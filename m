@@ -2,99 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE5A476C33
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 09:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C185477309
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 14:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhLPIte (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 03:49:34 -0500
-Received: from smtp23.cstnet.cn ([159.226.251.23]:54330 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229533AbhLPItd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 03:49:33 -0500
-Received: from localhost.localdomain (unknown [124.16.138.126])
-        by APP-03 (Coremail) with SMTP id rQCowABHTlqA_bphQfc+Aw--.52062S2;
-        Thu, 16 Dec 2021 16:49:05 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] sfc: potential dereference of null pointer
-Date:   Thu, 16 Dec 2021 16:49:02 +0800
-Message-Id: <20211216084902.329009-1-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        id S234582AbhLPNWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 08:22:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232110AbhLPNWF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 08:22:05 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A4C061574;
+        Thu, 16 Dec 2021 05:22:05 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id x15so87838339edv.1;
+        Thu, 16 Dec 2021 05:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=60XSf9cHzUxT6ZkrcHjpgYMJcYBfPDQTULwlGLQzSnM=;
+        b=kCx+JYRzpt9IsbUnF/BkdXilxvx4imVH7NBWYFmU9VtfhpKLH1EM4q0RvV1irbcAt2
+         4OUo4eyzE7sMOK6tRXsc4xLVv/qtM792nz5NtADQWBjrap89Y/9E/DZxSBIHu7325r/R
+         hIC/sGcS9qEiPwBXZAW5NovkyMWfLumPUtQmunPWnVoQUBiERx3rk/VkbLYBfkwVGO9y
+         EsKuunqOtjcdR6HyMyyx/bPiRPdWzMwghOLxbC9p5Js1T6rGt75sjMvVBIJB63A2ZgLe
+         5aMLTapxYRh8oYTA1blPPWVmnTomQhw8jhKlzJ1REvymCEuTgBEiSQF+CTWuRXtm5xsl
+         2mGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=60XSf9cHzUxT6ZkrcHjpgYMJcYBfPDQTULwlGLQzSnM=;
+        b=3F5Tup9UV2RED/P0mk5FA7AM5/ufsoxvyuKPjqylUTbFn7Mvgx82LG+2wzoJT/mKXo
+         xDMWxl0QgvNOnbc64WYV/5YdqLzYmrsfLpXo+lhV5hX03c0dcR3Yxujbj0DgwWwxvZKJ
+         kseEn2OxP+g0ThWs4gMx8USbqhAgmkFahl+GwNPRIWa8WGiC6ktBAHl41hgDpxNhO9f4
+         0D6ZoEzKYRKso9r2uktbC00fLcQOCjQ7v56MiXShu7AJNShQPRuPXOa5FSK0gd+XrfB+
+         SZ/2zYSVA6gPJHuPx/GzTevqvUZIcPRuCUTldA01u4qAKUXph+X2MwQVKMjOl/nDb9od
+         5Iyg==
+X-Gm-Message-State: AOAM533jfoUxBFP7DXZji6SqJrP5NcF3es96+NI9fuG40Mkfl6FJZvPU
+        opTYy7h01uH4MqaUfUcCfvs=
+X-Google-Smtp-Source: ABdhPJzNKXQY5diG8Cxb9pHPRUB7F1RD08f1ZucgR2b3lGFQEqnZF+Gahv7l9l3FM9jf/FfHySZvDQ==
+X-Received: by 2002:a05:6402:1768:: with SMTP id da8mr20810877edb.252.1639660923591;
+        Thu, 16 Dec 2021 05:22:03 -0800 (PST)
+Received: from [192.168.8.198] ([185.69.144.117])
+        by smtp.gmail.com with ESMTPSA id sd2sm1857108ejc.22.2021.12.16.05.22.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Dec 2021 05:22:02 -0800 (PST)
+Message-ID: <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com>
+Date:   Thu, 16 Dec 2021 13:21:26 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: rQCowABHTlqA_bphQfc+Aw--.52062S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFWUAw17KFWxJr1xJF1rXrb_yoW8Cw1xpa
-        1xK347ur4ktw45Za4kCw4kZF9xJasxtFWxWrySk3yrZwn5AF15ZrsrtFW5ur4qyr4DWF12
-        yrWUZFsFyFs8JwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-        Y2ka0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-        evJa73UjIFyTuYvjfUeYLvDUUUU
-X-Originating-IP: [124.16.138.126]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
+ <Yboc/G18R1Vi1eQV@google.com>
+ <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com>
+ <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+ <Yboy2WwaREgo95dy@google.com>
+ <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
+ <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
+ <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com>
+ <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The return value of kcalloc() needs to be checked.
-To avoid dereference of null pointer in case of the failure of alloc,
-such as efx_fini_rx_recycle_ring().
-Therefore, it should be better to change the definition of page_ptr_mask
-to signed int and then assign the page_ptr_mask to -1 when page_ring is
-NULL, in order to avoid the use in the loop in
-efx_fini_rx_recycle_ring().
+On 12/15/21 22:07, Stanislav Fomichev wrote:
+> On Wed, Dec 15, 2021 at 11:55 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 12/15/21 19:15, Stanislav Fomichev wrote:
+>>> On Wed, Dec 15, 2021 at 10:54 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> On 12/15/21 18:24, sdf@google.com wrote:
+[...]
+>>>>> I can probably do more experiments on my side once your patch is
+>>>>> accepted. I'm mostly concerned with getsockopt(TCP_ZEROCOPY_RECEIVE).
+>>>>> If you claim there is visible overhead for a direct call then there
+>>>>> should be visible benefit to using CGROUP_BPF_TYPE_ENABLED there as
+>>>>> well.
+>>>>
+>>>> Interesting, sounds getsockopt might be performance sensitive to
+>>>> someone.
+>>>>
+>>>> FWIW, I forgot to mention that for testing tx I'm using io_uring
+>>>> (for both zc and not) with good submission batching.
+>>>
+>>> Yeah, last time I saw 2-3% as well, but it was due to kmalloc, see
+>>> more details in 9cacf81f8161, it was pretty visible under perf.
+>>> That's why I'm a bit skeptical of your claims of direct calls being
+>>> somehow visible in these 2-3% (even skb pulls/pushes are not 2-3%?).
+>>
+>> migrate_disable/enable together were taking somewhat in-between
+>> 1% and 1.5% in profiling, don't remember the exact number. The rest
+>> should be from rcu_read_lock/unlock() in BPF_PROG_RUN_ARRAY_CG_FLAGS()
+>> and other extra bits on the way.
+> 
+> You probably have a preemptiple kernel and preemptible rcu which most
+> likely explains why you see the overhead and I won't (non-preemptible
+> kernel in our env, rcu_read_lock is essentially a nop, just a compiler
+> barrier).
 
-Fixes: 3d95b884392f ("sfc: move more rx code")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/net/ethernet/sfc/net_driver.h | 2 +-
- drivers/net/ethernet/sfc/rx_common.c  | 5 ++++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+Right. For reference tried out non-preemptible, perf shows the function
+taking 0.8% with a NIC and 1.2% with a dummy netdev.
 
-diff --git a/drivers/net/ethernet/sfc/net_driver.h b/drivers/net/ethernet/sfc/net_driver.h
-index 9b4b25704271..beba3e0a6027 100644
---- a/drivers/net/ethernet/sfc/net_driver.h
-+++ b/drivers/net/ethernet/sfc/net_driver.h
-@@ -407,7 +407,7 @@ struct efx_rx_queue {
- 	unsigned int page_recycle_count;
- 	unsigned int page_recycle_failed;
- 	unsigned int page_recycle_full;
--	unsigned int page_ptr_mask;
-+	int page_ptr_mask;
- 	unsigned int max_fill;
- 	unsigned int fast_fill_trigger;
- 	unsigned int min_fill;
-diff --git a/drivers/net/ethernet/sfc/rx_common.c b/drivers/net/ethernet/sfc/rx_common.c
-index 68fc7d317693..d9d0a5805f1c 100644
---- a/drivers/net/ethernet/sfc/rx_common.c
-+++ b/drivers/net/ethernet/sfc/rx_common.c
-@@ -150,7 +150,10 @@ static void efx_init_rx_recycle_ring(struct efx_rx_queue *rx_queue)
- 					    efx->rx_bufs_per_page);
- 	rx_queue->page_ring = kcalloc(page_ring_size,
- 				      sizeof(*rx_queue->page_ring), GFP_KERNEL);
--	rx_queue->page_ptr_mask = page_ring_size - 1;
-+	if (!rx_queue->page_ring)
-+		rx_queue->page_ptr_mask = -1;
-+	else
-+		rx_queue->page_ptr_mask = page_ring_size - 1;
- }
- 
- static void efx_fini_rx_recycle_ring(struct efx_rx_queue *rx_queue)
+
+>> I'm skeptical I'll be able to measure inlining one function,
+>> variability between boots/runs is usually greater and would hide it.
+> 
+> Right, that's why I suggested to mirror what we do in set/getsockopt
+> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
+> to you, Martin and the rest.
+
 -- 
-2.25.1
-
+Pavel Begunkov
