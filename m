@@ -2,101 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E166C4768F2
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 05:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3234B476958
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 06:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbhLPEGi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 23:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbhLPEGh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 23:06:37 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B810C061574;
-        Wed, 15 Dec 2021 20:06:37 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id x32so60955410ybi.12;
-        Wed, 15 Dec 2021 20:06:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3OChzfLXWJUKSc6lAArF7YrO3Lj8rLF54C6O9wKrR48=;
-        b=L6Fbif68sn2Q2slnFz+6Xj+dLgFjqTIMUS8mgtpg2GXGiQpDPWBgMNycw+PqCayK0F
-         9hm1P2dCASVP+ArjqsvCEF6SHPeBlvIROTbdOXQVTifDE2ZIDIWc34UVvHL71P69mgWn
-         z/d5rakfuWbVPRNi31dPwBNgW6YzEhncmngXWPfJYxIn8JDxqnuA44JxmSA/iq50pZ5F
-         pmgKIyataAHI9Vm/yABz8Bzt9964COeGKH6Uu3GiNyj14j1eqmIF6HdyT9BOckmakYep
-         BsO22/GMytmnndDdIxKoFLLVvyHeaHQqEdazvQyJhg489TFLGSowuMpQD279FK0SHV8v
-         RkFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3OChzfLXWJUKSc6lAArF7YrO3Lj8rLF54C6O9wKrR48=;
-        b=49iCCiSiAfcCJ1wOcmjB7QUK7C3mZSQY3QyV/PQFAtoE52NLtq8LTP43ECwS+yij3b
-         93AGirRytRHoLjG3WtW7QD7/s4FK/CuWKPxi+qO2pwwssEVj1IAaS4fdnMLf1+7zHi4c
-         FXfMiYQe7ckjV1sLGopnO20hZAPmIhOFcWzWqkUYjR2KBKPw4EpEH7ZKn0lqfIKKhvjA
-         zkVZ73vXsv6udP8uc38P+zfaU4+bFwsmvDnH3f1spa+7xlcjoarjE1jlRfdzyMOZ2mmO
-         IP5Tg6mvbpx3Zgij9HrO9gcbjftpdZr3F4gILaYMD8rgdqR6k75eLs7UH8dfFeCw5BDN
-         BuUQ==
-X-Gm-Message-State: AOAM531zVhRotN/HsPGwlaTLkk8DKROFVEhJgihhGlYgqFu9bWLO9Cew
-        rqSMMA+9DX0VcC18RnOgSA7EqPnTLrmGD907GwQ=
-X-Google-Smtp-Source: ABdhPJwU23HHgeDAXxPP2z19rK3WDqzJheAQL1/Ob4GmrEk8pheviCFvLPIBsS9hQv1InPm0GsBSafoCjgljC+ueGgg=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr10274669ybd.180.1639627596650;
- Wed, 15 Dec 2021 20:06:36 -0800 (PST)
+        id S231938AbhLPFFy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 16 Dec 2021 00:05:54 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34218 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231639AbhLPFFy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 00:05:54 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 1BG4AKLU016522
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 21:05:53 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3cyspqhpjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 21:05:53 -0800
+Received: from intmgw001.27.prn2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 15 Dec 2021 21:05:52 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 3800CD4EDCB8; Wed, 15 Dec 2021 21:05:43 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next 0/3] Revamp and fix libbpf's feature-probing APIs
+Date:   Wed, 15 Dec 2021 21:05:42 -0800
+Message-ID: <20211216050542.2737969-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20211214135555.125348-1-pulehui@huawei.com>
-In-Reply-To: <20211214135555.125348-1-pulehui@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Dec 2021 20:06:25 -0800
-Message-ID: <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
- userspace pt_regs
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-FB-Source: Intern
+X-Proofpoint-GUID: O0ODZ1bdmtiQZVYR7VSvGgVvL3iYWE6Y
+X-Proofpoint-ORIG-GUID: O0ODZ1bdmtiQZVYR7VSvGgVvL3iYWE6Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-16_01,2021-12-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=784 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2112160029
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
->
-> When building bpf selftests on arm64, the following error will occur:
->
-> progs/loop2.c:20:7: error: incomplete definition of type 'struct
-> user_pt_regs'
->
-> Some archs, like arm64 and riscv, use userspace pt_regs in
-> bpf_tracing.h, which causes build failure when bpf prog use
-> macro in bpf_tracing.h. So let's use vmlinux.h directly.
+Fix and improve libbpf feature-probing APIs. Name them consistently and
+deprecated previous inconsistently named APIs.
 
-We could probably also extend bpf_tracing.h to work with
-kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
-__VMLINUX_H__ checks). It's more work, but will benefit other end
-users, not just selftests.
+Cc: Dave Marchevsky <davemarchevsky@fb.com>
 
->
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
->  tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
->  tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
->  tools/testing/selftests/bpf/progs/loop6.c     | 20 ++++++-------------
->  .../selftests/bpf/progs/test_overhead.c       |  8 ++------
->  .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
->  6 files changed, 15 insertions(+), 43 deletions(-)
->
+Andrii Nakryiko (3):
+  libbpf: rework feature-probing APIs
+  selftests/bpf: add libbpf feature-probing API selftests
+  bpftool: reimplement large insn size limit feature probing
 
-[...]
+ tools/bpf/bpftool/feature.c                   |  26 +-
+ tools/lib/bpf/libbpf.h                        |  52 +++-
+ tools/lib/bpf/libbpf.map                      |   3 +
+ tools/lib/bpf/libbpf_probes.c                 | 235 ++++++++++++++----
+ tools/testing/selftests/bpf/config            |   2 +
+ .../selftests/bpf/prog_tests/libbpf_probes.c  | 124 +++++++++
+ 6 files changed, 385 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/libbpf_probes.c
+
+-- 
+2.30.2
+
