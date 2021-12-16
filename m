@@ -2,196 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55201477CBB
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:45:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6AC477CCF
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239925AbhLPTpe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 14:45:34 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34326 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229945AbhLPTpd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 14:45:33 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BGIHHQX008086;
-        Thu, 16 Dec 2021 11:45:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=JrMCwqRYyKYLnVGM+ewKRZjLD1m6iuWXCigfGM8Ovsc=;
- b=BNZxGr0SFQWXlgJFOb6Xd/etuUFCK3OBV1nVRPj8rcDa6sg1sgBqKgbKAeDpZ93Y/QyS
- 7hC8ZKkdVUc//PTEWzbFJJy7V3UW609ag795kmf2KNZpINo4FRo/sgTSbLvkdzWEjuL6
- vrmEn63hci9GLe2i/TlQ+fpYRFinjARMMsc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3d03d5v77t-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 16 Dec 2021 11:45:31 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 16 Dec 2021 11:45:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=msGfDeAxeiOBH5iJQK6S3Fto9vIjYY2FUlcw6Iju+wVqWNWxlwj+l0/L2O7rASygzSTGHaxqEd3u+3QCJgwKnmpxm07qhWgGc9iDx2hqbAh/2J5U+qLj4+PIi6Vlxoei3uCXSLYlklJb96w/Fk1s+tLdknZAFIO+Enc6qw+e9ywL/R+6WsyPo41acoNQCXaRrWSH3qNegsmtrBnLdIoQM1l6RBsam3aMVoeetCeO9LvpaL+ag/l+wHobj2aQyFVDLhs7Jr/4U67QHcdUqfsCtFwsKFyeQIsSP5oDXvbwSpibuUwB5uXpoho0+hVY0SH1WZAE5rnd6VawgtEnwqqFuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JrMCwqRYyKYLnVGM+ewKRZjLD1m6iuWXCigfGM8Ovsc=;
- b=C2++TzkGjMTnkqkRi9/9SB0Y+zkJKpdL9lUq8QBxeTCIb8M5W4/qx4T8n35X28ZtWWOKD0/d4ARfC7NdbPs3pxwT28eD5QWo1Dv47fBOc342770sMp3GXAtE4HuaUEFkdrxduprZXvjjjqUJ7tfCK78pIpxFWBT+jaZdchN8ojYZaCcUDYGFpaVa7dDbUEr4FwBH7bWln3w4KFQ4GXtBFilPGZuczbGDoJhW7TFHfqtKsSiVU/Zey9Raq7shqo8AOHAFoOgYGmEQLPbKJYmJBB3vozGHLaHCQeIQ0Xi9McyztpJq+5/v9NchSfhLk2rUuH13Y8ka6+a1X2NH7nydvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5061.namprd15.prod.outlook.com (2603:10b6:806:1dc::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.11; Thu, 16 Dec
- 2021 19:45:26 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::f826:e515:ee1a:a33]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::f826:e515:ee1a:a33%6]) with mapi id 15.20.4801.014; Thu, 16 Dec 2021
- 19:45:26 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Song Liu <song@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCH v2 bpf-next 2/7] bpf: use bytes instead of pages for
- bpf_jit_[charge|uncharge]_modmem
-Thread-Topic: [PATCH v2 bpf-next 2/7] bpf: use bytes instead of pages for
- bpf_jit_[charge|uncharge]_modmem
-Thread-Index: AQHX8Xk2RhT4OmwE5UKoGBpiYcjtlqwzQGkAgAJHhoA=
-Date:   Thu, 16 Dec 2021 19:45:25 +0000
-Message-ID: <60221F26-614D-48DA-85C5-5FF4143AF642@fb.com>
-References: <20211215060102.3793196-1-song@kernel.org>
- <20211215060102.3793196-3-song@kernel.org>
- <YbmtyiGpGLug1x5u@hirez.programming.kicks-ass.net>
-In-Reply-To: <YbmtyiGpGLug1x5u@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3693.20.0.1.32)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: d7d61a4b-236c-4c75-f735-08d9c0cc9b62
-x-ms-traffictypediagnostic: SA1PR15MB5061:EE_
-x-microsoft-antispam-prvs: <SA1PR15MB50619F06753E25290C57FF26B3779@SA1PR15MB5061.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:127;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AQ89loW81Xs2FxGuw6I2J/NKSQLvbjuuU7W7usAlQ6Xfj/N7LZXW83tZuP5WCtm875ZNfQWwv+wrCTU2o4GWWUyUo/RHNKeoEOJDztWYL8vjJdTNmchF+6yOGtiU+DN8OZHJmMWfFCHUpvTrX2iA2wG97o07RWKgE89d4D/KWxU64/V8aQPNX4BJ4PMAwE9TSfI0ud3p8hb4cu1FMVQVIIK7HDfAbBsR/wOh5CXMPLk+jGVMiJKyIqWDlm8QiQ3AhxeW5p6fvfEyL2qey+9f0eLAAdwk+zBH/ces7KPjlRz1v5J03YMAiTwNxw5zILNqvNd1FpsDSFkO6hBA01SslssAgHldzd29+z/2kPi6CaeBS3u6sDZMXYZtgn28JUaUTHwLsqRdwx50PMulfQugt019tbxgZMTDKTem1623/KiXRtPv6y6YmnTmrt2tYzw/JrssF0bHJRqkMGS2OhabfwGcjoRdJXOuKuEJ3pPXeXVO9RMeWzDJ355AipnLPj6Sv5hpteL5bXLj3yCBK6nYFJAew6Xi4McR+Bf+oakk/bghsRmYR1mTNsQ4VOx6XaI+SidVrPOm4Xb+5SOlWvJWFHuaG4WMFctpixrLJb/shee0eaRoiXoeIP3IIMoAMefaDXntd9t8v0xVfh+EA5CYyj8cat9URsHn2/C6soJvvEiFVPwWFhDPV+nvmO8EFaLDoeo3+M3tyzMkAbf+COL/o6Qx6GcJd7NeWWsNkrQ73HcmHKvwdES9TXRBlrs5Yzmb
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(71200400001)(2906002)(6916009)(91956017)(122000001)(316002)(6512007)(2616005)(33656002)(66946007)(66446008)(66476007)(66556008)(76116006)(86362001)(186003)(508600001)(83380400001)(5660300002)(4326008)(38100700002)(64756008)(6486002)(36756003)(6506007)(38070700005)(8676002)(54906003)(8936002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QHFAmdrBEyOluPDk16tk3HDmwK150DIrmERQtyJtBY1yA55FAZETSBzpea2I?=
- =?us-ascii?Q?8oSJAtjH8M9/v2Onm3HvpynN4CK94JANzFKw0nWsQldZWrbSDRwHysCAGkyf?=
- =?us-ascii?Q?h8N6RFuSP7wqeOp/uFX88SOkqhfA/tyuipLoVMWtfET50KAaxILAW4giKYHT?=
- =?us-ascii?Q?b30lo0r3Cn4u5OzoIjPb9ouJ7VvuDyl2gjQAk7VD7N/BVcF9fQN9a0SxJex2?=
- =?us-ascii?Q?XDTFF3cMlasYZk/hViEEKBlJ3a2WSruCY768B79iuiDR+oCpSB5VHnd81p5x?=
- =?us-ascii?Q?3KkP9Uz+8xwnriaIXoMWJwuorv1Zn3x3sUdtTvc94YWV44ub6SOzyPvqZqaD?=
- =?us-ascii?Q?yUAr6SgwMH9u2DfbO9fpL0QLT+Sfvqw6iFI5xv6va/vtAGctsEKa/NCNxqjQ?=
- =?us-ascii?Q?JdiU9EHsbayJbIYoiUzgfG9Kbf99Ehk3ZAXv0Z/B9g8sp3TPcGbKtk5yAYfZ?=
- =?us-ascii?Q?x27o6lJPdZ2ULtZ835UAujgVV7DIAauYuCQndukmW6+9RnpGUJSYNILAU9ha?=
- =?us-ascii?Q?rDkugc415eD3x2gr5T6FiGx18BjzbQA3XQxJH3ztduJwATZuFCgXIQqNCQ3Y?=
- =?us-ascii?Q?NEiHHnX64ClWeVt0H3X2aVdpGWXmq99+kh8B79nNRxHnmG+S3fF39VEUdioQ?=
- =?us-ascii?Q?h0bvXhNRZ4iGuubcy+Z2wRjvCz8xODMIqhqiHQ+oFovKCW+1MG2Jp446xxGN?=
- =?us-ascii?Q?tlyz1PXNXsAt6ejMRB2dKYoC1fjLZdfuquN4NAGEi9KvBPuZB3cGmdaLrB+u?=
- =?us-ascii?Q?kM8OPXJ6kPebPQ86G8bUTOgzhJot5bg89KaeRjRV6moaXve+LIZRP0HG9pmP?=
- =?us-ascii?Q?gEhApXNhfMUr/AMmdkBhunVsMXPRWhoIUuM9Y3ZwJoDR5FwawLGTaT52bXLQ?=
- =?us-ascii?Q?gQ8OIp2aiUKKrdvrb9KQiIXLlM6RzgiN8Uk36Zqc84CqvKScYywdHhqP7XzK?=
- =?us-ascii?Q?Mr2A6EcpKZJnAXGvVbWPomgYigJ4hnfP7mWIrG3JwmJEPy3mrHf3sts2DWx4?=
- =?us-ascii?Q?S/6cvcbMDmdW9hRZATE8pBK5/a///Hwbr37ajOvy9uc6hcnLOXhYFhfbqDvR?=
- =?us-ascii?Q?2cvJRtM0HVY8OddPmBM937lGlrQ9y2GnuMaaaJVFjC4QthvqQ9fgfOkeVnLF?=
- =?us-ascii?Q?fcJQYzXR1slQbhRp3QetiMROzqgzDjzNTYHSRweDeXKfxaSa6IZYUIzdENon?=
- =?us-ascii?Q?lwgLEbYadm0W4cgtTcKaAguYm0fGil85LHrvvoB2wMlY/dDAn7ysYisnbXXV?=
- =?us-ascii?Q?E2NIM66CMM6ZodPq5/lv6Uq+kvmEKNt8ldZlUez6b7g14sxrDyUNZunnsKKG?=
- =?us-ascii?Q?D5fpMDNgLCdLH/XVR0Kx9eiToZJ/kFluc/YKTKDixZZUSOFohkWJLhzrNYwl?=
- =?us-ascii?Q?sDq4xVYl3Fsn3m+9zuzFrOhiY1y307aZnJePindaB4x7vnMYD5MrinXzCwYO?=
- =?us-ascii?Q?A+qpHYkxlTP9JodJhiopZLXbYdUGuK6UYsn5XxXE1cNdNZYpmibB41Py0KMB?=
- =?us-ascii?Q?+WRrcfIScTL73YyrdgGrW2CRxq9mm+vNPoqdKCee2oq+E7pxEmi71ZhOMQco?=
- =?us-ascii?Q?yHTH8muozDXKTjL6WYmb/uqMILEqnSHeAm3AWSLyi+CffL7yQCjDGxY5swDE?=
- =?us-ascii?Q?8sGEKRxu10GbwNPnhsz5xcsVBkQmYjaD1ZfBirsc1h0jVL5DuVLS8Da5/tJg?=
- =?us-ascii?Q?+2Rp5w=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3D47F9A4445A48478551E66EE76882B5@namprd15.prod.outlook.com>
+        id S241094AbhLPTvM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 14:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241088AbhLPTvL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 14:51:11 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CBAC061574
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:51:11 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso202329ots.6
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:51:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TSyw+5NE57grmXEvJooaI5xtGgoQMSQLuPJVw3Fnbz0=;
+        b=Tpyf7pdfSIzTQJ5ddM2RQ/4ufoSTi693T/ZvMrPXpEsrX+dek4KH9zcyfyqnda/mpV
+         oK8+bQs73J8jGLrrMPKmsDYnHYixb1TrYcFvGpRuIqaon/M3jsb2/0QY1AmETvx7rJBu
+         65BPv3eRq6Z+Nfi0Wbajl/LtknopCWZwg07gM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TSyw+5NE57grmXEvJooaI5xtGgoQMSQLuPJVw3Fnbz0=;
+        b=DV9oXry4E2QqV1nJScctTZi7RUXTtTywHvy95BgiCh7wL94DibWxT0k0lZG4SDpYZP
+         vrUdhSVlFLUZn1MdJG4VKVWgcj5xU7IcdHpogLmgKfBkl1ai9Hrrne2yR3VMX3jD/FrG
+         +qMq7C5eeBgyd9gr68yNQeiVGrW0y9JrcpCQ2w72RlAyMZRlkp9M0v+/uQmlf0vNTVUs
+         r91NVj9uPHMYUzOOnxZBhiUk/3lg7RzLtQW5o542IBp/aOvENRxQBmAjs55kR28uBUA+
+         iND6xPG9GsBpHAmKKKDj1qtgKqwbhFvCfH8ouQAnyBnf4L6iuGIlnDaWKlghEePYlRWn
+         Olqw==
+X-Gm-Message-State: AOAM530mZoqrhQZrXNYyQcpVeVToA29rot48geGBroZ0lapfELef5nX7
+        RDcAd8mmKegfiZiGUwD3GmYiZA==
+X-Google-Smtp-Source: ABdhPJzkPk7UAaVmdoip7gq4iwOC5yGm+pzaLqDeNMEUG5lPY0sMchwnWFV03x5CAd8cbbCPLNJxXg==
+X-Received: by 2002:a9d:798d:: with SMTP id h13mr13577040otm.132.1639684270667;
+        Thu, 16 Dec 2021 11:51:10 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 52sm534911oth.52.2021.12.16.11.51.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Dec 2021 11:51:10 -0800 (PST)
+Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211210173433.13247-1-skhan@linuxfoundation.org>
+ <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com>
+ <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
+ <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
+ <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
+ <CAEf4BzYKnoD_x7fZ4Fwp0Kg-wT6HMXOG0CMRSG4U+qQ0R27yzQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <53490dba-b7fd-a3f8-6574-5736c83aa90d@linuxfoundation.org>
+Date:   Thu, 16 Dec 2021 12:51:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7d61a4b-236c-4c75-f735-08d9c0cc9b62
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2021 19:45:26.0758
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: tD+tu5RzfUyjfVSilshb2HsDCgvyx2lrvq6DnmiJuetAS/HxZaIPoZ+LBRG4G1hIlTYotelaCAkLsQkDkZ8Miw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5061
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: P8bJNnzS_Jul4sPgxT5hPvB1iFNQKb27
-X-Proofpoint-GUID: P8bJNnzS_Jul4sPgxT5hPvB1iFNQKb27
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-16_07,2021-12-16_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
- mlxscore=0 priorityscore=1501 adultscore=0 clxscore=1015
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2112160108
-X-FB-Internal: deliver
+In-Reply-To: <CAEf4BzYKnoD_x7fZ4Fwp0Kg-wT6HMXOG0CMRSG4U+qQ0R27yzQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> On Dec 15, 2021, at 12:56 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+On 12/16/21 12:30 PM, Andrii Nakryiko wrote:
+> On Thu, Dec 16, 2021 at 6:42 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 12/15/21 9:04 PM, Andrii Nakryiko wrote:
+>>> On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
+>>>>> On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>>>
+>>>>>> ARRAY_SIZE is defined in multiple test files. Remove the definitions
+>>>>>> and include header file for the define instead.
+>>>>>>
+>>>>>> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
+>>>>>> define.
+>>>>>>
+>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>>> ---
+>>>>>>     tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
+>>>>>>     tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
+>>>>>>     tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
+>>>>>>     tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
+>>>>>>     tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
+>>>>>>     5 files changed, 5 insertions(+), 19 deletions(-)
+>>>>>>
+>>>>>> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>>>> index 1d8918dfbd3f..7a5ebd330689 100644
+>>>>>> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>>>> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>>>> @@ -5,6 +5,7 @@
+>>>>>>     #include <bpf/bpf_helpers.h>
+>>>>>>     #include <bpf/bpf_tracing.h>
+>>>>>>     #include <bpf/bpf_core_read.h>
+>>>>>> +#include <bpf/bpf_util.h>
+>>>>>
+>>>>> It doesn't look like you've built it.
+>>>>>
+>>>>> progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+>>>>> #include <bpf/bpf_util.h>
+>>>>>             ^~~~~~~~~~~~~~~~
+>>>>>      CLNG-BPF [test_maps] socket_cookie_prog.o
+>>>>> progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+>>>>> #include <bpf/bpf_util.h>
+>>>>>             ^~~~~~~~~~~~~~~~
+>>>>> 1 error generated.
+>>>>> In file included from progs/profiler2.c:6:
+>>>>> progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
+>>>>> #include <bpf/bpf_util.h>
+>>>>>             ^~~~~~~~~~~~~~~~
+>>>>>
+>>>>
+>>>> Sorry about that. I built it - I think something is wrong in my env. Build
+>>>> fails complaining about not finding vmlinux - I overlooked that the failure
+>>>> happened before it got to progs.
+>>>>
+>>>> Error: failed to load BTF from .../vmlinux: No such file or directory
+>>>
+>>> Please make sure that you build vmlinux before you build selftests,
+>>> BPF selftests use vmlinux to generate vmlinux.h with all kernel types
+>>> (among other things). So please also make sure that all the setting in
+>>> selftests/bpf/config were used in your Kconfig.
+>>>
+>>>>
+>>
+>> The problem in my env. is that I don't have CONFIG_DEBUG_INFO_BTF in
+>> my config and then don't have the dwarves and llvm-strip on my system.
+>> Pains of upgrading.
+>>
+>> I am all set now. On the other hand the vmlinux.h is a mess. It has
+>> no guards for defines and including stdio.h and this generated
+>> vmlinux.h causes all sorts of problems.
 > 
-> On Tue, Dec 14, 2021 at 10:00:57PM -0800, Song Liu wrote:
->> From: Song Liu <songliubraving@fb.com>
->> 
->> This enables sub-page memory charge and allocation.
->> 
->> Signed-off-by: Song Liu <songliubraving@fb.com>
->> ---
->> include/linux/bpf.h     |  4 ++--
->> kernel/bpf/core.c       | 19 +++++++++----------
->> kernel/bpf/trampoline.c |  6 +++---
->> 3 files changed, 14 insertions(+), 15 deletions(-)
->> 
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 965fffaf0308..adcdda0019f1 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -775,8 +775,8 @@ void bpf_image_ksym_add(void *data, struct bpf_ksym *ksym);
->> void bpf_image_ksym_del(struct bpf_ksym *ksym);
->> void bpf_ksym_add(struct bpf_ksym *ksym);
->> void bpf_ksym_del(struct bpf_ksym *ksym);
->> -int bpf_jit_charge_modmem(u32 pages);
->> -void bpf_jit_uncharge_modmem(u32 pages);
->> +int bpf_jit_charge_modmem(u32 size);
->> +void bpf_jit_uncharge_modmem(u32 size);
->> bool bpf_prog_has_trampoline(const struct bpf_prog *prog);
->> #else
->> static inline int bpf_trampoline_link_prog(struct bpf_prog *prog,
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index de3e5bc6781f..495e3b2c36ff 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -808,7 +808,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->> 	return slot;
->> }
->> 
->> -static atomic_long_t bpf_jit_current;
->> +static atomic64_t bpf_jit_current;
+> It does have
 > 
-> atomic64_t is atrocious crap on much of 32bit. I suppose it doesn't
-> matter since this is slow path accounting?
+> #ifndef __VMLINUX_H__
+> #define __VMLINUX_H__
+> 
+> Are we talking about the same vmlinux.h here?
+> 
 
-Yeah, speed shouldn't matter for bpf_jit_charge|uncharge(). 
+Yes we are. The guard it has works when vmlinux.h is included
+twice. It defines a lot of common defines which are the problem.
+Unless you add guards around each one of them, including vmlinux.h
+is problematic if you also include other standard includes.
 
-Thanks,
-Song
+You can try to include bpf_util.h for example from one of the
+test in progs to see the problem.
 
+thanks,
+-- Shuah
