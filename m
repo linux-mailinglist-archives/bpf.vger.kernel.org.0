@@ -2,112 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38CA74766BE
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 00:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EEA4767AC
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 03:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhLOXuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 18:50:05 -0500
-Received: from mail.netfilter.org ([217.70.188.207]:56732 "EHLO
-        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbhLOXuE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 18:50:04 -0500
-Received: from netfilter.org (unknown [78.30.32.163])
-        by mail.netfilter.org (Postfix) with ESMTPSA id EE160607E0;
-        Thu, 16 Dec 2021 00:47:33 +0100 (CET)
-Date:   Thu, 16 Dec 2021 00:49:59 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org,
+        id S232753AbhLPCEq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 21:04:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232752AbhLPCEq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 21:04:46 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED1BC061574
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 18:04:46 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id i3-20020a170902c94300b0014287dc7dcbso7268924pla.16
+        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 18:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=4xhJRPGTz33TsLVVEaHrcpS+70YTd6EGGFlzsB3xnSk=;
+        b=JTLcxznXYfgXQt17XlvNlxMWNJMbSaNI+hGPInw8Wn68YhchsdeqQFSFoyaCVRz1ST
+         TEWxq/jlP104ombWDCmiJ60lKNlfUFABNfimqz0ilcJLCtGWmTz5EcmJo+WpVvsDzIHm
+         XY94GMF40y7zDE814U0ywrUJLMTangWt6qiIK3+QzbqWWgcQxyffXmD6NkPzGlnxBEGQ
+         lhdY571n/gc0khsKP8jMUUoOc6yBMlAC03FFsnB4FUwhF2sV/Xj+kb5jGiXv+YSvgWj+
+         db7GNkumN/QMVgh0Rvew0G12+CGSKhl3GcYyqK+NNxeCHmTI2rmEiEjsxHQHnj6J4ELg
+         FfPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=4xhJRPGTz33TsLVVEaHrcpS+70YTd6EGGFlzsB3xnSk=;
+        b=kh71QZrewB62Y33oZjXkGeOhj8hLD0EJDsNgnohcXrcFlg1fcdI9+Y0Lt3XlTpkk0r
+         TdyXPSCaZDg+FfJQmDIa9dFIveRU6CqmUvvQs0QI3Q0D0kYDGIXEoPjh2QUBY9Tb9OLo
+         xHtVbpHxRLNlcKUShJUOOLB0T3QPZCxZn7wsODgliHbQY/9Q3iX3yAv0sQJtXYm8oJ/z
+         ZQnd6uxV9XAPLgCOwppiEeNO4DPQMK/hYZHNp7TBz1vt6axBn4A3VHCmzXnlaz0/T9r/
+         KgzZdre7Z17W8X0XD8hkOcwVkGedJ3pyiR9YBrapvnLaXarw9EejonNKQKH5m4W10M8e
+         N65g==
+X-Gm-Message-State: AOAM53313Up5eCkRPSqeY5//8w47+DBBDcmL2E+0jqtD+zmaGIjlcsko
+        vrc10jJxF8xWUXFJOdfCYUjTOZriKI/uxe+2vQdwcYmagl5y/NjtT+umi/MWKKzXKEKsqxvKMxr
+        xANZFnlSzXTpUr0kChwmBvY74wBcKTAgbmunCCOgbqrls5PpRKjakdiENckCCl7M=
+X-Google-Smtp-Source: ABdhPJyWiFnltnZpvebb3xG3swl7QBh3uWdxUccdrJWrbeZ6lFAGPBPlKOSR0IQ3oKMbrTjS9t04mLWu3L/CJw==
+X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
+ (user=zhuyifei job=sendgmr) by 2002:a05:6a00:b83:b0:49f:b555:1183 with SMTP
+ id g3-20020a056a000b8300b0049fb5551183mr11731465pfj.32.1639620285591; Wed, 15
+ Dec 2021 18:04:45 -0800 (PST)
+Date:   Thu, 16 Dec 2021 02:04:24 +0000
+Message-Id: <cover.1639619851.git.zhuyifei@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.1.173.g76aa8bc2d0-goog
+Subject: [PATCH v2 bpf-next 0/5] bpf: allow cgroup progs to export custom
+ retval to userspace
+From:   YiFei Zhu <zhuyifei@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Stanislav Fomichev <sdf@google.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 7/9] net/netfilter: Add unstable CT lookup
- helpers for XDP and TC-BPF
-Message-ID: <Ybp/J5KXn0hLT4DZ@salvia>
-References: <20211210130230.4128676-1-memxor@gmail.com>
- <20211210130230.4128676-8-memxor@gmail.com>
- <YbNtmlaeqPuHHRgl@salvia>
- <20211210153129.srb6p2ebzhl5yyzh@apollo.legion>
- <YbPcxjdsdqepEQAJ@salvia>
- <87pmq3ugz5.fsf@toke.dk>
- <YbT5DEmlkunw7cCo@salvia>
- <87tufcyz72.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87tufcyz72.fsf@toke.dk>
+        Song Liu <song@kernel.org>, YiFei Zhu <zhuyifei@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 10:25:37PM +0100, Toke Høiland-Jørgensen wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> writes:
-> 
-> > On Sat, Dec 11, 2021 at 07:35:58PM +0100, Toke Høiland-Jørgensen wrote:
-> >> Pablo Neira Ayuso <pablo@netfilter.org> writes:
-> >> 
-> >> > On Fri, Dec 10, 2021 at 09:01:29PM +0530, Kumar Kartikeya Dwivedi wrote:
-> >> >> On Fri, Dec 10, 2021 at 08:39:14PM IST, Pablo Neira Ayuso wrote:
-> >> >> > On Fri, Dec 10, 2021 at 06:32:28PM +0530, Kumar Kartikeya Dwivedi wrote:
-> >> >> > [...]
-> >> >> > >  net/netfilter/nf_conntrack_core.c | 252 ++++++++++++++++++++++++++++++
-> >> >> > >  7 files changed, 497 insertions(+), 1 deletion(-)
-> >> >> > >
-> >> >> > [...]
-> >> >> > > diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> >> >> > > index 770a63103c7a..85042cb6f82e 100644
-> >> >> > > --- a/net/netfilter/nf_conntrack_core.c
-> >> >> > > +++ b/net/netfilter/nf_conntrack_core.c
-> >> >> >
-> >> >> > Please, keep this new code away from net/netfilter/nf_conntrack_core.c
-> >> >> 
-> >> >> Ok. Can it be a new file under net/netfilter, or should it live elsewhere?
-> >> >
-> >> > IPVS and OVS use conntrack for already quite a bit of time and they
-> >> > keep their code in their respective folders.
-> >> 
-> >> Those are users, though.
-> >
-> > OK, I see this as a yet user of the conntrack infrastructure.
-> 
-> The users are the BPF programs; this series adds the exports. I.e., the
-> code defines an API that BPF programs can hook into, and implements the
-> validation and lifetime enforcement that is necessary for the particular
-> data structures being exposed. This is very much something that the
-> module doing the exports should be concerned with, so from that
-> perspective it makes sense to keep it in the nf_conntrack kmod.
+Right now, most cgroup hooks are best used for permission checks. They
+can only reject a syscall with -EPERM, so a cause of a rejection, if
+the rejected by eBPF cgroup hooks, is ambiguous to userspace.
+Additionally, if the syscalls are implemented in eBPF, all permission
+checks and the implementation has to happen within the same filter,
+as programs executed later in the series of progs are unaware of the
+return values return by the previous progs.
 
-Thanks for explaining.
+This patch series adds two helpers, bpf_get_retval and bpf_set_retval,
+that allows hooks to get/set the return value of syscall to userspace.
+This also allows later progs to retrieve retval set by previous progs.
 
-> >> This is adding a different set of exported functions, like a BPF
-> >> version of EXPORT_SYMBOL(). We don't put those outside the module
-> >> where the code lives either...
-> >
-> > OVS and IPVS uses Kconfig to enable the conntrack module as a
-> > dependency. Then, add module that is loaded when conntrack is used.
-> 
-> BPF can't do that, though: all the core BPF code is always built into
-> the kernel, so we can't have any dependencies on module code. Until now,
-> this has meant that hooking into modules has been out of scope for BPF
-> entirely. With kfuncs and the module BTF support this is now possible,
-> but it's a bit "weird" (i.e., different) compared to what we're used to
-> with kernel modules.
+For legacy programs that rejects a syscall without setting the retval,
+for backwards compatibility, if a prog rejects without itself or a
+prior prog setting retval to an -err, the retval is set by the kernel
+to -EPERM.
 
-OK.
+For getsockopt hooks that has ctx->retval, this variable mirrors that
+that accessed by the helpers.
 
-> This series represents the first instance of actually implementing BPF
-> hooks into a module, BTW, so opinions on how to do it best are
-> absolutely welcome. But I have a hard time seeing how this could be done
-> without introducing *any* new code into the conntrack module...
+Additionally, the following user-visible behavior for getsockopt
+hooks has changed:
+  - If a prior filter rejected the syscall, it will be visible
+    in ctx->retval.
+  - Attempting to change the retval arbitrarily is now allowed and
+    will not cause an -EFAULT.
+  - If kernel rejects a getsockopt syscall before running the hooks,
+    the error will be visible in ctx->retval. Returning 0 from the
+    prog will not overwrite the error to -EPERM unless there is an
+    explicit call of bpf_set_retval(-EPERM)
 
-OK, move on then and let's take the time to revisit.
+Tests have been added in this series to test the behavior of the helper
+with cgroup setsockopt getsockopt hooks.
 
-Thanks.
+Patch 1 changes the API of macros to prepare for the next patch and
+  should be a no-op.
+Patch 2 moves ctx->retval to a struct pointed to by current
+  task_struct.
+Patch 3 implements the helpers.
+Patch 4 tests the behaviors of the helpers.
+Patch 5 updates a test after the test broke due to the visible changes.
+
+v1 -> v2:
+  - errno -> retval
+  - split one helper to get & set helpers
+  - allow retval to be set arbitrarily in the general case
+  - made the helper retval and context retval mirror each other
+
+YiFei Zhu (5):
+  bpf: Make BPF_PROG_RUN_ARRAY return -err instead of allow boolean
+  bpf: Move getsockopt retval to struct bpf_cg_run_ctx
+  bpf: Add cgroup helpers bpf_{get,set}_retval to get/set syscall return
+    value
+  selftests/bpf: Test bpf_{get,set}_retval behavior with cgroup/sockopt
+  selftests/bpf: Update sockopt_sk test to the use bpf_set_retval
+
+ include/linux/bpf.h                           |  34 +-
+ include/linux/filter.h                        |   5 +-
+ include/uapi/linux/bpf.h                      |  18 +
+ kernel/bpf/cgroup.c                           | 149 ++++--
+ security/device_cgroup.c                      |   2 +-
+ tools/include/uapi/linux/bpf.h                |  18 +
+ .../bpf/prog_tests/cgroup_getset_retval.c     | 481 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/sockopt_sk.c     |   2 +-
+ .../progs/cgroup_getset_retval_getsockopt.c   |  45 ++
+ .../progs/cgroup_getset_retval_setsockopt.c   |  52 ++
+ .../testing/selftests/bpf/progs/sockopt_sk.c  |  32 +-
+ 11 files changed, 750 insertions(+), 88 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_getset_retval.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_getsockopt.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_getset_retval_setsockopt.c
+
+-- 
+2.34.1.173.g76aa8bc2d0-goog
