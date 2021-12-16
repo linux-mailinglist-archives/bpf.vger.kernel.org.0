@@ -2,71 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D604768BB
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 04:34:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A626B4768EE
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 05:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhLPDd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 22:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34058 "EHLO
+        id S231342AbhLPEEv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 15 Dec 2021 23:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbhLPDd7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 15 Dec 2021 22:33:59 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F81C061574
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 19:33:59 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id y68so60893511ybe.1
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 19:33:59 -0800 (PST)
+        with ESMTP id S231309AbhLPEEv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 23:04:51 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A72C061574;
+        Wed, 15 Dec 2021 20:04:50 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id 131so60926112ybc.7;
+        Wed, 15 Dec 2021 20:04:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g3vQi+5i1OPz61K5j5MfR4tB9UkCUXTRdprJ/WRZrzo=;
-        b=BY6XqUnexdOD7QozuL6MwP/a/M5hlV0B+5lHS+hx9zlmh9yMZp84y52gZHWJJ42x7q
-         iIMxQpXN1C/PSLikERthEq9XDBmz+P0dfbL+Iss9cr2ouZxWuuLb8IcDzQCuirF3OX+L
-         MSzezn55taHp+FK/xqWQyW0gDbm459r5P1rp+OfLuiZpGFE4sZPHeNa9pW0nL+MaFIeJ
-         8EZDFUMWYcnV/Li+ZnULQO4Lad9CEWwvHZQ36seHbWYwPpHjP4tETu1qKmXxsRDzNftL
-         QihC3USi/aod5whwRfcbVhhkxBQykPGW7Q8UsBGcBl/h/LTgAH3hN/wY+n550l5HdCnX
-         jDmg==
+        bh=M5hd03nfR2iBOHfB3tDlcvjjCHo3CH/+wbQDgx81RYY=;
+        b=K3rgGhVTVos+g/w1iD9fZq9xwYQ9WkQIUJydeTgOnicasY3rlqQ0cXEbvS1pKHBXMT
+         vZsHQQ2eNPWJwjbdze+LyOD7DJHN4+0RjOYhv+//BYW5BHT7hgIxHOnD8hn7r1Vub0IT
+         sRbfzrt0P/+CiT9g9GihznyzH2/9b7DTuH54xJefwNT4D9MHXVGGpdkjUz729bDf4bak
+         rPbGuV509xe6N7ElDwiw4CJpVACWOpz+MCtb9ByUmCQ1zjynqAo56HN7Ksy2mn8Z56Ok
+         wwIHMNOzyFq4Bik0kkiQSbvlZFx262wa/BOqXdAc3LBPWtIQ8MEj+j1OrAc1Cminyq3N
+         x5uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g3vQi+5i1OPz61K5j5MfR4tB9UkCUXTRdprJ/WRZrzo=;
-        b=eIlNGFgYe1K6nBByRx/dYK8+nPhYw3OTk8m4busJU5pHGfooTppaY/U8uZ8llgPmaF
-         Nu5frkWkdlfklcW32U9RgYGA5S2+WlbVTyUoLjw0/HaDU2h81NB1oOwE7r9Jk6HIYs+P
-         5oabLAmFVi8LQyTjR8ulb8dSj9BH7SnIV6fx2cKh5YsHhwTSN9G9jtQ0uYAKEgVt1zXZ
-         PmcYEVjlw4rT0QQQwREpe0zeTkoHqN7nNAc78kJ74yzhw+733NE/ulj+QJNCi9SUHrCF
-         zpLtwTx5t9xHPLSYVxGE1hlts8R9dkg+qYrPmefxZU9+S1F4hqt5gbp8TyIQV+D7MYPi
-         450A==
-X-Gm-Message-State: AOAM531DnegBIvvLwJNDlXcAuglSvVld2bTeJkGpjHv2PuAro+hslBeO
-        yXBKwO/eyD0GobXWb8K/spCtWzVf3tzzXmOqaJv/Ot57IPQ=
-X-Google-Smtp-Source: ABdhPJzI6LaoMj6T8ozexBW2f1IMOshJKzgKKg+YrflPU2l95vH6cxvnpY0Qq96Y24mKGAT6k+4exR4r040I5xt7WFY=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr10151026ybd.180.1639625638355;
- Wed, 15 Dec 2021 19:33:58 -0800 (PST)
+        bh=M5hd03nfR2iBOHfB3tDlcvjjCHo3CH/+wbQDgx81RYY=;
+        b=4reYgR8fC1doyF+3OnU35TV0v78mxMh3IWoII5XQc72NSBvV1ENxN5YSxBwQcHqPCJ
+         QHRUIdmVgRZHxADaPGKR+PiCeGEtHNv9JQ1SbejEl/uIbB6eLphO66H21AenTlwcXTxi
+         MbqTSDFNpkYgTSgKaNnDh0WdoZ+aGXulaC1nLHzAQLkDzMNcEsTr7U8AIsB8A2NEKgoQ
+         kXuYe+XYQ4H2VEfmuelXpiI1PJxfbZKBODRD0bJoWa6ZHAvPK0EoEmB2zue15Lwq8ilc
+         MO45U8UdkuZBKhHNTomlJMsN+qZfZaElsE3ud7HWHyapNJOViIpIw3s/ytmDJn1vBbLE
+         iStQ==
+X-Gm-Message-State: AOAM532eFcB8RoEYGsQDdbvxajEbCX34SOGJRYnb2CVaAPVBVfDKdwO/
+        Ycu+tfyLgFHPkrvcPa1n1TzhY5Wr70BPy7mrTdUGZr2ANi8=
+X-Google-Smtp-Source: ABdhPJw2qFftLQX+HGUz0zp8VC9JMlFEuHxdrxULCH34QjNd3jPjLUuzcGgQ/hSPi/B290KANWj2o/3rcHqab1V1PL8=
+X-Received: by 2002:a25:2a89:: with SMTP id q131mr11702009ybq.436.1639627489988;
+ Wed, 15 Dec 2021 20:04:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20211210063112.80047-1-vincent@vincent-minet.net>
- <CAEf4BzbRqsi_0fBYK2S-huurKic1X1hDcJYX=0sDCVpvp669gg@mail.gmail.com> <YbqpAnxRnEbu1but@localhost.localdomain>
-In-Reply-To: <YbqpAnxRnEbu1but@localhost.localdomain>
+References: <20211210173433.13247-1-skhan@linuxfoundation.org>
+ <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com> <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
+In-Reply-To: <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 15 Dec 2021 19:33:47 -0800
-Message-ID: <CAEf4BzYkVD2wjKrVuVOU7y3SKNabKUXmP5dVvQgAgY2zaQzMHQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: fix typo in btf__dedup@LIBBPF_0.0.2 definition
-To:     Vincent Minet <vincent@vincent-minet.net>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Wed, 15 Dec 2021 20:04:38 -0800
+Message-ID: <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 6:48 PM Vincent Minet <vincent@vincent-minet.net> wrote:
+On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> On Thu, Dec 09, 2021 at 10:48:15PM -0800, Andrii Nakryiko wrote:
+> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
+> > On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>
+> >> ARRAY_SIZE is defined in multiple test files. Remove the definitions
+> >> and include header file for the define instead.
+> >>
+> >> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
+> >> define.
+> >>
+> >> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> >> ---
+> >>   tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
+> >>   tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
+> >>   tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
+> >>   tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
+> >>   tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
+> >>   5 files changed, 5 insertions(+), 19 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >> index 1d8918dfbd3f..7a5ebd330689 100644
+> >> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >> @@ -5,6 +5,7 @@
+> >>   #include <bpf/bpf_helpers.h>
+> >>   #include <bpf/bpf_tracing.h>
+> >>   #include <bpf/bpf_core_read.h>
+> >> +#include <bpf/bpf_util.h>
 > >
-> > How did you run into this problem? Are you using btf__dedup() for
-> > something? Can you please share some details?
+> > It doesn't look like you've built it.
+> >
+> > progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+> > #include <bpf/bpf_util.h>
+> >           ^~~~~~~~~~~~~~~~
+> >    CLNG-BPF [test_maps] socket_cookie_prog.o
+> > progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+> > #include <bpf/bpf_util.h>
+> >           ^~~~~~~~~~~~~~~~
+> > 1 error generated.
+> > In file included from progs/profiler2.c:6:
+> > progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
+> > #include <bpf/bpf_util.h>
+> >           ^~~~~~~~~~~~~~~~
+> >
 >
-> I ran into the problem with pahole (built against the shared libbpf).
-> Nothing more than that.
+> Sorry about that. I built it - I think something is wrong in my env. Build
+> fails complaining about not finding vmlinux - I overlooked that the failure
+> happened before it got to progs.
+>
+> Error: failed to load BTF from .../vmlinux: No such file or directory
 
-I see, ok. I was just wondering if someone else is using btf__dedup()
-for something else. Thanks.
+Please make sure that you build vmlinux before you build selftests,
+BPF selftests use vmlinux to generate vmlinux.h with all kernel types
+(among other things). So please also make sure that all the setting in
+selftests/bpf/config were used in your Kconfig.
+
+>
+> I do have the kernel built with gcc. Is there a clang dependency?
+
+Yes, you'll need recent enough Clang. Probably the easiest is to get
+one of the latest nightly packages.
+
+>
+> thanks,
+> -- Shuah
+>
