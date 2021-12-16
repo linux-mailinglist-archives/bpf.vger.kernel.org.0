@@ -2,88 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF8A477ED4
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 22:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B46477EDF
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 22:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241550AbhLPVaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 16:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234373AbhLPVaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 16:30:07 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B64C061574
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 13:30:06 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id z206so336697wmc.1
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 13:30:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=IL78GSdb5NfBt4jK7QBxmwE+dG3VPFYbtbjroH5/cDk=;
-        b=Sd4kgtYJAGvKO9KqsAjkKWnKguYDCJj3ESSJtQsSvzsx1MBur78GQmNsBea0Ynh3N5
-         jYEauh0mI93j6JsJOViZIOEWE7+F7ayCCL2upwcATG+NdOKe6AHx4PilH3k3vDA08x38
-         7ThEpT2jtAO2d8w7+fHw0sm4aM4rarSc+C5NXDVh7QbuAR8ViCTXtNdYqfXKkJAc9fII
-         /sUURX5FDaqohEGvmZ4bD/l/T0Bk0eZKGQXHepmCJ/1abuFTJ+FjPwdmjhPYClY1Wrkh
-         ZCcnSXiRf03vdrB313qDVooZEauUc7uF6Wlm+IrIJI3kcXFxsOrjX4T4yOmKSM74wbL1
-         Yg5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IL78GSdb5NfBt4jK7QBxmwE+dG3VPFYbtbjroH5/cDk=;
-        b=d6ymzobWLs1Equ3l1qBDR17iWGbWiJ3WSbC5J4UhIuS7zWPXXW8JOpViD3XhNXjN6l
-         cRxkS5JkDHK9tb4jDXBZPjSPMswd9RTgsMsHnFarzBFQuixglSDtpCp29xtSDKSIs5YU
-         4cC08Si3F1HvCcyrWXqp6naGPNqgcTZcW0OMMjt/5hvu1Kfx67yAFSpjXNzQnEFu12/A
-         MRC0dckYy4D24RG3AAXVy2NpWX1qyjh/85aP1Stwiujf3qifZd6z2LH/c01exX1tngKW
-         IFCtnZ1mIMfVNNRzV8sVF1Cvq85fM1BWNww5kE0tmQRayEm/VNq6m5yfEQ8h4df/d/ae
-         C/lA==
-X-Gm-Message-State: AOAM531LuZTHjnat5na3+BsPciDEGKsdL4i0RsPMnWXt+h0mositJ90v
-        1ANkTXNuIaricGOV/gJA74yK
-X-Google-Smtp-Source: ABdhPJwEd2rGtR4XOFkkzpmH/XCvEa/lvo5d+sXdzF0at4ZLGaUTLH82JOtEoKrYSVY0UnewZaWCeA==
-X-Received: by 2002:a05:600c:2215:: with SMTP id z21mr1567414wml.119.1639690205162;
-        Thu, 16 Dec 2021 13:30:05 -0800 (PST)
-Received: from Mem (2a01cb088160fc00945483c765112a48.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:9454:83c7:6511:2a48])
-        by smtp.gmail.com with ESMTPSA id u14sm6054241wrf.39.2021.12.16.13.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Dec 2021 13:30:04 -0800 (PST)
-Date:   Thu, 16 Dec 2021 22:30:03 +0100
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf] bpftool: Flush tracelog output
-Message-ID: <CAHMuVOC1bwuY_X5doyWEZfw2yTb=cB-J5dYK2SnDGzD0=fAbew@mail.gmail.com>
+        id S236461AbhLPVeL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 16:34:11 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:33882 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236373AbhLPVeL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 16:34:11 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BGIJmen005019
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 13:34:10 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=3qHu+J+Wf1+Xl4O2bhBgIVA3x77sgT2fCID1uidmZ3s=;
+ b=b7S+ISvra7emPEL4t/Xwa98CUSsWfvN7pyzC0g/CU77PAvWRIv0GVHadwpMEAmny7YQl
+ 4mFkuQN299cGsnXsOMz01iS2/jYekU6IPrmcgE549OcJ22HvHBGwTC9CR0ZD0Usn8fXb
+ xeo4JjQSXaKCYeUG9rktJ8h2yH5SW2CfFQ8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3d02jgd84g-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 13:34:10 -0800
+Received: from twshared13036.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 16 Dec 2021 13:34:09 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id D06DD788891; Thu, 16 Dec 2021 13:34:02 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH v3 bpf-next 0/3] Improve verifier log readability
+Date:   Thu, 16 Dec 2021 13:33:55 -0800
+Message-ID: <20211216213358.3374427-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: tU-CSkgewZ2imnrkjHKYaIuCmrwU8UKp
+X-Proofpoint-ORIG-GUID: tU-CSkgewZ2imnrkjHKYaIuCmrwU8UKp
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-16_08,2021-12-16_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ mlxscore=0 bulkscore=0 malwarescore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112160115
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The output of bpftool prog tracelog is currently buffered, which is
-inconvenient when piping the output into other commands. A simple
-tracelog | grep will typically not display anything. This patch fixes it
-by flushing the tracelog output after each line from the trace_pipe file.
+Simplify verifier logs and improve readability.
 
-Fixes: 30da46b5dc3a ("tools: bpftool: add a command to dump the trace pipe")
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Paul Chaignon <paul@isovalent.com>
----
- tools/bpf/bpftool/tracelog.c | 1 +
- 1 file changed, 1 insertion(+)
+Changelog:
+----------
+v2 -> v3:
+v2: https://lore.kernel.org/all/20211215192225.1278237-1-christylee@fb.com/
 
-diff --git a/tools/bpf/bpftool/tracelog.c b/tools/bpf/bpftool/tracelog.c
-index e80a5c79b38f..b310229abb07 100644
---- a/tools/bpf/bpftool/tracelog.c
-+++ b/tools/bpf/bpftool/tracelog.c
-@@ -158,6 +158,7 @@ int do_tracelog(int argc, char **argv)
-                        jsonw_string(json_wtr, buff);
-                else
-                        printf("%s", buff);
-+               fflush(stdout);
-        }
+Patch 1:
+* Fixed typo
+* Added print_all bool arg to print_verifier_state()
 
-        fclose(trace_pipe_fd);
+Patch 2:
+* Changed alignment from 32 to 40, fixed off-by-one error
+* Renamed print_prev_insn_state() to print_insn_state()
+* Fixed formatting to make the code more readable
+
+v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211213182117.682461-1-christylee@fb.com/
+
+Patch 2/3:
+* Verifier will skip insn_idx when the insn is longer than 8 bytes,
+  example:
+  0000000000000000 <good_prog>:
+       0:	18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00	r2 =3D 0 ll
+       2:	63 12 00 00 00 00 00 00	*(u32 *)(r2 + 0) =3D r1
+       3:	61 20 04 00 00 00 00 00	r0 =3D *(u32 *)(r2 + 4)
+       4:	95 00 00 00 00 00 00 00	exit
+  It's incorrect to check that prev_insn_idx =3D insn_idx - 1, skip this
+  check and print the verifier state on the correct line.
+  Before:
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; a[0] =3D (int)(long)ctx;
+  0: (18) r2 =3D 0xffffc900006de000
+  2: R2_w=3Dmap_value(id=3D0,off=3D0,ks=3D4,vs=3D16,imm=3D0)
+  2: (63) *(u32 *)(r2 +0) =3D r1
+  After:
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; a[0] =3D (int)(long)ctx;
+  0: (18) r2 =3D 0xffffc900006de000 ; R2_w=3Dmap_value(id=3D0,off=3D0,ks=3D=
+4,vs=3D16,imm=3D0)
+  2: (63) *(u32 *)(r2 +0) =3D r1
+* Track previous line logging length in env, allow aligning intsruction
+  from anywhere in the verifier
+* Fixed bug where the verifier printed verifier state after checking
+  source memory access but before check destination memory access,
+  this ensures the aligned verifier state contains all scratched
+  registers
+
+Patch 3/3:
+* Added one more case where we should only log in log_level=3D2
+
+Christy Lee (3):
+  Only print scratched registers and stack slots to verifier logs
+  Right align verifier states in verifier logs
+  Only output backtracking information in log level 2
+
+ include/linux/bpf_verifier.h                  |  10 +
+ kernel/bpf/verifier.c                         | 130 ++++++++---
+ .../testing/selftests/bpf/prog_tests/align.c  | 214 +++++++++---------
+ 3 files changed, 225 insertions(+), 129 deletions(-)
+
 --
-2.25.1
+2.30.2
