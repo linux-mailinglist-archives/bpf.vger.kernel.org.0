@@ -2,129 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C185477309
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 14:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5EE4773D3
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 15:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234582AbhLPNWG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 08:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbhLPNWF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 08:22:05 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1A4C061574;
-        Thu, 16 Dec 2021 05:22:05 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id x15so87838339edv.1;
-        Thu, 16 Dec 2021 05:22:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=60XSf9cHzUxT6ZkrcHjpgYMJcYBfPDQTULwlGLQzSnM=;
-        b=kCx+JYRzpt9IsbUnF/BkdXilxvx4imVH7NBWYFmU9VtfhpKLH1EM4q0RvV1irbcAt2
-         4OUo4eyzE7sMOK6tRXsc4xLVv/qtM792nz5NtADQWBjrap89Y/9E/DZxSBIHu7325r/R
-         hIC/sGcS9qEiPwBXZAW5NovkyMWfLumPUtQmunPWnVoQUBiERx3rk/VkbLYBfkwVGO9y
-         EsKuunqOtjcdR6HyMyyx/bPiRPdWzMwghOLxbC9p5Js1T6rGt75sjMvVBIJB63A2ZgLe
-         5aMLTapxYRh8oYTA1blPPWVmnTomQhw8jhKlzJ1REvymCEuTgBEiSQF+CTWuRXtm5xsl
-         2mGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=60XSf9cHzUxT6ZkrcHjpgYMJcYBfPDQTULwlGLQzSnM=;
-        b=3F5Tup9UV2RED/P0mk5FA7AM5/ufsoxvyuKPjqylUTbFn7Mvgx82LG+2wzoJT/mKXo
-         xDMWxl0QgvNOnbc64WYV/5YdqLzYmrsfLpXo+lhV5hX03c0dcR3Yxujbj0DgwWwxvZKJ
-         kseEn2OxP+g0ThWs4gMx8USbqhAgmkFahl+GwNPRIWa8WGiC6ktBAHl41hgDpxNhO9f4
-         0D6ZoEzKYRKso9r2uktbC00fLcQOCjQ7v56MiXShu7AJNShQPRuPXOa5FSK0gd+XrfB+
-         SZ/2zYSVA6gPJHuPx/GzTevqvUZIcPRuCUTldA01u4qAKUXph+X2MwQVKMjOl/nDb9od
-         5Iyg==
-X-Gm-Message-State: AOAM533jfoUxBFP7DXZji6SqJrP5NcF3es96+NI9fuG40Mkfl6FJZvPU
-        opTYy7h01uH4MqaUfUcCfvs=
-X-Google-Smtp-Source: ABdhPJzNKXQY5diG8Cxb9pHPRUB7F1RD08f1ZucgR2b3lGFQEqnZF+Gahv7l9l3FM9jf/FfHySZvDQ==
-X-Received: by 2002:a05:6402:1768:: with SMTP id da8mr20810877edb.252.1639660923591;
-        Thu, 16 Dec 2021 05:22:03 -0800 (PST)
-Received: from [192.168.8.198] ([185.69.144.117])
-        by smtp.gmail.com with ESMTPSA id sd2sm1857108ejc.22.2021.12.16.05.22.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Dec 2021 05:22:02 -0800 (PST)
-Message-ID: <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com>
-Date:   Thu, 16 Dec 2021 13:21:26 +0000
+        id S237394AbhLPOAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 09:00:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:12132 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237350AbhLPOAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 09:00:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1639663203; x=1671199203;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xdKbtlL7ITOIX1JNCDs0U+JBIpXSsVmjnc4PePr4EnM=;
+  b=DAABFT391XXUAWUDC+K3d5tV4YTa8eKKA46J2FleXNr4SuJr5Cz2I1sI
+   yjoxF5J2+k3rvEJHwhSo6VRv7PqiDvQtW7m8MEKijv57uotGp7qJdIsvK
+   szVUCLdKVkJILgLJnol9suPazoDD0dZEK4hg+rG0TDyOasvvZKjvuc6Fc
+   kf0itWsKZH9pFvXUZ5lTK9BaOBQmbHhZosE8YfPP2lKcD5VMED4HTE7Rh
+   K/QrsGc5HTEsKnQ1BJGNcySNa58tJoDFrZ8JFpauw+WpgSwnhY9/+BNq/
+   X7HXlESHWDggSJsJpfGxq7mhXhmt0ntZDy66ExQ0ncYfYEsbUheqoATGn
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="226779238"
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
+   d="scan'208";a="226779238"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 06:00:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
+   d="scan'208";a="545988157"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orsmga001.jf.intel.com with ESMTP; 16 Dec 2021 06:00:01 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf-next v2 0/4] xsk: Tx improvements
+Date:   Thu, 16 Dec 2021 14:59:54 +0100
+Message-Id: <20211216135958.3434-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-References: <462ce9402621f5e32f08cc8acbf3d9da4d7d69ca.1639579508.git.asml.silence@gmail.com>
- <Yboc/G18R1Vi1eQV@google.com>
- <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com>
- <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
- <Yboy2WwaREgo95dy@google.com>
- <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
- <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
- <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com>
- <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/15/21 22:07, Stanislav Fomichev wrote:
-> On Wed, Dec 15, 2021 at 11:55 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 12/15/21 19:15, Stanislav Fomichev wrote:
->>> On Wed, Dec 15, 2021 at 10:54 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>>>
->>>> On 12/15/21 18:24, sdf@google.com wrote:
-[...]
->>>>> I can probably do more experiments on my side once your patch is
->>>>> accepted. I'm mostly concerned with getsockopt(TCP_ZEROCOPY_RECEIVE).
->>>>> If you claim there is visible overhead for a direct call then there
->>>>> should be visible benefit to using CGROUP_BPF_TYPE_ENABLED there as
->>>>> well.
->>>>
->>>> Interesting, sounds getsockopt might be performance sensitive to
->>>> someone.
->>>>
->>>> FWIW, I forgot to mention that for testing tx I'm using io_uring
->>>> (for both zc and not) with good submission batching.
->>>
->>> Yeah, last time I saw 2-3% as well, but it was due to kmalloc, see
->>> more details in 9cacf81f8161, it was pretty visible under perf.
->>> That's why I'm a bit skeptical of your claims of direct calls being
->>> somehow visible in these 2-3% (even skb pulls/pushes are not 2-3%?).
->>
->> migrate_disable/enable together were taking somewhat in-between
->> 1% and 1.5% in profiling, don't remember the exact number. The rest
->> should be from rcu_read_lock/unlock() in BPF_PROG_RUN_ARRAY_CG_FLAGS()
->> and other extra bits on the way.
-> 
-> You probably have a preemptiple kernel and preemptible rcu which most
-> likely explains why you see the overhead and I won't (non-preemptible
-> kernel in our env, rcu_read_lock is essentially a nop, just a compiler
-> barrier).
+Hi,
+this time we're on Tx side of AF_XDP and we touch i40e and ice drivers.
+Unfortunately, similar scalability issues that were addressed for XDP
+processing in ice, exist on AF_XDP side. Let's resolve them in mostly
+the same way as we did on [0] and utilize the Tx batching API from xsk
+buffer pool.
 
-Right. For reference tried out non-preemptible, perf shows the function
-taking 0.8% with a NIC and 1.2% with a dummy netdev.
+Magnus moves the array of Tx descriptors that is used with batching
+approach to the xsk buffer pool. This means that future users of this
+API will not have carry the array on their own side, they can simple
+refer to pool's tx_desc array, which can be seen on patch from Magnus.
+Described patch is based on i40e as it is the only user of this API.
+Tx batching is still left to be tried out for ice, though.
 
+v2:
+* introduce new patch that resets @next_dd and @next_rs fields
+* use batching API for AF_XDP Tx on ice side
 
->> I'm skeptical I'll be able to measure inlining one function,
->> variability between boots/runs is usually greater and would hide it.
-> 
-> Right, that's why I suggested to mirror what we do in set/getsockopt
-> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
-> to you, Martin and the rest.
+Thanks,
+Magnus & Maciej
+
+[0]: https://lore.kernel.org/bpf/20211015162908.145341-8-anthony.l.nguyen@intel.com/
+
+Maciej Fijalkowski (3):
+  ice: xsk: avoid potential dead AF_XDP Tx processing
+  ice: xsk: improve AF_XDP ZC Tx and use batching API
+  ice: xsk: borrow xdp_tx_active logic from i40e
+
+Magnus Karlsson (1):
+  i40e: xsk: move tmp desc array from driver to pool
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  11 -
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   1 -
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |   5 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |   1 +
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 255 ++++++++++++------
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  26 +-
+ include/net/xdp_sock_drv.h                    |   5 +-
+ include/net/xsk_buff_pool.h                   |   1 +
+ net/xdp/xsk.c                                 |  13 +-
+ net/xdp/xsk_buff_pool.c                       |   7 +
+ net/xdp/xsk_queue.h                           |  12 +-
+ 13 files changed, 216 insertions(+), 129 deletions(-)
 
 -- 
-Pavel Begunkov
+2.33.1
+
