@@ -2,139 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E81A477B79
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 19:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1D0F477C4B
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:16:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240572AbhLPSYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 13:24:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238399AbhLPSYv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 13:24:51 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A06C06173F
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 10:24:50 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id eq6so71854qvb.7
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 10:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S3bQug7Q3Y8bGfDQ90oiL7YlAL/sesqoY0B+mdgASAE=;
-        b=ihLB1h+Rgl72xRpn+k9ZhT1kdNXT+Nqs4XGJHZ7OaLplnDAJe3aNTJ15nJd5m8VUmW
-         Wh1NoK7hOl/+m7vRS0rM3Ij/VbmElam8MPFWKTU5DMSYtWGozNwzKPoaGDR2duRt7UqG
-         mlATVlZmF1FM9zA8EwGpFzZG7TKPf3zCHULt4U6d8PGBKNsmXonALM5Q6QvNmHxbn31g
-         Db7ogFshTMtcoCF3OB2ohrUkCYJEs37POuMpJ5eiDyUwWG2t0niKCxQ0qk1TKj6cuuPu
-         BrdbI5MgXIRD5XP4giDSFdrjtsT3BcNMA9U2DMHRn5KnsyfSjIk047tb9taXZCBpBkSf
-         A/gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S3bQug7Q3Y8bGfDQ90oiL7YlAL/sesqoY0B+mdgASAE=;
-        b=1z0yjMvZ97x3PIgxgDhjQSQD4pue8sERmR3PNNYL8gMeMfMLFSIPOqgk3jpFYG/KnX
-         3TD8xwPxqbEdWmadsn+BcX2SSmZc968XuuutUV8i3xY+9rhUklpFfidDh45xIR05VV9f
-         kgG4iRnp4CvZrtCkCZDER2dVvI4fifHemUoQRw4uxiNvxt+Z+scp6p7ZQhDAuxTHex5e
-         AXwJ7fz9RGoDrBtSyfd00u19Li80GWsAWf3ubew87W6ghvqubMf1zxrErkM6kS6G/7Jm
-         uTW0ShHZlxPDQHN32O2aEE4NxHG3O03FgBDQrSRmbaApsbEKAJgWJIzfgU0zb/Hko6sP
-         vDHQ==
-X-Gm-Message-State: AOAM533xf67ywfhG7nQkNEvJfXQn1WL/U5CEUmMPF8GbRrjhC63C7aua
-        sS6QeuFsXHpWbMMC3K1/gtylJxCFl1eAzv6kZrSL1g==
-X-Google-Smtp-Source: ABdhPJxmfD/HFoD7QRvwBZ38fcHdjZTFJJJt0+kkFuzoNVWsCXU+XmZlr3QxbwmDKkh25oZF5D6rr6K+FVIIqjnvfD4=
-X-Received: by 2002:a05:6214:d88:: with SMTP id e8mr7230680qve.80.1639679089762;
- Thu, 16 Dec 2021 10:24:49 -0800 (PST)
-MIME-Version: 1.0
-References: <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
- <Yboy2WwaREgo95dy@google.com> <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
- <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
- <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com> <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
- <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com> <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 16 Dec 2021 10:24:38 -0800
-Message-ID: <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S240843AbhLPTQd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 14:16:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43938 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236663AbhLPTQd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 14:16:33 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BGHaY2h013165
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:16:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=QW+kKEporWo1JVYWxK0aSW7YSKHZeJx4tAUIa6PZjxU=;
+ b=ZmX1lZiWPhI5SHmokukrIETGJq26kqLoBVBpV0L1hMKth3l4bzmhzKIcOmSU9o9ravKu
+ OIscA48U09gxT6exVEzqEheOBZqLfiHLwywaCnx2j72vjPau6T1kfHdUUSUByTA6zCZ3
+ +Z0x25n0cePpp9EvNQgArs5BjMpqB3TQX3M= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3cyyrr575n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:16:33 -0800
+Received: from twshared7460.02.ash7.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 16 Dec 2021 11:16:32 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 638E63FED855; Thu, 16 Dec 2021 11:16:30 -0800 (PST)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf] bpf: selftests: Fix racing issue in btf_skc_cls_ingress test
+Date:   Thu, 16 Dec 2021 11:16:30 -0800
+Message-ID: <20211216191630.466151-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: VS6dYnDhZEzW56CxpRuPsvai-4KFL7w0
+X-Proofpoint-ORIG-GUID: VS6dYnDhZEzW56CxpRuPsvai-4KFL7w0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-16_07,2021-12-16_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0 clxscore=1015
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112160106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
-> > On 12/15/21 22:07, Stanislav Fomichev wrote:
-> > > On Wed, Dec 15, 2021 at 11:55 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> > > >
-> > > > On 12/15/21 19:15, Stanislav Fomichev wrote:
-> > > > > On Wed, Dec 15, 2021 at 10:54 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> > > > > >
-> > > > > > On 12/15/21 18:24, sdf@google.com wrote:
-> > [...]
-> > > > > > > I can probably do more experiments on my side once your patch is
-> > > > > > > accepted. I'm mostly concerned with getsockopt(TCP_ZEROCOPY_RECEIVE).
-> > > > > > > If you claim there is visible overhead for a direct call then there
-> > > > > > > should be visible benefit to using CGROUP_BPF_TYPE_ENABLED there as
-> > > > > > > well.
-> > > > > >
-> > > > > > Interesting, sounds getsockopt might be performance sensitive to
-> > > > > > someone.
-> > > > > >
-> > > > > > FWIW, I forgot to mention that for testing tx I'm using io_uring
-> > > > > > (for both zc and not) with good submission batching.
-> > > > >
-> > > > > Yeah, last time I saw 2-3% as well, but it was due to kmalloc, see
-> > > > > more details in 9cacf81f8161, it was pretty visible under perf.
-> > > > > That's why I'm a bit skeptical of your claims of direct calls being
-> > > > > somehow visible in these 2-3% (even skb pulls/pushes are not 2-3%?).
-> > > >
-> > > > migrate_disable/enable together were taking somewhat in-between
-> > > > 1% and 1.5% in profiling, don't remember the exact number. The rest
-> > > > should be from rcu_read_lock/unlock() in BPF_PROG_RUN_ARRAY_CG_FLAGS()
-> > > > and other extra bits on the way.
-> > >
-> > > You probably have a preemptiple kernel and preemptible rcu which most
-> > > likely explains why you see the overhead and I won't (non-preemptible
-> > > kernel in our env, rcu_read_lock is essentially a nop, just a compiler
-> > > barrier).
-> >
-> > Right. For reference tried out non-preemptible, perf shows the function
-> > taking 0.8% with a NIC and 1.2% with a dummy netdev.
-> >
-> >
-> > > > I'm skeptical I'll be able to measure inlining one function,
-> > > > variability between boots/runs is usually greater and would hide it.
-> > >
-> > > Right, that's why I suggested to mirror what we do in set/getsockopt
-> > > instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
-> > > to you, Martin and the rest.
-> I also suggested to try to stay with one way for fullsock context in v2
-> but it is for code readability reason.
->
-> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
-> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
+The libbpf CI reported occasional failure in btf_skc_cls_ingress:
 
-SG!
+test_syncookie:FAIL:Unexpected syncookie states gen_cookie:80326634 recv_=
+cookie:0
+bpf prog error at line 97
 
-> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
-> want to check if there is bpf to run before proceeding everything else
-> and then I don't need to jump to the non-inline function itself to see
-> if there is other prog array empty check.
->
-> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
-> when there is bpf prog to run for set/getsockopt()?  I think
-> it should be mostly noise from looking at
-> __cgroup_bpf_run_filter_*sockopt()?
+"error at line 97" means the bpf prog cannot find the listening socket
+when the final ack is received.  It then skipped processing
+the syncookie in the final ack which then led to "recv_cookie:0".
 
-Yeah, my concern is also mostly about readability/consistency. Either
-__cgroup_bpf_prog_array_is_empty everywhere or this new
-CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
-__cgroup_bpf_prog_array_is_empty because I don't believe direct
-function calls add any visible overhead and macros are ugly :-) But
-either way is fine as long as it looks consistent.
+The problem is the userspace program did not do accept() and went ahead
+to close(listen_fd) before the kernel (and the bpf prog) had
+a chance to process the final ack.
+
+The fix is to add accept() call so that the userspace
+will wait for the kernel to finish processing the final
+ack first before close()-ing everything.
+
+Fixes: 9a856cae2217 ("bpf: selftest: Add test_btf_skc_cls_ingress")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ .../bpf/prog_tests/btf_skc_cls_ingress.c         | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c=
+ b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
+index 762f6a9da8b5..664ffc0364f4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_skc_cls_ingress.c
+@@ -90,7 +90,7 @@ static void print_err_line(void)
+=20
+ static void test_conn(void)
+ {
+-	int listen_fd =3D -1, cli_fd =3D -1, err;
++	int listen_fd =3D -1, cli_fd =3D -1, srv_fd =3D -1, err;
+ 	socklen_t addrlen =3D sizeof(srv_sa6);
+ 	int srv_port;
+=20
+@@ -112,6 +112,10 @@ static void test_conn(void)
+ 	if (CHECK_FAIL(cli_fd =3D=3D -1))
+ 		goto done;
+=20
++	srv_fd =3D accept(listen_fd, NULL, NULL);
++	if (CHECK_FAIL(srv_fd =3D=3D -1))
++		goto done;
++
+ 	if (CHECK(skel->bss->listen_tp_sport !=3D srv_port ||
+ 		  skel->bss->req_sk_sport !=3D srv_port,
+ 		  "Unexpected sk src port",
+@@ -134,11 +138,13 @@ static void test_conn(void)
+ 		close(listen_fd);
+ 	if (cli_fd !=3D -1)
+ 		close(cli_fd);
++	if (srv_fd !=3D -1)
++		close(srv_fd);
+ }
+=20
+ static void test_syncookie(void)
+ {
+-	int listen_fd =3D -1, cli_fd =3D -1, err;
++	int listen_fd =3D -1, cli_fd =3D -1, srv_fd =3D -1, err;
+ 	socklen_t addrlen =3D sizeof(srv_sa6);
+ 	int srv_port;
+=20
+@@ -161,6 +167,10 @@ static void test_syncookie(void)
+ 	if (CHECK_FAIL(cli_fd =3D=3D -1))
+ 		goto done;
+=20
++	srv_fd =3D accept(listen_fd, NULL, NULL);
++	if (CHECK_FAIL(srv_fd =3D=3D -1))
++		goto done;
++
+ 	if (CHECK(skel->bss->listen_tp_sport !=3D srv_port,
+ 		  "Unexpected tp src port",
+ 		  "listen_tp_sport:%u expected:%u\n",
+@@ -188,6 +198,8 @@ static void test_syncookie(void)
+ 		close(listen_fd);
+ 	if (cli_fd !=3D -1)
+ 		close(cli_fd);
++	if (srv_fd !=3D -1)
++		close(srv_fd);
+ }
+=20
+ struct test {
+--=20
+2.30.2
+
