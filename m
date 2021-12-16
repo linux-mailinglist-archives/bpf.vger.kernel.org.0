@@ -2,156 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52879477C92
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F7E477CA5
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 20:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhLPTaO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 14:30:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
+        id S236599AbhLPTh6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 14:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhLPTaO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 14:30:14 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D05EC061574;
-        Thu, 16 Dec 2021 11:30:14 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id y68so124418ybe.1;
-        Thu, 16 Dec 2021 11:30:14 -0800 (PST)
+        with ESMTP id S236556AbhLPTh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 14:37:58 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30EB9C061574
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:37:58 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 131so74968ybc.7
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 11:37:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vBq/AIjoYwp53RAGyy2WVyA7H7oGamWg7hkUDS5jhZc=;
-        b=eChcv9h6UQyg6fZiNcX5tvhyN9alMPHXiZnA9LIry3iilpyveWARl7XZ6V0SAr2/np
-         QE+/WTc+yD5qr4kuAscG5VgUbdTpUuZ2FAEsARchaNb9236f34jgzXDT6/kTjW8IKFgP
-         L+/BNX9paBcDi43esbhII2sSY8GO7aXFY9w0yOQGphFKqVlZEzG5iKj0uq6go5fKFvIP
-         q0XFgnHH6q2Oo1SNg9qonU0JUofBXzmawmZceezmsFXcPtxIiimTorh+8S+lYQAQ+HYF
-         51l0F3FQojJKpb1tp0jNMLmmqfOdJRG7zxIYHbRfjWMyRiUOsAewnpWGNIZOKQKM1ST+
-         U1/Q==
+        bh=Jz9Y23Gpq3ooND/KMECaEsDkI0+0sim4VUPZDYZ2aZE=;
+        b=SIm9TnH3ylqguI6Wtmd0HErU3XPPbWQzVlzlK4Hz0NDGRd7XJVB6SPz0g1TpRhEBE/
+         npIQxoPwQXJywdIndU9hn/cw+3bsJ0OFpMcAM1Kevm3du1RogLzUXDT/3pgLA6AnjSgL
+         PiQ4qy0dbOqTgDnmErNMF3r3AH5eC2KocqjSMTPmoiOFMcxP+ktzJtv6v+NcYRJDJnQ+
+         cwMfBgbO0Zi/qgqBruKdcwbl3rF7fxDjxRX9Krml6BCnLN65V+Ai9cBx4VfAWL1biN9y
+         PnuRD9h9e8kwQM4n1NcH2AZp3fKDVXP3K8n2me+KvA7LpHJZhLbpVlh14E9UUakcF+UJ
+         yFGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vBq/AIjoYwp53RAGyy2WVyA7H7oGamWg7hkUDS5jhZc=;
-        b=7gJf9L1Q9ATL6pR30iOPUyzmsohK+K33b4wCGh+0oKmm0yG8/p/vRSbud2WSwDdySm
-         NHFhBh79lOyazj6bhqV5w5YSCIKXNPwi+4ntRGwsMyyF6cTCTzEe9r3+fcmHW5mYzA+O
-         aljCb6S4gOPmIWmAOs8QHDRm2DarPBe0Bt5ZKXdOCv3tLMFqEb9Aql6DQ/kLcEMHA+qj
-         w0jFCfpt1jhWegWWfswz+xIKBIcjsoYgMTQmPdTqhUfyEYRhmy47fOkXrd+eW9QxLqtK
-         qIrSMJV/epmpAyMeC/QmJIEZyFGoe2DP8sB5FKLfoJr+Sub+aIOekhJB7s6+WC6VGdCW
-         TGRw==
-X-Gm-Message-State: AOAM531Hew1+aQUKRxh+hvtQpe5NfmFa5PamrNcKFI/ndsvB7jaLKVej
-        lgm/bj9YSrz9H1CDrP9KsDePcyY/nf6hnqQaedA=
-X-Google-Smtp-Source: ABdhPJzJlt1GSC0aOS1XabcCyDX17a23mLFqWmYFQH5e7ix/HymjdWC09/g/yYCOtjr4mQ0MC+YCLVWhrdXpKCVDUek=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr14717023ybd.180.1639683013244;
- Thu, 16 Dec 2021 11:30:13 -0800 (PST)
+        bh=Jz9Y23Gpq3ooND/KMECaEsDkI0+0sim4VUPZDYZ2aZE=;
+        b=PlEC4IzzdBVHH/r8NfPL9C/QhtF2RszwOU8StCTabYXBTrfZjGLPmxRS6CCTuOlyIs
+         F0c9snJBZMAU8ThsR6aOppAyVcYdwyq2sunhEPfzi/WVYE/flspaiHdbh/RO5LhP8noJ
+         hcgfbx1+OwT1UGbBNWBAKLzLiQyuxX0/T0fYFKUpBMjGjZmHFwCKMPxoUWTyA8Jmy8Xf
+         z+1KksiZ/xmxrkPiehtjiKsd4gTGrYOPBKHdTUW5XnI4zmKV1H/0BXG2QZ8eFaMV7Kgf
+         TOnz06LG6J4OTRwPc8V8Lek03+81WNH5Tt0Lhp0PYDL/Mi/fxah50wXWhkNESqsIUGvr
+         YO0w==
+X-Gm-Message-State: AOAM531Qpv8pZPe0Jd03DI94Zai0i8NH1t6iYpmf7Ds41jPmYKMo1Bpy
+        x9Xq3VcP4JQ/wTl7KklonU++qqmAoTNWUNa9fKQ=
+X-Google-Smtp-Source: ABdhPJzNcTdhGf6OJQIHosidhy6xTLi2jvJw6gGqTQkC0fNaXoba8KAS8O8WJu1zBidbuX7iNzj+0QF5b7pFK1TLhjQ=
+X-Received: by 2002:a25:3c9:: with SMTP id 192mr15852560ybd.766.1639683477199;
+ Thu, 16 Dec 2021 11:37:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211210173433.13247-1-skhan@linuxfoundation.org>
- <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com>
- <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
- <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com> <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
-In-Reply-To: <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
+References: <20211215192225.1278237-1-christylee@fb.com> <20211215192225.1278237-3-christylee@fb.com>
+ <CAEf4BzZvpODHJ-ca7yifmYBvqw+7ysR5A+HHPVDKHBs8XMzr-A@mail.gmail.com>
+ <CAPqJDZr1AudE2PfbZQarHf0N5i_-xm-zyhfLqS5rogX98UtNLQ@mail.gmail.com> <CAPqJDZqyRLz+Xt77XLfxYbqP3DiEVonBYhhhOCsO4mN-Mc7xQw@mail.gmail.com>
+In-Reply-To: <CAPqJDZqyRLz+Xt77XLfxYbqP3DiEVonBYhhhOCsO4mN-Mc7xQw@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Dec 2021 11:30:01 -0800
-Message-ID: <CAEf4BzYKnoD_x7fZ4Fwp0Kg-wT6HMXOG0CMRSG4U+qQ0R27yzQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
+Date:   Thu, 16 Dec 2021 11:37:45 -0800
+Message-ID: <CAEf4BzbUaf+iCj0dM_2jhw8BiFk35BHnKhRtkCpNGi4VrLk1GQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/3] Right align verifier states in verifier logs
+To:     Christy Lee <christyc.y.lee@gmail.com>
+Cc:     Christy Lee <christylee@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 6:42 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Thu, Dec 16, 2021 at 8:03 AM Christy Lee <christyc.y.lee@gmail.com> wrote:
 >
-> On 12/15/21 9:04 PM, Andrii Nakryiko wrote:
-> > On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>
-> >> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
-> >>> On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>>
-> >>>> ARRAY_SIZE is defined in multiple test files. Remove the definitions
-> >>>> and include header file for the define instead.
-> >>>>
-> >>>> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
-> >>>> define.
-> >>>>
-> >>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> >>>> ---
-> >>>>    tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
-> >>>>    tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
-> >>>>    tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
-> >>>>    tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
-> >>>>    tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
-> >>>>    5 files changed, 5 insertions(+), 19 deletions(-)
-> >>>>
-> >>>> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>> index 1d8918dfbd3f..7a5ebd330689 100644
-> >>>> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>> @@ -5,6 +5,7 @@
-> >>>>    #include <bpf/bpf_helpers.h>
-> >>>>    #include <bpf/bpf_tracing.h>
-> >>>>    #include <bpf/bpf_core_read.h>
-> >>>> +#include <bpf/bpf_util.h>
-> >>>
-> >>> It doesn't look like you've built it.
-> >>>
-> >>> progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>> #include <bpf/bpf_util.h>
-> >>>            ^~~~~~~~~~~~~~~~
-> >>>     CLNG-BPF [test_maps] socket_cookie_prog.o
-> >>> progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>> #include <bpf/bpf_util.h>
-> >>>            ^~~~~~~~~~~~~~~~
-> >>> 1 error generated.
-> >>> In file included from progs/profiler2.c:6:
-> >>> progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>> #include <bpf/bpf_util.h>
-> >>>            ^~~~~~~~~~~~~~~~
-> >>>
-> >>
-> >> Sorry about that. I built it - I think something is wrong in my env. Build
-> >> fails complaining about not finding vmlinux - I overlooked that the failure
-> >> happened before it got to progs.
-> >>
-> >> Error: failed to load BTF from .../vmlinux: No such file or directory
+> On Thu, Dec 16, 2021 at 7:59 AM Christy Lee <christyc.y.lee@gmail.com> wrote:>
+>
+> Apologies, resending this because the previous email was not plain text.
+>
 > >
-> > Please make sure that you build vmlinux before you build selftests,
-> > BPF selftests use vmlinux to generate vmlinux.h with all kernel types
-> > (among other things). So please also make sure that all the setting in
-> > selftests/bpf/config were used in your Kconfig.
-> >
+> > On Wed, Dec 15, 2021 at 11:02 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 > >>
->
-> The problem in my env. is that I don't have CONFIG_DEBUG_INFO_BTF in
-> my config and then don't have the dwarves and llvm-strip on my system.
-> Pains of upgrading.
->
-> I am all set now. On the other hand the vmlinux.h is a mess. It has
-> no guards for defines and including stdio.h and this generated
-> vmlinux.h causes all sorts of problems.
+> >> On Wed, Dec 15, 2021 at 11:22 AM Christy Lee <christylee@fb.com> wrote:
+> >> >
+> >
+> > [...]
+> >>
+> >>
+> >> There seems to be quite a lot of jumpin back and forth in terms of
+> >> 33th (see off by one error below) vs 40th offsets (this is for
+> >> pyperf50 test):
+> >>
+> >> 16: (07) r2 += -8               ; R2_w=fp-8
+> >> ; Event* event = bpf_map_lookup_elem(&eventmap, &zero);
+> >> 17: (18) r1 = 0xffff88810d81dc00       ;
+> >> R1_w=map_ptr(id=0,off=0,ks=4,vs=252,imm=0)
+> >> 19: (85) call bpf_map_lookup_elem#1    ;
+> >> R0=map_value_or_null(id=3,off=0,ks=4,vs=252,imm=0)
+> >> 20: (bf) r7 = r0                ;
+> >> R0=map_value_or_null(id=3,off=0,ks=4,vs=252,imm=0)
+> >> R7_w=map_value_or_null(id=3,off=0,ks=4,vs=252,imm=0)
+> >> ; if (!event)
+> >> 21: (15) if r7 == 0x0 goto pc+5193     ;
+> >> R7_w=map_value(id=0,off=0,ks=4,vs=252,imm=0)
+> >> ; event->pid = pid;
+> >> 22: (61) r1 = *(u32 *)(r10 -4)  ;
+> >> R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R10=fp0
+> >>
+> >> Maybe let's bump the minimum to 40?
+> >
+> > Will do! I'll experiment with the nicest looking offset.
+> >>
+> >>
+> >> >
+> >> > Signed-off-by: Christy Lee <christylee@fb.com>
+> >
+> > [...]
+> >>
+> >> >
+> >> > +static u32 vlog_alignment(u32 prev_insn_print_len)
+> >> > +{
+> >> > +       if (prev_insn_print_len < BPF_LOG_ALIGNMENT_POS)
+> >> > +               return BPF_LOG_ALIGNMENT_POS - prev_insn_print_len + 1;
+> >>
+> >> why +1 here?
+> >
+> > I wanted the insn_state to be prepended by BPF_LOG_ALIGNMENT_POS
+> > number of characters, in this case, that would be prepended by 32 and starting
+> > at 33. This ensures that whether prev_insn_print_len is smaller than
+> > BPF_LOG_ALIGNMENT_POS or not, the insn_states would be aligned properly,
+> > there would be an off-by-one error otherwise.
+> >>
+> >>
+> >> > +       return round_up(prev_insn_print_len, BPF_LOG_MIN_ALIGNMENT) -
+> >> > +              prev_insn_print_len;
+> >> > +}
+> >> > +
+> >> > +static void print_prev_insn_state(struct bpf_verifier_env *env,
+> >> > +                                 const struct bpf_func_state *state)
+> >> > +{
+> >> > +       if (env->prev_log_len == env->log.len_used) {
+> >> > +               if (env->prev_log_len)
+> >> > +                       bpf_vlog_reset(&env->log, env->prev_log_len - 1);
+> >>
+> >> I don't get this... why do we need this reset? Why just appending
+> >> alignment spaces below doesn't work?
+> >
+> > The insn are printed via print_bpf_insn() which ends the line with a '\n', we need to
+> > reset one character in order to remove the new line and print insn_state on the same
+> > line. print_bpf_insn() is defined in kernel/bpf/disasm.h and used by bpf_tool as well, so I
+> > didn't want to modify it.
 
-It does have
+oh, can you please leave a small comment explaining that?
 
-#ifndef __VMLINUX_H__
-#define __VMLINUX_H__
-
-Are we talking about the same vmlinux.h here?
-
-As for stdio.h. vmlinux.h doesn't co-exist with other headers well,
-it's a known inconvenience we are trying to fix at Clang side. But
-stdio.h makes no sense as vmlinux.h is supposed to be used only from
-the BPF program side, where stdio.h never worked. So not sure what you
-are trying to do, but vmlinux.h works fine for cases it was created
-for.
-
->
-> thanks,
-> -- Shuah
+> >>
+> >>
+> >> > +               verbose(env, "%*c;", vlog_alignment(env->prev_insn_print_len),
+> >> > +                       ' ');
+> >>
+> >> nit: keep it on single line
+> >>
+> >> > +       } else
+> >> > +               verbose(env, "%d:", env->insn_idx);
+> >>
+> >> if one branch of if/else has {}, the other one has to have them as
+> >> well, even if it's a single line statement
+> >>
+> >> > +       print_verifier_state(env, state);
+> >> > +}
+> >> > +
+> >> >  /* copy array src of length n * size bytes to dst. dst is reallocated if it's too
+> >> >   * small to hold src. This is different from krealloc since we don't want to preserve
+> >> >   * the contents of dst.
+> >>
+> >> [...]
+> >>
+> >> > @@ -9441,8 +9465,10 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+> >> >                         insn->dst_reg);
+> >> >                 return -EACCES;
+> >> >         }
+> >> > -       if (env->log.level & BPF_LOG_LEVEL)
+> >> > -               print_verifier_state(env, this_branch->frame[this_branch->curframe]);
+> >> > +       if (env->log.level & BPF_LOG_LEVEL) {
+> >> > +               print_prev_insn_state(
+> >> > +                       env, this_branch->frame[this_branch->curframe]);
+> >>
+> >> nit: keep on a single line. But also is it really a "previous
+> >> instruction" or still a current instruction? Maybe just
+> >> "print_insn_state"? Do we have "next_insn" helper anywhere? If not,
+> >> dropping this "prev_" prefix from helpers and variables would be
+> >> cleaner, IMO
+> >>
+> >> > +       }
+> >> >         return 0;
+> >> >  }
+> >> >
+> >> > @@ -11310,17 +11336,12 @@ static int do_check(struct bpf_verifier_env *env)
+> >> >                 if (need_resched())
+> >> >                         cond_resched();
+> >> >
+> >> > -               if ((env->log.level & BPF_LOG_LEVEL2) ||
+> >> > -                   (env->log.level & BPF_LOG_LEVEL && do_print_state)) {
+> >> > -                       if (verifier_state_scratched(env) &&
+> >> > -                           (env->log.level & BPF_LOG_LEVEL2))
+> >> > -                               verbose(env, "%d:", env->insn_idx);
+> >> > -                       else
+> >> > -                               verbose(env, "\nfrom %d to %d%s:",
+> >> > -                                       env->prev_insn_idx, env->insn_idx,
+> >> > -                                       env->cur_state->speculative ?
+> >> > -                                       " (speculative execution)" : "");
+> >> > -                       print_verifier_state(env, state->frame[state->curframe]);
+> >> > +               if (env->log.level & BPF_LOG_LEVEL1 && do_print_state) {
+> >>
+> >> () around bit operations
+> >>
+> >> > +                       verbose(env, "\nfrom %d to %d%s:\n", env->prev_insn_idx,
+> >> > +                               env->insn_idx,
+> >> > +                               env->cur_state->speculative ?
+> >> > +                                       " (speculative execution)" :
+> >> > +                                             "");
+> >>
+> >> it's ok to go up to 100 characters, please keep the code more readable
+> >>
+> >> >                         do_print_state = false;
+> >> >                 }
+> >> >
+> >> > @@ -11331,9 +11352,17 @@ static int do_check(struct bpf_verifier_env *env)
+> >> >                                 .private_data   = env,
+> >> >                         };
+> >> >
+> >> > +                       if (verifier_state_scratched(env))
+> >> > +                               print_prev_insn_state(
+> >> > +                                       env, state->frame[state->curframe]);
+> >> > +
+> >> >                         verbose_linfo(env, env->insn_idx, "; ");
+> >> > +                       env->prev_log_len = env->log.len_used;
+> >> >                         verbose(env, "%d: ", env->insn_idx);
+> >> >                         print_bpf_insn(&cbs, insn, env->allow_ptr_leaks);
+> >> > +                       env->prev_insn_print_len =
+> >> > +                               env->log.len_used - env->prev_log_len;
+> >> > +                       env->prev_log_len = env->log.len_used;
+> >> >                 }
+> >> >
+> >> >                 if (bpf_prog_is_dev_bound(env->prog->aux)) {
+> >>
+> >> [...]
