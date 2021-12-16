@@ -2,131 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9C54773D8
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 15:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01CF4774DC
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 15:42:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237486AbhLPOAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 09:00:12 -0500
-Received: from mga02.intel.com ([134.134.136.20]:12138 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237444AbhLPOAK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 09:00:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1639663210; x=1671199210;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MKhQd473uwwFtY1Oln+5trvh/SUpcgr7v/jcIBVcgG4=;
-  b=WM50clSNW0iiQdch4Y0y5dHdA7S+BEnygyR3CTdtNlZCXhmUGaU/ATIV
-   5L3xrCRzviB1qaivqRbcnFUJIpSaJ/jPVPuVc8wBX9N8WbTGWyP03DW+K
-   MvUmOUtD2mYi3MwK9Ai1abxiuhKJ2HsDhRDrFoSY0JjABxcHsN2PoHBDV
-   M8P+4megBd8nebsO0q0DnsasmOUlsmuNqa106uoR9VLvQm4aet+jMN2ra
-   0kXAGxtOESEPYkwybVLuA4PJ9iKJz7AbHgLU7F8AxPNyKok3ND5udEPh2
-   QFKiZWbp2ksVAxOohWkQVPbqNRdhbqXalSO1+g6SyqHDriB+iQxA7Y6xa
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10199"; a="226779284"
-X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
-   d="scan'208";a="226779284"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Dec 2021 06:00:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,211,1635231600"; 
-   d="scan'208";a="545988280"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by orsmga001.jf.intel.com with ESMTP; 16 Dec 2021 06:00:08 -0800
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v2 4/4] ice: xsk: borrow xdp_tx_active logic from i40e
-Date:   Thu, 16 Dec 2021 14:59:58 +0100
-Message-Id: <20211216135958.3434-5-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211216135958.3434-1-maciej.fijalkowski@intel.com>
-References: <20211216135958.3434-1-maciej.fijalkowski@intel.com>
+        id S238120AbhLPOmf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 09:42:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232369AbhLPOmf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 09:42:35 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28226C06173F
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 06:42:35 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id e128so35456685iof.1
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 06:42:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=90t3NH6y3rHFem3c05354TVkhqLDF/TSYMRbi9fk4K0=;
+        b=DrebHczD6kxSqJFBYodZSklsRzBgT5lHDYXVWZ0RsVZxfJgn2SZWC4f4dyH/6YiVCM
+         5FjeK1lqOWkSa6wfHdzLh8zeizJWsc+x50mNvaWh0hNYpKvUZ9OZ09Do+tpMlTGyilD5
+         qNc72AgtlcBS029yZ6rY9FWnFX6pHWs0PeEw0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=90t3NH6y3rHFem3c05354TVkhqLDF/TSYMRbi9fk4K0=;
+        b=SLNgYXHHh2LwPb5GHrrXErSP+YLrGeKpy0vX1dvnaBjXEVQlKfs/eXbnptqdk2Ri9t
+         yJbaIAipy5JqLyzK0T7RnDgy8d6ez1DwmKtYqsO7Be32sk3nDiztgKX2vFbfXLIAt6d8
+         06cdZNG573fx+7Ke0cRRQ3kWGvSqde6VoE9T+EsX6rUCzpXTHBwUfoi1tW1m/rXt2+H/
+         UdCs+drUcxgBU+G4kD5NlzRfzADSV2RL5oE2CUOMjvStqtwwaTg+axTEyVFKYIu8Rybx
+         q+oaw9FeRwvTGBKKQONCIe2Pf1Pd7ed3Cj3ri/+VtRvr+nhtKgpqUXjuT8Pza+JzZYhS
+         BQLQ==
+X-Gm-Message-State: AOAM533y31UJOKkpKTUC/fgdDHIClXejZpln0t0PKOuVgmJOpBa4d5k/
+        BOHFZyK9FU8+pazZSFWDRWVv4A==
+X-Google-Smtp-Source: ABdhPJzgIGkU86mMhl+z1BhmlrPdA9HVQEegcOWPq7ug2X32i8/WPm46kYkgC4VpVIOBK4P6cZTF2w==
+X-Received: by 2002:a6b:2bc3:: with SMTP id r186mr9543325ior.167.1639665754388;
+        Thu, 16 Dec 2021 06:42:34 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id f10sm2743677iob.7.2021.12.16.06.42.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Dec 2021 06:42:34 -0800 (PST)
+Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211210173433.13247-1-skhan@linuxfoundation.org>
+ <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com>
+ <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
+ <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
+Date:   Thu, 16 Dec 2021 07:42:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-One of the things that commit 5574ff7b7b3d ("i40e: optimize AF_XDP Tx
-completion path") introduced was the @xdp_tx_active field. Its usage
-from i40e can be adjusted to ice driver and give us positive performance
-results.
+On 12/15/21 9:04 PM, Andrii Nakryiko wrote:
+> On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
+>>> On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> ARRAY_SIZE is defined in multiple test files. Remove the definitions
+>>>> and include header file for the define instead.
+>>>>
+>>>> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
+>>>> define.
+>>>>
+>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>> ---
+>>>>    tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
+>>>>    tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
+>>>>    tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
+>>>>    tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
+>>>>    tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
+>>>>    5 files changed, 5 insertions(+), 19 deletions(-)
+>>>>
+>>>> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>> index 1d8918dfbd3f..7a5ebd330689 100644
+>>>> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+>>>> @@ -5,6 +5,7 @@
+>>>>    #include <bpf/bpf_helpers.h>
+>>>>    #include <bpf/bpf_tracing.h>
+>>>>    #include <bpf/bpf_core_read.h>
+>>>> +#include <bpf/bpf_util.h>
+>>>
+>>> It doesn't look like you've built it.
+>>>
+>>> progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+>>> #include <bpf/bpf_util.h>
+>>>            ^~~~~~~~~~~~~~~~
+>>>     CLNG-BPF [test_maps] socket_cookie_prog.o
+>>> progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+>>> #include <bpf/bpf_util.h>
+>>>            ^~~~~~~~~~~~~~~~
+>>> 1 error generated.
+>>> In file included from progs/profiler2.c:6:
+>>> progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
+>>> #include <bpf/bpf_util.h>
+>>>            ^~~~~~~~~~~~~~~~
+>>>
+>>
+>> Sorry about that. I built it - I think something is wrong in my env. Build
+>> fails complaining about not finding vmlinux - I overlooked that the failure
+>> happened before it got to progs.
+>>
+>> Error: failed to load BTF from .../vmlinux: No such file or directory
+> 
+> Please make sure that you build vmlinux before you build selftests,
+> BPF selftests use vmlinux to generate vmlinux.h with all kernel types
+> (among other things). So please also make sure that all the setting in
+> selftests/bpf/config were used in your Kconfig.
+> 
+>>
 
-If the descriptor that @next_dd to points has been sent by HW (its DD
-bit is set), then we are sure that there are ICE_TX_THRESH count of
-descriptors ready to be cleaned. If @xdp_tx_active is 0 which means that
-related xdp_ring is not used for XDP_{TX, REDIRECT} workloads, then we
-know how many XSK entries should placed to completion queue, IOW walking
-through the ring can be skipped.
+The problem in my env. is that I don't have CONFIG_DEBUG_INFO_BTF in
+my config and then don't have the dwarves and llvm-strip on my system.
+Pains of upgrading.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_txrx.h     | 1 +
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 1 +
- drivers/net/ethernet/intel/ice/ice_xsk.c      | 8 +++++++-
- 3 files changed, 9 insertions(+), 1 deletion(-)
+I am all set now. On the other hand the vmlinux.h is a mess. It has
+no guards for defines and including stdio.h and this generated
+vmlinux.h causes all sorts of problems.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-index 9e8b4337d131..5e37d4f57bfa 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-@@ -333,6 +333,7 @@ struct ice_tx_ring {
- 	struct ice_ptp_tx *tx_tstamps;
- 	spinlock_t tx_lock;
- 	u32 txq_teid;			/* Added Tx queue TEID */
-+	u16 xdp_tx_active;
- #define ICE_TX_FLAGS_RING_XDP		BIT(0)
- 	u8 flags;
- 	u8 dcb_tc;			/* Traffic class of ring */
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index 1dd7e84f41f8..f15c215c973c 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -299,6 +299,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
- 	tx_desc->cmd_type_offset_bsz = ice_build_ctob(ICE_TX_DESC_CMD_EOP, 0,
- 						      size, 0);
- 
-+	xdp_ring->xdp_tx_active++;
- 	i++;
- 	if (i == xdp_ring->count) {
- 		i = 0;
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 563ea7e7e0b1..a81ade2b7600 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -620,6 +620,7 @@ static void
- ice_clean_xdp_tx_buf(struct ice_tx_ring *xdp_ring, struct ice_tx_buf *tx_buf)
- {
- 	xdp_return_frame((struct xdp_frame *)tx_buf->raw_buf);
-+	xdp_ring->xdp_tx_active--;
- 	dma_unmap_single(xdp_ring->dev, dma_unmap_addr(tx_buf, dma),
- 			 dma_unmap_len(tx_buf, len), DMA_TO_DEVICE);
- 	dma_unmap_len_set(tx_buf, len, 0);
-@@ -648,6 +649,11 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring)
- 
- again:
- 	cleared_dds++;
-+	xsk_frames = 0;
-+	if (likely(!xdp_ring->xdp_tx_active)) {
-+		xsk_frames = ICE_TX_THRESH;
-+		goto skip;
-+	}
- 
- 	ntc = xdp_ring->next_to_clean;
- 
-@@ -665,7 +671,7 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring)
- 		if (ntc >= xdp_ring->count)
- 			ntc = 0;
- 	}
--
-+skip:
- 	xdp_ring->next_to_clean += ICE_TX_THRESH;
- 	if (xdp_ring->next_to_clean >= desc_cnt)
- 		xdp_ring->next_to_clean -= desc_cnt;
--- 
-2.33.1
-
+thanks,
+-- Shuah
