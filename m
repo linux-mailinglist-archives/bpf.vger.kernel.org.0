@@ -2,76 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6144B477DC0
-	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 21:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEEB477E02
+	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 22:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhLPUnY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 15:43:24 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:43488 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhLPUnX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 15:43:23 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB6EEB82631
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 20:43:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A3CF1C36AE7;
-        Thu, 16 Dec 2021 20:43:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639687401;
-        bh=Ffn1uskKTLZIXsm76v2OZ4EiQXQofeT7LZXWC6FLx0g=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=LOr6DS2wLMy3gOvPD/FI6i4N9xRAMHTGSelZCjiGzbCqADkz4HdyGCpufTtNWteMM
-         1k+rLWUm8DBBFvjlJPyl9+uVl9ocjuuQqDG4KDWB69uR294/hMb6g3NKnSHb1wCDgj
-         YNP1F48978FQB4EBr8Sx2miWprfrojZX70groTAA05qxiMizbClO/3vIW1Bq/ngHzF
-         x132MmX1LdnVOezagGqzKdcHzGNWXIlacH9Kq+QPiNbzZgoscHv7PoV0+meWRAQZbU
-         5z9K8AAuJnwtFi/HldRuTJ/q19JukyIekGwieCWcjBgSf/ZVDZjiPbGAqP5Mc65q3/
-         almyGj5NMmIXg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8417960A3C;
-        Thu, 16 Dec 2021 20:43:21 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S241501AbhLPVAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 16:00:09 -0500
+Received: from www62.your-server.de ([213.133.104.62]:47890 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhLPVAI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 16:00:08 -0500
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mxxrC-000EsM-9L; Thu, 16 Dec 2021 22:00:06 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2021-12-16
+Date:   Thu, 16 Dec 2021 22:00:05 +0100
+Message-Id: <20211216210005.13815-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: selftests: Fix racing issue in btf_skc_cls_ingress
- test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163968740153.12846.4113118887819711158.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Dec 2021 20:43:21 +0000
-References: <20211216191630.466151-1-kafai@fb.com>
-In-Reply-To: <20211216191630.466151-1-kafai@fb.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26389/Thu Dec 16 07:02:49 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi David, hi Jakub,
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+The following pull-request contains BPF updates for your *net* tree.
 
-On Thu, 16 Dec 2021 11:16:30 -0800 you wrote:
-> The libbpf CI reported occasional failure in btf_skc_cls_ingress:
-> 
-> test_syncookie:FAIL:Unexpected syncookie states gen_cookie:80326634 recv_cookie:0
-> bpf prog error at line 97
-> 
-> "error at line 97" means the bpf prog cannot find the listening socket
-> when the final ack is received.  It then skipped processing
-> the syncookie in the final ack which then led to "recv_cookie:0".
-> 
-> [...]
+We've added 15 non-merge commits during the last 7 day(s) which contain
+a total of 12 files changed, 434 insertions(+), 30 deletions(-).
 
-Here is the summary with links:
-  - [bpf] bpf: selftests: Fix racing issue in btf_skc_cls_ingress test
-    https://git.kernel.org/bpf/bpf/c/c2fcbf81c332
+The main changes are:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+1) Fix incorrect verifier state pruning behavior for <8B register spill/fill,
+   from Paul Chaignon.
 
+2) Fix x86-64 JIT's extable handling for fentry/fexit when return pointer
+   is an ERR_PTR(), from Alexei Starovoitov.
 
+3) Fix 3 different possibilities that BPF verifier missed where unprivileged
+   could leak kernel addresses, from Daniel Borkmann.
+
+4) Fix xsk's poll behavior under need_wakeup flag, from Magnus Karlsson.
+
+5) Fix an oob-write in test_verifier due to a missed MAX_NR_MAPS bump,
+   from Kumar Kartikeya Dwivedi.
+
+6) Fix a race in test_btf_skc_cls_ingress selftest, from Martin KaFai Lau.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrii Nakryiko, Brendan Jackman, Daniel Borkmann, 
+John Fastabend, Keith Wiles, Kuee K1r0a, Lorenzo Fontana, Maciej 
+Fijalkowski, Ryota Shiga (Flatt Security)
+
+----------------------------------------------------------------
+
+The following changes since commit ab443c53916730862cec202078d36fd4008bea79:
+
+  sch_cake: do not call cake_destroy() from cake_init() (2021-12-10 08:11:36 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to c2fcbf81c332b42382a0c439bfe2414a241e4f5b:
+
+  bpf, selftests: Fix racing issue in btf_skc_cls_ingress test (2021-12-16 21:41:18 +0100)
+
+----------------------------------------------------------------
+Alexei Starovoitov (3):
+      bpf: Fix extable fixup offset.
+      bpf: Fix extable address check.
+      selftest/bpf: Add a test that reads various addresses.
+
+Daniel Borkmann (7):
+      bpf: Fix kernel address leakage in atomic fetch
+      bpf, selftests: Add test case for atomic fetch on spilled pointer
+      bpf: Fix kernel address leakage in atomic cmpxchg's r0 aux reg
+      bpf, selftests: Update test case for atomic cmpxchg on r0 with pointer
+      bpf: Fix signed bounds propagation after mov32
+      bpf: Make 32->64 bounds propagation slightly more robust
+      bpf, selftests: Add test case trying to taint map value pointer
+
+Kumar Kartikeya Dwivedi (1):
+      selftests/bpf: Fix OOB write in test_verifier
+
+Magnus Karlsson (1):
+      xsk: Do not sleep in poll() when need_wakeup set
+
+Martin KaFai Lau (1):
+      bpf, selftests: Fix racing issue in btf_skc_cls_ingress test
+
+Paul Chaignon (2):
+      bpf: Fix incorrect state pruning for <8B spill/fill
+      selftests/bpf: Tests for state pruning with u32 spill/fill
+
+ arch/x86/net/bpf_jit_comp.c                        | 51 ++++++++++--
+ kernel/bpf/verifier.c                              | 53 ++++++++----
+ net/xdp/xsk.c                                      |  4 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c        | 20 +++++
+ .../selftests/bpf/prog_tests/btf_skc_cls_ingress.c | 16 +++-
+ .../selftests/bpf/progs/test_module_attach.c       | 12 +++
+ tools/testing/selftests/bpf/test_verifier.c        |  2 +-
+ .../selftests/bpf/verifier/atomic_cmpxchg.c        | 86 ++++++++++++++++++++
+ .../testing/selftests/bpf/verifier/atomic_fetch.c  | 94 ++++++++++++++++++++++
+ .../selftests/bpf/verifier/search_pruning.c        | 71 ++++++++++++++++
+ tools/testing/selftests/bpf/verifier/spill_fill.c  | 32 ++++++++
+ .../selftests/bpf/verifier/value_ptr_arith.c       | 23 ++++++
+ 12 files changed, 434 insertions(+), 30 deletions(-)
