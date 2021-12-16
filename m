@@ -2,115 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580ED47685F
+	by mail.lfdr.de (Postfix) with ESMTP id 4F74D47685E
 	for <lists+bpf@lfdr.de>; Thu, 16 Dec 2021 03:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhLPCzo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 15 Dec 2021 21:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233189AbhLPCzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S233193AbhLPCzn (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 15 Dec 2021 21:55:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65939C06173F
-        for <bpf@vger.kernel.org>; Wed, 15 Dec 2021 18:55:43 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233186AbhLPCzn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 15 Dec 2021 21:55:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E33C06173E;
+        Wed, 15 Dec 2021 18:55:43 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2EE2EB82286
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 02:55:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC256C36AE0;
-        Thu, 16 Dec 2021 02:55:40 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C49DD61BF5;
+        Thu, 16 Dec 2021 02:55:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5A8C36AE3;
+        Thu, 16 Dec 2021 02:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639623341;
-        bh=HiFl2b7gez+FJ8ZxxyfPUhvXE/yvuUjuUCdiClIMHak=;
-        h=From:To:Cc:Subject:Date:From;
-        b=H5GHUVc+J3SSFToaFdqApAIkU2RMRkVlum/2MdwVhVP07b7RHvAI92louE1VOrVYX
-         9d2WHfG1pln41GKv+u6mFxtt4w+Ym1ezXJnrd+D253QON8jQNV0wna80TaA574BI3h
-         jr/Wc+S5HzH+wIWoiU3vdpyW+HmfcZKxNz4U1z7IU9c3Cgw5KSzsbXtNk4xI8uurEf
-         i17sLhHDXZpXz7Heg+sZMGV5f0J/xJwtFTAmfuZZVnn5zqBrKtBkTW0zwGj6JyYZpD
-         FoiY+5FoVxmsn67AY1ss0zZNLjvg4tVj/0wHZn3zO/eXB2CAXs64z7Bo8ftu8JUkqM
-         pK6epX+S6IcjQ==
+        s=k20201202; t=1639623342;
+        bh=7X9ZmUGE+B1m0xkLxOJiwH84nbiN+L9KsIInhdbCtVE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=c1BbK6Y2VWmKhBFVSdVOYyHL4NenIXxV+gpv+wQ5hqP8azUpj0xbc8C7GB5uI0MRI
+         6FC24EWUxADPfp0QfoZ3Gqx758dEjysX65y7IBfa1yHvuJ9aBSg60XuHIwJEXLfaiR
+         jezwj1ja0Zl27wtNh7NJK61lLleW8Qa1UxX5A4sKefyUqVDYcvsWjTLCgCBPvLkAMW
+         g9Pf3oVIg0rrkS70dJKetdUJaL14n1YmMzfP8yastRcZ6QzdB2H6Gzt9LiWLKI5Wu6
+         hWTqEbJMR5gF5C1F95Kci2fAkIHb+QeQ3iYZmjeEXYBQ3ybqCpy4UKkzjMntkN02ID
+         Ay4nj3Mpxb6Lw==
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH bpf-next v5 0/3] bpf: remove the cgroup -> bpf header dependecy
-Date:   Wed, 15 Dec 2021 18:55:35 -0800
-Message-Id: <20211216025538.1649516-1-kuba@kernel.org>
+Cc:     bpf@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@linux.ibm.com,
+        agordeev@linux.ibm.com, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        peterx@redhat.com, akpm@linux-foundation.org,
+        linux-s390@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH bpf-next v5 1/3] add includes masked by cgroup -> bpf dependency
+Date:   Wed, 15 Dec 2021 18:55:36 -0800
+Message-Id: <20211216025538.1649516-2-kuba@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211216025538.1649516-1-kuba@kernel.org>
+References: <20211216025538.1649516-1-kuba@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Changes to bpf.h tend to clog up our build systems. The netdev/bpf
-build bot does incremental builds to save time (reusing the build
-directory to only rebuild changed objects).
+cgroup pulls in BPF which pulls in a lot of includes.
+We're about to break that chain so fix those who were
+depending on it.
 
-This is the rough breakdown of how many objects needs to be rebuilt
-based on file touched:
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: hca@linux.ibm.com
+CC: gor@linux.ibm.com
+CC: borntraeger@linux.ibm.com
+CC: agordeev@linux.ibm.com
+CC: peterz@infradead.org
+CC: mingo@redhat.com
+CC: acme@kernel.org
+CC: mark.rutland@arm.com
+CC: alexander.shishkin@linux.intel.com
+CC: jolsa@redhat.com
+CC: namhyung@kernel.org
+CC: ast@kernel.org
+CC: daniel@iogearbox.net
+CC: andrii@kernel.org
+CC: kafai@fb.com
+CC: songliubraving@fb.com
+CC: yhs@fb.com
+CC: john.fastabend@gmail.com
+CC: kpsingh@kernel.org
+CC: peterx@redhat.com
+CC: akpm@linux-foundation.org
+CC: linux-s390@vger.kernel.org
+CC: linux-perf-users@vger.kernel.org
+CC: bpf@vger.kernel.org
+---
+ arch/s390/mm/hugetlbpage.c | 1 +
+ include/linux/perf_event.h | 1 +
+ 2 files changed, 2 insertions(+)
 
-kernel.h      40633
-bpf.h         17881
-bpf-cgroup.h  17875
-skbuff.h      10696
-bpf-netns.h    7604
-netdevice.h    7452
-filter.h       5003
-sock.h         4959
-tcp.h          4048
-
-As the stats show touching bpf.h is _very_ expensive.
-
-Bulk of the objects get rebuilt because MM includes cgroup headers.
-Luckily bpf-cgroup.h does not fundamentally depend on bpf.h so we
-can break that dependency and reduce the number of objects.
-
-With the patches applied touching bpf.h causes 5019 objects to be rebuilt
-(17881 / 5019 = 3.56x). That's pretty much down to filter.h plus noise.
-
-v2:
-Try to make the new headers wider in scope. Collapse bpf-link and
-bpf-cgroup-types into one header, which may serve as "BPF kernel
-API" header in the future if needed. Rename bpf-cgroup-storage.h
-to bpf-inlines.h.
-
-Add a fix for the s390 build issue.
-
-v3: https://lore.kernel.org/all/20211215061916.715513-1-kuba@kernel.org/
-Merge bpf-includes.h into bpf.h.
-
-v4: https://lore.kernel.org/all/20211215181231.1053479-1-kuba@kernel.org/
-Change course - break off cgroup instead of breaking off bpf.
-
-v5:
-Add forward declaration of struct bpf_prog to perf_event.h
-when !CONFIG_BPF_SYSCALL (kbuild bot).
-
-Jakub Kicinski (3):
-  add includes masked by cgroup -> bpf dependency
-  add missing bpf-cgroup.h includes
-  bpf: remove the cgroup -> bpf header dependecy
-
- arch/s390/mm/hugetlbpage.c      |  1 +
- include/linux/bpf-cgroup-defs.h | 70 +++++++++++++++++++++++++++++++++
- include/linux/bpf-cgroup.h      | 57 +--------------------------
- include/linux/cgroup-defs.h     |  2 +-
- include/linux/perf_event.h      |  1 +
- kernel/bpf/helpers.c            |  1 +
- kernel/bpf/syscall.c            |  1 +
- kernel/bpf/verifier.c           |  1 +
- kernel/cgroup/cgroup.c          |  1 +
- kernel/trace/trace_kprobe.c     |  1 +
- kernel/trace/trace_uprobe.c     |  1 +
- net/ipv4/udp.c                  |  1 +
- net/ipv6/udp.c                  |  1 +
- net/socket.c                    |  1 +
- security/device_cgroup.c        |  1 +
- 15 files changed, 84 insertions(+), 57 deletions(-)
- create mode 100644 include/linux/bpf-cgroup-defs.h
-
+diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
+index da36d13ffc16..082793d497ec 100644
+--- a/arch/s390/mm/hugetlbpage.c
++++ b/arch/s390/mm/hugetlbpage.c
+@@ -9,6 +9,7 @@
+ #define KMSG_COMPONENT "hugetlb"
+ #define pr_fmt(fmt) KMSG_COMPONENT ": " fmt
+ 
++#include <asm/pgalloc.h>
+ #include <linux/mm.h>
+ #include <linux/hugetlb.h>
+ #include <linux/mman.h>
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index 0dcfd265beed..4a021149eaf0 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -611,6 +611,7 @@ struct swevent_hlist {
+ #define PERF_ATTACH_SCHED_CB	0x20
+ #define PERF_ATTACH_CHILD	0x40
+ 
++struct bpf_prog;
+ struct perf_cgroup;
+ struct perf_buffer;
+ 
 -- 
 2.31.1
 
