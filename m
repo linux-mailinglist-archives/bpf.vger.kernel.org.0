@@ -2,74 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675B14796F8
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 23:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EAD4796FC
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 23:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhLQWUO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 17:20:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        id S229480AbhLQWUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 17:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhLQWUL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 17:20:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D72C061574;
-        Fri, 17 Dec 2021 14:20:11 -0800 (PST)
+        with ESMTP id S230002AbhLQWUO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 17:20:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69EDC061574
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 14:20:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D09F62411;
+        by ams.source.kernel.org (Postfix) with ESMTPS id ABD25B82B1E
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 22:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C766C36AEB;
         Fri, 17 Dec 2021 22:20:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A20CAC36AE8;
-        Fri, 17 Dec 2021 22:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639779610;
-        bh=Kum7r0wTtsWIkvSn2t0rm2SvGvxHdbz+bkHQHaazmqA=;
+        s=k20201202; t=1639779611;
+        bh=x52AuQG2ulgCUPhyqfeJO3uwoszXz14UMZKO5BqDuRc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=OkJGksF+fKmA7OXDjNT2FU4sUMZGgakjKg4ihA4vUHhXrAtgQg6AXUvTSjyaYMzyF
-         b7tAN+nVOqbgRh9DDLqM9wzaed9eUaYDFWmZvIESN+W719XU6yfwhrtDsXSEPZSdti
-         QAIAJqi8fME6VFSc/rNOy7cPhv6uUzp3rr/LXQ7ngj/hj0inNo09HUPHLpcDB6GxSm
-         bA9bGBUlr03wXjcBmCXVT4CoZW4sHzN2VmVy1DoN3tNre/JTUDLDyooebHH2DGYXmv
-         kgsKA9J84Wm4o9r/rYn/6SOzls+qwzeQHfPNvGGo6Slnp2t3pt4hlfuxj9eW/8a+5C
-         auor5t46Mcp4A==
+        b=hROsiMIyW4Z/fA+N8SNqJkggZ8eRG+adCtBsIArtcUESB0+O7I1RaUtdJ8r5soylH
+         ijhDYMH++cOX6ZGeJVfxnpeZ2kJG2qtVkLjVe2hCWKyjvDXhhx5USKqti2cpx6AkTy
+         vPIW4kgIa1pjZBTCYUugPm91kwpoLlvtlfF9MSy4mCV2RxZKiH5Y+npHuJVEIEyN1f
+         TqD5MZfkGGc2wGQ7qrrIOjv+0dzDwr3CUlVKAdLQtNPHMpODOqePsIDD6ETI+CaKf3
+         KbMvrWyGOyUFeywF7ikJmQdTERvNcQvHFHhzXnNcDNfhOPc1eE0aYep9aix5j1W7Gp
+         NM3Wt10ihm/6A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D62360A3C;
-        Fri, 17 Dec 2021 22:20:10 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6096060A3C;
+        Fri, 17 Dec 2021 22:20:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] bpf,
- selftests: Fix spelling mistake "tained" -> "tainted"
+Subject: Re: [PATCH v2 bpf-next 0/3] Revamp and fix libbpf's feature-probing APIs
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163977961050.17343.6487483630157192212.git-patchwork-notify@kernel.org>
-Date:   Fri, 17 Dec 2021 22:20:10 +0000
-References: <20211217182400.39296-1-colin.i.king@gmail.com>
-In-Reply-To: <20211217182400.39296-1-colin.i.king@gmail.com>
-To:     Colin Ian King <colin.i.king@gmail.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-Id: <163977961139.17343.116378339550967950.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Dec 2021 22:20:11 +0000
+References: <20211217171202.3352835-1-andrii@kernel.org>
+In-Reply-To: <20211217171202.3352835-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, davemarchevsky@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Fri, 17 Dec 2021 18:24:00 +0000 you wrote:
-> There appears to be a spelling mistake in a bpf test message. Fix it.
+On Fri, 17 Dec 2021 09:11:59 -0800 you wrote:
+> Fix and improve libbpf feature-probing APIs. Name them consistently and
+> deprecated previous inconsistently named APIs.
 > 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  tools/testing/selftests/bpf/verifier/value_ptr_arith.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v1->v2:
+>   - fixed misleading comment and added acks (Dave).
+> 
+> Cc: Dave Marchevsky <davemarchevsky@fb.com>
+> 
+> [...]
 
 Here is the summary with links:
-  - [next] bpf, selftests: Fix spelling mistake "tained" -> "tainted"
-    https://git.kernel.org/bpf/bpf/c/819d11507f66
+  - [v2,bpf-next,1/3] libbpf: rework feature-probing APIs
+    https://git.kernel.org/bpf/bpf-next/c/878d8def0603
+  - [v2,bpf-next,2/3] selftests/bpf: add libbpf feature-probing API selftests
+    https://git.kernel.org/bpf/bpf-next/c/5a8ea82f9d25
+  - [v2,bpf-next,3/3] bpftool: reimplement large insn size limit feature probing
+    https://git.kernel.org/bpf/bpf-next/c/e967a20a8fab
 
 You are awesome, thank you!
 -- 
