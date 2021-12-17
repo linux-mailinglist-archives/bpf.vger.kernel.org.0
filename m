@@ -2,51 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C328547814F
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 01:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DB4478150
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 01:32:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229587AbhLQAcB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 19:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        id S229596AbhLQAcD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 19:32:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbhLQAcB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 19:32:01 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B071C061574
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:00 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id y17-20020a2586d1000000b005f6596e8760so1428344ybm.17
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:00 -0800 (PST)
+        with ESMTP id S229563AbhLQAcC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 19:32:02 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA254C061574
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:02 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id kj12-20020a056214528c00b003bde2e1df71so913951qvb.18
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=V///VcFEBhjR6GeGnFgf0YY+klBa/s9b1Wa6vUmP1t4=;
-        b=lMY15nnYkFC67MnTKRrxVsvfsvp1c6DUsxTl2p8Y2WMnVexVIOI2uZpNOg+VgxgL2M
-         GyR5t2ofUH652cAOrCyMjltPANAXNmdxLNtMD2PBVELOWQGV/2p+QrMZXouGdE0lPaiP
-         SOV5M906w8in40oKMlHGl2QV+UXVLNDzM0zqRDp/b6v5ZC7Fb0iNn0+yvzR8ZSoCyjT7
-         Gf6XlidNChGkvnLV+LMZedIixZGP89hQOxfRN7fCKe6NxgZxvCO8GEqFPhEtkOqGBUj1
-         fhdS0wlUJiyEvCeVUpnCE/WNB/VXMFUFLSsD/v7Cfw6Pif3jDWLTeCusLOdxAFCng2Up
-         zzMQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=CqBFYAK+I01Ce5LAlMAa3+epdDPMqZrXXCAJ9GJ0bFI=;
+        b=APbB8+D7QxNmnP3/a9EqWLPY5Y0PyVRvBHijoExwikFT6nUYzfQfMa07Cmx3RbmZOO
+         i0Dflta6o6FsZ7ZTpcWJ++a6Q7Yp8hPGySXffTf3zrvdncL7sItwYFdW5nJaRZjXQBtO
+         DCXgmrjjEiBhCAgn23VJMkvjXbgsfz9vd1eG2pHwedybxwShWFgdkwDH4rII8I71KKco
+         McBIpduACUpE480NKBk8p4XpKnpiDRn7DDsgJmMza5+NjwT0eRL7pZJ65ses1YkL/60B
+         xQBB9t+/3qU0pSYut0CSGxa2moQH6JrzptLdQeeLTMbzH3mO638I7YPpMz2ALNgaZpbq
+         0Baw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=V///VcFEBhjR6GeGnFgf0YY+klBa/s9b1Wa6vUmP1t4=;
-        b=hyVitlxySjzTvGAkLpZT15Ep9jtlFHYG2SU/4XqScYMEvh0Er5gpm7qfrZq7bxOWbw
-         mf0pKrVp9K+rF00vvZt00JqFzGH3OaL+v2JzC0W5SA+gcKv/Ino/2AKD23oWQmvFpDak
-         FJhwg0b/kEKZCpV9+5nlS9TaNa0oLqvEAbN9DR+7hWEWy0RgdiD2Cx73c6j9buSzgxyY
-         L0muYsd0T3+7W1Q8YFAfL+X6G6G03icY+PwHCUNs29pGs9jND72McHTU9K5BxsTvkDdo
-         M89bv5djYkV5D3iAlUiVC4od6fMo15kXHVEVd53+IGo07B2A1Awa5upnYmC1o1qy/8/r
-         AB7Q==
-X-Gm-Message-State: AOAM530P1UpMBTs3YzPgyMGtOUNVY4C2GLrETTQY4U/3naBZvn4o6zfq
-        1dXtofa27OLm7aPmJy5xJMzmeoqYRQo=
-X-Google-Smtp-Source: ABdhPJx4tLgI4kg7SD9rKQCSLQbYtCHKkMQEprqokIi4WhctnsZSS51YehKmZH8rDJOxCY9C6muKhkCSM0g=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=CqBFYAK+I01Ce5LAlMAa3+epdDPMqZrXXCAJ9GJ0bFI=;
+        b=IJ9qcrbSi/EeXbNOYusvl/ERqr92fY1Io/Db5QCXMbc/sUUvT1AVd5M3P6TOEBNyWT
+         O0dg5Q1n9ccJS7uYY45o4jJy2Q7vbofhp6ja4w4byE/+OLqyU+MI7pqcgg+tH2FckHqj
+         uPbcgVINBM6iI4jE6h6VJiKLfeAJYVK7w2clwJM+TT7hqpubKi6I04DuXpue9OZrRRtj
+         uZvbEZsiqe/SEtCud/MF2STyjPtMIZKbh00i/4Exd/oZ8jPvcSd4D7XyRsB/3uwjI8gg
+         xzbrQufdDAQL8hA9yo0se4w6pcLGyCNFq1hy2K+rQCPByo2PKd3niWfgLZbsKBeq+lZF
+         zeGg==
+X-Gm-Message-State: AOAM532OVXBe8ucCBACLEikCEPsbhfHkFq6GsaxUqJIkNZr8ZY3DQwom
+        KGhkAfVJ0lMaT63Pmnm+way07b1bY1M=
+X-Google-Smtp-Source: ABdhPJx7WZQtU9w7pucmO0O1fJFzf8+/3jSoFe4vmyJEVcllsmvM+RdIB0PtUzjDotT57TRwJZnKmfcRzcI=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:9064:adcd:ab38:7d29])
- (user=haoluo job=sendgmr) by 2002:a05:6902:120e:: with SMTP id
- s14mr853207ybu.397.1639701119438; Thu, 16 Dec 2021 16:31:59 -0800 (PST)
-Date:   Thu, 16 Dec 2021 16:31:43 -0800
-Message-Id: <20211217003152.48334-1-haoluo@google.com>
+ (user=haoluo job=sendgmr) by 2002:ac8:5b8f:: with SMTP id a15mr453627qta.169.1639701121908;
+ Thu, 16 Dec 2021 16:32:01 -0800 (PST)
+Date:   Thu, 16 Dec 2021 16:31:44 -0800
+In-Reply-To: <20211217003152.48334-1-haoluo@google.com>
+Message-Id: <20211217003152.48334-2-haoluo@google.com>
 Mime-Version: 1.0
+References: <20211217003152.48334-1-haoluo@google.com>
 X-Mailer: git-send-email 2.34.1.173.g76aa8bc2d0-goog
-Subject: [PATCH bpf-next v2 0/9] Introduce composable bpf types
+Subject: [PATCH bpf-next v2 1/9] bpf: Introduce composable reg, ret and arg types.
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -59,111 +63,139 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch set consists of two changes:
+There are some common properties shared between bpf reg, ret and arg
+values. For instance, a value may be a NULL pointer, or a pointer to
+a read-only memory. Previously, to express these properties, enumeration
+was used. For example, in order to test whether a reg value can be NULL,
+reg_type_may_be_null() simply enumerates all types that are possibly
+NULL. The problem of this approach is that it's not scalable and causes
+a lot of duplication. These properties can be combined, for example, a
+type could be either MAYBE_NULL or RDONLY, or both.
 
- - a cleanup of arg_type, ret_type and reg_type which try to make those
-   types composable. (patch 1/9 - patch 6/9)
- - a bug fix that prevents bpf programs from writing kernel memory.
-   (patch 7/9 - patch 9/9)
+This patch series rewrites the layout of reg_type, arg_type and
+ret_type, so that common properties can be extracted and represented as
+composable flag. For example, one can write
 
-The purpose of the cleanup is to find a scalable way to express type
-nullness and read-onliness. This patchset introduces two flags that
-can be applied on all three types: PTR_MAYBE_NULL and MEM_RDONLY.
-Previous types such as ARG_XXX_OR_NULL can now be written as
+ ARG_PTR_TO_MEM | PTR_MAYBE_NULL
 
- ARG_XXX | PTR_MAYBE_NULL
+which is equivalent to the previous
 
-Similarly, PTR_TO_RDONLY_BUF is now "PTR_TO_BUF | MEM_RDONLY".
+ ARG_PTR_TO_MEM_OR_NULL
 
-Flags can be composed, as ARGs can be both MEM_RDONLY and MAYBE_NULL.
+The type ARG_PTR_TO_MEM are called "base type" in this patch. Base
+types can be extended with flags. A flag occupies the higher bits while
+base types sits in the lower bits.
 
- ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY
+This patch in particular sets up a set of macro for this purpose. The
+following patches will rewrite arg_types, ret_types and reg_types
+respectively.
 
-Based on this new composable types, patch 7/9 applies MEM_RDONLY on
-PTR_TO_MEM, in order to tag the returned memory from per_cpu_ptr as
-read-only. Therefore fixing a previous bug that one can leverage
-per_cpu_ptr to modify kernel memory within BPF programs.
+Signed-off-by: Hao Luo <haoluo@google.com>
+---
+ include/linux/bpf.h          | 42 ++++++++++++++++++++++++++++++++++++
+ include/linux/bpf_verifier.h | 13 +++++++++++
+ 2 files changed, 55 insertions(+)
 
-Patch 8/9 generalizes the use of MEM_RDONLY further by tagging a set of
-helper arguments ARG_PTR_TO_MEM with MEM_RDONLY. Some helper functions
-may override their arguments, such as bpf_d_path, bpf_snprintf. In this
-patch, we narrow the ARG_PTR_TO_MEM to be compatible with only a subset
-of memory types. This prevents these helpers from writing read-only
-memories. For the helpers that do not write its arguments, we add tag
-MEM_RDONLY to allow taking a RDONLY memory as argument.
-
-Changes since v1:
- - use %u to print base_type(type) instead of %lu. (Andrii, patch 3/9)
- - improve reg_type_str() by appending '_or_null' and prepending 'rdonly_'.
-   use preallocated buffer in 'bpf_env'.
- - unified handling of the previous XXX_OR_NULL in adjust_ptr_min_max_vals
-   (Andrii, patch 4/9)
- - move PTR_TO_MAP_KEY up to PTR_TO_MAP_VALUE so that we don't have
-   to change to drivers that assume the numeric values of bpf_reg.
-   (patch 4/9)
- - reintroduce the typo from previous commits in fixes tags (Andrii, patch 7/9)
- - extensive comments on the reason behind folding flags in
-   check_reg_type (Andrii, patch 8/9)
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 965fffaf0308..41bb3687cc85 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -297,6 +297,29 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
  
-Changes since RFC v2:
- - renamed BPF_BASE_TYPE to a more succinct name base_type and move its
-   definition to bpf_verifier.h. Same for BPF_TYPE_FLAG. (Alexei)
- - made checking MEM_RDONLY in check_reg_type() universal (Alexei)
- - ran through majority of test_progs and fixed bugs in RFC v2:
-   - fixed incorrect BPF_BASE_TYPE_MASK. The high bit of GENMASK should
-     be BITS - 1, rather than BITS. patch 1/9.
-   - fixed incorrect conditions when checking ARG_PTR_TO_MAP_VALUE in
-     check_func_arg(). See patch 2/9.
-   - fixed a bug where PTR_TO_BTF_ID may be combined with MEM_RDONLY,
-     causing the check in check_mem_access() to fall through to the
-     'else' branch. See check_helper_call() in patch 7/9.
- - fixed build failure on netronome driver. Entries in bpf_reg_type have
-   been ordered. patch 4/9.
- - fixed build warnings of using '%d' to print base_type. patch 4/9
- - unify arg_type_may_be_null() and reg_type_may_be_null() into a single
-   type_may_be_null().
-
-Previous versions:
-
- v1:
-   https://lwn.net/Articles/877938/
-
- RFC v2:
-   https://lwn.net/Articles/877171/
-
- RFC v1:
-   https://lore.kernel.org/bpf/20211109003052.3499225-1-haoluo@google.com/T/
-   https://lore.kernel.org/bpf/20211109021624.1140446-8-haoluo@google.com/T/
-
-Hao Luo (9):
-  bpf: Introduce composable reg, ret and arg types.
-  bpf: Replace ARG_XXX_OR_NULL with ARG_XXX | PTR_MAYBE_NULL
-  bpf: Replace RET_XXX_OR_NULL with RET_XXX | PTR_MAYBE_NULL
-  bpf: Replace PTR_TO_XXX_OR_NULL with PTR_TO_XXX | PTR_MAYBE_NULL
-  bpf: Introduce MEM_RDONLY flag
-  bpf: Convert PTR_TO_MEM_OR_NULL to composable types.
-  bpf: Make per_cpu_ptr return rdonly PTR_TO_MEM.
-  bpf: Add MEM_RDONLY for helper args that are pointers to rdonly mem.
-  bpf/selftests: Test PTR_TO_RDONLY_MEM
-
- include/linux/bpf.h                           | 101 +++-
- include/linux/bpf_verifier.h                  |  17 +
- kernel/bpf/btf.c                              |  12 +-
- kernel/bpf/cgroup.c                           |   2 +-
- kernel/bpf/helpers.c                          |  12 +-
- kernel/bpf/map_iter.c                         |   4 +-
- kernel/bpf/ringbuf.c                          |   2 +-
- kernel/bpf/syscall.c                          |   2 +-
- kernel/bpf/verifier.c                         | 491 +++++++++---------
- kernel/trace/bpf_trace.c                      |  26 +-
- net/core/bpf_sk_storage.c                     |   2 +-
- net/core/filter.c                             |  64 +--
- net/core/sock_map.c                           |   2 +-
- .../selftests/bpf/prog_tests/ksyms_btf.c      |  14 +
- .../bpf/progs/test_ksyms_btf_write_check.c    |  29 ++
- 15 files changed, 444 insertions(+), 336 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
-
+ extern const struct bpf_map_ops bpf_map_offload_ops;
+ 
++/* bpf_type_flag contains a set of flags that are applicable to the values of
++ * arg_type, ret_type and reg_type. For example, a pointer value may be null,
++ * or a memory is read-only. We classify types into two categories: base types
++ * and extended types. Extended types are base types combined with a type flag.
++ *
++ * Currently there are no more than 32 base types in arg_type, ret_type and
++ * reg_types.
++ */
++#define BPF_BASE_TYPE_BITS	8
++
++enum bpf_type_flag {
++	/* PTR may be NULL. */
++	PTR_MAYBE_NULL		= BIT(0 + BPF_BASE_TYPE_BITS),
++
++	__BPF_TYPE_LAST_FLAG	= PTR_MAYBE_NULL,
++};
++
++/* Max number of base types. */
++#define BPF_BASE_TYPE_LIMIT	(1UL << BPF_BASE_TYPE_BITS)
++
++/* Max number of all types. */
++#define BPF_TYPE_LIMIT		(__BPF_TYPE_LAST_FLAG | (__BPF_TYPE_LAST_FLAG - 1))
++
+ /* function argument constraints */
+ enum bpf_arg_type {
+ 	ARG_DONTCARE = 0,	/* unused argument in helper function */
+@@ -343,7 +366,13 @@ enum bpf_arg_type {
+ 	ARG_PTR_TO_CONST_STR,	/* pointer to a null terminated read-only string */
+ 	ARG_PTR_TO_TIMER,	/* pointer to bpf_timer */
+ 	__BPF_ARG_TYPE_MAX,
++
++	/* This must be the last entry. Its purpose is to ensure the enum is
++	 * wide enough to hold the higher bits reserved for bpf_type_flag.
++	 */
++	__BPF_ARG_TYPE_LIMIT	= BPF_TYPE_LIMIT,
+ };
++static_assert(__BPF_ARG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+ 
+ /* type of values returned from helper functions */
+ enum bpf_return_type {
+@@ -359,7 +388,14 @@ enum bpf_return_type {
+ 	RET_PTR_TO_MEM_OR_BTF_ID_OR_NULL, /* returns a pointer to a valid memory or a btf_id or NULL */
+ 	RET_PTR_TO_MEM_OR_BTF_ID,	/* returns a pointer to a valid memory or a btf_id */
+ 	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
++	__BPF_RET_TYPE_MAX,
++
++	/* This must be the last entry. Its purpose is to ensure the enum is
++	 * wide enough to hold the higher bits reserved for bpf_type_flag.
++	 */
++	__BPF_RET_TYPE_LIMIT	= BPF_TYPE_LIMIT,
+ };
++static_assert(__BPF_RET_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+ 
+ /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF programs
+  * to in-kernel helper functions and for adjusting imm32 field in BPF_CALL
+@@ -461,7 +497,13 @@ enum bpf_reg_type {
+ 	PTR_TO_FUNC,		 /* reg points to a bpf program function */
+ 	PTR_TO_MAP_KEY,		 /* reg points to a map element key */
+ 	__BPF_REG_TYPE_MAX,
++
++	/* This must be the last entry. Its purpose is to ensure the enum is
++	 * wide enough to hold the higher bits reserved for bpf_type_flag.
++	 */
++	__BPF_REG_TYPE_LIMIT	= BPF_TYPE_LIMIT,
+ };
++static_assert(__BPF_REG_TYPE_MAX <= BPF_BASE_TYPE_LIMIT);
+ 
+ /* The information passed from prog-specific *_is_valid_access
+  * back to the verifier.
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 182b16a91084..74ee73e79bce 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -536,5 +536,18 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			    struct bpf_attach_target_info *tgt_info);
+ void bpf_free_kfunc_btf_tab(struct bpf_kfunc_btf_tab *tab);
+ 
++#define BPF_BASE_TYPE_MASK	GENMASK(BPF_BASE_TYPE_BITS - 1, 0)
++
++/* extract base type from bpf_{arg, return, reg}_type. */
++static inline u32 base_type(u32 type)
++{
++	return type & BPF_BASE_TYPE_MASK;
++}
++
++/* extract flags from an extended type. See bpf_type_flag in bpf.h. */
++static inline u32 type_flag(u32 type)
++{
++	return type & ~BPF_BASE_TYPE_MASK;
++}
+ 
+ #endif /* _LINUX_BPF_VERIFIER_H */
 -- 
 2.34.1.173.g76aa8bc2d0-goog
 
