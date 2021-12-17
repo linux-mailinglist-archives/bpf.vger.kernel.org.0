@@ -2,131 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4A14794D5
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 20:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85ACA4794C6
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 20:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240672AbhLQTcU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 14:32:20 -0500
-Received: from mga01.intel.com ([192.55.52.88]:11893 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240662AbhLQTcS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 14:32:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1639769538; x=1671305538;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=K+xNIudu0nRnwNQpXcmMtITHz1TaJegslilJC36f9Kk=;
-  b=amj9ZJvrRlO9/Cqsv1JyWl5qSSzcqAczLNp420YIoz4/exGZguUHAsNp
-   bdwFfsCScO8ZiZycE3c+Hbn990VfY35PHwAelVGfZ142l30f4JLcumVo8
-   ibOrqxD4l762qW3AAA8bgQkb1AT+ZKS2/0SlyhyyMBf+cnbqKmKZHmYd3
-   iEzS4B1OVjsqYt6iSWDPChQxhJsTPxHgTH6QX3cKBBVo0b19HJknjiXM/
-   k5SyjaqpthaJZzAQHwRP92KCpqjaX57SKmJS7r2I/oQkdrFidNptLpHDh
-   7/Zhz9FPHOIVbbyJW2Wln0U2UqJcl0VLCblYTRaN27M2ndyD2ePGLulpw
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10201"; a="263998137"
-X-IronPort-AV: E=Sophos;i="5.88,214,1635231600"; 
-   d="scan'208";a="263998137"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2021 11:32:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,214,1635231600"; 
-   d="scan'208";a="754659464"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Dec 2021 11:32:14 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
-        Kiran Bhandare <kiranx.bhandare@intel.com>
-Subject: [PATCH net 6/6] ice: xsk: fix cleaned_count setting
-Date:   Fri, 17 Dec 2021 11:31:14 -0800
-Message-Id: <20211217193114.392106-7-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211217193114.392106-1-anthony.l.nguyen@intel.com>
-References: <20211217193114.392106-1-anthony.l.nguyen@intel.com>
+        id S239284AbhLQTb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 14:31:57 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:45810 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236806AbhLQTbz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 14:31:55 -0500
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8F0A820B7179;
+        Fri, 17 Dec 2021 11:31:55 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8F0A820B7179
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1639769515;
+        bh=cRv1WcSt0W5cSKayHF2tip8g7TX35i59/0QbRgNWzaU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MhexrEl8xul/7EJEmQ9ctKSu/OqP5hTSgYLkcxOxbtlRaEmLVeMC0umttpEf1DccD
+         5q05nUXhBgAv/XGu6USkDMeZn48vsVdskq8//9qkBP5FlvUqe+eBrfQRO6/47hBvyc
+         y5FSZka5hwe/uuCmg8nTgipQq+dNld6NvVlSP6zI=
+Received: by mail-pg1-f180.google.com with SMTP id r138so3041586pgr.13;
+        Fri, 17 Dec 2021 11:31:55 -0800 (PST)
+X-Gm-Message-State: AOAM530hNRZAk4LCVJ9lPG8s2ijwRjlKCNtdGxoVkSr/nHxaG96Ki6n6
+        ivnctV1gn2e4SM4eXhVEUnDHwtJyCL6CiWoWHO0=
+X-Google-Smtp-Source: ABdhPJwNH6xujiXnHflsTggNnsem9wvT8MU14S2o6N2NLP2AwJNCHyFv/iBlkfPk4xcTbpnyfBCTlPfGaBbnWmZmrx8=
+X-Received: by 2002:a63:ec54:: with SMTP id r20mr3946441pgj.455.1639769515003;
+ Fri, 17 Dec 2021 11:31:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
+ <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
+ <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com>
+ <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com> <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+In-Reply-To: <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 17 Dec 2021 20:31:18 +0100
+X-Gmail-Original-Message-ID: <CAFnufp35YbxhbQR7stq39WOhAZm4LYHu6FfYBeHJ8-xRSo7TnQ@mail.gmail.com>
+Message-ID: <CAFnufp35YbxhbQR7stq39WOhAZm4LYHu6FfYBeHJ8-xRSo7TnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+ On Wed, Dec 15, 2021 at 7:21 PM Matteo Croce
+<mcroce@linux.microsoft.com> wrote:
+>
+> On Wed, Dec 15, 2021 at 6:29 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Wed, Dec 15, 2021 at 6:54 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> > > >
+> > > > Maybe do a level check here?
+> > > > Since calling it and immediately returning doesn't conserve
+> > > > the stack.
+> > > > If it gets called it can finish fine, but
+> > > > calling it again would be too much.
+> > > > In other words checking the level here gives us
+> > > > room for one more frame.
+> > > >
+> > >
+> > > I thought that the compiler was smart enough to return before
+> > > allocating most of the frame.
+> > > I tried and this is true only with gcc, not with clang.
+> >
+> > Interesting. That's a surprise.
+> > Could you share the asm that gcc generates?
+> >
+>
+> Sure,
+>
+> This is the gcc x86_64 asm on a stripped down
+> bpf_core_types_are_compat() with a 1k struct on the stack:
+>
+> bpf_core_types_are_compat:
+> test esi, esi
+> jle .L69
+> push r15
+> push r14
+> push r13
+> push r12
+> push rbp
+> mov rbp, rdi
+> push rbx
+> mov ebx, esi
+> sub rsp, 9112
+> [...]
+> .L69:
+> or eax, -1
+> ret
+>
+> This latest clang:
+>
+> bpf_core_types_are_compat: # @bpf_core_types_are_compat
+> push rbp
+> push r15
+> push r14
+> push rbx
+> sub rsp, 1000
+> mov r14d, -1
+> test esi, esi
+> jle .LBB0_7
+> [...]
+> .LBB0_7:
+> mov eax, r14d
+> add rsp, 1000
+> pop rbx
+> pop r14
+> pop r15
+> pop rbp
+> ret
+>
+> > > > > +                       err = __bpf_core_types_are_compat(local_btf, local_id,
+> > > > > +                                                         targ_btf, targ_id,
+> > > > > +                                                         level - 1);
+> > > > > +                       if (err <= 0)
+> > > > > +                               return err;
+> > > > > +               }
+> > > > > +
+> > > > > +               /* tail recurse for return type check */
+> > > > > +               btf_type_skip_modifiers(local_btf, local_type->type, &local_id);
+> > > > > +               btf_type_skip_modifiers(targ_btf, targ_type->type, &targ_id);
+> > > > > +               goto recur;
+> > > > > +       }
+> > > > > +       default:
+> > > > > +               pr_warn("unexpected kind %s relocated, local [%d], target [%d]\n",
+> > > > > +                       btf_type_str(local_type), local_id, targ_id);
+> > > >
+> > > > That should be bpf_log() instead.
+> > > >
+> > >
+> > > To do that I need a struct bpf_verifier_log, which is not present
+> > > there, neither in bpf_core_spec_match() or bpf_core_apply_relo_insn().
+> >
+> > It is there. See:
+> >         err = bpf_core_apply_relo_insn((void *)ctx->log, insn, ...
+> >
+> > > Should we drop the message at all?
+> >
+> > Passing it into bpf_core_spec_match() and further into
+> > bpf_core_types_are_compat() is probably unnecessary.
+> > All callers have an error check with a log right after.
+> > So I think we won't lose anything if we drop this log.
+> >
+>
+> Nice.
+>
+> > >
+> > > > > +               return 0;
+> > > > > +       }
+> > > > > +}
+> > > >
+> > > > Please add tests that exercise this logic by enabling
+> > > > additional lskels and a new test that hits the recursion limit.
+> > > > I suspect we don't have such case in selftests.
+> > > >
+> > > > Thanks!
+> > >
+> > > Will do!
+> >
+> > Thanks!
+>
 
-Currently cleaned_count is initialized to ICE_DESC_UNUSED(rx_ring) and
-later on during the Rx processing it is incremented per each frame that
-driver consumed. This can result in excessive buffers requested from xsk
-pool based on that value.
+Hi,
 
-To address this, just drop cleaned_count and pass
-ICE_DESC_UNUSED(rx_ring) directly as a function argument to
-ice_alloc_rx_bufs_zc(). Idea is to ask for buffers as many as consumed.
+I'm writing a test which exercise that function.
+I can succesfully trigger a call to __bpf_core_types_are_compat() with
+these  calls:
 
-Let us also call ice_alloc_rx_bufs_zc unconditionally at the end of
-ice_clean_rx_irq_zc. This has been changed in that way for corresponding
-ice_clean_rx_irq, but not here.
+bpf_core_type_id_kernel(struct sk_buff);
+bpf_core_type_exists(struct sk_buff);
+bpf_core_type_size(struct sk_buff);
 
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_txrx.h | 1 -
- drivers/net/ethernet/intel/ice/ice_xsk.c  | 6 +-----
- 2 files changed, 1 insertion(+), 6 deletions(-)
+but the kind will obviously be BTF_KIND_STRUCT.
+I'm trying to do the same with kind BTF_KIND_FUNC_PROTO instead with:
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-index c56dd1749903..b7b3bd4816f0 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-@@ -24,7 +24,6 @@
- #define ICE_MAX_DATA_PER_TXD_ALIGNED \
- 	(~(ICE_MAX_READ_REQ_SIZE - 1) & ICE_MAX_DATA_PER_TXD)
- 
--#define ICE_RX_BUF_WRITE	16	/* Must be power of 2 */
- #define ICE_MAX_TXQ_PER_TXQG	128
- 
- /* Attempt to maximize the headroom available for incoming frames. We use a 2K
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index c1491dc0675d..c895351b25e0 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -505,7 +505,6 @@ ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
- int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- {
- 	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
--	u16 cleaned_count = ICE_DESC_UNUSED(rx_ring);
- 	struct ice_tx_ring *xdp_ring;
- 	unsigned int xdp_xmit = 0;
- 	struct bpf_prog *xdp_prog;
-@@ -562,7 +561,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 
- 			total_rx_bytes += size;
- 			total_rx_packets++;
--			cleaned_count++;
- 
- 			ice_bump_ntc(rx_ring);
- 			continue;
-@@ -575,7 +573,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 			break;
- 		}
- 
--		cleaned_count++;
- 		ice_bump_ntc(rx_ring);
- 
- 		if (eth_skb_pad(skb)) {
-@@ -597,8 +594,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
- 		ice_receive_skb(rx_ring, skb, vlan_tag);
- 	}
- 
--	if (cleaned_count >= ICE_RX_BUF_WRITE)
--		failure = !ice_alloc_rx_bufs_zc(rx_ring, cleaned_count);
-+	failure = !ice_alloc_rx_bufs_zc(rx_ring, ICE_DESC_UNUSED(rx_ring));
- 
- 	ice_finalize_xdp_rx(xdp_ring, xdp_xmit);
- 	ice_update_rx_ring_stats(rx_ring, total_rx_packets, total_rx_bytes);
+void func_proto(int, unsigned int);
+bpf_core_type_id_kernel(func_proto);
+
+but I get a clang crash[1], while just checking the existence with:
+
+typedef int (*func_proto_typedef)(struct sk_buff *);
+bpf_core_type_exists(func_proto_typedef);
+
+I don't reach even bpf_core_spec_match().
+
+Which is a simple way to generate a BTF_KIND_FUNC_PROTO BTF field?
+
+[1] https://github.com/llvm/llvm-project/issues/52779
+
+Regards,
 -- 
-2.31.1
-
+per aspera ad upstream
