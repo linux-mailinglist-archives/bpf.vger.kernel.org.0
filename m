@@ -2,118 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAF1478664
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 09:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4CA478707
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 10:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232512AbhLQIkJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 03:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
+        id S234086AbhLQJ0l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 04:26:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232353AbhLQIkH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 03:40:07 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5482CC061747;
-        Fri, 17 Dec 2021 00:40:07 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id v16so1637293pjn.1;
-        Fri, 17 Dec 2021 00:40:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jAkmu0uJQg/B9pO7n5QymGcyVXcAft2zKtbo4iiM1U0=;
-        b=Gh/6WuWm9i8f2qct8kBrqxif8u7YCkAlX6mzWOTbFF8U2Zv68NgG6W+5Is5tbSI963
-         VzdCJ7o7ph6hXLM0jn4b6bzuCCk7++IHiI48vjZ/kKJ/mtRz+8/dxDY3d+LMwYJer/Kb
-         Zh+NONlkAcS5xADFW75arBsBCywwvXc1RIV3jTlRHmWbOBQoTNjxS2GakWe2h/SrHxn0
-         XOm0HlvfQql7VPASG0QLjVFo2dZdeQwoB8Ptnn2g2ScTj60ag4IUQyoYTxUV3GhCd+5t
-         /TJgEu8K3xF4/e5Bp5hGUwOvhCW+KcWlmgL9qlO96vsNMqcE276WSPR2GvXXV5BAGUEq
-         b5Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jAkmu0uJQg/B9pO7n5QymGcyVXcAft2zKtbo4iiM1U0=;
-        b=Joi/kBNRIC9oUMAEqvoVhTJcLmdHNmbKl7O8WkbWs9uO6oFkXBiBZe2kBI55rucnmn
-         fVqurxYrQKyxL0GQDA2mmORKH8PxV4wrzrhlrbR8l4O3bIk56xevrkY1ekJh/C7yalOu
-         /nxvWxtsvzpymMer3Nj9WyR3CKyS/qbqPZjig7VDLmGw9Di/GSRqt0QRAhC5TiTzgt18
-         OmqNu0U4/JZJKrnWyk4cdPu5yyHjtRZI617HEjJJ0jk13boq8Lll8LazGBE23NGYqtKs
-         D08v/DMPozqYCpYEkqqpKejl+cPlsvqim+hL2HaRbob1AIRzY+iBLrLTVN7vdynJewqZ
-         55ig==
-X-Gm-Message-State: AOAM532yrMcfK/S6nELWS3dqShSaeqBlNXGJ+trA+l3nE/BMefdXd1py
-        f0nkl0jpPvZjJEDNjoDdrDA=
-X-Google-Smtp-Source: ABdhPJxuNuwX+LGwDgRD1tZJkgWulxgcZb2riEcvuuNzL2IVRHfP13vo9Copqms9BgJrRzovwFRMQg==
-X-Received: by 2002:a17:902:8c94:b0:148:a2e8:2c39 with SMTP id t20-20020a1709028c9400b00148a2e82c39mr2098279plo.136.1639730406752;
-        Fri, 17 Dec 2021 00:40:06 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id p20sm8622146pfw.96.2021.12.17.00.40.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Dec 2021 00:40:06 -0800 (PST)
-Date:   Fri, 17 Dec 2021 14:10:03 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v4 07/10] net/netfilter: Add unstable CT lookup
- helpers for XDP and TC-BPF
-Message-ID: <20211217084003.dr2gv6hismpyib3y@apollo.legion>
-References: <20211217015031.1278167-1-memxor@gmail.com>
- <20211217015031.1278167-8-memxor@gmail.com>
- <YbxHy7yLwMQ7L0mN@salvia>
+        with ESMTP id S232507AbhLQJ0k (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 04:26:40 -0500
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D78C061574;
+        Fri, 17 Dec 2021 01:26:40 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1639733197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B7CcEKz1Bb1SpLsV9WHI5Sn4q4D3I2gK1U2uhyOlGyM=;
+        b=VUsleyxaeFiBXQ7O7pWQExVqwzOmqkEnFQ5Qka971rv9iyLdMDxKnjGeDBNR9QvLf2mR/9
+        W1sWEDark3KL10/qevAuLEkcBooY0JeOElALAMyFgoesJkv/UyxapbVYZx6OB1+WRzElSG
+        i0gMdo7xpFOsi/iPIvMBTlYLAIHB4/Y=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] xdp: move the if dev statements to the first
+Date:   Fri, 17 Dec 2021 17:25:45 +0800
+Message-Id: <20211217092545.30204-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YbxHy7yLwMQ7L0mN@salvia>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 01:48:19PM IST, Pablo Neira Ayuso wrote:
-> On Fri, Dec 17, 2021 at 07:20:28AM +0530, Kumar Kartikeya Dwivedi wrote:
-> > This change adds conntrack lookup helpers using the unstable kfunc call
-> > interface for the XDP and TC-BPF hooks. The primary usecase is
-> > implementing a synproxy in XDP, see Maxim's patchset at [0].
-> >
-> > Export get_net_ns_by_id as nf_conntrack needs to call it.
-> >
-> > Note that we search for acquire, release, and null returning kfuncs in
-> > the intersection of those sets and main set.
-> >
-> > This implies that the kfunc_btf_id_list acq_set, rel_set, null_set may
-> > contain BTF ID not in main set, this is explicitly allowed and
-> > recommended (to save on definining more and more sets), since
-> > check_kfunc_call verifier operation would filter out the invalid BTF ID
-> > fairly early, so later checks for acquire, release, and ret_type_null
-> > kfunc will only consider allowed BTF IDs for that program that are
-> > allowed in main set. This is why the nf_conntrack_acq_ids set has BTF
-> > IDs for both xdp and tc hook kfuncs.
-> >
-> >   [0]: https://lore.kernel.org/bpf/20211019144655.3483197-1-maximmi@nvidia.com
-> >
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/btf.h               |   2 +
-> >  kernel/bpf/btf.c                  |   1 +
-> >  net/core/filter.c                 |  24 +++
-> >  net/core/net_namespace.c          |   1 +
-> >  net/netfilter/nf_conntrack_core.c | 278 ++++++++++++++++++++++++++++++
->
-> Toke proposed to move it to net/netfilter/nf_conntrack_bpf.c
+The xdp_rxq_info_unreg() called by xdp_rxq_info_reg() is meaningless when
+dev is NULL, so move the if dev statements to the first.
 
-Ugh, sorry. I think I completely missed that mail, but I see it now.
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ net/core/xdp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-I'll wait for this review cycle to conclude, and then put the code in its own
-file in the next version.
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 5ddc29f29bad..7fe1df85f505 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -159,6 +159,11 @@ static void xdp_rxq_info_init(struct xdp_rxq_info *xdp_rxq)
+ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+ 		     struct net_device *dev, u32 queue_index, unsigned int napi_id)
+ {
++	if (!dev) {
++		WARN(1, "Missing net_device from driver");
++		return -ENODEV;
++	}
++
+ 	if (xdp_rxq->reg_state == REG_STATE_UNUSED) {
+ 		WARN(1, "Driver promised not to register this");
+ 		return -EINVAL;
+@@ -169,11 +174,6 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+ 		xdp_rxq_info_unreg(xdp_rxq);
+ 	}
+ 
+-	if (!dev) {
+-		WARN(1, "Missing net_device from driver");
+-		return -ENODEV;
+-	}
+-
+ 	/* State either UNREGISTERED or NEW */
+ 	xdp_rxq_info_init(xdp_rxq);
+ 	xdp_rxq->dev = dev;
+-- 
+2.32.0
 
-Thanks.
-
---
-Kartikeya
