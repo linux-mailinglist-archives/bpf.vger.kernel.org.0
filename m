@@ -2,139 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA564791AC
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 17:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354C54791C6
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 17:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235875AbhLQQnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 11:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
+        id S233709AbhLQQp1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 11:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235796AbhLQQnX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 11:43:23 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05E6C061574;
-        Fri, 17 Dec 2021 08:43:22 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id y68so8218157ybe.1;
-        Fri, 17 Dec 2021 08:43:22 -0800 (PST)
+        with ESMTP id S232266AbhLQQpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 11:45:25 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F590C061574;
+        Fri, 17 Dec 2021 08:45:25 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id g17so7998546ybe.13;
+        Fri, 17 Dec 2021 08:45:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PEi6Hg+qpmCegDUptK8uXeraoYtQySx5+iFXDlrrumM=;
-        b=V8ibWEWEQ4BIx84gCk1TKVkRlql7baDM5YjzIiRhH/x+Do49q+tWWQDHPDloNsSgzS
-         NNKOxJ8ghcKv6LgElON+Bcwz1RahvLrwlcsXxpUa7UpriD/gLcK6hgCAeMPOuqiFN1uY
-         0HAzPoTkCRu+dF+KCL5gBxlAnYNyPcqfuJjB8x3Rd7pW+dCt8+sFwfXmCiz31Dm1VgSC
-         VrqohetlqlEyIlj0YwaKBYe+aqds251A6c7kMRX/nais2ickyKXBbnnTSpeQmB9oyd/g
-         DALT4dCnnI0UJPLkGvJcM0hwkg/PYueeCjEvsUWvDrgvLdH9QlCLxf3rgh1ciZ18+Wjk
-         8BlA==
+        bh=m7Y7ckw+IgW4yU6GDHbrZEnkRBsrFfzHCVFkQQiHxak=;
+        b=kcyeSOnDd9J0q0McHdlTwt2+/AaFjyYI8vm8T3n5p7L2MFKyooEiDZXin00Vkh2QHA
+         gln30x7Ctw47OckybLamsXsvHYyt02zS89/Z1cMj9XqHqu2igcYveTXj7nikEKn+TOFN
+         8nMbon5bb/PxrXi7WxNId9RXz+YrBRxzqjsW/IcwVym7CGhE+sgcHXt1d5fwJ3086H5u
+         SBV6vpaVm6D5wvf9v1V6BSUCLmaqsWbpq2TRgwGMQ1XN/Tluu2qQVw2c0suY143k727i
+         qCLnLwrAJ6YMRQhYz0dl9FYkE4xUuQxAbUS4+qghM+lH6goboXo7USCaZeu1RzdUxE8J
+         WF1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PEi6Hg+qpmCegDUptK8uXeraoYtQySx5+iFXDlrrumM=;
-        b=iUoFfY5mekUAV6eG8peqyyArhFwlH0NgrnBc2ivtnOTehtL097oh6o/2djz+qoHUCM
-         0BmiWj4MEF7WV3e4vFWpIPINgg5TFDWHjzzrgIkk2VuQFx2AFj3Ju6+ZmJrNv/jz/lh6
-         a2XhJl2IInUSMFAoA/HwpgLK3cMYeQKKSLK57BY/1mYePxhMBWhip+qSDBUR47yCMcrJ
-         CyvOgjcwfUfBOKDT0jVgvUcaiHBPj1oM1zG2IFsMqq6OmiUbw9sL7BGLv1gJZPWi/jwC
-         MOlV5U2laE6iDtcArOMAKY104BR+P6+gjYCF6yzvTrI0OxyhxdFqopPplyykIM73oq1h
-         PK1g==
-X-Gm-Message-State: AOAM532eOxRdb6WjNyyadhhrUKI6YhZW2xolpFD+bTWs9VBFRiwsFseK
-        Y/5CH14HngpflQzig7iTRxzO/MHp0eXyiBPVc1c=
-X-Google-Smtp-Source: ABdhPJzC9ELVuCk0Ucd+qF84sdX3qBQOw0u/JzlnEMqw6tA3GDiL/eXCMkOwTPX0mSip9sY2S28ZuaKmK7dtw7bzMds=
-X-Received: by 2002:a25:e90a:: with SMTP id n10mr5296330ybd.180.1639759402213;
- Fri, 17 Dec 2021 08:43:22 -0800 (PST)
+        bh=m7Y7ckw+IgW4yU6GDHbrZEnkRBsrFfzHCVFkQQiHxak=;
+        b=YvxsYW715qbaHGxUBtpsAtk6nAIN8Hh2s1z0gGWrwLoSEUUJ83uQ34mklslrLRIYr1
+         o+y7nvT03j2AiCV6XyDdFhdOzd3BM3pDtkyEbLkSRXiNTHZBl6D36rKz9jXapV742pHt
+         G4iC7usjPmWvvyN6be/yEulW7nJRbIO5whVSqiOc8+nGEJB8Ri7rWSECCaCA/6Kmghep
+         cazk6gMuM3CNeK8DQndAuSxd90gnd5yk6gth0Lm8PJHQLNKEYNsNXjFTeTz+FcaldksB
+         XqiWQsD1lmaSmWY3gCIjQ8tQOaATfAM/ublZXGQG5xFRi9VhUaR52CmTdS3IenMqzvx1
+         CMqw==
+X-Gm-Message-State: AOAM533+DxwTUOojaYOjNRAprIZNd9f1/ACR6++N0fmNpaBl2WM9S8VM
+        ZSZs8ylucBk2vTwZdWrZCEQ7XpWAJjOpGwPaWG4=
+X-Google-Smtp-Source: ABdhPJzfKY1BO8ehGRFdS69WpfFRf+Rny7uieyPckkgvNhRP9CTEpoL1kfBsBWCeBrYRSpnHy6RCQHVZuZ/MXgnkvwg=
+X-Received: by 2002:a25:3c9:: with SMTP id 192mr5496379ybd.766.1639759524593;
+ Fri, 17 Dec 2021 08:45:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20211215060102.3793196-1-song@kernel.org> <CAEf4BzaFYPWCycTx+pHefhRHgD2n1WPyy9-L9TDJ8rHyGTaQSQ@mail.gmail.com>
- <DC857926-ECDA-4DF0-8058-C53DD15226AE@fb.com> <CAEf4BzbfqSGHCbG6-EC=DLd=yFCwDiKEFWMtG4hbY78dm2OA=Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzbfqSGHCbG6-EC=DLd=yFCwDiKEFWMtG4hbY78dm2OA=Q@mail.gmail.com>
+References: <20211214135555.125348-1-pulehui@huawei.com> <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
+ <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com>
+In-Reply-To: <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 17 Dec 2021 08:43:11 -0800
-Message-ID: <CAEf4Bzb3sbf5Ddq4FaBsZpyiqhoFD+PxxbZHP6ips6h01EuNYg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/7] bpf_prog_pack allocator
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 17 Dec 2021 08:45:13 -0800
+Message-ID: <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
+ userspace pt_regs
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Peter Ziljstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 8:42 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Dec 16, 2021 at 6:25 PM Pu Lehui <pulehui@huawei.com> wrote:
 >
-> On Thu, Dec 16, 2021 at 5:53 PM Song Liu <songliubraving@fb.com> wrote:
-> >
-> >
-> >
-> > > On Dec 16, 2021, at 12:06 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Dec 14, 2021 at 10:01 PM Song Liu <song@kernel.org> wrote:
-> > >>
-> > >> Changes v1 => v2:
-> > >> 1. Use text_poke instead of writing through linear mapping. (Peter)
-> > >> 2. Avoid making changes to non-x86_64 code.
-> > >>
-> > >> Most BPF programs are small, but they consume a page each. For systems
-> > >> with busy traffic and many BPF programs, this could also add significant
-> > >> pressure to instruction TLB.
-> > >>
-> > >> This set tries to solve this problem with customized allocator that pack
-> > >> multiple programs into a huge page.
-> > >>
-> > >> Patches 1-5 prepare the work. Patch 6 contains key logic of the allocator.
-> > >> Patch 7 uses this allocator in x86_64 jit compiler.
-> > >>
-> > >
-> > > There are test failures, please see [0]. But I was also wondering if
-> > > there could be an explicit selftest added to validate that all this
-> > > huge page machinery is actually activated and working as expected?
-> >
-> > We can enable some debug option that dumps the page table. Then from the
-> > page table, we can confirm the programs are running on a huge page. This
-> > only works on x86_64 though. WDYT?
-> >
 >
-> I don't know what exactly is involved, so it's hard to say. Ideally
-> whatever we do doesn't complicate our CI setup. Can we use BPF tracing
-> magic to check this from inside the kernel somehow?
 >
+> On 2021/12/16 12:06, Andrii Nakryiko wrote:
+> > On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
+> >>
+> >> When building bpf selftests on arm64, the following error will occur:
+> >>
+> >> progs/loop2.c:20:7: error: incomplete definition of type 'struct
+> >> user_pt_regs'
+> >>
+> >> Some archs, like arm64 and riscv, use userspace pt_regs in
+> >> bpf_tracing.h, which causes build failure when bpf prog use
+> >> macro in bpf_tracing.h. So let's use vmlinux.h directly.
+> >
+> > We could probably also extend bpf_tracing.h to work with
+> > kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
+> > __VMLINUX_H__ checks). It's more work, but will benefit other end
+> > users, not just selftests.
+> >
+> It might change a lot. We can use header file directory generated by
+> "make headers_install" to fix it.
 
-But I don't feel strongly about this, if it's hard to detect, it's
-fine to not have a specific test (especially that it's very
-architecture-specific)
+We don't have dependency on "make headers_install" and I'd rather not add it.
 
-> > Thanks,
-> > Song
+What do you mean by "change a lot"?
+
+>
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -294,7 +294,8 @@ MENDIAN=$(if
+> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>   BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
+>              -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) \
+> -            -I$(abspath $(OUTPUT)/../usr/include)
+> +            -I$(abspath $(OUTPUT)/../usr/include) \
+> +            -I../../../../usr/include
+> >>
+> >> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> >> ---
+> >>   tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
+> >>   tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
+> >>   tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
+> >>   tools/testing/selftests/bpf/progs/loop6.c     | 20 ++++++-------------
+> >>   .../selftests/bpf/progs/test_overhead.c       |  8 ++------
+> >>   .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
+> >>   6 files changed, 15 insertions(+), 43 deletions(-)
+> >>
 > >
-> >
-> > >
-> > >  [0] https://github.com/kernel-patches/bpf/runs/4530372387?check_suite_focus=true
-> > >
-> > >> Song Liu (7):
-> > >>  x86/Kconfig: select HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP
-> > >>  bpf: use bytes instead of pages for bpf_jit_[charge|uncharge]_modmem
-> > >>  bpf: use size instead of pages in bpf_binary_header
-> > >>  bpf: add a pointer of bpf_binary_header to bpf_prog
-> > >>  x86/alternative: introduce text_poke_jit
-> > >>  bpf: introduce bpf_prog_pack allocator
-> > >>  bpf, x86_64: use bpf_prog_pack allocator
-> > >>
-> > >> arch/x86/Kconfig                     |   1 +
-> > >> arch/x86/include/asm/text-patching.h |   1 +
-> > >> arch/x86/kernel/alternative.c        |  28 ++++
-> > >> arch/x86/net/bpf_jit_comp.c          |  93 ++++++++++--
-> > >> include/linux/bpf.h                  |   4 +-
-> > >> include/linux/filter.h               |  23 ++-
-> > >> kernel/bpf/core.c                    | 213 ++++++++++++++++++++++++---
-> > >> kernel/bpf/trampoline.c              |   6 +-
-> > >> 8 files changed, 328 insertions(+), 41 deletions(-)
-> > >>
-> > >> --
-> > >> 2.30.2
+> > [...]
+> > .
 > >
