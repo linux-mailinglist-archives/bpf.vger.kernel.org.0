@@ -2,265 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4594647814A
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 01:28:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C328547814F
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 01:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhLQA2K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 19:28:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25805 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230412AbhLQA17 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 16 Dec 2021 19:27:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1639700879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=liH+qN0WmF6KG3mO/mKBj0yNsvaPZ08gu8hDBnDNrZY=;
-        b=C9pYFZYR8zAACbEebzTo57mwINjX/uzMqUpoT7Ge75y5ulwF+undGUdFhsBlHVrt4gqKpD
-        VvmA3c1t1EkKImi08cFToZjK0Wh3ryXvy933zC1Xbc28L5/xvnkvj54rV5l6cQbnvHA1r/
-        m+gcA5v/Pul9AaDGMFks3qnpKsdTCSs=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-427-niuZzojRPGSkRSHOW3Pgxw-1; Thu, 16 Dec 2021 19:27:58 -0500
-X-MC-Unique: niuZzojRPGSkRSHOW3Pgxw-1
-Received: by mail-ed1-f70.google.com with SMTP id r26-20020aa7cfda000000b003f7fbbd9b5dso370348edy.19
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:27:57 -0800 (PST)
+        id S229587AbhLQAcB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 19:32:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229563AbhLQAcB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 19:32:01 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B071C061574
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:00 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id y17-20020a2586d1000000b005f6596e8760so1428344ybm.17
+        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:32:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=V///VcFEBhjR6GeGnFgf0YY+klBa/s9b1Wa6vUmP1t4=;
+        b=lMY15nnYkFC67MnTKRrxVsvfsvp1c6DUsxTl2p8Y2WMnVexVIOI2uZpNOg+VgxgL2M
+         GyR5t2ofUH652cAOrCyMjltPANAXNmdxLNtMD2PBVELOWQGV/2p+QrMZXouGdE0lPaiP
+         SOV5M906w8in40oKMlHGl2QV+UXVLNDzM0zqRDp/b6v5ZC7Fb0iNn0+yvzR8ZSoCyjT7
+         Gf6XlidNChGkvnLV+LMZedIixZGP89hQOxfRN7fCKe6NxgZxvCO8GEqFPhEtkOqGBUj1
+         fhdS0wlUJiyEvCeVUpnCE/WNB/VXMFUFLSsD/v7Cfw6Pif3jDWLTeCusLOdxAFCng2Up
+         zzMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=liH+qN0WmF6KG3mO/mKBj0yNsvaPZ08gu8hDBnDNrZY=;
-        b=3WW80uHqC641luIf6xCS3JVNKBxjvO3G5KNHSuF6IYRdxuC7Xsil5sNxS7St314ktJ
-         YvCm7zSmBB/6gOH8uDQJi9zBrzMao8JLU/I5qqzeolrv+x5PNrAaAaEDTfufFbnLKkPn
-         VqdygG56w0O7yrkMeBrP/BztbcJKYisjlWpUMDYhB/X+u01nm5IGY6ppcj302sIRvXap
-         rQs1CGvyZCyH6MyH2QNa30olay/0tiuGGHLw0MKGSVOyqWJQ+reoDzbcpmCfSKEqjUu/
-         kgLP4Jtllll2vVn9PaLJnt8wQbsx+IOizcN4EKvgVTRInCm/rJiwblQzB+9kZLiNGY3k
-         NIhg==
-X-Gm-Message-State: AOAM531nmgU4+msNAaIJVWbuLF0xTcXDNboPMHyfJQ3BXRr6s0MyjZv+
-        hRuxyuohxgA60b3puMfd1c+dhVVkEV+HK+ysInasL2AklnXwP1j55xAglXhiO9lUvva4/2rwnt+
-        OF0VqFZZ5av4c
-X-Received: by 2002:a17:907:160e:: with SMTP id hb14mr448171ejc.694.1639700876511;
-        Thu, 16 Dec 2021 16:27:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyevTqfmrhG+79psbM8079zg51FlmljuxVi58IylO7b1P80QNSI1WbSn07Z8pAncVO8XYqa0w==
-X-Received: by 2002:a17:907:160e:: with SMTP id hb14mr448139ejc.694.1639700876188;
-        Thu, 16 Dec 2021 16:27:56 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id i9sm2259387ejw.170.2021.12.16.16.27.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Dec 2021 16:27:54 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 28315183565; Fri, 17 Dec 2021 01:27:54 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=V///VcFEBhjR6GeGnFgf0YY+klBa/s9b1Wa6vUmP1t4=;
+        b=hyVitlxySjzTvGAkLpZT15Ep9jtlFHYG2SU/4XqScYMEvh0Er5gpm7qfrZq7bxOWbw
+         mf0pKrVp9K+rF00vvZt00JqFzGH3OaL+v2JzC0W5SA+gcKv/Ino/2AKD23oWQmvFpDak
+         FJhwg0b/kEKZCpV9+5nlS9TaNa0oLqvEAbN9DR+7hWEWy0RgdiD2Cx73c6j9buSzgxyY
+         L0muYsd0T3+7W1Q8YFAfL+X6G6G03icY+PwHCUNs29pGs9jND72McHTU9K5BxsTvkDdo
+         M89bv5djYkV5D3iAlUiVC4od6fMo15kXHVEVd53+IGo07B2A1Awa5upnYmC1o1qy/8/r
+         AB7Q==
+X-Gm-Message-State: AOAM530P1UpMBTs3YzPgyMGtOUNVY4C2GLrETTQY4U/3naBZvn4o6zfq
+        1dXtofa27OLm7aPmJy5xJMzmeoqYRQo=
+X-Google-Smtp-Source: ABdhPJx4tLgI4kg7SD9rKQCSLQbYtCHKkMQEprqokIi4WhctnsZSS51YehKmZH8rDJOxCY9C6muKhkCSM0g=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:9064:adcd:ab38:7d29])
+ (user=haoluo job=sendgmr) by 2002:a05:6902:120e:: with SMTP id
+ s14mr853207ybu.397.1639701119438; Thu, 16 Dec 2021 16:31:59 -0800 (PST)
+Date:   Thu, 16 Dec 2021 16:31:43 -0800
+Message-Id: <20211217003152.48334-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.1.173.g76aa8bc2d0-goog
+Subject: [PATCH bpf-next v2 0/9] Introduce composable bpf types
+From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v4 7/7] selftests/bpf: Add selftest for XDP_REDIRECT in bpf_prog_run()
-Date:   Fri, 17 Dec 2021 01:27:41 +0100
-Message-Id: <20211217002741.146797-8-toke@redhat.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20211217002741.146797-1-toke@redhat.com>
-References: <20211217002741.146797-1-toke@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        bpf@vger.kernel.org, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a selftest for the XDP_REDIRECT facility in bpf_prog_run, that
-redirects packets into a veth and counts them using an XDP program on the
-other side of the veth pair.
+This patch set consists of two changes:
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../bpf/prog_tests/xdp_do_redirect.c          | 118 ++++++++++++++++++
- .../bpf/progs/test_xdp_do_redirect.c          |  39 ++++++
- 2 files changed, 157 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+ - a cleanup of arg_type, ret_type and reg_type which try to make those
+   types composable. (patch 1/9 - patch 6/9)
+ - a bug fix that prevents bpf programs from writing kernel memory.
+   (patch 7/9 - patch 9/9)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-new file mode 100644
-index 000000000000..a587c351d495
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -0,0 +1,118 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <net/if.h>
-+#include <linux/if_ether.h>
-+#include <linux/if_packet.h>
-+#include <linux/ipv6.h>
-+#include <linux/in6.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include "test_xdp_do_redirect.skel.h"
-+
-+#define SYS(fmt, ...)						\
-+	({							\
-+		char cmd[1024];					\
-+		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-+		if (!ASSERT_OK(system(cmd), cmd))		\
-+			goto fail;				\
-+	})
-+
-+struct udp_packet {
-+	struct ethhdr eth;
-+	struct ipv6hdr iph;
-+	struct udphdr udp;
-+	__u8 payload[64 - sizeof(struct udphdr)
-+		     - sizeof(struct ethhdr) - sizeof(struct ipv6hdr)];
-+} __packed;
-+
-+static struct udp_packet pkt_udp = {
-+	.eth.h_proto = __bpf_constant_htons(ETH_P_IPV6),
-+	.eth.h_dest = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55},
-+	.eth.h_source = {0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb},
-+	.iph.version = 6,
-+	.iph.nexthdr = IPPROTO_UDP,
-+	.iph.payload_len = bpf_htons(sizeof(struct udp_packet)
-+				     - offsetof(struct udp_packet, udp)),
-+	.iph.hop_limit = 2,
-+	.iph.saddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(1)},
-+	.iph.daddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(2)},
-+	.udp.source = bpf_htons(1),
-+	.udp.dest = bpf_htons(1),
-+	.udp.len = bpf_htons(sizeof(struct udp_packet)
-+			     - offsetof(struct udp_packet, udp)),
-+	.payload = {0x42}, /* receiver XDP program matches on this */
-+};
-+
-+#define NUM_PKTS 3
-+void test_xdp_do_redirect(void)
-+{
-+	struct test_xdp_do_redirect *skel = NULL;
-+	struct xdp_md ctx_in = { .data_end = sizeof(pkt_udp) };
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &pkt_udp,
-+			    .data_size_in = sizeof(pkt_udp),
-+			    .ctx_in = &ctx_in,
-+			    .ctx_size_in = sizeof(ctx_in),
-+			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-+			    .repeat = NUM_PKTS,
-+		);
-+	int err, prog_fd, ifindex_src, ifindex_dst;
-+	struct bpf_link *link;
-+
-+	skel = test_xdp_do_redirect__open();
-+	if (!ASSERT_OK_PTR(skel, "skel"))
-+		return;
-+
-+	/* We setup a veth pair that we can not only XDP_REDIRECT packets
-+	 * between, but also route them. The test packet (defined above) has
-+	 * address information so it will be routed back out the same interface
-+	 * after it has been received, which will allow it to be picked up by
-+	 * the XDP program on the destination interface.
-+	 *
-+	 * The XDP program we run with bpf_prog_run() will cycle through all
-+	 * four return codes (DROP/PASS/TX/REDIRECT), so we should end up with
-+	 * NUM_PKTS - 1 packets seen on the dst iface. We match the packets on
-+	 * the UDP payload.
-+	 */
-+	SYS("ip link add veth_src type veth peer name veth_dst");
-+	SYS("ip link set dev veth_src address 00:11:22:33:44:55");
-+	SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
-+	SYS("ip link set dev veth_src up");
-+	SYS("ip link set dev veth_dst up");
-+	SYS("ip addr add dev veth_src fc00::1/64");
-+	SYS("ip addr add dev veth_dst fc00::2/64");
-+	SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb");
-+	SYS("sysctl -w net.ipv6.conf.all.forwarding=1");
-+
-+	ifindex_src = if_nametoindex("veth_src");
-+	ifindex_dst = if_nametoindex("veth_dst");
-+	if (!ASSERT_NEQ(ifindex_src, 0, "ifindex_src") ||
-+	    !ASSERT_NEQ(ifindex_dst, 0, "ifindex_dst"))
-+		goto fail;
-+
-+	memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
-+	skel->rodata->ifindex_out = ifindex_src;
-+	ctx_in.ingress_ifindex = ifindex_src;
-+
-+	if (!ASSERT_OK(test_xdp_do_redirect__load(skel), "load"))
-+		goto fail;
-+
-+	link = bpf_program__attach_xdp(skel->progs.xdp_count_pkts, ifindex_dst);
-+	if (!ASSERT_OK_PTR(link, "prog_attach"))
-+		goto fail;
-+	skel->links.xdp_count_pkts = link;
-+
-+	prog_fd = bpf_program__fd(skel->progs.xdp_redirect_notouch);
-+	err = bpf_prog_test_run_opts(prog_fd, &opts);
-+	if (!ASSERT_OK(err, "prog_run"))
-+		goto fail;
-+
-+	/* wait for the packets to be flushed */
-+	kern_sync_rcu();
-+
-+	ASSERT_EQ(skel->bss->pkts_seen, NUM_PKTS - 1, "pkt_count");
-+fail:
-+	system("ip link del dev veth_src");
-+	test_xdp_do_redirect__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-new file mode 100644
-index 000000000000..f9ea587b0876
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define ETH_ALEN 6
-+const volatile int ifindex_out;
-+const volatile __u8 expect_dst[ETH_ALEN];
-+volatile int pkts_seen = 0;
-+volatile int retcode = XDP_DROP;
-+
-+SEC("xdp")
-+int xdp_redirect_notouch(struct xdp_md *xdp)
-+{
-+	if (retcode == XDP_REDIRECT)
-+		bpf_redirect(ifindex_out, 0);
-+	return retcode++;
-+}
-+
-+SEC("xdp")
-+int xdp_count_pkts(struct xdp_md *xdp)
-+{
-+	void *data = (void *)(long)xdp->data;
-+	void *data_end = (void *)(long)xdp->data_end;
-+	struct ethhdr *eth = data;
-+	struct ipv6hdr *iph = (void *)(eth + 1);
-+	struct udphdr *udp = (void *)(iph + 1);
-+	__u8 *payload = (void *)(udp + 1);
-+	int i;
-+
-+	if (payload + 1 > data_end)
-+		return XDP_ABORTED;
-+
-+	if (iph->nexthdr == IPPROTO_UDP && *payload == 0x42)
-+		pkts_seen++;
-+
-+	return XDP_PASS;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+The purpose of the cleanup is to find a scalable way to express type
+nullness and read-onliness. This patchset introduces two flags that
+can be applied on all three types: PTR_MAYBE_NULL and MEM_RDONLY.
+Previous types such as ARG_XXX_OR_NULL can now be written as
+
+ ARG_XXX | PTR_MAYBE_NULL
+
+Similarly, PTR_TO_RDONLY_BUF is now "PTR_TO_BUF | MEM_RDONLY".
+
+Flags can be composed, as ARGs can be both MEM_RDONLY and MAYBE_NULL.
+
+ ARG_PTR_TO_MEM | PTR_MAYBE_NULL | MEM_RDONLY
+
+Based on this new composable types, patch 7/9 applies MEM_RDONLY on
+PTR_TO_MEM, in order to tag the returned memory from per_cpu_ptr as
+read-only. Therefore fixing a previous bug that one can leverage
+per_cpu_ptr to modify kernel memory within BPF programs.
+
+Patch 8/9 generalizes the use of MEM_RDONLY further by tagging a set of
+helper arguments ARG_PTR_TO_MEM with MEM_RDONLY. Some helper functions
+may override their arguments, such as bpf_d_path, bpf_snprintf. In this
+patch, we narrow the ARG_PTR_TO_MEM to be compatible with only a subset
+of memory types. This prevents these helpers from writing read-only
+memories. For the helpers that do not write its arguments, we add tag
+MEM_RDONLY to allow taking a RDONLY memory as argument.
+
+Changes since v1:
+ - use %u to print base_type(type) instead of %lu. (Andrii, patch 3/9)
+ - improve reg_type_str() by appending '_or_null' and prepending 'rdonly_'.
+   use preallocated buffer in 'bpf_env'.
+ - unified handling of the previous XXX_OR_NULL in adjust_ptr_min_max_vals
+   (Andrii, patch 4/9)
+ - move PTR_TO_MAP_KEY up to PTR_TO_MAP_VALUE so that we don't have
+   to change to drivers that assume the numeric values of bpf_reg.
+   (patch 4/9)
+ - reintroduce the typo from previous commits in fixes tags (Andrii, patch 7/9)
+ - extensive comments on the reason behind folding flags in
+   check_reg_type (Andrii, patch 8/9)
+ 
+Changes since RFC v2:
+ - renamed BPF_BASE_TYPE to a more succinct name base_type and move its
+   definition to bpf_verifier.h. Same for BPF_TYPE_FLAG. (Alexei)
+ - made checking MEM_RDONLY in check_reg_type() universal (Alexei)
+ - ran through majority of test_progs and fixed bugs in RFC v2:
+   - fixed incorrect BPF_BASE_TYPE_MASK. The high bit of GENMASK should
+     be BITS - 1, rather than BITS. patch 1/9.
+   - fixed incorrect conditions when checking ARG_PTR_TO_MAP_VALUE in
+     check_func_arg(). See patch 2/9.
+   - fixed a bug where PTR_TO_BTF_ID may be combined with MEM_RDONLY,
+     causing the check in check_mem_access() to fall through to the
+     'else' branch. See check_helper_call() in patch 7/9.
+ - fixed build failure on netronome driver. Entries in bpf_reg_type have
+   been ordered. patch 4/9.
+ - fixed build warnings of using '%d' to print base_type. patch 4/9
+ - unify arg_type_may_be_null() and reg_type_may_be_null() into a single
+   type_may_be_null().
+
+Previous versions:
+
+ v1:
+   https://lwn.net/Articles/877938/
+
+ RFC v2:
+   https://lwn.net/Articles/877171/
+
+ RFC v1:
+   https://lore.kernel.org/bpf/20211109003052.3499225-1-haoluo@google.com/T/
+   https://lore.kernel.org/bpf/20211109021624.1140446-8-haoluo@google.com/T/
+
+Hao Luo (9):
+  bpf: Introduce composable reg, ret and arg types.
+  bpf: Replace ARG_XXX_OR_NULL with ARG_XXX | PTR_MAYBE_NULL
+  bpf: Replace RET_XXX_OR_NULL with RET_XXX | PTR_MAYBE_NULL
+  bpf: Replace PTR_TO_XXX_OR_NULL with PTR_TO_XXX | PTR_MAYBE_NULL
+  bpf: Introduce MEM_RDONLY flag
+  bpf: Convert PTR_TO_MEM_OR_NULL to composable types.
+  bpf: Make per_cpu_ptr return rdonly PTR_TO_MEM.
+  bpf: Add MEM_RDONLY for helper args that are pointers to rdonly mem.
+  bpf/selftests: Test PTR_TO_RDONLY_MEM
+
+ include/linux/bpf.h                           | 101 +++-
+ include/linux/bpf_verifier.h                  |  17 +
+ kernel/bpf/btf.c                              |  12 +-
+ kernel/bpf/cgroup.c                           |   2 +-
+ kernel/bpf/helpers.c                          |  12 +-
+ kernel/bpf/map_iter.c                         |   4 +-
+ kernel/bpf/ringbuf.c                          |   2 +-
+ kernel/bpf/syscall.c                          |   2 +-
+ kernel/bpf/verifier.c                         | 491 +++++++++---------
+ kernel/trace/bpf_trace.c                      |  26 +-
+ net/core/bpf_sk_storage.c                     |   2 +-
+ net/core/filter.c                             |  64 +--
+ net/core/sock_map.c                           |   2 +-
+ .../selftests/bpf/prog_tests/ksyms_btf.c      |  14 +
+ .../bpf/progs/test_ksyms_btf_write_check.c    |  29 ++
+ 15 files changed, 444 insertions(+), 336 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_btf_write_check.c
+
 -- 
-2.34.1
+2.34.1.173.g76aa8bc2d0-goog
 
