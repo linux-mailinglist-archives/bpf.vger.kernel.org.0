@@ -2,81 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EAD4796FC
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 23:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A16479750
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 23:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229480AbhLQWUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 17:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230002AbhLQWUO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 17:20:14 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69EDC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 14:20:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id ABD25B82B1E
-        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 22:20:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C766C36AEB;
-        Fri, 17 Dec 2021 22:20:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639779611;
-        bh=x52AuQG2ulgCUPhyqfeJO3uwoszXz14UMZKO5BqDuRc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=hROsiMIyW4Z/fA+N8SNqJkggZ8eRG+adCtBsIArtcUESB0+O7I1RaUtdJ8r5soylH
-         ijhDYMH++cOX6ZGeJVfxnpeZ2kJG2qtVkLjVe2hCWKyjvDXhhx5USKqti2cpx6AkTy
-         vPIW4kgIa1pjZBTCYUugPm91kwpoLlvtlfF9MSy4mCV2RxZKiH5Y+npHuJVEIEyN1f
-         TqD5MZfkGGc2wGQ7qrrIOjv+0dzDwr3CUlVKAdLQtNPHMpODOqePsIDD6ETI+CaKf3
-         KbMvrWyGOyUFeywF7ikJmQdTERvNcQvHFHhzXnNcDNfhOPc1eE0aYep9aix5j1W7Gp
-         NM3Wt10ihm/6A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6096060A3C;
-        Fri, 17 Dec 2021 22:20:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231238AbhLQWp7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 17:45:59 -0500
+Received: from www62.your-server.de ([213.133.104.62]:37644 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230461AbhLQWp7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 17:45:59 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1myLz7-0002Xb-L4; Fri, 17 Dec 2021 23:45:53 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1myLz7-000Hsd-Eb; Fri, 17 Dec 2021 23:45:53 +0100
+Subject: Re: [PATCH] bpf: check size before calling kvmalloc
+To:     George Kennedy <george.kennedy@oracle.com>, sdf@google.com,
+        ast@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1639766884-1210-1-git-send-email-george.kennedy@oracle.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <395e51ca-2274-26ea-baf5-6353b0247214@iogearbox.net>
+Date:   Fri, 17 Dec 2021 23:45:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/3] Revamp and fix libbpf's feature-probing APIs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163977961139.17343.116378339550967950.git-patchwork-notify@kernel.org>
-Date:   Fri, 17 Dec 2021 22:20:11 +0000
-References: <20211217171202.3352835-1-andrii@kernel.org>
-In-Reply-To: <20211217171202.3352835-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, davemarchevsky@fb.com
+In-Reply-To: <1639766884-1210-1-git-send-email-george.kennedy@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26390/Fri Dec 17 10:20:34 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Fri, 17 Dec 2021 09:11:59 -0800 you wrote:
-> Fix and improve libbpf feature-probing APIs. Name them consistently and
-> deprecated previous inconsistently named APIs.
+On 12/17/21 7:48 PM, George Kennedy wrote:
+> ZERO_SIZE_PTR ((void *)16) is returned by kvmalloc() instead of NULL
+> if size is zero. Currently, return values from kvmalloc() are only
+> checked for NULL. Before calling kvmalloc() check for size of zero
+> and return error if size is zero to avoid the following crash.
 > 
-> v1->v2:
->   - fixed misleading comment and added acks (Dave).
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
+> PGD 1030bd067 P4D 1030bd067 PUD 103497067 PMD 0
+> Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 1 PID: 15094 Comm: syz-executor344 Not tainted 5.16.0-rc1-syzk #1
+> Hardware name: Red Hat KVM, BIOS
+> RIP: 0010:0x0
+> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+> RSP: 0018:ffff888017627b78 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: ffff8880215d0780 RCX: ffffffff81b63c60
+> RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8881035db400
+> RBP: ffff888017627f08 R08: ffffed1003697209 R09: ffffed1003697209
+> R10: ffff88801b4b9043 R11: ffffed1003697208 R12: ffffffff8f15d580
+> R13: 1ffff11002ec4f77 R14: ffff8881035db400 R15: 0000000000000000
+> FS:  00007f62bca78740(0000) GS:ffff888107880000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffffffffffffffd6 CR3: 000000002282a000 CR4: 00000000000006e0
+> Call Trace:
+>   <TASK>
+>   map_get_next_key kernel/bpf/syscall.c:1279 [inline]
+>   __sys_bpf+0x384d/0x5b30 kernel/bpf/syscall.c:4612
+>   __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
+>   __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
+>   __x64_sys_bpf+0x7a/0xc0 kernel/bpf/syscall.c:4720
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> Cc: Dave Marchevsky <davemarchevsky@fb.com>
-> 
-> [...]
+> Reported-by: syzkaller <syzkaller@googlegroups.com>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
 
-Here is the summary with links:
-  - [v2,bpf-next,1/3] libbpf: rework feature-probing APIs
-    https://git.kernel.org/bpf/bpf-next/c/878d8def0603
-  - [v2,bpf-next,2/3] selftests/bpf: add libbpf feature-probing API selftests
-    https://git.kernel.org/bpf/bpf-next/c/5a8ea82f9d25
-  - [v2,bpf-next,3/3] bpftool: reimplement large insn size limit feature probing
-    https://git.kernel.org/bpf/bpf-next/c/e967a20a8fab
+Could you provide some more details, e.g. which map type is this where we
+have to assume zero-sized keys everywhere?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+(Or link to syzkaller report could also work alternatively if public.)
 
-
+Thanks,
+Daniel
