@@ -2,103 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEDB479205
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 17:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC3B4791E0
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 17:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239427AbhLQQzg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 11:55:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
+        id S235767AbhLQQvN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 17 Dec 2021 11:51:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235644AbhLQQzg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 11:55:36 -0500
-X-Greylist: delayed 599 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Dec 2021 08:55:36 PST
-Received: from mail.smart-cactus.org (schildkroeter.smart-cactus.org [IPv6:2a01:4f8:161:4431::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B5AC06173E;
-        Fri, 17 Dec 2021 08:55:36 -0800 (PST)
-Received: from localhost.localdomain (unknown [IPv6:2001:470:e438:2:747b:446d:1213:d2e0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: ben@smart-cactus.org)
-        by mail.smart-cactus.org (Postfix) with ESMTPSA id 73C32A5C05ED;
-        Fri, 17 Dec 2021 16:45:34 +0000 (UTC)
-Date:   Fri, 17 Dec 2021 11:45:32 -0500
-From:   Ben Gamari <ben@smart-cactus.org>
-To:     bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Sampling of non-C-like stacks with eBPF and perf_events?
-Message-ID: <87o85ftc3p.fsf@smart-cactus.org>
+        with ESMTP id S231258AbhLQQvN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 17 Dec 2021 11:51:13 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FD7C061574
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 08:51:12 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id v138so8162332ybb.8
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 08:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wy1hD1NtN3aIYhaK0EXbIDD96mHBKbesLioQtcUcYdU=;
+        b=c3tRzLrkC/yuIe7i6fv4q/KHFz8PyxMh1GZi/anKopd70WAG/nqs2CIWbflCGER80M
+         6GYHElaQJ9kFA2LXel5kefhyvwJzZgljsMS+o5r8qvmCojv8Fk+5yg3xfAypBr1RiVdK
+         c5th1vrbx0ZXTsT9yK3y7t2cyfBFBNIGloqZqWfp1FY6Yi88mtBsDzhhurr/drH+eSgo
+         ZmiV9Q5ZRKh3nfNgs1c7QL15/CcS+tppxyghcT4O9yTkjE9ElVdkvflD84fXMn17ehY5
+         mMhMRDkfqrNVAW5X24FKiR/Yc+8WNQx9Dt8MoBQG+U4de+YH3hjFUAlcXwkFm4kO2afE
+         yqSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wy1hD1NtN3aIYhaK0EXbIDD96mHBKbesLioQtcUcYdU=;
+        b=FY+Ab9FmOP1QQX/uR3tN2D33Bf2Uyw8aNU7uwK6khcbBsVTa8zzmhWhaQvTLqgLSa8
+         mRcLVNFirASH3bpj1z3Ar/S8PuyYF7VfYFacyqUq7zfO44SMMLQzccs55MWRL/3GgMuW
+         WPuZhPKZZdX4Q2PDLXqHmQuxdrs9fhbYWg8ZcxvvEImqhjfUisxX4AMlinqm9LNNbiEo
+         3x85JpV1p2WKaVu5Fyv6eBChOe0TgO8zYTPiZ4yBKHbqQkt0KwuJfSLSK9gy++4W/dJE
+         OaWvEMxYsZkXQb56avDDSogkcK1PElfP7ty3/CwZreAAKFTEdnLbrHdGU0PnwnsqvKXq
+         tKIA==
+X-Gm-Message-State: AOAM5332Q7cljaa2ZPF8ngwqMQIv76o/oyLXIWGqPM9g9bW6qGByyDYa
+        stIZcYOuHtrqeNJIuzB93eU3l2WngenFs4Lj9Sk=
+X-Google-Smtp-Source: ABdhPJx87cO9rtCYzg5Cgsro4PHrx2Hj3LUWIeE9OFt03xMDzbrwAh+CpB2Q5idtAkl7pQIa2KTZ3rW1tNQRvsNQrDQ=
+X-Received: by 2002:a25:ac12:: with SMTP id w18mr2597976ybi.362.1639759872163;
+ Fri, 17 Dec 2021 08:51:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20211217141140.GA26351@Mem>
+In-Reply-To: <20211217141140.GA26351@Mem>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 17 Dec 2021 08:51:01 -0800
+Message-ID: <CAEf4BzYxLcZRq685reGkNRBWNpxLWnEt3u_J1pBCb1ptrU0z1A@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] bpftool: Flush tracelog output
+To:     Paul Chaignon <paul@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+On Fri, Dec 17, 2021 at 6:11 AM Paul Chaignon <paul@isovalent.com> wrote:
+>
+> The output of bpftool prog tracelog is currently buffered, which is
+> inconvenient when piping the output into other commands. A simple
+> tracelog | grep will typically not display anything. This patch fixes it
+> by flushing the tracelog output after each line from the trace_pipe file.
+>
+> Fixes: 30da46b5dc3a ("tools: bpftool: add a command to dump the trace pipe")
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> Signed-off-by: Paul Chaignon <paul@isovalent.com>
+> ---
+> Changes in v2:
+>   - Resending to fix a format error.
+>
+>  tools/bpf/bpftool/tracelog.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/bpf/bpftool/tracelog.c b/tools/bpf/bpftool/tracelog.c
+> index e80a5c79b38f..b310229abb07 100644
+> --- a/tools/bpf/bpftool/tracelog.c
+> +++ b/tools/bpf/bpftool/tracelog.c
+> @@ -158,6 +158,7 @@ int do_tracelog(int argc, char **argv)
+>                         jsonw_string(json_wtr, buff);
+>                 else
+>                         printf("%s", buff);
+> +               fflush(stdout);
 
-Hi all,
+maybe it's better to
 
-I have recently been exploring the possibility of using a
-BPF_PROG_TYPE_PERF_EVENT program to implement stack sampling for
-languages which do not use the platform's %sp for their stack pointer
-(in my case, GHC/Haskell [1], which on x86-64 uses %rbp for its stack
-pointer). Specifically, the idea is to use a sampling perf_events
-session with an eBPF overflow handler which locates the
-currently-running thread's stack and records it in the sample ringbuffer
-(see [2] for my current attempt). At this point I only care about
-user-space samples.
+setlinebuf(stdout);
 
-However, I quickly ran up against the fact that perf_event's stack
-sampling logic (namely perf_output_sample_ustack) is called from an IRQ
-context. This appears to preclude use of a sleepable BPF program, which
-would be necessary to use bpf_copy_from_user. Indeed, the fact that the
-usual stack sampling logic uses copy_from_user_inatomic rather than
-copy_from_user suggests that this isn't a safe context for sleeping.
-
-So, I'm at this point a bit unclear on how to proceed. I can see a few
-possible directions forward, although none are particularly enticing:
-
-* Add a bpf_copy_from_user_atomic helper, which can be called from a
-  non-sleepable context like a perf_events overflow handler. This would
-  take the same set_fs() and pagefault_disable() precautions as
-  perf_output_sample_ustack to ensure that the access is safe and aborts
-  on fault.
-
-* Introduce a new BPF program type,
-  BPF_PROG_TYPE_PERF_EVENT_STACK_LOCATOR, which can be invoked by
-  perf_output_sample_ustack to locate the stack to be sampled.
-
-Do either of these ideas sound upstreamable? Perhaps there are other
-ideas on how to attack this general problem? I do not believe Haskell is
-alone in its struggle with the current inflexibility of stack sampling;
-the JVM introduced framepointer support specifically to allow callgraph
-sampling; however, dedicating a register and code to this seems like an
-unfortunate compromise, especially on x86-64 where registers are already
-fairly precious.
-
-Any thoughts or suggestions would be greatly appreciated.
-
-Cheers,
-
-- Ben
+for the entire bpftool instead?
 
 
-[1] https://www.haskell.org/ghc/
-[2] https://gitlab.haskell.org/bgamari/hs-bpf-prof/
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEg5ai+U8IKhnDQZiPCIdltPrJkTcFAmG8vnoACgkQCIdltPrJ
-kTfukgf+N739FsXjUEqkJe2kzicnVWpjtKXBg0vSuRb/uSh3IBQLzZEA7U85unXU
-dKSNVBrrVS7XsD7IJzt27xGAMEDS7eOLyLg/ih7L2Kvt0wBCnTEg9jyUOBxWhtyl
-uel34RDSAbyrQmxzstV2LhEbCQ0BA3a9BVO1M/Y8TDjS8cPJ8q8sD6PPo5ipucnQ
-OEX41gGdNx8hLTl0HKQtBcdE2+rwheZ+H2dMpCiPFpCci5TIce1A+BmHolodV4Vf
-Wd2llcFp9oPzCPEGytv3G/TJ9/bkkKof8A9wVANYLw7Fxp+D+e8pgxJIFYjIRV7/
-My9hztP6fDmeNsxq+7/OYhWDiUYGSw==
-=tF2b
------END PGP SIGNATURE-----
---=-=-=--
+>         }
+>
+>         fclose(trace_pipe_fd);
+> --
+> 2.25.1
+>
