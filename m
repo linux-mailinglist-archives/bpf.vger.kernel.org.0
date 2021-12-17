@@ -2,113 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A524781BA
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 01:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DF94781E0
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 02:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhLQAmW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 19:42:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46134 "EHLO
+        id S231531AbhLQBDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 20:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbhLQAmV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 19:42:21 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7694C061748
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:42:20 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id e136so1791980ybc.4
-        for <bpf@vger.kernel.org>; Thu, 16 Dec 2021 16:42:20 -0800 (PST)
+        with ESMTP id S229988AbhLQBDw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 20:03:52 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72237C061574;
+        Thu, 16 Dec 2021 17:03:52 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id q74so1752291ybq.11;
+        Thu, 16 Dec 2021 17:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nE3vvxgudTTgKMVrFPkk1p8pl5FsaIahz4HSTwiqNZg=;
-        b=IElBe/kXZKJioH3tpwOJksi8ryFBugPpQzGb2lNvIz6uTuUgNYAy2KKEB63vGOnW/i
-         BvcNUVprhmZ1hjE/k0af/lr04X8f0RK7oPUmlmMqd8MzJaiNvK7R2SdQeUpLd09bzxFJ
-         xBo+4ohrmMpnToijMtW538AUHII7DWoL5wKMnSG3qTmk9lcAQR/C6bISrSsXakIaIyuR
-         xfbBbw1mGczUqFYe5iAoqvFlkbsWypobOmjUDJ82xRReqmE84h0fx0Y1FS4n9GXOuCuQ
-         E6uHVtmPqFg6v0qu3AqUsz4iuIDNevNsPa6HAYDWno5VthRUhynZrymSJYQAX31qcfLe
-         s7AA==
+        bh=esp5q/yMslV4XhtOkSMlOozHd3IJiE7INI35/+PGDPo=;
+        b=pMLpNZFo5PgsMaYgd/8fgoPkD5dUOEMb81W63b8U4WVoqtNMOyseQ7DoGimtHnMMnV
+         Qd+ksiTOMBVNHPkzpfG+lPA7R37XTrQwAdC7qxdKbhuMbCKkiNEHSBv+9sUt8tPU5Cam
+         sDnBWKo6Ugs2JyJDytDcCYnPApIRrHtQ113/clIvX+U9Mw/UdUF4NWcr0+8ePKByYE+W
+         1kq8HGmsOZtFgqwSy70ebDweE6WImC6lZFv0Gz4d04k+U5jwkliL0F2zRTyJ5K+7b4rd
+         mxRtDg77ZE/3LnlNamIDq0zFavbsOyJwHF769pKW5gh9SvxfnsBJWVU7XiGhmKzO2p6r
+         pMYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nE3vvxgudTTgKMVrFPkk1p8pl5FsaIahz4HSTwiqNZg=;
-        b=G3vwgM3RMqiuU2IioO7SRGxi+0n/lP1o5zPOicaZjmz0IV3eew+1Sr8eSkUpfYl54w
-         gvWiCBFuh1FkBrDubnpvRXxhumbhnUS26y++e4HV+K8a1ZKwLd79Uo+BCNvX/cHnTEh2
-         wlea0PBAMxU5Lgfl/PepoZgaYhPaPLQHju2Mt5kZHjpFX4TcPV2muxDSUJmXThRGrgVY
-         Jr8PZaHUHxD3PuaeJori/7EholOgkuIQgyJic0sCttPXWx4+gJkgnO4QbOPd8UefcDBE
-         DLR64jnefrWoStLCcl6oBthf/yrS3h4PfKWd+QbOwLhM7nHdY78ZcHmh+dZgmhb04drA
-         3yeg==
-X-Gm-Message-State: AOAM530rmqjrRZ3bhYofKBMFWgeCsn2zWYqPJSfmSZlRkmGoanlTGJdJ
-        2X7eQAmbaLePjeir6HtKzwMqc62uXAPySOhgbzA=
-X-Google-Smtp-Source: ABdhPJw+qcEn6VUhV2/mZC6Bo2ww3lCRctX0BHklrS9Yn+nqfaL9V2rbYqa1US0L4058kk/CoE3vimUf900XRabmADY=
-X-Received: by 2002:a25:4cc5:: with SMTP id z188mr985087yba.248.1639701739905;
- Thu, 16 Dec 2021 16:42:19 -0800 (PST)
+        bh=esp5q/yMslV4XhtOkSMlOozHd3IJiE7INI35/+PGDPo=;
+        b=kkaP4TS3xpLhmqf7QitQL8sZMj1KupGVLzqRIjLRtWuhmzU6M2yR3mBjQC3SjQD+FB
+         W9F/PviHwta0HtxT4GjRLFBDXGkfXKHHuimPPlLdSfyr8v6H0QPJIfg7fOeCPKGoldzJ
+         6O7uDSejiyzXiBGV8NLAzPbAe0k9mL+mZk9tPU9fFWHOEBSFbxl7Fe+Sn9ijCKi9FdW8
+         CYwCLaozlFHXMzPDxCQnhOPz4kcpjZvSEacoOA7F5JJM++eWz0lCk9sdVkeBP0V5j7jN
+         K0cVOMx4RpZEH5HuVofScd5fdgNJXME8eGdgl74FOeFZJ5x4DqmLf9TWh1tft/KfyYsY
+         uKpg==
+X-Gm-Message-State: AOAM532g+lePPJdNa7Rbx9mfU9sSrNwqEbItcFneFFVDoV4tSVX6j1Ww
+        1dWinwt/YscKAwoqoi8Kzv7/oNa8aLDGv0rhTH4=
+X-Google-Smtp-Source: ABdhPJwWkFRTrpXiBRSyqwIlsAo7elgTEuvCMvdSSw06QmN1c7fQw6DfCVYGfXXISiEbvVjSOot+NY2Zn+eXVj5s1s0=
+X-Received: by 2002:a5b:1c2:: with SMTP id f2mr1160509ybp.150.1639703031653;
+ Thu, 16 Dec 2021 17:03:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20211216070442.1492204-1-andrii@kernel.org> <20211216070442.1492204-3-andrii@kernel.org>
- <b183b2b8-3bff-f647-678f-40b479c9c5c5@fb.com>
-In-Reply-To: <b183b2b8-3bff-f647-678f-40b479c9c5c5@fb.com>
+References: <20211210173433.13247-1-skhan@linuxfoundation.org>
+ <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com>
+ <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
+ <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
+ <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
+ <CAEf4BzYKnoD_x7fZ4Fwp0Kg-wT6HMXOG0CMRSG4U+qQ0R27yzQ@mail.gmail.com>
+ <53490dba-b7fd-a3f8-6574-5736c83aa90d@linuxfoundation.org>
+ <CAEf4BzYA1h2kVF3945hxdcR8gf08GFpLiN1OwjedzTrzaAparA@mail.gmail.com> <cc4d6562-3d2e-2c0a-cb31-2733d2189f5c@linuxfoundation.org>
+In-Reply-To: <cc4d6562-3d2e-2c0a-cb31-2733d2189f5c@linuxfoundation.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Dec 2021 16:42:08 -0800
-Message-ID: <CAEf4BzZydhBisHacU9Rjf1ZWik1_aUeiy6ANRfaUkebo7cYq5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] selftests/bpf: add libbpf feature-probing
- API selftests
-To:     Dave Marchevsky <davemarchevsky@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Thu, 16 Dec 2021 17:03:40 -0800
+Message-ID: <CAEf4BzZ1K9uQ-K1Q2BCSBesR3RUj_NW8uHu6NduoX7uLBdfukQ@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 4:21 PM Dave Marchevsky <davemarchevsky@fb.com> wrote:
+On Thu, Dec 16, 2021 at 12:22 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
 >
-> On 12/16/21 2:04 AM, Andrii Nakryiko wrote:
-> > Add selftests for prog/map/prog+helper feature probing APIs. Prog and
-> > map selftests are designed in such a way that they will always test all
-> > the possible prog/map types, based on running kernel's vmlinux BTF enum
-> > definition. This way we'll always be sure that when adding new BPF
-> > program types or map types, libbpf will be always updated accordingly to
-> > be able to feature-detect them.
+> On 12/16/21 1:03 PM, Andrii Nakryiko wrote:
+> > On Thu, Dec 16, 2021 at 11:51 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>
+> >> On 12/16/21 12:30 PM, Andrii Nakryiko wrote:
+> >>> On Thu, Dec 16, 2021 at 6:42 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>>>
+> >>>> On 12/15/21 9:04 PM, Andrii Nakryiko wrote:
+> >>>>> On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>>>>>
+> >>>>>> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
+> >>>>>>> On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+> >>>>>>>>
+> >>>>>>>> ARRAY_SIZE is defined in multiple test files. Remove the definitions
+> >>>>>>>> and include header file for the define instead.
+> >>>>>>>>
+> >>>>>>>> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
+> >>>>>>>> define.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> >>>>>>>> ---
+> >>>>>>>>      tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
+> >>>>>>>>      tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
+> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
+> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
+> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
+> >>>>>>>>      5 files changed, 5 insertions(+), 19 deletions(-)
+> >>>>>>>>
+> >>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >>>>>>>> index 1d8918dfbd3f..7a5ebd330689 100644
+> >>>>>>>> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >>>>>>>> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+> >>>>>>>> @@ -5,6 +5,7 @@
+> >>>>>>>>      #include <bpf/bpf_helpers.h>
+> >>>>>>>>      #include <bpf/bpf_tracing.h>
+> >>>>>>>>      #include <bpf/bpf_core_read.h>
+> >>>>>>>> +#include <bpf/bpf_util.h>
+> >>>>>>>
+> >>>>>>> It doesn't look like you've built it.
+> >>>>>>>
+> >>>>>>> progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+> >>>>>>> #include <bpf/bpf_util.h>
+> >>>>>>>              ^~~~~~~~~~~~~~~~
+> >>>>>>>       CLNG-BPF [test_maps] socket_cookie_prog.o
+> >>>>>>> progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
+> >>>>>>> #include <bpf/bpf_util.h>
+> >>>>>>>              ^~~~~~~~~~~~~~~~
+> >>>>>>> 1 error generated.
+> >>>>>>> In file included from progs/profiler2.c:6:
+> >>>>>>> progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
+> >>>>>>> #include <bpf/bpf_util.h>
+> >>>>>>>              ^~~~~~~~~~~~~~~~
+> >>>>>>>
+> >>>>>>
+> >>>>>> Sorry about that. I built it - I think something is wrong in my env. Build
+> >>>>>> fails complaining about not finding vmlinux - I overlooked that the failure
+> >>>>>> happened before it got to progs.
+> >>>>>>
+> >>>>>> Error: failed to load BTF from .../vmlinux: No such file or directory
+> >>>>>
+> >>>>> Please make sure that you build vmlinux before you build selftests,
+> >>>>> BPF selftests use vmlinux to generate vmlinux.h with all kernel types
+> >>>>> (among other things). So please also make sure that all the setting in
+> >>>>> selftests/bpf/config were used in your Kconfig.
+> >>>>>
+> >>>>>>
+> >>>>
+> >>>> The problem in my env. is that I don't have CONFIG_DEBUG_INFO_BTF in
+> >>>> my config and then don't have the dwarves and llvm-strip on my system.
+> >>>> Pains of upgrading.
+> >>>>
+> >>>> I am all set now. On the other hand the vmlinux.h is a mess. It has
+> >>>> no guards for defines and including stdio.h and this generated
+> >>>> vmlinux.h causes all sorts of problems.
+> >>>
+> >>> It does have
+> >>>
+> >>> #ifndef __VMLINUX_H__
+> >>> #define __VMLINUX_H__
+> >>>
+> >>> Are we talking about the same vmlinux.h here?
+> >>>
+> >>
+> >> Yes we are. The guard it has works when vmlinux.h is included
+> >> twice. It defines a lot of common defines which are the problem.
+> >> Unless you add guards around each one of them, including vmlinux.h
+> >> is problematic if you also include other standard includes.
+> >>
+> >> You can try to include bpf_util.h for example from one of the
+> >> test in progs to see the problem.
 > >
-> > BPF prog_helper selftest will have to be manually extended with
-> > interesting and important prog+helper combinations, it's easy, but can't
-> > be completely automated.
+> > bpf_util.h is a user-space header, it's not going to work from the BPF
+> > program side. If you look at any of progs/*.c (all of which are BPF
+> > program-side source code), not a single one is including bpf_util.h.
 > >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
 >
-> [...]
+> Whether bpf_util.h can be included from progs isn't the main thing here.
+> progs/test*.c including vmlinux.h (most of them seem to) can,'t include
+> any standard .h files.
 >
-> > +     for (e = btf_enum(t), i = 0, n = btf_vlen(t); i < n; e++, i++) {
-> > +             const char *prog_type_name = btf__str_by_offset(btf, e->name_off);
-> > +             enum bpf_prog_type prog_type = (enum bpf_prog_type)e->val;
-> > +             int res;
-> > +
-> > +             if (prog_type == BPF_PROG_TYPE_UNSPEC)
-> > +                     continue;
-> > +
-> > +             if (!test__start_subtest(prog_type_name))
-> > +                     continue;
-> > +
-> > +             res = libbpf_probe_bpf_prog_type(prog_type, NULL);
-> > +             ASSERT_EQ(res, 1, prog_type_name);
-> > +     }
+> "including vmlinux.h is problematic if a test also had to include other
+>   standard includes."
 >
-> I like how easy BTF makes this.
-> Maybe worth trying to probe one-past-the-end of enum to confirm it fails as
-> expected?
+> This makes this header file restrictive and works in one case and one
+> case only when no other standard headers aren't included.
 >
 
-Yeah, sure, not a bad idea, I'll add in v2.
+It does work with other BPF-side headers that libbpf provides:
+bpf_tracing.h, bpf_core_read.h, etc. Yes, it doesn't work with other
+kernel or non-kernel headers. We are well aware of this limitation and
+are currently trying to convince the Clang community to let us fix
+that with a new attribute for Clang.
 
-> Regardless,
->
-> Acked-by: Dave Marchevsky <davemarchevsky@fb.com>
->
-> > +cleanup:
-> > +     btf__free(btf);
-> > +}
->
-> [...]
+But I'm not sure what we are discussing at this point. I think we
+established that bpf_util.h is a user-space header and can't be used
+from the BPF side.
+
+> thanks,
+> -- Shuah
