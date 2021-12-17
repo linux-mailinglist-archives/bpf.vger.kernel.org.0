@@ -2,193 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DF94781E0
-	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 02:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C80478268
+	for <lists+bpf@lfdr.de>; Fri, 17 Dec 2021 02:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhLQBDy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 16 Dec 2021 20:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51010 "EHLO
+        id S231277AbhLQBuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 16 Dec 2021 20:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229988AbhLQBDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 16 Dec 2021 20:03:52 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72237C061574;
-        Thu, 16 Dec 2021 17:03:52 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id q74so1752291ybq.11;
-        Thu, 16 Dec 2021 17:03:52 -0800 (PST)
+        with ESMTP id S229662AbhLQBuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 16 Dec 2021 20:50:35 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D830EC061574;
+        Thu, 16 Dec 2021 17:50:34 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id j6-20020a17090a588600b001a78a5ce46aso4332796pji.0;
+        Thu, 16 Dec 2021 17:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=esp5q/yMslV4XhtOkSMlOozHd3IJiE7INI35/+PGDPo=;
-        b=pMLpNZFo5PgsMaYgd/8fgoPkD5dUOEMb81W63b8U4WVoqtNMOyseQ7DoGimtHnMMnV
-         Qd+ksiTOMBVNHPkzpfG+lPA7R37XTrQwAdC7qxdKbhuMbCKkiNEHSBv+9sUt8tPU5Cam
-         sDnBWKo6Ugs2JyJDytDcCYnPApIRrHtQ113/clIvX+U9Mw/UdUF4NWcr0+8ePKByYE+W
-         1kq8HGmsOZtFgqwSy70ebDweE6WImC6lZFv0Gz4d04k+U5jwkliL0F2zRTyJ5K+7b4rd
-         mxRtDg77ZE/3LnlNamIDq0zFavbsOyJwHF769pKW5gh9SvxfnsBJWVU7XiGhmKzO2p6r
-         pMYw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NhG7o+nsdY02iw3dYd2aTlPdsjbjsVvPHVIuGI/z9LY=;
+        b=J0tVkkSnTUQy77P7W0kkVWnA2mLJkVeVkkBlXvG4npM00vmUcP9D+hd2ItAQ1pcs2z
+         QjzDWOwAIMLhAFOIF1CarAl7AVnG0m4BB7Q9MhcyqKkxFVhalQ1lkSehl82+Pqwn8cOM
+         NoKdnoRdjhtGmIVmiK3E1GnYaBwkeN58QS1qX+l+1FH3xrHqkmdZueG8K4Hjpvc4S33G
+         pGl0hYWNouiR6JIu9+e/k3Yp8DTZKk/6J8RGzTF+COfrwBdcUB4dW2XvOK0VToAmCxte
+         Bqsk+XLpOehaSeCxkasJttaoSoobG6/urywG5xdlyZ9n1YmAyTxKj792S2ttSDk8279N
+         wjbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=esp5q/yMslV4XhtOkSMlOozHd3IJiE7INI35/+PGDPo=;
-        b=kkaP4TS3xpLhmqf7QitQL8sZMj1KupGVLzqRIjLRtWuhmzU6M2yR3mBjQC3SjQD+FB
-         W9F/PviHwta0HtxT4GjRLFBDXGkfXKHHuimPPlLdSfyr8v6H0QPJIfg7fOeCPKGoldzJ
-         6O7uDSejiyzXiBGV8NLAzPbAe0k9mL+mZk9tPU9fFWHOEBSFbxl7Fe+Sn9ijCKi9FdW8
-         CYwCLaozlFHXMzPDxCQnhOPz4kcpjZvSEacoOA7F5JJM++eWz0lCk9sdVkeBP0V5j7jN
-         K0cVOMx4RpZEH5HuVofScd5fdgNJXME8eGdgl74FOeFZJ5x4DqmLf9TWh1tft/KfyYsY
-         uKpg==
-X-Gm-Message-State: AOAM532g+lePPJdNa7Rbx9mfU9sSrNwqEbItcFneFFVDoV4tSVX6j1Ww
-        1dWinwt/YscKAwoqoi8Kzv7/oNa8aLDGv0rhTH4=
-X-Google-Smtp-Source: ABdhPJwWkFRTrpXiBRSyqwIlsAo7elgTEuvCMvdSSw06QmN1c7fQw6DfCVYGfXXISiEbvVjSOot+NY2Zn+eXVj5s1s0=
-X-Received: by 2002:a5b:1c2:: with SMTP id f2mr1160509ybp.150.1639703031653;
- Thu, 16 Dec 2021 17:03:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20211210173433.13247-1-skhan@linuxfoundation.org>
- <CAADnVQ+Fnn-NuGoLq1ZYbHM=kR_W01GB1DCFOnQTHhgfDOrnaA@mail.gmail.com>
- <d367441f-bba0-30eb-787a-89b0c06a65dd@linuxfoundation.org>
- <CAEf4BzahZhCEroeMWNTu-kGsuFCDaNCvbkiFW7ci0EUOWTwmqQ@mail.gmail.com>
- <d3c1b7f4-5363-c23e-4837-5eaf07f63ebc@linuxfoundation.org>
- <CAEf4BzYKnoD_x7fZ4Fwp0Kg-wT6HMXOG0CMRSG4U+qQ0R27yzQ@mail.gmail.com>
- <53490dba-b7fd-a3f8-6574-5736c83aa90d@linuxfoundation.org>
- <CAEf4BzYA1h2kVF3945hxdcR8gf08GFpLiN1OwjedzTrzaAparA@mail.gmail.com> <cc4d6562-3d2e-2c0a-cb31-2733d2189f5c@linuxfoundation.org>
-In-Reply-To: <cc4d6562-3d2e-2c0a-cb31-2733d2189f5c@linuxfoundation.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 16 Dec 2021 17:03:40 -0800
-Message-ID: <CAEf4BzZ1K9uQ-K1Q2BCSBesR3RUj_NW8uHu6NduoX7uLBdfukQ@mail.gmail.com>
-Subject: Re: [PATCH] selftests/bpf: remove ARRAY_SIZE defines from tests
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NhG7o+nsdY02iw3dYd2aTlPdsjbjsVvPHVIuGI/z9LY=;
+        b=F7JORF9jW51/Rp3NHS6E9QRx8DZvsyaAlWT7cMC5nXxECS9rcKspUessoLylX+Lt+Z
+         co6z/2w6V1gTGOt6tAYKXvYFlN9FYNEMV8tXMRlLP2K63pPORzXPyGjOh89IEYxiVsjY
+         rtUVPjWdFlvpDyi6+HwOHYxoAJP/Z+xjsAiEgyNjhysON8aA1BgLFZ49QldfJFLlfRfF
+         gXb5trKlWqtpLaDyhSDJmy1cvLSxkWbjEsmxjRjJZd7son1AhHEK0fMyBvjXZ52txQWj
+         JHvDKc5pVryyEwi2MPF0cZK+upkJeDP3ah+FP0Lv9f5t1+Q6rnDYyy747TYvP+pQ3Ipt
+         GyzA==
+X-Gm-Message-State: AOAM5337VBziAset/e+/iaFKgIfPgnD1nR01KXNA+DTiNSFdd8o8khNW
+        2Fj61LIDTsTtPJi7hgtZzVFa5JExrL4=
+X-Google-Smtp-Source: ABdhPJxNhKz9WNazgJ2GytKgLvjRAzyA5K63evER/ZuvEsf43XpOrIcoWtrEkNuGbVwMEQSM1QAI4Q==
+X-Received: by 2002:a17:902:728e:b0:143:a388:868b with SMTP id d14-20020a170902728e00b00143a388868bmr1007872pll.33.1639705834227;
+        Thu, 16 Dec 2021 17:50:34 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id m11sm7474209pfk.27.2021.12.16.17.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Dec 2021 17:50:33 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf-next v4 00/10] Introduce unstable CT lookup helpers
+Date:   Fri, 17 Dec 2021 07:20:21 +0530
+Message-Id: <20211217015031.1278167-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4546; h=from:subject; bh=YscigycUksLr/b9v4i2qq748xsHI9ClA1gn/zVo1vhI=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhu+vEbu5ewbqYbD1Sj47TTOLXK6zekpZRzxxQ2JtP nyzgwm2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYbvrxAAKCRBM4MiGSL8Ryi4vEA CQT/ziJvTSHR58gniy86vMkmf22hES0hs33kQ0VGNHNqEeVGiOLulbY08PfaJqCkWUkb0JO16D0vzq NZgYLZAonTrb3YjXihKlCdVhrNjxPX+pfhHKuQvgNtKt/zZIM9Q5R/sec+T6mB4NT6T1sdrd6qF0qQ LW6gWVRHxwYl6x/X5ch7H97wEg6+7V9euKvo3sRYTuljYJjnw8SOJ7+JgFow8fnRSIOBJtuRkH7CeO RbcXYkvqAPq2t/QEwVwgoO4hiTJKDS9yTKf1bFKOAUZYbWIlBJj1Bz8Vk6VnxWI0ny7mHXLkPHDNQe EnxoO08SjRRslmv9qRwsBEY5CYA1ggjOYmJ0wp3cZwKzSMqO7H4bdKlM4Z50V1ah0Bt4hJFtKBlXZu 3aF8NXN3DQ9h60Zc+5AFQua47HMTvVDn35KgNwOFhdWnFpv/nxJkyQ0KAa2d+4L7Gad0m986FQAM6O 0XEflb0A1TXpp7MYDIaPSiVpv6x+dnAaF/X08cj1D22ZEPwfM0nPD4TRA98Bn3H9pGsiIBGgRpSeS5 c3FnL03MN4XIYT+tv12CJEeEWPVDyY5DFz2rwvhD6Sb8X4HjlgMaL8a8T9JI8rOqIA+6mIMQAwOztl TuF/UouFEgnNINOdzKoPyH0BNP1KtjOJimsm2sv0bjelL2tHBMm/aNPKgg3w==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 12:22 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
->
-> On 12/16/21 1:03 PM, Andrii Nakryiko wrote:
-> > On Thu, Dec 16, 2021 at 11:51 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>
-> >> On 12/16/21 12:30 PM, Andrii Nakryiko wrote:
-> >>> On Thu, Dec 16, 2021 at 6:42 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>>
-> >>>> On 12/15/21 9:04 PM, Andrii Nakryiko wrote:
-> >>>>> On Tue, Dec 14, 2021 at 12:27 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>>>>
-> >>>>>> On 12/11/21 6:53 PM, Alexei Starovoitov wrote:
-> >>>>>>> On Fri, Dec 10, 2021 at 9:34 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>>>>>>>
-> >>>>>>>> ARRAY_SIZE is defined in multiple test files. Remove the definitions
-> >>>>>>>> and include header file for the define instead.
-> >>>>>>>>
-> >>>>>>>> Remove ARRAY_SIZE define and add include bpf_util.h to bring in the
-> >>>>>>>> define.
-> >>>>>>>>
-> >>>>>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> >>>>>>>> ---
-> >>>>>>>>      tools/testing/selftests/bpf/progs/netif_receive_skb.c | 5 +----
-> >>>>>>>>      tools/testing/selftests/bpf/progs/profiler.inc.h      | 5 +----
-> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_loop1.c | 5 +----
-> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_loop2.c | 4 +---
-> >>>>>>>>      tools/testing/selftests/bpf/progs/test_sysctl_prog.c  | 5 +----
-> >>>>>>>>      5 files changed, 5 insertions(+), 19 deletions(-)
-> >>>>>>>>
-> >>>>>>>> diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>>>>>> index 1d8918dfbd3f..7a5ebd330689 100644
-> >>>>>>>> --- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>>>>>> +++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-> >>>>>>>> @@ -5,6 +5,7 @@
-> >>>>>>>>      #include <bpf/bpf_helpers.h>
-> >>>>>>>>      #include <bpf/bpf_tracing.h>
-> >>>>>>>>      #include <bpf/bpf_core_read.h>
-> >>>>>>>> +#include <bpf/bpf_util.h>
-> >>>>>>>
-> >>>>>>> It doesn't look like you've built it.
-> >>>>>>>
-> >>>>>>> progs/test_sysctl_prog.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>>>>>> #include <bpf/bpf_util.h>
-> >>>>>>>              ^~~~~~~~~~~~~~~~
-> >>>>>>>       CLNG-BPF [test_maps] socket_cookie_prog.o
-> >>>>>>> progs/test_sysctl_loop2.c:11:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>>>>>> #include <bpf/bpf_util.h>
-> >>>>>>>              ^~~~~~~~~~~~~~~~
-> >>>>>>> 1 error generated.
-> >>>>>>> In file included from progs/profiler2.c:6:
-> >>>>>>> progs/profiler.inc.h:7:10: fatal error: 'bpf/bpf_util.h' file not found
-> >>>>>>> #include <bpf/bpf_util.h>
-> >>>>>>>              ^~~~~~~~~~~~~~~~
-> >>>>>>>
-> >>>>>>
-> >>>>>> Sorry about that. I built it - I think something is wrong in my env. Build
-> >>>>>> fails complaining about not finding vmlinux - I overlooked that the failure
-> >>>>>> happened before it got to progs.
-> >>>>>>
-> >>>>>> Error: failed to load BTF from .../vmlinux: No such file or directory
-> >>>>>
-> >>>>> Please make sure that you build vmlinux before you build selftests,
-> >>>>> BPF selftests use vmlinux to generate vmlinux.h with all kernel types
-> >>>>> (among other things). So please also make sure that all the setting in
-> >>>>> selftests/bpf/config were used in your Kconfig.
-> >>>>>
-> >>>>>>
-> >>>>
-> >>>> The problem in my env. is that I don't have CONFIG_DEBUG_INFO_BTF in
-> >>>> my config and then don't have the dwarves and llvm-strip on my system.
-> >>>> Pains of upgrading.
-> >>>>
-> >>>> I am all set now. On the other hand the vmlinux.h is a mess. It has
-> >>>> no guards for defines and including stdio.h and this generated
-> >>>> vmlinux.h causes all sorts of problems.
-> >>>
-> >>> It does have
-> >>>
-> >>> #ifndef __VMLINUX_H__
-> >>> #define __VMLINUX_H__
-> >>>
-> >>> Are we talking about the same vmlinux.h here?
-> >>>
-> >>
-> >> Yes we are. The guard it has works when vmlinux.h is included
-> >> twice. It defines a lot of common defines which are the problem.
-> >> Unless you add guards around each one of them, including vmlinux.h
-> >> is problematic if you also include other standard includes.
-> >>
-> >> You can try to include bpf_util.h for example from one of the
-> >> test in progs to see the problem.
-> >
-> > bpf_util.h is a user-space header, it's not going to work from the BPF
-> > program side. If you look at any of progs/*.c (all of which are BPF
-> > program-side source code), not a single one is including bpf_util.h.
-> >
->
-> Whether bpf_util.h can be included from progs isn't the main thing here.
-> progs/test*.c including vmlinux.h (most of them seem to) can,'t include
-> any standard .h files.
->
-> "including vmlinux.h is problematic if a test also had to include other
->   standard includes."
->
-> This makes this header file restrictive and works in one case and one
-> case only when no other standard headers aren't included.
->
+This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
+patch adding the lookup helper is based off of Maxim's recent patch to aid in
+rebasing their series on top of this, all adjusted to work with module kfuncs [0].
 
-It does work with other BPF-side headers that libbpf provides:
-bpf_tracing.h, bpf_core_read.h, etc. Yes, it doesn't work with other
-kernel or non-kernel headers. We are well aware of this limitation and
-are currently trying to convince the Clang community to let us fix
-that with a new attribute for Clang.
+  [0]: https://lore.kernel.org/bpf/20211019144655.3483197-8-maximmi@nvidia.com
 
-But I'm not sure what we are discussing at this point. I think we
-established that bpf_util.h is a user-space header and can't be used
-from the BPF side.
+To enable returning a reference to struct nf_conn, the verifier is extended to
+support reference tracking for PTR_TO_BTF_ID, and kfunc is extended with support
+for working as acquire/release functions, similar to existing BPF helpers. kfunc
+returning pointer (limited to PTR_TO_BTF_ID in the kernel) can also return a
+PTR_TO_BTF_ID_OR_NULL now, typically needed when acquiring a resource can fail.
+kfunc can also receive PTR_TO_CTX and PTR_TO_MEM (with some limitations) as
+arguments now. There is also support for passing a mem, len pair as argument
+to kfunc now. In such cases, passing pointer to unsized type (void) is also
+permitted.
 
-> thanks,
-> -- Shuah
+Please see individual commits for details.
+
+Note: BPF CI needs to add the following to config to test the set. I did update
+the selftests config in patch 8, but not sure if that is enough.
+
+	CONFIG_NETFILTER=y
+	CONFIG_NF_DEFRAG_IPV4=y
+	CONFIG_NF_DEFRAG_IPV6=y
+	CONFIG_NF_CONNTRACK=y
+
+Changelog:
+----------
+v3 -> v4:
+v3: https://lore.kernel.org/bpf/20211210130230.4128676-1-memxor@gmail.com
+
+ * Guard unstable CT helpers with CONFIG_DEBUG_INFO_BTF_MODULES
+ * Move addition of prog_test test kfuncs to selftest commit
+ * Move negative kfunc tests to test_verifier suite
+ * Limit struct nesting depth to 4, which should be enough for now
+
+v2 -> v3:
+v2: https://lore.kernel.org/bpf/20211209170929.3485242-1-memxor@gmail.com
+
+ * Fix build error for !CONFIG_BPF_SYSCALL (Patchwork)
+
+RFC v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211030144609.263572-1-memxor@gmail.com
+
+ * Limit PTR_TO_MEM support to pointer to scalar, or struct with scalars (Alexei)
+ * Use btf_id_set for checking acquire, release, ret type null (Alexei)
+ * Introduce opts struct for CT helpers, move int err parameter to it
+ * Add l4proto as parameter to CT helper's opts, remove separate tcp/udp helpers
+ * Add support for mem, len argument pair to kfunc
+ * Allow void * as pointer type for mem, len argument pair
+ * Extend selftests to cover new additions to kfuncs
+ * Copy ref_obj_id to PTR_TO_BTF_ID dst_reg on btf_struct_access, test it
+ * Fix other misc nits, bugs, and expand commit messages
+
+Kumar Kartikeya Dwivedi (10):
+  bpf: Refactor bpf_check_mod_kfunc_call
+  bpf: Remove DEFINE_KFUNC_BTF_ID_SET
+  bpf: Extend kfunc with PTR_TO_CTX, PTR_TO_MEM argument support
+  bpf: Introduce mem, size argument pair support for kfunc
+  bpf: Add reference tracking support to kfunc
+  bpf: Track provenance for pointers formed from referenced
+    PTR_TO_BTF_ID
+  net/netfilter: Add unstable CT lookup helpers for XDP and TC-BPF
+  selftests/bpf: Add test for unstable CT lookup API
+  selftests/bpf: Add test_verifier support to fixup kfunc call insns
+  selftests/bpf: Extend kfunc selftests
+
+ include/linux/bpf.h                           |  27 +-
+ include/linux/bpf_verifier.h                  |  12 +
+ include/linux/btf.h                           |  46 ++-
+ kernel/bpf/btf.c                              | 216 ++++++++++++--
+ kernel/bpf/verifier.c                         | 232 +++++++++++----
+ net/bpf/test_run.c                            | 135 +++++++++
+ net/core/filter.c                             |  27 ++
+ net/core/net_namespace.c                      |   1 +
+ net/ipv4/tcp_bbr.c                            |   5 +-
+ net/ipv4/tcp_cubic.c                          |   5 +-
+ net/ipv4/tcp_dctcp.c                          |   5 +-
+ net/netfilter/nf_conntrack_core.c             | 278 ++++++++++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   5 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  48 +++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +
+ .../selftests/bpf/progs/kfunc_call_test.c     |  52 +++-
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 105 +++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  28 ++
+ tools/testing/selftests/bpf/verifier/calls.c  |  75 +++++
+ .../selftests/bpf/verifier/ref_tracking.c     |  44 +++
+ 21 files changed, 1248 insertions(+), 108 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_nf.c
+
+-- 
+2.34.1
+
