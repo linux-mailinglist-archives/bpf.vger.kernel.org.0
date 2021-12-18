@@ -2,74 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14043479AC1
-	for <lists+bpf@lfdr.de>; Sat, 18 Dec 2021 13:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534AB479BA4
+	for <lists+bpf@lfdr.de>; Sat, 18 Dec 2021 16:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhLRMkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Dec 2021 07:40:12 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:34060 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhLRMkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Dec 2021 07:40:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3BBD460B67;
-        Sat, 18 Dec 2021 12:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 96200C36AEF;
-        Sat, 18 Dec 2021 12:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639831210;
-        bh=qdD3EG/hSwDS/LzVyVWBoJlrOW5+oGyhgZG+a6l/4JQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XF3jEmsB3v2h1f2rfl3DLD4J8U4In6SOfefVb1mUdb3++sWJBU0/Do8+egXFGp3Db
-         bd76+KNhpM5Tq6qkJekEa3UPS+mD12nF5ZLhZt+FBGcnnCo5u5bmiOf4pfQXRddY8S
-         EdJXE4PlL/fg8cWJTqr005sV78lygScMFyg+O9aukXzor3bePPnimOZl+5szjmowaE
-         PCK9Gr09g9gPxUoDBVe+l1ytviLNsG2ufjtc8UpbCmL9nafn93LCQn/YqJeATtWZqL
-         +y39vhIBD2SGALMEJ5kW9jHpe2svLdNqCq7vjGz7rdGRHXBkb59lRLm7zr3CXcXbr8
-         U9m4EDOssTDHw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 861FB60A4F;
-        Sat, 18 Dec 2021 12:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233497AbhLRPzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Dec 2021 10:55:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhLRPzY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Dec 2021 10:55:24 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08654C061574
+        for <bpf@vger.kernel.org>; Sat, 18 Dec 2021 07:55:24 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id i6so9908536uae.6
+        for <bpf@vger.kernel.org>; Sat, 18 Dec 2021 07:55:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=L00z4MC4i5vBnGMfXadXy3NRbd3AuPB7mN6tIYo0T+neNA7Xb/hlPSL3UO6u6umMN+
+         vbQaHQKgCLP3dzD56Vy4WMte9lwdffjtsKOoBedc/7INB5CatVDh3+05avW/mg5HQTNr
+         vpj5funXdAFeP6iQ9SLhHFG5jen19mV3+Drf0NINGFJh6SunCJaZpTbsF+pJbU7425Z2
+         pF1h5m0oSoN3jsl/O9CDlI+SjfBB+80+Ha+6pEPBUCCeM+y3vitkHNec4uACB5MNEPv2
+         oSQASp3ABdyUk6zsZ4jAw/JHhe7OkDMk5fTCi+ZqGB+z/wFRzcfVJNl9TQfGH7GsXf0I
+         zeeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=xQrYULKok+hL+AIRGJuG9CojAZcnV9Xr+it7yxQJVlY=;
+        b=h/vOESrYPC+a5AVy4OuJWYRHATq8pXDRRgxGuuQByGznyzdBTcoI42TCbsSNMGNR20
+         E3vAqAbYuE//AGOHFLmBW+0ktdRNsxY+TA0il7/47BLAyZ4mNCG7LVbV9CF9u2RgUTqy
+         cu1PfvG9izxmcP1PoE1nJNLFSNz4uw6PKkrzA2wT/do8mrkL1B+VULZo7fb5eoUnInLF
+         zzzfYUKDWIHzWyiraPyD9IvkpFMo+t1lqnC4Nby6/c4e4xepi20Dy3kTmoP2HJKs2JdO
+         XOhT4SEilRN+GY1x1R4w8i5olc0DWKNdKyXp3hhf+sWuFIKoxcuQa0cB9kZkIKzx7KZu
+         bcbQ==
+X-Gm-Message-State: AOAM533ZDCmq2sn2cJtefZdAgltKjbPty9cxVVuUXhqSm6r30zCub3zZ
+        /8jeHzD5dGHO5R6fgRBCeAgHViWi3r3+t7jXZA==
+X-Google-Smtp-Source: ABdhPJzPIZ1XHUeXLNfQmVqda/A6gxpJIoBte9+ejkmK1UQnfJ1JQrJ6PZZXYYutwZn12mI2/yyN7C/l9fw2kU+fW7s=
+X-Received: by 2002:a67:d29c:: with SMTP id z28mr2844847vsi.12.1639842922987;
+ Sat, 18 Dec 2021 07:55:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] xdp: move the if dev statements to the first
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163983121054.1461.2128609584569863556.git-patchwork-notify@kernel.org>
-Date:   Sat, 18 Dec 2021 12:40:10 +0000
-References: <20211217092545.30204-1-yajun.deng@linux.dev>
-In-Reply-To: <20211217092545.30204-1-yajun.deng@linux.dev>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Received: by 2002:a9f:2005:0:0:0:0:0 with HTTP; Sat, 18 Dec 2021 07:55:22
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
+Date:   Sat, 18 Dec 2021 07:55:22 -0800
+Message-ID: <CAMoG4bXj-FVDsdawS+cVxN8YMK3MJ_tn8Bptei34YmHnyZmRKQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Dear Friend,
 
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-On Fri, 17 Dec 2021 17:25:45 +0800 you wrote:
-> The xdp_rxq_info_unreg() called by xdp_rxq_info_reg() is meaningless when
-> dev is NULL, so move the if dev statements to the first.
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
->  net/core/xdp.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-Here is the summary with links:
-  - [net-next] xdp: move the if dev statements to the first
-    https://git.kernel.org/netdev/net-next/c/f85b244ee395
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+investment funds.
 
+Your Urgent Reply Will Be Appreciated
 
+Best Regards
+Mrs Aisha Al-Qaddafi
