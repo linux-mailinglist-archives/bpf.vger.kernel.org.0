@@ -2,143 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B81D47980B
-	for <lists+bpf@lfdr.de>; Sat, 18 Dec 2021 02:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4169D479973
+	for <lists+bpf@lfdr.de>; Sat, 18 Dec 2021 08:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhLRBoP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 17 Dec 2021 20:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S232297AbhLRHjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Dec 2021 02:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229718AbhLRBoP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 17 Dec 2021 20:44:15 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695FEC061574
-        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 17:44:15 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id f18-20020a17090aa79200b001ad9cb23022so4434204pjq.4
-        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 17:44:15 -0800 (PST)
+        with ESMTP id S232295AbhLRHjz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Dec 2021 02:39:55 -0500
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C80C06173E
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 23:39:55 -0800 (PST)
+Received: by mail-ot1-x344.google.com with SMTP id r10-20020a056830080a00b0055c8fd2cebdso5719340ots.6
+        for <bpf@vger.kernel.org>; Fri, 17 Dec 2021 23:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fSHRWeCblGYobnhDMs41erQYGXWVDLZ4Kl0P4n8z1Y8=;
-        b=MHMl3CYqeXruvE6vNjptA8+NbPZjOM6s351hMqhTl/0CzX6tjTGENw6NkT01/Yum0V
-         G1TAiT5+qL5qyfcUb2KRkbXYi7VL8xeG9qSFRdXydktARIw918wdlLoGM55irc7V3AwQ
-         4VwKuhaVbTBsETp1+/AXv3ChkUWpszfYst95Mx3Z1HFKZ/5G2BcLqtSsd5pF9YcqJqLG
-         WbSNu+H04XzWgZvX2g98Rueod1WcThYLRhcukTWJxCtPLN5qANmdUxS0Jxfyng+ypsn1
-         qFHnMU9TZOm0YaR9TnN8NRCb7RlwxmydTCZRD/to6sk7KS/6UP/4cIcXZSnCDUPMvt7W
-         tQNw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
+        b=cYTWtJWrd7PU+WxJv7L8hK25OJfOECuyCqxG4gRHmWM7/PoQoIMiO3qtXv09OfB3Iu
+         qgyFDDztWiIWaVpeXhfU5EOaK1qf7EU7KYgJ/HK404ZXD1VsaMwa8R+2RlA4Hp75PxVt
+         TeOIiq7Ll3Oyy3bHq3AKfvOeq/x6JXIvUD0XBemjVbs5cyDeq/E9leLbooAzFEOZiyYd
+         2tjPdEVCRpPknBNGNQErHrlXluXYc6l6mAUWJe8QMUuwYrCzioausWsLGY5kjA6znGk8
+         /qTPqfWthhHnTpQbIBiiLjTfnlxBI+CC14P3Tv67w5VaV1KMu0IHltmDyWmiw8OM2TUl
+         5KgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fSHRWeCblGYobnhDMs41erQYGXWVDLZ4Kl0P4n8z1Y8=;
-        b=ytYwQCUf27aK8Iv37ioTFFD2RsqwZpHG3XCYvk8lO0yB/CQbT7CiY4XgVtK3i8Ja9y
-         HcDGvWQnqH35Yl+Vgzjf+V0Z1l2cUn3inLRP8EfyjRKThg6olr8k2jGNS7xz0uwkOD46
-         Z5RumahblHdld2IBaxRJOcL0GDD31Jy2XM8aUTHJJK+I+Vvhr7TAhvbkQxQZS0SFntNI
-         4x0fSw09ZjOLgFo9jqiMGayGjdvLMSLPZcVKL3LxcJk+p1rxc7tlGzeeKzFqnXU4xjPg
-         8oU6LO/wOfIRj7bfo4/8UWeD74fxxDRaXIVw53FHEC7xDS6WwOMwULtB8lm/GKRylpa2
-         5d/Q==
-X-Gm-Message-State: AOAM530QyrnHJb7n9+s86CZmKeU1GgmxY7Aw0Ur5S55zMcmxA1MteNqO
-        8du9pduliq072TMwqX3s0hI=
-X-Google-Smtp-Source: ABdhPJw1kPdfn1q9W5cbHeESnwr0EMfBK9mUY28aMecbqhlJRh8r3mMfIVtMQfwp9Z6LAlXlrHB4Gg==
-X-Received: by 2002:a17:90b:314b:: with SMTP id ip11mr14927249pjb.133.1639791854770;
-        Fri, 17 Dec 2021 17:44:14 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:dd94])
-        by smtp.gmail.com with ESMTPSA id j7sm11445128pfc.74.2021.12.17.17.44.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Dec 2021 17:44:14 -0800 (PST)
-Date:   Fri, 17 Dec 2021 17:44:12 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Mark Wielaard <mark@klomp.org>
-Subject: Re: [PATCH bpf-next v2 00/11] bpf: add support for new btf kind
- BTF_KIND_TAG
-Message-ID: <20211218014412.rlbpsvtcqsemtiyk@ast-mbp.dhcp.thefacebook.com>
-References: <20210913155122.3722704-1-yhs@fb.com>
- <b59428f2-28cf-f1fd-a02c-730c3a5e453f@fb.com>
- <87sfy82zvd.fsf@oracle.com>
- <fc6e80ec-a823-bee4-7451-2b4d497a64af@fb.com>
- <87ilvncy5x.fsf@oracle.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=FJS4/5T71szSxuyB4zC+w3VW/dKU2m10Yv1EUUU33j4=;
+        b=eGr1X8DwEcbJ2oPGEeXtDMbtRsJc/JN2nnIUajzFmBbK/XWhTgEwIzcqyDLoTsqPh2
+         q7ZLkLyKYypSddvA2CGbKn13kmcQk9/pMyVaUXxo+JJ97qSwLcMlxRHkSg51ze9cJZyN
+         388xznZcCE4onO+F+CNXVQBQUwtD95duFJGNLPyU7irrxASM3Lw9g4FofFdNGHQhNtrG
+         b0Y654FYUvkVFD6usf95KOHk1NbgSbzVeXPC2Ev6Lvelcav9uVbuhPeVZE6U9tzb4FAY
+         hLb21aIGl4qbVXd/MRwR+F/wNLLofiwIsSk9ajsRiJ3EQ/d7d7jBaDs+l22sdA2icx6P
+         MCGA==
+X-Gm-Message-State: AOAM532R6uHzxnXIsX+ALjzPFJ5B65gyZoopI/9IGNW9ZcN0BWbkg8gY
+        3m19SWI87BeD4aiIryO1puvDge4RvGuEbPDXMsg=
+X-Google-Smtp-Source: ABdhPJxXH90GR2xa67LHePlKZldGt7uMLf6gBLNuXzEVbdg5z35Ti1nkXf8xuJ7TM7FLZMIEKvhOsQ0hYt1SLe/7t+4=
+X-Received: by 2002:a05:6830:232e:: with SMTP id q14mr4789700otg.133.1639813194510;
+ Fri, 17 Dec 2021 23:39:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ilvncy5x.fsf@oracle.com>
+Received: by 2002:a05:6838:2e4a:0:0:0:0 with HTTP; Fri, 17 Dec 2021 23:39:54
+ -0800 (PST)
+Reply-To: mussaomra2017@gmail.com
+From:   omra musa <atmcard.consultant100@gmail.com>
+Date:   Sat, 18 Dec 2021 07:39:54 +0000
+Message-ID: <CANsUGic5GEf1nHYXZ5518=B25_+65Bqt3ASe2xMFq1u3QgsqXw@mail.gmail.com>
+Subject: GREETING TO YOU.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 11:40:10AM +0100, Jose E. Marchesi wrote:
-> 
-> 2) The need for DWARF to convey free-text tags on certain elements, such
->    as members of struct types.
-> 
->    The motivation for this was originally the way the Linux kernel
->    generates its BTF information, using pahole, using DWARF as a source.
->    As we discussed in our last exchange on this topic, this is
->    accidental, i.e. if the kernel switched to generate BTF directly from
->    the compiler and the linker could merge/deduplicate BTF, there would
->    be no need for using DWARF to act as the "unwilling conveyer" of this
->    information.  There are additional benefits of this second approach.
->    Thats why we didn't plan to add these extended DWARF DIEs to GCC.
-> 
->    However, it now seems that a DWARF consumer, the drgn project, would
->    also benefit from having such a support in DWARF to distinguish
->    between different kind of pointers.
+Good Day,
 
-drgn can use .percpu section in vmlinux for global percpu vars.
-For pointers the annotation is indeed necessary.
 
->    So it seems to me that now we have two use-cases for adding support
->    for these free-text tags to DWARF, as a proper extension to the
->    format, strictly unrelated to BTF, BPF or even the kernel, since:
->    - This is not kernel specific.
->    - This is not directly related to BTF.
->    - This is not directly related to BPF.
+I know this email might come to you as a surprise as first coming from
+one you haven=E2=80=99t met with before.
 
-__percpu annotation is kernel specific.
-__user and __rcu are kernel specific too.
-Only BPF and BTF can meaningfully consume all three.
-drgn can consume __percpu.
+I am Mr. Omra Musa, the bank manager with ADB bank of Burkina Faso,and
+a personal banker of Dr.Mohamed Farouk Ibrahim, an Egyptian who
+happened to be a medical contractor attached to the overthrown Afghan
+government by the Taliban government.
 
-In that sense if GCC follows LLVM and emits compiler specific DWARF tag
-pahole can convert it to the same BTF regardless whether kernel
-was compiled with clang or gcc.
-drgn can consume dwarf generated by clang or gcc as well even when BTF
-is not there. That is the fastest way forward.
+Dr.Mohamed Farouk Ibrahim deposits some sum of ($15) million USD with
+our bank but he was died by car accidents with his family while trying
+to leave from Kandahar.
 
-In that sense it would be nice to have common DWARF tag for pointer
-annotations, but it's not mandatory. The time is the most valuable asset.
-Implementing GCC specific DWARF tag doesn't require committee voting
-and the mailing list bikeshedding.
+The said sum can be used for an investment if you are interested.
+Details relating to the funds are in my position and will present you
+as the Next-of-Kin because there was none, and I shall furnish you
+with more detail once i hear your response.
 
-> 3) Addition of C-family language-level constructions to specify
->    free-text tags on certain language elements, such as struct fields.
-> 
->    These are the attributes, or built-ins or whatever syntax.
-> 
->    Note that, strictly speaking:
->    - This is orthogonal to both DWARF and BTF, and any other supported
->      debugging format, which may or may not be expressive enough to
->      convey the free-form text tag.
->    - This is not specific to BPF.
-> 
->    Therefore I would avoid any reference to BTF or BPF in the attribute
->    names.  Something like `__attribute__((btf_tag("arbitrary_str")))'
->    makes very little sense to me; the attribute name ought to be more
->    generic.
+Regards,
+Mr. Omra Musa
 
-Let's agree to disagree.
-When BPF ISA was designed we didn't go to Intel, Arm, Mips, etc in order to
-come up with the best ISA that would JIT to those architectures the best
-possible way. Same thing with btf_tag. Today it is specific to BTF and BPF
-only. Hence it's called this way. Whenever actual users will appear that need
-free-text tags on a struct field then and only then will be the time to discuss
-generic tag name. Just because "free-text tag on a struct field" sounds generic
-it doesn't mean that it has any use case beyond what we're using it for in BPF
-land. It goes back to the point of coding now instead of talking about coding.
-If gcc wants to call it __attribute__((my_precious_gcc_tag("arbitrary_str")))
-go ahead and code it this way. The include/linux/compiler.h can accommodate it.
+
+you can reply to my private email address at mussaomra2017@gmail.com
