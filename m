@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E8C479ED1
-	for <lists+bpf@lfdr.de>; Sun, 19 Dec 2021 03:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48E2479EE7
+	for <lists+bpf@lfdr.de>; Sun, 19 Dec 2021 03:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbhLSC2m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Dec 2021 21:28:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
+        id S230317AbhLSCx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Dec 2021 21:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234244AbhLSC2m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Dec 2021 21:28:42 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64273C061574;
-        Sat, 18 Dec 2021 18:28:42 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id 205so1392438pfu.0;
-        Sat, 18 Dec 2021 18:28:42 -0800 (PST)
+        with ESMTP id S229804AbhLSCx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Dec 2021 21:53:57 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0607C061574;
+        Sat, 18 Dec 2021 18:53:56 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so980565pjb.5;
+        Sat, 18 Dec 2021 18:53:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Y4hHdVW6kFMSr88EUtR87PERTsdaKJSyRdbTWu3G75A=;
-        b=R9wIOK3LOLzHxDhKH336jhn0/+SPxg6JGFeh7zNw4QA1TmhVOfJU3oCvOeTLzpXM7z
-         ZKBAlijBCj/C6tnMmKbmtXBXVAQK1lH3Y0knonyXBlL/3JQIYNOejaMGw2ytjty8Dtgw
-         MwDWUmuQTD9QiOFi8tPudtLps+FSNAsQqNrpbvX7cWPHkXMnHyqQ7Uehm3dbp29MAN0j
-         3O++oX8OjP4FyqbK+D5UBKV0750ngFx8jmfocZxiklBt9ig9UxfzH6SdIvS8eF0cCrL2
-         trWwqGFL68ZYKzEL6daf+b7EGAvvvwKSDbvksHtGEQJJeVUxEqEUFzDLLN90uvY5Vgdi
-         OrRw==
+        bh=gbrmeFBoFbrrn63omNp3qbJEqmTy+45r2+/WHgmZII0=;
+        b=QdNCn79QRPHzFBTgiiYochOEebVSr+CnKy7rQNdVMD8+YLaOJEbO5Opk6cyqqRvDRZ
+         wvSu37KX8fSdeHff2+msg6r59fOJQJQSsNUlOzPqChf3HkxIfpfcCLbXs6nkmDFLXAO6
+         15LWl9LNjJ+/xUWko3zDsDj6uFBo++CsmMkNJ2hXEddGCcHvK3bEeyLrNCFQ7yqdaC/L
+         bXi0ZgFvh8HTyWEIL1uGdPgk05YuhIAotSvR0584EXwxCNDKFM+zQzGSZ6FNYIYCKtaj
+         2EFoIWnTGPKTCFigpPpKK2vouqW0tJABD022vn/PjCHUOar8Tfe1Qx6H07A5RFyrUN4r
+         +20Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Y4hHdVW6kFMSr88EUtR87PERTsdaKJSyRdbTWu3G75A=;
-        b=riq6Vh4HN52USeU7iEaje9tSHD5EqEGAF6mM7OoB3SZJjGw5dtpFPf2Wuo4zFov/Uo
-         EojiXG/VC4NJ4e0rXFgYlOdbCj+5zLJp7AZBVvwvDoI3VR044imz3V1mlepH62b/m6wn
-         /FlsUfNySFETKlerznDTPTRmJXiFT297nfZIE/pCJKF7GIBgibUd1RC+0CorM9rU88nO
-         RUwpKAiHJuZLrzejNnH0ekHWDe6QPosSxSbTiN64DEJRDzGSUUDYQxI/sPCkxRj9blzc
-         xZBeeK1TUlsZaErVHV+muscFZPbVTVdVAtdnPghnPjISknEnhWzg76l5m2iFJuT31AQo
-         11lQ==
-X-Gm-Message-State: AOAM531Jp/KrgPwG/yRktKB4ebkC7N3DxYM1XmKvp0NJPvQAUfv7ko4J
-        OA708+NtDoby/fBT1bS27nzFEiCQ0gY=
-X-Google-Smtp-Source: ABdhPJz1hjjHQ0aKRyWETED1pdruYylEut2YEbaDofuT2+BdVZl5FMVx7Wbv+awTkzJP/3BjhT9UXg==
-X-Received: by 2002:a63:dc0a:: with SMTP id s10mr9140717pgg.187.1639880921900;
-        Sat, 18 Dec 2021 18:28:41 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:e30])
-        by smtp.gmail.com with ESMTPSA id z4sm14777724pfh.15.2021.12.18.18.28.40
+        bh=gbrmeFBoFbrrn63omNp3qbJEqmTy+45r2+/WHgmZII0=;
+        b=I2Nb/NfGoRZnh+qN4Uiv0ekG0PLvyr01GSyPem2EvgT+YRQz1GEVB9QMDaO94OjZn8
+         fajJC3gjfUcwxvldDT8QTUcOBOcn8HKzWPUJfEKZcF6CDUHUUl7wX7dle8stIgS0PdFe
+         bHXrR6aIkMkfPjTxhceZLnLTcapxnslkLtQXCzEPAGmJV5hu9/xfvcRrjRi2r5iCcYSO
+         Tf94Tzhy17UwCq92Mz9Dzf8fKl7WmtC4senjKLqPJBjiATHit8HyJAwDMFPPfY/VplKg
+         jsxYhADeM7YDgB0uOWPbLYyQP8G5EBdwnoPmw3ILCuOx1vrjwJmqlAWGYWb3E8H+o/vG
+         +tqA==
+X-Gm-Message-State: AOAM532H8/BSbJf9wYR/cz7ryIdc5S8j+fNKvq88sUCxN+zCbIdN2/NY
+        6UR6lE9c0Ntcd8kOs2nuUc4=
+X-Google-Smtp-Source: ABdhPJzSnTvg2yG+PiK1ktDEMTWLhiL3N3cZuvlg32zMFftsuszCC0+oOG/R2Z6CRfHiH4MtrrgwSg==
+X-Received: by 2002:a17:90b:f0b:: with SMTP id br11mr8422927pjb.39.1639882436418;
+        Sat, 18 Dec 2021 18:53:56 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id np1sm18146680pjb.22.2021.12.18.18.53.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Dec 2021 18:28:41 -0800 (PST)
-Date:   Sat, 18 Dec 2021 18:28:39 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        Sat, 18 Dec 2021 18:53:55 -0800 (PST)
+Date:   Sun, 19 Dec 2021 08:23:53 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         netfilter-devel@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
@@ -63,44 +63,43 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Florian Westphal <fw@strlen.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v4 06/10] bpf: Track provenance for pointers
- formed from referenced PTR_TO_BTF_ID
-Message-ID: <20211219022839.kdms7k3jte5ajubt@ast-mbp>
+Subject: Re: [PATCH bpf-next v4 04/10] bpf: Introduce mem, size argument pair
+ support for kfunc
+Message-ID: <20211219025353.57iaosx5zrjqjtuo@apollo.legion>
 References: <20211217015031.1278167-1-memxor@gmail.com>
- <20211217015031.1278167-7-memxor@gmail.com>
+ <20211217015031.1278167-5-memxor@gmail.com>
+ <20211219021922.2jhnvuhcg4zzcp32@ast-mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211217015031.1278167-7-memxor@gmail.com>
+In-Reply-To: <20211219021922.2jhnvuhcg4zzcp32@ast-mbp>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 07:20:27AM +0530, Kumar Kartikeya Dwivedi wrote:
-> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> index b80fe5bf2a02..a6ef11db6823 100644
-> --- a/include/linux/bpf_verifier.h
-> +++ b/include/linux/bpf_verifier.h
-> @@ -128,6 +128,16 @@ struct bpf_reg_state {
->  	 * allowed and has the same effect as bpf_sk_release(sk).
->  	 */
->  	u32 ref_obj_id;
-> +	/* This is set for pointers which are derived from referenced
-> +	 * pointer (e.g. PTR_TO_BTF_ID pointer walking), so that the
-> +	 * pointers obtained by walking referenced PTR_TO_BTF_ID
-> +	 * are appropriately invalidated when the lifetime of their
-> +	 * parent object ends.
-> +	 *
-> +	 * Only one of ref_obj_id and parent_ref_obj_id can be set,
-> +	 * never both at once.
-> +	 */
-> +	u32 parent_ref_obj_id;
+On Sun, Dec 19, 2021 at 07:49:22AM IST, Alexei Starovoitov wrote:
+> On Fri, Dec 17, 2021 at 07:20:25AM +0530, Kumar Kartikeya Dwivedi wrote:
+> > +static bool is_kfunc_arg_mem_size(const struct btf *btf,
+> > +				  const struct btf_param *arg,
+> > +				  const struct bpf_reg_state *reg)
+> > +{
+> > +	const struct btf_type *t;
+> > +	const char *param_name;
+> > +
+> > +	t = btf_type_skip_modifiers(btf, arg->type, NULL);
+> > +	if (!btf_type_is_scalar(t) || reg->type != SCALAR_VALUE)
+> > +		return false;
+> > +
+> > +	/* In the future, this can be ported to use BTF tagging */
+> > +	param_name = btf_name_by_offset(btf, arg->name_off);
+> > +	if (strncmp(param_name, "len__", sizeof("len__") - 1))
+> > +		return false;
+>
+> I like the feature and approach, but have a suggestion:
+> The "__sz" suffix would be shorter and more readable.
+> wdyt?
 
-How would it handle parent of parent?
-Did you consider map_uid approach ?
-Similar uid can be added for PTR_TO_BTF_ID.
-Then every such pointer will be unique. Each deref will get its own uid.
-I think the advantage of parent_ref_obj_id approach is that the program
-can acquire a pointer through one kernel type, do some deref, and then
-release it through a deref of other type. I'm not sure how practical is that
-and it feels a bit dangerous.
+Sounds good, I'll change this in v5.
+
+--
+Kartikeya
