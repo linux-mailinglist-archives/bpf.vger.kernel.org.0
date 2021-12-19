@@ -2,90 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9569A479DA4
-	for <lists+bpf@lfdr.de>; Sat, 18 Dec 2021 22:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1577479EC8
+	for <lists+bpf@lfdr.de>; Sun, 19 Dec 2021 03:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234553AbhLRVtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 18 Dec 2021 16:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
+        id S234073AbhLSCR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 18 Dec 2021 21:17:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234584AbhLRVtE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 18 Dec 2021 16:49:04 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0805C061401
-        for <bpf@vger.kernel.org>; Sat, 18 Dec 2021 13:49:03 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id l10so5626654pgm.7
-        for <bpf@vger.kernel.org>; Sat, 18 Dec 2021 13:49:03 -0800 (PST)
+        with ESMTP id S234054AbhLSCR0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 18 Dec 2021 21:17:26 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E90C061574;
+        Sat, 18 Dec 2021 18:17:26 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id q17so5172563plr.11;
+        Sat, 18 Dec 2021 18:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=749Sb3zqCynaFBje7je7EI1NvLdt1VndpKdgC/q7CMU=;
-        b=MP5EvYI6Hcm3/FrHEyW8DhEfR/JDjktWl2AgmoXHYXsC8moE3HoWyq2BnleM7Z+pgV
-         QTgO/1jgN1ofF1ixJbPc+k526rMhdePUdUebVDCKz0gI4Q6WZiEGpRMRCBKu7KIeKMIh
-         X8riGh/Iqn8lkRuaDINLjc/k7M+7MOa0PPk44HsKdgDLREjs5orXLRGSAmLcjHVtqRFc
-         Cc1ioOxluW9m/mfI9+0yNXJGdrHkZgm8jqlgxmU8PjVl/2moLmDKsNa3NVdcWraSHa+c
-         v06wZ+pP0yO2n3CqMPXQgU7YQgfPV4JaaG5zV/XmeWAoI4lCELi74aRpt2Lk5k4xzUr9
-         PTLA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qQ8Ew9mBF9z/DRnKMBFI6rAWxCp6gXAhEU1PXdc3WIY=;
+        b=XP8wbBaXYgRfcOFRxrYV4Ugih/0UdURQt9MrjChSrgQ6CMgwhR2PN9wcCcex/CjvSs
+         FeU7ydp8OJSy5DvaSwygQPRTGEvo+qSSvMmLCRVd86s5Uob2+U2tj4lgUcSdrttx7qZT
+         05Uvsf3WqsW18YB0BZLfzqT2pY6IV4fjoyNahh7nfToDELmO0hFljYIZkR4u7/yNLa3r
+         XjNmIQ6VUv63fbzpy7sOpkxTD+Tpj2Zc3MB8t3Y3OYtO2xBcebIkIFlDxDTdAaC19xok
+         A7OsOC9AhneJ5+ZJc8hm/rdd68FnElORo5xxtI1FwBVUhuiJCCz4ryJn6+v8fc/+Z+RX
+         LEJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=749Sb3zqCynaFBje7je7EI1NvLdt1VndpKdgC/q7CMU=;
-        b=2jvUVkirgb8WfMYHsPGzhdvei/I1SDoPa/L9+ux/Jh+CLOdfw5P5QMBuygk9+F1WXu
-         DOuat22u9ommfVfIU16RxwoZMnAF7/bXI5+AYz8ow93CvbMbANv3rtF3kkTS4mNXXyY8
-         Ce/N+1kgP4wF7jKOuVZ6P6YwXy4iH6DMQO/wKI+P2kFfr1cwB/KsrZ2mZkvqDqarAnR9
-         wACQxQjmUWRPHQPmDsBvv6ITKa2ep1r2rL2UBvVmk51pEGz0CUXnuZqnszoeuE87894Y
-         wTBHFxTbojL/RP2sOppHZLhasrWZkiuXGbtsrXm23L29X0XlgVK5EWp/4cHCeZoOoA8C
-         YMXA==
-X-Gm-Message-State: AOAM533NbBknJpzTxYfhQlFf3xw7YvBPdu8SICzpdIxNH4PFKqRmjqix
-        M4NJ5G2k0arOY6nZXdXr1ODsfemWO8jwWa0RoLs=
-X-Google-Smtp-Source: ABdhPJyWM0dlAE7vUfBva7fogHktT/yZ1sKiabdmTdC8hugIXzsHv5R8lgJdQoyqIGyF2kdJGkCKRl6LUkj1EGyN3+0=
-X-Received: by 2002:aa7:81c2:0:b0:4ba:81a8:645d with SMTP id
- c2-20020aa781c2000000b004ba81a8645dmr7811828pfn.77.1639864143430; Sat, 18 Dec
- 2021 13:49:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20211217003152.48334-1-haoluo@google.com> <20211217003152.48334-9-haoluo@google.com>
-In-Reply-To: <20211217003152.48334-9-haoluo@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qQ8Ew9mBF9z/DRnKMBFI6rAWxCp6gXAhEU1PXdc3WIY=;
+        b=TQ9BZkQp+kMG9tUmM7VXAtGqJUkKcf4YBgSpWeamBNjQ3I56wqQ3yH2p4PJ8JkZi9M
+         Le/+XhaH9R6EPMd5ydEs9A7HIdyXFzp/p+4AU+soajVbXqckqBSWPa0oJKIvx2n1zSbL
+         g4zE2tZiM24VLn28Pte4AZP2aN4kfiqRaeQRCtk2shvHHazAnB4Sqsn7rOGXmp5MeZ5Z
+         9kAW0ooas/ImxUf+YaBKMqOl5vIkR8XkSbCYdc7GY2Nj08Ns3j0JUZYvA+xLU44fHrCt
+         1lGb01TfaZq1wSYCoG/OQrgcku36oYmcOHizvsmnJCSv/irX5QiEiVTXoUqyd3XUwF7p
+         VF+A==
+X-Gm-Message-State: AOAM532b1QhJhwknG2T3hA8v3rXXhURek9yHZdbZf71Ca1DRN+xIB5Am
+        OQB/3j+EQG2QO0GcbwUZ6SA=
+X-Google-Smtp-Source: ABdhPJw+dmNfkoRSjdsAsfAg0BHMSaN+NeBqWQTfJaspdbjVMjVjlVi134CC1IGHOTVCiagzd6UNeg==
+X-Received: by 2002:a17:902:a70b:b0:148:a2e8:2793 with SMTP id w11-20020a170902a70b00b00148a2e82793mr10444246plq.154.1639880245814;
+        Sat, 18 Dec 2021 18:17:25 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:e30])
+        by smtp.gmail.com with ESMTPSA id r10sm12963745pff.120.2021.12.18.18.17.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 18 Dec 2021 18:17:25 -0800 (PST)
+Date:   Sat, 18 Dec 2021 18:17:22 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 18 Dec 2021 13:48:52 -0800
-Message-ID: <CAADnVQLYrP0P5CZj1domV3n3oHJsDYRbbk+1tym223-Z=Tk54A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 8/9] bpf: Add MEM_RDONLY for helper args that
- are pointers to rdonly mem.
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v4 03/10] bpf: Extend kfunc with PTR_TO_CTX,
+ PTR_TO_MEM argument support
+Message-ID: <20211219021722.yf4cnmar33lrpcje@ast-mbp>
+References: <20211217015031.1278167-1-memxor@gmail.com>
+ <20211217015031.1278167-4-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211217015031.1278167-4-memxor@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 4:32 PM Hao Luo <haoluo@google.com> wrote:
->
-> Some helper functions may modify its arguments, for example,
-> bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> to modify a read-only memory by passing it into one of such helper
-> functions.
+On Fri, Dec 17, 2021 at 07:20:24AM +0530, Kumar Kartikeya Dwivedi wrote:
+>  
+> +/* Returns true if struct is composed of scalars, 4 levels of nesting allowed */
+> +static bool __btf_type_is_scalar_struct(struct bpf_verifier_log *log,
+> +					const struct btf *btf,
+> +					const struct btf_type *t, int rec)
+> +{
+> +	const struct btf_type *member_type;
+> +	const struct btf_member *member;
+> +	u16 i;
+> +
+> +	if (rec == 4) {
+> +		bpf_log(log, "max struct nesting depth 4 exceeded\n");
+> +		return false;
+> +	}
 
-I've added ", but technically incorrect" to the above sentence.
-Otherwise it sounds like it was an ok thing to do.
-I've considered adding a set of Fixes tag, but there would be too many
-and it's a laborious task to look through all such helpers just
-to beautify the commit log. This patch set isn't going to
-be backported anyway due to complexity.
+As Matteo found out that saves stack with gcc only,
+so I moved this check few lines below, just before recursive call.
 
-Please add a test to make sure that bpf_d_path on rdonly buf
-is rejected.
+> +			if (is_kfunc) {
+> +				/* Permit pointer to mem, but only when argument
+> +				 * type is pointer to scalar, or struct composed
+> +				 * (recursively) of scalars.
+> +				 */
+> +				if (!btf_type_is_scalar(ref_t) && !__btf_type_is_scalar_struct(log, btf, ref_t, 0)) {
 
-Thank you very much for doing this work.
-It's a great improvement to the verifier type handling.
+... and reformatted this line to fit screen width.
 
-There is a concern that generality of flags may cause
-a regression, but no amount of code review will reveal that.
-Please watch out for strange verifier issues.
+... and applied.
+
+Please add individual selftest for this feature
+(not tied into refcnted kfuncs and CT).
