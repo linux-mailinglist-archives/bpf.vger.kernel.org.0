@@ -2,79 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2687347AABB
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 14:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3547AADB
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 15:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhLTN43 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 08:56:29 -0500
-Received: from smtp21.cstnet.cn ([159.226.251.21]:38678 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232365AbhLTN43 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 08:56:29 -0500
-Received: from localhost.localdomain (unknown [124.16.138.126])
-        by APP-01 (Coremail) with SMTP id qwCowAA3zqZ0i8BhvTxvBA--.40494S2;
-        Mon, 20 Dec 2021 21:56:04 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] sfc: Check null pointer of rx_queue->page_ring
-Date:   Mon, 20 Dec 2021 21:56:03 +0800
-Message-Id: <20211220135603.954944-1-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.25.1
+        id S233378AbhLTOCW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 09:02:22 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:29270 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232447AbhLTOCW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 09:02:22 -0500
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JHh915hwyzbjWh;
+        Mon, 20 Dec 2021 22:01:57 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 20 Dec 2021 22:02:19 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 20 Dec 2021 22:02:19 +0800
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
+ userspace pt_regs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211214135555.125348-1-pulehui@huawei.com>
+ <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
+ <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com>
+ <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <50d81d9c-2b5f-9dfd-a284-9778e6273725@huawei.com>
+Date:   Mon, 20 Dec 2021 22:02:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: qwCowAA3zqZ0i8BhvTxvBA--.40494S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1UAw43XrW3CFWfXFWfAFb_yoWkCFcE9F
-        s7XF17tw4UK34Fvws3Ja1Sva42q34DuF4FqFZ2grZxt34xAr13J3WDZas3GwnxG34UAFnr
-        G3ZrC3W5Cw1UtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc2xSY4AK67AK6ry8MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
-        cVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUa385UUUUU=
-X-Originating-IP: [124.16.138.126]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+In-Reply-To: <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Because of the possible failure of the kcalloc, it should be better to
-set rx_queue->page_ptr_mask to 0 when it happens in order to maintain
-the consistency.
 
-Fixes: 5a6681e22c14 ("sfc: separate out SFC4000 ("Falcon") support into new sfc-falcon driver")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
----
- drivers/net/ethernet/sfc/rx_common.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/sfc/rx_common.c b/drivers/net/ethernet/sfc/rx_common.c
-index 68fc7d317693..0983abc0cc5f 100644
---- a/drivers/net/ethernet/sfc/rx_common.c
-+++ b/drivers/net/ethernet/sfc/rx_common.c
-@@ -150,7 +150,10 @@ static void efx_init_rx_recycle_ring(struct efx_rx_queue *rx_queue)
- 					    efx->rx_bufs_per_page);
- 	rx_queue->page_ring = kcalloc(page_ring_size,
- 				      sizeof(*rx_queue->page_ring), GFP_KERNEL);
--	rx_queue->page_ptr_mask = page_ring_size - 1;
-+	if (!rx_queue->page_ring)
-+		rx_queue->page_ptr_mask = 0;
-+	else
-+		rx_queue->page_ptr_mask = page_ring_size - 1;
- }
- 
- static void efx_fini_rx_recycle_ring(struct efx_rx_queue *rx_queue)
--- 
-2.25.1
+On 2021/12/18 0:45, Andrii Nakryiko wrote:
+> On Thu, Dec 16, 2021 at 6:25 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2021/12/16 12:06, Andrii Nakryiko wrote:
+>>> On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
+>>>>
+>>>> When building bpf selftests on arm64, the following error will occur:
+>>>>
+>>>> progs/loop2.c:20:7: error: incomplete definition of type 'struct
+>>>> user_pt_regs'
+>>>>
+>>>> Some archs, like arm64 and riscv, use userspace pt_regs in
+>>>> bpf_tracing.h, which causes build failure when bpf prog use
+>>>> macro in bpf_tracing.h. So let's use vmlinux.h directly.
+>>>
+>>> We could probably also extend bpf_tracing.h to work with
+>>> kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
+>>> __VMLINUX_H__ checks). It's more work, but will benefit other end
+>>> users, not just selftests.
+>>>
+>> It might change a lot. We can use header file directory generated by
+>> "make headers_install" to fix it.
+> 
+> We don't have dependency on "make headers_install" and I'd rather not add it.
+> 
+> What do you mean by "change a lot"?
+> 
+Maybe I misunderstood your advice. Your suggestion might be to extend 
+bpf_tracing.h to kernel-space pt_regs, while some archs, like arm64, 
+only support user-space. So the patch might be like this:
 
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index db05a5937105..2c3cb8e9ae92 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -195,9 +195,13 @@ struct pt_regs;
+
+  #elif defined(bpf_target_arm64)
+
+-struct pt_regs;
++#if defined(__KERNEL__)
++#define PT_REGS_ARM64 const volatile struct pt_regs
++#else
+  /* arm64 provides struct user_pt_regs instead of struct pt_regs to 
+userspace */
+  #define PT_REGS_ARM64 const volatile struct user_pt_regs
++#endif
++
+  #define PT_REGS_PARM1(x) (((PT_REGS_ARM64 *)(x))->regs[0])
+  #define PT_REGS_PARM2(x) (((PT_REGS_ARM64 *)(x))->regs[1])
+  #define PT_REGS_PARM3(x) (((PT_REGS_ARM64 *)(x))->regs[2])
+
+>>
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -294,7 +294,8 @@ MENDIAN=$(if
+>> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>>    CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>>    BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
+>>               -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) \
+>> -            -I$(abspath $(OUTPUT)/../usr/include)
+>> +            -I$(abspath $(OUTPUT)/../usr/include) \
+>> +            -I../../../../usr/include
+>>>>
+>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>>> ---
+>>>>    tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
+>>>>    tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
+>>>>    tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
+>>>>    tools/testing/selftests/bpf/progs/loop6.c     | 20 ++++++-------------
+>>>>    .../selftests/bpf/progs/test_overhead.c       |  8 ++------
+>>>>    .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
+>>>>    6 files changed, 15 insertions(+), 43 deletions(-)
+>>>>
+>>>
+>>> [...]
+>>> .
+>>>
+> .
+> 
