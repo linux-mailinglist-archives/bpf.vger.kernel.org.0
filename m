@@ -2,196 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1D447A4AC
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 06:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0190047A572
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 08:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhLTFmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 00:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhLTFl7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 00:41:59 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A65C061574
-        for <bpf@vger.kernel.org>; Sun, 19 Dec 2021 21:41:59 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id kc16so8429753qvb.3
-        for <bpf@vger.kernel.org>; Sun, 19 Dec 2021 21:41:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZV5uObsvtrxLZxfTMll9Ebuk5DfmDGt+yb0wvC/T3iw=;
-        b=Az2pd55FLEXj5tc/6VrnplnJDeAL8r7THnm77Uwg7GO7qiFxwq6/xTDJL3w3qV+jBb
-         v8jFt2KrhLicMtLh8lIqxv2iTF/J1bymQ6XqDLpuljpUZXgRibxEJA302YS810ErXRQ0
-         29D7GeDXSfP3w86XmPsONGH+fRjVHA05LNWPS549h0EqWjYw2tsJz9nl81wHzDyUKCfC
-         FVarM/E9c0aPnAm1iHnTTxz0nzCXXR/fxO/UE9fgKjgDEN1BlACjmwop+sLwQUiZctmH
-         6kFt+GmMN/BknPATo7pMdaFf6E570lIFqX8xN2k+oauzyLbqS3GfjV8427zoeOXWjr/U
-         IrIw==
+        id S234452AbhLTHlZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 02:41:25 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:50751 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234447AbhLTHlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 02:41:25 -0500
+Received: by mail-io1-f69.google.com with SMTP id e14-20020a6bf10e000000b005e23f0f5e08so6582833iog.17
+        for <bpf@vger.kernel.org>; Sun, 19 Dec 2021 23:41:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZV5uObsvtrxLZxfTMll9Ebuk5DfmDGt+yb0wvC/T3iw=;
-        b=0aDSInzSSXL+m7loSniuY+gpxernqa9dNPjhtyizkH4BroP/0stNk9yEbSKSooKG0x
-         NXpDKwPHy0G+i7pldgG9B4iZjkrd2xG3P3sBeDOaesc190Jgjvd8CAslHllBvzrtbsZQ
-         VIjonAH7cYN2aKFvp9dO+L875m8inTztQNhoRBM+6pSZFJ2Hn6AVtYLECmlHQ/ecQfdI
-         +vrhb1GQWHLEzNTYNaaOa55KSwSnLUBOtwk/JT9z+sUJ35IP5snmOXN3rx/E3gJDRjFc
-         XCgkYdzey+flakX5fGRpD1OKmRB4bK2MQMKvmqXBbQpqqW+H+B+ob/POeXTyBX4HQuqU
-         RF4Q==
-X-Gm-Message-State: AOAM531Fqehh3o8OzispQ3oC27B7tCjr5wkT8ygos0blmEHd+7RNhqMZ
-        Q0B3s08ckMUcSXyV9DZk0XUqKEkvjl9arQ==
-X-Google-Smtp-Source: ABdhPJzo2VH1Tsln/CyAXhSt4wnsNzX6bFVeNu4kwGsel1wkfvTFAtzwSHS4NhrW3i0gF9axs1+rrw==
-X-Received: by 2002:a05:6214:d0c:: with SMTP id 12mr2671065qvh.104.1639978918212;
-        Sun, 19 Dec 2021 21:41:58 -0800 (PST)
-Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
-        by smtp.gmail.com with ESMTPSA id bq36sm10952060qkb.6.2021.12.19.21.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Dec 2021 21:41:57 -0800 (PST)
-From:   grantseltzer <grantseltzer@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, grantseltzer@gmail.com
-Subject: [PATCH bpf-next] libbpf: Add documentation for bpf_map batch operations
-Date:   Mon, 20 Dec 2021 00:40:48 -0500
-Message-Id: <20211220054048.54845-1-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=RytUdnzVGkCTxVVyLQox42i7D0tYk89snCrw0fjmvko=;
+        b=aDDCkNBKXLfIleCEjDPNRW/yWLP5pC831/w5LgWSCNdXMEj3wLat8GSA5E3h+w2z0u
+         pEO9SGwmw0dOf/tt625q5Ta5RiC0rvD9hcrwHJuO6oJh3wcI7EpHyoZEJWkMl0MLne6m
+         KJSSxM/8d4WbPuO3JoVXydjSb+A/5UtAVOw3ILTfHRUmcsKg58mBB53CtMdJZ2t3E8M8
+         Z3Nqd+gHN+OsEGDM4cTCEbyXcT7v+OWKKLuVYsmdUH+FHKd/UJDbI7u2+ZkNuUTDL5MK
+         0kUbGL3zyAo3G8tlWS0mYFltupWF3j/XH5T8PyubjaMqdU4yyDAwR/X3xwvS8Qn3GxbR
+         ve+Q==
+X-Gm-Message-State: AOAM531C71y8UDOfHz1H32CV4UtYkQbkRkaHJIzW98wB+D6cxY5sB+JD
+        Nb93q9x7habeMw8OKSWWVHEb8Q4pX5ljpGFCav30bQsCY0sR
+X-Google-Smtp-Source: ABdhPJzICsA6qDPBF+mKbLrfqRVchCfqb00wsIltL+sOGZotjPXUJvuV9XAYiXTL6RNrqNBTWh8kQKMyQTGr/yFWw+iX0+xU+sYo
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:168a:: with SMTP id f10mr2413086jat.279.1639986084902;
+ Sun, 19 Dec 2021 23:41:24 -0800 (PST)
+Date:   Sun, 19 Dec 2021 23:41:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000006fee605d38f0418@google.com>
+Subject: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_prog_put
+From:   syzbot <syzbot+bb73e71cf4b8fd376a4f@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        jakub@cloudflare.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        lmb@cloudflare.com, netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Grant Seltzer <grantseltzer@gmail.com>
+Hello,
 
-This adds documention for:
+syzbot found the following issue on:
 
-- bpf_map_delete_batch()
-- bpf_map_lookup_batch()
-- bpf_map_lookup_and_delete_batch()
-- bpf_map_update_batch()
+HEAD commit:    9eaa88c7036e Merge tag 'libata-5.16-rc6' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ed4143b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10f3f669b8093e95
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb73e71cf4b8fd376a4f
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=112d6ca5b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17393549b00000
 
-Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+The issue was bisected to:
+
+commit 38207a5e81230d6ffbdd51e5fa5681be5116dcae
+Author: John Fastabend <john.fastabend@gmail.com>
+Date:   Fri Nov 19 18:14:17 2021 +0000
+
+    bpf, sockmap: Attach map progs to psock early for feature probes
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13532e85b00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10d32e85b00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17532e85b00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb73e71cf4b8fd376a4f@syzkaller.appspotmail.com
+Fixes: 38207a5e8123 ("bpf, sockmap: Attach map progs to psock early for feature probes")
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_prog_put kernel/bpf/syscall.c:1812 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_prog_put kernel/bpf/syscall.c:1812 [inline] kernel/bpf/syscall.c:1829
+BUG: KASAN: vmalloc-out-of-bounds in bpf_prog_put+0x8c/0x4f0 kernel/bpf/syscall.c:1829 kernel/bpf/syscall.c:1829
+Read of size 8 at addr ffffc90000e76038 by task syz-executor020/3641
+
+CPU: 1 PID: 3641 Comm: syz-executor020 Not tainted 5.16.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ __dump_stack lib/dump_stack.c:88 [inline] lib/dump_stack.c:106
+ dump_stack_lvl+0x1dc/0x2d8 lib/dump_stack.c:106 lib/dump_stack.c:106
+ print_address_description+0x65/0x380 mm/kasan/report.c:247 mm/kasan/report.c:247
+ __kasan_report mm/kasan/report.c:433 [inline]
+ __kasan_report mm/kasan/report.c:433 [inline] mm/kasan/report.c:450
+ kasan_report+0x19a/0x1f0 mm/kasan/report.c:450 mm/kasan/report.c:450
+ __bpf_prog_put kernel/bpf/syscall.c:1812 [inline]
+ __bpf_prog_put kernel/bpf/syscall.c:1812 [inline] kernel/bpf/syscall.c:1829
+ bpf_prog_put+0x8c/0x4f0 kernel/bpf/syscall.c:1829 kernel/bpf/syscall.c:1829
+ bpf_prog_release+0x37/0x40 kernel/bpf/syscall.c:1837 kernel/bpf/syscall.c:1837
+ __fput+0x3fc/0x870 fs/file_table.c:280 fs/file_table.c:280
+ task_work_run+0x146/0x1c0 kernel/task_work.c:164 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ exit_task_work include/linux/task_work.h:32 [inline] kernel/exit.c:832
+ do_exit+0x705/0x24f0 kernel/exit.c:832 kernel/exit.c:832
+ do_group_exit+0x168/0x2d0 kernel/exit.c:929 kernel/exit.c:929
+ __do_sys_exit_group+0x13/0x20 kernel/exit.c:940 kernel/exit.c:940
+ __se_sys_exit_group+0x10/0x10 kernel/exit.c:938 kernel/exit.c:938
+ __x64_sys_exit_group+0x37/0x40 kernel/exit.c:938 kernel/exit.c:938
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline] arch/x86/entry/common.c:80
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f3b90ccd1d9
+Code: Unable to access opcode bytes at RIP 0x7f3b90ccd1af.
+RSP: 002b:00007ffdeec58318 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 00007f3b90d41330 RCX: 00007f3b90ccd1d9
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 0000000000000000 R08: ffffffffffffffc4 R09: 00007ffdeec58390
+R10: 00007ffdeec58390 R11: 0000000000000246 R12: 00007f3b90d41330
+R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+ </TASK>
+
+
+Memory state around the buggy address:
+ ffffc90000e75f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e75f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90000e76000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                                        ^
+ ffffc90000e76080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e76100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
 ---
- tools/lib/bpf/bpf.h | 93 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 00619f64a040..b1a2ac9ca9c7 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -254,20 +254,113 @@ struct bpf_map_batch_opts {
- };
- #define bpf_map_batch_opts__last_field flags
- 
-+
-+/**
-+ * @brief **bpf_map_delete_batch()** allows for batch deletion of multiple
-+ * elements in a BPF map.
-+ *
-+ * The parameter *keys* points to a memory address large enough to hold
-+ * *count* keys of elements in the map *fd*.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param keys memory address large enough to hold *count* * *key_size*
-+ * @param count number of elements in the map to sequentially delete
-+ * @param opts options for configuring the way the batch deletion works
-+ * @return  int error code, 0 if no error (errno is also set to error)
-+ */
- LIBBPF_API int bpf_map_delete_batch(int fd, void *keys,
- 				    __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
-+
-+/**
-+ * @brief **bpf_map_lookup_batch()** allows for iteration of BPF map elements.
-+ *
-+ * The parameter *in_batch* is the address of the first element in the batch to read.
-+ * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
-+ * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to set
-+ * *out_batch* as the first element of the map.
-+ *
-+ * The *keys* and *values* are output parameters which must point to memory large enough to
-+ * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
-+ * buffer must be of *key_size* * *count*. The *values* buffer must be of
-+ * *value_size* * *count*.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param in_batch address of the first element in batch to read, can pass NULL to
-+ * get address of the first element in *out_batch*
-+ * @param out_batch output parameter that should be passed to next call as *in_batch*
-+ * @param keys memory address large enough to hold *count* * *key_size*
-+ * @param values memory address large enough to hold *count* * *value_size*
-+ * @param count number of elements in the map to read in batch
-+ * @param opts options for configuring the way the batch lookup works
-+ * @return int error code, 0 if no error (errno is also set to error)
-+ */
- LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
- 				    void *keys, void *values, __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
-+
-+/**
-+ * @brief **bpf_map_lookup_and_delete_batch()** allows for iteration of BPF map
-+ * elements where each element is deleted after being retrieved.
-+ *
-+ * Note that *count* is an input and output parameter, where on output it
-+ * represents how many elements were succesfully deleted. Also note that if
-+ * **EFAULT** is returned up to *count* elements may have been deleted without
-+ * being returned via the *keys* and *values* output parameters.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param in_batch address of the first element in batch to read, can pass NULL to
-+ * get address of the first element in *out_batch*
-+ * @param out_batch output parameter that should be passed to next call as *in_batch*
-+ * @param keys memory address large enough to hold *count* * *key_size*
-+ * @param values memory address large enough to hold *count* * *value_size*
-+ * @param count number of elements in the map to read and delete in batch
-+ * @param opts options for configuring the way the batch lookup and delete works
-+ * @return int error code, 0 if no error (errno is also set to error)
-+ * See note on EFAULT.
-+ */
- LIBBPF_API int bpf_map_lookup_and_delete_batch(int fd, void *in_batch,
- 					void *out_batch, void *keys,
- 					void *values, __u32 *count,
- 					const struct bpf_map_batch_opts *opts);
-+
-+/**
-+ * @brief **bpf_map_update_batch()** updates multiple elements in a map
-+ * by specifiying keys and their corresponding values.
-+ *
-+ * The *keys* and *values* paremeters must point to memory large enough
-+ * to hold *count* items based on the key and value size of the map.
-+ *
-+ * The *opts* parameter can be used to control how *bpf_map_update_batch()*
-+ * should handle keys that either do or do not already exist in the map.
-+ * In particular the *flags* field of *bpf_map_batch_opts* can be
-+ * one of the following:
-+ *
-+ * **BPF_ANY**
-+ * 	Create new elements or update a existing elements.
-+ *
-+ * **BPF_NOEXIST**
-+ * 	Create new elements only if they do not exist.
-+ *
-+ * **BPF_EXIST**
-+ * 	Update existing elements.
-+ *
-+ * **BPF_F_LOCK**
-+ * 	Update spin_lock-ed map elements. This must be
-+ * 	specified if the map value contains a spinlock.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param keys memory address large enough to hold *count* * *key_size*
-+ * @param values memory address large enough to hold *count* * *value_size*
-+ * @param count number of elements in the map to update in batch
-+ * @param opts options for configuring the way the batch update works
-+ * @return int error code, 0 if no error (errno is also set to error)
-+ */
- LIBBPF_API int bpf_map_update_batch(int fd, void *keys, void *values,
- 				    __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
- 
-+
- LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
- LIBBPF_API int bpf_obj_get(const char *pathname);
- 
--- 
-2.33.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
