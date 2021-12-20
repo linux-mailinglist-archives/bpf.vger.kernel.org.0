@@ -2,104 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BE447AED6
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 16:04:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF76347B04E
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 16:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239340AbhLTPEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 10:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        id S238357AbhLTPbG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 10:31:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240817AbhLTPCG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 10:02:06 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C707C08EE18
-        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 06:51:36 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id x15so39432737edv.1
-        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 06:51:36 -0800 (PST)
+        with ESMTP id S240217AbhLTPar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 10:30:47 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9015C0698C5
+        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 07:27:05 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id z29so39720979edl.7
+        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 07:27:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
-        b=YgqgUnSECcj3JiW3LyjHLqC1DjEFPdNxCmKns+p0oV6GiwKkUJNUHoTcnFfbnWO16H
-         jebZBzyzJrTd1QZJa62/u3YQWPDN+TBNKHr02PWHTVtHIThIbmEY+9t5ASfaGzJwt2OD
-         nTTeAMMSZc4HBGcTW3mBUiZ/WMMwdHHCyaeLQQnGA2hfCoSGmSVJG+VQZFV4LrRQPFcb
-         +ZwHWDVvDqVqVdJN6DhXzEoJOFsnKNK6Nq4+dunBjrBMbEL4ttw86uq7ez2wYxaew8i1
-         ITVKpgeNKCtd0G0reVAp/jl8+yaAbKZotdHGPVzEJnsW05++8q8WnL0ttAicPm/Q4gMt
-         vo9Q==
+        d=elastic.co; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AXpj1vp629gSs0ATSB+0fWXF2SHKFQXC0D6SE9fulsc=;
+        b=HV5k2bEXzHRsIEW2knQNwXLdcLEhJ7QCZyTOHKHwiHLU7Vr1frm0j/3ct7MEi+TbAL
+         auzpm+V+ijQ9uQ+CB1nDGDbzcGhhw62IBfOKo+yPFvQbucPjdnD01hYN1nKlHJxp+PI/
+         hdDyhdzeOvVKxDZ8NAddL4hv3hlTzbzTn9ckM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
-        b=QVkyOxWxZlRZD/3sxjhN16N8OMHOe7iLG+fcnmIfJ50vxMbu0H4y7QBE+UxGEO5zlB
-         SS1B373L3tfWucc9tUtyrYp/d2j55PlvHlJtdxKPi4SjQEC9uXTyfEVjZGDvpKEkfR4l
-         JTzlxUuqWgOq7MSLHo5T6Y2tJ5IZm2cxXsG2c+a+GuuNpUvZxHL1L9rZqbg7C20rbRtV
-         5qx9X8hHx2MSNildJ40ugUz4AIO6BnJkexD2u/UxNmbG8+RxCmEg3EtWZHeggkvvKxbE
-         EucKxB3edsQ8B3J/XhLPgFWBJD8ewCN02WKpk7+ysNv5Cbg0ANG1vhUrPPNZUH1IXTbR
-         CEgg==
-X-Gm-Message-State: AOAM531dsfWqFRmz3uf0DUUTskCsj3Qe2iucl6dpd6vue1rAVGVEOnxC
-        VLvAoJCj9o3TEWRchakTeee9NqRhqu0i18ZZsw==
-X-Google-Smtp-Source: ABdhPJwnQyp3Preos9jWHXbmn36Y56nQYSe/zxoFOPNb7yVTrPWvJvtxh6p3CgX1X9xwjiWVjNcNZIhhbXz972LiQ1A=
-X-Received: by 2002:a17:906:6a0a:: with SMTP id qw10mr13547516ejc.141.1640011894152;
- Mon, 20 Dec 2021 06:51:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=AXpj1vp629gSs0ATSB+0fWXF2SHKFQXC0D6SE9fulsc=;
+        b=lm6TZ3Ns9DWKkSC84tUz0JHW/3HbflV1BaisS5olXdWWaY4T9hCqVjHWzg0vkeJxbn
+         5lW4N+SXlqvmj/vYtnUahtst7BBVnYm9bjrzuJ77Fow52SKnOToXyT6z3Hq4GgyLwCtd
+         lcrxumRm7ZvtmfkNJ4NK/a7iZXGpplXGf6KuxOu9UFYHGfX181VDNLObheBNbt2RqEeB
+         vP1Lnvf9lM4w10q/S0mlOGnOVCYwVkx0KztSYtEMNXlqFq7CRQPkTtjSln3X26uSqbJt
+         10XXgmsYtNj6YZ6bQQhhg0071rmXkfU7smG3vrgGFl6vAjQJ1i5W4GCvSmt83gpPh2Jy
+         r+pQ==
+X-Gm-Message-State: AOAM530ElRA1UWi2EM6XZELQwvEr9+mt7kT/h5tEn7nBwzLmzz3XfZWZ
+        U+ZyOIUzNfUo4bDuM5I+n/t0GA==
+X-Google-Smtp-Source: ABdhPJwJGOV7KbK/D+HPi6v2dyWHGDUeD4dpoDpmquJ7tdFLpPw4IowXj6TxuLKTZEH04k2nSfcoEw==
+X-Received: by 2002:a17:907:1c9c:: with SMTP id nb28mr13152129ejc.184.1640014024301;
+        Mon, 20 Dec 2021 07:27:04 -0800 (PST)
+Received: from localhost (host-82-50-106-104.retail.telecomitalia.it. [82.50.106.104])
+        by smtp.gmail.com with ESMTPSA id f5sm5597778edu.38.2021.12.20.07.27.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Dec 2021 07:27:03 -0800 (PST)
+Date:   Mon, 20 Dec 2021 16:27:01 +0100
+From:   Lorenzo Fontana <lorenzo.fontana@elastic.co>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: Correct the INDEX address in
+ vmtest.sh
+Message-ID: <YcCgxQiEGLOd130m@workstation>
+Mail-Followup-To: Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Pu Lehui <pulehui@huawei.com>, shuah@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211220050803.2670677-1-pulehui@huawei.com>
 MIME-Version: 1.0
-Sender: chantalstark91@gmail.com
-Received: by 2002:a05:6400:5b22:0:0:0:0 with HTTP; Mon, 20 Dec 2021 06:51:33
- -0800 (PST)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Mon, 20 Dec 2021 14:51:33 +0000
-X-Google-Sender-Auth: cWKhlmrOYpaiDrBslEwmS9d7-ig
-Message-ID: <CAOzO0HRjqFt++PSeFvwrHM5eFx9G15jjFtk0aKNK4jNgBQ4Gyw@mail.gmail.com>
-Subject: Calvary greetings.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211220050803.2670677-1-pulehui@huawei.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello my dear,
+On Mon, Dec 20, 2021 at 05:08:03AM +0000, Pu Lehui wrote:
+> Migration of vmtest to libbpf/ci will change the address
+> of INDEX in vmtest.sh, which will cause vmtest.sh to not
+> work due to the failure of rootfs fetching.
+> 
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  tools/testing/selftests/bpf/vmtest.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
+> index 5e43c79ddc6e..b3afd43549fa 100755
+> --- a/tools/testing/selftests/bpf/vmtest.sh
+> +++ b/tools/testing/selftests/bpf/vmtest.sh
+> @@ -32,7 +32,7 @@ ROOTFS_IMAGE="root.img"
+>  OUTPUT_DIR="$HOME/.bpf_selftests"
+>  KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/config-latest.${ARCH}"
+>  KCONFIG_API_URL="https://api.github.com/repos/libbpf/libbpf/contents/travis-ci/vmtest/configs/config-latest.${ARCH}"
+> -INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
+> +INDEX_URL="https://raw.githubusercontent.com/libbpf/ci/master/INDEX"
+>  NUM_COMPILE_JOBS="$(nproc)"
+>  LOG_FILE_BASE="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S")"
+>  LOG_FILE="${LOG_FILE_BASE}.log"
+> -- 
+> 2.25.1
+> 
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina. Howley Mckenna, a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country  for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die.. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
+I was testing some failures with another patch and was about to do the
+same.
 
-I'm waiting for your immediate reply..
+Tested this in my environment.
 
-May God Bless you,
-Mrs. Dina. Howley Mckenna.
+Tested-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+
+Thanks!
+
+-Lore
