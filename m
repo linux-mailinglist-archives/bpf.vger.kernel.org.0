@@ -2,148 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9BD47B476
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 21:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890B947B4C6
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 22:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229479AbhLTUk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 15:40:57 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:44270 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhLTUk5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 15:40:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1640032857; x=1671568857;
-  h=from:to:cc:subject:date:message-id;
-  bh=7gcjqFEBl1z2FIEX9a6YE4vBVG8KWut/aOElnJSSrx4=;
-  b=YjVbEq+Uqn1vEafSbwy4Xfls3NO7LztXzhbStHJRf+b0NyWJJngbuHL/
-   TYE0yAh6tczk6MnT3Q4+wK2SCvsGH5oLhPLNKLaB69Dn4c9342DA/bwBU
-   jPDozy52UZnYWGtaRzHV/aC/SkepEBKtQXuxoFoOX1VIG2Gi2zKqxfned
-   w=;
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 20 Dec 2021 12:40:57 -0800
-X-QCInternal: smtphost
-Received: from hu-twear-lv.qualcomm.com (HELO hu-devc-lv-u18-c.qualcomm.com) ([10.47.234.142])
-  by ironmsg08-lv.qualcomm.com with ESMTP; 20 Dec 2021 12:40:56 -0800
-Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 202676)
-        id C5C4C500177; Mon, 20 Dec 2021 12:40:36 -0800 (PST)
-From:   Tyler Wear <quic_twear@quicinc.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Tyler Wear <quic_twear@quicinc.com>
-Subject: [PATCH] Bpf Helper Function BPF_FUNC_skb_change_dsfield
-Date:   Mon, 20 Dec 2021 12:40:34 -0800
-Message-Id: <20211220204034.24443-1-quic_twear@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        id S230286AbhLTVKL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 16:10:11 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:48576 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230171AbhLTVKL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 16:10:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E80FB6130B;
+        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4EFFCC36AEA;
+        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640034610;
+        bh=yZmaZHdiwq2IgL+/TS0ifA/oIR8OHxhuTiOkzCgBHRw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=avCPUbWWn1EzvAVFezAFXsnQF5czXwGdXF0tIve6THuptf5NwRmCxI2v8uKHZkZK6
+         BmWmE6yAWTZqEolxPTMTzEkbYzrue0aT7kggs/s59q14c/A5Yqp2hM5xXjby81Zzlg
+         jp475WvcuQdCE2MwPjcYpB6smXL53PupBoZIU5+l9jFA3VEJalKuzi0QGW6WlDItYf
+         ameKnN9eysncf49rx15nHfAQe4jl3qPZJG1hJ+9qWM+YSkw+e7TgfZRVYMvFO8KJn0
+         PhvAEYirW3nMtj/nXXSBdVPb6gfxJSmCx2b1oW76dE1GM9vrsNDXXN/UehPJ9lqEmb
+         zcrKgW4kYE20A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 28647609B3;
+        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: Correct the INDEX address in
+ vmtest.sh
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164003461016.22825.8777048018858756034.git-patchwork-notify@kernel.org>
+Date:   Mon, 20 Dec 2021 21:10:10 +0000
+References: <20211220050803.2670677-1-pulehui@huawei.com>
+In-Reply-To: <20211220050803.2670677-1-pulehui@huawei.com>
+To:     Pu Lehui <pulehui@huawei.com>
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-New bpf helper function BPF_FUNC_skb_change_dsfield
-"int bpf_skb_change_dsfield(struct sk_buff *skb, u8 mask, u8 value)".
-BPF_PROG_TYPE_CGROUP_SKB typed bpf_prog which currently can
-be attached to the ingress and egress path. The helper is needed
-because this type of bpf_prog cannot modify the skb directly.
+Hello:
 
-Used by a bpf_prog to specify DS field values on egress or
-ingress.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
----
- include/uapi/linux/bpf.h |  9 ++++++++
- net/core/filter.c        | 46 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+On Mon, 20 Dec 2021 05:08:03 +0000 you wrote:
+> Migration of vmtest to libbpf/ci will change the address
+> of INDEX in vmtest.sh, which will cause vmtest.sh to not
+> work due to the failure of rootfs fetching.
+> 
+> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+> ---
+>  tools/testing/selftests/bpf/vmtest.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 556216dc9703..742cea7dcf8c 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -3742,6 +3742,14 @@ union bpf_attr {
-  * 	Return
-  * 		The helper returns **TC_ACT_REDIRECT** on success or
-  * 		**TC_ACT_SHOT** on error.
-+ *
-+ * long bpf_skb_change_dsfield(struct sk_buff *skb, u8 mask, u8 value)
-+ *	Description
-+ *		Set DS field of IP header to the specified *value*. The *value*
-+ *		is masked with the provided *mask* when ds field is updated.
-+ *		Works with IPv6 and IPv4.
-+ *	Return
-+ *		1 if the DS field is set, 0 if it is not set.
-  */
- #define __BPF_FUNC_MAPPER(FN)		\
- 	FN(unspec),			\
-@@ -3900,6 +3908,7 @@ union bpf_attr {
- 	FN(per_cpu_ptr),		\
- 	FN(this_cpu_ptr),		\
- 	FN(redirect_peer),		\
-+	FN(skb_change_dsfield),		\
- 	/* */
- 
- /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 035d66227ae2..71ea943c8059 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -6402,6 +6402,50 @@ BPF_CALL_1(bpf_skb_ecn_set_ce, struct sk_buff *, skb)
- 	return INET_ECN_set_ce(skb);
- }
- 
-+BPF_CALL_3(bpf_skb_change_dsfield, struct sk_buff *, skb, u8, mask, u8, value)
-+{
-+	unsigned int iphdr_len;
-+
-+	switch (skb_protocol(skb, true)) {
-+	case cpu_to_be16(ETH_P_IP):
-+		iphdr_len = sizeof(struct iphdr);
-+		break;
-+	case cpu_to_be16(ETH_P_IPV6):
-+		iphdr_len = sizeof(struct ipv6hdr);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	if (skb_headlen(skb) < iphdr_len)
-+		return 0;
-+
-+	if (skb_cloned(skb) && !skb_clone_writable(skb, iphdr_len))
-+		return 0;
-+
-+	switch (skb_protocol(skb, true)) {
-+	case cpu_to_be16(ETH_P_IP):
-+		ipv4_change_dsfield(ipip_hdr(skb), mask, value);
-+		break;
-+	case cpu_to_be16(ETH_P_IPV6):
-+		ipv6_change_dsfield(ipv6_hdr(skb), mask, value);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+static const struct bpf_func_proto bpf_skb_change_dsfield_proto = {
-+	.func           = bpf_skb_change_dsfield,
-+	.gpl_only       = false,
-+	.ret_type       = RET_INTEGER,
-+	.arg1_type      = ARG_PTR_TO_CTX,
-+	.arg2_type      = ARG_ANYTHING,
-+	.arg3_type      = ARG_ANYTHING,
-+};
-+
- bool bpf_xdp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 				  struct bpf_insn_access_aux *info)
- {
-@@ -7057,6 +7101,8 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		return &bpf_get_listener_sock_proto;
- 	case BPF_FUNC_skb_ecn_set_ce:
- 		return &bpf_skb_ecn_set_ce_proto;
-+	case BPF_FUNC_skb_change_dsfield:
-+		return &bpf_skb_change_dsfield_proto;
- #endif
- 	default:
- 		return sk_filter_func_proto(func_id, prog);
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: Correct the INDEX address in vmtest.sh
+    https://git.kernel.org/bpf/bpf-next/c/426b87b111b0
+
+You are awesome, thank you!
 -- 
-2.17.1
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
