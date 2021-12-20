@@ -2,101 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1DA47B43A
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 21:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9BD47B476
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 21:40:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhLTUOb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 15:14:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhLTUOa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 15:14:30 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FA2C061574
-        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 12:14:29 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id a1so10861239qtx.11
-        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 12:14:29 -0800 (PST)
+        id S229479AbhLTUk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 15:40:57 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:44270 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhLTUk5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 15:40:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tfnn/ot4ATgAAJ497pIGc+b/k/W8s20cdxtoOaUGiGs=;
-        b=V1+e7KxvPZRQ2j9uKvZr3iyfL7pb6BRhaRz5h1To5h2pDFWJaxfSQWCpHAIYYE7o5F
-         40N66JJnzLvFKHFHGz6MBEDCFQvvc1J0reFsJkvB6ZLRsZ3cYHAb7hHtGdpRByYHrZhz
-         Hjz3FKcc/leKHXg/Sj6iLHiGWm9WaFl+ib8yEsTf30ovemVLbn2bWmv3H2nKicaJ/sni
-         rNR0xjpwHSm+q7nQ0kyugNlIdyHrmwHvC7U9SqdCz/lugQN9+PNdY7mRGFJrlLTRkxrZ
-         zmZJqdj77TFZx9X1lkAyRgx0EFFIHHwu/gIXrhZooBHwu9zYD2Z6SdAl4UKWdZ16gYYq
-         AiGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tfnn/ot4ATgAAJ497pIGc+b/k/W8s20cdxtoOaUGiGs=;
-        b=p1mLpK0uAYIubYpl3THai1n+FKb0NCZPrdIalX4bjA9i07pKd3cYV1XXkHRTo3y+8y
-         vJZ482DuJPKZJy7Yu5UNBl1V6Lhh4QCVAhoqjtzWrTqsVVivVxIGu2CEY2jE5HR9zjO4
-         pKf5NOa1mxfCsmhECRcYVCics3Cw48HLyF9jwA7tCw2/C4hwZLYVKO0mA23HxJG8b+37
-         0622vrgsCYI3RTazi1DH6EcYWMrvVLZbGIL64ZdUYSKZOlAil5JMAOYnNFHaZMr00th8
-         o69Stsl0Xw4L5NjjwGUhuMu1iszlAp5fQz40B9D0SbeOq1//FcJfRXZc/YNsSsGv/0SL
-         RsAQ==
-X-Gm-Message-State: AOAM532kp2jMf9xOLzCm/WtVH1tc0jYCRUPRA1xA/+xcJiJu53krYA2A
-        UdJ00+ARheUNtkhj3xvJqQt6N7PkQhXe/wTSi2ox/A==
-X-Google-Smtp-Source: ABdhPJyQBcmILaJUP9uuaO52sfLuuacoY0VNOL3urK7c69BnU09ArR6FELMhb/dHf5agzRn0itx+2/U4N1x/LztiM68=
-X-Received: by 2002:a05:622a:108:: with SMTP id u8mr5344834qtw.333.1640031268822;
- Mon, 20 Dec 2021 12:14:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20211217003152.48334-1-haoluo@google.com> <20211217003152.48334-9-haoluo@google.com>
- <CAADnVQLYrP0P5CZj1domV3n3oHJsDYRbbk+1tym223-Z=Tk54A@mail.gmail.com>
-In-Reply-To: <CAADnVQLYrP0P5CZj1domV3n3oHJsDYRbbk+1tym223-Z=Tk54A@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 20 Dec 2021 12:14:15 -0800
-Message-ID: <CA+khW7jvBb+_5g93PATeMB4weYBihtEngx8kX+m-ny4p9yUZzg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 8/9] bpf: Add MEM_RDONLY for helper args that
- are pointers to rdonly mem.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1640032857; x=1671568857;
+  h=from:to:cc:subject:date:message-id;
+  bh=7gcjqFEBl1z2FIEX9a6YE4vBVG8KWut/aOElnJSSrx4=;
+  b=YjVbEq+Uqn1vEafSbwy4Xfls3NO7LztXzhbStHJRf+b0NyWJJngbuHL/
+   TYE0yAh6tczk6MnT3Q4+wK2SCvsGH5oLhPLNKLaB69Dn4c9342DA/bwBU
+   jPDozy52UZnYWGtaRzHV/aC/SkepEBKtQXuxoFoOX1VIG2Gi2zKqxfned
+   w=;
+Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
+  by alexa-out.qualcomm.com with ESMTP; 20 Dec 2021 12:40:57 -0800
+X-QCInternal: smtphost
+Received: from hu-twear-lv.qualcomm.com (HELO hu-devc-lv-u18-c.qualcomm.com) ([10.47.234.142])
+  by ironmsg08-lv.qualcomm.com with ESMTP; 20 Dec 2021 12:40:56 -0800
+Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 202676)
+        id C5C4C500177; Mon, 20 Dec 2021 12:40:36 -0800 (PST)
+From:   Tyler Wear <quic_twear@quicinc.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Tyler Wear <quic_twear@quicinc.com>
+Subject: [PATCH] Bpf Helper Function BPF_FUNC_skb_change_dsfield
+Date:   Mon, 20 Dec 2021 12:40:34 -0800
+Message-Id: <20211220204034.24443-1-quic_twear@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 18, 2021 at 1:49 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Dec 16, 2021 at 4:32 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > Some helper functions may modify its arguments, for example,
-> > bpf_d_path, bpf_get_stack etc. Previously, their argument types
-> > were marked as ARG_PTR_TO_MEM, which is compatible with read-only
-> > mem types, such as PTR_TO_RDONLY_BUF. Therefore it's legitimate
-> > to modify a read-only memory by passing it into one of such helper
-> > functions.
->
-> I've added ", but technically incorrect" to the above sentence.
-> Otherwise it sounds like it was an ok thing to do.
-> I've considered adding a set of Fixes tag, but there would be too many
-> and it's a laborious task to look through all such helpers just
-> to beautify the commit log. This patch set isn't going to
-> be backported anyway due to complexity.
->
-> Please add a test to make sure that bpf_d_path on rdonly buf
-> is rejected.
->
+New bpf helper function BPF_FUNC_skb_change_dsfield
+"int bpf_skb_change_dsfield(struct sk_buff *skb, u8 mask, u8 value)".
+BPF_PROG_TYPE_CGROUP_SKB typed bpf_prog which currently can
+be attached to the ingress and egress path. The helper is needed
+because this type of bpf_prog cannot modify the skb directly.
 
-Done. Just sent out a selftest patch for that.
+Used by a bpf_prog to specify DS field values on egress or
+ingress.
 
-> Thank you very much for doing this work.
-> It's a great improvement to the verifier type handling.
->
+Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
+---
+ include/uapi/linux/bpf.h |  9 ++++++++
+ net/core/filter.c        | 46 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
-No problem. I'm really glad to help there. :)
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 556216dc9703..742cea7dcf8c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3742,6 +3742,14 @@ union bpf_attr {
+  * 	Return
+  * 		The helper returns **TC_ACT_REDIRECT** on success or
+  * 		**TC_ACT_SHOT** on error.
++ *
++ * long bpf_skb_change_dsfield(struct sk_buff *skb, u8 mask, u8 value)
++ *	Description
++ *		Set DS field of IP header to the specified *value*. The *value*
++ *		is masked with the provided *mask* when ds field is updated.
++ *		Works with IPv6 and IPv4.
++ *	Return
++ *		1 if the DS field is set, 0 if it is not set.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3900,6 +3908,7 @@ union bpf_attr {
+ 	FN(per_cpu_ptr),		\
+ 	FN(this_cpu_ptr),		\
+ 	FN(redirect_peer),		\
++	FN(skb_change_dsfield),		\
+ 	/* */
+ 
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 035d66227ae2..71ea943c8059 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6402,6 +6402,50 @@ BPF_CALL_1(bpf_skb_ecn_set_ce, struct sk_buff *, skb)
+ 	return INET_ECN_set_ce(skb);
+ }
+ 
++BPF_CALL_3(bpf_skb_change_dsfield, struct sk_buff *, skb, u8, mask, u8, value)
++{
++	unsigned int iphdr_len;
++
++	switch (skb_protocol(skb, true)) {
++	case cpu_to_be16(ETH_P_IP):
++		iphdr_len = sizeof(struct iphdr);
++		break;
++	case cpu_to_be16(ETH_P_IPV6):
++		iphdr_len = sizeof(struct ipv6hdr);
++		break;
++	default:
++		return 0;
++	}
++
++	if (skb_headlen(skb) < iphdr_len)
++		return 0;
++
++	if (skb_cloned(skb) && !skb_clone_writable(skb, iphdr_len))
++		return 0;
++
++	switch (skb_protocol(skb, true)) {
++	case cpu_to_be16(ETH_P_IP):
++		ipv4_change_dsfield(ipip_hdr(skb), mask, value);
++		break;
++	case cpu_to_be16(ETH_P_IPV6):
++		ipv6_change_dsfield(ipv6_hdr(skb), mask, value);
++		break;
++	default:
++		return 0;
++	}
++
++	return 1;
++}
++
++static const struct bpf_func_proto bpf_skb_change_dsfield_proto = {
++	.func           = bpf_skb_change_dsfield,
++	.gpl_only       = false,
++	.ret_type       = RET_INTEGER,
++	.arg1_type      = ARG_PTR_TO_CTX,
++	.arg2_type      = ARG_ANYTHING,
++	.arg3_type      = ARG_ANYTHING,
++};
++
+ bool bpf_xdp_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 				  struct bpf_insn_access_aux *info)
+ {
+@@ -7057,6 +7101,8 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_get_listener_sock_proto;
+ 	case BPF_FUNC_skb_ecn_set_ce:
+ 		return &bpf_skb_ecn_set_ce_proto;
++	case BPF_FUNC_skb_change_dsfield:
++		return &bpf_skb_change_dsfield_proto;
+ #endif
+ 	default:
+ 		return sk_filter_func_proto(func_id, prog);
+-- 
+2.17.1
 
-> There is a concern that generality of flags may cause
-> a regression, but no amount of code review will reveal that.
-> Please watch out for strange verifier issues.
-
-Sure thing.
