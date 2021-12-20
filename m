@@ -2,77 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 890B947B4C6
-	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 22:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDD847B557
+	for <lists+bpf@lfdr.de>; Mon, 20 Dec 2021 22:45:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhLTVKL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 16:10:11 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:48576 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbhLTVKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 16:10:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E80FB6130B;
-        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4EFFCC36AEA;
-        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640034610;
-        bh=yZmaZHdiwq2IgL+/TS0ifA/oIR8OHxhuTiOkzCgBHRw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=avCPUbWWn1EzvAVFezAFXsnQF5czXwGdXF0tIve6THuptf5NwRmCxI2v8uKHZkZK6
-         BmWmE6yAWTZqEolxPTMTzEkbYzrue0aT7kggs/s59q14c/A5Yqp2hM5xXjby81Zzlg
-         jp475WvcuQdCE2MwPjcYpB6smXL53PupBoZIU5+l9jFA3VEJalKuzi0QGW6WlDItYf
-         ameKnN9eysncf49rx15nHfAQe4jl3qPZJG1hJ+9qWM+YSkw+e7TgfZRVYMvFO8KJn0
-         PhvAEYirW3nMtj/nXXSBdVPb6gfxJSmCx2b1oW76dE1GM9vrsNDXXN/UehPJ9lqEmb
-         zcrKgW4kYE20A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 28647609B3;
-        Mon, 20 Dec 2021 21:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231639AbhLTVpd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 16:45:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231636AbhLTVpc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 16:45:32 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F59FC061574
+        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 13:45:32 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id t18so22700285wrg.11
+        for <bpf@vger.kernel.org>; Mon, 20 Dec 2021 13:45:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ReHMahL4Bz1cnsNzSLZyAh5glpyLPXN+HRkz+TSIBBE=;
+        b=yvg3lbHQy2PB+NWmy0b9NmuRIdjvZx8ihS/5n0UQegbi26fiYb1QE3YZ0owxymk23U
+         IZzHsG6KXCzr/Au2Nsavn6IDlXaDMhmZNoTspBhF9uLbQY+ZphRzgIarZrjPvsdOgzUb
+         xFQRF8eQ+2rgOE/z/Hm4Sj7NFXdvkxuKUCXERU9V7L4KGqkmAnA+U/6zskDy3ksOWqP8
+         RUHB6VrSVxOiQw6QELO3vo3NzNXr2Myaae6/bUl7AO/vPDclFfkY69tTzN/G4CMq8+zQ
+         fnxbl7CtRyfyYrB7gnwDfYaD4VLhQBvuWuaKcENuI9nLjIBncmCqw5U+AS9rvItXQLCn
+         ckLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ReHMahL4Bz1cnsNzSLZyAh5glpyLPXN+HRkz+TSIBBE=;
+        b=rIeoZ9FPXS0soxUu6UIIOSbeWd8ANnVup5ulXyOT8DMnHsSZ/BaLw/mJfy2ftFvRBN
+         rlt547+2LRQ6McnripDF+NKXyImVf/Uz2HFFYJ7EWEPFuyXIb+IWWgF6Hp3W07fUl0Jt
+         l707MMf0/gMHnZ3xcX7E5RRnZ1VIDF28/EGBQq69Y+T+aVxjeSDsJ2UkUaO6VZnO8zTq
+         KXdIYidh8Xo66rcYbsV+B1puUfLGeca+81/iPNZW/Ky6SZBmDt9M/hzQqXq1lRd0rq3s
+         1H9PMU6Efa0KIbhaElCdVVzRr9v/7iIbGRMRPibXkpn59a5Xs9gj9HGfeovSV5n2Pykl
+         /Scw==
+X-Gm-Message-State: AOAM532E7LJkmZK21MuzDjdhFeHrh2n5xgAVkEQMSOUbvtg2xkh+yHbU
+        98B09Ysbr7wh8+10EJFhqk3N
+X-Google-Smtp-Source: ABdhPJwkAkw7AsvLZ/kl1NOv7/HeRW2myK5wazsZQNbKfcIvoHTB/fdB4ncPStDuQrpNTHae8hay9Q==
+X-Received: by 2002:adf:9004:: with SMTP id h4mr47016wrh.593.1640036730621;
+        Mon, 20 Dec 2021 13:45:30 -0800 (PST)
+Received: from Mem (2a01cb088160fc00f5af1551c2b57bb2.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:f5af:1551:c2b5:7bb2])
+        by smtp.gmail.com with ESMTPSA id s1sm445558wmh.35.2021.12.20.13.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Dec 2021 13:45:30 -0800 (PST)
+Date:   Mon, 20 Dec 2021 22:45:28 +0100
+From:   Paul Chaignon <paul@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf v3] bpftool: Enable line buffering for stdout
+Message-ID: <20211220214528.GA11706@Mem>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Correct the INDEX address in
- vmtest.sh
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164003461016.22825.8777048018858756034.git-patchwork-notify@kernel.org>
-Date:   Mon, 20 Dec 2021 21:10:10 +0000
-References: <20211220050803.2670677-1-pulehui@huawei.com>
-In-Reply-To: <20211220050803.2670677-1-pulehui@huawei.com>
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+The output of bpftool prog tracelog is currently buffered, which is
+inconvenient when piping the output into other commands. A simple
+tracelog | grep will typically not display anything. This patch fixes it
+by enabling line buffering on stdout for the whole bpftool binary.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Fixes: 30da46b5dc3a ("tools: bpftool: add a command to dump the trace pipe")
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Paul Chaignon <paul@isovalent.com>
+---
+Changes in v3:
+  - Title changed from "bpftool: Flush tracelog output".
+  - Enable line buffering for all of bpftool, as suggested by Andrii.
+  - Rebased on bpf.
+Changes in v2:
+  - Resending to fix a format error.
 
-On Mon, 20 Dec 2021 05:08:03 +0000 you wrote:
-> Migration of vmtest to libbpf/ci will change the address
-> of INDEX in vmtest.sh, which will cause vmtest.sh to not
-> work due to the failure of rootfs fetching.
-> 
-> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> ---
->  tools/testing/selftests/bpf/vmtest.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/bpf/bpftool/main.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Correct the INDEX address in vmtest.sh
-    https://git.kernel.org/bpf/bpf-next/c/426b87b111b0
-
-You are awesome, thank you!
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 28237d7cef67..8fbcff9d557d 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -400,6 +400,8 @@ int main(int argc, char **argv)
+ 	};
+ 	int opt, ret;
+ 
++	setlinebuf(stdout);
++
+ 	last_do_help = do_help;
+ 	pretty_output = false;
+ 	json_output = false;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
