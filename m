@@ -2,75 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4622047B6C5
-	for <lists+bpf@lfdr.de>; Tue, 21 Dec 2021 02:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538C447B753
+	for <lists+bpf@lfdr.de>; Tue, 21 Dec 2021 03:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhLUBVL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 20 Dec 2021 20:21:11 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:29271 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhLUBVL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 20 Dec 2021 20:21:11 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JHzDH03rRzbjVM;
-        Tue, 21 Dec 2021 09:20:47 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 21 Dec 2021 09:21:08 +0800
-Subject: Re: [PATCH -next V2] sysctl: returns -EINVAL when a negative value is
- passed to proc_doulongvec_minmax
-To:     Luis Chamberlain <mcgrof@kernel.org>
-CC:     <akpm@linux-foundation.org>, <keescook@chromium.org>,
-        <yzaikin@google.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <yukuai3@huawei.com>, Hulk Robot <hulkci@huawei.com>,
-        Baokun Li <libaokun1@huawei.com>
-References: <20211220092627.3744624-1-libaokun1@huawei.com>
- <YcDWx1P1NdqgED1i@bombadil.infradead.org>
-From:   "libaokun (A)" <libaokun1@huawei.com>
-Message-ID: <6ec2155c-c976-4c9b-1975-c28792bb3144@huawei.com>
-Date:   Tue, 21 Dec 2021 09:21:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233768AbhLUB64 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 20 Dec 2021 20:58:56 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:53724 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233039AbhLUB6m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 20 Dec 2021 20:58:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 18B3961361;
+        Tue, 21 Dec 2021 01:58:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DCC0C36AE9;
+        Tue, 21 Dec 2021 01:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640051920;
+        bh=m3xYOY40sGGEAEGJONdxUth2xOPLby9qLPaqbvBZe/I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lRKuf2p43WlpkadV9hlqDY18gHOmAuw08V9LsjlgpeMIxku2V34iiMll4XeT1R4S2
+         rV/okwgCFQfRl/YLUEOI/MG3IjzmGGgrn7nQsTPHaCUmtPLR1Y6QFtBVBTMr0zNe34
+         jjaa2GZIyEE7cPVBQw+3dJiTmakYYO/nyrU//Teh1tEwlit/n/d/dwhFFwY93tbfHI
+         EpgVE+zCecSH6+j1i7Q/jlrmvvQe/o7bqlUPTf24HrrlaInIApbPaONj1KNRMgZMEW
+         IXRozFIvSdj/0MVNi8xlnDGgQslRA7gYm6NXe98hGWA9EDEoPW25LZJmjDw0mg5H0e
+         er/e4RIvpuUZg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 23/29] bpf: Make 32->64 bounds propagation slightly more robust
+Date:   Mon, 20 Dec 2021 20:57:44 -0500
+Message-Id: <20211221015751.116328-23-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20211221015751.116328-1-sashal@kernel.org>
+References: <20211221015751.116328-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YcDWx1P1NdqgED1i@bombadil.infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.174]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-在 2021/12/21 3:17, Luis Chamberlain 写道:
-> On Mon, Dec 20, 2021 at 05:26:27PM +0800, Baokun Li wrote:
->> When we pass a negative value to the proc_doulongvec_minmax() function,
->> the function returns 0, but the corresponding interface value does not
->> change.
->>
->> we can easily reproduce this problem with the following commands:
->>      `cd /proc/sys/fs/epoll`
->>      `echo -1 > max_user_watches; echo $?; cat max_user_watches`
->>
->> This function requires a non-negative number to be passed in, so when
->> a negative number is passed in, -EINVAL is returned.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> Acked-by: Luis Chamberlain <mcgrof@kernel.org>
->
->   Luis
-> .
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-Thank you for your Ack.
+[ Upstream commit e572ff80f05c33cd0cb4860f864f5c9c044280b6 ]
 
+Make the bounds propagation in __reg_assign_32_into_64() slightly more
+robust and readable by aligning it similarly as we did back in the
+__reg_combine_64_into_32() counterpart. Meaning, only propagate or
+pessimize them as a smin/smax pair.
+
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/bpf/verifier.c | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8a0b4879790e5..03f627e7e233b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1358,22 +1358,28 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
+ 	reg->var_off = tnum_or(tnum_clear_subreg(var64_off), var32_off);
+ }
+ 
++static bool __reg32_bound_s64(s32 a)
++{
++	return a >= 0 && a <= S32_MAX;
++}
++
+ static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
+ {
+ 	reg->umin_value = reg->u32_min_value;
+ 	reg->umax_value = reg->u32_max_value;
+-	/* Attempt to pull 32-bit signed bounds into 64-bit bounds
+-	 * but must be positive otherwise set to worse case bounds
+-	 * and refine later from tnum.
++
++	/* Attempt to pull 32-bit signed bounds into 64-bit bounds but must
++	 * be positive otherwise set to worse case bounds and refine later
++	 * from tnum.
+ 	 */
+-	if (reg->s32_min_value >= 0 && reg->s32_max_value >= 0)
+-		reg->smax_value = reg->s32_max_value;
+-	else
+-		reg->smax_value = U32_MAX;
+-	if (reg->s32_min_value >= 0)
++	if (__reg32_bound_s64(reg->s32_min_value) &&
++	    __reg32_bound_s64(reg->s32_max_value)) {
+ 		reg->smin_value = reg->s32_min_value;
+-	else
++		reg->smax_value = reg->s32_max_value;
++	} else {
+ 		reg->smin_value = 0;
++		reg->smax_value = U32_MAX;
++	}
+ }
+ 
+ static void __reg_combine_32_into_64(struct bpf_reg_state *reg)
 -- 
-With Best Regards,
-Baokun Li
+2.34.1
 
