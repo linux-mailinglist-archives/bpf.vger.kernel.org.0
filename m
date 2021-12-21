@@ -2,447 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A3B47C636
-	for <lists+bpf@lfdr.de>; Tue, 21 Dec 2021 19:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955BB47C74D
+	for <lists+bpf@lfdr.de>; Tue, 21 Dec 2021 20:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241143AbhLUSRo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Dec 2021 13:17:44 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19998 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240053AbhLUSRn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 21 Dec 2021 13:17:43 -0500
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BLHK7rA023709;
-        Tue, 21 Dec 2021 18:17:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : from : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=2Oao9GOk70AKGUIKx9nW2Y+iy3o/mJ6cjyAcgw2A9eg=;
- b=AiKYCWKZz0Z7lxZVx3shU4SRrHcx2Vfe19ncBNXp2hbavbd165hKnk3eeQgQZHB1MTDI
- EXV/fhCjLM4mgBe7LsvejIXeXikvXcNOkwC/1oNo7Ce/fiiT3RFF+10ByAs4+VeP67Pv
- lelJUKqTGZAhfr3qZLedWkXY0+X+kDLz9R1CDVeJleKb3kyUdSjBMRsvJsvLWLFAjb8v
- mnDPW3QuUMQrayp7bNvP5PidoPId6VV3P2YupkFUzQSFuOrlDW5taXETNfV9Bp89h8zl
- +9xdqLpVSbhswMqbA6gK0Jdy5/oNSU5Z5UcmLDYmtVZi2RmC78uuDyxQ/bX4gLAPEQyM Lg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3d2qk2c2w4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Dec 2021 18:17:27 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1BLIGvkT138066;
-        Tue, 21 Dec 2021 18:17:26 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
-        by userp3030.oracle.com with ESMTP id 3d14rvx4p5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 Dec 2021 18:17:25 +0000
+        id S237461AbhLUTQo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Dec 2021 14:16:44 -0500
+Received: from esa.hc3962-90.iphmx.com ([216.71.140.77]:38327 "EHLO
+        esa.hc3962-90.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhLUTQo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Dec 2021 14:16:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qccesdkim1;
+  t=1640114204; x=1640719004;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=d359jE5LBn1hCJVkhAYFzM3RHjh0ODq3WvOpGaGsAOk=;
+  b=jzYvWV0e6Qm7hl+cR263kSjg0bNV5aaglUtfIPniCxgl2exIlmUdwb33
+   WY3XKd+ngEwjQqS7Si7vvII7xojrpfmhiu8pR8a7lax7HB+Lfiz4g8vHf
+   W8iizSDmFBqkl603mEn4jz0BlgqHOLvlaQiQ2sHSz0K7c33ELIQpFpNJY
+   8=;
+Received: from mail-mw2nam12lp2045.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.45])
+  by ob1.hc3962-90.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2021 19:16:43 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k/J/JQfYCqq2LRnfXCrcBAz/wd8+vADo+rOAov2teaPZmFZtaLpyWHf0Oy7hdb/V07ncQSCcW586o7R/HLJ5Wek0RvCQ4VuDplfzZXngOnY2CRA9Uugz0ekUve3tx6ZqA6uAArbjOUk662XZ40IRQUYWqQYCaCHpt/ptXQ2j1H0HMDLLFQG0TcyyCn9qrD8Lq3aHC+mFJ7eLaYz9U2AXUFwkAVv3S/pelU6KD/IllTxmGixgRGwttFpyAFwiY3x8pX7djlq4EQHRMZApTOQmSQxfW7qeEDRUkOJ+waDhu/TU8iizo7r+r6UG6YelwBWVbH6/W6rMymYclN+vSVe0uw==
+ b=BHowcnUTYkmVPJWFrHIPUDzTbjbiM8NSD8L6es78JTx9uu1AFTjO2QZNT3Mrc3x22b+GslH3S7e0mEQLtS2hFVGu3Z1NT9XuZHnKhfaMxhtz/hkEz2owe7ARpjtgpSKlacWQRPgSnBy/gaUi68fJAolwrGJsU2+Mxi6F20PZSS2qjZN7YWAJL4f9OhU3tBDSMv7iNgvLH5zWiObDZQjPMEObGA82/dkS7FOi94QK4ySshyP4FwIabjwcTwUD0BNSBM/U00ydB9kPdTmSirD9XOKtAaDKuOCFlYYQGD15FAVJcm8ttf4EZ+fyqSh7GCsO8cTjzNCv08iyQb9pW9fGmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2Oao9GOk70AKGUIKx9nW2Y+iy3o/mJ6cjyAcgw2A9eg=;
- b=VI2SNzzn0emOMGHsawLK/UhqTkntVrUX+QvpCg4sTXrG0p+lPyXhozvpl9bs9g0hby6AqrUpYJVZRMdnnia7tYjgKW3ZtPRAe12mu7QWEeLU+7tUSok7MkPWqsyCauTAMgbKHP7CF/5IDX3vHORFwReGrzxW09spxM440vYkAtlYcD7guaojIxMIm6fEAb7rrGhSTByxzqXBb/8gknJlIu+rxkw9YJBW4XDGDlqy7ZFruCNfRVXpdBnlCumUyOkaovzu9q/pvzNn+U3WQ3aZBlsbDy8SqA2OXITo/YgsBqK1kS8t23K9J1lM5q2XCojhwnsM6Ntdb8RzNzkrVFfs+g==
+ bh=d359jE5LBn1hCJVkhAYFzM3RHjh0ODq3WvOpGaGsAOk=;
+ b=kswvE151EdrggUCOOOUnllm9ZMqRSHM+WRt5drS3Nq62tX7aCERmButECsKuPC73V85RNmX5IaW5YYqlrDPrq8AVNp99OFCDEVhqc/REU2TzoxBoU+j9VSsvWn0fUeVAyEd3IQkDa6IsfcM0oP3A71sgegPcpJIpOnH3Z8j2LeTA+0HR0PguAJ5frgGiRzjCL9HjUWbCdyvwUQjZe6Q2+M8UxcaQtnJXKjAI7H+H+PZuIFWA/JFTSnPmjuB0imGJpMg6qkVY3mDMWgILjDZ+yrIAznb+S5tHbZwnZioldNZBMMIvzzu7IxUJVLf5MJSDh1m93jbHTcNxDUVLlX3omA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2Oao9GOk70AKGUIKx9nW2Y+iy3o/mJ6cjyAcgw2A9eg=;
- b=e05h32mlb8EkViOQ24l1dfmc1q7SpqkDMBrQ/GtrVTYvM0bV6Do6y43d+c7dFpZsFvwbidRlT1sXKZ8pKHWc+P5NXCtpSXjm/xRlftMrWm6FBNihZ5e5D2Cabouej+XbwyXJe4OCtaNpk0eZu8qD7wnYDQdOgCBVvRo0/eCuhbI=
-Received: from CH2PR10MB3752.namprd10.prod.outlook.com (2603:10b6:610:d::23)
- by CH2PR10MB4118.namprd10.prod.outlook.com (2603:10b6:610:a4::8) with
+ smtp.mailfrom=quicinc.com; dmarc=pass action=none header.from=quicinc.com;
+ dkim=pass header.d=quicinc.com; arc=none
+Received: from BYAPR02MB5238.namprd02.prod.outlook.com (2603:10b6:a03:71::17)
+ by BY5PR02MB6914.namprd02.prod.outlook.com (2603:10b6:a03:239::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4801.17; Tue, 21 Dec
- 2021 18:17:23 +0000
-Received: from CH2PR10MB3752.namprd10.prod.outlook.com
- ([fe80::b012:2fbd:f463:f5ae]) by CH2PR10MB3752.namprd10.prod.outlook.com
- ([fe80::b012:2fbd:f463:f5ae%4]) with mapi id 15.20.4801.022; Tue, 21 Dec 2021
- 18:17:23 +0000
-Message-ID: <dd139846-830e-9363-91d3-1dc31be7702c@oracle.com>
-Date:   Tue, 21 Dec 2021 13:17:20 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: [PATCH] bpf: check size before calling kvmalloc
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.17; Tue, 21 Dec
+ 2021 19:16:42 +0000
+Received: from BYAPR02MB5238.namprd02.prod.outlook.com
+ ([fe80::8802:ab1b:7465:4b07]) by BYAPR02MB5238.namprd02.prod.outlook.com
+ ([fe80::8802:ab1b:7465:4b07%5]) with mapi id 15.20.4801.020; Tue, 21 Dec 2021
+ 19:16:41 +0000
+From:   "Tyler Wear (QUIC)" <quic_twear@quicinc.com>
+To:     Martin KaFai Lau <kafai@fb.com>,
+        "Tyler Wear (QUIC)" <quic_twear@quicinc.com>
+CC:     Yonghong Song <yhs@fb.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "maze@google.com" <maze@google.com>
+Subject: RE: [PATCH] Bpf Helper Function BPF_FUNC_skb_change_dsfield
+Thread-Topic: [PATCH] Bpf Helper Function BPF_FUNC_skb_change_dsfield
+Thread-Index: AQHX9eHoIVi91SZqTE+0za9xEhnh/6w8RyUAgAAxxwCAANfuIA==
+Date:   Tue, 21 Dec 2021 19:16:41 +0000
+Message-ID: <BYAPR02MB5238740A681CD4E64D1EE0F0AA7C9@BYAPR02MB5238.namprd02.prod.outlook.com>
+References: <20211220204034.24443-1-quic_twear@quicinc.com>
+ <41e6f9da-a375-3e72-aed3-f3b76b134d9b@fb.com>
+ <20211221061652.n4f47xh67uxqq5p4@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211221061652.n4f47xh67uxqq5p4@kafai-mbp.dhcp.thefacebook.com>
+Accept-Language: en-US
 Content-Language: en-US
-From:   George Kennedy <george.kennedy@oracle.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>, sdf@google.com,
-        ast@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1639766884-1210-1-git-send-email-george.kennedy@oracle.com>
- <395e51ca-2274-26ea-baf5-6353b0247214@iogearbox.net>
- <a6cb8004-50de-bcec-1f1b-b61b341fd8f4@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <a6cb8004-50de-bcec-1f1b-b61b341fd8f4@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SN7PR18CA0015.namprd18.prod.outlook.com
- (2603:10b6:806:f3::6) To CH2PR10MB3752.namprd10.prod.outlook.com
- (2603:10b6:610:d::23)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=quicinc.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 81668574-d86d-46c5-4af4-08d9c4b66bb6
+x-ms-traffictypediagnostic: BY5PR02MB6914:EE_
+x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
+x-microsoft-antispam-prvs: <BY5PR02MB69141FB0925D9B2F5D9CD557FB7C9@BY5PR02MB6914.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JlECR7RYQu6dZH/j0Xl+BO9+9CvCGMGmN7T8Ko6uK0BVielWnIZflpCQVos0Hns0qIEmAC9DIDbyTSuvP0yNlvyYtAo6LIuF+hfFuIm0jUIvnQcDLJuTSRAhf9dFz4PaCzBZxdkAAtXvixCLPSzA/Le08857X+YwNXugoRH7Cv1qkFkuDgR5fJLQLUiFj+OWbnPVz+9y6Uyniaw2NGWoRqmuBup8F+tZPQdBEF18O/nNrlZi4AMea7wmzBeMgf2V+wRjpZ9ZXTFMNA/n3wqefsI9P2Qa1VUb0z5RcG7FCKJkwC5m0nwf43PXF9jY4Kxap62w1HXQdVI3XofxrMsBSEsRctLHxQHRnQNpPxPl3f0wbW2RG4NQhfDWzGh3jkCFY5LTTcIopc/XRSyMZdYocmI6UkjAd52uBhxGLSAnSEUZI3p6qyYWiKm9gwBAPIO4RfIKp/GZz9HsN2LTuT1kCgFsD5EijbHjKsW+/QQzwGpd+TKkOipQ7eJZOKBH89bZ4g6nZkiEkG0MQkrXhoFMVMrKB99emHLAtqI2yjrAkN3a2TRBB/MCTrmXRqDhCxVpVLmbUcZ1OTpjjvmSdJmr80JoNWFgxMn1z/WRPNHWcf7Rc0yVPImGlcMSeMxJRLheLyLngcP+HdMjief5feZPBHYwkq6nSH4twI5zPOohye9/G6VyX58fGAecH4KiD8X0XmYfM8djiBc5Mtg83Um6HA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5238.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(122000001)(316002)(4326008)(38070700005)(66556008)(66446008)(66476007)(64756008)(52536014)(53546011)(110136005)(66946007)(86362001)(54906003)(33656002)(8936002)(508600001)(6506007)(2906002)(9686003)(7696005)(71200400001)(186003)(26005)(5660300002)(55016003)(76116006)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fu4qAhYQ/twZwGXColYEdcpJxjZ0A3nd112VTiS6WS0p4GlyCYdyAJVlJhMi?=
+ =?us-ascii?Q?DrGf/aHW4xuhWXa5Bnkb2XJSMi5txkm0r8eb7U6U81iQqBtclWu0pD2UnCWH?=
+ =?us-ascii?Q?9v0QuK0ahMLA6Oz+zmQGKvwrGU2Jl+fhhyFXcIBHUWLv/axt/WOjJg0ftCeT?=
+ =?us-ascii?Q?XBKPhtPTgwl/MrcrEJoTns/z0xKd4MvYk0PTuskx31kxOAGoSaF8PRjG+y/2?=
+ =?us-ascii?Q?6C3DTCG8xIZ/nrWJxOl2mE00bLVPv1fRAb7QLW2usG3BB3wPgm6OXoCPsRkg?=
+ =?us-ascii?Q?dUYluk7/gii37IUZzFAN1q10qiesm+Mq5Cikq9QK4OG0eO5aR8wq4FzggAF9?=
+ =?us-ascii?Q?JObv+xcb4GGl6WWHVP9STAmNYsWKq06b45xW8HzLSfdgJmgwAC/ZqpZJ0InC?=
+ =?us-ascii?Q?omjXnzYLCFeyvEqOUu7v0s3y/tG/OBQlRXysQwZsLq7wMyBZ0RNAbdLvDMg0?=
+ =?us-ascii?Q?xClHU28xbxKs6VQOpvLOnldsQKWTb0PD/sxSTVp7DPXOubF8Alc5KpWzB27m?=
+ =?us-ascii?Q?3klQKiIfW0F0gOcTtaKOjgKXDzWgq5IbdQeXCHcv5uzWgqgHMdvqWTsimu84?=
+ =?us-ascii?Q?rw9EuRs5xS1FHeZq+ZnPjw1p2ZmityEm5HV0sQdCtCwUREY2A8AuI+LzfFch?=
+ =?us-ascii?Q?/aWD8wuBKx2AqblUa7UdFFe9+07IYfGLo+7NYZN6tk4j4L6Wt5dWIKU5BgoC?=
+ =?us-ascii?Q?oGNHOJmsgfQZORQIxa6jye5YHbpmmVlg4D6j/L+98YkGb2CIZc4uNHRN1ngk?=
+ =?us-ascii?Q?LB2h9IGputP8jU/I9iuVA9tK+MpiliFrtD2W20QXQUm3i0tkKI2gIWnfI302?=
+ =?us-ascii?Q?vfwAKxLfNUjIpTU0LEDIDlw9W33u9WWd4AqC/HCBd+fHcHUbENUFo4+n2ggc?=
+ =?us-ascii?Q?VCQWcT9EyNocNC+OoggdbNWvxW1/H0e+GLc/idVtJNKd9IOvKGJ6MOcaAwbv?=
+ =?us-ascii?Q?1RzrGhqS8/lLBc2bG9r2nZsqlf8yAntT+Syp1azQe/w1z+w9ezH+HAV+FuHM?=
+ =?us-ascii?Q?fFqFrbCazs8Oc6agANMiMjk3bceNxLdRm/29UIVfzPenOGZNDW9xCs/nPcQG?=
+ =?us-ascii?Q?emvG+pf86xnd723/QpLHs8td/W55R51Xfo3ZHrFWbGNbfQPSZhS5lBtrTzV8?=
+ =?us-ascii?Q?99O1wCO8llkxS9gIzgpK7VugVA63GOO835zSG3T0ncKemPwYBFvZUG9pq168?=
+ =?us-ascii?Q?RCPUGrmagqFkm2G2ztgxP5fOgr9bmgXWLUGhRxbYOD8cf7b3bna2rhO084tL?=
+ =?us-ascii?Q?KUqT/Jlknet74/RHGSVpDtT0VE0U6o9k78w2HRd431hMwZyxx8Mttf/Vips7?=
+ =?us-ascii?Q?ZA7VhoK1L/XRq59515buJQipnKWgALZh7ecc7Y2zVTnHi16LwQMwTBum/cRx?=
+ =?us-ascii?Q?zE8VTZXZbwpTYncV1iHIrwC2Xmy7gXWa4+vPIoBbU0pXKz3eHSo3ieu+9b6i?=
+ =?us-ascii?Q?PxJ1Z3JtYKrOI4SENMb/hiISxwDO2gGEzCbXNAKvQqlAhkqeUXNghc3pLXvB?=
+ =?us-ascii?Q?Iy+T1O9xuRnwN4Csk/tO1d/pgn4VB4gVY5e000gj3GaA2js8l0u9IUU117M6?=
+ =?us-ascii?Q?ts2K8Qg8vgiKfKARURGk4L+bMk78PpyPwxMV5qHgQi42nKu5i131froXzEbJ?=
+ =?us-ascii?Q?vg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ecce68d9-903a-439a-6648-08d9c4ae2290
-X-MS-TrafficTypeDiagnostic: CH2PR10MB4118:EE_
-X-Microsoft-Antispam-PRVS: <CH2PR10MB4118439A024D70F99823E4A7E67C9@CH2PR10MB4118.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fv7GGGFljxHCEkcKynfvyhZN1G1mpUmpiczQnoRkolu4JeiVGlmEaQRG/wRAwc99BQAAmeI7XG06xd29CKEHOC8ZybxAW45Pb5afUQ74fpMjV6ZU8w8iE+HsW5iIhGJjg9ns5xMVEkbvZ+8R51bsC9wAjZA/dcIfMBdwhmnsWHUbxoA307+adgLtdEiqPjT/w+XXsJZ9UlaKl/OB55Lpjrv8Qjqn1us510JMkQ+98CWKdqb/J0OVvMPU5MW1gpEH5L0ccGXOnS5/04HF807M8rd7rKH4FPT7PEA3XVeKMpklc5QyAjex9mHd5FmyKOWtYPcbdB1pi6TfEV3ZFPnzL0mI4wtJHJG7q8s7HpLFyMol5Us0Tb1qDGOKMIJGGfulXNLWMSpUl96WneeCr5LbDtXkVVZyHiIZeEbCjK2/OLGuOnQbjr6v3cyqSvDRkju3oz7ztcqD5xzIrYrnRCTff2kp8Ifc7TJNGXh4ZSDMWl7tOTVrpIFzbV0TnOdqXViYeFed3WQwiKKsMSnqLHiW1RIugvd9g9mBCV5SQYuNAjBY05B10J6ugey5fKMnS3gjWFDPeSb+F9NVb3zQy48Uu0G3HZ0/U0GWdEMNTg+d0ToYyrerCOAl7mudU5Slp7p1i6r/Yz/Aic0VctR58a/zCSKzTP7R1fft5vy5elUhIbHFmvEi8tCjMBBo0n4Mc96EmnsPM25Lq9sg24lLXYi3ivMLYWGIhiw6X3azDrFIWuGWyF5RMuW8eIX0VwfMD5x6PcY2gT7SQPUfiJ02KzzvXgIvJkXpssoF97NrgXprs7uj6EEjeRZZzUOIhOJ6DOZ6
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB3752.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(36756003)(508600001)(30864003)(316002)(31686004)(31696002)(6506007)(2616005)(6512007)(45080400002)(4326008)(5660300002)(8936002)(44832011)(8676002)(6486002)(66556008)(36916002)(66946007)(86362001)(66476007)(83380400001)(186003)(53546011)(2906002)(26005)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDhMOExKcGVlY1ZlVmVLTWhscXpZc0J2c1lPdmIrNFBUcndOSE8zejFKclEr?=
- =?utf-8?B?amVLOWFQOHMxT3VZUjZraFNyd3VXaDh1dmQwd3FtU2lDQ3UrK3lDV2xjWTl3?=
- =?utf-8?B?SG03c1NBV2ZwWHpJalRPQi9ua21SK3JYaWZOYWFmbHprdGdKRVRuby9hUkxw?=
- =?utf-8?B?b1ZLQkFJL0VjYmx2RFdlR0o2akcvTk94ZGx3VG16SUY1emx6ZmFLY0RHWXpr?=
- =?utf-8?B?blprWCtUM2VZQW5tMnBLU29YejhSY2YwTVdYTlF4bWFPL1kvdVd2VEVackhZ?=
- =?utf-8?B?SVhMQWI1ZHE2a0N4VkJzbm96YUhORHlpZmdMMVlPS2JvdXYrSG4vaFl0N2Zu?=
- =?utf-8?B?Q1FsVUVIMUpWRWwrcEJvK000NVBSWE9LOGxBNlRXTm5BMkd3c1E3SkZEcDBH?=
- =?utf-8?B?NXVEaURiS2psbE9oRGxxQitsb3A2cXdmbkFVa0IvQ2REOWRLZ0RpTjJ3UnVR?=
- =?utf-8?B?TUZ2dHY5bE9hMWp6cllBamNNeEVjQUpUZUluanZQNXpTaWtjS1BUeWhPTjN6?=
- =?utf-8?B?WUI4RHpjUnA4eWQrWEpjK3Q5N3c2NXFYM1V1R0JWK1NmMDBwajBkeVdWbVIy?=
- =?utf-8?B?eU9YVk5IMWxSdmoyMFZZQy9NL2FSZnhGdzR0L0JCL2gvTjN5UzBHWGswV2lR?=
- =?utf-8?B?MnV0Yisyb2ZYeGYvU2k5OVFsNFhPTjdoVmo3UU80QUVLU0dmTzZRUWd6c0tP?=
- =?utf-8?B?Z0NIWHJybk1WTjVOWkljdHorZ3JJdktBRkh5M0xEc2U5eHd5SXNGNjNaSFV4?=
- =?utf-8?B?NkdjN3N1ZjVBaFhnUVY3NjVIRFJETDhpVGsreDYzNlJNb0tSRGp5SUlZWXhZ?=
- =?utf-8?B?VWh5NUtRanVGUzkyZ3lId3JxVVhYNU9CNVExZ0FvNzRGdDNjbytVSDlsWFlU?=
- =?utf-8?B?TTA2T0pUOUxoZmJjczlYcyt0cFkzUkxtN09maVg5cmtvVjErUmJGNTFFbktS?=
- =?utf-8?B?RldXUTFFM2hCR2VyVEx1RFBpbC9vUHJrOVZuY1VFT1ZOOFhZeWk1RCt5UUYr?=
- =?utf-8?B?b0ZHbHRLZ0pxRXExR1h5ZG5QbTVKMEs4eU4yVjI5ejMrbzVNNk41YXl0cXVT?=
- =?utf-8?B?aFZZK0Z6clluL0l5U3M1VEY4WFVsL0s4MU5HUjVTTTFvcXdERHBSK0xDUzdo?=
- =?utf-8?B?U2lDZkZDUStiS2pFS3RwRUxFSVRjbjNmRjNBby93bjBaSEVxV2xsb2pxYkwr?=
- =?utf-8?B?VlgvYUpmdEJvOENRZHR5dVE5ZUZpMU9VMFR4N0FHL2t3SVdaN1h0dlpBbHZJ?=
- =?utf-8?B?eElmNmJlVVhFcCtrZllzZS9IS0YwRjJDbktzSlVCb2V6ZjJQSlVwclBKWTFz?=
- =?utf-8?B?M2wvRWNIbHB6aGdwUWE1ZVhYT0hCYnZLSEZ4YTZDL1lYdjVBRlV4Q3lsSVFE?=
- =?utf-8?B?b1J6d0ZLd3EyU29pem1BUFZueDl2Y1dYWDFMMXBaQXdHTFFuRG4xcHdMZkd5?=
- =?utf-8?B?SFZGUUt3ZXN6b0ZneHlFMlRITlhOL0plb0hvN0hUUnZKT3lvZkpMMk0xSjV0?=
- =?utf-8?B?eWxGOTREZVlRWndUNlpkblR2UGFyRlJOTzdsRGNMSENFN0ZYYndNamIzblkw?=
- =?utf-8?B?UnhXTmU4NTVrRE9JNUlTTzJ3WUxzbUJ4SE9zSHNMdlhrZ1R2YlFMeWVVS3ZZ?=
- =?utf-8?B?RGtLOTQrTk5LWGhLd2pOWTBlZzdHS04rQ0NjdW9VaGtEYlFvU0g5U29yRnla?=
- =?utf-8?B?a2hSYkltMjk2MXBrbUtKQzBubi9qbDQxLzM2dGtsaW5jUUdVaWNkRDBHa0dn?=
- =?utf-8?B?UkhRczVFS1R1Uy9xSDlOWEZWcTRIUWhtRCtXT2VkVEIrU2l2SGRJK3NidVky?=
- =?utf-8?B?a2hWcU5iNWJNdWlxczNoZ25Ec1RYRTg4SkRCY1VtcXBERUJZdW11cHo4UjRo?=
- =?utf-8?B?aEhUM2NvMVZqb1h3NVN3Uk5ON3hLYmd3RlRPZ3N5TGdQbGlrR0tZNVpNditX?=
- =?utf-8?B?MmgyS1Mvb0xMT3hzOGtMcEU2YkJNZndLd1dmREhVVGZReGxsaGhUdms5RnlW?=
- =?utf-8?B?Y3pWN1pqSER3R2xFaGN6RmhneDJreWtkUUZyMEI5aitHQjZrKzN1MU4rajJO?=
- =?utf-8?B?N011L2huRUhHNThnZkVCQXo4WW5la085MG43MTJBOVdVeVVvdW1obHV0Wktv?=
- =?utf-8?B?Z0NDWU5UZmxreUw1YWZnQU9nSXB1MC9qVXp0aXlsWmpzK252L2piS0NRUWNl?=
- =?utf-8?B?cysySmFFQmxCZGRMMUluR1Qvd1hQTkR0RThWVnpoWFFybTlLWFFKcW5oN29C?=
- =?utf-8?B?SmowZVZTalZINjhadzU0a1Rjbmd3PT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecce68d9-903a-439a-6648-08d9c4ae2290
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB3752.namprd10.prod.outlook.com
+X-OriginatorOrg: quicinc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2021 18:17:23.5690
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5238.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81668574-d86d-46c5-4af4-08d9c4b66bb6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Dec 2021 19:16:41.8899
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xyQ4USV5X+5uKtGMxc9bOdMEJHvRhdMapFIO99njyEhiqYpnK9aO+HVIcZXJjk//9mG1CZG+nK8WQyOTlGmxl4e/oU/3sOhD/6dqd2iqhYQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4118
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10205 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0 adultscore=0
- phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2112210090
-X-Proofpoint-GUID: gwcv-KyDsqQveui60YgOUyR79JSHklUY
-X-Proofpoint-ORIG-GUID: gwcv-KyDsqQveui60YgOUyR79JSHklUY
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Ngal7uSL8/Jvc63YuLihjfsOkBA7j3dF1GcjIBf47yQZujg2/LarbT8pUStJ4Dlo1tMd0k2tJk8Jb+vHKZbnfA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR02MB6914
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 12/20/2021 8:50 AM, George Kennedy wrote:
+> On Mon, Dec 20, 2021 at 07:18:42PM -0800, Yonghong Song wrote:
+> >
+> >
+> > On 12/20/21 12:40 PM, Tyler Wear wrote:
+> > > New bpf helper function BPF_FUNC_skb_change_dsfield "int=20
+> > > bpf_skb_change_dsfield(struct sk_buff *skb, u8 mask, u8 value)".
+> > > BPF_PROG_TYPE_CGROUP_SKB typed bpf_prog which currently can be=20
+> > > attached to the ingress and egress path. The helper is needed=20
+> > > because this type of bpf_prog cannot modify the skb directly.
+> > >
+> > > Used by a bpf_prog to specify DS field values on egress or ingress.
+> >
+> > Maybe you can expand a little bit here for your use case?
+> > I know DS field might help but a description of your actual use case=20
+> > will make adding this helper more compelling.
+> +1.  More details on the use case is needed.
+> Also, having an individual helper for each particular header field is too=
+ specific.
 >
->
-> On 12/17/2021 5:45 PM, Daniel Borkmann wrote:
->> On 12/17/21 7:48 PM, George Kennedy wrote:
->>> ZERO_SIZE_PTR ((void *)16) is returned by kvmalloc() instead of NULL
->>> if size is zero. Currently, return values from kvmalloc() are only
->>> checked for NULL. Before calling kvmalloc() check for size of zero
->>> and return error if size is zero to avoid the following crash.
->>>
->>> BUG: kernel NULL pointer dereference, address: 0000000000000000
->>> PGD 1030bd067 P4D 1030bd067 PUD 103497067 PMD 0
->>> Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
->>> CPU: 1 PID: 15094 Comm: syz-executor344 Not tainted 5.16.0-rc1-syzk #1
->>> Hardware name: Red Hat KVM, BIOS
->>> RIP: 0010:0x0
->>> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
->>> RSP: 0018:ffff888017627b78 EFLAGS: 00010246
->>> RAX: 0000000000000000 RBX: ffff8880215d0780 RCX: ffffffff81b63c60
->>> RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8881035db400
->>> RBP: ffff888017627f08 R08: ffffed1003697209 R09: ffffed1003697209
->>> R10: ffff88801b4b9043 R11: ffffed1003697208 R12: ffffffff8f15d580
->>> R13: 1ffff11002ec4f77 R14: ffff8881035db400 R15: 0000000000000000
->>> FS:  00007f62bca78740(0000) GS:ffff888107880000(0000) 
->>> knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: ffffffffffffffd6 CR3: 000000002282a000 CR4: 00000000000006e0
->>> Call Trace:
->>>   <TASK>
->>>   map_get_next_key kernel/bpf/syscall.c:1279 [inline]
->>>   __sys_bpf+0x384d/0x5b30 kernel/bpf/syscall.c:4612
->>>   __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
->>>   __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
->>>   __x64_sys_bpf+0x7a/0xc0 kernel/bpf/syscall.c:4720
->>>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->>>   do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
->>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>
->>> Reported-by: syzkaller <syzkaller@googlegroups.com>
->>> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
->>
->> Could you provide some more details, e.g. which map type is this 
->> where we
->> have to assume zero-sized keys everywhere?
->>
->> (Or link to syzkaller report could also work alternatively if public.)
->
-> I don't think the report is public. Here's the report and C reproducer:
->
-> #ifdef REF
-> Syzkaller hit 'BUG: unable to handle kernel NULL pointer dereference 
-> in bpf' bug.
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> #PF: supervisor instruction fetch in kernel mode
-> #PF: error_code(0x0010) - not-present page
-> PGD 1030bd067 P4D 1030bd067 PUD 103497067 PMD 0
-> Oops: 0010 [#1] PREEMPT SMP KASAN NOPTI
-> CPU: 1 PID: 15094 Comm: syz-executor344 Not tainted 5.16.0-rc1-syzk #1
-> Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7860+a7792d29 
-> 04/01/2014
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffff888017627b78 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8880215d0780 RCX: ffffffff81b63c60
-> RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8881035db400
-> RBP: ffff888017627f08 R08: ffffed1003697209 R09: ffffed1003697209
-> R10: ffff88801b4b9043 R11: ffffed1003697208 R12: ffffffff8f15d580
-> R13: 1ffff11002ec4f77 R14: ffff8881035db400 R15: 0000000000000000
-> FS:  00007f62bca78740(0000) GS:ffff888107880000(0000) 
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000002282a000 CR4: 00000000000006e0
-> Call Trace:
->  <TASK>
->  map_get_next_key kernel/bpf/syscall.c:1279 [inline]
->  __sys_bpf+0x384d/0x5b30 kernel/bpf/syscall.c:4612
->  __do_sys_bpf kernel/bpf/syscall.c:4722 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:4720 [inline]
->  __x64_sys_bpf+0x7a/0xc0 kernel/bpf/syscall.c:4720
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f62bc36f289
-> Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00 48 89 f8 48 
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 
-> 01 f0 ff ff 73 01 c3 48 8b 0d b7 db 2c 00 f7 d8 64 89 01 48
-> RSP: 002b:00007ffccaa211e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f62bc36f289
-> RDX: 0000000000000020 RSI: 0000000020000080 RDI: 0000000000000004
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004006d0
-> R13: 00007ffccaa212d0 R14: 0000000000000000 R15: 0000000000000000
->  </TASK>
-> Modules linked in:
-> CR2: 0000000000000000
-> ---[ end trace d203e5a1836d64aa ]---
-> RIP: 0010:0x0
-> Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
-> RSP: 0018:ffff888017627b78 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8880215d0780 RCX: ffffffff81b63c60
-> RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffff8881035db400
-> RBP: ffff888017627f08 R08: ffffed1003697209 R09: ffffed1003697209
-> R10: ffff88801b4b9043 R11: ffffed1003697208 R12: ffffffff8f15d580
-> R13: 1ffff11002ec4f77 R14: ffff8881035db400 R15: 0000000000000000
-> FS:  00007f62bca78740(0000) GS:ffff888107880000(0000) 
-> knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: ffffffffffffffd6 CR3: 000000002282a000 CR4: 00000000000006e0
->
->
-> Syzkaller reproducer:
-> # {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1 
-> Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false 
-> NetInjection:false NetDevices:false NetReset:false Cgroups:false 
-> BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false 
-> VhciInjection:false Wifi:false IEEE802154:false Sysctl:false 
-> UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-> r0 = bpf$MAP_CREATE(0x0, &(0x7f0000001480)={0x1e, 0x0, 0x2, 0x2, 0x0, 
-> 0x1}, 0x40)
-> bpf$MAP_GET_NEXT_KEY(0x4, &(0x7f0000000080)={r0, 0x0, 0x0}, 0x20)
->
->
-> C reproducer:
-> #endif /* REF */
-> // autogenerated by syzkaller (https://github.com/google/syzkaller)
->
-> #define _GNU_SOURCE
->
-> #include <endian.h>
-> #include <stdint.h>
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <sys/syscall.h>
-> #include <sys/types.h>
-> #include <unistd.h>
->
-> #ifndef __NR_bpf
-> #define __NR_bpf 321
-> #endif
->
-> uint64_t r[1] = {0xffffffffffffffff};
->
-> int main(void)
-> {
->         syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->     syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->     syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->                 intptr_t res = 0;
-> *(uint32_t*)0x20001480 = 0x1e;
-> *(uint32_t*)0x20001484 = 0;
-> *(uint32_t*)0x20001488 = 2;
-> *(uint32_t*)0x2000148c = 2;
-> *(uint32_t*)0x20001490 = 0;
-> *(uint32_t*)0x20001494 = 1;
-> *(uint32_t*)0x20001498 = 0;
-> memset((void*)0x2000149c, 0, 16);
-> *(uint32_t*)0x200014ac = 0;
-> *(uint32_t*)0x200014b0 = -1;
-> *(uint32_t*)0x200014b4 = 0;
-> *(uint32_t*)0x200014b8 = 0;
-> *(uint32_t*)0x200014bc = 0;
->     res = syscall(__NR_bpf, 0ul, 0x20001480ul, 0x40ul);
->     if (res != -1)
->         r[0] = res;
-> *(uint32_t*)0x20000080 = r[0];
-> *(uint64_t*)0x20000088 = 0;
-> *(uint64_t*)0x20000090 = 0;
-> *(uint64_t*)0x20000098 = 0;
->     syscall(__NR_bpf, 4ul, 0x20000080ul, 0x20ul);
->     return 0;
-> }
->
-> George
->
-Hi Daniel,
+> For egress, there is bpf_setsockopt() for IP_TOS and IPV6_TCLASS and it c=
+an be called in other cgroup hooks. e.g.
+> BPF_PROG_TYPE_SOCK_OPS during tcp ESTABLISHED event.
+> There is an example in tools/testing/selftests/bpf/progs/test_tcpbpf_kern=
+.c.
+> Is it enough for egress?
 
-I missed another set of kvmallocs. Here's another report and reproducer:
-
-Syzkaller hit 'WARNING: kmalloc bug in bpf' bug.
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 15091 at mm/util.c:597 kvmalloc_node+0x11d/0x130 mm/util.c:597
-Modules linked in:
-CPU: 1 PID: 15091 Comm: syz-executor949 Not tainted 5.16.0-rc5-syzk #1
-Hardware name: Red Hat KVM, BIOS 1.13.0-2.module+el8.3.0+7860+a7792d29 04/01/2014
-RIP: 0010:kvmalloc_node+0x11d/0x130 mm/util.c:597
-Code: 01 00 00 00 48 89 df e8 01 4f 0c 00 49 89 c5 e9 68 ff ff ff e8 b4 82 ca ff 45 89 e5 41 81 cd 00 20 01 00 eb 95 e8 a3 82 ca ff <0f> 0b e9 4b ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44
-RSP: 0018:ffff888017687b50 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000080000001 RCX: ffffffff81b63b8a
-RDX: 0000000000000000 RSI: ffff888101916500 RDI: 0000000000000002
-RBP: ffff888017687b70 R08: 0000000000112cc0 R09: 00000000ffffffff
-R10: 0000000000000000 R11: ffffed1004a71db0 R12: 0000000000102cc0
-R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888025092800
-FS:  00007f0794bc3740(0000) GS:ffff888107880000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000500 CR3: 00000000299d0000 CR4: 00000000000006e0
-Call Trace:
-  <TASK>
-  kvmalloc include/linux/slab.h:741 [inline]
-  map_lookup_elem kernel/bpf/syscall.c:1099 [inline]
-  __sys_bpf+0x415b/0x5a80 kernel/bpf/syscall.c:4618
-  __do_sys_bpf kernel/bpf/syscall.c:4737 [inline]
-  __se_sys_bpf kernel/bpf/syscall.c:4735 [inline]
-  __x64_sys_bpf+0x7a/0xc0 kernel/bpf/syscall.c:4735
-  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
-  do_syscall_64+0x3a/0x80 arch/x86/entry/common.c:80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f07944ba289
-Code: 01 00 48 81 c4 80 00 00 00 e9 f1 fe ff ff 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b7 db 2c 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffc3a07dcd8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f07944ba289
-RDX: 0000000000000020 RSI: 0000000020000240 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004006d0
-R13: 00007ffc3a07ddc0 R14: 0000000000000000 R15: 0000000000000000
-  </TASK>
----[ end trace 67ed3be15b904c13 ]---
-
-
-Syzkaller reproducer:
-# {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1 Slowdown:1 Sandbox: Fault:false FaultCall:-1 FaultNth:0 Leak:false NetInjection:false NetDevices:false NetReset:false Cgroups:false BinfmtMisc:false CloseFDs:false KCSAN:false DevlinkPCI:false USB:false VhciInjection:false Wifi:false IEEE802154:false Sysctl:false UseTmpDir:false HandleSegv:false Repro:false Trace:false}
-r0 = bpf$MAP_CREATE(0x0, &(0x7f0000000500)={0x1e, 0x0, 0x80000001, 0x1, 0x0, 0x1}, 0x40)
-bpf$MAP_LOOKUP_ELEM(0x1, &(0x7f0000000240)={r0, 0x0, 0x0}, 0x20)
-
-
-C reproducer:
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <endian.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-uint64_t r[1] = {0xffffffffffffffff};
-
-int main(void)
-{
-		syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-	syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
-	syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
-				intptr_t res = 0;
-*(uint32_t*)0x20000500 = 0x1e;
-*(uint32_t*)0x20000504 = 0;
-*(uint32_t*)0x20000508 = 0x80000001;
-*(uint32_t*)0x2000050c = 1;
-*(uint32_t*)0x20000510 = 0;
-*(uint32_t*)0x20000514 = 1;
-*(uint32_t*)0x20000518 = 0;
-memset((void*)0x2000051c, 0, 16);
-*(uint32_t*)0x2000052c = 0;
-*(uint32_t*)0x20000530 = -1;
-*(uint32_t*)0x20000534 = 0;
-*(uint32_t*)0x20000538 = 0;
-*(uint32_t*)0x2000053c = 0;
-	res = syscall(__NR_bpf, 0ul, 0x20000500ul, 0x40ul);
-	if (res != -1)
-		r[0] = res;
-*(uint32_t*)0x20000240 = r[0];
-*(uint64_t*)0x20000248 = 0;
-*(uint64_t*)0x20000250 = 0;
-*(uint64_t*)0x20000258 = 0;
-	syscall(__NR_bpf, 1ul, 0x20000240ul, 0x20ul);
-	return 0;
-}
-
-
-It seems like kvmalloc and its friends are used with no size check
-throughout the kernel. It seems like the commit that returned
-ZERO_SIZE_PTR ((void *)16) should be backed out.
-
-Should I send out a v2 of the patch including the other kvmalloc
-calls or do you have a suggested fix?
-
-Thanks,
-George
-
->>
->> Thanks,
->> Daniel
->
-
+Using bpf_setsockopt() has 2 issues: 1) it changes the userspace visible st=
+ate 2) won't work with udp sendmsg cmsg
