@@ -2,53 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD0947CA46
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 01:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36AD447CA71
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 01:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239434AbhLVAe0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Dec 2021 19:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44032 "EHLO
+        id S232757AbhLVAhP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Dec 2021 19:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229674AbhLVAeZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Dec 2021 19:34:25 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E7E5C061574
-        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:34:25 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id z26so712539iod.10
-        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:34:25 -0800 (PST)
+        with ESMTP id S231443AbhLVAhP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Dec 2021 19:37:15 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5BAC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:37:14 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id q5so742443ioj.7
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:37:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AYR0lSf9TmmMk65SxZgDN9d6ebL8hkH2jGS7+vxBIBA=;
-        b=TWDAqGjxfGAToErMCHTJ5lw7PMb/K7TmJB+XPBFQvn2/KIO8fNDx5s8YuV17BeUZSV
-         VqZdC0SqQJGCLdaFQMCpPjUmI/zJWGRv9RkbO5L/V+tZ0cUlyTYuoiTVVCpr89YK3KE+
-         6tVvTydN2dH3iddtAl0rTwKRHQjijZtnKjQG8t6YAYXJ63hlJKaOEGG93YETAPAI4DNm
-         OCOnbynzJOwoGEtSz3R6eunAvQ36Vp+9ODcilY08YRoLMbjvXZmmFCrbqWcIBIGWQxg8
-         w45g4EvyRPQBwBjjl5ZsxaLzFhXhy7LcnOcHRGnOzO16xlDKXBPJZoRb2aMmsAzbe4/L
-         89dg==
+        bh=9HgnwF0UodCmTO2Oi7QC00JjdOKO6Cpn7my6He+TCmk=;
+        b=iw9gyaf96EAOY+jr09lm4YQid0uWNsHxk2pgAec34K5ZiltMfVQZT/FFXHWUN+PdUU
+         QcsGJngoZMMVirGIwD6/RBOZxVymzm58E/XqEyTVnwwnSOZN7p5vAUMJ/+8Sq9CzqpO7
+         Ib5VCOJYwAaCfJ1AwasPwIeKyni4Ysqq+ClrZfKNKc97eKb7hlNdz6gBmRh6JQmVHZCy
+         HK15CGhTCRRAMsA3veD6p67aTI9V1yPh2v6xjuP3AZBqS5hwb9vxeAFtKPNIuga62TsV
+         kEwgI9VN2qV9YL8ISyoK8VwCLLBMyAREoIDSHIlgajrzEzZDSXJPeb9hlC2IUbkakrhZ
+         huOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AYR0lSf9TmmMk65SxZgDN9d6ebL8hkH2jGS7+vxBIBA=;
-        b=1AoW6rQ/kXOCA37giWDoWTuIuaIh+RvjPc1OSa6PzvFaMCyf3TKp/HIligCiz/YUet
-         p+N4bptun3TZ0Ehz2/Tb2R61e5ln6g107vQAwRtTy4x+Rfos8G4pU0RVPKYOt4OU2TPr
-         TrovkPycOCxmCyrOb8f1IuWYPfejx2ygSWJsPxZNTD4UXe30eYBDB3npdDA/Bx4TX6+O
-         UyP02P+NbabK8rM3vYW8D4f8q11n6nnoNWm4WZYmy01EZrtC5uTRZzeg7dXPVoIAdSAy
-         MByNe4pWJXTVGaxE8K1WiFV9NhiW5UaCp+fr7VoSUs3yt+yotld1qJiWYIR3uko1z5sX
-         Qk3g==
-X-Gm-Message-State: AOAM530u1Oeh4N8tGGw2WSRpIJH0UCx0QK541LS8scDvIKiZNl6P20cM
-        8iDeF18aVqgbflekWTm0sYJ5IPq3CDqeiHKPoRWOFVfY
-X-Google-Smtp-Source: ABdhPJztevFSKo6DI3jaT+rpAoKMxqZl7OMhgheLKVG/9OeQIWhHBQBHNnvl732nbhCLalerRphgrR1Avy43xvbI9Hw=
-X-Received: by 2002:a6b:3b51:: with SMTP id i78mr280698ioa.63.1640133264534;
- Tue, 21 Dec 2021 16:34:24 -0800 (PST)
+        bh=9HgnwF0UodCmTO2Oi7QC00JjdOKO6Cpn7my6He+TCmk=;
+        b=yz/CZbj5QcqYQVeG0u/Yw1B2dn44z/KsbGw3Jl7aZLxwobxOY0F4FdZMF9kvgRLJ9Z
+         QV5SMhKH4fOxYRaYDk4/OYxHExufWWOzr1JPwGfFCVZsLyG5zMw4dSIk805ZbJv1gY5L
+         quoD2ZKVg8i1jWJu7jLr0FvgQ9Lm0wnW/fb86OjoFkuAVTvX33QTA+hphYP0zgJvMuO2
+         6kLGt7BzraQQrUXN3J/qC8aaqGjkC2fw7T7/YYQFyE450aCiEL8n2jvrHJpmFuHBus/x
+         JBSJe2o38x0D/Sp0RrwddIFnE8u4IgXJpnGsQpu1STeQELyURpNdwAW4wOlFjbbJoko2
+         KyLA==
+X-Gm-Message-State: AOAM532KRrMqJM8bWF8kAkjjYgXqbZC6qK46yZzEcUKB9hHZ/J1Bxu7A
+        55hyZVbD9DoUrPwk4x06X7sWfPcLqGi8ITMvH8s=
+X-Google-Smtp-Source: ABdhPJyIrpoDdW2SaqNIiTM7q6q8Ye2XP5eWdJb8Pbs9A+IxPahWDxJS7U3eiArKRYOJIUqDDJeBKz5/r24DQd1811Y=
+X-Received: by 2002:a05:6638:1193:: with SMTP id f19mr314731jas.237.1640133434263;
+ Tue, 21 Dec 2021 16:37:14 -0800 (PST)
 MIME-Version: 1.0
 References: <20211221055312.3371414-1-hengqi.chen@gmail.com> <20211221055312.3371414-3-hengqi.chen@gmail.com>
 In-Reply-To: <20211221055312.3371414-3-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Dec 2021 16:34:13 -0800
-Message-ID: <CAEf4BzarZ4yrtHcnbHrMwgEEhER7v5U8Hj1Qv0_eutQ2fGJSJA@mail.gmail.com>
+Date:   Tue, 21 Dec 2021 16:37:03 -0800
+Message-ID: <CAEf4BzZ+UHAoAVwgjafAcfZa=c7cSLiLUY8OvpfKk9N4gO7zYQ@mail.gmail.com>
 Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test BPF_KPROBE_SYSCALL/BPF_KRETPROBE_SYSCALL
  macros
 To:     Hengqi Chen <hengqi.chen@gmail.com>
@@ -91,12 +91,6 @@ On Mon, Dec 20, 2021 at 9:54 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 > +
 > +       skel = test_kprobe_syscall__open();
 > +       if (!ASSERT_OK_PTR(skel, "could not open BPF object"))
-
-"could not open BPF object" is not an error message, it's an
-identifier of what you are checking (skel here).  If assertion fails,
-we'll see something like: "<identifier> is not a valid pointer". So
-please pick it properly here and below.
-
 > +               return;
 > +
 > +       skel->rodata->my_pid = getpid();
@@ -110,15 +104,8 @@ please pick it properly here and below.
 > +               goto cleanup;
 > +
 > +       fd = socket(AF_UNIX, SOCK_STREAM, 0);
-
-maybe use something non-zero for the 3rd argument? Also see discussion
-on previous patch, let's test something that has at least 4 arguments.
-
 > +
 > +       ASSERT_GT(fd, 0, "socket failed");
-
-see comment below, it should be GE
-
 > +       ASSERT_EQ(skel->bss->domain, AF_UNIX, "BPF_KPROBE_SYSCALL failed");
 > +       ASSERT_EQ(skel->bss->type, SOCK_STREAM, "BPF_KPROBE_SYSCALL failed");
 > +       ASSERT_EQ(skel->bss->protocol, 0, "BPF_KPROBE_SYSCALL failed");
@@ -126,11 +113,63 @@ see comment below, it should be GE
 > +
 > +cleanup:
 > +       if (fd)
-
-it's highly unlikely, but for FDs the check should be >= 0
-
 > +               close(fd);
 > +       test_kprobe_syscall__destroy(skel);
 > +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+> new file mode 100644
+> index 000000000000..ecef9d19007c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+> @@ -0,0 +1,41 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Hengqi Chen */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include <bpf/bpf_core_read.h>
+> +
+> +const volatile pid_t my_pid = 0;
+> +int domain = 0;
+> +int type = 0;
+> +int protocol = 0;
+> +int fd = 0;
+> +
+> +SEC("kprobe/__x64_sys_socket")
+> +int BPF_KPROBE_SYSCALL(socket_enter, int d, int t, int p)
+> +{
+> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
+> +
+> +       if (pid != my_pid)
+> +               return 0;
+> +
+> +       domain = d;
+> +       type = t;
+> +       protocol = p;
+> +       return 0;
+> +}
+> +
+> +SEC("kretprobe/__x64_sys_socket")
 
-[...]
+oh, please also use SYS_PREFIX instead of hard-coding __x64. This is
+very x86-64-specific and we have other architectures tested by
+selftests, so this makes it automatically fail on non-x86_64.
+
+If you get a chance, try also cleaning up other __x64_ uses in the
+selftests as a separate patch. Thank you!
+
+> +int BPF_KRETPROBE_SYSCALL(socket_exit, int ret)
+> +{
+> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
+> +
+> +       if (pid != my_pid)
+> +               return 0;
+> +
+> +       fd = ret;
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.30.2
