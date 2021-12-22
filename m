@@ -2,174 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36AD447CA71
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 01:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6F347CAA3
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 02:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232757AbhLVAhP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Dec 2021 19:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S240367AbhLVBGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Dec 2021 20:06:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231443AbhLVAhP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Dec 2021 19:37:15 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5BAC061574
-        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:37:14 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id q5so742443ioj.7
-        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:37:14 -0800 (PST)
+        with ESMTP id S240381AbhLVBGG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Dec 2021 20:06:06 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E309C061574
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 17:06:06 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id 131so830941qkk.2
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 17:06:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9HgnwF0UodCmTO2Oi7QC00JjdOKO6Cpn7my6He+TCmk=;
-        b=iw9gyaf96EAOY+jr09lm4YQid0uWNsHxk2pgAec34K5ZiltMfVQZT/FFXHWUN+PdUU
-         QcsGJngoZMMVirGIwD6/RBOZxVymzm58E/XqEyTVnwwnSOZN7p5vAUMJ/+8Sq9CzqpO7
-         Ib5VCOJYwAaCfJ1AwasPwIeKyni4Ysqq+ClrZfKNKc97eKb7hlNdz6gBmRh6JQmVHZCy
-         HK15CGhTCRRAMsA3veD6p67aTI9V1yPh2v6xjuP3AZBqS5hwb9vxeAFtKPNIuga62TsV
-         kEwgI9VN2qV9YL8ISyoK8VwCLLBMyAREoIDSHIlgajrzEzZDSXJPeb9hlC2IUbkakrhZ
-         huOA==
+        bh=URvwdgBa4iT/HxTcqN5UHt4bzLe//3fi8I/mIeMv9Sk=;
+        b=UoUxNws9Q7R6gv/F49dAK1CX+7jFX8d+2BCyaQOn4MeK3cUbiQPUUGE+3j+giskwlO
+         C5RsrSe+i+YIXy+gkcl+uo94l7k/Qg9ixMKJ+FBiIadMsOeM+sTS5JVpT4lgM/WjA0rv
+         /KdM4nRSeZn9qntV/FgJAombYCkglxUyKnYRxYna62DVa3LWEJ3eyGaJujsT9cDILKfW
+         CBL7at2+tGVlAxrWL1pjt8tzJufQHbbaD+7i1pIYdQT8D3IWe281iCwhX0WUeeObZQYf
+         PXXdGVS2gQodj/a6VLOO4mHB4SMgPKUooMT5tk3bnpFHTM8ywtJEZ4ocTFvjS0m0IA3Q
+         R8Hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9HgnwF0UodCmTO2Oi7QC00JjdOKO6Cpn7my6He+TCmk=;
-        b=yz/CZbj5QcqYQVeG0u/Yw1B2dn44z/KsbGw3Jl7aZLxwobxOY0F4FdZMF9kvgRLJ9Z
-         QV5SMhKH4fOxYRaYDk4/OYxHExufWWOzr1JPwGfFCVZsLyG5zMw4dSIk805ZbJv1gY5L
-         quoD2ZKVg8i1jWJu7jLr0FvgQ9Lm0wnW/fb86OjoFkuAVTvX33QTA+hphYP0zgJvMuO2
-         6kLGt7BzraQQrUXN3J/qC8aaqGjkC2fw7T7/YYQFyE450aCiEL8n2jvrHJpmFuHBus/x
-         JBSJe2o38x0D/Sp0RrwddIFnE8u4IgXJpnGsQpu1STeQELyURpNdwAW4wOlFjbbJoko2
-         KyLA==
-X-Gm-Message-State: AOAM532KRrMqJM8bWF8kAkjjYgXqbZC6qK46yZzEcUKB9hHZ/J1Bxu7A
-        55hyZVbD9DoUrPwk4x06X7sWfPcLqGi8ITMvH8s=
-X-Google-Smtp-Source: ABdhPJyIrpoDdW2SaqNIiTM7q6q8Ye2XP5eWdJb8Pbs9A+IxPahWDxJS7U3eiArKRYOJIUqDDJeBKz5/r24DQd1811Y=
-X-Received: by 2002:a05:6638:1193:: with SMTP id f19mr314731jas.237.1640133434263;
- Tue, 21 Dec 2021 16:37:14 -0800 (PST)
+        bh=URvwdgBa4iT/HxTcqN5UHt4bzLe//3fi8I/mIeMv9Sk=;
+        b=j1k4fUHTeXY8OR2CL0SmK/nEZuFwhogSD4vntz8lebZW+wosvroou1BOb3rX9QHzto
+         ZMftSldldrebUU10RsMPQRrF7HHwJFnTLdxrgMTRWE3IeH7qP3oRV7zK6SkLO3mPPC7g
+         xJwxC9BKSVr34w+DZJyyYHfGWKzYOyWnKrELrw3sJxUXTAqdgnB8eXO7WtT5EGnAAjXY
+         6oI+Vt4HO4ysIMW+UFTBs/497uzVV3aIs5gB1iAeHeDSxtApegtMBOi2+32j23+A7lRK
+         +RXlrjrrlJfcI5LT0YPq0hPIuj16NZ9kBsVJCXkkPso7Q4eoz25d1/rGOs/Y4iDBA3SB
+         j9ow==
+X-Gm-Message-State: AOAM5325lzHO5rDjS1bV+qsqSl0hZdEnxDzircnQiyS9GnqwOTkwee51
+        F3wxD1ESwS0raQighHmBVtXPgjH6R8S5SEIOFvmItg==
+X-Google-Smtp-Source: ABdhPJzF/zejOTH8faPcsQzwdpE17eCL3I6vNfyg9I3WoQ4lwofeib8/E0q7IUdgxxYtZg6/z0w8pNnVY1algKacdVc=
+X-Received: by 2002:a05:620a:454d:: with SMTP id u13mr676312qkp.221.1640135165088;
+ Tue, 21 Dec 2021 17:06:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20211221055312.3371414-1-hengqi.chen@gmail.com> <20211221055312.3371414-3-hengqi.chen@gmail.com>
-In-Reply-To: <20211221055312.3371414-3-hengqi.chen@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Dec 2021 16:37:03 -0800
-Message-ID: <CAEf4BzZ+UHAoAVwgjafAcfZa=c7cSLiLUY8OvpfKk9N4gO7zYQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Test BPF_KPROBE_SYSCALL/BPF_KRETPROBE_SYSCALL
- macros
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+References: <20211220201204.653248-1-haoluo@google.com> <cd32b6d2-bbca-7442-419a-653f0fb5c3c7@fb.com>
+ <CA+khW7iVPr-AWZwD61MkZHUhPowOVK98qMPnkhAh-GCRncSJEA@mail.gmail.com> <CAEf4BzY6s0hh52dn4QB9uFkk7HsxAfebkaKP6GxmUEds_4nU6Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzY6s0hh52dn4QB9uFkk7HsxAfebkaKP6GxmUEds_4nU6Q@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 21 Dec 2021 17:05:53 -0800
+Message-ID: <CA+khW7gtxOqDJzL+VbFQkPv3XQXnEndFNUZeVg2p5LQBm1J48g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf/selftests: Test bpf_d_path on rdonly_mem.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 9:54 PM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+On Tue, Dec 21, 2021 at 4:24 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Add tests for the newly added BPF_KPROBE_SYSCALL/BPF_KRETPROBE_SYSCALL macros.
+> On Tue, Dec 21, 2021 at 12:16 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > On Mon, Dec 20, 2021 at 8:28 PM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > >
+> > > On 12/20/21 12:12 PM, Hao Luo wrote:
+> > > > The second parameter of bpf_d_path() can only accept writable
+> > > > memories. rdonly_mem obtained from bpf_per_cpu_ptr() can not
+> > > > be passed into bpf_d_path for modification. This patch adds
+> > > > a selftest to verify this behavior.
+> > > >
+> > > > Signed-off-by: Hao Luo <haoluo@google.com>
+> > > > ---
+> > > >   .../testing/selftests/bpf/prog_tests/d_path.c | 22 +++++++++++++-
+> > > >   .../bpf/progs/test_d_path_check_rdonly_mem.c  | 30 +++++++++++++++++++
+> > > >   2 files changed, 51 insertions(+), 1 deletion(-)
+> > > >   create mode 100644 tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > > > index 0a577a248d34..f8d8c5a5dfba 100644
+> > > > --- a/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > > > +++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+> > > > @@ -9,6 +9,7 @@
+> > > >   #define MAX_FILES           7
+> > > >
+> > > >   #include "test_d_path.skel.h"
+> > > > +#include "test_d_path_check_rdonly_mem.skel.h"
+> > > >
+> > > >   static int duration;
+> > > >
+> > > > @@ -99,7 +100,7 @@ static int trigger_fstat_events(pid_t pid)
+> > > >       return ret;
+> > > >   }
+> > > >
+> > > > -void test_d_path(void)
+> > > > +static void test_d_path_basic(void)
+> > > >   {
+> > > >       struct test_d_path__bss *bss;
+> > > >       struct test_d_path *skel;
+> > > > @@ -155,3 +156,22 @@ void test_d_path(void)
+> > > >   cleanup:
+> > > >       test_d_path__destroy(skel);
+> > > >   }
+> > > > +
+> > > > +static void test_d_path_check_rdonly_mem(void)
+> > > > +{
+> > > > +     struct test_d_path_check_rdonly_mem *skel;
+> > > > +
+> > > > +     skel = test_d_path_check_rdonly_mem__open_and_load();
+> > > > +     ASSERT_ERR_PTR(skel, "unexpected load of a prog using d_path to write rdonly_mem\n");
+> > > > +
+> > > > +     test_d_path_check_rdonly_mem__destroy(skel);
+> > >
+> > > You shouldn't call test_d_path_check_rdonly_mem__destroy(skel) if skel
+> > > is an ERR_PTR. Maybe
+> > >         if (!ASSERT_ERR_PTR(...))
+> > >                 test_d_path_check_rdonly_mem__destroy(skel);
+> > >
+> >
+> > Ack. Will change that.
 >
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/kprobe_syscall.c | 40 ++++++++++++++++++
->  .../selftests/bpf/progs/test_kprobe_syscall.c | 41 +++++++++++++++++++
->  2 files changed, 81 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+> no need, __destroy() handles NULLs and ERR_PTR just fine, the way you
+> wrote it is totally correct (that's a deliberate nice feature of
+> libbpf's "destructor" APIs)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
-> new file mode 100644
-> index 000000000000..a1fad70bbb69
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
-> @@ -0,0 +1,40 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Hengqi Chen */
-> +
-> +#include <test_progs.h>
-> +#include <sys/types.h>
-> +#include <sys/socket.h>
-> +#include "test_kprobe_syscall.skel.h"
-> +
-> +void test_kprobe_syscall(void)
-> +{
-> +       struct test_kprobe_syscall *skel;
-> +       int err, fd = 0;
-> +
-> +       skel = test_kprobe_syscall__open();
-> +       if (!ASSERT_OK_PTR(skel, "could not open BPF object"))
-> +               return;
-> +
-> +       skel->rodata->my_pid = getpid();
-> +
-> +       err = test_kprobe_syscall__load(skel);
-> +       if (!ASSERT_OK(err, "could not load BPF object"))
-> +               goto cleanup;
-> +
-> +       err = test_kprobe_syscall__attach(skel);
-> +       if (!ASSERT_OK(err, "could not attach BPF object"))
-> +               goto cleanup;
-> +
-> +       fd = socket(AF_UNIX, SOCK_STREAM, 0);
-> +
-> +       ASSERT_GT(fd, 0, "socket failed");
-> +       ASSERT_EQ(skel->bss->domain, AF_UNIX, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->type, SOCK_STREAM, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->protocol, 0, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->fd, fd, "BPF_KRETPROBE_SYSCALL failed");
-> +
-> +cleanup:
-> +       if (fd)
-> +               close(fd);
-> +       test_kprobe_syscall__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
-> new file mode 100644
-> index 000000000000..ecef9d19007c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
-> @@ -0,0 +1,41 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2021 Hengqi Chen */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_core_read.h>
-> +
-> +const volatile pid_t my_pid = 0;
-> +int domain = 0;
-> +int type = 0;
-> +int protocol = 0;
-> +int fd = 0;
-> +
-> +SEC("kprobe/__x64_sys_socket")
-> +int BPF_KPROBE_SYSCALL(socket_enter, int d, int t, int p)
-> +{
-> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid != my_pid)
-> +               return 0;
-> +
-> +       domain = d;
-> +       type = t;
-> +       protocol = p;
-> +       return 0;
-> +}
-> +
-> +SEC("kretprobe/__x64_sys_socket")
 
-oh, please also use SYS_PREFIX instead of hard-coding __x64. This is
-very x86-64-specific and we have other architectures tested by
-selftests, so this makes it automatically fail on non-x86_64.
+Yep. That's also my understanding.
 
-If you get a chance, try also cleaning up other __x64_ uses in the
-selftests as a separate patch. Thank you!
+> >
+> > I don't know if it's only me: I find it confusing when figuring out
+> > what ASSERT_ERR_PTR(ptr) returns. Is the returned value 'ptr'? or 'ptr
+> > != NULL'? or 'err != 0'? I used to think ASSERT-like function/macro
+> > returns nothing.
+> >
+>
+> You haven't looked at many other selftests, I presume. All the
+> ASSERT_xxx() macros return true/false depending whether the assertion
+> holds or not. ASSERT_ERR_PTR() checks that ptr *is* erroneous (which
+> is NULL and ERR_PTR). If it's not, it returns false. So
+>
+> if (!ASSERT_ERR_PTR(ptr, "short_descriptor"))
+>    /* do something if assertion failed */
+>
+> is a common pattern.
+>
+> Note also "short_descriptor", it's not supposed to be a long
+> descriptive sentences, it's sort of a "codename" of the particular
+> check. It's not illegal to use space-separated sentence, but better to
+> keep it short and identifier-like.
+>
 
-> +int BPF_KRETPROBE_SYSCALL(socket_exit, int ret)
-> +{
-> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid != my_pid)
-> +               return 0;
-> +
-> +       fd = ret;
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.30.2
+I see. Thanks for the explanation.
+
+> > I noticed that xxx__destroy has a check for NULL, so I put the destroy
+> > function unconditionally.
+> >
+> > > > +}
+> > > > +
+> > > > +void test_d_path(void)
+> > > > +{
+> > > > +     if (test__start_subtest("basic"))
+> > > > +             test_d_path_basic();
+> > > > +
+> > > > +     if (test__start_subtest("check_rdonly_mem"))
+> > > > +             test_d_path_check_rdonly_mem();
+> > > > +}
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c b/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+> > > > new file mode 100644
+> > > > index 000000000000..c7a9655d5850
+> > > > --- /dev/null
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+> > > > @@ -0,0 +1,30 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/* Copyright (c) 2021 Google */
+> > > > +
+> > > > +#include "vmlinux.h"
+> > > > +
+> > > > +#include "vmlinux.h"
+> > >
+> > > duplicated vmlinux.h.
+> > >
+> >
+> > Thanks. Will fix that.
+> >
+> > > > +#include <bpf/bpf_helpers.h>
+> > > > +#include <bpf/bpf_tracing.h>
+> > > > +
+> > > > +extern const int bpf_prog_active __ksym;
+> > > > +
+> > > > +SEC("fentry/security_inode_getattr")
+> > > > +int BPF_PROG(d_path_check_rdonly_mem, struct path *path, struct kstat *stat,
+> > > > +          __u32 request_mask, unsigned int query_flags)
+> > > > +{
+> > > > +     char *active;
+> > >
+> > > int *active?
+> > > It may not matter since the program is rejected by the kernel but
+> > > with making it conforms to kernel definition we have one less thing
+> > > to worry about the verification.
+> > >
+> >
+> > Because bpf_d_path() accepts 'char *' instead of 'int *', I need to
+> > cast 'active' to 'char *' somewhere, otherwise the compiler will issue
+> > a warning. To combine with your comment, maybe the following:
+> >
+> > int *active;
+> > active = (int *)bpf_per_cpu_ptr(...);
+> > ...
+> > bpf_d_path(path, (char *)active, sizeof(int));
+> >
+>
+> why not `void *`?
+>
+
+'void *' works. Just haven't thought about that.
+
+> > > > +     __u32 cpu;
+> > > > +
+> > > > +     cpu = bpf_get_smp_processor_id();
+> > > > +     active = (char *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
+> > >
+> > > int *
+> > >
+> > > > +     if (active) {
+> > > > +             /* FAIL here! 'active' is a rdonly_mem. bpf helpers that
+> > >
+> > > 'active' points to readonly memory.
+> > >
+> >
+> > Ack.
+> >
+> > > > +              * update its arguments can not write into it.
+> > > > +              */
+> > > > +             bpf_d_path(path, active, sizeof(int));
+> > > > +     }
+> > > > +     return 0;
+> > > > +}
+> > > > +
+> > > > +char _license[] SEC("license") = "GPL";
