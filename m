@@ -2,257 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BE447CDA4
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 08:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D83B47D06D
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 12:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243046AbhLVHnc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 02:43:32 -0500
-Received: from mx08-001d1705.pphosted.com ([185.183.30.70]:39294 "EHLO
-        mx08-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231422AbhLVHnb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Dec 2021 02:43:31 -0500
-Received: from pps.filterd (m0209322.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BLNx8Wp006816;
-        Wed, 22 Dec 2021 05:52:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=S1;
- bh=LGdg6yM1M+YBt/CFSy0kKytDqe2XRcoyLAA1yjAaQuM=;
- b=FKPMkYQIUyc7cX3iwP606qeS6jl5JToka34f1tsxT4Z6Z6/WXUrypDUI5rYitSdCriZJ
- InrzdFTKWZI+MZKrDyD6qt9QRLasWiizz7jiVX+hYndtod54cIV/OIRybKoiHQYZgdGk
- IHlPSdRVclNEjMdQhOR9bZvFmuZgFsKhAPNUKrlRx9GuiemoO++dOfhca9pwC33YgNUF
- JHFARrA8djPai0Ngam/EonLvdCqrFVyqE3dioW+5j6rpxSkUyxzxnOovPZ7yzvHg5jag
- F54wlIni5sle0RmAOFR/PuAPeaqDlKs4cKb8I1nPSgTyHse4yqT4+YG6jBeWcpnUBzj+ aA== 
-Received: from jpn01-os0-obe.outbound.protection.outlook.com (mail-os0jpn01lp2111.outbound.protection.outlook.com [104.47.23.111])
-        by mx08-001d1705.pphosted.com with ESMTP id 3d16e6vhjc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 22 Dec 2021 05:52:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KhJoyn9I50HRGoLkr9K5F+z3KJAIZGa6c2ebb+/eKMCsT6l4khPVRJSBi7/OZ810rakRL7DZjpDg77NGUOEjrSQMbik9lc7BXKN50FeZlcDIhEdNVZgIXpePTMi7FL9lAvNqWMzY/R3aH8yQbfy7T7pm/uO/TvF2Ss5EwVKV6DyUPh0Gc3SMXo436zn39RC+fdpEv78xdADBzbn9Y0ctAK0RbnFzpw6z6tHI8NUfYPI1KVaiMtl3cYWDAWS7vDFhALTgIVEjmj1hjDWOFaAJZnxUzx1uz786E1h7Q25TDslvu+ESHIv7lAeJW9v47xLqhty6xyPQvZGE3SlB6nFJlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LGdg6yM1M+YBt/CFSy0kKytDqe2XRcoyLAA1yjAaQuM=;
- b=LPaqkbAbeq/oAO5GaePwDQYmORgVzTl4zjMgEhNP+GvWKoR6ql5zW7jHlIkqZUltcAfPDo5iExs1GZbZFSJU9YidgrGEfNP+L7eWFYWKQ+SW07GmvAsp6iiRh/c348TbDvuXb8sPhQMPxlH5gWuRvn3FD77AG/82E4gZDlosHsUZtIlPKtP2cHZ9jU2euzKhBHMUkBfytKhPoLcTav9fWNqMsPjlt43HKsOJ/kEVyJbkhKuS0f1+UyyWn8oSyCFGj1P1Ld0P+tumo59PL+r0elII/uWyyj1/tLsfV9Yf7FeQQVd9ajHlDkf28zYU09sHtCPOC+6JERl0QuaHGExVHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-Received: from TYCPR01MB5936.jpnprd01.prod.outlook.com (2603:1096:400:42::10)
- by TYAPR01MB5820.jpnprd01.prod.outlook.com (2603:1096:404:8053::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.18; Wed, 22 Dec
- 2021 05:51:58 +0000
-Received: from TYCPR01MB5936.jpnprd01.prod.outlook.com
- ([fe80::f814:f7e:f65c:3147]) by TYCPR01MB5936.jpnprd01.prod.outlook.com
- ([fe80::f814:f7e:f65c:3147%6]) with mapi id 15.20.4823.018; Wed, 22 Dec 2021
- 05:51:58 +0000
-From:   <Kenta.Tada@sony.com>
-To:     <andrii.nakryiko@gmail.com>, <yhs@fb.com>
-CC:     <andrii@kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>
-Subject: RE: [PATCH] libbpf: Fix the incorrect register read for syscalls on
- x86_64
-Thread-Topic: [PATCH] libbpf: Fix the incorrect register read for syscalls on
- x86_64
-Thread-Index: Adf2Wq/aKz/L3iqWSU+AnW3rkIDyVQAJ9cIAAA7tG4AAC30MAA==
-Date:   Wed, 22 Dec 2021 05:51:57 +0000
-Message-ID: <TYCPR01MB593607100AD90D252D94F8DFF57D9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
-References: <TYCPR01MB59360988D96E23FBA97DAE0AF57C9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
- <0d380bb2-13df-d934-a873-f2f10279dbb2@fb.com>
- <CAEf4BzaJLZP-Y5deE8fB=YJSNZA-meHT8pgU4G0xvV-aMvV0HA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaJLZP-Y5deE8fB=YJSNZA-meHT8pgU4G0xvV-aMvV0HA@mail.gmail.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e45a01ad-d600-4b22-f166-08d9c50f2ac9
-x-ms-traffictypediagnostic: TYAPR01MB5820:EE_
-x-microsoft-antispam-prvs: <TYAPR01MB58200E7C2638057C658F2C23F57D9@TYAPR01MB5820.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2276;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: SYWls1VmuRzOuDM+addl8zbTOdjMXs+G4wivC64dXaSwaN6MzkEvDkZcT1Cgw0zCimJVn0r/HrQ6m7ExoEPqizl0mvbitfPG9zz/7eV6GWuizLD6PxWJPBTrRJuuRsTYnO1OXbiWwsltODrXFd/Cd7Nfq1cpqXanz0puTBvMArmEq3sQCJ2DHWZOHBntfmJprWN2bATOzb0IqHcf+8anviURxyorHpJ+ui//oNIwjToR4TTulH9WsAXxghUm+yb/bzspmoJcq7/WM+PzF7uE/TBetvPcLDYi7UulRHPP/6GQz8Rd89VEv77RdEUpKKwUQVOyFpyfFjuHBLK1r23tTdWmuuOaHUVyvMBFz/X9M48zlDgrrr0Oah4YEIxVawg6KwOzaZSs78naXYQcEoUuX0e92XPRgoqMOKhhBFyhVRz+SSYwFBc7bseGhG5/THpmVfCryql8PE5PcHIFnD9NJos6lOfZaPULub2Zb/msL2m+SFgTWGwzFPfMyiceRV7nirU5AgbLBQGd8gJGYaDANulQJjpA4uOaFOhzZ2+DAyaae60K4Pj7BQEdH6a+TnaipOJdtfNxgy2UDmcvMF1I0h0CbfcilOErvd4ummoa8djUIj1fFT39pEuFhLgsGxcExZy8KgboM2sOKPnAuw9fpqnH7j0rUdJn2YMiATvOo+yZjzkmWlG+TsMApW80G8/CeKsksdRZhT5nwDJDGGbbJ2qT5rITfCq9X0PLYsHbxImN9Qu0zGMthNnTZPRflOJ2hnVGEoaCeMxMnKnxvBCDWHHL2q9DeXIMGrqIrpMX03w=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB5936.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(53546011)(38070700005)(7416002)(2906002)(52536014)(82960400001)(86362001)(83380400001)(66556008)(66476007)(316002)(122000001)(33656002)(64756008)(66446008)(9686003)(76116006)(71200400001)(66946007)(7696005)(38100700002)(55016003)(8936002)(4326008)(8676002)(5660300002)(186003)(508600001)(966005)(54906003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?VGQzb3Rrb0IrVXh0d1pqTEZHazE4UEh2OXFvSzJnS1pHT2JMZXREMk9OMXE1?=
- =?utf-8?B?Q2drWlkwVmJzRWtzOWRwNVNWQ2NCZ3lxb1F2QXdqamh2Qnl4QzE2WXdJaVhE?=
- =?utf-8?B?cWt5RUxIc3FRMWthaFBKTUxoQ2FHYmE3cXJtUjFnVG1sa09nbU4zS0MxQjNF?=
- =?utf-8?B?THdxZlZ6QUx4Q3F6bnMzbEFWZE1KOHpOSERVcFdmNW0vbzEwUWxVRkxEVlNi?=
- =?utf-8?B?VnFxdmZ3WDhDT3dtZFlITFdDengvMm5lSVIzQXRpRUNNY05ZUm9kVEpEYzZh?=
- =?utf-8?B?Q0R3dnp1RTloVm5BcXh3ZndrS0dhbCtmeE1FS2REbGMrQW1RdnlUbkgraTFH?=
- =?utf-8?B?UUZWNU4vUFJDOXE3NHM0UGNQYXNVNWt5aDRlV0RIM3QvOFFNTEdvZHRYeXBB?=
- =?utf-8?B?QTg3THV5dE45dWd4VnR1NWVMMW5MS3Ywa00vdkNsaktuY2VzWTUzeFEvbUJk?=
- =?utf-8?B?MzJHalkybWZ1QnkrQkNYNFN1alZWOHJPbCsvVndmNnFxays5RzlXQVN4elZB?=
- =?utf-8?B?SE9FVFZxV0dYK3RxcUpxM25HV1MzWTdIQUZrcDF0alR5YWtsZS9pNjZxNXd0?=
- =?utf-8?B?cnhNb0ZDQ054MkNWTlVFTFBHYXNGNVloWmFWYnhETU94UTdqaVNLRU5LbHEy?=
- =?utf-8?B?RkhDZ0ZMWlZ1TGRza3RDUHd5emVlcmlUNXJ2YmdMZ1lLaXRxZjZXQ2RKSldG?=
- =?utf-8?B?L28zcHhZZDBJNG14RmF2WXpLd3JQQjBkRTl0WkJwL0U1S1JTSXVBUkZlSkJq?=
- =?utf-8?B?dUc1SFptR2JmeVY5NkJBSHowWE5vSlZvTFpUaThXeVZiN3gzc3BJbG9ockdy?=
- =?utf-8?B?M0pBSnBpNlBaTG1WU1hQYWJzY05aMkNnS3BvSDEzSTdWdmRjZGM4V05mTFpl?=
- =?utf-8?B?eXBleTFMV3VaaEpoN2c1aG95SHlkckRKL0VVdS9BaHJtc3Jac3FOVWNtaVlS?=
- =?utf-8?B?YVdiVnloUWEwOXhTeVVocnd4eFNhQW9odzhCeDhUQmhOczRIR29WZjYyU0JV?=
- =?utf-8?B?N0lySGQ2US9vUnBzeUR1OTBhd3FucDllUnNUZWdDMll1dVBYSG9HdHVaa2ZH?=
- =?utf-8?B?RmdUMC9xaEVEODA3blY2VlkrVTdDWmFRMTlIV0J6MEx5bW5YTU1LMGQrSy9m?=
- =?utf-8?B?OEZ3MGlNcmgxWWpMRUk1UFBobytEUzFjQkU5dkJUYTZtS2o5WnM0VCtGMWVh?=
- =?utf-8?B?c0lhd1JaWTY1blo0b2J6SEVsZGlMNjlPZ3E4aHJCa2hQZHIyVzIzRDBhVWdT?=
- =?utf-8?B?amdsbnF0cWg3dE4vK2NsZTN1S1RTZmhmcmJqTDdQZjVCZmo3WVRVVU1oNU9h?=
- =?utf-8?B?MVN1cEVPWWhRbndHU3ZDQy9xV0kzcVpwZmRqNElUS2srK0tYSXdCcUgrd2xN?=
- =?utf-8?B?OUlydm5YUnZ0UjBrNXNVK3NnK0tpdVQwckhHSG5DamxlcGpKNHJnOVRLUVRz?=
- =?utf-8?B?Z3FrZ1grRHo0RFlzbVVVR3VwZXdKZWhWWHNWTnhNS1o1MGlxZCtIM04zU01G?=
- =?utf-8?B?OTlXanRNc21DSmpuaFBFY3Q1WGNWaDgyeWtQUStibDVGcUs3dVV6T3UzMXhX?=
- =?utf-8?B?VE9RbFlSeVZtNFJ1SHNrOVAwUzBmTlFDVnl2cjIwcktHNVJPUmlrSlpGR0tU?=
- =?utf-8?B?d1NpSHh1b2NKSy9sSFJQcWdyTzh2M05nMmRUSXdrT0xYbkpSTllSQmVad2I2?=
- =?utf-8?B?L2pmMGNEaThKRXZhTUNEYUthRXVMQnJzdVV0UGJkTmFuTk5uMStCVTdiMXkr?=
- =?utf-8?B?dkYzS2hFOUNvNmRsZUVHTjdwRjgwQkhXSm5qRzR5M2ZYcU5mRURpUmx1am4z?=
- =?utf-8?B?RlM4bkluT0N0YVI2MFc2YVNnK1NDaDAxSDBzTUsvV2FNdkkxY1RIOE50QzRI?=
- =?utf-8?B?eHAvdk5ZNjIycVBFYmhBc3M3bXVQbXNzZmRYRi9nMkpHdUEzV3UyVnQ1NTFv?=
- =?utf-8?B?d0xOb3NmK0Jjd1BON2FST2RJY2lGMTdBaFBqS2poK2pxYjhDUkdlcWZPa256?=
- =?utf-8?B?VkRuNHd0cHRMaks3NGRKRVc5Zlpja0dNb3VuWUhLTXlybHFESFNvMmI3YnM5?=
- =?utf-8?B?YUlPVEQyc2taRVI2dkZsMnhBY3UweEJueklKU0RUSFpScWdURUpDSmlZckpV?=
- =?utf-8?B?bmxEZnpBVzVvVjJnS05mYmsvYzArdlcwZ2V0OE1rOG1rZ1VQVHpkNUdod2pp?=
- =?utf-8?B?ZHByWnBwM1c0Sk1yZlJod0pkWTkyeXI3R3V5ak9WblJQMmZaMFdOM3RZN25r?=
- =?utf-8?B?ZWRPYzVSR3Q0OUZ2K2hORHM3SGt3PT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S240104AbhLVLAi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 06:00:38 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:49922 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244360AbhLVLAf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 06:00:35 -0500
+Received: by mail-io1-f69.google.com with SMTP id g16-20020a05660203d000b005f7b3b0642eso1048009iov.16
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 03:00:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=GKX/d8iTHUta4j7+l6WF6B1hADn9V+84Bv3iJuqSE44=;
+        b=QZAsPnUv0Yqc/5IfcNkMw4HCuOeLjbumBwUP1hVgkvxSCPqXVyU2OB1mjPI9ycNXn8
+         wVExp+ZmpfjSVCcUuZGq4nSXazDNvmxlsImoF4Rb1VJByHJQHX0IF9NF/ynA5jIIGSxU
+         sGnb+db6X0oaEYLwsIAYZS+a39qamhNn4IbvTIHAsei111GWmvwvKyzCLxBHKGgEJYOX
+         INvi8mxujQ9BUOi/EyADd5K4OhHtEM59TLcETpvXoEilUMEzvpexAuj6Prmg8qX3JaDj
+         PZnk5cdz5us3HdMt3gsd96kzYUxxINcuLNdLANIvQXSxsiZ/O2oA1J4yuwocO8nahLNE
+         DgKg==
+X-Gm-Message-State: AOAM531w2CcgeIsymIkMnRd7CCKXVRaP6133Ox+Xxh/uMvkNk1c8VoHg
+        ntJsgGJnZ0CkpnFds2cPfIPuTF/b5l+ShgCksFrTx0A0xhEY
+X-Google-Smtp-Source: ABdhPJzDQee906NuLJIycYnVt2Nc0JabAzX9pZz4e5RvgxkmAtfCRVqDq1wRys3GlAV2KZ5xMgVzge06l3bMc7SUeprU3tbXtNz9
 MIME-Version: 1.0
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB5936.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e45a01ad-d600-4b22-f166-08d9c50f2ac9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Dec 2021 05:51:58.1288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: qThthsIWMVU8vGHz/efvYN8af3T3v98YN3DBiCT0SWpGYzW5sgcldZoRnLcI0CIagX/96JAx5/nweqI252iPOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5820
-X-Proofpoint-ORIG-GUID: wKY1FdtqufdGHLKjwES1aM-hf4kjf4m9
-X-Proofpoint-GUID: wKY1FdtqufdGHLKjwES1aM-hf4kjf4m9
-X-Sony-Outbound-GUID: wKY1FdtqufdGHLKjwES1aM-hf4kjf4m9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-22_01,2021-12-21_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 phishscore=0 impostorscore=0 adultscore=0 mlxscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112220033
+X-Received: by 2002:a05:6638:3823:: with SMTP id i35mr1070513jav.213.1640170834581;
+ Wed, 22 Dec 2021 03:00:34 -0800 (PST)
+Date:   Wed, 22 Dec 2021 03:00:34 -0800
+In-Reply-To: <00000000000045dc96059f4d7b02@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f75af905d3ba0716@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in tcp_retransmit_timer (5)
+From:   syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tpa@hlghospital.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pj4gTG9va3MgbGlrZSBtYWNyb3Mgb25seSBhdmFpbGFibGUgZm9yIHg4Nl82NC4gQ2FuIHdlIG1h
-a2UgaXQgYWxzbyANCj4+IGF2YWlsYWJsZSBmb3Igb3RoZXIgYXJjaGl0ZWN0dXJlcyBzbyB3ZSB3
-b24ndCBpbnRyb2R1Y2UgYXJjaCBzcGVjaWZpYyANCj4+IGNvZGVzIGludG8gYnBmIHByb2dyYW0/
-DQo+DQo+WWVhaCwgYnV0IGluc3RlYWQgb2YgY29weS9wYXN0aW5nIGl0IGZvciBlYWNoIGFyY2hp
-dGVjdHVyZSwgbGV0J3MgZGVmaW5lIFBUX1JFR1NfUEFSTTQvUFRfUkVHU19QQVJNNF9DT1JFIGZv
-ciB4ODYtNjQgKGlzIHRoaXMgdGhlIG9ubHkgYXJjaCB3aXRoIHN1Y2ggaW5jb25zaXN0ZW5jeT8p
-IGFuZCB0aGVuIGFmdGVyIGFsbCB0aGUgYXJjaGl0ZWN0dXJlcyBkZWZpbmVkIHRoZWlyIG1hY3Jv
-IGRlZmluZQ0KDQpDdXJyZW50bHksIEkgdGhpbmsgeDg2XzY0IGlzIHRoZSBvbmx5IGFyY2ggd2hp
-Y2ggY2F1c2VzIHRoaXMgaXNzdWUuDQpCdXQgSSdsbCBhZGQgI2lmbmRlZiB0byBub3Qgb25seSB0
-aGUgNHRoIHBhcmFtZXRlciBidXQgYWxzbyBhbGwgcGFyYW1ldGVycyBmb3IgZnV0dXJlIGV4dGVu
-c2liaWxpdHkuDQoNCj4+DQo+PiBBbHNvLCBjb3VsZCB5b3UgYWRkIGEgc2VsZnRlc3QgdG8gdXNl
-IHRoaXMgbWFjcm8sIGVzcC4gZm9yIHBhcmFtZXRlciA0Pw0KDQpTdXJlLg0KSSdsbCBhZGQgdGhl
-IHNhbWUgbWFjcm8gdG8gYnBmX3RyYWNpbmcuaCBpbiBzZWxmdGVzdHMuDQoNClRoYW5rcyENCg0K
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFuZHJpaSBOYWtyeWlrbyA8YW5kcmlp
-Lm5ha3J5aWtvQGdtYWlsLmNvbT4gDQpTZW50OiBXZWRuZXNkYXksIERlY2VtYmVyIDIyLCAyMDIx
-IDc6NTggQU0NClRvOiBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPg0KQ2M6IFRhZGEsIEtlbnRh
-IChTR0MpIDxLZW50YS5UYWRhQHNvbnkuY29tPjsgQW5kcmlpIE5ha3J5aWtvIDxhbmRyaWlAa2Vy
-bmVsLm9yZz47IGJwZiA8YnBmQHZnZXIua2VybmVsLm9yZz47IEFsZXhlaSBTdGFyb3ZvaXRvdiA8
-YXN0QGtlcm5lbC5vcmc+OyBEYW5pZWwgQm9ya21hbm4gPGRhbmllbEBpb2dlYXJib3gubmV0Pjsg
-TWFydGluIExhdSA8a2FmYWlAZmIuY29tPjsgU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNv
-bT47IGpvaG4gZmFzdGFiZW5kIDxqb2huLmZhc3RhYmVuZEBnbWFpbC5jb20+OyBLUCBTaW5naCA8
-a3BzaW5naEBrZXJuZWwub3JnPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gbGliYnBmOiBGaXggdGhl
-IGluY29ycmVjdCByZWdpc3RlciByZWFkIGZvciBzeXNjYWxscyBvbiB4ODZfNjQNCg0KT24gVHVl
-LCBEZWMgMjEsIDIwMjEgYXQgNzo1MSBBTSBZb25naG9uZyBTb25nIDx5aHNAZmIuY29tPiB3cm90
-ZToNCj4NCj4NCj4NCj4gT24gMTIvMjEvMjEgMzoyMSBBTSwgS2VudGEuVGFkYUBzb255LmNvbSB3
-cm90ZToNCj4gPiBDdXJyZW50bHksIHJjeCBpcyByZWFkIGFzIHRoZSBmb3VydGggcGFyYW1ldGVy
-IG9mIHN5c2NhbGwgb24geDg2XzY0Lg0KPiA+IEJ1dCB4ODZfNjQgTGludXggU3lzdGVtIENhbGwg
-Y29udmVudGlvbiB1c2VzIHIxMCBhY3R1YWxseS4NCj4gPiBUaGlzIGNvbW1pdCBhZGRzIHRoZSB3
-cmFwcGVyIGZvciB1c2VycyB3aG8gd2FudCB0byBhY2Nlc3MgdG8gc3lzY2FsbCANCj4gPiBwYXJh
-bXMgdG8gYW5hbHl6ZSB0aGUgdXNlciBzcGFjZS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IEtl
-bnRhIFRhZGEgPEtlbnRhLlRhZGFAc29ueS5jb20+DQo+ID4gLS0tDQo+ID4gICB0b29scy9saWIv
-YnBmL2JwZl90cmFjaW5nLmggfCAyMCArKysrKysrKysrKysrKysrKysrKw0KPiA+ICAgMSBmaWxl
-IGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS90b29scy9s
-aWIvYnBmL2JwZl90cmFjaW5nLmggDQo+ID4gYi90b29scy9saWIvYnBmL2JwZl90cmFjaW5nLmgg
-aW5kZXggZGIwNWE1OTM3MTA1Li5mNmZjY2NkOWIxMGMgDQo+ID4gMTAwNjQ0DQo+ID4gLS0tIGEv
-dG9vbHMvbGliL2JwZi9icGZfdHJhY2luZy5oDQo+ID4gKysrIGIvdG9vbHMvbGliL2JwZi9icGZf
-dHJhY2luZy5oDQo+ID4gQEAgLTY3LDEwICs2NywxNSBAQA0KPiA+ICAgI2lmIGRlZmluZWQoX19L
-RVJORUxfXykgfHwgZGVmaW5lZChfX1ZNTElOVVhfSF9fKQ0KPiA+DQo+ID4gICAjZGVmaW5lIFBU
-X1JFR1NfUEFSTTEoeCkgKCh4KS0+ZGkpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19QQVJNMV9TWVND
-QUxMKHgpIFBUX1JFR1NfUEFSTTEoeCkNCj4gPiAgICNkZWZpbmUgUFRfUkVHU19QQVJNMih4KSAo
-KHgpLT5zaSkNCj4gPiArI2RlZmluZSBQVF9SRUdTX1BBUk0yX1NZU0NBTEwoeCkgUFRfUkVHU19Q
-QVJNMih4KQ0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BBUk0zKHgpICgoeCktPmR4KQ0KPiA+ICsj
-ZGVmaW5lIFBUX1JFR1NfUEFSTTNfU1lTQ0FMTCh4KSBQVF9SRUdTX1BBUk0zKHgpDQo+ID4gICAj
-ZGVmaW5lIFBUX1JFR1NfUEFSTTQoeCkgKCh4KS0+Y3gpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19Q
-QVJNNF9TWVNDQUxMKHgpICgoeCktPnIxMCkgLyogc3lzY2FsbCB1c2VzIHIxMCAqLw0KPg0KPiBJ
-IHRoaW5rIHRoaXMgaXMgY29ycmVjdC4gV2UgaGF2ZSBhIGJjYyBjb21taXQgZG9pbmcgc2ltaWxh
-ciB0aGluZy4NCj4gaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHBzOi8vZ2l0aHViLmNv
-bS9pb3Zpc29yL2JjYy9jb21taXQvYzIzNA0KPiA0OGUzNGVjZDNjYzliZmMxOWYwYjQzZjQzMjVm
-NzdjMmU0Y2MqZGlmZi1jNzhmZmI1OGY1OWU4NWVhYmE5YmY5OTc3YjcyDQo+IDAyZjNlNTBmMTdl
-MmE5ZWU1NTZjMzZhMzExZjlhOWFiNWQ2ZV9fO0l3ISFKbW9aaVpHQnYzUnZLUlN4IXFhMnBPUWxV
-U2QNCj4gV2ZveG1aN0V1UHZacFdBbEs1SUJWUDFlQy0yZDNuakJMZTN5ZWhBWHlWXzB3STltR1JG
-NVEkIFtnaXRodWJbLl1jb21dDQo+DQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUEFSTTUoeCkgKCh4
-KS0+cjgpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19QQVJNNV9TWVNDQUxMKHgpIFBUX1JFR1NfUEFS
-TTUoeCkNCj4gPiAgICNkZWZpbmUgUFRfUkVHU19SRVQoeCkgKCh4KS0+c3ApDQo+ID4gICAjZGVm
-aW5lIFBUX1JFR1NfRlAoeCkgKCh4KS0+YnApDQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUkMoeCkg
-KCh4KS0+YXgpDQo+ID4gQEAgLTc4LDEwICs4MywxNSBAQA0KPiA+ICAgI2RlZmluZSBQVF9SRUdT
-X0lQKHgpICgoeCktPmlwKQ0KPiA+DQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUEFSTTFfQ09SRSh4
-KSBCUEZfQ09SRV9SRUFEKCh4KSwgZGkpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19QQVJNMV9DT1JF
-X1NZU0NBTEwoeCkgUFRfUkVHU19QQVJNMV9DT1JFKHgpDQo+ID4gICAjZGVmaW5lIFBUX1JFR1Nf
-UEFSTTJfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgc2kpDQo+ID4gKyNkZWZpbmUgUFRfUkVH
-U19QQVJNMl9DT1JFX1NZU0NBTEwoeCkgUFRfUkVHU19QQVJNMl9DT1JFKHgpDQo+ID4gICAjZGVm
-aW5lIFBUX1JFR1NfUEFSTTNfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgZHgpDQo+ID4gKyNk
-ZWZpbmUgUFRfUkVHU19QQVJNM19DT1JFX1NZU0NBTEwoeCkgUFRfUkVHU19QQVJNM19DT1JFKHgp
-DQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUEFSTTRfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwg
-Y3gpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19QQVJNNF9DT1JFX1NZU0NBTEwoeCkgQlBGX0NPUkVf
-UkVBRCgoeCksIHIxMCkgLyogDQo+ID4gK3N5c2NhbGwgdXNlcyByMTAgKi8NCj4gPiAgICNkZWZp
-bmUgUFRfUkVHU19QQVJNNV9DT1JFKHgpIEJQRl9DT1JFX1JFQUQoKHgpLCByOCkNCj4gPiArI2Rl
-ZmluZSBQVF9SRUdTX1BBUk01X0NPUkVfU1lTQ0FMTCh4KSBQVF9SRUdTX1BBUk01X0NPUkUoeCkN
-Cj4gPiAgICNkZWZpbmUgUFRfUkVHU19SRVRfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgc3Ap
-DQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfRlBfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgYnAp
-DQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUkNfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgYXgp
-IEBAIC0xMTcsMTAgDQo+ID4gKzEyNywxNSBAQA0KPiA+ICAgI2Vsc2UNCj4gPg0KPiA+ICAgI2Rl
-ZmluZSBQVF9SRUdTX1BBUk0xKHgpICgoeCktPnJkaSkNCj4gPiArI2RlZmluZSBQVF9SRUdTX1BB
-Uk0xX1NZU0NBTEwoeCkgUFRfUkVHU19QQVJNMSh4KQ0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BB
-Uk0yKHgpICgoeCktPnJzaSkNCj4gPiArI2RlZmluZSBQVF9SRUdTX1BBUk0yX1NZU0NBTEwoeCkg
-UFRfUkVHU19QQVJNMih4KQ0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BBUk0zKHgpICgoeCktPnJk
-eCkNCj4gPiArI2RlZmluZSBQVF9SRUdTX1BBUk0zX1NZU0NBTEwoeCkgUFRfUkVHU19QQVJNMyh4
-KQ0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BBUk00KHgpICgoeCktPnJjeCkNCj4gPiArI2RlZmlu
-ZSBQVF9SRUdTX1BBUk00X1NZU0NBTEwoeCkgKCh4KS0+cjEwKSAvKiBzeXNjYWxsIHVzZXMgcjEw
-ICovDQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUEFSTTUoeCkgKCh4KS0+cjgpDQo+ID4gKyNkZWZp
-bmUgUFRfUkVHU19QQVJNNSh4KSBQVF9SRUdTX1BBUk01KHgpDQo+ID4gICAjZGVmaW5lIFBUX1JF
-R1NfUkVUKHgpICgoeCktPnJzcCkNCj4gPiAgICNkZWZpbmUgUFRfUkVHU19GUCh4KSAoKHgpLT5y
-YnApDQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUkMoeCkgKCh4KS0+cmF4KQ0KPiA+IEBAIC0xMjgs
-MTAgKzE0MywxNSBAQA0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX0lQKHgpICgoeCktPnJpcCkNCj4g
-Pg0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BBUk0xX0NPUkUoeCkgQlBGX0NPUkVfUkVBRCgoeCks
-IHJkaSkNCj4gPiArI2RlZmluZSBQVF9SRUdTX1BBUk0xX0NPUkVfU1lTQ0FMTCh4KSBQVF9SRUdT
-X1BBUk0xX0NPUkUoeCkNCj4gPiAgICNkZWZpbmUgUFRfUkVHU19QQVJNMl9DT1JFKHgpIEJQRl9D
-T1JFX1JFQUQoKHgpLCByc2kpDQo+ID4gKyNkZWZpbmUgUFRfUkVHU19QQVJNMl9DT1JFX1NZU0NB
-TEwoeCkgUFRfUkVHU19QQVJNMl9DT1JFKHgpDQo+ID4gICAjZGVmaW5lIFBUX1JFR1NfUEFSTTNf
-Q09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgcmR4KQ0KPiA+ICsjZGVmaW5lIFBUX1JFR1NfUEFS
-TTNfQ09SRV9TWVNDQUxMKHgpIFBUX1JFR1NfUEFSTTNfQ09SRSh4KQ0KPiA+ICAgI2RlZmluZSBQ
-VF9SRUdTX1BBUk00X0NPUkUoeCkgQlBGX0NPUkVfUkVBRCgoeCksIHJjeCkNCj4gPiArI2RlZmlu
-ZSBQVF9SRUdTX1BBUk00X0NPUkVfU1lTQ0FMTCh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgcjEwKSAv
-KiANCj4gPiArc3lzY2FsbCB1c2VzIHIxMCAqLw0KPiA+ICAgI2RlZmluZSBQVF9SRUdTX1BBUk01
-X0NPUkUoeCkgQlBGX0NPUkVfUkVBRCgoeCksIHI4KQ0KPiA+ICsjZGVmaW5lIFBUX1JFR1NfUEFS
-TTVfQ09SRV9TWVNDQUxMKHgpIFBUX1JFR1NfUEFSTTVfQ09SRSh4KQ0KPiA+ICAgI2RlZmluZSBQ
-VF9SRUdTX1JFVF9DT1JFKHgpIEJQRl9DT1JFX1JFQUQoKHgpLCByc3ApDQo+ID4gICAjZGVmaW5l
-IFBUX1JFR1NfRlBfQ09SRSh4KSBCUEZfQ09SRV9SRUFEKCh4KSwgcmJwKQ0KPiA+ICAgI2RlZmlu
-ZSBQVF9SRUdTX1JDX0NPUkUoeCkgQlBGX0NPUkVfUkVBRCgoeCksIHJheCkNCj4NCj4gTG9va3Mg
-bGlrZSBtYWNyb3Mgb25seSBhdmFpbGFibGUgZm9yIHg4Nl82NC4gQ2FuIHdlIG1ha2UgaXQgYWxz
-byANCj4gYXZhaWxhYmxlIGZvciBvdGhlciBhcmNoaXRlY3R1cmVzIHNvIHdlIHdvbid0IGludHJv
-ZHVjZSBhcmNoIHNwZWNpZmljIA0KPiBjb2RlcyBpbnRvIGJwZiBwcm9ncmFtPw0KDQpZZWFoLCBi
-dXQgaW5zdGVhZCBvZiBjb3B5L3Bhc3RpbmcgaXQgZm9yIGVhY2ggYXJjaGl0ZWN0dXJlLCBsZXQn
-cyBkZWZpbmUgUFRfUkVHU19QQVJNNC9QVF9SRUdTX1BBUk00X0NPUkUgZm9yIHg4Ni02NCAoaXMg
-dGhpcyB0aGUgb25seSBhcmNoIHdpdGggc3VjaCBpbmNvbnNpc3RlbmN5PykgYW5kIHRoZW4gYWZ0
-ZXIgYWxsIHRoZSBhcmNoaXRlY3R1cmVzIGRlZmluZWQgdGhlaXIgbWFjcm8gZGVmaW5lDQoNCiNk
-ZWZpbmUgUFRfUkVHU19QQVJNMV9TWVNDQUxMKHgpIFBUX1JFR1NfUEFSTTEoeCkgLi4uDQojaWZu
-ZGVmIFBUX1JFR1NfUEFSTTRfU1lTQ0FMTCh4KQ0KI2RlZmluZSBQVF9SRUdTX1BBUk00X1NZU0NB
-TEwoeCkgUFRfUkVHU19QQVJNNCh4KSAjZW5kaWYNCg0KVGhhdCB3YXkgd2UnbGwgYXZvaWQgYWxs
-IHRoZSBleHRyYSAibm8tb3AiIGRlZmluaXRpb25zLg0KDQoNCj4NCj4gQWxzbywgY291bGQgeW91
-IGFkZCBhIHNlbGZ0ZXN0IHRvIHVzZSB0aGlzIG1hY3JvLCBlc3AuIGZvciBwYXJhbWV0ZXIgND8N
-Cg0KKzENCg==
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    819d11507f66 bpf, selftests: Fix spelling mistake "tained"..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=138bf80db00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=22b66456935ee10
+dashboard link: https://syzkaller.appspot.com/bug?extid=694120e1002c117747ed
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172ccbcdb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14fcccedb00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+694120e1002c117747ed@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in tcp_retransmit_timer+0x2ea2/0x3320 net/ipv4/tcp_timer.c:511
+Read of size 8 at addr ffff888075d9b6d8 by task jbd2/sda1-8/2936
+
+CPU: 1 PID: 2936 Comm: jbd2/sda1-8 Not tainted 5.16.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x8d/0x320 mm/kasan/report.c:247
+ __kasan_report mm/kasan/report.c:433 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:450
+ tcp_retransmit_timer+0x2ea2/0x3320 net/ipv4/tcp_timer.c:511
+ tcp_write_timer_handler+0x5e6/0xbc0 net/ipv4/tcp_timer.c:622
+ tcp_write_timer+0xa2/0x2b0 net/ipv4/tcp_timer.c:642
+ call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1421
+ expire_timers kernel/time/timer.c:1466 [inline]
+ __run_timers.part.0+0x675/0xa20 kernel/time/timer.c:1734
+ __run_timers kernel/time/timer.c:1715 [inline]
+ run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1747
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ invoke_softirq kernel/softirq.c:432 [inline]
+ __irq_exit_rcu+0x123/0x180 kernel/softirq.c:637
+ irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
+ sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:check_kcov_mode kernel/kcov.c:166 [inline]
+RIP: 0010:__sanitizer_cov_trace_pc+0x1c/0x60 kernel/kcov.c:200
+Code: be b0 01 00 00 e8 b4 ff ff ff 31 c0 c3 90 65 8b 05 29 be 8a 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b 14 25 40 70 02 00 <a9> 00 01 ff 00 74 0e 85 c9 74 35 8b 82 a4 15 00 00 85 c0 74 2b 8b
+RSP: 0018:ffffc9000cc8f7e0 EFLAGS: 00000246
+RAX: 0000000080000001 RBX: 0000000000005460 RCX: 0000000000000000
+RDX: ffff88807dcdd700 RSI: ffffffff82149a29 RDI: 0000000000000003
+RBP: 0000000000008000 R08: 0000000000008000 R09: ffff88801d0598ff
+R10: ffffffff82149a1c R11: 0000000000000000 R12: ffff88801d059a88
+R13: 00000000ffffffff R14: ffff88801d059000 R15: 00000000ffffffff
+ mb_test_and_clear_bits+0xd9/0x240 fs/ext4/mballoc.c:1675
+ mb_free_blocks+0x364/0x1370 fs/ext4/mballoc.c:1811
+ ext4_free_data_in_buddy fs/ext4/mballoc.c:3662 [inline]
+ ext4_process_freed_data+0x56c/0x1070 fs/ext4/mballoc.c:3713
+ ext4_journal_commit_callback+0x11e/0x380 fs/ext4/super.c:449
+ jbd2_journal_commit_transaction+0x55a8/0x6be0 fs/jbd2/commit.c:1171
+ kjournald2+0x1d0/0x930 fs/jbd2/journal.c:213
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+Allocated by task 3696:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ __kasan_slab_alloc+0x90/0xc0 mm/kasan/common.c:467
+ kasan_slab_alloc include/linux/kasan.h:259 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3234 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ kmem_cache_alloc+0x202/0x3a0 mm/slub.c:3247
+ kmem_cache_zalloc include/linux/slab.h:714 [inline]
+ net_alloc net/core/net_namespace.c:402 [inline]
+ copy_net_ns+0x125/0x760 net/core/net_namespace.c:457
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x445/0x920 kernel/fork.c:3075
+ __do_sys_unshare kernel/fork.c:3146 [inline]
+ __se_sys_unshare kernel/fork.c:3144 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3144
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 503:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track+0x21/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:370
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:235 [inline]
+ slab_free_hook mm/slub.c:1723 [inline]
+ slab_free_freelist_hook+0x8b/0x1c0 mm/slub.c:1749
+ slab_free mm/slub.c:3513 [inline]
+ kmem_cache_free+0xbd/0x5d0 mm/slub.c:3530
+ net_free net/core/net_namespace.c:431 [inline]
+ net_free net/core/net_namespace.c:427 [inline]
+ cleanup_net+0x8ba/0xb00 net/core/net_namespace.c:614
+ process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
+ kthread+0x405/0x4f0 kernel/kthread.c:327
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+The buggy address belongs to the object at ffff888075d9b480
+ which belongs to the cache net_namespace of size 6464
+The buggy address is located 600 bytes inside of
+ 6464-byte region [ffff888075d9b480, ffff888075d9cdc0)
+The buggy address belongs to the page:
+page:ffffea0001d76600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x75d98
+head:ffffea0001d76600 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 0000000000000000 dead000000000122 ffff888011885000
+raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 3693, ts 1611631437660, free_ts 92175173930
+ prep_new_page mm/page_alloc.c:2418 [inline]
+ get_page_from_freelist+0xa72/0x2f50 mm/page_alloc.c:4149
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5369
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2191
+ alloc_slab_page mm/slub.c:1793 [inline]
+ allocate_slab mm/slub.c:1930 [inline]
+ new_slab+0x32d/0x4a0 mm/slub.c:1993
+ ___slab_alloc+0x918/0xfe0 mm/slub.c:3022
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3109
+ slab_alloc_node mm/slub.c:3200 [inline]
+ slab_alloc mm/slub.c:3242 [inline]
+ kmem_cache_alloc+0x35c/0x3a0 mm/slub.c:3247
+ kmem_cache_zalloc include/linux/slab.h:714 [inline]
+ net_alloc net/core/net_namespace.c:402 [inline]
+ copy_net_ns+0x125/0x760 net/core/net_namespace.c:457
+ create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+ unshare_nsproxy_namespaces+0xc1/0x1f0 kernel/nsproxy.c:226
+ ksys_unshare+0x445/0x920 kernel/fork.c:3075
+ __do_sys_unshare kernel/fork.c:3146 [inline]
+ __se_sys_unshare kernel/fork.c:3144 [inline]
+ __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3144
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x374/0x870 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3309 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3388
+ __unfreeze_partials+0x343/0x360 mm/slub.c:2527
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:259 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3234 [inline]
+ kmem_cache_alloc_node+0x255/0x3f0 mm/slub.c:3270
+ __alloc_skb+0x215/0x340 net/core/skbuff.c:414
+ alloc_skb include/linux/skbuff.h:1126 [inline]
+ alloc_skb_with_frags+0x93/0x620 net/core/skbuff.c:6078
+ sock_alloc_send_pskb+0x783/0x910 net/core/sock.c:2575
+ unix_dgram_sendmsg+0x3ec/0x1950 net/unix/af_unix.c:1811
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ sock_write_iter+0x289/0x3c0 net/socket.c:1057
+ call_write_iter include/linux/fs.h:2162 [inline]
+ new_sync_write+0x429/0x660 fs/read_write.c:503
+ vfs_write+0x7cd/0xae0 fs/read_write.c:590
+ ksys_write+0x1ee/0x250 fs/read_write.c:643
+
+Memory state around the buggy address:
+ ffff888075d9b580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888075d9b600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888075d9b680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff888075d9b700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888075d9b780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+----------------
+Code disassembly (best guess):
+   0:	be b0 01 00 00       	mov    $0x1b0,%esi
+   5:	e8 b4 ff ff ff       	callq  0xffffffbe
+   a:	31 c0                	xor    %eax,%eax
+   c:	c3                   	retq
+   d:	90                   	nop
+   e:	65 8b 05 29 be 8a 7e 	mov    %gs:0x7e8abe29(%rip),%eax        # 0x7e8abe3e
+  15:	89 c1                	mov    %eax,%ecx
+  17:	48 8b 34 24          	mov    (%rsp),%rsi
+  1b:	81 e1 00 01 00 00    	and    $0x100,%ecx
+  21:	65 48 8b 14 25 40 70 	mov    %gs:0x27040,%rdx
+  28:	02 00
+* 2a:	a9 00 01 ff 00       	test   $0xff0100,%eax <-- trapping instruction
+  2f:	74 0e                	je     0x3f
+  31:	85 c9                	test   %ecx,%ecx
+  33:	74 35                	je     0x6a
+  35:	8b 82 a4 15 00 00    	mov    0x15a4(%rdx),%eax
+  3b:	85 c0                	test   %eax,%eax
+  3d:	74 2b                	je     0x6a
+  3f:	8b                   	.byte 0x8b
+
