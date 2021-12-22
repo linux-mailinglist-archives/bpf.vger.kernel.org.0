@@ -2,105 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C7E47D29B
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 14:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5FB347D2AC
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 14:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240643AbhLVNEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 08:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S245259AbhLVNKj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 08:10:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236759AbhLVNEB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Dec 2021 08:04:01 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4989C061574;
-        Wed, 22 Dec 2021 05:04:00 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id e5so4796637wrc.5;
-        Wed, 22 Dec 2021 05:04:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HKQIWNLYPt7amFrpeIymAqoGxzo0Cgh8nYeaaa5M1uA=;
-        b=cU2XA5CSGjYISQe4AfmNub7qo8y8L/husj6deVctxz4Xgli5etSpWH8JllQMSio9x3
-         briBu/f9ljZ06KDlZCq9JDZZLFCUvQMpoBhtJg2MkURnQmKBoDmp+6Mv8L1JucF0GqP/
-         jNIGNEdolu7nsR6BSolLWALOaMq8bDJiUg8x5DiM4E9xtTi6v+R71J96clEsHz34KgnZ
-         cBwLjbpjjiBvRFQRyJ2ADZdWRUynpfVx5QrM7zNLRNXqX2OKRfp4gD9whOfWG2o+Rh9x
-         lia5QnhFMtZC/fRI1Wn0qr03tZdUUqj8P4K6VX659vUzLq/4dHxaUt9kfAlowcLQ9aKS
-         hupg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=HKQIWNLYPt7amFrpeIymAqoGxzo0Cgh8nYeaaa5M1uA=;
-        b=of59V/wdHdxKU4ks4p7wqkSea+gGoRLvLP18a047jDFtC0LMYH5Q38DHZ1RrugfwPa
-         BAdMm6haZIs5YnHGEPFPx9+YXav35+3uT0GAFtAqFUX8GWZ6F880IXS/muidlIX+fuZQ
-         TGnCW57lsjc6EZCxJe1GUPCOearTvSENFV0xJnRa/6Omeucbe1WqRBWbpALlCKPS+sqK
-         hUkICmxNMgTG7o44EFeb2slesRgPCsJqGi1T/ls0oUASLmUWfCbTZEMcpUCzHxHKP4w2
-         ZHKiDnqpcOOVHdPYIBHT3WD4NnpobSNjeOjkNuqmfM0bFrptkCmr+PKgcY9DnFYon2mo
-         /KIA==
-X-Gm-Message-State: AOAM531Ua0JSbdG/gMg+xpCcCkzJYkj8Rj/wTL9MSPdXFK/rYVh5cvxF
-        SXmKE6YzU0FqxP+TMfPogD0=
-X-Google-Smtp-Source: ABdhPJzCSUsI+1Rnpp2auPNEAsP95AYQmrBIBFI047rty/ezPIaz/pYqp95RjJUYc00ugUrjw3lvdQ==
-X-Received: by 2002:adf:f188:: with SMTP id h8mr2054843wro.663.1640178239296;
-        Wed, 22 Dec 2021 05:03:59 -0800 (PST)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id g1sm1937049wri.103.2021.12.22.05.03.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 Dec 2021 05:03:58 -0800 (PST)
-Date:   Wed, 22 Dec 2021 13:03:56 +0000
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     ecree.xilinx@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] sfc: Check null pointer of rx_queue->page_ring
-Message-ID: <20211222130356.xlzmhoyexrnctkrs@gmail.com>
-Mail-Followup-To: Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        ecree.xilinx@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20211220135603.954944-1-jiasheng@iscas.ac.cn>
+        with ESMTP id S240747AbhLVNKj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 08:10:39 -0500
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090FFC061574
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 05:10:38 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1640178636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=9wggsQ+/g3Cpp7vBrIbfDsRyczwlBopQjgkuWcfZ/6c=;
+        b=VuoWit134t3gkyCcuNlYIn/w6v6QHyC+FEFXUd8JvpMvIeEYCOW1p9PENXudiQfPEGfbs0
+        mIalG13S+oGqPZ9k0RV1+eL3H83bS0hsxBGwMQOYJP/qJae+PK0ggV4metk04CmmXcjlTk
+        Np1rUtUBYGVH2j9sxc9s1UA1YlYC7eU=
+From:   Jackie Liu <liu.yun@linux.dev>
+To:     daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, ast@kernel.org, liu.yun@linux.dev
+Subject: [PATCH] bpf: clean up unnecessary conditional judgments
+Date:   Wed, 22 Dec 2021 21:10:05 +0800
+Message-Id: <20211222131005.1380289-1-liu.yun@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211220135603.954944-1-jiasheng@iscas.ac.cn>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 09:56:03PM +0800, Jiasheng Jiang wrote:
-> Because of the possible failure of the kcalloc, it should be better to
-> set rx_queue->page_ptr_mask to 0 when it happens in order to maintain
-> the consistency.
-> 
-> Fixes: 5a6681e22c14 ("sfc: separate out SFC4000 ("Falcon") support into new sfc-falcon driver")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
+s32 is always true regardless of the values of its operands. let's
+cleanup.
 
-> ---
->  drivers/net/ethernet/sfc/rx_common.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/sfc/rx_common.c b/drivers/net/ethernet/sfc/rx_common.c
-> index 68fc7d317693..0983abc0cc5f 100644
-> --- a/drivers/net/ethernet/sfc/rx_common.c
-> +++ b/drivers/net/ethernet/sfc/rx_common.c
-> @@ -150,7 +150,10 @@ static void efx_init_rx_recycle_ring(struct efx_rx_queue *rx_queue)
->  					    efx->rx_bufs_per_page);
->  	rx_queue->page_ring = kcalloc(page_ring_size,
->  				      sizeof(*rx_queue->page_ring), GFP_KERNEL);
-> -	rx_queue->page_ptr_mask = page_ring_size - 1;
-> +	if (!rx_queue->page_ring)
-> +		rx_queue->page_ptr_mask = 0;
-> +	else
-> +		rx_queue->page_ptr_mask = page_ring_size - 1;
->  }
->  
->  static void efx_fini_rx_recycle_ring(struct efx_rx_queue *rx_queue)
-> -- 
-> 2.25.1
+Fixes: e572ff80f05c ("bpf: Make 32->64 bounds propagation slightly more	robust")
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+---
+ kernel/bpf/verifier.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index b532f1058d35..43812ee58304 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1366,11 +1366,6 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
+ 	reg->var_off = tnum_or(tnum_clear_subreg(var64_off), var32_off);
+ }
+ 
+-static bool __reg32_bound_s64(s32 a)
+-{
+-	return a >= 0 && a <= S32_MAX;
+-}
+-
+ static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
+ {
+ 	reg->umin_value = reg->u32_min_value;
+@@ -1380,8 +1375,7 @@ static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
+ 	 * be positive otherwise set to worse case bounds and refine later
+ 	 * from tnum.
+ 	 */
+-	if (__reg32_bound_s64(reg->s32_min_value) &&
+-	    __reg32_bound_s64(reg->s32_max_value)) {
++	if (reg->s32_min_value >= 0 && reg->s32_max_value >= 0) {
+ 		reg->smin_value = reg->s32_min_value;
+ 		reg->smax_value = reg->s32_max_value;
+ 	} else {
+-- 
+2.25.1
+
