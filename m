@@ -2,86 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B754447D5F4
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 18:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4F747D847
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 21:26:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbhLVRo1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 12:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
+        id S232783AbhLVU0U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 15:26:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232852AbhLVRo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Dec 2021 12:44:27 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B06C061574
-        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 09:44:27 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id o63so5761035uao.5
-        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 09:44:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=PqeKwfGtry3Hm5mwkXDEHiRgHh6Y5S1ouypmzni3hLo=;
-        b=H76aPXhkbqtC0M1Sl3a770WouKJeUhBvriQS/Z39SydXSEtBlIEqKqsTdPY/fri7eU
-         EV6G9Fe4ZCftAgX8dUcZBh7BKJP8Qq0KQFtyIhlC4Vu6lNYt7N+XGFdYln02d/vSVav3
-         +8spKkzh9vsIYdlWj/1UyLkLXYE9RVpkmFerNHf+eBi3FVetcRycaY5iHvWVGmTXNoDx
-         lrZrOtyE4z2FBgYipZtjju3OPX0W+mpXMxLmOzWjzqIwAQJk5FALEckfqS3r+OdC8jB5
-         v2FF+4IVnP/Z3QYzyfFzVNh+5yhtBdtdPC93vzTynQyY8xm2lwtVAMfmlKjE6qXJHzqT
-         EUpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=PqeKwfGtry3Hm5mwkXDEHiRgHh6Y5S1ouypmzni3hLo=;
-        b=AiGwgFZWCsRPRzmorUA9G0vi6oIJf62cVYKC8JmuPtOTWeWRpfEHentCumc/BWFQcM
-         xYBPB5mV/v6nI4gqfRKhRjbZxKDz15ezy5+AqPXSBkXes/9pR9udpEVOty5sf2nHPnSj
-         Sb57LcKhMSCPslrBOSSsMZ29DNnXBN2UqCK8YpWcKgi1d8QtZkIZhQOmMzx8gMtNyVrZ
-         t9csiA9gS+JLKlRFFl8fxj6ZYkAcv1KSmJOTh5P2Fh9ecbfesAriFO1XQiQFWeOA0JE2
-         9heJYrvyiD5MIKWFLBxbUZ4wFcUQ/A4X6AQsdpe+7qt2ZB7Tw53d3/ZmJFtqzUUIGLt6
-         sJkA==
-X-Gm-Message-State: AOAM530EJCRU4vBsIpBHXvICaJg3fDkqw2CHT8ItzJED7iZG1PutRiUi
-        qK42OgsPl1XtHwm5l/So+aJa1dk6Ke6rhhJe0wY=
-X-Google-Smtp-Source: ABdhPJxkUFxKoCN5ncW/5ssUQZS5YFQ0eti12Dlbk4BPZWEfreD1FzbbtQSUhcNh4+5jKk/dfPuiHzestCxcFKp7LBA=
-X-Received: by 2002:a67:1541:: with SMTP id 62mr1300872vsv.79.1640195065967;
- Wed, 22 Dec 2021 09:44:25 -0800 (PST)
+        with ESMTP id S229969AbhLVU0T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 15:26:19 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA27BC061574;
+        Wed, 22 Dec 2021 12:26:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 02DB261CF3;
+        Wed, 22 Dec 2021 20:26:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CE5EC36AE8;
+        Wed, 22 Dec 2021 20:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640204778;
+        bh=RxKIkjafrTOBZF0gKzWFST49aq7+J+yevpRaTaZzeII=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iQC55m1khm59SL3Wcc3x+BEunTwJH95fjfF9h49TWatuG3TXdMbHVKg2rjzaRQ0fr
+         cOeG5H6BTtXvtZIUy8DwIeCI1A8tJT7+5g9vrfxuT/vFcMYKn9EeoIvxWVkFD5R0dZ
+         Lxq0Ef9zP8xE/owY0z0/z4FKu5Rf6yM4ZMq3ir3hGKyleNbt/bO1qOueLSHcfq9+Ro
+         iJSO9cxbU/9en8rIphdr4JbmC2uRHC7mamouyGENmoqhzPGc+91fxtLkvo8HjBTjUE
+         Q28t9dJClBNDFzlNhDNRBcZCEB46PgEADNKq1MT1wkTgG2x96E1ZRuKgkhwyp8YLGm
+         PvaYTzarKt5Kg==
+Date:   Wed, 22 Dec 2021 12:26:16 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Martin Habets <habetsm.xilinx@gmail.com>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     ecree.xilinx@gmail.com, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] sfc: Check null pointer of rx_queue->page_ring
+Message-ID: <20211222122616.79fb1f34@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211222130356.xlzmhoyexrnctkrs@gmail.com>
+References: <20211220135603.954944-1-jiasheng@iscas.ac.cn>
+        <20211222130356.xlzmhoyexrnctkrs@gmail.com>
 MIME-Version: 1.0
-Sender: mrs.doris.david22@gmail.com
-Received: by 2002:ab0:35cf:0:0:0:0:0 with HTTP; Wed, 22 Dec 2021 09:44:24
- -0800 (PST)
-From:   Anderson Theresa <ndersontheresa.24@gmail.com>
-Date:   Wed, 22 Dec 2021 09:44:24 -0800
-X-Google-Sender-Auth: lYs2StU-UssomfmNujbsqzXtpgQ
-Message-ID: <CALSkaMBJLoEZ5umYafv8jtyMyUmPd4fG5KRMW-LARDx8KjHgqg@mail.gmail.com>
-Subject: Re: Greetings My Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings,
+On Wed, 22 Dec 2021 13:03:56 +0000 Martin Habets wrote:
+> On Mon, Dec 20, 2021 at 09:56:03PM +0800, Jiasheng Jiang wrote:
+> > Because of the possible failure of the kcalloc, it should be better to
+> > set rx_queue->page_ptr_mask to 0 when it happens in order to maintain
+> > the consistency.
+> > 
+> > Fixes: 5a6681e22c14 ("sfc: separate out SFC4000 ("Falcon") support into new sfc-falcon driver")
+> > Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>  
+> 
+> Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
 
-I sent this mail praying it will find you in a good condition, since I
-myself am in a very critical health condition in which I sleep every
-night without knowing if I may be alive to see the next day. I am
-Mrs.Theresa Anderson, a widow suffering from a long time illness. I
-have some funds I inherited from my late husband, the sum of
-($11,000,000.00, Eleven Million Dollars) my Doctor told me recently
-that I have serious sickness which is a cancer problem. What disturbs
-me most is my stroke sickness. Having known my condition, I decided to
-donate this fund to a good person that will utilize it the way I am
-going to instruct herein. I need a very honest God.
-
-fearing a person who can claim this money and use it for Charity
-works, for orphanages, widows and also build schools for less
-privileges that will be named after my late husband if possible and to
-promote the word of God and the effort that the house of God is
-maintained. I do not want a situation where this money will be used in
-an ungodly manner. That's why I' making this decision. I'm not afraid
-of death so I know where I'm going. I accept this decision because I
-do not have any child who will inherit this money after I die. Please
-I want your sincere and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
-
-May God Bless you,
-Mrs.Theresa Anderson,
+Applied, thanks!
