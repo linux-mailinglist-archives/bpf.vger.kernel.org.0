@@ -2,180 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0C747CACE
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 02:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53EDF47CB5A
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 03:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241038AbhLVBda (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Dec 2021 20:33:30 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:30157 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhLVBda (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Dec 2021 20:33:30 -0500
-Received: from dggpemm500022.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4JJbPl4d1lz8vyq;
-        Wed, 22 Dec 2021 09:31:07 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 22 Dec 2021 09:33:27 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 22 Dec 2021 09:33:27 +0800
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
- userspace pt_regs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211214135555.125348-1-pulehui@huawei.com>
- <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
- <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com>
- <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
- <50d81d9c-2b5f-9dfd-a284-9778e6273725@huawei.com>
- <88aa98df-b566-d031-b9f9-2b88a437a810@huawei.com>
- <CAEf4BzbJsmKiZHrnEZUZxCL_7PP2w3K5-VabP1bcsoyKogiypw@mail.gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <bd0a5dff-7ada-4ff3-8fda-89e69254c2c4@huawei.com>
-Date:   Wed, 22 Dec 2021 09:33:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbJsmKiZHrnEZUZxCL_7PP2w3K5-VabP1bcsoyKogiypw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+        id S238679AbhLVC3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Dec 2021 21:29:02 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:50313 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237775AbhLVC3C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Dec 2021 21:29:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1640140142; x=1671676142;
+  h=from:to:cc:subject:date:message-id;
+  bh=25A2RLRjV+lzLQA+Qzas0p+Abu4pT4L6NwBAMZ18Nyg=;
+  b=fuMBqYrAXiC3WnV9D0XZU+cTcFZ2hp7Uv71HX/L93zTWiJy6kYSSd9j5
+   lzGNk7AeU1f8OQ+Wqi0eUPfiMPoOqyt9np7eirGy2x54C/ptJq1BTawc8
+   BkviFOP9PqJfUwCH2Oa/aOMqCBJgIrgKsu5gagx+2N5lVb7Rm/7vaHpL1
+   4=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 21 Dec 2021 18:29:02 -0800
+X-QCInternal: smtphost
+Received: from hu-twear-lv.qualcomm.com (HELO hu-devc-lv-u18-c.qualcomm.com) ([10.47.234.142])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP; 21 Dec 2021 18:29:01 -0800
+Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 202676)
+        id 650FF500177; Tue, 21 Dec 2021 18:28:01 -0800 (PST)
+From:   Tyler Wear <quic_twear@quicinc.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     kafai@fb.com, maze@google.com, yhs@fb.com,
+        Tyler Wear <quic_twear@quicinc.com>
+Subject: [PATCH] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
+Date:   Tue, 21 Dec 2021 18:27:37 -0800
+Message-Id: <20211222022737.7369-1-quic_twear@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Need to modify the ds field to support upcoming
+Wifi QoS Alliance spec. Instead of adding generic
+function for just modifying the ds field, add
+skb_store_bytes for BPF_PROG_TYPE_CGROUP_SKB. This
+allows other fields in the network and transport header
+to be modified in the future.
 
+Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
+---
+ net/core/filter.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On 2021/12/22 7:52, Andrii Nakryiko wrote:
-> On Mon, Dec 20, 2021 at 4:58 PM Pu Lehui <pulehui@huawei.com> wrote:
->>
->>
->>
->> On 2021/12/20 22:02, Pu Lehui wrote:
->>>
->>>
->>> On 2021/12/18 0:45, Andrii Nakryiko wrote:
->>>> On Thu, Dec 16, 2021 at 6:25 PM Pu Lehui <pulehui@huawei.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 2021/12/16 12:06, Andrii Nakryiko wrote:
->>>>>> On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
->>>>>>>
->>>>>>> When building bpf selftests on arm64, the following error will occur:
->>>>>>>
->>>>>>> progs/loop2.c:20:7: error: incomplete definition of type 'struct
->>>>>>> user_pt_regs'
->>>>>>>
->>>>>>> Some archs, like arm64 and riscv, use userspace pt_regs in
->>>>>>> bpf_tracing.h, which causes build failure when bpf prog use
->>>>>>> macro in bpf_tracing.h. So let's use vmlinux.h directly.
->>>>>>
->>>>>> We could probably also extend bpf_tracing.h to work with
->>>>>> kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
->>>>>> __VMLINUX_H__ checks). It's more work, but will benefit other end
->>>>>> users, not just selftests.
->>>>>>
->>>>> It might change a lot. We can use header file directory generated by
->>>>> "make headers_install" to fix it.
->>>>
->>>> We don't have dependency on "make headers_install" and I'd rather not
->>>> add it.
->>>>
->>>> What do you mean by "change a lot"?
->>>>
->>> Maybe I misunderstood your advice. Your suggestion might be to extend
->>> bpf_tracing.h to kernel-space pt_regs, while some archs, like arm64,
-> 
-> yes
-> 
->>> only support user-space. So the patch might be like this:
->>>
->>> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
->>> index db05a5937105..2c3cb8e9ae92 100644
->>> --- a/tools/lib/bpf/bpf_tracing.h
->>> +++ b/tools/lib/bpf/bpf_tracing.h
->>> @@ -195,9 +195,13 @@ struct pt_regs;
->>>
->>>    #elif defined(bpf_target_arm64)
->>>
->>> -struct pt_regs;
->>> +#if defined(__KERNEL__)
->>> +#define PT_REGS_ARM64 const volatile struct pt_regs
->>> +#else
->>>    /* arm64 provides struct user_pt_regs instead of struct pt_regs to
->>> userspace */
->>>    #define PT_REGS_ARM64 const volatile struct user_pt_regs
->>> +#endif
->>> +
->>>    #define PT_REGS_PARM1(x) (((PT_REGS_ARM64 *)(x))->regs[0])
->>>    #define PT_REGS_PARM2(x) (((PT_REGS_ARM64 *)(x))->regs[1])
->>>    #define PT_REGS_PARM3(x) (((PT_REGS_ARM64 *)(x))->regs[2])
->>>
->> Please ignore the last reply. User-space pt_regs of arm64/s390 is the
->> first part of the kernel-space's, it should has covered both kernel and
->> userspace.
-> 
-> Alright, so is there still a problem or not? Looking at the definition
-> of struct pt_regs for arm64, just casting struct pt_regs to struct
-> user_pt_regs will indeed just work. So in that case, what was your
-> original issue?
-> 
-Thanks for your reply. The original issue is, when arm64 bpf selftests 
-cross compiling in x86_64 host, clang cannot find the arch specific uapi 
-ptrace.h, and then the above error occur. Of course it works when 
-compiling in arm64 host for it owns the corresponding uapi ptrace.h. So 
-my suggestion is to add arch specific use header file directory 
-generated by "make headers_install" for the cross compiling issue.
->>>>>
->>>>> --- a/tools/testing/selftests/bpf/Makefile
->>>>> +++ b/tools/testing/selftests/bpf/Makefile
->>>>> @@ -294,7 +294,8 @@ MENDIAN=$(if
->>>>> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
->>>>>     CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
->>>>>     BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
->>>>>                -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) \
->>>>> -            -I$(abspath $(OUTPUT)/../usr/include)
->>>>> +            -I$(abspath $(OUTPUT)/../usr/include) \
->>>>> +            -I../../../../usr/include
->>>>>>>
->>>>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->>>>>>> ---
->>>>>>>     tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
->>>>>>>     tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
->>>>>>>     tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
->>>>>>>     tools/testing/selftests/bpf/progs/loop6.c     | 20
->>>>>>> ++++++-------------
->>>>>>>     .../selftests/bpf/progs/test_overhead.c       |  8 ++------
->>>>>>>     .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
->>>>>>>     6 files changed, 15 insertions(+), 43 deletions(-)
->>>>>>>
->>>>>>
->>>>>> [...]
->>>>>> .
->>>>>>
->>>> .
->>>>
->>> .
-> .
-> 
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6102f093d59a..0c25aa2212a2 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7289,6 +7289,8 @@ static const struct bpf_func_proto *
+ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+ 	switch (func_id) {
++	case BPF_FUNC_skb_store_bytes:
++		return &bpf_skb_store_bytes_proto;
+ 	case BPF_FUNC_get_local_storage:
+ 		return &bpf_get_local_storage_proto;
+ 	case BPF_FUNC_sk_fullsock:
+-- 
+2.17.1
+
