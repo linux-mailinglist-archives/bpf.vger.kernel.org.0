@@ -2,178 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3B747C9E4
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 00:52:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336F547CA09
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 01:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbhLUXwn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 21 Dec 2021 18:52:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34578 "EHLO
+        id S229667AbhLVAGr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 21 Dec 2021 19:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231741AbhLUXwn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 21 Dec 2021 18:52:43 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB38C061574;
-        Tue, 21 Dec 2021 15:52:43 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id u8so533448ilk.0;
-        Tue, 21 Dec 2021 15:52:43 -0800 (PST)
+        with ESMTP id S229535AbhLVAGq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 21 Dec 2021 19:06:46 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A547FC061574
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:06:46 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id 19so160492ioz.4
+        for <bpf@vger.kernel.org>; Tue, 21 Dec 2021 16:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vew+Y6C0Xb4YbeDjKWJ5N89q8pmGnOIhzn71f8LdWQI=;
-        b=EaNe3ZSvokj/H/pohy2LjACQAmPjtsoc7e9TOiwwVjNOe0NV3jJFuDeHisHSmFg19n
-         gaB0NAMWSofDJjyv/mtQZCBg2AxOpnoXuNiZMslBRQzDwmxXsCHSQOorSIy2Qhpwdj2w
-         eVXRAf+Ng78+AlCtuzbPENAIMgUvN275RLUR60CCInXfRHdcsyOWaSQQCIRFmjpnk0nm
-         MLoOSSU24l1qdHCnBO0esW2VQmNeD9iAxj3bMWUf+ZjOQkVrD59tWz0pBIlgQ+yV2uwK
-         f9tEXapPrpHGJG1CmjwusUHoHzumcQBeS6jKPoPmaeaN3H/YmnecDDfKulihPlTEn7vg
-         4vhA==
+        bh=f7R4SnyTUZhw1Se6gldmGyvoz6W55yfLcXnq9pf/0DE=;
+        b=cvr0YM2bVKy8KeX2sdH28ardY2bAXwm9kjB9+5dnyQVxTgXLLSfWTFQ80LEbVypEO3
+         LE6wvwoJRp3QR3i4WYeoGh0DxksJIyZEdWPI/SPn/E/ICcbFGwOdrd0rRVI5CSQBuCpw
+         KVHfSXADBW25WPd3Flfs4lsDDD8odIVHHbPPE8uslOOHsB1uqZj617rgqtIq/7Q48m5q
+         CKfzOXboO7JDKWP6cepEUHmW/4vIovol+58QQi6tksKknVis5hpLUjlxLitRTIoOGx58
+         BvO1kESXw4QVSNrdcrEbeAYv5gHQUD4xmO9eukOMhpVJH3C9Df9QuacRPXC5U/Hh95xs
+         M89Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vew+Y6C0Xb4YbeDjKWJ5N89q8pmGnOIhzn71f8LdWQI=;
-        b=rDeLtQxpwV0Ml5zTKtkW7pfLv6U3RPGLsrB8v5Gl4Rg+hvT5YTgVhKx3KYpy+R/2cj
-         Kr+Jgn44Mk/78h1sgEdeGK27IEyxtzuMZ6MFj4zfcXx45op0xNZhnfDjyKlAIgkDs9BI
-         5thMSBCAlytiKSXrobalwWiIIOpTf6ljQlWJiJlwwNwWEhfa+0FIbbADNGkT0uS3aVz9
-         E3CElBlVJPmxoXpnA0uu6448QgFlfPhcrFNBMHk3GmQhOCdcC3pfjumzW/Ry9pToaoIG
-         KaSFb609tXm9d2onSmadJFJJcF+3RxV3GMaS6dophYJlDo81pDKOHfWHWBQG9iy3QGuV
-         nNew==
-X-Gm-Message-State: AOAM533Y6kSpAsIiitM03EJRpKqKH2osCzom7/XVaj0UszGX0+BWEkVc
-        pMNpR6nObdGa7c5I+1dq4HCU+kRxj1tSDQNB9N4=
-X-Google-Smtp-Source: ABdhPJw6EW6RqfsSqxydJGudx4Qgp0WEhCNkhiP+plg+tm0GmGuZ04r1MKvAkbCXFQYs+Jb3vh4//oyKqEPK+fBG50s=
-X-Received: by 2002:a05:6e02:1a21:: with SMTP id g1mr257519ile.71.1640130762806;
- Tue, 21 Dec 2021 15:52:42 -0800 (PST)
+        bh=f7R4SnyTUZhw1Se6gldmGyvoz6W55yfLcXnq9pf/0DE=;
+        b=YaU1M4cmWcrIRmOHWS2nzmtJnXsKtBOpe2MlVrpHq6yx1l30VkZa4qNtRYkD+cVC7T
+         QY9jdXRtTFM4Aa1vnm3IhGNhORP7igFgwwMtHBF1q7rq+RtcSoupCsBX3N1g0iAwKTDR
+         SkMEFHgy99KcG56kdrwT/hISIJbE+eSBDWTbAXoXhpUD3Xo46lLeLuG7+Dj1yvU+krYO
+         oIcvWeONXxI2+yu7eRPt4dpH0c07k/nLdTS7C99ue969TXPteGIHf8F/DUpkM1MAj8QI
+         SuuhLwPRpAk0cGgs8DgSpr26KvyUx2Z5TCAeuyYhdm9K2bs5TeST6dhf0LsBrMAXcURu
+         RSTw==
+X-Gm-Message-State: AOAM531uxtGS7ebWUGfx90laKzwWSeqoYQ/13eRtOSgqne8NdNeNt3XD
+        1e2pgUkgspEJoEG6z2SMSa3GDur7CnCzSGqdxVs=
+X-Google-Smtp-Source: ABdhPJyaWSGROkYzvpwdminhiehuTLe5gG4Pdx9EJ69iswJeVd2S9mcEN1+FtccsXNSePNU9kgb/s5dA6xISErIHAwc=
+X-Received: by 2002:a5d:9f01:: with SMTP id q1mr254893iot.144.1640131606040;
+ Tue, 21 Dec 2021 16:06:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20211214135555.125348-1-pulehui@huawei.com> <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
- <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com> <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
- <50d81d9c-2b5f-9dfd-a284-9778e6273725@huawei.com> <88aa98df-b566-d031-b9f9-2b88a437a810@huawei.com>
-In-Reply-To: <88aa98df-b566-d031-b9f9-2b88a437a810@huawei.com>
+References: <20211220054048.54845-1-grantseltzer@gmail.com>
+In-Reply-To: <20211220054048.54845-1-grantseltzer@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 21 Dec 2021 15:52:31 -0800
-Message-ID: <CAEf4BzbJsmKiZHrnEZUZxCL_7PP2w3K5-VabP1bcsoyKogiypw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
- userspace pt_regs
-To:     Pu Lehui <pulehui@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 21 Dec 2021 16:06:34 -0800
+Message-ID: <CAEf4BzYOkkh3Cn6gBFx6SNwy5_fUewZkAxgiidoh-2ECtrwexQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: Add documentation for bpf_map batch operations
+To:     grantseltzer <grantseltzer@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 20, 2021 at 4:58 PM Pu Lehui <pulehui@huawei.com> wrote:
+On Sun, Dec 19, 2021 at 9:42 PM grantseltzer <grantseltzer@gmail.com> wrote:
 >
+> From: Grant Seltzer <grantseltzer@gmail.com>
 >
+> This adds documention for:
+
+typo: documentation :)
+
 >
-> On 2021/12/20 22:02, Pu Lehui wrote:
-> >
-> >
-> > On 2021/12/18 0:45, Andrii Nakryiko wrote:
-> >> On Thu, Dec 16, 2021 at 6:25 PM Pu Lehui <pulehui@huawei.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 2021/12/16 12:06, Andrii Nakryiko wrote:
-> >>>> On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
-> >>>>>
-> >>>>> When building bpf selftests on arm64, the following error will occur:
-> >>>>>
-> >>>>> progs/loop2.c:20:7: error: incomplete definition of type 'struct
-> >>>>> user_pt_regs'
-> >>>>>
-> >>>>> Some archs, like arm64 and riscv, use userspace pt_regs in
-> >>>>> bpf_tracing.h, which causes build failure when bpf prog use
-> >>>>> macro in bpf_tracing.h. So let's use vmlinux.h directly.
-> >>>>
-> >>>> We could probably also extend bpf_tracing.h to work with
-> >>>> kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
-> >>>> __VMLINUX_H__ checks). It's more work, but will benefit other end
-> >>>> users, not just selftests.
-> >>>>
-> >>> It might change a lot. We can use header file directory generated by
-> >>> "make headers_install" to fix it.
-> >>
-> >> We don't have dependency on "make headers_install" and I'd rather not
-> >> add it.
-> >>
-> >> What do you mean by "change a lot"?
-> >>
-> > Maybe I misunderstood your advice. Your suggestion might be to extend
-> > bpf_tracing.h to kernel-space pt_regs, while some archs, like arm64,
+> - bpf_map_delete_batch()
+> - bpf_map_lookup_batch()
+> - bpf_map_lookup_and_delete_batch()
+> - bpf_map_update_batch()
+>
+> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+> ---
+>  tools/lib/bpf/bpf.h | 93 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 93 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+> index 00619f64a040..b1a2ac9ca9c7 100644
+> --- a/tools/lib/bpf/bpf.h
+> +++ b/tools/lib/bpf/bpf.h
+> @@ -254,20 +254,113 @@ struct bpf_map_batch_opts {
+>  };
+>  #define bpf_map_batch_opts__last_field flags
+>
+> +
+> +/**
+> + * @brief **bpf_map_delete_batch()** allows for batch deletion of multiple
+> + * elements in a BPF map.
+> + *
+> + * The parameter *keys* points to a memory address large enough to hold
 
-yes
+"memory address large enough" is very misleading... "points to buffer
+large enough"?
 
-> > only support user-space. So the patch might be like this:
-> >
-> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> > index db05a5937105..2c3cb8e9ae92 100644
-> > --- a/tools/lib/bpf/bpf_tracing.h
-> > +++ b/tools/lib/bpf/bpf_tracing.h
-> > @@ -195,9 +195,13 @@ struct pt_regs;
-> >
-> >   #elif defined(bpf_target_arm64)
-> >
-> > -struct pt_regs;
-> > +#if defined(__KERNEL__)
-> > +#define PT_REGS_ARM64 const volatile struct pt_regs
-> > +#else
-> >   /* arm64 provides struct user_pt_regs instead of struct pt_regs to
-> > userspace */
-> >   #define PT_REGS_ARM64 const volatile struct user_pt_regs
-> > +#endif
-> > +
-> >   #define PT_REGS_PARM1(x) (((PT_REGS_ARM64 *)(x))->regs[0])
-> >   #define PT_REGS_PARM2(x) (((PT_REGS_ARM64 *)(x))->regs[1])
-> >   #define PT_REGS_PARM3(x) (((PT_REGS_ARM64 *)(x))->regs[2])
-> >
-> Please ignore the last reply. User-space pt_regs of arm64/s390 is the
-> first part of the kernel-space's, it should has covered both kernel and
-> userspace.
+But in this case, keys is just an input array of keys, no? In such a
+case just saying that "*keys* points to an array of *count* keys"
+would be pretty unambiguous, right?
 
-Alright, so is there still a problem or not? Looking at the definition
-of struct pt_regs for arm64, just casting struct pt_regs to struct
-user_pt_regs will indeed just work. So in that case, what was your
-original issue?
+> + * *count* keys of elements in the map *fd*.
+> + *
+> + * @param fd BPF map file descriptor
+> + * @param keys memory address large enough to hold *count* * *key_size*
+> + * @param count number of elements in the map to sequentially delete
+> + * @param opts options for configuring the way the batch deletion works
+> + * @return  int error code, 0 if no error (errno is also set to error)
 
-> >>>
-> >>> --- a/tools/testing/selftests/bpf/Makefile
-> >>> +++ b/tools/testing/selftests/bpf/Makefile
-> >>> @@ -294,7 +294,8 @@ MENDIAN=$(if
-> >>> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
-> >>>    CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
-> >>>    BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
-> >>>               -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) \
-> >>> -            -I$(abspath $(OUTPUT)/../usr/include)
-> >>> +            -I$(abspath $(OUTPUT)/../usr/include) \
-> >>> +            -I../../../../usr/include
-> >>>>>
-> >>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
-> >>>>> ---
-> >>>>>    tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
-> >>>>>    tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
-> >>>>>    tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
-> >>>>>    tools/testing/selftests/bpf/progs/loop6.c     | 20
-> >>>>> ++++++-------------
-> >>>>>    .../selftests/bpf/progs/test_overhead.c       |  8 ++------
-> >>>>>    .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
-> >>>>>    6 files changed, 15 insertions(+), 43 deletions(-)
-> >>>>>
-> >>>>
-> >>>> [...]
-> >>>> .
-> >>>>
-> >> .
-> >>
-> > .
+Usually success is described first. Can you please rephrase here and
+in others to something along the lines of:
+
+0, on success; negative error code, otherwise (errno is also set to
+the error code)
+
+?
+
+> + */
+>  LIBBPF_API int bpf_map_delete_batch(int fd, void *keys,
+
+if keys are really just an input, let's mark them as `const void *`,
+while we are documenting all this?
+
+>                                     __u32 *count,
+>                                     const struct bpf_map_batch_opts *opts);
+> +
+> +/**
+> + * @brief **bpf_map_lookup_batch()** allows for iteration of BPF map elements.
+> + *
+> + * The parameter *in_batch* is the address of the first element in the batch to read.
+> + * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
+> + * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to set
+> + * *out_batch* as the first element of the map.
+> + *
+> + * The *keys* and *values* are output parameters which must point to memory large enough to
+> + * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
+> + * buffer must be of *key_size* * *count*. The *values* buffer must be of
+> + * *value_size* * *count*.
+> + *
+> + * @param fd BPF map file descriptor
+> + * @param in_batch address of the first element in batch to read, can pass NULL to
+> + * get address of the first element in *out_batch*
+> + * @param out_batch output parameter that should be passed to next call as *in_batch*
+> + * @param keys memory address large enough to hold *count* * *key_size*
+> + * @param values memory address large enough to hold *count* * *value_size*
+
+again this "memory address large enough" wording. Address is fixed at
+32-bit/64-bit, depending on the architecture. It's quite a confusing
+wording that you chose...
+
+> + * @param count number of elements in the map to read in batch
+> + * @param opts options for configuring the way the batch lookup works
+> + * @return int error code, 0 if no error (errno is also set to error)
+> + */
+>  LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
+>                                     void *keys, void *values, __u32 *count,
+>                                     const struct bpf_map_batch_opts *opts);
+> +
+> +/**
+> + * @brief **bpf_map_lookup_and_delete_batch()** allows for iteration of BPF map
+> + * elements where each element is deleted after being retrieved.
+> + *
+> + * Note that *count* is an input and output parameter, where on output it
+> + * represents how many elements were succesfully deleted. Also note that if
+> + * **EFAULT** is returned up to *count* elements may have been deleted without
+> + * being returned via the *keys* and *values* output parameters.
+> + *
+> + * @param fd BPF map file descriptor
+> + * @param in_batch address of the first element in batch to read, can pass NULL to
+> + * get address of the first element in *out_batch*
+> + * @param out_batch output parameter that should be passed to next call as *in_batch*
+> + * @param keys memory address large enough to hold *count* * *key_size*
+> + * @param values memory address large enough to hold *count* * *value_size*
+> + * @param count number of elements in the map to read and delete in batch
+> + * @param opts options for configuring the way the batch lookup and delete works
+> + * @return int error code, 0 if no error (errno is also set to error)
+> + * See note on EFAULT.
+> + */
+>  LIBBPF_API int bpf_map_lookup_and_delete_batch(int fd, void *in_batch,
+>                                         void *out_batch, void *keys,
+>                                         void *values, __u32 *count,
+>                                         const struct bpf_map_batch_opts *opts);
+> +
+> +/**
+> + * @brief **bpf_map_update_batch()** updates multiple elements in a map
+> + * by specifiying keys and their corresponding values.
+> + *
+> + * The *keys* and *values* paremeters must point to memory large enough
+> + * to hold *count* items based on the key and value size of the map.
+> + *
+> + * The *opts* parameter can be used to control how *bpf_map_update_batch()*
+> + * should handle keys that either do or do not already exist in the map.
+> + * In particular the *flags* field of *bpf_map_batch_opts* can be
+> + * one of the following:
+> + *
+> + * **BPF_ANY**
+> + *     Create new elements or update a existing elements.
+
+just "update existing"
+
+> + *
+> + * **BPF_NOEXIST**
+> + *     Create new elements only if they do not exist.
+> + *
+> + * **BPF_EXIST**
+> + *     Update existing elements.
+> + *
+> + * **BPF_F_LOCK**
+> + *     Update spin_lock-ed map elements. This must be
+> + *     specified if the map value contains a spinlock.
+> + *
+> + * @param fd BPF map file descriptor
+> + * @param keys memory address large enough to hold *count* * *key_size*
+> + * @param values memory address large enough to hold *count* * *value_size*
+> + * @param count number of elements in the map to update in batch
+> + * @param opts options for configuring the way the batch update works
+> + * @return int error code, 0 if no error (errno is also set to error)
+> + */
+>  LIBBPF_API int bpf_map_update_batch(int fd, void *keys, void *values,
+
+I think keys are also `const void *`, while values are written into.
+Let's update accordingly.
+
+>                                     __u32 *count,
+>                                     const struct bpf_map_batch_opts *opts);
+>
+> +
+>  LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
+>  LIBBPF_API int bpf_obj_get(const char *pathname);
+>
+> --
+> 2.33.1
+>
