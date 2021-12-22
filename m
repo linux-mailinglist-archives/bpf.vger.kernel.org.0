@@ -2,189 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22F847D323
-	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 14:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EA447D3C5
+	for <lists+bpf@lfdr.de>; Wed, 22 Dec 2021 15:34:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbhLVNo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 08:44:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:23882 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234159AbhLVNo5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Dec 2021 08:44:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1640180696;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EUX0ogKpf3d14pHpuY30V0wv60QYvAzDmFZeRw8TXic=;
-        b=HvqWn3xliTo9gmnK3Ni/QVq5tLG2XP78f8kBKpDocDjq2On/meDkU4zz4JhI6bLdvPjeEf
-        f/SHuBx7m4wHrZOOgRJTNZK8WwQlR4fxQaW1Awhg1l5hfDo9tjO2ebPED1Y1jbO2s1sI84
-        C+KzI1En4JMm12AB1fo7vpGHRW1Rnog=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-251-Njhx80XTNLiXNsTLyvyrng-1; Wed, 22 Dec 2021 08:44:55 -0500
-X-MC-Unique: Njhx80XTNLiXNsTLyvyrng-1
-Received: by mail-ed1-f70.google.com with SMTP id ch27-20020a0564021bdb00b003f8389236f8so1847996edb.19
-        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 05:44:55 -0800 (PST)
+        id S241330AbhLVOeV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 09:34:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237237AbhLVOd5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 09:33:57 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE6CC061574
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 06:33:54 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g22so2281179pgn.1
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 06:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
+        b=a9sQ4pvnvy3v1LCkXmsRg+S+GVpevPlqELdKXNRvwBUz1eFBpFxIl4s1VZgvM7iENv
+         OXwG8sIwpS8kXYYSc/jAZh+owFWbXcspHQjT5tulPOTsu+8aEAXuJKmDjEKBdysuxsiw
+         tSOqnRyoGILVLyU2tfmq29eDbk8uSI29NVkp2UZJvKgxk7kMwQROSJWNaKcLPRXfh+WW
+         OXCdwjszT/nR6p9Iy62I8S23eBWhMaxPSbfilQ5jG6uPbc+Am5GFjX6e0csFszZHXGud
+         0kSbFT4ZS+9g61dQULAI3p4mCbxoktG28Bq5nKuqjYrTYkVlUipiGkjF40vlLzfaRoOn
+         uJSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EUX0ogKpf3d14pHpuY30V0wv60QYvAzDmFZeRw8TXic=;
-        b=J4QqOOnIcDeJ/Mptx0/g6kADEDSUdfwsJvDXpYwZchmdKFjlsQexzqmR1LkBEo1RXa
-         +79Zd3bLFYJhlpC0DdimpWxPqzz2iMs+S8mRARKUgGnPSg2sGM+LHHdmx+pbRvovzpMF
-         d5cTgp+ErsE1rsI2GfpHPMHghaUwUEBVMK3QWa4je5jYx3HZJGpemYU5Lv8zAtChIIrs
-         AexCM+shJvUlxhh7ZACN6xhdHMVZjGYZtmScXWleHaYNUbt1VKQH8tQOloIPGrpX0YX8
-         ggGkw1Qmjh6E+mXqbaukecmnzpAJZd/2HMUdhy9RxLnt9SekPLfOuBiC2wqspx9iPApd
-         Ww7A==
-X-Gm-Message-State: AOAM532xXJ+dPOGjjtFVAN7LBGvMq/MhwJnrXCfU4DhBWZQjmxbpLrOh
-        T0jCcwk4i+uGhf2FVQwbC2H3NVPOYNeBvsRMYUdasgt0mXwCthLY7L57n1oHOKGt01Cbq68+uqN
-        OHAcUzi0a9lWo
-X-Received: by 2002:a17:907:8a06:: with SMTP id sc6mr931761ejc.214.1640180694379;
-        Wed, 22 Dec 2021 05:44:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzH2Ch4giRTpV+TGELmHFEzgTDQlBiWQMnDDaSrIPTcmLp/t4Ey8yKkKy7hlVrNJH2pmznoPA==
-X-Received: by 2002:a17:907:8a06:: with SMTP id sc6mr931742ejc.214.1640180694125;
-        Wed, 22 Dec 2021 05:44:54 -0800 (PST)
-Received: from krava ([83.240.60.218])
-        by smtp.gmail.com with ESMTPSA id 12sm742338eja.187.2021.12.22.05.44.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Dec 2021 05:44:53 -0800 (PST)
-Date:   Wed, 22 Dec 2021 14:44:52 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Christy Lee <christylee@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Christy Lee <christyc.y.lee@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        He Kuang <hekuang@huawei.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH bpf-next 2/2] perf: stop using deprecated
- bpf__object_next() API
-Message-ID: <YcMr1LeP6zUBdCiK@krava>
-References: <20211216222108.110518-1-christylee@fb.com>
- <20211216222108.110518-3-christylee@fb.com>
- <YcGO271nDvfMeSlK@krava>
- <CAEf4BzZpNvEtfsVHUJGfwi_1xM+7-ohBPKPrRo--X=fYkYLrsw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=szeolAqmJqd0hJn5d47PHeNOyZWuU1CeFrejo0YAi2g=;
+        b=pUcAaDKvYjRFVWqsHrAuUX87azDrtFks6vdKAIonr2sEB0yUaQwEv2F+dNtQioW5/w
+         DAGR5NNvTqv6dnMFS97tDdT/3oxyHkGJ4RaWVBWICARrrdBhamRtJBV4KNr3Au0reKP8
+         TzE4ZFSLmjcW8Rc+HOBHYTAoJ4ELsgFGVuzvVx15U/63bNB2D6E2VTuvf4XrBB/jpQAB
+         YfREW2Z42HpEvHbZhaFHfilCemh0KwIayLwkeKGtZZsemg0dlARWt/+i2gapWZ0FZvYA
+         EF0u+UpfBQAxlg6uPGE6t4VidWtM1MJdqUCJWBRe8liKwbwsf8dod3IzqCyPeTwn0CAx
+         7/dQ==
+X-Gm-Message-State: AOAM5310kywKGasXOh0THaTE6bIBB5aQiR/oVh/edSobQsJ/kkBx2kA4
+        WVruY1CtUyfgpx9Lx9TZ6bN5lQZlqnMGDVl6Ig4=
+X-Google-Smtp-Source: ABdhPJxcGXtsWGK9TVKgc+RNas/KmihaRY/UEv/rnP5d8gHpZT7k05NOviM08dlSdLGfYaRCof+5JNjW6/oeWOG0eK4=
+X-Received: by 2002:a63:395:: with SMTP id 143mr2972738pgd.181.1640183634314;
+ Wed, 22 Dec 2021 06:33:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZpNvEtfsVHUJGfwi_1xM+7-ohBPKPrRo--X=fYkYLrsw@mail.gmail.com>
+Received: by 2002:a05:6a10:70b:0:0:0:0 with HTTP; Wed, 22 Dec 2021 06:33:53
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi35@gmail.com>
+Date:   Wed, 22 Dec 2021 06:33:53 -0800
+Message-ID: <CABTz6dOJuQL055kd_L6EaLyYj66-qUmR==YK=3qD5vxrFD17Dg@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 21, 2021 at 01:58:14PM -0800, Andrii Nakryiko wrote:
-> On Tue, Dec 21, 2021 at 12:23 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Thu, Dec 16, 2021 at 02:21:08PM -0800, Christy Lee wrote:
-> > > bpf__object_next is deprecated, track bpf_objects directly in
-> > > perf instead.
-> > >
-> > > Signed-off-by: Christy Lee <christylee@fb.com>
-> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  tools/perf/util/bpf-loader.c | 72 +++++++++++++++++++++++++++---------
-> > >  tools/perf/util/bpf-loader.h |  1 +
-> > >  2 files changed, 55 insertions(+), 18 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-> > > index 528aeb0ab79d..9e3988fd719a 100644
-> > > --- a/tools/perf/util/bpf-loader.c
-> > > +++ b/tools/perf/util/bpf-loader.c
-> > > @@ -29,9 +29,6 @@
-> > >
-> > >  #include <internal/xyarray.h>
-> > >
-> > > -/* temporarily disable libbpf deprecation warnings */
-> > > -#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> > > -
-> > >  static int libbpf_perf_print(enum libbpf_print_level level __attribute__((unused)),
-> > >                             const char *fmt, va_list args)
-> > >  {
-> > > @@ -49,6 +46,36 @@ struct bpf_prog_priv {
-> > >       int *type_mapping;
-> > >  };
-> > >
-> > > +struct bpf_perf_object {
-> > > +     struct bpf_object *obj;
-> > > +     struct list_head list;
-> > > +};
-> > > +
-> > > +static LIST_HEAD(bpf_objects_list);
-> >
-> > hum, so this duplicates libbpf's bpf_objects_list,
-> > how do objects get on this list?
-> 
-> yep, this list needs to be updated on perf side each time
-> bpf_object__open() (and any variant of open) is called.
-> 
-> >
-> > could you please put more comments in changelog
-> > and share how you tested this?
-> 
-> I actually have no idea how to test this as well, can you please share
-> some ideas?
-> 
+Dear Friend,
 
-I don't use it, I just know it's there.. that's why I asked ;-)
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
 
-it's possible to specify bpf program on the perf command line
-to be attached to event, like:
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-      # cat tools/perf/examples/bpf/hello.c
-      #include <stdio.h>
-    
-      int syscall_enter(openat)(void *args)
-      {
-              puts("Hello, world\n");
-              return 0;
-      }
-    
-      license(GPL);
-      #
-      # perf trace -e openat,tools/perf/examples/bpf/hello.c cat /etc/passwd > /dev/null
-         0.016 (         ): __bpf_stdout__:Hello, world
-         0.018 ( 0.010 ms): cat/9079 openat(dfd: CWD, filename: /etc/ld.so.cache, flags: CLOEXEC) = 3
-         0.057 (         ): __bpf_stdout__:Hello, world
-         0.059 ( 0.011 ms): cat/9079 openat(dfd: CWD, filename: /lib64/libc.so.6, flags: CLOEXEC) = 3
-         0.417 (         ): __bpf_stdout__:Hello, world
-         0.419 ( 0.009 ms): cat/9079 openat(dfd: CWD, filename: /etc/passwd) = 3
-      #
-
-I took that example from commit message
-
-> 
-> BTW, while we are at it, Jiri, do you have any good ideas on how to
-> remove perf's usage of bpf_program__set_priv() and
-> bpf_program__set_prep() APIs in perf code base? These APIs are
-> deprecated as well, but seems like perf relies on them pretty heavily.
-> What would be the best way to stop using them?
-> 
-> For set_priv(), I think it should be totally fine to maintain a
-> separate lookup hash table by `struct bpf_program *` or its name, that
-> shouldn't be hard.
-
-ok, so there's no alternative api for this one then
-
-> 
-> But for set_prep(), what does perf use it for? I assume for cloning
-> BPF programs, right? Anything else besides that? If it's just for
-> cloning, libbpf provides bpf_program__insns() API to get access to
-> underlying bpf_insn array, do you think it's possible to switch perf
-> to that instead?
-
-look like it's used to generate prologs for programs:
-  a08357d8dc7d perf bpf: Generate prologue for BPF programs
-
-the author Wang Nan haven't touched that for some time,
-I'm cc-ing other folks that were involved..  Arnaldo? ;-)
-
-if nobody volunteers, I can check on that
-
-jirka
-
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+Best Regards
+Mrs Aisha Al-Qaddafi
