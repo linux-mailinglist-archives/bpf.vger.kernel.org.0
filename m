@@ -2,91 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1D647DE55
-	for <lists+bpf@lfdr.de>; Thu, 23 Dec 2021 05:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E7C47DE63
+	for <lists+bpf@lfdr.de>; Thu, 23 Dec 2021 05:52:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhLWEnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 23:43:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhLWEnd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 22 Dec 2021 23:43:33 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6BCC061574
-        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 20:43:33 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id mj19so4012206pjb.3
-        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 20:43:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eFwjkPbMKqFa9X+P9sB7lfHnsxS67gNA+SrAChfAE0I=;
-        b=mJ0xfYBc3ZXE7Ez2l3ccerA73Jg0ar5MC75/JbCoAQ6nFxOCL03UFji2ufbfm0QYrx
-         udT8oO0wntaKNlI7Jx5cmWuq8Kf+IgkYTOCTL2iQ3pUZXXwNemZ6h9JPNk56xCMc+Y/q
-         2eCxizp8ksUes28sw+2fBqxWuSKl6qkVj7mHbpzlzjel3uhin3ReuUW3kYs5r94XuxQA
-         lN20TfbKdd/PHEKeUwth5UshCZZKuMBQTKtl4nprLMHnOlGCJxcDB2Lc5LQ/EvgR0VUD
-         aITSppqpLAI1RUoNtSLVedaGuyj6dVVFSeCjKVWQEh2nXfRkvw5aVfzvnDg6SzUo2wOs
-         4Wmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eFwjkPbMKqFa9X+P9sB7lfHnsxS67gNA+SrAChfAE0I=;
-        b=pIduyynVJKs40dPal4IdHrOwyPm0AuFRKpUtYjUVBT2Q/Oa46cUhaPa7Q/XYxY/nD1
-         Z25YXGeGKQ3jnTTdOONHDG6vwxv+2ZlRzlQadr+QFLp9wxPJaU4KuGEwFqbgC/JRpK0Q
-         /p/Y9TyG+iyvWknq3Khmnsv1yn4nkQ9GeHAFvzcRx3YXS+JpTLY9Y4FnDURR0tyJ1KxC
-         OuTjE6rOdRCOJlOFg7xf/6bvSmRN+2YLf0PJMFuS76E8ZXEpYTttRNpPh+zSPSIp8gvl
-         nY6lbaHKgek/k0g+cHKMwUNUcHUfUMAnqvt9w6cRnuXLmFGRj7JItqfY7rY+jHBAHeUn
-         CiSw==
-X-Gm-Message-State: AOAM530STvhazCCwvqjYDGzZR9lqCP+IZ17EuC9yw6cU2AqJlvVb87al
-        yk5SW6o1dIwum0wd2qqt9orB1XYNe68L/64CfCpJ5g4D
-X-Google-Smtp-Source: ABdhPJz76FJ2e5tpQl3g1aMiOW23ME10nBmCjOJ3QJp1ghcPZsOt/0MkOp0NqjstMGO34t9WbzuDtZJTAeWoKv1pN/4=
-X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
- f12-20020a170902860c00b00149101725f0mr816166plo.116.1640234612669; Wed, 22
- Dec 2021 20:43:32 -0800 (PST)
+        id S234415AbhLWEwR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 23:52:17 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:33903 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhLWEwR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 23:52:17 -0500
+Received: from dggpemm500020.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JKHpv0nWXzcc4N;
+        Thu, 23 Dec 2021 12:51:51 +0800 (CST)
+Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
+ dggpemm500020.china.huawei.com (7.185.36.49) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 23 Dec 2021 12:52:14 +0800
+Received: from [10.67.109.184] (10.67.109.184) by
+ dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 23 Dec 2021 12:52:14 +0800
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix building error when using
+ userspace pt_regs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Shuah Khan <shuah@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211214135555.125348-1-pulehui@huawei.com>
+ <CAEf4BzaQcHV3iY5XqEbt3ptw+KejVVEZ8gSmW7u46=xHnsTaPA@mail.gmail.com>
+ <a83777e4-528f-8adb-33e4-a0fea8d544a0@huawei.com>
+ <CAEf4BzZf2UBgO=uaOOhPFEdJV9Jo7x3KAC3G9Wa1RVdmOD35nA@mail.gmail.com>
+ <50d81d9c-2b5f-9dfd-a284-9778e6273725@huawei.com>
+ <88aa98df-b566-d031-b9f9-2b88a437a810@huawei.com>
+ <CAEf4BzbJsmKiZHrnEZUZxCL_7PP2w3K5-VabP1bcsoyKogiypw@mail.gmail.com>
+ <bd0a5dff-7ada-4ff3-8fda-89e69254c2c4@huawei.com>
+ <CAEf4BzZjoDH1ko7-wMPN6kquq-5dAnWAAqLfheRgKdQP8Mg7fQ@mail.gmail.com>
+From:   Pu Lehui <pulehui@huawei.com>
+Message-ID: <133520cb-fd10-1822-047f-ea9e8765de1e@huawei.com>
+Date:   Thu, 23 Dec 2021 12:52:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20211222131005.1380289-1-liu.yun@linux.dev>
-In-Reply-To: <20211222131005.1380289-1-liu.yun@linux.dev>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 22 Dec 2021 20:43:21 -0800
-Message-ID: <CAADnVQ+21_4gANJhARm7GECLRbshQUxAq4s0WL8OvAiHnD2oxw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: clean up unnecessary conditional judgments
-To:     Jackie Liu <liu.yun@linux.dev>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzZjoDH1ko7-wMPN6kquq-5dAnWAAqLfheRgKdQP8Mg7fQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.109.184]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500019.china.huawei.com (7.185.36.180)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 5:10 AM Jackie Liu <liu.yun@linux.dev> wrote:
->
-> From: Jackie Liu <liuyun01@kylinos.cn>
->
-> s32 is always true regardless of the values of its operands. let's
-> cleanup.
->
-> Fixes: e572ff80f05c ("bpf: Make 32->64 bounds propagation slightly more robust")
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
-> ---
->  kernel/bpf/verifier.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b532f1058d35..43812ee58304 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1366,11 +1366,6 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
->         reg->var_off = tnum_or(tnum_clear_subreg(var64_off), var32_off);
->  }
->
-> -static bool __reg32_bound_s64(s32 a)
-> -{
-> -       return a >= 0 && a <= S32_MAX;
-> -}
-> -
 
-The code is the best documentation.
-Here it clearly describes the intent.
-Please ignore compiler warnings.
+
+On 2021/12/23 7:17, Andrii Nakryiko wrote:
+> On Tue, Dec 21, 2021 at 5:33 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>
+>>
+>>
+>> On 2021/12/22 7:52, Andrii Nakryiko wrote:
+>>> On Mon, Dec 20, 2021 at 4:58 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2021/12/20 22:02, Pu Lehui wrote:
+>>>>>
+>>>>>
+>>>>> On 2021/12/18 0:45, Andrii Nakryiko wrote:
+>>>>>> On Thu, Dec 16, 2021 at 6:25 PM Pu Lehui <pulehui@huawei.com> wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2021/12/16 12:06, Andrii Nakryiko wrote:
+>>>>>>>> On Tue, Dec 14, 2021 at 5:54 AM Pu Lehui <pulehui@huawei.com> wrote:
+>>>>>>>>>
+>>>>>>>>> When building bpf selftests on arm64, the following error will occur:
+>>>>>>>>>
+>>>>>>>>> progs/loop2.c:20:7: error: incomplete definition of type 'struct
+>>>>>>>>> user_pt_regs'
+>>>>>>>>>
+>>>>>>>>> Some archs, like arm64 and riscv, use userspace pt_regs in
+>>>>>>>>> bpf_tracing.h, which causes build failure when bpf prog use
+>>>>>>>>> macro in bpf_tracing.h. So let's use vmlinux.h directly.
+>>>>>>>>
+>>>>>>>> We could probably also extend bpf_tracing.h to work with
+>>>>>>>> kernel-defined pt_regs, just like we do for x86 (see __KERNEL__ and
+>>>>>>>> __VMLINUX_H__ checks). It's more work, but will benefit other end
+>>>>>>>> users, not just selftests.
+>>>>>>>>
+>>>>>>> It might change a lot. We can use header file directory generated by
+>>>>>>> "make headers_install" to fix it.
+>>>>>>
+>>>>>> We don't have dependency on "make headers_install" and I'd rather not
+>>>>>> add it.
+>>>>>>
+>>>>>> What do you mean by "change a lot"?
+>>>>>>
+>>>>> Maybe I misunderstood your advice. Your suggestion might be to extend
+>>>>> bpf_tracing.h to kernel-space pt_regs, while some archs, like arm64,
+>>>
+>>> yes
+>>>
+>>>>> only support user-space. So the patch might be like this:
+>>>>>
+>>>>> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+>>>>> index db05a5937105..2c3cb8e9ae92 100644
+>>>>> --- a/tools/lib/bpf/bpf_tracing.h
+>>>>> +++ b/tools/lib/bpf/bpf_tracing.h
+>>>>> @@ -195,9 +195,13 @@ struct pt_regs;
+>>>>>
+>>>>>     #elif defined(bpf_target_arm64)
+>>>>>
+>>>>> -struct pt_regs;
+>>>>> +#if defined(__KERNEL__)
+>>>>> +#define PT_REGS_ARM64 const volatile struct pt_regs
+>>>>> +#else
+>>>>>     /* arm64 provides struct user_pt_regs instead of struct pt_regs to
+>>>>> userspace */
+>>>>>     #define PT_REGS_ARM64 const volatile struct user_pt_regs
+>>>>> +#endif
+>>>>> +
+>>>>>     #define PT_REGS_PARM1(x) (((PT_REGS_ARM64 *)(x))->regs[0])
+>>>>>     #define PT_REGS_PARM2(x) (((PT_REGS_ARM64 *)(x))->regs[1])
+>>>>>     #define PT_REGS_PARM3(x) (((PT_REGS_ARM64 *)(x))->regs[2])
+>>>>>
+>>>> Please ignore the last reply. User-space pt_regs of arm64/s390 is the
+>>>> first part of the kernel-space's, it should has covered both kernel and
+>>>> userspace.
+>>>
+>>> Alright, so is there still a problem or not? Looking at the definition
+>>> of struct pt_regs for arm64, just casting struct pt_regs to struct
+>>> user_pt_regs will indeed just work. So in that case, what was your
+>>> original issue?
+>>>
+>> Thanks for your reply. The original issue is, when arm64 bpf selftests
+>> cross compiling in x86_64 host, clang cannot find the arch specific uapi
+>> ptrace.h, and then the above error occur. Of course it works when
+>> compiling in arm64 host for it owns the corresponding uapi ptrace.h. So
+>> my suggestion is to add arch specific use header file directory
+>> generated by "make headers_install" for the cross compiling issue.
+> 
+> I see. Can you try adding something like:
+> 
+> ARCH_APIDIR := $(abspath ../../../../arch/$(SRCARCH)/include/uapi)
+> 
+> and then add -I$(ARCH_APIDIR) to BPF_CFLAGS?
+> 
+> Please let me know if that works for your cross-compilation case.
+> 
+It works, thanks. I will add it to v2.
+>>>>>>>
+>>>>>>> --- a/tools/testing/selftests/bpf/Makefile
+>>>>>>> +++ b/tools/testing/selftests/bpf/Makefile
+>>>>>>> @@ -294,7 +294,8 @@ MENDIAN=$(if
+>>>>>>> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>>>>>>>      CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>>>>>>>      BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) \
+>>>>>>>                 -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR) \
+>>>>>>> -            -I$(abspath $(OUTPUT)/../usr/include)
+>>>>>>> +            -I$(abspath $(OUTPUT)/../usr/include) \
+>>>>>>> +            -I../../../../usr/include
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Pu Lehui <pulehui@huawei.com>
+>>>>>>>>> ---
+>>>>>>>>>      tools/testing/selftests/bpf/progs/loop1.c     |  8 ++------
+>>>>>>>>>      tools/testing/selftests/bpf/progs/loop2.c     |  8 ++------
+>>>>>>>>>      tools/testing/selftests/bpf/progs/loop3.c     |  8 ++------
+>>>>>>>>>      tools/testing/selftests/bpf/progs/loop6.c     | 20
+>>>>>>>>> ++++++-------------
+>>>>>>>>>      .../selftests/bpf/progs/test_overhead.c       |  8 ++------
+>>>>>>>>>      .../selftests/bpf/progs/test_probe_user.c     |  6 +-----
+>>>>>>>>>      6 files changed, 15 insertions(+), 43 deletions(-)
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> [...]
+>>>>>>>> .
+>>>>>>>>
+>>>>>> .
+>>>>>>
+>>>>> .
+>>> .
+>>>
+> .
+> 
