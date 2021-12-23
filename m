@@ -2,120 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EE947DD5D
-	for <lists+bpf@lfdr.de>; Thu, 23 Dec 2021 02:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1D647DE55
+	for <lists+bpf@lfdr.de>; Thu, 23 Dec 2021 05:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237775AbhLWB02 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 22 Dec 2021 20:26:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229590AbhLWB02 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 22 Dec 2021 20:26:28 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BMMceka040069;
-        Thu, 23 Dec 2021 01:26:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=1cvTI4hVbqhNIOEUMsUugGgL6OlJP0wHv6tSaJOy+8s=;
- b=UG+kZCIaNt3k+fzrTJQGVggD+mn9NZS2Z0krzn6mpH7/M8E3G8nuVAYOnj0EVHSfTMEs
- ZbcJBEdUPLviDZMWvo/hZkty0FIscakAIAIEnVbY7PVzMvsnRWOB1LKobVEiSA7jC051
- HaTNUhgwaiQwYjIaCZH/Wk3Z8R7GgMCZlGc69O2PvSO2aQoQujl7TNIvEzrKiZdZGLDD
- Gr4wCzsTK3E4flOm64+AsvCMT0zyXCvuJrxaErhcgH8SKRh6TUnpWKr8EhViauZs2dtQ
- ZeduB18GqZukiWU+rwcMyzcsi76lJtflqOprqF36Rlpdn4CQWOW4ZrRoSGxj3TDgMiT2 cA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3d472s95v4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Dec 2021 01:26:10 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1BN1Et20019577;
-        Thu, 23 Dec 2021 01:26:10 GMT
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3d472s95uk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Dec 2021 01:26:09 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1BN1BfqT012456;
-        Thu, 23 Dec 2021 01:26:07 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3d179a2r99-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 23 Dec 2021 01:26:07 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1BN1Q5pQ36045252
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 23 Dec 2021 01:26:05 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24D7DAE045;
-        Thu, 23 Dec 2021 01:26:05 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A7350AE051;
-        Thu, 23 Dec 2021 01:26:04 +0000 (GMT)
-Received: from [9.171.84.70] (unknown [9.171.84.70])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 23 Dec 2021 01:26:04 +0000 (GMT)
-Message-ID: <72ef381f2aa0b8bf20a07052b71eb7ad1f426c86.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: normalize PT_REGS_xxx() macro
- definitions
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     kernel-team@fb.com, Kenta Tada <Kenta.Tada@sony.com>,
-        Hengqi Chen <hengqi.chen@gmail.com>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
-Date:   Thu, 23 Dec 2021 02:26:04 +0100
-In-Reply-To: <20211222213924.1869758-1-andrii@kernel.org>
-References: <20211222213924.1869758-1-andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.1 (3.42.1-1.fc35) 
+        id S232078AbhLWEnd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 22 Dec 2021 23:43:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhLWEnd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 22 Dec 2021 23:43:33 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E6BCC061574
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 20:43:33 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id mj19so4012206pjb.3
+        for <bpf@vger.kernel.org>; Wed, 22 Dec 2021 20:43:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eFwjkPbMKqFa9X+P9sB7lfHnsxS67gNA+SrAChfAE0I=;
+        b=mJ0xfYBc3ZXE7Ez2l3ccerA73Jg0ar5MC75/JbCoAQ6nFxOCL03UFji2ufbfm0QYrx
+         udT8oO0wntaKNlI7Jx5cmWuq8Kf+IgkYTOCTL2iQ3pUZXXwNemZ6h9JPNk56xCMc+Y/q
+         2eCxizp8ksUes28sw+2fBqxWuSKl6qkVj7mHbpzlzjel3uhin3ReuUW3kYs5r94XuxQA
+         lN20TfbKdd/PHEKeUwth5UshCZZKuMBQTKtl4nprLMHnOlGCJxcDB2Lc5LQ/EvgR0VUD
+         aITSppqpLAI1RUoNtSLVedaGuyj6dVVFSeCjKVWQEh2nXfRkvw5aVfzvnDg6SzUo2wOs
+         4Wmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eFwjkPbMKqFa9X+P9sB7lfHnsxS67gNA+SrAChfAE0I=;
+        b=pIduyynVJKs40dPal4IdHrOwyPm0AuFRKpUtYjUVBT2Q/Oa46cUhaPa7Q/XYxY/nD1
+         Z25YXGeGKQ3jnTTdOONHDG6vwxv+2ZlRzlQadr+QFLp9wxPJaU4KuGEwFqbgC/JRpK0Q
+         /p/Y9TyG+iyvWknq3Khmnsv1yn4nkQ9GeHAFvzcRx3YXS+JpTLY9Y4FnDURR0tyJ1KxC
+         OuTjE6rOdRCOJlOFg7xf/6bvSmRN+2YLf0PJMFuS76E8ZXEpYTttRNpPh+zSPSIp8gvl
+         nY6lbaHKgek/k0g+cHKMwUNUcHUfUMAnqvt9w6cRnuXLmFGRj7JItqfY7rY+jHBAHeUn
+         CiSw==
+X-Gm-Message-State: AOAM530STvhazCCwvqjYDGzZR9lqCP+IZ17EuC9yw6cU2AqJlvVb87al
+        yk5SW6o1dIwum0wd2qqt9orB1XYNe68L/64CfCpJ5g4D
+X-Google-Smtp-Source: ABdhPJz76FJ2e5tpQl3g1aMiOW23ME10nBmCjOJ3QJp1ghcPZsOt/0MkOp0NqjstMGO34t9WbzuDtZJTAeWoKv1pN/4=
+X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
+ f12-20020a170902860c00b00149101725f0mr816166plo.116.1640234612669; Wed, 22
+ Dec 2021 20:43:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: a228mmJRCIMCM7hVGEH2dVTiyhl-K_OT
-X-Proofpoint-GUID: If8W5bqUbmq1B2_v2_GZEXU7Pla0FJnS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-22_09,2021-12-22_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- malwarescore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501
- adultscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112230004
+References: <20211222131005.1380289-1-liu.yun@linux.dev>
+In-Reply-To: <20211222131005.1380289-1-liu.yun@linux.dev>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 22 Dec 2021 20:43:21 -0800
+Message-ID: <CAADnVQ+21_4gANJhARm7GECLRbshQUxAq4s0WL8OvAiHnD2oxw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: clean up unnecessary conditional judgments
+To:     Jackie Liu <liu.yun@linux.dev>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-12-22 at 13:39 -0800, Andrii Nakryiko wrote:
-> Refactor PT_REGS macros definitions in  bpf_tracing.h to avoid
-> excessive
-> duplication. We currently have classic PT_REGS_xxx() and CO-RE-
-> enabled
-> PT_REGS_xxx_CORE(). We are about to add also _SYSCALL variants, which
-> would require excessive copying of all the per-architecture
-> definitions.
-> 
-> Instead, separate architecture-specific field/register names from the
-> final macro that utilize them. That way for upcoming _SYSCALL
-> variants
-> we'll be able to just define x86_64 exception and otherwise have one
-> common set of _SYSCALL macro definitions common for all
-> architectures.
-> 
-> Cc: Kenta Tada <Kenta.Tada@sony.com>
-> Cc: Hengqi Chen <hengqi.chen@gmail.com>
-> Cc: Björn Töpel <bjorn@kernel.org>
-> Cc: Ilya Leoshkevich <iii@linux.ibm.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On Wed, Dec 22, 2021 at 5:10 AM Jackie Liu <liu.yun@linux.dev> wrote:
+>
+> From: Jackie Liu <liuyun01@kylinos.cn>
+>
+> s32 is always true regardless of the values of its operands. let's
+> cleanup.
+>
+> Fixes: e572ff80f05c ("bpf: Make 32->64 bounds propagation slightly more robust")
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 > ---
->  tools/lib/bpf/bpf_tracing.h | 377 +++++++++++++++-------------------
-> --
->  1 file changed, 152 insertions(+), 225 deletions(-)
+>  kernel/bpf/verifier.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b532f1058d35..43812ee58304 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1366,11 +1366,6 @@ static void __reg_bound_offset(struct bpf_reg_state *reg)
+>         reg->var_off = tnum_or(tnum_clear_subreg(var64_off), var32_off);
+>  }
+>
+> -static bool __reg32_bound_s64(s32 a)
+> -{
+> -       return a >= 0 && a <= S32_MAX;
+> -}
+> -
 
-Works fine on s390, and looks good to me.
-For both patches:
-
-Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-
-Best regards,
-Ilya
+The code is the best documentation.
+Here it clearly describes the intent.
+Please ignore compiler warnings.
