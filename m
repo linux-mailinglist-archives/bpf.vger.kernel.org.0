@@ -2,231 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5906A47EFD4
-	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 16:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A57647F0D5
+	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 21:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353079AbhLXP32 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Dec 2021 10:29:28 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:55366 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238876AbhLXP32 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Dec 2021 10:29:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30C7C62051
-        for <bpf@vger.kernel.org>; Fri, 24 Dec 2021 15:29:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B955C36AED;
-        Fri, 24 Dec 2021 15:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640359767;
-        bh=21CmYBYSAXqR6+gmD90xJtib32Ki8rYk3bSGclXBEbo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TXEVRGq+8+j8TwwsuMkESrhlCmxxR3NGIwGsreo0inWksZD4tUqb6HwrizIJdEI2W
-         wudTf33k/rceS8GzMeltJt3f2ExucIFBaFyEY+I9sB0bJqWwUQTuVZSTFUwatYw8cE
-         VVTHzqnA+0LCyFzsrAVJQHEni3uGMcdaiYTFJWLymvpFydMIp8VuRnmEUS14py6QTt
-         Dr4hNhuxwV0T2s4WP1DIKf5ueSonN9XAdXQF5XMi3DJEyj3N68QDM0x5tKqZe1y6H8
-         4BbQyOXmtKbT7IYHEt33kBwUBUKxbCjR+6W6r03acg+CymQ718qfaKFrjBbEFJ78ku
-         9cf0uzqr/EYZA==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH v3 bpf-next 2/2] bpf/selftests: Update local storage selftest for sleepable programs
-Date:   Fri, 24 Dec 2021 15:29:16 +0000
-Message-Id: <20211224152916.1550677-3-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.34.1.448.ga2b2bfdf31-goog
-In-Reply-To: <20211224152916.1550677-1-kpsingh@kernel.org>
-References: <20211224152916.1550677-1-kpsingh@kernel.org>
+        id S1353490AbhLXUBZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Dec 2021 15:01:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239476AbhLXUBZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Dec 2021 15:01:25 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09618C061401;
+        Fri, 24 Dec 2021 12:01:25 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id v22-20020a9d4e96000000b005799790cf0bso12089646otk.5;
+        Fri, 24 Dec 2021 12:01:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzYscnPBVPQ+HLTf6uGUFq6uTGRmHq5UoMjjhmil7sE=;
+        b=piLVeOuPKhtQG/UKMFWdNQPZdA4C4E/WlKPOuTETbll8Z0Ny+Q8EweWzRcHhX+xFkS
+         7MvS4+gUNiWc7KIDWxKIgQhYZdxai0K8bI7ZvG6DF7R89xUJ21+6IC6iZuHvTNc7++DO
+         s1JkUNusPWSkLm6RHdhxHXGgtfjUqFrzPOQH7tNTRQrAUn5FOjphRpC6lwLriIsbzx+4
+         MHjCkg9jkzHROarRRl3rwu9uaUnaoEBwHVm/jEOq0TNGQ6eRdvuTGfmqS4koKDdSJyfT
+         Ymygj0R2Z80qPcJa69EliNuCr2AvUooS/P8dH5ICaOWR2ogIZm8EUQGaWh0kou/ubvPX
+         P/rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bzYscnPBVPQ+HLTf6uGUFq6uTGRmHq5UoMjjhmil7sE=;
+        b=klKH4AJ3GGOJQnuOVSFwYUTvINxklAeJ2xXqTjt4afR+0uxLHUMdWNubGsUH+oHp9b
+         8XY9N/s16OSG4c4sDx4LwgKoa0YKlW6CgAMGsp77PqcPgOaQjzp6dIVD67+NX+IgNX/q
+         ACcYXmIV23pEborcqQzoxJ+/u60b/vOH5Edm4J2O9bRoQLA6OhNDYQUsPXkArbxm7L4u
+         XTpS7kNiw1oVSs4Q0mOQgGZlgJTyhh65hX0CMl+nsOh4M3V6TCr3SVOIGNzkmm0FKdQS
+         KCnfWHcuKwP+qsIG/fPyxya1eJsIFduJG/QbMSUIUIe1CR/o/8GNxFOHbXnZqgmhC6SU
+         m9xQ==
+X-Gm-Message-State: AOAM532ldgm79zB7i8/9WS5fhg1PB2ylIpWEzmMu3ORfBCD9BONWQD1T
+        wKs+L4zlJ+9wroudgAXuAXCUWEpCvM4=
+X-Google-Smtp-Source: ABdhPJw/5t+tLovjSbVm82gStQnFoxwyOxOP9L1zC1GBlkQ4p2GeWIcG5PZnjDjLUiQqbueb/P/GRA==
+X-Received: by 2002:a9d:750c:: with SMTP id r12mr5429294otk.273.1640376083367;
+        Fri, 24 Dec 2021 12:01:23 -0800 (PST)
+Received: from pop-os.attlocal.net ([2600:1700:65a0:ab60:b326:fb0b:9894:47a6])
+        by smtp.gmail.com with ESMTPSA id o2sm1865506oik.11.2021.12.24.12.01.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Dec 2021 12:01:23 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>
+Subject: [RFC Patch v3 0/3] net_sched: introduce eBPF based Qdisc
+Date:   Fri, 24 Dec 2021 12:00:56 -0800
+Message-Id: <20211224200059.161979-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove the spin lock logic and update the selftests to use sleepable
-programs to use a mix of sleepable and non-sleepable programs. It's more
-useful to test the sleepable programs since the tests don't really need
-spinlocks.
+From: Cong Wang <cong.wang@bytedance.com>
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: KP Singh <kpsingh@kernel.org>
+This *incomplete* patch introduces a programmable Qdisc with
+eBPF.  The goal is to make this Qdisc as programmable as possible,
+that is, to replace as many existing Qdisc's as we can, no matter
+in tree or out of tree. And we want to make programmer's and researcher's
+life as easy as possible, so that they don't have to write a complete
+Qdisc kernel module just to experiment some queuing theory.
+
+The design was discussed during last LPC:
+https://linuxplumbersconf.org/event/7/contributions/679/attachments/520/1188/sch_bpf.pdf
+
+Here is a summary of design decisions I made:
+
+1. Avoid eBPF struct_ops, as it would be really hard to program
+   a Qdisc with this approach, literally all the struct Qdisc_ops
+   and struct Qdisc_class_ops are needed to implement. This is almost
+   as hard as programming a Qdisc kernel module.
+
+2. Introduce skb map, which will allow other eBPF programs to store skb's
+   too.
+
+   a) As eBPF maps are not directly visible to the kernel, we have to
+   dump the stats via eBPF map API's instead of netlink.
+
+   b) The user-space is not allowed to read the entire packets, only __sk_buff
+   itself is readable, because we don't have such a use case yet and it would
+   require a different API to read the data, as map values have fixed length.
+
+   c) Two eBPF helpers are introduced for skb map operations:
+   bpf_skb_map_enqueue() and bpf_skb_map_dequeue(). Normal map update is
+   not allowed.
+
+   d) Multi-queue support should be done via map-in-map. This is TBD.
+
+   e) Use the netdevice notifier to reset the packets inside skb map upon
+   NETDEV_DOWN event.
+
+3. Integrate with existing TC infra. For example, if the user doesn't want
+   to implement her own filters (e.g. a flow dissector), she should be able
+   to re-use the existing TC filters. Another helper bpf_skb_classify() is
+   introduced for this purpose.
+
+Although the biggest limitation is obviously that users can not traverse
+the packets or flows inside the Qdisc, I think at least they could store
+those global information of interest inside their own hashmap.
+
+TBD: should we introduce an eBPF program for skb map which allows users to
+sort the packets?
+
+Any high-level feedbacks are welcome. Please kindly do not review any coding
+details until RFC tag is removed.
+
+TODO:
+1. actually test it
+2. write a document for this Qdisc
+3. add test cases and sample code
+
+Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 ---
- .../bpf/prog_tests/test_local_storage.c       | 20 +++++-----------
- .../selftests/bpf/progs/local_storage.c       | 24 ++++---------------
- 2 files changed, 11 insertions(+), 33 deletions(-)
+v3: move priority queue from sch_bpf to skb map
+    introduce skb map and its helpers
+    introduce bpf_skb_classify()
+    use netdevice notifier to reset skb's
+    Rebase on latest bpf-next
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-index d2c16eaae367..26ac26a88026 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -28,10 +28,6 @@ static unsigned int duration;
- struct storage {
- 	void *inode;
- 	unsigned int value;
--	/* Lock ensures that spin locked versions of local stoage operations
--	 * also work, most operations in this tests are still single threaded
--	 */
--	struct bpf_spin_lock lock;
- };
- 
- /* Fork and exec the provided rm binary and return the exit code of the
-@@ -66,27 +62,24 @@ static int run_self_unlink(int *monitored_pid, const char *rm_path)
- 
- static bool check_syscall_operations(int map_fd, int obj_fd)
- {
--	struct storage val = { .value = TEST_STORAGE_VALUE, .lock = { 0 } },
--		       lookup_val = { .value = 0, .lock = { 0 } };
-+	struct storage val = { .value = TEST_STORAGE_VALUE },
-+		       lookup_val = { .value = 0 };
- 	int err;
- 
- 	/* Looking up an existing element should fail initially */
--	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
--					BPF_F_LOCK);
-+	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
- 	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
- 		  "err:%d errno:%d\n", err, errno))
- 		return false;
- 
- 	/* Create a new element */
--	err = bpf_map_update_elem(map_fd, &obj_fd, &val,
--				  BPF_NOEXIST | BPF_F_LOCK);
-+	err = bpf_map_update_elem(map_fd, &obj_fd, &val, BPF_NOEXIST);
- 	if (CHECK(err < 0, "bpf_map_update_elem", "err:%d errno:%d\n", err,
- 		  errno))
- 		return false;
- 
- 	/* Lookup the newly created element */
--	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
--					BPF_F_LOCK);
-+	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
- 	if (CHECK(err < 0, "bpf_map_lookup_elem", "err:%d errno:%d", err,
- 		  errno))
- 		return false;
-@@ -102,8 +95,7 @@ static bool check_syscall_operations(int map_fd, int obj_fd)
- 		return false;
- 
- 	/* The lookup should fail, now that the element has been deleted */
--	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val,
--					BPF_F_LOCK);
-+	err = bpf_map_lookup_elem_flags(map_fd, &obj_fd, &lookup_val, 0);
- 	if (CHECK(!err || errno != ENOENT, "bpf_map_lookup_elem",
- 		  "err:%d errno:%d\n", err, errno))
- 		return false;
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-index 95868bc7ada9..9b1f9b75d5c2 100644
---- a/tools/testing/selftests/bpf/progs/local_storage.c
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -20,7 +20,6 @@ int sk_storage_result = -1;
- struct local_storage {
- 	struct inode *exec_inode;
- 	__u32 value;
--	struct bpf_spin_lock lock;
- };
- 
- struct {
-@@ -58,9 +57,7 @@ int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- 				       bpf_get_current_task_btf(), 0, 0);
- 	if (storage) {
- 		/* Don't let an executable delete itself */
--		bpf_spin_lock(&storage->lock);
- 		is_self_unlink = storage->exec_inode == victim->d_inode;
--		bpf_spin_unlock(&storage->lock);
- 		if (is_self_unlink)
- 			return -EPERM;
- 	}
-@@ -68,7 +65,7 @@ int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- 	return 0;
- }
- 
--SEC("lsm/inode_rename")
-+SEC("lsm.s/inode_rename")
- int BPF_PROG(inode_rename, struct inode *old_dir, struct dentry *old_dentry,
- 	     struct inode *new_dir, struct dentry *new_dentry,
- 	     unsigned int flags)
-@@ -89,10 +86,8 @@ int BPF_PROG(inode_rename, struct inode *old_dir, struct dentry *old_dentry,
- 	if (!storage)
- 		return 0;
- 
--	bpf_spin_lock(&storage->lock);
- 	if (storage->value != DUMMY_STORAGE_VALUE)
- 		inode_storage_result = -1;
--	bpf_spin_unlock(&storage->lock);
- 
- 	err = bpf_inode_storage_delete(&inode_storage_map, old_dentry->d_inode);
- 	if (!err)
-@@ -101,7 +96,7 @@ int BPF_PROG(inode_rename, struct inode *old_dir, struct dentry *old_dentry,
- 	return 0;
- }
- 
--SEC("lsm/socket_bind")
-+SEC("lsm.s/socket_bind")
- int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
- 	     int addrlen)
- {
-@@ -117,10 +112,8 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
- 	if (!storage)
- 		return 0;
- 
--	bpf_spin_lock(&storage->lock);
- 	if (storage->value != DUMMY_STORAGE_VALUE)
- 		sk_storage_result = -1;
--	bpf_spin_unlock(&storage->lock);
- 
- 	err = bpf_sk_storage_delete(&sk_storage_map, sock->sk);
- 	if (!err)
-@@ -129,7 +122,7 @@ int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
- 	return 0;
- }
- 
--SEC("lsm/socket_post_create")
-+SEC("lsm.s/socket_post_create")
- int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- 	     int protocol, int kern)
- {
-@@ -144,9 +137,7 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- 	if (!storage)
- 		return 0;
- 
--	bpf_spin_lock(&storage->lock);
- 	storage->value = DUMMY_STORAGE_VALUE;
--	bpf_spin_unlock(&storage->lock);
- 
- 	return 0;
- }
-@@ -154,7 +145,7 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- /* This uses the local storage to remember the inode of the binary that a
-  * process was originally executing.
-  */
--SEC("lsm/bprm_committed_creds")
-+SEC("lsm.s/bprm_committed_creds")
- void BPF_PROG(exec, struct linux_binprm *bprm)
- {
- 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-@@ -166,18 +157,13 @@ void BPF_PROG(exec, struct linux_binprm *bprm)
- 	storage = bpf_task_storage_get(&task_storage_map,
- 				       bpf_get_current_task_btf(), 0,
- 				       BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (storage) {
--		bpf_spin_lock(&storage->lock);
-+	if (storage)
- 		storage->exec_inode = bprm->file->f_inode;
--		bpf_spin_unlock(&storage->lock);
--	}
- 
- 	storage = bpf_inode_storage_get(&inode_storage_map, bprm->file->f_inode,
- 					0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!storage)
- 		return;
- 
--	bpf_spin_lock(&storage->lock);
- 	storage->value = DUMMY_STORAGE_VALUE;
--	bpf_spin_unlock(&storage->lock);
- }
+v2: Rebase on latest net-next
+    Make the code more complete (but still incomplete)
+
+Cong Wang (3):
+  introduce priority queue
+  bpf: introduce skb map
+  net_sched: introduce eBPF based Qdisc
+
+ include/linux/bpf_types.h      |   2 +
+ include/linux/priority_queue.h |  90 ++++++
+ include/linux/skbuff.h         |   2 +
+ include/uapi/linux/bpf.h       |  15 +
+ include/uapi/linux/pkt_sched.h |  17 ++
+ kernel/bpf/Makefile            |   2 +-
+ kernel/bpf/skb_map.c           | 244 +++++++++++++++
+ net/sched/Kconfig              |  15 +
+ net/sched/Makefile             |   1 +
+ net/sched/sch_bpf.c            | 521 +++++++++++++++++++++++++++++++++
+ 10 files changed, 908 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/priority_queue.h
+ create mode 100644 kernel/bpf/skb_map.c
+ create mode 100644 net/sched/sch_bpf.c
+
 -- 
-2.34.1.448.ga2b2bfdf31-goog
+2.32.0
 
