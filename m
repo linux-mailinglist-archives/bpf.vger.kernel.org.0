@@ -2,158 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08EF47ECC5
-	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 08:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0A547EFA9
+	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 15:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343608AbhLXHi3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 24 Dec 2021 02:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46948 "EHLO
+        id S238962AbhLXOir (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 24 Dec 2021 09:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343578AbhLXHi3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 24 Dec 2021 02:38:29 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24F0EC061757
-        for <bpf@vger.kernel.org>; Thu, 23 Dec 2021 23:38:29 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id jw3so7024372pjb.4
-        for <bpf@vger.kernel.org>; Thu, 23 Dec 2021 23:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=H4F2V9c1PkaLdgAGnpv/RVBL4kcIo1QcKpTTOJdHTl8=;
-        b=5g17BbspCXEjkr/biCb9GIUQZp6ikmFHO9oQ7M9syNHod4TQPjy9KgaAhfyp/pDYIa
-         6wo2jxDJH3sf7U3taB21xkPkZSbbdsSwjAOUj9X7pB/QlqFk1T0w7gK7VFiBNxH3MPie
-         gONr5XgIk7HlnswoqMwk+Vv9I5sgS+KnP+sSMcKHAyulFhOp6DQbTpeTAlq7q22t7Pey
-         vukNgxmR/vobRl9HgrXSxUfL6OTROePcoqXiJdOn/SwZu/YfnBem7RCzpBJqiAoAoTyR
-         /D89UkytgMOKtDiP26wuFbGfatHXwL0EJp+2Ffpr/GrLOleRBiitmofzKape974xNi6M
-         J8HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=H4F2V9c1PkaLdgAGnpv/RVBL4kcIo1QcKpTTOJdHTl8=;
-        b=oNNwnndf0k93gQjq029VulzTlqkMU3qH5ulcjiE4oqccBDb0uvtx1Rv6xPfQvLXkTX
-         ZzwvZce0xiO1+rp1jMmRNCue8/bjZYKK/HRiD11qJfFJjMcxErvuIOh4QL4n5DmN5hVn
-         a597SEX4bAPQnElRp/+CT8Rj+ELo5RRRtDzFZKHs8VjD6np4XPhO1dtyscuVMM6gG0zm
-         AAhxrsBCk0CpmSOPX4V9EI7YfYxXLO0JQbf9o3DQTUbahJmqhXifDiUXetftU+kuVLcn
-         CCZ2gFtsQ5aM1a6cJQXqtrmXXFtoe6UsdmnxORZvQUK7V3D+gqrDhjsBFFcnmL2Uy8fF
-         hXfQ==
-X-Gm-Message-State: AOAM5301GjbT9hRsz59PSXcTohp2qypAusnt8p90J5FwKSVkCG1RK+AR
-        nxh7FsW7QIqQqItJR4u5n63+HA==
-X-Google-Smtp-Source: ABdhPJyAuuuagOuqWpDZBvJEssG6KbMUcW2iSpjeuECd5mLWotysn9+jj4/g+7wtBYp3NHlntU1IIA==
-X-Received: by 2002:a17:902:ecc3:b0:149:5a6d:c5e with SMTP id a3-20020a170902ecc300b001495a6d0c5emr3080082plh.20.1640331508636;
-        Thu, 23 Dec 2021 23:38:28 -0800 (PST)
-Received: from [10.255.186.155] ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id z2sm8564478pfe.93.2021.12.23.23.38.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Dec 2021 23:38:28 -0800 (PST)
-Message-ID: <5dcbb13e-322f-a8d0-3bcf-d91b72ab51b9@bytedance.com>
-Date:   Fri, 24 Dec 2021 15:38:20 +0800
+        with ESMTP id S231836AbhLXOir (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 24 Dec 2021 09:38:47 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CE9EC061401
+        for <bpf@vger.kernel.org>; Fri, 24 Dec 2021 06:38:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 50A35B82301
+        for <bpf@vger.kernel.org>; Fri, 24 Dec 2021 14:38:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC816C36AEB
+        for <bpf@vger.kernel.org>; Fri, 24 Dec 2021 14:38:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640356724;
+        bh=0Wv0U5d7BcIqpZKgqu8eunTIPIHmJ+8elWlNpzgu9X8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SPvKCiX3wimJHQJKShOXNR4NZPoMZs+48xgy0sj2+v/uCIxaG0dOL+JJYKp7QiScI
+         SDsia+fUQpx2RSFwTfJ+A0E+cT1CDjqdhDeFtFtms+JSeTDwl6DzRXov3FiUDrvg5U
+         PcCc7/ULwrHXJMGoGRAqiQ5ts32e0HkeWfysbUPE8uradSpyg+oCqI9QHTKUuJJPBK
+         mfBb0649SCWthGL2cZyj0fIwGDrrXsoA+0b993pQ3YH2wFhB29gmnlg22ISODDIZd2
+         pGITcOyscliCvqB7RcQmBGnIQN3oNTA9HT9jUXtXeXhMokkZIJ27dNO/ODWlpdt2hN
+         Lyy6MTa2rA9lg==
+Received: by mail-ed1-f47.google.com with SMTP id q14so26400516edi.3
+        for <bpf@vger.kernel.org>; Fri, 24 Dec 2021 06:38:43 -0800 (PST)
+X-Gm-Message-State: AOAM5306SMXmb5VlAtrOZ3u2UeoW6HbGlEoj14sf11nKDBm2bu0FeeS+
+        TSewsfI4XrSjrPiJGDYjqT26uWv7Qb+TWcZxz33+eA==
+X-Google-Smtp-Source: ABdhPJz59rryUfD77TPnsYcJCz4gDz3fS/U/2wpdTbzjKYJfnPdSPprVJztaQdlVOLbhgg84qhmnPnFjlaeiIWgg15E=
+X-Received: by 2002:a17:907:7b8d:: with SMTP id ne13mr5537044ejc.496.1640356722194;
+ Fri, 24 Dec 2021 06:38:42 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.4.1
-Subject: Re: [External] Re: Fix repeated legacy kprobes on same function
-Content-Language: en-US
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Qiang Wang <wangqiang.wq.frank@bytedance.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20211206151909.951258-1-kpsingh@kernel.org> <20211206151909.951258-2-kpsingh@kernel.org>
+ <20211209015938.s2f4wmjtiqagjwqy@kafai-mbp.dhcp.thefacebook.com>
+ <CACYkzJ77G4f_FJ=q7BKCta-rodWiescgEnkqE5U+kAW+=bw5_w@mail.gmail.com> <20211209070004.gj5b4ybrcdxqblbp@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20211209070004.gj5b4ybrcdxqblbp@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Fri, 24 Dec 2021 20:08:31 +0530
+X-Gmail-Original-Message-ID: <CACYkzJ6X23jSoqPJfMgtQah4qbKfnmsyRwOn2dAVEGePk3_zcg@mail.gmail.com>
+Message-ID: <CACYkzJ6X23jSoqPJfMgtQah4qbKfnmsyRwOn2dAVEGePk3_zcg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Allow bpf_local_storage to be used
+ by sleepable programs
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        duanxiongchun@bytedance.com, shekairui@bytedance.com,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <c84094d2-75c1-a50d-ea9e-9dded5f01fb9@bytedance.com>
- <CAEf4Bza200bB3d-E3rMyxZs7wxijbzJ_0xmRSy+=tHm2Ot14Eg@mail.gmail.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <CAEf4Bza200bB3d-E3rMyxZs7wxijbzJ_0xmRSy+=tHm2Ot14Eg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021/12/24 2:57 下午, Andrii Nakryiko wrote:
-> On Thu, Dec 23, 2021 at 8:01 PM Qiang Wang
-> <wangqiang.wq.frank@bytedance.com> wrote:
->>
->> If repeated legacy kprobes on same function in one process,
->> libbpf will register using the same probe name and got -EBUSY
->> error. So append index to the probe name format to fix this
->> problem.
->>
->> And fix a bug in commit 46ed5fc33db9, which wrongly used the
->> func_name instead of probe_name to register.
->>
->> Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
->> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Signed-off-by: Qiang Wang <wangqiang.wq.frank@bytedance.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->>
->> ---
->>   tools/lib/bpf/libbpf.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 7c74342bb668..7d1097958459 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -9634,7 +9634,8 @@ static int append_to_file(const char *file, const
->> char *fmt, ...)
->>   static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
->>                                           const char *kfunc_name, size_t
->> offset)
->>   {
->> -       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(),
->> kfunc_name, offset);
->> +       static int index = 0;
->> +       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(),
->> kfunc_name, offset, index++);
-> 
-> BCC doesn't add this auto-increment (which is also not thread-safe)
-> and it seems like that works fine for all users.
-> 
+On Thu, Dec 9, 2021 at 12:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Thu, Dec 09, 2021 at 03:18:21AM +0100, KP Singh wrote:
+> > On Thu, Dec 9, 2021 at 3:00 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> > >
+> > > On Mon, Dec 06, 2021 at 03:19:08PM +0000, KP Singh wrote:
+> > > [ ... ]
+> > >
+> > > > diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+> > > > index 96ceed0e0fb5..20604d904d14 100644
+> > > > --- a/kernel/bpf/bpf_inode_storage.c
+> > > > +++ b/kernel/bpf/bpf_inode_storage.c
+> > > > @@ -17,6 +17,7 @@
+> > > >  #include <linux/bpf_lsm.h>
+> > > >  #include <linux/btf_ids.h>
+> > > >  #include <linux/fdtable.h>
+> > > > +#include <linux/rcupdate_trace.h>
+> > > >
+> > > >  DEFINE_BPF_STORAGE_CACHE(inode_cache);
+> > > >
+> > > > @@ -44,7 +45,8 @@ static struct bpf_local_storage_data *inode_storage_lookup(struct inode *inode,
+> > > >       if (!bsb)
+> > > >               return NULL;
+> > > >
+> > > > -     inode_storage = rcu_dereference(bsb->storage);
+> > > > +     inode_storage =
+> > > > +             rcu_dereference_check(bsb->storage, bpf_rcu_lock_held());
+> > > >       if (!inode_storage)
+> > > >               return NULL;
+> > > >
+> > > > @@ -97,7 +99,8 @@ void bpf_inode_storage_free(struct inode *inode)
+> > > >        * local_storage->list was non-empty.
+> > > >        */
+> > > >       if (free_inode_storage)
+> > > > -             kfree_rcu(local_storage, rcu);
+> > > > +             call_rcu_tasks_trace(&local_storage->rcu,
+> > > > +                                  bpf_local_storage_free_rcu);
+> > > It is not clear to me why bpf_inode_storage_free() needs this change
+> > > but not in bpf_task_storage_free() and bpf_sk_storage_free().
+> > > Could you explain the reason here?
+> >
+> > I think I carried this forward from my older version and messed it up
+> > while applying diffs, I tested on the linux-next branch which has it
+> > for the other storages as well.
+> >
+> > We will need to free all these under trace RCU. Will fix it in v3.
+> For sk, bpf_sk_storage_free() is called when sk is about to be kfree.
+> My understanding is the sleepable bpf_lsm should not be running
+> with this sk in parallel at this point when the sk has already reached
+> the bpf_sk_storage_free().  iow, call_rcu_tasks_trace should not
+> be needed here.  The existing kfree_rcu() is for the
+> bpf_local_storage_map_free.
+>
 
-Yes, BCC has the same problem, we will send a fix patch to BCC later.
-We thought libbpf was used in single-threaded environment, so will
-change to use __sync_fetch_and_add() to keep thread-safe. Thanks for
-pointing this out.
+You are right, the callback for both the task and inode are
+called before the inode is actually freed,
+[inode_free_security and task_free]
+This is similar to the lifetime of the sk storage
+so kfree_rcu should suffice.
 
-> What is the use case where you'd like to attach to the same kernel
-> function multiple times with legacy kprobe?
-> 
-
-We used many different BPF modules writen by different people in one
-monitor process to analyze all data, there maybe repeated legacy kprobes
-on the same function. So we want to add a unique index suffix to support
-this use case.
-
->>   }
->>
->>   static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
->> @@ -9735,7 +9736,7 @@ bpf_program__attach_kprobe_opts(const struct
->> bpf_program *prog,
->>                  gen_kprobe_legacy_event_name(probe_name,
->> sizeof(probe_name),
->>                                               func_name, offset);
->>
->> -               legacy_probe = strdup(func_name);
->> +               legacy_probe = strdup(probe_name);
-> 
-> please send this as a separate fix
-> 
-
-Ok, will do.
-
-Thanks.
-
->>                  if (!legacy_probe)
->>                          return libbpf_err_ptr(-ENOMEM);
->>
->> --
->> 2.20.1
->>
+> I was not sure for inode since the inode's storage life time
+> is not obvious to me, so the earlier question.
+>
+> After another thought, the synchronize_rcu_mult changes in
+> bpf_local_storage_map_free() is also not needed.  The first
+> existing synchronize_rcu() is for the bpf_sk_storage_clone().
+> The second one is for the bpf_(sk|task|inode)_storage_free().
