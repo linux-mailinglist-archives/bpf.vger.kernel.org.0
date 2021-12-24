@@ -2,112 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5086F47EAB6
-	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 03:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104BE47EB0A
+	for <lists+bpf@lfdr.de>; Fri, 24 Dec 2021 05:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhLXC56 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 23 Dec 2021 21:57:58 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:16856 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbhLXC54 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 23 Dec 2021 21:57:56 -0500
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JKsCx2Vssz91sc;
-        Fri, 24 Dec 2021 10:57:01 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (7.185.36.180) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 24 Dec 2021 10:57:52 +0800
-Received: from [10.67.109.184] (10.67.109.184) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 24 Dec 2021 10:57:52 +0800
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Fix cross compiling error when
- using userspace pt_regs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211223052007.4111674-1-pulehui@huawei.com>
- <CAEf4BzY29kWicH0fdh9NnYu4nn1E4odL2ES2EYTGkyvHbo2c4g@mail.gmail.com>
-From:   Pu Lehui <pulehui@huawei.com>
-Message-ID: <6bf1e9cb-77c8-7bb8-c55d-bf85a09819cd@huawei.com>
-Date:   Fri, 24 Dec 2021 10:57:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S1351214AbhLXEBQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 23 Dec 2021 23:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351213AbhLXEBQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 23 Dec 2021 23:01:16 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDB2C061759
+        for <bpf@vger.kernel.org>; Thu, 23 Dec 2021 20:01:15 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id co15so6627221pjb.2
+        for <bpf@vger.kernel.org>; Thu, 23 Dec 2021 20:01:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:to:cc:from:subject
+         :content-transfer-encoding;
+        bh=qfXaFkYb/kIfBlrpBQ69YN33YWc3HqccGvv48B9wnL4=;
+        b=HXx6JpwtqCLLrbnXWhRAPBLv2nc67Twc0DEQ1Q0nmKlKLwfcCYtsohNSDvwLcvhtf/
+         rWCqdmHw71ASDkmxIS4mQPOnXy7oQSGSHXXGbQsEw4GO0X0cFwaqFAzZdaKdvIYl7vJc
+         1ustjDt89hrYZmW6mXOOMMHSG6S2K2SKxBc7OGmls8stT4BXuzrPzxHLiLAL57vPxhMz
+         Fw8u/BRQUz9M6OMwHDeyKzutCtm0LMAP4EUaImwhm92ufF9YoQ7FwxjNlBt1sy1l9j7M
+         FQynvd87T5gm97wzIBWmaqR7Usihmon/AylZ6JUOev3git7WooIXbHWc/4sbKodtvEaV
+         tvJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:to:cc
+         :from:subject:content-transfer-encoding;
+        bh=qfXaFkYb/kIfBlrpBQ69YN33YWc3HqccGvv48B9wnL4=;
+        b=kG4WNBsHbfObUwVoyiNIvBA0B17BxCRB/xNl3RBkS587gNihl7BCIzLD/k8fS8HS2f
+         72o4SefOqiW2xDsIjtf6MQgy63Ko28vsSSTbrD1xzfktbUclbCxW5xKOb43YKQ9j8qHp
+         qBTJNdtgbfXmInNq3yqNHqfAUvt028ctK/VwcHh3mRbCnlOG5KZKCC0H0QD/RbpyIVTz
+         redrRHPde9ppOvjImXEKUgaTY1I7rt85keDghzd6HkCnYCzlSOL4DBfcXI2PDCJ9l3Xs
+         wZFmyTkGs3JyCOD9aVJ7lHuoA9UBWZ8eEKqqtMMkuc+6Ezuq9cJZotOSpRKByUh5pM1x
+         p42w==
+X-Gm-Message-State: AOAM531DsUvt2/u+kIA2e1VMQ+Jg++NUrmwQwR4ZWd2gYhdVAvQeZBx3
+        4KKB2icf0IfcmS1xUtoZKDZfyA==
+X-Google-Smtp-Source: ABdhPJzvsV6EHsBpCX/vAdUSZ0zjgMK6bB8WNv08m8ZCvBCO0pUVYuneu07DKOLIt3xSrRG+R/ptEw==
+X-Received: by 2002:a17:902:e552:b0:148:a2e8:277a with SMTP id n18-20020a170902e55200b00148a2e8277amr5165877plf.129.1640318475205;
+        Thu, 23 Dec 2021 20:01:15 -0800 (PST)
+Received: from [10.69.75.97] ([139.177.225.244])
+        by smtp.gmail.com with ESMTPSA id r11sm7138132pff.81.2021.12.23.20.01.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Dec 2021 20:01:14 -0800 (PST)
+Message-ID: <c84094d2-75c1-a50d-ea9e-9dded5f01fb9@bytedance.com>
+Date:   Fri, 24 Dec 2021 12:01:06 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY29kWicH0fdh9NnYu4nn1E4odL2ES2EYTGkyvHbo2c4g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.109.184]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500019.china.huawei.com (7.185.36.180)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.0
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        zhouchengming@bytedance.com, songmuchun@bytedance.com,
+        duanxiongchun@bytedance.com, shekairui@bytedance.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Qiang Wang <wangqiang.wq.frank@bytedance.com>
+Subject: Fix repeated legacy kprobes on same function
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+If repeated legacy kprobes on same function in one process,
+libbpf will register using the same probe name and got -EBUSY
+error. So append index to the probe name format to fix this
+problem.
 
+And fix a bug in commit 46ed5fc33db9, which wrongly used the
+func_name instead of probe_name to register.
 
-On 2021/12/24 2:21, Andrii Nakryiko wrote:
-> On Wed, Dec 22, 2021 at 8:56 PM Pu Lehui <pulehui@huawei.com> wrote:
->>
->> When cross compiling arm64 bpf selftests in x86_64 host, the following
->> error occur:
->>
->> progs/loop2.c:20:7: error: incomplete definition of type 'struct
->> user_pt_regs'
->>
->> Some archs, like arm64 and riscv, use userspace pt_regs in bpf_tracing.h.
->> When arm64 bpf selftests cross compiling in x86_64 host, clang cannot
->> find the arch specific uapi ptrace.h. We can add arch specific header
->> file directory to fix this issue.
->>
->> Signed-off-by: Pu Lehui <pulehui@huawei.com>
->> ---
->> v1->v2:
->> - use vmlinux.h directly might lead to verifier fail.
->> - use source arch header file directory suggested by Andrii Nakryiko.
->>
->>   tools/testing/selftests/bpf/Makefile | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->> index 42ffc24e9e71..1ecb6d192953 100644
->> --- a/tools/testing/selftests/bpf/Makefile
->> +++ b/tools/testing/selftests/bpf/Makefile
->> @@ -12,6 +12,7 @@ BPFDIR := $(LIBDIR)/bpf
->>   TOOLSINCDIR := $(TOOLSDIR)/include
->>   BPFTOOLDIR := $(TOOLSDIR)/bpf/bpftool
->>   APIDIR := $(TOOLSINCDIR)/uapi
->> +ARCH_APIDIR := $(abspath ../../../../arch/$(SRCARCH)/include/uapi)
->>   GENDIR := $(abspath ../../../../include/generated)
->>   GENHDR := $(GENDIR)/autoconf.h
->>
->> @@ -294,7 +295,8 @@ MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
->>   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
->>   BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
->>               -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)                   \
->> -            -I$(abspath $(OUTPUT)/../usr/include)
->> +            -I$(abspath $(OUTPUT)/../usr/include)                      \
->> +            -I$(ARCH_APIDIR)
->>
-> 
-> This causes compilation error, see [0]. I think we'll have to wait for
-> my patch ([1]) to land and then add kernel-side variants for accessing
-> pt_regs.
-> 
->    [0] https://github.com/kernel-patches/bpf/runs/4614606900?check_suite_focus=true
->    [1] https://patchwork.kernel.org/project/netdevbpf/patch/20211222213924.1869758-1-andrii@kernel.org/
-> 
-> 
-OK, I'll keep follow it.
->>   CLANG_CFLAGS = $(CLANG_SYS_INCLUDES) \
->>                 -Wno-compare-distinct-pointer-types
->> --
->> 2.25.1
->>
-> .
-> 
+Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Qiang Wang <wangqiang.wq.frank@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+
+---
+  tools/lib/bpf/libbpf.c | 5 +++--
+  1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7c74342bb668..7d1097958459 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9634,7 +9634,8 @@ static int append_to_file(const char *file, const 
+char *fmt, ...)
+  static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+                                          const char *kfunc_name, size_t 
+offset)
+  {
+-       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), 
+kfunc_name, offset);
++       static int index = 0;
++       snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), 
+kfunc_name, offset, index++);
+  }
+
+  static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
+@@ -9735,7 +9736,7 @@ bpf_program__attach_kprobe_opts(const struct 
+bpf_program *prog,
+                 gen_kprobe_legacy_event_name(probe_name, 
+sizeof(probe_name),
+                                              func_name, offset);
+
+-               legacy_probe = strdup(func_name);
++               legacy_probe = strdup(probe_name);
+                 if (!legacy_probe)
+                         return libbpf_err_ptr(-ENOMEM);
+
+--
+2.20.1
+
