@@ -2,236 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A62447F468
-	for <lists+bpf@lfdr.de>; Sat, 25 Dec 2021 21:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A2847F855
+	for <lists+bpf@lfdr.de>; Sun, 26 Dec 2021 17:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhLYUhd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 25 Dec 2021 15:37:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
+        id S232860AbhLZQ44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 26 Dec 2021 11:56:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhLYUhd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 25 Dec 2021 15:37:33 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E69EC061401
-        for <bpf@vger.kernel.org>; Sat, 25 Dec 2021 12:37:33 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 69so11046360qkd.6
-        for <bpf@vger.kernel.org>; Sat, 25 Dec 2021 12:37:33 -0800 (PST)
+        with ESMTP id S229965AbhLZQ44 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 26 Dec 2021 11:56:56 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086E5C06173E;
+        Sun, 26 Dec 2021 08:56:56 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id 205so11910984pfu.0;
+        Sun, 26 Dec 2021 08:56:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gd1UaFBLKXl6bUXZarqaIRFNmK+UFVtqrXncrUElU50=;
-        b=FTJgB0V5S9s3NcNDX1JMK7Gx3G6R72zDa2XaVSP2JAmkX0ioq1n+KrpW2SwB2hYTVb
-         Kh0mGFvSmAMMWYMsqpvwGzPXXW0+mgA3WHyVGzcBD+nRewxQjFKoMVi9+snowBpCaivw
-         BsM5ws/vSHt5SHiwx+1QJWe7hErrvv4C27R8WfAqqt+qPJLDfrxelC7ck3QBTFRWLtIL
-         czlkKsIk3+bR/OkLUi7JS+C6z7xvslsENaRRyhO97ZrUCy0tY+B+ohKLaczEZkCrGRn/
-         lAKn7T3X7G8O5xngAu31Q0kUbO82B6vzw4fNrT/TZWuVwZ+Tm0NK1JytqbC3JTNjop3s
-         H4bQ==
+        bh=1vtB4zSWEd+mzMw7k7zC4ebpjbJkDLgH/0D+65o5eMY=;
+        b=AU6v5k8/Wqlgq3kZrAnO2P6IoVfzz7Q4wHYtb3zEA6i+N+wVFGYCHa2vKgVpVH6Y3D
+         QkALbVpU8AWxGLJT4NehXhXJLt9PcgTGvGXC9tGZ/zIkm4FplG/zFWNSKcuOpmOIH6Pd
+         5vtdjb1TgTsY3CSmsCKj4wEBoY6VuxW+EtplPTsqt2N3MM4sKRQbepAXtGZ5qv6+bl8/
+         p2KukY3Pi9WQXfouZ9iLIOdJ8wuQvIktznS842uJfFdR2F50LgcDPlGjc4mZ2wJ42pcg
+         E4QGMzDBgtFt1GK44QGhjRPlCr2KSJ1LhGbFSu+9KSrxzl78IIMnBp4968PsDwrfjxDk
+         iBsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=gd1UaFBLKXl6bUXZarqaIRFNmK+UFVtqrXncrUElU50=;
-        b=MeV3rxiukq1rkwFBuDTD/iKBXK5v1LbGpf6SiOn0P+SvOHM0lPidgIWHJGLNkh0YUq
-         6qnQu6lpt9Ex0mfgcbrrh++WNI8NgqVvZeajN8zZ09IWzqccfyQF9bPM/wVpTwrcItrG
-         rlNG8jxAEafFt7fvxbnmAac/DJtPb5nQSdpjilCo5UCzMKuJOmiN6X+D8tJ6MAqaeV2u
-         bbBbnSAEqDBNt8UcA9VBjBjpzEgKP4YaRQMk3TvSQuxCpVReaxMqc/06vhvEiCa3yMzF
-         RHF+OWtCHpbaSVm57Cy41k5KXfZh03NCVWPfq57UuQJNEhulAbksWghmbYzj9yiqthDu
-         1f3g==
-X-Gm-Message-State: AOAM530ykgRJ6coHa4ggl7Tp8GUWdNeCDsQsoZd2o4m2zxHhLnsHxOxh
-        Wz23b8SwlF2fsr5pr3M+UhFt7t+lJ5XMow==
-X-Google-Smtp-Source: ABdhPJw8gl1GpCdq5n0EbOCBJ7iqa3EnwrPQYCtyEiz1s3j4Z8y5cEGygXpjgWwlrhMU+VyhXpX6EA==
-X-Received: by 2002:a05:620a:294b:: with SMTP id n11mr7936151qkp.606.1640464652074;
-        Sat, 25 Dec 2021 12:37:32 -0800 (PST)
-Received: from localhost.localdomain ([4.31.27.193])
-        by smtp.gmail.com with ESMTPSA id 137sm8118117qkm.69.2021.12.25.12.37.31
+        bh=1vtB4zSWEd+mzMw7k7zC4ebpjbJkDLgH/0D+65o5eMY=;
+        b=0ZHyiyyyOe1nud6jjXcdLvWbq/FnL2Cz2jreyQ1b1mF2BNzCc8oFjgQjL7vVOtXHhh
+         9NX4FAaVk6f1J1kjaUrUfQq3NB0QLGepl6sW0SDWFEgRAlPhs0JFcobyHDXyoxRspXMz
+         o1cNvesr150zAwYT3MwHZRCqSNs+LU1d0S/HSxHnbfcJMnm9aVKrbanarr4DWvxj5Ch2
+         4p1vNfTQF55USBRhuev1Ztt6c8mnFznYSupsVAKHpxHNmZaMVVmWCLzlepYdzfC5D/DL
+         SqGJhwcLr5V952B9QN/AjMr3rHjjurY54kiLaOwikvzct2R6Gl2Q2iYRZxKrEZ2HKxLD
+         832g==
+X-Gm-Message-State: AOAM532bmtjWVbQmV72o9AZKtfknOLupMd4aqg1+Nz/v5z+Zo3GB+EmT
+        njgIh87vDvHR61C6pNIWDoatTFbFigpCm442
+X-Google-Smtp-Source: ABdhPJyLF7IFMHweBjbsN6/rvYtE4N3sLAm7AE1ZjVFVBLFKlg6Mss0Tj6beK5t7Liu/YQmnMc4MUg==
+X-Received: by 2002:a63:5fc6:: with SMTP id t189mr12891600pgb.249.1640537815531;
+        Sun, 26 Dec 2021 08:56:55 -0800 (PST)
+Received: from vultr.guest ([45.76.74.237])
+        by smtp.gmail.com with ESMTPSA id on7sm14395735pjb.50.2021.12.26.08.56.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Dec 2021 12:37:31 -0800 (PST)
-From:   grantseltzer <grantseltzer@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     andrii@kernel.org, grantseltzer@gmail.com
-Subject: [PATCH bpf-next v2] libbpf: Add documentation for bpf_map batch operations
-Date:   Sat, 25 Dec 2021 15:37:17 -0500
-Message-Id: <20211225203717.35718-1-grantseltzer@gmail.com>
-X-Mailer: git-send-email 2.33.1
+        Sun, 26 Dec 2021 08:56:55 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>,
+        David Howells <dhowells@redhat.com>
+Subject: [PATCH] bpf: allow setting mount device for bpffs
+Date:   Sun, 26 Dec 2021 16:56:49 +0000
+Message-Id: <20211226165649.7178-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Grant Seltzer <grantseltzer@gmail.com>
+We noticed our tc ebpf tools can't start after we upgrade our in-house
+kernel version from 4.19 to 5.10. That is because of the behaviour change
+in bpffs caused by commit
+d2935de7e4fd ("vfs: Convert bpf to use the new mount API").
 
-This adds documentation for:
+In our tc ebpf tools, we do strict environment check. If the enrioment is
+not match, we won't allow to start the ebpf progs. One of the check is
+whether bpffs is properly mounted. The mount information of bpffs in
+kernel-4.19 and kernel-5.10 are as follows,
 
-- bpf_map_delete_batch()
-- bpf_map_lookup_batch()
-- bpf_map_lookup_and_delete_batch()
-- bpf_map_update_batch()
+- kenrel 4.19
+$ mount -t bpf bpffs /sys/fs/bpf
+$ mount -t bpf
+bpffs on /sys/fs/bpf type bpf (rw,relatime)
 
-Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
+- kernel 5.10
+$ mount -t bpf bpffs /sys/fs/bpf
+$ mount -t bpf
+none on /sys/fs/bpf type bpf (rw,relatime)
+
+The device name in kernel-5.10 is displayed as none instead of bpffs,
+then our environment check fails. Currently we modify the tools to adopt to
+the kernel behaviour change, but I think we'd better change the kernel code
+to keep the behavior consistent.
+
+After this change, the mount information will be displayed the same with
+the behavior in kernel-4.19, for example,
+
+$ mount -t bpf bpffs /sys/fs/bpf
+$ mount -t bpf
+bpffs on /sys/fs/bpf type bpf (rw,relatime)
+
+Fixes: d2935de7e4fd ("vfs: Convert bpf to use the new mount API")
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: David Howells <dhowells@redhat.com>
 ---
- tools/lib/bpf/bpf.c |   4 +-
- tools/lib/bpf/bpf.h | 112 +++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 112 insertions(+), 4 deletions(-)
+ kernel/bpf/inode.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 9b64eed2b003..25f3d6f85fe5 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -691,7 +691,7 @@ static int bpf_map_batch_common(int cmd, int fd, void  *in_batch,
- 	return libbpf_err_errno(ret);
- }
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 80da1db47c68..5a8b729afa91 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -648,12 +648,26 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	int opt;
  
--int bpf_map_delete_batch(int fd, void *keys, __u32 *count,
-+int bpf_map_delete_batch(int fd, const void *keys, __u32 *count,
- 			 const struct bpf_map_batch_opts *opts)
- {
- 	return bpf_map_batch_common(BPF_MAP_DELETE_BATCH, fd, NULL,
-@@ -715,7 +715,7 @@ int bpf_map_lookup_and_delete_batch(int fd, void *in_batch, void *out_batch,
- 				    count, opts);
- }
+ 	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
+-	if (opt < 0)
++	if (opt < 0) {
+ 		/* We might like to report bad mount options here, but
+ 		 * traditionally we've ignored all mount options, so we'd
+ 		 * better continue to ignore non-existing options for bpf.
+ 		 */
+-		return opt == -ENOPARAM ? 0 : opt;
++		if (opt == -ENOPARAM) {
++			if (strcmp(param->key, "source") == 0) {
++				if (param->type != fs_value_is_string)
++					return 0;
++				if (fc->source)
++					return 0;
++				fc->source = param->string;
++				param->string = NULL;
++			}
++
++			return 0;
++		}
++
++		return opt;
++	}
  
--int bpf_map_update_batch(int fd, void *keys, void *values, __u32 *count,
-+int bpf_map_update_batch(int fd, const void *keys, const void *values, __u32 *count,
- 			 const struct bpf_map_batch_opts *opts)
- {
- 	return bpf_map_batch_common(BPF_MAP_UPDATE_BATCH, fd, NULL, NULL,
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 00619f64a040..01011747f127 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -254,20 +254,128 @@ struct bpf_map_batch_opts {
- };
- #define bpf_map_batch_opts__last_field flags
- 
--LIBBPF_API int bpf_map_delete_batch(int fd, void *keys,
-+
-+/**
-+ * @brief **bpf_map_delete_batch()** allows for batch deletion of multiple
-+ * elements in a BPF map.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param keys pointer to an array of *count* keys
-+ * @param count number of elements in the map to sequentially delete
-+ * @param opts options for configuring the way the batch deletion works
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
-+LIBBPF_API int bpf_map_delete_batch(int fd, const void *keys,
- 				    __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
-+
-+/**
-+ * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF map elements.
-+ *
-+ * The parameter *in_batch* is the address of the first element in the batch to read.
-+ * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
-+ * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to indicate
-+ * that the batched lookup starts from the beginning of the map.
-+ *
-+ * The *keys* and *values* are output parameters which must point to memory large enough to
-+ * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
-+ * buffer must be of *key_size* * *count*. The *values* buffer must be of
-+ * *value_size* * *count*.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param in_batch address of the first element in batch to read, can pass NULL to
-+ * indicate that the batched lookup starts from the beginning of the map.
-+ * @param out_batch output parameter that should be passed to next call as *in_batch*
-+ * @param keys pointer to an array large enough for *count* keys
-+ * @param values pointer to an array large enough for *count* values
-+ * @param count number of elements in the map to read in batch. If ENOENT is
-+ * returned, count will be set as the number of elements that were read before
-+ * running out of entries in the map
-+ * @param opts options for configuring the way the batch lookup works
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
- LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
- 				    void *keys, void *values, __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
-+
-+/**
-+ * @brief **bpf_map_lookup_and_delete_batch()** allows for batch lookup and deletion
-+ * of BPF map elements where each element is deleted after being retrieved.
-+ *
-+ * Note that *count* is an input and output parameter, where on output it
-+ * represents how many elements were successfully deleted. Also note that if
-+ * **EFAULT** is returned up to *count* elements may have been deleted without
-+ * being returned via the *keys* and *values* output parameters. If **ENOENT**
-+ * is returned then *count* will be set to the number of elements that were read
-+ * before running out of entries in the map.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param in_batch address of the first element in batch to read, can pass NULL to
-+ * get address of the first element in *out_batch*
-+ * @param out_batch output parameter that should be passed to next call as *in_batch*
-+ * @param keys pointer to an array of *count* keys
-+ * @param values pointer to an array large enough for *count* values
-+ * @param count input and output parameter; on input it's the number of elements
-+ * in the map to read and delete in batch; on output it represents number of elements
-+ * that were successfully read and deleted
-+ * If ENOENT is returned, count will be set as the number of elements that were
-+ * read before running out of entries in the map
-+ * @param opts options for configuring the way the batch lookup and delete works
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
- LIBBPF_API int bpf_map_lookup_and_delete_batch(int fd, void *in_batch,
- 					void *out_batch, void *keys,
- 					void *values, __u32 *count,
- 					const struct bpf_map_batch_opts *opts);
--LIBBPF_API int bpf_map_update_batch(int fd, void *keys, void *values,
-+
-+/**
-+ * @brief **bpf_map_update_batch()** updates multiple elements in a map
-+ * by specifying keys and their corresponding values.
-+ *
-+ * The *keys* and *values* parameters must point to memory large enough
-+ * to hold *count* items based on the key and value size of the map.
-+ *
-+ * The *opts* parameter can be used to control how *bpf_map_update_batch()*
-+ * should handle keys that either do or do not already exist in the map.
-+ * In particular the *flags* parameter of *bpf_map_batch_opts* can be
-+ * one of the following:
-+ *
-+ * Note that *count* is an input and output parameter, where on output it
-+ * represents how many elements were successfully updated. Also note that if
-+ * **EFAULT** then *count* should not be trusted to be correct.
-+ *
-+ * **BPF_ANY**
-+ *     Create new elements or update existing.
-+ *
-+ * **BPF_NOEXIST**
-+ *    Create new elements only if they do not exist.
-+ *
-+ * **BPF_EXIST**
-+ *    Update existing elements.
-+ *
-+ * **BPF_F_LOCK**
-+ *    Update spin_lock-ed map elements. This must be
-+ *    specified if the map value contains a spinlock.
-+ *
-+ * @param fd BPF map file descriptor
-+ * @param keys pointer to an array of *count* keys
-+ * @param values pointer to an array of *count* values
-+ * @param count input and output parameter; on input it's the number of elements
-+ * in the map to update in batch; on output it represents the number of elements
-+ * that were successfully updated. If EFAULT is returned, *count* should not
-+ * be trusted to be correct.
-+ * @param opts options for configuring the way the batch update works
-+ * @return 0, on success; negative error code, otherwise (errno is also set to
-+ * the error code)
-+ */
-+LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values,
- 				    __u32 *count,
- 				    const struct bpf_map_batch_opts *opts);
- 
-+
- LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
- LIBBPF_API int bpf_obj_get(const char *pathname);
- 
+ 	switch (opt) {
+ 	case OPT_MODE:
 -- 
-2.33.1
+2.17.1
 
