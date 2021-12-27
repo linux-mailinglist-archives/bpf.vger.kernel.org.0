@@ -2,103 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D5247FC4C
-	for <lists+bpf@lfdr.de>; Mon, 27 Dec 2021 12:47:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE0047FC80
+	for <lists+bpf@lfdr.de>; Mon, 27 Dec 2021 13:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbhL0Lri (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Dec 2021 06:47:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233644AbhL0Lri (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Dec 2021 06:47:38 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 437A2C06173E;
-        Mon, 27 Dec 2021 03:47:38 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id q3so9164432pfs.7;
-        Mon, 27 Dec 2021 03:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=G9iuBVZjT8vUmCjrkgGPpAr0bPP8S/6A2uyuP5TVG6k=;
-        b=oBP0MUz/A04YrLV1RHVS9RrRij4wELPOWB7YyoZkLhB0LTLnTFlGJw3XZ2sg0g6DLa
-         z8nAl3j140KJOF/z+KpoXwmP5wgw3YtDCX27s+cbp6hnLX1YQzRlAK5/tpPeBU2WfQqZ
-         QeaEDETRGSwSELGWlKYECczbG4sdcjTEgiPvk1m5gJEoVYUbISSm5EJlOVwMtc2Xb39i
-         6LLGQYhvyPhn27hveZeMhZ7orx/Wbb89EiFolomRc10xw8uj/DYbzuVPrIOOft1/BtbN
-         wIBafK89Xuks69S+S0Lq0GI5J1Ps5pVYeEs9I32hbB11Rh5UTNAY1jXwT8dmZRvEZ0/E
-         rncQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=G9iuBVZjT8vUmCjrkgGPpAr0bPP8S/6A2uyuP5TVG6k=;
-        b=LgL3c3sI1YbTloVMczGhgomAoYNVLSRRtPbsDjNNfOs/ilFxHyPZj5Yz8kjCIBQQCj
-         /cZhgRU5Erkx1N2RhlE48vRP1s8zakMbADH3v0Yu9ulsgWc5BH/NVKW9Fl2S8mhcazTy
-         i0M5j9Nkf40RAyQQa2oToL9ynpO+AO272M1gVsD1BYiUAPPi2ZfrxpxPX7kd/KID3BSV
-         UWBmsVgG2iofUQYVf42QM0/np66TJisFb7/RLcg/qxYNpaktG4bsSe0soCrtSv9tJZZn
-         VsNUuSR82d4oaL1TaNinfRdatpw2EsBG9xIgJbt6q++J7IAQLbw0ie9sEIp5HVRoLVBT
-         S2NA==
-X-Gm-Message-State: AOAM533iKslDt6P2loLqoat37gM+ke9pXOsXcXttCUpN5uYlmbUNekQL
-        bgpQ6eGpkkDiYl1ij+9Ddgc=
-X-Google-Smtp-Source: ABdhPJxAQrBUDLOKsXFFEMt26ELGRaq1hWhDCymkbKV7dZ8bZXV+7b73tsWZJ0SlefyoNDp2HvwPgw==
-X-Received: by 2002:a62:6497:0:b0:4ba:737c:8021 with SMTP id y145-20020a626497000000b004ba737c8021mr17590806pfb.18.1640605657834;
-        Mon, 27 Dec 2021 03:47:37 -0800 (PST)
-Received: from [192.168.255.10] ([203.205.141.115])
-        by smtp.gmail.com with ESMTPSA id t21sm19107051pjq.9.2021.12.27.03.47.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Dec 2021 03:47:37 -0800 (PST)
-Message-ID: <aebfbe2e-598e-ef57-2412-605aa15d29e4@gmail.com>
-Date:   Mon, 27 Dec 2021 19:47:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.4.0
-Subject: Re: [PATCH 1/2] libbpf: Use probe_name for legacy kprobe
-Content-Language: en-US
+        id S233654AbhL0MJX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Dec 2021 07:09:23 -0500
+Received: from mga17.intel.com ([192.55.52.151]:49927 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231964AbhL0MJX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Dec 2021 07:09:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1640606962; x=1672142962;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=okfjJNDIMcbw0e+Sab5DYvFf+BRXsTdpjDfl4ffFb88=;
+  b=iBfRgetn1s+9poM90p8bIZ5Yf/VZk1J4Iq1KQBFfJIloCBC+R9NMFJPO
+   0NtSpR8HxGeY8j5PjPyomHrfwcbL40x0DRZ2j2inRJOcES4v8ffQbjYry
+   5dJUY1qP1W1fXP2qlaMBBAWts3XcDxnBtAMY87Lfqpyp215D0lVK0zE7d
+   FlLSJeZxThFVEBlPVhG7yeJhG6cijFwEyyZA5uF4QqYoEyNqmfCLjm4/V
+   1uDQ0qGhP/ljQxDaKRfouwwjjOfhx37vcIIVmJ9ckNfGLtggfEdOI0Iqd
+   laU8Ip/L2ho23+1ELwNmRXTfPji5m1gv3xdo+LA2qH51S6yo89jXmLP8g
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10209"; a="221869146"
+X-IronPort-AV: E=Sophos;i="5.88,239,1635231600"; 
+   d="scan'208";a="221869146"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2021 04:09:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,239,1635231600"; 
+   d="scan'208";a="758403941"
+Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 27 Dec 2021 04:09:19 -0800
+Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n1ooY-0006Fl-Lb; Mon, 27 Dec 2021 12:09:18 +0000
+Date:   Mon, 27 Dec 2021 20:08:33 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Qiang Wang <wangqiang.wq.frank@bytedance.com>, ast@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
         songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com,
-        songmuchun@bytedance.com, duanxiongchun@bytedance.com,
-        shekairui@bytedance.com
-References: <20211225083242.38498-1-wangqiang.wq.frank@bytedance.com>
-From:   Hengqi Chen <hengqi.chen@gmail.com>
-In-Reply-To: <20211225083242.38498-1-wangqiang.wq.frank@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 2/2] libbpf: Support repeated legacy kprobes on same
+ function
+Message-ID: <202112272030.W0PW9fN7-lkp@intel.com>
+References: <20211225083242.38498-2-wangqiang.wq.frank@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211225083242.38498-2-wangqiang.wq.frank@bytedance.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Qiang,
 
+Thank you for the patch! Yet something to improve:
 
-On 2021/12/25 4:32 PM, Qiang Wang wrote:
-> Fix a bug in commit 46ed5fc33db9, which wrongly used the
-> func_name instead of probe_name to register legacy kprobe.
-> 
-> Fixes: 46ed5fc33db9 ("libbpf: Refactor and simplify legacy kprobe code")
-> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
-> Signed-off-by: Qiang Wang <wangqiang.wq.frank@bytedance.com>
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7c74342bb668..b7d6c951fa09 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -9735,7 +9735,7 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
->  		gen_kprobe_legacy_event_name(probe_name, sizeof(probe_name),
->  					     func_name, offset);
->  
-> -		legacy_probe = strdup(func_name);
-> +		legacy_probe = strdup(probe_name);
->  		if (!legacy_probe)
->  			return libbpf_err_ptr(-ENOMEM);
->  
+[auto build test ERROR on bpf-next/master]
+[also build test ERROR on bpf/master horms-ipvs/master linus/master v5.16-rc7 next-20211224]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Reviewed-by: Hengqi Chen <hengqi.chen@gmail.com>
-Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
+url:    https://github.com/0day-ci/linux/commits/Qiang-Wang/libbpf-Use-probe_name-for-legacy-kprobe/20211225-163349
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+config: i386-randconfig-c001-20211227 (https://download.01.org/0day-ci/archive/20211227/202112272030.W0PW9fN7-lkp@intel.com/config)
+compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 511726c64d3b6cca66f7c54d457d586aa3129f67)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/4a70a6c46086b85c64cae0b5c67980bd7f73cfeb
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Qiang-Wang/libbpf-Use-probe_name-for-legacy-kprobe/20211225-163349
+        git checkout 4a70a6c46086b85c64cae0b5c67980bd7f73cfeb
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> libbpf.c:9896:4: error: expected ')'
+                    __sync_fetch_and_add(&index, 1));
+                    ^
+   libbpf.c:9895:10: note: to match this '('
+           snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset
+                   ^
+   1 error generated.
+   make[6]: *** [tools/build/Makefile.build:97: kernel/bpf/preload/libbpf/staticobjs/libbpf.o] Error 1
+   make[6]: Target '__build' not remade because of errors.
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
