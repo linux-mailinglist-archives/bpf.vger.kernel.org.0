@@ -2,103 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5667347FB0B
-	for <lists+bpf@lfdr.de>; Mon, 27 Dec 2021 09:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A9147FC45
+	for <lists+bpf@lfdr.de>; Mon, 27 Dec 2021 12:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233642AbhL0Ibh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 27 Dec 2021 03:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        id S236462AbhL0LkA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Dec 2021 06:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231500AbhL0Ibh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 27 Dec 2021 03:31:37 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F7BC06173E;
-        Mon, 27 Dec 2021 00:31:37 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id v16so12917150pjn.1;
-        Mon, 27 Dec 2021 00:31:37 -0800 (PST)
+        with ESMTP id S236454AbhL0Lj7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Dec 2021 06:39:59 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE60C06173E;
+        Mon, 27 Dec 2021 03:39:59 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id x15so11233653plg.1;
+        Mon, 27 Dec 2021 03:39:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rbgsHophdEOuD8rdPsWfvcnl/Y/41s9/BVnXbagiOUQ=;
-        b=ITmdv861TcHzMi4pcq2c9CrAAhr6713oDv0ckivmZDBgikmDU5CEypLQ+CgSh6K321
-         d7KAk20vVwjG4vw5hUGMRAO/6ho7aP257xGDiRCGb5dcNvG24/R+tqDWVWUa6jtsDDGf
-         MhGZnum5D3iXtDCDK/kWraIma+Z/0K/vQx9vhGUawrCu8y+q3NqRdlXiHnEUxofK8O2g
-         MoSh9L+H8Sfw4z+9BrqGewrK/E0B55erv5YnlgK9zoxazW5Wac0ZgGvbTnrK+/FNYCZI
-         QRcRbZDiXIq+IOEnyj6jhdFywlge8tTWbgeKYx1sAjU5ALED9l5p32et0Ix31DmhyJ2h
-         pg+w==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=ue3UcdwJ+Dvyqxy+9ne3pye+qmUspCkO0hrkxjCa1Kc=;
+        b=kqPydr2fywkJsQKbNDVOrWGU9EFDSxQs8CZ/IqlIy/E6oq+5ulZ5qr5kCDy+6wUTKR
+         Rq7oWfGUfbpYd0WljWa6Y/P+4BVminwiin1sueU115WV2zVtiX46TRHDVwmeJSb1oZcN
+         5f3YOou41LAXIHjDGOvPyTumny71osgqrQSlEYREh5lwkvVYOhu62giIy4faG8fG72eG
+         tuPPUGdK8DTG4HFgZ/dlgW1Jz/qak4t1USSLNVGWPXDMz81O80hAjQuFXbvRknCmojrB
+         /BNLrm/hW/e6EBWwToX04qna2Ta7X+xUtVhQQaS30oD0oZimb0A3nEsBsaYhfymMzJW4
+         znKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=rbgsHophdEOuD8rdPsWfvcnl/Y/41s9/BVnXbagiOUQ=;
-        b=gh5hdjE/KIiOHM6z1u4rWtxcWvlX6UjjE3gsEp62RpuuPr/32DBmHN2pT02oJ3moSG
-         82ngIoXX9NHkGdKvvKEkWYLOEOMOVMMFwWoNLOXbF5QN15OW6gX4wAQzA++wnYyDRpC2
-         mXbnwGTNMIQUIgHHUZIX0x+0OMi+uPJa/P+JF+mAWkR52q5DTwE8qCWShxUuapoo0qnX
-         hhxrHB+/SBdDSVmLKIIkXtp/rSayZiMhuirQSWdiSQeYOd0WReDYJWulhtb2Y1aZnqfB
-         1smIE9HHfFzTyJVvQKsS3RL7WtB01FjlSLxQ+X4cUGInSBXrvWq0ya8yA8/FU4EXJrc2
-         XDgA==
-X-Gm-Message-State: AOAM530GT2RMAxSbyz/1ylB+6BZjzDTjvI3eQNEPnNaTbF1h7rQz4CmU
-        J9fI4hBCr0n9+myVgmu1gli6PcteYGOzw6mlOb8=
-X-Google-Smtp-Source: ABdhPJwH2WDDxEuTrrMZddHUdYj1ufuMXNrYNNbMitBd8S8x0Qajtd9NbSbBqsfl5cKWGQkccIUjSQ==
-X-Received: by 2002:a17:902:a404:b0:148:b897:c658 with SMTP id p4-20020a170902a40400b00148b897c658mr16235438plq.71.1640593896526;
-        Mon, 27 Dec 2021 00:31:36 -0800 (PST)
-Received: from ubuntu-hirsute.. ([61.16.102.69])
-        by smtp.gmail.com with ESMTPSA id r10sm16139145pff.120.2021.12.27.00.31.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Dec 2021 00:31:36 -0800 (PST)
-From:   yangxingwu <xingwu.yang@gmail.com>
-To:     davem@davemloft.net
-Cc:     yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, yangxingwu <xingwu.yang@gmail.com>
-Subject: [PATCH] net: udp: fix alignment problem in udp4_seq_show()
-Date:   Mon, 27 Dec 2021 16:29:51 +0800
-Message-Id: <20211227082951.844543-1-xingwu.yang@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=ue3UcdwJ+Dvyqxy+9ne3pye+qmUspCkO0hrkxjCa1Kc=;
+        b=55etZnUlPMNvGBlWM+YKZ2Rao/ag5A7Ukb5AJOUYZMRZ4EW6InKIeQowDwyK26SeYc
+         +aq504zr+bFdZHXpuTD/PyfOGgRcaZfyOtmlOXC73BJQEjmGWn0vpm+C2MxJ4lMKkOfS
+         l5eLD3VrhMFMYPFkxP5UEKf66xtYGi1iB6p4TXueIhAgu8I3SdZfRRzaqYncsTj5ZqJu
+         N/9vsNZXmGu27s+efbnkWX1BvYQvStBclDR3QgTHad75IH5Z+deQOWx21tGDxjSVPBwJ
+         SClZ5JRupxRpaGvCb+UWLiUBrN+EiXcG+QHQophL4urYl6jqHlo9dBe2nXlTNVMYeePJ
+         fRTg==
+X-Gm-Message-State: AOAM532ZF/58YJsY9T9SHJ/imcjhypzIQvRVo/6Xq+UFjtwuvViJNKZm
+        vkK3qDkWwR9GhLXQ8He6LcR0sPDSjgQH8Q==
+X-Google-Smtp-Source: ABdhPJz4MsuHGmBCC2/yLCzkDMjbQ9B+/SFyR6UdB4SedwZsz2HIvpGqKiHowoz/qboEZQ1VCTVkeQ==
+X-Received: by 2002:a17:90b:1c8d:: with SMTP id oo13mr21031980pjb.139.1640605199154;
+        Mon, 27 Dec 2021 03:39:59 -0800 (PST)
+Received: from [192.168.255.10] ([203.205.141.115])
+        by smtp.gmail.com with ESMTPSA id s29sm14427063pgo.34.2021.12.27.03.39.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Dec 2021 03:39:58 -0800 (PST)
+Message-ID: <24ebf2ef-7ea6-67a1-65f1-08ce3e5529c4@gmail.com>
+Date:   Mon, 27 Dec 2021 19:39:53 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.0
+Subject: Re: [PATCH 2/2] libbpf: Support repeated legacy kprobes on same
+ function
+Content-Language: en-US
+To:     Qiang Wang <wangqiang.wq.frank@bytedance.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com,
+        songmuchun@bytedance.com, duanxiongchun@bytedance.com,
+        shekairui@bytedance.com
+References: <20211225083242.38498-1-wangqiang.wq.frank@bytedance.com>
+ <20211225083242.38498-2-wangqiang.wq.frank@bytedance.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <20211225083242.38498-2-wangqiang.wq.frank@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-$ cat /pro/net/udp
 
-before:
 
-  sl  local_address rem_address   st tx_queue rx_queue tr tm->when
-26050: 0100007F:0035 00000000:0000 07 00000000:00000000 00:00000000
-26320: 0100007F:0143 00000000:0000 07 00000000:00000000 00:00000000
-27135: 00000000:8472 00000000:0000 07 00000000:00000000 00:00000000
+On 2021/12/25 4:32 PM, Qiang Wang wrote:
+> If repeated legacy kprobes on same function in one process,
+> libbpf will register using the same probe name and got -EBUSY
+> error. So append index to the probe name format to fix this
+> problem.
+> 
+> Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+> Signed-off-by: Qiang Wang <wangqiang.wq.frank@bytedance.com>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index b7d6c951fa09..0c41a45ffd54 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -9634,7 +9634,9 @@ static int append_to_file(const char *file, const char *fmt, ...)
+>  static void gen_kprobe_legacy_event_name(char *buf, size_t buf_sz,
+>  					 const char *kfunc_name, size_t offset)
+>  {
+> -	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx", getpid(), kfunc_name, offset);
+> +	static int index = 0;
 
-after:
+Add empty line after variable declaration.
 
-   sl  local_address rem_address   st tx_queue rx_queue tr tm->when
-26050: 0100007F:0035 00000000:0000 07 00000000:00000000 00:00000000
-26320: 0100007F:0143 00000000:0000 07 00000000:00000000 00:00000000
-27135: 00000000:8472 00000000:0000 07 00000000:00000000 00:00000000
+> +	snprintf(buf, buf_sz, "libbpf_%u_%s_0x%zx_%d", getpid(), kfunc_name, offset
 
-Signed-off-by: yangxingwu <xingwu.yang@gmail.com>
----
- net/ipv4/udp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Missing a comma after offset.
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 15c6b450b8db..0cd6b857e7ec 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -3075,7 +3075,7 @@ int udp4_seq_show(struct seq_file *seq, void *v)
- {
- 	seq_setwidth(seq, 127);
- 	if (v == SEQ_START_TOKEN)
--		seq_puts(seq, "  sl  local_address rem_address   st tx_queue "
-+		seq_puts(seq, "   sl  local_address rem_address   st tx_queue "
- 			   "rx_queue tr tm->when retrnsmt   uid  timeout "
- 			   "inode ref pointer drops");
- 	else {
--- 
-2.30.2
-
+> +		 __sync_fetch_and_add(&index, 1));
+>  }
+>  
+>  static int add_kprobe_event_legacy(const char *probe_name, bool retprobe,
