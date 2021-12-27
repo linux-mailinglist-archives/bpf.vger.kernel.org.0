@@ -2,61 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A2847F855
-	for <lists+bpf@lfdr.de>; Sun, 26 Dec 2021 17:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667F447FA7D
+	for <lists+bpf@lfdr.de>; Mon, 27 Dec 2021 07:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbhLZQ44 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 26 Dec 2021 11:56:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
+        id S231201AbhL0GUn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 27 Dec 2021 01:20:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229965AbhLZQ44 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 26 Dec 2021 11:56:56 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 086E5C06173E;
-        Sun, 26 Dec 2021 08:56:56 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id 205so11910984pfu.0;
-        Sun, 26 Dec 2021 08:56:56 -0800 (PST)
+        with ESMTP id S230356AbhL0GUn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 27 Dec 2021 01:20:43 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB3FC06173E;
+        Sun, 26 Dec 2021 22:20:42 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id r16-20020a17090a0ad000b001b276aa3aabso4367995pje.0;
+        Sun, 26 Dec 2021 22:20:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1vtB4zSWEd+mzMw7k7zC4ebpjbJkDLgH/0D+65o5eMY=;
-        b=AU6v5k8/Wqlgq3kZrAnO2P6IoVfzz7Q4wHYtb3zEA6i+N+wVFGYCHa2vKgVpVH6Y3D
-         QkALbVpU8AWxGLJT4NehXhXJLt9PcgTGvGXC9tGZ/zIkm4FplG/zFWNSKcuOpmOIH6Pd
-         5vtdjb1TgTsY3CSmsCKj4wEBoY6VuxW+EtplPTsqt2N3MM4sKRQbepAXtGZ5qv6+bl8/
-         p2KukY3Pi9WQXfouZ9iLIOdJ8wuQvIktznS842uJfFdR2F50LgcDPlGjc4mZ2wJ42pcg
-         E4QGMzDBgtFt1GK44QGhjRPlCr2KSJ1LhGbFSu+9KSrxzl78IIMnBp4968PsDwrfjxDk
-         iBsQ==
+        bh=q3qnlUPyv7j+2lJxGhadY9VPUX1fm9lkgG1YxnakR3w=;
+        b=fG4YEC8gkL+8kyTxVDpZWworuNLYPFs1uw5jTPZheRMvFcPLozXaaH9gmzbVfF4ZcL
+         Q5bKSdqyx6qQMm8Rw2ewDyAE5/7BMNcOhf+vVhdE8g/x9cE6LM0z4n/sdmQNxlWn9Ka1
+         aXRCT/hFL4BYE4PYDddefck5uLzsiqoHeYEzFqflzp5BdJOWJimBoE+EtrHAV2yU15Hu
+         3JSErgkUIl5wqrnZHJgYDkAhPILbUSO8OBkxavI+HiL7qrVuDEH0Xk5tAtpceSMW3QUU
+         Wt8fVlm+i+hLjFa6/ccGcQghsmbeaghyhVj5QdQoEDSroC7ocpJAmhdnCD/EqovR2nIj
+         4IZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1vtB4zSWEd+mzMw7k7zC4ebpjbJkDLgH/0D+65o5eMY=;
-        b=0ZHyiyyyOe1nud6jjXcdLvWbq/FnL2Cz2jreyQ1b1mF2BNzCc8oFjgQjL7vVOtXHhh
-         9NX4FAaVk6f1J1kjaUrUfQq3NB0QLGepl6sW0SDWFEgRAlPhs0JFcobyHDXyoxRspXMz
-         o1cNvesr150zAwYT3MwHZRCqSNs+LU1d0S/HSxHnbfcJMnm9aVKrbanarr4DWvxj5Ch2
-         4p1vNfTQF55USBRhuev1Ztt6c8mnFznYSupsVAKHpxHNmZaMVVmWCLzlepYdzfC5D/DL
-         SqGJhwcLr5V952B9QN/AjMr3rHjjurY54kiLaOwikvzct2R6Gl2Q2iYRZxKrEZ2HKxLD
-         832g==
-X-Gm-Message-State: AOAM532bmtjWVbQmV72o9AZKtfknOLupMd4aqg1+Nz/v5z+Zo3GB+EmT
-        njgIh87vDvHR61C6pNIWDoatTFbFigpCm442
-X-Google-Smtp-Source: ABdhPJyLF7IFMHweBjbsN6/rvYtE4N3sLAm7AE1ZjVFVBLFKlg6Mss0Tj6beK5t7Liu/YQmnMc4MUg==
-X-Received: by 2002:a63:5fc6:: with SMTP id t189mr12891600pgb.249.1640537815531;
-        Sun, 26 Dec 2021 08:56:55 -0800 (PST)
-Received: from vultr.guest ([45.76.74.237])
-        by smtp.gmail.com with ESMTPSA id on7sm14395735pjb.50.2021.12.26.08.56.54
+        bh=q3qnlUPyv7j+2lJxGhadY9VPUX1fm9lkgG1YxnakR3w=;
+        b=Paq6nxulpbp6P/RbEMMnxSEqqCVfaKdJQgamM5ChZ+pAP5VLhGWH1m0QhIVgz51nx9
+         P4wZylybr/k0KLW5WuGgwiVbtNIDndBvkVFkBvsRIrTXK8l1lJtbgxVDZv9crjD+CymS
+         g716SQKU+/8qlU5VqmTgH4adwI5HXdm4uHt6dbn8ulZHVu1JvBU76RrSJu0JdF4IZTYs
+         Bzh4YNEw6Wwt3d+KHt3TWPAyV60eJ6u2F9GLt3Ds6x69oAoJzVHSCTFhUdPT0eor1tHJ
+         oVU3FNLO4rbPXhwGG7EOJ11jL3y5iIHZVP4E2ZQuFOomqM6rEHrEZj9GoZRt7hr160/e
+         56mQ==
+X-Gm-Message-State: AOAM531U4U6fxm7QO+5AAAsVErqtLvR1Z7tIQdqogDnQxQ4ROF7P8qno
+        X/e+6JhqgvUfiXlXkPvlvlg=
+X-Google-Smtp-Source: ABdhPJw1GG9gLyD2Ok10MtSX9QuV/UAuAGC+v80GKFDIGZ3WICJnHGXVaPUt+9vLkXa3ttaaqj/cdw==
+X-Received: by 2002:a17:90b:3803:: with SMTP id mq3mr16071698pjb.46.1640586042554;
+        Sun, 26 Dec 2021 22:20:42 -0800 (PST)
+Received: from localhost.localdomain ([43.132.141.9])
+        by smtp.gmail.com with ESMTPSA id j23sm13143890pga.59.2021.12.26.22.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 26 Dec 2021 08:56:55 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Sun, 26 Dec 2021 22:20:42 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH] bpf: allow setting mount device for bpffs
-Date:   Sun, 26 Dec 2021 16:56:49 +0000
-Message-Id: <20211226165649.7178-1-laoar.shao@gmail.com>
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Menglong Dong <imagedong@tencent.com>
+Subject: [PATCH] net: bpf: handle return value of BPF_CGROUP_RUN_PROG_INET4_POST_BIND()
+Date:   Mon, 27 Dec 2021 14:20:35 +0800
+Message-Id: <20211227062035.3224982-1-imagedong@tencent.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,78 +66,56 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We noticed our tc ebpf tools can't start after we upgrade our in-house
-kernel version from 4.19 to 5.10. That is because of the behaviour change
-in bpffs caused by commit
-d2935de7e4fd ("vfs: Convert bpf to use the new mount API").
+From: Menglong Dong <imagedong@tencent.com>
 
-In our tc ebpf tools, we do strict environment check. If the enrioment is
-not match, we won't allow to start the ebpf progs. One of the check is
-whether bpffs is properly mounted. The mount information of bpffs in
-kernel-4.19 and kernel-5.10 are as follows,
+The return value of BPF_CGROUP_RUN_PROG_INET4_POST_BIND() in
+__inet_bind() is not handled properly. While the return value
+is non-zero, it will set inet_saddr and inet_rcv_saddr to 0 and
+exit:
 
-- kenrel 4.19
-$ mount -t bpf bpffs /sys/fs/bpf
-$ mount -t bpf
-bpffs on /sys/fs/bpf type bpf (rw,relatime)
+	err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
+	if (err) {
+		inet->inet_saddr = inet->inet_rcv_saddr = 0;
+		goto out_release_sock;
+	}
 
-- kernel 5.10
-$ mount -t bpf bpffs /sys/fs/bpf
-$ mount -t bpf
-none on /sys/fs/bpf type bpf (rw,relatime)
+Let's take UDP for example and see what will happen. For UDP
+socket, it will be added to 'udp_prot.h.udp_table->hash' and
+'udp_prot.h.udp_table->hash2' after the sk->sk_prot->get_port()
+called success. If 'inet->inet_rcv_saddr' is specified here,
+then 'sk' will be in the 'hslot2' of 'hash2' that it don't belong
+to (because inet_saddr is changed to 0), and UDP packet received
+will not be passed to this sock. If 'inet->inet_rcv_saddr' is not
+specified here, the sock will work fine, as it can receive packet
+properly, which is wired, as the 'bind()' is already failed.
 
-The device name in kernel-5.10 is displayed as none instead of bpffs,
-then our environment check fails. Currently we modify the tools to adopt to
-the kernel behaviour change, but I think we'd better change the kernel code
-to keep the behavior consistent.
+I'm not sure what should do here, maybe we should unhash the sock
+for UDP? Therefor, user can try to bind another port?
 
-After this change, the mount information will be displayed the same with
-the behavior in kernel-4.19, for example,
-
-$ mount -t bpf bpffs /sys/fs/bpf
-$ mount -t bpf
-bpffs on /sys/fs/bpf type bpf (rw,relatime)
-
-Fixes: d2935de7e4fd ("vfs: Convert bpf to use the new mount API")
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: David Howells <dhowells@redhat.com>
+Signed-off-by: Menglong Dong <imagedong@tencent.com>
 ---
- kernel/bpf/inode.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ net/ipv4/af_inet.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 80da1db47c68..5a8b729afa91 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -648,12 +648,26 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	int opt;
- 
- 	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
--	if (opt < 0)
-+	if (opt < 0) {
- 		/* We might like to report bad mount options here, but
- 		 * traditionally we've ignored all mount options, so we'd
- 		 * better continue to ignore non-existing options for bpf.
- 		 */
--		return opt == -ENOPARAM ? 0 : opt;
-+		if (opt == -ENOPARAM) {
-+			if (strcmp(param->key, "source") == 0) {
-+				if (param->type != fs_value_is_string)
-+					return 0;
-+				if (fc->source)
-+					return 0;
-+				fc->source = param->string;
-+				param->string = NULL;
-+			}
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 04067b249bf3..9e5710f40a39 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -530,7 +530,14 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 		if (!(flags & BIND_FROM_BPF)) {
+ 			err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
+ 			if (err) {
++				if (sk->sk_prot == &udp_prot)
++					sk->sk_prot->unhash(sk);
++				else if (sk->sk_prot == &tcp_prot)
++					inet_put_port(sk);
 +
-+			return 0;
-+		}
+ 				inet->inet_saddr = inet->inet_rcv_saddr = 0;
++				err = -EPERM;
 +
-+		return opt;
-+	}
- 
- 	switch (opt) {
- 	case OPT_MODE:
+ 				goto out_release_sock;
+ 			}
+ 		}
 -- 
-2.17.1
+2.30.2
 
