@@ -2,94 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2C948153B
-	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 17:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B34748154F
+	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 17:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240881AbhL2QqO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 11:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        id S240931AbhL2Qvi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 11:51:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234322AbhL2QqN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 11:46:13 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CAFC061574;
-        Wed, 29 Dec 2021 08:46:13 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id iy13so18946232pjb.5;
-        Wed, 29 Dec 2021 08:46:13 -0800 (PST)
+        with ESMTP id S240895AbhL2Qvf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 11:51:35 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DEC1C061574;
+        Wed, 29 Dec 2021 08:51:35 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id x15so16250935plg.1;
+        Wed, 29 Dec 2021 08:51:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=m2VHGpOsSlqMAvp8eXPTyOqpWd6XOjYOHnMNBcpT7VE=;
-        b=oKbLmkhWLxseBbzoAoTc/1plIjTZRWHEGAHqnj1kwtYvy3JElApZ+OAMUCnHRXzNRz
-         lw9q1GLyJM7oroeJSRLDxD1FUPpGKGMPgKsk3MU7+xi07w2bKMUFdhIjVwaVEwlBmSeA
-         UVdOTp+XxufSakob4eI7BFNvEYXoSouwV8+zK/r4s/zcWR6IDQzN0YDLJDinIM6G3uxQ
-         oMs9mG/SCsMYe3LUCKsU68XgiKB99Plydq69kUz4z3HgeZWQal9Dc3boWCHOsu5XsBsn
-         mAcH4sWzinqY7i8QPl284mab6nghjV7j+9oRJkzg6yALSOfDJDqanEbGav9tWQ5OOSxE
-         dggA==
+        bh=eyiokD87yXLE7dKoF/rAesIX6IaZjzEtJI7+LN04FEk=;
+        b=jbps2qryj0Z0zQWn+lrBBlSxcDefe6KXi88QIlXKVc6Y7PKqWfUapjY8JxFcaIGigd
+         ft7+84WoQ0h4UhL3vyJ1DIBHIIiAm5llGYmfk4nVkAe+3GrrBf97zhKbWsvTPX6JejKF
+         1dkXJo0UGl+pIxJTyh0L4R8V7cOazLao67YG1WvcCgMJUT7Zmhf0eicJkPKKBztKsk7v
+         D05fKDj1dOQc8zLv828bRzJys90kfBlRY+f583hLSA+S27xtYBrr/t46oqhBNzw2uXBi
+         meZ8HORQpYNqIJLSkK446oH4j64Ut5bibHP4XsZdHoPvyO6AnHzKO5rs+vK+c+HbGKip
+         7LUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=m2VHGpOsSlqMAvp8eXPTyOqpWd6XOjYOHnMNBcpT7VE=;
-        b=qXA8hyG6RM/mxWwKOIQkiCvN4V3eQlBnJw+cZgArdAtDiKxo++DJN7gR0rntcHm+JP
-         RCJcY0MHzun551LXzesF/Mm+WcSAOvqoPdtMukoIRDbfKKZnkgFAAlyIjuF3ySaQTU9i
-         /1+n6ILZ1yWoyS2ODKEykmiT6ZwhHvQ8twRlRM6JJmxtAmCpqZ/x3F+I5ZlsfyACHS9E
-         mfRCUfp4si56pksTfLGMVfYAW/Um3B3gj0MGEUL0SAf3BfTMS/2ESB1DmBQcfRLj3FhG
-         URXUf7ZJik6BigiSLikKAmMALGu8S+TTCHFB1S2YcQBFEiNakSm31WIJCcHL/F2bF6Cj
-         dOxQ==
-X-Gm-Message-State: AOAM532/Y0MFjdJCP6ilXGCjQSTltjDeHcUaqRkYZMF8dtolhDV1Q6J5
-        SyY499mCmUeJZjjNWgRDpFrk+DtldcJhEMeHrmE=
-X-Google-Smtp-Source: ABdhPJweW9lxYzxvvOvJG1pq8rjphOJ/T0YrCCS9hDcP87ZqGhZs+grOrfogTU65rUakkFU/BBmS0S6Ied8nspKeTs4=
-X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
- f12-20020a170902860c00b00149101725f0mr26992202plo.116.1640796372752; Wed, 29
- Dec 2021 08:46:12 -0800 (PST)
+        bh=eyiokD87yXLE7dKoF/rAesIX6IaZjzEtJI7+LN04FEk=;
+        b=hWiaPoUqJrVzY5vg6f/c77RBAEYa17d/E6UGC8KAVQ+PYzfl82InjrArHXDEYwGOrL
+         Qzc7Ez+e+rsoxqHvzJ2Tl5tnaatkpPeDU21KW9xHyhXtBw89SFUtYFgniKE3B5IUj+qj
+         9HQKl6gBjyYgTyZV5+siJvSF+1TSNYukxsk33ecnbRThqJlu8stTQBgWADo8WNiKz+h+
+         D8Du/HL+xqgYpxsgJgqRHxplC8RyPO08lvkqj80xLavY1gGH9lcjdPKFx4iQpJ05bB67
+         et7HX70AlLPPjV0Uy+wW3vf7NXVl3Ns3muYCId5E1T9/1lcC9YEpMHm2D4XpWeMKeyrb
+         e2iA==
+X-Gm-Message-State: AOAM532kVlzxktAb+63NYKaT5zI1au11QfZbWHHa7x75GfqwF4Be4MwS
+        CzTN9/xCStm7aaFTSxXK+usG6kccsejec4v8/5A=
+X-Google-Smtp-Source: ABdhPJxws7iMiWFQ81pkeV1J6AYDjsQKCDaoIm81c0ZOXt5vTQ/CRD6VrIFy5sdtzv5w8UmX3Hk8KIPfWDSHxOMnNg4=
+X-Received: by 2002:a17:902:c443:b0:148:f689:d924 with SMTP id
+ m3-20020a170902c44300b00148f689d924mr27252809plm.78.1640796694708; Wed, 29
+ Dec 2021 08:51:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20211229113256.299024-1-imagedong@tencent.com>
-In-Reply-To: <20211229113256.299024-1-imagedong@tencent.com>
+References: <20211229004913.513372-1-kuba@kernel.org>
+In-Reply-To: <20211229004913.513372-1-kuba@kernel.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 29 Dec 2021 08:46:01 -0800
-Message-ID: <CAADnVQLY2i+2YTj+Oi7+70e98sRC-t6rr536sc=3WYghpki+ug@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: bpf: add hook for close of tcp timewait sock
-To:     menglong8.dong@gmail.com
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
+Date:   Wed, 29 Dec 2021 08:51:23 -0800
+Message-ID: <CAADnVQLd2y_Cuqrn+cAQzCjpXM_Lub5_X6xEfZdMMC2a2Jq41A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] net: don't include filter.h from net/sock.h
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>
+        Marc Kleine-Budde <mkl@pengutronix.de>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, mustafa.ismail@intel.com,
+        shiraz.saleem@intel.com, Leon Romanovsky <leon@kernel.org>,
+        Taehee Yoo <ap420073@gmail.com>, wg@grandegger.com,
+        woojung.huh@microchip.com, Andrew Lunn <andrew@lunn.ch>,
+        vivien.didelot@gmail.com, Florian Fainelli <f.fainelli@gmail.com>,
+        olteanv@gmail.com, george.mccollister@gmail.com,
+        Michael Chan <michael.chan@broadcom.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        anthony.l.nguyen@intel.com,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Tariq Toukan <tariqt@nvidia.com>, saeedm@nvidia.com,
+        ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com, jreuter@yaina.de,
+        David Ahern <dsahern@kernel.org>, kvalo@codeaurora.org,
+        pkshih@realtek.com, trond.myklebust@hammerspace.com,
+        anna.schumaker@netapp.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Luis R. Rodriguez" <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>, nikolay@nvidia.com,
+        jiri@nvidia.com, wintera@linux.ibm.com, wenjia@linux.ibm.com,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>, kgraul@linux.ibm.com,
+        sgarzare@redhat.com,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>, linux-bluetooth@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        linux-hams@vger.kernel.org, ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        linux-nfs@vger.kernel.org,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "moderated list:ETHERNET BRIDGE" <bridge@lists.linux-foundation.org>,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam@netfilter.org, virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 29, 2021 at 3:33 AM <menglong8.dong@gmail.com> wrote:
+On Tue, Dec 28, 2021 at 4:49 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> From: Menglong Dong <imagedong@tencent.com>
+> sock.h is pretty heavily used (5k objects rebuilt on x86 after
+> it's touched). We can drop the include of filter.h from it and
+> add a forward declaration of struct sk_filter instead.
+> This decreases the number of rebuilt objects when bpf.h
+> is touched from ~5k to ~1k.
 >
-> The cgroup eBPF attach type 'CGROUP_SOCK_OPS' is able to monitor the
-> state change of a tcp connect with 'BPF_SOCK_OPS_STATE_CB' ops.
+> There's a lot of missing includes this was masking. Primarily
+> in networking tho, this time.
 >
-> However, it can't trace the whole state change of a tcp connect. While
-> a connect becomes 'TCP_TIME_WAIT' state, this sock will be release and
-> a tw sock will be created. While tcp sock release, 'TCP_CLOSE' state
-> change will be passed to eBPF program. Howeven, the real state of this
-> connect is 'TCP_TIME_WAIT'.
->
-> To make eBPF get the real state change of a tcp connect, add
-> 'CGROUP_TWSK_CLOSE' cgroup attach type, which will be called when
-> tw sock release and tcp connect become CLOSE.
+> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> v2: https://lore.kernel.org/all/20211228192519.386913-1-kuba@kernel.org/
+>  - fix build in bond on ia64
+>  - fix build in ip6_fib with randconfig
 
-The use case is not explained.
-Why bpf tracing cannot be used to achieve the same?
-
-Also there are no selftests.
+Nice! Applied. Thanks
