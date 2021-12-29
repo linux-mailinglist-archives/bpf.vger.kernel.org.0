@@ -2,120 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A57480E8F
-	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 02:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23635480F25
+	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 04:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238203AbhL2Bdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 28 Dec 2021 20:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S238462AbhL2DCN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 28 Dec 2021 22:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbhL2Bdu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 28 Dec 2021 20:33:50 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06494C061574;
-        Tue, 28 Dec 2021 17:33:50 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id b77so11211673vka.11;
-        Tue, 28 Dec 2021 17:33:49 -0800 (PST)
+        with ESMTP id S238461AbhL2DCN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 28 Dec 2021 22:02:13 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5080FC061574;
+        Tue, 28 Dec 2021 19:02:13 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id v25so17375132pge.2;
+        Tue, 28 Dec 2021 19:02:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=IBcil9O+VRrBlwSK9WQFnnXvi87jfhzw0Yvv4tQzzQ4=;
-        b=noDIEQ8P8sUYyX/OE18Q5FGCEdOtXRbYUWogiKJXUl19FWceFTLSzy33NO7370WsVb
-         xNtywJS1aHmXYo/ZkLPfxpKAuLKxK4YE+eVz8VTkizITqKtfycFbgYZ8mkgMJWEJt21+
-         SNTUf5JrpwvWrXhCSoo6DxEmJYz1lYAcgrZn5Siak7Xevszf8m10NCTaN+zXiqI+KIS/
-         Eu3eNT4oCfEFd0fiD/WXOlhQ5EblQr9RpaZdLMvylKbA5ymBdmZHyFsCK1nxmVisoAn9
-         uYVylo+Wo6Qmr7pTJyQxMeOn82Ns+dOHizKeng6bH3WIfBKj/q/NPdRFTbbgDlFIWhAW
-         0Xqg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H70Gh5GeGP3DCR9wXHQc0AqjiiJZ2/7tzP/ZebEKVew=;
+        b=VrdjWLvfi7ntTLRzjwaXjt9MdsfaT+iKlSUwf1sI/ICDItKg3bIXw7YGeSyYiyQRKB
+         /qj4ueX+wDWUuUqvV+yhIu8+Ma6MmedYA0xhNbBKOp8z2D5i/o6ZXOB6hg7Iql8jpEov
+         yW/mMFLQ5IIR0O1cxxLmbtn31gSpAAxXpEs75MdSTUfwtoVIER3vDt+OuSAfvNDGJ5VT
+         DOhzeHBGEGzMVdxITjgCa4VQLvCuPtWWSaOrHiIOVTy+qaTfmTIpKPS6ZsLmnHVlX956
+         AnN9K75+YNZTzaNBFa+ojwfNRdxLjzqZ4PpYWlfbda4KuT7qEScOOsMDLj2YshEoZUMH
+         3obA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=IBcil9O+VRrBlwSK9WQFnnXvi87jfhzw0Yvv4tQzzQ4=;
-        b=3eKziM9dojfbmU9z227wmvZxlUvkvXHU2ObjzOZ+JHo4TGEQOGkgkHXx0VIKXk6Rbf
-         wp0K0vm1TgBxuOtxfbryl3o+2Q18d/kTpo/EmRMCUboBYL7iH5dvQ7NnrwPvBIVala5L
-         Fb960C6ya+ThkV7RaGLzjOyzm3tR+1bNlgdjqUfG8MpB7CevtAbtY7PdIYXACooshlDs
-         j1Q4KTlpU0pYnu58qkRrzYRTUMRb0lo92oRsgedX0pJsGZ6vYSOF06g2nYBBGO5Cfbtx
-         L4uMl89CL7qfLKHaZ9X3cz0A0lM51OeW0utowExoHZO2TBteF5pymxgUYdMpmghYxy9q
-         1/8w==
-X-Gm-Message-State: AOAM533T5kB3Po560hb5BI3iCorpl3jAHUh+HrfpwytPABF935FHV/k4
-        rWQ/s+0C5WOUZuoj/Dh2Apo=
-X-Google-Smtp-Source: ABdhPJwKKoiH34wYig8kLDUOCk3RH8x02XOvCc3/C+ewf+rsM//1r3lSXc1Bk8D6hTuZbPILWEIFJw==
-X-Received: by 2002:a1f:9f04:: with SMTP id i4mr7411735vke.33.1640741629056;
-        Tue, 28 Dec 2021 17:33:49 -0800 (PST)
-Received: from [10.230.2.158] ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id d15sm3964460vsb.18.2021.12.28.17.33.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Dec 2021 17:33:48 -0800 (PST)
-Message-ID: <5a82690c-7dc0-81de-4dd6-06e26e4b9b92@gmail.com>
-Date:   Tue, 28 Dec 2021 17:33:39 -0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H70Gh5GeGP3DCR9wXHQc0AqjiiJZ2/7tzP/ZebEKVew=;
+        b=YbeIhpmHwABjyOBxTGYvfbuoh32yLhucNoHRIOAfa58/IzpYXLwVEJY/B2oi2amHDg
+         lZYGFmvhrwotEFcil2kC+s8PWK/53uVgn9RUO1mQ/zQpR1RTt4QwDGj/OE5ukEFtObWj
+         oBon6VtK9dN1pweTBkI5rP2+HKXxTocgcPqlyQeY4bF8WwJtyOAyMFy/8rLQkc6/8G9p
+         8s3YVplSwHTgQqGFrW2UoQIvRPhC2Ft303DVB5mFTT8aPtTtZ5l5WEmrbPt7lIg3xXVz
+         h9bbuPrmn2F8o5OrXqL8wKZqP8zS8Nw4TJ6mmh8f3j4dkOlRFUnqK4wty0vAi8Q6KeQ1
+         0xiw==
+X-Gm-Message-State: AOAM532xSRJPb5Os1fp0UZkBWR2R00vP9VCx17CqX534PqZd3oFWhS26
+        CCq19juaRXV6KqhH2akoibdGNX9nG+RgIFisRYM=
+X-Google-Smtp-Source: ABdhPJzVCJQ41F/p+nGAEw99ol+ouzSJYVVBMI3lAOeKm8YSQjSFCJf4ZAdS33ASc90MhodLIIQ5nXIAaPjRMW4y4rU=
+X-Received: by 2002:a65:4381:: with SMTP id m1mr21269143pgp.375.1640746932653;
+ Tue, 28 Dec 2021 19:02:12 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [PATCH bpf-next v2] net: don't include filter.h from net/sock.h
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, dledford@redhat.com,
-        jgg@ziepe.ca, mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        leon@kernel.org, ap420073@gmail.com, wg@grandegger.com,
-        woojung.huh@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, olteanv@gmail.com,
-        george.mccollister@gmail.com, michael.chan@broadcom.com,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        hawk@kernel.org, john.fastabend@gmail.com, tariqt@nvidia.com,
-        saeedm@nvidia.com, ecree.xilinx@gmail.com,
-        habetsm.xilinx@gmail.com, jreuter@yaina.de, dsahern@kernel.org,
-        kvalo@codeaurora.org, pkshih@realtek.com,
-        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com,
-        viro@zeniv.linux.org.uk, andrii@kernel.org, mcgrof@kernel.org,
-        keescook@chromium.org, yzaikin@google.com, nikolay@nvidia.com,
-        jiri@nvidia.com, wintera@linux.ibm.com, wenjia@linux.ibm.com,
-        pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-        ralf@linux-mips.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
-        kgraul@linux.ibm.com, sgarzare@redhat.com,
-        steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        arnd@arndb.de, linux-bluetooth@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-hams@vger.kernel.org,
-        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        bridge@lists.linux-foundation.org,
-        linux-decnet-user@lists.sourceforge.net,
-        linux-s390@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, virtualization@lists.linux-foundation.org
-References: <20211229004913.513372-1-kuba@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211229004913.513372-1-kuba@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211216135958.3434-1-maciej.fijalkowski@intel.com> <20211216135958.3434-4-maciej.fijalkowski@intel.com>
+In-Reply-To: <20211216135958.3434-4-maciej.fijalkowski@intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 28 Dec 2021 19:02:01 -0800
+Message-ID: <CAADnVQLGq69c-Tw9M=v_pXFCMYDTA1rqNFWagkE6x7bRao9ZGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] ice: xsk: improve AF_XDP ZC Tx and use
+ batching API
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Dec 16, 2021 at 6:00 AM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>  }
+>
+>  /**
+> - * ice_clean_tx_irq_zc - Completes AF_XDP entries, and cleans XDP entries
+> - * @xdp_ring: XDP Tx ring
+> - * @budget: NAPI budget
+> + * ice_clean_xdp_irq - Reclaim resources after transmit completes on XDP ring
+> + * @xdp_ring: XDP ring to clean
+>   *
+> - * Returns true if cleanup/tranmission is done.
+> + * Returns count of cleaned descriptors
+>   */
+> -bool ice_clean_tx_irq_zc(struct ice_tx_ring *xdp_ring, int budget)
+> +static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring)
 
+The patches look good, but please fix the warnings:
 
-On 12/28/2021 4:49 PM, Jakub Kicinski wrote:
-> sock.h is pretty heavily used (5k objects rebuilt on x86 after
-> it's touched). We can drop the include of filter.h from it and
-> add a forward declaration of struct sk_filter instead.
-> This decreases the number of rebuilt objects when bpf.h
-> is touched from ~5k to ~1k.
-> 
-> There's a lot of missing includes this was masking. Primarily
-> in networking tho, this time.
-> 
-> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-
-It would be nice if we used the number of files rebuilt because of a 
-header file change as another metric that the kernel is evaluated with 
-from release to release (or even on a commit by commit basis). Food for 
-thought.
--- 
-Florian
+../drivers/net/ethernet/intel/ice/ice_xsk.c:636: warning: expecting
+prototype for ice_clean_xdp_irq(). Prototype was for
+ice_clean_xdp_irq_zc() instead
+../drivers/net/ethernet/intel/ice/ice_xsk.c:719: warning: expecting
+prototype for ice_xmit_pkt(). Prototype was for ice_xmit_pkt_batch()
+instead
+../drivers/net/ethernet/intel/ice/ice_xsk.c:636: warning: expecting
+prototype for ice_clean_xdp_irq(). Prototype was for
+ice_clean_xdp_irq_zc() instead
+../drivers/net/ethernet/intel/ice/ice_xsk.c:719: warning: expecting
+prototype for ice_xmit_pkt(). Prototype was for ice_xmit_pkt_batch()
+instead
