@@ -2,255 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E6C48160B
-	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 19:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6C8481620
+	for <lists+bpf@lfdr.de>; Wed, 29 Dec 2021 20:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhL2S3L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 13:29:11 -0500
-Received: from esa.hc3962-90.iphmx.com ([216.71.140.77]:8611 "EHLO
-        esa.hc3962-90.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhL2S3K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 13:29:10 -0500
+        id S229985AbhL2TBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 14:01:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhL2TBr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 14:01:47 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7745AC061574;
+        Wed, 29 Dec 2021 11:01:47 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id j124so36367334oih.12;
+        Wed, 29 Dec 2021 11:01:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qccesdkim1;
-  t=1640802550; x=1641407350;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=0Nd7by/gTgXlMKmVlcUIHi8+H0hLOo2Qjb0ZVlufdAY=;
-  b=PpPrrZ6wxUh7U52RFRUeNtLi9OHn1IaV5u5T1LmVCYRBeF3dqT26Uohl
-   t3M2ZyKkpDNTvf05FZ8f8gJl3BgCIbCcP3xUWRcEUhN+wkfVjvh0yRLis
-   WGpYIFTyKkJpEYp3qs3X8uQtbOVjkuoP5ihByJ99bnbnEeCsl4svAiB+7
-   U=;
-Received: from mail-dm6nam11lp2170.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.170])
-  by ob1.hc3962-90.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2021 18:29:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=REv7G/ynkSF3OhVkFCJKYQ8mMARyKrxLJaHIgSLOarq2pYe67WJxEtOtnFeROV6q3rfdaNImsvxGsM1g+3ENvZw13Dzg/NAnxKjKSLpCZvWnBej1tHEIPVuS/vo/JKXYc+8R4toU35HpgWwDCCEWQZvNz9tg6ERkU6rYGNHKKg1i9TvAYaoLRpTX4sOJ6BGbY7rrv7Ic69meQELOVaKM1RIPg6+dMteK3HZL4KXOkj40jvj3JpHHzwFevg+MpVtpBPaAHvY3kfuyy3WRoyBqbmmm52/hc/n2aHAG/l/HL6dQaCQM1fJ/c5gJQBcIutZEgiGqEWOBmVO9U2QUYXaJ4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Nd7by/gTgXlMKmVlcUIHi8+H0hLOo2Qjb0ZVlufdAY=;
- b=fBWfDuqYSPwm1bXrM8vyeX3c7HOR9n7naKfdPNBzRD9+PiWd09gQx8QyV1oTtsFue1Fe1dazJrpre6yW22SxPqPriQgngtei1efOAJIPWczIbx7tlXAVmKvv0l6ueBvK7p8iPthaidy1ITN4bo4QW4PWf2ebORbMJjK7z/tchOtdenoRhGi0JXJl1hqwh+Q026XDScpJtng6ZSNiTNpM6zBsgqBEw7pEKd5sPyawadhWtGkS8gYJgqOJCUCHaNt3+ykpphVscSCSBAKdlgXuVlddtkdy65mdGZa9poyCXXfucOl1zyPHQ+laIs4KnaVuUDgaq7ubXzAN/v6EHFxyvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=quicinc.com; dmarc=pass action=none header.from=quicinc.com;
- dkim=pass header.d=quicinc.com; arc=none
-Received: from BYAPR02MB5238.namprd02.prod.outlook.com (2603:10b6:a03:71::17)
- by BYAPR02MB4629.namprd02.prod.outlook.com (2603:10b6:a03:14::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.21; Wed, 29 Dec
- 2021 18:29:05 +0000
-Received: from BYAPR02MB5238.namprd02.prod.outlook.com
- ([fe80::8802:ab1b:7465:4b07]) by BYAPR02MB5238.namprd02.prod.outlook.com
- ([fe80::8802:ab1b:7465:4b07%6]) with mapi id 15.20.4823.024; Wed, 29 Dec 2021
- 18:29:05 +0000
-From:   Tyler Wear <twear@quicinc.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-CC:     Yonghong Song <yhs@fb.com>,
-        "Tyler Wear (QUIC)" <quic_twear@quicinc.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "maze@google.com" <maze@google.com>
-Subject: RE: [PATCH] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
-Thread-Topic: [PATCH] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
-Thread-Index: AQHX9tuyjzikyJjagEKGz1loPsx8d6w93owAgAE+o3CAABKSgIAKpfOw
-Date:   Wed, 29 Dec 2021 18:29:05 +0000
-Message-ID: <BYAPR02MB52388E60A9E9BA148CBA9299AA449@BYAPR02MB5238.namprd02.prod.outlook.com>
-References: <20211222022737.7369-1-quic_twear@quicinc.com>
- <1bb2ac91-d47c-82c2-41bd-cad0cc96e505@fb.com>
- <BYAPR02MB52384D4B920EE2DB7C6D0F89AA7D9@BYAPR02MB5238.namprd02.prod.outlook.com>
- <20211222235045.j2o5szilxtl3yqzx@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20211222235045.j2o5szilxtl3yqzx@kafai-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=quicinc.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ed5bf6fc-d09b-4d27-d168-08d9caf91841
-x-ms-traffictypediagnostic: BYAPR02MB4629:EE_
-x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR02MB462967D8EA9CAA96D1540151AA449@BYAPR02MB4629.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3383;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: b/90IiStoIo4BdBwFpL9z5Uubs+y+LiSII4ZwVaz2isGWdxuWOa2W9Z0wT23pQRU66IXXA/3JdpoH1gmpRy7PLRJwoDsdX2VL0L2DBoSlesdWssHKu/JcQ9kFT/qwTF5+A5rQdz2zTeVHywJ94Fk3bfFh8BSx4nyTZrQC/grK3YySPKbGyZtnm5PsXd6MqYB20WsPdTDgK8PI9RIy+a/UV6eeN77LckWdTjXRFeZOxxwU9vfBzveS0Du/g3+H7F4CMWm3Eq37uL1wFA28RbbbDnK8lh58D9sRSrwbMZ6aWrB+X01fC7Gt1UHxLEaBOx9ZSZlConLeT6PhUUlLngsLoXGREseD+Nv936Z5+D8ZDTFgyNW1nAk0UZY+uM9fBSNJksqdQzHzK1yOgQSEM1A/cV01bEmR3F/WJHt+74k/dLtDqZRyWcziyWF0xpDpRkiDAX5dC5C6wmym3iArbML4xrJ6EUtNtG9NnKf38zdt6+tVgiuPCTRdivZ/dLOinIPBx1cg3G9b/MIYYk63xqhhrikwkMNX0Q1KOhswlWPwPKjUxFX/x5tMHvvzYct31wI3pxC0fPGOAWsy/wL2MAU60oOlCuzyAX0myviqUC6FDXl7e/vBsZhwUTion4H3RqkbwuwoX6SQgrA+bJ1givKqxBHEBtasSm6o5AY4N58ITk1yho/Ik6Vxt5Rxb1UMgTpJ1yMqY9Q7nkQ2Ez96A5prA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5238.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(64756008)(83380400001)(66556008)(66476007)(186003)(508600001)(7696005)(8936002)(316002)(5660300002)(6916009)(66446008)(76116006)(9686003)(8676002)(66946007)(71200400001)(52536014)(4326008)(2906002)(6506007)(86362001)(38100700002)(53546011)(33656002)(38070700005)(26005)(55016003)(54906003)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AHTcDr0qZCt3oJtHsO5RsJxlgqNxk6Y216Fqyp10Y8XoUtY1oeXiCtAwVHAf?=
- =?us-ascii?Q?hizozremZpV8Rgt7TnLAi3n22ZL9FO4ZaOCL0DRrDae/LIahdZbZ8dZ2RX5Z?=
- =?us-ascii?Q?8a+X9/g87oVDGKaY/KFd/P88sa3Jci0yULgpb4Zzux0HPdaM2PpzbAgU4VJV?=
- =?us-ascii?Q?+XxE7PfVV8xzAHIU/vV1JDWzlXa0SpdP0w1HdoScgYV5eiZU43EftAGcyeeL?=
- =?us-ascii?Q?pwl5TvJCNq0/dE+audo7gdKSa253UG+Y2C2kW7gvW5yVt7IUglCEfFZNZyOG?=
- =?us-ascii?Q?bP+Iv+kan3u5EXB89ZCrYWo+KPkXRw0/Oecw+XBp5IX0yi75aTALplnbNB3w?=
- =?us-ascii?Q?4ReqzaOxfdWZIiEbCbu+IFXcyVtEEL2AHaC+mEHBj+07P7RS068q1qmi3Ka5?=
- =?us-ascii?Q?WmeLLvMxT4x2Y1UgYt7/BpA0l0SKEoV+jDLmsTVjQwvQWzl7RM+QTdEBbvPI?=
- =?us-ascii?Q?Em/jIiOGT+CnjhBb+XKpFCkyMFcQNlhB0OKos9bET/lGqIWUMfJ+eBfXzeSd?=
- =?us-ascii?Q?7uIbtjBCUk7Cls0XrYVwGdK33o5S8v5uTPhjyOsZaU+/TqO0IXmE+GLD8ZrA?=
- =?us-ascii?Q?KsZt8R4FQNs5vDu18o2WGRAea6ogkVYujxr8uE0iaNzrSWdDeFJbL/V+Y22V?=
- =?us-ascii?Q?jNfYt5QdIjkE0iKDzzs51zm1LJsxwFxIG1Gxt95ZhpFzC2vRJT7VUGjbq5+Z?=
- =?us-ascii?Q?IXz4fQWb7wpLkGKoska+Rso1EMTB7Anogvf/Ak20EbQE1OvFpw/MTLWYGCVT?=
- =?us-ascii?Q?HuzDYtCktk/OtL3Jr93lG/OhWYJ6IGgwCgadM7qKJHUAiu7jh+K4vWEbzGkE?=
- =?us-ascii?Q?P66QYXw9Dk/AVrfgKJ/jFOIJtKaIDhr/SQ8NgInKtRT8AqHRDym/j01VpIKi?=
- =?us-ascii?Q?fZMF5RH9QbqBYd/X05YTs7BvNRn8FGgVSkLMiYs2NYez2+BJQFCWAiQlj68f?=
- =?us-ascii?Q?UOXXr756Vm/K+yRsy/mstb6vz7WG3bPKOBfk1Tbqr4cYbHzM9lmLLAMyrkQV?=
- =?us-ascii?Q?8DHRV2Zoaw8sLm6sHdsnthRvVtH/6yhmZXxsXHJciCb9Rm9TiRoQAgv8yZvE?=
- =?us-ascii?Q?eEecaG199NmQkR5XuCTvG8bhmhKMtTktgsK70G8GntGvXW7j7TcWyPSlfPYB?=
- =?us-ascii?Q?zgrcygNEghmVxiE2EHehXujstT+bzBPzs1vhbXkGMvRVWHGgATA7jbhGvLtg?=
- =?us-ascii?Q?nHmFY6k7MrNQHxs8tHCg1St/T9mxufZsSpCCw3qZD3ja7m36sc3uFR+JaaLb?=
- =?us-ascii?Q?lnlR8gk7vjnu1JgeECf6UJR67Gm66MR8saHDN2bj98gIJlZOVCnxF4mhHuH1?=
- =?us-ascii?Q?fdac6kMECmZB0UTQeB8DW+5XF5sMTbCa2RaFHJEx/ihIFbRouVUrz44u3V2p?=
- =?us-ascii?Q?B43Q6c8D9pKF0DSsg0j7jMio6Hyk4QZ58GXEBge3kRuBC2r22csCGz7zi7tU?=
- =?us-ascii?Q?Jp8giMjnXquGUVcJd33EIxRgzufe3yH+hlwfuZjJXv/X5gjyxHyAExgGrRi6?=
- =?us-ascii?Q?xgsRsfRTmhDsx3j41nORlk4fIQhKQCYX/czHkIkh+991s9ogDDkPQ1l4+23N?=
- =?us-ascii?Q?S+GEed1f9SPKTmPKVK2uo+ywvUk6LFoQbBKvFD5nVPOaNudWMUniqa4bB290?=
- =?us-ascii?Q?60dsH54FEZ+FiH2SKtgn204=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lRINl9bSIHzu7cRYaq3FSH+P+41wU3Ojg7POjWfVokk=;
+        b=KUjMjlBT6sMwDbvndonSVhsp9Pvln9VnycfMzUhILA6rexEPBAU5W1iTkw7rvbc1lb
+         81JQBuVyRhYoJaI0a1p2Z52FRFKKocFX1dRuF4+AUdOSywBod7V/UW5xuQ3PDT9/YqMD
+         y6aQf+hsf0xy48+axgZPIxSy5psApFt8JJMLaRoalVIxtjIaX7Jd1aHgXtVtm3D7wOc+
+         cwPmFMUAOVmXF35HSgeGbfK0tHLYS4ptWeK3yUgnIa2J/vmRYsXSsXEoD/pjwjhuLbc3
+         liJJpiJVM/LHrGGg39meeipvlNnVlAAVNQIEav8vwKAOsqK2IXVfqM56pbD74EqJux6V
+         wnqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lRINl9bSIHzu7cRYaq3FSH+P+41wU3Ojg7POjWfVokk=;
+        b=GHSnRcTnGYJrJ515T07rvRgVZNe3qdWX+wC+KgfJlucHmhACc6D4orLE61wtYEzKVy
+         G7bChbQfYjfDxGSomgGSCN/JHxVdZJrxK1YtUm1lwvW2LORbGMxt7Uo6XgD/iG77ycPT
+         aNP2BbMaKsetdFkSJ/XasF3kXMxSoXkjNFgNl4Z9wW5iCot/aMUZZsVd1P+rQoiMEY9g
+         2zqYPRcA+y9EevD8GfGq9XwU2PSPAHWNiws58Chbbb9mhCHzbby5wjzgJQ9CZW08U8+Z
+         gBMPFLK9SEdYuzMH8SzitBSXUMqr8CJKSOTF9dXuLtDWUVuA2cAwbN1id9/cXpPjuIl7
+         vKaQ==
+X-Gm-Message-State: AOAM5333zOpogbheZjzdFFKphaKtvNMKwoJkYVKUL1RC6JfjAbBLC0LH
+        +rtK5ZLkYHjo/lizNMIG2qbaTTs5rVw/rZWL9Xo=
+X-Google-Smtp-Source: ABdhPJyLpLTPbemnFAz0K/5iKmRl8VJ2LXGEIeRM45vEowlmW0ZyZc5MxNCRtAIhCb1iuCSH7HOiLADdzv4pZf5w1mQ=
+X-Received: by 2002:a05:6808:1285:: with SMTP id a5mr20742944oiw.104.1640804506794;
+ Wed, 29 Dec 2021 11:01:46 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: quicinc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5238.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed5bf6fc-d09b-4d27-d168-08d9caf91841
-X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Dec 2021 18:29:05.1176
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: A+MpP/z4ex87uEO7BY6cffKrXMRMeTwHF0dzf+6zOH1iH4mw3eehT+IF0huQMUVQBZPgVGYpfY1xzNHuyloxmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4629
+References: <20211216222108.110518-1-christylee@fb.com> <20211216222108.110518-3-christylee@fb.com>
+ <YcGO271nDvfMeSlK@krava> <CAEf4BzZpNvEtfsVHUJGfwi_1xM+7-ohBPKPrRo--X=fYkYLrsw@mail.gmail.com>
+ <YcMr1LeP6zUBdCiK@krava> <CAEf4Bzb2HWiuJmeb6WxE2Dift5qQOLBE=j1ZqfpVMjuWV3+EDg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb2HWiuJmeb6WxE2Dift5qQOLBE=j1ZqfpVMjuWV3+EDg@mail.gmail.com>
+From:   Christy Lee <christyc.y.lee@gmail.com>
+Date:   Wed, 29 Dec 2021 11:01:35 -0800
+Message-ID: <CAPqJDZouQHpUXv4dEGKKe=UjwkZu3=GMQ2M9g2zLYOV6a=gZbw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] perf: stop using deprecated
+ bpf__object_next() API
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        He Kuang <hekuang@huawei.com>, Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Martin KaFai Lau <kafai@fb.com>
-> Sent: Wednesday, December 22, 2021 3:51 PM
-> To: Tyler Wear <twear@quicinc.com>
-> Cc: Yonghong Song <yhs@fb.com>; Tyler Wear (QUIC) <quic_twear@quicinc.com=
->; netdev@vger.kernel.org; bpf@vger.kernel.org;
-> maze@google.com
-> Subject: Re: [PATCH] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
->=20
-> WARNING: This email originated from outside of Qualcomm. Please be wary o=
-f any links or attachments, and do not enable macros.
->=20
-> On Wed, Dec 22, 2021 at 10:49:45PM +0000, Tyler Wear wrote:
-> > > On 12/21/21 6:27 PM, Tyler Wear wrote:
-> > > > Need to modify the ds field to support upcoming Wifi QoS Alliance
-> > > > spec. Instead of adding generic function for just modifying the ds
-> > > > field, add skb_store_bytes for BPF_PROG_TYPE_CGROUP_SKB. This
-> > > > allows other fields in the network and transport header to be
-> > > > modified in the future.
-> > >
-> > > Could change tag from "[PATCH]" to "[PATCH bpf-next]"?
-> > > Please also indicate the version of the patch, so in this case, it sh=
-ould be "[PATCH bpf-next v2]".
-> > >
-> > > I think you can add more contents in the commit message about why
-> > > existing bpf_setsockopt() won't work and why CGROUP_UDP[4|6]_SENDMSG =
-is not preferred.
-> > > These have been discussed in v1 of this patch and they are valuable f=
-or people to understand full context and reasoning.
-> > >
-> > > >
-> > > > Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
-> > > > ---
-> > > >   net/core/filter.c | 2 ++
-> > > >   1 file changed, 2 insertions(+)
-> > > >
-> > > > diff --git a/net/core/filter.c b/net/core/filter.c index
-> > > > 6102f093d59a..0c25aa2212a2 100644
-> > > > --- a/net/core/filter.c
-> > > > +++ b/net/core/filter.c
-> > > > @@ -7289,6 +7289,8 @@ static const struct bpf_func_proto *
-> > > >   cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog=
- *prog)
-> > > >   {
-> > > >       switch (func_id) {
-> > > > +     case BPF_FUNC_skb_store_bytes:
-> > > > +             return &bpf_skb_store_bytes_proto;
-> > >
-> > > Typically different 'case's are added in chronological order to
-> > > people can guess what is added earlier and what is added later. Maybe=
- add the new helper after BPF_FUNC_perf_event_output?
-> > >
-> > > >       case BPF_FUNC_get_local_storage:
-> > > >               return &bpf_get_local_storage_proto;
-> > > >       case BPF_FUNC_sk_fullsock:
-> > >
-> > > Please add a test case to exercise the new usage of
-> > > bpf_skb_store_bytes() helper. You may piggy back on some existing cg_=
-skb progs if it is easier to do.
+On Wed, Dec 22, 2021 at 2:17 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Dec 22, 2021 at 5:44 AM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > Would it be sufficient to change the dscp value in
-> > tools/testing/selftests/bpf/progs/test_sock_fields.c via
-> > bpf_skb_store_bytes()
-> test_sock_fields focus on sk instead of skb, so it will not be a good fit=
-.
->=20
-> load_bytes_relative.c may be a better fit.
-> The minimal is to write the dscp value by bpf_skb_store_bytes() and be ab=
-le to read it back at the receiver side (e.g.
-> by making a TCP connection like load_bytes_relative).
+> > On Tue, Dec 21, 2021 at 01:58:14PM -0800, Andrii Nakryiko wrote:
+> > > On Tue, Dec 21, 2021 at 12:23 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Thu, Dec 16, 2021 at 02:21:08PM -0800, Christy Lee wrote:
+> > > > > bpf__object_next is deprecated, track bpf_objects directly in
+> > > > > perf instead.
+> > > > >
+> > > > > Signed-off-by: Christy Lee <christylee@fb.com>
+> > > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > > ---
+> > > > >  tools/perf/util/bpf-loader.c | 72 +++++++++++++++++++++++++++---------
+> > > > >  tools/perf/util/bpf-loader.h |  1 +
+> > > > >  2 files changed, 55 insertions(+), 18 deletions(-)
+> > > > >
+> > > > > diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> > > > > index 528aeb0ab79d..9e3988fd719a 100644
+> > > > > --- a/tools/perf/util/bpf-loader.c
+> > > > > +++ b/tools/perf/util/bpf-loader.c
+> > > > > @@ -29,9 +29,6 @@
+> > > > >
+> > > > >  #include <internal/xyarray.h>
+> > > > >
+> > > > > -/* temporarily disable libbpf deprecation warnings */
+> > > > > -#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> > > > > -
+> > > > >  static int libbpf_perf_print(enum libbpf_print_level level __attribute__((unused)),
+> > > > >                             const char *fmt, va_list args)
+> > > > >  {
+> > > > > @@ -49,6 +46,36 @@ struct bpf_prog_priv {
+> > > > >       int *type_mapping;
+> > > > >  };
+> > > > >
+> > > > > +struct bpf_perf_object {
+> > > > > +     struct bpf_object *obj;
+> > > > > +     struct list_head list;
+> > > > > +};
+> > > > > +
+> > > > > +static LIST_HEAD(bpf_objects_list);
+> > > >
+> > > > hum, so this duplicates libbpf's bpf_objects_list,
+> > > > how do objects get on this list?
+> > >
+> > > yep, this list needs to be updated on perf side each time
+> > > bpf_object__open() (and any variant of open) is called.
+> > >
+> > > >
+> > > > could you please put more comments in changelog
+> > > > and share how you tested this?
+> > >
+> > > I actually have no idea how to test this as well, can you please share
+> > > some ideas?
+> > >
+> >
+> > I don't use it, I just know it's there.. that's why I asked ;-)
+> >
+> > it's possible to specify bpf program on the perf command line
+> > to be attached to event, like:
+> >
+> >       # cat tools/perf/examples/bpf/hello.c
+> >       #include <stdio.h>
+> >
+> >       int syscall_enter(openat)(void *args)
+> >       {
+> >               puts("Hello, world\n");
+> >               return 0;
+> >       }
+> >
+> >       license(GPL);
+> >       #
+> >       # perf trace -e openat,tools/perf/examples/bpf/hello.c cat /etc/passwd > /dev/null
+> >          0.016 (         ): __bpf_stdout__:Hello, world
+> >          0.018 ( 0.010 ms): cat/9079 openat(dfd: CWD, filename: /etc/ld.so.cache, flags: CLOEXEC) = 3
+> >          0.057 (         ): __bpf_stdout__:Hello, world
+> >          0.059 ( 0.011 ms): cat/9079 openat(dfd: CWD, filename: /lib64/libc.so.6, flags: CLOEXEC) = 3
+> >          0.417 (         ): __bpf_stdout__:Hello, world
+> >          0.419 ( 0.009 ms): cat/9079 openat(dfd: CWD, filename: /etc/passwd) = 3
+> >       #
+> >
+> > I took that example from commit message
+[...]
 
-Unable to run any bpf tests do to errors below. These occur with and withou=
-t the new patch. Is this a known issue?
-Is the new test case required since bpf_skb_store_bytes() is already a test=
-ed function for other prog types?
+I found the original commit aa3abf30bb28addcf593578d37447d42e3f65fc3
+that included a test case, but I'm having trouble reproducing it due to syntax
+error. I am running this on bpf-next master without my patches.
 
-libbpf: failed to find BTF for extern 'bpf_testmod_invalid_mod_kfunc' [18] =
-section: -2
-Error: failed to open BPF object file: No such file or directory
-libbpf: failed to find BTF info for global/extern symbol 'my_tid'
-Error: failed to link '/local/mnt/workspace/linux-stable/tools/testing/self=
-tests/bpf/linked_funcs1.o': Unknown error -2 (-2)
-libbpf: failed to find BTF for extern 'bpf_kfunc_call_test1' [27] section: =
--2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:484: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/test_ksyms_module.skel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/test_ksyms_module.skel.h'
-make: *** Waiting for unfinished jobs....
-make: *** [Makefile:484: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/kfunc_call_test_subprog.skel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/kfunc_call_test_subprog.skel.h'
-make: *** [Makefile:482: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/linked_funcs.skel.h] Error 254
-libbpf: failed to find BTF info for global/extern symbol 'input_rodata_weak=
-'
-Error: failed to link '/local/mnt/workspace/linux-stable/tools/testing/self=
-tests/bpf/linked_vars1.o': Unknown error -2 (-2)
-make: *** [Makefile:482: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/linked_vars.skel.h] Error 254
-libbpf: failed to find BTF for extern 'tcp_cong_avoid_ai' [27] section: -2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:486: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/bpf_cubic.skel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/bpf_cubic.skel.h'
-libbpf: failed to find BTF for extern 'bpf_kfunc_call_test1' [28] section: =
--2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:486: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/kfunc_call_test.lskel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/kfunc_call_test.lskel.h'
-libbpf: failed to find BTF for extern 'tcp_reno_cong_avoid' [38] section: -=
-2
-Error: failed to open BPF object file: No such file or directory
-libbpf: failed to find BTF for extern 'bpf_testmod_invalid_mod_kfunc' [18] =
-section: -2
-Error: failed to open BPF object file: No such file or directory
-make: *** [Makefile:486: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/bpf_dctcp.skel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/bpf_dctcp.skel.h'
-make: *** [Makefile:486: /local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/test_ksyms_module.lskel.h] Error 255
-make: *** Deleting file '/local/mnt/workspace/linux-stable/tools/testing/se=
-lftests/bpf/test_ksyms_module.lskel.h'
+I ran 'perf test -v LLVM' and used it's output to generate a script for
+compiling the perf test object:
+
+--------------------------------------------------
+$ cat ~/bin/hello-ebpf
+INPUT_FILE=/tmp/test.c
+OUTPUT_FILE=/tmp/test.o
+
+export KBUILD_DIR=/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
+export NR_CPUS=56
+export LINUX_VERSION_CODE=0x50c00
+export CLANG_EXEC=/data/users/christylee/devtools/llvm/latest/bin/clang
+export CLANG_OPTIONS=-xc
+export KERNEL_INC_OPTIONS="-nostdinc -isystem
+/data/users/christylee/devtools/gcc/10.3.0/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include
+-I./arch/\
+x86/include -I./arch/x86/include/generated  -I./include
+-I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi
+-I./include/uapi -I./in\
+clude/generated/uapi -include ./include/linux/compiler-version.h
+-include ./include/linux/kconfig.h"
+export PERF_BPF_INC_OPTIONS=-I/home/christylee/lib/perf/include/bpf
+export WORKING_DIR=/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
+export CLANG_SOURCE=-
+
+rm -f $OUTPUT_FILE
+cat $INPUT_FILE |
+/data/users/christylee/devtools/llvm/latest/bin/clang -D__KERNEL__
+-D__NR_CPUS__=56 -DLINUX_VERSION_CODE=0x50c00 -xc  -I/ho\
+me/christylee/lib/perf/include/bpf  -nostdinc -isystem
+/data/users/christylee/devtools/gcc/10.3.0/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include
+\
+-I./arch/x86/include -I./arch/x86/include/generated  -I./include
+-I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi
+-I./include/ua\
+pi -I./include/generated/uapi -include
+./include/linux/compiler-version.h -include ./include/linux/kconfig.h
+-Wno-unused-value -Wno-pointer-\
+sign -working-directory
+/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build -c - -target bpf
+-O2 -o $OUTPUT_FILE
+--------------------------------------------------
+
+I then wrote and compiled a script that ask to get asks to put a probe
+at a function that
+does not exists in the kernel, it errors out as expected:
+
+$ cat /tmp/test.c
+__attribute__((section("fork=does_not_exist"), used)) int fork(void *ctx) {
+    return 0;
+}
+
+char _license[] __attribute__((section("license"), used)) = "GPL";
+int _version __attribute__((section("version"), used)) = 0x40100;
+$ cd ~/bin && ./hello-ebpf
+$ perf record --event /tmp/test.o sleep 1
+Using perf wrapper that supports hot-text. Try perf.real if you
+encounter any issues.
+Probe point 'does_not_exist' not found.
+event syntax error: '/tmp/test.o'
+                     \___ You need to check probing points in BPF file
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+available events
+
+---------------------------------------------------
+
+Next I changed the attribute to something that exists in the kernel.
+As expected, it errors out
+with permission problem:
+$ cat /tmp/test.c
+__attribute__((section("fork=fork_init"), used)) int fork(void *ctx) {
+    return 0;
+}
+char _license[] __attribute__((section("license"), used)) = "GPL";
+int _version __attribute__((section("version"), used)) = 0x40100;
+$ grep fork_init /proc/kallsyms
+ffffffff8146e250 T xfs_ifork_init_cow
+ffffffff83980481 T fork_init
+$ cd ~/bin && ./hello-ebpf
+$ perf record --event /tmp/test.o sleep 1
+Using perf wrapper that supports hot-text. Try perf.real if you
+encounter any issues.
+Failed to open kprobe_events: Permission denied
+event syntax error: '/tmp/test.o'
+                     \___ You need to be root
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+available events
+
+---------------------------------------------------
+
+So I reran as root, but this time I get an invalid syntax error:
+
+# perf record --event /tmp/test.o -v sleep 1
+Using perf wrapper that supports hot-text. Try perf.real if you
+encounter any issues.
+Failed to write event: Invalid argument
+event syntax error: '/tmp/test.o'
+                     \___ Invalid argument
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event selector. use 'perf list' to list
+available events
+---------------------------------------------------
+
+Is there a different way to attach a custom event probe point?
