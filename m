@@ -2,198 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4DEB4817F2
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 01:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4588481809
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 02:27:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbhL3A52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 19:57:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:51232 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233673AbhL3A52 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 19:57:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1640825848; x=1672361848;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=WwDri9jJu3hZEwl7yyP74fwvRjKINBNWg+MB7eyLwL4=;
-  b=kfS+8hspyeJjmSoJZ/EDUAnwzq5k3Juob3IfTtu4ptbkf0y6yEymsJQ8
-   4vn8OsXrolUZw+f5bDQ8unhU+mWj7KzemqNTe4g6+oO66YOLtUgc5856s
-   /fjPekcPTgvqY6gIuiUD9fz8//pEKxQksux0G47wtRrdYv4T3mOw8e+v4
-   33sPprJrdIprIM9WIEv3qOBP41Qgu8fNcIdvNizzxWo6GbxCZttTA3CaW
-   ghtXUIAURLapoMHQaV67j9sVp7fsLox3dtgpxjq11987/0uo29zWQ58gx
-   yrXX9K8mlsmRr2BLNHxIhWrKjfx4oA03cRBRfHlMaYtjoUEFCvV7hMNnK
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10212"; a="302346504"
-X-IronPort-AV: E=Sophos;i="5.88,246,1635231600"; 
-   d="scan'208";a="302346504"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Dec 2021 16:57:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,246,1635231600"; 
-   d="scan'208";a="619225745"
-Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 29 Dec 2021 16:57:25 -0800
-Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n2jkz-0009Wi-0O; Thu, 30 Dec 2021 00:57:25 +0000
-Date:   Thu, 30 Dec 2021 08:57:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>, ast@kernel.org,
-        daniel@iogearbox.net
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH bpf-next 2/2] bpf: invert the dependency between
- bpf-netns.h and netns/bpf.h
-Message-ID: <202112300828.wqqaIPJ3-lkp@intel.com>
-References: <20211229223139.708975-3-kuba@kernel.org>
+        id S233905AbhL3B1r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 20:27:47 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:50644 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhL3B1r (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 20:27:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2DE78615BB;
+        Thu, 30 Dec 2021 01:27:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF86C36AEA;
+        Thu, 30 Dec 2021 01:27:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640827666;
+        bh=s26WabnK78sN9tQCrndeQKxJdVJVDJwBqtVU8Dv2AKw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=n1Id8AFrABttPC/gUWeIkTiuYLaH+CYJUZk8CJlItC4/gwXsScVmpcQkV26pT/6FO
+         qZnFJsS2fPIvBwjWgpvtK5QMenQ/cIYOK1wtPOC+F80x4PN1oC5Ld5mOg4MBSNHwvL
+         phFKXtYD2fRe432XD6z8E8zr748d9xEsmrcm+7xWijemJ7wkq1a6PCptuBL6xbZOHY
+         mMr8LDGnXT+cmwEGDI6SbEf9y5hk0N42bveJh3ZKYvecuNjAZz/023CizQQVwn29XH
+         BD5ZhP/fMjyCOi4qhXqM/P7uwH8gO/K9D18E/LOEgMG/z1KRa646FCd2hJXBNf9K0A
+         fA4UQwlTcrLIQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH bpf-next v2 0/2] lighten uapi/bpf.h rebuilds
+Date:   Wed, 29 Dec 2021 17:27:40 -0800
+Message-Id: <20211230012742.770642-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211229223139.708975-3-kuba@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jakub,
+Last change in the bpf headers - disentangling BPF uapi from
+netdevice.h. Both linux/bpf.h and uapi/bpf.h changes should
+now rebuild ~1k objects down from the original ~18k. There's
+probably more that can be done but it's diminishing returns.
 
-I love your patch! Yet something to improve:
+Split into two patches for ease of review.
 
-[auto build test ERROR on bpf-next/master]
+Jakub Kicinski (2):
+  net: add includes masked by netdevice.h including uapi/bpf.h
+  bpf: invert the dependency between bpf-netns.h and netns/bpf.h
 
-url:    https://github.com/0day-ci/linux/commits/Jakub-Kicinski/lighten-uapi-bpf-h-rebuilds/20211230-063309
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: x86_64-randconfig-a002-20211230 (https://download.01.org/0day-ci/archive/20211230/202112300828.wqqaIPJ3-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project cd284b7ac0615afc6e0f1a30da2777e361de27a3)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/df4183ffb29b84cb3cfb6ac82457f151e6fa2a28
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jakub-Kicinski/lighten-uapi-bpf-h-rebuilds/20211230-063309
-        git checkout df4183ffb29b84cb3cfb6ac82457f151e6fa2a28
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash net/ipv6/
+ drivers/net/ethernet/amazon/ena/ena_netdev.h       | 1 +
+ drivers/net/ethernet/cavium/thunder/nicvf_queues.c | 1 +
+ drivers/net/ethernet/microsoft/mana/mana_en.c      | 2 ++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h       | 1 +
+ drivers/net/ethernet/ti/cpsw_priv.h                | 2 ++
+ include/linux/bpf-netns.h                          | 8 +-------
+ include/net/ip6_fib.h                              | 1 +
+ include/net/netns/bpf.h                            | 9 ++++++++-
+ kernel/bpf/net_namespace.c                         | 1 +
+ 9 files changed, 18 insertions(+), 8 deletions(-)
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+-- 
+2.31.1
 
-All error/warnings (new ones prefixed by >>):
-
-   In file included from net/ipv6/anycast.c:39:
-   In file included from include/net/ip6_route.h:24:
->> include/net/ip6_fib.h:548:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
->> include/net/ip6_fib.h:548:22: warning: declaration of 'struct bpf_iter_meta' will not be visible outside of this function [-Wvisibility]
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                               ^
->> include/net/ip6_fib.h:548:39: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                                                ^
-                                                int
-   include/net/ip6_fib.h:549:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:549:35: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct fib6_info *, rt);
-                                            ^
-                                            int
->> include/net/ip6_fib.h:549:2: error: duplicate member '__bpf_md_ptr'
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:548:2: note: previous declaration is here
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
-   3 warnings and 3 errors generated.
---
-   In file included from net/ipv6/route.c:48:
->> include/net/ip6_fib.h:548:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
->> include/net/ip6_fib.h:548:22: warning: declaration of 'struct bpf_iter_meta' will not be visible outside of this function [-Wvisibility]
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                               ^
->> include/net/ip6_fib.h:548:39: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                                                ^
-                                                int
-   include/net/ip6_fib.h:549:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:549:35: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct fib6_info *, rt);
-                                            ^
-                                            int
->> include/net/ip6_fib.h:549:2: error: duplicate member '__bpf_md_ptr'
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:548:2: note: previous declaration is here
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
->> net/ipv6/route.c:6612:5: error: no member named 'rt' in 'bpf_iter__ipv6_route'
-                   { offsetof(struct bpf_iter__ipv6_route, rt),
-                     ^                                     ~~
-   include/linux/stddef.h:17:32: note: expanded from macro 'offsetof'
-   #define offsetof(TYPE, MEMBER)  __compiler_offsetof(TYPE, MEMBER)
-                                   ^                         ~~~~~~
-   include/linux/compiler_types.h:140:35: note: expanded from macro '__compiler_offsetof'
-   #define __compiler_offsetof(a, b)       __builtin_offsetof(a, b)
-                                           ^                     ~
-   3 warnings and 4 errors generated.
---
-   In file included from net/ipv6/netfilter/nf_reject_ipv6.c:8:
-   In file included from include/net/ip6_route.h:24:
->> include/net/ip6_fib.h:548:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
->> include/net/ip6_fib.h:548:22: warning: declaration of 'struct bpf_iter_meta' will not be visible outside of this function [-Wvisibility]
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                               ^
->> include/net/ip6_fib.h:548:39: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-                                                ^
-                                                int
-   include/net/ip6_fib.h:549:2: error: type name requires a specifier or qualifier
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:549:35: warning: declaration specifier missing, defaulting to 'int'
-           __bpf_md_ptr(struct fib6_info *, rt);
-                                            ^
-                                            int
->> include/net/ip6_fib.h:549:2: error: duplicate member '__bpf_md_ptr'
-           __bpf_md_ptr(struct fib6_info *, rt);
-           ^
-   include/net/ip6_fib.h:548:2: note: previous declaration is here
-           __bpf_md_ptr(struct bpf_iter_meta *, meta);
-           ^
-   net/ipv6/netfilter/nf_reject_ipv6.c:287:18: warning: variable 'ip6h' set but not used [-Wunused-but-set-variable]
-           struct ipv6hdr *ip6h;
-                           ^
-   4 warnings and 3 errors generated.
-
-
-vim +548 include/net/ip6_fib.h
-
-180ca444b985c4 Wei Wang      2017-10-06  537  
-8d1c802b2815ed David Ahern   2018-04-17  538  void fib6_metric_set(struct fib6_info *f6i, int metric, u32 val);
-8d1c802b2815ed David Ahern   2018-04-17  539  static inline bool fib6_metric_locked(struct fib6_info *f6i, int metric)
-d4ead6b34b67fd David Ahern   2018-04-17  540  {
-d4ead6b34b67fd David Ahern   2018-04-17  541  	return !!(f6i->fib6_metrics->metrics[RTAX_LOCK - 1] & (1 << metric));
-d4ead6b34b67fd David Ahern   2018-04-17  542  }
-907eea486888cf Amit Cohen    2021-02-01  543  void fib6_info_hw_flags_set(struct net *net, struct fib6_info *f6i,
-0c5fcf9e249ee1 Amit Cohen    2021-02-07  544  			    bool offload, bool trap, bool offload_failed);
-180ca444b985c4 Wei Wang      2017-10-06  545  
-3c32cc1bceba8a Yonghong Song 2020-05-13  546  #if IS_BUILTIN(CONFIG_IPV6) && defined(CONFIG_BPF_SYSCALL)
-3c32cc1bceba8a Yonghong Song 2020-05-13  547  struct bpf_iter__ipv6_route {
-3c32cc1bceba8a Yonghong Song 2020-05-13 @548  	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-3c32cc1bceba8a Yonghong Song 2020-05-13 @549  	__bpf_md_ptr(struct fib6_info *, rt);
-3c32cc1bceba8a Yonghong Song 2020-05-13  550  };
-3c32cc1bceba8a Yonghong Song 2020-05-13  551  #endif
-3c32cc1bceba8a Yonghong Song 2020-05-13  552  
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
