@@ -2,87 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592DA48204A
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 21:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410D748204B
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 21:40:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242113AbhL3Ukc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Dec 2021 15:40:32 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60386 "EHLO
+        id S242115AbhL3Ukj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Dec 2021 15:40:39 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64530 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242088AbhL3Ukb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 30 Dec 2021 15:40:31 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BUJfsJp008078
-        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:31 -0800
+        by vger.kernel.org with ESMTP id S242088AbhL3Ukj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Dec 2021 15:40:39 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BUJfscB013531
+        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:38 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=EeMVG5faCAbgLV2ACVlqM/esj6mLhmAxQh3K2IStoT4=;
- b=loXEuTSp193O+Vbun4yvkj5q8J+x8N21di6FZlKAXLK60rpTDqtCKfjDxSaTopqvn5Nf
- 2UpVJ0Wzip3PujeOmOz4JNTgCIcs3NWD/N7dxBI28LiVFy8HFcTwdA/AVZQ3w3F8P9nj
- qsA1mm6l7ecg+8o5AvZ7G8PJY1I4l/hz1+g= 
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=qlYZIMP3Hm0aecnNwhIEwnrfoksXOgZf+5Nzpm6aMV0=;
+ b=dSH3n/d9KAnME0+n4HPpGo8cEtTjXIc8UdYLjNH25T2km9X4fHjJkJUFBUTEJu2DRU5L
+ +3sBNIUtQlOkEDV77X7lY6kh21DuaQ50KMkJw9iHxw7Fgxz2mmvtsH5HU8WymNzRisTZ
+ iJVd3rlrqUG+Y/jvRr8EDQwN/UJmpuhg6/Q= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3d9hubsv7x-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3d9c6vkek9-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:31 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:38 -0800
+Received: from twshared13036.24.prn2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 30 Dec 2021 12:40:30 -0800
+ 15.1.2308.20; Thu, 30 Dec 2021 12:40:36 -0800
 Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id A9C7010BBFC7; Thu, 30 Dec 2021 12:40:26 -0800 (PST)
+        id 11B0410BC028; Thu, 30 Dec 2021 12:40:30 -0800 (PST)
 From:   Christy Lee <christylee@fb.com>
 To:     <andrii@kernel.org>, <acme@kernel.org>
 CC:     <christyc.y.lee@gmail.com>, <bpf@vger.kernel.org>,
         <kernel-team@fb.com>, <ast@kernel.org>,
         Christy Lee <christylee@fb.com>
-Subject: [PATCH bpf-next 0/3] libbpf 1.0: deprecate non-OPTS variants of bpf_object__open API
-Date:   Thu, 30 Dec 2021 12:40:05 -0800
-Message-ID: <20211230204008.3136565-1-christylee@fb.com>
+Subject: [PATCH bpf-next 1/3] libbpf: deprecate bpf_object__open() API
+Date:   Thu, 30 Dec 2021 12:40:06 -0800
+Message-ID: <20211230204008.3136565-2-christylee@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211230204008.3136565-1-christylee@fb.com>
+References: <20211230204008.3136565-1-christylee@fb.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xZ9GfQzM6IkQT3Z02fIaf4Y0QQNvf4jH
-X-Proofpoint-GUID: xZ9GfQzM6IkQT3Z02fIaf4Y0QQNvf4jH
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: ZHXhaF3_oElzX2kpdmdgtn0iYbuLV1BO
+X-Proofpoint-ORIG-GUID: ZHXhaF3_oElzX2kpdmdgtn0iYbuLV1BO
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2021-12-30_08,2021-12-30_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
- lowpriorityscore=0 mlxlogscore=981 spamscore=0 phishscore=0 mlxscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 impostorscore=0
- clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2112300117
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112300117
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Deprecate bpf_object__open(), bpf_object__open_buffer(), and
-bpf_object__open_xattr() in favor of bpf_object__open_file() and
-bpf_object__open_mem().
+Deprecate bpf_object__open() in favor of bpf_object__open_file().
 
-[0] Closes: https://github.com/libbpf/libbpf/issues/287
-
-Christy Lee (3):
-  libbpf: deprecate bpf_object__open() API
-  libbpf: deprecate bpf_object__open_buffer() API
-  libbpf: deprecate bpf_object__open_xattr() API
-
+Signed-off-by: Christy Lee <christylee@fb.com>
+---
  Documentation/bpf/prog_lsm.rst                            | 2 +-
  tools/bpf/bpftool/Documentation/bpftool-gen.rst           | 2 +-
  tools/bpf/bpftool/iter.c                                  | 2 +-
  tools/build/feature/test-libbpf.c                         | 2 +-
- tools/lib/bpf/libbpf.c                                    | 2 +-
- tools/lib/bpf/libbpf.h                                    | 7 +++++--
- tools/perf/tests/llvm.c                                   | 2 +-
- tools/perf/util/bpf-loader.c                              | 7 +++++--
+ tools/lib/bpf/libbpf.h                                    | 5 +++--
+ tools/perf/util/bpf-loader.c                              | 2 +-
  tools/testing/selftests/bpf/prog_tests/btf.c              | 2 +-
  tools/testing/selftests/bpf/prog_tests/select_reuseport.c | 2 +-
  tools/testing/selftests/bpf/test_maps.c                   | 4 ++--
  tools/testing/selftests/bpf/test_sockmap.c                | 2 +-
- 12 files changed, 21 insertions(+), 15 deletions(-)
+ 10 files changed, 13 insertions(+), 12 deletions(-)
 
---
+diff --git a/Documentation/bpf/prog_lsm.rst b/Documentation/bpf/prog_lsm.=
+rst
+index 0dc3fb0d9544..9217f5373951 100644
+--- a/Documentation/bpf/prog_lsm.rst
++++ b/Documentation/bpf/prog_lsm.rst
+@@ -102,7 +102,7 @@ eBPF programs can be loaded with the :manpage:`bpf(2)=
+` syscall's
+=20
+ 	struct bpf_object *obj;
+=20
+-	obj =3D bpf_object__open("./my_prog.o");
++	obj =3D bpf_object__open_file("./my_prog.o", NULL);
+ 	bpf_object__load(obj);
+=20
+ This can be simplified by using a skeleton header generated by ``bpftool=
+``:
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst b/tools/bpf/=
+bpftool/Documentation/bpftool-gen.rst
+index bc276388f432..036c6ec0cc48 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+@@ -46,7 +46,7 @@ DESCRIPTION
+ 		  individually compiled files that are then linked into
+ 		  a single resulting BPF object file, which can be used to
+ 		  generated BPF skeleton (with **gen skeleton** command) or
+-		  passed directly into **libbpf** (using **bpf_object__open()**
++		  passed directly into **libbpf** (using **bpf_object__open_file()**
+ 		  family of APIs).
+=20
+ 	**bpftool gen skeleton** *FILE*
+diff --git a/tools/bpf/bpftool/iter.c b/tools/bpf/bpftool/iter.c
+index f88fdc820d23..94a0ac1e176c 100644
+--- a/tools/bpf/bpftool/iter.c
++++ b/tools/bpf/bpftool/iter.c
+@@ -45,7 +45,7 @@ static int do_pin(int argc, char **argv)
+ 		}
+ 	}
+=20
+-	obj =3D bpf_object__open(objfile);
++	obj =3D bpf_object__open_file(objfile, NULL);
+ 	err =3D libbpf_get_error(obj);
+ 	if (err) {
+ 		p_err("can't open objfile %s", objfile);
+diff --git a/tools/build/feature/test-libbpf.c b/tools/build/feature/test=
+-libbpf.c
+index a508756cf4cc..113d5be747f1 100644
+--- a/tools/build/feature/test-libbpf.c
++++ b/tools/build/feature/test-libbpf.c
+@@ -3,5 +3,5 @@
+=20
+ int main(void)
+ {
+-	return bpf_object__open("test") ? 0 : -1;
++	return bpf_object__open_file("test", NULL) ? 0 : -1;
+ }
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 85dfef88b3d2..2c8767706f8e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -150,6 +150,7 @@ struct bpf_object_open_opts {
+ };
+ #define bpf_object_open_opts__last_field kernel_log_level
+=20
++LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_object__open_file() instead")
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+=20
+ /**
+@@ -807,10 +808,10 @@ struct bpf_prog_load_attr {
+ 	int prog_flags;
+ };
+=20
+-LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_object__open() and bpf_object__lo=
+ad() instead")
++LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_object__open_file() and bpf_objec=
+t__load() instead")
+ LIBBPF_API int bpf_prog_load_xattr(const struct bpf_prog_load_attr *attr=
+,
+ 				   struct bpf_object **pobj, int *prog_fd);
+-LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__open() and bpf_object__lo=
+ad() instead")
++LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__open_file() and bpf_objec=
+t__load() instead")
+ LIBBPF_API int bpf_prog_load_deprecated(const char *file, enum bpf_prog_=
+type type,
+ 					struct bpf_object **pobj, int *prog_fd);
+=20
+diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+index 528aeb0ab79d..75694703d638 100644
+--- a/tools/perf/util/bpf-loader.c
++++ b/tools/perf/util/bpf-loader.c
+@@ -101,7 +101,7 @@ struct bpf_object *bpf__prepare_load(const char *file=
+name, bool source)
+=20
+ 		free(obj_buf);
+ 	} else
+-		obj =3D bpf_object__open(filename);
++		obj =3D bpf_object__open_file(filename, NULL);
+=20
+ 	if (IS_ERR_OR_NULL(obj)) {
+ 		pr_debug("bpf: failed to load %s\n", filename);
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing=
+/selftests/bpf/prog_tests/btf.c
+index 8ba53acf9eb4..4bcc441fea21 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -4560,7 +4560,7 @@ static void do_test_file(unsigned int test_num)
+ 	has_btf_ext =3D btf_ext !=3D NULL;
+ 	btf_ext__free(btf_ext);
+=20
+-	obj =3D bpf_object__open(test->file);
++	obj =3D bpf_object__open_file(test->file, NULL);
+ 	err =3D libbpf_get_error(obj);
+ 	if (CHECK(err, "obj: %d", err))
+ 		return;
+diff --git a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c b/=
+tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+index 1cbd8cd64044..83472eda46b5 100644
+--- a/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
++++ b/tools/testing/selftests/bpf/prog_tests/select_reuseport.c
+@@ -91,7 +91,7 @@ static int prepare_bpf_obj(void)
+ 	struct bpf_map *map;
+ 	int err;
+=20
+-	obj =3D bpf_object__open("test_select_reuseport_kern.o");
++	obj =3D bpf_object__open_file("test_select_reuseport_kern.o", NULL);
+ 	err =3D libbpf_get_error(obj);
+ 	RET_ERR(err, "open test_select_reuseport_kern.o",
+ 		"obj:%p PTR_ERR(obj):%d\n", obj, err);
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/self=
+tests/bpf/test_maps.c
+index 50f7e74ca0b9..241b14f25ef5 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1156,7 +1156,7 @@ static void test_map_in_map(void)
+ 	__u32 id =3D 0;
+ 	libbpf_print_fn_t old_print_fn;
+=20
+-	obj =3D bpf_object__open(MAPINMAP_PROG);
++	obj =3D bpf_object__open_file(MAPINMAP_PROG, NULL);
+=20
+ 	fd =3D bpf_map_create(BPF_MAP_TYPE_HASH, NULL, sizeof(int), sizeof(int)=
+, 2, NULL);
+ 	if (fd < 0) {
+@@ -1227,7 +1227,7 @@ static void test_map_in_map(void)
+ 	bpf_object__close(obj);
+=20
+ 	/* Test that failing bpf_object__create_map() destroys the inner map */
+-	obj =3D bpf_object__open(MAPINMAP_INVALID_PROG);
++	obj =3D bpf_object__open_file(MAPINMAP_INVALID_PROG, NULL);
+ 	err =3D libbpf_get_error(obj);
+ 	if (err) {
+ 		printf("Failed to load %s program: %d %d",
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/s=
+elftests/bpf/test_sockmap.c
+index 1ba7e7346afb..521b4e0c0852 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -1761,7 +1761,7 @@ static int populate_progs(char *bpf_file)
+ 	int i =3D 0;
+ 	long err;
+=20
+-	obj =3D bpf_object__open(bpf_file);
++	obj =3D bpf_object__open_file(bpf_file, NULL);
+ 	err =3D libbpf_get_error(obj);
+ 	if (err) {
+ 		char err_buf[256];
+--=20
 2.30.2
+
