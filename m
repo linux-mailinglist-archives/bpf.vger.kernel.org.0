@@ -2,143 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053A9481896
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B18648189B
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:37:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbhL3CfI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 21:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        id S234937AbhL3ChK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 21:37:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbhL3CfI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 21:35:08 -0500
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B64C061574;
-        Wed, 29 Dec 2021 18:35:07 -0800 (PST)
-Received: by mail-ed1-x541.google.com with SMTP id q14so85019883edi.3;
-        Wed, 29 Dec 2021 18:35:07 -0800 (PST)
+        with ESMTP id S234911AbhL3ChJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 21:37:09 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C01C061574;
+        Wed, 29 Dec 2021 18:37:09 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id 8so20204004pfo.4;
+        Wed, 29 Dec 2021 18:37:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=voLAT29uQmvFJF1yqoF/u59oF12nNcayLd/i0yTgxcE=;
-        b=klj5Ud/6/7miOoip7cY5kX6vd2XS1JM5PqfQMAR/wDWBgfJ/+aRM5qX84G97T+2zHG
-         qOt8SK82PhSR/VkSudotU/i1X2B6mlv3+71Cp/9BXoxtKoOlKUdf5G03p0SHpE5ldoxK
-         i86gtsfW0Hm+9gsl0vyJbn+ovdvnKsU4+yOMTfxHgKlLQvPKX1zOT7S0Xj+22iyyzFBM
-         RPI3gRg+L0A4tquV2g8YkQwbOUuyTH9nQvi/iSG9qh5OLmm5EEzB+lUrvUqU5cATNdh7
-         It4wdKwgMIo+ZK0EPnSVzSmfPnXADzgsdQ96KKDgIFvipo9RCvCWoGLNftolrh5jOcSb
-         huRQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T/uajn2jmvBmuupZ05y07FHeO8LYjfWjG5jTNHi86Co=;
+        b=WYuqfYwZJ6VN8l7Aj1RfWjQljCJuigp2HrjHZhH0WYKnGGibLrErIF+UI19VNvqXmJ
+         8DBnNMWWTkkYFFQn1v6q+oljxTDfO2xkahw2QtSRzvN928XSh1BqSIrPTX2+U0w2eDGl
+         FLI50KkkUlBSmXRWzkCJh2vp/dUXDY+BCH+lw9GHMkjQTXVLcRivUO5QG8i42EBZdNpq
+         1XXnPK8azmUrwJzTOrXfOrA+O9RHNtEcCtr/Ua29wbvCBLAISqXrpH88VKl7f18F/amE
+         D0gQxR48Yn37Xzk5HtK1dSKNP4Qm2xCR+rz3ZjkYmRXsWpolXV6qGs4BKd+xmP84eq+j
+         R2PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=voLAT29uQmvFJF1yqoF/u59oF12nNcayLd/i0yTgxcE=;
-        b=nb2yG/d39758/1A3Yz74LhqBjRGSXwXO+e3ee30IJFSiyo8G3aE2jF3RYwnQjewzDr
-         FV8qx9PnSkFOeNffALqhgDk3F42rzo7x8Gzf8x1/Ga+wQUFdYUXs+F+OCHPIefuCPzcV
-         IvakTUiBeEeYc6oC6g8z0h7HuakfEe0qkqEtr5IlP3H000PG6BDHy9Uwpspt+Xnmeu2S
-         jcd3OCGO44zpMF1PY8mwSbPGZPRhfOO6+5ePg0wlkh7CCwxQrHGs99nV4Pv8H4HgOOvX
-         fp/+TLyartO79YMvhgYsC6rl+xujkoqc21QAphCySir/6vcTOlCZvDgipt4xRz7TvjRy
-         OowA==
-X-Gm-Message-State: AOAM533PFRBay+j+CKVlG9VuC0l/gMSxxjl8HVlHSIcyqEMmPDHw9BUt
-        pMTEr8fKvxaO+vqF7EsZgP11RKc/2gjFHiOiIZg=
-X-Google-Smtp-Source: ABdhPJw937o5vB6F8C+kDTsx8+yArOSfCjgkhSCZSiguf2aPH1MvnlCTJMTYRNwkOehSKHALS7+jkbwgg9l9oh1O2Qc=
-X-Received: by 2002:a17:907:d19:: with SMTP id gn25mr23597114ejc.456.1640831706603;
- Wed, 29 Dec 2021 18:35:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20211229113256.299024-1-imagedong@tencent.com>
- <CAADnVQLY2i+2YTj+Oi7+70e98sRC-t6rr536sc=3WYghpki+ug@mail.gmail.com>
- <CADxym3Ya-=_zknyJmrQZ-fBKTK_PfPX1Njd=3pqYZR0_B8erJg@mail.gmail.com> <CAADnVQK6FTp1wACyhH0bNztT73DDr_wbCMbj7GorLRrOOQB2SA@mail.gmail.com>
-In-Reply-To: <CAADnVQK6FTp1wACyhH0bNztT73DDr_wbCMbj7GorLRrOOQB2SA@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 30 Dec 2021 10:31:56 +0800
-Message-ID: <CADxym3Yc6-=HgM+4-t9xoNDDSEoFQNy6iUSLj+EVGhNHjHF_wQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: bpf: add hook for close of tcp timewait sock
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T/uajn2jmvBmuupZ05y07FHeO8LYjfWjG5jTNHi86Co=;
+        b=P95ek45oKk95WruDUVDsvC6UKTt9LlraphMMvG0jhbaqNogjZnXbuEeRP+H/EG+Pip
+         IWnWDHr9GN97RU1xBS0pIsOSLCbTZMHiFzsgMt7/96Lg3LKc9AXvZ+TxRPiOJzL1Xq7B
+         rO027M6vJJxAdsZ/sdYu9M+/b+NIVVaK2G5b/Y7oCy4s3d44j4u86kxm5RhACLSYqK+q
+         A3FRyu8caYwmjTdRvOENLAyy5sSfP7HCpNPLlrPNqPtNlkz/mRSLEuH0QQ49PNFvvMbL
+         MVXrabGaFI8MtwD96VlUyzRZNy8D46xwHJZPiq642+zx7w83lWx6g37oV3oxQdU+HXSh
+         QwfA==
+X-Gm-Message-State: AOAM533TqVf95F0GfJtOh/lXXBXal+JGBUdasxlYMVc4m39apBw0BNkh
+        uMwIEGq2bBXSV5Wbmz4JrxZUtLbiMYY=
+X-Google-Smtp-Source: ABdhPJxnpWFiBgtndDoUi9Bl8gkyoukPUSOFVTePqHyvmcWmp7Rrvd38qjoHzr5t47bgiYX9APSR7Q==
+X-Received: by 2002:a63:340c:: with SMTP id b12mr20589840pga.360.1640831828765;
+        Wed, 29 Dec 2021 18:37:08 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id v8sm19690989pfu.68.2021.12.29.18.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Dec 2021 18:37:08 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf-next v5 0/9] Introduce unstable CT lookup helpers
+Date:   Thu, 30 Dec 2021 08:06:56 +0530
+Message-Id: <20211230023705.3860970-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5083; h=from:subject; bh=FNs9IV+i+1RViNTH6XCtw2Wq2JgK1XSxAGXLlwKAtvA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBhzRr9eKXSQb9e0LUx3vBJXPZUTmWO/xoFFLtxbFEA CfwS6hCJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYc0a/QAKCRBM4MiGSL8Ryi1iD/ 4tCyCmB+m4qwK72vLhZHsEc16Rx2We8V8IfcHmJF+Br/qMiFodVTvvnfZ0B8T8Zxqe6kZlxjfhumRU lI1O+NVVn+nffqNjDDEQ3gmrk3DTQWhzaVQY8v3aRd85TdL0EBONGUgiekOFnQznbAOUs2S7T3Qylv RYTr/33aBBcOS9gWl3oxU9ZaJQjAnxVGSd6qkqGjQmt8uUwqEYYMf8A904S3goCElV+ecbQtDz74QC WfLZU7n0KL419pX5izYhDUvL7s+hbKqoXgAQZUkfrgWsunlb3mE6D/gn+5/H4NdxzfQDBpL6sKdsVU 1gB79hkg+oyvXAjiG9PD1EGzR2KotdIfv8T5m9Ht8q5iSiFp6zTM8me+F3mTGrDmAsubtAt7Xlyv8p ZVGLLMrHlrokh3Lzb4F9eUJ5KfVMtKPRacnGDXCW9wgJov8/kGG7myfFvEDOpCIyL7wlssyEE1MoH6 tWcniiY8KnuHO4Fnzi9xTIX34xyBS3s46eD5DD/XP8s7/SRaixyfksoSKiaV4jwkoLERL70ynYdK8f YrhxiR/T7jEPMR+wPACv2+HciHB8YurDimZ9NrrcsbHKr0sLAkFYGnlMJHZT4ajQJOKsDx++iCIFKp ssk2iwkCQt3OZrHn45xyoMmBouiXvL6J6/ShkbYWOOYXOW6DektNpdwm7pwA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 10:12 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Dec 29, 2021 at 6:07 PM Menglong Dong <menglong8.dong@gmail.com> wrote:
-> >
-> > On Thu, Dec 30, 2021 at 12:46 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 29, 2021 at 3:33 AM <menglong8.dong@gmail.com> wrote:
-> > > >
-> > > > From: Menglong Dong <imagedong@tencent.com>
-> > > >
-> > > > The cgroup eBPF attach type 'CGROUP_SOCK_OPS' is able to monitor the
-> > > > state change of a tcp connect with 'BPF_SOCK_OPS_STATE_CB' ops.
-> > > >
-> > > > However, it can't trace the whole state change of a tcp connect. While
-> > > > a connect becomes 'TCP_TIME_WAIT' state, this sock will be release and
-> > > > a tw sock will be created. While tcp sock release, 'TCP_CLOSE' state
-> > > > change will be passed to eBPF program. Howeven, the real state of this
-> > > > connect is 'TCP_TIME_WAIT'.
-> > > >
-> > > > To make eBPF get the real state change of a tcp connect, add
-> > > > 'CGROUP_TWSK_CLOSE' cgroup attach type, which will be called when
-> > > > tw sock release and tcp connect become CLOSE.
-> > >
-> > > The use case is not explained.
-> >
-> > Sorry for the absence of use cases and selftests. In my case, it is for NAT of
-> > a docker container.
-> >
-> > Simply speaking, I'll add an element to a hash map during sys_connect() with
-> > 'BPF_SOCK_OPS_TCP_CONNECT_CB' ops of 'BPF_CGROUP_SOCK_OPS'
-> > cgroup attach type. Therefore, the received packet of the host can do DNAT
-> > according to the hash map.
-> >
-> > I need to release the element in the hashmap when the connection closes.
-> > With the help of 'BPF_SOCK_OPS_STATE_CB', I can monitor the TCP_CLOSE
-> > of the connection. However, as I mentioned above, it doesn't work well when
-> > it comes to tw sock. When the connect become 'FIN_WAIT2' or 'TIME_WAIT',
-> > the state of the tcp sock becomes 'TCP_CLOSE', which doesn't match the connect
-> > state. Therefore, the 'fin' packet that the host received can't be DNAT, as the
-> > element is already removed.
-> >
-> > In this patch, BPF_SOCK_OPS_TW_CLOSE_FLAG is introduced, which is used
-> > make 'BPF_SOCK_OPS_STATE_CB' not called when this sock becomes
-> > TCP_CLOSE if it is being replaced with a tw sock.
-> >
-> > > Why bpf tracing cannot be used to achieve the same?
-> >
-> > En...do you mean kprobe based eBPF trace? It can work, but I don't think it's
-> > high-performance, especially for network NAT. Strictly speaking, attach types,
-> > such as 'CGROUP_INET_SOCK_RELEASE', can be replaced by bpf tracing, but
-> > they exist out of performance.
->
-> kprobe at the entry is pretty fast.
-> fentry is even faster. It's actually faster than cgroup based hook.
+This series adds unstable conntrack lookup helpers using BPF kfunc support.  The
+patch adding the lookup helper is based off of Maxim's recent patch to aid in
+rebasing their series on top of this, all adjusted to work with module kfuncs [0].
 
-Really? Doesn't it already consider the data copy of bpf_probe_read()?
-After all,
-sock based eBPF can read sock data directly.
+  [0]: https://lore.kernel.org/bpf/20211019144655.3483197-8-maximmi@nvidia.com
 
-What's more, I'm not sure bpf tracing is enough, because I do NAT not for all
-the docker containers, which means not all tcp connect close should call my
-eBPF program, and that's the advantage of cgroup based eBPF.
+To enable returning a reference to struct nf_conn, the verifier is extended to
+support reference tracking for PTR_TO_BTF_ID, and kfunc is extended with support
+for working as acquire/release functions, similar to existing BPF helpers. kfunc
+returning pointer (limited to PTR_TO_BTF_ID in the kernel) can also return a
+PTR_TO_BTF_ID_OR_NULL now, typically needed when acquiring a resource can fail.
+kfunc can also receive PTR_TO_CTX and PTR_TO_MEM (with some limitations) as
+arguments now. There is also support for passing a mem, len pair as argument
+to kfunc now. In such cases, passing pointer to unsized type (void) is also
+permitted.
 
-Thanks!
-Menglong Dong
+Please see individual commits for details.
 
-> Give it a shot.
+Changelog:
+----------
+v4 -> v5:
+v4: https://lore.kernel.org/bpf/20211217015031.1278167-1-memxor@gmail.com
+
+ * Move nf_conntrack helpers code to its own separate file (Toke, Pablo)
+ * Remove verifier callbacks, put btf_id_sets in struct btf (Alexei)
+  * Convert the in-kernel users away from the old API
+ * Change len__ prefix convention to __sz suffix (Alexei)
+ * Drop parent_ref_obj_id patch (Alexei)
+
+v3 -> v4:
+v3: https://lore.kernel.org/bpf/20211210130230.4128676-1-memxor@gmail.com
+
+ * Guard unstable CT helpers with CONFIG_DEBUG_INFO_BTF_MODULES
+ * Move addition of prog_test test kfuncs to selftest commit
+ * Move negative kfunc tests to test_verifier suite
+ * Limit struct nesting depth to 4, which should be enough for now
+
+v2 -> v3:
+v2: https://lore.kernel.org/bpf/20211209170929.3485242-1-memxor@gmail.com
+
+ * Fix build error for !CONFIG_BPF_SYSCALL (Patchwork)
+
+RFC v1 -> v2:
+v1: https://lore.kernel.org/bpf/20211030144609.263572-1-memxor@gmail.com
+
+ * Limit PTR_TO_MEM support to pointer to scalar, or struct with scalars (Alexei)
+ * Use btf_id_set for checking acquire, release, ret type null (Alexei)
+ * Introduce opts struct for CT helpers, move int err parameter to it
+ * Add l4proto as parameter to CT helper's opts, remove separate tcp/udp helpers
+ * Add support for mem, len argument pair to kfunc
+ * Allow void * as pointer type for mem, len argument pair
+ * Extend selftests to cover new additions to kfuncs
+ * Copy ref_obj_id to PTR_TO_BTF_ID dst_reg on btf_struct_access, test it
+ * Fix other misc nits, bugs, and expand commit messages
+
+Kumar Kartikeya Dwivedi (9):
+  kernel: Add kallsyms_on_each_symbol variant for single module
+  bpf: Prepare kfunc BTF ID sets when parsing kernel BTF
+  bpf: Remove check_kfunc_call callback and old kfunc BTF ID API
+  bpf: Introduce mem, size argument pair support for kfunc
+  bpf: Add reference tracking support to kfunc
+  net/netfilter: Add unstable CT lookup helpers for XDP and TC-BPF
+  selftests/bpf: Add test for unstable CT lookup API
+  selftests/bpf: Add test_verifier support to fixup kfunc call insns
+  selftests/bpf: Extend kfunc selftests
+
+ include/linux/bpf.h                           |   8 -
+ include/linux/bpf_verifier.h                  |   7 +
+ include/linux/btf.h                           |  63 +--
+ include/linux/btf_ids.h                       |  20 +-
+ include/linux/kallsyms.h                      |  11 +-
+ include/linux/module.h                        |  37 +-
+ kernel/bpf/btf.c                              | 401 +++++++++++++++---
+ kernel/bpf/verifier.c                         | 196 ++++++---
+ kernel/kallsyms.c                             |   4 +-
+ kernel/livepatch/core.c                       |   2 +-
+ kernel/module.c                               |  62 ++-
+ net/bpf/test_run.c                            | 121 +++++-
+ net/core/filter.c                             |   1 -
+ net/core/net_namespace.c                      |   1 +
+ net/ipv4/bpf_tcp_ca.c                         |  12 +-
+ net/ipv4/tcp_bbr.c                            |  15 +-
+ net/ipv4/tcp_cubic.c                          |  15 +-
+ net/ipv4/tcp_dctcp.c                          |  15 +-
+ net/netfilter/Makefile                        |   5 +
+ net/netfilter/nf_conntrack_bpf.c              | 253 +++++++++++
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  15 +-
+ tools/testing/selftests/bpf/config            |   4 +
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  48 +++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   6 +
+ .../selftests/bpf/progs/kfunc_call_test.c     |  52 ++-
+ .../testing/selftests/bpf/progs/test_bpf_nf.c | 105 +++++
+ tools/testing/selftests/bpf/test_verifier.c   |  28 ++
+ tools/testing/selftests/bpf/verifier/calls.c  |  75 ++++
+ 28 files changed, 1314 insertions(+), 268 deletions(-)
+ create mode 100644 net/netfilter/nf_conntrack_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_nf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_bpf_nf.c
+
+-- 
+2.34.1
+
