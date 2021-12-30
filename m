@@ -2,120 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62F9481F61
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 20:08:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 592DA48204A
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 21:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241768AbhL3TI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Dec 2021 14:08:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237020AbhL3TI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Dec 2021 14:08:26 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6A2C06173F
-        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 11:08:25 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id r22so41948059ljk.11
-        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 11:08:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kgyj97ctTErwJCIhgzUX8EMyaDF/bLUdCmbEuAYlHjw=;
-        b=YOZVOBHDDpfH3Ql5u1ocW3n2/vJn9YZp1eV0ovKa0V9oHZEI4tHDNs5y3oqOeRyYLB
-         uhnnc1xa7T/vkBCfrT26Kw5tter/RZgpklftKQ2G/60d+OvlMPJnDW9APlJzmOKHwKU1
-         /yamItDqCuyQ0HpIcSy2xYO8EVL9rVcrw1yOWj8N8IffziJ8mVAdX/e8AKwBGLunsly4
-         YFpEdTZEZIcfafjeNPCPssBDelxxIrw4qI0pc6PtHVJdUTqfKBsJLPlUnC8ko5hhqeMB
-         vJB8dEryxS3tfVB+qYDZX8erLuN9Vaebet1OIINCgn7RSLNWAmkZzMWzStggjp3N0KFg
-         6WkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kgyj97ctTErwJCIhgzUX8EMyaDF/bLUdCmbEuAYlHjw=;
-        b=0t9JksHlSmkTCGuk2+/bP9JA5Ra1E1RMan1GOEdOBvmLiYrkKfQG35KlmIUjOB4zsY
-         efrFwWhnU6eov3OX+RLcCm4aYXIoS12IKadwrRek80ym39DDj5+rVX0jMfU8xzOVdN4D
-         X7+lSIyHeo+0yuUsPHMi7uDAmIDHiAiofk1zrGlnWAic2kgWLKu/SO8zxer0wayRKX+M
-         qbSh//S8l4Z050+5jRIr/Kh2HYLQ8YP7kZ44rvdENKn3DXHkxNbe685FV2frm24r5ga6
-         VbhqsPgD/Hfi8J7AqlYDV30pQvjxjLzoz8s6pnmVPsWxW9CGez1EndG/v4kANs9PA5dv
-         8yfA==
-X-Gm-Message-State: AOAM5304iy9Iaw4f8T2yEcz1CW40WSYjQV5rhK/UFCzGTF+21dwyz66h
-        nDjGw6wbcWyP8Ixm1IjYYT/O00orgAxzfeWCAEleJg==
-X-Google-Smtp-Source: ABdhPJwRuz90LSenncg3Ir0RuESemN0QoyVzJiasaGluR94kNn7uQB+PloeHXS2750u1IXJBq7bTmvMkM0LB6KJDmp8=
-X-Received: by 2002:a2e:8854:: with SMTP id z20mr20464394ljj.202.1640891303360;
- Thu, 30 Dec 2021 11:08:23 -0800 (PST)
+        id S242113AbhL3Ukc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Dec 2021 15:40:32 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60386 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242088AbhL3Ukb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 30 Dec 2021 15:40:31 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 1BUJfsJp008078
+        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:31 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=EeMVG5faCAbgLV2ACVlqM/esj6mLhmAxQh3K2IStoT4=;
+ b=loXEuTSp193O+Vbun4yvkj5q8J+x8N21di6FZlKAXLK60rpTDqtCKfjDxSaTopqvn5Nf
+ 2UpVJ0Wzip3PujeOmOz4JNTgCIcs3NWD/N7dxBI28LiVFy8HFcTwdA/AVZQ3w3F8P9nj
+ qsA1mm6l7ecg+8o5AvZ7G8PJY1I4l/hz1+g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3d9hubsv7x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 30 Dec 2021 12:40:31 -0800
+Received: from twshared3399.25.prn2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 30 Dec 2021 12:40:30 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id A9C7010BBFC7; Thu, 30 Dec 2021 12:40:26 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <andrii@kernel.org>, <acme@kernel.org>
+CC:     <christyc.y.lee@gmail.com>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>, <ast@kernel.org>,
+        Christy Lee <christylee@fb.com>
+Subject: [PATCH bpf-next 0/3] libbpf 1.0: deprecate non-OPTS variants of bpf_object__open API
+Date:   Thu, 30 Dec 2021 12:40:05 -0800
+Message-ID: <20211230204008.3136565-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: xZ9GfQzM6IkQT3Z02fIaf4Y0QQNvf4jH
+X-Proofpoint-GUID: xZ9GfQzM6IkQT3Z02fIaf4Y0QQNvf4jH
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <00000000000049f33f05d4535526@google.com> <Yc1zbYqVO/6b6Uhf@dhcp22.suse.cz>
-In-Reply-To: <Yc1zbYqVO/6b6Uhf@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 30 Dec 2021 11:08:12 -0800
-Message-ID: <CALvZod6S+zLw=mRw6F7g4+WSnCVaj+jHs7rjAoyDfFK92wq9jw@mail.gmail.com>
-Subject: Re: [syzbot] general protection fault in mod_memcg_page_state
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     syzbot <syzbot+864849a13d44b22de04d@syzkaller.appspotmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        changbin.du@intel.com, Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        hkallweit1@gmail.com, John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        yajun.deng@linux.dev, Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-30_08,2021-12-30_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=981 spamscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 impostorscore=0
+ clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2112300117
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 12:53 AM Michal Hocko <mhocko@suse.com> wrote:
-[...]
->
-> This might have something to do with http://lkml.kernel.org/r/20211222052457.1960701-1-shakeelb@google.com
-> which has added the accounting which is blowing up. The problem happens
-> when a memcg is retrieved from the allocated page. This should be NULL
-> as the reported commit doesn't really add any __GFP_ACCOUNT user AFAICS.
-> Anyway vm_area_alloc_pages can fail the allocation if the current
-> context has fatal signals pending. array->pages array is allocated with
-> __GFP_ZERO so the failed allocation should have kept the pages[0] NULL.
-> I haven't followed the page->memcg path to double check whether that
-> could lead to 0xdffffc0000000001 in the end.
->
-> I believe we need something like
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index 9bf838817a47..d2e392cac909 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2627,7 +2627,8 @@ static void __vunmap(const void *addr, int deallocate_pages)
->                 unsigned int page_order = vm_area_page_order(area);
->                 int i;
->
-> -               mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
-> +               if (area->pages[0])
-> +                       mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
->                                      -area->nr_pages);
->
->                 for (i = 0; i < area->nr_pages; i += 1U << page_order) {
-> @@ -2968,7 +2969,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
->                 page_order, nr_small_pages, area->pages);
->
->         atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
-> -       mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC, area->nr_pages);
-> +       if (area->pages[0])
-> +               mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC, area->nr_pages);
->
->         /*
->          * If not enough pages were obtained to accomplish an
->
-> Or to account each page separately so that we do not have to rely on
-> pages[0].
->
+Deprecate bpf_object__open(), bpf_object__open_buffer(), and
+bpf_object__open_xattr() in favor of bpf_object__open_file() and
+bpf_object__open_mem().
 
-Thanks Michal for the CC. I will add these checks in the next version
-(or convert to account each page separately based on discussion on the
-other thread).
+[0] Closes: https://github.com/libbpf/libbpf/issues/287
 
-Shakeel
+Christy Lee (3):
+  libbpf: deprecate bpf_object__open() API
+  libbpf: deprecate bpf_object__open_buffer() API
+  libbpf: deprecate bpf_object__open_xattr() API
+
+ Documentation/bpf/prog_lsm.rst                            | 2 +-
+ tools/bpf/bpftool/Documentation/bpftool-gen.rst           | 2 +-
+ tools/bpf/bpftool/iter.c                                  | 2 +-
+ tools/build/feature/test-libbpf.c                         | 2 +-
+ tools/lib/bpf/libbpf.c                                    | 2 +-
+ tools/lib/bpf/libbpf.h                                    | 7 +++++--
+ tools/perf/tests/llvm.c                                   | 2 +-
+ tools/perf/util/bpf-loader.c                              | 7 +++++--
+ tools/testing/selftests/bpf/prog_tests/btf.c              | 2 +-
+ tools/testing/selftests/bpf/prog_tests/select_reuseport.c | 2 +-
+ tools/testing/selftests/bpf/test_maps.c                   | 4 ++--
+ tools/testing/selftests/bpf/test_sockmap.c                | 2 +-
+ 12 files changed, 21 insertions(+), 15 deletions(-)
+
+--
+2.30.2
