@@ -2,139 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ED2481876
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:20:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9EE48187A
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234526AbhL3CUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 21:20:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
+        id S234450AbhL3CXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 21:23:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234411AbhL3CUY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 21:20:24 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F8FC061574;
-        Wed, 29 Dec 2021 18:20:23 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id x15so92767564edv.1;
-        Wed, 29 Dec 2021 18:20:23 -0800 (PST)
+        with ESMTP id S229513AbhL3CXc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 21:23:32 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBB2C061574;
+        Wed, 29 Dec 2021 18:23:31 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id z3so17213741plg.8;
+        Wed, 29 Dec 2021 18:23:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hiEx9cUv2eMNzaWLRDEcUcL8OSIJpA5IG99OfRArXu8=;
-        b=V4gKDpUZcyC/9VpK0cwWVTupek56v/K05xfnKOzQ+bD96Q1su291S1gbk7U2XUaKPS
-         jcoJqPY9ztT7BjtKG/1kkWeeVKt4X7mVAl1oClBNv9cGT+hoMIZmqwlrI/FKQi10rYWe
-         aRf0EKL2Fd+FvmrSe5OPh1UtisAcwu012fo+dXg58gmrCLYE6k7C0EbTBVXGJ7NhJAls
-         2X90GegTqcYKCiu+Oik7/71sUwVg9fnYlCxocYeR+nTqIbCdWWspx1htE+D2x036fPN4
-         aV47ZJYP4eN6czTwGGZv08GcyzwFyvg8ubzYDYyMCXwfmouHZXdHT7Hn5jp99pRUq0MY
-         IB5A==
+        bh=lEWqHLR4IbqmlBub+ds0nLFhZFaT8QHa3CHLgWRdNYQ=;
+        b=IRZEbk/DyfJWRqe1VSMQp73XOpSGUbcWUbGFdem/qkvNp1kRZ/Xh1q33wCDL7zYNxP
+         OqoJJo7C1hZMOW4VrYjljZ89OBfVit06BNK96VhQZhz7OaQaJS/iN0dZBgV0ZrdKsUJr
+         VRF3ll/LgPu8Qna/wABxvr0xgowFOFa6syuGNDoUZp4uV7Bit2l7j3WvWQXRWty06HGf
+         m13xflQtmT7B79KS/3KM6q+BLJEuzSD1XncZMA5VuSxLuCHcddRnpe2DO96c3K8enGHC
+         Fp6O15fcMdGw1bmGJ5WSjHAjluJLrjT+9e+ynwD3vEC0ND/cw0DN3qRqT8MIwnQUclZF
+         sINg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hiEx9cUv2eMNzaWLRDEcUcL8OSIJpA5IG99OfRArXu8=;
-        b=fofOcE33ZkTGDZp1yAL3CFCyBRSt84bEH+drKHuIl/sOpHVSFu514gfvZZ9kiKfnIr
-         b0WWRF4Cia4/0cnqSignS1RLGGRdrGN+Ux1Y5lH3JB4tplNvVk4r26HPx4fQO/MT23V6
-         th7/ZDvIbtH/XxaRXrwxivfXj3Aux2zw0dvtutPSEeFt4jxHNTzdZqeuMN+m5YCRjKlN
-         QvuN4atkC+KYLKDN7tF/M78NVXsI4IFzJZ3OeM/IzzuOc3701RNwQ2b33vG7SI/JdW7K
-         ouZdN1eQaEm451+PfpceWIUU2aCQxabEvqtuL2JbQW12GHWo8BrsbeBp0QBPlRDdg6eZ
-         zfbA==
-X-Gm-Message-State: AOAM532MMNx5CVxGqZk1TWZv4v9UNC99Qdj7FWfwOKrOMYvTxf8R6Bo4
-        YCby+UrD/bSDpTOYaM+BptB6GVYxKYLcwmUWtRk=
-X-Google-Smtp-Source: ABdhPJzEF0vetISaVS8USQar00SVVZb5xFxrEJyCn6tK2L1VaY/y08YFNOb4wOogYVHqHp8aZj9qBz852zOuCjM7/6Y=
-X-Received: by 2002:a17:907:2da3:: with SMTP id gt35mr23678763ejc.704.1640830822347;
- Wed, 29 Dec 2021 18:20:22 -0800 (PST)
+        bh=lEWqHLR4IbqmlBub+ds0nLFhZFaT8QHa3CHLgWRdNYQ=;
+        b=oXwp8At3DVgweN4/DnO+8MmJ7qjVklb3GZFZo0P5QB2NwPsQ9169/2Nv67bIBtQ5et
+         RAIebGxnik1rRpKDV0FOPrmPKTf7JpHe6KO4EHD76vfIGEqOtDeq49snX4UOypTbUUcx
+         OKkS6iKAMfr0a6X408ZQEVcHCEZ6aMCG0Gn7MMgFPpmpwoRk2JjKR/ScpP354DuEG1S7
+         Yx8/dJWeFCvqNBYfu0/SQT04MCHjMEnSwrhl9i3FJG+8cB5VmYq/gNgf3qb5a3p0EUu6
+         B1wvq1HRy6Jo041jH/8RNXsVIDduxDQjAk8r80VSetmdS3hvr/kS0w073t0bwnAtapsT
+         xcXg==
+X-Gm-Message-State: AOAM5320yB/R4g5f7zYGgM7ZVTxS+ZgceGhZo2Yxjs3AY+nvTP+uiEPm
+        PG6hF52oF5Hz7fSvu6m78IdrFtih40rMrNgp7wo3BBy3
+X-Google-Smtp-Source: ABdhPJyHOpWlkk7qZxz67djBEUddHIaDK483V/PDfCyokLdVZ6UjTrykwApssiW+KlWfsis6k9iFsbivlvIqF86sh4s=
+X-Received: by 2002:a17:90b:798:: with SMTP id l24mr35496747pjz.122.1640831011288;
+ Wed, 29 Dec 2021 18:23:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20211227062035.3224982-1-imagedong@tencent.com> <20211229130927.2370f098@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20211229130927.2370f098@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Thu, 30 Dec 2021 10:17:12 +0800
-Message-ID: <CADxym3ZJPG8HxEXt6vTEeegCtZZRKjGWGJ_3rWjrzNijKBa-uQ@mail.gmail.com>
-Subject: Re: [PATCH] net: bpf: handle return value of BPF_CGROUP_RUN_PROG_INET4_POST_BIND()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <CAFcO6XMpbL4OsWy1Pmsnvf8zut7wFXdvY_KofR-m0WK1Bgutpg@mail.gmail.com>
+In-Reply-To: <CAFcO6XMpbL4OsWy1Pmsnvf8zut7wFXdvY_KofR-m0WK1Bgutpg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 29 Dec 2021 18:23:20 -0800
+Message-ID: <CAADnVQJK5mPOB7B4KBa6q1NRYVQx1Eya5mtNb6=L0p-BaCxX=w@mail.gmail.com>
+Subject: Re: A slab-out-of-bounds Read bug in __htab_map_lookup_and_delete_batch
+To:     butt3rflyh4ck <butterflyhuangxx@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>,
-        Andrey Ignatov <rdna@fb.com>
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 5:09 AM Jakub Kicinski <kuba@kernel.org> wrote:
+On Wed, Dec 29, 2021 at 2:10 AM butt3rflyh4ck
+<butterflyhuangxx@gmail.com> wrote:
 >
-> On Mon, 27 Dec 2021 14:20:35 +0800 menglong8.dong@gmail.com wrote:
-> > From: Menglong Dong <imagedong@tencent.com>
-> >
-> > The return value of BPF_CGROUP_RUN_PROG_INET4_POST_BIND() in
-> > __inet_bind() is not handled properly. While the return value
-> > is non-zero, it will set inet_saddr and inet_rcv_saddr to 0 and
-> > exit:
-> >
-> >       err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
-> >       if (err) {
-> >               inet->inet_saddr = inet->inet_rcv_saddr = 0;
-> >               goto out_release_sock;
-> >       }
-> >
-> > Let's take UDP for example and see what will happen. For UDP
-> > socket, it will be added to 'udp_prot.h.udp_table->hash' and
-> > 'udp_prot.h.udp_table->hash2' after the sk->sk_prot->get_port()
-> > called success. If 'inet->inet_rcv_saddr' is specified here,
-> > then 'sk' will be in the 'hslot2' of 'hash2' that it don't belong
-> > to (because inet_saddr is changed to 0), and UDP packet received
-> > will not be passed to this sock. If 'inet->inet_rcv_saddr' is not
-> > specified here, the sock will work fine, as it can receive packet
-> > properly, which is wired, as the 'bind()' is already failed.
-> >
-> > I'm not sure what should do here, maybe we should unhash the sock
-> > for UDP? Therefor, user can try to bind another port?
+> Hi, there is a slab-out-bounds Read bug in
+> __htab_map_lookup_and_delete_batch in kernel/bpf/hashtab.c
+> and I reproduce it in linux-5.16.rc7(upstream) and latest linux-5.15.11.
 >
-> Enumarating the L4 unwind paths in L3 code seems like a fairly clear
-> layering violation. A new callback to undo ->sk_prot->get_port() may
-> be better.
-
-Yeah, it seems there isn't an easier way to solve this problem, a new
-callback is needed.
-
+> #carsh log
+> [  166.945208][ T6897]
+> ==================================================================
+> [  166.947075][ T6897] BUG: KASAN: slab-out-of-bounds in _copy_to_user+0x87/0xb0
+> [  166.948612][ T6897] Read of size 49 at addr ffff88801913f800 by
+> task __htab_map_look/6897
+> [  166.950406][ T6897]
+> [  166.950890][ T6897] CPU: 1 PID: 6897 Comm: __htab_map_look Not
+> tainted 5.16.0-rc7+ #30
+> [  166.952521][ T6897] Hardware name: QEMU Standard PC (i440FX + PIIX,
+> 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+> [  166.954562][ T6897] Call Trace:
+> [  166.955268][ T6897]  <TASK>
+> [  166.955918][ T6897]  dump_stack_lvl+0x57/0x7d
+> [  166.956875][ T6897]  print_address_description.constprop.0.cold+0x93/0x347
+> [  166.958411][ T6897]  ? _copy_to_user+0x87/0xb0
+> [  166.959356][ T6897]  ? _copy_to_user+0x87/0xb0
+> [  166.960272][ T6897]  kasan_report.cold+0x83/0xdf
+> [  166.961196][ T6897]  ? _copy_to_user+0x87/0xb0
+> [  166.962053][ T6897]  kasan_check_range+0x13b/0x190
+> [  166.962978][ T6897]  _copy_to_user+0x87/0xb0
+> [  166.964340][ T6897]  __htab_map_lookup_and_delete_batch+0xdc2/0x1590
+> [  166.965619][ T6897]  ? htab_lru_map_update_elem+0xe70/0xe70
+> [  166.966732][ T6897]  bpf_map_do_batch+0x1fa/0x460
+> [  166.967619][ T6897]  __sys_bpf+0x99a/0x3860
+> [  166.968443][ T6897]  ? bpf_link_get_from_fd+0xd0/0xd0
+> [  166.969393][ T6897]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [  166.970425][ T6897]  ? lock_acquire+0x1ab/0x520
+> [  166.971284][ T6897]  ? find_held_lock+0x2d/0x110
+> [  166.972208][ T6897]  ? rcu_read_lock_sched_held+0x9c/0xd0
+> [  166.973139][ T6897]  ? rcu_read_lock_bh_held+0xb0/0xb0
+> [  166.974096][ T6897]  __x64_sys_bpf+0x70/0xb0
+> [  166.974903][ T6897]  ? syscall_enter_from_user_mode+0x21/0x70
+> [  166.976077][ T6897]  do_syscall_64+0x35/0xb0
+> [  166.976889][ T6897]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  166.978027][ T6897] RIP: 0033:0x450f0d
 >
-> Does IPv6 no need as similar change?
 >
+> In hashtable, if the elements' keys have the same jhash() value, the
+> elements will be put into the same bucket.
+> By putting a lot of elements into a single bucket, the value of
+> bucket_size can be increased to overflow.
+>  but also we can increase bucket_cnt to out of bound Read.
 
-IPv6 nedd change too. This patch is just to get some suggestions :/
+Can you be more specific?
+If you can send a patch with a fix it would be even better.
 
-> You need to provide a selftest to validate the expected behavior.
-
-I'll add it.
-
-Thanks!
-Menglong Dong
-
+> the out of bound Read in  __htab_map_lookup_and_delete_batch code:
+> ```
+> ...
+> if (bucket_cnt && (copy_to_user(ukeys + total * key_size, keys,
+> key_size * bucket_cnt) ||
+>     copy_to_user(uvalues + total * value_size, values,
+>     value_size * bucket_cnt))) {
+> ret = -EFAULT;
+> goto after_loop;
+> }
+> ...
+> ```
 >
-> > diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> > index 04067b249bf3..9e5710f40a39 100644
-> > --- a/net/ipv4/af_inet.c
-> > +++ b/net/ipv4/af_inet.c
-> > @@ -530,7 +530,14 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
-> >               if (!(flags & BIND_FROM_BPF)) {
-> >                       err = BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk);
-> >                       if (err) {
-> > +                             if (sk->sk_prot == &udp_prot)
-> > +                                     sk->sk_prot->unhash(sk);
-> > +                             else if (sk->sk_prot == &tcp_prot)
-> > +                                     inet_put_port(sk);
-> > +
-> >                               inet->inet_saddr = inet->inet_rcv_saddr = 0;
-> > +                             err = -EPERM;
-> > +
-> >                               goto out_release_sock;
-> >                       }
-> >               }
+> Regards,
+>  butt3rflyh4ck.
 >
+>
+> --
+> Active Defense Lab of Venustech
