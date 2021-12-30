@@ -2,81 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB6F48185A
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4880148185E
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 03:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhL3CGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 29 Dec 2021 21:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45786 "EHLO
+        id S234365AbhL3CHz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 29 Dec 2021 21:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232768AbhL3CGk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 29 Dec 2021 21:06:40 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E761C06173E
-        for <bpf@vger.kernel.org>; Wed, 29 Dec 2021 18:06:40 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id b22so20108784pfb.5
-        for <bpf@vger.kernel.org>; Wed, 29 Dec 2021 18:06:40 -0800 (PST)
+        with ESMTP id S232768AbhL3CHx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 29 Dec 2021 21:07:53 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9CCC061574;
+        Wed, 29 Dec 2021 18:07:53 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id c3so3959193pls.5;
+        Wed, 29 Dec 2021 18:07:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7SoaFM1hOktwzt+1C9KXwK6m6eP36tOjLikT7y3Hqxg=;
-        b=Eyc4K7y22CKARk3sV2ZWNDffh6bb7/QCjqKkOyVu+E6gO2AhARLN+1x/7MWL5+3e3m
-         7X8rI5pnm1x1hX2qAwJHAvTzlMpYdwa/nSxvf31tpZohptcQkF8JDjSmNOzg/ztWzPoo
-         PrZthmIyPU+J+ZGbTUTnRB0NkWMpceYuFxso2UkLeOBgKIRozW33ldccZk/llXZzTFA7
-         X0in0Uq6eUqRpXzn/vOINOfRIjfcXC6XQXx2pxdQLt0soSL0KETy0mKjd8eGMLi8VeGR
-         h10EYRu/IB4DbMFkHj0l1Vr60x/1NYjDy6LKzYi1KCtkeyvBk9bbwdAvFQciwY2Xxf8v
-         Q14w==
+        bh=e8IOmK1CoEzJz3HM16qK6cdC2z2n/t1ShoeG8aIu0xU=;
+        b=o0fiD9tc+wJK4xNycdMD3blFstIj9UhhK0MTvjYgPW+lsCXI8mNrOszU7mgoHkhbus
+         bnNkAeEx1U/PAlj37r5enn3NmZJ9Rc+4OR42i8f1lTA46fFIhNTzk94qCbOyjZ1Py2RQ
+         P1zhCER+ER4UY7Qc618Cyefxgjxek+w5mE3GzukNAv8eju/RTmZLC2pYgQjsh4zoKcLX
+         H7Rpchej1X0G04tpA7Lvs1Wy/3W+3WDixSbfeDHzIwbs2Kan2ej9eBYeGA0l4GlSPKOt
+         KXzMu73SV0pz104co7Uc6DWlZcg6TnhE80n5UwQSG3ycvALjoAt9M2zHFcWwOksmb54n
+         /9vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7SoaFM1hOktwzt+1C9KXwK6m6eP36tOjLikT7y3Hqxg=;
-        b=EJ/e8dDqaULaO1NFSiwjn1eugIEaFhh6odYXkrUsZ1Nsu+3XCurYnVrFD5/py8ms+h
-         HrmoM0bg8KwpKe4HTYHFRlZ9q/Nxkg5X/eaZYp8DKgQ8899DgchqH0iaNWQ/2pYEH6kp
-         ZEHuflR67TnYO1d2Js5e86wjbfZnl1W1jM+dH/2Rm0CzfMUadgDm93Abm8wRovqvwhlp
-         9wWzQUq4aKGB3xiWEBxSvOIMN0jpW1tBhlrurZSDk8sJHD+HeTsaDrkussRTCq8epeij
-         OolBwW2sbAfmKOFtHPUEd4Pa5qNX1IuTN4vhcsO4vMUnCaM+EBzI1kHVQnEFxi8XKddK
-         ciyA==
-X-Gm-Message-State: AOAM5339pf++BlPr44a2cFcVLjKhUBUyCNX9Wom0GHb9ovEjdKIJte3A
-        OYwF02jiO7EWw0YE+WCNbzlDljbXajJQLYEymD4=
-X-Google-Smtp-Source: ABdhPJzl18y72YqkrUdBaegoEXuFS9JqecbJAzuqFR5czbHzbZeNMREszx3ww2GxyxfjesUh+DrLaIP5A+a1mrqIb34=
-X-Received: by 2002:a63:6881:: with SMTP id d123mr25175382pgc.497.1640830000039;
- Wed, 29 Dec 2021 18:06:40 -0800 (PST)
+        bh=e8IOmK1CoEzJz3HM16qK6cdC2z2n/t1ShoeG8aIu0xU=;
+        b=jFgotsUcPjQuuIfAuhsoxjithwA+jxTrRvw/slDPmxZaQMQAYbKIr6d1icrWfD0Jgq
+         KWm/byt4y9+/+YV1FWlSgBwTwtJZszhJfh8qLrld4NAg+ieNcX7ZqAg4kXP70KZuVtWO
+         wyRGjloavY3hC/UMJDFlEgzK/1cUOqOCcSerJ2cgL1sJI8aTSeR0g/FpS5YdOx0r46kG
+         r5WBvbvr1cJq1+GfbfsWWDh3KsL+ZEZwKiYpMVaRgtusmR8pGfa57oQwBpPGLEZHwv52
+         xrNrn+/jPJX4ICs1RO4vlhDp0DEgLx4v2laoHlOcKUZTLRKZS5JtX49JGadm0MJ2C3xc
+         6JVg==
+X-Gm-Message-State: AOAM530lb5lye3/b1gHb85Sq1X1jW4UGfU4wv8Y9faloOuprm05MfeGm
+        Fs/GF/ZIOnaieelbM0jIAupDKHi66aHSiVwXJmiY3nSE
+X-Google-Smtp-Source: ABdhPJyCyigfirE/8D3Mqh9esEYDbxQ891lF0ykf0T1ZIjvIPhvS3sCCsTVqVse0Kcic8xlumzTRhct35ZD6+vCC+5Q=
+X-Received: by 2002:a17:902:c443:b0:148:f689:d924 with SMTP id
+ m3-20020a170902c44300b00148f689d924mr29099112plm.78.1640830072624; Wed, 29
+ Dec 2021 18:07:52 -0800 (PST)
 MIME-Version: 1.0
-References: <CAFbkdV3Bj=gM0dd6LBaXyc-V79Y0Ewy7xKF5TQT_6H0sCpxE6A@mail.gmail.com>
-In-Reply-To: <CAFbkdV3Bj=gM0dd6LBaXyc-V79Y0Ewy7xKF5TQT_6H0sCpxE6A@mail.gmail.com>
+References: <cover.1639162845.git.lorenzo@kernel.org> <YcsjAP383AmEb4pQ@localhost.localdomain>
+In-Reply-To: <YcsjAP383AmEb4pQ@localhost.localdomain>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 29 Dec 2021 18:06:28 -0800
-Message-ID: <CAADnVQJ9W99v-_P_zE+fPfnR45=jry7RxPNYRL1enYcKF547Hg@mail.gmail.com>
-Subject: Re: Adding arch_prepare_bpf_trampoline support for aarch64?
-To:     Huichun Feng <foxhoundsk.tw@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Date:   Wed, 29 Dec 2021 18:07:41 -0800
+Message-ID: <CAADnVQKcHe9ToeZ=OCFax0v+GLrEgdtANyzU51jkZzhZYZTTwA@mail.gmail.com>
+Subject: Re: [PATCH v20 bpf-next 00/23] mvneta: introduce XDP multi-buffer support
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 29, 2021 at 2:12 AM Huichun Feng <foxhoundsk.tw@gmail.com> wrote:
+On Tue, Dec 28, 2021 at 6:45 AM Lorenzo Bianconi
+<lorenzo.bianconi@redhat.com> wrote:
 >
-> Hi Jean and the list,
+> [...]
+> >
+> > Eelco Chaudron (3):
+> >   bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+> >   bpf: add multi-buffer support to xdp copy helpers
+> >   bpf: selftests: update xdp_adjust_tail selftest to include
+> >     multi-buffer
+> >
+> > Lorenzo Bianconi (19):
+> >   net: skbuff: add size metadata to skb_shared_info for xdp
+> >   xdp: introduce flags field in xdp_buff/xdp_frame
+> >   net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+> >   net: mvneta: simplify mvneta_swbm_add_rx_fragment management
+> >   net: xdp: add xdp_update_skb_shared_info utility routine
+> >   net: marvell: rely on xdp_update_skb_shared_info utility routine
+> >   xdp: add multi-buff support to xdp_return_{buff/frame}
+> >   net: mvneta: add multi buffer support to XDP_TX
+> >   bpf: introduce BPF_F_XDP_MB flag in prog_flags loading the ebpf
+> >     program
+> >   net: mvneta: enable jumbo frames if the loaded XDP program support mb
+> >   bpf: introduce bpf_xdp_get_buff_len helper
+> >   bpf: move user_size out of bpf_test_init
+> >   bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+> >   bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+> >     signature
+> >   libbpf: Add SEC name for xdp_mb programs
+> >   net: xdp: introduce bpf_xdp_pointer utility routine
+> >   bpf: selftests: introduce bpf_xdp_{load,store}_bytes selftest
+> >   bpf: selftests: add CPUMAP/DEVMAP selftests for xdp multi-buff
+> >   xdp: disable XDP_REDIRECT for xdp multi-buff
+> >
+> > Toke Hoiland-Jorgensen (1):
+> >   bpf: generalise tail call map compatibility check
 >
-> Attaching BPF to fentry/fexit hooks requires
-> arch_prepare_bpf_trampoline(), which
-> AFAIK has only been implemented on x86. Is there any related ongoing patch for
-> aarch64?
+> Hi Alexei and Daniel,
 >
-> I've found a discussion [0] on this, and seems there has no further discussion.
+> I noticed this series's state is now set to "New, archived" in patchwork.
+> Is it due to conflicts? Do I need to repost?
 
-No patches have been posted since then.
-If you have cycles to pick up this work it would be awesome!
-
-> Any thoughts?
->
-> Thanks!
-> Huichun
->
-> [0] https://www.spinics.net/lists/bpf/msg35573.html
+I believe Daniel had some comments, but please repost anyway.
+The fresh rebase will be easier to review.
