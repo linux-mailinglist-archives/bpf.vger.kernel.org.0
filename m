@@ -2,228 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF475481AE5
-	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 09:53:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35488481C64
+	for <lists+bpf@lfdr.de>; Thu, 30 Dec 2021 14:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237851AbhL3IxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 30 Dec 2021 03:53:05 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:41496 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhL3IxE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 30 Dec 2021 03:53:04 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E2B511F37D;
-        Thu, 30 Dec 2021 08:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1640854382; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=T3vjpe5wh37Ag5AnOi3WIBaJix43vROrMlLKQ5Y7MOM=;
-        b=HYdkICGnEOe9BvUfM97pUxdpG3i3oD8XkNWLnl4/pNt/gbYCCNbGg/XuF07c+56V8Y71GX
-        jI1PUBUDFW1TSANGTlHWJrSS2PwLtfBKVGA7NJn56sr4Z9k23/6vdzfC5Ihs4ofj/lEBZB
-        ckxG9xl+tJ8Ug+TauAD8bdhYu44th7s=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4E011A3B83;
-        Thu, 30 Dec 2021 08:53:02 +0000 (UTC)
-Date:   Thu, 30 Dec 2021 09:53:01 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     syzbot <syzbot+864849a13d44b22de04d@syzkaller.appspotmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        changbin.du@intel.com, daniel@iogearbox.net, davem@davemloft.net,
-        edumazet@google.com, hawk@kernel.org, hkallweit1@gmail.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yajun.deng@linux.dev, yhs@fb.com,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [syzbot] general protection fault in mod_memcg_page_state
-Message-ID: <Yc1zbYqVO/6b6Uhf@dhcp22.suse.cz>
-References: <00000000000049f33f05d4535526@google.com>
+        id S239497AbhL3NNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 30 Dec 2021 08:13:12 -0500
+Received: from mga11.intel.com ([192.55.52.93]:19985 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236208AbhL3NNM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 30 Dec 2021 08:13:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1640869992; x=1672405992;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=q/HMgBj5AbGi6HG58yHRTDs9pxMWXuCk5+n7wUGrSMI=;
+  b=FD6pF9TOi+8KOZOPuM35sDCtYy2jIyWz+QsIAc7Ebx/7GAo3lY1N364t
+   9y4H5Ol/iRXSJF2Ll3TCoaiEd2/PTR8faPIPSlpnMvK6UjlnvJHRBsIgD
+   dU7SmYBCJi6djxKW+K3XWycRFtDOLibu0da6VngOtwo1ie1k2xtbATRkv
+   uEi6+cdFSzxjmTLtgaex53nJEECcS+FcP4qvtUP7uvTILUGQ3imUIpoGN
+   GcACUGJrL5FfDGUeh5YwLOhHv6l/PC6eDEqRDwY9jA/eY9B14romM1ihi
+   WsopxspQ06WJtGhCxJANpVZ8EKNshhKpl1qsYxu0yWktyyBbu0FjZAUUH
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10212"; a="239210640"
+X-IronPort-AV: E=Sophos;i="5.88,248,1635231600"; 
+   d="scan'208";a="239210640"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2021 05:13:12 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,248,1635231600"; 
+   d="scan'208";a="759234705"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Dec 2021 05:13:10 -0800
+Date:   Thu, 30 Dec 2021 14:13:10 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, magnus.karlsson@intel.com
+Subject: Re: [PATCH bpf-next v2 3/4] ice: xsk: improve AF_XDP ZC Tx and use
+ batching API
+Message-ID: <Yc2wZvfA8qr/XB8P@boxer>
+References: <20211216135958.3434-1-maciej.fijalkowski@intel.com>
+ <20211216135958.3434-4-maciej.fijalkowski@intel.com>
+ <20211229131131.1460702-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000049f33f05d4535526@google.com>
+In-Reply-To: <20211229131131.1460702-1-alexandr.lobakin@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[Cc Shakeel]
+On Wed, Dec 29, 2021 at 02:11:31PM +0100, Alexander Lobakin wrote:
+> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Date: Thu, 16 Dec 2021 14:59:57 +0100
+> 
+> > Follow mostly the logic from commit 9610bd988df9 ("ice: optimize XDP_TX
+> > workloads") that has been done in order to address the massive tx_busy
+> > statistic bump and improve the performance as well.
+> > 
+> > Increase the ICE_TX_THRESH to 64 as it seems to work out better for both
+> > XDP and AF_XDP. Also, separating the stats structs onto separate cache
+> > lines seemed to improve the performance. Batching approach is inspired
+> > by i40e's implementation with adjustments to the cleaning logic.
+> > 
+> > One difference from 'xdpdrv' XDP_TX is when ring has less than
+> > ICE_TX_THRESH free entries, the cleaning routine will not stop after
+> > cleaning a single ICE_TX_THRESH amount of descs but rather will forward
+> > the next_dd pointer and check the DD bit and for this bit being set the
+> > cleaning will be repeated. IOW clean until there are descs that can be
+> > cleaned.
+> > 
+> > It takes three separate xdpsock instances in txonly mode to achieve the
+> > line rate and this was not previously possible.
+> > 
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > ---
+> >  drivers/net/ethernet/intel/ice/ice_txrx.c |   2 +-
+> >  drivers/net/ethernet/intel/ice/ice_txrx.h |   4 +-
+> >  drivers/net/ethernet/intel/ice/ice_xsk.c  | 249 ++++++++++++++--------
+> >  drivers/net/ethernet/intel/ice/ice_xsk.h  |  26 ++-
+> >  4 files changed, 182 insertions(+), 99 deletions(-)
+> > 
+> 
+> -- 8< --
+> 
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.h b/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > index 4c7bd8e9dfc4..f2eb99063c1f 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > @@ -6,19 +6,36 @@
+> >  #include "ice_txrx.h"
+> >  #include "ice.h"
+> >  
+> > +#define PKTS_PER_BATCH 8
+> > +
+> > +#ifdef __clang__
+> > +#define loop_unrolled_for _Pragma("clang loop unroll_count(8)") for
+> > +#elif __GNUC__ >= 4
+> > +#define loop_unrolled_for _Pragma("GCC unroll 8") for
+> > +#else
+> > +#define loop_unrolled_for for
+> > +#endif
+> 
+> It's used in a bunch more places across the tree, what about
+> defining that in linux/compiler{,_clang,_gcc}.h?
+> Is it possible to pass '8' as an argument? Like
 
-On Wed 29-12-21 17:54:21, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    ea586a076e8a Add linux-next specific files for 20211224
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16dc61edb00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a9c4e3dde2c568fb
-> dashboard link: https://syzkaller.appspot.com/bug?extid=864849a13d44b22de04d
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17371b99b00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14519ac3b00000
-> 
-> The issue was bisected to:
-> 
-> commit e4b8954074f6d0db01c8c97d338a67f9389c042f
-> Author: Eric Dumazet <edumazet@google.com>
-> Date:   Tue Dec 7 01:30:37 2021 +0000
-> 
->     netlink: add net device refcount tracker to struct ethnl_req_info
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f00ddbb00000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=16f00ddbb00000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=12f00ddbb00000
+Like where besides i40e? I might currently suck at grepping, let's blame
+christmas break for that.
 
-I am confused. The above log points to the following warning and
-a consequent panic_on_warn
-WARNING: CPU: 0 PID: 10 at lib/ref_tracker.c:38 ref_tracker_dir_exit.cold+0x163/0x1b4
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+864849a13d44b22de04d@syzkaller.appspotmail.com
-> Fixes: e4b8954074f6 ("netlink: add net device refcount tracker to struct ethnl_req_info")
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000001: 0000 [#1] PREEMPT SMP KASAN
-> KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-> CPU: 1 PID: 3677 Comm: syz-executor257 Not tainted 5.16.0-rc6-next-20211224-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:_compound_head include/linux/page-flags.h:263 [inline]
-> RIP: 0010:page_memcg include/linux/memcontrol.h:452 [inline]
-> RIP: 0010:mod_memcg_page_state.part.0.constprop.0+0x28/0x5b0 include/linux/memcontrol.h:957
+If there are actually other callsites besides i40e then this is a good
+idea to me, maybe as a follow-up?
 
-This might have something to do with http://lkml.kernel.org/r/20211222052457.1960701-1-shakeelb@google.com
-which has added the accounting which is blowing up. The problem happens
-when a memcg is retrieved from the allocated page. This should be NULL
-as the reported commit doesn't really add any __GFP_ACCOUNT user AFAICS.
-Anyway vm_area_alloc_pages can fail the allocation if the current
-context has fatal signals pending. array->pages array is allocated with
-__GFP_ZERO so the failed allocation should have kept the pages[0] NULL.
-I haven't followed the page->memcg path to double check whether that
-could lead to 0xdffffc0000000001 in the end.
-
-I believe we need something like
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 9bf838817a47..d2e392cac909 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2627,7 +2627,8 @@ static void __vunmap(const void *addr, int deallocate_pages)
- 		unsigned int page_order = vm_area_page_order(area);
- 		int i;
- 
--		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
-+		if (area->pages[0])
-+			mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
- 				     -area->nr_pages);
- 
- 		for (i = 0; i < area->nr_pages; i += 1U << page_order) {
-@@ -2968,7 +2969,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 		page_order, nr_small_pages, area->pages);
- 
- 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
--	mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC, area->nr_pages);
-+	if (area->pages[0])
-+		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC, area->nr_pages);
- 
- 	/*
- 	 * If not enough pages were obtained to accomplish an
-
-Or to account each page separately so that we do not have to rely on
-pages[0].
-
-> Code: 00 90 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 4c 8d 6d 08 e8 49 dd c1 ff 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 11 05 00 00 4c 8b 75 08 31 ff 4c 89 f3 83 e3 01
-> RSP: 0018:ffffc900028bf5c0 EFLAGS: 00010202
 > 
-> RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: 0000000000000001 RSI: ffffffff81b62737 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff81b745c0 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000008 R14: ffff88807ee9b628 R15: ffff88807ee9b600
-> FS:  00007f8d769be700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007ffe642c4960 CR3: 000000006fc65000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  mod_memcg_page_state mm/vmalloc.c:2971 [inline]
->  __vmalloc_area_node mm/vmalloc.c:2971 [inline]
->  __vmalloc_node_range+0x678/0xf80 mm/vmalloc.c:3106
->  __vmalloc_node mm/vmalloc.c:3156 [inline]
->  vmalloc+0x67/0x80 mm/vmalloc.c:3197
->  bpf_prog_calc_tag+0xc9/0x6c0 kernel/bpf/core.c:279
->  resolve_pseudo_ldimm64 kernel/bpf/verifier.c:11925 [inline]
->  bpf_check+0x1c86/0xbac0 kernel/bpf/verifier.c:14279
->  bpf_prog_load+0xf55/0x21f0 kernel/bpf/syscall.c:2344
->  __sys_bpf+0x68a/0x5970 kernel/bpf/syscall.c:4634
->  __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
->  __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f8d76a0cd09
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 11 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f8d769be2f8 EFLAGS: 00000246
->  ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007f8d76a954a8 RCX: 00007f8d76a0cd09
-> RDX: 0000000000000080 RSI: 0000000020000200 RDI: 0000000000000005
-> RBP: 00007f8d76a954a0 R08: 0000000000000002 R09: 0000000000003032
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-> R13: 00007f8d769be300 R14: 00007f8d769be400 R15: 0000000000022000
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:_compound_head include/linux/page-flags.h:263 [inline]
-> RIP: 0010:page_memcg include/linux/memcontrol.h:452 [inline]
-> RIP: 0010:mod_memcg_page_state.part.0.constprop.0+0x28/0x5b0 include/linux/memcontrol.h:957
-> Code: 00 90 41 56 41 55 41 54 41 89 f4 55 48 89 fd 53 4c 8d 6d 08 e8 49 dd c1 ff 4c 89 ea 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 11 05 00 00 4c 8b 75 08 31 ff 4c 89 f3 83 e3 01
-> RSP: 0018:ffffc900028bf5c0 EFLAGS: 00010202
+> 	loop_unrolled_for(PKTS_PER_BATCH) ( ; ; ) { }
 > 
-> RAX: dffffc0000000000 RBX: 0000000000000001 RCX: 0000000000000000
-> RDX: 0000000000000001 RSI: ffffffff81b62737 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000001
-> R10: ffffffff81b745c0 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000008 R14: ffff88807ee9b628 R15: ffff88807ee9b600
-> FS:  00007f8d769be700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f8d76a76e84 CR3: 000000006fc65000 CR4: 00000000003506e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> ----------------
-> Code disassembly (best guess):
->    0:	00 90 41 56 41 55    	add    %dl,0x55415641(%rax)
->    6:	41 54                	push   %r12
->    8:	41 89 f4             	mov    %esi,%r12d
->    b:	55                   	push   %rbp
->    c:	48 89 fd             	mov    %rdi,%rbp
->    f:	53                   	push   %rbx
->   10:	4c 8d 6d 08          	lea    0x8(%rbp),%r13
->   14:	e8 49 dd c1 ff       	callq  0xffc1dd62
->   19:	4c 89 ea             	mov    %r13,%rdx
->   1c:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
->   23:	fc ff df
->   26:	48 c1 ea 03          	shr    $0x3,%rdx
-> * 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
->   2e:	0f 85 11 05 00 00    	jne    0x545
->   34:	4c 8b 75 08          	mov    0x8(%rbp),%r14
->   38:	31 ff                	xor    %edi,%edi
->   3a:	4c 89 f3             	mov    %r14,%rbx
->   3d:	83 e3 01             	and    $0x1,%ebx
+> Could be quite handy.
+> If it is not, I'd maybe try to define a couple of precoded macros
+> for 8, 16 and 32, like
 > 
+> #define loop_unrolled_for_8 ...
+> #define loop_unrolled_for_16 ...
+> ...
 > 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> So they could be used as generic. I don't think I've seen them with
+> values other than 8-32.
 > 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-
--- 
-Michal Hocko
-SUSE Labs
+> > +
+> >  struct ice_vsi;
+> >  
+> >  #ifdef CONFIG_XDP_SOCKETS
+> >  int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool,
+> >  		       u16 qid);
+> >  int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget);
+> > -bool ice_clean_tx_irq_zc(struct ice_tx_ring *xdp_ring, int budget);
+> >  int ice_xsk_wakeup(struct net_device *netdev, u32 queue_id, u32 flags);
+> >  bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count);
+> >  bool ice_xsk_any_rx_ring_ena(struct ice_vsi *vsi);
+> >  void ice_xsk_clean_rx_ring(struct ice_rx_ring *rx_ring);
+> >  void ice_xsk_clean_xdp_ring(struct ice_tx_ring *xdp_ring);
+> > +bool ice_xmit_zc(struct ice_tx_ring *xdp_ring, u32 budget);
+> >  #else
+> > +static inline bool
+> > +ice_xmit_zc(struct ice_tx_ring __always_unused *xdp_ring,
+> > +	    u32 __always_unused budget)
+> > +{
+> > +	return false;
+> > +}
+> > +
+> >  static inline int
+> >  ice_xsk_pool_setup(struct ice_vsi __always_unused *vsi,
+> >  		   struct xsk_buff_pool __always_unused *pool,
+> > @@ -34,13 +51,6 @@ ice_clean_rx_irq_zc(struct ice_rx_ring __always_unused *rx_ring,
+> >  	return 0;
+> >  }
+> >  
+> > -static inline bool
+> > -ice_clean_tx_irq_zc(struct ice_tx_ring __always_unused *xdp_ring,
+> > -		    int __always_unused budget)
+> > -{
+> > -	return false;
+> > -}
+> > -
+> >  static inline bool
+> >  ice_alloc_rx_bufs_zc(struct ice_rx_ring __always_unused *rx_ring,
+> >  		     u16 __always_unused count)
+> > -- 
+> > 2.33.1
+> 
+> Thanks,
+> Al
