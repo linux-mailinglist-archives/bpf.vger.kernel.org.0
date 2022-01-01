@@ -2,81 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DC8482612
-	for <lists+bpf@lfdr.de>; Sat,  1 Jan 2022 00:05:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90093482657
+	for <lists+bpf@lfdr.de>; Sat,  1 Jan 2022 03:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231890AbhLaXFz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 31 Dec 2021 18:05:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S231958AbiAACkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 31 Dec 2021 21:40:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbhLaXFy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 31 Dec 2021 18:05:54 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28FD2C061574;
-        Fri, 31 Dec 2021 15:05:54 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id x15so21005274plg.1;
-        Fri, 31 Dec 2021 15:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g5v1xPzowAYu3QM3an7egFraB+wrAFLcZhivMPg3KZ4=;
-        b=CuXocwPY1LkIGBBMnlAvjl1KAGA+hh8/mmpui7RbE6MbUWGHMiiBnWklZg16g7bnfW
-         VInYAmQuN3ZzoOGApQaNTUIDYvdX5tibV9MycFnF4+NJisK4XvzBx9LCWxUm3UXvke2D
-         gPa7BamE97GqNJxLtvh7jdKnI3N2M1XMclwJXaY8GpvAnBNKAHD2kNzyDqsjuz2g4sCP
-         lJryWI4ce9QzLQ8wjlbJfsePyHauKpvxzkUVKYCX4JhwjHfk/r8k6wssDjew4ELQAgP1
-         XDsBmPiFpfB4gp5RWsQQmng/kF6SPWA5gvUSBtID43qZ3suSMLW0VefjrdnkZWGVB1yX
-         Seag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g5v1xPzowAYu3QM3an7egFraB+wrAFLcZhivMPg3KZ4=;
-        b=tH5/0eF/yH+/W+gu35R2g4SlV1VkiUR9ErAZ+iuF+tSI4wLqEv/yvJ6oOtPwUNOyFK
-         SaK5MWOYzpVx/Jb6xXP1548TPWSUuUDufpjXS9+Ct1Vve4VF5RaOL+JX2bOogvbcQvcC
-         S3txEPlZ6Ufa/2jQatjJo87GSE9dD5RvEL3B219J0XHUkUZtiqwVcvjz3UtDhaJ0XlM8
-         jG4pcgNaHPdV2L6ef3r7mHndcz/BVZ95RKUiVYMjRatywFwoA4KehhAkQCEjIs4gByzt
-         xOnp+IdHzFzpDkQUTlSOGs9cT/sIn7sNlx+r657dWinuq9qTLk/5FxBqhfhT4rmmyVMT
-         PMsg==
-X-Gm-Message-State: AOAM532ENQ6yKDED9x9hpPy+heuyWXwe5QJMCBw4U0GrGT8rs1g3PLkd
-        RZ9z0fjeVsAcdnLkQZDPWbOVJLIqLxI=
-X-Google-Smtp-Source: ABdhPJwAXDdng5LIu7g1RaPML/kmSMWkLIJVrRea+7I/d8/AqEU0qSTAiGnHS1teHg6tlLkqby536w==
-X-Received: by 2002:a17:902:e843:b0:148:f219:afb7 with SMTP id t3-20020a170902e84300b00148f219afb7mr38168648plg.81.1640991953323;
-        Fri, 31 Dec 2021 15:05:53 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id k8sm33927314pfu.72.2021.12.31.15.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 Dec 2021 15:05:52 -0800 (PST)
-Date:   Sat, 1 Jan 2022 04:35:50 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     David Vernet <void@manifault.com>
-Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jpoimboe@redhat.com, pmladek@suse.com, jikos@kernel.org,
-        mbenes@suse.cz, joe.lawrence@redhat.com,
-        linux-modules@vger.kernel.org, mcgrof@kernel.org, jeyu@kernel.org,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] livepatch: Avoid CPU hogging with cond_resched
-Message-ID: <20211231230550.t2wjz5g5ancrqx7d@apollo.legion>
-References: <Yc0yskk0m2bePLu6@dev0025.ash9.facebook.com>
+        with ESMTP id S229565AbiAACkG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 31 Dec 2021 21:40:06 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CA8C061574;
+        Fri, 31 Dec 2021 18:40:06 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C55FCB81D57;
+        Sat,  1 Jan 2022 02:40:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33640C36AEC;
+        Sat,  1 Jan 2022 02:40:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641004803;
+        bh=YLdiW9lOwymYUrFlUVQ0+nJdGdMK4B3/6Vhsovj0eF8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iJVMQzcrtrdwOP8SBFa6cPXnU1K9hTBLfDKYPMF7pqJ9ZnDjH43J81c74TIn6f2e9
+         tB7ptWKluLo507vjM6bnl6nFAzCtz0By/qxn7/QRZnz/iEmpQaAniKpV8OhS7nbjOv
+         uV4zZAel87t+SNAV5Zj+OI1h3fmpRneRXsJzubA4Jnf1E0fAhTfuempCzHsHhy+GFQ
+         j/dMvgmzF+3OrcsaMnEZKK7er+xL/EwQ4VdJr6BJGMrJAoBbyLbhF39r5951/z5A3s
+         4NMtsFNiiL1MyesWy8reCHnqwTLQ6MD/YsoKTfuuZHuC5vf2W9VnT7O4DyK99VXhxF
+         xNlfaqAgZhJLQ==
+Date:   Fri, 31 Dec 2021 18:40:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf 2021-12-31
+Message-ID: <20211231184002.4fbe18b3@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20211231160050.16105-1-daniel@iogearbox.net>
+References: <20211231160050.16105-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yc0yskk0m2bePLu6@dev0025.ash9.facebook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 09:46:50AM IST, David Vernet wrote:
-> Adding modules + BPF list and maintainers to this thread.
->
+On Fri, 31 Dec 2021 17:00:50 +0100 Daniel Borkmann wrote:
+> First of all, we wish you both a happy new year! :-)
 
-Thanks for the Cc, but I'm dropping my patch for the next revision, so there
-should be no conflicts with this one.
-
-> [...]
-
---
-Kartikeya
+Happy new year! :)
