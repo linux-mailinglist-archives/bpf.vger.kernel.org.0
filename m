@@ -2,93 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEC74836DD
-	for <lists+bpf@lfdr.de>; Mon,  3 Jan 2022 19:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B61483702
+	for <lists+bpf@lfdr.de>; Mon,  3 Jan 2022 19:36:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbiACSdI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jan 2022 13:33:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45965 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229728AbiACSdH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 3 Jan 2022 13:33:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641234786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4qN6h930TSM8c/mWmb9+fYi4rE4bqlpIk/doAZAWfiM=;
-        b=FeQeI61j36qRlvUlr92L8b8KoxmjtRdVKEkIZ3vvbktB+HMhBi+gK+f9LWLvslLk4sw219
-        f7gBDZmNJiKwckSLU6r4k8wO7yVQ61Dlln9JCRqZHhPpJt1kyqtUUf6eAIA0aYsOZjgxpn
-        aPgmqZEww1Xg79qxxy7cynzfswgqCFk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-86-Y92-LA8qPpaUelSD21jsiA-1; Mon, 03 Jan 2022 13:33:05 -0500
-X-MC-Unique: Y92-LA8qPpaUelSD21jsiA-1
-Received: by mail-ed1-f71.google.com with SMTP id l14-20020aa7cace000000b003f7f8e1cbbdso23423182edt.20
-        for <bpf@vger.kernel.org>; Mon, 03 Jan 2022 10:33:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=4qN6h930TSM8c/mWmb9+fYi4rE4bqlpIk/doAZAWfiM=;
-        b=08epcaB9KdzZPOdKUrhGj3y2InBuP6KrQ2tfC2ZI6GXNLMSzgStPLHDA2jk+1wWLYX
-         gwpGTrA6IV1tYCvRH2jWVuj8ildTanSFNMiXozKd/WCk1rx+w0ygeotCP9cH6RhCzeQi
-         donf2yBSisaQohsDXFb0j4xoJne3DcUqlHMmuBn0AX9vqIo/dThSEP7lgNhXWr1dbXID
-         ArgPY3zsrbz+gyNTlXL590vsIlksYo4EHLMDRMau6oDqbZ010BZXH3924xkoRkyVY7XO
-         SNdTJedbDLvoZBdAXFTGgLM8Zf5zED6XSc+QEpOkxTvRyTSB4vJoQqBtfBr2KMj3UsCZ
-         AnEQ==
-X-Gm-Message-State: AOAM531YjkcjuhZJk85v9K/SS43d5hiHtN/FTpkIC61Ba1eZoKJat/Wl
-        PlVjeoIYmfFGYoQSrQjwf1kaut94QjSNKb+BsaWaCl5eziQhDl8uiKee0fVsV7qKynnEDiuF4B2
-        Pv7PL6tDTxhpt
-X-Received: by 2002:a17:907:8a26:: with SMTP id sc38mr37867240ejc.557.1641234783818;
-        Mon, 03 Jan 2022 10:33:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzKxgJw62ZH8iVdOI6GaU3nt3iU+z1YpGQfKs7zSUDnMVC+C/Tmlb6WAQgVo32A/ZkGpAuq5g==
-X-Received: by 2002:a17:907:8a26:: with SMTP id sc38mr37867212ejc.557.1641234783361;
-        Mon, 03 Jan 2022 10:33:03 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 3sm10873367ejq.159.2022.01.03.10.33.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jan 2022 10:33:02 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 53268180300; Mon,  3 Jan 2022 19:33:02 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Huichun Feng <foxhoundsk.tw@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf <bpf@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: Re: Adding arch_prepare_bpf_trampoline support for aarch64?
-In-Reply-To: <CAADnVQJ9W99v-_P_zE+fPfnR45=jry7RxPNYRL1enYcKF547Hg@mail.gmail.com>
-References: <CAFbkdV3Bj=gM0dd6LBaXyc-V79Y0Ewy7xKF5TQT_6H0sCpxE6A@mail.gmail.com>
- <CAADnVQJ9W99v-_P_zE+fPfnR45=jry7RxPNYRL1enYcKF547Hg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 03 Jan 2022 19:33:02 +0100
-Message-ID: <87ee5od601.fsf@toke.dk>
+        id S235838AbiACSgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jan 2022 13:36:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235836AbiACSgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jan 2022 13:36:09 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AF1C061761;
+        Mon,  3 Jan 2022 10:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=wk3KhHMV4lZeSivBj3jKfjwwWW4Nlc9rCKddeJFkp5Y=; b=3i5XVv7qNe4ZmvEuG0rdKdJZqi
+        wUTqvlUbcpRHtjGAjWZP7ODSsue3ZHhI+H6gvRdPUEk0skJ3bTmOeJJqPCJ6AhbBWAXGYUD+WA7NW
+        1vskliYNd+JuEh4L2SkqcgVL9/8sIdKplzORXz7J8zpXVyquCq7/muhcYQuMFRPQlQFiAeY6QEJgo
+        kqRDUwPr9vvSs1yv1W80xh64Kq8R85Sgo2hRdRLH9DuOyAqVpWl6jCItsGkANPihB9dmWs2ousPW4
+        P+d1iREB0Ols3DvcpBS4r39VLH2SOW3nSGT1FZxtORIi529czijA8yQ3yUagV2IcjbFVRT6eRYZYJ
+        qjaesabg==;
+Received: from [2001:4bb8:184:3f95:b8f7:97d6:6b53:b9be] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n4SBc-009qQs-TK; Mon, 03 Jan 2022 18:36:01 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: more eBPF instruction set documentation improvements
+Date:   Mon,  3 Jan 2022 19:35:50 +0100
+Message-Id: <20220103183556.41040-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Hi all,
 
-> On Wed, Dec 29, 2021 at 2:12 AM Huichun Feng <foxhoundsk.tw@gmail.com> wrote:
->>
->> Hi Jean and the list,
->>
->> Attaching BPF to fentry/fexit hooks requires
->> arch_prepare_bpf_trampoline(), which
->> AFAIK has only been implemented on x86. Is there any related ongoing patch for
->> aarch64?
->>
->> I've found a discussion [0] on this, and seems there has no further discussion.
->
-> No patches have been posted since then.
-> If you have cycles to pick up this work it would be awesome!
+this series adds further improves the eBPF instruction set documentation.
+Mostly it adds descriptions to the various tables as requested by
+Alexei, but there are a few other minor tidyups as well.
 
-+1, would love to see this! :)
-
--Toke
-
+Diffstat:
+ instruction-set.rst |  156 ++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 91 insertions(+), 65 deletions(-)
