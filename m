@@ -2,14 +2,14 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3A54833F5
+	by mail.lfdr.de (Postfix) with ESMTP id 24E3C4833F4
 	for <lists+bpf@lfdr.de>; Mon,  3 Jan 2022 16:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233865AbiACPId (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S233869AbiACPId (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Mon, 3 Jan 2022 10:08:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60692 "EHLO
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32415 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233854AbiACPIb (ORCPT
+        by vger.kernel.org with ESMTP id S233881AbiACPIb (ORCPT
         <rfc822;bpf@vger.kernel.org>); Mon, 3 Jan 2022 10:08:31 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1641222511;
@@ -17,58 +17,59 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4GGO6N4bCUKxV1eNBvyBL2tJVvDzjOAuLukvcKL/rog=;
-        b=QVDs4tnQeiYkA5Dt3J8qdCT+/XCdoJZnZTYRy5dqoXYiS9gjfG+h5BFPpjvpFs//3KajII
-        Wno3dng8DJD6YCcm4+EZv8OyAWwWEe2VSnE6wzJyODnW5tLI9+84PQILOrPblq5iNcYE+a
-        l8Afh97mJLtjENTOOTzjFba57aLWGuk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=liH+qN0WmF6KG3mO/mKBj0yNsvaPZ08gu8hDBnDNrZY=;
+        b=Vij0pA4H7U5ZdAx7NRFmnu6z8hJpspKMX+XVb9hrybdR/AMlXXWUuj74BtcndNra6lvWOE
+        JbgcHeCWo4YG6pvRjlba+SiyuvwlYkVv830b6lMFLLUo29+AoWKvM1y6CNoqNV8rdnvHD1
+        8+Djktdzcf2aZJrEVECiLu5rGN8UezY=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-450-mCTGvWdcPDGKUpEF04kBVA-1; Mon, 03 Jan 2022 10:08:29 -0500
-X-MC-Unique: mCTGvWdcPDGKUpEF04kBVA-1
-Received: by mail-ed1-f69.google.com with SMTP id y10-20020a056402358a00b003f88b132849so23290612edc.0
+ us-mta-327-NJaFhaqqOtOCH8rvadyakw-1; Mon, 03 Jan 2022 10:08:30 -0500
+X-MC-Unique: NJaFhaqqOtOCH8rvadyakw-1
+Received: by mail-ed1-f72.google.com with SMTP id b8-20020a056402350800b003f8f42a883dso15850646edd.16
         for <bpf@vger.kernel.org>; Mon, 03 Jan 2022 07:08:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4GGO6N4bCUKxV1eNBvyBL2tJVvDzjOAuLukvcKL/rog=;
-        b=1EItrv0L8HfkSXQqRaWIAp9EHf8h1FP/N8VMrdHQLg9z08Dmhi/KaHRofrjjb3WwE1
-         x46zQElgIAIaEcnTKM5oYbDXq/crQaaz8dAloZ/bUybBHLh/ByzWmccp+TMtCR6XeKJ3
-         NFpVQKZTQRLg2zOvuvsMqjucxWvpUl6hNx6ebShFstvxT24jSWIXi8t7ugiXpd+EqDnq
-         ZWhbXHYABhCjhJwAGMIu0xpCAZwfo95CWcq1y+ym27egrdUHRCSUrX82f37Uss1cus4D
-         MJnFx0RTfMcvfsbtX+WdPJPNuUdeFyvFp9YIvz18US0fLrF5+wsS97W12r3NvOnDQylY
-         649Q==
-X-Gm-Message-State: AOAM532LjW+Wg/McqgXE2rwFVf1iwYSL8/vOO+1yk5zyMusL2GFxTSCt
-        6DJsGtTLHjwjPgwaB1iPPcDBlxjr6emb9uVSElkHVgBveS5TlnK/16AorI/zOQ2mWXEGdqYlPbL
-        KIpHHmQsKmDSY
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr38870201ede.362.1641222506594;
+        bh=liH+qN0WmF6KG3mO/mKBj0yNsvaPZ08gu8hDBnDNrZY=;
+        b=uMJQNQD5DLhrSUuzccRsvri1R9Drf6kXFywO/aZfsKhrLSn+3zgzD9qjIBMPuse2qt
+         RKEpWmhOkuLvyTXQ60j52XvofoxXbpVwDQ68SSFAVHEDK0EA5Ii8rblAwxge+ClsbMLB
+         Uy8Smr7uWoN7WRM47ZWIybc5BgYayAMsTioWVt/y671fgIrUdLo4W/whlMDHEYXxui1x
+         3gKgGj7RKJHjpkbZ31lpRo99A5Bt0aBXFikJgKMB4XltS7VXhCK11DhIz+GadUh35ojj
+         mmbKfYlWUaxyIF8lg1Q2LNvvY5fVW+ZcSDhCfZZesL08oWKwMeFoW+464Rx119PoKtJ5
+         8LdA==
+X-Gm-Message-State: AOAM5337+h330kxxc2LeWplz8O3ZOHm60CLqPHIiBs8BTAfwVnWDX+52
+        xt2tJsqoGV8E+JWoYWzWdPv3nBUvCAAiVCTFGXZZxWPc4Jlx3cTTHyxb/AJeoEXNw7fLPfThZ1j
+        J4ScxfXY0vyFs
+X-Received: by 2002:a17:906:d552:: with SMTP id cr18mr36275500ejc.260.1641222507432;
+        Mon, 03 Jan 2022 07:08:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxsRVCvB++XaDGgB0IoilqLN7chbS8Duehkorg0cuF3gtkSNzcGZOpHIEx/bJEgW06PjwrcLw==
+X-Received: by 2002:a17:906:d552:: with SMTP id cr18mr36275402ejc.260.1641222506100;
         Mon, 03 Jan 2022 07:08:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzK+Txc8/Bne8wUO9SrV2TpsZ6gBn95YOiYiW4pA8MfClahNUVAJoKxvZ1ns/l09jzqHm+S7Q==
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr38870098ede.362.1641222505169;
-        Mon, 03 Jan 2022 07:08:25 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id oz20sm10660127ejc.60.2022.01.03.07.08.22
+        by smtp.gmail.com with ESMTPSA id c12sm13989442edx.80.2022.01.03.07.08.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jan 2022 07:08:24 -0800 (PST)
+        Mon, 03 Jan 2022 07:08:25 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 389CA180300; Mon,  3 Jan 2022 16:08:22 +0100 (CET)
+        id C6B85181F2A; Mon,  3 Jan 2022 16:08:22 +0100 (CET)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
+        KP Singh <kpsingh@kernel.org>
 Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v5 6/7] bpf: Add "live packet" mode for XDP in bpf_prog_run()
-Date:   Mon,  3 Jan 2022 16:08:11 +0100
-Message-Id: <20220103150812.87914-7-toke@redhat.com>
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for XDP_REDIRECT in bpf_prog_run()
+Date:   Mon,  3 Jan 2022 16:08:12 +0100
+Message-Id: <20220103150812.87914-8-toke@redhat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220103150812.87914-1-toke@redhat.com>
 References: <20220103150812.87914-1-toke@redhat.com>
@@ -79,461 +80,187 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds support for running XDP programs through bpf_prog_run() in a mode
-that enables live packet processing of the resulting frames. Previous uses
-of bpf_prog_run() for XDP returned the XDP program return code and the
-modified packet data to userspace, which is useful for unit testing of XDP
-programs.
-
-This patch adds a new mode with different semantics. When enabled through
-the new BPF_F_TEST_XDP_LIVE_FRAMES flag, the XDP program return codes will
-be honoured: returning XDP_PASS will result in the frame being injected
-into the networking stack as if it came from the selected networking
-interface, while returning XDP_TX and XDP_REDIRECT will result in the frame
-being transmitted out an egress interface. XDP_TX is translated into an
-XDP_REDIRECT operation, since the real XDP_TX action is only possible from
-within the network drivers themselves, not from the process context where
-bpf_prog_run() is executed.
-
-To achieve this new mode of operation, we create a page pool instance while
-setting up the test run, and feed pages from that into the XDP program. The
-setup cost of this is amortised over the number of repetitions specified by
-userspace.
-
-To support performance testing use case, we further optimise the setup step
-so that all pages in the pool are pre-initialised with the packet data, and
-pre-computed context and xdp_frame objects stored at the start of each
-page. This makes it possible to entirely avoid touching the page content on
-each XDP program invocation, and enables sending up to 11.5 Mpps/core on my
-test box.
-
-Because the data pages are recycled by the page pool, and the test runner
-doesn't re-initialise them for each run, subsequent invocations of the XDP
-program will see the packet data in the state it was after the last time it
-ran on that particular page. This means that an XDP program that modifies
-the packet before redirecting it has to be careful about which assumptions
-it makes about the packet content, but that is only an issue for the most
-naively written programs.
-
-Enabling the new flag is only allowed when not setting ctx_out and data_out
-in the test specification, since using it means frames will be redirected
-somewhere else, so they can't be returned.
+This adds a selftest for the XDP_REDIRECT facility in bpf_prog_run, that
+redirects packets into a veth and counts them using an XDP program on the
+other side of the veth pair.
 
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/uapi/linux/bpf.h       |   2 +
- kernel/bpf/Kconfig             |   1 +
- net/bpf/test_run.c             | 287 ++++++++++++++++++++++++++++++++-
- tools/include/uapi/linux/bpf.h |   2 +
- 4 files changed, 284 insertions(+), 8 deletions(-)
+ .../bpf/prog_tests/xdp_do_redirect.c          | 118 ++++++++++++++++++
+ .../bpf/progs/test_xdp_do_redirect.c          |  39 ++++++
+ 2 files changed, 157 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b0383d371b9a..5ef20deaf49f 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1225,6 +1225,8 @@ enum {
- 
- /* If set, run the test on the cpu specified by bpf_attr.test.cpu */
- #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
-+/* If set, XDP frames will be transmitted after processing */
-+#define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
- 
- /* type for BPF_ENABLE_STATS */
- enum bpf_stats_type {
-diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-index d24d518ddd63..c8c920020d11 100644
---- a/kernel/bpf/Kconfig
-+++ b/kernel/bpf/Kconfig
-@@ -30,6 +30,7 @@ config BPF_SYSCALL
- 	select TASKS_TRACE_RCU
- 	select BINARY_PRINTF
- 	select NET_SOCK_MSG if NET
-+	select PAGE_POOL if NET
- 	default n
- 	help
- 	  Enable the bpf() system call that allows to manipulate BPF programs
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 46dd95755967..11543819f0ef 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -14,6 +14,7 @@
- #include <net/sock.h>
- #include <net/tcp.h>
- #include <net/net_namespace.h>
-+#include <net/page_pool.h>
- #include <linux/error-injection.h>
- #include <linux/smp.h>
- #include <linux/sock_diag.h>
-@@ -52,10 +53,11 @@ static void bpf_test_timer_leave(struct bpf_test_timer *t)
- 	rcu_read_unlock();
- }
- 
--static bool bpf_test_timer_continue(struct bpf_test_timer *t, u32 repeat, int *err, u32 *duration)
-+static bool bpf_test_timer_continue(struct bpf_test_timer *t, int iterations,
-+				    u32 repeat, int *err, u32 *duration)
- 	__must_hold(rcu)
- {
--	t->i++;
-+	t->i += iterations;
- 	if (t->i >= repeat) {
- 		/* We're done. */
- 		t->time_spent += ktime_get_ns() - t->time_start;
-@@ -87,6 +89,267 @@ static bool bpf_test_timer_continue(struct bpf_test_timer *t, u32 repeat, int *e
- 	return false;
- }
- 
-+/* We put this struct at the head of each page with a context and frame
-+ * initialised when the page is allocated, so we don't have to do this on each
-+ * repetition of the test run.
-+ */
-+struct xdp_page_head {
-+	struct xdp_buff orig_ctx;
-+	struct xdp_buff ctx;
-+	struct xdp_frame frm;
-+	u8 data[];
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+new file mode 100644
+index 000000000000..a587c351d495
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+@@ -0,0 +1,118 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include <network_helpers.h>
++#include <net/if.h>
++#include <linux/if_ether.h>
++#include <linux/if_packet.h>
++#include <linux/ipv6.h>
++#include <linux/in6.h>
++#include <linux/udp.h>
++#include <bpf/bpf_endian.h>
++#include "test_xdp_do_redirect.skel.h"
++
++#define SYS(fmt, ...)						\
++	({							\
++		char cmd[1024];					\
++		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
++		if (!ASSERT_OK(system(cmd), cmd))		\
++			goto fail;				\
++	})
++
++struct udp_packet {
++	struct ethhdr eth;
++	struct ipv6hdr iph;
++	struct udphdr udp;
++	__u8 payload[64 - sizeof(struct udphdr)
++		     - sizeof(struct ethhdr) - sizeof(struct ipv6hdr)];
++} __packed;
++
++static struct udp_packet pkt_udp = {
++	.eth.h_proto = __bpf_constant_htons(ETH_P_IPV6),
++	.eth.h_dest = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55},
++	.eth.h_source = {0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb},
++	.iph.version = 6,
++	.iph.nexthdr = IPPROTO_UDP,
++	.iph.payload_len = bpf_htons(sizeof(struct udp_packet)
++				     - offsetof(struct udp_packet, udp)),
++	.iph.hop_limit = 2,
++	.iph.saddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(1)},
++	.iph.daddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(2)},
++	.udp.source = bpf_htons(1),
++	.udp.dest = bpf_htons(1),
++	.udp.len = bpf_htons(sizeof(struct udp_packet)
++			     - offsetof(struct udp_packet, udp)),
++	.payload = {0x42}, /* receiver XDP program matches on this */
 +};
 +
-+struct xdp_test_data {
-+	struct xdp_buff *orig_ctx;
-+	struct xdp_rxq_info rxq;
-+	struct net_device *dev;
-+	struct page_pool *pp;
-+	u32 frame_cnt;
-+};
-+
-+#define TEST_XDP_FRAME_SIZE (PAGE_SIZE - sizeof(struct xdp_page_head)	\
-+			     - sizeof(struct skb_shared_info))
-+#define TEST_XDP_BATCH 64
-+
-+static void xdp_test_run_init_page(struct page *page, void *arg)
++#define NUM_PKTS 3
++void test_xdp_do_redirect(void)
 +{
-+	struct xdp_page_head *head = phys_to_virt(page_to_phys(page));
-+	struct xdp_buff *new_ctx, *orig_ctx;
-+	u32 headroom = XDP_PACKET_HEADROOM;
-+	struct xdp_test_data *xdp = arg;
-+	size_t frm_len, meta_len;
-+	struct xdp_frame *frm;
-+	void *data;
++	struct test_xdp_do_redirect *skel = NULL;
++	struct xdp_md ctx_in = { .data_end = sizeof(pkt_udp) };
++	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
++			    .data_in = &pkt_udp,
++			    .data_size_in = sizeof(pkt_udp),
++			    .ctx_in = &ctx_in,
++			    .ctx_size_in = sizeof(ctx_in),
++			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
++			    .repeat = NUM_PKTS,
++		);
++	int err, prog_fd, ifindex_src, ifindex_dst;
++	struct bpf_link *link;
 +
-+	orig_ctx = xdp->orig_ctx;
-+	frm_len = orig_ctx->data_end - orig_ctx->data_meta;
-+	meta_len = orig_ctx->data - orig_ctx->data_meta;
-+	headroom -= meta_len;
-+
-+	new_ctx = &head->ctx;
-+	frm = &head->frm;
-+	data = &head->data;
-+	memcpy(data + headroom, orig_ctx->data_meta, frm_len);
-+
-+	xdp_init_buff(new_ctx, TEST_XDP_FRAME_SIZE, &xdp->rxq);
-+	xdp_prepare_buff(new_ctx, data, headroom, frm_len, true);
-+	new_ctx->data_meta = new_ctx->data + meta_len;
-+
-+	xdp_update_frame_from_buff(new_ctx, frm);
-+	frm->mem = new_ctx->rxq->mem;
-+
-+	memcpy(&head->orig_ctx, new_ctx, sizeof(head->orig_ctx));
-+}
-+
-+static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff *orig_ctx)
-+{
-+	struct xdp_mem_info mem = {};
-+	struct page_pool *pp;
-+	int err;
-+	struct page_pool_params pp_params = {
-+		.order = 0,
-+		.flags = 0,
-+		.pool_size = NAPI_POLL_WEIGHT * 2,
-+		.nid = NUMA_NO_NODE,
-+		.max_len = TEST_XDP_FRAME_SIZE,
-+		.init_callback = xdp_test_run_init_page,
-+		.init_arg = xdp,
-+	};
-+
-+	pp = page_pool_create(&pp_params);
-+	if (IS_ERR(pp))
-+		return PTR_ERR(pp);
-+
-+	/* will copy 'mem.id' into pp->xdp_mem_id */
-+	err = xdp_reg_mem_model(&mem, MEM_TYPE_PAGE_POOL, pp);
-+	if (err) {
-+		page_pool_destroy(pp);
-+		return err;
-+	}
-+	xdp->pp = pp;
-+
-+	/* We create a 'fake' RXQ referencing the original dev, but with an
-+	 * xdp_mem_info pointing to our page_pool
-+	 */
-+	xdp_rxq_info_reg(&xdp->rxq, orig_ctx->rxq->dev, 0, 0);
-+	xdp->rxq.mem.type = MEM_TYPE_PAGE_POOL;
-+	xdp->rxq.mem.id = pp->xdp_mem_id;
-+	xdp->dev = orig_ctx->rxq->dev;
-+	xdp->orig_ctx = orig_ctx;
-+
-+	return 0;
-+}
-+
-+static void xdp_test_run_teardown(struct xdp_test_data *xdp)
-+{
-+	struct xdp_mem_info mem = {
-+		.id = xdp->pp->xdp_mem_id,
-+		.type = MEM_TYPE_PAGE_POOL,
-+	};
-+
-+	xdp_unreg_mem_model(&mem);
-+}
-+
-+static bool ctx_was_changed(struct xdp_page_head *head)
-+{
-+	return head->orig_ctx.data != head->ctx.data ||
-+		head->orig_ctx.data_meta != head->ctx.data_meta ||
-+		head->orig_ctx.data_end != head->ctx.data_end;
-+}
-+
-+static void reset_ctx(struct xdp_page_head *head)
-+{
-+	if (likely(!ctx_was_changed(head)))
++	skel = test_xdp_do_redirect__open();
++	if (!ASSERT_OK_PTR(skel, "skel"))
 +		return;
 +
-+	head->ctx.data = head->orig_ctx.data;
-+	head->ctx.data_meta = head->orig_ctx.data_meta;
-+	head->ctx.data_end = head->orig_ctx.data_end;
-+	xdp_update_frame_from_buff(&head->ctx, &head->frm);
-+}
++	/* We setup a veth pair that we can not only XDP_REDIRECT packets
++	 * between, but also route them. The test packet (defined above) has
++	 * address information so it will be routed back out the same interface
++	 * after it has been received, which will allow it to be picked up by
++	 * the XDP program on the destination interface.
++	 *
++	 * The XDP program we run with bpf_prog_run() will cycle through all
++	 * four return codes (DROP/PASS/TX/REDIRECT), so we should end up with
++	 * NUM_PKTS - 1 packets seen on the dst iface. We match the packets on
++	 * the UDP payload.
++	 */
++	SYS("ip link add veth_src type veth peer name veth_dst");
++	SYS("ip link set dev veth_src address 00:11:22:33:44:55");
++	SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
++	SYS("ip link set dev veth_src up");
++	SYS("ip link set dev veth_dst up");
++	SYS("ip addr add dev veth_src fc00::1/64");
++	SYS("ip addr add dev veth_dst fc00::2/64");
++	SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb");
++	SYS("sysctl -w net.ipv6.conf.all.forwarding=1");
 +
-+static int xdp_recv_frames(struct xdp_frame **frames, int nframes,
-+			   struct net_device *dev)
++	ifindex_src = if_nametoindex("veth_src");
++	ifindex_dst = if_nametoindex("veth_dst");
++	if (!ASSERT_NEQ(ifindex_src, 0, "ifindex_src") ||
++	    !ASSERT_NEQ(ifindex_dst, 0, "ifindex_dst"))
++		goto fail;
++
++	memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
++	skel->rodata->ifindex_out = ifindex_src;
++	ctx_in.ingress_ifindex = ifindex_src;
++
++	if (!ASSERT_OK(test_xdp_do_redirect__load(skel), "load"))
++		goto fail;
++
++	link = bpf_program__attach_xdp(skel->progs.xdp_count_pkts, ifindex_dst);
++	if (!ASSERT_OK_PTR(link, "prog_attach"))
++		goto fail;
++	skel->links.xdp_count_pkts = link;
++
++	prog_fd = bpf_program__fd(skel->progs.xdp_redirect_notouch);
++	err = bpf_prog_test_run_opts(prog_fd, &opts);
++	if (!ASSERT_OK(err, "prog_run"))
++		goto fail;
++
++	/* wait for the packets to be flushed */
++	kern_sync_rcu();
++
++	ASSERT_EQ(skel->bss->pkts_seen, NUM_PKTS - 1, "pkt_count");
++fail:
++	system("ip link del dev veth_src");
++	test_xdp_do_redirect__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+new file mode 100644
+index 000000000000..f9ea587b0876
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <vmlinux.h>
++#include <bpf/bpf_helpers.h>
++
++#define ETH_ALEN 6
++const volatile int ifindex_out;
++const volatile __u8 expect_dst[ETH_ALEN];
++volatile int pkts_seen = 0;
++volatile int retcode = XDP_DROP;
++
++SEC("xdp")
++int xdp_redirect_notouch(struct xdp_md *xdp)
 +{
-+	gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
-+	void *skbs[TEST_XDP_BATCH];
-+	int i, n;
-+	LIST_HEAD(list);
-+
-+	n = kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
-+	if (unlikely(n == 0)) {
-+		for (i = 0; i < nframes; i++)
-+			xdp_return_frame(frames[i]);
-+		return -ENOMEM;
-+	}
-+
-+	for (i = 0; i < nframes; i++) {
-+		struct xdp_frame *xdpf = frames[i];
-+		struct sk_buff *skb = skbs[i];
-+
-+		skb = __xdp_build_skb_from_frame(xdpf, skb, dev);
-+		if (!skb) {
-+			xdp_return_frame(xdpf);
-+			continue;
-+		}
-+
-+		list_add_tail(&skb->list, &list);
-+	}
-+	netif_receive_skb_list(&list);
-+	return 0;
++	if (retcode == XDP_REDIRECT)
++		bpf_redirect(ifindex_out, 0);
++	return retcode++;
 +}
 +
-+static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_prog *prog,
-+			      u32 repeat)
++SEC("xdp")
++int xdp_count_pkts(struct xdp_md *xdp)
 +{
-+	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
-+	int err = 0, act, ret, i, nframes = 0, batch_sz;
-+	struct xdp_frame *frames[TEST_XDP_BATCH];
-+	struct xdp_page_head *head;
-+	struct xdp_frame *frm;
-+	bool redirect = false;
-+	struct xdp_buff *ctx;
-+	struct page *page;
++	void *data = (void *)(long)xdp->data;
++	void *data_end = (void *)(long)xdp->data_end;
++	struct ethhdr *eth = data;
++	struct ipv6hdr *iph = (void *)(eth + 1);
++	struct udphdr *udp = (void *)(iph + 1);
++	__u8 *payload = (void *)(udp + 1);
++	int i;
 +
-+	batch_sz = min_t(u32, repeat, TEST_XDP_BATCH);
-+	xdp_set_return_frame_no_direct();
++	if (payload + 1 > data_end)
++		return XDP_ABORTED;
 +
-+	for (i = 0; i < batch_sz; i++) {
-+		page = page_pool_dev_alloc_pages(xdp->pp);
-+		if (!page) {
-+			err = -ENOMEM;
-+			goto out;
-+		}
++	if (iph->nexthdr == IPPROTO_UDP && *payload == 0x42)
++		pkts_seen++;
 +
-+		head = phys_to_virt(page_to_phys(page));
-+		reset_ctx(head);
-+		ctx = &head->ctx;
-+		frm = &head->frm;
-+		xdp->frame_cnt++;
-+
-+		act = bpf_prog_run_xdp(prog, ctx);
-+
-+		/* if program changed pkt bounds we need to update the xdp_frame */
-+		if (unlikely(ctx_was_changed(head))) {
-+			err = xdp_update_frame_from_buff(ctx, frm);
-+			if (err) {
-+				xdp_return_buff(ctx);
-+				goto out;
-+			}
-+		}
-+
-+		switch (act) {
-+		case XDP_TX:
-+			/* we can't do a real XDP_TX since we're not in the
-+			 * driver, so turn it into a REDIRECT back to the same
-+			 * index
-+			 */
-+			ri->tgt_index = xdp->dev->ifindex;
-+			ri->map_id = INT_MAX;
-+			ri->map_type = BPF_MAP_TYPE_UNSPEC;
-+			fallthrough;
-+		case XDP_REDIRECT:
-+			redirect = true;
-+			err = xdp_do_redirect_frame(xdp->dev, ctx, frm, prog);
-+			if (err) {
-+				xdp_return_buff(ctx);
-+				goto out;
-+			}
-+			break;
-+		case XDP_PASS:
-+			frames[nframes++] = frm;
-+			break;
-+		default:
-+			bpf_warn_invalid_xdp_action(NULL, prog, act);
-+			fallthrough;
-+		case XDP_DROP:
-+			xdp_return_buff(ctx);
-+			break;
-+		}
-+	}
-+
-+out:
-+	if (redirect)
-+		xdp_do_flush();
-+	if (nframes) {
-+		ret = xdp_recv_frames(frames, nframes, xdp->dev);
-+		if (ret)
-+			err = ret;
-+	}
-+
-+	xdp_clear_return_frame_no_direct();
-+	return err;
++	return XDP_PASS;
 +}
 +
-+static int bpf_test_run_xdp_live(struct bpf_prog *prog, struct xdp_buff *ctx,
-+				 u32 repeat, u32 *time)
-+
-+{
-+	struct bpf_test_timer t = { .mode = NO_MIGRATE };
-+	struct xdp_test_data xdp = {};
-+	int ret;
-+
-+	if (!repeat)
-+		repeat = 1;
-+
-+	ret = xdp_test_run_setup(&xdp, ctx);
-+	if (ret)
-+		return ret;
-+
-+	bpf_test_timer_enter(&t);
-+	do {
-+		xdp.frame_cnt = 0;
-+		ret = xdp_test_run_batch(&xdp, prog, repeat - t.i);
-+		if (unlikely(ret < 0))
-+			break;
-+	} while (bpf_test_timer_continue(&t, xdp.frame_cnt, repeat, &ret, time));
-+	bpf_test_timer_leave(&t);
-+
-+	xdp_test_run_teardown(&xdp);
-+	return ret;
-+}
-+
- static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			u32 *retval, u32 *time, bool xdp)
- {
-@@ -118,7 +381,7 @@ static int bpf_test_run(struct bpf_prog *prog, void *ctx, u32 repeat,
- 			*retval = bpf_prog_run_xdp(prog, ctx);
- 		else
- 			*retval = bpf_prog_run(prog, ctx);
--	} while (bpf_test_timer_continue(&t, repeat, &ret, time));
-+	} while (bpf_test_timer_continue(&t, 1, repeat, &ret, time));
- 	bpf_reset_run_ctx(old_ctx);
- 	bpf_test_timer_leave(&t);
- 
-@@ -757,13 +1020,14 @@ static void xdp_convert_buff_to_md(struct xdp_buff *xdp, struct xdp_md *xdp_md)
- int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			  union bpf_attr __user *uattr)
- {
-+	bool do_live = (kattr->test.flags & BPF_F_TEST_XDP_LIVE_FRAMES);
- 	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 	u32 headroom = XDP_PACKET_HEADROOM;
- 	u32 size = kattr->test.data_size_in;
- 	u32 repeat = kattr->test.repeat;
- 	struct netdev_rx_queue *rxqueue;
- 	struct xdp_buff xdp = {};
--	u32 retval, duration;
-+	u32 retval = 0, duration;
- 	struct xdp_md *ctx;
- 	u32 max_data_sz;
- 	void *data;
-@@ -773,6 +1037,9 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	    prog->expected_attach_type == BPF_XDP_CPUMAP)
- 		return -EINVAL;
- 
-+	if (kattr->test.flags & ~BPF_F_TEST_XDP_LIVE_FRAMES)
-+		return -EINVAL;
-+
- 	ctx = bpf_ctx_init(kattr, sizeof(struct xdp_md));
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
-@@ -781,7 +1048,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 		/* There can't be user provided data before the meta data */
- 		if (ctx->data_meta || ctx->data_end != size ||
- 		    ctx->data > ctx->data_end ||
--		    unlikely(xdp_metalen_invalid(ctx->data)))
-+		    unlikely(xdp_metalen_invalid(ctx->data)) ||
-+		    (do_live && (kattr->test.data_out || kattr->test.ctx_out)))
- 			goto free_ctx;
- 		/* Meta data is allocated from the headroom */
- 		headroom -= ctx->data;
-@@ -807,7 +1075,10 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 
- 	if (repeat > 1)
- 		bpf_prog_change_xdp(NULL, prog);
--	ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
-+	if (do_live)
-+		ret = bpf_test_run_xdp_live(prog, &xdp, repeat, &duration);
-+	else
-+		ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
- 	/* We convert the xdp_buff back to an xdp_md before checking the return
- 	 * code so the reference count of any held netdevice will be decremented
- 	 * even if the test run failed.
-@@ -905,7 +1176,7 @@ int bpf_prog_test_run_flow_dissector(struct bpf_prog *prog,
- 	do {
- 		retval = bpf_flow_dissect(prog, &ctx, eth->h_proto, ETH_HLEN,
- 					  size, flags);
--	} while (bpf_test_timer_continue(&t, repeat, &ret, &duration));
-+	} while (bpf_test_timer_continue(&t, 1, repeat, &ret, &duration));
- 	bpf_test_timer_leave(&t);
- 
- 	if (ret < 0)
-@@ -1000,7 +1271,7 @@ int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kat
- 	do {
- 		ctx.selected_sk = NULL;
- 		retval = BPF_PROG_SK_LOOKUP_RUN_ARRAY(progs, ctx, bpf_prog_run);
--	} while (bpf_test_timer_continue(&t, repeat, &ret, &duration));
-+	} while (bpf_test_timer_continue(&t, 1, repeat, &ret, &duration));
- 	bpf_test_timer_leave(&t);
- 
- 	if (ret < 0)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b0383d371b9a..5ef20deaf49f 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1225,6 +1225,8 @@ enum {
- 
- /* If set, run the test on the cpu specified by bpf_attr.test.cpu */
- #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
-+/* If set, XDP frames will be transmitted after processing */
-+#define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
- 
- /* type for BPF_ENABLE_STATS */
- enum bpf_stats_type {
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
