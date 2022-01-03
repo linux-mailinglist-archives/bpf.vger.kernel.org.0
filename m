@@ -2,14 +2,14 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08184833F3
-	for <lists+bpf@lfdr.de>; Mon,  3 Jan 2022 16:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2A84833F0
+	for <lists+bpf@lfdr.de>; Mon,  3 Jan 2022 16:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233853AbiACPIc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jan 2022 10:08:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:46850 "EHLO
+        id S233886AbiACPIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jan 2022 10:08:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:52795 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233868AbiACPI3 (ORCPT
+        by vger.kernel.org with ESMTP id S233861AbiACPI3 (ORCPT
         <rfc822;bpf@vger.kernel.org>); Mon, 3 Jan 2022 10:08:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1641222508;
@@ -17,42 +17,42 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VcLBd7sfLQd5mT9HLpqncuK4NzZSAv9ZaVpM25Xng3Y=;
-        b=S8vNCo4vsSzXee46QW7gxxJHH2fEtgWUqgK45leWaenXCh0NbGAMxRqdJeUvlLc3r8qTKP
-        o9/8aFksQ7EG4PTm3HF7iEsdepKFtkGXOgeyX4T/Bya2kuGODCDBJhh2ur9bgFoG40adev
-        ZH8M7Ajdy7KaYcYNGa+cfW8MdI6HjeA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=lGlVjG9u8jJMDdtq/pUyG8OIadV06H5nUns87f244fk=;
+        b=Vj/YZ2NU0q846CW7FGL/cndPIGp0aktZz/KeP/kog/JFcSVbYH1CcRGsN6WChnqqQU4GA9
+        ak9omkFOM9P1kJPA4Wqz6qBnybvXV48XOK7HApiV4INGbd33brlsDIQKpV6EZTps2Ma+oA
+        HSwZuXv9CoDLqsm/9m4g++m8zczj6nw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-657-bWZNX3o1NDiEMdMoV0rxWg-1; Mon, 03 Jan 2022 10:08:24 -0500
-X-MC-Unique: bWZNX3o1NDiEMdMoV0rxWg-1
-Received: by mail-ed1-f69.google.com with SMTP id y10-20020a056402358a00b003f88b132849so23290350edc.0
-        for <bpf@vger.kernel.org>; Mon, 03 Jan 2022 07:08:24 -0800 (PST)
+ us-mta-425-OHqwuq33MqmofgbgCVDO3A-1; Mon, 03 Jan 2022 10:08:27 -0500
+X-MC-Unique: OHqwuq33MqmofgbgCVDO3A-1
+Received: by mail-ed1-f71.google.com with SMTP id z3-20020a05640240c300b003f9154816ffso13914178edb.9
+        for <bpf@vger.kernel.org>; Mon, 03 Jan 2022 07:08:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VcLBd7sfLQd5mT9HLpqncuK4NzZSAv9ZaVpM25Xng3Y=;
-        b=DKJHikmtqq5QNO7LtFeKnj3Z0qr9t7KNqghPMS7Etx0D9ouXadWt4H555rZil54qnq
-         iR8C4skJffQKYzuKkB25Bjm9idrVECFvBDBoJ79dlLUoJJ6cEMA3xOuBA/CbX20L4oBZ
-         Z4CJ/2EHTEJ2dyY449ZOHAXqQ9pSw8ZZd2YyQgAqC2uOZJkLt4iD/xAlMvPbBQMBeFk3
-         xt9eNgzT30FMFLEnjghOau2XmSjcP7DmH0xG14v4ihGPClgz0r2rguUGrtap4YvP6Y+r
-         fjGLJce5BezrX7GcSuBQxaSfs99NSZjXLtRdQiNJinsCOgzHy8Awl8banfboNYV/K6fp
-         2Vag==
-X-Gm-Message-State: AOAM530r58qX6t4e6eH3sNflzoBpArEgTlvKk7NHL52cBbCXgi5fEy5L
-        a3gotsjgGQi3oOpUXT1fyePQUXDlLEzSLhN4I+x0E7HtJkIQEGNDKlCJJvx7jZsw2bhLUzOiaOz
-        AVTBPhuOvsr6B
-X-Received: by 2002:aa7:dd56:: with SMTP id o22mr45854744edw.73.1641222502609;
-        Mon, 03 Jan 2022 07:08:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzExLOFUCiyhcqUZi2xcTpdt4lezlTcHEA6LCatRyB3+Cfa9wTmh4HeGijksW/jenb9oIvEVQ==
-X-Received: by 2002:aa7:dd56:: with SMTP id o22mr45854706edw.73.1641222502288;
-        Mon, 03 Jan 2022 07:08:22 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id hd17sm10726076ejc.58.2022.01.03.07.08.21
+        bh=lGlVjG9u8jJMDdtq/pUyG8OIadV06H5nUns87f244fk=;
+        b=kgJH8HJsN8enSmUdMBh+l8YqON89JtgkbototUM5WeuNQC96/7Y9z5B4RzLhNgQYA9
+         q2nzfkvq5P3glbP1mInpAl61tj48sKcTn+b5NVujV9eLY6ARwgUUxD01bCRpFNa4w5fe
+         spD8gwFWYhf9YfVvOt36TCVNCZOfHpEPgdJeCUuue5k0xH+WMBRNA+ZJ5fKgFsqjzFaB
+         xjhuTIdSdxhHZWQQ63CLENtcsL1jT8glEJbjzikEdHbqcZqoXtUjjNrpf/PRgBiClx/8
+         am28EKm2bqzhlU/IdldWhDkxif05Q+973qNP5pwDKO5Lilx29eqGq9+VknYfkxK0vjgb
+         dqPQ==
+X-Gm-Message-State: AOAM533TCUJ5HNDri3zePWiLjIHd3Vl3wo1Ue5ciTkK2XSsZdCBEr/ks
+        IAEXIcAzTfJ+sccgwuDaYGzUWWoRIQW1joACkZZ/pn7rCk54tZIlhqJVzExaViLfwjBZDhF9aUK
+        k/BzcTgfQTkYv
+X-Received: by 2002:a17:906:2cd5:: with SMTP id r21mr37638652ejr.435.1641222505438;
+        Mon, 03 Jan 2022 07:08:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwrOCi0fyye1AEKcpCPxzHe5FwTTrTTgYNDB1QzJYEp4ptU4OnyPfwpJNZGM5XlsNCsx4yWlQ==
+X-Received: by 2002:a17:906:2cd5:: with SMTP id r21mr37638524ejr.435.1641222503428;
+        Mon, 03 Jan 2022 07:08:23 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id v19sm13856217edx.75.2022.01.03.07.08.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jan 2022 07:08:21 -0800 (PST)
+        Mon, 03 Jan 2022 07:08:22 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id F223C181F2A; Mon,  3 Jan 2022 16:08:20 +0100 (CET)
+        id 67865181F2B; Mon,  3 Jan 2022 16:08:21 +0100 (CET)
 From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,9 +66,9 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>
 Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v5 4/7] xdp: Move conversion to xdp_frame out of map functions
-Date:   Mon,  3 Jan 2022 16:08:09 +0100
-Message-Id: <20220103150812.87914-5-toke@redhat.com>
+Subject: [PATCH bpf-next v5 5/7] xdp: add xdp_do_redirect_frame() for pre-computed xdp_frames
+Date:   Mon,  3 Jan 2022 16:08:10 +0100
+Message-Id: <20220103150812.87914-6-toke@redhat.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220103150812.87914-1-toke@redhat.com>
 References: <20220103150812.87914-1-toke@redhat.com>
@@ -79,290 +79,134 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-All map redirect functions except XSK maps convert xdp_buff to xdp_frame
-before enqueueing it. So move this conversion of out the map functions
-and into xdp_do_redirect(). This removes a bit of duplicated code, but more
-importantly it makes it possible to support caller-allocated xdp_frame
-structures, which will be added in a subsequent commit.
+Add an xdp_do_redirect_frame() variant which supports pre-computed
+xdp_frame structures. This will be used in bpf_prog_run() to avoid having
+to write to the xdp_frame structure when the XDP program doesn't modify the
+frame boundaries.
 
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/linux/bpf.h | 20 ++++++++++----------
- kernel/bpf/cpumap.c |  8 +-------
- kernel/bpf/devmap.c | 32 +++++++++++---------------------
- net/core/filter.c   | 24 +++++++++++++++++-------
- 4 files changed, 39 insertions(+), 45 deletions(-)
+ include/linux/filter.h |  4 +++
+ net/core/filter.c      | 65 +++++++++++++++++++++++++++++++++++-------
+ 2 files changed, 58 insertions(+), 11 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 26753139d5b4..6e947cd91152 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1669,17 +1669,17 @@ void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth);
- struct btf *bpf_get_btf_vmlinux(void);
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 60eec80fa1d4..71fa57b88bfc 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1019,6 +1019,10 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
+ int xdp_do_redirect(struct net_device *dev,
+ 		    struct xdp_buff *xdp,
+ 		    struct bpf_prog *prog);
++int xdp_do_redirect_frame(struct net_device *dev,
++			  struct xdp_buff *xdp,
++			  struct xdp_frame *xdpf,
++			  struct bpf_prog *prog);
+ void xdp_do_flush(void);
  
- /* Map specifics */
--struct xdp_buff;
-+struct xdp_frame;
- struct sk_buff;
- struct bpf_dtab_netdev;
- struct bpf_cpu_map_entry;
- 
- void __dev_flush(void);
--int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx);
--int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
-+int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx);
--int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
-+int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- 			  struct bpf_map *map, bool exclude_ingress);
- int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
- 			     struct bpf_prog *xdp_prog);
-@@ -1688,7 +1688,7 @@ int dev_map_redirect_multi(struct net_device *dev, struct sk_buff *skb,
- 			   bool exclude_ingress);
- 
- void __cpu_map_flush(void);
--int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
-+int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx);
- int cpu_map_generic_redirect(struct bpf_cpu_map_entry *rcpu,
- 			     struct sk_buff *skb);
-@@ -1866,26 +1866,26 @@ static inline void __dev_flush(void)
- {
- }
- 
--struct xdp_buff;
-+struct xdp_frame;
- struct bpf_dtab_netdev;
- struct bpf_cpu_map_entry;
- 
- static inline
--int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx)
- {
- 	return 0;
- }
- 
- static inline
--int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
-+int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx)
- {
- 	return 0;
- }
- 
- static inline
--int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
-+int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- 			  struct bpf_map *map, bool exclude_ingress)
- {
- 	return 0;
-@@ -1913,7 +1913,7 @@ static inline void __cpu_map_flush(void)
- }
- 
- static inline int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu,
--				  struct xdp_buff *xdp,
-+				  struct xdp_frame *xdpf,
- 				  struct net_device *dev_rx)
- {
- 	return 0;
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 0421061d95f1..b3e6b9422238 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -746,15 +746,9 @@ static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
- 		list_add(&bq->flush_node, flush_list);
- }
- 
--int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
-+int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx)
- {
--	struct xdp_frame *xdpf;
--
--	xdpf = xdp_convert_buff_to_frame(xdp);
--	if (unlikely(!xdpf))
--		return -EOVERFLOW;
--
- 	/* Info needed when constructing SKB on remote CPU */
- 	xdpf->dev_rx = dev_rx;
- 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 6feea293ff10..fe019dbdb3f0 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -467,24 +467,19 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 	bq->q[bq->count++] = xdpf;
- }
- 
--static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+static inline int __xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 				struct net_device *dev_rx,
- 				struct bpf_prog *xdp_prog)
- {
--	struct xdp_frame *xdpf;
- 	int err;
- 
- 	if (!dev->netdev_ops->ndo_xdp_xmit)
- 		return -EOPNOTSUPP;
- 
--	err = xdp_ok_fwd_dev(dev, xdp->data_end - xdp->data);
-+	err = xdp_ok_fwd_dev(dev, xdpf->len);
- 	if (unlikely(err))
- 		return err;
- 
--	xdpf = xdp_convert_buff_to_frame(xdp);
--	if (unlikely(!xdpf))
--		return -EOVERFLOW;
--
- 	bq_enqueue(dev, xdpf, dev_rx, xdp_prog);
- 	return 0;
- }
-@@ -520,27 +515,27 @@ static u32 dev_map_bpf_prog_run_skb(struct sk_buff *skb, struct bpf_dtab_netdev
- 	return act;
- }
- 
--int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-+int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx)
- {
--	return __xdp_enqueue(dev, xdp, dev_rx, NULL);
-+	return __xdp_enqueue(dev, xdpf, dev_rx, NULL);
- }
- 
--int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
-+int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
- 		    struct net_device *dev_rx)
- {
- 	struct net_device *dev = dst->dev;
- 
--	return __xdp_enqueue(dev, xdp, dev_rx, dst->xdp_prog);
-+	return __xdp_enqueue(dev, xdpf, dev_rx, dst->xdp_prog);
- }
- 
--static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_buff *xdp)
-+static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf)
- {
- 	if (!obj ||
- 	    !obj->dev->netdev_ops->ndo_xdp_xmit)
- 		return false;
- 
--	if (xdp_ok_fwd_dev(obj->dev, xdp->data_end - xdp->data))
-+	if (xdp_ok_fwd_dev(obj->dev, xdpf->len))
- 		return false;
- 
- 	return true;
-@@ -586,14 +581,13 @@ static int get_upper_ifindexes(struct net_device *dev, int *indexes)
- 	return n;
- }
- 
--int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
-+int dev_map_enqueue_multi(struct xdp_frame *xdpf, struct net_device *dev_rx,
- 			  struct bpf_map *map, bool exclude_ingress)
- {
- 	struct bpf_dtab *dtab = container_of(map, struct bpf_dtab, map);
- 	struct bpf_dtab_netdev *dst, *last_dst = NULL;
- 	int excluded_devices[1+MAX_NEST_DEV];
- 	struct hlist_head *head;
--	struct xdp_frame *xdpf;
- 	int num_excluded = 0;
- 	unsigned int i;
- 	int err;
-@@ -603,15 +597,11 @@ int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
- 		excluded_devices[num_excluded++] = dev_rx->ifindex;
- 	}
- 
--	xdpf = xdp_convert_buff_to_frame(xdp);
--	if (unlikely(!xdpf))
--		return -EOVERFLOW;
--
- 	if (map->map_type == BPF_MAP_TYPE_DEVMAP) {
- 		for (i = 0; i < map->max_entries; i++) {
- 			dst = rcu_dereference_check(dtab->netdev_map[i],
- 						    rcu_read_lock_bh_held());
--			if (!is_valid_dst(dst, xdp))
-+			if (!is_valid_dst(dst, xdpf))
- 				continue;
- 
- 			if (is_ifindex_excluded(excluded_devices, num_excluded, dst->dev->ifindex))
-@@ -634,7 +624,7 @@ int dev_map_enqueue_multi(struct xdp_buff *xdp, struct net_device *dev_rx,
- 			head = dev_map_index_hash(dtab, i);
- 			hlist_for_each_entry_rcu(dst, head, index_hlist,
- 						 lockdep_is_held(&dtab->index_lock)) {
--				if (!is_valid_dst(dst, xdp))
-+				if (!is_valid_dst(dst, xdpf))
- 					continue;
- 
- 				if (is_ifindex_excluded(excluded_devices, num_excluded,
+ /* The xdp_do_flush_map() helper has been renamed to drop the _map suffix, as
 diff --git a/net/core/filter.c b/net/core/filter.c
-index 606ab5a98a1a..81b57ea9ad35 100644
+index 81b57ea9ad35..cceb4cf52519 100644
 --- a/net/core/filter.c
 +++ b/net/core/filter.c
-@@ -3964,12 +3964,24 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+@@ -3957,26 +3957,44 @@ u32 xdp_master_redirect(struct xdp_buff *xdp)
+ }
+ EXPORT_SYMBOL_GPL(xdp_master_redirect);
+ 
+-int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+-		    struct bpf_prog *xdp_prog)
++static inline int __xdp_do_redirect_xsk(struct bpf_redirect_info *ri,
++					struct net_device *dev,
++					struct xdp_buff *xdp,
++					struct bpf_prog *xdp_prog)
+ {
+-	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
  	enum bpf_map_type map_type = ri->map_type;
  	void *fwd = ri->tgt_value;
  	u32 map_id = ri->map_id;
-+	struct xdp_frame *xdpf;
- 	struct bpf_map *map;
+-	struct xdp_frame *xdpf;
+-	struct bpf_map *map;
  	int err;
  
  	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
  	ri->map_type = BPF_MAP_TYPE_UNSPEC;
  
-+	if (map_type == BPF_MAP_TYPE_XSKMAP) {
-+		err = __xsk_map_redirect(fwd, xdp);
-+		goto out;
-+	}
-+
-+	xdpf = xdp_convert_buff_to_frame(xdp);
-+	if (unlikely(!xdpf)) {
-+		err = -EOVERFLOW;
-+		goto err;
-+	}
-+
- 	switch (map_type) {
- 	case BPF_MAP_TYPE_DEVMAP:
- 		fallthrough;
-@@ -3977,17 +3989,14 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 		map = READ_ONCE(ri->map);
- 		if (unlikely(map)) {
- 			WRITE_ONCE(ri->map, NULL);
--			err = dev_map_enqueue_multi(xdp, dev, map,
-+			err = dev_map_enqueue_multi(xdpf, dev, map,
- 						    ri->flags & BPF_F_EXCLUDE_INGRESS);
- 		} else {
--			err = dev_map_enqueue(fwd, xdp, dev);
-+			err = dev_map_enqueue(fwd, xdpf, dev);
- 		}
- 		break;
- 	case BPF_MAP_TYPE_CPUMAP:
--		err = cpu_map_enqueue(fwd, xdp, dev);
--		break;
--	case BPF_MAP_TYPE_XSKMAP:
+-	if (map_type == BPF_MAP_TYPE_XSKMAP) {
 -		err = __xsk_map_redirect(fwd, xdp);
-+		err = cpu_map_enqueue(fwd, xdpf, dev);
- 		break;
- 	case BPF_MAP_TYPE_UNSPEC:
- 		if (map_id == INT_MAX) {
-@@ -3996,7 +4005,7 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 				err = -EINVAL;
- 				break;
- 			}
--			err = dev_xdp_enqueue(fwd, xdp, dev);
-+			err = dev_xdp_enqueue(fwd, xdpf, dev);
- 			break;
- 		}
- 		fallthrough;
-@@ -4004,6 +4013,7 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+-		goto out;
+-	}
++	err = __xsk_map_redirect(fwd, xdp);
++	if (unlikely(err))
++		goto err;
++
++	_trace_xdp_redirect_map(dev, xdp_prog, fwd, map_type, map_id, ri->tgt_index);
++	return 0;
++err:
++	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map_type, map_id, ri->tgt_index, err);
++	return err;
++}
++
++static __always_inline int __xdp_do_redirect_frame(struct bpf_redirect_info *ri,
++						   struct net_device *dev,
++						   struct xdp_frame *xdpf,
++						   struct bpf_prog *xdp_prog)
++{
++	enum bpf_map_type map_type = ri->map_type;
++	void *fwd = ri->tgt_value;
++	u32 map_id = ri->map_id;
++	struct bpf_map *map;
++	int err;
++
++	ri->map_id = 0; /* Valid map id idr range: [1,INT_MAX[ */
++	ri->map_type = BPF_MAP_TYPE_UNSPEC;
+ 
+-	xdpf = xdp_convert_buff_to_frame(xdp);
+ 	if (unlikely(!xdpf)) {
+ 		err = -EOVERFLOW;
+ 		goto err;
+@@ -4013,7 +4031,6 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
  		err = -EBADRQC;
  	}
  
-+out:
+-out:
  	if (unlikely(err))
  		goto err;
  
+@@ -4023,8 +4040,34 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
+ 	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map_type, map_id, ri->tgt_index, err);
+ 	return err;
+ }
++
++int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
++		    struct bpf_prog *xdp_prog)
++{
++	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
++	enum bpf_map_type map_type = ri->map_type;
++
++	if (map_type == BPF_MAP_TYPE_XSKMAP)
++		return __xdp_do_redirect_xsk(ri, dev, xdp, xdp_prog);
++
++	return __xdp_do_redirect_frame(ri, dev, xdp_convert_buff_to_frame(xdp),
++				       xdp_prog);
++}
+ EXPORT_SYMBOL_GPL(xdp_do_redirect);
+ 
++int xdp_do_redirect_frame(struct net_device *dev, struct xdp_buff *xdp,
++			  struct xdp_frame *xdpf, struct bpf_prog *xdp_prog)
++{
++	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
++	enum bpf_map_type map_type = ri->map_type;
++
++	if (map_type == BPF_MAP_TYPE_XSKMAP)
++		return __xdp_do_redirect_xsk(ri, dev, xdp, xdp_prog);
++
++	return __xdp_do_redirect_frame(ri, dev, xdpf, xdp_prog);
++}
++EXPORT_SYMBOL_GPL(xdp_do_redirect_frame);
++
+ static int xdp_do_generic_redirect_map(struct net_device *dev,
+ 				       struct sk_buff *skb,
+ 				       struct xdp_buff *xdp,
 -- 
 2.34.1
 
