@@ -2,152 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C062F484752
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 19:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E854847A5
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 19:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236030AbiADSAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 13:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
+        id S229504AbiADSTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 13:19:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236020AbiADSAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jan 2022 13:00:16 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59105C061761
-        for <bpf@vger.kernel.org>; Tue,  4 Jan 2022 10:00:16 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id v10-20020a05600c214a00b00345e59928eeso157018wml.0
-        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 10:00:16 -0800 (PST)
+        with ESMTP id S236201AbiADSTh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 13:19:37 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DD4C061761;
+        Tue,  4 Jan 2022 10:19:37 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id 196so32917231pfw.10;
+        Tue, 04 Jan 2022 10:19:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1++MdtwGUVKvSetDOO4bDdTjL/q4+438yAaGXU8tCPQ=;
-        b=QL7ucGr+v953FpdQy20GW+4eUvFQNE5lg5JTWpTNEofUYbOFXpnx1g4bYTtj/5ekkB
-         ib6yjmeIasxu8X1inYdo4ziXfM1AnzZjD0kw82Q7ItIYrAZCQlQIP8b5wNt1W3HRkbIW
-         8XwTNU1OYeSyYJOeuWD3ict2AohJ3mkvZa55mYVJZz2XGm84YLQA8GGPyoav4809E9Wl
-         jXxxDeMBNswkl2Z/56bfyED4pluW8FuXvx/vjjcrnneggi1W2Wgy6kVGM/G5J7Aa7XNn
-         2PacIwq1R7Ut2NKbP7pbopMrOM6U0m5KvKNWmq0aATRuMrCSLBO8TLj6QBU1TdIxRVud
-         vMsw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b2EhUOxCKs6rziROIdG8qDACzBoihdnlepJ1sGGPMQA=;
+        b=fyapymGWVpZnIAXD/KNEFEz/3tp3LTW8/oCD8mCOCmq7dfoMsFNc2xwxnpBWpQaCnX
+         QS2gqNcQWl6rx5173FHiwxfyAY5/98ePwffZ0YvrM6zSgLkYwY70nqo3dMz0RvCOz+z5
+         A1MY5IjCp2Y4xceDMo0fyW2OlEpRn81I3MrToYsbNGxBwJ1/f9vTczywxDKrqnRCc1Up
+         AvYCf2a8Zx7HZMC6P0HLuMGxdmOVhdOeoTuxs2cCfqjo6JqtW2R/wOSbUVyTyTZmTKxd
+         TAMkhB2lS0NbgkZfez1LeGXh9aoGEFqmdv5dWFIT/xhNAEk+KcH/ks0sFyEN2fNYW0GR
+         ukZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1++MdtwGUVKvSetDOO4bDdTjL/q4+438yAaGXU8tCPQ=;
-        b=XwjsqcumgDWsJ4HV9lG/Eyap7hiQkML7mQzdjTne/BcfDe3OHH38+0TrQKmcQHh7a7
-         cgJa1Yj8uj2cCCtEWiggE5q8hjMTGinvdG8C+SiFjg67t335IImJE698sxWWv5jPSttE
-         JCO8s1pe7X+J21pBPFG8lK4eCZKl5oCmFC9BP+IpsPWHRM+oRtJQ/xtHwXPlt/9Yd9m1
-         43d7qgFGiWAu7xCqLz++UOHjl1oxWBn+nKVgQeMNNMZnIsL9C6gKT/ZqGhKgT76i8n+H
-         ehNLifyhZuV1BbOSCVJKvUmRsAlJPXeyx/R+mvYlYD9MRpObif8n07c6LXfxTYqqJ7kK
-         UCjQ==
-X-Gm-Message-State: AOAM533ydkNZ/gBiwptbqLk+a/n2rqn4vYZHvL/R1eVK0QePRmbqKo2h
-        fh0zww3QRWmCJheC9A1XHlTu
-X-Google-Smtp-Source: ABdhPJyO7UHSRS5jYj19PIbjeBCB0ljBQs1SwDCXigNdPMUI0mxY2nF6AchTrsBt8o2WNfiuLkIceg==
-X-Received: by 2002:a1c:f616:: with SMTP id w22mr18912866wmc.75.1641319214934;
-        Tue, 04 Jan 2022 10:00:14 -0800 (PST)
-Received: from Mem (2a01cb088160fc006dcbec8694cd1f89.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6dcb:ec86:94cd:1f89])
-        by smtp.gmail.com with ESMTPSA id l13sm43334786wrs.73.2022.01.04.10.00.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 10:00:14 -0800 (PST)
-Date:   Tue, 4 Jan 2022 19:00:13 +0100
-From:   Paul Chaignon <paul@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 3/3] bpftool: Probe for instruction set extensions
-Message-ID: <3bfedcd9898c1f41ac67ca61f144fec84c6c3a92.1641314075.git.paul@isovalent.com>
-References: <cover.1641314075.git.paul@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b2EhUOxCKs6rziROIdG8qDACzBoihdnlepJ1sGGPMQA=;
+        b=y6NyoR/Q4qVCfD1ezeKyqt/Kzt8lmDHSi5OzrvkBiiMAhtNR0QiYhTS8Ng+uRpBRXq
+         jIsPWNU8fl332NDQKy1j7DJfI1AsQp3N9IsZfoLnm5elLqdoZR8YlNfIQWw6vpSa15MT
+         fqGRrSYlVc0FJQRG+poq70KeU8TVAudgJJaXyZge4IPEQx5Zqwonayxoe4MzR39fZpyj
+         aludx23Zjv68X6kPiaNIe22luysBJ4xb5vqM/0MI5lyD+0Wzdk5Mi8JvEVPDtqQMbj10
+         U6W0dxkcuincmU/ka8GKgVLu9nS63o82bEil1O03DKtmzAXVqwtFmX2Pp9zdl2jHPvs/
+         vxiQ==
+X-Gm-Message-State: AOAM533Fm77Cbh6dzOzSV2MjMjkhS6nlrJKVlci4nck0kpw0r9f2OzuJ
+        faqbAzUY8+o+UJwfI1n9aMu1qIiM6U7uqJdtEcM=
+X-Google-Smtp-Source: ABdhPJwX+C/gsltMItc5oiL/7sX3GTDabrztWuLq8W0P8CeVVU9MV8Pwhy8mmpNLPfPr+8kIeH5F4Aq2DcCzmPGTDBI=
+X-Received: by 2002:aa7:8c59:0:b0:4bc:9dd2:6c12 with SMTP id
+ e25-20020aa78c59000000b004bc9dd26c12mr12468407pfd.59.1641320376688; Tue, 04
+ Jan 2022 10:19:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1641314075.git.paul@isovalent.com>
+References: <20210715005417.78572-1-alexei.starovoitov@gmail.com>
+ <20210715005417.78572-9-alexei.starovoitov@gmail.com> <20220104171557.GB1559@oracle.com>
+In-Reply-To: <20220104171557.GB1559@oracle.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 Jan 2022 10:19:25 -0800
+Message-ID: <CAADnVQ+MAWVmXoDYx6XOaqbnit2kSE9wx5ejEAW0ZTjrcsF=9A@mail.gmail.com>
+Subject: Re: [PATCH v7 bpf-next 08/11] bpf: Implement verifier support for
+ validation of async callbacks.
+To:     Kris Van Hees <kris.van.hees@oracle.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch introduces new probes to check whether the kernel supports
-instruction set extensions v2 and v3. The first introduced eBPF
-instructions BPF_J{LT,LE,SLT,SLE} in commit 92b31a9af73b ("bpf: add
-BPF_J{LT,LE,SLT,SLE} instructions"). The second introduces 32-bit
-variants of all jump instructions in commit 092ed0968bb6 ("bpf:
-verifier support JMP32").
+On Tue, Jan 4, 2022 at 9:16 AM Kris Van Hees <kris.van.hees@oracle.com> wrote:
+>
+> I ran into a problem due to this patch.  Specifically, the test in the
+> __check_func_call() function is flaweed because it can actually mis-interpret
+> a regular BPF-to-BPF pseudo-call as a callback call.
+>
+> Consider the conditional in the code:
+>
+>         if (insn->code == (BPF_JMP | BPF_CALL) &&
+>             insn->imm == BPF_FUNC_timer_set_callback) {
+>
+> The BPF_FUNC_timer_set_callback has value 170.  This means that if you have
+> a BPF program that contains a pseudo-call with an instruction delta of 170,
+> this conditional will be found to be true by the verifier, and it will
+> interpret the pseudo-call as a callback.  This leads to a mess with the
+> verification of the program because it makes the wrong assumptions about the
+> nature of this call.
+>
+> As far as I can see, the solution is simple.  Include an explicit check to
+> ensure that src_reg is not a pseudo-call.  I.e. make the conditional:
+>
+>         if (insn->code == (BPF_JMP | BPF_CALL) &&
+>             insn->src_reg != BPF_PSEUDO_CALL &&
+>             insn->imm == BPF_FUNC_timer_set_callback) {
+>
+> It is of course a pretty rare case that this would go wrong, but since my
+> code makes extensive use of BPF-to-BPF pseudo-calls, it was only a matter of
+> time before I would run into a call with instruction delta 170.
 
-These probes are useful for userspace BPF projects that want to use newer
-instruction set extensions on newer kernels, to reduce the programs'
-sizes or their complexity. LLVM already provides an mcpu=probe option to
-automatically probe the kernel and select the newest-supported
-instruction set extension. That is however not flexible enough for all
-use cases. For example, in Cilium, we only want to use the v3
-instruction set extension on v5.10+, even though it is supported on all
-kernels v5.1+.
-
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Paul Chaignon <paul@isovalent.com>
----
- tools/bpf/bpftool/feature.c | 44 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
-
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 03579d113042..e999159fa28d 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -708,6 +708,48 @@ probe_bounded_loops(const char *define_prefix, __u32 ifindex)
- 			   "BOUNDED_LOOPS");
- }
- 
-+/*
-+ * Probe for the v2 instruction set extension introduced in commit 92b31a9af73b
-+ * ("bpf: add BPF_J{LT,LE,SLT,SLE} instructions").
-+ */
-+static void
-+probe_v2_isa_extension(const char *define_prefix, __u32 ifindex)
-+{
-+	struct bpf_insn insns[4] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_JMP_IMM(BPF_JLT, BPF_REG_0, 0, 1),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN()
-+	};
-+
-+	probe_misc_feature(insns, ARRAY_SIZE(insns),
-+			   define_prefix, ifindex,
-+			   "have_v2_isa_extension",
-+			   "ISA extension v2",
-+			   "V2_ISA_EXTENSION");
-+}
-+
-+/*
-+ * Probe for the v3 instruction set extension introduced in commit 092ed0968bb6
-+ * ("bpf: verifier support JMP32").
-+ */
-+static void
-+probe_v3_isa_extension(const char *define_prefix, __u32 ifindex)
-+{
-+	struct bpf_insn insns[4] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_JMP32_IMM(BPF_JLT, BPF_REG_0, 0, 1),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN()
-+	};
-+
-+	probe_misc_feature(insns, ARRAY_SIZE(insns),
-+			   define_prefix, ifindex,
-+			   "have_v3_isa_extension",
-+			   "ISA extension v3",
-+			   "V3_ISA_EXTENSION");
-+}
-+
- static void
- section_system_config(enum probe_component target, const char *define_prefix)
- {
-@@ -823,6 +865,8 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
- 			    define_prefix);
- 	probe_large_insn_limit(define_prefix, ifindex);
- 	probe_bounded_loops(define_prefix, ifindex);
-+	probe_v2_isa_extension(define_prefix, ifindex);
-+	probe_v3_isa_extension(define_prefix, ifindex);
- 	print_end_section();
- }
- 
--- 
-2.25.1
-
+Great catch. All makes sense.
+Could you please submit an official patch ?
+Checking for insn->src_reg == 0 is probably better,
+since src_reg can be BPF_PSEUDO_KFUNC_CALL as well
+though __check_func_call is not called for it.
