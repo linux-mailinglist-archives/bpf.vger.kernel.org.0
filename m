@@ -2,63 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3915483C33
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 08:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AB0483D50
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 08:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbiADHYR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 02:24:17 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:36260 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbiADHYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jan 2022 02:24:16 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3D745B81125;
-        Tue,  4 Jan 2022 07:24:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EECEC36AED;
-        Tue,  4 Jan 2022 07:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641281054;
-        bh=CExcfHqPr4EO+0TkF9lRajV/MGP8IkIBhKsioRKlgJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LwtEYeuTK2ZpxkytTOKRUaqWkpMMM4o+NbnJg+fgvE5RMsk0De9MgjuRP3U5svnmK
-         lZHifn+9L91ncs0v9SXohuIwSZyxAYKeSer+V2Ng7lnyRUel1zwci7tEqMKBwH7naI
-         rdVVawrNaLtLor+PCiWtn1l7bqbmVaqBt7rpKa6IdXngDyhdrQKFqkxPQkg2uzIki0
-         tf+hy7AYXg1TTs9Hhccdr/jRiHCEtD3TkbQHVqJxsgBb0N4ufXPkVq8UbWwqZ689cB
-         gEnHc8nIyVO1VhY2qGPCYLCm7HHlHdV9kbCjt2tecXqlJcsBZDiG04tQH4zZFSihA5
-         sgW77KGR0bIGQ==
-Date:   Mon, 3 Jan 2022 23:24:11 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        saeedm@nvidia.com, leon@kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
+        id S233768AbiADH5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 02:57:10 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233771AbiADH5J (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 02:57:09 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2044DWXC008837;
+        Tue, 4 Jan 2022 07:56:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=E+3Lggbi73BJUF7sAts8cCdKAnFCwgo26V0dOyoHqr4=;
+ b=o8ISA6tRe4M80xu7k8awnxCreULpZoQ6P27ch518Ldi742W7a5w00vsSkmT9KwvUSDgu
+ 6hBsGXsXyBDXJvbiARdILyD1v/ulipuJ6xFy7A6LKMyg+dx2tdShZcxQ0JEQKhzdt0Zm
+ P2eMb0xr5DkdxU1J4MMGxh6qiRv+/4WkuXhekSgrqH5xMt27pAx2j3XSosblbsaD+tPM
+ GefmlpeYUI5lhSBjWO+dZYrishomgykfFM/GbB/VAKypfJFNjH7ib5bNYpJfLnh4BPcM
+ EGnLBrwZSBKj0aimziO2U0fxDNxPI1bCX4alg6fBDI02thhUmuDTZ14St4AzgvakaqPb LA== 
+Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3dcf1831vs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Jan 2022 07:56:51 +0000
+Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
+        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2047sYJs021543;
+        Tue, 4 Jan 2022 07:56:51 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma01wdc.us.ibm.com with ESMTP id 3daeka5xaq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 Jan 2022 07:56:50 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2047uoaX30998800
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 Jan 2022 07:56:50 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20DEA6A05D;
+        Tue,  4 Jan 2022 07:56:50 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDA436A04D;
+        Tue,  4 Jan 2022 07:56:44 +0000 (GMT)
+Received: from [9.43.78.252] (unknown [9.43.78.252])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue,  4 Jan 2022 07:56:44 +0000 (GMT)
+Message-ID: <984e801f-494b-c84c-8efe-2d205af9bd7a@linux.vnet.ibm.com>
+Date:   Tue, 4 Jan 2022 13:24:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
 Subject: Re: [PATCH net-next] net: fixup build after bpf header changes
-Message-ID: <20220104072411.esukmdx7sy3milmx@sx1>
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, sachinp <sachinp@linux.vnet.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>
 References: <20220104034827.1564167-1-kuba@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+From:   Abdul Haleem <abdhalee@linux.vnet.ibm.com>
 In-Reply-To: <20220104034827.1564167-1-kuba@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: qK3BMOAQyXfi_WpBA8KFUOtwlAmpIBwJ
+X-Proofpoint-ORIG-GUID: qK3BMOAQyXfi_WpBA8KFUOtwlAmpIBwJ
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-04_04,2022-01-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ clxscore=1011 spamscore=0 suspectscore=0 lowpriorityscore=0
+ priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201040049
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 03, 2022 at 07:48:27PM -0800, Jakub Kicinski wrote:
->Recent bpf-next merge brought in header changes which uncovered
->includes missing in net-next which were not present in bpf-next.
->Build problems happen only on less-popular arches like hppa,
->sparc, alpha etc.
->
->I could repro the build problem with ice but not the mlx5 problem
->Abdul was reporting. mlx5 does look like it should include filter.h,
->anyway.
->
+Hi
 
-I got an internal report on the same thing also, but I couldn't repro
-myself neither, I will ask them to test your patch.
+Thank You Jakub for the patch.
+
+Kernel builds fine with given patch fix
+
+Tested-by : Abdul haleem <abdhalee@linux.vnet.ibm.com>
+
+On 1/4/22 9:18 AM, Jakub Kicinski wrote:
+
+> Recent bpf-next merge brought in header changes which uncovered
+> includes missing in net-next which were not present in bpf-next.
+> Build problems happen only on less-popular arches like hppa,
+> sparc, alpha etc.
+>
+> I could repro the build problem with ice but not the mlx5 problem
+> Abdul was reporting. mlx5 does look like it should include filter.h,
+> anyway.
+>
+> Reported-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+> Fixes: e63a02348958 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next")
+> Link: https://lore.kernel.org/all/7c03768d-d948-c935-a7ab-b1f963ac7eed@linux.vnet.ibm.com/
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: jesse.brandeburg@intel.com
+> CC: anthony.l.nguyen@intel.com
+> CC: saeedm@nvidia.com
+> CC: leon@kernel.org
+> CC: intel-wired-lan@lists.osuosl.org
+> CC: linux-rdma@vger.kernel.org
+> CC: bpf@vger.kernel.org
+> ---
+>   drivers/net/ethernet/intel/ice/ice_nvm.c          | 2 ++
+>   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 1 +
+>   2 files changed, 3 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/intel/ice/ice_nvm.c b/drivers/net/ethernet/intel/ice/ice_nvm.c
+> index cd739a2c64e8..4eb0599714f4 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_nvm.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_nvm.c
+> @@ -1,6 +1,8 @@
+>   // SPDX-License-Identifier: GPL-2.0
+>   /* Copyright (c) 2018, Intel Corporation. */
+>
+> +#include <linux/vmalloc.h>
+> +
+>   #include "ice_common.h"
+>
+>   /**
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index efcf9d30b131..31c911182498 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -37,6 +37,7 @@
+>   #include <net/geneve.h>
+>   #include <linux/bpf.h>
+>   #include <linux/if_bridge.h>
+> +#include <linux/filter.h>
+>   #include <net/page_pool.h>
+>   #include <net/xdp_sock_drv.h>
+>   #include "eswitch.h"
+
+-- 
+Regard's
+
+Abdul Haleem
+IBM Linux Technology Center
 
