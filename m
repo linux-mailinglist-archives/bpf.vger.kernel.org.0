@@ -2,82 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B868A483F7A
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 10:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFCE483FD6
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 11:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbiADJ5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 04:57:05 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53773 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230308AbiADJ5E (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 04:57:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0V0vAOIp_1641290221;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V0vAOIp_1641290221)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 04 Jan 2022 17:57:02 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     netdev@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org
-Subject: [PATCH net] Revert "xsk: Do not sleep in poll() when need_wakeup set"
-Date:   Tue,  4 Jan 2022 17:57:01 +0800
-Message-Id: <20220104095701.10661-1-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
+        id S231406AbiADKYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 05:24:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231408AbiADKYV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 05:24:21 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15FCCC061785
+        for <bpf@vger.kernel.org>; Tue,  4 Jan 2022 02:24:21 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id q14so138750852edi.3
+        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 02:24:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=lS2G53CUISbjpkqCjm2OaetcGsivZVkspnAYsGlEa00=;
+        b=L6Yv8nqYLar/A3mUr0OfY1upF8XUDRYHUiBhFwiesxtM8Wo55kNFJau869s0RO8RmJ
+         w4sFqQLwewU1rA96MFYVhJSZ88T/gkon2QoJTB+h1RfDrEomOLZrFRzDw0dSG6DuWLEq
+         5IRP/HXM9kq1IproeXaKI6C3hYAYQ+2qekpaUjrGw0UGS5DPBjQyQ/b0YlOT0rFgxeHc
+         sGowHEKqSROFpcEF2dQVo8LtWXe76tA8kfYztr0GXuduKZDnSMXD/3SrXFImrPZyQpqn
+         wOq9bx+IC36O9xdsSI4nQFJYLvJvNSZvKQVFFYolCxlD03ZdQce3zUXqlF2J7VlVdyoA
+         Z2GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=lS2G53CUISbjpkqCjm2OaetcGsivZVkspnAYsGlEa00=;
+        b=H1Q5VDX22r0X1uHs1AyPSTE6T48Oxq3IoqkGYu3RssqhvBoY2tLezeBvKXwDor6QCZ
+         A+Bcwb/eVHrRk7dnkJl6akDuGNURbB7qGsu+ZBs0ameS+QzhGi1tdQ7kcEfxgWbi5NfE
+         kTofMLUYA6bpa/len6bpKO+Uj3qyde1fezhJGaE3mKf2+DmcO8aclOLFbx9PL50CT+nP
+         K6s7ErLujn9HG/rTOPx7DOc4ASlggSNI1BlSyWSv9kkTrPWgC3LHyNw+9LTcGSIXnRFU
+         gpkYtotXqkBU+D+quCDi2Tzfg8UbqFI04egQfeIG6UF6b6AmBMdUwKXg2fIc4jfqli8O
+         pDnw==
+X-Gm-Message-State: AOAM532wAyedKVc+BpZO5YK8gpPhzwcho3H43KKvNu8aA/FWyPKuhO+g
+        nkJqmOhuK6Hh9RXd0G/QlKli9J0OmwCPoU4pkEAHfMN8
+X-Google-Smtp-Source: ABdhPJw8Q/Etvc/rvstudi7zF0u8pW2QlZogdT8VH9Nsm4wJ3oSFlxHnSGJHT3469yOr2a9ZNVy6wTindAZazmThQWA=
+X-Received: by 2002:aa7:c7d1:: with SMTP id o17mr44632979eds.412.1641291859545;
+ Tue, 04 Jan 2022 02:24:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK7W0xe9VVbyVykzTK8X8ieg4UgRJEtrvEyKgLjBO+iVFV41+A@mail.gmail.com>
+ <YdOYhsVwGu1p/SSu@pop-os.localdomain> <CAK7W0xezGaA1TZcsxkt_hf+b0LU+396CmetejFBEXjqtvbmDkA@mail.gmail.com>
+In-Reply-To: <CAK7W0xezGaA1TZcsxkt_hf+b0LU+396CmetejFBEXjqtvbmDkA@mail.gmail.com>
+From:   His Shadow <shadowpilot34@gmail.com>
+Date:   Tue, 4 Jan 2022 13:24:08 +0300
+Message-ID: <CAK7W0xfX35NSKa_ExcpJkWoy1iX5mU7ogjHbr=T5sHJ9U+D0fQ@mail.gmail.com>
+Subject: Fwd: eBPF sockhash datastructure and stream_parser/stream_verdict programs
+To:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This reverts commit bd0687c18e635b63233dc87f38058cd728802ab4.
+Resending to the list, since gmail only picks first responder :(
 
-When working with epoll, if the application encounters tx full, the
-application will enter epoll_wait and wait for tx to be awakened when
-there is room.
+>Are you saying the packets arrived before you put the socket into the sockmap?
+Yes, exactly!
 
-In the current situation, when tx is full pool->cached_need_wakeup may
-not be 0 (regardless of whether the driver supports wakeup, or whether
-the user uses XDP_USE_NEED_WAKEUP). The result is that if the user
-enters epoll_wait, because soock_poll_wait is not called, causing the
-user process to not be awakened.
+Could you elaborate on how BPF_SOCK_OPS_PASSIVE_ESTABLISHED_CB would
+be helpful? I assume I need to set up a sockops program and record
+passive ends pointers to bpf_sock somewhere, then redirect from
+passive to passive or passive->active?
 
-Fixes: bd0687c18e63 ("xsk: Do not sleep in poll() when need_wakeup set")
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- net/xdp/xsk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index e3d35850fdea..28ef3f4465ae 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -677,6 +677,8 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 	struct xdp_sock *xs = xdp_sk(sk);
- 	struct xsk_buff_pool *pool;
- 
-+	sock_poll_wait(file, sock, wait);
-+
- 	if (unlikely(!xsk_is_bound(xs)))
- 		return mask;
- 
-@@ -688,8 +690,6 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 		else
- 			/* Poll needs to drive Tx also in copy mode */
- 			__xsk_sendmsg(sk);
--	} else {
--		sock_poll_wait(file, sock, wait);
- 	}
- 
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
 -- 
-2.31.0
-
+HisShadow
