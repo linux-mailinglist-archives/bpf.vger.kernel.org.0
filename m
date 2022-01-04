@@ -2,84 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49FF74839E4
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 02:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7B54839C9
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 02:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbiADBej (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jan 2022 20:34:39 -0500
-Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:59191 "EHLO
-        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbiADBej (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jan 2022 20:34:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1641260079; x=1672796079;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=p0DyDQ+vWEwJliI3fARijsd3UJqqtNYA35ktKFWmfQA=;
-  b=do1RnvfFXT5aB+TIsV4NwNNZkEJ/1Mj1/ruJfDVDKYSKwf6wU3b0aCmb
-   XssEb9ZFNEIk8LcJ9XJz30AKLtGCJCvM63oTZurFbzP5uxNB2+XUhpAdr
-   4T7kn6gC1oQ8B2zy3pxdc9UaB/4PhMU+YCOOGEC2Wvn9Y9eti1ljaSwJT
-   w=;
-X-IronPort-AV: E=Sophos;i="5.88,258,1635206400"; 
-   d="scan'208";a="52418794"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-1cb212d9.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 04 Jan 2022 01:34:39 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2c-1cb212d9.us-west-2.amazon.com (Postfix) with ESMTPS id 11FB2C0950;
-        Tue,  4 Jan 2022 01:34:39 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.26; Tue, 4 Jan 2022 01:34:37 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.97) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.26; Tue, 4 Jan 2022 01:34:34 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S231727AbiADB1Y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jan 2022 20:27:24 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:31065 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbiADB1X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jan 2022 20:27:23 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JSZdS28Xsz1DKM0;
+        Tue,  4 Jan 2022 09:23:56 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Tue, 4 Jan
+ 2022 09:27:20 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH bpf-next 6/6] selftest/bpf: Fix a stale comment.
-Date:   Tue, 4 Jan 2022 10:31:53 +0900
-Message-ID: <20220104013153.97906-7-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220104013153.97906-1-kuniyu@amazon.co.jp>
-References: <20220104013153.97906-1-kuniyu@amazon.co.jp>
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH bpf] bpf, arm64: calculate offset as byte-offset for bpf line info
+Date:   Tue, 4 Jan 2022 09:42:36 +0800
+Message-ID: <20220104014236.1512639-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.97]
-X-ClientProxiedBy: EX13D19UWA004.ant.amazon.com (10.43.160.102) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit b8a58aa6fccc ("af_unix: Cut unix_validate_addr() out of
-unix_mkname().") moved the bound test part into unix_validate_addr().
+The bpf line info for arm64 is broken due to two reasons:
+(1) insn_to_jit_off passed to bpf_prog_fill_jited_linfo() is
+    calculated in instruction granularity instead of bytes
+    granularity.
+(2) insn_to_jit_off only considers the body itself and ignores
+    prologue before the body.
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+So fix it by calculating offset as byte-offset and do build_prologue()
+first in the first JIT pass.
+
+Fixes: 37ab566c178d ("bpf: arm64: Enable arm64 jit to provide bpf_line_info")
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_iter_unix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/net/bpf_jit_comp.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-index c21e3f545371..e6aefae38894 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-@@ -63,7 +63,7 @@ int dump_unix(struct bpf_iter__unix *ctx)
- 			BPF_SEQ_PRINTF(seq, " @");
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 148ca51325bb..d7a6d4b523c9 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -24,6 +24,8 @@
  
- 			for (i = 1; i < len; i++) {
--				/* unix_mkname() tests this upper bound. */
-+				/* unix_validate_addr() tests this upper bound. */
- 				if (i >= sizeof(struct sockaddr_un))
- 					break;
+ #include "bpf_jit.h"
  
++#define INSN_SZ (sizeof(u32))
++
+ #define TMP_REG_1 (MAX_BPF_JIT_REG + 0)
+ #define TMP_REG_2 (MAX_BPF_JIT_REG + 1)
+ #define TCALL_CNT (MAX_BPF_JIT_REG + 2)
+@@ -154,10 +156,11 @@ static inline int bpf2a64_offset(int bpf_insn, int off,
+ 	bpf_insn++;
+ 	/*
+ 	 * Whereas arm64 branch instructions encode the offset
+-	 * from the branch itself, so we must subtract 1 from the
++	 * from the branch itself, so we must subtract 4 from the
+ 	 * instruction offset.
+ 	 */
+-	return ctx->offset[bpf_insn + off] - (ctx->offset[bpf_insn] - 1);
++	return (ctx->offset[bpf_insn + off] -
++		(ctx->offset[bpf_insn] - INSN_SZ)) / INSN_SZ;
+ }
+ 
+ static void jit_fill_hole(void *area, unsigned int size)
+@@ -955,13 +958,14 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+ 		const struct bpf_insn *insn = &prog->insnsi[i];
+ 		int ret;
+ 
++		/* BPF line info needs byte-offset instead of insn-offset */
+ 		if (ctx->image == NULL)
+-			ctx->offset[i] = ctx->idx;
++			ctx->offset[i] = ctx->idx * INSN_SZ;
+ 		ret = build_insn(insn, ctx, extra_pass);
+ 		if (ret > 0) {
+ 			i++;
+ 			if (ctx->image == NULL)
+-				ctx->offset[i] = ctx->idx;
++				ctx->offset[i] = ctx->idx * INSN_SZ;
+ 			continue;
+ 		}
+ 		if (ret)
+@@ -973,7 +977,7 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+ 	 * instruction (end of program)
+ 	 */
+ 	if (ctx->image == NULL)
+-		ctx->offset[i] = ctx->idx;
++		ctx->offset[i] = ctx->idx * INSN_SZ;
+ 
+ 	return 0;
+ }
+@@ -1058,15 +1062,18 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		goto out_off;
+ 	}
+ 
+-	/* 1. Initial fake pass to compute ctx->idx. */
+-
+-	/* Fake pass to fill in ctx->offset. */
+-	if (build_body(&ctx, extra_pass)) {
++	/*
++	 * 1. Initial fake pass to compute ctx->idx and ctx->offset.
++	 *
++	 * BPF line info needs ctx->offset[i] to be the byte offset
++	 * of instruction[i] in jited image, so build prologue first.
++	 */
++	if (build_prologue(&ctx, was_classic)) {
+ 		prog = orig_prog;
+ 		goto out_off;
+ 	}
+ 
+-	if (build_prologue(&ctx, was_classic)) {
++	if (build_body(&ctx, extra_pass)) {
+ 		prog = orig_prog;
+ 		goto out_off;
+ 	}
 -- 
-2.30.2
+2.27.0
 
