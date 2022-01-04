@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD728483DB5
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 09:10:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F221D483DBB
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 09:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233871AbiADIKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 03:10:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47643 "EHLO
+        id S233832AbiADIKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 03:10:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42120 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233852AbiADIJ7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 03:09:59 -0500
+        by vger.kernel.org with ESMTP id S233852AbiADIKG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 03:10:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641283799;
+        s=mimecast20190719; t=1641283806;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wC25vJidXOSulDOMTh98GoQfpZN9ZJGJe/vhERr1/WY=;
-        b=EE05GDFr+C+XzLeJEPOStvJs2gtdMByWDDZd2qJ0RlRoXk2NZvjU2Kq4WlQThiwi3VY2Iy
-        prsFSuyPXupEqxOeZoPenTyfSHG2Hp5xq9TzDMbCsEAA1u9bWFlv1AfQFoUlehxTWIGGNl
-        Q7RWK4ly68OnMOrh5acp8CojLb7QtWA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=6BFEB//ISNWLrFisbkclN0B/NzP/+Sn4aN88iN/SnSE=;
+        b=UB8Fv75v/CnbOUgal8JlURA/cEDGeyn2g22gSGVzRmRJSvUUzbbIb58ZMckAKHE8Dom3tQ
+        yiAhqZQ0+qkC2BYKhVYXDo9fGMS2+a1TBY+Skin1uzxrCLjUNAdWp0++BmuNU96W9gw2n4
+        qQ8g2LTXN2q2/z/B8Veqv5KxEbPHy7Y=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-393-zqRBsE06Pg2ivVJS4aVj1Q-1; Tue, 04 Jan 2022 03:09:58 -0500
-X-MC-Unique: zqRBsE06Pg2ivVJS4aVj1Q-1
-Received: by mail-ed1-f70.google.com with SMTP id h6-20020a056402280600b003f9967993aeso3841484ede.10
-        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 00:09:57 -0800 (PST)
+ us-mta-418-R5IL4i4EPrediQgpznDh1Q-1; Tue, 04 Jan 2022 03:10:05 -0500
+X-MC-Unique: R5IL4i4EPrediQgpznDh1Q-1
+Received: by mail-ed1-f72.google.com with SMTP id z8-20020a056402274800b003f8580bfb99so24711790edd.11
+        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 00:10:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wC25vJidXOSulDOMTh98GoQfpZN9ZJGJe/vhERr1/WY=;
-        b=GkKX73ho1ncPZtcKhwngsBLXHSrpWcN15UZ4doEJ5K5hSmBf4lZgIJpLg1+F10mC6x
-         X/seAU6bcX5ET5bbsPXvsafIxoqg/FoDzqI+Y4MRr+w/LY5pgBlGoAEDojBElAo211iI
-         xwDiA+s2NSBYqDvlv20agQTnxuMfMOsdPal3gV2Rh5VI9A6BAPvW3VA8J/B1sQTlMTW1
-         c04RtOM0U4rIV+xBaAWAt0lnI0CwA5+EC3ItVL1xXygO19BGytIDb41ea8tjC7zHqpON
-         mkjr3w/A1Sb3dthy0dzWI/CLp0AAPl9TzOFxhDghcG9i8bywCmaLdB6xSJlAdZf9vGCV
-         5DEA==
-X-Gm-Message-State: AOAM533iiqwgMjd54Ye/EQpUT1uJJd6DUrj8X3gJcF8tFb0VzhLwP7al
-        sUszlNpwHDCwI9nob6xmg/GY2J9/Z4LY7kpmvU1wwVvs9QxGrOGtBxBcPJvDIJQwOBXQs6tlrdK
-        fC/YvWWIGzu2i
-X-Received: by 2002:a17:907:82a6:: with SMTP id mr38mr37035520ejc.744.1641283796931;
-        Tue, 04 Jan 2022 00:09:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxsV54Czj67uFIcbN98S4rvhYvKQh3lGyoyRpY5hJVl008UQ+Cuw2N++aiqMvvkhk7MQ3Geww==
-X-Received: by 2002:a17:907:82a6:: with SMTP id mr38mr37035499ejc.744.1641283796706;
-        Tue, 04 Jan 2022 00:09:56 -0800 (PST)
+        bh=6BFEB//ISNWLrFisbkclN0B/NzP/+Sn4aN88iN/SnSE=;
+        b=FzqFQKuhREubsA/pOfblOhLbaqmr/BBELknL6RD2LC2jR2DUWM+8eVAd3wUIdD4sMb
+         HVuFYWI2W6fGq88dG8lJaIPpVViVrrrAY0SN2GlHb9dTrO1hzhmpmbVDDMPFkboyEbKP
+         LxPKVE2NNpEhX1O0EtWMqERiqhqymdA7pTmg+pe50JxKjaXBlr8AO5Bf9bL3GiZJKi10
+         V552sc6j1QdwaBGvgxuo7X9wnisFQMejon1hiCSlLNlXe7w7yCpeq/+9MzGE1JR74vOR
+         Vy91pLwSPrH6N8/LIbeCPG12J2Vi8UZ4ihupPATt6zvzGTvycvMmf5LBsjsRITBi9xHY
+         bytw==
+X-Gm-Message-State: AOAM533LUyGBtuV0guZsLesgq/E+ILkoML2Wn22A3c4VUNCj/so65dxj
+        BkVWKSJOwRE6IkDdOXS/V0IIrJj0KMtmwu/ixA6fCfY9RiTNA+qv9vn5d7+mA52FxgiQM9L2jxh
+        Laqsmu692N9ci
+X-Received: by 2002:aa7:d299:: with SMTP id w25mr48023970edq.269.1641283802978;
+        Tue, 04 Jan 2022 00:10:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJybPAhyMNJAbOkPpI/5fB1tOEsb49UmlCJ1ODo++dlxof7LW1b5pCI0lsf7ki81kO1IxWQOxg==
+X-Received: by 2002:aa7:d299:: with SMTP id w25mr48023957edq.269.1641283802782;
+        Tue, 04 Jan 2022 00:10:02 -0800 (PST)
 Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id 19sm8284197ejv.207.2022.01.04.00.09.56
+        by smtp.gmail.com with ESMTPSA id hu8sm11296854ejc.32.2022.01.04.00.10.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 00:09:56 -0800 (PST)
+        Tue, 04 Jan 2022 00:10:02 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -67,9 +67,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 02/13] kprobe: Keep traced function address
-Date:   Tue,  4 Jan 2022 09:09:32 +0100
-Message-Id: <20220104080943.113249-3-jolsa@kernel.org>
+Subject: [PATCH 03/13] kprobe: Add support to register multiple ftrace kprobes
+Date:   Tue,  4 Jan 2022 09:09:33 +0100
+Message-Id: <20220104080943.113249-4-jolsa@kernel.org>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20220104080943.113249-1-jolsa@kernel.org>
 References: <20220104080943.113249-1-jolsa@kernel.org>
@@ -79,109 +79,506 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bpf_get_func_ip_kprobe helper should return traced function
-address, but it's doing so only for kprobes that are placed on
-the function entry.
+Adding support to register kprobe on multiple addresses within
+single kprobe object instance.
 
-If kprobe is placed within the function, bpf_get_func_ip_kprobe
-returns that address instead of function entry.
+It uses the CONFIG_KPROBES_ON_FTRACE feature (so it's only
+available for function entry addresses) and separated ftrace_ops
+object placed directly in the kprobe object.
 
-Storing the function entry directly in kprobe object, so it could
-be used in bpf_get_func_ip_kprobe helper.
+There's new CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE config option,
+enabled for archs that support multi kprobes.
+
+It registers all the provided addresses in the ftrace_ops object
+filter and adds separate ftrace_ops callback.
+
+To register multi kprobe user provides array of addresses or
+symbols with their count, like:
+
+  struct kprobe kp = {};
+
+  kp.multi.symbols = (const char **) symbols;
+  kp.multi.cnt = cnt;
+  ...
+
+  err = register_kprobe(&kp);
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/kprobes.h                              |  3 +++
- kernel/kprobes.c                                     | 12 ++++++++++++
- kernel/trace/bpf_trace.c                             |  2 +-
- tools/testing/selftests/bpf/progs/get_func_ip_test.c |  4 ++--
- 4 files changed, 18 insertions(+), 3 deletions(-)
+ arch/Kconfig                     |   3 +
+ arch/x86/Kconfig                 |   1 +
+ arch/x86/kernel/kprobes/ftrace.c |  48 ++++++--
+ include/linux/kprobes.h          |  25 ++++
+ kernel/kprobes.c                 | 204 +++++++++++++++++++++++++------
+ 5 files changed, 235 insertions(+), 46 deletions(-)
 
+diff --git a/arch/Kconfig b/arch/Kconfig
+index d3c4ab249e9c..0131636e1ef8 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -191,6 +191,9 @@ config HAVE_OPTPROBES
+ config HAVE_KPROBES_ON_FTRACE
+ 	bool
+ 
++config HAVE_KPROBES_MULTI_ON_FTRACE
++	bool
++
+ config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
+ 	bool
+ 	help
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5c2ccb85f2ef..0c870238016a 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -217,6 +217,7 @@ config X86
+ 	select HAVE_KERNEL_ZSTD
+ 	select HAVE_KPROBES
+ 	select HAVE_KPROBES_ON_FTRACE
++	select HAVE_KPROBES_MULTI_ON_FTRACE
+ 	select HAVE_FUNCTION_ERROR_INJECTION
+ 	select HAVE_KRETPROBES
+ 	select HAVE_KVM
+diff --git a/arch/x86/kernel/kprobes/ftrace.c b/arch/x86/kernel/kprobes/ftrace.c
+index dd2ec14adb77..ac4d256b89c6 100644
+--- a/arch/x86/kernel/kprobes/ftrace.c
++++ b/arch/x86/kernel/kprobes/ftrace.c
+@@ -12,22 +12,14 @@
+ 
+ #include "common.h"
+ 
+-/* Ftrace callback handler for kprobes -- called under preempt disabled */
+-void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+-			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
++static void ftrace_handler(struct kprobe *p, unsigned long ip,
++			   struct ftrace_regs *fregs)
+ {
+ 	struct pt_regs *regs = ftrace_get_regs(fregs);
+-	struct kprobe *p;
+ 	struct kprobe_ctlblk *kcb;
+-	int bit;
+ 
+-	bit = ftrace_test_recursion_trylock(ip, parent_ip);
+-	if (bit < 0)
+-		return;
+-
+-	p = get_kprobe((kprobe_opcode_t *)ip);
+ 	if (unlikely(!p) || kprobe_disabled(p))
+-		goto out;
++		return;
+ 
+ 	kcb = get_kprobe_ctlblk();
+ 	if (kprobe_running()) {
+@@ -57,11 +49,43 @@ void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 		 */
+ 		__this_cpu_write(current_kprobe, NULL);
+ 	}
+-out:
++}
++
++/* Ftrace callback handler for kprobes -- called under preempt disabled */
++void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
++			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
++{
++	struct kprobe *p;
++	int bit;
++
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	if (bit < 0)
++		return;
++
++	p = get_kprobe((kprobe_opcode_t *)ip);
++	ftrace_handler(p, ip, fregs);
++
+ 	ftrace_test_recursion_unlock(bit);
+ }
+ NOKPROBE_SYMBOL(kprobe_ftrace_handler);
+ 
++void kprobe_ftrace_multi_handler(unsigned long ip, unsigned long parent_ip,
++				 struct ftrace_ops *ops, struct ftrace_regs *fregs)
++{
++	struct kprobe *p;
++	int bit;
++
++	bit = ftrace_test_recursion_trylock(ip, parent_ip);
++	if (bit < 0)
++		return;
++
++	p = container_of(ops, struct kprobe, multi.ops);
++	ftrace_handler(p, ip, fregs);
++
++	ftrace_test_recursion_unlock(bit);
++}
++NOKPROBE_SYMBOL(kprobe_ftrace_multi_handler);
++
+ int arch_prepare_kprobe_ftrace(struct kprobe *p)
+ {
+ 	p->ainsn.insn = NULL;
 diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
-index 8c8f7a4d93af..a204df4fef96 100644
+index a204df4fef96..03fd86ef69cb 100644
 --- a/include/linux/kprobes.h
 +++ b/include/linux/kprobes.h
-@@ -74,6 +74,9 @@ struct kprobe {
- 	/* Offset into the symbol */
- 	unsigned int offset;
+@@ -68,6 +68,16 @@ struct kprobe {
+ 	/* location of the probe point */
+ 	kprobe_opcode_t *addr;
  
-+	/* traced function address */
-+	unsigned long func_addr;
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++	/* location of the multi probe points */
++	struct {
++		const char **symbols;
++		kprobe_opcode_t **addrs;
++		unsigned int cnt;
++		struct ftrace_ops ops;
++	} multi;
++#endif
 +
- 	/* Called before addr is executed. */
- 	kprobe_pre_handler_t pre_handler;
+ 	/* Allow user to indicate symbol name of the probe point */
+ 	const char *symbol_name;
  
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index d20ae8232835..c4060a8da050 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1310,6 +1310,7 @@ static void init_aggr_kprobe(struct kprobe *ap, struct kprobe *p)
- 	copy_kprobe(p, ap);
- 	flush_insn_slot(ap);
- 	ap->addr = p->addr;
-+	ap->func_addr = p->func_addr;
- 	ap->flags = p->flags & ~KPROBE_FLAG_OPTIMIZED;
- 	ap->pre_handler = aggr_pre_handler;
- 	/* We don't care the kprobe which has gone. */
-@@ -1588,6 +1589,16 @@ static int check_kprobe_address_safe(struct kprobe *p,
- 	return ret;
+@@ -105,6 +115,7 @@ struct kprobe {
+ 				   * this flag is only for optimized_kprobe.
+ 				   */
+ #define KPROBE_FLAG_FTRACE	8 /* probe is using ftrace */
++#define KPROBE_FLAG_MULTI      16 /* probe multi addresses */
+ 
+ /* Has this kprobe gone ? */
+ static inline bool kprobe_gone(struct kprobe *p)
+@@ -130,6 +141,18 @@ static inline bool kprobe_ftrace(struct kprobe *p)
+ 	return p->flags & KPROBE_FLAG_FTRACE;
  }
  
-+static unsigned long resolve_func_addr(kprobe_opcode_t *addr)
++/* Is this ftrace multi kprobe ? */
++static inline bool kprobe_ftrace_multi(struct kprobe *p)
 +{
-+	char str[KSYM_SYMBOL_LEN];
-+	unsigned long offset;
++	return kprobe_ftrace(p) && (p->flags & KPROBE_FLAG_MULTI);
++}
 +
-+	if (kallsyms_lookup((unsigned long) addr, NULL, &offset, NULL, str))
-+		return (unsigned long) addr - offset;
++/* Is this single kprobe ? */
++static inline bool kprobe_single(struct kprobe *p)
++{
++	return !(p->flags & KPROBE_FLAG_MULTI);
++}
++
+ /*
+  * Function-return probe -
+  * Note:
+@@ -365,6 +388,8 @@ static inline void wait_for_kprobe_optimizer(void) { }
+ #ifdef CONFIG_KPROBES_ON_FTRACE
+ extern void kprobe_ftrace_handler(unsigned long ip, unsigned long parent_ip,
+ 				  struct ftrace_ops *ops, struct ftrace_regs *fregs);
++extern void kprobe_ftrace_multi_handler(unsigned long ip, unsigned long parent_ip,
++					struct ftrace_ops *ops, struct ftrace_regs *fregs);
+ extern int arch_prepare_kprobe_ftrace(struct kprobe *p);
+ #else
+ static inline int arch_prepare_kprobe_ftrace(struct kprobe *p)
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index c4060a8da050..e7729e20d85c 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -44,6 +44,7 @@
+ #include <asm/cacheflush.h>
+ #include <asm/errno.h>
+ #include <linux/uaccess.h>
++#include <linux/ftrace.h>
+ 
+ #define KPROBE_HASH_BITS 6
+ #define KPROBE_TABLE_SIZE (1 << KPROBE_HASH_BITS)
+@@ -1022,6 +1023,35 @@ static struct kprobe *alloc_aggr_kprobe(struct kprobe *p)
+ }
+ #endif /* CONFIG_OPTPROBES */
+ 
++static int check_kprobe_address(unsigned long addr)
++{
++	/* Ensure it is not in reserved area nor out of text */
++	return !kernel_text_address(addr) ||
++		within_kprobe_blacklist(addr) ||
++		jump_label_text_reserved((void *) addr, (void *) addr) ||
++		static_call_text_reserved((void *) addr, (void *) addr) ||
++		find_bug(addr);
++}
++
++static int check_ftrace_location(unsigned long addr, struct kprobe *p)
++{
++	unsigned long ftrace_addr;
++
++	ftrace_addr = ftrace_location(addr);
++	if (ftrace_addr) {
++#ifdef CONFIG_KPROBES_ON_FTRACE
++		/* Given address is not on the instruction boundary */
++		if (addr != ftrace_addr)
++			return -EILSEQ;
++		if (p)
++			p->flags |= KPROBE_FLAG_FTRACE;
++#else	/* !CONFIG_KPROBES_ON_FTRACE */
++		return -EINVAL;
++#endif
++	}
 +	return 0;
 +}
 +
- int register_kprobe(struct kprobe *p)
+ #ifdef CONFIG_KPROBES_ON_FTRACE
+ static struct ftrace_ops kprobe_ftrace_ops __read_mostly = {
+ 	.func = kprobe_ftrace_handler,
+@@ -1043,6 +1073,13 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 
+ 	lockdep_assert_held(&kprobe_mutex);
+ 
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++	if (kprobe_ftrace_multi(p)) {
++		ret = register_ftrace_function(&p->multi.ops);
++		WARN(ret < 0, "Failed to register kprobe-multi-ftrace (error %d)\n", ret);
++		return ret;
++	}
++#endif
+ 	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
+ 	if (WARN_ONCE(ret < 0, "Failed to arm kprobe-ftrace at %pS (error %d)\n", p->addr, ret))
+ 		return ret;
+@@ -1081,6 +1118,13 @@ static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
+ 
+ 	lockdep_assert_held(&kprobe_mutex);
+ 
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++	if (kprobe_ftrace_multi(p)) {
++		ret = unregister_ftrace_function(&p->multi.ops);
++		WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret);
++		return ret;
++	}
++#endif
+ 	if (*cnt == 1) {
+ 		ret = unregister_ftrace_function(ops);
+ 		if (WARN(ret < 0, "Failed to unregister kprobe-ftrace (error %d)\n", ret))
+@@ -1103,6 +1147,94 @@ static int disarm_kprobe_ftrace(struct kprobe *p)
+ 		ipmodify ? &kprobe_ipmodify_ops : &kprobe_ftrace_ops,
+ 		ipmodify ? &kprobe_ipmodify_enabled : &kprobe_ftrace_enabled);
+ }
++
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++/*
++ * In addition to standard kprobe address check for multi
++ * ftrace kprobes we also allow only:
++ * - ftrace managed function entry address
++ * - kernel core only address
++ */
++static unsigned long check_ftrace_addr(unsigned long addr)
++{
++	int err;
++
++	if (!addr)
++		return -EINVAL;
++	err = check_ftrace_location(addr, NULL);
++	if (err)
++		return err;
++	if (check_kprobe_address(addr))
++		return -EINVAL;
++	if (__module_text_address(addr))
++		return -EINVAL;
++	return 0;
++}
++
++static int check_ftrace_multi(struct kprobe *p)
++{
++	kprobe_opcode_t **addrs = p->multi.addrs;
++	const char **symbols = p->multi.symbols;
++	unsigned int i, cnt = p->multi.cnt;
++	unsigned long addr, *ips;
++	int err;
++
++	if ((symbols && addrs) || (!symbols && !addrs))
++		return -EINVAL;
++
++	/* do we want sysctl for this? */
++	if (cnt >= 20000)
++		return -E2BIG;
++
++	ips = kmalloc(sizeof(*ips) * cnt, GFP_KERNEL);
++	if (!ips)
++		return -ENOMEM;
++
++	for (i = 0; i < cnt; i++) {
++		if (symbols)
++			addr = (unsigned long) kprobe_lookup_name(symbols[i], 0);
++		else
++			addr = (unsigned long) addrs[i];
++		ips[i] = addr;
++	}
++
++	jump_label_lock();
++	preempt_disable();
++
++	for (i = 0; i < cnt; i++) {
++		err = check_ftrace_addr(ips[i]);
++		if (err)
++			break;
++	}
++
++	preempt_enable();
++	jump_label_unlock();
++
++	if (err)
++		goto out;
++
++	err = ftrace_set_filter_ips(&p->multi.ops, ips, cnt, 0, 0);
++	if (err)
++		goto out;
++
++	p->multi.ops.func = kprobe_ftrace_multi_handler;
++	p->multi.ops.flags = FTRACE_OPS_FL_SAVE_REGS|FTRACE_OPS_FL_DYNAMIC;
++
++	p->flags |= KPROBE_FLAG_MULTI|KPROBE_FLAG_FTRACE;
++	if (p->post_handler)
++		p->multi.ops.flags |= FTRACE_OPS_FL_IPMODIFY;
++
++out:
++	kfree(ips);
++	return err;
++}
++
++static void free_ftrace_multi(struct kprobe *p)
++{
++	ftrace_free_filter(&p->multi.ops);
++}
++#endif
++
+ #else	/* !CONFIG_KPROBES_ON_FTRACE */
+ static inline int arm_kprobe_ftrace(struct kprobe *p)
+ {
+@@ -1489,6 +1621,9 @@ static struct kprobe *__get_valid_kprobe(struct kprobe *p)
+ 
+ 	lockdep_assert_held(&kprobe_mutex);
+ 
++	if (kprobe_ftrace_multi(p))
++		return p;
++
+ 	ap = get_kprobe(p->addr);
+ 	if (unlikely(!ap))
+ 		return NULL;
+@@ -1520,41 +1655,18 @@ static inline int warn_kprobe_rereg(struct kprobe *p)
+ 	return ret;
+ }
+ 
+-static int check_ftrace_location(struct kprobe *p)
+-{
+-	unsigned long ftrace_addr;
+-
+-	ftrace_addr = ftrace_location((unsigned long)p->addr);
+-	if (ftrace_addr) {
+-#ifdef CONFIG_KPROBES_ON_FTRACE
+-		/* Given address is not on the instruction boundary */
+-		if ((unsigned long)p->addr != ftrace_addr)
+-			return -EILSEQ;
+-		p->flags |= KPROBE_FLAG_FTRACE;
+-#else	/* !CONFIG_KPROBES_ON_FTRACE */
+-		return -EINVAL;
+-#endif
+-	}
+-	return 0;
+-}
+-
+ static int check_kprobe_address_safe(struct kprobe *p,
+ 				     struct module **probed_mod)
  {
  	int ret;
-@@ -1600,6 +1611,7 @@ int register_kprobe(struct kprobe *p)
- 	if (IS_ERR(addr))
- 		return PTR_ERR(addr);
- 	p->addr = addr;
-+	p->func_addr = resolve_func_addr(addr);
  
+-	ret = check_ftrace_location(p);
++	ret = check_ftrace_location((unsigned long) p->addr, p);
+ 	if (ret)
+ 		return ret;
+ 	jump_label_lock();
+ 	preempt_disable();
+ 
+-	/* Ensure it is not in reserved area nor out of text */
+-	if (!kernel_text_address((unsigned long) p->addr) ||
+-	    within_kprobe_blacklist((unsigned long) p->addr) ||
+-	    jump_label_text_reserved(p->addr, p->addr) ||
+-	    static_call_text_reserved(p->addr, p->addr) ||
+-	    find_bug((unsigned long)p->addr)) {
++	if (check_kprobe_address((unsigned long) p->addr)) {
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+@@ -1599,13 +1711,16 @@ static unsigned long resolve_func_addr(kprobe_opcode_t *addr)
+ 	return 0;
+ }
+ 
+-int register_kprobe(struct kprobe *p)
++static int check_addr(struct kprobe *p, struct module **probed_mod)
+ {
+ 	int ret;
+-	struct kprobe *old_p;
+-	struct module *probed_mod;
+ 	kprobe_opcode_t *addr;
+ 
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++	if (p->multi.cnt)
++		return check_ftrace_multi(p);
++#endif
++
+ 	/* Adjust probe address from symbol */
+ 	addr = kprobe_addr(p);
+ 	if (IS_ERR(addr))
+@@ -1616,13 +1731,21 @@ int register_kprobe(struct kprobe *p)
  	ret = warn_kprobe_rereg(p);
  	if (ret)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 21aa30644219..25631253084a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1026,7 +1026,7 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
- {
- 	struct kprobe *kp = kprobe_running();
+ 		return ret;
++	return check_kprobe_address_safe(p, probed_mod);
++}
++
++int register_kprobe(struct kprobe *p)
++{
++	struct module *probed_mod = NULL;
++	struct kprobe *old_p;
++	int ret;
  
--	return kp ? (uintptr_t)kp->addr : 0;
-+	return kp ? (uintptr_t)kp->func_addr : 0;
- }
+ 	/* User can pass only KPROBE_FLAG_DISABLED to register_kprobe */
+ 	p->flags &= KPROBE_FLAG_DISABLED;
+ 	p->nmissed = 0;
+ 	INIT_LIST_HEAD(&p->list);
  
- static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index a587aeca5ae0..e988aefa567e 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -69,7 +69,7 @@ int test6(struct pt_regs *ctx)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
+-	ret = check_kprobe_address_safe(p, &probed_mod);
++	ret = check_addr(p, &probed_mod);
+ 	if (ret)
+ 		return ret;
  
--	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
-+	test6_result = (const void *) addr == &bpf_fentry_test6;
+@@ -1644,14 +1767,21 @@ int register_kprobe(struct kprobe *p)
+ 	if (ret)
+ 		goto out;
+ 
+-	INIT_HLIST_NODE(&p->hlist);
+-	hlist_add_head_rcu(&p->hlist,
+-		       &kprobe_table[hash_ptr(p->addr, KPROBE_HASH_BITS)]);
++	/*
++	 * Multi ftrace kprobes do not have single address,
++	 * so they are not stored in the kprobe_table hash.
++	 */
++	if (kprobe_single(p)) {
++		INIT_HLIST_NODE(&p->hlist);
++		hlist_add_head_rcu(&p->hlist,
++			       &kprobe_table[hash_ptr(p->addr, KPROBE_HASH_BITS)]);
++	}
+ 
+ 	if (!kprobes_all_disarmed && !kprobe_disabled(p)) {
+ 		ret = arm_kprobe(p);
+ 		if (ret) {
+-			hlist_del_rcu(&p->hlist);
++			if (kprobe_single(p))
++				hlist_del_rcu(&p->hlist);
+ 			synchronize_rcu();
+ 			goto out;
+ 		}
+@@ -1778,7 +1908,13 @@ static int __unregister_kprobe_top(struct kprobe *p)
+ 	return 0;
+ 
+ disarmed:
+-	hlist_del_rcu(&ap->hlist);
++	if (kprobe_single(ap))
++		hlist_del_rcu(&ap->hlist);
++
++#ifdef CONFIG_HAVE_KPROBES_MULTI_ON_FTRACE
++	if (kprobe_ftrace_multi(ap))
++		free_ftrace_multi(ap);
++#endif
  	return 0;
  }
  
-@@ -79,6 +79,6 @@ int test7(struct pt_regs *ctx)
- {
- 	__u64 addr = bpf_get_func_ip(ctx);
- 
--	test7_result = (const void *) addr == &bpf_fentry_test7 + 5;
-+	test7_result = (const void *) addr == &bpf_fentry_test7;
- 	return 0;
- }
 -- 
 2.33.1
 
