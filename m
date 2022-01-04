@@ -2,59 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B2484750
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 18:59:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B8F484751
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 19:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235970AbiADR7d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 12:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46990 "EHLO
+        id S236029AbiADSAA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 13:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236029AbiADR7c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jan 2022 12:59:32 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39804C061761
-        for <bpf@vger.kernel.org>; Tue,  4 Jan 2022 09:59:32 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id v7so77674425wrv.12
-        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 09:59:32 -0800 (PST)
+        with ESMTP id S236020AbiADSAA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 13:00:00 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0492AC061761
+        for <bpf@vger.kernel.org>; Tue,  4 Jan 2022 10:00:00 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id b186-20020a1c1bc3000000b00345734afe78so1887685wmb.0
+        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 09:59:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=iohrnjdYSUSXtR57MMhODAaUER+JKP7h9997XjjNmGY=;
-        b=64VlPR+jtpRIFKGCAOzDE9++M0YFE5EXjiu19jAGJu/w1NF4IFDgsThf8552nkK1jQ
-         QA8DysS2oGPslKjNg2bfTKvxHBWdOC1C/T54c4UQRwjPHRKmBK/9aWaLHoLNKKVExAOi
-         9ynVcqhIlunwWSeVxxq1OOufAJ0dlDIPCfvc1RtLHmMPyDkXfBhmowXm/+TH79x6CFZL
-         FcAlnGhS+lrCqd0sFZIKnPvQ4ywZnGr6e2TuKSi55NogZ7VzaIhq7ky21QQR1sz8vFb+
-         uPu80GbN2Ri7dENBxYqfzMor1cCK827rMBAFqPfVC1Jhu40XqwR9AQfZugYCFDZNzK8W
-         IdxA==
+        bh=6wZh1urzx3jgq42hunOJWsEpPnLLAuBD2+D/o8QAvX4=;
+        b=VcyDVOQJyaVvG+plCwMKn/EwIZVos/QxZ0Vls16gBc8oNMTozErZgavxvwsBOCuse9
+         vdpXS3I1HKlUQ2V7IfFeW3C9v5oXZ3D+ttWqsTBEnN/bKcFY5Vt6Y58GYz1WMzFEuXQF
+         ZzI9nTQo5/0Sjs4cLFrXao9pF88CpzHu5QPeF3YeD55OJ2JS6smEk+KUJeiQf8rNG1Bi
+         TqmWJ10khbSF8bwnMNw7ipHSBvz2MgRvbgub09f8pWhjxVucDWRUQswpfw36qZBEqW5Q
+         t/eat88v+dbEcNOWuhTa+V6DjtLy+bEORMfAeVYhCGWS0R7bXHUgkYjYOmftspuJa9kf
+         9DzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=iohrnjdYSUSXtR57MMhODAaUER+JKP7h9997XjjNmGY=;
-        b=TO7qyojUYyPsaZkWpjZlTpm+4pBeq2+C/Ogf2HuSlp+12ITtTHQ4mPIqbH7VRjdoQ4
-         ZDHPbfhFhk6LiXCMxGgUo0o7XSYb2tNZxHitQt2f925T0ntMZswujBTM9+xBjrqhWEvW
-         RcK9/ximdiSrvsYMj3w7zcevRp0mw2V4Ec09g4pa21HP2K7vq+YXuNql5U8zB1R+qVqJ
-         Y2yNhSEUyLyeSIxPJS+kqF3+DTZ1TPCxY5i6YveANNTd8d7K0Ig6BWG38MK28e7qjUM3
-         6oGYdzuBjODPj/NpHth+6czYfHGvan5QTOc+K+eLqlXRgVHGiw2962zK0x07Cw94Hjko
-         Zvjg==
-X-Gm-Message-State: AOAM533HCM/+dj3vXBcFHoSVs/CMJYi4EcY2OLs10XKvCsw0uqFZsusX
-        eEKzweJLiO/atMOr1UE9+9Ev
-X-Google-Smtp-Source: ABdhPJwKW/iM+4dVy3YY5vu7hQrKDBkJ/HScnSFAsJuVldHLnpB2T+8qKlk+9lkSpx/3Z/H0vFb+cQ==
-X-Received: by 2002:a5d:47c2:: with SMTP id o2mr43971659wrc.637.1641319170893;
-        Tue, 04 Jan 2022 09:59:30 -0800 (PST)
+        bh=6wZh1urzx3jgq42hunOJWsEpPnLLAuBD2+D/o8QAvX4=;
+        b=ZetTGr6KxmyqaezCtf3hyI7UImZug1DL2ZkIU+VpcUpjCUussaqc3+RvvJnySf6Dx4
+         WqP4aR/E96+uF3N5m4WadqrNUnH4d9aMD+TeICyueAvCWIvUvSvZ9gSh2pftR7f1/+9j
+         YWrKm0+1IC8NKMnVOVAHBF7hHegEyzcE11ZoLlDWVQFie9cA0GTIqra74NKDzEP7Tc+4
+         l/P0PPdOKETARtUeHCCInIUFf8jQI7E0F/LEHW5FKwn5xYGpLq5iGK7KXHXVqn4TnqJ9
+         CElX2cSbnMWo5QE9laM4NLgLiiRR/e5XLJtYAsq5dvb2inIA6qz4Z7iwEu/pk6zrbIdL
+         mJUQ==
+X-Gm-Message-State: AOAM532saAXCVKk6CY0Pa187+KNZdHSzPQ8stI9EqGdJk2G3Y4ZGCtya
+        GYhp2x7zSnd5eREEYJyuMosA
+X-Google-Smtp-Source: ABdhPJzp3tC39ZWH4F8G5EifkjjkheK6fp2BHk+hR0RNoEp1FuNlY8N39VzKIgGIiNY7OFW6HtvKWw==
+X-Received: by 2002:a7b:ce16:: with SMTP id m22mr43557563wmc.149.1641319198619;
+        Tue, 04 Jan 2022 09:59:58 -0800 (PST)
 Received: from Mem (2a01cb088160fc006dcbec8694cd1f89.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:6dcb:ec86:94cd:1f89])
-        by smtp.gmail.com with ESMTPSA id o5sm53738wmc.39.2022.01.04.09.59.30
+        by smtp.gmail.com with ESMTPSA id d143sm81984wmd.6.2022.01.04.09.59.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 09:59:30 -0800 (PST)
-Date:   Tue, 4 Jan 2022 18:59:29 +0100
+        Tue, 04 Jan 2022 09:59:58 -0800 (PST)
+Date:   Tue, 4 Jan 2022 18:59:57 +0100
 From:   Paul Chaignon <paul@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next 1/3] bpftool: Refactor misc. feature probe
-Message-ID: <956c9329a932c75941194f91790d01f31dfbe01b.1641314075.git.paul@isovalent.com>
+Subject: [PATCH bpf-next 2/3] bpftool: Probe for bounded loop support
+Message-ID: <f7807c0b27d79f48e71de7b5a99c680ca4bd0151.1641314075.git.paul@isovalent.com>
 References: <cover.1641314075.git.paul@isovalent.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -64,94 +64,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There is currently a single miscellaneous feature probe,
-HAVE_LARGE_INSN_LIMIT, to check for the 1M instructions limit in the
-verifier. Subsequent patches will add additional miscellaneous probes,
-which follow the same pattern at the existing probe. This patch
-therefore refactors the probe to avoid code duplication in subsequent
-patches.
+This patch introduces a new probe to check whether the verifier supports
+bounded loops as introduced in commit 2589726d12a1 ("bpf: introduce
+bounded loops"). This patch will allow BPF users such as Cilium to probe
+for loop support on startup and only unconditionally unroll loops on
+older kernels.
 
-The BPF program type and the checked error numbers in the
-HAVE_LARGE_INSN_LIMIT probe are changed to better generalize to other
-probes. The feature probe retains its current behavior despite those
-changes.
+The results are displayed as part of the miscellaneous section, as shown
+below.
+
+  $ bpftool feature probe | grep loops
+  Bounded loop support is available
+  $ bpftool feature probe macro | grep LOOPS
+  #define HAVE_BOUNDED_LOOPS
+  $ bpftool feature probe -j | jq .misc
+  {
+    "have_large_insn_limit": true,
+    "have_bounded_loops": true
+  }
 
 Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 Signed-off-by: Paul Chaignon <paul@isovalent.com>
 ---
- tools/bpf/bpftool/feature.c | 45 ++++++++++++++++++++++++-------------
- 1 file changed, 29 insertions(+), 16 deletions(-)
+ tools/bpf/bpftool/feature.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
 diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 6719b9282eca..3da97a02f455 100644
+index 3da97a02f455..03579d113042 100644
 --- a/tools/bpf/bpftool/feature.c
 +++ b/tools/bpf/bpftool/feature.c
-@@ -642,6 +642,30 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
- 		printf("\n");
+@@ -687,6 +687,27 @@ static void probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
+ 			   "LARGE_INSN_LIMIT");
  }
  
++/*
++ * Probe for bounded loop support introduced in commit 2589726d12a1
++ * ("bpf: introduce bounded loops").
++ */
 +static void
-+probe_misc_feature(struct bpf_insn *insns, size_t len,
-+		   const char *define_prefix, __u32 ifindex,
-+		   const char *feat_name, const char *plain_name,
-+		   const char *define_name)
++probe_bounded_loops(const char *define_prefix, __u32 ifindex)
 +{
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts,
-+		.prog_ifindex = ifindex,
-+	);
-+	bool res;
-+	int fd;
++	struct bpf_insn insns[4] = {
++		BPF_MOV64_IMM(BPF_REG_0, 10),
++		BPF_ALU64_IMM(BPF_SUB, BPF_REG_0, 1),
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, -2),
++		BPF_EXIT_INSN()
++	};
 +
-+	errno = 0;
-+	fd = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL",
-+			   insns, len, &opts);
-+	res = fd >= 0 || !errno;
-+
-+	if (fd >= 0)
-+		close(fd);
-+
-+	print_bool_feature(feat_name, plain_name, define_name, res,
-+			   define_prefix);
-+}
-+
- /*
-  * Probe for availability of kernel commit (5.3):
-  *
-@@ -649,29 +673,18 @@ probe_helpers_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
-  */
- static void probe_large_insn_limit(const char *define_prefix, __u32 ifindex)
- {
--	LIBBPF_OPTS(bpf_prog_load_opts, opts,
--		.prog_ifindex = ifindex,
--	);
- 	struct bpf_insn insns[BPF_MAXINSNS + 1];
--	bool res;
--	int i, fd;
-+	int i;
- 
- 	for (i = 0; i < BPF_MAXINSNS; i++)
- 		insns[i] = BPF_MOV64_IMM(BPF_REG_0, 1);
- 	insns[BPF_MAXINSNS] = BPF_EXIT_INSN();
- 
--	errno = 0;
--	fd = bpf_prog_load(BPF_PROG_TYPE_SCHED_CLS, NULL, "GPL",
--			   insns, ARRAY_SIZE(insns), &opts);
--	res = fd >= 0 || (errno != E2BIG && errno != EINVAL);
--
--	if (fd >= 0)
--		close(fd);
--
--	print_bool_feature("have_large_insn_limit",
 +	probe_misc_feature(insns, ARRAY_SIZE(insns),
 +			   define_prefix, ifindex,
-+			   "have_large_insn_limit",
- 			   "Large program size limit",
--			   "LARGE_INSN_LIMIT",
--			   res, define_prefix);
-+			   "LARGE_INSN_LIMIT");
++			   "have_bounded_loops",
++			   "Bounded loop support",
++			   "BOUNDED_LOOPS");
++}
++
+ static void
+ section_system_config(enum probe_component target, const char *define_prefix)
+ {
+@@ -801,6 +822,7 @@ static void section_misc(const char *define_prefix, __u32 ifindex)
+ 			    "/*** eBPF misc features ***/",
+ 			    define_prefix);
+ 	probe_large_insn_limit(define_prefix, ifindex);
++	probe_bounded_loops(define_prefix, ifindex);
+ 	print_end_section();
  }
  
- static void
 -- 
 2.25.1
 
