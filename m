@@ -2,150 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AB0483D50
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 08:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3095A483DAF
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 09:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233768AbiADH5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 02:57:10 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34354 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233771AbiADH5J (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 02:57:09 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2044DWXC008837;
-        Tue, 4 Jan 2022 07:56:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=E+3Lggbi73BJUF7sAts8cCdKAnFCwgo26V0dOyoHqr4=;
- b=o8ISA6tRe4M80xu7k8awnxCreULpZoQ6P27ch518Ldi742W7a5w00vsSkmT9KwvUSDgu
- 6hBsGXsXyBDXJvbiARdILyD1v/ulipuJ6xFy7A6LKMyg+dx2tdShZcxQ0JEQKhzdt0Zm
- P2eMb0xr5DkdxU1J4MMGxh6qiRv+/4WkuXhekSgrqH5xMt27pAx2j3XSosblbsaD+tPM
- GefmlpeYUI5lhSBjWO+dZYrishomgykfFM/GbB/VAKypfJFNjH7ib5bNYpJfLnh4BPcM
- EGnLBrwZSBKj0aimziO2U0fxDNxPI1bCX4alg6fBDI02thhUmuDTZ14St4AzgvakaqPb LA== 
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3dcf1831vs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Jan 2022 07:56:51 +0000
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2047sYJs021543;
-        Tue, 4 Jan 2022 07:56:51 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma01wdc.us.ibm.com with ESMTP id 3daeka5xaq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 Jan 2022 07:56:50 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2047uoaX30998800
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Jan 2022 07:56:50 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 20DEA6A05D;
-        Tue,  4 Jan 2022 07:56:50 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDA436A04D;
-        Tue,  4 Jan 2022 07:56:44 +0000 (GMT)
-Received: from [9.43.78.252] (unknown [9.43.78.252])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  4 Jan 2022 07:56:44 +0000 (GMT)
-Message-ID: <984e801f-494b-c84c-8efe-2d205af9bd7a@linux.vnet.ibm.com>
-Date:   Tue, 4 Jan 2022 13:24:07 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH net-next] net: fixup build after bpf header changes
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, saeedm@nvidia.com, leon@kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, sachinp <sachinp@linux.vnet.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>
-References: <20220104034827.1564167-1-kuba@kernel.org>
-From:   Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-In-Reply-To: <20220104034827.1564167-1-kuba@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: qK3BMOAQyXfi_WpBA8KFUOtwlAmpIBwJ
-X-Proofpoint-ORIG-GUID: qK3BMOAQyXfi_WpBA8KFUOtwlAmpIBwJ
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233620AbiADIJs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 03:09:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41397 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232556AbiADIJr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 03:09:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641283787;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=r+pJGFCaBi00UwfNIQiKj+H5FCtGgxgoDD8u3lefA54=;
+        b=ABXoDyLUOi142VOtMDGVh5sOdhpXyYAe9ugtx+VwE4Zqs2c2iq9wIV1LUoh2ExssvRidle
+        etEA5Fqnm3PEdKnOTDSg+0Sr33XXGDQCT5Azp/5+aTo/4PqAG23UHlX95pud2EP6MeU0ti
+        01ImIyJK9tzJz98Ir2RV4C80i2BmMlo=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-600-L_wAOJqvP2SFjxdQ1x8yfA-1; Tue, 04 Jan 2022 03:09:46 -0500
+X-MC-Unique: L_wAOJqvP2SFjxdQ1x8yfA-1
+Received: by mail-wm1-f70.google.com with SMTP id o18-20020a05600c511200b00345c1603997so7801621wms.1
+        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 00:09:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=r+pJGFCaBi00UwfNIQiKj+H5FCtGgxgoDD8u3lefA54=;
+        b=jzz86mBtf6laZE6aSqVQ/vqOCPO7SfQVWHrIbQjesyR8XKU2j9VbmST43wcg04Y5JM
+         JukJTpaBWnctfr8TcY5QuWQWzm/kPBcJt5NL3ovHMQ0Yff2+VhHxGuasP4/WpMvzqmE2
+         YimJk8acOmXlY5I2tfKk8y2yge+uDyoeThL9OmUfXd4zS4YLyX1yObp4mx0FzoF1AP+2
+         Crs0MweGwtw5bmCRwXzCWfE0BsOtPhD16JZFIQ9sElVynocgE67Qe+jXmT+vpNcI5rl/
+         hyqftP/exEDp4FfmI0K3UpQBPeWsPYiWefNMxYj+e/aXn5vK+PiHdTwEEbLwbBXmxh7l
+         NUzA==
+X-Gm-Message-State: AOAM532S4C7nShfYTdVyqdHwekQG+Gfjjs6Ka7AIabBo8cc7DC2brzsC
+        wCpJ9LEDJqdhOR4fs4Kqp7C4I13KyyAYoNDITPEPUhn9hVdwLaoeuSjXmuFw7xStHDU0pvJGZCI
+        R3Rar6M6vWRZj
+X-Received: by 2002:a1c:4641:: with SMTP id t62mr41502888wma.100.1641283784911;
+        Tue, 04 Jan 2022 00:09:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzRAl10hto62ikaFvjmh+RWxhdWA+ui1s2lKp3RllvobTON1Us//OixMaQvQYZghnkwzi/66Q==
+X-Received: by 2002:a1c:4641:: with SMTP id t62mr41502858wma.100.1641283784619;
+        Tue, 04 Jan 2022 00:09:44 -0800 (PST)
+Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id p13sm31211324wrs.54.2022.01.04.00.09.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Jan 2022 00:09:44 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
+Date:   Tue,  4 Jan 2022 09:09:30 +0100
+Message-Id: <20220104080943.113249-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-04_04,2022-01-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 bulkscore=0 malwarescore=0 phishscore=0
- clxscore=1011 spamscore=0 suspectscore=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201040049
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi
+hi,
+adding support to attach multiple kprobes within single syscall
+and speed up attachment of many kprobes.
 
-Thank You Jakub for the patch.
+The previous attempt [1] wasn't fast enough, so coming with new
+approach that adds new kprobe interface.
 
-Kernel builds fine with given patch fix
+The attachment speed of of this approach (tested in bpftrace)
+is now comparable to ftrace tracer attachment speed.. fast ;-)
 
-Tested-by : Abdul haleem <abdhalee@linux.vnet.ibm.com>
+The limit of this approach is forced by using ftrace as attach
+layer, so it allows only kprobes on function's entry (plus
+return probes).
 
-On 1/4/22 9:18 AM, Jakub Kicinski wrote:
+This patchset contains:
+  - kprobes support to register multiple kprobes with current
+    kprobe API (patches 1 - 8)
+  - bpf support ot create new kprobe link allowing to attach
+    multiple addresses (patches 9 - 14)
 
-> Recent bpf-next merge brought in header changes which uncovered
-> includes missing in net-next which were not present in bpf-next.
-> Build problems happen only on less-popular arches like hppa,
-> sparc, alpha etc.
->
-> I could repro the build problem with ice but not the mlx5 problem
-> Abdul was reporting. mlx5 does look like it should include filter.h,
-> anyway.
->
-> Reported-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-> Fixes: e63a02348958 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next")
-> Link: https://lore.kernel.org/all/7c03768d-d948-c935-a7ab-b1f963ac7eed@linux.vnet.ibm.com/
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> ---
-> CC: jesse.brandeburg@intel.com
-> CC: anthony.l.nguyen@intel.com
-> CC: saeedm@nvidia.com
-> CC: leon@kernel.org
-> CC: intel-wired-lan@lists.osuosl.org
-> CC: linux-rdma@vger.kernel.org
-> CC: bpf@vger.kernel.org
-> ---
->   drivers/net/ethernet/intel/ice/ice_nvm.c          | 2 ++
->   drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 1 +
->   2 files changed, 3 insertions(+)
->
-> diff --git a/drivers/net/ethernet/intel/ice/ice_nvm.c b/drivers/net/ethernet/intel/ice/ice_nvm.c
-> index cd739a2c64e8..4eb0599714f4 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_nvm.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_nvm.c
-> @@ -1,6 +1,8 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright (c) 2018, Intel Corporation. */
->
-> +#include <linux/vmalloc.h>
-> +
->   #include "ice_common.h"
->
->   /**
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index efcf9d30b131..31c911182498 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -37,6 +37,7 @@
->   #include <net/geneve.h>
->   #include <linux/bpf.h>
->   #include <linux/if_bridge.h>
-> +#include <linux/filter.h>
->   #include <net/page_pool.h>
->   #include <net/xdp_sock_drv.h>
->   #include "eswitch.h"
+We don't need to care about multiple probes on same functions
+because it's taken care on the ftrace_ops layer.
 
--- 
-Regard's
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  kprobe/multi
 
-Abdul Haleem
-IBM Linux Technology Center
+thanks,
+jirka
+
+[1] https://lore.kernel.org/bpf/20211124084119.260239-1-jolsa@kernel.org/
+
+
+---
+Jiri Olsa (13):
+      ftrace: Add ftrace_set_filter_ips function
+      kprobe: Keep traced function address
+      kprobe: Add support to register multiple ftrace kprobes
+      kprobe: Add support to register multiple ftrace kretprobes
+      kprobe: Allow to get traced function address for multi ftrace kprobes
+      samples/kprobes: Add support for multi kprobe interface
+      samples/kprobes: Add support for multi kretprobe interface
+      bpf: Add kprobe link for attaching raw kprobes
+      libbpf: Add libbpf__kallsyms_parse function
+      libbpf: Add bpf_link_create support for multi kprobes
+      libbpf: Add bpf_program__attach_kprobe_opts for multi kprobes
+      selftest/bpf: Add raw kprobe attach test
+      selftest/bpf: Add bpf_cookie test for raw_k[ret]probe
+
+ arch/Kconfig                                             |   3 ++
+ arch/x86/Kconfig                                         |   1 +
+ arch/x86/kernel/kprobes/ftrace.c                         |  51 +++++++++++++-----
+ include/linux/bpf_types.h                                |   1 +
+ include/linux/ftrace.h                                   |   3 ++
+ include/linux/kprobes.h                                  |  55 ++++++++++++++++++++
+ include/uapi/linux/bpf.h                                 |  12 +++++
+ kernel/bpf/syscall.c                                     | 191 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ kernel/kprobes.c                                         | 264 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------
+ kernel/trace/bpf_trace.c                                 |   7 ++-
+ kernel/trace/ftrace.c                                    |  53 +++++++++++++++----
+ samples/kprobes/kprobe_example.c                         |  47 +++++++++++++++--
+ samples/kprobes/kretprobe_example.c                      |  43 +++++++++++++++-
+ tools/include/uapi/linux/bpf.h                           |  12 +++++
+ tools/lib/bpf/bpf.c                                      |   5 ++
+ tools/lib/bpf/bpf.h                                      |   7 ++-
+ tools/lib/bpf/libbpf.c                                   | 186 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------
+ tools/lib/bpf/libbpf_internal.h                          |   5 ++
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c      |  42 +++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/raw_kprobe_test.c |  92 +++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/get_func_ip_test.c     |   4 +-
+ tools/testing/selftests/bpf/progs/raw_kprobe.c           |  58 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_bpf_cookie.c      |  24 ++++++++-
+ 23 files changed, 1062 insertions(+), 104 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/raw_kprobe_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/raw_kprobe.c
 
