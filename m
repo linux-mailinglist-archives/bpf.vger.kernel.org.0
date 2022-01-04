@@ -2,96 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A3348398D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 01:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB394839D8
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 02:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbiADA4a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 3 Jan 2022 19:56:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbiADA4a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 3 Jan 2022 19:56:30 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30E4C061761
-        for <bpf@vger.kernel.org>; Mon,  3 Jan 2022 16:56:29 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id u21so44004752oie.10
-        for <bpf@vger.kernel.org>; Mon, 03 Jan 2022 16:56:29 -0800 (PST)
+        id S231796AbiADBdM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 3 Jan 2022 20:33:12 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:5711 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230341AbiADBdM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 3 Jan 2022 20:33:12 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M0Uwuc7pP5poUiBOIu/sezUZR16RCfuF9o0myYNiTeQ=;
-        b=Y5S7SogglNw6gXi3vO8lz5Z76v4nJNjiTpw+3QEoYbgqOiS2OPSYkrUD6PfVQU0SPr
-         3sweYiS2c7CiaxQj40XJSiIXb/wBeaB2xg6QorGC1FjXzaUWbpkZZyBGY6mVxnVXY2oc
-         MTdeE++tMe5RDpKyFno567wM+Qodooa3h/I0n2Hlu5uzPDODnUHeUCXJ/wvymdhJQ9mM
-         miQuoa15K5342ZeyhAb3GJOCXwd6YtSq7YzB2GfyjoajYUFg2NClxgZxZJ39fSsaMBiM
-         8GtaqE7U67WK3j36MQdIlPjtS6YUKiNrexGmZLO2QpZFVmlqnksqg7ZtDmCGBJc2d6Nv
-         fhDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M0Uwuc7pP5poUiBOIu/sezUZR16RCfuF9o0myYNiTeQ=;
-        b=4xlBATl8FIkjy9YhZ/YyfMnj/txMLCHmXl7UWAQVVaAXyLV9ej7CMMpDZQelCyy+nc
-         u3/yF1SAc2sfUTwXKrMOzqpLHesgsjQRvELIgDA6GTEmIz8uuHUtidRJePuzf6kHJ+YX
-         jF1ektkpCauIbRHrY0xfwUq0NeyyaZ/KEInMprlE49HLhuq3piDBdsSqZMlcJrUlLIOk
-         WDZf884gglsF4V2FTWIlD79D1glD2FfIOVQfqBQSn6zBVX9v4nLVk+5QX/5VauKY5GKl
-         BEEZhPovZS6Bu7aRdQ0EZa2WnvVZFLdBg+TWk6jzmzYr1ilWy4j24L29CAy/9tEIuyff
-         yIkQ==
-X-Gm-Message-State: AOAM532S9BO6IVIrcb8l4c9g5HhxEKONgzrq0UYzmw5eyCOskvYjpBES
-        ywYazgNuLhbOartVIdt8fJi4Jjj8j5M=
-X-Google-Smtp-Source: ABdhPJyWIue+MIW1IKkOvNYmObqzHLelzMLPMWfTpVKMKMfT46HNR/iY4PYCuKrYkClmFwFQr4iOGQ==
-X-Received: by 2002:a05:6808:144d:: with SMTP id x13mr38931977oiv.25.1641257789307;
-        Mon, 03 Jan 2022 16:56:29 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:73a2:abf:ebbe:9103])
-        by smtp.gmail.com with ESMTPSA id bi20sm9660799oib.29.2022.01.03.16.56.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jan 2022 16:56:29 -0800 (PST)
-Date:   Mon, 3 Jan 2022 16:56:28 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Jhonny Knaak de Vargas <jhonny.knaak@protonmail.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: Some questions about EBPF
-Message-ID: <YdObPAA6L43g4QZX@pop-os.localdomain>
-References: <f9526881379a8d5f2c27e2fe5843885d648b31ec.camel@protonmail.com>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1641259992; x=1672795992;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KT94uZx6V4TDwxt9vnlF8ncToXDb8fgnqdULqlhRSBY=;
+  b=YTawa2bFyNvoaiJ19YDwzg6QJi8gwlktaLU/bz7vUjUnkuTb2mleR1hq
+   IwtFC73AkO8acZichcsGXvn43o4UUTM0dlMwqBCF/YXx64bJwcgGEuAhF
+   Oz9I18rUzwhhTTFRjG3lVyuxJjVm6u+Ft7D0KGyQdaEI71nY/Z8aOtoU4
+   A=;
+X-IronPort-AV: E=Sophos;i="5.88,258,1635206400"; 
+   d="scan'208";a="162910724"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-9ec26c6c.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 04 Jan 2022 01:33:11 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-pdx-2c-9ec26c6c.us-west-2.amazon.com (Postfix) with ESMTPS id E110242EB7;
+        Tue,  4 Jan 2022 01:33:10 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.26; Tue, 4 Jan 2022 01:33:10 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.161.97) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.26; Tue, 4 Jan 2022 01:33:06 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH bpf-next 0/6] bpf: Batching iter for AF_UNIX sockets.
+Date:   Tue, 4 Jan 2022 10:31:47 +0900
+Message-ID: <20220104013153.97906-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9526881379a8d5f2c27e2fe5843885d648b31ec.camel@protonmail.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.97]
+X-ClientProxiedBy: EX13D19UWA004.ant.amazon.com (10.43.160.102) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 02, 2022 at 08:02:01PM +0000, Jhonny Knaak de Vargas wrote:
-> Hi,
-> Got some quick questions,
-> Consider that I am a newbie just studying.
-> 
-> 1. How can I subscribe to the list? This link seems to not be valid
-> anymore http://vger.kernel.org/vger-lists.html#bpf
+Happy new year!
 
-It should work.
+Last year the commit afd20b9290e1 ("af_unix: Replace the big lock with
+small locks.") landed on bpf-next.  Now we can use a batching algorithm
+for bpf unix iter as bpf tcp iter.
 
-> 
-> 2. What I want to do:
-> 	My idea is from user space set the pid of a process to the bpf
-> program on the kernel side.
-> 	On the kernel side I want to have a variable which will have
-> that PID that came from user space. Now,I want to identify writes to
-> memory that process owns.
-> 
->    Question:
-> 	I am not sure if I should be looking to use kernel headers for
-> identifying the memory pages of a process or should I be reading /proc?
-> 
-> 	Can you guys please give me some tips on how to achieve that?
+Note that the first patch only can be a candidate for the bpf tree.
 
-Where exactly do you hook for identifying memory writes?
 
-I guess it may already provide some context for you to follow to find
-out the process.
+Kuniyuki Iwashima (6):
+  bpf: Fix SO_RCVBUF/SO_SNDBUF handling in _bpf_setsockopt().
+  bpf: Add SO_RCVBUF/SO_SNDBUF in _bpf_getsockopt().
+  bpf: af_unix: Use batching algorithm in bpf unix iter.
+  bpf: Support bpf_(get|set)sockopt() in bpf unix iter.
+  selftest/bpf: Test batching and bpf_(get|set)sockopt in bpf unix iter.
+  selftest/bpf: Fix a stale comment.
 
-And you can always use eBPF map to communicate with user-space to filter
-processes with PID's.
+ net/core/filter.c                             |   8 +
+ net/unix/af_unix.c                            | 197 +++++++++++++++++-
+ .../bpf/prog_tests/bpf_iter_setsockopt_unix.c | 100 +++++++++
+ .../bpf/progs/bpf_iter_setsockopt_unix.c      |  60 ++++++
+ .../selftests/bpf/progs/bpf_iter_unix.c       |   2 +-
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   2 +
+ 6 files changed, 361 insertions(+), 8 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_iter_setsockopt_unix.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_setsockopt_unix.c
 
-Thanks.
+-- 
+2.30.2
+
