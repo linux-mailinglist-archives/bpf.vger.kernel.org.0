@@ -2,85 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A36048481B
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 19:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2802848499A
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 21:59:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbiADSxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 13:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59452 "EHLO
+        id S233301AbiADU7U (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 15:59:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236058AbiADSxb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 4 Jan 2022 13:53:31 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB99C061761;
-        Tue,  4 Jan 2022 10:53:31 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso4087693pjb.1;
-        Tue, 04 Jan 2022 10:53:31 -0800 (PST)
+        with ESMTP id S229700AbiADU7U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 15:59:20 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E4B4C061761;
+        Tue,  4 Jan 2022 12:59:20 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id r5so33730024pgi.6;
+        Tue, 04 Jan 2022 12:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=878RGf7G5xfSkN8ej4TdN81e7RTEV0mxJ9Xgt75AUUE=;
-        b=IJ77n83ECbSB+kdRdX5qjRc+aSZSJFT4uzLrnbpTK8jOWA8F2k59cLapDgE7ANO2gW
-         vwzq1tl60fYsbGIhkTv5MZkkYRuO6AOv9VS2GsAZ6i6J4tbKgOJLkOYs1Z4yyTFbAps2
-         QlRlDHzDfnMLbw8cJaP6hOnOnYxFzZ8OvLK2g2q0ZfQL5a7jTs4nId7I2oiAkrzPz+jC
-         cim0D1QhaICDtwJUiMtT5X1ZbY/xfvYeSFrkc+mJpuAIx+Tq5ps8vApku2wp+cwfP4He
-         2CTj4RDcT/4cVYc/Vt3Jtv67AkxStu7tibGpQPFUIPYUmBqqyNVWG1u4ROpmWSY+sCN9
-         Fo6g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQyCF3djAmOFhQyPxWDMxHb/jQnUuZ5YYM4f7z23PhQ=;
+        b=Qmb6wRtleudBLjESDuMEsome4T8KKQuaKSUQJSvRjL9FjpR0GKg18PYXDEGspmfOos
+         korc04ilzqys9iFjgT9XrgfFZS0GFxE4TNmCj2t2moOV1VXYbYJak0vjT00d5dlXLwf2
+         O6XpXZCn7KyFIqPXdt7OKqNME6oSLbVqkAaWX/XoOJyzY/cHb3+taYFgTR/tp8bBGQbZ
+         mmOt9K79Naza9Z0savlpi55Hjv9hPz3r5eU17nuamT9gxL8OMU7ySrgP+5S11mL8cT/P
+         MPiU910u8swht+SJlq+gXAMhhErU6wCC3mUtmgHArpnhd8K+j7mzlj1EcAl0pW7Yw6/X
+         LRoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=878RGf7G5xfSkN8ej4TdN81e7RTEV0mxJ9Xgt75AUUE=;
-        b=NKQAOXpwEUpRpgKgBXwtKkiKtM9YX7FR+cNTcZu+SI3oCHmLYfpV/Iz4YLZ3C/zPdz
-         ddSQZh1SWfRq+/vCl1GWV++v9IrTzThXbGnNSwN8L9XhQSOfBHctCfPgCh/9hGzkFWvw
-         Hd3TQ7K5ezlPt61n6LUyX5/SSCAUssfSpFp0jG2jfWNCan6KlH4tYi/hQ3HC/uPeX/ls
-         /kyLvZTSfI3GTKe1s3inHf6FtFZxaupyEMndbFa7f/UQh4A6pR/v2Ji5KixSniuOZX8d
-         9t52urrB9Y3ia9bKKXfEyeZExaBaFWLcmGXFBruhF32UC85j9JpifXp4eZftj0h0ZbML
-         9S9w==
-X-Gm-Message-State: AOAM533XT9DBXlLtvM6G8VysC7clxAqGYtGg8/1ZYud7I1Y+g2YFXHk8
-        rdVZK0xZqfHom0nSoWuyATm2lq0zsRmadRDZ3cY=
-X-Google-Smtp-Source: ABdhPJzdLaJwn8kNn+k7D+hlUghYv6CNpvjQNRPwlSxXwCsTRX4ocx/Bt3dou1s7om3gsPL4T2blgTsQ5F/hdZA4GwY=
-X-Received: by 2002:a17:90b:798:: with SMTP id l24mr62011210pjz.122.1641322410956;
- Tue, 04 Jan 2022 10:53:30 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VQyCF3djAmOFhQyPxWDMxHb/jQnUuZ5YYM4f7z23PhQ=;
+        b=z5GEd4WFoNmJ2gJ1mvkZVvY4KQO4kwmz5pxVVwkwaK6OYwA7kH1HZ6PhXe4uhJrIkc
+         m0nv8KeEv+6A4g6Za8vTGZ20MwNpGIUd7xBUdoGaAsL4tgpaRCOBdsABmRnwMyTAA60e
+         ZxKavG2VtDZufc/bauu0tf3eVrTjEG2fhWyBnn+Y9qUW+7Xtm1KEQZqs1m18BOELFqMJ
+         NYPzbWISLNaTx0QQ3LuBmSqWjzo0wRqMuaz9LzpCe2lKF51zmq4paiOpbD2Ks4Fi0TFu
+         EiWYCfULWsYG6xqYSjglxHM5a59o8Ubn+rCqAM9uZzoIshJbYTw6j1JcxxaeR0f2SZLK
+         feAw==
+X-Gm-Message-State: AOAM530u5VrGHiTzzTXFdLcj9Osm1F6IchvEB+4Ecbvth0qAgQpZNtLi
+        L/C1vOdGDOVNdVWbXcMb3DCQzbi0EEA=
+X-Google-Smtp-Source: ABdhPJwhXsXHTN01NMAV/Zkz9RfHBrXEjGwwaJAV+74pwq35S7GAsdYl+L/2nrp1pjybgP0Zvt+31Q==
+X-Received: by 2002:a63:2acd:: with SMTP id q196mr46470468pgq.370.1641329960027;
+        Tue, 04 Jan 2022 12:59:20 -0800 (PST)
+Received: from localhost.localdomain ([71.236.223.183])
+        by smtp.gmail.com with ESMTPSA id f16sm45647600pfj.6.2022.01.04.12.59.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Jan 2022 12:59:19 -0800 (PST)
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, joamaki@gmail.com,
+        john.fastabend@gmail.com
+Subject: [PATCH bpf-next] bpf, sockmap: fix return codes from tcp_bpf_recvmsg_parser()
+Date:   Tue,  4 Jan 2022 12:59:18 -0800
+Message-Id: <20220104205918.286416-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20220104080943.113249-1-jolsa@kernel.org>
-In-Reply-To: <20220104080943.113249-1-jolsa@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 4 Jan 2022 10:53:19 -0800
-Message-ID: <CAADnVQKZcr38aXwN6DyV7C9Ernfwkz5nsx8pXapKGNmnZ1JMDQ@mail.gmail.com>
-Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 4, 2022 at 12:09 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> hi,
-> adding support to attach multiple kprobes within single syscall
-> and speed up attachment of many kprobes.
->
-> The previous attempt [1] wasn't fast enough, so coming with new
-> approach that adds new kprobe interface.
->
-> The attachment speed of of this approach (tested in bpftrace)
-> is now comparable to ftrace tracer attachment speed.. fast ;-)
+Applications can be confused slightly because we do not always return the
+same error code as expected, e.g. what the TCP stack normally returns. For
+example on a sock err sk->sk_err instead of returning the sock_error we
+return EAGAIN. This usually means the application will 'try again'
+instead of aborting immediately. Another example, when a shutdown event
+is received we should immediately abort instead of waiting for data when
+the user provides a timeout.
 
-What are the absolute numbers?
-How quickly a single bpf prog can attach to 1k kprobes?
+These tend to not be fatal, applications usually recover, but introduces
+bogus errors to the user or introduces unexpected latency. Before
+'c5d2177a72a16' we fell back to the TCP stack when no data was available
+so we managed to catch many of the cases here, although with the extra
+latency cost of calling tcp_msg_wait_data() first.
+
+To fix lets duplicate the error handling in TCP stack into tcp_bpf so
+that we get the same error codes.
+
+These were found in our CI tests that run applications against sockmap
+and do longer lived testing, at least compared to test_sockmap that
+does short-lived ping/pong tests, and in some of our test clusters
+we deploy.
+
+Its non-trivial to do these in a shorter form CI tests that would be
+appropriate for BPF selftests, but we are looking into it so we can
+ensure this keeps working going forward. As a preview one idea is to
+pull in the packetdrill testing which catches some of this.
+
+Fixes: c5d2177a72a16 ("bpf, sockmap: Fix race in ingress receive verdict with redirect to self")
+Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+---
+ net/ipv4/tcp_bpf.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index f70aa0932bd6..9b9b02052fd3 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -196,12 +196,39 @@ static int tcp_bpf_recvmsg_parser(struct sock *sk,
+ 		long timeo;
+ 		int data;
+ 
++		if (sock_flag(sk, SOCK_DONE))
++			goto out;
++
++		if (sk->sk_err) {
++			copied = sock_error(sk);
++			goto out;
++		}
++
++		if (sk->sk_shutdown & RCV_SHUTDOWN)
++			goto out;
++
++		if (sk->sk_state == TCP_CLOSE) {
++			copied = -ENOTCONN;
++			goto out;
++		}
++
+ 		timeo = sock_rcvtimeo(sk, nonblock);
++		if (!timeo) {
++			copied = -EAGAIN;
++			goto out;
++		}
++
++		if (signal_pending(current)) {
++			copied = sock_intr_errno(timeo);
++			goto out;
++		}
++
+ 		data = tcp_msg_wait_data(sk, psock, timeo);
+ 		if (data && !sk_psock_queue_empty(psock))
+ 			goto msg_bytes_ready;
+ 		copied = -EAGAIN;
+ 	}
++out:
+ 	release_sock(sk);
+ 	sk_psock_put(sk, psock);
+ 	return copied;
+-- 
+2.33.0
+
