@@ -2,253 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9498548438B
-	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 15:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F0B14844F5
+	for <lists+bpf@lfdr.de>; Tue,  4 Jan 2022 16:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbiADOkz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 09:40:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45924 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230044AbiADOkz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 09:40:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641307253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yjF/HkcVKz/JEhsGrCG5Ee+s8aLEGsQuOHneC2aFbZc=;
-        b=Ipg+oGG40JT5VMf1BT1HWFiYPLOpplYIlAJ/WRtxQK7/zaAEBm0NzfGaaD4JsIQ85qOXSf
-        sJgwNxDMa/AGvBff979KfNKvXoin00pxNBm/eaJoAqNjzg8oVKiSkbvZONAONY1Uc753PA
-        lzuQaOaP9o3a1+f1RmoUWaQaruq1cgo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-622-yLstmadVMaSz2AlObw5Ztw-1; Tue, 04 Jan 2022 09:40:53 -0500
-X-MC-Unique: yLstmadVMaSz2AlObw5Ztw-1
-Received: by mail-wr1-f69.google.com with SMTP id h12-20020adfa4cc000000b001a22dceda69so11773624wrb.16
-        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 06:40:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yjF/HkcVKz/JEhsGrCG5Ee+s8aLEGsQuOHneC2aFbZc=;
-        b=UpR9P/fNXFBhONsVryksxN7gclNLyUJ00Q5AbzhyE88TJdNP50eNEXuLyKH08/lBKO
-         RosCuqMXkW0K0P4+hIAdmZW1fbVq8Z7SZIvKNhHIHeFFFPieE6n8Ljsz96XKdugGsQdO
-         +GVdVVZPUG/i8WULKVfsC7QrXge9T3gBn9OMdML7onq4LrFJDv8+pkMyY+ZCg2do/4SI
-         gStAs0sAUsbN6Wl57b59ciOLzsfTOyP/Ue7gCkH6yjoUlk/PRB+rcxjbCLY0V/aWLm0F
-         vvg5hLiU3JL6q4TUvt53xwZ+4q7gmjmNPzEsvH9Iy3Jx7aqOIhg1qhEI7yY6vXTkbeHm
-         kJsw==
-X-Gm-Message-State: AOAM531S5j1qIn4y/3h3LS3LyxCCxKlu3aaMOqM6QDE/q1tZ6UdTVulC
-        jLOypA2mAspzD6z/tDhfdEYNUMrv7CF4MZttVVq8zTjUBcfAZdyuH17L23nc9aG5a2HMz0t3CBq
-        yoBq/a+q9WDAG
-X-Received: by 2002:a5d:6546:: with SMTP id z6mr43402782wrv.516.1641307251325;
-        Tue, 04 Jan 2022 06:40:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyRS0u8ZoT1tsRxza5yCzGKCGxKsTddHRB9On2QtVajv3vMP2xFcFlYVbXT/FDWiVkGetlqQQ==
-X-Received: by 2002:a5d:6546:: with SMTP id z6mr43402769wrv.516.1641307251089;
-        Tue, 04 Jan 2022 06:40:51 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id b5sm8082377wrr.19.2022.01.04.06.40.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 06:40:50 -0800 (PST)
-Date:   Tue, 4 Jan 2022 15:40:49 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Christy Lee <christyc.y.lee@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Christy Lee <christylee@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        He Kuang <hekuang@huawei.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH bpf-next 2/2] perf: stop using deprecated
- bpf__object_next() API
-Message-ID: <YdRccTaunl9Fo63X@krava>
-References: <20211216222108.110518-1-christylee@fb.com>
- <20211216222108.110518-3-christylee@fb.com>
- <YcGO271nDvfMeSlK@krava>
- <CAEf4BzZpNvEtfsVHUJGfwi_1xM+7-ohBPKPrRo--X=fYkYLrsw@mail.gmail.com>
- <YcMr1LeP6zUBdCiK@krava>
- <CAEf4Bzb2HWiuJmeb6WxE2Dift5qQOLBE=j1ZqfpVMjuWV3+EDg@mail.gmail.com>
- <CAPqJDZouQHpUXv4dEGKKe=UjwkZu3=GMQ2M9g2zLYOV6a=gZbw@mail.gmail.com>
+        id S233784AbiADPn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 10:43:59 -0500
+Received: from mga02.intel.com ([134.134.136.20]:10197 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232505AbiADPn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 10:43:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1641311038; x=1672847038;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=22y9EjrBRaMVy/mz9REdCI0A1LxLuq5BPOq8HpG1+gg=;
+  b=UnovQSwallIVIqbAQyjb9NCARDilaA1Ue7nDtEe8kXT723v2h7NU6tzj
+   LD6SUjbvz3nozkJw8+lesaECkScGnd3tq1MXNUhS6ph/dAAdDj9SGhGDW
+   t9O1lZy5P95H2zSPB49Cg2C+Q5W4gojbfFrRI+7YvtubgVf3LL17XC36p
+   iRNu6nngL5TFQCIXF/T+2ah1UzGqBz3z9U3LSSr/hy1MHXgIHwiXKsXYk
+   5KYL4R3+5otT7W3IRllPUq6NF+Cxf78guqRC8FDxs0dMLx8dPHYp6PXL/
+   QGseiTvWtgDcIgNUhUWJTKsqAffWp71R3vWF4Ng/dugEYwryWUUfNtkUd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10216"; a="229559359"
+X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
+   d="scan'208";a="229559359"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 07:43:58 -0800
+X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
+   d="scan'208";a="688600650"
+Received: from smile.fi.intel.com ([10.237.72.61])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 07:43:52 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1n4lxK-006GMj-Qz;
+        Tue, 04 Jan 2022 17:42:34 +0200
+Date:   Tue, 4 Jan 2022 17:42:34 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jakub Kicinski <kuba@kernel.org>, mingo@kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-can@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-hams@vger.kernel.org, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        linux-decnet-user@lists.sourceforge.net,
+        linux-s390@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH bpf-next v2] net: don't include filter.h from net/sock.h
+Message-ID: <YdRq6vKceOqscaKK@smile.fi.intel.com>
+References: <20211229004913.513372-1-kuba@kernel.org>
+ <5a82690c-7dc0-81de-4dd6-06e26e4b9b92@gmail.com>
+ <20211229092012.635e9f2b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPqJDZouQHpUXv4dEGKKe=UjwkZu3=GMQ2M9g2zLYOV6a=gZbw@mail.gmail.com>
+In-Reply-To: <20211229092012.635e9f2b@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 29, 2021 at 11:01:35AM -0800, Christy Lee wrote:
+On Wed, Dec 29, 2021 at 09:20:12AM -0800, Jakub Kicinski wrote:
+> On Tue, 28 Dec 2021 17:33:39 -0800 Florian Fainelli wrote:
+> > It would be nice if we used the number of files rebuilt because of a 
+> > header file change as another metric that the kernel is evaluated with 
+> > from release to release (or even on a commit by commit basis). Food for 
+> > thought.
+> 
+> Maybe Andy has some thoughts, he has been working on dropping
+> unnecessary includes of kernel.h, it seems.
 
-SNIP
+With this [1] announcement I believe Ingo is the best to tell you if this is a
+right direction.
 
-> > >
-> > > I don't use it, I just know it's there.. that's why I asked ;-)
-> > >
-> > > it's possible to specify bpf program on the perf command line
-> > > to be attached to event, like:
-> > >
-> > >       # cat tools/perf/examples/bpf/hello.c
-> > >       #include <stdio.h>
-> > >
-> > >       int syscall_enter(openat)(void *args)
-> > >       {
-> > >               puts("Hello, world\n");
-> > >               return 0;
-> > >       }
-> > >
-> > >       license(GPL);
-> > >       #
-> > >       # perf trace -e openat,tools/perf/examples/bpf/hello.c cat /etc/passwd > /dev/null
-> > >          0.016 (         ): __bpf_stdout__:Hello, world
-> > >          0.018 ( 0.010 ms): cat/9079 openat(dfd: CWD, filename: /etc/ld.so.cache, flags: CLOEXEC) = 3
-> > >          0.057 (         ): __bpf_stdout__:Hello, world
-> > >          0.059 ( 0.011 ms): cat/9079 openat(dfd: CWD, filename: /lib64/libc.so.6, flags: CLOEXEC) = 3
-> > >          0.417 (         ): __bpf_stdout__:Hello, world
-> > >          0.419 ( 0.009 ms): cat/9079 openat(dfd: CWD, filename: /etc/passwd) = 3
-> > >       #
-> > >
-> > > I took that example from commit message
-> [...]
+> It'd be cool to plug something that'd warn us about significant
+> increases in dependencies into the patchwork build bot.
 > 
-> I found the original commit aa3abf30bb28addcf593578d37447d42e3f65fc3
-> that included a test case, but I'm having trouble reproducing it due to syntax
-> error. I am running this on bpf-next master without my patches.
-> 
-> I ran 'perf test -v LLVM' and used it's output to generate a script for
-> compiling the perf test object:
-> 
-> --------------------------------------------------
-> $ cat ~/bin/hello-ebpf
-> INPUT_FILE=/tmp/test.c
-> OUTPUT_FILE=/tmp/test.o
-> 
-> export KBUILD_DIR=/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-> export NR_CPUS=56
-> export LINUX_VERSION_CODE=0x50c00
-> export CLANG_EXEC=/data/users/christylee/devtools/llvm/latest/bin/clang
-> export CLANG_OPTIONS=-xc
-> export KERNEL_INC_OPTIONS="-nostdinc -isystem
-> /data/users/christylee/devtools/gcc/10.3.0/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include
-> -I./arch/\
-> x86/include -I./arch/x86/include/generated  -I./include
-> -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi
-> -I./include/uapi -I./in\
-> clude/generated/uapi -include ./include/linux/compiler-version.h
-> -include ./include/linux/kconfig.h"
-> export PERF_BPF_INC_OPTIONS=-I/home/christylee/lib/perf/include/bpf
-> export WORKING_DIR=/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-> export CLANG_SOURCE=-
-> 
-> rm -f $OUTPUT_FILE
-> cat $INPUT_FILE |
-> /data/users/christylee/devtools/llvm/latest/bin/clang -D__KERNEL__
-> -D__NR_CPUS__=56 -DLINUX_VERSION_CODE=0x50c00 -xc  -I/ho\
-> me/christylee/lib/perf/include/bpf  -nostdinc -isystem
-> /data/users/christylee/devtools/gcc/10.3.0/lib/gcc/x86_64-pc-linux-gnu/10.3.0/include
-> \
-> -I./arch/x86/include -I./arch/x86/include/generated  -I./include
-> -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi
-> -I./include/ua\
-> pi -I./include/generated/uapi -include
-> ./include/linux/compiler-version.h -include ./include/linux/kconfig.h
-> -Wno-unused-value -Wno-pointer-\
-> sign -working-directory
-> /lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build -c - -target bpf
-> -O2 -o $OUTPUT_FILE
-> --------------------------------------------------
-> 
-> I then wrote and compiled a script that ask to get asks to put a probe
-> at a function that
-> does not exists in the kernel, it errors out as expected:
-> 
-> $ cat /tmp/test.c
-> __attribute__((section("fork=does_not_exist"), used)) int fork(void *ctx) {
->     return 0;
-> }
-> 
-> char _license[] __attribute__((section("license"), used)) = "GPL";
-> int _version __attribute__((section("version"), used)) = 0x40100;
-> $ cd ~/bin && ./hello-ebpf
-> $ perf record --event /tmp/test.o sleep 1
-> Using perf wrapper that supports hot-text. Try perf.real if you
-> encounter any issues.
-> Probe point 'does_not_exist' not found.
-> event syntax error: '/tmp/test.o'
->                      \___ You need to check probing points in BPF file
-> 
-> (add -v to see detail)
-> Run 'perf list' for a list of valid events
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -e, --event <event>   event selector. use 'perf list' to list
-> available events
-> 
-> ---------------------------------------------------
-> 
-> Next I changed the attribute to something that exists in the kernel.
-> As expected, it errors out
-> with permission problem:
-> $ cat /tmp/test.c
-> __attribute__((section("fork=fork_init"), used)) int fork(void *ctx) {
->     return 0;
-> }
-> char _license[] __attribute__((section("license"), used)) = "GPL";
-> int _version __attribute__((section("version"), used)) = 0x40100;
-> $ grep fork_init /proc/kallsyms
-> ffffffff8146e250 T xfs_ifork_init_cow
-> ffffffff83980481 T fork_init
-> $ cd ~/bin && ./hello-ebpf
-> $ perf record --event /tmp/test.o sleep 1
-> Using perf wrapper that supports hot-text. Try perf.real if you
-> encounter any issues.
-> Failed to open kprobe_events: Permission denied
-> event syntax error: '/tmp/test.o'
->                      \___ You need to be root
-> 
-> (add -v to see detail)
-> Run 'perf list' for a list of valid events
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -e, --event <event>   event selector. use 'perf list' to list
-> available events
-> 
-> ---------------------------------------------------
-> 
-> So I reran as root, but this time I get an invalid syntax error:
-> 
-> # perf record --event /tmp/test.o -v sleep 1
-> Using perf wrapper that supports hot-text. Try perf.real if you
-> encounter any issues.
-> Failed to write event: Invalid argument
-> event syntax error: '/tmp/test.o'
->                      \___ Invalid argument
-> 
-> (add -v to see detail)
-> Run 'perf list' for a list of valid events
-> 
->  Usage: perf record [<options>] [<command>]
->     or: perf record [<options>] -- <command> [<options>]
-> 
->     -e, --event <event>   event selector. use 'perf list' to list
-> available events
-> ---------------------------------------------------
-> 
-> Is there a different way to attach a custom event probe point?
-> 
+> I have one more small series which un-includes uapi/bpf.h from
+> netdevice.h at which point I hope we'll be largely in the clear 
+> from build bot performance perspective.
 
-nice, good question ;-)
+[1]: https://lore.kernel.org/lkml/YdIfz+LMewetSaEB@gmail.com/T/#u
 
-looks like there are no volunteers from original authors,
-I'll check on that
+-- 
+With Best Regards,
+Andy Shevchenko
 
-thanks,
-jirka
 
