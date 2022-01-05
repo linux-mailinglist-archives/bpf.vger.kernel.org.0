@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC41485BFD
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 00:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F05485BFE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 00:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245254AbiAEXBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 18:01:20 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54514 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S245231AbiAEXBQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 5 Jan 2022 18:01:16 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 205LApC2023729
-        for <bpf@vger.kernel.org>; Wed, 5 Jan 2022 15:01:15 -0800
+        id S245231AbiAEXBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 18:01:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34142 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245244AbiAEXBS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 5 Jan 2022 18:01:18 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 205KKSTg022549
+        for <bpf@vger.kernel.org>; Wed, 5 Jan 2022 15:01:17 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=OGNOMDT6dIgIyXZXX4M4ISGKgyHwPXHMscSOviIqbmg=;
- b=UCgt1uJkjsH+EaLjOLe/0D1btQdgOnWD4qEsXyctU40qooQ/Mn+J3EJZlMZynzUxWN7v
- KJ4GPI9EavGFfb5A2Z9mVGz6rz6qKmIdLT/y5IIgvGM/njG3x2/mT/IhtzJf0xEXJKeX
- fwkqhJuW9AgWqhS2eJ6s8YOqUIC6+wEKG4g= 
+ bh=WZEw60ZWQad/kWMWGh6Nn9kIVrLEm3RjtbfSrmbf/CE=;
+ b=WQrhTAn0ZkVm0Bpg27ksvkrOL1ck2dLAUAQihaQVEGLm4BFtChak9Cv9NGtQORxlbQb4
+ NJiCxipQG9xJhkczYqh4Vbya1uII4jUrT1GYWjEZLepw3ttCFGrKUbMIhW0Rwrbe4YJD
+ bkHZIM7fO5/0M/8c+GeUxR5RzqnqFKlTj04= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3dcxpr77rr-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ddj9e0xgf-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 15:01:15 -0800
-Received: from twshared13833.42.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 15:01:17 -0800
+Received: from twshared10140.39.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 5 Jan 2022 15:01:14 -0800
+ 15.1.2308.20; Wed, 5 Jan 2022 15:01:15 -0800
 Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id 601CA15060B0; Wed,  5 Jan 2022 15:01:10 -0800 (PST)
+        id 6549915060B2; Wed,  5 Jan 2022 15:01:10 -0800 (PST)
 From:   Christy Lee <christylee@fb.com>
 To:     <andrii@kernel.org>, <acme@kernel.org>
 CC:     <christyc.y.lee@gmail.com>, <bpf@vger.kernel.org>,
         <kernel-team@fb.com>, <linux-perf-users@vger.kernel.org>,
         Christy Lee <christylee@fb.com>
-Subject: [PATCH bpf-next 1/5] samples/bpf: stop using bpf_map__def() API
-Date:   Wed, 5 Jan 2022 15:00:53 -0800
-Message-ID: <20220105230057.853163-2-christylee@fb.com>
+Subject: [PATCH bpf-next 2/5] bpftool: stop using bpf_map__def() API
+Date:   Wed, 5 Jan 2022 15:00:54 -0800
+Message-ID: <20220105230057.853163-3-christylee@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220105230057.853163-1-christylee@fb.com>
 References: <20220105230057.853163-1-christylee@fb.com>
@@ -46,80 +46,110 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: h167-gZ0gXWDmHm6DRoM5zaRqv6AT60B
-X-Proofpoint-GUID: h167-gZ0gXWDmHm6DRoM5zaRqv6AT60B
+X-Proofpoint-GUID: _x6S0-11_j6XKnUHGHfrVaSo8kfpDPRM
+X-Proofpoint-ORIG-GUID: _x6S0-11_j6XKnUHGHfrVaSo8kfpDPRM
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-05_08,2022-01-04_01,2021-12-02_01
 X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
- mlxlogscore=999 spamscore=0 suspectscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201050145
+ mlxscore=0 adultscore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201050146
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-libbpf bpf_map__def() API is being deprecated, replace samples/bpf's
+libbpf bpf_map__def() API is being deprecated, replace bpftool's
 usage with the appropriate getters and setters.
 
 Signed-off-by: Christy Lee <christylee@fb.com>
 ---
- samples/bpf/xdp_rxq_info_user.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/bpf/bpftool/gen.c        | 12 ++++++------
+ tools/bpf/bpftool/struct_ops.c |  4 +---
+ 2 files changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/samples/bpf/xdp_rxq_info_user.c b/samples/bpf/xdp_rxq_info_u=
-ser.c
-index 74a2926eba08..4033f345aa29 100644
---- a/samples/bpf/xdp_rxq_info_user.c
-+++ b/samples/bpf/xdp_rxq_info_user.c
-@@ -209,7 +209,7 @@ static struct datarec *alloc_record_per_cpu(void)
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index b4695df2ea3d..0b6f1553db0b 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -227,7 +227,7 @@ static int codegen_datasecs(struct bpf_object *obj, c=
+onst char *obj_name)
+ 		/* only generate definitions for memory-mapped internal maps */
+ 		if (!bpf_map__is_internal(map))
+ 			continue;
+-		if (!(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
++		if (!(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+ 			continue;
 =20
- static struct record *alloc_record_per_rxq(void)
+ 		if (!get_map_ident(map, map_ident, sizeof(map_ident)))
+@@ -468,7 +468,7 @@ static void codegen_destroy(struct bpf_object *obj, c=
+onst char *obj_name)
+ 		if (!get_map_ident(map, ident, sizeof(ident)))
+ 			continue;
+ 		if (bpf_map__is_internal(map) &&
+-		    (bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
++		    (bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+ 			printf("\tmunmap(skel->%1$s, %2$zd);\n",
+ 			       ident, bpf_map_mmap_sz(map));
+ 		codegen("\
+@@ -536,7 +536,7 @@ static int gen_trace(struct bpf_object *obj, const ch=
+ar *obj_name, const char *h
+ 			continue;
+=20
+ 		if (!bpf_map__is_internal(map) ||
+-		    !(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
++		    !(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+ 			continue;
+=20
+ 		codegen("\
+@@ -600,10 +600,10 @@ static int gen_trace(struct bpf_object *obj, const =
+char *obj_name, const char *h
+ 			continue;
+=20
+ 		if (!bpf_map__is_internal(map) ||
+-		    !(bpf_map__def(map)->map_flags & BPF_F_MMAPABLE))
++		    !(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+ 			continue;
+=20
+-		if (bpf_map__def(map)->map_flags & BPF_F_RDONLY_PROG)
++		if (bpf_map__map_flags(map) & BPF_F_RDONLY_PROG)
+ 			mmap_flags =3D "PROT_READ";
+ 		else
+ 			mmap_flags =3D "PROT_READ | PROT_WRITE";
+@@ -962,7 +962,7 @@ static int do_skeleton(int argc, char **argv)
+ 				i, bpf_map__name(map), i, ident);
+ 			/* memory-mapped internal maps */
+ 			if (bpf_map__is_internal(map) &&
+-			    (bpf_map__def(map)->map_flags & BPF_F_MMAPABLE)) {
++			    (bpf_map__map_flags(map) & BPF_F_MMAPABLE)) {
+ 				printf("\ts->maps[%zu].mmaped =3D (void **)&obj->%s;\n",
+ 				       i, ident);
+ 			}
+diff --git a/tools/bpf/bpftool/struct_ops.c b/tools/bpf/bpftool/struct_op=
+s.c
+index 2f693b082bdb..e08a6ff2866c 100644
+--- a/tools/bpf/bpftool/struct_ops.c
++++ b/tools/bpf/bpftool/struct_ops.c
+@@ -480,7 +480,6 @@ static int do_unregister(int argc, char **argv)
+ static int do_register(int argc, char **argv)
  {
--	unsigned int nr_rxqs =3D bpf_map__def(rx_queue_index_map)->max_entries;
-+	unsigned int nr_rxqs =3D bpf_map__max_entries(rx_queue_index_map);
- 	struct record *array;
+ 	LIBBPF_OPTS(bpf_object_open_opts, open_opts);
+-	const struct bpf_map_def *def;
+ 	struct bpf_map_info info =3D {};
+ 	__u32 info_len =3D sizeof(info);
+ 	int nr_errs =3D 0, nr_maps =3D 0;
+@@ -510,8 +509,7 @@ static int do_register(int argc, char **argv)
+ 	}
 =20
- 	array =3D calloc(nr_rxqs, sizeof(struct record));
-@@ -222,7 +222,7 @@ static struct record *alloc_record_per_rxq(void)
+ 	bpf_object__for_each_map(map, obj) {
+-		def =3D bpf_map__def(map);
+-		if (def->type !=3D BPF_MAP_TYPE_STRUCT_OPS)
++		if (bpf_map__type(map) !=3D BPF_MAP_TYPE_STRUCT_OPS)
+ 			continue;
 =20
- static struct stats_record *alloc_stats_record(void)
- {
--	unsigned int nr_rxqs =3D bpf_map__def(rx_queue_index_map)->max_entries;
-+	unsigned int nr_rxqs =3D bpf_map__max_entries(rx_queue_index_map);
- 	struct stats_record *rec;
- 	int i;
-=20
-@@ -241,7 +241,7 @@ static struct stats_record *alloc_stats_record(void)
-=20
- static void free_stats_record(struct stats_record *r)
- {
--	unsigned int nr_rxqs =3D bpf_map__def(rx_queue_index_map)->max_entries;
-+	unsigned int nr_rxqs =3D bpf_map__max_entries(rx_queue_index_map);
- 	int i;
-=20
- 	for (i =3D 0; i < nr_rxqs; i++)
-@@ -289,7 +289,7 @@ static void stats_collect(struct stats_record *rec)
- 	map_collect_percpu(fd, 0, &rec->stats);
-=20
- 	fd =3D bpf_map__fd(rx_queue_index_map);
--	max_rxqs =3D bpf_map__def(rx_queue_index_map)->max_entries;
-+	max_rxqs =3D bpf_map__max_entries(rx_queue_index_map);
- 	for (i =3D 0; i < max_rxqs; i++)
- 		map_collect_percpu(fd, i, &rec->rxq[i]);
- }
-@@ -335,7 +335,7 @@ static void stats_print(struct stats_record *stats_re=
-c,
- 			struct stats_record *stats_prev,
- 			int action, __u32 cfg_opt)
- {
--	unsigned int nr_rxqs =3D bpf_map__def(rx_queue_index_map)->max_entries;
-+	unsigned int nr_rxqs =3D bpf_map__max_entries(rx_queue_index_map);
- 	unsigned int nr_cpus =3D bpf_num_possible_cpus();
- 	double pps =3D 0, err =3D 0;
- 	struct record *rec, *prev;
+ 		link =3D bpf_map__attach_struct_ops(map);
 --=20
 2.30.2
 
