@@ -2,109 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EABB64855C9
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 16:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 537AC48570F
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 18:07:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241429AbiAEPYo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 10:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241491AbiAEPYo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 10:24:44 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10004C061245;
-        Wed,  5 Jan 2022 07:24:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C145EB81C24;
-        Wed,  5 Jan 2022 15:24:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12DBAC36AE0;
-        Wed,  5 Jan 2022 15:24:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641396281;
-        bh=uvTf2jfh+MIhZI5PPr+ElM4TeMYS68HmJo8Y431Rbb8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XLLsY6/rbs/SuZzN5aITI0C9UZVuzQzHpif9Moqjc5iDwu95kw4Hm73Dxa0xDHa6S
-         6KuYbA9QF6sCcoolwsAMdFB+RyRMc2TsK7jtJlTkNGpivyufe1kL05FUd9zkL+aVTk
-         PadlCRQm1Lmn0xuvTzkux81vSoTMK86po9OpncyY+lci+XYxQn2x/dcyFtACygXDUu
-         LwBWA4k536qgB8sTP3kpE4zG3qwo/0jPOPcTS0Gxsihzhk3Cw06qrqMXlrNw68whhh
-         Dd9bjgwF9cz5vuDgMs/a8YW357Wi4qvt9BDbrfyzJZeCi70hf0fVgg741RpQI9/ICW
-         Bna8M10ILkbMg==
-Date:   Thu, 6 Jan 2022 00:24:35 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
-Message-Id: <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
-In-Reply-To: <20220104080943.113249-1-jolsa@kernel.org>
-References: <20220104080943.113249-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242146AbiAERHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 12:07:20 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:39834 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242091AbiAERHU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 12:07:20 -0500
+Received: by mail-il1-f200.google.com with SMTP id u7-20020a056e02170700b002b54e12bb9eso44910ill.6
+        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 09:07:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LT9mjlWKUcOxEoDHLR8Lx02AdDDKYTNX5FyA18BMsYg=;
+        b=gf7L8Wi9ZoVXlrPZj1c6ZTChco1P3FCiBq2vH6nOPzgtUVFu+LPtp8bYLxFQkHfnsa
+         GtBBXA8FE2E7sPB8PnO5Tf996rU9XCj1Pop2O2WaJBGwZEBB9BAMkRyQ1jzC9DcsaNGc
+         krSZnI4IoUaqcv/26yUzccp0FzXmXLYHUNThbbhG4KdD78jX8KjclEcmxuumz/VTD28s
+         pFLaVRyxJCAWei0BgU5NSuzGJAtzJm/CriwkRY6C6N7PcLkkZYDAnU6+qYbqS+pSxY9T
+         3dTE2oKLUU2px6ZwoT1Dd7KXkk/EMx/31LognwfNgG127yW2Nzk63GBdeuLWOry2IKKe
+         Fd2Q==
+X-Gm-Message-State: AOAM532+mx4M9fb3H9JK9kaOSSr3ZUa52xhsLzpKDwg1lwFQShJiZFrq
+        DW42Sr25mpxPDp6crC8dE4HK4ZtpkXyUGIfbV0rV5bAuidWJ
+X-Google-Smtp-Source: ABdhPJzez4IwyI7mFVbzEive5MPPzk2HT3jOx5a5V3+bmuQLKp9Nw7HZlaQIOtkhZ2P1MUB+iA8r5DQv1ygxJcoyOSUSKz4jMA0h
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9d92:: with SMTP id ay18mr26063533iob.130.1641402439542;
+ Wed, 05 Jan 2022 09:07:19 -0800 (PST)
+Date:   Wed, 05 Jan 2022 09:07:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000057aae805d4d8c9c7@google.com>
+Subject: [syzbot] WARNING in fixup_exception
+From:   syzbot <syzbot+d9a0f6db5058ce56e260@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bp@alien8.de,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        dave.hansen@linux.intel.com, hpa@zytor.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue,  4 Jan 2022 09:09:30 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
+Hello,
 
-> hi,
-> adding support to attach multiple kprobes within single syscall
-> and speed up attachment of many kprobes.
-> 
-> The previous attempt [1] wasn't fast enough, so coming with new
-> approach that adds new kprobe interface.
+syzbot found the following issue on:
 
-Yes, since register_kprobes() just registers multiple kprobes on
-array. This is designed for dozens of kprobes.
+HEAD commit:    800829388818 mm: vmscan: reduce throttling due to a failur..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=100bafc3b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a86c22260afac2f
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9a0f6db5058ce56e260
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=154be92bb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112fd30bb00000
 
-> The attachment speed of of this approach (tested in bpftrace)
-> is now comparable to ftrace tracer attachment speed.. fast ;-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d9a0f6db5058ce56e260@syzkaller.appspotmail.com
 
-Yes, because that if ftrace, not kprobes.
+------------[ cut here ]------------
+General protection fault in user access. Non-canonical address?
+WARNING: CPU: 0 PID: 2529 at arch/x86/mm/extable.c:57 ex_handler_uaccess arch/x86/mm/extable.c:57 [inline]
+WARNING: CPU: 0 PID: 2529 at arch/x86/mm/extable.c:57 fixup_exception+0x5da/0x690 arch/x86/mm/extable.c:140
+Modules linked in:
+CPU: 0 PID: 2529 Comm: syz-executor223 Not tainted 5.16.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:ex_handler_uaccess arch/x86/mm/extable.c:57 [inline]
+RIP: 0010:fixup_exception+0x5da/0x690 arch/x86/mm/extable.c:140
+Code: 0c 31 ff 89 de e8 06 f5 42 00 84 db 0f 85 9b fc ff ff e8 19 f1 42 00 48 c7 c7 20 59 a9 89 c6 05 49 33 48 0c 01 e8 52 cf cb 07 <0f> 0b e9 7c fc ff ff e8 fa f0 42 00 48 89 de 48 c7 c7 c0 59 a9 89
+RSP: 0018:ffffc90003bf7bf0 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801dbd0000 RSI: ffffffff815f0948 RDI: fffff5200077ef70
+RBP: ffffffff8b6d0044 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815ea6ee R11: 0000000000000000 R12: ffffc90003bf7cc8
+R13: 000000000000000d R14: ffffc90003bf7d48 R15: 0000000000000000
+FS:  00007f46f7487700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f46f7d44190 CR3: 0000000022544000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __exc_general_protection arch/x86/kernel/traps.c:601 [inline]
+ exc_general_protection+0xed/0x300 arch/x86/kernel/traps.c:562
+ asm_exc_general_protection+0x1e/0x30 arch/x86/include/asm/idtentry.h:562
+RIP: 0010:__put_user_nocheck_2+0x3/0x11
+Code: 00 00 48 39 d9 73 74 0f 01 cb 88 01 31 c9 0f 01 ca c3 66 0f 1f 44 00 00 48 bb ff ef ff ff ff 7f 00 00 48 39 d9 73 54 0f 01 cb <66> 89 01 31 c9 0f 01 ca c3 0f 1f 44 00 00 48 bb fd ef ff ff ff 7f
+RSP: 0018:ffffc90003bf7d78 EFLAGS: 00050293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0006020200000004
+RDX: ffff88801dbd0000 RSI: ffffffff86d1fba8 RDI: 0000000000000003
+RBP: ffff888077ff01a8 R08: 0000000000000002 R09: 0000000000000001
+R10: ffffffff86d1fb95 R11: 0000000000000000 R12: 0006020200000004
+R13: ffff888077ff0258 R14: 0000000000000000 R15: 0000000000000000
+ vhost_put_used_flags drivers/vhost/vhost.c:969 [inline]
+ vhost_update_used_flags+0x1a3/0x3d0 drivers/vhost/vhost.c:1969
+ vhost_vq_init_access+0x114/0x5c0 drivers/vhost/vhost.c:2013
+ vhost_net_set_backend drivers/vhost/net.c:1548 [inline]
+ vhost_net_ioctl+0xbad/0x1740 drivers/vhost/net.c:1705
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f46f7d02839
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 31 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f46f7487208 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f46f7d8a278 RCX: 00007f46f7d02839
+RDX: 0000000020000000 RSI: 000000004008af30 RDI: 0000000000000003
+RBP: 00007f46f7d8a270 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f46f7d8a27c
+R13: 00007ffc8471e10f R14: 00007f46f7487300 R15: 0000000000022000
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	48 39 d9             	cmp    %rbx,%rcx
+   5:	73 74                	jae    0x7b
+   7:	0f 01 cb             	stac
+   a:	88 01                	mov    %al,(%rcx)
+   c:	31 c9                	xor    %ecx,%ecx
+   e:	0f 01 ca             	clac
+  11:	c3                   	retq
+  12:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+  18:	48 bb ff ef ff ff ff 	movabs $0x7fffffffefff,%rbx
+  1f:	7f 00 00
+  22:	48 39 d9             	cmp    %rbx,%rcx
+  25:	73 54                	jae    0x7b
+  27:	0f 01 cb             	stac
+* 2a:	66 89 01             	mov    %ax,(%rcx) <-- trapping instruction
+  2d:	31 c9                	xor    %ecx,%ecx
+  2f:	0f 01 ca             	clac
+  32:	c3                   	retq
+  33:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+  38:	48                   	rex.W
+  39:	bb fd ef ff ff       	mov    $0xffffeffd,%ebx
+  3e:	ff                   	(bad)
+  3f:	7f                   	.byte 0x7f
 
-> The limit of this approach is forced by using ftrace as attach
-> layer, so it allows only kprobes on function's entry (plus
-> return probes).
 
-Note that you also need to multiply the number of instances.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> 
-> This patchset contains:
->   - kprobes support to register multiple kprobes with current
->     kprobe API (patches 1 - 8)
->   - bpf support ot create new kprobe link allowing to attach
->     multiple addresses (patches 9 - 14)
-> 
-> We don't need to care about multiple probes on same functions
-> because it's taken care on the ftrace_ops layer.
-
-Hmm, I think there may be a time to split the "kprobe as an 
-interface for the software breakpoint" and "kprobe as a wrapper
-interface for the callbacks of various instrumentations", like
-'raw_kprobe'(or kswbp) and 'kprobes'.
-And this may be called as 'fprobe' as ftrace_ops wrapper.
-(But if the bpf is enough flexible, this kind of intermediate layer
- may not be needed, it can use ftrace_ops directly, eventually)
-
-Jiri, have you already considered to use ftrace_ops from the
-bpf directly? Are there any issues?
-(bpf depends on 'kprobe' widely?)
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
