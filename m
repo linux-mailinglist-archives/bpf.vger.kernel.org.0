@@ -2,39 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86711485384
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 14:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B9A4853B9
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 14:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240294AbiAENYX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 08:24:23 -0500
-Received: from www62.your-server.de ([213.133.104.62]:49864 "EHLO
+        id S240418AbiAENmH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 08:42:07 -0500
+Received: from www62.your-server.de ([213.133.104.62]:54236 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236846AbiAENYV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 08:24:21 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
+        with ESMTP id S234294AbiAENmF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 08:42:05 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1n56H3-0004es-5s; Wed, 05 Jan 2022 14:24:17 +0100
+        id 1n56YE-0007D6-Pc; Wed, 05 Jan 2022 14:42:02 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1n56H2-0003jA-RB; Wed, 05 Jan 2022 14:24:16 +0100
-Subject: Re: [PATCH] bpf: allow setting mount device for bpffs
-To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
+        id 1n56YE-000Pvo-H9; Wed, 05 Jan 2022 14:42:02 +0100
+Subject: Re: [PATCH net] scripts/pahole-flags.sh: Make sure pahole --version
+ works
+To:     Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        David Howells <dhowells@redhat.com>, viro@zeniv.linux.org.uk
-References: <20211226165649.7178-1-laoar.shao@gmail.com>
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+References: <20211231075607.94752-1-saeed@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <616eab60-0f56-7309-4f0f-c0f96719b688@iogearbox.net>
-Date:   Wed, 5 Jan 2022 14:24:16 +0100
+Message-ID: <8cf93086-4990-f14a-3271-92bc2ee0519e@iogearbox.net>
+Date:   Wed, 5 Jan 2022 14:42:01 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20211226165649.7178-1-laoar.shao@gmail.com>
+In-Reply-To: <20211231075607.94752-1-saeed@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -44,95 +47,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/26/21 5:56 PM, Yafang Shao wrote:
-> We noticed our tc ebpf tools can't start after we upgrade our in-house
-> kernel version from 4.19 to 5.10. That is because of the behaviour change
-> in bpffs caused by commit
-> d2935de7e4fd ("vfs: Convert bpf to use the new mount API").
+On 12/31/21 8:56 AM, Saeed Mahameed wrote:
+> From: Saeed Mahameed <saeedm@nvidia.com>
 > 
-> In our tc ebpf tools, we do strict environment check. If the enrioment is
-> not match, we won't allow to start the ebpf progs. One of the check is
-> whether bpffs is properly mounted. The mount information of bpffs in
-> kernel-4.19 and kernel-5.10 are as follows,
+> I had a broken pahole and it's been driving me crazy to see tons of the
+> following error messages on every build.
 > 
-> - kenrel 4.19
-> $ mount -t bpf bpffs /sys/fs/bpf
-> $ mount -t bpf
-> bpffs on /sys/fs/bpf type bpf (rw,relatime)
+> pahole: symbol lookup error: pahole: undefined symbol: btf_gen_floats
+> scripts/pahole-flags.sh: line 12: [: : integer expression expected
+> scripts/pahole-flags.sh: line 16: [: : integer expression expected
 > 
-> - kernel 5.10
-> $ mount -t bpf bpffs /sys/fs/bpf
-> $ mount -t bpf
-> none on /sys/fs/bpf type bpf (rw,relatime)
-> 
-> The device name in kernel-5.10 is displayed as none instead of bpffs,
-> then our environment check fails. Currently we modify the tools to adopt to
-> the kernel behaviour change, but I think we'd better change the kernel code
-> to keep the behavior consistent.
-> 
-> After this change, the mount information will be displayed the same with
-> the behavior in kernel-4.19, for example,
-> 
-> $ mount -t bpf bpffs /sys/fs/bpf
-> $ mount -t bpf
-> bpffs on /sys/fs/bpf type bpf (rw,relatime)
-> 
-> Fixes: d2935de7e4fd ("vfs: Convert bpf to use the new mount API")
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Cc: David Howells <dhowells@redhat.com>
+> Address this by redirecting pahole --version stderr to devnull,
+> and validate stdout has a non empty string, otherwise exit silently.
+
+I'll leave this up to Andrii, but broken pahole version sounds like it would
+have been better to fix the local pahole installation instead [rather than the
+kernel having to guard against it, especially if it's driving you crazy]?
+
+I could image that silent exit on empty version string due to broken pahole
+deployment might rather waste developer's time to then go and debug why btf
+wasn't generated..
+
+> Fixes: 9741e07ece7c ("kbuild: Unify options for BTF generation for vmlinux and modules")
+> CC: Andrii Nakryiko <andrii@kernel.org>
+> CC: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 > ---
->   kernel/bpf/inode.c | 18 ++++++++++++++++--
->   1 file changed, 16 insertions(+), 2 deletions(-)
+>   scripts/pahole-flags.sh | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index 80da1db47c68..5a8b729afa91 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -648,12 +648,26 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->   	int opt;
+> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> index e6093adf4c06..b3b53f890d40 100755
+> --- a/scripts/pahole-flags.sh
+> +++ b/scripts/pahole-flags.sh
+> @@ -7,7 +7,8 @@ if ! [ -x "$(command -v ${PAHOLE})" ]; then
+>   	exit 0
+>   fi
 >   
->   	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
-> -	if (opt < 0)
-> +	if (opt < 0) {
->   		/* We might like to report bad mount options here, but
->   		 * traditionally we've ignored all mount options, so we'd
->   		 * better continue to ignore non-existing options for bpf.
->   		 */
-> -		return opt == -ENOPARAM ? 0 : opt;
-> +		if (opt == -ENOPARAM) {
-> +			if (strcmp(param->key, "source") == 0) {
-> +				if (param->type != fs_value_is_string)
-> +					return 0;
-> +				if (fc->source)
-> +					return 0;
-> +				fc->source = param->string;
-> +				param->string = NULL;
-> +			}
-> +
-> +			return 0;
-> +		}
-> +
-> +		return opt;
-> +	}
+> -pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+> +pahole_ver=$(${PAHOLE} --version 2>/dev/null | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+> +[ -z "${pahole_ver}" ] && exit 0
+>   
+>   if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
+>   	# pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> 
 
-I don't think we need to open code this? Couldn't we just do something like:
-
-         [...]
-
-         opt = fs_parse(fc, bpf_fs_parameters, param, &result);
-         if (opt == -ENOPARAM) {
-                 opt = vfs_parse_fs_param_source(fc, param);
-                 if (opt != -ENOPARAM)
-                         return opt;
-                 return 0;
-         }
-         if (opt < 0)
-                 return opt;
-
-         [...]
-
-See also 0858d7da8a09 ("ramfs: fix mount source show for ramfs") where they
-had a similar issue.
-
-Thanks,
-Daniel
