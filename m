@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0956484E08
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 07:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B82C484E4C
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 07:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234842AbiAEGKo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 01:10:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
+        id S232841AbiAEGTY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 01:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiAEGKo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 01:10:44 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA9CC061761;
-        Tue,  4 Jan 2022 22:10:43 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g2so34659574pgo.9;
-        Tue, 04 Jan 2022 22:10:43 -0800 (PST)
+        with ESMTP id S237766AbiAEGTU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 01:19:20 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8676C061395;
+        Tue,  4 Jan 2022 22:19:14 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id r16-20020a17090a0ad000b001b276aa3aabso2512653pje.0;
+        Tue, 04 Jan 2022 22:19:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=c7gkEmC5tF+7d71r6EPg3NkvqUoiequVOGJzgTvDk+c=;
-        b=IoQhgL5UTwmFiWWTFwmdM/ZcX9KrhlOee5HY8XAFvwpx9KtdR3hJKzFdCNCtq5KOtJ
-         bt9oHS1KGB8EI2JRiWsuRTN19A6MZVyQFIlTjc/lAcwpBj15o+YLekcil2zEnmqk1W11
-         pIbDTQL8RaVmIy+5HdHDfqYkE8ZRq+3MnS0INWsSg+4dLIWuiiF12nLFjm7V4dhchtAj
-         VNghQ187pwtJ1EZTBplDq7htRknLl/7J4mjJEAjtRrSV0otnAk+R77jj3SVwdln0Vp36
-         3Tu9GHE3f3DWpLFZFCeTOkIIGTxJTUfNRnzT5cGrK1dHXSFXJNrjaZ51Vo1Avp5Z0yDn
-         kuwQ==
+        bh=Rsuq8U75Y7DnzY2eBcjcdz6eXja5MIiZ/3OfqerurIE=;
+        b=Poh7IMLqJE0mM1seq7nUsy7wj/54PzY5qP8pMco0HDrGXwpelwhNvXkBIb4HHvHgkz
+         qjhSitDfDoMbdMG7Tebw/ahw/SZvkkv+aTOw7jR5/eVf7rFnGWW8271c7t5Sv4TPPLsx
+         JNfVoOIyOMkUtexxIG8PTKjaqh4hnznDXPCejf/QaL02DIGGkvZG2z1CFmGTF/L8uqhU
+         dQiQZcTnbM7TSdShcdaH4swHeRuhWtQMJO9kNZtNrJMH6dQrJrnQqW4yBuK4mJJ/XO6l
+         TGeacJgT5xn60BxvSOjMVtr/ekxh3Yz++wFVGh4sDLApLVx8+LpOtH36nkgkpFuwjtRd
+         Gn3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=c7gkEmC5tF+7d71r6EPg3NkvqUoiequVOGJzgTvDk+c=;
-        b=MavaoVRhBLsInTOV8TzmmaUMq7utJKpsOIHPpE825EdZ4aUlCv4p6V3Vx0f/U8aNIP
-         y4IPRe4tldqFB19Vv9TcxQtInq1jizb6bwf+7nGkkQyMMc46gcOHTMNTzYMSwJOvlU/0
-         0TviYJnGq8fuQoO2tWhGkp78etWZrNQ+2wgS3tZo6bBi+/692zla4IUfOGB2w9iR0AtI
-         AXk13fbo5rCYIse1qOLJJEMLOKrzmFdd9Rs+HLztsWBAVkmHCV5fKPHw5fTmP0CvFc1O
-         TI17XGM7bSdtxaAYuMotokvlFsQnjm1ezx7OVIkpFOMXwjBdhT1Afxnvlr/rs4wDS5dr
-         K5+A==
-X-Gm-Message-State: AOAM533uTd/1YfVtXmjedYbRRsn7P4718Ic3/D1syEpaqn1IliPo5ISV
-        GOAf9st9drvB5qXOuOzMhUQ=
-X-Google-Smtp-Source: ABdhPJyzZJacIPo/b67svzzDsjhSvPjeMM6e8PFo5exAA4ToVis09ZcyjZTAYpW4MA4DliZlFrT6Dg==
-X-Received: by 2002:a63:90c3:: with SMTP id a186mr46234178pge.323.1641363043318;
-        Tue, 04 Jan 2022 22:10:43 -0800 (PST)
+        bh=Rsuq8U75Y7DnzY2eBcjcdz6eXja5MIiZ/3OfqerurIE=;
+        b=UgB5yDUrEyu+FG9w2kNed+nm2q2Wf169Fq+FTh+mM65qNgznLSb/Ql+uWxtpzK6Elv
+         OorfYXXZhKbVwjDapELxxjJPbGMj/nC112eghfOvYX1F583ZmUkMRGb5p8CgpHmswe4p
+         XA5C4m3+bjxt5HNVHH7J2ZkC2F0ea+J9NtWYdRAPzQ2XZ/MDRYjPLE5lH9y4CKsynIES
+         w8Gro3bJXbBV6OxpROJfMYOOUz+SRslmOkmfZmSJVE9dbMSoHq5pFQ9VAtrSjcAwa8Hc
+         kg83PxuEMU+pJtDYxyPCp9z3tOoKrrD9PjlHJioPB/x2bxaryyuwidSkqt57SdplcX/v
+         lWXw==
+X-Gm-Message-State: AOAM532QOfZ/y9uS5T0fToq6ueggM/Y5jJDVo5DnGq24/NXK/NtJ39nT
+        euxBRFNT+5jqVETpQDGxO9c=
+X-Google-Smtp-Source: ABdhPJxbhYqz6y2CTqHZV654Y9VGDisZF+Bh3OAPQSskdvzDWG7d7Sc45Fa7IWM+D3OW2zLqmyo2rg==
+X-Received: by 2002:a17:902:76c3:b0:149:ac0a:1662 with SMTP id j3-20020a17090276c300b00149ac0a1662mr21650753plt.92.1641363554429;
+        Tue, 04 Jan 2022 22:19:14 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1a5b])
-        by smtp.gmail.com with ESMTPSA id o11sm44875071pfu.150.2022.01.04.22.10.41
+        by smtp.gmail.com with ESMTPSA id n14sm35836381pgd.80.2022.01.04.22.19.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jan 2022 22:10:42 -0800 (PST)
-Date:   Tue, 4 Jan 2022 22:10:40 -0800
+        Tue, 04 Jan 2022 22:19:14 -0800 (PST)
+Date:   Tue, 4 Jan 2022 22:19:11 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -61,56 +61,90 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Florian Westphal <fw@strlen.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v6 02/11] bpf: Fix UAF due to race between
- btf_try_get_module and load_module
-Message-ID: <20220105061040.snl7hqsogeqxxruo@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v6 03/11] bpf: Populate kfunc BTF ID sets in
+ struct btf
+Message-ID: <20220105061911.nzgzzvt2rpftcavi@ast-mbp.dhcp.thefacebook.com>
 References: <20220102162115.1506833-1-memxor@gmail.com>
- <20220102162115.1506833-3-memxor@gmail.com>
+ <20220102162115.1506833-4-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220102162115.1506833-3-memxor@gmail.com>
+In-Reply-To: <20220102162115.1506833-4-memxor@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 02, 2022 at 09:51:06PM +0530, Kumar Kartikeya Dwivedi wrote:
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 33bb8ae4a804..b5b423de53ab 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6338,7 +6338,10 @@ struct module *btf_try_get_module(const struct btf *btf)
->  		if (btf_mod->btf != btf)
->  			continue;
+On Sun, Jan 02, 2022 at 09:51:07PM +0530, Kumar Kartikeya Dwivedi wrote:
 >  
-> -		if (try_module_get(btf_mod->module))
-> +		/* We must only consider module whose __init routine has
-> +		 * finished, hence use try_module_get_live.
-> +		 */
-> +		if (try_module_get_live(btf_mod->module))
+> +enum btf_kfunc_hook {
+> +	BTF_KFUNC_HOOK_XDP,
+> +	BTF_KFUNC_HOOK_TC,
+> +	BTF_KFUNC_HOOK_STRUCT_OPS,
+> +	_BTF_KFUNC_HOOK_MAX,
 
-Instead of patch 1 refactoring for this very specific case can we do:
-1.
-if (try_module_get(btf_mod->module)) {
-     if (btf_mod->module->state != MODULE_STATE_LIVE)
-        module_put(btf_mod->module);
-     else
-        res = btf_mod->module;
+Why prefix with _ ?
 
-2. 
-preempt_disable();
-if (btf_mod->module->state == MODULE_STATE_LIVE &&
-    try_module_get(btf_mod->module)) ...
-preempt_enable();
+> +enum {
+> +	BTF_KFUNC_SET_MAX_CNT = 32,
+> +};
+...
+> +	if (set_cnt + add_set->cnt > BTF_KFUNC_SET_MAX_CNT) {
+> +		ret = -E2BIG;
+> +		goto end;
+> +	}
 
-3. add
-case MODULE_STATE_LIVE:
-to btf_module_notify()
-and have an extra flag in struct btf_module to say that it's ready?
+This artificial limit wouldn't be needed if you didn't insist on sorting.
+The later patches don't take advantage of this sorting feature and
+I don't see a test for sorting either.
 
-I'm mainly concerned about:
--EXPORT_SYMBOL(try_module_get);
-+EXPORT_SYMBOL(__try_module_get);
-in the patch 1. Not that I care about out of tree modules,
-but we shouldn't be breaking them without a reason.
+> +
+> +	/* Grow set */
+> +	set = krealloc(tab->sets[hook][type], offsetof(struct btf_id_set, ids[set_cnt + add_set->cnt]),
+> +		       GFP_KERNEL | __GFP_NOWARN);
+> +	if (!set) {
+> +		ret = -ENOMEM;
+> +		goto end;
+> +	}
+> +
+> +	/* For newly allocated set, initialize set->cnt to 0 */
+> +	if (!tab->sets[hook][type])
+> +		set->cnt = 0;
+> +	tab->sets[hook][type] = set;
+> +
+> +	/* Concatenate the two sets */
+> +	memcpy(set->ids + set->cnt, add_set->ids, add_set->cnt * sizeof(set->ids[0]));
+> +	set->cnt += add_set->cnt;
+
+Without sorting this function would just assign the pointer.
+No need for krealloc and memcpy.
+
+> +
+> +	if (sort_set)
+> +		sort(set->ids, set->cnt, sizeof(set->ids[0]), btf_id_cmp_func, NULL);
+
+All that looks like extra code for a dubious feature.
+
+> +bool btf_kfunc_id_set_contains(const struct btf *btf,
+> +			       enum bpf_prog_type prog_type,
+> +			       enum btf_kfunc_type type, u32 kfunc_btf_id)
+> +{
+> +	enum btf_kfunc_hook hook;
+> +
+> +	switch (prog_type) {
+> +	case BPF_PROG_TYPE_XDP:
+> +		hook = BTF_KFUNC_HOOK_XDP;
+> +		break;
+> +	case BPF_PROG_TYPE_SCHED_CLS:
+> +		hook = BTF_KFUNC_HOOK_TC;
+> +		break;
+> +	case BPF_PROG_TYPE_STRUCT_OPS:
+> +		hook = BTF_KFUNC_HOOK_STRUCT_OPS;
+> +		break;
+> +	default:
+> +		return false;
+> +	}
+
+So this switch() is necessary only to compress prog_types into smaller hooks
+to save memory in the struct btf_kfunc_set_tab, right ?
+If so both kfunc_id_set_contains() and register_btf_kfunc() should
+probably use prog_type as an argument for symmetry.
