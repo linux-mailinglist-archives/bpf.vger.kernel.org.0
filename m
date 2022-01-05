@@ -2,131 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA56485A23
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 21:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A212485A4D
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 21:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244112AbiAEUkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 15:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        id S244240AbiAEUzz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 15:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244127AbiAEUkq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 15:40:46 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13806C061245;
-        Wed,  5 Jan 2022 12:40:46 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id q5so576638ioj.7;
-        Wed, 05 Jan 2022 12:40:46 -0800 (PST)
+        with ESMTP id S244239AbiAEUzw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 15:55:52 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87898C061245;
+        Wed,  5 Jan 2022 12:55:52 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id w7so461473plp.13;
+        Wed, 05 Jan 2022 12:55:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=45SP3bqnZoHbEc/qN8LNfImZ/YeuvDvy9LOD6oQtizc=;
-        b=ZVNnYwfLnJ+VojOtedXPo9wsSncszCXEGLqxeFiv0cSvYCfEuXKUZzUz24Q0rTyE5L
-         liw4nrhmGy9KHAEDDvwMr7/3sQbhlM16FaWF8V/p0MCi5mT/edk4FXpX4ok/yoAjcjeO
-         QVUyteWuGvf9ueQE7C+tHLFD4LMmv3NeHuR9vZLp90GDnEsvSdeM9uFMtFNUNJ7kvEUv
-         J1D7ZZOA6Y8yexvtLELBDpjs9D9E8qV/pVXEUiBp09vsrEoq23/Q2GG2kb29g5XT+KSq
-         pEtSyc/W6wuvYRoGomG9DWbJGbCCN599K5e0zqTsvXuiYff3w3yCcs9jIV7X6K8Slq0P
-         OkQQ==
+        bh=cBznVAld5K088tv2SFB3Jx7CG3DaWx7P5YgQ6E60k30=;
+        b=ZX/ipq78Z/qT9BexoxBGBt5nTLa4YCb42OcArXJsesE/Zc06YCebybONJaio6L+MHV
+         RrKMTV0quo8yrORE3OAi6FzWVIE5kapedqd11p8wYxmMTIxa3yFRFpEXdp7qo8cWT6S1
+         stc6p+J+GXDmzOW3RoakGC1HvscyK+bASVbQeDPSQwfwWnCjnfe4XzWg5d4hVKFh5eQd
+         7NjXOsK56kIwBW5Rp5oiUSREcMEq+ekabMU0gwSm7LwKpbTqrezacOEi9ujQOQmNSNbL
+         MpaJ3rDOB4pQWrdN+jfNTX42DuVfFbY0u2jxfgDpN2SCrU8QtP8QFJDX0st4Tz9tpnjK
+         SfMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=45SP3bqnZoHbEc/qN8LNfImZ/YeuvDvy9LOD6oQtizc=;
-        b=6+nkQgs6mKT6DG1srIRacbWqnakfm7qExvhMDecxr8s+jrh+PMmHI9RVXxuI2gniOI
-         Iubu9vxXmIXDhm+Lfa2wFxmF8HnsME8/lonrmlGVQ9hmpaYTb/sIUHj/czbbFDFhF6uO
-         eAnu914r5Qvtq6NSM2F2YR5K1rDDNt/L72o0vfDj59eoby86q7wLCWtaVzgZ1TW27HRB
-         AYEdySyiaZd9VmwyZb4l9cnvjLqLixwfojhECv7dKxB2HNALbx2/VCKblajJkd1oA5KU
-         7puvCTXYkshzmgez0B4VQksuxXq+DHMjv6Qbd5JEn+/lOhRKibwPS9FkQ7gVa20AFDi1
-         5PaA==
-X-Gm-Message-State: AOAM531/peNXcaSw7OpXi5qsT3a7E9TwX7hiLrNHfjGMls8LQ9yn/VMW
-        TI7CZseSq7sgO6VzDcM1rGe4h8cuT97pLpAMgNw=
-X-Google-Smtp-Source: ABdhPJyBwku1U1w4AAxvzgmc//dVuyBdCj8HysKq+5CBS+QAK19GVbV1nnmEqFC6AlveVlq1rBKBR+7vzkwtTSCwJpI=
-X-Received: by 2002:a05:6602:2d81:: with SMTP id k1mr25810715iow.112.1641415245384;
- Wed, 05 Jan 2022 12:40:45 -0800 (PST)
+        bh=cBznVAld5K088tv2SFB3Jx7CG3DaWx7P5YgQ6E60k30=;
+        b=smFvlVa7xsWrLeSp0yCIFpKTl9bUyGVZwNOaqHXnFk5UVMiAEqRmp0Y11G2vQb5TMQ
+         Rm3y8o0Rr8PAahAo8AVhar7J/13XNeFN+XduiQEvdGPdo1/4fI6ARtuG0kdhm0t6IUx8
+         pqgixBQHE2sGjw8zlSogEYbNyWoxQ9zXhgw0+nsbw/um5lIulVkL+mkGH9OHjOh1nYnP
+         ckQJ/8Vo+FklthCVm32H6Jp5VS++u7SBsckMj/U9XDAX0U9n6O4Ce6Qm96vBZdc9zNVB
+         AnvJCShCAD3Q2KNoID0lRo+oZW3Z502nzlpOSUo34+5+6Rr2VddglLZDURIgoFXqmhHD
+         pCUA==
+X-Gm-Message-State: AOAM533AoU+Tf1lUP16amutVzrk9BgQIcRI7U/C/1uzcjhyjly3J3Ji+
+        p8tsc8Y36XdKPyKH7e7MGQ5qG85vebZSvQV2Afw=
+X-Google-Smtp-Source: ABdhPJyeNoxNyXrXYGhHTjrkUMnCGi/lEoxOeWAFRzdO51AMks+q6og/kJz9AUDfPKek229TrSxKU1boMr21vQh+3Ms=
+X-Received: by 2002:a17:902:c443:b0:148:f689:d924 with SMTP id
+ m3-20020a170902c44300b00148f689d924mr55310145plm.78.1641416151921; Wed, 05
+ Jan 2022 12:55:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20220104121030.138216-1-jolsa@kernel.org>
-In-Reply-To: <20220104121030.138216-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Jan 2022 12:40:34 -0800
-Message-ID: <CAEf4BzZK1=zdy1_ZdwWXK7Ryk+uWQeSApcpxFT9yMp4bRNanDQ@mail.gmail.com>
-Subject: Re: [PATCH] bpf/selftests: Fix namespace mount setup in tc_redirect
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20211216135958.3434-1-maciej.fijalkowski@intel.com>
+ <20211216135958.3434-4-maciej.fijalkowski@intel.com> <20211229131131.1460702-1-alexandr.lobakin@intel.com>
+ <Yc2wZvfA8qr/XB8P@boxer> <20211230160755.26019-1-alexandr.lobakin@intel.com>
+In-Reply-To: <20211230160755.26019-1-alexandr.lobakin@intel.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 5 Jan 2022 12:55:40 -0800
+Message-ID: <CAADnVQKjGykDYuCS=LQJ3g0brWACpMyaKjgQ9qm4szxHOLXV=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/4] ice: xsk: improve AF_XDP ZC Tx and use
+ batching API
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jussi Maki <joamaki@gmail.com>, Hangbin Liu <haliu@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 4, 2022 at 4:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Thu, Dec 30, 2021 at 8:09 AM Alexander Lobakin
+<alexandr.lobakin@intel.com> wrote:
 >
-> The tc_redirect umounts /sys in the new namespace, which can be
-> mounted as shared and cause global umount. The lazy umount also
-> takes down mounted trees under /sys like debugfs, which won't be
-> available after sysfs mounts again and could cause fails in other
-> tests.
+> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> Date: Thu, 30 Dec 2021 14:13:10 +0100
 >
->   # cat /proc/self/mountinfo | grep debugfs
->   34 23 0:7 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime shared:14 - debugfs debugfs rw
->   # cat /proc/self/mountinfo | grep sysfs
->   23 86 0:22 / /sys rw,nosuid,nodev,noexec,relatime shared:2 - sysfs sysfs rw
->   # mount | grep debugfs
->   debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
+> > On Wed, Dec 29, 2021 at 02:11:31PM +0100, Alexander Lobakin wrote:
+> > > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > > Date: Thu, 16 Dec 2021 14:59:57 +0100
+> > >
+> > > > Follow mostly the logic from commit 9610bd988df9 ("ice: optimize XDP_TX
+> > > > workloads") that has been done in order to address the massive tx_busy
+> > > > statistic bump and improve the performance as well.
+> > > >
+> > > > Increase the ICE_TX_THRESH to 64 as it seems to work out better for both
+> > > > XDP and AF_XDP. Also, separating the stats structs onto separate cache
+> > > > lines seemed to improve the performance. Batching approach is inspired
+> > > > by i40e's implementation with adjustments to the cleaning logic.
+> > > >
+> > > > One difference from 'xdpdrv' XDP_TX is when ring has less than
+> > > > ICE_TX_THRESH free entries, the cleaning routine will not stop after
+> > > > cleaning a single ICE_TX_THRESH amount of descs but rather will forward
+> > > > the next_dd pointer and check the DD bit and for this bit being set the
+> > > > cleaning will be repeated. IOW clean until there are descs that can be
+> > > > cleaned.
+> > > >
+> > > > It takes three separate xdpsock instances in txonly mode to achieve the
+> > > > line rate and this was not previously possible.
+> > > >
+> > > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > > > ---
+> > > >  drivers/net/ethernet/intel/ice/ice_txrx.c |   2 +-
+> > > >  drivers/net/ethernet/intel/ice/ice_txrx.h |   4 +-
+> > > >  drivers/net/ethernet/intel/ice/ice_xsk.c  | 249 ++++++++++++++--------
+> > > >  drivers/net/ethernet/intel/ice/ice_xsk.h  |  26 ++-
+> > > >  4 files changed, 182 insertions(+), 99 deletions(-)
+> > > >
+> > >
+> > > -- 8< --
+> > >
+> > > > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.h b/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > > > index 4c7bd8e9dfc4..f2eb99063c1f 100644
+> > > > --- a/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > > > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.h
+> > > > @@ -6,19 +6,36 @@
+> > > >  #include "ice_txrx.h"
+> > > >  #include "ice.h"
+> > > >
+> > > > +#define PKTS_PER_BATCH 8
+> > > > +
+> > > > +#ifdef __clang__
+> > > > +#define loop_unrolled_for _Pragma("clang loop unroll_count(8)") for
+> > > > +#elif __GNUC__ >= 4
+> > > > +#define loop_unrolled_for _Pragma("GCC unroll 8") for
+> > > > +#else
+> > > > +#define loop_unrolled_for for
+> > > > +#endif
+> > >
+> > > It's used in a bunch more places across the tree, what about
+> > > defining that in linux/compiler{,_clang,_gcc}.h?
+> > > Is it possible to pass '8' as an argument? Like
+> >
+> > Like where besides i40e? I might currently suck at grepping, let's blame
+> > christmas break for that.
 >
->   # ./test_progs -t tc_redirect
->   #164 tc_redirect:OK
->   Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
+> Ah okay, I confused it with a work around this pragma here: [0]
 >
->   # mount | grep debugfs
->   # cat /proc/self/mountinfo | grep debugfs
->   # cat /proc/self/mountinfo | grep sysfs
->   25 86 0:22 / /sys rw,relatime shared:2 - sysfs sysfs rw
+> >
+> > If there are actually other callsites besides i40e then this is a good
+> > idea to me, maybe as a follow-up?
 >
-> Making the sysfs private under the new namespace so the umount won't
-> trigger the global sysfs umount.
+> I think there are more potential call sites for that to come, I'd
+> make linux/unroll.h in the future I guess. But not as a part of
+> this series, right.
 
-Hey Jiri,
-
-Thanks for the fix. Did you try making tc_redirect non-serial again
-(s/serial_test_tc_redirect/test_tc_redirect/) and doing parallelized
-test_progs run (./test_progs -j) in a tight loop for a while? I
-suspect this might have been an issue forcing us to make this test
-serial in the first place, so now that it's fixed, we can make
-parallel test_progs a bit faster.
-
->
-> Cc: Jussi Maki <joamaki@gmail.com>
-> Reported-by: Hangbin Liu <haliu@redhat.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> index 4b18b73df10b..c2426df58e17 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-> @@ -105,6 +105,13 @@ static int setns_by_fd(int nsfd)
->         if (!ASSERT_OK(err, "unshare"))
->                 return err;
->
-> +       /* Make our /sys mount private, so the following umount won't
-> +        * trigger the global umount in case it's shared.
-> +        */
-> +       err = mount("none", "/sys", NULL, MS_PRIVATE, NULL);
-> +       if (!ASSERT_OK(err, "remount private /sys"))
-> +               return err;
-> +
->         err = umount2("/sys", MNT_DETACH);
->         if (!ASSERT_OK(err, "umount2 /sys"))
->                 return err;
-> --
-> 2.33.1
->
+Please don't, since loop unroll pragma is a hint.
+The compilers don't have to actually do the unroll.
+Both gcc and clang try to do it when it looks ok-ish from
+compiler perspective, but they don't have to.
+Try large unroll values and check the code.
+Ideally add compiler debug flags, so it can tell what it's actually doing.
+It's hard to figure out loop unroll factor looking at the assembly.
