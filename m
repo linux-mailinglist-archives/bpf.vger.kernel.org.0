@@ -2,145 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DFD4853E5
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 14:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192C04854A7
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 15:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240463AbiAEN5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 08:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236891AbiAEN5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 08:57:39 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9BBC061761
-        for <bpf@vger.kernel.org>; Wed,  5 Jan 2022 05:57:39 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id j83so99584585ybg.2
-        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 05:57:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q8VC82293G3QI/P2kAIl5VJN7S08d7ZmIRunRrjYEoA=;
-        b=AqGuah6QksnrhmrxMbulpI/61PSR00Oc4IDmCW5ib4li+2tqhH20IdW7wj6ygAxXL4
-         fExIsJBeIIR1MBk3YjW9lY/OTXy4mrmFsciIVZ302iIHr7Q2Z0yh+LITMNHnXXYSeR9p
-         iIqngnLfiGBiTr5DBnGRPI1cVoqeTYTAoMAg9pwFlAlATot0V0fA81H9efVSU3NzAs/4
-         G8cCRUoBOryU9/Bzk+P2LMJr2Hgop8jq2EO6BJVU8UCeYApqFMA9UdkYwGK06oxyH65h
-         qZ0pd7pAbc7mgESxKwMOW6Di+ca3zhC2pjm29G36O/8yKUqbDOHnwZd2rZrhsdxT7EZE
-         2KYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q8VC82293G3QI/P2kAIl5VJN7S08d7ZmIRunRrjYEoA=;
-        b=CS02HjYzb3ryXwGtRvsE9cJ4o/Bh/dS2i9dxMuADa8HTk2MUbLwd2dAqaWiUzFQzvg
-         DjqcOqb+gVMIZjOc7gzxvnNSrbYLVCkAMJ3cdbKRjD5JzwydamdD17neBGW96d3PcJxo
-         GmhRfDNPndg0UeWqN+Pdwpb8N1Vbe/sQBttCN6RAD0vXzscdbfqbHg+3zxJCIPIeDfQy
-         uG3mHLHfC3Yj42yCeXiI//Auym+N42uJwXsn8DhowKzaATsx6V5Rg0A1z8Ep3Yp1WyzR
-         c9BW473In9ahdbkp31ve3fSKgH4jIBG0vCPN1aq+m2kn+lRWZ/ZLe+Ph6CdfMLi4mx9d
-         RgTw==
-X-Gm-Message-State: AOAM531GJYxIOLcCCoND2m16X783Ng1DHArhUhql8mHYDTASioga8R7J
-        N5xAvqACK8S3aPWmKbaTqlZv5KNvOnTzsSafsH1k/A==
-X-Google-Smtp-Source: ABdhPJzWXFwL4M4RioBFZGKwwxrE/9qIDA5084D+/r9nJDVn4FK01peXlX2OqQ8TudAdR2uBavCeTXEOszbm61wDi+Q=
-X-Received: by 2002:a25:824c:: with SMTP id d12mr54015007ybn.5.1641391058295;
- Wed, 05 Jan 2022 05:57:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20220105131849.2559506-1-imagedong@tencent.com> <20220105131849.2559506-3-imagedong@tencent.com>
-In-Reply-To: <20220105131849.2559506-3-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 5 Jan 2022 05:57:27 -0800
-Message-ID: <CANn89iLMNK0Yo=5LmcV=NMLmAUEZsb1V__V5bY+ZNh347UE-xg@mail.gmail.com>
-Subject: Re: [PATCH v3 net-next 2/2] bpf: selftests: add bind retry for
- post_bind{4, 6}
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
+        id S240928AbiAEOdC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 09:33:02 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:42908 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240913AbiAEOdC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 09:33:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 77EC5B81B60;
+        Wed,  5 Jan 2022 14:33:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76943C36AE9;
+        Wed,  5 Jan 2022 14:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641393179;
+        bh=Kw96vXcxJrrUVhwGqm3/YXrxz5qus1Y9+XKUh4pYQuA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=c0+hVicSFx41Aoucb0+tNaX6sWkED4MZ/2ZzKItQ/6IJPrSkd3qgYANQO0NX2WqVf
+         Lv+jMEhqvzBtivgBvMNNVA+5h1SSBW5idy8ai4f2/GfsBGFOMxCspgeCzLgTMIngJi
+         sxV4lDMHUZbqyzCaW8pyRe6cLLgsh5LKSdRtpywk8QjUaBx6+TZzGiPc2t4rMsTTFO
+         VnZbD6SmGFcKjJTpOKZX0ZAJ9UJpD6i2ZzF8EjIE96FeaqLAaV+rUFnMUG15zGftAv
+         1ZBDnf4UxxthaUSd0F5w3SRVuIFTY9cDYMV1+SaIcsXkdbOYQK0eGb3maU9JGKphbq
+         qzyfjzyVjG1JQ==
+Date:   Wed, 5 Jan 2022 23:32:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 02/13] kprobe: Keep traced function address
+Message-Id: <20220105233252.2bc92d14c42827328109d9d0@kernel.org>
+In-Reply-To: <20220104080943.113249-3-jolsa@kernel.org>
+References: <20220104080943.113249-1-jolsa@kernel.org>
+        <20220104080943.113249-3-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 5:21 AM <menglong8.dong@gmail.com> wrote:
->
-> From: Menglong Dong <imagedong@tencent.com>
->
-> With previous patch, kernel is able to 'put_port' after sys_bind()
-> fails. Add the test for that case: rebind another port after
-> sys_bind() fails. If the bind success, it means previous bind
-> operation is already undoed.
->
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+On Tue,  4 Jan 2022 09:09:32 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
+
+> The bpf_get_func_ip_kprobe helper should return traced function
+> address, but it's doing so only for kprobes that are placed on
+> the function entry.
+> 
+> If kprobe is placed within the function, bpf_get_func_ip_kprobe
+> returns that address instead of function entry.
+> 
+> Storing the function entry directly in kprobe object, so it could
+> be used in bpf_get_func_ip_kprobe helper.
+
+Hmm, please do this in bpf side, which should have some data structure
+around the kprobe itself. Do not add this "specialized" field to
+the kprobe data structure.
+
+Thank you,
+
+> 
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/testing/selftests/bpf/test_sock.c | 166 +++++++++++++++++++++---
->  1 file changed, 146 insertions(+), 20 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_sock.c b/tools/testing/selftests/bpf/test_sock.c
-> index e8edd3dd3ec2..68525d68d4e5 100644
-> --- a/tools/testing/selftests/bpf/test_sock.c
-> +++ b/tools/testing/selftests/bpf/test_sock.c
-> @@ -35,12 +35,15 @@ struct sock_test {
->         /* Endpoint to bind() to */
->         const char *ip;
->         unsigned short port;
-> +       unsigned short port_retry;
->         /* Expected test result */
->         enum {
->                 LOAD_REJECT,
->                 ATTACH_REJECT,
->                 BIND_REJECT,
->                 SUCCESS,
-> +               RETRY_SUCCESS,
-> +               RETRY_REJECT
->         } result;
->  };
->
-> @@ -60,6 +63,7 @@ static struct sock_test tests[] = {
->                 0,
->                 NULL,
->                 0,
-> +               0,
->                 LOAD_REJECT,
->         },
+>  include/linux/kprobes.h                              |  3 +++
+>  kernel/kprobes.c                                     | 12 ++++++++++++
+>  kernel/trace/bpf_trace.c                             |  2 +-
+>  tools/testing/selftests/bpf/progs/get_func_ip_test.c |  4 ++--
+>  4 files changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> index 8c8f7a4d93af..a204df4fef96 100644
+> --- a/include/linux/kprobes.h
+> +++ b/include/linux/kprobes.h
+> @@ -74,6 +74,9 @@ struct kprobe {
+>  	/* Offset into the symbol */
+>  	unsigned int offset;
+>  
+> +	/* traced function address */
+> +	unsigned long func_addr;
+> +
+>  	/* Called before addr is executed. */
+>  	kprobe_pre_handler_t pre_handler;
+>  
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index d20ae8232835..c4060a8da050 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1310,6 +1310,7 @@ static void init_aggr_kprobe(struct kprobe *ap, struct kprobe *p)
+>  	copy_kprobe(p, ap);
+>  	flush_insn_slot(ap);
+>  	ap->addr = p->addr;
+> +	ap->func_addr = p->func_addr;
+>  	ap->flags = p->flags & ~KPROBE_FLAG_OPTIMIZED;
+>  	ap->pre_handler = aggr_pre_handler;
+>  	/* We don't care the kprobe which has gone. */
+> @@ -1588,6 +1589,16 @@ static int check_kprobe_address_safe(struct kprobe *p,
+>  	return ret;
+>  }
+>  
+> +static unsigned long resolve_func_addr(kprobe_opcode_t *addr)
+> +{
+> +	char str[KSYM_SYMBOL_LEN];
+> +	unsigned long offset;
+> +
+> +	if (kallsyms_lookup((unsigned long) addr, NULL, &offset, NULL, str))
+> +		return (unsigned long) addr - offset;
+> +	return 0;
+> +}
+> +
+>  int register_kprobe(struct kprobe *p)
+>  {
+>  	int ret;
+> @@ -1600,6 +1611,7 @@ int register_kprobe(struct kprobe *p)
+>  	if (IS_ERR(addr))
+>  		return PTR_ERR(addr);
+>  	p->addr = addr;
+> +	p->func_addr = resolve_func_addr(addr);
+>  
+>  	ret = warn_kprobe_rereg(p);
+>  	if (ret)
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 21aa30644219..25631253084a 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1026,7 +1026,7 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+>  {
+>  	struct kprobe *kp = kprobe_running();
+>  
+> -	return kp ? (uintptr_t)kp->addr : 0;
+> +	return kp ? (uintptr_t)kp->func_addr : 0;
+>  }
+>  
+>  static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
+> diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> index a587aeca5ae0..e988aefa567e 100644
+> --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> @@ -69,7 +69,7 @@ int test6(struct pt_regs *ctx)
+>  {
+>  	__u64 addr = bpf_get_func_ip(ctx);
+>  
+> -	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
+> +	test6_result = (const void *) addr == &bpf_fentry_test6;
+>  	return 0;
+>  }
+>  
+> @@ -79,6 +79,6 @@ int test7(struct pt_regs *ctx)
+>  {
+>  	__u64 addr = bpf_get_func_ip(ctx);
+>  
+> -	test7_result = (const void *) addr == &bpf_fentry_test7 + 5;
+> +	test7_result = (const void *) addr == &bpf_fentry_test7;
+>  	return 0;
+>  }
+> -- 
+> 2.33.1
+> 
 
 
-I assume we tried C99 initializers here, and this failed for some reason ?
-
-diff --git a/tools/testing/selftests/bpf/test_sock.c
-b/tools/testing/selftests/bpf/test_sock.c
-index e8edd3dd3ec2..b57ce9f3eabf 100644
---- a/tools/testing/selftests/bpf/test_sock.c
-+++ b/tools/testing/selftests/bpf/test_sock.c
-@@ -54,13 +54,13 @@ static struct sock_test tests[] = {
-                        BPF_MOV64_IMM(BPF_REG_0, 1),
-                        BPF_EXIT_INSN(),
-                },
--               BPF_CGROUP_INET4_POST_BIND,
--               BPF_CGROUP_INET4_POST_BIND,
--               0,
--               0,
--               NULL,
--               0,
--               LOAD_REJECT,
-+               .expected_attach_type = BPF_CGROUP_INET4_POST_BIND,
-+               .attach_type = BPF_CGROUP_INET4_POST_BIND,
-+               .domain = 0,
-+               .type = 0,
-+               .ip = NULL,
-+               .port = 0,
-+               .result = LOAD_REJECT,
-        },
-        {
-                "bind4 load with invalid access: mark",
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
