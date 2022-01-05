@@ -2,75 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB62485980
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 20:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA56485A23
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 21:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243733AbiAETvC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 14:51:02 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:60332 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243742AbiAETuN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 14:50:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 13BE1B81D82;
-        Wed,  5 Jan 2022 19:50:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D3945C36AE0;
-        Wed,  5 Jan 2022 19:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641412209;
-        bh=bAxPBa049uOz/Ur5g0BCKPwJ/GwHldu6X84fAeTxzvw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=R2aYC4cU31jUQl2b+lAiQUmSNu9QVdNU/fkDnAhn5oG7VQ94Nj7W2Vo7kkm/RGbfE
-         fw1PPgh1H0dT6sjNuFtcfaA7+/Chewbz+iCW0jLdz+zOWVhSFj+N8Y20xx6VKRS0+1
-         Wb0WXgNfSWlD0sbiBwPPoiGHRJ3Tm4eMbQEyEBkb41X7D1gUNlx3BPY9APgdZaerdY
-         DGCou3+BXXjR/AXyteSTwHsHSmgi6LVYrOYxTBOpfHMBaLPoLyo+ItgPyWVrUrRIRK
-         cY+PZWD6aSRhgaN11sYNgjaUxef0F7ROJtrrR8BPu/JnumIivbqPgdnC5PVBH3UQsk
-         g5Upp//ItA9LA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B9078F7940B;
-        Wed,  5 Jan 2022 19:50:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S244112AbiAEUkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 15:40:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244127AbiAEUkq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 15:40:46 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13806C061245;
+        Wed,  5 Jan 2022 12:40:46 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id q5so576638ioj.7;
+        Wed, 05 Jan 2022 12:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=45SP3bqnZoHbEc/qN8LNfImZ/YeuvDvy9LOD6oQtizc=;
+        b=ZVNnYwfLnJ+VojOtedXPo9wsSncszCXEGLqxeFiv0cSvYCfEuXKUZzUz24Q0rTyE5L
+         liw4nrhmGy9KHAEDDvwMr7/3sQbhlM16FaWF8V/p0MCi5mT/edk4FXpX4ok/yoAjcjeO
+         QVUyteWuGvf9ueQE7C+tHLFD4LMmv3NeHuR9vZLp90GDnEsvSdeM9uFMtFNUNJ7kvEUv
+         J1D7ZZOA6Y8yexvtLELBDpjs9D9E8qV/pVXEUiBp09vsrEoq23/Q2GG2kb29g5XT+KSq
+         pEtSyc/W6wuvYRoGomG9DWbJGbCCN599K5e0zqTsvXuiYff3w3yCcs9jIV7X6K8Slq0P
+         OkQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=45SP3bqnZoHbEc/qN8LNfImZ/YeuvDvy9LOD6oQtizc=;
+        b=6+nkQgs6mKT6DG1srIRacbWqnakfm7qExvhMDecxr8s+jrh+PMmHI9RVXxuI2gniOI
+         Iubu9vxXmIXDhm+Lfa2wFxmF8HnsME8/lonrmlGVQ9hmpaYTb/sIUHj/czbbFDFhF6uO
+         eAnu914r5Qvtq6NSM2F2YR5K1rDDNt/L72o0vfDj59eoby86q7wLCWtaVzgZ1TW27HRB
+         AYEdySyiaZd9VmwyZb4l9cnvjLqLixwfojhECv7dKxB2HNALbx2/VCKblajJkd1oA5KU
+         7puvCTXYkshzmgez0B4VQksuxXq+DHMjv6Qbd5JEn+/lOhRKibwPS9FkQ7gVa20AFDi1
+         5PaA==
+X-Gm-Message-State: AOAM531/peNXcaSw7OpXi5qsT3a7E9TwX7hiLrNHfjGMls8LQ9yn/VMW
+        TI7CZseSq7sgO6VzDcM1rGe4h8cuT97pLpAMgNw=
+X-Google-Smtp-Source: ABdhPJyBwku1U1w4AAxvzgmc//dVuyBdCj8HysKq+5CBS+QAK19GVbV1nnmEqFC6AlveVlq1rBKBR+7vzkwtTSCwJpI=
+X-Received: by 2002:a05:6602:2d81:: with SMTP id k1mr25810715iow.112.1641415245384;
+ Wed, 05 Jan 2022 12:40:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf,
- sockmap: fix double bpf_prog_put on error case in map_link
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164141220975.28548.12480548960134714730.git-patchwork-notify@kernel.org>
-Date:   Wed, 05 Jan 2022 19:50:09 +0000
-References: <20220104214645.290900-1-john.fastabend@gmail.com>
-In-Reply-To: <20220104214645.290900-1-john.fastabend@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, joamaki@gmail.com
+References: <20220104121030.138216-1-jolsa@kernel.org>
+In-Reply-To: <20220104121030.138216-1-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 Jan 2022 12:40:34 -0800
+Message-ID: <CAEf4BzZK1=zdy1_ZdwWXK7Ryk+uWQeSApcpxFT9yMp4bRNanDQ@mail.gmail.com>
+Subject: Re: [PATCH] bpf/selftests: Fix namespace mount setup in tc_redirect
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jussi Maki <joamaki@gmail.com>, Hangbin Liu <haliu@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Jan 4, 2022 at 4:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> The tc_redirect umounts /sys in the new namespace, which can be
+> mounted as shared and cause global umount. The lazy umount also
+> takes down mounted trees under /sys like debugfs, which won't be
+> available after sysfs mounts again and could cause fails in other
+> tests.
+>
+>   # cat /proc/self/mountinfo | grep debugfs
+>   34 23 0:7 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime shared:14 - debugfs debugfs rw
+>   # cat /proc/self/mountinfo | grep sysfs
+>   23 86 0:22 / /sys rw,nosuid,nodev,noexec,relatime shared:2 - sysfs sysfs rw
+>   # mount | grep debugfs
+>   debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
+>
+>   # ./test_progs -t tc_redirect
+>   #164 tc_redirect:OK
+>   Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
+>
+>   # mount | grep debugfs
+>   # cat /proc/self/mountinfo | grep debugfs
+>   # cat /proc/self/mountinfo | grep sysfs
+>   25 86 0:22 / /sys rw,relatime shared:2 - sysfs sysfs rw
+>
+> Making the sysfs private under the new namespace so the umount won't
+> trigger the global sysfs umount.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Hey Jiri,
 
-On Tue,  4 Jan 2022 13:46:45 -0800 you wrote:
-> sock_map_link() is called to update a sockmap entry with a sk. But, if the
-> sock_map_init_proto() call fails then we return an error to the map_update
-> op against the sockmap. In the error path though we need to cleanup psock
-> and dec the refcnt on any programs associated with the map, because we
-> refcnt them early in the update process to ensure they are pinned for the
-> psock. (This avoids a race where user deletes programs while also updating
-> the map with new socks.)
-> 
-> [...]
+Thanks for the fix. Did you try making tc_redirect non-serial again
+(s/serial_test_tc_redirect/test_tc_redirect/) and doing parallelized
+test_progs run (./test_progs -j) in a tight loop for a while? I
+suspect this might have been an issue forcing us to make this test
+serial in the first place, so now that it's fixed, we can make
+parallel test_progs a bit faster.
 
-Here is the summary with links:
-  - [bpf-next] bpf, sockmap: fix double bpf_prog_put on error case in map_link
-    https://git.kernel.org/bpf/bpf-next/c/218d747a4142
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> Cc: Jussi Maki <joamaki@gmail.com>
+> Reported-by: Hangbin Liu <haliu@redhat.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> index 4b18b73df10b..c2426df58e17 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+> @@ -105,6 +105,13 @@ static int setns_by_fd(int nsfd)
+>         if (!ASSERT_OK(err, "unshare"))
+>                 return err;
+>
+> +       /* Make our /sys mount private, so the following umount won't
+> +        * trigger the global umount in case it's shared.
+> +        */
+> +       err = mount("none", "/sys", NULL, MS_PRIVATE, NULL);
+> +       if (!ASSERT_OK(err, "remount private /sys"))
+> +               return err;
+> +
+>         err = umount2("/sys", MNT_DETACH);
+>         if (!ASSERT_OK(err, "umount2 /sys"))
+>                 return err;
+> --
+> 2.33.1
+>
