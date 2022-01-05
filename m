@@ -2,89 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA67B484BBC
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 01:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF72A484C9F
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 04:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234453AbiAEAbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 4 Jan 2022 19:31:50 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42982 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233341AbiAEAbu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 4 Jan 2022 19:31:50 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 204KIG3O032003
-        for <bpf@vger.kernel.org>; Tue, 4 Jan 2022 16:31:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=p5HTSUFYytYERF0C4L741qm96DdHbBElWFZRlcWAC5o=;
- b=S9whoz7ttjrGlh3jzd8fN0rj6lLAe+DREfTp5NEH0oMXHPUWDXMwNMr78eeu3kDOJaOV
- sX4H+FteBzbSHbMAYplJGBwgxWfDzjZQABUI1Rug9wyQVVTh+k+j+JtjZPzvxMlNVyvC
- oVMSxEqweA3kyqEVLyi0nMs5t4AB6aY9amY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dct1a2qg7-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 04 Jan 2022 16:31:49 -0800
-Received: from twshared13036.24.prn2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 4 Jan 2022 16:31:30 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id D040F1454E52; Tue,  4 Jan 2022 16:31:28 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>
-CC:     <christyc.y.lee@gmail.com>, <bpf@vger.kernel.org>,
-        <kernel-team@fb.com>, Christy Lee <christylee@fb.com>
-Subject: [PATCH bpf-next] libbpf 1.0: deprecate bpf_object__find_map_by_offset() API
-Date:   Tue, 4 Jan 2022 16:31:20 -0800
-Message-ID: <20220105003120.2222673-1-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-GUID: KFAK88SHgtHxM6nw1jzXc_IlHkEsZ_-y
-X-Proofpoint-ORIG-GUID: KFAK88SHgtHxM6nw1jzXc_IlHkEsZ_-y
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S236039AbiAEDDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 4 Jan 2022 22:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233243AbiAEDDw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 4 Jan 2022 22:03:52 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C76C061784;
+        Tue,  4 Jan 2022 19:03:52 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id 8so33918874pfo.4;
+        Tue, 04 Jan 2022 19:03:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tB3BOrXRYEduh6b6cfsOzhTDYHRhS4PARArLudGPIAU=;
+        b=RzWtAvGliW2u2+/tZwjYUWs+AdCdoKH3D2qlmrZXtpMHKT8+wDY+Yau0B6961d+Z7I
+         xg7pgpSH90+qS36h70xDHkrWP+yoLa0ldsRrVmKuNPAc7gco/0tl7iQRD7sddjFxSMrQ
+         hYl9AtXNT1+kv3nze3GIj13MBu0mpKwQrsS0g4cY9icmK9KU7fr/7mCiphQkbMeWdJqe
+         cozYKnFv5yLpQBxKTjN975VIdNHkUSmXFHG+2TTPVv0hwWIBb2ZIMqbUOA74tNfP6QI7
+         Hz+Z2hJRJ9vvCth39iN8qamLh3U5j1A7yGzZJy5gKa4tJD0+640+hK3wYcK+VF/hGgTT
+         kr2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tB3BOrXRYEduh6b6cfsOzhTDYHRhS4PARArLudGPIAU=;
+        b=ZHPD/PXmjY6GdMDAIOYAs25AxPhGot8573wF8thzOU+B2pjTbU3Bafloz0XYb1w9Hk
+         93FxTOBlDWeIzlFe+rGwpseMxEP5/WGaf+NVDunD2UNd4PAZZZKOJe/NiMMbn145fNDI
+         zmBKv/qt0vh/jpOaRN1ZRXF8em+qaJvrU5DrinFXTfFLDSlE7gmh1dDjLle3gJBRexAM
+         JyKDGtwYVz6fGbOyr4hDe/5v3ByIHdGpN6BZLpgUXxkQO88itvMJqdE6Acrw3fMAypJZ
+         aCX9nfLx8o5ATi713V1utzr78DPJrH6U5O/UQac7Pa+ceVj4dh9ukFCgqENaoCXv9eWK
+         iUCg==
+X-Gm-Message-State: AOAM531tjJOytId1qjhV2Rfc71ZotyWc4+hsEX94ySx4hgJbJULetJxM
+        HNpPEouEM+UeyZNya/YcSA==
+X-Google-Smtp-Source: ABdhPJxa9RifkMnktZwyX0yFwXxX7WTYZdpqJqja4tPDPS+5n4LR+Qs5/0VSqrIHt7vOP5AMdfuH8A==
+X-Received: by 2002:a63:7c1b:: with SMTP id x27mr47000804pgc.176.1641351831623;
+        Tue, 04 Jan 2022 19:03:51 -0800 (PST)
+Received: from jevburton2.c.googlers.com.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i9sm34280818pgc.27.2022.01.04.19.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Jan 2022 19:03:51 -0800 (PST)
+From:   Joe Burton <jevburton.kernel@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, ppenkov@google.com,
+        sdf@google.com, haoluo@google.com
+Cc:     Joe Burton <jevburton@google.com>
+Subject: [PATCH bpf-next v4 0/3] Introduce BPF map tracing capability
+Date:   Wed,  5 Jan 2022 03:03:42 +0000
+Message-Id: <20220105030345.3255846-1-jevburton.kernel@gmail.com>
+X-Mailer: git-send-email 2.34.1.448.ga2b2bfdf31-goog
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-04_11,2022-01-04_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxlogscore=999
- spamscore=0 malwarescore=0 suspectscore=0 adultscore=0 clxscore=1015
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201050000
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-API created with simplistic assumptions about BPF map definitions.
-It hasn=E2=80=99t worked for a while, deprecate it in preparation for
-libbpf 1.0.
+From: Joe Burton <jevburton@google.com>
 
-[0] Closes: https://github.com/libbpf/libbpf/issues/302
+This is the fourth version of a patch series implementing map tracing.
 
-Signed-off-by: Christy Lee <christylee@fb.com>
----
- tools/lib/bpf/libbpf.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Map tracing enables executing BPF programs upon BPF map updates. This
+might be useful to perform upgrades of stateful programs; e.g., tracing
+programs can propagate changes to maps that occur during an upgrade
+operation.
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 85dfef88b3d2..8a86d7e614bc 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -677,7 +677,8 @@ bpf_object__find_map_fd_by_name(const struct bpf_object=
- *obj, const char *name);
-  * Get bpf_map through the offset of corresponding struct bpf_map_def
-  * in the BPF object file.
-  */
--LIBBPF_API struct bpf_map *
-+LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 8, "function has no effect")
-+struct bpf_map *
- bpf_object__find_map_by_offset(struct bpf_object *obj, size_t offset);
-=20
- LIBBPF_API LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_object__next_map() inste=
-ad")
---=20
-2.30.2
+This version uses trampoline hooks to provide the capability.
+fentry/fexit/fmod_ret programs can attach to two new functions:
+        int bpf_map_trace_update_elem(struct bpf_map* map, void* key,
+                void* val, u32 flags);
+        int bpf_map_trace_delete_elem(struct bpf_map* map, void* key);
+
+These hooks work as intended for the following map types:
+        BPF_MAP_TYPE_ARRAY
+        BPF_MAP_TYPE_PERCPU_ARRAY
+        BPF_MAP_TYPE_HASH
+        BPF_MAP_TYPE_PERCPU_HASH
+        BPF_MAP_TYPE_LRU_HASH
+        BPF_MAP_TYPE_LRU_PERCPU_HASH
+
+The only guarantee about the semantics of these hooks is that they execute
+after the operation takes place. We cannot call them with locks held
+because the hooked program might try to acquire the same locks.
+
+Changes from v3 -> v4:
+* Hooks execute *after* the associated operation, not before.
+* Replaced `#pragma once' with traditional `#ifdef' guards.
+* Explicitly constrained selftests to x86, since trampolines are only
+  implemented there.
+* Use /dev/null instead of /tmp/map_trace_test_file in selftests.
+
+Changes from v2 -> v3:
+* Reimplemented using trampoline hooks, simplifying greatly.
+
+Changes from v1 -> v2:
+* None. Resent series to a broader audience.
+
+Joe Burton (3):
+  bpf: Add map tracing functions and call sites
+  bpf: Add selftests
+  bpf: Add real world example for map tracing
+
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |   4 +-
+ kernel/bpf/hashtab.c                          |  20 +-
+ kernel/bpf/map_trace.c                        |  17 +
+ kernel/bpf/map_trace.h                        |  19 +
+ .../selftests/bpf/prog_tests/map_trace.c      | 427 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_map_trace.c       |  95 ++++
+ .../bpf/progs/bpf_map_trace_common.h          |  12 +
+ .../progs/bpf_map_trace_real_world_common.h   | 125 +++++
+ .../bpf_map_trace_real_world_migration.c      | 102 +++++
+ .../bpf/progs/bpf_map_trace_real_world_new.c  |   4 +
+ .../bpf/progs/bpf_map_trace_real_world_old.c  |   5 +
+ 12 files changed, 829 insertions(+), 3 deletions(-)
+ create mode 100644 kernel/bpf/map_trace.c
+ create mode 100644 kernel/bpf/map_trace.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_trace.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_real_world_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_real_world_migration.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_real_world_new.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_map_trace_real_world_old.c
+
+-- 
+2.34.1.448.ga2b2bfdf31-goog
 
