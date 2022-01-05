@@ -2,75 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6DC485AEB
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 22:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22404485B68
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 23:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244560AbiAEVqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 16:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57392 "EHLO
+        id S244908AbiAEWMX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 17:12:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbiAEVqQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 16:46:16 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A05C061245;
-        Wed,  5 Jan 2022 13:46:15 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id c3so573987pls.5;
-        Wed, 05 Jan 2022 13:46:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uba1HCQpuOmekSj3LRsy3ldVgNhkDNc6UoMf5GpuTa8=;
-        b=pdB9s776K6ta/bdtaPkTbW1VTDTLPGN8Ml4BAb0EeVHUc+W0lt9sjTvSO8o51MZhiw
-         opcTOpK/BZFYx+7U6PFUNIbK0lG8lNOxv7oTWpeCkKOJPNgNSf7Jy+AcSIFPCGVNbuVW
-         jIxsaWob1BOK+8s+iYK6YTZg8dJJ8WC+un06aoQMdnGzUZBkarI2uuXYBEjhEnjzE6cz
-         s+yeysANAORLCYtd8IRd5R9P5/k6/fg2QD28XmIEIgqF6hfLnvUfH70CMlFlkPPzH6cl
-         zBL9SLgR9q4nZiVl+wLJQ76FsjsiGTfKlVMmZLAJU5V+oJMRmhDEltOdBtoUwDerazPr
-         12Tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uba1HCQpuOmekSj3LRsy3ldVgNhkDNc6UoMf5GpuTa8=;
-        b=UfH4fbg3/6Tyl+GsZ5uY5ttBCFN9TUbi2z/q4255EJLdDcJLwreE2J2/OrYNqmzPOi
-         GbQN9PhKuB+fleEcY0Po9lzMucqgh1F9kXxc9Fq3yjS5CVojiFIduoJhNNKV1Ux0Lk/r
-         Zsd24qFf4G+X0Zi29o4RHirQFgpMFZXfojx+Z/vJCzoVYFJyEDB4XGFmaeLAWUdWduKb
-         v+YWBPCPd5YkEFS0+cNz1Q+fRusotuXp4WciuJgwSfnZn1T7ZUC6KZzwUFjCUQlzAzPr
-         meGsiByGrR61LthiQnu5mZSGA/WIjVicN8F7nuIZ6xp6UWd88bhm5EQ6mhR9PxrtcaSU
-         VNHA==
-X-Gm-Message-State: AOAM531tYvitld51oEq44fk8DRO+FTWE3H6Z2SVfSKbkTWpS/6RHIRB4
-        9URQMLJt0BgJQbHBBBzZYyIhJ6oZzrTleVeg/Ew=
-X-Google-Smtp-Source: ABdhPJz49ilVGGIAObcxbnqI1fIBNwxLd1Qks0fE9OPrG2VYLgJ1f8Wo9ZMph4oZKCvXybmmD7NXjF7Eg4GURFk71oE=
-X-Received: by 2002:a17:902:c443:b0:148:f689:d924 with SMTP id
- m3-20020a170902c44300b00148f689d924mr55469992plm.78.1641419175125; Wed, 05
- Jan 2022 13:46:15 -0800 (PST)
+        with ESMTP id S245029AbiAEWLf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 17:11:35 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D92E7C033271;
+        Wed,  5 Jan 2022 14:10:52 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 799B5617D1;
+        Wed,  5 Jan 2022 22:10:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B518C36AEB;
+        Wed,  5 Jan 2022 22:10:51 +0000 (UTC)
+Date:   Wed, 5 Jan 2022 17:10:49 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     xkernel.wang@foxmail.com
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH v2] tracing: check the return value of kstrdup()
+Message-ID: <20220105171049.5858901b@gandalf.local.home>
+In-Reply-To: <tencent_3C2E330722056D7891D2C83F29C802734B06@qq.com>
+References: <tencent_3C2E330722056D7891D2C83F29C802734B06@qq.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20220105210150.GH1559@oracle.com>
-In-Reply-To: <20220105210150.GH1559@oracle.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 5 Jan 2022 13:46:04 -0800
-Message-ID: <CAADnVQ+kSjvwX1dYzp1Jm5AVVtoGm2DXrBOVUAm-iDhPyYO1Zg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix verifier support for validation of async callbacks
-To:     Kris Van Hees <kris.van.hees@oracle.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 1:01 PM Kris Van Hees <kris.van.hees@oracle.com> wrote:
->
-> Commit bfc6bb74e4 ("bpf: Implement verifier support for validation of
-> async callbacks.") added support for BPF_FUNC_timer_set_callback to
+Masami, can you ack this ?
 
-abbrev=12 is the standard nowadays.
-Also don't break the commit subj into multiple lines.
-I've added
-Fixes: bfc6bb74e4f1 ("bpf: Implement verifier support for validation
-of async callbacks.")
-and pushed to bpf-next.
-Thanks a lot!
+-- Steve
+
+
+On Tue, 14 Dec 2021 09:28:02 +0800
+xkernel.wang@foxmail.com wrote:
+
+> From: Xiaoke Wang <xkernel.wang@foxmail.com>
+> 
+> kstrdup() returns NULL when some internal memory errors happen, it is
+> better to check the return value of it so to catch the memory error in
+> time.
+> 
+> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+> ---
+> Changelogs:
+> Compare with the last email, this one is using my full name.
+> And I am sorry that I did not notice the bugs in trace_boot.c had been
+> already patched. So I removed the content about trace_boot.c.
+> ---
+>  kernel/trace/trace_uprobe.c | 5 +++++
+>  1 files changed, 5 insertions(+)
+> 
+> diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+> index 225ce56..173ff0f 100644
+> --- a/kernel/trace/trace_uprobe.c
+> +++ b/kernel/trace/trace_uprobe.c
+> @@ -1618,6 +1618,11 @@ create_local_trace_uprobe(char *name, unsigned long offs,
+>  	tu->path = path;
+>  	tu->ref_ctr_offset = ref_ctr_offset;
+>  	tu->filename = kstrdup(name, GFP_KERNEL);
+> +	if (!tu->filename) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +
+>  	init_trace_event_call(tu);
+>  
+>  	ptype = is_ret_probe(tu) ? PROBE_PRINT_RETURN : PROBE_PRINT_NORMAL;
+
