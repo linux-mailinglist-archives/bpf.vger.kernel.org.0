@@ -2,77 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED1D4852F3
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 13:42:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB154852F1
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 13:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233435AbiAEMkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 07:40:22 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:43474 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234272AbiAEMkR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 07:40:17 -0500
+        id S232884AbiAEMkV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 07:40:21 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:51434 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234314AbiAEMkU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 07:40:20 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE7FA61670;
-        Wed,  5 Jan 2022 12:40:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 495CFC36AF3;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 921ECB81AAE
+        for <bpf@vger.kernel.org>; Wed,  5 Jan 2022 12:40:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 41932C36AEB;
         Wed,  5 Jan 2022 12:40:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1641386416;
-        bh=85EgKSnkxr2c1immt9do3f1sURp0SJC6V/uNQ5SIVJg=;
+        bh=5X0mcBQQvtUnQDJTVSbnQ/LITXP0ujO2OP74iNQ+6HI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=l3xA/fgXftfzuLba+7hRFiFrsbmTPQAzVOho6qEebiRj5Y/iDGd5ws/sboQ/OtC/y
-         WxsS8iBct3eZY6mwwlmjqA96h0bPzRjhtN1TtrP+M1sVrIL+APw8Xs3tbpO3s0K+rU
-         56zgPrh1nvX1ACPLdUbnRzQf+uVL8qCH8BJR5uGN0I3zUATcWX+BLQZf8Kublo6MH6
-         y9T9QXt+Hl2mZmXoHeCcuvCQdf/DRQRqGpJ7UAmcxMnrd4MUodWaOj4/BwfGOgT0mn
-         s3E/J29LU3hhWQE0M/v4PFvhTlIMog7D1RnSKg4adGfCxl7Ws7iruAIz8hGkTsf+hu
-         GZxxSLw+7HOGw==
+        b=IHx9N8Q8U7uaFrrBYf+3YICfgv6kDiZNo7TrrGP20y9QEKqAVy+/iiaO/WIlx2U0m
+         dstu2rZqkHs4YsoyjpvRxezqsauP0lTAsaMKdLK6HhVw+tR8XQg4IjrSKB/QG+5yjJ
+         cp52SJAN74Xk8o4uH4R43/0EFjdLC7J3ATq6RN6jw8U1DB8n7iVgQA8AH1XTJ7C1WP
+         mxL9qPBG6nnceYEmchzBSWcyCw40KnMcCpnXTUvd0yVT6CIJct2BV6ssTxzQRjZL2I
+         o6oisrrW3cHw6vlJlXPmE+reJGN62krIl0rSo04UjYNWaJnR/xJbAlZyu0PkrD1t00
+         DCuxFKCOLBp3g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 30AA3F7940C;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 26647F79408;
         Wed,  5 Jan 2022 12:40:16 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf/selftests: Fix namespace mount setup in tc_redirect
+Subject: Re: [PATCH bpf-next 0/3] bpftool: Probes for bounded loops and
+ instruction set extensions
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164138641619.6231.12315835333755803519.git-patchwork-notify@kernel.org>
+Message-Id: <164138641615.6231.4937030135518900608.git-patchwork-notify@kernel.org>
 Date:   Wed, 05 Jan 2022 12:40:16 +0000
-References: <20220104121030.138216-1-jolsa@kernel.org>
-In-Reply-To: <20220104121030.138216-1-jolsa@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
+References: <cover.1641314075.git.paul@isovalent.com>
+In-Reply-To: <cover.1641314075.git.paul@isovalent.com>
+To:     Paul Chaignon <paul@isovalent.com>
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        joamaki@gmail.com, haliu@redhat.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org
+        bpf@vger.kernel.org, quentin@isovalent.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue,  4 Jan 2022 13:10:30 +0100 you wrote:
-> The tc_redirect umounts /sys in the new namespace, which can be
-> mounted as shared and cause global umount. The lazy umount also
-> takes down mounted trees under /sys like debugfs, which won't be
-> available after sysfs mounts again and could cause fails in other
-> tests.
+On Tue, 4 Jan 2022 18:57:54 +0100 you wrote:
+> This patchset adds feature probes for bounded loops and instruction set
+> extensions. The first patch refactors the existing miscellaneous probe
+> to avoid code duplication in subsequent patches.
 > 
->   # cat /proc/self/mountinfo | grep debugfs
->   34 23 0:7 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime shared:14 - debugfs debugfs rw
->   # cat /proc/self/mountinfo | grep sysfs
->   23 86 0:22 / /sys rw,nosuid,nodev,noexec,relatime shared:2 - sysfs sysfs rw
->   # mount | grep debugfs
->   debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
+> The four miscellaneous probes were tested on kernels 4.9, 4.19, and 5.4.
+> 
+> The feature probe for bounded loops was previously submitted as part of
+> patchset https://lore.kernel.org/bpf/20211217211135.GA42088@Mem/T/.
 > 
 > [...]
 
 Here is the summary with links:
-  - bpf/selftests: Fix namespace mount setup in tc_redirect
-    https://git.kernel.org/bpf/bpf-next/c/5e22dd186267
+  - [bpf-next,1/3] bpftool: Refactor misc. feature probe
+    https://git.kernel.org/bpf/bpf-next/c/b22bf1b9979a
+  - [bpf-next,2/3] bpftool: Probe for bounded loop support
+    https://git.kernel.org/bpf/bpf-next/c/c04fb2b0bd92
+  - [bpf-next,3/3] bpftool: Probe for instruction set extensions
+    https://git.kernel.org/bpf/bpf-next/c/0fd800b2456c
 
 You are awesome, thank you!
 -- 
