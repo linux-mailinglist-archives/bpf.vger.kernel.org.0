@@ -2,52 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD5048597E
-	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 20:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EF648597C
+	for <lists+bpf@lfdr.de>; Wed,  5 Jan 2022 20:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243706AbiAETux (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 14:50:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243711AbiAETuL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S243702AbiAETuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 14:50:51 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:50874 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243740AbiAETuL (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 5 Jan 2022 14:50:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3F9C034002;
-        Wed,  5 Jan 2022 11:50:10 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EDE5618F1;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 871F9618EC;
         Wed,  5 Jan 2022 19:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E69D1C36AEB;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E7811C36AF2;
         Wed,  5 Jan 2022 19:50:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1641412210;
-        bh=asPxWn8xmtKixECs/KOe7TBXxXopnRiSa0bMO9usZFg=;
+        bh=nJ8IvB9Omo4tRFb0UMgMVVVhno371eQE/tSIlUryzLk=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WEE+lJMpJF/Ytf8iwiCs1tEiVGd4+1SbYm71Wcq/EQWl2RcZn9MF/Fu3uYYYrzdHT
-         UCKk+eCyWsCi9t5ln40+v4dQBaZ/WkLueB9tpsecUdaDoSMl3F/DnsYFS55Wwqq3yf
-         PZoThX3yZ7jm1xmJw6TMgoPm/i+SjIjGBi09BqP2w6/JhGU6KQzLQSDKuTLSxYAK4l
-         BaiUl1XE3D1uU0Q2LEgqL8TbEpMP4OXt9Kqnrdpvuy3DVR+BVUnEhDe4l2en1LXUsU
-         Ypbi0uyOTl7Q93h+m5wNPyxUKbD9OCK/HDahsaeSlnigi+BYnH2ZKV4S6V4zyTzi8k
-         5xhlfHvKHV+pw==
+        b=OFyPEqGqDSXAc9+aLzLgfwgxBq2qDip1F2SU4/G7NCHX07Z3Sj5ZDFvV5Mbk2A6Td
+         4O1eodCHVW5m3Y6Z6+0mcguFyCV/eKCJ4PoNrdX7dIieNKHR6tV5rwGgrPcSVcIVIv
+         IZgKyCCKCHY4LdTJFAVwBy82b9KiTI1H9hmNaYQ9wa5yKpvbHgcGIXdfKHioLYe72w
+         VDODo81yriDrmH6eeeQkmwWyGLCEQpp6c/SBog0bi+jH385xo6omE3Y/CodnBSG1/5
+         8/p7vSwjf4+sv1Fxcohs2RLTFh9qX3zcBuLo1bwtqo0Pe80zjUAEgROwUwNM4DHiv3
+         ROR1nSrev1RxA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C3B46F7940C;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CD8ADF79408;
         Wed,  5 Jan 2022 19:50:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf, arm64: use emit_addr_mov_i64() for BPF_PSEUDO_FUNC
+Subject: Re: [PATCH bpf-next] bpf,
+ sockmap: fix return codes from tcp_bpf_recvmsg_parser()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164141220979.28548.10398527104221522201.git-patchwork-notify@kernel.org>
+Message-Id: <164141220983.28548.2255582640543203112.git-patchwork-notify@kernel.org>
 Date:   Wed, 05 Jan 2022 19:50:09 +0000
-References: <20211231151018.3781550-1-houtao1@huawei.com>
-In-Reply-To: <20211231151018.3781550-1-houtao1@huawei.com>
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     ast@kernel.org, kafai@fb.com, yhs@fb.com, daniel@iogearbox.net,
-        andrii@kernel.org, zlim.lnx@gmail.com, will@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+References: <20220104205918.286416-1-john.fastabend@gmail.com>
+In-Reply-To: <20220104205918.286416-1-john.fastabend@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, joamaki@gmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -57,19 +53,20 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Fri, 31 Dec 2021 23:10:18 +0800 you wrote:
-> The following error is reported when running "./test_progs -t for_each"
-> under arm64:
-> 
->     bpf_jit: multi-func JIT bug 58 != 56
->     ......
->     JIT doesn't support bpf-to-bpf calls
+On Tue,  4 Jan 2022 12:59:18 -0800 you wrote:
+> Applications can be confused slightly because we do not always return the
+> same error code as expected, e.g. what the TCP stack normally returns. For
+> example on a sock err sk->sk_err instead of returning the sock_error we
+> return EAGAIN. This usually means the application will 'try again'
+> instead of aborting immediately. Another example, when a shutdown event
+> is received we should immediately abort instead of waiting for data when
+> the user provides a timeout.
 > 
 > [...]
 
 Here is the summary with links:
-  - bpf, arm64: use emit_addr_mov_i64() for BPF_PSEUDO_FUNC
-    https://git.kernel.org/bpf/bpf-next/c/e4a41c2c1fa9
+  - [bpf-next] bpf, sockmap: fix return codes from tcp_bpf_recvmsg_parser()
+    https://git.kernel.org/bpf/bpf-next/c/5b2c5540b811
 
 You are awesome, thank you!
 -- 
