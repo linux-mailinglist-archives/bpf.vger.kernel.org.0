@@ -2,175 +2,211 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B03A486AFA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FFF486AFD
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243582AbiAFUSJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 15:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234612AbiAFUSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 15:18:09 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F608C061245
-        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 12:18:09 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id o7so4517825ioo.9
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:18:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gh8HPwk5wIj8j3UO12jMaBLmsjpN4FRqYe3VwkpZtck=;
-        b=ANBZLLJ+F4V8/x5EKxiJfEprFjYqH6i8YUjQ5QjSaojGgAtFqjRa0EC/oSGbyxp5lS
-         36v0otaWOsd26gdBZSHq5uvm35Jbtxd3dAVPF97vLS+JC1+LJ6Kd8X3A1w/iHCc/vjx9
-         Faq7FswrJJzWUT514TO3AG/znsVdrbvqmeCIMbqSSKlMYDKYh28C/ip8SAOtFFu4OoPm
-         6391K/mwkogqJ70wFym5AGRFac+7I0WqTAzLSLMEUlSp0fFIqfUTisd1QBozaH6sKSfu
-         EyUo1YBeqUf5U72WAGVqvgDjE/Ltu7chWkjqPvP+PiDn85tGMCRn9g6513cKs3KKpKRM
-         wfww==
+        id S243650AbiAFUU7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 15:20:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41330 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234612AbiAFUU5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 15:20:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641500456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVPgqD2PlyQyW5KqK6Xa09cRn07PcS57Of9dZqeQYns=;
+        b=KKGOE4nvCb+Wuo7yjCjaAUYWj+QhisWy1Z5vUslc1aikjM6iSI7/V0UurnWZLkiXEKdRds
+        puVoJ/YeFcY4ccOTxQ+/e86YrYMtjlzHJFiLB12H3z2NCmyuNStGvf4MGHvlTNOpOm2Hl+
+        JZcYsQ6Y2rhhL9MP83EOvKOIjxPcEW8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-597-sZmR8qwdMkqUHkoeLxP_xQ-1; Thu, 06 Jan 2022 15:20:55 -0500
+X-MC-Unique: sZmR8qwdMkqUHkoeLxP_xQ-1
+Received: by mail-ed1-f70.google.com with SMTP id m16-20020a056402431000b003fb60bbe0e2so27494edc.3
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:20:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gh8HPwk5wIj8j3UO12jMaBLmsjpN4FRqYe3VwkpZtck=;
-        b=dbUw+NvaXhCHcvVShv8W2Bi4OyIJ9EzFqNGmgVuL9etyZ7N7ma7jPd2qkqBLL5DkmM
-         frxGTEQerg79a0MSZ3E6IlVSpuWCGAsEWOg88me2pDUbRFvQFC5VPi1VszD1KyT5jm/2
-         95AHvZnt0U52wwiaPnM93mTUJ1YPq+G+tIZUDPiUYBGyIchmcnRFRV+1R3NEE5UFawxK
-         s2XYo6xTZZBbDAFFRk8rtbZ/uE6aJgz4d9LTIifpa8IXxiXguPjgQVrZlXbCceZIIvhi
-         a8T9inweNuJ88O8hZaeqkQldO0dM7ARga5Kyxz56sq13zX8OKKWCHh4VnibUccCiP9yW
-         zgAw==
-X-Gm-Message-State: AOAM533K0krpXEcO++AzeA9uEmtCqHB35YKLUSHZQPGRbb0zTjVRHryL
-        WkcaNJ9yRjwdC6O+JPCl8GbB5X6/A2zNEPvYHz8=
-X-Google-Smtp-Source: ABdhPJziePgL54T/6YUwxfSykH2n+YF+c1atvZ2iF4bIGwXgJtBosqjP9/nfQiM25LiaSvRnWNhAsXPJCASGHwYEedE=
-X-Received: by 2002:a02:c6a5:: with SMTP id o5mr29805301jan.145.1641500287912;
- Thu, 06 Jan 2022 12:18:07 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=uVPgqD2PlyQyW5KqK6Xa09cRn07PcS57Of9dZqeQYns=;
+        b=EMhNK5abQABx2cN3qnxDvNzQx9BeYkwQvNJpS818HoCEYXiUEmZh0g6ekuGJpRNZn4
+         ft08TC7rC7exHycu17FbF0d12sOYyZkyaX5dBsdkBQaSoJMeOFQvFGNyZOzjzojwW1Es
+         shzR0cJYPpzjzOCGprpTKN1YfrqySrRdcu+yf8zSYuXSWuy/rJupkUfctqyhKwYnkmzu
+         0Tq/cbpQM8Q+F8dQwLKCHmMlj9iSqqryyciFHeMKXFYewyUAocoCwR+F1TJreJQlB7g+
+         W9/OTOvXDWZZUJkNYYZA0tXmKtXgdcjO7n754m/eQlvPBa3Uyr8tLhXksZdR5lNvDmcu
+         WlfQ==
+X-Gm-Message-State: AOAM530PFmm+pdqiIzyDbAnBorUAAi3YTouhxlymCRs8sYIEbG5r/s3W
+        5IGoV8dropLmmM31Uv4YVYoG11BgO/jPqLMLpR9rEwPQB5YlPy1WslnIpJQ2QCuqLvLNWnSVjA4
+        IogxqD/AjWBtv
+X-Received: by 2002:a05:6402:5190:: with SMTP id q16mr60144579edd.332.1641500453867;
+        Thu, 06 Jan 2022 12:20:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx607J+hqfiTtq8mJkPUIsvhlCsEcMGUzayoy5UsP40GeTlwvH/LAzG7BtX60oKed4m1VMzRw==
+X-Received: by 2002:a05:6402:5190:: with SMTP id q16mr60144511edd.332.1641500452572;
+        Thu, 06 Jan 2022 12:20:52 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id 2sm759736ejx.123.2022.01.06.12.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jan 2022 12:20:52 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 54970181F2A; Thu,  6 Jan 2022 21:20:51 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
+ XDP_REDIRECT in bpf_prog_run()
+In-Reply-To: <CAADnVQ+6-Q6N1t0UsmF=Rn1yP=KPo7Xc2Fiy1rzJ+Hb0oAr4Hw@mail.gmail.com>
+References: <20220103150812.87914-1-toke@redhat.com>
+ <20220103150812.87914-8-toke@redhat.com>
+ <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
+ <87y23t9blc.fsf@toke.dk>
+ <CAADnVQ+j=DO8fMCcpoHmAjrW5sTbhHp_OA4eVpcKcwwRzsvKTA@mail.gmail.com>
+ <87tuegafnw.fsf@toke.dk>
+ <CAADnVQ+6-Q6N1t0UsmF=Rn1yP=KPo7Xc2Fiy1rzJ+Hb0oAr4Hw@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 06 Jan 2022 21:20:51 +0100
+Message-ID: <87mtk8aa58.fsf@toke.dk>
 MIME-Version: 1.0
-References: <1641377010132.82356@hs-osnabrueck.de> <CAEf4BzYfu49iG=mmokC6VpBKoyKfqVDjCpkusjsXGLQTXS1tSQ@mail.gmail.com>
- <1641488009887.85104@hs-osnabrueck.de>
-In-Reply-To: <1641488009887.85104@hs-osnabrueck.de>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Jan 2022 12:17:56 -0800
-Message-ID: <CAEf4BzaGb3ybiJef4s3-kx_3zeV1kJ7VK=VcE9R59=r7r-sneA@mail.gmail.com>
-Subject: Re: [Extern] Re: Problem loading eBPF program on Kernel 4.18 (best
- with CO:RE): -EINVAL
-To:     "Buchberger, Dennis" <dennis.buchberger@hs-osnabrueck.de>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 8:53 AM Buchberger, Dennis
-<dennis.buchberger@hs-osnabrueck.de> wrote:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+
+> On Thu, Jan 6, 2022 at 10:21 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>>
+>> > On Thu, Jan 6, 2022 at 6:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>> >>
+>> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>> >>
+>> >> > On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke H=C3=B8iland-J=C3=B8=
+rgensen wrote:
+>> >> >> +
+>> >> >> +#define NUM_PKTS 3
+>> >> >
+>> >> > May be send a bit more than 3 packets?
+>> >> > Just to test skb_list logic for XDP_PASS.
+>> >>
+>> >> OK, can do.
+>> >>
+>> >> >> +
+>> >> >> +    /* We setup a veth pair that we can not only XDP_REDIRECT pac=
+kets
+>> >> >> +     * between, but also route them. The test packet (defined abo=
+ve) has
+>> >> >> +     * address information so it will be routed back out the same=
+ interface
+>> >> >> +     * after it has been received, which will allow it to be pick=
+ed up by
+>> >> >> +     * the XDP program on the destination interface.
+>> >> >> +     *
+>> >> >> +     * The XDP program we run with bpf_prog_run() will cycle thro=
+ugh all
+>> >> >> +     * four return codes (DROP/PASS/TX/REDIRECT), so we should en=
+d up with
+>> >> >> +     * NUM_PKTS - 1 packets seen on the dst iface. We match the p=
+ackets on
+>> >> >> +     * the UDP payload.
+>> >> >> +     */
+>> >> >> +    SYS("ip link add veth_src type veth peer name veth_dst");
+>> >> >> +    SYS("ip link set dev veth_src address 00:11:22:33:44:55");
+>> >> >> +    SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
+>> >> >> +    SYS("ip link set dev veth_src up");
+>> >> >> +    SYS("ip link set dev veth_dst up");
+>> >> >> +    SYS("ip addr add dev veth_src fc00::1/64");
+>> >> >> +    SYS("ip addr add dev veth_dst fc00::2/64");
+>> >> >> +    SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:=
+bb");
+>> >> >> +    SYS("sysctl -w net.ipv6.conf.all.forwarding=3D1");
+>> >> >
+>> >> > These commands pollute current netns. The test has to create its ow=
+n netns
+>> >> > like other tests do.
+>> >>
+>> >> Right, will fix.
+>> >>
+>> >> > The forwarding=3D1 is odd. Nothing in the comments or commit logs
+>> >> > talks about it.
+>> >>
+>> >> Hmm, yeah, should probably have added an explanation, sorry about tha=
+t :)
+>> >>
+>> >> > I'm guessing it's due to patch 6 limitation of picking loopback
+>> >> > for XDP_PASS and XDP_TX, right?
+>> >> > There is ingress_ifindex field in struct xdp_md.
+>> >> > May be use that to setup dev and rxq in test_run in patch 6?
+>> >> > Then there will be no need to hack through forwarding=3D1 ?
+>> >>
+>> >> No, as you note there's already ingress_ifindex to set the device, and
+>> >> the test does use that:
+>> >>
+>> >> +       memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALE=
+N);
+>> >> +       skel->rodata->ifindex_out =3D ifindex_src;
+>> >> +       ctx_in.ingress_ifindex =3D ifindex_src;
+>> >
+>> > My point is that this ingress_ifindex should be used instead of loopba=
+ck.
+>> > Otherwise the test_run infra is lying to the xdp program.
+>>
+>> But it is already using that! There is just no explicit code in patch 6
+>> to do that because that was already part of the XDP prog_run
+>> functionality.
+>>
+>> Specifically, the existing bpf_prog_test_run_xdp() will pass the context
+>> through xdp_convert_md_to_buff() which will resolve the ifindex and get
+>> a dev reference. So the xdp_buff object being passed to the new
+>> bpf_test_run_xdp_live() function already has the right device in
+>> ctx->rxq.
 >
-> > >  [...]
-> > > As the target kernel does not support CONFIG_DEBUG_INFO_BTF, I used pahole -J (v1.22) to create vmlinux file with BTF info embedded there.
-> > > Basically, I followed this mails:
-> > > https://urldefense.com/v3/__https://lore.kernel.org/bpf/CADmGQ*1euj7Uv
-> > > 9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com/__;Kw!!MeVeBiz6!5
-> > > PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFP1nWOL3A$
-> > >
-> > > Right now, the bpf program is just a uProbe for a simple test app, which writes some output to the tracing pipe. As Kernel 4.18. does not support global data for bpf programs, I had to remove (comment out) the bpf_trace_printk statements.
-> >
-> > You can do #define BPF_NO_GLOBAL_DATA before including bpf_helpers.h and then you can still use bpf_printk() helper macro.
-> >
->
-> Thank you! That's really helpful. Is there any collection of up-to-date documentation and best practices in writing bpf code (without skeletons) besides the sources in libbpf/libbpf-bootstrap, iovisor /libbpf-tools and linux/tools/testing/selftests/bpf ?
+> Got it. Please make it clear in the commit log.
 
-There are also various blog posts on the Internet. I tried to do my
-part with CO-RE at [0], but I don't think there is any single
-documentation that captures all possible issues in one place (and I
-don't think it's possible, there are just way too many variables to
-anticipate all possible problems).
-
-  [0] https://nakryiko.com/posts/bpf-core-reference-guide/
-
->
->
-> >
-> > > On the development machine, it works fine. But on the target machine, loading the program fails: libbpf: load bpf program failed: Invalid argument (full libbpf log see below).
-> > > When compiling the programs on the target machine without using CO:RE, I get a similar error (invalid argument, -22).
-> > > What could be the problem? I don't think the eBPF program uses anything that is available on Kernel 5.4.0 and not available on the system with Kernel 4.18, does it?
-> > >
-> > > Thanks in advance for your help.
-> > > Best
-> > > Dennis
-> > >
-> > >
-> > >
-> > >
-> > > ============ log ============
-> > >
-> > > sudo ./ebpf
-> > > libbpf: loading main.bpf.o
-> > > [...]
-> > > libbpf: CO-RE relocating [0] struct pt_regs: found target candidate
-> > > [201] struct pt_regs in [vmlinux]
-> > > libbpf: prog 'trace_func_entry': relo #0: kind <byte_off> (0), spec is
-> > > [2] struct pt_regs.di (0:14 @ offset 112)
-> > > libbpf: prog 'trace_func_entry': relo #0: matching candidate #0 [201]
-> > > struct pt_regs.di (0:14 @ offset 112)
-> > > libbpf: prog 'trace_func_entry': relo #0: patched insn #2 (ALU/ALU64)
-> > > imm 112 -> 112
-> > > libbpf: prog 'trace_func_entry': relo #1: kind <byte_off> (0), spec is
-> > > [2] struct pt_regs.si (0:13 @ offset 104)
-> > > libbpf: prog 'trace_func_entry': relo #1: matching candidate #0 [201]
-> > > struct pt_regs.si (0:13 @ offset 104)
-> > > libbpf: prog 'trace_func_entry': relo #1: patched insn #9 (ALU/ALU64)
-> > > imm 104 -> 104
-> > > libbpf: sec 'kretprobe/': found 1 CO-RE relocations
-> > > libbpf: prog 'trace_func_exit': relo #0: kind <byte_off> (0), spec is
-> > > [2] struct pt_regs.ax (0:10 @ offset 80)
-> > > libbpf: prog 'trace_func_exit': relo #0: matching candidate #0 [201]
-> > > struct pt_regs.ax (0:10 @ offset 80)
-> > > libbpf: prog 'trace_func_exit': relo #0: patched insn #2 (ALU/ALU64)
-> > > imm 80 -> 80
-> >
-> > CO-RE relocations succeeded, btf_custom_path worked, the problem is not in CO-RE.
-> >
-> > > libbpf: load bpf program failed: Invalid argument
-> > > libbpf: failed to load program 'trace_func_entry'
-> >
-> > I suspect this is due to your target machine running Ubuntu 18.10.
-> > Ubuntu has infamous problem with reporting kernel version through
-> > uname() syscall. I've just improved libbpf's detection of it few days ago (see [0]), but it didn't yet make it into Github mirror of libbpf.
-> > I'm going to start the sync right now, but you can manually specify correct version code with bpf_object__set_kversion() as you already realized. See how I do that in my patch [0], you can do that manually as well.
-> >
-> >   [0] https://urldefense.com/v3/__https://patchwork.kernel.org/project/netdevbpf/patch/20211222231003.2334940-1-andrii@kernel.org/__;!!MeVeBiz6!5PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFM_zuNNKA$
->
-> That's it, thank you very much!
->
-> I just added
->         __u32 currKernelVersion = get_kernel_version();
->         bpf_object__set_kversion(main_bpf_obj, currKernelVersion)
-> with get_kernel_version() from libbpf.c and your patch [0] and now it is working. :)
->
-
-Great, once [1] is merged (I'll need to fix up selftests first),
-libbpf will be able to deal with this Ubuntu quirk automatically and
-you'll never know it existed.
-
-  [1] https://github.com/libbpf/libbpf/pull/435
-
-> However, there is something I do not understand:
-> (a): Why did it work on the development machine in the first place with Ubuntu 20.04?
->         - the old get_kernel_version() returned 328704 (5.4.0), the new version returns 328852 (5.4.148) so there already is a missmatch. (and I did not call it, so libbpf set the kernel version to 0?)
-
-You dev machine has recent enough kernel that doesn't check kernel
-version anymore, so it doesn't matter that Ubuntu reports the wrong
-one.
-
->         - on the target machine, it is 266752 (4.2.0) vs. 266772 (4.2.4)
-> (b): I use a uProbe. Why is the bpf program type kProbe? Is it just for usability of libbpf as for a uProbe the user must specify the address while for a kprobe only the symbol is required?
-
-4.2 is old enough where kernel version has to match and it didn't.
+Ah, sorry, already hit send on v6 before I saw this. If you want to fix
+up the commit message while applying, how about a paragraph at the end
+like:
 
 
-> (c): Why does the kernel version matter at all?
+The new mode reuses the setup code from the existing bpf_prog_run() for
+XDP. This means that userspace can set the ingress ifindex and RXQ
+number as part of the context object being passed to the kernel, in
+which case packets will look like they arrived on that interface when
+the test program returns XDP_PASS and the packets go up the stack.
+
+>> No the problem of XDP_PASS going in the opposite direction of XDP_TX and
+>> XDP_REDIRECT remains. This is just like on a physical interface: if you
+>> XDP_TX a packet it goes back out, if you XDP_PASS it, it goes up the
+>> stack. To intercept both after the fact, you need to look in two
+>> different places.
+>>
+>> Anyhow, just using a TC hook for XDP_PASS works fine and gets rid of the
+>> forwarding hack; I'll send a v6 with that just as soon as I verify that
+>> I didn't break anything when running the traffic generator on bare metal=
+ :)
 >
-> It would be really nice if you could answer these questions as well or point me to a source.
->
-> Best
-> Dennis
->
-> [...]
->
+> Got it. You mean a tc ingress prog attached to veth_src ? That should wor=
+k.
+
+Yup, exactly!
+
+-Toke
+
