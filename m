@@ -2,154 +2,327 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F83486623
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 15:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D6E48665F
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 15:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240186AbiAFOfA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 09:35:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:39546 "EHLO
+        id S240249AbiAFO5Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 09:57:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20276 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240183AbiAFOe7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 09:34:59 -0500
+        by vger.kernel.org with ESMTP id S232616AbiAFO5P (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 09:57:15 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641479699;
+        s=mimecast20190719; t=1641481035;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2WuXtGkDpAo/ntSMRFokvG8f43rf3nWbW3WKOjxk68M=;
-        b=Lzxl37UucW6QoGLAkFPLJykVCIKd4p1EaaiCmbM9Qrudd/dqG+7xymTa1+zZG9BSHnCazq
-        e83hjek6D9ZZbTnqqVrskcAVqKwVYm85zbJqULv1nBkNMSpuC25QHqG5AqX6vAMN/kua23
-        0KqrkycIq1G/xiUlSOayaIi61qCjfXM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=WyQPJI+hEo4Yj1jUmLhmtNkYsUJguWTxcYd9w3Q6E2E=;
+        b=Hj3M9L31BkQmB+oQQpWAw4pWvQ8hoDBzORVWL/T6G9+JZPOupNzpKqDahSttJFe9SgnbQk
+        7iNOxLNnMkTq+Suvh5lGBiyN8iJYRO/v5gRxzP+toWlApNoaSlW1DRorOYSgbLu/+SXojw
+        Qty/zYogpL+ae+CVhqlw6irNeHx2IQ0=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-651-M2FyB9LNMEGoGqqIruoekw-1; Thu, 06 Jan 2022 09:34:58 -0500
-X-MC-Unique: M2FyB9LNMEGoGqqIruoekw-1
-Received: by mail-ed1-f72.google.com with SMTP id x19-20020a05640226d300b003f8b80f5729so2067382edd.13
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 06:34:57 -0800 (PST)
+ us-mta-308-Ul3MXgrPP7-mWae-Xc7qEw-1; Thu, 06 Jan 2022 09:57:14 -0500
+X-MC-Unique: Ul3MXgrPP7-mWae-Xc7qEw-1
+Received: by mail-ed1-f70.google.com with SMTP id r8-20020a05640251c800b003f9a52daa3fso2105579edd.22
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 06:57:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=2WuXtGkDpAo/ntSMRFokvG8f43rf3nWbW3WKOjxk68M=;
-        b=lA9DPJWJirJMIbFc0rongdsKy7pgRadWGXNPeerBB0Z6xeVKuoYAiFRLZsLZkxWMxW
-         Cc7Gk1DYDeq1ijtBT1O9+Cj7z29+/0bFKQjw7/+vWnx58oSqMntSxau4VtDikP0p2JKa
-         veCKB6Ang1yXOcrmXpckomZPnylxKPuyHYOf4g/vGvEoVHT31hI+fUNQLlUQBGPhqxkU
-         b/Y/AQ1qzU4qbRXjWQKibWr6cO5fjc2yD90HrVBOmWmEtUewWoFk/l0n0qrKN7fuBVGU
-         /8I6vj/3X6jULUjQUa1vzaCPxxcp0YYz0uG6FADXhwFkw22aNC2v7QNf0apsWGHPqM2m
-         wUtQ==
-X-Gm-Message-State: AOAM530ntuw6dehvcT4N8LXnZCKZV8MTwuj8B6SoVpRz+8uqkr1nS46O
-        CjhUy0v1iRbnI6F+kwkAdlnBEbMe+Pvd7l5/EmPNCh5c1IdLc0Hl3ynbmHLi8oglFOLIVGZspCZ
-        IDMVGhDzaBjiD
-X-Received: by 2002:a17:907:94d6:: with SMTP id dn22mr806452ejc.541.1641479696792;
-        Thu, 06 Jan 2022 06:34:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyDCgJ2Wu+QbfvbTq9G/i0J9CNkAJCohUf+MBvFhiDIoUR5ShVWwd804DOkKmHO+ExX2mJqBw==
-X-Received: by 2002:a17:907:94d6:: with SMTP id dn22mr806428ejc.541.1641479696367;
-        Thu, 06 Jan 2022 06:34:56 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id o12sm784810edz.71.2022.01.06.06.34.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WyQPJI+hEo4Yj1jUmLhmtNkYsUJguWTxcYd9w3Q6E2E=;
+        b=zTbeo/nVCEPrwTV03EgRgnKU16cdjqUdezRaP6EMa2qvizifcxN+yDCWiAdMvMh67R
+         4WgMB2tm95qBGpwik5hmdCU/L/HK6VhrHQlu5hgaBZmI8plXUWdADJmnjU5mM6+BPeT3
+         93HtDEplEFvQkxzhzC5UenxCdECI/JTZ+KUrq18aC4TAetNCn7vclcBg1nJ+9MGXmdzV
+         +Ra/ORt41FILTmVkZ0vWJHIQ7z7Jzdi57K52pKJQ6XDdkhfL5QpC6cVOJ46/wV9rxw7N
+         aPEBpFfb6xUB6VQtSDZBRUF5lQhvHfW66Z9zs65+L/8hCB2Pa2Y0GcDf7j8A6YJ9zDWz
+         OrCw==
+X-Gm-Message-State: AOAM530cK3KIkO3udHw0EVKf4Dbqu6tUbFNdcEkZkwOYfvZFeULN0OsZ
+        Bpnop6CHeSpEe9rNVz7QlXNsYdV2BafoCJUAaa7OVFHUQtad/BMJHYdG57NAmVznu64hJytNUKA
+        LJJ4X7BnPuHZ9
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr5474705ejc.431.1641481032758;
+        Thu, 06 Jan 2022 06:57:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyoyE70BXRIKkWTb3eHQNX6/HYfwE4FUA5F++leaCr2dgmba8ya+07Av/6pViQ02HNwmLs5Ig==
+X-Received: by 2002:a17:907:628d:: with SMTP id nd13mr5474680ejc.431.1641481032497;
+        Thu, 06 Jan 2022 06:57:12 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id o25sm804427edr.20.2022.01.06.06.57.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 06:34:55 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 3B8A3181F2A; Thu,  6 Jan 2022 15:34:55 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        Thu, 06 Jan 2022 06:57:12 -0800 (PST)
+Date:   Thu, 6 Jan 2022 15:57:10 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
- XDP_REDIRECT in bpf_prog_run()
-In-Reply-To: <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
-References: <20220103150812.87914-1-toke@redhat.com>
- <20220103150812.87914-8-toke@redhat.com>
- <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 06 Jan 2022 15:34:55 +0100
-Message-ID: <87y23t9blc.fsf@toke.dk>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
+Message-ID: <YdcDRqmgOeOMmyoM@krava>
+References: <20220104080943.113249-1-jolsa@kernel.org>
+ <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
+ <YdaoTuWjEeT33Zzm@krava>
+ <20220106225943.87701fcc674202dc3e172289@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220106225943.87701fcc674202dc3e172289@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+On Thu, Jan 06, 2022 at 10:59:43PM +0900, Masami Hiramatsu wrote:
 
-> On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> +
->> +#define NUM_PKTS 3
->
-> May be send a bit more than 3 packets?
-> Just to test skb_list logic for XDP_PASS.
+SNIP
 
-OK, can do.
+> > > 
+> > > Hmm, I think there may be a time to split the "kprobe as an 
+> > > interface for the software breakpoint" and "kprobe as a wrapper
+> > > interface for the callbacks of various instrumentations", like
+> > > 'raw_kprobe'(or kswbp) and 'kprobes'.
+> > > And this may be called as 'fprobe' as ftrace_ops wrapper.
+> > > (But if the bpf is enough flexible, this kind of intermediate layer
+> > >  may not be needed, it can use ftrace_ops directly, eventually)
+> > > 
+> > > Jiri, have you already considered to use ftrace_ops from the
+> > > bpf directly? Are there any issues?
+> > > (bpf depends on 'kprobe' widely?)
+> > 
+> > at the moment there's not ftrace public interface for the return
+> > probe merged in, so to get the kretprobe working I had to use
+> > kprobe interface
+> 
+> Yeah, I found that too. We have to ask Steve to salvage it ;)
 
->> +
->> +	/* We setup a veth pair that we can not only XDP_REDIRECT packets
->> +	 * between, but also route them. The test packet (defined above) has
->> +	 * address information so it will be routed back out the same interface
->> +	 * after it has been received, which will allow it to be picked up by
->> +	 * the XDP program on the destination interface.
->> +	 *
->> +	 * The XDP program we run with bpf_prog_run() will cycle through all
->> +	 * four return codes (DROP/PASS/TX/REDIRECT), so we should end up with
->> +	 * NUM_PKTS - 1 packets seen on the dst iface. We match the packets on
->> +	 * the UDP payload.
->> +	 */
->> +	SYS("ip link add veth_src type veth peer name veth_dst");
->> +	SYS("ip link set dev veth_src address 00:11:22:33:44:55");
->> +	SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
->> +	SYS("ip link set dev veth_src up");
->> +	SYS("ip link set dev veth_dst up");
->> +	SYS("ip addr add dev veth_src fc00::1/64");
->> +	SYS("ip addr add dev veth_dst fc00::2/64");
->> +	SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb");
->> +	SYS("sysctl -w net.ipv6.conf.all.forwarding=3D1");
->
-> These commands pollute current netns. The test has to create its own netns
-> like other tests do.
+I got those patches rebased like half a year ago upstream code,
+so should be easy to revive them
 
-Right, will fix.
+> 
+> > but.. there are patches Steven shared some time ago, that do that
+> > and make graph_ops available as kernel interface
+> > 
+> > I recall we considered graph_ops interface before as common attach
+> > layer for trampolines, which was bad, but it might actually make
+> > sense for kprobes
+> 
+> I started working on making 'fprobe' which will provide multiple
+> function probe with similar interface of kprobes. See attached
+> patch. Then you can use it in bpf, maybe with an union like
+> 
+> union {
+> 	struct kprobe kp;	// for function body
+> 	struct fprobe fp;	// for function entry and return
+> };
+> 
+> At this moment, fprobe only support entry_handler, but when we
+> re-start the generic graph_ops interface, it is easy to expand
+> to support exit_handler.
+> If this works, I think kretprobe can be phased out, since at that
+> moment, kprobe_event can replace it with the fprobe exit_handler.
+> (This is a benefit of decoupling the instrumentation layer from
+> the event layer. It can choose the best way without changing
+> user interface.)
+> 
 
-> The forwarding=3D1 is odd. Nothing in the comments or commit logs
-> talks about it.
+I can resend out graph_ops patches if you want to base
+it directly on that
 
-Hmm, yeah, should probably have added an explanation, sorry about that :)
+> > I'll need to check it in more details but I think both graph_ops and
+> > kprobe do about similar thing wrt hooking return probe, so it should
+> > be comparable.. and they are already doing the same for the entry hook,
+> > because kprobe is mostly using ftrace for that
+> > 
+> > we would not need to introduce new program type - kprobe programs
+> > should be able to run from ftrace callbacks just fine
+> 
+> That seems to bind your mind. The program type is just a programing
+> 'model' of the bpf. You can choose the best implementation to provide
+> equal functionality. 'kprobe' in bpf is just a name that you call some
+> instrumentations which can probe kernel code.
 
-> I'm guessing it's due to patch 6 limitation of picking loopback
-> for XDP_PASS and XDP_TX, right?
-> There is ingress_ifindex field in struct xdp_md.
-> May be use that to setup dev and rxq in test_run in patch 6?
-> Then there will be no need to hack through forwarding=3D1 ?
+I don't want to introduce new type, there's some dependencies
+in bpf verifier and helpers code we'd need to handle for that
 
-No, as you note there's already ingress_ifindex to set the device, and
-the test does use that:
+I'm looking for solution for current kprobe bpf program type
+to be registered for multiple addresses quickly
 
-+	memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
-+	skel->rodata->ifindex_out =3D ifindex_src;
-+	ctx_in.ingress_ifindex =3D ifindex_src;
+> 
+> Thank you,
+> 
+> > 
+> > so we would have:
+> >   - kprobe type programs attaching to:
+> >   - new BPF_LINK_TYPE_FPROBE link using the graph_ops as attachment layer
+> > 
+> > jirka
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
 
-I enable forwarding because the XDP program that counts the packets is
-running on the other end of the veth pair (on veth_dst), while the
-traffic gen is using veth_src as its ingress ifindex. So for XDP_TX and
-XDP_REDIRECT we send the frame back out the veth device, and it ends up
-being processed by the XDP program on veth_dst, and counted. But when
-the test program returns XDP_PASS, the packet will go up the frame; so
-to get it back to the counting program I enable forwarding and set the
-packet dst IP so that the stack routes it back out the same interface.
+> From 269b86597c166d6d4c5dd564168237603533165a Mon Sep 17 00:00:00 2001
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> Date: Thu, 6 Jan 2022 15:40:36 +0900
+> Subject: [PATCH] fprobe: Add ftrace based probe APIs
+> 
+> The fprobe is a wrapper API for ftrace function tracer.
+> Unlike kprobes, this probes only supports the function entry, but
+> it can probe multiple functions by one fprobe. The usage is almost
+> same as the kprobe, user will specify the function names by
+> fprobe::syms, the number of syms by fprobe::nsyms, and the user
+> handler by fprobe::handler.
+> 
+> struct fprobe = { 0 };
+> const char *targets[] = {"func1", "func2", "func3"};
+> 
+> fprobe.handler = user_handler;
+> fprobe.nsyms = ARRAY_SIZE(targets);
+> fprobe.syms = targets;
+> 
+> ret = register_fprobe(&fprobe);
+> ...
+> 
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  include/linux/fprobes.h |  52 ++++++++++++++++
+>  kernel/trace/Kconfig    |  10 ++++
+>  kernel/trace/Makefile   |   1 +
+>  kernel/trace/fprobes.c  | 128 ++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 191 insertions(+)
+>  create mode 100644 include/linux/fprobes.h
+>  create mode 100644 kernel/trace/fprobes.c
+> 
+> diff --git a/include/linux/fprobes.h b/include/linux/fprobes.h
+> new file mode 100644
+> index 000000000000..22db748bf491
+> --- /dev/null
+> +++ b/include/linux/fprobes.h
+> @@ -0,0 +1,52 @@
+> +#ifndef _LINUX_FPROBES_H
+> +#define _LINUX_FPROBES_H
+> +/* Simple ftrace probe wrapper */
+> +
+> +#include <linux/compiler.h>
+> +#include <linux/ftrace.h>
+> +
+> +struct fprobe {
+> +	const char		**syms;
+> +	unsigned long		*addrs;
 
-I'll admit this is a bit hacky; I guess I can add a second TC ingress
-program that will count the packets being XDP_PASS'ed instead...
+could you add array of user data for each addr/sym?
 
--Toke
+SNIP
+
+> +static int populate_func_addresses(struct fprobe *fp)
+> +{
+> +	unsigned int i;
+> +
+> +	fp->addrs = kmalloc(sizeof(void *) * fp->nsyms, GFP_KERNEL);
+> +	if (!fp->addrs)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < fp->nsyms; i++) {
+> +		fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
+> +		if (!fp->addrs[i]) {
+> +			kfree(fp->addrs);
+> +			fp->addrs = NULL;
+> +			return -ENOENT;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/**
+> + * register_fprobe - Register fprobe to ftrace
+> + * @fp: A fprobe data structure to be registered.
+> + *
+> + * This expects the user set @fp::syms or @fp::addrs (not both),
+> + * @fp::nsyms (number of entries of @fp::syms or @fp::addrs) and
+> + * @fp::handler. Other fields are initialized by this function.
+> + */
+> +int register_fprobe(struct fprobe *fp)
+> +{
+> +	unsigned int i;
+> +	int ret;
+> +
+> +	if (!fp)
+> +		return -EINVAL;
+> +
+> +	if (!fp->nsyms || (!fp->syms && !fp->addrs) || (fp->syms && fp->addrs))
+> +		return -EINVAL;
+> +
+> +	if (fp->syms) {
+> +		ret = populate_func_addresses(fp);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	fp->ftrace.func = fprobe_handler;
+> +	fp->ftrace.flags = FTRACE_OPS_FL_SAVE_REGS;
+> +
+> +	for (i = 0; i < fp->nsyms; i++) {
+> +		ret = ftrace_set_filter_ip(&fp->ftrace, fp->addrs[i], 0, 0);
+> +		if (ret < 0)
+> +			goto error;
+> +	}
+
+I introduced ftrace_set_filter_ips, because loop like above was slow:
+  https://lore.kernel.org/bpf/20211118112455.475349-4-jolsa@kernel.org/
+
+thanks,
+jirka
+
+> +
+> +	fp->nmissed = 0;
+> +	ret = register_ftrace_function(&fp->ftrace);
+> +	if (!ret)
+> +		return ret;
+> +
+> +error:
+> +	if (fp->syms) {
+> +		kfree(fp->addrs);
+> +		fp->addrs = NULL;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +/**
+> + * unregister_fprobe - Unregister fprobe from ftrace
+> + * @fp: A fprobe data structure to be unregistered.
+> + */
+> +int unregister_fprobe(struct fprobe *fp)
+> +{
+> +	int ret;
+> +
+> +	if (!fp)
+> +		return -EINVAL;
+> +
+> +	if (!fp->nsyms || !fp->addrs)
+> +		return -EINVAL;
+> +
+> +	ret = unregister_ftrace_function(&fp->ftrace);
+> +
+> +	if (fp->syms) {
+> +		/* fp->addrs is allocated by register_fprobe() */
+> +		kfree(fp->addrs);
+> +		fp->addrs = NULL;
+> +	}
+> +
+> +	return ret;
+> +}
+> -- 
+> 2.25.1
+> 
 
