@@ -2,99 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50574485D1B
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 01:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A48485D6C
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 01:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343660AbiAFA0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 19:26:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343658AbiAFA0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 19:26:44 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C1CC061245
-        for <bpf@vger.kernel.org>; Wed,  5 Jan 2022 16:26:43 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id v10so839486ilj.3
-        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 16:26:43 -0800 (PST)
+        id S1343972AbiAFAo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 19:44:57 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:51216 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343936AbiAFAoW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 19:44:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8+MtkvKJJLUkRjo+TehPBt71Ox8LXv5TqmtM3OCiWpE=;
-        b=epuCidMl1dxoGrKBfbB4hVxgavwvrXSv5+xEBUWICdPHDcFYzE2UDBQ7/skVmRfXbi
-         WbZWaLGySPQxfoRg2w1Kdpj3XlS6JYpxFlEYFOUKRWVGc6UMNpW3WxOV5yo5eIjW8UEI
-         snUNUay7qvzOBDG5UpPOmeh/8D1e7/xg7NlseCNFD/sPFmhC4EKHplq+vHh1CzODgf2J
-         sl4rrk5BtFj90yS/Aie/wX3d9b1IA4Kg9rw0wPTsJlBxTBtxRs6/odu3X8Mwz8fz6CPq
-         D7A3Hs2hYY6oow40gVa5Qws4x3ODI2q4QVC030wHNnNUaojAp2ozK4YZNxIF/3cyOHEY
-         Gqsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8+MtkvKJJLUkRjo+TehPBt71Ox8LXv5TqmtM3OCiWpE=;
-        b=D27iAWvRR6W1nuk7GVLbCPWWDnB8p2/tDR0xQ/c37CIkZwjWdfwpcEuQ00FYRVu7Wn
-         i7v4HXLNrtxmv0a1A3GZkL5Of5Yss5bHwlzFHKaXKEyJY3wyiQKnvUQZ+jWKubPnE5Da
-         9/9wQ7wqtOshqc11NIOWOBZjeTxbasmrlkFnlGwtYTvkhbp+yfFbNp3BDZ8ZR0GkW6ZT
-         odJGcOgrDiEisOmhTU1cV8INGM29p8mCwwBMYQPh8wI5M8GisxRJLPSP1XYkvo43nKFq
-         3htCSjNqlWnKrBLery0m1Ac9Jhowb+etwLOGSQf0KJnGwHXFBNJ+cRpQ06724TW3ElWJ
-         1Hdg==
-X-Gm-Message-State: AOAM532IL+Nu+Ue6FVwSjD/+ECalL3y5zoImzX58+rAVC5nWD3cJt31o
-        hvQgRfbDXCZ7GHXSaBdYjjmzPM70esaMUjslkZMONPPB
-X-Google-Smtp-Source: ABdhPJznsyrWPq+BKQIMAz6xMuAZTZZ0iw9lAhaNhgDTnwKIN2bNsRMZOoQfa7/7Yh6rNT0B/YgTje12lwCGfq75y3Q=
-X-Received: by 2002:a05:6e02:18ca:: with SMTP id s10mr27064588ilu.305.1641428803261;
- Wed, 05 Jan 2022 16:26:43 -0800 (PST)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1641429862; x=1672965862;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Rz5PvVfZbv748AWmS2fFlrQBqLr5EJy3zvJ1hILAXbo=;
+  b=WiXRH16FntlU43N/ay4ijmoPJm0KhWmzTClhpwdvHndV0a3woJKQi4Ql
+   wZ9i6aDrcGNZvFUrNEIaiwSze/4OIRD85tUfZ9+RfMFt88JZ5V9KIMD+U
+   6hYMscK10UPJWXKsS25dsrhio6Pgv7gqOcn6OemxC+kwuO3mTqLNeBlH2
+   8=;
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 05 Jan 2022 16:44:20 -0800
+X-QCInternal: smtphost
+Received: from hu-twear-lv.qualcomm.com (HELO hu-devc-sd-u20-a-1.qualcomm.com) ([10.47.235.107])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 05 Jan 2022 16:44:20 -0800
+Received: by hu-devc-sd-u20-a-1.qualcomm.com (Postfix, from userid 202676)
+        id 51B5E5D9; Wed,  5 Jan 2022 16:44:00 -0800 (PST)
+From:   Tyler Wear <quic_twear@quicinc.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     maze@google.com, yhs@fb.com, kafai@fb.com, toke@redhat.com,
+        Tyler Wear <quic_twear@quicinc.org>,
+        Tyler Wear <quic_twear@quicinc.com>
+Subject: [PATCH bpf-next v3] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
+Date:   Wed,  5 Jan 2022 16:43:40 -0800
+Message-Id: <20220106004340.2317542-1-quic_twear@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211230215338.6be8cccf@poseidon.quill.lan>
-In-Reply-To: <20211230215338.6be8cccf@poseidon.quill.lan>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Jan 2022 16:26:32 -0800
-Message-ID: <CAEf4BzbEH4m_y2saV1nN30a_eOSb2ORRgZfXQ6FaXtTHyUsYYw@mail.gmail.com>
-Subject: Re: libbpf: Memory error detected by Valgrind
-To:     Alex <bpf@centromere.net>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 31, 2021 at 2:35 AM Alex <bpf@centromere.net> wrote:
->
-> With valgrind I discovered the following in v0.6.1:
->
-> ```
-> ==923672== Memcheck, a memory error detector
-> ==923672== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-> ==923672== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-> ==923672== Command: ...
-> ==923672==
-> ==923672== Conditional jump or move depends on uninitialised value(s)
-> ==923672==    at 0x46707C: strlen (in ...)
-> ==923672==    by 0x466F4D: strdup (in ...)
-> ==923672==    by 0x41DE90: internal_map_name (libbpf.c:1521)
-> ==923672==    by 0x41DE90: bpf_object__init_internal_map (libbpf.c:1540)
-> ==923672==    by 0x4200B0: bpf_object__init_global_data_maps (libbpf.c:1601)
-> ==923672==    by 0x4266B5: bpf_object__init_maps (libbpf.c:2601)
-> ==923672==    by 0x4266B5: __bpf_object__open.part.0 (libbpf.c:6937)
-> ==923672==    by 0x429609: __bpf_object__open (libbpf.c:6885)
-> ==923672==    by 0x429609: bpf_object__open_mem (libbpf.c:6999)
-> ==923672==    by 0x4315C0: bpf_object__open_skeleton (libbpf.c:11529)
-> ```
->
-> I believe `map_name` in `internal_map_name` of src/libbpf.c is the culprit:
->
-> char map_name[BPF_OBJ_NAME_LEN], *p;
->
-> The issue disappears when I change this line to:
->
-> char map_name[BPF_OBJ_NAME_LEN] = {}, *p;
->
-> Should I submit a patch?
+From: Tyler Wear <quic_twear@quicinc.org>
 
-I don't understand where the issue is, tbh. map_name is clearly
-initialized by snprintf() unconditionally, so by the time we do
-strdup(map_name) it's a properly initialized string. What am I
-missing?
+Need to modify the ds field to support upcoming Wifi QoS Alliance spec.
+Instead of adding generic function for just modifying the ds field,
+add skb_store_bytes for BPF_PROG_TYPE_CGROUP_SKB.
+This allows other fields in the network and transport header to be
+modified in the future.
 
->
-> --
-> Alex
+Checksum API's also need to be added for completeness.
+
+It is not possible to use CGROUP_(SET|GET)SOCKOPT since
+the policy may change during runtime and would result
+in a large number of entries with wildcards.
+
+Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
+---
+ net/core/filter.c                             | 10 ++
+ .../bpf/prog_tests/cgroup_store_bytes.c       | 97 +++++++++++++++++++
+ .../selftests/bpf/progs/cgroup_store_bytes.c  | 64 ++++++++++++
+ 3 files changed, 171 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cgroup_store_bytes.c
+ create mode 100644 tools/testing/selftests/bpf/progs/cgroup_store_bytes.c
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 6102f093d59a..ce01a8036361 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7299,6 +7299,16 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_delete_proto;
+ 	case BPF_FUNC_perf_event_output:
+ 		return &bpf_skb_event_output_proto;
++	case BPF_FUNC_skb_store_bytes:
++		return &bpf_skb_store_bytes_proto;
++	case BPF_FUNC_csum_update:
++		return &bpf_csum_update_proto;
++	case BPF_FUNC_csum_level:
++		return &bpf_csum_level_proto;
++	case BPF_FUNC_l3_csum_replace:
++		return &bpf_l3_csum_replace_proto;
++	case BPF_FUNC_l4_csum_replace:
++		return &bpf_l4_csum_replace_proto;
+ #ifdef CONFIG_SOCK_CGROUP_DATA
+ 	case BPF_FUNC_skb_cgroup_id:
+ 		return &bpf_skb_cgroup_id_proto;
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_store_bytes.c b/tools/testing/selftests/bpf/prog_tests/cgroup_store_bytes.c
+new file mode 100644
+index 000000000000..4bbc43775f45
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_store_bytes.c
+@@ -0,0 +1,97 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <test_progs.h>
++#include <network_helpers.h>
++
++void test_cgroup_store_bytes(void)
++{
++	int server_fd, cgroup_fd, prog_fd, map_fd, client_fd;
++	int err;
++	struct bpf_object *obj;
++	struct bpf_program *prog;
++	struct bpf_map *test_result;
++	__u32 duration = 0;
++
++	__u32 map_key = 0;
++	__u32 map_value = 0;
++
++	cgroup_fd = test__join_cgroup("/cgroup_store_bytes");
++	if (CHECK_FAIL(cgroup_fd < 0))
++		return;
++
++	server_fd = start_server(AF_INET, SOCK_DGRAM, NULL, 0, 0);
++	if (CHECK_FAIL(server_fd < 0))
++		goto close_cgroup_fd;
++
++	err = bpf_prog_load("./cgroup_store_bytes.o", BPF_PROG_TYPE_CGROUP_SKB,
++														&obj, &prog_fd);
++	if (CHECK_FAIL(err))
++		goto close_server_fd;
++
++	test_result = bpf_object__find_map_by_name(obj, "test_result");
++	if (CHECK_FAIL(!test_result))
++		goto close_bpf_object;
++
++	map_fd = bpf_map__fd(test_result);
++	if (map_fd < 0)
++		goto close_bpf_object;
++
++	prog = bpf_object__find_program_by_name(obj, "cgroup_store_bytes");
++	if (CHECK_FAIL(!prog))
++		goto close_bpf_object;
++
++	err = bpf_prog_attach(prog_fd, cgroup_fd, BPF_CGROUP_INET_EGRESS,
++														BPF_F_ALLOW_MULTI);
++	if (CHECK_FAIL(err))
++		goto close_bpf_object;
++
++	//client_fd = connect_to_fd(server_fd, 0);
++	client_fd = start_server(AF_INET, SOCK_DGRAM, NULL, 0, 0);
++	if (CHECK_FAIL(client_fd < 0))
++		goto close_bpf_object;
++
++	struct sockaddr server_addr;
++	socklen_t addrlen = sizeof(server_addr);
++	if (getsockname(server_fd, &server_addr, &addrlen)) {
++		perror("Failed to get server addr");
++		return -1;
++	}
++
++	char buf[] = "testing";
++	if (CHECK_FAIL(sendto(client_fd, buf, sizeof(buf), 0, &server_addr, sizeof(server_addr)) != sizeof(buf))) {
++		perror("Can't write on client");
++		goto close_client_fd;
++	}
++
++	struct sockaddr_storage ss;
++	char recv_buf[BUFSIZ];
++	socklen_t slen;
++	if (recvfrom(server_fd, &recv_buf, sizeof(recv_buf), 0, (struct sockaddr *)&ss, &slen) <= 0) {
++		perror("Recvfrom recieved no packets");
++		goto close_client_fd;
++	}
++
++	struct in_addr addr = ((struct sockaddr_in *)&ss)->sin_addr;
++	CHECK(addr.s_addr != 0xac100164, "bpf", "bpf program failed to change saddr");
++
++	unsigned short port = ((struct sockaddr_in *)&ss)->sin_port;
++	CHECK(port != htons(5556), "bpf", "bpf program failed to change port");
++	
++	err = bpf_map_lookup_elem(map_fd, &map_key, &map_value);
++	if (CHECK_FAIL(err))
++		goto close_client_fd;
++
++	CHECK(map_value != 1, "bpf", "bpf program returned failure");
++
++close_client_fd:
++	close(client_fd);
++
++close_bpf_object:
++	bpf_object__close(obj);
++
++close_server_fd:
++	close(server_fd);
++
++close_cgroup_fd:
++	close(cgroup_fd);
++}
+diff --git a/tools/testing/selftests/bpf/progs/cgroup_store_bytes.c b/tools/testing/selftests/bpf/progs/cgroup_store_bytes.c
+new file mode 100644
+index 000000000000..7e5bf61fcfb7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/cgroup_store_bytes.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <errno.h>
++#include <linux/bpf.h>
++#include <linux/if_ether.h>
++#include <linux/ip.h>
++#include <netinet/in.h>
++#include <netinet/udp.h>
++#include <bpf/bpf_helpers.h>
++
++#define IP_SRC_OFF offsetof(struct iphdr, saddr)
++#define UDP_PORT_OFF (sizeof(struct iphdr) + offsetof(struct udphdr, source))
++
++#define IS_PSEUDO 0x10
++
++#define UDP_CSUM_OFF (sizeof(struct iphdr) + offsetof(struct udphdr, check))
++#define IP_CSUM_OFF offsetof(struct iphdr, check)
++#define TOS_OFF offsetof(struct iphdr, tos)
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, __u32);
++	__type(value, __u32);
++} test_result SEC(".maps");
++
++SEC("cgroup_skb/egress")
++int cgroup_store_bytes(struct __sk_buff *skb)
++{
++	struct ethhdr eth;
++	struct iphdr iph;
++	struct udphdr udph;
++
++	__u32 map_key = 0;
++	__u32 test_passed = 0;
++
++	if (bpf_skb_load_bytes_relative(skb, 0, &iph, sizeof(iph), //ETH_HLEN
++					BPF_HDR_START_NET))
++		goto fail;
++		
++	if (bpf_skb_load_bytes_relative(skb, sizeof(iph), &udph, sizeof(udph),
++					BPF_HDR_START_NET))
++		goto fail;
++
++	__u32 old_ip = htonl(iph.saddr);
++	__u32 new_ip = 0xac100164; //172.16.1.100
++	bpf_l4_csum_replace(skb, UDP_CSUM_OFF, old_ip, new_ip, IS_PSEUDO | sizeof(new_ip));
++	bpf_l3_csum_replace(skb, IP_CSUM_OFF, old_ip, new_ip, sizeof(new_ip));
++	if (bpf_skb_store_bytes(skb, IP_SRC_OFF, &new_ip, sizeof(new_ip), 0) < 0)
++		goto fail;
++	
++	__u16 old_port = udph.source;
++	__u16 new_port = 5555;
++	bpf_l4_csum_replace(skb, UDP_CSUM_OFF, old_port, new_port, IS_PSEUDO | sizeof(new_port));
++	if (bpf_skb_store_bytes(skb, UDP_PORT_OFF, &new_port, sizeof(new_port), 0) < 0)
++		goto fail;
++
++	test_passed = 1;
++
++fail:
++	bpf_map_update_elem(&test_result, &map_key, &test_passed, BPF_ANY);
++
++	return 1;
++}
+-- 
+2.25.1
+
