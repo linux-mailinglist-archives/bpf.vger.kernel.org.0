@@ -2,128 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B39485F51
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 04:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C836485FA0
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 05:20:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231153AbiAFDqG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 22:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S232741AbiAFEUd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 23:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230214AbiAFDqF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 22:46:05 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70387C061245;
-        Wed,  5 Jan 2022 19:46:05 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id x15so1119079ilc.5;
-        Wed, 05 Jan 2022 19:46:05 -0800 (PST)
+        with ESMTP id S232841AbiAFEUb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 23:20:31 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9CBC061201;
+        Wed,  5 Jan 2022 20:20:31 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso1897306pjb.1;
+        Wed, 05 Jan 2022 20:20:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3gV3xZ2h/EE4U6Pp/2sO2sTK0mMF/xknIRpxJ9B4orY=;
-        b=N75pw4f2fQeOV6BaLGZbQ/QG90Egzu/xYD3Nas9/uNy5gURoGxtFY/hrBLR1sahETe
-         jbv/jZwMEYAKQv2kMvHSQZLbaV9ILEnhTp1N2+eDG+LsZacGlPslL/PLtzb8ktaiBBT/
-         XrKkaSYBDr0+hCme4c+pn5YsA8QvmNSDO/NmW9yWpwsshzCrwGa5rfOlKQ6ymP0N0DFU
-         Aw3HHw0uNysmT9VsHByYXe/pmsUDGUYcDE/dMFxB8+drQEzAiN4/Dlgg82F9kTORQsAP
-         cZgP2kebSxrecHJh3+Cd2S7TfUM/P7FqnQ82OvW6a/VIOWgf5lr0teBVIHeAJNDqRxOP
-         Oa1Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XFyPWySpG/eTVU9P9gQaXzmlhOo5LJXbONaRr08875g=;
+        b=JwKhgb6Q2A3pr1O6mTBTzASepduhzVE+V5J0lpHXPdzyWxfgwmRspLrbqTAxKbs8Qo
+         rKMwRyqqzNebgEQ80XUuktg0KXMYVFdTqlN/c5dgr4K/y/gIZ2CUKS/rxsoUvQx6xVGC
+         SQyfN1dS29uGf3SdAPN4CUEkq0Exi2cOMitAW2J6xgS25JBkr6JcqRWW4zbZcmX81pJq
+         QwWgoQ+9dxsLVpprzRmMNkgKGGEF9h4TSX9qNNHUrPWj0oyEIubM53z0+e8sNASXFmJ/
+         rEAi3WRX4mvhlhsXsU4UWLzGF9K/u8bqQgd5DRJGjADFTi84s05iyPNSsrQV3jMHMZP/
+         gvPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3gV3xZ2h/EE4U6Pp/2sO2sTK0mMF/xknIRpxJ9B4orY=;
-        b=nQXgCmdZnfRva38gGzXwTidhx9UfTAHJPPZEelImffKcfbqe3FV73RXBmkPyDiP2mj
-         HcrH7MLP9Lxs8Kzk9/ixnzkpXmTuElPAub5L/0yteQlPh2RjawmaVvUXh6CxC/5tduIv
-         HPHeGLvzgZtS2GCEip7D9/7bI/PRk6b2cCwk0Dqru0y5ob3I3ridxIaK5iK+cRKLXC1V
-         HH4V27mu9XCBS5NyWFFfiq2R7l4ZlvABWQudF/BjprsnVV9x5nTOHTd7Jqssdo1o7TA9
-         DYcgYHRQIPNtcII7z428FdXe7fDVNNpkZJumYx4qq8UQ7x7uRuC30A9X9rQkHswDZOIi
-         FRlg==
-X-Gm-Message-State: AOAM530Li+dEC7twuopTB4M6bKmr+DW/o3a69mqStVza9mhqvCM/jd1T
-        dHb9Iem3FozpRN7+VMq9rbeecq9XmD0f55jSF6X2uLAA
-X-Google-Smtp-Source: ABdhPJynxqvMBai3T5C2S21CJWj6eleJmvpAtHMF2HeCRtIBcT8QGMI7jgK2GV1djEpPYNpn2GXDjOgoxtXQOF92QR8=
-X-Received: by 2002:a05:6e02:1c01:: with SMTP id l1mr27742076ilh.239.1641440764892;
- Wed, 05 Jan 2022 19:46:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20211231075607.94752-1-saeed@kernel.org> <8cf93086-4990-f14a-3271-92bc2ee0519e@iogearbox.net>
- <20220105221419.tlp4lp2h5ttvssuh@sx1>
-In-Reply-To: <20220105221419.tlp4lp2h5ttvssuh@sx1>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Jan 2022 19:45:53 -0800
-Message-ID: <CAEf4BzaYf5SMYrcj=uTrAW0PN6npGLwio79Mi+MAY8FX=QaaYA@mail.gmail.com>
-Subject: Re: [PATCH net] scripts/pahole-flags.sh: Make sure pahole --version works
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XFyPWySpG/eTVU9P9gQaXzmlhOo5LJXbONaRr08875g=;
+        b=vBKD93jjsOoIclmW3nJtLErpllijwPhwRELcm0rDzhfnw/5zTKFphNHHGHrFkEVee6
+         /Yy97jmvhzIj4amCVMrCAXTjjKv33QTowIEHXX98wLurAMRNBLUjSCUb3XGZzVDmFylg
+         RzvYwB7cfzwJgI3GtrvAzhKzWYy0pFL4apxXYekNENSjATz1fKJU4E1IxIEXKgWSSLyA
+         E7DSlBBShX99ihKu5SFqM0AYc2MkvE6iscHULoLdO80YOWaIxa4mEGSvfUcPS7K/7AzK
+         y+++LLVce/jyCC50n7RpCsxHctSCChpfkhhJs6QzsI1YjkkO8NZMRQfNxo0B2w5zRZL8
+         mqJw==
+X-Gm-Message-State: AOAM532cBwK4+x3115pHJEvUVgKsjjVnRYWt1sbQfeXbtPtN/hk+TjNL
+        00zSFabUwxfChR2DsIpyGCo=
+X-Google-Smtp-Source: ABdhPJygTiLePf+5dyNrGntX9XvEJMsjQ+3wBbnQMWHeh7Oh9OrP/Qe4ygqMkkHO63yejza3iYuimA==
+X-Received: by 2002:a17:90a:bc92:: with SMTP id x18mr7971959pjr.130.1641442830784;
+        Wed, 05 Jan 2022 20:20:30 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1a5b])
+        by smtp.gmail.com with ESMTPSA id k6sm590615pff.106.2022.01.05.20.20.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jan 2022 20:20:30 -0800 (PST)
+Date:   Wed, 5 Jan 2022 20:20:27 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
+ XDP_REDIRECT in bpf_prog_run()
+Message-ID: <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
+References: <20220103150812.87914-1-toke@redhat.com>
+ <20220103150812.87914-8-toke@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220103150812.87914-8-toke@redhat.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 2:14 PM Saeed Mahameed <saeed@kernel.org> wrote:
->
-> On Wed, Jan 05, 2022 at 02:42:01PM +0100, Daniel Borkmann wrote:
-> >On 12/31/21 8:56 AM, Saeed Mahameed wrote:
-> >>From: Saeed Mahameed <saeedm@nvidia.com>
-> >>
-> >>I had a broken pahole and it's been driving me crazy to see tons of the
-> >>following error messages on every build.
-> >>
-> >>pahole: symbol lookup error: pahole: undefined symbol: btf_gen_floats
-> >>scripts/pahole-flags.sh: line 12: [: : integer expression expected
-> >>scripts/pahole-flags.sh: line 16: [: : integer expression expected
-> >>
-> >>Address this by redirecting pahole --version stderr to devnull,
-> >>and validate stdout has a non empty string, otherwise exit silently.
-> >
-> >I'll leave this up to Andrii, but broken pahole version sounds like it would
-> >have been better to fix the local pahole installation instead [rather than the
-> >kernel having to guard against it, especially if it's driving you crazy]?
-> >
->
-> Already did :)
->
-> >I could image that silent exit on empty version string due to broken pahole
-> >deployment might rather waste developer's time to then go and debug why btf
-> >wasn't generated..
-> >
->
-> Good point, I was mainly thinking about developers who are not familiar with btf
-> and who have no time debugging irrelevant build issues, but up to you, I
-> personally like silent build scripts.
->
+On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke Høiland-Jørgensen wrote:
+> +
+> +#define NUM_PKTS 3
 
-Sorry, trying to understand. If you didn't use BTF (and thus
-CONFIG_DEBUG_INFO_BTF is not set), is pahole still being called? If
-yes, we might want to address that, I suppose.
+May be send a bit more than 3 packets?
+Just to test skb_list logic for XDP_PASS.
 
-But if you have a broken pahole that emits something to stderr
-(undefined symbol in shared library), then I agree with Daniel that we
-shouldn't be working around that in Linux build script.
+> +
+> +	/* We setup a veth pair that we can not only XDP_REDIRECT packets
+> +	 * between, but also route them. The test packet (defined above) has
+> +	 * address information so it will be routed back out the same interface
+> +	 * after it has been received, which will allow it to be picked up by
+> +	 * the XDP program on the destination interface.
+> +	 *
+> +	 * The XDP program we run with bpf_prog_run() will cycle through all
+> +	 * four return codes (DROP/PASS/TX/REDIRECT), so we should end up with
+> +	 * NUM_PKTS - 1 packets seen on the dst iface. We match the packets on
+> +	 * the UDP payload.
+> +	 */
+> +	SYS("ip link add veth_src type veth peer name veth_dst");
+> +	SYS("ip link set dev veth_src address 00:11:22:33:44:55");
+> +	SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
+> +	SYS("ip link set dev veth_src up");
+> +	SYS("ip link set dev veth_dst up");
+> +	SYS("ip addr add dev veth_src fc00::1/64");
+> +	SYS("ip addr add dev veth_dst fc00::2/64");
+> +	SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb");
+> +	SYS("sysctl -w net.ipv6.conf.all.forwarding=1");
 
-> >>Fixes: 9741e07ece7c ("kbuild: Unify options for BTF generation for vmlinux and modules")
-> >>CC: Andrii Nakryiko <andrii@kernel.org>
-> >>CC: Jiri Olsa <jolsa@redhat.com>
-> >>Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-> >>---
-> >>  scripts/pahole-flags.sh | 3 ++-
-> >>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>
-> >>diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-> >>index e6093adf4c06..b3b53f890d40 100755
-> >>--- a/scripts/pahole-flags.sh
-> >>+++ b/scripts/pahole-flags.sh
-> >>@@ -7,7 +7,8 @@ if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> >>      exit 0
-> >>  fi
-> >>-pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
-> >>+pahole_ver=$(${PAHOLE} --version 2>/dev/null | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
-> >>+[ -z "${pahole_ver}" ] && exit 0
-> >>  if [ "${pahole_ver}" -ge "118" ] && [ "${pahole_ver}" -le "121" ]; then
-> >>      # pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
-> >>
-> >
+These commands pollute current netns. The test has to create its own netns
+like other tests do.
+
+The forwarding=1 is odd. Nothing in the comments or commit logs
+talks about it.
+I'm guessing it's due to patch 6 limitation of picking loopback
+for XDP_PASS and XDP_TX, right?
+There is ingress_ifindex field in struct xdp_md.
+May be use that to setup dev and rxq in test_run in patch 6?
+Then there will be no need to hack through forwarding=1 ?
