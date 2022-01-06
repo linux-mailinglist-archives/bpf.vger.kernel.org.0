@@ -2,51 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD712486CB8
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 22:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F11D486CB9
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 22:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244522AbiAFVvK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 16:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
+        id S244552AbiAFVvM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 16:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244453AbiAFVvJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 16:51:09 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A2AC061245
-        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 13:51:09 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id k130-20020a255688000000b0060c3dcae580so7539213ybb.6
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 13:51:09 -0800 (PST)
+        with ESMTP id S244537AbiAFVvM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 16:51:12 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FBD0C061245
+        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 13:51:12 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id n2-20020a255902000000b0060f9d75eafeso7686797ybb.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 13:51:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=kdM0s6QqOxdtaUmFhX2PE5X5ddjgitMB71Dm4q7m87s=;
-        b=egtzppUfJZc50O5tYkFPQXR/6GgVJz+mrQaH43+iUkKFuCPLyw1mtMYaODmRJ9dsuz
-         degQTFKR+jXbAqTZQfq/+zjjW/yVSQHsmt/+gjFGhRRWLnJZ4rjp2e0k3O+6vRVKDx8S
-         P/tvgsJx5pxNui0NkA5I2zsN2Fz+HYg67ngvX8zSPblK5LOB2aM/9LHAdZ/evqeArCQz
-         RGu6EJOs7YpjNrI7tNvpWmj/VId3e8gBfW2nbkwkjGo3JOt65NypzdAMx0ADhjtfzJY/
-         T1USgyFJP7obT9geoAK2Dlnu8nA0qrXZEtA/o0Ohs1HCX0i6bkDI92YhLySNL4dI4dJx
-         PvEg==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=XfvrIOiHNbk7sHm262Jen6JEO4ueUlQOWGJuAR4JJ6g=;
+        b=QjGuhAir6rqlPoJLK1yYFC65x5Q8mFf23h4/pRuJrPbEhr9W2YZo9wQ0reC8oOHAka
+         OlbKeq8BmMilr/ZKSPQueNqs2OkYkiQU0foogtFqe81E/J075a+6igS4w4f+NZtMsapf
+         B01GcB6OWnDlMliuG66qk6b7+gCHc1m1+incERNWCi9q6pS1N0C5rY7dNaw8qCxCHC+9
+         BCLpza7IVVAYGUkWiBfAfDuCNAYriq75XPsFXXLPtnqZYrGSlAA/1GBG/+vMOiQzQ0Mr
+         fRt3z1Vgcknp22w38Nfo6s45TOrTf5trTxeCr0fKMpHjL2gHc2KJ0qC83WGY9sIAuzSu
+         jO+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=kdM0s6QqOxdtaUmFhX2PE5X5ddjgitMB71Dm4q7m87s=;
-        b=d1m7g17Xlo43tktonQfVCGgUD2DyLsVcrRuki5w6usTBdfZdokdxXoLcNHODHUzRPl
-         d2bKmYaA+wEpiU936psA+uCHHf09p9tv4Bol+b+MK5nlBl+mxRUGmL/b3SK/J98Yi+lr
-         I0qUTjyDrRcVkQl9L8DUWExBp8pjpZvZC8zN7wUbVjRpEP2nnJmPO4n9So+QG35dlso+
-         RQHI60/Nkl2qPUo49dAt39JgI/OeO1RjJoGR/8jdCygoeWLUTGXr1tnauyeUl504cHaz
-         Z4FMo3HmuqZGq70ZEB4KOCLdzat1l85e5RaqZF+JAg04uRwVW6gb6sIG+6r3hzKHq34P
-         p/Zw==
-X-Gm-Message-State: AOAM532cvPh9K63/2+gfEuH7yoktfPkw3VdWwStObyHNbJC7MclLWQk4
-        FY4nJjEaN6RQktomg/C8JSpgJ6OVH6o=
-X-Google-Smtp-Source: ABdhPJyNu7Gfzyiuq80HsMXPFySvIdDkqMaH9rKQRtHdhnpXq4I6O/H59tabZKEca2hPsN+XkR87G7v+Hyw=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=XfvrIOiHNbk7sHm262Jen6JEO4ueUlQOWGJuAR4JJ6g=;
+        b=q0IFQNbKQgltqFOdxFv2LXAAtMGYbVDYjnCmE3Ae/K/swr++9Xtl1gW6/73gSq5YgQ
+         pODfS6+MrD/VgAkHFBwd592Cpx+cxbW8BO3qBdlzOFp6rg09J0OkkB1+7kLzVkMtGEft
+         t57FisjHwxnqJtjJwIo/VuMQG+kMyox+VLVCaDBDHooOxHMcGKOhqezsB85toC9aR5Qz
+         MFoFBa4H6Vqbx9HlE6sijvFi/6E8pLehluq9c8VnpVuagjDWWIa/34apXjJM8pA2RRxK
+         h+039ZALe27ioK1/wX/akS08pC/aWFrCWRtLT2o6R0SGLiVyhJx+U2D6iD+v3xdkvmbg
+         lmSw==
+X-Gm-Message-State: AOAM533cr4PSitFdS2eN0BLm3UWRIt8oMOyjL3itM604oP3gX19D6dac
+        51Sc2oLd40ytpbkw6DwJ92RoBFOTEzY=
+X-Google-Smtp-Source: ABdhPJy+BbO/mFlD7os94sdsGTqQuF3pFk/uL/yRJLDu4CN79rGSxCKHf/LHnu3c5RfcHLK7MB5epmUTwGU=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:3a2:a76c:b77f:b671])
- (user=haoluo job=sendgmr) by 2002:a25:880d:: with SMTP id c13mr79072440ybl.720.1641505868695;
- Thu, 06 Jan 2022 13:51:08 -0800 (PST)
-Date:   Thu,  6 Jan 2022 13:50:51 -0800
-Message-Id: <20220106215059.2308931-1-haoluo@google.com>
+ (user=haoluo job=sendgmr) by 2002:a25:5c6:: with SMTP id 189mr70119943ybf.595.1641505871244;
+ Thu, 06 Jan 2022 13:51:11 -0800 (PST)
+Date:   Thu,  6 Jan 2022 13:50:52 -0800
+In-Reply-To: <20220106215059.2308931-1-haoluo@google.com>
+Message-Id: <20220106215059.2308931-2-haoluo@google.com>
 Mime-Version: 1.0
+References: <20220106215059.2308931-1-haoluo@google.com>
 X-Mailer: git-send-email 2.34.1.448.ga2b2bfdf31-goog
-Subject: [PATCH RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
+Subject: [PATCH RFC bpf-next v1 1/8] bpf: Support pinning in non-bpf file system.
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -62,86 +66,249 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bpffs is a pseudo file system that persists bpf objects. Previously
-bpf objects can only be pinned in bpffs, this patchset extends pinning
-to allow bpf objects to be pinned (or exposed) to other file systems.
+Introduce a new API called bpf_watch_inode() to watch the destruction of
+an inode and calls a registered callback function. With the help of this
+new API, one can implement pinning bpf objects in a non-bpf file system
+such as sockfs. The ability of pinning bpf objects in an external file
+system has potential uses: for example, allow using bpf programs to
+customize file behaviors, as we can see in the following patches.
 
-In particular, this patchset allows pinning bpf objects in kernfs. This
-creates a new file entry in the kernfs file system and the created file
-is able to reference the bpf object. By doing so, bpf can be used to
-customize the file's operations, such as seq_show.
+Extending the pinning logic in bpf_obj_do_pin() to associate bpf objects
+to inodes of another file system is relatively straightforward. The
+challenge is how to notify the bpf object when the associated inode is
+gone so that the object's refcnt can be decremented at that time. Bpffs
+uses .free_inode() callback in super_operations to drop object's refcnt.
+But not every file system implements .free_inode() and inserting bpf
+notification to every target file system can be too instrusive.
 
-As a concrete usecase of this feature, this patchset introduces a
-simple new program type called 'bpf_view', which can be used to format
-a seq file by a kernel object's state. By pinning a bpf_view program
-into a cgroup directory, userspace is able to read the cgroup's state
-from file in a format defined by the bpf program.
+Thanks to fsnotify, there is a generic callback in VFS that can be
+used to notify the events of an inode. bpf_watch_inode() implements on
+top of that. bpf_watch_inode() allows the caller to pass in a callback
+(for example, decrementing an object's refcnt), which will be called
+when the inode is about to be freed. So typically, one can implement
+exposing bpf objects to other file systems in the following steps:
 
-Different from bpffs, kernfs doesn't have a callback when a kernfs node
-is freed, which is problem if we allow the kernfs node to hold an extra
-reference of the bpf object, because there is no chance to dec the
-object's refcnt. Therefore the kernfs node created by pinning doesn't
-hold reference of the bpf object. The lifetime of the kernfs node
-depends on the lifetime of the bpf object. Rather than "pinning in
-kernfs", it is "exposing to kernfs". We require the bpf object to be
-pinned in bpffs first before it can be pinned in kernfs. When the
-object is unpinned from bpffs, their kernfs nodes will be removed
-automatically. This somehow treats a pinned bpf object as a persistent
-"device".
+ 1. extend bpf_obj_do_pin() to create a new entry in the target file
+    system.
+ 2. call bpf_watch_inode() to register bpf object put operation at
+    the destruction of the newly created inode.
 
-We rely on fsnotify to monitor the inode events in bpffs. A new function
-bpf_watch_inode() is introduced. It allows registering a callback
-function at inode destruction. For the kernfs case, a callback that
-removes kernfs node is registered at the destruction of bpffs inodes.
-For other file systems such as sockfs, bpf_watch_inode() can monitor the
-destruction of sockfs inodes and the created file entry can hold the bpf
-object's reference. In this case, it is truly "pinning".
+Of course, on a system with no fsnotify support, pinning bpf object in
+non-bpf file system will not be available.
 
-File operations other than seq_show can also be implemented using bpf.
-For example, bpf may be of help for .poll and .mmap in kernfs.
-
-Patch organization:
- - patch 1/8 and 2/8 are preparations. 1/8 implements bpf_watch_inode();
-   2/8 records bpffs inode in bpf object.
- - patch 3/8 and 4/8 implement generic logic for creating bpf backed
-   kernfs file.
- - patch 5/8 and 6/8 add a new program type for formatting output.
- - patch 7/8 implements cgroup seq_show operation using bpf.
- - patch 8/8 adds selftest.
-
-Hao Luo (8):
-  bpf: Support pinning in non-bpf file system.
-  bpf: Record back pointer to the inode in bpffs
-  bpf: Expose bpf object in kernfs
-  bpf: Support removing kernfs entries
-  bpf: Introduce a new program type bpf_view.
-  libbpf: Support of bpf_view prog type.
-  bpf: Add seq_show operation for bpf in cgroupfs
-  selftests/bpf: Test exposing bpf objects in kernfs
-
- include/linux/bpf.h                           |   9 +-
- include/uapi/linux/bpf.h                      |   2 +
- kernel/bpf/Makefile                           |   2 +-
- kernel/bpf/bpf_view.c                         | 190 ++++++++++++++
- kernel/bpf/bpf_view.h                         |  25 ++
- kernel/bpf/inode.c                            | 219 ++++++++++++++--
- kernel/bpf/inode.h                            |  54 ++++
- kernel/bpf/kernfs_node.c                      | 165 ++++++++++++
- kernel/bpf/syscall.c                          |   3 +
- kernel/bpf/verifier.c                         |   6 +
- kernel/trace/bpf_trace.c                      |  12 +-
- tools/include/uapi/linux/bpf.h                |   2 +
- tools/lib/bpf/libbpf.c                        |  21 ++
- .../selftests/bpf/prog_tests/pinning_kernfs.c | 245 ++++++++++++++++++
- .../selftests/bpf/progs/pinning_kernfs.c      |  72 +++++
- 15 files changed, 995 insertions(+), 32 deletions(-)
- create mode 100644 kernel/bpf/bpf_view.c
- create mode 100644 kernel/bpf/bpf_view.h
+Signed-off-by: Hao Luo <haoluo@google.com>
+---
+ kernel/bpf/inode.c | 118 ++++++++++++++++++++++++++++++++++++++++-----
+ kernel/bpf/inode.h |  33 +++++++++++++
+ 2 files changed, 140 insertions(+), 11 deletions(-)
  create mode 100644 kernel/bpf/inode.h
- create mode 100644 kernel/bpf/kernfs_node.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_kernfs.c
- create mode 100644 tools/testing/selftests/bpf/progs/pinning_kernfs.c
 
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 80da1db47c68..b4066dd986a8 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -16,18 +16,13 @@
+ #include <linux/fs.h>
+ #include <linux/fs_context.h>
+ #include <linux/fs_parser.h>
++#include <linux/fsnotify_backend.h>
+ #include <linux/kdev_t.h>
+ #include <linux/filter.h>
+ #include <linux/bpf.h>
+ #include <linux/bpf_trace.h>
+ #include "preload/bpf_preload.h"
+-
+-enum bpf_type {
+-	BPF_TYPE_UNSPEC	= 0,
+-	BPF_TYPE_PROG,
+-	BPF_TYPE_MAP,
+-	BPF_TYPE_LINK,
+-};
++#include "inode.h"
+ 
+ static void *bpf_any_get(void *raw, enum bpf_type type)
+ {
+@@ -67,6 +62,95 @@ static void bpf_any_put(void *raw, enum bpf_type type)
+ 	}
+ }
+ 
++#ifdef CONFIG_FSNOTIFY
++/* Notification mechanism based on fsnotify, used in bpf to watch the
++ * destruction of an inode. This inode could an inode in bpffs or any
++ * other file system.
++ */
++
++struct notify_mark {
++	struct fsnotify_mark fsn_mark;
++	const struct notify_ops *ops;
++	void *object;
++	enum bpf_type type;
++	void *priv;
++};
++
++struct fsnotify_group *bpf_notify_group;
++struct kmem_cache *bpf_notify_mark_cachep __read_mostly;
++
++/* Handler for any inode event. */
++int handle_inode_event(struct fsnotify_mark *mark, u32 mask,
++		       struct inode *inode, struct inode *dir,
++		       const struct qstr *file_name, u32 cookie)
++{
++	return 0;
++}
++
++/* Handler for freeing marks. This is called when the watched inode is being
++ * freed.
++ */
++static void notify_freeing_mark(struct fsnotify_mark *mark, struct fsnotify_group *group)
++{
++	struct notify_mark *b_mark;
++
++	b_mark = container_of(mark, struct notify_mark, fsn_mark);
++
++	if (b_mark->ops && b_mark->ops->free_inode)
++		b_mark->ops->free_inode(b_mark->object, b_mark->type, b_mark->priv);
++}
++
++static void notify_free_mark(struct fsnotify_mark *mark)
++{
++	struct notify_mark *b_mark;
++
++	b_mark = container_of(mark, struct notify_mark, fsn_mark);
++
++	kmem_cache_free(bpf_notify_mark_cachep, b_mark);
++}
++
++struct fsnotify_ops bpf_notify_ops = {
++	.handle_inode_event = handle_inode_event,
++	.freeing_mark = notify_freeing_mark,
++	.free_mark = notify_free_mark,
++};
++
++static int bpf_inode_type(const struct inode *inode, enum bpf_type *type);
++
++/* Watch the destruction of an inode and calls the callbacks in the given
++ * notify_ops.
++ */
++int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops, void *priv)
++{
++	enum bpf_type type;
++	struct notify_mark *b_mark;
++	int ret;
++
++	if (IS_ERR(bpf_notify_group) || unlikely(!bpf_notify_mark_cachep))
++		return -ENOMEM;
++
++	b_mark = kmem_cache_alloc(bpf_notify_mark_cachep, GFP_KERNEL_ACCOUNT);
++	if (unlikely(!b_mark))
++		return -ENOMEM;
++
++	fsnotify_init_mark(&b_mark->fsn_mark, bpf_notify_group);
++	b_mark->ops = ops;
++	b_mark->priv = priv;
++	b_mark->object = inode->i_private;
++	bpf_inode_type(inode, &type);
++	b_mark->type = type;
++
++	ret = fsnotify_add_inode_mark(&b_mark->fsn_mark, inode,
++				      /*allow_dups=*/1);
++
++	fsnotify_put_mark(&b_mark->fsn_mark); /* match get in fsnotify_init_mark */
++
++	return ret;
++}
++#endif
++
++/* bpffs */
++
+ static void *bpf_fd_probe_obj(u32 ufd, enum bpf_type *type)
+ {
+ 	void *raw;
+@@ -435,11 +519,15 @@ static int bpf_iter_link_pin_kernel(struct dentry *parent,
+ 	return ret;
+ }
+ 
++static bool dentry_is_bpf_dir(struct dentry *dentry)
++{
++	return d_inode(dentry)->i_op == &bpf_dir_iops;
++}
++
+ static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+ 			  enum bpf_type type)
+ {
+ 	struct dentry *dentry;
+-	struct inode *dir;
+ 	struct path path;
+ 	umode_t mode;
+ 	int ret;
+@@ -454,8 +542,7 @@ static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+ 	if (ret)
+ 		goto out;
+ 
+-	dir = d_inode(path.dentry);
+-	if (dir->i_op != &bpf_dir_iops) {
++	if (!dentry_is_bpf_dir(path.dentry)) {
+ 		ret = -EPERM;
+ 		goto out;
+ 	}
+@@ -821,8 +908,17 @@ static int __init bpf_init(void)
+ 		return ret;
+ 
+ 	ret = register_filesystem(&bpf_fs_type);
+-	if (ret)
++	if (ret) {
+ 		sysfs_remove_mount_point(fs_kobj, "bpf");
++		return ret;
++	}
++
++#ifdef CONFIG_FSNOTIFY
++	bpf_notify_mark_cachep = KMEM_CACHE(notify_mark, 0);
++	bpf_notify_group = fsnotify_alloc_group(&bpf_notify_ops);
++	if (IS_ERR(bpf_notify_group) || !bpf_notify_mark_cachep)
++		pr_warn("Failed to initialize bpf_notify system, user can not pin objects outside bpffs.\n");
++#endif
+ 
+ 	return ret;
+ }
+diff --git a/kernel/bpf/inode.h b/kernel/bpf/inode.h
+new file mode 100644
+index 000000000000..3f53a4542028
+--- /dev/null
++++ b/kernel/bpf/inode.h
+@@ -0,0 +1,33 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/* Copyright (c) 2022 Google
++ */
++#ifndef __BPF_INODE_H_
++#define __BPF_INODE_H_
++
++enum bpf_type {
++	BPF_TYPE_UNSPEC = 0,
++	BPF_TYPE_PROG,
++	BPF_TYPE_MAP,
++	BPF_TYPE_LINK,
++};
++
++struct notify_ops {
++	void (*free_inode)(void *object, enum bpf_type type, void *priv);
++};
++
++#ifdef CONFIG_FSNOTIFY
++/* Watch the destruction of an inode and calls the callbacks in the given
++ * notify_ops.
++ */
++int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops,
++		    void *priv);
++#else
++static inline
++int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops,
++		    void *priv)
++{
++	return -EPERM;
++}
++#endif  // CONFIG_FSNOTIFY
++
++#endif  // __BPF_INODE_H_
 -- 
 2.34.1.448.ga2b2bfdf31-goog
 
