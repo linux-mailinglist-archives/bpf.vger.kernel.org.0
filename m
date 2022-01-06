@@ -2,93 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F5E486DE1
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 00:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8574486E02
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 00:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245654AbiAFXlJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 18:41:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245583AbiAFXlI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 18:41:08 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EACDC061212;
-        Thu,  6 Jan 2022 15:41:08 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id j16so3555104pll.10;
-        Thu, 06 Jan 2022 15:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o74yz8L6+6jfB2t7yJMQ/dU1oEeqRAnFvYqJIOklSMM=;
-        b=YQfG3ndjXDyU7Xr8KvEWdWR0nLgB27EdwMoI6hRz7tEQwtpgnkbNIOIhP6sEbtyj8w
-         V6Ki4x81rY0Q6Fy2S+b8RRVHIF/g4EQGzF/4sTR77FFokEkzOrlgd6WgZr2UtngJgDg3
-         cQ+2/Ta5HxcsQZ5Exspr6OBcphuY/HW6ClBFNts16sfH+brxDe8t9nROySQaVyD+o660
-         g4fHOZ6p8IUOSofLkb0WNYXMxvJwlJKMEu0tF/IUA9R6nR2MrewuE3Zy3ib4Lr5BDl0A
-         f9NKtyEwIVTqMlBJ+uLuQtr5F0S5DiDOvj8A6nQJRlmibZ1+VqPpCoA4I2bjAerwhgvX
-         jOJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o74yz8L6+6jfB2t7yJMQ/dU1oEeqRAnFvYqJIOklSMM=;
-        b=G0UhSwZZ2OLymfoPx2KXjG3yZWhbRv7SNV+hAzsRvRceTpW9lZLMgaNU+YFSEvglIg
-         lhq0kazhXBH054u9GFiPx1pWuvP5kVqWBiT+K3jTals9WLQ7glaAos3HW5VRTfKPEwm0
-         +wWegyknHxH72d2yI2UPACSM8vXwqMI9jDKqQ5xnPp/EFW/+x2ROMbAN1QBOc+wtBaob
-         txL4TzxjFRnturLX30HUeYVCOYybVGLrib92vKe9V6KXoYiq14JwW9fdRb6n3MC9f8I6
-         oCNDugpfAYW6XVZQImgcmpiOlsmN2tLGnfDX2uwsw5DAJ4i5HyE1nMwDZXsYmAC8JDXd
-         TdrQ==
-X-Gm-Message-State: AOAM533yjozxmTtoFLzaABdwduL+zumPoOD+HG4O6ZBhfbxwvBF31GpZ
-        qOC1nSe9jJyLbw4Ssj33OHdCenWwGG2Zqrf8rlA=
-X-Google-Smtp-Source: ABdhPJwtjy/59anDWHfkRRBgPMKKDZmuTIxtzhlS/B1ABuPfT9lJx8gT0b+s/Ju5YRa5MBkMQ+FJ+ya8BeTUiQczPRo=
-X-Received: by 2002:a17:90a:ba11:: with SMTP id s17mr12798687pjr.138.1641512467898;
- Thu, 06 Jan 2022 15:41:07 -0800 (PST)
+        id S245538AbiAFXqw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 18:46:52 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63090 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245689AbiAFXqv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 18:46:51 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 206M452M006704
+        for <bpf@vger.kernel.org>; Thu, 6 Jan 2022 15:46:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=xJF1XKBSeg/O+j/x3gIxbPrX/aounzPjtLfRmE80AHI=;
+ b=dqc4qVeC539z6Irh5CNCUbnkJ27x3M9jgYtrOdi2aNrNlw/AQ3zuOBoSEuO3mZiuUS+3
+ FMl/ykmMRlbZWLC42ql4LyFLVzOj+7jqCyEC4+mkMkfyysTZKCIlsfVf7P62iqW8tsSe
+ 2y/zGy5lGlLsBE3vw762+h8oEAFrRoAY7/U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4vjt7kk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 15:46:51 -0800
+Received: from twshared14302.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 6 Jan 2022 15:46:49 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id 7E5F615CB716; Thu,  6 Jan 2022 15:46:44 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <andrii@kernel.org>, <acme@kernel.org>
+CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
+        <bpf@vger.kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next v2 0/2] libbpf: rename bpf_prog_attach_xattr to bpf_prog_attach_opts
+Date:   Thu, 6 Jan 2022 15:46:37 -0800
+Message-ID: <20220106234639.1418484-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: w8ILPl0ukn_iPpfyr_Ok8itZQ6aoc8BS
+X-Proofpoint-ORIG-GUID: w8ILPl0ukn_iPpfyr_Ok8itZQ6aoc8BS
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220102162115.1506833-1-memxor@gmail.com> <20220102162115.1506833-4-memxor@gmail.com>
- <20220105061911.nzgzzvt2rpftcavi@ast-mbp.dhcp.thefacebook.com> <20220106085906.3zeugweq3twnkwzh@apollo.legion>
-In-Reply-To: <20220106085906.3zeugweq3twnkwzh@apollo.legion>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 6 Jan 2022 15:40:56 -0800
-Message-ID: <CAADnVQ+J+733_LU0QchkmpZz511_sCTeOAYi5MQ4YFMZQMygTA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 03/11] bpf: Populate kfunc BTF ID sets in
- struct btf
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-06_10,2022-01-06_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ malwarescore=0 clxscore=1015 spamscore=0 mlxlogscore=935 adultscore=0
+ bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201060144
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 12:59 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> I'm not insisting, but for vmlinux we will have multiple
-> register_btf_kfunc_id_set calls for same hook, so we have to concat multiple
-> sets into one, which may result in an unsorted set. It's ok to not sort for
-> modules where only one register call per hook is allowed.
->
-> Unless we switch to linear search for now (which is ok by me), we have to
-> re-sort for vmlinux BTF, to make btf_id_set_contains (in
-> btf_kfunc_id_set_contains) work.
+All xattr APIs are being dropped, mark bpf_prog_attach_opts() as deprecated
+and rename to bpf_prog_attach_xattr(). Replace all usages of the deprecated
+function with the new function name.
 
-Could you give an example when it happens in vmlinux?
-Is it when modules are built-in (like tcp_bbr.c, tcp_cubic.c) ?
-But then they should go into struct btf of the module?
-Or THIS_MODULE becomes vmlinux and everything goes there?
-If that's the case then yeah, sorting is needed.
-Please make it clear in the comment and the commit log.
-It should be clear to reviewers without having to grill the author
-with questions.
-Would certainly save time for both author and reviewer. Agree?
+  [0] Closes: https://github.com/libbpf/libbpf/issues/285
+
+Changelog:
+----------
+v1 -> v2:
+https://lore.kernel.org/all/20211230000110.1068538-1-christylee@fb.com/
+
+* Used alias instead of returning original function
+* Split out selftests to a different commit
+
+Christy Lee (2):
+  libbpf: rename bpf_prog_attach_xattr() to bpf_prog_attach_opts()
+  selftests/bpf: change bpf_prog_attach_xattr() to
+    bpf_prog_attach_opts()
+
+ tools/lib/bpf/bpf.c                                  |  9 +++++++--
+ tools/lib/bpf/bpf.h                                  |  4 ++++
+ tools/lib/bpf/libbpf.map                             |  1 +
+ .../selftests/bpf/prog_tests/cgroup_attach_multi.c   | 12 ++++++------
+ 4 files changed, 18 insertions(+), 8 deletions(-)
+
+--
+2.30.2
