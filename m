@@ -2,103 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F63486A92
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 20:39:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65668486A9B
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 20:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243383AbiAFTjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 14:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243378AbiAFTjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 14:39:16 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7787C061245;
-        Thu,  6 Jan 2022 11:39:15 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id x6so4347993iol.13;
-        Thu, 06 Jan 2022 11:39:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2Ta/qPPLbIegMeyk44wXJPPazJMwHROpJTWS1AQ/mvc=;
-        b=LslgYxrTvXzwlynzwtXIOVQSAr/+bEM84i/DqusI8EmAPUrBTmdoXxTNNzgEF9tTsP
-         9Eq9RBiCXul4GaPekPhChtsFZ54yP+CilNhPkv1wkTcJAHTplhCQ00GTGRqB598f1aX6
-         533q6l0q/65935uHyqzqxmXtLy+HN+JAe9n7JqZwj3XLWhZ7G6ztzV+dtpzIchSwaTIB
-         W5ilgJJUsLK0eFngOAgkqEvJKc0JwXRm+21Yaw01/M4VASgs0JuD/cwjzqvXM1IG/giE
-         Lzo1w9Fob/lzdMWj4madf2k6udPi3GBWlSoPHhGQjaq6NEVNVw+A+W3zw2cJRjU86PbG
-         SgbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2Ta/qPPLbIegMeyk44wXJPPazJMwHROpJTWS1AQ/mvc=;
-        b=jGkNVDTyEJ8Z8VqbDwgWW+CitaVqbp4vBKRwRDpyzd69IZRHq1aYZ0bO+Dr3twJMQN
-         aRmJiHnVUqaDCney0YNVfVhzSVWQf334L/Ak8ZzBk1B6lAxdF1p1Mjq5byOW4n5xAgZ7
-         nHGyruH4JKEDWsXgi1CFvDC+UZnrbRfJoujhVOimZRnZSSev3Xr1AKGcFk14inMjrQEk
-         i75tYTqPugEVx0U2WprNLRO1G1eM3H0LAsV2vFiyC7PF+n7eZihlhheccZPdVJ9hEDlD
-         DOaOPrwG0/Cvr2fxj10CJUXdOeo99pPVQjYl6eLX1JKRL0gsCgMmZayvb32iF40kinRh
-         jxnA==
-X-Gm-Message-State: AOAM533egs9y8kwuFya7hTP+yMf3B7RTxAZOYkU1DuXxjY/YRGEltSa8
-        4Al7AjPdeBxaZDf+jtJRtUqoCOBtQD1K/vu1iHg=
-X-Google-Smtp-Source: ABdhPJxruaX0rHD+Z49e5KKfazUlOGeR/t1gW1Ajl6nWzn8ug6T5acRIRO1l5L0/hI9+JG8TGbbn1gRkcBHou7trq+I=
-X-Received: by 2002:a6b:3b51:: with SMTP id i78mr28375567ioa.63.1641497955241;
- Thu, 06 Jan 2022 11:39:15 -0800 (PST)
+        id S243399AbiAFToU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 14:44:20 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:33118 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243373AbiAFToU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 14:44:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C56CEB82391;
+        Thu,  6 Jan 2022 19:44:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 649E8C36AE3;
+        Thu,  6 Jan 2022 19:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641498257;
+        bh=T6INKLj+ULtVr0TPsyZhCQXTtWGYB45Nxl4YMvhDTUA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K2rxMowkLDs+cKQpxKrz9Ut/j2aY0fE8WSagESuWvUTrBYoGDEerxnn9eLHe9Wt/i
+         SkA5X86J8W9hXXrO3ARoEsGXRLPJpzTda99RS93xCjKv6j1hxSRwdlM1txAyd6+fc1
+         kBqSeaCMadJ3RXslYo8azJ+OQtYCcxbgN4K6xycr7DhHvqZ4fYeR8J7UHI+V5vqzw5
+         UExP3ZUGbK6KCLgILYbu0/DIChy4NtlmFojMIM14lq5yDi9W/ypek4IcAZWUiYeQ5D
+         UzBn/d+m7ZyNf0dzfGeKO5rn+wdCtbbW3JVN/MA1TSRODJpkRGv3TuwOM9QyHTV3IB
+         3BBZnUpeiacYQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CA1DB40B92; Thu,  6 Jan 2022 16:44:14 -0300 (-03)
+Date:   Thu, 6 Jan 2022 16:44:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: perf build broken seemingly due to libbpf changes, checking...
+Message-ID: <YddGjjmlMZzxUZbN@kernel.org>
+References: <YddEVgNKBJiqcV6Y@kernel.org>
 MIME-Version: 1.0
-References: <20220102162115.1506833-1-memxor@gmail.com> <20220102162115.1506833-12-memxor@gmail.com>
- <20220105062033.lufu57xhpyou3sie@ast-mbp.dhcp.thefacebook.com> <20220106090400.6p34bempgv2wzocj@apollo.legion>
-In-Reply-To: <20220106090400.6p34bempgv2wzocj@apollo.legion>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Jan 2022 11:39:04 -0800
-Message-ID: <CAEf4BzYsVC0cOuxVB2A-WWv+zW7zEFNQGrD0WKWhhOWDbYw3PQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 11/11] selftests/bpf: Add test for race in btf_try_get_module
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YddEVgNKBJiqcV6Y@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 1:04 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> On Wed, Jan 05, 2022 at 11:50:33AM IST, Alexei Starovoitov wrote:
-> > On Sun, Jan 02, 2022 at 09:51:15PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > This adds a complete test case to ensure we never take references to
-> > > modules not in MODULE_STATE_LIVE, which can lead to UAF, and it also
-> > > ensures we never access btf->kfunc_set_tab in an inconsistent state.
-> > >
-> > > The test uses userfaultfd to artifically widen the race.
-> >
-> > Fancy!
-> > Does it have to use a different module?
-> > Can it be part of bpf_testmod somehow?
->
-> I was thinking of doing it with bpf_testmod, but then I realised it would be a
-> problem with parallel mode of test_progs, where another selftest in parallel may
-> rely on bpf_testmod (which this test would unload, load and make it fault, and
-> then fail the load before restoring it by loading again), so I went with
-> bpf_testmod.
->
-> Maybe we can hardcode a list of tests to be executed serially in --workers=n > 1
-> mode? All serial tests are then executed in the beginning (or end), and then it
-> starts invoking others in parallel as usual.
+Em Thu, Jan 06, 2022 at 04:34:46PM -0300, Arnaldo Carvalho de Melo escreveu:
+> After merging torvalds/master to perf/urgent I'm getting this:
+> 
+> util/bpf-event.c:25:21: error: no previous prototype for ‘btf__load_from_kernel_by_id’ [-Werror=missing-prototypes]
+>    25 | struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
+>       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> util/bpf-event.c:37:1: error: no previous prototype for ‘bpf_object__next_program’ [-Werror=missing-prototypes]
+>    37 | bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
+>       | ^~~~~~~~~~~~~~~~~~~~~~~~
+> util/bpf-event.c:46:1: error: no previous prototype for ‘bpf_object__next_map’ [-Werror=missing-prototypes]
+>    46 | bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+>       | ^~~~~~~~~~~~~~~~~~~~
+> util/bpf-event.c:55:1: error: no previous prototype for ‘btf__raw_data’ [-Werror=missing-prototypes]
+>    55 | btf__raw_data(const struct btf *btf_ro, __u32 *size)
+>       | ^~~~~~~~~~~~~
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf-event.o] Error 1
+> make[4]: *** Waiting for unfinished jobs....
+> util/bpf_counter.c: In function ‘bpf_target_prog_name’:
+> util/bpf_counter.c:82:15: error: implicit declaration of function ‘btf__load_from_kernel_by_id’ [-Werror=implicit-function-declaration]
+>    82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
+>       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> util/bpf_counter.c:82:13: error: assignment to ‘struct btf *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+>    82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
+>       |             ^
+> cc1: all warnings being treated as errors
+> make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter.o] Error 1
+> 
+> I'm checking now...
+> 
+> BTW I test perf builds with:
+> 
+> make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin && git status && perf test python
 
-you can mark test as serial with "serial_" prefix, grep for that, we
-have a bunch of tests like this. But if you are going to unload and
-reload bpf_testmod, you will be forcing any bpf_testmod-using test to
-be serial, which I'm not sure is such a great idea.
+Nevermind, this was due to a patch by Ian Rogers I was testing,
+bisecting get up to the last patch, since I had merged torvalds/master
+today it got me to a wrong correlation, sorry for the disturbance.
 
->
-> --
-> Kartikeya
+For reference, this is the patch:
+
+http://lore.kernel.org/lkml/20220106072627.476524-1-irogers@google.com
+
+- Arnaldo
