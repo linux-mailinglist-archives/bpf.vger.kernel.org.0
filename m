@@ -2,378 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40A30486AD2
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8FC486AED
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243560AbiAFUDc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 15:03:32 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37234 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243552AbiAFUDb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 15:03:31 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 206HV9va021652
-        for <bpf@vger.kernel.org>; Thu, 6 Jan 2022 12:03:30 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=OCzB++jq5wbxY7UmBuL438Y58HZYnxkiX0UWFaLHpts=;
- b=jGheaivWUuLnT9pA3JrEthdABFBQi+q0dwYNmcmD4yTAXRZPSKyukczFk1QWM/66bDlb
- qIlSyghJavZJ2VEeNiy0YbQCkaOIFMtzj7ETcaGZmD6YxamYqvgQ1PfqG7VqVJIVgWRC
- OFr3JE+yvpAzyxLnULefeE4n94KUgvZ3f0Q= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3de4w2s1tf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:03:30 -0800
-Received: from twshared10140.39.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 6 Jan 2022 12:03:29 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id 95EF915AB151; Thu,  6 Jan 2022 12:00:44 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>, <jolsa@redhat.com>
-CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
-        <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <kernel-team@fb.com>, <wangnan0@huawei.com>,
-        <bobo.shaobowang@huawei.com>, <yuehaibing@huawei.com>
-Subject: [PATCH bpf-next v2 2/2] perf: stop using deprecated bpf__object_next() API
-Date:   Thu, 6 Jan 2022 12:00:32 -0800
-Message-ID: <20220106200032.3067127-3-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220106200032.3067127-1-christylee@fb.com>
-References: <20220106200032.3067127-1-christylee@fb.com>
+        id S243607AbiAFUNZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 15:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243604AbiAFUNY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 15:13:24 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58C2C061245
+        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 12:13:23 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id f17so927958qtf.8
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:13:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hWFH/PhBgptdaVzEzBtWF8TQy3zG02gv3L2bvRoVek=;
+        b=DHuAD62xxlK8lJgxxDc4RmXShKuA6rkWxSydJ+eQjjg+rU7ifI5tCAqxx6duEb16Ej
+         T8PtmMApXP0qPH8ClqBbb44HCSlwW301W1u88NPrMQjmW6TOsfByEozX1H0MK3A842BV
+         oNN18iLzLA4qnPDL420Cdl2HEhnJrjYfTEPzw03Tu+Vt1oN2NlxHYDHVl417YEhLevti
+         tviX4Ju5g5y4OGV/wAaWB7lm+bgPuCbaLE7pLsWiTFUEU7rABtEXJC0DhUbaWu3QyOaS
+         etYuCFxWHDL/XQ/HFRx3cyM+VV95mNs21gbvOn0Bn/AreemBQ6DP4gaH6umh+rEUuuII
+         VAVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hWFH/PhBgptdaVzEzBtWF8TQy3zG02gv3L2bvRoVek=;
+        b=iCEuC6KY5Gtdl1jijM4oCwFu53fVARKYUFg8ij2Ge81ZoRVTbgSAokt5cBWUIxH8XR
+         JzgbImJmH44WWRx0SAHB3R4bI3/jBE3vu811OKTZkBhNQ19O8IK8sH66MWKfjONtrawJ
+         H+JCFbv4O1IF7yBVKFYyFafQv9EJEj8TK33OPRkwyn5+kxMXgIkeK2A89uaXyVqvcLAx
+         /kt2q+HabzHiWvHPdspa/WAcpu7FJ0BniEQ/EP/v3oDYlVm1S+rzl+/7/aqA7xcEBY61
+         heFnjX+XB8UN3XBnji9ebppttM5GogbyvLZp3Hf3wfrL6JBmTVIhwls+Aj4DNXLBhqFh
+         u8Ew==
+X-Gm-Message-State: AOAM532ojwzqe56Jaa2wbHVlDK7sthCVP2aDramtRsMZOQM9zqWSNHb4
+        grNb3bK0uDKY/OEYHT3K7+XWe84mv4c=
+X-Google-Smtp-Source: ABdhPJwuojNqtE5ws3OGWl8OuIoYa7xsYFlCbaFEPPyoKtwHH8nVNWf2+YGLO2PwLhl7tPmugZJ0/w==
+X-Received: by 2002:ac8:5b01:: with SMTP id m1mr52609073qtw.313.1641500002614;
+        Thu, 06 Jan 2022 12:13:22 -0800 (PST)
+Received: from localhost.localdomain (cpe-104-162-105-43.nyc.res.rr.com. [104.162.105.43])
+        by smtp.gmail.com with ESMTPSA id d11sm2016323qtj.4.2022.01.06.12.13.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jan 2022 12:13:22 -0800 (PST)
+From:   grantseltzer <grantseltzer@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, grantseltzer@gmail.com
+Subject: [PATCH bpf-next v3] libbpf: Add documentation for bpf_map batch operations
+Date:   Thu,  6 Jan 2022 15:13:05 -0500
+Message-Id: <20220106201304.112675-1-grantseltzer@gmail.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 0iSm33h_LgL2Kb4hHutzJcDrtUuEcL2m
-X-Proofpoint-ORIG-GUID: 0iSm33h_LgL2Kb4hHutzJcDrtUuEcL2m
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-06_08,2022-01-06_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- mlxlogscore=999 clxscore=1015 suspectscore=0 phishscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201060126
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previously libbpf maintained a list of bpf_objects, and bpf_objects
-can be added to the list via bpf__object__next() API. Libbpf has
-deprecated the ability to keep track of object list inside libbpf,
-so we need to hoist the tracking logic to perf.
+From: Grant Seltzer <grantseltzer@gmail.com>
 
-Committer note:
+This adds documention for:
 
-This is tested by following the committer's note in the original commit
-"aa3abf30bb28addcf593578d37447d42e3f65fc3".
+- bpf_map_delete_batch()
+- bpf_map_lookup_batch()
+- bpf_map_lookup_and_delete_batch()
+- bpf_map_update_batch()
 
-I ran 'perf test -v LLVM' and used it's output to generate a script for
-compiling the perf test object:
+This also updates the public API for the `keys` parameter
+of `bpf_map_delete_batch()`, and both the
+`keys` and `values` parameters of `bpf_map_update_batch()`
+to be constants.
 
---------------------------------------------------
-$ cat ~/bin/hello-ebpf
-INPUT_FILE=3D/tmp/test.c
-OUTPUT_FILE=3D/tmp/test.o
-
-export KBUILD_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export NR_CPUS=3D56
-export LINUX_VERSION_CODE=3D0x50c00
-export CLANG_EXEC=3D/data/users/christylee/devtools/llvm/latest/bin/clang
-export CLANG_OPTIONS=3D-xc
-export KERNEL_INC_OPTIONS=3D"KERNEL_INC_OPTIONS=3D -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h"
-export PERF_BPF_INC_OPTIONS=3D-I/usr/lib/perf/include/bpf
-export WORKING_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export CLANG_SOURCE=3D-
-
-rm -f $OUTPUT_FILE
-cat $INPUT_FILE | /data/users/christylee/devtools/llvm/latest/bin/clang \
--D__KERNEL__ -D__NR_CPUS__=3D56 -DLINUX_VERSION_CODE=3D0x50c00 -xc  \
--I/usr/lib/perf/include/bpf -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h -Wno-unused-value -Wno-pointer-sign \
--working-directory /lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build \
--c - -target bpf -O2 -o $OUTPUT_FILE
---------------------------------------------------
-
-I then wrote and compiled a script that ask to get asks to put a probe
-at a function that
-does not exists in the kernel, it errors out as expected:
-
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dnot_exist"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
-
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
-
-Using perf wrapper that supports hot-text. Try perf.real if you
-encounter any issues.
-Probe point 'not_exist' not found.
-event syntax error: '/tmp/test.o'
-                     \___ You need to check probing points in BPF file
-
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Next I changed the attribute to something that exists in the kernel.
-As expected, it errors out
-with permission problem:
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dkernel_execve"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
-
-$ grep kernel_execve /proc/kallsyms
-ffffffff812dc210 T kernel_execve
-
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
-
-Using perf wrapper that supports hot-text. Try perf.real if you
-encounter any issues.
-Failed to open kprobe_events: Permission denied
-event syntax error: '/tmp/test.o'
-                     \___ You need to be root
-
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Reran as root, see that the probe point worked as intended.
-
-$ sudo -i
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.018 MB perf.data ]
-perf_bpf_probe:probe_point
-perf_bpf_probe:probe_point: type: 2, size: 128, config: 0x8e9, \
-{ sample_period, sample_freq }: 1, \
-sample_type: IP|TID|TIME|CPU|PERIOD|RAW, read_format: ID, disabled: 1, \
-inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, \
-sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, \
-bpf_event: 1
-
----------------------------------------------------
-
-Signed-off-by: Christy Lee <christylee@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
 ---
- tools/perf/util/bpf-loader.c | 72 +++++++++++++++++++++++++++---------
- tools/perf/util/bpf-loader.h |  1 +
- 2 files changed, 55 insertions(+), 18 deletions(-)
+ tools/lib/bpf/bpf.c |   8 +--
+ tools/lib/bpf/bpf.h | 116 +++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 118 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 528aeb0ab79d..9e3988fd719a 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -29,9 +29,6 @@
-=20
- #include <internal/xyarray.h>
-=20
--/* temporarily disable libbpf deprecation warnings */
--#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
--
- static int libbpf_perf_print(enum libbpf_print_level level __attribute__=
-((unused)),
- 			      const char *fmt, va_list args)
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 9b64eed2b003..550b4cbb6c99 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -691,11 +691,11 @@ static int bpf_map_batch_common(int cmd, int fd, void  *in_batch,
+ 	return libbpf_err_errno(ret);
+ }
+ 
+-int bpf_map_delete_batch(int fd, void *keys, __u32 *count,
++int bpf_map_delete_batch(int fd, const void *keys, __u32 *count,
+ 			 const struct bpf_map_batch_opts *opts)
  {
-@@ -49,6 +46,36 @@ struct bpf_prog_priv {
- 	int *type_mapping;
+ 	return bpf_map_batch_common(BPF_MAP_DELETE_BATCH, fd, NULL,
+-				    NULL, keys, NULL, count, opts);
++				    NULL, (void *)keys, NULL, count, opts);
+ }
+ 
+ int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch, void *keys,
+@@ -715,11 +715,11 @@ int bpf_map_lookup_and_delete_batch(int fd, void *in_batch, void *out_batch,
+ 				    count, opts);
+ }
+ 
+-int bpf_map_update_batch(int fd, void *keys, void *values, __u32 *count,
++int bpf_map_update_batch(int fd, const void *keys, const void *values, __u32 *count,
+ 			 const struct bpf_map_batch_opts *opts)
+ {
+ 	return bpf_map_batch_common(BPF_MAP_UPDATE_BATCH, fd, NULL, NULL,
+-				    keys, values, count, opts);
++				    (void *)keys, (void *)values, count, opts);
+ }
+ 
+ int bpf_obj_pin(int fd, const char *pathname)
+diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
+index 00619f64a040..68f1da7e89c6 100644
+--- a/tools/lib/bpf/bpf.h
++++ b/tools/lib/bpf/bpf.h
+@@ -254,20 +254,132 @@ struct bpf_map_batch_opts {
  };
-=20
-+struct bpf_perf_object {
-+	struct bpf_object *obj;
-+	struct list_head list;
-+};
+ #define bpf_map_batch_opts__last_field flags
+ 
+-LIBBPF_API int bpf_map_delete_batch(int fd, void *keys,
 +
-+static LIST_HEAD(bpf_objects_list);
++/**
++ * @brief **bpf_map_delete_batch()** allows for batch deletion of multiple
++ * elements in a BPF map.
++ *
++ * @param fd BPF map file descriptor
++ * @param keys pointer to an array of *count* keys
++ * @param count input and output parameter; on input **count** represents the
++ * number of  elements in the map to delete in batch;
++ * on output if a non-EFAULT error is returned, **count** represents the number of deleted
++ * elements if the output **count** value is not equal to the input **count** value
++ * If EFAULT is returned, **count** should not be trusted to be correct.
++ * @param opts options for configuring the way the batch deletion works
++ * @return 0, on success; negative error code, otherwise (errno is also set to
++ * the error code)
++ */
++LIBBPF_API int bpf_map_delete_batch(int fd, const void *keys,
+ 				    __u32 *count,
+ 				    const struct bpf_map_batch_opts *opts);
 +
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev)
-+{
-+	struct bpf_perf_object *next;
++/**
++ * @brief **bpf_map_lookup_batch()** allows for batch lookup of BPF map elements.
++ *
++ * The parameter *in_batch* is the address of the first element in the batch to read.
++ * *out_batch* is an output parameter that should be passed as *in_batch* to subsequent
++ * calls to **bpf_map_lookup_batch()**. NULL can be passed for *in_batch* to indicate
++ * that the batched lookup starts from the beginning of the map.
++ *
++ * The *keys* and *values* are output parameters which must point to memory large enough to
++ * hold *count* items based on the key and value size of the map *map_fd*. The *keys*
++ * buffer must be of *key_size* * *count*. The *values* buffer must be of
++ * *value_size* * *count*.
++ *
++ * @param fd BPF map file descriptor
++ * @param in_batch address of the first element in batch to read, can pass NULL to
++ * indicate that the batched lookup starts from the beginning of the map.
++ * @param out_batch output parameter that should be passed to next call as *in_batch*
++ * @param keys pointer to an array large enough for *count* keys
++ * @param values pointer to an array large enough for *count* values
++ * @param count input and output parameter; on input it's the number of elements
++ * in the map to read in batch; on output it's the number of elements that were
++ * successfully read.
++ * If a non-EFAULT error is returned, count will be set as the number of elements
++ * that were read before the error occurred.
++ * If EFAULT is returned, **count** should not be trusted to be correct.
++ * @param opts options for configuring the way the batch lookup works
++ * @return 0, on success; negative error code, otherwise (errno is also set to
++ * the error code)
++ */
+ LIBBPF_API int bpf_map_lookup_batch(int fd, void *in_batch, void *out_batch,
+ 				    void *keys, void *values, __u32 *count,
+ 				    const struct bpf_map_batch_opts *opts);
 +
-+	if (!prev)
-+		next =3D list_first_entry(&bpf_objects_list,
-+					struct bpf_perf_object, list);
-+	else
-+		next =3D list_next_entry(prev, list);
++/**
++ * @brief **bpf_map_lookup_and_delete_batch()** allows for batch lookup and deletion
++ * of BPF map elements where each element is deleted after being retrieved.
++ *
++ * @param fd BPF map file descriptor
++ * @param in_batch address of the first element in batch to read, can pass NULL to
++ * get address of the first element in *out_batch*
++ * @param out_batch output parameter that should be passed to next call as *in_batch*
++ * @param keys pointer to an array of *count* keys
++ * @param values pointer to an array large enough for *count* values
++ * @param count input and output parameter; on input it's the number of elements
++ * in the map to read and delete in batch; on output it represents the number of
++ * elements that were successfully read and deleted
++ * If a non-**EFAULT** error code is returned and if the output **count** value
++ * is not equal to the input **count** value, up to **count** elements may
++ * have been deleted.
++ * if **EFAULT** is returned up to *count* elements may have been deleted without
++ * being returned via the *keys* and *values* output parameters.
++ * @param opts options for configuring the way the batch lookup and delete works
++ * @return 0, on success; negative error code, otherwise (errno is also set to
++ * the error code)
++ */
+ LIBBPF_API int bpf_map_lookup_and_delete_batch(int fd, void *in_batch,
+ 					void *out_batch, void *keys,
+ 					void *values, __u32 *count,
+ 					const struct bpf_map_batch_opts *opts);
+-LIBBPF_API int bpf_map_update_batch(int fd, void *keys, void *values,
 +
-+	/* Empty list is noticed here so don't need checking on entry. */
-+	if (&next->list =3D=3D &bpf_objects_list)
-+		return NULL;
++/**
++ * @brief **bpf_map_update_batch()** updates multiple elements in a map
++ * by specifying keys and their corresponding values.
++ *
++ * The *keys* and *values* parameters must point to memory large enough
++ * to hold *count* items based on the key and value size of the map.
++ *
++ * The *opts* parameter can be used to control how *bpf_map_update_batch()*
++ * should handle keys that either do or do not already exist in the map.
++ * In particular the *flags* parameter of *bpf_map_batch_opts* can be
++ * one of the following:
++ *
++ * Note that *count* is an input and output parameter, where on output it
++ * represents how many elements were successfully updated. Also note that if
++ * **EFAULT** then *count* should not be trusted to be correct.
++ *
++ * **BPF_ANY**
++ *    Create new elements or update existing.
++ *
++ * **BPF_NOEXIST**
++ *    Create new elements only if they do not exist.
++ *
++ * **BPF_EXIST**
++ *    Update existing elements.
++ *
++ * **BPF_F_LOCK**
++ *    Update spin_lock-ed map elements. This must be
++ *    specified if the map value contains a spinlock.
++ *
++ * @param fd BPF map file descriptor
++ * @param keys pointer to an array of *count* keys
++ * @param values pointer to an array of *count* values
++ * @param count input and output parameter; on input it's the number of elements
++ * in the map to update in batch; on output if a non-EFAULT error is returned,
++ * **count** represents the number of updated elements if the output **count**
++ * value is not equal to the input **count** value.
++ * If EFAULT is returned, **count** should not be trusted to be correct.
++ * @param opts options for configuring the way the batch update works
++ * @return 0, on success; negative error code, otherwise (errno is also set to
++ * the error code)
++ */
++LIBBPF_API int bpf_map_update_batch(int fd, const void *keys, const void *values,
+ 				    __u32 *count,
+ 				    const struct bpf_map_batch_opts *opts);
+ 
 +
-+	return next;
-+}
-+
-+#define bpf_perf_object__for_each(perf_obj, tmp, obj)                   =
-       \
-+	for ((perf_obj) =3D bpf_perf_object__next(NULL),                       =
-  \
-+	    (tmp) =3D bpf_perf_object__next(perf_obj), (obj) =3D NULL;         =
-    \
-+	     (perf_obj) !=3D NULL; (perf_obj) =3D (tmp),                       =
-    \
-+	    (tmp) =3D bpf_perf_object__next(tmp), (obj) =3D (perf_obj)->obj)
-+
- static bool libbpf_initialized;
-=20
- struct bpf_object *
-@@ -113,9 +140,10 @@ struct bpf_object *bpf__prepare_load(const char *fil=
-ename, bool source)
-=20
- void bpf__clear(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
-=20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		bpf__unprobe(obj);
- 		bpf_object__close(obj);
- 	}
-@@ -621,8 +649,12 @@ static int hook_load_preprocessor(struct bpf_program=
- *prog)
- 	if (err)
- 		return err;
-=20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 	err =3D bpf_program__set_prep(prog, priv->nr_types,
- 				    preproc_gen_prologue);
-+#pragma GCC diagnostic pop
- 	return err;
- }
-=20
-@@ -776,7 +808,11 @@ int bpf__foreach_event(struct bpf_object *obj,
- 			if (priv->need_prologue) {
- 				int type =3D priv->type_mapping[i];
-=20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 				fd =3D bpf_program__nth_fd(prog, type);
-+#pragma GCC diagnostic pop
- 			} else {
- 				fd =3D bpf_program__fd(prog);
- 			}
-@@ -1498,10 +1534,11 @@ apply_obj_config_object(struct bpf_object *obj)
-=20
- int bpf__apply_obj_config(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	int err;
-=20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		err =3D apply_obj_config_object(obj);
- 		if (err)
- 			return err;
-@@ -1510,26 +1547,25 @@ int bpf__apply_obj_config(void)
- 	return 0;
- }
-=20
--#define bpf__for_each_map(pos, obj, objtmp)	\
--	bpf_object__for_each_safe(obj, objtmp)	\
--		bpf_object__for_each_map(pos, obj)
-+#define bpf__perf_for_each_map(perf_obj, tmp, obj, map)                 =
-       \
-+	bpf_perf_object__for_each(perf_obj, tmp, obj)                          =
-\
-+		bpf_object__for_each_map(map, obj)
-=20
--#define bpf__for_each_map_named(pos, obj, objtmp, name)	\
--	bpf__for_each_map(pos, obj, objtmp) 		\
--		if (bpf_map__name(pos) && 		\
--			(strcmp(name, 			\
--				bpf_map__name(pos)) =3D=3D 0))
-+#define bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name)     =
-       \
-+	bpf__perf_for_each_map(perf_obj, tmp, obj, map)                        =
-\
-+		if (bpf_map__name(map) && (strcmp(name, bpf_map__name(map)) =3D=3D 0))
-=20
- struct evsel *bpf__setup_output_event(struct evlist *evlist, const char =
-*name)
- {
- 	struct bpf_map_priv *tmpl_priv =3D NULL;
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	struct evsel *evsel =3D NULL;
- 	struct bpf_map *map;
- 	int err;
- 	bool need_init =3D false;
-=20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
-=20
- 		if (IS_ERR(priv))
-@@ -1565,7 +1601,7 @@ struct evsel *bpf__setup_output_event(struct evlist=
- *evlist, const char *name)
- 		evsel =3D evlist__last(evlist);
- 	}
-=20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
-=20
- 		if (IS_ERR(priv))
-diff --git a/tools/perf/util/bpf-loader.h b/tools/perf/util/bpf-loader.h
-index 5d1c725cea29..95262b7e936f 100644
---- a/tools/perf/util/bpf-loader.h
-+++ b/tools/perf/util/bpf-loader.h
-@@ -53,6 +53,7 @@ typedef int (*bpf_prog_iter_callback_t)(const char *gro=
-up, const char *event,
-=20
- #ifdef HAVE_LIBBPF_SUPPORT
- struct bpf_object *bpf__prepare_load(const char *filename, bool source);
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev);
- int bpf__strerror_prepare_load(const char *filename, bool source,
- 			       int err, char *buf, size_t size);
-=20
---=20
-2.30.2
+ LIBBPF_API int bpf_obj_pin(int fd, const char *pathname);
+ LIBBPF_API int bpf_obj_get(const char *pathname);
+ 
+-- 
+2.33.1
 
