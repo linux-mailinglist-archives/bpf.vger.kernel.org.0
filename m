@@ -2,100 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0CA4861C9
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 10:04:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D203748623D
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 10:41:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237113AbiAFJEM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 04:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        id S237496AbiAFJlC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 04:41:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236715AbiAFJEL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 04:04:11 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FFAC061245;
-        Thu,  6 Jan 2022 01:04:11 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id c2so2009019pfc.1;
-        Thu, 06 Jan 2022 01:04:11 -0800 (PST)
+        with ESMTP id S237473AbiAFJlA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 04:41:00 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86953C061245
+        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 01:41:00 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id k69so5823122ybf.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 01:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xSSoYa3Oh5uJWtwI1Z8ymCv2YQrKvjhDxgIsNPINZuE=;
-        b=oO7ezoyhjSV72us8z/bLxc1YLcDYAIyMpQqn6lC4mSQkqfJFDDFg7SopCSCWAHcW0z
-         m9DS0HZ38CsiHLP5vXaZrBpCpdTdU3l1qYkJFIxXHIMDAA453jB3HL3brHJGHdJ+suiT
-         Wv+uOQC9oBIclXDSXiDAOvAMQAPKSlOYyTRrHofEXkoqTT63EPRinBnY6NPLNYDWhTau
-         DQiA0vepc214e1BnzbfNPdeTTfhLvWsd9mxv/8smhX+Zl3axUFlMr47p3TR1UH+rfBIL
-         fkOC9HdcxoxaAixj8TSIe/OCYxg9sZ2RyDbYdBzwMNJ0c1XdPBJuUM8ZZcZ5b3Fnnof9
-         iitQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fR7IIRArFMGHGL4Y7ewnLWhKofR0hpOY8//Mz/xfJMI=;
+        b=FmZciMLM970aw+DX6FViM/xRrFSOBMQ7FUR64UFUi8YJUNTymxPnHTQjAK6EYVGz6O
+         693w1Fe1IofdWBdhm7W4LI4y55Qp5kU7qBezVxmZfHkD+/yAGfQXJ7zSpS1a7CZZflKD
+         n7wA1/NgFjNvi51nfKQXjlSok3FEWCUA211IhAbBMbl9BDiSNCMGcXa16mox607M+QbW
+         YS0TTIS+ce3rHykgFwdeVPZIyQCcxcKWULn95ogo1Tk+8EEC+WHBYquTTmmV1/nMLSd+
+         6RQ/is1ePANxltHky/p5oDKG13Z+SOnzdFA3b0YvPYnNflFSBNQlAK03fRUPTpBcS9P0
+         L7Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xSSoYa3Oh5uJWtwI1Z8ymCv2YQrKvjhDxgIsNPINZuE=;
-        b=BmTEqXE5mkTAoJPq6c4VP3LT8hUweM+03wzA9hbovbp8kx5KtWTdBbGSrhHUyZ+wav
-         05/5+260K2Sh813Mq2BdG8tmenPt5CkFQtsB7+n4WgeQk9lxreN9DDVLh1YQF1pe2zl1
-         4VD4566QmDIydNXszpYLSCR1ahPZFVYzcxwnpBOZ/cjJmbvZ3ppOFihmCV+OBxmKvIH2
-         i2a/458G7Zep23aSpDu3Ghehu22NhmUfNolVYIQFy6UEjA/qmBKn3fltZzILucvwMz2U
-         wpj4pXKmJ28xRC0+2EoJJybuqD7/w0cM335+1yhNKnbyP33jWUsmYiY/lQDiCRSCXoGs
-         WAbg==
-X-Gm-Message-State: AOAM532u8y+6TZ6dawmJ6ffLgipD+0nozGQKYRBuzFQcIsa58e1b3vVX
-        moH45dMXOnfXbqnk3cCsovZPmqnd7LQ=
-X-Google-Smtp-Source: ABdhPJyP2x8XCIgRK0rHBg0d8z1S+0k0lUMQfGBmrTLq3LZnKv8ER61R9/iHsXj6WOO3sKqoJsU5FA==
-X-Received: by 2002:a63:381d:: with SMTP id f29mr52599558pga.162.1641459850913;
-        Thu, 06 Jan 2022 01:04:10 -0800 (PST)
-Received: from localhost ([103.4.221.252])
-        by smtp.gmail.com with ESMTPSA id j1sm1759183pfc.49.2022.01.06.01.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 01:04:10 -0800 (PST)
-Date:   Thu, 6 Jan 2022 14:34:00 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fR7IIRArFMGHGL4Y7ewnLWhKofR0hpOY8//Mz/xfJMI=;
+        b=Wxjh0eVKXvquGbh3CW0EvPJTcGg47PhOODR2n9apHJgNRSaLlTbS2lFdxo0cOLC/wy
+         jTo2AUnBWDxaIr/NoQTtG1pTvHhACsaVaFTSuiok4WdizJSlQqGqhYWtQ2yHfe1IqpMV
+         tyalAH2qjIa5ied0PBYtpxLoodhpMpNO2eCDXMXZkTqa67qsEHDzagExMy/jGw+5UrJc
+         Dug3npAHCVR9jQOPKyS5GgVsoLx0wFfXhNG9aWuVy0Mo516dwnvwcoEH0EzbC+CDzja9
+         8vwW6+/LKkvaDZVoA7U/Or9+Nk/SSCxOLlb7kL4xXTuSurOlG44FF0RxIzOFneFWInUk
+         Vn0A==
+X-Gm-Message-State: AOAM532a4jIjbaUz8PBknecpYXHea6m06GcHIxd55bRbcNYAYGfzm++R
+        eAd4U3/fC7R53Ts14r2k/ytx+GpcOx6dCVZJWbyFFQ==
+X-Google-Smtp-Source: ABdhPJywhRECp7C5vpSBVpBMwqj4puOv3mfX4vIAmNdCr0nl+R2GBF5FDnlLm98Y9a1T1JjDic1zvq9n1pN+OpJdVeQ=
+X-Received: by 2002:a25:9d82:: with SMTP id v2mr72636310ybp.383.1641462059361;
+ Thu, 06 Jan 2022 01:40:59 -0800 (PST)
+MIME-Version: 1.0
+References: <20220106015721.3038819-1-imagedong@tencent.com> <20220106015721.3038819-4-imagedong@tencent.com>
+In-Reply-To: <20220106015721.3038819-4-imagedong@tencent.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 6 Jan 2022 01:40:47 -0800
+Message-ID: <CANn89iJv9OUmwdCSQ-A9GRU78B5XLXEqx7t-psjU6tKOX680pA@mail.gmail.com>
+Subject: Re: [PATCH v4 net-next 3/3] bpf: selftests: use C99 initializers in test_sock.c
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v6 11/11] selftests/bpf: Add test for race in
- btf_try_get_module
-Message-ID: <20220106090400.6p34bempgv2wzocj@apollo.legion>
-References: <20220102162115.1506833-1-memxor@gmail.com>
- <20220102162115.1506833-12-memxor@gmail.com>
- <20220105062033.lufu57xhpyou3sie@ast-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220105062033.lufu57xhpyou3sie@ast-mbp.dhcp.thefacebook.com>
+        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 11:50:33AM IST, Alexei Starovoitov wrote:
-> On Sun, Jan 02, 2022 at 09:51:15PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > This adds a complete test case to ensure we never take references to
-> > modules not in MODULE_STATE_LIVE, which can lead to UAF, and it also
-> > ensures we never access btf->kfunc_set_tab in an inconsistent state.
-> >
-> > The test uses userfaultfd to artifically widen the race.
+On Wed, Jan 5, 2022 at 5:58 PM <menglong8.dong@gmail.com> wrote:
 >
-> Fancy!
-> Does it have to use a different module?
-> Can it be part of bpf_testmod somehow?
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> Use C99 initializers for the initialization of 'tests' in test_sock.c.
+>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
 
-I was thinking of doing it with bpf_testmod, but then I realised it would be a
-problem with parallel mode of test_progs, where another selftest in parallel may
-rely on bpf_testmod (which this test would unload, load and make it fault, and
-then fail the load before restoring it by loading again), so I went with
-bpf_testmod.
+I would have done this patch before 2/3 really.
 
-Maybe we can hardcode a list of tests to be executed serially in --workers=n > 1
-mode? All serial tests are then executed in the beginning (or end), and then it
-starts invoking others in parallel as usual.
-
---
-Kartikeya
+This would make "bpf: selftests: add bind retry for post_bind{4, 6}"
+much smaller.
