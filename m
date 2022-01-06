@@ -2,86 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B79486B77
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A32ED486B7A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243990AbiAFUwD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 6 Jan 2022 15:52:03 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62224 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243986AbiAFUwD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 15:52:03 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 206HUwIt021066
-        for <bpf@vger.kernel.org>; Thu, 6 Jan 2022 12:52:02 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3de4w2saq7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:52:02 -0800
-Received: from twshared18912.14.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 6 Jan 2022 12:52:01 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id BC038E89C24B; Thu,  6 Jan 2022 12:51:57 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: don't rely on preserving volatile in PT_REGS macros in loop3
-Date:   Thu, 6 Jan 2022 12:51:56 -0800
-Message-ID: <20220106205156.955373-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: _IaoPfApapmZm3JE2oIf-LRCuFZBQE_4
-X-Proofpoint-ORIG-GUID: _IaoPfApapmZm3JE2oIf-LRCuFZBQE_4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-06_09,2022-01-06_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- mlxlogscore=802 clxscore=1015 suspectscore=0 phishscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 mlxscore=0 spamscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201060131
-X-FB-Internal: deliver
+        id S244014AbiAFUza (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 15:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244011AbiAFUza (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 15:55:30 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC73CC061245
+        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 12:55:29 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b10-20020a251b0a000000b0060a7fbb7a64so7266064ybb.23
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=PLwFzwVKyZlW3ZKQNxOkvPuZCJ9ocPN5UB5wn/16Lv0=;
+        b=ED/KaK+5CblB/9GEsaq1HKe0k+rlCYrQlE2WCBtwxWJ9X7XTU+P3Ys8bpaWfNpW88U
+         +Fmu6Cqo8BLasWnjTK9YMmPMhM0AlK7EVDTYgQxeF8nivKpsU+W0d5yFGp37eQXtwDOq
+         5KvXbFDXVVovfu0WB8Ib6UFQWPA3GBn43SkVQE859NegypLTiEbp8ksgsB8kLcNxuqPJ
+         Wair27WlrOHGaWyDuf4T92j9QoVhSZKW35IAQikPFC4s0CMbw9mINPjy6WjSpTM06GrM
+         L+q3S0eY3QHPUf8RmKr5nQr7wkJ+G7j6VmmHZxz33g9xkVft8ugkSVcg3A8zw/k53JXs
+         TODg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=PLwFzwVKyZlW3ZKQNxOkvPuZCJ9ocPN5UB5wn/16Lv0=;
+        b=JW6FIL+oDDKmW+ZAxnfA2apNZB/IG3KN8bV2Ad1cTcFuy475xHOQlQiMECYLlsRABf
+         5heyY073tbj7b1xg5wx19yrzgtGI07qpT8nP9oRShWa70tABe3+bPnJ5w8AYdQCmZTL+
+         BJ8jKE+c5i4fTXGteQM3aanz2xYJkhWOiiTUP7Bxjn9sAFa2+7xnmGjM+N1RLkdDaMYU
+         dUcX1jDBdFXCZ9on88pPbexc+/BaGTE+uncIHf82G+nbBO6o4Z3AfD4Lx1VTgy8GD4aq
+         nx0Ag8+S1oDTvKOCYxDd7mLnTSMV4FPRJRg0ojUBqBWHP0dtXGYBsKUmrTi1nfQFHDS8
+         qUJA==
+X-Gm-Message-State: AOAM533BU6nhnbkKOEYjjjBZSyEZatRqU5pfFuV5XbqJTz1qIhKOTVWn
+        nZzzFHT0YaaaFFesWHW0xYNxCvuCIeA=
+X-Google-Smtp-Source: ABdhPJxw5gybO7P7b54vYJ3NooLiQDMv3W1J7QVjI9K/GOzSdyHDK9DXWz3AuKJcAR+3kA0ggQrV1JWlLqs=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:3a2:a76c:b77f:b671])
+ (user=haoluo job=sendgmr) by 2002:a25:aa02:: with SMTP id s2mr67009543ybi.119.1641502529102;
+ Thu, 06 Jan 2022 12:55:29 -0800 (PST)
+Date:   Thu,  6 Jan 2022 12:55:25 -0800
+Message-Id: <20220106205525.2116218-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.1.448.ga2b2bfdf31-goog
+Subject: [PATCH bpf-next v2] bpf/selftests: Test bpf_d_path on rdonly_mem.
+From:   Hao Luo <haoluo@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        bpf@vger.kernel.org, Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PT_REGS*() macro on some architectures force-cast struct pt_regs to
-other types (user_pt_regs, etc) and might drop volatile modifiers, if any.
-Volatile isn't really required as pt_regs value isn't supposed to change
-during the BPF program run, so this is correct behavior.
+The second parameter of bpf_d_path() can only accept writable
+memories. Rdonly_mem obtained from bpf_per_cpu_ptr() can not
+be passed into bpf_d_path for modification. This patch adds
+a selftest to verify this behavior.
 
-But progs/loop3.c relies on that volatile modifier to ensure that loop
-is preserved. Fix loop3.c by declaring i and sum variables as volatile
-instead. It preserves the loop and makes the test pass on all
-architectures (including s390x which is currently broken).
-
-Fixes: 3cc31d794097 ("libbpf: Normalize PT_REGS_xxx() macro definitions")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- tools/testing/selftests/bpf/progs/loop3.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Changelog since v1:
+ - remove duplicated vmlinux.h (Yonghong)
+ - use 'void *' as type of 'active' (Andrii)
+ - use codename instead of descriptive sentense in ASSERT_ERR_PTR's
+   error message. (Andrii)
 
-diff --git a/tools/testing/selftests/bpf/progs/loop3.c b/tools/testing/selftests/bpf/progs/loop3.c
-index 76e93b31c14b..24ff85295830 100644
---- a/tools/testing/selftests/bpf/progs/loop3.c
-+++ b/tools/testing/selftests/bpf/progs/loop3.c
-@@ -12,9 +12,9 @@
- char _license[] SEC("license") = "GPL";
+ .../testing/selftests/bpf/prog_tests/d_path.c | 22 ++++++++++++++-
+ .../bpf/progs/test_d_path_check_rdonly_mem.c  | 28 +++++++++++++++++++
+ 2 files changed, 49 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+index 0a577a248d34..42bf4272bb5e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/d_path.c
++++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+@@ -9,6 +9,7 @@
+ #define MAX_FILES		7
  
- SEC("raw_tracepoint/consume_skb")
--int while_true(volatile struct pt_regs* ctx)
-+int while_true(struct pt_regs* ctx)
+ #include "test_d_path.skel.h"
++#include "test_d_path_check_rdonly_mem.skel.h"
+ 
+ static int duration;
+ 
+@@ -99,7 +100,7 @@ static int trigger_fstat_events(pid_t pid)
+ 	return ret;
+ }
+ 
+-void test_d_path(void)
++static void test_d_path_basic(void)
  {
--	__u64 i = 0, sum = 0;
-+	volatile __u64 i = 0, sum = 0;
- 	do {
- 		i++;
- 		sum += PT_REGS_RC(ctx);
+ 	struct test_d_path__bss *bss;
+ 	struct test_d_path *skel;
+@@ -155,3 +156,22 @@ void test_d_path(void)
+ cleanup:
+ 	test_d_path__destroy(skel);
+ }
++
++static void test_d_path_check_rdonly_mem(void)
++{
++	struct test_d_path_check_rdonly_mem *skel;
++
++	skel = test_d_path_check_rdonly_mem__open_and_load();
++	ASSERT_ERR_PTR(skel, "unexpected_load_overwriting_rdonly_mem\n");
++
++	test_d_path_check_rdonly_mem__destroy(skel);
++}
++
++void test_d_path(void)
++{
++	if (test__start_subtest("basic"))
++		test_d_path_basic();
++
++	if (test__start_subtest("check_rdonly_mem"))
++		test_d_path_check_rdonly_mem();
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c b/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+new file mode 100644
+index 000000000000..27c27cff6a3a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_d_path_check_rdonly_mem.c
+@@ -0,0 +1,28 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Google */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++extern const int bpf_prog_active __ksym;
++
++SEC("fentry/security_inode_getattr")
++int BPF_PROG(d_path_check_rdonly_mem, struct path *path, struct kstat *stat,
++	     __u32 request_mask, unsigned int query_flags)
++{
++	void *active;
++	__u32 cpu;
++
++	cpu = bpf_get_smp_processor_id();
++	active = (void *)bpf_per_cpu_ptr(&bpf_prog_active, cpu);
++	if (active) {
++		/* FAIL here! 'active' points to readonly memory. bpf helpers
++		 * that update its arguments can not write into it.
++		 */
++		bpf_d_path(path, active, sizeof(int));
++	}
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
-2.30.2
+2.34.1.448.ga2b2bfdf31-goog
 
