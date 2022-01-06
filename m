@@ -2,138 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA000485EDB
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 03:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C40F6485F25
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 04:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344884AbiAFChx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 5 Jan 2022 21:37:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
+        id S229770AbiAFDV2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 5 Jan 2022 22:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344887AbiAFChw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 5 Jan 2022 21:37:52 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB08CC061201
-        for <bpf@vger.kernel.org>; Wed,  5 Jan 2022 18:37:51 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id o1so854950ilo.6
-        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 18:37:51 -0800 (PST)
+        with ESMTP id S229745AbiAFDV1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 5 Jan 2022 22:21:27 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64214C061201
+        for <bpf@vger.kernel.org>; Wed,  5 Jan 2022 19:21:27 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id gp5so1350423pjb.0
+        for <bpf@vger.kernel.org>; Wed, 05 Jan 2022 19:21:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BAVM0VZszj+UURGWv9ATzaiUdv3MqwGCiPD3WyG69/c=;
-        b=eSjRt4lh2200fIn4YCggRXOzKKcW/WQMJASGLgZuqdHcwXvItmpk5c/zy5nUHk8nL1
-         VRy6pM6PWlH0IDI2zoRTxsdDQ0PPgAv8989Ri/GPzagYA6g2LwC37dz9xXDZPOOXYYvR
-         1haH0o+kdQTkHuZoIGz0uxRD7+33MZPnL8VSQyDkCa8I/DXFU2uiJixj7GYGVHokwBAT
-         72j11pvSDpou9XwhD5yhTUEE3j6QEGtHvQVStdJVqD8Q7lBVr4DCcfeOjleh+i+GDsGx
-         LxjHLVWQyQDucsQLSKJ9BTeNzNrS/wyKUC7FrI76gLFoIrcO3CH4F3iQMhjZE+29HS8q
-         aILw==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L1kt8i+PKHaNiwL3dKZWcYg8PXU//JPnPYFIcwDdGfc=;
+        b=2R0Da2tFc7++Xc3yybYIx+8Lh8wqtM9Mjox4PAZuIEDFcqITJek0A59lpXRvWUlXk0
+         uF53KE3M8oeji64aGEwHFwT3WuJpkD+dBsw7/yt4ubkkB8RynEGp3sfCH/ChZNHdRwKV
+         wABF92HSTztHwKgLaHghfMnbWBLGRE5sSZVgf1vJ2XOGqIkPIbjgSN5Ko5Ug0MmuwO6n
+         5PoPoJpw9tpp4ir0O4bJ8UNC9v4JELpYzA2L/Db9H3U+iYpeHBAOM8ZbeHareODlS+Zv
+         AfkBEf8hxLpqlT3pBLEj4e2rA0NByIlRmkZFefYd6/xhOPOueMj/79HVhTXkMXJ1XGqO
+         qvFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BAVM0VZszj+UURGWv9ATzaiUdv3MqwGCiPD3WyG69/c=;
-        b=yWZ24Zg6EX5HVCulVF7Jz1YXi7o5rv39jlNsKSFqui2hvU78qW2mAspwjHc3JZHR+O
-         cKi5rbPUfzhAOstKNWVExmc92B5ord4jaj9MLCZk2Dx1mSPpIknXY1x0gl9t9QcoSdzP
-         QPTQuh7pfsjFRkFIMMnekNvq1FP0r7jqMkfqhndMzLJm51h8hqWiWxCg/tW1L3NIFTix
-         aGsT+GlmmRWEzSCOzQGMQhG1R7Q0TYEPTKREUZVyFj6d57wp33rgp7ACl6ibHzC5qTxk
-         jOBm0G4MPByVBgONmCtx+OkyYcwIqzcOvDG9dq3yY1iN4vQp9v5IPeaCyY9+24Fl1ot0
-         n4gA==
-X-Gm-Message-State: AOAM532RJXZkikGjVi9s/Q074P2BERcAmJdhdGKGHe6tUwi7/Xsba3I+
-        fGBlhHjfTMITfu99zJBNGKMg5Z52dTrb3HC9TQcIozPm
-X-Google-Smtp-Source: ABdhPJyTNBlhwWWLxrhvlCx578mUJQmxA9DcBhOjnB9Zl1ByJ3i/WFnVbRRLLiv3r5yFdIj0eD7PyRx3AQfhQQvJIj4=
-X-Received: by 2002:a05:6e02:1c01:: with SMTP id l1mr27652441ilh.239.1641436670899;
- Wed, 05 Jan 2022 18:37:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20211225203717.35718-1-grantseltzer@gmail.com>
-In-Reply-To: <20211225203717.35718-1-grantseltzer@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 Jan 2022 18:37:40 -0800
-Message-ID: <CAEf4BzbZn7s3nHrXd=ruLSmiQ-VSU46R62hCTaprEe60bKF_oA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] libbpf: Add documentation for bpf_map batch operations
-To:     grantseltzer <grantseltzer@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=L1kt8i+PKHaNiwL3dKZWcYg8PXU//JPnPYFIcwDdGfc=;
+        b=cjFM2Up+necABkxbwDY2BUMv/gUiLIjoUyWqJ8vO/nboJRtmHHVODmtTdrWaAE/ifi
+         Z8VxlsJR3fWsl0+D1RUfjscZYW3TXe+mP/OFXJTyjZ4xL45XZW7qjTKp9vhw4mWvvo03
+         MHdBEOJO1BznvBBSn51oNXEUC7ApFmtuJ5RoplRdZUSfI8jSwgiGaLcFK03+Cwf1ElXk
+         MzdxfsIEXGUYgXwsMcn281QgJKRsQfKFnRAApecmvfWglA44JKCOatfLcaykZdno6e/G
+         ZI3tAYnTvieZDP2gUK/h84TyE+38nF3hdd62gHYGwx+oZMHuIWvCPHjJQ3//KdsRncoD
+         p3NA==
+X-Gm-Message-State: AOAM532PIzDeh19o0HbK7YsyTwRguJm6c+KYsGUqHmLwEs9I3TnNkiXt
+        kXi9vSI5s6wqqJ30+v9m5NA4RA==
+X-Google-Smtp-Source: ABdhPJx+qsaW9e3nS8xYE3uGzJD868WVU1ZiRYqaH/dQax0aODKoR/36iJxLlMJS1PRFkPjsegb6YA==
+X-Received: by 2002:a17:903:1cf:b0:149:b6f:4e98 with SMTP id e15-20020a17090301cf00b001490b6f4e98mr56918701plh.118.1641439286739;
+        Wed, 05 Jan 2022 19:21:26 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id q21sm467662pfu.176.2022.01.05.19.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jan 2022 19:21:26 -0800 (PST)
+Date:   Wed, 05 Jan 2022 19:21:26 -0800 (PST)
+X-Google-Original-Date: Wed, 05 Jan 2022 19:20:58 PST (-0800)
+Subject:     Re: [PATCH 09/12] riscv: extable: add `type` and `data` fields
+In-Reply-To: <20211118152155.GB9977@lakrids.cambridge.arm.com>
+CC:     jszhang3@mail.ustc.edu.cn, tglx@linutronix.de,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com,
+        kpsingh@kernel.org, masahiroy@kernel.org, michal.lkml@markovi.net,
+        ndesaulniers@google.com, wangkefeng.wang@huawei.com,
+        tongtiangen@huawei.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     mark.rutland@arm.com
+Message-ID: <mhng-84ef2902-21c8-4cde-9d02-aa89f913a981@palmer-ri-x1c9>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 25, 2021 at 12:37 PM grantseltzer <grantseltzer@gmail.com> wrote:
+On Thu, 18 Nov 2021 07:21:55 PST (-0800), mark.rutland@arm.com wrote:
+> On Thu, Nov 18, 2021 at 07:42:49PM +0800, Jisheng Zhang wrote:
+>> On Thu, 18 Nov 2021 19:26:05 +0800 Jisheng Zhang wrote:
+>>
+>> > From: Jisheng Zhang <jszhang@kernel.org>
+>> >
+>> > This is a riscv port of commit d6e2cc564775("arm64: extable: add `type`
+>> > and `data` fields").
+>> >
+>> > We will add specialized handlers for fixups, the `type` field is for
+>> > fixup handler type, the `data` field is used to pass specific data to
+>> > each handler, for example register numbers.
+>> >
+>> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 >
-> From: Grant Seltzer <grantseltzer@gmail.com>
+>> > diff --git a/scripts/sorttable.c b/scripts/sorttable.c
+>> > index 0c031e47a419..5b5472b543f5 100644
+>> > --- a/scripts/sorttable.c
+>> > +++ b/scripts/sorttable.c
+>> > @@ -376,9 +376,11 @@ static int do_file(char const *const fname, void *addr)
+>> >  	case EM_PARISC:
+>> >  	case EM_PPC:
+>> >  	case EM_PPC64:
+>> > -	case EM_RISCV:
+>> >  		custom_sort = sort_relative_table;
+>> >  		break;
+>> > +	case EM_RISCV:
+>> > +		custom_sort = arm64_sort_relative_table;
+>>
+>> Hi Mark, Thomas,
+>>
+>> x86 and arm64 version of sort_relative_table routine are the same, I want to
+>> unify them, and then use the common function for riscv, but I'm not sure
+>> which name is better. Could you please suggest?
 >
-> This adds documentation for:
+> I sent a patch last week which unifies them as
+> sort_relative_table_with_data():
 >
-> - bpf_map_delete_batch()
-> - bpf_map_lookup_batch()
-> - bpf_map_lookup_and_delete_batch()
-> - bpf_map_update_batch()
+>   https://lore.kernel.org/linux-arm-kernel/20211108114220.32796-1-mark.rutland@arm.com/
 >
-> Signed-off-by: Grant Seltzer <grantseltzer@gmail.com>
-> ---
->  tools/lib/bpf/bpf.c |   4 +-
->  tools/lib/bpf/bpf.h | 112 +++++++++++++++++++++++++++++++++++++++++++-
->  2 files changed, 112 insertions(+), 4 deletions(-)
+> Thomas, are you happy with that patch?
 >
-> diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-> index 9b64eed2b003..25f3d6f85fe5 100644
-> --- a/tools/lib/bpf/bpf.c
-> +++ b/tools/lib/bpf/bpf.c
-> @@ -691,7 +691,7 @@ static int bpf_map_batch_common(int cmd, int fd, void  *in_batch,
->         return libbpf_err_errno(ret);
->  }
+> With your ack it could go via the riscv tree for v5.17 as a preparatory
+> cleanup in this series.
 >
-> -int bpf_map_delete_batch(int fd, void *keys, __u32 *count,
-> +int bpf_map_delete_batch(int fd, const void *keys, __u32 *count,
->                          const struct bpf_map_batch_opts *opts)
->  {
->         return bpf_map_batch_common(BPF_MAP_DELETE_BATCH, fd, NULL,
-> @@ -715,7 +715,7 @@ int bpf_map_lookup_and_delete_batch(int fd, void *in_batch, void *out_batch,
->                                     count, opts);
->  }
->
-> -int bpf_map_update_batch(int fd, void *keys, void *values, __u32 *count,
-> +int bpf_map_update_batch(int fd, const void *keys, const void *values, __u32 *count,
->                          const struct bpf_map_batch_opts *opts)
->  {
->         return bpf_map_batch_common(BPF_MAP_UPDATE_BATCH, fd, NULL, NULL,
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index 00619f64a040..01011747f127 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -254,20 +254,128 @@ struct bpf_map_batch_opts {
->  };
->  #define bpf_map_batch_opts__last_field flags
->
-> -LIBBPF_API int bpf_map_delete_batch(int fd, void *keys,
-> +
-> +/**
-> + * @brief **bpf_map_delete_batch()** allows for batch deletion of multiple
-> + * elements in a BPF map.
-> + *
-> + * @param fd BPF map file descriptor
-> + * @param keys pointer to an array of *count* keys
-> + * @param count number of elements in the map to sequentially delete
+> Maybe we could get it in as a cleanup for v5.16-rc{2,3} ?
 
-it's important to mention that count is updated after
-bpf_map_delete_batch() returns with the actual number of elements that
-were deleted. Please double-check the other APIs as well whether there
-are important points to mention. These batch APIs are one of the
-trickiest ones in bpf() syscall, let's do a thorough job documenting
-them so that users don't have to read kernel code each time they want
-to use it
+I don't see anything on that thread, and looks like last time I had to 
+touch sorttable I just took it via the RISC-V tree.  I went ahead and 
+put Mark's patch, along with this patch set, on my for-next.  I had to 
+fix up a few minor issues, so LMK if anything went off the rails.
 
-But other than that, great job! I've CC'ed Yonghong to take another
-look, as he should know the semantics of batch APIs much better.
-Yonghong, please take a look when you can. Thanks!
-
-
-> + * @param opts options for configuring the way the batch deletion works
-> + * @return 0, on success; negative error code, otherwise (errno is also set to
-> + * the error code)
-> + */
-> +LIBBPF_API int bpf_map_delete_batch(int fd, const void *keys,
->                                     __u32 *count,
->                                     const struct bpf_map_batch_opts *opts);
-
-[...]
+Thanks!
