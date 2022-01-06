@@ -2,131 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2A8486BD8
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 22:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FC6486C0A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 22:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244188AbiAFVY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 16:24:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
+        id S244346AbiAFVmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 16:42:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244183AbiAFVY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 16:24:28 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A101C061245;
-        Thu,  6 Jan 2022 13:24:28 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id c4so3099210iln.7;
-        Thu, 06 Jan 2022 13:24:28 -0800 (PST)
+        with ESMTP id S244347AbiAFVmC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 16:42:02 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94113C061212
+        for <bpf@vger.kernel.org>; Thu,  6 Jan 2022 13:42:02 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id d3so3108531ilr.10
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 13:42:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AHNjHhJNA6K9i0SnEMUnzbbgZ5bVUcNEQvH0wqh3K9E=;
-        b=e5WVPOaNdGE6/i0mx3dlUWUo/207G0Ivnb5NWYR2PIU5Ows0HORFH/jl5qkL6d0KoL
-         dY+RMCBQ2nZcn+tAA2duvDwOYfWx4JeipuZ8fvDYDIk7DP7ScEST/ZVzKrZTdh4XBaaw
-         XjwNOxmOfpzhrcMlR0PKLt1MdoflVPd+EL3jvQpsFpnCnCoDAfqyKGXNDSYY5GA4LQNE
-         czC92f6VNEv5e5AWtSWWVmiIQTN2o4B2Q78GN4FWZIme9Pnc3y0rWkskKmwk344a92Oo
-         P4BJ13jA7yFqad91oT2wfOeD6Bx+1EA3iL8CxoaOT2felW8/034nDHCfB1dPRTkRUY7/
-         cqBw==
+         :cc:content-transfer-encoding;
+        bh=HeoT0mQrj9JvIgt5NiHK7dnl/tGxYKl1417jYmdtGtM=;
+        b=Ms8vDWwvsUMeTK3hnY/EkhJydyrkOK1e7wWJGowWXCYsro3ZMTKXhno4PCFQz5/0qH
+         +f9PTFeCU7YqKMqOsQaDXKbylLp8nSClPcpEI8eeQQ4PPwCaUIlhcdWhnsR4RjGNgmFS
+         +uIlu57DVwc2wlt7lovl52K6+9FMUgPj5jNgiScHpKaFkXoKbru8NE5K1hNWhyESKK/W
+         lQbTEbLxXMiFV6z66u/Sn99tGMbDXXZ3BC11fPz3coDkngxgdWZIWayWmOYAmBEQaVdM
+         UqOl5LY2d7xT0dmhURdJboT3qR106v1Eyt4b8Y0YxyET/NCevpJeSom1P7kD7PN5n90f
+         JhIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AHNjHhJNA6K9i0SnEMUnzbbgZ5bVUcNEQvH0wqh3K9E=;
-        b=jWik8gWoz+3hxRzzKI+fELd+DeiDpIR2d6oE4xM9u5vdhC56oOYp59eAsHig4f1QwR
-         JuFe7EJwvVIO8alwxhmzihV/oOHJ2iHCs77akfhPVy6cN/R6Dn6SFW8pa4AV9lA0T+Lp
-         siYZDcTt5kXwfcom0ZS2xpUd64Rrdf6vOWVYozJTeVUw7ZxaRZS12OOkEM4OlheOASun
-         IQzcIi7V5dzoOgSKJ7WgQhioBoF1Uxwmlp55rk6cjV68xUOp3XmsysftJRTGmKdLxLHw
-         raJMB10dlbVMI/fGJOb1SHbNc8w5ipuFdO7YmexGesyV1wYXQCE8sUgUdXhyolOnjU1D
-         yeIQ==
-X-Gm-Message-State: AOAM5322PuBZts6AE4nufdJV/Srd0AK/5Ik24GlTOVXNcW15HjBgzge8
-        r/utTFraSuAHkFuEx57Jwm4NOqnxaOpnXaA2hfo=
-X-Google-Smtp-Source: ABdhPJwahFu67nQkVi/3aEoJVgFaQTkWv49uJOEbaY2Fs9hE6iK+/VL67lRQ20zz9Iu8DtxU+48ZU1bPQREXF5VunWc=
-X-Received: by 2002:a05:6e02:b4c:: with SMTP id f12mr27101949ilu.252.1641504267973;
- Thu, 06 Jan 2022 13:24:27 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HeoT0mQrj9JvIgt5NiHK7dnl/tGxYKl1417jYmdtGtM=;
+        b=bbaeX1MYSXltsEEJl77/N5Ymm3g5cL35SVQVanWVoryY/l6Rwx7SAEIBTlECFc5U5X
+         eqb18ZT8YtnclxK42vmtsRRhN8M0dP0Bg8dKzx+Byk3Yshl3pQ9zw9ky6FK0P0ZqfFkl
+         8eTuWrf4chb5++Y5YoGBOsqsHJJCqCHKmh/bYOZx4cGusDY2UzbcnEVx/9mC6O50ARzC
+         oBLrfGI1CfUwMqyyMk9hvRtVI2zJ29wD61WmowaOhJRKo010ucSdhEjdZFZFcytTehnU
+         ra3JpuOJuRlIPmET41lKTpcOvvRXBGuJAxli54ynwUcQkvhzH47h1RbbcIXshcyapC8t
+         auBQ==
+X-Gm-Message-State: AOAM532cqyq0WRMhmpIdYahP3u62AlxhCynLdIl8tXeBIdUKePhMa8nC
+        8PkdP+6sWNILfQFSrwgU2pA0EfKiL5K/QdHioGlUQQ==
+X-Google-Smtp-Source: ABdhPJyU33dQiQIgwHreTOmvHttQQLVMwIuI0OBX9XUWDqhj4QWUrm/Ugebp8LtCvNHgpWwO3E2orcUIViamqx3Jh1g=
+X-Received: by 2002:a05:6e02:1c21:: with SMTP id m1mr5596173ilh.150.1641505321618;
+ Thu, 06 Jan 2022 13:42:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20220106200032.3067127-1-christylee@fb.com> <20220106200032.3067127-2-christylee@fb.com>
-In-Reply-To: <20220106200032.3067127-2-christylee@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 6 Jan 2022 13:24:16 -0800
-Message-ID: <CAEf4Bzad6-Pf51Gez2hA4orvuR90YyB_eqYzVLG1H229jkn8uw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] perf: stop using deprecated
- bpf_prog_load() API
-To:     Christy Lee <christylee@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Christy Lee <christyc.y.lee@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>
+References: <YddEVgNKBJiqcV6Y@kernel.org> <YddGjjmlMZzxUZbN@kernel.org> <YddHmYhvtVvgqZb/@kernel.org>
+In-Reply-To: <YddHmYhvtVvgqZb/@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 6 Jan 2022 13:41:48 -0800
+Message-ID: <CAP-5=fU2QAr9BMHqm9i6uDKPaUFsY2EAqt+oO1AO8ovBXCh5xQ@mail.gmail.com>
+Subject: Re: perf build broken seemingly due to libbpf changes, checking...
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 12:03 PM Christy Lee <christylee@fb.com> wrote:
+On Thu, Jan 6, 2022 at 11:48 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> bpf_prog_load() API is deprecated, remove perf's usage of the deprecated
-> function.
+> Em Thu, Jan 06, 2022 at 04:44:14PM -0300, Arnaldo Carvalho de Melo escrev=
+eu:
+> > Em Thu, Jan 06, 2022 at 04:34:46PM -0300, Arnaldo Carvalho de Melo escr=
+eveu:
+> > > After merging torvalds/master to perf/urgent I'm getting this:
+> > >
+> > > util/bpf-event.c:25:21: error: no previous prototype for =E2=80=98btf=
+__load_from_kernel_by_id=E2=80=99 [-Werror=3Dmissing-prototypes]
+> > >    25 | struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
+> > >       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > util/bpf-event.c:37:1: error: no previous prototype for =E2=80=98bpf_=
+object__next_program=E2=80=99 [-Werror=3Dmissing-prototypes]
+> > >    37 | bpf_object__next_program(const struct bpf_object *obj, struct=
+ bpf_program *prev)
+> > >       | ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > util/bpf-event.c:46:1: error: no previous prototype for =E2=80=98bpf_=
+object__next_map=E2=80=99 [-Werror=3Dmissing-prototypes]
+> > >    46 | bpf_object__next_map(const struct bpf_object *obj, const stru=
+ct bpf_map *prev)
+> > >       | ^~~~~~~~~~~~~~~~~~~~
+> > > util/bpf-event.c:55:1: error: no previous prototype for =E2=80=98btf_=
+_raw_data=E2=80=99 [-Werror=3Dmissing-prototypes]
+> > >    55 | btf__raw_data(const struct btf *btf_ro, __u32 *size)
+> > >       | ^~~~~~~~~~~~~
+> > > cc1: all warnings being treated as errors
+> > > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: =
+/tmp/build/perf/util/bpf-event.o] Error 1
+> > > make[4]: *** Waiting for unfinished jobs....
+> > > util/bpf_counter.c: In function =E2=80=98bpf_target_prog_name=E2=80=
+=99:
+> > > util/bpf_counter.c:82:15: error: implicit declaration of function =E2=
+=80=98btf__load_from_kernel_by_id=E2=80=99 [-Werror=3Dimplicit-function-dec=
+laration]
+> > >    82 |         btf =3D btf__load_from_kernel_by_id(info_linear->info=
+.btf_id);
+> > >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > util/bpf_counter.c:82:13: error: assignment to =E2=80=98struct btf *=
+=E2=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer without a c=
+ast [-Werror=3Dint-conversion]
+> > >    82 |         btf =3D btf__load_from_kernel_by_id(info_linear->info=
+.btf_id);
+> > >       |             ^
+> > > cc1: all warnings being treated as errors
+> > > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: =
+/tmp/build/perf/util/bpf_counter.o] Error 1
+> > >
+> > > I'm checking now...
+> > >
+> > > BTW I test perf builds with:
+> > >
+> > > make -k BUILD_BPF_SKEL=3D1 CORESIGHT=3D1 PYTHON=3Dpython3 O=3D/tmp/bu=
+ild/perf -C tools/perf install-bin && git status && perf test python
+> >
+> > Nevermind, this was due to a patch by Ian Rogers I was testing,
+> > bisecting get up to the last patch, since I had merged torvalds/master
+> > today it got me to a wrong correlation, sorry for the disturbance.
+> >
+> > For reference, this is the patch:
+> >
+> > http://lore.kernel.org/lkml/20220106072627.476524-1-irogers@google.com
 >
-> Signed-off-by: Christy Lee <christylee@fb.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/perf/tests/bpf.c | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
+> Ian, I have libbpf-devel installed:
 >
-> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-> index 573490530194..57b9591f7cbb 100644
-> --- a/tools/perf/tests/bpf.c
-> +++ b/tools/perf/tests/bpf.c
-> @@ -281,8 +281,8 @@ static int __test__bpf(int idx)
+> =E2=AC=A2[acme@toolbox perf]$ rpm -qa | grep libbpf
+> libbpf-0.4.0-1.fc34.x86_64
+> libbpf-devel-0.4.0-1.fc34.x86_64
+> =E2=AC=A2[acme@toolbox perf]$
 >
->  static int check_env(void)
->  {
-> +       LIBBPF_OPTS(bpf_prog_load_opts, opts);
->         int err;
-> -       unsigned int kver_int;
->         char license[] = "GPL";
+> But I'm not using LIBBPF_DYNAMIC=3D1, so you can't just give precedence t=
+o
+> system headers for all of the homies in tools/lib/.
 >
->         struct bpf_insn insns[] = {
-> @@ -290,19 +290,13 @@ static int check_env(void)
->                 BPF_EXIT_INSN(),
->         };
->
-> -       err = fetch_kernel_version(&kver_int, NULL, 0);
-> +       err = fetch_kernel_version(&opts.kern_version, NULL, 0);
->         if (err) {
->                 pr_debug("Unable to get kernel version\n");
->                 return err;
->         }
-> -
-> -/* temporarily disable libbpf deprecation warnings */
-> -#pragma GCC diagnostic push
-> -#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-> -       err = bpf_load_program(BPF_PROG_TYPE_KPROBE, insns,
-> -                              ARRAY_SIZE(insns),
-> -                              license, kver_int, NULL, 0);
-> -#pragma GCC diagnostic pop
-> +       err = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, license, insns,
-> +                           ARRAY_SIZE(insns), &opts);
+> I bet that if I remove the libbpf-devel package it works, yeah, just
+> tested. So we need to make those overrides dependent on using
+> LIBBPF_DYNAMIC=3D1, LIBTRACEEVENT_DYNAMIC=3D1, etc and avoid the big hamm=
+er
+> that is -Itools/lib/, using a more finegrained approach, right?
 
-Christy, you should probably define __weak bpf_prog_load
-implementation that will re-route to bpf_load_program? See how it was
-done for other APIs (e.g., btf__load_from_kernel_by_id).
+Ugh, this is messy. The -I for tools/lib is overloaded and being used
+in tools/perf/util/bpf-event.c so that bpf/bpf.h, bpf/btf.h and
+bpf/libbpf.h can be found. Likewise, for tools/perf/util/debug.c it is
+used to pick up traceevent/event-parse.h.
 
-Arnaldo, more generally, what would be the plan for libbpf 1.0 at
-which point those deprecated APIs (e.g., bpf_load_program) are going
-to be removed completely? Do you have some control over the minimal
-libbpf version for cases when you'd like to use libbpf as a shared
-library?
+Assuming  LIBBPF_DYNAMIC=3D1 and LIBTRACEEVENT_DYNAMIC=3D1 then we get
+different combinations of:
+libtraceevent >=3D 1.3 && libbpf >=3D 0.6 - -I is broken for debug.c,
+-idirafter okay
+libtraceevent >=3D 1.3 && libbpf < 0.6 - -I is broken for debug.c,
+-idirafter broken for bpf-event.c
+libtraceevent < 1.3 && libbpf >=3D 0.6 - -I should build okay but
+headers mismatched, -idirafter okay
+libtraceevent < 1.3 && libbpf < 0.6 - -I will fail to link
+bpf-event.c, -idirafter broken for bpf-event.c
 
+As the choice of -I and -idirafter are binary then there will always
+be a way to break the build. We could modify the build so that the
+-I/-idirafter only applies to the affected C files. This postpones the
+problem to when libbpf and libtracevent are in the same file, which
+doesn't happen currently. I think if you want the dynamic behavior
+then you need to use idirafter.
 
->         if (err < 0) {
->                 pr_err("Missing basic BPF support, skip this test: %s\n",
->                        strerror(errno));
-> --
-> 2.30.2
->
+Thanks,
+Ian
