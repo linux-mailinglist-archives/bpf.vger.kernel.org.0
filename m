@@ -2,211 +2,322 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FFF486AFD
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276A8486B0B
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 21:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243650AbiAFUU7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 15:20:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:41330 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234612AbiAFUU5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 15:20:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641500456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uVPgqD2PlyQyW5KqK6Xa09cRn07PcS57Of9dZqeQYns=;
-        b=KKGOE4nvCb+Wuo7yjCjaAUYWj+QhisWy1Z5vUslc1aikjM6iSI7/V0UurnWZLkiXEKdRds
-        puVoJ/YeFcY4ccOTxQ+/e86YrYMtjlzHJFiLB12H3z2NCmyuNStGvf4MGHvlTNOpOm2Hl+
-        JZcYsQ6Y2rhhL9MP83EOvKOIjxPcEW8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-597-sZmR8qwdMkqUHkoeLxP_xQ-1; Thu, 06 Jan 2022 15:20:55 -0500
-X-MC-Unique: sZmR8qwdMkqUHkoeLxP_xQ-1
-Received: by mail-ed1-f70.google.com with SMTP id m16-20020a056402431000b003fb60bbe0e2so27494edc.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 12:20:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=uVPgqD2PlyQyW5KqK6Xa09cRn07PcS57Of9dZqeQYns=;
-        b=EMhNK5abQABx2cN3qnxDvNzQx9BeYkwQvNJpS818HoCEYXiUEmZh0g6ekuGJpRNZn4
-         ft08TC7rC7exHycu17FbF0d12sOYyZkyaX5dBsdkBQaSoJMeOFQvFGNyZOzjzojwW1Es
-         shzR0cJYPpzjzOCGprpTKN1YfrqySrRdcu+yf8zSYuXSWuy/rJupkUfctqyhKwYnkmzu
-         0Tq/cbpQM8Q+F8dQwLKCHmMlj9iSqqryyciFHeMKXFYewyUAocoCwR+F1TJreJQlB7g+
-         W9/OTOvXDWZZUJkNYYZA0tXmKtXgdcjO7n754m/eQlvPBa3Uyr8tLhXksZdR5lNvDmcu
-         WlfQ==
-X-Gm-Message-State: AOAM530PFmm+pdqiIzyDbAnBorUAAi3YTouhxlymCRs8sYIEbG5r/s3W
-        5IGoV8dropLmmM31Uv4YVYoG11BgO/jPqLMLpR9rEwPQB5YlPy1WslnIpJQ2QCuqLvLNWnSVjA4
-        IogxqD/AjWBtv
-X-Received: by 2002:a05:6402:5190:: with SMTP id q16mr60144579edd.332.1641500453867;
-        Thu, 06 Jan 2022 12:20:53 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx607J+hqfiTtq8mJkPUIsvhlCsEcMGUzayoy5UsP40GeTlwvH/LAzG7BtX60oKed4m1VMzRw==
-X-Received: by 2002:a05:6402:5190:: with SMTP id q16mr60144511edd.332.1641500452572;
-        Thu, 06 Jan 2022 12:20:52 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 2sm759736ejx.123.2022.01.06.12.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 12:20:52 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 54970181F2A; Thu,  6 Jan 2022 21:20:51 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
- XDP_REDIRECT in bpf_prog_run()
-In-Reply-To: <CAADnVQ+6-Q6N1t0UsmF=Rn1yP=KPo7Xc2Fiy1rzJ+Hb0oAr4Hw@mail.gmail.com>
-References: <20220103150812.87914-1-toke@redhat.com>
- <20220103150812.87914-8-toke@redhat.com>
- <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
- <87y23t9blc.fsf@toke.dk>
- <CAADnVQ+j=DO8fMCcpoHmAjrW5sTbhHp_OA4eVpcKcwwRzsvKTA@mail.gmail.com>
- <87tuegafnw.fsf@toke.dk>
- <CAADnVQ+6-Q6N1t0UsmF=Rn1yP=KPo7Xc2Fiy1rzJ+Hb0oAr4Hw@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 06 Jan 2022 21:20:51 +0100
-Message-ID: <87mtk8aa58.fsf@toke.dk>
+        id S243691AbiAFUY7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 15:24:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243662AbiAFUY4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 15:24:56 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A3BC061245;
+        Thu,  6 Jan 2022 12:24:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9CECCB823A0;
+        Thu,  6 Jan 2022 20:24:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 167FEC36AE5;
+        Thu,  6 Jan 2022 20:24:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641500693;
+        bh=AWlOb/n+g5p4uv/N859Up050X5Anv853St+tnU7I6ss=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RwXTIk+MdeVzi0BktZZPlwSG9PTv9v7ohtKsMYY0AuPjJ4wFP7ubxeMTiDWiuYglh
+         Vih/vRbPM58Z9DObNZ3DgrmDI7ms41BYsGW+hOjXhudTsIqn5jkwllRSPhuLyJAWDJ
+         ICojHH1vJLGyNrA/oZYGI2PCSNcxZ6prdYzyNc4qxAgfMFrKq4uEzt2NY2N8BVqWDN
+         aK4cCYkWy2I4zNBZwDUPZ8drQ4XcLi379E2wu/JuttMuKn7OMLquR2+f95b0uDOjQz
+         1UPezzK2KxnLBv4lD2A6r8f5xXMncAClq7PEOLGUG9XlUfkpZi+q5sw3I2vN9gLRpk
+         gRO+kztSD5fQQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 57D0940B92; Thu,  6 Jan 2022 17:24:51 -0300 (-03)
+Date:   Thu, 6 Jan 2022 17:24:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Christy Lee <christylee@fb.com>
+Cc:     andrii@kernel.org, christyc.y.lee@gmail.com, bpf@vger.kernel.org,
+        kernel-team@fb.com, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/5] perf: stop using bpf_map__def() API
+Message-ID: <YddQE5ZIgkarkRNL@kernel.org>
+References: <20220105230057.853163-1-christylee@fb.com>
+ <20220105230057.853163-4-christylee@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220105230057.853163-4-christylee@fb.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+Em Wed, Jan 05, 2022 at 03:00:55PM -0800, Christy Lee escreveu:
+> libbpf bpf_map__def() API is being deprecated, replace bpftool's
+> usage with the appropriate getters and setters.
 
-> On Thu, Jan 6, 2022 at 10:21 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Thu, Jan 6, 2022 at 6:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->> >>
->> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->> >>
->> >> > On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke H=C3=B8iland-J=C3=B8=
-rgensen wrote:
->> >> >> +
->> >> >> +#define NUM_PKTS 3
->> >> >
->> >> > May be send a bit more than 3 packets?
->> >> > Just to test skb_list logic for XDP_PASS.
->> >>
->> >> OK, can do.
->> >>
->> >> >> +
->> >> >> +    /* We setup a veth pair that we can not only XDP_REDIRECT pac=
-kets
->> >> >> +     * between, but also route them. The test packet (defined abo=
-ve) has
->> >> >> +     * address information so it will be routed back out the same=
- interface
->> >> >> +     * after it has been received, which will allow it to be pick=
-ed up by
->> >> >> +     * the XDP program on the destination interface.
->> >> >> +     *
->> >> >> +     * The XDP program we run with bpf_prog_run() will cycle thro=
-ugh all
->> >> >> +     * four return codes (DROP/PASS/TX/REDIRECT), so we should en=
-d up with
->> >> >> +     * NUM_PKTS - 1 packets seen on the dst iface. We match the p=
-ackets on
->> >> >> +     * the UDP payload.
->> >> >> +     */
->> >> >> +    SYS("ip link add veth_src type veth peer name veth_dst");
->> >> >> +    SYS("ip link set dev veth_src address 00:11:22:33:44:55");
->> >> >> +    SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
->> >> >> +    SYS("ip link set dev veth_src up");
->> >> >> +    SYS("ip link set dev veth_dst up");
->> >> >> +    SYS("ip addr add dev veth_src fc00::1/64");
->> >> >> +    SYS("ip addr add dev veth_dst fc00::2/64");
->> >> >> +    SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:=
-bb");
->> >> >> +    SYS("sysctl -w net.ipv6.conf.all.forwarding=3D1");
->> >> >
->> >> > These commands pollute current netns. The test has to create its ow=
-n netns
->> >> > like other tests do.
->> >>
->> >> Right, will fix.
->> >>
->> >> > The forwarding=3D1 is odd. Nothing in the comments or commit logs
->> >> > talks about it.
->> >>
->> >> Hmm, yeah, should probably have added an explanation, sorry about tha=
-t :)
->> >>
->> >> > I'm guessing it's due to patch 6 limitation of picking loopback
->> >> > for XDP_PASS and XDP_TX, right?
->> >> > There is ingress_ifindex field in struct xdp_md.
->> >> > May be use that to setup dev and rxq in test_run in patch 6?
->> >> > Then there will be no need to hack through forwarding=3D1 ?
->> >>
->> >> No, as you note there's already ingress_ifindex to set the device, and
->> >> the test does use that:
->> >>
->> >> +       memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALE=
-N);
->> >> +       skel->rodata->ifindex_out =3D ifindex_src;
->> >> +       ctx_in.ingress_ifindex =3D ifindex_src;
->> >
->> > My point is that this ingress_ifindex should be used instead of loopba=
-ck.
->> > Otherwise the test_run infra is lying to the xdp program.
->>
->> But it is already using that! There is just no explicit code in patch 6
->> to do that because that was already part of the XDP prog_run
->> functionality.
->>
->> Specifically, the existing bpf_prog_test_run_xdp() will pass the context
->> through xdp_convert_md_to_buff() which will resolve the ifindex and get
->> a dev reference. So the xdp_buff object being passed to the new
->> bpf_test_run_xdp_live() function already has the right device in
->> ctx->rxq.
->
-> Got it. Please make it clear in the commit log.
+This log message is for perf, right?
 
-Ah, sorry, already hit send on v6 before I saw this. If you want to fix
-up the commit message while applying, how about a paragraph at the end
-like:
+- Arnaldo
+ 
+> Signed-off-by: Christy Lee <christylee@fb.com>
+> ---
+>  tools/perf/util/bpf-loader.c | 58 ++++++++++++++++--------------------
+>  tools/perf/util/bpf_map.c    | 28 ++++++++---------
+>  2 files changed, 39 insertions(+), 47 deletions(-)
+> 
+> diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
+> index 528aeb0ab79d..ea5ccf0aed1b 100644
+> --- a/tools/perf/util/bpf-loader.c
+> +++ b/tools/perf/util/bpf-loader.c
+> @@ -1002,24 +1002,22 @@ __bpf_map__config_value(struct bpf_map *map,
+>  {
+>  	struct bpf_map_op *op;
+>  	const char *map_name = bpf_map__name(map);
+> -	const struct bpf_map_def *def = bpf_map__def(map);
+>  
+> -	if (IS_ERR(def)) {
+> -		pr_debug("Unable to get map definition from '%s'\n",
+> -			 map_name);
+> +	if (!map) {
+> +		pr_debug("Map '%s' is invalid\n", map_name);
+>  		return -BPF_LOADER_ERRNO__INTERNAL;
+>  	}
+>  
+> -	if (def->type != BPF_MAP_TYPE_ARRAY) {
+> +	if (bpf_map__type(map) != BPF_MAP_TYPE_ARRAY) {
+>  		pr_debug("Map %s type is not BPF_MAP_TYPE_ARRAY\n",
+>  			 map_name);
+>  		return -BPF_LOADER_ERRNO__OBJCONF_MAP_TYPE;
+>  	}
+> -	if (def->key_size < sizeof(unsigned int)) {
+> +	if (bpf_map__key_size(map) < sizeof(unsigned int)) {
+>  		pr_debug("Map %s has incorrect key size\n", map_name);
+>  		return -BPF_LOADER_ERRNO__OBJCONF_MAP_KEYSIZE;
+>  	}
+> -	switch (def->value_size) {
+> +	switch (bpf_map__value_size(map)) {
+>  	case 1:
+>  	case 2:
+>  	case 4:
+> @@ -1061,7 +1059,6 @@ __bpf_map__config_event(struct bpf_map *map,
+>  			struct parse_events_term *term,
+>  			struct evlist *evlist)
+>  {
+> -	const struct bpf_map_def *def;
+>  	struct bpf_map_op *op;
+>  	const char *map_name = bpf_map__name(map);
+>  	struct evsel *evsel = evlist__find_evsel_by_str(evlist, term->val.str);
+> @@ -1072,18 +1069,16 @@ __bpf_map__config_event(struct bpf_map *map,
+>  		return -BPF_LOADER_ERRNO__OBJCONF_MAP_NOEVT;
+>  	}
+>  
+> -	def = bpf_map__def(map);
+> -	if (IS_ERR(def)) {
+> -		pr_debug("Unable to get map definition from '%s'\n",
+> -			 map_name);
+> -		return PTR_ERR(def);
+> +	if (!map) {
+> +		pr_debug("Map '%s' is invalid\n", map_name);
+> +		return PTR_ERR(map);
+>  	}
+>  
+>  	/*
+>  	 * No need to check key_size and value_size:
+>  	 * kernel has already checked them.
+>  	 */
+> -	if (def->type != BPF_MAP_TYPE_PERF_EVENT_ARRAY) {
+> +	if (bpf_map__type(map) != BPF_MAP_TYPE_PERF_EVENT_ARRAY) {
+>  		pr_debug("Map %s type is not BPF_MAP_TYPE_PERF_EVENT_ARRAY\n",
+>  			 map_name);
+>  		return -BPF_LOADER_ERRNO__OBJCONF_MAP_TYPE;
+> @@ -1132,7 +1127,6 @@ config_map_indices_range_check(struct parse_events_term *term,
+>  			       const char *map_name)
+>  {
+>  	struct parse_events_array *array = &term->array;
+> -	const struct bpf_map_def *def;
+>  	unsigned int i;
+>  
+>  	if (!array->nr_ranges)
+> @@ -1143,10 +1137,8 @@ config_map_indices_range_check(struct parse_events_term *term,
+>  		return -BPF_LOADER_ERRNO__INTERNAL;
+>  	}
+>  
+> -	def = bpf_map__def(map);
+> -	if (IS_ERR(def)) {
+> -		pr_debug("ERROR: Unable to get map definition from '%s'\n",
+> -			 map_name);
+> +	if (!map) {
+> +		pr_debug("Map '%s' is invalid\n", map_name);
+>  		return -BPF_LOADER_ERRNO__INTERNAL;
+>  	}
+>  
+> @@ -1155,7 +1147,7 @@ config_map_indices_range_check(struct parse_events_term *term,
+>  		size_t length = array->ranges[i].length;
+>  		unsigned int idx = start + length - 1;
+>  
+> -		if (idx >= def->max_entries) {
+> +		if (idx >= bpf_map__max_entries(map)) {
+>  			pr_debug("ERROR: index %d too large\n", idx);
+>  			return -BPF_LOADER_ERRNO__OBJCONF_MAP_IDX2BIG;
+>  		}
+> @@ -1248,21 +1240,21 @@ int bpf__config_obj(struct bpf_object *obj,
+>  }
+>  
+>  typedef int (*map_config_func_t)(const char *name, int map_fd,
+> -				 const struct bpf_map_def *pdef,
+> +				 const struct bpf_map *map,
+>  				 struct bpf_map_op *op,
+>  				 void *pkey, void *arg);
+>  
+>  static int
+>  foreach_key_array_all(map_config_func_t func,
+>  		      void *arg, const char *name,
+> -		      int map_fd, const struct bpf_map_def *pdef,
+> +		      int map_fd, const struct bpf_map *map,
+>  		      struct bpf_map_op *op)
+>  {
+>  	unsigned int i;
+>  	int err;
+>  
+> -	for (i = 0; i < pdef->max_entries; i++) {
+> -		err = func(name, map_fd, pdef, op, &i, arg);
+> +	for (i = 0; i < bpf_map__max_entries(map); i++) {
+> +		err = func(name, map_fd, map, op, &i, arg);
+>  		if (err) {
+>  			pr_debug("ERROR: failed to insert value to %s[%u]\n",
+>  				 name, i);
+> @@ -1275,7 +1267,7 @@ foreach_key_array_all(map_config_func_t func,
+>  static int
+>  foreach_key_array_ranges(map_config_func_t func, void *arg,
+>  			 const char *name, int map_fd,
+> -			 const struct bpf_map_def *pdef,
+> +			 const struct bpf_map *map,
+>  			 struct bpf_map_op *op)
+>  {
+>  	unsigned int i, j;
+> @@ -1288,7 +1280,7 @@ foreach_key_array_ranges(map_config_func_t func, void *arg,
+>  		for (j = 0; j < length; j++) {
+>  			unsigned int idx = start + j;
+>  
+> -			err = func(name, map_fd, pdef, op, &idx, arg);
+> +			err = func(name, map_fd, map, op, &idx, arg);
+>  			if (err) {
+>  				pr_debug("ERROR: failed to insert value to %s[%u]\n",
+>  					 name, idx);
+> @@ -1304,7 +1296,7 @@ bpf_map_config_foreach_key(struct bpf_map *map,
+>  			   map_config_func_t func,
+>  			   void *arg)
+>  {
+> -	int err, map_fd;
+> +	int err, map_fd, type;
+>  	struct bpf_map_op *op;
+>  	const struct bpf_map_def *def;
+>  	const char *name = bpf_map__name(map);
+> @@ -1330,19 +1322,19 @@ bpf_map_config_foreach_key(struct bpf_map *map,
+>  		return map_fd;
+>  	}
+>  
+> +	type = bpf_map__type(map);
+>  	list_for_each_entry(op, &priv->ops_list, list) {
+> -		switch (def->type) {
+> +		switch (type) {
+>  		case BPF_MAP_TYPE_ARRAY:
+>  		case BPF_MAP_TYPE_PERF_EVENT_ARRAY:
+>  			switch (op->key_type) {
+>  			case BPF_MAP_KEY_ALL:
+>  				err = foreach_key_array_all(func, arg, name,
+> -							    map_fd, def, op);
+> +						map_fd, map, op);
+>  				break;
+>  			case BPF_MAP_KEY_RANGES:
+>  				err = foreach_key_array_ranges(func, arg, name,
+> -							       map_fd, def,
+> -							       op);
+> +						map_fd, map, op);
+>  				break;
+>  			default:
+>  				pr_debug("ERROR: keytype for map '%s' invalid\n",
+> @@ -1451,7 +1443,7 @@ apply_config_evsel_for_key(const char *name, int map_fd, void *pkey,
+>  
+>  static int
+>  apply_obj_config_map_for_key(const char *name, int map_fd,
+> -			     const struct bpf_map_def *pdef,
+> +			     const struct bpf_map *map,
+>  			     struct bpf_map_op *op,
+>  			     void *pkey, void *arg __maybe_unused)
+>  {
+> @@ -1460,7 +1452,7 @@ apply_obj_config_map_for_key(const char *name, int map_fd,
+>  	switch (op->op_type) {
+>  	case BPF_MAP_OP_SET_VALUE:
+>  		err = apply_config_value_for_key(map_fd, pkey,
+> -						 pdef->value_size,
+> +						 bpf_map__value_size(map),
+>  						 op->v.value);
+>  		break;
+>  	case BPF_MAP_OP_SET_EVSEL:
+> diff --git a/tools/perf/util/bpf_map.c b/tools/perf/util/bpf_map.c
+> index eb853ca67cf4..c863ae0c5cb5 100644
+> --- a/tools/perf/util/bpf_map.c
+> +++ b/tools/perf/util/bpf_map.c
+> @@ -9,25 +9,25 @@
+>  #include <stdlib.h>
+>  #include <unistd.h>
+>  
+> -static bool bpf_map_def__is_per_cpu(const struct bpf_map_def *def)
+> +static bool bpf_map__is_per_cpu(enum bpf_map_type type)
+>  {
+> -	return def->type == BPF_MAP_TYPE_PERCPU_HASH ||
+> -	       def->type == BPF_MAP_TYPE_PERCPU_ARRAY ||
+> -	       def->type == BPF_MAP_TYPE_LRU_PERCPU_HASH ||
+> -	       def->type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE;
+> +	return type == BPF_MAP_TYPE_PERCPU_HASH ||
+> +	       type == BPF_MAP_TYPE_PERCPU_ARRAY ||
+> +	       type == BPF_MAP_TYPE_LRU_PERCPU_HASH ||
+> +	       type == BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE;
+>  }
+>  
+> -static void *bpf_map_def__alloc_value(const struct bpf_map_def *def)
+> +static void *bpf_map__alloc_value(const struct bpf_map *map)
+>  {
+> -	if (bpf_map_def__is_per_cpu(def))
+> -		return malloc(round_up(def->value_size, 8) * sysconf(_SC_NPROCESSORS_CONF));
+> +	if (bpf_map__is_per_cpu(bpf_map__type(map)))
+> +		return malloc(round_up(bpf_map__value_size(map), 8) *
+> +			      sysconf(_SC_NPROCESSORS_CONF));
+>  
+> -	return malloc(def->value_size);
+> +	return malloc(bpf_map__value_size(map));
+>  }
+>  
+>  int bpf_map__fprintf(struct bpf_map *map, FILE *fp)
+>  {
+> -	const struct bpf_map_def *def = bpf_map__def(map);
+>  	void *prev_key = NULL, *key, *value;
+>  	int fd = bpf_map__fd(map), err;
+>  	int printed = 0;
+> @@ -35,15 +35,15 @@ int bpf_map__fprintf(struct bpf_map *map, FILE *fp)
+>  	if (fd < 0)
+>  		return fd;
+>  
+> -	if (IS_ERR(def))
+> -		return PTR_ERR(def);
+> +	if (!map)
+> +		return PTR_ERR(map);
+>  
+>  	err = -ENOMEM;
+> -	key = malloc(def->key_size);
+> +	key = malloc(bpf_map__key_size(map));
+>  	if (key == NULL)
+>  		goto out;
+>  
+> -	value = bpf_map_def__alloc_value(def);
+> +	value = bpf_map__alloc_value(map);
+>  	if (value == NULL)
+>  		goto out_free_key;
+>  
+> -- 
+> 2.30.2
 
+-- 
 
-The new mode reuses the setup code from the existing bpf_prog_run() for
-XDP. This means that userspace can set the ingress ifindex and RXQ
-number as part of the context object being passed to the kernel, in
-which case packets will look like they arrived on that interface when
-the test program returns XDP_PASS and the packets go up the stack.
-
->> No the problem of XDP_PASS going in the opposite direction of XDP_TX and
->> XDP_REDIRECT remains. This is just like on a physical interface: if you
->> XDP_TX a packet it goes back out, if you XDP_PASS it, it goes up the
->> stack. To intercept both after the fact, you need to look in two
->> different places.
->>
->> Anyhow, just using a TC hook for XDP_PASS works fine and gets rid of the
->> forwarding hack; I'll send a v6 with that just as soon as I verify that
->> I didn't break anything when running the traffic generator on bare metal=
- :)
->
-> Got it. You mean a tc ingress prog attached to veth_src ? That should wor=
-k.
-
-Yup, exactly!
-
--Toke
-
+- Arnaldo
