@@ -2,129 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B826486E03
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 00:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8422486E0F
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 00:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245689AbiAFXqx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 18:46:53 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:6306 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245659AbiAFXqx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 18:46:53 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 206M476Q001564
-        for <bpf@vger.kernel.org>; Thu, 6 Jan 2022 15:46:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=+in/XWxMRgbnaKU4v8f41pK2KkWjs35ZQyCrR4xw1Zo=;
- b=K79DWwBPczH197IgPqsCD1t07mtEkBX1dhOhxJ3y4++FJsFAgECMeIYMoQ9uIp08T+mL
- oyH1eoqqgL2ytDrh+mFMuZ7Sx4AyLR2t8U5cKg5MvuHYWcTXpkkG8gScCyjrKUFpSi1n
- sYVjUrG/iGYxSTpyePNVezWFQ3hIYb5Xid0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4wg27rc-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 15:46:53 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 6 Jan 2022 15:46:51 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id 8D09B15CB71A; Thu,  6 Jan 2022 15:46:44 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>
-CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: change bpf_prog_attach_xattr() to bpf_prog_attach_opts()
-Date:   Thu, 6 Jan 2022 15:46:39 -0800
-Message-ID: <20220106234639.1418484-3-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220106234639.1418484-1-christylee@fb.com>
-References: <20220106234639.1418484-1-christylee@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: N7Wiqy5DoLh9SqlwbVqw8zYZHdSz9Dlz
-X-Proofpoint-ORIG-GUID: N7Wiqy5DoLh9SqlwbVqw8zYZHdSz9Dlz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-06_10,2022-01-06_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0 phishscore=0
- spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201060144
-X-FB-Internal: deliver
+        id S245606AbiAFXwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 18:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245586AbiAFXwM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 18:52:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81F6C061245;
+        Thu,  6 Jan 2022 15:52:11 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 80FD3B8248C;
+        Thu,  6 Jan 2022 23:52:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B68BC36AE0;
+        Thu,  6 Jan 2022 23:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641513129;
+        bh=VzdssKBsKk7ql2J3op87GHuQU0+WMaZqZn3eCOALKqY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=aphWZ8SsaGIWBqMqJ9z9YkF62sPs4y/85qzCZ8YpNbjjV/KPvgL6HJfCH1DKGow0P
+         ipY+zYcJr3if5+gWaaYxenC59nNOpgcmha/2YZKAi0RyuWAwnnlpiotuf1NNblIJI5
+         V0VhWSLFOCj2liwNqCaAcPjtxVI/N2G/ZmDsl7fR27/fSCPjxTOcgtDA1Dy3q2QTIW
+         m7MkdfC4/hijA0DqbtezkrOKOrj+07FQE40Ka9DIinpW+l2mvNg5FgFZDSRCM03FJQ
+         2EdI87ovGmcvprMA8xxoxJ6oqEML7gOv0kZxupA0tW6SRza0KDUTac7ubWO2KjCOo7
+         JWyIKXDcvscDQ==
+Date:   Fri, 7 Jan 2022 08:52:03 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
+Message-Id: <20220107085203.14f9c06e0537ea6b00779842@kernel.org>
+In-Reply-To: <CAADnVQLjjcsckQVqaSB8ODB4FKdVUt-PB9xyJ3FAa2GWGLbHgA@mail.gmail.com>
+References: <20220104080943.113249-1-jolsa@kernel.org>
+        <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
+        <YdaoTuWjEeT33Zzm@krava>
+        <20220106225943.87701fcc674202dc3e172289@kernel.org>
+        <CAADnVQLjjcsckQVqaSB8ODB4FKdVUt-PB9xyJ3FAa2GWGLbHgA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_prog_attach_opts() is being deprecated and renamed to
-bpf_prog_attach_xattr(). Change all selftests/bpf's uage to the new name.
+On Thu, 6 Jan 2022 09:40:17 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Signed-off-by: Christy Lee <christylee@fb.com>
----
- .../selftests/bpf/prog_tests/cgroup_attach_multi.c   | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> On Thu, Jan 6, 2022 at 5:59 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > That seems to bind your mind. The program type is just a programing
+> > 'model' of the bpf. You can choose the best implementation to provide
+> > equal functionality. 'kprobe' in bpf is just a name that you call some
+> > instrumentations which can probe kernel code.
+> 
+> No. We're not going to call it "fprobe" or any other name.
+> From bpf user's pov it's going to be "multi attach kprobe",
+> because this is how everyone got to know kprobes.
+> The 99% usage is at the beginning of the funcs.
+> When users say "kprobe" they don't care how kernel attaches it.
+> The func entry limitation for "multi attach kprobe" is a no-brainer.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c=
- b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-index d3e8f729c623..38b3c47293da 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-@@ -194,14 +194,14 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	attach_opts.flags =3D BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
- 	attach_opts.replace_prog_fd =3D allow_prog[0];
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_override", "unexpected success\n"))
- 		goto err;
- 	CHECK_FAIL(errno !=3D EINVAL);
-=20
- 	attach_opts.flags =3D BPF_F_REPLACE;
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_no_multi", "unexpected success\n"))
- 		goto err;
-@@ -209,7 +209,7 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	attach_opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_REPLACE;
- 	attach_opts.replace_prog_fd =3D -1;
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_bad_fd", "unexpected success\n"))
- 		goto err;
-@@ -217,7 +217,7 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	/* replacing a program that is not attached to cgroup should fail  */
- 	attach_opts.replace_prog_fd =3D allow_prog[3];
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_no_ent", "unexpected success\n"))
- 		goto err;
-@@ -225,14 +225,14 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	/* replace 1st from the top program */
- 	attach_opts.replace_prog_fd =3D allow_prog[0];
--	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
- 					BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "prog_replace", "errno=3D%d\n", errno))
- 		goto err;
-=20
- 	/* replace program with itself */
- 	attach_opts.replace_prog_fd =3D allow_prog[6];
--	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
- 					BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "prog_replace", "errno=3D%d\n", errno))
- 		goto err;
---=20
-2.30.2
+Agreed. I think I might mislead you. From the bpf user pov, it always be
+shown as 'multi attached kprobes (but only for the function entry)'
+the 'fprobe' is kernel internal API name.
 
+> And we need both "multi attach kprobe" and "multi attach kretprobe"
+> at the same time. It's no go to implement one first and the other
+> some time later.
+
+You can provide the interface to user space, but the kernel implementation
+is optimized step by step. We can start it with using real multiple
+kretprobes, and then, switch to 'fprobe' after integrating fgraph
+callback. :)
+
+Thank you,
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
