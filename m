@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CA3486170
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 09:29:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F892486175
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 09:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236573AbiAFI3J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 03:29:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42158 "EHLO
+        id S236447AbiAFIaw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 03:30:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37844 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236547AbiAFI3H (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 03:29:07 -0500
+        by vger.kernel.org with ESMTP id S236602AbiAFIaw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 03:30:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641457747;
+        s=mimecast20190719; t=1641457851;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=NQC5BMXb3FUA0pAf7I+eZdd/zk8xeROhiXpc2k+6AtY=;
-        b=BUiM93ylCC9Gatx6rtQYrhaGN7Ofb2Jyfatn8c2UXcwIHTJQWGQFt1DO77pI8YMZRIm6iQ
-        EIfgZj65QO4NzT0t4a9iH2Apkz0CmPNvwUhRUGTNe8z3i+HX9DgFzXY4WUDl7uBar6K6vf
-        fdDieCjrbJFDEhFYtZ8LI20zgyFSTTg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=vjj+fSGy3AdmbQ9M5rrQ05B4+QRffIiePU4dNg++7jg=;
+        b=AhEJK7vYPSnmgpvyiZ30wNIABLqe9VUIUMTqRizGGAimqMSdeuym14KdvUZ2deqJD4tPPW
+        1kbQUjoMmW0rWMCBeQYwFrRmU7JAHBp3dXEZ+snvgfcIsRj+LN569GuRy1Qt8/71N8C7Vc
+        0Cv9m1TJpIq9g8JmpYnHS1jayMe9iYM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-256-vb8UGqKoPz6580yHoGOcUw-1; Thu, 06 Jan 2022 03:29:06 -0500
-X-MC-Unique: vb8UGqKoPz6580yHoGOcUw-1
-Received: by mail-ed1-f71.google.com with SMTP id t1-20020a056402524100b003f8500f6e35so1413711edd.8
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 00:29:06 -0800 (PST)
+ us-mta-220-ej86yBXiOSqIHrzYqlhD5A-1; Thu, 06 Jan 2022 03:30:50 -0500
+X-MC-Unique: ej86yBXiOSqIHrzYqlhD5A-1
+Received: by mail-wm1-f72.google.com with SMTP id n3-20020a05600c3b8300b00345c3fc40b0so2719509wms.3
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 00:30:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NQC5BMXb3FUA0pAf7I+eZdd/zk8xeROhiXpc2k+6AtY=;
-        b=wzIlZg0fOyfyI/XdUENxXaL24Bo6uQBK6TZL41VoeyhEueXRRJb3A9OD83jMPPKwK4
-         fifFkYA3m2xUXCI7fVs26VjfuRyZ0wtrEHdkf6yEdl5LxCut5aIpJKw1gp/YE6KkrKLN
-         rBMXYulZVBP13vu1WfKkq3HPW+R5uiXQDHb2tXLKE+YYRJQa/ImFZYme2xCE4OljqfrS
-         wmrJDfD7He9+fL2wkr+64/5mnKhN0C76yx/89uf+HjHeLub9TB1xq2+EWR6rxS86uqq8
-         4xIHGMODEC0amIL3x8Bj5fwnrzCkU68QdVADJbzu4bNrySx3MtlNQvosliGOONhEA2gu
-         qn5w==
-X-Gm-Message-State: AOAM532GIn9W/r/viek3ShPVghGKjanklK1WWtpVMhNEABNSisZnLKsU
-        oC2/7XDBZkOmpuz83h1TMpQGJ/rVn1nkA+7xzwMVPd2TsN5cBh+PDxUx1b8mSSDyHvNqkIVstoq
-        Mx/TzT149+FDX
-X-Received: by 2002:a17:906:375b:: with SMTP id e27mr201637ejc.148.1641457745129;
-        Thu, 06 Jan 2022 00:29:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzNlSOMnYiiXSAh7YLcDBrtYRzSS2zc+Wc7pv8jFJRHr30nvdmNczWB9oJHtZprTWisVPT4bQ==
-X-Received: by 2002:a17:906:375b:: with SMTP id e27mr201627ejc.148.1641457744947;
-        Thu, 06 Jan 2022 00:29:04 -0800 (PST)
+        bh=vjj+fSGy3AdmbQ9M5rrQ05B4+QRffIiePU4dNg++7jg=;
+        b=zCE5NVwRIqurWvZX6kUrPsTTq0V8Xw+xHoUJgk1F38PLpbnCS6mrP9FZUvQ63DjXE6
+         24EancJQc4090gjVNyKb+FD750aXreQSvDRkDLywgfAd6pDXdkTU55dHM9TNw6OBXGom
+         DwCYFz5+TP1xQUNN1jBFJU3H2r0UXW0bBPCdmyxhnlRifd/zmV3zfX0/k8fjJXomQrC8
+         Mt++AzPrWcLa25GAUejbpTXJQcDJqc0CwAmXg1sb8dRmj4VMPVDrdgBDqrHLDEcv8byr
+         sgHEv6wYnB4TFu1LkpXZxf/BYi2HKlkk/E5hHdfGZQUUpOm9Y8PfQNAti+zKIayXvFw9
+         zanA==
+X-Gm-Message-State: AOAM530zLcVK31cY6UbpZjrartspz4/IBdublHimUWcHrYcKRJzd1EkC
+        4jWQP7UaPbOHfppuCNjccyl7zuKoOmz4Qes0kUuCyde/oxrZ683pujC/ufTwgbUa27rJxjeCECP
+        I5ioVz4iAJlcM
+X-Received: by 2002:a05:6000:1b0c:: with SMTP id f12mr5705514wrz.230.1641457849153;
+        Thu, 06 Jan 2022 00:30:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwfwhEhUu3E8ESCkUP5/TUeTOMDj/7fY1LyWDXZZLeuan85OIM0O4b+3gl/fmau7YNN/mTEJg==
+X-Received: by 2002:a05:6000:1b0c:: with SMTP id f12mr5705489wrz.230.1641457848930;
+        Thu, 06 Jan 2022 00:30:48 -0800 (PST)
 Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id 18sm317383ejw.187.2022.01.06.00.29.04
+        by smtp.gmail.com with ESMTPSA id b14sm1459488wri.112.2022.01.06.00.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 00:29:04 -0800 (PST)
-Date:   Thu, 6 Jan 2022 09:29:02 +0100
+        Thu, 06 Jan 2022 00:30:47 -0800 (PST)
+Date:   Thu, 6 Jan 2022 09:30:45 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -65,87 +65,145 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
-Message-ID: <YdaoTuWjEeT33Zzm@krava>
+Subject: Re: [PATCH 02/13] kprobe: Keep traced function address
+Message-ID: <Ydaoteitn9ufdTib@krava>
 References: <20220104080943.113249-1-jolsa@kernel.org>
- <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
+ <20220104080943.113249-3-jolsa@kernel.org>
+ <20220105233252.2bc92d14c42827328109d9d0@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
+In-Reply-To: <20220105233252.2bc92d14c42827328109d9d0@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 06, 2022 at 12:24:35AM +0900, Masami Hiramatsu wrote:
-> On Tue,  4 Jan 2022 09:09:30 +0100
+On Wed, Jan 05, 2022 at 11:32:52PM +0900, Masami Hiramatsu wrote:
+> On Tue,  4 Jan 2022 09:09:32 +0100
 > Jiri Olsa <jolsa@redhat.com> wrote:
 > 
-> > hi,
-> > adding support to attach multiple kprobes within single syscall
-> > and speed up attachment of many kprobes.
+> > The bpf_get_func_ip_kprobe helper should return traced function
+> > address, but it's doing so only for kprobes that are placed on
+> > the function entry.
 > > 
-> > The previous attempt [1] wasn't fast enough, so coming with new
-> > approach that adds new kprobe interface.
-> 
-> Yes, since register_kprobes() just registers multiple kprobes on
-> array. This is designed for dozens of kprobes.
-> 
-> > The attachment speed of of this approach (tested in bpftrace)
-> > is now comparable to ftrace tracer attachment speed.. fast ;-)
-> 
-> Yes, because that if ftrace, not kprobes.
-> 
-> > The limit of this approach is forced by using ftrace as attach
-> > layer, so it allows only kprobes on function's entry (plus
-> > return probes).
-> 
-> Note that you also need to multiply the number of instances.
-> 
+> > If kprobe is placed within the function, bpf_get_func_ip_kprobe
+> > returns that address instead of function entry.
 > > 
-> > This patchset contains:
-> >   - kprobes support to register multiple kprobes with current
-> >     kprobe API (patches 1 - 8)
-> >   - bpf support ot create new kprobe link allowing to attach
-> >     multiple addresses (patches 9 - 14)
-> > 
-> > We don't need to care about multiple probes on same functions
-> > because it's taken care on the ftrace_ops layer.
+> > Storing the function entry directly in kprobe object, so it could
+> > be used in bpf_get_func_ip_kprobe helper.
 > 
-> Hmm, I think there may be a time to split the "kprobe as an 
-> interface for the software breakpoint" and "kprobe as a wrapper
-> interface for the callbacks of various instrumentations", like
-> 'raw_kprobe'(or kswbp) and 'kprobes'.
-> And this may be called as 'fprobe' as ftrace_ops wrapper.
-> (But if the bpf is enough flexible, this kind of intermediate layer
->  may not be needed, it can use ftrace_ops directly, eventually)
-> 
-> Jiri, have you already considered to use ftrace_ops from the
-> bpf directly? Are there any issues?
-> (bpf depends on 'kprobe' widely?)
+> Hmm, please do this in bpf side, which should have some data structure
+> around the kprobe itself. Do not add this "specialized" field to
+> the kprobe data structure.
 
-at the moment there's not ftrace public interface for the return
-probe merged in, so to get the kretprobe working I had to use
-kprobe interface
+ok, will check
 
-but.. there are patches Steven shared some time ago, that do that
-and make graph_ops available as kernel interface
-
-I recall we considered graph_ops interface before as common attach
-layer for trampolines, which was bad, but it might actually make
-sense for kprobes
-
-I'll need to check it in more details but I think both graph_ops and
-kprobe do about similar thing wrt hooking return probe, so it should
-be comparable.. and they are already doing the same for the entry hook,
-because kprobe is mostly using ftrace for that
-
-we would not need to introduce new program type - kprobe programs
-should be able to run from ftrace callbacks just fine
-
-so we would have:
-  - kprobe type programs attaching to:
-  - new BPF_LINK_TYPE_FPROBE link using the graph_ops as attachment layer
-
+thanks,
 jirka
+
+> 
+> Thank you,
+> 
+> > 
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  include/linux/kprobes.h                              |  3 +++
+> >  kernel/kprobes.c                                     | 12 ++++++++++++
+> >  kernel/trace/bpf_trace.c                             |  2 +-
+> >  tools/testing/selftests/bpf/progs/get_func_ip_test.c |  4 ++--
+> >  4 files changed, 18 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/include/linux/kprobes.h b/include/linux/kprobes.h
+> > index 8c8f7a4d93af..a204df4fef96 100644
+> > --- a/include/linux/kprobes.h
+> > +++ b/include/linux/kprobes.h
+> > @@ -74,6 +74,9 @@ struct kprobe {
+> >  	/* Offset into the symbol */
+> >  	unsigned int offset;
+> >  
+> > +	/* traced function address */
+> > +	unsigned long func_addr;
+> > +
+> >  	/* Called before addr is executed. */
+> >  	kprobe_pre_handler_t pre_handler;
+> >  
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index d20ae8232835..c4060a8da050 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -1310,6 +1310,7 @@ static void init_aggr_kprobe(struct kprobe *ap, struct kprobe *p)
+> >  	copy_kprobe(p, ap);
+> >  	flush_insn_slot(ap);
+> >  	ap->addr = p->addr;
+> > +	ap->func_addr = p->func_addr;
+> >  	ap->flags = p->flags & ~KPROBE_FLAG_OPTIMIZED;
+> >  	ap->pre_handler = aggr_pre_handler;
+> >  	/* We don't care the kprobe which has gone. */
+> > @@ -1588,6 +1589,16 @@ static int check_kprobe_address_safe(struct kprobe *p,
+> >  	return ret;
+> >  }
+> >  
+> > +static unsigned long resolve_func_addr(kprobe_opcode_t *addr)
+> > +{
+> > +	char str[KSYM_SYMBOL_LEN];
+> > +	unsigned long offset;
+> > +
+> > +	if (kallsyms_lookup((unsigned long) addr, NULL, &offset, NULL, str))
+> > +		return (unsigned long) addr - offset;
+> > +	return 0;
+> > +}
+> > +
+> >  int register_kprobe(struct kprobe *p)
+> >  {
+> >  	int ret;
+> > @@ -1600,6 +1611,7 @@ int register_kprobe(struct kprobe *p)
+> >  	if (IS_ERR(addr))
+> >  		return PTR_ERR(addr);
+> >  	p->addr = addr;
+> > +	p->func_addr = resolve_func_addr(addr);
+> >  
+> >  	ret = warn_kprobe_rereg(p);
+> >  	if (ret)
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 21aa30644219..25631253084a 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -1026,7 +1026,7 @@ BPF_CALL_1(bpf_get_func_ip_kprobe, struct pt_regs *, regs)
+> >  {
+> >  	struct kprobe *kp = kprobe_running();
+> >  
+> > -	return kp ? (uintptr_t)kp->addr : 0;
+> > +	return kp ? (uintptr_t)kp->func_addr : 0;
+> >  }
+> >  
+> >  static const struct bpf_func_proto bpf_get_func_ip_proto_kprobe = {
+> > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > index a587aeca5ae0..e988aefa567e 100644
+> > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
+> > @@ -69,7 +69,7 @@ int test6(struct pt_regs *ctx)
+> >  {
+> >  	__u64 addr = bpf_get_func_ip(ctx);
+> >  
+> > -	test6_result = (const void *) addr == &bpf_fentry_test6 + 5;
+> > +	test6_result = (const void *) addr == &bpf_fentry_test6;
+> >  	return 0;
+> >  }
+> >  
+> > @@ -79,6 +79,6 @@ int test7(struct pt_regs *ctx)
+> >  {
+> >  	__u64 addr = bpf_get_func_ip(ctx);
+> >  
+> > -	test7_result = (const void *) addr == &bpf_fentry_test7 + 5;
+> > +	test7_result = (const void *) addr == &bpf_fentry_test7;
+> >  	return 0;
+> >  }
+> > -- 
+> > 2.33.1
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+> 
 
