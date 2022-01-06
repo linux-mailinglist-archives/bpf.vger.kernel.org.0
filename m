@@ -2,208 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BBAE4869AE
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 19:21:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9569A486A8A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 20:34:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242681AbiAFSVt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 13:21:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53131 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242673AbiAFSVq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 13:21:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641493305;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZIrk+bfFu7JK7es/+sJfTXkxXQZhqqBoOQaxDDJ4K7g=;
-        b=VeSrU73DRsAfASMjPCASDEmJ0mPCyTZr96SI70KxaykRqFUbAFQ0ZTD2rE55454HjtBOCe
-        STtJsZ5m6DT+AKyGBd0ckJir38GKXaL06ujAh0FA/mzGHRiiYc6MUTyN41miCuJrIuTMSR
-        sUVGTWnYbTzG0IUS4EEBI32fFULqsWo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-160-V18xMDUePIqnA0A5-Tr0vw-1; Thu, 06 Jan 2022 13:21:44 -0500
-X-MC-Unique: V18xMDUePIqnA0A5-Tr0vw-1
-Received: by mail-ed1-f69.google.com with SMTP id g11-20020a056402090b00b003f8fd1ac475so2615064edz.1
-        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 10:21:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ZIrk+bfFu7JK7es/+sJfTXkxXQZhqqBoOQaxDDJ4K7g=;
-        b=j+q851dRFnWRJOLIZTZY1qWp3rnlFv4gcmN/sg3oDJcJa6DhEoxxqUwuNCP24z808i
-         5G89+co5Cxu1J9Oan1Ah7LkTjWgi9iLdQkfye01DRmUh9hYHJS2VBX2UMtC7oHD+BKA0
-         mwzo+XPjPtd/9ddfeDqDhraYa0gAXNKM9yhaPFjpGuXZ9FEfe9FQykpVJdgpGMfRfl46
-         gzbJsLC19UoOdTEk5wMiW24QOaWm2kQAdpGw91+X1zdlBsxdmemTx42AjphrPNQFizWx
-         eC4XLOrH89klTLYjREyJMCCDMz++fxSuIQBEygAQVKWEM1RNYgwFNURJnqQ3u9i+t59R
-         oqxg==
-X-Gm-Message-State: AOAM533mP8yRl5CPJO1hjugrFHG8V805daQXL3j5egJpaEOMpb4qxVj+
-        UvQ8x64Tw7rfHSxH/MdHBpiU/3PyPWN8ExZbI3rTfnrvEde5zOvViLrLYfq40sg2oL5uPRFkeQ2
-        EcX91ThHPLfBo
-X-Received: by 2002:a05:6402:128e:: with SMTP id w14mr57918107edv.161.1641493303023;
-        Thu, 06 Jan 2022 10:21:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxWddGHE5gYcGtu0TY/FiDON2PbAvku8S1l5WCHmXgXN6WJ4tE/0bTGd0asV9ALstp2FQxUgQ==
-X-Received: by 2002:a05:6402:128e:: with SMTP id w14mr57918024edv.161.1641493301924;
-        Thu, 06 Jan 2022 10:21:41 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h10sm1031718edj.1.2022.01.06.10.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 10:21:41 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 40DA1181F2A; Thu,  6 Jan 2022 19:21:39 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
- XDP_REDIRECT in bpf_prog_run()
-In-Reply-To: <CAADnVQ+j=DO8fMCcpoHmAjrW5sTbhHp_OA4eVpcKcwwRzsvKTA@mail.gmail.com>
-References: <20220103150812.87914-1-toke@redhat.com>
- <20220103150812.87914-8-toke@redhat.com>
- <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
- <87y23t9blc.fsf@toke.dk>
- <CAADnVQ+j=DO8fMCcpoHmAjrW5sTbhHp_OA4eVpcKcwwRzsvKTA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 06 Jan 2022 19:21:39 +0100
-Message-ID: <87tuegafnw.fsf@toke.dk>
+        id S234361AbiAFTew (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 14:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231801AbiAFTev (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 14:34:51 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB951C061245;
+        Thu,  6 Jan 2022 11:34:51 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E2A92B82354;
+        Thu,  6 Jan 2022 19:34:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CE9EC36AE3;
+        Thu,  6 Jan 2022 19:34:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641497688;
+        bh=7Go2vgeGYWubnF+82VhrywldXz4Xvt6wmXlJuZcLP5k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uUgcB6kp1S6wPwOPmN/OgWmvBByQt5QLnNiae0S/B9SRr9IA+Q21BOW/bVyBllhPI
+         rWrtp6hVH/WMiatRHXy7kVE9Dhjc2Uqj/36kS0ohLquFnkhrOxPHfe+vHh4hAYo8Qg
+         A6ADJq+ycNHXu2gLc/1Yq8ba5X5vIkeHHtI4N5TBaO8z8LKhsie91uTgPsdBbS7wml
+         FUvJG3myCjTQIOdnL611pwv4efYEqABmURpcrQvOYZ3W6otnZ1yqp4rjQXn4j9HN7v
+         uhbKXj2+p96GNlb0RQqADTGHgbZDI0aCzcJZL6Tw/ezl53smz3d593OnmNOQ25Wlfl
+         B0M02F6IBQYsA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 677E240B92; Thu,  6 Jan 2022 16:34:46 -0300 (-03)
+Date:   Thu, 6 Jan 2022 16:34:46 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: perf build broken seemingly due to libbpf changes, checking...
+Message-ID: <YddEVgNKBJiqcV6Y@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+After merging torvalds/master to perf/urgent I'm getting this:
 
-> On Thu, Jan 6, 2022 at 6:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->>
->> > On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> >> +
->> >> +#define NUM_PKTS 3
->> >
->> > May be send a bit more than 3 packets?
->> > Just to test skb_list logic for XDP_PASS.
->>
->> OK, can do.
->>
->> >> +
->> >> +    /* We setup a veth pair that we can not only XDP_REDIRECT packets
->> >> +     * between, but also route them. The test packet (defined above)=
- has
->> >> +     * address information so it will be routed back out the same in=
-terface
->> >> +     * after it has been received, which will allow it to be picked =
-up by
->> >> +     * the XDP program on the destination interface.
->> >> +     *
->> >> +     * The XDP program we run with bpf_prog_run() will cycle through=
- all
->> >> +     * four return codes (DROP/PASS/TX/REDIRECT), so we should end u=
-p with
->> >> +     * NUM_PKTS - 1 packets seen on the dst iface. We match the pack=
-ets on
->> >> +     * the UDP payload.
->> >> +     */
->> >> +    SYS("ip link add veth_src type veth peer name veth_dst");
->> >> +    SYS("ip link set dev veth_src address 00:11:22:33:44:55");
->> >> +    SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
->> >> +    SYS("ip link set dev veth_src up");
->> >> +    SYS("ip link set dev veth_dst up");
->> >> +    SYS("ip addr add dev veth_src fc00::1/64");
->> >> +    SYS("ip addr add dev veth_dst fc00::2/64");
->> >> +    SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb"=
-);
->> >> +    SYS("sysctl -w net.ipv6.conf.all.forwarding=3D1");
->> >
->> > These commands pollute current netns. The test has to create its own n=
-etns
->> > like other tests do.
->>
->> Right, will fix.
->>
->> > The forwarding=3D1 is odd. Nothing in the comments or commit logs
->> > talks about it.
->>
->> Hmm, yeah, should probably have added an explanation, sorry about that :)
->>
->> > I'm guessing it's due to patch 6 limitation of picking loopback
->> > for XDP_PASS and XDP_TX, right?
->> > There is ingress_ifindex field in struct xdp_md.
->> > May be use that to setup dev and rxq in test_run in patch 6?
->> > Then there will be no need to hack through forwarding=3D1 ?
->>
->> No, as you note there's already ingress_ifindex to set the device, and
->> the test does use that:
->>
->> +       memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
->> +       skel->rodata->ifindex_out =3D ifindex_src;
->> +       ctx_in.ingress_ifindex =3D ifindex_src;
->
-> My point is that this ingress_ifindex should be used instead of loopback.
-> Otherwise the test_run infra is lying to the xdp program.
+util/bpf-event.c:25:21: error: no previous prototype for ‘btf__load_from_kernel_by_id’ [-Werror=missing-prototypes]
+   25 | struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+util/bpf-event.c:37:1: error: no previous prototype for ‘bpf_object__next_program’ [-Werror=missing-prototypes]
+   37 | bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+util/bpf-event.c:46:1: error: no previous prototype for ‘bpf_object__next_map’ [-Werror=missing-prototypes]
+   46 | bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
+      | ^~~~~~~~~~~~~~~~~~~~
+util/bpf-event.c:55:1: error: no previous prototype for ‘btf__raw_data’ [-Werror=missing-prototypes]
+   55 | btf__raw_data(const struct btf *btf_ro, __u32 *size)
+      | ^~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf-event.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
+util/bpf_counter.c: In function ‘bpf_target_prog_name’:
+util/bpf_counter.c:82:15: error: implicit declaration of function ‘btf__load_from_kernel_by_id’ [-Werror=implicit-function-declaration]
+   82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+util/bpf_counter.c:82:13: error: assignment to ‘struct btf *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
+   82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
+      |             ^
+cc1: all warnings being treated as errors
+make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter.o] Error 1
 
-But it is already using that! There is just no explicit code in patch 6
-to do that because that was already part of the XDP prog_run
-functionality.
+I'm checking now...
 
-Specifically, the existing bpf_prog_test_run_xdp() will pass the context
-through xdp_convert_md_to_buff() which will resolve the ifindex and get
-a dev reference. So the xdp_buff object being passed to the new
-bpf_test_run_xdp_live() function already has the right device in
-ctx->rxq.
+BTW I test perf builds with:
 
-I'll add a check for this to the selftest to make it explicit.
+make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin && git status && perf test python
 
->> I enable forwarding because the XDP program that counts the packets is
->> running on the other end of the veth pair (on veth_dst), while the
->> traffic gen is using veth_src as its ingress ifindex. So for XDP_TX and
->> XDP_REDIRECT we send the frame back out the veth device, and it ends up
->> being processed by the XDP program on veth_dst, and counted.
->
-> Not for XDP_TX. If I'm reading patch 6 correctly it gets xmited
-> out of loopback.
 
-See above.
+-- 
 
->> But when
->> the test program returns XDP_PASS, the packet will go up the frame; so
->> to get it back to the counting program I enable forwarding and set the
->> packet dst IP so that the stack routes it back out the same interface.
->>
->> I'll admit this is a bit hacky; I guess I can add a second TC ingress
->> program that will count the packets being XDP_PASS'ed instead...
->
-> No. Please figure out how to XDP_PASS and XDP_TX without enabling forward
-> and counting in different places.
-> imo the forwarding hides the issue in the design that should be addressed.
-> When rx ifindex is an actual ifindex given by user space instead of
-> loopback all problems go away.
-
-No the problem of XDP_PASS going in the opposite direction of XDP_TX and
-XDP_REDIRECT remains. This is just like on a physical interface: if you
-XDP_TX a packet it goes back out, if you XDP_PASS it, it goes up the
-stack. To intercept both after the fact, you need to look in two
-different places.
-
-Anyhow, just using a TC hook for XDP_PASS works fine and gets rid of the
-forwarding hack; I'll send a v6 with that just as soon as I verify that
-I didn't break anything when running the traffic generator on bare metal :)
-
--Toke
-
+- Arnaldo
