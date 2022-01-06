@@ -2,445 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D58DC4865AF
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 14:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBD8486605
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 15:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239833AbiAFN7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 08:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239827AbiAFN7w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 08:59:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9E1C061245;
-        Thu,  6 Jan 2022 05:59:52 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C0C3DB82187;
-        Thu,  6 Jan 2022 13:59:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B013C36AE3;
-        Thu,  6 Jan 2022 13:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641477589;
-        bh=fgSR1LFi3kuUftxv03WEvsxMpqnrcirA/Nh4Dp9V+U0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DDZfG4D8o37J/ebD5pINOeQ2s7juuqHVETVLOLAbCR1B1Xe++wXRdHpBVgFG2Cm9F
-         3/2ksbE4iCxK4/AqfRUOOZzz4zaYwzPweBuD0XHpDE5p7SnI9MGIFEXWI5G6KSGkBx
-         +CiTsAHnPoqqq3FRTRrQtUE4DpIWYRHGs5SbLxuLl3hgqs9FNbZ9PeTptOkNb34fu1
-         n/ndBhvfkgrtZy7ZhNvOshsmULgM01NFXopq1LumqzAPSPQb5JCW0MBA1BVS1CPweZ
-         vqomihJCjyEPNK5w6R+QDjdj0kcQorkWoxOBxISuZGt5KDmRkq0RFJCooQr8bAWHfT
-         MP+lmCmFCfPuA==
-Date:   Thu, 6 Jan 2022 22:59:43 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
+        id S240053AbiAFO2r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 09:28:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23216 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239914AbiAFO2q (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 09:28:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641479326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wKJ1mPwObqH/MnKEsnkO0BZSurZ6kA0eO6sa4cHwvAc=;
+        b=boQs4DudgarEZ0dj4NBDiA7Dtk1PSXLPrHCIa4t9u1Vosd9AUyiubhKutg93s+LjVaGvYu
+        eHXDuan3Y7QdPhkoBePVfWpDXFEinRVSnlqIfzixQSLmPUMz8qJrZgVKdPiOz1DVnxb4aS
+        qe+OW6/1W25G4ExLnd+uXagBzsWMEJc=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-618-1yPlgzgsO7eXFdlRoxQPvw-1; Thu, 06 Jan 2022 09:28:45 -0500
+X-MC-Unique: 1yPlgzgsO7eXFdlRoxQPvw-1
+Received: by mail-ed1-f71.google.com with SMTP id i5-20020a05640242c500b003f84839a8c3so2090935edc.6
+        for <bpf@vger.kernel.org>; Thu, 06 Jan 2022 06:28:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=wKJ1mPwObqH/MnKEsnkO0BZSurZ6kA0eO6sa4cHwvAc=;
+        b=Z8F0B41y0zzGYaNyzHb9bPgSbItJB7tKGPFUzq4FNZsc5O2KUIn5wbJQDhKc/rEmNo
+         Cyfk61be7e7sQR5+14BIpuoM+wQ/nGWfY+8MVDFhfmNZhlCktfCdDGGXw+6lFzLl1vmU
+         hMAPcrefOsyJ8g8fwtotZrYzU32dgZrUiBIHqO8cxzGCxG2u4jKCYlFQWYCI9SXcg93D
+         Ur0SedyBihoD1IqAVqZPzpM5IZpbhxvcJpIsufBhx+m26SmFcoNbJjpQO0Sd3Dt7siBx
+         lfTyWQ9p5/Q6eg9I3PW5twXV2T4htAu7MbN4CCJldjLt18+i+Qm1HZjg7E1R2oANVZhb
+         iX7A==
+X-Gm-Message-State: AOAM532K+fsXA7UP6UYAwEDLo2k8TKwu6JBEJz0KppL011KdoKj4VU9D
+        rrcEnt9Gw0K0LKKe4R0Anxr9SSyRHeEN+OYhXgyZeiISMKpLIxLp6idsdAB+l4XqptFdH5k6ypx
+        i00fmGC1s+gLx
+X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr6668212edb.380.1641479324039;
+        Thu, 06 Jan 2022 06:28:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyrK9obIO+dlnSMkar0Yt/gFfV8kj1kacu79HPEVklYuiNK8OzMZNtW3ES9rdxF3Rm9mS27w==
+X-Received: by 2002:a05:6402:2211:: with SMTP id cq17mr6668181edb.380.1641479323715;
+        Thu, 06 Jan 2022 06:28:43 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id sg39sm530674ejc.66.2022.01.06.06.28.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jan 2022 06:28:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id E004E181F2A; Thu,  6 Jan 2022 15:28:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC 00/13] kprobe/bpf: Add support to attach multiple kprobes
-Message-Id: <20220106225943.87701fcc674202dc3e172289@kernel.org>
-In-Reply-To: <YdaoTuWjEeT33Zzm@krava>
-References: <20220104080943.113249-1-jolsa@kernel.org>
-        <20220106002435.d73e4010c93462fbee9ef074@kernel.org>
-        <YdaoTuWjEeT33Zzm@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="Multipart=_Thu__6_Jan_2022_22_59_43_+0900_xoXUXmLlhl=d1Yqq"
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v5 6/7] bpf: Add "live packet" mode for XDP in
+ bpf_prog_run()
+In-Reply-To: <20220106042618.kperh3ovyuckxecl@ast-mbp.dhcp.thefacebook.com>
+References: <20220103150812.87914-1-toke@redhat.com>
+ <20220103150812.87914-7-toke@redhat.com>
+ <20220106042618.kperh3ovyuckxecl@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 06 Jan 2022 15:28:41 +0100
+Message-ID: <871r1laqg6.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a multi-part message in MIME format.
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
---Multipart=_Thu__6_Jan_2022_22_59_43_+0900_xoXUXmLlhl=d1Yqq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+> On Mon, Jan 03, 2022 at 04:08:11PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> +static void xdp_test_run_init_page(struct page *page, void *arg)
+>> +{
+>> +	struct xdp_page_head *head =3D phys_to_virt(page_to_phys(page));
+>> +	struct xdp_buff *new_ctx, *orig_ctx;
+>> +	u32 headroom =3D XDP_PACKET_HEADROOM;
+>> +	struct xdp_test_data *xdp =3D arg;
+>> +	size_t frm_len, meta_len;
+>> +	struct xdp_frame *frm;
+>> +	void *data;
+>> +
+>> +	orig_ctx =3D xdp->orig_ctx;
+>> +	frm_len =3D orig_ctx->data_end - orig_ctx->data_meta;
+>> +	meta_len =3D orig_ctx->data - orig_ctx->data_meta;
+>> +	headroom -=3D meta_len;
+>> +
+>> +	new_ctx =3D &head->ctx;
+>> +	frm =3D &head->frm;
+>> +	data =3D &head->data;
+>> +	memcpy(data + headroom, orig_ctx->data_meta, frm_len);
+>> +
+>> +	xdp_init_buff(new_ctx, TEST_XDP_FRAME_SIZE, &xdp->rxq);
+>> +	xdp_prepare_buff(new_ctx, data, headroom, frm_len, true);
+>> +	new_ctx->data_meta =3D new_ctx->data + meta_len;
+>
+> data vs data_meta is the other way around, no?
+>
+> Probably needs a selftest to make sure.
 
-On Thu, 6 Jan 2022 09:29:02 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
+Yup, you're right; nice catch! Will fix and add a test for it.
 
-> On Thu, Jan 06, 2022 at 12:24:35AM +0900, Masami Hiramatsu wrote:
-> > On Tue,  4 Jan 2022 09:09:30 +0100
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> > 
-> > > hi,
-> > > adding support to attach multiple kprobes within single syscall
-> > > and speed up attachment of many kprobes.
-> > > 
-> > > The previous attempt [1] wasn't fast enough, so coming with new
-> > > approach that adds new kprobe interface.
-> > 
-> > Yes, since register_kprobes() just registers multiple kprobes on
-> > array. This is designed for dozens of kprobes.
-> > 
-> > > The attachment speed of of this approach (tested in bpftrace)
-> > > is now comparable to ftrace tracer attachment speed.. fast ;-)
-> > 
-> > Yes, because that if ftrace, not kprobes.
-> > 
-> > > The limit of this approach is forced by using ftrace as attach
-> > > layer, so it allows only kprobes on function's entry (plus
-> > > return probes).
-> > 
-> > Note that you also need to multiply the number of instances.
-> > 
-> > > 
-> > > This patchset contains:
-> > >   - kprobes support to register multiple kprobes with current
-> > >     kprobe API (patches 1 - 8)
-> > >   - bpf support ot create new kprobe link allowing to attach
-> > >     multiple addresses (patches 9 - 14)
-> > > 
-> > > We don't need to care about multiple probes on same functions
-> > > because it's taken care on the ftrace_ops layer.
-> > 
-> > Hmm, I think there may be a time to split the "kprobe as an 
-> > interface for the software breakpoint" and "kprobe as a wrapper
-> > interface for the callbacks of various instrumentations", like
-> > 'raw_kprobe'(or kswbp) and 'kprobes'.
-> > And this may be called as 'fprobe' as ftrace_ops wrapper.
-> > (But if the bpf is enough flexible, this kind of intermediate layer
-> >  may not be needed, it can use ftrace_ops directly, eventually)
-> > 
-> > Jiri, have you already considered to use ftrace_ops from the
-> > bpf directly? Are there any issues?
-> > (bpf depends on 'kprobe' widely?)
-> 
-> at the moment there's not ftrace public interface for the return
-> probe merged in, so to get the kretprobe working I had to use
-> kprobe interface
+>> +static int xdp_recv_frames(struct xdp_frame **frames, int nframes,
+>> +			   struct net_device *dev)
+>> +{
+>> +	gfp_t gfp =3D __GFP_ZERO | GFP_ATOMIC;
+>> +	void *skbs[TEST_XDP_BATCH];
+>> +	int i, n;
+>> +	LIST_HEAD(list);
+>> +
+>> +	n =3D kmem_cache_alloc_bulk(skbuff_head_cache, gfp, nframes, skbs);
+>> +	if (unlikely(n =3D=3D 0)) {
+>> +		for (i =3D 0; i < nframes; i++)
+>> +			xdp_return_frame(frames[i]);
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	for (i =3D 0; i < nframes; i++) {
+>> +		struct xdp_frame *xdpf =3D frames[i];
+>> +		struct sk_buff *skb =3D skbs[i];
+>> +
+>> +		skb =3D __xdp_build_skb_from_frame(xdpf, skb, dev);
+>> +		if (!skb) {
+>> +			xdp_return_frame(xdpf);
+>> +			continue;
+>> +		}
+>> +
+>> +		list_add_tail(&skb->list, &list);
+>> +	}
+>> +	netif_receive_skb_list(&list);
+>
+> Does it need local_bh_disable() like cpumap does?
 
-Yeah, I found that too. We have to ask Steve to salvage it ;)
+Yes, I think it probably does, actually. Or at least having it can
+potentially improve performance since we're then sure that the whole
+batch will be processed at once. Will add!
 
-> but.. there are patches Steven shared some time ago, that do that
-> and make graph_ops available as kernel interface
-> 
-> I recall we considered graph_ops interface before as common attach
-> layer for trampolines, which was bad, but it might actually make
-> sense for kprobes
+> I've applied patches 1 - 5.
 
-I started working on making 'fprobe' which will provide multiple
-function probe with similar interface of kprobes. See attached
-patch. Then you can use it in bpf, maybe with an union like
+Thanks! Will respin this and the selftest :)
 
-union {
-	struct kprobe kp;	// for function body
-	struct fprobe fp;	// for function entry and return
-};
-
-At this moment, fprobe only support entry_handler, but when we
-re-start the generic graph_ops interface, it is easy to expand
-to support exit_handler.
-If this works, I think kretprobe can be phased out, since at that
-moment, kprobe_event can replace it with the fprobe exit_handler.
-(This is a benefit of decoupling the instrumentation layer from
-the event layer. It can choose the best way without changing
-user interface.)
-
-> I'll need to check it in more details but I think both graph_ops and
-> kprobe do about similar thing wrt hooking return probe, so it should
-> be comparable.. and they are already doing the same for the entry hook,
-> because kprobe is mostly using ftrace for that
-> 
-> we would not need to introduce new program type - kprobe programs
-> should be able to run from ftrace callbacks just fine
-
-That seems to bind your mind. The program type is just a programing
-'model' of the bpf. You can choose the best implementation to provide
-equal functionality. 'kprobe' in bpf is just a name that you call some
-instrumentations which can probe kernel code.
-
-Thank you,
-
-> 
-> so we would have:
->   - kprobe type programs attaching to:
->   - new BPF_LINK_TYPE_FPROBE link using the graph_ops as attachment layer
-> 
-> jirka
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
-
---Multipart=_Thu__6_Jan_2022_22_59_43_+0900_xoXUXmLlhl=d1Yqq
-Content-Type: text/x-diff;
- name="0001-fprobe-Add-ftrace-based-probe-APIs.patch"
-Content-Disposition: attachment;
- filename="0001-fprobe-Add-ftrace-based-probe-APIs.patch"
-Content-Transfer-Encoding: 7bit
-
-From 269b86597c166d6d4c5dd564168237603533165a Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Thu, 6 Jan 2022 15:40:36 +0900
-Subject: [PATCH] fprobe: Add ftrace based probe APIs
-
-The fprobe is a wrapper API for ftrace function tracer.
-Unlike kprobes, this probes only supports the function entry, but
-it can probe multiple functions by one fprobe. The usage is almost
-same as the kprobe, user will specify the function names by
-fprobe::syms, the number of syms by fprobe::nsyms, and the user
-handler by fprobe::handler.
-
-struct fprobe = { 0 };
-const char *targets[] = {"func1", "func2", "func3"};
-
-fprobe.handler = user_handler;
-fprobe.nsyms = ARRAY_SIZE(targets);
-fprobe.syms = targets;
-
-ret = register_fprobe(&fprobe);
-...
-
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- include/linux/fprobes.h |  52 ++++++++++++++++
- kernel/trace/Kconfig    |  10 ++++
- kernel/trace/Makefile   |   1 +
- kernel/trace/fprobes.c  | 128 ++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 191 insertions(+)
- create mode 100644 include/linux/fprobes.h
- create mode 100644 kernel/trace/fprobes.c
-
-diff --git a/include/linux/fprobes.h b/include/linux/fprobes.h
-new file mode 100644
-index 000000000000..22db748bf491
---- /dev/null
-+++ b/include/linux/fprobes.h
-@@ -0,0 +1,52 @@
-+#ifndef _LINUX_FPROBES_H
-+#define _LINUX_FPROBES_H
-+/* Simple ftrace probe wrapper */
-+
-+#include <linux/compiler.h>
-+#include <linux/ftrace.h>
-+
-+struct fprobe {
-+	const char		**syms;
-+	unsigned long		*addrs;
-+	unsigned int		nsyms;
-+
-+	struct ftrace_ops	ftrace;
-+	unsigned long		nmissed;
-+	unsigned int		flags;
-+	void (*handler) (struct fprobe *, struct pt_regs *);
-+};
-+
-+#define FPROBE_FL_DISABLED	1
-+
-+static inline bool fprobe_disabled(struct fprobe *fp)
-+{
-+	return (fp) ? fp->flags & FPROBE_FL_DISABLED : false;
-+}
-+
-+#ifdef CONFIG_FPROBES
-+int register_fprobe(struct fprobe *fp);
-+int unregister_fprobe(struct fprobe *fp);
-+#else
-+static inline int register_fprobe(struct fprobe *fp)
-+{
-+	return -ENOTSUPP;
-+}
-+static inline int unregister_fprobe(struct fprobe *fp)
-+{
-+	return -ENOTSUPP;
-+}
-+#endif
-+
-+static inline void disable_fprobe(struct fprobe *fp)
-+{
-+	if (fp)
-+		fp->flags |= FPROBE_FL_DISABLED;
-+}
-+
-+static inline void enable_fprobe(struct fprobe *fp)
-+{
-+	if (fp)
-+		fp->flags &= ~FPROBE_FL_DISABLED;
-+}
-+
-+#endif
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 420ff4bc67fd..45a3618a20a7 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -223,6 +223,16 @@ config DYNAMIC_FTRACE_WITH_ARGS
- 	depends on DYNAMIC_FTRACE
- 	depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
-+config FPROBES
-+	bool "Kernel Function Probe (fprobe)"
-+	depends on FUNCTION_TRACER
-+	depends on DYNAMIC_FTRACE_WITH_REGS
-+	default n
-+	help
-+	  This option enables kernel function probe feature, which is
-+	  similar to kprobes, but probes only for kernel function entries
-+	  and it can probe multiple functions by one fprobe.
-+
- config FUNCTION_PROFILER
- 	bool "Kernel function profiler"
- 	depends on FUNCTION_TRACER
-diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-index bedc5caceec7..47a37a3bb974 100644
---- a/kernel/trace/Makefile
-+++ b/kernel/trace/Makefile
-@@ -97,6 +97,7 @@ obj-$(CONFIG_PROBE_EVENTS) += trace_probe.o
- obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
- obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
- obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
-+obj-$(CONFIG_FPROBES) += fprobes.o
- 
- obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
- 
-diff --git a/kernel/trace/fprobes.c b/kernel/trace/fprobes.c
-new file mode 100644
-index 000000000000..2ea118462afb
---- /dev/null
-+++ b/kernel/trace/fprobes.c
-@@ -0,0 +1,128 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#define pr_fmt(fmt) "fprobes: " fmt
-+
-+#include <linux/fprobes.h>
-+#include <linux/kallsyms.h>
-+#include <linux/kprobes.h>
-+#include <linux/slab.h>
-+
-+static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
-+			struct ftrace_ops *ops, struct ftrace_regs *fregs)
-+{
-+	struct fprobe *fp;
-+	int bit;
-+
-+	fp = container_of(ops, struct fprobe, ftrace);
-+	if (fprobe_disabled(fp))
-+		return;
-+
-+	bit = ftrace_test_recursion_trylock(ip, parent_ip);
-+	if (bit < 0) {
-+		fp->nmissed++;
-+		return;
-+	}
-+
-+	if (fp->handler)
-+		fp->handler(fp, ftrace_get_regs(fregs));
-+
-+	ftrace_test_recursion_unlock(bit);
-+}
-+NOKPROBE_SYMBOL(fprobe_handler);
-+
-+/*
-+ * Populate fp::addrs array from fp::syms. Whether the functions are
-+ * ftrace-able or not will be checked afterwards by ftrace_set_filter_ip().
-+ */
-+static int populate_func_addresses(struct fprobe *fp)
-+{
-+	unsigned int i;
-+
-+	fp->addrs = kmalloc(sizeof(void *) * fp->nsyms, GFP_KERNEL);
-+	if (!fp->addrs)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < fp->nsyms; i++) {
-+		fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
-+		if (!fp->addrs[i]) {
-+			kfree(fp->addrs);
-+			fp->addrs = NULL;
-+			return -ENOENT;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * register_fprobe - Register fprobe to ftrace
-+ * @fp: A fprobe data structure to be registered.
-+ *
-+ * This expects the user set @fp::syms or @fp::addrs (not both),
-+ * @fp::nsyms (number of entries of @fp::syms or @fp::addrs) and
-+ * @fp::handler. Other fields are initialized by this function.
-+ */
-+int register_fprobe(struct fprobe *fp)
-+{
-+	unsigned int i;
-+	int ret;
-+
-+	if (!fp)
-+		return -EINVAL;
-+
-+	if (!fp->nsyms || (!fp->syms && !fp->addrs) || (fp->syms && fp->addrs))
-+		return -EINVAL;
-+
-+	if (fp->syms) {
-+		ret = populate_func_addresses(fp);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	fp->ftrace.func = fprobe_handler;
-+	fp->ftrace.flags = FTRACE_OPS_FL_SAVE_REGS;
-+
-+	for (i = 0; i < fp->nsyms; i++) {
-+		ret = ftrace_set_filter_ip(&fp->ftrace, fp->addrs[i], 0, 0);
-+		if (ret < 0)
-+			goto error;
-+	}
-+
-+	fp->nmissed = 0;
-+	ret = register_ftrace_function(&fp->ftrace);
-+	if (!ret)
-+		return ret;
-+
-+error:
-+	if (fp->syms) {
-+		kfree(fp->addrs);
-+		fp->addrs = NULL;
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * unregister_fprobe - Unregister fprobe from ftrace
-+ * @fp: A fprobe data structure to be unregistered.
-+ */
-+int unregister_fprobe(struct fprobe *fp)
-+{
-+	int ret;
-+
-+	if (!fp)
-+		return -EINVAL;
-+
-+	if (!fp->nsyms || !fp->addrs)
-+		return -EINVAL;
-+
-+	ret = unregister_ftrace_function(&fp->ftrace);
-+
-+	if (fp->syms) {
-+		/* fp->addrs is allocated by register_fprobe() */
-+		kfree(fp->addrs);
-+		fp->addrs = NULL;
-+	}
-+
-+	return ret;
-+}
--- 
-2.25.1
-
-
---Multipart=_Thu__6_Jan_2022_22_59_43_+0900_xoXUXmLlhl=d1Yqq--
