@@ -2,116 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864BD486AA6
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 20:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C89F486AB6
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 20:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243438AbiAFTso (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 14:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
+        id S243472AbiAFT5I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 14:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243403AbiAFTsn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 14:48:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0097C061245;
-        Thu,  6 Jan 2022 11:48:43 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FA8861DD7;
-        Thu,  6 Jan 2022 19:48:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A684EC36AE3;
-        Thu,  6 Jan 2022 19:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641498522;
-        bh=2LkPOjQHzKO5mfFi4gLfZhHO9AcpCJU0ojJyoXqO260=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FMVl8cNPVTI5YOOH0N9CPWnfYegS8tMg4vIDGVMorpWjrG45DjHR/nzkfS0H2CyJS
-         gbcleqOm+Xbgw31vgk2WYtw+QIhBeceHKq9aeh12k4r2PcUP4CkXWPgkjCzwzumQXl
-         tBAsAAp/XxxCOJq2uOCTaxu1CZ96ec+88EoD565VufmeaHrZDNOskOfYIFTm/3ZHkI
-         n80AiEqw2p3DiRRrU7F1WIQ+D4Cg1XK7F7Ajot2PRp9zLo+YiS8XB3mxWxFgAl96En
-         EiuOCJ0aMY/g8GimmsRV7IRg03BozBdaAiGz69YoAgW1rm++yCYS2tr8Elwi/7UW9V
-         FTmc/CgfPK+ag==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0F05E40B92; Thu,  6 Jan 2022 16:48:41 -0300 (-03)
-Date:   Thu, 6 Jan 2022 16:48:41 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: perf build broken seemingly due to libbpf changes, checking...
-Message-ID: <YddHmYhvtVvgqZb/@kernel.org>
-References: <YddEVgNKBJiqcV6Y@kernel.org>
- <YddGjjmlMZzxUZbN@kernel.org>
+        with ESMTP id S243460AbiAFT5I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 14:57:08 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE65C061245;
+        Thu,  6 Jan 2022 11:57:08 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id r14-20020a17090b050e00b001b3548a4250so1370285pjz.2;
+        Thu, 06 Jan 2022 11:57:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wr+OYqxxLoTjP5us1mUsue+uQ072K41NX1xN3XRdfiM=;
+        b=K9pYQZepTHuMeXTDcu9gHnz9AG0FDPGdfZSRa+Lb2H+qvtfuGXkVpyPtD9DP1NVC1l
+         kk1XsmdkV6EraXZoMHUEsbZQO6Wt9WT6Ob1rY6HyniXfUKeiGfg777FZTkzQHV9PSafy
+         L+liz/1PRovAscQaExzpUQPmSuSkpKVwPevip4uliuqT9IMmpSiOktvISi7gW/16VxUG
+         g5pry2fwxGl4jukhAwiUmaaXzXpCm6BGNqLsj6yPfJ2Hag4UxxgLAKST1cbTcIruer0y
+         Mc5L/pm9rTbOvor1BFCOES4OSM36an4pFvKKVCGhlV7OzzWBM1jfU22yOHjR8fsx9tec
+         PvmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wr+OYqxxLoTjP5us1mUsue+uQ072K41NX1xN3XRdfiM=;
+        b=NVyFnIUL18qjLE97u4EqORNr4AEVdZI/qT6BAyq0PtFmFxfqHVpsf2XRBW+yivjrOu
+         gVXek9wmOM1ErKdFaeL/mxmRwudZkq74Gu25DDu5+FQnpkIincZ+wjfeZBjlNycc4GKm
+         5ZdE9G7qGXiq7yLs382DDvtbn9iQ9nYQ3cWzTXVtS/nCD6X4VLq34pDhcQfWmnM/2Doq
+         xLeKRqpn1lXtb1ix//qdlPLPTN5BA+zMeKW/al31nPVGT2yQrytw9y2Cjk0CrXhStX3l
+         RoCa9E8aEFm7wm9ZCrLXk73ZXP5AKj1l4934ty2EpVlQzDSrVWXRWQvciZNoMuBABlW1
+         3/GA==
+X-Gm-Message-State: AOAM530EB33IWR7/Zrhgc+Y1z8aXo8YT6x+c9CF/HeviqyujZig+zpe6
+        jlNL0QjpaZwxhT/sNGuYT5+yxSh+vM2f72xr6ik=
+X-Google-Smtp-Source: ABdhPJxVqnB7pan7givu+7QsB6VcITZVTNEL2BgTE6vg5MObAE3waOATAewjmSkkwIEHLEmx9tVu7WIetv30WuXVPn0=
+X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
+ f12-20020a170902860c00b00149101725f0mr59632442plo.116.1641499027827; Thu, 06
+ Jan 2022 11:57:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YddGjjmlMZzxUZbN@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20220103150812.87914-1-toke@redhat.com> <20220103150812.87914-8-toke@redhat.com>
+ <20220106042027.zy6j4a72nxaqmocw@ast-mbp.dhcp.thefacebook.com>
+ <87y23t9blc.fsf@toke.dk> <CAADnVQ+j=DO8fMCcpoHmAjrW5sTbhHp_OA4eVpcKcwwRzsvKTA@mail.gmail.com>
+ <87tuegafnw.fsf@toke.dk>
+In-Reply-To: <87tuegafnw.fsf@toke.dk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Jan 2022 11:56:56 -0800
+Message-ID: <CAADnVQ+6-Q6N1t0UsmF=Rn1yP=KPo7Xc2Fiy1rzJ+Hb0oAr4Hw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 7/7] selftests/bpf: Add selftest for
+ XDP_REDIRECT in bpf_prog_run()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jan 06, 2022 at 04:44:14PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jan 06, 2022 at 04:34:46PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > After merging torvalds/master to perf/urgent I'm getting this:
-> > 
-> > util/bpf-event.c:25:21: error: no previous prototype for ‘btf__load_from_kernel_by_id’ [-Werror=missing-prototypes]
-> >    25 | struct btf * __weak btf__load_from_kernel_by_id(__u32 id)
-> >       |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > util/bpf-event.c:37:1: error: no previous prototype for ‘bpf_object__next_program’ [-Werror=missing-prototypes]
-> >    37 | bpf_object__next_program(const struct bpf_object *obj, struct bpf_program *prev)
-> >       | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > util/bpf-event.c:46:1: error: no previous prototype for ‘bpf_object__next_map’ [-Werror=missing-prototypes]
-> >    46 | bpf_object__next_map(const struct bpf_object *obj, const struct bpf_map *prev)
-> >       | ^~~~~~~~~~~~~~~~~~~~
-> > util/bpf-event.c:55:1: error: no previous prototype for ‘btf__raw_data’ [-Werror=missing-prototypes]
-> >    55 | btf__raw_data(const struct btf *btf_ro, __u32 *size)
-> >       | ^~~~~~~~~~~~~
-> > cc1: all warnings being treated as errors
-> > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf-event.o] Error 1
-> > make[4]: *** Waiting for unfinished jobs....
-> > util/bpf_counter.c: In function ‘bpf_target_prog_name’:
-> > util/bpf_counter.c:82:15: error: implicit declaration of function ‘btf__load_from_kernel_by_id’ [-Werror=implicit-function-declaration]
-> >    82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
-> >       |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > util/bpf_counter.c:82:13: error: assignment to ‘struct btf *’ from ‘int’ makes pointer from integer without a cast [-Werror=int-conversion]
-> >    82 |         btf = btf__load_from_kernel_by_id(info_linear->info.btf_id);
-> >       |             ^
-> > cc1: all warnings being treated as errors
-> > make[4]: *** [/var/home/acme/git/perf/tools/build/Makefile.build:96: /tmp/build/perf/util/bpf_counter.o] Error 1
-> > 
-> > I'm checking now...
-> > 
-> > BTW I test perf builds with:
-> > 
-> > make -k BUILD_BPF_SKEL=1 CORESIGHT=1 PYTHON=python3 O=/tmp/build/perf -C tools/perf install-bin && git status && perf test python
-> 
-> Nevermind, this was due to a patch by Ian Rogers I was testing,
-> bisecting get up to the last patch, since I had merged torvalds/master
-> today it got me to a wrong correlation, sorry for the disturbance.
-> 
-> For reference, this is the patch:
-> 
-> http://lore.kernel.org/lkml/20220106072627.476524-1-irogers@google.com
+On Thu, Jan 6, 2022 at 10:21 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+>
+> > On Thu, Jan 6, 2022 at 6:34 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+> >>
+> >> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
+> >>
+> >> > On Mon, Jan 03, 2022 at 04:08:12PM +0100, Toke H=C3=B8iland-J=C3=B8r=
+gensen wrote:
+> >> >> +
+> >> >> +#define NUM_PKTS 3
+> >> >
+> >> > May be send a bit more than 3 packets?
+> >> > Just to test skb_list logic for XDP_PASS.
+> >>
+> >> OK, can do.
+> >>
+> >> >> +
+> >> >> +    /* We setup a veth pair that we can not only XDP_REDIRECT pack=
+ets
+> >> >> +     * between, but also route them. The test packet (defined abov=
+e) has
+> >> >> +     * address information so it will be routed back out the same =
+interface
+> >> >> +     * after it has been received, which will allow it to be picke=
+d up by
+> >> >> +     * the XDP program on the destination interface.
+> >> >> +     *
+> >> >> +     * The XDP program we run with bpf_prog_run() will cycle throu=
+gh all
+> >> >> +     * four return codes (DROP/PASS/TX/REDIRECT), so we should end=
+ up with
+> >> >> +     * NUM_PKTS - 1 packets seen on the dst iface. We match the pa=
+ckets on
+> >> >> +     * the UDP payload.
+> >> >> +     */
+> >> >> +    SYS("ip link add veth_src type veth peer name veth_dst");
+> >> >> +    SYS("ip link set dev veth_src address 00:11:22:33:44:55");
+> >> >> +    SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
+> >> >> +    SYS("ip link set dev veth_src up");
+> >> >> +    SYS("ip link set dev veth_dst up");
+> >> >> +    SYS("ip addr add dev veth_src fc00::1/64");
+> >> >> +    SYS("ip addr add dev veth_dst fc00::2/64");
+> >> >> +    SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:b=
+b");
+> >> >> +    SYS("sysctl -w net.ipv6.conf.all.forwarding=3D1");
+> >> >
+> >> > These commands pollute current netns. The test has to create its own=
+ netns
+> >> > like other tests do.
+> >>
+> >> Right, will fix.
+> >>
+> >> > The forwarding=3D1 is odd. Nothing in the comments or commit logs
+> >> > talks about it.
+> >>
+> >> Hmm, yeah, should probably have added an explanation, sorry about that=
+ :)
+> >>
+> >> > I'm guessing it's due to patch 6 limitation of picking loopback
+> >> > for XDP_PASS and XDP_TX, right?
+> >> > There is ingress_ifindex field in struct xdp_md.
+> >> > May be use that to setup dev and rxq in test_run in patch 6?
+> >> > Then there will be no need to hack through forwarding=3D1 ?
+> >>
+> >> No, as you note there's already ingress_ifindex to set the device, and
+> >> the test does use that:
+> >>
+> >> +       memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN=
+);
+> >> +       skel->rodata->ifindex_out =3D ifindex_src;
+> >> +       ctx_in.ingress_ifindex =3D ifindex_src;
+> >
+> > My point is that this ingress_ifindex should be used instead of loopbac=
+k.
+> > Otherwise the test_run infra is lying to the xdp program.
+>
+> But it is already using that! There is just no explicit code in patch 6
+> to do that because that was already part of the XDP prog_run
+> functionality.
+>
+> Specifically, the existing bpf_prog_test_run_xdp() will pass the context
+> through xdp_convert_md_to_buff() which will resolve the ifindex and get
+> a dev reference. So the xdp_buff object being passed to the new
+> bpf_test_run_xdp_live() function already has the right device in
+> ctx->rxq.
 
-Ian, I have libbpf-devel installed:
+Got it. Please make it clear in the commit log.
 
-⬢[acme@toolbox perf]$ rpm -qa | grep libbpf
-libbpf-0.4.0-1.fc34.x86_64
-libbpf-devel-0.4.0-1.fc34.x86_64
-⬢[acme@toolbox perf]$
+> No the problem of XDP_PASS going in the opposite direction of XDP_TX and
+> XDP_REDIRECT remains. This is just like on a physical interface: if you
+> XDP_TX a packet it goes back out, if you XDP_PASS it, it goes up the
+> stack. To intercept both after the fact, you need to look in two
+> different places.
+>
+> Anyhow, just using a TC hook for XDP_PASS works fine and gets rid of the
+> forwarding hack; I'll send a v6 with that just as soon as I verify that
+> I didn't break anything when running the traffic generator on bare metal =
+:)
 
-But I'm not using LIBBPF_DYNAMIC=1, so you can't just give precedence to
-system headers for all of the homies in tools/lib/.
-
-I bet that if I remove the libbpf-devel package it works, yeah, just
-tested. So we need to make those overrides dependent on using
-LIBBPF_DYNAMIC=1, LIBTRACEEVENT_DYNAMIC=1, etc and avoid the big hammer
-that is -Itools/lib/, using a more finegrained approach, right?
-
-- Arnaldo
+Got it. You mean a tc ingress prog attached to veth_src ? That should work.
