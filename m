@@ -2,139 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A46F4867BA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 17:32:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D43C4867EE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jan 2022 17:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241272AbiAFQcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 11:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbiAFQca (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 6 Jan 2022 11:32:30 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95171C061245;
-        Thu,  6 Jan 2022 08:32:30 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id c9-20020a17090a1d0900b001b2b54bd6c5so9227405pjd.1;
-        Thu, 06 Jan 2022 08:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kMqP5DUrb/FAT7MeAYvxaJ3PDFZQ/9iFD97ycYbpY3w=;
-        b=SbxvszxmEkR5o/vuM3SIOGno9fRLHzd1ao6VAMPym8DUs2HbF+9nN2w9ZyN1pl7MFf
-         1GropGXfAe6oLxqaCmJmJJR0PIOXIs9r0+ybK5J9nCYA36glhKlzjG+ex10ftNNphrWK
-         zeIxoJHI9lZmbpNYGma/z+1lVMMkDVcc7Dz94y46DaepmmfgDo2XEA3X9e57M4ZmjW6Q
-         Qmt94XXBEho1FIpap+KBIN4yQO3LuguHsP/tk2EZ9rv4FHiplLP3sG2rrsLpWKRG8l5N
-         WEobYnzb2l9phlg/UmmP5vYTgmpMK0/gkaTpwGjuUO17P+Au1kiWLVbI3YKIvA049oOR
-         PeQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kMqP5DUrb/FAT7MeAYvxaJ3PDFZQ/9iFD97ycYbpY3w=;
-        b=K73fcoXOeJmaW2L8ENKTmbWGKpDItBEEO+tp6nVcZLMJMv6MmMCyo4fCjqRvvLHLZ6
-         lfJzT/IWjtclwZLHqMRSqzbLU7VAxyVfj7Nz3M30bu2uF47dPZu6Tcp0TRX+hiz2DSzP
-         133LERLOg+bcVdO/T6XcD+6wa8SMe36Lqe915gNiLuPRnv6X786Bf2by1Ml+LOc4xabu
-         K1rbO7z6wL7efFV7+ra3VRGcM7+1Gdz/9wLaeC+G4h0aKfD0saicicu5u93ChGBoVGyr
-         B8gv0mJBIunWqPJLXvJshaeA00gNcMNm3fLRRLkp+kmnC6vqrg95h1739eUKtpu4hdUW
-         8MkA==
-X-Gm-Message-State: AOAM532emcM+C7CsgqCxNJEFWz9n9/z9w+D5mVLI/TCkmaI2qp4nbYg4
-        U5DTdFNIOgKijSNKq85Oqqq488jjeg9/VfZWSQI=
-X-Google-Smtp-Source: ABdhPJxHk4+FJEzOOWKpDqO9+LXypuP8eFgev5ToUUXb5mS8bVuvbibHMRkWyz/Rerpju51XjyJnKqWVsmy99UOTVEY=
-X-Received: by 2002:a17:902:6502:b0:149:1162:f0b5 with SMTP id
- b2-20020a170902650200b001491162f0b5mr58474182plk.126.1641486750040; Thu, 06
- Jan 2022 08:32:30 -0800 (PST)
+        id S241445AbiAFQxd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 6 Jan 2022 11:53:33 -0500
+Received: from mail.hs-osnabrueck.de ([131.173.88.34]:65080 "EHLO
+        msx.hs-osnabrueck.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241433AbiAFQxd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 11:53:33 -0500
+Received: from sea-02.fhos.de (localhost.localdomain [127.0.0.1])
+        by localhost (Email Security Appliance) with SMTP id C356B75_1D71E8AB;
+        Thu,  6 Jan 2022 16:53:30 +0000 (GMT)
+Received: from msx.hs-osnabrueck.de (RODDERBERG.FHOS.DE [192.168.179.29])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (Client CN "msx.hs-osnabrueck.de", Issuer "DFN-Verein Global Issuing CA" (not verified))
+        by sea-02.fhos.de (Sophos Email Appliance) with ESMTPS id 7BF2E2A5F85_1D71E8AF;
+        Thu,  6 Jan 2022 16:53:30 +0000 (GMT)
+Received: from ROCKENSTEIN.FHOS.DE (192.168.179.25) by Rodderberg.FHOS.DE
+ (192.168.179.29) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Thu, 6 Jan
+ 2022 17:53:29 +0100
+Received: from ROCKENSTEIN.FHOS.DE ([fe80::d109:b519:b2eb:52b4]) by
+ Rockenstein.FHOS.DE ([fe80::d109:b519:b2eb:52b4%12]) with mapi id
+ 15.00.1497.026; Thu, 6 Jan 2022 17:53:29 +0100
+From:   "Buchberger, Dennis" <dennis.buchberger@hs-osnabrueck.de>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: AW: [Extern] Re: Problem loading eBPF program on Kernel 4.18 (best
+ with CO:RE): -EINVAL
+Thread-Topic: [Extern] Re: Problem loading eBPF program on Kernel 4.18 (best
+ with CO:RE): -EINVAL
+Thread-Index: AQHYAhp5eI29nHop60CO4GOJmoPCtqxVXjYAgADX9Pc=
+Date:   Thu, 6 Jan 2022 16:53:29 +0000
+Message-ID: <1641488009887.85104@hs-osnabrueck.de>
+References: <1641377010132.82356@hs-osnabrueck.de>,<CAEf4BzYfu49iG=mmokC6VpBKoyKfqVDjCpkusjsXGLQTXS1tSQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzYfu49iG=mmokC6VpBKoyKfqVDjCpkusjsXGLQTXS1tSQ@mail.gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [192.168.179.140]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20220104080943.113249-1-jolsa@kernel.org> <20220104080943.113249-9-jolsa@kernel.org>
- <CAEf4BzZ7s=Pp+2xY3qKX9u6KrPdGW9NNfoiep7nGW+=_s=JJJA@mail.gmail.com> <YdarSovbcmoY9lI6@krava>
-In-Reply-To: <YdarSovbcmoY9lI6@krava>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 6 Jan 2022 08:32:18 -0800
-Message-ID: <CAADnVQJdgt41wprEmCdEgpQMii-AHm9ZesZX6gypNuTefntmEA@mail.gmail.com>
-Subject: Re: [PATCH 08/13] bpf: Add kprobe link for attaching raw kprobes
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+X-SASI-RCODE: 200
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 12:41 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Jan 05, 2022 at 08:30:56PM -0800, Andrii Nakryiko wrote:
-> > On Tue, Jan 4, 2022 at 12:10 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > Adding new link type BPF_LINK_TYPE_KPROBE to attach kprobes
-> > > directly through register_kprobe/kretprobe API.
-> > >
-> > > Adding new attach type BPF_TRACE_RAW_KPROBE that enables
-> > > such link for kprobe program.
-> > >
-> > > The new link allows to create multiple kprobes link by using
-> > > new link_create interface:
-> > >
-> > >   struct {
-> > >     __aligned_u64   addrs;
-> > >     __u32           cnt;
-> > >     __u64           bpf_cookie;
+> >  [...]
+> > As the target kernel does not support CONFIG_DEBUG_INFO_BTF, I used pahole -J (v1.22) to create vmlinux file with BTF info embedded there.
+> > Basically, I followed this mails:
+> > https://urldefense.com/v3/__https://lore.kernel.org/bpf/CADmGQ*1euj7Uv
+> > 9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com/__;Kw!!MeVeBiz6!5
+> > PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFP1nWOL3A$
 > >
-> > I'm afraid bpf_cookie has to be different for each addr, otherwise
-> > it's severely limiting. So it would be an array of cookies alongside
-> > an array of addresses
+> > Right now, the bpf program is just a uProbe for a simple test app, which writes some output to the tracing pipe. As Kernel 4.18. does not support global data for bpf programs, I had to remove (comment out) the bpf_trace_printk statements.
 >
-> ok
+> You can do #define BPF_NO_GLOBAL_DATA before including bpf_helpers.h and then you can still use bpf_printk() helper macro.
 >
-> >
-> > >   } kprobe;
-> > >
-> > > Plus new flag BPF_F_KPROBE_RETURN for link_create.flags to
-> > > create return probe.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  include/linux/bpf_types.h      |   1 +
-> > >  include/uapi/linux/bpf.h       |  12 +++
-> > >  kernel/bpf/syscall.c           | 191 ++++++++++++++++++++++++++++++++-
-> > >  tools/include/uapi/linux/bpf.h |  12 +++
-> > >  4 files changed, 211 insertions(+), 5 deletions(-)
-> > >
-> >
-> > [...]
-> >
-> > > @@ -1111,6 +1113,11 @@ enum bpf_link_type {
-> > >   */
-> > >  #define BPF_F_SLEEPABLE                (1U << 4)
-> > >
-> > > +/* link_create flags used in LINK_CREATE command for BPF_TRACE_RAW_KPROBE
-> > > + * attach type.
-> > > + */
-> > > +#define BPF_F_KPROBE_RETURN    (1U << 0)
-> > > +
-> >
-> > we have plenty of flexibility to have per-link type fields, so why not
-> > add `bool is_retprobe` next to addrs and cnt?
->
-> well I thought if I do that, people would suggest to use the empty
-> flags field instead ;-)
->
-> we can move it there as you suggest, but I wonder it's good idea to
-> use bool in uapi headers, because the bool size definition is vague
 
-Good point. No 'bool' please.
-grep bool include/uapi/linux/
-Only gives openvswitch.h and it's guarded by ifdef KERNEL
-So not a single uapi header has bool in it.
+Thank you! That's really helpful. Is there any collection of up-to-date documentation and best practices in writing bpf code (without skeletons) besides the sources in libbpf/libbpf-bootstrap, iovisor /libbpf-tools and linux/tools/testing/selftests/bpf ?
+
+
+>
+> > On the development machine, it works fine. But on the target machine, loading the program fails: libbpf: load bpf program failed: Invalid argument (full libbpf log see below).
+> > When compiling the programs on the target machine without using CO:RE, I get a similar error (invalid argument, -22).
+> > What could be the problem? I don't think the eBPF program uses anything that is available on Kernel 5.4.0 and not available on the system with Kernel 4.18, does it?
+> >
+> > Thanks in advance for your help.
+> > Best
+> > Dennis
+> >
+> >
+> >
+> >
+> > ============ log ============
+> >
+> > sudo ./ebpf
+> > libbpf: loading main.bpf.o
+> > [...]
+> > libbpf: CO-RE relocating [0] struct pt_regs: found target candidate
+> > [201] struct pt_regs in [vmlinux]
+> > libbpf: prog 'trace_func_entry': relo #0: kind <byte_off> (0), spec is
+> > [2] struct pt_regs.di (0:14 @ offset 112)
+> > libbpf: prog 'trace_func_entry': relo #0: matching candidate #0 [201]
+> > struct pt_regs.di (0:14 @ offset 112)
+> > libbpf: prog 'trace_func_entry': relo #0: patched insn #2 (ALU/ALU64)
+> > imm 112 -> 112
+> > libbpf: prog 'trace_func_entry': relo #1: kind <byte_off> (0), spec is
+> > [2] struct pt_regs.si (0:13 @ offset 104)
+> > libbpf: prog 'trace_func_entry': relo #1: matching candidate #0 [201]
+> > struct pt_regs.si (0:13 @ offset 104)
+> > libbpf: prog 'trace_func_entry': relo #1: patched insn #9 (ALU/ALU64)
+> > imm 104 -> 104
+> > libbpf: sec 'kretprobe/': found 1 CO-RE relocations
+> > libbpf: prog 'trace_func_exit': relo #0: kind <byte_off> (0), spec is
+> > [2] struct pt_regs.ax (0:10 @ offset 80)
+> > libbpf: prog 'trace_func_exit': relo #0: matching candidate #0 [201]
+> > struct pt_regs.ax (0:10 @ offset 80)
+> > libbpf: prog 'trace_func_exit': relo #0: patched insn #2 (ALU/ALU64)
+> > imm 80 -> 80
+>
+> CO-RE relocations succeeded, btf_custom_path worked, the problem is not in CO-RE.
+>
+> > libbpf: load bpf program failed: Invalid argument
+> > libbpf: failed to load program 'trace_func_entry'
+>
+> I suspect this is due to your target machine running Ubuntu 18.10.
+> Ubuntu has infamous problem with reporting kernel version through
+> uname() syscall. I've just improved libbpf's detection of it few days ago (see [0]), but it didn't yet make it into Github mirror of libbpf.
+> I'm going to start the sync right now, but you can manually specify correct version code with bpf_object__set_kversion() as you already realized. See how I do that in my patch [0], you can do that manually as well.
+>
+>   [0] https://urldefense.com/v3/__https://patchwork.kernel.org/project/netdevbpf/patch/20211222231003.2334940-1-andrii@kernel.org/__;!!MeVeBiz6!5PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFM_zuNNKA$
+
+That's it, thank you very much!
+
+I just added
+	__u32 currKernelVersion = get_kernel_version();
+	bpf_object__set_kversion(main_bpf_obj, currKernelVersion)
+with get_kernel_version() from libbpf.c and your patch [0] and now it is working. :)
+
+However, there is something I do not understand:
+(a): Why did it work on the development machine in the first place with Ubuntu 20.04?
+	- the old get_kernel_version() returned 328704 (5.4.0), the new version returns 328852 (5.4.148) so there already is a missmatch. (and I did not call it, so libbpf set the kernel version to 0?)
+	- on the target machine, it is 266752 (4.2.0) vs. 266772 (4.2.4)
+(b): I use a uProbe. Why is the bpf program type kProbe? Is it just for usability of libbpf as for a uProbe the user must specify the address while for a kprobe only the symbol is required?
+(c): Why does the kernel version matter at all?
+
+It would be really nice if you could answer these questions as well or point me to a source.
+
+Best
+Dennis
+
+[...]
+
