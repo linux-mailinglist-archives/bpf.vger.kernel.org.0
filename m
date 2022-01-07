@@ -2,215 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA8B486EEB
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 01:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F651486F10
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 01:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343870AbiAGAgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 19:36:17 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6604 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343832AbiAGAgQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 19:36:16 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2070DYLV031032;
-        Thu, 6 Jan 2022 16:36:02 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=mWQcx3vP/G9BFVhZvhE9OJr1xswbGEjQ83fkTZpxsx8=;
- b=pqMxUWY2sgUSCE+1x+g1fcxu/xBiuqjDW80xEquNRhXYlQxz4DzlYO0I/mDBSj4iKE9D
- DmrWkcEX2Ww+ugpCbHA3+8z/WBmCbODQq3jplYW+E30H62RyQX08x61Zy0L5P2gTkYuW
- YyEYILqnJ/DUDgIR1dVVH6n7nvYkXwnFhkU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4vvaenc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 06 Jan 2022 16:36:02 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 6 Jan 2022 16:35:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j1G3Md/JdlT9JaDB3SmsKaWYYZ5M+LlnoXIIGbvAsGGP6Sop8Zz4Ll3teG9LnWrCV4ooGIW/baD9vDM+1cCrZEIZtpR/51nqnMCdURVSzh2Ei5Ve3dMA5Mru2Bo6Vg0k2fV6zNqbc1XMpf2oqjd3GuJNdw4kGj1hAVMVs6M10u/2UPJDJqJjuMK/rGvltOtvSHDbV8LASfsJ+0k/HHXxX4rAWk3d3xHx8m7TLNsDruA1O63Pp0j8+mxaKnEyWJ/cZ+RoKITN1Q3+iwcs0y1nyM+00OTzaWFDxqSRZ0xPw78US0VuaNg0ciwKmWo00N/e5R1iYEMc+WYzbk2nqGM5/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mWQcx3vP/G9BFVhZvhE9OJr1xswbGEjQ83fkTZpxsx8=;
- b=Z8SJBednNJW2g+f5XJAH1Lk84iteNCTPx/jqIj1bRHoBR/59Z3MBUwzOIp9uiDNXjwC7pVCSIrWDTW6aX0DOM6G/rzIIbY6f1sOhXuflDQSx2luXCFugi2FMbJFYPJaAOo+e7q89KMfbsOZceLprwti2k5B0yfk8WShP5WkSH2E2hNWAwtUHPY5+VCHc03ejSrZTH1EnBWEJSQ1vTD/UbwMgYlC75uU/G9EK/Gy1rA7IJktyEU9wOpMv+1C2yh7HLi0K7UD7NP2KtS6TDzojDnFpdvkCll6zX9hAFqeePTPBxEvIOGMyfimQBlRoYnIQ+TMWZcuYirnOde09wZp90A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
- by DM6PR15MB3797.namprd15.prod.outlook.com (2603:10b6:5:2b7::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Fri, 7 Jan
- 2022 00:35:54 +0000
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::8988:8ab3:bd6f:514f]) by DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::8988:8ab3:bd6f:514f%3]) with mapi id 15.20.4867.009; Fri, 7 Jan 2022
- 00:35:54 +0000
-Message-ID: <653e9ca0-7783-4ed8-4762-ff736d5b599d@fb.com>
-Date:   Thu, 6 Jan 2022 16:35:50 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.4.1
-Subject: Re: [PATCH RFC bpf-next v1 5/8] bpf: Introduce a new program type
- bpf_view.
-Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>, <bpf@vger.kernel.org>
-References: <20220106215059.2308931-1-haoluo@google.com>
- <20220106215059.2308931-6-haoluo@google.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220106215059.2308931-6-haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CO2PR04CA0202.namprd04.prod.outlook.com
- (2603:10b6:104:5::32) To DM5PR1501MB2055.namprd15.prod.outlook.com
- (2603:10b6:4:a1::13)
+        id S1344498AbiAGAue (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 19:50:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344449AbiAGAue (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 6 Jan 2022 19:50:34 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1023C061245;
+        Thu,  6 Jan 2022 16:50:33 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id gp5so3864402pjb.0;
+        Thu, 06 Jan 2022 16:50:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=S5vebt9jggOq2lOKb+rEEyNidW86ACbtcR2h/WqV/To=;
+        b=cz86p9oLoPP62smZRT6VeFiEtPSJFrpq+uxC4yecG7CbMi/hJt3nNfcNTFTMl6CTjO
+         gucQl8UNoGfhQFQSsoERkUQ2Fm12Zrv0PgNoBEcwbZFSpPghU7aTb/33RJdaXJxZXfyC
+         pEcu9JRj4atbYu1qAoE3KBc32tZETqSIj+vCW9UjkSS/f3SHal7oxgbCF7hAYXoO0NlN
+         5Lm5WhV/NLEYTIhsHft4CD3rg/dbTcAMq4oLuq2ZSabvPwkcetHXbpk4iN4AZjVJ2NJd
+         CqXw49ApFt+DT+IBnFp9ubT5x5f6Vl3BhER7+olWzc0UOwapNng1xsN0lchue3dMMgfP
+         zo9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S5vebt9jggOq2lOKb+rEEyNidW86ACbtcR2h/WqV/To=;
+        b=BR3Rv9aHHwwBpXm3Q1tAyWC2mcuG7O84ORW3apUsI0sgFkggPqjenGMcAJEVIMynyA
+         LycTxJtYNA6sfZHC7nrWu68DsFJwWB8BS36A/BlwUtMvp2VbRVtJptMTLrxTLcmH+KZM
+         CBGtfKa96vxFjy0kjlZUUViM3YDemVl0coRT1Hdyh9HSnC7ys5dkOz9uwUgb6mYtk3dl
+         3/gNEF+PdajTy16TshHYvFHC1hvcQV/sAM+ddidLVypLElKISmCJF5X/z/O7KpxFBYd4
+         lGGdeaXLFqTby9O3grhTS1a2aZ/6c6fb4WXcKS8OLQ5PDlNVwWJ4iZQZnbG0beJFqMdD
+         ARXg==
+X-Gm-Message-State: AOAM532vQ4fDigJ8aUjGZK5vhoV5f9ZToG1iUTtwRU0JJ8IbBo9KXhMh
+        dHxn3NRyVSUGXoKeoskHl5QOew5Q5y4uYxvR4SM=
+X-Google-Smtp-Source: ABdhPJyGD+OQl8unRjiDgavNSXA1xbtokfDZLp7Ck8wKjzGmR6t7wvfOolK4V4kjB3Fa8rTHXeIhNWLqVpTU1J42JEc=
+X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
+ f12-20020a170902860c00b00149101725f0mr60544973plo.116.1641516633469; Thu, 06
+ Jan 2022 16:50:33 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec9e7dc1-5dbe-421c-235c-08d9d175a9ea
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3797:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB3797E4C9F21D8310252C6D97D34D9@DM6PR15MB3797.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2BqFrgtdoSQjp4SY/i78aohmM80xNXic/LACwfUE095aszzlY+w+QCSsBJBuTtHKG8z80sNg2bTbtzuNXOQ8X87bh6Mrkl2YmNVGI/suKmaidBE4wYfxS1aqSZNlzO8CDXG2IYC5opd2bnABQsuvkzA2EisLoIH8AisGoFMx4DrswFNoTUwo5MHnOl/MZ9kn70iPQps+uaGlqm6FKKKz5pY9Bra3GYBCorfqzjDjO6DIyYjKwDT1jNfdJ0Z5BcroEchZuZwUCB2FhpiiSE7WK0TGtL7vziwL6Co7fjxT2xsWktC3Xf9xnJdRKHj79eFXYF5pCSHxOrLf1n90wtYxfPqnyu9HjHa33GdzF4suOJ+mZt+j9RL2sBEwMx+dJM5hp/WERZdDQ1eg9xaoZgCJ8UfNKQhvauYwHlFLvAgN4Hf1crQ07r59Xo/SAbhH/TYjtyr5bTvYT+RNXbPDEUlwGxOzEv7iI2X+hKVQIr5xd9vad1WCHPrlqLjzQfx0XWvMz2VW3FrP4bC+1xAf9eM9C9D4M+jnlvDwrtI+/dInM0STCqkOfS7yookJ6kMYHamABPKpFJ1wPcR5E1vthPLG/avel6xBGV/kYshGkcu0ZhrHN1hN85IzEYs82lXBGKKyshgHSm15PIXsnhf3Qq76gpq9MScti/szQTxA2tYLfpnYqQ7k30nV6h1/ttpJ/D4YgiJhUsVF+SYVB3/jiSlPM6vno7EYLmBOdnBbRIgfJnU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6512007)(6506007)(4326008)(2616005)(53546011)(52116002)(8936002)(110136005)(6666004)(36756003)(316002)(6486002)(186003)(508600001)(31696002)(66476007)(38100700002)(66556008)(2906002)(66946007)(5660300002)(54906003)(86362001)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SXNTVVFIbTA4ZG8zQlVVQVBzSEVlZ3kyY2h1aXlSNngxRFRBQlVSWkxrOEds?=
- =?utf-8?B?SE5QK0JCajdBTnJZUWV5WHRSdVVrODQzaU0ycmhPSHhTTkpqcllZa29zYWtY?=
- =?utf-8?B?WS9TVy9kdmw1cEV3WTdyR0R6NFdSTmcrQTVMUVFxMzhTZEpwNGpsdUJIUkRx?=
- =?utf-8?B?eTN0Tklzd1Z3YUZ4Z1h4ZEY1eXFzOEpubDZnd29BREcreFVmWnRwbjEvNk1W?=
- =?utf-8?B?MkFzSm1tWWVZZk5RSkNvaERINXZlRWVjdUhnQWRqejQrWHp2OEl1bVI3UExL?=
- =?utf-8?B?OFMwTThTMFNjZ2xUVFhYWUg3MllkZnN3ZFN3UG1SZDNMUCtHZnl3V1JiZmtL?=
- =?utf-8?B?OHJzOFpML2xPZ3lUWGFSVGk1aUpIOU1WZkNkOTFUTHJUeWhFRVF5cGdQMUJN?=
- =?utf-8?B?S0QyZk4rWkN5V1lUNWlKZ2lXOWorbHR1OHZqdktIUlNRVDJCaUJXWUc0WWV6?=
- =?utf-8?B?ay9WOE4vZSsvc3hmOEc4cjhjWEpCdCthRWMzOFlTSTZhNmpOYXJsSDcvY0Nr?=
- =?utf-8?B?V3cxcHBVU2d1Mk1LZWRqVWttTTZPMGU5TStkbW9NSHIxVTlXVzB5eGxQR01j?=
- =?utf-8?B?OVVDbmF3d3hqOGpMb1pudlBFbllyNS95SU4xK3lzZ0J6bXB6NGx0RzI3aFVL?=
- =?utf-8?B?ZXVEUlZQbHo1VUQzaWxzLytUaDIwSzBtcjdlMHB4VStKeDNXUXJJQTIyVWJY?=
- =?utf-8?B?cUtxTDJ0aFdQRHVYWDhERWFteXhxR25DQ05PYmlNSGRhVkZIa1dmR3AwM3di?=
- =?utf-8?B?cmRGUUg0Q0EzOWdwY01CaytML1JNbnVRejNINWVacCs3UnB6dm9mV2RLZ2pl?=
- =?utf-8?B?N01qNi9jZE1jMElwNzk0anprTDlrdG5kTmhjZTFPckdPY1hKbjMra0llK1N3?=
- =?utf-8?B?YW40dUtMaVZtQVV1djBrWXkwM0Y2ZDNMQmxGUmxYa09yMU9PNGFuNVlEWWU4?=
- =?utf-8?B?QnA4MW5xZTBKRS9GZjI5NHpnWHZadXhYeUxLS3E4eWlPWVFkSi9NejR6RXlB?=
- =?utf-8?B?ampScVBibi84SFVPMTRSdnE4WkdBZnd0clh6WjFia2p6dE5lOTBORWJVeXdI?=
- =?utf-8?B?MUVra0FzSk94dldQOHZnaWdHYjBrUTRGV0RDWTZTREF6V1c0a2ViSkUzRFNZ?=
- =?utf-8?B?QTNNcXZnVUdmRGVyalpkZDBDbFQ5YmREQ3cwQTVOdFc4MEVDM2F4MlVublg3?=
- =?utf-8?B?NHdNek0yNzdBeHlSbTBIV1dQVzZqYUc4YnI5UlNiRWdWUkNjSW9GcU1VUEVv?=
- =?utf-8?B?Uis1SjRYNDN4K0N4N0xDZVdLcWVqZDRVcFEyVXVNZkdQQ09scExSa1FnQTNL?=
- =?utf-8?B?aXZBVThJQmlUd0V2eGM4KzdEcVY3Ky9GMW1TU3FscGo5QW1EK1V0UkRNYWpL?=
- =?utf-8?B?QVFhTFM0Mjhma3dWc1VEb3NXeW42VngrMmc1d3F5cjJpREw0WWNZR3IzcVJB?=
- =?utf-8?B?VVdNemFsall4SnJZVUluZHdYdmM5V2NOMm9SWXpUR2h1WjRqbFowelYyU3Zp?=
- =?utf-8?B?eUx5bXpvdFM3bVp5T0piR2F6c1hia2VKdC9iWWc3VjNUNUxEOGhMZjNrY1Q2?=
- =?utf-8?B?NmFOMC9ZSU44MnkxQ0NzZmFMMW8vSUZkQzVHWmxIaWhRbXU3c1pFb0kvbVlQ?=
- =?utf-8?B?YVpmV3AzdzRXUUQ5MDZvQTJoaVlBMzJRbnEydDlnSDJsOVJFYzVBQTJ4NWtm?=
- =?utf-8?B?akpDR2VnQzZvcEhwdUFkQWdqTDluTEFCWW40WEpOMXY2alZUalJWS2V6bDhs?=
- =?utf-8?B?eUl2cG1Eb1AzS1VYUWZnc2lKMVFtbWd0anZ6WkpVN1VnTTc4T1pHRnZyTEtN?=
- =?utf-8?B?R2lEL0F3eVVQbGpGc1hiRWplOEJ1TkpvYnZ1OTFCZHQxeDdseldGajhEQlpO?=
- =?utf-8?B?c3c2YS8reGJEbUxLUVI4MU1KbU01OUYzNkxMSEk4aHlXZ3NUNk5paFREZHZ4?=
- =?utf-8?B?d1Rnc214R1hzek5jTjMrK21ZVUJHcWxNeFBiMTdUbVcwUEFDdFhiQ2JPTUlx?=
- =?utf-8?B?MjFDWjdicFc3L0Q0d3c2WmtXSXl5b2ZGSkJWN3QrUnZvcmFUWUFsVDNJM1ZT?=
- =?utf-8?B?aFdneStnWUZEQnVpL0NzQlV6NWJJbDJldVVtM1N0c1ZjdHRKR2xUWVBjaWZU?=
- =?utf-8?Q?8gk3Tu/lA1iuUx6R5t55NRK3w?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec9e7dc1-5dbe-421c-235c-08d9d175a9ea
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 00:35:54.2802
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AkRBlvJy+1GnyDYJSe4J7/hHS61ZAOD3AsUbMQ73mY27RD54NsXiq7ZekBiPkEkl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3797
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: gmfw0ZvrZTij6jV0J0HXCh43aMsupOCT
-X-Proofpoint-ORIG-GUID: gmfw0ZvrZTij6jV0J0HXCh43aMsupOCT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-06_10,2022-01-06_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
- phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
- lowpriorityscore=0 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201070001
-X-FB-Internal: deliver
+References: <20220106195938.261184-1-toke@redhat.com> <20220106195938.261184-4-toke@redhat.com>
+In-Reply-To: <20220106195938.261184-4-toke@redhat.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 6 Jan 2022 16:50:18 -0800
+Message-ID: <CAADnVQJS-2VdpkPoiXWCDYLV1MC6gk9oQFC+GZYw6jP2umH0Cw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 3/3] selftests/bpf: Add selftest for
+ XDP_REDIRECT in bpf_prog_run()
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 1/6/22 1:50 PM, Hao Luo wrote:
-> Introduce a new program type called "bpf_view", which can be used to
-> print out a kernel object's state to a seq file. So the signature of
-> this program consists of two parameters: a seq file and a kernel object.
-> Currently only 'struct cgroup' is supported.
-> 
-> The following patches will introduce a call site for this program type
-> and allow users to customize the format of printing out the state of
-> kernel objects to userspace.
-> 
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->   include/linux/bpf.h            |   4 +
->   include/uapi/linux/bpf.h       |   2 +
->   kernel/bpf/Makefile            |   2 +-
->   kernel/bpf/bpf_view.c          | 179 +++++++++++++++++++++++++++++++++
->   kernel/bpf/bpf_view.h          |  24 +++++
->   kernel/bpf/syscall.c           |   3 +
->   kernel/bpf/verifier.c          |   6 ++
->   kernel/trace/bpf_trace.c       |  12 ++-
->   tools/include/uapi/linux/bpf.h |   2 +
->   9 files changed, 230 insertions(+), 4 deletions(-)
->   create mode 100644 kernel/bpf/bpf_view.c
->   create mode 100644 kernel/bpf/bpf_view.h
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 2ec693c3d6f6..16f582dfff7e 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1622,6 +1622,10 @@ void bpf_iter_map_show_fdinfo(const struct bpf_iter_aux_info *aux,
->   int bpf_iter_map_fill_link_info(const struct bpf_iter_aux_info *aux,
->   				struct bpf_link_info *info);
->   
-> +bool bpf_view_prog_supported(struct bpf_prog *prog);
-> +int bpf_view_link_attach(const union bpf_attr *attr, bpfptr_t uattr,
-> +			 struct bpf_prog *prog);
+On Thu, Jan 6, 2022 at 11:59 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 > +
->   int map_set_for_each_callback_args(struct bpf_verifier_env *env,
->   				   struct bpf_func_state *caller,
->   				   struct bpf_func_state *callee);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index b0383d371b9a..efa0f21d13ba 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -982,6 +982,7 @@ enum bpf_attach_type {
->   	BPF_MODIFY_RETURN,
->   	BPF_LSM_MAC,
->   	BPF_TRACE_ITER,
-> +	BPF_TRACE_VIEW,
+> +#define NUM_PKTS 10
 
-Please add the new entry to the end of enum list. Otherwise,
-this will break backward compatibility.
+I'm afraid this needs more work.
+Just bumping above to 1M I got:
+[  254.165911] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[  254.166387] WARNING: inconsistent lock state
+[  254.166882] 5.16.0-rc7-02011-g64923127f1b3 #3784 Tainted: G           O
+[  254.167659] --------------------------------
+[  254.168140] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+[  254.168793] swapper/7/0 [HC0[0]:SC1[5]:HE1:SE0] takes:
+[  254.169373] ffff888113d24220 (&r->producer_lock){+.?.}-{2:2}, at:
+veth_xmit+0x361/0x830
+[  254.170317] {SOFTIRQ-ON-W} state was registered at:
+[  254.170921]   lock_acquire+0x18a/0x450
+[  254.171371]   _raw_spin_lock+0x2f/0x40
+[  254.171815]   veth_xdp_xmit+0x1d7/0x8c0
+[  254.172241]   veth_ndo_xdp_xmit+0x1d/0x50
+[  254.172689]   bq_xmit_all+0x562/0xc30
+[  254.173159]   __dev_flush+0xb1/0x220
+[  254.173586]   xdp_do_flush+0xa/0x20
+[  254.173983]   xdp_test_run_batch.constprop.25+0x90c/0xf00
+[  254.174564]   bpf_test_run_xdp_live+0x369/0x480
+[  254.175038]   bpf_prog_test_run_xdp+0x63f/0xe50
+[  254.175512]   __sys_bpf+0x688/0x4410
+[  254.175923]   __x64_sys_bpf+0x75/0xb0
+[  254.176327]   do_syscall_64+0x34/0x80
+[  254.176733]   entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  254.177297] irq event stamp: 130862
+[  254.177681] hardirqs last  enabled at (130862):
+[<ffffffff812d0812>] call_rcu+0x2a2/0x640
+[  254.178561] hardirqs last disabled at (130861):
+[<ffffffff812d08bd>] call_rcu+0x34d/0x640
+[  254.179404] softirqs last  enabled at (130814):
+[<ffffffff83c00534>] __do_softirq+0x534/0x835
+[  254.180332] softirqs last disabled at (130839):
+[<ffffffff811389f7>] irq_exit_rcu+0xe7/0x120
+[  254.181255]
+[  254.181255] other info that might help us debug this:
+[  254.181969]  Possible unsafe locking scenario:
+[  254.183172]   lock(&r->producer_lock);
+[  254.183590]   <Interrupt>
+[  254.183893]     lock(&r->producer_lock);
+[  254.184321]
+[  254.184321]  *** DEADLOCK ***
+[  254.184321]
+[  254.185047] 5 locks held by swapper/7/0:
+[  254.185501]  #0: ffff8881f6d89db8 ((&ndev->rs_timer)){+.-.}-{0:0},
+at: call_timer_fn+0xc8/0x440
+[  254.186496]  #1: ffffffff854415e0 (rcu_read_lock){....}-{1:2}, at:
+ndisc_send_skb+0x761/0x12e0
+[  254.187444]  #2: ffffffff85441580 (rcu_read_lock_bh){....}-{1:2},
+at: ip6_finish_output2+0x2da/0x1e00
+[  254.188447]  #3: ffffffff85441580 (rcu_read_lock_bh){....}-{1:2},
+at: __dev_queue_xmit+0x1de/0x2910
+[  254.189502]  #4: ffffffff854415e0 (rcu_read_lock){....}-{1:2}, at:
+veth_xmit+0x41/0x830
+[  254.190455]
+[  254.190455] stack backtrace:
+[  254.190963] CPU: 7 PID: 0 Comm: swapper/7 Tainted: G           O
+  5.16.0-rc7-02011-g64923127f1b3 #3784
+[  254.192109] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[  254.193427] Call Trace:
+[  254.193711]  <IRQ>
+[  254.193945]  dump_stack_lvl+0x44/0x57
+[  254.194418]  mark_lock.part.54+0x157b/0x2210
+[  254.194940]  ? mark_lock.part.54+0xfd/0x2210
+[  254.195451]  ? print_usage_bug+0x80/0x80
+[  254.195896]  ? rcu_read_lock_sched_held+0x91/0xc0
+[  254.196413]  ? rcu_read_lock_bh_held+0xa0/0xa0
+[  254.196903]  ? rcu_read_lock_bh_held+0xa0/0xa0
+[  254.197389]  ? find_held_lock+0x33/0x1c0
+[  254.197826]  ? lock_release+0x3a1/0x650
+[  254.198251]  ? __stack_depot_save+0x274/0x490
+[  254.198742]  ? lock_acquire+0x19a/0x450
+[  254.199175]  ? lock_downgrade+0x690/0x690
+[  254.199626]  ? do_raw_spin_lock+0x11d/0x270
+[  254.200091]  ? rwlock_bug.part.2+0x90/0x90
+[  254.200550]  __lock_acquire+0x151f/0x6310
+[  254.201000]  ? mark_lock.part.54+0xfd/0x2210
+[  254.201470]  ? lockdep_hardirqs_on_prepare+0x3f0/0x3f0
+[  254.202083]  ? lock_is_held_type+0xda/0x130
+[  254.202592]  ? rcu_read_lock_sched_held+0x91/0xc0
+[  254.203134]  ? rcu_read_lock_bh_held+0xa0/0xa0
+[  254.203630]  lock_acquire+0x18a/0x450
+[  254.204041]  ? veth_xmit+0x361/0x830
+[  254.204455]  ? lock_release+0x650/0x650
+[  254.204932]  ? eth_gro_receive+0xc60/0xc60
+[  254.205421]  ? rcu_read_lock_held+0x91/0xa0
+[  254.205912]  _raw_spin_lock+0x2f/0x40
+[  254.206314]  ? veth_xmit+0x361/0x830
+[  254.206707]  veth_xmit+0x361/0x830
 
->   	BPF_CGROUP_INET4_GETPEERNAME,
->   	BPF_CGROUP_INET6_GETPEERNAME,
->   	BPF_CGROUP_INET4_GETSOCKNAME,
-> @@ -1009,6 +1010,7 @@ enum bpf_link_type {
->   	BPF_LINK_TYPE_NETNS = 5,
->   	BPF_LINK_TYPE_XDP = 6,
->   	BPF_LINK_TYPE_PERF_EVENT = 7,
-> +	BPF_LINK_TYPE_VIEW = 8,
->   
->   	MAX_BPF_LINK_TYPE,
->   };
-[...]
+I suspect it points out that local_bh_disable is needed
+around xdp_do_flush.
+
+That's why I asked you to test it with something
+more than 3 in NUM_PKTS.
+What values did you test it with? I hope not just 10.
+
+Please make sure XDP_PASS/TX/REDIRECT are all stress tested.
