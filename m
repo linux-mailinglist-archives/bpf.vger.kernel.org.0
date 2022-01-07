@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226D3487C52
+	by mail.lfdr.de (Postfix) with ESMTP id 9E282487C53
 	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 19:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbiAGSqQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 13:46:16 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37590 "EHLO
+        id S229834AbiAGSqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 13:46:17 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25314 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229834AbiAGSqQ (ORCPT
+        by vger.kernel.org with ESMTP id S229984AbiAGSqQ (ORCPT
         <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 13:46:16 -0500
 Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207HG2bI026222
-        for <bpf@vger.kernel.org>; Fri, 7 Jan 2022 10:46:15 -0800
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207HG2bK026222
+        for <bpf@vger.kernel.org>; Fri, 7 Jan 2022 10:46:16 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=zXwDVjF+Caxwi6lk1xcTGHCmca2pE0ClsucMAp8/Vy4=;
- b=YpZ9Bgsl7/r3TjMVMmn0JGhjcRE5M7Ep6FgMVYlSLITzTq+BnOtEfRZx+8yA4D09OqdL
- 24P0QMKEAQwH+dKTp/xQY8Psxh6Ltp14lb/MA4GLdUJ44T9fEkS7as//0SHudWknZNG0
- pzwFkFlI6flbEfD3pdHBH2/qh9tNAisXVCo= 
+ bh=+in/XWxMRgbnaKU4v8f41pK2KkWjs35ZQyCrR4xw1Zo=;
+ b=MgKebzJshnvqS4flqHzrpYudIxRFCtAS3UwF8bFVq8zi1xG5/nsxjTswXlajGasHWJCy
+ p4aWE/xVAqkKd3g+8CZhyu8R9lqYqsLuB7YnPue4ZNWrQk80zuq4Lb8TNTn27e97+HYZ
+ 9A2flyp9oLPRvpNnez6poHzJDMbpKrzELPA= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4wg7p0c-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4wg7p0c-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 10:46:15 -0800
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 10:46:16 -0800
 Received: from twshared5363.25.prn2.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 7 Jan 2022 10:46:14 -0800
+ 15.1.2308.20; Fri, 7 Jan 2022 10:46:15 -0800
 Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id C659F1662906; Fri,  7 Jan 2022 10:46:05 -0800 (PST)
+        id CC0AF1662908; Fri,  7 Jan 2022 10:46:05 -0800 (PST)
 From:   Christy Lee <christylee@fb.com>
 To:     <andrii@kernel.org>, <acme@kernel.org>
 CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
         <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 1/2] libbpf: rename bpf_prog_attach_xattr() to bpf_prog_attach_opts()
-Date:   Fri, 7 Jan 2022 10:46:03 -0800
-Message-ID: <20220107184604.3668544-2-christylee@fb.com>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: change bpf_prog_attach_xattr() to bpf_prog_attach_opts()
+Date:   Fri, 7 Jan 2022 10:46:04 -0800
+Message-ID: <20220107184604.3668544-3-christylee@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220107184604.3668544-1-christylee@fb.com>
 References: <20220107184604.3668544-1-christylee@fb.com>
@@ -45,8 +45,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: EQt_CTumNE1xWiPUTGiwoGhgHDMNjljD
-X-Proofpoint-ORIG-GUID: EQt_CTumNE1xWiPUTGiwoGhgHDMNjljD
+X-Proofpoint-GUID: XzsgbCDmyr3-YbhWEAJVN9Ahgo7Z5yMW
+X-Proofpoint-ORIG-GUID: XzsgbCDmyr3-YbhWEAJVN9Ahgo7Z5yMW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-07_08,2022-01-07_01,2021-12-02_01
@@ -60,75 +60,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-All xattr APIs are being dropped, let's converge to the convention used i=
-n
-high-level APIs and rename bpf_prog_attach_xattr to bpf_prog_attach_opts.
+bpf_prog_attach_opts() is being deprecated and renamed to
+bpf_prog_attach_xattr(). Change all selftests/bpf's uage to the new name.
 
 Signed-off-by: Christy Lee <christylee@fb.com>
 ---
- tools/lib/bpf/bpf.c      | 9 +++++++--
- tools/lib/bpf/bpf.h      | 4 ++++
- tools/lib/bpf/libbpf.map | 1 +
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/cgroup_attach_multi.c   | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 9b64eed2b003..7e564c4438c9 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -754,10 +754,10 @@ int bpf_prog_attach(int prog_fd, int target_fd, enu=
-m bpf_attach_type type,
- 		.flags =3D flags,
- 	);
+diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c=
+ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+index d3e8f729c623..38b3c47293da 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+@@ -194,14 +194,14 @@ void serial_test_cgroup_attach_multi(void)
 =20
--	return bpf_prog_attach_xattr(prog_fd, target_fd, type, &opts);
-+	return bpf_prog_attach_opts(prog_fd, target_fd, type, &opts);
- }
+ 	attach_opts.flags =3D BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
+ 	attach_opts.replace_prog_fd =3D allow_prog[0];
+-	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "fail_prog_replace_override", "unexpected success\n"))
+ 		goto err;
+ 	CHECK_FAIL(errno !=3D EINVAL);
 =20
--int bpf_prog_attach_xattr(int prog_fd, int target_fd,
-+int bpf_prog_attach_opts(int prog_fd, int target_fd,
- 			  enum bpf_attach_type type,
- 			  const struct bpf_prog_attach_opts *opts)
- {
-@@ -778,6 +778,11 @@ int bpf_prog_attach_xattr(int prog_fd, int target_fd=
-,
- 	return libbpf_err_errno(ret);
- }
+ 	attach_opts.flags =3D BPF_F_REPLACE;
+-	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "fail_prog_replace_no_multi", "unexpected success\n"))
+ 		goto err;
+@@ -209,7 +209,7 @@ void serial_test_cgroup_attach_multi(void)
 =20
-+__attribute__((alias("bpf_prog_attach_opts")))
-+int bpf_prog_attach_xattr(int prog_fd, int target_fd,
-+			  enum bpf_attach_type type,
-+			  const struct bpf_prog_attach_opts *opts);
-+
- int bpf_prog_detach(int target_fd, enum bpf_attach_type type)
- {
- 	union bpf_attr attr;
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index 00619f64a040..5dc9fefe73f3 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -280,6 +280,10 @@ struct bpf_prog_attach_opts {
+ 	attach_opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_REPLACE;
+ 	attach_opts.replace_prog_fd =3D -1;
+-	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "fail_prog_replace_bad_fd", "unexpected success\n"))
+ 		goto err;
+@@ -217,7 +217,7 @@ void serial_test_cgroup_attach_multi(void)
 =20
- LIBBPF_API int bpf_prog_attach(int prog_fd, int attachable_fd,
- 			       enum bpf_attach_type type, unsigned int flags);
-+LIBBPF_API int bpf_prog_attach_opts(int prog_fd, int attachable_fd,
-+				     enum bpf_attach_type type,
-+				     const struct bpf_prog_attach_opts *opts);
-+LIBBPF_DEPRECATED_SINCE(0, 8, "use bpf_prog_attach_opts() instead")
- LIBBPF_API int bpf_prog_attach_xattr(int prog_fd, int attachable_fd,
- 				     enum bpf_attach_type type,
- 				     const struct bpf_prog_attach_opts *opts);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 529783967793..8262cfca2240 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -247,6 +247,7 @@ LIBBPF_0.0.8 {
- 		bpf_link_create;
- 		bpf_link_update;
- 		bpf_map__set_initial_value;
-+		bpf_prog_attach_opts;
- 		bpf_program__attach_cgroup;
- 		bpf_program__attach_lsm;
- 		bpf_program__is_lsm;
+ 	/* replacing a program that is not attached to cgroup should fail  */
+ 	attach_opts.replace_prog_fd =3D allow_prog[3];
+-	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "fail_prog_replace_no_ent", "unexpected success\n"))
+ 		goto err;
+@@ -225,14 +225,14 @@ void serial_test_cgroup_attach_multi(void)
+=20
+ 	/* replace 1st from the top program */
+ 	attach_opts.replace_prog_fd =3D allow_prog[0];
+-	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "prog_replace", "errno=3D%d\n", errno))
+ 		goto err;
+=20
+ 	/* replace program with itself */
+ 	attach_opts.replace_prog_fd =3D allow_prog[6];
+-	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
++	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
+ 					BPF_CGROUP_INET_EGRESS, &attach_opts),
+ 		  "prog_replace", "errno=3D%d\n", errno))
+ 		goto err;
 --=20
 2.30.2
 
