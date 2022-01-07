@@ -2,148 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1FC4878C4
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 15:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F274879AB
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 16:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbiAGOT2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 09:19:28 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:55923 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbiAGOT1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 09:19:27 -0500
-Received: by mail-io1-f69.google.com with SMTP id n80-20020a6b8b53000000b00601ac7398c3so3936767iod.22
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 06:19:27 -0800 (PST)
+        id S1348081AbiAGP03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 10:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232822AbiAGP02 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 10:26:28 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A372AC061574
+        for <bpf@vger.kernel.org>; Fri,  7 Jan 2022 07:26:28 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id a8so351406qvx.2
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 07:26:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vGt+owIlTcGsf36iCyr2fuZ50uj0j7pktyV5lENxl60=;
+        b=BsSs3Sf0PUcYCsfnc2cET0b7KSTLKjqELvqmmkYXLRIU7I0n0/CBH2fMqbYPc6y3ut
+         Qf5aXIX0x7U/CuVi0682ceKeM85KIzxTGH5Zx4AxhpQjpseKLqVBC6LllOzwdVpYfkcX
+         etxOGMz7MpDURFO3WXYXvKFtAnYkHFFPa6u4c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lehBmzV4hibWTovQUK/+HgjGU/Xf4O0K8LFaKhVjZuM=;
-        b=tdibSlM9e+SkhNQ44At78s0JNRYgWm6BWhHgjsBDe1I5cj9thq27pJ2n4N5nVsQBsG
-         cXkTYZAGhW27z/gZQn9TdcdgpNxp+ly+QvszzbcCaDZV6VPujJqXJNF5I5MmZqICRPFX
-         bx28k4BMg0t6cn7v6iGhtgZSzzJ9hg1vEtzCYherbrSbpawV6Q4NSO5ZG9ja7wxMF675
-         59M3vapNqUkv3fpdScIv2cVEORCSMiRPWTYGxd0IIP39RpXQRsTOuMhF4l303Y374CvT
-         qkWqYoNpv11b89kPtl9kXpOiYchl6FBEL+aLb6TmaMa22wGn9YkidzQkvbZe0fxqgHU9
-         HGCw==
-X-Gm-Message-State: AOAM530DBZphK15OHycCrFRMVFnM578pwlrEVh0Rn0L6RldzB93SprEJ
-        KoOlcvEC+8NAVmWLnYNRhaxyrWz+yfxL3NPjIqddoIt01EPh
-X-Google-Smtp-Source: ABdhPJxJ3jTJpnlFIqwAaflUOuGygF7KcB41XrEhhY33jUaoNRz0n5Qy87AeiE/jncORNfK9Z7DQKT2+iufwBGPdcJSc+xxdVUlq
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vGt+owIlTcGsf36iCyr2fuZ50uj0j7pktyV5lENxl60=;
+        b=AkFNTJw84mSMF5SZmIkwEwuXq8OebZaz/IxE1oUVMYinbDXF8P/JGKefxdlO2Xw12a
+         BgJkJRhVYiayJSgT/TCoX+rEEKkKz6q2YWaEIERw5Ex7pT5NZUGl4mTOmspEBjRCk3av
+         zZqSyj8QPo+zy161OgCrVJOj85m58rN8pjQMPwXz687F4UaKIPiFm1AoulfC7KIrLN82
+         1Yanof5poI65CBhH8eOYjtuQw/rchqgbi+s1WgOgM9Fb+GS3ooJMIxLUgF744e/5e6Mc
+         I1h6ya7cRHaPh8trMzyiryRqUwrGg+9023FC0mlorCuwGYVJl7dnX+RbCd9pHvnLZ7Gu
+         Pi2g==
+X-Gm-Message-State: AOAM5328h5rugY4NUT0ZHGHbciCj6mW8DHlydgBSp7b8/PK0wON6+Zov
+        K2e463EBaxvHrwDdKjOe5O8o4w==
+X-Google-Smtp-Source: ABdhPJwVk7agXiz7QnVNq9n1H0hekc/TGGK4YAap4uIyx26BeWy/IoJ1LN2f3uQ1HovNcFME09MT1Q==
+X-Received: by 2002:ad4:5b8f:: with SMTP id 15mr32201544qvp.112.1641569186094;
+        Fri, 07 Jan 2022 07:26:26 -0800 (PST)
+Received: from localhost.localdomain ([181.136.110.101])
+        by smtp.gmail.com with ESMTPSA id h9sm3441494qkp.106.2022.01.07.07.26.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jan 2022 07:26:25 -0800 (PST)
+From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next 1/2] libbpf: Use IS_ERR_OR_NULL() in hashmap__free()
+Date:   Fri,  7 Jan 2022 10:26:19 -0500
+Message-Id: <20220107152620.192327-1-mauricio@kinvolk.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:6609:: with SMTP id a9mr29184620ioc.138.1641565167261;
- Fri, 07 Jan 2022 06:19:27 -0800 (PST)
-Date:   Fri, 07 Jan 2022 06:19:27 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ab9b3e05d4feacd6@google.com>
-Subject: [syzbot] general protection fault in dev_get_by_index_rcu (2)
-From:   syzbot <syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+hashmap__new() uses ERR_PTR() to return an error so it's better to
+use IS_ERR_OR_NULL() in order to check the pointer before calling
+free(). This will prevent freeing an invalid pointer if somebody calls
+hashmap__free() with the result of a failed hashmap__new() call.
 
-syzbot found the following issue on:
-
-HEAD commit:    819d11507f66 bpf, selftests: Fix spelling mistake "tained"..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=12500db3b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=22b66456935ee10
-dashboard link: https://syzkaller.appspot.com/bug?extid=983941aa85af6ded1fd9
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153a6cb3b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121c690bb00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000003e: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000001f0-0x00000000000001f7]
-CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.16.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:dev_index_hash net/core/dev.c:222 [inline]
-RIP: 0010:dev_get_by_index_rcu+0x28/0x140 net/core/dev.c:885
-Code: 00 00 41 55 41 54 55 89 f5 53 48 89 fb e8 00 9d 4d fa 48 8d bb f0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 fc 00 00 00 48 8b 93 f0 01 00 00 40 0f b6 c5 48
-RSP: 0018:ffffc90000d97608 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
-RDX: 000000000000003e RSI: ffffffff872a14d0 RDI: 00000000000001f0
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff873745ad R11: 000000000008808a R12: ffff88806a062100
-R13: 0000000000000003 R14: ffff88806a062100 R15: ffffc90001116000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055555733a848 CR3: 000000001479e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- ____bpf_clone_redirect net/core/filter.c:2410 [inline]
- bpf_clone_redirect+0x91/0x420 net/core/filter.c:2401
- bpf_prog_bebbfe2050753572+0x56/0xcc0
- __bpf_prog_run include/linux/filter.h:626 [inline]
- bpf_prog_run_xdp include/linux/filter.h:801 [inline]
- veth_xdp_rcv_skb+0x64b/0x1b20 drivers/net/veth.c:775
- veth_xdp_rcv+0x3ac/0x810 drivers/net/veth.c:881
- veth_poll+0x134/0x850 drivers/net/veth.c:913
- __napi_poll+0xaf/0x440 net/core/dev.c:7023
- napi_poll net/core/dev.c:7090 [inline]
- net_rx_action+0x801/0xb40 net/core/dev.c:7177
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-Modules linked in:
----[ end trace 86b7d5782a67ad32 ]---
-RIP: 0010:dev_index_hash net/core/dev.c:222 [inline]
-RIP: 0010:dev_get_by_index_rcu+0x28/0x140 net/core/dev.c:885
-Code: 00 00 41 55 41 54 55 89 f5 53 48 89 fb e8 00 9d 4d fa 48 8d bb f0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 fc 00 00 00 48 8b 93 f0 01 00 00 40 0f b6 c5 48
-RSP: 0018:ffffc90000d97608 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000100
-RDX: 000000000000003e RSI: ffffffff872a14d0 RDI: 00000000000001f0
-RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff873745ad R11: 000000000008808a R12: ffff88806a062100
-R13: 0000000000000003 R14: ffff88806a062100 R15: ffffc90001116000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055555733a848 CR3: 000000001479e000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	41 55                	push   %r13
-   4:	41 54                	push   %r12
-   6:	55                   	push   %rbp
-   7:	89 f5                	mov    %esi,%ebp
-   9:	53                   	push   %rbx
-   a:	48 89 fb             	mov    %rdi,%rbx
-   d:	e8 00 9d 4d fa       	callq  0xfa4d9d12
-  12:	48 8d bb f0 01 00 00 	lea    0x1f0(%rbx),%rdi
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 fc 00 00 00    	jne    0x130
-  34:	48 8b 93 f0 01 00 00 	mov    0x1f0(%rbx),%rdx
-  3b:	40 0f b6 c5          	movzbl %bpl,%eax
-  3f:	48                   	rex.W
-
-
+Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/lib/bpf/hashmap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
+index 3c20b126d60d..aeb09c288716 100644
+--- a/tools/lib/bpf/hashmap.c
++++ b/tools/lib/bpf/hashmap.c
+@@ -75,7 +75,7 @@ void hashmap__clear(struct hashmap *map)
+ 
+ void hashmap__free(struct hashmap *map)
+ {
+-	if (!map)
++	if (IS_ERR_OR_NULL(map))
+ 		return;
+ 
+ 	hashmap__clear(map);
+@@ -238,4 +238,3 @@ bool hashmap__delete(struct hashmap *map, const void *key,
+ 
+ 	return true;
+ }
+-
+-- 
+2.25.1
+
