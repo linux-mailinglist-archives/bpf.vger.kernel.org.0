@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B2048730D
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 07:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A574487379
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 08:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbiAGG07 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 01:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
+        id S234843AbiAGHWy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 02:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbiAGG06 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 01:26:58 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8046C061245;
-        Thu,  6 Jan 2022 22:26:58 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id m13so4401807pji.3;
-        Thu, 06 Jan 2022 22:26:58 -0800 (PST)
+        with ESMTP id S234952AbiAGHWv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 02:22:51 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5D7C061245;
+        Thu,  6 Jan 2022 23:22:51 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id m1so4494732pfk.8;
+        Thu, 06 Jan 2022 23:22:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gPtCYtDNKh7VvsIap26OOmHVz9QTUZhglH+C/8cTVx8=;
-        b=MuxJwq57lZaQovLI/veUgOdI+6eYDBCgoICXxDyBxAkzkAhIbtubxvnhlmxXVMYn+2
-         gIw571Tc+agUWfjcsVvAVi+IkMEshfhdN8qgY5wPjK/bYz2y8+9ugQFCGVdaqCpltzsp
-         29VH+sbxgRMBON6ifXJx0k8KFMEFlFy8DPUnB6q19qym+hM8AyQI4dNzW6sviNPFpB9s
-         zgcq5GYdYGm517yuXA0U5Wny9GCa6NsII6qM4y6IufnSvPo1xCMgmokI5ktk4NZSiRir
-         f/aGw9EYf873aiPT9A8Wma6r6BU5KOQb58AdiyCITd0uBjrNsXd4AvACa2o5unbJNP7e
-         Jv2w==
+        bh=/iKuZuECKdgKrRCy3kPaNIUdSvOv4DODSZrCc3vNZOM=;
+        b=Rjxgbu2/Wm6o0d0SP8O01j2vFBGuy+h9mgdXFLRL5ARMz8AevWEc7teyW/nXi0H4Zh
+         BKbFnb49MtMulRQryHddxCVEg+Q0B7zVnd6cf47iBvNtCvgyHJ1ttnmbUgMt7OifQJ0i
+         YQqXla94aMrCm/dk1hkiZzh2UPsy8Soyxzf4pxGY33HQ20w/thil7WMMm9tMr6GhjStF
+         flfz070nJg/M/QUQi/wfGmEqbXlkPFpmAa01i1T3PV6CbExShDKK34P+n1wa2K5fmNrY
+         33ijo03AUQjfukWOjW3fqkIAwkIHWNH+QmJ8gBQJxiKs5W3PZjX+Ege2UfucFtpYNYWS
+         cnOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=gPtCYtDNKh7VvsIap26OOmHVz9QTUZhglH+C/8cTVx8=;
-        b=ulLNKXhA7LN97uqFwdy0uE/HYcsZeegQQ+3l/Y4+jXHgn4cS9QnQVDNoLA9Ilag1ik
-         b3hQsXmq4r7Vf49WOHF9/cYZ3rXuYb+DzM2Eq224MPaA9iYsaIAGSaXIuVeIpMSPPyBX
-         +tr3YZwKUVHi/rUkidMbF+DbE2LM5FAnbuzldF4tMvNW48siGYCSRcP/pwHTGJXxXgue
-         5NXP0LZYed/npD2zdqeWiEj/zqWq9zFXzW4/4GFN1GvhHQ0aqnAUv2yHTOSfMlmg4+lw
-         Q3nfdL5BZJUTFZ1ssN+NbeDls4aS27NGom8J2HY4Y0aW77NeXlmdUopo2hw9Cgc/1r0E
-         wVbQ==
-X-Gm-Message-State: AOAM530qkn+XrFpGxsbkJJlqs6oBdMkcKk74c1RmmLWhVm2Onua+0oIm
-        jp3w2qSImQTWYevDlnrGuy4=
-X-Google-Smtp-Source: ABdhPJwfd4RF4+BlYGdl1UAM1ihyoT93eN3d5oDX3ptvoZeNmRYm49nyzli+OEkoIOBaY2PEQhPlmw==
-X-Received: by 2002:a17:903:110d:b0:149:a908:16a2 with SMTP id n13-20020a170903110d00b00149a90816a2mr31811946plh.77.1641536818128;
-        Thu, 06 Jan 2022 22:26:58 -0800 (PST)
+        bh=/iKuZuECKdgKrRCy3kPaNIUdSvOv4DODSZrCc3vNZOM=;
+        b=KNvbyu8r74BorcRwAeNiXuShIsE8CFGt0ka0R70WP38mT0qd4y2cdJY14e5vILD484
+         6erj8XV+tfym1NLuV8KqiTpuu5515o26fQM07yMQrPTADMzSaLhy4uC0d4k9AWzECNe5
+         75y/BtfhvqAm10/2X+ZLz7S+6OvuFGPljrrKZDAqdsjWasJ698ZBC58+2e5eb1KYs2Mb
+         IelfQtecyjtQxKwkIfUffWaq56e8MUSQSWQJAegfv2+aAHFRvremZyv6gU2kFJoMjIiM
+         DvQZh30mz6SiZA9OmN6j4pTHoeUYKI20VV2bbgXenfWsBjtDwNiPPhbTxUulfcmU13cA
+         MRQQ==
+X-Gm-Message-State: AOAM5322G9oh5UIQrpQRgXGjbIqZpVlOKA2cvUhUYwJ8Vt6/VhnRcD68
+        vTW9J+G2okxikfFYbJmgWWg=
+X-Google-Smtp-Source: ABdhPJxndjXO/VYrAT8vaE3rI5nZ5nXObuFTnepGOuUBuIapKt1EKfg8ok4wDHRYRI7AWhVXK8jzXQ==
+X-Received: by 2002:a63:7b59:: with SMTP id k25mr491897pgn.190.1641540171040;
+        Thu, 06 Jan 2022 23:22:51 -0800 (PST)
 Received: from localhost ([14.96.13.220])
-        by smtp.gmail.com with ESMTPSA id ko19sm6635563pjb.16.2022.01.06.22.26.57
+        by smtp.gmail.com with ESMTPSA id y14sm3803535pgo.87.2022.01.06.23.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 22:26:57 -0800 (PST)
-Date:   Fri, 7 Jan 2022 11:56:45 +0530
+        Thu, 06 Jan 2022 23:22:50 -0800 (PST)
+Date:   Fri, 7 Jan 2022 12:52:36 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Networking <netdev@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Maxim Mikityanskiy <maximmi@nvidia.com>,
@@ -63,56 +63,60 @@ Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Florian Westphal <fw@strlen.de>,
         Jesper Dangaard Brouer <brouer@redhat.com>,
         Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v6 03/11] bpf: Populate kfunc BTF ID sets in
- struct btf
-Message-ID: <20220107062645.d5hdazzkvl4d2fhq@apollo.legion>
+Subject: Re: [PATCH bpf-next v6 11/11] selftests/bpf: Add test for race in
+ btf_try_get_module
+Message-ID: <20220107072236.ayhibs3bllcl4d6c@apollo.legion>
 References: <20220102162115.1506833-1-memxor@gmail.com>
- <20220102162115.1506833-4-memxor@gmail.com>
- <20220105061911.nzgzzvt2rpftcavi@ast-mbp.dhcp.thefacebook.com>
- <20220106085906.3zeugweq3twnkwzh@apollo.legion>
- <CAADnVQ+J+733_LU0QchkmpZz511_sCTeOAYi5MQ4YFMZQMygTA@mail.gmail.com>
+ <20220102162115.1506833-12-memxor@gmail.com>
+ <20220105062033.lufu57xhpyou3sie@ast-mbp.dhcp.thefacebook.com>
+ <20220106090400.6p34bempgv2wzocj@apollo.legion>
+ <CAEf4BzYsVC0cOuxVB2A-WWv+zW7zEFNQGrD0WKWhhOWDbYw3PQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQ+J+733_LU0QchkmpZz511_sCTeOAYi5MQ4YFMZQMygTA@mail.gmail.com>
+In-Reply-To: <CAEf4BzYsVC0cOuxVB2A-WWv+zW7zEFNQGrD0WKWhhOWDbYw3PQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 07, 2022 at 05:10:56AM IST, Alexei Starovoitov wrote:
-> On Thu, Jan 6, 2022 at 12:59 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
+On Fri, Jan 07, 2022 at 01:09:04AM IST, Andrii Nakryiko wrote:
+> On Thu, Jan 6, 2022 at 1:04 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > I'm not insisting, but for vmlinux we will have multiple
-> > register_btf_kfunc_id_set calls for same hook, so we have to concat multiple
-> > sets into one, which may result in an unsorted set. It's ok to not sort for
-> > modules where only one register call per hook is allowed.
+> > On Wed, Jan 05, 2022 at 11:50:33AM IST, Alexei Starovoitov wrote:
+> > > On Sun, Jan 02, 2022 at 09:51:15PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > This adds a complete test case to ensure we never take references to
+> > > > modules not in MODULE_STATE_LIVE, which can lead to UAF, and it also
+> > > > ensures we never access btf->kfunc_set_tab in an inconsistent state.
+> > > >
+> > > > The test uses userfaultfd to artifically widen the race.
+> > >
+> > > Fancy!
+> > > Does it have to use a different module?
+> > > Can it be part of bpf_testmod somehow?
 > >
-> > Unless we switch to linear search for now (which is ok by me), we have to
-> > re-sort for vmlinux BTF, to make btf_id_set_contains (in
-> > btf_kfunc_id_set_contains) work.
+> > I was thinking of doing it with bpf_testmod, but then I realised it would be a
+> > problem with parallel mode of test_progs, where another selftest in parallel may
+> > rely on bpf_testmod (which this test would unload, load and make it fault, and
+> > then fail the load before restoring it by loading again), so I went with
+> > bpf_testmod.
+> >
+> > Maybe we can hardcode a list of tests to be executed serially in --workers=n > 1
+> > mode? All serial tests are then executed in the beginning (or end), and then it
+> > starts invoking others in parallel as usual.
 >
-> Could you give an example when it happens in vmlinux?
-> Is it when modules are built-in (like tcp_bbr.c, tcp_cubic.c) ?
-> But then they should go into struct btf of the module?
-> Or THIS_MODULE becomes vmlinux and everything goes there?
-> If that's the case then yeah, sorting is needed.
+> you can mark test as serial with "serial_" prefix, grep for that, we
 
-Yep, THIS_MODULE would be NULL, and it would pick vmlinux BTF for storing the
-set.
+Thanks for pointing that out!
 
-Your suggestion to do direct assignment for module case is also good, since we
-always ensure module refcount is held when looking into set, access to it should
-be safe.
+> have a bunch of tests like this. But if you are going to unload and
+> reload bpf_testmod, you will be forcing any bpf_testmod-using test to
+> be serial, which I'm not sure is such a great idea.
+>
 
-> Please make it clear in the comment and the commit log.
-> It should be clear to reviewers without having to grill the author
-> with questions.
-> Would certainly save time for both author and reviewer. Agree?
-
-Agreed, I'll add the comments and respin.
-
-Thanks for your review.
+Didn't get the last part, based on my reading it will execute serial tests one
+by one (after finishing parallel tests), so if my serial test restores the
+loaded bpf_testmod after completing, it shouldn't really impact other tests,
+right? Did I miss something?
 
 --
 Kartikeya
