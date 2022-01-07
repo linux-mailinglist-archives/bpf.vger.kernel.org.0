@@ -2,78 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E362E48749F
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 10:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D6D4874A4
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 10:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346330AbiAGJXw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 04:23:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231910AbiAGJXw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 04:23:52 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00714C061245
-        for <bpf@vger.kernel.org>; Fri,  7 Jan 2022 01:23:51 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id m21so19981708edc.0
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 01:23:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=0N9qNU7XMr1iCrMw5iuO3cNdEW2jTXl9dhs46vp1OHU=;
-        b=cdxEUGbpf6h4tnN8o39dETWutO4HHgJ3a4XMaMtOA60Ii6yf9rE8+qQbFy1nfJmcdq
-         ll3Lxe3bjkwHXap8HVeqyVRvFTVyp4HY4DxCaOIoIEjMV6rDY1vdvcilzuBVX4+XhFmD
-         LylY+hbJyq2ISE/qN0x+Xe+l3nzLFgDwf3yT4XQC7aIINTC63NuSoBvaU9F4jPkUsVjV
-         yjyfEeMA4npJWgfOvmS2u5Myh1n04Ql07v4lIS/QHpWSf1b6zn9QUwYYFIZDlOAsU862
-         213PWcAHwTStqz9rDer4d3f8sdCgdiV8nsGThFNg6tib6Pq7ZsdnK27x/eNqvp7f7nMs
-         +2Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=0N9qNU7XMr1iCrMw5iuO3cNdEW2jTXl9dhs46vp1OHU=;
-        b=UoNciuiPRHbGROvJcb8fNv2KB0HzvbXbYYhdI3bsf2sb5C8Pw3Zgp4oSOdo3HRR8HR
-         Dxk05gJV5/2/PExQOnvgX1mLyWkgaBTfk1KL3syGKWl5+b5qJSnKxrSXfQSgYaW4Gn6X
-         FU0DJpBaXy46vNV1JcUEnljiL8gNfyMJ5qYoFstLo73FiShWmfiiDiim/GTqGCG0IwqK
-         WY1cWjelu0VTIxVZ7bL+PIvqmAonlTtWt72zVAwf8j22llooze5C1HNTGKgc3p6gl4TL
-         Y3y5deDam86l/bZKHMjxGfAREohEmcq48KchtQ9VAVrE5r5RJzuwrZNYC9RBVGryPRDk
-         fCug==
-X-Gm-Message-State: AOAM533/oe+bAjg2T3z/f8AWma2sWN1MHIYhfgqYk6bruCEYMUol8G5G
-        ETEIlS10SXxk5gbTOQzjPalcLL4fT9vEgz6NKVk=
-X-Google-Smtp-Source: ABdhPJwyqmDAvco61qQK4FuE4oWY8rf3wbLcYTRO+lQl0i/+jfDp1Z1hIQVCNhcW8Y+TtPCcz1Xgenb0HJ+SNXugZ+c=
-X-Received: by 2002:a05:6402:354b:: with SMTP id f11mr60472097edd.342.1641547430518;
- Fri, 07 Jan 2022 01:23:50 -0800 (PST)
+        id S1346404AbiAGJZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 04:25:25 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:40748 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231910AbiAGJZZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 04:25:25 -0500
+Received: from loongson-pc (unknown [111.9.175.10])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxOMruBthh5m0AAA--.418S2;
+        Fri, 07 Jan 2022 17:25:04 +0800 (CST)
+Date:   Fri, 7 Jan 2022 17:25:02 +0800
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        paulburton@kernel.org, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        tsbogend@alpha.franken.de, chenhuacai@kernel.org,
+        jiaxun.yang@flygoat.com, yangtiezhu@loongson.cn,
+        tony.ambardar@gmail.com, bpf@vger.kernel.org,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 5/7] mips: bpf: Add JIT workarounds for CPU errata
+Message-ID: <20220107092456.kq6t2fdaf2bq36db@loongson-pc>
+References: <20211005165408.2305108-1-johan.almbladh@anyfinetworks.com>
+ <20211005165408.2305108-6-johan.almbladh@anyfinetworks.com>
 MIME-Version: 1.0
-Reply-To: fre0707lo@gmail.com
-Sender: esl85764544b@gmail.com
-Received: by 2002:a17:906:90d6:0:0:0:0 with HTTP; Fri, 7 Jan 2022 01:23:49
- -0800 (PST)
-From:   "Ms. Lori" <udom4395@gmail.com>
-Date:   Fri, 7 Jan 2022 10:23:49 +0100
-X-Google-Sender-Auth: xSU4KruMJLJ7BripXHrUFhTy5qo
-Message-ID: <CAK0nFEVnn8KKfAYpb83wEAg0fBGp6O4iaBTTgRqR9Seqe+uf1A@mail.gmail.com>
-Subject: Good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005165408.2305108-6-johan.almbladh@anyfinetworks.com>
+User-Agent: NeoMutt/20180716
+X-CM-TRANSID: AQAAf9DxOMruBthh5m0AAA--.418S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKr18GFW7tFWDGw1kGryfZwb_yoW7Aw15pF
+        yUCwn3Cr9Fqr1DZFyrAF45Xr1Sgr4SqF47Cayak340qr9agFn3KF18KF45XrZ8uryDA34r
+        JrZ0vF98u3s3A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjEoGJ
+        UUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear friend,
+Hi, for Loongson3 errata, we need another sycn for cmpxchg
 
-My name is Ms. Lori. I am from Washington, United States and I work as
-a Foreign Operations Manager at a reputable bank. I am the account
-manager for one of our deceased clients, an oil and gas contractor who
-died of a heart attack in 2012. He had a fixed deposit account with
-our bank in the amount of $6,300,000.00 million. And he didn't specify
-a next heir when he opened the account. He died without any closest
-registered relative as he had been divorced for a long time and had no
-children. I decided to contact you for our mutual benefit, knowing
-that you have the same last name as my deceased client.
+ @@ -414,12 +415,13 @@ static void emit_cmpxchg_r64(struct jit_context *ctx, u8 dst, u8 src, s16 off)
+  	u8 t1 = MIPS_R_T6;
+  	u8 t2 = MIPS_R_T7;
+  
+ +	LLSC_sync(ctx);
+  	emit(ctx, lld, t1, off, dst);
+  	emit(ctx, bne, t1, r0, 12);
+  	emit(ctx, move, t2, src);      /* Delay slot */
+  	emit(ctx, scd, t2, off, dst);
+ -	emit(ctx, beqz, t2, -20);
+ -	emit(ctx, move, r0, t1);      /* Delay slot */
+ +	emit(ctx, LLSC_beqz, t2, -20 - LLSC_offset);
+ +	emit(ctx, move, r0, t1);       /* Delay slot */
+ +	LLSC_sync(ctx);	
+  
+On Tue, Oct 05, 2021 at 06:54:06PM +0200, Johan Almbladh wrote:
+> This patch adds workarounds for the following CPU errata to the MIPS
+> eBPF JIT, if enabled in the kernel configuration.
+> 
+>   - R10000 ll/sc weak ordering
+>   - Loongson-3 ll/sc weak ordering
+>   - Loongson-2F jump hang
+> 
+> The Loongson-2F nop errata is implemented in uasm, which the JIT uses,
+> so no additional mitigations are needed for that.
+> 
+> Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> ---
+>  arch/mips/net/bpf_jit_comp.c   |  6 ++++--
+>  arch/mips/net/bpf_jit_comp.h   | 26 +++++++++++++++++++++++++-
+>  arch/mips/net/bpf_jit_comp64.c | 10 ++++++----
+>  3 files changed, 35 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/mips/net/bpf_jit_comp.c b/arch/mips/net/bpf_jit_comp.c
+> index 7eb95fc57710..b17130d510d4 100644
+> --- a/arch/mips/net/bpf_jit_comp.c
+> +++ b/arch/mips/net/bpf_jit_comp.c
+> @@ -404,6 +404,7 @@ void emit_alu_r(struct jit_context *ctx, u8 dst, u8 src, u8 op)
+>  /* Atomic read-modify-write (32-bit) */
+>  void emit_atomic_r(struct jit_context *ctx, u8 dst, u8 src, s16 off, u8 code)
+>  {
+> +	LLSC_sync(ctx);
+>  	emit(ctx, ll, MIPS_R_T9, off, dst);
+>  	switch (code) {
+>  	case BPF_ADD:
+> @@ -427,7 +428,7 @@ void emit_atomic_r(struct jit_context *ctx, u8 dst, u8 src, s16 off, u8 code)
+>  		break;
+>  	}
+>  	emit(ctx, sc, MIPS_R_T8, off, dst);
+> -	emit(ctx, beqz, MIPS_R_T8, -16);
+> +	emit(ctx, LLSC_beqz, MIPS_R_T8, -16 - LLSC_offset);
+>  	emit(ctx, nop); /* Delay slot */
+>  
+>  	if (code & BPF_FETCH) {
+> @@ -439,11 +440,12 @@ void emit_atomic_r(struct jit_context *ctx, u8 dst, u8 src, s16 off, u8 code)
+>  /* Atomic compare-and-exchange (32-bit) */
+>  void emit_cmpxchg_r(struct jit_context *ctx, u8 dst, u8 src, u8 res, s16 off)
+>  {
+> +	LLSC_sync(ctx);
+>  	emit(ctx, ll, MIPS_R_T9, off, dst);
+>  	emit(ctx, bne, MIPS_R_T9, res, 12);
+>  	emit(ctx, move, MIPS_R_T8, src);     /* Delay slot */
+>  	emit(ctx, sc, MIPS_R_T8, off, dst);
+> -	emit(ctx, beqz, MIPS_R_T8, -20);
+> +	emit(ctx, LLSC_beqz, MIPS_R_T8, -20 - LLSC_offset);
+>  	emit(ctx, move, res, MIPS_R_T9);     /* Delay slot */
+>  	clobber_reg(ctx, res);
+>  }
+> diff --git a/arch/mips/net/bpf_jit_comp.h b/arch/mips/net/bpf_jit_comp.h
+> index 44787cf377dd..6f3a7b07294b 100644
+> --- a/arch/mips/net/bpf_jit_comp.h
+> +++ b/arch/mips/net/bpf_jit_comp.h
+> @@ -87,7 +87,7 @@ struct jit_context {
+>  };
+>  
+>  /* Emit the instruction if the JIT memory space has been allocated */
+> -#define emit(ctx, func, ...)					\
+> +#define __emit(ctx, func, ...)					\
+>  do {								\
+>  	if ((ctx)->target != NULL) {				\
+>  		u32 *p = &(ctx)->target[ctx->jit_index];	\
+> @@ -95,6 +95,30 @@ do {								\
+>  	}							\
+>  	(ctx)->jit_index++;					\
+>  } while (0)
+> +#define emit(...) __emit(__VA_ARGS__)
+> +
+> +/* Workaround for R10000 ll/sc errata */
+> +#ifdef CONFIG_WAR_R10000
+> +#define LLSC_beqz	beqzl
+> +#else
+> +#define LLSC_beqz	beqz
+> +#endif
+> +
+> +/* Workaround for Loongson-3 ll/sc errata */
+> +#ifdef CONFIG_CPU_LOONGSON3_WORKAROUNDS
+> +#define LLSC_sync(ctx)	emit(ctx, sync, 0)
+> +#define LLSC_offset	4
+> +#else
+> +#define LLSC_sync(ctx)
+> +#define LLSC_offset	0
+> +#endif
+> +
+> +/* Workaround for Loongson-2F jump errata */
+> +#ifdef CONFIG_CPU_JUMP_WORKAROUNDS
+> +#define JALR_MASK	0xffffffffcfffffffULL
+> +#else
+> +#define JALR_MASK	(~0ULL)
+> +#endif
+>  
+>  /*
+>   * Mark a BPF register as accessed, it needs to be
+> diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
+> index ca49d3ef7ff4..1f1f7b87f213 100644
+> --- a/arch/mips/net/bpf_jit_comp64.c
+> +++ b/arch/mips/net/bpf_jit_comp64.c
+> @@ -375,6 +375,7 @@ static void emit_atomic_r64(struct jit_context *ctx,
+>  	u8 t1 = MIPS_R_T6;
+>  	u8 t2 = MIPS_R_T7;
+>  
+> +	LLSC_sync(ctx);
+>  	emit(ctx, lld, t1, off, dst);
+>  	switch (code) {
+>  	case BPF_ADD:
+> @@ -398,7 +399,7 @@ static void emit_atomic_r64(struct jit_context *ctx,
+>  		break;
+>  	}
+>  	emit(ctx, scd, t2, off, dst);
+> -	emit(ctx, beqz, t2, -16);
+> +	emit(ctx, LLSC_beqz, t2, -16 - LLSC_offset);
+>  	emit(ctx, nop); /* Delay slot */
+>  
+>  	if (code & BPF_FETCH) {
+> @@ -414,12 +415,13 @@ static void emit_cmpxchg_r64(struct jit_context *ctx, u8 dst, u8 src, s16 off)
+>  	u8 t1 = MIPS_R_T6;
+>  	u8 t2 = MIPS_R_T7;
+>  
+> +	LLSC_sync(ctx);
+>  	emit(ctx, lld, t1, off, dst);
+>  	emit(ctx, bne, t1, r0, 12);
+>  	emit(ctx, move, t2, src);      /* Delay slot */
+>  	emit(ctx, scd, t2, off, dst);
+> -	emit(ctx, beqz, t2, -20);
+> -	emit(ctx, move, r0, t1);      /* Delay slot */
+> +	emit(ctx, LLSC_beqz, t2, -20 - LLSC_offset);
+> +	emit(ctx, move, r0, t1);       /* Delay slot */
+>  
+>  	clobber_reg(ctx, r0);
+>  }
+> @@ -443,7 +445,7 @@ static int emit_call(struct jit_context *ctx, const struct bpf_insn *insn)
+>  	push_regs(ctx, ctx->clobbered & JIT_CALLER_REGS, 0, 0);
+>  
+>  	/* Emit function call */
+> -	emit_mov_i64(ctx, tmp, addr);
+> +	emit_mov_i64(ctx, tmp, addr & JALR_MASK);
+>  	emit(ctx, jalr, MIPS_R_RA, tmp);
+>  	emit(ctx, nop); /* Delay slot */
+>  
+> -- 
+> 2.30.2
+> 
 
-I am very pleased to see your name and I look forward to your
-cooperation in presenting you to the bank as the next of kin and I
-guarantee that this will be done under a legitimate arrangement that
-will protect us from any breach of the law. And for your participation
-in this deal, you will receive 50% of the total amount after the money
-is transferred to you, and I will receive 50%. If you are interested,
-please contact me for more procedures.
