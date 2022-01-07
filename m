@@ -2,55 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA008487E17
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 22:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99226487E33
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 22:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229798AbiAGVRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 16:17:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbiAGVRv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 16:17:51 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C36C061574;
-        Fri,  7 Jan 2022 13:17:51 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id q5so8700257ioj.7;
-        Fri, 07 Jan 2022 13:17:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/tSm3F0mr1eWZ5R2UpnKSIhESVsNU+pdkgxHUepnRaM=;
-        b=m2tp/DvfEEL+wUW4vNrArSeCGdUYMgJGV5e3/9aU+BeSAvVKEEKQGq501dfJF0c5Da
-         0Wh8RAtXSzRAwUyE3iM/mupgDicXfbftVS6IQhKVpML8SMF63Lps/sxv+SA5iO7SdCYQ
-         kJsbDtQag+VQlaH2ukMsm3PAFoe3rVCQm1km/r016TPpWj+cfbCwOlcF9OJrIWVWGSWr
-         HWHbUrEDxxqJuG/xUnLH29p5y4OLaLF4DpG904h1M/8Vrqp4m3DJO3LoXpGZX28ic2jN
-         fjO57bzMxCvDkWf0Kdw/tdt6lRSTuwgDHFnSyKdWfn1YxS18Qdsb1bPjwrDtkzmuby3d
-         jEyw==
+        id S229884AbiAGVXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 16:23:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229846AbiAGVXU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 16:23:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641590599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xd6bkhc0TPmGTIt0PTD4sayE2qLpiqib1COYaKHyNiU=;
+        b=C8pQplvQikPm6GmNC1OIkUohtRiNNDYowv4s5/WymGbeBr7FIyouTwcqO2lLR6ffDwIW97
+        ouucl3H1keo+uZKB23F9W3LrDIAPjfb/s2HUUlOFvwKHcfcmRBXM7T309w0TvhCXursxaE
+        Cr07JRiVVb1KME/1tvLtsBO7Vc8zv7U=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-668-p_eXo2x4Oy-BJPUWwB74og-1; Fri, 07 Jan 2022 16:23:18 -0500
+X-MC-Unique: p_eXo2x4Oy-BJPUWwB74og-1
+Received: by mail-ed1-f71.google.com with SMTP id z10-20020a05640235ca00b003f8efab3342so5694581edc.2
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 13:23:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/tSm3F0mr1eWZ5R2UpnKSIhESVsNU+pdkgxHUepnRaM=;
-        b=YSvYj3iNKB5G6BnA3o9857W1KZG2UlzyAMwrVYP38Z2K7e/LQ5AcSXeRSVe2mSmwlO
-         Sdl2dCuoe/Oydgj1exyhQcFcIj6mWETTo1MRXjkNJcoUzAU8ep+HGWCKym6AkiN0Nnp3
-         hlWP6bbH6K144fRHI5hqLGJUGG1ea2WCGHYhrBRZjx/E5xp8Dgns5XTkTf6WyGpLU+DO
-         35KV1S+7JP8Zhk6rJFvY3J4Fq3RHdbAEHcR/MupOfUL1+9vE907uiPcgtcMl7ot1MYTh
-         nYu3I1W4Ko3vkEZqgJFOqwEdu8v4JSCoVqotNM8lkV3LoKnmG/h2tMhx2F4/nscW7TA4
-         jawQ==
-X-Gm-Message-State: AOAM531MkVkoN0tk+fx6fjZnhwcZo/O2kLiGrQ27vg6s7gOgSA5nE/ay
-        ujoo58EOBTlZsN50B49UpKgoX9/39+YZMB5ApTY=
-X-Google-Smtp-Source: ABdhPJzVxmwaPiwyDYwVZIotVb7p0zTACSZ8duAKscw/3cP3iUqdUMlyRuihH9pBxfiFotKbEJRBzeajp1N+4919J6Q=
-X-Received: by 2002:a02:c6a5:: with SMTP id o5mr32228893jan.145.1641590270852;
- Fri, 07 Jan 2022 13:17:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20220107183049.311134-1-toke@redhat.com>
-In-Reply-To: <20220107183049.311134-1-toke@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 7 Jan 2022 13:17:39 -0800
-Message-ID: <CAEf4BzbRxwbJQFZHvB-hBj1A+364Jua4KJgkL+D_9PKsj7jKSg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] xdp: check prog type before updating BPF link
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=xd6bkhc0TPmGTIt0PTD4sayE2qLpiqib1COYaKHyNiU=;
+        b=3p2WmTI1j5M2QTtmh0zpi5YYrnBRg3p5SkrZejysU0g4+4M3PKE7Bt6Gh9bRV0N5Sn
+         usf+tuhJ138mjRNjwsd/uIX89/vV7KevBJ/ZJvafBThEXqWCFXAnnQSU+P+F1i7oY0aW
+         zLkBw4JXCIt/nOHe4a5uIoNPXZqMUYMcet6eCClpsViI7IjSCvLkwK/Le0ssfh+zsekU
+         N29vINEcE+cIYrMCTRzc/SI0aQ43ziGn6AuijrRFAUe2Xuc31dGCJVLhr7p/6rD/s8qA
+         sp+BMcr+Y7JAMtpqMohwth9wbadmH499OwClyaAsy9DiQWXMn91caBxDgEGZZm7ZVdEs
+         NV8Q==
+X-Gm-Message-State: AOAM531bDp1OnKLMnRb9l0kqUSGtBSSYDlNo+9/UlmlKWkpIrOcRMq/z
+        V4UlxiWpWzqdC7PsHl6QlkBhBCNUUjKi/eWxKbndTVJTbyIVmTCcJYK5FywAC0FPD9tOWFNPQfN
+        rZ5Yi+BLA8fD9
+X-Received: by 2002:a17:906:5284:: with SMTP id c4mr50746892ejm.423.1641590596965;
+        Fri, 07 Jan 2022 13:23:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz1MYSjs1AibqUucqU+YCP/OSRMoY+As78BWX/RoNcNYOOoShEhys6ruS0WMOnDGEPeeDzDgw==
+X-Received: by 2002:a17:906:5284:: with SMTP id c4mr50746855ejm.423.1641590595914;
+        Fri, 07 Jan 2022 13:23:15 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id kw22sm1723103ejc.132.2022.01.07.13.23.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jan 2022 13:23:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 72956181F2A; Fri,  7 Jan 2022 22:23:14 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
@@ -60,63 +64,198 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf 2/2] bpf/selftests: Add check for updating XDP
+ bpf_link with wrong program type
+In-Reply-To: <CAEf4BzadXK+DiiVEgkZNuDA8=QdVZGSqPsAia7g39GTnQqSpQg@mail.gmail.com>
+References: <20220107183049.311134-1-toke@redhat.com>
+ <20220107183049.311134-2-toke@redhat.com>
+ <CAEf4BzadXK+DiiVEgkZNuDA8=QdVZGSqPsAia7g39GTnQqSpQg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 07 Jan 2022 22:23:14 +0100
+Message-ID: <87v8yv8cl9.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 7, 2022 at 10:31 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> The bpf_xdp_link_update() function didn't check the program type before
-> updating the program, which made it possible to install any program type =
-as
-> an XDP program, which is obviously not good. Syzbot managed to trigger th=
-is
-> by swapping in an LWT program on the XDP hook which would crash in a help=
-er
-> call.
->
-> Fix this by adding a check and bailing out if the types don't match.
->
-> Fixes: 026a4c28e1db ("bpf, xdp: Implement LINK_UPDATE for BPF XDP link")
-> Reported-by: syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-The fix looks good to me, thanks. I'd love it if this was done
-generically in link_update, but each link type has its own locking
-schema for link->prog, so I didn't figure out a way to do this in a
-centralized way.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  net/core/dev.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+> On Fri, Jan 7, 2022 at 10:31 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Add a check to the xdp_link selftest that the kernel rejects replacing an
+>> XDP program with a different program type on link update. Convert the
+>> selftest to use the preferred ASSERT_* macros while we're at it.
+>>
+>> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>> ---
+>>  .../selftests/bpf/prog_tests/xdp_link.c       | 62 +++++++++----------
+>>  .../selftests/bpf/progs/test_xdp_link.c       |  6 ++
+>>  2 files changed, 37 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_link.c b/tools/t=
+esting/selftests/bpf/prog_tests/xdp_link.c
+>> index 983ab0b47d30..8660e68383ea 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/xdp_link.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_link.c
+>> @@ -8,46 +8,47 @@
+>>
+>>  void serial_test_xdp_link(void)
+>>  {
+>> -       __u32 duration =3D 0, id1, id2, id0 =3D 0, prog_fd1, prog_fd2, e=
+rr;
+>>         DECLARE_LIBBPF_OPTS(bpf_xdp_set_link_opts, opts, .old_fd =3D -1);
+>>         struct test_xdp_link *skel1 =3D NULL, *skel2 =3D NULL;
+>> +       __u32 id1, id2, id0 =3D 0, prog_fd1, prog_fd2;
+>>         struct bpf_link_info link_info;
+>>         struct bpf_prog_info prog_info;
+>>         struct bpf_link *link;
+>> +       int err;
+>>         __u32 link_info_len =3D sizeof(link_info);
+>>         __u32 prog_info_len =3D sizeof(prog_info);
+>>
+>>         skel1 =3D test_xdp_link__open_and_load();
+>> -       if (CHECK(!skel1, "skel_load", "skeleton open and load failed\n"=
+))
+>> +       if (!ASSERT_OK_PTR(skel1, "skel_load"))
+>>                 goto cleanup;
+>>         prog_fd1 =3D bpf_program__fd(skel1->progs.xdp_handler);
+>>
+>>         skel2 =3D test_xdp_link__open_and_load();
+>> -       if (CHECK(!skel2, "skel_load", "skeleton open and load failed\n"=
+))
+>> +       if (!ASSERT_OK_PTR(skel2, "skel_load"))
+>>                 goto cleanup;
+>>         prog_fd2 =3D bpf_program__fd(skel2->progs.xdp_handler);
+>>
+>>         memset(&prog_info, 0, sizeof(prog_info));
+>>         err =3D bpf_obj_get_info_by_fd(prog_fd1, &prog_info, &prog_info_=
+len);
+>> -       if (CHECK(err, "fd_info1", "failed %d\n", -errno))
+>> +       if (!ASSERT_OK(err, "fd_info1"))
+>>                 goto cleanup;
+>>         id1 =3D prog_info.id;
+>>
+>>         memset(&prog_info, 0, sizeof(prog_info));
+>>         err =3D bpf_obj_get_info_by_fd(prog_fd2, &prog_info, &prog_info_=
+len);
+>> -       if (CHECK(err, "fd_info2", "failed %d\n", -errno))
+>> +       if (!ASSERT_OK(err, "fd_info2"))
+>>                 goto cleanup;
+>>         id2 =3D prog_info.id;
+>>
+>>         /* set initial prog attachment */
+>>         err =3D bpf_set_link_xdp_fd_opts(IFINDEX_LO, prog_fd1, XDP_FLAGS=
+_REPLACE, &opts);
+>> -       if (CHECK(err, "fd_attach", "initial prog attach failed: %d\n", =
+err))
+>> +       if (!ASSERT_OK(err, "fd_attach"))
+>>                 goto cleanup;
+>>
+>>         /* validate prog ID */
+>>         err =3D bpf_get_link_xdp_id(IFINDEX_LO, &id0, 0);
+>> -       CHECK(err || id0 !=3D id1, "id1_check",
+>> -             "loaded prog id %u !=3D id1 %u, err %d", id0, id1, err);
+>> +       if (!ASSERT_OK(err, "id1_check_err") || !ASSERT_EQ(id0, id1, "id=
+1_check_val"))
+>> +               goto cleanup;
+>>
+>>         /* BPF link is not allowed to replace prog attachment */
+>>         link =3D bpf_program__attach_xdp(skel1->progs.xdp_handler, IFIND=
+EX_LO);
+>> @@ -62,7 +63,7 @@ void serial_test_xdp_link(void)
+>>         /* detach BPF program */
+>>         opts.old_fd =3D prog_fd1;
+>>         err =3D bpf_set_link_xdp_fd_opts(IFINDEX_LO, -1, XDP_FLAGS_REPLA=
+CE, &opts);
+>> -       if (CHECK(err, "prog_detach", "failed %d\n", err))
+>> +       if (!ASSERT_OK(err, "prog_detach"))
+>>                 goto cleanup;
+>>
+>>         /* now BPF link should attach successfully */
+>> @@ -73,24 +74,23 @@ void serial_test_xdp_link(void)
+>>
+>>         /* validate prog ID */
+>>         err =3D bpf_get_link_xdp_id(IFINDEX_LO, &id0, 0);
+>> -       if (CHECK(err || id0 !=3D id1, "id1_check",
+>> -                 "loaded prog id %u !=3D id1 %u, err %d", id0, id1, err=
+))
+>> +       if (!ASSERT_OK(err, "id1_check_err") || !ASSERT_EQ(id0, id1, "id=
+1_check_val"))
+>>                 goto cleanup;
+>>
+>>         /* BPF prog attach is not allowed to replace BPF link */
+>>         opts.old_fd =3D prog_fd1;
+>>         err =3D bpf_set_link_xdp_fd_opts(IFINDEX_LO, prog_fd2, XDP_FLAGS=
+_REPLACE, &opts);
+>> -       if (CHECK(!err, "prog_attach_fail", "unexpected success\n"))
+>> +       if (!ASSERT_ERR(err, "prog_attach_fail"))
+>>                 goto cleanup;
+>>
+>>         /* Can't force-update when BPF link is active */
+>>         err =3D bpf_set_link_xdp_fd(IFINDEX_LO, prog_fd2, 0);
+>> -       if (CHECK(!err, "prog_update_fail", "unexpected success\n"))
+>> +       if (!ASSERT_ERR(err, "prog_update_fail"))
+>>                 goto cleanup;
+>>
+>>         /* Can't force-detach when BPF link is active */
+>>         err =3D bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);
+>> -       if (CHECK(!err, "prog_detach_fail", "unexpected success\n"))
+>> +       if (!ASSERT_ERR(err, "prog_detach_fail"))
+>>                 goto cleanup;
+>>
+>>         /* BPF link is not allowed to replace another BPF link */
+>> @@ -110,40 +110,40 @@ void serial_test_xdp_link(void)
+>>         skel2->links.xdp_handler =3D link;
+>>
+>>         err =3D bpf_get_link_xdp_id(IFINDEX_LO, &id0, 0);
+>> -       if (CHECK(err || id0 !=3D id2, "id2_check",
+>> -                 "loaded prog id %u !=3D id2 %u, err %d", id0, id1, err=
+))
+>> +       if (!ASSERT_OK(err, "id2_check_err") || !ASSERT_EQ(id0, id2, "id=
+2_check_val"))
+>>                 goto cleanup;
+>>
+>>         /* updating program under active BPF link works as expected */
+>>         err =3D bpf_link__update_program(link, skel1->progs.xdp_handler);
+>> -       if (CHECK(err, "link_upd", "failed: %d\n", err))
+>> +       if (!ASSERT_OK(err, "link_upd"))
+>>                 goto cleanup;
+>>
+>>         memset(&link_info, 0, sizeof(link_info));
+>>         err =3D bpf_obj_get_info_by_fd(bpf_link__fd(link), &link_info, &=
+link_info_len);
+>> -       if (CHECK(err, "link_info", "failed: %d\n", err))
+>> +       if (!ASSERT_OK(err, "link_info"))
+>> +               goto cleanup;
+>> +
+>> +       if (!ASSERT_EQ(link_info.type, BPF_LINK_TYPE_XDP, "link_type") ||
+>> +           !ASSERT_EQ(link_info.prog_id, id1, "link_prog_id") ||
+>> +           !ASSERT_EQ(link_info.xdp.ifindex, IFINDEX_LO, "link_ifindex"=
+))
+>>                 goto cleanup;
+>>
+>> -       CHECK(link_info.type !=3D BPF_LINK_TYPE_XDP, "link_type",
+>> -             "got %u !=3D exp %u\n", link_info.type, BPF_LINK_TYPE_XDP);
+>> -       CHECK(link_info.prog_id !=3D id1, "link_prog_id",
+>> -             "got %u !=3D exp %u\n", link_info.prog_id, id1);
+>> -       CHECK(link_info.xdp.ifindex !=3D IFINDEX_LO, "link_ifindex",
+>> -             "got %u !=3D exp %u\n", link_info.xdp.ifindex, IFINDEX_LO);
 >
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index c4708e2487fb..2078d04c6482 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-> @@ -9656,6 +9656,12 @@ static int bpf_xdp_link_update(struct bpf_link *li=
-nk, struct bpf_prog *new_prog,
->                 goto out_unlock;
->         }
->         old_prog =3D link->prog;
-> +       if (old_prog->type !=3D new_prog->type ||
-> +           old_prog->expected_attach_type !=3D new_prog->expected_attach=
-_type) {
-> +               err =3D -EINVAL;
-> +               goto out_unlock;
-> +       }
-> +
->         if (old_prog =3D=3D new_prog) {
->                 /* no-op, don't disturb drivers */
->                 bpf_prog_put(new_prog);
-> --
-> 2.34.1
->
+> these checks were done unconditionally (and all of them), even if one
+> of the fails. Why did you do goto cleanup for those. Similarly below.
+> It's much cleaner to just have three ASSERT_EQ() statements one after
+> the other with no if() goto cleanup;
+
+Because I figured the absence of a 'goto cleanup' was an oversight :)
+
+Not sure why you think it's cleaner, but I don't have any strong opinion
+about it either way, so I can respin get rid of the containing ifs if
+you prefer...
+
+-Toke
+
