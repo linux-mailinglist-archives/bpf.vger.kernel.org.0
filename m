@@ -2,236 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D987F487A1C
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 17:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FA12487A27
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 17:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239922AbiAGQGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 11:06:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37676 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239818AbiAGQGG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 11:06:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641571565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1UdfhYkDwBNgCPWv+4lTJRZibPdJvYPQfjI87BcPSi4=;
-        b=I4UUZ6EEyxMyOByu+6iSHmCF6ktTjFBeMoTwLLkhoahHgB+cM6V5Amjj8KNA2YlFxKrOG9
-        pQyhrM2X1BJk4eFVdvQDjoGfzRQ9gHJSOq99EgwrYVBrBqS3QKrrXapoc2d8xNUPTuxgb1
-        xbcKb+oj318NkNXgLTDfTzx8ACmmR1E=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-44-24p8IYg8Mx65K8fMLbD4Rw-1; Fri, 07 Jan 2022 11:06:04 -0500
-X-MC-Unique: 24p8IYg8Mx65K8fMLbD4Rw-1
-Received: by mail-ed1-f71.google.com with SMTP id g2-20020a056402424200b003f8ee03207eso5040382edb.7
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 08:06:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=1UdfhYkDwBNgCPWv+4lTJRZibPdJvYPQfjI87BcPSi4=;
-        b=VEszqcK+U2f75d1TPZdlfGO8/FCyR+F0HgkJPpt25aeM+2UJfNV+AkhngYvAHmAjBu
-         +0+1tApvRum9fkTU9wZOaoBVuQIDc/Sbbpd6OtSMacgHM2oD53tZtxFSE5R4G0nBBQx/
-         FaC/bwFloC+L34uzs+099eC+fJpdJZhDXiawP21xw2vDLhapdwanUeqHbLs7RCLVsUVV
-         lbjICpo8bGF02rgcFKjo68jT+ahR1oM79BKvae74gnY4xESw157URJAdTSetI6fkjsiN
-         f3NVcKTImx3N+PBbew1TxwVgw6HHBpuG0wiqmSxIHe1xrFilQ4MnxcglJ3NWxGfQKH6g
-         a3hg==
-X-Gm-Message-State: AOAM532Ww4TjtXiepC7wtAWvTRdxRnDaD/0JiAQAcAJJK5B3BlGp3Gqb
-        hO5eaG7tiow/ewhA6K48vX3LFhJ85A2NdIQfty+dEHT8au/rnp7wjW+/Zk1zM7WNCRHHU694Udn
-        4mLlp8C23AhFq
-X-Received: by 2002:a05:6402:11c7:: with SMTP id j7mr60030207edw.169.1641571560382;
-        Fri, 07 Jan 2022 08:06:00 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwhOXYtStNze75aDCJmM9f9RvRNKXSMjRH/MiaWhH3ye7Zzhasn7a7+JOIxwMkxTPlionFfAQ==
-X-Received: by 2002:a05:6402:11c7:: with SMTP id j7mr60030124edw.169.1641571559378;
-        Fri, 07 Jan 2022 08:05:59 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ne31sm1515021ejc.48.2022.01.07.08.05.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Jan 2022 08:05:58 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 1EEBF181F2A; Fri,  7 Jan 2022 17:05:58 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v6 3/3] selftests/bpf: Add selftest for
- XDP_REDIRECT in bpf_prog_run()
-In-Reply-To: <87a6g7a6e3.fsf@toke.dk>
-References: <20220106195938.261184-1-toke@redhat.com>
- <20220106195938.261184-4-toke@redhat.com>
- <CAADnVQJS-2VdpkPoiXWCDYLV1MC6gk9oQFC+GZYw6jP2umH0Cw@mail.gmail.com>
- <87a6g7a6e3.fsf@toke.dk>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 07 Jan 2022 17:05:58 +0100
-Message-ID: <877dbba5uh.fsf@toke.dk>
+        id S233101AbiAGQMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 11:12:18 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22184 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231302AbiAGQMS (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 11:12:18 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207CScpG017396;
+        Fri, 7 Jan 2022 08:12:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=aVAYQddTx5VSqd9jqqu3k/IwVDG5GPDfQCk6u0OLH8s=;
+ b=NXgGzaQlLXCAk6GHeM4aVyWTC7Se2qUMESEgRry36NJEJzQbM4icOde/bf5a3N8SoqzM
+ iXXpAUacGHHiaf+T536BnL99ppxe88Gtiu6SKrt1KWWJfj8c23EdZWxWq2DM+4qQT80B
+ abCo66tXUK+zkH/mGak8eSBUudXrbpiNS/w= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3denj31bsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 07 Jan 2022 08:11:59 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 7 Jan 2022 08:11:59 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iq9TqXSkTRk3FnzCnodXF5jgiDsEtw5UlFj1pLys73Vm64mLcGhYcvvCB4gVZFyWa81zUvHUsXZmPYNIBX+qD1vup/+pMbO3fuOHavMLFeEXXPh7dhuAL64tArxpNpmdatZWSVGPB0AvF9bJ8v54cOXtUNhm+u7XwVXUB4YOG3aTeKaE++6KwUk7/iDOHC3Z03oDcdJPv/QfIHrfLvnfVPjzZlbEdVL6SguYuLp4IjZyltGZOv0ZpZIilD5sxJBWev4VAx48bK2jSbmfGBWzYesFehFDxocoWGfUXmw31iF1fzomNdWDlHdcb5DsV2RxBSYuNEtNL7LvKbEn5zAo1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aVAYQddTx5VSqd9jqqu3k/IwVDG5GPDfQCk6u0OLH8s=;
+ b=e2oWDoLz/NMHroufpAnhzIn9qeEHvsnmLm0Q+oqLmBjgCqQ2mc3LWSvl+fqv1wvjMPw9wDozgB38/BxUivVpBBYvmD33s/MP9nQUN/wSuNpf4h0F9P39xoiItgR1vEO6h8P7LlXgT34WutVxO8eVPhhhdRRRpAo7V5Tp4VQ4lgmxfu0pRYvBCtoCccymfqKgx0uu6Zh86xmdaMC+FXieS0PSUzSpoVTTgiaNHaAlqTMe6z0OOorhQwVLCm4X5L0L0Iry7iJ057UPu4VaCTtsM6P6hFED80kEtk2B4wqFS4+0sxh/6Wr/UiGSfeUrzIkBIyrPiIeSD6c1JaECuasXZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA1PR15MB4919.namprd15.prod.outlook.com (2603:10b6:806:1d2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Fri, 7 Jan
+ 2022 16:11:58 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ede3:677f:b85c:ac29]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::ede3:677f:b85c:ac29%4]) with mapi id 15.20.4867.011; Fri, 7 Jan 2022
+ 16:11:58 +0000
+Message-ID: <32fc5f03-9249-f243-f6cf-9fbe8ccd5fee@fb.com>
+Date:   Fri, 7 Jan 2022 08:11:55 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH v2] libbpf: Fix the incorrect register read for syscalls
+ on x86_64
+Content-Language: en-US
+To:     <Kenta.Tada@sony.com>, <andrii@kernel.org>, <bpf@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>
+References: <TYCPR01MB593665A2C1E6C39169D10377F54D9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <TYCPR01MB593665A2C1E6C39169D10377F54D9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-ClientProxiedBy: MW4PR04CA0367.namprd04.prod.outlook.com
+ (2603:10b6:303:81::12) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c01bfccd-360f-4389-e2b3-08d9d1f86e57
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4919:EE_
+X-Microsoft-Antispam-PRVS: <SA1PR15MB49195D761609077B1C929006D34D9@SA1PR15MB4919.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1002;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vEwDbViOoT+LsSpX4I27K8PRjco4BT+GzVA8S/zkdpSGZbfRZv0h73e4KHezKMdrpulQOOMRqyR/zlT/OoyrhCgPipcwQXvrP2pMfHGJNkocNILsTNIWAVhAsYWOOrllu8667gUqEnFmh+O/imj7qBUA5Z6gsxkoFKrAa8JEQyJzs5oi3TSfWs3jJnihuuLX3PIM/ZAAdJ4WkbznkON91WFeM+4zLDXZkhjCI4IHgOiEV5RlumpXnAIaKuAvEKc+YPhd7uQN/KADLpHl3OJhDXo6L07sr2SKIdPmLgKriTGML1pv1uqes0OH8iUYejtmPmUsDNZfkVnjk5WuWTydJEqTkgCoZU7JX3402RRf8Zwbnq1rz3mtGjFQ4HsoP2GEOv67RX/IkayMe3DFr1bBveKQVNgp0hkT7SoT7LvR6/IER1aJXazjHP07l7NFx4t8Fr4UAWy6S0QhjqrdIPmDDu/UmnchsZpRLgt8LsWmV4GT+AWg+Mn6Ftm/rcpmscxyVGKMcexScu4hmf/IbF/GVH/YyViw7oMWuFAvGwwrXUn9BMbPQVHsnevF+5FpFZfsPJ0NvclHdL8bmZyS3QlCPIE8sBEqWrghiSm2vuL7+ExIjWwxxSlA0i8EvTL73SXRpU8IEZwPljEWVs11L9DbUF/FgF1ALBo+lOQGPQrQmw+BqLr6T8kGCXUEleukJDzJm1eWVJRZWcyH0PzyKOS+DURHIarBHPXAkRThF014SkMXXa4BDlLelfLuELCWkVhMGhVxStIaVWj9XeungOI4lIvuSFBr88yLccPaeJLOn9ZCUHSePD67Kq/Cji6lq5mG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(36756003)(86362001)(6486002)(31696002)(83380400001)(8676002)(6512007)(31686004)(316002)(4326008)(66946007)(66476007)(2616005)(66556008)(38100700002)(6506007)(53546011)(966005)(5660300002)(52116002)(2906002)(6666004)(508600001)(8936002)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2xYTTVvMzU3bm5yTFlhL3hUcUJ5VWxiUU41M1M2MGY5WHdTdS9iT1VRemx2?=
+ =?utf-8?B?Vkp0OFFMVDViL2tXeE90TzVXMmo2M253S2pURUR0alNSUWp4bkhlL3p1WkZE?=
+ =?utf-8?B?SjRYWlRuem1kUS82YWxSK3RWUFNJTFZ3YTNVa1crTlVTaTArbVNBQjRJZ0Na?=
+ =?utf-8?B?dTJZMlZDS0hkeUFReHpwU2JBc3lBOUQram5tL1J2NS9YaHlKNC82YXpnbGJr?=
+ =?utf-8?B?OU5QM2srNzNpTTBUalZ3S3laT3BxWkRKMXcyVG11dHB4L2xzaVNPeG5MRGN5?=
+ =?utf-8?B?elRCaE9PMS9lRzBkcytBWlMxRm5vZ1A3NnNjdkhjZGc1ejltbm1GYytGMklM?=
+ =?utf-8?B?aC9QY2plUHVpUHQweXB3blFSMENPV1lCZUx0M0RtUFlObUorV3I2ZG1qbk5o?=
+ =?utf-8?B?ZmJnWXZVcmN2YUZ1dHpxSzlkaHJwNFlhOUtva2NYY3kyM0hObUN4UEJVc3dp?=
+ =?utf-8?B?aFFER1Z2QytqRHFlN2R0TDk4SHRaK0pOejRmUW8zdlQzSXhNeWpYVUx6ZGJI?=
+ =?utf-8?B?VjB6ajc4WllHNjNycDgyOWZxNURraUJUZ294U0tYSnpoaEtyY1VSSi9VUlp5?=
+ =?utf-8?B?ckJ4dkw1NjJCVm5hMmV2UjVxc3MwK3NaTlMyWWFWMFFyTmx0U3p4WTNoazZT?=
+ =?utf-8?B?TXBSS0VXT3NOenpjK2JTejU1dUJMK1c5MTNoY3A0WmRmak9DSFVZcFJ0MmlL?=
+ =?utf-8?B?dHlWeks4MmhQN1pUdEVFdzRVTzk2WkpUVWxsWFA5M0l6OXF4M3BzTFZ4aWVR?=
+ =?utf-8?B?aEN0RXg4NlQ3MDM2U0MrdEJoY0J4UGdsbFJhUU1rRkF0dGk1OUFtYUF2ZjFF?=
+ =?utf-8?B?aWtha2hVME9hamRqRlRVRDZOZTViUVNKdHRFOXNhSnY0RFozUUovbTVwU0lL?=
+ =?utf-8?B?dnlPYndiNWhJVmNKY0ZVeE50QllpSnBPdkkrZU5LTjNnMWRlSWE1NzhaMUhn?=
+ =?utf-8?B?OEdQRGVLcHZDenBNZ1hTdXltY0pucTVVUnFjcG85N3VpUVpzUUIyY2lkMjdh?=
+ =?utf-8?B?RnFoNjZ5MmJxYzB0WlJabDB3SGttSlZMVWNxcXpFdVVMb1ROQ0tBdDRRY29p?=
+ =?utf-8?B?a3pqMXZYckVUdEpRbGxTNHlvamFRRmxZQy93a0MvWFRRMmlNQk42QWVQQkxW?=
+ =?utf-8?B?eUp6RGMyT0tWRXVvdWtDMVlvdFhKU0FndVdqNE9CRGR3NVg3Q1F2ZVFCN1k3?=
+ =?utf-8?B?NXZ4d2wzMnNoYnBLeHJIR1k5R2FYaDZTK0RnZ3VGQ2gvUjgveFByOUVZclNu?=
+ =?utf-8?B?Qk81T3p1Y2w3YVhGMkRXdFBUR0RRU2Y0WUZSWVZiYUdRUHJOVDhzK2txSnNC?=
+ =?utf-8?B?Vkc5enVhQ295YU5VSDJZYkF6US8reE5DMnU2SE93THpvVFFIcEJzbE1SNXpU?=
+ =?utf-8?B?bldzdVRRajZBeXlCUDFCY2tEVGJENGloL2tiRWNtMTlGaFRoMEhXS3Mwclhi?=
+ =?utf-8?B?TTkyZWs1eTVHZ3BkZzBZME1LdVlxL1AxZHlURktaRWFuaHJ3amRWY2o3REUr?=
+ =?utf-8?B?b3dVandLSlpHZnJRY3NYUkFNUlhiU1FEcnRjM05Jd25sbnIzT3JFZm9YMHpV?=
+ =?utf-8?B?YWVsVFllZFJidzI1ZldPcDVnaTN3SGhEV2R6VXJ6SHVDbjFveWE5S0VzRzho?=
+ =?utf-8?B?VEN6YXFTVmxwbXVTRWFRM25CWjFZUGk2SWllTSt5RHZEcVM1d2JSSDkwekI3?=
+ =?utf-8?B?azExekRVb00wTjNEMXBiZjdTWVBBODdzZ2gxYzBEc0dQNVdkRUVnV085YWpw?=
+ =?utf-8?B?MnZKaVNFNFc0SDVVYjVYTkFHWlNTNmMvVmp0NnV0US9WTTlaRVdSK0NIOUpv?=
+ =?utf-8?B?K3FsU0RraldxcTVUeXpPcnNzNkZzb2twRnoxU21HRXkxTXpMbW5zTUZIYnhw?=
+ =?utf-8?B?OXh4dGMvR2hGZnRJTVJHZ3FsSFlQMFExQVJTQlJaaWNiclB6bnBkdVBDeXpV?=
+ =?utf-8?B?YTZiUjd0cE9uMk8zL2xHRzI3eE13UFBiZlJrcFV5RkNNekFNdnc3SWlwSVJO?=
+ =?utf-8?B?RXNCMFo2eDRkeThjNllkYWx6YVJXR0h1bzFFSXlYWGdHR21oUzFWSjR3Z0Qy?=
+ =?utf-8?B?bnNSeWpxZGI2dnFBaW83bndlaXFUdmh3V1llblpjZzV4U0R1QTZ3U3RnY0xt?=
+ =?utf-8?Q?1ywN0rnRgaxT5MbsSDIhWTXyv?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c01bfccd-360f-4389-e2b3-08d9d1f86e57
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 16:11:58.4546
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5uBfLIACvmWBbwl3tt7f055Ea11WcX29QZdW9BFOcGjBRcvD1F9ZGy07zgxB844G
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4919
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: atVctygtBkW2T2aft6GWSKwYKMHej1Gx
+X-Proofpoint-ORIG-GUID: atVctygtBkW2T2aft6GWSKwYKMHej1Gx
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-07_06,2022-01-07_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ clxscore=1015 spamscore=0 phishscore=0 bulkscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201070110
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
-
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
->> On Thu, Jan 6, 2022 at 11:59 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
->>> +
->>> +#define NUM_PKTS 10
->>
->> I'm afraid this needs more work.
->> Just bumping above to 1M I got:
->> [  254.165911] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> [  254.166387] WARNING: inconsistent lock state
->> [  254.166882] 5.16.0-rc7-02011-g64923127f1b3 #3784 Tainted: G          =
- O
->> [  254.167659] --------------------------------
->> [  254.168140] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
->> [  254.168793] swapper/7/0 [HC0[0]:SC1[5]:HE1:SE0] takes:
->> [  254.169373] ffff888113d24220 (&r->producer_lock){+.?.}-{2:2}, at:
->> veth_xmit+0x361/0x830
->> [  254.170317] {SOFTIRQ-ON-W} state was registered at:
->> [  254.170921]   lock_acquire+0x18a/0x450
->> [  254.171371]   _raw_spin_lock+0x2f/0x40
->> [  254.171815]   veth_xdp_xmit+0x1d7/0x8c0
->> [  254.172241]   veth_ndo_xdp_xmit+0x1d/0x50
->> [  254.172689]   bq_xmit_all+0x562/0xc30
->> [  254.173159]   __dev_flush+0xb1/0x220
->> [  254.173586]   xdp_do_flush+0xa/0x20
->> [  254.173983]   xdp_test_run_batch.constprop.25+0x90c/0xf00
->> [  254.174564]   bpf_test_run_xdp_live+0x369/0x480
->> [  254.175038]   bpf_prog_test_run_xdp+0x63f/0xe50
->> [  254.175512]   __sys_bpf+0x688/0x4410
->> [  254.175923]   __x64_sys_bpf+0x75/0xb0
->> [  254.176327]   do_syscall_64+0x34/0x80
->> [  254.176733]   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> [  254.177297] irq event stamp: 130862
->> [  254.177681] hardirqs last  enabled at (130862):
->> [<ffffffff812d0812>] call_rcu+0x2a2/0x640
->> [  254.178561] hardirqs last disabled at (130861):
->> [<ffffffff812d08bd>] call_rcu+0x34d/0x640
->> [  254.179404] softirqs last  enabled at (130814):
->> [<ffffffff83c00534>] __do_softirq+0x534/0x835
->> [  254.180332] softirqs last disabled at (130839):
->> [<ffffffff811389f7>] irq_exit_rcu+0xe7/0x120
->> [  254.181255]
->> [  254.181255] other info that might help us debug this:
->> [  254.181969]  Possible unsafe locking scenario:
->> [  254.183172]   lock(&r->producer_lock);
->> [  254.183590]   <Interrupt>
->> [  254.183893]     lock(&r->producer_lock);
->> [  254.184321]
->> [  254.184321]  *** DEADLOCK ***
->> [  254.184321]
->> [  254.185047] 5 locks held by swapper/7/0:
->> [  254.185501]  #0: ffff8881f6d89db8 ((&ndev->rs_timer)){+.-.}-{0:0},
->> at: call_timer_fn+0xc8/0x440
->> [  254.186496]  #1: ffffffff854415e0 (rcu_read_lock){....}-{1:2}, at:
->> ndisc_send_skb+0x761/0x12e0
->> [  254.187444]  #2: ffffffff85441580 (rcu_read_lock_bh){....}-{1:2},
->> at: ip6_finish_output2+0x2da/0x1e00
->> [  254.188447]  #3: ffffffff85441580 (rcu_read_lock_bh){....}-{1:2},
->> at: __dev_queue_xmit+0x1de/0x2910
->> [  254.189502]  #4: ffffffff854415e0 (rcu_read_lock){....}-{1:2}, at:
->> veth_xmit+0x41/0x830
->> [  254.190455]
->> [  254.190455] stack backtrace:
->> [  254.190963] CPU: 7 PID: 0 Comm: swapper/7 Tainted: G           O
->>   5.16.0-rc7-02011-g64923127f1b3 #3784
->> [  254.192109] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
->> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->> [  254.193427] Call Trace:
->> [  254.193711]  <IRQ>
->> [  254.193945]  dump_stack_lvl+0x44/0x57
->> [  254.194418]  mark_lock.part.54+0x157b/0x2210
->> [  254.194940]  ? mark_lock.part.54+0xfd/0x2210
->> [  254.195451]  ? print_usage_bug+0x80/0x80
->> [  254.195896]  ? rcu_read_lock_sched_held+0x91/0xc0
->> [  254.196413]  ? rcu_read_lock_bh_held+0xa0/0xa0
->> [  254.196903]  ? rcu_read_lock_bh_held+0xa0/0xa0
->> [  254.197389]  ? find_held_lock+0x33/0x1c0
->> [  254.197826]  ? lock_release+0x3a1/0x650
->> [  254.198251]  ? __stack_depot_save+0x274/0x490
->> [  254.198742]  ? lock_acquire+0x19a/0x450
->> [  254.199175]  ? lock_downgrade+0x690/0x690
->> [  254.199626]  ? do_raw_spin_lock+0x11d/0x270
->> [  254.200091]  ? rwlock_bug.part.2+0x90/0x90
->> [  254.200550]  __lock_acquire+0x151f/0x6310
->> [  254.201000]  ? mark_lock.part.54+0xfd/0x2210
->> [  254.201470]  ? lockdep_hardirqs_on_prepare+0x3f0/0x3f0
->> [  254.202083]  ? lock_is_held_type+0xda/0x130
->> [  254.202592]  ? rcu_read_lock_sched_held+0x91/0xc0
->> [  254.203134]  ? rcu_read_lock_bh_held+0xa0/0xa0
->> [  254.203630]  lock_acquire+0x18a/0x450
->> [  254.204041]  ? veth_xmit+0x361/0x830
->> [  254.204455]  ? lock_release+0x650/0x650
->> [  254.204932]  ? eth_gro_receive+0xc60/0xc60
->> [  254.205421]  ? rcu_read_lock_held+0x91/0xa0
->> [  254.205912]  _raw_spin_lock+0x2f/0x40
->> [  254.206314]  ? veth_xmit+0x361/0x830
->> [  254.206707]  veth_xmit+0x361/0x830
->>
->> I suspect it points out that local_bh_disable is needed
->> around xdp_do_flush.
->>
->> That's why I asked you to test it with something
->> more than 3 in NUM_PKTS.
->> What values did you test it with? I hope not just 10.
->>
->> Please make sure XDP_PASS/TX/REDIRECT are all stress tested.
->
-> Okay, finally managed to reproduce this; it did not show up at all in my
-> own tests.
->
-> Did you run the old version of the selftest by any chance? At least I
-> can only reproduce it with the forwarding sysctl enabled; it happens
-> because the XDP_PASS path races with the XDP_REDIRECT path and end up
-> trying to grab the same lock, which only happens when the XDP_PASS path
-> sends the packets back out the same interface. The fix is to extend the
-> local_bh_disable() to cover the full loop in xdp_test_run_batch().
->
-> I'll send an update with that fixed. But I'm not sure what to do about
-> the selftest? I can keep the forwarding enabled + 1 million iterations -
-> that seems to trigger the bug fairly reliably for me, but it takes a bit
-> longer to run. Is that acceptable?
-
-The absolute difference is just over three seconds on my machine, BTW:
-
-1M pkts:
-
-[root@(none) bpf]# time ./test_progs -a xdp_do_redirect
-#221 xdp_do_redirect:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-real	0m5,042s
-user	0m0,109s
-sys	0m3,968s
-
-10 pkts:
-
-[root@(none) bpf]# time ./test_progs -a xdp_do_redirect
-#221 xdp_do_redirect:OK
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-real	0m1,823s
-user	0m0,117s
-sys	0m0,685s
 
 
--Toke
+On 1/6/22 6:38 PM, Kenta.Tada@sony.com wrote:
+> Currently, rcx is read as the fourth parameter of syscall on x86_64.
+> But x86_64 Linux System Call convention uses r10 actually.
+> This commit adds the wrapper for users who want to access to
+> syscall params to analyze the user space.
+> 
+> Changelog:
+> ----------
+> v1 -> v2:
+> - Rebase to current bpf-next
+> https://lore.kernel.org/bpf/20211222213924.1869758-1-andrii@kernel.org/
+> 
+> Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
+> ---
+>   tools/lib/bpf/bpf_tracing.h | 20 ++++++++++++++++++++
+>   1 file changed, 20 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 90f56b0f585f..4c3df8c122a4 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -70,6 +70,7 @@
+>   #define __PT_PARM2_REG si
+>   #define __PT_PARM3_REG dx
+>   #define __PT_PARM4_REG cx
+> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
+>   #define __PT_PARM5_REG r8
+>   #define __PT_RET_REG sp
+>   #define __PT_FP_REG bp
+> @@ -99,6 +100,7 @@
+>   #define __PT_PARM2_REG rsi
+>   #define __PT_PARM3_REG rdx
+>   #define __PT_PARM4_REG rcx
+> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
+>   #define __PT_PARM5_REG r8
+>   #define __PT_RET_REG rsp
+>   #define __PT_FP_REG rbp
+> @@ -226,6 +228,7 @@ struct pt_regs;
+>   #define PT_REGS_PARM2(x) (__PT_REGS_CAST(x)->__PT_PARM2_REG)
+>   #define PT_REGS_PARM3(x) (__PT_REGS_CAST(x)->__PT_PARM3_REG)
+>   #define PT_REGS_PARM4(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG)
+> +#define PT_REGS_PARM4_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
+>   #define PT_REGS_PARM5(x) (__PT_REGS_CAST(x)->__PT_PARM5_REG)
+>   #define PT_REGS_RET(x) (__PT_REGS_CAST(x)->__PT_RET_REG)
+>   #define PT_REGS_FP(x) (__PT_REGS_CAST(x)->__PT_FP_REG)
+> @@ -237,6 +240,7 @@ struct pt_regs;
+>   #define PT_REGS_PARM2_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM2_REG)
+>   #define PT_REGS_PARM3_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM3_REG)
+>   #define PT_REGS_PARM4_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG)
+> +#define PT_REGS_PARM4_CORE_SYSCALL(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG_SYSCALL)
+>   #define PT_REGS_PARM5_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM5_REG)
+>   #define PT_REGS_RET_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_RET_REG)
+>   #define PT_REGS_FP_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_FP_REG)
+> @@ -292,6 +296,22 @@ struct pt_regs;
+>   
+>   #endif /* defined(bpf_target_defined) */
+>   
+> +#define PT_REGS_PARM1_SYSCALL(x) PT_REGS_PARM1(x)
+> +#define PT_REGS_PARM2_SYSCALL(x) PT_REGS_PARM2(x)
+> +#define PT_REGS_PARM3_SYSCALL(x) PT_REGS_PARM3(x)
+> +#ifndef PT_REGS_PARM4_SYSCALL
+> +#define PT_REGS_PARM4_SYSCALL(x) PT_REGS_PARM4(x)
+> +#endif
+> +#define PT_REGS_PARM5_SYSCALL(x) PT_REGS_PARM5(x)
+> +
+> +#define PT_REGS_PARM1_CORE_SYSCALL(x) PT_REGS_PARM1_CORE(x)
+> +#define PT_REGS_PARM2_CORE_SYSCALL(x) PT_REGS_PARM2_CORE(x)
+> +#define PT_REGS_PARM3_CORE_SYSCALL(x) PT_REGS_PARM3_CORE(x)
+> +#ifndef PT_REGS_PARM4_CORE_SYSCALL
+> +#define PT_REGS_PARM4_CORE_SYSCALL(x) PT_REGS_PARM4_CORE(x)
+> +#endif
+> +#define PT_REGS_PARM5_CORE_SYSCALL(x) PT_REGS_PARM5_CORE(x)
 
+Since you proposed the patch, you probably hit the issue. Please
+add a selftest so the macro esp. PT_REGS_PARM4_SYSCALL or
+PT_REGS_PARM4_CORE_SYSCALL is exercised. Thanks.
+
+> +
+>   #ifndef ___bpf_concat
+>   #define ___bpf_concat(a, b) a ## b
+>   #endif
