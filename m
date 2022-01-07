@@ -2,108 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AB7487BD6
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 19:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9BF487C36
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 19:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240675AbiAGSKL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 13:10:11 -0500
-Received: from mout.perfora.net ([74.208.4.196]:43929 "EHLO mout.perfora.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240523AbiAGSKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 13:10:11 -0500
-X-Greylist: delayed 336 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Jan 2022 13:10:10 EST
-Received: from localhost.localdomain ([194.191.235.54]) by mrelay.perfora.net
- (mreueus004 [74.208.5.2]) with ESMTPSA (Nemesis) id 1MnqT8-1mZN8Y43S6-00pHqr;
- Fri, 07 Jan 2022 19:03:57 +0100
-From:   Marcel Ziswiler <marcel@ziswiler.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Marek Vasut <marek.vasut@gmail.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S1348765AbiAGSbK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 13:31:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22108 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241055AbiAGSbI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 13:31:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641580267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CnnFuMGhB5JyFl3Jry+SDDf7d1TYi2ACAz22LLK65xE=;
+        b=bCQE51Uyh7x/eEChs9Um11b5i7zbeU19NlXZF8LNz1CW6D6NB0UAJNQVJRKCa8d84CEAUg
+        f7Mujx+fytc9tiLKx+kTpIM6tBSJMsJoFF1+ayX+jke0r1VCeh+U5y6OpH6FsM16AXPda+
+        dPiUUeNEoreSk+dQIkoFE8axOddR2vs=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-517-sC02aEXYMfCh2bl_8s0LJg-1; Fri, 07 Jan 2022 13:31:06 -0500
+X-MC-Unique: sC02aEXYMfCh2bl_8s0LJg-1
+Received: by mail-ed1-f71.google.com with SMTP id h11-20020a05640250cb00b003fa024f87c2so5365962edb.4
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 10:31:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CnnFuMGhB5JyFl3Jry+SDDf7d1TYi2ACAz22LLK65xE=;
+        b=tDMyIv/fSxFhAOPGxMFk/weKjb0HPii8ThqPzPEc5HPQEpXH4TcamcUAcMdcF4afve
+         ZsMyu5gRWN588hn3uKfhcvhyWRI80vNlfk6QJKTavgkBgn61MOsGOmsEFAcuc5a+1NSx
+         lwiecyGH6vK2M1vj3ECmFXfvKYFE/A0RZsrniZ//qw+8LSf9OtzsRZO3SZyqALzY+Gqv
+         ccZ1eokKiMpK0KBRNQ68xHcxsLgIJsfaFeXzWPmRowE82xDu5kC8rwkdXh5lv0F7Enag
+         ZYie1t5JjuIgw7gjMrdRdoNgeWDQxQ0ks7w/RVU1nwpqMVuAxvAUiY25t6aO6gCKfGoq
+         SAJA==
+X-Gm-Message-State: AOAM533SlOvKbXYnFjvnQEBnPmV+zwgyJ5MRWP33WGn4nIslL2GfrT9T
+        yWrym5CA3etFXTMmTZOeqalsO+P7nA+HLIqyBZwb48KyH7mqH0nlGJBs4Tk97wifAeW3rRhQdsS
+        lQRoiaHOnKxFL
+X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr2378929edv.396.1641580265228;
+        Fri, 07 Jan 2022 10:31:05 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxOjDvG04fHiqW1oMWTPMiyPLrLIZvdP2d1EgvGYDfE3UckOVJN/UxvqyJ1rQW3vEZHpke8HQ==
+X-Received: by 2002:a05:6402:28e:: with SMTP id l14mr2378909edv.396.1641580264843;
+        Fri, 07 Jan 2022 10:31:04 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id 1sm1614361ejo.192.2022.01.07.10.31.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jan 2022 10:31:04 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 617CF181F2A; Fri,  7 Jan 2022 19:31:03 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Will Deacon <will@kernel.org>, Yonghong Song <yhs@fb.com>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v1 04/14] arm64: defconfig: enable bpf/cgroup firewalling
-Date:   Fri,  7 Jan 2022 19:03:04 +0100
-Message-Id: <20220107180314.1816515-5-marcel@ziswiler.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220107180314.1816515-1-marcel@ziswiler.com>
-References: <20220107180314.1816515-1-marcel@ziswiler.com>
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf 1/2] xdp: check prog type before updating BPF link
+Date:   Fri,  7 Jan 2022 19:30:48 +0100
+Message-Id: <20220107183049.311134-1-toke@redhat.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:hnmCG4gNJe/WfYxTTdBLiKuTD21o0vH1c0vKJTADHuWy4MsGR2l
- YQBGK1mg00A33MLbiZvQGzNRlncHl83cidX1ZhNCWOlI1n6ZzYPzrsEyYqYWg9VCEBJ+rwE
- xvdW2v+w8JUdUJwFRvQxPDIfCWLEaYrguHyD1QOOOkjYPocsRRZfOyd8wW8sGTzwR8U+H5Z
- PCcpvlARSo+Em6Nh31yGw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Z+ZN9Ufiu3I=:OR4f2kn+F0UtsLQqOAitgN
- xnQwyjJAFVker0iSnORT2KGtyT/z7yWKItxB4j3/B4FEx3hTRdACBletV5haLoD9ba/CzWyyD
- hENNrDOSfc6TXLtZ1dVTXEBW8PqhfXeHWXrnDbfheMauK9AzeEUuq+pu5RfGRHSpb3MMuuES2
- AT21Eu/qQVPrLRZBXzFOx2dthNXYoRfCSFVIs26YN6K96bBW7BEYk3NuCwmiJlkmfDFlGewk+
- ONkJNXD61crDGJX+wO93FXipTlG2d5IsMiwt8eb6IsjZc6wF/sHDPRU50xuRW/ueJReuD0g+c
- CjtHnqd+4of7H2QeYq2h+xGXKOy10VtyhUL64RF1DsNe1Qm53og+Yo7Q8RkMucLG0F0DIZJwt
- Hgscd1/PFjSwm6LG6It4RLkwuVagcT97ZWpUuw1CrRnIJgVCmzM6MHHijwyXs9brWWv93T8wY
- RL6QQCL2IKf7VjsRKu+xaOQlh84Om+Bg+e5T0E8KcfLeW2NIsDMNQ6PU12btXFg8B101gILL3
- R4ndXUSYwU3z/aDyY8Ptue8ItbZPi05aY8zWf8o5TOZvX4+4AAdg50VVPEnckia/ZRkFvwWfa
- Abq6wAyDnOpidPp60v8iadWmrrkMRjCBH6QgIXZZe+0gIJCcYhqDw36mMwvOn4tNxziFdg+eo
- iRX0AbV3MoQlHxECt1XCXsPUKdvueq8yc/wN08uzxFCYTk26jBvMy5xjGA6tNkP8M0DhbxuOq
- FLMWhSrYpvfnJWuLlH5qG8bl4512cJ6YkD27QkZmJJNw8B82mAGSp5OjywXERaevpFvqFB1bY
- Aln4kOGl8W+5ojxVvs+FPlqKLxXSg==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+The bpf_xdp_link_update() function didn't check the program type before
+updating the program, which made it possible to install any program type as
+an XDP program, which is obviously not good. Syzbot managed to trigger this
+by swapping in an LWT program on the XDP hook which would crash in a helper
+call.
 
-This avoids the following systemd warning:
+Fix this by adding a check and bailing out if the types don't match.
 
-[    2.618538] systemd[1]: system-getty.slice: unit configures an IP
- firewall, but the local system does not support BPF/cgroup firewalling.
-[    2.630916] systemd[1]: (This warning is only shown for the first
- unit using IP firewalling.)
-
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Fixes: 026a4c28e1db ("bpf, xdp: Implement LINK_UPDATE for BPF XDP link")
+Reported-by: syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
+ net/core/dev.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 79e4bf9f4c2c..3c8106c5776a 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -3,6 +3,7 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_AUDIT=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BPF_SYSCALL=y
- CONFIG_BPF_JIT=y
- CONFIG_IRQ_TIME_ACCOUNTING=y
- CONFIG_BSD_PROCESS_ACCT=y
-@@ -18,6 +19,7 @@ CONFIG_CPUSETS=y
- CONFIG_CGROUP_DEVICE=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_PERF=y
-+CONFIG_CGROUP_BPF=y
- CONFIG_USER_NS=y
- CONFIG_SCHED_AUTOGROUP=y
- CONFIG_BLK_DEV_INITRD=y
+diff --git a/net/core/dev.c b/net/core/dev.c
+index c4708e2487fb..2078d04c6482 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -9656,6 +9656,12 @@ static int bpf_xdp_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+ 		goto out_unlock;
+ 	}
+ 	old_prog = link->prog;
++	if (old_prog->type != new_prog->type ||
++	    old_prog->expected_attach_type != new_prog->expected_attach_type) {
++		err = -EINVAL;
++		goto out_unlock;
++	}
++
+ 	if (old_prog == new_prog) {
+ 		/* no-op, don't disturb drivers */
+ 		bpf_prog_put(new_prog);
 -- 
-2.33.1
+2.34.1
 
