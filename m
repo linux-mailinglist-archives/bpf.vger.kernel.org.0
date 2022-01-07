@@ -2,173 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6114874B2
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 10:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB0D48754E
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 11:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346438AbiAGJbC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 7 Jan 2022 04:31:02 -0500
-Received: from mail.hs-osnabrueck.de ([131.173.88.34]:64971 "EHLO
-        msx.hs-osnabrueck.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346437AbiAGJbB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 04:31:01 -0500
-Received: from sea-02.fhos.de (localhost.localdomain [127.0.0.1])
-        by localhost (Email Security Appliance) with SMTP id ADFE67B_1D80852B;
-        Fri,  7 Jan 2022 09:30:58 +0000 (GMT)
-Received: from msx.hs-osnabrueck.de (RODDERBERG.FHOS.DE [192.168.179.29])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (Client CN "msx.hs-osnabrueck.de", Issuer "DFN-Verein Global Issuing CA" (not verified))
-        by sea-02.fhos.de (Sophos Email Appliance) with ESMTPS id 58A8C2A4A4D_1D80852F;
-        Fri,  7 Jan 2022 09:30:58 +0000 (GMT)
-Received: from ROCKENSTEIN.FHOS.DE (192.168.179.25) by Rodderberg.FHOS.DE
- (192.168.179.29) with Microsoft SMTP Server (TLS) id 15.0.1497.26; Fri, 7 Jan
- 2022 10:30:57 +0100
-Received: from ROCKENSTEIN.FHOS.DE ([fe80::d109:b519:b2eb:52b4]) by
- Rockenstein.FHOS.DE ([fe80::d109:b519:b2eb:52b4%12]) with mapi id
- 15.00.1497.026; Fri, 7 Jan 2022 10:30:57 +0100
-From:   "Buchberger, Dennis" <dennis.buchberger@hs-osnabrueck.de>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: AW: [Extern] Re: Problem loading eBPF program on Kernel 4.18 (best
- with CO:RE): -EINVAL
-Thread-Topic: [Extern] Re: Problem loading eBPF program on Kernel 4.18 (best
- with CO:RE): -EINVAL
-Thread-Index: AQHYAhp5eI29nHop60CO4GOJmoPCtqxVXjYAgADX9PeAACnZAIAA7YgA
-Date:   Fri, 7 Jan 2022 09:30:57 +0000
-Message-ID: <1641547857827.85104@hs-osnabrueck.de>
-References: <1641377010132.82356@hs-osnabrueck.de>
- <CAEf4BzYfu49iG=mmokC6VpBKoyKfqVDjCpkusjsXGLQTXS1tSQ@mail.gmail.com>
- <1641488009887.85104@hs-osnabrueck.de>,<CAEf4BzaGb3ybiJef4s3-kx_3zeV1kJ7VK=VcE9R59=r7r-sneA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaGb3ybiJef4s3-kx_3zeV1kJ7VK=VcE9R59=r7r-sneA@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [192.168.179.140]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S237304AbiAGKPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 05:15:00 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40170 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236825AbiAGKO7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 05:14:59 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1n5mGq-000BB7-92; Fri, 07 Jan 2022 11:14:52 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1n5mGp-000Fdg-UZ; Fri, 07 Jan 2022 11:14:51 +0100
+Subject: Re: [PATCH] bpf: allow setting mount device for bpffs
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, christian.brauner@ubuntu.com
+References: <20211226165649.7178-1-laoar.shao@gmail.com>
+ <616eab60-0f56-7309-4f0f-c0f96719b688@iogearbox.net>
+ <CALOAHbBi4HYUd+AD+F8DrCUPrh8-E3HJC=RPMTw3dNLKHAHczg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e3598aba-490f-95a9-f92d-52cf83175d42@iogearbox.net>
+Date:   Fri, 7 Jan 2022 11:14:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-SASI-RCODE: 200
+In-Reply-To: <CALOAHbBi4HYUd+AD+F8DrCUPrh8-E3HJC=RPMTw3dNLKHAHczg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26415/Fri Jan  7 10:26:59 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > > >  [...]
-> > > > As the target kernel does not support CONFIG_DEBUG_INFO_BTF, I used pahole -J (v1.22) to create vmlinux file with BTF info embedded there.
-> > > > Basically, I followed this mails:
-> > > > https://urldefense.com/v3/__https://lore.kernel.org/bpf/CADmGQ*1euj7Uv
-> > > > 9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com/__;Kw!!MeVeBiz6!5
-> > > > PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFP1nWOL3A$
-> > > >
-> > > > Right now, the bpf program is just a uProbe for a simple test app, which writes some output to the tracing pipe. As Kernel 4.18. does not support global data for bpf programs, I had to 
-remove (comment out) the bpf_trace_printk statements.
-> > >
-> > > You can do #define BPF_NO_GLOBAL_DATA before including bpf_helpers.h and then you can still use bpf_printk() helper macro.
-> > >
-> >
-> > Thank you! That's really helpful. Is there any collection of up-to-date documentation and best practices in writing bpf code (without skeletons) besides the sources in libbpf/libbpf-bootstrap, iovisor /libbpf-tools and linux/tools/testing/selftests/bpf ?
->
-> There are also various blog posts on the Internet. I tried to do my
-> part with CO-RE at [0], but I don't think there is any single
-> documentation that captures all possible issues in one place (and I
-> don't think it's possible, there are just way too many variables to
-> anticipate all possible problems).
->
->   [0] https://nakryiko.com/posts/bpf-core-reference-guide/
+On 1/7/22 6:48 AM, Yafang Shao wrote:
+> On Wed, Jan 5, 2022 at 9:24 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 12/26/21 5:56 PM, Yafang Shao wrote:
+>>> We noticed our tc ebpf tools can't start after we upgrade our in-house
+>>> kernel version from 4.19 to 5.10. That is because of the behaviour change
+>>> in bpffs caused by commit
+>>> d2935de7e4fd ("vfs: Convert bpf to use the new mount API").
+>>>
+>>> In our tc ebpf tools, we do strict environment check. If the enrioment is
+>>> not match, we won't allow to start the ebpf progs. One of the check is
+>>> whether bpffs is properly mounted. The mount information of bpffs in
+>>> kernel-4.19 and kernel-5.10 are as follows,
+>>>
+>>> - kenrel 4.19
+>>> $ mount -t bpf bpffs /sys/fs/bpf
+>>> $ mount -t bpf
+>>> bpffs on /sys/fs/bpf type bpf (rw,relatime)
+>>>
+>>> - kernel 5.10
+>>> $ mount -t bpf bpffs /sys/fs/bpf
+>>> $ mount -t bpf
+>>> none on /sys/fs/bpf type bpf (rw,relatime)
+>>>
+>>> The device name in kernel-5.10 is displayed as none instead of bpffs,
+>>> then our environment check fails. Currently we modify the tools to adopt to
+>>> the kernel behaviour change, but I think we'd better change the kernel code
+>>> to keep the behavior consistent.
+>>>
+>>> After this change, the mount information will be displayed the same with
+>>> the behavior in kernel-4.19, for example,
+>>>
+>>> $ mount -t bpf bpffs /sys/fs/bpf
+>>> $ mount -t bpf
+>>> bpffs on /sys/fs/bpf type bpf (rw,relatime)
+>>>
+>>> Fixes: d2935de7e4fd ("vfs: Convert bpf to use the new mount API")
+>>> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>>> Cc: David Howells <dhowells@redhat.com>
+>>> ---
+>>>    kernel/bpf/inode.c | 18 ++++++++++++++++--
+>>>    1 file changed, 16 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+>>> index 80da1db47c68..5a8b729afa91 100644
+>>> --- a/kernel/bpf/inode.c
+>>> +++ b/kernel/bpf/inode.c
+>>> @@ -648,12 +648,26 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+>>>        int opt;
+>>>
+>>>        opt = fs_parse(fc, bpf_fs_parameters, param, &result);
+>>> -     if (opt < 0)
+>>> +     if (opt < 0) {
+>>>                /* We might like to report bad mount options here, but
+>>>                 * traditionally we've ignored all mount options, so we'd
+>>>                 * better continue to ignore non-existing options for bpf.
+>>>                 */
+>>> -             return opt == -ENOPARAM ? 0 : opt;
+>>> +             if (opt == -ENOPARAM) {
+>>> +                     if (strcmp(param->key, "source") == 0) {
+>>> +                             if (param->type != fs_value_is_string)
+>>> +                                     return 0;
+>>> +                             if (fc->source)
+>>> +                                     return 0;
+>>> +                             fc->source = param->string;
+>>> +                             param->string = NULL;
+>>> +                     }
+>>> +
+>>> +                     return 0;
+>>> +             }
+>>> +
+>>> +             return opt;
+>>> +     }
+>>
+>> I don't think we need to open code this? Couldn't we just do something like:
+>>
+>>           [...]
+>>
+>>           opt = fs_parse(fc, bpf_fs_parameters, param, &result);
+>>           if (opt == -ENOPARAM) {
+>>                   opt = vfs_parse_fs_param_source(fc, param);
+>>                   if (opt != -ENOPARAM)
+>>                           return opt;
+>>                   return 0;
+>>           }
+>>           if (opt < 0)
+>>                   return opt;
+>>
+>>           [...]
+>>
+>> See also 0858d7da8a09 ("ramfs: fix mount source show for ramfs") where they
+>> had a similar issue.
+> 
+> Thanks for the suggestion. I will update it.
 
-What a pity. ok thanks!
+Sounds good, thanks!
 
+> nit:  vfs_parse_fs_param_source() is introduced in commit d1d488d81370
+> ("fs: add vfs_parse_fs_param_source() helper"), so the updated one
+> can't be directly backported to 5.10.
 
-> >
-> >
-> > >
-> > > > On the development machine, it works fine. But on the target machine, loading the program fails: libbpf: load bpf program failed: Invalid argument (full libbpf log see below).
-> > > > When compiling the programs on the target machine without using CO:RE, I get a similar error (invalid argument, -22).
-> > > > What could be the problem? I don't think the eBPF program uses anything that is available on Kernel 5.4.0 and not available on the system with Kernel 4.18, does it?
-> > > >
-> > > > Thanks in advance for your help.
-> > > > Best
-> > > > Dennis
-> > > >
-> > > >
-> > > >
-> > > >
-> > > > ============ log ============
-> > > >
-> > > > sudo ./ebpf
-> > > > libbpf: loading main.bpf.o
-> > > > [...]
-> > > > libbpf: CO-RE relocating [0] struct pt_regs: found target candidate
-> > > > [201] struct pt_regs in [vmlinux]
-> > > > libbpf: prog 'trace_func_entry': relo #0: kind <byte_off> (0), spec is
-> > > > [2] struct pt_regs.di (0:14 @ offset 112)
-> > > > libbpf: prog 'trace_func_entry': relo #0: matching candidate #0 [201]
-> > > > struct pt_regs.di (0:14 @ offset 112)
-> > > > libbpf: prog 'trace_func_entry': relo #0: patched insn #2 (ALU/ALU64)
-> > > > imm 112 -> 112
-> > > > libbpf: prog 'trace_func_entry': relo #1: kind <byte_off> (0), spec is
-> > > > [2] struct pt_regs.si (0:13 @ offset 104)
-> > > > libbpf: prog 'trace_func_entry': relo #1: matching candidate #0 [201]
-> > > > struct pt_regs.si (0:13 @ offset 104)
-> > > > libbpf: prog 'trace_func_entry': relo #1: patched insn #9 (ALU/ALU64)
-> > > > imm 104 -> 104
-> > > > libbpf: sec 'kretprobe/': found 1 CO-RE relocations
-> > > > libbpf: prog 'trace_func_exit': relo #0: kind <byte_off> (0), spec is
-> > > > [2] struct pt_regs.ax (0:10 @ offset 80)
-> > > > libbpf: prog 'trace_func_exit': relo #0: matching candidate #0 [201]
-> > > > struct pt_regs.ax (0:10 @ offset 80)
-> > > > libbpf: prog 'trace_func_exit': relo #0: patched insn #2 (ALU/ALU64)
-> > > > imm 80 -> 80
-> > >
-> > > CO-RE relocations succeeded, btf_custom_path worked, the problem is not in CO-RE.
-> > >
-> > > > libbpf: load bpf program failed: Invalid argument
-> > > > libbpf: failed to load program 'trace_func_entry'
-> > >
-> > > I suspect this is due to your target machine running Ubuntu 18.10.
-> > > Ubuntu has infamous problem with reporting kernel version through
-> > > uname() syscall. I've just improved libbpf's detection of it few days ago (see [0]), but it didn't yet make it into Github mirror of libbpf.
-> > > I'm going to start the sync right now, but you can manually specify correct version code with bpf_object__set_kversion() as you already realized. See how I do that in my patch [0], you can do that manually as well.
-> > >
-> > >   [0] https://urldefense.com/v3/__https://patchwork.kernel.org/project/netdevbpf/patch/20211222231003.2334940-1-andrii@kernel.org/__;!!MeVeBiz6!5PZT7QBM-W93AhbZnRJ3kmTO4JyBUiapxeJrPCl4k4gKHidI5Ri0WQp19MbBDFM_zuNNKA$
-> >
-> > That's it, thank you very much!
-> >
-> > I just added
-> >         __u32 currKernelVersion = get_kernel_version();
-> >         bpf_object__set_kversion(main_bpf_obj, currKernelVersion)
-> > with get_kernel_version() from libbpf.c and your patch [0] and now it is working. :)
-> >
->
-> Great, once [1] is merged (I'll need to fix up selftests first),
-> libbpf will be able to deal with this Ubuntu quirk automatically and
-> you'll never know it existed.
->
->   [1] https://github.com/libbpf/libbpf/pull/435
->
-> > However, there is something I do not understand:
-> > (a): Why did it work on the development machine in the first place with Ubuntu 20.04?
-> >         - the old get_kernel_version() returned 328704 (5.4.0), the new version returns 328852 (5.4.148) so there already is a missmatch. (and I did not call it, so libbpf set the kernel version to 0?)
->
-> You dev machine has recent enough kernel that doesn't check kernel
-> version anymore, so it doesn't matter that Ubuntu reports the wrong
-> one.
->
-> >         - on the target machine, it is 266752 (4.2.0) vs. 266772 (4.2.4)
-> > (b): I use a uProbe. Why is the bpf program type kProbe? Is it just for usability of libbpf as for a uProbe the user must specify the address while for a kprobe only the symbol is required?>
-> 4.2 is old enough where kernel version has to match and it didn't.
->
+Right, so for stable trees that don't have this commit, you could use your
+patch here if needed. But for upstream, lets not open code it given we have
+the helper for it.
 
-Thank you!
-
-
-> > (c): Why does the kernel version matter at all?
-> >
-> > It would be really nice if you could answer these questions as well or point me to a source.
-> >
-> > Best
-> > Dennis
-> >
-> > [...]
-> >
->
+Thanks,
+Daniel
