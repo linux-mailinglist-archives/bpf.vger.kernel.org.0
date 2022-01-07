@@ -2,57 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03001486EDB
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 01:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D95C486EE6
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 01:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbiAGAaq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 6 Jan 2022 19:30:46 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3256 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344231AbiAGAan (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 19:30:43 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2070DUfX023675;
-        Thu, 6 Jan 2022 16:30:28 -0800
+        id S1343836AbiAGAeA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 6 Jan 2022 19:34:00 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59002 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1343832AbiAGAeA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 6 Jan 2022 19:34:00 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 2070DKoX013837;
+        Thu, 6 Jan 2022 16:33:44 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=LWmN0wf1nTvfjVAxhkc0B2S5LEdeK0qIH8Oyh5JhOD0=;
- b=Q7+XH70RqtDqajp9SDxYgihIf9rEcovaK3pRFMJ7hSSgFEKJb9g14CD5FN9M5wJ3Ydwp
- KP4EE5TAevbzBuo2cXGyulJVxEY52WyPG3OOLr8XSV4g12bHdFgJLFhkFUluzdF1hFQ2
- FlqoFGXlStlv/PHrUryj3z95HsyCCB8dG3o= 
+ bh=LfVzO4h4kGKM75zJDAkhUgAa+6IEXZ4vcuFuPHIL5Sc=;
+ b=PDEnJ9kv6NWiDo2BsLEyfbz3aFX4Ljl+5HUfJtLc1FRvcVd9PlvpEgg9uhfL8Us1sO96
+ WVDBIcxYH4BOFJCl4CPORBeZmwa/EHIcJ2DLgTnX/VVRJsMpMhH2YdP2R/eU94RuHpZC
+ pvSHr5lv80yTajn7CfI9GKmFQ2IDF8QE2Yg= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4vjte6k-1
+        by m0001303.ppops.net (PPS) with ESMTPS id 3de4xftft2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 06 Jan 2022 16:30:27 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+        Thu, 06 Jan 2022 16:33:44 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 6 Jan 2022 16:30:26 -0800
+ 15.1.2308.20; Thu, 6 Jan 2022 16:33:43 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J2sCAheBoFaTvTUFqdXfWMRZBNX3bkFfM5lq0U/XFTsvf2w79WNmg/enFWeRvyzibmYn7XTQCJVLoBwFyqDsX6vdtJvANgRVkEwS6Rh0Cp2rH1x5DQ2c3Lf9lhsKIDE6YNd9ZKEGuSVGEVYPr8pPNvnyaW5P0PgAUgNc9yoDXWHsW0tTFbPCF3H9a+dF4vq9Bvb4orIvqJvUKva9Qi+ggJtNySn1UZaFPLfiNoaqnJ5ALzv2zCTE3o6q/ngeTY70Slf2FQNYB9Qw6hRH8UDon7LqfTpooASK9tqAIufVXJYSBQg36EdJky3zuKY3WyP+QrMm+IfJh8lgKO5ionmZyQ==
+ b=Bt242UK6jgGEc2ytAUvGmgslhtRt8M5i8rXayomirDfW45lprpG5fboG/w5aBnLoKkRRvZ58DZ1WaU/xZxKkSupy3YoWxWKK6YcqetLc00/ktYjy62b1qH8IsyuLo0YqaLM1LR5aeJTwNxfTsPHJYhNRhsWRinTrudUecBU/FNLE4SxmonfRveyLnbN/Wenf0qrfRo8W7aumUGjVvN9WpA8x7vL7VVMpTU4l/bd1ewOMV2QAo1oHRNttepD8n2OtwFALOlu3YeVxlKh8gkLYK20/Lwt35+Zfm11lzFCQ6lAPye8p4E4ZmQMJNEchKN8rWbRzYfvWK/l//4q7qLgO6Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LWmN0wf1nTvfjVAxhkc0B2S5LEdeK0qIH8Oyh5JhOD0=;
- b=T2dmV8sNIonmOSbX3KAWuxZ/1cN395wM4igsFDdOG99vZZ1K79B56jUvUUM4/BSZKwna4sc7w59xLhM2ylbiQrst41YlQvtm+cvLngzi7DlZP6oZlWDSl3Eko7wpgFZKJ5EhYoK+kiszkJCxrRp3/HaxG5rJ190eW88hklq2bTw80YRE6HO87vlFFMNzgDQSXH3lNKCeq+y1sSmke3c8Ru+NcweW/s6hqqH+ytwq1DVlN8EXquQZQWtMtrQ4+GwP1mnoMXQjtlyAup8EiyCq24FR5mUWOwX3y9lc+LpXViGB2eqHL9E4YgrFBXUh99M/W3NjNQsmiqlNno186kv5AQ==
+ bh=LfVzO4h4kGKM75zJDAkhUgAa+6IEXZ4vcuFuPHIL5Sc=;
+ b=bePcAn/nDQ4LLsmmyO9O+briZSKSUgfdiw+kTd50qyUk/uGjIuvZSuNUHDQPcdmUJ3liebVvXT/STUN9ohzEIE2feodEdf2P3RA9bhcArkZ12CnCTdHDPUG5fKweARa0odRj9KRzN+X3YR7EdFmApfHfSR3ZwHSqHMaW9K3p75qNzSw8YtDukgsUJfWPvW0lAZpWFECLapmfwWKaJ40AP8+ns0ifEQwzpLsTfTNodG+UsAFhatOUGXg1YKivv3tMG5RIqb0ynf/B/QhNeUZF+TspetCpKpVcH40mDFc4PuOE8C3Bc9BGo7xerVwTAXgKgacZsmXOIOFYAqJSDIP7mw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
- by DM6PR15MB2298.namprd15.prod.outlook.com (2603:10b6:5:88::28) with
+ by DM6PR15MB3797.namprd15.prod.outlook.com (2603:10b6:5:2b7::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.15; Fri, 7 Jan
- 2022 00:30:25 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Fri, 7 Jan
+ 2022 00:33:37 +0000
 Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
  ([fe80::8988:8ab3:bd6f:514f]) by DM5PR1501MB2055.namprd15.prod.outlook.com
  ([fe80::8988:8ab3:bd6f:514f%3]) with mapi id 15.20.4867.009; Fri, 7 Jan 2022
- 00:30:24 +0000
-Message-ID: <86203252-0c97-8085-f56f-ea8fe7f0b9dd@fb.com>
-Date:   Thu, 6 Jan 2022 16:30:20 -0800
+ 00:33:37 +0000
+Message-ID: <481d3cf2-cb51-50c7-f088-df33e08667cd@fb.com>
+Date:   Thu, 6 Jan 2022 16:33:33 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.4.1
-Subject: Re: [PATCH RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
+Subject: Re: [PATCH RFC bpf-next v1 1/8] bpf: Support pinning in non-bpf file
+ system.
 Content-Language: en-US
 To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -63,82 +64,83 @@ CC:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
         Joe Burton <jevburton.kernel@gmail.com>,
         Stanislav Fomichev <sdf@google.com>, <bpf@vger.kernel.org>
 References: <20220106215059.2308931-1-haoluo@google.com>
+ <20220106215059.2308931-2-haoluo@google.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220106215059.2308931-1-haoluo@google.com>
+In-Reply-To: <20220106215059.2308931-2-haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P222CA0005.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::10) To DM5PR1501MB2055.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR1601CA0014.namprd16.prod.outlook.com
+ (2603:10b6:300:da::24) To DM5PR1501MB2055.namprd15.prod.outlook.com
  (2603:10b6:4:a1::13)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2dea1fe8-16fa-48ba-87ad-08d9d174e596
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2298:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB2298F015B73D4C4FB2D8358DD34D9@DM6PR15MB2298.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: c9a82bd1-42c4-40d1-cccc-08d9d1755821
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3797:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR15MB3797797158716CF86EA46748D34D9@DM6PR15MB3797.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1d3bmGJQxujUc0rQg/gS9oix1Fr3PbblkoodtyrDQ4ma6ULhzbNAElaEzEZVexqGf1p5bjH3Uxc58/mlUUh8o24qsX15H7YytQ6YWPplGCrRdcoMhodCpaopTIKhtzA6pLgUjVOb0eGZngKJcNwpGFafws56b5v0EBVjPupZs3d/ddCX3pH7n9M/jHiVJr7FzpsuM94Lf2doitnhCkHZqv/z1rqUangg8dykKQ97NTW8QABrwueFDDMsXkZoSADZjGg6PSiQyN2atFIazmfTgOBx53FGA2P8jQ0JiYAbkKSKE8h+xJKkw7YwhvjzvLTdZXhieWPgRneQONvPtRDi9IS9XNsXhJG2J1qlNMWnmchctONeo4GpsGJhSzkEYILd/r5DEyvrxjLuLDMC0150wqCZCCqbeJwefx6BurMdy5x1QVaFbpGrEB7if/0BjFH+RV5487TBI21ArI9YJ/nyUwROjuJhe75cawf5ijjO5xLt7PhQT1aQjNNxtqW53etuC6JB+0im+BPX1e5mq1XjKT738AYGFKa9tio9BlgSf4uXtACW+DIfe8kmc9kGWiY9oTDJ24SHq+lBpYZ3s1W0zP5D2T2J/GCDg4qcgRPIduI8tylX87WnqsUGoU39QuHBQUYpnIopqGFLlm+T7oZz5B9BZYOjAYelxNA/iBZoBK3BEbz4BtTiCVJdUiGHNu9uZS95SgZ8Ok7fL86Yt+dbInO51i/6h/31HwakOe1CCTs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(38100700002)(8676002)(6666004)(6506007)(86362001)(53546011)(36756003)(8936002)(6486002)(4326008)(2616005)(31696002)(186003)(54906003)(508600001)(316002)(2906002)(83380400001)(5660300002)(52116002)(6512007)(31686004)(66476007)(66556008)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: F1eRBHC+0bIoLSWyuSTZFGrGrP00KjamotPKt/+Bg0D7qPpvY3SMaWGAIHRUKg22OpCqru0IH1zXsj3gx6iV52ThGdi4lC2Wxj7aqUBBRGJidy65Cqw6ivPBIOuTVJFFwnzGr1yxUEUHqiBQsQuVsPlrZvjSN2uu5vLrEFiLtSPe0erUb7eq9p96mo22gzAAduaZ/cB0C3n6VarE51l0mVv4S7NDGXYVmzL2HsAObA1jO7onR0tpqvSD4IDpuAi0iO1teQTc/punByxt7VwFn/9CctoD0WhvpxeIcVHv04u33+rbfxCvBYYwAjOK8GGl0YW7fDNARkut554yYX+AzhmZr4jw5Y5wM3G7d/LNbHX8lJg1IQ+q6Tnh7LOmPE29fZZjYcKURFXHu4oBx6hw1UVe2Cp1q/7g2YqZP9v0NAZ5Bhe13UpKUvPw2qgK3ThuZpFIB409WNZT7frvXlTZ8QygdKvJ4RLKHiGxJBANoVs4O2ZfAZ98fj5FZT/D5TppEZD5KUor8UW/dk0zr4gpgUyG7iP6UE1Tok5mi3xkZ20eOzL9mROydT3uobZaNvJezcD9fpaEvOJ8WZUTBgtuPY/9rTNHc1uEUs9as7enMezSTSTtj5wqhvA5/bso7MB6SvTHh4IC9AaI8IxMoQjjiVK9nRhNEn8d+9+JNKpNMuu+VbhSp99pOpNuKsk9bXAo4w+t8zyL6UE76j4fzxnjyRGVRBXI9fn15YwrNQYSphQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(6512007)(6506007)(4326008)(2616005)(53546011)(52116002)(8936002)(110136005)(6666004)(36756003)(316002)(6486002)(186003)(508600001)(31696002)(66476007)(38100700002)(66556008)(2906002)(66946007)(5660300002)(54906003)(86362001)(83380400001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aXFFS2ZtazVpTG1UdkNMVXg1cVVBblp4KzVYR0ZGVGlaYjZtdS95UGRVTVVQ?=
- =?utf-8?B?TTh4a0RRT0pIVDlsS3VnOXF6U1J1SGpxVW1HUGVIVWh4aFphaE5xWEgrZGJN?=
- =?utf-8?B?bGNwc29NL0swc0I3eHpmMWRmSFZMcVBjbnROTVdPTTE2aXRMTDJJamk2b2c3?=
- =?utf-8?B?WE1yOEp3d0dBLzFsY1R1eUxmZkljRGZVanRwRVVwSXJXZExObVJPd29DYUN2?=
- =?utf-8?B?dnZKR1NLSFJwcldlR2ZiS3ViRHdGVWFtQWIyRTB5ZGN4N2M3QlRhVWpldEJz?=
- =?utf-8?B?eWFkRmRvTDczUHhiRlZBQnozbGZkOHNCd1F3aVBDbVhUUHdrNnMzbnlXcUpt?=
- =?utf-8?B?eUNuQUlnMzFZOFAvQ3Q1YTh0c0ZTdTZSc1hvNm1OcFhmTTZ1QjhtZ1RTSUxW?=
- =?utf-8?B?N2tTQTFDOXpOM0JYbUpwSWYzdnBwNWpjZG41UDZnWWtmSGg1Q2NGQzRJN2Jx?=
- =?utf-8?B?dGZKakFzb0lMczl6VHNQaDBiMVVDNkFJTjdjUlRzRTN0VE9Xc3BTb3NrVitO?=
- =?utf-8?B?cDB4YUZOQlgvSWdIRFRiNDRmKzYwOXpvYmpMWkFLVjE4emIreDFDemE2UnZ1?=
- =?utf-8?B?TThEenMxMzJGTzVhbFVVbVlzcWRJNzAwdHI1aEdiRU56Zmgxc1RZS1p0cEpr?=
- =?utf-8?B?K0FSMGY0ZlhaZk9qMzdHeG5xN0lTaWc3SDE1eW9ZeWo5NHVhZHMraWhPL1dB?=
- =?utf-8?B?emVyQ1RPWUFXTEFTSXloK2dYL2pBUC9uWjZKemJWMTJvcDFueHpMcVh2TnVE?=
- =?utf-8?B?d05EMXF1a2FTcDZrTFNEZEdkdmxVZ0FXSkhucWc3RkdSNEhaMEpvVHROT1Ju?=
- =?utf-8?B?cUovRkVTT3U3V0xHNSszS0NFMEF1THVHdHhSdDB4QVUwdTNtRlhRRVFhL0pn?=
- =?utf-8?B?eDMvdkJPNUNNTXdSb1ovYllpK20weE1od1k2RS9Dc3ZzNzl1ekxwbnF2ZUxN?=
- =?utf-8?B?Y01TNzl5S0N6dW45OWFGYXhSaFd2ZHJUYVRoWkNxOHoxWC9xMk1peG8vS3BY?=
- =?utf-8?B?TmovZmM3WXlsQmJLV1I4azB0REZZeVpQaDFORGN0V2ozcEwzWklYbFpub3Vh?=
- =?utf-8?B?YmRuYTNsNlhMbFRVcnZPTHI5ejZhU2ozSTFieTBKSEloV2Q5WFk2OTVwTkFY?=
- =?utf-8?B?R01wMktXdHZYS0dxcklhVHBib2hkWVU3a1F5MjhRYWZOVWtDK0x1SmZ0THJt?=
- =?utf-8?B?dGxtLzJvcEVFQUI5d0MxK0hyNk9ja2ZvTWJmbkVpcmZxOUNGNG50RlAzVWNO?=
- =?utf-8?B?eHZIZ2Zva3hldnVnQlpoZFlLcG5USVFRbnpTd1E4ZkVCdENBUHlGNEFrQ1VL?=
- =?utf-8?B?OU9uSSswZ09mNmlsSWpBT0NzeEEyd2NaOVZlUFFzNTIwWWxhWjRhUFc0bThY?=
- =?utf-8?B?OHB3djhUWGZYQUtibXFkREROdlNCVWRxcG8xUEdkczlWb3hTSVFKNlZBUSt5?=
- =?utf-8?B?MkVydkUvb0dDbnF3MjJ3RDhaeXJGRklBUUlzRU9GUk44aDRGQXUrMW5YdFpM?=
- =?utf-8?B?VDFDa29aa3l1bTJJYTB3bzZOYm04aUdUYUhIcS9keldZS0lZR3RSbWVrVFNH?=
- =?utf-8?B?SFFHU2FCL1NMV3Qzc2xXRzBob3VwaVBWZTFERzE4V2dkVFdINzRrR0l6cGRl?=
- =?utf-8?B?c2RNQVIwQnJ3bGpoSmFSd1V4aCt3Q1lhM3QrS2o3aFRTWHVxeHJTR01acnZh?=
- =?utf-8?B?NzRsUm9NVmF4dWw4WEtJWU9iYzNnYk9NTFFVcTNMRXVKR1RkMzZrUFdFandX?=
- =?utf-8?B?Nm0vbzdtYVlJZUdKQWQ3NlJWb3Y3cnhiK2pOMGo4Y2w2bjNrTHcvYkJyQlJG?=
- =?utf-8?B?a1A0UzlnMjUzbGRTMkx3SnYzMDVhMThZbDhYMnkyR2UvZlYxU1RrSXZmQ21D?=
- =?utf-8?B?VFVsWW5qeWxTUUZuSWR6d1o4UDU5R3YyUWVnRFRobDdTQ2laeHJKdzBSdXpo?=
- =?utf-8?B?OWpPUUVZWFlMUWI2d05LMTk4QXhvWVdZbVYwQUJ6QjVIOFBpd3Z3NlFoUjBv?=
- =?utf-8?B?ZGVyTHVhbG56aXMwcStTc3hZRFI0aFllZzJ5cTlRblJia3ozU1oyOFhRLzhn?=
- =?utf-8?B?R0JWR2poblBGUE9sMGRXd3UvN0Y0V2crc3NyZ1ZEMzVkcDJaYTliZmsxRDdO?=
- =?utf-8?Q?34OUZ3nY8PHo+juhJLWwgUaoE?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dea1fe8-16fa-48ba-87ad-08d9d174e596
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VGdUUFRsWjFpRkJVaUJSVGs2Q1pRTEVMTCtvbnZMSHRYYldmQ2JTS1gxVHdP?=
+ =?utf-8?B?UjRNeHFsM0FYQzl4b2szQUNuR0VZTVhPK0UzV1pvRnhkQ0tuWHB1NDlZNkdK?=
+ =?utf-8?B?UDV0dGJyaUEwS2FGa0R1SEE1M1JPZVJ5ZTU2dW9pbmdzUmFTMGZmVTEvV0RH?=
+ =?utf-8?B?eURPVVpUSU9lTVhjMWhKQXhUM3RoMnkxVEI5RTVTZk43RnBhaEVQdzEremNO?=
+ =?utf-8?B?dGZHUzVKczNLdkt4cW5TbXc0RVd1YlRtcXFVN1NLUUQvbEtNL1UvcHNId1hk?=
+ =?utf-8?B?ZDYxNmRrMTVuTHJNbW1RU0YzdkxNdDRoM2RTbGdKZVM4enJNamRtU1VKaCtx?=
+ =?utf-8?B?dmFhQ0NOV3BlNXdmcFNiUDlmZ0NiRG45TGpWbzZOcUZXajVqdnFXMlVZQW5Y?=
+ =?utf-8?B?eGdCU1dDeHBmLzJLdm9ZemFTcUZwWWxSVzFVZnhGWFdlcmovaDE5ak1HcThp?=
+ =?utf-8?B?WDdGTmQ1THZWbUlWN2Q5eFF5dlBRMnBkVVc3emZHMFpQTmlwejRFZlBFL0lV?=
+ =?utf-8?B?R1N4SXk4R1pQWW1oQmwzZHRKOUtlUFNTUTNZU2l1bGFpcjRacnd2LzVFQzBi?=
+ =?utf-8?B?VDRiR21IcVpmZGpjT0txanpXWG92c2VLd1Nvd2wrT2NxRENCaVFKQlRsck1U?=
+ =?utf-8?B?R05kRjhqZDZCakdua1puV0NyaktPNjBRc2NYQUFtWXR6cC9rTU9naWhOY3l1?=
+ =?utf-8?B?cGNGQVJkUVlGLzZhc0dOYUFJOTBQa2NqZ1Y0VzBWQmNaRU1pWmtabkh6OVhk?=
+ =?utf-8?B?SzZRWTY2QTJ3REFuMlRZZzR6d29aY2xlZEk0RURrQVpaRFB5ZTBRdmlqbXAx?=
+ =?utf-8?B?Nm5jdW1ubTU3V0drOGdNMUpKNjdERUYzQVdtOHFQNnZidGlnanFDTmoyR1dx?=
+ =?utf-8?B?NVlvU0VIcDdkVGM3VGZ5NW9ZVXNHazJwQ0ZJUzRCSGQ5M0VvZStrQmp4WlB3?=
+ =?utf-8?B?N2NYUEdBSFlHeWpETExPSnlyZ2pISVZrYkRGeVhmOG1tM1JJaGJUWFFNeXF2?=
+ =?utf-8?B?ZFdqRlFLWnQ2YlZrYXgrS3RHWUt0cHJEaDhjSERDNVZzUlhvUzNUQ09nNElh?=
+ =?utf-8?B?cXpoZEZwVkNBNW5mRHgzZ2FFcGJqMDZPTjVtSks5ZnBzY0UxZ3ZBbDY2KzY3?=
+ =?utf-8?B?S1JrQXdJTXVqS3had3BkRU5mWGJLZ2ZUSGlvV2UrdlZNL1c3T2xpR1RBMzlZ?=
+ =?utf-8?B?TUxLYzZQVDQyQ1QwWUxOSERzMXEzVVBCcXJkOGJFd3l4K1BHREpENlZ4TVVN?=
+ =?utf-8?B?bEF0YWhxREdDM1gyNlpZY0tiSXZTZ2NRNUVTNGI0N2JYVUN5YTVsSENsZWpP?=
+ =?utf-8?B?SnYxLzVPcDJhbXJBdEhYQWtaUVpiT3RHQSttTklaay9JYkFZeEZqeFVSd2tH?=
+ =?utf-8?B?NUsyOWRZUjZ2VkFjUE8rWTNpM3FjcHczWTNraTFVS2xMUlRrK1djOG9nTmpT?=
+ =?utf-8?B?Mm4vL3JCZlRXSVNrLzZmalYwTFVpdmswL0p0WlRTdjd1OWM4VWNvKzVnRlp4?=
+ =?utf-8?B?M2U2OE40M0lIQ1NGNTlaM2h0MlovRURHN2hEdzlEenRTbU9YaVpYTzVxUHBD?=
+ =?utf-8?B?WTZQNGlWRGdFWlljQ3N5MUhkYlV2NnV5U0xhSVl5K3MzWHhrUjl1YUgvcStL?=
+ =?utf-8?B?OWdmeGJFTVY1dnNzbjZyUzNwN3g2Mjk1RkhyazhuTUg2RDhicjBqN3NubFpW?=
+ =?utf-8?B?VXhlL2FSRWJFbDdCL3VGeVo5UkJWWkVqSjVFT2RxUkxwM2xHT2o0TlhldHkz?=
+ =?utf-8?B?S2VpdTRweGhiV25La2d4VHZKQnJUUkptRFFNb29JWUNpMTN6QzVwQVppcEth?=
+ =?utf-8?B?OHk1V040WVE2SndaTTQvRnBrOU9RUUFHa0hOSGxHSFFCVUhYdWgwdDYvSk9h?=
+ =?utf-8?B?RDRoUDVBTGNVMVBZazRRTUd4MkJLdzYxUm51MWRxVXFoWGNhRFJyVUhCUXFj?=
+ =?utf-8?B?RjhOQWttRXZid3F0WFNzakt0Ri9wQnhPd0dnRGFyNjhFUm8rb0xrVmNFUURP?=
+ =?utf-8?B?VEtIU3FtSSswdmF6TkJUSnZaQVZ2R0lZdVJlemJPaGsyM0lTREZRSCtZOHZy?=
+ =?utf-8?B?NWRPWThNMVQ1anV5MCs1NS9ONHpRRE5NL0srNlhIK0ZYT0p2VnlZOXNmc0xV?=
+ =?utf-8?Q?wz5k0qeGoGtWH7rvmJ07PciXX?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9a82bd1-42c4-40d1-cccc-08d9d1755821
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 00:30:24.8988
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 00:33:37.0405
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gtWhNp17xCisjf2mBwDlCmTUO+kJ/zGz4JEYHTVYaEIzBSGBxz0hiprewWKaK9zp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2298
+X-MS-Exchange-CrossTenant-UserPrincipalName: tT8jFTPUWJ3UcQ5YRuCrwx8JSUdEKN6lpiCh7epjaUEJYdJr1o3leeGZR20+xql7
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3797
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: GGhv2ZkAGebl1sIsAr5U31WhT4JZMjXM
-X-Proofpoint-ORIG-GUID: GGhv2ZkAGebl1sIsAr5U31WhT4JZMjXM
+X-Proofpoint-GUID: UlXPPRjn322eEPa-FFsy1A1XIlgj5ykV
+X-Proofpoint-ORIG-GUID: UlXPPRjn322eEPa-FFsy1A1XIlgj5ykV
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-06_10,2022-01-06_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- malwarescore=0 clxscore=1011 spamscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0 spamscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2201070001
 X-FB-Internal: deliver
 Precedence: bulk
@@ -148,99 +150,251 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 1/6/22 1:50 PM, Hao Luo wrote:
-> Bpffs is a pseudo file system that persists bpf objects. Previously
-> bpf objects can only be pinned in bpffs, this patchset extends pinning
-> to allow bpf objects to be pinned (or exposed) to other file systems.
+> Introduce a new API called bpf_watch_inode() to watch the destruction of
+> an inode and calls a registered callback function. With the help of this
+> new API, one can implement pinning bpf objects in a non-bpf file system
+> such as sockfs. The ability of pinning bpf objects in an external file
+> system has potential uses: for example, allow using bpf programs to
+> customize file behaviors, as we can see in the following patches.
 > 
-> In particular, this patchset allows pinning bpf objects in kernfs. This
-> creates a new file entry in the kernfs file system and the created file
-> is able to reference the bpf object. By doing so, bpf can be used to
-> customize the file's operations, such as seq_show.
+> Extending the pinning logic in bpf_obj_do_pin() to associate bpf objects
+> to inodes of another file system is relatively straightforward. The
+> challenge is how to notify the bpf object when the associated inode is
+> gone so that the object's refcnt can be decremented at that time. Bpffs
+> uses .free_inode() callback in super_operations to drop object's refcnt.
+> But not every file system implements .free_inode() and inserting bpf
+> notification to every target file system can be too instrusive.
 > 
-> As a concrete usecase of this feature, this patchset introduces a
-> simple new program type called 'bpf_view', which can be used to format
-> a seq file by a kernel object's state. By pinning a bpf_view program
-> into a cgroup directory, userspace is able to read the cgroup's state
-> from file in a format defined by the bpf program.
+> Thanks to fsnotify, there is a generic callback in VFS that can be
+> used to notify the events of an inode. bpf_watch_inode() implements on
+> top of that. bpf_watch_inode() allows the caller to pass in a callback
+> (for example, decrementing an object's refcnt), which will be called
+> when the inode is about to be freed. So typically, one can implement
+> exposing bpf objects to other file systems in the following steps:
 > 
-> Different from bpffs, kernfs doesn't have a callback when a kernfs node
-> is freed, which is problem if we allow the kernfs node to hold an extra
-> reference of the bpf object, because there is no chance to dec the
-> object's refcnt. Therefore the kernfs node created by pinning doesn't
-> hold reference of the bpf object. The lifetime of the kernfs node
-> depends on the lifetime of the bpf object. Rather than "pinning in
-> kernfs", it is "exposing to kernfs". We require the bpf object to be
-> pinned in bpffs first before it can be pinned in kernfs. When the
-> object is unpinned from bpffs, their kernfs nodes will be removed
-> automatically. This somehow treats a pinned bpf object as a persistent
-> "device".
-
-During our initial discussion for bpf_iter, we even proposed to
-put cat-able files under /proc/ system. But there are some concerns
-that /proc/ system holds stable APIs so people can rely on its format 
-etc. Not sure kernfs here has such requirement or not.
-
-I understand directly put files in respective target directories
-(e.g., cgroup) helps. But you can also create directory hierarchy
-in bpffs. This can make a bunch of cgroup-stat-dumping bpf programs
-better organized.
-
-Also regarding new program type bpf_view, I think we can reuse
-bpf_iter infrastructure. E.g., we already can customize bpf_iter
-for a particular map. We can certainly customize bpf_iter targeting
-a particular cgroup.
-
+>   1. extend bpf_obj_do_pin() to create a new entry in the target file
+>      system.
+>   2. call bpf_watch_inode() to register bpf object put operation at
+>      the destruction of the newly created inode.
 > 
-> We rely on fsnotify to monitor the inode events in bpffs. A new function
-> bpf_watch_inode() is introduced. It allows registering a callback
-> function at inode destruction. For the kernfs case, a callback that
-> removes kernfs node is registered at the destruction of bpffs inodes.
-> For other file systems such as sockfs, bpf_watch_inode() can monitor the
-> destruction of sockfs inodes and the created file entry can hold the bpf
-> object's reference. In this case, it is truly "pinning".
+> Of course, on a system with no fsnotify support, pinning bpf object in
+> non-bpf file system will not be available.
 > 
-> File operations other than seq_show can also be implemented using bpf.
-> For example, bpf may be of help for .poll and .mmap in kernfs.
-> 
-> Patch organization:
->   - patch 1/8 and 2/8 are preparations. 1/8 implements bpf_watch_inode();
->     2/8 records bpffs inode in bpf object.
->   - patch 3/8 and 4/8 implement generic logic for creating bpf backed
->     kernfs file.
->   - patch 5/8 and 6/8 add a new program type for formatting output.
->   - patch 7/8 implements cgroup seq_show operation using bpf.
->   - patch 8/8 adds selftest.
-> 
-> Hao Luo (8):
->    bpf: Support pinning in non-bpf file system.
->    bpf: Record back pointer to the inode in bpffs
->    bpf: Expose bpf object in kernfs
->    bpf: Support removing kernfs entries
->    bpf: Introduce a new program type bpf_view.
->    libbpf: Support of bpf_view prog type.
->    bpf: Add seq_show operation for bpf in cgroupfs
->    selftests/bpf: Test exposing bpf objects in kernfs
-> 
->   include/linux/bpf.h                           |   9 +-
->   include/uapi/linux/bpf.h                      |   2 +
->   kernel/bpf/Makefile                           |   2 +-
->   kernel/bpf/bpf_view.c                         | 190 ++++++++++++++
->   kernel/bpf/bpf_view.h                         |  25 ++
->   kernel/bpf/inode.c                            | 219 ++++++++++++++--
->   kernel/bpf/inode.h                            |  54 ++++
->   kernel/bpf/kernfs_node.c                      | 165 ++++++++++++
->   kernel/bpf/syscall.c                          |   3 +
->   kernel/bpf/verifier.c                         |   6 +
->   kernel/trace/bpf_trace.c                      |  12 +-
->   tools/include/uapi/linux/bpf.h                |   2 +
->   tools/lib/bpf/libbpf.c                        |  21 ++
->   .../selftests/bpf/prog_tests/pinning_kernfs.c | 245 ++++++++++++++++++
->   .../selftests/bpf/progs/pinning_kernfs.c      |  72 +++++
->   15 files changed, 995 insertions(+), 32 deletions(-)
->   create mode 100644 kernel/bpf/bpf_view.c
->   create mode 100644 kernel/bpf/bpf_view.h
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>   kernel/bpf/inode.c | 118 ++++++++++++++++++++++++++++++++++++++++-----
+>   kernel/bpf/inode.h |  33 +++++++++++++
+>   2 files changed, 140 insertions(+), 11 deletions(-)
 >   create mode 100644 kernel/bpf/inode.h
->   create mode 100644 kernel/bpf/kernfs_node.c
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_kernfs.c
->   create mode 100644 tools/testing/selftests/bpf/progs/pinning_kernfs.c
 > 
+> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> index 80da1db47c68..b4066dd986a8 100644
+> --- a/kernel/bpf/inode.c
+> +++ b/kernel/bpf/inode.c
+> @@ -16,18 +16,13 @@
+>   #include <linux/fs.h>
+>   #include <linux/fs_context.h>
+>   #include <linux/fs_parser.h>
+> +#include <linux/fsnotify_backend.h>
+>   #include <linux/kdev_t.h>
+>   #include <linux/filter.h>
+>   #include <linux/bpf.h>
+>   #include <linux/bpf_trace.h>
+>   #include "preload/bpf_preload.h"
+> -
+> -enum bpf_type {
+> -	BPF_TYPE_UNSPEC	= 0,
+> -	BPF_TYPE_PROG,
+> -	BPF_TYPE_MAP,
+> -	BPF_TYPE_LINK,
+> -};
+> +#include "inode.h"
+>   
+>   static void *bpf_any_get(void *raw, enum bpf_type type)
+>   {
+> @@ -67,6 +62,95 @@ static void bpf_any_put(void *raw, enum bpf_type type)
+>   	}
+>   }
+>   
+> +#ifdef CONFIG_FSNOTIFY
+> +/* Notification mechanism based on fsnotify, used in bpf to watch the
+> + * destruction of an inode. This inode could an inode in bpffs or any
+> + * other file system.
+> + */
+> +
+> +struct notify_mark {
+> +	struct fsnotify_mark fsn_mark;
+> +	const struct notify_ops *ops;
+> +	void *object;
+> +	enum bpf_type type;
+> +	void *priv;
+> +};
+> +
+> +struct fsnotify_group *bpf_notify_group;
+> +struct kmem_cache *bpf_notify_mark_cachep __read_mostly;
+> +
+> +/* Handler for any inode event. */
+> +int handle_inode_event(struct fsnotify_mark *mark, u32 mask,
+> +		       struct inode *inode, struct inode *dir,
+> +		       const struct qstr *file_name, u32 cookie)
+> +{
+> +	return 0;
+> +}
+> +
+> +/* Handler for freeing marks. This is called when the watched inode is being
+> + * freed.
+> + */
+> +static void notify_freeing_mark(struct fsnotify_mark *mark, struct fsnotify_group *group)
+> +{
+> +	struct notify_mark *b_mark;
+> +
+> +	b_mark = container_of(mark, struct notify_mark, fsn_mark);
+> +
+> +	if (b_mark->ops && b_mark->ops->free_inode)
+> +		b_mark->ops->free_inode(b_mark->object, b_mark->type, b_mark->priv);
+> +}
+> +
+> +static void notify_free_mark(struct fsnotify_mark *mark)
+> +{
+> +	struct notify_mark *b_mark;
+> +
+> +	b_mark = container_of(mark, struct notify_mark, fsn_mark);
+> +
+> +	kmem_cache_free(bpf_notify_mark_cachep, b_mark);
+> +}
+> +
+> +struct fsnotify_ops bpf_notify_ops = {
+> +	.handle_inode_event = handle_inode_event,
+> +	.freeing_mark = notify_freeing_mark,
+> +	.free_mark = notify_free_mark,
+> +};
+> +
+> +static int bpf_inode_type(const struct inode *inode, enum bpf_type *type);
+> +
+> +/* Watch the destruction of an inode and calls the callbacks in the given
+> + * notify_ops.
+> + */
+> +int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops, void *priv)
+> +{
+> +	enum bpf_type type;
+> +	struct notify_mark *b_mark;
+> +	int ret;
+> +
+> +	if (IS_ERR(bpf_notify_group) || unlikely(!bpf_notify_mark_cachep))
+> +		return -ENOMEM;
+> +
+> +	b_mark = kmem_cache_alloc(bpf_notify_mark_cachep, GFP_KERNEL_ACCOUNT);
+> +	if (unlikely(!b_mark))
+> +		return -ENOMEM;
+> +
+> +	fsnotify_init_mark(&b_mark->fsn_mark, bpf_notify_group);
+> +	b_mark->ops = ops;
+> +	b_mark->priv = priv;
+> +	b_mark->object = inode->i_private;
+> +	bpf_inode_type(inode, &type);
+> +	b_mark->type = type;
+> +
+> +	ret = fsnotify_add_inode_mark(&b_mark->fsn_mark, inode,
+> +				      /*allow_dups=*/1);
+> +
+> +	fsnotify_put_mark(&b_mark->fsn_mark); /* match get in fsnotify_init_mark */
+> +
+> +	return ret;
+> +}
+> +#endif
+> +
+> +/* bpffs */
+> +
+>   static void *bpf_fd_probe_obj(u32 ufd, enum bpf_type *type)
+>   {
+>   	void *raw;
+> @@ -435,11 +519,15 @@ static int bpf_iter_link_pin_kernel(struct dentry *parent,
+>   	return ret;
+>   }
+>   
+> +static bool dentry_is_bpf_dir(struct dentry *dentry)
+> +{
+> +	return d_inode(dentry)->i_op == &bpf_dir_iops;
+> +}
+> +
+>   static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+>   			  enum bpf_type type)
+>   {
+>   	struct dentry *dentry;
+> -	struct inode *dir;
+>   	struct path path;
+>   	umode_t mode;
+>   	int ret;
+> @@ -454,8 +542,7 @@ static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+>   	if (ret)
+>   		goto out;
+>   
+> -	dir = d_inode(path.dentry);
+> -	if (dir->i_op != &bpf_dir_iops) {
+> +	if (!dentry_is_bpf_dir(path.dentry)) {
+>   		ret = -EPERM;
+>   		goto out;
+>   	}
+> @@ -821,8 +908,17 @@ static int __init bpf_init(void)
+>   		return ret;
+>   
+>   	ret = register_filesystem(&bpf_fs_type);
+> -	if (ret)
+> +	if (ret) {
+>   		sysfs_remove_mount_point(fs_kobj, "bpf");
+> +		return ret;
+> +	}
+> +
+> +#ifdef CONFIG_FSNOTIFY
+> +	bpf_notify_mark_cachep = KMEM_CACHE(notify_mark, 0);
+> +	bpf_notify_group = fsnotify_alloc_group(&bpf_notify_ops);
+> +	if (IS_ERR(bpf_notify_group) || !bpf_notify_mark_cachep)
+> +		pr_warn("Failed to initialize bpf_notify system, user can not pin objects outside bpffs.\n");
+> +#endif
+>   
+>   	return ret;
+>   }
+> diff --git a/kernel/bpf/inode.h b/kernel/bpf/inode.h
+> new file mode 100644
+> index 000000000000..3f53a4542028
+> --- /dev/null
+> +++ b/kernel/bpf/inode.h
+> @@ -0,0 +1,33 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+
+GPL-2.0-only? This file is kernel only.
+
+> +/* Copyright (c) 2022 Google
+> + */
+> +#ifndef __BPF_INODE_H_
+> +#define __BPF_INODE_H_
+> +
+> +enum bpf_type {
+> +	BPF_TYPE_UNSPEC = 0,
+> +	BPF_TYPE_PROG,
+> +	BPF_TYPE_MAP,
+> +	BPF_TYPE_LINK,
+> +};
+> +
+> +struct notify_ops {
+> +	void (*free_inode)(void *object, enum bpf_type type, void *priv);
+> +};
+> +
+> +#ifdef CONFIG_FSNOTIFY
+> +/* Watch the destruction of an inode and calls the callbacks in the given
+> + * notify_ops.
+> + */
+> +int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops,
+> +		    void *priv);
+> +#else
+> +static inline
+> +int bpf_watch_inode(struct inode *inode, const struct notify_ops *ops,
+> +		    void *priv)
+> +{
+> +	return -EPERM;
+> +}
+> +#endif  // CONFIG_FSNOTIFY
+> +
+> +#endif  // __BPF_INODE_H_
+
+For the above two. C style comment is preferred.
