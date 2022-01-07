@@ -2,129 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E282487C53
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 19:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F92487C74
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 19:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbiAGSqR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 13:46:17 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:25314 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229984AbiAGSqQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 13:46:16 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 207HG2bK026222
-        for <bpf@vger.kernel.org>; Fri, 7 Jan 2022 10:46:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=+in/XWxMRgbnaKU4v8f41pK2KkWjs35ZQyCrR4xw1Zo=;
- b=MgKebzJshnvqS4flqHzrpYudIxRFCtAS3UwF8bFVq8zi1xG5/nsxjTswXlajGasHWJCy
- p4aWE/xVAqkKd3g+8CZhyu8R9lqYqsLuB7YnPue4ZNWrQk80zuq4Lb8TNTn27e97+HYZ
- 9A2flyp9oLPRvpNnez6poHzJDMbpKrzELPA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3de4wg7p0c-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 10:46:16 -0800
-Received: from twshared5363.25.prn2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 7 Jan 2022 10:46:15 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id CC0AF1662908; Fri,  7 Jan 2022 10:46:05 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>
-CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
-        <bpf@vger.kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: change bpf_prog_attach_xattr() to bpf_prog_attach_opts()
-Date:   Fri, 7 Jan 2022 10:46:04 -0800
-Message-ID: <20220107184604.3668544-3-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220107184604.3668544-1-christylee@fb.com>
-References: <20220107184604.3668544-1-christylee@fb.com>
+        id S230340AbiAGSv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 13:51:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbiAGSv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 13:51:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2128BC061574;
+        Fri,  7 Jan 2022 10:51:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B4F1B61F60;
+        Fri,  7 Jan 2022 18:51:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A78EC36AEF;
+        Fri,  7 Jan 2022 18:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641581518;
+        bh=VC42HmZeAm565z2JaDi81GUTXInUDnQH6O8dfuXC23M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GyTAHfCapdDkce4Cm4/fM1otNHhtKFegAjYpegu3hp9YKi7xS6LZ7J6f9NLUcMYYZ
+         /j6MkEcRtBgf19flOEotXxzjRN8VySn7KhaEfGTQgIw9bhm7eVxvk2nrx0ztblN9sd
+         LsHieHPVei3mvf4MOQ4GFQvkYC8O0sdDmOlxEP+7a0OKM2SHrie3XyzOKl+IozIfhX
+         jiobwzzE8HklEFzbGUlMltsc2tQNqAVyl+77DwwuAf88vNxv+6wwBRmwlGYnQv4Gjp
+         f24IErHplDPq8QwZw5B/g4eCMlLm/qPVv1V70nzLNZycmjfm6dJvzLcK6TkvLvBCVH
+         zbFFMptYZR+Eg==
+Received: by mail-yb1-f169.google.com with SMTP id c6so17257627ybk.3;
+        Fri, 07 Jan 2022 10:51:58 -0800 (PST)
+X-Gm-Message-State: AOAM530JRIroK52LzzpWrWijPpLC8lkmNyUK/q+MbTjf2x6JmzLdXeve
+        n+2Eiy0wfkUnxG4ZmOvF6MdnI7Qp6b5EBigRogM=
+X-Google-Smtp-Source: ABdhPJzxOhjqBFaCxuGyDDeN84E+5W6O4yaUYFeDhsxidy0v5B+nspI4jqOvF4gUGU2UUThlfu/kphBWMg1fQMBZvVI=
+X-Received: by 2002:a25:8b85:: with SMTP id j5mr74750303ybl.558.1641581517327;
+ Fri, 07 Jan 2022 10:51:57 -0800 (PST)
 MIME-Version: 1.0
+References: <20220107152620.192327-1-mauricio@kinvolk.io> <20220107152620.192327-2-mauricio@kinvolk.io>
+In-Reply-To: <20220107152620.192327-2-mauricio@kinvolk.io>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 7 Jan 2022 10:51:46 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5rmuGqN5LYzjQ6fTv0nsyGeMLqv8-4RsSZU-x62Vr-UQ@mail.gmail.com>
+Message-ID: <CAPhsuW5rmuGqN5LYzjQ6fTv0nsyGeMLqv8-4RsSZU-x62Vr-UQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpftool: Fix error check when calling hashmap__new()
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: XzsgbCDmyr3-YbhWEAJVN9Ahgo7Z5yMW
-X-Proofpoint-ORIG-GUID: XzsgbCDmyr3-YbhWEAJVN9Ahgo7Z5yMW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-07_08,2022-01-07_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0 phishscore=0
- spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201070118
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_prog_attach_opts() is being deprecated and renamed to
-bpf_prog_attach_xattr(). Change all selftests/bpf's uage to the new name.
+On Fri, Jan 7, 2022 at 7:26 AM Mauricio V=C3=A1squez <mauricio@kinvolk.io> =
+wrote:
+>
+> hashmap__new() encodes errors with ERR_PTR(), hence it's not valid to
+> check the returned pointer against NULL and IS_ERR() has to be used
+> instead.
+>
+> libbpf_get_error() can't be used in this case as hashmap__new() is not
+> part of the public libbpf API and it'll continue using ERR_PTR() after
+> libbpf 1.0.
+>
+> Fixes: 8f184732b60b ("bpftool: Switch to libbpf's hashmap for pinned path=
+s of BPF objects")
+> Fixes: 2828d0d75b73 ("bpftool: Switch to libbpf's hashmap for programs/ma=
+ps in BTF listing")
+> Fixes: d6699f8e0f83 ("bpftool: Switch to libbpf's hashmap for PIDs/names =
+references")
+>
+> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
 
-Signed-off-by: Christy Lee <christylee@fb.com>
----
- .../selftests/bpf/prog_tests/cgroup_attach_multi.c   | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c=
- b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-index d3e8f729c623..38b3c47293da 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
-@@ -194,14 +194,14 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	attach_opts.flags =3D BPF_F_ALLOW_OVERRIDE | BPF_F_REPLACE;
- 	attach_opts.replace_prog_fd =3D allow_prog[0];
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_override", "unexpected success\n"))
- 		goto err;
- 	CHECK_FAIL(errno !=3D EINVAL);
-=20
- 	attach_opts.flags =3D BPF_F_REPLACE;
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_no_multi", "unexpected success\n"))
- 		goto err;
-@@ -209,7 +209,7 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	attach_opts.flags =3D BPF_F_ALLOW_MULTI | BPF_F_REPLACE;
- 	attach_opts.replace_prog_fd =3D -1;
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_bad_fd", "unexpected success\n"))
- 		goto err;
-@@ -217,7 +217,7 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	/* replacing a program that is not attached to cgroup should fail  */
- 	attach_opts.replace_prog_fd =3D allow_prog[3];
--	if (CHECK(!bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(!bpf_prog_attach_opts(allow_prog[6], cg1,
- 					 BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "fail_prog_replace_no_ent", "unexpected success\n"))
- 		goto err;
-@@ -225,14 +225,14 @@ void serial_test_cgroup_attach_multi(void)
-=20
- 	/* replace 1st from the top program */
- 	attach_opts.replace_prog_fd =3D allow_prog[0];
--	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
- 					BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "prog_replace", "errno=3D%d\n", errno))
- 		goto err;
-=20
- 	/* replace program with itself */
- 	attach_opts.replace_prog_fd =3D allow_prog[6];
--	if (CHECK(bpf_prog_attach_xattr(allow_prog[6], cg1,
-+	if (CHECK(bpf_prog_attach_opts(allow_prog[6], cg1,
- 					BPF_CGROUP_INET_EGRESS, &attach_opts),
- 		  "prog_replace", "errno=3D%d\n", errno))
- 		goto err;
---=20
-2.30.2
-
+Acked-by: Song Liu <songliubraving@fb.com>
