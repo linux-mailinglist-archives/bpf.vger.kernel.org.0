@@ -2,169 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B25487DCA
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 21:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B31487DCF
+	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 21:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbiAGUe5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 15:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42890 "EHLO
+        id S229460AbiAGUoE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 15:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbiAGUe5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 7 Jan 2022 15:34:57 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3DCC061574
-        for <bpf@vger.kernel.org>; Fri,  7 Jan 2022 12:34:57 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id q5so8570053ioj.7
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 12:34:57 -0800 (PST)
+        with ESMTP id S229452AbiAGUoD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 7 Jan 2022 15:44:03 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66EAC061574
+        for <bpf@vger.kernel.org>; Fri,  7 Jan 2022 12:44:03 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id q3so6600838qvc.7
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 12:44:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=bwejnykmxKgy1cX4GmV23flEB4t+ufvY0ZcKW/b87o8=;
-        b=qDdsn7LLMNs6kOuWBf5y+PIUXtMUWnR8VxJ0trmFBLHIzvrgm1g8iIlhoPUGPa4Quz
-         zLfyhQSIeUvvoXkLFswTyzdOxWUKrt0IY0r0okMdsoV4yyqxkiOGXyFayl0Q+K6s6Hvv
-         X4TYdCNP/Iod1bCE+fEdxGCrYGXpwJjnfmKqoy6g5gRu/ZSXYUBDwSMXLdg380dWC4rF
-         yCtvurFOueRGLnIBMoeqBFX1EzfRAZaR/VLkjnaUxT73ZsI6xaeQGLUubh4Df+9qtSmH
-         E2frLEP284LDA0ZshObElpxqArSbl4vLS6aqLRsu/w5TWFUHtm7AEnzKf5g0RertNOV8
-         eteA==
+        bh=F/duy4ok7LCjAYvVEiaWHn9szJ5yPHasYdjK3KcLrTQ=;
+        b=BMu6kCV5XsR8WGYvzzLNYNEoUPoi3osmivmn2ZS0ZENDXqUm7upe2inALfYYQZytJ6
+         FppZ0HrfymDrS3dOQ8ujndw/01C93RM9Iun6gtDJ+ycAPkHgfYuVdJRdixA+6txDbOF6
+         bLLD5BAIxVNDd86eLfcQhGDVUkElLKeNL77VV5usaxaJTHgJ3KC3QrRuqJh6zlC81KQB
+         p+ZpOmJ4Hi67MZ1SMtUj506fK+HgfdMzi2d4I5uVTqoOESAWbo+Hs2Y9hypZTZAJAtPR
+         XFo6sjYfOyVFbPgxba+CLQgWqLh3W6rrc6bFHXmR34VZnEK9LRG4ho5P84G6mLk1UeWy
+         iDhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bwejnykmxKgy1cX4GmV23flEB4t+ufvY0ZcKW/b87o8=;
-        b=GoisOMXfmybL12nKwSC3UB3PPeNztxqb+AAb0Wp/uL7WwEq0P8LaiHPVLZm8HocK1g
-         C79CbJzze7z8CZdSKUr3LkRFUtrxXUCGiCOtolhgLw0A2prNRbtdCCYIck+v5U91UjOy
-         p79dogY8LX2AzSnC/a0FC/b8BpA4vSB7BH/QKIURW6f8AZuV7R5Fd6c2HPBlHj7GfHUB
-         8+msbtc2a8GEKIyar6+xlQb2Bp8IUFL6rro2flyf/m5YJUod/zgl4rIFj470zFLgEsul
-         727v8bMKrhHIg7YYuagcozD4nBi8PFHxJ/ReqvGrsBS6ZNusorrwwEKA/yiRLpK9BbSp
-         Ph8A==
-X-Gm-Message-State: AOAM5313r1qKjzVS/u8labIE/R76I3YHbZgc+a6lvuuydZ5pHL8xo2DM
-        +Pkk33PiF7M7i7B4e59qWDBj54dxVuXWQIl65SI=
-X-Google-Smtp-Source: ABdhPJx1v1VUaB0CTdw4DlMft5AD5cjuLOq+tk+oi1b8rM5nkuAheL0gdcgVgzKfpm+1l42APTrlgsbF5sp/jH7Mp0U=
-X-Received: by 2002:a02:ce8f:: with SMTP id y15mr26011838jaq.234.1641587696650;
- Fri, 07 Jan 2022 12:34:56 -0800 (PST)
+        bh=F/duy4ok7LCjAYvVEiaWHn9szJ5yPHasYdjK3KcLrTQ=;
+        b=a5OAVjF2FVNUStHezroY9szpKFydRitcb/8IMVmkD1WDZbhwaj2E3Wic8FS3BNbgp1
+         t7XTt3PkDUH3zVREZbV2KOXC4+leqVkpbp+4yqfou1R4TXgEydnkCldaB2x3n4qE0M8N
+         n2MaIexak63QsejmZpKp5oMdCajmBOyq9ZGtdfDrwkdZaeg8y+WfehOvA8YY+e289r5t
+         J4wEdCEntKWcPR/+V7Uha//jF3SCOh9vV0siXXuS/7QlIAoleCUPfybywVy6MDJGH3KV
+         PxhmIGasa64kQLT6aKW/7ZYsCA4S/w1LD8FIwDPV0snsP5s7uFyR41TLk5lNs1Ww7DLk
+         bFYQ==
+X-Gm-Message-State: AOAM531p5X/cPITRcbsp/Ji+Ozbx67+pBaCVoMnEsk+JewDiOtgKx06i
+        KF9mgPS53TegHDPsfF8N7P1OxHTrUrkjDXi8EWXK6A==
+X-Google-Smtp-Source: ABdhPJy65GT2V23oE/Gp3y6/xg+XBl0ovpdWHX6EpD3NLwAOI5Ht3TN6RgqDLXX8CVu/g2yOz1CrVcLkBlnqhunhtfg=
+X-Received: by 2002:a05:6214:500a:: with SMTP id jo10mr59522372qvb.17.1641588242422;
+ Fri, 07 Jan 2022 12:44:02 -0800 (PST)
 MIME-Version: 1.0
-References: <TYCPR01MB593665A2C1E6C39169D10377F54D9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYCPR01MB593665A2C1E6C39169D10377F54D9@TYCPR01MB5936.jpnprd01.prod.outlook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 7 Jan 2022 12:34:45 -0800
-Message-ID: <CAEf4BzYWueWzBzVfW62augyDmLTN0ZW=mtE0xPFX7UrtG2BMPw@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: Fix the incorrect register read for syscalls
- on x86_64
-To:     Kenta Tada <Kenta.Tada@sony.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220106215059.2308931-1-haoluo@google.com> <86203252-0c97-8085-f56f-ea8fe7f0b9dd@fb.com>
+In-Reply-To: <86203252-0c97-8085-f56f-ea8fe7f0b9dd@fb.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 7 Jan 2022 12:43:51 -0800
+Message-ID: <CA+khW7jiDgdFz3Wty0=ajkaiLpAyYu8-9jnZXqT2sF45Y4rb9Q@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 6, 2022 at 6:39 PM <Kenta.Tada@sony.com> wrote:
+On Thu, Jan 6, 2022 at 4:30 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> Currently, rcx is read as the fourth parameter of syscall on x86_64.
-> But x86_64 Linux System Call convention uses r10 actually.
-> This commit adds the wrapper for users who want to access to
-> syscall params to analyze the user space.
 >
-> Changelog:
-> ----------
-> v1 -> v2:
-> - Rebase to current bpf-next
-> https://lore.kernel.org/bpf/20211222213924.1869758-1-andrii@kernel.org/
 >
-> Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
-> ---
->  tools/lib/bpf/bpf_tracing.h | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+> On 1/6/22 1:50 PM, Hao Luo wrote:
+> > Bpffs is a pseudo file system that persists bpf objects. Previously
+> > bpf objects can only be pinned in bpffs, this patchset extends pinning
+> > to allow bpf objects to be pinned (or exposed) to other file systems.
+> >
+> > In particular, this patchset allows pinning bpf objects in kernfs. This
+> > creates a new file entry in the kernfs file system and the created file
+> > is able to reference the bpf object. By doing so, bpf can be used to
+> > customize the file's operations, such as seq_show.
+> >
+> > As a concrete usecase of this feature, this patchset introduces a
+> > simple new program type called 'bpf_view', which can be used to format
+> > a seq file by a kernel object's state. By pinning a bpf_view program
+> > into a cgroup directory, userspace is able to read the cgroup's state
+> > from file in a format defined by the bpf program.
+> >
+> > Different from bpffs, kernfs doesn't have a callback when a kernfs node
+> > is freed, which is problem if we allow the kernfs node to hold an extra
+> > reference of the bpf object, because there is no chance to dec the
+> > object's refcnt. Therefore the kernfs node created by pinning doesn't
+> > hold reference of the bpf object. The lifetime of the kernfs node
+> > depends on the lifetime of the bpf object. Rather than "pinning in
+> > kernfs", it is "exposing to kernfs". We require the bpf object to be
+> > pinned in bpffs first before it can be pinned in kernfs. When the
+> > object is unpinned from bpffs, their kernfs nodes will be removed
+> > automatically. This somehow treats a pinned bpf object as a persistent
+> > "device".
+
+Thanks Yonghong for the feedback.
+
 >
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 90f56b0f585f..4c3df8c122a4 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -70,6 +70,7 @@
->  #define __PT_PARM2_REG si
->  #define __PT_PARM3_REG dx
->  #define __PT_PARM4_REG cx
-> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
->  #define __PT_PARM5_REG r8
->  #define __PT_RET_REG sp
->  #define __PT_FP_REG bp
-> @@ -99,6 +100,7 @@
->  #define __PT_PARM2_REG rsi
->  #define __PT_PARM3_REG rdx
->  #define __PT_PARM4_REG rcx
-> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
->  #define __PT_PARM5_REG r8
->  #define __PT_RET_REG rsp
->  #define __PT_FP_REG rbp
-> @@ -226,6 +228,7 @@ struct pt_regs;
->  #define PT_REGS_PARM2(x) (__PT_REGS_CAST(x)->__PT_PARM2_REG)
->  #define PT_REGS_PARM3(x) (__PT_REGS_CAST(x)->__PT_PARM3_REG)
->  #define PT_REGS_PARM4(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG)
-> +#define PT_REGS_PARM4_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
-
-Not all architectures define __PT_PARM4_REG_SYSCALL, but you are
-assuming it does. I think you mixed up where to put these definitions,
-see below.
-
->  #define PT_REGS_PARM5(x) (__PT_REGS_CAST(x)->__PT_PARM5_REG)
->  #define PT_REGS_RET(x) (__PT_REGS_CAST(x)->__PT_RET_REG)
->  #define PT_REGS_FP(x) (__PT_REGS_CAST(x)->__PT_FP_REG)
-> @@ -237,6 +240,7 @@ struct pt_regs;
->  #define PT_REGS_PARM2_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM2_REG)
->  #define PT_REGS_PARM3_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM3_REG)
->  #define PT_REGS_PARM4_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG)
-> +#define PT_REGS_PARM4_CORE_SYSCALL(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG_SYSCALL)
-
-Do we need CORE variants for _SYSCALL macro? I guess realistic
-selftests would show that.
-
->  #define PT_REGS_PARM5_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM5_REG)
->  #define PT_REGS_RET_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_RET_REG)
->  #define PT_REGS_FP_CORE(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_FP_REG)
-> @@ -292,6 +296,22 @@ struct pt_regs;
+> During our initial discussion for bpf_iter, we even proposed to
+> put cat-able files under /proc/ system. But there are some concerns
+> that /proc/ system holds stable APIs so people can rely on its format
+> etc. Not sure kernfs here has such requirement or not.
 >
->  #endif /* defined(bpf_target_defined) */
+> I understand directly put files in respective target directories
+> (e.g., cgroup) helps. But you can also create directory hierarchy
+> in bpffs. This can make a bunch of cgroup-stat-dumping bpf programs
+> better organized.
 >
-> +#define PT_REGS_PARM1_SYSCALL(x) PT_REGS_PARM1(x)
-> +#define PT_REGS_PARM2_SYSCALL(x) PT_REGS_PARM2(x)
-> +#define PT_REGS_PARM3_SYSCALL(x) PT_REGS_PARM3(x)
-> +#ifndef PT_REGS_PARM4_SYSCALL
-> +#define PT_REGS_PARM4_SYSCALL(x) PT_REGS_PARM4(x)
-> +#endif
-> +#define PT_REGS_PARM5_SYSCALL(x) PT_REGS_PARM5(x)
-> +
-> +#define PT_REGS_PARM1_CORE_SYSCALL(x) PT_REGS_PARM1_CORE(x)
-> +#define PT_REGS_PARM2_CORE_SYSCALL(x) PT_REGS_PARM2_CORE(x)
-> +#define PT_REGS_PARM3_CORE_SYSCALL(x) PT_REGS_PARM3_CORE(x)
-> +#ifndef PT_REGS_PARM4_CORE_SYSCALL
-> +#define PT_REGS_PARM4_CORE_SYSCALL(x) PT_REGS_PARM4_CORE(x)
-> +#endif
-> +#define PT_REGS_PARM5_CORE_SYSCALL(x) PT_REGS_PARM5_CORE(x)
-> +
 
-All this should be inside the `#if defined(bpf_target_defined)`
-section, not after it. And then for PT_REGS_PARM4_SYSCALL you can just
-do this:
+I thought about this. I think the problem is that you need to
+simultaneously manage two hierarchies now. You may have
+synchronization problems in bpffs to deal with. For example, what if
+the target cgroup is being removed while there is an on-going 'cat' on
+the bpf program. I haven't given much thought in this direction. This
+patchset doesn't deal with this problem, because kernfs has already
+handled these synchronizations.
 
-#ifdef __PT_PARM4_REG_SYSCALL
-#define PT_REGS_PARM4_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
-#else /* __PT_PARM4_REG_SYSCALL */
-#define PT_REGS_PARM4_SYSCALL(x) PT_REGS_PARM4(x)
-#endif
+> Also regarding new program type bpf_view, I think we can reuse
+> bpf_iter infrastructure. E.g., we already can customize bpf_iter
+> for a particular map. We can certainly customize bpf_iter targeting
+> a particular cgroup.
+>
 
+Right, that's what I was thinking. During the bpf office hour when I
+initially proposed the idea, Alexei suggested creating a new program
+type instead of reusing bpf_iter. The reason I remember was that iter
+is for iterating a set of objects. Even for dumping a particular map,
+it is iterating the entries in a map. While what I wanted to achieve
+here is printing for a particular cgroup, not iterating something.
+Maybe, we should reuse the infrastructure of bpf_iter (attach, target
+registration, etc) but having a different prog type? I do copy-pasted
+many code from bpf_iter for bpf_view. I haven't put too much thought
+there as I would like to get feedbacks on the idea in general in this
+first version of RFC.
 
-And I guess for completeness we need to define __BPF_TARGET_MISSING
-variants if !defined(bpf_traget_defined), see how it's done for all
-current PT_REGS_xxx
-
->  #ifndef ___bpf_concat
->  #define ___bpf_concat(a, b) a ## b
->  #endif
-> --
-> 2.32.0
+> >
+> > We rely on fsnotify to monitor the inode events in bpffs. A new function
+> > bpf_watch_inode() is introduced. It allows registering a callback
+> > function at inode destruction. For the kernfs case, a callback that
+> > removes kernfs node is registered at the destruction of bpffs inodes.
+> > For other file systems such as sockfs, bpf_watch_inode() can monitor the
+> > destruction of sockfs inodes and the created file entry can hold the bpf
+> > object's reference. In this case, it is truly "pinning".
+> >
+> > File operations other than seq_show can also be implemented using bpf.
+> > For example, bpf may be of help for .poll and .mmap in kernfs.
+> >
+> > Patch organization:
+> >   - patch 1/8 and 2/8 are preparations. 1/8 implements bpf_watch_inode();
+> >     2/8 records bpffs inode in bpf object.
+> >   - patch 3/8 and 4/8 implement generic logic for creating bpf backed
+> >     kernfs file.
+> >   - patch 5/8 and 6/8 add a new program type for formatting output.
+> >   - patch 7/8 implements cgroup seq_show operation using bpf.
+> >   - patch 8/8 adds selftest.
+> >
+> > Hao Luo (8):
+> >    bpf: Support pinning in non-bpf file system.
+> >    bpf: Record back pointer to the inode in bpffs
+> >    bpf: Expose bpf object in kernfs
+> >    bpf: Support removing kernfs entries
+> >    bpf: Introduce a new program type bpf_view.
+> >    libbpf: Support of bpf_view prog type.
+> >    bpf: Add seq_show operation for bpf in cgroupfs
+> >    selftests/bpf: Test exposing bpf objects in kernfs
+> >
+> >   include/linux/bpf.h                           |   9 +-
+> >   include/uapi/linux/bpf.h                      |   2 +
+> >   kernel/bpf/Makefile                           |   2 +-
+> >   kernel/bpf/bpf_view.c                         | 190 ++++++++++++++
+> >   kernel/bpf/bpf_view.h                         |  25 ++
+> >   kernel/bpf/inode.c                            | 219 ++++++++++++++--
+> >   kernel/bpf/inode.h                            |  54 ++++
+> >   kernel/bpf/kernfs_node.c                      | 165 ++++++++++++
+> >   kernel/bpf/syscall.c                          |   3 +
+> >   kernel/bpf/verifier.c                         |   6 +
+> >   kernel/trace/bpf_trace.c                      |  12 +-
+> >   tools/include/uapi/linux/bpf.h                |   2 +
+> >   tools/lib/bpf/libbpf.c                        |  21 ++
+> >   .../selftests/bpf/prog_tests/pinning_kernfs.c | 245 ++++++++++++++++++
+> >   .../selftests/bpf/progs/pinning_kernfs.c      |  72 +++++
+> >   15 files changed, 995 insertions(+), 32 deletions(-)
+> >   create mode 100644 kernel/bpf/bpf_view.c
+> >   create mode 100644 kernel/bpf/bpf_view.h
+> >   create mode 100644 kernel/bpf/inode.h
+> >   create mode 100644 kernel/bpf/kernfs_node.c
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_kernfs.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/pinning_kernfs.c
+> >
