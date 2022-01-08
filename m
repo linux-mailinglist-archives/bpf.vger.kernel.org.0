@@ -2,126 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228F8487ECB
-	for <lists+bpf@lfdr.de>; Fri,  7 Jan 2022 23:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F07F487FFA
+	for <lists+bpf@lfdr.de>; Sat,  8 Jan 2022 01:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbiAGWL2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 7 Jan 2022 17:11:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:21614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230442AbiAGWL0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 17:11:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641593486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=omVKaNcy5fAR+P8CusXzfyn6nmrKkdfnGWZtZt9VL2k=;
-        b=XzeR2MZ+9Za7nQgyI6fp4i2OP7VQjhVz5plaIwpRqmVOpce/spkj9L0Mj8Vy+wAPvxPJsD
-        mYXPGuecv8QMW9YbuTI2lRiPKt6QEPc8eHjDr/p/heLbhoJqpXTX9qicE3JBvHx+GRG93e
-        Vd/7SNMNUmtyiNKLValIzK+BCHnBxWM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-599-az3ShygDNEeW7Yl0JSLPgQ-1; Fri, 07 Jan 2022 17:11:22 -0500
-X-MC-Unique: az3ShygDNEeW7Yl0JSLPgQ-1
-Received: by mail-ed1-f72.google.com with SMTP id h11-20020a05640250cb00b003fa024f87c2so5772117edb.4
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 14:11:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=omVKaNcy5fAR+P8CusXzfyn6nmrKkdfnGWZtZt9VL2k=;
-        b=o4CL4thJOlWAWMk6bNYAVu7NoFGDRxINB0pU3QTb3N+w4rD7W6BV0rijK77/e5eVLE
-         i18ImGxemYJCfpaoVRZPb6Lq6+hoG5mIAXe+s+6O9sr18MOnt8RqfJZ2EkYtXP1WvMFE
-         2Qlu9qQYi2ClZdCnt5m3lBzRyGONzetIVfsJN8jR/syrsrg9lwKW1vYpjTcCxD9D4xe2
-         v3M8oqDB7fi2eofoKAdjXbKAzUlv1lrTHHUQFJ2eonOAldvf3jtCxIoiEAR1uj7r5xtd
-         3CGxoVyjbyUVkJUsDdrQJ79NdLPYaLQzJiqWYQgLZkLMqDJxFcuqjFOki0q53htCDfbF
-         9ocw==
-X-Gm-Message-State: AOAM533nsKpbkotFDe8FBw4kkeN1bttj+hF1qV5UyaFBHVl0OGjXUXPb
-        8X4P3K5bvdx6yM6pW3qUsCih1uoiaACGxxCOqHyVPJezXz+p6EtubIdV5xFC7AwoJKLbxMvv/zT
-        lAT4YoqXSc2SF
-X-Received: by 2002:a05:6402:154:: with SMTP id s20mr65522104edu.148.1641593481125;
-        Fri, 07 Jan 2022 14:11:21 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzKzpJCWoqaZSxUYfC+gJ25uxor1OuK6byXmPFu4l+4AGwMSieKYCB5o2yckQxwbmLbVn0IGg==
-X-Received: by 2002:a05:6402:154:: with SMTP id s20mr65521979edu.148.1641593478704;
-        Fri, 07 Jan 2022 14:11:18 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id g7sm1744790ejt.29.2022.01.07.14.11.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Jan 2022 14:11:17 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 4F592181F2E; Fri,  7 Jan 2022 23:11:17 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf v2 3/3] bpf/selftests: Add check for updating XDP bpf_link with wrong program type
-Date:   Fri,  7 Jan 2022 23:11:15 +0100
-Message-Id: <20220107221115.326171-3-toke@redhat.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220107221115.326171-1-toke@redhat.com>
-References: <20220107221115.326171-1-toke@redhat.com>
+        id S231253AbiAHAmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 7 Jan 2022 19:42:53 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57854 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232027AbiAHAmx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 7 Jan 2022 19:42:53 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 207M3nJ7010907
+        for <bpf@vger.kernel.org>; Fri, 7 Jan 2022 16:42:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=rlKho+LPhv0GQiqilnjROOzkBgmnQv75HqXP78g6sAo=;
+ b=IRalkHW1/W9d9vLpeHns9IKMJmccN94oBk0/eZtlX27gulJk2lV0sby++G2SI5rjihgX
+ AZdxiFBUonb8+sfxyzBleEHdT6DVd5/XUjMxoYV+SvZj7M9YWiT7Ny2cXLO/w4OpiLhG
+ ifPfiDlqjHTc9x39qPyX0QSDoeSX/quUmv0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3de4xg1k89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 16:42:52 -0800
+Received: from twshared3399.25.prn2.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 7 Jan 2022 16:42:51 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id 7896F1694BC3; Fri,  7 Jan 2022 16:42:39 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <andrii@kernel.org>, <acme@kernel.org>
+CC:     <christyc.y.lee@gmail.com>, <bpf@vger.kernel.org>,
+        <kernel-team@fb.com>, <linux-perf-users@vger.kernel.org>,
+        Christy Lee <christylee@fb.com>
+Subject: [PATCH bpf-next v2 0/5] libbpf 1.0: deprecate bpf_map__def() API
+Date:   Fri, 7 Jan 2022 16:42:13 -0800
+Message-ID: <20220108004218.355761-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 9NKS3bgpRRDfP9xY70gFgCWiSHoHVWlk
+X-Proofpoint-ORIG-GUID: 9NKS3bgpRRDfP9xY70gFgCWiSHoHVWlk
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-07_10,2022-01-07_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 mlxscore=0 spamscore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201080001
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a check to the xdp_link selftest that the kernel rejects replacing an
-XDP program with a different program type on link update.
+bpf_map__def() is rarely used and non-extensible. bpf_map_def fields
+can be accessed with appropriate map getters and setters instead.
+Deprecate bpf_map__def() API and replace use cases with getters and
+setters.
 
-v2:
-- Split this out into its own patch.
+Changelog:
+----------
+v1 -> v2:
+https://lore.kernel.org/all/20220105230057.853163-1-christylee@fb.com/
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/testing/selftests/bpf/prog_tests/xdp_link.c | 5 +++++
- tools/testing/selftests/bpf/progs/test_xdp_link.c | 6 ++++++
- 2 files changed, 11 insertions(+)
+* Fixed commit messages to match commit titles
+* Fixed indentation
+* Removed bpf_map__def() usage that was missed in v1
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_link.c b/tools/testing/selftests/bpf/prog_tests/xdp_link.c
-index eec0bf83546b..b2b357f8c74c 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_link.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_link.c
-@@ -127,6 +127,11 @@ void serial_test_xdp_link(void)
- 	ASSERT_EQ(link_info.prog_id, id1, "link_prog_id");
- 	ASSERT_EQ(link_info.xdp.ifindex, IFINDEX_LO, "link_ifindex");
- 
-+	/* updating program under active BPF link with different type fails */
-+	err = bpf_link__update_program(link, skel1->progs.tc_handler);
-+	if (!ASSERT_ERR(err, "link_upd_invalid"))
-+		goto cleanup;
-+
- 	err = bpf_link__detach(link);
- 	if (!ASSERT_OK(err, "link_detach"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_link.c b/tools/testing/selftests/bpf/progs/test_xdp_link.c
-index ee7d6ac0f615..64ff32eaae92 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_link.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_link.c
-@@ -10,3 +10,9 @@ int xdp_handler(struct xdp_md *xdp)
- {
- 	return 0;
- }
-+
-+SEC("tc")
-+int tc_handler(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
--- 
-2.34.1
+Christy Lee (5):
+  samples/bpf: stop using bpf_map__def() API
+  bpftool: stop using bpf_map__def() API
+  perf: stop using bpf_map__def() API
+  selftests/bpf: stop using bpf_map__def() API
+  libbpf: deprecate bpf_map__def() API
 
+ samples/bpf/xdp_rxq_info_user.c               | 10 +--
+ tools/bpf/bpftool/gen.c                       | 12 ++--
+ tools/bpf/bpftool/struct_ops.c                |  4 +-
+ tools/lib/bpf/libbpf.h                        |  3 +-
+ tools/perf/util/bpf-loader.c                  | 64 ++++++++-----------
+ tools/perf/util/bpf_map.c                     | 28 ++++----
+ .../selftests/bpf/prog_tests/flow_dissector.c |  2 +-
+ .../selftests/bpf/prog_tests/global_data.c    |  2 +-
+ .../bpf/prog_tests/global_data_init.c         |  2 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 12 ++--
+ .../selftests/bpf/prog_tests/tailcalls.c      | 36 +++++------
+ 11 files changed, 81 insertions(+), 94 deletions(-)
+
+--
+2.30.2
