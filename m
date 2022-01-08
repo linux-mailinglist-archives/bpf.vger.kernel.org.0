@@ -2,120 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF47488164
-	for <lists+bpf@lfdr.de>; Sat,  8 Jan 2022 06:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C63648826E
+	for <lists+bpf@lfdr.de>; Sat,  8 Jan 2022 09:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbiAHFLa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Jan 2022 00:11:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
+        id S231304AbiAHIkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Jan 2022 03:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiAHFLa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Jan 2022 00:11:30 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E4BC06173E
-        for <bpf@vger.kernel.org>; Fri,  7 Jan 2022 21:11:29 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gp5so6986406pjb.0
-        for <bpf@vger.kernel.org>; Fri, 07 Jan 2022 21:11:29 -0800 (PST)
+        with ESMTP id S229613AbiAHIkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 8 Jan 2022 03:40:19 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E403AC061574;
+        Sat,  8 Jan 2022 00:40:18 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso9100396pjb.1;
+        Sat, 08 Jan 2022 00:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=openresty-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=y9WGOS+NmTpwsfWAaNLR4kcuvqh/6mnBxgOTqljYllg=;
-        b=mn2CR4XIf7DQVYu0fqTfWTYBxNu65IiPfwv1HlAf/ALTTJ3+P5rVhrRHdYxevNiaEg
-         eWlsdKRIF5v0DxpsZMlAIEpHb0S/agb+1TdIR9v0sQ8oqq5LsWggYlFx+Y6NuqxSxSil
-         6aHqXsfbOBznPGcdmOkoo9ZjdtpLRAdUfasPQUBIutE0s7VoSHZ6ZJFP6HFj1jBP4Q+H
-         8cS6VvNs64y+ERwLuQ8uCSZn+0CjY9EBR5c4CjGjELaeGf+ZnVnMRijop4DNpXUvUyD5
-         iEWxkQeQvZ1i6aW/7eGjVrpqJVYX2m9ttGiovsLfxWH+b5lEYilpvnRalcdBEJ8I5QHd
-         CiYQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9zEwDmNMe5JERLrwlCRlU/+ORPGYL9TSSP35Lx3dN30=;
+        b=CuClFgSfhd2sHttE34W8oabBRGxMtRezBYjAnGdE1RsZ83TYi8ViK3Xmg1auClddbx
+         GwH8+CYdXARMc5nifS/9sklBitiGXcSlRdnrqDF2MuITggX4gShDw9xqSds5Vpz7jCdI
+         obMtp+Es1uBXHuSFLk6cpS/sZ6r/fkDEt9tU/Jefu5BOy6FA9Xpo/UoGwAe8GN9aT+jK
+         1ajH/DIXh2JtuFylbH9pgGuAyChKpvsSDU5ZJ/l+mvjagsxC1W4UekWKCzX8MoJQ7FJT
+         8KTmDJSHASgXEZU6rzCV9rFAKcCM0kdexhEdPXqjC5bBR6WVtnaOtp1Qbp+chGejhIkn
+         EijQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=y9WGOS+NmTpwsfWAaNLR4kcuvqh/6mnBxgOTqljYllg=;
-        b=ynmmO+y3uBlJbcIXFrge3nt+TZrX8W/BbHWOeR2W6eniD2umlinfW5F6gOQZh6eEoA
-         l9Z9WM0E8LDiYh99tu2RR9K0lm207p/ncyDzduL7RukZo0C49ByfSDOj/PAIcRfdG6IW
-         YUNIxvn9C+hu4SsubNHJCsam8qv/XirtI6OU8sI+jT4rQb2mjpUXbRX7CHQlWdVO8m22
-         MOHvlAK6GoQXJfdcP2Av4NCWQRD8hxnKitTEkfNTEUuzxCSHuNh9lkJmTrAWMqw1Zaoe
-         ClYVm8p0yyDEPYjZTzVEvOYK3NVLvIbbUhEQigCEjWlfdWoahzvN9qWJCT77w4P9s0vS
-         3oKw==
-X-Gm-Message-State: AOAM532rxhL+svkDpsg9lo86qGo3T8SjVfQ+OAN99z7drfBKN60ie++q
-        iisHuKYJOVt6uCnFwyJyudy2PQ==
-X-Google-Smtp-Source: ABdhPJyXnncodsFk1sYhJ9INkN1BNwdN6A1mtZXDP0lfXNH1P2YDSCXWdLhFwc1/n3/1bKwdV6/4ZQ==
-X-Received: by 2002:a17:90b:30cc:: with SMTP id hi12mr19315174pjb.50.1641618689293;
-        Fri, 07 Jan 2022 21:11:29 -0800 (PST)
-Received: from localhost.localdomain (c-98-35-249-89.hsd1.ca.comcast.net. [98.35.249.89])
-        by smtp.gmail.com with ESMTPSA id q16sm552808pfu.31.2022.01.07.21.11.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 07 Jan 2022 21:11:28 -0800 (PST)
-From:   "Yichun Zhang (agentzh)" <yichun@openresty.com>
-To:     yichun@openresty.com
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bpf: core: Fix the call ins's offset s32 -> s16 truncation
-Date:   Fri,  7 Jan 2022 21:11:21 -0800
-Message-Id: <20220108051121.28632-1-yichun@openresty.com>
-X-Mailer: git-send-email 2.17.2
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9zEwDmNMe5JERLrwlCRlU/+ORPGYL9TSSP35Lx3dN30=;
+        b=pG9tYXAsTSdT3aTmov757Z+rM75NpqEyN+m5LNXgJKDA/18KMOpgnMDVNtdEaqSLPG
+         6XYrWqWQDxDTl7FDZyDT590iELjSA5w0gYRtes2jo9BCyy7HqgWdDyBlH5rr7gQvxa/G
+         +a5ysUFDTFs30cgKvJ3O3qOWOBoYMWAt/u/Jytnvkgu2Fy8JDvgUrZPZHVLKSnNxPfoH
+         7ZhbLlIRbCq9wGGogcAVz94Od2mn3P4sOgcihb3WXQ4gLfkDpTwgCKk3ANRbJWavvcx2
+         H5TY8uKiv91chEqtwGwqz4XiAMo5D2qp6rYCX/RU531dmc99ppnfnsWzFvUnHVylTXpO
+         zXtw==
+X-Gm-Message-State: AOAM532mmWuZtz4BylICiWVfPfppiAdja/Y7cD7Hb59NxRIUUrC7uFPK
+        br/F7XuaQQF5DfAKS+n5mR0=
+X-Google-Smtp-Source: ABdhPJxgT+hITarZ5kOie4lgQKjGUCs4kcAxUmDsHXGRU8Ggif6Uqhy6zZ/xF3aIzhOlokShIaQfEQ==
+X-Received: by 2002:a17:902:a3c4:b0:149:6639:4b86 with SMTP id q4-20020a170902a3c400b0014966394b86mr62292275plb.60.1641631218474;
+        Sat, 08 Jan 2022 00:40:18 -0800 (PST)
+Received: from localhost.localdomain ([111.199.185.103])
+        by smtp.gmail.com with ESMTPSA id mq12sm1333897pjb.48.2022.01.08.00.40.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 Jan 2022 00:40:18 -0800 (PST)
+From:   Wei Fu <fuweid89@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wei Fu <fuweid89@gmail.com>
+Subject: [PATCH bpf] tools/bpf: only set obj->skeleton without err
+Date:   Sat,  8 Jan 2022 16:40:08 +0800
+Message-Id: <20220108084008.1053111-1-fuweid89@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF interpreter always truncates the BPF CALL instruction's 32-bit
-jump offset to 16-bit. Large BPF programs run by the interpreter often
-hit this issue and result in weird behaviors when jumping to the wrong
-destination instructions.
+After `bpftool gen skeleton`, the ${bpf_app}.skel.h will provide that
+${bpf_app_name}__open helper to load bpf. If there is some error
+like ENOMEM, the ${bpf_app_name}__open will rollback(free) the allocated
+object, including `bpf_object_skeleton`.
 
-The BPF JIT compiler does not have this bug.
+Since the ${bpf_app_name}__create_skeleton set the obj->skeleton first
+and not rollback it when error, it will cause double-free in
+${bpf_app_name}__destory at ${bpf_app_name}__open. Therefore, we should
+set the obj->skeleton before return 0;
 
-Fixes: 1ea47e01ad6ea ("bpf: add support for bpf_call to interpreter")
-Signed-off-by: Yichun Zhang (agentzh) <yichun@openresty.com>
+Signed-off-by: Wei Fu <fuweid89@gmail.com>
 ---
- kernel/bpf/core.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ tools/bpf/bpftool/gen.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 2405e39d800f..dc3c90992f33 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -59,6 +59,9 @@
- #define CTX	regs[BPF_REG_CTX]
- #define IMM	insn->imm
- 
-+static u64 (*interpreters_args[])(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5,
-+				  const struct bpf_insn *insn);
-+
- /* No hurry in this branch
-  *
-  * Exported for the bpf jit load helper.
-@@ -1560,10 +1563,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
- 		CONT;
- 
- 	JMP_CALL_ARGS:
--		BPF_R0 = (__bpf_call_base_args + insn->imm)(BPF_R1, BPF_R2,
--							    BPF_R3, BPF_R4,
--							    BPF_R5,
--							    insn + insn->off + 1);
-+		BPF_R0 = (interpreters_args[insn->off])(BPF_R1, BPF_R2,
-+							BPF_R3, BPF_R4,
-+							BPF_R5,
-+							insn + insn->imm + 1);
- 		CONT;
- 
- 	JMP_TAIL_CALL: {
-@@ -1810,9 +1813,7 @@ EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
- void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
- {
- 	stack_depth = max_t(u32, stack_depth, 1);
--	insn->off = (s16) insn->imm;
--	insn->imm = interpreters_args[(round_up(stack_depth, 32) / 32) - 1] -
--		__bpf_call_base_args;
-+	insn->off = (round_up(stack_depth, 32) / 32) - 1;
- 	insn->code = BPF_JMP | BPF_CALL_ARGS;
- }
- 
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 5c18351290f0..e61e08f524da 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -928,7 +928,6 @@ static int do_skeleton(int argc, char **argv)
+ 			s = (struct bpf_object_skeleton *)calloc(1, sizeof(*s));\n\
+ 			if (!s)						    \n\
+ 				goto err;				    \n\
+-			obj->skeleton = s;				    \n\
+ 									    \n\
+ 			s->sz = sizeof(*s);				    \n\
+ 			s->name = \"%1$s\";				    \n\
+@@ -1001,6 +1000,8 @@ static int do_skeleton(int argc, char **argv)
+ 									    \n\
+ 			s->data = (void *)%2$s__elf_bytes(&s->data_sz);	    \n\
+ 									    \n\
++			obj->skeleton = s;				    \n\
++									    \n\
+ 			return 0;					    \n\
+ 		err:							    \n\
+ 			bpf_object__destroy_skeleton(s);		    \n\
 -- 
-2.17.2
+2.25.1
 
