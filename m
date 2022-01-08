@@ -2,118 +2,216 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01BD4883EC
-	for <lists+bpf@lfdr.de>; Sat,  8 Jan 2022 15:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4218488411
+	for <lists+bpf@lfdr.de>; Sat,  8 Jan 2022 15:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbiAHOKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 8 Jan 2022 09:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234430AbiAHOKH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 8 Jan 2022 09:10:07 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4BCC061574
-        for <bpf@vger.kernel.org>; Sat,  8 Jan 2022 06:10:06 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id p1-20020a1c7401000000b00345c2d068bdso6994811wmc.3
-        for <bpf@vger.kernel.org>; Sat, 08 Jan 2022 06:10:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=Wvr9B5Og2idB5f4e8kL+4mc9ZlXpKCsICKibs4hTE6U=;
-        b=HNPCe7KrRLoYAhuKcXaBwu3uQVsuefqIavkpBVgi20r855XuhUIUKodE5uplvoIgNn
-         bdo0c0Kz7FUkdZ59y8SbcSGG7YMN3crNHrLEkMJsmCCdGJoqYinG2WgRIZ/IeaNaaGZg
-         xBqfCv/aLCTn5N7bb2vGTtyg8H0NgmT7xHpds=
+        id S234482AbiAHOpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 8 Jan 2022 09:45:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234477AbiAHOpG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 8 Jan 2022 09:45:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641653105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kIMiqV1yAZ33ux+d9eUm0sLEHRYTI8oFyptIaVpcFAs=;
+        b=RvvLXHwsh3W2ceuYIYdywmLbEB5kqNzmeoY4ipRsNuDm0q7DurbebSpSVstnA4a1IB9dEP
+        WR6vKtfNdAiVrciTbv0ZY+AgbNnRvPvZIjQHKZ+kjUT+Nha4r5SmCnw1SwG6fK4lnv6JZq
+        Q15uWyK/pVU9bqiEIFYF1Ku/tfcFQJ4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-168-y4Z_LjfkPKaeh0Db4tLifw-1; Sat, 08 Jan 2022 09:45:04 -0500
+X-MC-Unique: y4Z_LjfkPKaeh0Db4tLifw-1
+Received: by mail-wm1-f72.google.com with SMTP id c188-20020a1c35c5000000b00346a2160ea8so1457604wma.9
+        for <bpf@vger.kernel.org>; Sat, 08 Jan 2022 06:45:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=Wvr9B5Og2idB5f4e8kL+4mc9ZlXpKCsICKibs4hTE6U=;
-        b=jpbgHLJkp5H+luz6pBJ2JYGKwf1Tf6U0+bHCq0g99d4wN4WXANYPyQ748gE+5lMZLl
-         EgbPwfR9/fEpQxv1PsTgldqLl3KMY/vHLeW8f3BsYvH7fuYAJerIq5rnqlhPoMT6lkXu
-         fga0jaZTTXpJtryf0thyNvQn58tSl7Yc+2DZeozsHl7yYUBfRyqGEChWyQe1b01FiVgD
-         opn8z2A3dsnqCr39+u0xsXFc/SK8ckF9VLGrkM0sNNe3bD6lB+l7rKcgbjl1dnxbMm7w
-         Pk48Urx7Ac31mbDYllW6EzB26SmbWFKNbUFcgqvM+r0BVka7EQSpPQM9ZDuo3oyXs/pI
-         e3Yg==
-X-Gm-Message-State: AOAM533Aff6XXAgql1KVWSC0hnBq/juIJwGytnLXkfXyljAAcQ/X0Qm9
-        NMR5IPayM3VuiOLVuJOnLGuAJw==
-X-Google-Smtp-Source: ABdhPJxVHH4OnlGxc7mRvX1WqD4jFqxAfvGCz4ewLcCwoU3VfZlQPCOWpUu1qp1IfNnkqU8vjlNPgg==
-X-Received: by 2002:a05:600c:190c:: with SMTP id j12mr14754929wmq.166.1641651005070;
-        Sat, 08 Jan 2022 06:10:05 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
-        by smtp.gmail.com with ESMTPSA id o1sm1701644wmc.38.2022.01.08.06.10.04
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kIMiqV1yAZ33ux+d9eUm0sLEHRYTI8oFyptIaVpcFAs=;
+        b=4HAsmB64OTAiUfqYx3t7YaBGcQEMbANjPe0v34rbH7QbkHj1nFfJVfxiLhANYXRHvd
+         HX8aFSF/D/k7PzEsUAPyOgaa2B4R06ykglyTkZYUDqFuw/Kh/3Imr/vosU8W12XuVoLZ
+         tVvIgtxXxl8Yq4xP2X4woPxJunH1b+59FMHu2w4Jy6o90UgEGLPCySE5tsM3VRBsYlcP
+         11w+u2YRgAQ5TR36I6wFCaBCFb7MzzGcbMvDP1gZxw3kk22xzPhm71HJmMygSFZPa8qI
+         3k0HPLZFSZvpJqK2dsrEENQfGYqHxvweaM6zAuxqHeiHfbakxwn39OVZrlDrHq2mdMpP
+         XGzw==
+X-Gm-Message-State: AOAM530EKZcLYEH7BmYtqgVj95mEt1AEW/kvMJTyKBbXMIAfudTYAQr0
+        W2QnFY8/zxBGaweCZ7J1hbBd+b1IxPARXtdBvjVqIX7r4IygGEaIRnuVCt6G4f0yphSoEAViKAl
+        HVJJrO27R+uED
+X-Received: by 2002:adf:eb12:: with SMTP id s18mr27244231wrn.717.1641653103667;
+        Sat, 08 Jan 2022 06:45:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwzqVdn2B+eHWvHfhUeSYTREvqIx8GQcMycr6Wfy0rrIRZGR8GA+GeMmRBxaNIkI/8Lk4HaPg==
+X-Received: by 2002:adf:eb12:: with SMTP id s18mr27244221wrn.717.1641653103485;
+        Sat, 08 Jan 2022 06:45:03 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id az1sm1766758wrb.104.2022.01.08.06.45.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Jan 2022 06:10:04 -0800 (PST)
-References: <20220104214645.290900-1-john.fastabend@gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, joamaki@gmail.com
-Subject: Re: [PATCH bpf-next] bpf, sockmap: fix double bpf_prog_put on error
- case in map_link
-In-reply-to: <20220104214645.290900-1-john.fastabend@gmail.com>
-Date:   Sat, 08 Jan 2022 15:10:03 +0100
-Message-ID: <874k6epbd0.fsf@cloudflare.com>
+        Sat, 08 Jan 2022 06:45:03 -0800 (PST)
+Date:   Sat, 8 Jan 2022 15:45:01 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        ykaliuta@redhat.com,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        song@kernel.org, johan.almbladh@anyfinetworks.com,
+        Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 03/13] powerpc/bpf: Update ldimm64 instructions during
+ extra pass
+Message-ID: <YdmjbccR1LOJjaEv@krava>
+References: <cover.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+ <7cc162af77ba918eb3ecd26ec9e7824bc44b1fae.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7cc162af77ba918eb3ecd26ec9e7824bc44b1fae.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 04, 2022 at 10:46 PM CET, John Fastabend wrote:
-> sock_map_link() is called to update a sockmap entry with a sk. But, if the
-> sock_map_init_proto() call fails then we return an error to the map_update
-> op against the sockmap. In the error path though we need to cleanup psock
-> and dec the refcnt on any programs associated with the map, because we
-> refcnt them early in the update process to ensure they are pinned for the
-> psock. (This avoids a race where user deletes programs while also updating
-> the map with new socks.)
->
-> In current code we do the prog refcnt dec explicitely by calling
-> bpf_prog_put() when the program was found in the map. But, after commit
-> '38207a5e81230' in this error path we've already done the prog to psock
-> assignment so the programs have a reference from the psock as well. This
-> then causes the psock tear down logic, invoked by sk_psock_put() in the
-> error path, to similarly call bpf_prog_put on the programs there.
->
-> To be explicit this logic does the prog->psock assignemnt
->
->   if (msg_*)
->     psock_set_prog(...)
->
-> Then the error path under the out_progs label does a similar check and dec
-> with,
->
->   if (msg_*)
->      bpf_prog_put(...)
->
-> And the teardown logic sk_psock_put() does,
->
->   psock_set_prog(msg_*, NULL)
->
-> triggering another bpf_prog_put(...). Then KASAN gives us this splat, found
-> by syzbot because we've created an inbalance between bpf_prog_inc and
-> bpf_prog_put calling put twice on the program.
->
-> BUG: KASAN: vmalloc-out-of-bounds in __bpf_prog_put kernel/bpf/syscall.c:1812 [inline]
-> BUG: KASAN: vmalloc-out-of-bounds in __bpf_prog_put kernel/bpf/syscall.c:1812 [inline] kernel/bpf/syscall.c:1829
-> BUG: KASAN: vmalloc-out-of-bounds in bpf_prog_put+0x8c/0x4f0 kernel/bpf/syscall.c:1829 kernel/bpf/syscall.c:1829
-> Read of size 8 at addr ffffc90000e76038 by task syz-executor020/3641
->
-> To fix clean up error path so it doesn't try to do the bpf_prog_put in the
-> error path once progs are assigned then it relies on the normal psock
-> tear down logic to do complete cleanup.
->
-> For completness we also cover the case whereh sk_psock_init_strp() fails,
-> but this is not expected because it indicates an incorrect socket type
-> and should be caught earlier.
->
-> Reported-by: syzbot+bb73e71cf4b8fd376a4f@syzkaller.appspotmail.com
-> Fixes: 38207a5e8123 ("bpf, sockmap: Attach map progs to psock early for feature probes")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+On Thu, Jan 06, 2022 at 05:15:07PM +0530, Naveen N. Rao wrote:
+> These instructions are updated after the initial JIT, so redo codegen
+> during the extra pass. Rename bpf_jit_fixup_subprog_calls() to clarify
+> that this is more than just subprog calls.
+> 
+> Fixes: 69c087ba6225b5 ("bpf: Add bpf_for_each_map_elem() helper")
+> Cc: stable@vger.kernel.org # v5.15
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+
+Tested-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
 > ---
+>  arch/powerpc/net/bpf_jit_comp.c   | 29 +++++++++++++++++++++++------
+>  arch/powerpc/net/bpf_jit_comp32.c |  6 ++++++
+>  arch/powerpc/net/bpf_jit_comp64.c |  7 ++++++-
+>  3 files changed, 35 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit_comp.c b/arch/powerpc/net/bpf_jit_comp.c
+> index d6ffdd0f2309d0..56dd1f4e3e4447 100644
+> --- a/arch/powerpc/net/bpf_jit_comp.c
+> +++ b/arch/powerpc/net/bpf_jit_comp.c
+> @@ -23,15 +23,15 @@ static void bpf_jit_fill_ill_insns(void *area, unsigned int size)
+>  	memset32(area, BREAKPOINT_INSTRUCTION, size / 4);
+>  }
+>  
+> -/* Fix the branch target addresses for subprog calls */
+> -static int bpf_jit_fixup_subprog_calls(struct bpf_prog *fp, u32 *image,
+> -				       struct codegen_context *ctx, u32 *addrs)
+> +/* Fix updated addresses (for subprog calls, ldimm64, et al) during extra pass */
+> +static int bpf_jit_fixup_addresses(struct bpf_prog *fp, u32 *image,
+> +				   struct codegen_context *ctx, u32 *addrs)
+>  {
+>  	const struct bpf_insn *insn = fp->insnsi;
+>  	bool func_addr_fixed;
+>  	u64 func_addr;
+>  	u32 tmp_idx;
+> -	int i, ret;
+> +	int i, j, ret;
+>  
+>  	for (i = 0; i < fp->len; i++) {
+>  		/*
+> @@ -66,6 +66,23 @@ static int bpf_jit_fixup_subprog_calls(struct bpf_prog *fp, u32 *image,
+>  			 * of the JITed sequence remains unchanged.
+>  			 */
+>  			ctx->idx = tmp_idx;
+> +		} else if (insn[i].code == (BPF_LD | BPF_IMM | BPF_DW)) {
+> +			tmp_idx = ctx->idx;
+> +			ctx->idx = addrs[i] / 4;
+> +#ifdef CONFIG_PPC32
+> +			PPC_LI32(ctx->b2p[insn[i].dst_reg] - 1, (u32)insn[i + 1].imm);
+> +			PPC_LI32(ctx->b2p[insn[i].dst_reg], (u32)insn[i].imm);
+> +			for (j = ctx->idx - addrs[i] / 4; j < 4; j++)
+> +				EMIT(PPC_RAW_NOP());
+> +#else
+> +			func_addr = ((u64)(u32)insn[i].imm) | (((u64)(u32)insn[i + 1].imm) << 32);
+> +			PPC_LI64(b2p[insn[i].dst_reg], func_addr);
+> +			/* overwrite rest with nops */
+> +			for (j = ctx->idx - addrs[i] / 4; j < 5; j++)
+> +				EMIT(PPC_RAW_NOP());
+> +#endif
+> +			ctx->idx = tmp_idx;
+> +			i++;
+>  		}
+>  	}
+>  
+> @@ -200,13 +217,13 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+>  		/*
+>  		 * Do not touch the prologue and epilogue as they will remain
+>  		 * unchanged. Only fix the branch target address for subprog
+> -		 * calls in the body.
+> +		 * calls in the body, and ldimm64 instructions.
+>  		 *
+>  		 * This does not change the offsets and lengths of the subprog
+>  		 * call instruction sequences and hence, the size of the JITed
+>  		 * image as well.
+>  		 */
+> -		bpf_jit_fixup_subprog_calls(fp, code_base, &cgctx, addrs);
+> +		bpf_jit_fixup_addresses(fp, code_base, &cgctx, addrs);
+>  
+>  		/* There is no need to perform the usual passes. */
+>  		goto skip_codegen_passes;
+> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+> index 997a47fa615b30..2258d3886d02ec 100644
+> --- a/arch/powerpc/net/bpf_jit_comp32.c
+> +++ b/arch/powerpc/net/bpf_jit_comp32.c
+> @@ -293,6 +293,8 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  		bool func_addr_fixed;
+>  		u64 func_addr;
+>  		u32 true_cond;
+> +		u32 tmp_idx;
+> +		int j;
+>  
+>  		/*
+>  		 * addrs[] maps a BPF bytecode address into a real offset from
+> @@ -908,8 +910,12 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  		 * 16 byte instruction that uses two 'struct bpf_insn'
+>  		 */
+>  		case BPF_LD | BPF_IMM | BPF_DW: /* dst = (u64) imm */
+> +			tmp_idx = ctx->idx;
+>  			PPC_LI32(dst_reg_h, (u32)insn[i + 1].imm);
+>  			PPC_LI32(dst_reg, (u32)insn[i].imm);
+> +			/* padding to allow full 4 instructions for later patching */
+> +			for (j = ctx->idx - tmp_idx; j < 4; j++)
+> +				EMIT(PPC_RAW_NOP());
+>  			/* Adjust for two bpf instructions */
+>  			addrs[++i] = ctx->idx * 4;
+>  			break;
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 472d4a551945dd..3d018ecc475b2b 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -319,6 +319,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  		u64 imm64;
+>  		u32 true_cond;
+>  		u32 tmp_idx;
+> +		int j;
+>  
+>  		/*
+>  		 * addrs[] maps a BPF bytecode address into a real offset from
+> @@ -848,9 +849,13 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, struct codegen_context *
+>  		case BPF_LD | BPF_IMM | BPF_DW: /* dst = (u64) imm */
+>  			imm64 = ((u64)(u32) insn[i].imm) |
+>  				    (((u64)(u32) insn[i+1].imm) << 32);
+> +			tmp_idx = ctx->idx;
+> +			PPC_LI64(dst_reg, imm64);
+> +			/* padding to allow full 5 instructions for later patching */
+> +			for (j = ctx->idx - tmp_idx; j < 5; j++)
+> +				EMIT(PPC_RAW_NOP());
+>  			/* Adjust for two bpf instructions */
+>  			addrs[++i] = ctx->idx * 4;
+> -			PPC_LI64(dst_reg, imm64);
+>  			break;
+>  
+>  		/*
+> -- 
+> 2.34.1
+> 
 
-FWIW, late :thumbup:
-
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
