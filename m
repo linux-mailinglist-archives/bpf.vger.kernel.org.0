@@ -2,144 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBBC488E99
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 03:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0CE488F01
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 04:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238178AbiAJCQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Jan 2022 21:16:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbiAJCQr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Jan 2022 21:16:47 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B700C06173F;
-        Sun,  9 Jan 2022 18:16:47 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id s6so15693881ioj.0;
-        Sun, 09 Jan 2022 18:16:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x59Bsdz00UuuK7CrUu0qSPeYM/0w695vGZHOVL5oxDw=;
-        b=GctAjI1AzPKPYcU9URKAP2raqiTogkLOrbong4V/sIfaBzTEl2GvOPtC8aU1/F1Im4
-         QE39EHGzLYTnokpWtsu44Fb7h7zmKPv+pugnqbfiAn+r6hbjh/FLdYiEv+SoUNY6a+1S
-         5kh2yIbnBp3llv0J5uT+UAevlsyAlUVKdv+StMteJtmCeMRLWJHiv3Rbme49Bztdfk5H
-         dwICCxegwZsyXNp2TTBWMvAwEe0XXoobpON9BTpM5t62IUmOIFgU4JWWLispA1Z0RH/K
-         iJJ/x2Lc9gg80dgb3Z+pyVnWaujOnp48Blqk7MuXPjbx72YuR4mTtxMgxUIg0QJxnahu
-         8gHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x59Bsdz00UuuK7CrUu0qSPeYM/0w695vGZHOVL5oxDw=;
-        b=lgspyYwWJCB4FnSAuWFGXJNlweXKJicPR3W37jXWvXiOgajVWNOv0NztWlrywwrkIX
-         Zc4iHiDxV5o3iPMF8IVqRCJ7A2thGTFnqxyrV1JS1S7qB7SwaBlXPg8siDQ0EFbEGz+3
-         G4fK6P3ZJRUznvWZB1DNjQ/nj0fM6nzNLqskUYL+dMAawIYV52KLsKD/eeINdZvPt9kg
-         Mzu1v8YcBqIDJ+Vjdz83064UAjKw5qcvySmmTa6mOvTBtiFD1PT5DObupjrNez3Or0i3
-         xPsLeOKLg2RK/79wkTdBbH4PHune6yrr1tPTom8qFj1myWCuBUlG6lDuZ26uaB+N8KCj
-         dBQg==
-X-Gm-Message-State: AOAM531BNXfbOd1tVbAACeve4vzJsOdv8V2c9Mpbm8ZekVtWiY6yp9AQ
-        9GNcgCUYNA5pjZ5fu1B9c1wHVgnOmD4NcCqzUSc=
-X-Google-Smtp-Source: ABdhPJwGlQWEp3OigiEL/u6AlScXHwc4a0lJFK//WNiqGDhfvnmjwL4Y1QBaRtB3hb35NBZRfBcc/ycDO8DN/xymc/Q=
-X-Received: by 2002:a05:6638:1193:: with SMTP id f19mr34813025jas.237.1641781006618;
- Sun, 09 Jan 2022 18:16:46 -0800 (PST)
+        id S236129AbiAJDrQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Jan 2022 22:47:16 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:53593 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235727AbiAJDrP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Jan 2022 22:47:15 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4JXKX14swqz4xdd;
+        Mon, 10 Jan 2022 14:47:13 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1641786434;
+        bh=LocqTwodVt/kEQFBOJj7f+zi/hSB5CLQZtSRLVFk1tE=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ZkBdaF0X/WBOyJ09Fjgh14uY1B9II8rI2zb8mSCwBYeJnuNEabENAtIWOc9SA8iNj
+         F9L3KnZ+m609lxj/Seb/ldNDHGULzK7ftZi15Mb1RnjQqXIt2cm+rD9vnzY2gtViT0
+         LNSznOChEZkcXrpkvoRYAN34F/+InBlW2Ydbv5UoJPuSU5Cqvmw1DM//ZA6DgPwPDz
+         I8DJgzoy6JDDwDOeU/e+HSBtwK3ZFs+S3JZolggjwA07jcCBLKDqCSMZYBYNHHzWvI
+         Nwh2hC7oya6m/n6uthyV7k6o0EL91rLiSBQI0sa0yPuw3RZPuJrH32N7OYbF8AoBmN
+         QxmS3+CpG3Vdg==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Hari Bathini <hbathini@linux.ibm.com>,
+        johan.almbladh@anyfinetworks.com, Jiri Olsa <jolsa@redhat.com>,
+        linuxppc-dev@lists.ozlabs.org, song@kernel.org, ykaliuta@redhat.com
+Subject: Re: [PATCH 00/13] powerpc/bpf: Some fixes and updates
+In-Reply-To: <4893ddd3-f0ef-003b-3445-57ce5dc1b065@iogearbox.net>
+References: <cover.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+ <f4f3437d-084f-0858-8795-76e4a0fa5627@iogearbox.net>
+ <1641540707.ewk8tpqmvl.naveen@linux.ibm.com>
+ <4893ddd3-f0ef-003b-3445-57ce5dc1b065@iogearbox.net>
+Date:   Mon, 10 Jan 2022 14:47:12 +1100
+Message-ID: <875yqs2qwv.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-References: <cover.1641641663.git.lorenzo@kernel.org> <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
-In-Reply-To: <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 9 Jan 2022 18:16:35 -0800
-Message-ID: <CAEf4BzbfDvH5CYNsWg9Dx7JcFEp4jNmNRR6H-6sJEUxDSy1zZw@mail.gmail.com>
-Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 9, 2022 at 7:05 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+Daniel Borkmann <daniel@iogearbox.net> writes:
+> On 1/7/22 8:36 AM, Naveen N. Rao wrote:
+>> Daniel Borkmann wrote:
+>>> On 1/6/22 12:45 PM, Naveen N. Rao wrote:
+>>>> A set of fixes and updates to powerpc BPF JIT:
+>>>> - Patches 1-3 fix issues with the existing powerpc JIT and are tagged
+>>>> =C2=A0=C2=A0 for -stable.
+>>>> - Patch 4 fixes a build issue with bpf selftests on powerpc.
+>>>> - Patches 5-9 handle some corner cases and make some small improvement=
+s.
+>>>> - Patches 10-13 optimize how function calls are handled in ppc64.
+>>>>
+>>>> Patches 7 and 8 were previously posted, and while patch 7 has no
+>>>> changes, patch 8 has been reworked to handle BPF_EXIT differently.
+>>>
+>>> Is the plan to route these via ppc trees? Fwiw, patch 1 and 4 look gene=
+ric
+>>> and in general good to me, we could also take these two via bpf-next tr=
+ee
+>>> given outside of arch/powerpc/? Whichever works best.
+>>=20
+>> Yes, I would like to route this through the powerpc tree. Though patches=
+ 1 and 4 are generic, they primarily affect powerpc and I do not see confli=
+cting changes in bpf-next. Request you to please ack those patches so that =
+Michael can take it through the powerpc tree.
 >
-> Introduce support for the following SEC entries for XDP multi-buff
-> property:
-> - SEC("xdp_mb/")
-> - SEC("xdp_devmap_mb/")
-> - SEC("xdp_cpumap_mb/")
+> Ok, works for me. I presume this will end up in the upcoming merge window
+> anyway, so not too long time until we can sync these back to bpf/bpf-next
+> trees then.
 
-Libbpf seemed to went with .<suffix> rule (e.g., fentry.s for
-sleepable, seems like we'll have kprobe.multi or  something along
-those lines as well), so let's stay consistent and call this "xdp_mb",
-"xdp_devmap.mb", "xdp_cpumap.mb" (btw, is "mb" really all that
-recognizable? would ".multibuf" be too verbose?). Also, why the "/"
-part? Also it shouldn't be "sloppy" either. Neither expected attach
-type should be optional.  Also not sure SEC_ATTACHABLE is needed. So
-at most it should be SEC_XDP_MB, probably.
+Hmm. This series landed a little late for me to get it into linux-next
+before the merge window opened.
 
->
-> Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  tools/lib/bpf/libbpf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7f10dd501a52..c93f6afef96c 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -235,6 +235,8 @@ enum sec_def_flags {
->         SEC_SLEEPABLE = 8,
->         /* allow non-strict prefix matching */
->         SEC_SLOPPY_PFX = 16,
-> +       /* BPF program support XDP multi-buff */
-> +       SEC_XDP_MB = 32,
->  };
->
->  struct bpf_sec_def {
-> @@ -6562,6 +6564,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
->         if (def & SEC_SLEEPABLE)
->                 opts->prog_flags |= BPF_F_SLEEPABLE;
->
-> +       if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_MB))
-> +               opts->prog_flags |= BPF_F_XDP_MB;
+It's mostly small and includes some bug fixes, so I'm not saying it
+needs to wait for the next merge window, but I would like it to get some
+testing in linux-next before I ask Linus to pull it.
 
-I'd say you don't even need SEC_XDP_MB flag at all, you can just check
-that prog->sec_name is one of "xdp.mb", "xdp_devmap.mb" or
-"xdp_cpumap.mb" and add the flag. SEC_XDP_MB doesn't seem generic
-enough to warrant a flag.
+When would you need it all merged into Linus' tree in order to sync up
+with the bpf tree for the next cycle? I assume as long as it's merged
+before rc1 that would be sufficient?
 
-> +
->         if ((prog->type == BPF_PROG_TYPE_TRACING ||
->              prog->type == BPF_PROG_TYPE_LSM ||
->              prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
-> @@ -8600,8 +8605,11 @@ static const struct bpf_sec_def section_defs[] = {
->         SEC_DEF("lsm.s/",               LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
->         SEC_DEF("iter/",                TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
->         SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
-> +       SEC_DEF("xdp_devmap_mb/",       XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_XDP_MB),
->         SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
-> +       SEC_DEF("xdp_cpumap_mb/",       XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_XDP_MB),
->         SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
-> +       SEC_DEF("xdp_mb/",              XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX | SEC_XDP_MB),
->         SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
->         SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
->         SEC_DEF("lwt_in",               LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> --
-> 2.33.1
->
+cheers
