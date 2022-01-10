@@ -2,82 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8BD488E97
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 03:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBBC488E99
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 03:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238175AbiAJCKO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 9 Jan 2022 21:10:14 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:40834 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238174AbiAJCKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 9 Jan 2022 21:10:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id C2EB6CE1258;
-        Mon, 10 Jan 2022 02:10:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BC263C36AEF;
-        Mon, 10 Jan 2022 02:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641780609;
-        bh=zBuFSL/tlo/kGDtU6AYsmMls/4da+oq+NcCGlkXPWA4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RT1NqQVS/+HvtX8b7/SBreG6kau5GsyJcqNtcTWbwuzTVFM+1hLixNGjD4EgcjT8E
-         S47ev99CdOs0dK9Iurp772Ghp1oqg0vAiNxd2c3Tirl6DxWm1iZsBt5GoFDZ3fQsVF
-         kf9LLV04RNRfRnKhDH1j9jHclIuFSMQpsy4Ko0O3upyeC8TPVK3GBAAlmn11eQjlPO
-         9NrAnGiFvWgWqzOWC/O5UVQpYNrKOmWrMCTKE8abHdaXH6ZVxrG3C3bVgam309HC8i
-         WyujNVcUwMQ/l1Do/t7fDaId8iW0D6+bWr6Hm4TwpoHN35E9AI6WsoNErdvKUmEcbz
-         gyxklbj902FBQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9C270F6078A;
-        Mon, 10 Jan 2022 02:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S238178AbiAJCQr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 9 Jan 2022 21:16:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232504AbiAJCQr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 9 Jan 2022 21:16:47 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B700C06173F;
+        Sun,  9 Jan 2022 18:16:47 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id s6so15693881ioj.0;
+        Sun, 09 Jan 2022 18:16:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x59Bsdz00UuuK7CrUu0qSPeYM/0w695vGZHOVL5oxDw=;
+        b=GctAjI1AzPKPYcU9URKAP2raqiTogkLOrbong4V/sIfaBzTEl2GvOPtC8aU1/F1Im4
+         QE39EHGzLYTnokpWtsu44Fb7h7zmKPv+pugnqbfiAn+r6hbjh/FLdYiEv+SoUNY6a+1S
+         5kh2yIbnBp3llv0J5uT+UAevlsyAlUVKdv+StMteJtmCeMRLWJHiv3Rbme49Bztdfk5H
+         dwICCxegwZsyXNp2TTBWMvAwEe0XXoobpON9BTpM5t62IUmOIFgU4JWWLispA1Z0RH/K
+         iJJ/x2Lc9gg80dgb3Z+pyVnWaujOnp48Blqk7MuXPjbx72YuR4mTtxMgxUIg0QJxnahu
+         8gHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x59Bsdz00UuuK7CrUu0qSPeYM/0w695vGZHOVL5oxDw=;
+        b=lgspyYwWJCB4FnSAuWFGXJNlweXKJicPR3W37jXWvXiOgajVWNOv0NztWlrywwrkIX
+         Zc4iHiDxV5o3iPMF8IVqRCJ7A2thGTFnqxyrV1JS1S7qB7SwaBlXPg8siDQ0EFbEGz+3
+         G4fK6P3ZJRUznvWZB1DNjQ/nj0fM6nzNLqskUYL+dMAawIYV52KLsKD/eeINdZvPt9kg
+         Mzu1v8YcBqIDJ+Vjdz83064UAjKw5qcvySmmTa6mOvTBtiFD1PT5DObupjrNez3Or0i3
+         xPsLeOKLg2RK/79wkTdBbH4PHune6yrr1tPTom8qFj1myWCuBUlG6lDuZ26uaB+N8KCj
+         dBQg==
+X-Gm-Message-State: AOAM531BNXfbOd1tVbAACeve4vzJsOdv8V2c9Mpbm8ZekVtWiY6yp9AQ
+        9GNcgCUYNA5pjZ5fu1B9c1wHVgnOmD4NcCqzUSc=
+X-Google-Smtp-Source: ABdhPJwGlQWEp3OigiEL/u6AlScXHwc4a0lJFK//WNiqGDhfvnmjwL4Y1QBaRtB3hb35NBZRfBcc/ycDO8DN/xymc/Q=
+X-Received: by 2002:a05:6638:1193:: with SMTP id f19mr34813025jas.237.1641781006618;
+ Sun, 09 Jan 2022 18:16:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 0/5] libbpf 1.0: deprecate bpf_map__def() API
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164178060963.18256.8098134045355307256.git-patchwork-notify@kernel.org>
-Date:   Mon, 10 Jan 2022 02:10:09 +0000
-References: <20220108004218.355761-1-christylee@fb.com>
-In-Reply-To: <20220108004218.355761-1-christylee@fb.com>
-To:     Christy Lee <christylee@fb.com>
-Cc:     andrii@kernel.org, acme@kernel.org, christyc.y.lee@gmail.com,
-        bpf@vger.kernel.org, kernel-team@fb.com,
-        linux-perf-users@vger.kernel.org
+References: <cover.1641641663.git.lorenzo@kernel.org> <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
+In-Reply-To: <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 9 Jan 2022 18:16:35 -0800
+Message-ID: <CAEf4BzbfDvH5CYNsWg9Dx7JcFEp4jNmNRR6H-6sJEUxDSy1zZw@mail.gmail.com>
+Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Sun, Jan 9, 2022 at 7:05 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Introduce support for the following SEC entries for XDP multi-buff
+> property:
+> - SEC("xdp_mb/")
+> - SEC("xdp_devmap_mb/")
+> - SEC("xdp_cpumap_mb/")
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Libbpf seemed to went with .<suffix> rule (e.g., fentry.s for
+sleepable, seems like we'll have kprobe.multi or  something along
+those lines as well), so let's stay consistent and call this "xdp_mb",
+"xdp_devmap.mb", "xdp_cpumap.mb" (btw, is "mb" really all that
+recognizable? would ".multibuf" be too verbose?). Also, why the "/"
+part? Also it shouldn't be "sloppy" either. Neither expected attach
+type should be optional.  Also not sure SEC_ATTACHABLE is needed. So
+at most it should be SEC_XDP_MB, probably.
 
-On Fri, 7 Jan 2022 16:42:13 -0800 you wrote:
-> bpf_map__def() is rarely used and non-extensible. bpf_map_def fields
-> can be accessed with appropriate map getters and setters instead.
-> Deprecate bpf_map__def() API and replace use cases with getters and
-> setters.
-> 
-> Changelog:
-> 
-> [...]
+>
+> Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 7f10dd501a52..c93f6afef96c 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -235,6 +235,8 @@ enum sec_def_flags {
+>         SEC_SLEEPABLE = 8,
+>         /* allow non-strict prefix matching */
+>         SEC_SLOPPY_PFX = 16,
+> +       /* BPF program support XDP multi-buff */
+> +       SEC_XDP_MB = 32,
+>  };
+>
+>  struct bpf_sec_def {
+> @@ -6562,6 +6564,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+>         if (def & SEC_SLEEPABLE)
+>                 opts->prog_flags |= BPF_F_SLEEPABLE;
+>
+> +       if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_MB))
+> +               opts->prog_flags |= BPF_F_XDP_MB;
 
-Here is the summary with links:
-  - [bpf-next,v2,1/5] samples/bpf: stop using bpf_map__def() API
-    https://git.kernel.org/bpf/bpf-next/c/fcaf77640892
-  - [bpf-next,v2,2/5] bpftool: stop using bpf_map__def() API
-    https://git.kernel.org/bpf/bpf-next/c/567df3b14606
-  - [bpf-next,v2,3/5] perf: stop using bpf_map__def() API
-    https://git.kernel.org/bpf/bpf-next/c/ad60db9aabb1
-  - [bpf-next,v2,4/5] selftests/bpf: stop using bpf_map__def() API
-    https://git.kernel.org/bpf/bpf-next/c/f8b287530aef
-  - [bpf-next,v2,5/5] libbpf: deprecate bpf_map__def() API
-    https://git.kernel.org/bpf/bpf-next/c/b95533311a0f
+I'd say you don't even need SEC_XDP_MB flag at all, you can just check
+that prog->sec_name is one of "xdp.mb", "xdp_devmap.mb" or
+"xdp_cpumap.mb" and add the flag. SEC_XDP_MB doesn't seem generic
+enough to warrant a flag.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> +
+>         if ((prog->type == BPF_PROG_TYPE_TRACING ||
+>              prog->type == BPF_PROG_TYPE_LSM ||
+>              prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+> @@ -8600,8 +8605,11 @@ static const struct bpf_sec_def section_defs[] = {
+>         SEC_DEF("lsm.s/",               LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
+>         SEC_DEF("iter/",                TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
+>         SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+> +       SEC_DEF("xdp_devmap_mb/",       XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_XDP_MB),
+>         SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp_cpumap_mb/",       XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_XDP_MB),
+>         SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp_mb/",              XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX | SEC_XDP_MB),
+>         SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+>         SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+>         SEC_DEF("lwt_in",               LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> --
+> 2.33.1
+>
