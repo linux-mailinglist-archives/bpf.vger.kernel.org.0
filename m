@@ -2,183 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFF6489B49
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 15:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B56E2489B6C
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 15:39:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235526AbiAJOba (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jan 2022 09:31:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235500AbiAJOba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jan 2022 09:31:30 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1288DC06173F
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 06:31:30 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id s1so27168511wra.6
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 06:31:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BkTrZkjjZOYLDB8/6286x9FL60uPsTTrkR9kHWn6A+g=;
-        b=xHfnqCgsuhhr5szaddgiBGeCVQ/m8Kuhpadm37Sz0rEEjY8Eb20grfaq+s1neyegxo
-         +g4Mvw+RyGNN/aZtYocodiqF8oaUK4Rb56up9JGeirRLLDinw1KoSMIrNg/xdMy7wBKm
-         t41gOZywy6iMQLYC+eWYoFszJLcwmVCC0vlx4APlOAeuwlZrHJUezQ//Oh4gIKaBf8iO
-         yl6Ai0kja14aPpCR9/a51qGMSf7FJ5YkbDgHtQnuItUzN4sC8KhxkZVjpgL8GeidFzu+
-         X0jZ28EPaCO2sdm1GJzmewL3Sf5vuc/ydK6NQLnxIMR74HN9O/1b9WmXIyewWGFq+cXw
-         j8aw==
+        id S235640AbiAJOjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jan 2022 09:39:02 -0500
+Received: from mail-qv1-f43.google.com ([209.85.219.43]:45844 "EHLO
+        mail-qv1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231196AbiAJOjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jan 2022 09:39:01 -0500
+Received: by mail-qv1-f43.google.com with SMTP id a9so14599906qvd.12;
+        Mon, 10 Jan 2022 06:39:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BkTrZkjjZOYLDB8/6286x9FL60uPsTTrkR9kHWn6A+g=;
-        b=0/LDoGR52b1tLDGVx2h6/MfgDDS0WdWTxhyspIwsFZgXplmpT3mMgJ5gVqx1GS7wc8
-         ckLhLNsqRjmMJcwR/9dlNQB3txjJKyPvOb9Lv2vP33nxkeVZoS78Jjb1schuGj2tCt67
-         id86ALgD0vg2xSj53oVaB3oAyuZkZDLr1h3he+r5iHPAnF1PLCkcb3P8sixLHWHp07/V
-         NWvzR/VoxobqIo5sAXcqNu93BwOE3dbs90RD5Kb6NHWzwERMKpbN2EKCeRzm2FBk29Nk
-         0KhLyifUKOOoLuWHbBIcgIfVkiKcCWxbvhzCKdmvUWUof4t2tj4fLXT/qdzinTMZJiU4
-         QAMg==
-X-Gm-Message-State: AOAM530B2BOZ2Hu+edsHMA7LH7v43Tzi749aDJyB5fK+XBk8nf1/LoBz
-        f57xJYhxvQe32aeWN+opXiu+Gp/zNnux2w==
-X-Google-Smtp-Source: ABdhPJwJ7qeBMbM7DTkXNgYcIlYGgt0vtNI+VTbfnCwzE4GCZUFoCFjfiwtPWsgIPr39whMJyHL3GA==
-X-Received: by 2002:adf:9dc1:: with SMTP id q1mr12337486wre.18.1641825088520;
-        Mon, 10 Jan 2022 06:31:28 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6d:f804:0:630b:457a:c617:2b89])
-        by smtp.gmail.com with ESMTPSA id o15sm7597159wri.106.2022.01.10.06.31.28
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pO7pYeF0q/KOlSDXskK/am/odc2RYkvEzSsdTjA4sWM=;
+        b=gRTbjgJmxjdCUi7JMQk7WGmiyclPZeWwmgoeu2VyXeCHGgJ9Vz7o/Dk5ijtymrXntb
+         g3M65jKF9TnEdtGpgstLScFbD4OBJfzVwHaHynhg6OUOW2zpVqM+fKYFocDJyUuHeoDz
+         HPsQlsqJihg/rjA2LxB7MUL03k/IavUEby7njHPZa/Ve/31HezB6CLE2qMPxgZ7Z2SwP
+         2tSJtiFZ4XzqzojNTd78hDXNo6bCETKkNsOlyT9wcKu1Zh4EUITJrZjnJhkzUQaLtFTm
+         9JILxMwCgKBv4A89KFQtI1cE1QRvWGn6reomc2kuoOhD6l0QzYx/HFeZcy463gNcMCbF
+         g1Fw==
+X-Gm-Message-State: AOAM533vUXmtCoff9+QHKY+wIY/A0NkDKQMHKO7qVIqr9G7UD4S426mP
+        SwOybfGK2YepZxnpwxHmPsTtROvv6fmNxg==
+X-Google-Smtp-Source: ABdhPJym7QBoq8Zjc+aKSJ0iSTaFS10mpRbgvEa+KZAl3mkEJk7GZpOWuY2DnxGzvLYA1H/MIZou1A==
+X-Received: by 2002:a05:6214:2a88:: with SMTP id jr8mr69282684qvb.18.1641825540470;
+        Mon, 10 Jan 2022 06:39:00 -0800 (PST)
+Received: from dev0025.ash9.facebook.com (fwdproxy-ash-006.fbsv.net. [2a03:2880:20ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id k8sm4931234qtx.35.2022.01.10.06.38.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jan 2022 06:31:28 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, joe@cilium.io,
-        fam.zheng@bytedance.com, cong.wang@bytedance.com,
-        alexei.starovoitov@gmail.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH v2] bpf/scripts: add warning if the correct number of helpers are not auto-generated
-Date:   Mon, 10 Jan 2022 14:31:02 +0000
-Message-Id: <20220110143102.3466150-1-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 10 Jan 2022 06:39:00 -0800 (PST)
+Date:   Mon, 10 Jan 2022 06:38:58 -0800
+From:   David Vernet <void@manifault.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jpoimboe@redhat.com, jikos@kernel.org, mbenes@suse.cz,
+        joe.lawrence@redhat.com, linux-modules@vger.kernel.org,
+        mcgrof@kernel.org, jeyu@kernel.org, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, memxor@gmail.com, clm@fb.com
+Subject: Re: [PATCH] livepatch: Avoid CPU hogging with cond_resched
+Message-ID: <YdxFAshozmxfiLd/@dev0025.ash9.facebook.com>
+References: <Yc0yskk0m2bePLu6@dev0025.ash9.facebook.com>
+ <YdMej8L0bqe+XetW@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YdMej8L0bqe+XetW@alley>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently bpf_helper_defs.h is auto-generated using function documentation
-present in bpf.h. If the documentation for the helper is missing
-or doesn't follow a specific format for e.g. if a function is documented
-as:
- * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
-instead of
- * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
-(notice the extra space at the start and end of function arguments)
-then that helper is not dumped in the auto-generated header and results in
-an invalid call during eBPF runtime, even if all the code specific to the
-helper is correct.
+Apologies all for the delayed response -- I was still on holiday last week.
 
-This patch checks the number of functions documented within the header file
-with those present as part of #define __BPF_FUNC_MAPPER and generates a
-warning in the header file if they don't match. It is not needed with the
-currently documented upstream functions, but can help in debugging
-when developing new helpers when there might be missing or misformatted
-documentation.
+Petr Mladek <pmladek@suse.com> wrote on Mon [2022-Jan-03 17:04:31 +0100]:
+> > > It turns out that symbol lookups often take up the most CPU time when
+> > > enabling and disabling a patch, and may hog the CPU and cause other tasks
+> > > on that CPU's runqueue to starve -- even in paths where interrupts are
+> > > enabled.  For example, under certain workloads, enabling a KLP patch with
+> > > many objects or functions may cause ksoftirqd to be starved, and thus for
+>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+> This suggests that a single kallsyms_on_each_symbol() is not a big
+> problem. cond_resched() might be called non-necessarily often there.
+> I wonder if it would be enough to add cond_resched() into the two
+> loops calling klp_find_object_symbol().
 
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+In the initial version of the patch I was intending to send out, I actually
+had the cond_resched() in klp_find_object_symbol(). Having it there did
+appear to fix the ksoftirqd starvation issue, but I elected to put it in
+klp_find_object_symbol() after Chris (cc'd) suggested it because
+cond_resched() is so lightweight, and it didn't affect the runtime for
+livepatching in my experiments.
 
----
-v1->v2:
-- Fix CI error reported by Alexei Starovoitov
----
- scripts/bpf_doc.py | 46 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 44 insertions(+), 2 deletions(-)
+> That said, kallsyms_on_each_symbol() is a slow path and there might
+> be many symbols. So, it might be the right place.
 
-diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index a6403ddf5de7..e426d2a727cb 100755
---- a/scripts/bpf_doc.py
-+++ b/scripts/bpf_doc.py
-@@ -87,6 +87,8 @@ class HeaderParser(object):
-         self.line = ''
-         self.helpers = []
-         self.commands = []
-+        self.desc_unique_helpers = set()
-+        self.define_unique_helpers = []
- 
-     def parse_element(self):
-         proto    = self.parse_symbol()
-@@ -193,19 +195,41 @@ class HeaderParser(object):
-             except NoSyscallCommandFound:
-                 break
- 
--    def parse_helpers(self):
-+    def parse_desc_helpers(self):
-         self.seek_to('* Start of BPF helper function descriptions:',
-                      'Could not find start of eBPF helper descriptions list')
-         while True:
-             try:
-                 helper = self.parse_helper()
-                 self.helpers.append(helper)
-+                proto = helper.proto_break_down()
-+                if proto['name'] not in self.desc_unique_helpers:
-+                    self.desc_unique_helpers.add(proto['name'])
-             except NoHelperFound:
-                 break
- 
-+    def parse_define_helpers(self):
-+        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
-+        # later with the number of unique function names present in description
-+        self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
-+                     'Could not find start of eBPF helper definition list')
-+        # Searches for either one or more FN(\w+) defines or a backslash for newline
-+        p = re.compile('\s*(FN\(\w+\))+|\\\\')
-+        fn_defines_str = ''
-+        while True:
-+            capture = p.match(self.line)
-+            if capture:
-+                fn_defines_str += self.line
-+            else:
-+                break
-+            self.line = self.reader.readline()
-+        # Find the number of occurences of FN(\w+)
-+        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
-+
-     def run(self):
-         self.parse_syscall()
--        self.parse_helpers()
-+        self.parse_desc_helpers()
-+        self.parse_define_helpers()
-         self.reader.close()
- 
- ###############################################################################
-@@ -509,6 +533,8 @@ class PrinterHelpers(Printer):
-     """
-     def __init__(self, parser):
-         self.elements = parser.helpers
-+        self.desc_unique_helpers = parser.desc_unique_helpers
-+        self.define_unique_helpers = parser.define_unique_helpers
- 
-     type_fwds = [
-             'struct bpf_fib_lookup',
-@@ -628,6 +654,22 @@ class PrinterHelpers(Printer):
- /* Forward declarations of BPF structs */'''
- 
-         print(header)
-+
-+        nr_desc_unique_helpers = len(self.desc_unique_helpers)
-+        nr_define_unique_helpers = len(self.define_unique_helpers)
-+        if nr_desc_unique_helpers != nr_define_unique_helpers:
-+            header_warning = '''
-+#warning The number of unique helpers in description (%d) don\'t match the number of unique helpers defined in __BPF_FUNC_MAPPER (%d)
-+''' % (nr_desc_unique_helpers, nr_define_unique_helpers)
-+            if nr_desc_unique_helpers < nr_define_unique_helpers:
-+                # Function description is parsed until no helper is found (which can be due to
-+                # misformatting). Hence, only print the first missing/misformatted function.
-+                header_warning += '''
-+#warning The description for %s is not present or formatted correctly.
-+''' % (self.define_unique_helpers[nr_desc_unique_helpers])
-+            print(header_warning)
-+
-+
-         for fwd in self.type_fwds:
-             print('%s;' % fwd)
-         print('')
--- 
-2.25.1
-
+Yes, my thinking was that because it didn't seem to affect throughput, and
+because it would could potentially cause the same ssue to occur if it were
+ever called elsewhere, that this was the correct place for it.
