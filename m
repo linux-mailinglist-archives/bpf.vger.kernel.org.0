@@ -2,86 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2949B48A2B6
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 23:26:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4DE48A307
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 23:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345397AbiAJW0N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jan 2022 17:26:13 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:58610 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345394AbiAJW0N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jan 2022 17:26:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0FAF8B8180F
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 22:26:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BC27C36AF2
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 22:26:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641853570;
-        bh=Yy9vhvdSWUoAdkNq1RqvMXdUU+tXDUzwGivddfPXKGQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NJLR9PsHwHEgk4+Xq8bQwH9aPOzzeM2KrGoOtYNw5lSLc+tRRp92rHeVtGFrGsU8c
-         Kb49Ksjk75fyzX0GcvkXUz7NXriSpFLQi5Xt8wWHbaDl3u/4Fe4YPKYXYCqPb8GLED
-         VtDiibVGZ7mXQGYDTo+pT8+PduvceJqGqnbDW40DjQaJX+UhjZ7YXcki+O6NNxl/aI
-         a8yQ3nEOZH7PBh+DZsmL0kp2kFVo4eQtJ51Qu46CFFAsraTYBDkw03dJ3G/Q1rrRKp
-         67Pbnnr7DAewhqHmbQhUIQkbArMxgt5wMWJDw3PD7MLwiNL5ceypkCnAPC93aWDdkH
-         z6UNlWRqMWGrA==
-Received: by mail-yb1-f179.google.com with SMTP id i3so42046467ybh.11
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:26:10 -0800 (PST)
-X-Gm-Message-State: AOAM530qZCT/DEtZA9cmKQolL+dYDBu7G2wQGuOUMoNo9JZpkAEtm5SE
-        AyIWUWfOqEdLKOLHTJhrrIcuKRb7wSgiAQ3IlFM=
-X-Google-Smtp-Source: ABdhPJwHZrP4areBByLUi5wU6zQFagixPhet5WFjwLaQ1Qick+FRij+TPfEhXB/JZaYX+J7LpWKrIelnWC/6LCOhnBo=
-X-Received: by 2002:a05:6902:1106:: with SMTP id o6mr2713172ybu.195.1641853569738;
- Mon, 10 Jan 2022 14:26:09 -0800 (PST)
+        id S241651AbiAJWfV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jan 2022 17:35:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7464 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242335AbiAJWfV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jan 2022 17:35:21 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20AJZ21C009658
+        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:35:20 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Xt/j2qCPr6eqR7ff2TQeM61XNYLEiBu/AL1DYjHwyk4=;
+ b=bcWHUVd5uMuZdACyUHryTvDevWXsqkgMoJxamPMd3rxTHG9UY8WKIx82Oj+0SntzCPMg
+ dy0E+MtOqZwbDm2dWCTk4VnNF0v6ULJUQoNjnp2iNxRYxLY12mxSZXxzYtq5dy066n1C
+ /D2TEaqTO+HZwy+vzqpoLlBpS8zFJ99hGYI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dgt8m1qg9-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:35:20 -0800
+Received: from twshared18912.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 10 Jan 2022 14:35:18 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id B930A21245D6; Mon, 10 Jan 2022 14:35:15 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v4 bpf-next 0/4] Stop using bpf_object__find_program_by_title API
+Date:   Mon, 10 Jan 2022 14:34:42 -0800
+Message-ID: <20220110223446.345531-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: Xq1Q5WAqoe51OUFUnR958bHWuag3xsHf
+X-Proofpoint-ORIG-GUID: Xq1Q5WAqoe51OUFUnR958bHWuag3xsHf
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <202201060848.nagWejwv-lkp@intel.com> <20220108005854.658596-1-christylee@fb.com>
- <CAPhsuW5FQTLfs4P4GqMKxsakP82KuPGOrEcqX+zvAH1+VLf7aQ@mail.gmail.com> <CAPqJDZqf8-4DCe9J1jr7KekxqfBac3JBc+hx7a6qW4hoF6xPUQ@mail.gmail.com>
-In-Reply-To: <CAPqJDZqf8-4DCe9J1jr7KekxqfBac3JBc+hx7a6qW4hoF6xPUQ@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Mon, 10 Jan 2022 14:25:58 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW747JiykdZRj4ReJfTMfdSbvZBCkyO2Fiiri5uVrt4jbw@mail.gmail.com>
-Message-ID: <CAPhsuW747JiykdZRj4ReJfTMfdSbvZBCkyO2Fiiri5uVrt4jbw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] Fix incorrect integer literal used for marking
- scratched registers in verifier logs
-To:     Christy Lee <christyc.y.lee@gmail.com>
-Cc:     Christy Lee <christylee@fb.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
-        kbuild@lists.01.org, Linux-MM <linux-mm@kvack.org>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-10_10,2022-01-10_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 adultscore=0 phishscore=0 mlxlogscore=999 bulkscore=0
+ malwarescore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201100146
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 10, 2022 at 2:13 PM Christy Lee <christyc.y.lee@gmail.com> wrote:
->
-> On Mon, Jan 10, 2022 at 1:52 PM Song Liu <song@kernel.org> wrote:
-> >
-> > On Fri, Jan 7, 2022 at 4:59 PM Christy Lee <christylee@fb.com> wrote:
-> > >
-> > > env->scratched_stack_slots is a 64-bit value, we should use ULL
-> > > instead of UL literal values.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Signed-off-by: Christy Lee <christylee@fb.com>
-> >
-> > The fix looks good to me. Thus:
-> >
-> > Acked-by: Song Liu <songliubraving@fb.com>
-> >
-> > However, the patch looks corrupted. Also, the subject is probably too
-> > long (./scripts/checkpatch.pl should complain about it).
-> >
->
-> I just checked that even with an absurdly long subject (more than 200
-> characters), ./scripts/checkpatch.pl doesn't complain. It only complains
-> when the commit message body has longer than 75 characters but not the
-> subject line.  What's the maximum subject line length?
+bpf_object__find_program_by_title is going to be deprecated since
+v0.7.  Replace all use cases with bpf_object__find_program_by_name if
+possible, or use bpf_object__for_each_program to iterate over
+programs, matching section names.
 
-Hmm..  you are right. I somehow thought there was a limit by checkpatch.
-I would personally limit it to 75 characters though.
+V3 fixes a broken test case, fexit_bpf2bpf, in selftests/bpf, using
+bpf_obj__for_each_program API instead.
+
+[v2] https://lore.kernel.org/bpf/20211211003608.2764928-1-kuifeng@fb.com/
+[v1] https://lore.kernel.org/bpf/20211210190855.1369060-1-kuifeng@fb.com/T/
+
+Kui-Feng Lee (4):
+  selftests/bpf: Stop using bpf_object__find_program_by_title API.
+  samples/bpf: Stop using bpf_object__find_program_by_title API.
+  tools/perf: Stop using bpf_object__find_program_by_title API.
+  libbpf: Mark bpf_object__find_program_by_title API deprecated.
+
+ samples/bpf/hbm.c                             | 11 ++-
+ samples/bpf/xdp_fwd_user.c                    | 12 ++-
+ tools/lib/bpf/libbpf.h                        |  1 +
+ tools/perf/builtin-trace.c                    | 13 ++-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     |  4 +-
+ .../bpf/prog_tests/connect_force_port.c       | 18 ++---
+ .../selftests/bpf/prog_tests/core_reloc.c     | 79 +++++++++++++------
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 17 +++-
+ .../bpf/prog_tests/get_stack_raw_tp.c         |  4 +-
+ .../bpf/prog_tests/sockopt_inherit.c          | 15 ++--
+ .../selftests/bpf/prog_tests/stacktrace_map.c |  4 +-
+ .../bpf/prog_tests/stacktrace_map_raw_tp.c    |  4 +-
+ .../selftests/bpf/prog_tests/test_overhead.c  | 20 ++---
+ .../bpf/prog_tests/trampoline_count.c         |  6 +-
+ 14 files changed, 137 insertions(+), 71 deletions(-)
+
+--=20
+2.30.2
+
