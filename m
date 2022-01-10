@@ -2,184 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB1C48A30B
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 23:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D17E348A319
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 23:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242548AbiAJWhF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jan 2022 17:37:05 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63398 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242574AbiAJWhE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jan 2022 17:37:04 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20AJZ4tf014102
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:37:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=8Elfquv8gIKLJ9pS4xhge8Z4FoNVsH8ZvYc69ub2co0=;
- b=Sb7aLh3Y28IbYV0tBVGsrt+/ypQC0tO/rAwyukznNEsD+UQUTQMFU37jNJUeg2FM/qSj
- 354uhdfVjqYSVJiFQIoypxk5tj5nWakFSk9zyu/YQtlQwIZkp1Jz7s2xWoNXDHaZoXRp
- NflJ3qyuhvy1q5pcekLbsCmunsvpVWKECR4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dgtps1e55-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:37:04 -0800
-Received: from twshared4941.18.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 10 Jan 2022 14:37:03 -0800
-Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
-        id 6EE632124D80; Mon, 10 Jan 2022 14:36:54 -0800 (PST)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next] libbpf: Improve btf__add_btf() with an additional hashmap for strings.
-Date:   Mon, 10 Jan 2022 14:36:44 -0800
-Message-ID: <20220110223644.364987-1-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
+        id S1345292AbiAJWoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jan 2022 17:44:06 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:36282 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242210AbiAJWoE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jan 2022 17:44:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6F995B81809
+        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 22:44:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 209CEC36AF3
+        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 22:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641854642;
+        bh=+4HsTaP+HoKnPaVgBtAPcznI4xSidJokuk3GJ2NPTX0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=eoq1+Z4dQuMczo3GIfLwP/oXYFLn0w7fd/ImQBIHn+c47Av04XGrNr+BlIE4k+PO/
+         B0JVH6I9otnaX7YGBgDG6fHdJMyAbcOTHcqLQE+X2OB6qxDyxsff9fzP+xfdNEe+2R
+         BNUGBvlW1XYZ0rBP07+I+clsPsW7q5JMzbh5Sd/s2JCq2Ou2GWiMjIxxAFHJ101tEe
+         CzKLjk3IKkSiUww+ucu4b9aj6Lu/VyPTYnOA08Bd9zLRLljko1OHh5hGhR3MdYAlGs
+         3DedakFr7sIGF98xKwiSKW6oiB8++kMKtg/3o98IDbHXpuMFdSCe/XC4bkKP8nErYi
+         dlng7JbNwNtZg==
+Received: by mail-yb1-f175.google.com with SMTP id p5so34963752ybd.13
+        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 14:44:02 -0800 (PST)
+X-Gm-Message-State: AOAM533CUz/IUN3d+RHw1aoNk8YYJ8Dw38IVVWm4wIHs2yov3J8ZTibz
+        tXqoN07hg/Tr3q6XQ5fB9hGfWsqYdsr2BmQ5NzY=
+X-Google-Smtp-Source: ABdhPJwNk+Y6De/lplQzJmL6ksXvzNywr4f8BGb4CqKAkQwU5nCPWRSsnhwInyZzKeJjM4qgq5O+21YMLEXunZm6n7U=
+X-Received: by 2002:a25:c097:: with SMTP id c145mr2539420ybf.282.1641854641122;
+ Mon, 10 Jan 2022 14:44:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SzBHyustm3iF26Mmbgb57V-_5mqDRErp
-X-Proofpoint-GUID: SzBHyustm3iF26Mmbgb57V-_5mqDRErp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-10_10,2022-01-10_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- bulkscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0 spamscore=0
- clxscore=1015 adultscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=837
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201100146
-X-FB-Internal: deliver
+References: <20220110143102.3466150-1-usama.arif@bytedance.com>
+In-Reply-To: <20220110143102.3466150-1-usama.arif@bytedance.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 10 Jan 2022 14:43:50 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW58rPRsiKXmUNWa11ROzM5GpwbgAGxm80bgiOGPfmu0qg@mail.gmail.com>
+Message-ID: <CAPhsuW58rPRsiKXmUNWa11ROzM5GpwbgAGxm80bgiOGPfmu0qg@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf/scripts: add warning if the correct number of
+ helpers are not auto-generated
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, joe@cilium.io,
+        fam.zheng@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a hashmap to map the string offsets from a source btf to the
-string offsets from a target btf to reduce overheads.
+On Mon, Jan 10, 2022 at 6:31 AM Usama Arif <usama.arif@bytedance.com> wrote:
+>
+> Currently bpf_helper_defs.h is auto-generated using function documentation
+> present in bpf.h. If the documentation for the helper is missing
+> or doesn't follow a specific format for e.g. if a function is documented
+> as:
+>  * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
+> instead of
+>  * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
+> (notice the extra space at the start and end of function arguments)
+> then that helper is not dumped in the auto-generated header and results in
+> an invalid call during eBPF runtime, even if all the code specific to the
+> helper is correct.
+>
+> This patch checks the number of functions documented within the header file
+> with those present as part of #define __BPF_FUNC_MAPPER and generates a
+> warning in the header file if they don't match. It is not needed with the
 
-btf__add_btf() calls btf__add_str() to add strings from a source to a
-target btf.  It causes many string comparisons, and it is a major
-hotspot when adding a big btf.  btf__add_str() uses strcmp() to check
-if a hash entry is the right one.  The extra hashmap here compares
-offsets of strings, that are much cheaper.  It remembers the results
-of btf__add_str() for later uses to reduce the cost.
+Shall we fail instead of warning?
 
-We are parallelizing BTF encoding for pahole by creating separated btf
-instances for worker threads.  These per-thread btf instances will be
-added to the btf instance of the main thread by calling btf__add_str()
-to deduplicate and write out.  With this patch and -j4, the running
-time of pahole drops to about 6.0s from 6.6s.
+> currently documented upstream functions, but can help in debugging
+> when developing new helpers when there might be missing or misformatted
+> documentation.
+>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>
+> ---
+> v1->v2:
+> - Fix CI error reported by Alexei Starovoitov
+> ---
+>  scripts/bpf_doc.py | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 44 insertions(+), 2 deletions(-)
+>
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index a6403ddf5de7..e426d2a727cb 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -87,6 +87,8 @@ class HeaderParser(object):
+>          self.line = ''
+>          self.helpers = []
+>          self.commands = []
+> +        self.desc_unique_helpers = set()
+> +        self.define_unique_helpers = []
+>
+>      def parse_element(self):
+>          proto    = self.parse_symbol()
+> @@ -193,19 +195,41 @@ class HeaderParser(object):
+>              except NoSyscallCommandFound:
+>                  break
+>
+> -    def parse_helpers(self):
+> +    def parse_desc_helpers(self):
+>          self.seek_to('* Start of BPF helper function descriptions:',
+>                       'Could not find start of eBPF helper descriptions list')
+>          while True:
+>              try:
+>                  helper = self.parse_helper()
+>                  self.helpers.append(helper)
+> +                proto = helper.proto_break_down()
+> +                if proto['name'] not in self.desc_unique_helpers:
 
-The following lines are the summary of 'perf stat' w/o the change.
+The "not in" check is unnecessary for set().
 
-       6.668126396 seconds time elapsed
+> +                    self.desc_unique_helpers.add(proto['name'])
+>              except NoHelperFound:
+>                  break
+>
+> +    def parse_define_helpers(self):
+> +        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
+> +        # later with the number of unique function names present in description
+> +        self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
+> +                     'Could not find start of eBPF helper definition list')
+> +        # Searches for either one or more FN(\w+) defines or a backslash for newline
+> +        p = re.compile('\s*(FN\(\w+\))+|\\\\')
+> +        fn_defines_str = ''
+> +        while True:
+> +            capture = p.match(self.line)
+> +            if capture:
+> +                fn_defines_str += self.line
+> +            else:
+> +                break
+> +            self.line = self.reader.readline()
+> +        # Find the number of occurences of FN(\w+)
+> +        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
 
-      13.451054000 seconds user
-       0.715520000 seconds sys
+How about we only save nr_define_unique_helpers in self?
 
-The following lines are the summary w/ the change.
-
-       5.986973919 seconds time elapsed
-
-      12.939903000 seconds user
-       0.724152000 seconds sys
-
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- tools/lib/bpf/btf.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 9aa19c89f758..cd1e92c17261 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1620,20 +1620,35 @@ static int btf_commit_type(struct btf *btf, int d=
-ata_sz)
- struct btf_pipe {
- 	const struct btf *src;
- 	struct btf *dst;
-+	struct hashmap str_off_map; /* map string offsets from src to dst */
- };
-=20
- static int btf_rewrite_str(__u32 *str_off, void *ctx)
- {
- 	struct btf_pipe *p =3D ctx;
-+	void *mapped_off;
- 	int off;
-+	int err;
-=20
- 	if (!*str_off) /* nothing to do for empty strings */
- 		return 0;
-=20
-+	if (hashmap__find(&p->str_off_map, (void *)(long)*str_off, &mapped_off)=
-) {
-+		*str_off =3D (__u32)(long)mapped_off;
-+		return 0;
-+	}
-+
- 	off =3D btf__add_str(p->dst, btf__str_by_offset(p->src, *str_off));
- 	if (off < 0)
- 		return off;
-=20
-+	/* Remember string mapping from src to dst.  It avoids
-+	 * performing expensive string comparisons.
-+	 */
-+	err =3D hashmap__append(&p->str_off_map, (void *)(long)*str_off, (void =
-*)(long)off);
-+	if (err)
-+		return err;
-+
- 	*str_off =3D off;
- 	return 0;
- }
-@@ -1680,6 +1695,9 @@ static int btf_rewrite_type_ids(__u32 *type_id, voi=
-d *ctx)
- 	return 0;
- }
-=20
-+static size_t btf_dedup_identity_hash_fn(const void *key, void *ctx);
-+static bool btf_dedup_equal_fn(const void *k1, const void *k2, void *ctx=
-);
-+
- int btf__add_btf(struct btf *btf, const struct btf *src_btf)
- {
- 	struct btf_pipe p =3D { .src =3D src_btf, .dst =3D btf };
-@@ -1687,6 +1705,9 @@ int btf__add_btf(struct btf *btf, const struct btf =
-*src_btf)
- 	__u32 *off;
- 	void *t;
-=20
-+	/* Map the string offsets from src_btf to the offsets from btf to impro=
-ve performance */
-+	hashmap__init(&p.str_off_map, btf_dedup_identity_hash_fn, btf_dedup_equ=
-al_fn, NULL);
-+
- 	/* appending split BTF isn't supported yet */
- 	if (src_btf->base_btf)
- 		return libbpf_err(-ENOTSUP);
-@@ -1754,6 +1775,8 @@ int btf__add_btf(struct btf *btf, const struct btf =
-*src_btf)
- 	btf->hdr->str_off +=3D data_sz;
- 	btf->nr_types +=3D cnt;
-=20
-+	hashmap__clear(&p.str_off_map);
-+
- 	/* return type ID of the first added BTF type */
- 	return btf->start_id + btf->nr_types - cnt;
- err_out:
-@@ -1767,6 +1790,8 @@ int btf__add_btf(struct btf *btf, const struct btf =
-*src_btf)
- 	 * wasn't modified, so doesn't need restoring, see big comment above */
- 	btf->hdr->str_len =3D old_strs_len;
-=20
-+	hashmap__clear(&p.str_off_map);
-+
- 	return libbpf_err(err);
- }
-=20
---=20
-2.30.2
-
+> +
+>      def run(self):
+>          self.parse_syscall()
+> -        self.parse_helpers()
+> +        self.parse_desc_helpers()
+> +        self.parse_define_helpers()
+>          self.reader.close()
+>
+>  ###############################################################################
+> @@ -509,6 +533,8 @@ class PrinterHelpers(Printer):
+>      """
+>      def __init__(self, parser):
+>          self.elements = parser.helpers
+> +        self.desc_unique_helpers = parser.desc_unique_helpers
+> +        self.define_unique_helpers = parser.define_unique_helpers
+>
+>      type_fwds = [
+>              'struct bpf_fib_lookup',
+> @@ -628,6 +654,22 @@ class PrinterHelpers(Printer):
+>  /* Forward declarations of BPF structs */'''
+>
+>          print(header)
+> +
+> +        nr_desc_unique_helpers = len(self.desc_unique_helpers)
+> +        nr_define_unique_helpers = len(self.define_unique_helpers)
+> +        if nr_desc_unique_helpers != nr_define_unique_helpers:
+> +            header_warning = '''
+> +#warning The number of unique helpers in description (%d) don\'t match the number of unique helpers defined in __BPF_FUNC_MAPPER (%d)
+> +''' % (nr_desc_unique_helpers, nr_define_unique_helpers)
+> +            if nr_desc_unique_helpers < nr_define_unique_helpers:
+> +                # Function description is parsed until no helper is found (which can be due to
+> +                # misformatting). Hence, only print the first missing/misformatted function.
+> +                header_warning += '''
+> +#warning The description for %s is not present or formatted correctly.
+> +''' % (self.define_unique_helpers[nr_desc_unique_helpers])
+> +            print(header_warning)
+> +
+> +
+>          for fwd in self.type_fwds:
+>              print('%s;' % fwd)
+>          print('')
+> --
+> 2.25.1
+>
