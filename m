@@ -2,247 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE69C489DB4
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 17:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3132C489DF3
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 17:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237594AbiAJQhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jan 2022 11:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35692 "EHLO
+        id S233911AbiAJQ7n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jan 2022 11:59:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237574AbiAJQhH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jan 2022 11:37:07 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F28CC061748
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 08:37:07 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id rj2-20020a17090b3e8200b001b1944bad25so592078pjb.5
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 08:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :in-reply-to;
-        bh=rbc6XJVKkrCDxX35o9epsB4ZCZcMuwxJzFIiNTo3e1I=;
-        b=GI9mW1D6xq8Nqd9wuSjA3PcW8Do8YJKPTU7lpxoB7kDVUbPbcHWm6IPyLCb0jGYzAs
-         nIf1Ax8/MFUScQ7Eysjx1qt6Q/vMZTaET5/ufqtpAfXICJLHS/HJV/ad6L8+M4xa2Jiy
-         vi/6WHoJqKjIH77regY9IMSQyiO2GnWgAVyz8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:in-reply-to;
-        bh=rbc6XJVKkrCDxX35o9epsB4ZCZcMuwxJzFIiNTo3e1I=;
-        b=WHznI1khl8ZOYhQ7bGF1N8wW3YPglXyOqCBid7gIWsQHal6H2uPTBnx11pnhWVU8c7
-         9lE/S3sklB85laX6rvVBfdRrxUDSgyAH/WvKmmEQpNI8GpINatYV8TBmIiW+N5WUKVtL
-         PMAHZC+EX5pf8AWCWSMX1O+bUBsCTr6hiym3sZOJWkp/sZZqUcMRwrXcXhu8sOGvFFV9
-         5Zma3PUjQSLsXKuAc+IEjW3/ffV65yUdzaKaOERCNYZKaDlZv57IK1LWb80Fc4CiMb6d
-         n6h7XM0mKGopA1ZabGFDh+I4fq+rldh6xhjGE9w866d0k/je9535dn3+RyernJpNW8KD
-         /muw==
-X-Gm-Message-State: AOAM531C6SZiJkiwowwmEBOXRUYV7qRd86ZTkhAxZMHcivIs7pDtEpio
-        0irLEFCyAitVKwlLUK7FnG6BhQ==
-X-Google-Smtp-Source: ABdhPJwuOF4VLD3Had2luICeMwgpPCZmWrpVFPKoDC4/52Sy29r0QnxYswtsP5TzEA0oaZ7EYq5KRg==
-X-Received: by 2002:a63:af1e:: with SMTP id w30mr438426pge.467.1641832626191;
-        Mon, 10 Jan 2022 08:37:06 -0800 (PST)
-Received: from C02YVCJELVCG (104-190-227-136.lightspeed.rlghnc.sbcglobal.net. [104.190.227.136])
-        by smtp.gmail.com with ESMTPSA id x12sm3370712pjq.52.2022.01.10.08.37.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jan 2022 08:37:05 -0800 (PST)
-From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
-X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
-Date:   Mon, 10 Jan 2022 11:37:00 -0500
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com, andy@greyhouse.net
-Subject: Re: [PATCH v21 bpf-next 06/23] net: marvell: rely on
- xdp_update_skb_shared_info utility routine
-Message-ID: <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
-References: <cover.1641641663.git.lorenzo@kernel.org>
- <a346f27e55a9117f43f89aceb7e47c5f0743d50a.1641641663.git.lorenzo@kernel.org>
+        with ESMTP id S237327AbiAJQ7n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 10 Jan 2022 11:59:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58270C06173F;
+        Mon, 10 Jan 2022 08:59:42 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 457F461341;
+        Mon, 10 Jan 2022 16:59:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25D50C36AE3;
+        Mon, 10 Jan 2022 16:59:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641833980;
+        bh=dL5sJz14KH/MnFm5LiWq3OK9TibKvIP5py+qchPUekA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RDraMqr7XGnCR4woIVwGa1WdQQQwyYNS1cCiaqmGtWhWfe4/HCgvzb6GDiHK1vUuQ
+         GoRLtJGFjk+a2DOwby5nTgvxOjLVGlSTI3N6TyP1Su6A6kg7+ZDEKbvLSzy+FYXX2A
+         +kjSm2N/OomoHMcSLUyhPk1aiknBe8g5eSzKgX0VodiAJVhGsk/jnY5ku1G3OuOwxd
+         Re5mTP75shNx1VpiEqTgyI0YtLcDK+iaK/6q4IDkBxIsyTpTdNJxrB/1OgTc0su7Rx
+         aiXcQh2I2n+hCUetVHfe10aNDFXaZDyKgi1GfkKJ218OgVTbLbkrjlbFBW94WPGf1O
+         etzmbZQfVquIw==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tong Tiangen <tongtiangen@huawei.com>
+Subject: [PATCH riscv-next] riscv: bpf: Fix eBPF's exception tables
+Date:   Tue, 11 Jan 2022 00:52:08 +0800
+Message-Id: <20220110165208.1826-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <a346f27e55a9117f43f89aceb7e47c5f0743d50a.1641641663.git.lorenzo@kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000082759c05d53cf25e"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---00000000000082759c05d53cf25e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+eBPF's exception tables needs to be modified to relative synchronously.
 
-On Sat, Jan 08, 2022 at 12:53:09PM +0100, Lorenzo Bianconi wrote:
-> Rely on xdp_update_skb_shared_info routine in order to avoid
-> resetting frags array in skb_shared_info structure building
-> the skb in mvneta_swbm_build_skb(). Frags array is expected to
-> be initialized by the receiving driver building the xdp_buff
-> and here we just need to update memory metadata.
-> 
-> Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/ethernet/marvell/mvneta.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> index 775ffd91b741..267a306d9c75 100644
-> --- a/drivers/net/ethernet/marvell/mvneta.c
-> +++ b/drivers/net/ethernet/marvell/mvneta.c
-> @@ -2332,8 +2332,12 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
->  		skb_frag_size_set(frag, data_len);
->  		__skb_frag_set_page(frag, page);
->  
-> -		if (!xdp_buff_is_mb(xdp))
-> +		if (!xdp_buff_is_mb(xdp)) {
-> +			sinfo->xdp_frags_size = *size;
->  			xdp_buff_set_mb(xdp);
-> +		}
-> +		if (page_is_pfmemalloc(page))
-> +			xdp_buff_set_frag_pfmemalloc(xdp);
->  	} else {
->  		page_pool_put_full_page(rxq->page_pool, page, true);
->  	}
-> @@ -2347,7 +2351,6 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
->  	struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
->  	struct sk_buff *skb;
->  	u8 num_frags;
-> -	int i;
->  
->  	if (unlikely(xdp_buff_is_mb(xdp)))
->  		num_frags = sinfo->nr_frags;
-> @@ -2362,18 +2365,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
->  	skb_put(skb, xdp->data_end - xdp->data);
->  	skb->ip_summed = mvneta_rx_csum(pp, desc_status);
->  
-> -	if (likely(!xdp_buff_is_mb(xdp)))
-> -		goto out;
-> -
-> -	for (i = 0; i < num_frags; i++) {
-> -		skb_frag_t *frag = &sinfo->frags[i];
-> -
-> -		skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> -				skb_frag_page(frag), skb_frag_off(frag),
-> -				skb_frag_size(frag), PAGE_SIZE);
+Suggested-by: Tong Tiangen <tongtiangen@huawei.com>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Maybe I'm missing something but I'm not sure you have a suitable
-replacement for the 3 lines above this in your proposed change.
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 69bab7e28f91..44c97535bc15 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -498,7 +498,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
+ 	offset = pc - (long)&ex->insn;
+ 	if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
+ 		return -ERANGE;
+-	ex->insn = pc;
++	ex->insn = offset;
+ 
+ 	/*
+ 	 * Since the extable follows the program, the fixup offset is always
+-- 
+2.34.1
 
-> -	}
-> +	if (unlikely(xdp_buff_is_mb(xdp)))
-> +		xdp_update_skb_shared_info(skb, num_frags,
-> +					   sinfo->xdp_frags_size,
-> +					   num_frags * xdp->frame_sz,
-> +					   xdp_buff_is_frag_pfmemalloc(xdp));
->  
-
-When I did an implementation of this on a different driver I also needed
-to add:
-
-	for (i = 0; i < num_frags; i++)
-		skb_frag_set_page(skb, i, skb_frag_page(&sinfo->frags[i]));
-
-to make sure that frames that were given XDP_PASS were formatted
-correctly so they could be handled by the stack.  Don't you need
-something similar to make sure frags are properly set?
-
-Thanks,
-
--andy
-
-P.S.  Sorry for noticing this so late in the process; I realize this version
-was just a rebase of v20 and this would have been useful information
-earlier if I'm correct.
-
-> -out:
->  	return skb;
->  }
->  
-> -- 
-> 2.33.1
-> 
-
---00000000000082759c05d53cf25e
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVkwggRBoAMCAQICDBPdG+g0KtOPKKsBCTANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDAyMzhaFw0yMjA5MjIxNDExNTVaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGDAWBgNVBAMTD0FuZHkgR29zcG9kYXJlazEtMCsGCSqGSIb3
-DQEJARYeYW5kcmV3Lmdvc3BvZGFyZWtAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEAp9JFtMqwgpbnvA3lNVCpnR5ehv0kWK9zMpw2VWslbEZq4WxlXr1zZLZEFo9Y
-rdIZ0jlxwJ4QGYCvxE093p9easqc7NMemeMg7JpF63hhjCksrGnsxb6jCVUreXPSpBDD0cjaE409
-9yo/J5OQORNPelDd4Ihod6g0XlcxOLtlTk1F0SOODSjBZvaDm0zteqiVZb+7xgle3NOSZm3kiCby
-iRuyS0gMTdQN3gdgwal9iC3cSXHMZFBXyQz+JGSHomhPC66L6j4t6dUqSTdSP07wg38ZPV6ct/Sv
-/O2HcK+E/yYkdMXrDBgcOelO4t8AYHhmedCIvFVp4pFb2oit9tBuFQIDAQABo4IB3zCCAdswDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDApBgNVHREEIjAggR5hbmRyZXcuZ29zcG9kYXJla0Bicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
-KwYBBQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFKARn7Ud
-RlGu+rBdUDirYE+Ee4TeMA0GCSqGSIb3DQEBCwUAA4IBAQAcWqh4fdwhDN0+MKyH7Mj0vS10E7xg
-mDetQhQ+twwKk5qPe3tJXrjD/NyZzrUgguNaE+X97jRsEbszO7BqdnM0j5vLDOmzb7d6qeNluJvk
-OYyzItlqZk9cJPoP9sD8w3lr2GRcajj5JCKV4pd2PX/i7r30Qco0VnloXpiesFmNTXQqD6lguUyn
-nb7IGM3v/Nb7NTFH8/KUVg33xw829ztuGrOvfrHfBbeVcUoOHEHObXoaofYOJjtmSOQdMeJIiBgP
-XEpJG8/HB8t4FF6A8W++4cHhv0+ayyEnznrbOCn6WUmIvV2WiJymRpvRG7Hhdlk0zA97MRpqK5yn
-ai3dQ6VvMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
-di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
-E90b6DQq048oqwEJMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCnAR3CGjBzZnmI
-CqN9MKz0iCVz9RRKJNBSaISQs5js+jAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
-DQEJBTEPFw0yMjAxMTAxNjM3MDZaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
-SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
-BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEASGShvmteZKjlc4DsxOHYYM+BY5dGSWhS
-hHyffvcHwbN6fyfib6K2Ly5O1QR/zIsAzzKVrKZARWdtojlQ8DuhgvHGZX5/98up2zeWaB36+Wyv
-6guquMguT7hssi+MVDtH5yAHksVirStWMOZsI/5HMfRUNqjpM7d+Vs9/Yj7QbJ804cwBcdS9SxUc
-FmnT5umxTjyad3mBzFQs6pmgeaRGZ5xmZUtstbmty1UT8MsH1SldcgcNxXz8Cxbzcv+ctqFLeMRQ
-qwMJjAJ6mEO4UgbscZF2KcszAnn2JVv/jal/yiK1M9new+b4gEVIqkFbgPc/CG54S0yDeKM/ZUp5
-a0Fp0g==
---00000000000082759c05d53cf25e--
