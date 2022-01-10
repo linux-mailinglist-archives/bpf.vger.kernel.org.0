@@ -2,131 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058E248967B
-	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 11:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FBB4896C3
+	for <lists+bpf@lfdr.de>; Mon, 10 Jan 2022 11:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239436AbiAJKhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 10 Jan 2022 05:37:22 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:49978 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244037AbiAJKhT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 10 Jan 2022 05:37:19 -0500
-Received: by mail-io1-f70.google.com with SMTP id g16-20020a05660203d000b005f7b3b0642eso10741698iov.16
-        for <bpf@vger.kernel.org>; Mon, 10 Jan 2022 02:37:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=28Zn727PbkOa9e5z/Te0bGji+C0r00GDui6Opfz/fgY=;
-        b=kaGH+95UDS1UljcEiuBA190L0PwMcpSbS9Da6m+ivx5jaKtzNCVKUin7fUCKZV1rxn
-         GBCaQ/vrX68Yh1Osp3TqTzCJFRimiPwmtngfOpnBxJwWq4JoLZ1AJGgzksVLs2wYJ5F0
-         sUP7X1Rfv9VEIZL2JAx/SokN5Rb8aELT5cKT2BtrTsZIrp8P60GvytxtIv1fThab6iGw
-         ELop0+PQ3jt8SlZXmtT/o/XIZxVxHYBczzu7twCjkFJzFpM0W7QTnRID9N9MRV5dVGdy
-         3Nny+4xuu9Te1o63TLtcOqAQlzrxlEKzdVuu+qC+3q5dcr1j+iOQhavc/EKx3VzUp8VH
-         dyjQ==
-X-Gm-Message-State: AOAM531LKr+2BucJSSUj35a8VD/yV28hJRmh5w4YJioGAwrGITvAvUlx
-        zdG/UfycJy6BKmU9pqlKeJqY4L9blVpfoPuCwKHoMIKIZioI
-X-Google-Smtp-Source: ABdhPJxkWJglLMH3JYkAs5xRuRcpxjI7rYX9TuzOm255LBfzxK0nlisfIObbM2ncvDqJUr2+cbUo4jJfvo5yCLgKxSReC+qt7bFu
+        id S244263AbiAJKwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 10 Jan 2022 05:52:39 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:16834 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S244267AbiAJKwg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 10 Jan 2022 05:52:36 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20AAgktC022279;
+        Mon, 10 Jan 2022 10:52:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=MHSYtK1t1qTzP5B98nVv74V4WQvLYItmjMVkqb64VSM=;
+ b=MUDBP9kCFu2q8IDuwlmG/iVH6Lq4vG6MFac5w3AkqwIIVGJ7pUTEQcWwCe8h0NoccN+I
+ L6eaRuHo5yThRb8dE+I7YLCjHGnIPtxiKNkco5e4mp4s1KBs/g3NV5qx05xnOJCq8YtT
+ bGtvu82ni6A14h0Yp+XU20BONOBFBUFlGybo+HMHJEw8gD1AEyhPQqvqvO/ucM0xEa7u
+ yMz5hhDbgl0cthsiYFaPBDUnez4mOss7fLb27/d/HzHW+dgmlxFc45OqlryJvz9RjugU
+ 49iWvTjZUi5dOKje0gwv124TT6ERXCPpzm5v2WZoHHwuREsqw+XEWE6jjBi5BjGXetcJ Jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3df37wtqpv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jan 2022 10:52:12 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20AAgsqP022681;
+        Mon, 10 Jan 2022 10:52:12 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3df37wtqpc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jan 2022 10:52:11 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20AAm5Na015230;
+        Mon, 10 Jan 2022 10:52:10 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3df2892u64-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jan 2022 10:52:10 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20AAq7KA18481536
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Jan 2022 10:52:07 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88669AE045;
+        Mon, 10 Jan 2022 10:52:07 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 148B0AE053;
+        Mon, 10 Jan 2022 10:52:07 +0000 (GMT)
+Received: from localhost (unknown [9.43.115.31])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 10 Jan 2022 10:52:06 +0000 (GMT)
+Date:   Mon, 10 Jan 2022 16:22:05 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 02/13] powerpc32/bpf: Fix codegen for bpf-to-bpf calls
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        "johan.almbladh@anyfinetworks.com" <johan.almbladh@anyfinetworks.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "ykaliuta@redhat.com" <ykaliuta@redhat.com>
+References: <cover.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+        <52d8fe51f7620a6f27f377791564d79d75463576.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+        <4f7b021e-0527-0113-ca99-8c63b43ca21c@csgroup.eu>
+In-Reply-To: <4f7b021e-0527-0113-ca99-8c63b43ca21c@csgroup.eu>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ba05:: with SMTP id k5mr35882555iof.194.1641811039359;
- Mon, 10 Jan 2022 02:37:19 -0800 (PST)
-Date:   Mon, 10 Jan 2022 02:37:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca1d2005d537ebac@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in __dev_queue_xmit
-From:   syzbot <syzbot+e163f2ff7c3f7efd8203@syzkaller.appspotmail.com>
-To:     a@unstable.cc, alobakin@pm.me, andrii@kernel.org, ast@kernel.org,
-        atenart@kernel.org, b.a.t.m.a.n@lists.open-mesh.org,
-        bpf@vger.kernel.org, coreteam@netfilter.org, daniel@iogearbox.net,
-        davem@davemloft.net, fw@strlen.de, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kadlec@netfilter.org, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lukas@wunner.de, mareklindner@neomailbox.ch,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, songliubraving@fb.com, sven@narfation.org,
-        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.16-1-g4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1641811059.76dcmed7ki.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: THt_vLLvHYsUXgeVQui0t7o7RJ08l0x5
+X-Proofpoint-ORIG-GUID: LVVkbRLFRI-xCpoMN9ABYAy1h4aeLXjb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-10_04,2022-01-10_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=938
+ priorityscore=1501 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
+ mlxscore=0 impostorscore=0 bulkscore=0 malwarescore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2201100074
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Christophe Leroy wrote:
+>=20
+>=20
+> Le 06/01/2022 =C3=A0 12:45, Naveen N. Rao a =C3=A9crit=C2=A0:
+>> Pad instructions emitted for BPF_CALL so that the number of instructions
+>> generated does not change for different function addresses. This is
+>> especially important for calls to other bpf functions, whose address
+>> will only be known during extra pass.
+>=20
+> In first pass, 'image' is NULL and we emit the 4 instructions sequence=20
+> already, so the code won't grow after first pass, it can only shrink.
 
-syzbot found the following issue on:
+Right, but this patch addresses the scenario where the function address=20
+is only provided during the extra pass. So, even though we will not=20
+write past the end of the BPF image, the emitted instructions can still=20
+be wrong.
 
-HEAD commit:    4c375272fb0b Merge branch 'net-add-preliminary-netdev-refc..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=164749a9b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2b8e24e3a80e3875
-dashboard link: https://syzkaller.appspot.com/bug?extid=e163f2ff7c3f7efd8203
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11493641b00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ac6aceb00000
+>=20
+> On PPC32, a huge effort is made to minimise the situations where 'bl'=20
+> cannot be used, see commit 2ec13df16704 ("powerpc/modules: Load modules=20
+> closer to kernel text")
+>=20
+> And if you take the 8xx for instance, a NOP a just like any other=20
+> instruction, it takes one cycle.
+>=20
+> If it is absolutely needed, then I'd prefer we use an out-of-line=20
+> trampoline for the unlikely case and use 'bl' to that trampoline.
 
-The issue was bisected to:
+Yes, something like that will be nice to do, but we will still need this=20
+patch for -stable.
 
-commit 42df6e1d221dddc0f2acf2be37e68d553ad65f96
-Author: Lukas Wunner <lukas@wunner.de>
-Date:   Fri Oct 8 20:06:03 2021 +0000
-
-    netfilter: Introduce egress hook
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1236329db00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1136329db00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1636329db00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e163f2ff7c3f7efd8203@syzkaller.appspotmail.com
-Fixes: 42df6e1d221d ("netfilter: Introduce egress hook")
-
-=============================
-WARNING: suspicious RCU usage
-5.16.0-rc3-syzkaller #0 Not tainted
------------------------------
-include/linux/netfilter_netdev.h:97 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
+The other option is to redo the whole JIT during the extra pass, but=20
+only if we can ensure that we have provisioned for the maximum image=20
+size.
 
 
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by kworker/u4:2/49:
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: arch_atomic_long_set include/linux/atomic/atomic-long.h:41 [inline]
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: atomic_long_set include/linux/atomic/atomic-instrumented.h:1198 [inline]
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:635 [inline]
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:662 [inline]
- #0: ffff88814b0fe938 ((wq_completion)bat_events){+.+.}-{0:0}, at: process_one_work+0x896/0x1690 kernel/workqueue.c:2269
- #1: ffffc9000119fdb0 ((work_completion)(&(&forw_packet_aggr->delayed_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8ca/0x1690 kernel/workqueue.c:2273
- #2: ffffffff8bb83b00 (rcu_read_lock_bh){....}-{1:2}, at: __dev_queue_xmit+0x1e3/0x3640 net/core/dev.c:4036
+- Naveen
 
-stack backtrace:
-CPU: 1 PID: 49 Comm: kworker/u4:2 Not tainted 5.16.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: bat_events batadv_iv_send_outstanding_bat_ogm_packet
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- nf_hook_egress include/linux/netfilter_netdev.h:97 [inline]
- __dev_queue_xmit+0x2eac/0x3640 net/core/dev.c:4053
- batadv_send_skb_packet+0x4a9/0x5f0 net/batman-adv/send.c:108
- batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:393 [inline]
- batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:421 [inline]
- batadv_iv_send_outstanding_bat_ogm_packet+0x6d7/0x8e0 net/batman-adv/bat_iv_ogm.c:1701
- process_one_work+0x9b2/0x1690 kernel/workqueue.c:2298
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2445
- kthread+0x405/0x4f0 kernel/kthread.c:327
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
