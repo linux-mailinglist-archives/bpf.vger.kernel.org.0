@@ -2,112 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 179BB48AD61
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 13:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F2548ADA3
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 13:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239621AbiAKMOH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 07:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53578 "EHLO
+        id S238809AbiAKMdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 07:33:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239613AbiAKMOG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 07:14:06 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8B3C06173F;
-        Tue, 11 Jan 2022 04:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DhDkiEPn5JGUZnMHwMsgyfl+B6fjvmEHCm3pq7u5958=; b=KpLOIxN+GaIw7gaHD4vNd1cafQ
-        U02ud691p2Gk0bmPI45C6i/HhYJ4ulVnHzt4E0sLc4I4aEkKGHiWjaY6nohspyne7vW4QSBtJNn0P
-        CDa9QjJSYCalbLeJTfJPjarmHmd91cd7P2V1cJw483Oh2DS1c9rHH2+1CEOpcmtVOAhCLXNOjUhyM
-        x5JdC7tK+Qj3sr22g344F8FKSUtriqaq/tlLlx0TVeTYhnhNs3nkA7RyzhJK3RgbNwLcmpLfUc0pu
-        Twka7k8bJSIOHzPk0Ba6a2mqvUpV2Ky/A9Yv0sH9MSH/zSg/6gSggr5pL8wGLdKMrhqF4AHYjRvuS
-        xHAdAPVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1n7G2I-003DnK-3A; Tue, 11 Jan 2022 12:13:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7A123000E6;
-        Tue, 11 Jan 2022 13:13:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 987532B323545; Tue, 11 Jan 2022 13:13:57 +0100 (CET)
-Date:   Tue, 11 Jan 2022 13:13:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kernel-team@fb.com, x86@kernel.org
-Subject: Re: [PATCH v3 bpf-next 5/7] x86/alternative: introduce text_poke_jit
-Message-ID: <Yd10heJVckednY07@hirez.programming.kicks-ass.net>
-References: <20220106022533.2950016-1-song@kernel.org>
- <20220106022533.2950016-6-song@kernel.org>
+        with ESMTP id S238766AbiAKMdY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 07:33:24 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCD0C06173F
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 04:33:23 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id u21so43968094edd.5
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 04:33:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Iyuyw1lveh7BTFp098e8inSytxlbldUsFUYZq5M97Uk=;
+        b=aVLGEFN09CKi1L79iT5rILR6v9jOAVdekFvJF4VaYNrToUHG1Cyo8hnQZywkZpC01d
+         57g6mUp9qQm9BNfeRkv26sDFFrRqdnsFSOJM2BFgStJB3fQN7IlVZfaXArd3bYPqk99j
+         WCeK4c9QNxyAljPajfToCHA2REUso/F9PY66H3LJcRglH3njse+lke3iU+qD/W179q9r
+         wp0XwZBPqQEVmcBvhveLiM9VKrmJqcaPDd6AkVgP8Lg3eSvmA+sRroGeupl5RsvmzCGm
+         pDjAMsr4LzyPzSBunnqpD9v2on0VxCvjH/937yl4zQb4GTGtT1vXNYnwwQRB7VXt/0vE
+         ZYzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Iyuyw1lveh7BTFp098e8inSytxlbldUsFUYZq5M97Uk=;
+        b=nXN/LC131dIlWsa6hANa1NlsB7+cqvXiFFgQ1DR8qlkNmhUcrgs53Xay8Yv94OkjyG
+         4GA7wDnCza/Rc8f1OsLOuzkGFUGg+/Qz5giq0nUntQVw5aMsz2QKqafvP/DZd0pujC//
+         HvnM4TxT+IzydFAlTaPPh5lDzm+VKq+3sD5k0leWA0TIiEzEdsZq3/c2WhcK3M8Ep8SF
+         q0pwzR/z5LwcPAMssh4rwpKCIgA8CF/P1S6aMdIb3PdQ4FA7W2v/U4Ti1TXN+oaKCMU8
+         KBL7yWiV5UVBM5fjppXQFBlzR4RBSkptO6fKNNKbbYwI9Yzj/rfWKM34clQwLiaH/wR4
+         OCJA==
+X-Gm-Message-State: AOAM532Jr/67wh0ZkNNk9rmQY8D+ImQ7syY3fhTHgkHlIGtHSgQpr8Xf
+        rY2jpOgIDieEgjU1vWyFkqCu0c7cffpR2jS0wh2fbAjty5Y=
+X-Google-Smtp-Source: ABdhPJyR0qnV472ATGcu34aK1/QmHVSx8gseak5XZ6Oad+pbyfGpU3QOXZiP2S6FXl7a4apAQjRDty2Wr9hsLCfqN/o=
+X-Received: by 2002:a05:6402:124b:: with SMTP id l11mr4054749edw.9.1641904402221;
+ Tue, 11 Jan 2022 04:33:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220106022533.2950016-6-song@kernel.org>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Tue, 11 Jan 2022 14:33:11 +0200
+Message-ID: <CAMy7=ZXqyoaw0mOk2Z8ADxUSs95B=SRgvTua3vRJ00nS5qTFgQ@mail.gmail.com>
+Subject: libbpf API: dynamically load(/unload/attach/detach) bpf programs question
+To:     bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     michael.tcherniack@aquasec.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 06:25:31PM -0800, Song Liu wrote:
+Hello!
 
-> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-> index 23fb4d51a5da..02c35725cc62 100644
-> --- a/arch/x86/kernel/alternative.c
-> +++ b/arch/x86/kernel/alternative.c
-> @@ -1102,6 +1102,34 @@ void *text_poke_kgdb(void *addr, const void *opcode, size_t len)
->  	return __text_poke(addr, opcode, len);
->  }
->  
-> +/**
-> + * text_poke_jit - Update instructions on a live kernel by jit engine
-> + * @addr: address to modify
-> + * @opcode: source of the copy
-> + * @len: length to copy, could be more than 2x PAGE_SIZE
-> + *
-> + * Only module memory taking jit text (e.g. for bpf) should be patched.
-> + */
+I noticed that the bpf_program__load() API was deprecated since libbpf
+0.6 saying that bpf_object__load() should be used instead.
+This, however, doesn't seem to fit our use case of loading multiple
+bpf programs (that also share the same maps) from one bpf object (elf
+file), then unloading and loading them dynamically according to some
+given needs.
+I'm not sure it is possible to load one specific program from the bpf
+object using bpf_object__load() API - is it?
 
-Maybe:
+Another question with the same context -
+If I understand correctly, the purpose of detach is to "prevent
+execution of a previously attached program from any future events"
+(https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-lifetime.html),
+which seems like something that I would want to do if I just wanted to
+temporarily stop an event from triggering the program. But then I ask
+myself - what is the meaning of detaching a link (and not
+bpf_link__destroy() it) if there is no way to attach it back (without
+re-creating the link object)? I don't see any function named
+bpf_link__attach() that would do such a thing, or any other function
+in libbpf API that can do something similar, am I right?
+Also, It seems that using bpf_link__detach() does not fit all link
+types. For example, when attaching a (non legacy) kprobe, detaching it
+should probably happen using PERF_EVENT_IOC_DISABLE and not through
+sys_bpf(BPF_LINK_DETACH), shouldn't it?
 
-	text_poke_copy() - Copy instructions into (an unused part of) RX memory
-	@args...
+And one last question:
+When using bpf_program__unload() on a program that is already
+attached, should we first call bpf_link__detach() or does the kernel
+already take care of this?
 
-	Not safe against concurrent execution; useful for JITs to dump
-	new code blocks into unused regions of RX memory. Can be used in
-	conjunction with synchronize_rcu_tasks() to wait for existing
-	execution to quiesce after having made sure no existing
-	functions pointers are life.
-
-or something along those lines?
-
-> +void *text_poke_jit(void *addr, const void *opcode, size_t len)
-> +{
-> +	unsigned long start = (unsigned long)addr;
-> +	size_t patched = 0;
-> +
-> +	if (WARN_ON_ONCE(core_kernel_text(start)))
-> +		return NULL;
-> +
-> +	while (patched < len) {
-> +		unsigned long ptr = start + patched;
-> +		size_t s;
-> +
-> +		s = min_t(size_t, PAGE_SIZE * 2 - offset_in_page(ptr), len - patched);
-> +
-> +		__text_poke((void *)ptr, opcode + patched, s);
-> +		patched += s;
-> +	}
-> +	return addr;
-> +}
-> +
->  static void do_sync_core(void *info)
->  {
->  	sync_core();
-> -- 
-> 2.30.2
-> 
+Thanks,
+Yaniv
