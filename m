@@ -2,95 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4916A48B2EC
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 18:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA62548B39B
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 18:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242720AbiAKRJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 12:09:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S241281AbiAKRTX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 12:19:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242530AbiAKRJw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 12:09:52 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A1AC06173F;
-        Tue, 11 Jan 2022 09:09:52 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id pf13so41980pjb.0;
-        Tue, 11 Jan 2022 09:09:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=57czanYP5Q2b4OYDOc6CpasiXsnfYjeLs0Wps/Ww8UA=;
-        b=J/XcacddpOe/fOijVK7gKcDJKRjJJg7nVdvQl1Q0CuNQv4lRpopqUBWn6T5ccjT3B0
-         N8OVnbm1uNp+6ZNMnFxqHQyfT+fOStOLtg2n78GfnpU7OLiaJp6vOv7qXwuPjdpfUJz+
-         P26rN+PEMAhvp2vnYZgT91LCmWY8pt6zpPYqR2PG6gKdoC12LktLmP5eySGGoFVEPsxI
-         gtZ996KWj2kqCwLStu/1ybbu7pQNVUuB2N0r/3fDKD4NA49Y3XpiTFQifmDKcAzHr9SG
-         2yS0uselQPtB3ZHX8n6msxKP6VqG1q8jsbuKmsMVfrA/rA5yPGmmDENY/FiOL1HsXFMK
-         Kgxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=57czanYP5Q2b4OYDOc6CpasiXsnfYjeLs0Wps/Ww8UA=;
-        b=c0wYDHxJpsJUeFmq3GFo59QqhY7D5KRv5+bLONxUUUc+fu6qsnaN1VuljHXncDJS8y
-         RnqQ4kBPhO0uamY6QN3BOxsFDxSBPY2yRKBE+lkDRfqRsaXMaa1u31pLioYxXgM39AzI
-         OtQ49ag9M4rAXDg+JWP3Theu4QnByF6SzNLfiXSQUC1GQi8ODtIdzWk1sc5GmsvQNf3i
-         PRttI746Z1wWRPtcM34Regnet2GaZAgh+0YmcYAAS36BLRwI4AAldLd6e1AVjbnji+SC
-         9NYfV1gA3Z5lDo0IzKVrkFC5vHlWPzP+EyJHujrRb7yLsfj7SXzVAkkLwAm9fliLbDdX
-         lj4w==
-X-Gm-Message-State: AOAM531riNYxuTfrDoCb8/c4IStXXxWYfRTaTC+EF0unmYX4VzmHtaTT
-        quStuMJ7SNNLnOV8UaEbBUI=
-X-Google-Smtp-Source: ABdhPJxvqKdeEG6ekW/di2Oj20ysA6X9QvFmKDXCgk5AA1AFNsL2x63WhUwfPu7eDovgAoj8qfKdpg==
-X-Received: by 2002:a63:8f09:: with SMTP id n9mr4810039pgd.308.1641920991608;
-        Tue, 11 Jan 2022 09:09:51 -0800 (PST)
-Received: from chaofan ([111.199.185.103])
-        by smtp.gmail.com with ESMTPSA id t207sm10378069pfc.205.2022.01.11.09.09.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jan 2022 09:09:51 -0800 (PST)
-Date:   Wed, 12 Jan 2022 01:09:46 +0800
-From:   Wei Fu <fuweid89@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
-        fuweid89@gmail.com
-Subject: Re: [PATCH bpf] tools/bpf: only set obj->skeleton without err
-Message-ID: <20220111170946.GA16663@chaofan>
-References: <20220108084008.1053111-1-fuweid89@gmail.com>
- <CAEf4Bzag+qQOs86t2ESmYvTY8xCip+_GTKqXa0m7MQWjDMO5Mg@mail.gmail.com>
+        with ESMTP id S1344118AbiAKRS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 12:18:57 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D93CC061748
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 09:18:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 700FDB81C04
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 17:18:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE22C36AEB
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 17:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641921535;
+        bh=M1PXH4TpNqgNmMhA1P1pyfs7aUoRrGGzhlW7iHGTyBI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dEt0Zb6I8DyUQ/2ZxiUGbUm8nkAN3mvkpa3j56wAsDhb1voKwKYnvsTRsoUGG1lhn
+         SApnbO5PI6kz1QpyeLD5vek1nF3j66enYRC1QI4F3gMLQczW4LTwAPKzKD1B9PGVkD
+         i5dp/0LrZAsknCZQ3uBuBPx3ZXQyswVx1kKMtzlyV82UcZcLKIpDTWJiwF0m9Xph4z
+         m7HPqcTzPB4aWcifmZZSPXbV3ZGseyUcg/KENm+VMa6Trbdgn9753KCkXDFpiJCXO5
+         jHyPcxrG3ImuwwZRfLslK3Ex7JtXIirqVSbZ1ygWo4RZCZc/7NyzV2ca9Qb981SIDp
+         baag0KHnqfPSg==
+Received: by mail-yb1-f169.google.com with SMTP id n68so3691852ybg.6
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 09:18:55 -0800 (PST)
+X-Gm-Message-State: AOAM533gIaADFUUDiKDd4YCF7gTPqeaUlJPOqhcs2qfH6C4dsJTlJk/a
+        na2K6OAYXI0H0vSj0iYEn9ThQ0lbQePU7xMI8AY=
+X-Google-Smtp-Source: ABdhPJxpUSLLWri5b9onExYzq1gtha/lIiqAaH7M9/DDO3378Z6pYgyBpXhTvgM/NVdUjXYVGbKDBP/HpU25oLZv9VA=
+X-Received: by 2002:a25:287:: with SMTP id 129mr7374899ybc.670.1641921534364;
+ Tue, 11 Jan 2022 09:18:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzag+qQOs86t2ESmYvTY8xCip+_GTKqXa0m7MQWjDMO5Mg@mail.gmail.com>
+References: <20220110143102.3466150-1-usama.arif@bytedance.com>
+ <CAPhsuW58rPRsiKXmUNWa11ROzM5GpwbgAGxm80bgiOGPfmu0qg@mail.gmail.com> <8e512316-d99f-1e17-0132-39608afaffa2@bytedance.com>
+In-Reply-To: <8e512316-d99f-1e17-0132-39608afaffa2@bytedance.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 11 Jan 2022 09:18:43 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4hMSmEEL7vF2h-7SCPEK4Hg4b0NRJaLONY0gKSFsKVGg@mail.gmail.com>
+Message-ID: <CAPhsuW4hMSmEEL7vF2h-7SCPEK4Hg4b0NRJaLONY0gKSFsKVGg@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf/scripts: add warning if the correct number of
+ helpers are not auto-generated
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, joe@cilium.io,
+        fam.zheng@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 09, 2022 at 06:04:45PM -0800, Andrii Nakryiko wrote:
-> On Sat, Jan 8, 2022 at 12:40 AM Wei Fu <fuweid89@gmail.com> wrote:
+On Tue, Jan 11, 2022 at 3:17 AM Usama Arif <usama.arif@bytedance.com> wrote:
+>
+>
+>
+> On 10/01/2022 22:43, Song Liu wrote:
+> > On Mon, Jan 10, 2022 at 6:31 AM Usama Arif <usama.arif@bytedance.com> wrote:
+> >>
+> >> Currently bpf_helper_defs.h is auto-generated using function documentation
+> >> present in bpf.h. If the documentation for the helper is missing
+> >> or doesn't follow a specific format for e.g. if a function is documented
+> >> as:
+> >>   * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
+> >> instead of
+> >>   * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
+> >> (notice the extra space at the start and end of function arguments)
+> >> then that helper is not dumped in the auto-generated header and results in
+> >> an invalid call during eBPF runtime, even if all the code specific to the
+> >> helper is correct.
+> >>
+> >> This patch checks the number of functions documented within the header file
+> >> with those present as part of #define __BPF_FUNC_MAPPER and generates a
+> >> warning in the header file if they don't match. It is not needed with the
 > >
-> > After `bpftool gen skeleton`, the ${bpf_app}.skel.h will provide that
-> > ${bpf_app_name}__open helper to load bpf. If there is some error
-> > like ENOMEM, the ${bpf_app_name}__open will rollback(free) the allocated
-> > object, including `bpf_object_skeleton`.
+> > Shall we fail instead of warning?
 > >
-> > Since the ${bpf_app_name}__create_skeleton set the obj->skeleton first
-> > and not rollback it when error, it will cause double-free in
-> > ${bpf_app_name}__destory at ${bpf_app_name}__open. Therefore, we should
-> > set the obj->skeleton before return 0;
-> >
-> > Signed-off-by: Wei Fu <fuweid89@gmail.com>
-> > ---
-> >  tools/bpf/bpftool/gen.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> 
-> Great catch! Added (please add it yourself in the future):
-> 
-> Fixes: 5dc7a8b21144 ("bpftool, selftests/bpf: Embed object file inside
-> skeleton")
-> 
-> Also reworded the subject a bit. Pushed to bpf-next.
+>
+> I am ok with either warning or error. The only thing with error is that
+> it will cause the eBPF program to fail compilation even if its not using
+> the helper with missing/misformatted doc, which i thought might be a bit
+> extreme as the eBPF program will work if it doesnt use it.
+> If error is recommended approach i can send v4 with #error replacing
+> #warning.
+>
 
-Sure! Thanks for the review.
+Even the BPF program is not using the missing helper, it may still get wrong
+helper ID. I think we should fail to compile in just cases.
+
+[...]
+
+> >> +                break
+> >> +            self.line = self.reader.readline()
+> >> +        # Find the number of occurences of FN(\w+)
+> >> +        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
+> >
+> > How about we only save nr_define_unique_helpers in self?
+> >
+>
+> self.define_unique_helpers is used to give the first
+> missing/misformatted helper to print in "#warning The description for %s
+> is not present or formatted correctly" below.
+
+I see. This is useful information, so let's keep it.
+
+Thanks,
+Song
