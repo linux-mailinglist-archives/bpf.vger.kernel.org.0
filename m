@@ -2,189 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563EF48AE27
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 14:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B13A48AED2
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 14:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240167AbiAKNFh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 08:05:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240123AbiAKNFh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 11 Jan 2022 08:05:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641906336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wpzje35ZQJ++DpfcFSJcktDk/9fVWR9cmKQ44GgvnmQ=;
-        b=JlgrQPIIIw+E2BjdG32+908WF5JZfGtLCsNqlihfW3/N/+NrxqbbWonKnqqRIbO891T8iw
-        nDH8h+LlFu4fIQk8hHO/Zv16DRV1BxeMLqsXpvp4vjNxLrQF2Iirg0kpHSvxqhvSlHCFng
-        E0/Q4VhOp34XY24D5owFs5Bimml7C4E=
-Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
- [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-671-KxLA-1C1OpuOtEpL7B6PGw-1; Tue, 11 Jan 2022 08:05:35 -0500
-X-MC-Unique: KxLA-1C1OpuOtEpL7B6PGw-1
-Received: by mail-yb1-f197.google.com with SMTP id n2-20020a255902000000b0060f9d75eafeso33827117ybb.1
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 05:05:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wpzje35ZQJ++DpfcFSJcktDk/9fVWR9cmKQ44GgvnmQ=;
-        b=QmQ2zrPjy8zi9sxKC8tNihgozF3C2Zf6tnZOUyBTdk4JKFu4f+UYBSp79uqs08qv54
-         3oHlwg+OGbPusOAO7SvT0VqZWvT/zDd+Jg4dqCv0qO3KsuDBLAXj+uXFNSokMXTAnMU3
-         bm2NORUHx2wYEem1mBYxrHxz3kOgf1osDMSYjyxJZ1Ba/7qi+/uZvwzwFHRZXNjgV5as
-         3l/C/1MWKgp//ITlodI3ac6jribFpq2JPEYp/my/Hkmjte+u+o4jt9xIEmInp5Fn31In
-         tt/h5n58BKBtvK2PPXgeigAFj7JPRgv6Rr8oaYTBvkqGY1x4lSUb/ovwIoqvi2YkFzHm
-         gPVw==
-X-Gm-Message-State: AOAM532CNKlOpTsGvSsUk/GDGRzsbKVmVFboxhDeOfIFwIwiX+zDsYUk
-        +CEI4BH6g9c+emExt6VKQ1x2gquaxCJamMTaafhquHZCXF/aNZ1fLrdp9u41ymKqtbaOu3Qc/to
-        i5riNgZ29PFGc4paYoK70/7dqSKZR
-X-Received: by 2002:a05:6902:110d:: with SMTP id o13mr6658658ybu.715.1641906335046;
-        Tue, 11 Jan 2022 05:05:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyJsAYYRDSZYX6e6gogiyOC4FEsDkRLDsOR3cKi9/31EBqC9/2HpkReIPbJz5Y5IOzS526Z85G8eg2mMdWVzTY=
-X-Received: by 2002:a05:6902:110d:: with SMTP id o13mr6658623ybu.715.1641906334739;
- Tue, 11 Jan 2022 05:05:34 -0800 (PST)
+        id S241079AbiAKNsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 08:48:33 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57856 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241004AbiAKNsc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 08:48:32 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1n7HVm-0009LP-1m; Tue, 11 Jan 2022 14:48:30 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1n7HVl-000PVP-Ty; Tue, 11 Jan 2022 14:48:29 +0100
+Subject: Re: [bug report] bpf: Make 32->64 bounds propagation slightly more
+ robust
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     bpf@vger.kernel.org, john.fastabend@gmail.com
+References: <20220111082054.GA20305@kili>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1941b7b2-beb7-ff3f-ee55-70b5d4e028df@iogearbox.net>
+Date:   Tue, 11 Jan 2022 14:48:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <cover.1641641663.git.lorenzo@kernel.org> <a346f27e55a9117f43f89aceb7e47c5f0743d50a.1641641663.git.lorenzo@kernel.org>
- <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
-In-Reply-To: <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Tue, 11 Jan 2022 14:05:23 +0100
-Message-ID: <CAJ0CqmXaeJkJ8SDjTA1u_JNsqpxS8GA4J29S9wGPH0qOmqjp0w@mail.gmail.com>
-Subject: Re: [PATCH v21 bpf-next 06/23] net: marvell: rely on
- xdp_update_skb_shared_info utility routine
-To:     Andy Gospodarek <andrew.gospodarek@broadcom.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Agroskin, Shay" <shayagr@amazon.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
-        Toke Hoiland Jorgensen <toke@redhat.com>, andy@greyhouse.net
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20220111082054.GA20305@kili>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26419/Tue Jan 11 10:24:18 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->
-> On Sat, Jan 08, 2022 at 12:53:09PM +0100, Lorenzo Bianconi wrote:
-> > Rely on xdp_update_skb_shared_info routine in order to avoid
-> > resetting frags array in skb_shared_info structure building
-> > the skb in mvneta_swbm_build_skb(). Frags array is expected to
-> > be initialized by the receiving driver building the xdp_buff
-> > and here we just need to update memory metadata.
-> >
-> > Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  drivers/net/ethernet/marvell/mvneta.c | 23 ++++++++++-------------
-> >  1 file changed, 10 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> > index 775ffd91b741..267a306d9c75 100644
-> > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > @@ -2332,8 +2332,12 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
-> >               skb_frag_size_set(frag, data_len);
-> >               __skb_frag_set_page(frag, page);
-> >
-> > -             if (!xdp_buff_is_mb(xdp))
-> > +             if (!xdp_buff_is_mb(xdp)) {
-> > +                     sinfo->xdp_frags_size = *size;
-> >                       xdp_buff_set_mb(xdp);
-> > +             }
-> > +             if (page_is_pfmemalloc(page))
-> > +                     xdp_buff_set_frag_pfmemalloc(xdp);
-> >       } else {
-> >               page_pool_put_full_page(rxq->page_pool, page, true);
-> >       }
-> > @@ -2347,7 +2351,6 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
-> >       struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
-> >       struct sk_buff *skb;
-> >       u8 num_frags;
-> > -     int i;
-> >
-> >       if (unlikely(xdp_buff_is_mb(xdp)))
-> >               num_frags = sinfo->nr_frags;
-> > @@ -2362,18 +2365,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
-> >       skb_put(skb, xdp->data_end - xdp->data);
-> >       skb->ip_summed = mvneta_rx_csum(pp, desc_status);
-> >
-> > -     if (likely(!xdp_buff_is_mb(xdp)))
-> > -             goto out;
-> > -
-> > -     for (i = 0; i < num_frags; i++) {
-> > -             skb_frag_t *frag = &sinfo->frags[i];
-> > -
-> > -             skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
-> > -                             skb_frag_page(frag), skb_frag_off(frag),
-> > -                             skb_frag_size(frag), PAGE_SIZE);
->
-> Maybe I'm missing something but I'm not sure you have a suitable
-> replacement for the 3 lines above this in your proposed change.
->
+On 1/11/22 9:20 AM, Dan Carpenter wrote:
+> Hello Daniel Borkmann,
 
-Hi Andy,
+[+John]
 
-mvneta_swbm_add_rx_fragment() initializes frags array in
-skb_shared_info for xdp whenever we receive a multi-descriptors frame.
-Since frags array is at the same offset for the xdp_buff and for the
-new skb and build_skb() in mvneta_swbm_build_skb() does not overwrite
-it, we do not need to initialize it again allocating the skb, just
-account metadata info running xdp_update_skb_shared_info(). Agree?
+> The patch e572ff80f05c: "bpf: Make 32->64 bounds propagation slightly
+> more robust" from Dec 15, 2021, leads to the following Smatch static
+> checker warning:
+> 
+> 	kernel/bpf/verifier.c:1412 __reg32_bound_s64()
+> 	warn: always true condition '(a <= (((~0) >> 1))) => (s32min-s32max <= s32max)'
+> 
+> kernel/bpf/verifier.c
+>    1410        static bool __reg32_bound_s64(s32 a)
+>    1411        {
+>    1412                return a >= 0 && a <= S32_MAX;
+> 
+> Obviously an s32 is going to be <= S32_MAX
 
-> > -     }
-> > +     if (unlikely(xdp_buff_is_mb(xdp)))
-> > +             xdp_update_skb_shared_info(skb, num_frags,
-> > +                                        sinfo->xdp_frags_size,
-> > +                                        num_frags * xdp->frame_sz,
-> > +                                        xdp_buff_is_frag_pfmemalloc(xdp));
-> >
->
-> When I did an implementation of this on a different driver I also needed
-> to add:
->
->         for (i = 0; i < num_frags; i++)
->                 skb_frag_set_page(skb, i, skb_frag_page(&sinfo->frags[i]));
->
-> to make sure that frames that were given XDP_PASS were formatted
-> correctly so they could be handled by the stack.  Don't you need
-> something similar to make sure frags are properly set?
->
-> Thanks,
->
-> -andy
->
-> P.S.  Sorry for noticing this so late in the process; I realize this version
-> was just a rebase of v20 and this would have been useful information
-> earlier if I'm correct.
->
+It's aligned with similar helpers such as __reg64_bound_u32() / __reg64_bound_s32() and
+when discussing we went for leaving this explicitly documented in here (aside being true).
 
-no worries :)
+>    1413        }
+>    1414
+>    1415        static void __reg_assign_32_into_64(struct bpf_reg_state *reg)
+>    1416        {
+>    1417                reg->umin_value = reg->u32_min_value;
+>    1418                reg->umax_value = reg->u32_max_value;
+>    1419
+>    1420                /* Attempt to pull 32-bit signed bounds into 64-bit bounds but must
+>    1421                 * be positive otherwise set to worse case bounds and refine later
+>    1422                 * from tnum.
+>    1423                 */
+>    1424                if (__reg32_bound_s64(reg->s32_min_value) &&
+>    1425                    __reg32_bound_s64(reg->s32_max_value)) {
+>    1426                        reg->smin_value = reg->s32_min_value;
+>    1427                        reg->smax_value = reg->s32_max_value;
+>    1428                } else {
+>    1429                        reg->smin_value = 0;
+>    1430                        reg->smax_value = U32_MAX;
+> 
+> Should this be S32_MAX instead of U32_MAX?
 
-Regards,
-Lorenzo
+U32_MAX is correct here.
 
-> > -out:
-> >       return skb;
-> >  }
-> >
-> > --
-> > 2.33.1
-> >
+>    1431                }
+>    1432        }
+> 
+> regards,
+> dan carpenter
+> 
 
