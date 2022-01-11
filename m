@@ -2,217 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEF948B570
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 19:11:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B7448B59C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 19:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242942AbiAKSLF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 13:11:05 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:34576 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242957AbiAKSLE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 13:11:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CFA8B61618;
-        Tue, 11 Jan 2022 18:11:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53188C36AE9;
-        Tue, 11 Jan 2022 18:11:02 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="dvzCGTvB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1641924662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y8yaQEJdWGKWQITH4vgPEpVGHGMGT1Gu/a6CeJDd8tQ=;
-        b=dvzCGTvB1Pg32mCHrz4E6Puayjl+0i4DqkMN4pZfMUNkE1XsZwpkTzbvp1fJ4gwTxW0Y6d
-        LgVIBkKoRzRNyoEJa6aL1HsauIIIWLRr/25GQo1GDBOvzlVdJytf4+gIJUkKuVElXDnFwn
-        kScQn3msxVxV8oT8h6AWUp//nGlev1Y=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 840ddccb (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 11 Jan 2022 18:11:01 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, geert@linux-m68k.org, tytso@mit.edu,
-        gregkh@linuxfoundation.org, jeanphilippe.aumasson@gmail.com,
-        ardb@kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH crypto v2 2/2] lib/crypto: sha1: re-roll loops to reduce code size
-Date:   Tue, 11 Jan 2022 19:10:37 +0100
-Message-Id: <20220111181037.632969-3-Jason@zx2c4.com>
-In-Reply-To: <20220111181037.632969-1-Jason@zx2c4.com>
-References: <20220111134934.324663-1-Jason@zx2c4.com>
- <20220111181037.632969-1-Jason@zx2c4.com>
+        id S1344456AbiAKSUs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 13:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242284AbiAKSUr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 13:20:47 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A335DC06173F
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 10:20:46 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id l12-20020a7bc34c000000b003467c58cbdfso1992689wmj.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 10:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wm7JxQun/f0KEdfX9AQ8CuW2Ykn5Ij0XUilnvdBPwxQ=;
+        b=dJujzxlkN7zU25a8hlOsXa7XIX8pfGN2bX+MNbJGMEmhAItAeTrLf6fUw4zM+5yOFw
+         xSkfWTUj1JlJm6KiS9hE7gnf3AG/QOcOFDDBCNvj2Ddtq48zMSAyRf22Q3oz9ZB5ME/K
+         FJA/2Xr49YpZKRdvJsXRw9omT+TH48dal3RQgKAxkPu8d16yt4YK20Jtb1I4BVnDZ4Tw
+         PBXSbl65huLGqLcN8d/kTl/3zqz0qWfcbQebgsso6Z5wv6OG08l1fkbhfqFUIZEW7dWT
+         eCRlndFelj0g2YIFuI3IcMvV+N+ZPRUAyJqF7t8mbL6q0WIMMmNzDeOZZsTnu/O7NOoX
+         FBtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wm7JxQun/f0KEdfX9AQ8CuW2Ykn5Ij0XUilnvdBPwxQ=;
+        b=eayh3H6BBicNmUSt4TYp5tUnLye2xfS0hlrICI+YLG5Xmbgo/1Oyumzl/NaRBAXfSE
+         X1WmNV+58h8+8jG0tl16TSIZl9WHiE78OSZr3aCYy0nbqqFVJTVNUpYP2GAaAJz1+18x
+         +ae2/LZ6pVjfmbpkellgjZk4W9SSlhwWgjI9IC62Mna7IVwVcvCH8oPzlPlTzIZgz7zV
+         yKi9a1GFT03ih06X2vNWhzVYOmtZ/O7wICvMCsej7bAsTha2tLQvTm2L3PGD5mvAqXGB
+         gMCKgpsN3ET29GE+xUzcc3rKyLC1gO03LnbnYrdfulm0Dqh/QZJZwElQ8k/lb1airO8r
+         up+w==
+X-Gm-Message-State: AOAM5328kH8kvH0PKFD5ctiDwezsYW0CHOt7Oa5kINXe5YC3niYUYjCV
+        zbaQlCSdHhhOpDM2AFD+lQvgPcEqvi9Yl8G2KbL0iw==
+X-Google-Smtp-Source: ABdhPJwd6+Bj6GZ6Bv1j7tviWum9qUWGo+sD1S4b3AJ7sE7AplyQ8CdHNm5bSZMr3aihSJ1n57kbfDz/nYFJjKHRHds=
+X-Received: by 2002:a7b:cd02:: with SMTP id f2mr2488625wmj.68.1641925245065;
+ Tue, 11 Jan 2022 10:20:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220106215059.2308931-1-haoluo@google.com> <Ydd1IIUG7/3kQRcR@google.com>
+ <CA+khW7h4OG0=w5RXnentwnsi614wZdpYW4EUwN6k7Vce3unBKw@mail.gmail.com>
+ <YdiTrq4Y7JwmQumc@google.com> <CA+khW7ihrLZwvzPTGAy0GyFmKzB7tH-FU6D+-fthqbj4wuiwFg@mail.gmail.com>
+ <20220111033344.n2ffifjlnoifdgnj@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220111033344.n2ffifjlnoifdgnj@ast-mbp.dhcp.thefacebook.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Tue, 11 Jan 2022 10:20:33 -0800
+Message-ID: <CA+khW7i3CMMLpHVAk9zG2GPoOiJrm1un4TgeUu-nM_Vp1C0m_g@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     sdf@google.com, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With SHA-1 no longer being used for anything performance oriented, and
-also soon to be phased out entirely, we can make up for the space added
-by unrolled BLAKE2s by simply re-rolling SHA-1. Since SHA-1 is so much
-more complex, re-rolling it more or less takes care of the code size
-added by BLAKE2s. And eventually, hopefully we'll see SHA-1 removed
-entirely from most small kernel builds.
+On Mon, Jan 10, 2022 at 7:33 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jan 10, 2022 at 10:55:54AM -0800, Hao Luo wrote:
+> >
+> > I see. With attach API, are we also able to specify some attributes
+> > for the attachment? For example, a property that we may want is: let
+> > descendent cgroups inherit their parent cgroup's programs.
+>
+> Plenty of interesting ideas in this thread. Thanks for kicking it off.
+> Maybe we should move it to office hours?
+> The back and forth over email can take some time.
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- lib/sha1.c | 117 ++++++++++++-----------------------------------------
- 1 file changed, 25 insertions(+), 92 deletions(-)
+No problem. Requested a time on Thursday (1/13/22).
 
-diff --git a/lib/sha1.c b/lib/sha1.c
-index 9bd1935a1472..f2acfa294e64 100644
---- a/lib/sha1.c
-+++ b/lib/sha1.c
-@@ -9,6 +9,7 @@
- #include <linux/kernel.h>
- #include <linux/export.h>
- #include <linux/bitops.h>
-+#include <linux/string.h>
- #include <crypto/sha1.h>
- #include <asm/unaligned.h>
- 
-@@ -83,109 +84,41 @@
-  */
- void sha1_transform(__u32 *digest, const char *data, __u32 *array)
- {
--	__u32 A, B, C, D, E;
-+	u32 d[5];
-+	unsigned int i = 0;
- 
--	A = digest[0];
--	B = digest[1];
--	C = digest[2];
--	D = digest[3];
--	E = digest[4];
-+	memcpy(d, digest, sizeof(d));
- 
- 	/* Round 1 - iterations 0-16 take their input from 'data' */
--	T_0_15( 0, A, B, C, D, E);
--	T_0_15( 1, E, A, B, C, D);
--	T_0_15( 2, D, E, A, B, C);
--	T_0_15( 3, C, D, E, A, B);
--	T_0_15( 4, B, C, D, E, A);
--	T_0_15( 5, A, B, C, D, E);
--	T_0_15( 6, E, A, B, C, D);
--	T_0_15( 7, D, E, A, B, C);
--	T_0_15( 8, C, D, E, A, B);
--	T_0_15( 9, B, C, D, E, A);
--	T_0_15(10, A, B, C, D, E);
--	T_0_15(11, E, A, B, C, D);
--	T_0_15(12, D, E, A, B, C);
--	T_0_15(13, C, D, E, A, B);
--	T_0_15(14, B, C, D, E, A);
--	T_0_15(15, A, B, C, D, E);
-+	for (; i < 16; ++i)
-+		T_0_15(i, d[(-6 - i) % 5], d[(-5 - i) % 5],
-+		       d[(-4 - i) % 5], d[(-3 - i) % 5], d[(-2 - i) % 5]);
- 
- 	/* Round 1 - tail. Input from 512-bit mixing array */
--	T_16_19(16, E, A, B, C, D);
--	T_16_19(17, D, E, A, B, C);
--	T_16_19(18, C, D, E, A, B);
--	T_16_19(19, B, C, D, E, A);
-+	for (; i < 20; ++i)
-+		T_16_19(i, d[(-6 - i) % 5], d[(-5 - i) % 5],
-+			d[(-4 - i) % 5], d[(-3 - i) % 5], d[(-2 - i) % 5]);
- 
- 	/* Round 2 */
--	T_20_39(20, A, B, C, D, E);
--	T_20_39(21, E, A, B, C, D);
--	T_20_39(22, D, E, A, B, C);
--	T_20_39(23, C, D, E, A, B);
--	T_20_39(24, B, C, D, E, A);
--	T_20_39(25, A, B, C, D, E);
--	T_20_39(26, E, A, B, C, D);
--	T_20_39(27, D, E, A, B, C);
--	T_20_39(28, C, D, E, A, B);
--	T_20_39(29, B, C, D, E, A);
--	T_20_39(30, A, B, C, D, E);
--	T_20_39(31, E, A, B, C, D);
--	T_20_39(32, D, E, A, B, C);
--	T_20_39(33, C, D, E, A, B);
--	T_20_39(34, B, C, D, E, A);
--	T_20_39(35, A, B, C, D, E);
--	T_20_39(36, E, A, B, C, D);
--	T_20_39(37, D, E, A, B, C);
--	T_20_39(38, C, D, E, A, B);
--	T_20_39(39, B, C, D, E, A);
-+	for (; i < 40; ++i)
-+		T_20_39(i, d[(-6 - i) % 5], d[(-5 - i) % 5],
-+			d[(-4 - i) % 5], d[(-3 - i) % 5], d[(-2 - i) % 5]);
- 
- 	/* Round 3 */
--	T_40_59(40, A, B, C, D, E);
--	T_40_59(41, E, A, B, C, D);
--	T_40_59(42, D, E, A, B, C);
--	T_40_59(43, C, D, E, A, B);
--	T_40_59(44, B, C, D, E, A);
--	T_40_59(45, A, B, C, D, E);
--	T_40_59(46, E, A, B, C, D);
--	T_40_59(47, D, E, A, B, C);
--	T_40_59(48, C, D, E, A, B);
--	T_40_59(49, B, C, D, E, A);
--	T_40_59(50, A, B, C, D, E);
--	T_40_59(51, E, A, B, C, D);
--	T_40_59(52, D, E, A, B, C);
--	T_40_59(53, C, D, E, A, B);
--	T_40_59(54, B, C, D, E, A);
--	T_40_59(55, A, B, C, D, E);
--	T_40_59(56, E, A, B, C, D);
--	T_40_59(57, D, E, A, B, C);
--	T_40_59(58, C, D, E, A, B);
--	T_40_59(59, B, C, D, E, A);
-+	for (; i < 60; ++i)
-+		T_40_59(i, d[(-6 - i) % 5], d[(-5 - i) % 5],
-+			d[(-4 - i) % 5], d[(-3 - i) % 5], d[(-2 - i) % 5]);
- 
- 	/* Round 4 */
--	T_60_79(60, A, B, C, D, E);
--	T_60_79(61, E, A, B, C, D);
--	T_60_79(62, D, E, A, B, C);
--	T_60_79(63, C, D, E, A, B);
--	T_60_79(64, B, C, D, E, A);
--	T_60_79(65, A, B, C, D, E);
--	T_60_79(66, E, A, B, C, D);
--	T_60_79(67, D, E, A, B, C);
--	T_60_79(68, C, D, E, A, B);
--	T_60_79(69, B, C, D, E, A);
--	T_60_79(70, A, B, C, D, E);
--	T_60_79(71, E, A, B, C, D);
--	T_60_79(72, D, E, A, B, C);
--	T_60_79(73, C, D, E, A, B);
--	T_60_79(74, B, C, D, E, A);
--	T_60_79(75, A, B, C, D, E);
--	T_60_79(76, E, A, B, C, D);
--	T_60_79(77, D, E, A, B, C);
--	T_60_79(78, C, D, E, A, B);
--	T_60_79(79, B, C, D, E, A);
--
--	digest[0] += A;
--	digest[1] += B;
--	digest[2] += C;
--	digest[3] += D;
--	digest[4] += E;
-+	for (; i < 80; ++i)
-+		T_60_79(i, d[(-6 - i) % 5], d[(-5 - i) % 5],
-+			d[(-4 - i) % 5], d[(-3 - i) % 5], d[(-2 - i) % 5]);
-+
-+	digest[0] += d[0];
-+	digest[1] += d[1];
-+	digest[2] += d[2];
-+	digest[3] += d[3];
-+	digest[4] += d[4];
- }
- EXPORT_SYMBOL(sha1_transform);
- 
--- 
-2.34.1
-
+> It sounds to me that "let descendents inherit" is a mandatory feature.
+> In that sense "allow attach in kernfs" is not a feature. It feels that
+> it's creating more problems for the design.
+> Creating a "catable" file inside cgroup directory that descedents inherit
+> with the same name is a cgroup specific feature.
+> Inherit or not can be a flag, but the inheritance needs to be designed
+> from the start.
+>
+> echo "rm" is not pretty.
+> fsnotify feels a bit hacky.
+> Maybe pinning in cgroupfs will avoid both issues?
+> We can have normal unlink implemented there.
+>
+> The attach bpf_sys cmd as-is won't work. It needs a name at least.
+> That will make it look like obj_pin cmd. So probably better to make
+> obj_pin work when path is inside cgroupfs and use file_flags for
+> inherit or not.
+> The patch 8 gives a glimpse of how the bpf prog will look like.
+> Can you make it more realistic?
+> Do you need to walk cgroup children? Or all processes in a cgroup?
+> Will we need css_for_each_descendant() as a bpf helper?
