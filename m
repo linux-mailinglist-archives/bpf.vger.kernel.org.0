@@ -2,299 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD10248AFD0
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 15:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392DB48AFD8
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 15:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233944AbiAKOoH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 09:44:07 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:41596 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242201AbiAKOoG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 09:44:06 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5FA8C616A3;
-        Tue, 11 Jan 2022 14:44:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEE9AC36AEB;
-        Tue, 11 Jan 2022 14:44:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641912245;
-        bh=9QtNgp4GexGBqtOwirvi47YwIzGmn/bXKQBw5RQx9qA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PS/GyHe2IojWJ1YN8K5T2hpa2Af5LOomqMwD4LuKDc+DGtw/iGvD4R3ncsLJXIYRl
-         SS4ldPslXZc/e0b2PpOohkQsy07shAQNTq3zh39/F64JJyOExerHz5WdIUiheJsrTM
-         sqQ3/Wj965F5bgkVpNJKYo0MdXMj/nj9picVUTRZYElHBNTrb9EuAdhsW4tAZUWVr9
-         f7glDSpPaGqJh5bleVODz2QjWvzMiothj3La3PyL+fuMbO2obmvJxbaZL1w1FMLADu
-         dbczHv4gPJBmPVjCeh9rkbZA9DSr+1PNQtbLhsGpzC+98wKbE2RiLr78eWoYxlQDXC
-         TlTeVU/RQI6UA==
-Received: by mail-wr1-f47.google.com with SMTP id d19so2879099wrb.0;
-        Tue, 11 Jan 2022 06:44:05 -0800 (PST)
-X-Gm-Message-State: AOAM533HM9V+jpYsLp3o/DHhUgzIgmfehYP7EW0JzDDmZHDCOi3uWV4e
-        ohV2fTgNOr6ZNRIzLEhT9heGOw2QWacSYbncJvY=
-X-Google-Smtp-Source: ABdhPJz/w2V6Pid5D3w0qEs9I5COP+6n2xpVD080JqwBmLeVHA6oNfaUY4ZgnqPHsQ3vI53XZqOv8T2Gy6+VTAIQUzM=
-X-Received: by 2002:a5d:4087:: with SMTP id o7mr4115239wrp.189.1641912244034;
- Tue, 11 Jan 2022 06:44:04 -0800 (PST)
+        id S242656AbiAKOp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 09:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242631AbiAKOp4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 09:45:56 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD29C06173F
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 06:45:56 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id q8so33305402wra.12
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 06:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=25tBrQdvOhSDMfpnFvp4W9AH04srjAUSkRAm9JUy38w=;
+        b=0SjbH2PkSV5xHaWdBEI57ovzlYl3/ceFlZuJIngoECATUzX96ARkUL36uRUW7RSKBE
+         WeeY82f4d3d7WNfv1f2nMxuAVID3/xtExA9sc6fzj6Ir+gjRdulIUALZDIqXG3mQnt+3
+         Hfm7apGcOfJTVwmfIFkuFQPNYzqgcBZCREgUmzhoLvwOUYm3f8Yf9KFUFQDDjvthtqt8
+         7pMaVaYrvxLZb4qqKi0Ba1EDBuPvpqGro17hRtf5FsanThVAHJvqfysQgOGfP0WFvA01
+         fyTtSeUMf0gKwZOXkGyA+yCnpyuc7UCbv87TaTfE3rQxRKYuQ3rA3DqC8wEyoUMPQlTM
+         CVpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=25tBrQdvOhSDMfpnFvp4W9AH04srjAUSkRAm9JUy38w=;
+        b=Dq4VYsikVHO1uZamDXcyx0rLVS1cWw3ie6pKhB8Kxx1DoSUBLHj00xYT+t8cbpSPib
+         gig0lxyX2hEYu1CLRdoI/67KCHa2mM7n1Uvi6HKy19X1xew70DpeR7FxPQnCbCx7uMi3
+         UDR/Kae7VZqXvlnTYRKWQ9pyWOE0Q4uQrrtiqTBaCyBxAWkpTHbH+8XqrrD1m7MjLL9F
+         YBTwMoPF1f9AwrYFf2x53NARg1hdN8E7QKPUmzmBKPJfu5nyTjjxiJcjYpSgns/Y2Zwz
+         Tt6OtO/37hlU0ltENtI1ysI2YDLS0xBXnU1N2Xkxm2r3PZtfuP4/oM0J/EsEhsyP+Un5
+         iZ0w==
+X-Gm-Message-State: AOAM531ZbE3124ZTP7Kn+Y+Xo9aaT5cw7ZgiCcEK3oksoUc9DuDywQHD
+        pMHifXSmExO51hVMjMM/+1yvwuzLLy/akA==
+X-Google-Smtp-Source: ABdhPJwOF6VwP6g4Gdl3nHBPKYhiKs35bYK3ACFpoIK7P4PiMW2WFWy7xE+xBzKPuumf6TpgIrvtgg==
+X-Received: by 2002:a5d:47ad:: with SMTP id 13mr4151825wrb.268.1641912354597;
+        Tue, 11 Jan 2022 06:45:54 -0800 (PST)
+Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6d:f804:0:3b22:c269:f398:55da])
+        by smtp.gmail.com with ESMTPSA id z4sm1829300wmf.44.2022.01.11.06.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jan 2022 06:45:54 -0800 (PST)
+From:   Usama Arif <usama.arif@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, joe@cilium.io,
+        fam.zheng@bytedance.com, cong.wang@bytedance.com,
+        alexei.starovoitov@gmail.com, song@kernel.org,
+        quentin@isovalent.com, Usama Arif <usama.arif@bytedance.com>
+Subject: [PATCH v4] bpf/scripts: add warning if the correct number of helpers are not auto-generated
+Date:   Tue, 11 Jan 2022 14:45:52 +0000
+Message-Id: <20220111144552.18534-1-usama.arif@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
- <20220111134934.324663-1-Jason@zx2c4.com> <20220111134934.324663-3-Jason@zx2c4.com>
-In-Reply-To: <20220111134934.324663-3-Jason@zx2c4.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 11 Jan 2022 15:43:52 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFynd4K7Zp6czgTWnDp9RHimizyMs4Yo2RsjCsEfa89fA@mail.gmail.com>
-Message-ID: <CAMj1kXFynd4K7Zp6czgTWnDp9RHimizyMs4Yo2RsjCsEfa89fA@mail.gmail.com>
-Subject: Re: [PATCH crypto 2/2] lib/crypto: blake2s: move hmac construction
- into wireguard
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <netdev@vger.kernel.org>, wireguard@lists.zx2c4.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BPF JIT for MIPS (32-BIT AND 64-BIT)" 
-        <bpf@vger.kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 11 Jan 2022 at 14:49, Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> Basically nobody should use blake2s in an HMAC construction; it already
-> has a keyed variant. But for unfortunately historical reasons, Noise,
+Currently bpf_helper_defs.h and the bpf helpers man page are auto-generated
+using function documentation present in bpf.h. If the documentation for the
+helper is missing or doesn't follow a specific format for e.g. if a function
+is documented as:
+ * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
+instead of
+ * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
+(notice the extra space at the start and end of function arguments)
+then that helper is not dumped in the auto-generated header and results in
+an invalid call during eBPF runtime, even if all the code specific to the
+helper is correct.
 
--ly
+This patch checks the number of functions documented within the header file
+with those present as part of #define __BPF_FUNC_MAPPER and generates a
+warning in the header file and the man page if they don't match. It is not
+needed  with the currently documented upstream functions, but can help in
+debugging when developing new helpers when there might be missing or
+misformatted documentation.
 
-> used by WireGuard, uses HKDF quite strictly, which means we have to use
-> this. Because this really shouldn't be used by others, this commit moves
-> it into wireguard's noise.c locally, so that kernels that aren't using
-> WireGuard don't get this superfluous code baked in. On m68k systems,
-> this shaves off ~314 bytes.
->
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: wireguard@lists.zx2c4.com
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+---
+v3->v4:
+- Added comments to make code clearer
+- Added warning to man page as well (suggested by Quentin Monnet)
 
-> ---
->  drivers/net/wireguard/noise.c | 45 ++++++++++++++++++++++++++++++-----
->  include/crypto/blake2s.h      |  3 ---
->  lib/crypto/blake2s-selftest.c | 31 ------------------------
->  lib/crypto/blake2s.c          | 37 ----------------------------
->  4 files changed, 39 insertions(+), 77 deletions(-)
->
-> diff --git a/drivers/net/wireguard/noise.c b/drivers/net/wireguard/noise.c
-> index c0cfd9b36c0b..720952b92e78 100644
-> --- a/drivers/net/wireguard/noise.c
-> +++ b/drivers/net/wireguard/noise.c
-> @@ -302,6 +302,41 @@ void wg_noise_set_static_identity_private_key(
->                 static_identity->static_public, private_key);
->  }
->
-> +static void hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen, const size_t keylen)
-> +{
-> +       struct blake2s_state state;
-> +       u8 x_key[BLAKE2S_BLOCK_SIZE] __aligned(__alignof__(u32)) = { 0 };
-> +       u8 i_hash[BLAKE2S_HASH_SIZE] __aligned(__alignof__(u32));
-> +       int i;
-> +
-> +       if (keylen > BLAKE2S_BLOCK_SIZE) {
-> +               blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> +               blake2s_update(&state, key, keylen);
-> +               blake2s_final(&state, x_key);
-> +       } else
-> +               memcpy(x_key, key, keylen);
-> +
-> +       for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-> +               x_key[i] ^= 0x36;
-> +
-> +       blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> +       blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-> +       blake2s_update(&state, in, inlen);
-> +       blake2s_final(&state, i_hash);
-> +
-> +       for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-> +               x_key[i] ^= 0x5c ^ 0x36;
-> +
-> +       blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> +       blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-> +       blake2s_update(&state, i_hash, BLAKE2S_HASH_SIZE);
-> +       blake2s_final(&state, i_hash);
-> +
-> +       memcpy(out, i_hash, BLAKE2S_HASH_SIZE);
-> +       memzero_explicit(x_key, BLAKE2S_BLOCK_SIZE);
-> +       memzero_explicit(i_hash, BLAKE2S_HASH_SIZE);
-> +}
-> +
->  /* This is Hugo Krawczyk's HKDF:
->   *  - https://eprint.iacr.org/2010/264.pdf
->   *  - https://tools.ietf.org/html/rfc5869
-> @@ -322,14 +357,14 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
->                  ((third_len || third_dst) && (!second_len || !second_dst))));
->
->         /* Extract entropy from data into secret */
-> -       blake2s256_hmac(secret, data, chaining_key, data_len, NOISE_HASH_LEN);
-> +       hmac(secret, data, chaining_key, data_len, NOISE_HASH_LEN);
->
->         if (!first_dst || !first_len)
->                 goto out;
->
->         /* Expand first key: key = secret, data = 0x1 */
->         output[0] = 1;
-> -       blake2s256_hmac(output, output, secret, 1, BLAKE2S_HASH_SIZE);
-> +       hmac(output, output, secret, 1, BLAKE2S_HASH_SIZE);
->         memcpy(first_dst, output, first_len);
->
->         if (!second_dst || !second_len)
-> @@ -337,8 +372,7 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
->
->         /* Expand second key: key = secret, data = first-key || 0x2 */
->         output[BLAKE2S_HASH_SIZE] = 2;
-> -       blake2s256_hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1,
-> -                       BLAKE2S_HASH_SIZE);
-> +       hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1, BLAKE2S_HASH_SIZE);
->         memcpy(second_dst, output, second_len);
->
->         if (!third_dst || !third_len)
-> @@ -346,8 +380,7 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
->
->         /* Expand third key: key = secret, data = second-key || 0x3 */
->         output[BLAKE2S_HASH_SIZE] = 3;
-> -       blake2s256_hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1,
-> -                       BLAKE2S_HASH_SIZE);
-> +       hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1, BLAKE2S_HASH_SIZE);
->         memcpy(third_dst, output, third_len);
->
->  out:
-> diff --git a/include/crypto/blake2s.h b/include/crypto/blake2s.h
-> index bc3fb59442ce..4e30e1799e61 100644
-> --- a/include/crypto/blake2s.h
-> +++ b/include/crypto/blake2s.h
-> @@ -101,7 +101,4 @@ static inline void blake2s(u8 *out, const u8 *in, const u8 *key,
->         blake2s_final(&state, out);
->  }
->
-> -void blake2s256_hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen,
-> -                    const size_t keylen);
-> -
->  #endif /* _CRYPTO_BLAKE2S_H */
-> diff --git a/lib/crypto/blake2s-selftest.c b/lib/crypto/blake2s-selftest.c
-> index 5d9ea53be973..409e4b728770 100644
-> --- a/lib/crypto/blake2s-selftest.c
-> +++ b/lib/crypto/blake2s-selftest.c
-> @@ -15,7 +15,6 @@
->   * #include <stdio.h>
->   *
->   * #include <openssl/evp.h>
-> - * #include <openssl/hmac.h>
->   *
->   * #define BLAKE2S_TESTVEC_COUNT       256
->   *
-> @@ -58,16 +57,6 @@
->   *     }
->   *     printf("};\n\n");
->   *
-> - *     printf("static const u8 blake2s_hmac_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {\n");
-> - *
-> - *     HMAC(EVP_blake2s256(), key, sizeof(key), buf, sizeof(buf), hash, NULL);
-> - *     print_vec(hash, BLAKE2S_OUTBYTES);
-> - *
-> - *     HMAC(EVP_blake2s256(), buf, sizeof(buf), key, sizeof(key), hash, NULL);
-> - *     print_vec(hash, BLAKE2S_OUTBYTES);
-> - *
-> - *     printf("};\n");
-> - *
->   *     return 0;
->   *}
->   */
-> @@ -554,15 +543,6 @@ static const u8 blake2s_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {
->      0xd6, 0x98, 0x6b, 0x07, 0x10, 0x65, 0x52, 0x65, },
->  };
->
-> -static const u8 blake2s_hmac_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {
-> -  { 0xce, 0xe1, 0x57, 0x69, 0x82, 0xdc, 0xbf, 0x43, 0xad, 0x56, 0x4c, 0x70,
-> -    0xed, 0x68, 0x16, 0x96, 0xcf, 0xa4, 0x73, 0xe8, 0xe8, 0xfc, 0x32, 0x79,
-> -    0x08, 0x0a, 0x75, 0x82, 0xda, 0x3f, 0x05, 0x11, },
-> -  { 0x77, 0x2f, 0x0c, 0x71, 0x41, 0xf4, 0x4b, 0x2b, 0xb3, 0xc6, 0xb6, 0xf9,
-> -    0x60, 0xde, 0xe4, 0x52, 0x38, 0x66, 0xe8, 0xbf, 0x9b, 0x96, 0xc4, 0x9f,
-> -    0x60, 0xd9, 0x24, 0x37, 0x99, 0xd6, 0xec, 0x31, },
-> -};
-> -
->  bool __init blake2s_selftest(void)
->  {
->         u8 key[BLAKE2S_KEY_SIZE];
-> @@ -607,16 +587,5 @@ bool __init blake2s_selftest(void)
->                 }
->         }
->
-> -       if (success) {
-> -               blake2s256_hmac(hash, buf, key, sizeof(buf), sizeof(key));
-> -               success &= !memcmp(hash, blake2s_hmac_testvecs[0], BLAKE2S_HASH_SIZE);
-> -
-> -               blake2s256_hmac(hash, key, buf, sizeof(key), sizeof(buf));
-> -               success &= !memcmp(hash, blake2s_hmac_testvecs[1], BLAKE2S_HASH_SIZE);
-> -
-> -               if (!success)
-> -                       pr_err("blake2s256_hmac self-test: FAIL\n");
-> -       }
-> -
->         return success;
->  }
-> diff --git a/lib/crypto/blake2s.c b/lib/crypto/blake2s.c
-> index 93f2ae051370..9364f79937b8 100644
-> --- a/lib/crypto/blake2s.c
-> +++ b/lib/crypto/blake2s.c
-> @@ -30,43 +30,6 @@ void blake2s_final(struct blake2s_state *state, u8 *out)
->  }
->  EXPORT_SYMBOL(blake2s_final);
->
-> -void blake2s256_hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen,
-> -                    const size_t keylen)
-> -{
-> -       struct blake2s_state state;
-> -       u8 x_key[BLAKE2S_BLOCK_SIZE] __aligned(__alignof__(u32)) = { 0 };
-> -       u8 i_hash[BLAKE2S_HASH_SIZE] __aligned(__alignof__(u32));
-> -       int i;
-> -
-> -       if (keylen > BLAKE2S_BLOCK_SIZE) {
-> -               blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> -               blake2s_update(&state, key, keylen);
-> -               blake2s_final(&state, x_key);
-> -       } else
-> -               memcpy(x_key, key, keylen);
-> -
-> -       for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-> -               x_key[i] ^= 0x36;
-> -
-> -       blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> -       blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-> -       blake2s_update(&state, in, inlen);
-> -       blake2s_final(&state, i_hash);
-> -
-> -       for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-> -               x_key[i] ^= 0x5c ^ 0x36;
-> -
-> -       blake2s_init(&state, BLAKE2S_HASH_SIZE);
-> -       blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-> -       blake2s_update(&state, i_hash, BLAKE2S_HASH_SIZE);
-> -       blake2s_final(&state, i_hash);
-> -
-> -       memcpy(out, i_hash, BLAKE2S_HASH_SIZE);
-> -       memzero_explicit(x_key, BLAKE2S_BLOCK_SIZE);
-> -       memzero_explicit(i_hash, BLAKE2S_HASH_SIZE);
-> -}
-> -EXPORT_SYMBOL(blake2s256_hmac);
-> -
->  static int __init blake2s_mod_init(void)
->  {
->         if (!IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS) &&
-> --
-> 2.34.1
->
+v2->v3:
+- Removed check if value is already in set (suggested by Song Liu)
+
+v1->v2:
+- Fix CI error reported by Alexei Starovoitov
+---
+ scripts/bpf_doc.py | 74 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 70 insertions(+), 4 deletions(-)
+
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index a6403ddf5de7..e80f4ab26e67 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -87,6 +87,8 @@ class HeaderParser(object):
+         self.line = ''
+         self.helpers = []
+         self.commands = []
++        self.desc_unique_helpers = set()
++        self.define_unique_helpers = []
+ 
+     def parse_element(self):
+         proto    = self.parse_symbol()
+@@ -193,19 +195,42 @@ class HeaderParser(object):
+             except NoSyscallCommandFound:
+                 break
+ 
+-    def parse_helpers(self):
++    def parse_desc_helpers(self):
+         self.seek_to('* Start of BPF helper function descriptions:',
+                      'Could not find start of eBPF helper descriptions list')
+         while True:
+             try:
+                 helper = self.parse_helper()
+                 self.helpers.append(helper)
++                proto = helper.proto_break_down()
++                self.desc_unique_helpers.add(proto['name'])
+             except NoHelperFound:
+                 break
+ 
++    def parse_define_helpers(self):
++        # Parse the number of FN(...) in #define __BPF_FUNC_MAPPER to compare
++        # later with the number of unique function names present in description.
++        # Note: seek_to(..) discards the first line below the target search text,
++        # resulting in FN(unspec) being skipped and not added to self.define_unique_helpers.
++        self.seek_to('#define __BPF_FUNC_MAPPER(FN)',
++                     'Could not find start of eBPF helper definition list')
++        # Searches for either one or more FN(\w+) defines or a backslash for newline
++        p = re.compile('\s*(FN\(\w+\))+|\\\\')
++        fn_defines_str = ''
++        while True:
++            capture = p.match(self.line)
++            if capture:
++                fn_defines_str += self.line
++            else:
++                break
++            self.line = self.reader.readline()
++        # Find the number of occurences of FN(\w+)
++        self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
++
+     def run(self):
+         self.parse_syscall()
+-        self.parse_helpers()
++        self.parse_desc_helpers()
++        self.parse_define_helpers()
+         self.reader.close()
+ 
+ ###############################################################################
+@@ -305,9 +330,11 @@ class PrinterHelpersRST(PrinterRST):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
++        self.desc_unique_helpers = parser.desc_unique_helpers
++        self.define_unique_helpers = parser.define_unique_helpers
+ 
+     def print_header(self):
+-        header = '''\
++        header_name = '''\
+ ===========
+ BPF-HELPERS
+ ===========
+@@ -317,6 +344,8 @@ list of eBPF helper functions
+ 
+ :Manual section: 7
+ 
++'''
++        header_description = '''
+ DESCRIPTION
+ ===========
+ 
+@@ -349,7 +378,27 @@ HELPERS
+ =======
+ '''
+         PrinterRST.print_license(self)
+-        print(header)
++
++        print(header_name)
++
++        # Add a warning if the correct number of helpers are not auto-generated.
++        nr_desc_unique_helpers = len(self.desc_unique_helpers)
++        nr_define_unique_helpers = len(self.define_unique_helpers)
++        if nr_desc_unique_helpers != nr_define_unique_helpers:
++            header_warning = '''
++.. warning::
++    The number of unique helpers in description (%d) don\'t match the number of unique helpers defined in __BPF_FUNC_MAPPER (%d)
++''' % (nr_desc_unique_helpers, nr_define_unique_helpers)
++            if nr_desc_unique_helpers < nr_define_unique_helpers:
++                # Function description is parsed until no helper is found (which can be due to
++                # misformatting). Hence, only print the first missing/misformatted function.
++                header_warning += '''
++.. warning::
++    The description for %s is not present or formatted correctly.
++''' % (self.define_unique_helpers[nr_desc_unique_helpers])
++            print(header_warning)
++
++        print(header_description)
+ 
+     def print_footer(self):
+         footer = '''
+@@ -509,6 +558,8 @@ class PrinterHelpers(Printer):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
++        self.desc_unique_helpers = parser.desc_unique_helpers
++        self.define_unique_helpers = parser.define_unique_helpers
+ 
+     type_fwds = [
+             'struct bpf_fib_lookup',
+@@ -628,6 +679,21 @@ class PrinterHelpers(Printer):
+ /* Forward declarations of BPF structs */'''
+ 
+         print(header)
++
++        nr_desc_unique_helpers = len(self.desc_unique_helpers)
++        nr_define_unique_helpers = len(self.define_unique_helpers)
++        if nr_desc_unique_helpers != nr_define_unique_helpers:
++            header_warning = '''
++#warning The number of unique helpers in description (%d) don\'t match the number of unique helpers defined in __BPF_FUNC_MAPPER (%d)
++''' % (nr_desc_unique_helpers, nr_define_unique_helpers)
++            if nr_desc_unique_helpers < nr_define_unique_helpers:
++                # Function description is parsed until no helper is found (which can be due to
++                # misformatting). Hence, only print the first missing/misformatted function.
++                header_warning += '''
++#warning The description for %s is not present or formatted correctly.
++''' % (self.define_unique_helpers[nr_desc_unique_helpers])
++            print(header_warning)
++
+         for fwd in self.type_fwds:
+             print('%s;' % fwd)
+         print('')
+-- 
+2.25.1
+
