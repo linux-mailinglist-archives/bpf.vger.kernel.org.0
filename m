@@ -2,82 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB20C48B9E1
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 22:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FC148BA69
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 23:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244246AbiAKVtx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 16:49:53 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:37016 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbiAKVtx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 16:49:53 -0500
+        id S1345517AbiAKWFV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 17:05:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345416AbiAKWFV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 17:05:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26290C06173F;
+        Tue, 11 Jan 2022 14:05:21 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 42AC3B81D4F
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 21:49:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13A23C36AF2
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 21:49:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641937791;
-        bh=z5KoftC8awVcvx70e1t6eeC2ZSD2cHZ+RCHN8zNFR38=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rnldDHVbGIgs3foVZwS2RX8/w9vIaB3Q8Ix9CGYgJNSnO4e7XpDEgrWlt9O5QUBLT
-         +fsh80xzUOqNw7MWjmyXZo+J2MX88cJna3H9lO2R3VpdQvr7urRDS5u5Y51/UQkHGo
-         pZX+Ic0zeKvrAAyq+K8RI0lxMU3e5XWERT5DIvlGOLRtlyC4k0vUYY+yrZuaqgxtf6
-         54wKqUQZ3l+cyGtBq51YwBo0TD4wzVpo2g4z5y+dh7lLDNPUgKbSWwA3m3wVJ1WtvY
-         CvQvMIjv5OyWZ533nfTQmh0u7er1AeoBcs06b4mnsrvBeEhk/39frmnKw6E7xURCJ1
-         RJjKcX854nBXA==
-Received: by mail-yb1-f169.google.com with SMTP id c6so930930ybk.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 13:49:51 -0800 (PST)
-X-Gm-Message-State: AOAM532oAyeyeeKm9agalVo7URLI4MtLzS0O4L29E0VpP9Gvx6NWC5gp
-        vrEbbWTA+O4BkwVLvdKfwi7qMTVHJY7DlUTXamM=
-X-Google-Smtp-Source: ABdhPJxjPHFG+jm2q7F1MuL+P4K2+kCBPeySjxKzyG0duhQC5L/kZwZNiZwsrKbI14jmjlotNlkC143oL4FSR6OaA+8=
-X-Received: by 2002:a05:6902:1106:: with SMTP id o6mr10061267ybu.195.1641937790199;
- Tue, 11 Jan 2022 13:49:50 -0800 (PST)
+        by ams.source.kernel.org (Postfix) with ESMTPS id E01A8B81D53;
+        Tue, 11 Jan 2022 22:05:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE47AC36AE9;
+        Tue, 11 Jan 2022 22:05:17 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Otbpq+tu"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1641938716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8Cdvgb4D8xjNM3H+eoQR37WQXKMdUq8WCPEoF9YXne4=;
+        b=Otbpq+tuY/czAeOvirwPCnRnA5W1Z0lop+JXW67s7Lz46Zl9pDHR+jP7TrsEUbDBLPjOzC
+        3Q4vPoPAEXPaKVdGLtVNmtZtOhZSAjLTLll/ETmNDw58C/ABxgECsIcTogKlySB1cl/Heg
+        /Lt96wXjiFZB1UVNbp/75PYhacTxhcI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f2775939 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Tue, 11 Jan 2022 22:05:15 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        wireguard@lists.zx2c4.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, geert@linux-m68k.org, tytso@mit.edu,
+        gregkh@linuxfoundation.org, jeanphilippe.aumasson@gmail.com,
+        ardb@kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: [PATCH crypto v3 0/2] reduce code size from blake2s on m68k and other small platforms
+Date:   Tue, 11 Jan 2022 23:05:04 +0100
+Message-Id: <20220111220506.742067-1-Jason@zx2c4.com>
+In-Reply-To: <20220111181037.632969-1-Jason@zx2c4.com>
+References: <20220111181037.632969-1-Jason@zx2c4.com>
 MIME-Version: 1.0
-References: <20220111184418.196442-1-usama.arif@bytedance.com>
-In-Reply-To: <20220111184418.196442-1-usama.arif@bytedance.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 11 Jan 2022 13:49:39 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5ys+q1ikj5s+TroQBgLAmzWdP+aYEadhtM1==6CYRQow@mail.gmail.com>
-Message-ID: <CAPhsuW5ys+q1ikj5s+TroQBgLAmzWdP+aYEadhtM1==6CYRQow@mail.gmail.com>
-Subject: Re: [PATCH v5] bpf/scripts: add an error if the correct number of
- helpers are not generated
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, joe@cilium.io,
-        fam.zheng@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 10:44 AM Usama Arif <usama.arif@bytedance.com> wrote:
->
-> Currently bpf_helper_defs.h and the bpf helpers man page are auto-generated
-> using function documentation present in bpf.h. If the documentation for the
-> helper is missing or doesn't follow a specific format for e.g. if a function
-> is documented as:
->  * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
-> instead of
->  * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
-> (notice the extra space at the start and end of function arguments)
-> then that helper is not dumped in the auto-generated header and results in
-> an invalid call during eBPF runtime, even if all the code specific to the
-> helper is correct.
->
-> This patch checks the number of functions documented within the header file
-> with those present as part of #define __BPF_FUNC_MAPPER and generates an
-> error in the header file and the man page if they don't match. It is not
-> needed with the currently documented upstream functions, but can help in
-> debugging when developing new helpers when there might be missing or
-> misformatted documentation.
->
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+Hi,
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Geert emailed me this afternoon concerned about blake2s codesize on m68k
+and other small systems. We identified two effective ways of chopping
+down the size. One of them moves some wireguard-specific things into
+wireguard proper. The other one adds a slower codepath for small
+machines to blake2s. This worked, and was v1 of this patchset, but I
+wasn't so much of a fan. Then someone pointed out that the generic C
+SHA-1 implementation is still unrolled, which is a *lot* of extra code.
+Simply rerolling that saves about as much as v1 did. So, we instead do
+that in this patchset. SHA-1 is being phased out, and soon it won't
+be included at all (hopefully). And nothing performance-oriented has
+anything to do with it anyway.
 
-[...]
+The result of these two patches mitigates Geert's feared code size
+increase for 5.17.
+
+v3 improves on v2 by making the re-rolling of SHA-1 much simpler,
+resulting in even larger code size reduction and much better
+performance. The reason I'm sending yet a third version in such a short
+amount of time is because the trick here feels obvious and substantial
+enough that I'd hate for Geert to waste time measuring the impact of the
+previous commit.
+
+Thanks,
+Jason
+
+Jason A. Donenfeld (2):
+  lib/crypto: blake2s: move hmac construction into wireguard
+  lib/crypto: sha1: re-roll loops to reduce code size
+
+ drivers/net/wireguard/noise.c | 45 ++++++++++++++---
+ include/crypto/blake2s.h      |  3 --
+ lib/crypto/blake2s-selftest.c | 31 ------------
+ lib/crypto/blake2s.c          | 37 --------------
+ lib/sha1.c                    | 95 ++++++-----------------------------
+ 5 files changed, 53 insertions(+), 158 deletions(-)
+
+-- 
+2.34.1
+
