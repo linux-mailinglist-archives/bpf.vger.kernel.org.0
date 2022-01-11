@@ -2,282 +2,295 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 385EB48AEE0
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 14:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8516848AF8E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 15:30:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241171AbiAKNuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 08:50:01 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:45104 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241099AbiAKNt6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 08:49:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DA1AA61663;
-        Tue, 11 Jan 2022 13:49:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53E00C36AFF;
-        Tue, 11 Jan 2022 13:49:56 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="h0D0rwlw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1641908995;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4NQLLaVMZ1wxVBx6BZZlCjSXtSr8OCneaUsHX0poeSo=;
-        b=h0D0rwlwzfUB3WK34y7X1Ool29oi0rEsel47I5+hCfrxg2usE8bMpABHxFWvUu0Q7ytH/B
-        P3RGFV0k2TOPQmEIBqV37RFPXA+W7H9/HwePvxDiETDlOjNyuZu6IJdSgaqCC1l6+H0yXz
-        yFyJt4JSbZnL+E5DvwK4OnYiCQ1MIK8=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id e5b03932 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 11 Jan 2022 13:49:54 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, geert@linux-m68k.org, tytso@mit.edu,
-        gregkh@linuxfoundation.org, jeanphilippe.aumasson@gmail.com,
-        ardb@kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH crypto 2/2] lib/crypto: blake2s: move hmac construction into wireguard
-Date:   Tue, 11 Jan 2022 14:49:34 +0100
-Message-Id: <20220111134934.324663-3-Jason@zx2c4.com>
-In-Reply-To: <20220111134934.324663-1-Jason@zx2c4.com>
-References: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
- <20220111134934.324663-1-Jason@zx2c4.com>
+        id S241903AbiAKOaB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 09:30:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241898AbiAKOaA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 09:30:00 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC38C06173F
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 06:30:00 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id c14-20020a17090a674e00b001b31e16749cso5524534pjm.4
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 06:30:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :in-reply-to;
+        bh=F4eddiYIt9Yk/Jezuq+gqHEG++gE7HUbdFNbNwgGm90=;
+        b=O/bGs34jrIIURYtv3ldawNzUDr9CguWItWndZwEDBWNr2kYu3nR3uZ95S0cLjN6Ijl
+         RA5l/IVF0YNPe8UbqaLLLEbaSi5IzAV5I7t81Kabsp6mIl4z2stWo/hoTHpHz+GzQevo
+         J78UCYKcf6QDXUT3ZRiSn+oLv6yo+Fv1YHomc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:in-reply-to;
+        bh=F4eddiYIt9Yk/Jezuq+gqHEG++gE7HUbdFNbNwgGm90=;
+        b=tZDpXdByrdJKbaGiE4luHwbmj97L4BXjx4umNyPONL3dWCVe9F1tEnLxXmaiS1mpEj
+         WsOvgScoVIHu6Osel+AJC94PlPLZVPaB0EWjXy6yv16UJg2r7c2TWW+zcvMAGRdISxyT
+         TCbx77aNBxXldHuwdRCT6ZWdfExpHxxhq/679PfQ0BOVHDe0B7RvNM6jhFG607L/X9Q0
+         dtIHXK+7HptztHwxXd2QtbcS0gqOcmsXuVPQ0JvCeCUXfaXOty9JPavwzBd5NT/RBh+s
+         eLZRM1Jug4kH3T3c6fG2Oi0md0zEvq2damKFRV5wo5Mxxq7/ykGc8M2ZavN03T8H/P0B
+         BteA==
+X-Gm-Message-State: AOAM533BBodXgZOQFjVLZvOLdL6ayb5yYKBxkeb0MCd6AZPpugE9mtZp
+        WsIStVJove4LdQHSckPT5wjDxw==
+X-Google-Smtp-Source: ABdhPJxW+IXd4/03qXJ0pyQOOKCnKB4XyIB66CT3hmTMuiuvbhDCpaE4AYVNEzA5juYlITb1tkD7/A==
+X-Received: by 2002:a17:902:ea07:b0:14a:45c0:78a7 with SMTP id s7-20020a170902ea0700b0014a45c078a7mr4626102plg.92.1641911399655;
+        Tue, 11 Jan 2022 06:29:59 -0800 (PST)
+Received: from C02YVCJELVCG (104-190-227-136.lightspeed.rlghnc.sbcglobal.net. [104.190.227.136])
+        by smtp.gmail.com with ESMTPSA id a23sm2561944pjo.57.2022.01.11.06.29.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jan 2022 06:29:59 -0800 (PST)
+From:   Andy Gospodarek <andrew.gospodarek@broadcom.com>
+X-Google-Original-From: Andy Gospodarek <gospo@broadcom.com>
+Date:   Tue, 11 Jan 2022 09:29:52 -0500
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>, andy@greyhouse.net
+Subject: Re: [PATCH v21 bpf-next 06/23] net: marvell: rely on
+ xdp_update_skb_shared_info utility routine
+Message-ID: <Yd2UYHT2KGN7aY8H@C02YVCJELVCG>
+References: <cover.1641641663.git.lorenzo@kernel.org>
+ <a346f27e55a9117f43f89aceb7e47c5f0743d50a.1641641663.git.lorenzo@kernel.org>
+ <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
+ <CAJ0CqmXaeJkJ8SDjTA1u_JNsqpxS8GA4J29S9wGPH0qOmqjp0w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJ0CqmXaeJkJ8SDjTA1u_JNsqpxS8GA4J29S9wGPH0qOmqjp0w@mail.gmail.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000c557dd05d54f4936"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Basically nobody should use blake2s in an HMAC construction; it already
-has a keyed variant. But for unfortunately historical reasons, Noise,
-used by WireGuard, uses HKDF quite strictly, which means we have to use
-this. Because this really shouldn't be used by others, this commit moves
-it into wireguard's noise.c locally, so that kernels that aren't using
-WireGuard don't get this superfluous code baked in. On m68k systems,
-this shaves off ~314 bytes.
+--000000000000c557dd05d54f4936
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: wireguard@lists.zx2c4.com
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- drivers/net/wireguard/noise.c | 45 ++++++++++++++++++++++++++++++-----
- include/crypto/blake2s.h      |  3 ---
- lib/crypto/blake2s-selftest.c | 31 ------------------------
- lib/crypto/blake2s.c          | 37 ----------------------------
- 4 files changed, 39 insertions(+), 77 deletions(-)
+On Tue, Jan 11, 2022 at 02:05:23PM +0100, Lorenzo Bianconi wrote:
+> >
+> > On Sat, Jan 08, 2022 at 12:53:09PM +0100, Lorenzo Bianconi wrote:
+> > > Rely on xdp_update_skb_shared_info routine in order to avoid
+> > > resetting frags array in skb_shared_info structure building
+> > > the skb in mvneta_swbm_build_skb(). Frags array is expected to
+> > > be initialized by the receiving driver building the xdp_buff
+> > > and here we just need to update memory metadata.
+> > >
+> > > Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> > > Acked-by: John Fastabend <john.fastabend@gmail.com>
+> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > ---
+> > >  drivers/net/ethernet/marvell/mvneta.c | 23 ++++++++++-------------
+> > >  1 file changed, 10 insertions(+), 13 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> > > index 775ffd91b741..267a306d9c75 100644
+> > > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > > @@ -2332,8 +2332,12 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
+> > >               skb_frag_size_set(frag, data_len);
+> > >               __skb_frag_set_page(frag, page);
+> > >
+> > > -             if (!xdp_buff_is_mb(xdp))
+> > > +             if (!xdp_buff_is_mb(xdp)) {
+> > > +                     sinfo->xdp_frags_size = *size;
+> > >                       xdp_buff_set_mb(xdp);
+> > > +             }
+> > > +             if (page_is_pfmemalloc(page))
+> > > +                     xdp_buff_set_frag_pfmemalloc(xdp);
+> > >       } else {
+> > >               page_pool_put_full_page(rxq->page_pool, page, true);
+> > >       }
+> > > @@ -2347,7 +2351,6 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> > >       struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> > >       struct sk_buff *skb;
+> > >       u8 num_frags;
+> > > -     int i;
+> > >
+> > >       if (unlikely(xdp_buff_is_mb(xdp)))
+> > >               num_frags = sinfo->nr_frags;
+> > > @@ -2362,18 +2365,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> > >       skb_put(skb, xdp->data_end - xdp->data);
+> > >       skb->ip_summed = mvneta_rx_csum(pp, desc_status);
+> > >
+> > > -     if (likely(!xdp_buff_is_mb(xdp)))
+> > > -             goto out;
+> > > -
+> > > -     for (i = 0; i < num_frags; i++) {
+> > > -             skb_frag_t *frag = &sinfo->frags[i];
+> > > -
+> > > -             skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+> > > -                             skb_frag_page(frag), skb_frag_off(frag),
+> > > -                             skb_frag_size(frag), PAGE_SIZE);
+> >
+> > Maybe I'm missing something but I'm not sure you have a suitable
+> > replacement for the 3 lines above this in your proposed change.
+> >
+> 
+> Hi Andy,
+> 
+> mvneta_swbm_add_rx_fragment() initializes frags array in
+> skb_shared_info for xdp whenever we receive a multi-descriptors frame.
+> Since frags array is at the same offset for the xdp_buff and for the
+> new skb and build_skb() in mvneta_swbm_build_skb() does not overwrite
+> it, we do not need to initialize it again allocating the skb, just
+> account metadata info running xdp_update_skb_shared_info(). Agree?
+> 
 
-diff --git a/drivers/net/wireguard/noise.c b/drivers/net/wireguard/noise.c
-index c0cfd9b36c0b..720952b92e78 100644
---- a/drivers/net/wireguard/noise.c
-+++ b/drivers/net/wireguard/noise.c
-@@ -302,6 +302,41 @@ void wg_noise_set_static_identity_private_key(
- 		static_identity->static_public, private_key);
- }
- 
-+static void hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen, const size_t keylen)
-+{
-+	struct blake2s_state state;
-+	u8 x_key[BLAKE2S_BLOCK_SIZE] __aligned(__alignof__(u32)) = { 0 };
-+	u8 i_hash[BLAKE2S_HASH_SIZE] __aligned(__alignof__(u32));
-+	int i;
-+
-+	if (keylen > BLAKE2S_BLOCK_SIZE) {
-+		blake2s_init(&state, BLAKE2S_HASH_SIZE);
-+		blake2s_update(&state, key, keylen);
-+		blake2s_final(&state, x_key);
-+	} else
-+		memcpy(x_key, key, keylen);
-+
-+	for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-+		x_key[i] ^= 0x36;
-+
-+	blake2s_init(&state, BLAKE2S_HASH_SIZE);
-+	blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-+	blake2s_update(&state, in, inlen);
-+	blake2s_final(&state, i_hash);
-+
-+	for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
-+		x_key[i] ^= 0x5c ^ 0x36;
-+
-+	blake2s_init(&state, BLAKE2S_HASH_SIZE);
-+	blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
-+	blake2s_update(&state, i_hash, BLAKE2S_HASH_SIZE);
-+	blake2s_final(&state, i_hash);
-+
-+	memcpy(out, i_hash, BLAKE2S_HASH_SIZE);
-+	memzero_explicit(x_key, BLAKE2S_BLOCK_SIZE);
-+	memzero_explicit(i_hash, BLAKE2S_HASH_SIZE);
-+}
-+
- /* This is Hugo Krawczyk's HKDF:
-  *  - https://eprint.iacr.org/2010/264.pdf
-  *  - https://tools.ietf.org/html/rfc5869
-@@ -322,14 +357,14 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
- 		 ((third_len || third_dst) && (!second_len || !second_dst))));
- 
- 	/* Extract entropy from data into secret */
--	blake2s256_hmac(secret, data, chaining_key, data_len, NOISE_HASH_LEN);
-+	hmac(secret, data, chaining_key, data_len, NOISE_HASH_LEN);
- 
- 	if (!first_dst || !first_len)
- 		goto out;
- 
- 	/* Expand first key: key = secret, data = 0x1 */
- 	output[0] = 1;
--	blake2s256_hmac(output, output, secret, 1, BLAKE2S_HASH_SIZE);
-+	hmac(output, output, secret, 1, BLAKE2S_HASH_SIZE);
- 	memcpy(first_dst, output, first_len);
- 
- 	if (!second_dst || !second_len)
-@@ -337,8 +372,7 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
- 
- 	/* Expand second key: key = secret, data = first-key || 0x2 */
- 	output[BLAKE2S_HASH_SIZE] = 2;
--	blake2s256_hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1,
--			BLAKE2S_HASH_SIZE);
-+	hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1, BLAKE2S_HASH_SIZE);
- 	memcpy(second_dst, output, second_len);
- 
- 	if (!third_dst || !third_len)
-@@ -346,8 +380,7 @@ static void kdf(u8 *first_dst, u8 *second_dst, u8 *third_dst, const u8 *data,
- 
- 	/* Expand third key: key = secret, data = second-key || 0x3 */
- 	output[BLAKE2S_HASH_SIZE] = 3;
--	blake2s256_hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1,
--			BLAKE2S_HASH_SIZE);
-+	hmac(output, output, secret, BLAKE2S_HASH_SIZE + 1, BLAKE2S_HASH_SIZE);
- 	memcpy(third_dst, output, third_len);
- 
- out:
-diff --git a/include/crypto/blake2s.h b/include/crypto/blake2s.h
-index bc3fb59442ce..4e30e1799e61 100644
---- a/include/crypto/blake2s.h
-+++ b/include/crypto/blake2s.h
-@@ -101,7 +101,4 @@ static inline void blake2s(u8 *out, const u8 *in, const u8 *key,
- 	blake2s_final(&state, out);
- }
- 
--void blake2s256_hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen,
--		     const size_t keylen);
--
- #endif /* _CRYPTO_BLAKE2S_H */
-diff --git a/lib/crypto/blake2s-selftest.c b/lib/crypto/blake2s-selftest.c
-index 5d9ea53be973..409e4b728770 100644
---- a/lib/crypto/blake2s-selftest.c
-+++ b/lib/crypto/blake2s-selftest.c
-@@ -15,7 +15,6 @@
-  * #include <stdio.h>
-  *
-  * #include <openssl/evp.h>
-- * #include <openssl/hmac.h>
-  *
-  * #define BLAKE2S_TESTVEC_COUNT	256
-  *
-@@ -58,16 +57,6 @@
-  *	}
-  *	printf("};\n\n");
-  *
-- *	printf("static const u8 blake2s_hmac_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {\n");
-- *
-- *	HMAC(EVP_blake2s256(), key, sizeof(key), buf, sizeof(buf), hash, NULL);
-- *	print_vec(hash, BLAKE2S_OUTBYTES);
-- *
-- *	HMAC(EVP_blake2s256(), buf, sizeof(buf), key, sizeof(key), hash, NULL);
-- *	print_vec(hash, BLAKE2S_OUTBYTES);
-- *
-- *	printf("};\n");
-- *
-  *	return 0;
-  *}
-  */
-@@ -554,15 +543,6 @@ static const u8 blake2s_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {
-     0xd6, 0x98, 0x6b, 0x07, 0x10, 0x65, 0x52, 0x65, },
- };
- 
--static const u8 blake2s_hmac_testvecs[][BLAKE2S_HASH_SIZE] __initconst = {
--  { 0xce, 0xe1, 0x57, 0x69, 0x82, 0xdc, 0xbf, 0x43, 0xad, 0x56, 0x4c, 0x70,
--    0xed, 0x68, 0x16, 0x96, 0xcf, 0xa4, 0x73, 0xe8, 0xe8, 0xfc, 0x32, 0x79,
--    0x08, 0x0a, 0x75, 0x82, 0xda, 0x3f, 0x05, 0x11, },
--  { 0x77, 0x2f, 0x0c, 0x71, 0x41, 0xf4, 0x4b, 0x2b, 0xb3, 0xc6, 0xb6, 0xf9,
--    0x60, 0xde, 0xe4, 0x52, 0x38, 0x66, 0xe8, 0xbf, 0x9b, 0x96, 0xc4, 0x9f,
--    0x60, 0xd9, 0x24, 0x37, 0x99, 0xd6, 0xec, 0x31, },
--};
--
- bool __init blake2s_selftest(void)
- {
- 	u8 key[BLAKE2S_KEY_SIZE];
-@@ -607,16 +587,5 @@ bool __init blake2s_selftest(void)
- 		}
- 	}
- 
--	if (success) {
--		blake2s256_hmac(hash, buf, key, sizeof(buf), sizeof(key));
--		success &= !memcmp(hash, blake2s_hmac_testvecs[0], BLAKE2S_HASH_SIZE);
--
--		blake2s256_hmac(hash, key, buf, sizeof(key), sizeof(buf));
--		success &= !memcmp(hash, blake2s_hmac_testvecs[1], BLAKE2S_HASH_SIZE);
--
--		if (!success)
--			pr_err("blake2s256_hmac self-test: FAIL\n");
--	}
--
- 	return success;
- }
-diff --git a/lib/crypto/blake2s.c b/lib/crypto/blake2s.c
-index 93f2ae051370..9364f79937b8 100644
---- a/lib/crypto/blake2s.c
-+++ b/lib/crypto/blake2s.c
-@@ -30,43 +30,6 @@ void blake2s_final(struct blake2s_state *state, u8 *out)
- }
- EXPORT_SYMBOL(blake2s_final);
- 
--void blake2s256_hmac(u8 *out, const u8 *in, const u8 *key, const size_t inlen,
--		     const size_t keylen)
--{
--	struct blake2s_state state;
--	u8 x_key[BLAKE2S_BLOCK_SIZE] __aligned(__alignof__(u32)) = { 0 };
--	u8 i_hash[BLAKE2S_HASH_SIZE] __aligned(__alignof__(u32));
--	int i;
--
--	if (keylen > BLAKE2S_BLOCK_SIZE) {
--		blake2s_init(&state, BLAKE2S_HASH_SIZE);
--		blake2s_update(&state, key, keylen);
--		blake2s_final(&state, x_key);
--	} else
--		memcpy(x_key, key, keylen);
--
--	for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
--		x_key[i] ^= 0x36;
--
--	blake2s_init(&state, BLAKE2S_HASH_SIZE);
--	blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
--	blake2s_update(&state, in, inlen);
--	blake2s_final(&state, i_hash);
--
--	for (i = 0; i < BLAKE2S_BLOCK_SIZE; ++i)
--		x_key[i] ^= 0x5c ^ 0x36;
--
--	blake2s_init(&state, BLAKE2S_HASH_SIZE);
--	blake2s_update(&state, x_key, BLAKE2S_BLOCK_SIZE);
--	blake2s_update(&state, i_hash, BLAKE2S_HASH_SIZE);
--	blake2s_final(&state, i_hash);
--
--	memcpy(out, i_hash, BLAKE2S_HASH_SIZE);
--	memzero_explicit(x_key, BLAKE2S_BLOCK_SIZE);
--	memzero_explicit(i_hash, BLAKE2S_HASH_SIZE);
--}
--EXPORT_SYMBOL(blake2s256_hmac);
--
- static int __init blake2s_mod_init(void)
- {
- 	if (!IS_ENABLED(CONFIG_CRYPTO_MANAGER_DISABLE_TESTS) &&
--- 
-2.34.1
+Lorenzo,
 
+Thanks for the explanation; I do agree.  I was thinking about this last night
+and suspected this was the case.  My current implementation doesn't use
+build_skb to reuse the DMA buffer; it allocates a new skb->data area for
+passing up the stack.  This is why I needed the skb_frag_set_page calls and you
+did not.  That may change, but the first implementation will probably continue
+on that path.
+
+Overall this set looks pretty solid to me.  Thanks to you and other
+contributors for all the work on this!
+
+-andy
+
+> > > -     }
+> > > +     if (unlikely(xdp_buff_is_mb(xdp)))
+> > > +             xdp_update_skb_shared_info(skb, num_frags,
+> > > +                                        sinfo->xdp_frags_size,
+> > > +                                        num_frags * xdp->frame_sz,
+> > > +                                        xdp_buff_is_frag_pfmemalloc(xdp));
+> > >
+> >
+> > When I did an implementation of this on a different driver I also needed
+> > to add:
+> >
+> >         for (i = 0; i < num_frags; i++)
+> >                 skb_frag_set_page(skb, i, skb_frag_page(&sinfo->frags[i]));
+> >
+> > to make sure that frames that were given XDP_PASS were formatted
+> > correctly so they could be handled by the stack.  Don't you need
+> > something similar to make sure frags are properly set?
+> >
+> > Thanks,
+> >
+> > -andy
+> >
+> > P.S.  Sorry for noticing this so late in the process; I realize this version
+> > was just a rebase of v20 and this would have been useful information
+> > earlier if I'm correct.
+> >
+> 
+> no worries :)
+> 
+> Regards,
+> Lorenzo
+> 
+> > > -out:
+> > >       return skb;
+> > >  }
+> > >
+> > > --
+> > > 2.33.1
+> > >
+> 
+
+--000000000000c557dd05d54f4936
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVkwggRBoAMCAQICDBPdG+g0KtOPKKsBCTANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMTAyMjIxNDAyMzhaFw0yMjA5MjIxNDExNTVaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGDAWBgNVBAMTD0FuZHkgR29zcG9kYXJlazEtMCsGCSqGSIb3
+DQEJARYeYW5kcmV3Lmdvc3BvZGFyZWtAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAp9JFtMqwgpbnvA3lNVCpnR5ehv0kWK9zMpw2VWslbEZq4WxlXr1zZLZEFo9Y
+rdIZ0jlxwJ4QGYCvxE093p9easqc7NMemeMg7JpF63hhjCksrGnsxb6jCVUreXPSpBDD0cjaE409
+9yo/J5OQORNPelDd4Ihod6g0XlcxOLtlTk1F0SOODSjBZvaDm0zteqiVZb+7xgle3NOSZm3kiCby
+iRuyS0gMTdQN3gdgwal9iC3cSXHMZFBXyQz+JGSHomhPC66L6j4t6dUqSTdSP07wg38ZPV6ct/Sv
+/O2HcK+E/yYkdMXrDBgcOelO4t8AYHhmedCIvFVp4pFb2oit9tBuFQIDAQABo4IB3zCCAdswDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDApBgNVHREEIjAggR5hbmRyZXcuZ29zcG9kYXJla0Bicm9hZGNvbS5jb20wEwYDVR0lBAwwCgYI
+KwYBBQUHAwQwHwYDVR0jBBgwFoAUljPR5lgXWzR1ioFWZNW+SN6hj88wHQYDVR0OBBYEFKARn7Ud
+RlGu+rBdUDirYE+Ee4TeMA0GCSqGSIb3DQEBCwUAA4IBAQAcWqh4fdwhDN0+MKyH7Mj0vS10E7xg
+mDetQhQ+twwKk5qPe3tJXrjD/NyZzrUgguNaE+X97jRsEbszO7BqdnM0j5vLDOmzb7d6qeNluJvk
+OYyzItlqZk9cJPoP9sD8w3lr2GRcajj5JCKV4pd2PX/i7r30Qco0VnloXpiesFmNTXQqD6lguUyn
+nb7IGM3v/Nb7NTFH8/KUVg33xw829ztuGrOvfrHfBbeVcUoOHEHObXoaofYOJjtmSOQdMeJIiBgP
+XEpJG8/HB8t4FF6A8W++4cHhv0+ayyEnznrbOCn6WUmIvV2WiJymRpvRG7Hhdlk0zA97MRpqK5yn
+ai3dQ6VvMYICbTCCAmkCAQEwazBbMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBu
+di1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMgUGVyc29uYWxTaWduIDIgQ0EgMjAyMAIM
+E90b6DQq048oqwEJMA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCCCu+7FFoCKWbQQ
+joAvtCW6RcHqrc81ptVZvXNcy1WXPDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3
+DQEJBTEPFw0yMjAxMTExNDMwMDBaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUDBAEqMAsGCWCG
+SAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsGCSqGSIb3DQEB
+BzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAaoaOOCwq5yqrui+Sx8yETOVIm3dusqAe
+ytcFx8r/fV/fhhSOQ9kyQGyaWKk1FOm7+GuPOi+/Zs7fIMzcgJqt1eN5kaZQkzKxNi+5rnfyYxYh
+hGgVsVwzNLq4zdTSnI9mFZ969d6t6PHhWEwv52Ln7/EtVu5C7UzF4CeJJrnEFXNrg3uaTKA7+D3w
+SO84cFtBPeZZ6R4Gp5krNNDCqfcaPgmc8+xm1TZuD+hA0kSu4zhr6G2/9t99MjIzTvBdMJvOlGpV
+CUN6Qh9j8zfqVJko2zkfTTj0fbulu8ol55Qz9nr4tWIpdN2/Rlw8QI6NRVeslFb7sfCXtiYl+oYt
+9xMm1w==
+--000000000000c557dd05d54f4936--
