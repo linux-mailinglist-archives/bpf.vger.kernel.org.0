@@ -2,76 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF1D848AE17
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 14:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563EF48AE27
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 14:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240053AbiAKNDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 08:03:14 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:51600 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239661AbiAKNDO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 08:03:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FD5161247;
-        Tue, 11 Jan 2022 13:03:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31C4AC36AED;
-        Tue, 11 Jan 2022 13:03:13 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="MFUmMebD"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1641906191;
+        id S240167AbiAKNFh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 08:05:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240123AbiAKNFh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 11 Jan 2022 08:05:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1641906336;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dD8XQSwfxo9Qxlwz/G+XVhaNKfdndavkp2bxgcRBbBo=;
-        b=MFUmMebDpLyDxjsoyIJbJpe79N9khL827AQ4XB75K8ZWyHtg+Ti8ikJHsZlBmfFmhuRyGt
-        LuwBsm4bRzhYzg1MIKHgAG8zR798wojqy0m8kiQlHGzbSbWQjQ26dggaYIO67mmoruTYCE
-        ClEPPD2IuBuEQlmg9OJkXz6i+p+JFGI=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 502088a2 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 11 Jan 2022 13:03:10 +0000 (UTC)
-Received: by mail-yb1-f182.google.com with SMTP id n68so1445650ybg.6;
-        Tue, 11 Jan 2022 05:03:10 -0800 (PST)
-X-Gm-Message-State: AOAM5318ZN/Tx3YlCRwxUK4DWwLku6kK85cMUZ9pHT8vXFXl0HBY6AEE
-        Rr7nzB211U2vsmKtcK498ZQY0i9IP0qoyH2z+68=
-X-Google-Smtp-Source: ABdhPJyuxNRlBlXLYZ87sxZJN7FApgyqec7syhcIQclS06IdXwytu39KatIkarIKO39uGGvNME+hOhV9JsThjOhfr+c=
-X-Received: by 2002:a25:a0c4:: with SMTP id i4mr5913073ybm.457.1641906189532;
- Tue, 11 Jan 2022 05:03:09 -0800 (PST)
+        bh=Wpzje35ZQJ++DpfcFSJcktDk/9fVWR9cmKQ44GgvnmQ=;
+        b=JlgrQPIIIw+E2BjdG32+908WF5JZfGtLCsNqlihfW3/N/+NrxqbbWonKnqqRIbO891T8iw
+        nDH8h+LlFu4fIQk8hHO/Zv16DRV1BxeMLqsXpvp4vjNxLrQF2Iirg0kpHSvxqhvSlHCFng
+        E0/Q4VhOp34XY24D5owFs5Bimml7C4E=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-671-KxLA-1C1OpuOtEpL7B6PGw-1; Tue, 11 Jan 2022 08:05:35 -0500
+X-MC-Unique: KxLA-1C1OpuOtEpL7B6PGw-1
+Received: by mail-yb1-f197.google.com with SMTP id n2-20020a255902000000b0060f9d75eafeso33827117ybb.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 05:05:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wpzje35ZQJ++DpfcFSJcktDk/9fVWR9cmKQ44GgvnmQ=;
+        b=QmQ2zrPjy8zi9sxKC8tNihgozF3C2Zf6tnZOUyBTdk4JKFu4f+UYBSp79uqs08qv54
+         3oHlwg+OGbPusOAO7SvT0VqZWvT/zDd+Jg4dqCv0qO3KsuDBLAXj+uXFNSokMXTAnMU3
+         bm2NORUHx2wYEem1mBYxrHxz3kOgf1osDMSYjyxJZ1Ba/7qi+/uZvwzwFHRZXNjgV5as
+         3l/C/1MWKgp//ITlodI3ac6jribFpq2JPEYp/my/Hkmjte+u+o4jt9xIEmInp5Fn31In
+         tt/h5n58BKBtvK2PPXgeigAFj7JPRgv6Rr8oaYTBvkqGY1x4lSUb/ovwIoqvi2YkFzHm
+         gPVw==
+X-Gm-Message-State: AOAM532CNKlOpTsGvSsUk/GDGRzsbKVmVFboxhDeOfIFwIwiX+zDsYUk
+        +CEI4BH6g9c+emExt6VKQ1x2gquaxCJamMTaafhquHZCXF/aNZ1fLrdp9u41ymKqtbaOu3Qc/to
+        i5riNgZ29PFGc4paYoK70/7dqSKZR
+X-Received: by 2002:a05:6902:110d:: with SMTP id o13mr6658658ybu.715.1641906335046;
+        Tue, 11 Jan 2022 05:05:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJsAYYRDSZYX6e6gogiyOC4FEsDkRLDsOR3cKi9/31EBqC9/2HpkReIPbJz5Y5IOzS526Z85G8eg2mMdWVzTY=
+X-Received: by 2002:a05:6902:110d:: with SMTP id o13mr6658623ybu.715.1641906334739;
+ Tue, 11 Jan 2022 05:05:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20211223141113.1240679-1-Jason@zx2c4.com> <20211223141113.1240679-2-Jason@zx2c4.com>
- <CAMuHMdU0spv9X_wErkBBWQ9kV9f1zE_YNcu5nPbTG_64Lh_h0w@mail.gmail.com>
- <CAHmME9pZu-UvCK=uP-sxXL127BmbjmrD2=M7cNd9vHdJEsverw@mail.gmail.com> <CAMuHMdW+Od70XTNbnNxL3qXgetZ9QDLeett6u5vg9Wr6atxD=w@mail.gmail.com>
-In-Reply-To: <CAMuHMdW+Od70XTNbnNxL3qXgetZ9QDLeett6u5vg9Wr6atxD=w@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Tue, 11 Jan 2022 14:02:58 +0100
-X-Gmail-Original-Message-ID: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
-Message-ID: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] random: use BLAKE2s instead of SHA1 in extraction
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Theodore Tso <tytso@mit.edu>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
-        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>
+References: <cover.1641641663.git.lorenzo@kernel.org> <a346f27e55a9117f43f89aceb7e47c5f0743d50a.1641641663.git.lorenzo@kernel.org>
+ <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
+In-Reply-To: <YdxgrP1YDMyWXmqL@C02YVCJELVCG>
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Date:   Tue, 11 Jan 2022 14:05:23 +0100
+Message-ID: <CAJ0CqmXaeJkJ8SDjTA1u_JNsqpxS8GA4J29S9wGPH0qOmqjp0w@mail.gmail.com>
+Subject: Re: [PATCH v21 bpf-next 06/23] net: marvell: rely on
+ xdp_update_skb_shared_info utility routine
+To:     Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Agroskin, Shay" <shayagr@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>,
+        Toke Hoiland Jorgensen <toke@redhat.com>, andy@greyhouse.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 1:51 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, Jan 11, 2022 at 1:28 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> > On Tue, Jan 11, 2022 at 12:38 PM Geert Uytterhoeven
-> > <geert@linux-m68k.org> wrote:
-> > > Unfortunately we cannot get rid of the sha1 code yet (lib/sha1.o is
-> > > built-in unconditionally), as there are other users...
 >
-> kernel/bpf/core.c and net/ipv6/addrconf.c
-> Could they be switched to blake2s, too?
+> On Sat, Jan 08, 2022 at 12:53:09PM +0100, Lorenzo Bianconi wrote:
+> > Rely on xdp_update_skb_shared_info routine in order to avoid
+> > resetting frags array in skb_shared_info structure building
+> > the skb in mvneta_swbm_build_skb(). Frags array is expected to
+> > be initialized by the receiving driver building the xdp_buff
+> > and here we just need to update memory metadata.
+> >
+> > Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  drivers/net/ethernet/marvell/mvneta.c | 23 ++++++++++-------------
+> >  1 file changed, 10 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> > index 775ffd91b741..267a306d9c75 100644
+> > --- a/drivers/net/ethernet/marvell/mvneta.c
+> > +++ b/drivers/net/ethernet/marvell/mvneta.c
+> > @@ -2332,8 +2332,12 @@ mvneta_swbm_add_rx_fragment(struct mvneta_port *pp,
+> >               skb_frag_size_set(frag, data_len);
+> >               __skb_frag_set_page(frag, page);
+> >
+> > -             if (!xdp_buff_is_mb(xdp))
+> > +             if (!xdp_buff_is_mb(xdp)) {
+> > +                     sinfo->xdp_frags_size = *size;
+> >                       xdp_buff_set_mb(xdp);
+> > +             }
+> > +             if (page_is_pfmemalloc(page))
+> > +                     xdp_buff_set_frag_pfmemalloc(xdp);
+> >       } else {
+> >               page_pool_put_full_page(rxq->page_pool, page, true);
+> >       }
+> > @@ -2347,7 +2351,6 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> >       struct skb_shared_info *sinfo = xdp_get_shared_info_from_buff(xdp);
+> >       struct sk_buff *skb;
+> >       u8 num_frags;
+> > -     int i;
+> >
+> >       if (unlikely(xdp_buff_is_mb(xdp)))
+> >               num_frags = sinfo->nr_frags;
+> > @@ -2362,18 +2365,12 @@ mvneta_swbm_build_skb(struct mvneta_port *pp, struct page_pool *pool,
+> >       skb_put(skb, xdp->data_end - xdp->data);
+> >       skb->ip_summed = mvneta_rx_csum(pp, desc_status);
+> >
+> > -     if (likely(!xdp_buff_is_mb(xdp)))
+> > -             goto out;
+> > -
+> > -     for (i = 0; i < num_frags; i++) {
+> > -             skb_frag_t *frag = &sinfo->frags[i];
+> > -
+> > -             skb_add_rx_frag(skb, skb_shinfo(skb)->nr_frags,
+> > -                             skb_frag_page(frag), skb_frag_off(frag),
+> > -                             skb_frag_size(frag), PAGE_SIZE);
+>
+> Maybe I'm missing something but I'm not sure you have a suitable
+> replacement for the 3 lines above this in your proposed change.
+>
 
-I've brought this up before and the conclusion is that they probably
-can't for compatibility reasons. No need to rehash that discussion
-again. Alternatively, send a patch to netdev and see how it goes.
+Hi Andy,
 
-Anyway, we can follow up with the code size reduction patches we
-discussed elsewhere in this thread.
+mvneta_swbm_add_rx_fragment() initializes frags array in
+skb_shared_info for xdp whenever we receive a multi-descriptors frame.
+Since frags array is at the same offset for the xdp_buff and for the
+new skb and build_skb() in mvneta_swbm_build_skb() does not overwrite
+it, we do not need to initialize it again allocating the skb, just
+account metadata info running xdp_update_skb_shared_info(). Agree?
+
+> > -     }
+> > +     if (unlikely(xdp_buff_is_mb(xdp)))
+> > +             xdp_update_skb_shared_info(skb, num_frags,
+> > +                                        sinfo->xdp_frags_size,
+> > +                                        num_frags * xdp->frame_sz,
+> > +                                        xdp_buff_is_frag_pfmemalloc(xdp));
+> >
+>
+> When I did an implementation of this on a different driver I also needed
+> to add:
+>
+>         for (i = 0; i < num_frags; i++)
+>                 skb_frag_set_page(skb, i, skb_frag_page(&sinfo->frags[i]));
+>
+> to make sure that frames that were given XDP_PASS were formatted
+> correctly so they could be handled by the stack.  Don't you need
+> something similar to make sure frags are properly set?
+>
+> Thanks,
+>
+> -andy
+>
+> P.S.  Sorry for noticing this so late in the process; I realize this version
+> was just a rebase of v20 and this would have been useful information
+> earlier if I'm correct.
+>
+
+no worries :)
+
+Regards,
+Lorenzo
+
+> > -out:
+> >       return skb;
+> >  }
+> >
+> > --
+> > 2.33.1
+> >
+
