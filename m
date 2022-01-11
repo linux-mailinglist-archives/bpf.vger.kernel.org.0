@@ -2,101 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A0848B460
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 18:50:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D22AA48B495
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 18:52:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244447AbiAKRuB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 12:50:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
+        id S1344950AbiAKRwj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 12:52:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344718AbiAKRtk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 12:49:40 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21112C06173F;
-        Tue, 11 Jan 2022 09:49:40 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso191672pjb.1;
-        Tue, 11 Jan 2022 09:49:40 -0800 (PST)
+        with ESMTP id S1344872AbiAKRwd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 12:52:33 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBBD3C034001;
+        Tue, 11 Jan 2022 09:51:25 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id e19so11669223plc.10;
+        Tue, 11 Jan 2022 09:51:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7d4f9OeHE1AUWS6VvZSAGVP+TjEkekjrAdEq9W1CT2E=;
-        b=LtkofzxD8TdZdP1aO140lbC8WPCnOpwojXcvO2mF652G/dUReimGiS1A8lxeLWYeuc
-         xreoO/umV7fcww04Au79l7Tgczx7oFMt9jbgxbJDOHoUUOk6TeiyJDcqzPPX15QnDJhG
-         Icarugm+ycoyN2G6XHMgkUclx4/BPA4qVJy4u/ICwz7tePpLVJLfXb0aZrZtz1MUoy9x
-         wxcoHtjVPAd6Bio8X0xK4kdbaSa92d4KHV+6OELn1y2pS0vHFHI8qac3Nlmyt99MwPVF
-         AzUp7RiblUYkcB6mB7m5mpOrxfTlwo56vTJ6Ck0eFaf3qTH2s6MrcW+G13KXZ+cmMw4Q
-         640g==
+         :cc;
+        bh=dCLKPvyqwFiADeW+fUHpp9nGxWyERyIzo7SwvZQVl9s=;
+        b=ZNrTBDgtZqfO/0O53VItY+K50sRyRO/na+zTvONRWtyTbwdYbhkhi5Hu2gKFEe2D/g
+         Nnh8WsX5J7CCnTsCUSg9HtbUCPFWPTQ3k6mS69EuE2c8owF2ITCpxI7UJ6Jn2A4YuDCF
+         9JQ+WpvwRErEy5O4WtipqJ5RG8QIsx/TdLAa8cjQ9MHBabhdnLhi2EOz3oG3jWe27Qqm
+         OffY1/kCH69ThL34Jng8c4HijqodU/cJn9PApWrlSBTN7BFJNFb9fGjC1/a94h+O7lLE
+         twHAdDYbAwQY360CJXEQBaiJlbbej5CHyQJ0f05Tbn80scTpsq2iIAwGGS9ChvfSfVF5
+         /T3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7d4f9OeHE1AUWS6VvZSAGVP+TjEkekjrAdEq9W1CT2E=;
-        b=NItp4sSpjmcP5N687W2wGrVVhm3fWF4Xj/mVQjxGXiRCXadXnCwSvU+EhhMcZ9mY5Q
-         X6mn/jgAR43ZJIPntJC/Bxo1//giDRD8czXNAGJRuF+bfo/jyDrveIzKwpFfjbXQ+U3X
-         qhEfMv45goTWl2GLFnbQ+jAFc1uD/W0IGCxGG4za5D6Ruq75RddFiwnKiDpihMohUf4B
-         68Uz96NXD9VDqirBVWd/eI5PVNaGVOOjwvJaWf5rUV4yUzFfZxiG1caRdxYdyoRMdHYG
-         UcjrC5SBeHygaNfiHZl+uAVbztEt6tn4z80irOX8vRzEyf5By4H+cMNN/tkdk6P7BL0u
-         RQRw==
-X-Gm-Message-State: AOAM5331iVMkyHLgbPz3LC8dg8F/8B6BtEzojxTlEC43wyPq5U08X4uC
-        bz/by3w9pRC4FxqGIEKKFb+8gir5zqcer/JFTt0=
-X-Google-Smtp-Source: ABdhPJxFxc6D7uid0EDFruT8ggqzhgP0nSd8Gassl1xLfHh3m98dx/PYKvteYP8uz0sXDUXmDuWPMrGAmdt3mgJ+wak=
-X-Received: by 2002:a05:6a00:1582:b0:4bb:4bc8:7ecd with SMTP id
- u2-20020a056a00158200b004bb4bc87ecdmr5567919pfk.46.1641923379584; Tue, 11 Jan
- 2022 09:49:39 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=dCLKPvyqwFiADeW+fUHpp9nGxWyERyIzo7SwvZQVl9s=;
+        b=a33EPPn5yp5+VHkKFO4X9JlKQJdwa3Nk7fMPcv9PU1IB/iSBT2T6Pvm7UNUddEjaXL
+         IJJaFZLPTSMI8I7HI3dgaueiGafgzJruGRdsY2WyvRhPK45mTDJON919k5PmM+f4UvZL
+         nkb0sz8aniwT0zIQvaXmMQoQQMlLnA41mgsstd6G3qf9Pw12t6nrbfD+bwP4eHiOQRWv
+         cl7SDjtGExJo6XbM72LRMHoMRBpGL0VpWp2SOSn5p1A7E1OYMSsVnTLQK4oWWN0/0TO4
+         rKMbWW44gywALKd04R3uZs3GfQtQcGLKk8i4UD6tnmr982Z3P688f0mjBL4yc+CFEy8j
+         Tx+g==
+X-Gm-Message-State: AOAM530bb2hOI0sNCkxlExOZ0tz154vbkmKIxPNgOGNwwVBN/BO9xBmd
+        LKpWzh60BiAl8LKQFTzGr52TkS8N/uUH+qxGrws=
+X-Google-Smtp-Source: ABdhPJydex/pZa/4x+YHMH39gD/e+xj74BR+O6j9dxvaO25qdr9CmE/7L4+pz0l4wjJfYoyr/SRVhaeHRmPponx1o8s=
+X-Received: by 2002:a63:7c50:: with SMTP id l16mr4997656pgn.95.1641923485232;
+ Tue, 11 Jan 2022 09:51:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20220107221115.326171-1-toke@redhat.com> <CAADnVQLBDwUEcf63Jd2ohe0k5xKAcFaUmPL6tC-h937pSTzcCg@mail.gmail.com>
-In-Reply-To: <CAADnVQLBDwUEcf63Jd2ohe0k5xKAcFaUmPL6tC-h937pSTzcCg@mail.gmail.com>
+References: <20220108051121.28632-1-yichun@openresty.com>
+In-Reply-To: <20220108051121.28632-1-yichun@openresty.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 11 Jan 2022 09:49:28 -0800
-Message-ID: <CAADnVQ+eK+cmOE7OcKjV1O9J-x0=Hb_5yM61KeBXeWWn2TWquw@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/3] xdp: check prog type before updating BPF link
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Date:   Tue, 11 Jan 2022 09:51:13 -0800
+Message-ID: <CAADnVQLRtVtfw3GxiHskLRBV8BKgeEVOP8qbje-mRNKn9rMOFw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: core: Fix the call ins's offset s32 -> s16 truncation
+To:     "Yichun Zhang (agentzh)" <yichun@openresty.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        syzbot <syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com>,
         Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 8, 2022 at 11:37 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Fri, Jan 7, 2022 at 9:11 PM Yichun Zhang (agentzh)
+<yichun@openresty.com> wrote:
 >
-> On Fri, Jan 7, 2022 at 2:11 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
-> >
-> > The bpf_xdp_link_update() function didn't check the program type before
-> > updating the program, which made it possible to install any program typ=
-e as
-> > an XDP program, which is obviously not good. Syzbot managed to trigger =
-this
-> > by swapping in an LWT program on the XDP hook which would crash in a he=
-lper
-> > call.
-> >
-> > Fix this by adding a check and bailing out if the types don't match.
-> >
-> > Fixes: 026a4c28e1db ("bpf, xdp: Implement LINK_UPDATE for BPF XDP link"=
-)
-> > Reported-by: syzbot+983941aa85af6ded1fd9@syzkaller.appspotmail.com
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> The BPF interpreter always truncates the BPF CALL instruction's 32-bit
+> jump offset to 16-bit. Large BPF programs run by the interpreter often
+> hit this issue and result in weird behaviors when jumping to the wrong
+> destination instructions.
 >
-> Thanks a lot for the quick fix!
-> The merge window is about to begin.
-> We will land it as soon as possible when bpf tree will be ready
-> to accept fixes.
+> The BPF JIT compiler does not have this bug.
+>
+> Fixes: 1ea47e01ad6ea ("bpf: add support for bpf_call to interpreter")
+> Signed-off-by: Yichun Zhang (agentzh) <yichun@openresty.com>
+> ---
+>  kernel/bpf/core.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 2405e39d800f..dc3c90992f33 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -59,6 +59,9 @@
+>  #define CTX    regs[BPF_REG_CTX]
+>  #define IMM    insn->imm
+>
+> +static u64 (*interpreters_args[])(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5,
+> +                                 const struct bpf_insn *insn);
+> +
+>  /* No hurry in this branch
+>   *
+>   * Exported for the bpf jit load helper.
+> @@ -1560,10 +1563,10 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn)
+>                 CONT;
+>
+>         JMP_CALL_ARGS:
+> -               BPF_R0 = (__bpf_call_base_args + insn->imm)(BPF_R1, BPF_R2,
+> -                                                           BPF_R3, BPF_R4,
+> -                                                           BPF_R5,
+> -                                                           insn + insn->off + 1);
+> +               BPF_R0 = (interpreters_args[insn->off])(BPF_R1, BPF_R2,
+> +                                                       BPF_R3, BPF_R4,
+> +                                                       BPF_R5,
+> +                                                       insn + insn->imm + 1);
+>                 CONT;
+>
+>         JMP_TAIL_CALL: {
+> @@ -1810,9 +1813,7 @@ EVAL4(PROG_NAME_LIST, 416, 448, 480, 512)
+>  void bpf_patch_call_args(struct bpf_insn *insn, u32 stack_depth)
+>  {
+>         stack_depth = max_t(u32, stack_depth, 1);
+> -       insn->off = (s16) insn->imm;
+> -       insn->imm = interpreters_args[(round_up(stack_depth, 32) / 32) - 1] -
+> -               __bpf_call_base_args;
+> +       insn->off = (round_up(stack_depth, 32) / 32) - 1;
+>         insn->code = BPF_JMP | BPF_CALL_ARGS;
 
-Applied to bpf tree.
+Neat. Please add a test case and resubmit.
