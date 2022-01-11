@@ -2,89 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F2548ADA3
-	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 13:33:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9D048ADE9
+	for <lists+bpf@lfdr.de>; Tue, 11 Jan 2022 13:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238809AbiAKMdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 11 Jan 2022 07:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238766AbiAKMdY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 11 Jan 2022 07:33:24 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCD0C06173F
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 04:33:23 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id u21so43968094edd.5
-        for <bpf@vger.kernel.org>; Tue, 11 Jan 2022 04:33:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Iyuyw1lveh7BTFp098e8inSytxlbldUsFUYZq5M97Uk=;
-        b=aVLGEFN09CKi1L79iT5rILR6v9jOAVdekFvJF4VaYNrToUHG1Cyo8hnQZywkZpC01d
-         57g6mUp9qQm9BNfeRkv26sDFFrRqdnsFSOJM2BFgStJB3fQN7IlVZfaXArd3bYPqk99j
-         WCeK4c9QNxyAljPajfToCHA2REUso/F9PY66H3LJcRglH3njse+lke3iU+qD/W179q9r
-         wp0XwZBPqQEVmcBvhveLiM9VKrmJqcaPDd6AkVgP8Lg3eSvmA+sRroGeupl5RsvmzCGm
-         pDjAMsr4LzyPzSBunnqpD9v2on0VxCvjH/937yl4zQb4GTGtT1vXNYnwwQRB7VXt/0vE
-         ZYzw==
+        id S240009AbiAKMvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 11 Jan 2022 07:51:49 -0500
+Received: from mail-vk1-f178.google.com ([209.85.221.178]:40449 "EHLO
+        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239653AbiAKMvt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 11 Jan 2022 07:51:49 -0500
+Received: by mail-vk1-f178.google.com with SMTP id 78so10253519vkz.7;
+        Tue, 11 Jan 2022 04:51:49 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Iyuyw1lveh7BTFp098e8inSytxlbldUsFUYZq5M97Uk=;
-        b=nXN/LC131dIlWsa6hANa1NlsB7+cqvXiFFgQ1DR8qlkNmhUcrgs53Xay8Yv94OkjyG
-         4GA7wDnCza/Rc8f1OsLOuzkGFUGg+/Qz5giq0nUntQVw5aMsz2QKqafvP/DZd0pujC//
-         HvnM4TxT+IzydFAlTaPPh5lDzm+VKq+3sD5k0leWA0TIiEzEdsZq3/c2WhcK3M8Ep8SF
-         q0pwzR/z5LwcPAMssh4rwpKCIgA8CF/P1S6aMdIb3PdQ4FA7W2v/U4Ti1TXN+oaKCMU8
-         KBL7yWiV5UVBM5fjppXQFBlzR4RBSkptO6fKNNKbbYwI9Yzj/rfWKM34clQwLiaH/wR4
-         OCJA==
-X-Gm-Message-State: AOAM532Jr/67wh0ZkNNk9rmQY8D+ImQ7syY3fhTHgkHlIGtHSgQpr8Xf
-        rY2jpOgIDieEgjU1vWyFkqCu0c7cffpR2jS0wh2fbAjty5Y=
-X-Google-Smtp-Source: ABdhPJyR0qnV472ATGcu34aK1/QmHVSx8gseak5XZ6Oad+pbyfGpU3QOXZiP2S6FXl7a4apAQjRDty2Wr9hsLCfqN/o=
-X-Received: by 2002:a05:6402:124b:: with SMTP id l11mr4054749edw.9.1641904402221;
- Tue, 11 Jan 2022 04:33:22 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ooKGf7RGEfbJN/l+F17gfotu+sbZFbeMAX/JFJAo0EQ=;
+        b=Lxdh9w0vleGQs/U4UYbeubaM4+WE8Yn3kK+FyxmRFP6uO8w1GyyzKrujrdflEOIvX3
+         2ofEwSJiz0P4eiuezh/dUD58xm6m293MHzytmsDbCQcRfRMQaTYwpRhT8fAtV2cECbVM
+         KzuIwQftBvi7y6H+HPpNiyT7jFx2VKk8ipe0OwEZgwyS3V8MMmAQU9pJzURjyL2vHr3R
+         fe8rJFZg3L8ROmAh8vk6dIfawG1iTVqEQZiQyz6RiXiyyKoIXpIxs/kJtzoMooW1X3mk
+         9AHNxaduMEarlBwAZM2kdQvCGPETQwme4OT1fysFAivRDTVKp5+tMIswUH8Et89O2+WG
+         oUGA==
+X-Gm-Message-State: AOAM530xsxbr/0VzNGN72iuCDV8gMBNRVi/SGXuHbTXChDTe40Gvn8ZJ
+        e+mOj6nEeTwFc5/Vhedg5bJDFpq0r5FdCw==
+X-Google-Smtp-Source: ABdhPJyR8U904KSrfsEa9jdjW9fTngvw5YpkTC9y/+eMa4iL4va6bRxrbN1d1JDwAOE9UWyiCc68Kw==
+X-Received: by 2002:a1f:3213:: with SMTP id y19mr1940708vky.7.1641905508697;
+        Tue, 11 Jan 2022 04:51:48 -0800 (PST)
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com. [209.85.222.52])
+        by smtp.gmail.com with ESMTPSA id q11sm5823031uaj.4.2022.01.11.04.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Jan 2022 04:51:48 -0800 (PST)
+Received: by mail-ua1-f52.google.com with SMTP id v12so29447222uar.7;
+        Tue, 11 Jan 2022 04:51:48 -0800 (PST)
+X-Received: by 2002:a05:6102:21dc:: with SMTP id r28mr1805314vsg.57.1641905507900;
+ Tue, 11 Jan 2022 04:51:47 -0800 (PST)
 MIME-Version: 1.0
-From:   Yaniv Agman <yanivagman@gmail.com>
-Date:   Tue, 11 Jan 2022 14:33:11 +0200
-Message-ID: <CAMy7=ZXqyoaw0mOk2Z8ADxUSs95B=SRgvTua3vRJ00nS5qTFgQ@mail.gmail.com>
-Subject: libbpf API: dynamically load(/unload/attach/detach) bpf programs question
-To:     bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     michael.tcherniack@aquasec.com
+References: <20211223141113.1240679-1-Jason@zx2c4.com> <20211223141113.1240679-2-Jason@zx2c4.com>
+ <CAMuHMdU0spv9X_wErkBBWQ9kV9f1zE_YNcu5nPbTG_64Lh_h0w@mail.gmail.com> <CAHmME9pZu-UvCK=uP-sxXL127BmbjmrD2=M7cNd9vHdJEsverw@mail.gmail.com>
+In-Reply-To: <CAHmME9pZu-UvCK=uP-sxXL127BmbjmrD2=M7cNd9vHdJEsverw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 11 Jan 2022 13:51:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdW+Od70XTNbnNxL3qXgetZ9QDLeett6u5vg9Wr6atxD=w@mail.gmail.com>
+Message-ID: <CAMuHMdW+Od70XTNbnNxL3qXgetZ9QDLeett6u5vg9Wr6atxD=w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] random: use BLAKE2s instead of SHA1 in extraction
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Theodore Tso <tytso@mit.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello!
+Hi Jason,
 
-I noticed that the bpf_program__load() API was deprecated since libbpf
-0.6 saying that bpf_object__load() should be used instead.
-This, however, doesn't seem to fit our use case of loading multiple
-bpf programs (that also share the same maps) from one bpf object (elf
-file), then unloading and loading them dynamically according to some
-given needs.
-I'm not sure it is possible to load one specific program from the bpf
-object using bpf_object__load() API - is it?
+CC bpf, netdev
 
-Another question with the same context -
-If I understand correctly, the purpose of detach is to "prevent
-execution of a previously attached program from any future events"
-(https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-lifetime.html),
-which seems like something that I would want to do if I just wanted to
-temporarily stop an event from triggering the program. But then I ask
-myself - what is the meaning of detaching a link (and not
-bpf_link__destroy() it) if there is no way to attach it back (without
-re-creating the link object)? I don't see any function named
-bpf_link__attach() that would do such a thing, or any other function
-in libbpf API that can do something similar, am I right?
-Also, It seems that using bpf_link__detach() does not fit all link
-types. For example, when attaching a (non legacy) kprobe, detaching it
-should probably happen using PERF_EVENT_IOC_DISABLE and not through
-sys_bpf(BPF_LINK_DETACH), shouldn't it?
+On Tue, Jan 11, 2022 at 1:28 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> On Tue, Jan 11, 2022 at 12:38 PM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> > Unfortunately we cannot get rid of the sha1 code yet (lib/sha1.o is
+> > built-in unconditionally), as there are other users...
 
-And one last question:
-When using bpf_program__unload() on a program that is already
-attached, should we first call bpf_link__detach() or does the kernel
-already take care of this?
+kernel/bpf/core.c and net/ipv6/addrconf.c
+Could they be switched to blake2s, too?
 
-Thanks,
-Yaniv
+> I think that's just how things go and a price for progress. We're not
+> going to stick with sha1, and blake2s has some nice properties that we
+> certainly want. In the future hopefully this can decrease in other
+> ways based on other future improvements. But that's where we are now.
+>
+> If you're really quite concerned about m68k code size, I can probably
+> do some things to reduce that. For example, blake2s256_hmac is only
+> used by wireguard and it could probably be made local there. And with
+> some trivial loop re-rolling, I can shave off another 2300 bytes. And
+> I bet I can find a few other things too. The question is: how
+> important is this to you?
+
+No problem, I just try to report all measurable impact on kernel size,
+so there is some record of it.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
