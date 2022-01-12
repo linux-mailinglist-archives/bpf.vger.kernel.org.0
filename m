@@ -2,176 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A440948CBC3
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 20:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F03E648CBCE
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 20:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345194AbiALTVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 14:21:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58990 "EHLO
+        id S238677AbiALTZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 14:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241961AbiALTVC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 14:21:02 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDE55C06173F;
-        Wed, 12 Jan 2022 11:21:00 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id r16so3369483ile.8;
-        Wed, 12 Jan 2022 11:21:00 -0800 (PST)
+        with ESMTP id S242557AbiALTZv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 14:25:51 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1722AC06173F
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 11:25:51 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id f12-20020a056902038c00b006116df1190aso6305151ybs.20
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 11:25:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mbIdVFwDdEDm9VgrSp8imN1y3sdVv8K2KsXUSowezwI=;
-        b=oiR/zGz7KU3ArFilrA3ScSpITPhyKs9ySvel65QwpA5+KRMkfS9+62CFyZj+xFCRfR
-         ehf7b5p0VnpSJIn9jcTNnzhI1x7J4xfumhdsSQo9VEgTYdIfcwZ8BxnzGJJ2SvRw48M8
-         IFWVzaIT/Oravp2rsStLiFyywa0KjFbXWAIydSs1W5NQJgcuM+hUf/QWl4nwvhd4APKx
-         Di5hnKPF+IpEtCOGKFs8JkBaguAWc7mf2MtG4aBMto7CBMH+6YX51aZvtiD2KkjhA9Y+
-         squADoQaOIvxxZKBOHiG7db35XFCzZGF79Ozrl+beIOsddHw5R0O3Jiq/sWu59hfhxKb
-         HcwQ==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kdM0s6QqOxdtaUmFhX2PE5X5ddjgitMB71Dm4q7m87s=;
+        b=YPsd7oUeoPQ5WuO1u+sAFfJ9blW7Z5DgdMneotr9Ra00Lfu7qd8YBWEGvd8KhtNJyd
+         mZuMoZwwW8X3tpBtQQFJ0ggAq8ipOdZYgZjI/vXLhlbeYNmDhTAqzPaq3pSH3OlcdZaX
+         qkiXYQdAlGDN9K2Ynqf2KyyLq7XY87He1WZLT1OOq9dbvHy+SjbklE0dcKhYWvYLCRrg
+         as6us6aUq+FRQi0PI7upm/QFzwb0ceqX7sy4lSwPw1eFW192n05PsRUNDVqwX/CJijTH
+         Jfp8J0U8mbsvFWuz5flUj7SEqW51+eYTlGFdWFkimi9SQHFX0+DkjbHfjpYgpgtcpSqV
+         nrNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mbIdVFwDdEDm9VgrSp8imN1y3sdVv8K2KsXUSowezwI=;
-        b=twN8HZ32L1q1Wv2INlnOGceddvKglhQSgGSq3SokBK/bUby+fn26kUoPGHiBqIiVA/
-         hDrwH4+5XXTyHTfAAwWH03xTys3A+h0d0rZtefptxUuEDem34sorntUFm+ofSO8aP80k
-         FATxiGbS2FXyoGqMEPjje/L4y5P0ZIO6Xicortwk1r6nxKTjE7khu20UxcAfwpbER4+R
-         QJRsFpw317qQ8oj0xLrjpT9z3tRX99t8Y/f2nmRQwoham4wOr+ml4vwLsbUq1VY4Rr5b
-         HatfHwSqr/9qJAvDZal/RUsOgUJwkMCT2I119c21+Bozm7RoDIHwjgc8e/f9cSWxFM7x
-         0ZrA==
-X-Gm-Message-State: AOAM531FMQiD0Kti5yFA/M0D9R3zvPx6CyZMfmV5JYnzWdM2pPxUzFaK
-        37tk+QoZUcr8e/X4IJe7YvDwrtPcAh7tFAuybuhapJM9
-X-Google-Smtp-Source: ABdhPJxTh7GGXXYOFF5KBx/gQv40wTuNBU/6r/v8nkVb5jNENEjwuPwCbo7k2Ix/17xJje7nz2UILRGFvGWuUK2Gt5U=
-X-Received: by 2002:a05:6e02:1a24:: with SMTP id g4mr692391ile.71.1642015260327;
- Wed, 12 Jan 2022 11:21:00 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1641641663.git.lorenzo@kernel.org> <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
- <CAEf4BzbfDvH5CYNsWg9Dx7JcFEp4jNmNRR6H-6sJEUxDSy1zZw@mail.gmail.com>
- <Yd8bVIcA18KIH6+I@lore-desk> <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
- <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
-In-Reply-To: <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 Jan 2022 11:20:48 -0800
-Message-ID: <CAEf4BzZ4c1VwPf9oBRRdN7jdBWrk4pg=mw_50LMjLr99Mb0yfw@mail.gmail.com>
-Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kdM0s6QqOxdtaUmFhX2PE5X5ddjgitMB71Dm4q7m87s=;
+        b=udK9mW7axX3wmjvH0ZAZrjac4ESAYUajIrZRBQ7qXpbB9En/ADRjuvzccYuDGKV543
+         VXnDqOxq5e/X6KF9thDV46TqWZ7eIiQWZMn2bt1PtN5jdRFGEQzLfVvBKU3v22d4jOVx
+         EfRAmd46I9FirR66n47CpsciE5X1E3C5c0L116eXOoXom1UUiyraKQBtadTraekc56ZZ
+         nILch8xHSVxyj3w4Z14NtRxJSNBIy5tPzmKWf7i3yXlC8fBSBWfBjVX5pA5TBbJZI0Z6
+         dwhCr2DSmPhMrFuFXWzOVKSyGIIAz39X6Ik1vBrTDhDj/DAfsMHjwLZqJaMghypq+XO+
+         ST/A==
+X-Gm-Message-State: AOAM532RGMTjz2HTWiM9Eq/W4WIzluxY7upj+4rU1zdmFf1VRfClEIiM
+        Tw726oVvNyMEInUW57Lqncv4lPje5WE=
+X-Google-Smtp-Source: ABdhPJxtAzHZ+mgWbyzR0k9xGs4bfXxHTUFdGg4DbmTCP0tJF85QfjBm92ihhWSHNjPHma0ZaEpCA0N7zuU=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:ddf2:9aea:6994:df79])
+ (user=haoluo job=sendgmr) by 2002:a5b:986:: with SMTP id c6mr1577401ybq.504.1642015550298;
+ Wed, 12 Jan 2022 11:25:50 -0800 (PST)
+Date:   Wed, 12 Jan 2022 11:25:39 -0800
+Message-Id: <20220112192547.3054575-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.34.1.703.g22d0c6ccf7-goog
+Subject: [PATCH RESEND RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
+From:   Hao Luo <haoluo@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, Joe@google.com,
+        Burton@google.com, jevburton.kernel@gmail.com,
+        Tejun Heo <tj@kernel.org>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 11:17 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jan 12, 2022 at 10:24 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Jan 12, 2022 at 10:18 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > >
-> > > > On Sun, Jan 9, 2022 at 7:05 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > > > >
-> > > > > Introduce support for the following SEC entries for XDP multi-buff
-> > > > > property:
-> > > > > - SEC("xdp_mb/")
-> > > > > - SEC("xdp_devmap_mb/")
-> > > > > - SEC("xdp_cpumap_mb/")
-> > > >
-> > > > Libbpf seemed to went with .<suffix> rule (e.g., fentry.s for
-> > > > sleepable, seems like we'll have kprobe.multi or  something along
-> > > > those lines as well), so let's stay consistent and call this "xdp_mb",
-> > > > "xdp_devmap.mb", "xdp_cpumap.mb" (btw, is "mb" really all that
-> > > > recognizable? would ".multibuf" be too verbose?). Also, why the "/"
-> > > > part? Also it shouldn't be "sloppy" either. Neither expected attach
-> > > > type should be optional.  Also not sure SEC_ATTACHABLE is needed. So
-> > > > at most it should be SEC_XDP_MB, probably.
-> > >
-> > > ack, I fine with it. Something like:
-> > >
-> > >         SEC_DEF("lsm.s/",               LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
-> > >         SEC_DEF("iter/",                TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
-> > >         SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
-> > > +       SEC_DEF("xdp_devmap.multibuf",  XDP, BPF_XDP_DEVMAP, 0),
-> > >         SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
-> > > +       SEC_DEF("xdp_cpumap.multibuf",  XDP, BPF_XDP_CPUMAP, 0),
-> > >         SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
-> > > +       SEC_DEF("xdp.multibuf",         XDP, BPF_XDP, 0),
-> >
-> > yep, but please use SEC_NONE instead of zero
-> >
-> > >         SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
-> > >         SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> > >         SEC_DEF("lwt_in",               LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
-> > >
-> > > >
-> > > > >
-> > > > > Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-> > > > > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > > > ---
-> > > > >  tools/lib/bpf/libbpf.c | 8 ++++++++
-> > > > >  1 file changed, 8 insertions(+)
-> > > > >
-> > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > > > index 7f10dd501a52..c93f6afef96c 100644
-> > > > > --- a/tools/lib/bpf/libbpf.c
-> > > > > +++ b/tools/lib/bpf/libbpf.c
-> > > > > @@ -235,6 +235,8 @@ enum sec_def_flags {
-> > > > >         SEC_SLEEPABLE = 8,
-> > > > >         /* allow non-strict prefix matching */
-> > > > >         SEC_SLOPPY_PFX = 16,
-> > > > > +       /* BPF program support XDP multi-buff */
-> > > > > +       SEC_XDP_MB = 32,
-> > > > >  };
-> > > > >
-> > > > >  struct bpf_sec_def {
-> > > > > @@ -6562,6 +6564,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
-> > > > >         if (def & SEC_SLEEPABLE)
-> > > > >                 opts->prog_flags |= BPF_F_SLEEPABLE;
-> > > > >
-> > > > > +       if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_MB))
-> > > > > +               opts->prog_flags |= BPF_F_XDP_MB;
-> > > >
-> > > > I'd say you don't even need SEC_XDP_MB flag at all, you can just check
-> > > > that prog->sec_name is one of "xdp.mb", "xdp_devmap.mb" or
-> > > > "xdp_cpumap.mb" and add the flag. SEC_XDP_MB doesn't seem generic
-> > > > enough to warrant a flag.
-> > >
-> > > ack, something like:
-> > >
-> > > +       if (prog->type == BPF_PROG_TYPE_XDP &&
-> > > +           (!strcmp(prog->sec_name, "xdp_devmap.multibuf") ||
-> > > +            !strcmp(prog->sec_name, "xdp_cpumap.multibuf") ||
-> > > +            !strcmp(prog->sec_name, "xdp.multibuf")))
-> > > +               opts->prog_flags |= BPF_F_XDP_MB;
-> >
-> > yep, can also simplify it a bit with strstr(prog->sec_name,
-> > ".multibuf") instead of three strcmp
->
-> Maybe ".mb" ?
-> ".multibuf" is too verbose.
-> We're fine with ".s" for sleepable :)
+Bpffs is a pseudo file system that persists bpf objects. Previously
+bpf objects can only be pinned in bpffs, this patchset extends pinning
+to allow bpf objects to be pinned (or exposed) to other file systems.
 
+In particular, this patchset allows pinning bpf objects in kernfs. This
+creates a new file entry in the kernfs file system and the created file
+is able to reference the bpf object. By doing so, bpf can be used to
+customize the file's operations, such as seq_show.
 
-I had reservations about "mb" because the first and strong association
-is "megabyte", not "multibuf". And it's not like anyone would have
-tens of those programs in a single file so that ".multibuf" becomes
-way too verbose. But I don't feel too strongly about this, if the
-consensus is on ".mb".
+As a concrete usecase of this feature, this patchset introduces a
+simple new program type called 'bpf_view', which can be used to format
+a seq file by a kernel object's state. By pinning a bpf_view program
+into a cgroup directory, userspace is able to read the cgroup's state
+from file in a format defined by the bpf program.
+
+Different from bpffs, kernfs doesn't have a callback when a kernfs node
+is freed, which is problem if we allow the kernfs node to hold an extra
+reference of the bpf object, because there is no chance to dec the
+object's refcnt. Therefore the kernfs node created by pinning doesn't
+hold reference of the bpf object. The lifetime of the kernfs node
+depends on the lifetime of the bpf object. Rather than "pinning in
+kernfs", it is "exposing to kernfs". We require the bpf object to be
+pinned in bpffs first before it can be pinned in kernfs. When the
+object is unpinned from bpffs, their kernfs nodes will be removed
+automatically. This somehow treats a pinned bpf object as a persistent
+"device".
+
+We rely on fsnotify to monitor the inode events in bpffs. A new function
+bpf_watch_inode() is introduced. It allows registering a callback
+function at inode destruction. For the kernfs case, a callback that
+removes kernfs node is registered at the destruction of bpffs inodes.
+For other file systems such as sockfs, bpf_watch_inode() can monitor the
+destruction of sockfs inodes and the created file entry can hold the bpf
+object's reference. In this case, it is truly "pinning".
+
+File operations other than seq_show can also be implemented using bpf.
+For example, bpf may be of help for .poll and .mmap in kernfs.
+
+Patch organization:
+ - patch 1/8 and 2/8 are preparations. 1/8 implements bpf_watch_inode();
+   2/8 records bpffs inode in bpf object.
+ - patch 3/8 and 4/8 implement generic logic for creating bpf backed
+   kernfs file.
+ - patch 5/8 and 6/8 add a new program type for formatting output.
+ - patch 7/8 implements cgroup seq_show operation using bpf.
+ - patch 8/8 adds selftest.
+
+Hao Luo (8):
+  bpf: Support pinning in non-bpf file system.
+  bpf: Record back pointer to the inode in bpffs
+  bpf: Expose bpf object in kernfs
+  bpf: Support removing kernfs entries
+  bpf: Introduce a new program type bpf_view.
+  libbpf: Support of bpf_view prog type.
+  bpf: Add seq_show operation for bpf in cgroupfs
+  selftests/bpf: Test exposing bpf objects in kernfs
+
+ include/linux/bpf.h                           |   9 +-
+ include/uapi/linux/bpf.h                      |   2 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_view.c                         | 190 ++++++++++++++
+ kernel/bpf/bpf_view.h                         |  25 ++
+ kernel/bpf/inode.c                            | 219 ++++++++++++++--
+ kernel/bpf/inode.h                            |  54 ++++
+ kernel/bpf/kernfs_node.c                      | 165 ++++++++++++
+ kernel/bpf/syscall.c                          |   3 +
+ kernel/bpf/verifier.c                         |   6 +
+ kernel/trace/bpf_trace.c                      |  12 +-
+ tools/include/uapi/linux/bpf.h                |   2 +
+ tools/lib/bpf/libbpf.c                        |  21 ++
+ .../selftests/bpf/prog_tests/pinning_kernfs.c | 245 ++++++++++++++++++
+ .../selftests/bpf/progs/pinning_kernfs.c      |  72 +++++
+ 15 files changed, 995 insertions(+), 32 deletions(-)
+ create mode 100644 kernel/bpf/bpf_view.c
+ create mode 100644 kernel/bpf/bpf_view.h
+ create mode 100644 kernel/bpf/inode.h
+ create mode 100644 kernel/bpf/kernfs_node.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_kernfs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/pinning_kernfs.c
+
+-- 
+2.34.1.448.ga2b2bfdf31-goog
+
