@@ -2,127 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF6648C2DC
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 12:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9471748C31B
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 12:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352738AbiALLIt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 06:08:49 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:41442 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237651AbiALLIs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 06:08:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 416AF61744;
-        Wed, 12 Jan 2022 11:08:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2423C36AE9;
-        Wed, 12 Jan 2022 11:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641985727;
-        bh=g4TvSOUEifbHDFsfuXP1XTIJ9SHq2ApknF9J8gPzf1w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NT9pKrhc7d9PNADi6t1tdi/jU0XXRogTOhGVezq27DEkxXmBJQkYdIpb/CyVbpdRh
-         9DVNj8MIjdNkzb04r5CzjqArJBLq1WKRDVYnFWmD7zno52jR5sQIiBzR/dQJN1jjUX
-         F92BrQZwI0y7yaZDuS32qEjiULQ39YdL47xKTOOpYRKMgW9AAm11ZQ1grY7rrgmwF5
-         yxy50LD28I92l/TXa9KQTwwBhkbVr6BncE5SVt0408gFnjUhUELE6WBUFalbhBGyck
-         LEOzt0voGuBVRoerR5M4CXl8a3CUNewUUUP3XTg3tjLNP94D3zh1DmvzbBMCHUWDT0
-         P9AZxeuNiAgog==
-Date:   Wed, 12 Jan 2022 20:08:40 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [RFC PATCH 0/6] fprobe: Introduce fprobe function entry/exit
- probe
-Message-Id: <20220112200840.a035b3b001d2e207e6a2d885@kernel.org>
-In-Reply-To: <20220112163353.4da6a6b9c6eef69dbda50324@kernel.org>
-References: <20220104080943.113249-1-jolsa@kernel.org>
-        <164191321766.806991.7930388561276940676.stgit@devnote2>
-        <20220111223944.jbi3mxedwifxwyz5@ast-mbp.lan>
-        <20220112163353.4da6a6b9c6eef69dbda50324@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1347032AbiALL3t (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 06:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1352858AbiALL3n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 06:29:43 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC3EC061748
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 03:29:43 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id o1so4113693uap.4
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 03:29:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KalP7pqUldn0owlfQ20Q8VvgpD4qNB4+Il7bEQ6jfBE=;
+        b=iitSWVzZnGpeo7YF73/KVI/tBZLURlxeWM0lCHEYjC6DH9KnUOywv7VxRtmOF67PXd
+         RZGDhFjBDiHHARkKN6oRBnfP0qPHLnCfOxsOZpErXlzhJzTR/lmokvxX5laykPGJq7DY
+         eYLhZWwuEJYLPsHh8uh3fJPVlQLIH+PDSfYRDrEj7ykhJcO1/8MIIdKKfyFIoM32RJLq
+         1jR+WdKbCYwp0Qj6ZzITZdDtKwGpURwY+RjMloR/+rD/jHsqWqMf+ZHR7Bxf2alXPXdb
+         K4aGXEJKhEeceVqWauraKpfP4zyOm2wM9ggonofntlnkVRlRyP8vF51x1OYqVMJ6M4pF
+         HiTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KalP7pqUldn0owlfQ20Q8VvgpD4qNB4+Il7bEQ6jfBE=;
+        b=uKoUuE52D2qdFkcPj8I65hluebV3O1vO2UW3GcII6hCO7H+okp4ZtE7k5r6h9EXYou
+         k9YXGsMHJYjMcm84RFzp5Dl3bF0garogbtHXddNkXDE6ypsGG7k1k76ieY5pQDChJEqY
+         vgGGDLOFuli9vt7thTwi+nhxF4v2X/d61FfzUXpz/YEd3G3saAdOaQvziM3bcrntedfM
+         i3dwDB5LykBXbP0piTcE40nHXjthZInq1WINoXSU8FyYiBAWxk7NlgzDdBtwpsNR9eYV
+         fFNPwEBWOMMH1QJybKkdSky6C6NMDwu6Bt8sPkBvwyaY5Zr6r62PqyvVCnqsXckFUQFB
+         FX5A==
+X-Gm-Message-State: AOAM53158wRObWEuc9r/LfLFgL51S8TgGGKlxllxZHRYj8+XAxF380yk
+        2sxwHH0vuKYMJ3xJ9IB7UCMoxhKwi4Y9VBmgsA==
+X-Google-Smtp-Source: ABdhPJy9dEWjMKGQKidN5OHDPzVecBqhKsvv2s8uTNt2D9Nk+96kTdKqKLruPPbllWKuUxg3jpy1nhhoCrOwOfSO84w=
+X-Received: by 2002:a67:e3a7:: with SMTP id j7mr2867427vsm.81.1641986982369;
+ Wed, 12 Jan 2022 03:29:42 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:ab0:2845:0:0:0:0:0 with HTTP; Wed, 12 Jan 2022 03:29:41
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishag8@gmail.com>
+Date:   Wed, 12 Jan 2022 03:29:41 -0800
+Message-ID: <CAMoG4bVaSyTpyL4Kbu7UsOGAaWbWbRABRjT5-6dKXM1LS1NApQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 Jan 2022 16:33:53 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Dear Friend,
 
-> Hi Alexei,
-> 
-> On Tue, 11 Jan 2022 14:39:44 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> 
-> > On Wed, Jan 12, 2022 at 12:00:17AM +0900, Masami Hiramatsu wrote:
-> > > Hi Jiri,
-> > > 
-> > > Here is a short series of patches, which shows what I replied
-> > > to your series.
-> > > 
-> > > This introduces the fprobe, the function entry/exit probe with
-> > > multiple probe point support. This also introduces the rethook
-> > > for hooking function return, which I cloned from kretprobe.
-> > > 
-> > > I also rewrite your [08/13] bpf patch to use this fprobe instead
-> > > of kprobes. I didn't tested that one, but the sample module seems
-> > > to work. Please test bpf part with your libbpf updates.
-> > > 
-> > > BTW, while implementing the fprobe, I introduced the per-probe
-> > > point private data, but I'm not sure why you need it. It seems
-> > > that data is not used from bpf...
-> > > 
-> > > If this is good for you, I would like to proceed this with
-> > > the rethook and rewrite the kretprobe to use the rethook to
-> > > hook the functions. That should be much cleaner (and easy to
-> > > prepare for the fgraph tracer integration)
-> > 
-> > What is the speed of attach/detach of thousands fprobes?
-> 
-> I've treaked my example module and it shows below result;
-> 
-> /lib/modules/5.16.0-rc4+/kernel/samples/fprobe # time insmod ./fprobe_example.ko
->  symbol='btrfs_*'
-> [  187.095925] fprobe_init: 1028 symbols found
-> [  188.521694] fprobe_init: Planted fprobe at btrfs_*
-> real	0m 1.47s
-> user	0m 0.00s
-> sys	0m 1.36s
-> 
-> I think using ftrace_set_filter_ips() can make it faster.
-> (maybe it needs to drop per-probe point private data, that
-> prevents fprobe to use that interface)
+I came across your e-mail contact prior a private search while in need
+of your assistance. My name is Aisha Gaddafi a single
 
-OK, I've updated fprobes to use the ftrace_set_filter_ips()
-and got below result.
+Mother and a Widow with three Children. I am the only biological
+Daughter of late Libyan President (Late Colonel Muammar
 
-/lib/modules/5.16.0-rc4+/kernel/samples/fprobe # time insmod fprobe_example.ko s
-ymbol='btrfs_*' 
-[   36.130947] fprobe_init: 1028 symbols found
-[   36.177901] fprobe_init: Planted fprobe at btrfs_*
-real	0m 0.08s
-user	0m 0.00s
-sys	0m 0.07s
+Gaddafi).
 
-Let me update the series :)
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a
 
-Thank you,
+trusted investment Manager/Partner because of my current refugee
+status, however, I am interested in you for investment
 
+project assistance in your country, may be from there, we can build
+business relationship in the nearest future.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+I am willing to negotiate investment/business profit sharing ratio
+with you base on the future investment earning profits.
+If you are willing to handle this project on my behalf kindly reply
+urgent to enable me provide you more information about
+Mrs Aisha Gaddafi
