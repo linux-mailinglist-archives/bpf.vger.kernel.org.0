@@ -2,71 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E73D48CB16
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 19:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771F048CB4B
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 19:51:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356295AbiALSgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 13:36:05 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:37246 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356351AbiALSfo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 13:35:44 -0500
+        id S1356503AbiALSva (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 13:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356574AbiALSvX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 13:51:23 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9122EC061751;
+        Wed, 12 Jan 2022 10:51:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 303C9CE1DF2;
-        Wed, 12 Jan 2022 18:35:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44133C36AE5;
-        Wed, 12 Jan 2022 18:35:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642012540;
-        bh=zP4n5siVZnpIyHLJdzM1lw+loF13BYSmPiQZisa6tuw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AHNf8poxGDbn8OXvXbyU/lgYy4gLXmPWkzVfGXNfqOB2rXeXy/W1Var/4aL2lIAvB
-         OhuzmRV/vQbjXdyFojxfOEPhVrR9nkVSbjivDRo+1CtuXg/pmXXu84/qkp1bL/K8nR
-         0KRfwxpeQLAAqjIL5feVPmbMOQ5F6ThYGoVMz9+L2n1+nOy4eIxtdgwxD9ii5ucviE
-         GJFvN2dVy5lhY8b7rcUtXYfjQW+x51XYSVsJ/LOzt/VsioJZLT4nARhyAhMADVRtKW
-         sbGW18ON579dWzPLEKzGOOONxjB0AxJkMXYZKNrn1qsNZHeuPvWeuMU1TdFM4g0/uy
-         Ic9DHW18rj0xA==
-Date:   Wed, 12 Jan 2022 10:35:38 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
-        wireguard@lists.zx2c4.com, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, geert@linux-m68k.org, tytso@mit.edu,
-        gregkh@linuxfoundation.org, jeanphilippe.aumasson@gmail.com,
-        ardb@kernel.org, Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: [PATCH crypto 2/2] lib/crypto: blake2s: move hmac construction
- into wireguard
-Message-ID: <Yd8fevK3n5aACJMF@gmail.com>
-References: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
- <20220111134934.324663-1-Jason@zx2c4.com>
- <20220111134934.324663-3-Jason@zx2c4.com>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0CB54B8203C;
+        Wed, 12 Jan 2022 18:51:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3423BC36AEC;
+        Wed, 12 Jan 2022 18:51:13 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="SVlUKGNc"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1642013471;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xreHySqXLyhKUk0VW0GwsU6XUHgnG+4/Jk0kao9Oifc=;
+        b=SVlUKGNcrSDoPZWC+klO14Zqk7l7Uf8MtIAFKt+cC6HwyJsLy+SLzVJX2qkW5yifFG74U1
+        jkNoAR9iWafix2H1JjlgdtWawKfLApWQRctYnBS5dtnsQG3gAwp6/5nfj5vg0rGFBqRHvP
+        Qe+YhFBRbUX0+Y9zskJZr0tLh1hhtZk=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id f42311d7 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 12 Jan 2022 18:51:11 +0000 (UTC)
+Received: by mail-yb1-f173.google.com with SMTP id v186so8318237ybg.1;
+        Wed, 12 Jan 2022 10:51:09 -0800 (PST)
+X-Gm-Message-State: AOAM53047xidX8tulzJ90ryBsqKoJ+CfaIZY8T7ByCp0MK/55c6dtvyc
+        RcSYh/gspnMn6X7NUUWUGqYn3iVNsvcYaxsJ4Xo=
+X-Google-Smtp-Source: ABdhPJyNAIEcTXisld7XC7bhz4PalaSX6tHDm9+bpvRZLfdVf/6oPJbATFqmhRaXycqh4DhrWUXcosqQSbDYw9Ipoz0=
+X-Received: by 2002:a25:854f:: with SMTP id f15mr1311046ybn.121.1642013469238;
+ Wed, 12 Jan 2022 10:51:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220111134934.324663-3-Jason@zx2c4.com>
+References: <CAHmME9qbnYmhvsuarButi6s=58=FPiti0Z-QnGMJ=OsMzy1eOg@mail.gmail.com>
+ <20220111134934.324663-1-Jason@zx2c4.com> <20220111134934.324663-2-Jason@zx2c4.com>
+ <Yd8enQTocuCSQVkT@gmail.com>
+In-Reply-To: <Yd8enQTocuCSQVkT@gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Wed, 12 Jan 2022 19:50:58 +0100
+X-Gmail-Original-Message-ID: <CAHmME9qGs8yfYy0GVcV8XaUt9cjCqQF2D79RvrsQE+CNLCeojA@mail.gmail.com>
+Message-ID: <CAHmME9qGs8yfYy0GVcV8XaUt9cjCqQF2D79RvrsQE+CNLCeojA@mail.gmail.com>
+Subject: Re: [PATCH crypto 1/2] lib/crypto: blake2s-generic: reduce code size
+ on small systems
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 02:49:34PM +0100, Jason A. Donenfeld wrote:
-> Basically nobody should use blake2s in an HMAC construction; it already
-> has a keyed variant. But for unfortunately historical reasons, Noise,
-> used by WireGuard, uses HKDF quite strictly, which means we have to use
-> this. Because this really shouldn't be used by others, this commit moves
-> it into wireguard's noise.c locally, so that kernels that aren't using
-> WireGuard don't get this superfluous code baked in. On m68k systems,
-> this shaves off ~314 bytes.
-> 
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: netdev@vger.kernel.org
-> Cc: wireguard@lists.zx2c4.com
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
-> ---
+On Wed, Jan 12, 2022 at 7:32 PM Eric Biggers <ebiggers@kernel.org> wrote:
+> How about unrolling the inner loop but not the outer one?  Wouldn't that give
+> most of the benefit, without hurting performance as much?
+>
+> If you stay with this approach and don't unroll either loop, can you use 'r' and
+> 'i' instead of 'i' and 'j', to match the naming in G()?
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
+All this might work, sure. But as mentioned earlier, I've abandoned
+this entirely, as I don't think this patch is necessary. See the v3
+patchset instead:
 
-- Eric
+https://lore.kernel.org/linux-crypto/20220111220506.742067-1-Jason@zx2c4.com/
