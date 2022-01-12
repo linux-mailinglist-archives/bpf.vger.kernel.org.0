@@ -2,173 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCB548CCB0
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 21:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F4F48CCCE
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 21:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357180AbiALUAf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 15:00:35 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32238 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1357373AbiALT55 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jan 2022 14:57:57 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20CIVRTn020423;
-        Wed, 12 Jan 2022 11:57:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=AdD47U6u4HmHJqQ7BmznViszx2sq2hD8hzydjGyNMPE=;
- b=TwaN514sgGM53QXO5vEZf03iP2YeHdvf4RuWTZH3vq1fG1S5yiVVd3o5eYDxT2t0Ihrh
- 5Sz6jg1nlTENr6j4IybgItAUc5xkoJ2PO67JCTPdVFLHKMUK2HRaqfd1YA/IKNcZ9HbA
- ulH6EATi5R8o6Citb3IsfzKdMRgsMD2S+bw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3dj4b90hqw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 12 Jan 2022 11:57:39 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 12 Jan 2022 11:57:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sh+WTQC5o3T9ThvjTGPsB9tis5+uOMDnvXTvqHwAdh7CxiSEwpZPwHVeFlY9QKnm9BruqF51EZXHq0OLW0ENlzddIZfGbIWS7kEe9oQ6gowS7nnODxEKH57R7WATd5LytsfCy3FL8NHuf4ohSc0ol7RSjFnMzinuzT6pUF/gD3bmkS37r/jYNtOe8kZYQjOv0E+X/ny63mkTjJnfrlE/RCJrLvOvVREg9C3+FfM5NG734Cma2yB/Hlpax3av+lVD0iG59RLWqx9KtLmEKSZKTGVUg0e9gNp9AxmKNklF574xNYGbqVE20H4OPJvhfMizBjJpkab5GdUnahSZ5374ZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AdD47U6u4HmHJqQ7BmznViszx2sq2hD8hzydjGyNMPE=;
- b=NeNOgaFP7b4uVPq+u7qZ+fB0hP1GGjcL5hQm//xJv69UtfIsC37QOxfZmTbif0sRGNne/RdPdzxPeiM77eECHdJLPn0SvNuvsacfgykrw2zJJfmk1xFgq7t0doDj/VTcvTKWqph8nLX55uzCqTz18Ohu8+DNuKZ4z9mNiJySrXy7V8CJ/jrKryDNm78X8ybVnKRyYkrti0NHLYHfgflFNa2F3faD+Hbhk3tD7BLymsnY9JAGJsHm6RRiJXAFX5eoyXZ0axu3FSZ3f7jnwrECL+HBye8MEb8hekRaTBTNwJPVs427WrrpFniOaSDC6B5VeHr+V96jxDxrWCw0Xgw3eg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SA1PR15MB4321.namprd15.prod.outlook.com (2603:10b6:806:1ac::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4888.9; Wed, 12 Jan
- 2022 19:57:36 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::b0ca:a63e:fb69:6437]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::b0ca:a63e:fb69:6437%4]) with mapi id 15.20.4888.010; Wed, 12 Jan 2022
- 19:57:36 +0000
-Date:   Wed, 12 Jan 2022 11:57:32 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Tyler Wear <quic_twear@quicinc.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <maze@google.com>,
-        <yhs@fb.com>, <toke@redhat.com>, <daniel@iogearbox.net>,
-        <song@kernel.org>
-Subject: Re: [PATCH bpf-next v5 1/2] Add skb_store_bytes() for
- BPF_PROG_TYPE_CGROUP_SKB
-Message-ID: <20220112195732.4vlkuowaiyc4k24t@kafai-mbp.dhcp.thefacebook.com>
-References: <20220111000001.3118189-1-quic_twear@quicinc.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20220111000001.3118189-1-quic_twear@quicinc.com>
-X-ClientProxiedBy: CO2PR05CA0070.namprd05.prod.outlook.com
- (2603:10b6:102:2::38) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        id S1357556AbiALUGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 15:06:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1358050AbiALUFC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 15:05:02 -0500
+Received: from mail-ua1-x961.google.com (mail-ua1-x961.google.com [IPv6:2607:f8b0:4864:20::961])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834C3C061201
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:05:02 -0800 (PST)
+Received: by mail-ua1-x961.google.com with SMTP id p37so7006536uae.8
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:05:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:dkim-signature:mime-version:references
+         :in-reply-to:from:date:message-id:subject:to:cc;
+        bh=64TeOckiIOlsQMyhELJYoKH6clLYhhm5T/EofrW5BDg=;
+        b=gUI4xLiNiZM4XIlmoAmnwUnyNJBD1WFY5TQ2IWQKVqR3c6r1r+2ZsCaGlsNURhH90L
+         CaiqG+q11ScMr/rGDUj4tor48q0NH8qx9zPN3emKQDW2p31nWekIoV8V4/C7HGvWXjdn
+         0Wa0nxQ5S8Y6/s5sl9j7Qe0ufnbYLXjc8gwPiTjZmLGTCMnPmixnc+yqMoDm1mlTMprd
+         WeQNYvwplqW3Edhwb0UahiEGL7ahaWOWMhOUMnOcPDkGvxtzrCvPBCO1T4mcoRRyXNEk
+         N6qilYxbFnmPrZY/jo0HXslx3G2XGJIiNDt3C0J892VgtxA7qLRGcE5j7NrRX4K5Lp36
+         hi5w==
+X-Gm-Message-State: AOAM533j6xt+CF5p/UhtYVhcT46h8R0lMoPS5l2RNEewdswRTntiFnui
+        zr1U8e7y8ahGY4NtD7P3gZziZBsoiGWSPaYHuv4rjYPl+6RF0Q==
+X-Google-Smtp-Source: ABdhPJycyd8klaAFacgFR4ubyuENPb9ZVU4Yv6usOtDlDNQQLgIerizji5RGT5ahlflFr4R5rNfmLjYOV8Om
+X-Received: by 2002:a67:ff10:: with SMTP id v16mr873709vsp.67.1642017901691;
+        Wed, 12 Jan 2022 12:05:01 -0800 (PST)
+Received: from netskope.com ([163.116.128.205])
+        by smtp-relay.gmail.com with ESMTPS id w8sm209275vsk.3.2022.01.12.12.05.01
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jan 2022 12:05:01 -0800 (PST)
+X-Relaying-Domain: riotgames.com
+Received: by mail-vk1-f198.google.com with SMTP id n15-20020a1fa40f000000b0031698b506b8so802955vke.0
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:04:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=riotgames.com; s=riotgames;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=64TeOckiIOlsQMyhELJYoKH6clLYhhm5T/EofrW5BDg=;
+        b=lgmC5Fs1Hbkpvm6i9Sn7DVbkM8qZaYjg+WbujUpJqphSSEtI10x8XtCPuHvvAsNHjK
+         xEUN9l85F9F2W56oVyGbeJxomRWNBBXuO/uyryWlPg6UfvFFiFqbTtraH7CZMgy0IYR4
+         cdjEAYBQm+5l7Ac64gyncY1wnAo1uT86spIG0=
+X-Received: by 2002:a17:902:7c09:b0:148:e02f:176b with SMTP id x9-20020a1709027c0900b00148e02f176bmr1375077pll.130.1642017888485;
+        Wed, 12 Jan 2022 12:04:48 -0800 (PST)
+X-Received: by 2002:a17:902:7c09:b0:148:e02f:176b with SMTP id
+ x9-20020a1709027c0900b00148e02f176bmr1375042pll.130.1642017888123; Wed, 12
+ Jan 2022 12:04:48 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 111c8116-6470-4113-526c-08d9d605c766
-X-MS-TrafficTypeDiagnostic: SA1PR15MB4321:EE_
-X-Microsoft-Antispam-PRVS: <SA1PR15MB4321C801C78452F6EBD309C7D5529@SA1PR15MB4321.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v1sJPl7A7FJ/WAinhn+vYwOCozVIqUj66qztLB1VHL1Xzx7UrLinNr1pENBb/Ol78z9UqKpnJYzTefG3y5ynQBYuUcFPIU5QZGsVPTJmJob64Vc+DilnPqf1qTrs8R/eRcHhQ/37F7J/gRG4SUKFmFPd04bVShE8SheeJdCkCVZ51WQlKUYn9QMTjRuNJrSWzaihfnF3cQmhDgeA2D2OFq+VvDpLx4aHfcOyGQq75He5JVJiJ2yOH79xQXQ7maoQiUaiS/Tkzw114St/D5o9zaAhMU7y51t4WbvOgStSY+9pBw+wsMw/qhoFpRPChV4ZJXGJHtsN02BEOZd29w7+cDpNCybqqnFCBIPHmfwGD9UhlVONJy3EkIfyKo/sqyS7UYvmqbHjH/TXs5nk8gFm+5Fbe+7p26KBcmBFgwL+euz9m/iD59/X56AVIm86PdD9IJottSxm3F3UuACtkCRywdGCNi191PIqirkdxSpp/4Y9zn8qhU6OvBY+omLuDfxP1/Ohq/IiNaM96vDwqWzPF2htL6ThMw38IKUpLwKNwGouWq6ik+v77LtH8QhJl6tc/P8/PmRqTJqAYu/9QvGgTF0GerBbXjuyBlstZJqiTPGoEvpYfVRvrZ/kX3PcgB6q+VQF3DKar1zGFe75WNsm1g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6512007)(9686003)(66476007)(1076003)(86362001)(316002)(66556008)(6506007)(66946007)(83380400001)(6666004)(6486002)(186003)(38100700002)(52116002)(8676002)(2906002)(8936002)(5660300002)(4326008)(6916009)(508600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U7fJf5tJxuzulahvuwvY8nqWGB/djzDdUzSXkIzKoP8RWpXt7AUyQccyjwLp?=
- =?us-ascii?Q?Onz3siOF2xt+5Ufk0vcELotj63evoADnLd1i4B1AgY4Y1gvpfSjuGLaT6ovQ?=
- =?us-ascii?Q?6a6and39oXofHrdwEWUiMQJyu4JLUxT72vLGGZEchFtdB695tdMXAXa0qYul?=
- =?us-ascii?Q?Mk0db157mdgN6a0EKoBoSEz62UFxgDByipLcI1A31BD9NOhvcbWTk1Vi5Sn2?=
- =?us-ascii?Q?gDkZwYT9ExaWacWZ9GcPTCVUwhLS1ucDI6y25phyQuiDQHYVxt7SeCjMMyBU?=
- =?us-ascii?Q?cNH5T7T8f6Q4L1VTlfCla2xLrf5nexzpwD+8GTpmHluxRjYtsxbKHIDgkBUK?=
- =?us-ascii?Q?TzbKwsezPWM6Fy7Q+apirUrWznGeB+VAI5iCB47ppqG4jpKP7YczqaHSkIsU?=
- =?us-ascii?Q?SyGSVhFPdGcLMLFmwt9zr4XY1TqgHdSoWS2sdNHIHyVUPQZS8dBs2fXClJPW?=
- =?us-ascii?Q?GSKjNcG+bs/fXtn3tjU79xUoi1kheRrI3bDOnNGN/9jyQnD9JEfoqbwun2rY?=
- =?us-ascii?Q?1NV4tDZ2diyPI9y2Lnej/R5KTNTYLwpmOhE85DSA2YRvb1UljZdJYDgfpi16?=
- =?us-ascii?Q?vfivW6cz68LTVirXWhybmA1A3f94l+8n8o5/6Vs+rpgPAjUtqhWAI2aC6Aig?=
- =?us-ascii?Q?rL+htWDm6kJokE7aUvtEjR8F/c5GV4xFffKMP5IWL/oIvAUSxOU+8np92KAl?=
- =?us-ascii?Q?8ttbJxR7hHyEsPTaYsLeldWo2cyrCGtTOsGNX/8ITsX7TfBAcZ5vmwQaHVom?=
- =?us-ascii?Q?ls/YlEBJA9DBYGTrxuBkYcPSEeNyBYRMhStafmO7WshWTSsk1XRYUnvAB18r?=
- =?us-ascii?Q?tiWXuiKNJ4WkiZplKaTL9dwraDlGf+rGKQnUxpKVU/Ds4z4M+J9lEQxU32Qn?=
- =?us-ascii?Q?BSvn6JdTuPopuIgit1+DB07lg5MA4gLxlC7CpsJITPWNcS1qEjMiWRH1b3rW?=
- =?us-ascii?Q?VdyobzoM6kn6cNHjO6IM3kDAHjZ8wcCo2WkPewiN4/ctf5cxPoA8GT5MMDTB?=
- =?us-ascii?Q?n3/hl+ZgIxzWbqZ1cz2lwUcp04x0o0+WORyVNB6q6+b2tJtwU31jRdntk4c2?=
- =?us-ascii?Q?bmziNoE0k/I0RevkfVwfdAf+A9wG53zgV66ponkJ1Fmmr/CXrcIjkt+3gNtQ?=
- =?us-ascii?Q?oZjNzlcN3dZeTIhIGzZY+S3MUaT5Gm0edeML+D2DSlWXTFDqDrpfdy7CtV4K?=
- =?us-ascii?Q?glVw7hDVVh1XfqIDs5ArOXzOdC4RGu0k3SWkUyD8C8u/iuD3OCulUEyxS5oo?=
- =?us-ascii?Q?ZSdKFkmz8dPRwA+H1HjieJT0R+/cVJkeXtFApbYnYvty6blPwLHTPPFJsiuF?=
- =?us-ascii?Q?LnAWWS+ZIpNp/aZ5RMoqJn0dU00fgNIg2n+4ihowRz20hjzNL3+7MkdbvQQR?=
- =?us-ascii?Q?5X31D0j3dJW2zkkTM5LCVzqeer1wnq6C9UmlJLnA94nSSETnuqTlk9TpNRgy?=
- =?us-ascii?Q?BBl0BsZYOjYUBe2RVUQqgh9mjtfRKYLVXT8I1BfcE/y96mQy5u3bBN8jLWlx?=
- =?us-ascii?Q?fPM80gip7iWGZ82TJ88GCypmjIi8OdA6kWVKWkiIHnYYxt/SqPw9OKdWBim5?=
- =?us-ascii?Q?iyBs4h+73y/G+b8gXozGq5/DlLXgg/mVp2GHTFz+?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 111c8116-6470-4113-526c-08d9d605c766
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2022 19:57:36.0219
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0U1Sb2aKBaQ6tSl/qk/BW54K13pZzDuorLmQisoxfScbcfHHWkNhvhq+4qz2+UeX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4321
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: XTm9NjhwOWsKQX9qV-NjcScnnzZk5omx
-X-Proofpoint-ORIG-GUID: XTm9NjhwOWsKQX9qV-NjcScnnzZk5omx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-12_05,2022-01-11_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- impostorscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0 bulkscore=0
- spamscore=0 malwarescore=0 clxscore=1011 phishscore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201120117
-X-FB-Internal: deliver
+References: <cover.1641641663.git.lorenzo@kernel.org> <f9103d787144983524ba331273718e422a63a767.1641641663.git.lorenzo@kernel.org>
+ <CAEf4BzbfDvH5CYNsWg9Dx7JcFEp4jNmNRR6H-6sJEUxDSy1zZw@mail.gmail.com>
+ <Yd8bVIcA18KIH6+I@lore-desk> <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
+ <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
+ <CAEf4BzZ4c1VwPf9oBRRdN7jdBWrk4pg=mw_50LMjLr99Mb0yfw@mail.gmail.com> <CAADnVQ+BiMy4TZNocfFSvazh-QTFwMD-3uQ9LLiku7ePLDn=MQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+BiMy4TZNocfFSvazh-QTFwMD-3uQ9LLiku7ePLDn=MQ@mail.gmail.com>
+From:   Zvi Effron <zeffron@riotgames.com>
+Date:   Wed, 12 Jan 2022 12:04:36 -0800
+Message-ID: <CAC1LvL0CeTw+YKjO6r0f68Ly3tK4qhDyjV0ak82e0PpHURVQOw@mail.gmail.com>
+Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+x-netskope-inspected: true
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 10, 2022 at 04:00:00PM -0800, Tyler Wear wrote:
-> Need to modify the ds field to support upcoming Wifi QoS Alliance spec.
-> Instead of adding generic function for just modifying the ds field,
-> add skb_store_bytes for BPF_PROG_TYPE_CGROUP_SKB.
-> This allows other fields in the network and transport header to be
-> modified in the future.
-> 
-> Checksum API's also need to be added for completeness.
-> 
-> It is not possible to use CGROUP_(SET|GET)SOCKOPT since
-> the policy may change during runtime and would result
-> in a large number of entries with wildcards.
-> 
-> V4 patch fixes warnings and errors from checkpatch.
-> 
-> The existing check for bpf_try_make_writable() should mean that
-> skb_share_check() is not needed.
-> 
-> Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
-> ---
->  net/core/filter.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 6102f093d59a..ce01a8036361 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -7299,6 +7299,16 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->  		return &bpf_sk_storage_delete_proto;
->  	case BPF_FUNC_perf_event_output:
->  		return &bpf_skb_event_output_proto;
-> +	case BPF_FUNC_skb_store_bytes:
-> +		return &bpf_skb_store_bytes_proto;
-> +	case BPF_FUNC_csum_update:
-> +		return &bpf_csum_update_proto;
-> +	case BPF_FUNC_csum_level:
-> +		return &bpf_csum_level_proto;
-> +	case BPF_FUNC_l3_csum_replace:
-> +		return &bpf_l3_csum_replace_proto;
-> +	case BPF_FUNC_l4_csum_replace:
-> +		return &bpf_l4_csum_replace_proto;
-BPF_FUNC_csum_diff should also be added to support
-updating >4 bytes (e.g. ipv6 addr).
+On Wed, Jan 12, 2022 at 11:47 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jan 12, 2022 at 11:21 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Jan 12, 2022 at 11:17 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Jan 12, 2022 at 10:24 AM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Wed, Jan 12, 2022 at 10:18 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > > > >
+> > > > > > On Sun, Jan 9, 2022 at 7:05 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > > > > > >
+> > > > > > > Introduce support for the following SEC entries for XDP multi-buff
+> > > > > > > property:
+> > > > > > > - SEC("xdp_mb/")
+> > > > > > > - SEC("xdp_devmap_mb/")
+> > > > > > > - SEC("xdp_cpumap_mb/")
+> > > > > >
+> > > > > > Libbpf seemed to went with .<suffix> rule (e.g., fentry.s for
+> > > > > > sleepable, seems like we'll have kprobe.multi or  something along
+> > > > > > those lines as well), so let's stay consistent and call this "xdp_mb",
+> > > > > > "xdp_devmap.mb", "xdp_cpumap.mb" (btw, is "mb" really all that
+> > > > > > recognizable? would ".multibuf" be too verbose?). Also, why the "/"
+> > > > > > part? Also it shouldn't be "sloppy" either. Neither expected attach
+> > > > > > type should be optional.  Also not sure SEC_ATTACHABLE is needed. So
+> > > > > > at most it should be SEC_XDP_MB, probably.
+> > > > >
+> > > > > ack, I fine with it. Something like:
+> > > > >
+> > > > >         SEC_DEF("lsm.s/",               LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
+> > > > >         SEC_DEF("iter/",                TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
+> > > > >         SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+> > > > > +       SEC_DEF("xdp_devmap.multibuf",  XDP, BPF_XDP_DEVMAP, 0),
+> > > > >         SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> > > > > +       SEC_DEF("xdp_cpumap.multibuf",  XDP, BPF_XDP_CPUMAP, 0),
+> > > > >         SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> > > > > +       SEC_DEF("xdp.multibuf",         XDP, BPF_XDP, 0),
+> > > >
+> > > > yep, but please use SEC_NONE instead of zero
+> > > >
+> > > > >         SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+> > > > >         SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> > > > >         SEC_DEF("lwt_in",               LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> > > > >
+> > > > > >
+> > > > > > >
+> > > > > > > Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> > > > > > > Acked-by: John Fastabend <john.fastabend@gmail.com>
+> > > > > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > > > > ---
+> > > > > > >  tools/lib/bpf/libbpf.c | 8 ++++++++
+> > > > > > >  1 file changed, 8 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > > > > > > index 7f10dd501a52..c93f6afef96c 100644
+> > > > > > > --- a/tools/lib/bpf/libbpf.c
+> > > > > > > +++ b/tools/lib/bpf/libbpf.c
+> > > > > > > @@ -235,6 +235,8 @@ enum sec_def_flags {
+> > > > > > >         SEC_SLEEPABLE = 8,
+> > > > > > >         /* allow non-strict prefix matching */
+> > > > > > >         SEC_SLOPPY_PFX = 16,
+> > > > > > > +       /* BPF program support XDP multi-buff */
+> > > > > > > +       SEC_XDP_MB = 32,
+> > > > > > >  };
+> > > > > > >
+> > > > > > >  struct bpf_sec_def {
+> > > > > > > @@ -6562,6 +6564,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+> > > > > > >         if (def & SEC_SLEEPABLE)
+> > > > > > >                 opts->prog_flags |= BPF_F_SLEEPABLE;
+> > > > > > >
+> > > > > > > +       if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_MB))
+> > > > > > > +               opts->prog_flags |= BPF_F_XDP_MB;
+> > > > > >
+> > > > > > I'd say you don't even need SEC_XDP_MB flag at all, you can just check
+> > > > > > that prog->sec_name is one of "xdp.mb", "xdp_devmap.mb" or
+> > > > > > "xdp_cpumap.mb" and add the flag. SEC_XDP_MB doesn't seem generic
+> > > > > > enough to warrant a flag.
+> > > > >
+> > > > > ack, something like:
+> > > > >
+> > > > > +       if (prog->type == BPF_PROG_TYPE_XDP &&
+> > > > > +           (!strcmp(prog->sec_name, "xdp_devmap.multibuf") ||
+> > > > > +            !strcmp(prog->sec_name, "xdp_cpumap.multibuf") ||
+> > > > > +            !strcmp(prog->sec_name, "xdp.multibuf")))
+> > > > > +               opts->prog_flags |= BPF_F_XDP_MB;
+> > > >
+> > > > yep, can also simplify it a bit with strstr(prog->sec_name,
+> > > > ".multibuf") instead of three strcmp
+> > >
+> > > Maybe ".mb" ?
+> > > ".multibuf" is too verbose.
+> > > We're fine with ".s" for sleepable :)
+> >
+> >
+> > I had reservations about "mb" because the first and strong association
+> > is "megabyte", not "multibuf". And it's not like anyone would have
+> > tens of those programs in a single file so that ".multibuf" becomes
+> > way too verbose. But I don't feel too strongly about this, if the
+> > consensus is on ".mb".
+>
+> The rest of the patches are using _mb everywhere.
+> I would keep libbpf consistent.
+
+Should the rest of the patches maybe use "multibuf" instead of "mb"? I've been
+following this patch series closely and excitedly, and I keep having to remind
+myself that "mb" is "multibuff" and not "megabyte". If I'm having to correct
+myself while following the patch series, I'm wondering if future confusion is
+inevitable?
+
+But, is it enough confusion to be worth updating many other patches? I'm not
+sure.
+
+I agree consistency is more important than the specific term we're consistent
+on.
+
+--Zvi
