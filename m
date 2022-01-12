@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF8948CCF6
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 21:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC2E48CCF7
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 21:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350769AbiALUPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 15:15:19 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50508 "EHLO
+        id S233942AbiALUP1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 15:15:27 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:12818 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350686AbiALUPR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jan 2022 15:15:17 -0500
+        by vger.kernel.org with ESMTP id S1350777AbiALUPY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jan 2022 15:15:24 -0500
 Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20CHFlNV001587
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:15:17 -0800
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20CIaR3q001693
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:15:24 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=kUSByD/m4uaLxd03QJ2ntvoZh7fudcqMs8Xx/1QZ2TA=;
- b=Nwi5zhdlmUtuovuR+kzYIfTfb6eBpr4q1LDifYWWXbHQAMa5aL7D1rh9BbRUwiDI7vRN
- 1v+shfAk2w1uSVGA/YET/GPBcORn35rvaE9Oha0IYZNJii6XyfkJ4uzZ186JeDTP8OB6
- gxc7LCq6y+cJ+2TrGYnQ6tibOOteywHUhuY= 
+ bh=ceY3oCuFIrC5qvF62YPUN3Oe0Rpc5XSA7tobfyiK1lU=;
+ b=YGQuocSo4lN4VEdp0s5auV8Irh6xR2+1YtDaqCPHgdwzGWZ/Rkh72qkkrW9lbsfXriPv
+ Aqaooa0m8yKeDx/Roml3m0tePNALw0T1IFCCfHbM10t/BmcbJPDoQEQw/8ckh3xFBTac
+ ikIf0H4fTM3DTIxm3EjZqMxJtivg2gYyQ6M= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dhs9748m2-20
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dhs9748pn-15
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:15:17 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 12:15:24 -0800
+Received: from twshared7634.08.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 12 Jan 2022 12:15:10 -0800
+ 15.1.2308.20; Wed, 12 Jan 2022 12:15:17 -0800
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 389774FCA1B9; Wed, 12 Jan 2022 12:15:07 -0800 (PST)
+        id 7AA864FCA1CF; Wed, 12 Jan 2022 12:15:12 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
@@ -39,9 +39,9 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
         "Jose E . Marchesi" <jose.marchesi@oracle.com>,
         <kernel-team@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next v2 3/5] selftests/bpf: rename btf_decl_tag.c to test_btf_decl_tag.c
-Date:   Wed, 12 Jan 2022 12:15:07 -0800
-Message-ID: <20220112201507.1626185-1-yhs@fb.com>
+Subject: [PATCH bpf-next v2 4/5] selftests/bpf: add a selftest with __user tag
+Date:   Wed, 12 Jan 2022 12:15:12 -0800
+Message-ID: <20220112201512.1629052-1-yhs@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220112201449.1620763-1-yhs@fb.com>
 References: <20220112201449.1620763-1-yhs@fb.com>
@@ -49,8 +49,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: PB-UzLCXLWJ5gbIQW19fy5JrqI5wI1cF
-X-Proofpoint-GUID: PB-UzLCXLWJ5gbIQW19fy5JrqI5wI1cF
+X-Proofpoint-ORIG-GUID: 3AHKxxxHQSACnzpIr5hyLStJj5UroOCL
+X-Proofpoint-GUID: 3AHKxxxHQSACnzpIr5hyLStJj5UroOCL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-12_05,2022-01-11_01,2021-12-02_01
@@ -64,68 +64,280 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The uapi btf.h contains the following declaration:
-  struct btf_decl_tag {
-       __s32   component_idx;
-  };
+Added a selftest with three__user usages: a __user pointer-type argument
+in bpf_testmod, a __user pointer-type struct member in bpf_testmod,
+and a __user pointer-type struct member in vmlinux. In all cases,
+directly accessing the user memory will result verification failure.
 
-The skeleton will also generate a struct with name
-"btf_decl_tag" for bpf program btf_decl_tag.c.
+  $ ./test_progs -v -n 22/3
+  ...
+  libbpf: prog 'test_user1': BPF program load failed: Permission denied
+  libbpf: prog 'test_user1': -- BEGIN PROG LOAD LOG --
+  R1 type=3Dctx expected=3Dfp
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; int BPF_PROG(test_user1, struct bpf_testmod_btf_type_tag_1 *arg)
+  0: (79) r1 =3D *(u64 *)(r1 +0)
+  func 'bpf_testmod_test_btf_type_tag_user_1' arg0 has btf_id 136561 type=
+ STRUCT 'bpf_testmod_btf_type_tag_1'
+  1: R1_w=3Duser_ptr_bpf_testmod_btf_type_tag_1(id=3D0,off=3D0,imm=3D0)
+  ; g =3D arg->a;
+  1: (61) r1 =3D *(u32 *)(r1 +0)
+  R1 invalid mem access 'user_ptr_'
+  ...
+  #22/3 btf_tag/btf_type_tag_user_mod1:OK
 
-Rename btf_decl_tag.c to test_btf_decl_tag.c so
-the corresponding skeleton struct name becomes
-"test_btf_decl_tag". This way, we could include
-uapi btf.h in prog_tests/btf_tag.c.
-There is no functionality change for this patch.
+  $ ./test_progs -v -n 22/4
+  ...
+  libbpf: prog 'test_user2': BPF program load failed: Permission denied
+  libbpf: prog 'test_user2': -- BEGIN PROG LOAD LOG --
+  R1 type=3Dctx expected=3Dfp
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; int BPF_PROG(test_user2, struct bpf_testmod_btf_type_tag_2 *arg)
+  0: (79) r1 =3D *(u64 *)(r1 +0)
+  func 'bpf_testmod_test_btf_type_tag_user_2' arg0 has btf_id 136563 type=
+ STRUCT 'bpf_testmod_btf_type_tag_2'
+  1: R1_w=3Dptr_bpf_testmod_btf_type_tag_2(id=3D0,off=3D0,imm=3D0)
+  ; g =3D arg->p->a;
+  1: (79) r1 =3D *(u64 *)(r1 +0)          ; R1_w=3Duser_ptr_bpf_testmod_b=
+tf_type_tag_1(id=3D0,off=3D0,imm=3D0)
+  ; g =3D arg->p->a;
+  2: (61) r1 =3D *(u32 *)(r1 +0)
+  R1 invalid mem access 'user_ptr_'
+  ...
+  #22/4 btf_tag/btf_type_tag_user_mod2:OK
+
+  $ ./test_progs -v -n 22/5
+  ...
+  libbpf: prog 'test_sys_getsockname': BPF program load failed: Permissio=
+n denied
+  libbpf: prog 'test_sys_getsockname': -- BEGIN PROG LOAD LOG --
+  R1 type=3Dctx expected=3Dfp
+  0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  ; int BPF_PROG(test_sys_getsockname, int fd, struct sockaddr *usockaddr=
+,
+  0: (79) r1 =3D *(u64 *)(r1 +8)
+  func '__sys_getsockname' arg1 has btf_id 2319 type STRUCT 'sockaddr'
+  1: R1_w=3Duser_ptr_sockaddr(id=3D0,off=3D0,imm=3D0)
+  ; g =3D usockaddr->sa_family;
+  1: (69) r1 =3D *(u16 *)(r1 +0)
+  R1 invalid mem access 'user_ptr_'
+  ...
+  #22/5 btf_tag/btf_type_tag_user_vmlinux:OK
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- tools/testing/selftests/bpf/prog_tests/btf_tag.c          | 8 ++++----
- .../bpf/progs/{btf_decl_tag.c =3D> test_btf_decl_tag.c}     | 0
- 2 files changed, 4 insertions(+), 4 deletions(-)
- rename tools/testing/selftests/bpf/progs/{btf_decl_tag.c =3D> test_btf_d=
-ecl_tag.c} (100%)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 18 ++++
+ .../selftests/bpf/prog_tests/btf_tag.c        | 93 +++++++++++++++++++
+ .../selftests/bpf/progs/btf_type_tag_user.c   | 40 ++++++++
+ 3 files changed, 151 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_type_tag_user.c
 
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tool=
+s/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index df3b292a8ffe..4efe3eee0908 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -21,6 +21,24 @@ bpf_testmod_test_mod_kfunc(int i)
+ 	*(int *)this_cpu_ptr(&bpf_testmod_ksym_percpu) =3D i;
+ }
+=20
++struct bpf_testmod_btf_type_tag_1 {
++	int a;
++};
++
++struct bpf_testmod_btf_type_tag_2 {
++	struct bpf_testmod_btf_type_tag_1 __user *p;
++};
++
++noinline int
++bpf_testmod_test_btf_type_tag_user_1(struct bpf_testmod_btf_type_tag_1 _=
+_user *arg) {
++	return arg->a;
++}
++
++noinline int
++bpf_testmod_test_btf_type_tag_user_2(struct bpf_testmod_btf_type_tag_2 *=
+arg) {
++	return arg->p->a;
++}
++
+ noinline int bpf_testmod_loop_test(int n)
+ {
+ 	int i, sum =3D 0;
 diff --git a/tools/testing/selftests/bpf/prog_tests/btf_tag.c b/tools/tes=
 ting/selftests/bpf/prog_tests/btf_tag.c
-index 88d63e23e35f..c4cf27777ff7 100644
+index c4cf27777ff7..ee13acb44893 100644
 --- a/tools/testing/selftests/bpf/prog_tests/btf_tag.c
 +++ b/tools/testing/selftests/bpf/prog_tests/btf_tag.c
-@@ -1,7 +1,7 @@
+@@ -1,6 +1,7 @@
  // SPDX-License-Identifier: GPL-2.0
  /* Copyright (c) 2021 Facebook */
  #include <test_progs.h>
--#include "btf_decl_tag.skel.h"
-+#include "test_btf_decl_tag.skel.h"
++#include <bpf/btf.h>
+ #include "test_btf_decl_tag.skel.h"
 =20
  /* struct btf_type_tag_test is referenced in btf_type_tag.skel.h */
- struct btf_type_tag_test {
-@@ -11,9 +11,9 @@ struct btf_type_tag_test {
+@@ -8,6 +9,7 @@ struct btf_type_tag_test {
+         int **p;
+ };
+ #include "btf_type_tag.skel.h"
++#include "btf_type_tag_user.skel.h"
 =20
  static void test_btf_decl_tag(void)
  {
--	struct btf_decl_tag *skel;
-+	struct test_btf_decl_tag *skel;
-=20
--	skel =3D btf_decl_tag__open_and_load();
-+	skel =3D test_btf_decl_tag__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "btf_decl_tag"))
- 		return;
-=20
-@@ -22,7 +22,7 @@ static void test_btf_decl_tag(void)
- 		test__skip();
- 	}
-=20
--	btf_decl_tag__destroy(skel);
-+	test_btf_decl_tag__destroy(skel);
+@@ -41,10 +43,101 @@ static void test_btf_type_tag(void)
+ 	btf_type_tag__destroy(skel);
  }
 =20
- static void test_btf_type_tag(void)
-diff --git a/tools/testing/selftests/bpf/progs/btf_decl_tag.c b/tools/tes=
-ting/selftests/bpf/progs/test_btf_decl_tag.c
-similarity index 100%
-rename from tools/testing/selftests/bpf/progs/btf_decl_tag.c
-rename to tools/testing/selftests/bpf/progs/test_btf_decl_tag.c
++static void test_btf_type_tag_mod_user(bool load_test_user1)
++{
++	const char *module_name =3D "bpf_testmod";
++	struct btf *vmlinux_btf, *module_btf;
++	struct btf_type_tag_user *skel;
++	__s32 type_id;
++	int err;
++
++	if (!env.has_testmod) {
++		test__skip();
++		return;
++	}
++
++	/* skip the test if the module does not have __user tags */
++	vmlinux_btf =3D btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
++		return;
++
++	module_btf =3D btf__load_module_btf(module_name, vmlinux_btf);
++	if (!ASSERT_OK_PTR(module_btf, "could not load module BTF"))
++		goto free_vmlinux_btf;
++
++	type_id =3D btf__find_by_name_kind(module_btf, "user", BTF_KIND_TYPE_TA=
+G);
++	if (type_id <=3D 0) {
++		printf("%s:SKIP: btf_type_tag attribute not in %s", __func__, module_n=
+ame);
++		test__skip();
++		goto free_module_btf;
++	}
++
++	skel =3D btf_type_tag_user__open();
++	if (!ASSERT_OK_PTR(skel, "btf_type_tag_user"))
++		goto free_module_btf;
++
++	bpf_program__set_autoload(skel->progs.test_sys_getsockname, false);
++	if (load_test_user1)
++		bpf_program__set_autoload(skel->progs.test_user2, false);
++	else
++		bpf_program__set_autoload(skel->progs.test_user1, false);
++
++	err =3D btf_type_tag_user__load(skel);
++	ASSERT_ERR(err, "btf_type_tag_user");
++
++	btf_type_tag_user__destroy(skel);
++
++free_module_btf:
++	btf__free(module_btf);
++free_vmlinux_btf:
++	btf__free(vmlinux_btf);
++}
++
++static void test_btf_type_tag_vmlinux_user()
++{
++	struct btf_type_tag_user *skel;
++	struct btf *vmlinux_btf;
++	__s32 type_id;
++	int err;
++
++	/* skip the test if the vmlinux does not have __user tags */
++	vmlinux_btf =3D btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
++		return;
++
++	type_id =3D btf__find_by_name_kind(vmlinux_btf, "user", BTF_KIND_TYPE_T=
+AG);
++	if (type_id <=3D 0) {
++		printf("%s:SKIP: btf_type_tag attribute not in vmlinux btf", __func__)=
+;
++		test__skip();
++		goto free_vmlinux_btf;
++	}
++
++	skel =3D btf_type_tag_user__open();
++	if (!ASSERT_OK_PTR(skel, "btf_type_tag_user"))
++		goto free_vmlinux_btf;
++
++	bpf_program__set_autoload(skel->progs.test_user2, false);
++	bpf_program__set_autoload(skel->progs.test_user1, false);
++
++	err =3D btf_type_tag_user__load(skel);
++	ASSERT_ERR(err, "btf_type_tag_user");
++
++	btf_type_tag_user__destroy(skel);
++
++free_vmlinux_btf:
++	btf__free(vmlinux_btf);
++}
++
+ void test_btf_tag(void)
+ {
+ 	if (test__start_subtest("btf_decl_tag"))
+ 		test_btf_decl_tag();
+ 	if (test__start_subtest("btf_type_tag"))
+ 		test_btf_type_tag();
++	if (test__start_subtest("btf_type_tag_user_mod1"))
++		test_btf_type_tag_mod_user(true);
++	if (test__start_subtest("btf_type_tag_user_mod2"))
++		test_btf_type_tag_mod_user(false);
++	if (test__start_subtest("btf_type_tag_sys_user_vmlinux"))
++		test_btf_type_tag_vmlinux_user();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/btf_type_tag_user.c b/tool=
+s/testing/selftests/bpf/progs/btf_type_tag_user.c
+new file mode 100644
+index 000000000000..5523f77c5a44
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/btf_type_tag_user.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++struct bpf_testmod_btf_type_tag_1 {
++	int a;
++};
++
++struct bpf_testmod_btf_type_tag_2 {
++	struct bpf_testmod_btf_type_tag_1 *p;
++};
++
++int g;
++
++SEC("fentry/bpf_testmod_test_btf_type_tag_user_1")
++int BPF_PROG(test_user1, struct bpf_testmod_btf_type_tag_1 *arg)
++{
++	g =3D arg->a;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_btf_type_tag_user_2")
++int BPF_PROG(test_user2, struct bpf_testmod_btf_type_tag_2 *arg)
++{
++	g =3D arg->p->a;
++	return 0;
++}
++
++/* int __sys_getsockname(int fd, struct sockaddr __user *usockaddr,
++ *                       int __user *usockaddr_len);
++ */
++SEC("fentry/__sys_getsockname")
++int BPF_PROG(test_sys_getsockname, int fd, struct sockaddr *usockaddr,
++	     int *usockaddr_len)
++{
++	g =3D usockaddr->sa_family;
++	return 0;
++}
 --=20
 2.30.2
 
