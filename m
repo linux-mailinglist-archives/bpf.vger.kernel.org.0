@@ -2,224 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2DA48C590
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 15:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E3548C5F4
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 15:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239963AbiALOFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 09:05:02 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:56512 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242273AbiALOE2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 09:04:28 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C207CB81EF5;
-        Wed, 12 Jan 2022 14:04:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C72EDC36AEA;
-        Wed, 12 Jan 2022 14:04:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641996265;
-        bh=OlhRkWarq2RHlk3uHOGFYdiuiqRk58njvjxQ42ZY9TU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jJCFv1dUffxBIV/xLifBA4mJgvr7Z25LztkEtalF7iUNkLK6VHJG0FEz2tfnoL0Hv
-         zwc2RTvaWneot0VR95TrQcyB8XB3SiYtPJMQKDPwk8aNFyNe2PlID7kcafDMK+c+OX
-         ys6pI4ae2e7ymJUnBM7adwouoa7swHgAf6lUzjm9a+peUIrSgooyPZfAV0FBXc3UnY
-         yhthtphMdeQRVl4Ari2FZFn3dQhWjJSQmw/vPSUaIsBoZt649cMWzP09dCS66YHnfI
-         NBrZlU3W87jb3Oben9wegx6+fLoVEcirhYS3CaEzeGLAa6oob/7JAe4sF9I7Szzu1p
-         5fVt6B10MG+hA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [RFC PATCH v2 8/8] [DO NOT MERGE] Out-of-tree: Support wildcard symbol option to sample
-Date:   Wed, 12 Jan 2022 23:04:19 +0900
-Message-Id: <164199625932.1247129.8866493903208911902.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <164199616622.1247129.783024987490980883.stgit@devnote2>
-References: <164199616622.1247129.783024987490980883.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1354101AbiALO1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 09:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354097AbiALO1F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 09:27:05 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C8CC061748
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 06:27:05 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id e3so5976529lfc.9
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 06:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5UtZOgyvwuakH58Xq06yE4+32HeIntaep9LP3R+E2ko=;
+        b=l/xe6e+4LQJmbHUVXViKJrUeIB5+8unDy/UQjpwUAbKhl+ZHPveIwWO0hFgXb5nREX
+         ZBfEevtPns1nVj83ZpPsm2nc9zJ2DvTb05y8/S3H1jXQwh66UavHrygty/WuedtRc1f0
+         Nf7aI+TVWkNG0x7URImsllzoLVFV7ICCYxJi4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5UtZOgyvwuakH58Xq06yE4+32HeIntaep9LP3R+E2ko=;
+        b=aFRTzIGYvPA/is+WfCZA7lFdlo931wyqFISB3ScTkQzO+rZVm0e76zFnGJO98vS982
+         5P1XS3q36wd6vHWKTEPnsDtjd/K7NpvJ/CtDCQfjRH9zM4BLJOJNWYatN5ou/v4Ut5gb
+         UCLBxtZq0UHe2YqBOwxEdug0wCNrZVVo86NE1vHnNupFnvWm8bA75aEppy+gQFzsOpS3
+         UqH5cKVy8XHU6pl7tk+ZM/rf4xng7YjbPp4VVikvDDny72hXL/V/NMCTQywyKzUoFnMi
+         kRqb5Ykn2F7rjnuSiVPNDIb2llauBLqrbGlI0SaNFLx3CMb8oyUbW5xHRroCHSs8il9H
+         O25Q==
+X-Gm-Message-State: AOAM531BgrdIVkyUjfGOx+Kf0d7VNESmDxIlUV6W+2g1mr7ji/QzOQ/O
+        YztFszLuHzmRwHFKI05ae4GVVOtLFggRAKLRDOrPsA==
+X-Google-Smtp-Source: ABdhPJzCU0g0LCN8M2kWA5P3DLnAvOxJ4bhKxHaDjbYZpOhK1dumbbBuT05gKqojtAX1nnmHdPYHrIPTHKH+YwGdhgM=
+X-Received: by 2002:a05:6512:12d5:: with SMTP id p21mr6802838lfg.569.1641997623575;
+ Wed, 12 Jan 2022 06:27:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211217185654.311609-1-mauricio@kinvolk.io> <20211217185654.311609-2-mauricio@kinvolk.io>
+ <CAEf4BzZw2RBPSxE0j8uQd8-75qOfq=iPnhB73ONErsHYUaF+pg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZw2RBPSxE0j8uQd8-75qOfq=iPnhB73ONErsHYUaF+pg@mail.gmail.com>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Wed, 12 Jan 2022 09:26:52 -0500
+Message-ID: <CAHap4ztB7BWxXX3DerY2AVvV54vdhi+4wgTrrM9RzbiQ9KjhrQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/3] libbpf: split bpf_core_apply_relo()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is not intended to be merged to upstream code (since this
-expose some kernel internal functions just for an example.)
+> > -static int bpf_core_apply_relo(struct bpf_program *prog,
+> > -                              const struct bpf_core_relo *relo,
+> > -                              int relo_idx,
+> > -                              const struct btf *local_btf,
+> > -                              struct hashmap *cand_cache)
+> > +static int bpf_core_calc_relo_res(struct bpf_program *prog,
+>
+> bpf_core_calc_relo_res is almost indistinguishable from
+> bpf_core_calc_relo... Let's call this one bpf_core_resolve_relo()?
+>
 
-But this is good to show how the fprobe is time-efficient
-for registering a probe on thousands of functions.
+That's a much better name! Deciding the name of that function was
+probably the most complicated part of this patch.
 
- # time insmod fprobe_example.ko symbol='btrfs_*'
-[   36.130947] fprobe_init: 1028 symbols found
-[   36.177901] fprobe_init: Planted fprobe at btrfs_*
-real	0m 0.08s
-user	0m 0.00s
-sys	0m 0.07s
+> > @@ -5636,12 +5627,31 @@ bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_path)
+> >                         if (!prog->load)
+> >                                 continue;
+> >
+> > -                       err = bpf_core_apply_relo(prog, rec, i, obj->btf, cand_cache);
+> > +                       err = bpf_core_calc_relo_res(prog, rec, i, obj->btf, cand_cache, &targ_res);
+> >                         if (err) {
+> >                                 pr_warn("prog '%s': relo #%d: failed to relocate: %d\n",
+> >                                         prog->name, i, err);
+> >                                 goto out;
+> >                         }
+> > +
+> > +                       if (rec->insn_off % BPF_INSN_SZ)
+> > +                               return -EINVAL;
+> > +                       insn_idx = rec->insn_off / BPF_INSN_SZ;
+> > +                       /* adjust insn_idx from section frame of reference to the local
+> > +                        * program's frame of reference; (sub-)program code is not yet
+> > +                        * relocated, so it's enough to just subtract in-section offset
+> > +                        */
+> > +                       insn_idx = insn_idx - prog->sec_insn_off;
+> > +                       if (insn_idx >= prog->insns_cnt)
+> > +                               return -EINVAL;
+> > +                       insn = &prog->insns[insn_idx];
+>
+> this is sort of like sanity checks, let's do them before the core_calc
+> step, so after that it's a clean sequence of calc_relo + pathc_insn?
+>
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kallsyms.c               |    1 +
- kernel/trace/ftrace.c           |    1 +
- samples/fprobe/fprobe_example.c |   69 ++++++++++++++++++++++++++++++++++-----
- 3 files changed, 62 insertions(+), 9 deletions(-)
+Makes sense.
 
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index 3011bc33a5ba..d0c4073acbfd 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -246,6 +246,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
- 	}
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(kallsyms_on_each_symbol);
- #endif /* CONFIG_LIVEPATCH */
- 
- static unsigned long get_symbol_pos(unsigned long addr,
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index d38ae5063be3..feb69ecc5d2c 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -1580,6 +1580,7 @@ unsigned long ftrace_location(unsigned long ip)
- {
- 	return ftrace_location_range(ip, ip);
- }
-+EXPORT_SYMBOL_GPL(ftrace_location);
- 
- /**
-  * ftrace_text_reserved - return true if range contains an ftrace location
-diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
-index c28320537f98..df034e00661e 100644
---- a/samples/fprobe/fprobe_example.c
-+++ b/samples/fprobe/fprobe_example.c
-@@ -12,6 +12,7 @@
- 
- #define pr_fmt(fmt) "%s: " fmt, __func__
- 
-+#include <linux/glob.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/fprobe.h>
-@@ -37,16 +38,51 @@ static void sample_exit_handler(struct fprobe *fp, unsigned long ip, struct pt_r
- 
- static char *symbuf;
- 
-+struct sym_search_param {
-+	unsigned long *addrs;
-+	const char *pat;
-+	int cnt;
-+};
-+
-+#define MAX_FPROBE_ENTS	(16 * 1024)
-+
-+static int wildcard_match(void *data, const char *symbol, struct module *mod,
-+			  unsigned long addr)
-+{
-+	struct sym_search_param *param = (struct sym_search_param *)data;
-+
-+	if (glob_match(param->pat, symbol)) {
-+		if (!ftrace_location(addr))
-+			return 0;
-+
-+		if (param->addrs)
-+			param->addrs[param->cnt] = addr;
-+		param->cnt++;
-+		if (param->cnt >= MAX_FPROBE_ENTS)
-+			return -E2BIG;
-+	}
-+	return 0;
-+}
-+
- static int __init fprobe_init(void)
- {
--	const char **syms;
-+	struct sym_search_param param = {.pat = symbol, .addrs = NULL, .cnt = 0};
-+	unsigned long *addrs = NULL;
-+	const char **syms = NULL;
- 	char *p;
- 	int ret, count, i;
-+	bool wildcard = false;
- 
- 	sample_probe.entry_handler = sample_entry_handler;
- 	sample_probe.exit_handler = sample_exit_handler;
- 
--	if (strchr(symbol, ',')) {
-+	if (strchr(symbol, '*')) {
-+		kallsyms_on_each_symbol(wildcard_match, &param);
-+		count = param.cnt;
-+		if (!count)
-+			return -ENOENT;
-+		wildcard = true;
-+	} else if (strchr(symbol, ',')) {
- 		symbuf = kstrdup(symbol, GFP_KERNEL);
- 		if (!symbuf)
- 			return -ENOMEM;
-@@ -58,19 +94,31 @@ static int __init fprobe_init(void)
- 		count = 1;
- 		symbuf = symbol;
- 	}
--	pr_info("%d symbols found\n", count);
- 
--	syms = kcalloc(count, sizeof(char *), GFP_KERNEL);
--	if (!syms) {
-+	if (wildcard)
-+		addrs = kcalloc(count, sizeof(unsigned long), GFP_KERNEL);
-+	else
-+		syms = kcalloc(count, sizeof(char *), GFP_KERNEL);
-+	if (!syms && !addrs) {
- 		ret = -ENOMEM;
- 		goto error;
- 	}
- 
--	p = symbuf;
--	for (i = 0; i < count; i++)
--		syms[i] = strsep(&p, ",");
-+	if (wildcard) {
-+		param.addrs = addrs;
-+		param.cnt = 0;
-+
-+		kallsyms_on_each_symbol(wildcard_match, &param);
-+		count = param.cnt;
-+		sample_probe.addrs = addrs;
-+	} else {
-+		p = symbuf;
-+		for (i = 0; i < count; i++)
-+			syms[i] = strsep(&p, ",");
-+		sample_probe.syms = syms;
-+	}
-+	pr_info("%d symbols found\n", count);
- 
--	sample_probe.syms = syms;
- 	sample_probe.nentry = count;
- 
- 	ret = register_fprobe(&sample_probe);
-@@ -82,6 +130,8 @@ static int __init fprobe_init(void)
- 	return 0;
- 
- error:
-+	kfree(addrs);
-+	kfree(syms);
- 	if (symbuf != symbol)
- 		kfree(symbuf);
- 	return ret;
-@@ -92,6 +142,7 @@ static void __exit fprobe_exit(void)
- 	unregister_fprobe(&sample_probe);
- 
- 	kfree(sample_probe.syms);
-+	kfree(sample_probe.addrs);
- 	if (symbuf != symbol)
- 		kfree(symbuf);
- 
+> > @@ -1177,18 +1152,18 @@ static void bpf_core_dump_spec(const char *prog_name, int level, const struct bp
+> >   *    between multiple relocations for the same type ID and is updated as some
+> >   *    of the candidates are pruned due to structural incompatibility.
+> >   */
+> > -int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+> > -                            int insn_idx,
+> > -                            const struct bpf_core_relo *relo,
+> > -                            int relo_idx,
+> > -                            const struct btf *local_btf,
+> > -                            struct bpf_core_cand_list *cands,
+> > -                            struct bpf_core_spec *specs_scratch)
+> > +int bpf_core_calc_relo_insn(const char *prog_name,
+>
+> please update the comment for this function, it's not "CO-RE relocate
+> single instruction" anymore, it's more like "Calculate CO-RE
+> relocation target result" or something along those lines.
+>
 
+Updated with your suggestion.
+
+> > @@ -1223,12 +1198,12 @@ int bpf_core_apply_relo_insn(const char *prog_name, struct bpf_insn *insn,
+> >         /* TYPE_ID_LOCAL relo is special and doesn't need candidate search */
+> >         if (relo->kind == BPF_CORE_TYPE_ID_LOCAL) {
+> >                 /* bpf_insn's imm value could get out of sync during linking */
+> > -               memset(&targ_res, 0, sizeof(targ_res));
+> > -               targ_res.validate = false;
+> > -               targ_res.poison = false;
+> > -               targ_res.orig_val = local_spec->root_type_id;
+> > -               targ_res.new_val = local_spec->root_type_id;
+> > -               goto patch_insn;
+> > +               memset(targ_res, 0, sizeof(*targ_res));
+> > +               targ_res->validate = true;
+>
+> hm.. original code sets it to false here, please don't regress the logic
+>
+
+ops, I introduced this by mistake while rebasing.
