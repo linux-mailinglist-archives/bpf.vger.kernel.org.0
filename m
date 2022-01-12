@@ -2,126 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 399D848C90B
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 18:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C083348CAA0
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 19:07:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349880AbiALREp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 12:04:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355510AbiALREm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 12:04:42 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 965EEC06173F;
-        Wed, 12 Jan 2022 09:04:42 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id z17so956067ilm.3;
-        Wed, 12 Jan 2022 09:04:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MM7tsNjQ1RjKdLjIHYsiqgwyzjhwJ0Sd2pi5INVTS3Q=;
-        b=OtK3i+2Ty+nFD/D/+RH0QLwdycQnaaQUlO6sUBfDW1msryhEvHE9oK7qD63hh59rVy
-         q7h+GJk3N542RZW0B3y7zdihtuigG9uZCaYbfCbS+bzHVDTd9tdmh+A7ucE06NfdudmI
-         1tuI+xKNe4PsXTSyFag7IFO+3gfRhb2AMvdPwOT6Yt8FC06b6yImDkf7B0tO0FJB8aP4
-         S7OcapXa4cmxUobw51i+1R3FxGMaIpYhT0OTueuybnHxJwnMIkkluxAqJvBuN/L6y/xX
-         9CnBjmPJVmW85hM5O2tybAPGguDJbsP1iB6Wiskp7pUsp4d9Um0uyc6w75xX30C4MQeF
-         KjAA==
+        id S1356029AbiALSHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 13:07:08 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:35579 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356024AbiALSHH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 13:07:07 -0500
+Received: by mail-il1-f198.google.com with SMTP id z17-20020a926511000000b002b43c84f5d3so2199838ilb.2
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 10:07:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MM7tsNjQ1RjKdLjIHYsiqgwyzjhwJ0Sd2pi5INVTS3Q=;
-        b=CFkx080P2OPakvqRy0C3FSnXmNdAWAbn8CbH8TvnL2JcZ3at3HMpms1o2CFgmc7wzM
-         eIJyxentXOanr/HRmG5hsjo08YCaENDS3wdybCFeMZLpHM1oa7GynSL+njHtDqunyvf1
-         efXoK8p4GsuS00BaEu20lI9m37Jal16prie7x5GNxaUyS5tPlsx543/Peegt3FiQT0/V
-         rZ3iICGsfTRvxSI16WRqb0ODVjJyFEipCkAXN9Cf3hkQpF552iuU+2SdrW0xg7eImu19
-         Kq50yZ7RzVAS5Zdaye238l1pghbrBxhYFLvC2YqMk8Iuk6iW0wT4xbau1Lml9I2hL1e+
-         T2aQ==
-X-Gm-Message-State: AOAM531neBKKzOpK2VokvJA9eS6av7/zPLOIthVxVPMjbFhLd96tlUVu
-        lcFDTObUdocbZC/BJGoyM39MqcyAWYvlysIn2HA=
-X-Google-Smtp-Source: ABdhPJw+3snJ3EljleHH4lNVkB2UC6LRoGYoai/9g0BNjhUahCdB0oAE8v5QNx53cihajRL9XmYDGptr6HOi+ZAasqY=
-X-Received: by 2002:a05:6e02:1a24:: with SMTP id g4mr399887ile.71.1642007081328;
- Wed, 12 Jan 2022 09:04:41 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4qfyyc8d8t6HSYNLIhDajcHWDIP5czgFUKxiWdgZZuo=;
+        b=GodVhGJ5U9aYjcIkoaNQpzpg3lsLq9vIciOs9b2CRZ+jchZCF3IAsl7/jIg80QtKeQ
+         qtH7xEh5dR06NVNbSjsRsXZy18EP9zvy2QnU4IVylQJo2tklT9KYOBpNhEVWVs0E5Br9
+         1cRppvC6cts1aNkPSM8sfNpvYv4VdYQ6xqYnKO3vzG0uwGKXbrmwzT61qL33jzU9JH9q
+         JL2A+zA4F/449JhXteRYuZ6aSrLnEVsW+X0J2cTi7aBc8UyHnGpVJy44rNMJq9EM6PsK
+         ijJGfhBST+hl5kum7EToXByXLfmB5ZUOZVWB9ehL0g/Rnrjw9NWoeZrTRFwPgMV63bum
+         X7Tg==
+X-Gm-Message-State: AOAM53356EP/7BLrhPoYcgGrLLKXdpmkQaZ+TeUgQ6LYirnty+y4YrX3
+        docnzYZDBTHRpQRptU3yEIN7f1oEctJtGQCFMu7U/lb2aqAw
+X-Google-Smtp-Source: ABdhPJypiq3WNQhaEDkIOaecF5zA0hAxEGuLf4XczFian/Ud6RPY4l9/xIPbalhaOGaw8NUbxN6HUozucfb4pNbwD+xvQf1HCkcn
 MIME-Version: 1.0
-References: <1642004329-23514-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1642004329-23514-1-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 12 Jan 2022 09:04:30 -0800
-Message-ID: <CAEf4BzYRLxzVHw00DUphqqdv2m_AU7Mu=S0JF0PZYN40hBvHgA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/4] libbpf: userspace attach by name
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a05:6602:1490:: with SMTP id a16mr491280iow.30.1642010826998;
+ Wed, 12 Jan 2022 10:07:06 -0800 (PST)
+Date:   Wed, 12 Jan 2022 10:07:06 -0800
+In-Reply-To: <000000000000c1524005cdeacc5f@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000f890905d56670f5@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in veth_xdp_rcv
+From:   syzbot <syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, fgheet255t@gmail.com,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, toke@redhat.com, toke@toke.dk,
+        yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 8:19 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> This patch series is a rough attempt to support attach by name for
-> uprobes and USDT (Userland Static Defined Tracing) probes.
-> Currently attach for such probes is done by determining the offset
-> manually, so the aim is to try and mimic the simplicity of kprobe
-> attach, making use of uprobe opts.
->
-> One restriction applies: uprobe attach supports system-wide probing
-> by specifying "-1" for the pid.  That functionality is not supported,
-> since we need a running process to determine the base address to
-> subtract to get the uprobe-friendly offset.  There may be a way
-> to do this without a running process, so any suggestions would
-> be greatly appreciated.
->
-> There are probably a bunch of subtleties missing here; the aim
-> is to see if this is useful and if so hopefully we can refine
-> it to deal with more complex cases.  I tried to handle one case
-> that came to mind - weak library symbols - but there are probably
-> other issues when determining which address to use I haven't
-> thought of.
->
-> Alan Maguire (4):
->   libbpf: support function name-based attach for uprobes
->   libbpf: support usdt provider/probe name-based attach for uprobes
->   selftests/bpf: add tests for u[ret]probe attach by name
->   selftests/bpf: add test for USDT uprobe attach by name
->
+syzbot suspects this issue was fixed by commit:
 
-Hey Alan,
+commit 2cbad989033bff0256675c38f96f5faab852af4b
+Author: Paolo Abeni <pabeni@redhat.com>
+Date:   Tue Nov 30 10:08:06 2021 +0000
 
-I've been working on USDT support last year. It's considerably more
-code than in this RFC, but it handles not just finding a location of
-USDT probe(s), but also fetching its arguments based on argument
-location specification and more usability focused BPF-side APIs to
-work with USDTs.
+    bpf: Do not WARN in bpf_warn_invalid_xdp_action()
 
-I don't remember how up to date it is, but the last "open source"
-version of it can be found at [0]. I currently have the latest
-debugged and tested version internally in the process of being
-integrated into our profiling solution here at Meta. So far it seems
-to be working fine and covers our production use cases well.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e9e1ddb00000
+start commit:   252c765bd764 riscv, bpf: Add BPF exception tables
+git tree:       bpf-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f60548b4c38ae4a8
+dashboard link: https://syzkaller.appspot.com/bug?extid=67f89551088ea1a6850e
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1797fcf2b00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e71f9f300000
 
-The plan is to open source it as a separate companion library to
-libbpf some time in the next few months. Hopefully that would work for
-you. Once it is available, I hope we can also utilize it to convert
-some more BCC-based tools (that rely on USDT) to libbpf ([1]).
+If the result looks correct, please mark the issue as fixed by replying with:
 
-  [0] https://github.com/anakryiko/linux/commit/d473d042c8058da0a9e6c0353d97aeaf574925c6
-  [1] https://github.com/iovisor/bcc/tree/master/libbpf-tools
+#syz fix: bpf: Do not WARN in bpf_warn_invalid_xdp_action()
 
->  tools/lib/bpf/libbpf.c                             | 244 +++++++++++++++++++++
->  tools/lib/bpf/libbpf.h                             |  17 +-
->  tools/testing/selftests/bpf/Makefile               |  34 +++
->  .../selftests/bpf/prog_tests/attach_probe.c        |  74 ++++++-
->  .../selftests/bpf/progs/test_attach_probe.c        |  24 ++
->  5 files changed, 391 insertions(+), 2 deletions(-)
->
-> --
-> 1.8.3.1
->
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
