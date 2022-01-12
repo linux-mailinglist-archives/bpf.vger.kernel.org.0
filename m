@@ -2,261 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB0E48C60E
-	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 15:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2FA48C7CA
+	for <lists+bpf@lfdr.de>; Wed, 12 Jan 2022 17:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354157AbiALO1z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 09:27:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354138AbiALO1s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 09:27:48 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191D3C06118C
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 06:27:35 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id 193so1924383qkh.13
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 06:27:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=361WBFrE2wyLlAJ9s20Jdt/AO9xNH671IIEc8E5AvSg=;
-        b=QLlh9HdPfFFPMIVsYUpeU0sMQAUPlBjDzBSfBK4ENYsYQ5AmAlndiv/EPzP332KUW3
-         1SbLbTY4HpcnHQp+V5SKSGyWX7wagVzVI+AOV8VLf1IxKCx4Vgagkc03WD0ElP/l9Gvd
-         VW+6pTd0ufbI2iaYRUjHwHKHKjCAOyq9vi0+4=
+        id S1354912AbiALQBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 11:01:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22923 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1354918AbiALQBT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 12 Jan 2022 11:01:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1642003278;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=61jkuwvVXvuFtimMSu8IeQNNLzj0gYj5g/G0tQLun4o=;
+        b=RaZhHO9cvRnhfVHq79pEbMkvOUp9Hi3Xh8b34xMIXIEYR/cgJ532K1HFur99PGu2ect2aJ
+        aZrC6fQ37j6xcq2+CJKmbCQbiQGAsvbL9sLTCP23MzFGpmorii/yVeduScK6oTaNZF64gb
+        7TQFoIS09bpmLs891mVl59UI82QeBas=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-64-8JMSWkH5Mk6zZ0U2yMBdqg-1; Wed, 12 Jan 2022 11:01:17 -0500
+X-MC-Unique: 8JMSWkH5Mk6zZ0U2yMBdqg-1
+Received: by mail-ed1-f69.google.com with SMTP id i9-20020a05640242c900b003fe97faab62so2645172edc.9
+        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 08:01:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=361WBFrE2wyLlAJ9s20Jdt/AO9xNH671IIEc8E5AvSg=;
-        b=jahH0d1Ls4URteZ1YyEfJkm53kCwowdOqMPoT0vmbVtqd0CkgeRdQU9IB/bW0gTTkS
-         lpJIGSr65Pp4o6rP/KBYpf/34MB1Nlq9W2Cs/wuWDe+D8IvFNzHHhH/W+W2wtQ8jDqJx
-         srr1bTx68oPp72DO47NFt8GQGDbEweUxnS7xZZUZTyijHMt4nfJAemil2mNqmEjDg5z2
-         qLRqZChkW74Vfp6jHqjsZ/xVwC40K6cs4+/I2DbWDU96zHEmjSOvRpjncIifkvqcD9UV
-         nEMLp9FGnrpSt2L3W2CU7Rc8kJAweuqsWmUaRSsqkBUMnY9q7ir1DppQ1V0+W9PQSnKb
-         ekaA==
-X-Gm-Message-State: AOAM53217szRehWQkXlLHSE9k9k2peLYMwbX6QWiiRAARiWptqcXPSe4
-        QwQ3S0ixKwJ0vbYh2IfP/wwMcA==
-X-Google-Smtp-Source: ABdhPJxJcL8C4HcfM5N1qHfFuGjc7UOW+hpCMugpgdyucK0RwlrwHaOXz2t32HyMzhspeNMzRlmoxA==
-X-Received: by 2002:a05:620a:4544:: with SMTP id u4mr5841852qkp.49.1641997653317;
-        Wed, 12 Jan 2022 06:27:33 -0800 (PST)
-Received: from localhost.localdomain ([181.136.110.101])
-        by smtp.gmail.com with ESMTPSA id h11sm8776690qko.59.2022.01.12.06.27.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=61jkuwvVXvuFtimMSu8IeQNNLzj0gYj5g/G0tQLun4o=;
+        b=teg8NjmVF8e4U4p4EweyF0XJ9eBd8LZLOKtON6DijwRElfX/smExZsP0s1JD7VyNsB
+         i2LIpBVf6vTeBkGv4qvtnh/M56YpTIK1yS32glfMfMFl8j8oXqsE+yGgEfD4wqcPHOng
+         nUZgMZ4Ouo5mOFCZrOiN6aKNtrIZitNzEliCZ8vq95MXtGNd5ysiptodqZUYvK+EDq7L
+         wi6cNuv/SW+FjVTNjOyxCPZn0FfmytTxBWEAj7ATswU/mZzN6/XObfAthbulPo6OaawF
+         3HtWKzML4phmtpgeHcg795dgQBeB/9G/L7btC49a60ytZl440kCbSOq0rbMV2uAor3Zu
+         C4Rw==
+X-Gm-Message-State: AOAM532aXmzmtPRw2nbPyfGf1VWLGAkheaaiCHbnhgMc5HAvROoCVnn5
+        8jXQH15fOjAIDEHANRHyJcmx/CfkBLtzVc8GN/ll/IBvCiMecu78s7dztheJpNHhqVDsboiItu+
+        im2iLntmEIvlZ
+X-Received: by 2002:a17:907:8a14:: with SMTP id sc20mr302776ejc.312.1642003275932;
+        Wed, 12 Jan 2022 08:01:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwxGt6hG1hH0dOVq6f/p2z8HN7LPcMPdtYQjVG0H4X9gj95ZjcBiN/8cWzbbMtxEHAc87CxqQ==
+X-Received: by 2002:a17:907:8a14:: with SMTP id sc20mr302756ejc.312.1642003275652;
+        Wed, 12 Jan 2022 08:01:15 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id p3sm40988ejo.61.2022.01.12.08.01.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jan 2022 06:27:33 -0800 (PST)
-From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+        Wed, 12 Jan 2022 08:01:15 -0800 (PST)
+Date:   Wed, 12 Jan 2022 17:01:13 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Subject: [PATCH bpf-next v4 8/8] bpftool: Implement btfgen_get_btf()
-Date:   Wed, 12 Jan 2022 09:27:09 -0500
-Message-Id: <20220112142709.102423-9-mauricio@kinvolk.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220112142709.102423-1-mauricio@kinvolk.io>
-References: <20220112142709.102423-1-mauricio@kinvolk.io>
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v2 0/8] fprobe: Introduce fprobe function entry/exit
+ probe
+Message-ID: <Yd77SYWgtrkhFIYz@krava>
+References: <164199616622.1247129.783024987490980883.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164199616622.1247129.783024987490980883.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The last part of the BTFGen algorithm is to create a new BTF object with
-all the types that were recorded in the previous steps.
+On Wed, Jan 12, 2022 at 11:02:46PM +0900, Masami Hiramatsu wrote:
+> Hi Jiri and Alexei,
+> 
+> Here is the 2nd version of fprobe. This version uses the
+> ftrace_set_filter_ips() for reducing the registering overhead.
+> Note that this also drops per-probe point private data, which
+> is not used anyway.
+> 
+> This introduces the fprobe, the function entry/exit probe with
+> multiple probe point support. This also introduces the rethook
+> for hooking function return as same as kretprobe does. This
 
-This function performs two different steps:
-1. Add the types to the new BTF object by using btf__add_type(). Some
-special logic around struct and unions is implemented to only add the
-members that are really used in the field-based relocations. The type
-ID on the new and old BTF objects is stored on a map.
-2. Fix all the type IDs on the new BTF object by using the IDs saved in
-the previous step.
+nice, I was going through the multi-user-graph support 
+and was wondering that this might be a better way
 
-Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
----
- tools/bpf/bpftool/gen.c | 158 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 157 insertions(+), 1 deletion(-)
+> abstraction will help us to generalize the fgraph tracer,
+> because we can just switch it from rethook in fprobe, depending
+> on the kernel configuration.
+> 
+> The patch [1/8] and [7/8] are from your series[1]. Other libbpf
+> patches will not be affected by this change.
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 8c13dde0b74d..696a66bded32 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -1607,10 +1607,166 @@ static int btfgen_record_obj(struct btfgen_info *info, const char *obj_path)
- 	return err;
- }
- 
-+static unsigned int btfgen_get_id(struct hashmap *ids, unsigned int old)
-+{
-+	uintptr_t new = 0;
-+
-+	/* deal with BTF_KIND_VOID */
-+	if (old == 0)
-+		return 0;
-+
-+	if (!hashmap__find(ids, uint_as_hash_key(old), (void **)&new)) {
-+		/* return id for void as it's possible that the ID we're looking for is
-+		 * the type of a pointer that we're not adding.
-+		 */
-+		return 0;
-+	}
-+
-+	return (unsigned int)(uintptr_t)new;
-+}
-+
-+static int btfgen_add_id(struct hashmap *ids, unsigned int old, unsigned int new)
-+{
-+	return hashmap__add(ids, uint_as_hash_key(old), uint_as_hash_key(new));
-+}
-+
- /* Generate BTF from relocation information previously recorded */
- static struct btf *btfgen_get_btf(struct btfgen_info *info)
- {
--	return ERR_PTR(-EOPNOTSUPP);
-+	struct hashmap_entry *entry;
-+	struct btf *btf_new = NULL;
-+	struct hashmap *ids = NULL;
-+	size_t bkt;
-+	int err = 0;
-+
-+	btf_new = btf__new_empty();
-+	if (libbpf_get_error(btf_new))
-+		goto err_out;
-+
-+	ids = hashmap__new(btfgen_hash_fn, btfgen_equal_fn, NULL);
-+	if (IS_ERR(ids)) {
-+		errno = -PTR_ERR(ids);
-+		goto err_out;
-+	}
-+
-+	/* first pass: add all types and add their new ids to the ids map */
-+	hashmap__for_each_entry(info->types, entry, bkt) {
-+		struct btfgen_type *btfgen_type = entry->value;
-+		struct btf_type *btf_type = btfgen_type->type;
-+		int new_id;
-+
-+		/* we're adding BTF_KIND_VOID to the list but it can't be added to
-+		 * the generated BTF object, hence we skip it here.
-+		 */
-+		if (btfgen_type->id == 0)
-+			continue;
-+
-+		/* add members for struct and union */
-+		if (btf_is_struct(btf_type) || btf_is_union(btf_type)) {
-+			struct hashmap_entry *member_entry;
-+			struct btf_type *btf_type_cpy;
-+			int nmembers, index;
-+			size_t new_size;
-+
-+			nmembers = btfgen_type->members ? hashmap__size(btfgen_type->members) : 0;
-+			new_size = sizeof(struct btf_type) + nmembers * sizeof(struct btf_member);
-+
-+			btf_type_cpy = malloc(new_size);
-+			if (!btf_type_cpy)
-+				goto err_out;
-+
-+			/* copy header */
-+			memcpy(btf_type_cpy, btf_type, sizeof(*btf_type_cpy));
-+
-+			/* copy only members that are needed */
-+			index = 0;
-+			if (nmembers > 0) {
-+				size_t bkt2;
-+
-+				hashmap__for_each_entry(btfgen_type->members, member_entry, bkt2) {
-+					struct btfgen_member *btfgen_member;
-+					struct btf_member *btf_member;
-+
-+					btfgen_member = member_entry->value;
-+					btf_member = btf_members(btf_type) + btfgen_member->idx;
-+
-+					memcpy(btf_members(btf_type_cpy) + index, btf_member,
-+					       sizeof(struct btf_member));
-+
-+					index++;
-+				}
-+			}
-+
-+			/* set new vlen */
-+			btf_type_cpy->info = btf_type_info(btf_kind(btf_type_cpy), nmembers,
-+							   btf_kflag(btf_type_cpy));
-+
-+			err = btf__add_type(btf_new, info->src_btf, btf_type_cpy);
-+			free(btf_type_cpy);
-+		} else {
-+			err = btf__add_type(btf_new, info->src_btf, btf_type);
-+		}
-+
-+		if (err < 0)
-+			goto err_out;
-+
-+		new_id = err;
-+
-+		/* add ID mapping */
-+		err = btfgen_add_id(ids, btfgen_type->id, new_id);
-+		if (err)
-+			goto err_out;
-+	}
-+
-+	/* second pass: fix up type ids */
-+	for (unsigned int i = 0; i < btf__type_cnt(btf_new); i++) {
-+		struct btf_member *btf_member;
-+		struct btf_type *btf_type;
-+		struct btf_param *params;
-+		struct btf_array *array;
-+
-+		btf_type = (struct btf_type *) btf__type_by_id(btf_new, i);
-+
-+		switch (btf_kind(btf_type)) {
-+		case BTF_KIND_STRUCT:
-+		case BTF_KIND_UNION:
-+			for (unsigned short j = 0; j < btf_vlen(btf_type); j++) {
-+				btf_member = btf_members(btf_type) + j;
-+				btf_member->type = btfgen_get_id(ids, btf_member->type);
-+			}
-+			break;
-+		case BTF_KIND_PTR:
-+		case BTF_KIND_TYPEDEF:
-+		case BTF_KIND_VOLATILE:
-+		case BTF_KIND_CONST:
-+		case BTF_KIND_RESTRICT:
-+		case BTF_KIND_FUNC:
-+		case BTF_KIND_VAR:
-+			btf_type->type = btfgen_get_id(ids, btf_type->type);
-+			break;
-+		case BTF_KIND_ARRAY:
-+			array = btf_array(btf_type);
-+			array->index_type = btfgen_get_id(ids, array->index_type);
-+			array->type = btfgen_get_id(ids, array->type);
-+			break;
-+		case BTF_KIND_FUNC_PROTO:
-+			btf_type->type = btfgen_get_id(ids, btf_type->type);
-+			params = btf_params(btf_type);
-+			for (unsigned short j = 0; j < btf_vlen(btf_type); j++)
-+				params[j].type = btfgen_get_id(ids, params[j].type);
-+			break;
-+		default:
-+			break;
-+		}
-+	}
-+
-+	hashmap__free(ids);
-+	return btf_new;
-+
-+err_out:
-+	btf__free(btf_new);
-+	hashmap__free(ids);
-+	return NULL;
- }
- 
- /* Create BTF file for a set of BPF objects.
--- 
-2.25.1
+I'll try the bpf selftests on top of this
+
+> 
+> [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> 
+> I also added an out-of-tree (just for testing) patch at the
+> end of this series ([8/8]) for adding a wildcard support to
+> the sample program. With that patch, it shows how long the
+> registration will take;
+> 
+> # time insmod fprobe_example.ko symbol='btrfs_*'
+> [   36.130947] fprobe_init: 1028 symbols found
+> [   36.177901] fprobe_init: Planted fprobe at btrfs_*
+> real    0m 0.08s
+> user    0m 0.00s
+> sys     0m 0.07s
+
+I'll run my bpftrace tests on top of that
+
+thanks,
+jirka
+
+> 
+> Thank you,
+> 
+> ---
+> 
+> Jiri Olsa (2):
+>       ftrace: Add ftrace_set_filter_ips function
+>       bpf: Add kprobe link for attaching raw kprobes
+> 
+> Masami Hiramatsu (6):
+>       fprobe: Add ftrace based probe APIs
+>       rethook: Add a generic return hook
+>       rethook: x86: Add rethook x86 implementation
+>       fprobe: Add exit_handler support
+>       fprobe: Add sample program for fprobe
+>       [DO NOT MERGE] Out-of-tree: Support wildcard symbol option to sample
+> 
+> 
+>  arch/x86/Kconfig                |    1 
+>  arch/x86/kernel/Makefile        |    1 
+>  arch/x86/kernel/rethook.c       |  115 ++++++++++++++++++++
+>  include/linux/bpf_types.h       |    1 
+>  include/linux/fprobe.h          |   57 ++++++++++
+>  include/linux/ftrace.h          |    3 +
+>  include/linux/rethook.h         |   74 +++++++++++++
+>  include/linux/sched.h           |    3 +
+>  include/uapi/linux/bpf.h        |   12 ++
+>  kernel/bpf/syscall.c            |  195 +++++++++++++++++++++++++++++++++-
+>  kernel/exit.c                   |    2 
+>  kernel/fork.c                   |    3 +
+>  kernel/kallsyms.c               |    1 
+>  kernel/trace/Kconfig            |   22 ++++
+>  kernel/trace/Makefile           |    2 
+>  kernel/trace/fprobe.c           |  168 +++++++++++++++++++++++++++++
+>  kernel/trace/ftrace.c           |   54 ++++++++-
+>  kernel/trace/rethook.c          |  226 +++++++++++++++++++++++++++++++++++++++
+>  samples/Kconfig                 |    7 +
+>  samples/Makefile                |    1 
+>  samples/fprobe/Makefile         |    3 +
+>  samples/fprobe/fprobe_example.c |  154 +++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h  |   12 ++
+>  23 files changed, 1103 insertions(+), 14 deletions(-)
+>  create mode 100644 arch/x86/kernel/rethook.c
+>  create mode 100644 include/linux/fprobe.h
+>  create mode 100644 include/linux/rethook.h
+>  create mode 100644 kernel/trace/fprobe.c
+>  create mode 100644 kernel/trace/rethook.c
+>  create mode 100644 samples/fprobe/Makefile
+>  create mode 100644 samples/fprobe/fprobe_example.c
+> 
+> --
+> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> 
 
