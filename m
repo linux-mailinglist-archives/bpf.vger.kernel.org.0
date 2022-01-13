@@ -2,91 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F8648DC94
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 18:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5EB48DDEA
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 19:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbiAMRHq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 12:07:46 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:46012 "EHLO
+        id S237726AbiAMSzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 13:55:52 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:40112 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbiAMRHp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jan 2022 12:07:45 -0500
+        with ESMTP id S237707AbiAMSzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 13:55:51 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5545861CE3;
-        Thu, 13 Jan 2022 17:07:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B475BC36AEF;
-        Thu, 13 Jan 2022 17:07:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3EBAB61D40;
+        Thu, 13 Jan 2022 18:55:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB79C36AEC;
+        Thu, 13 Jan 2022 18:55:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642093664;
-        bh=Dx0IclD0tXg+B85btv+baN4OXf8B48NeAIY0q+sv920=;
+        s=k20201202; t=1642100150;
+        bh=hMlJ9QB1L16utXssQ293CfOFivWIchx1FAeMsc3sNoI=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EOCCUQVHJTxVv7/QtyIHGEaxPkCkQNEN8CVjaOSKRx/z9bjFVCfp9TsvgYAi24Fco
-         HmdxBL5cICZ1H0R4hkSHMk4/g+YevWqLOl8s24G7rik9jlVjiMRS3EbLtPrUMEUe6k
-         fydjEb7Lu5xKexGm3vxwEXFq8WIgcLHjP6UbR0XFKajVUO0lVVUiaT/O8RIwn4Vosx
-         NTGS1Nw3IXBc11B5/iPNu10ZvQVT1K/KEGP3qDjbgQBmnCi/evXOVWPi9cFgDQXB+h
-         8+G2G6mT89UEHf0f44Fkx4qarggQhgumCRfv5aSOU+YBsLiKDnQhIexRX/H+WFr4aJ
-         A2nigoTxZpftg==
-Received: by mail-yb1-f181.google.com with SMTP id c10so16967795ybb.2;
-        Thu, 13 Jan 2022 09:07:44 -0800 (PST)
-X-Gm-Message-State: AOAM530LvruR4aahudg7Gr9f3DGMBX99HtcRmR881oNI+g8a1kXCihSe
-        5ZaQjzmESEtfdH43UUT0yxVUhh6bhrj8Up+m1xI=
-X-Google-Smtp-Source: ABdhPJx5751HYvm6d/DQxy//XcTquoSjPD2H5p3LnBRwIC5C70ChPpnQLrQMSJYixxSRVsf4oaRMoG1NcBL8zTNVs6M=
-X-Received: by 2002:a25:fd6:: with SMTP id 205mr7112590ybp.654.1642093663795;
- Thu, 13 Jan 2022 09:07:43 -0800 (PST)
+        b=SkiLjRj7G2antCNr0Xeb0tvN2njwb/UzFIYBE4p/rd+fEMhJrk1ts4VdJ0kxrAJsj
+         gW1/DkgQUGcA1mIgVACsYabSg4qjuJCxH+O2fWSaoCOcuxNnncFge78OV6rtYEZx/1
+         uf65LChZYjW+ZJWkr4+wxD0yFO8PuMf4yuPxvLOBHmAI+WGbIWeFOirCz9TeZxsZRV
+         RG1p5na1G7JWnApvrYW1pUklJq5XfycsD5QcIwBREsWfwZ/L1pQRN8wmJ+A4BzS2Hf
+         k9UbHe8LwCtb95H6SRZU/JfCb2KoAZvsiqtGolfElhXlEfsVpBVvwIOwuSUIa+L6Rm
+         3MSFpRRpUxvTQ==
+Received: by mail-yb1-f177.google.com with SMTP id g14so17710409ybs.8;
+        Thu, 13 Jan 2022 10:55:50 -0800 (PST)
+X-Gm-Message-State: AOAM533yiDf0P0r/Iqf6pm1e2kSvcGTE8i2Gu5oACq8Ucj+XAi1GhktE
+        B4XBX4TxZ2iefTgUsMqIwQVJlVLFJUN9wwGbSKQ=
+X-Google-Smtp-Source: ABdhPJzy3uH8nfMkDWu9YayjnvJO6vmodvRntm4s02doIFEXvE99PxC88E0Afwy1DsXL6Pagrbovz9ItsUsin/jxvRQ=
+X-Received: by 2002:a25:8b85:: with SMTP id j5mr7726044ybl.558.1642100149669;
+ Thu, 13 Jan 2022 10:55:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20220113031658.633290-1-imagedong@tencent.com>
-In-Reply-To: <20220113031658.633290-1-imagedong@tencent.com>
+References: <20220113070245.791577-1-imagedong@tencent.com>
+In-Reply-To: <20220113070245.791577-1-imagedong@tencent.com>
 From:   Song Liu <song@kernel.org>
-Date:   Thu, 13 Jan 2022 09:07:32 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5HLK=DoNWmROXrce+9AcNBDLhjuoXQy2T0A_DQ34PBfQ@mail.gmail.com>
-Message-ID: <CAPhsuW5HLK=DoNWmROXrce+9AcNBDLhjuoXQy2T0A_DQ34PBfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] test: selftests: remove unused various in sockmap_verdict_prog.c
+Date:   Thu, 13 Jan 2022 10:55:38 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5zf3MqJL+tJtHTd-hYSwpUpeAvduhL7uy2T=T2+eLQug@mail.gmail.com>
+Message-ID: <CAPhsuW5zf3MqJL+tJtHTd-hYSwpUpeAvduhL7uy2T=T2+eLQug@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct bpf_sock'
 To:     menglong8.dong@gmail.com
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, davemarchevsky@fb.com,
-        linux-kselftest@vger.kernel.org,
+        KP Singh <kpsingh@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, imagedong@tencent.com
+        open list <linux-kernel@vger.kernel.org>,
+        mengensun@tencent.com, flyingpeng@tencent.com,
+        mungerjiang@tencent.com, Menglong Dong <imagedong@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 7:17 PM <menglong8.dong@gmail.com> wrote:
+On Wed, Jan 12, 2022 at 11:03 PM <menglong8.dong@gmail.com> wrote:
 >
 > From: Menglong Dong <imagedong@tencent.com>
 >
-> 'lport' and 'rport' in bpf_prog1() of sockmap_verdict_prog.c is not
-> used, just remove them.
+> The description of 'dst_port' in 'struct bpf_sock' is not accurated.
+> In fact, 'dst_port' is not in network byte order, it is 'partly' in
+> network byte order.
+>
+> We can see it in bpf_sock_convert_ctx_access():
+>
+> > case offsetof(struct bpf_sock, dst_port):
+> >       *insn++ = BPF_LDX_MEM(
+> >               BPF_FIELD_SIZEOF(struct sock_common, skc_dport),
+> >               si->dst_reg, si->src_reg,
+> >               bpf_target_off(struct sock_common, skc_dport,
+> >                              sizeof_field(struct sock_common,
+> >                                           skc_dport),
+> >                              target_size));
+>
+> It simply passes 'sock_common->skc_dport' to 'bpf_sock->dst_port',
+> which makes that the low 16-bits of 'dst_port' is equal to 'skc_port'
+> and is in network byte order, but the high 16-bites of 'dst_port' is
+> 0. And the actual port is 'bpf_ntohs((__u16)dst_port)', and
+> 'bpf_ntohl(dst_port)' is totally not the right port.
+>
+> This is different form 'remote_port' in 'struct bpf_sock_ops' or
+> 'struct __sk_buff':
+>
+> > case offsetof(struct __sk_buff, remote_port):
+> >       BUILD_BUG_ON(sizeof_field(struct sock_common, skc_dport) != 2);
+> >
+> >       *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
+> >                             si->dst_reg, si->src_reg,
+> >                                     offsetof(struct sk_buff, sk));
+> >       *insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->dst_reg,
+> >                             bpf_target_off(struct sock_common,
+> >                                            skc_dport,
+> >                                            2, target_size));
+> > #ifndef __BIG_ENDIAN_BITFIELD
+> >       *insn++ = BPF_ALU32_IMM(BPF_LSH, si->dst_reg, 16);
+> > #endif
+>
+> We can see that it will left move 16-bits in little endian, which makes
+> the whole 'remote_port' is in network byte order, and the actual port
+> is bpf_ntohl(remote_port).
+>
+> Note this in the document of 'dst_port'. ( Maybe this should be unified
+> in the code? )
 >
 > Signed-off-by: Menglong Dong <imagedong@tencent.com>
 
 Acked-by: Song Liu <songliubraving@fb.com>
 
 > ---
->  tools/testing/selftests/bpf/progs/sockmap_parse_prog.c | 2 --
->  1 file changed, 2 deletions(-)
+>  include/uapi/linux/bpf.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
-> index 95d5b941bc1f..c9abfe3a11af 100644
-> --- a/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
-> +++ b/tools/testing/selftests/bpf/progs/sockmap_parse_prog.c
-> @@ -7,8 +7,6 @@ int bpf_prog1(struct __sk_buff *skb)
->  {
->         void *data_end = (void *)(long) skb->data_end;
->         void *data = (void *)(long) skb->data;
-> -       __u32 lport = skb->local_port;
-> -       __u32 rport = skb->remote_port;
->         __u8 *d = data;
->         int err;
->
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b0383d371b9a..891a182a749a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5500,7 +5500,11 @@ struct bpf_sock {
+>         __u32 src_ip4;
+>         __u32 src_ip6[4];
+>         __u32 src_port;         /* host byte order */
+> -       __u32 dst_port;         /* network byte order */
+> +       __u32 dst_port;         /* low 16-bits are in network byte order,
+> +                                * and high 16-bits are filled by 0.
+> +                                * So the real port in host byte order is
+> +                                * bpf_ntohs((__u16)dst_port).
+> +                                */
+>         __u32 dst_ip4;
+>         __u32 dst_ip6[4];
+>         __u32 state;
 > --
 > 2.34.1
 >
