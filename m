@@ -2,91 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6BA148E058
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 23:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B1F48E0A0
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 23:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238002AbiAMWgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 17:36:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
+        id S238098AbiAMWps (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 17:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235281AbiAMWgA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jan 2022 17:36:00 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B41C061574;
-        Thu, 13 Jan 2022 14:36:00 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id j27so1151158pgj.3;
-        Thu, 13 Jan 2022 14:36:00 -0800 (PST)
+        with ESMTP id S231467AbiAMWpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 17:45:47 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD38FC061574;
+        Thu, 13 Jan 2022 14:45:47 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id g11-20020a17090a7d0b00b001b2c12c7273so6363411pjl.0;
+        Thu, 13 Jan 2022 14:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5wMgPxnCW3lehf/aD8F6oiMEHPNP42N5iWx4rfgZFL4=;
-        b=PmgdI80v1X1TnsGb4hKz8oDwMz08xt8OgAYEs/BpfflSL+sMzlFggHCGI1TGMQg2qS
-         6+/gli9MXi1Luueje4lazUFfiuadkeLW2L3PYt1oTyy2CAoilfw1euvaYt4lFmIyttaZ
-         +4MLMcNT+vLTY0D2MTxfVZDlz9RCPKgioOweo/jaXFlnO5JXglg1hj9L1mDHKRTRY0B8
-         gNi9NycvPGTuA7reXUCBePESYON6D1oU8srXTMdTx1d6Xy1eotSJeGerj18aMgdWbmMd
-         av6t8Z59cppFbxjNB1HRaFS23zWAxJsB7RtOnwQSVcpXbShI3pack4sYfZiHX4jNUXZG
-         QRvw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/4RRqBrmw4TBe6Qmao1QkNx5bovUudrxDbFnqUSc0p4=;
+        b=d+AMNGi3pmM56Gw2ANsf4dVZkxxu9gTZDnubAuMgpsTG1TYyOSubjwAIJj3gchZ4gI
+         0B77/wPoI6sJdx0dYzH9e+lPKGTrWqDi6uyscCT0NnwL12r9kMf7UvNqXJap9Ww9h00X
+         ++eNBUvCUuailZefL6xUS4zuY/+i3LJ2umXQPcvLL5HwHhiKShI/TzgHyVvAtT9o+ZSK
+         EV02hfsBZNw7tUb03GMWe5SwiQU5xrCuj5K+pvBnluwXB33LxlPrTMAfibhBsOZOmd2P
+         oGea+Ra0tvVuvCYZOfjqrRNi6jwwrixOt69WwOVKo/qnSAZsLEczPsUnUk+MGwTjlCJC
+         V5fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5wMgPxnCW3lehf/aD8F6oiMEHPNP42N5iWx4rfgZFL4=;
-        b=vJVZJ0WwHs2+c57zKk+6Zgvqi3v7LTbvoFLJBhXJ01rK+zj40KbRBl1yNbbK+kKL0s
-         lYJcejbg9a/kwDi93kCkxmXj1HTfTD5DvJnLfS720v75mycJT6/nwS6gqZ2Ta7BhfuI0
-         LxbF4dcIL8THkgWnvUkkU9/Dpkxz13mbF8Q2+/GE85vZVGVTkfr6TxJAXb0ESZ9Bc5r3
-         /+HhMl2OdB/VC24GFx1GXt/7oDN0+aPnHFAyImBLg1hNWoIDBqcTR3MOPUVyhIcKGHzc
-         Vi+nlWPlxUm/oXqqt+Bgp0UZAfvwTTQLElgx4Pfp5CIgjtYT40Cjh2inoW200j6mFXM4
-         dUEw==
-X-Gm-Message-State: AOAM5332B1AZoBkrwPyQauKe/xGUmC7km2JymSQz6OaMykevN3OxGlEI
-        a6R2c1OWhkOh2iBzJwD4UUQ=
-X-Google-Smtp-Source: ABdhPJy6lIyDsCCRGHC224n2GBJJt1B3S0cMAUxPsmE8tuwGvPhuVopd45aoClszjbW+yZiszJm6vg==
-X-Received: by 2002:a63:91c4:: with SMTP id l187mr4989464pge.34.1642113359688;
-        Thu, 13 Jan 2022 14:35:59 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:5547])
-        by smtp.gmail.com with ESMTPSA id il18sm2029418pjb.45.2022.01.13.14.35.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jan 2022 14:35:59 -0800 (PST)
-Date:   Thu, 13 Jan 2022 14:35:57 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH bpf-next v7 07/10] selftests/bpf: Add test for unstable
- CT lookup API
-Message-ID: <20220113223557.45d5czezncjwekge@ast-mbp.dhcp.thefacebook.com>
-References: <20220111180428.931466-1-memxor@gmail.com>
- <20220111180428.931466-8-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/4RRqBrmw4TBe6Qmao1QkNx5bovUudrxDbFnqUSc0p4=;
+        b=fFrph2ERd2e+6lFzehpoRYBhTLYqkgWHu+KU6hNW/GVTwMGeFv0eGh4xLPiaYInnGh
+         pqN6tkyXaeQZ7rr/cMKByISdBdS/JtNAqdEOuOtiuTN/uqM92IHlLf8OJjFY8kHKlVMv
+         waSfiRIT0Bo8xhOPiAaCbL/NSqgzhImjrNR67sXg/7XQCP/6VKiaCmCUY8MlpCONyzxC
+         2n3KNJxQigfhnhREfzZhhGEsfbofHNyCyrw8wnoXSBWLaaeGGpwYHEP55HDz0+LqdXbq
+         iTOw9VjGpdsztHWLjsR4Vue9M+WcxorfGVq1Gc3IRmvfeeq0ufYDNuNRlv4WZgVWh/ft
+         mGsA==
+X-Gm-Message-State: AOAM532B6ztdSeDHShCQMLXruKT2QUOR2of4si6pA8rMtvfG9d+IqC12
+        eaZgW7qGrLfU0WadGlnNhIwqdgnGoJcquF7uHyk=
+X-Google-Smtp-Source: ABdhPJyxLxthKpfUVIlwPxInPsYgz0dcn/oER61I63Kniua6f0bKm2UEhXy0QS1Rmwj+6QC6d9YSVxj1zeyLuLfEOK0=
+X-Received: by 2002:a17:90b:3a82:: with SMTP id om2mr7541963pjb.138.1642113947224;
+ Thu, 13 Jan 2022 14:45:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220111180428.931466-8-memxor@gmail.com>
+References: <20220112131204.800307-1-Jason@zx2c4.com> <20220112131204.800307-2-Jason@zx2c4.com>
+ <87tue8ftrm.fsf@toke.dk> <CAADnVQJqoHy+EQ-G5fUtkPpeHaA6YnqsOjjhUY6UW0v7eKSTZw@mail.gmail.com>
+ <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com>
+In-Reply-To: <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 13 Jan 2022 14:45:36 -0800
+Message-ID: <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag calculation
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 11, 2022 at 11:34:25PM +0530, Kumar Kartikeya Dwivedi wrote:
-> +
-> +#define nf_ct_test(func, ctx)                                                  \
-> +	({                                                                     \
-> +		struct bpf_ct_opts opts_def = { .l4proto = IPPROTO_TCP,        \
-> +						.netns_id = -1 };              \
-> +		struct bpf_sock_tuple bpf_tuple;                               \
-> +		struct nf_conn *ct;                                            \
-> +		__builtin_memset(&bpf_tuple, 0, sizeof(bpf_tuple.ipv4));       \
-> +		ct = func(ctx, NULL, 0, &opts_def, sizeof(opts_def));          \
+On Thu, Jan 13, 2022 at 4:27 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>
+> Hi Alexei,
+>
+> On 1/13/22, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > Nack.
+> > It's part of api. We cannot change it.
+>
+> This is an RFC patchset, so there's no chance that it'll actually be
+> applied as-is, and hence there's no need for the strong hammer nack.
+> The point of "request for comments" is comments. Specifically here,
+> I'm searching for information on the ins and outs of *why* it might be
+> hard to change. How does userspace use this? Why must this 64-bit
+> number be unchanged? Why did you do things this way originally? Etc.
+> If you could provide a bit of background, we might be able to shake
+> out a solution somewhere in there.
 
-Have you tried converting the macro to static always_inline
-and passing func as a pointer to a function?
-The first argument 'ctx' is different, but if you prototype it
-in this static inline as (*fn)(void *ctx)
-and type case it later in nf_skb/xdp_ct_test() that should still work?
+There is no problem with the code and nothing to be fixed.
