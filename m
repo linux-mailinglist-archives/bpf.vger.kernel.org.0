@@ -2,177 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30DE48D106
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 04:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE13548D1CB
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 06:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbiAMDn0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 22:43:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232333AbiAMDnY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 22:43:24 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6976C03327F
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 19:43:08 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id g21so5451244qtk.4
-        for <bpf@vger.kernel.org>; Wed, 12 Jan 2022 19:43:08 -0800 (PST)
+        id S229530AbiAMFMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 00:12:39 -0500
+Received: from esa.hc3962-90.iphmx.com ([216.71.142.165]:16440 "EHLO
+        esa.hc3962-90.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbiAMFMi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 00:12:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s6k6NJsxXj5YfhQSmiemviYiME/l/siGhhpC0AN2qMg=;
-        b=MjM9r2SGQO/E9XkRHWYWtj1FpRQbfWLVs8AUSwlUKCFNd+KPyTjSpqwicESaORCnOC
-         bZB5JBLgiR9JZYCN7ZbSMPpIUixOg9QLH6TtFE9xqJN8cAMOnAd4MEgIMDKXg5SdmlFf
-         qEJWYLjyaFbCd1sXgeRZZodbLVO86aPQkkXsWQN63gQ2sGBS7180C9KzYcevyKniZfNJ
-         GQBgkEf9KkMSr4FjkcbcDB1mvleDEW6rAZPcQU1Q++sdyde1z50C8bw9SRirytBuMn6g
-         47HheRCvd+cttlK9r5+Xe+2DJ7q68xLe7HbLFpWNCt52R0v9qC44XBJDU0TdMXENT/XE
-         M1FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s6k6NJsxXj5YfhQSmiemviYiME/l/siGhhpC0AN2qMg=;
-        b=nqZYp4/7yobqPwZ++dzYYNx0zcPt9J0A0hMtTGITvSoY2mP5QE/IS95KZ93EJYBjlf
-         g4y/a5w6ou0PeCY0xfYUv9jXeVUSd0nXnzWWW4qk737YcNa4030qHtbgjPkIQP2C97sx
-         gN+22hEVfXdWmvBPv5P3zCQ9nPD8MiYpQFu3HXEf/U6WPZg/cvuzy2u90n9VUQ5ide7m
-         d8qK5mIDIolwc06ycT2w8IPZN+248lKjWA8lPnAqcEicTkxUavdPmHlr3bSfK7cRVhDV
-         VIwDDcb2HkNF4Yp2BOOAa3nRHXS8gzwiywW0JxWWihMTlfiY0pFlXq7QBGPY33L0y2aG
-         qN/A==
-X-Gm-Message-State: AOAM531x7DCHV/QKc9C5/yBeNuoHxqE4cbQjuphQ9vJV/Wjj2mlJeQDN
-        wCLe77VxMv4iLSyTKtP9IvHOYz5yF/r5C5wcdDuqBQ==
-X-Google-Smtp-Source: ABdhPJzXJ1Rsc4WDrza846RBC13leRzHrVEcG0qhclBCFDiDZetiMXoW2OOpN2mkNUQSV/w90p0+FA2X8p0ZzuSJ+oI=
-X-Received: by 2002:ac8:5796:: with SMTP id v22mr2134467qta.299.1642045387850;
- Wed, 12 Jan 2022 19:43:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20220112193152.3058718-1-haoluo@google.com> <Yd9YFM5kqU9yKXf5@slm.duckdns.org>
-In-Reply-To: <Yd9YFM5kqU9yKXf5@slm.duckdns.org>
-From:   Hao Luo <haoluo@google.com>
-Date:   Wed, 12 Jan 2022 19:42:56 -0800
-Message-ID: <CA+khW7gDyT9x6hAZhYfsVe_R_UQCE0ZsTdPt8SAPuyP_F-uwVQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND RFC bpf-next v1 0/8] Pinning bpf objects outside bpffs
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qccesdkim1;
+  t=1642050758; x=1642655558;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=1kuMu2q8SoxYTskZNz1DYXin9D+HggYcF3d19CZ79ec=;
+  b=PdNxkm2vt79yd+ej5gOzAab96TDUzSn/ipGwFC6/wm/irMgGdvk+gzZc
+   VJJdZn46T4ntJcaNrNyjL2pdvA7BF6jdAbhhhmQMLi/Nc1ZlUj1WxG87Q
+   QEdwWwWLbnIfdE2ky96r169f5pHOi+UeTK2XF0cnqMIbUMEMgjYDbJkrf
+   U=;
+Received: from mail-bn1nam07lp2046.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.46])
+  by ob1.hc3962-90.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 05:12:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bAdkjr82dCzAWQAjtQNq7EyI9xYsFqH8XT55XxG41U0ZRXXsqFvN9pmrdzdjQo5Jh0RlFBJbDG6OciYSC85OuKDVo/DEML727Yvd7T1F3l+Z9DjpLbCa9u2Mi3onLWavjvFpF6sNkp9LnafxW+sPyYEizMvuudakzW4k9qf27CKLI0KNdl3vrh6Wq1He+SYOoWRvZV4WE6K8nZeEcan4xHmyeG0fQMsl+8KOwQQJrIT7XCQOhz9rm+khu/8lDKs3aA3HMuRl9iu3oCsEo5yHw9iW9P0kDXxVDT5H2K93z7ITPFByIP5Utp3zoW+gdYD8NMLyD+fGmRDe3LCf8xhRLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1kuMu2q8SoxYTskZNz1DYXin9D+HggYcF3d19CZ79ec=;
+ b=VOTz+O1ttuur63ekxp/B22Mlgs35j6ik2l0Axhlo7gWnQ+hBWfHlw3TMztrjGeHE1CzCV+rbX3z+r5ezmuzazdwd4/S8KVI5E2C3HRaPE9wheqeh9LoWpKSWhZYyp+aPoWI5DbpoRRJRQ95IGilyd4WFRq0XjuIdqC1VLxk1x+KyI1PXa+yKdtIDGLJ3SkNYUUp7wgUa4SEq9x6mI5dix02uQeiG8Z9NjsTdWZvi9TnNvWukT12VZqpZllQbdqIUJNWXcRpCKWTubwrJdecXIoyCx7GQif0z8ABNSQ3stu4GQzMJPFT11H79rVKSQMNG+9Ys4D2VYnEhD3ailEuNSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=quicinc.com; dmarc=pass action=none header.from=quicinc.com;
+ dkim=pass header.d=quicinc.com; arc=none
+Received: from BYAPR02MB5238.namprd02.prod.outlook.com (2603:10b6:a03:71::17)
+ by CO1PR02MB8689.namprd02.prod.outlook.com (2603:10b6:303:160::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4888.10; Thu, 13 Jan
+ 2022 05:12:34 +0000
+Received: from BYAPR02MB5238.namprd02.prod.outlook.com
+ ([fe80::8802:ab1b:7465:4b07]) by BYAPR02MB5238.namprd02.prod.outlook.com
+ ([fe80::8802:ab1b:7465:4b07%6]) with mapi id 15.20.4867.012; Thu, 13 Jan 2022
+ 05:12:34 +0000
+From:   Tyler Wear <twear@quicinc.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Tyler Wear (QUIC)" <quic_twear@quicinc.com>
+CC:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?utf-8?B?TWFjaWVqIMW7ZW5jenlrb3dza2k=?= <maze@google.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <song@kernel.org>
+Subject: RE: [PATCH bpf-next v6 1/2] Add skb_store_bytes() for
+ BPF_PROG_TYPE_CGROUP_SKB
+Thread-Topic: [PATCH bpf-next v6 1/2] Add skb_store_bytes() for
+ BPF_PROG_TYPE_CGROUP_SKB
+Thread-Index: AQHYCBF+ZP8hLSSObUirLFFwasTGhaxgNl8AgAAxUjA=
+Date:   Thu, 13 Jan 2022 05:12:34 +0000
+Message-ID: <BYAPR02MB523848C2591E467973B5592EAA539@BYAPR02MB5238.namprd02.prod.outlook.com>
+References: <20220113000650.514270-1-quic_twear@quicinc.com>
+ <CAADnVQLQ=JTiJm6FTWR-ZJ5PDOpGzoFOS4uFE+bNbr=Z06hnUQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLQ=JTiJm6FTWR-ZJ5PDOpGzoFOS4uFE+bNbr=Z06hnUQ@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=quicinc.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 34e83900-c9a3-4c57-148b-08d9d6534eed
+x-ms-traffictypediagnostic: CO1PR02MB8689:EE_
+x-ld-processed: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d,ExtAddr
+x-microsoft-antispam-prvs: <CO1PR02MB8689C1A181592FC9F233E154AA539@CO1PR02MB8689.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1ORuok90LkhPLsRGoaZuL15TLT8EDKSWixgrYiRnIyC6svI3Szh9hMRghAb/rkcmfp9MGjbjkeEJ9e/z08/3xLlK+hvhNwyllLwRPNatdCfp+yNt10oShdb0aZxf9trnwV7w6ZNNW3sBXD6uV40crxjsYv3cGV9gZ//aqNJH3CDnnEui01M4CAqV1wcDAoA55OuqWTQK2cyvQYOp7DuYcHg57g0adYznH3kkkBEUEIz1BFXOY9X7W6MZhDi784u7twCL4lDWvAN287PRAv4fYVcRXGnUynLi2WQhgb+eNQhXoLR3CEqn592Pw5apQQrb5hESW0RJPZLcsStPIx8fmEeObUjGM4TAiQlgCEnaPfM5ZgE1EZaRKWgNCgd+EDK4/ShClUP4/XxwD5VE3Bd6HOJkpYifpyIk2Rknphf9E5Fsl+3OdRRjEnL7YOxqTKW1IJhfeFk/sVzZPz+O9QEV8mwrGKWa5DNagpsc613iwr2+AaQco/sftFA122CUU4Q/xHTFSGMlU90AxQE1g/o4KgSgDlvnSmhAuwMWi2HFWlitNcjUSPB2gMqi3jeEKj3A3Y03pC+N9xAOss6QeWpCryJUWX2+8riRGY8a4aixkl+o2jx9nelmHzUDlQ7E0dsccmaTnnDDHgtEPgCuNasikq/mbt5GEQWjF4e9PyuO+/ZQWyt0HLvE495hm24JlNC/J+ts6qrNUplZT+tOs7q0Rg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5238.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(26005)(53546011)(6506007)(54906003)(6636002)(110136005)(316002)(71200400001)(38070700005)(52536014)(5660300002)(33656002)(83380400001)(2906002)(66574015)(4326008)(55016003)(66946007)(7696005)(508600001)(38100700002)(86362001)(122000001)(9686003)(66556008)(66476007)(8936002)(64756008)(66446008)(8676002)(76116006);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eHc3NXQyMDdtb2NkTVZrQnA5dE1kYnZreFZYd2tMWTJPZWhrRlFPSkY0ZDhV?=
+ =?utf-8?B?KzQra2ZLbm1DN2h5QkJJa0U2UjV1N2duT3RORy9laVZ5Nkpwa09yU3pZczNw?=
+ =?utf-8?B?V2tBWk9LVnkxaDFYS1NnejJicFloUVdUZFp1WnNOSXIyOU8rZU1VcHBDZGZj?=
+ =?utf-8?B?NlczTkp6ZENBUWJ5RE9Ha2JGV2poZUhoWFVqaW5RRlB6RzduUWhjUmNmRXNF?=
+ =?utf-8?B?WEJJdktLYWN0bUsvTkdUK3pQQW9iRXUyaVFXYTNnZnJwaGppeTVxeTJSRVZP?=
+ =?utf-8?B?S2c3WFYvZS9qOUVvYkF3UEdxTkVqL1dyVjltZkprYjNaeFFESEVKenlQOHB4?=
+ =?utf-8?B?MkpzMHVvWE5JNFhqOXd6RldQNEZLK0JnRzF3L2l6R0Q1djI4eUdXSmMwVVpo?=
+ =?utf-8?B?OTc2cXNXVUFsc240WDliRzNNRzlUQ2xvM1Y2Q1dRcTBTeE1qUFF3NHBZVmxU?=
+ =?utf-8?B?aDBLZWNmSDdMWXFybkI4dms0bFpwdjNWVlJTUU5SOFovUS9iUGhaY1hPOHBW?=
+ =?utf-8?B?bllhT2x2S09obE1iV25xOGtFd2dQNGFaUmV4UTFYT2J1YWV4VldESk1WbWEv?=
+ =?utf-8?B?LzdtUjdkVEtJeVNjNy92WGJzQ3dmQTN3MjcwNW1kL2hoOFFvMUkzNmJlL0hi?=
+ =?utf-8?B?NG9rcitBaHIrTUdOQXZheGJXN0VRYnM3dEcveHFoY29Zekh5QkdwOWNVTkMr?=
+ =?utf-8?B?T2syaWlrcmJwWDRpQyt4RHF2cEJuNjNNOFB1K1JIdVlxMmtqN0V4d05jU090?=
+ =?utf-8?B?aVhyVUU1RVdYV041b2RFL21sbnI4YkFrbXJvck4xSlpncm1rQ09QYWlVells?=
+ =?utf-8?B?aHZtWHdtcENtUWtTa1d5amVIYUhlV3hFV3NnRndEa3ZHdUlUcGNWakQwRGlC?=
+ =?utf-8?B?L2ZlMXk0Ykw1ZDc5TEx1N1pSZXNRVHFmdkExeVdBZElIRW5wZ2YyZzc4eG1t?=
+ =?utf-8?B?aER4SjIyRS9xUXZLcFhYZnNBNkpQWnhFTGdqQytvTmJLR2hSV2t4R1FPNGhE?=
+ =?utf-8?B?L0kydmZLaUwvNVdtcDdIV0hsYURGQ21FcndnS21TZklTTStnbUsrTWtBOUJB?=
+ =?utf-8?B?K3YrcGJjQkgxbW1NZ2NlZEpwTnY5M3VPOUlXOERTU2NsZkNobWJ0S0VZdUQ3?=
+ =?utf-8?B?dGc1VnhCZDNGcy9VVWM0YUtCOFhveWxYMGJTRFpqVnJ0VHV5VEJNZG5RUGli?=
+ =?utf-8?B?bGQyWWtFQ3NRQTMvM0gvN1NHT3JISVZ0KzFUeHlNYVdKSG9YQTZEZk9iVmJW?=
+ =?utf-8?B?elQ5Y1JvcXdxenJaOEk1Q2crRXdiVlppK2xSSUd3bFQ4bDFzSUt5TURuenRV?=
+ =?utf-8?B?cVE3azJnMGxnenU0RzF0L2hVTnFudmgrR3JqUUErczVBWDEzMnQwUGw2bzVV?=
+ =?utf-8?B?aHZGZTBXd1g2UGhLWlJPMmV1KzFBZURFS3NvZ0N2Z0o3NzNidVpRVnhPMDJ1?=
+ =?utf-8?B?TGZkQzhlNkhSNi94UWE1ZTd3VXV4VVdvTHBZb3AxbXFVbUtrQ0c3WncwZ1U3?=
+ =?utf-8?B?ZUxyejl4YW9yZUdYNml2L0RpNyt0VmpvZWxVZGhBUDJvbmsvUEtDTktwZ3A5?=
+ =?utf-8?B?ZWRzcTlzQ1NWSk1zZUVCaC9MYS9HY0EzOWg0ZXBXZnFKbjNtcVhvaXM1NTZq?=
+ =?utf-8?B?MFVVRE9FVDM5YXY4elJjMmZ6bWZ1MXFzc2hBVHE3OU5YVnhEazJ4Sk5QVXUy?=
+ =?utf-8?B?dGxXa0diVmdudzl5Wm4yeEttUWMzUDZyT1AxK1phVDRKN1VZdTgyL0dlL1k0?=
+ =?utf-8?B?S2twNmFYcHRvYVZCbUkwcXI5RGNQRkFkYXZpZUE0UHRKOFcyVVZuTEl2Nzdn?=
+ =?utf-8?B?d0NZYUcxNVkxOUxKeUV6ejhtTWlHSW0wV1dNTElLS29vZjVrb3BsOE45TkFt?=
+ =?utf-8?B?VmpINHcvd2U5UVgwdWhnQXBaazRQMVFZbWhDTjJhQ0lPOXk2Ny9rVkFHOW9C?=
+ =?utf-8?B?aklCMHNPRStwdHl4TmVNR2Frc3lTeTZzYWQrTW5vbXE3eEF0SEkvRFQ2MVpq?=
+ =?utf-8?B?WnZHY3lDMFlOMm96UlVUc3Q3WDYxUlRVWm5ZZHJvemVFWUNFT1lMMURVazVp?=
+ =?utf-8?B?U0tyNUdIMEg2QXZPTHdHbk9HVzEwS2NyTjZ1VFNEMU1ZL0x6WW5Nb3luc1Q5?=
+ =?utf-8?B?S29jWUdhUzJXVCsyNXk2WXhEZ0VzNFIzc1FIbkdpa3V5cGlNY1FRYTBKN0la?=
+ =?utf-8?Q?qkGCUECHECft+V2Dmdu8QGA=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: quicinc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5238.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34e83900-c9a3-4c57-148b-08d9d6534eed
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2022 05:12:34.3488
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 98e9ba89-e1a1-4e38-9007-8bdabc25de1d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wTbkCEhCIW1A+nOdoJLKd+PJuaqIlh1cq/LBEi7HA5Vdb3lgL3eEsdi2+2oLQiL//FRYAML2wVn2a1bma7P4Tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR02MB8689
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 2:37 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello, Hao.
->
-
-Thanks Tejun for your insights.
-
-> On Wed, Jan 12, 2022 at 11:31:44AM -0800, Hao Luo wrote:
-> > As a concrete usecase of this feature, this patchset introduces a
-> > simple new program type called 'bpf_view', which can be used to format
-> > a seq file by a kernel object's state. By pinning a bpf_view program
-> > into a cgroup directory, userspace is able to read the cgroup's state
-> > from file in a format defined by the bpf program.
->
-> Both kernfs users - sysfs and cgroups - are hard APIs just as procfs, so
-> allowing bpf programs to add arbitrarily formatted files anywhere likely
-> isn't a good idea. Even ignoring the hard-defined interface problem,
-> allowing arbitrary files can cause surprising failures through namespace
-> collisions (which may be worked around by restricting where these files
-> reside or how they're named).
->
-> While the attraction is understandable, I think this is a misguided
-> direction. Text file interfaces are okay, or sometimes even good, for
-> certain things - communicating well established small piece of information.
-> They're easy to access and as long as the format stays really stable, the
-> million parsers that they end up spawning are mostly manageable although you
-> inevitably end up with "I was reading 3rd field of 4th line and you added a
-> new line above!".
->
-> The above also illustrates the problems with using these text file
-> interfaces. They're good for really static stuff or something really
-> provisional like for debugging where there's only one or very few consumers.
-> Outside of those extremes, they become pretty terrible. They are very
-> inefficient when the data volume isn't trivial. There's no good way to
-> synchronize accesses to multiple files. There are million ways to parse
-> them, many of them ever so subtly wrong. There's no good way to version the
-> interface (not that you can't). And if you throw these flexible files in the
-> midst of other hard-API files, it'll severely exacerbate confusion.
->
-
-I understand the importance of a set of hard APIs and appreciate the
-effort maintainers put on maintaining them. I acknowledge the problems
-of text file interfaces mentioned above. But there are situations
-where the text file interface also provides great value, in a sense, I
-think, outweighs its limitations. Bpf iter has many great
-applications. Bpf iter could be made more efficient, providing greater
-value.
-
-I agree that mixing flexible files with hard-API files is a problem.
-And my understanding is that, it's the key concern here. It would be
-great if there is a way to separate the bpf files from the stable
-APIs. I'm now thinking along this direction.
-
-> Also, for something which isn't stable, I think it's better to have some of
-> the access logic on the reader side. For example, let's say you've been
-> using data from a cgroup file on the system. One day, the system boots and
-> the file isn't there. How would you debug that? If it were a, say, py-bcc
-> script which fetched data through bpf, it wouldn't be difficult to track.
-> This isn't just happenstance - if you're reaching into a black box to get
-> data, you better keep that mechanism close to you as it's a fragile
-> temporary thing prone to breaking.
->
-
-From the view of userspace, allowing bpf to define kernel interface is
-giving the userspace full control. With everything controlled in
-userspace, debugging is easier rather than harder in my understanding.
-Access logic on the reader side is always needed of course. I've seen
-bugs where even stable files in cgroupfs are seemingly missing, which
-is harder to debug than bpf loading failure.
-
-> Yet another argument against it is that the kernel is a really bad place to
-> process and format data. We can't do real percentiles, or any kind of
-> non-trivial numeric analysis, or even handle and format real numbers. Given
-> that bpf already has an a lot more efficient way to transfer data between
-> kernel and user, it doesn't make sense to push data formatting into the
-> kernel. Export data to userspace, process and format there.
->
-
-There is a plus side of processing and formatting data in the kernel.
-Not every type of handling needs to process real percentiles or format
-real numbers. A big saving in cpu cycles can be achieved by the power
-of customizing data encoding inside the kernel.
-
-Currently many data are exported in text, userspace parses them and
-encodes them in a format suitable for network transmission (for
-example, Protobuf). If the kernel can encode the data directly in its
-final format, that would save the cpu cycles spent on encoding to and
-decoding from text. Multiplying this saving by the frequency of data
-collections and scale of the data center, the number can be
-significant. Bpf can transfer data in binary, but there is currently
-no good way to control data encoding and organize data in cgroups, as
-far as I know.
-
-> If there are reasons why this isn't very convenient using bpf. I think the
-> right thing to do is improving those. One issue that Song raised was that
-> there's no easy to allow non-root users to run specific bpf programs and
-> even if we do that with SUID binaries, each execution would be pretty
-> expensive involving full verification run and so on. But those problems are
-> solvable - maybe known BPF programs can be cached and made available to
-> other users - and I think concentrating on such direction would be way more
-> fruitful for wider purposes than trying to make BPF show text files in
-> existing fixed interfaces.
->
-> Thanks.
->
-> --
-> tejun
-
-Thanks,
-
-Hao
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQWxleGVpIFN0YXJvdm9p
+dG92IDxhbGV4ZWkuc3Rhcm92b2l0b3ZAZ21haWwuY29tPg0KPiBTZW50OiBXZWRuZXNkYXksIEph
+bnVhcnkgMTIsIDIwMjIgNjoxNCBQTQ0KPiBUbzogVHlsZXIgV2VhciAoUVVJQykgPHF1aWNfdHdl
+YXJAcXVpY2luYy5jb20+DQo+IENjOiBOZXR3b3JrIERldmVsb3BtZW50IDxuZXRkZXZAdmdlci5r
+ZXJuZWwub3JnPjsgYnBmDQo+IDxicGZAdmdlci5rZXJuZWwub3JnPjsgTWFjaWVqIMW7ZW5jenlr
+b3dza2kgPG1hemVAZ29vZ2xlLmNvbT47DQo+IFlvbmdob25nIFNvbmcgPHloc0BmYi5jb20+OyBN
+YXJ0aW4gS2FGYWkgTGF1IDxrYWZhaUBmYi5jb20+OyBUb2tlDQo+IEjDuGlsYW5kLUrDuHJnZW5z
+ZW4gPHRva2VAcmVkaGF0LmNvbT47IERhbmllbCBCb3JrbWFubg0KPiA8ZGFuaWVsQGlvZ2VhcmJv
+eC5uZXQ+OyBTb25nIExpdSA8c29uZ0BrZXJuZWwub3JnPg0KPiBTdWJqZWN0OiBSZTogW1BBVENI
+IGJwZi1uZXh0IHY2IDEvMl0gQWRkIHNrYl9zdG9yZV9ieXRlcygpIGZvcg0KPiBCUEZfUFJPR19U
+WVBFX0NHUk9VUF9TS0INCj4gDQo+IFdBUk5JTkc6IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9t
+IG91dHNpZGUgb2YgUXVhbGNvbW0uIFBsZWFzZSBiZSB3YXJ5DQo+IG9mIGFueSBsaW5rcyBvciBh
+dHRhY2htZW50cywgYW5kIGRvIG5vdCBlbmFibGUgbWFjcm9zLg0KPiANCj4gT24gV2VkLCBKYW4g
+MTIsIDIwMjIgYXQgNToxNSBQTSBUeWxlciBXZWFyIDxxdWljX3R3ZWFyQHF1aWNpbmMuY29tPg0K
+PiB3cm90ZToNCj4gPg0KPiA+IE5lZWQgdG8gbW9kaWZ5IHRoZSBkcyBmaWVsZCB0byBzdXBwb3J0
+IHVwY29taW5nIFdpZmkgUW9TIEFsbGlhbmNlIHNwZWMuDQo+ID4gSW5zdGVhZCBvZiBhZGRpbmcg
+Z2VuZXJpYyBmdW5jdGlvbiBmb3IganVzdCBtb2RpZnlpbmcgdGhlIGRzIGZpZWxkLA0KPiA+IGFk
+ZCBza2Jfc3RvcmVfYnl0ZXMgZm9yIEJQRl9QUk9HX1RZUEVfQ0dST1VQX1NLQi4NCj4gPiBUaGlz
+IGFsbG93cyBvdGhlciBmaWVsZHMgaW4gdGhlIG5ldHdvcmsgYW5kIHRyYW5zcG9ydCBoZWFkZXIg
+dG8gYmUNCj4gPiBtb2RpZmllZCBpbiB0aGUgZnV0dXJlLg0KPiA+DQo+ID4gQ2hlY2tzdW0gQVBJ
+J3MgYWxzbyBuZWVkIHRvIGJlIGFkZGVkIGZvciBjb21wbGV0ZW5lc3MuDQo+ID4NCj4gPiBJdCBp
+cyBub3QgcG9zc2libGUgdG8gdXNlIENHUk9VUF8oU0VUfEdFVClTT0NLT1BUIHNpbmNlIHRoZSBw
+b2xpY3kgbWF5DQo+ID4gY2hhbmdlIGR1cmluZyBydW50aW1lIGFuZCB3b3VsZCByZXN1bHQgaW4g
+YSBsYXJnZSBudW1iZXIgb2YgZW50cmllcw0KPiA+IHdpdGggd2lsZGNhcmRzLg0KPiA+DQo+ID4g
+VjQgcGF0Y2ggZml4ZXMgd2FybmluZ3MgYW5kIGVycm9ycyBmcm9tIGNoZWNrcGF0Y2guDQo+ID4N
+Cj4gPiBUaGUgZXhpc3RpbmcgY2hlY2sgZm9yIGJwZl90cnlfbWFrZV93cml0YWJsZSgpIHNob3Vs
+ZCBtZWFuIHRoYXQNCj4gPiBza2Jfc2hhcmVfY2hlY2soKSBpcyBub3QgbmVlZGVkLg0KPiA+DQo+
+ID4gU2lnbmVkLW9mZi1ieTogVHlsZXIgV2VhciA8cXVpY190d2VhckBxdWljaW5jLmNvbT4NCj4g
+PiAtLS0NCj4gPiAgbmV0L2NvcmUvZmlsdGVyLmMgfCAxMiArKysrKysrKysrKysNCj4gPiAgMSBm
+aWxlIGNoYW5nZWQsIDEyIGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9uZXQv
+Y29yZS9maWx0ZXIuYyBiL25ldC9jb3JlL2ZpbHRlci5jIGluZGV4DQo+ID4gNjEwMmYwOTNkNTlh
+Li5mMzBkOTM5Y2I0Y2YgMTAwNjQ0DQo+ID4gLS0tIGEvbmV0L2NvcmUvZmlsdGVyLmMNCj4gPiAr
+KysgYi9uZXQvY29yZS9maWx0ZXIuYw0KPiA+IEBAIC03Mjk5LDYgKzcyOTksMTggQEAgY2dfc2ti
+X2Z1bmNfcHJvdG8oZW51bSBicGZfZnVuY19pZCBmdW5jX2lkLA0KPiBjb25zdCBzdHJ1Y3QgYnBm
+X3Byb2cgKnByb2cpDQo+ID4gICAgICAgICAgICAgICAgIHJldHVybiAmYnBmX3NrX3N0b3JhZ2Vf
+ZGVsZXRlX3Byb3RvOw0KPiA+ICAgICAgICAgY2FzZSBCUEZfRlVOQ19wZXJmX2V2ZW50X291dHB1
+dDoNCj4gPiAgICAgICAgICAgICAgICAgcmV0dXJuICZicGZfc2tiX2V2ZW50X291dHB1dF9wcm90
+bzsNCj4gPiArICAgICAgIGNhc2UgQlBGX0ZVTkNfc2tiX3N0b3JlX2J5dGVzOg0KPiA+ICsgICAg
+ICAgICAgICAgICByZXR1cm4gJmJwZl9za2Jfc3RvcmVfYnl0ZXNfcHJvdG87DQo+ID4gKyAgICAg
+ICBjYXNlIEJQRl9GVU5DX2NzdW1fdXBkYXRlOg0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4g
+JmJwZl9jc3VtX3VwZGF0ZV9wcm90bzsNCj4gPiArICAgICAgIGNhc2UgQlBGX0ZVTkNfY3N1bV9s
+ZXZlbDoNCj4gPiArICAgICAgICAgICAgICAgcmV0dXJuICZicGZfY3N1bV9sZXZlbF9wcm90bzsN
+Cj4gPiArICAgICAgIGNhc2UgQlBGX0ZVTkNfbDNfY3N1bV9yZXBsYWNlOg0KPiA+ICsgICAgICAg
+ICAgICAgICByZXR1cm4gJmJwZl9sM19jc3VtX3JlcGxhY2VfcHJvdG87DQo+ID4gKyAgICAgICBj
+YXNlIEJQRl9GVU5DX2w0X2NzdW1fcmVwbGFjZToNCj4gPiArICAgICAgICAgICAgICAgcmV0dXJu
+ICZicGZfbDRfY3N1bV9yZXBsYWNlX3Byb3RvOw0KPiA+ICsgICAgICAgY2FzZSBCUEZfRlVOQ19j
+c3VtX2RpZmY6DQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAmYnBmX2NzdW1fZGlmZl9wcm90
+bzsNCj4gDQo+IFRoaXMgaXMgd3JvbmcuDQo+IENHUk9VUF9JTkVUX0VHUkVTUyBicGYgcHJvZyBj
+YW5ub3QgYXJiaXRyYXJ5IGNoYW5nZSBwYWNrZXQgZGF0YS4NCj4gVGhlIG5ldHdvcmtpbmcgc3Rh
+Y2sgcG9wdWxhdGVkIHRoZSBJUCBoZWFkZXIgYXQgdGhhdCBwb2ludC4NCj4gSWYgdGhlIHByb2cg
+Y2hhbmdlcyBpdCB0byBzb21ldGhpbmcgZWxzZSBpdCB3aWxsIGJlIGNvbmZ1c2luZyBvdGhlciBs
+YXllcnMgb2YNCj4gc3RhY2suIG5laWdoKEwyKSB3aWxsIGJlIHdyb25nLCBldGMuDQo+IFdlIGNh
+biBzdGlsbCBjaGFuZ2UgY2VydGFpbiB0aGluZ3MgaW4gdGhlIHBhY2tldCwgYnV0IG5vdCBhcmJp
+dHJhcnkgYnl0ZXMuDQo+IA0KPiBXZSBjYW5ub3QgY2hhbmdlIHRoZSBEUyBmaWVsZCBkaXJlY3Rs
+eSBpbiB0aGUgcGFja2V0IGVpdGhlci4NCj4gSXQgY2FuIG9ubHkgYmUgY2hhbmdlZCBieSBjaGFu
+Z2luZyBpdHMgdmFsdWUgaW4gdGhlIHNvY2tldC4NCg0KV2h5IGlzIHRoZSBEUyBmaWVsZCB1bmNo
+YW5nZWFibGUsIGJ1dCBlY24gaXMgY2hhbmdlYWJsZT8NCg0KPiANCj4gVEMgbGF5ZXIgaXMgd2hl
+cmUgcGFja2V0IG1vZGlmaWNhdGlvbnMgYXJlIGFsbG93ZWQuDQo=
