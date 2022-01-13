@@ -2,86 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A213F48CFB5
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 01:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432C448CFC2
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 01:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229654AbiAMAaZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 12 Jan 2022 19:30:25 -0500
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:17417 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbiAMAaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 12 Jan 2022 19:30:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1642033823; x=1673569823;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=p0DyDQ+vWEwJliI3fARijsd3UJqqtNYA35ktKFWmfQA=;
-  b=kcpZjaRKwim8JaBt6/nxEdznpqcU/OiSS7SMBcN72YavdSsYGGbHmOWE
-   EHX19Jqh2AaAne2AvdTlZ4HlSuA7FxD5nnsiH7NTyyLoE83TCd29Dpx0Q
-   VYrODu05vddTLfgfhp5eCO+jIE1ZXBGH4RdUnemt2OgelWDLdCrYlshIv
-   I=;
-X-IronPort-AV: E=Sophos;i="5.88,284,1635206400"; 
-   d="scan'208";a="54982855"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-ccb3efe0.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 13 Jan 2022 00:30:21 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1e-ccb3efe0.us-east-1.amazon.com (Postfix) with ESMTPS id 1414BC08B9;
-        Thu, 13 Jan 2022 00:30:19 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.28; Thu, 13 Jan 2022 00:30:18 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.161.142) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.26; Thu, 13 Jan 2022 00:30:14 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>,
-        Benjamin Herrenschmidt <benh@amazon.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH v2 bpf-next 5/5] selftest/bpf: Fix a stale comment.
-Date:   Thu, 13 Jan 2022 09:28:49 +0900
-Message-ID: <20220113002849.4384-6-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220113002849.4384-1-kuniyu@amazon.co.jp>
-References: <20220113002849.4384-1-kuniyu@amazon.co.jp>
+        id S229710AbiAMAn7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 12 Jan 2022 19:43:59 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:56106 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbiAMAn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 12 Jan 2022 19:43:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 46CBC61BAA;
+        Thu, 13 Jan 2022 00:43:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3633C36AF2;
+        Thu, 13 Jan 2022 00:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642034636;
+        bh=yAx1h+9noqod81ewSCFu8y3UVuCXM1L6HjeQ3KdgKUA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OKt+oK0K9iJai6rJsDjNn0MInVgSlkp6ZXfLxS+BTsebPfds4WcHNlAth7/CgGx5W
+         +bYW0fMvtMSMLtAveq5orCuwNBQKy8RdOMzKGyFCzpE7qsIv36xXg1PVuhXb8hfcHo
+         kfT+ePjG3UyqxW4Z+UPipSEHz6qSUGiD6hTlHkueFdcc5Y01rDfRPPS8vYFvufICih
+         A3WbbOVixORPVKpfqZ3fteg7badtttzALhXLPc8VQ5afG6bS5Kiozh8MggJsFpJ+Jv
+         5Pa2BFKSaJ41DPDJGk4yIFyRpmW3kwr1+SZA9Ob9AqVIBSFjMKIUKnbDBkydNTyftz
+         ZDn3QnOlVtqpA==
+Received: by mail-yb1-f174.google.com with SMTP id p187so10603240ybc.0;
+        Wed, 12 Jan 2022 16:43:56 -0800 (PST)
+X-Gm-Message-State: AOAM531h7AgVhrVrxWuZgrXRB0zfaoZ+jUTl7havyPj93NzEd4lIAYRJ
+        bJAOtYaGCWNWk8UG+D576YFwTuk8FJ0oXLiId5Q=
+X-Google-Smtp-Source: ABdhPJz6E0fvuhYb1SPPeYq4QlOc8xxdiKC17UxOjPy9v7eMtzN8L1pW7dz+dL/cgsDEa/+fHCYYFONeKg+R4BgBUeA=
+X-Received: by 2002:a05:6902:1106:: with SMTP id o6mr3351822ybu.195.1642034635648;
+ Wed, 12 Jan 2022 16:43:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.142]
-X-ClientProxiedBy: EX13D04UWB001.ant.amazon.com (10.43.161.46) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20220113000650.514270-1-quic_twear@quicinc.com>
+In-Reply-To: <20220113000650.514270-1-quic_twear@quicinc.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 12 Jan 2022 16:43:44 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7yCzyFy+onm2_bMHHh2Dq2xu+XRxQE+S7fLRCrVw0NFg@mail.gmail.com>
+Message-ID: <CAPhsuW7yCzyFy+onm2_bMHHh2Dq2xu+XRxQE+S7fLRCrVw0NFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/2] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
+To:     Tyler Wear <quic_twear@quicinc.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Yonghong Song <yhs@fb.com>, Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit b8a58aa6fccc ("af_unix: Cut unix_validate_addr() out of
-unix_mkname().") moved the bound test part into unix_validate_addr().
+On Wed, Jan 12, 2022 at 4:07 PM Tyler Wear <quic_twear@quicinc.com> wrote:
+>
+> Need to modify the ds field to support upcoming Wifi QoS Alliance spec.
+> Instead of adding generic function for just modifying the ds field,
+> add skb_store_bytes for BPF_PROG_TYPE_CGROUP_SKB.
+> This allows other fields in the network and transport header to be
+> modified in the future.
+>
+> Checksum API's also need to be added for completeness.
+>
+> It is not possible to use CGROUP_(SET|GET)SOCKOPT since
+> the policy may change during runtime and would result
+> in a large number of entries with wildcards.
+>
+> V4 patch fixes warnings and errors from checkpatch.
 
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+I don't think we need "V4 patch ..." part in the commit log.
+To keep some history of patch, we can add these notes after
+an "---" line, like:
+
+Signed-off-by:
 ---
- tools/testing/selftests/bpf/progs/bpf_iter_unix.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v4 patch ...
+v3 patch ...
+---
+  net/core/filter.c | 12 ++++++++++++
+...
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-index c21e3f545371..e6aefae38894 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_unix.c
-@@ -63,7 +63,7 @@ int dump_unix(struct bpf_iter__unix *ctx)
- 			BPF_SEQ_PRINTF(seq, " @");
- 
- 			for (i = 1; i < len; i++) {
--				/* unix_mkname() tests this upper bound. */
-+				/* unix_validate_addr() tests this upper bound. */
- 				if (i >= sizeof(struct sockaddr_un))
- 					break;
- 
--- 
-2.30.2
+With this format, git-am will remove the content between the
+two "---" lines.
 
+>
+> The existing check for bpf_try_make_writable() should mean that
+> skb_share_check() is not needed.
+>
+> Signed-off-by: Tyler Wear <quic_twear@quicinc.com>
+> ---
+>  net/core/filter.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 6102f093d59a..f30d939cb4cf 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7299,6 +7299,18 @@ cg_skb_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_sk_storage_delete_proto;
+>         case BPF_FUNC_perf_event_output:
+>                 return &bpf_skb_event_output_proto;
+> +       case BPF_FUNC_skb_store_bytes:
+> +               return &bpf_skb_store_bytes_proto;
+> +       case BPF_FUNC_csum_update:
+> +               return &bpf_csum_update_proto;
+> +       case BPF_FUNC_csum_level:
+> +               return &bpf_csum_level_proto;
+> +       case BPF_FUNC_l3_csum_replace:
+> +               return &bpf_l3_csum_replace_proto;
+> +       case BPF_FUNC_l4_csum_replace:
+> +               return &bpf_l4_csum_replace_proto;
+> +       case BPF_FUNC_csum_diff:
+> +               return &bpf_csum_diff_proto;
+>  #ifdef CONFIG_SOCK_CGROUP_DATA
+>         case BPF_FUNC_skb_cgroup_id:
+>                 return &bpf_skb_cgroup_id_proto;
+> --
+> 2.25.1
+>
