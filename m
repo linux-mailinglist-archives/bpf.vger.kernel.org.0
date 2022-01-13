@@ -2,204 +2,508 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC6548D5C0
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 11:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0339A48D7DB
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 13:26:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbiAMKad (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 05:30:33 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:44720 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231269AbiAMKa3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jan 2022 05:30:29 -0500
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20D8Mbg5031717;
-        Thu, 13 Jan 2022 10:30:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : content-type :
- mime-version; s=corp-2021-07-09;
- bh=zz+sZCEHgTqlKkNzG73vvPKElm+fx6zlm6qlzjFhqwo=;
- b=iKgfODjmJmhG7cyvjoCFpf8FXY2A2glJ1Ef04kTpnKzXAtFgJe1MtYBIgpwSs/xSluPT
- HurnlPR6K4EJwXeb3LiukVcTvMl4E1Rmpc859arBI3/2Yw9XCh0Y5fNtZyy1qDTLVEhS
- dHbOCCVeEQT5JZZ6lAV55AX9OPUyDCyyT9kc1h1q6BIoCuzskBNRYjnpODVOBJykwIS2
- 4jPwEOEfW3TdU2DxDVXvpGJOe7LW09T/JWYko7UzLm5+gM2CCGraxuVAPoQU5nEXUoUj
- i9MOg1MH4zzpVmyAKOvHdGMjafUGYzPPyBL+RkDqkm0498madrXnKIWSErkqryywewU2 Hg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3dgmk9grnm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jan 2022 10:30:13 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 20DAFjAx030505;
-        Thu, 13 Jan 2022 10:30:12 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by userp3020.oracle.com with ESMTP id 3df42ra4dc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 13 Jan 2022 10:30:12 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=msbYT63X3XMUO/DXVz6tcQTTgTqQYAZcxBhaEYviCdu5WKn9LMR+yOVHsCSUQlxhQp7dlfsB0MpSpuMyn7RCjRFYfZfX1vxE5LpPXQ6pA+BGMPj60SyZJLB5wyQ/35T8cXlbHymrJJjIRecjB2Qd/eLesyOjWgeufguyHXgOiZHR+ZA2BBKNXlNtW7vAwlFlKEYXTb9dcfyC/KqgnxcPTYQ9Q+4R4q9GCjCLsdmvj/ujxmqF7UVmQCSFAAm8yWwBYF0At4S0ye0y1uo2oySePDtGH8z1UuteVXnNdszA+0HxZuADlurVvbMeBRBs719cOlRBIFib3vI6f39NHeVoYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=zz+sZCEHgTqlKkNzG73vvPKElm+fx6zlm6qlzjFhqwo=;
- b=f/6LQic4AY7035FVS5DraaTPPcTdqPaKE+RSvWEzXaKY+yoLHqfpJK0i8ilEnPOsHaTaqXU9yYvhqgkfS/RdpK+O2ebYxkC14EbS+lgb6VI6vH7WNBN0eZiq3AJkkEinqrfVkbnJbisnQhYjP6q8TDzrIG5LCfS8UlGplSLdGgyRnbyw7s0C+S0JeZ/RYhdbtISUo4x23qEQjG+qSH20I2QuyEGOtPU9oEPV4ywP0bgfyj6FkyR3XHqiKrvYsJtiPnYbSQ3XyRZRo62iujJhe+++1B4EbbD8c44Iy/Hu+1NHa5I5r/nD3i7q+rAwG/sn08kdLALoFXDeQWMKQby/LA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zz+sZCEHgTqlKkNzG73vvPKElm+fx6zlm6qlzjFhqwo=;
- b=hjKoXcbJdASS/YAf5AcZ4HhDJuxGVo6b6V26ysw7+c+jWbPK9pNZV15F7TCocLx3LSsNitcFUlTfD8FCsJEspZlsFDkGlBVql6jQzML+1nsym6ESng6joEX6pGrYSKNWg/0WA/lUSmz1qgpNV+5tVjFHsBbGhoY3sAty7h58T38=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by DM6PR10MB3546.namprd10.prod.outlook.com (2603:10b6:5:17d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Thu, 13 Jan
- 2022 10:30:08 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::31c1:e20b:33a1:ba8c]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::31c1:e20b:33a1:ba8c%5]) with mapi id 15.20.4888.011; Thu, 13 Jan 2022
- 10:30:08 +0000
-Date:   Thu, 13 Jan 2022 10:29:35 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S231193AbiAMM0a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 07:26:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29721 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234916AbiAMMZ6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jan 2022 07:25:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1642076757;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mc64Q+JlUtC6Em2ufSP4lDdpIRXK71Fd5qLPj8PT5/E=;
+        b=Wa9XPK2AVMCdrNCBAOfnAWZua6s3+/gBzJRB8oTKOJBSmSYZak+fp+wHmUWwT0hRraMnoi
+        a5PlZJN+8s39KbvbGfkzaO8/gHrbpnmndmXlyMbyYVbqSmhAfmnSFf6And1RmVrS4mKVhO
+        9bk19IlitaJa66eqe+OHdiR0a8RDX20=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-653-71VoW7SfO-68RdbHxPE3KA-1; Thu, 13 Jan 2022 07:25:56 -0500
+X-MC-Unique: 71VoW7SfO-68RdbHxPE3KA-1
+Received: by mail-ed1-f71.google.com with SMTP id r8-20020a05640251c800b003f9a52daa3fso5161894edd.22
+        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 04:25:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mc64Q+JlUtC6Em2ufSP4lDdpIRXK71Fd5qLPj8PT5/E=;
+        b=DoPC74Le6wr8KvGSGx8F/ZKV8u+2RsMQ7dCAnkpMGk+l/Z7HmNYJ+SAEtlrZP8cR0j
+         XioSzqDIOQY9NLktweDx+UXcCbG5msgezPStwzoEiOO+QHYheUCSwQQRxeAAFZW+/QM7
+         xaRx+RMQVUhCkRS/A6dTxRUpupUU38lI4rGM7fSSALttQLOQ3YIbgsPE1hCNDiTg/TRr
+         QE5/ymXs/nQj4SpIPkgChdeXXYaz8jMPVEmQRyrh7Rm1aAQp0+J3XYtRfiEly92Kz9s8
+         JHnRLTq90kA71ixbBSmPh9h8fxJm2AnP/Z8mN9CqE6CHxAe9T9fpFzaN6mFbLZ7ISkwB
+         Kk5w==
+X-Gm-Message-State: AOAM530OadhCzzo9308aBbQE++cTZ2hNvNHiYeoARr2n4mwRK+8TbbmE
+        shczgQIY01c1mciXgG70U/86IpfB/tEEXIBklEJj7GITA2gfVUgb8VxWYPJm3oGt/1/3XXcu9Uv
+        GvIvj+pp8ENfM
+X-Received: by 2002:a05:6402:f16:: with SMTP id i22mr3863691eda.165.1642076755116;
+        Thu, 13 Jan 2022 04:25:55 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxSW8+lP80XLZVsO0mjX2bqPvEpM3SP/vkN2q/q7Z/SA8wgO//qHL13fKRMkGSiUIqgTGzUVQ==
+X-Received: by 2002:a05:6402:f16:: with SMTP id i22mr3863670eda.165.1642076754886;
+        Thu, 13 Jan 2022 04:25:54 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id f11sm567193edv.67.2022.01.13.04.25.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jan 2022 04:25:54 -0800 (PST)
+Date:   Thu, 13 Jan 2022 13:25:52 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [RFC bpf-next 0/4] libbpf: userspace attach by name
-In-Reply-To: <CAEf4BzYRLxzVHw00DUphqqdv2m_AU7Mu=S0JF0PZYN40hBvHgA@mail.gmail.com>
-Message-ID: <alpine.LRH.2.23.451.2201131025380.13423@localhost>
-References: <1642004329-23514-1-git-send-email-alan.maguire@oracle.com> <CAEf4BzYRLxzVHw00DUphqqdv2m_AU7Mu=S0JF0PZYN40hBvHgA@mail.gmail.com>
-Content-Type: text/plain; charset=US-ASCII
-X-ClientProxiedBy: SG2PR06CA0094.apcprd06.prod.outlook.com
- (2603:1096:3:14::20) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v2 3/8] rethook: Add a generic return hook
+Message-ID: <YeAaUN8aUip3MUn8@krava>
+References: <164199616622.1247129.783024987490980883.stgit@devnote2>
+ <164199620208.1247129.13021391608719523669.stgit@devnote2>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0eb7e2df-4718-4d06-2f3b-08d9d67fabec
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3546:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR10MB3546CB54DFFEF52DE2C11DEAEF539@DM6PR10MB3546.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tjBZq4AdazVHlpHM0l7iwlsNRxTsTz2p50k1n9sK/Dxu7Zpe50whY6MTQb5IsXVbGo7V+quXLBuh3ZGoKRMBRYatsYP3cz5zxcSyh38HAkHKXI6CtrufBqYJzHM28Lx8hzJTjKDe1eUna3VjfHb+HE+sYUMtBpLvfy5ewlp22vTlHLVz/0/sDbtFgPYyo1rRIEAPLlpv+pKZHo7w/qjc3L4rsGaZ8+i9lcaGeMl8mVr3o4jsqd2NalnmCNXACF1EviczQ3qf1570HyAEGx4/yC//FS01rz7X9NX7ScYUdIxvRxgaXZlPMBaRn75PmSFypcIw++ltcCudLhZyNXaisbIFpywTfVqmDGl7lwPPTsjdxefyFjYVMMiOEsA6Pt6y6CiQDr8XPtiinIWOmlGCQCngShN8x0koDrm9snABo0CokyWPqexvXvBW9+0AMFztfdx7/5caMQJbh1QknqviCJqyIKDwrUQ1NS5TOXMe5cwnMyRj9mE0yot88ufiuH1lP0O8nkjOlPbhlCabGhc2b8GbMcLtwb39jnLQtGwkmwF4uYw7ZkxlCXvkg4n4Gbm3LdZmnf4YinK2ntMpJvVfs8i0AZPPxJACX6je/hZBHFi7Z2sG0nER8BR/2SYde0I0MP2bXGQhw7CMkER8XoqKaQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(366004)(44832011)(6666004)(6512007)(9686003)(66946007)(4326008)(5660300002)(66476007)(66556008)(7416002)(186003)(508600001)(2906002)(6486002)(86362001)(54906003)(316002)(8936002)(52116002)(53546011)(6506007)(8676002)(38100700002)(33716001)(6916009)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?p21KMk1a3+BR1K+tA+H+79lLZHcL3WG7W7ZUPEKGAdRWvYo2UoxXG23I/PYy?=
- =?us-ascii?Q?uiowXLx6FXtG1y/wJsoQCtZn8rEYLulJubdksLezsTfxtAj57DYVQf2wl6yp?=
- =?us-ascii?Q?3++NtWOksuEfini+8LsPh9oKzpPC0DaFB9MHARBUPCpAaJKgIeJEh6lbO4a6?=
- =?us-ascii?Q?ZuT7LrAS41SfLIrSZmjmBnXtPKOja7nrZo8hrDCH4BZH9q48eJZw/y+u06EQ?=
- =?us-ascii?Q?D6jiIwWOX79QfHXhjSdY0cThvx1j4utP44YT5bTMT9hNQSBORp5axdVas683?=
- =?us-ascii?Q?l5zTNFXB7zgYcocGcjwULi/bvy34lYlcuSa0pab17f+nvNUdBgpLDvUA1rnB?=
- =?us-ascii?Q?VhVsPNrHg35/phVvlvBfilMMCiQMNiSebzo9KEg84/8JdY5N6YK494LFncNf?=
- =?us-ascii?Q?H+SRv8oKoJWnI+5XXU5UzBokfCvgjV7PdhvE5qCl5epsYaPkGfN8Jscq5cGM?=
- =?us-ascii?Q?tjGvKoqrtInSXKOMoqlp3xJqqsVyBm0lCBBZfQoA6N4ErvFHLqq9yeDg/+ZA?=
- =?us-ascii?Q?/MZK+pofyBZ+8Nz4vqUlmgCkhF2XiXu0s32eH3I3TE3FK8WvDz/c93TSJeGM?=
- =?us-ascii?Q?CZsLDiNlV5kkyQEScUmlb0nrjSXSCBhS5IZ9PnsCvZP/QYuzRUpexTqOngkJ?=
- =?us-ascii?Q?Q8BUMmJftPaemSbq67k0jtnZLxaj+bKva394kBIJ8xFxj3xOfSoPPrdIuq2K?=
- =?us-ascii?Q?OEpBjJTeIyK3Uh2QzE5vKktFvp+sO43qnibL4jpmACDewGDjQhiE1mSthZlO?=
- =?us-ascii?Q?qBS9bfYdiYrCJnyPuLJInrHqoDG29HN/+g17Xfr9vuPnS2gcvi63wptzUaPH?=
- =?us-ascii?Q?sOoNGR6Xy1JdKRjVTFSwqv9lEgzcnxfcQYO5npBLxXZYzKSotReYzhOBwnf6?=
- =?us-ascii?Q?KximYwfgWEDKNdBZyv+RsK11wVDfckOMRcCA3qhJfyIGWkCf2QiBnQJM/NOP?=
- =?us-ascii?Q?e6ocaI8D+9/jfB7Vdfyky/UcGJyT7nI8ogE0jP7M+xnLAr49X0tekHikYx+t?=
- =?us-ascii?Q?afcwOEfve3+0pYrGmMozo3MXuj+fho6tygfr6S7kG2GZFyuPFbOSj4zw6JFP?=
- =?us-ascii?Q?MmkJx3O2Q6DfEZy629/ydjocI8OGULty8YdamwJ7NBVS2kBbyAl28DPeOYu0?=
- =?us-ascii?Q?ALpbxAuNvQBNjQJDWVN9YNHl5PUf8oiYRwtf/REobQQJHcmqzJcbLYllU1X0?=
- =?us-ascii?Q?2gnOQ/acnYeur5ANdLW5n2YtsU8hsyDedeZFnj3fzK5WMGUaRDppOBzGO0Hf?=
- =?us-ascii?Q?f1MeAVtX0teADpgENwE+CV0vXdIyFHIvBvtEDE9TjfHcYAhZBU4T2XnHtg+g?=
- =?us-ascii?Q?lsaNZqhCFHDyaAFigoMNvMenqIgcOccq1sTd+bUJ8N8zsX0rg0RREmJ6MWyN?=
- =?us-ascii?Q?OmviY14fjenJe37bE2O3ph/f+ycH/Zu1UpsDuEK6tOd/1EzYx4ysG8vQBtax?=
- =?us-ascii?Q?sFTjEWr806vZH4gX4Ximox6ME1l+z2Mi7tjE3jiqBKJImPABIQjPWGloJTUz?=
- =?us-ascii?Q?r2jnJOlSBq7EMG5e5ctSrj/LWNWGuWz4gcb2JqsQMVISfrmtGoCJDks7FcgS?=
- =?us-ascii?Q?ww6+ElJ1chE9zh0DHqBdRGEFuxBrL81lT6kRWICU9zfzNeuIkmLOjuofT/kt?=
- =?us-ascii?Q?9Sy6RVpTilNffDJFReUTwVr9X/c2vJsosFPoHEn5E7Wp?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0eb7e2df-4718-4d06-2f3b-08d9d67fabec
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2022 10:30:08.5396
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jk+9WAUUFzUJnx3/k3aVYitU1RmvZkurJpWlFTHFt4oGmlN385CY13GKxVFJBcMxPlWOPLSlV6NrHNDhrCjsbA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3546
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10225 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2201130061
-X-Proofpoint-GUID: UhPjIv_cr_aOTQ6Sy5GR_ZrJOacY0eDJ
-X-Proofpoint-ORIG-GUID: UhPjIv_cr_aOTQ6Sy5GR_ZrJOacY0eDJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164199620208.1247129.13021391608719523669.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 12 Jan 2022, Andrii Nakryiko wrote:
+On Wed, Jan 12, 2022 at 11:03:22PM +0900, Masami Hiramatsu wrote:
+> Add a return hook framework which hooks the function
+> return. Most of the idea came from the kretprobe, but
+> this is independent from kretprobe.
+> Note that this is expected to be used with other
+> function entry hooking feature, like ftrace, fprobe,
+> adn kprobes. Eventually this will replace the
+> kretprobe (e.g. kprobe + rethook = kretprobe), but
+> at this moment, this is just a additional hook.
 
-> On Wed, Jan 12, 2022 at 8:19 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> >
-> > This patch series is a rough attempt to support attach by name for
-> > uprobes and USDT (Userland Static Defined Tracing) probes.
-> > Currently attach for such probes is done by determining the offset
-> > manually, so the aim is to try and mimic the simplicity of kprobe
-> > attach, making use of uprobe opts.
-> >
-> > One restriction applies: uprobe attach supports system-wide probing
-> > by specifying "-1" for the pid.  That functionality is not supported,
-> > since we need a running process to determine the base address to
-> > subtract to get the uprobe-friendly offset.  There may be a way
-> > to do this without a running process, so any suggestions would
-> > be greatly appreciated.
-> >
-> > There are probably a bunch of subtleties missing here; the aim
-> > is to see if this is useful and if so hopefully we can refine
-> > it to deal with more complex cases.  I tried to handle one case
-> > that came to mind - weak library symbols - but there are probably
-> > other issues when determining which address to use I haven't
-> > thought of.
-> >
-> > Alan Maguire (4):
-> >   libbpf: support function name-based attach for uprobes
-> >   libbpf: support usdt provider/probe name-based attach for uprobes
-> >   selftests/bpf: add tests for u[ret]probe attach by name
-> >   selftests/bpf: add test for USDT uprobe attach by name
-> >
+this looks similar to the code kretprobe is using now
+
+would it make sense to incrementaly change current code to provide
+this rethook interface? instead of big switch of current kretprobe
+to kprobe + new rethook interface in future?
+
+thanks,
+jirka
+
+
 > 
-> Hey Alan,
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  include/linux/rethook.h |   74 +++++++++++++++
+>  include/linux/sched.h   |    3 +
+>  kernel/exit.c           |    2 
+>  kernel/fork.c           |    3 +
+>  kernel/trace/Kconfig    |   11 ++
+>  kernel/trace/Makefile   |    1 
+>  kernel/trace/rethook.c  |  226 +++++++++++++++++++++++++++++++++++++++++++++++
+>  7 files changed, 320 insertions(+)
+>  create mode 100644 include/linux/rethook.h
+>  create mode 100644 kernel/trace/rethook.c
 > 
-> I've been working on USDT support last year. It's considerably more
-> code than in this RFC, but it handles not just finding a location of
-> USDT probe(s), but also fetching its arguments based on argument
-> location specification and more usability focused BPF-side APIs to
-> work with USDTs.
+> diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+> new file mode 100644
+> index 000000000000..2622bcd5213a
+> --- /dev/null
+> +++ b/include/linux/rethook.h
+> @@ -0,0 +1,74 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Return hooking with list-based shadow stack.
+> + */
+> +#ifndef _LINUX_RETHOOK_H
+> +#define _LINUX_RETHOOK_H
+> +
+> +#include <linux/compiler.h>
+> +#include <linux/freelist.h>
+> +#include <linux/llist.h>
+> +#include <linux/rcupdate.h>
+> +#include <linux/refcount.h>
+> +
+> +struct rethook_node;
+> +
+> +typedef void (*rethook_handler_t) (struct rethook_node *, void *, struct pt_regs *);
+> +
+> +struct rethook {
+> +	void			*data;
+> +	rethook_handler_t	handler;
+> +	struct freelist_head	pool;
+> +	refcount_t		ref;
+> +	struct rcu_head		rcu;
+> +};
+> +
+> +struct rethook_node {
+> +	union {
+> +		struct freelist_node freelist;
+> +		struct rcu_head      rcu;
+> +	};
+> +	struct llist_node	llist;
+> +	struct rethook		*rethook;
+> +	unsigned long		ret_addr;
+> +	unsigned long		frame;
+> +};
+> +
+> +int rethook_node_init(struct rethook_node *node);
+> +
+> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
+> +void rethook_free(struct rethook *rh);
+> +void rethook_add_node(struct rethook *rh, struct rethook_node *node);
+> +
+> +struct rethook_node *rethook_try_get(struct rethook *rh);
+> +void rethook_node_recycle(struct rethook_node *node);
+> +void rethook_hook_current(struct rethook_node *node, struct pt_regs *regs);
+> +
+> +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
+> +				    struct llist_node **cur);
+> +
+> +/* Arch dependent code must implement this and trampoline code */
+> +void arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs);
+> +void arch_rethook_trampoline(void);
+> +
+> +static inline bool is_rethook_trampoline(unsigned long addr)
+> +{
+> +	return addr == (unsigned long)arch_rethook_trampoline;
+> +}
+> +
+> +/* If the architecture needs a fixup the return address, implement it. */
+> +void arch_rethook_fixup_return(struct pt_regs *regs,
+> +			       unsigned long correct_ret_addr);
+> +
+> +/* Generic trampoline handler, arch code must prepare asm stub */
+> +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+> +					 unsigned long frame);
+> +
+> +#ifdef CONFIG_RETHOOK
+> +void rethook_flush_task(struct task_struct *tk);
+> +#else
+> +#define rethook_flush_task(tsk)	do { } while (0)
+> +#endif
+> +
+> +#endif
+> +
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index 78c351e35fec..2bfabf5355b7 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -1473,6 +1473,9 @@ struct task_struct {
+>  #ifdef CONFIG_KRETPROBES
+>  	struct llist_head               kretprobe_instances;
+>  #endif
+> +#ifdef CONFIG_RETHOOK
+> +	struct llist_head               rethooks;
+> +#endif
+>  
+>  #ifdef CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH
+>  	/*
+> diff --git a/kernel/exit.c b/kernel/exit.c
+> index f702a6a63686..a39a321c1f37 100644
+> --- a/kernel/exit.c
+> +++ b/kernel/exit.c
+> @@ -64,6 +64,7 @@
+>  #include <linux/compat.h>
+>  #include <linux/io_uring.h>
+>  #include <linux/kprobes.h>
+> +#include <linux/rethook.h>
+>  
+>  #include <linux/uaccess.h>
+>  #include <asm/unistd.h>
+> @@ -169,6 +170,7 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
+>  	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
+>  
+>  	kprobe_flush_task(tsk);
+> +	rethook_flush_task(tsk);
+>  	perf_event_delayed_put(tsk);
+>  	trace_sched_process_free(tsk);
+>  	put_task_struct(tsk);
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 3244cc56b697..ffae38be64c4 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2282,6 +2282,9 @@ static __latent_entropy struct task_struct *copy_process(
+>  #ifdef CONFIG_KRETPROBES
+>  	p->kretprobe_instances.first = NULL;
+>  #endif
+> +#ifdef CONFIG_RETHOOK
+> +	p->rethooks.first = NULL;
+> +#endif
+>  
+>  	/*
+>  	 * Ensure that the cgroup subsystem policies allow the new process to be
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 6834b0272798..44c473ad9021 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -10,6 +10,17 @@ config USER_STACKTRACE_SUPPORT
+>  config NOP_TRACER
+>  	bool
+>  
+> +config HAVE_RETHOOK
+> +	bool
+> +
+> +config RETHOOK
+> +	bool
+> +	depends on HAVE_RETHOOK
+> +	help
+> +	  Enable generic return hooking feature. This is an internal
+> +	  API, which will be used by other function-entry hooking
+> +	  feature like fprobe and kprobes.
+> +
+>  config HAVE_FUNCTION_TRACER
+>  	bool
+>  	help
+> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> index 79255f9de9a4..c6f11a139eac 100644
+> --- a/kernel/trace/Makefile
+> +++ b/kernel/trace/Makefile
+> @@ -98,6 +98,7 @@ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
+>  obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
+>  obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+>  obj-$(CONFIG_FPROBE) += fprobe.o
+> +obj-$(CONFIG_RETHOOK) += rethook.o
+>  
+>  obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
+>  
+> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> new file mode 100644
+> index 000000000000..80c0584e8497
+> --- /dev/null
+> +++ b/kernel/trace/rethook.c
+> @@ -0,0 +1,226 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#define pr_fmt(fmt) "rethook: " fmt
+> +
+> +#include <linux/bug.h>
+> +#include <linux/kallsyms.h>
+> +#include <linux/kprobes.h>
+> +#include <linux/preempt.h>
+> +#include <linux/rethook.h>
+> +#include <linux/slab.h>
+> +#include <linux/sort.h>
+> +
+> +/* Return hook list (shadow stack by list) */
+> +
+> +void rethook_flush_task(struct task_struct *tk)
+> +{
+> +	struct rethook_node *rhn;
+> +	struct llist_node *node;
+> +
+> +	preempt_disable();
+> +
+> +	node = __llist_del_all(&tk->rethooks);
+> +	while (node) {
+> +		rhn = container_of(node, struct rethook_node, llist);
+> +		node = node->next;
+> +		rethook_node_recycle(rhn);
+> +	}
+> +
+> +	preempt_enable();
+> +}
+> +
+> +static void rethook_free_rcu(struct rcu_head *head)
+> +{
+> +	struct rethook *rh = container_of(head, struct rethook, rcu);
+> +	struct rethook_node *rhn;
+> +	struct freelist_node *node;
+> +	int count = 1;
+> +
+> +	node = rh->pool.head;
+> +	while (node) {
+> +		rhn = container_of(node, struct rethook_node, freelist);
+> +		node = node->next;
+> +		kfree(rhn);
+> +		count++;
+> +	}
+> +
+> +	/* The rh->ref is the number of pooled node + 1 */
+> +	if (refcount_sub_and_test(count, &rh->ref))
+> +		kfree(rh);
+> +}
+> +
+> +void rethook_free(struct rethook *rh)
+> +{
+> +	rh->handler = NULL;
+> +	rh->data = NULL;
+> +
+> +	call_rcu(&rh->rcu, rethook_free_rcu);
+> +}
+> +
+> +/*
+> + * @handler must not NULL. @handler == NULL means this rethook is
+> + * going to be freed.
+> + */
+> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler)
+> +{
+> +	struct rethook *rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
+> +
+> +	if (!rh || !handler)
+> +		return NULL;
+> +
+> +	rh->data = data;
+> +	rh->handler = handler;
+> +	rh->pool.head = NULL;
+> +	refcount_set(&rh->ref, 1);
+> +
+> +	return rh;
+> +}
+> +
+> +void rethook_add_node(struct rethook *rh, struct rethook_node *node)
+> +{
+> +	node->rethook = rh;
+> +	freelist_add(&node->freelist, &rh->pool);
+> +	refcount_inc(&rh->ref);
+> +}
+> +
+> +static void free_rethook_node_rcu(struct rcu_head *head)
+> +{
+> +	struct rethook_node *node = container_of(head, struct rethook_node, rcu);
+> +
+> +	if (refcount_dec_and_test(&node->rethook->ref))
+> +		kfree(node->rethook);
+> +	kfree(node);
+> +}
+> +
+> +void rethook_node_recycle(struct rethook_node *node)
+> +{
+> +	if (likely(READ_ONCE(node->rethook->handler)))
+> +		freelist_add(&node->freelist, &node->rethook->pool);
+> +	else
+> +		call_rcu(&node->rcu, free_rethook_node_rcu);
+> +}
+> +
+> +struct rethook_node *rethook_try_get(struct rethook *rh)
+> +{
+> +	struct freelist_node *fn;
+> +
+> +	/* Check whether @rh is going to be freed. */
+> +	if (unlikely(!READ_ONCE(rh->handler)))
+> +		return NULL;
+> +
+> +	fn = freelist_try_get(&rh->pool);
+> +	if (!fn)
+> +		return NULL;
+> +
+> +	return container_of(fn, struct rethook_node, freelist);
+> +}
+> +
+> +void rethook_hook_current(struct rethook_node *node, struct pt_regs *regs)
+> +{
+> +	arch_rethook_prepare(node, regs);
+> +	__llist_add(&node->llist, &current->rethooks);
+> +}
+> +
+> +/* This assumes the 'tsk' is the current task or the is not running. */
+> +static unsigned long __rethook_find_ret_addr(struct task_struct *tsk,
+> +					     struct llist_node **cur)
+> +{
+> +	struct rethook_node *rh = NULL;
+> +	struct llist_node *node = *cur;
+> +
+> +	if (!node)
+> +		node = tsk->rethooks.first;
+> +	else
+> +		node = node->next;
+> +
+> +	while (node) {
+> +		rh = container_of(node, struct rethook_node, llist);
+> +		if (rh->ret_addr != (unsigned long)arch_rethook_trampoline) {
+> +			*cur = node;
+> +			return rh->ret_addr;
+> +		}
+> +		node = node->next;
+> +	}
+> +	return 0;
+> +}
+> +NOKPROBE_SYMBOL(__rethook_find_ret_addr);
+> +
+> +/**
+> + * rethook_find_ret_addr -- Find correct return address modified by rethook
+> + * @tsk: Target task
+> + * @frame: A frame pointer
+> + * @cur: a storage of the loop cursor llist_node pointer for next call
+> + *
+> + * Find the correct return address modified by a rethook on @tsk in unsigned
+> + * long type. If it finds the return address, this returns that address value,
+> + * or this returns 0.
+> + * The @tsk must be 'current' or a task which is not running. @frame is a hint
+> + * to get the currect return address - which is compared with the
+> + * rethook::frame field. The @cur is a loop cursor for searching the
+> + * kretprobe return addresses on the @tsk. The '*@cur' should be NULL at the
+> + * first call, but '@cur' itself must NOT NULL.
+> + */
+> +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
+> +				    struct llist_node **cur)
+> +{
+> +	struct rethook_node *rhn = NULL;
+> +	unsigned long ret;
+> +
+> +	if (WARN_ON_ONCE(!cur))
+> +		return 0;
+> +
+> +	do {
+> +		ret = __rethook_find_ret_addr(tsk, cur);
+> +		if (!ret)
+> +			break;
+> +		rhn = container_of(*cur, struct rethook_node, llist);
+> +	} while (rhn->frame != frame);
+> +
+> +	return ret;
+> +}
+> +NOKPROBE_SYMBOL(rethook_find_ret_addr);
+> +
+> +void __weak arch_rethook_fixup_return(struct pt_regs *regs,
+> +				      unsigned long correct_ret_addr)
+> +{
+> +	/*
+> +	 * Do nothing by default. If the architecture which uses a
+> +	 * frame pointer to record real return address on the stack,
+> +	 * it should fill this function to fixup the return address
+> +	 * so that stacktrace works from the rethook handler.
+> +	 */
+> +}
+> +
+> +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+> +					 unsigned long frame)
+> +{
+> +	struct rethook_node *rhn;
+> +	struct llist_node *first, *node = NULL;
+> +	unsigned long correct_ret_addr = __rethook_find_ret_addr(current, &node);
+> +
+> +	if (!correct_ret_addr) {
+> +		pr_err("rethook: Return address not found! Maybe there is a bug in the kernel\n");
+> +		BUG_ON(1);
+> +	}
+> +
+> +	instruction_pointer_set(regs, correct_ret_addr);
+> +	arch_rethook_fixup_return(regs, correct_ret_addr);
+> +
+> +	first = current->rethooks.first;
+> +	current->rethooks.first = node->next;
+> +	node->next = NULL;
+> +
+> +	while (first) {
+> +		rhn = container_of(first, struct rethook_node, llist);
+> +		if (WARN_ON_ONCE(rhn->frame != frame))
+> +			break;
+> +		if (rhn->rethook->handler)
+> +			rhn->rethook->handler(rhn, rhn->rethook->data, regs);
+> +
+> +		first = first->next;
+> +		rethook_node_recycle(rhn);
+> +	}
+> +
+> +	return correct_ret_addr;
+> +}
+> +
 > 
-> I don't remember how up to date it is, but the last "open source"
-> version of it can be found at [0]. I currently have the latest
-> debugged and tested version internally in the process of being
-> integrated into our profiling solution here at Meta. So far it seems
-> to be working fine and covers our production use cases well.
-> 
 
-This looks great Andrii! I really like the argument access work, and the
-global tracing part is solved too by using the ELF segment info instead
-of the process maps to get the relative offset, with (I think?) use of
-BPF cookies to disambiguate between different user attachments.
-
-The one piece that seems to be missing from my perspective - and this may 
-be in more recent versions - is uprobe function attachment by name. Most of 
-the work is  already done in libusdt so it's reasonably doable I think - at a 
-minimum  it would require an equivalent to the find_elf_func_offset() 
-function in my  patch 1. Now the name of the library libusdt suggests its 
-focus is on USDT of course, but I think having userspace function attach 
-by name too would be great. Is that part of your plans for this work?
-
-Thanks!
-
-Alan
