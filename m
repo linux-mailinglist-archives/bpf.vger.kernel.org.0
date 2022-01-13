@@ -2,139 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C077F48D28E
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 08:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542F348D4A4
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 10:49:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbiAMHDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 02:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbiAMHDF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jan 2022 02:03:05 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2BFC06173F;
-        Wed, 12 Jan 2022 23:03:05 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id ie23-20020a17090b401700b001b38a5318easo9754587pjb.2;
-        Wed, 12 Jan 2022 23:03:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9YiylcqzBMt89XYpqqW+JVelsZs+NS+1Uj8U2luc+c=;
-        b=E4ZSdbA0INbaYUj/8z3UQdcHV3vS8hRH3govnpbUuRHsUsT0u/E06Dc9AIEYZE0G+Y
-         t5jea3HnE8grm26Poo7uXsc17jcu9g0BvjyBiF/ijpaR/DCzyA2dbVdKmOmaYkLjZ3Is
-         q89YPeKs2FB5u67VKVFet3YA9fF/lxKbxJ/IqV74CS3aXvRuk8OlrKR4x0EU46O+v6LK
-         4pSAEPaDRNcBLqPNRMABJnYAftYmlcO1d8Yf9rfJlZ7ul+YppebYkemcFsu8eQd2TtHr
-         +UkJYVO+aX2XLGwDwQEnbIw1qQh+vl+kWVY9LR2XSUUiLqA1ukMfwKRQqfF1kVpCKgDc
-         T5Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a9YiylcqzBMt89XYpqqW+JVelsZs+NS+1Uj8U2luc+c=;
-        b=M6mduMqnJARnlxhdNZIufdO7n0sKeM7e9xSGLnZtjC9BmgBAiYJrSY3jaBG6BfAO//
-         1kRuGbcwHEy/SBIA2yxiBRoIFklT0A5djpeL50z+NhPun1JJu6+5OcQsWnU/0NA4Z6rm
-         mz/Lw7ZxtAoClutcri1DBDdxLtzJufMQmrsgj6NCOb7KW6zvwihaAMftu8Ih3+NKUKRp
-         83pjMRE0rdTWHWlGDxceMgnafMVnuQcSKgrHRCLCID4/eDQnDnnbg6DBE3oe9nOfTNgf
-         HXk/+z+cT3xNaKVEyi66jqMG9HM5/dQQXXg2KDauQzL1KtRAm4rtsYhzWh9Ae68mwKFS
-         U/Uw==
-X-Gm-Message-State: AOAM531hdngwleHrYHwwYSFMgc1GrJCiCqwhx7iEONkeHNH14LZ6kQUl
-        Sbs5Zn/Kp2te1Rz+2ZQEs4o=
-X-Google-Smtp-Source: ABdhPJwgglElab1mEpYnI9eZBUfcHqlZTfeG/+5IhzX1cUsYiFujXx9qzDeo0Fr1BSve/UkRQi7cJw==
-X-Received: by 2002:a05:6a00:134e:b0:4bf:5086:2332 with SMTP id k14-20020a056a00134e00b004bf50862332mr3194025pfu.9.1642057384718;
-        Wed, 12 Jan 2022 23:03:04 -0800 (PST)
-Received: from localhost.localdomain ([43.132.141.4])
-        by smtp.gmail.com with ESMTPSA id z4sm1613097pfh.215.2022.01.12.23.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jan 2022 23:03:04 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: imagedong@tencent.com
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mengensun@tencent.com,
-        flyingpeng@tencent.com, mungerjiang@tencent.com,
-        Menglong Dong <imagedong@tencent.com>
-Subject: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct bpf_sock'
-Date:   Thu, 13 Jan 2022 15:02:45 +0800
-Message-Id: <20220113070245.791577-1-imagedong@tencent.com>
+        id S229935AbiAMJAy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 04:00:54 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:30274 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231376AbiAMJAx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 04:00:53 -0500
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JZJKl0vm6zbjtX;
+        Thu, 13 Jan 2022 17:00:11 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 13 Jan 2022 17:00:51 +0800
+Received: from DESKTOP-9883QJJ.china.huawei.com (10.136.114.155) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 13 Jan 2022 17:00:50 +0800
+From:   Di Zhu <zhudi2@huawei.com>
+To:     <ast@kernel.org>, <davem@davemloft.net>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhudi2@huawei.com>, <luzhihao@huawei.com>, <rose.chen@huawei.com>
+Subject: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+Date:   Thu, 13 Jan 2022 17:00:28 +0800
+Message-ID: <20220113090029.1055-1-zhudi2@huawei.com>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.136.114.155]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Menglong Dong <imagedong@tencent.com>
+Right now there is no way to query whether BPF programs are
+attached to a sockmap or not.
 
-The description of 'dst_port' in 'struct bpf_sock' is not accurated.
-In fact, 'dst_port' is not in network byte order, it is 'partly' in
-network byte order.
+we can use the standard interface in libbpf to query, such as:
+bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+the mapFd is the fd of sockmap.
 
-We can see it in bpf_sock_convert_ctx_access():
-
-> case offsetof(struct bpf_sock, dst_port):
-> 	*insn++ = BPF_LDX_MEM(
-> 		BPF_FIELD_SIZEOF(struct sock_common, skc_dport),
-> 		si->dst_reg, si->src_reg,
-> 		bpf_target_off(struct sock_common, skc_dport,
-> 			       sizeof_field(struct sock_common,
-> 					    skc_dport),
-> 			       target_size));
-
-It simply passes 'sock_common->skc_dport' to 'bpf_sock->dst_port',
-which makes that the low 16-bits of 'dst_port' is equal to 'skc_port'
-and is in network byte order, but the high 16-bites of 'dst_port' is
-0. And the actual port is 'bpf_ntohs((__u16)dst_port)', and
-'bpf_ntohl(dst_port)' is totally not the right port.
-
-This is different form 'remote_port' in 'struct bpf_sock_ops' or
-'struct __sk_buff':
-
-> case offsetof(struct __sk_buff, remote_port):
-> 	BUILD_BUG_ON(sizeof_field(struct sock_common, skc_dport) != 2);
->
-> 	*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
-> 			      si->dst_reg, si->src_reg,
-> 				      offsetof(struct sk_buff, sk));
-> 	*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->dst_reg,
-> 			      bpf_target_off(struct sock_common,
-> 					     skc_dport,
-> 					     2, target_size));
-> #ifndef __BIG_ENDIAN_BITFIELD
-> 	*insn++ = BPF_ALU32_IMM(BPF_LSH, si->dst_reg, 16);
-> #endif
-
-We can see that it will left move 16-bits in little endian, which makes
-the whole 'remote_port' is in network byte order, and the actual port
-is bpf_ntohl(remote_port).
-
-Note this in the document of 'dst_port'. ( Maybe this should be unified
-in the code? )
-
-Signed-off-by: Menglong Dong <imagedong@tencent.com>
+Signed-off-by: Di Zhu <zhudi2@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
 ---
- include/uapi/linux/bpf.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/bpf.h  |  9 +++++
+ kernel/bpf/syscall.c |  5 +++
+ net/core/sock_map.c  | 78 ++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 85 insertions(+), 7 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b0383d371b9a..891a182a749a 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5500,7 +5500,11 @@ struct bpf_sock {
- 	__u32 src_ip4;
- 	__u32 src_ip6[4];
- 	__u32 src_port;		/* host byte order */
--	__u32 dst_port;		/* network byte order */
-+	__u32 dst_port;		/* low 16-bits are in network byte order,
-+				 * and high 16-bits are filled by 0.
-+				 * So the real port in host byte order is
-+				 * bpf_ntohs((__u16)dst_port).
-+				 */
- 	__u32 dst_ip4;
- 	__u32 dst_ip6[4];
- 	__u32 state;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6e947cd91152..c4ca14c9f838 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2071,6 +2071,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr);
++
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+@@ -2124,6 +2127,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++static inline int sock_map_bpf_prog_query(const union bpf_attr *attr,
++					  union bpf_attr __user *uattr)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fa4505f9b611..9e0631f091a6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3318,6 +3318,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_FLOW_DISSECTOR:
+ 	case BPF_SK_LOOKUP:
+ 		return netns_bpf_prog_query(attr, uattr);
++	case BPF_SK_SKB_STREAM_PARSER:
++	case BPF_SK_SKB_STREAM_VERDICT:
++	case BPF_SK_MSG_VERDICT:
++	case BPF_SK_SKB_VERDICT:
++		return sock_map_bpf_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 1827669eedd6..a424f51041ca 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1416,38 +1416,50 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
+ 	return NULL;
+ }
+ 
+-static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+-				struct bpf_prog *old, u32 which)
++static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog ***pprog,
++				u32 which)
+ {
+ 	struct sk_psock_progs *progs = sock_map_progs(map);
+-	struct bpf_prog **pprog;
+ 
+ 	if (!progs)
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (which) {
+ 	case BPF_SK_MSG_VERDICT:
+-		pprog = &progs->msg_parser;
++		*pprog = &progs->msg_parser;
+ 		break;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+ 	case BPF_SK_SKB_STREAM_PARSER:
+-		pprog = &progs->stream_parser;
++		*pprog = &progs->stream_parser;
+ 		break;
+ #endif
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+ 		if (progs->skb_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->stream_verdict;
++		*pprog = &progs->stream_verdict;
+ 		break;
+ 	case BPF_SK_SKB_VERDICT:
+ 		if (progs->stream_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->skb_verdict;
++		*pprog = &progs->skb_verdict;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	return 0;
++}
++
++static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
++				struct bpf_prog *old, u32 which)
++{
++	struct bpf_prog **pprog;
++	int ret;
++
++	ret = sock_map_prog_lookup(map, &pprog, which);
++	if (ret)
++		return ret;
++
+ 	if (old)
+ 		return psock_replace_prog(pprog, prog, old);
+ 
+@@ -1455,6 +1467,58 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+ 	return 0;
+ }
+ 
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr)
++{
++	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
++	struct bpf_prog **pprog;
++	struct bpf_prog *prog;
++	struct bpf_map *map;
++	struct fd f;
++	u32 id = 0;
++	int ret;
++
++	if (attr->query.query_flags)
++		return -EINVAL;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	rcu_read_lock();
++
++	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
++	if (ret)
++		goto end;
++
++	prog = *pprog;
++	prog_cnt = !prog ? 0 : 1;
++
++	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
++		goto end;
++
++	id = prog->aux->id;
++
++	/* we do not hold the refcnt, the bpf prog may be released
++	 * asynchronously and the id would be set to 0.
++	 */
++	if (id == 0)
++		prog_cnt = 0;
++
++end:
++	rcu_read_unlock();
++
++	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
++	    (id != 0 && copy_to_user(prog_ids, &id, sizeof(u32))) ||
++	    copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
++		ret = -EFAULT;
++
++	fdput(f);
++	return ret;
++}
++
+ static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+ {
+ 	switch (link->map->map_type) {
 -- 
-2.34.1
+2.27.0
 
