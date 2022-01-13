@@ -2,57 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A6948D7E6
-	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 13:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE5448D896
+	for <lists+bpf@lfdr.de>; Thu, 13 Jan 2022 14:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbiAMM1l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 07:27:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230253AbiAMM1j (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jan 2022 07:27:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642076859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ViQVHhS9TeU1GADrKolwOU4MxQRPJUjTMiV4znToNZg=;
-        b=S61E3PMcSiNkDJkvPVCzceJ9qfyhEJ3C2wN/Xz/GedDMNaGaHDfquIyBgQXMkdL0rs8cFq
-        2qb53tWtXcxZuBkuXe5+9VTWyycoRiAvJ6p07PdHpIXvFjLyr4iGGfbMkAMet3UBZCnVXl
-        a2gOjpm0nItJ+3FeJZ19ngUvXNuCu+A=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-572-WPArihFvO2eCGibPN-helQ-1; Thu, 13 Jan 2022 07:27:37 -0500
-X-MC-Unique: WPArihFvO2eCGibPN-helQ-1
-Received: by mail-ed1-f71.google.com with SMTP id q15-20020a056402518f00b003f87abf9c37so5178433edd.15
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 04:27:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ViQVHhS9TeU1GADrKolwOU4MxQRPJUjTMiV4znToNZg=;
-        b=JwIiMmleTb0/3KAcsJ4VMzl164dQwbekVxBGjMiSISa7FT4vs1pM7UT0dDkY9ewgYh
-         CGsknG3Euw3BgowQzRlpoUiosrBMN9UYnqnOi9+Z2Qd2lqRp3V/p7t68VcnFWM4ybhTK
-         i/9Ep4yMli9we6aU7LkbUw7ylyz4IqsQK3ww/bumyBXdFgAz3fefCu123VZmIjYdr68R
-         xvDHYyntDL4l8XL1SjhGRtSjuK6ujYuh6roYz06wg73Gz4yoClDniy3+9Zl3ynHLim4D
-         uw/vFclnSJRRo8tgQ6oFfzNEh3yCtMS0X3EqUhwvoyeYnADTDwWZqJUgO3b48qm/dnbw
-         WcTw==
-X-Gm-Message-State: AOAM530zXprP/hsuk7UZIcDcOQJ6B8ymu4JINCJR8SrmlFQ3KXlLLWoK
-        u6uY6jvswE3x9+FJw/UWvbsfjgucIY6fdFt6KOODEvlf+gIk3B2sb28ax/Gx9cCRE4iL9bfHmkg
-        LyEWCmb8wMtJq
-X-Received: by 2002:a17:906:da1b:: with SMTP id fi27mr3480781ejb.68.1642076856776;
-        Thu, 13 Jan 2022 04:27:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzzq8hitOmNz+ym3vvwJSFT3GdzZkSBYpwA288q5gf8tRuG+8tKBO7yzTkkVxcdxI0Vag+s+w==
-X-Received: by 2002:a17:906:da1b:: with SMTP id fi27mr3480767ejb.68.1642076856599;
-        Thu, 13 Jan 2022 04:27:36 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id qa35sm836380ejc.67.2022.01.13.04.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jan 2022 04:27:36 -0800 (PST)
-Date:   Thu, 13 Jan 2022 13:27:34 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
+        id S231450AbiAMNPj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 08:15:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229464AbiAMNPj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 08:15:39 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1D9C06173F;
+        Thu, 13 Jan 2022 05:15:39 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D17AE616C9;
+        Thu, 13 Jan 2022 13:15:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E14CEC36AE3;
+        Thu, 13 Jan 2022 13:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642079738;
+        bh=xQVTKDZzsFtlhCL8BzwYKaH2UmaQPcZ7CBG/VUdwYIk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=b2gQ9meTpLGrX0Ciip0/ORIKxjmNs3QOgS38E4v6w/yxxEM9WXNY39gU6TQEAXfc6
+         bQoCz3wOuGK88hxIpumnx6F+8/+1uD2N8mpvqKgyhibLwjuq1ShXG3v1getRHfd++b
+         zxSoxdlf2IA07lxAHlNQ2pneVvJU3XpheL5GAssD3EJbxQ1oPaxHYMCF2Eddbn6u34
+         PgDVORFkcAJQKcLwgFJrknnKNKLyikJtzICJKH9nDYx66DWYOwa/9x9sa5ZOX3wQAE
+         pnGk/VPsSBdNpVIffCZIELB0EqrlPFni7FEIp8v6xOdzf4iMB6vP5lmg0oeRx5kKkd
+         vPGKZiPwUuTOQ==
+Date:   Thu, 13 Jan 2022 22:15:32 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
@@ -65,46 +46,85 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S . Miller" <davem@davemloft.net>
-Subject: Re: [RFC PATCH v2 0/8] fprobe: Introduce fprobe function entry/exit
- probe
-Message-ID: <YeAatqQTKsrxmUkS@krava>
+Subject: Re: [RFC PATCH v2 3/8] rethook: Add a generic return hook
+Message-Id: <20220113221532.c48abf7f56d29ba95dcb0dc6@kernel.org>
+In-Reply-To: <YeAaUN8aUip3MUn8@krava>
 References: <164199616622.1247129.783024987490980883.stgit@devnote2>
- <Yd77SYWgtrkhFIYz@krava>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yd77SYWgtrkhFIYz@krava>
+        <164199620208.1247129.13021391608719523669.stgit@devnote2>
+        <YeAaUN8aUip3MUn8@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 05:01:15PM +0100, Jiri Olsa wrote:
-> On Wed, Jan 12, 2022 at 11:02:46PM +0900, Masami Hiramatsu wrote:
-> > Hi Jiri and Alexei,
-> > 
-> > Here is the 2nd version of fprobe. This version uses the
-> > ftrace_set_filter_ips() for reducing the registering overhead.
-> > Note that this also drops per-probe point private data, which
-> > is not used anyway.
-> > 
-> > This introduces the fprobe, the function entry/exit probe with
-> > multiple probe point support. This also introduces the rethook
-> > for hooking function return as same as kretprobe does. This
-> 
-> nice, I was going through the multi-user-graph support 
-> and was wondering that this might be a better way
-> 
-> > abstraction will help us to generalize the fgraph tracer,
-> > because we can just switch it from rethook in fprobe, depending
-> > on the kernel configuration.
-> > 
-> > The patch [1/8] and [7/8] are from your series[1]. Other libbpf
-> > patches will not be affected by this change.
-> 
-> I'll try the bpf selftests on top of this
+On Thu, 13 Jan 2022 13:25:52 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-I'm getting crash and stall when running bpf selftests,
-the fprobe sample module works fine, I'll check on that
+> On Wed, Jan 12, 2022 at 11:03:22PM +0900, Masami Hiramatsu wrote:
+> > Add a return hook framework which hooks the function
+> > return. Most of the idea came from the kretprobe, but
+> > this is independent from kretprobe.
+> > Note that this is expected to be used with other
+> > function entry hooking feature, like ftrace, fprobe,
+> > adn kprobes. Eventually this will replace the
+> > kretprobe (e.g. kprobe + rethook = kretprobe), but
+> > at this moment, this is just a additional hook.
+> 
+> this looks similar to the code kretprobe is using now
 
-jirka
+Yes, I've mostly re-typed the code :)
 
+> would it make sense to incrementaly change current code to provide
+> this rethook interface? instead of big switch of current kretprobe
+> to kprobe + new rethook interface in future?
+
+Would you mean modifying the kretprobe instance code to provide
+similar one, and rename it at some point?
+My original idea is to keep the current kretprobe code and build
+up the similar one, and switch to it at some point. Actually,
+I don't want to change the current kretprobe interface itself,
+but the backend will be changed. For example, current kretprobe
+has below interface.
+
+struct kretprobe {
+        struct kprobe kp;
+        kretprobe_handler_t handler;
+        kretprobe_handler_t entry_handler;
+        int maxactive;
+        int nmissed;
+        size_t data_size;
+        struct freelist_head freelist;
+        struct kretprobe_holder *rph;
+};
+
+My idea is switching it to below.
+
+struct kretprobe {
+        struct kprobe kp;
+        kretprobe_handler_t handler;
+        kretprobe_handler_t entry_handler;
+        int maxactive;
+        int nmissed;
+        size_t data_size;
+        struct rethook *rethook;
+};
+
+Of course 'kretprobe_instance' may need to be changed...
+
+struct kretprobe_instance {
+	struct rethook_node;
+	char data[];
+};
+
+But even though, since there is 'get_kretprobe(ri)' wrapper, user
+will be able to access the 'struct kretprobe' from kretprobe_instance
+transparently.
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
