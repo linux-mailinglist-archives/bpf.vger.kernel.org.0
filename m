@@ -2,91 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38CC48E104
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 00:37:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2E148E152
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 00:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbiAMXhR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 18:37:17 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40914 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232009AbiAMXhR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jan 2022 18:37:17 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20DN7A4w026071
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 15:37:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=qM3W7m1sG4QADw1qKcJ1ZsA48Yyz+W1BxIIMuja8xd8=;
- b=kHgQHiWviCKK+KuN3wVzxNdO9e3viJPvYpV6r/yXMDQFOTJhvsfdXwnmJsPHyxaFiPmH
- PWCTHMKF+j1xZ5beWtmzccKbFtFzR9Uc5qJ2OWDFIzp/Vprk9Y5Le0zuePAIdsjVLXqD
- 7fD04KRrpQ1M5X5X6dtLwpCo74pW/eFNNh8= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3djh92vnxx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 15:37:16 -0800
-Received: from twshared22811.39.frc1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 13 Jan 2022 15:37:15 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id CE6F98F9838B; Thu, 13 Jan 2022 15:37:10 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <phoenix1987@gmail.com>
-CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <yhs@fb.com>, Kenny Yu <kennyyu@fb.com>
-Subject: Re: Proposal: bpf_copy_from_user_remote
-Date:   Thu, 13 Jan 2022 15:37:08 -0800
-Message-ID: <20220113233708.1682225-1-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAGnuNNtdvbk+wp8uYDPK3weGm5PVmM7hqEaD=Mg2nBT-dKtNHw@mail.gmail.com>
-References: <CAGnuNNtdvbk+wp8uYDPK3weGm5PVmM7hqEaD=Mg2nBT-dKtNHw@mail.gmail.com>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: MvCH3AGIdG5GuE3Kjn60Bi5hzjs0Maz2
-X-Proofpoint-GUID: MvCH3AGIdG5GuE3Kjn60Bi5hzjs0Maz2
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S238317AbiAMX6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 18:58:48 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:54946 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235897AbiAMX6s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 18:58:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id C18F7CE216E;
+        Thu, 13 Jan 2022 23:58:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 819F8C36AEA;
+        Thu, 13 Jan 2022 23:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642118325;
+        bh=EVg3Hrvzx6GYLATr0TyYWQDZofLGcg+Ix9ZtVWkVQAM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gTKsiYTFhJgSt+ecVm+dxiGao711y7GTcNfO5DC7CtR+Le0PvkZZFzPdnrR9KdHHp
+         8IdQu3s7P0IzIghAupvbajuvhmMJBHT/8hCw0KnXkI1/lLFdV0VRAQcx9T4bXcPMYq
+         DV0QOlTDBtotFwvOYKUHGgqK9joMOL21TYXbVcG1ZkKN7kekx+0Xky5yLjBo0BnDM0
+         ClVN72cRqp16NQ4Nr3AZMKO89eKvNqffMq1eDReB3m4LWN9w0UgTJiY/0PE4Ck519C
+         wn2wYhmBtErWyVnW/W2IbFeD+YtdQ0rgs/zbWFXYr3hyKVy+bHKGzqciKTWUuBIUsK
+         1dsXEWvOT3urQ==
+Date:   Fri, 14 Jan 2022 00:58:40 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Zvi Effron <zeffron@riotgames.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com
+Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb
+ programs
+Message-ID: <YeC8sOAeZjpc4j8+@lore-desk>
+References: <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
+ <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
+ <CAEf4BzZ4c1VwPf9oBRRdN7jdBWrk4pg=mw_50LMjLr99Mb0yfw@mail.gmail.com>
+ <CAADnVQ+BiMy4TZNocfFSvazh-QTFwMD-3uQ9LLiku7ePLDn=MQ@mail.gmail.com>
+ <CAC1LvL0CeTw+YKjO6r0f68Ly3tK4qhDyjV0ak82e0PpHURVQOw@mail.gmail.com>
+ <Yd82J8vxSAR9tvQt@lore-desk>
+ <8735lshapk.fsf@toke.dk>
+ <47a3863b-080c-3ac2-ff2d-466b74d82c1c@redhat.com>
+ <Yd/9SPHAPH3CpSnN@lore-desk>
+ <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-13_10,2022-01-13_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
- malwarescore=0 clxscore=1015 phishscore=0 priorityscore=1501 adultscore=0
- mlxlogscore=514 spamscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201130140
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nZm/TQme1PjwK7dz"
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Gabriele,
 
-I just submitted a patch series that adds a similar helper to read
-userspace memory from a remote process, please see: https://lore.kernel.org=
-/bpf/20220113233158.1582743-1-kennyyu@fb.com/T/#ma0646f96bccf0b957793054de7=
-404115d321079d
+--nZm/TQme1PjwK7dz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In my patch series, I added a bpf helper to wrap `access_process_vm`
-which takes a `struct task_struct` argument instead of a pid.
+> On Thu, Jan 13, 2022 at 2:22 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
+te:
+> > > > >
+> > > > > I would prefer to keep the "_mb" postfix, but naming is hard and =
+I am
+> > > > > polarized :)
+> > > >
+> > > > I would lean towards keeping _mb as well, but if it does have to be
+> > > > changed why not _mbuf? At least that's not quite as verbose :)
+> > >
+> > > I dislike the "mb" abbreviation as I forget it stands for multi-buffe=
+r.
+> > > I like the "mbuf" suggestion, even-though it conflicts with (Free)BSD=
+ mbufs
+> > > (which is their SKB).
+> >
+> > If we all agree, I can go over the series and substitute mb postfix wit=
+h mbuf.
+> > Any objections?
+>=20
+> mbuf has too much bsd taste.
+>=20
+> How about ".frags" instead?
 
-In your patch series, one issue would be it is not clear which pid namespace
-the pid belongs to, whereas passing a `struct task_struct` is unambiguous.
-I think the helper signature in my patch series also provides more flexibil=
-ity,
-as the bpf program can also provide different flags on how to read
-userspace memory.
+I am fine with this (for me it is better than mb or mbuf).
+Do we all agree or do we prefer the "mb" suffix?
 
-Our use case at Meta for this change is to use a bpf task iterator program
-to read debug information from a running process in production, e.g.,
-extract C++ async stack traces from a running program.
+> Then xdp_buff_is_mb() will be xdp_buff_has_frags().
+>=20
+> I agree that it's not obvious what "mb" suffix stands for,
+> but I don't buy at all that it can be confused with "megabyte".
+> It's the context that matters.
+> In "100mb" it's obvious that "mb" is likely "megabyte",
+> but in "xdp.mb" it's certainly not "xdp megabyte".
+> Such a sentence has no meaning.
+> Imagine we used that suffix for "tc"...
+> it would be "tc.mb"... "Traffic Control Megabyte" ??
+>=20
+> Anyway "xdp.frags" ?
 
-A few questions:
-* What is your use case for adding this helper?
-* Do you have a specific requirement that requires using a pid, or would a
-  helper using `struct task_struct` be sufficient?
-* Are you ok with these changes? If so, I will proceed with my patch series.
+agree
 
-Thanks,
-Kenny Yu
+>=20
+> Btw "xdp_cpumap" should be cleaned up.
+> xdp_cpumap is an attach type. It's not prog type.
+> Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]" ?
+
+so for xdp "mb" or xdp "frags" it will be xdp/cpumap.mb (xdp/devmap.mb) or
+xdp/cpumap.frags (xdp/devmap.frags), right?
+
+>=20
+> In patch 22 there is a comment:
+> /* try to attach BPF_XDP_DEVMAP multi-buff program"
+>=20
+> It creates further confusion. There is no XDP_DEVMAP program type.
+> It should probably read
+> "Attach BPF_XDP program with frags to devmap"
+
+ack, I will fix it.
+
+>=20
+> Patch 21 still has "CHECK". Pls replace it with ASSERT.
+
+ack, I will fix it.
+
+Regards,
+Lorenzo
+
+--nZm/TQme1PjwK7dz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYeC8sAAKCRA6cBh0uS2t
+rOf4AQCaGzSEnw1hXKEWatDwR6JQ1FvtR+J0EzPZ+3qZ6vVIdgEA6pCHTZoY9aPr
+mSjJ5Pms7CXEJt7PVDR2CJujxM5XfQ8=
+=UXis
+-----END PGP SIGNATURE-----
+
+--nZm/TQme1PjwK7dz--
