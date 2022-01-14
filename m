@@ -2,134 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7370B48E3D8
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 06:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E91C48E3DB
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 06:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235548AbiANFoN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 00:44:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbiANFoM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 00:44:12 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F23C061574;
-        Thu, 13 Jan 2022 21:44:12 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id b13so31308796edn.0;
-        Thu, 13 Jan 2022 21:44:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2WU/q1u+ncowVTyrtjZBvLYZsp0cbhNEqqLrYsYSJiE=;
-        b=nTphanuLAjh3f+296Ts/L2/sCo6omPbhvjF6h3Ynd685DkQvLCxpGrfV+IIwybDo2X
-         lyDcj3FumLSC4J7z5dL0OjHq5R8Dj/+nShMtt3631naRgQn/CFxVeuE2Z1FRrMfp2iLY
-         xVX06Aa2YXAbXnARRl8nSHGOyK/CBhdLlM6qyz1tiHiaWcr61G/uCtO/Rx3UAaWsSmv+
-         GEcjf1u2FA7831B3gGWe3kmiJKGS6K1E5SMrENYkJL6Hzxo58IRZHjhYkie9Zkte1fd0
-         mOyNKaR+Yk6WxBlERZAxZbHdH9uais/3+Gb8cYps/JT2nKNqh/8oD83ODUeIo5yvZZ8j
-         d0nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2WU/q1u+ncowVTyrtjZBvLYZsp0cbhNEqqLrYsYSJiE=;
-        b=rsvgezVf+fuwpYu5Q3M9I+5m66RSt+knfTKqdNXiJXWPuaVdBn9ma7kDfE1IJEQyxZ
-         uB/hIA1GFJBDjAMK6C237noOForhqG7vMMeLqI/VjBse84Cq+PFP+4NI8Qfdn9JMTazT
-         yFGbWWWGoiDhlTfd9liZiZFBmD2YOMLlnOV95U549JLV1bdf7wUgffS+SZz/ScxvmmDx
-         4294lCGjF/0Do0ulx7LsbUM5wGS8J3A+et1b9DGYmcmYSqQMItcgZcjigdzwGzuUWDWo
-         M0F6w6ZAmCJ/Ko2XrZeZUdtl/gxnejfF1XrDMmAqg7gjZdgOB90xg5CW1y6BsPykpJxm
-         sAdg==
-X-Gm-Message-State: AOAM530bUn3RS3VQogSeugA2XSelBXpt8P9F2ibxPQLBvvxbjrW0gFjT
-        kACkPN+nCPHJ+qw2kIoG6/PYmrT8Mw/M7A8Kqk4MqiGRc6I=
-X-Google-Smtp-Source: ABdhPJybJuvKa9LHYBmZuH0qGjLOBlYmhITGXhItw5r4EFL6cdU0GVqd0D4LnpvEqiHg/WVvtBXHH/s2bR5Gj5kINqM=
-X-Received: by 2002:a17:906:4781:: with SMTP id cw1mr6550136ejc.116.1642139050856;
- Thu, 13 Jan 2022 21:44:10 -0800 (PST)
+        id S236351AbiANFpB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 14 Jan 2022 00:45:01 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:35838 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234904AbiANFpB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 00:45:01 -0500
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JZqxG1QK2zccWc;
+        Fri, 14 Jan 2022 13:44:18 +0800 (CST)
+Received: from kwepeml500003.china.huawei.com (7.221.188.182) by
+ kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 14 Jan 2022 13:44:58 +0800
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ kwepeml500003.china.huawei.com (7.221.188.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 14 Jan 2022 13:44:58 +0800
+Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
+ dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.020;
+ Fri, 14 Jan 2022 13:44:58 +0800
+From:   "zhudi (E)" <zhudi2@huawei.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+CC:     "ast@kernel.org" <ast@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Luzhihao (luzhihao, Euler)" <luzhihao@huawei.com>,
+        "Chenxiang (EulerOS)" <rose.chen@huawei.com>
+Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Thread-Topic: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
+ attached to sockmap
+Thread-Index: AdgJAVS91cwWMrx3QDm+6rM/XIXS/w==
+Date:   Fri, 14 Jan 2022 05:44:57 +0000
+Message-ID: <3abe6e9f2e1a408f887b1dd31862f7b1@huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.136.114.155]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20220111192952.49040-1-ivan@cloudflare.com> <CAA93jw6HKLh857nuh2eX2N=siYz5wwQknMaOtpkqLzpfWTGhuA@mail.gmail.com>
- <CABWYdi0ZHYvzzP9SFOCJhnfyMP12Ot9ALEmXg75oeXBWRAD8KQ@mail.gmail.com>
-In-Reply-To: <CABWYdi0ZHYvzzP9SFOCJhnfyMP12Ot9ALEmXg75oeXBWRAD8KQ@mail.gmail.com>
-From:   Dave Taht <dave.taht@gmail.com>
-Date:   Thu, 13 Jan 2022 21:43:57 -0800
-Message-ID: <CAA93jw5+LjKLcCaNr5wJGPrXhbjvLhts8hqpKPFx7JeWG4g0AA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] tcp: bpf: Add TCP_BPF_RCV_SSTHRESH for bpf_setsockopt
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 2:56 PM Ivan Babrou <ivan@cloudflare.com> wrote:
->
-> On Wed, Jan 12, 2022 at 1:02 PM Dave Taht <dave.taht@gmail.com> wrote:
-> > I would not use the word "latency" in this way, I would just say
-> > potentially reducing
-> > roundtrips...
->
-> Roundtrips translate directly into latency on high latency links.
+> On Thu, Jan 13, 2022 at 10:00 AM CET, Di Zhu wrote:
+> > Right now there is no way to query whether BPF programs are
+> > attached to a sockmap or not.
+> >
+> > we can use the standard interface in libbpf to query, such as:
+> > bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+> > the mapFd is the fd of sockmap.
+> >
+> > Signed-off-by: Di Zhu <zhudi2@huawei.com>
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> > ---
+> >  include/linux/bpf.h  |  9 +++++
+> >  kernel/bpf/syscall.c |  5 +++
+> >  net/core/sock_map.c  | 78
+> ++++++++++++++++++++++++++++++++++++++++----
+> >  3 files changed, 85 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 6e947cd91152..c4ca14c9f838 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -2071,6 +2071,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog
+> *prog,
+> >  int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog
+> *prog);
+> >  int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type
+> ptype);
+> >  int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value,
+> u64 flags);
 
-Yes, but with the caveats below. I'm fine with you just saying round trips,
-and making this api possible.
 
-It would comfort me further if you could provide an actual scenario.
+	.......
 
-See also:
 
-https://datatracker.ietf.org/doc/html/rfc6928
+> > +int sock_map_bpf_prog_query(const union bpf_attr *attr,
+> > +			    union bpf_attr __user *uattr)
+> > +{
+> > +	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
+> > +	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
+> > +	struct bpf_prog **pprog;
+> > +	struct bpf_prog *prog;
+> > +	struct bpf_map *map;
+> > +	struct fd f;
+> > +	u32 id = 0;
+> > +	int ret;
+> > +
+> > +	if (attr->query.query_flags)
+> > +		return -EINVAL;
+> > +
+> > +	f = fdget(ufd);
+> > +	map = __bpf_map_get(f);
+> > +	if (IS_ERR(map))
+> > +		return PTR_ERR(map);
+> > +
+> > +	rcu_read_lock();
+> > +
+> > +	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
+> > +	if (ret)
+> > +		goto end;
+> > +
+> > +	prog = *pprog;
+> > +	prog_cnt = !prog ? 0 : 1;
+> > +
+> > +	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
+> > +		goto end;
+> > +
+> > +	id = prog->aux->id;
+> 
+> ^ This looks like a concurrent read/write.
+> 
+> Would wrap with READ_ONCE() and corresponding WRITE_ONCE() in
+> bpf_prog_free_id(). See [1] for rationale.
+> 
+> [1]
+> https://github.com/google/kernel-sanitizers/blob/master/other/READ_WRITE_O
+> NCE.md
 
-which predates packet pacing (are you using sch_fq?)
 
->
-> > and potentially massively increasing packet loss, oversaturating
-> > links, and otherwise
-> > hurting latency for other applications sharing the link, including the
-> > application
-> > that advertised an extreme window like this.
->
-> The receive window is going to scale up to tcp_rmem[2] with traffic,
-> and packet loss won't stop it. That's around 3MiB on anything that's
-> not embedded these days.
->
-> My understanding is that congestion control on the sender side deals
-> with packet loss, bottleneck saturation, and packet pacing. This patch
-> only touches the receiving side, letting the client scale up faster if
-> they choose to do so. I don't think any out of the box sender will
-> make use of this, even if we enable it on the receiver, just because
-> the sender's congestion control constraints are lower (like
-> initcwnd=3D10).
+Thanks for your advice, I will modify this code.
 
-I've always kind of not liked the sender/reciever "language" in tcp.
-
-they are peers.
-
-> Let me know if any of this doesn't look right to you.
->
-> > This overall focus tends to freak me out somewhat, especially when
-> > faced with further statements that cloudflare is using an initcwnd of 2=
-50!???
->
-> Congestion window is a learned property, not a static number. You
-> won't get a large initcwnd towards a poor connection.
-
-initcwnd is set globally or on a per route basis.
-
-> We have a dedicated backbone with different properties.
-
-It's not so much that I don't think your backbone can handle this...
-
-... it's the prospect of handing whiskey, car keys and excessive
-initcwnd to teenage boys on a saturday night.
-
---=20
-I tried to build a better future, a few times:
-https://wayforward.archive.org/?site=3Dhttps%3A%2F%2Fwww.icei.org
-
-Dave T=C3=A4ht CEO, TekLibre, LLC
+ 
+> > +
+> > +	/* we do not hold the refcnt, the bpf prog may be released
+> > +	 * asynchronously and the id would be set to 0.
+> > +	 */
+> > +	if (id == 0)
+> > +		prog_cnt = 0;
+> > +
+> > +end:
+> > +	rcu_read_unlock();
+> > +
+> > +	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
+> > +	    (id != 0 && copy_to_user(prog_ids, &id, sizeof(u32))) ||
+> > +	    copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
+> > +		ret = -EFAULT;
+> > +
+> > +	fdput(f);
+> > +	return ret;
+> > +}
+> > +
+> >  static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+> >  {
+> >  	switch (link->map->map_type) {
