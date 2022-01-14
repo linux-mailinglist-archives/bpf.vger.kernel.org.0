@@ -2,57 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B773148F032
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 19:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F282F48F07D
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 20:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243551AbiANSzi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 13:55:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55818 "EHLO
+        id S244116AbiANTfS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 14:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236181AbiANSzi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 13:55:38 -0500
-Received: from mail-pf1-x463.google.com (mail-pf1-x463.google.com [IPv6:2607:f8b0:4864:20::463])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A2DC061574
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 10:55:38 -0800 (PST)
-Received: by mail-pf1-x463.google.com with SMTP id f144so2775567pfa.6
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 10:55:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:dkim-signature:mime-version:references
-         :in-reply-to:from:date:message-id:subject:to:cc;
-        bh=Hy5aZ4Roey3EFS/MVuvVyRUa8ToAzix3WO2/RHWO60I=;
-        b=JomTLyLauO5E7uPwXAHC1AnsyeUdcSG3jt6DRgdh19mhRNH/Vosst72PUmj9THNYSb
-         Y+WlhVKiV7zg5kDAtGOXbPIvcm0ys3PPFBgdnZ14N6bXDwxG6Rvz69QjmETUWCP5kUaB
-         NrUCZXeQTYH2m7l7wKoTEMHX358Ae/R8fenJ6i28BcD1FDaWhbniKgrlV8djVyF5kMvs
-         eUAoZQDkLgCjSX7rn6GUbS/fVELwRYqS9ya+8Pk3M2pTJZZy8y1Vrfb2KEnpn2/B3Qgf
-         BPTXKICXwecMufGaq98QBxQvzfyHY7JCeCxbg0q0FjJg18UUiAS4GYrIqwZfWznapDQ0
-         CoZA==
-X-Gm-Message-State: AOAM533avqlHszQlXPXmiX8UTGe3zxvGPqhZfQkzfpuYh48SXVoC6wmN
-        J43gyfdMn1l8UesSi8cwpzjou46bIjbQYXO5Dn2XvlQ7s/5yEw==
-X-Google-Smtp-Source: ABdhPJyC+bEa+ewvUhtkCtD8WOf8JUXnLjtBQB1HllccGpK78uWj3JF+afj1qHa6TTSpWWtV1AJWMfYb+aVT
-X-Received: by 2002:a63:be49:: with SMTP id g9mr8989700pgo.375.1642186537643;
-        Fri, 14 Jan 2022 10:55:37 -0800 (PST)
-Received: from netskope.com ([163.116.131.7])
-        by smtp-relay.gmail.com with ESMTPS id lx2sm2372107pjb.13.2022.01.14.10.55.37
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jan 2022 10:55:37 -0800 (PST)
-X-Relaying-Domain: riotgames.com
-Received: by mail-pg1-f198.google.com with SMTP id j37-20020a634a65000000b00349a11dc809so2361025pgl.3
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 10:55:36 -0800 (PST)
+        with ESMTP id S244115AbiANTfR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 14:35:17 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB23C061574;
+        Fri, 14 Jan 2022 11:35:17 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id b1so9225887ilj.2;
+        Fri, 14 Jan 2022 11:35:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=riotgames.com; s=riotgames;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Hy5aZ4Roey3EFS/MVuvVyRUa8ToAzix3WO2/RHWO60I=;
-        b=YwWkfmnbohf8+9NcQ8MXUDzEzi1jb/TVO/GiB3NRMq+k2WWwXsHRzOBnrzTR/5nK5m
-         qtRwrrByNyDa0X9hePyHkSdgLIALPbKCFv/BZwKNbGx0cCVusuCoO8J3RCgVRPU7AdMW
-         HPWz9T0KpoAKL9MyULbPJsRIVd65/2w58R6yU=
-X-Received: by 2002:aa7:9510:0:b0:4bd:ce79:d158 with SMTP id b16-20020aa79510000000b004bdce79d158mr10108449pfp.24.1642186536544;
-        Fri, 14 Jan 2022 10:55:36 -0800 (PST)
-X-Received: by 2002:aa7:9510:0:b0:4bd:ce79:d158 with SMTP id
- b16-20020aa79510000000b004bdce79d158mr10108421pfp.24.1642186536257; Fri, 14
- Jan 2022 10:55:36 -0800 (PST)
+        bh=WBw/MJ4zo+l9u4s/FhgIl55LwuJiTSEG+Eoot+09J00=;
+        b=hNqBH+Y7PtAE1OvVLN+NpsTHz5pWo4kZs/75QRkYx0SumG60tqVHni5eEgjDEnQT6H
+         YKZ6tYTr4mMjnNdJ8DQQ9wK12x/Vvz91h3u8qlDngr1OCzxL8EHPMLwoPCZEJdrNivtm
+         KmMyvz0IlQD6kRsWAvapuuVPqIrU7Y1XlBbrhpU6ioIdGmlBe7pI07wxMw3l0S3/1pdi
+         PWpUA0ISrfCjjERjxoL5iNXfJBUZzRNNvLw4X+vqCPDjfZ0uGMFRCJs4reg9HIW5bXu8
+         Ued9mBXD60PDQF+p17BaWdGHTiCPP0p9oChsV1L+JFEp9Bwg0fld56uTiXiP2/1igtSv
+         Jf6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WBw/MJ4zo+l9u4s/FhgIl55LwuJiTSEG+Eoot+09J00=;
+        b=ZzrV+/A+zICU4f5A/y27dp6gCzZ2gK8qfTokrXKoxrgPD2zRe3myFmZmDnBmqTvdmC
+         lBQh0N9MGiNk+2wDAWbt+fZ/WOQ0Tkt9Z1LPiMmRwTkgY0lFQJf+QBJXkO3seh2LBitA
+         5G1axy4OTWCfUhiAMdN0Zz5M4nfXNyPsVU0p02alBpsBQTlEg+ZwqufY5OQmSdiXI5xO
+         WqWA7n4XkcdoFsGUAh6pKjbY2Smoq67AhW+ehoa101cOzxvXn8Uvmbd98LRmVnQszYcu
+         cjz4cAataqR5rknTF+95CByjbmAwBfX9j6NTY7ptHvvigXTI4wDKHNdFs0/pebdGypnY
+         oDLw==
+X-Gm-Message-State: AOAM530+CVlJ8QHuFK71/rAAWHWJy42Cq9NZ/jYq26ngo5rG0jpp9ymB
+        EuGvTGx9X3N47SjL6OYa0Luq3Cj6zyOpwFC7/cE=
+X-Google-Smtp-Source: ABdhPJxJXyaITHunJxH+EqKjzkvnJOBNbtfNhB9osLTt05b3H5jZIaR42V56VYrrSBef//NqTKDPXU/KwJgFJ+hr0+0=
+X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr5763618ilh.239.1642188916535;
+ Fri, 14 Jan 2022 11:35:16 -0800 (PST)
 MIME-Version: 1.0
 References: <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
  <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
@@ -61,19 +51,19 @@ References: <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
  <CAC1LvL0CeTw+YKjO6r0f68Ly3tK4qhDyjV0ak82e0PpHURVQOw@mail.gmail.com>
  <Yd82J8vxSAR9tvQt@lore-desk> <8735lshapk.fsf@toke.dk> <47a3863b-080c-3ac2-ff2d-466b74d82c1c@redhat.com>
  <Yd/9SPHAPH3CpSnN@lore-desk> <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
- <YeC8sOAeZjpc4j8+@lore-desk> <CAADnVQ+=0k1YBbkMmSKSBtkmiG8VCYZ5oKGjPPr4s9c53QF-mQ@mail.gmail.com>
- <e86ccea8-af77-83bf-e90e-dce88b26f07c@redhat.com>
-In-Reply-To: <e86ccea8-af77-83bf-e90e-dce88b26f07c@redhat.com>
-From:   Zvi Effron <zeffron@riotgames.com>
-Date:   Fri, 14 Jan 2022 10:55:24 -0800
-Message-ID: <CAC1LvL3M9OaSanES0uzp=vvgK23qPGRPpcAR6Z_Vqcvma3K5Qg@mail.gmail.com>
+ <YeGmZDI6etoB0hKx@lore-desk>
+In-Reply-To: <YeGmZDI6etoB0hKx@lore-desk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 14 Jan 2022 11:35:05 -0800
+Message-ID: <CAEf4BzZFu-5FChGhQrHcu-2kJe-qO6xXCdmGO-L6cViMMmtbYg@mail.gmail.com>
 Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
 Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, brouer@redhat.com,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
         =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Zvi Effron <zeffron@riotgames.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -90,47 +80,82 @@ Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         Magnus Karlsson <magnus.karlsson@intel.com>,
         tirthendu.sarkar@intel.com
 Content-Type: text/plain; charset="UTF-8"
-x-netskope-inspected: true
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 14, 2022 at 8:50 AM Jesper Dangaard Brouer
-<jbrouer@redhat.com> wrote:
+On Fri, Jan 14, 2022 at 8:35 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
->
->
-> On 14/01/2022 03.09, Alexei Starovoitov wrote:
-> > On Thu, Jan 13, 2022 at 3:58 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> >>>
-> >>> Btw "xdp_cpumap" should be cleaned up.
-> >>> xdp_cpumap is an attach type. It's not prog type.
-> >>> Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]" ?
-> >>
-> >> so for xdp "mb" or xdp "frags" it will be xdp/cpumap.mb (xdp/devmap.mb) or
-> >> xdp/cpumap.frags (xdp/devmap.frags), right?
+> > On Thu, Jan 13, 2022 at 2:22 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> > > > > >
+> > > > > > I would prefer to keep the "_mb" postfix, but naming is hard and I am
+> > > > > > polarized :)
+> > > > >
+> > > > > I would lean towards keeping _mb as well, but if it does have to be
+> > > > > changed why not _mbuf? At least that's not quite as verbose :)
+> > > >
+> > > > I dislike the "mb" abbreviation as I forget it stands for multi-buffer.
+> > > > I like the "mbuf" suggestion, even-though it conflicts with (Free)BSD mbufs
+> > > > (which is their SKB).
+> > >
+> > > If we all agree, I can go over the series and substitute mb postfix with mbuf.
+> > > Any objections?
 > >
-> > xdp.frags/cpumap
-> > xdp.frags/devmap
+> > mbuf has too much bsd taste.
 > >
-> > The current de-facto standard for SEC("") in libbpf:
-> > prog_type.prog_flags/attach_place
+> > How about ".frags" instead?
+> > Then xdp_buff_is_mb() will be xdp_buff_has_frags().
+> >
+> > I agree that it's not obvious what "mb" suffix stands for,
+> > but I don't buy at all that it can be confused with "megabyte".
+> > It's the context that matters.
+> > In "100mb" it's obvious that "mb" is likely "megabyte",
+> > but in "xdp.mb" it's certainly not "xdp megabyte".
+> > Such a sentence has no meaning.
+> > Imagine we used that suffix for "tc"...
+> > it would be "tc.mb"... "Traffic Control Megabyte" ??
+> >
+> > Anyway "xdp.frags" ?
+> >
+> > Btw "xdp_cpumap" should be cleaned up.
+> > xdp_cpumap is an attach type. It's not prog type.
+> > Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]" ?
 >
-> Ups, did we make a mistake with SEC("xdp_devmap/")
+> If we change xdp_devmap/ in xdp/devmap (and xdp_cpumap/ in xdp/cpumap),
+> are we going to break backward compatibility?
+> Maybe there are programs already deployed using it.
+> This is not a xdp multi-buff problem since we are not breaking backward
+> compatibility there, we can just use:
 >
-> and can we correct without breaking existing programs?
+> xdp.frags/devmap
+> xdp.frags/cpumap
 >
+> Moreover in samples/bpf we have something like:
+>
+> SEC("xdp_devmap/egress")
+>
+> It seems to me the egress postfix is not really used, right? Can we just drop
+> it?
 
-We can (at the very least) add the correct sections, even if we leave the
-current incorrect ones as well. Ideally we'd mark the incorrect ones deprecated
-and either remove them before libbpf 1.0 or as part of 2.0?
+Yeah, by current rules it should be just SEC("xdp_devmap"). This will
+break in libbpf 1.0 mode. For anyone who knows how to actually test
+BPF samples, it would be great to add
+libbpf_set_strict_mode(LIBBPF_STRICT_ALL); in every sample and make
+sure everything is still working. We've cleaned up selftests and all
+other places I knew about, but missed samples (and I can't test them
+properly).
 
---Zvi
 
-> > "attach_place" is either function_name for fentry/, tp/, lsm/, etc.
-> > or attach_type/hook/target for cgroup/bind4, cgroup_skb/egress.
-> >
-> > lsm.s/socket_bind -> prog_type = LSM, flags = SLEEPABLE
-> > lsm/socket_bind -> prog_type = LSM, non sleepable.
-> >
 >
+> Regards,
+> Lorenzo
+>
+> >
+> > In patch 22 there is a comment:
+> > /* try to attach BPF_XDP_DEVMAP multi-buff program"
+> >
+> > It creates further confusion. There is no XDP_DEVMAP program type.
+> > It should probably read
+> > "Attach BPF_XDP program with frags to devmap"
+> >
+> > Patch 21 still has "CHECK". Pls replace it with ASSERT.
