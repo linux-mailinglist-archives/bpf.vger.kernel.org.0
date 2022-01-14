@@ -2,179 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481B648E1BD
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 01:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BE348E268
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 03:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238551AbiANAte (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 19:49:34 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27596 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238527AbiANAte (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 13 Jan 2022 19:49:34 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20DN5pgD030471
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 16:49:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=CQDO9m7TzsaaJ0OOYKFSMCqU3OyAfpjxhml18kcgnGg=;
- b=U5MwIzAMOvqbXcN2I3zetJ9bSUHPIpCa+rUg86966h9i24nIqre3gtHt3TmdkgzMTnFg
- tCEL59uRQfxJ/HURHgGeOGB3RI9Xd0wD0UxDBLSMOZiqGPf6VE8oFQ4x6MiEaAx9tjyg
- GM+docR7YTobSP5dw+quHHIJfkWEHv6tRoY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3djh9xw2c1-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 16:49:33 -0800
-Received: from twshared14302.24.prn2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 13 Jan 2022 16:49:30 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 1CDD68FA33E4; Thu, 13 Jan 2022 16:49:22 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>
-CC:     Kenny Yu <kennyyu@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: Add test for sleepable bpf iterator programs
-Date:   Thu, 13 Jan 2022 16:49:00 -0800
-Message-ID: <20220114004900.3756025-5-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220114004900.3756025-1-kennyyu@fb.com>
-References: <20220113233158.1582743-1-kennyyu@fb.com>
- <20220114004900.3756025-1-kennyyu@fb.com>
+        id S235713AbiANCJt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 21:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbiANCJt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 21:09:49 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0F3C061574;
+        Thu, 13 Jan 2022 18:09:48 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id c6so3579284plh.6;
+        Thu, 13 Jan 2022 18:09:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XpJbac53fRpSunCAh1w84QujJ1RBhEaDKayiX5UID/w=;
+        b=LyYkVONhDx4r6c1AwSyDkBCogwgYo7jfSC5GXFv/PH7IvzWMxRg9D/xfBBDgfbFGzX
+         DHkEyRMacTi9Vv+VBYvU+48XOCWMAa1DMfwHVAP1fj8HDqWdHytxY51QwZIHv6K9gf9L
+         62sZJdW2csKqcfZPx2s6uX/rmSbYBAOonjCc1u2Y5xzLorpeRTDt5yXuA6FdbCVcw0RD
+         NvxXVe6vEiFEBbVUGLOZKzRWIlY4YKFZVEJczljl+hmMDrisag7FQuhy5fojzYFCbqR8
+         waeHteYMIOq2Kn0ndhuQWGF2G7nCH5B5vvp3vYmjkhnfkC3ASJcEXuHxDn48Yn2jlD6q
+         jFQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XpJbac53fRpSunCAh1w84QujJ1RBhEaDKayiX5UID/w=;
+        b=Wpn2D+aY9u9KMuDEswX7hJr3MFq/f3ISf/Cuw8G/0VeOALaNg/5tAxwgNuTRRigXYL
+         1uV1nnMMSbVnmL9EBR6GCBclrq0gpYXdyTyLLXXb2Kjed/Nf/BVjVAU6C04ABGJf0ovy
+         FKeEq0a1pQx+nT0HAzgcVGcD7DXEDZZG7DJn6k7J0j3m2wQg1Y1ETMop+vLzxz4FPp22
+         TEWfVvDC1zC+tEofJXPmLoDJjFVNdQQKkEn0/dhtB0U9FUmKPUo7BUZitduGSGxhkq9V
+         rz5CqQLmQqyDMdAzHKvFec2NJdeRK42IPHXbkJUNXIUSod5tQc2RQ7rn+SHC/6QgYSPA
+         PKOw==
+X-Gm-Message-State: AOAM533zt7hQiLIEUg6+q9Li9/3HXlV6unawXYh/A2GC5mAfQX0oEyNC
+        WJWrYMsZKRuBJpdK+W54C1aLrfeIbyjVNW9l0a4PlIz8TeQ=
+X-Google-Smtp-Source: ABdhPJww454elzu3ylVj2V6Fuz3l2o0RkPpE0EJjdIGmKiqeoRcnSWi6aa4Ckx3RMKyybtvsfB0hAYAmvV+FuGh7cv8=
+X-Received: by 2002:a17:902:ec82:b0:14a:30bd:94bf with SMTP id
+ x2-20020a170902ec8200b0014a30bd94bfmr7483680plg.78.1642126188143; Thu, 13 Jan
+ 2022 18:09:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: u0a4nFfQ81FsQrAIOMlsEGL4p8RYvxgP
-X-Proofpoint-ORIG-GUID: u0a4nFfQ81FsQrAIOMlsEGL4p8RYvxgP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-13_10,2022-01-13_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=897
- clxscore=1015 impostorscore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 adultscore=0 phishscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201140003
-X-FB-Internal: deliver
+References: <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
+ <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
+ <CAEf4BzZ4c1VwPf9oBRRdN7jdBWrk4pg=mw_50LMjLr99Mb0yfw@mail.gmail.com>
+ <CAADnVQ+BiMy4TZNocfFSvazh-QTFwMD-3uQ9LLiku7ePLDn=MQ@mail.gmail.com>
+ <CAC1LvL0CeTw+YKjO6r0f68Ly3tK4qhDyjV0ak82e0PpHURVQOw@mail.gmail.com>
+ <Yd82J8vxSAR9tvQt@lore-desk> <8735lshapk.fsf@toke.dk> <47a3863b-080c-3ac2-ff2d-466b74d82c1c@redhat.com>
+ <Yd/9SPHAPH3CpSnN@lore-desk> <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
+ <YeC8sOAeZjpc4j8+@lore-desk>
+In-Reply-To: <YeC8sOAeZjpc4j8+@lore-desk>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 13 Jan 2022 18:09:36 -0800
+Message-ID: <CAADnVQ+=0k1YBbkMmSKSBtkmiG8VCYZ5oKGjPPr4s9c53QF-mQ@mail.gmail.com>
+Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Zvi Effron <zeffron@riotgames.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        tirthendu.sarkar@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a test for bpf iterator programs to make use of sleepable
-bpf helpers.
+On Thu, Jan 13, 2022 at 3:58 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+> >
+> > Btw "xdp_cpumap" should be cleaned up.
+> > xdp_cpumap is an attach type. It's not prog type.
+> > Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]" ?
+>
+> so for xdp "mb" or xdp "frags" it will be xdp/cpumap.mb (xdp/devmap.mb) or
+> xdp/cpumap.frags (xdp/devmap.frags), right?
 
-Signed-off-by: Kenny Yu <kennyyu@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 16 ++++++
- .../selftests/bpf/progs/bpf_iter_task.c       | 54 +++++++++++++++++++
- 2 files changed, 70 insertions(+)
+xdp.frags/cpumap
+xdp.frags/devmap
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index b84f859b1267..fcda0ecd8746 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -138,6 +138,20 @@ static void test_task(void)
- 	bpf_iter_task__destroy(skel);
- }
-=20
-+static void test_task_sleepable(void)
-+{
-+	struct bpf_iter_task *skel;
-+
-+	skel =3D bpf_iter_task__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_task__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_task_sleepable);
-+
-+	bpf_iter_task__destroy(skel);
-+}
-+
- static void test_task_stack(void)
- {
- 	struct bpf_iter_task_stack *skel;
-@@ -1252,6 +1266,8 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_sleepable"))
-+		test_task_sleepable();
- 	if (test__start_subtest("task_stack"))
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_task.c
-index c86b93f33b32..bb4b63043533 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-@@ -23,3 +24,56 @@ int dump_task(struct bpf_iter__task *ctx)
- 	BPF_SEQ_PRINTF(seq, "%8d %8d\n", task->tgid, task->pid);
- 	return 0;
- }
-+
-+// New helper added
-+static long (*bpf_access_process_vm)(
-+	struct task_struct *tsk,
-+	unsigned long addr,
-+	void *buf,
-+	int len,
-+	unsigned int gup_flags) =3D (void *)186;
-+
-+// Copied from include/linux/mm.h
-+#define FOLL_REMOTE 0x2000 /* we are working on non-current tsk/mm */
-+
-+SEC("iter.s/task")
-+int dump_task_sleepable(struct bpf_iter__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
-+	struct pt_regs *regs;
-+	void *ptr;
-+	uint32_t user_data =3D 0;
-+	int numread;
-+
-+	if (task =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	regs =3D (struct pt_regs *)bpf_task_pt_regs(task);
-+	if (regs =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+	ptr =3D (void *)PT_REGS_IP(regs);
-+
-+	// Try to read the contents of the task's instruction pointer from the
-+	// remote task's address space.
-+	numread =3D bpf_access_process_vm(task,
-+					(unsigned long)ptr,
-+					(void *)&user_data,
-+					sizeof(uint32_t),
-+					FOLL_REMOTE);
-+	if (numread !=3D sizeof(uint32_t)) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	if (ctx->meta->seq_num =3D=3D 0)
-+		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-+
-+	BPF_SEQ_PRINTF(seq, "%8d %8d %8d\n", task->tgid, task->pid, user_data);
-+	return 0;
-+}
---=20
-2.30.2
+The current de-facto standard for SEC("") in libbpf:
+prog_type.prog_flags/attach_place
 
+"attach_place" is either function_name for fentry/, tp/, lsm/, etc.
+or attach_type/hook/target for cgroup/bind4, cgroup_skb/egress.
+
+lsm.s/socket_bind -> prog_type = LSM, flags = SLEEPABLE
+lsm/socket_bind -> prog_type = LSM, non sleepable.
