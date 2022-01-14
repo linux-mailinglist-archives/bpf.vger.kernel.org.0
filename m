@@ -2,56 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A7548EDF9
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 17:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452CD48EE2A
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 17:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239180AbiANQUe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 11:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbiANQUd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 11:20:33 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF5FC061574;
-        Fri, 14 Jan 2022 08:20:33 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id a1-20020a17090a688100b001b3fd52338eso13434091pjd.1;
-        Fri, 14 Jan 2022 08:20:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wCk9twFpDl6+WjnnhC7znYwCWhjmneBKzu1nIMx+UPk=;
-        b=C+aI5yX1wz/I3tjQZsVrKLlWpgUvrNYWgSbi9B47SEFZnWrCv9iH+y4Ft9oEl9kMuX
-         EfIRISlQXs1WJOzYW0CDhKZbh2/iYG7iqSnCkSc88XGXIpo+E1c+Y4lB8GUr61Im4YZB
-         3MfJIFDHMn8BdV8OW8ZvrhQrvUokP0o9Gw84Yu2qlSgEsYMyXKrfZTwTi91GQ3s22/VL
-         0KTkZGDy7cBlrj5f+LeIcNnbUFjuuRw8MuLI4Nh6hrxNXxl/ClxzN3bbEwZMPdnF15Yu
-         +Am9FdfI7iErgMWRcdlGYslQwzgxGC++EvdSMGwR2wvheQhvzYxliJB64z9mSQyUeLij
-         d++Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wCk9twFpDl6+WjnnhC7znYwCWhjmneBKzu1nIMx+UPk=;
-        b=d3D5cEK5AWlu6cHJMD3GwwLZMmbNhTuWzgvmYwHj9Y3XoG/AJVUjJOHkpzHTc3CO/B
-         drADUbxebU1k1rEZqGLSuBK6FQ0GNQiJu5uBSQDdpwNIckJA3ugKsnrEwNGKb5BEPNTm
-         an3FdFf0zFlwNUzb8FwpHoDFckKl7RUQVK6X2wwriE+hzhAA6SaIfc5RUNo7/OCSaZpg
-         zCM2705xySCoofzhYQYDceu6Z8pX9KO4Z+2zKLuWFsjagAWyxB/zURZ8WWXr+6S/ilGq
-         Vru2M2kYXaAMtMdmnVYcBOasOCytaHc7cY6yJOV0AGwrnOzmFTcezja+yLqD4VmyA8RQ
-         j4JQ==
-X-Gm-Message-State: AOAM531QR/FeRJ7De+mSMLgBnazQm//7t6HlWJO6U7nDai4eihj4D0rK
-        ztrqkdGFf1rDDVnigdB82EoympGFoam06w/l8zY=
-X-Google-Smtp-Source: ABdhPJyxtJkZpDAo1n6nW5FDaYgs/bGhPklwfosepqM4KmBTSKklri2jQQWobdLxJtNDUHr64CRPPhM/ZlNsy1oM/vA=
-X-Received: by 2002:a17:902:6502:b0:149:1162:f0b5 with SMTP id
- b2-20020a170902650200b001491162f0b5mr9819305plk.126.1642177232891; Fri, 14
- Jan 2022 08:20:32 -0800 (PST)
+        id S243347AbiANQdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 11:33:24 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:36406 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230447AbiANQdX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 11:33:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2B2EAB82963;
+        Fri, 14 Jan 2022 16:33:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E157C36AEF;
+        Fri, 14 Jan 2022 16:33:20 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="f8BE3bp8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1642177997;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fjhRN0D79I8OqjnhotxNxDTJr6R4g/K22rp1JS1C5Eo=;
+        b=f8BE3bp888e2UKyRZigZlucXrl3EdxDbtL2HX5Uh6swbq0rLANuLtzjzONNVXsYEFDHnUn
+        wv5dGEQ278DvKOHOOv0FuHhDaAj0Avb7lqA83+1xY++L96XuPTypYbcYQgFdf14t0lTllp
+        Qmub2ddKHXu8E2fLwGtJgLDGOam56y0=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3ee846df (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 14 Jan 2022 16:33:17 +0000 (UTC)
+Received: by mail-yb1-f169.google.com with SMTP id h14so25261919ybe.12;
+        Fri, 14 Jan 2022 08:33:17 -0800 (PST)
+X-Gm-Message-State: AOAM530kUVVuAQAdn4s+NCPDlRQNeZEEhFl57dlLIFzmxX9ei3a/7kH6
+        3qnpE1RNkhWfZnr36/fWNU3qd8Ba178JeYRF6mQ=
+X-Google-Smtp-Source: ABdhPJw+G76wCMtSJSIuOYt31tQHyRYk7zoC2KbYtKA7+I1KIxZdl0Ni/9vsDj9W+Rg1a6w300a7FLWP7S/v0KjtE5Y=
+X-Received: by 2002:a25:4109:: with SMTP id o9mr11071225yba.115.1642177996382;
+ Fri, 14 Jan 2022 08:33:16 -0800 (PST)
 MIME-Version: 1.0
 References: <20220114142015.87974-1-Jason@zx2c4.com> <20220114142015.87974-2-Jason@zx2c4.com>
-In-Reply-To: <20220114142015.87974-2-Jason@zx2c4.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 14 Jan 2022 08:20:21 -0800
-Message-ID: <CAADnVQJ1qsGacgrsKNiMme--+nwPVG+bd1D8rF8t8bDCvTgbLw@mail.gmail.com>
+ <CAADnVQJ1qsGacgrsKNiMme--+nwPVG+bd1D8rF8t8bDCvTgbLw@mail.gmail.com>
+In-Reply-To: <CAADnVQJ1qsGacgrsKNiMme--+nwPVG+bd1D8rF8t8bDCvTgbLw@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 14 Jan 2022 17:33:05 +0100
+X-Gmail-Original-Message-ID: <CAHmME9oV-KEU=3ZVHzN1APgUWP0vABt3T5FL4GX47KAUfp6ekw@mail.gmail.com>
+Message-ID: <CAHmME9oV-KEU=3ZVHzN1APgUWP0vABt3T5FL4GX47KAUfp6ekw@mail.gmail.com>
 Subject: Re: [PATCH RFC v2 1/3] bpf: move from sha1 to blake2s in tag calculation
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
@@ -66,11 +62,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 14, 2022 at 6:20 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+On Fri, Jan 14, 2022 at 5:20 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> BLAKE2s is faster and more secure. SHA-1 has been broken for a long time
-> now. This also removes quite a bit of code, and lets us potentially
-> remove sha1 from lib, which would further reduce vmlinux size.
+> On Fri, Jan 14, 2022 at 6:20 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> >
+> > BLAKE2s is faster and more secure. SHA-1 has been broken for a long time
+> > now. This also removes quite a bit of code, and lets us potentially
+> > remove sha1 from lib, which would further reduce vmlinux size.
+>
+> Same NACK as before.
+> Stop this spam. Pls.
 
-Same NACK as before.
-Stop this spam. Pls.
+You can read the 0/3 for an explanation of why I sent this v2. I
+reject your characterization of this as "spam".
+
+Thanks,
+Jason
