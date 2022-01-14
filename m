@@ -2,134 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 495AF48F085
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 20:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFFF48F087
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 20:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244128AbiANThA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 14:37:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235243AbiANThA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 14:37:00 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44DA0C061574;
-        Fri, 14 Jan 2022 11:37:00 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id v1so13547508ioj.10;
-        Fri, 14 Jan 2022 11:37:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=25llhbJLunNuI26s0KmzOshu+lNofBiDN1PWcbs+9dA=;
-        b=J5Vm9OkWsHN46Kt9QZUyOHKLMhhQiYD0I12Yglq2nS4aDzWG+5Yr7FNSk63XueuS02
-         TddU2q4esC+4l4Pfgxi9sK8erPZh02Rqx+lGNwVHcNbS6v8JJ6GpnYC2yBiT1wumQV9W
-         7SmWWSOVGXlJa7+b5rwpHd7Ru2n6l6+GwvXt8x4vokIcit3Gl/OZyTsrsdp1Fi07YYjj
-         s/xYy9r8U3ZMQFv/gV9n3ossdDAAgWAfTUSHyJE+rQwFAeok3YPOjjuBXGdQJa6o8Lhr
-         vZ8EYwzYQf/s7D/B1OpMvUyHnJ+u1KrZOnX/to5JuCH2HgfLB+P4VRcHvucEyAyMOUXt
-         2AmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=25llhbJLunNuI26s0KmzOshu+lNofBiDN1PWcbs+9dA=;
-        b=3NkSCf7cjlTGCGlf2f33A0YRJ3X6TflbjumTS8j1T5bWqShbZE3aU8BlRmHoZNIlVG
-         8FWLwTijT9R35EkdXoU4q7BaEohjnuz/GQmRM6WZE4qk4DsCqUZxT0gbxq3MI220hmc6
-         zc8JWuzm9eD2yP5T9FB3oQ3exKNeb+siC79Wk9yloaRvxmM+aAAG9jid9jboRRo4EACw
-         JJrewj8F7rncXFGXQcQIrsQ1+8GrNNhqlP1te5DgCJdcaakceTHf9Hl+cdiNnOJq44Lb
-         R6BhUkf6rJ5LAS8p2Nje1OJ2iFNd2Uk/mZv2RBQqLIIntZmVZYk+x5nF/Fb7NBCniiqE
-         xcrg==
-X-Gm-Message-State: AOAM532fotSxGu+N5ySHMZfAsl5lDDx5Jwd4LgVVAAU99F0xUjCDAULv
-        VUidf1pOqPeSeQ8h33tYrD/n8mgK0rYFz/CboRQ=
-X-Google-Smtp-Source: ABdhPJzoUPY39Yz6Jt/ofJASN96l0ANO2WXuPkqCWISA5JyxsuBODmwIOteZwrAFY7iQAn5Y41OxH3AMaeQxYQ+fN3s=
-X-Received: by 2002:a02:ca03:: with SMTP id i3mr4627012jak.234.1642189019658;
- Fri, 14 Jan 2022 11:36:59 -0800 (PST)
+        id S235243AbiANTiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 14:38:25 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22382 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234120AbiANTiZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 14:38:25 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20EIVAq6026887
+        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 11:38:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=aJaU5RrACdCaMg9ry1W+iybhAY0FmHv9grjYpJz3BQc=;
+ b=Fqa7hHSfDIh/MxPEBy9cMgN/98dqXCjQzd2e0H/9hW9gqcHe7Ca74K909iyrPPPfjLDG
+ 48ICgH0Dt7uhYFPmZULYLLvuVlP0h03ns9itKHa8TYfEYRfBlD+PPTWXLolNq8YeuWtU
+ NjBYRL90t66fVCiPrGd1OyJigYLMz/gGfcU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dk0254pxe-18
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 11:38:24 -0800
+Received: from twshared3115.02.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 14 Jan 2022 11:38:11 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id A42D523D4D0F; Fri, 14 Jan 2022 11:38:05 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v2 bpf-next] libbpf: Improve btf__add_btf() with an additional hashmap for strings.
+Date:   Fri, 14 Jan 2022 11:37:13 -0800
+Message-ID: <20220114193713.461349-1-kuifeng@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAEf4Bza+WO5U+Kw=S+GvQBgu5VHfPL29u7eLSQq34jvYzGnbBA@mail.gmail.com>
- <CAADnVQLGxjvOO3Ae3mGTWTyd0aHnACxYoF8daNi+z56NQyYQug@mail.gmail.com>
- <CAEf4BzZ4c1VwPf9oBRRdN7jdBWrk4pg=mw_50LMjLr99Mb0yfw@mail.gmail.com>
- <CAADnVQ+BiMy4TZNocfFSvazh-QTFwMD-3uQ9LLiku7ePLDn=MQ@mail.gmail.com>
- <CAC1LvL0CeTw+YKjO6r0f68Ly3tK4qhDyjV0ak82e0PpHURVQOw@mail.gmail.com>
- <Yd82J8vxSAR9tvQt@lore-desk> <8735lshapk.fsf@toke.dk> <47a3863b-080c-3ac2-ff2d-466b74d82c1c@redhat.com>
- <Yd/9SPHAPH3CpSnN@lore-desk> <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
- <YeC8sOAeZjpc4j8+@lore-desk> <CAADnVQ+=0k1YBbkMmSKSBtkmiG8VCYZ5oKGjPPr4s9c53QF-mQ@mail.gmail.com>
- <e86ccea8-af77-83bf-e90e-dce88b26f07c@redhat.com> <CAC1LvL3M9OaSanES0uzp=vvgK23qPGRPpcAR6Z_Vqcvma3K5Qg@mail.gmail.com>
-In-Reply-To: <CAC1LvL3M9OaSanES0uzp=vvgK23qPGRPpcAR6Z_Vqcvma3K5Qg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 Jan 2022 11:36:48 -0800
-Message-ID: <CAEf4BzZAMtmqW4sMfhEX8WtAzmQoVQ=WupqeqXa=5KbYXAbQNA@mail.gmail.com>
-Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb programs
-To:     Zvi Effron <zeffron@riotgames.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        tirthendu.sarkar@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 3nWd4I0bVPPZ3GYYvhcVw3d1kFS2G5IM
+X-Proofpoint-ORIG-GUID: 3nWd4I0bVPPZ3GYYvhcVw3d1kFS2G5IM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-14_06,2022-01-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ mlxlogscore=942 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 mlxscore=0 spamscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201140117
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 14, 2022 at 10:55 AM Zvi Effron <zeffron@riotgames.com> wrote:
->
-> On Fri, Jan 14, 2022 at 8:50 AM Jesper Dangaard Brouer
-> <jbrouer@redhat.com> wrote:
-> >
-> >
-> >
-> > On 14/01/2022 03.09, Alexei Starovoitov wrote:
-> > > On Thu, Jan 13, 2022 at 3:58 PM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
-> > >>>
-> > >>> Btw "xdp_cpumap" should be cleaned up.
-> > >>> xdp_cpumap is an attach type. It's not prog type.
-> > >>> Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]" ?
-> > >>
-> > >> so for xdp "mb" or xdp "frags" it will be xdp/cpumap.mb (xdp/devmap.mb) or
-> > >> xdp/cpumap.frags (xdp/devmap.frags), right?
-> > >
-> > > xdp.frags/cpumap
-> > > xdp.frags/devmap
-> > >
-> > > The current de-facto standard for SEC("") in libbpf:
-> > > prog_type.prog_flags/attach_place
-> >
-> > Ups, did we make a mistake with SEC("xdp_devmap/")
-> >
-> > and can we correct without breaking existing programs?
-> >
->
-> We can (at the very least) add the correct sections, even if we leave the
-> current incorrect ones as well. Ideally we'd mark the incorrect ones deprecated
-> and either remove them before libbpf 1.0 or as part of 2.0?
->
+V2 fixes a crash issue of using an uninitialized hashmap.
 
-Correct, those would need to be new aliases. We can also deprecate old
-ones, if we have consensus on that. We can teach libbpf to emit
-warnings (through logs, of course) for such uses of to-be-removed
-sections aliases. We still have probably a few months before the final
-1.0 release, should hopefully be plenty of time to people to adapt.
+Add a hashmap to map the string offsets from a source btf to the
+string offsets from a target btf to reduce overheads.
 
-> --Zvi
->
-> > > "attach_place" is either function_name for fentry/, tp/, lsm/, etc.
-> > > or attach_type/hook/target for cgroup/bind4, cgroup_skb/egress.
-> > >
-> > > lsm.s/socket_bind -> prog_type = LSM, flags = SLEEPABLE
-> > > lsm/socket_bind -> prog_type = LSM, non sleepable.
-> > >
-> >
+btf__add_btf() calls btf__add_str() to add strings from a source to a
+target btf.  It causes many string comparisons, and it is a major
+hotspot when adding a big btf.  btf__add_str() uses strcmp() to check
+if a hash entry is the right one.  The extra hashmap here compares
+offsets of strings, that are much cheaper.  It remembers the results
+of btf__add_str() for later uses to reduce the cost.
+
+We are parallelizing BTF encoding for pahole by creating separated btf
+instances for worker threads.  These per-thread btf instances will be
+added to the btf instance of the main thread by calling btf__add_str()
+to deduplicate and write out.  With this patch and -j4, the running
+time of pahole drops to about 6.0s from 6.6s.
+
+The following lines are the summary of 'perf stat' w/o the change.
+
+       6.668126396 seconds time elapsed
+
+      13.451054000 seconds user
+       0.715520000 seconds sys
+
+The following lines are the summary w/ the change.
+
+       5.986973919 seconds time elapsed
+
+      12.939903000 seconds user
+       0.724152000 seconds sys
+
+Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+---
+ tools/lib/bpf/btf.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 9aa19c89f758..8b96418000cc 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1620,20 +1620,38 @@ static int btf_commit_type(struct btf *btf, int d=
+ata_sz)
+ struct btf_pipe {
+ 	const struct btf *src;
+ 	struct btf *dst;
++	struct hashmap *str_off_map; /* map string offsets from src to dst */
+ };
+=20
+ static int btf_rewrite_str(__u32 *str_off, void *ctx)
+ {
+ 	struct btf_pipe *p =3D ctx;
++	void *mapped_off;
+ 	int off;
++	int err;
+=20
+ 	if (!*str_off) /* nothing to do for empty strings */
+ 		return 0;
+=20
++	if (p->str_off_map &&
++	    hashmap__find(p->str_off_map, (void *)(long)*str_off, &mapped_off))=
+ {
++		*str_off =3D (__u32)(long)mapped_off;
++		return 0;
++	}
++
+ 	off =3D btf__add_str(p->dst, btf__str_by_offset(p->src, *str_off));
+ 	if (off < 0)
+ 		return off;
+=20
++	/* Remember string mapping from src to dst.  It avoids
++	 * performing expensive string comparisons.
++	 */
++	if (p->str_off_map) {
++		err =3D hashmap__append(p->str_off_map, (void *)(long)*str_off, (void =
+*)(long)off);
++		if (err)
++			return err;
++	}
++
+ 	*str_off =3D off;
+ 	return 0;
+ }
+@@ -1680,6 +1698,9 @@ static int btf_rewrite_type_ids(__u32 *type_id, voi=
+d *ctx)
+ 	return 0;
+ }
+=20
++static size_t btf_dedup_identity_hash_fn(const void *key, void *ctx);
++static bool btf_dedup_equal_fn(const void *k1, const void *k2, void *ctx=
+);
++
+ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
+ {
+ 	struct btf_pipe p =3D { .src =3D src_btf, .dst =3D btf };
+@@ -1713,6 +1734,11 @@ int btf__add_btf(struct btf *btf, const struct btf=
+ *src_btf)
+ 	if (!off)
+ 		return libbpf_err(-ENOMEM);
+=20
++	/* Map the string offsets from src_btf to the offsets from btf to impro=
+ve performance */
++	p.str_off_map =3D hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_eq=
+ual_fn, NULL);
++	if (p.str_off_map =3D=3D NULL)
++		return libbpf_err(-ENOMEM);
++
+ 	/* bulk copy types data for all types from src_btf */
+ 	memcpy(t, src_btf->types_data, data_sz);
+=20
+@@ -1754,6 +1780,8 @@ int btf__add_btf(struct btf *btf, const struct btf =
+*src_btf)
+ 	btf->hdr->str_off +=3D data_sz;
+ 	btf->nr_types +=3D cnt;
+=20
++	hashmap__free(p.str_off_map);
++
+ 	/* return type ID of the first added BTF type */
+ 	return btf->start_id + btf->nr_types - cnt;
+ err_out:
+@@ -1767,6 +1795,9 @@ int btf__add_btf(struct btf *btf, const struct btf =
+*src_btf)
+ 	 * wasn't modified, so doesn't need restoring, see big comment above */
+ 	btf->hdr->str_len =3D old_strs_len;
+=20
++	if (p.str_off_map)
++		hashmap__free(p.str_off_map);
++
+ 	return libbpf_err(err);
+ }
+=20
+--=20
+2.30.2
+
