@@ -2,174 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F031548E907
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 12:18:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EBA848EB53
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 15:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240766AbiANLSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 06:18:24 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63984 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240590AbiANLSX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 06:18:23 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20EApt5P028949;
-        Fri, 14 Jan 2022 11:17:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=kd8T9O3p29h8F5lsjDAZVzBlixnmUAhh/IcXT7fFzMs=;
- b=YF6yxxEcmUTIlReyHZYPdmcB/jvAiq0PiI5b9uCMDWXwdtFJ/SHv/I6pRSXw5BYvMwla
- Z7wKVpXhmC0PFfRvgkTzh9E72iqXAScjjvj0hCfBUHG5ab54pCvAO4kE07m7BOiM8JzP
- 9ValSaJJDmsba9EpCqctfH8UQBk4UIDtvjx4Fo3SBhlqKJ1NTIjZQXW36euHHlBhZoS2
- pornvIDYH8APUBGr5Hr1senNg7EP0NmfPXqJbsxz75NijcIp+GWbj9pe6QyR9cmJlZrN
- nQel2+cJlCAhqYbg/abZpjOZHlSTtrCjh1Ufl+zanS0VDUYjXrD7zAV6/CnOR9tsOlpq Iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dk7sy8d9j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jan 2022 11:17:58 +0000
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20EBFDoY031291;
-        Fri, 14 Jan 2022 11:17:58 GMT
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dk7sy8d93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jan 2022 11:17:57 +0000
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20EBCINt010072;
-        Fri, 14 Jan 2022 11:17:55 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3df1vkasfq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 14 Jan 2022 11:17:55 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20EBHrjG46072234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 14 Jan 2022 11:17:53 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EB667A4054;
-        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7D6FFA405B;
-        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
-Received: from localhost (unknown [9.43.21.93])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
-Date:   Fri, 14 Jan 2022 16:47:51 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 11/13] powerpc64/bpf elfv2: Setup kernel TOC in r2 on
- entry
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        "johan.almbladh@anyfinetworks.com" <johan.almbladh@anyfinetworks.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "song@kernel.org" <song@kernel.org>,
-        "ykaliuta@redhat.com" <ykaliuta@redhat.com>, masahiroy@kernel.org
-References: <cover.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
-        <4501050f6080f12bd3ba1b5d9d7bef8d3aa57d23.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
-        <d0e28f07-c24c-200d-de04-5d27c651a5e6@csgroup.eu>
-        <1641896867.1ukblu8135.naveen@linux.ibm.com>
-        <080527ac-54f2-6e41-17a0-fdb7a556c30d@csgroup.eu>
-        <01d558b9-82b7-f73e-70d6-d19a192d47b6@csgroup.eu>
-In-Reply-To: <01d558b9-82b7-f73e-70d6-d19a192d47b6@csgroup.eu>
+        id S234291AbiANOMy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 09:12:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbiANOMy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 09:12:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C348C061574;
+        Fri, 14 Jan 2022 06:12:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DD7C861CB0;
+        Fri, 14 Jan 2022 14:12:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE92AC36AEC;
+        Fri, 14 Jan 2022 14:12:52 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="FN49HvIi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1642169570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LIMH262hTr1jVdFOs326DIRgfGVgp0+2qWG3fNbUYe0=;
+        b=FN49HvIikRDwacVw+jUnmDgVYcLelNrJn6xdc3L00w4crPBYyNsMYLqjINzqIHNbYf59TJ
+        rHLePFEWS6PBSSFZbgFPz9Z3naOs8TTB4bfFHn3pMp2cGZrsE1mTdzsVIb5x3vyLmqaXo3
+        aeo9UqGrMg7CilyInPMwdReEE58rE54=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 9a5dd7a9 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Fri, 14 Jan 2022 14:12:49 +0000 (UTC)
+Received: by mail-yb1-f182.google.com with SMTP id c10so24307987ybb.2;
+        Fri, 14 Jan 2022 06:12:49 -0800 (PST)
+X-Gm-Message-State: AOAM532wJ36Dti313ntlYd7xM3bHE5KMZlUB4MB9H1/9u4iZAdGEMbsk
+        vT0wi3jfBHrQRzRJ4jA4Vq4eBCe4aWqc0BKvjy8=
+X-Google-Smtp-Source: ABdhPJyK1aAnC+0tJZUV+DCA0RieE3QpF7oJw379/gdehyvjAagEN9wrY6yMkVRSf7JT1ik4kf+4v/JTpiaLNxm2gpY=
+X-Received: by 2002:a25:a0c4:: with SMTP id i4mr13252823ybm.457.1642169568253;
+ Fri, 14 Jan 2022 06:12:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: astroid/v0.16-1-g4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1642157523.jyz3p74ouz.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 90Zbb4VURnN2JHGPSCGOVHLoqZSSaJXZ
-X-Proofpoint-ORIG-GUID: nMYp1gYkWl5F2metnTZ2fhpdATDmrOiv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-14_04,2022-01-14_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
- clxscore=1011 adultscore=0 impostorscore=0 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201140074
+References: <20220112131204.800307-1-Jason@zx2c4.com> <20220112131204.800307-2-Jason@zx2c4.com>
+ <87tue8ftrm.fsf@toke.dk> <CAADnVQJqoHy+EQ-G5fUtkPpeHaA6YnqsOjjhUY6UW0v7eKSTZw@mail.gmail.com>
+ <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com> <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
+In-Reply-To: <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+Date:   Fri, 14 Jan 2022 15:12:37 +0100
+X-Gmail-Original-Message-ID: <CAHmME9oq36JdV8ap9sPZ=CDfNyaQd6mXd21ztAaZiL7pJh8RCw@mail.gmail.com>
+Message-ID: <CAHmME9oq36JdV8ap9sPZ=CDfNyaQd6mXd21ztAaZiL7pJh8RCw@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag calculation
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Christophe Leroy wrote:
->=20
->=20
-> Le 11/01/2022 =C3=A0 15:35, Christophe Leroy a =C3=A9crit=C2=A0:
->>=20
->>=20
->> Le 11/01/2022 =C3=A0 11:31, Naveen N. Rao a =C3=A9crit=C2=A0:
->>> Christophe Leroy wrote:
->>>>
->>>>
->>>> Le 06/01/2022 =C3=A0 12:45, Naveen N. Rao a =C3=A9crit=C2=A0:
->>>>> In preparation for using kernel TOC, load the same in r2 on entry. Wi=
-th
->>>>> elfv1, the kernel TOC is already setup by our caller so we just emit =
-a
->>>>> nop. We adjust the number of instructions to skip on a tail call
->>>>> accordingly.
->>>>>
->>>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->>>>> ---
->>>>>  =C2=A0 arch/powerpc/net/bpf_jit_comp64.c | 8 +++++++-
->>>>>  =C2=A0 1 file changed, 7 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/powerpc/net/bpf_jit_comp64.c
->>>>> b/arch/powerpc/net/bpf_jit_comp64.c
->>>>> index ce4fc59bbd6a92..e05b577d95bf11 100644
->>>>> --- a/arch/powerpc/net/bpf_jit_comp64.c
->>>>> +++ b/arch/powerpc/net/bpf_jit_comp64.c
->>>>> @@ -73,6 +73,12 @@ void bpf_jit_build_prologue(u32 *image, struct
->>>>> codegen_context *ctx)
->>>>>  =C2=A0 {
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int i;
->>>>> +#ifdef PPC64_ELF_ABI_v2
->>>>> +=C2=A0=C2=A0=C2=A0 PPC_BPF_LL(_R2, _R13, offsetof(struct paca_struct=
-, kernel_toc));
->>>>> +#else
->>>>> +=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_NOP());
->>>>> +#endif
->>>>
->>>> Can we avoid the #ifdef, using
->>>>
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0if (__is_defined(PPC64_ELF_ABI_v2))
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PPC_BPF_LL(_R2, _R13, offs=
-etof(struct paca_struct, kernel_toc));
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0else
->>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_NOP());
->>>
->>> Hmm... that doesn't work for me. Is __is_defined() expected to work wit=
-h
->>> macros other than CONFIG options?
->>=20
->> Yes, __is_defined() should work with any item.
->>=20
->> It is IS_ENABLED() which is supposed to work only with CONFIG options.
+Hi Alexei,
 
-I suppose you are saying that due to the name? Since IS_ENABLED() and=20
-IS_BUILTIN() seem to work fine too, once I define the macro as 1.
+On Thu, Jan 13, 2022 at 11:45 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Thu, Jan 13, 2022 at 4:27 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> >
+> > Hi Alexei,
+> >
+> > On 1/13/22, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > Nack.
+> > > It's part of api. We cannot change it.
+> >
+> > This is an RFC patchset, so there's no chance that it'll actually be
+> > applied as-is, and hence there's no need for the strong hammer nack.
+> > The point of "request for comments" is comments. Specifically here,
+> > I'm searching for information on the ins and outs of *why* it might be
+> > hard to change. How does userspace use this? Why must this 64-bit
+> > number be unchanged? Why did you do things this way originally? Etc.
+> > If you could provide a bit of background, we might be able to shake
+> > out a solution somewhere in there.
+>
+> There is no problem with the code and nothing to be fixed.
 
-Along those lines, it would have been nice to have IS_DEFINED().
+Yes yes, my mama says I'm the specialist snowflake of a boy too. That
+makes two of us ice crystals, falling from the winter heavens,
+blessing vim with our beautiful shapes and frosty code.
 
->>=20
->> See commit 5c189c523e78 ("powerpc/time: Fix mftb()/get_tb() for use with
->> the compat VDSO")
->>=20
->> Or commit ca5999fde0a1 ("mm: introduce include/linux/pgtable.h")
->=20
-> Ah ... wait.
->=20
-> It seems it expects a macro set to 1.
->=20
-> So it would require arch/powerpc/include/asm/types.h to be modified to=20
-> define PPC64_ELF_ABI_v2 or PPC64_ELF_ABI_v1 as 1
+Anyway, back to reality, as Geert points out, we're hoping to be able
+to remove lib/sha1.c from vmlinux (see 3/3 of this series) for
+codesize, and this bpf usage here is one of two remaining usages of
+it. So I was hoping that by sending this RFC, it might elicit a bit
+more information about the ecosystem around the usage of the function,
+so that we can start trying to think of creative solutions to sunset
+it.
 
-Thanks, that works.
+I started trying to figure out what's up there and wound up with some
+more questions. My primary one is why you're okay with such a weak
+"checksum" -- the thing is only 64-bits, and as you told Andy Polyakov
+in 2016 when he tried to stop you from using SHA-1, "Andy, please read
+the code. \ we could have used jhash there just as well. \ Collisions
+are fine."
 
+Looking at https://github.com/iovisor/bcc/blob/e17c4f7324d8fc5cc24ba8ee1db451666cd7ced3/src/cc/bpf_module.cc#L571
+I see:
 
-- Naveen
+  err = bpf_prog_compute_tag(insns, prog_len, &tag1);
+  if (err)
+    return err;
+  err = bpf_prog_get_tag(prog_fd, &tag2);
+  if (err)
+    return err;
+  if (tag1 != tag2) {
+    fprintf(stderr, "prog tag mismatch %llx %llx\n", tag1, tag2);
+
+So it's clearly a check for something. A collision there might prove pesky:
+
+  char buf[128];
+  ::snprintf(buf, sizeof(buf), BCC_PROG_TAG_DIR "/bpf_prog_%llx", tag1);
+  err = mkdir(buf, 0777);
+
+Maybe you don't really see a security problem here, because these
+programs are root loadable anyway? But I imagine things will
+ultimately get more complicated later on down the road when bpf
+becomes more modular and less privileged and more namespaced -- the
+usual evolution of these sorts of features.
+
+So I'm wondering - why not just do this in a more robust way entirely,
+and always export a sufficiently sized blake2s hash? That way we'll
+never have these sorts of shenanigans to care about. If that's not a
+sensible thing to do, it's likely that I _still_ don't quite grok the
+purpose of the program tag, in which case, I'd be all ears to an
+explanation.
+
+Jason
+
+[ PS: As an aside, I noticed some things in the userspace tag
+calculation code at
+https://github.com/iovisor/bcc/blob/aa7200b9b2a7a2ce2e8a6f0dc1f456f3f93af1da/src/cc/libbpf.c#L536
+- you probably shouldn't use AF_ALG for things that are software based
+and can be done in userspace faster. And the unconditional
+__builtin_bswap64 there means that the code will fail on big endian
+systems. I know you mostly only care about x86 and all, but <endian.h>
+might make this easy to fix. ]
