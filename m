@@ -2,92 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5BB48ED31
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 16:36:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D10548ED92
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 16:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbiANPgf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 10:36:35 -0500
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:47077 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbiANPgf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 10:36:35 -0500
-Received: by mail-vk1-f178.google.com with SMTP id bj47so6010278vkb.13;
-        Fri, 14 Jan 2022 07:36:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YJjdZDOE3o2kL7hMCs+KcBi0cfqKaf561XO1uO98LqA=;
-        b=jKv34m9Xik7cvyi1qWqtZFBtdMR88awmRcZkLEeA7XZVZba4y6gszFTE0s7E7Ab5Rq
-         5KbNZpjvdKNOxDg4xz9jgl7+OHQeR/PExvzxfv2nDvGrmNwPQrEIwHvkueMXgAWgPK4p
-         +xBfj9vHjMlB6DxV2djQmKxrjPKNY0LJoXOuf6lMbVz4K1CBIJAF1zUY4xMa2Y/jy0Zv
-         IQ1/WLMbUc/T96jbZeYyhO9Yery8eGN+P6av1B+bd+MeRxXboyU89eoHLd2wkokKC2xH
-         uhiy3uAmRmA//jXvOC9bhSWbnawimCdWsminunYrNO5F/AopKAzLAUbRrlA4GGmxtACY
-         cOIw==
-X-Gm-Message-State: AOAM531aYTh8dRH+GIFLosy6g05xKRC6fwSl3uzaz0ra1gAWe/qPt6GU
-        04MspgBmR/9UgUmktrhagk4g3OR+Zg6Xewrv
-X-Google-Smtp-Source: ABdhPJz9d1jGDGtXclbJT1JVstQJwp3ulw7+h2mXY52hq6cOelrhOpLJ+gL4rOiKf0M61CISDB/+Bg==
-X-Received: by 2002:ac5:c18f:: with SMTP id z15mr2784842vkb.24.1642174594644;
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com. [209.85.222.47])
-        by smtp.gmail.com with ESMTPSA id o12sm2172193uae.1.2022.01.14.07.36.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-Received: by mail-ua1-f47.google.com with SMTP id p1so17529862uap.9;
-        Fri, 14 Jan 2022 07:36:34 -0800 (PST)
-X-Received: by 2002:a9f:3e01:: with SMTP id o1mr4495386uai.89.1642174593855;
- Fri, 14 Jan 2022 07:36:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20220112131204.800307-1-Jason@zx2c4.com> <20220112131204.800307-2-Jason@zx2c4.com>
- <87tue8ftrm.fsf@toke.dk> <CAADnVQJqoHy+EQ-G5fUtkPpeHaA6YnqsOjjhUY6UW0v7eKSTZw@mail.gmail.com>
- <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com>
- <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
- <CAHmME9oq36JdV8ap9sPZ=CDfNyaQd6mXd21ztAaZiL7pJh8RCw@mail.gmail.com>
- <CAMj1kXE3JtNjgF3FZjbL-GOQG41yODup4+XdEFP063F=-AWg8A@mail.gmail.com> <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
-In-Reply-To: <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 14 Jan 2022 16:36:22 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXDmwHaJuvNo8vkzudfhL0E3b=0b4mP_OqDCYFqm82J5Q@mail.gmail.com>
-Message-ID: <CAMuHMdXDmwHaJuvNo8vkzudfhL0E3b=0b4mP_OqDCYFqm82J5Q@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag calculation
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
+        id S243071AbiANP7a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 10:59:30 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:36879 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238947AbiANP73 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 10:59:29 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-190-J5jrWq3oPyyS4GLy2VXbAQ-1; Fri, 14 Jan 2022 15:59:27 +0000
+X-MC-Unique: J5jrWq3oPyyS4GLy2VXbAQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.26; Fri, 14 Jan 2022 15:59:21 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.026; Fri, 14 Jan 2022 15:59:21 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?utf-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        "Network Development" <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
         Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: RE: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag
+ calculation
+Thread-Topic: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag
+ calculation
+Thread-Index: AQHYCVpULjtSZ105lEeo5rcLfvZFjaxiq4hw
+Date:   Fri, 14 Jan 2022 15:59:21 +0000
+Message-ID: <13d51088799746469d26a442fb3c6fd5@AcuMS.aculab.com>
+References: <20220112131204.800307-1-Jason@zx2c4.com>
+ <20220112131204.800307-2-Jason@zx2c4.com> <87tue8ftrm.fsf@toke.dk>
+ <CAADnVQJqoHy+EQ-G5fUtkPpeHaA6YnqsOjjhUY6UW0v7eKSTZw@mail.gmail.com>
+ <CAHmME9ork6wh-T=sRfX6X0B4j-Vb36GVO0v=Yda0Hac1hiN_KA@mail.gmail.com>
+ <CAADnVQLF_tmNmNk+H+jP1Ubmw-MBhG1FevFmtZY6yw5xk2314g@mail.gmail.com>
+ <CAHmME9oq36JdV8ap9sPZ=CDfNyaQd6mXd21ztAaZiL7pJh8RCw@mail.gmail.com>
+ <CAMj1kXE3JtNjgF3FZjbL-GOQG41yODup4+XdEFP063F=-AWg8A@mail.gmail.com>
+ <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
+In-Reply-To: <CAHmME9oa8dAeRQfgj-U00gUtVOJ_CTGwtyBxUB4=8+XO_fFjNQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jason,
+RnJvbTogSmFzb24gQS4gRG9uZW5mZWxkDQo+IFNlbnQ6IDE0IEphbnVhcnkgMjAyMiAxNToyMQ0K
+PiANCj4gT24gRnJpLCBKYW4gMTQsIDIwMjIgYXQgNDowOCBQTSBBcmQgQmllc2hldXZlbCA8YXJk
+YkBrZXJuZWwub3JnPiB3cm90ZToNCj4gPiBZZWFoLCBzbyB0aGUgaXNzdWUgaXMgdGhhdCwgYXQg
+KnNvbWUqIHBvaW50LCBTSEEtMSBpcyBnb2luZyB0byBoYXZlIHRvDQo+ID4gZ28uIFNvIGl0IHdv
+dWxkIGJlIGhlbHBmdWwgaWYgQWxleGVpIGNvdWxkIGNsYXJpZnkgKndoeSogaGUgZG9lc24ndA0K
+PiA+IHNlZSB0aGlzIGFzIGEgcHJvYmxlbS4gVGhlIGZhY3QgdGhhdCBpdCBpcyBicm9rZW4gbWVh
+bnMgdGhhdCBpdCBpcyBubw0KPiA+IGxvbmdlciBpbnRyYWN0YWJsZSB0byBmb3JnZSBjb2xsaXNp
+b25zLCB3aGljaCBsaWtsZXkgbWVhbnMgdGhhdCBTSEEtMQ0KPiA+IG5vIGxvbmdlciBmdWxmaWxs
+cyB0aGUgdGFzayB0aGF0IHlvdSB3YW50ZWQgaXQgdG8gZG8gaW4gdGhlIGZpcnN0DQo+ID4gcGxh
+Y2UuDQo+IA0KPiBJIHRoaW5rIHRoZSByZWFzb24gdGhhdCBBbGV4ZWkgZG9lc24ndCB0aGluayB0
+aGF0IHRoZSBTSEEtMSBjaG9pY2UNCj4gcmVhbGx5IG1hdHRlcnMgaXMgYmVjYXVzZSB0aGUgcmVz
+dWx0IGlzIGJlaW5nIHRydW5jYXRlZCB0byA2NC1iaXRzLCBzbw0KPiBjb2xsaXNpb25zIGFyZSBl
+YXN5IGFueXdheS4uLg0KDQpXaGljaCBwcm9iYWJseSBtZWFucyB0aGF0IFNIQS0xIGlzIGNvbXBs
+ZXRlIG92ZXJraWxsIGFuZCBzb21ldGhpbmcNCm11Y2ggc2ltcGxlciBjb3VsZCBoYXZlIGJlZW4g
+dXNlZCBpbnN0ZWFkLg0KSXMgdGhlIGJ1ZmZlciBldmVuIGJpZyBlbm91Z2ggdG8gaGF2ZSBldmVy
+IHdhcnJhbnRlZCB0aGUgbWFzc2l2ZQ0KdW5yb2xsaW5nIG9mIHRoZSBzaGEtMSBmdW5jdGlvbi4N
+CihJIHN1c3BlY3QgdGhhdCBqdXN0IGRlc3Ryb3lzIHRoZSBJLWNhY2hlIG9uIG1vc3QgY3B1LikN
+Cg0KVGhlIElQdjYgYWRkcmVzcyBjYXNlIHNlZW1zIGV2ZW4gbW9yZSBpbnNhbmUgLSBob3cgbWFu
+eSBieXRlcw0KYXJlIGFjdHVhbGx5IGJlaW5nIGhhc2hlZC4NClRoZSB1bnJvbGxlZCBsb29wIGlz
+IG9ubHkgbGlrZWx5IHRvIGJlIHNhbmUgZm9yIGxhcmdlIChtZWdhYnl0ZSkNCmJ1ZmZlcnMuDQoN
+CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
+TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
+MTM5NzM4NiAoV2FsZXMpDQo=
 
-On Fri, Jan 14, 2022 at 4:20 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> I think the reason that Alexei doesn't think that the SHA-1 choice
-> really matters is because the result is being truncated to 64-bits, so
-> collisions are easy anyway, regardless of which hash function is
-> chosen (birthday bound and all). But from Geert's perspective, that
-> SHA-1 is still taking up precious bytes in m68k builds. And from my
-> perspective, it's poor form and clutters vmlinux, and plus, now I'm
-> curious about why this isn't using a more appropriately sized tag in
-> the first place.
-
-Not just on m68k. Same on other architectures.
-Yes, people do make products with SoCs with 8 MiB of builtin SRAM,
-running Linux. They might stay away from BPF, though ;-)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
