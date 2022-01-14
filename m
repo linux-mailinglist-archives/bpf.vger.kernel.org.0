@@ -2,67 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CED48E8C4
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 12:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F031548E907
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 12:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232445AbiANLBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 06:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbiANLBn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 06:01:43 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3010C061574
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 03:01:43 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id c10so23000112ybb.2
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 03:01:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=CJKelyZbKSo4W6L/imc7Q3KTcKv1ieVBY2H7YXKc+9A=;
-        b=M38E+7DoQ7aFks83W9lFOXvRKJ7gkw9MY1mpdGl13ae+zA0zFNBMihdso/D/z5d9E4
-         IHQsUII+DJ4jkr8c2aehzLbL8CFkwOcSuMXjWqS0TP8v+ybB2LkDlEeNAFNSZk/xUp4D
-         vV8+oIAaRsn/lyqvB+H5omUVZy/SbvGy+Ebvk1in7g2UdN+TfkYepT5e246gTWJr3PUl
-         +/6nX0mytrSG+W7KVi/jgzIE+oRRAegNTcrUF8CbqKSNitvK8sJmGhHkPINZBS78qv50
-         4dGsNuuuPWUw+eiKPwIMbPZZRUAmBUZvnKi+PlT2NVL6OG0IvwFQMUgTQJ9Y/uaKFyb6
-         NLVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=CJKelyZbKSo4W6L/imc7Q3KTcKv1ieVBY2H7YXKc+9A=;
-        b=LhwHdTZ+SocdI4CWmkGd15LN60m+fH4ZgIjejt+VN+KkJMpeMo8imMyNSCadMFo5pX
-         iaTs8NHLuFCWw8ZikV0okzcanTuvA5tfqWFwTlwWkYtUaKuEBY2TvLZuuDVry68Ye2Rp
-         v2rOeyoj09MeH+rSeSMEjEvU8SRobBd/XWeaUOya6Tz7k8m8pGUhQlcUNqlLfM0wT1nm
-         E/XQmpL96xjvi3YZRNXgvCmOFePjbG6lea0OPouzSQPqJq9kQPcpHcYqY/UslcHCVGZ/
-         p3A6PlGNM32e4RikdIxhl8HsBm9kod2ARgfF/Z3WdZoB5m5+LA5n3eDgpJCjMbp62vfc
-         L3MQ==
-X-Gm-Message-State: AOAM533iCAuRaqzaTFGTX8dntTK3yt/1/5tp/Ufnb004LaZyhy1aL2Dr
-        g8Cvsawh/P110akm4+4UNUIdCk749ek/HCU4En4=
-X-Google-Smtp-Source: ABdhPJx1SOqdHohvyESEZVkk6w2xuE0jaFG3YlHWSJcHOe5VgmoK1yjtK67BTk64Cy+l5nFLek/gbsCZEfcNMgra4NE=
-X-Received: by 2002:a5b:88e:: with SMTP id e14mr2226641ybq.119.1642158102611;
- Fri, 14 Jan 2022 03:01:42 -0800 (PST)
+        id S240766AbiANLSY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 06:18:24 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:63984 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240590AbiANLSX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 06:18:23 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20EApt5P028949;
+        Fri, 14 Jan 2022 11:17:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=kd8T9O3p29h8F5lsjDAZVzBlixnmUAhh/IcXT7fFzMs=;
+ b=YF6yxxEcmUTIlReyHZYPdmcB/jvAiq0PiI5b9uCMDWXwdtFJ/SHv/I6pRSXw5BYvMwla
+ Z7wKVpXhmC0PFfRvgkTzh9E72iqXAScjjvj0hCfBUHG5ab54pCvAO4kE07m7BOiM8JzP
+ 9ValSaJJDmsba9EpCqctfH8UQBk4UIDtvjx4Fo3SBhlqKJ1NTIjZQXW36euHHlBhZoS2
+ pornvIDYH8APUBGr5Hr1senNg7EP0NmfPXqJbsxz75NijcIp+GWbj9pe6QyR9cmJlZrN
+ nQel2+cJlCAhqYbg/abZpjOZHlSTtrCjh1Ufl+zanS0VDUYjXrD7zAV6/CnOR9tsOlpq Iw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dk7sy8d9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jan 2022 11:17:58 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20EBFDoY031291;
+        Fri, 14 Jan 2022 11:17:58 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dk7sy8d93-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jan 2022 11:17:57 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20EBCINt010072;
+        Fri, 14 Jan 2022 11:17:55 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 3df1vkasfq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 14 Jan 2022 11:17:55 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20EBHrjG46072234
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 14 Jan 2022 11:17:53 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB667A4054;
+        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D6FFA405B;
+        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
+Received: from localhost (unknown [9.43.21.93])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 14 Jan 2022 11:17:52 +0000 (GMT)
+Date:   Fri, 14 Jan 2022 16:47:51 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 11/13] powerpc64/bpf elfv2: Setup kernel TOC in r2 on
+ entry
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        "johan.almbladh@anyfinetworks.com" <johan.almbladh@anyfinetworks.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "ykaliuta@redhat.com" <ykaliuta@redhat.com>, masahiroy@kernel.org
+References: <cover.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+        <4501050f6080f12bd3ba1b5d9d7bef8d3aa57d23.1641468127.git.naveen.n.rao@linux.vnet.ibm.com>
+        <d0e28f07-c24c-200d-de04-5d27c651a5e6@csgroup.eu>
+        <1641896867.1ukblu8135.naveen@linux.ibm.com>
+        <080527ac-54f2-6e41-17a0-fdb7a556c30d@csgroup.eu>
+        <01d558b9-82b7-f73e-70d6-d19a192d47b6@csgroup.eu>
+In-Reply-To: <01d558b9-82b7-f73e-70d6-d19a192d47b6@csgroup.eu>
 MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: maxwellagusdin01@gmail.com
-Received: by 2002:a05:7010:53d4:b0:1f9:66c5:df7b with HTTP; Fri, 14 Jan 2022
- 03:01:42 -0800 (PST)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Fri, 14 Jan 2022 12:01:42 +0100
-X-Google-Sender-Auth: GXJBT4ixByM0nXir04zWsY3gRK8
-Message-ID: <CAO7tpgiFhspvZs3jn4oHbRdW5A-wE60O_J2hfyqG1a0sq2e9Dg@mail.gmail.com>
-Subject: Get back to me as soon as possible
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.16-1-g4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1642157523.jyz3p74ouz.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 90Zbb4VURnN2JHGPSCGOVHLoqZSSaJXZ
+X-Proofpoint-ORIG-GUID: nMYp1gYkWl5F2metnTZ2fhpdATDmrOiv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-14_04,2022-01-14_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 phishscore=0 suspectscore=0 malwarescore=0
+ clxscore=1011 adultscore=0 impostorscore=0 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201140074
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Good Morning Friend,
+Christophe Leroy wrote:
+>=20
+>=20
+> Le 11/01/2022 =C3=A0 15:35, Christophe Leroy a =C3=A9crit=C2=A0:
+>>=20
+>>=20
+>> Le 11/01/2022 =C3=A0 11:31, Naveen N. Rao a =C3=A9crit=C2=A0:
+>>> Christophe Leroy wrote:
+>>>>
+>>>>
+>>>> Le 06/01/2022 =C3=A0 12:45, Naveen N. Rao a =C3=A9crit=C2=A0:
+>>>>> In preparation for using kernel TOC, load the same in r2 on entry. Wi=
+th
+>>>>> elfv1, the kernel TOC is already setup by our caller so we just emit =
+a
+>>>>> nop. We adjust the number of instructions to skip on a tail call
+>>>>> accordingly.
+>>>>>
+>>>>> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>>>>> ---
+>>>>>  =C2=A0 arch/powerpc/net/bpf_jit_comp64.c | 8 +++++++-
+>>>>>  =C2=A0 1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/arch/powerpc/net/bpf_jit_comp64.c
+>>>>> b/arch/powerpc/net/bpf_jit_comp64.c
+>>>>> index ce4fc59bbd6a92..e05b577d95bf11 100644
+>>>>> --- a/arch/powerpc/net/bpf_jit_comp64.c
+>>>>> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+>>>>> @@ -73,6 +73,12 @@ void bpf_jit_build_prologue(u32 *image, struct
+>>>>> codegen_context *ctx)
+>>>>>  =C2=A0 {
+>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int i;
+>>>>> +#ifdef PPC64_ELF_ABI_v2
+>>>>> +=C2=A0=C2=A0=C2=A0 PPC_BPF_LL(_R2, _R13, offsetof(struct paca_struct=
+, kernel_toc));
+>>>>> +#else
+>>>>> +=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_NOP());
+>>>>> +#endif
+>>>>
+>>>> Can we avoid the #ifdef, using
+>>>>
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0if (__is_defined(PPC64_ELF_ABI_v2))
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 PPC_BPF_LL(_R2, _R13, offs=
+etof(struct paca_struct, kernel_toc));
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0else
+>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 EMIT(PPC_RAW_NOP());
+>>>
+>>> Hmm... that doesn't work for me. Is __is_defined() expected to work wit=
+h
+>>> macros other than CONFIG options?
+>>=20
+>> Yes, __is_defined() should work with any item.
+>>=20
+>> It is IS_ENABLED() which is supposed to work only with CONFIG options.
 
-I'm contacting you to know if you can help me to transfer the amount
-of ($6Million). After the transfer we have to share it, 50% for me,
-and 50% for you. Please let me know if you can help me so that I can
-give you the full information regarding the transfer.
+I suppose you are saying that due to the name? Since IS_ENABLED() and=20
+IS_BUILTIN() seem to work fine too, once I define the macro as 1.
 
-Thanks.
+Along those lines, it would have been nice to have IS_DEFINED().
+
+>>=20
+>> See commit 5c189c523e78 ("powerpc/time: Fix mftb()/get_tb() for use with
+>> the compat VDSO")
+>>=20
+>> Or commit ca5999fde0a1 ("mm: introduce include/linux/pgtable.h")
+>=20
+> Ah ... wait.
+>=20
+> It seems it expects a macro set to 1.
+>=20
+> So it would require arch/powerpc/include/asm/types.h to be modified to=20
+> define PPC64_ELF_ABI_v2 or PPC64_ELF_ABI_v1 as 1
+
+Thanks, that works.
+
+
+- Naveen
