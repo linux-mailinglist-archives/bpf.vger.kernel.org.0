@@ -2,157 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DAA48F1CA
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 22:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C5C48F1F9
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 22:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229569AbiANVA6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 16:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
+        id S229746AbiANVS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 16:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbiANVA5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 16:00:57 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50792C061574;
-        Fri, 14 Jan 2022 13:00:57 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id i14so9364015ila.11;
-        Fri, 14 Jan 2022 13:00:57 -0800 (PST)
+        with ESMTP id S229610AbiANVS6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 16:18:58 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF4DC061574
+        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 13:18:58 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id c36so19097062uae.13
+        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 13:18:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=S/3XZOyIgDP11RoDvk9GWnXC8L5uLhKIajiH8VUBzOo=;
-        b=X8Ojmz8Gs8Y1ev7ywHRDPYIEusIcZGYXYqedV5pLiulCBb+Kk45BSZkrOJufxmeFfp
-         eX/Y7q/Z6c+IDtJykf7P/+oFOlsE94KCDwKpxdDNkT4+aCd8Y+lrugn7NRINlCKLXa5d
-         m1QdNMw9PMc8yX3Dg09TuvGTk1trKLOWAa818UW945AvQ9IpiQ9w/9X36BuwF3dAiv9j
-         +O58ddyWz+7jjQad/xh7nRlNhDpdI5+sit7fBuUs0uwUJ/uSCHykihZgi42vADzbl+Ee
-         SgVtdqlLN4t19075JS8dKUxrRXJPIZzbIsDKfKmsk0fMpjkNVNeOJEnfLPjruMwwyCOv
-         DvaQ==
+        bh=+un88kIUjelH0CuN5J/Cm9se9f65/4SawBptw+FBoO4=;
+        b=C/qF2hWLgKzu2heihY5x4OQ67n2lvCXr/Knrdq/Nq3Yw87J+kbYsrXu0TkaUbqB30K
+         dbjj7OejFqOmhiYF+d3yZvY7JYFXE//27ekIDcmkeKRh78zB69kYuC4p4CrhxkJxAWnC
+         Ip2xHork7GSVFz2Op2hS+sdh/jPaoApcr57T6bGR0tpscTMpFl+JlWb6NcNeJv7KWLdE
+         AeC9RCIr05nGMNpejJmHF8Kr5zERyY7CR6ob5r1NitcehKJriR9URokf7pb5ECrygJZi
+         w1iJ1NUlQiOtYJHqLCrkt8RLZlZlzlDsRRO8GEWxwZj5LbKy8F9Nr2eoqinSMJ86/SLj
+         Hk9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=S/3XZOyIgDP11RoDvk9GWnXC8L5uLhKIajiH8VUBzOo=;
-        b=cTOYWHNF+sp3ESbtR4YcqgZTGZAg3VNqc9OyyglzF3Tk5mEBlaPXF72g2/o3pHvTZg
-         7gjUCgfgG3bwOQBxOi/gB3NQVBq1n+YO0fNvqiQDzFAz2S2Uh1vk9VpWziRwNFPoFRNk
-         ZViJL3m+yA9V7u1/0q8hH9hzEAiWsRF/mVu9u+TiNk8cwadH9WB/Aj93Nd20oQ9HKFco
-         /dj2kdhdyM7hU1F5eEzXhTxzboX1Pfo+rDzP591+Busm8RdUmT4FvgmLcRq2VjgTcohV
-         A66wOaObpulQvb2tudTZAbMBGZJcu9nvrJfyIhgiW+w5Ttq/Yu/Dbi2HVLveqDU+87HT
-         ahRw==
-X-Gm-Message-State: AOAM531apo0b6hOGYBLMbVljb2fC/8AxO5CDrY0fsRIIfK8aMoIaGs+k
-        j2bXJbIJylHIiJx9MMKR5LJYtNvQUACXWllWk/lB3MyOl3c=
-X-Google-Smtp-Source: ABdhPJxB3tJlKWBbbJ6m7MVMyTBXUprEY+7ohw2BCRFcuAuj+a82nPy0eqzmlbdI8NV6kTBKur5P4tcd49iLauiofCs=
-X-Received: by 2002:a05:6e02:1749:: with SMTP id y9mr5373560ill.252.1642194056573;
- Fri, 14 Jan 2022 13:00:56 -0800 (PST)
+        bh=+un88kIUjelH0CuN5J/Cm9se9f65/4SawBptw+FBoO4=;
+        b=lRP85vY7t6Xh7wWUsXCTbK04NHauDStZgRsNIklc51uWeJrlQRa0x6jziECyprGIOr
+         RArZcs8hq2ZMa+mHEFXiEd7jzrQY8+dpphOesrHGfUK9C7h1C3OEnfc8ZelGBC5a0xFn
+         a0gyMD2rPvCh0ToDzl5iY1rYadTH3SOPjuM4UAZYUtSPN2FZITnf9CenE5dfjZJ9Vg3c
+         u/EEwwG3W0xYcEx0sKdh0dWhyOfsmgQtINxgYyTdVJb0G8O6X/Zyvw0pFuUIvZGZlJte
+         9col/+O27vLb8cEovuzaOH+JWDDSo8Jq9vM7/4ycGEX9WeSghZ31FOxZT6IjIAltJ+dP
+         wABw==
+X-Gm-Message-State: AOAM532a+uIFWnDfQUA7ANHD8MwMRRtmMzvXEIqtRozFbeQ8Gi3ZV/ll
+        aC6BHmK2tBPXiAKwGY1HtrtTECuFSVUgRRcbhH5clA==
+X-Google-Smtp-Source: ABdhPJx4VpDXouL4D2d/sau9k+vt4ooJD9EBc5fhoxcLAolx+OYYtBEeyBn1nLujOE1FvJpF3ep4p/z8PyCy+z3n/YM=
+X-Received: by 2002:a05:6102:2451:: with SMTP id g17mr4964750vss.8.1642195137092;
+ Fri, 14 Jan 2022 13:18:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20211216222108.110518-1-christylee@fb.com> <20211216222108.110518-3-christylee@fb.com>
- <YcGO271nDvfMeSlK@krava> <CAEf4BzZpNvEtfsVHUJGfwi_1xM+7-ohBPKPrRo--X=fYkYLrsw@mail.gmail.com>
- <YcMr1LeP6zUBdCiK@krava> <CAEf4Bzb2HWiuJmeb6WxE2Dift5qQOLBE=j1ZqfpVMjuWV3+EDg@mail.gmail.com>
- <CAPqJDZouQHpUXv4dEGKKe=UjwkZu3=GMQ2M9g2zLYOV6a=gZbw@mail.gmail.com>
- <YdRccTaunl9Fo63X@krava> <YdWhz1qaRncxNC/6@krava> <CAPqJDZpZrrg4UBz19H-HyEMk7rzn+PCe=qpYDR0uHvD3nPr4yw@mail.gmail.com>
- <YeBBzbfjOgE/wfjK@krava>
-In-Reply-To: <YeBBzbfjOgE/wfjK@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 Jan 2022 13:00:45 -0800
-Message-ID: <CAEf4BzatQ-y=kvTYvLj0rdtPTWuhNtep6gfWPj-aru7psfD9AQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] perf: stop using deprecated
- bpf__object_next() API
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Christy Lee <christylee@fb.com>,
-        Christy Lee <christyc.y.lee@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        He Kuang <hekuang@huawei.com>, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>
+References: <20220113000650.514270-1-quic_twear@quicinc.com>
+ <CAADnVQLQ=JTiJm6FTWR-ZJ5PDOpGzoFOS4uFE+bNbr=Z06hnUQ@mail.gmail.com>
+ <BYAPR02MB523848C2591E467973B5592EAA539@BYAPR02MB5238.namprd02.prod.outlook.com>
+ <BYAPR02MB5238AEC23C7287A41C44C307AA549@BYAPR02MB5238.namprd02.prod.outlook.com>
+ <CAADnVQJc=qgz47S1OuUBmX5Rb_opZUCADKqzqGnBruxtJONO7Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJc=qgz47S1OuUBmX5Rb_opZUCADKqzqGnBruxtJONO7Q@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
+Date:   Fri, 14 Jan 2022 13:18:44 -0800
+Message-ID: <CANP3RGfJ2G8P40hN2F=PGDYUc3pm84=SNppHp_J0V+YiDkLM_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/2] Add skb_store_bytes() for BPF_PROG_TYPE_CGROUP_SKB
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "Tyler Wear (QUIC)" <quic_twear@quicinc.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <song@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 7:14 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Jan 06, 2022 at 09:54:38AM -0800, Christy Lee wrote:
-> > Thank you so much, I was able to reproduce the original tests after applying
-> > the bug fix. I will submit a new patch set with the more detailed comments.
+> > > > This is wrong.
+> > > > CGROUP_INET_EGRESS bpf prog cannot arbitrary change packet data.
+
+I agree with this sentiment, which is why the original proposal was
+simply to add a helper which is only capable of modifying the
+tos/tclass/dscp field, and not any arbitrary bytes.  (note: there
+already is such a helper to set the ECN congestion notification bits,
+so there's somewhat of a precedent)
+
+> > > > The networking stack populated the IP header at that point.
+> > > > If the prog changes it to something else it will be confusing other
+> > > > layers of stack. neigh(L2) will be wrong, etc.
+> > > > We can still change certain things in the packet, but not arbitrary bytes.
+> > > >
+> > > > We cannot change the DS field directly in the packet either.
+
+This part I won't agree with.  In most cases there is no DSCP based
+routing decision, in which case it seems perfectly reasonable to
+change the DSCP bits here.  Indeed last I checked (though this was a
+few years ago) the ipv4 tos routing code wasn't even capable of making
+sane decisions, because it looks at the bottom 4 bits of the TOS
+field, instead of the top 6 bits, ie. you can route on ECN bits, but
+you can't route on the full DSCP field.  Additionally afaik the ipv6
+tclass routing simply wasn't implemented.  However, I last had to deal
+with this probably half a decade ago, on even older kernels, so
+perhaps the situation has changed.
+
+Additionally DSCP bits may affect transmit queue selection (for
+something like wifi qos / traffic prioritization across multiple
+transmit queues with different air-time behaviours - which can use
+dscp), so ideally we need dscp to be set *before* the mq qdisc /
+dispatch.  I think this implies it needs to happen before tc (though
+again, I'm not too certain of the ordering here).
+
+> > > > It can only be changed by changing its value in the socket.
+
+Changing it directly in the socket has two problems:
+- it becomes visible to userspace which is undesirable (ie. I've run
+across userspace code which will set tos to A, then read it back and
+exit/fail/crash if it doesn't see A)
+- if the tos bits themselves are an input to the decision about what
+tos bits to actually use, then this becomes recursive and basically
+impossible to get right.  (for example ssh sets tos to different
+values for interactive/bulk (ie. copy) traffic, so using application
+selected tos to select wire tos is perfectly reasonable)
+
+> > > Why is the DS field unchangeable, but ecn is changeable?
 > >
-> > The only deprecated functions that need to be removed after this would be
-> > bpf_program__set_prep() (how perf sets the bpf prologue) and
-> > bpf_program__nth_fd() (how perf leverages multi instance bpf). They look a
-> > little more involved and I'm not sure how to approach those. Jiri, would you
-> > mind taking a look at those please?
+> > Per spec the requirement is to modify the ds field of egress packets with DSCP value. Setting ds field on socket will not suffice here.
+> > Another case is where device is a middle-man and needs to modify the packets of a connected tethered client with the DSCP value, using a sock will not be able to change the packet here.
 >
-> hi,
-> I checked and here's the way perf uses this interface:
->
->   - when bpf object/sources is specified on perf command line
->     we use bpf_object__open to load it
->
->   - user can define parameters in the section name for each bpf program
->     like:
->
->       SEC("lock_page=__lock_page page->flags")
->       int lock_page(struct pt_regs *ctx, int err, unsigned long flags)
->       {
->              return 1;
->       }
->
->     which tells perf to 'prepare' some extra bpf code for the program,
->     like to put value of 'page->flags' into 'flags' argument above
->
->   - perf generates extra prologue code to retrieve this data and does
->     that before the program is loaded by using bpf_program__set_prep
->     callback
->
->   - now the reason why we use bpf_program__set_prep for that, is because
->     it allows to create multiple instances for one bpf program
->
->   - we need multiple instances for single program, because probe can
->     result in multiple attach addresses (like for inlined functions)
->     with possible different ways of getting the arguments we need
->     to load
->
-> I guess you want to get rid of that whole 'struct instances' related
-> stuff, is that right?
->
-> perf would need to load all the needed instances for program manually
-> and somehow bypass/workaround bpf_object__load.. is there a way to
-> manually add extra programs to bpf_object?
->
-> thoughts? ;-)
-
-Sigh..
-
-1. SEC("lock_page=__lock_page page->flags") will break in libbpf 1.0.
-I'm going to add a way to provide a custom callback to handle such BPF
-program sections by your custom code, but... Who's using this? Is
-anyone using this? How is this used and for what? Would it be possible
-to just kill this feature?
-
-2. For creating multiple instances. I've added bpf_program__insns()
-API to fetch exact bytecode as it is sent by libbpf to kernel. If you
-fetch those instructions *after* the program is loaded, all the map
-FDs and other stuff will be correct and resolved. At that point you
-can use that to create as many copies as you want to with low-level
-bpf_prog_load() API. You'll need to keep track of those FDs of clones,
-but you'll have your multiple instances.
-
-3. Do you really support attaching to inlined functions *and* also
-fetching their input arguments? How does that even work, given that
-the compiler can spread and reorder inlined function code as it sees
-fit?...
-
-But really, why does that feature exist at all? Why BPF program can't
-fetch whatever it needs to fetch explicitly, like the rest of BPF
-applications in the world do? Too much custom magic :( Especially with
-the BPF_KPROBE() macro this is so trivial to do...
-
-Can we kill this feature altogether, maybe? Pretty please? Such a
-burden for everyone...
-
->
-> thanks,
-> jirka
->
+> If DS field needs to be changed differently for every packet
+> it's better to use TC layer for this task.
+> qdiscs may send packets with different DSs to different queues.
