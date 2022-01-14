@@ -2,82 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDD848E306
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 04:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9754648E369
+	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 05:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239013AbiANDq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 13 Jan 2022 22:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        id S232634AbiANEuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 13 Jan 2022 23:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233660AbiANDq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 13 Jan 2022 22:46:59 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16822C061574
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 19:46:59 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id c6so20760811ybk.3
-        for <bpf@vger.kernel.org>; Thu, 13 Jan 2022 19:46:59 -0800 (PST)
+        with ESMTP id S229884AbiANEuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 13 Jan 2022 23:50:35 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1027BC061574;
+        Thu, 13 Jan 2022 20:50:35 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id x83so1799903pgx.4;
+        Thu, 13 Jan 2022 20:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=oNR6UMoEFgCGES/gVk9KvDaEd3IBNEPmzowHbE1edNc=;
-        b=ENtQLS9JQf+YrrKPMXVX9/1MQHqtby+FdOSORHJlF5jpXv8t02XKD+6AAIrIX1p0TV
-         hTXL5eZ01ja5E140iHSXZiTDrOOdf7d/jVuXiApKRe7w2QqOGwjkcfeL0Es3l/zmvB4+
-         XvGWy4rTo+6ZlFDfi6PwSKb3RHZouZ2FhOKuVwA40OrO4MJG+xImovOYiaPd58q4omHs
-         l4pMvQkIaEbtTh/p7u+GDIPTBNs0O69P+pMJuO+BK6cHRJH5kwhbzUDLDcV0e/LEdcVb
-         CJq91Nep9uVHTSgVm7SZxMxmqSWic8N8X+9njTENAVNdwSkjKUcY0BUetg6jwxrsqymN
-         U4nw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t7qIz+X+QglQoyCXVE8p/RRZbcs9mwrC8OUUePFdTgE=;
+        b=cGqRbF39YENIq3LINuO+JIV8FPElEWoDwWxuMpD9o+0C55/GJ0vr0oZ+sQlSWpEGAZ
+         wxlZuoT9JGXT8je5ku6LMfKDfYmZaR8fZHtoKha5XqTkzTa9uSqJ+q2fU9qoDSqu2dc3
+         nwZ7Rv/IRqiOao8t/2dkwCp8w8ApdGfKloG5shGW42Hhu7rxvLmbJVljsFTTG1OPAcw0
+         ulufF1CON0vOLUa8v/tRRKWOdLATYm5HWqxm4hfnc0vKjqJhV+sOyVxmVDwFujMZE6rn
+         vYX/GTcxOBmTy42qiQEDU8dkwgOU8695kF02ljAmmqXtfPTZDHSBSRkn0RqFYNWU4LqR
+         FmqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=oNR6UMoEFgCGES/gVk9KvDaEd3IBNEPmzowHbE1edNc=;
-        b=tZ004nByv4s2C+KMYUB4nwc6SiXos4+Lq+Iw3F9jO7CXTP3w9R78vJAZ+Q5CDt65wn
-         nEw8vivbWJuHaEJrynAFnlS5n5seSb6jp4g3cGQm82jh6QT94lrptvkAzJ5d+VwIcuDZ
-         joRiOnt/hR0+ccf+xEZ5YNPV1Wppr3SAWHtWjtcJRxjg4uxiwpYoW0U6AT+90mOs9phS
-         DVhlKNTlMaN3cktlLg1rRrS7WmTeeOGzQ5VEfld56KIUTg867fCU7JxQeuU5/Tv/IZ5D
-         z4uHmupgzulx+5cK+K9i7dyiDpE3qjnmiykLWSEtNO6/w3rxgzW7tOWuWkoaTBCvb4GA
-         hIBg==
-X-Gm-Message-State: AOAM530cEal4jKjVOyqnrQGv0hZ5K2GBIIxDbQ8/hoow5CKfQJjEZfL+
-        WCR9jrfq2F9Hft/0eITwXcnnV5fwkoqLcqrW6QI=
-X-Google-Smtp-Source: ABdhPJy2OowZYIl1T4X1usWOqAOBCwRb3K7dLeNSoinh4+lltczA3/V7Gxxs2JSaRSN7aBcGEU3wvEJNLAmqI7ae4+0=
-X-Received: by 2002:a25:4b85:: with SMTP id y127mr9620029yba.181.1642132018202;
- Thu, 13 Jan 2022 19:46:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t7qIz+X+QglQoyCXVE8p/RRZbcs9mwrC8OUUePFdTgE=;
+        b=pg/bzYEjJ84/HbYDoYPXVl8Drpr/GEViyqlvtY/oHSSnj8aLcRzecxIDok/IFooy2u
+         ZYzfnjP5ZATJbdT6wK9NqHjdFSvCczTVf8+eRMmhh8zbJrTMV8Id8N3caw89UOETZzFQ
+         sVlUSJUd0rKTEXNt0/NfmIVtaagC1aTPPfC2F7EH7VMUzQBizmNTXZMlxXZeMSJIs/wG
+         dSsg7KV6chHhoiJ4psbPbPBnKwZJ+B10BKuFf+5zqVKKThM8uo4hdzY0PrmCh7F4hOMr
+         OEKSFtH4EVkWF4RVyH293TzRm2xbYhlJTXfm9W2VjJQPOw0AfTXZSoxlOVrc5DVplDdi
+         VuFA==
+X-Gm-Message-State: AOAM533KVHI75iBZtL63uE3Z0hH7ljwv5n82aXpU7lj3nX2e42mGu1dz
+        38hbODP0xWknxCW1l1JRoWOUybU8GSEasg==
+X-Google-Smtp-Source: ABdhPJyqFviXQgbKM8eEzQ+2rgTCgI9dOBdOYEpCFXed/8nKMozZ/PWf94RAPHeB38p6kHv5WZ5LNg==
+X-Received: by 2002:a63:86c1:: with SMTP id x184mr6336670pgd.324.1642135834324;
+        Thu, 13 Jan 2022 20:50:34 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:502e:73f4:8af1:9522])
+        by smtp.gmail.com with ESMTPSA id k8sm3900534pjj.3.2022.01.13.20.50.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jan 2022 20:50:33 -0800 (PST)
+Date:   Fri, 14 Jan 2022 10:19:50 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v7 02/10] bpf: Populate kfunc BTF ID sets in
+ struct btf
+Message-ID: <20220114044950.24jr6juxbuzxskw2@apollo.legion>
+References: <20220111180428.931466-1-memxor@gmail.com>
+ <20220111180428.931466-3-memxor@gmail.com>
+ <20220113223211.s2m5fkvafd6fk4tv@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7010:73d2:b0:1f6:97ba:bee5 with HTTP; Thu, 13 Jan 2022
- 19:46:57 -0800 (PST)
-Reply-To: fulhammartins8@gmail.com
-From:   Fulham Martins <geleanor650@gmail.com>
-Date:   Thu, 13 Jan 2022 19:46:57 -0800
-Message-ID: <CAD5dpsUpJKt34FTyT89p3OY7JFuA_A0Qhat81k5=JmryzLvYCg@mail.gmail.com>
-Subject: INVESTMENT PARTNERSHIP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220113223211.s2m5fkvafd6fk4tv@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Partner,
+On Fri, Jan 14, 2022 at 04:02:11AM IST, Alexei Starovoitov wrote:
+> On Tue, Jan 11, 2022 at 11:34:20PM +0530, Kumar Kartikeya Dwivedi wrote:
+> >
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  include/linux/btf.h     |  46 ++++++++
+> >  include/linux/btf_ids.h |  13 ++-
+> >  kernel/bpf/btf.c        | 253 +++++++++++++++++++++++++++++++++++++++-
+> >  kernel/bpf/verifier.c   |   1 +
+> >  4 files changed, 305 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index 0c74348cbc9d..95a8238272af 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -12,11 +12,40 @@
+> >  #define BTF_TYPE_EMIT(type) ((void)(type *)0)
+> >  #define BTF_TYPE_EMIT_ENUM(enum_val) ((void)enum_val)
+> >
+> > +enum btf_kfunc_hook {
+> > +	BTF_KFUNC_HOOK_XDP,
+> > +	BTF_KFUNC_HOOK_TC,
+> > +	BTF_KFUNC_HOOK_STRUCT_OPS,
+> > +	BTF_KFUNC_HOOK_MAX,
+> > +};
+>
+> The enum doesn't have to be in .h, right?
+> Would be cleaner to reduce its scope to btf.c
+>
 
-My Name is Mr. Fulham Martins. I am from the United Kingdom.
-It is my resolve to contact you for an investment plan in your country. It is
-no more a secret that investments are thriving fast in your country.
-Therefore, I want to invest in your country and want you to be my
-business partner.
-I am ready to invest in any sector such as Manufacturing, Agriculture,
-Real Estate, Hoteling,etc. or any other business that has good return
-on investment/profitable.
+Ok, will do.
 
-If you choose to be of assistance,I am ready to send the consignment
-fund box to your country regarding the investment
-collaboration or do a direct bank transfer to your account based on
-whatever modalities the investment will entail.
-I am presently based in the United Kingdom and would like to know
-whether you are ready to partner with me on this. Kindly indicate your
-interest to enable us proceed.
-Thank you in anticipation as I look forward to reading your reply on
-fulhammartins8@gmail.com.
+> >  		 */
+> > -		if ((btf_mod->flags & BTF_MODULE_F_LIVE) && try_module_get(btf_mod->module))
+> > +		if ((btf_mod->flags & BTF_MODULE_F_LIVE) && try_module_get(btf_mod->module)) {
+> > +			/* pairs with smp_wmb in register_btf_kfunc_id_set */
+> > +			smp_rmb();
+>
+> Doesn't look necessary. More below.
+>
+> > +/* This function must be invoked only from initcalls/module init functions */
+> > +int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+> > +			      const struct btf_kfunc_id_set *kset)
+> > +{
+> > +	enum btf_kfunc_hook hook;
+> > +	struct btf *btf;
+> > +	int ret;
+> > +
+> > +	btf = btf_get_module_btf(kset->owner);
+> > +	if (IS_ERR_OR_NULL(btf))
+> > +		return btf ? PTR_ERR(btf) : -ENOENT;
+> > +
+> > +	hook = bpf_prog_type_to_kfunc_hook(prog_type);
+> > +	ret = btf_populate_kfunc_set(btf, hook, kset);
+> > +	/* Make sure all updates are visible before we go to MODULE_STATE_LIVE,
+> > +	 * pairs with smp_rmb in btf_try_get_module (for success case).
+> > +	 *
+> > +	 * btf_populate_kfunc_set(...)
+> > +	 * smp_wmb()	<-----------.
+> > +	 * mod->state = LIVE	    |		if (mod->state == LIVE)
+> > +	 *			    |		  atomic_inc_nz(mod)
+> > +	 *			    `--------->	  smp_rmb()
+> > +	 *					  btf_kfunc_id_set_contains(...)
+> > +	 */
+> > +	smp_wmb();
+>
+> This comment somehow implies that mod->state = LIVE
+> and if (mod->state == LIVE && try_mod_get) can race.
+> That's not the case.
+> The patch 1 closed the race.
+> btf_kfunc_id_set_contains() will be called only on LIVE modules.
+> At that point all __init funcs of the module including register_btf_kfunc_id_set()
+> have completed.
+> This smp_wmb/rmb pair serves no purpose.
+> Unless I'm missing something?
+>
 
+Right, I'm no expert on memory ordering, but even if we closed the race, to me
+there seems to be no reason why the CPU cannot reorder the stores to tab (or its
+hook/type slot) with mod->state = LIVE store.
 
-Best regards.
+Usually, the visibility is handled by whatever lock is used to register the
+module somewhere in some subsystem, as the next acquirer can see all updates
+from the previous registration.
 
-Mr.Fulham Martins.
+In this case, we're directly assigning a pointer without holding any locks etc.
+While it won't be concurrently accessed until module state is LIVE, it is
+necessary to make all updates visible in the right order (that is, once state is
+LIVE, everything stored previously in struct btf for module is also visible).
+
+Once mod->state = LIVE is visible, we will start accessing kfunc_set_tab, but if
+previous stores to it were not visible by then, we'll access a badly-formed
+kfunc_set_tab.
+
+For this particular case, you can think of mod->state = LIVE acting as a release
+store, and the read for mod->state == LIVE acting as an acquire load.
+
+But I'm probably being overtly cautious, please let me know why.
+
+> > +	/* reference is only taken for module BTF */
+> > +	if (btf_is_module(btf))
+> > +		btf_put(btf);
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_btf_kfunc_id_set);
+> >
+> >  #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index bfb45381fb3f..b5ea73560a4d 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -1783,6 +1783,7 @@ static struct btf *__find_kfunc_desc_btf(struct bpf_verifier_env *env,
+> >
+> >  		mod = btf_try_get_module(btf);
+> >  		if (!mod) {
+> > +			verbose(env, "failed to get reference for BTF's module\n");
+>
+> This one is highly unlikely, right?
+> One can see it only with a specially crafted test like patch 10.
+> Normal users will never see it. Why add it then?
+> Also there are two places in verifier.c that calls btf_try_get_module().
+> If it's a real concern, both places should have verbose().
+> But I would not add it in either.
+
+Ok, I'll drop this.
+
+Thanks!
+--
+Kartikeya
