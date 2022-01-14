@@ -2,80 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF17D48F262
-	for <lists+bpf@lfdr.de>; Fri, 14 Jan 2022 23:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB4B48F2C9
+	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 00:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbiANWZH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 17:25:07 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:10910 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230081AbiANWZH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 17:25:07 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20EMNr9A028036
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 14:25:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=IEGTdGU+n3wkZ7Tz68UtMVyaSC5LxL+eOneT/Rv+5+8=;
- b=hJ7gw7FxfF4XfS9HlyID1Ay3mgTiqN9VTyMJnZwlLF3NM40evm/yOeuu4Hb5zT9Rd8fL
- O1sYw5Nh6yrE7oGCnTLqh0d1erNXqXbEBAkIpDgfFVMon+YlaDkLdz5KjA7BWoUFN0+B
- N7kVql3o9uLpqF+k0Mili+dibZG1ArTUswg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3djxytwvwb-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 14:25:06 -0800
-Received: from twshared18912.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 14 Jan 2022 14:25:06 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id C0B119066BBA; Fri, 14 Jan 2022 14:24:58 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <phoenix1987@gmail.com>
-CC:     <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <kennyyu@fb.com>, <yhs@fb.com>
-Subject: Re: Proposal: bpf_copy_from_user_remote
-Date:   Fri, 14 Jan 2022 14:24:47 -0800
-Message-ID: <20220114222447.1642516-1-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAGnuNNvgtfBtU5d2FJ9qhjRCQpZTTq7gibgQntt7+SUstn6VKA@mail.gmail.com>
-References: <CAGnuNNvgtfBtU5d2FJ9qhjRCQpZTTq7gibgQntt7+SUstn6VKA@mail.gmail.com>
+        id S229717AbiANXE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 18:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229646AbiANXE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 18:04:26 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B672CC061574;
+        Fri, 14 Jan 2022 15:04:26 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id i65so4065901pfc.9;
+        Fri, 14 Jan 2022 15:04:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=J4+lZIDd6o5zmH05CFS7Chus/4ckzIXTgk91SRnxUls=;
+        b=FTpEGS7qAx/sQGZEcABd019S7Hymf9UHf4a+Z/FjMnKETvgcSNOuprT2LqLixPDeU4
+         my/DZmh4kvT5trb5uQ3kQHJzq/69VUUie5znya1InMaurhjnGjQeyR5fxccRqI+cmpbC
+         w/WhOjbKT3fzbrAceqOtVrj3g5BC76OA3C5KYveiiPrCq9ufFYuHPali89mMa01htUNJ
+         MBap2BbkvaqdkGLioyzQFVXTrBD500qzM+J3gJVNk7Vv1kOTv2zyGl4Qqi0Ar/IuZlT3
+         7w0e/9eoys1y57wiS2gXvQqcdoAwBLuPKp6AB4VU0xZfs8Md1OWiAoeqVo8CVK2ITK95
+         t+Og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=J4+lZIDd6o5zmH05CFS7Chus/4ckzIXTgk91SRnxUls=;
+        b=foP2Z01vh5BnAH+Hp5OB+R4YIugPWpP6kob3kdKS/EsaUa6Kvdk5nGHJilvgeEYTKs
+         kFIFox3YIIx+W5ZkCqvaJPUn8h0I31RP0B7x4FfLvZMuIocMIS9JtFnDHN/t29l6bV65
+         ZJXRgBQOPLw8lCa8qiqBqQfHhZ3H/ejS0xg5FIGMWycKkVTUNeArsRhuIK31LKb16aXe
+         +A+BMXxByWB97z0cTSj087AuEiWnBf57i2woR1ngq1d9yYKrgyXcXkJ26mpmQpRHS0oA
+         HHvqLhWKGEokHafVpuAMUh2K/gN7iYTTeLLwEes5D9TqeDZWI3BFlw0HfmUh//I4xPD+
+         egyw==
+X-Gm-Message-State: AOAM533ie7LS/BP6JQfftXLXdSWXO3wCrTNWcjXSjTRWIWXewvXvREqn
+        Pc7xz6c/Fb4WNnXwec9zJgyIu4ebWIO9dFfdbng=
+X-Google-Smtp-Source: ABdhPJxiGyyevi/x/S48E/qQOg2S+H4ILpi11ez7OVZ6hwF0rP9lAfUr9XzA8Y1pOZL3sRiAWpW5jLpJ1QRsiRsHH4g=
+X-Received: by 2002:a63:a619:: with SMTP id t25mr9755116pge.235.1642201466182;
+ Fri, 14 Jan 2022 15:04:26 -0800 (PST)
 MIME-Version: 1.0
+References: <20220112131204.800307-1-Jason@zx2c4.com> <20220112131204.800307-2-Jason@zx2c4.com>
+ <87tue8ftrm.fsf@toke.dk>
+In-Reply-To: <87tue8ftrm.fsf@toke.dk>
+Reply-To: noloader@gmail.com
+From:   Jeffrey Walton <noloader@gmail.com>
+Date:   Fri, 14 Jan 2022 18:04:14 -0500
+Message-ID: <CAH8yC8=+7p1i6a+_zq3fL5MqHem34vMDGxY+KGcZbjOg1H9q1Q@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 1/3] bpf: move from sha1 to blake2s in tag calculation
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jean-Philippe Aumasson <jeanphilippe.aumasson@gmail.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: jr5HRy5A812KJ4nx3CovNu-P1nFL8_e8
-X-Proofpoint-ORIG-GUID: jr5HRy5A812KJ4nx3CovNu-P1nFL8_e8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-14_06,2022-01-14_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=671
- bulkscore=0 malwarescore=0 clxscore=1015 impostorscore=0 mlxscore=0
- priorityscore=1501 spamscore=0 phishscore=0 lowpriorityscore=0
- adultscore=4 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201140125
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Gabriele,
+On Wed, Jan 12, 2022 at 8:13 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> [ adding the bpf list - please make sure to include that when sending
+>   BPF-related patches, not everyone in BPF land follows netdev ]
+>
+> "Jason A. Donenfeld" <Jason@zx2c4.com> writes:
+>
+> > BLAKE2s is faster and more secure. SHA-1 has been broken for a long tim=
+e
+> > now. This also removes quite a bit of code, and lets us potentially
+> > remove sha1 from lib, which would further reduce vmlinux size.
+>
+> AFAIU, the BPF tag is just used as an opaque (i.e., arbitrary) unique
+> identifier for BPF programs, without any guarantees of stability. Which
+> means changing it should be fine; at most we'd confuse some operators
+> who have memorised the tags of their BPF programs :)
+>
+> The only other concern I could see would be if it somehow locked us into
+> that particular algorithm for other future use cases for computing
+> hashes of BPF programs (say, signing if that ends up being the direction
+> we go in). But obviously SHA1 would not be a good fit for that anyway,
+> so the algorithm choice would have to be part of that discussion in any
+> case.
+>
+> So all in all, I don't see any issues with making this change for BPF.
 
-Thanks for the context about your use case!
+Somewhat related, if BPF is going to move from SHA to something, then
+consider SipHash. Here are the numbers I regularly observe. They
+remain relative the same on 64-bit platforms:
 
-> I don't expect to be needing to iterate over all running tasks, so as
-long as the new helper can be used against specific processes that can
-be identified via pid (and namespace) then I'm totally fine with your
-patch series.
+    * SHA-1: 4.31 cpb using SSE2
+    * BLAKE2s: 4.84 cpb using SSE4.1
+    * BLAKE2b: 3.49 cpb using SSE4.1
+    * SipHash 2-4: 1.54 cpb using C/C++
+    * SipHash 4-8: 2.55 cpb using C/C++
 
-Sounds great! I'll proceed with my patch series based on `access_process_=
-vm`.
+If BPF is Ok with 64-bit tags, then SipHash 2-4 is probably what you
+want on the wish list.
 
-> I switched to access_process_vm (but kept my signature) and got
-something that works as intended for my use.
-
-Awesome!
-
-Thanks,
-Kenny
+Jeff
