@@ -2,183 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A6C48F3E5
-	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 02:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00EE548F406
+	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 02:20:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbiAOBIo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 20:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
+        id S231915AbiAOBS1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 20:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbiAOBIo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 20:08:44 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38444C061574;
-        Fri, 14 Jan 2022 17:08:44 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id x15so9783016ilc.5;
-        Fri, 14 Jan 2022 17:08:44 -0800 (PST)
+        with ESMTP id S231924AbiAOBSZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 20:18:25 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A48EAC06173E;
+        Fri, 14 Jan 2022 17:18:25 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id h23so14357735iol.11;
+        Fri, 14 Jan 2022 17:18:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SguhQSidD98goHcEcMCiT3PaDe/6KqF5jSvhZbAcwRk=;
-        b=NHiGLwf83Z+J4WvcapubnWeXQNYhGQEl4VuM3PQQAStk1h36D1YBs5Nyt5g6c7HJph
-         E9mOJaWWrKC6IcQqeFcM21mbbOAeTgKVNJihbPDFip4jAHUAq+9Zm0XnHHLQeyKrgs0g
-         BIPZ9WM65c/A1vmsU4OTiFsk/Fz+jAdDhhhmRt4WGU9pTZNMMiY+GD/ZIBlKg4h3SB27
-         qitoAMVCl/hmc6W0/F8pH+cFSOKYPVSQYFgYjaHw27oQAzEPsY2rn+zbNHG/9naRBWYO
-         H4Dc64P4YstnCzG1crCDxC8V1FLG7R/7E3mFDyEAJz+gNqZG2Mdmo611Mo9baRDlVJrL
-         5+wQ==
+        bh=KXEATilqjAJHLxRKGFo0bawDLxVl2H1RZHKug2e9tEw=;
+        b=oi5EPxSLPHxSp0z1O2dpwatQowkKC9dX58ELnJWxBQu/F3zGxYgytfEf+iiix+yZxK
+         YWgI0s6yoNEhkJIfqUfUCRq3bprgj1E2Env6m/pgOFQu6+tUmcJJTCEu+mHF1MsRxvYx
+         KUyVglS8WE2/14q/j87A335WHSgAHULve7BCj3A6Rx3X0g8Z+npwMwf29Z1ha6LLn1OM
+         t1yIY7CEgNy7/cSe9g27lnt/2BDfxQP7o3cvb6chOMgH8ag8ipJVcff0P8s3LQ1NnHRl
+         XphquqSFPlrbXGe1FXXeBq7bdaqXaXncvLmeAa5RQwhHWWUO34lHicOIZqUQ6wG8QNIQ
+         DHQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SguhQSidD98goHcEcMCiT3PaDe/6KqF5jSvhZbAcwRk=;
-        b=lG+2bSWsaGG8oYMmZWrwVeCWJwNNcXa85tIX58uZ3v5ryr99+zTeaUXqtCZjVT+TLx
-         bNZ6DudOfNLN5j9nvcglRJ4MwHUrSa1Vqss4WUVAN/JwoVYJH2Slg+Z/lW25K32XO+SG
-         +Sd0+BYijx5lCRlDxdNfcPGxPtun4wQ89mGGHV6QQcqY1IUkhuFV0xt+0nMygYscMmqO
-         xUP61KiqijLRnzIZ1l0zMrssAc7w8uAUxjTAbugIrBGvaZ+xkCMXUd7FvCZoCJ9XXtwx
-         L+ysH48SVIjmjP1BhoCxk6NrMzYfXOlMQz7J4SBo2ztOGAnok7PO6fUY5kqCQMX6he0I
-         xiow==
-X-Gm-Message-State: AOAM533+Xp8gMjN4gjML0QQI8CAzr7oebBAS+deoR7s3rYZp/fDVeoz2
-        o4U31zkbKPEAcUPvMqi8mV/t1PtDQcIxMrUzJxM=
-X-Google-Smtp-Source: ABdhPJwGLYxnU95xaDvzf6OsQToxn3hALPGJAKmy5zkq3aHdqqkbt5gl6/g9wDkG9TeB3ereYnB0dIGh1RV78ImTprE=
-X-Received: by 2002:a05:6e02:1749:: with SMTP id y9mr5705696ill.252.1642208923596;
- Fri, 14 Jan 2022 17:08:43 -0800 (PST)
+        bh=KXEATilqjAJHLxRKGFo0bawDLxVl2H1RZHKug2e9tEw=;
+        b=aqscXm2L8T0d3/Wof9qHUlXZzX0aASc/M+jnZds55lGpOiRawkGxy0h0+Oxb8p+Trj
+         P5QshotTkG5DCZ+M8gB7WYzrOI3Obx1q3/5AxAgh2TA6KyPyzaRZTZSwWrAgwrGo66PA
+         pZy0E3Mz8psVU7RhkrM5uTrB/CEbf8HSiCYwtzsSZ88u2jD2AgQC5iD+IMT3nv0Tjv6c
+         qI1zMcELgPqIkueF6tGsShJp+O7Bvl1OXGsrOc9lELUTevhm++ruIvtKC0Yxtfdt+n/s
+         6iveRyziWlCCBNHJstl5p/87gYSKtYW4BI0qsY56u0T2ev0hV1mLS0qwwgk/mBYrGt1j
+         vNzw==
+X-Gm-Message-State: AOAM5314JfIUp+W6MH73AX64bTcFlJwD1S5c8+6pAWGrCkJRrNyq2KN/
+        03q0PNV1A1zBOdII3W2gHLdQcQbi6jbjk5591A8=
+X-Google-Smtp-Source: ABdhPJxl/Q9EatHWxtATUKdxXRzHCvDyO+ZaPi5ikEf9zh5evVLedYtv6zW17L5IBtIazIluvZW0kHXv1xAHT1CJWTw=
+X-Received: by 2002:a05:6638:410a:: with SMTP id ay10mr5483098jab.237.1642209505103;
+ Fri, 14 Jan 2022 17:18:25 -0800 (PST)
 MIME-Version: 1.0
-References: <164199616622.1247129.783024987490980883.stgit@devnote2>
-In-Reply-To: <164199616622.1247129.783024987490980883.stgit@devnote2>
+References: <20220113090029.1055-1-zhudi2@huawei.com> <20220113090029.1055-2-zhudi2@huawei.com>
+In-Reply-To: <20220113090029.1055-2-zhudi2@huawei.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 14 Jan 2022 17:08:32 -0800
-Message-ID: <CAEf4BzY9qmzemZ=3JSto+eWq9k-kX7hZKgugJRO9zZ61-pasqg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/8] fprobe: Introduce fprobe function entry/exit probe
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 14 Jan 2022 17:18:14 -0800
+Message-ID: <CAEf4Bzb5QArDia5HarAJEsHp6+HHHk0H3vZ5ZBcAZkgwEJLdmA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
+ progs attached to sockmap
+To:     Di Zhu <zhudi2@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, luzhihao@huawei.com,
+        rose.chen@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 6:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Thu, Jan 13, 2022 at 1:01 AM Di Zhu <zhudi2@huawei.com> wrote:
 >
-> Hi Jiri and Alexei,
+> Add test for querying progs attached to sockmap. we use an existing
+> libbpf query interface to query prog cnt before and after progs
+> attaching to sockmap and check whether the queried prog id is right.
 >
-> Here is the 2nd version of fprobe. This version uses the
-> ftrace_set_filter_ips() for reducing the registering overhead.
-> Note that this also drops per-probe point private data, which
-> is not used anyway.
-
-This per-probe private data is necessary for the feature called BPF
-cookie, in which each attachment has a unique user-provided u64 value
-associated to it, accessible at runtime through
-bpf_get_attach_cookie() helper. One way or another we'll need to
-support this to make these multi-attach BPF programs really useful for
-generic tracing applications.
-
-Jiri,
-
-We've discussed with Alexei this week how cookies can be supported for
-multi-attach fentry (where it seems even more challenging than in
-kprobe case), and agreed on rather simple solution, which roughly goes
-like this. When multi-attaching either fentry/fexit program, save
-sorted array of IP addresses and then sorted in the same order as IPs
-list of u64 cookies. At runtime, bpf_get_attach_cookie() helper should
-somehow get access to these two arrays and functions IP (that we
-already have with bpf_get_func_ip()), perform binary search and locate
-necessary cookie. This offloads the overhead of finding this cookie to
-actual call site of bpf_get_attach_cookie() (and it's a log(N), so not
-bad at all, especially if BPF program can be optimized to call this
-helper just once).
-
-I think something like that should be doable for Masami's fprobe-based
-multi-attach kprobes, right? That would allow to have super-fast
-attachment, but still support BPF cookie per each individual IP/kernel
-function attachment. I haven't looked at code thoroughly, though,
-please let me know if I'm missing something fundamental.
-
->
-> This introduces the fprobe, the function entry/exit probe with
-> multiple probe point support. This also introduces the rethook
-> for hooking function return as same as kretprobe does. This
-> abstraction will help us to generalize the fgraph tracer,
-> because we can just switch it from rethook in fprobe, depending
-> on the kernel configuration.
->
-> The patch [1/8] and [7/8] are from your series[1]. Other libbpf
-> patches will not be affected by this change.
->
-> [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
->
-> I also added an out-of-tree (just for testing) patch at the
-> end of this series ([8/8]) for adding a wildcard support to
-> the sample program. With that patch, it shows how long the
-> registration will take;
->
-> # time insmod fprobe_example.ko symbol='btrfs_*'
-> [   36.130947] fprobe_init: 1028 symbols found
-> [   36.177901] fprobe_init: Planted fprobe at btrfs_*
-> real    0m 0.08s
-> user    0m 0.00s
-> sys     0m 0.07s
->
-> Thank you,
->
+> Signed-off-by: Di Zhu <zhudi2@huawei.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 70 +++++++++++++++++++
+>  .../bpf/progs/test_sockmap_progs_query.c      | 24 +++++++
+>  2 files changed, 94 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
 >
-> Jiri Olsa (2):
->       ftrace: Add ftrace_set_filter_ips function
->       bpf: Add kprobe link for attaching raw kprobes
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> index 85db0f4cdd95..06923ea44bad 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> @@ -8,6 +8,7 @@
+>  #include "test_sockmap_update.skel.h"
+>  #include "test_sockmap_invalid_update.skel.h"
+>  #include "test_sockmap_skb_verdict_attach.skel.h"
+> +#include "test_sockmap_progs_query.skel.h"
+>  #include "bpf_iter_sockmap.skel.h"
 >
-> Masami Hiramatsu (6):
->       fprobe: Add ftrace based probe APIs
->       rethook: Add a generic return hook
->       rethook: x86: Add rethook x86 implementation
->       fprobe: Add exit_handler support
->       fprobe: Add sample program for fprobe
->       [DO NOT MERGE] Out-of-tree: Support wildcard symbol option to sample
+>  #define TCP_REPAIR             19      /* TCP sock is under repair right now */
+> @@ -315,6 +316,69 @@ static void test_sockmap_skb_verdict_attach(enum bpf_attach_type first,
+>         test_sockmap_skb_verdict_attach__destroy(skel);
+>  }
 >
->
->  arch/x86/Kconfig                |    1
->  arch/x86/kernel/Makefile        |    1
->  arch/x86/kernel/rethook.c       |  115 ++++++++++++++++++++
->  include/linux/bpf_types.h       |    1
->  include/linux/fprobe.h          |   57 ++++++++++
->  include/linux/ftrace.h          |    3 +
->  include/linux/rethook.h         |   74 +++++++++++++
->  include/linux/sched.h           |    3 +
->  include/uapi/linux/bpf.h        |   12 ++
->  kernel/bpf/syscall.c            |  195 +++++++++++++++++++++++++++++++++-
->  kernel/exit.c                   |    2
->  kernel/fork.c                   |    3 +
->  kernel/kallsyms.c               |    1
->  kernel/trace/Kconfig            |   22 ++++
->  kernel/trace/Makefile           |    2
->  kernel/trace/fprobe.c           |  168 +++++++++++++++++++++++++++++
->  kernel/trace/ftrace.c           |   54 ++++++++-
->  kernel/trace/rethook.c          |  226 +++++++++++++++++++++++++++++++++++++++
->  samples/Kconfig                 |    7 +
->  samples/Makefile                |    1
->  samples/fprobe/Makefile         |    3 +
->  samples/fprobe/fprobe_example.c |  154 +++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h  |   12 ++
->  23 files changed, 1103 insertions(+), 14 deletions(-)
->  create mode 100644 arch/x86/kernel/rethook.c
->  create mode 100644 include/linux/fprobe.h
->  create mode 100644 include/linux/rethook.h
->  create mode 100644 kernel/trace/fprobe.c
->  create mode 100644 kernel/trace/rethook.c
->  create mode 100644 samples/fprobe/Makefile
->  create mode 100644 samples/fprobe/fprobe_example.c
->
+> +static __u32 query_prog_id(int prog_fd)
+> +{
+> +       struct bpf_prog_info info = {};
+> +       __u32 info_len = sizeof(info);
+> +       int err;
+> +
+> +       err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
+> +       if (!ASSERT_OK(err, "bpf_obj_get_info_by_fd") ||
+> +           !ASSERT_EQ(info_len, sizeof(info), "bpf_obj_get_info_by_fd"))
+> +               return 0;
+> +
+> +       return info.id;
+> +}
+> +
+> +static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+> +{
+> +       struct test_sockmap_progs_query *skel;
+> +       int err, map_fd, verdict_fd, duration = 0;
+> +       __u32 attach_flags = 0;
+> +       __u32 prog_ids[3] = {};
+> +       __u32 prog_cnt = 3;
+> +
+> +       skel = test_sockmap_progs_query__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "test_sockmap_progs_query__open_and_load"))
+> +               return;
+> +
+> +       map_fd = bpf_map__fd(skel->maps.sock_map);
+> +
+> +       if (attach_type == BPF_SK_MSG_VERDICT)
+> +               verdict_fd = bpf_program__fd(skel->progs.prog_skmsg_verdict);
+> +       else
+> +               verdict_fd = bpf_program__fd(skel->progs.prog_skb_verdict);
+> +
+> +       err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
+> +                            &attach_flags, prog_ids, &prog_cnt);
+> +       if (!ASSERT_OK(err, "bpf_prog_query failed"))
+> +               goto out;
+> +
+> +       if (!ASSERT_EQ(attach_flags,  0, "wrong attach_flags on query"))
+> +               goto out;
+> +
+> +       if (!ASSERT_EQ(prog_cnt, 0, "wrong program count on query"))
+> +               goto out;
+> +
+> +       err = bpf_prog_attach(verdict_fd, map_fd, attach_type, 0);
+> +       if (!ASSERT_OK(err, "bpf_prog_attach failed"))
+> +               goto out;
+> +
+> +       prog_cnt = 1;
+> +       err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
+> +                            &attach_flags, prog_ids, &prog_cnt);
+> +
+> +       ASSERT_OK(err, "bpf_prog_query failed");
+> +       ASSERT_EQ(attach_flags, 0, "wrong attach_flags on query");
+> +       ASSERT_EQ(prog_cnt, 1, "wrong program count on query");
+> +       ASSERT_EQ(prog_ids[0], query_prog_id(verdict_fd),
+> +                 "wrong prog_ids on query");
+
+See how much easier it is to follow these tests, why didn't you do the
+same with err, attach_flags and prog above?
+
+
+> +
+> +       bpf_prog_detach2(verdict_fd, map_fd, attach_type);
+> +out:
+> +       test_sockmap_progs_query__destroy(skel);
+> +}
+> +
+>  void test_sockmap_basic(void)
+>  {
+>         if (test__start_subtest("sockmap create_update_free"))
+> @@ -341,4 +405,10 @@ void test_sockmap_basic(void)
+>                 test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
+>                                                 BPF_SK_SKB_VERDICT);
+>         }
+> +       if (test__start_subtest("sockmap progs query")) {
+> +               test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
+> +               test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
+> +               test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
+> +               test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
+
+Why are these not separate subtests? What's the benefit of bundling
+them into one subtest?
+
+> +       }
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> new file mode 100644
+> index 000000000000..9d58d61c0dee
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> @@ -0,0 +1,24 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_SOCKMAP);
+> +       __uint(max_entries, 1);
+> +       __type(key, __u32);
+> +       __type(value, __u64);
+> +} sock_map SEC(".maps");
+> +
+> +SEC("sk_skb")
+> +int prog_skb_verdict(struct __sk_buff *skb)
+> +{
+> +       return SK_PASS;
+> +}
+> +
+> +SEC("sk_msg")
+> +int prog_skmsg_verdict(struct sk_msg_md *msg)
+> +{
+> +       return SK_PASS;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > --
-> Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> 2.27.0
+>
