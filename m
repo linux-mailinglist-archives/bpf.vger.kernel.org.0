@@ -2,195 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B9C48F47C
-	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 03:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA64648F47F
+	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 03:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229471AbiAOCiT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 21:38:19 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:35843 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230100AbiAOCiS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 14 Jan 2022 21:38:18 -0500
-Received: from kwepemi100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JbMlL6FKxzccXc;
-        Sat, 15 Jan 2022 10:37:34 +0800 (CST)
-Received: from kwepeml500003.china.huawei.com (7.221.188.182) by
- kwepemi100001.china.huawei.com (7.221.188.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 15 Jan 2022 10:38:16 +0800
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- kwepeml500003.china.huawei.com (7.221.188.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 15 Jan 2022 10:38:15 +0800
-Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
- dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.020;
- Sat, 15 Jan 2022 10:38:15 +0800
-From:   "zhudi (E)" <zhudi2@huawei.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S231187AbiAOCsg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 21:48:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230100AbiAOCsf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 21:48:35 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE09C061574;
+        Fri, 14 Jan 2022 18:48:35 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id x15so9906218ilc.5;
+        Fri, 14 Jan 2022 18:48:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WVBMklvNNHSirRzSBO7rwIwZxmGwlJqNSrC/1eRQQJs=;
+        b=q7Y7AyvREpRvyzJvd9mG8QpJgc4f9TKK1o8cMbl4lAfmf5iuYLlCu316JCsXv4LHga
+         a4u9ZiRKc5hGLU9vQlE3S/mK2/7zUFufGqnbyKgSSTxrWcxva6k9W1/EIlT/JiOrBM2U
+         x+b6gn4hnrj27rICwHUg1/r4K634+n6OexR/I3+M8Am3uh6K3zBmqyh3wOqgryxjS5WH
+         GLXwMgbz1BNXEIz1XOicwvZ+lQaIh8+O/iGyo+1Gq2Vjxd4CNmUyNOT+GqzFbmrvsB8h
+         Tz23etjizxbvEZ8HZZlu+ulSyifwiSe8XMNR+xpQAgVkzuGwHXzVeMl3YffqAadzcHy/
+         7fwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WVBMklvNNHSirRzSBO7rwIwZxmGwlJqNSrC/1eRQQJs=;
+        b=GfNizAjehADO8R1csjVGP6eGDut+rc/Sd3xMnJoatnIzmtEtU3RwbkLSBZnXg4/6zk
+         q/BVIVhc61bBDAFgUV4W2yNkB9m9W+8+LoYasVDZ3KU7uWFPmpqRBKK+pI7x+KLZp2TE
+         kkwoaRhaQkH9KZgGdHZleEdHU+xlVQ5x/JzRshxfPs6gIRW0Xv6sWHQLVaeF+OaWk4vd
+         dLRMVzQlLKThNyOAIZ7BttdWmQf4VM2bm+bqz3hxkRmm7tTlHD1ygtmKIiFkQZz008O8
+         CLzIM7s3nxaANhTcqSXScbAX0uV2vk0v7jdPF8cGJELFonKT963rTqYfQjBCWCa+Q7wz
+         2BoQ==
+X-Gm-Message-State: AOAM533nj3VrTxHDuksvj1cYj8qGDd7uUugtQBFVT9hSXwUytlvsaicV
+        zWTefFxFmvWwz5iuM6TmfGWaHBkNJUlKao1fDHc=
+X-Google-Smtp-Source: ABdhPJxFyLm4CFe/MTXPwN4c9TnJMNNanmFEgTHxBB97ZGoG8S85R/QwJf5XrXA/BJghPO9rt3CmkUnYzQvjwXTrB5c=
+X-Received: by 2002:a05:6e02:1748:: with SMTP id y8mr6327576ill.305.1642214914748;
+ Fri, 14 Jan 2022 18:48:34 -0800 (PST)
+MIME-Version: 1.0
+References: <a05a0e4fdd3c49deaa6671c14bb20a6c@huawei.com>
+In-Reply-To: <a05a0e4fdd3c49deaa6671c14bb20a6c@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 14 Jan 2022 18:48:23 -0800
+Message-ID: <CAEf4BzayhbiWLdRed+isKQk+o9z_GHH0dQECfud8jZAYXQrz6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
+ progs attached to sockmap
+To:     "zhudi (E)" <zhudi2@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
         "Luzhihao (luzhihao, Euler)" <luzhihao@huawei.com>,
         "Chenxiang (EulerOS)" <rose.chen@huawei.com>
-Subject: Re: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Topic: [PATCH bpf-next v5 1/2] bpf: support BPF_PROG_QUERY for progs
- attached to sockmap
-Thread-Index: AdgJuGpZYRQRcgFbS7aTGYtP5nrLLA==
-Date:   Sat, 15 Jan 2022 02:38:15 +0000
-Message-ID: <58661dd93a834a2abbe42dd16da93e0b@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBPbiBUaHUsIEphbiAxMywgMjAyMiBhdCA4OjE1IEFNIEpha3ViIFNpdG5pY2tpIDxqYWt1YkBj
-bG91ZGZsYXJlLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBPbiBUaHUsIEphbiAxMywgMjAyMiBhdCAx
-MDowMCBBTSBDRVQsIERpIFpodSB3cm90ZToNCj4gPiA+IFJpZ2h0IG5vdyB0aGVyZSBpcyBubyB3
-YXkgdG8gcXVlcnkgd2hldGhlciBCUEYgcHJvZ3JhbXMgYXJlDQo+ID4gPiBhdHRhY2hlZCB0byBh
-IHNvY2ttYXAgb3Igbm90Lg0KPiA+ID4NCj4gPiA+IHdlIGNhbiB1c2UgdGhlIHN0YW5kYXJkIGlu
-dGVyZmFjZSBpbiBsaWJicGYgdG8gcXVlcnksIHN1Y2ggYXM6DQo+ID4gPiBicGZfcHJvZ19xdWVy
-eShtYXBGZCwgQlBGX1NLX1NLQl9TVFJFQU1fUEFSU0VSLCAwLCBOVUxMLCAuLi4pOw0KPiA+ID4g
-dGhlIG1hcEZkIGlzIHRoZSBmZCBvZiBzb2NrbWFwLg0KPiA+ID4NCj4gPiA+IFNpZ25lZC1vZmYt
-Ynk6IERpIFpodSA8emh1ZGkyQGh1YXdlaS5jb20+DQo+ID4gPiBBY2tlZC1ieTogWW9uZ2hvbmcg
-U29uZyA8eWhzQGZiLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gIGluY2x1ZGUvbGludXgvYnBmLmgg
-IHwgIDkgKysrKysNCj4gPiA+ICBrZXJuZWwvYnBmL3N5c2NhbGwuYyB8ICA1ICsrKw0KPiA+ID4g
-IG5ldC9jb3JlL3NvY2tfbWFwLmMgIHwgNzgNCj4gKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKy0tLS0NCj4gPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDg1IGluc2VydGlvbnMo
-KyksIDcgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGlu
-dXgvYnBmLmggYi9pbmNsdWRlL2xpbnV4L2JwZi5oDQo+ID4gPiBpbmRleCA2ZTk0N2NkOTExNTIu
-LmM0Y2ExNGM5ZjgzOCAxMDA2NDQNCj4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvYnBmLmgNCj4g
-PiA+ICsrKyBiL2luY2x1ZGUvbGludXgvYnBmLmgNCj4gPiA+IEBAIC0yMDcxLDYgKzIwNzEsOSBA
-QCBpbnQgYnBmX3Byb2dfdGVzdF9ydW5fc3lzY2FsbChzdHJ1Y3QgYnBmX3Byb2cNCj4gKnByb2cs
-DQo+ID4gPiAgaW50IHNvY2tfbWFwX2dldF9mcm9tX2ZkKGNvbnN0IHVuaW9uIGJwZl9hdHRyICph
-dHRyLCBzdHJ1Y3QgYnBmX3Byb2cNCj4gKnByb2cpOw0KPiA+ID4gIGludCBzb2NrX21hcF9wcm9n
-X2RldGFjaChjb25zdCB1bmlvbiBicGZfYXR0ciAqYXR0ciwgZW51bSBicGZfcHJvZ190eXBlDQo+
-IHB0eXBlKTsNCj4gPiA+ICBpbnQgc29ja19tYXBfdXBkYXRlX2VsZW1fc3lzKHN0cnVjdCBicGZf
-bWFwICptYXAsIHZvaWQgKmtleSwgdm9pZA0KPiAqdmFsdWUsIHU2NCBmbGFncyk7DQo+ID4gPiAr
-aW50IHNvY2tfbWFwX2JwZl9wcm9nX3F1ZXJ5KGNvbnN0IHVuaW9uIGJwZl9hdHRyICphdHRyLA0K
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICB1bmlvbiBicGZfYXR0ciBfX3VzZXIgKnVh
-dHRyKTsNCj4gPiA+ICsNCj4gPiA+ICB2b2lkIHNvY2tfbWFwX3VuaGFzaChzdHJ1Y3Qgc29jayAq
-c2spOw0KPiA+ID4gIHZvaWQgc29ja19tYXBfY2xvc2Uoc3RydWN0IHNvY2sgKnNrLCBsb25nIHRp
-bWVvdXQpOw0KPiA+ID4gICNlbHNlDQo+ID4gPiBAQCAtMjEyNCw2ICsyMTI3LDEyIEBAIHN0YXRp
-YyBpbmxpbmUgaW50DQo+IHNvY2tfbWFwX3VwZGF0ZV9lbGVtX3N5cyhzdHJ1Y3QgYnBmX21hcCAq
-bWFwLCB2b2lkICprZXksIHZvaWQNCj4gPiA+ICB7DQo+ID4gPiAgICAgICByZXR1cm4gLUVPUE5P
-VFNVUFA7DQo+ID4gPiAgfQ0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyBpbmxpbmUgaW50IHNvY2tf
-bWFwX2JwZl9wcm9nX3F1ZXJ5KGNvbnN0IHVuaW9uIGJwZl9hdHRyICphdHRyLA0KPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVuaW9uIGJwZl9hdHRyIF9fdXNl
-cg0KPiAqdWF0dHIpDQo+ID4gPiArew0KPiA+ID4gKyAgICAgcmV0dXJuIC1FSU5WQUw7DQo+ID4g
-PiArfQ0KPiA+ID4gICNlbmRpZiAvKiBDT05GSUdfQlBGX1NZU0NBTEwgKi8NCj4gPiA+ICAjZW5k
-aWYgLyogQ09ORklHX05FVCAmJiBDT05GSUdfQlBGX1NZU0NBTEwgKi8NCj4gPiA+DQo+ID4gPiBk
-aWZmIC0tZ2l0IGEva2VybmVsL2JwZi9zeXNjYWxsLmMgYi9rZXJuZWwvYnBmL3N5c2NhbGwuYw0K
-PiA+ID4gaW5kZXggZmE0NTA1ZjliNjExLi45ZTA2MzFmMDkxYTYgMTAwNjQ0DQo+ID4gPiAtLS0g
-YS9rZXJuZWwvYnBmL3N5c2NhbGwuYw0KPiA+ID4gKysrIGIva2VybmVsL2JwZi9zeXNjYWxsLmMN
-Cj4gPiA+IEBAIC0zMzE4LDYgKzMzMTgsMTEgQEAgc3RhdGljIGludCBicGZfcHJvZ19xdWVyeShj
-b25zdCB1bmlvbiBicGZfYXR0cg0KPiAqYXR0ciwNCj4gPiA+ICAgICAgIGNhc2UgQlBGX0ZMT1df
-RElTU0VDVE9SOg0KPiA+ID4gICAgICAgY2FzZSBCUEZfU0tfTE9PS1VQOg0KPiA+ID4gICAgICAg
-ICAgICAgICByZXR1cm4gbmV0bnNfYnBmX3Byb2dfcXVlcnkoYXR0ciwgdWF0dHIpOw0KPiA+ID4g
-KyAgICAgY2FzZSBCUEZfU0tfU0tCX1NUUkVBTV9QQVJTRVI6DQo+ID4gPiArICAgICBjYXNlIEJQ
-Rl9TS19TS0JfU1RSRUFNX1ZFUkRJQ1Q6DQo+ID4gPiArICAgICBjYXNlIEJQRl9TS19NU0dfVkVS
-RElDVDoNCj4gPiA+ICsgICAgIGNhc2UgQlBGX1NLX1NLQl9WRVJESUNUOg0KPiA+ID4gKyAgICAg
-ICAgICAgICByZXR1cm4gc29ja19tYXBfYnBmX3Byb2dfcXVlcnkoYXR0ciwgdWF0dHIpOw0KPiA+
-ID4gICAgICAgZGVmYXVsdDoNCj4gPiA+ICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQo+
-ID4gPiAgICAgICB9DQo+ID4gPiBkaWZmIC0tZ2l0IGEvbmV0L2NvcmUvc29ja19tYXAuYyBiL25l
-dC9jb3JlL3NvY2tfbWFwLmMNCj4gPiA+IGluZGV4IDE4Mjc2NjllZWRkNi4uYTQyNGY1MTA0MWNh
-IDEwMDY0NA0KPiA+ID4gLS0tIGEvbmV0L2NvcmUvc29ja19tYXAuYw0KPiA+ID4gKysrIGIvbmV0
-L2NvcmUvc29ja19tYXAuYw0KPiA+ID4gQEAgLTE0MTYsMzggKzE0MTYsNTAgQEAgc3RhdGljIHN0
-cnVjdCBza19wc29ja19wcm9ncw0KPiAqc29ja19tYXBfcHJvZ3Moc3RydWN0IGJwZl9tYXAgKm1h
-cCkNCj4gPiA+ICAgICAgIHJldHVybiBOVUxMOw0KPiA+ID4gIH0NCj4gPiA+DQo+ID4gPiAtc3Rh
-dGljIGludCBzb2NrX21hcF9wcm9nX3VwZGF0ZShzdHJ1Y3QgYnBmX21hcCAqbWFwLCBzdHJ1Y3Qg
-YnBmX3Byb2cNCj4gKnByb2csDQo+ID4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICBz
-dHJ1Y3QgYnBmX3Byb2cgKm9sZCwgdTMyIHdoaWNoKQ0KPiA+ID4gK3N0YXRpYyBpbnQgc29ja19t
-YXBfcHJvZ19sb29rdXAoc3RydWN0IGJwZl9tYXAgKm1hcCwgc3RydWN0IGJwZl9wcm9nDQo+ICoq
-KnBwcm9nLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTMyIHdoaWNoKQ0K
-PiA+ID4gIHsNCj4gPiA+ICAgICAgIHN0cnVjdCBza19wc29ja19wcm9ncyAqcHJvZ3MgPSBzb2Nr
-X21hcF9wcm9ncyhtYXApOw0KPiA+ID4gLSAgICAgc3RydWN0IGJwZl9wcm9nICoqcHByb2c7DQo+
-ID4gPg0KPiA+ID4gICAgICAgaWYgKCFwcm9ncykNCj4gPiA+ICAgICAgICAgICAgICAgcmV0dXJu
-IC1FT1BOT1RTVVBQOw0KPiA+ID4NCj4gPiA+ICAgICAgIHN3aXRjaCAod2hpY2gpIHsNCj4gPiA+
-ICAgICAgIGNhc2UgQlBGX1NLX01TR19WRVJESUNUOg0KPiA+ID4gLSAgICAgICAgICAgICBwcHJv
-ZyA9ICZwcm9ncy0+bXNnX3BhcnNlcjsNCj4gPiA+ICsgICAgICAgICAgICAgKnBwcm9nID0gJnBy
-b2dzLT5tc2dfcGFyc2VyOw0KPiA+ID4gICAgICAgICAgICAgICBicmVhazsNCj4gPiA+ICAjaWYg
-SVNfRU5BQkxFRChDT05GSUdfQlBGX1NUUkVBTV9QQVJTRVIpDQo+ID4gPiAgICAgICBjYXNlIEJQ
-Rl9TS19TS0JfU1RSRUFNX1BBUlNFUjoNCj4gPiA+IC0gICAgICAgICAgICAgcHByb2cgPSAmcHJv
-Z3MtPnN0cmVhbV9wYXJzZXI7DQo+ID4gPiArICAgICAgICAgICAgICpwcHJvZyA9ICZwcm9ncy0+
-c3RyZWFtX3BhcnNlcjsNCj4gPiA+ICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gPiAgI2VuZGlm
-DQo+ID4gPiAgICAgICBjYXNlIEJQRl9TS19TS0JfU1RSRUFNX1ZFUkRJQ1Q6DQo+ID4gPiAgICAg
-ICAgICAgICAgIGlmIChwcm9ncy0+c2tiX3ZlcmRpY3QpDQo+ID4gPiAgICAgICAgICAgICAgICAg
-ICAgICAgcmV0dXJuIC1FQlVTWTsNCj4gPiA+IC0gICAgICAgICAgICAgcHByb2cgPSAmcHJvZ3Mt
-PnN0cmVhbV92ZXJkaWN0Ow0KPiA+ID4gKyAgICAgICAgICAgICAqcHByb2cgPSAmcHJvZ3MtPnN0
-cmVhbV92ZXJkaWN0Ow0KPiA+ID4gICAgICAgICAgICAgICBicmVhazsNCj4gPiA+ICAgICAgIGNh
-c2UgQlBGX1NLX1NLQl9WRVJESUNUOg0KPiA+ID4gICAgICAgICAgICAgICBpZiAocHJvZ3MtPnN0
-cmVhbV92ZXJkaWN0KQ0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRUJVU1k7
-DQo+ID4gPiAtICAgICAgICAgICAgIHBwcm9nID0gJnByb2dzLT5za2JfdmVyZGljdDsNCj4gPiA+
-ICsgICAgICAgICAgICAgKnBwcm9nID0gJnByb2dzLT5za2JfdmVyZGljdDsNCj4gPiA+ICAgICAg
-ICAgICAgICAgYnJlYWs7DQo+ID4gPiAgICAgICBkZWZhdWx0Og0KPiA+ID4gICAgICAgICAgICAg
-ICByZXR1cm4gLUVPUE5PVFNVUFA7DQo+ID4gPiAgICAgICB9DQo+ID4gPg0KPiA+ID4gKyAgICAg
-cmV0dXJuIDA7DQo+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyBpbnQgc29ja19tYXBf
-cHJvZ191cGRhdGUoc3RydWN0IGJwZl9tYXAgKm1hcCwgc3RydWN0IGJwZl9wcm9nDQo+ICpwcm9n
-LA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGJwZl9wcm9nICpv
-bGQsIHUzMiB3aGljaCkNCj4gPiA+ICt7DQo+ID4gPiArICAgICBzdHJ1Y3QgYnBmX3Byb2cgKipw
-cHJvZzsNCj4gPiA+ICsgICAgIGludCByZXQ7DQo+ID4gPiArDQo+ID4gPiArICAgICByZXQgPSBz
-b2NrX21hcF9wcm9nX2xvb2t1cChtYXAsICZwcHJvZywgd2hpY2gpOw0KPiA+ID4gKyAgICAgaWYg
-KHJldCkNCj4gPiA+ICsgICAgICAgICAgICAgcmV0dXJuIHJldDsNCj4gPiA+ICsNCj4gPiA+ICAg
-ICAgIGlmIChvbGQpDQo+ID4gPiAgICAgICAgICAgICAgIHJldHVybiBwc29ja19yZXBsYWNlX3By
-b2cocHByb2csIHByb2csIG9sZCk7DQo+ID4gPg0KPiA+ID4gQEAgLTE0NTUsNiArMTQ2Nyw1OCBA
-QCBzdGF0aWMgaW50IHNvY2tfbWFwX3Byb2dfdXBkYXRlKHN0cnVjdCBicGZfbWFwDQo+ICptYXAs
-IHN0cnVjdCBicGZfcHJvZyAqcHJvZywNCj4gPiA+ICAgICAgIHJldHVybiAwOw0KPiA+ID4gIH0N
-Cj4gPiA+DQo+ID4gPiAraW50IHNvY2tfbWFwX2JwZl9wcm9nX3F1ZXJ5KGNvbnN0IHVuaW9uIGJw
-Zl9hdHRyICphdHRyLA0KPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICB1bmlvbiBicGZf
-YXR0ciBfX3VzZXIgKnVhdHRyKQ0KPiA+ID4gK3sNCj4gPiA+ICsgICAgIF9fdTMyIF9fdXNlciAq
-cHJvZ19pZHMgPSB1NjRfdG9fdXNlcl9wdHIoYXR0ci0+cXVlcnkucHJvZ19pZHMpOw0KPiA+ID4g
-KyAgICAgdTMyIHByb2dfY250ID0gMCwgZmxhZ3MgPSAwLCB1ZmQgPSBhdHRyLT50YXJnZXRfZmQ7
-DQo+ID4gPiArICAgICBzdHJ1Y3QgYnBmX3Byb2cgKipwcHJvZzsNCj4gPiA+ICsgICAgIHN0cnVj
-dCBicGZfcHJvZyAqcHJvZzsNCj4gPiA+ICsgICAgIHN0cnVjdCBicGZfbWFwICptYXA7DQo+ID4g
-PiArICAgICBzdHJ1Y3QgZmQgZjsNCj4gPiA+ICsgICAgIHUzMiBpZCA9IDA7DQo+ID4gPiArICAg
-ICBpbnQgcmV0Ow0KPiA+ID4gKw0KPiA+ID4gKyAgICAgaWYgKGF0dHItPnF1ZXJ5LnF1ZXJ5X2Zs
-YWdzKQ0KPiA+ID4gKyAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCj4gPiA+ICsNCj4gPiA+
-ICsgICAgIGYgPSBmZGdldCh1ZmQpOw0KPiA+ID4gKyAgICAgbWFwID0gX19icGZfbWFwX2dldChm
-KTsNCj4gPiA+ICsgICAgIGlmIChJU19FUlIobWFwKSkNCj4gPiA+ICsgICAgICAgICAgICAgcmV0
-dXJuIFBUUl9FUlIobWFwKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHJjdV9yZWFkX2xvY2soKTsN
-Cj4gPiA+ICsNCj4gPiA+ICsgICAgIHJldCA9IHNvY2tfbWFwX3Byb2dfbG9va3VwKG1hcCwgJnBw
-cm9nLCBhdHRyLT5xdWVyeS5hdHRhY2hfdHlwZSk7DQo+ID4gPiArICAgICBpZiAocmV0KQ0KPiA+
-ID4gKyAgICAgICAgICAgICBnb3RvIGVuZDsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHByb2cgPSAq
-cHByb2c7DQo+ID4gPiArICAgICBwcm9nX2NudCA9ICFwcm9nID8gMCA6IDE7DQo+ID4gPiArDQo+
-ID4gPiArICAgICBpZiAoIWF0dHItPnF1ZXJ5LnByb2dfY250IHx8ICFwcm9nX2lkcyB8fCAhcHJv
-Z19jbnQpDQo+ID4gPiArICAgICAgICAgICAgIGdvdG8gZW5kOw0KPiA+ID4gKw0KPiA+ID4gKyAg
-ICAgaWQgPSBwcm9nLT5hdXgtPmlkOw0KPiA+DQo+ID4gXiBUaGlzIGxvb2tzIGxpa2UgYSBjb25j
-dXJyZW50IHJlYWQvd3JpdGUuDQo+IA0KPiBZb3UgbWVhbiB0aGF0IGJwZl9wcm9nX2xvYWQoKSBt
-aWdodCBiZSBzZXR0aW5nIGl0IGluIGEgZGlmZmVyZW50DQo+IHRocmVhZD8gSSB0aGluayBJRCBp
-cyBhbGxvY2F0ZWQgYW5kIGZpeGVkIGJlZm9yZSBwcm9nIEZEIGlzIGF2YWlsYWJsZQ0KPiB0byB0
-aGUgdXNlci1zcGFjZSwgc28gcHJvZy0+YXV4LT5pZCBpcyBzZXQgaW4gc3RvbmUgYW5kIGltbXV0
-YWJsZSBpbg0KPiB0aGF0IHJlZ2FyZC4NCg0KV2hhdCB3ZSdyZSB0YWxraW5nIGFib3V0IGhlcmUg
-aXMgdGhhdCBicGZfcHJvZ19mcmVlX2lkKCkgd2lsbCB3cml0ZSB0aGUgaWQNCmlkZW50aWZpZXIg
-c3luY2hyb25vdXNseS4NCg0KPiANCj4gPg0KPiA+IFdvdWxkIHdyYXAgd2l0aCBSRUFEX09OQ0Uo
-KSBhbmQgY29ycmVzcG9uZGluZyBXUklURV9PTkNFKCkgaW4NCj4gPiBicGZfcHJvZ19mcmVlX2lk
-KCkuIFNlZSBbMV0gZm9yIHJhdGlvbmFsZS4NCj4gPg0KPiA+IFsxXQ0KPiBodHRwczovL2dpdGh1
-Yi5jb20vZ29vZ2xlL2tlcm5lbC1zYW5pdGl6ZXJzL2Jsb2IvbWFzdGVyL290aGVyL1JFQURfV1JJ
-VEVfTw0KPiBOQ0UubWQNCj4gPg0KPiA+ID4gKw0KPiA+ID4gKyAgICAgLyogd2UgZG8gbm90IGhv
-bGQgdGhlIHJlZmNudCwgdGhlIGJwZiBwcm9nIG1heSBiZSByZWxlYXNlZA0KPiA+ID4gKyAgICAg
-ICogYXN5bmNocm9ub3VzbHkgYW5kIHRoZSBpZCB3b3VsZCBiZSBzZXQgdG8gMC4NCj4gPiA+ICsg
-ICAgICAqLw0KPiA+ID4gKyAgICAgaWYgKGlkID09IDApDQo+ID4gPiArICAgICAgICAgICAgIHBy
-b2dfY250ID0gMDsNCj4gPiA+ICsNCj4gPiA+ICtlbmQ6DQo+ID4gPiArICAgICByY3VfcmVhZF91
-bmxvY2soKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIGlmIChjb3B5X3RvX3VzZXIoJnVhdHRyLT5x
-dWVyeS5hdHRhY2hfZmxhZ3MsICZmbGFncywgc2l6ZW9mKGZsYWdzKSkgfHwNCj4gPiA+ICsgICAg
-ICAgICAoaWQgIT0gMCAmJiBjb3B5X3RvX3VzZXIocHJvZ19pZHMsICZpZCwgc2l6ZW9mKHUzMikp
-KSB8fA0KPiA+ID4gKyAgICAgICAgIGNvcHlfdG9fdXNlcigmdWF0dHItPnF1ZXJ5LnByb2dfY250
-LCAmcHJvZ19jbnQsDQo+IHNpemVvZihwcm9nX2NudCkpKQ0KPiA+ID4gKyAgICAgICAgICAgICBy
-ZXQgPSAtRUZBVUxUOw0KPiA+ID4gKw0KPiA+ID4gKyAgICAgZmRwdXQoZik7DQo+ID4gPiArICAg
-ICByZXR1cm4gcmV0Ow0KPiA+ID4gK30NCj4gPiA+ICsNCj4gPiA+ICBzdGF0aWMgdm9pZCBzb2Nr
-X21hcF91bmxpbmsoc3RydWN0IHNvY2sgKnNrLCBzdHJ1Y3Qgc2tfcHNvY2tfbGluayAqbGluaykN
-Cj4gPiA+ICB7DQo+ID4gPiAgICAgICBzd2l0Y2ggKGxpbmstPm1hcC0+bWFwX3R5cGUpIHsNCg==
+On Fri, Jan 14, 2022 at 6:34 PM zhudi (E) <zhudi2@huawei.com> wrote:
+>
+> > On Thu, Jan 13, 2022 at 1:01 AM Di Zhu <zhudi2@huawei.com> wrote:
+> > >
+> > > Add test for querying progs attached to sockmap. we use an existing
+> > > libbpf query interface to query prog cnt before and after progs
+> > > attaching to sockmap and check whether the queried prog id is right.
+> > >
+> > > Signed-off-by: Di Zhu <zhudi2@huawei.com>
+> > > Acked-by: Yonghong Song <yhs@fb.com>
+> > > ---
+> > >  .../selftests/bpf/prog_tests/sockmap_basic.c  | 70 +++++++++++++++++++
+> > >  .../bpf/progs/test_sockmap_progs_query.c      | 24 +++++++
+> > >  2 files changed, 94 insertions(+)
+> > >  create mode 100644
+> > tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > > index 85db0f4cdd95..06923ea44bad 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
+> > > @@ -8,6 +8,7 @@
+> > >  #include "test_sockmap_update.skel.h"
+> > >  #include "test_sockmap_invalid_update.skel.h"
+> > >  #include "test_sockmap_skb_verdict_attach.skel.h"
+> > > +#include "test_sockmap_progs_query.skel.h"
+> > >  #include "bpf_iter_sockmap.skel.h"
+> > >
+> > >  #define TCP_REPAIR             19      /* TCP sock is under repair
+> > right now */
+> > > @@ -315,6 +316,69 @@ static void test_sockmap_skb_verdict_attach(enum
+> > bpf_attach_type first,
+> > >         test_sockmap_skb_verdict_attach__destroy(skel);
+> > >  }
+> > >
+> > > +static __u32 query_prog_id(int prog_fd)
+> > > +{
+> > > +       struct bpf_prog_info info = {};
+> > > +       __u32 info_len = sizeof(info);
+> > > +       int err;
+> > > +
+> > > +       err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
+> > > +       if (!ASSERT_OK(err, "bpf_obj_get_info_by_fd") ||
+> > > +           !ASSERT_EQ(info_len, sizeof(info), "bpf_obj_get_info_by_fd"))
+> > > +               return 0;
+> > > +
+> > > +       return info.id;
+> > > +}
+> > > +
+> > > +static void test_sockmap_progs_query(enum bpf_attach_type attach_type)
+> > > +{
+> > > +       struct test_sockmap_progs_query *skel;
+> > > +       int err, map_fd, verdict_fd, duration = 0;
+> > > +       __u32 attach_flags = 0;
+> > > +       __u32 prog_ids[3] = {};
+> > > +       __u32 prog_cnt = 3;
+> > > +
+> > > +       skel = test_sockmap_progs_query__open_and_load();
+> > > +       if (!ASSERT_OK_PTR(skel,
+> > "test_sockmap_progs_query__open_and_load"))
+> > > +               return;
+> > > +
+> > > +       map_fd = bpf_map__fd(skel->maps.sock_map);
+> > > +
+> > > +       if (attach_type == BPF_SK_MSG_VERDICT)
+> > > +               verdict_fd =
+> > bpf_program__fd(skel->progs.prog_skmsg_verdict);
+> > > +       else
+> > > +               verdict_fd =
+> > bpf_program__fd(skel->progs.prog_skb_verdict);
+> > > +
+> > > +       err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
+> > > +                            &attach_flags, prog_ids, &prog_cnt);
+> > > +       if (!ASSERT_OK(err, "bpf_prog_query failed"))
+> > > +               goto out;
+> > > +
+> > > +       if (!ASSERT_EQ(attach_flags,  0, "wrong attach_flags on query"))
+> > > +               goto out;
+> > > +
+> > > +       if (!ASSERT_EQ(prog_cnt, 0, "wrong program count on query"))
+> > > +               goto out;
+
+I mean here that you can do just
+
+ASSERT_OK(err, ...);
+ASSERT_EQ(attach_flags, ...);
+ASSERT_EQ(prog_cnt, ...);
+
+No if + goto necessary.
+
+> > > +
+> > > +       err = bpf_prog_attach(verdict_fd, map_fd, attach_type, 0);
+> > > +       if (!ASSERT_OK(err, "bpf_prog_attach failed"))
+> > > +               goto out;
+> > > +
+> > > +       prog_cnt = 1;
+> > > +       err = bpf_prog_query(map_fd, attach_type, 0 /* query flags */,
+> > > +                            &attach_flags, prog_ids, &prog_cnt);
+> > > +
+> > > +       ASSERT_OK(err, "bpf_prog_query failed");
+> > > +       ASSERT_EQ(attach_flags, 0, "wrong attach_flags on query");
+> > > +       ASSERT_EQ(prog_cnt, 1, "wrong program count on query");
+> > > +       ASSERT_EQ(prog_ids[0], query_prog_id(verdict_fd),
+> > > +                 "wrong prog_ids on query");
+> >
+> > See how much easier it is to follow these tests, why didn't you do the
+> > same with err, attach_flags and prog above?
+>
+> It is recommended by Yonghong Song to increase the test coverage.
+
+see above
+
+>
+> >
+> >
+> > > +
+> > > +       bpf_prog_detach2(verdict_fd, map_fd, attach_type);
+> > > +out:
+> > > +       test_sockmap_progs_query__destroy(skel);
+> > > +}
+> > > +
+> > >  void test_sockmap_basic(void)
+> > >  {
+> > >         if (test__start_subtest("sockmap create_update_free"))
+> > > @@ -341,4 +405,10 @@ void test_sockmap_basic(void)
+> > >
+> > test_sockmap_skb_verdict_attach(BPF_SK_SKB_STREAM_VERDICT,
+> > >
+> > BPF_SK_SKB_VERDICT);
+> > >         }
+> > > +       if (test__start_subtest("sockmap progs query")) {
+> > > +               test_sockmap_progs_query(BPF_SK_MSG_VERDICT);
+> > > +
+> > test_sockmap_progs_query(BPF_SK_SKB_STREAM_PARSER);
+> > > +
+> > test_sockmap_progs_query(BPF_SK_SKB_STREAM_VERDICT);
+> > > +               test_sockmap_progs_query(BPF_SK_SKB_VERDICT);
+> >
+> > Why are these not separate subtests? What's the benefit of bundling
+> > them into one subtest?
+> >
+>
+> These are essentially doing the same thing, just for different program attach types.
+
+Right, so they are independent subtests, no? Not separate tests, but
+not one subtest either.
+
+>
+> > > +       }
+> > >  }
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> > b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> > > new file mode 100644
+> > > index 000000000000..9d58d61c0dee
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/progs/test_sockmap_progs_query.c
+> > > @@ -0,0 +1,24 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +#include "vmlinux.h"
+> > > +#include <bpf/bpf_helpers.h>
+> > > +
+> > > +struct {
+> > > +       __uint(type, BPF_MAP_TYPE_SOCKMAP);
+> > > +       __uint(max_entries, 1);
+> > > +       __type(key, __u32);
+> > > +       __type(value, __u64);
+> > > +} sock_map SEC(".maps");
+> > > +
+> > > +SEC("sk_skb")
+> > > +int prog_skb_verdict(struct __sk_buff *skb)
+> > > +{
+> > > +       return SK_PASS;
+> > > +}
+> > > +
+> > > +SEC("sk_msg")
+> > > +int prog_skmsg_verdict(struct sk_msg_md *msg)
+> > > +{
+> > > +       return SK_PASS;
+> > > +}
+> > > +
+> > > +char _license[] SEC("license") = "GPL";
+> > > --
+> > > 2.27.0
+> > >
