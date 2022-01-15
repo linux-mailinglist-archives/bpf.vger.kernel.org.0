@@ -2,140 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A51EC48F7C6
-	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 17:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58248F7F8
+	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 17:47:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbiAOQ1X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 15 Jan 2022 11:27:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
+        id S229784AbiAOQrH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 15 Jan 2022 11:47:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbiAOQ1W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 15 Jan 2022 11:27:22 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09131C061574
-        for <bpf@vger.kernel.org>; Sat, 15 Jan 2022 08:27:22 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id b77so7687789vka.11
-        for <bpf@vger.kernel.org>; Sat, 15 Jan 2022 08:27:21 -0800 (PST)
+        with ESMTP id S229471AbiAOQrH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 15 Jan 2022 11:47:07 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87903C061574;
+        Sat, 15 Jan 2022 08:47:06 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id a18so46360564edj.7;
+        Sat, 15 Jan 2022 08:47:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oLqTxGPNrdM0GkhGN4pNoNHhFJ25kVJNaFi/jnCk1OA=;
-        b=gMITlJB0MfzuPajFWeauMcWTFypJ/wa2uzcdqHDQujVNy0Z791b4ltCg1vHPJdPQAO
-         4Blq6Mp5gyZId1tiVOCKLb2SZRMKCbaKL1ot3hYze/0jJ/7zdHQhTyUdir6BwypSw1JQ
-         scBC9eOR7qzipC3fxH1YgDbtkfFYj8RXD+Y61Zr6r0rrZ2WASk9ja9iCM4CmYH3bNYn5
-         DKRYoDLov5yar4Uvf5Yf74AzcHnAFJ1hUAh9wVjK8+5Vq8kyuxovrE6Me2LiPxcQ+FhH
-         TwBuFC0mXSFWRCN9pFxE8nqeESsjQlqzdo9CSwRgZ2lINOIQFfeLji/IR8JnajFh7brc
-         Dw2A==
+         :cc:content-transfer-encoding;
+        bh=umg3fmIHEU7ouEUqxByuwXez80RylgBi5NxgeR5uNbQ=;
+        b=XtM7/t4yjYeD7SB0BHoS/8zjCi3EyHDHyN8e+nPG3/QFmujQ1mEftGtLVzA59gNri8
+         N5EOUb0FZImDOY6t+xgq0FqVwNXEMSuIGL651CgPH7ooF5ASBPja9tL8vOv4LsuCpXC9
+         EgTXJLVNtSwXVfPBRMcln6JzB52gwoca0kNu4Y7K6zU5I3Px4vCIY7c0c2AWIEBDAajA
+         YiI7OjPLq8qUmyPHDc9t8kBS+RCNmgXkyHxf8Y5PiTHKt7JXIkufiuhCaHc1KTuoWler
+         yeh7qkRQuaqLP65bFQrf1xvodxCRXRBFt4SlqstNUwoQ7nX73QeHJevivhiASdeiwZBi
+         9E2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oLqTxGPNrdM0GkhGN4pNoNHhFJ25kVJNaFi/jnCk1OA=;
-        b=4o2udLdioKHZakf8qL9GrR8LZ++uWP7U+bqmH/jvRfaBNiUn2WQH5SKZQz8QCnHGmp
-         Q+qeFnHwgyTmyGx+3qzhwhPaTrt0hZOT344xEz+o7EnPRBaFiJ5vkwmFwmJzehxhBu4X
-         0gxpVyaEsHc19ZTsaDyOei5Na9UEbLN9Q8ZXRgaETAgbgKiFgiBQb0mtgb2jyyGcLqcO
-         qg8b/VmkpGk0yrEaKN5u/0vMCPxvAz6tr0BzPEsf6Blu9NpLX5akIrtmM/V0F1+FSZcK
-         IoVsmV/IY55/ndhdSJIa68qpr4Rd3RjOKAt+RG1UTIpSva/9/EVpbanDQp0Wg/Os3aRr
-         MqCQ==
-X-Gm-Message-State: AOAM532P7zB0ofjfxaoDh55SXT1hYnouOfyjYI9K93AVmY48ed+GbhzF
-        toSC6lhm4gh5T3nSgUH92o8YaOxQG7LKYMUlezs=
-X-Google-Smtp-Source: ABdhPJw6o8UYWChXystjf/WPHGtw6uUVGXgoXUyqlevHYY9jji/h/SLaleZc4a3f4bAdI117n5tu1D6Hupm/x7vlj4w=
-X-Received: by 2002:a05:6122:219e:: with SMTP id j30mr2898255vkd.34.1642264041019;
- Sat, 15 Jan 2022 08:27:21 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=umg3fmIHEU7ouEUqxByuwXez80RylgBi5NxgeR5uNbQ=;
+        b=BWeApdd+nIB72WcIRjsObTiIs/JOqW25mhqK+O+2+gVeXHwamRGuau35nZEbHmcqbh
+         3HPNtYY19R+ed3fF+GcQ9eCsoIX7N9rGc4y19yi0vnpCahZvoUr/55fFIF8TN9X6/7My
+         cd48yUWGA9uWgFULUY4GGXXx9RJcNK4AeNNa2A2JoBWmqK43rtIQLACBj+Q1VhoBiuwR
+         vVECPCRMbAcVP2d6rnQdfDXtSnbxT3OpKZJTkzg9IVlad+2JoxZQPRGTCZs/M2NRbtKp
+         L3GNiW72sz+vM7MAbu91EBINPilJaEjTEYmmGBPLCe2aVGARGfyBtymdZp2xXZS7HDbN
+         msaw==
+X-Gm-Message-State: AOAM533C9GfiLjjr8JdWNk+S3CUXqP6lQARe0aYLrWfECFA1PtcPJSgM
+        rxaCAFFqB5LA7JykS30DkX8faXoRhKyGSOSJl7g=
+X-Google-Smtp-Source: ABdhPJyH0UIPV8JqnNsONGk7+0AcajsTKmtphUYvVBb6LJAlzTTQZj8ELY3WoewqdICJa2EcIezozG5CquyVZSmgNis=
+X-Received: by 2002:a05:6402:289a:: with SMTP id eg26mr334586edb.318.1642265225026;
+ Sat, 15 Jan 2022 08:47:05 -0800 (PST)
 MIME-Version: 1.0
-References: <CAADnVQ+nS1++7NwcAPuwO26CcuvNnPVMQgtwi4FDNcmHQEBm8g@mail.gmail.com>
- <20220114231426.426052-1-kennyyu@fb.com> <CAEf4BzY9s1ngF_ja_rrpY=1cNX=byVSjptNT-LaEKTsUJEfP6Q@mail.gmail.com>
-In-Reply-To: <CAEf4BzY9s1ngF_ja_rrpY=1cNX=byVSjptNT-LaEKTsUJEfP6Q@mail.gmail.com>
-From:   Gabriele <phoenix1987@gmail.com>
-Date:   Sat, 15 Jan 2022 16:27:10 +0000
-Message-ID: <CAGnuNNv0TVQ3ZSYjJgJh1Dxasc9pX-QTwVApYyW7Q0xEy0Bgng@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: Add test for sleepable bpf
- iterator programs
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     Kenny Yu <kennyyu@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20220111192952.49040-1-ivan@cloudflare.com> <CAA93jw6HKLh857nuh2eX2N=siYz5wwQknMaOtpkqLzpfWTGhuA@mail.gmail.com>
+ <CABWYdi0ZHYvzzP9SFOCJhnfyMP12Ot9ALEmXg75oeXBWRAD8KQ@mail.gmail.com>
+ <CAA93jw5+LjKLcCaNr5wJGPrXhbjvLhts8hqpKPFx7JeWG4g0AA@mail.gmail.com> <CABWYdi1p=rRQM3oySw2+N+mcrUq3bXA5MXm8cHmC3=qfCU5SDA@mail.gmail.com>
+In-Reply-To: <CABWYdi1p=rRQM3oySw2+N+mcrUq3bXA5MXm8cHmC3=qfCU5SDA@mail.gmail.com>
+From:   Dave Taht <dave.taht@gmail.com>
+Date:   Sat, 15 Jan 2022 08:46:52 -0800
+Message-ID: <CAA93jw435mThYcBA_7Sf1Z6W_bZrLuK8FLHw8AgAwg0+3y6PBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] tcp: bpf: Add TCP_BPF_RCV_SSTHRESH for bpf_setsockopt
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 15 Jan 2022 at 15:48, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+On Fri, Jan 14, 2022 at 2:21 PM Ivan Babrou <ivan@cloudflare.com> wrote:
 >
-> On Fri, Jan 14, 2022 at 3:14 PM Kenny Yu <kennyyu@fb.com> wrote:
+> On Thu, Jan 13, 2022 at 9:44 PM Dave Taht <dave.taht@gmail.com> wrote:
+> > Yes, but with the caveats below. I'm fine with you just saying round tr=
+ips,
+> > and making this api possible.
 > >
-> > Hi Alexei,
-> >
-> > > > +// New helper added
-> > > > +static long (*bpf_access_process_vm)(
-> > > > +       struct task_struct *tsk,
-> > > > +       unsigned long addr,
-> > > > +       void *buf,
-> > > > +       int len,
-> > > > +       unsigned int gup_flags) = (void *)186;
-> > >
-> > > This shouldn't be needed.
-> > > Since patch 1 updates tools/include/uapi/linux/bpf.h
-> > > it will be in bpf_helper_defs.h automatically.
-> >
-> > I will fix. This is my first time writing selftests, so I am not too familiar
-> > with how these are built and run. For my understanding, are these tests
-> > meant to be built and run after booting the new kernel?
+> > It would comfort me further if you could provide an actual scenario.
 >
-> Look at vmtest.sh under tools/testing/selftests/bpf, it handles
-> building kernel, selftests and spinning up qemu instance for running
-> selftests inside it.
+> The actual scenario is getting a response as quickly as possible on a
+> fresh connection across long distances (200ms+ RTT). If an RPC
+> response doesn't fit into the initial 64k of rcv_ssthresh, we end up
+> requiring more roundrips to receive the response. Some customers are
+> very picky about the latency they measure and cutting the extra
+> roundtrips made a very visible difference in the tests.
 >
+> > See also:
 > >
-> > > > +
-> > > > +// Copied from include/linux/mm.h
-> > > > +#define FOLL_REMOTE 0x2000 /* we are working on non-current tsk/mm */
-> > >
-> > > Please use C style comments only.
+> > https://datatracker.ietf.org/doc/html/rfc6928
 > >
-> > I will fix.
+> > which predates packet pacing (are you using sch_fq?)
+>
+> We are using fq and bbr.
+>
+> > > Congestion window is a learned property, not a static number. You
+> > > won't get a large initcwnd towards a poor connection.
 > >
-> > > > +       numread = bpf_access_process_vm(task,
-> > > > +                                       (unsigned long)ptr,
-> > > > +                                       (void *)&user_data,
-> > > > +                                       sizeof(uint32_t),
-> > > > +                                       FOLL_REMOTE);
-> > >
-> > > We probably would need to hide flags like FOLL_REMOTE
-> > > inside the helper otherwise prog might confuse the kernel.
-> > > In this case I'm not even sure that FOLL_REMOTE is needed.
-> > > I suspect gup_flags=0 in all cases will work fine.
-> > > We're not doing write here and not pining anything.
-> > > fast_gup is not necessary either.
-> >
-> > Thanks for the suggestion! I'll remove the flag argument from the helper
-> > to simplify the API for bpf programs. This means that the helper will have
-> > the following signature:
-> >
-> >   bpf_access_process_vm(struct task_struct *tsk,
-> >                         unsigned long addr,
-> >                         void *buf,
-> >                         int len);
->
-> keeping generic u64 flags makes sense for the future, so I'd keep it.
->
-> But I also wanted to point out that this helper is logically in the
-> same family as bpf_probe_read_kernel/user and bpf_copy_from_user, etc,
-> where we have consistent pattern that first two arguments specify
-> destination buffer (so buf + len) and the remaining ones specify
-> source (in probe_read it's just an address, here it's tsk_addr). So I
-> wonder if it would be less surprising and more consistent to reorder
-> and have:
->
-> buf, len, tsk, addr, flags
->
-> ?
->
+> > initcwnd is set globally or on a per route basis.
 
-I would personally find it more intuitive to have process information
-passed as either the first argument (like process_vm_readv does), or
-as "last", just before the flags (as extra information required w.r.t.
-to local versions, e.g. bpf_copy_from_user).
+Like I said, retaining state from an existing connection as to the
+window is ok. i think arbitrarily declaring a window like this
+for a new connection is not.
+
+> With TCP_BPF_IW the world is your oyster.
+
+The oyster has to co-habit in this ocean with all the other life
+there, and I would be comforted if your customer also tracked various
+other TCP_INFO statistics, like RTT growth, loss, marks, and
+retransmits, and was aware of not just the self harm inflicted but of
+collateral damage. In fact I really wish more were instrumenting
+everything with that, of late we've seen a lot of need for
+TCP_NOTSENT_LOWAT in things like apache traffic server in containers.
+A simple one line patch for an widely used app I can't talk about, did
+wonders for actual perceived throughput and responsiveness by the end
+user. Measuring from the reciever is far, far more important than
+measuring from the sender. Collecting long term statistics over many
+connections, also, from
+the real world. I hope y'all have been instrumenting your work as well
+as google has, on these fronts.
+
+I know that I'm getting old and crunchy and scarred by seeing so many
+(corporate wifi mostly) networks over the last decade essentially in
+congestion collapse!
+
+https://blog.apnic.net/2020/01/22/bufferbloat-may-be-solved-but-its-not-ove=
+r-yet/
+
+I'm very happy with how well sch_fq + packet pacing works to mitigate
+impuses like this, as well as with so many other things like BBR and
+BQL, but pacing out !=3D pacing in,
+and despite my fervent wish for more FQ+AQM techniques on more
+bottleneck links also, we're not there yet.
+
+I like very much that BPF is allowing rapid innovation, but with great
+power comes great responsibility.
+--=20
+I tried to build a better future, a few times:
+https://wayforward.archive.org/?site=3Dhttps%3A%2F%2Fwww.icei.org
+
+Dave T=C3=A4ht CEO, TekLibre, LLC
