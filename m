@@ -2,96 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7872148F4C4
-	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 05:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7658248F4CA
+	for <lists+bpf@lfdr.de>; Sat, 15 Jan 2022 05:39:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbiAOEax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 14 Jan 2022 23:30:53 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:14686 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229952AbiAOEax (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 14 Jan 2022 23:30:53 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20F1bert032580
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 20:30:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=v8K5tXsQCuF/GzOTc0UogewuOgJA5yUQ67i5GMBrxJc=;
- b=YXaVFZkA7T1QJOQgbx7DQPdwDN4R3Ml5Mm27nOLBZ/5nL+OpQdGyNUaseR+x2WjiiUli
- i7NLDmw07LlNJYFxRWPSLqIg6Sg96jVRMo2gThOIaQ0No1wZa8FCCgUzSeqvNVqQiQHv
- 60ucm9qNAzr3Om+ZqrcZm+y/ZSftkA80rlo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dkaecm40b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 14 Jan 2022 20:30:52 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 14 Jan 2022 20:30:51 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 0F21090A211A; Fri, 14 Jan 2022 20:30:37 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <andrii.nakryiko@gmail.com>
-CC:     <alexei.starovoitov@gmail.com>, <andrii@kernel.org>,
-        <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <kennyyu@fb.com>, <yhs@fb.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: Add test for sleepable bpf iterator programs
-Date:   Fri, 14 Jan 2022 20:30:26 -0800
-Message-ID: <20220115043026.1401889-1-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAEf4BzY9s1ngF_ja_rrpY=1cNX=byVSjptNT-LaEKTsUJEfP6Q@mail.gmail.com>
-References: <CAEf4BzY9s1ngF_ja_rrpY=1cNX=byVSjptNT-LaEKTsUJEfP6Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: FavqonTrmjLNACWEO0du8a_HFiAFNwjb
-X-Proofpoint-ORIG-GUID: FavqonTrmjLNACWEO0du8a_HFiAFNwjb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-15_01,2022-01-14_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 bulkscore=0 adultscore=0
- malwarescore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2201150023
-X-FB-Internal: deliver
+        id S232486AbiAOEjQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 14 Jan 2022 23:39:16 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:46010 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232483AbiAOEjQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 14 Jan 2022 23:39:16 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D8EC9B82A3F;
+        Sat, 15 Jan 2022 04:39:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB737C36AE3;
+        Sat, 15 Jan 2022 04:39:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642221553;
+        bh=Lmw0vnQYmWnz1sy8w6vxj9DD1VhxFXZBl4P4Jg4yq/w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZCQYVVEZGKXxUXg07KpzKKYBf449x8VFMf4m6GuD2mqoi+QiHmDAOu8vU6moy9CK8
+         zWTxMxTX5/L5M1Ka2gA2sgmMS+oRyeecauqGf8wD0v+E8EEv9o5GjQ4720OUKadL6Z
+         0FrUNOWwuWnUatKXjZtLVwcFZOBmH97XizYRIgt4BXmGVEEnXK1OGANfounfdyJexz
+         odmNVhmDZ3OV5IJY+c8b+oCSjd6zWHfDixXtEjFiTGGa8/Y8aYgfxnMt5FQ4IQvIOa
+         Gw1wVApnGt2fXnW+QOBPH7KaYzvvDjROUPMFhWLYKfXipl4anZz3Gv0lr3GW06ERkc
+         YGpyCsbdkLiWw==
+Date:   Sat, 15 Jan 2022 13:39:07 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v2 3/8] rethook: Add a generic return hook
+Message-Id: <20220115133907.2a713806100fc0f7a562a96b@kernel.org>
+In-Reply-To: <YeGUNRH9MiF7dgVs@krava>
+References: <164199616622.1247129.783024987490980883.stgit@devnote2>
+        <164199620208.1247129.13021391608719523669.stgit@devnote2>
+        <YeAaUN8aUip3MUn8@krava>
+        <20220113221532.c48abf7f56d29ba95dcb0dc6@kernel.org>
+        <YeGUNRH9MiF7dgVs@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
+On Fri, 14 Jan 2022 16:18:13 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-> Look at vmtest.sh under tools/testing/selftests/bpf, it handles
-> building kernel, selftests and spinning up qemu instance for running
-> selftests inside it.
+> On Thu, Jan 13, 2022 at 10:15:32PM +0900, Masami Hiramatsu wrote:
+> > On Thu, 13 Jan 2022 13:25:52 +0100
+> > Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > > On Wed, Jan 12, 2022 at 11:03:22PM +0900, Masami Hiramatsu wrote:
+> > > > Add a return hook framework which hooks the function
+> > > > return. Most of the idea came from the kretprobe, but
+> > > > this is independent from kretprobe.
+> > > > Note that this is expected to be used with other
+> > > > function entry hooking feature, like ftrace, fprobe,
+> > > > adn kprobes. Eventually this will replace the
+> > > > kretprobe (e.g. kprobe + rethook = kretprobe), but
+> > > > at this moment, this is just a additional hook.
+> > > 
+> > > this looks similar to the code kretprobe is using now
+> > 
+> > Yes, I've mostly re-typed the code :)
+> > 
+> > > would it make sense to incrementaly change current code to provide
+> > > this rethook interface? instead of big switch of current kretprobe
+> > > to kprobe + new rethook interface in future?
+> > 
+> > Would you mean modifying the kretprobe instance code to provide
+> > similar one, and rename it at some point?
+> > My original idea is to keep the current kretprobe code and build
+> > up the similar one, and switch to it at some point. Actually,
+> > I don't want to change the current kretprobe interface itself,
+> > but the backend will be changed. For example, current kretprobe
+> > has below interface.
+> > 
+> > struct kretprobe {
+> >         struct kprobe kp;
+> >         kretprobe_handler_t handler;
+> >         kretprobe_handler_t entry_handler;
+> >         int maxactive;
+> >         int nmissed;
+> >         size_t data_size;
+> >         struct freelist_head freelist;
+> >         struct kretprobe_holder *rph;
+> > };
+> > 
+> > My idea is switching it to below.
+> > 
+> > struct kretprobe {
+> >         struct kprobe kp;
+> >         kretprobe_handler_t handler;
+> >         kretprobe_handler_t entry_handler;
+> >         int maxactive;
+> >         int nmissed;
+> >         size_t data_size;
+> >         struct rethook *rethook;
+> > };
+> 
+> looks good, will this be a lot of changes?
 
-Thanks, this helps!
+Yes and no, we can easily replace the kretprobe generic trampoline
+callback (since it almost same, and have same feature), but it also
+needs to update per-arch kretprobe trampoline to rethook trampoline.
 
-> keeping generic u64 flags makes sense for the future, so I'd keep it.
+> could you include it in the patchset?
 
-That makes sense, I'll keep the flags in that case.
+Let me try, but since it involves many archs (which support kretprobes)
+it may take a time to be merged.
 
-> But I also wanted to point out that this helper is logically in the
-> same family as bpf_probe_read_kernel/user and bpf_copy_from_user, etc,
-> where we have consistent pattern that first two arguments specify
-> destination buffer (so buf + len) and the remaining ones specify
-> source (in probe_read it's just an address, here it's tsk_addr). So I
-> wonder if it would be less surprising and more consistent to reorder
-> and have:
->=20
-> buf, len, tsk, addr, flags
->
-> ?
+Thank you,
 
-Yeah, that looks better for consistency. Should I still keep the name
-as `bpf_access_process_vm`, or call it something else to be more consiste=
-nt
-with the naming of the other bpf helpers? The benefit of the
-`bpf_access_process_vm` name is that it makes it obvious it is wrapping
-an existing function `access_process_vm`.=20
+> 
+> thanks,
+> jirka
+> 
+> > 
+> > Of course 'kretprobe_instance' may need to be changed...
+> > 
+> > struct kretprobe_instance {
+> > 	struct rethook_node;
+> > 	char data[];
+> > };
+> > 
+> > But even though, since there is 'get_kretprobe(ri)' wrapper, user
+> > will be able to access the 'struct kretprobe' from kretprobe_instance
+> > transparently.
+> > 
+> > Thank you,
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu <mhiramat@kernel.org>
+> > 
+> 
 
-Thanks for the feedback!
 
-Kenny
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
