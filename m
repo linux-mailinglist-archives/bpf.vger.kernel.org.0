@@ -2,186 +2,244 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5777C49006D
-	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 03:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28929490230
+	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 07:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233989AbiAQC76 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Jan 2022 21:59:58 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:31094 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbiAQC75 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Jan 2022 21:59:57 -0500
-Received: from kwepemi100002.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Jcc3x3rPgz1FChT;
-        Mon, 17 Jan 2022 10:56:13 +0800 (CST)
-Received: from kwepeml500003.china.huawei.com (7.221.188.182) by
- kwepemi100002.china.huawei.com (7.221.188.188) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 17 Jan 2022 10:59:55 +0800
-Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
- kwepeml500003.china.huawei.com (7.221.188.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 17 Jan 2022 10:59:55 +0800
-Received: from dggpeml500011.china.huawei.com ([7.185.36.84]) by
- dggpeml500011.china.huawei.com ([7.185.36.84]) with mapi id 15.01.2308.020;
- Mon, 17 Jan 2022 10:59:55 +0800
-From:   "zhudi (E)" <zhudi2@huawei.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Luzhihao (luzhihao, Euler)" <luzhihao@huawei.com>,
-        "Chenxiang (EulerOS)" <rose.chen@huawei.com>
-Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
- progs attached to sockmap
-Thread-Topic: [PATCH bpf-next v5 2/2] selftests: bpf: test BPF_PROG_QUERY for
- progs attached to sockmap
-Thread-Index: AdgLTktk3At/PtlUThCT0czbKVqVNQ==
-Date:   Mon, 17 Jan 2022 02:59:55 +0000
-Message-ID: <7ac10b7b68b94337971f6d755f735e68@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.136.114.155]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S232187AbiAQG5Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jan 2022 01:57:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231831AbiAQG5Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jan 2022 01:57:24 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AFAC061574
+        for <bpf@vger.kernel.org>; Sun, 16 Jan 2022 22:57:23 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id u21so61372051edd.5
+        for <bpf@vger.kernel.org>; Sun, 16 Jan 2022 22:57:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AMuVkbtMKfwly1qcQszqXLxDg3nFtxQOhJQIDjSWv0c=;
+        b=qLiFfZBgykeKUg5V+Q9xOvMWxBTbX6B5fx0oUA4fmlEbQCuZJpmiEGaatlzh1Drp1j
+         QckBWvDYzalUuX7y1BqHF6bjnItmRCAKPhZLs8JZGRQnoCFfgVN2dzCiqn54oJGO60bK
+         l+WMQcIhlahSqIfT8CBhYJlwQSio7U/A4aQ/LMKACoNbNfzhcqYMCoQV6fWEScr8WdAZ
+         0is4GCbn5UF5R4sPvnwmfG3JCbsvohDMAp3usaqvoqPsofV0dySv+68aBHGNJtjohW4U
+         HERBZDmfhTZ3xECj4vTb2w6va3EBg0moKgM1anS6uoX7HBIiPFF1VzEQYhQLg4PwwOsH
+         Wj2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AMuVkbtMKfwly1qcQszqXLxDg3nFtxQOhJQIDjSWv0c=;
+        b=LMrZHZNQIfQTSX/+4ygxWvV5RiV9MRuEOwFG0e56fbb4jc3SBsedqfrCPz+Uz2q++Z
+         yXZObqFXqDcir75/aWtZV5a7sIGlaSgUcC3pU1YCDBphuVUniSKqmyuktLlG4z+jZC4E
+         +qxVaZKICudYwZrvkzOrrQy+Mb3f0bik4I6KovVW+fjRl89gmiC3cUQ/If9CH8udpCgB
+         sfuUuv2wXDd5UyOgQ/3pnPp9qVaPwtyIr/HsKYIKqJDj2UVwUNhy7tA+6YTwZQkPna3E
+         AU6tTNYFKthMvcdyRybxt9L5thu5wxkMjJ+MhHczR0tGUovOw13Vjd8hX9htVtNC/I3p
+         xGGA==
+X-Gm-Message-State: AOAM533DrHKAyDPLpyWOCBORypMRYjOnrL6WkiPWK+9PvG8lCX9bSgeE
+        hy+Q0d68S5PWbzcfL3u6kSwguC1h9eBlKbSYlD8=
+X-Google-Smtp-Source: ABdhPJxUIf6IByWQKasmWWdsmFVy1TRQ+DQqXGgddBOIbOBWLYhpNym1De2IruTm+tp/aH9AdOzyHMam+gCtEQitEU4=
+X-Received: by 2002:a05:6402:268a:: with SMTP id w10mr19722164edd.10.1642402642066;
+ Sun, 16 Jan 2022 22:57:22 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <CAMy7=ZXqyoaw0mOk2Z8ADxUSs95B=SRgvTua3vRJ00nS5qTFgQ@mail.gmail.com>
+ <CAEf4BzY-H7ySLukPn+aUm55DhDxfO07e45J4V1q1bLqpDZ98_Q@mail.gmail.com>
+ <CAMy7=ZV_SVoHPxCvcm0NJttg0pgq0ccfjUj9egszWnC0cjXoLg@mail.gmail.com> <CAEf4BzZ8=dV0wvggAKnD64yXnhcXhdf1ovCT_LBd17RtJJXrdA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ8=dV0wvggAKnD64yXnhcXhdf1ovCT_LBd17RtJJXrdA@mail.gmail.com>
+From:   Yaniv Agman <yanivagman@gmail.com>
+Date:   Mon, 17 Jan 2022 08:57:11 +0200
+Message-ID: <CAMy7=ZW60WmV5R9myXCzrZGZXMrPhO+dwaW8+aABUJO9pMV+yA@mail.gmail.com>
+Subject: Re: libbpf API: dynamically load(/unload/attach/detach) bpf programs question
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, michael.tcherniack@aquasec.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiBPbiBGcmksIEphbiAxNCwgMjAyMiBhdCA2OjM0IFBNIHpodWRpIChFKSA8emh1ZGkyQGh1YXdl
-aS5jb20+IHdyb3RlOg0KPiA+DQo+ID4gPiBPbiBUaHUsIEphbiAxMywgMjAyMiBhdCAxOjAxIEFN
-IERpIFpodSA8emh1ZGkyQGh1YXdlaS5jb20+IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBBZGQg
-dGVzdCBmb3IgcXVlcnlpbmcgcHJvZ3MgYXR0YWNoZWQgdG8gc29ja21hcC4gd2UgdXNlIGFuIGV4
-aXN0aW5nDQo+ID4gPiA+IGxpYmJwZiBxdWVyeSBpbnRlcmZhY2UgdG8gcXVlcnkgcHJvZyBjbnQg
-YmVmb3JlIGFuZCBhZnRlciBwcm9ncw0KPiA+ID4gPiBhdHRhY2hpbmcgdG8gc29ja21hcCBhbmQg
-Y2hlY2sgd2hldGhlciB0aGUgcXVlcmllZCBwcm9nIGlkIGlzIHJpZ2h0Lg0KPiA+ID4gPg0KPiA+
-ID4gPiBTaWduZWQtb2ZmLWJ5OiBEaSBaaHUgPHpodWRpMkBodWF3ZWkuY29tPg0KPiA+ID4gPiBB
-Y2tlZC1ieTogWW9uZ2hvbmcgU29uZyA8eWhzQGZiLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+
-ICAuLi4vc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3NvY2ttYXBfYmFzaWMuYyAgfCA3MA0KPiAr
-KysrKysrKysrKysrKysrKysrDQo+ID4gPiA+ICAuLi4vYnBmL3Byb2dzL3Rlc3Rfc29ja21hcF9w
-cm9nc19xdWVyeS5jICAgICAgfCAyNCArKysrKysrDQo+ID4gPiA+ICAyIGZpbGVzIGNoYW5nZWQs
-IDk0IGluc2VydGlvbnMoKykNCj4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiA+ID4gdG9v
-bHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3Rfc29ja21hcF9wcm9nc19xdWVyeS5j
-DQo+ID4gPiA+DQo+ID4gPiA+IGRpZmYgLS1naXQgYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9i
-cGYvcHJvZ190ZXN0cy9zb2NrbWFwX2Jhc2ljLmMNCj4gPiA+IGIvdG9vbHMvdGVzdGluZy9zZWxm
-dGVzdHMvYnBmL3Byb2dfdGVzdHMvc29ja21hcF9iYXNpYy5jDQo+ID4gPiA+IGluZGV4IDg1ZGIw
-ZjRjZGQ5NS4uMDY5MjNlYTQ0YmFkIDEwMDY0NA0KPiA+ID4gPiAtLS0gYS90b29scy90ZXN0aW5n
-L3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9zb2NrbWFwX2Jhc2ljLmMNCj4gPiA+ID4gKysrIGIv
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvc29ja21hcF9iYXNpYy5jDQo+
-ID4gPiA+IEBAIC04LDYgKzgsNyBAQA0KPiA+ID4gPiAgI2luY2x1ZGUgInRlc3Rfc29ja21hcF91
-cGRhdGUuc2tlbC5oIg0KPiA+ID4gPiAgI2luY2x1ZGUgInRlc3Rfc29ja21hcF9pbnZhbGlkX3Vw
-ZGF0ZS5za2VsLmgiDQo+ID4gPiA+ICAjaW5jbHVkZSAidGVzdF9zb2NrbWFwX3NrYl92ZXJkaWN0
-X2F0dGFjaC5za2VsLmgiDQo+ID4gPiA+ICsjaW5jbHVkZSAidGVzdF9zb2NrbWFwX3Byb2dzX3F1
-ZXJ5LnNrZWwuaCINCj4gPiA+ID4gICNpbmNsdWRlICJicGZfaXRlcl9zb2NrbWFwLnNrZWwuaCIN
-Cj4gPiA+ID4NCj4gPiA+ID4gICNkZWZpbmUgVENQX1JFUEFJUiAgICAgICAgICAgICAxOSAgICAg
-IC8qIFRDUCBzb2NrIGlzIHVuZGVyIHJlcGFpcg0KPiA+ID4gcmlnaHQgbm93ICovDQo+ID4gPiA+
-IEBAIC0zMTUsNiArMzE2LDY5IEBAIHN0YXRpYyB2b2lkDQo+IHRlc3Rfc29ja21hcF9za2JfdmVy
-ZGljdF9hdHRhY2goZW51bQ0KPiA+ID4gYnBmX2F0dGFjaF90eXBlIGZpcnN0LA0KPiA+ID4gPiAg
-ICAgICAgIHRlc3Rfc29ja21hcF9za2JfdmVyZGljdF9hdHRhY2hfX2Rlc3Ryb3koc2tlbCk7DQo+
-ID4gPiA+ICB9DQo+ID4gPiA+DQo+ID4gPiA+ICtzdGF0aWMgX191MzIgcXVlcnlfcHJvZ19pZChp
-bnQgcHJvZ19mZCkNCj4gPiA+ID4gK3sNCj4gPiA+ID4gKyAgICAgICBzdHJ1Y3QgYnBmX3Byb2df
-aW5mbyBpbmZvID0ge307DQo+ID4gPiA+ICsgICAgICAgX191MzIgaW5mb19sZW4gPSBzaXplb2Yo
-aW5mbyk7DQo+ID4gPiA+ICsgICAgICAgaW50IGVycjsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAg
-ICAgIGVyciA9IGJwZl9vYmpfZ2V0X2luZm9fYnlfZmQocHJvZ19mZCwgJmluZm8sICZpbmZvX2xl
-bik7DQo+ID4gPiA+ICsgICAgICAgaWYgKCFBU1NFUlRfT0soZXJyLCAiYnBmX29ial9nZXRfaW5m
-b19ieV9mZCIpIHx8DQo+ID4gPiA+ICsgICAgICAgICAgICFBU1NFUlRfRVEoaW5mb19sZW4sIHNp
-emVvZihpbmZvKSwNCj4gImJwZl9vYmpfZ2V0X2luZm9fYnlfZmQiKSkNCj4gPiA+ID4gKyAgICAg
-ICAgICAgICAgIHJldHVybiAwOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgcmV0dXJuIGlu
-Zm8uaWQ7DQo+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPiA+ID4gK3N0YXRpYyB2b2lkIHRlc3Rf
-c29ja21hcF9wcm9nc19xdWVyeShlbnVtIGJwZl9hdHRhY2hfdHlwZQ0KPiBhdHRhY2hfdHlwZSkN
-Cj4gPiA+ID4gK3sNCj4gPiA+ID4gKyAgICAgICBzdHJ1Y3QgdGVzdF9zb2NrbWFwX3Byb2dzX3F1
-ZXJ5ICpza2VsOw0KPiA+ID4gPiArICAgICAgIGludCBlcnIsIG1hcF9mZCwgdmVyZGljdF9mZCwg
-ZHVyYXRpb24gPSAwOw0KPiA+ID4gPiArICAgICAgIF9fdTMyIGF0dGFjaF9mbGFncyA9IDA7DQo+
-ID4gPiA+ICsgICAgICAgX191MzIgcHJvZ19pZHNbM10gPSB7fTsNCj4gPiA+ID4gKyAgICAgICBf
-X3UzMiBwcm9nX2NudCA9IDM7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICBza2VsID0gdGVz
-dF9zb2NrbWFwX3Byb2dzX3F1ZXJ5X19vcGVuX2FuZF9sb2FkKCk7DQo+ID4gPiA+ICsgICAgICAg
-aWYgKCFBU1NFUlRfT0tfUFRSKHNrZWwsDQo+ID4gPiAidGVzdF9zb2NrbWFwX3Byb2dzX3F1ZXJ5
-X19vcGVuX2FuZF9sb2FkIikpDQo+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm47DQo+ID4g
-PiA+ICsNCj4gPiA+ID4gKyAgICAgICBtYXBfZmQgPSBicGZfbWFwX19mZChza2VsLT5tYXBzLnNv
-Y2tfbWFwKTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIGlmIChhdHRhY2hfdHlwZSA9PSBC
-UEZfU0tfTVNHX1ZFUkRJQ1QpDQo+ID4gPiA+ICsgICAgICAgICAgICAgICB2ZXJkaWN0X2ZkID0N
-Cj4gPiA+IGJwZl9wcm9ncmFtX19mZChza2VsLT5wcm9ncy5wcm9nX3NrbXNnX3ZlcmRpY3QpOw0K
-PiA+ID4gPiArICAgICAgIGVsc2UNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHZlcmRpY3RfZmQg
-PQ0KPiA+ID4gYnBmX3Byb2dyYW1fX2ZkKHNrZWwtPnByb2dzLnByb2dfc2tiX3ZlcmRpY3QpOw0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgZXJyID0gYnBmX3Byb2dfcXVlcnkobWFwX2ZkLCBh
-dHRhY2hfdHlwZSwgMCAvKiBxdWVyeSBmbGFncyAqLywNCj4gPiA+ID4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAmYXR0YWNoX2ZsYWdzLCBwcm9nX2lkcywgJnByb2dfY250KTsNCj4gPiA+
-ID4gKyAgICAgICBpZiAoIUFTU0VSVF9PSyhlcnIsICJicGZfcHJvZ19xdWVyeSBmYWlsZWQiKSkN
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsg
-ICAgICAgaWYgKCFBU1NFUlRfRVEoYXR0YWNoX2ZsYWdzLCAgMCwgIndyb25nIGF0dGFjaF9mbGFn
-cyBvbiBxdWVyeSIpKQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgZ290byBvdXQ7DQo+ID4gPiA+
-ICsNCj4gPiA+ID4gKyAgICAgICBpZiAoIUFTU0VSVF9FUShwcm9nX2NudCwgMCwgIndyb25nIHBy
-b2dyYW0gY291bnQgb24gcXVlcnkiKSkNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGdvdG8gb3V0
-Ow0KPiANCj4gSSBtZWFuIGhlcmUgdGhhdCB5b3UgY2FuIGRvIGp1c3QNCj4gDQo+IEFTU0VSVF9P
-SyhlcnIsIC4uLik7DQo+IEFTU0VSVF9FUShhdHRhY2hfZmxhZ3MsIC4uLik7DQo+IEFTU0VSVF9F
-UShwcm9nX2NudCwgLi4uKTsNCj4gDQo+IE5vIGlmICsgZ290byBuZWNlc3NhcnkuDQoNCkkgc2Vl
-IHdoYXQgeW91IG1lYW4uIEknbGwgbW9kaWZ5IHRoZSBjb2RlLCB0aGFua3MNCg0KPiANCj4gPiA+
-ID4gKw0KPiA+ID4gPiArICAgICAgIGVyciA9IGJwZl9wcm9nX2F0dGFjaCh2ZXJkaWN0X2ZkLCBt
-YXBfZmQsIGF0dGFjaF90eXBlLCAwKTsNCj4gPiA+ID4gKyAgICAgICBpZiAoIUFTU0VSVF9PSyhl
-cnIsICJicGZfcHJvZ19hdHRhY2ggZmFpbGVkIikpDQo+ID4gPiA+ICsgICAgICAgICAgICAgICBn
-b3RvIG91dDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIHByb2dfY250ID0gMTsNCj4gPiA+
-ID4gKyAgICAgICBlcnIgPSBicGZfcHJvZ19xdWVyeShtYXBfZmQsIGF0dGFjaF90eXBlLCAwIC8q
-IHF1ZXJ5IGZsYWdzICovLA0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICZh
-dHRhY2hfZmxhZ3MsIHByb2dfaWRzLCAmcHJvZ19jbnQpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsg
-ICAgICAgQVNTRVJUX09LKGVyciwgImJwZl9wcm9nX3F1ZXJ5IGZhaWxlZCIpOw0KPiA+ID4gPiAr
-ICAgICAgIEFTU0VSVF9FUShhdHRhY2hfZmxhZ3MsIDAsICJ3cm9uZyBhdHRhY2hfZmxhZ3Mgb24g
-cXVlcnkiKTsNCj4gPiA+ID4gKyAgICAgICBBU1NFUlRfRVEocHJvZ19jbnQsIDEsICJ3cm9uZyBw
-cm9ncmFtIGNvdW50IG9uIHF1ZXJ5Iik7DQo+ID4gPiA+ICsgICAgICAgQVNTRVJUX0VRKHByb2df
-aWRzWzBdLCBxdWVyeV9wcm9nX2lkKHZlcmRpY3RfZmQpLA0KPiA+ID4gPiArICAgICAgICAgICAg
-ICAgICAid3JvbmcgcHJvZ19pZHMgb24gcXVlcnkiKTsNCj4gPiA+DQo+ID4gPiBTZWUgaG93IG11
-Y2ggZWFzaWVyIGl0IGlzIHRvIGZvbGxvdyB0aGVzZSB0ZXN0cywgd2h5IGRpZG4ndCB5b3UgZG8g
-dGhlDQo+ID4gPiBzYW1lIHdpdGggZXJyLCBhdHRhY2hfZmxhZ3MgYW5kIHByb2cgYWJvdmU/DQo+
-ID4NCj4gPiBJdCBpcyByZWNvbW1lbmRlZCBieSBZb25naG9uZyBTb25nIHRvIGluY3JlYXNlIHRo
-ZSB0ZXN0IGNvdmVyYWdlLg0KPiANCj4gc2VlIGFib3ZlDQo+IA0KPiA+DQo+ID4gPg0KPiA+ID4N
-Cj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIGJwZl9wcm9nX2RldGFjaDIodmVyZGljdF9mZCwg
-bWFwX2ZkLCBhdHRhY2hfdHlwZSk7DQo+ID4gPiA+ICtvdXQ6DQo+ID4gPiA+ICsgICAgICAgdGVz
-dF9zb2NrbWFwX3Byb2dzX3F1ZXJ5X19kZXN0cm95KHNrZWwpOw0KPiA+ID4gPiArfQ0KPiA+ID4g
-PiArDQo+ID4gPiA+ICB2b2lkIHRlc3Rfc29ja21hcF9iYXNpYyh2b2lkKQ0KPiA+ID4gPiAgew0K
-PiA+ID4gPiAgICAgICAgIGlmICh0ZXN0X19zdGFydF9zdWJ0ZXN0KCJzb2NrbWFwIGNyZWF0ZV91
-cGRhdGVfZnJlZSIpKQ0KPiA+ID4gPiBAQCAtMzQxLDQgKzQwNSwxMCBAQCB2b2lkIHRlc3Rfc29j
-a21hcF9iYXNpYyh2b2lkKQ0KPiA+ID4gPg0KPiA+ID4gdGVzdF9zb2NrbWFwX3NrYl92ZXJkaWN0
-X2F0dGFjaChCUEZfU0tfU0tCX1NUUkVBTV9WRVJESUNULA0KPiA+ID4gPg0KPiA+ID4gQlBGX1NL
-X1NLQl9WRVJESUNUKTsNCj4gPiA+ID4gICAgICAgICB9DQo+ID4gPiA+ICsgICAgICAgaWYgKHRl
-c3RfX3N0YXJ0X3N1YnRlc3QoInNvY2ttYXAgcHJvZ3MgcXVlcnkiKSkgew0KPiA+ID4gPiArICAg
-ICAgICAgICAgICAgdGVzdF9zb2NrbWFwX3Byb2dzX3F1ZXJ5KEJQRl9TS19NU0dfVkVSRElDVCk7
-DQo+ID4gPiA+ICsNCj4gPiA+IHRlc3Rfc29ja21hcF9wcm9nc19xdWVyeShCUEZfU0tfU0tCX1NU
-UkVBTV9QQVJTRVIpOw0KPiA+ID4gPiArDQo+ID4gPiB0ZXN0X3NvY2ttYXBfcHJvZ3NfcXVlcnko
-QlBGX1NLX1NLQl9TVFJFQU1fVkVSRElDVCk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICB0ZXN0
-X3NvY2ttYXBfcHJvZ3NfcXVlcnkoQlBGX1NLX1NLQl9WRVJESUNUKTsNCj4gPiA+DQo+ID4gPiBX
-aHkgYXJlIHRoZXNlIG5vdCBzZXBhcmF0ZSBzdWJ0ZXN0cz8gV2hhdCdzIHRoZSBiZW5lZml0IG9m
-IGJ1bmRsaW5nDQo+ID4gPiB0aGVtIGludG8gb25lIHN1YnRlc3Q/DQo+ID4gPg0KPiA+DQo+ID4g
-VGhlc2UgYXJlIGVzc2VudGlhbGx5IGRvaW5nIHRoZSBzYW1lIHRoaW5nLCBqdXN0IGZvciBkaWZm
-ZXJlbnQgcHJvZ3JhbSBhdHRhY2gNCj4gdHlwZXMuDQo+IA0KPiBSaWdodCwgc28gdGhleSBhcmUg
-aW5kZXBlbmRlbnQgc3VidGVzdHMsIG5vPyBOb3Qgc2VwYXJhdGUgdGVzdHMsIGJ1dA0KPiBub3Qg
-b25lIHN1YnRlc3QgZWl0aGVyLg0KDQpPaywgSSdsbCBzcGxpdCBpdCBpbnRvIHNldmVyYWwgc3Vi
-c2V0cy4NCg0KPiA+DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiAgfQ0KPiA+ID4gPiBkaWZm
-IC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3Rlc3Rfc29ja21hcF9w
-cm9nc19xdWVyeS5jDQo+ID4gPiBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy90
-ZXN0X3NvY2ttYXBfcHJvZ3NfcXVlcnkuYw0KPiA+ID4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0K
-PiA+ID4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLjlkNThkNjFjMGRlZQ0KPiA+ID4gPiAtLS0gL2Rl
-di9udWxsDQo+ID4gPiA+ICsrKyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9ncy90
-ZXN0X3NvY2ttYXBfcHJvZ3NfcXVlcnkuYw0KPiA+ID4gPiBAQCAtMCwwICsxLDI0IEBADQo+ID4g
-PiA+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+ID4gPiArI2luY2x1
-ZGUgInZtbGludXguaCINCj4gPiA+ID4gKyNpbmNsdWRlIDxicGYvYnBmX2hlbHBlcnMuaD4NCj4g
-PiA+ID4gKw0KPiA+ID4gPiArc3RydWN0IHsNCj4gPiA+ID4gKyAgICAgICBfX3VpbnQodHlwZSwg
-QlBGX01BUF9UWVBFX1NPQ0tNQVApOw0KPiA+ID4gPiArICAgICAgIF9fdWludChtYXhfZW50cmll
-cywgMSk7DQo+ID4gPiA+ICsgICAgICAgX190eXBlKGtleSwgX191MzIpOw0KPiA+ID4gPiArICAg
-ICAgIF9fdHlwZSh2YWx1ZSwgX191NjQpOw0KPiA+ID4gPiArfSBzb2NrX21hcCBTRUMoIi5tYXBz
-Iik7DQo+ID4gPiA+ICsNCj4gPiA+ID4gK1NFQygic2tfc2tiIikNCj4gPiA+ID4gK2ludCBwcm9n
-X3NrYl92ZXJkaWN0KHN0cnVjdCBfX3NrX2J1ZmYgKnNrYikNCj4gPiA+ID4gK3sNCj4gPiA+ID4g
-KyAgICAgICByZXR1cm4gU0tfUEFTUzsNCj4gPiA+ID4gK30NCj4gPiA+ID4gKw0KPiA+ID4gPiAr
-U0VDKCJza19tc2ciKQ0KPiA+ID4gPiAraW50IHByb2dfc2ttc2dfdmVyZGljdChzdHJ1Y3Qgc2tf
-bXNnX21kICptc2cpDQo+ID4gPiA+ICt7DQo+ID4gPiA+ICsgICAgICAgcmV0dXJuIFNLX1BBU1M7
-DQo+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPiA+ID4gK2NoYXIgX2xpY2Vuc2VbXSBTRUMoImxp
-Y2Vuc2UiKSA9ICJHUEwiOw0KPiA+ID4gPiAtLQ0KPiA+ID4gPiAyLjI3LjANCj4gPiA+ID4NCg==
+=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=95=D7=
+=B3, 14 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2022 =D7=91-22:03 =D7=9E=D7=90=D7=AA=
+ =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+<=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+>
+> On Wed, Jan 12, 2022 at 2:42 AM Yaniv Agman <yanivagman@gmail.com> wrote:
+> >
+> > =E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=92=
+=D7=B3, 11 =D7=91=D7=99=D7=A0=D7=95=D7=B3 2022 =D7=91-22:59 =D7=9E=D7=90=D7=
+=AA =E2=80=AAAndrii Nakryiko=E2=80=AC=E2=80=8F
+> > <=E2=80=AAandrii.nakryiko@gmail.com=E2=80=AC=E2=80=8F>:=E2=80=AC
+> > >
+> > > On Tue, Jan 11, 2022 at 4:33 AM Yaniv Agman <yanivagman@gmail.com> wr=
+ote:
+> > > >
+> > > > Hello!
+> > > >
+> > > > I noticed that the bpf_program__load() API was deprecated since lib=
+bpf
+> > > > 0.6 saying that bpf_object__load() should be used instead.
+> > > > This, however, doesn't seem to fit our use case of loading multiple
+> > > > bpf programs (that also share the same maps) from one bpf object (e=
+lf
+> > > > file), then unloading and loading them dynamically according to som=
+e
+> > > > given needs.
+> > >
+> > > What's the use case for loading, then unloading, and then loading aga=
+in?
+> >
+> > In Tracee we have different bpf programs (tracepoints, kprobes, tc)
+> > used to send events and capture data according to what was chosen by
+> > the user.
+> > Currently, the user provides this configuration at start, and we use
+> > autoload to only load the required bpf programs.
+> > We want to be able to change this configuration at runtime, without
+> > having to restart Tracee.
+> > For example, if the user wants to enable/disable network capture, we
+> > want to load/unload the relevant bpf programs.
+> > It is possible that only destroying the link (and attaching back
+> > later) will be enough, but I think that there are other
+> > considerations, such as kernel memory consumption, that makes
+> > unloading the program preferable.
+>
+> I think the amount of memory held for verifier BPF program is pretty
+> miniscule and shouldn't be a big deal. It's much more expensive to
+> validate the program (especially if you do it repeatedly).
+
+In our case there will potentially be about 100 loaded programs while
+only 20-30 are attached.
+
+If that's the case and there is no real problem in keeping many bpf
+programs loaded at once,
+I'll take your advice and load all the programs at start,
+attaching/destroying the links when required.
+
+Thanks!
+
+>
+> >
+> > >
+> > > > I'm not sure it is possible to load one specific program from the b=
+pf
+> > > > object using bpf_object__load() API - is it?
+> > >
+> > > It is possible. You can disable loading BPF program by calling
+> > > bpf_program__set_autoload(prog, false) after bpf_object__open() and
+> > > before bpf_object__load().
+> >
+> > Yes, I'm aware of bpf_program__set_autoload() and we already use it as
+> > I described above.
+> > I think, however, that there might be problems loading the same object
+> > file more than once:
+> > 1. obj->loaded is set to true, and an error will be returned
+>
+> Right, because re-loading bpf_object isn't supported, even if it might
+> have worked in some limited situations.
+>
+> > 2. The maps defined by the object were already created and initialized
+> > And possibly other issues that we might encounter.
+>
+> You could use bpf_map__reuse_fd() to work around that problem, but it
+> certainly adds complexity. I'd prefer keep verified programs ready
+> (but not attached), if possible
+>
+>
+> >
+> > >
+> > > I've thought about adding a convention to SEC() to disable
+> > > auto-loading declaratively (e.g., SEC('!kprobe/whatever') won't
+> > > auto-load unless autoload is set to true through
+> > > bpf_program__set_autoload()), but we haven't implemented that yet.
+> > >
+> >
+> > That can be a nice addition, but I don't think that it will help in our=
+ case
+> >
+> > > >
+> > > > Another question with the same context -
+> > > > If I understand correctly, the purpose of detach is to "prevent
+> > > > execution of a previously attached program from any future events"
+> > > > (https://facebookmicrosites.github.io/bpf/blog/2018/08/31/object-li=
+fetime.html),
+> > > > which seems like something that I would want to do if I just wanted=
+ to
+> > > > temporarily stop an event from triggering the program. But then I a=
+sk
+> > > > myself - what is the meaning of detaching a link (and not
+> > > > bpf_link__destroy() it) if there is no way to attach it back (witho=
+ut
+> > >
+> > > you mean bpf_link__detach()? this is a special "admin-only" operation
+> > > of force-detaching the link, even if there are still link FDs open.
+> > > Normally you shouldn't do it. Use bpf_link__destroy() to detach (and
+> > > make sure no one dup()'ed extra FDs)
+> >
+> > Ok, cool. I didn't know that this is a special "admin-only" operation,
+> > as it is defined in libbpf.h with LIBBPF_API and I didn't see any
+> > documentation saying that.
+> >
+> > >
+> > > > re-creating the link object)? I don't see any function named
+> > > > bpf_link__attach() that would do such a thing, or any other functio=
+n
+> > > > in libbpf API that can do something similar, am I right?
+> > >
+> > > Right, links are created with bpf_program__attach*() APIs.
+> >
+> > Got it. I thought that it should be possible to use the same bpf_link
+> > object and temporarily detach it when required (attaching it back when
+> > required).
+> > So now I understand that the only way to achieve such a behavior is to
+> > destroy the link and recreate it, right?
+>
+> Right. You could "restore" struct bpf_link from pinned link instance
+> in BPF FS through bpf_link__open(), but overall bpf_link is meant to
+> be created by attachment and destroyed to detach the program.
+>
+> >
+> > >
+> > > > Also, It seems that using bpf_link__detach() does not fit all link
+> > > > types. For example, when attaching a (non legacy) kprobe, detaching=
+ it
+> > > > should probably happen using PERF_EVENT_IOC_DISABLE and not through
+> > > > sys_bpf(BPF_LINK_DETACH), shouldn't it?
+> > > >
+> > > > And one last question:
+> > > > When using bpf_program__unload() on a program that is already
+> > > > attached, should we first call bpf_link__detach() or does the kerne=
+l
+> > > > already take care of this?
+> > >
+> > > Keep in mind that bpf_program__unload() is also deprecated. The idea
+> > > is that if you are working with high-level libbpf APIs that are
+> > > centered around struct bpf_object, bpf_program, and bpf_map, the
+> > > entire collection of programs and maps is functioning as a single
+> > > bundle. If that abstraction doesn't work, you'll have to drop to
+> > > low-level APIs (defined in bpf/bpf.h) and manipulate everything
+> > > through FDs.
+> >
+> > Yes, it seems that this abstraction is not enough for our use case.
+> > As I described above, Tracee's bpf programs and maps do work as a
+> > bundle, but sometimes it might be required to unload/load bpf programs
+> > according to user request.
+> > The problem with using the lower level APIs (such as bpf_prog_load())
+> > is that they expect to get bpf instructions and not a bpf_program
+> > struct (which is a good abstraction),
+> > so working with them will require to implement by ourselves some of
+> > the logic of libbpf, and we want to avoid that
+> >
+> > >
+> > > As for detaching (destroying in libbpf lingo, though) the link, yes,
+> > > you need to destroy links before unloading the program. Otherwise
+> > > links themselves will keep programs loaded in the kernel. Some legacy
+> > > links (legacy kprobe/uprobe) won't auto-detach even on process exit
+> > > because the kernel doesn't support this.
+> >
+> > Got it, thanks
+> >
+> > >
+> > > >
+> > > > Thanks,
+> > > > Yaniv
