@@ -2,84 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1812A490F9E
-	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 18:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A63491086
+	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 19:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237993AbiAQRa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jan 2022 12:30:57 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:41744 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbiAQRay (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jan 2022 12:30:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A14BFB81055;
-        Mon, 17 Jan 2022 17:30:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5A7C36AE7;
-        Mon, 17 Jan 2022 17:30:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642440651;
-        bh=+QcweZFoQoyVtKcd6UBT+oVRxyH4F1ClnSvb77XOSQs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U6yweeKmtrlt7D4cnfYR72YwgfTD+PxTTrO7/MrJdHCjdUhxcxqE/GJ3n62c0hqhx
-         2/s30luKiq1qI/1X2vJO75khtYzAhjvpvFY7SWSN5wk4hQircG0a9b6I/FYSsD6aIb
-         ASXX3bnG47hS0/JOEX0KfrUUcRaacrTckciQFhFEdARsfHtzU+veS6oQ/bMmjK/tMk
-         ZmLZdIBdGrdf39Y2AH8lNvcSwQm7slygCwJrkt3e2tZ9a4n/ga5TWkmDc7koO9vpJB
-         bhB+7CgMLVIeEuvDgpp+yNSsTRe2d5RVJQPu+toNcCs5NCP2P/yotbrNQRZ7Xh/qMi
-         5Hr6UiSpx1ymA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, jasowang@redhat.com,
-        alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        tirthendu.sarkar@intel.com, toke@redhat.com
-Subject: [PATCH v22 bpf-next 23/23] xdp: disable XDP_REDIRECT for xdp multi-frags
-Date:   Mon, 17 Jan 2022 18:28:35 +0100
-Message-Id: <b74ddaeb1110645c82b50a949ec4497784626322.1642439548.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1642439548.git.lorenzo@kernel.org>
-References: <cover.1642439548.git.lorenzo@kernel.org>
+        id S232592AbiAQS5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jan 2022 13:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbiAQS5K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jan 2022 13:57:10 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE44AC061574
+        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 10:57:09 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id d3so61093936lfv.13
+        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 10:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=p4+ifsKtrSTkHTpLkWcmY2OfN5Ym/bKgcmz1lLUBtYM=;
+        b=DTwI5XgzGarM9ok8xQpMm8BtFl5faZMvXUHNjdd+w3c6+gEXhaGftYbZ3ZbugOUlaI
+         o1yyj/pfLiLYIpIHW+osyPrPj2hSJSovN+ad0fVZTfxSi3+PVEwleqtpmBOqbxTPBm1C
+         4qzKTPPWLlB/+2dtvTpQZoLzk4Ys6VMU0+85o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=p4+ifsKtrSTkHTpLkWcmY2OfN5Ym/bKgcmz1lLUBtYM=;
+        b=XdzIQd/ExGRHYmLKdvy7tsO1rLs/qMilvzRVJKkZsAWnCT92LsOjGBS1pq+Mm+tLSU
+         43Dn7XNwIX1GhnSzMCfr1by/KBK6xfn9+r+pKmTR9N1zBBbgEegDCUddsIVo3zrjbe2f
+         a0+b1m38P4gQpUfr4T/5rTpzkeGJtG6cmhdhJtcLoSKUNGU/fv1Y2yGAyns3XWk7UB3J
+         yaq3gNGCjkf26Kllb27USPh6PWDUHPl9ARjYqj6bDbrJyNPjoDrtgBrHQGk7c0qBakh9
+         hoysroFuc+p6EUoVymPDdnPsh428F77aaZxrFo1vrZyH4ZZGgRkNLXCq+CPi41rse+Ez
+         SBxA==
+X-Gm-Message-State: AOAM532M9yorGVJorHKaQ1pDMESNLlDtVLBqaPu/FDZ0dnpvOyn4y6em
+        2w0CRhd2TSoi6+vkduBQIS7JcZRgr6WIug==
+X-Google-Smtp-Source: ABdhPJzy4SdEGN9DXWUz6Szo0jfSSPltNNIgbksq4c+3xuwAmzMEWx29IE8TBRNUMQR68c3CRJvR+g==
+X-Received: by 2002:a2e:86c7:: with SMTP id n7mr14091387ljj.102.1642445828162;
+        Mon, 17 Jan 2022 10:57:08 -0800 (PST)
+Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
+        by smtp.gmail.com with ESMTPSA id s18sm1051702lfs.23.2022.01.17.10.57.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jan 2022 10:57:07 -0800 (PST)
+References: <20220117140728.167736-1-fmaurer@redhat.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Felix Maurer <fmaurer@redhat.com>
+Cc:     bpf@vger.kernel.org, sdf@google.com, kafai@fb.com, ast@kernel.org
+Subject: Re: [PATCH bpf] selftests: bpf: Fix bind on used port
+In-reply-to: <20220117140728.167736-1-fmaurer@redhat.com>
+Date:   Mon, 17 Jan 2022 19:57:07 +0100
+Message-ID: <87zgnunqbg.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-XDP_REDIRECT is not fully supported yet for xdp multi-frags since not
-all XDP capable drivers can map non-linear xdp_frame in ndo_xdp_xmit
-so disable it for the moment.
+On Mon, Jan 17, 2022 at 03:07 PM CET, Felix Maurer wrote:
+> The bind_perm BPF selftest failed when port 111/tcp was already in use
+> during the test. To fix this, the test now runs in its own network name
+> space.
+>
+> To use unshare, it is necessary to reorder the includes. The style of
+> the includes is adapted to be consistent with the other prog_tests.
+>
+> Fixes: 8259fdeb30326 ("selftests/bpf: Verify that rebinding to port < 1024 from BPF works")
+> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+> ---
+>  .../selftests/bpf/prog_tests/bind_perm.c      | 22 ++++++++++++++++---
+>  1 file changed, 19 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> index d0f06e40c16d..cbd739d36e4d 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> @@ -1,13 +1,26 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include <test_progs.h>
+> -#include "bind_perm.skel.h"
+> -
+> +#define _GNU_SOURCE
+> +#include <sched.h>
+> +#include <stdlib.h>
+>  #include <sys/types.h>
+>  #include <sys/socket.h>
+>  #include <sys/capability.h>
+>  
+> +#include "test_progs.h"
+> +#include "bind_perm.skel.h"
+> +
+>  static int duration;
+>  
+> +static int create_netns(void)
+> +{
+> +	if (CHECK(unshare(CLONE_NEWNET), "create netns",
+> +		  "unshare(CLONE_NEWNET): %s (%d)",
+> +		  strerror(errno), errno))
 
-Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- net/core/filter.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+CHECK() macro is deprecated. See [1].
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 06b4b946fa45..546df4152d6f 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -4266,6 +4266,14 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 	enum bpf_map_type map_type = ri->map_type;
- 
-+	/* XDP_REDIRECT is not fully supported yet for xdp multi-frags since
-+	 * not all XDP capable drivers can map non-linear xdp_frame in
-+	 * ndo_xdp_xmit.
-+	 */
-+	if (unlikely(xdp_buff_has_frags(xdp) &&
-+		     map_type != BPF_MAP_TYPE_CPUMAP))
-+		return -EOPNOTSUPP;
-+
- 	if (map_type == BPF_MAP_TYPE_XSKMAP)
- 		return __xdp_do_redirect_xsk(ri, dev, xdp, xdp_prog);
- 
--- 
-2.34.1
+[1] https://lore.kernel.org/bpf/20220107221115.326171-2-toke@redhat.com/
 
+[...]
