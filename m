@@ -2,120 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B4FF490A8F
-	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 15:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC44E490C7D
+	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 17:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234441AbiAQOfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jan 2022 09:35:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        id S240827AbiAQQ2W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jan 2022 11:28:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbiAQOfj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jan 2022 09:35:39 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05705C061574
-        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 06:35:39 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id v123so20826523wme.2
-        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 06:35:38 -0800 (PST)
+        with ESMTP id S235260AbiAQQ2V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jan 2022 11:28:21 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A73C06161C
+        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 08:28:21 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id s11so14144055ioe.12
+        for <bpf@vger.kernel.org>; Mon, 17 Jan 2022 08:28:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=9zv8TuxDTnlgZaPUVurCzXmFD4FERYFTJLZcn2XRP/0=;
-        b=Ms4Bk5MbORe/jSxyWbQkqEnSBMw/SBEUP0mKxl36bDi2xlaubX9yrc3MOqV8FDkL1A
-         9+0fIolJtsa6nbUB5S+sPcz7uiB6GLOXcyBWKOF57NO2L7y1sksX6aUT533r9ZWwET2o
-         IoVCOBOSiVO4WiOMs4vBqiMvyxoeV1oJjKtWjDqv4iH6S8QxS+Vksz1KgVf14uZq2UWY
-         FvsC3b2uD8c7f1FGfUI4Ro3e/kG3bDLHliQ8UMF6dvpWjFoEECbcH49/QfodFzqtyeQ4
-         TAuzOydO2y5iOG/N93Pgm8ORcMTwAPAJIETyGwN6DmP+KC4GQqy+F9pEyRdStjHmD2Yj
-         jVRA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FKuvwksI9n1D5eeZK/jbIF9ogu2ww7rREgxcqTgZGeI=;
+        b=nAl0JX0XnfUvDUPXDdh1iHLGq3wdf7wV9/LL4pUDu+twKRqjsXcp1AWzBjAFNdncQh
+         qWiRBJGxtWuKgSEkkE8uu44o8gQL7gZWM4inggeEkJnw1jOMSnBFSBtzZr0R1DFEXsre
+         kHIwcNGp+4OOR3qHrWvmxzLH8FnOuqsIR3bmv3s/3mALN18EasUgsWUyehsrDLE1/EqV
+         69xSBOCFDW3zxrx/HRS2S1bMIIZJ1uaYA7erczDjD29CDR/X4+V2UpU1+0/9lyF/92Ng
+         fPkjOn+5d6z4A6EVw0R0imOyC8/rLDpJZ+EGS6nRoCCWBeQA1ACx0KZGt2J4jk5HMx+k
+         f1AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=9zv8TuxDTnlgZaPUVurCzXmFD4FERYFTJLZcn2XRP/0=;
-        b=XCK04qqaay5uwUSQ27qhYy/4irQrXWglD8BEFHp4U0bVjLznYifzGrWjm61pcS++uD
-         9dYzvBfthM3h2uj8Y2VMrsxDt6Us6ktG1RXJyBtVECZ6NGDbVVQJkfJYUK2M29X54uxs
-         Y8tzehq2Sz3n8BQMjM8FPTMr1IwIrzYF5NmyZZ/91VWk4nfh5DAxi/+CrF7Y+kIquD3i
-         rvMBV2Tv59B169iFuCqeh+dgtmYGx7jSxzdC/Pjej1qf4V8Tr/ffRH/9IfksmZHpmeMH
-         Q0H8FYpjDY67UQZLFi0tf1vzjTFqhyQQIozs2NCwQI0OGrEtF527VjvFBD89MPy/p6i3
-         G5dQ==
-X-Gm-Message-State: AOAM530l7Aoxi20r/Vg3TwGgvvmLp9aSTLZ6oDfrio7LJfl35C5PkHl+
-        pky4cB96/dMbSmPoPtlLr1bMsg==
-X-Google-Smtp-Source: ABdhPJxLxL3bpQYaRHeG0cVijmcVtKCf4YneAcQ48Hke38qmGNYtMpvfdlAWpEZCnane4kYvfOwQhQ==
-X-Received: by 2002:a7b:c40c:: with SMTP id k12mr20799853wmi.185.1642430137250;
-        Mon, 17 Jan 2022 06:35:37 -0800 (PST)
-Received: from [192.168.1.8] ([149.86.86.230])
-        by smtp.gmail.com with ESMTPSA id b15sm10463729wrr.50.2022.01.17.06.35.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jan 2022 06:35:36 -0800 (PST)
-Message-ID: <1c84bb5f-fd71-3fa0-bf90-c188180cbd00@isovalent.com>
-Date:   Mon, 17 Jan 2022 14:35:35 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FKuvwksI9n1D5eeZK/jbIF9ogu2ww7rREgxcqTgZGeI=;
+        b=OlE21VroyKOKPYPCRzmb7pTyfhcD+XCsUHvdkhLGJatpSP2Zb3z4hf8Fg9qy+SX0Td
+         p705MfeEAj6hkyqM5F/2k+p7VZK/5KAaLVQ60xbe0058NIeEwipNA0dqP4EtZrzaVvwp
+         wRsB2WrSmyXHwYEWMVqWdjoBWXDJzLVfVEmuaBIY87Hbbqdo40L4aUisz7OGOcH8luh3
+         SLKaIkdVQf2JWMq3luKTApaxaI3t2WxdwupXbr7/+t6qQC9ASFGeB5PBKjKPfvxoBdmq
+         6ao8OddsuwM+kYg94QCAQD4bvX913Ds1sH3dW+Lx7XgHxLsFrlGFGR5r/6BX08tf2Qn2
+         MOrw==
+X-Gm-Message-State: AOAM532TJ5x8WEnNNKC3NDXTERmwG7DgM8zlmp7kn20Y6Ef80+7fivNx
+        G9cKkkx8LH6OhAMMlq5EeqKjiGaZiUMFcbkMSJw7lg==
+X-Google-Smtp-Source: ABdhPJz6axRt7fn2ICl2LmGSHcYtuXt4UvPLKyBS1KE9e+92tT0xCZpbgOIajylVskNZBzDe+OtAkMdljyc5yTHfy20=
+X-Received: by 2002:a5e:890e:: with SMTP id k14mr2343801ioj.151.1642436900085;
+ Mon, 17 Jan 2022 08:28:20 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v6] bpf/scripts: raise an exception if the correct number
- of helpers are not generated
-Content-Language: en-GB
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Song Liu <song@kernel.org>
-Cc:     Usama Arif <usama.arif@bytedance.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Joe Stringer <joe@cilium.io>, fam.zheng@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-References: <20220112114953.722380-1-usama.arif@bytedance.com>
- <6586be41-1ceb-c9d3-f9ea-567f51dbab49@isovalent.com>
- <CAPhsuW73qDOOrp2tSEZav_i2ySarUH91RRBhZjFwOtrwEGzREw@mail.gmail.com>
- <CAEf4BzaFfsQXGEVC9LbMS12u9B5nsud=Ep+f+EpUGqEgYwOFvg@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAEf4BzaFfsQXGEVC9LbMS12u9B5nsud=Ep+f+EpUGqEgYwOFvg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220114212102.179209-1-german.gomez@arm.com> <c2b960eb-a25e-7ce7-ee4b-2be557d8a213@arm.com>
+ <35a4f70f-d7ef-6e3c-dc79-aa09d87f0271@arm.com>
+In-Reply-To: <35a4f70f-d7ef-6e3c-dc79-aa09d87f0271@arm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 17 Jan 2022 08:28:07 -0800
+Message-ID: <CAP-5=fUHT29Z8Y5pMdTWK4mLKAXrNTtC5RBpet6UsAy4TLDfDw@mail.gmail.com>
+Subject: Re: [PATCH] perf record/arm-spe: Override attr->sample_period for
+ non-libpfm4 events
+To:     German Gomez <german.gomez@arm.com>
+Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org,
+        Chase Conklin <chase.conklin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, "acme@kernel.org" <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-01-14 16:48 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Wed, Jan 12, 2022 at 3:51 PM Song Liu <song@kernel.org> wrote:
->>
->> On Wed, Jan 12, 2022 at 4:15 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>
->>> 2022-01-12 11:49 UTC+0000 ~ Usama Arif <usama.arif@bytedance.com>
->>>> Currently bpf_helper_defs.h and the bpf helpers man page are auto-generated
->>>> using function documentation present in bpf.h. If the documentation for the
->>>> helper is missing or doesn't follow a specific format for e.g. if a function
->>>> is documented as:
->>>>  * long bpf_kallsyms_lookup_name( const char *name, int name_sz, int flags, u64 *res )
->>>> instead of
->>>>  * long bpf_kallsyms_lookup_name(const char *name, int name_sz, int flags, u64 *res)
->>>> (notice the extra space at the start and end of function arguments)
->>>> then that helper is not dumped in the auto-generated header and results in
->>>> an invalid call during eBPF runtime, even if all the code specific to the
->>>> helper is correct.
->>>>
->>>> This patch checks the number of functions documented within the header file
->>>> with those present as part of #define __BPF_FUNC_MAPPER and raises an
->>>> Exception if they don't match. It is not needed with the currently documented
->>>> upstream functions, but can help in debugging when developing new helpers
->>>> when there might be missing or misformatted documentation.
->>>>
->>>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
->>>
->>> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
->>
->> Acked-by: Song Liu <songliubraving@fb.com>
->>
->> Thanks!
-> 
-> Would be great if we could also enforce minimal formatting consistency
-> (i.e., that Description and Return sections are present and that empty
-> line before the next function definition is present), but it's an
-> improvement anyway. Fixed up don't -> doesn't and applied to bpf-next.
+On Mon, Jan 17, 2022 at 2:27 AM German Gomez <german.gomez@arm.com> wrote:
+>
+> Hi James,
+>
+> On 17/01/2022 09:59, James Clark wrote:
+> >
+> > On 14/01/2022 21:21, German Gomez wrote:
+> >> A previous commit preventing attr->sample_period values from being
+> >> overridden in pfm events changed a related behaviour in arm_spe.
+> >>
+> >> Before this patch:
+> >> perf record -c 10000 -e arm_spe_0// -- sleep 1
+> >>
+> >> Would not yield an SPE event with period=10000, because the arm-spe code
+> > Just to clarify, this seems like it should say "Would yield", not "Would not yield",
+> > as in it was previously working?
+>
+> "this patch" refers to the patch I'm sending, not the one it's fixing.
+> I might have to rewrite this to make it more clear. How about:
+>
+> ===
+> A previous patch preventing "attr->sample_period" values from being
+> overridden in pfm events changed a related behaviour in arm-spe.
+>
+> Before said patch:
+> perf record -c 10000 -e arm_spe_0// -- sleep 1
+>
+> Would yield an SPE event with period=10000. After the patch, the period
+> in "-c 10000" was being ignored because the arm-spe code initializes
+> sample_period to a non-zero value.
+>
+> This patch restores the previous behaviour for non-libpfm4 events.
+> ===
 
-Just noting here for the record - Another possible follow-up could be to
-add the same check as you did for the documentation of the syscall
-subcommands in the same script (parse_syscall()), to make sure no bpf()
-subcommand is misformatted or missing in the doc.
+Thanks for fixing this, I can add an acked-by for the v2 patch. Could
+we add a test for this to avoid future regressions? There are similar
+tests for frequency like:
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr/test-record-freq
+based on the attr.py test:
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr.py
+The test specifies a base type of event attribute and then what is
+modified by the test. It takes a little to get your head around but
+having a test for this would be a welcome addition.
 
-Quentin
+Thanks!
+Ian
+
+> Thanks for the review,
+> German
