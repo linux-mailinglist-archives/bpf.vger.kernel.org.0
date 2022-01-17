@@ -2,81 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D1848FDC0
-	for <lists+bpf@lfdr.de>; Sun, 16 Jan 2022 17:02:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217A848FFAE
+	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 01:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbiAPQCl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 16 Jan 2022 11:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233455AbiAPQCl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 16 Jan 2022 11:02:41 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39759C061574
-        for <bpf@vger.kernel.org>; Sun, 16 Jan 2022 08:02:41 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id h23so7544958pgk.11
-        for <bpf@vger.kernel.org>; Sun, 16 Jan 2022 08:02:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=33//Ifqafj5vah3eayUSf6uENYY18HgBL4WzLbzW/gM=;
-        b=IVI+a6ZLHgEAQm+OuLpD/viXhyvUrsKbeDJQ7WsY5Lq5uG8WmJTJl5NcAq+XCnsy4o
-         XT9BlT4Lip6n/gQmFWPN90D6W6Taj+2hYuk8FQzFksR2ryyYE/o0cs9XAYeMitNrzBiE
-         39fxW8mXx3dGfG4AWoQ8y/pVst0TpUtFgwZGECw9EoQT7NhV/iosy557diNXAnPhyEqw
-         LVUk3fBY4qBzsHG9Td9yqbnKf8Q8HLaajXAmfqPnZ2iIM0n5JpZk1cMFtNBCHDdxCoEy
-         vFzJ8FUdy3UvdYz9G7QcfIAuLqTl6AmxHguSMKI4/dic+BADgzdfwhTa/LWojpulWMPe
-         f7pg==
+        id S236465AbiAQAFZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 16 Jan 2022 19:05:25 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:45931 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236448AbiAQAFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 16 Jan 2022 19:05:25 -0500
+Received: by mail-il1-f200.google.com with SMTP id k14-20020a056e021a8e00b002b4b2388c48so10553546ilv.12
+        for <bpf@vger.kernel.org>; Sun, 16 Jan 2022 16:05:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=33//Ifqafj5vah3eayUSf6uENYY18HgBL4WzLbzW/gM=;
-        b=j4FWEa4Un3duC7obq1s/56E9NQEm93/pP8oCOfy19nzAzARoLERX8UbnULpjPQPvXz
-         gvHWMkP1dJGbHzjtLpjb9NOmMRs4oNLdM5wP5HdnQkkjUL0NZrSBQNxd03amFcz935ZZ
-         yR/rLkDmuHo+yGtiEJE+E/H6xT0oBclzXM9dWN3jZMd99d0ifxL+36kb1ugtDcdd0qDO
-         b8uZZfdiUBbGAPY/oeRDab0NU/AMbwCU2l0fQyNINMcEufRvbHbeo7iTIDgHwHXP4zFY
-         XiIsU+bBsK5esai5IWpqoDyw3khN/XrF23UGrOpYTmNCQoyCqOXEepE3gjCecTRG3xyT
-         yaqA==
-X-Gm-Message-State: AOAM533LzPlBfZsOkexyerVKeQ1R9Zn+6rHkXUjH2loTOvgLmhx2Bzd6
-        n0IlroT2riAlXtVwTxApUU0imagfLoEZp2EEmVU=
-X-Google-Smtp-Source: ABdhPJx4jd51snYJKi08tDd7wX8gGmYynkIHQKHhAsyGzf8AcJPZWcBy2jQUHau90H1aFDSsEQk6Q/iEMW4Pozv1Cqg=
-X-Received: by 2002:a63:710c:: with SMTP id m12mr15719175pgc.334.1642348960542;
- Sun, 16 Jan 2022 08:02:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=n0Q0139SFG+a05PCBICqsbFwpyWDdadFRS7jqfWkpqs=;
+        b=fBzpu+Mp80+fbzG/u7u0ECE7jtPSMvxcqhsMnzJ4yMsfTnvKx8H3wFKcoh8hYAReEL
+         1Ma384iZnjBYVUGawuQ+WuYjL/s7VTlwOvl5yRL0aV8TKOKaV2q/Kf0zm4MZWLiZKq6Q
+         mvEocyyK1kyw1AzA+QZ2+Xv2Sd9+CFjlEGGqPP00pXbv3sjxsEI+sCKSXx+5JNeGjkjL
+         cI0VMbBF9TaGMBEQgTIAvHJUGBliSuos45VlaOGZ+3CmYTTnVmnLLsFlcwaz8DBIYBZK
+         DYZfTlt09Y0opet6jBqTO7MHwCPtMWev/K8MWtgSfcOr4Gh5GaILEMKFJD9KWz1Wrz5t
+         Cq9Q==
+X-Gm-Message-State: AOAM5314H6Flif1wVej+i6WsefRzUpJ0CgszCskIz/FmX3iP/KPzhj6N
+        9ao2rJUbFpf/8MHEU9shae6OORFkYUOasKO/BgxNQloDPzgz
+X-Google-Smtp-Source: ABdhPJxRLwLRgnFdUfT5aRwInjv9Q6N05LgHNwf1utr7rzaw6YiUKz8+e1THu35ngdTY2XLsKkVxVrcUy7xIUJ5NgBcyCI8nNUGD
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:cac9:0:0:0:0 with HTTP; Sun, 16 Jan 2022 08:02:39
- -0800 (PST)
-Reply-To: fulhammartins8@gmail.com
-From:   Fulham Martins <whoknowsladyjay@gmail.com>
-Date:   Sun, 16 Jan 2022 08:02:39 -0800
-Message-ID: <CAMhEkO4vdu2NgiWtGfMr_Db2g=pMaubC0QkSmj2e0YCP6x0V-w@mail.gmail.com>
-Subject: INVESTMENT PARTNERSHIP
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6e02:1c2f:: with SMTP id m15mr9296065ilh.206.1642377924688;
+ Sun, 16 Jan 2022 16:05:24 -0800 (PST)
+Date:   Sun, 16 Jan 2022 16:05:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c9c00e05d5bbe887@google.com>
+Subject: [syzbot] WARNING in __cleanup_sighand
+From:   syzbot <syzbot+985a662ba46639a7897f@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, david@redhat.com, ebiederm@xmission.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        legion@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, peterz@infradead.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear friend,
+Hello,
 
-My Name is Mr. Fulham Martins. I am from the United Kingdom.
-It is my resolve to contact you for an investment plan in your country. It is
-no more a secret that investments are thriving fast in your country.
-Therefore, I want to invest in your country and want you to be my
-business partner.
-I am ready to invest in any sector such as Manufacturing, Agriculture,
-Real Estate, Hoteling, etc. or any other business that has good return
-on investment/profitable.
+syzbot found the following issue on:
 
-If you choose to be of assistance,I am ready to send the consignment
-box to your country regarding the investment
-partnership or do a direct bank transfer to your account based on
-whatever modalities the investment will entail.
-Like I mentioned earlier, I am presently based in the United Kingdom
-and would like to know whether you are ready to partner with me on
-this. Kindly indicate your interest to enable us to proceed.
-Thank you in anticipation as I look forward to reading your reply.
+HEAD commit:    79e06c4c4950 Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1285ed28700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=afd3ce8cd5cf174b
+dashboard link: https://syzkaller.appspot.com/bug?extid=985a662ba46639a7897f
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+985a662ba46639a7897f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 3640 at kernel/sched/wait.c:245 __wake_up_pollfree+0x1c7/0x1d0 kernel/sched/wait.c:246
+Modules linked in:
+CPU: 0 PID: 3640 Comm: syz-executor.3 Not tainted 5.16.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__wake_up_pollfree+0x1c7/0x1d0 kernel/sched/wait.c:245
+Code: 0d 00 00 c6 44 08 0f 00 65 48 8b 04 25 28 00 00 00 48 3b 84 24 a0 00 00 00 75 13 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b eb a7 e8 60 3e b0 08 55 41 57 41 56 41 55 41 54 53 48 83 ec
+RSP: 0018:ffffc900028cf760 EFLAGS: 00010097
+RAX: ffff88801ec1b130 RBX: 0000000000000046 RCX: dffffc0000000000
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
+RBP: ffffc900028cf848 R08: dffffc0000000000 R09: ffffed100850025a
+R10: ffffed100850025a R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc900028cf7a0 R14: 1ffff92000519ef4 R15: ffff888042801308
+FS:  0000555556549400(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fed83b131b8 CR3: 000000004a82a000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 000000000000802e DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __cleanup_sighand+0x48/0xa0 kernel/fork.c:1590
+ __exit_signal kernel/exit.c:159 [inline]
+ release_task+0x115f/0x15d0 kernel/exit.c:200
+ wait_task_zombie kernel/exit.c:1114 [inline]
+ wait_consider_task+0x1995/0x2fb0 kernel/exit.c:1341
+ do_wait_thread kernel/exit.c:1404 [inline]
+ do_wait+0x291/0x9d0 kernel/exit.c:1521
+ kernel_wait4+0x2a3/0x3c0 kernel/exit.c:1684
+ __do_sys_wait4 kernel/exit.c:1712 [inline]
+ __se_sys_wait4 kernel/exit.c:1708 [inline]
+ __x64_sys_wait4+0x130/0x1e0 kernel/exit.c:1708
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f2aff29e487
+Code: 89 7c 24 10 48 89 4c 24 18 e8 35 50 02 00 4c 8b 54 24 18 8b 54 24 14 41 89 c0 48 8b 74 24 08 8b 7c 24 10 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 89 44 24 10 e8 65 50 02 00 8b 44
+RSP: 002b:00007ffeabee34f0 EFLAGS: 00000293 ORIG_RAX: 000000000000003d
+RAX: ffffffffffffffda RBX: 0000000000000932 RCX: 00007f2aff29e487
+RDX: 0000000040000001 RSI: 00007ffeabee357c RDI: 00000000ffffffff
+RBP: 00007ffeabee357c R08: 0000000000000000 R09: 0000000000000010
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000032
+R13: 00000000000af2e3 R14: 0000000000000009 R15: 00007ffeabee35e0
+ </TASK>
 
 
-Best regards.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Mr.Fulham Martins.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
