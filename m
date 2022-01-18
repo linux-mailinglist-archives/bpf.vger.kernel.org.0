@@ -2,113 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F914925BA
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 13:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9424925F0
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 13:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbiARMcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 07:32:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiARMce (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 07:32:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FABC061574;
-        Tue, 18 Jan 2022 04:32:34 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D929061380;
-        Tue, 18 Jan 2022 12:32:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 254E8C00446;
-        Tue, 18 Jan 2022 12:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642509153;
-        bh=F9Vu7ZI1/HnPH5QGZNUeqh85iKDiHrkRW8l6raKQS+M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WmrASj3abHpIKN7ju1MqlFtWwY+yzZqkpVOdWr9pT+nikc5uQwHJvmtPWBEot56md
-         8uvZW3fsAR01ws0X7LKtkgykQPuSBRUmSBVW4m6f7KaT0lwPDeBthRSs8PzjAhT7GA
-         R+0zSy1emkBLdDXSNtPlX4fzkCZ1zu1fVl2CGXHX86Il4GXhXQ0r6B1BFTwrtUyedw
-         JPLgOvn+LpML56YCXJMB+yUpqjTqQilfATvLW6sTKW5h5kjDZRw7ymla0/98zQKfIt
-         2qMA6YcSN2HomakS+9yo1mldhDfarQsr817bsuoRUg99WsnmP7vcvQl29uy82WyFss
-         9Ig7+VjIMb9vA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 86E8440714; Tue, 18 Jan 2022 09:32:30 -0300 (-03)
-Date:   Tue, 18 Jan 2022 09:32:30 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     Ian Rogers <irogers@google.com>, James Clark <james.clark@arm.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Chase Conklin <chase.conklin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Stephane Eranian <eranian@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf record/arm-spe: Override attr->sample_period for
- non-libpfm4 events
-Message-ID: <YeazXmnjkET7h5LW@kernel.org>
-References: <20220114212102.179209-1-german.gomez@arm.com>
- <c2b960eb-a25e-7ce7-ee4b-2be557d8a213@arm.com>
- <35a4f70f-d7ef-6e3c-dc79-aa09d87f0271@arm.com>
- <CAP-5=fUHT29Z8Y5pMdTWK4mLKAXrNTtC5RBpet6UsAy4TLDfDw@mail.gmail.com>
- <10cc73f1-53fd-9c5a-7fe2-8cd3786fbe37@arm.com>
+        id S237441AbiARMpG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 07:45:06 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:29129 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236418AbiARMpA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 07:45:00 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-230-d_QmobujNXmDT8znvK2f3A-1; Tue, 18 Jan 2022 12:44:58 +0000
+X-MC-Unique: d_QmobujNXmDT8znvK2f3A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.28; Tue, 18 Jan 2022 12:44:57 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.028; Tue, 18 Jan 2022 12:44:57 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Jason A. Donenfeld'" <Jason@zx2c4.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+CC:     "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "wireguard@lists.zx2c4.com" <wireguard@lists.zx2c4.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "tytso@mit.edu" <tytso@mit.edu>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jeanphilippe.aumasson@gmail.com" <jeanphilippe.aumasson@gmail.com>,
+        "ardb@kernel.org" <ardb@kernel.org>
+Subject: RE: [PATCH crypto v3 0/2] reduce code size from blake2s on m68k and
+ other small platforms
+Thread-Topic: [PATCH crypto v3 0/2] reduce code size from blake2s on m68k and
+ other small platforms
+Thread-Index: AQHYDGCZ1hhaA5g8jUud5pQLYuQbPqxotdeQ
+Date:   Tue, 18 Jan 2022 12:44:57 +0000
+Message-ID: <ad862f5ad048404ab452e25bba074824@AcuMS.aculab.com>
+References: <CAHmME9rxdksVZkN4DF_GabsEPrSDrKbo1cVQs77B_s-e2jZ64A@mail.gmail.com>
+ <YeZhVGczxcBl0sI9@gondor.apana.org.au>
+ <CAHmME9ogAW0o2PReNtsD+fFgwp28q2kP7WADtbd8kA7GsnKBpg@mail.gmail.com>
+In-Reply-To: <CAHmME9ogAW0o2PReNtsD+fFgwp28q2kP7WADtbd8kA7GsnKBpg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10cc73f1-53fd-9c5a-7fe2-8cd3786fbe37@arm.com>
-X-Url:  http://acmel.wordpress.com
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 17, 2022 at 09:32:55PM +0000, German Gomez escreveu:
-> Hi Ian,
-> 
-> On 17/01/2022 16:28, Ian Rogers wrote:
-> > [...]
-> > Thanks for fixing this, I can add an acked-by for the v2 patch. Could
-> > we add a test for this to avoid future regressions? There are similar
-> > tests for frequency like:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr/test-record-freq
-> > based on the attr.py test:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr.py
-> > The test specifies a base type of event attribute and then what is
-> > modified by the test. It takes a little to get your head around but
-> > having a test for this would be a welcome addition.
-> 
-> I agree I should have included a test for this fix. I'll look into this for the v2.
+RnJvbTogSmFzb24gQS4gRG9uZW5mZWxkDQo+IFNlbnQ6IDE4IEphbnVhcnkgMjAyMiAxMTo0Mw0K
+PiANCj4gT24gMS8xOC8yMiwgSGVyYmVydCBYdSA8aGVyYmVydEBnb25kb3IuYXBhbmEub3JnLmF1
+PiB3cm90ZToNCj4gPiBBcyB0aGUgcGF0Y2hlcyB0aGF0IHRyaWdnZXJlZCB0aGlzIHdlcmVuJ3Qg
+cGFydCBvZiB0aGUgY3J5cHRvDQo+ID4gdHJlZSwgdGhpcyB3aWxsIGhhdmUgdG8gZ28gdGhyb3Vn
+aCB0aGUgcmFuZG9tIHRyZWUgaWYgeW91IHdhbnQNCj4gPiB0aGVtIGZvciA1LjE3Lg0KPiANCj4g
+U3VyZSwgd2lsbCBkby4NCg0KSSd2ZSByYW1tZWQgdGhlIGNvZGUgdGhyb3VnaCBnb2Rib2x0Li4u
+IGh0dHBzOi8vZ29kYm9sdC5vcmcvei9XdjY0ejl6RzgNCg0KU29tZSB0aGluZ3MgSSd2ZSBub3Rp
+Y2VkOw0KDQoxKSBUaGVyZSBpcyBubyBwb2ludCBoYXZpbmcgYWxsIHRoZSBpbmxpbmUgZnVuY3Rp
+b25zLg0KICAgRmFyIGJldHRlciB0byBoYXZlIHJlYWwgZnVuY3Rpb25zIHRvIGRvIHRoZSB3b3Jr
+Lg0KICAgR2l2ZW4gdGhlIGNvc3Qgb2YgaGFzaGluZyA2NCBieXRlcyBvZiBkYXRhIHRoZSBleHRy
+YQ0KICAgZnVuY3Rpb24gY2FsbCB3b24ndCBtYXR0ZXIuDQogICBJbmRlZWQgZm9yIHJlcGVhdGVk
+IGNhbGxzIGl0IHdpbGwgaGVscCBiZWNhdXNlIHRoZSByZXF1aXJlZA0KICAgY29kZSB3aWxsIGJl
+IGluIHRoZSBJLWNhY2hlLg0KDQoyKSBUaGUgY29tcGlsZXMgSSB0cmllZCBkbyBtYW5hZ2UgdG8g
+cmVtb3ZlIHRoZSBibGFrZTJfc2lnbWFbXVtdDQogICB3aGVuIHVucm9sbGluZyBldmVyeXRoaW5n
+IC0gd2hpY2ggaXMgYSBzbGlnaHQgZ2FpbiBmb3IgdGhlIGZ1bGwNCiAgIHVucm9sbC4gQnV0IEkg
+ZG91YnQgaXQgaXMgdGhhdCBzaWduaWZpY2FudCBpZiB0aGUgYWNjZXNzIGNhbg0KICAgZ2V0IHNl
+bnNpYmx5IG9wdGltaXNlZC4NCiAgIEZvciBub24teDg2IHRoYXQgbWlnaHQgcmVxdWlyZSBhbGwg
+dGhlIHZhbHVlcyBieSBtdWx0aXBsaWVkIGJ5IDQuDQoNCjMpIEFsdGhvdWdoIEcoKSBpcyBhIG1h
+c3NpdmUgcmVnaXN0ZXIgZGVwZW5kZW5jeSBjaGFpbiB0aGUgY29tcGlsZXINCiAgIGtub3dzIHRo
+YXQgRygsWzAtM10sKSBhcmUgaW5kZXBlbmRlbnQgYW5kIGNhbiBleGVjdXRlIGluIHBhcmFsbGVs
+Lg0KICAgVGhpcyBkb2VzIGhlbHAgZXhlY3V0aW9uIHRpbWUgb24gbXVsdGktaXNzdWUgY3B1IChs
+aWtlIHg4NikuDQogICBXaXRoIGNhcmUgaXQgb3VnaHQgdG8gYmUgcG9zc2libGUgdG8gdXNlIHRo
+ZSBzYW1lIGNvZGUgZm9yIEcoLFs0LTddLCkNCiAgIHdpdGhvdXQgc3RvcHBpbmcgdGhlIGNvbXBp
+bGVyIGludGVybGVhdmluZyBhbGwgdGhlIGluc3RydWN0aW9ucy4NCg0KNCkgSSBzdHJvbmdseSBz
+dXNwZWN0IHRoYXQgdXNpbmcgYSBsb29wIGZvciB0aGUgcm91bmRzIHdpbGwgaGF2ZQ0KICAgbWlu
+aW1hbCBpbXBhY3Qgb24gcGVyZm9ybWFuY2UgLSBlc3BlY2lhbGx5IGlmIHRoZSBmaXJzdCBjYWxs
+IGlzDQogICAnY29sZCBjYWNoZScuDQogICBCdXQgSSd2ZSBub3QgZ290IHRpbWUgdG8gdGVzdCB0
+aGUgY29kZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJh
+bWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0
+cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-A test is always good to have, we need more, yeah.
-
-But since this is a fix and what is needed for v2 is just to improve the
-wording, please don't let the test to prevent you from sending the
-updated fix.
-
-Then you can go on and work on the test.
-
-I say this because the merge window may close before the test gets ready
-and its better for us to have fixes merged as soon as possible so that
-we have more time to figure out if it has unintended consequences as it
-gets in place for longer.
- 
-> Other events such as "-p 10000 -e cycles//" worked fine. Only the ones with aux area tracing (arm_spe, cs_etm, intel_pt) were ignoring the global config flags.
-> 
-> Thank you for the pointers, and the review,
-> German
-> 
-> >
-> > Thanks!
-> > Ian
-> >
-> >> Thanks for the review,
-> >> German
-
--- 
-
-- Arnaldo
