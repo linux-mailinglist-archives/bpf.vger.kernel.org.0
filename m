@@ -2,196 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF629493159
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 00:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A9E493179
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 00:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234509AbiARXVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 18:21:50 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39128 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1350269AbiARXVu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 18:21:50 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20IMegAL026244
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=qoOqk0joUaSJ8sKLEN6K1yiGzdM9hPAyLvdkgnpr9g8=;
- b=XXjgfGif5ktXhNXFTfkwHewYiVoiTp+B77V1pXRJ6UIroN2fpotWeO2UC9ZvRwPhScIT
- XpYwA9b3xYpL5vzvZZqd+O1Nh5FZ8Ce70pehAwZujvS2JpxgSPGGrfbWl8WapdiK9lTG
- LnpvnjcEyHtl6/BoqKpWslBluK1O6dJTObo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3dp6j8g7mr-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:49 -0800
-Received: from twshared4941.18.frc3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 18 Jan 2022 15:21:46 -0800
-Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
-        id AC59326AF781; Tue, 18 Jan 2022 15:21:44 -0800 (PST)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>
-CC:     Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH v3 bpf-next] libbpf: Improve btf__add_btf() with an additional hashmap for strings.
-Date:   Tue, 18 Jan 2022 15:20:53 -0800
-Message-ID: <20220118232053.2113139-2-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220118232053.2113139-1-kuifeng@fb.com>
-References: <20220118232053.2113139-1-kuifeng@fb.com>
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: qDfAlkdZXyG8nfQESzvI52HMrF_r5Hjo
-X-Proofpoint-ORIG-GUID: qDfAlkdZXyG8nfQESzvI52HMrF_r5Hjo
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233354AbiARXx7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 18:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344932AbiARXx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 18:53:58 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4198FC061574;
+        Tue, 18 Jan 2022 15:53:58 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id g2so656894pgo.9;
+        Tue, 18 Jan 2022 15:53:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2VYJaO2f2+oyJmGbk1m7upZoK/g8R4QgH1WZUP2CD74=;
+        b=Lu9xfHkDMBBStlM53OHLPoTJaTj+sWOHJNCoaJsgr4muaooeAbpP2Cw9iOUP00muTv
+         FHXc1qyyMuDcT7MkAJbZCuJX8/+dM7z6v4PZJdy1Xm6PfQUI1shqQC66uSNdiyAgn2vc
+         G2J2l4DD1djIaTHZlUFhal8FGZ6WYXC8hfLYcqEo2OxCqp/2qEZkncKf1Xkk05IqDuQC
+         +mDKU1AQvqar0mbJHhiUm2aHA0S1gEe8/3CYznM8yXpMVQguuKY0BFBYX5Cr6hf5/0Qb
+         Di0eqhxJL+DsySrqTSdCUk2q5ZfwGYJq8ogxq8+llo6D3QKtgxx0QPa3lTq6GGMkQp6r
+         jx7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2VYJaO2f2+oyJmGbk1m7upZoK/g8R4QgH1WZUP2CD74=;
+        b=PTOlIIPUKntr5qJIirWE3AjINLCf2FcbBX77vXIQDCrsKh26Drhd9I2mO7VpBYQcrM
+         vU32o9VZf1CDclJTF/Yt3mYqmH7cy9OHcatPMdkvTCY5l6Ak/PRigiXT03PxdcVKclm2
+         BKy+jatLirKlKVSX06uHmmuDePa+Oo+vokCuAegDf72ILvL3GNae9DlymtwMdH8LkNUT
+         McsTkRo/e2wWU6ljJsHOFTy2z6W5Qqo3aqSamVTwVGQ6DOXTGeZBsdxo/7xQ7DAYx15s
+         cjXUvXapn64hz5TbVYHXRi/AqInmgp69OzbYpqqEJS9RYM0ogYdL82nqmHm7FyWdT3XW
+         4uxw==
+X-Gm-Message-State: AOAM53066PdrmyGWXC9+tPorP2+Y72Mvvkxv9HNOvsNLhi3dPjkkQJzg
+        nDE+wfVM8x7mAtMabmuZMxrQM3kskTMkZlD9++I=
+X-Google-Smtp-Source: ABdhPJyIODfFujZGkv17/eb0qpafbNipM/F80U5IYRCxISAh9UP//MFXbMpFkUDA1n4ehozEkd0YQ8qSVWRWG+VZmVk=
+X-Received: by 2002:a62:6342:0:b0:4bc:c4f1:2abf with SMTP id
+ x63-20020a626342000000b004bcc4f12abfmr28163781pfb.77.1642550037743; Tue, 18
+ Jan 2022 15:53:57 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-18_06,2022-01-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
- clxscore=1015 suspectscore=0 bulkscore=0 phishscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 impostorscore=0
- mlxlogscore=814 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201180131
-X-FB-Internal: deliver
+References: <20220113002849.4384-1-kuniyu@amazon.co.jp>
+In-Reply-To: <20220113002849.4384-1-kuniyu@amazon.co.jp>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 18 Jan 2022 15:53:46 -0800
+Message-ID: <CAADnVQLf+HCOTyK3=ur34Lb1GWKAvbgDvvC4AGAYBGvF=BL+BQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/5] bpf: Batching iter for AF_UNIX sockets.
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a hashmap to map the string offsets from a source btf to the
-string offsets from a target btf to reduce overheads.
+On Wed, Jan 12, 2022 at 4:29 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
+>
+> Last year the commit afd20b9290e1 ("af_unix: Replace the big lock with
+> small locks.") landed on bpf-next.  Now we can use a batching algorithm
+> for AF_UNIX bpf iter as TCP bpf iter.
+>
+>
+> Changelog:
+> - Add the 1st patch.
+> - Call unix_get_first() in .start()/.next() to always acquire a lock in
+>   each iteration in the 2nd patch.
 
-btf__add_btf() calls btf__add_str() to add strings from a source to a
-target btf.  It causes many string comparisons, and it is a major
-hotspot when adding a big btf.  btf__add_str() uses strcmp() to check
-if a hash entry is the right one.  The extra hashmap here compares
-offsets of strings, that are much cheaper.  It remembers the results
-of btf__add_str() for later uses to reduce the cost.
-
-We are parallelizing BTF encoding for pahole by creating separated btf
-instances for worker threads.  These per-thread btf instances will be
-added to the btf instance of the main thread by calling btf__add_str()
-to deduplicate and write out.  With this patch and -j4, the running
-time of pahole drops to about 6.0s from 6.6s.
-
-The following lines are the summary of 'perf stat' w/o the change.
-
-       6.668126396 seconds time elapsed
-
-      13.451054000 seconds user
-       0.715520000 seconds sys
-
-The following lines are the summary w/ the change.
-
-       5.986973919 seconds time elapsed
-
-      12.939903000 seconds user
-       0.724152000 seconds sys
-
-V3 removes an unnecssary check against str_off_map, and merges the
-declarations of two variables into one line.
-
-[v2] https://lore.kernel.org/bpf/20220114193713.461349-1-kuifeng@fb.com/
-
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- tools/lib/bpf/btf.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 9aa19c89f758..84289ac7179e 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1620,20 +1620,37 @@ static int btf_commit_type(struct btf *btf, int dat=
-a_sz)
- struct btf_pipe {
- 	const struct btf *src;
- 	struct btf *dst;
-+	struct hashmap *str_off_map; /* map string offsets from src to dst */
- };
-=20
- static int btf_rewrite_str(__u32 *str_off, void *ctx)
- {
- 	struct btf_pipe *p =3D ctx;
--	int off;
-+	void *mapped_off;
-+	int off, err;
-=20
- 	if (!*str_off) /* nothing to do for empty strings */
- 		return 0;
-=20
-+	if (p->str_off_map &&
-+	    hashmap__find(p->str_off_map, (void *)(long)*str_off, &mapped_off)) {
-+		*str_off =3D (__u32)(long)mapped_off;
-+		return 0;
-+	}
-+
- 	off =3D btf__add_str(p->dst, btf__str_by_offset(p->src, *str_off));
- 	if (off < 0)
- 		return off;
-=20
-+	/* Remember string mapping from src to dst.  It avoids
-+	 * performing expensive string comparisons.
-+	 */
-+	if (p->str_off_map) {
-+		err =3D hashmap__append(p->str_off_map, (void *)(long)*str_off, (void *)=
-(long)off);
-+		if (err)
-+			return err;
-+	}
-+
- 	*str_off =3D off;
- 	return 0;
- }
-@@ -1680,6 +1697,9 @@ static int btf_rewrite_type_ids(__u32 *type_id, void =
-*ctx)
- 	return 0;
- }
-=20
-+static size_t btf_dedup_identity_hash_fn(const void *key, void *ctx);
-+static bool btf_dedup_equal_fn(const void *k1, const void *k2, void *ctx);
-+
- int btf__add_btf(struct btf *btf, const struct btf *src_btf)
- {
- 	struct btf_pipe p =3D { .src =3D src_btf, .dst =3D btf };
-@@ -1713,6 +1733,11 @@ int btf__add_btf(struct btf *btf, const struct btf *=
-src_btf)
- 	if (!off)
- 		return libbpf_err(-ENOMEM);
-=20
-+	/* Map the string offsets from src_btf to the offsets from btf to improve=
- performance */
-+	p.str_off_map =3D hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_equa=
-l_fn, NULL);
-+	if (p.str_off_map =3D=3D NULL)
-+		return libbpf_err(-ENOMEM);
-+
- 	/* bulk copy types data for all types from src_btf */
- 	memcpy(t, src_btf->types_data, data_sz);
-=20
-@@ -1754,6 +1779,8 @@ int btf__add_btf(struct btf *btf, const struct btf *s=
-rc_btf)
- 	btf->hdr->str_off +=3D data_sz;
- 	btf->nr_types +=3D cnt;
-=20
-+	hashmap__free(p.str_off_map);
-+
- 	/* return type ID of the first added BTF type */
- 	return btf->start_id + btf->nr_types - cnt;
- err_out:
-@@ -1767,6 +1794,8 @@ int btf__add_btf(struct btf *btf, const struct btf *s=
-rc_btf)
- 	 * wasn't modified, so doesn't need restoring, see big comment above */
- 	btf->hdr->str_len =3D old_strs_len;
-=20
-+	hashmap__free(p.str_off_map);
-+
- 	return libbpf_err(err);
- }
-=20
---=20
-2.30.2
-
+Applied. Thanks
