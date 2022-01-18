@@ -2,80 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6532E491152
-	for <lists+bpf@lfdr.de>; Mon, 17 Jan 2022 22:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9B5491417
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 03:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243267AbiAQVdP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 17 Jan 2022 16:33:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:37478 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243263AbiAQVdP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 17 Jan 2022 16:33:15 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27D21ED1;
-        Mon, 17 Jan 2022 13:33:14 -0800 (PST)
-Received: from [192.168.0.5] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A1873F774;
-        Mon, 17 Jan 2022 13:33:11 -0800 (PST)
-Subject: Re: [PATCH] perf record/arm-spe: Override attr->sample_period for
- non-libpfm4 events
-To:     Ian Rogers <irogers@google.com>
-Cc:     James Clark <james.clark@arm.com>, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org,
-        Chase Conklin <chase.conklin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Stephane Eranian <eranian@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, "acme@kernel.org" <acme@kernel.org>
-References: <20220114212102.179209-1-german.gomez@arm.com>
- <c2b960eb-a25e-7ce7-ee4b-2be557d8a213@arm.com>
- <35a4f70f-d7ef-6e3c-dc79-aa09d87f0271@arm.com>
- <CAP-5=fUHT29Z8Y5pMdTWK4mLKAXrNTtC5RBpet6UsAy4TLDfDw@mail.gmail.com>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <10cc73f1-53fd-9c5a-7fe2-8cd3786fbe37@arm.com>
-Date:   Mon, 17 Jan 2022 21:32:55 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S244445AbiARCUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 17 Jan 2022 21:20:03 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:34802 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244399AbiARCT5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 17 Jan 2022 21:19:57 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BE56CB811FF;
+        Tue, 18 Jan 2022 02:19:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B021BC36AEB;
+        Tue, 18 Jan 2022 02:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642472394;
+        bh=D2F65sZ8+SV9pkPLBU9T9VYQyZJtdJT8brhvmr+qFZo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=G0JMM8HtWyOGSaDPtHkPGvf49tiMZtL8JymoI/Vf74ALq73JbgmvzfaVTRaMSNM6b
+         nwZJ1aWyjRYfdaoVwZ5UfBF0Lg+iZckKLJeBpTR8QzPWY8ZnFwGMsTMJgrprXmG9aC
+         Xnt0mK9bhLxGPFU5EpiLZBPh4D1bwbDcp7F0RkJ0kMs4icwsTmFpMf+SOShZNc4rA+
+         TV1JHYu33wPjhmct4Dn0JEQAmwz8S7dyVLYoEtaR1KNQOeL79yZheRQRp/wxH2M1/u
+         FbI32OZtsZSDpsqTIGS+UGlwhM2Dl/WSfgaHKSVSIQ6++tjEmm1hY47UB406QS9Xkx
+         EOA++R8E2Ybkw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Sasha Levin <sashal@kernel.org>,
+        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.16 008/217] libbpf: Detect corrupted ELF symbols section
+Date:   Mon, 17 Jan 2022 21:16:11 -0500
+Message-Id: <20220118021940.1942199-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220118021940.1942199-1-sashal@kernel.org>
+References: <20220118021940.1942199-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUHT29Z8Y5pMdTWK4mLKAXrNTtC5RBpet6UsAy4TLDfDw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ian,
+From: Andrii Nakryiko <andrii@kernel.org>
 
-On 17/01/2022 16:28, Ian Rogers wrote:
-> [...]
-> Thanks for fixing this, I can add an acked-by for the v2 patch. Could
-> we add a test for this to avoid future regressions? There are similar
-> tests for frequency like:
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr/test-record-freq
-> based on the attr.py test:
-> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr.py
-> The test specifies a base type of event attribute and then what is
-> modified by the test. It takes a little to get your head around but
-> having a test for this would be a welcome addition.
+[ Upstream commit 833907876be55205d0ec153dcd819c014404ee16 ]
 
-I agree I should have included a test for this fix. I'll look into this for the v2.
+Prevent divide-by-zero if ELF is corrupted and has zero sh_entsize.
+Reported by oss-fuzz project.
 
-Other events such as "-p 10000 -e cycles//" worked fine. Only the ones with aux area tracing (arm_spe, cs_etm, intel_pt) were ignoring the global config flags.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Yonghong Song <yhs@fb.com>
+Link: https://lore.kernel.org/bpf/20211103173213.1376990-2-andrii@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you for the pointers, and the review,
-German
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7c74342bb6680..b5bf1c074832e 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3555,7 +3555,7 @@ static int bpf_object__collect_externs(struct bpf_object *obj)
+ 
+ 	scn = elf_sec_by_idx(obj, obj->efile.symbols_shndx);
+ 	sh = elf_sec_hdr(obj, scn);
+-	if (!sh)
++	if (!sh || sh->sh_entsize != sizeof(Elf64_Sym))
+ 		return -LIBBPF_ERRNO__FORMAT;
+ 
+ 	dummy_var_btf_id = add_dummy_ksym_var(obj->btf);
+-- 
+2.34.1
 
->
-> Thanks!
-> Ian
->
->> Thanks for the review,
->> German
