@@ -2,117 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AED649289E
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 15:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F6B492979
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 16:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245010AbiAROoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 09:44:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:58502 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231658AbiAROoC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 09:44:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DB5B41FB;
-        Tue, 18 Jan 2022 06:44:01 -0800 (PST)
-Received: from ip-10-252-15-108.eu-west-1.compute.internal (unknown [10.252.15.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0F27E3F766;
-        Tue, 18 Jan 2022 06:43:58 -0800 (PST)
-From:   German Gomez <german.gomez@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     German Gomez <german.gomez@arm.com>,
-        Chase Conklin <chase.conklin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Stephane Eranian <eranian@google.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v2] perf record/arm-spe: Override attr->sample_period for non-libpfm4 events
-Date:   Tue, 18 Jan 2022 14:40:54 +0000
-Message-Id: <20220118144054.2541-1-german.gomez@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1344738AbiARPOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 10:14:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46396 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344977AbiARPOB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 10:14:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1642518841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=SBWXHV4rq5C+Zy00MCJDNgodxABjxEMEpY21t6DRkbE=;
+        b=UJpmnqrNqPn6kKCkcP/56JzpDmYJlcNjac4k8c5i3eqmXF/ajkyPB7WO4eAiq/wTFreWS3
+        PObhYq6WAN6aeSe98kfMd0LnHPcu71IZUEcePk36aIMApAj+wFeEzynVC4ufqql0ebAlrx
+        a1X6WejLfm3ad+5NisM/jBaVvEdlEYo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-426-NpUe5zWFMb-EoZ1KCMUlSw-1; Tue, 18 Jan 2022 10:13:55 -0500
+X-MC-Unique: NpUe5zWFMb-EoZ1KCMUlSw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7181F1868336;
+        Tue, 18 Jan 2022 15:12:52 +0000 (UTC)
+Received: from thinkpad.redhat.com (unknown [10.40.194.108])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C47915CE80;
+        Tue, 18 Jan 2022 15:12:50 +0000 (UTC)
+From:   Felix Maurer <fmaurer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     sdf@google.com, kafai@fb.com, ast@kernel.org, jakub@cloudflare.com
+Subject: [PATCH bpf v2] selftests: bpf: Fix bind on used port
+Date:   Tue, 18 Jan 2022 16:11:56 +0100
+Message-Id: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A previous patch preventing "attr->sample_period" values from being
-overridden in pfm events changed a related behaviour in arm-spe.
+The bind_perm BPF selftest failed when port 111/tcp was already in use
+during the test. To fix this, the test now runs in its own network name
+space.
 
-Before said patch:
-perf record -c 10000 -e arm_spe_0// -- sleep 1
+To use unshare, it is necessary to reorder the includes. The style of
+the includes is adapted to be consistent with the other prog_tests.
 
-Would yield an SPE event with period=10000. After the patch, the period
-in "-c 10000" was being ignored because the arm-spe code initializes
-sample_period to a non-zero value.
+v2: Replace deprecated CHECK macro with ASSERT_OK
 
-This patch restores the previous behaviour for non-libpfm4 events.
-
-Reported-by: Chase Conklin <chase.conklin@arm.com>
-Fixes: ae5dcc8abe31 (“perf record: Prevent override of attr->sample_period for libpfm4 events”)
-Signed-off-by: German Gomez <german.gomez@arm.com>
+Fixes: 8259fdeb30326 ("selftests/bpf: Verify that rebinding to port < 1024 from BPF works")
+Signed-off-by: Felix Maurer <fmaurer@redhat.com>
 ---
-As suggested by Arnaldo, this v2 doesn't include a test in order to not
-block this fix for longer than necessary. So the test can be sent as a
-separate submission later.
+ .../selftests/bpf/prog_tests/bind_perm.c      | 20 ++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-Changes since v1.
- - Update commit message (James Clark)
----
- tools/perf/util/evsel.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
-
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index a59fb2ecb84e..86ab038f020f 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1065,6 +1065,17 @@ void __weak arch_evsel__fixup_new_cycles(struct perf_event_attr *attr __maybe_un
- {
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+index d0f06e40c16d..eac71fbb24ce 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bind_perm.c
++++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+@@ -1,13 +1,24 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include <test_progs.h>
+-#include "bind_perm.skel.h"
+-
++#define _GNU_SOURCE
++#include <sched.h>
++#include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #include <sys/capability.h>
  
-+static void evsel__set_default_freq_period(struct record_opts *opts,
-+					   struct perf_event_attr *attr)
++#include "test_progs.h"
++#include "bind_perm.skel.h"
++
+ static int duration;
+ 
++static int create_netns(void)
 +{
-+	if (opts->freq) {
-+		attr->freq = 1;
-+		attr->sample_freq = opts->freq;
-+	} else {
-+		attr->sample_period = opts->default_interval;
-+	}
++	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
++		return -1;
++
++	return 0;
 +}
 +
- /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1131,14 +1142,12 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	 * We default some events to have a default interval. But keep
- 	 * it a weak assumption overridable by the user.
- 	 */
--	if (!attr->sample_period) {
--		if (opts->freq) {
--			attr->freq		= 1;
--			attr->sample_freq	= opts->freq;
--		} else {
--			attr->sample_period = opts->default_interval;
--		}
--	}
-+	if ((evsel->is_libpfm_event && !attr->sample_period) ||
-+	    (!evsel->is_libpfm_event && (!attr->sample_period ||
-+					 opts->user_freq != UINT_MAX ||
-+					 opts->user_interval != ULLONG_MAX)))
-+		evsel__set_default_freq_period(opts, attr);
+ void try_bind(int family, int port, int expected_errno)
+ {
+ 	struct sockaddr_storage addr = {};
+@@ -75,6 +86,9 @@ void test_bind_perm(void)
+ 	struct bind_perm *skel;
+ 	int cgroup_fd;
+ 
++	if (create_netns())
++		return;
 +
- 	/*
- 	 * If attr->freq was set (here or earlier), ask for period
- 	 * to be sampled.
+ 	cgroup_fd = test__join_cgroup("/bind_perm");
+ 	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
+ 		return;
 -- 
-2.25.1
+2.34.1
 
