@@ -2,57 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33600493158
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 00:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF629493159
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 00:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237650AbiARXVf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 18:21:35 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:10782 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234509AbiARXVd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 18:21:33 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20IM4OpE022414
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:33 -0800
+        id S234509AbiARXVu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 18:21:50 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:39128 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1350269AbiARXVu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 18:21:50 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20IMegAL026244
+        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=R/FcfERIj8IoMQ5z0X6U0IXLpE0nKcDTyyVwpym4R2E=;
- b=luAA7O/TtDKFHnXxjejkaO2ilSAXrnM0wFCxNK2ylUX7LXYRLY3y3j+RAmDjxXAGRKh1
- J0qCivreKco7QGID4rHkW12HHIJFihobPO7ATtjBaCF3j5tuD/ITJf7btMcl1S0su+sp
- 8W3NcIYnOQ7z6a1wQ0v2eSAqc1iLSuZ119c= 
+ : date : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=qoOqk0joUaSJ8sKLEN6K1yiGzdM9hPAyLvdkgnpr9g8=;
+ b=XXjgfGif5ktXhNXFTfkwHewYiVoiTp+B77V1pXRJ6UIroN2fpotWeO2UC9ZvRwPhScIT
+ XpYwA9b3xYpL5vzvZZqd+O1Nh5FZ8Ce70pehAwZujvS2JpxgSPGGrfbWl8WapdiK9lTG
+ LnpvnjcEyHtl6/BoqKpWslBluK1O6dJTObo= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp0x2tubb-1
+        by m0001303.ppops.net (PPS) with ESMTPS id 3dp6j8g7mr-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:33 -0800
-Received: from twshared7634.08.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 15:21:49 -0800
+Received: from twshared4941.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 18 Jan 2022 15:21:32 -0800
+ 15.1.2308.20; Tue, 18 Jan 2022 15:21:46 -0800
 Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
-        id AE87926AF5FE; Tue, 18 Jan 2022 15:21:21 -0800 (PST)
+        id AC59326AF781; Tue, 18 Jan 2022 15:21:44 -0800 (PST)
 From:   Kui-Feng Lee <kuifeng@fb.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <andrii@kernel.org>
 CC:     Kui-Feng Lee <kuifeng@fb.com>
 Subject: [PATCH v3 bpf-next] libbpf: Improve btf__add_btf() with an additional hashmap for strings.
-Date:   Tue, 18 Jan 2022 15:20:52 -0800
-Message-ID: <20220118232053.2113139-1-kuifeng@fb.com>
+Date:   Tue, 18 Jan 2022 15:20:53 -0800
+Message-ID: <20220118232053.2113139-2-kuifeng@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220118232053.2113139-1-kuifeng@fb.com>
+References: <20220118232053.2113139-1-kuifeng@fb.com>
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 9whDP0cj7jzaEzTeHCBDKSx13gZ2ElWE
-X-Proofpoint-GUID: 9whDP0cj7jzaEzTeHCBDKSx13gZ2ElWE
+X-Proofpoint-GUID: qDfAlkdZXyG8nfQESzvI52HMrF_r5Hjo
+X-Proofpoint-ORIG-GUID: qDfAlkdZXyG8nfQESzvI52HMrF_r5Hjo
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-18_06,2022-01-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=796 suspectscore=0 bulkscore=0
- impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201180130
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ clxscore=1015 suspectscore=0 bulkscore=0 phishscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=814 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201180131
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -88,8 +91,7 @@ The following lines are the summary w/ the change.
       12.939903000 seconds user
        0.724152000 seconds sys
 
-V3 refactors the code according to the feedbacks got from v2.  It
-removes an unnecessary check against str_off_map, and merges the
+V3 removes an unnecssary check against str_off_map, and merges the
 declarations of two variables into one line.
 
 [v2] https://lore.kernel.org/bpf/20220114193713.461349-1-kuifeng@fb.com/
