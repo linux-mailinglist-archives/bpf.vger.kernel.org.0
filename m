@@ -2,61 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFE7492853
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 15:25:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EB8492891
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 15:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242519AbiAROZb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 09:25:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28757 "EHLO
+        id S241799AbiAROjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 09:39:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:22650 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233868AbiAROZb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 09:25:31 -0500
+        by vger.kernel.org with ESMTP id S1343535AbiAROig (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 09:38:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642515930;
+        s=mimecast20190719; t=1642516715;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=N0j/fQ4PflVYGPy/bLo8LyJo0AEkhVcyeqzgco+GTv8=;
-        b=VF8b9qOtBTViUT6+Slp36CzezAcdTXWL4olQown8KqKoP8K6N8gehy6fRjSepVu8G/p9JY
-        WsKdYZUwgHcGXSGHu3hbfxteNvpimitwxLCtdGyGXYg4inQ8JfdeDozdqAtEWUfnUeoADL
-        ltRSI3JuA1tBw8a50y2kPixXvjY2Lo8=
+        bh=L/3xiTwKonxDCzPOwDPfLLah1H5jM3BzmJPk13Up2Bg=;
+        b=b+ISggn0TjKed6vxo/9ZdfioD6H256LGfSsx8mGpCb0gB4M0Gfw4TnRdzpXuWoKCQjsurm
+        aRVD6t5RJrdqfUOVhgkfA5/3uBhBjUrHiDsn6Kjtx9hi3pZRRN4bpWbju5EZNc9F9R5p/u
+        Ds36tzpidk+pcKT1FWu6VEzyULYSkzY=
 Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
  [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-538-kH7EG1VJPQ6Z2PR5Kgm98Q-1; Tue, 18 Jan 2022 09:25:29 -0500
-X-MC-Unique: kH7EG1VJPQ6Z2PR5Kgm98Q-1
-Received: by mail-ed1-f69.google.com with SMTP id l14-20020aa7cace000000b003f7f8e1cbbdso17102519edt.20
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 06:25:29 -0800 (PST)
+ us-mta-319-0C9xNngmPcuXYKpfKtk6HA-1; Tue, 18 Jan 2022 09:38:33 -0500
+X-MC-Unique: 0C9xNngmPcuXYKpfKtk6HA-1
+Received: by mail-ed1-f69.google.com with SMTP id c8-20020a05640227c800b003fdc1684cdeso17237080ede.12
+        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 06:38:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=N0j/fQ4PflVYGPy/bLo8LyJo0AEkhVcyeqzgco+GTv8=;
-        b=M6XvCMvCrLx9WLM9kd4HijWhTFB8xlcvKDI3ChqZyH9r1lPeVaZbLLhQZKkPtK5dmq
-         Lig/UBxTM8ZWD3i39tfk1gv89wHVHVOp1L6F4mWuOKMvDRTk0jyi7VMC2UM9Tj+5K42b
-         h79IKj3BHBFLhN014O3M87R9OV4UErfnnBIYx/+qQJDq7U/L7VMEl/xaXgtc081uSRPn
-         QpPFlHntMugwwoDoKneMcxYVHOCcNB4Gap0JpufLMfwi3IYOaoVStpECgQzxU3X/216F
-         xPfxffG4wvHpMO0t8+D3ixts9HxS48tyO9aloPkOIm4o30lmKcGgzS1htsd2xBtKPoXX
-         UGNw==
-X-Gm-Message-State: AOAM531jOqSBjfWNV3DKaXLFiQ8xHxTOevsNKVJpFymDZfwx5Kul+KQ7
-        GudDYVyLjrEln74wRq0MUcxbJgu4crrhGvixtPn6gO2oQz9wijqPjh5OWLn7dDQcNd7tKk0OqCK
-        RhRlAMd1KilYY
-X-Received: by 2002:a17:907:6d22:: with SMTP id sa34mr19840863ejc.635.1642515928012;
-        Tue, 18 Jan 2022 06:25:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxt7mNYuWcPmCyBDWs9bQTDMSJk3irHRnoPYop007C8xxpW8ahyJvriCHSEP50GE/m7CBOxBQ==
-X-Received: by 2002:a17:907:6d22:: with SMTP id sa34mr19840848ejc.635.1642515927724;
-        Tue, 18 Jan 2022 06:25:27 -0800 (PST)
+        bh=L/3xiTwKonxDCzPOwDPfLLah1H5jM3BzmJPk13Up2Bg=;
+        b=dl37nXntR0QgJtdKMROCmMxyRVw05hNe4rmGd9W9H6utloNA7OTbUBqT+p6sOk6fd7
+         +iE3wbacI4qnZZcHrpn1diCUfkWu6APS/3yCEHhmjEkXT9uZq7sgcQZ9U+mEhAEC81d1
+         BinSQ2syKKBq3rh06xxPyy0uxLuI2C5/XSTP44NwkNCMJjSBfIo1nKojlF0QK+xA8TBv
+         VEg1KnXAfZ3LXz+ud9LDKGJSaUL9RGkcKrCo1Tv2NeDR5C5MSeJLQR/lLeaj98RaK0ve
+         l2OvmeDH/WJVX/q+3qiN2i/NytjNQKEbC5Ftz7oylowMyW5rSBTispTCnM9r2ak1XiOV
+         JUrg==
+X-Gm-Message-State: AOAM531OobzLG3n3hVnLSVLaxgW0koxv/ekBuFpc9JwfxLU5cOPzO+pp
+        PLjVMYrjWQHDbTGSoGztdf7Xjfze4/qXkep0LM4cLx/6YONggEhzkGpNSsrfrxajNWD8BDmyLgf
+        IAR8Hrk/tOTwV
+X-Received: by 2002:a05:6402:22d2:: with SMTP id dm18mr25313849edb.410.1642516712350;
+        Tue, 18 Jan 2022 06:38:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJypqPN9DQm94a1olWK3nqTc3tmoyxpKtTknk1gpNMzhugw4gQ/v2cnrt8sk2LTdvU5KY9yY4Q==
+X-Received: by 2002:a05:6402:22d2:: with SMTP id dm18mr25313829edb.410.1642516712165;
+        Tue, 18 Jan 2022 06:38:32 -0800 (PST)
 Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id cw6sm7205493edb.11.2022.01.18.06.25.26
+        by smtp.gmail.com with ESMTPSA id q14sm7065206edv.79.2022.01.18.06.38.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jan 2022 06:25:27 -0800 (PST)
-Date:   Tue, 18 Jan 2022 15:25:25 +0100
+        Tue, 18 Jan 2022 06:38:31 -0800 (PST)
+Date:   Tue, 18 Jan 2022 15:38:28 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
@@ -67,114 +69,136 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         "David S . Miller" <davem@davemloft.net>
 Subject: Re: [RFC PATCH v2 0/8] fprobe: Introduce fprobe function entry/exit
  probe
-Message-ID: <YebN1TIRxMX0sgs4@krava>
+Message-ID: <YebQ5E0dEvbFqxL3@krava>
 References: <164199616622.1247129.783024987490980883.stgit@devnote2>
- <Yd77SYWgtrkhFIYz@krava>
- <YeAatqQTKsrxmUkS@krava>
- <20220115135219.64ef1cc6482d5de8a3bce9b0@kernel.org>
+ <CAEf4BzY9qmzemZ=3JSto+eWq9k-kX7hZKgugJRO9zZ61-pasqg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220115135219.64ef1cc6482d5de8a3bce9b0@kernel.org>
+In-Reply-To: <CAEf4BzY9qmzemZ=3JSto+eWq9k-kX7hZKgugJRO9zZ61-pasqg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 15, 2022 at 01:52:19PM +0900, Masami Hiramatsu wrote:
-> On Thu, 13 Jan 2022 13:27:34 +0100
-> Jiri Olsa <jolsa@redhat.com> wrote:
+On Fri, Jan 14, 2022 at 05:08:32PM -0800, Andrii Nakryiko wrote:
+> On Wed, Jan 12, 2022 at 6:02 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > Hi Jiri and Alexei,
+> >
+> > Here is the 2nd version of fprobe. This version uses the
+> > ftrace_set_filter_ips() for reducing the registering overhead.
+> > Note that this also drops per-probe point private data, which
+> > is not used anyway.
 > 
-> > On Wed, Jan 12, 2022 at 05:01:15PM +0100, Jiri Olsa wrote:
-> > > On Wed, Jan 12, 2022 at 11:02:46PM +0900, Masami Hiramatsu wrote:
-> > > > Hi Jiri and Alexei,
-> > > > 
-> > > > Here is the 2nd version of fprobe. This version uses the
-> > > > ftrace_set_filter_ips() for reducing the registering overhead.
-> > > > Note that this also drops per-probe point private data, which
-> > > > is not used anyway.
-> > > > 
-> > > > This introduces the fprobe, the function entry/exit probe with
-> > > > multiple probe point support. This also introduces the rethook
-> > > > for hooking function return as same as kretprobe does. This
-> > > 
-> > > nice, I was going through the multi-user-graph support 
-> > > and was wondering that this might be a better way
-> > > 
-> > > > abstraction will help us to generalize the fgraph tracer,
-> > > > because we can just switch it from rethook in fprobe, depending
-> > > > on the kernel configuration.
-> > > > 
-> > > > The patch [1/8] and [7/8] are from your series[1]. Other libbpf
-> > > > patches will not be affected by this change.
-> > > 
-> > > I'll try the bpf selftests on top of this
-> > 
-> > I'm getting crash and stall when running bpf selftests,
-> > the fprobe sample module works fine, I'll check on that
+> This per-probe private data is necessary for the feature called BPF
+> cookie, in which each attachment has a unique user-provided u64 value
+> associated to it, accessible at runtime through
+> bpf_get_attach_cookie() helper. One way or another we'll need to
+> support this to make these multi-attach BPF programs really useful for
+> generic tracing applications.
 > 
-> OK, I got a kernel stall. I missed to enable CONFIG_FPROBE.
-> I think vmtest.sh should support menuconfig option.
+> Jiri,
 > 
-> #6 bind_perm:OK
-> #7 bloom_filter_map:OK
-> [  107.282403] clocksource: timekeeping watchdog on CPU0: Marking clocksource 'tsc' as unstable because the skew is too large:
-> [  107.283240] clocksource:                       'hpet' wd_nsec: 496216090 wd_now: 7ddc7120 wd_last: 7ae746b7 mask: ffffffff
-> [  107.284045] clocksource:                       'tsc' cs_nsec: 495996979 cs_now: 31fdb69b39 cs_last: 31c2d29219 mask: ffffffffffffffff
-> [  107.284926] clocksource:                       'tsc' is current clocksource.
-> [  107.285487] tsc: Marking TSC unstable due to clocksource watchdog
-> [  107.285973] TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
-> [  107.286616] sched_clock: Marking unstable (107240582544, 45390230)<-(107291410145, -5437339)
-> [  107.290408] clocksource: Not enough CPUs to check clocksource 'tsc'.
-> [  107.290879] clocksource: Switched to clocksource hpet
-> [  604.210415] INFO: rcu_tasks detected stalls on tasks:
-> [  604.210830] (____ptrval____): .. nvcsw: 86/86 holdout: 1 idle_cpu: -1/0
-> [  604.211314] task:test_progs      state:R  running task     stack:    0 pid:   87 ppid:    85 flags:0x00004000
-> [  604.212058] Call Trace:
-> [  604.212246]  <TASK>
-> [  604.212452]  __schedule+0x362/0xbb0
-> [  604.212723]  ? preempt_schedule_notrace_thunk+0x16/0x18
-> [  604.213107]  preempt_schedule_notrace+0x48/0x80
-> [  604.217403]  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
-> [  604.217790]  ? ftrace_regs_call+0xd/0x52
-> [  604.218087]  ? bpf_test_finish.isra.0+0x190/0x190
-> [  604.218461]  ? bpf_fentry_test1+0x5/0x10
-> [  604.218750]  ? trace_clock_x86_tsc+0x10/0x10
-> [  604.219064]  ? __sys_bpf+0x8b1/0x2970
-> [  604.219337]  ? lock_is_held_type+0xd7/0x130
-> [  604.219680]  ? __x64_sys_bpf+0x1c/0x20
-> [  604.219957]  ? do_syscall_64+0x35/0x80
-> [  604.220237]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  604.220653]  </TASK>
+> We've discussed with Alexei this week how cookies can be supported for
+> multi-attach fentry (where it seems even more challenging than in
+> kprobe case), and agreed on rather simple solution, which roughly goes
+> like this. When multi-attaching either fentry/fexit program, save
+> sorted array of IP addresses and then sorted in the same order as IPs
+> list of u64 cookies. At runtime, bpf_get_attach_cookie() helper should
+> somehow get access to these two arrays and functions IP (that we
+> already have with bpf_get_func_ip()), perform binary search and locate
+> necessary cookie. This offloads the overhead of finding this cookie to
+> actual call site of bpf_get_attach_cookie() (and it's a log(N), so not
+> bad at all, especially if BPF program can be optimized to call this
+> helper just once).
 > 
-> Jiri, is that what you had seen? 
+> I think something like that should be doable for Masami's fprobe-based
+> multi-attach kprobes, right? That would allow to have super-fast
+> attachment, but still support BPF cookie per each individual IP/kernel
+> function attachment. I haven't looked at code thoroughly, though,
+> please let me know if I'm missing something fundamental.
 
-hi,
-sorry for late response
-
-I did not get any backtrace for the stall, debugging showed 
-that the first probed function was called over and over for
-some reason
-
-as for the crash I used the small fix below
-
-do you have any newer version I could play with?
+ok, that seems doable, we should be able to get the link struct
+in bpf_get_attach_cookie_trace and reach both ips and cookies
 
 jirka
 
-
----
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 3333893e5217..883151275892 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -157,7 +157,8 @@ int unregister_fprobe(struct fprobe *fp)
- 	ret = unregister_ftrace_function(&fp->ftrace);
- 
- 	if (!ret) {
--		rethook_free(fp->rethook);
-+		if (fp->rethook)
-+			rethook_free(fp->rethook);
- 		if (fp->syms) {
- 			kfree(fp->addrs);
- 			fp->addrs = NULL;
+> 
+> >
+> > This introduces the fprobe, the function entry/exit probe with
+> > multiple probe point support. This also introduces the rethook
+> > for hooking function return as same as kretprobe does. This
+> > abstraction will help us to generalize the fgraph tracer,
+> > because we can just switch it from rethook in fprobe, depending
+> > on the kernel configuration.
+> >
+> > The patch [1/8] and [7/8] are from your series[1]. Other libbpf
+> > patches will not be affected by this change.
+> >
+> > [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> >
+> > I also added an out-of-tree (just for testing) patch at the
+> > end of this series ([8/8]) for adding a wildcard support to
+> > the sample program. With that patch, it shows how long the
+> > registration will take;
+> >
+> > # time insmod fprobe_example.ko symbol='btrfs_*'
+> > [   36.130947] fprobe_init: 1028 symbols found
+> > [   36.177901] fprobe_init: Planted fprobe at btrfs_*
+> > real    0m 0.08s
+> > user    0m 0.00s
+> > sys     0m 0.07s
+> >
+> > Thank you,
+> >
+> > ---
+> >
+> > Jiri Olsa (2):
+> >       ftrace: Add ftrace_set_filter_ips function
+> >       bpf: Add kprobe link for attaching raw kprobes
+> >
+> > Masami Hiramatsu (6):
+> >       fprobe: Add ftrace based probe APIs
+> >       rethook: Add a generic return hook
+> >       rethook: x86: Add rethook x86 implementation
+> >       fprobe: Add exit_handler support
+> >       fprobe: Add sample program for fprobe
+> >       [DO NOT MERGE] Out-of-tree: Support wildcard symbol option to sample
+> >
+> >
+> >  arch/x86/Kconfig                |    1
+> >  arch/x86/kernel/Makefile        |    1
+> >  arch/x86/kernel/rethook.c       |  115 ++++++++++++++++++++
+> >  include/linux/bpf_types.h       |    1
+> >  include/linux/fprobe.h          |   57 ++++++++++
+> >  include/linux/ftrace.h          |    3 +
+> >  include/linux/rethook.h         |   74 +++++++++++++
+> >  include/linux/sched.h           |    3 +
+> >  include/uapi/linux/bpf.h        |   12 ++
+> >  kernel/bpf/syscall.c            |  195 +++++++++++++++++++++++++++++++++-
+> >  kernel/exit.c                   |    2
+> >  kernel/fork.c                   |    3 +
+> >  kernel/kallsyms.c               |    1
+> >  kernel/trace/Kconfig            |   22 ++++
+> >  kernel/trace/Makefile           |    2
+> >  kernel/trace/fprobe.c           |  168 +++++++++++++++++++++++++++++
+> >  kernel/trace/ftrace.c           |   54 ++++++++-
+> >  kernel/trace/rethook.c          |  226 +++++++++++++++++++++++++++++++++++++++
+> >  samples/Kconfig                 |    7 +
+> >  samples/Makefile                |    1
+> >  samples/fprobe/Makefile         |    3 +
+> >  samples/fprobe/fprobe_example.c |  154 +++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h  |   12 ++
+> >  23 files changed, 1103 insertions(+), 14 deletions(-)
+> >  create mode 100644 arch/x86/kernel/rethook.c
+> >  create mode 100644 include/linux/fprobe.h
+> >  create mode 100644 include/linux/rethook.h
+> >  create mode 100644 kernel/trace/fprobe.c
+> >  create mode 100644 kernel/trace/rethook.c
+> >  create mode 100644 samples/fprobe/Makefile
+> >  create mode 100644 samples/fprobe/fprobe_example.c
+> >
+> > --
+> > Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> 
 
