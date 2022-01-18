@@ -2,70 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998E9492544
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 12:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F914925BA
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 13:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241107AbiARL4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 06:56:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49594 "EHLO
+        id S231536AbiARMcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 07:32:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237808AbiARL4j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 06:56:39 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0369C061574
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:38 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id 23so799457ybf.7
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=rF60vm/8dNwvA4UcIattIMqMmIBYqOWiYQ4XAq5dQ6E=;
-        b=XhQoz/0fJEaNMbFMy17FjV/yTc5n2ZM4dlwLFg59dSkFDLn3jHuCG8QNAwfoMxar6u
-         nK8MPqTZH4tkVsDjtvMzltNC1sWIKdPKYz4iaDQwbzuqIeZTl4X0fdXjPijEwk/+ohmq
-         UTglJvr4da05iOS9mLZ8G5Ixrz4kh8Pkja0i2bf1mhBwWRzC0N6yUf90+PSJO804OFB+
-         SfMPgcfM0sIJ2gBwyT1TDmoxMlEPBhBc7pNGNxEAGIibkYKqPPcS9d/Ew1aS40sL02Ei
-         ZcMGdDCOnHUQmYZXj7n6af6OUIx1XvydbP2MAdW/Tf/qIBFeiFpVW2ZFwxYF893Q3XgW
-         Tj7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=rF60vm/8dNwvA4UcIattIMqMmIBYqOWiYQ4XAq5dQ6E=;
-        b=JNJbrusBe/e7U+9I28acfErpEaCT04oTadSUWkDCNo0jQABxVHs9T6wuksVofxhmUW
-         zaL2pyebMQOw+03vIff85Mcqj5F3nUI8DX2z9OKEOcXvadzwQ4E5LYyYjggTsO64/L/i
-         4jy4eQetKh0SrX0OUUGIiBXYGBU4bxFdAfzX6aHWeWyFDar55oxT/ewsrSOcKFq3rVTM
-         XM7ynkDbHYTMTVNHYzC3UkaYjfL9aOqsGQSbD/6eP1FvBBUhN688Ih04NIieotok8EHt
-         6sJjsXDCTs5gEJfxqtPQiIFdhzmUbOjGnp3EZHQRS0IXIXyW+KKSmNkgtAK8hjs+W/Lr
-         e8yg==
-X-Gm-Message-State: AOAM533+cno2XEc45YxVw4yuNi9fsyKZ402jCxl2rYf0aBt5wUmw1yC+
-        TAB/J4L3S9BW+VqZR7fRMavqSl8fo5fJ20jn1iM=
-X-Google-Smtp-Source: ABdhPJzNcSg0c3oxrTb0DY5hGcQG5W3ER5iMH2UI3nKG7E158eQ+vorkpjLboTLUvCmaVlhLD4bstiXCvYi+Y6WG/M8=
-X-Received: by 2002:a25:268a:: with SMTP id m132mr6770605ybm.508.1642506997368;
- Tue, 18 Jan 2022 03:56:37 -0800 (PST)
+        with ESMTP id S229604AbiARMce (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 07:32:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FABC061574;
+        Tue, 18 Jan 2022 04:32:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D929061380;
+        Tue, 18 Jan 2022 12:32:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 254E8C00446;
+        Tue, 18 Jan 2022 12:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642509153;
+        bh=F9Vu7ZI1/HnPH5QGZNUeqh85iKDiHrkRW8l6raKQS+M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WmrASj3abHpIKN7ju1MqlFtWwY+yzZqkpVOdWr9pT+nikc5uQwHJvmtPWBEot56md
+         8uvZW3fsAR01ws0X7LKtkgykQPuSBRUmSBVW4m6f7KaT0lwPDeBthRSs8PzjAhT7GA
+         R+0zSy1emkBLdDXSNtPlX4fzkCZ1zu1fVl2CGXHX86Il4GXhXQ0r6B1BFTwrtUyedw
+         JPLgOvn+LpML56YCXJMB+yUpqjTqQilfATvLW6sTKW5h5kjDZRw7ymla0/98zQKfIt
+         2qMA6YcSN2HomakS+9yo1mldhDfarQsr817bsuoRUg99WsnmP7vcvQl29uy82WyFss
+         9Ig7+VjIMb9vA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 86E8440714; Tue, 18 Jan 2022 09:32:30 -0300 (-03)
+Date:   Tue, 18 Jan 2022 09:32:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     German Gomez <german.gomez@arm.com>
+Cc:     Ian Rogers <irogers@google.com>, James Clark <james.clark@arm.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Chase Conklin <chase.conklin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf record/arm-spe: Override attr->sample_period for
+ non-libpfm4 events
+Message-ID: <YeazXmnjkET7h5LW@kernel.org>
+References: <20220114212102.179209-1-german.gomez@arm.com>
+ <c2b960eb-a25e-7ce7-ee4b-2be557d8a213@arm.com>
+ <35a4f70f-d7ef-6e3c-dc79-aa09d87f0271@arm.com>
+ <CAP-5=fUHT29Z8Y5pMdTWK4mLKAXrNTtC5RBpet6UsAy4TLDfDw@mail.gmail.com>
+ <10cc73f1-53fd-9c5a-7fe2-8cd3786fbe37@arm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:a30a:0:0:0:0 with HTTP; Tue, 18 Jan 2022 03:56:36
- -0800 (PST)
-Reply-To: djene.conde2022@gmail.com
-From:   =?UTF-8?B?TWlzcyBEamVuw6kgQ29uZMOp?= <sandrine.tagro205@gmail.com>
-Date:   Tue, 18 Jan 2022 11:56:36 +0000
-Message-ID: <CAHnAOcFKfuBJreyVCQ=bfp1M9ZG3DBX+_S3D30O5Brdzx=NTqA@mail.gmail.com>
-Subject: Good Morning my good friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <10cc73f1-53fd-9c5a-7fe2-8cd3786fbe37@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---=20
-Hello,
-I am sorry that my letter may come to your mailbox as spam because of
-internet exchange. I am Djene Cond=C3=A9, the daughter to the former
-president of the Republic of Guinea who as toppled in a military coup
-on the 5th septembre 2021. I solicit your assistance for a fund
-transfer to your country for urgent investment on important projects.,
-If you are interested to help me i will accord you twenty percent of
-the total fund. Please contact me here: (conde.djene2022@gmail.com)
-Rgds
-Djene
+Em Mon, Jan 17, 2022 at 09:32:55PM +0000, German Gomez escreveu:
+> Hi Ian,
+> 
+> On 17/01/2022 16:28, Ian Rogers wrote:
+> > [...]
+> > Thanks for fixing this, I can add an acked-by for the v2 patch. Could
+> > we add a test for this to avoid future regressions? There are similar
+> > tests for frequency like:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr/test-record-freq
+> > based on the attr.py test:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/tests/attr.py
+> > The test specifies a base type of event attribute and then what is
+> > modified by the test. It takes a little to get your head around but
+> > having a test for this would be a welcome addition.
+> 
+> I agree I should have included a test for this fix. I'll look into this for the v2.
+
+A test is always good to have, we need more, yeah.
+
+But since this is a fix and what is needed for v2 is just to improve the
+wording, please don't let the test to prevent you from sending the
+updated fix.
+
+Then you can go on and work on the test.
+
+I say this because the merge window may close before the test gets ready
+and its better for us to have fixes merged as soon as possible so that
+we have more time to figure out if it has unintended consequences as it
+gets in place for longer.
+ 
+> Other events such as "-p 10000 -e cycles//" worked fine. Only the ones with aux area tracing (arm_spe, cs_etm, intel_pt) were ignoring the global config flags.
+> 
+> Thank you for the pointers, and the review,
+> German
+> 
+> >
+> > Thanks!
+> > Ian
+> >
+> >> Thanks for the review,
+> >> German
+
+-- 
+
+- Arnaldo
