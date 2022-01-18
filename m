@@ -2,124 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF258492DA5
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 19:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F17E492F16
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 21:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348109AbiARSpo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 13:45:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S245354AbiARUOy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 15:14:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348241AbiARSpl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 13:45:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE58C061574;
-        Tue, 18 Jan 2022 10:45:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E9C4EB81661;
-        Tue, 18 Jan 2022 18:45:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B291C340E0;
-        Tue, 18 Jan 2022 18:45:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642531538;
-        bh=VbfxqFhZdIEQGYRIyZ+f589stovF/2R2oWo4TEO3irs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aJzTqv3dxyPY+mrBmgXgzxMbPttj7zr3etFIa86/8FK57h7LbvxtD1rSjSxkxPk1M
-         AMYsjPlwGiBWtRi81f1M3g8eoUPuGWMVuw+DY/PhQCmHxbi3UnBp9vCUGwnflWnEC2
-         h1e4cq1AYoo/gwhCD8POuZz1412L8G84biaNa+y07oZWI7YaoxTUi4om1eq/faDbUn
-         mEEmpA3YPZI0qR+RHF6roC7aJr2IifjZ0nJvvpLrawBYO+xciTz4BW3zPAl/vGBttF
-         dt5PEhrZ+KrWLsXwgvyZ15w3QrrjzpHgB+XF+caJOvKIhNrxVNhjKTSgfpQ5Ipx94Q
-         ziVnfySHNkMdQ==
-Date:   Tue, 18 Jan 2022 10:45:36 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     syzbot <syzbot+985a662ba46639a7897f@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, david@redhat.com, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        legion@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, peterz@infradead.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: [syzbot] WARNING in __cleanup_sighand
-Message-ID: <YecK0A+Qo431D8Jm@sol.localdomain>
-References: <000000000000c9c00e05d5bbe887@google.com>
+        with ESMTP id S234274AbiARUOx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 15:14:53 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C0AC061574;
+        Tue, 18 Jan 2022 12:14:53 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id d15-20020a17090a110f00b001b4e7d27474so394151pja.2;
+        Tue, 18 Jan 2022 12:14:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=puXMU5J0qX2c1G1ZYyRfcRbbPxhh45PagenGpQGdctg=;
+        b=iurWTEjPALY3vQyjXL7Lu2KJ1GTdJzpNcqeIfYQuCbHqb4ykUqcVxMknKOl4V991KN
+         To/Km87RuH8660bIT8yQ95fXd7B+uNvp/4gnR1VWSW2gttPXqH6r3ygi+4HhPfDEs0MA
+         jPh/y874ktcLbFXuB7mi/RWRUfzF0VME5P8h9oqdijCuilomhAjHL/oMUomqTA1DzD96
+         KEUSzIlTXPqHg7cdF03LgfnP60uixhn+3d4bvfF9lGVSsi5Itp+9elWbEidfLCAnh15c
+         HoM4n7PSdmSISo9qzlbRAZ6r9kcIrhjppRZCi83pqQbOpu2cKr9QzWXMUlvaH1jNt8QJ
+         jucQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=puXMU5J0qX2c1G1ZYyRfcRbbPxhh45PagenGpQGdctg=;
+        b=M4T6f1bQiGs2QzPCb+IkkBiIONEeErM6QOflbTeoFd4z3f5UlqQ8P0NqN67sU7zLtF
+         HEolyjD0AEqlGHhGz6+szGXWaSH1vaviTLCiaDIdbrY+jRmu8J/QrQdlJ31n0Ny/ZcsL
+         6gWL9nTxxpYrnA4mbE0f5LjyYs0cIDZYq4xv8s6gWvRJmULyCJ6kLGlQlKBxHJVMycHR
+         T1bjTNAyCnAkd1s7FAibYc/3IzWn/xEyBbtwKHVSmtHVYXqkmPdp/vgWqRZ8ZO0LnLcR
+         +vT6pWfOdO5YGRkX06swG2FquO9WPUhVOMA9csfvgyBfQ9PvbT1MJTT+psMFJMshQs9r
+         OTbA==
+X-Gm-Message-State: AOAM5328uqKLuZ3y56LsKzOxA634coWM96OSHaBWpoWaBDJok8EKD2+2
+        lbXJv5KEU69JvKU54EnXBGFqXBjgYvc=
+X-Google-Smtp-Source: ABdhPJxhAXEbjl4b4yEPXz9r8Uotr+e3C40o9hsAyAyC/2uIblEF6A8NBS5ugJM97BVI1VzV40mPIQ==
+X-Received: by 2002:a17:902:8693:b0:148:a2e7:fb5a with SMTP id g19-20020a170902869300b00148a2e7fb5amr28717066plo.155.1642536892833;
+        Tue, 18 Jan 2022 12:14:52 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:f291])
+        by smtp.gmail.com with ESMTPSA id a23sm3393753pjo.57.2022.01.18.12.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jan 2022 12:14:52 -0800 (PST)
+Date:   Tue, 18 Jan 2022 12:14:49 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, shayagr@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com,
+        alexander.duyck@gmail.com, saeed@kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        tirthendu.sarkar@intel.com, toke@redhat.com
+Subject: Re: [PATCH v22 bpf-next 18/23] libbpf: Add SEC name for xdp
+ multi-frags programs
+Message-ID: <20220118201449.sjqzif5qkpbu5tqx@ast-mbp.dhcp.thefacebook.com>
+References: <cover.1642439548.git.lorenzo@kernel.org>
+ <c2bdc436abe8e27a46aa8ba13f75d24f119e18a4.1642439548.git.lorenzo@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000c9c00e05d5bbe887@google.com>
+In-Reply-To: <c2bdc436abe8e27a46aa8ba13f75d24f119e18a4.1642439548.git.lorenzo@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 16, 2022 at 04:05:24PM -0800, syzbot wrote:
-> Hello,
+On Mon, Jan 17, 2022 at 06:28:30PM +0100, Lorenzo Bianconi wrote:
+> Introduce support for the following SEC entries for XDP multi-frags
+> property:
+> - SEC("xdp.frags")
+> - SEC("xdp.frags/devmap")
+> - SEC("xdp.frags/cpumap")
 > 
-> syzbot found the following issue on:
+> Acked-by: Toke Hoiland-Jorgensen <toke@redhat.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> HEAD commit:    79e06c4c4950 Merge tag 'for-linus' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1285ed28700000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=afd3ce8cd5cf174b
-> dashboard link: https://syzkaller.appspot.com/bug?extid=985a662ba46639a7897f
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+985a662ba46639a7897f@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 3640 at kernel/sched/wait.c:245 __wake_up_pollfree+0x1c7/0x1d0 kernel/sched/wait.c:246
-> Modules linked in:
-> CPU: 0 PID: 3640 Comm: syz-executor.3 Not tainted 5.16.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:__wake_up_pollfree+0x1c7/0x1d0 kernel/sched/wait.c:245
-> Code: 0d 00 00 c6 44 08 0f 00 65 48 8b 04 25 28 00 00 00 48 3b 84 24 a0 00 00 00 75 13 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b eb a7 e8 60 3e b0 08 55 41 57 41 56 41 55 41 54 53 48 83 ec
-> RSP: 0018:ffffc900028cf760 EFLAGS: 00010097
-> RAX: ffff88801ec1b130 RBX: 0000000000000046 RCX: dffffc0000000000
-> RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-> RBP: ffffc900028cf848 R08: dffffc0000000000 R09: ffffed100850025a
-> R10: ffffed100850025a R11: 0000000000000000 R12: 0000000000000000
-> R13: ffffc900028cf7a0 R14: 1ffff92000519ef4 R15: ffff888042801308
-> FS:  0000555556549400(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fed83b131b8 CR3: 000000004a82a000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 000000000000802e DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __cleanup_sighand+0x48/0xa0 kernel/fork.c:1590
->  __exit_signal kernel/exit.c:159 [inline]
->  release_task+0x115f/0x15d0 kernel/exit.c:200
->  wait_task_zombie kernel/exit.c:1114 [inline]
->  wait_consider_task+0x1995/0x2fb0 kernel/exit.c:1341
->  do_wait_thread kernel/exit.c:1404 [inline]
->  do_wait+0x291/0x9d0 kernel/exit.c:1521
->  kernel_wait4+0x2a3/0x3c0 kernel/exit.c:1684
->  __do_sys_wait4 kernel/exit.c:1712 [inline]
->  __se_sys_wait4 kernel/exit.c:1708 [inline]
->  __x64_sys_wait4+0x130/0x1e0 kernel/exit.c:1708
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f2aff29e487
-> Code: 89 7c 24 10 48 89 4c 24 18 e8 35 50 02 00 4c 8b 54 24 18 8b 54 24 14 41 89 c0 48 8b 74 24 08 8b 7c 24 10 b8 3d 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 89 44 24 10 e8 65 50 02 00 8b 44
-> RSP: 002b:00007ffeabee34f0 EFLAGS: 00000293 ORIG_RAX: 000000000000003d
-> RAX: ffffffffffffffda RBX: 0000000000000932 RCX: 00007f2aff29e487
-> RDX: 0000000040000001 RSI: 00007ffeabee357c RDI: 00000000ffffffff
-> RBP: 00007ffeabee357c R08: 0000000000000000 R09: 0000000000000010
-> R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000032
-> R13: 00000000000af2e3 R14: 0000000000000009 R15: 00007ffeabee35e0
->  </TASK>
-> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index fdb3536afa7d..611e81357fb6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -6562,6 +6562,9 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+>  	if (def & SEC_SLEEPABLE)
+>  		opts->prog_flags |= BPF_F_SLEEPABLE;
+>  
+> +	if (prog->type == BPF_PROG_TYPE_XDP && strstr(prog->sec_name, ".frags"))
+> +		opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
+
+That's a bit sloppy.
+Could you handle it similar to SEC_SLEEPABLE?
+
+> +
+>  	if ((prog->type == BPF_PROG_TYPE_TRACING ||
+>  	     prog->type == BPF_PROG_TYPE_LSM ||
+>  	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+> @@ -8600,8 +8603,11 @@ static const struct bpf_sec_def section_defs[] = {
+>  	SEC_DEF("lsm.s/",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
+>  	SEC_DEF("iter/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
+>  	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
+> +	SEC_DEF("xdp.frags/devmap",	XDP, BPF_XDP_DEVMAP, SEC_NONE),
+>  	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> +	SEC_DEF("xdp.frags/cpumap",	XDP, BPF_XDP_CPUMAP, SEC_NONE),
+>  	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> +	SEC_DEF("xdp.frags",		XDP, BPF_XDP, SEC_NONE),
+
+It would be SEC_FRAGS here instead of SEC_NONE.
+
+>  	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+>  	SEC_DEF("perf_event",		PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+>  	SEC_DEF("lwt_in",		LWT_IN, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> -- 
+> 2.34.1
 > 
 
-This is probably caused by io_uring not handling POLLFREE notifications,
-i.e. this is probably a duplicate of the previous syzbot report
-https://lore.kernel.org/lkml/000000000000c9a3fb05d4d787a3@google.com/T/#u
-("WARNING in signalfd_cleanup").  It's impossible to be certain without a
-reproducer, but based on the console output here, some of the programs that
-syzkaller executed use io_uring.  So it's at least plausible.
-
-- Eric
+-- 
