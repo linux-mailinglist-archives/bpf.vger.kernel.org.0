@@ -2,280 +2,260 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9172E492543
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 12:56:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324FE492545
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 12:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241092AbiARL4h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 06:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49580 "EHLO
+        id S241100AbiARL4o (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 06:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237808AbiARL4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 06:56:36 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80484C061574
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:36 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 25-20020a05600c231900b003497473a9c4so5125278wmo.5
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:36 -0800 (PST)
+        with ESMTP id S241104AbiARL4m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 06:56:42 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CD4C061574
+        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:41 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id n8so379111wmk.3
+        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 03:56:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRPm5krx9chIlPxpwKUGDk2O4qqdmNfbWUVJUEJxDro=;
-        b=KTowU4Ij6625bGxqu84JIzhaaoe5D7Xeyp0VJufn0SHx6ENiPw6stE+1OE1qTXT+wl
-         EFgVeGyKYp0/Rv8PfUCZbrHeWOAdUegFIViL44poZ/6R5ilf3fe3dKT+s441eCdCTaIk
-         5n8e/Xzrb2vCRCr2RK0HzDLUFF9nqsnI9RQ8nrQaOqNBayoNRqm/J2dFW5BFcv8BZM53
-         IjUyZ1Sm6NCV94LvOns2CX5M4tlrD+mGu9XQ+rzgqTiM6aXpWDw4ne2HCKx+pXxRlusE
-         253jc/DO8izmrd/KS4neH3usnIFc4LQotTcAYEj9nl8YIXRopoSYiHk4VPqY39g7hOSN
-         NCkA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=lvIelu54oJBJmwyaLwL8rubC0MguHdhxl0oTpI2uG5o=;
+        b=Nj1UuI87m1P/qhNwsvAmKVwebJKVsvZwPwOX10xscH28+CdyK4yOwUTTCmhOTdlOIN
+         +1DCI0czP8DDsKLqMqTT29bllK2yoEy0zWjBrjMk+YKF7/95XGZ+G4lHIo44IZ5/H/bO
+         Zy/KT6IkoXT3b1SL+jDFPBGQdSlQDhHGmODvjPBydPkzdeJDhvlpxIhSnZNLmAxgR5fR
+         sveZgKWx+vZPiCSr+uXXyHMnbBaYvo6OHPyJaS1DRWgX2eNmHYwR/B/4g8mNk05U2y8R
+         sAQYpbVxRSmMyhNCqjzjL0w2b5ERu5+imN39ohMlKLsc1fLBLKBwWZwE4yxBbyRqfdBC
+         h2Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FRPm5krx9chIlPxpwKUGDk2O4qqdmNfbWUVJUEJxDro=;
-        b=XRlOzFAdBjChBCKiqWs0xZYmoS+WTAgFMIUHjyDHydeANFzsLZ+haszNziC/jCwDK+
-         sR375XIM/Ky7P1g288NrPL4OxiV1wQSJrwbNoMq3Cr8SJn/KZPYQ5lpQ4mzEHrgdR3lT
-         hl+X3vBzV7gvrUDI4cnCjHfom9Mva0JZmAkbP83YMif7HskAwV7SIhDDiy6Npi/rz2mc
-         Wi+jj6HguXbBOVl2Iy5lPfuvrvd1mKDFQDL7pNC/pM7hqopyIcFeHD5sP2KB+tFdzF9U
-         8HayNwxzMyO1JGmfoqeuu+wB3TUORxCgk0Ii/QfCi4f5HBcwKThzv1qBs/Y7DK+A0mrr
-         mS8Q==
-X-Gm-Message-State: AOAM530m9gMmpKtBHhjBKR9q4Bz9AMakRExZzi6KMC4fUPOlw+w1iiwU
-        FsNqR6oZqg0RJSezIJcFnoCxRoNak/mC7Q==
-X-Google-Smtp-Source: ABdhPJzF5gGKk3NxwBK9EepM/Hf0bqNByJoeL0UPLHlCmABUBdH0m5WWEo7wjo1GOaVEojQHnIfgPg==
-X-Received: by 2002:a05:6000:18cb:: with SMTP id w11mr23533980wrq.144.1642506994889;
-        Tue, 18 Jan 2022 03:56:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=lvIelu54oJBJmwyaLwL8rubC0MguHdhxl0oTpI2uG5o=;
+        b=f1JoeKG/cazd+Tsu6GSmlA2yy38mI31WQw8+d0oDadKOjSd7c/Z8rPAUgb9B0cJVjL
+         KXTNqbLywuzv99Fvm6/NRcV66s1ACAXHofE/IyECuDq+ouAnfbPgbtu5dveEuwMNlUx8
+         15ssNNMfEq4q+imYoFQM+j241s/qmi0/Y++lanJJcIjCIkjWybbnCNx0yuo2vQ6VK4Rn
+         n7sA/JvvqzR5Js8FC68FIYuciNXogoFmgkLpOtH5TCy6mS1gDUt5i65NwURPXQ80lGMc
+         fiKIaS31ReduLYCCkRPvbCtFF4OQFv1mSR0px5ge58gnOsM2AwwcWMQKG9gJ0v+5Xsn2
+         8jyw==
+X-Gm-Message-State: AOAM533NPgQMH/qNOch2DyyRLCXHG+vz6fWUpzIgO/n2y59291r49Pmv
+        xU5nvHWP8pj4jye+o/H68aR1aoEHxAevIw==
+X-Google-Smtp-Source: ABdhPJwQxau9UmcqTE9fO5ux51Lved/i/0C7qPCn6nAK/9Sw1A2HDYA5NhU4XF3V/d43JxFTCCpbTg==
+X-Received: by 2002:adf:d216:: with SMTP id j22mr23728715wrh.577.1642506999435;
+        Tue, 18 Jan 2022 03:56:39 -0800 (PST)
 Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6d:f804:0:4699:372e:4a59:14b2])
-        by smtp.gmail.com with ESMTPSA id k31sm2234042wms.15.2022.01.18.03.56.34
+        by smtp.gmail.com with ESMTPSA id k31sm2234042wms.15.2022.01.18.03.56.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jan 2022 03:56:34 -0800 (PST)
+        Tue, 18 Jan 2022 03:56:39 -0800 (PST)
 From:   Usama Arif <usama.arif@bytedance.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, fam.zheng@bytedance.com,
         cong.wang@bytedance.com, song@kernel.org, quentin@isovalent.com,
         andrii.nakryiko@gmail.com, Usama Arif <usama.arif@bytedance.com>
-Subject: [PATCH bpf-next 1/2] bpf/scripts: Make description and returns section for helpers/syscalls mandatory
-Date:   Tue, 18 Jan 2022 11:56:19 +0000
-Message-Id: <20220118115620.849425-1-usama.arif@bytedance.com>
+Subject: [PATCH bpf-next 2/2] bpf/scripts: Raise an exception if the correct number of sycalls are not generated
+Date:   Tue, 18 Jan 2022 11:56:20 +0000
+Message-Id: <20220118115620.849425-2-usama.arif@bytedance.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220118115620.849425-1-usama.arif@bytedance.com>
+References: <20220118115620.849425-1-usama.arif@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This  enforce a minimal formatting consistency for the documentation. The
-description and returns missing for a few helpers have also been added.
+Currently the syscalls rst and subsequently man page are auto-generated
+using function documentation present in bpf.h. If the documentation for the
+syscall is missing or doesn't follow a specific format, then that syscall
+is not dumped in the auto-generated rst.
+
+This patch checks the number of syscalls documented within the header file
+with those present as part of the enum bpf_cmd and raises an Exception if
+they don't match. It is not needed with the currently documented upstream
+syscalls, but can help in debugging when developing new syscalls when
+there might be missing or misformatted documentation.
+
+The function helper_number_check is moved to the Printer parent
+class and renamed to elem_number_check as all the most derived children
+classes are using this function now.
 
 Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 ---
- include/uapi/linux/bpf.h       | 13 +++++++++++++
- scripts/bpf_doc.py             | 30 ++++++++++++++++++------------
- tools/include/uapi/linux/bpf.h | 13 +++++++++++++
- 3 files changed, 44 insertions(+), 12 deletions(-)
+ scripts/bpf_doc.py | 88 ++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 61 insertions(+), 27 deletions(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index b0383d371..8cbb3737e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1775,6 +1775,8 @@ union bpf_attr {
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * u64 bpf_get_current_pid_tgid(void)
-+ * 	Description
-+ * 		Get the current pid and tgid.
-  * 	Return
-  * 		A 64-bit integer containing the current tgid and pid, and
-  * 		created as such:
-@@ -1782,6 +1784,8 @@ union bpf_attr {
-  * 		*current_task*\ **->pid**.
-  *
-  * u64 bpf_get_current_uid_gid(void)
-+ * 	Description
-+ * 		Get the current uid and gid.
-  * 	Return
-  * 		A 64-bit integer containing the current GID and UID, and
-  * 		created as such: *current_gid* **<< 32 \|** *current_uid*.
-@@ -2256,6 +2260,8 @@ union bpf_attr {
-  * 		The 32-bit hash.
-  *
-  * u64 bpf_get_current_task(void)
-+ * 	Description
-+ * 		Get the current task.
-  * 	Return
-  * 		A pointer to the current task struct.
-  *
-@@ -2369,6 +2375,8 @@ union bpf_attr {
-  * 		indicate that the hash is outdated and to trigger a
-  * 		recalculation the next time the kernel tries to access this
-  * 		hash or when the **bpf_get_hash_recalc**\ () helper is called.
-+ * 	Return
-+ * 		void.
-  *
-  * long bpf_get_numa_node_id(void)
-  * 	Description
-@@ -2466,6 +2474,8 @@ union bpf_attr {
-  * 		A 8-byte long unique number or 0 if *sk* is NULL.
-  *
-  * u32 bpf_get_socket_uid(struct sk_buff *skb)
-+ * 	Description
-+ * 		Get the owner UID of the socked associated to *skb*.
-  * 	Return
-  * 		The owner UID of the socket associated to *skb*. If the socket
-  * 		is **NULL**, or if it is not a full socket (i.e. if it is a
-@@ -3240,6 +3250,9 @@ union bpf_attr {
-  * 		The id is returned or 0 in case the id could not be retrieved.
-  *
-  * u64 bpf_get_current_cgroup_id(void)
-+ * 	Description
-+ * 		Get the current cgroup id based on the cgroup within which
-+ * 		the current task is running.
-  * 	Return
-  * 		A 64-bit integer containing the current cgroup id based
-  * 		on the cgroup within which the current task is running.
 diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
-index 5cf8ae2e7..20441e5d2 100755
+index 20441e5d2..11304427e 100755
 --- a/scripts/bpf_doc.py
 +++ b/scripts/bpf_doc.py
-@@ -92,14 +92,14 @@ class HeaderParser(object):
+@@ -89,6 +89,8 @@ class HeaderParser(object):
+         self.commands = []
+         self.desc_unique_helpers = set()
+         self.define_unique_helpers = []
++        self.desc_syscalls = []
++        self.enum_syscalls = []
  
      def parse_element(self):
          proto    = self.parse_symbol()
--        desc     = self.parse_desc()
--        ret      = self.parse_ret()
-+        desc     = self.parse_desc(proto)
-+        ret      = self.parse_ret(proto)
-         return APIElement(proto=proto, desc=desc, ret=ret)
- 
-     def parse_helper(self):
-         proto    = self.parse_proto()
--        desc     = self.parse_desc()
--        ret      = self.parse_ret()
-+        desc     = self.parse_desc(proto)
-+        ret      = self.parse_ret(proto)
+@@ -103,7 +105,7 @@ class HeaderParser(object):
          return Helper(proto=proto, desc=desc, ret=ret)
  
      def parse_symbol(self):
-@@ -129,16 +129,15 @@ class HeaderParser(object):
-         self.line = self.reader.readline()
-         return capture.group(1)
- 
--    def parse_desc(self):
-+    def parse_desc(self, proto):
-         p = re.compile(' \* ?(?:\t| {5,8})Description$')
+-        p = re.compile(' \* ?(.+)$')
++        p = re.compile(' \* ?(BPF\w+)$')
          capture = p.match(self.line)
          if not capture:
--            # Helper can have empty description and we might be parsing another
--            # attribute: return but do not consume.
--            return ''
-+            raise Exception("No description section found for " + proto)
-         # Description can be several lines, some of them possibly empty, and it
-         # stops when another subsection title is met.
-         desc = ''
-+        desc_present = False
-         while True:
-             self.line = self.reader.readline()
-             if self.line == ' *\n':
-@@ -147,21 +146,24 @@ class HeaderParser(object):
-                 p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-                 capture = p.match(self.line)
-                 if capture:
-+                    desc_present = True
-                     desc += capture.group(1) + '\n'
-                 else:
-                     break
-+
-+        if not desc_present:
-+            raise Exception("No description found for " + proto)
-         return desc
- 
--    def parse_ret(self):
-+    def parse_ret(self, proto):
-         p = re.compile(' \* ?(?:\t| {5,8})Return$')
-         capture = p.match(self.line)
-         if not capture:
--            # Helper can have empty retval and we might be parsing another
--            # attribute: return but do not consume.
--            return ''
-+            raise Exception("No return section found for " + proto)
-         # Return value description can be several lines, some of them possibly
-         # empty, and it stops when another subsection title is met.
-         ret = ''
-+        ret_present = False
-         while True:
-             self.line = self.reader.readline()
-             if self.line == ' *\n':
-@@ -170,9 +172,13 @@ class HeaderParser(object):
-                 p = re.compile(' \* ?(?:\t| {5,8})(?:\t| {8})(.*)')
-                 capture = p.match(self.line)
-                 if capture:
-+                    ret_present = True
-                     ret += capture.group(1) + '\n'
-                 else:
-                     break
-+
-+        if not ret_present:
-+            raise Exception("No return found for " + proto)
+             raise NoSyscallCommandFound
+@@ -181,26 +183,55 @@ class HeaderParser(object):
+             raise Exception("No return found for " + proto)
          return ret
  
-     def seek_to(self, target, help_message):
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index b0383d371..8cbb3737e 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1775,6 +1775,8 @@ union bpf_attr {
-  * 		0 on success, or a negative error in case of failure.
-  *
-  * u64 bpf_get_current_pid_tgid(void)
-+ * 	Description
-+ * 		Get the current pid and tgid.
-  * 	Return
-  * 		A 64-bit integer containing the current tgid and pid, and
-  * 		created as such:
-@@ -1782,6 +1784,8 @@ union bpf_attr {
-  * 		*current_task*\ **->pid**.
-  *
-  * u64 bpf_get_current_uid_gid(void)
-+ * 	Description
-+ * 		Get the current uid and gid.
-  * 	Return
-  * 		A 64-bit integer containing the current GID and UID, and
-  * 		created as such: *current_gid* **<< 32 \|** *current_uid*.
-@@ -2256,6 +2260,8 @@ union bpf_attr {
-  * 		The 32-bit hash.
-  *
-  * u64 bpf_get_current_task(void)
-+ * 	Description
-+ * 		Get the current task.
-  * 	Return
-  * 		A pointer to the current task struct.
-  *
-@@ -2369,6 +2375,8 @@ union bpf_attr {
-  * 		indicate that the hash is outdated and to trigger a
-  * 		recalculation the next time the kernel tries to access this
-  * 		hash or when the **bpf_get_hash_recalc**\ () helper is called.
-+ * 	Return
-+ * 		void.
-  *
-  * long bpf_get_numa_node_id(void)
-  * 	Description
-@@ -2466,6 +2474,8 @@ union bpf_attr {
-  * 		A 8-byte long unique number or 0 if *sk* is NULL.
-  *
-  * u32 bpf_get_socket_uid(struct sk_buff *skb)
-+ * 	Description
-+ * 		Get the owner UID of the socked associated to *skb*.
-  * 	Return
-  * 		The owner UID of the socket associated to *skb*. If the socket
-  * 		is **NULL**, or if it is not a full socket (i.e. if it is a
-@@ -3240,6 +3250,9 @@ union bpf_attr {
-  * 		The id is returned or 0 in case the id could not be retrieved.
-  *
-  * u64 bpf_get_current_cgroup_id(void)
-+ * 	Description
-+ * 		Get the current cgroup id based on the cgroup within which
-+ * 		the current task is running.
-  * 	Return
-  * 		A 64-bit integer containing the current cgroup id based
-  * 		on the cgroup within which the current task is running.
+-    def seek_to(self, target, help_message):
++    def seek_to(self, target, help_message, discard_lines = 1):
+         self.reader.seek(0)
+         offset = self.reader.read().find(target)
+         if offset == -1:
+             raise Exception(help_message)
+         self.reader.seek(offset)
+         self.reader.readline()
+-        self.reader.readline()
++        for _ in range(discard_lines):
++            self.reader.readline()
+         self.line = self.reader.readline()
+ 
+-    def parse_syscall(self):
++    def parse_desc_syscall(self):
+         self.seek_to('* DOC: eBPF Syscall Commands',
+                      'Could not find start of eBPF syscall descriptions list')
+         while True:
+             try:
+                 command = self.parse_element()
+                 self.commands.append(command)
++                self.desc_syscalls.append(command.proto)
++
+             except NoSyscallCommandFound:
+                 break
+ 
++    def parse_enum_syscall(self):
++        self.seek_to('enum bpf_cmd {',
++                     'Could not find start of bpf_cmd enum', 0)
++        # Searches for either one or more BPF\w+ enums
++        bpf_p = re.compile('\s*(BPF\w+)+')
++        # Searches for an enum entry assigned to another entry,
++        # for e.g. BPF_PROG_RUN = BPF_PROG_TEST_RUN, which is
++        # not documented hence should be skipped in check to
++        # determine if the right number of syscalls are documented
++        assign_p = re.compile('\s*(BPF\w+)\s*=\s*(BPF\w+)')
++        bpf_cmd_str = ''
++        while True:
++            capture = assign_p.match(self.line)
++            if capture:
++                # Skip line if an enum entry is assigned to another entry
++                self.line = self.reader.readline()
++                continue
++            capture = bpf_p.match(self.line)
++            if capture:
++                bpf_cmd_str += self.line
++            else:
++                break
++            self.line = self.reader.readline()
++        # Find the number of occurences of BPF\w+
++        self.enum_syscalls = re.findall('(BPF\w+)+', bpf_cmd_str)
++
+     def parse_desc_helpers(self):
+         self.seek_to('* Start of BPF helper function descriptions:',
+                      'Could not find start of eBPF helper descriptions list')
+@@ -234,7 +265,8 @@ class HeaderParser(object):
+         self.define_unique_helpers = re.findall('FN\(\w+\)', fn_defines_str)
+ 
+     def run(self):
+-        self.parse_syscall()
++        self.parse_desc_syscall()
++        self.parse_enum_syscall()
+         self.parse_desc_helpers()
+         self.parse_define_helpers()
+         self.reader.close()
+@@ -266,6 +298,27 @@ class Printer(object):
+             self.print_one(elem)
+         self.print_footer()
+ 
++    def elem_number_check(self, desc_unique_elem, define_unique_elem, type, instance):
++        """
++        Checks the number of helpers/syscalls documented within the header file
++        description with those defined as part of enum/macro and raise an
++        Exception if they don't match.
++        """
++        nr_desc_unique_elem = len(desc_unique_elem)
++        nr_define_unique_elem = len(define_unique_elem)
++        if nr_desc_unique_elem != nr_define_unique_elem:
++            exception_msg = '''
++    The number of unique %s in description (%d) doesn\'t match the number of unique %s defined in %s (%d)
++    ''' % (type, nr_desc_unique_elem, type, instance, nr_define_unique_elem)
++            if nr_desc_unique_elem < nr_define_unique_elem:
++                # Function description is parsed until no helper is found (which can be due to
++                # misformatting). Hence, only print the first missing/misformatted helper/enum.
++                exception_msg += '''
++    The description for %s is not present or formatted correctly.
++    ''' % (define_unique_elem[nr_desc_unique_elem])
++            print(define_unique_elem)
++            print(desc_unique_elem)
++            raise Exception(exception_msg)
+ 
+ class PrinterRST(Printer):
+     """
+@@ -326,26 +379,6 @@ class PrinterRST(Printer):
+ 
+         print('')
+ 
+-def helper_number_check(desc_unique_helpers, define_unique_helpers):
+-    """
+-    Checks the number of functions documented within the header file
+-    with those present as part of #define __BPF_FUNC_MAPPER and raise an
+-    Exception if they don't match.
+-    """
+-    nr_desc_unique_helpers = len(desc_unique_helpers)
+-    nr_define_unique_helpers = len(define_unique_helpers)
+-    if nr_desc_unique_helpers != nr_define_unique_helpers:
+-        helper_exception = '''
+-The number of unique helpers in description (%d) doesn\'t match the number of unique helpers defined in __BPF_FUNC_MAPPER (%d)
+-''' % (nr_desc_unique_helpers, nr_define_unique_helpers)
+-        if nr_desc_unique_helpers < nr_define_unique_helpers:
+-            # Function description is parsed until no helper is found (which can be due to
+-            # misformatting). Hence, only print the first missing/misformatted function.
+-            helper_exception += '''
+-The description for %s is not present or formatted correctly.
+-''' % (define_unique_helpers[nr_desc_unique_helpers])
+-        raise Exception(helper_exception)
+-
+ class PrinterHelpersRST(PrinterRST):
+     """
+     A printer for dumping collected information about helpers as a ReStructured
+@@ -355,7 +388,7 @@ class PrinterHelpersRST(PrinterRST):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
+-        helper_number_check(parser.desc_unique_helpers, parser.define_unique_helpers)
++        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
+ 
+     def print_header(self):
+         header = '''\
+@@ -529,6 +562,7 @@ class PrinterSyscallRST(PrinterRST):
+     """
+     def __init__(self, parser):
+         self.elements = parser.commands
++        self.elem_number_check(parser.desc_syscalls, parser.enum_syscalls, 'syscall', 'bpf_cmd')
+ 
+     def print_header(self):
+         header = '''\
+@@ -560,7 +594,7 @@ class PrinterHelpers(Printer):
+     """
+     def __init__(self, parser):
+         self.elements = parser.helpers
+-        helper_number_check(parser.desc_unique_helpers, parser.define_unique_helpers)
++        self.elem_number_check(parser.desc_unique_helpers, parser.define_unique_helpers, 'helper', '__BPF_FUNC_MAPPER')
+ 
+     type_fwds = [
+             'struct bpf_fib_lookup',
 -- 
 2.25.1
 
