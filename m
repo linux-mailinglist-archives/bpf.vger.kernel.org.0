@@ -2,107 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F6B492979
-	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 16:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4507F49297E
+	for <lists+bpf@lfdr.de>; Tue, 18 Jan 2022 16:16:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344738AbiARPOC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 10:14:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46396 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344977AbiARPOB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 18 Jan 2022 10:14:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642518841;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=SBWXHV4rq5C+Zy00MCJDNgodxABjxEMEpY21t6DRkbE=;
-        b=UJpmnqrNqPn6kKCkcP/56JzpDmYJlcNjac4k8c5i3eqmXF/ajkyPB7WO4eAiq/wTFreWS3
-        PObhYq6WAN6aeSe98kfMd0LnHPcu71IZUEcePk36aIMApAj+wFeEzynVC4ufqql0ebAlrx
-        a1X6WejLfm3ad+5NisM/jBaVvEdlEYo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-426-NpUe5zWFMb-EoZ1KCMUlSw-1; Tue, 18 Jan 2022 10:13:55 -0500
-X-MC-Unique: NpUe5zWFMb-EoZ1KCMUlSw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S242317AbiARPPf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 10:15:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235679AbiARPPe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 10:15:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1093C061574;
+        Tue, 18 Jan 2022 07:15:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7181F1868336;
-        Tue, 18 Jan 2022 15:12:52 +0000 (UTC)
-Received: from thinkpad.redhat.com (unknown [10.40.194.108])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C47915CE80;
-        Tue, 18 Jan 2022 15:12:50 +0000 (UTC)
-From:   Felix Maurer <fmaurer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     sdf@google.com, kafai@fb.com, ast@kernel.org, jakub@cloudflare.com
-Subject: [PATCH bpf v2] selftests: bpf: Fix bind on used port
-Date:   Tue, 18 Jan 2022 16:11:56 +0100
-Message-Id: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5EF0A61266;
+        Tue, 18 Jan 2022 15:15:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30430C00446;
+        Tue, 18 Jan 2022 15:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642518932;
+        bh=tjT3ZQ4DAQSHMG1zW4fLXQMJkGqd6yqqhqFbfFtt8g8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uOQ1TLV0gpksFu4cRdzD5k1dGB7PoDvwWEOEdiQoyVJwnMp+p7KgkWZ3whjMpftKV
+         U1UXGeoZE07IkY89/QHWO4IPtR8GwxPg7dQ3H0/PcujzCYIhq9wGBM1BlefF7kDRan
+         u4C++7A98b0mrAeAsXHU8a0r0umMK1FntmseBN0pZeGSLp+YB/+f1/PpQF0NIY2fI/
+         6WAcXlUEyZp/RGG9LEA5jSbLfNzo9DbxpPXYB4r5sc78peXtXxmAL8tXN8Y3Te5CN5
+         tNQRUQ1/ibNedNhHjOI12zbvzcDQ3cVB5x/Cdm6qN6jdzgJhVDjzJkO2laAbqiHfL5
+         U2OvbnD7oPZXg==
+Date:   Wed, 19 Jan 2022 00:15:26 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v2 0/8] fprobe: Introduce fprobe function entry/exit
+ probe
+Message-Id: <20220119001526.9d6c931141e6ccb00017f3c0@kernel.org>
+In-Reply-To: <YebN1TIRxMX0sgs4@krava>
+References: <164199616622.1247129.783024987490980883.stgit@devnote2>
+        <Yd77SYWgtrkhFIYz@krava>
+        <YeAatqQTKsrxmUkS@krava>
+        <20220115135219.64ef1cc6482d5de8a3bce9b0@kernel.org>
+        <YebN1TIRxMX0sgs4@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bind_perm BPF selftest failed when port 111/tcp was already in use
-during the test. To fix this, the test now runs in its own network name
-space.
+On Tue, 18 Jan 2022 15:25:25 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-To use unshare, it is necessary to reorder the includes. The style of
-the includes is adapted to be consistent with the other prog_tests.
+> On Sat, Jan 15, 2022 at 01:52:19PM +0900, Masami Hiramatsu wrote:
+> > On Thu, 13 Jan 2022 13:27:34 +0100
+> > Jiri Olsa <jolsa@redhat.com> wrote:
+> > 
+> > > On Wed, Jan 12, 2022 at 05:01:15PM +0100, Jiri Olsa wrote:
+> > > > On Wed, Jan 12, 2022 at 11:02:46PM +0900, Masami Hiramatsu wrote:
+> > > > > Hi Jiri and Alexei,
+> > > > > 
+> > > > > Here is the 2nd version of fprobe. This version uses the
+> > > > > ftrace_set_filter_ips() for reducing the registering overhead.
+> > > > > Note that this also drops per-probe point private data, which
+> > > > > is not used anyway.
+> > > > > 
+> > > > > This introduces the fprobe, the function entry/exit probe with
+> > > > > multiple probe point support. This also introduces the rethook
+> > > > > for hooking function return as same as kretprobe does. This
+> > > > 
+> > > > nice, I was going through the multi-user-graph support 
+> > > > and was wondering that this might be a better way
+> > > > 
+> > > > > abstraction will help us to generalize the fgraph tracer,
+> > > > > because we can just switch it from rethook in fprobe, depending
+> > > > > on the kernel configuration.
+> > > > > 
+> > > > > The patch [1/8] and [7/8] are from your series[1]. Other libbpf
+> > > > > patches will not be affected by this change.
+> > > > 
+> > > > I'll try the bpf selftests on top of this
+> > > 
+> > > I'm getting crash and stall when running bpf selftests,
+> > > the fprobe sample module works fine, I'll check on that
+> > 
+> > OK, I got a kernel stall. I missed to enable CONFIG_FPROBE.
+> > I think vmtest.sh should support menuconfig option.
+> > 
+> > #6 bind_perm:OK
+> > #7 bloom_filter_map:OK
+> > [  107.282403] clocksource: timekeeping watchdog on CPU0: Marking clocksource 'tsc' as unstable because the skew is too large:
+> > [  107.283240] clocksource:                       'hpet' wd_nsec: 496216090 wd_now: 7ddc7120 wd_last: 7ae746b7 mask: ffffffff
+> > [  107.284045] clocksource:                       'tsc' cs_nsec: 495996979 cs_now: 31fdb69b39 cs_last: 31c2d29219 mask: ffffffffffffffff
+> > [  107.284926] clocksource:                       'tsc' is current clocksource.
+> > [  107.285487] tsc: Marking TSC unstable due to clocksource watchdog
+> > [  107.285973] TSC found unstable after boot, most likely due to broken BIOS. Use 'tsc=unstable'.
+> > [  107.286616] sched_clock: Marking unstable (107240582544, 45390230)<-(107291410145, -5437339)
+> > [  107.290408] clocksource: Not enough CPUs to check clocksource 'tsc'.
+> > [  107.290879] clocksource: Switched to clocksource hpet
+> > [  604.210415] INFO: rcu_tasks detected stalls on tasks:
+> > [  604.210830] (____ptrval____): .. nvcsw: 86/86 holdout: 1 idle_cpu: -1/0
+> > [  604.211314] task:test_progs      state:R  running task     stack:    0 pid:   87 ppid:    85 flags:0x00004000
+> > [  604.212058] Call Trace:
+> > [  604.212246]  <TASK>
+> > [  604.212452]  __schedule+0x362/0xbb0
+> > [  604.212723]  ? preempt_schedule_notrace_thunk+0x16/0x18
+> > [  604.213107]  preempt_schedule_notrace+0x48/0x80
+> > [  604.217403]  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
+> > [  604.217790]  ? ftrace_regs_call+0xd/0x52
+> > [  604.218087]  ? bpf_test_finish.isra.0+0x190/0x190
+> > [  604.218461]  ? bpf_fentry_test1+0x5/0x10
+> > [  604.218750]  ? trace_clock_x86_tsc+0x10/0x10
+> > [  604.219064]  ? __sys_bpf+0x8b1/0x2970
+> > [  604.219337]  ? lock_is_held_type+0xd7/0x130
+> > [  604.219680]  ? __x64_sys_bpf+0x1c/0x20
+> > [  604.219957]  ? do_syscall_64+0x35/0x80
+> > [  604.220237]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  604.220653]  </TASK>
+> > 
+> > Jiri, is that what you had seen? 
+> 
+> hi,
+> sorry for late response
+> 
+> I did not get any backtrace for the stall, debugging showed 
+> that the first probed function was called over and over for
+> some reason
+> 
+> as for the crash I used the small fix below
 
-v2: Replace deprecated CHECK macro with ASSERT_OK
+Oops, good catch!
 
-Fixes: 8259fdeb30326 ("selftests/bpf: Verify that rebinding to port < 1024 from BPF works")
-Signed-off-by: Felix Maurer <fmaurer@redhat.com>
----
- .../selftests/bpf/prog_tests/bind_perm.c      | 20 ++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
+> 
+> do you have any newer version I could play with?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-index d0f06e40c16d..eac71fbb24ce 100644
---- a/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-@@ -1,13 +1,24 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <test_progs.h>
--#include "bind_perm.skel.h"
--
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <stdlib.h>
- #include <sys/types.h>
- #include <sys/socket.h>
- #include <sys/capability.h>
- 
-+#include "test_progs.h"
-+#include "bind_perm.skel.h"
-+
- static int duration;
- 
-+static int create_netns(void)
-+{
-+	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
-+		return -1;
-+
-+	return 0;
-+}
-+
- void try_bind(int family, int port, int expected_errno)
- {
- 	struct sockaddr_storage addr = {};
-@@ -75,6 +86,9 @@ void test_bind_perm(void)
- 	struct bind_perm *skel;
- 	int cgroup_fd;
- 
-+	if (create_netns())
-+		return;
-+
- 	cgroup_fd = test__join_cgroup("/bind_perm");
- 	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
- 		return;
+Let me update the fprobe and rethook. I'm now trying to integrate
+the rethook with kretprobes and find some issues.
+
+Thank you!
+
+> 
+> jirka
+> 
+> 
+> ---
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 3333893e5217..883151275892 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -157,7 +157,8 @@ int unregister_fprobe(struct fprobe *fp)
+>  	ret = unregister_ftrace_function(&fp->ftrace);
+>  
+>  	if (!ret) {
+> -		rethook_free(fp->rethook);
+> +		if (fp->rethook)
+> +			rethook_free(fp->rethook);
+>  		if (fp->syms) {
+>  			kfree(fp->addrs);
+>  			fp->addrs = NULL;
+> 
+
+
 -- 
-2.34.1
-
+Masami Hiramatsu <mhiramat@kernel.org>
