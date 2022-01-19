@@ -2,82 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1762B494013
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D61B49402C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347086AbiASSkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 13:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46792 "EHLO
+        id S1356907AbiASStw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 13:49:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346884AbiASSkM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 13:40:12 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3CFC061574
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:40:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 16B2CB81B00
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 18:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D5A0EC340E1;
-        Wed, 19 Jan 2022 18:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642617609;
-        bh=efULN279u6y/mMt8ft85K/Ky0wcjdDxmUOc3wTFB++A=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fOprhlhOttgtsC2znnhyPFut7NQr4Xh5uXRDp06icFw8He6dhjmSyNBgKwdkoNx9A
-         jtu/RusB3Tb6SKacX+22HsNo7KV2Wh+Rx1rY2Ovlp86MOo8euDUwJ9E2Xi5pNpaPWl
-         rRPCgSA7+tnTbVJaBkkxKpCZwaHFS7Jhl4ogqYWs1sxEPVet489RuyKUIk6UtXQ7fd
-         n5D9tEHK20rNbpJZlukHMdh/e3dY+r05IbcbHAV7bFXpBgxXi8bG0zT4pIcF6RhPJV
-         4vF7GRVwy+wpVyzoZ8uh4XzAuivUiQfO2ADytaNEELrDocTiuVDaf5NW8IZVD0HsyC
-         pVhVCDud5qShw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BA2FAF6079B;
-        Wed, 19 Jan 2022 18:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S1356903AbiASStt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jan 2022 13:49:49 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD46C061574;
+        Wed, 19 Jan 2022 10:49:48 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id z19so4055474ioj.1;
+        Wed, 19 Jan 2022 10:49:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nnuoU1KSe1lPzn+swqfrL4u+55EECpEPFhS5y1Mxsfk=;
+        b=hVhm31jvNS5wbREEluftIXgbqwXvIohRdyCpSa3EM9DRnsOK9TpSEpDGIXwzHHyTJv
+         /09mGm7RwutOmCCO0l63Lez0ehcH8Eo7jkJo29CaEFOZXEFG5GBwUoylHv1v7nSdw2wh
+         6tw9lYCjELz0NwOti7hYRUix5EwufXhk9rtYHxvF68M6Sk5qfMALLMlaec6VALG2wJVq
+         BU8AOcyZ5M3nxcM2ddse8hidhVflS/SWLC8Da2e9LxKOIdjR5wEXilqt4GivPi9FamKj
+         Onbz97KUaY8gNBEwEin8Y69Dg9rI80LxRMQ2ozeST+Sr4XiiKYYTgMUqsHwErReAqIl1
+         CaSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nnuoU1KSe1lPzn+swqfrL4u+55EECpEPFhS5y1Mxsfk=;
+        b=wzDsvSCzw+B3eUW5BpKwb6ZeaTAj6jQ24L7K21IDM1V6VX3cHShzMOuPoKHBUIt4js
+         1J0ngjvUAMa8kuIfamMmHkd7nR3EaxFTCmPDpejQoDlOdiSXotS5WyWpltCJmnvZBsWB
+         R7Zf+PNSpGFJjeO5VEo3ZVs+fgswYxYFMMo5mj14cM1JjH4vQiEGf4UDwJAKWBVKXMe+
+         5pQlNJG/6MYrCHQH9z/EBQsZrSnRl+FxLoL5vD/s87QWdtd8nApfP8Y+NZVeAlH5E4Dg
+         j4mDpiCpdbemGxrTv0Y+U3GGvm9YKWo6mdM+V5Ff4ZzZOqU+3tPv+6ljdwGqwpHWPivs
+         4gOg==
+X-Gm-Message-State: AOAM531/yVYKPMAFNw0ZFk3qmpg4tHdZgOgvC4DI3rji0xKYQDZ1bcuf
+        9DbGHEqJuoxNkV+XbCQ5V5dmtaxGAOqAgf0Ls7I=
+X-Google-Smtp-Source: ABdhPJzaMUfYG1ePvmrS2kcmYD9SEmK+HrpPRpPvfM5v7/7VWMNLgfZrwrtR/LhXQHGuRyOk48BEoK82DkbfzOwcTK8=
+X-Received: by 2002:a02:bb8d:: with SMTP id g13mr15231052jan.103.1642618187947;
+ Wed, 19 Jan 2022 10:49:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 1/3] uapi/bpf: Add missing description and returns
- for helper documentation
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164261760975.14405.8285375089710473745.git-patchwork-notify@kernel.org>
-Date:   Wed, 19 Jan 2022 18:40:09 +0000
-References: <20220119114442.1452088-1-usama.arif@bytedance.com>
-In-Reply-To: <20220119114442.1452088-1-usama.arif@bytedance.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        fam.zheng@bytedance.com, cong.wang@bytedance.com, song@kernel.org,
-        quentin@isovalent.com, andrii.nakryiko@gmail.com
+References: <1642004329-23514-1-git-send-email-alan.maguire@oracle.com>
+ <CAEf4BzYRLxzVHw00DUphqqdv2m_AU7Mu=S0JF0PZYN40hBvHgA@mail.gmail.com>
+ <alpine.LRH.2.23.451.2201131025380.13423@localhost> <CAEf4BzaX70Ze2mdLuQvw8kNqCt7fQAOkO=Akm=T9Pjxf4eDpLA@mail.gmail.com>
+ <alpine.LRH.2.23.451.2201191341380.10931@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2201191341380.10931@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 19 Jan 2022 10:49:36 -0800
+Message-ID: <CAEf4BzadgXvW_eDAG00a_hyFUKqyLFn=rNwGFgJqCpyRsLyNTw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/4] libbpf: userspace attach by name
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Jan 19, 2022 at 6:04 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Fri, 14 Jan 2022, Andrii Nakryiko wrote:
+>
+> > > The one piece that seems to be missing from my perspective - and this may
+> > > be in more recent versions - is uprobe function attachment by name. Most of
+> > > the work is  already done in libusdt so it's reasonably doable I think - at a
+> > > minimum  it would require an equivalent to the find_elf_func_offset()
+> > > function in my  patch 1. Now the name of the library libusdt suggests its
+> > > focus is on USDT of course, but I think having userspace function attach
+> > > by name too would be great. Is that part of your plans for this work?
+> >
+> > True, uprobes don't supprot attaching by function name, which is quite
+> > annoying. It's certainly not a focus for libusdt (or whatever it will
+> > end up being called when open-sources). But if it's not much code and
+> > complexity we should probably just add that to libbpf directly for
+> > uprobes.
+> >
+>
+> I've been looking at this, and I've got the following cases working:
+>
+> - local symbols in a binary. This involves symbol table lookup and
+>   relative offset calcuation.
+> - shared object symbols in a shared object.  In this case, the symbol
+>   table values suffice, no adjustment needed.
+>
+> The former works using the program headers (instead of /proc/pid/maps for
+> offset computation), so can be run for all processes, lifting the
+> limitation in the RFC which only supported name lookup for a specific
+> process. Around a hundred lines for this makes it worthwhile I think.
+>
+> There is one more case, which is a shared library function in a binary -
+> where I specify "malloc" as the function and /usr/bin/foo as the binary
+> path.  In this case, for dynamic symbols we can't just look up the symbol
+> table in the binary, since the associated values are 0.  Ideally it would
+> be nice if the user could just specify "malloc" and not need to use libc
+> as the binary path argument, but getting this working is proving to be
+> trickier. I've tried making use of PLT section information but no luck
+> yet (the idea being we try to use the trampoline address of malloc@@PLT
+> instead, but I'm still trying to figure out how to extract that).
+>
+> So I'm wondering if we just fail lookup for that case, assuming the user
+> will specify the shared library path if they want to trace a shared library
+> function. What do you think? Thanks!
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I think it all makes sense (but let's see the code as well ;) ). For
+the latter, can you please double-check what sort of functionality BCC
+provides? Also make sure that you support specifying absolute address
+instead of function name as well (func+0x123 probably as well, just
+like for kprobes?).
 
-On Wed, 19 Jan 2022 11:44:40 +0000 you wrote:
-> Both description and returns section will become mandatory
-> for helpers and syscalls in a later commit to generate man pages.
-> 
-> This commit also adds in the documentation that BPF_PROG_RUN is
-> an alias for BPF_PROG_TEST_RUN for anyone searching for the
-> syscall in the generated man pages.
-> 
-> [...]
+The annoying bit is libbpf's convention to use '/' as a separator in
+SEC() definitions. I think bpftrace/dtrace's ':' makes more sense, but
+it seems to disruptive to switch it now. Because of this, specifying
+absolute path to the binary would look weird:
 
-Here is the summary with links:
-  - [bpf-next,v3,1/3] uapi/bpf: Add missing description and returns for helper documentation
-    https://git.kernel.org/bpf/bpf-next/c/e40fbbf0572c
-  - [bpf-next,v3,2/3] bpf/scripts: Make description and returns section for helpers/syscalls mandatory
-    https://git.kernel.org/bpf/bpf-next/c/f1f3f67fd8ed
-  - [bpf-next,v3,3/3] bpf/scripts: Raise an exception if the correct number of sycalls are not generated
-    https://git.kernel.org/bpf/bpf-next/c/0ba3929e5b3d
+SEC("uprobe//usr/bin/bash/readline")
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+or something like that would consistent with current convention, but
+super weird.
+
+Did you run into this issue during your experiments?
+
+I can see two improvements, more and less radical (short of switching
+from / to : completely):
+
+1. less radical is to use "custom" format for uprobe after the "uprobe/" part:
+
+SEC("uprobe//usr/bin/bash:readline")
+
+2. a bit more radical (but probably better long term) is to support
+'/' and ':' interchangeably (but only one of them in any given SEC()
+definition).  For existing definitions, we can say that both forms are
+supported now:
+
+SEC("kprobe/some_func") and SEC("kprobe:some_func")
+
+For uprobe I'd probably combine #1 and #2 and say that these two forms
+are supported:
+
+SEC("uprobe//usr/bin/bash:readline") (so function separator is always ':')
+
+and
+
+SEC("uprobe:/usr/bin/bash:readline") (nicer and more consistent).
 
 
+Thoughts?
+
+BTW, as much as I like consistency, the proposal to switch to ':'
+exclusively in libbpf 1.0 is a no-go, IMO, it's too much of a
+disruption for tons of users.
+
+
+>
+> Alan
