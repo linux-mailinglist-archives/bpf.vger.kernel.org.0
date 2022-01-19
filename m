@@ -2,30 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E5F493D73
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 16:43:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24934493DE1
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 16:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355822AbiASPmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 10:42:36 -0500
-Received: from www62.your-server.de ([213.133.104.62]:52166 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355832AbiASPmf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 10:42:35 -0500
-Received: from [78.46.152.42] (helo=sslproxy04.your-server.de)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nAD6S-000FUR-0G; Wed, 19 Jan 2022 16:42:28 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nAD6R-000O1M-Iy; Wed, 19 Jan 2022 16:42:27 +0100
+        id S1345752AbiASP7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 10:59:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235935AbiASP7y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jan 2022 10:59:54 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4A6C061574;
+        Wed, 19 Jan 2022 07:59:53 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id v123so5959884wme.2;
+        Wed, 19 Jan 2022 07:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+vOb5yHTUTgHDDJX2OrXL/1O2I+8ETIcPsDexqsYa1Y=;
+        b=fYraz93MX4Xg4NtOpfPQ59K9zOTiqFaT0QfJNRUzZde4KwXyKNXQvByB6IiFd7oaIl
+         hV5QVjpdZBq6KWaOnHRlZui/ponpmAj49JbWd1Q7uGx/4H9BsrNEyngiok+2pDjp7kPz
+         A7+je10EtD2nsoGw0WQ7BxkzTCWskyvqecMmZbKAw9Z3bHd+uh0oDfxzDX1BKyFir8Da
+         YqgQ3KvlO0VJwTsi7XrNWKoSU18rZGG2hOQ+AqqHiLZrl5eHZG6uTQC7fYzlOCCe4unT
+         oH+djtM/VcPzktfiXU8ICsIsHRWVl2iRHUlW8cvM7sr0bXAgJZMr40qeyZsjqG0rWbRe
+         oJZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+vOb5yHTUTgHDDJX2OrXL/1O2I+8ETIcPsDexqsYa1Y=;
+        b=eZ0e7c4lkujIK0pbYrDB7t8WdpPDJcnZ+OUJagCLVg60fQLYUnOkiyhWh7zaobEDak
+         XjjA4069K5Nn5nYg8bjkbVDSdabjNTFYYdwaI2CEyMvo1N2uMTQKQtBrRqprLWuU+MCf
+         brlrrwSSRBuyyZmzCzWpyn2ifhyvaMJOFRgv3mIcoPz24YZdkyzrdIAsptTM5v+REeCU
+         QQ8o93tylFW6S7vHvwbRSNdayTgl97RdqsdDvj2rc/OC6l02O6L/6cJ4L10GDvrx0O/8
+         ThkM9vT/8ZaHcuIIz61S+t4ZcaVpKVRWX+IXdT5F5Ph1yw0l3WTHtzTnT+nELu2QPkvG
+         0sXQ==
+X-Gm-Message-State: AOAM533xjBP3BXkWFDE4350gkmUlpRiPpJXk7TbzQ8mqoRlixjk8Ui6G
+        RzKbpRlcsqjWgsvYCUXRSRoOJvP7oA16706r8wQ=
+X-Google-Smtp-Source: ABdhPJxllMHmNdo+PnzLV4B/leNYKBD0RcLgdBJ9d7U41dzillp07VzmjbjOGDrtTBkD7GmO0emmpFkyrOxTSsLuAH0=
+X-Received: by 2002:a1c:f70d:: with SMTP id v13mr4222288wmh.133.1642607992553;
+ Wed, 19 Jan 2022 07:59:52 -0800 (PST)
+MIME-Version: 1.0
+References: <20220110165208.1826-1-jszhang@kernel.org> <Ydxljv2Q4YNDYRTx@xhacker>
+ <CAJ+HfNiS7Ss0FJowPUrrKvuC+1Kn9gXb=VqNoqh3eWJDu=m4Mg@mail.gmail.com> <1b104397-8cb7-c5c2-92cb-11ce56c9a8de@iogearbox.net>
+In-Reply-To: <1b104397-8cb7-c5c2-92cb-11ce56c9a8de@iogearbox.net>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Wed, 19 Jan 2022 16:59:40 +0100
+Message-ID: <CAJ+HfNikH3OMH_b3=uvfSqAJZkjJabn9yipbYdnTxsh_=VDHOQ@mail.gmail.com>
 Subject: Re: [PATCH riscv-next] riscv: bpf: Fix eBPF's exception tables
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, palmer@rivosinc.com
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>, palmer@rivosinc.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -37,66 +66,30 @@ Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         linux-riscv <linux-riscv@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Tong Tiangen <tongtiangen@huawei.com>
-References: <20220110165208.1826-1-jszhang@kernel.org>
- <Ydxljv2Q4YNDYRTx@xhacker>
- <CAJ+HfNiS7Ss0FJowPUrrKvuC+1Kn9gXb=VqNoqh3eWJDu=m4Mg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1b104397-8cb7-c5c2-92cb-11ce56c9a8de@iogearbox.net>
-Date:   Wed, 19 Jan 2022 16:42:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAJ+HfNiS7Ss0FJowPUrrKvuC+1Kn9gXb=VqNoqh3eWJDu=m4Mg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26427/Wed Jan 19 11:42:43 2022)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/19/22 11:24 AM, Björn Töpel wrote:
-> On Mon, 10 Jan 2022 at 18:05, Jisheng Zhang <jszhang@kernel.org> wrote:
->> On Tue, Jan 11, 2022 at 12:52:08AM +0800, Jisheng Zhang wrote:
->>> eBPF's exception tables needs to be modified to relative synchronously.
->>>
->>> Suggested-by: Tong Tiangen <tongtiangen@huawei.com>
->>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> 
-> Nice catch, and apologies for the slow response.
-> 
-> Acked-by: Björn Töpel <bjorn@kernel.org>
-> 
->>> ---
->>>   arch/riscv/net/bpf_jit_comp64.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
->>> index 69bab7e28f91..44c97535bc15 100644
->>> --- a/arch/riscv/net/bpf_jit_comp64.c
->>> +++ b/arch/riscv/net/bpf_jit_comp64.c
->>> @@ -498,7 +498,7 @@ static int add_exception_handler(const struct bpf_insn *insn,
->>>        offset = pc - (long)&ex->insn;
->>>        if (WARN_ON_ONCE(offset >= 0 || offset < INT_MIN))
->>>                return -ERANGE;
->>> -     ex->insn = pc;
->>> +     ex->insn = offset;
->>
->> Hi Palmer,
->>
->> Tong pointed out this issue but there was something wrong with my email
->> forwarding address, so I didn't get his reply. Today, I searched on
->> lore.kernel.org just found his reply, sorry for inconvenience.
-> 
-> AFAIK, Jisheng's extable work is still in Palmer's for-next tree.
-> 
-> Daniel/Alexei: This eBPF must follow commit 1f77ed9422cb ("riscv:
-> switch to relative extable and other improvements"), which is in
-> Palmer's tree. It cannot go via bpf-next.
+On Wed, 19 Jan 2022 at 16:42, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+[...]
+> > AFAIK, Jisheng's extable work is still in Palmer's for-next tree.
+> >
+> > Daniel/Alexei: This eBPF must follow commit 1f77ed9422cb ("riscv:
+> > switch to relative extable and other improvements"), which is in
+> > Palmer's tree. It cannot go via bpf-next.
+>
+> Thanks for letting us know, then lets route this fix via Palmer. Maybe he=
+ could
+> also add Fixes tags when applying, so stable can pick it up later on.
+>
 
-Thanks for letting us know, then lets route this fix via Palmer. Maybe he could
-also add Fixes tags when applying, so stable can pick it up later on.
+It shouldn't have a fixes-tag, since it's a new feature for RV. This
+was adapting to that new feature. It hasn't made it upstream yet (I
+hope!).
+
 
 Cheers,
-Daniel
+Bj=C3=B6rn
