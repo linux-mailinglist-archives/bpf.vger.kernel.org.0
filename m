@@ -2,188 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D644941AA
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 21:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D45E494278
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 22:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240118AbiASUWR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 15:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbiASUWQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 15:22:16 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ECAC061574
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 12:22:16 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id f24so6721050uab.11
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 12:22:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8QDttiEv5twtAfYPlNXTQif9E8Zlclz38TyVgv46XG4=;
-        b=fw/Etc2K8ET60s5qVWV1uQty8ucdXrKwzTXTpHqkp553lJW15eUaRMQ9z2iwbKt/R7
-         dG91LSmdYp44w1ZABOn0PyFkwzhu4HlXLGL4TfkMgu/ZnAaGwXimyXNvB1PIufX3vV9c
-         2L26viX02Lr92nzk0I/EcMMmYX7wDYnsmzm6xV6FPhBTdEAxrvUX01tcxDvHEJnCZp4F
-         +GbOO0VxCMQaKdkvCuwgYNRlr9FwNB8KkQzz1fmbR9vxU1bj4HwzyR4Tx5GRJ/Q0rL4z
-         VRjOFx48m5or4k0cwAQm+01Qa5srdPkSe2wnmzoFv3BckJx6V/gHChsOQuI6huBoEjnb
-         WJKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8QDttiEv5twtAfYPlNXTQif9E8Zlclz38TyVgv46XG4=;
-        b=Kyx1mEaeFkVHV6qAOyTU7vHqvYcNnwSct+l8NmUT79xqkExUMdRluHRAQQTSUx7G+T
-         WvOJMBmhvh36v0+DFzlOwPoE1M5cD09cmOwZ9IethX+qfxZ88TdkY9D1LeDR8mYSa1Pq
-         erZAR/Eq068Sfl7E9f1qywdnKFnHu26pCUZ+tEl7ixZ3NswjPtEyhBRYr/QxtRqmXBlF
-         sxTVA3J3EL92blFn2rPMN1fHu1b4kZc16FkeMmmetATPXiCNX+YkcywyLt7QVkQvu6iI
-         valwicETWZoo89E4zYhh+LVQQYnhvKj+3qqeNxAtGGoFyqNGDDtfOdriLL6+3iVKoW4s
-         gVqw==
-X-Gm-Message-State: AOAM532MMegQ2Ks8byEAtMn6I/sEd1hfq/cL8Ybl+Y7Wi29H0GFQmzkr
-        nvwg+1ZhE0E9STQ8ahIQ8f0AQ0UrZghNJmX2rBMm+yDhx/d7aQ==
-X-Google-Smtp-Source: ABdhPJwEFA9693tFxjhSCO2QRG2uKE9h+nGiKoMaxWDPyyUcJUOOeO+nr9EGQpGy5eR1hrEtCJzOgBDBTVJwf2N4Swg=
-X-Received: by 2002:ab0:45ae:: with SMTP id u43mr3952040uau.91.1642623735475;
- Wed, 19 Jan 2022 12:22:15 -0800 (PST)
+        id S229500AbiASVZd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 16:25:33 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:11996 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229436AbiASVZc (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 16:25:32 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIrojJ029330;
+        Wed, 19 Jan 2022 13:25:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=mStf2XUsx7BlzOi1gfzAiyNxo+KWjBOZA+82XKMAzAU=;
+ b=OR5h0RutRZbajBCk87Ioh/NzFs9n8UtRSYiwt/8TnwN3tGIEZB9vEmuVlojpYAUAdOXD
+ za6iG4GnshElVQpLqed+JySc1IGh0rToQN4pVm8EyAGnKWH2wvMFxl5KplJQt6/thvlJ
+ +gNrbMClzR5ksKTjHN4xoNBCAQJqP2V4dcE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dnw1guecf-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 Jan 2022 13:25:31 -0800
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 13:25:30 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RnOrtdeaOplqKwb17uw4atv7V80YYDLb07U6nNxcqQpILZXohJXf4pY7trWFllsUVepSRLUM0OCCY/cR3XWJuJQsVJ8Cs/tuA78ON6OMQdWi4TPBiotP5A9trP07yKHvqGGtyuiJbaN87MwzYkqGZ6TzWmzaes8pOSNCyaaHAUmPJYw54aUhfqvJX9fUHph+KGPWMFelMAhWQ8SzScaJTPOhNRY/R/YpXrkids3VNItuKDZWccL5v0gJqi8U2nuNipfxF8cTfz/Tp6YY2CRmzlL2ZvTpebw53pYtQ0Wzduu0K7f+Sd1tYnvfwaUNBRf8h0Xs+tfec816ue8axAyJWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mStf2XUsx7BlzOi1gfzAiyNxo+KWjBOZA+82XKMAzAU=;
+ b=cr43gpPZSNjA4pTU2eonUpNdNEk8BQN4xHGI44fN0fmEFysK/UeIh3z0fGhohug3WqmB57oZz5osI9N2tyRnsZ3R9PIk5w93YqB+vLW7qoWvXdoV8oQhknh+6EnpCG7SiUuFoGsZGqWFK24ts4yBu9+LBaZ7neuACTCsRrE6rMzzSwPyzFZBOWduVtvr5v2fVrfr/eVvEaeod5fXhVcWoqap0FwNjrMsf7CjPRUGiu9MXu0UrT9+VgrBgf7Ltc8dXL/wOUUGqZBgRJKyv2X1vZ8k7RZhIyAx6xHbcidzklB52igDhEyUOjjxikiXGPddlxQP+H35KeEvB3sGbdXXMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SA1PR15MB4902.namprd15.prod.outlook.com (2603:10b6:806:1d1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.7; Wed, 19 Jan
+ 2022 21:25:28 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e%6]) with mapi id 15.20.4888.014; Wed, 19 Jan 2022
+ 21:25:28 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "Christy Lee-Eusman (PL&R)" <christylee@fb.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "christyc.y.lee@gmail.com" <christyc.y.lee@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        "wangnan0@huawei.com" <wangnan0@huawei.com>,
+        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+        "yuehaibing@huawei.com" <yuehaibing@huawei.com>
+Subject: Re: [PATCH bpf-next v3 1/2] perf: stop using deprecated
+ bpf_prog_load() API
+Thread-Topic: [PATCH bpf-next v3 1/2] perf: stop using deprecated
+ bpf_prog_load() API
+Thread-Index: AQHYDV72LXEnvfTaSEqw1WDF6YXfTqxq22oA
+Date:   Wed, 19 Jan 2022 21:25:28 +0000
+Message-ID: <66C221AA-D79F-4880-90BF-53140C6E33C6@fb.com>
+References: <20220119180023.835496-1-christylee@fb.com>
+ <20220119180023.835496-2-christylee@fb.com>
+In-Reply-To: <20220119180023.835496-2-christylee@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.40.0.1.81)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f49a46b4-d182-4ffa-51cf-08d9db92372b
+x-ms-traffictypediagnostic: SA1PR15MB4902:EE_
+x-microsoft-antispam-prvs: <SA1PR15MB4902A90E668010EF7DA1FD2CB3599@SA1PR15MB4902.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: kTWkj08JV2yH1k/pShkfztBTJHjgiABU5zo1xxOMqmLr5RUc68GeCBfwLJ3JgfS0mMtPJl4pxdVe9e17TNmfYO2jvg9rWmeK8+KvUmC/jQGtoGzH/7G7I2HkbLUph0p00VbCncTlyiJ8PLR+XVbQ8PkeCRrbfiDV4MinjD4K3QOa1ZeembOx0KHaJ3b6CRPB8tItP0xsEjjeaDtxW85NpJtw/Rxuud0na41l3UVg1k5TVxC8IUmgIzySy2XS5MMgkkdWYlReuB5vQDWQv2kgiLVZgVaAzxxRB7vXoOCEDtdeLIYQQjPuPGNysHbkNIX8ouAw207Y7XlGHmEobKyuAN3ZlrNXpTOCrXzyzdeRAqTJWxznl3UiCAbftLapucTv23CMO4rCRe614AMG0A7pEGaBcnnUwnUWLMYdqFPoLlvDk7vdVPSIw4SJxt/tanl2B6zTllmH+JMJHtuKu8tWhNr2EMKItwywAFExa1+MxM0g/681x1z6OAI/Rm9y9vnTXQ2AzaA2TXJaYu6j8FmPTpIB6XnogQ2MmbLOlWOUakQgEsyPjfQ6NHPqmJWFdcEIbHOyzPlxaAtLM78o7f8XvAvzaR6t0dMW++xiPF1vu64JUcQ2OXNAYCrSp/2KlLpIAWuh1Dr6e043PPc4LSHFpcEWUZc64z+oGQ30Hug0M4tzPUFcAF47yf9q3/AgjjLvS3kERAS77hsGHMXxts/p8bVZGndC3+fNWdhUwfwhWYzhv8RW9bMIDhSHzop9DrEL
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(6636002)(186003)(8936002)(53546011)(122000001)(6486002)(33656002)(71200400001)(38100700002)(86362001)(508600001)(5660300002)(6862004)(36756003)(38070700005)(8676002)(91956017)(6512007)(83380400001)(76116006)(66946007)(54906003)(4326008)(66556008)(37006003)(66446008)(64756008)(2906002)(316002)(66476007)(2616005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/DrVAPs/EWLIjj0WMBXLUp8Z+rqrwZ4mAgeLuwEhZxD1HFd2HJcMMAu3IdNg?=
+ =?us-ascii?Q?iU8kXhDKbXqxUFa7BZGDmUOQSM2XsmRo4nb3MfTcFcV7sQXbgE9QsgmUF9GU?=
+ =?us-ascii?Q?DdLZlgm8HpJZJIuc9RDCMykZxB+mUEh6E9WAhS6/1rOeXJ6Nmf5sIxen4z+O?=
+ =?us-ascii?Q?9E1lWq/OigobHsdB/l0fXsYcfAmxRnOWTRO0Flh8GZE/AmUtDtocegML5euW?=
+ =?us-ascii?Q?v3/P7BKr2JL0CIBLQN0xHKmtu+b1ZQymHXD5Pq2edIzzkf1a/wrOpGQ1R+ZK?=
+ =?us-ascii?Q?FdypOjjTrMzH86G1wzancmKpHVS4uebmMdEneRyk4U9eaTB1hWM51z/IjgJ0?=
+ =?us-ascii?Q?gPQLWX5tjTEsGPv00hUcAVccTFd11Jbev61qIHA6Vmzb37TWoe5j9/wQWLKp?=
+ =?us-ascii?Q?/cDZ4IPuEHN4m+bMbY+TS+mQds7oUn6EdoD0ICjOgDPRc4esEA2rq0UEut0q?=
+ =?us-ascii?Q?Odf+mTJqXVuKaAlxXH6gfO0JYywNQ74Sb8oRP10idDSLLNMkL4XTZBBPqIQ9?=
+ =?us-ascii?Q?WQMrExtF0JXgkdD9HMU6UQUUK6WL3QTN9ZQNg2VC5fhaZ2VZih72rUzXhCAO?=
+ =?us-ascii?Q?D1/3dvqQ8+rmEfOogFeWuPQQWYG0Oaivgd9lUeRIdAy+zBvtTvSMmlCSzMhI?=
+ =?us-ascii?Q?a8ezTW1J5J8NXGWLMPsyfGRNlYUVnE3GcjjchFwlC8+4GrPVncx7L9He6p7o?=
+ =?us-ascii?Q?k8OCWkdVHxyCCcQtIZI8ysi/TiKiSbKR9sHQgawn3UVN8doGp03nZ4ar7IZ8?=
+ =?us-ascii?Q?pYwd+UdVM3aAg+umakBJPkRwdoIbtADlTh939S0jau373MWFurpcblRwqHDM?=
+ =?us-ascii?Q?qxWf7J9r8ZE7y+1/eqZVOE1U/XBzJUUUC1n/izNxBOUaTRQwZkhRCCdTqqUx?=
+ =?us-ascii?Q?QOeXZfJ2ysfVrDYyEqNQnJ+sdY2Oac0/OB+4vxA5oM4jMc4c6HRzawdDxohH?=
+ =?us-ascii?Q?XVtYOkIBXppRO6gPDh68czZYEuWrtAM/XBO6ugSeejn4gjtPvVVhfwsGz0mp?=
+ =?us-ascii?Q?HDKbnbXzMGBnt2oki+zD8j2xd3wVREaIZpw1tKX7UcB5ZzRxJ7jtTKGBHuaK?=
+ =?us-ascii?Q?D3kT145OMIVQEhabRh3a8A7t2mFSCTl5wTXN1I6WNuSe1QHbcd4IMT3FsFDC?=
+ =?us-ascii?Q?Pojjg3HkNhiNFBBYRtr5jh1xp7zLS3TN+h/JRcNCT+sJS+kj6lH5UamgrTjX?=
+ =?us-ascii?Q?UC0yTaAe1q/zguVGde0SPWoVx5APwLK+zddOhpCe/qAEMUqv0hGId79Wm2RY?=
+ =?us-ascii?Q?ADT7EUidbbYSX38Xr7n9zVc7fleZ+gvD+QVf8bRvDqCFeslKhiGanIXDTDGG?=
+ =?us-ascii?Q?plzpphnV8rnJJ36rCAin6lPOn/JQx20bZZoJuTsMWOOSuojzQPNrrFJesx9m?=
+ =?us-ascii?Q?a2vFX8JhZ5l6swPkwKMM5JSEMTsiMw39h1wGwjjgt2E3T2DeiNyVw2gMW21x?=
+ =?us-ascii?Q?holtLfgJ5kVM9J2+irZkv9EDAUxmFqwTktH+Vp8YfekLn2gcnSLEfxh5WQqS?=
+ =?us-ascii?Q?aV+yjq7Of8lOyvPxEcf3Dff1+FGZgztNHoZizSH58RXcBNG3b4ZhBDNCeqEA?=
+ =?us-ascii?Q?cW0bPm56RCaGptAaKYJMnxm1E38iNKs5G/R5FSaTklmaoX9Hu1EVAOg4fKF9?=
+ =?us-ascii?Q?XRUzb4hggqkfJ6vA3/e+tBLzFQnppjvOe3ja6rcc1Nq4Pg8ciXcv6f2/vApr?=
+ =?us-ascii?Q?qZJa9g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C5C1C35FCE5F884A84618B8451DE29AF@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-References: <cover.1641316155.git.zhuyifei@google.com> <833b122afaeaba4485942c563ef16a64fa997fe6.1641316155.git.zhuyifei@google.com>
- <CAADnVQLCw+zyC6q=-HSURO4SpkAmSR1bwz8YLwL3nonUkeJ9Xg@mail.gmail.com>
-In-Reply-To: <CAADnVQLCw+zyC6q=-HSURO4SpkAmSR1bwz8YLwL3nonUkeJ9Xg@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei@google.com>
-Date:   Wed, 19 Jan 2022 12:22:04 -0800
-Message-ID: <CAA-VZPkmO7Po2U4N_=eoj_iwiEimAGdRF7RvXD6pAOc08a8Dig@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 3/4] bpf: Add cgroup helpers
- bpf_{get,set}_retval to get/set syscall return value
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f49a46b4-d182-4ffa-51cf-08d9db92372b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2022 21:25:28.6304
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OnYHYDhUuTgX1278bl5DHVxWJdmoovncyA6ZmOsAOVVTuOkyl9AjCuc8AcccifI+m8ROZ5GslbNSJmuQEi1Zuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4902
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: AYDYaJKf2xeeclnmDbixxaG6TjKx7aKj
+X-Proofpoint-ORIG-GUID: AYDYaJKf2xeeclnmDbixxaG6TjKx7aKj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-19_11,2022-01-19_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ adultscore=0 priorityscore=1501 mlxlogscore=999 spamscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201190116
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 11:50 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jan 4, 2022 at 9:15 AM YiFei Zhu <zhuyifei@google.com> wrote:
-> >
-> > The helpers continue to use int for retval because all the hooks
-> > are int-returning rather than long-returning. The return value of
-> > bpf_set_retval is int for future-proofing, in case in the future
-> > there may be errors trying to set the retval.
-> >
-> > After the previous patch, if a program rejects a syscall by
-> > returning 0, an -EPERM will be generated no matter if the retval
-> > is already set to -err. This patch change it being forced only if
-> > retval is not -err. This is because we want to support, for
-> > example, invoking bpf_set_retval(-EINVAL) and return 0, and have
-> > the syscall return value be -EINVAL not -EPERM.
-> >
-> > This change is reflected in the sockopt_sk test which has been
-> > updated to assert the errno is EINVAL instead of the EPERM.
-> > The eBPF prog has to explicitly bpf_set_retval(-EPERM) if EPERM
-> > is wanted. I also removed the explicit mentions of EPERM in the
-> > comments in the prog.
-> >
-> > For BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY, the prior behavior is
-> > that, if the return value is NET_XMIT_DROP, the packet is silently
-> > dropped. We preserve this behavior for backward compatibility
-> > reasons, so even if an errno is set, the errno does not return to
-> > caller. However, setting a non-err to retval cannot propagate so
-> > this is not allowed and we return a -EFAULT in that case.
-> >
-> > Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-> > Reviewed-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  include/linux/bpf.h                           | 10 +++--
-> >  include/uapi/linux/bpf.h                      | 18 +++++++++
-> >  kernel/bpf/cgroup.c                           | 38 ++++++++++++++++++-
-> >  tools/include/uapi/linux/bpf.h                | 18 +++++++++
-> >  .../selftests/bpf/prog_tests/sockopt_sk.c     |  2 +-
-> >  .../testing/selftests/bpf/progs/sockopt_sk.c  | 32 ++++++++--------
-> >  6 files changed, 96 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 88f6891e2b53..300df48fa0e0 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -1300,7 +1300,7 @@ BPF_PROG_RUN_ARRAY_CG_FLAGS(const struct bpf_prog_array __rcu *array_rcu,
-> >         while ((prog = READ_ONCE(item->prog))) {
-> >                 run_ctx.prog_item = item;
-> >                 func_ret = run_prog(prog, ctx);
-> > -               if (!(func_ret & 1))
-> > +               if (!(func_ret & 1) && !IS_ERR_VALUE((long)run_ctx.retval))
-> >                         run_ctx.retval = -EPERM;
-> >                 *(ret_flags) |= (func_ret >> 1);
-> >                 item++;
-> > @@ -1330,7 +1330,7 @@ BPF_PROG_RUN_ARRAY_CG(const struct bpf_prog_array __rcu *array_rcu,
-> >         old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> >         while ((prog = READ_ONCE(item->prog))) {
-> >                 run_ctx.prog_item = item;
-> > -               if (!run_prog(prog, ctx))
-> > +               if (!run_prog(prog, ctx) && !IS_ERR_VALUE((long)run_ctx.retval))
-> >                         run_ctx.retval = -EPERM;
-> >                 item++;
-> >         }
-> > @@ -1390,7 +1390,7 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
-> >   *   0: NET_XMIT_SUCCESS  skb should be transmitted
-> >   *   1: NET_XMIT_DROP     skb should be dropped and cn
-> >   *   2: NET_XMIT_CN       skb should be transmitted and cn
-> > - *   3: -EPERM            skb should be dropped
-> > + *   3: -err              skb should be dropped
-> >   */
-> >  #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)                \
-> >         ({                                              \
-> > @@ -1399,10 +1399,12 @@ BPF_PROG_RUN_ARRAY(const struct bpf_prog_array __rcu *array_rcu,
-> >                 u32 _ret;                               \
-> >                 _ret = BPF_PROG_RUN_ARRAY_CG_FLAGS(array, ctx, func, 0, &_flags); \
-> >                 _cn = _flags & BPF_RET_SET_CN;          \
-> > +               if (_ret && !IS_ERR_VALUE((long)_ret))  \
-> > +                       _ret = -EFAULT;                 \
-> >                 if (!_ret)                              \
-> >                         _ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);  \
-> >                 else                                    \
-> > -                       _ret = (_cn ? NET_XMIT_DROP : -EPERM);          \
-> > +                       _ret = (_cn ? NET_XMIT_DROP : _ret);            \
->
-> Sorry for the long delay in reviewing.
-> Overall it looks very good.
-> Few questions:
->
-> Why change this behavior for BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY ?
-> It's for an inet_egress hook only. In other words ip_output.
-> What kind of different error codes do you want to pass to
-> the stack from there?
 
-I don't really have a use case in mind for a different error code for
-an egress hook (my use cases are for sockopt hooks) at the moment, but
-it sounds to me that it would a surprising behavior if bpf_set_retval
-is provided yet it would still be -EPERM.
 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> > index 4b937e5dbaca..164aa5020bf1 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-> > @@ -177,7 +177,7 @@ static int getsetsockopt(void)
-> >         optlen = sizeof(buf.zc);
-> >         errno = 0;
-> >         err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-> > -       if (errno != EPERM) {
-> > +       if (errno != EINVAL) {
->
-> Could you explain which part of this patch caused this change
-> in user visible behavior?
-> I understand the desire to do bpf_set_retval(-EINVAL) and return 0,
-> but progs/sockopt_sk.c is not doing it.
-> Where does EINVAL come from?
+> On Jan 19, 2022, at 10:00 AM, Christy Lee <christylee@fb.com> wrote:
+> 
+> bpf_prog_load() API is deprecated, remove perf's usage of the deprecated
+> function.
 
-This comes from the kernel. In for an anvalid address to the
-getsockopt handler in tcp_zerocopy_receive [1]. The original behavior
-prior to this series is that the eBPF getsockopt hook generating an
--EPERM overrides that of the kernel's -EINVAL, but now when the eBPF
-hook returns 0, it sees that an -EINVAL is already set by the kernel
-and does not modify the error code.
+I think this should be "bpf_load_program() API is deprecated"? Same for 
+the subject. 
 
-[1] https://elixir.bootlin.com/linux/v5.16.1/source/net/ipv4/tcp.c#L2060
+Thanks,
+Song
 
-YiFei Zhu
+
+> 
+> Signed-off-by: Christy Lee <christylee@fb.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+> tools/perf/tests/bpf.c | 14 ++++----------
+> 1 file changed, 4 insertions(+), 10 deletions(-)
+> 
+> diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
+> index 573490530194..57b9591f7cbb 100644
+> --- a/tools/perf/tests/bpf.c
+> +++ b/tools/perf/tests/bpf.c
+> @@ -281,8 +281,8 @@ static int __test__bpf(int idx)
+> 
+> static int check_env(void)
+> {
+> +	LIBBPF_OPTS(bpf_prog_load_opts, opts);
+> 	int err;
+> -	unsigned int kver_int;
+> 	char license[] = "GPL";
+> 
+> 	struct bpf_insn insns[] = {
+> @@ -290,19 +290,13 @@ static int check_env(void)
+> 		BPF_EXIT_INSN(),
+> 	};
+> 
+> -	err = fetch_kernel_version(&kver_int, NULL, 0);
+> +	err = fetch_kernel_version(&opts.kern_version, NULL, 0);
+> 	if (err) {
+> 		pr_debug("Unable to get kernel version\n");
+> 		return err;
+> 	}
+> -
+> -/* temporarily disable libbpf deprecation warnings */
+> -#pragma GCC diagnostic push
+> -#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+> -	err = bpf_load_program(BPF_PROG_TYPE_KPROBE, insns,
+> -			       ARRAY_SIZE(insns),
+> -			       license, kver_int, NULL, 0);
+> -#pragma GCC diagnostic pop
+> +	err = bpf_prog_load(BPF_PROG_TYPE_KPROBE, NULL, license, insns,
+> +			    ARRAY_SIZE(insns), &opts);
+> 	if (err < 0) {
+> 		pr_err("Missing basic BPF support, skip this test: %s\n",
+> 		       strerror(errno));
+> -- 
+> 2.30.2
+> 
+
