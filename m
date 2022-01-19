@@ -2,373 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E42C493F8B
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79AFF493F7C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356586AbiASSDN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 13:03:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17620 "EHLO
+        id S1347376AbiASSC3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 13:02:29 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44312 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1353397AbiASSDN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 13:03:13 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JFCr92020378
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:03:12 -0800
+        by vger.kernel.org with ESMTP id S234188AbiASSC2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 13:02:28 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JGXVio013301
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:02:28 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9xnKpEi2edMi69jWLktIUEpzvuptxzueIB659S2vTMg=;
- b=cekX+TVfoeDS1YbsK5Stt9RKkvqaiTycEhY4uwcm0NFpl01PckCAvrTvKpLGjTlT/OWt
- UPBsrx/8HxG76XgsqtXxn8wKsyYjJp9h2hmMIqyu9ZcyDbJ7GQRboJ3/+IYufXHLSeKD
- ItscErP9TnqrX345GEKrw6YE8xwBxl1g5SY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp16qg81q-2
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=WUQwVVLDw+LelOMBSnT97xrkMWn+Q5NO9+iIRC5D7Cw=;
+ b=H/MkgQXldUTMydFE9mRg3Z1PAWFHFKpVSgKFafBeD2w+pzTMlHtXIYExsikdVrSsMGcb
+ N7TlaZCLplT8Dw1BA/nFH55VgzKooOXu5JeQUg5jXM8H76DNRI/N+6hzFFMkDaLEXYnj
+ k6cOZp4ecIeshNrPCqnqtdIs7H3MabYrlgI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpad3vp6s-17
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:03:12 -0800
-Received: from twshared14302.24.prn2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:02:27 -0800
+Received: from twshared7634.08.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 19 Jan 2022 10:03:10 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id 231FB1EDF9B1; Wed, 19 Jan 2022 10:00:34 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>, <jolsa@redhat.com>
-CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
-        <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <kernel-team@fb.com>, <wangnan0@huawei.com>,
-        <bobo.shaobowang@huawei.com>, <yuehaibing@huawei.com>
-Subject: [PATCH bpf-next v3 2/2] perf: stop using deprecated bpf__object_next() API
-Date:   Wed, 19 Jan 2022 10:00:23 -0800
-Message-ID: <20220119180023.835496-3-christylee@fb.com>
+ 15.1.2308.20; Wed, 19 Jan 2022 10:02:26 -0800
+Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
+        id 09BF2273D8EF; Wed, 19 Jan 2022 10:02:18 -0800 (PST)
+From:   Kui-Feng Lee <kuifeng@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>
+CC:     Kui-Feng Lee <kuifeng@fb.com>
+Subject: [PATCH v4 bpf-next] libbpf: Improve btf__add_btf() with an additional hashmap for strings.
+Date:   Wed, 19 Jan 2022 10:02:14 -0800
+Message-ID: <20220119180214.255634-1-kuifeng@fb.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220119180023.835496-1-christylee@fb.com>
-References: <20220119180023.835496-1-christylee@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: tHvHy9NAnTSCFybp4yXO7vJiYc1s6uuG
-X-Proofpoint-GUID: tHvHy9NAnTSCFybp4yXO7vJiYc1s6uuG
+X-Proofpoint-GUID: wPw3mD6LxjLatAneol7CbNDunwPor_kn
+X-Proofpoint-ORIG-GUID: wPw3mD6LxjLatAneol7CbNDunwPor_kn
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-19_10,2022-01-19_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- phishscore=0 adultscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 spamscore=0 mlxlogscore=999 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 mlxscore=0 bulkscore=0
+ spamscore=0 clxscore=1015 phishscore=0 malwarescore=0 mlxlogscore=877
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2201190102
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Previously libbpf maintained a list of bpf_objects, and bpf_objects
-can be added to the list via bpf__object__next() API. Libbpf has
-deprecated the ability to keep track of object list inside libbpf,
-so we need to hoist the tracking logic to perf.
+Add a hashmap to map the string offsets from a source btf to the
+string offsets from a target btf to reduce overheads.
 
-Committer note:
+btf__add_btf() calls btf__add_str() to add strings from a source to a
+target btf.  It causes many string comparisons, and it is a major
+hotspot when adding a big btf.  btf__add_str() uses strcmp() to check
+if a hash entry is the right one.  The extra hashmap here compares
+offsets of strings, that are much cheaper.  It remembers the results
+of btf__add_str() for later uses to reduce the cost.
 
-This is tested by following the committer's note in the original commit
-"aa3abf30bb28addcf593578d37447d42e3f65fc3".
+We are parallelizing BTF encoding for pahole by creating separated btf
+instances for worker threads.  These per-thread btf instances will be
+added to the btf instance of the main thread by calling btf__add_str()
+to deduplicate and write out.  With this patch and -j4, the running
+time of pahole drops to about 6.0s from 6.6s.
 
-I ran 'perf test -v LLVM' and used it's output to generate a script for
-compiling the perf test object:
+The following lines are the summary of 'perf stat' w/o the change.
 
---------------------------------------------------
-$ cat ~/bin/hello-ebpf
-INPUT_FILE=3D/tmp/test.c
-OUTPUT_FILE=3D/tmp/test.o
+       6.668126396 seconds time elapsed
 
-export KBUILD_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export NR_CPUS=3D56
-export LINUX_VERSION_CODE=3D0x50c00
-export CLANG_EXEC=3D/data/users/christylee/devtools/llvm/latest/bin/clang
-export CLANG_OPTIONS=3D-xc
-export KERNEL_INC_OPTIONS=3D"KERNEL_INC_OPTIONS=3D -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h"
-export PERF_BPF_INC_OPTIONS=3D-I/usr/lib/perf/include/bpf
-export WORKING_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export CLANG_SOURCE=3D-
+      13.451054000 seconds user
+       0.715520000 seconds sys
 
-rm -f $OUTPUT_FILE
-cat $INPUT_FILE | /data/users/christylee/devtools/llvm/latest/bin/clang \
--D__KERNEL__ -D__NR_CPUS__=3D56 -DLINUX_VERSION_CODE=3D0x50c00 -xc  \
--I/usr/lib/perf/include/bpf -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h -Wno-unused-value -Wno-pointer-sign \
--working-directory /lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build \
--c - -target bpf -O2 -o $OUTPUT_FILE
---------------------------------------------------
+The following lines are the summary w/ the change.
 
-I then wrote and compiled a script that ask to get asks to put a probe
-at a function that
-does not exists in the kernel, it errors out as expected:
+       5.986973919 seconds time elapsed
 
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dnot_exist"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
+      12.939903000 seconds user
+       0.724152000 seconds sys
 
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
+V4 fixes a bug of error checking against the pointer returned by
+hashmap__new().
 
-Probe point 'not_exist' not found.
-event syntax error: '/tmp/test.o'
-                     \___ You need to check probing points in BPF file
+[v3] https://lore.kernel.org/bpf/20220118232053.2113139-1-kuifeng@fb.com/
+[v2] https://lore.kernel.org/bpf/20220114193713.461349-1-kuifeng@fb.com/
 
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Next I changed the attribute to something that exists in the kernel.
-As expected, it errors out
-with permission problem:
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dkernel_execve"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
-
-$ grep kernel_execve /proc/kallsyms
-ffffffff812dc210 T kernel_execve
-
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
-
-Failed to open kprobe_events: Permission denied
-event syntax error: '/tmp/test.o'
-                     \___ You need to be root
-
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Reran as root, see that the probe point worked as intended.
-
-$ sudo -i
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.018 MB perf.data ]
-perf_bpf_probe:probe_point
-perf_bpf_probe:probe_point: type: 2, size: 128, config: 0x8e9, \
-{ sample_period, sample_freq }: 1, \
-sample_type: IP|TID|TIME|CPU|PERIOD|RAW, read_format: ID, disabled: 1, \
-inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, \
-sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, \
-bpf_event: 1
-
----------------------------------------------------
-
-Signed-off-by: Christy Lee <christylee@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 ---
- tools/perf/util/bpf-loader.c | 72 +++++++++++++++++++++++++++---------
- tools/perf/util/bpf-loader.h |  1 +
- 2 files changed, 55 insertions(+), 18 deletions(-)
+ tools/lib/bpf/btf.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 4631cac3957f..b1822f8af2bb 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -29,9 +29,6 @@
-=20
- #include <internal/xyarray.h>
-=20
--/* temporarily disable libbpf deprecation warnings */
--#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
--
- static int libbpf_perf_print(enum libbpf_print_level level __attribute__=
-((unused)),
- 			      const char *fmt, va_list args)
- {
-@@ -49,6 +46,36 @@ struct bpf_prog_priv {
- 	int *type_mapping;
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 9aa19c89f758..1383e26c5d1f 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1620,20 +1620,37 @@ static int btf_commit_type(struct btf *btf, int dat=
+a_sz)
+ struct btf_pipe {
+ 	const struct btf *src;
+ 	struct btf *dst;
++	struct hashmap *str_off_map; /* map string offsets from src to dst */
  };
 =20
-+struct bpf_perf_object {
-+	struct bpf_object *obj;
-+	struct list_head list;
-+};
-+
-+static LIST_HEAD(bpf_objects_list);
-+
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev)
-+{
-+	struct bpf_perf_object *next;
-+
-+	if (!prev)
-+		next =3D list_first_entry(&bpf_objects_list,
-+					struct bpf_perf_object, list);
-+	else
-+		next =3D list_next_entry(prev, list);
-+
-+	/* Empty list is noticed here so don't need checking on entry. */
-+	if (&next->list =3D=3D &bpf_objects_list)
-+		return NULL;
-+
-+	return next;
-+}
-+
-+#define bpf_perf_object__for_each(perf_obj, tmp, obj)                   =
-       \
-+	for ((perf_obj) =3D bpf_perf_object__next(NULL),                       =
-  \
-+	    (tmp) =3D bpf_perf_object__next(perf_obj), (obj) =3D NULL;         =
-    \
-+	     (perf_obj) !=3D NULL; (perf_obj) =3D (tmp),                       =
-    \
-+	    (tmp) =3D bpf_perf_object__next(tmp), (obj) =3D (perf_obj)->obj)
-+
- static bool libbpf_initialized;
-=20
- struct bpf_object *
-@@ -113,9 +140,10 @@ struct bpf_object *bpf__prepare_load(const char *fil=
-ename, bool source)
-=20
- void bpf__clear(void)
+ static int btf_rewrite_str(__u32 *str_off, void *ctx)
  {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
+ 	struct btf_pipe *p =3D ctx;
+-	int off;
++	void *mapped_off;
++	int off, err;
 =20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		bpf__unprobe(obj);
- 		bpf_object__close(obj);
- 	}
-@@ -621,8 +649,12 @@ static int hook_load_preprocessor(struct bpf_program=
- *prog)
- 	if (err)
- 		return err;
+ 	if (!*str_off) /* nothing to do for empty strings */
+ 		return 0;
 =20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 	err =3D bpf_program__set_prep(prog, priv->nr_types,
- 				    preproc_gen_prologue);
-+#pragma GCC diagnostic pop
- 	return err;
++	if (p->str_off_map &&
++	    hashmap__find(p->str_off_map, (void *)(long)*str_off, &mapped_off)) {
++		*str_off =3D (__u32)(long)mapped_off;
++		return 0;
++	}
++
+ 	off =3D btf__add_str(p->dst, btf__str_by_offset(p->src, *str_off));
+ 	if (off < 0)
+ 		return off;
+=20
++	/* Remember string mapping from src to dst.  It avoids
++	 * performing expensive string comparisons.
++	 */
++	if (p->str_off_map) {
++		err =3D hashmap__append(p->str_off_map, (void *)(long)*str_off, (void *)=
+(long)off);
++		if (err)
++			return err;
++	}
++
+ 	*str_off =3D off;
+ 	return 0;
  }
-=20
-@@ -776,7 +808,11 @@ int bpf__foreach_event(struct bpf_object *obj,
- 			if (priv->need_prologue) {
- 				int type =3D priv->type_mapping[i];
-=20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 				fd =3D bpf_program__nth_fd(prog, type);
-+#pragma GCC diagnostic pop
- 			} else {
- 				fd =3D bpf_program__fd(prog);
- 			}
-@@ -1488,10 +1524,11 @@ apply_obj_config_object(struct bpf_object *obj)
-=20
- int bpf__apply_obj_config(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	int err;
-=20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		err =3D apply_obj_config_object(obj);
- 		if (err)
- 			return err;
-@@ -1500,26 +1537,25 @@ int bpf__apply_obj_config(void)
+@@ -1680,6 +1697,9 @@ static int btf_rewrite_type_ids(__u32 *type_id, void =
+*ctx)
  	return 0;
  }
 =20
--#define bpf__for_each_map(pos, obj, objtmp)	\
--	bpf_object__for_each_safe(obj, objtmp)	\
--		bpf_object__for_each_map(pos, obj)
-+#define bpf__perf_for_each_map(perf_obj, tmp, obj, map)                 =
-       \
-+	bpf_perf_object__for_each(perf_obj, tmp, obj)                          =
-\
-+		bpf_object__for_each_map(map, obj)
-=20
--#define bpf__for_each_map_named(pos, obj, objtmp, name)	\
--	bpf__for_each_map(pos, obj, objtmp) 		\
--		if (bpf_map__name(pos) && 		\
--			(strcmp(name, 			\
--				bpf_map__name(pos)) =3D=3D 0))
-+#define bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name)     =
-       \
-+	bpf__perf_for_each_map(perf_obj, tmp, obj, map)                        =
-\
-+		if (bpf_map__name(map) && (strcmp(name, bpf_map__name(map)) =3D=3D 0))
-=20
- struct evsel *bpf__setup_output_event(struct evlist *evlist, const char =
-*name)
++static size_t btf_dedup_identity_hash_fn(const void *key, void *ctx);
++static bool btf_dedup_equal_fn(const void *k1, const void *k2, void *ctx);
++
+ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
  {
- 	struct bpf_map_priv *tmpl_priv =3D NULL;
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	struct evsel *evsel =3D NULL;
- 	struct bpf_map *map;
- 	int err;
- 	bool need_init =3D false;
+ 	struct btf_pipe p =3D { .src =3D src_btf, .dst =3D btf };
+@@ -1713,6 +1733,11 @@ int btf__add_btf(struct btf *btf, const struct btf *=
+src_btf)
+ 	if (!off)
+ 		return libbpf_err(-ENOMEM);
 =20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
++	/* Map the string offsets from src_btf to the offsets from btf to improve=
+ performance */
++	p.str_off_map =3D hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_equa=
+l_fn, NULL);
++	if (IS_ERR(p.str_off_map))
++		return libbpf_err(-ENOMEM);
++
+ 	/* bulk copy types data for all types from src_btf */
+ 	memcpy(t, src_btf->types_data, data_sz);
 =20
- 		if (IS_ERR(priv))
-@@ -1555,7 +1591,7 @@ struct evsel *bpf__setup_output_event(struct evlist=
- *evlist, const char *name)
- 		evsel =3D evlist__last(evlist);
- 	}
+@@ -1754,6 +1779,8 @@ int btf__add_btf(struct btf *btf, const struct btf *s=
+rc_btf)
+ 	btf->hdr->str_off +=3D data_sz;
+ 	btf->nr_types +=3D cnt;
 =20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
++	hashmap__free(p.str_off_map);
++
+ 	/* return type ID of the first added BTF type */
+ 	return btf->start_id + btf->nr_types - cnt;
+ err_out:
+@@ -1767,6 +1794,8 @@ int btf__add_btf(struct btf *btf, const struct btf *s=
+rc_btf)
+ 	 * wasn't modified, so doesn't need restoring, see big comment above */
+ 	btf->hdr->str_len =3D old_strs_len;
 =20
- 		if (IS_ERR(priv))
-diff --git a/tools/perf/util/bpf-loader.h b/tools/perf/util/bpf-loader.h
-index 5d1c725cea29..95262b7e936f 100644
---- a/tools/perf/util/bpf-loader.h
-+++ b/tools/perf/util/bpf-loader.h
-@@ -53,6 +53,7 @@ typedef int (*bpf_prog_iter_callback_t)(const char *gro=
-up, const char *event,
-=20
- #ifdef HAVE_LIBBPF_SUPPORT
- struct bpf_object *bpf__prepare_load(const char *filename, bool source);
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev);
- int bpf__strerror_prepare_load(const char *filename, bool source,
- 			       int err, char *buf, size_t size);
++	hashmap__free(p.str_off_map);
++
+ 	return libbpf_err(err);
+ }
 =20
 --=20
 2.30.2
