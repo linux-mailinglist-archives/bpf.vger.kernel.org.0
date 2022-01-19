@@ -2,106 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA7C494297
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 22:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77ED04942A4
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 22:54:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357427AbiASVqT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 16:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbiASVqT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 16:46:19 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24607C061574
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 13:46:19 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id h20-20020a17090adb9400b001b518bf99ffso297985pjv.1
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 13:46:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jZ6lVTSSFLFuFM/L+SjIupfkrZNssGv8z3Ianidrykk=;
-        b=T5Ut7gDpIfiZ5vSn4GajrcdCDWzj3ncSvpr6z6u/ZHn+J7ACma+MqlbYIBGh6deKu+
-         AGSqX//MqiJnhFlcxxPXGhsyfGy4OUZt5/o8LkpVe126EQuZ1otC9ZvfvCSyaq5xOigZ
-         5cNXaMKmqRIOE+fQIwzIpvPLiavpe7QZVSlv401/WOfqOnxY6I+NazU64BPtwtOsDxpj
-         3H0Hao4uRWffQHJ212dZlw4d92bI0U2aaqU8cd3Uwsx+gcdBJxwzsRw/pjJjrr+qXPez
-         ixx7wBTUnNLEC1vtxF5KOL4CEnwnE3Jpirk2c7r96x4GdSWtrM5oroLNP+PoZb4BHjIP
-         FSSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=jZ6lVTSSFLFuFM/L+SjIupfkrZNssGv8z3Ianidrykk=;
-        b=qd82yJA3CXbr75c66LrkMK549tjwIxqHEtBULJsjcrlvDBslXAkzN5/fj+eug9nTsG
-         zXHP888aveQwo/BWi6rFp2bPH0061wHCInYW72625yiJRuGyzSZAX+AHBpf+Nh4oj50v
-         qAhMKgWf6q8+EASVMqF4jIR2kfMAyct36PvwSMjvYpYj7239Umo2dSiUCU5QIonpGJ2w
-         KpWDoE1pRvROarPsra9HzcdLO7Yo+R8aQhMn2Jelw3XQ8bSbj5Jnl1fTnOqBQ7eJmUdO
-         G+vLY/SId1E5vRYa6ThS98+CQ5PhB+tL1Arp+yB7XEAUsmZ+mcKR/ByrXIpiRY2LU85W
-         KPcg==
-X-Gm-Message-State: AOAM530BVDqeP9ZKrY5O0Ca9UHBLMc+M0JQLCQwzSBYI+Vf6jOf+Q6cj
-        ZCZPO5VttRRtq+woltXEONr6zA==
-X-Google-Smtp-Source: ABdhPJyOycOjSe9Y3DxhPWvgMrJUgy5U1hJ1ti7S8lIPGcJ4Ev3rPpSEkhI1yF9/JudNuJm4lJE5Sg==
-X-Received: by 2002:a17:90b:1bcc:: with SMTP id oa12mr6853102pjb.4.1642628778470;
-        Wed, 19 Jan 2022 13:46:18 -0800 (PST)
-Received: from localhost ([12.3.194.138])
-        by smtp.gmail.com with ESMTPSA id j4sm635045pfc.125.2022.01.19.13.46.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 13:46:17 -0800 (PST)
-Date:   Wed, 19 Jan 2022 13:46:17 -0800 (PST)
-X-Google-Original-Date: Wed, 19 Jan 2022 13:45:49 PST (-0800)
-Subject:     Re: [PATCH riscv-next] riscv: bpf: Fix eBPF's exception tables
-In-Reply-To: <mhng-db82dcc8-e5f7-4da5-9f5c-d7f6eb225735@palmer-ri-x1c9>
-CC:     Bjorn Topel <bjorn.topel@gmail.com>, jszhang@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, ast@kernel.org, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tongtiangen@huawei.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     daniel@iogearbox.net
-Message-ID: <mhng-5a4269e6-dca2-4a28-b9c8-336c023b8450@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S1357383AbiASVx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 16:53:58 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:43766 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343606AbiASVx6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jan 2022 16:53:58 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id EDD3CCE1F43
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 21:53:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABEEFC004E1;
+        Wed, 19 Jan 2022 21:53:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642629235;
+        bh=3McgxxuaELeBSYvy5X7flNUP0K8Hxak8OcudBha4YdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SGQFRpJcA0p0SHmC/xJgX17hR6iatqo7uBtwDfXEzaok59Uz0KVPqUJHbCte5HELd
+         6aRpu1A4paB7jAbG5FUOcEqYWZxHcyIN1563GjvR0w7bfCfl97CEtRMsLmLjPiH1Hr
+         d+0TmHvBD/bJ34n7NFBO0IRD4oSxc0oIRXdNDwyqX18AHsFpiMkHJzNANaujwgKiNE
+         arEoJpeyVQPbDughqVNVLmX58fyHMjzgKS2tNU6/v+bjLTJbnVPBRVz7smAQxX9jCz
+         +X8qc6MeJUHwG8fFFGbQ1TsFTYVEwX1tp9yaVS682A8gZGr8JSMJag6pJJCktTZ1fy
+         R69L6D1YEdWDQ==
+Date:   Wed, 19 Jan 2022 22:53:51 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: selftests: get rid of CHECK macro in
+ xdp_bpf2bpf.c
+Message-ID: <YeiIb3IkSl90BuaF@lore-desk>
+References: <cover.1642611050.git.lorenzo@kernel.org>
+ <ec0dbfecc37e9900001bfbd5744d917eb48de870.1642611050.git.lorenzo@kernel.org>
+ <CAEf4BzZVYLGHX1zexH0wuAXD_OLAA3Kv2LSi7eCQNw=VS1B0ZA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FBT3MZk/5m5i3mx8"
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZVYLGHX1zexH0wuAXD_OLAA3Kv2LSi7eCQNw=VS1B0ZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Jan 2022 10:04:24 PST (-0800), Palmer Dabbelt wrote:
-> On Wed, 19 Jan 2022 07:59:40 PST (-0800), Bjorn Topel wrote:
->> On Wed, 19 Jan 2022 at 16:42, Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>
->> [...]
->>> > AFAIK, Jisheng's extable work is still in Palmer's for-next tree.
->>> >
->>> > Daniel/Alexei: This eBPF must follow commit 1f77ed9422cb ("riscv:
->>> > switch to relative extable and other improvements"), which is in
->>> > Palmer's tree. It cannot go via bpf-next.
->>>
->>> Thanks for letting us know, then lets route this fix via Palmer. Maybe he could
->>> also add Fixes tags when applying, so stable can pick it up later on.
->>>
->>
->> It shouldn't have a fixes-tag, since it's a new feature for RV. This
->> was adapting to that new feature. It hasn't made it upstream yet (I
->> hope!).
->
-> That was actually just merged this morning into Linus' tree.  I'm still
-> happy to take the fix via my tree, but you're welcome to take it via a
-> BPF tree as well.  I'm juggling some other patches right now, just LMK
-> what works on your end.
->
-> IMO it should have a fixes tag: it's a bit of a grey area, but one
-> something's in I generally try and put those tags on it.  That way folks
-> who try and backport features at least have a shot at finding the fix
-> (or at least, finding the fix without chasing around the bug ;)).
->
-> I also tried poking you guys on the BPF Slack, but I don't really use it
-> and I'm not sure if anyone else does either.
 
-As per the slack discussion with Daniel, I've put this into the RISC-V 
-for-next tree.
+--FBT3MZk/5m5i3mx8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+> On Wed, Jan 19, 2022 at 8:58 AM Lorenzo Bianconi <lorenzo@kernel.org> wro=
+te:
+> >
+> > Rely on ASSERT* macros and get rid of deprecated CHECK ones in
+> > xdp_bpf2bpf bpf selftest.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 43 ++++++++-----------
+> >  1 file changed, 17 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/too=
+ls/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+> > index c98a897ad692..951ce1fc535d 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+> > @@ -12,25 +12,21 @@ struct meta {
+> >
+> >  static void on_sample(void *ctx, int cpu, void *data, __u32 size)
+> >  {
+> > -       int duration =3D 0;
+> >         struct meta *meta =3D (struct meta *)data;
+> >         struct ipv4_packet *trace_pkt_v4 =3D data + sizeof(*meta);
+> >
+> > -       if (CHECK(size < sizeof(pkt_v4) + sizeof(*meta),
+> > -                 "check_size", "size %u < %zu\n",
+> > -                 size, sizeof(pkt_v4) + sizeof(*meta)))
+> > +       if (!ASSERT_GE(size, sizeof(pkt_v4) + sizeof(*meta), "check_siz=
+e"))
+> >                 return;
+> >
+> > -       if (CHECK(meta->ifindex !=3D if_nametoindex("lo"), "check_meta_=
+ifindex",
+> > -                 "meta->ifindex =3D %d\n", meta->ifindex))
+> > +       if (!ASSERT_EQ(meta->ifindex, if_nametoindex("lo"),
+> > +                      "check_meta_ifindex"))
+> >                 return;
+> >
+> > -       if (CHECK(meta->pkt_len !=3D sizeof(pkt_v4), "check_meta_pkt_le=
+n",
+> > -                 "meta->pkt_len =3D %zd\n", sizeof(pkt_v4)))
+> > +       if (!ASSERT_EQ(meta->pkt_len, sizeof(pkt_v4), "check_meta_pkt_l=
+en"))
+> >                 return;
+> >
+> > -       if (CHECK(memcmp(trace_pkt_v4, &pkt_v4, sizeof(pkt_v4)),
+> > -                 "check_packet_content", "content not the same\n"))
+> > +       if (!ASSERT_EQ(memcmp(trace_pkt_v4, &pkt_v4, sizeof(pkt_v4)),
+> > +                      0, "check_packet_content"))
+> >                 return;
+> >
+>=20
+> we can simplify and make it easier to follow by not doing early
+> returns. Just a sequence of ASSERTs would be compact and nice.
+
+ack, fine. I will fix it in v2.
+
+>=20
+> >         *(bool *)ctx =3D true;
+> > @@ -52,7 +48,7 @@ void test_xdp_bpf2bpf(void)
+> >
+> >         /* Load XDP program to introspect */
+> >         pkt_skel =3D test_xdp__open_and_load();
+> > -       if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton failed=
+\n"))
+> > +       if (!ASSERT_OK_PTR(pkt_skel, "test_xdp__open_and_load"))
+> >                 return;
+> >
+> >         pkt_fd =3D bpf_program__fd(pkt_skel->progs._xdp_tx_iptunnel);
+> > @@ -62,7 +58,7 @@ void test_xdp_bpf2bpf(void)
+> >
+> >         /* Load trace program */
+> >         ftrace_skel =3D test_xdp_bpf2bpf__open();
+> > -       if (CHECK(!ftrace_skel, "__open", "ftrace skeleton failed\n"))
+> > +       if (!ASSERT_OK_PTR(ftrace_skel, "test_xdp_bpf2bpf__open"))
+> >                 goto out;
+> >
+> >         /* Demonstrate the bpf_program__set_attach_target() API rather =
+than
+> > @@ -77,11 +73,11 @@ void test_xdp_bpf2bpf(void)
+> >         bpf_program__set_attach_target(prog, pkt_fd, "_xdp_tx_iptunnel"=
+);
+> >
+> >         err =3D test_xdp_bpf2bpf__load(ftrace_skel);
+> > -       if (CHECK(err, "__load", "ftrace skeleton failed\n"))
+> > +       if (!ASSERT_OK(err, "test_xdp_bpf2bpf__load"))
+> >                 goto out;
+> >
+> >         err =3D test_xdp_bpf2bpf__attach(ftrace_skel);
+> > -       if (CHECK(err, "ftrace_attach", "ftrace attach failed: %d\n", e=
+rr))
+> > +       if (!ASSERT_OK(err, "test_xdp_bpf2bpf__attach"))
+> >                 goto out;
+> >
+> >         /* Set up perf buffer */
+> > @@ -94,30 +90,25 @@ void test_xdp_bpf2bpf(void)
+> >         err =3D bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
+> >                                 buf, &size, &retval, &duration);
+> >         memcpy(&iph, buf + sizeof(struct ethhdr), sizeof(iph));
+> > -       if (CHECK(err || retval !=3D XDP_TX || size !=3D 74 ||
+> > -                 iph.protocol !=3D IPPROTO_IPIP, "ipv4",
+> > -                 "err %d errno %d retval %d size %d\n",
+> > -                 err, errno, retval, size))
+> > +       if (!ASSERT_OK(err || retval !=3D XDP_TX || size !=3D 74 ||
+> > +                      iph.protocol !=3D IPPROTO_IPIP, "ipv4"))
+> >                 goto out;
+> >
+> >         /* Make sure bpf_xdp_output() was triggered and it sent the exp=
+ected
+> >          * data to the perf ring buffer.
+> >          */
+> >         err =3D perf_buffer__poll(pb, 100);
+> > -       if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
+> > +       if (!ASSERT_GE(err, 0, "perf_buffer__poll"))
+> >                 goto out;
+> >
+> > -       CHECK_FAIL(!passed);
+> > +       ASSERT_TRUE(passed, "test passed");
+> >
+> >         /* Verify test results */
+> > -       if (CHECK(ftrace_skel->bss->test_result_fentry !=3D if_nametoin=
+dex("lo"),
+> > -                 "result", "fentry failed err %llu\n",
+> > -                 ftrace_skel->bss->test_result_fentry))
+> > +       if (!ASSERT_EQ(ftrace_skel->bss->test_result_fentry, if_nametoi=
+ndex("lo"),
+> > +                      "fentry result"))
+> >                 goto out;
+> >
+> > -       CHECK(ftrace_skel->bss->test_result_fexit !=3D XDP_TX, "result",
+> > -             "fexit failed err %llu\n", ftrace_skel->bss->test_result_=
+fexit);
+> > -
+> > +       ASSERT_EQ(ftrace_skel->bss->test_result_fexit, XDP_TX, "fexit r=
+esult");
+> >  out:
+> >         if (pb)
+>=20
+> while at it, please drop this if. perf_buffer__free() handles NULLs
+> and error pointers.
+
+ack, fine. I will fix it in v2.
+
+Regards,
+Lorenzo
+
+>=20
+> >                 perf_buffer__free(pb);
+> > --
+> > 2.34.1
+> >
+
+--FBT3MZk/5m5i3mx8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYeiIbwAKCRA6cBh0uS2t
+rNGaAP9zf8gkhQnX3xN6WHAbtVABevxuIhCzo9Gl0YeDPyHx0gD9HGXMDWpo1fYG
+BtXKGo+0zMJF4SImzZu1jPzVLrlMDgE=
+=cM97
+-----END PGP SIGNATURE-----
+
+--FBT3MZk/5m5i3mx8--
