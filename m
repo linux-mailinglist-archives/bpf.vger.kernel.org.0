@@ -2,114 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA262493236
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 02:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5450493263
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 02:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344557AbiASBS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 20:18:28 -0500
-Received: from www62.your-server.de ([213.133.104.62]:51228 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238605AbiASBS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 20:18:28 -0500
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1n9zcH-0001wV-Tb; Wed, 19 Jan 2022 02:18:26 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2022-01-19
-Date:   Wed, 19 Jan 2022 02:18:25 +0100
-Message-Id: <20220119011825.9082-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S1350590AbiASBkm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 20:40:42 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:31103 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238619AbiASBkm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 20:40:42 -0500
+Received: from dggpeml500023.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JdpCW2ltnz1FCrp;
+        Wed, 19 Jan 2022 09:36:55 +0800 (CST)
+Received: from dggpeml500011.china.huawei.com (7.185.36.84) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 09:40:40 +0800
+Received: from DESKTOP-9883QJJ.china.huawei.com (10.136.114.155) by
+ dggpeml500011.china.huawei.com (7.185.36.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 09:40:39 +0800
+From:   Di Zhu <zhudi2@huawei.com>
+To:     <andrii.nakryiko@gmail.com>, <ast@kernel.org>,
+        <davem@davemloft.net>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <jakub@cloudflare.com>
+CC:     <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhudi2@huawei.com>, <luzhihao@huawei.com>, <rose.chen@huawei.com>
+Subject: [PATCH bpf-next v6 1/2] bpf: support BPF_PROG_QUERY for progs attached to sockmap
+Date:   Wed, 19 Jan 2022 09:40:04 +0800
+Message-ID: <20220119014005.1209-1-zhudi2@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26426/Tue Jan 18 10:32:09 2022)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.136.114.155]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500011.china.huawei.com (7.185.36.84)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+Right now there is no way to query whether BPF programs are
+attached to a sockmap or not.
 
-The following pull-request contains BPF updates for your *net* tree.
+we can use the standard interface in libbpf to query, such as:
+bpf_prog_query(mapFd, BPF_SK_SKB_STREAM_PARSER, 0, NULL, ...);
+the mapFd is the fd of sockmap.
 
-We've added 12 non-merge commits during the last 8 day(s) which contain
-a total of 12 files changed, 262 insertions(+), 64 deletions(-).
+Signed-off-by: Di Zhu <zhudi2@huawei.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ include/linux/bpf.h  |  9 ++++++
+ kernel/bpf/syscall.c |  5 +++
+ net/core/sock_map.c  | 77 ++++++++++++++++++++++++++++++++++++++++----
+ 3 files changed, 84 insertions(+), 7 deletions(-)
 
-The main changes are:
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6e947cd91152..c4ca14c9f838 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -2071,6 +2071,9 @@ int bpf_prog_test_run_syscall(struct bpf_prog *prog,
+ int sock_map_get_from_fd(const union bpf_attr *attr, struct bpf_prog *prog);
+ int sock_map_prog_detach(const union bpf_attr *attr, enum bpf_prog_type ptype);
+ int sock_map_update_elem_sys(struct bpf_map *map, void *key, void *value, u64 flags);
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr);
++
+ void sock_map_unhash(struct sock *sk);
+ void sock_map_close(struct sock *sk, long timeout);
+ #else
+@@ -2124,6 +2127,12 @@ static inline int sock_map_update_elem_sys(struct bpf_map *map, void *key, void
+ {
+ 	return -EOPNOTSUPP;
+ }
++
++static inline int sock_map_bpf_prog_query(const union bpf_attr *attr,
++					  union bpf_attr __user *uattr)
++{
++	return -EINVAL;
++}
+ #endif /* CONFIG_BPF_SYSCALL */
+ #endif /* CONFIG_NET && CONFIG_BPF_SYSCALL */
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fa4505f9b611..9e0631f091a6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3318,6 +3318,11 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_FLOW_DISSECTOR:
+ 	case BPF_SK_LOOKUP:
+ 		return netns_bpf_prog_query(attr, uattr);
++	case BPF_SK_SKB_STREAM_PARSER:
++	case BPF_SK_SKB_STREAM_VERDICT:
++	case BPF_SK_MSG_VERDICT:
++	case BPF_SK_SKB_VERDICT:
++		return sock_map_bpf_prog_query(attr, uattr);
+ 	default:
+ 		return -EINVAL;
+ 	}
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 1827669eedd6..2d213c4011db 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1416,38 +1416,50 @@ static struct sk_psock_progs *sock_map_progs(struct bpf_map *map)
+ 	return NULL;
+ }
+ 
+-static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+-				struct bpf_prog *old, u32 which)
++static int sock_map_prog_lookup(struct bpf_map *map, struct bpf_prog ***pprog,
++				u32 which)
+ {
+ 	struct sk_psock_progs *progs = sock_map_progs(map);
+-	struct bpf_prog **pprog;
+ 
+ 	if (!progs)
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (which) {
+ 	case BPF_SK_MSG_VERDICT:
+-		pprog = &progs->msg_parser;
++		*pprog = &progs->msg_parser;
+ 		break;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+ 	case BPF_SK_SKB_STREAM_PARSER:
+-		pprog = &progs->stream_parser;
++		*pprog = &progs->stream_parser;
+ 		break;
+ #endif
+ 	case BPF_SK_SKB_STREAM_VERDICT:
+ 		if (progs->skb_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->stream_verdict;
++		*pprog = &progs->stream_verdict;
+ 		break;
+ 	case BPF_SK_SKB_VERDICT:
+ 		if (progs->stream_verdict)
+ 			return -EBUSY;
+-		pprog = &progs->skb_verdict;
++		*pprog = &progs->skb_verdict;
+ 		break;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	return 0;
++}
++
++static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
++				struct bpf_prog *old, u32 which)
++{
++	struct bpf_prog **pprog;
++	int ret;
++
++	ret = sock_map_prog_lookup(map, &pprog, which);
++	if (ret)
++		return ret;
++
+ 	if (old)
+ 		return psock_replace_prog(pprog, prog, old);
+ 
+@@ -1455,6 +1467,57 @@ static int sock_map_prog_update(struct bpf_map *map, struct bpf_prog *prog,
+ 	return 0;
+ }
+ 
++int sock_map_bpf_prog_query(const union bpf_attr *attr,
++			    union bpf_attr __user *uattr)
++{
++	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
++	u32 prog_cnt = 0, flags = 0, ufd = attr->target_fd;
++	struct bpf_prog **pprog;
++	struct bpf_prog *prog;
++	struct bpf_map *map;
++	struct fd f;
++	u32 id = 0;
++	int ret;
++
++	if (attr->query.query_flags)
++		return -EINVAL;
++
++	f = fdget(ufd);
++	map = __bpf_map_get(f);
++	if (IS_ERR(map))
++		return PTR_ERR(map);
++
++	rcu_read_lock();
++
++	ret = sock_map_prog_lookup(map, &pprog, attr->query.attach_type);
++	if (ret)
++		goto end;
++
++	prog = *pprog;
++	prog_cnt = !prog ? 0 : 1;
++
++	if (!attr->query.prog_cnt || !prog_ids || !prog_cnt)
++		goto end;
++
++	/* we do not hold the refcnt, the bpf prog may be released
++	 * asynchronously and the id would be set to 0.
++	 */
++	id = data_race(prog->aux->id);
++	if (id == 0)
++		prog_cnt = 0;
++
++end:
++	rcu_read_unlock();
++
++	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags)) ||
++	    (id != 0 && copy_to_user(prog_ids, &id, sizeof(u32))) ||
++	    copy_to_user(&uattr->query.prog_cnt, &prog_cnt, sizeof(prog_cnt)))
++		ret = -EFAULT;
++
++	fdput(f);
++	return ret;
++}
++
+ static void sock_map_unlink(struct sock *sk, struct sk_psock_link *link)
+ {
+ 	switch (link->map->map_type) {
+-- 
+2.27.0
 
-1) Various verifier fixes mainly around register offset handling when passed
-   to helper functions, from Daniel Borkmann.
-
-2) Fix XDP BPF link handling to assert program type, from Toke Høiland-Jørgensen.
-
-3) Fix regression in mount parameter handling for BPF fs, from Yafang Shao.
-
-4) Fix incorrect integer literal when marking scratched stack slots in
-   verifier, from Christy Lee.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Andrii Nakryiko, Christian Brauner, Dan Carpenter, 
-John Fastabend, kernel test robot, Song Liu
-
-----------------------------------------------------------------
-
-The following changes since commit 7d6019b602de660bfc6a542a68630006ace83b90:
-
-  Revert "net: vertexcom: default to disabled on kbuild" (2022-01-10 21:11:07 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 37c8d4807d1b8b521b30310dce97f6695dc2c2c6:
-
-  bpf, selftests: Add ringbuf memory type confusion test (2022-01-19 01:27:03 +0100)
-
-----------------------------------------------------------------
-Christy Lee (1):
-      bpf: Fix incorrect integer literal used for marking scratched stack.
-
-Daniel Borkmann (7):
-      bpf: Generalize check_ctx_reg for reuse with other types
-      bpf: Mark PTR_TO_FUNC register initially with zero offset
-      bpf: Generally fix helper register offset check
-      bpf: Fix out of bounds access for ringbuf helpers
-      bpf: Fix ringbuf memory type confusion when passing to helpers
-      bpf, selftests: Add various ringbuf tests with invalid offset
-      bpf, selftests: Add ringbuf memory type confusion test
-
-Toke Høiland-Jørgensen (3):
-      xdp: check prog type before updating BPF link
-      bpf/selftests: convert xdp_link test to ASSERT_* macros
-      bpf/selftests: Add check for updating XDP bpf_link with wrong program type
-
-Yafang Shao (1):
-      bpf: Fix mount source show for bpffs
-
- include/linux/bpf.h                                |  9 +-
- include/linux/bpf_verifier.h                       |  4 +-
- kernel/bpf/btf.c                                   |  2 +-
- kernel/bpf/inode.c                                 | 14 +++-
- kernel/bpf/verifier.c                              | 81 ++++++++++++------
- net/core/dev.c                                     |  6 ++
- tools/testing/selftests/bpf/prog_tests/d_path.c    | 14 ++++
- tools/testing/selftests/bpf/prog_tests/xdp_link.c  | 61 +++++++-------
- .../selftests/bpf/progs/test_d_path_check_types.c  | 32 ++++++++
- tools/testing/selftests/bpf/progs/test_xdp_link.c  |  6 ++
- tools/testing/selftests/bpf/verifier/ringbuf.c     | 95 ++++++++++++++++++++++
- tools/testing/selftests/bpf/verifier/spill_fill.c  |  2 +-
- 12 files changed, 262 insertions(+), 64 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_d_path_check_types.c
- create mode 100644 tools/testing/selftests/bpf/verifier/ringbuf.c
