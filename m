@@ -2,170 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF420494374
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899A4494363
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244737AbiASXGw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 18:06:52 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:25110 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243366AbiASXGm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:06:42 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs87E030844
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=QQVM3WqmxAMOMYSTl+HcWUNnl5I34hitJkHaevHvggE=;
- b=aLZ6Bm4KtIbWRE9AMiGuhapXBxhbRMkokWQcsSDB3ynoI80yKy+sY3RI59tJHiawnpeG
- t2PSq7PLOx9i8N3g0EgX4eCc5O5zMF7Md7U7sSHJwyYCkMvSkGkCoGXfLxsxw0fgQsW1
- a3LLz5UwSgWtlkMW5/s1pzUQL7FMg5YddEw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpafj6kd3-1
+        id S239687AbiASXGg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 19 Jan 2022 18:06:36 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22074 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235950AbiASXGg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:06:36 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs6kG031096
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:36 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp197t7rv-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:41 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:35 -0800
+Received: from twshared0654.04.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 19 Jan 2022 15:06:40 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 457C1945C590; Wed, 19 Jan 2022 14:59:39 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <kennyyu@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>, <phoenix1987@gmail.com>,
-        <alexei.starovoitov@gmail.com>
-Subject: [PATCH v4 bpf-next 3/3] selftests/bpf: Add test for sleepable bpf iterator programs
-Date:   Wed, 19 Jan 2022 14:59:29 -0800
-Message-ID: <20220119225929.2312908-4-kennyyu@fb.com>
+ 15.1.2308.20; Wed, 19 Jan 2022 15:06:34 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 9CAB328220C2F; Wed, 19 Jan 2022 15:06:25 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <peterz@infradead.org>, <x86@kernel.org>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v4 bpf-next 0/7] bpf_prog_pack allocator
+Date:   Wed, 19 Jan 2022 15:06:13 -0800
+Message-ID: <20220119230620.3137425-1-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220119225929.2312908-1-kennyyu@fb.com>
-References: <20220113233158.1582743-1-kennyyu@fb.com>
- <20220119225929.2312908-1-kennyyu@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: M-Am-ofhQvafmk-RyezCdQqQeD-c3aNJ
-X-Proofpoint-GUID: M-Am-ofhQvafmk-RyezCdQqQeD-c3aNJ
+X-Proofpoint-ORIG-GUID: EjXUPoyrBVcWSceR9erW-05T4unVdeTf
+X-Proofpoint-GUID: EjXUPoyrBVcWSceR9erW-05T4unVdeTf
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-19_12,2022-01-19_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 suspectscore=0 mlxscore=0 phishscore=0
- adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=898 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 clxscore=1015
+ impostorscore=0 mlxscore=0 mlxlogscore=660 lowpriorityscore=0 spamscore=0
+ phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2110150000 definitions=main-2201190122
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a test for bpf iterator programs to make use of sleepable
-bpf helpers.
+Changes v3 => v4:
+1. Rename text_poke_jit() => text_poke_copy(). (Peter)
+2. Change comment style. (Peter)
 
-Signed-off-by: Kenny Yu <kennyyu@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 16 +++++++
- .../selftests/bpf/progs/bpf_iter_task.c       | 44 +++++++++++++++++++
- 2 files changed, 60 insertions(+)
+Changes v2 => v3:
+1. Fix tailcall.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index b84f859b1267..fcda0ecd8746 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -138,6 +138,20 @@ static void test_task(void)
- 	bpf_iter_task__destroy(skel);
- }
-=20
-+static void test_task_sleepable(void)
-+{
-+	struct bpf_iter_task *skel;
-+
-+	skel =3D bpf_iter_task__open_and_load();
-+	if (CHECK(!skel, "bpf_iter_task__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_task_sleepable);
-+
-+	bpf_iter_task__destroy(skel);
-+}
-+
- static void test_task_stack(void)
- {
- 	struct bpf_iter_task_stack *skel;
-@@ -1252,6 +1266,8 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_sleepable"))
-+		test_task_sleepable();
- 	if (test__start_subtest("task_stack"))
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_task.c
-index c86b93f33b32..81a86b3b7086 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-@@ -23,3 +24,46 @@ int dump_task(struct bpf_iter__task *ctx)
- 	BPF_SEQ_PRINTF(seq, "%8d %8d\n", task->tgid, task->pid);
- 	return 0;
- }
-+
-+SEC("iter.s/task")
-+int dump_task_sleepable(struct bpf_iter__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
-+	struct pt_regs *regs;
-+	void *ptr;
-+	uint32_t user_data =3D 0;
-+	int numread;
-+
-+	if (task =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	regs =3D (struct pt_regs *)bpf_task_pt_regs(task);
-+	if (regs =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+	ptr =3D (void *)PT_REGS_IP(regs);
-+
-+	/* Try to read the contents of the task's instruction pointer from the
-+	 * remote task's address space.
-+	 */
-+	numread =3D bpf_access_process_vm(&user_data,
-+					sizeof(uint32_t),
-+					ptr,
-+					task,
-+					0);
-+	if (numread !=3D sizeof(uint32_t)) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	if (ctx->meta->seq_num =3D=3D 0)
-+		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-+
-+	BPF_SEQ_PRINTF(seq, "%8d %8d %8d\n", task->tgid, task->pid, user_data);
-+	return 0;
-+}
---=20
+Changes v1 => v2:
+1. Use text_poke instead of writing through linear mapping. (Peter)
+2. Avoid making changes to non-x86_64 code.
+
+Most BPF programs are small, but they consume a page each. For systems
+with busy traffic and many BPF programs, this could also add significant
+pressure to instruction TLB.
+
+This set tries to solve this problem with customized allocator that pack
+multiple programs into a huge page.
+
+Patches 1-5 prepare the work. Patch 6 contains key logic of the allocator.
+Patch 7 uses this allocator in x86_64 jit compiler.
+
+Song Liu (7):
+  x86/Kconfig: select HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP
+  bpf: use bytes instead of pages for bpf_jit_[charge|uncharge]_modmem
+  bpf: use size instead of pages in bpf_binary_header
+  bpf: add a pointer of bpf_binary_header to bpf_prog
+  x86/alternative: introduce text_poke_copy
+  bpf: introduce bpf_prog_pack allocator
+  bpf, x86_64: use bpf_prog_pack allocator
+
+ arch/x86/Kconfig                     |   1 +
+ arch/x86/include/asm/text-patching.h |   1 +
+ arch/x86/kernel/alternative.c        |  32 ++++
+ arch/x86/net/bpf_jit_comp.c          | 135 +++++++++++++----
+ include/linux/bpf.h                  |   4 +-
+ include/linux/filter.h               |  23 ++-
+ kernel/bpf/core.c                    | 213 ++++++++++++++++++++++++---
+ kernel/bpf/trampoline.c              |   6 +-
+ 8 files changed, 356 insertions(+), 59 deletions(-)
+
+--
 2.30.2
-
