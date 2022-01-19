@@ -2,155 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9931493231
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 02:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA262493236
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 02:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347903AbiASBPt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 18 Jan 2022 20:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238605AbiASBPt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 18 Jan 2022 20:15:49 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0EBC061574
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 17:15:49 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id b1so830601ilj.2
-        for <bpf@vger.kernel.org>; Tue, 18 Jan 2022 17:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2etAGx0Ji6rss9DCS/dBqVeifZ9d6iHa87JNkucOpQY=;
-        b=dIW+ahGBQRHcFXgLoZwYtWTmxj99GkfDkRkqNE0v/VBndOA05pUXGym4UbxU7kaWfN
-         k0VCUmWKt+yjLy0H9FjF9nRZcaGkumzb/QfUIOFxHXT5foB5uCOFbae9KuGq8bWl1/15
-         wZbMugzX33/gL+LB1z35qqnfLnThtPKrHzU1Ss16UnagtZkvuLhdvOTds6YwUfdNDeMr
-         +lFFnvlS/3miLyaP7NGVGUBKSoX8n0GitXllBNzpbD++QYCbC9w339DS/cJ5I+wIJDBJ
-         uQ4LJdmrTUH6pmOgacijoKBCe6DjRn+5v8sCyz/nooMKNoVqNSLu4ZY4GRoyLs++uhS5
-         P/mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2etAGx0Ji6rss9DCS/dBqVeifZ9d6iHa87JNkucOpQY=;
-        b=G14Zw+kTrv4xdujMiwgL8Pa2nLJJ4oaqM0Beq9uWksfyU6hzOasMMbrM+dL/l+Hwt5
-         VvfHOXecLU8ybFHJxiFxGlkPfbC0COfk+BoDD45UXhszpqlBY/AfzFMS2ql01sJX3VSO
-         W5bqpbRsv/RUOXZ6BqaLcHVFVRK279OmvMyMOtP+6x7VQQLcz5X8TRFMjgM8ZJzEWHoy
-         yE7VD7nJ0FWktIkRnm+QTbD4u+F6cYZGdt+5ofqfg2WfE/6eJO5f5zyz4e1erVQFlEQQ
-         Qau+gU15+FF1Z3ALG9pdLh6yn4mIIRagszE4pWU15ZlcKJ1cY1qkZ2NCLYVJF+vV2VKp
-         RDYA==
-X-Gm-Message-State: AOAM53081H4rvD3xRrwdtFXha0iOlKZfTy+avr/oBZhIjLUaPPbMzIE9
-        1p9pxgtKJZO6GExFu9KxdO+0PAESwo92FrCuAFHhHhu/
-X-Google-Smtp-Source: ABdhPJzc2oSisFgNhkXMzni4NlEZu5MFeVlBTk7kNyixo1yuF4dZwc5yX5ToNlUvwSkcnGTo/NISyMIjAfEsZ31UNaA=
-X-Received: by 2002:a05:6e02:1c02:: with SMTP id l2mr15772494ilh.239.1642554948419;
- Tue, 18 Jan 2022 17:15:48 -0800 (PST)
+        id S1344557AbiASBS2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 18 Jan 2022 20:18:28 -0500
+Received: from www62.your-server.de ([213.133.104.62]:51228 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238605AbiASBS2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 18 Jan 2022 20:18:28 -0500
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1n9zcH-0001wV-Tb; Wed, 19 Jan 2022 02:18:26 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2022-01-19
+Date:   Wed, 19 Jan 2022 02:18:25 +0100
+Message-Id: <20220119011825.9082-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20220118232053.2113139-1-kuifeng@fb.com> <20220118232053.2113139-2-kuifeng@fb.com>
-In-Reply-To: <20220118232053.2113139-2-kuifeng@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 18 Jan 2022 17:15:37 -0800
-Message-ID: <CAEf4BzZi5G41-kpfcLf=Z5O_C1ELQnvw=4X9Kaxcq97uH8=Mjw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] libbpf: Improve btf__add_btf() with an
- additional hashmap for strings.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26426/Tue Jan 18 10:32:09 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 18, 2022 at 3:21 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
->
-> Add a hashmap to map the string offsets from a source btf to the
-> string offsets from a target btf to reduce overheads.
->
-> btf__add_btf() calls btf__add_str() to add strings from a source to a
-> target btf.  It causes many string comparisons, and it is a major
-> hotspot when adding a big btf.  btf__add_str() uses strcmp() to check
-> if a hash entry is the right one.  The extra hashmap here compares
-> offsets of strings, that are much cheaper.  It remembers the results
-> of btf__add_str() for later uses to reduce the cost.
->
-> We are parallelizing BTF encoding for pahole by creating separated btf
-> instances for worker threads.  These per-thread btf instances will be
-> added to the btf instance of the main thread by calling btf__add_str()
-> to deduplicate and write out.  With this patch and -j4, the running
-> time of pahole drops to about 6.0s from 6.6s.
->
-> The following lines are the summary of 'perf stat' w/o the change.
->
->        6.668126396 seconds time elapsed
->
->       13.451054000 seconds user
->        0.715520000 seconds sys
->
-> The following lines are the summary w/ the change.
->
->        5.986973919 seconds time elapsed
->
->       12.939903000 seconds user
->        0.724152000 seconds sys
->
-> V3 removes an unnecssary check against str_off_map, and merges the
-> declarations of two variables into one line.
->
-> [v2] https://lore.kernel.org/bpf/20220114193713.461349-1-kuifeng@fb.com/
->
-> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> ---
->  tools/lib/bpf/btf.c | 31 ++++++++++++++++++++++++++++++-
->  1 file changed, 30 insertions(+), 1 deletion(-)
->
+Hi David, hi Jakub,
 
-[...]
+The following pull-request contains BPF updates for your *net* tree.
 
-> @@ -1680,6 +1697,9 @@ static int btf_rewrite_type_ids(__u32 *type_id, void *ctx)
->         return 0;
->  }
->
-> +static size_t btf_dedup_identity_hash_fn(const void *key, void *ctx);
-> +static bool btf_dedup_equal_fn(const void *k1, const void *k2, void *ctx);
-> +
->  int btf__add_btf(struct btf *btf, const struct btf *src_btf)
->  {
->         struct btf_pipe p = { .src = src_btf, .dst = btf };
-> @@ -1713,6 +1733,11 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
->         if (!off)
->                 return libbpf_err(-ENOMEM);
->
-> +       /* Map the string offsets from src_btf to the offsets from btf to improve performance */
-> +       p.str_off_map = hashmap__new(btf_dedup_identity_hash_fn, btf_dedup_equal_fn, NULL);
-> +       if (p.str_off_map == NULL)
+We've added 12 non-merge commits during the last 8 day(s) which contain
+a total of 12 files changed, 262 insertions(+), 64 deletions(-).
 
-Sorry, I didn't catch this the first time. hashmap__new() returns
-ERR_PTR() on error (it's an internal API so we use ERR_PTR() for
-pointer-returning APIs), so you need to check for
-IS_ERR(p.str_off_map) instead.
+The main changes are:
 
-> +               return libbpf_err(-ENOMEM);
-> +
->         /* bulk copy types data for all types from src_btf */
->         memcpy(t, src_btf->types_data, data_sz);
->
-> @@ -1754,6 +1779,8 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
->         btf->hdr->str_off += data_sz;
->         btf->nr_types += cnt;
->
-> +       hashmap__free(p.str_off_map);
-> +
->         /* return type ID of the first added BTF type */
->         return btf->start_id + btf->nr_types - cnt;
->  err_out:
-> @@ -1767,6 +1794,8 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
->          * wasn't modified, so doesn't need restoring, see big comment above */
->         btf->hdr->str_len = old_strs_len;
->
-> +       hashmap__free(p.str_off_map);
-> +
->         return libbpf_err(err);
->  }
->
-> --
-> 2.30.2
->
+1) Various verifier fixes mainly around register offset handling when passed
+   to helper functions, from Daniel Borkmann.
+
+2) Fix XDP BPF link handling to assert program type, from Toke Høiland-Jørgensen.
+
+3) Fix regression in mount parameter handling for BPF fs, from Yafang Shao.
+
+4) Fix incorrect integer literal when marking scratched stack slots in
+   verifier, from Christy Lee.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrii Nakryiko, Christian Brauner, Dan Carpenter, 
+John Fastabend, kernel test robot, Song Liu
+
+----------------------------------------------------------------
+
+The following changes since commit 7d6019b602de660bfc6a542a68630006ace83b90:
+
+  Revert "net: vertexcom: default to disabled on kbuild" (2022-01-10 21:11:07 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 37c8d4807d1b8b521b30310dce97f6695dc2c2c6:
+
+  bpf, selftests: Add ringbuf memory type confusion test (2022-01-19 01:27:03 +0100)
+
+----------------------------------------------------------------
+Christy Lee (1):
+      bpf: Fix incorrect integer literal used for marking scratched stack.
+
+Daniel Borkmann (7):
+      bpf: Generalize check_ctx_reg for reuse with other types
+      bpf: Mark PTR_TO_FUNC register initially with zero offset
+      bpf: Generally fix helper register offset check
+      bpf: Fix out of bounds access for ringbuf helpers
+      bpf: Fix ringbuf memory type confusion when passing to helpers
+      bpf, selftests: Add various ringbuf tests with invalid offset
+      bpf, selftests: Add ringbuf memory type confusion test
+
+Toke Høiland-Jørgensen (3):
+      xdp: check prog type before updating BPF link
+      bpf/selftests: convert xdp_link test to ASSERT_* macros
+      bpf/selftests: Add check for updating XDP bpf_link with wrong program type
+
+Yafang Shao (1):
+      bpf: Fix mount source show for bpffs
+
+ include/linux/bpf.h                                |  9 +-
+ include/linux/bpf_verifier.h                       |  4 +-
+ kernel/bpf/btf.c                                   |  2 +-
+ kernel/bpf/inode.c                                 | 14 +++-
+ kernel/bpf/verifier.c                              | 81 ++++++++++++------
+ net/core/dev.c                                     |  6 ++
+ tools/testing/selftests/bpf/prog_tests/d_path.c    | 14 ++++
+ tools/testing/selftests/bpf/prog_tests/xdp_link.c  | 61 +++++++-------
+ .../selftests/bpf/progs/test_d_path_check_types.c  | 32 ++++++++
+ tools/testing/selftests/bpf/progs/test_xdp_link.c  |  6 ++
+ tools/testing/selftests/bpf/verifier/ringbuf.c     | 95 ++++++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/spill_fill.c  |  2 +-
+ 12 files changed, 262 insertions(+), 64 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/ringbuf.c
