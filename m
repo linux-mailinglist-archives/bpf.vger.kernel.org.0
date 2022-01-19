@@ -2,374 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF98F4943A9
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:09:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F5F4943D4
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357670AbiASXJ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 18:09:57 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43142 "EHLO
+        id S1344271AbiASXXV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 18:23:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22376 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1357891AbiASXJ2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:09:28 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs65Y030621
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:09:28 -0800
+        by vger.kernel.org with ESMTP id S1343864AbiASXXU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:23:20 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs691000584;
+        Wed, 19 Jan 2022 15:23:20 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=OeYwH0Pnl0tvmlFl0FcXJLWw3De5/z1J32xQW4e3EUE=;
- b=RIuI3l+YjWj3+puB8K7I4pNfLAkygv6Xm/MmEIOzmZEYvl+Ux3DmMUgGBo+xeA18pCZh
- qmMGklZ0J9TMNxeKaWZBdQ29EWOplhs3MziBOr0o22CZHNj+heZ06SMpeeah2uLGKPyo
- fe9NyBWuHyvO6jAeXEQxIZQfwPQqtZIPjnk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp0x32cea-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:09:27 -0800
-Received: from twshared1259.42.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=XaBzQbarHYbl2mYqszvqLoxuLvidxEk40+Q8uD+Y3gg=;
+ b=BDn3E2q7cf7KlS0Jsl16DZfWE1bpUytq7Wu9IxQ3GrcAaR3p89azFoIO7MDQudP1XBHC
+ LpdpxoZ9bQzU1k+RKbvPOBNPJLnHiarxYpyACy0eibbrJcpU45TPJ+vEpC/CO7jKSERq
+ hfNZYeCs4LstR88ECFWw5zShmyyhZl0c4TQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp89yf788-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 Jan 2022 15:23:20 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 19 Jan 2022 15:09:26 -0800
-Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
-        id 8094F1F0A178; Wed, 19 Jan 2022 15:06:42 -0800 (PST)
-From:   Christy Lee <christylee@fb.com>
-To:     <andrii@kernel.org>, <acme@kernel.org>, <jolsa@redhat.com>
-CC:     <christylee@fb.com>, <christyc.y.lee@gmail.com>,
-        <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
-        <kernel-team@fb.com>, <wangnan0@huawei.com>,
-        <bobo.shaobowang@huawei.com>, <yuehaibing@huawei.com>
-Subject: [PATCH bpf-next v4 2/2] perf: stop using deprecated bpf_object__next() API
-Date:   Wed, 19 Jan 2022 15:06:36 -0800
-Message-ID: <20220119230636.1752684-3-christylee@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220119230636.1752684-1-christylee@fb.com>
+ 15.1.2308.20; Wed, 19 Jan 2022 15:23:13 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ggrOqueKYrHjRYZQjaIyVkcBPW8GwyzposgUw7Yl4UD0ck9v4ajWl1/P835oS0twIKqZKF55gWjnpUUdoVmsl0jO/GqcO4NGrcK+GLHCW3zcqbmGvF1HHklu9IZ8hToCoCNRZ4COk4DiOv06PyasJ+qKtFoIZvCYmwSS8aAcgk5SFpeyhI2ywDDSWlNJdBYZZ9nIxxD7gNbHExAvqz9R6OGZpt7a0FR5O9eO//4bfNgh9XKtMLS9F2n94fOuW5spAKGQt90yNCGyYVrq9Mt5/9+JEQUQiCGCnZtXqVVpF3I+iHhQkGyZiXrVmFmtus+YcSDDRog1Eqrz8UfZo4XUnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Weyb4u9cnovfrTfwul/0VAIMde8EQIE2fiODIzo8bEw=;
+ b=ZLdGPKLYjtIE1o6Pva9wbg+2bJfb9Zs75jp2EgiuVzjnDR2vgD+wXyq3eLR4Bxel5rczglt/n0JlFe5+QxjWIJXNuen43RlMFl+R5UD3pkua3jV/DZp7NgneVG12U9xe3S2DdEjvoPAyU6Wn1IWHnVs5DAsanjmtbtEmllfAwnMdMQwi/1FDS7IKYbEG3c/VM0mhjy0A6IoVKL3MDenQXiXFFo8yflYluhqOXavwTUyvDuqpklSs6/XXwtWPDHinm41JoPDivkPJfhWJbwL/6ajtFQ5ADSLsv0R2deImHDWzun6j3n1Y2h04+qrxLzdxYym5H0X0GqNvh5u8odTxfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SJ0PR15MB4187.namprd15.prod.outlook.com (2603:10b6:a03:2e4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.7; Wed, 19 Jan
+ 2022 23:23:10 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e%6]) with mapi id 15.20.4888.014; Wed, 19 Jan 2022
+ 23:23:10 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     "Christy Lee-Eusman (PL&R)" <christylee@fb.com>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "christyc.y.lee@gmail.com" <christyc.y.lee@gmail.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        "wangnan0@huawei.com" <wangnan0@huawei.com>,
+        "bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
+        "yuehaibing@huawei.com" <yuehaibing@huawei.com>
+Subject: Re: [PATCH bpf-next v4 2/2] perf: stop using deprecated
+ bpf_object__next() API
+Thread-Topic: [PATCH bpf-next v4 2/2] perf: stop using deprecated
+ bpf_object__next() API
+Thread-Index: AQHYDYnOYaiJ2yjqYEmtuYtsxAGl2axq+/cA
+Date:   Wed, 19 Jan 2022 23:23:10 +0000
+Message-ID: <13ABED53-94DD-4B36-8BB4-776D326E6171@fb.com>
 References: <20220119230636.1752684-1-christylee@fb.com>
+ <20220119230636.1752684-3-christylee@fb.com>
+In-Reply-To: <20220119230636.1752684-3-christylee@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.40.0.1.81)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f5d21c14-6e54-4ea6-056b-08d9dba2a885
+x-ms-traffictypediagnostic: SJ0PR15MB4187:EE_
+x-microsoft-antispam-prvs: <SJ0PR15MB4187568895D75FEA20172E48B3599@SJ0PR15MB4187.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:608;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: crKg1bt2b/kasPu5y2y84HD3eqUH656vLokX8fkp2PwqRHUKTjHOftukh0J6eDqM7pqkrSmgv3nM+4hjbPAqBeUka5Lp7Qsr0j3ZTU67qccWeWdEa4VV2ncPxO/l+gNJXtYSbBUMw4J3kNq8YGa+jk6zhh3ArOM9iUIvmvnOvDvgZaE6Op7JOKP6wg2UOoD1l5BwzQWLtQy/MDUy6UHgnzqRJEHIrSealLo27MBeTJvNBZMdsxymlJVSCUs3B7dc3WO4dwwtsC7F3MSnA4qcAd9TFdfOo+6YbEVQgqUl1bTRnan6rIafFLDLrW4DClUmlEO+9FD5u/nhtNSjTiVTdcajXecNMwcvAQOr1DdjTBBEcbYd8JeD/6Qk7ZZeRrjgvdbikXctZ7ZUCwdcYye5L8MrKlWe/0kldX5GF6kjHIqFvLAGkDbTPQGje+Iy7Ey+m3hAEdd/aGf/bK4zs6pPgWXgMskY2rvah0iFQvO1WeNKOsa3OnsLqMEbYekLZrQKR1pcEG1H9ZLlBoTLfJEzgVRWfj2oNkgyfm/RskkgX8TRhs0CkuEvQFw1+3ZoNIRLGJ/81WFEPtglUhiEWyXsFYnLRfQ1XCWDN4r6cgINT4eZX68CIv0iVb9t57GMel1nd8rdHLpHid2L0NgNZlBt4Qzb/lV0g0eiyc1kcWe/Hk6H2rIYpBKN/kfQrsSjrqk/j68PimidHx9FgsZZ2P+h20r2lzBoLp2Qd6PcKPvDJvfE1hJRXGQe6WOhJyz+cqTXrPs8v8pb/Dj5xDMtuh7lVw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6862004)(2906002)(6506007)(91956017)(76116006)(86362001)(4326008)(508600001)(83380400001)(186003)(33656002)(8676002)(2616005)(122000001)(66446008)(36756003)(6636002)(66476007)(66556008)(37006003)(64756008)(316002)(66946007)(6512007)(54906003)(38070700005)(53546011)(71200400001)(8936002)(4744005)(6486002)(5660300002)(38100700002)(101420200003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?guePISg3DaY3HvpmvUnjJqEMks0lmk18Iqp+NZYvVkTrJUZpfY0Yi16SPY9M?=
+ =?us-ascii?Q?f4s+Ad4KnKSuJ00dEe7V/OiHzX9/0SB8DqjjSvkjDRnH2eXuSZepNHxi/jtG?=
+ =?us-ascii?Q?QDmynt3SURIN8AHMvh17QsSAlDogXtXrTv+GV3HxLB7TB4Kvb2ZTiC6nyE2e?=
+ =?us-ascii?Q?0sPTdS6WSA/5uLk7A/jo/4mxy1ICng0Gw3+Z7u4VKI02CRH4yvQrHYlU7xTs?=
+ =?us-ascii?Q?4GFH/QohOhlKbxkSPOPS50pRzRu9AcGQD/Wi1NYudNJeGdb1yAfMu1HJAMlE?=
+ =?us-ascii?Q?UNYcml27u2JXC9vapytRE6P18sgu8/Yith93ns21IhpeSM2T9sH+rKDHDd9c?=
+ =?us-ascii?Q?xelSiCv/AxijN6PkorZaZNDMK1AmVa5Rk9vfMLD8hgjAhyMeAB67eRw7NcVK?=
+ =?us-ascii?Q?ub5lOuPwhRo5cA9QFULC5glCpXjDBScCzeh/EoAb1jDXhTqdTg8iqsTrqTsa?=
+ =?us-ascii?Q?zeDUXj1pHYuRL3AfSsRq0Tiis2C7CSb2YNZuXIlDlv3c4Dx0xsgynrV55VuY?=
+ =?us-ascii?Q?MlLiWI0DhdXJoypxtwqXBmaF7jY11Ll8YrTz1x5wWVqw4jb6cVjljw5OmYug?=
+ =?us-ascii?Q?ymiUIswKnsjWzcQdw3RV5mE7IchnRJ6yB2YNXyOjDFJ9IMx/SQZyZTv3nZUq?=
+ =?us-ascii?Q?mAWSZidF6HKiJnS4u411kYIn66vYMnbon9In2dTe9kCEPBenGkO7HZrYVbmJ?=
+ =?us-ascii?Q?Zi632/lcpkpH0tYzLBUx3g6M0WtITzfk2mTTgFhDqjbLYFa8oYizSvwl5/ta?=
+ =?us-ascii?Q?kW8jsdOSdr3Uyhw+57wr4wEzPJqrbZJ7vCcV9k8Lz5mAk5pQswDYXd0WH7Oy?=
+ =?us-ascii?Q?6MbOBA/BI6edYDHLr/URGmG3ioGxHrwmhJkAhBD12FbFL7RsMUIlgOwT821A?=
+ =?us-ascii?Q?XlSkTVksNqnEhlXDNvpyrvEXa1cFojgXsyQh4b+V5zQzDa4UpLCIPH88LOFk?=
+ =?us-ascii?Q?bd5vAm7H7L8DWuGX4qg8BNa2+rhGHyW0ixiFkk/tGKA4qFhx9v7wUzsmuJ/q?=
+ =?us-ascii?Q?N5ieqhxNOyOlGg13hd06aJ6xUj6LoepDy0u6D0YI8SpeKIimGGuQrkr9q4Al?=
+ =?us-ascii?Q?PIxn5/+nYOv7Qi/GXKcYoa3UFqhfXIlhH2p0Pr+1gU5zkddWGaDEQKMCfemj?=
+ =?us-ascii?Q?myq4mepEvIZBlTFsDOj0AIIkTCj4foXDY2z0hAQifS2rKm9xS+fQGROHuJK6?=
+ =?us-ascii?Q?9TwWzkG7YtxyQUjyZ9fpDGDAE3fHaY/q19IOSPkK3CitdW/Hnvn3tqo2jzSQ?=
+ =?us-ascii?Q?6zKNj5tLI8m7CmzY4ykbPygxyaMmtWX8f7OB0y1WZoefUdsfO3dmE0pS5DZs?=
+ =?us-ascii?Q?8T3q/G0eUetdaHOJYFJWXH1aM3tVb4T9MuhBIox3GRpr9iRUltANqG40/7Mu?=
+ =?us-ascii?Q?EIQc5jP/hnSKANwBBCTYOI8ZZXLGXsOUqKBHlXXXao0WuNOw0kbJgBbNvf4s?=
+ =?us-ascii?Q?Rn3+3tp8dFh0cceQZqeUaiATH/YT/bB9uAIdVEMw4swu/soKlvt58pU6Wjcd?=
+ =?us-ascii?Q?aivVxNf6VQ52omW/z3xwSr8vCiht8q3Q8IYEY0XQJIGdvr8I8eHuklCXq5Bq?=
+ =?us-ascii?Q?VwhaanV1x/B0g/K201dpX0B6DxSc2QwXVNQrVgSvsUm3oGHUUe2rAuEyMEec?=
+ =?us-ascii?Q?/3ZX42Nr72lUz0Z1RWVFDO7uCM0C1SIyO/wINV88a7N9HXnUNHlrt0dfAq0o?=
+ =?us-ascii?Q?opWf4g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FCD3088DDDA75A4B82452057458D66E7@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: LCbKMODXf20ZEQpQ8b6qJzVrHmg4hsuU
-X-Proofpoint-GUID: LCbKMODXf20ZEQpQ8b6qJzVrHmg4hsuU
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f5d21c14-6e54-4ea6-056b-08d9dba2a885
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2022 23:23:10.7017
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4aZcR2nMWtEV5LVeTpiFVQ/sT9citeKmsVIm01iDcX4w3yCUoP45WXyY1n7lP7gFSRgoVf4MvSowMHNJWLwS2w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4187
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: 0yOSZ339n3-lUm8ThLuQC6JYpQVqESDc
+X-Proofpoint-GUID: 0yOSZ339n3-lUm8ThLuQC6JYpQVqESDc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-19_12,2022-01-19_01,2021-12-02_01
 X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
- malwarescore=0 spamscore=0 priorityscore=1501 mlxscore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
  impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2110150000 definitions=main-2201190122
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201190123
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf has deprecated the ability to keep track of object list inside
-libbpf, it now requires applications to track usage multiple bpf
-objects directly. Remove usage of bpf_object__next() API  and hoist the
-tracking logic to perf.
 
-Committer note:
 
-This is tested by following the committer's note in the original commit
-"aa3abf30bb28addcf593578d37447d42e3f65fc3".
+> On Jan 19, 2022, at 3:06 PM, Christy Lee <christylee@fb.com> wrote:
+> 
 
-I ran 'perf test -v LLVM' and used it's output to generate a script for
-compiling the perf test object:
+[...]
 
---------------------------------------------------
-$ cat ~/bin/hello-ebpf
-INPUT_FILE=3D/tmp/test.c
-OUTPUT_FILE=3D/tmp/test.o
+> $ sudo -i
+> [ perf record: Woken up 1 times to write data ]
+> [ perf record: Captured and wrote 0.018 MB perf.data ]
+> perf_bpf_probe:probe_point
+> perf_bpf_probe:probe_point: type: 2, size: 128, config: 0x8e9, \
+> { sample_period, sample_freq }: 1, \
+> sample_type: IP|TID|TIME|CPU|PERIOD|RAW, read_format: ID, disabled: 1, \
+> inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, \
+> sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, \
+> bpf_event: 1
+> 
+> ---------------------------------------------------
+> 
+> Signed-off-by: Christy Lee <christylee@fb.com>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-export KBUILD_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export NR_CPUS=3D56
-export LINUX_VERSION_CODE=3D0x50c00
-export CLANG_EXEC=3D/data/users/christylee/devtools/llvm/latest/bin/clang
-export CLANG_OPTIONS=3D-xc
-export KERNEL_INC_OPTIONS=3D"KERNEL_INC_OPTIONS=3D -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h"
-export PERF_BPF_INC_OPTIONS=3D-I/usr/lib/perf/include/bpf
-export WORKING_DIR=3D/lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build
-export CLANG_SOURCE=3D-
+Acked-by: Song Liu <songliubraving@fb.com>
 
-rm -f $OUTPUT_FILE
-cat $INPUT_FILE | /data/users/christylee/devtools/llvm/latest/bin/clang \
--D__KERNEL__ -D__NR_CPUS__=3D56 -DLINUX_VERSION_CODE=3D0x50c00 -xc  \
--I/usr/lib/perf/include/bpf -nostdinc \
--isystem /usr/lib/gcc/x86_64-redhat-linux/8/include -I./arch/x86/include =
-\
--I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi \
--I./arch/x86/include/generated/uapi -I./include/uapi \
--I./include/generated/uapi -include ./include/linux/compiler-version.h \
--include ./include/linux/kconfig.h -Wno-unused-value -Wno-pointer-sign \
--working-directory /lib/modules/5.12.0-0_fbk2_3390_g7ecb4ac46d7f/build \
--c - -target bpf -O2 -o $OUTPUT_FILE
---------------------------------------------------
-
-I then wrote and compiled a script that ask to get asks to put a probe
-at a function that
-does not exists in the kernel, it errors out as expected:
-
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dnot_exist"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
-
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
-
-Probe point 'not_exist' not found.
-event syntax error: '/tmp/test.o'
-                     \___ You need to check probing points in BPF file
-
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Next I changed the attribute to something that exists in the kernel.
-As expected, it errors out
-with permission problem:
-$ cat /tmp/test.c
-__attribute__((section("probe_point=3Dkernel_execve"), used))
-int probe_point(void *ctx) {
-    return 0;
-}
-char _license[] __attribute__((section("license"), used)) =3D "GPL";
-int _version __attribute__((section("version"), used)) =3D 0x40100;
-
-$ grep kernel_execve /proc/kallsyms
-ffffffff812dc210 T kernel_execve
-
-$ cd ~/bin && ./hello-ebpf
-$ ./perf record --event /tmp/test.o sleep 1
-
-Failed to open kprobe_events: Permission denied
-event syntax error: '/tmp/test.o'
-                     \___ You need to be root
-
-(add -v to see detail)
-Run 'perf list' for a list of valid events
-
- Usage: perf record [<options>] [<command>]
-    or: perf record [<options>] -- <command> [<options>]
-
-    -e, --event <event>   event selector. use 'perf list' to list
-available events
-
----------------------------------------------------
-
-Reran as root, see that the probe point worked as intended.
-
-$ sudo -i
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.018 MB perf.data ]
-perf_bpf_probe:probe_point
-perf_bpf_probe:probe_point: type: 2, size: 128, config: 0x8e9, \
-{ sample_period, sample_freq }: 1, \
-sample_type: IP|TID|TIME|CPU|PERIOD|RAW, read_format: ID, disabled: 1, \
-inherit: 1, mmap: 1, comm: 1, enable_on_exec: 1, task: 1, \
-sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, \
-bpf_event: 1
-
----------------------------------------------------
-
-Signed-off-by: Christy Lee <christylee@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/perf/util/bpf-loader.c | 72 +++++++++++++++++++++++++++---------
- tools/perf/util/bpf-loader.h |  1 +
- 2 files changed, 55 insertions(+), 18 deletions(-)
-
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 4631cac3957f..b1822f8af2bb 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -29,9 +29,6 @@
-=20
- #include <internal/xyarray.h>
-=20
--/* temporarily disable libbpf deprecation warnings */
--#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
--
- static int libbpf_perf_print(enum libbpf_print_level level __attribute__=
-((unused)),
- 			      const char *fmt, va_list args)
- {
-@@ -49,6 +46,36 @@ struct bpf_prog_priv {
- 	int *type_mapping;
- };
-=20
-+struct bpf_perf_object {
-+	struct bpf_object *obj;
-+	struct list_head list;
-+};
-+
-+static LIST_HEAD(bpf_objects_list);
-+
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev)
-+{
-+	struct bpf_perf_object *next;
-+
-+	if (!prev)
-+		next =3D list_first_entry(&bpf_objects_list,
-+					struct bpf_perf_object, list);
-+	else
-+		next =3D list_next_entry(prev, list);
-+
-+	/* Empty list is noticed here so don't need checking on entry. */
-+	if (&next->list =3D=3D &bpf_objects_list)
-+		return NULL;
-+
-+	return next;
-+}
-+
-+#define bpf_perf_object__for_each(perf_obj, tmp, obj)                   =
-       \
-+	for ((perf_obj) =3D bpf_perf_object__next(NULL),                       =
-  \
-+	    (tmp) =3D bpf_perf_object__next(perf_obj), (obj) =3D NULL;         =
-    \
-+	     (perf_obj) !=3D NULL; (perf_obj) =3D (tmp),                       =
-    \
-+	    (tmp) =3D bpf_perf_object__next(tmp), (obj) =3D (perf_obj)->obj)
-+
- static bool libbpf_initialized;
-=20
- struct bpf_object *
-@@ -113,9 +140,10 @@ struct bpf_object *bpf__prepare_load(const char *fil=
-ename, bool source)
-=20
- void bpf__clear(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
-=20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		bpf__unprobe(obj);
- 		bpf_object__close(obj);
- 	}
-@@ -621,8 +649,12 @@ static int hook_load_preprocessor(struct bpf_program=
- *prog)
- 	if (err)
- 		return err;
-=20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 	err =3D bpf_program__set_prep(prog, priv->nr_types,
- 				    preproc_gen_prologue);
-+#pragma GCC diagnostic pop
- 	return err;
- }
-=20
-@@ -776,7 +808,11 @@ int bpf__foreach_event(struct bpf_object *obj,
- 			if (priv->need_prologue) {
- 				int type =3D priv->type_mapping[i];
-=20
-+/* temporarily disable libbpf deprecation warnings */
-+#pragma GCC diagnostic push
-+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
- 				fd =3D bpf_program__nth_fd(prog, type);
-+#pragma GCC diagnostic pop
- 			} else {
- 				fd =3D bpf_program__fd(prog);
- 			}
-@@ -1488,10 +1524,11 @@ apply_obj_config_object(struct bpf_object *obj)
-=20
- int bpf__apply_obj_config(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	int err;
-=20
--	bpf_object__for_each_safe(obj, tmp) {
-+	bpf_perf_object__for_each(perf_obj, tmp, obj) {
- 		err =3D apply_obj_config_object(obj);
- 		if (err)
- 			return err;
-@@ -1500,26 +1537,25 @@ int bpf__apply_obj_config(void)
- 	return 0;
- }
-=20
--#define bpf__for_each_map(pos, obj, objtmp)	\
--	bpf_object__for_each_safe(obj, objtmp)	\
--		bpf_object__for_each_map(pos, obj)
-+#define bpf__perf_for_each_map(perf_obj, tmp, obj, map)                 =
-       \
-+	bpf_perf_object__for_each(perf_obj, tmp, obj)                          =
-\
-+		bpf_object__for_each_map(map, obj)
-=20
--#define bpf__for_each_map_named(pos, obj, objtmp, name)	\
--	bpf__for_each_map(pos, obj, objtmp) 		\
--		if (bpf_map__name(pos) && 		\
--			(strcmp(name, 			\
--				bpf_map__name(pos)) =3D=3D 0))
-+#define bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name)     =
-       \
-+	bpf__perf_for_each_map(perf_obj, tmp, obj, map)                        =
-\
-+		if (bpf_map__name(map) && (strcmp(name, bpf_map__name(map)) =3D=3D 0))
-=20
- struct evsel *bpf__setup_output_event(struct evlist *evlist, const char =
-*name)
- {
- 	struct bpf_map_priv *tmpl_priv =3D NULL;
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
-+	struct bpf_object *obj;
- 	struct evsel *evsel =3D NULL;
- 	struct bpf_map *map;
- 	int err;
- 	bool need_init =3D false;
-=20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
-=20
- 		if (IS_ERR(priv))
-@@ -1555,7 +1591,7 @@ struct evsel *bpf__setup_output_event(struct evlist=
- *evlist, const char *name)
- 		evsel =3D evlist__last(evlist);
- 	}
-=20
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(perf_obj, tmp, obj, map, name) {
- 		struct bpf_map_priv *priv =3D bpf_map__priv(map);
-=20
- 		if (IS_ERR(priv))
-diff --git a/tools/perf/util/bpf-loader.h b/tools/perf/util/bpf-loader.h
-index 5d1c725cea29..95262b7e936f 100644
---- a/tools/perf/util/bpf-loader.h
-+++ b/tools/perf/util/bpf-loader.h
-@@ -53,6 +53,7 @@ typedef int (*bpf_prog_iter_callback_t)(const char *gro=
-up, const char *event,
-=20
- #ifdef HAVE_LIBBPF_SUPPORT
- struct bpf_object *bpf__prepare_load(const char *filename, bool source);
-+struct bpf_perf_object *bpf_perf_object__next(struct bpf_perf_object *pr=
-ev);
- int bpf__strerror_prepare_load(const char *filename, bool source,
- 			       int err, char *buf, size_t size);
-=20
---=20
-2.30.2
-
+[...]
