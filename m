@@ -2,18 +2,18 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6E549435F
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:02:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE884494376
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 00:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239205AbiASXCu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 18:02:50 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46422 "EHLO
+        id S1344303AbiASXGz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 18:06:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15472 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237855AbiASXCu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:02:50 -0500
+        by vger.kernel.org with ESMTP id S1344263AbiASXGt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 18:06:49 -0500
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs8tM030818
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:02:49 -0800
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs87L030844
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
@@ -22,13 +22,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  go9b+057KolMz9iZdieJUWJROfy+ILXC1jdU8cDBIzVOiGxn5m6XUNr0Vh0mb2/A0bHT
  M/UNGChfMtKAaK7tJV5hgxVzns6PrmbT5Pc= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpafj6jsg-4
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpafj6kd3-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:02:49 -0800
-Received: from twshared14302.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 15:06:48 -0800
+Received: from twshared10426.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 19 Jan 2022 15:02:47 -0800
+ 15.1.2308.20; Wed, 19 Jan 2022 15:06:46 -0800
 Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
         id 5DCCA945C583; Wed, 19 Jan 2022 14:59:38 -0800 (PST)
 From:   Kenny Yu <kennyyu@fb.com>
@@ -47,8 +47,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: H4g_VSGbHn4mNXLSy3dx4KfPAecXlZVA
-X-Proofpoint-GUID: H4g_VSGbHn4mNXLSy3dx4KfPAecXlZVA
+X-Proofpoint-ORIG-GUID: gj6e2qQ2ORZkOuEFnENb2Kp8ZgedARsn
+X-Proofpoint-GUID: gj6e2qQ2ORZkOuEFnENb2Kp8ZgedARsn
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-19_12,2022-01-19_01,2021-12-02_01
