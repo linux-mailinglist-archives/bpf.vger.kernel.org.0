@@ -2,131 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E114942C1
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 23:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE5D494343
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 23:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357514AbiASWDi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 17:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357511AbiASWDi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 17:03:38 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A487BC061574;
-        Wed, 19 Jan 2022 14:03:37 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id o64so3810925pjo.2;
-        Wed, 19 Jan 2022 14:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IOjldLrnWWwpwY+JkWf0ExE0MpMLGJQlI8NdiUeY93k=;
-        b=kSEl/U/1h+1dwvDi0hIgtKSfplmCWl9uNrp2KkVmOGqXTw3Qwmd1cnzjLT97tkOzj+
-         Zp2XNWdH8ZH0Ya8qZSIl4+za5S/JcIWOBvnThLOUlDkR0vZ+DSJmM4vVETBIO5uE1gB5
-         WemdUYctYV3UseKEp7Tur2cSdm6qMJR/ENUd02x3NghpHewgIS3fW7Ng3RgUzVkT6UiL
-         qHzack50wKSJWqqgHsznMtLdSJ4T9hRFlO+O4IPmfUdFN3ys1pUZR+7b8bMX7WWxFbwc
-         UpddAjlDPLcoO69i7cj091TwgLVJ7Eur5UCeH6ZAeXeWQheaSUj0OrTxObGS9/eEYCBZ
-         FxhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IOjldLrnWWwpwY+JkWf0ExE0MpMLGJQlI8NdiUeY93k=;
-        b=JVXz3FhZZ/FH39AZJVyI+ShTjejaQ1tygsSP6jaBuRpzHYmjdWbei8BNi37pCOFIhf
-         VIlJcJVGel3cxUq0HfiSQUNHBhqRenMJ0t9NGgYbLubzjTvw3TDxEPMYqrRNsgOo+ewq
-         HB0UU7HhgPzAzBcbkKjJ+JSRbL8g9jRmejtFa08Kzn28RnBg4Af6FaIAWB5zdqUQIKmW
-         cmB7PxpywPhEYmGhaGkiZCuoAw66bC2ZyzgfvMuPUn8LnqSCnYHnv18f9nPHm1M9BnR8
-         pGUuYDB+9I14QdMSspTcq31J353Ov7yvBSkP3bFOmwkxQv/EhgvwoHopzUTNDIO2EpPD
-         b65A==
-X-Gm-Message-State: AOAM531nk0w3rns3P2/+4DokcJSWQJDbMPGfVEIjXppbdXM7X+AUuXFs
-        XwjGGdwOgo8g+/vEQ9vt5tzLFf+8r3ILsI1vAPU=
-X-Google-Smtp-Source: ABdhPJzV1oAx/xoKU++dv1R8kUyf32CYmSuCtq2M5RRSdynsPZSmD55U0LG7xKsRNsiyyG6JEjOIsGEiHHaAgYSi7xw=
-X-Received: by 2002:a17:902:860c:b0:149:1017:25f0 with SMTP id
- f12-20020a170902860c00b00149101725f0mr34284326plo.116.1642629817114; Wed, 19
- Jan 2022 14:03:37 -0800 (PST)
+        id S1357609AbiASWv1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 17:51:27 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:31028 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229716AbiASWv0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 17:51:26 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JIs85d030881
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 14:51:25 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=ejyZFdyQ3OKGeyUtYkIB3U3AnhSKEXqTOV6qYnJdmWU=;
+ b=HrS5Auy6GfEyDeTKoUrFu3+scqBfGjvDNHhRzegjks0zNSYHI6VXD6adRQYJK6x8iiV8
+ 0y6bXfDlK4tU4aNzI+pfRJET4OQQeZGQGO2QVmADXtOeh35rPRzItZihUUyRl/plw56U
+ d6Mm3mk+H4KgL3W2SHdFulp8S/MAWu/1J6I= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpafj6gww-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 14:51:25 -0800
+Received: from twshared10140.39.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 14:51:18 -0800
+Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
+        id 1EEA1945BA44; Wed, 19 Jan 2022 14:51:12 -0800 (PST)
+From:   Kenny Yu <kennyyu@fb.com>
+To:     <alexei.starovoitov@gmail.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <kennyyu@fb.com>, <phoenix1987@gmail.com>,
+        <yhs@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/3] bpf: Add bpf_access_process_vm() helper
+Date:   Wed, 19 Jan 2022 14:51:10 -0800
+Message-ID: <20220119225110.2026595-1-kennyyu@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAADnVQKDfacNQD8WCp-mmQeyWd6Y09_b41L1=E3b3A6+GCyH+w@mail.gmail.com>
+References: <CAADnVQKDfacNQD8WCp-mmQeyWd6Y09_b41L1=E3b3A6+GCyH+w@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220113070245.791577-1-imagedong@tencent.com>
-In-Reply-To: <20220113070245.791577-1-imagedong@tencent.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 19 Jan 2022 14:03:26 -0800
-Message-ID: <CAADnVQKNCqUzPJAjSHMFr-Ewwtv5Cs3UCQpthaKDTd+YNRWqqg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct bpf_sock'
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        mengensun@tencent.com, flyingpeng@tencent.com,
-        mungerjiang@tencent.com, Menglong Dong <imagedong@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: fL7G0YGVuzl7UkMABSUqddCKzefSMBpk
+X-Proofpoint-GUID: fL7G0YGVuzl7UkMABSUqddCKzefSMBpk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-19_12,2022-01-19_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 suspectscore=0 mlxscore=0 phishscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 mlxlogscore=906 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201190121
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 12, 2022 at 11:03 PM <menglong8.dong@gmail.com> wrote:
+> > +BPF_CALL_5(bpf_access_process_vm, void *, dst, u32, size,
+> > +          const void __user *, user_ptr, struct task_struct *, tsk,
+> > +          u32, flags)
+> > +{
+> > +       /* flags is not used yet */
+> > +       return access_process_vm(tsk, (unsigned long)user_ptr, dst, s=
+ize, 0);
+> > +}
 >
-> From: Menglong Dong <imagedong@tencent.com>
->
-> The description of 'dst_port' in 'struct bpf_sock' is not accurated.
-> In fact, 'dst_port' is not in network byte order, it is 'partly' in
-> network byte order.
->
-> We can see it in bpf_sock_convert_ctx_access():
->
-> > case offsetof(struct bpf_sock, dst_port):
-> >       *insn++ = BPF_LDX_MEM(
-> >               BPF_FIELD_SIZEOF(struct sock_common, skc_dport),
-> >               si->dst_reg, si->src_reg,
-> >               bpf_target_off(struct sock_common, skc_dport,
-> >                              sizeof_field(struct sock_common,
-> >                                           skc_dport),
-> >                              target_size));
->
-> It simply passes 'sock_common->skc_dport' to 'bpf_sock->dst_port',
-> which makes that the low 16-bits of 'dst_port' is equal to 'skc_port'
-> and is in network byte order, but the high 16-bites of 'dst_port' is
-> 0. And the actual port is 'bpf_ntohs((__u16)dst_port)', and
-> 'bpf_ntohl(dst_port)' is totally not the right port.
->
-> This is different form 'remote_port' in 'struct bpf_sock_ops' or
-> 'struct __sk_buff':
->
-> > case offsetof(struct __sk_buff, remote_port):
-> >       BUILD_BUG_ON(sizeof_field(struct sock_common, skc_dport) != 2);
-> >
-> >       *insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
-> >                             si->dst_reg, si->src_reg,
-> >                                     offsetof(struct sk_buff, sk));
-> >       *insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->dst_reg,
-> >                             bpf_target_off(struct sock_common,
-> >                                            skc_dport,
-> >                                            2, target_size));
-> > #ifndef __BIG_ENDIAN_BITFIELD
-> >       *insn++ = BPF_ALU32_IMM(BPF_LSH, si->dst_reg, 16);
-> > #endif
->
-> We can see that it will left move 16-bits in little endian, which makes
-> the whole 'remote_port' is in network byte order, and the actual port
-> is bpf_ntohl(remote_port).
->
-> Note this in the document of 'dst_port'. ( Maybe this should be unified
-> in the code? )
+> Though the 'flags' argument is unused the helper has to check
+> that it's zero and return -EINVAL otherwise.
+> If we don't do this we won't be able to change the behavior later
+> due to backward compatibility.
 
-Looks like
- __sk_buff->remote_port
- bpf_sock_ops->remote_port
- sk_msg_md->remote_port
-are doing the right thing,
-but bpf_sock->dst_port is not correct?
+Thanks for the feedback! Will fix.
 
-I think it's better to fix it,
-but probably need to consolidate it with
-convert_ctx_accesses() that deals with narrow access.
-I suspect reading u8 from three flavors of 'remote_port'
-won't be correct.
-'dst_port' works with a narrow load, but gets endianness wrong.
+Kenny
