@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6108C493FFE
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB07D49400B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:37:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344714AbiASSeE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 13:34:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
+        id S1356838AbiASShu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 13:37:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245537AbiASSeD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 13:34:03 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84CD3C061574
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:34:03 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id r204so220697iod.10
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:34:03 -0800 (PST)
+        with ESMTP id S1356837AbiASSht (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jan 2022 13:37:49 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E20C06161C
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:37:49 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id f24so4053355ioc.0
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:37:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Rt7sAjx7RcX2GmG3D3v8dmsUM0G63nnz+k4FBQChu+U=;
-        b=Qz1S5cKnJAWLyM+kDOAw8ur9k2cUYR/kbW+qcMgswBVkpiHleyLqNHoVxDMqv/IJjY
-         293neKBDH82YlBTgnPCAysrkRpXb5dv82PqhlCx9SEgrtsCh013QVUhq7g1wovf9Pol6
-         eKx7vFflQHTdLNma4sPut4v8puP7Z7ukD7m2PsZ+M+Z6NVqK1bzIEwFUKu6qqtHCGe8D
-         ngSEu9JVGrCk2+Kr9uBrXIxYBRUNA6wPMRdpYLOS4wClQuYD6Eqik1YxULObGDXwn6bE
-         5xXgykaqSYeonrj2ovdFabrV3Mml0QH+FhTOIk1IYkG0DRTxrqce+h2fV6M3+ImPCnno
-         DBiw==
+        bh=23TLRPFaV8xWlV4PxZ4KJ/AWU/iC3g3ih5HC/zSBPPk=;
+        b=h82ElW5mjZiTyRNw/KyiivBgoiwZ4kL2nm+4jgK+Tk8yPFv7eBDlt3HKbAIq1UuxVr
+         WpsGSZXrGbYFuvdLIOBygDJMsY17D46D3MvS/rQxzxtKTVjMysLjzQROi8En+VGjr+qd
+         xdALGbW0+nJe8sbRls0n0Z4l22aooKqxwpRBITDHxT6mUHNFF8IStVSqwCn80sNi7YJt
+         pNfGo2IfISbgNUvbAP9zAR6+Rq5hHi/MZXB7PeoWc9qJ2A2cfsGiQHpAUigcHuKgZRgC
+         fzqb2hVuMx+mWXS5hYW9dswgBNJt1qQzWctb6N4ZcKav24UL0k/DqNrDbPWfeOlYmc0g
+         vRsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rt7sAjx7RcX2GmG3D3v8dmsUM0G63nnz+k4FBQChu+U=;
-        b=v2OgKYt65y4RbEjLUf3EllbOSYg+rk3NsugCQZmjSczwPOENhkjOCFa9/MS6FEOBcO
-         Rh3YmFfDMP14FwgRK/EOUBC98gBepL7Vp51s4An0IKuuou32QQfgD9z+WiWP9Ndlpu37
-         6RNY/n2rt+O4bJ6M8V4aT2OF0gby2aXe71IhAkAGxOP+Vcfkvgl5MXqn3LM1G5UGhZYD
-         ARsUIlEPiLfU9rCOjjX01dCxRlsIk7JmHNi9YB9vnbZlZqWNAvHeGigAvh1hrK8Iv24H
-         WHl4da1EhCar7saRpgy1u98Daoj5RSfkrKrWZ+PngXnFppjdi3ADP5NLNhqex2n/u0iq
-         8HsA==
-X-Gm-Message-State: AOAM533maB2SA2rFnbQF+k6ivTB0zck0mRwTz89zxWpcnp6TIyPOxy2B
-        W/1d7M1awo2B7tNdlHQIFywbUEh6cF23npMlbo0=
-X-Google-Smtp-Source: ABdhPJz85OwM+2nDPdm0CylW3P+nWFXTAJ+fbuzmPLc7HxVJw2pMz0cVWyhH900lNscjPLmnWBFPtqFpkCYoZu6HTQg=
-X-Received: by 2002:a05:6638:2a7:: with SMTP id d7mr14669860jaq.93.1642617242947;
- Wed, 19 Jan 2022 10:34:02 -0800 (PST)
+        bh=23TLRPFaV8xWlV4PxZ4KJ/AWU/iC3g3ih5HC/zSBPPk=;
+        b=k8g7c8YwHp6r9xI4huEO/eFsNiMLrV3q29jc98wpuON/adF/6vRtgHSvhN+cHyjatP
+         YTQyvPoGd7XhyuiF+95Z1dm5O6bi5lsUCDDUChoZvChO/gQZt0Q9twUbGy09CZUPVAY/
+         K5e8RLHrLw77Kr+SFhinmghu8qmLfLCBkd8oZ0q1iYoCs473AG1IiHcyR2LxbyoGa5Kn
+         VKDwe/0uII2wWsltUnbya7UE0ewHZJvQOCtP5xFKfPpjmRyNwFygbktwVJqzBUg1Ipwt
+         aeLXxy6to5K9yEpNMLVmQ8cg9suUhflpPhq0iSFLPxJP5eVraymZyAUYLaJaKOtZ0QIZ
+         SOcw==
+X-Gm-Message-State: AOAM5308ye9l2PFqfVHvmoxHy7ThOwkmAPktccLL/Y6bOT7DqARE/CMj
+        PehOeb8FjwIvUIEXIwMHT+ijZMqWopIpWoRL4s973icyyXk=
+X-Google-Smtp-Source: ABdhPJxE4qid4cIGHDoogXkEjzhfzUkCVhiZf5wAelucv+5iOQVA3b4sq1KnqTcN1cK9/l0kKn77LWZyjfHgWMkdIn0=
+X-Received: by 2002:a05:6638:410a:: with SMTP id ay10mr15341062jab.237.1642617469122;
+ Wed, 19 Jan 2022 10:37:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20220119131209.36092-1-Kenta.Tada@sony.com> <20220119131209.36092-3-Kenta.Tada@sony.com>
-In-Reply-To: <20220119131209.36092-3-Kenta.Tada@sony.com>
+References: <20220119131209.36092-1-Kenta.Tada@sony.com> <20220119131209.36092-4-Kenta.Tada@sony.com>
+In-Reply-To: <20220119131209.36092-4-Kenta.Tada@sony.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 19 Jan 2022 10:33:51 -0800
-Message-ID: <CAEf4Bza9A+iC49bZRiSPWNuy+=qG3sc=_XvKem4Fj2zZF8merg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] libbpf: Fix the incorrect register read for
- syscalls on x86_64
+Date:   Wed, 19 Jan 2022 10:37:38 -0800
+Message-ID: <CAEf4BzYiokKees3qSN6ObG-8cd_Ovdnf+485nz3OTL_qu=tX6A@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] libbpf: Add a test to confirm PT_REGS_PARM4_SYSCALL
 To:     Kenta Tada <Kenta.Tada@sony.com>
 Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -64,89 +63,145 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 5:13 AM Kenta Tada <Kenta.Tada@sony.com> wrote:
+On Wed, Jan 19, 2022 at 5:14 AM Kenta Tada <Kenta.Tada@sony.com> wrote:
 >
-> Currently, rcx is read as the fourth parameter of syscall on x86_64.
-> But x86_64 Linux System Call convention uses r10 actually.
-> This commit adds the wrapper for users who want to access to
-> syscall params to analyze the user space.
+> Add a selftest to verify the behavior of PT_REGS_xxx.
 >
 > Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
 > ---
->  tools/lib/bpf/bpf_tracing.h | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
+>  .../bpf/prog_tests/test_bpf_syscall_macro.c   | 49 ++++++++++++++++++
+>  .../selftests/bpf/progs/bpf_syscall_macro.c   | 51 +++++++++++++++++++
+>  2 files changed, 100 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
 >
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 90f56b0f585f..81673a24973e 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -70,6 +70,7 @@
->  #define __PT_PARM2_REG si
->  #define __PT_PARM3_REG dx
->  #define __PT_PARM4_REG cx
-> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
->  #define __PT_PARM5_REG r8
->  #define __PT_RET_REG sp
->  #define __PT_FP_REG bp
-> @@ -99,6 +100,7 @@
->  #define __PT_PARM2_REG rsi
->  #define __PT_PARM3_REG rdx
->  #define __PT_PARM4_REG rcx
-> +#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
->  #define __PT_PARM5_REG r8
->  #define __PT_RET_REG rsp
->  #define __PT_FP_REG rbp
-> @@ -263,6 +265,26 @@ struct pt_regs;
->
->  #endif
->
-> +#define PT_REGS_PARM1_SYSCALL(x) PT_REGS_PARM1(x)
-> +#define PT_REGS_PARM2_SYSCALL(x) PT_REGS_PARM2(x)
-> +#define PT_REGS_PARM3_SYSCALL(x) PT_REGS_PARM3(x)
-> +#ifdef __PT_PARM4_REG_SYSCALL
-> +#define PT_REGS_PARM4_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
-> +#else /* __PT_PARM4_REG_SYSCALL */
-> +#define PT_REGS_PARM4_SYSCALL(x) PT_REGS_PARM4(x)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+> new file mode 100644
+> index 000000000000..2f725393195b
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright 2022 Sony Group Corporation */
+> +#include <sys/prctl.h>
+> +#include <test_progs.h>
+> +#include "bpf_syscall_macro.skel.h"
+> +
+> +//void serial_bpf_syscall_macro(void)
+
+leftover
+
+> +void test_bpf_syscall_macro(void)
+> +{
+> +       struct bpf_syscall_macro *skel = NULL;
+> +       int err;
+> +       int exp_arg1 = 1001;
+> +       unsigned long exp_arg2 = 12;
+> +       unsigned long exp_arg3 = 13;
+> +       unsigned long exp_arg4 = 14;
+> +       unsigned long exp_arg5 = 15;
+> +
+> +       /* check whether it can open program */
+> +       skel = bpf_syscall_macro__open();
+> +       if (!ASSERT_OK_PTR(skel, "bpf_syscall_macro__open"))
+> +               return;
+> +
+> +       skel->rodata->filter_pid = getpid();
+> +
+> +       /* check whether it can load program */
+> +       err = bpf_syscall_macro__load(skel);
+> +       if (!ASSERT_OK(err, "bpf_syscall_macro__load"))
+> +               goto cleanup;
+> +
+> +       /* check whether it can attach kprobe */
+> +       err = bpf_syscall_macro__attach(skel);
+> +       if (!ASSERT_OK(err, "bpf_syscall_macro__attach"))
+> +               goto cleanup;
+> +
+> +       /* check whether args of syscall are copied correctly */
+> +       prctl(exp_arg1, exp_arg2, exp_arg3, exp_arg4, exp_arg5);
+> +       ASSERT_EQ(skel->bss->arg1, exp_arg1, "syscall_arg1");
+> +       ASSERT_EQ(skel->bss->arg2, exp_arg2, "syscall_arg2");
+> +       ASSERT_EQ(skel->bss->arg3, exp_arg3, "syscall_arg3");
+> +       /* it cannot copy arg4 when uses PT_REGS_PARM4 on x86_64 */
+> +#ifdef __x86_64__
+> +       ASSERT_NEQ(skel->bss->arg4_cx, exp_arg4, "syscall_arg4_from_cx");
 > +#endif
-> +#define PT_REGS_PARM5_SYSCALL(x) PT_REGS_PARM5(x)
-> +
-> +#define PT_REGS_PARM1_CORE_SYSCALL(x) PT_REGS_PARM1_CORE(x)
-> +#define PT_REGS_PARM2_CORE_SYSCALL(x) PT_REGS_PARM2_CORE(x)
-> +#define PT_REGS_PARM3_CORE_SYSCALL(x) PT_REGS_PARM3_CORE(x)
-> +#ifdef __PT_PARM4_REG_SYSCALL
-> +#define PT_REGS_PARM4_CORE_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
 
-did you check PT_REGS_PARM4_CORE() definition? This should be
+else ASSERT_EQ(arg4_cx and exp_arg4) ?
 
-BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG_SYSCALL)
+> +       ASSERT_EQ(skel->bss->arg4, exp_arg4, "syscall_arg4");
+> +       ASSERT_EQ(skel->bss->arg5, exp_arg5, "syscall_arg5");
+> +
+> +cleanup:
+> +       bpf_syscall_macro__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> new file mode 100644
+> index 000000000000..5a7063de27c3
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright 2022 Sony Group Corporation */
+> +#include <linux/bpf.h>
+> +#include <linux/ptrace.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
 
-> +#else /* __PT_PARM4_REG_SYSCALL */
-> +#define PT_REGS_PARM4_CORE_SYSCALL(x) PT_REGS_PARM4_CORE(x)
-> +#endif
-> +#define PT_REGS_PARM5_CORE_SYSCALL(x) PT_REGS_PARM5_CORE(x)
+Use #include <vmlinux.h> instead, please
+
 > +
->  #else /* defined(bpf_target_defined) */
->
->  #define PT_REGS_PARM1(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> @@ -290,6 +312,18 @@ struct pt_regs;
->  #define BPF_KPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
->  #define BPF_KRETPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
->
-> +#define PT_REGS_PARM1_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM2_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM3_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM4_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM5_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "bpf_misc.h"
 > +
-> +#define PT_REGS_PARM1_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM2_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM3_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM4_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-> +#define PT_REGS_PARM5_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
+> +int arg1 = 0;
+> +unsigned long arg2 = 0;
+> +unsigned long arg3 = 0;
+> +unsigned long arg4_cx = 0;
+> +unsigned long arg4 = 0;
+> +unsigned long arg5 = 0;
 > +
->  #endif /* defined(bpf_target_defined) */
->
->  #ifndef ___bpf_concat
+> +const volatile pid_t filter_pid = 0;
+> +
+> +SEC("kprobe/" SYS_PREFIX "sys_prctl")
+> +int BPF_KPROBE(handle_sys_prctl)
+> +{
+> +       struct pt_regs *real_regs;
+> +       int orig_arg1;
+> +       unsigned long orig_arg2, orig_arg3, orig_arg4_cx, orig_arg4, orig_arg5;
+> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
+> +
+> +       if (pid != filter_pid)
+> +               return 0;
+> +
+> +       real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+> +       bpf_probe_read_kernel(&orig_arg1, sizeof(orig_arg1), &PT_REGS_PARM1_SYSCALL(real_regs));
+
+orig_arg1 = PT_REGS_PARM1_CORE_SYSCALL(real_regs);
+
+and same for others (the whole point of _CORE_SYSCALL macros!)
+
+
+> +       bpf_probe_read_kernel(&orig_arg2, sizeof(orig_arg2), &PT_REGS_PARM2_SYSCALL(real_regs));
+> +       bpf_probe_read_kernel(&orig_arg3, sizeof(orig_arg3), &PT_REGS_PARM3_SYSCALL(real_regs));
+> +       bpf_probe_read_kernel(&orig_arg4_cx, sizeof(orig_arg4_cx), &PT_REGS_PARM4(real_regs));
+> +       bpf_probe_read_kernel(&orig_arg4, sizeof(orig_arg4), &PT_REGS_PARM4_SYSCALL(real_regs));
+> +       bpf_probe_read_kernel(&orig_arg5, sizeof(orig_arg5), &PT_REGS_PARM5_SYSCALL(real_regs));
+> +
+> +       /* copy all actual args and the wrong arg4 on x86_64 */
+> +       arg1 = orig_arg1;
+> +       arg2 = orig_arg2;
+> +       arg3 = orig_arg3;
+> +       arg4_cx = orig_arg4_cx;
+> +       arg4 = orig_arg4;
+> +       arg5 = orig_arg5;
+> +
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > --
 > 2.32.0
 >
