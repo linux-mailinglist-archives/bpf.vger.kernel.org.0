@@ -2,94 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24934493DE1
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 16:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34384493EA4
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 17:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345752AbiASP7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 10:59:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235935AbiASP7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 10:59:54 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4A6C061574;
-        Wed, 19 Jan 2022 07:59:53 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id v123so5959884wme.2;
-        Wed, 19 Jan 2022 07:59:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+vOb5yHTUTgHDDJX2OrXL/1O2I+8ETIcPsDexqsYa1Y=;
-        b=fYraz93MX4Xg4NtOpfPQ59K9zOTiqFaT0QfJNRUzZde4KwXyKNXQvByB6IiFd7oaIl
-         hV5QVjpdZBq6KWaOnHRlZui/ponpmAj49JbWd1Q7uGx/4H9BsrNEyngiok+2pDjp7kPz
-         A7+je10EtD2nsoGw0WQ7BxkzTCWskyvqecMmZbKAw9Z3bHd+uh0oDfxzDX1BKyFir8Da
-         YqgQ3KvlO0VJwTsi7XrNWKoSU18rZGG2hOQ+AqqHiLZrl5eHZG6uTQC7fYzlOCCe4unT
-         oH+djtM/VcPzktfiXU8ICsIsHRWVl2iRHUlW8cvM7sr0bXAgJZMr40qeyZsjqG0rWbRe
-         oJZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+vOb5yHTUTgHDDJX2OrXL/1O2I+8ETIcPsDexqsYa1Y=;
-        b=eZ0e7c4lkujIK0pbYrDB7t8WdpPDJcnZ+OUJagCLVg60fQLYUnOkiyhWh7zaobEDak
-         XjjA4069K5Nn5nYg8bjkbVDSdabjNTFYYdwaI2CEyMvo1N2uMTQKQtBrRqprLWuU+MCf
-         brlrrwSSRBuyyZmzCzWpyn2ifhyvaMJOFRgv3mIcoPz24YZdkyzrdIAsptTM5v+REeCU
-         QQ8o93tylFW6S7vHvwbRSNdayTgl97RdqsdDvj2rc/OC6l02O6L/6cJ4L10GDvrx0O/8
-         ThkM9vT/8ZaHcuIIz61S+t4ZcaVpKVRWX+IXdT5F5Ph1yw0l3WTHtzTnT+nELu2QPkvG
-         0sXQ==
-X-Gm-Message-State: AOAM533xjBP3BXkWFDE4350gkmUlpRiPpJXk7TbzQ8mqoRlixjk8Ui6G
-        RzKbpRlcsqjWgsvYCUXRSRoOJvP7oA16706r8wQ=
-X-Google-Smtp-Source: ABdhPJxllMHmNdo+PnzLV4B/leNYKBD0RcLgdBJ9d7U41dzillp07VzmjbjOGDrtTBkD7GmO0emmpFkyrOxTSsLuAH0=
-X-Received: by 2002:a1c:f70d:: with SMTP id v13mr4222288wmh.133.1642607992553;
- Wed, 19 Jan 2022 07:59:52 -0800 (PST)
+        id S1356238AbiASQ4n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 11:56:43 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9958 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1352790AbiASQ4l (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 11:56:41 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20JG2oMU024102
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 08:56:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=4WRI7L68uxXbCgF9lrCU93IcQAFn9Mxei5UBd28e1gw=;
+ b=X2HVodzKBzdddl6JUAvdSt3ZUGXxFRqZJA/FEWP+2PB8NrOluX1St3gvOnIAIMRRfRA6
+ ULyxh662V6mdV+njLk7XaPOEED9kjikdjxDyxVE3rvol+BcCmSBkXW+VYl/yby8huyr7
+ YItlK1SNCLZQ4vsIuYxcUbj+5Ykhn95HwEU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dp89ycrfn-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 08:56:40 -0800
+Received: from twshared21922.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 08:56:39 -0800
+Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
+        id A1889941E702; Wed, 19 Jan 2022 08:56:27 -0800 (PST)
+From:   Kenny Yu <kennyyu@fb.com>
+To:     <phoenix1987@gmail.com>
+CC:     <alexei.starovoitov@gmail.com>, <andrii@kernel.org>,
+        <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <kennyyu@fb.com>, <yhs@fb.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: Add test for sleepable bpf iterator programs
+Date:   Wed, 19 Jan 2022 08:56:10 -0800
+Message-ID: <20220119165610.3966158-1-kennyyu@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAGnuNNv0TVQ3ZSYjJgJh1Dxasc9pX-QTwVApYyW7Q0xEy0Bgng@mail.gmail.com>
+References: <CAGnuNNv0TVQ3ZSYjJgJh1Dxasc9pX-QTwVApYyW7Q0xEy0Bgng@mail.gmail.com>
 MIME-Version: 1.0
-References: <20220110165208.1826-1-jszhang@kernel.org> <Ydxljv2Q4YNDYRTx@xhacker>
- <CAJ+HfNiS7Ss0FJowPUrrKvuC+1Kn9gXb=VqNoqh3eWJDu=m4Mg@mail.gmail.com> <1b104397-8cb7-c5c2-92cb-11ce56c9a8de@iogearbox.net>
-In-Reply-To: <1b104397-8cb7-c5c2-92cb-11ce56c9a8de@iogearbox.net>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Wed, 19 Jan 2022 16:59:40 +0100
-Message-ID: <CAJ+HfNikH3OMH_b3=uvfSqAJZkjJabn9yipbYdnTxsh_=VDHOQ@mail.gmail.com>
-Subject: Re: [PATCH riscv-next] riscv: bpf: Fix eBPF's exception tables
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Jisheng Zhang <jszhang@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>, palmer@rivosinc.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Tong Tiangen <tongtiangen@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: RFkhN25VxUKpfuJj5rGbvjs8L7qfKTX_
+X-Proofpoint-GUID: RFkhN25VxUKpfuJj5rGbvjs8L7qfKTX_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-19_10,2022-01-19_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0
+ bulkscore=0 phishscore=0 lowpriorityscore=0 mlxlogscore=999
+ impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201190096
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 19 Jan 2022 at 16:42, Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-[...]
-> > AFAIK, Jisheng's extable work is still in Palmer's for-next tree.
+> > But I also wanted to point out that this helper is logically in the
+> > same family as bpf_probe_read_kernel/user and bpf_copy_from_user, etc=
+,
+> > where we have consistent pattern that first two arguments specify
+> > destination buffer (so buf + len) and the remaining ones specify
+> > source (in probe_read it's just an address, here it's tsk_addr). So I
+> > wonder if it would be less surprising and more consistent to reorder
+> > and have:
 > >
-> > Daniel/Alexei: This eBPF must follow commit 1f77ed9422cb ("riscv:
-> > switch to relative extable and other improvements"), which is in
-> > Palmer's tree. It cannot go via bpf-next.
+> > buf, len, tsk, addr, flags
+> >
+> > ?
+> >
 >
-> Thanks for letting us know, then lets route this fix via Palmer. Maybe he=
- could
-> also add Fixes tags when applying, so stable can pick it up later on.
->
+> I would personally find it more intuitive to have process information
+> passed as either the first argument (like process_vm_readv does), or
+> as "last", just before the flags (as extra information required w.r.t.
+> to local versions, e.g. bpf_copy_from_user).
 
-It shouldn't have a fixes-tag, since it's a new feature for RV. This
-was adapting to that new feature. It hasn't made it upstream yet (I
-hope!).
+I think that makes sense. I'll combine both Andrii's and Gabriele's sugge=
+stions
+and keep the signature as close to the existing helpers
+(e.g., bpf_probe_read_user) and add the additional arguments at the end.
+I'll proceed with this signature:
 
+  bpf_access_process_vm(void *dst,
+  			u32 size,
+			const void *unsafe_ptr,
+			struct task_struct *tsk,
+			unsigned int flags);
 
-Cheers,
-Bj=C3=B6rn
+Thanks for all the suggestions!
+
+Kenny
