@@ -2,164 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D61B49402C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F6A494035
+	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 19:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356907AbiASStw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 13:49:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48962 "EHLO
+        id S1356923AbiASSw6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 13:52:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356903AbiASStt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 13:49:49 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD46C061574;
-        Wed, 19 Jan 2022 10:49:48 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id z19so4055474ioj.1;
-        Wed, 19 Jan 2022 10:49:48 -0800 (PST)
+        with ESMTP id S1356925AbiASSw5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 19 Jan 2022 13:52:57 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E19C06161C
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:52:56 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id b1so3042624ilj.2
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 10:52:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nnuoU1KSe1lPzn+swqfrL4u+55EECpEPFhS5y1Mxsfk=;
-        b=hVhm31jvNS5wbREEluftIXgbqwXvIohRdyCpSa3EM9DRnsOK9TpSEpDGIXwzHHyTJv
-         /09mGm7RwutOmCCO0l63Lez0ehcH8Eo7jkJo29CaEFOZXEFG5GBwUoylHv1v7nSdw2wh
-         6tw9lYCjELz0NwOti7hYRUix5EwufXhk9rtYHxvF68M6Sk5qfMALLMlaec6VALG2wJVq
-         BU8AOcyZ5M3nxcM2ddse8hidhVflS/SWLC8Da2e9LxKOIdjR5wEXilqt4GivPi9FamKj
-         Onbz97KUaY8gNBEwEin8Y69Dg9rI80LxRMQ2ozeST+Sr4XiiKYYTgMUqsHwErReAqIl1
-         CaSw==
+        bh=MvXD0croW9FPzzfWnZ+OnDNcKGUHtGRkFf7L0x8WUM4=;
+        b=kTmcEa4GDPAhtV1sVU0CH8rHH91Atc28nJAkxofjtvMuPJFpxKVSfb7e38mhGP/r3b
+         tXHpgBtn58wEy9WE+yUQksEfJzTiteb4hFGDbjKS9c7NdTVCYVRsexk049+6TsqhIqWX
+         UYz7+UcUQNvR0If3xOXCrbp2alxlgyzLoEARPqZtZRupTRcwNNfcs7owUSwb5N8+YVIJ
+         awLRO/LzkzuNWLri3bqKOaR/V8WtnyEKqzX7tRtEAr/y7nv2rbhny4XbBCJ0TDakmGca
+         kWLvc2MOayr3hq2HqEJzLR8S10vNJZ76jfDGR381ps5Zkmc/B24UPub5feu3ui6OcpeS
+         G4dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nnuoU1KSe1lPzn+swqfrL4u+55EECpEPFhS5y1Mxsfk=;
-        b=wzDsvSCzw+B3eUW5BpKwb6ZeaTAj6jQ24L7K21IDM1V6VX3cHShzMOuPoKHBUIt4js
-         1J0ngjvUAMa8kuIfamMmHkd7nR3EaxFTCmPDpejQoDlOdiSXotS5WyWpltCJmnvZBsWB
-         R7Zf+PNSpGFJjeO5VEo3ZVs+fgswYxYFMMo5mj14cM1JjH4vQiEGf4UDwJAKWBVKXMe+
-         5pQlNJG/6MYrCHQH9z/EBQsZrSnRl+FxLoL5vD/s87QWdtd8nApfP8Y+NZVeAlH5E4Dg
-         j4mDpiCpdbemGxrTv0Y+U3GGvm9YKWo6mdM+V5Ff4ZzZOqU+3tPv+6ljdwGqwpHWPivs
-         4gOg==
-X-Gm-Message-State: AOAM531/yVYKPMAFNw0ZFk3qmpg4tHdZgOgvC4DI3rji0xKYQDZ1bcuf
-        9DbGHEqJuoxNkV+XbCQ5V5dmtaxGAOqAgf0Ls7I=
-X-Google-Smtp-Source: ABdhPJzaMUfYG1ePvmrS2kcmYD9SEmK+HrpPRpPvfM5v7/7VWMNLgfZrwrtR/LhXQHGuRyOk48BEoK82DkbfzOwcTK8=
-X-Received: by 2002:a02:bb8d:: with SMTP id g13mr15231052jan.103.1642618187947;
- Wed, 19 Jan 2022 10:49:47 -0800 (PST)
+        bh=MvXD0croW9FPzzfWnZ+OnDNcKGUHtGRkFf7L0x8WUM4=;
+        b=QNwai0FADhHYXl2V9XeEHWGm8HRIOkIgbPQF0HkkmGZXKexHPDyhXEKV6+hT9/ME4Q
+         RPkzJWZ+LxnjAnNPAIGjnNOvkgni2WYNwzqyFui1OjD8BhnFa3wJWTYQi1WI+e+r189f
+         ZaKDf2FUqJocrvsQAJYdOYzlVN/BpOCdQQ9PBOE0VKh2zDxFisrADjbEOE0Wol2/hxlR
+         zI1Caatg9e7D+zWGvI4nIMAuGcnT296ps5HuY8t3gMHxJ0LxE+epamk0JzRFisH7tQ2Y
+         xtp+3x0HiDUXyHLBB2ikMJMHGJVQsN0ecaXY5V63igJzYsCQqVrLRS2xLrZCED4G1cmO
+         YH0w==
+X-Gm-Message-State: AOAM5315uQre7LqbfqcbXPS2sFEuEJh9sYY8QiYhzYc8D8Ae/bwy7P7c
+        JrCS6ViMs1I1ry/5xCB5XXn/Pfu4MOH5ZhzTqs+8sYVt
+X-Google-Smtp-Source: ABdhPJwJ+NxG1k9jRyQe5J19xlvccTp7ZTJEF/DGtPB4KviZWgZDWsmTZqY7F9d4qx65AQOAPhehjLuPX6WCiXePJqU=
+X-Received: by 2002:a05:6e02:1c01:: with SMTP id l1mr1540888ilh.239.1642618375867;
+ Wed, 19 Jan 2022 10:52:55 -0800 (PST)
 MIME-Version: 1.0
-References: <1642004329-23514-1-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzYRLxzVHw00DUphqqdv2m_AU7Mu=S0JF0PZYN40hBvHgA@mail.gmail.com>
- <alpine.LRH.2.23.451.2201131025380.13423@localhost> <CAEf4BzaX70Ze2mdLuQvw8kNqCt7fQAOkO=Akm=T9Pjxf4eDpLA@mail.gmail.com>
- <alpine.LRH.2.23.451.2201191341380.10931@localhost>
-In-Reply-To: <alpine.LRH.2.23.451.2201191341380.10931@localhost>
+References: <cover.1642611050.git.lorenzo@kernel.org> <bd3608faf2e9162cc93d54ee93d2d6737750bb30.1642611050.git.lorenzo@kernel.org>
+In-Reply-To: <bd3608faf2e9162cc93d54ee93d2d6737750bb30.1642611050.git.lorenzo@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 19 Jan 2022 10:49:36 -0800
-Message-ID: <CAEf4BzadgXvW_eDAG00a_hyFUKqyLFn=rNwGFgJqCpyRsLyNTw@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/4] libbpf: userspace attach by name
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Date:   Wed, 19 Jan 2022 10:52:44 -0800
+Message-ID: <CAEf4BzafyO6ZnESn_hk56FX6MZoHdfTU6e33_FECv91Y7GFnew@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: selftests: get rid of CHECK macro in xdp_adjust_tail.c
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 6:04 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Wed, Jan 19, 2022 at 8:58 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 >
-> On Fri, 14 Jan 2022, Andrii Nakryiko wrote:
+> Rely on ASSERT* macros and get rid of deprecated CHECK ones in
+> xdp_adjust_tail bpf selftest.
 >
-> > > The one piece that seems to be missing from my perspective - and this may
-> > > be in more recent versions - is uprobe function attachment by name. Most of
-> > > the work is  already done in libusdt so it's reasonably doable I think - at a
-> > > minimum  it would require an equivalent to the find_elf_func_offset()
-> > > function in my  patch 1. Now the name of the library libusdt suggests its
-> > > focus is on USDT of course, but I think having userspace function attach
-> > > by name too would be great. Is that part of your plans for this work?
-> >
-> > True, uprobes don't supprot attaching by function name, which is quite
-> > annoying. It's certainly not a focus for libusdt (or whatever it will
-> > end up being called when open-sources). But if it's not much code and
-> > complexity we should probably just add that to libbpf directly for
-> > uprobes.
-> >
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  .../bpf/prog_tests/xdp_adjust_tail.c          | 62 +++++++------------
+>  1 file changed, 23 insertions(+), 39 deletions(-)
 >
-> I've been looking at this, and I've got the following cases working:
+> diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> index 3f5a17c38be5..dffa21b35503 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
+> @@ -11,22 +11,19 @@ static void test_xdp_adjust_tail_shrink(void)
+>         char buf[128];
 >
-> - local symbols in a binary. This involves symbol table lookup and
->   relative offset calcuation.
-> - shared object symbols in a shared object.  In this case, the symbol
->   table values suffice, no adjustment needed.
+>         err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
+> -       if (CHECK_FAIL(err))
+> +       if (ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
+>                 return;
 >
-> The former works using the program headers (instead of /proc/pid/maps for
-> offset computation), so can be run for all processes, lifting the
-> limitation in the RFC which only supported name lookup for a specific
-> process. Around a hundred lines for this makes it worthwhile I think.
+>         err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
+>                                 buf, &size, &retval, &duration);
 >
-> There is one more case, which is a shared library function in a binary -
-> where I specify "malloc" as the function and /usr/bin/foo as the binary
-> path.  In this case, for dynamic symbols we can't just look up the symbol
-> table in the binary, since the associated values are 0.  Ideally it would
-> be nice if the user could just specify "malloc" and not need to use libc
-> as the binary path argument, but getting this working is proving to be
-> trickier. I've tried making use of PLT section information but no luck
-> yet (the idea being we try to use the trampoline address of malloc@@PLT
-> instead, but I'm still trying to figure out how to extract that).
->
-> So I'm wondering if we just fail lookup for that case, assuming the user
-> will specify the shared library path if they want to trace a shared library
-> function. What do you think? Thanks!
+> -       CHECK(err || retval != XDP_DROP,
+> -             "ipv4", "err %d errno %d retval %d size %d\n",
+> -             err, errno, retval, size);
+> +       ASSERT_OK(err || retval != XDP_DROP, "ipv4");
 
-I think it all makes sense (but let's see the code as well ;) ). For
-the latter, can you please double-check what sort of functionality BCC
-provides? Also make sure that you support specifying absolute address
-instead of function name as well (func+0x123 probably as well, just
-like for kprobes?).
-
-The annoying bit is libbpf's convention to use '/' as a separator in
-SEC() definitions. I think bpftrace/dtrace's ':' makes more sense, but
-it seems to disruptive to switch it now. Because of this, specifying
-absolute path to the binary would look weird:
-
-SEC("uprobe//usr/bin/bash/readline")
-
-or something like that would consistent with current convention, but
-super weird.
-
-Did you run into this issue during your experiments?
-
-I can see two improvements, more and less radical (short of switching
-from / to : completely):
-
-1. less radical is to use "custom" format for uprobe after the "uprobe/" part:
-
-SEC("uprobe//usr/bin/bash:readline")
-
-2. a bit more radical (but probably better long term) is to support
-'/' and ':' interchangeably (but only one of them in any given SEC()
-definition).  For existing definitions, we can say that both forms are
-supported now:
-
-SEC("kprobe/some_func") and SEC("kprobe:some_func")
-
-For uprobe I'd probably combine #1 and #2 and say that these two forms
-are supported:
-
-SEC("uprobe//usr/bin/bash:readline") (so function separator is always ':')
-
-and
-
-SEC("uprobe:/usr/bin/bash:readline") (nicer and more consistent).
-
-
-Thoughts?
-
-BTW, as much as I like consistency, the proposal to switch to ':'
-exclusively in libbpf 1.0 is a no-go, IMO, it's too much of a
-disruption for tons of users.
-
+it's better to do such checks as two ASSERTS: ASSERT_OK(err) and
+ASSERT_EQ(retval, XDP_DROP). It will give much more meaningful error
+messages and I think is easier to follow.
 
 >
-> Alan
+>         expect_sz = sizeof(pkt_v6) - 20;  /* Test shrink with 20 bytes */
+>         err = bpf_prog_test_run(prog_fd, 1, &pkt_v6, sizeof(pkt_v6),
+>                                 buf, &size, &retval, &duration);
+> -       CHECK(err || retval != XDP_TX || size != expect_sz,
+> -             "ipv6", "err %d errno %d retval %d size %d expect-size %d\n",
+> -             err, errno, retval, size, expect_sz);
+> +       ASSERT_OK(err || retval != XDP_TX || size != expect_sz, "ipv6");
+
+same as above, old CHECK printed all those values so it was ok-ish to
+combine checks. With ASSERT_XXX() let's do each error condition check
+separately. Same for all the rest below.
+
+> +
+>         bpf_object__close(obj);
+>  }
+>
+
+[...]
