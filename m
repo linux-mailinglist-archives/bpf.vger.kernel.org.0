@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9DA493EB1
+	by mail.lfdr.de (Postfix) with ESMTP id B9683493EB0
 	for <lists+bpf@lfdr.de>; Wed, 19 Jan 2022 17:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356266AbiASQ6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1356247AbiASQ6y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 11:58:54 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:59286 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239673AbiASQ6x (ORCPT <rfc822;bpf@vger.kernel.org>);
         Wed, 19 Jan 2022 11:58:53 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:38686 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356247AbiASQ6w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 11:58:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 87B6AB81A61
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 16:58:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50500C340E1;
-        Wed, 19 Jan 2022 16:58:49 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F8EA615A7
+        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 16:58:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92B80C004E1;
+        Wed, 19 Jan 2022 16:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642611530;
-        bh=hJQozeKP1fs4E06I1pCAYyH4VccT9YZZBROshaGrvho=;
+        s=k20201202; t=1642611532;
+        bh=Z0zaWYULmRksnbJA4QVQChY4o9e6lY01A/Eiy8Fefwg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ia66CwzwiXmT821HTXXpFMFhA9g5XqNbvUtjxkplkO2aE3YGgVV4fVtafx5Qyg3L0
-         9ALVK6P+crTPpPDnEOftUkI4eHDGROvc42D+RH65danrbEIwnijjDvFhV2auE7LWR+
-         EiZ6nakaZdfHAJpTG8FPOAN2C0sIDCqyMS91arcIDRZFr0933zXjrivlYZKBloOTDV
-         lANLHsjgw3gcQLnNNKw+P45Kt4y+A/8ndtKCfKOYXxI2DW34cIjiy26g+q/RjZ2HzL
-         1SuZAIxnzQ0Yd3/HlWi9sueEm+1EhziTdRtS/3l1SVUEaL0Lv3vzW11onGYPggakTB
-         0qdfsbamaSTeg==
+        b=mLleRdzWf6YLMzmirYCqe4cWZHFfXvYpL9VJKQnNTeNGqfV0rK8SJ9WDRFriod4h2
+         uv/AFahQk66dJVJ9pSiKx8KQJxmXKGlgW+VmqfondNsDYsfZTW2kfR87p1QUnzviUc
+         poS7USzuP4MbsPbj32wzv1Y7vJr/OMJIRn3BwXlq3rtcA8h3ZmBMlBplLTkSEAnEs3
+         gljGTIOnElCbvZ1RjNQm/QoOzR2SzidTVEpaKH51ZwZNI9+MC8FhGxbo90Cti/UIxV
+         6ptBC6OfNYq+GlqgpGrfpEf+hov8DSntzkH8pT7vzhhg50ggVA0G2SxKoNZAoFluFd
+         A9PMtUTV3oQEg==
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, andrii.nakryiko@gmail.com
-Subject: [PATCH bpf-next 1/2] bpf: selftests: get rid of CHECK macro in xdp_adjust_tail.c
-Date:   Wed, 19 Jan 2022 17:58:26 +0100
-Message-Id: <bd3608faf2e9162cc93d54ee93d2d6737750bb30.1642611050.git.lorenzo@kernel.org>
+Subject: [PATCH bpf-next 2/2] bpf: selftests: get rid of CHECK macro in xdp_bpf2bpf.c
+Date:   Wed, 19 Jan 2022 17:58:27 +0100
+Message-Id: <ec0dbfecc37e9900001bfbd5744d917eb48de870.1642611050.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1642611050.git.lorenzo@kernel.org>
 References: <cover.1642611050.git.lorenzo@kernel.org>
@@ -44,139 +44,119 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Rely on ASSERT* macros and get rid of deprecated CHECK ones in
-xdp_adjust_tail bpf selftest.
+xdp_bpf2bpf bpf selftest.
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- .../bpf/prog_tests/xdp_adjust_tail.c          | 62 +++++++------------
- 1 file changed, 23 insertions(+), 39 deletions(-)
+ .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    | 43 ++++++++-----------
+ 1 file changed, 17 insertions(+), 26 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index 3f5a17c38be5..dffa21b35503 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -11,22 +11,19 @@ static void test_xdp_adjust_tail_shrink(void)
- 	char buf[128];
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+index c98a897ad692..951ce1fc535d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_bpf2bpf.c
+@@ -12,25 +12,21 @@ struct meta {
  
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
--	if (CHECK_FAIL(err))
-+	if (ASSERT_OK(err, "test_xdp_adjust_tail_shrink"))
+ static void on_sample(void *ctx, int cpu, void *data, __u32 size)
+ {
+-	int duration = 0;
+ 	struct meta *meta = (struct meta *)data;
+ 	struct ipv4_packet *trace_pkt_v4 = data + sizeof(*meta);
+ 
+-	if (CHECK(size < sizeof(pkt_v4) + sizeof(*meta),
+-		  "check_size", "size %u < %zu\n",
+-		  size, sizeof(pkt_v4) + sizeof(*meta)))
++	if (!ASSERT_GE(size, sizeof(pkt_v4) + sizeof(*meta), "check_size"))
  		return;
  
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
- 				buf, &size, &retval, &duration);
- 
--	CHECK(err || retval != XDP_DROP,
--	      "ipv4", "err %d errno %d retval %d size %d\n",
--	      err, errno, retval, size);
-+	ASSERT_OK(err || retval != XDP_DROP, "ipv4");
- 
- 	expect_sz = sizeof(pkt_v6) - 20;  /* Test shrink with 20 bytes */
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v6, sizeof(pkt_v6),
- 				buf, &size, &retval, &duration);
--	CHECK(err || retval != XDP_TX || size != expect_sz,
--	      "ipv6", "err %d errno %d retval %d size %d expect-size %d\n",
--	      err, errno, retval, size, expect_sz);
-+	ASSERT_OK(err || retval != XDP_TX || size != expect_sz, "ipv6");
-+
- 	bpf_object__close(obj);
- }
- 
-@@ -39,21 +36,17 @@ static void test_xdp_adjust_tail_grow(void)
- 	int err, prog_fd;
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
--	if (CHECK_FAIL(err))
-+	if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
+-	if (CHECK(meta->ifindex != if_nametoindex("lo"), "check_meta_ifindex",
+-		  "meta->ifindex = %d\n", meta->ifindex))
++	if (!ASSERT_EQ(meta->ifindex, if_nametoindex("lo"),
++		       "check_meta_ifindex"))
  		return;
  
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
- 				buf, &size, &retval, &duration);
--	CHECK(err || retval != XDP_DROP,
--	      "ipv4", "err %d errno %d retval %d size %d\n",
--	      err, errno, retval, size);
-+	ASSERT_OK(err || retval != XDP_DROP, "ipv4");
- 
- 	expect_sz = sizeof(pkt_v6) + 40; /* Test grow with 40 bytes */
- 	err = bpf_prog_test_run(prog_fd, 1, &pkt_v6, sizeof(pkt_v6) /* 74 */,
- 				buf, &size, &retval, &duration);
--	CHECK(err || retval != XDP_TX || size != expect_sz,
--	      "ipv6", "err %d errno %d retval %d size %d expect-size %d\n",
--	      err, errno, retval, size, expect_sz);
-+	ASSERT_OK(err || retval != XDP_TX || size != expect_sz, "ipv6");
- 
- 	bpf_object__close(obj);
- }
-@@ -76,7 +69,7 @@ static void test_xdp_adjust_tail_grow2(void)
- 	};
- 
- 	err = bpf_prog_test_load(file, BPF_PROG_TYPE_XDP, &obj, &tattr.prog_fd);
--	if (CHECK_ATTR(err, "load", "err %d errno %d\n", err, errno))
-+	if (ASSERT_OK(err, "test_xdp_adjust_tail_grow"))
+-	if (CHECK(meta->pkt_len != sizeof(pkt_v4), "check_meta_pkt_len",
+-		  "meta->pkt_len = %zd\n", sizeof(pkt_v4)))
++	if (!ASSERT_EQ(meta->pkt_len, sizeof(pkt_v4), "check_meta_pkt_len"))
  		return;
  
- 	/* Test case-64 */
-@@ -86,21 +79,17 @@ static void test_xdp_adjust_tail_grow2(void)
- 	/* Kernel side alloc packet memory area that is zero init */
- 	err = bpf_prog_test_run_xattr(&tattr);
+-	if (CHECK(memcmp(trace_pkt_v4, &pkt_v4, sizeof(pkt_v4)),
+-		  "check_packet_content", "content not the same\n"))
++	if (!ASSERT_EQ(memcmp(trace_pkt_v4, &pkt_v4, sizeof(pkt_v4)),
++		       0, "check_packet_content"))
+ 		return;
  
--	CHECK_ATTR(errno != ENOSPC /* Due limit copy_size in bpf_test_finish */
--		   || tattr.retval != XDP_TX
--		   || tattr.data_size_out != 192, /* Expected grow size */
--		   "case-64",
--		   "err %d errno %d retval %d size %d\n",
--		   err, errno, tattr.retval, tattr.data_size_out);
-+	ASSERT_OK(errno != ENOSPC /* Due limit copy_size in bpf_test_finish */
-+		  || tattr.retval != XDP_TX
-+		  || tattr.data_size_out != 192, /* Expected grow size */
-+		  "case-64");
+ 	*(bool *)ctx = true;
+@@ -52,7 +48,7 @@ void test_xdp_bpf2bpf(void)
  
- 	/* Extra checks for data contents */
--	CHECK_ATTR(tattr.data_size_out != 192
--		   || buf[0]   != 1 ||  buf[63]  != 1  /*  0-63  memset to 1 */
--		   || buf[64]  != 0 ||  buf[127] != 0  /* 64-127 memset to 0 */
--		   || buf[128] != 1 ||  buf[191] != 1, /*128-191 memset to 1 */
--		   "case-64-data",
--		   "err %d errno %d retval %d size %d\n",
--		   err, errno, tattr.retval, tattr.data_size_out);
-+	ASSERT_OK(tattr.data_size_out != 192
-+		  || buf[0]   != 1 || buf[63]  != 1  /*  0-63  memset to 1 */
-+		  || buf[64]  != 0 || buf[127] != 0  /* 64-127 memset to 0 */
-+		  || buf[128] != 1 || buf[191] != 1, /*128-191 memset to 1 */
-+		  "case-64-data");
+ 	/* Load XDP program to introspect */
+ 	pkt_skel = test_xdp__open_and_load();
+-	if (CHECK(!pkt_skel, "pkt_skel_load", "test_xdp skeleton failed\n"))
++	if (!ASSERT_OK_PTR(pkt_skel, "test_xdp__open_and_load"))
+ 		return;
  
- 	/* Test case-128 */
- 	memset(buf, 2, sizeof(buf));
-@@ -109,23 +98,18 @@ static void test_xdp_adjust_tail_grow2(void)
- 	err = bpf_prog_test_run_xattr(&tattr);
+ 	pkt_fd = bpf_program__fd(pkt_skel->progs._xdp_tx_iptunnel);
+@@ -62,7 +58,7 @@ void test_xdp_bpf2bpf(void)
  
- 	max_grow = 4096 - XDP_PACKET_HEADROOM -	tailroom; /* 3520 */
--	CHECK_ATTR(err
--		   || tattr.retval != XDP_TX
--		   || tattr.data_size_out != max_grow,/* Expect max grow size */
--		   "case-128",
--		   "err %d errno %d retval %d size %d expect-size %d\n",
--		   err, errno, tattr.retval, tattr.data_size_out, max_grow);
-+	ASSERT_OK(err || tattr.retval != XDP_TX
-+		  || tattr.data_size_out != max_grow,/* Expect max grow size */
-+		  "case-128");
+ 	/* Load trace program */
+ 	ftrace_skel = test_xdp_bpf2bpf__open();
+-	if (CHECK(!ftrace_skel, "__open", "ftrace skeleton failed\n"))
++	if (!ASSERT_OK_PTR(ftrace_skel, "test_xdp_bpf2bpf__open"))
+ 		goto out;
  
- 	/* Extra checks for data content: Count grow size, will contain zeros */
- 	for (i = 0, cnt = 0; i < sizeof(buf); i++) {
- 		if (buf[i] == 0)
- 			cnt++;
- 	}
--	CHECK_ATTR((cnt != (max_grow - tattr.data_size_in)) /* Grow increase */
--		   || tattr.data_size_out != max_grow, /* Total grow size */
--		   "case-128-data",
--		   "err %d errno %d retval %d size %d grow-size %d\n",
--		   err, errno, tattr.retval, tattr.data_size_out, cnt);
-+	ASSERT_OK((cnt != (max_grow - tattr.data_size_in)) /* Grow increase */
-+		  || tattr.data_size_out != max_grow, /* Total grow size */
-+		  "case-128-data");
+ 	/* Demonstrate the bpf_program__set_attach_target() API rather than
+@@ -77,11 +73,11 @@ void test_xdp_bpf2bpf(void)
+ 	bpf_program__set_attach_target(prog, pkt_fd, "_xdp_tx_iptunnel");
  
- 	bpf_object__close(obj);
- }
+ 	err = test_xdp_bpf2bpf__load(ftrace_skel);
+-	if (CHECK(err, "__load", "ftrace skeleton failed\n"))
++	if (!ASSERT_OK(err, "test_xdp_bpf2bpf__load"))
+ 		goto out;
+ 
+ 	err = test_xdp_bpf2bpf__attach(ftrace_skel);
+-	if (CHECK(err, "ftrace_attach", "ftrace attach failed: %d\n", err))
++	if (!ASSERT_OK(err, "test_xdp_bpf2bpf__attach"))
+ 		goto out;
+ 
+ 	/* Set up perf buffer */
+@@ -94,30 +90,25 @@ void test_xdp_bpf2bpf(void)
+ 	err = bpf_prog_test_run(pkt_fd, 1, &pkt_v4, sizeof(pkt_v4),
+ 				buf, &size, &retval, &duration);
+ 	memcpy(&iph, buf + sizeof(struct ethhdr), sizeof(iph));
+-	if (CHECK(err || retval != XDP_TX || size != 74 ||
+-		  iph.protocol != IPPROTO_IPIP, "ipv4",
+-		  "err %d errno %d retval %d size %d\n",
+-		  err, errno, retval, size))
++	if (!ASSERT_OK(err || retval != XDP_TX || size != 74 ||
++		       iph.protocol != IPPROTO_IPIP, "ipv4"))
+ 		goto out;
+ 
+ 	/* Make sure bpf_xdp_output() was triggered and it sent the expected
+ 	 * data to the perf ring buffer.
+ 	 */
+ 	err = perf_buffer__poll(pb, 100);
+-	if (CHECK(err < 0, "perf_buffer__poll", "err %d\n", err))
++	if (!ASSERT_GE(err, 0, "perf_buffer__poll"))
+ 		goto out;
+ 
+-	CHECK_FAIL(!passed);
++	ASSERT_TRUE(passed, "test passed");
+ 
+ 	/* Verify test results */
+-	if (CHECK(ftrace_skel->bss->test_result_fentry != if_nametoindex("lo"),
+-		  "result", "fentry failed err %llu\n",
+-		  ftrace_skel->bss->test_result_fentry))
++	if (!ASSERT_EQ(ftrace_skel->bss->test_result_fentry, if_nametoindex("lo"),
++		       "fentry result"))
+ 		goto out;
+ 
+-	CHECK(ftrace_skel->bss->test_result_fexit != XDP_TX, "result",
+-	      "fexit failed err %llu\n", ftrace_skel->bss->test_result_fexit);
+-
++	ASSERT_EQ(ftrace_skel->bss->test_result_fexit, XDP_TX, "fexit result");
+ out:
+ 	if (pb)
+ 		perf_buffer__free(pb);
 -- 
 2.34.1
 
