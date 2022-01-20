@@ -2,82 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD826494B9D
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 11:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0DE494C01
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 11:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbiATK0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jan 2022 05:26:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359835AbiATK0S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jan 2022 05:26:18 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAD2C061574
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 02:26:18 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id o64so5347824pjo.2
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 02:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=33//Ifqafj5vah3eayUSf6uENYY18HgBL4WzLbzW/gM=;
-        b=fkQ9lDVbNFxkPoQXBrsC+8pzFloVoZ4Hiw3kFQ1zvbbmQcCf3cyoEEKWAvCCq5im2M
-         7Moh1LplBsYBTsVpn4DfJVrK/GOwHwV6d5bmZCfy62Lk1nvhdtjTbmWTNFQN5DJjiley
-         vUZekS1K+EemwiY0RUZ1eDFCCUrg33+Fj/YvzOoULU3xNlCuISepM/RBw0m3MyHDguCx
-         bW2wM89Uef119tdJlpPQ19FPap6nxnR80SHoLgPqTL9104r9pAcN7Feytfk59JfUEZ/6
-         SyLsoURJKyLuh2Zf7fBGUma5Fkn5v4sAPZo/jm4YdnwHAI8/VLssDxd6mHRcuHb9BuT9
-         Yolg==
+        id S234869AbiATKpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jan 2022 05:45:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50468 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1376374AbiATKpA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Jan 2022 05:45:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1642675499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kX+pu+Lp5VnrEzf41aOccHYagPzdKOujjotR8Q1un+c=;
+        b=cTsR47lRXNSvLbEQZJd0Y5WAeEaQySKBo5HOGinlBs5W/e25y42jSV51hjs6PzGjil5/DT
+        vQFicFCirj93wO6QcXdTGyHH04+iIsc3//3St14xW4MYKuMRpna+VRd2Mh6kxNnbj7WneN
+        KaRt3av+Li/QTWcconO8VregSapBMzk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-400-Qz0C8wdVMsii7hS3oS1eMA-1; Thu, 20 Jan 2022 05:44:58 -0500
+X-MC-Unique: Qz0C8wdVMsii7hS3oS1eMA-1
+Received: by mail-ed1-f69.google.com with SMTP id ee53-20020a056402293500b004022f34edcbso5535190edb.11
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 02:44:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=33//Ifqafj5vah3eayUSf6uENYY18HgBL4WzLbzW/gM=;
-        b=FhDNMoMzmqtllAvgnhGF27Ese/NTPv7NUXuxIoc8nRvmseG5dqZ/x/C2GdNkjloQFY
-         HmW42t3mwF8PxbdY/3T+/wC6JV2fl+mBZpuV5IwP9uZvqfrbmlGWGCKSK8mk6mPNFUEm
-         vKOH9CrK7hLP7TyVVKoW4NekYL3gQXZvx3XKQc3kBYjh+Q2wYtCvhoEQdMn7imxIG/jC
-         KDsKz/zCh98rUsgJq7jESGn3Bx/jVFE1BZV1qz0QE/Mxa8GF1GSLTh+hUwkW4XT7BNNc
-         iHet2/fdAgVH9CbFSZxWd3E0etoJ94jhU22CND42O/9iVtVLzJ/N2RE92yLOopH06gs0
-         qg7Q==
-X-Gm-Message-State: AOAM530phXLYOBnqq+/CXDJ93rDKTndGpFPBO59blbK+MTxjz7J5qw32
-        mBeLm3CmNBe/Ky0Ct3C6yUU++dPUfJXgzzaQxWQ=
-X-Google-Smtp-Source: ABdhPJz8JYVVyhrIgUzJIEJqdMlossT5svnWNV49VixFoqMIXKqgETXJEdqgNnou2py284VFs3EOVupsqwgO0Mz/W9Y=
-X-Received: by 2002:a17:902:db0b:b0:14a:58c2:c27a with SMTP id
- m11-20020a170902db0b00b0014a58c2c27amr37782225plx.61.1642674377580; Thu, 20
- Jan 2022 02:26:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kX+pu+Lp5VnrEzf41aOccHYagPzdKOujjotR8Q1un+c=;
+        b=DTj0mDXQn9gVwwEsApKlIjOQ0/dD2vCHR0k6+6y/stIITjWgcfiGJvXCLXOYF0KuNU
+         ljBRn4QZDu9EtitWbWwDxO48Pw6H5XZ2xoOK2yTg2YkCGYPbv+FfgCFsqcAWJhg8DOzc
+         0AY23gHUhfowSPIujVVTRWPnZP5H0DBLklHOAt62knZgAlzyiQIUg9iQikkQ9VGyxmoO
+         QSnnggIbhwQzV4sLTGldOlNJOrm4F3Dgf4Mr1sDogT4j+MPoiO+uNh6AGCiOPGHTVWID
+         I0DVfQVFGaCQY7Zp0Za/zaq/TedFJhWJFa1bL956FXloNj6dTMxrIXu2pKqDMEbv/WT5
+         HTqQ==
+X-Gm-Message-State: AOAM531ZzzMrhH8LjyeP0p1Sqq42NU5jT4PS+LJCgRF5YBym+z84ydS+
+        WmBDI6nH6ysj+GfPO+RxBU7jpZeSFbXpgLGy+jMKBy67JCT36oBdUnZ6uJhublY6ysqZb+63iQX
+        pVznokGYJe5Ql
+X-Received: by 2002:a05:6402:2803:: with SMTP id h3mr36105213ede.241.1642675497185;
+        Thu, 20 Jan 2022 02:44:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjARLhfYm29sjlnTYujKowEOv25kxTDg3c9udfzGwVbNwty28AzlkAFfqoo+s+jkviUx9CjA==
+X-Received: by 2002:a05:6402:2803:: with SMTP id h3mr36105201ede.241.1642675497034;
+        Thu, 20 Jan 2022 02:44:57 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id l3sm843873ejg.44.2022.01.20.02.44.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jan 2022 02:44:56 -0800 (PST)
+Date:   Thu, 20 Jan 2022 11:44:54 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v3 7/9] bpf: Add kprobe link for attaching raw kprobes
+Message-ID: <Yek9Jq1UVa8fq91n@krava>
+References: <164260419349.657731.13913104835063027148.stgit@devnote2>
+ <164260427009.657731.15292670471943106202.stgit@devnote2>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:cac9:0:0:0:0 with HTTP; Thu, 20 Jan 2022 02:26:17
- -0800 (PST)
-Reply-To: fulhammartins8@gmail.com
-From:   Fulham Martins <whoknowsladyjay@gmail.com>
-Date:   Thu, 20 Jan 2022 11:26:17 +0100
-Message-ID: <CAMhEkO4wGNmkb3kJXcQzOPLthZ_GLmRhTPvA07eGcv-1YMbFsQ@mail.gmail.com>
-Subject: INVESTMENT PARTNERSHIP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164260427009.657731.15292670471943106202.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear friend,
+On Wed, Jan 19, 2022 at 11:57:50PM +0900, Masami Hiramatsu wrote:
 
-My Name is Mr. Fulham Martins. I am from the United Kingdom.
-It is my resolve to contact you for an investment plan in your country. It is
-no more a secret that investments are thriving fast in your country.
-Therefore, I want to invest in your country and want you to be my
-business partner.
-I am ready to invest in any sector such as Manufacturing, Agriculture,
-Real Estate, Hoteling, etc. or any other business that has good return
-on investment/profitable.
+SNIP
 
-If you choose to be of assistance,I am ready to send the consignment
-box to your country regarding the investment
-partnership or do a direct bank transfer to your account based on
-whatever modalities the investment will entail.
-Like I mentioned earlier, I am presently based in the United Kingdom
-and would like to know whether you are ready to partner with me on
-this. Kindly indicate your interest to enable us to proceed.
-Thank you in anticipation as I look forward to reading your reply.
+> +static int kprobe_link_prog_run(struct bpf_kprobe_link *kprobe_link,
+> +				struct pt_regs *regs)
+> +{
+> +	struct bpf_trace_run_ctx run_ctx;
+> +	struct bpf_run_ctx *old_run_ctx;
+> +	int err;
+> +
+> +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> +		err = 0;
+> +		goto out;
+> +	}
+> +
+> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> +	run_ctx.bpf_cookie = kprobe_link->bpf_cookie;
+> +
+> +	rcu_read_lock();
+> +	migrate_disable();
+> +	err = bpf_prog_run(kprobe_link->link.prog, regs);
+> +	migrate_enable();
+> +	rcu_read_unlock();
+> +
+> +	bpf_reset_run_ctx(old_run_ctx);
+> +
+> + out:
+> +	__this_cpu_dec(bpf_prog_active);
+> +	return err;
+> +}
+> +
+> +static void kprobe_link_entry_handler(struct fprobe *fp, unsigned long entry_ip,
+> +				      struct pt_regs *regs)
+> +{
+> +	struct bpf_kprobe_link *kprobe_link;
+> +
+> +	/*
+> +	 * Because fprobe's regs->ip is set to the next instruction of
+> +	 * dynamic-ftrace insturction, correct entry ip must be set, so
+> +	 * that the bpf program can access entry address via regs as same
+> +	 * as kprobes.
+> +	 */
+> +	instruction_pointer_set(regs, entry_ip);
 
+ok, so this actually does the stall for me.. it changes
+the return address back to repeat the call again
 
-Best regards.
+bu I think it's good idea to carry the original ip in regs
+(for bpf_get_func_ip helper) so I think we need to save it
+first and restore after the callback
 
-Mr.Fulham Martins.
+I'll make the fix and add cookie change Andrii asked for
+on top of your ftrace changes and let you know
+
+thanks,
+jirka
+
+> +	kprobe_link = container_of(fp, struct bpf_kprobe_link, fp);
+> +	kprobe_link_prog_run(kprobe_link, regs);
+> +}
+> +
+
+SNIP
+
