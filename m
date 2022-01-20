@@ -2,119 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA28A494D8D
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 13:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D95494DB8
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 13:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbiATMAc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jan 2022 07:00:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:58609 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232550AbiATMAa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Jan 2022 07:00:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642680030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Lq3A8rA2el0fGEcP1H0WpUnf3juFQ4Qp4pOKMri1Oc=;
-        b=RItA3iG40lfwQxmnGdCKDjSgSGVoGzLawUoFhY3OeVi7evJLBl1GVtBD8uTHAFcnDVHJdP
-        u2a42v61kdqlnx2p7qezmZysp9A1H7FOqMNZrQfirnd4sO/VWYTBhQGKXavMxxOg8An6fq
-        szjBLyedDG710TE83GNCpFRSuV3Wx6w=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-395-3B_E1cNiP1WRzBW_CJyxpw-1; Thu, 20 Jan 2022 07:00:29 -0500
-X-MC-Unique: 3B_E1cNiP1WRzBW_CJyxpw-1
-Received: by mail-ed1-f69.google.com with SMTP id z9-20020a05640240c900b003fea688a17eso5695579edb.10
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 04:00:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=8Lq3A8rA2el0fGEcP1H0WpUnf3juFQ4Qp4pOKMri1Oc=;
-        b=fmp9egibfUPIjdZwaPvrcwKzeZMVCllnvSaN9qiE7KlcPZ0HSsnX5YFML8X8SDCCax
-         kGJTfng+v8/B7DA2GoIZGVE4tzA4ectwtv0ERQ1ShrofaMMD4UNaqsKaKWvYUfBJbog0
-         ArYwUr254lyUkgaxZ4U5yNp1xRot0e28cv5Nm16m8oMQgnVqulkwLBf2wkjwIDqhLMDZ
-         rnW6G9EavdM44aF/DAdYsBsLg9Kf3NNSx2p0QKq1kuzsRHwmw2E/aaNdyQwz+yGs754d
-         U37s2o1PeSYRxuQoRAGY92tAMigcDJG6MWfgZx3moqqVuIbeBYhM1XB9OQPx8NNkZasP
-         2M7Q==
-X-Gm-Message-State: AOAM53249AvC8X2HdgWHe+z72Mc+lJNF/+RrKFR1Ze7lbTx2Fd5MeHUv
-        7BOMpnA1ILohhXQ6WSOEvMNAfZrsZa3STUzTonCgurz2XKxX0T+UkhrEvHSwBFgfe6ZSQ+g7jSH
-        QwtQq3KYd4EEh
-X-Received: by 2002:a50:da48:: with SMTP id a8mr34921439edk.146.1642680025257;
-        Thu, 20 Jan 2022 04:00:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyE/JT9NgGXr0lsZvGbDnA5TvqVTOmuj70MKuK7wsx5G32oY/KtXdXOhnGtbyaoFRIKAn9e7w==
-X-Received: by 2002:a50:da48:: with SMTP id a8mr34921235edk.146.1642680022423;
-        Thu, 20 Jan 2022 04:00:22 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y2sm909861ejh.80.2022.01.20.04.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jan 2022 04:00:21 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 256311805F9; Thu, 20 Jan 2022 13:00:21 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next 1/4] libbpf: streamline low-level XDP APIs
-In-Reply-To: <20220120061422.2710637-2-andrii@kernel.org>
-References: <20220120061422.2710637-1-andrii@kernel.org>
- <20220120061422.2710637-2-andrii@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 20 Jan 2022 13:00:21 +0100
-Message-ID: <87tudy7h2i.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S230093AbiATMPf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jan 2022 07:15:35 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:46012 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232764AbiATMPe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jan 2022 07:15:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 31142616AF;
+        Thu, 20 Jan 2022 12:15:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E53C340E0;
+        Thu, 20 Jan 2022 12:15:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642680933;
+        bh=0zqjRx17jeQjOp1ol5omqJUXW3BnaewnNO4FG3prRkM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ihUgSNX5R5BLdm/EgKc1Xd0m/WUKj/xJJKFgn0xd6tHchDDoW3zUL3mOYEybMoZm1
+         r5yWPtR1q9gLxHv4MXtT9Ss2ZtGIUuljKzpemqUiFFndGkxP1rMzQ9rgP2QXCZIAf/
+         D8puAzQs6H50/JWpUngeFbFb/p2dbxJ+fzRMQtdo55J0M4/jAZrgOBrgBhXl84/fpP
+         39GuC5D9+AlHQoaBMLGe/xBvu0HYUpOYsXt0Y2ikFeo3Y8N2w7cxZvc+Ppd5TO7PaB
+         hE8SEZeWUvrEXUyp2iMqQJRwJ9QUNFrdxZDbCQ+qD+aH6Y6RgVYeLwdGhFqpf6suTU
+         H4WFVYmqI+Smw==
+Date:   Thu, 20 Jan 2022 21:15:27 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v3 7/9] bpf: Add kprobe link for attaching raw
+ kprobes
+Message-Id: <20220120211527.cd46c74ce2ad8f401aec545a@kernel.org>
+In-Reply-To: <Yek9Jq1UVa8fq91n@krava>
+References: <164260419349.657731.13913104835063027148.stgit@devnote2>
+        <164260427009.657731.15292670471943106202.stgit@devnote2>
+        <Yek9Jq1UVa8fq91n@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii@kernel.org> writes:
+On Thu, 20 Jan 2022 11:44:54 +0100
+Jiri Olsa <jolsa@redhat.com> wrote:
 
-> Introduce 4 new netlink-based XDP APIs for attaching, detaching, and
-> querying XDP programs:
->   - bpf_xdp_attach;
->   - bpf_xdp_detach;
->   - bpf_xdp_query;
->   - bpf_xdp_query_id.
->
-> These APIs replace bpf_set_link_xdp_fd, bpf_set_link_xdp_fd_opts,
-> bpf_get_link_xdp_id, and bpf_get_link_xdp_info APIs ([0]). The latter
-> don't follow a consistent naming pattern and some of them use
-> non-extensible approaches (e.g., struct xdp_link_info which can't be
-> modified without breaking libbpf ABI).
->
-> The approach I took with these low-level XDP APIs is similar to what we
-> did with low-level TC APIs. There is a nice duality of bpf_tc_attach vs
-> bpf_xdp_attach, and so on. I left bpf_xdp_attach() to support detaching
-> when -1 is specified for prog_fd for generality and convenience, but
-> bpf_xdp_detach() is preferred due to clearer naming and associated
-> semantics. Both bpf_xdp_attach() and bpf_xdp_detach() accept the same
-> opts struct allowing to specify expected old_prog_fd.
->
-> While doing the refactoring, I noticed that old APIs require users to
-> specify opts with old_fd =3D=3D -1 to declare "don't care about already
-> attached XDP prog fd" condition. Otherwise, FD 0 is assumed, which is
-> essentially never an intended behavior. So I made this behavior
-> consistent with other kernel and libbpf APIs, in which zero FD means "no
-> FD". This seems to be more in line with the latest thinking in BPF land
-> and should cause less user confusion, hopefully.
->
-> For querying, I left two APIs, both more generic bpf_xdp_query()
-> allowing to query multiple IDs and attach mode, but also
-> a specialization of it, bpf_xdp_query_id(), which returns only requested
-> prog_id. Uses of prog_id returning bpf_get_link_xdp_id() were so
-> prevalent across selftests and samples, that it seemed a very common use
-> case and using bpf_xdp_query() for doing it felt very cumbersome with
-> a highly branches if/else chain based on flags and attach mode.
->
-> Old APIs are scheduled for deprecation in libbpf 0.8 release.
->
->   [0] Closes: https://github.com/libbpf/libbpf/issues/309
->
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> On Wed, Jan 19, 2022 at 11:57:50PM +0900, Masami Hiramatsu wrote:
+> 
+> SNIP
+> 
+> > +static int kprobe_link_prog_run(struct bpf_kprobe_link *kprobe_link,
+> > +				struct pt_regs *regs)
+> > +{
+> > +	struct bpf_trace_run_ctx run_ctx;
+> > +	struct bpf_run_ctx *old_run_ctx;
+> > +	int err;
+> > +
+> > +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> > +		err = 0;
+> > +		goto out;
+> > +	}
+> > +
+> > +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
+> > +	run_ctx.bpf_cookie = kprobe_link->bpf_cookie;
+> > +
+> > +	rcu_read_lock();
+> > +	migrate_disable();
+> > +	err = bpf_prog_run(kprobe_link->link.prog, regs);
+> > +	migrate_enable();
+> > +	rcu_read_unlock();
+> > +
+> > +	bpf_reset_run_ctx(old_run_ctx);
+> > +
+> > + out:
+> > +	__this_cpu_dec(bpf_prog_active);
+> > +	return err;
+> > +}
+> > +
+> > +static void kprobe_link_entry_handler(struct fprobe *fp, unsigned long entry_ip,
+> > +				      struct pt_regs *regs)
+> > +{
+> > +	struct bpf_kprobe_link *kprobe_link;
+> > +
+> > +	/*
+> > +	 * Because fprobe's regs->ip is set to the next instruction of
+> > +	 * dynamic-ftrace insturction, correct entry ip must be set, so
+> > +	 * that the bpf program can access entry address via regs as same
+> > +	 * as kprobes.
+> > +	 */
+> > +	instruction_pointer_set(regs, entry_ip);
+> 
+> ok, so this actually does the stall for me.. it changes
+> the return address back to repeat the call again
 
-Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+Good catch! and don't mind, this change is introduced me :-P.
+I thought that if I didn't add the FTRACE_FL_IPMODIFY, ftrace
+ignores the updated regs->ip, but it doesn't.
 
+> bu I think it's good idea to carry the original ip in regs
+> (for bpf_get_func_ip helper) so I think we need to save it
+> first and restore after the callback
+
+Yes, btw, should I do that fix in fprobe?
+
+> 
+> I'll make the fix and add cookie change Andrii asked for
+> on top of your ftrace changes and let you know
+
+OK, thank you!
+
+> 
+> thanks,
+> jirka
+> 
+> > +	kprobe_link = container_of(fp, struct bpf_kprobe_link, fp);
+> > +	kprobe_link_prog_run(kprobe_link, regs);
+> > +}
+> > +
+> 
+> SNIP
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
