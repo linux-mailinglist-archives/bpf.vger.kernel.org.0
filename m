@@ -2,132 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A30494670
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 05:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813C849468A
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 05:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbiATE1e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 19 Jan 2022 23:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbiATE1d (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 19 Jan 2022 23:27:33 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4590C061574
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 20:27:33 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id mi14-20020a17090b4b4e00b001b51b28c055so739549pjb.1
-        for <bpf@vger.kernel.org>; Wed, 19 Jan 2022 20:27:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JkpYam3hZ+jJoShN26K1t5MnrIP7COnCpSkY81PT030=;
-        b=Zk9ldyeVlwhz7r27D60GFWdRllJfZeCoYAaw2CCAjrktNS6HCShyaagBr9wxMAoTRE
-         pQfwcCaZZ2fUCm2y+tPylSF9B547aZ4Dsohykm51vuH5NhGq1HHx/HDJBjhl8je9715L
-         FBd4xsQ4moFNuvIgn/cahf06An1ldh+x8ERRqavrLeStGYMWJbc6UAOA6vaEqCGASQqb
-         JBHLbz0u5rdMk1xr1c60LEZuUI63HYKWyuZ7YG334DEn1liuv83N6N8C+0Uq6ME81k31
-         AFIfp4xdpb87u5EPzlnVqWTE3GjALbu7Y5v2XuuQDFvRPX8252ihVJpmJ9O1dZjsFBHD
-         IgEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JkpYam3hZ+jJoShN26K1t5MnrIP7COnCpSkY81PT030=;
-        b=OkiOw3hiXg+4Px+5U6XZw8q0isKgCqOseBVLQzTeELhSGzgqDRyOkuoPRj8gof8lVJ
-         +RrUUXqhh5YQHoVG2TNudLtgDd5poMb6ENP2O5QZJ9WynTr/TfJyWuluBVeRU6AjgpOE
-         UKUt3To45Xh5Nxo2K680omjh5ZYz6laieBCI4nqv6FEEB3TlEQNJ1M9tWPb+OITjUdR4
-         L6aS1jXhoGFMf5xSA1LrKbkNxHwKSawRTC+R92UeTDXd0F8okXgZh6gQlZmAOj/D1HuK
-         65s5k6IeRiYxSMSjefHQj3GY5PNlrdRWxkRKqXP5gt6sJ5SUOBXXHI2aLG+6UsEbqgZp
-         GNzA==
-X-Gm-Message-State: AOAM533Ce28YdKpm7xpFgW32shY6Ik2x+CGDZ8zZOhIGBOLoyzO7AntZ
-        bN++pqvIXPxvRL1iskKMBDg=
-X-Google-Smtp-Source: ABdhPJyFbIKCjVxLDYeGFMSjuG4+6QkMO84Ss6Feq+ruqNJ/Xxn7DKmmuSF3msPsCLhL/NTMyrcWqg==
-X-Received: by 2002:a17:902:bd4b:b0:14a:7839:d839 with SMTP id b11-20020a170902bd4b00b0014a7839d839mr36051318plx.134.1642652853165;
-        Wed, 19 Jan 2022 20:27:33 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:9dc9])
-        by smtp.gmail.com with ESMTPSA id n15sm6951550pjn.32.2022.01.19.20.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jan 2022 20:27:32 -0800 (PST)
-Date:   Wed, 19 Jan 2022 20:27:30 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/5] bpf: reject program if a __user tagged
- memory accessed in kernel way
-Message-ID: <20220120042730.eow5d3dv3mtkwbci@ast-mbp.dhcp.thefacebook.com>
-References: <20220112201449.1620763-1-yhs@fb.com>
- <20220112201500.1623985-1-yhs@fb.com>
- <CAADnVQKY-uvYic=4iXmHMdyiYOSzT1Nx=Zv_70pL+8ypNWQjYQ@mail.gmail.com>
- <4fe03fc1-fc1a-9853-bc10-dacb8cc60fe1@fb.com>
+        id S1358485AbiATEpZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 19 Jan 2022 23:45:25 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54400 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229952AbiATEpY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 19 Jan 2022 23:45:24 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20K3OD7K029568;
+        Wed, 19 Jan 2022 20:45:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=2QQJ5EQse34cE4wdZYNoAvYFqoQFEPgpKBrPnmhGl8o=;
+ b=GaU27PbjN0OvPd3yIsDKPE6TzLdjTp1Nu/PtPrEql7OzCbhzLvYjQfG0nfcRLtPEhTzK
+ tL5kLE97QN5rOQbciUKb2EHtri/WN4ukdFCu47W5XhKAQZoeUnAnE/frF15KfankQrUu
+ g7qwdXprePcDAcKiItmJUjT967nEl+rQDKg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dpysx09bx-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 Jan 2022 20:45:23 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Wed, 19 Jan 2022 20:45:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E7zTUH2aZNVKiUWtGPamnWrMMid8f+O5cHR5LOpU49ICKO4Q99wttrs6jcp1RVdYRsSqtl6tA2nnY+Txkg0vorvRmTxTwDa2+VHuxFo+F8j4FOGwa0PuBGisJmJQmc6lESyGem8VRb+UlnBCIMGj7TLtMGQR4qimXDBHR6EdmJLj+FTdtiwgK9UBT6YHkWEXR/Zy7jClHpBxqtiRtuAL5Wh7FZs3Au8z9ddc4sIHRwmuVsAR4hhvsQvhqLVRc+m8ou1VAWvHH0lHhmI9MCYIVlj1rZzojzcDEM7VumRK130+tj7BYfuzTds0rpBa3ocs9y6WXvo4qQxMDZhugW5nyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2QQJ5EQse34cE4wdZYNoAvYFqoQFEPgpKBrPnmhGl8o=;
+ b=SxE/ttfvYOPRF5uIWJnjAhqvWtKw2ZOaVAVald9igRg+MJZsz1VS/WVG4E3N6ORsGDXVI4ciIZDgnGIu1cRYO2QPST4B9nxzJINronVNn2u4kE1R6w0Flt6qsw7OW4ZaVFvjLwTxjBPeiWrOQOk73FWl4b8Q7wxbBcQy20abgbO8UPAricpG1HPI1e+FwroTnJB5pGKVzI3lLRXqahdbdVOCw13GS5Oa9Rf6FvZvSXo7Ga85FpXEZ0AH0MfMiB+JPx0/LefumdT/bi0WqvvPh/xJGHsqxWuYUrLzgNSiHuAXp6kXSk9ftaeFBRS4hCVHZfe//7kHrCa8QLn4tP9MDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by PH0PR15MB4544.namprd15.prod.outlook.com (2603:10b6:510:89::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.7; Thu, 20 Jan
+ 2022 04:45:21 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e%6]) with mapi id 15.20.4888.014; Thu, 20 Jan 2022
+ 04:45:21 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Song Liu <song@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v4 bpf-next 2/7] bpf: use bytes instead of pages for
+ bpf_jit_[charge|uncharge]_modmem
+Thread-Topic: [PATCH v4 bpf-next 2/7] bpf: use bytes instead of pages for
+ bpf_jit_[charge|uncharge]_modmem
+Thread-Index: AQHYDYk++Lmpp6R8K0+OfkkKcJGheqxrTDqAgAAJwQA=
+Date:   Thu, 20 Jan 2022 04:45:21 +0000
+Message-ID: <24FE334F-1867-46A0-BB21-F10551CB1772@fb.com>
+References: <20220119230620.3137425-1-song@kernel.org>
+ <20220119230620.3137425-3-song@kernel.org>
+ <20220120041025.uhg2mgpgl32mnjtq@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220120041025.uhg2mgpgl32mnjtq@ast-mbp.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.40.0.1.81)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a47f9384-0ee2-4fb6-d9e7-08d9dbcfaab6
+x-ms-traffictypediagnostic: PH0PR15MB4544:EE_
+x-microsoft-antispam-prvs: <PH0PR15MB454404F4DBEA0ACCF8402504B35A9@PH0PR15MB4544.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FfSq8Sc/cxGHSa4T7Iozuj/jRXRiGvg/XXXlmNdMwsdD53T4PwqF7lFXZCl0s2al4pEuJ4juB2H/jCh2kh8xcSNiDRQw2tNQ0cH/fwSOuf4ug6NdsVMP0Kt4KkRSMGxsF4j4ucmWUmxv19m0fLpuywETLGhC2zaS1aQUKBObySVeELfyiqIDiLlWsN+pW9ATZc5VAYsygwEVpeIWXmYzhPz5ZZJruTWDB6zpAKZAM4Lf+WVEKS7/ysRiuMUsQzInWl1eKTMhkbfH9Y0jaMUso0C1J1Nj+/rF6v70uoyoSeC/UBsSswvhK2UamKZku2ZvhLUTLgijNewgMUEEfMcC7bP/eUgGhd22ar2J/FQotM9HbLGZyvQnhTPyx91XFwp4ODmFIEqTO0ddaQ/2A+5qdy31dhcuANxWfuqk9w/dEx0SnXHxDSmAyxVqO86IxPLKA7EZpOXO5Gts/ECSB3ae9siBIDE7NFpwQC2WyEdSXoY0aUm0LdlyunHdzqi/Lma18sL/zLCDvxCpjazkVyhjhwYWQBCsOaHQ5x5s2Z08JfFq8BXPiaFaimJTPKlzir3m5ZcLjO4GsG9FKVBqgdnAtdzeCYNjnGwtehPee4KNwvuATdS43IVqslqeIpPvEiEWEfZuPqMtYu6ffb5JvYIZW7yzY+2/rlPH915GWuJ4hXoHPznPbH2rLIxtiwD/o4AnRta1WWhJ1ME4wRCQeNRrYnXEaX4MHUgGGE1ZRUN2enOceHO4bQXHc5cYrUWnfovP
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(4326008)(186003)(6486002)(2616005)(4744005)(316002)(86362001)(6916009)(53546011)(6506007)(6512007)(38070700005)(2906002)(7416002)(5660300002)(66946007)(8936002)(33656002)(76116006)(122000001)(38100700002)(508600001)(36756003)(66446008)(66556008)(64756008)(91956017)(66476007)(71200400001)(54906003)(8676002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?QfPVwiXLDFhmozbNlYQkp0Y0GO/zRRrVQvgLcOFqjfJGOTsMxYRDFkIgYvvp?=
+ =?us-ascii?Q?s0/o2SEEgG5Z/SCWQQ+QHIeW3I36B2JhlIbQ9nQBZUUZMY6KPgMpQB8OgK3f?=
+ =?us-ascii?Q?Y+7d4DVhU/r8cSqqZXM4TokTnJwvXVlWqWs3DQgOEndo7MEqVhnjyd6ONhrz?=
+ =?us-ascii?Q?jSQMDOrXTQcyjiK5LYyFAYaepq5WA9jfHcrQYM/XEHBbnOiOG6+rC7r1R2aY?=
+ =?us-ascii?Q?xTzthSPXIOiKoqBy9XIMtol5X5xixxnv+N5Ij7gZfXiQtGdffDwto6rWv2p2?=
+ =?us-ascii?Q?ZBnWozIOCrj9a6JEJiI21qqk9l9JWY2ciqQzZAfy51KLUdB3RnjwsZUcl1VS?=
+ =?us-ascii?Q?8r/8GKOEVmG0aMRwOOYoFxGOY2NjNB3xoMQa5fYkhRU1Q5PDdD+yt/RwSV/b?=
+ =?us-ascii?Q?mVdcY8Kq4fW1ClZfMwVygqBdidV+3nBu6J6gTiHGi0cGNU7qiHTBA5x4ExCw?=
+ =?us-ascii?Q?tojDum9UOa5hPEWZ7D9P8r/wzMSHIUPSLqvlQ2rTTHRBqxo8pvDCBuXC2saM?=
+ =?us-ascii?Q?BPaEaS85BDrYGkYpRgv4s+WnXm5iNk8wCXw8bEaC7e90fMgVi7Rz81HvSQTq?=
+ =?us-ascii?Q?kWo428dKtLx1IvqJU05gXh3+6W48BqzYflsvOXu65FzqyP7dvBrO3QP/3OOU?=
+ =?us-ascii?Q?KLUn2B0y9jT9gcIZeL0D/hXSoshDePzalKbRxncEWMz+U7QwWfevn7nU3vmd?=
+ =?us-ascii?Q?v/kGz58Xu28iVos+5RtfdMezXZBLChOsdIKYnAbB2b/P7ZL6B5U7Vy3hly5l?=
+ =?us-ascii?Q?/zn+3tINyUEPunUDC3xM16om5DJE8mXZbNRf42Hkn8y+TOD9HIO4lFXZKaLX?=
+ =?us-ascii?Q?8RYIdyjlPGdr3DUbyyPqAuw1E30n1gZtpEkvMaoN4JvzkH/zCOqNH6tPFemB?=
+ =?us-ascii?Q?gUejb0vETYGMkPDaDLxoFfp4sBb1ekYR60yJWMOolsBQHNEb/GqoNkIvA158?=
+ =?us-ascii?Q?ymt8ulaRDqFdUpfToiOZ7iRTIzPUD8XgwZO5MIBqZ/Dq71+Q95DH5qEV2X1e?=
+ =?us-ascii?Q?gn3bdEuHgFwTas9dTbDFOEIjBDvZA/LMCHQ50YkRb/dLwJid3/619NRL1682?=
+ =?us-ascii?Q?5nSN78ECvndnfJCoUIxgo926SNZLrJmU6rMfgDvozxrE3yaKl6H8ILjACjGn?=
+ =?us-ascii?Q?Qig2prvuros4sCE2fTXuht6iWQe8KsWiil9I+9262po+EtIjziI0pUMvsTCc?=
+ =?us-ascii?Q?sdDZYTWsTfs8jiLnDOBXyBlkbnU+PADBVfjWuoAIvKmpenJFaTfPggz1ojfw?=
+ =?us-ascii?Q?dLhQXNRrarkNPiFM/hCjnLJ0UK01NOlQCNG2SuMTlgbNjvIT+VNdGab6GEuP?=
+ =?us-ascii?Q?/d3Y+Ohnfn4tBPFID2bA4XjqnFvmuiVHV7/LzxQk0MD1Jk370y0SBKCoUSM5?=
+ =?us-ascii?Q?EbbZR4EE3PevyuZBHVGgOIOTqnV7TGmFkemBouc2ika89zuRLazNaalkkVr6?=
+ =?us-ascii?Q?fjwp5HnP8rJCWZQdq7lS9Xdq0staV14WzguPcj5aTn6cU0BOYAzd5i+6zE5q?=
+ =?us-ascii?Q?b6VhfAH5aCgoVVyGAPpzuevkSvcjQ4E6I+KhcdlZXVmnQEjgByUD3h7+Z2As?=
+ =?us-ascii?Q?jH19+CHQcu3lHlZwi+FbUr2Ea5bk6Pnsf0H4o0Zy1Q5oiKbzj+vsQ7tdF1BE?=
+ =?us-ascii?Q?0kFgmbwF79Mvx8KZF1cNm77ZiPb8HVGnCguPqh3yynkmZM1E2kAb3FdGxJgI?=
+ =?us-ascii?Q?zZvl4w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <DE5B177862A31040BA935974E654AC0F@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4fe03fc1-fc1a-9853-bc10-dacb8cc60fe1@fb.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a47f9384-0ee2-4fb6-d9e7-08d9dbcfaab6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jan 2022 04:45:21.7678
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EVuwdrBjW/FSw03At5bnIt4Tx80f9S3Ids7tLSRPj8Ahhn4XNXVjMJ2Txpb4OR+LlG1FM+CvUTtDqwotcvxDaQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4544
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: HY99R89wgDksxpY8WCQA62pOsY27CQAm
+X-Proofpoint-GUID: HY99R89wgDksxpY8WCQA62pOsY27CQAm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-20_01,2022-01-19_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ phishscore=0 mlxlogscore=999 suspectscore=0 spamscore=0 clxscore=1015
+ bulkscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201200025
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 08:10:27PM -0800, Yonghong Song wrote:
-> 
-> 
-> On 1/19/22 9:47 AM, Alexei Starovoitov wrote:
-> > On Wed, Jan 12, 2022 at 12:16 PM Yonghong Song <yhs@fb.com> wrote:
-> > > +
-> > > +                       /* check __user tag */
-> > > +                       t = btf_type_by_id(btf, mtype->type);
-> > > +                       if (btf_type_is_type_tag(t)) {
-> > > +                               tag_value = __btf_name_by_offset(btf, t->name_off);
-> > > +                               if (strcmp(tag_value, "user") == 0)
-> > > +                                       tmp_flag = MEM_USER;
-> > > +                       }
-> > > +
-> > >                          stype = btf_type_skip_modifiers(btf, mtype->type, &id);
-> > 
-> > Does LLVM guarantee that btf_tag will be the first in the modifiers?
-> > Looking at the selftest:
-> > +struct bpf_testmod_btf_type_tag_2 {
-> > +       struct bpf_testmod_btf_type_tag_1 __user *p;
-> > +};
-> > 
-> > What if there are 'const' or 'volatile' modifiers on that pointer too?
-> > And in different order with btf_tag?
-> > BTF gets normalized or not?
-> > I wonder whether we should introduce something like
-> > btf_type_collect_modifiers() instead of btf_type_skip_modifiers() ?
-> 
-> Yes, LLVM guarantees that btf_tag will be the first in the modifiers.
-> The type chain format looks like below:
->   ptr -> [btf_type_tag ->]* (zero or more btf_type_tag's)
->       -> [other modifiers: const and/or volatile and/or restrict]
->       -> base_type
-> 
-> I only handled zero/one btf_type_tag case as we don't have use case
-> in kernel with two btf_type_tags for one pointer yet.
 
-Makes sense. Would be good to document this LLVM behavior somewhere.
-When GCC adds support for btf_tag it would need to do the same.
-Or is it more of a pahole guarantee when it converts LLVM dwarf tags to BTF?
 
-Separately... looking at:
-FLAG_DONTCARE           = 0
-It's not quite right.
-bpf_types already have an enum value at zero:
-enum bpf_reg_type {
-        NOT_INIT = 0,            /* nothing was written into register */
-and other bpf_*_types too.
-So empty flag should really mean zeros in bits after BPF_BASE_TYPE_BITS.
-But there is no good way to express it as enum.
-So maybe use 0 directly when you init:
-enum bpf_type_flag tmp_flag = 0;
-?
+> On Jan 19, 2022, at 8:10 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+> On Wed, Jan 19, 2022 at 03:06:15PM -0800, Song Liu wrote:
+>> From: Song Liu <songliubraving@fb.com>
+>> 
+>> This enables sub-page memory charge and allocation.
+>> 
+>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>> 
+[...]
+>> @@ -808,7 +808,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>> 	return slot;
+>> }
+>> 
+>> -static atomic_long_t bpf_jit_current;
+>> +static atomic64_t bpf_jit_current;
+> 
+> I don't understand the motivation for this change.
+> bpf_jit_limit is type "long" and it's counting in bytes.
+> So why change jit_current to atomic64?
+> atomic_long will be fine even on 32-bit arch.
+> What did I miss?
 
-Another bit.. this patch will conflict with
-commit a672b2e36a64 ("bpf: Fix ringbuf memory type confusion when passing to helpers")
-so please resubmit when that patch appears in bpf-next.
-Thanks!
+Hmm.. I think you are right. I guess I missed the fact that we use
+long bpf_jit_limit. Will remove this change in the next version. 
+
+Thanks,
+Song
