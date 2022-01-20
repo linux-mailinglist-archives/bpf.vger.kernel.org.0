@@ -2,143 +2,300 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0DE494C01
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 11:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490CC494C47
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 11:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234869AbiATKpA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jan 2022 05:45:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50468 "EHLO
+        id S229915AbiATKzX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jan 2022 05:55:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58382 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1376374AbiATKpA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 20 Jan 2022 05:45:00 -0500
+        by vger.kernel.org with ESMTP id S229810AbiATKzW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 20 Jan 2022 05:55:22 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642675499;
+        s=mimecast20190719; t=1642676121;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kX+pu+Lp5VnrEzf41aOccHYagPzdKOujjotR8Q1un+c=;
-        b=cTsR47lRXNSvLbEQZJd0Y5WAeEaQySKBo5HOGinlBs5W/e25y42jSV51hjs6PzGjil5/DT
-        vQFicFCirj93wO6QcXdTGyHH04+iIsc3//3St14xW4MYKuMRpna+VRd2Mh6kxNnbj7WneN
-        KaRt3av+Li/QTWcconO8VregSapBMzk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=R+WMX+rXFBlnmQkd+qto6BGtO5yiQl9ZhpYx2egERj4=;
+        b=fv5ijq8G3g+obet0Nc489l2jJhhUFQpOXKDbAx00sbvA0OSsp02FtXtAgzZLXfMZk/3qgk
+        wWeqvNjc+loInM+U7l5FnfIqETc6z9cDpEXJfv+NmJNWpGl1nKijhl2J4uES3dyIxCs22h
+        digLYtU7d82InfGVlPindUnqpJb7uIA=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-400-Qz0C8wdVMsii7hS3oS1eMA-1; Thu, 20 Jan 2022 05:44:58 -0500
-X-MC-Unique: Qz0C8wdVMsii7hS3oS1eMA-1
-Received: by mail-ed1-f69.google.com with SMTP id ee53-20020a056402293500b004022f34edcbso5535190edb.11
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 02:44:58 -0800 (PST)
+ us-mta-620-Isiq02lOPrOQz27YrAieVA-1; Thu, 20 Jan 2022 05:55:20 -0500
+X-MC-Unique: Isiq02lOPrOQz27YrAieVA-1
+Received: by mail-wm1-f70.google.com with SMTP id o3-20020a05600c4fc300b0034aee9534bdso2604012wmq.2
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 02:55:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=kX+pu+Lp5VnrEzf41aOccHYagPzdKOujjotR8Q1un+c=;
-        b=DTj0mDXQn9gVwwEsApKlIjOQ0/dD2vCHR0k6+6y/stIITjWgcfiGJvXCLXOYF0KuNU
-         ljBRn4QZDu9EtitWbWwDxO48Pw6H5XZ2xoOK2yTg2YkCGYPbv+FfgCFsqcAWJhg8DOzc
-         0AY23gHUhfowSPIujVVTRWPnZP5H0DBLklHOAt62knZgAlzyiQIUg9iQikkQ9VGyxmoO
-         QSnnggIbhwQzV4sLTGldOlNJOrm4F3Dgf4Mr1sDogT4j+MPoiO+uNh6AGCiOPGHTVWID
-         I0DVfQVFGaCQY7Zp0Za/zaq/TedFJhWJFa1bL956FXloNj6dTMxrIXu2pKqDMEbv/WT5
-         HTqQ==
-X-Gm-Message-State: AOAM531ZzzMrhH8LjyeP0p1Sqq42NU5jT4PS+LJCgRF5YBym+z84ydS+
-        WmBDI6nH6ysj+GfPO+RxBU7jpZeSFbXpgLGy+jMKBy67JCT36oBdUnZ6uJhublY6ysqZb+63iQX
-        pVznokGYJe5Ql
-X-Received: by 2002:a05:6402:2803:: with SMTP id h3mr36105213ede.241.1642675497185;
-        Thu, 20 Jan 2022 02:44:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyjARLhfYm29sjlnTYujKowEOv25kxTDg3c9udfzGwVbNwty28AzlkAFfqoo+s+jkviUx9CjA==
-X-Received: by 2002:a05:6402:2803:: with SMTP id h3mr36105201ede.241.1642675497034;
-        Thu, 20 Jan 2022 02:44:57 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id l3sm843873ejg.44.2022.01.20.02.44.56
+        bh=R+WMX+rXFBlnmQkd+qto6BGtO5yiQl9ZhpYx2egERj4=;
+        b=1ohgTdIBeU1EtQKja1Il2W+otIQ4SbvOCu+KnRQdm+l7RpG4srXFJlzzHmYftcmC1E
+         TmPP39KPkCwJm0Ty5MTvt8voym2boJa/sFRs1frmV2fg9cx3c2UD49bwTwiyqYX7xyAi
+         MgF5JZ/eK1+SEvZ+0xXb1IwAwbIjiBW8q8ONx9vLelNUl+7Dpn0Jt/pj5/K5iVDXCKdH
+         g2qGu/Sfjm0oAqqZMZD1ldQ2Pz8Zmo9dUJxmlUn2e8lprLGupIpJVaq70cOWPf/M+a7H
+         YrXOJb2Sery6uDnv0kVwzQ9ryNX7F1+OGMVwH4+xnWZPLQjerlt/pj0cyNVqRUfZhssG
+         prMA==
+X-Gm-Message-State: AOAM530yWg80IB+ti6XYWfRS4OKsZAkrEWy9P4ufNEjcNCODsPEG2lWm
+        RL2Mh4BERnFQNMQ2CEjHxI/K+S8lZKTS3wXhO6bgAj7PHmdIF8hRg+wkoFBwLTrK5v4xtDUrDl2
+        2m3nrKv3BMOnW
+X-Received: by 2002:a05:600c:2906:: with SMTP id i6mr8369905wmd.105.1642676119241;
+        Thu, 20 Jan 2022 02:55:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyLH+yMkVEJ5RGRzA3AllZsXHF8U7O92CKX4PkFa7MpIoiWLFs2vtpeFtuyRVq2zHMMtrCF0A==
+X-Received: by 2002:a05:600c:2906:: with SMTP id i6mr8369871wmd.105.1642676118930;
+        Thu, 20 Jan 2022 02:55:18 -0800 (PST)
+Received: from redhat.com ([2.55.158.216])
+        by smtp.gmail.com with ESMTPSA id i8sm2521246wmq.23.2022.01.20.02.55.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jan 2022 02:44:56 -0800 (PST)
-Date:   Thu, 20 Jan 2022 11:44:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Thu, 20 Jan 2022 02:55:18 -0800 (PST)
+Date:   Thu, 20 Jan 2022 05:55:14 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [RFC PATCH v3 7/9] bpf: Add kprobe link for attaching raw kprobes
-Message-ID: <Yek9Jq1UVa8fq91n@krava>
-References: <164260419349.657731.13913104835063027148.stgit@devnote2>
- <164260427009.657731.15292670471943106202.stgit@devnote2>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 07/12] virtio: queue_reset: pci: support
+ VIRTIO_F_RING_RESET
+Message-ID: <20220120055227-mutt-send-email-mst@kernel.org>
+References: <20220120064303.106639-1-xuanzhuo@linux.alibaba.com>
+ <20220120064303.106639-8-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <164260427009.657731.15292670471943106202.stgit@devnote2>
+In-Reply-To: <20220120064303.106639-8-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 19, 2022 at 11:57:50PM +0900, Masami Hiramatsu wrote:
+On Thu, Jan 20, 2022 at 02:42:58PM +0800, Xuan Zhuo wrote:
+> This patch implements virtio pci support for QUEUE RESET.
+> 
+> Performing reset on a queue is divided into two steps:
+> 
+> 1. reset_vq: reset one vq
+> 2. enable_reset_vq: re-enable the reset queue
+> 
+> In the first step, these tasks will be completed:
+>    1. notify the hardware queue to reset
+>    2. recycle the buffer from vq
+>    3. delete the vq
+> 
+> When deleting a vq, vp_del_vq() will be called to release all the memory
+> of the vq. But this does not affect the process of deleting vqs, because
+> that is based on the queue to release all the vqs. During this process,
+> the vq has been removed from the queue.
+> 
+> When deleting vq, info and vq will be released, and I save msix_vec in
+> vp_dev->vqs[queue_index]. When re-enable, the current msix_vec can be
+> reused. And based on intx_enabled to determine which method to use to
+> enable this queue.
+> 
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-SNIP
+There's something I don't understand here. It looks like
+you assume that when you reset a queue, you also
+reset the mapping from queue to event vector.
+The spec does not say it should, and I don't think it's
+useful to extend spec to do it - we already have a simple
+way to tweak the mapping.
 
-> +static int kprobe_link_prog_run(struct bpf_kprobe_link *kprobe_link,
-> +				struct pt_regs *regs)
+Avoid doing that, and things will be much easier, with no need
+to interact with a transport, won't they?
+
+
+> ---
+>  drivers/virtio/virtio_pci_common.c | 49 ++++++++++++++++++++
+>  drivers/virtio/virtio_pci_common.h |  4 ++
+>  drivers/virtio/virtio_pci_modern.c | 73 ++++++++++++++++++++++++++++++
+>  3 files changed, 126 insertions(+)
+> 
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> index 5afe207ce28a..28b5ffde4621 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -464,6 +464,55 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  	return vp_find_vqs_intx(vdev, nvqs, vqs, callbacks, names, ctx);
+>  }
+>  
+> +#define VQ_IS_DELETED(vp_dev, idx) ((unsigned long)vp_dev->vqs[idx] & 1)
+> +#define VQ_RESET_MSIX_VEC(vp_dev, idx) ((unsigned long)vp_dev->vqs[idx] >> 2)
+> +#define VQ_RESET_MARK(msix_vec) ((void *)(long)((msix_vec << 2) + 1))
+> +
+> +void vp_del_reset_vq(struct virtio_device *vdev, u16 queue_index)
 > +{
-> +	struct bpf_trace_run_ctx run_ctx;
-> +	struct bpf_run_ctx *old_run_ctx;
-> +	int err;
+> +	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> +	struct virtio_pci_vq_info *info;
+> +	u16 msix_vec;
 > +
-> +	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-> +		err = 0;
-> +		goto out;
-> +	}
+> +	info = vp_dev->vqs[queue_index];
 > +
-> +	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> +	run_ctx.bpf_cookie = kprobe_link->bpf_cookie;
+> +	msix_vec = info->msix_vector;
 > +
-> +	rcu_read_lock();
-> +	migrate_disable();
-> +	err = bpf_prog_run(kprobe_link->link.prog, regs);
-> +	migrate_enable();
-> +	rcu_read_unlock();
+> +	/* delete vq */
+> +	vp_del_vq(info->vq);
 > +
-> +	bpf_reset_run_ctx(old_run_ctx);
-> +
-> + out:
-> +	__this_cpu_dec(bpf_prog_active);
-> +	return err;
+> +	/* Mark the vq has been deleted, and save the msix_vec. */
+> +	vp_dev->vqs[queue_index] = VQ_RESET_MARK(msix_vec);
 > +}
 > +
-> +static void kprobe_link_entry_handler(struct fprobe *fp, unsigned long entry_ip,
-> +				      struct pt_regs *regs)
+> +struct virtqueue *vp_enable_reset_vq(struct virtio_device *vdev,
+> +				     int queue_index,
+> +				     vq_callback_t *callback,
+> +				     const char *name,
+> +				     const bool ctx)
 > +{
-> +	struct bpf_kprobe_link *kprobe_link;
+> +	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> +	struct virtqueue *vq;
+> +	u16 msix_vec;
 > +
-> +	/*
-> +	 * Because fprobe's regs->ip is set to the next instruction of
-> +	 * dynamic-ftrace insturction, correct entry ip must be set, so
-> +	 * that the bpf program can access entry address via regs as same
-> +	 * as kprobes.
+> +	if (!VQ_IS_DELETED(vp_dev, queue_index))
+> +		return ERR_PTR(-EPERM);
+> +
+> +	msix_vec = VQ_RESET_MSIX_VEC(vp_dev, queue_index);
+> +
+> +	if (vp_dev->intx_enabled)
+> +		vq = vp_setup_vq(vdev, queue_index, callback, name, ctx,
+> +				 VIRTIO_MSI_NO_VECTOR);
+> +	else
+> +		vq = vp_enable_vq_msix(vdev, queue_index, callback, name, ctx,
+> +				       msix_vec);
+> +
+> +	if (IS_ERR(vq))
+> +		vp_dev->vqs[queue_index] = VQ_RESET_MARK(msix_vec);
+> +
+> +	return vq;
+> +}
+> +
+>  const char *vp_bus_name(struct virtio_device *vdev)
+>  {
+>  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> index 23f6c5c678d5..96c13b1398f8 100644
+> --- a/drivers/virtio/virtio_pci_common.h
+> +++ b/drivers/virtio/virtio_pci_common.h
+> @@ -115,6 +115,10 @@ int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>  		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>  		const char * const names[], const bool *ctx,
+>  		struct irq_affinity *desc);
+> +void vp_del_reset_vq(struct virtio_device *vdev, u16 queue_index);
+> +struct virtqueue *vp_enable_reset_vq(struct virtio_device *vdev, int queue_index,
+> +				     vq_callback_t *callback, const char *name,
+> +				     const bool ctx);
+>  const char *vp_bus_name(struct virtio_device *vdev);
+>  
+>  /* Setup the affinity for a virtqueue:
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index 5455bc041fb6..fbf87239c920 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
+>  	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
+>  			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
+>  		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
+> +
+> +	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
+> +		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
+>  }
+>  
+>  /* virtio config->finalize_features() implementation */
+> @@ -176,6 +179,72 @@ static void vp_reset(struct virtio_device *vdev)
+>  	vp_disable_cbs(vdev);
+>  }
+>  
+> +static int vp_modern_reset_vq(struct virtio_device *vdev, u16 queue_index,
+> +			      vq_reset_callback_t *callback, void *data)
+> +{
+> +	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> +	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
+> +	struct virtio_pci_vq_info *info;
+> +	u16 msix_vec;
+> +	void *buf;
+> +
+> +	if (!virtio_has_feature(vdev, VIRTIO_F_RING_RESET))
+> +		return -ENOENT;
+> +
+> +	vp_modern_set_queue_reset(mdev, queue_index);
+> +
+> +	/* After write 1 to queue reset, the driver MUST wait for a read of
+> +	 * queue reset to return 1.
 > +	 */
-> +	instruction_pointer_set(regs, entry_ip);
-
-ok, so this actually does the stall for me.. it changes
-the return address back to repeat the call again
-
-bu I think it's good idea to carry the original ip in regs
-(for bpf_get_func_ip helper) so I think we need to save it
-first and restore after the callback
-
-I'll make the fix and add cookie change Andrii asked for
-on top of your ftrace changes and let you know
-
-thanks,
-jirka
-
-> +	kprobe_link = container_of(fp, struct bpf_kprobe_link, fp);
-> +	kprobe_link_prog_run(kprobe_link, regs);
+> +	while (vp_modern_get_queue_reset(mdev, queue_index) != 1)
+> +		msleep(1);
+> +
+> +	info = vp_dev->vqs[queue_index];
+> +	msix_vec = info->msix_vector;
+> +
+> +	/* Disable VQ callback. */
+> +	if (vp_dev->per_vq_vectors && msix_vec != VIRTIO_MSI_NO_VECTOR)
+> +		disable_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec));
+> +
+> +	while ((buf = virtqueue_detach_unused_buf(info->vq)) != NULL)
+> +		callback(vdev, buf, data);
+> +
+> +	vp_del_reset_vq(vdev, queue_index);
+> +
+> +	return 0;
 > +}
 > +
-
-SNIP
+> +static struct virtqueue *vp_modern_enable_reset_vq(struct virtio_device *vdev,
+> +						   u16 queue_index,
+> +						   vq_callback_t *callback,
+> +						   const char *name,
+> +						   const bool *ctx)
+> +{
+> +	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> +	struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
+> +	struct virtqueue *vq;
+> +	u16 msix_vec;
+> +
+> +	if (!virtio_has_feature(vdev, VIRTIO_F_RING_RESET))
+> +		return ERR_PTR(-ENOENT);
+> +
+> +	/* check queue reset status */
+> +	if (vp_modern_get_queue_reset(mdev, queue_index) != 1)
+> +		return ERR_PTR(-EBUSY);
+> +
+> +	vq = vp_enable_reset_vq(vdev, queue_index, callback, name, ctx);
+> +	if (IS_ERR(vq))
+> +		return vq;
+> +
+> +	vp_modern_set_queue_enable(&vp_dev->mdev, vq->index, true);
+> +
+> +	msix_vec = vp_dev->vqs[queue_index]->msix_vector;
+> +	if (vp_dev->per_vq_vectors && msix_vec != VIRTIO_MSI_NO_VECTOR)
+> +		enable_irq(pci_irq_vector(vp_dev->pci_dev, msix_vec));
+> +
+> +	return vq;
+> +}
+> +
+>  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
+>  {
+>  	return vp_modern_config_vector(&vp_dev->mdev, vector);
+> @@ -395,6 +464,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+>  	.set_vq_affinity = vp_set_vq_affinity,
+>  	.get_vq_affinity = vp_get_vq_affinity,
+>  	.get_shm_region  = vp_get_shm_region,
+> +	.reset_vq	 = vp_modern_reset_vq,
+> +	.enable_reset_vq = vp_modern_enable_reset_vq,
+>  };
+>  
+>  static const struct virtio_config_ops virtio_pci_config_ops = {
+> @@ -413,6 +484,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
+>  	.set_vq_affinity = vp_set_vq_affinity,
+>  	.get_vq_affinity = vp_get_vq_affinity,
+>  	.get_shm_region  = vp_get_shm_region,
+> +	.reset_vq	 = vp_modern_reset_vq,
+> +	.enable_reset_vq = vp_modern_enable_reset_vq,
+>  };
+>  
+>  /* the PCI probing function */
+> -- 
+> 2.31.0
 
