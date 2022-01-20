@@ -2,113 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB48849529E
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 17:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBED4952B7
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 17:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377069AbiATQur (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jan 2022 11:50:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
+        id S1377139AbiATQ4d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jan 2022 11:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346704AbiATQuq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jan 2022 11:50:46 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91EDEC061574
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 08:50:46 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id s2-20020a17090ad48200b001b501977b23so5706661pju.2
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 08:50:46 -0800 (PST)
+        with ESMTP id S1377142AbiATQ4c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jan 2022 11:56:32 -0500
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CB0C061574
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 08:56:32 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id v192so3983061vkv.4
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 08:56:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3cJe1dqPAL7rP+GUm7NwjMuLsz1alMs+mZXCZ7oHtGU=;
-        b=okgkw8TAupxq9Tudeh/RUpzBnRn0aOFedu88REkxLHcgC2LW+2kytL0la8UZiUeSYq
-         PwIpvjU6K5NFkpHo+xVt7jMvdtpD+1/t8jEcxWLjwjLKtPWZEV6FJX0G/SnPfduCgx5v
-         ZftiUDyzjg8pkpK7WLdHxvJpxsnN598xt0rT/fwRRUtYxXqhM9zXnOfnq9a0JlQYGrdE
-         nuuWiyeKHGF81FpV4Ppi2BhSJ8PS0ntTj95bulTQ7iUQRbWEs+6p225fzqHQ9uZPI0Ha
-         E6HgsyvP+nsR+3bAw+8p5VGLcF6hQqg+ZIELtD23AsnMyBjw/LHE/4q0B9JUGe0K/ihy
-         xGAQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P4jZfUY/qRPONIBBgDoVlIjUx5YyA/uc0D6uW1XBFnM=;
+        b=KN38RP/FtPyJ2MiSqvW0/gZV41scI7f6+sk2ORPGc/OXg9iz0/A+z6FdS+osVBbZFY
+         a1VJW0k/mmKUYdBxCiRzMX5sQilbK+Q1EDLeh1ALPZZiLb0dhfYzwK0eF3qCUMbB5L7A
+         1sdn5xhZOpWGcyVi/Ut0Nh72g7Dd/ayNjEUCOLGFhkkgzwDKAdFzczeiuOg48FjqK0Xb
+         srv803mLeLqf2k4aS+BQuSIIGsOS44W0P54lvxLcH4D/y79NLVbDZT711j2Y7CbGFTb4
+         8opENEPInLJr1PjfrRN6Tomddf9qwHe3hQnly8QCtNp7wu4/9oG2GvPFDUynYArwA29T
+         Lwcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3cJe1dqPAL7rP+GUm7NwjMuLsz1alMs+mZXCZ7oHtGU=;
-        b=ELtKqvCk7r2oYco1ZqajPUt4ZXsTxCZZBRgnMTw3T8FfrS6xAe9vsni1VzZ1Gn1ZHk
-         lwhBd3Vm0Wg0hotkX8tnfOeWVMQWeWVJZWWBvLCiGGTuyG+nkdcMQ4hsZpHKCWBjxJO/
-         0uqLDEm7n5UpzjG0dCf/hppQR4l7xHPCybPZzU9dQNcKKbESyRc/OTH3bruLzBxsRRSo
-         avyMsmbDWlHy0oaCC2SBj7GMDXZge92NuwLo2dv2eqsUL2CWG6Bjt+AsFAvb4Y/B8wBv
-         3/Kkh0jyIoLbtHblctOnxia8VcFbZaqGY2nAWY4ArqqKWXd9rQdzi+XkIGdlm0Ydoj3e
-         aTVA==
-X-Gm-Message-State: AOAM530gmAMMZTSJXHoFJAUUpzstkUkrcoYh4Hh2NKKdrvDruKrIXPbJ
-        z9HpCS4P5Oj6GvrZR7aNGu2+0zv30vfgYQ==
-X-Google-Smtp-Source: ABdhPJy4cCPcEskOP73YcxUhqQb34n/HxcctnTam0ubtvo6yB29g5HPr/nmcK9yr0blyabIYpA1J7w==
-X-Received: by 2002:a17:903:41cf:b0:14a:f1af:15cc with SMTP id u15-20020a17090341cf00b0014af1af15ccmr8792609ple.122.1642697445839;
-        Thu, 20 Jan 2022 08:50:45 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:502e:73f4:8af1:9522])
-        by smtp.gmail.com with ESMTPSA id q9sm3898872pfj.113.2022.01.20.08.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jan 2022 08:50:45 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Do not fail build if CONFIG_NF_CONNTRACK=m/n
-Date:   Thu, 20 Jan 2022 22:19:32 +0530
-Message-Id: <20220120164932.2798544-1-memxor@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P4jZfUY/qRPONIBBgDoVlIjUx5YyA/uc0D6uW1XBFnM=;
+        b=0uf7moB46fJg8m1zpzg+kFc6l8ET1MorKceK9mMdtkbvBKJJDTijMY30NeyOxx8t0t
+         ys/SvPdb08Vm8zM523YmEuaEz30I5Tbu9N/lkWR8lOjvk903CO7r5SpAq4SMtlcIuQ7+
+         l1L9ZVcVoBUs8mxRzM3PK5B+bGycQGHZHZ6hZHmEOao4WPkWHpJjsEg1U9G79EeurTsI
+         dJGLG0uOGu8+dD//FP5jHmkPeLOLoraOA0FTkVnPre5AxRrNBmie1YOM4Em5rp02740D
+         ljxNj84LnwcJHY4CMenOlqzZ01Xg5Pyiy2Q5bqEQ074xNVG2xFoAxlavNHuQOcK1yojc
+         CkDw==
+X-Gm-Message-State: AOAM533ozT7k4W/uAS/mFp7mHaOfjMRdVyRdv56lFX+BOG875mbmIIRX
+        TT82pXFvUwZIIiBfpgin+kmlJ9cSvp9qGWEQ/l7KcZ9Yn0eNeg==
+X-Google-Smtp-Source: ABdhPJzOKjiKUoOLVwlAQLuisiDlrq63eOJA8UFUvT9JPH7wK/bCk8VjZL2zoBgwT4HrqsyZVecraOI05L6sRjtXPvs=
+X-Received: by 2002:a05:6122:90a:: with SMTP id j10mr15025661vka.12.1642697790994;
+ Thu, 20 Jan 2022 08:56:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <YeadK5ykhh7slnXL@debian.home> <CAADnVQ+SqfhWP_wG8N3d-LH_ZZKAbudTnmBbOhCV2f-nJax_BQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+SqfhWP_wG8N3d-LH_ZZKAbudTnmBbOhCV2f-nJax_BQ@mail.gmail.com>
+From:   Gabriele <phoenix1987@gmail.com>
+Date:   Thu, 20 Jan 2022 16:56:20 +0000
+Message-ID: <CAGnuNNtC0y02d02dM-g1RC0DP4JmV+if+H=cz3UqbkDpse11uQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/1] bpf: Add bpf_copy_from_user_remote to read a
+ process VM given its PID.
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Some users have complained that selftests fail to build when
-CONFIG_NF_CONNTRACK=m. It would be useful to allow building as long as
-it is set to module or built-in, even though in case of building as
-module, user would need to load it before running the selftest. Note
-that this also allows building selftest when CONFIG_NF_CONNTRACK is
-disabled.
+On Wed, 19 Jan 2022 at 21:44, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> So how exactly is it going to be used with a pid provided by a tool?
+>
+> I'm guessing if bpf prog attaches to some syscall it will filter out
+> all events that don't match the pid.
+> Then when current_pid == user_provided_pid it will read memory.
+> In such case the prog can use bpf_get_current_task_btf()
+> and Kenny's bpf_access_process_vm(), right?
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- tools/testing/selftests/bpf/progs/test_bpf_nf.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+Hi Alexei
 
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_nf.c b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-index 6f131c993c0b..d048d355a69f 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_nf.c
-@@ -17,18 +17,27 @@ int test_enonet_netns_id = 0;
- int test_enoent_lookup = 0;
- int test_eafnosupport = 0;
+If I understand your suggestion correctly, one would call
+bpf_get_current_pid_tgid to get the pid and match it to the one passed
+by the user-space part of the BPF program, and then get the current
+task to pass to Kenny's helper (but wouldn't the existing
+bpf_copy_from_user be enough in this case?).
 
-+struct nf_conn;
-+
-+struct bpf_ct_opts___local {
-+	s32 netns_id;
-+	s32 error;
-+	u8 l4proto;
-+	u8 reserved[3];
-+};
-+
- struct nf_conn *bpf_xdp_ct_lookup(struct xdp_md *, struct bpf_sock_tuple *, u32,
--				  struct bpf_ct_opts *, u32) __ksym;
-+				  struct bpf_ct_opts___local *, u32) __ksym;
- struct nf_conn *bpf_skb_ct_lookup(struct __sk_buff *, struct bpf_sock_tuple *, u32,
--				  struct bpf_ct_opts *, u32) __ksym;
-+				  struct bpf_ct_opts___local *, u32) __ksym;
- void bpf_ct_release(struct nf_conn *) __ksym;
+I've had some further thoughts about my current and future use cases
+and I think they can be summarised in two scenarios:
 
- static __always_inline void
- nf_ct_test(struct nf_conn *(*func)(void *, struct bpf_sock_tuple *, u32,
--				   struct bpf_ct_opts *, u32),
-+				   struct bpf_ct_opts___local *, u32),
- 	   void *ctx)
- {
--	struct bpf_ct_opts opts_def = { .l4proto = IPPROTO_TCP, .netns_id = -1 };
-+	struct bpf_ct_opts___local opts_def = { .l4proto = IPPROTO_TCP, .netns_id = -1 };
- 	struct bpf_sock_tuple bpf_tuple;
- 	struct nf_conn *ct;
+Scenario 1: A pid is passed to the user-space part of a BPF program
+and used to filter out as suggested above in kernel-space. Then
+Kenny's helper is enough.
 
---
-2.34.1
+Scenario 2: A pid != current_pid is derived in the kernel part of BPF
+from somewhere in user-space and extra information needs to be
+retrieved from the remote process "represented" by this pid.
 
+I would expect many observability tools to fall within Scenario 1.
+However, a debugger might be an example of a tool that falls under
+Scenario 2 too. E.g. a function that takes a pid as an argument is
+traced and one wants to collect information from the VM of the process
+"identified" by it. Then the filtering out described above does not
+apply and we need either a helper like the one I'm proposing, or to
+expose find_get_task_by_vpid to BPF. More concretely, we might be
+tracing a native binary application that refers to a runtime like
+Python by pid and we might want to be able to return, e.g., the number
+of sub-interpreters or Python threads that are currently running, from
+events triggered for the native binary.
+
+Cheers,
+Gab
