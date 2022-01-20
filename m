@@ -2,75 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC624495473
-	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 19:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F61D495497
+	for <lists+bpf@lfdr.de>; Thu, 20 Jan 2022 20:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377368AbiATSwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 20 Jan 2022 13:52:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
+        id S1377391AbiATTIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 20 Jan 2022 14:08:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377354AbiATSwO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 20 Jan 2022 13:52:14 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F94FC061574
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 10:52:13 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id x22so25111170lfd.10
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 10:52:13 -0800 (PST)
+        with ESMTP id S1346936AbiATTIL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 20 Jan 2022 14:08:11 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B300C061574;
+        Thu, 20 Jan 2022 11:08:10 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id s11so8083627ioe.12;
+        Thu, 20 Jan 2022 11:08:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=9Fk/SIGHdNTnb/4ALIp+d7fHRN+OGq5AmFDA567rUGg=;
-        b=sk1T3U6UsxTjgt3bkR1zIKGLUHDjc4k+QP+8lt3xxv69gnYqPM2XKmN22ynapflfT1
-         2OM3GklSrY3eMK/+zI8bdt5T4Y4LR1K3zZ6jqMjXFs3x4zw/RPpK7xT2fH/er47PnooF
-         KCRfQUwSQMCD/uDT57n4JFJdF4TssNBMj+2TU=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c+32A77SAS8JOBp65RSQcGqcTi5g/XrAgKrbyrEwA5I=;
+        b=Uv70c5YW2JjG4J4DNfh9EeK8tvUNkxWKiW4sdE7oYBjKMYy6TWL6QZXR5eCwNvJJPK
+         iWGRx5YrkZZpxBPsTxe60ab+ggAWITdDuUZKJ0vPv8qL1zfe2jNvwFD7CGwN4sxcBbA3
+         ROVn1WK7RHKrXvBMtT1ZBbE+D0+5w+cFUoPuOjbkld0R+ztSDsEijQ7YnYymg0Azaqzy
+         R8FwosuiujRomBG8sP6atdX26mHieVUIiQxcXEEHPO2vshyRSSNbZlhJubIecAq1t4BQ
+         LXMvEgTsKuNVIERFfUN84KoCv9To7i+OgbTxPEFV2+calssgF8hOKToC38z8E+zpTAqe
+         ptoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=9Fk/SIGHdNTnb/4ALIp+d7fHRN+OGq5AmFDA567rUGg=;
-        b=JxPY0fATRygZL3hFb9yPXJm5Jm5sKIfV+5umQ1mqvUJtPO+HadzZQ5OXRD5Dt6Bo+l
-         azUklYFi0HoHggPOLXmHSao1VmpaHaUNrHrqD2lA7/kCS/MPqe5NGtP7YT/3jtKhOC7B
-         mHuDth+GnbLI4vsCk3/wxqPa48vnMxbyDOpFeLZnpRhnfq2Kdk0JhW4hGthjL8g4Bnq1
-         AfmeFr9PVBsLND768ujEAHzTNjDN94lqN6wxL/i+Hxk6dhk1bC0bamoHALKWcRaeVb9F
-         I/TPevRKl5XFyF3h/8hQ1AUIsJSo210O9C0D9LSOXt1TiplzCL01WWS3uL+GosFmVC0l
-         pn7A==
-X-Gm-Message-State: AOAM5303jyHC5rD4VPBao+cFtnyz7KF/vefou7p8IYncJu9ZkVggYcee
-        Vtu/nXb3N/iL6GhH7IM/oJ48uAsUmSZy9Q==
-X-Google-Smtp-Source: ABdhPJxXzWLIS3v70w+pK+nx6x8gjZNtZijexZR+g1GXPSGfOskfPZHLptra3CbDDY2b8nVHvkvSvg==
-X-Received: by 2002:a05:6512:c29:: with SMTP id z41mr423705lfu.160.1642704731967;
-        Thu, 20 Jan 2022 10:52:11 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
-        by smtp.gmail.com with ESMTPSA id s7sm3210lfs.23.2022.01.20.10.52.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jan 2022 10:52:11 -0800 (PST)
-References: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Felix Maurer <fmaurer@redhat.com>
-Cc:     bpf@vger.kernel.org, sdf@google.com, kafai@fb.com, ast@kernel.org
-Subject: Re: [PATCH bpf v2] selftests: bpf: Fix bind on used port
-In-reply-to: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
-Date:   Thu, 20 Jan 2022 19:52:11 +0100
-Message-ID: <87tudynstg.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c+32A77SAS8JOBp65RSQcGqcTi5g/XrAgKrbyrEwA5I=;
+        b=FBH64kFbaMlpUv4tocJCnPRfEko6nBc/rP1bgbAM2SWDxO/YQ4H9Hx9WPFVIu1pGeJ
+         +lYcWRgJ6ArOzABg2iUNFbjyPf3XUXNxtltsO4Q7RUFSBB7+fvoksEAE99TveGdx587v
+         ceRRxCCbhnmjfPWTWGj7kd7sAuVdOKqJIvB3wX16N6hpkud+OZ5Qreu9XoLynKt9if/C
+         FFIdunZ8qtR94y6TNeymYFInJ9vtDyjVSj96ZyHxcV1B0aElHfwdMTkSsSmutEeL4Igj
+         ugGgncF5+efq9cEuXzUoD1vxvrmintae6qCx2tyY9X0j4aOMg12co4O/WbRXFMbGtnrt
+         p1lA==
+X-Gm-Message-State: AOAM532kDaVYVXR7uO/Besb8ujBMA8s86DXbyzJrIgJDTo1+8FMgjL1t
+        GP4ViC9HyyHOjD9OmjpjRJoHMDz4Xv4URIW2Ww4=
+X-Google-Smtp-Source: ABdhPJzuNrj9j8UouuqH6KAxX9EkTLqxtyRrMoq4dxPLpQ26fKRNa3K/g5iPIica6P9Bxi4f+TI7qq7UUx/ZM3MQ0ec=
+X-Received: by 2002:a02:bb8d:: with SMTP id g13mr88386jan.103.1642705689957;
+ Thu, 20 Jan 2022 11:08:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <267a35a6-a045-c025-c2d9-78afbf6fc325@isovalent.com>
+ <CAEf4Bzbu4wc9anr19yG1AtFEcnxFsBrznynkrVZajQT1x_o6cA@mail.gmail.com> <ac3f95ed-bead-e8ea-b477-edcbd809452c@isovalent.com>
+In-Reply-To: <ac3f95ed-bead-e8ea-b477-edcbd809452c@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 Jan 2022 11:07:58 -0800
+Message-ID: <CAEf4BzaiUbAT4hBKTVYadGdygccA3c6jgPsu8VW9sLo+4Ofsvw@mail.gmail.com>
+Subject: Re: Bpftool mirror now available
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Thaler <dthaler@microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 18, 2022 at 04:11 PM CET, Felix Maurer wrote:
-> The bind_perm BPF selftest failed when port 111/tcp was already in use
-> during the test. To fix this, the test now runs in its own network name
-> space.
+On Thu, Jan 20, 2022 at 4:35 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> To use unshare, it is necessary to reorder the includes. The style of
-> the includes is adapted to be consistent with the other prog_tests.
+> 2022-01-19 22:25 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Wed, Jan 19, 2022 at 6:47 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> v2: Replace deprecated CHECK macro with ASSERT_OK
+> [...]
 >
-> Fixes: 8259fdeb30326 ("selftests/bpf: Verify that rebinding to port < 1024 from BPF works")
-> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-> ---
+> >> 2. Because it is easier to compile and ship, this mirror should
+> >> hopefully simplify bpftool packaging for distributions.
+> >
+> > Right, I hope disto packagers will be quick to adopt the new mirror
+> > repo for packaging bpftool. Let's figure out bpftool versioning schema
+> > as a next step. Given bpftool heavily relies on libbpf and isn't
+> > really coupled to kernel versions, it makes sense for bpftool to
+> > reflect libbpf version rather than kernel's. WDYT?
+>
+> Personally, I don't mind finding another scheme, as long as we keep it
+> consistent between the reference sources in the kernel repo and the mirror.
+>
+> I also agree that it would make sense to align it to libbpf, but that
+> would mean going backward on the numbers (current version is 5.16.0,
+> libbpf's is 0.7.0) and this will mess up with every script trying to
+> compare versions. We could maybe add a prefix to indicate that the
+> scheme has changed ('l_0.7.0), but similarly, it would break a good
+> number of tools that expect semantic versioning, I don't think this is
+> any better.
+>
+> The other alternative I see would be to pick a different major version
+> number and arbitrarily declare that bpftool's version is aligned on
+> libbpf's, but with a difference of 6 for the version number. So we would
+> start at 6.7.0 and reach 7.0.0 when libbpf 1.0.0 is released. This is
+> not ideal, but we would keep some consistency, and we can always add the
+> version of libbpf used for the build to "bpftool version"'s output. How
+> would you feel about it? Did you have something else in mind?
 
-Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+Yeah, this off-by-6 major version difference seems ok-ish to me, I
+don't mind that. Another alternative is to have a completely
+independent versioning (and report used libbpf version in bpftool
+--version output  separately). But I think divorcing it from kernel
+version is a must, too much confusion.
+
+>
+> Quentin
