@@ -2,183 +2,414 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D9F496510
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 19:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C40D496542
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 19:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382131AbiAUSbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 13:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        id S229642AbiAUSur (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 13:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382138AbiAUSbM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 13:31:12 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16731C06173D;
-        Fri, 21 Jan 2022 10:31:12 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id o10so8416456ilh.0;
-        Fri, 21 Jan 2022 10:31:12 -0800 (PST)
+        with ESMTP id S229744AbiAUSuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 13:50:23 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B6DC06173D
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 10:50:23 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id g67-20020a25db46000000b0061437d5e4b3so11485210ybf.10
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 10:50:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=7RosCskWkdt9rxG/Kn964mKmVE3e+ONowkWWNdWq2eU=;
-        b=WZxNZciYsovV1h2ayaikh9Jgy/b9nmUKn/GF2pyVnUpEmgikDCEWHt/fQ49tTBak2C
-         CzD07FGtY9d56lNjj9oovqBZcgCe6jjYExx/0yDsK3z3w/4ghXTLAVyvRUN2myRSsp4h
-         TrsBfeBIKl3KULenDa5fmMMEpFZui8b3Iw+pxe6tF/ukyonDMcE7Ae1fnTXpJnBVG+kJ
-         c1AO2B8QRmQZcSKcbdaQM/KKf2hXpWxlD3fDjY977uPkin6SyZSeTaDTmsJUqzPU1pu4
-         Ze2yOb9ykMHnStoEsJmd5wLAvzv4ttAeJd18DtYVDIpZKSvc+EzHTe2hRKjZkgSm+1FE
-         6Lzw==
+        bh=1H4meivw/loyKrsClb/KtN41lQLgtIBeTyTOmK+neXM=;
+        b=qIeSx192yWlft4UZfkNhlHgQAabZL6NxhcgDjMt6426XQtbTInvnTsSEwKRnbe/Uak
+         SkVKspo8tAAMGKY9LU6JHHiC5X0ByZfN26g4QsDHoGt/Y57dJKlcg2rKXWaUjn4Fkamn
+         z9Ne1j+djpiwi25dCDHcZHIVdr5igqhetp0xRvgMmhxCF73YbdQKd47wO4s6TKX654n/
+         A1/3XjnDIgmSLlblHCY7f0L+0NG75dBdxTUbKoZIuLJFziTOJXUTTNIItidA6P89ifVS
+         8NXlIxxP8TfZX+4MnqUXJ4Ej2uAd/+XggRO76paBB7sf/EUD6IhUM92Ywo4CVY7Gekj1
+         xghA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7RosCskWkdt9rxG/Kn964mKmVE3e+ONowkWWNdWq2eU=;
-        b=bQd8haz00y0ZrKOyRseeucG6sd1Db1rxd/SE1W00oUXGshXaS/CXwMZ7Goz13RlM0/
-         p/fSRggLRfwf4nvHEZqZqz/VoQ4FOPbVyngeag+WnRhAElLQbq5mDlJ3D2wwZhu+VPz6
-         MYlGWb1XBOmp52ai2XoOFGpZyQuycvihL7nqB0NyGu1YbYWyqV9u5LsiK+OIt0gRIkOM
-         SfpPuymMP0xTay5kMEt5Zdx2Ywjo8Jy5BwcD/gNvsyxaHNVf29UAU57/08lqVtXQsqpm
-         TVpV9yf1F5DBcFCXGerJYpWs4heVVhgZOqtJjMIkb2EGK799EvwNmi2obSWCiPW6uuPD
-         k62w==
-X-Gm-Message-State: AOAM533WAR0JfK+q8UIkhIeHyW83j+IXqV4S6MLWLXhMFzpem0RDRG6U
-        y0e68TbTp/0t5JBbtMqKfmF3sYwXJei2N7DT0L8=
-X-Google-Smtp-Source: ABdhPJxSWA27NWAnAj0jlHUI7cKQDQkUxNDLI6I1Kg1bkjWhmPS2GhRYr1675hwEJJXODWWGRB+RCTzbZ7Gv1hKHJqA=
-X-Received: by 2002:a05:6e02:1749:: with SMTP id y9mr2732285ill.252.1642789871449;
- Fri, 21 Jan 2022 10:31:11 -0800 (PST)
-MIME-Version: 1.0
-References: <1642678950-19584-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1642678950-19584-1-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Jan 2022 10:31:00 -0800
-Message-ID: <CAEf4BzbG8Rx1NXiHQrsnJdXMPmW_VQ9CCJDe9Gf9FWv3Q7vtnA@mail.gmail.com>
-Subject: Re: [RFC bpf-next 0/3] libbpf: name-based u[ret]probe attach
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=1H4meivw/loyKrsClb/KtN41lQLgtIBeTyTOmK+neXM=;
+        b=ysFCy5sYohkXS8jYfG9L7y8JMnGDUJd5s0LmxS4EPsCLBwM5B2Gtb1Rhd2qOLgd3Mz
+         lYjvjdNi45Wy39srgfi5qQ5kcyZiSk2SUgqEdfEow2NnIyIzAqg1s9fAXual01ww6fj/
+         +kZ9/bEYzPSFw2toXYcpLFpo4EYMDNto3UscF1Dr5HPbfC5gPMGPAPcy63KctKLIBCaU
+         8STYdaFo+DZmw3sVGSSXJMYS6jtTBXKYFZh1QUfv7opdZQnrQKjhjqgvI0ukGtlEM+s3
+         NEV1lZYUuu9Wt7wAL5V0PmN7BBSTrLtDQFPxlktKSxq+b54XHOJ6TivBlQf+bQNg+77k
+         FFLg==
+X-Gm-Message-State: AOAM531jk8yBpQR1hrZDOmhRiwiC/wduQyAqroMcz1ITdF4wJKpkW1wD
+        WrndrVgTl2CvCoDa6TFAOOFyqXg=
+X-Google-Smtp-Source: ABdhPJwKOr3Rs+R/7DOdiGPkCkkMkDHRQ0bCr89pjPtZ2+F7WZu8evEqD5UGVoLgEN6V02Z4hw6jgRY=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:a647:98e5:9f:3032])
+ (user=sdf job=sendgmr) by 2002:a25:e78a:: with SMTP id e132mr8291840ybh.515.1642791022754;
+ Fri, 21 Jan 2022 10:50:22 -0800 (PST)
+Date:   Fri, 21 Jan 2022 10:50:20 -0800
+In-Reply-To: <20220121073051.4180328-1-kafai@fb.com>
+Message-Id: <YesAbHLRYBJ8FwiK@google.com>
+Mime-Version: 1.0
+References: <20220121073026.4173996-1-kafai@fb.com> <20220121073051.4180328-1-kafai@fb.com>
+Subject: Re: [RFC PATCH v3 net-next 4/4] bpf: Add __sk_buff->mono_delivery_time
+ and handle __sk_buff->tstamp based on tc_at_ingress
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 3:43 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> This patch series is a refinement of the RFC patchset [1], focusing
-> on support for attach by name for uprobes and uretprobes.  Still
-> marked RFC as there are unresolved questions.
->
-> Currently attach for such probes is done by determining the offset
-> manually, so the aim is to try and mimic the simplicity of kprobe
-> attach, making use of uprobe opts to specify a name string.
->
-> uprobe attach is done by specifying a binary path, a pid (where
-> 0 means "this process" and -1 means "all processes") and an
-> offset.  Here a 'func_name' option is added to 'struct uprobe_opts'
-> and that name is searched for in symbol tables.  If the binary
-> is a program, relative offset calcuation must be done to the
-> symbol address as described in [2].
->
-> Having a name allows us to support auto-attach via SEC()
-> specification, for example
->
-> SEC("uprobe/usr/lib64/libc.so.6/malloc")
->
-> Unresolved questions:
->
->  - the current scheme uses
->
-> u[ret]probe[/]/path/2/binary/function[+offset]
+On 01/20, Martin KaFai Lau wrote:
+> __sk_buff->mono_delivery_time:
+> This patch adds __sk_buff->mono_delivery_time to
+> read and write the mono delivery_time in skb->tstamp.
 
-that / after uprobe is not optional. This should be parsed as
-"uprobe/<path-to-binary>/<func_name>[+<offset>]", in general. If
-<path-to-binary> doesn't have leading '/' it will be just treated as a
-relative path. Otherwise it's going to be ambiguous. So with your
-example SEC("uprobe/usr/lib64/libc.so.6/malloc") you are specifying
-"usr/lib64/libc.so.6", relative path, which is wrong. It has to be
-SEC("uprobe//usr/lib64/libc.so.6/malloc"), however ugly that might
-look.
+> The bpf rewrite is like:
+> /* BPF_READ: __u64 a = __sk_buff->mono_delivery_time; */
+> if (skb->mono_delivery_time)
+> 	a = skb->tstamp;
+> else
+> 	a = 0;
 
->
->    ...as SEC() format for auto-attach, for example
->
-> SEC("uprobe/usr/lib64/libc.so.6/malloc")
->
->    It would be cleaner to delimit binary and function with ':'
->    as is done by bcc.  One simple way to achieve that would be
->    to support section string pre-processing, where instances of
->    ':' are replaced by a '/'; this would get us to supporting
->    a similar probe specification as bcc without the backward
->    compatibility headaches.  I can't think of any valid
->    cases where SEC() definitions have a ':' that we would
->    replace with '/' in error, but I might be missing something.
+> /* BPF_WRITE: __sk_buff->mono_delivery_time = a; */
+> skb->tstamp = a;
+> skb->mono_delivery_time = !!a;
 
-I think at least for separating path and function name using ':' is
-much better. I'd go with
+> __sk_buff->tstamp:
+> The bpf rewrite is like:
+> /* BPF_READ: __u64 a = __sk_buff->tstamp; */
+> if (skb->tc_at_ingress && skb->mono_delivery_time)
+> 	a = 0;
+> else
+> 	a = skb->tstamp;
 
-SEC("uprobe//usr/lib64/libc.so.6:malloc")
+> /* BPF_WRITE: __sk_buff->tstamp = a; */
+> skb->tstamp = a;
+> if (skb->tc_at_ingress || !a)
+> 	skb->mono_delivery_time = 0;
 
-for your example
+> At egress, reading is the same as before.  All skb->tstamp
+> is the delivery_time.  Writing will not change the (kernel)
+> skb->mono_delivery_time also unless 0 is being written.  This
+> will be the same behavior as before.
 
->
->  - the current scheme doesn't support a raw offset address, since
->    it felt un-portable to encourage that, but can add this support
->    if needed.
+> (#) At ingress, the current bpf prog can only expect the
+> (rcv) timestamp.  Thus, both reading and writing are now treated as
+> operating on the (rcv) timestamp for the existing bpf prog.
 
-I think for consistency with kprobe it's good to support it. And there
-are local experimentation situations where this could be useful. So
-let's add (sscanf() is pretty great at parsing this anyways)
+> During bpf load time, the verifier will learn if the
+> bpf prog has accessed the new __sk_buff->mono_delivery_time.
 
->
->  - The auto-attach behaviour is to attach to all processes.
->    It would be good to have a way to specify the attach process
->    target. A few possibilities that would be compatible with
->    BPF skeleton support are to use the open opts (feels kind of
->    wrong conceptually since it's an attach-time attribute) or
->    to support opts with attach pid field in "struct bpf_prog_skeleton".
->    Latter would even allow a skeleton to attach to multiple
->    different processes with prog-level granularity (perhaps a union
->    of the various attach opts or similar?). There may be other
->    ways to achieve this.
+> When reading at ingress, if the bpf prog does not access the
+> new __sk_buff->mono_delivery_time, it will be treated as the
+> existing behavior as mentioned in (#) above.  If the (kernel) skb->tstamp
+> currently has a delivery_time,  it will temporary be saved first and then
+> set the skb->tstamp to either the ktime_get_real() or zero.  After
+> the bpf prog finished running, if the bpf prog did not change
+> the skb->tstamp,  the saved delivery_time will be restored
+> back to the skb->tstamp.
 
-Let's keep it simple and for auto-attach it's always -1 (all PIDs). If
-that's not satisfactory, user shouldn't use auto-attach. Skeleton's
-auto-attach (or bpf_program__attach()) is a convenience feature, not a
-mandatory step.
+> When writing __sk_buff->tstamp at ingress, the
+> skb->mono_delivery_time will be cleared because of
+> the (#) mentioned above.
 
->
-> Changes since RFC [1]:
->  - focused on uprobe entry/return, omitting USDT attach (Andrii)
->  - use ELF program headers in calculating relative offsets, as this
->    works for the case where we do not specify a process.  The
->    previous approach relied on /proc/pid/maps so would not work
->    for the "all processes" case (where pid is -1).
->  - add support for auto-attach (patch 2)
->  - fix selftests to use a real library function.  I didn't notice
->    selftests override the usleep(3) definition, so as a result of
->    this, the libc function wasn't being called, so usleep() should
->    not be used to test shared library attach.  Also switch to
->    using libc path as the binary argument for these cases, as
->    specifying a shared library function name for a program is
->    not supported.  Tests now instrument malloc/free.
->  - added selftest that verifies auto-attach.
->
-> [1] https://lore.kernel.org/bpf/1642004329-23514-1-git-send-email-alan.maguire@oracle.com/
-> [2] https://www.kernel.org/doc/html/latest/trace/uprobetracer.html
->
-> Alan Maguire (3):
->   libbpf: support function name-based attach for uprobes
->   libbpf: add auto-attach for uprobes based on section name
->   selftests/bpf: add tests for u[ret]probe attach by name
->
->  tools/lib/bpf/libbpf.c                             | 259 ++++++++++++++++++++-
->  tools/lib/bpf/libbpf.h                             |  10 +-
->  .../selftests/bpf/prog_tests/attach_probe.c        | 114 +++++++--
->  .../selftests/bpf/progs/test_attach_probe.c        |  33 +++
->  4 files changed, 396 insertions(+), 20 deletions(-)
->
-> --
-> 1.8.3.1
->
+> If the bpf prog does access the new __sk_buff->mono_delivery_time
+> at ingress, it indicates that the bpf prog is aware of this new
+> kernel support:
+> the (kernel) skb->tstamp can have the delivery_time or the
+> (rcv) timestamp at ingress.  If the __sk_buff->mono_delivery_time
+> is available, the __sk_buff->tstamp will not be available and
+> it will be zero.
+
+> The bpf rewrite needs to access the skb's mono_delivery_time
+> and tc_at_ingress bit.  They are moved up in sk_buff so
+> that bpf rewrite can be done at a fixed offset.  tc_skip_classify
+> is moved together with tc_at_ingress.  To get one bit for
+> mono_delivery_time, csum_not_inet is moved down and this bit
+> is currently used by sctp.
+
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>   include/linux/filter.h         |  31 +++++++-
+>   include/linux/skbuff.h         |  20 +++--
+>   include/uapi/linux/bpf.h       |   1 +
+>   net/core/filter.c              | 134 ++++++++++++++++++++++++++++++---
+>   net/sched/act_bpf.c            |   5 +-
+>   net/sched/cls_bpf.c            |   6 +-
+>   tools/include/uapi/linux/bpf.h |   1 +
+>   7 files changed, 171 insertions(+), 27 deletions(-)
+
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 71fa57b88bfc..5cef695d6575 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -572,7 +572,8 @@ struct bpf_prog {
+>   				has_callchain_buf:1, /* callchain buffer allocated? */
+>   				enforce_expected_attach_type:1, /* Enforce expected_attach_type  
+> checking at attach time */
+>   				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid()  
+> */
+> -				call_get_func_ip:1; /* Do we call get_func_ip() */
+> +				call_get_func_ip:1, /* Do we call get_func_ip() */
+> +				delivery_time_access:1; /* Accessed __sk_buff->mono_delivery_time */
+>   	enum bpf_prog_type	type;		/* Type of BPF program */
+>   	enum bpf_attach_type	expected_attach_type; /* For some prog types */
+>   	u32			len;		/* Number of filter blocks */
+> @@ -699,6 +700,34 @@ static inline void bpf_compute_data_pointers(struct  
+> sk_buff *skb)
+>   	cb->data_end  = skb->data + skb_headlen(skb);
+>   }
+
+> +static __always_inline u32 bpf_prog_run_at_ingress(const struct bpf_prog  
+> *prog,
+> +						   struct sk_buff *skb)
+> +{
+> +	ktime_t tstamp, delivery_time = 0;
+> +	int filter_res;
+> +
+> +	if (unlikely(skb->mono_delivery_time) && !prog->delivery_time_access) {
+> +		delivery_time = skb->tstamp;
+> +		skb->mono_delivery_time = 0;
+> +		if (static_branch_unlikely(&netstamp_needed_key))
+> +			skb->tstamp = tstamp = ktime_get_real();
+> +		else
+> +			skb->tstamp = tstamp = 0;
+> +	}
+> +
+> +	/* It is safe to push/pull even if skb_shared() */
+> +	__skb_push(skb, skb->mac_len);
+> +	bpf_compute_data_pointers(skb);
+> +	filter_res = bpf_prog_run(prog, skb);
+> +	__skb_pull(skb, skb->mac_len);
+> +
+> +	/* __sk_buff->tstamp was not changed, restore the delivery_time */
+> +	if (unlikely(delivery_time) && skb_tstamp(skb) == tstamp)
+> +		skb_set_delivery_time(skb, delivery_time, true);
+> +
+> +	return filter_res;
+> +}
+> +
+>   /* Similar to bpf_compute_data_pointers(), except that save orginal
+>    * data in cb->data and cb->meta_data for restore.
+>    */
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 4677bb6c7279..a14b04b86c13 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -866,22 +866,23 @@ struct sk_buff {
+>   	__u8			vlan_present:1;	/* See PKT_VLAN_PRESENT_BIT */
+>   	__u8			csum_complete_sw:1;
+>   	__u8			csum_level:2;
+> -	__u8			csum_not_inet:1;
+>   	__u8			dst_pending_confirm:1;
+> +	__u8			mono_delivery_time:1;
+> +
+> +#ifdef CONFIG_NET_CLS_ACT
+> +	__u8			tc_skip_classify:1;
+> +	__u8			tc_at_ingress:1;
+> +#endif
+>   #ifdef CONFIG_IPV6_NDISC_NODETYPE
+>   	__u8			ndisc_nodetype:2;
+>   #endif
+> -
+> +	__u8			csum_not_inet:1;
+>   	__u8			ipvs_property:1;
+>   	__u8			inner_protocol_type:1;
+>   	__u8			remcsum_offload:1;
+>   #ifdef CONFIG_NET_SWITCHDEV
+>   	__u8			offload_fwd_mark:1;
+>   	__u8			offload_l3_fwd_mark:1;
+> -#endif
+> -#ifdef CONFIG_NET_CLS_ACT
+> -	__u8			tc_skip_classify:1;
+> -	__u8			tc_at_ingress:1;
+>   #endif
+>   	__u8			redirected:1;
+>   #ifdef CONFIG_NET_REDIRECT
+> @@ -894,7 +895,6 @@ struct sk_buff {
+>   	__u8			decrypted:1;
+>   #endif
+>   	__u8			slow_gro:1;
+> -	__u8			mono_delivery_time:1;
+
+>   #ifdef CONFIG_NET_SCHED
+>   	__u16			tc_index;	/* traffic control index */
+> @@ -972,10 +972,16 @@ struct sk_buff {
+>   /* if you move pkt_vlan_present around you also must adapt these  
+> constants */
+>   #ifdef __BIG_ENDIAN_BITFIELD
+>   #define PKT_VLAN_PRESENT_BIT	7
+> +#define TC_AT_INGRESS_SHIFT	0
+> +#define SKB_MONO_DELIVERY_TIME_SHIFT 2
+>   #else
+>   #define PKT_VLAN_PRESENT_BIT	0
+> +#define TC_AT_INGRESS_SHIFT	7
+> +#define SKB_MONO_DELIVERY_TIME_SHIFT 5
+>   #endif
+>   #define PKT_VLAN_PRESENT_OFFSET	offsetof(struct sk_buff,  
+> __pkt_vlan_present_offset)
+> +#define TC_AT_INGRESS_OFFSET offsetof(struct sk_buff,  
+> __pkt_vlan_present_offset)
+> +#define SKB_MONO_DELIVERY_TIME_OFFSET offsetof(struct sk_buff,  
+> __pkt_vlan_present_offset)
+
+>   #ifdef __KERNEL__
+>   /*
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b0383d371b9a..83725c891f3c 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5437,6 +5437,7 @@ struct __sk_buff {
+>   	__u32 gso_size;
+>   	__u32 :32;		/* Padding, future use. */
+>   	__u64 hwtstamp;
+> +	__u64 mono_delivery_time;
+>   };
+
+>   struct bpf_tunnel_key {
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 4fc53d645a01..db17812f0f8c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -7832,6 +7832,7 @@ static bool bpf_skb_is_valid_access(int off, int  
+> size, enum bpf_access_type type
+>   			return false;
+>   		break;
+>   	case bpf_ctx_range(struct __sk_buff, tstamp):
+> +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   		if (size != sizeof(__u64))
+>   			return false;
+>   		break;
+> @@ -7872,6 +7873,7 @@ static bool sk_filter_is_valid_access(int off, int  
+> size,
+>   	case bpf_ctx_range(struct __sk_buff, tstamp):
+>   	case bpf_ctx_range(struct __sk_buff, wire_len):
+>   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
+> +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   		return false;
+>   	}
+
+> @@ -7911,6 +7913,7 @@ static bool cg_skb_is_valid_access(int off, int  
+> size,
+>   		case bpf_ctx_range_till(struct __sk_buff, cb[0], cb[4]):
+>   			break;
+>   		case bpf_ctx_range(struct __sk_buff, tstamp):
+> +		case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   			if (!bpf_capable())
+>   				return false;
+>   			break;
+> @@ -7943,6 +7946,7 @@ static bool lwt_is_valid_access(int off, int size,
+>   	case bpf_ctx_range(struct __sk_buff, tstamp):
+>   	case bpf_ctx_range(struct __sk_buff, wire_len):
+>   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
+> +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   		return false;
+>   	}
+
+> @@ -8169,6 +8173,7 @@ static bool tc_cls_act_is_valid_access(int off, int  
+> size,
+>   		case bpf_ctx_range_till(struct __sk_buff, cb[0], cb[4]):
+>   		case bpf_ctx_range(struct __sk_buff, tstamp):
+>   		case bpf_ctx_range(struct __sk_buff, queue_mapping):
+> +		case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   			break;
+>   		default:
+>   			return false;
+> @@ -8445,6 +8450,7 @@ static bool sk_skb_is_valid_access(int off, int  
+> size,
+>   	case bpf_ctx_range(struct __sk_buff, tstamp):
+>   	case bpf_ctx_range(struct __sk_buff, wire_len):
+>   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
+> +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
+>   		return false;
+>   	}
+
+> @@ -8603,6 +8609,114 @@ static struct bpf_insn  
+> *bpf_convert_shinfo_access(const struct bpf_insn *si,
+>   	return insn;
+>   }
+
+
+[..]
+
+> +static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_insn  
+> *si,
+> +						struct bpf_insn *insn)
+> +{
+> +	__u8 value_reg = si->dst_reg;
+> +	__u8 skb_reg = si->src_reg;
+> +	__u8 tmp_reg = BPF_REG_AX;
+> +
+> +#ifdef CONFIG_NET_CLS_ACT
+> +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, TC_AT_INGRESS_OFFSET);
+> +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, 1 << TC_AT_INGRESS_SHIFT);
+> +	*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0, 5);
+> +	/* @ingress, read __sk_buff->tstamp as the (rcv) timestamp,
+> +	 * so check the skb->mono_delivery_time.
+> +	 */
+> +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+> +			      SKB_MONO_DELIVERY_TIME_OFFSET);
+> +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+> +				1 << SKB_MONO_DELIVERY_TIME_SHIFT);
+> +	*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0, 2);
+> +	/* skb->mono_delivery_time is set, read 0 as the (rcv) timestamp. */
+> +	*insn++ = BPF_MOV64_IMM(value_reg, 0);
+> +	*insn++ = BPF_JMP_A(1);
+> +#endif
+> +
+> +	*insn++ = BPF_LDX_MEM(BPF_DW, value_reg, skb_reg,
+> +			      offsetof(struct sk_buff, tstamp));
+> +	return insn;
+> +}
+> +
+> +static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_insn  
+> *si,
+> +						 struct bpf_insn *insn)
+> +{
+> +	__u8 value_reg = si->src_reg;
+> +	__u8 skb_reg = si->dst_reg;
+> +	__u8 tmp_reg = BPF_REG_AX;
+> +
+> +	/* skb->tstamp = tstamp */
+> +	*insn++ = BPF_STX_MEM(BPF_DW, skb_reg, value_reg,
+> +			      offsetof(struct sk_buff, tstamp));
+> +
+> +#ifdef CONFIG_NET_CLS_ACT
+> +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, TC_AT_INGRESS_OFFSET);
+> +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, 1 << TC_AT_INGRESS_SHIFT);
+> +	*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg, 0, 1);
+> +#endif
+> +
+> +	/* test tstamp != 0 */
+> +	*insn++ = BPF_JMP_IMM(BPF_JNE, value_reg, 0, 3);
+> +	/* writing __sk_buff->tstamp at ingress or writing 0,
+> +	 * clear the skb->mono_delivery_time.
+> +	 */
+> +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+> +			      SKB_MONO_DELIVERY_TIME_OFFSET);
+> +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
+> +				~(1 << SKB_MONO_DELIVERY_TIME_SHIFT));
+> +	*insn++ = BPF_STX_MEM(BPF_B, skb_reg, tmp_reg,
+> +			      SKB_MONO_DELIVERY_TIME_OFFSET);
+> +
+> +	return insn;
+> +}
+
+I wonder if we'll see the regression from this. We read/write tstamp
+frequently and I'm not sure we care about the forwarding case.
+
+As a future work/follow up, do you think we can support cases like
+bpf_prog_load(prog_type=SCHED_CLS expected_attach_type=TC_EGRESS) where
+we can generate bytecode with only BPF_LDX_MEM/BPF_STX_MEM for skb->tstamp?
+(essentially a bytecode as it was prior to your patch series)
+
+Since we know that that specific program will run only at egress,
+I'm assuming we can generate simpler bytecode? (of coarse it needs more
+work on cls_bpf to enforce this new expected_attach_type constraint)
