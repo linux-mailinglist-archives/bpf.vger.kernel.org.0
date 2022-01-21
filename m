@@ -2,146 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A0049675C
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 22:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FDE4967AC
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 23:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbiAUVfc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 16:35:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56628 "EHLO
+        id S231168AbiAUWEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 17:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiAUVfb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 16:35:31 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF38C06173B;
-        Fri, 21 Jan 2022 13:35:31 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id d14so8748490ila.1;
-        Fri, 21 Jan 2022 13:35:31 -0800 (PST)
+        with ESMTP id S229484AbiAUWEE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 17:04:04 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D0B8C06173B
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 14:04:04 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id v17so8783567ilg.4
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 14:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=D0u4tqSZu5OHqBrSWNItVL2jVtt5qRAhS5SK3VjuQEY=;
-        b=EI4udjqY3hP326UfB0pe6lxpDRyl14Sogkkf50RckV0f0TXqYmrbCXS3LMg/FNeHiu
-         kyEyp4MmFrJF4Cg97Uug7u7F+AZKolQHJw4kqFFwG0vyx2dxRUAErTU13VC3WRAhTLKh
-         MoJNTPIng7QsBuS7JyNG+V5c/ukDIf8b4OmAxzRX/fpxGAKTyZO/Djq7cCYBA5K9JI2C
-         7B/lJ5FPm8nB5DDMX4loAe3fTHn+CDpu71V8MSPeNBEQrXXE8EBLdNMNDYxhup/HAZak
-         mYqDew8upCu1F5aolkte9w6YaqTwOabnGQ7jbMtbwyP2tBO6yK7EVHMmUY9snBJRUpaW
-         yw6A==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YEbP1Q7m0Wpr2wyOY+oxX51YpWXs2fINRdSdwjj8C6U=;
+        b=pLACaiAbxBE8LKUKbb8dAfGwIQw1kb5M8iulEFTXBeK71rwJZKgCSbwIZyGeZiSUOz
+         QUH++j/HSU2cxoMbDpwl9osYxS7aw8ZupDGF9k407MInXH/1T2N8XIcQ8Byj0FtprMyG
+         sJEib9vlMtP8tQPJZaw7EeJXTCHWvRCZ5YEJ/Hsm6uJ/a0Ys7f5+uJbEDiSvFLT1Ky9J
+         hSpxhu6gTGMm8kWYPg3QKPa83H3L9RfUICszRHqkLqEcdFURhwxxA7uXy9DdIo5oO8lo
+         ZhtYTQ4ND7O40F4Eeuyg5UokM463j+qKTW/i0AUf9vrwKWl2tUNZiX1fdZz7FGo+DXmZ
+         Nc6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=D0u4tqSZu5OHqBrSWNItVL2jVtt5qRAhS5SK3VjuQEY=;
-        b=oFydb9Ds3dcuIDSW+eae4SoHivJ4YLVSqFekuVg21dgJ48x6zwQjLbxwqgM1p+Hjmt
-         O1JapkH/ezY88rxBLRvjBtnEBEFQoyfslxCBZ2jzlMuMpNKRRyqJNxBcCsZ2uL0+x4ig
-         ardlNii7k4EMiMwvTfOKZvwrMe8h5bBOBXw/gof2nyjrWYGmw26zXqyQq9y1t69eMSvd
-         ecdozkT7qp4TT0jZVFgA1VrZHG3BSJxul+tNWpjbX2dCEOw52+ZaqVTHV3SdGbaSOCoe
-         2n1ZFVeYB7v+g4yCwioflKZpRtERj1+mWCaoqC0fCRt+g4qywvxg6lwt9/TGvVWzueND
-         IYCQ==
-X-Gm-Message-State: AOAM531JPszWXMv5Y4NahxQ4T0xviUgEd0nWkQnwsGZOEewp0mtMFKtq
-        6yqJrLhs2zcWQUfzmDueiSYZjN0kdEunf6wHE5Y=
-X-Google-Smtp-Source: ABdhPJwt6siGY4Pd/Hz2o5mHSmMAiOsX8PNz5OeplorBTKJQjrdpPgCusgXg3zkRU8UTWkI2ui107xoeOYI7Pkk8lds=
-X-Received: by 2002:a05:6e02:1c01:: with SMTP id l1mr3376885ilh.239.1642800930842;
- Fri, 21 Jan 2022 13:35:30 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YEbP1Q7m0Wpr2wyOY+oxX51YpWXs2fINRdSdwjj8C6U=;
+        b=mJtYzRvZHKYH2c5YwMZaRPSSN07n+Sp8N51wOSty+U8qAZaCwD6fIQBQvgs/O9oIpd
+         rcefUTyBrQ4ZDfXawZi6hVZ5eGK7PooncEH6mTZVP+ZDorZqrVhnH39tTDZhL0WBHjQJ
+         8rqE6PtdxWzFJ2Tv+x8iuIlZhCePNYOSLyFxy0qKd8OQmxNRoIuCFrnEO54w3MYnsfTX
+         SX1eCdfyb5URPZhOyKBXPTGfqesu28wdgbKnPrQL+4/DSXS2jR0tVTxT8OPLPFTMcfjL
+         UxQx3FBqLcGcbd8/njmTyoMIMMQrOdtaUNmbiszARnGNDPAeguL0Zlmc9nP5Ikj0nbBH
+         25gA==
+X-Gm-Message-State: AOAM531hMAi3tCAcyzjrYfzxEuPvIwmchkHXJ2AGYbWPXDKZztQlqeAo
+        SBsWYAQMjEQAUR/8WEogq4g=
+X-Google-Smtp-Source: ABdhPJz+hg5PxM3zcMEp5lWWUXNgFeHxOnZyXFHvnOJuGOtU5/o3X7cMWCFLZ1pLA+f0krGYg36fdA==
+X-Received: by 2002:a05:6e02:19cc:: with SMTP id r12mr3564923ill.246.1642802643677;
+        Fri, 21 Jan 2022 14:04:03 -0800 (PST)
+Received: from ?IPV6:2601:282:800:dc80:9047:2ab1:b7a9:36f2? ([2601:282:800:dc80:9047:2ab1:b7a9:36f2])
+        by smtp.googlemail.com with ESMTPSA id t7sm1325983ilu.37.2022.01.21.14.04.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 Jan 2022 14:04:03 -0800 (PST)
+Message-ID: <e58aabf9-af55-8eac-1047-b18801141d80@gmail.com>
+Date:   Fri, 21 Jan 2022 15:04:01 -0700
 MIME-Version: 1.0
-References: <20220112142709.102423-1-mauricio@kinvolk.io> <20220112142709.102423-4-mauricio@kinvolk.io>
- <33e77eec-524a-ffb0-9efc-a58da532a578@isovalent.com> <CAHap4ztH=EbFMtj1h5s3-23h06u_L3o8NU9cOL=6nzENZiq_XA@mail.gmail.com>
-In-Reply-To: <CAHap4ztH=EbFMtj1h5s3-23h06u_L3o8NU9cOL=6nzENZiq_XA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Jan 2022 13:35:19 -0800
-Message-ID: <CAEf4BzY0cxs02=jx3KJ-jvVWsCKz-x=oJCfw94a1SdO=WMd0VA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/8] bpftool: Add gen btf command
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Cc:     Quentin Monnet <quentin@isovalent.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.0
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map
+ definitions
+Content-Language: en-US
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
+References: <20220120060529.1890907-1-andrii@kernel.org>
+ <20220120060529.1890907-4-andrii@kernel.org> <87wniu7hss.fsf@toke.dk>
+ <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
+ <87lez87rbm.fsf@toke.dk>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <87lez87rbm.fsf@toke.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 12:40 PM Mauricio V=C3=A1squez Bernal
-<mauricio@kinvolk.io> wrote:
->
-> On Wed, Jan 12, 2022 at 1:08 PM Quentin Monnet <quentin@isovalent.com> wr=
-ote:
-> >
-> > 2022-01-12 09:27 UTC-0500 ~ Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > > This command is implemented under the "gen" command in bpftool and th=
-e
-> > > syntax is the following:
-> > >
-> > > $ bpftool gen btf INPUT OUTPUT OBJECT(S)
-> >
-> > Thanks a lot for this work!
-> >
-> > Please update the relevant manual page under Documentation, to let user=
-s
-> > know how to use the feature. You may also consider adding an example at
-> > the end of that document.
-> >
->
-> We're working on it, and will be part of the next spin.
->
-> > The bash completion script should also be updated with the new "btf"
-> > subcommand for "gen". Given that all the arguments are directories and
-> > files, it should not be hard.
-> >
->
-> Will do.
->
-> > Have you considered adding tests for the feature? There are a few
-> > bpftool-related selftests under tools/testing/selftests/bpf/.
-> >
->
-> Yes, we have but it seems not that trivial. One idea I have is to
-> include a couple of BTF source files from
-> https://github.com/aquasecurity/btfhub-archive/ and create a test
-> program that generates some field, type and enum relocations. Then we
-> could check if the generated BTF file has the expected types, fields
-> and so on by parsing it and using the BTF API from libbpf. One concern
-> about it is the size of those two source BTF files (~5MB each),
-> perhaps we should not include a full file but something that is
-> already "trimmed"? Another possibility is to use
-> "/sys/kernel/btf/vmlinux" but it'll limit the test to machines with
-> CONFIG_DEBUG_INFO_BTF.
->
-> Do you have any ideas / feedback on this one? Should the tests be
-> included in this series or can we push them later on?
+On 1/21/22 1:43 PM, Toke Høiland-Jørgensen wrote:
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> 
+>> On Thu, Jan 20, 2022 at 3:44 AM Toke Høiland-Jørgensen <toke@redhat.com> wrote:
+>>>
+>>> Andrii Nakryiko <andrii@kernel.org> writes:
+>>>
+>>>> Enact deprecation of legacy BPF map definition in SEC("maps") ([0]). For
+>>>> the definitions themselves introduce LIBBPF_STRICT_MAP_DEFINITIONS flag
+>>>> for libbpf strict mode. If it is set, error out on any struct
+>>>> bpf_map_def-based map definition. If not set, libbpf will print out
+>>>> a warning for each legacy BPF map to raise awareness that it goes
+>>>> away.
+>>>
+>>> We've touched upon this subject before, but I (still) don't think it's a
+>>> good idea to remove this support entirely: It makes it impossible to
+>>> write a loader that can handle both new and old BPF objects.
+>>>
+>>> So discourage the use of the old map definitions, sure, but please don't
+>>> make it completely impossible to load such objects.
+>>
+>> BTF-defined maps have been around for quite a long time now and only
+>> have benefits on top of the bpf_map_def way. The source code
+>> translation is also very straightforward. If someone didn't get around
+>> to update their BPF program in 2 years, I don't think we can do much
+>> about that.
+>>
+>> Maybe instead of trying to please everyone (especially those that
+>> refuse to do anything to their BPF programs), let's work together to
+>> nudge laggards to actually modernize their source code a little bit
+>> and gain some benefits from that along the way?
+> 
+> I'm completely fine with nudging people towards the newer features, and
+> I think the compile-time deprecation warning when someone is using the
+> old-style map definitions in their BPF programs is an excellent way to
+> do that. 
+> 
+> I'm also fine with libbpf *by default* refusing to load programs that
+> use the old-style map definitions, but if the code is removed completely
+> it becomes impossible to write general-purpose loaders that can handle
+> both old and new programs. The obvious example of such a loader is
+> iproute2, the loader in xdp-tools is another.
+> 
 
-See how we test CO-RE relocations and how we use C files to get custom
-BTFs. See progs/btf_* and prog_tests/core_reloc.c selftests. You don't
-have to use real vmlinux BTF to test this functionality.
+I agree with Toke's response.
 
+2 years is a very small amount of time when it comes to OS and kernel
+versions. Many companies base products on enterprise distributions and
+run them for 10+ years. During that time there will be needs to update
+some components - like kernel version or some tool but that is done with
+the least amount of churn possible. Every update has the potential to
+bring in unknown behavior changes. Requiring updates to entire tool
+chains, multiple tool sets and libraries to accommodate some deprecation
+will only hinder being able to update anything.
 
->
-> > >
-> > > INPUT can be either a single BTF file or a folder containing BTF file=
-s,
-> > > when it's a folder, a BTF file is generated for each BTF file contain=
-ed
-> > > in this folder. OUTPUT is the file (or folder) where generated files =
-are
-> > > stored and OBJECT(S) is the list of bpf objects we want to generate t=
-he
-> > > BTF file(s) for (each generated BTF file contains all the types neede=
-d
-> > > by all the objects).
-> > >
-> > > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> > > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> > > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> > > ---
-> > >  tools/bpf/bpftool/gen.c | 117 ++++++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 117 insertions(+)
-> > >
-
-[...]
+Further, programs (e.g., debugging as just one example) can and will
+need to be used across many OS and kernel versions.
