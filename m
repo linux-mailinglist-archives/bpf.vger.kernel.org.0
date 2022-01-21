@@ -2,150 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE68496683
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 21:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F71D496689
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 21:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbiAUUnh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 15:43:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:45637 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230112AbiAUUng (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 15:43:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642797815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S1XX4m9Bmr/HmfkdNEEyVnFBNYxuSsoCPaheUwNGuAo=;
-        b=el1naVEuWcbrzMPmie9Fy4D0r0PjAEEwWi68t9G4r1c78hiVF8HSC4k4ublQTfwB8ZgOOG
-        pZhEzYaXu/HvXuACfJEMnifgFNaDhDYJqy+6/IfXg3kT0SYNVrhPlzYjxWryH+QX+Q7rDm
-        7tuVTMz2rsVQEP48q+vtY9LXQMs5fJo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-115-osfhSRPzMIOxcMFtGvQqBA-1; Fri, 21 Jan 2022 15:43:34 -0500
-X-MC-Unique: osfhSRPzMIOxcMFtGvQqBA-1
-Received: by mail-ed1-f70.google.com with SMTP id w3-20020a50c443000000b0040696821132so2518063edf.22
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 12:43:34 -0800 (PST)
+        id S230288AbiAUUo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 15:44:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230088AbiAUUo7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 15:44:59 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07C2C061401
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 12:44:57 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id f21so1871402ljc.2
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 12:44:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CU7d6N2TyhYd51KHoDvsMP3R4d4RwWAQlCc6c2NhKCs=;
+        b=DsviKe9ihwwlXrEXa3MlGUGSoJ19U687O425LiC7zdNwlqS1yaSP/7Qpu7muG9wy7k
+         76bPktqYKw5IL49rTPfwNYeeAMBhreu0+gFQGwz51X4tlxxcIxm4fyLriho65hcSxIp6
+         0NlSNmiqUTPvBGPWR+U+Senvvltz4hHCCdQsc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=S1XX4m9Bmr/HmfkdNEEyVnFBNYxuSsoCPaheUwNGuAo=;
-        b=oBxDjTLHAcavnFsRY4qGtZBu+imOaCWteWwWz3rJ8UBUyrcRvML/Ct/Gj/lxtAVUsa
-         eA32l9o2Lm5z6BKetpRucKC2t10qu8gVxGTm99A0FGp6iOkbO7tFzaymxwk2pMsIsZfi
-         EuzdZH5RyVgbVE8tVFOGCc9bm1M2D6zJEQDn4anvV8hMmpHnBnkIi3mpDbwbaAXrijA6
-         dTCYJQo94+7qc5dVDQI8wJo+a1XyO70XEfKQDy/TMcBMWopNUFihIf6Hxm34KPUimiuw
-         2WT3SGnQ7e7ItQWDAs0da4vyT1HZt0M/GV5GSzEAJq1xby+kCX+DFCOl6lYO8IyjArx0
-         ipow==
-X-Gm-Message-State: AOAM530RZBk9QCCZxLVm6Og17TRGRQifObiKXBNPwQwUf20BgG12n2kQ
-        yG2aSSLacGAb48Nvoj8kxQZ4FWyGDqxV447syN4mAHyS0lC1b3/uCfJQ2UwoEQs5AHnYJeSGeSJ
-        RthpUI5FgOLYY
-X-Received: by 2002:a17:906:35c4:: with SMTP id p4mr4702968ejb.221.1642797810590;
-        Fri, 21 Jan 2022 12:43:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw9HiMmCOLxbFkD034zWlVFbrVFwHYjZep3VY0TsU68HkkinQe8UMn46gQKw5zTGvlPp9VTKw==
-X-Received: by 2002:a17:906:35c4:: with SMTP id p4mr4702878ejb.221.1642797807879;
-        Fri, 21 Jan 2022 12:43:27 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i24sm2354626ejh.41.2022.01.21.12.43.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jan 2022 12:43:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7AE3A1802F8; Fri, 21 Jan 2022 21:43:25 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CU7d6N2TyhYd51KHoDvsMP3R4d4RwWAQlCc6c2NhKCs=;
+        b=GZMQYj+PO+4C4w8ZH0/F2PMvAO4nSuKjFAF2VzWlJYLt+6yOOQuFliCI7rdGlS5QRc
+         gNWq/n/Gyfsr1UuoquobvqrD8dMWfNtfi08VJ96zOtjWzVuI/YewMseYQyT3c1VR0V06
+         sWzSjeuoRydbKkdFrOUP1CsmD0FQ/CyfLSypd8UHqSTvTpkPPaiF+pFbCrzyV9pA7AV/
+         c0DKbfiC30JnAJDJHAW9bH1etJ2bfbubPxNJfpEUl0ZaoPCUBYCidsMnd2U5QFTuWevD
+         1XWI8vIiLS4YBALSdCjCmMJ+nZGM4WQqCjNp6NGpQfx++BFVQ3XSoh4YWksI3seRD6jw
+         T2sg==
+X-Gm-Message-State: AOAM531Yp7vZlct1cbXtWx7Lea6CXYHqoh74O2hjDrJ2k+gd3cCCJBmp
+        ba8dEz9in+JcTyZ5WXMlPXn6fpMUrHTHOuppIFr1MA==
+X-Google-Smtp-Source: ABdhPJx6VPwPJdjlVQM1Gs7oamI3Dr1XTcHiMcHm86HRPMZJZWbMx/sxdR8YIZ3xyVeh4S7vFT+69kV87CQxg5M4adI=
+X-Received: by 2002:a05:651c:209:: with SMTP id y9mr4324918ljn.301.1642797890154;
+ Fri, 21 Jan 2022 12:44:50 -0800 (PST)
+MIME-Version: 1.0
+References: <20220112142709.102423-1-mauricio@kinvolk.io> <20220112142709.102423-4-mauricio@kinvolk.io>
+ <CAEf4BzZ2LEFzX1VoWY_NNowbS2+j04pCWS4DdrDi5nFe7CvcXw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ2LEFzX1VoWY_NNowbS2+j04pCWS4DdrDi5nFe7CvcXw@mail.gmail.com>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Fri, 21 Jan 2022 15:44:39 -0500
+Message-ID: <CAHap4zsH97nNA8KSVeeKGxgfoh8bfno0jd0m45UH8CJN_trXbw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 3/8] bpftool: Add gen btf command
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map
- definitions
-In-Reply-To: <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
-References: <20220120060529.1890907-1-andrii@kernel.org>
- <20220120060529.1890907-4-andrii@kernel.org> <87wniu7hss.fsf@toke.dk>
- <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 21 Jan 2022 21:43:25 +0100
-Message-ID: <87lez87rbm.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Thu, Jan 20, 2022 at 3:44 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii@kernel.org> writes:
->>
->> > Enact deprecation of legacy BPF map definition in SEC("maps") ([0]). F=
-or
->> > the definitions themselves introduce LIBBPF_STRICT_MAP_DEFINITIONS flag
->> > for libbpf strict mode. If it is set, error out on any struct
->> > bpf_map_def-based map definition. If not set, libbpf will print out
->> > a warning for each legacy BPF map to raise awareness that it goes
->> > away.
->>
->> We've touched upon this subject before, but I (still) don't think it's a
->> good idea to remove this support entirely: It makes it impossible to
->> write a loader that can handle both new and old BPF objects.
->>
->> So discourage the use of the old map definitions, sure, but please don't
->> make it completely impossible to load such objects.
+On Fri, Jan 14, 2022 at 9:09 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> BTF-defined maps have been around for quite a long time now and only
-> have benefits on top of the bpf_map_def way. The source code
-> translation is also very straightforward. If someone didn't get around
-> to update their BPF program in 2 years, I don't think we can do much
-> about that.
+> On Wed, Jan 12, 2022 at 6:27 AM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
+o> wrote:
+> >
+> > This command is implemented under the "gen" command in bpftool and the
+> > syntax is the following:
+> >
+> > $ bpftool gen btf INPUT OUTPUT OBJECT(S)
 >
-> Maybe instead of trying to please everyone (especially those that
-> refuse to do anything to their BPF programs), let's work together to
-> nudge laggards to actually modernize their source code a little bit
-> and gain some benefits from that along the way?
+> "gen btf" doesn't really convey that it's a minimized BTF for CO-RE,
+> maybe let's do something more verbose but also more precise, it's not
+> like this is going to be used by everyone multiple times a day, so
+> verboseness is not a bad thing here. Naming is hard, but something
+> like `bpftool gen min_core_btf` probably would give a bit better
+> pointer as to what this command is doing (minimal CO-RE BTF, right?)
+>
 
-I'm completely fine with nudging people towards the newer features, and
-I think the compile-time deprecation warning when someone is using the
-old-style map definitions in their BPF programs is an excellent way to
-do that.=20
+I agree. `bpftool gen min_core_btf` seems just fine to us.
 
-I'm also fine with libbpf *by default* refusing to load programs that
-use the old-style map definitions, but if the code is removed completely
-it becomes impossible to write general-purpose loaders that can handle
-both old and new programs. The obvious example of such a loader is
-iproute2, the loader in xdp-tools is another.
+> >
+> > INPUT can be either a single BTF file or a folder containing BTF files,
+> > when it's a folder, a BTF file is generated for each BTF file contained
+> > in this folder. OUTPUT is the file (or folder) where generated files ar=
+e
+> > stored and OBJECT(S) is the list of bpf objects we want to generate the
+> > BTF file(s) for (each generated BTF file contains all the types needed
+> > by all the objects).
+> >
+> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> > ---
+> >  tools/bpf/bpftool/gen.c | 117 ++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 117 insertions(+)
+> >
+>
+> [...]
+>
+> > +
+> > +       while ((dir =3D readdir(d)) !=3D NULL) {
+> > +               if (dir->d_type !=3D DT_REG)
+> > +                       continue;
+> > +
+> > +               if (strncmp(dir->d_name + strlen(dir->d_name) - 4, ".bt=
+f", 4))
+> > +                       continue;
+> > +
+> > +               snprintf(src_btf_path, sizeof(src_btf_path), "%s/%s", i=
+nput, dir->d_name);
+> > +               snprintf(dst_btf_path, sizeof(dst_btf_path), "%s/%s", o=
+utput, dir->d_name);
+> > +
+> > +               printf("SBTF: %s\n", src_btf_path);
+>
+> What's SBTF? Is this part of bpftool "protocol" now? It should be
+> something a bit more meaningful...
+>
 
-> It's the same thinking with stricter section names, and all the other
-> backwards incompatible changes that libbpf 1.0 will do.
+These are almost debug leftovers. I updated them to be more meaningful.
 
-If the plan is to refuse entirely to load programs that use the older
-section names, then I obviously have the same objection to that idea :)
 
-> If you absolutely cannot afford to drop support for all the
-> to-be-removed things from libbpf, you'll have to stick to 0.x libbpf
-> version. I assume (it will be up to disto maintainers, I suppose)
-> you'll have that option.
 
-As in, you expect distributions to package up the old libbpf in a
-separate package? Really?
-
-But either way, that doesn't really help; it just makes it a choice
-between supporting new or old programs. Can't very well link to two
-versions of the same library...
-
-I really don't get why you're so insistent on removing that code either;
-it's not like it's code that has a lot of churn (by definition), nor is
-it very much code in the first place. But if it's a question of
-maintenance burden I'm happy to help maintain it; or we could find some
-other way of letting applications hook into the ELF object parsing so
-the code doesn't have to live inside libbpf proper if that's more to you
-liking?
-
--Toke
-
+> > +
+> > +               err =3D btfgen(src_btf_path, dst_btf_path, objs);
+> > +               if (err)
+> > +                       goto out;
+> > +       }
+> > +
+> > +out:
+> > +       if (!err)
+> > +               printf("STAT: done!\n");
+>
+> similar, STAT? what's that? Do we need "done!" message in tool's output?
+>
+> > +       free(objs);
+> > +       closedir(d);
+> > +       return err;
+> > +}
+> > +
+> >  static const struct cmd cmds[] =3D {
+> >         { "object",     do_object },
+> >         { "skeleton",   do_skeleton },
+> > +       { "btf",        do_gen_btf},
+> >         { "help",       do_help },
+> >         { 0 }
+> >  };
+> > --
+> > 2.25.1
+> >
