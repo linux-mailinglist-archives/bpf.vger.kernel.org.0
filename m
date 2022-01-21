@@ -2,73 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0BF49650E
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 19:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D9F496510
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 19:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382103AbiAUSa5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 13:30:57 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22074 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351379AbiAUSaz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 13:30:55 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LGKTIG010980
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 10:30:55 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=wbjjILlQtcR2nu9yI2P6QWxjTBHgnHQKYHuaav40Aqo=;
- b=XAq/NU8JTAqCUsZMixUBg00U/oCXrpB/H5bZp5g0uAsNKucWs/wXly7JvwuklXiHRYcQ
- Ty9scmuCprpL7YV1MVUhQ5tWfzadtkRjWKnni6NUej7j79yycsKcllWUqXLPkRdjr8FW
- ZlDDfzRlvIT8wvqmrAHr3Aqjz5QOyOx2Vog= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqj0gmxk4-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 10:30:55 -0800
-Received: from twshared13833.42.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 21 Jan 2022 10:30:52 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 56EA695BF46C; Fri, 21 Jan 2022 10:30:48 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <alexei.starovoitov@gmail.com>
-CC:     <andrii.nakryiko@gmail.com>, <andrii@kernel.org>, <ast@kernel.org>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>, <kennyyu@fb.com>,
-        <phoenix1987@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH v5 bpf-next 1/3] bpf: Add bpf_access_process_vm() helper
-Date:   Fri, 21 Jan 2022 10:30:44 -0800
-Message-ID: <20220121183044.945054-1-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAADnVQKZa_rm3sybP=Rt4Nm-zYrv4s9XvF7PGDFTOBD-TDu23g@mail.gmail.com>
-References: <CAADnVQKZa_rm3sybP=Rt4Nm-zYrv4s9XvF7PGDFTOBD-TDu23g@mail.gmail.com>
+        id S1382131AbiAUSbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 13:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1382138AbiAUSbM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 13:31:12 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16731C06173D;
+        Fri, 21 Jan 2022 10:31:12 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id o10so8416456ilh.0;
+        Fri, 21 Jan 2022 10:31:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7RosCskWkdt9rxG/Kn964mKmVE3e+ONowkWWNdWq2eU=;
+        b=WZxNZciYsovV1h2ayaikh9Jgy/b9nmUKn/GF2pyVnUpEmgikDCEWHt/fQ49tTBak2C
+         CzD07FGtY9d56lNjj9oovqBZcgCe6jjYExx/0yDsK3z3w/4ghXTLAVyvRUN2myRSsp4h
+         TrsBfeBIKl3KULenDa5fmMMEpFZui8b3Iw+pxe6tF/ukyonDMcE7Ae1fnTXpJnBVG+kJ
+         c1AO2B8QRmQZcSKcbdaQM/KKf2hXpWxlD3fDjY977uPkin6SyZSeTaDTmsJUqzPU1pu4
+         Ze2yOb9ykMHnStoEsJmd5wLAvzv4ttAeJd18DtYVDIpZKSvc+EzHTe2hRKjZkgSm+1FE
+         6Lzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7RosCskWkdt9rxG/Kn964mKmVE3e+ONowkWWNdWq2eU=;
+        b=bQd8haz00y0ZrKOyRseeucG6sd1Db1rxd/SE1W00oUXGshXaS/CXwMZ7Goz13RlM0/
+         p/fSRggLRfwf4nvHEZqZqz/VoQ4FOPbVyngeag+WnRhAElLQbq5mDlJ3D2wwZhu+VPz6
+         MYlGWb1XBOmp52ai2XoOFGpZyQuycvihL7nqB0NyGu1YbYWyqV9u5LsiK+OIt0gRIkOM
+         SfpPuymMP0xTay5kMEt5Zdx2Ywjo8Jy5BwcD/gNvsyxaHNVf29UAU57/08lqVtXQsqpm
+         TVpV9yf1F5DBcFCXGerJYpWs4heVVhgZOqtJjMIkb2EGK799EvwNmi2obSWCiPW6uuPD
+         k62w==
+X-Gm-Message-State: AOAM533WAR0JfK+q8UIkhIeHyW83j+IXqV4S6MLWLXhMFzpem0RDRG6U
+        y0e68TbTp/0t5JBbtMqKfmF3sYwXJei2N7DT0L8=
+X-Google-Smtp-Source: ABdhPJxSWA27NWAnAj0jlHUI7cKQDQkUxNDLI6I1Kg1bkjWhmPS2GhRYr1675hwEJJXODWWGRB+RCTzbZ7Gv1hKHJqA=
+X-Received: by 2002:a05:6e02:1749:: with SMTP id y9mr2732285ill.252.1642789871449;
+ Fri, 21 Jan 2022 10:31:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: sGSV7XDWVCiz_djwq0VhtN67nGqnUH9e
-X-Proofpoint-GUID: sGSV7XDWVCiz_djwq0VhtN67nGqnUH9e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-21_09,2022-01-21_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0 adultscore=0
- clxscore=1015 bulkscore=0 impostorscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=833 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201210121
-X-FB-Internal: deliver
+References: <1642678950-19584-1-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1642678950-19584-1-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Jan 2022 10:31:00 -0800
+Message-ID: <CAEf4BzbG8Rx1NXiHQrsnJdXMPmW_VQ9CCJDe9Gf9FWv3Q7vtnA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 0/3] libbpf: name-based u[ret]probe attach
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > * If we had a partial read, we will memset the read bytes to 0 and re=
-turn
-> >   -EFAULT
->=20
-> Not read bytes, but all bytes.
-> copy_from_user zeros leftover for us, but access_process_vm doesn't
-> do this on partial read.
+On Thu, Jan 20, 2022 at 3:43 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> This patch series is a refinement of the RFC patchset [1], focusing
+> on support for attach by name for uprobes and uretprobes.  Still
+> marked RFC as there are unresolved questions.
+>
+> Currently attach for such probes is done by determining the offset
+> manually, so the aim is to try and mimic the simplicity of kprobe
+> attach, making use of uprobe opts to specify a name string.
+>
+> uprobe attach is done by specifying a binary path, a pid (where
+> 0 means "this process" and -1 means "all processes") and an
+> offset.  Here a 'func_name' option is added to 'struct uprobe_opts'
+> and that name is searched for in symbol tables.  If the binary
+> is a program, relative offset calcuation must be done to the
+> symbol address as described in [2].
+>
+> Having a name allows us to support auto-attach via SEC()
+> specification, for example
+>
+> SEC("uprobe/usr/lib64/libc.so.6/malloc")
+>
+> Unresolved questions:
+>
+>  - the current scheme uses
+>
+> u[ret]probe[/]/path/2/binary/function[+offset]
 
-I'll memset all bytes on error. Thanks for the suggestion!
+that / after uprobe is not optional. This should be parsed as
+"uprobe/<path-to-binary>/<func_name>[+<offset>]", in general. If
+<path-to-binary> doesn't have leading '/' it will be just treated as a
+relative path. Otherwise it's going to be ambiguous. So with your
+example SEC("uprobe/usr/lib64/libc.so.6/malloc") you are specifying
+"usr/lib64/libc.so.6", relative path, which is wrong. It has to be
+SEC("uprobe//usr/lib64/libc.so.6/malloc"), however ugly that might
+look.
 
-Kenny
+>
+>    ...as SEC() format for auto-attach, for example
+>
+> SEC("uprobe/usr/lib64/libc.so.6/malloc")
+>
+>    It would be cleaner to delimit binary and function with ':'
+>    as is done by bcc.  One simple way to achieve that would be
+>    to support section string pre-processing, where instances of
+>    ':' are replaced by a '/'; this would get us to supporting
+>    a similar probe specification as bcc without the backward
+>    compatibility headaches.  I can't think of any valid
+>    cases where SEC() definitions have a ':' that we would
+>    replace with '/' in error, but I might be missing something.
+
+I think at least for separating path and function name using ':' is
+much better. I'd go with
+
+SEC("uprobe//usr/lib64/libc.so.6:malloc")
+
+for your example
+
+>
+>  - the current scheme doesn't support a raw offset address, since
+>    it felt un-portable to encourage that, but can add this support
+>    if needed.
+
+I think for consistency with kprobe it's good to support it. And there
+are local experimentation situations where this could be useful. So
+let's add (sscanf() is pretty great at parsing this anyways)
+
+>
+>  - The auto-attach behaviour is to attach to all processes.
+>    It would be good to have a way to specify the attach process
+>    target. A few possibilities that would be compatible with
+>    BPF skeleton support are to use the open opts (feels kind of
+>    wrong conceptually since it's an attach-time attribute) or
+>    to support opts with attach pid field in "struct bpf_prog_skeleton".
+>    Latter would even allow a skeleton to attach to multiple
+>    different processes with prog-level granularity (perhaps a union
+>    of the various attach opts or similar?). There may be other
+>    ways to achieve this.
+
+Let's keep it simple and for auto-attach it's always -1 (all PIDs). If
+that's not satisfactory, user shouldn't use auto-attach. Skeleton's
+auto-attach (or bpf_program__attach()) is a convenience feature, not a
+mandatory step.
+
+>
+> Changes since RFC [1]:
+>  - focused on uprobe entry/return, omitting USDT attach (Andrii)
+>  - use ELF program headers in calculating relative offsets, as this
+>    works for the case where we do not specify a process.  The
+>    previous approach relied on /proc/pid/maps so would not work
+>    for the "all processes" case (where pid is -1).
+>  - add support for auto-attach (patch 2)
+>  - fix selftests to use a real library function.  I didn't notice
+>    selftests override the usleep(3) definition, so as a result of
+>    this, the libc function wasn't being called, so usleep() should
+>    not be used to test shared library attach.  Also switch to
+>    using libc path as the binary argument for these cases, as
+>    specifying a shared library function name for a program is
+>    not supported.  Tests now instrument malloc/free.
+>  - added selftest that verifies auto-attach.
+>
+> [1] https://lore.kernel.org/bpf/1642004329-23514-1-git-send-email-alan.maguire@oracle.com/
+> [2] https://www.kernel.org/doc/html/latest/trace/uprobetracer.html
+>
+> Alan Maguire (3):
+>   libbpf: support function name-based attach for uprobes
+>   libbpf: add auto-attach for uprobes based on section name
+>   selftests/bpf: add tests for u[ret]probe attach by name
+>
+>  tools/lib/bpf/libbpf.c                             | 259 ++++++++++++++++++++-
+>  tools/lib/bpf/libbpf.h                             |  10 +-
+>  .../selftests/bpf/prog_tests/attach_probe.c        | 114 +++++++--
+>  .../selftests/bpf/progs/test_attach_probe.c        |  33 +++
+>  4 files changed, 396 insertions(+), 20 deletions(-)
+>
+> --
+> 1.8.3.1
+>
