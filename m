@@ -2,18 +2,18 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7A6495AAF
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 08:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3AD495AC0
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 08:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378992AbiAUHan (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 02:30:43 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20002 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1378983AbiAUHam (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 02:30:42 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20L06xXO009703
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 23:30:42 -0800
+        id S239626AbiAUHd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 02:33:29 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47882 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1349051AbiAUHd2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 02:33:28 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20L4l7ml017711
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 23:33:28 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : content-type :
  content-transfer-encoding : mime-version; s=facebook;
@@ -22,13 +22,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  AGeTflGrtdx38MLuOP+Aod5mQacSzLR9BUS2E/+uL/WsTfKkpiyT9KM/gnud+dIu2qzd
  lqZ/yqWr5LIWXi0RVacehFGOtN2t1zp0a9I= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqj0c9p82-5
+        by m0001303.ppops.net (PPS) with ESMTPS id 3dqhy4hn38-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 23:30:42 -0800
-Received: from twshared7634.08.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 20 Jan 2022 23:33:27 -0800
+Received: from twshared12416.02.ash9.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 20 Jan 2022 23:30:40 -0800
+ 15.1.2308.21; Thu, 20 Jan 2022 23:33:26 -0800
 Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
         id 745C55BDEC00; Thu, 20 Jan 2022 23:30:32 -0800 (PST)
 From:   Martin KaFai Lau <kafai@fb.com>
@@ -48,19 +48,19 @@ In-Reply-To: <20220121073026.4173996-1-kafai@fb.com>
 References: <20220121073026.4173996-1-kafai@fb.com>
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: ieZN0eB41B8g7l_gYjlNIjtK8RUVrY6-
-X-Proofpoint-ORIG-GUID: ieZN0eB41B8g7l_gYjlNIjtK8RUVrY6-
+X-Proofpoint-ORIG-GUID: LHTrZUmhiQ5aQVgvIehUzuedXczhT35w
+X-Proofpoint-GUID: LHTrZUmhiQ5aQVgvIehUzuedXczhT35w
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-21_02,2022-01-20_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- bulkscore=0 priorityscore=1501 spamscore=0 clxscore=1015 impostorscore=0
- suspectscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2201210047
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ spamscore=0 malwarescore=0 adultscore=0 clxscore=1015 mlxlogscore=999
+ bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201210047
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
