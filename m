@@ -2,236 +2,323 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7824965CF
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 20:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF324965D0
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 20:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229772AbiAUTkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 14:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        id S229986AbiAUTk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 14:40:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbiAUTkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 14:40:23 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50878C06173B
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:40:23 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id s4so614164wrb.0
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:40:23 -0800 (PST)
+        with ESMTP id S229845AbiAUTkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 14:40:25 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D0CC06173B;
+        Fri, 21 Jan 2022 11:40:25 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id a18so8520934ilq.6;
+        Fri, 21 Jan 2022 11:40:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=APBr1dXLngqF7qgBZ4hXBmkjAVPr6Q0A4kkFMRBGOHA=;
-        b=KXTU2xXxFABErjr1sXsYGj5lDf7rQXh8LgrJT+1SCf+N2EAWnEDurlIHGh3ozOwOjU
-         SYh7pCrJImvn9Hluw4HrWq+BT71eTCKbXQfW6Bp1kQU34W8oQZc5S9vovw6fvTyOfGi0
-         t8bzkJ/9MJlIOdNQG3QLD4mHTdyXdphVw+IzxNafU6GrUDVkdROF6IACIdDmGRNV9Paj
-         UqGo1EkDtmOqdEuCG8ejyxUm7yerdM+2diZzcM20o8XTDvM+7nRQf9KHT6wQZ4oru+8M
-         aulmuMw2Isoz8UNU9+zO/GG6J0poexLpmqx9lB8GpDH9PmTbbwdw4Wir1OxLesIf6TKk
-         G3lw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PP2AoAwYzPkh8RnwvN79ZEEJxwHSwD91bg7VRyYckFU=;
+        b=mF2ZGlxSWpvvEZEs7uOz9WVNT558Y9jYAD8R/FSw91tSATrDGP+IsDvqoqchf35BgK
+         rFVnWh00ne+LjOOUupj7ApcVPp93BEkmgv/7CFMe3ms+8qKJgJ8j5qkZtUMM+rxSoArO
+         191gjc/ET1rYFqlCPFZ63QJnMhb2M8rv4e+FS3cQkJuMX9wCbv8YB2rJfXxwapODAWrv
+         ryO461ZlATvvNqbItb/HZTMmUmJ8QqJCY6tQ+JzfURjaGzXDB8ZzMFCRkOZ9xanQ+niU
+         9zDTk9HcaSQcNV+AQ10Gku9tzOkyblebOlJzjXuD+w5rVNRcmls+Q+F4XSOq2d0K7o9D
+         RIXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=APBr1dXLngqF7qgBZ4hXBmkjAVPr6Q0A4kkFMRBGOHA=;
-        b=1CHmBccR8HL8A2lZdE8B+8uSgmaDHBauKJz7LTM5vSMYqMIWtv9trIi5fCeDEKFsNS
-         P3P/37obNeu+ic/g8TZGpkd0Qib3qMQnUvfionL0ixip8rxZyY7UDhRFmBYrLKHz0okJ
-         Z7sdJTl4dQIIzPdl9jjz5rMDTLcwAf+2rSay018fTeIg6rJzoq7ajk2tGqBAnSQ1lVAZ
-         cmGKcqGV1lsXIk1/zHbq9M7jdHF8dG0q2ph7Ajvhr2kd5fIlr8DM4p4VVAsiBi4Xk28E
-         NnL26W3bGqJ07jzZpwEy9de3xsNstbIf5HE/qRgRS0ya/RNR3waTm4nU52ZsNisId2OS
-         LcmQ==
-X-Gm-Message-State: AOAM5300WvVe1N58a+jxLgoVB+SxRq6GZOBCQsTbt6wyMfZm0DWXZ/oQ
-        GUPM3+f+yknQH4DfOzOsML2eqwN9qpxMtA==
-X-Google-Smtp-Source: ABdhPJxSe2R1JRKZK+EqCpgXsH88/crff/Zn5v2gIlGt1LAJBpqmN/39OSiC4ZSOeXweGWBbLzm8fg==
-X-Received: by 2002:a5d:4567:: with SMTP id a7mr4925239wrc.363.1642794021800;
-        Fri, 21 Jan 2022 11:40:21 -0800 (PST)
-Received: from usaari01.cust.communityfibre.co.uk ([2a02:6b6d:f804:0:575f:679d:7c2f:fa19])
-        by smtp.gmail.com with ESMTPSA id n14sm6988059wri.101.2022.01.21.11.40.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jan 2022 11:40:21 -0800 (PST)
-From:   Usama Arif <usama.arif@bytedance.com>
-To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii.nakryiko@gmail.com
-Cc:     fam.zheng@bytedance.com, cong.wang@bytedance.com, song@kernel.org,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: [RFC bpf-next 3/3] selftests/bpf: add test for module helper
-Date:   Fri, 21 Jan 2022 19:39:56 +0000
-Message-Id: <20220121193956.198120-4-usama.arif@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220121193956.198120-1-usama.arif@bytedance.com>
-References: <20220121193956.198120-1-usama.arif@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PP2AoAwYzPkh8RnwvN79ZEEJxwHSwD91bg7VRyYckFU=;
+        b=nFxcCN9INkhxHahMDuadg3+ve4a2YK1jNGQpFtF/5J5mm6cTl3tZs1lbtOV8TGG0Rv
+         MAXhChRdbIluCeEp+OsRzeD7iUl5/mQjykvbsVnQ9oriX0wsGihvqGOwsnJhxj2wMBDL
+         slwTWAHMgznyMyMqcej2KRRNYRZ2EbX9m/XbqL+z0cf6tFh9MviD8dR3a680orQbxsz2
+         d/wtvan06+4wdKhgWjYLVw954QLU1MP+huPq7Ti7q4+J+TTshVe3EA3Z5mzsbSFnoxEK
+         yni3zGIBOk0uVIon+ebsUcTpvlOnS6txX3sIX5/2fTEEkfz0sUrDGNF53NQoWuZ0mE4Q
+         4X/A==
+X-Gm-Message-State: AOAM532Z58rV1cNkmYoC/NXo4QJBeujWyqohOnwbZXUs0PxgO1tJyg+5
+        wF66Ntbo0upzV1o20gUlOxmFiq+Mp1n1cjN1bGk=
+X-Google-Smtp-Source: ABdhPJyRKp0nU5lr9fXawCcJyIARpvrq6Kgc7Jupq60jCRxckq3orAAfkSzmWCWXglaIu+kDi1lb36T92tkmj+3ZapA=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr2320757ilu.71.1642794024712;
+ Fri, 21 Jan 2022 11:40:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1642678950-19584-1-git-send-email-alan.maguire@oracle.com> <1642678950-19584-4-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <1642678950-19584-4-git-send-email-alan.maguire@oracle.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Jan 2022 11:40:13 -0800
+Message-ID: <CAEf4BzY+VfOO6ykj5G1km3k2JfAbFVGynzmSkhjbUJyb-NKFdw@mail.gmail.com>
+Subject: Re: [RFC bpf-next 3/3] selftests/bpf: add tests for u[ret]probe
+ attach by name
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Yucong Sun <sunyucong@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is a simple test for a module hepler that accepts
-2 pointers to integer, prints them (using printk which isn't
-directly accessible to eBPF applications) and returns their sum.
-The test has been adapted from test_ksyms_module.
+On Thu, Jan 20, 2022 at 3:43 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> add tests that verify attaching by name for local functions in
+> a program and library functions in a shared object succeed for
+> uprobe and uretprobes using new "func_name" option for
+> bpf_program__attach_uprobe_opts().  Also verify auto-attach
+> works where uprobe, path to binary and function name are
+> specified.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  .../selftests/bpf/prog_tests/attach_probe.c        | 114 ++++++++++++++++++---
+>  .../selftests/bpf/progs/test_attach_probe.c        |  33 ++++++
+>  2 files changed, 130 insertions(+), 17 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index d0bd51e..1bfb09e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -10,16 +10,24 @@ static void method(void) {
+>         return ;
+>  }
+>
+> +/* attach point for byname uprobe */
+> +static void method2(void)
+> +{
+> +}
+> +
+>  void test_attach_probe(void)
+>  {
+>         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
+>         int duration = 0;
+>         struct bpf_link *kprobe_link, *kretprobe_link;
+> -       struct bpf_link *uprobe_link, *uretprobe_link;
+> +       struct bpf_link *uprobe_link[3], *uretprobe_link[3];
 
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
----
- tools/testing/selftests/bpf/Makefile          |  3 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 21 +++++++
- .../selftests/bpf/prog_tests/helper_module.c  | 59 +++++++++++++++++++
- .../selftests/bpf/progs/test_helper_module.c  | 18 ++++++
- 4 files changed, 100 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/helper_module.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_helper_module.c
+why do you need an array, uprobe_link and uretprobe_link are just
+temporary variables for shorter code, those links are assigned into
+skel->links section and taken care of by skeleton destroy method
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 42ffc24e9e71..34df13cdfb05 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -332,7 +332,8 @@ LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
- 	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
- 	map_ptr_kern.c core_kern.c
- # Generate both light skeleton and libbpf skeleton for these
--LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c
-+LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c \
-+	test_helper_module.c
- SKEL_BLACKLIST += $$(LSKELS)
- 
- test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index bdbacf5adcd2..38d344e2d12d 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
-+#include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
- #include <linux/error-injection.h>
-@@ -120,11 +121,29 @@ static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 
- extern int bpf_fentry_test1(int a);
- 
-+int bpf_helper_print_add(int *input1, int *input2)
-+{
-+	printk(KERN_INFO "input numbers for module helper %d %d\n", *input1, *input2);
-+	return *input1 + *input2;
-+}
-+
-+struct bpf_func_proto bpf_helper_print_add_proto = {
-+	.gpl_only       = false,
-+	.ret_type       = RET_INTEGER,
-+	.arg1_type      = ARG_PTR_TO_INT,
-+	.arg2_type      = ARG_PTR_TO_INT,
-+};
-+
-+DEFINE_MOD_HELPER(mod_helper, THIS_MODULE, bpf_helper_print_add, bpf_helper_print_add_proto);
-+
- static int bpf_testmod_init(void)
- {
- 	int ret;
- 
- 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
-+	if (ret < 0)
-+		return ret;
-+	ret = register_mod_helper(&mod_helper);
- 	if (ret < 0)
- 		return ret;
- 	if (bpf_fentry_test1(0) < 0)
-@@ -134,6 +153,8 @@ static int bpf_testmod_init(void)
- 
- static void bpf_testmod_exit(void)
- {
-+	unregister_mod_helper(&mod_helper);
-+
- 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
- }
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/helper_module.c b/tools/testing/selftests/bpf/prog_tests/helper_module.c
-new file mode 100644
-index 000000000000..d8e8600ab3be
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/helper_module.c
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "test_helper_module.lskel.h"
-+#include "test_helper_module.skel.h"
-+
-+void test_helper_module_lskel(void)
-+{
-+	struct test_helper_module_lskel *skel;
-+	int retval;
-+	int err;
-+
-+	if (!env.has_testmod) {
-+		test__skip();
-+		return;
-+	}
-+
-+	skel = test_helper_module_lskel__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_helper_module_lskel__open_and_load"))
-+		return;
-+	err = bpf_prog_test_run(skel->progs.load.prog_fd, 1, &pkt_v4, sizeof(pkt_v4),
-+				NULL, NULL, (__u32 *)&retval, NULL);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run"))
-+		goto cleanup;
-+	ASSERT_EQ(retval, 7, "retval");
-+cleanup:
-+	test_helper_module_lskel__destroy(skel);
-+}
-+
-+void test_helper_module_libbpf(void)
-+{
-+	struct test_helper_module *skel;
-+	int retval, err;
-+
-+	if (!env.has_testmod) {
-+		test__skip();
-+		return;
-+	}
-+
-+	skel = test_helper_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_helper_module__open"))
-+		return;
-+	err = bpf_prog_test_run(bpf_program__fd(skel->progs.load), 1, &pkt_v4,
-+				sizeof(pkt_v4), NULL, NULL, (__u32 *)&retval, NULL);
-+	if (!ASSERT_OK(err, "bpf_prog_test_run"))
-+		goto cleanup;
-+	ASSERT_EQ(retval, 7, "retval");
-+cleanup:
-+	test_helper_module__destroy(skel);
-+}
-+
-+void test_helper_module(void)
-+{
-+	if (test__start_subtest("lskel"))
-+		test_helper_module_lskel();
-+	if (test__start_subtest("libbpf"))
-+		test_helper_module_libbpf();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_helper_module.c b/tools/testing/selftests/bpf/progs/test_helper_module.c
-new file mode 100644
-index 000000000000..66dadd317498
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_helper_module.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+extern int bpf_helper_print_add(int *a, int *b) __ksym;
-+
-+SEC("tc")
-+int load(struct __sk_buff *skb)
-+{
-+	int a, b;
-+
-+	a = 3;
-+	b = 4;
-+	return bpf_helper_print_add(&a, &b);
-+}
-+
-+char LICENSE[] SEC("license") = "GPL";
--- 
-2.25.1
+>         struct test_attach_probe* skel;
+>         size_t uprobe_offset;
+>         ssize_t base_addr, ref_ctr_offset;
+> +       char libc_path[256];
+>         bool legacy;
+> +       char *mem;
+> +       FILE *f;
+>
+>         /* Check if new-style kprobe/uprobe API is supported.
+>          * Kernels that support new FD-based kprobe and uprobe BPF attachment
+> @@ -69,14 +77,14 @@ void test_attach_probe(void)
+>
+>         uprobe_opts.retprobe = false;
+>         uprobe_opts.ref_ctr_offset = legacy ? 0 : ref_ctr_offset;
+> -       uprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe,
+> -                                                     0 /* self pid */,
+> -                                                     "/proc/self/exe",
+> -                                                     uprobe_offset,
+> -                                                     &uprobe_opts);
+> -       if (!ASSERT_OK_PTR(uprobe_link, "attach_uprobe"))
+> +       uprobe_link[0] = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe,
+> +                                                        0 /* self pid */,
+> +                                                        "/proc/self/exe",
+> +                                                        uprobe_offset,
+> +                                                        &uprobe_opts);
+> +       if (!ASSERT_OK_PTR(uprobe_link[0], "attach_uprobe"))
+>                 goto cleanup;
+> -       skel->links.handle_uprobe = uprobe_link;
+> +       skel->links.handle_uprobe = uprobe_link[0];
+>
+>         if (!legacy)
+>                 ASSERT_GT(uprobe_ref_ctr, 0, "uprobe_ref_ctr_after");
+> @@ -84,17 +92,79 @@ void test_attach_probe(void)
+>         /* if uprobe uses ref_ctr, uretprobe has to use ref_ctr as well */
+>         uprobe_opts.retprobe = true;
+>         uprobe_opts.ref_ctr_offset = legacy ? 0 : ref_ctr_offset;
+> -       uretprobe_link = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe,
+> -                                                        -1 /* any pid */,
+> +       uretprobe_link[0] = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe,
+> +                                                           -1 /* any pid */,
+> +                                                           "/proc/self/exe",
+> +                                                           uprobe_offset, &uprobe_opts);
+> +       if (!ASSERT_OK_PTR(uretprobe_link[0], "attach_uretprobe"))
+> +               goto cleanup;
+> +       skel->links.handle_uretprobe = uretprobe_link[0];
+> +
+> +       uprobe_opts.func_name = "method2";
+> +       uprobe_opts.retprobe = false;
+> +       uprobe_opts.ref_ctr_offset = 0;
+> +       uprobe_link[1] = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe_byname,
+> +                                                        0 /* this pid */,
+>                                                          "/proc/self/exe",
+> -                                                        uprobe_offset, &uprobe_opts);
+> -       if (!ASSERT_OK_PTR(uretprobe_link, "attach_uretprobe"))
+> +                                                        0, &uprobe_opts);
+> +       if (!ASSERT_OK_PTR(uprobe_link[1], "attach_uprobe_byname"))
+> +               goto cleanup;
+> +       skel->links.handle_uprobe_byname = uprobe_link[1];
+> +
+> +       /* verify auto-attach works */
+> +       uretprobe_link[1] = bpf_program__attach(skel->progs.handle_uretprobe_byname);
+> +       if (!ASSERT_OK_PTR(uretprobe_link[1], "attach_uretprobe_byname"))
+> +               goto cleanup;
+> +       skel->links.handle_uretprobe_byname = uretprobe_link[1];
+> +
+> +       /* test attach by name for a library function, using the library
+> +        * as the binary argument.  To do this, find path to libc used
+> +        * by test_progs via /proc/self/maps.
+> +        */
+> +       f = fopen("/proc/self/maps", "r");
+> +       if (!ASSERT_OK_PTR(f, "read /proc/self/maps"))
+> +               goto cleanup;
+> +       while (fscanf(f, "%*s %*s %*s %*s %*s %[^\n]", libc_path) == 1) {
+> +               if (strstr(libc_path, "libc-"))
+> +                       break;
+> +       }
+> +       fclose(f);
+> +       if (!ASSERT_NEQ(strstr(libc_path, "libc-"), NULL, "find libc path in /proc/self/maps"))
+> +               goto cleanup;
 
+maybe let's extract this into a small helper, we'll eventually
+probably use it for other tests (and it just makes it a bit more
+obvious what's going on)
+
+> +
+> +       uprobe_opts.func_name = "malloc";
+> +       uprobe_opts.retprobe = false;
+> +       uprobe_link[2] = bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe_byname2,
+> +                                                         0 /* this pid */,
+> +                                                         libc_path,
+> +                                                         0, &uprobe_opts);
+> +       if (!ASSERT_OK_PTR(uprobe_link[2], "attach_uprobe_byname2"))
+>                 goto cleanup;
+> -       skel->links.handle_uretprobe = uretprobe_link;
+> +       skel->links.handle_uprobe_byname2 = uprobe_link[2];
+>
+> -       /* trigger & validate kprobe && kretprobe */
+> +       uprobe_opts.func_name = "free";
+> +       uprobe_opts.retprobe = true;
+> +       uretprobe_link[2] = bpf_program__attach_uprobe_opts(skel->progs.handle_uretprobe_byname2,
+> +                                                           -1 /* any pid */,
+> +                                                           libc_path,
+> +                                                           0, &uprobe_opts);
+> +       if (!ASSERT_OK_PTR(uretprobe_link[2], "attach_uretprobe_byname2"))
+> +               goto cleanup;
+> +       skel->links.handle_uretprobe_byname2 = uretprobe_link[2];
+> +
+> +       /* trigger & validate kprobe && kretprobe && uretprobe by name */
+>         usleep(1);
+>
+> +       /* trigger & validate shared library u[ret]probes attached by name */
+> +       mem = malloc(1);
+> +       free(mem);
+> +
+> +       /* trigger & validate uprobe & uretprobe */
+> +       method();
+> +
+> +       /* trigger & validate uprobe attached by name */
+> +       method2();
+> +
+>         if (CHECK(skel->bss->kprobe_res != 1, "check_kprobe_res",
+>                   "wrong kprobe res: %d\n", skel->bss->kprobe_res))
+>                 goto cleanup;
+> @@ -102,9 +172,6 @@ void test_attach_probe(void)
+>                   "wrong kretprobe res: %d\n", skel->bss->kretprobe_res))
+>                 goto cleanup;
+>
+> -       /* trigger & validate uprobe & uretprobe */
+> -       method();
+> -
+>         if (CHECK(skel->bss->uprobe_res != 3, "check_uprobe_res",
+>                   "wrong uprobe res: %d\n", skel->bss->uprobe_res))
+>                 goto cleanup;
+> @@ -112,6 +179,19 @@ void test_attach_probe(void)
+>                   "wrong uretprobe res: %d\n", skel->bss->uretprobe_res))
+>                 goto cleanup;
+>
+> +       if (CHECK(skel->bss->uprobe_byname_res != 5, "check_uprobe_byname_res",
+> +                 "wrong uprobe byname res: %d\n", skel->bss->uprobe_byname_res))
+> +               goto cleanup;
+> +       if (CHECK(skel->bss->uretprobe_byname_res != 6, "check_uretprobe_byname_res",
+> +                 "wrong uretprobe byname res: %d\n", skel->bss->uretprobe_byname_res))
+> +               goto cleanup;
+> +       if (CHECK(skel->bss->uprobe_byname2_res != 7, "check_uprobe_byname2_res",
+> +                 "wrong uprobe byname2 res: %d\n", skel->bss->uprobe_byname2_res))
+> +               goto cleanup;
+> +       if (CHECK(skel->bss->uretprobe_byname2_res != 8, "check_uretprobe_byname2_res",
+> +                 "wrong uretprobe byname2 res: %d\n", skel->bss->uretprobe_byname2_res))
+> +               goto cleanup;
+
+use ASSERT_xxx() instead of CHECK() for new tests
+
+> +
+>  cleanup:
+>         test_attach_probe__destroy(skel);
+>         ASSERT_EQ(uprobe_ref_ctr, 0, "uprobe_ref_ctr_cleanup");
+> diff --git a/tools/testing/selftests/bpf/progs/test_attach_probe.c b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> index 8056a4c..c176c89 100644
+> --- a/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> +++ b/tools/testing/selftests/bpf/progs/test_attach_probe.c
+> @@ -10,6 +10,10 @@
+>  int kretprobe_res = 0;
+>  int uprobe_res = 0;
+>  int uretprobe_res = 0;
+> +int uprobe_byname_res = 0;
+> +int uretprobe_byname_res = 0;
+> +int uprobe_byname2_res = 0;
+> +int uretprobe_byname2_res = 0;
+>
+>  SEC("kprobe/sys_nanosleep")
+>  int handle_kprobe(struct pt_regs *ctx)
+> @@ -39,4 +43,33 @@ int handle_uretprobe(struct pt_regs *ctx)
+>         return 0;
+>  }
+>
+> +SEC("uprobe/trigger_func_byname")
+
+this should be just SEC("uprobe") ?
+
+> +int handle_uprobe_byname(struct pt_regs *ctx)
+> +{
+> +       uprobe_byname_res = 5;
+> +       return 0;
+> +}
+> +
+> +/* use auto-attach format for section definition. */
+> +SEC("uretprobe/proc/self/exe/method2")
+> +int handle_uretprobe_byname(struct pt_regs *ctx)
+> +{
+> +       uretprobe_byname_res = 6;
+> +       return 0;
+> +}
+> +
+> +SEC("uprobe/trigger_func_byname2")
+> +int handle_uprobe_byname2(struct pt_regs *ctx)
+> +{
+> +       uprobe_byname2_res = 7;
+> +       return 0;
+> +}
+> +
+> +SEC("uretprobe/trigger_func_byname2")
+
+same here and above, SEC("uprobe") if you don't specify binary + func.
+
+We should tighten this up for other SEC_DEF()s as well, but that's
+separate change from yours.
+
+> +int handle_uretprobe_byname2(struct pt_regs *ctx)
+> +{
+> +       uretprobe_byname2_res = 8;
+> +       return 0;
+> +}
+> +
+>  char _license[] SEC("license") = "GPL";
+> --
+> 1.8.3.1
+>
