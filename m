@@ -2,366 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C234965EC
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 20:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECFB49660B
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 20:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbiAUTuC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 21 Jan 2022 14:50:02 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26056 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232895AbiAUTtx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 14:49:53 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LG4O2s010853
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:49:53 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqj0gnfhw-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:49:53 -0800
-Received: from twshared3115.02.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 21 Jan 2022 11:49:51 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 3CCFF284A5F6F; Fri, 21 Jan 2022 11:49:43 -0800 (PST)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, <peterz@infradead.org>, <x86@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v6 bpf-next 7/7] bpf, x86_64: use bpf_prog_pack allocator
-Date:   Fri, 21 Jan 2022 11:49:26 -0800
-Message-ID: <20220121194926.1970172-8-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220121194926.1970172-1-song@kernel.org>
-References: <20220121194926.1970172-1-song@kernel.org>
+        id S232178AbiAUTxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 14:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231280AbiAUTxw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 14:53:52 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EF4C06173B
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:53:52 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id d14so8551373ila.1
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 11:53:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vOpk2o2HWT/29BVoVuo7VnK9EOUJ/Pjiu8mXfN0rIaY=;
+        b=bFZjv063fSP8nPtHtwp9plf2uezXJpnMJNbPzYaRq+JhLgESkdS5LDQsZ8tV7YeFhR
+         k7RlHqxLwhvSCz33HIH/FQxMmn2MoA2LJTTZX54q+nIV8S3QT+KXQMGzk9llxiZVdKbC
+         bKbkCfVYv5H/gAfFIysRfyewKnpHNEvVaRwhA1s682HNJQGNApRQQf96wpC0/1NXgzXl
+         LqqE0guaS3bp/1NcJh+8FL3AjYlGa4StNZ+StZDr4mpFg7CrEbDSDvEhZjxqKJJ3UoD6
+         UfgpDmvHwW3F43Ct1GOVp8c7eyaIdCwm9693de6GrbI4YUSqRAosJoHGzLsDC09mk3GG
+         FdFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vOpk2o2HWT/29BVoVuo7VnK9EOUJ/Pjiu8mXfN0rIaY=;
+        b=Ec5EeRW/5+C53hTQSWm69Riajr7cboNwAwJI4817Q5Nu+TwyBJ8YQMtUA3oV72LofV
+         6ax0774+nNdZ0b3/e5bfu+7aiR/XzU7bHKooImmcE2XqWLuRDwYm0JqPuwoJxXF5HzBw
+         3Dp/h9PnhYhoehi/K4rJErSO73/y9M6X/3G7Uren0nlEIGhsXrK+t3EVTKAlLeqpdzZM
+         fB0eSm0hl4wqmSItmyCgQIU3K3kFOYBryasuvo/MfRHMZL6Y6KidSoCfXKesypr0JPm4
+         khtfMIrukZBoN9E2y9exMJiy/JZFnsUlI7j4GAzV6VaePOQ6zWjmmdSBNgqxHqdL/utY
+         7oxg==
+X-Gm-Message-State: AOAM53294S9/EOci6YzRr8gAK6fsIQ1QaR59+Ta3NfQHHhn1eciZO3G5
+        PdxdoGai3YRrOTDzBz0U+BDjVPzrGmGb9ltI7g/MxG9d
+X-Google-Smtp-Source: ABdhPJwUUSeqWNK/CDPYGo5/tPkDa6vVuxeAMfNsBS5ODax4a42iGp3IrJdtZtPkDsezdj8UTeFI85hKJtih6xmOWdc=
+X-Received: by 2002:a05:6e02:1748:: with SMTP id y8mr3086695ill.305.1642794831641;
+ Fri, 21 Jan 2022 11:53:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: dtTutaDFCMqQIlcVaIsySBy_Zb5yNFQk
-X-Proofpoint-GUID: dtTutaDFCMqQIlcVaIsySBy_Zb5yNFQk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-21_09,2022-01-21_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0 adultscore=0
- clxscore=1015 bulkscore=0 impostorscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=846 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201210128
-X-FB-Internal: deliver
+References: <20220113233158.1582743-1-kennyyu@fb.com> <20220121193047.3225019-1-kennyyu@fb.com>
+ <20220121193047.3225019-2-kennyyu@fb.com>
+In-Reply-To: <20220121193047.3225019-2-kennyyu@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Jan 2022 11:53:40 -0800
+Message-ID: <CAEf4BzYfQ4EbSa+c1-G0x_Zh4L6=TbutmH3qndTmv7wb2dAf1w@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/3] bpf: Add bpf_copy_from_user_task() helper
+To:     Kenny Yu <kennyyu@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Gabriele <phoenix1987@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+On Fri, Jan 21, 2022 at 11:31 AM Kenny Yu <kennyyu@fb.com> wrote:
+>
+> This adds a helper for bpf programs to read the memory of other
+> tasks. This also adds the ability for bpf iterator programs to
+> be sleepable.
+>
+> This changes `bpf_iter_run_prog` to use the appropriate synchronization for
+> sleepable bpf programs. With sleepable bpf iterator programs, we can no
+> longer use `rcu_read_lock()` and must use `rcu_read_lock_trace()` instead
+> to protect the bpf program.
+>
+> As an example use case at Meta, we are using a bpf task iterator program
+> and this new helper to print C++ async stack traces for all threads of
+> a given process.
+>
+> Signed-off-by: Kenny Yu <kennyyu@fb.com>
+> ---
+>  include/linux/bpf.h            |  1 +
+>  include/uapi/linux/bpf.h       | 10 ++++++++++
+>  kernel/bpf/bpf_iter.c          | 20 ++++++++++++++-----
+>  kernel/bpf/helpers.c           | 35 ++++++++++++++++++++++++++++++++++
+>  kernel/trace/bpf_trace.c       |  2 ++
+>  tools/include/uapi/linux/bpf.h | 10 ++++++++++
+>  6 files changed, 73 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 80e3387ea3af..5917883e528b 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2229,6 +2229,7 @@ extern const struct bpf_func_proto bpf_kallsyms_lookup_name_proto;
+>  extern const struct bpf_func_proto bpf_find_vma_proto;
+>  extern const struct bpf_func_proto bpf_loop_proto;
+>  extern const struct bpf_func_proto bpf_strncmp_proto;
+> +extern const struct bpf_func_proto bpf_copy_from_user_task_proto;
+>
+>  const struct bpf_func_proto *tracing_prog_func_proto(
+>    enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index fe2272defcd9..d82d9423874d 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5049,6 +5049,15 @@ union bpf_attr {
+>   *             This helper is currently supported by cgroup programs only.
+>   *     Return
+>   *             0 on success, or a negative error in case of failure.
+> + *
+> + * long bpf_copy_from_user_task(void *dst, u32 size, const void *user_ptr, struct task_struct *tsk, u64 flags)
+> + *     Description
+> + *             Read *size* bytes from user space address *user_ptr* in *tsk*'s
+> + *             address space, and stores the data in *dst*. *flags* is not
+> + *             used yet and is provided for future extensibility. This helper
+> + *             can only be used by sleepable programs.
 
-Use bpf_prog_pack allocator in x86_64 jit.
+"On error dst buffer is zeroed out."? This is an explicit guarantee.
 
-The program header from bpf_prog_pack is read only during the jit process.
-Therefore, the binary is first written to a temporary buffer, and later
-copied to final location with text_poke_copy().
+> + *     Return
+> + *             0 on success, or a negative error in case of failure.
+>   */
+>  #define __BPF_FUNC_MAPPER(FN)          \
+>         FN(unspec),                     \
+> @@ -5239,6 +5248,7 @@ union bpf_attr {
+>         FN(get_func_arg_cnt),           \
+>         FN(get_retval),                 \
+>         FN(set_retval),                 \
+> +       FN(copy_from_user_task),        \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+> index b7aef5b3416d..110029ede71e 100644
+> --- a/kernel/bpf/bpf_iter.c
+> +++ b/kernel/bpf/bpf_iter.c
+> @@ -5,6 +5,7 @@
+>  #include <linux/anon_inodes.h>
+>  #include <linux/filter.h>
+>  #include <linux/bpf.h>
+> +#include <linux/rcupdate_trace.h>
+>
+>  struct bpf_iter_target_info {
+>         struct list_head list;
+> @@ -684,11 +685,20 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
+>  {
+>         int ret;
+>
+> -       rcu_read_lock();
+> -       migrate_disable();
+> -       ret = bpf_prog_run(prog, ctx);
+> -       migrate_enable();
+> -       rcu_read_unlock();
+> +       if (prog->aux->sleepable) {
+> +               rcu_read_lock_trace();
+> +               migrate_disable();
+> +               might_fault();
+> +               ret = bpf_prog_run(prog, ctx);
+> +               migrate_enable();
+> +               rcu_read_unlock_trace();
+> +       } else {
+> +               rcu_read_lock();
+> +               migrate_disable();
+> +               ret = bpf_prog_run(prog, ctx);
+> +               migrate_enable();
+> +               rcu_read_unlock();
+> +       }
+>
 
-Similarly, jit_fill_hole() is updated to fill the hole with 0xcc using
-text_poke_copy().
+I think this sleepable bpf_iter change deserves its own patch. It has
+nothing to do with bpf_copy_from_user_task() helper.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- arch/x86/net/bpf_jit_comp.c | 141 ++++++++++++++++++++++++++++--------
- 1 file changed, 111 insertions(+), 30 deletions(-)
+>         /* bpf program can only return 0 or 1:
+>          *  0 : okay
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 01cfdf40c838..3bc37016fad0 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/pid_namespace.h>
+>  #include <linux/proc_ns.h>
+>  #include <linux/security.h>
+> +#include <linux/btf_ids.h>
+>
+>  #include "../../lib/kstrtox.h"
+>
+> @@ -671,6 +672,40 @@ const struct bpf_func_proto bpf_copy_from_user_proto = {
+>         .arg3_type      = ARG_ANYTHING,
+>  };
+>
+> +BPF_CALL_5(bpf_copy_from_user_task, void *, dst, u32, size,
+> +          const void __user *, user_ptr, struct task_struct *, tsk, u64, flags)
+> +{
+> +       int ret;
+> +
+> +       /* flags is not used yet */
+> +       if (flags)
+> +               return -EINVAL;
+> +
+> +       ret = access_process_vm(tsk, (unsigned long)user_ptr, dst, size, 0);
+> +       if (ret >= 0) {
+> +               if (ret == size)
+> +                       ret = 0;
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index fe4f08e25a1d..fcdfec992184 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -216,11 +216,32 @@ static u8 simple_alu_opcodes[] = {
- 	[BPF_ARSH] = 0xF8,
- };
- 
-+#define BPF_X86_JIT_HOLE_BUFFER_SIZE 128
-+static char jit_hole_buffer[BPF_X86_JIT_HOLE_BUFFER_SIZE] = {};
-+
- static void jit_fill_hole(void *area, unsigned int size)
-+{
-+	struct bpf_binary_header *hdr = area;
-+
-+	/* fill the first and last 128 bytes of the buffer with INT3 */
-+	text_poke_copy(area, jit_hole_buffer, BPF_X86_JIT_HOLE_BUFFER_SIZE);
-+	text_poke_copy(area + size - BPF_X86_JIT_HOLE_BUFFER_SIZE,
-+		       jit_hole_buffer, BPF_X86_JIT_HOLE_BUFFER_SIZE);
-+
-+	/*
-+	 * bpf_jit_binary_alloc_pack cannot write size directly to the ro
-+	 * mapping. Write it here with text_poke_copy().
-+	 */
-+	text_poke_copy(&hdr->size, &size, sizeof(size));
-+}
-+
-+static int __init x86_jit_fill_hole_init(void)
- {
- 	/* Fill whole space with INT3 instructions */
--	memset(area, 0xcc, size);
-+	memset(jit_hole_buffer, 0xcc, BPF_X86_JIT_HOLE_BUFFER_SIZE);
-+	return 0;
- }
-+pure_initcall(x86_jit_fill_hole_init);
- 
- struct jit_context {
- 	int cleanup_addr; /* Epilogue code offset */
-@@ -361,14 +382,11 @@ static int __bpf_arch_text_poke(void *ip, enum bpf_text_poke_type t,
- 
- 	ret = -EBUSY;
- 	mutex_lock(&text_mutex);
--	if (memcmp(ip, old_insn, X86_PATCH_SIZE))
-+	if (text_live && memcmp(ip, old_insn, X86_PATCH_SIZE))
- 		goto out;
- 	ret = 1;
- 	if (memcmp(ip, new_insn, X86_PATCH_SIZE)) {
--		if (text_live)
--			text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
--		else
--			memcpy(ip, new_insn, X86_PATCH_SIZE);
-+		text_poke_bp(ip, new_insn, X86_PATCH_SIZE, NULL);
- 		ret = 0;
- 	}
- out:
-@@ -537,7 +555,7 @@ static void emit_bpf_tail_call_direct(struct bpf_jit_poke_descriptor *poke,
- 	*pprog = prog;
- }
- 
--static void bpf_tail_call_direct_fixup(struct bpf_prog *prog)
-+static void bpf_tail_call_direct_fixup(struct bpf_prog *prog, bool text_live)
- {
- 	struct bpf_jit_poke_descriptor *poke;
- 	struct bpf_array *array;
-@@ -558,24 +576,15 @@ static void bpf_tail_call_direct_fixup(struct bpf_prog *prog)
- 		mutex_lock(&array->aux->poke_mutex);
- 		target = array->ptrs[poke->tail_call.key];
- 		if (target) {
--			/* Plain memcpy is used when image is not live yet
--			 * and still not locked as read-only. Once poke
--			 * location is active (poke->tailcall_target_stable),
--			 * any parallel bpf_arch_text_poke() might occur
--			 * still on the read-write image until we finally
--			 * locked it as read-only. Both modifications on
--			 * the given image are under text_mutex to avoid
--			 * interference.
--			 */
- 			ret = __bpf_arch_text_poke(poke->tailcall_target,
- 						   BPF_MOD_JUMP, NULL,
- 						   (u8 *)target->bpf_func +
--						   poke->adj_off, false);
-+						   poke->adj_off, text_live);
- 			BUG_ON(ret < 0);
- 			ret = __bpf_arch_text_poke(poke->tailcall_bypass,
- 						   BPF_MOD_JUMP,
- 						   (u8 *)poke->tailcall_target +
--						   X86_PATCH_SIZE, NULL, false);
-+						   X86_PATCH_SIZE, NULL, text_live);
- 			BUG_ON(ret < 0);
- 		}
- 		WRITE_ONCE(poke->tailcall_target_stable, true);
-@@ -867,7 +876,7 @@ static void emit_nops(u8 **pprog, int len)
- 
- #define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
- 
--static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
-+static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image,
- 		  int oldproglen, struct jit_context *ctx, bool jmp_padding)
- {
- 	bool tail_call_reachable = bpf_prog->aux->tail_call_reachable;
-@@ -894,8 +903,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
- 	push_callee_regs(&prog, callee_regs_used);
- 
- 	ilen = prog - temp;
--	if (image)
--		memcpy(image + proglen, temp, ilen);
-+	if (rw_image)
-+		memcpy(rw_image + proglen, temp, ilen);
- 	proglen += ilen;
- 	addrs[0] = proglen;
- 	prog = temp;
-@@ -1324,8 +1333,10 @@ st:			if (is_imm8(insn->off))
- 					pr_err("extable->insn doesn't fit into 32-bit\n");
- 					return -EFAULT;
- 				}
--				ex->insn = delta;
-+				/* switch ex to temporary buffer for writes */
-+				ex = (void *)rw_image + ((void *)ex - (void *)image);
- 
-+				ex->insn = delta;
- 				ex->type = EX_TYPE_BPF;
- 
- 				if (dst_reg > BPF_REG_9) {
-@@ -1706,7 +1717,7 @@ st:			if (is_imm8(insn->off))
- 				pr_err("bpf_jit: fatal error\n");
- 				return -EFAULT;
- 			}
--			memcpy(image + proglen, temp, ilen);
-+			memcpy(rw_image + proglen, temp, ilen);
- 		}
- 		proglen += ilen;
- 		addrs[i] = proglen;
-@@ -2248,6 +2259,12 @@ int arch_prepare_bpf_dispatcher(void *image, s64 *funcs, int num_funcs)
- 
- struct x64_jit_data {
- 	struct bpf_binary_header *header;
-+	/*
-+	 * With bpf_prog_pack, header points to read-only memory.
-+	 * rw_header holds a temporary rw buffer for JIT. When JIT is done,
-+	 * the binary is copied to header with text_poke_copy().
-+	 */
-+	struct bpf_binary_header *rw_header;
- 	int *addrs;
- 	u8 *image;
- 	int proglen;
-@@ -2259,6 +2276,7 @@ struct x64_jit_data {
- 
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- {
-+	struct bpf_binary_header *rw_header = NULL;
- 	struct bpf_binary_header *header = NULL;
- 	struct bpf_prog *tmp, *orig_prog = prog;
- 	struct x64_jit_data *jit_data;
-@@ -2267,6 +2285,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	bool tmp_blinded = false;
- 	bool extra_pass = false;
- 	bool padding = false;
-+	u8 *rw_image = NULL;
- 	u8 *image = NULL;
- 	int *addrs;
- 	int pass;
-@@ -2302,6 +2321,8 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		oldproglen = jit_data->proglen;
- 		image = jit_data->image;
- 		header = jit_data->header;
-+		rw_header = jit_data->rw_header;
-+		rw_image = (void *)rw_header + ((void *)image - (void *)header);
- 		extra_pass = true;
- 		padding = true;
- 		goto skip_init_addrs;
-@@ -2332,14 +2353,18 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 	for (pass = 0; pass < MAX_PASSES || image; pass++) {
- 		if (!padding && pass >= PADDING_PASSES)
- 			padding = true;
--		proglen = do_jit(prog, addrs, image, oldproglen, &ctx, padding);
-+		proglen = do_jit(prog, addrs, image, rw_image, oldproglen, &ctx, padding);
- 		if (proglen <= 0) {
- out_image:
- 			image = NULL;
--			if (header)
--				bpf_jit_binary_free(header);
-+			rw_image = NULL;
-+			if (header) {
-+				bpf_jit_binary_free_pack(header);
-+				kfree(rw_header);
-+			}
- 			prog = orig_prog;
- 			header = NULL;
-+			rw_header = NULL;
- 			goto out_addrs;
- 		}
- 		if (image) {
-@@ -2362,12 +2387,34 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 				sizeof(struct exception_table_entry);
- 
- 			/* allocate module memory for x86 insns and extable */
--			header = bpf_jit_binary_alloc(roundup(proglen, align) + extable_size,
--						      &image, align, jit_fill_hole);
-+			header = bpf_jit_binary_alloc_pack(roundup(proglen, align) + extable_size,
-+							   &image, align, jit_fill_hole);
- 			if (!header) {
- 				prog = orig_prog;
- 				goto out_addrs;
- 			}
-+			if (header->size > bpf_prog_pack_max_size()) {
-+				rw_header = header;
-+				rw_image = image;
-+			} else {
-+				/*
-+				 * With bpf_prog_pack, header and image
-+				 * points to read-only memory. Allocate a
-+				 * rw buffer for writes during JIT.
-+				 *
-+				 * When the JIT is done, the binary is copied
-+				 * to header with text_poke_copy().
-+				 */
-+				rw_header = kvmalloc(header->size, GFP_KERNEL | __GFP_ZERO);
-+				if (!rw_header) {
-+					bpf_jit_binary_free_pack(header);
-+					header = NULL;
-+					prog = orig_prog;
-+					goto out_addrs;
-+				}
-+				rw_header->size = header->size;
-+				rw_image = (void *)rw_header + ((void *)image - (void *)header);
-+			}
- 			prog->aux->extable = (void *) image + roundup(proglen, align);
- 		}
- 		oldproglen = proglen;
-@@ -2379,14 +2426,23 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 
- 	if (image) {
- 		if (!prog->is_func || extra_pass) {
--			bpf_tail_call_direct_fixup(prog);
--			bpf_jit_binary_lock_ro(header);
-+			if (header->size > bpf_prog_pack_max_size()) {
-+				/*
-+				 * bpf_prog_pack cannot handle too big
-+				 * program (> ~2MB). Fall back to regular
-+				 * module_alloc(), and do the fixup and
-+				 * lock_ro here.
-+				 */
-+				bpf_tail_call_direct_fixup(prog, false);
-+				bpf_jit_binary_lock_ro(header);
-+			}
- 		} else {
- 			jit_data->addrs = addrs;
- 			jit_data->ctx = ctx;
- 			jit_data->proglen = proglen;
- 			jit_data->image = image;
- 			jit_data->header = header;
-+			jit_data->rw_header = rw_header;
- 		}
- 		prog->bpf_func = (void *)image;
- 		prog->jited = 1;
-@@ -2402,6 +2458,17 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		kvfree(addrs);
- 		kfree(jit_data);
- 		prog->aux->jit_data = NULL;
-+		jit_data = NULL;
-+		if (rw_header != header) {
-+			text_poke_copy(header, rw_header, header->size);
-+			kvfree(rw_header);
-+			/*
-+			 * Do the fixup after final text_poke_copy().
-+			 * Otherwise, the fix up will be overwritten by
-+			 * text_poke_copy().
-+			 */
-+			bpf_tail_call_direct_fixup(prog, true);
-+		}
- 	}
- out:
- 	if (tmp_blinded)
-@@ -2415,3 +2482,17 @@ bool bpf_jit_supports_kfunc_call(void)
- {
- 	return true;
- }
-+
-+void bpf_jit_free(struct bpf_prog *fp)
-+{
-+	if (fp->jited) {
-+		struct bpf_binary_header *hdr = bpf_jit_binary_hdr(fp);
-+
-+		if (hdr->size > bpf_prog_pack_max_size())
-+			bpf_jit_binary_free(hdr);
-+		else
-+			bpf_jit_binary_free_pack(hdr);
-+	}
-+
-+	bpf_prog_unlock_free(fp);
-+}
--- 
-2.30.2
+is there a point in calling access_process_vm() with size == 0? It
+would validate that get_task_mm() succeeds, but that's pretty much it?
+So maybe instead just exit early if size is zero? It will be also less
+convoluted logic:
 
+if (size == 0)
+    return 0;
+if (access_process_vm(...)) {
+    memset(0);
+    return -EFAULT;
+}
+return 0;
+
+> +               else {
+> +                       /* If partial read, clear all bytes and return error */
+> +                       memset(dst, 0, size);
+> +                       ret = -EFAULT;
+> +               }
+> +       }
+> +       return ret;
+> +}
+> +
+
+[...]
