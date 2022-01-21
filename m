@@ -2,81 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A16496820
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 00:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE6A0496869
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 00:55:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbiAUXNH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 18:13:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
+        id S229907AbiAUXz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 18:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbiAUXNF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 18:13:05 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D008DC06173B
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 15:13:04 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id w5so4667812ilo.2
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 15:13:04 -0800 (PST)
+        with ESMTP id S229904AbiAUXz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 18:55:26 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545D0C06173B;
+        Fri, 21 Jan 2022 15:55:26 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id d5so8086101pjk.5;
+        Fri, 21 Jan 2022 15:55:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LwLuBrwe75SQOIMRGoQTXbtTN5NgEGbvHUDJG0ei2hY=;
-        b=WyngFcgMiFelBlIP+WVV8v/BFzS8n+7p/g+BwI/2VgfB9gqx/nvNNaMkQMHqturdKe
-         Wp7fblgjxIDfxHl9Gk4R0jlLA+Y9CCPq7vp9AqinFmy9NaUOQMg/iAgbBuGnRhxeMTzV
-         Wwh6Mfqk50LbJVFmP48wz98DLDhu97ICd+ZeRhKiaCUetF0CAh5erWDpU17GEa1bxd/b
-         BmJw7lHGHYT/+fNOKPMCZUhy3fPW6o730OPPzI37JW5WIkOAeyRWg2MlubaS+2tN5lo4
-         skVi+gQU+ayONOcOQXSYeUQSohoO9HVn4EMiLrb8z4l9W/m888b6uSP0Cs+/PHt7Rlns
-         uwTw==
+        bh=Q8HQt1HvGyw6p2m9jE0xI96X7Drt+WwhJJItVuCPdG4=;
+        b=AEn3ht+IvGHRh+8N2pnJhxmlOQxdgAcLE62J40D76oDg3HTNW2LI0IC5t8s+/fgRZR
+         n4oIQYpZNAYulc9nvN+b7EMOwNWMUPygVccUBjj/vhUIXX7b5IWwe9OHPKkAEyPZcFSu
+         5+U6IU8MYGETZY7qh/eL9qnshHH+14EREYGRUR+p+22k9gNc7YOYsubGRGfHPYcgL9GE
+         NHZjIOaUgLDikXWKZ8PNWkt4chPfHsXyBAyQcBNAG41rGk/l4XZQQ9cIEN+u9ayL2fii
+         OZo1GJBdkyVm1Wfd6tiTHzy8YrOFY2CebPcQLWd25GPDcUJ1jhNW3MXAppkBc4ACpSSw
+         GrHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LwLuBrwe75SQOIMRGoQTXbtTN5NgEGbvHUDJG0ei2hY=;
-        b=O05BfcN7SLXj+f2IxwJ8X/4o1M5HKZLLnf14mE5VmJZ4BHEpiTuxZCKcktbv96lt29
-         YXbCOSlKwA84vQE07jE6EKYEX0b1YQJsD2QGxu0gMtHJCcPpM+Iu/DbnRTgKG5ekswWZ
-         O+YD4jvtTp5NP4TE27zW2zwCRXtRlFgbMfXXT6MLmQCL603DWXvr1z6Pn0ycVwRTcqQh
-         e20E6seAQwgy4GibUJX/SgqYAbd57/2uxOuMaJSPYXwWs8CTjLVHNKOqgZjj7Z+54jRa
-         lifxhzbYikEVs5XHSWtNakoxOwolhnZkI19hN0JdWd1hrTRON6GXFtv19u9kbIBJ0x99
-         +6Bg==
-X-Gm-Message-State: AOAM532qa6ymmfvRGVkzKSihbKNRc5TYHV/bnZh29T4A7cs+d626sxsN
-        Bg2bXRYsDENoC+U42sRgN/akOB4KfyZhnAHBW58=
-X-Google-Smtp-Source: ABdhPJxu/as4t3i8XoslFFqVzHdE4XI4lVCDTFWNCQWLOjRP3S+i0HMpUxLIvFCIcHdkzqeurZxwwNxhFpvBQRfi51c=
-X-Received: by 2002:a05:6e02:1c01:: with SMTP id l1mr3531844ilh.239.1642806784098;
- Fri, 21 Jan 2022 15:13:04 -0800 (PST)
+        bh=Q8HQt1HvGyw6p2m9jE0xI96X7Drt+WwhJJItVuCPdG4=;
+        b=UuiWopMktPOYS5lYZwPoAEoDZ5scfSDYBzNNkL5D7dXRBtx9SuMviadnDqJJsS2JPt
+         +iculaQtj8KC5mVdvuaVc8QG7IGd0sjMyEQSZP15FPO0bVXcAnfNLMoFrF6mJuw2+unr
+         3F9+fmywcPiPISF71QaO+ghkzTLp2F7x21wGJ4cNijdySa49Zph+GhNUC4VMhqGVuQ7L
+         rsG2IFzRs/O+mu/4pPgNR+4k/k3YxK1bgcn2ND9Qjro1YwGnyVo+kyRMhxIrqeNi4YDR
+         lcVSPfHEX0oBuKCavkPL7HdAdOGqV0/mmIi21snEYW2UiPVRw8jsx8hawJrjzMGi2t0J
+         rSug==
+X-Gm-Message-State: AOAM531+ZpxSn2spcGO2q2JTeO40AI8is1cy5/RGLci0DhBkFRg56nfy
+        pY9xQqNz8qyQYWcMgQllCfs6ApXVJuohBbaAG7HYtpbZC6g=
+X-Google-Smtp-Source: ABdhPJx86p3K7XTaMBGZAt5t6KGfJNh508gK3uEngsI/OO5MJW6GbRwsKvZTTAPLgnbfwt3tSHrhBg3IaYflv0hOL1g=
+X-Received: by 2002:a17:90a:c78b:: with SMTP id gn11mr3015934pjb.138.1642809325739;
+ Fri, 21 Jan 2022 15:55:25 -0800 (PST)
 MIME-Version: 1.0
-References: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
- <87tudynstg.fsf@cloudflare.com>
-In-Reply-To: <87tudynstg.fsf@cloudflare.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Jan 2022 15:12:52 -0800
-Message-ID: <CAEf4Bzby9dSfwaoSKmxCRx9kOwz=HbrS6pfZ85+xqeVJ4v71WQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] selftests: bpf: Fix bind on used port
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Felix Maurer <fmaurer@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
+References: <20220121194926.1970172-1-song@kernel.org> <20220121194926.1970172-7-song@kernel.org>
+In-Reply-To: <20220121194926.1970172-7-song@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 21 Jan 2022 15:55:14 -0800
+Message-ID: <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
+To:     Song Liu <song@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 2:32 PM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+On Fri, Jan 21, 2022 at 11:49 AM Song Liu <song@kernel.org> wrote:
 >
-> On Tue, Jan 18, 2022 at 04:11 PM CET, Felix Maurer wrote:
-> > The bind_perm BPF selftest failed when port 111/tcp was already in use
-> > during the test. To fix this, the test now runs in its own network name
-> > space.
-> >
-> > To use unshare, it is necessary to reorder the includes. The style of
-> > the includes is adapted to be consistent with the other prog_tests.
-> >
-> > v2: Replace deprecated CHECK macro with ASSERT_OK
-> >
-> > Fixes: 8259fdeb30326 ("selftests/bpf: Verify that rebinding to port < 1024 from BPF works")
-> > Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-> > ---
->
-> Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
+> +static struct bpf_binary_header *
+> +__bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+> +                      unsigned int alignment,
+> +                      bpf_jit_fill_hole_t bpf_fill_ill_insns,
+> +                      u32 round_up_to)
+> +{
+> +       struct bpf_binary_header *hdr;
+> +       u32 size, hole, start;
+> +
+> +       WARN_ON_ONCE(!is_power_of_2(alignment) ||
+> +                    alignment > BPF_IMAGE_ALIGNMENT);
+> +
+> +       /* Most of BPF filters are really small, but if some of them
+> +        * fill a page, allow at least 128 extra bytes to insert a
+> +        * random section of illegal instructions.
+> +        */
+> +       size = round_up(proglen + sizeof(*hdr) + 128, round_up_to);
+> +
+> +       if (bpf_jit_charge_modmem(size))
+> +               return NULL;
+> +       hdr = bpf_jit_alloc_exec(size);
+> +       if (!hdr) {
+> +               bpf_jit_uncharge_modmem(size);
+> +               return NULL;
+> +       }
+> +
+> +       /* Fill space with illegal/arch-dep instructions. */
+> +       bpf_fill_ill_insns(hdr, size);
+> +
+> +       hdr->size = size;
+> +       hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
+> +                    PAGE_SIZE - sizeof(*hdr));
 
-I've applied it to bpf-next yesterday, patchbot missed it and I forgot
-to follow up to notify, sorry.
+It probably should be 'round_up_to' instead of PAGE_SIZE ?
+
+> +       start = (get_random_int() % hole) & ~(alignment - 1);
+> +
+> +       /* Leave a random number of instructions before BPF code. */
+> +       *image_ptr = &hdr->image[start];
+> +
+> +       return hdr;
+> +}
+> +
+>  struct bpf_binary_header *
+>  bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+>                      unsigned int alignment,
+>                      bpf_jit_fill_hole_t bpf_fill_ill_insns)
+> +{
+> +       return __bpf_jit_binary_alloc(proglen, image_ptr, alignment,
+> +                                     bpf_fill_ill_insns, PAGE_SIZE);
+> +}
+> +
+> +struct bpf_binary_header *
+> +bpf_jit_binary_alloc_pack(unsigned int proglen, u8 **image_ptr,
+> +                         unsigned int alignment,
+> +                         bpf_jit_fill_hole_t bpf_fill_ill_insns)
+>  {
+>         struct bpf_binary_header *hdr;
+>         u32 size, hole, start;
+> @@ -875,11 +1034,16 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+>          * fill a page, allow at least 128 extra bytes to insert a
+>          * random section of illegal instructions.
+>          */
+> -       size = round_up(proglen + sizeof(*hdr) + 128, PAGE_SIZE);
+> +       size = round_up(proglen + sizeof(*hdr) + 128, BPF_PROG_CHUNK_SIZE);
+> +
+> +       /* for too big program, use __bpf_jit_binary_alloc. */
+> +       if (size > BPF_PROG_MAX_PACK_PROG_SIZE)
+> +               return __bpf_jit_binary_alloc(proglen, image_ptr, alignment,
+> +                                             bpf_fill_ill_insns, PAGE_SIZE);
+>
+>         if (bpf_jit_charge_modmem(size))
+>                 return NULL;
+> -       hdr = bpf_jit_alloc_exec(size);
+> +       hdr = bpf_prog_pack_alloc(size);
+>         if (!hdr) {
+>                 bpf_jit_uncharge_modmem(size);
+>                 return NULL;
+> @@ -888,9 +1052,8 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
+>         /* Fill space with illegal/arch-dep instructions. */
+>         bpf_fill_ill_insns(hdr, size);
+>
+> -       hdr->size = size;
+
+I'm missing where it's assigned.
+Looks like hdr->size stays zero, so free is never performed?
+
+>         hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
+> -                    PAGE_SIZE - sizeof(*hdr));
+> +                    BPF_PROG_CHUNK_SIZE - sizeof(*hdr));
+
+Before this change size - (proglen + sizeof(*hdr)) would
+be at least 128 and potentially bigger than PAGE_SIZE
+when extra 128 crossed page boundary.
+Hence min() was necessary with the 2nd arg being PAGE_SIZE - sizeof(*hdr).
+
+With new code size - (proglen + sizeof(*hdr)) would
+be between 128 and 128+64
+while BPF_PROG_CHUNK_SIZE - sizeof(*hdr) is a constant less than 64.
+What is the point of min() ?
