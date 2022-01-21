@@ -2,520 +2,281 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA9F4966B0
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 21:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 765C749672D
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 22:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbiAUU5F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 15:57:05 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:9450 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230333AbiAUU5E (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 15:57:04 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20LFmfZg005209;
-        Fri, 21 Jan 2022 12:56:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=vsucrDmMC+6XNQpHTtuhM83Ri5HIl8xjfgnzy1c1QZg=;
- b=K4TQlWNhHV6GIo9VQ5JCxjnTiYP93U/5TyNdzxqKhhFgJ5P5xxXf/KPeo5dLej2p6ZkJ
- c3wLIrGIsZOrvCnMKliF7cRoL/7x8TeVsPcnazKDx5DI/CdGLP2kxjMeoeK9Vm7rFLzS
- mO1kXj0IiVKNez4gC3pZRKdW6eJXMgTmHdw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3dqhy4nwhu-4
+        id S229687AbiAUVPy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 16:15:54 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60764 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229520AbiAUVPx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 16:15:53 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LGENpB019535;
+        Fri, 21 Jan 2022 13:15:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=CA+I2/t3hyHaKZzw8Qj9StA/aZv44UGLw/iVkdFBdX0=;
+ b=YDO03unxBZk4GYu6HAy7kmxNkQivuXnv41jJk83j3RguF03xtKJXjoBY52ygdvdWlSjg
+ F5kbFBRGGnA51oKh3KWxTOMob9pPrk3WqB3mOimfJsh1JK9IGmUIY9rcvz+LD7tEPkNw
+ VznzX1GC6OJkacwXyDa9dme5kP7sBdMceWQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqhyvx0ku-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 21 Jan 2022 12:56:48 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Fri, 21 Jan 2022 13:15:40 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 21 Jan 2022 12:56:43 -0800
+ 15.1.2308.21; Fri, 21 Jan 2022 13:15:39 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BCO0/AOYprlj11Paon7B2uOsjVXgYF2FfrCsTmTK5vA0wzdXYnqdhWyplUVud1JkseKjAAQqxhUQnXUw058PtIeJcGHHwXw4QKJjyRKM2V9J72cRi+zjIVwtCTvwtMwzDwKxZME7F+NUjWcQwWZWflsrQJe8twCTSoEZNiFTmnIs5gM6X1VMcM/Q0s+8HdrF2V4CaeHxCKeEGhOYmsgFDsuFZgLB3YuA+kOs65dQ8LKm1WAMHUWLBUj/IWQ6ZFaOCQ05Gsty/ID9V86+QCmDOcxZzJ+uk04/GzRA4Z5mJdDrS52rR8VOebn96HwKbifPV21y7/pWQ7KxR7tU/TFDXg==
+ b=egaa/kxCy/XNbtZe+RxEWorbvkZoRcepXGrzbEBXAtJYoN/E8UvGtkVyhdiU5kL0LNMYXiyy8VRHDARZ5etyeZLUcBcyl/6CVVKgCQRMirF0s0KT6UDhCSf27txo6UdFI33uOkZ8Dnwunf3l1WJ1BbNBwF4YmerPZgKT/WeoDXBQm0VZ0nMWd5qG2f4PTKB8yZ31gKZin6WA2ha0AEWgKHGHHkeWNyRMNJs5bCzgcayHll0w7D+f6tNzGUz0rLhMMtG0HG5Zsnsfw5cNSFt7fSSVAQ8ShHOLL5mSfiXr7+VfFlXt/UBa2pzIXhxbqCyCzH2RMKv90SEeo81blSQLVQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vsucrDmMC+6XNQpHTtuhM83Ri5HIl8xjfgnzy1c1QZg=;
- b=GJqgduIVd6wRpYcRviIizCWnA5fIXAEy5wjy6OgWpWUIAYLcotRRWnNlAWr/lvShA+AIsRHAonrP6C8Xi7ftEkh7uFq+Xs47JH+u7gWMiu2U03+QTWe7yuK6WFNsoalCSglEfdbcu8jn+Q+O5O/VOSZSWXXgSHzRLQYcdJDjxQrs1FM2zm9CHrTUYyur2lphSC82AntxZx6qgz4dHwJj+bR0Aps7GMdZysqOdwVdp4eh5lMk/16PI0XTZnuCbLUyC/xNjFnxU2e2OFtHqFx2pS/9FesmlFH2amMh4AhOO7aR4NBhQtKqpE1EgLhc+2hy5E8oo3qaG8kotEQtIyLl1g==
+ bh=CA+I2/t3hyHaKZzw8Qj9StA/aZv44UGLw/iVkdFBdX0=;
+ b=fsooggs9YpmqGGrf1FggfLCA+ocdsm726EHPOwHy1O9DNZ/qXhmx8t2crOT4uJxQXv7P84Qma9zAv+94rdgmsG3LCpK60H5XbHmu4lmlSTBGgV1Ru2m3/HeGc2xqBDHN0LOz5F1ClEG8oNK2fkT2+bxzfx8qzsj8L4U1RQLdVC6+NiD0sUKh6pFmztzWK5QtquVe3NjHrn2pWvN3aU9YLDTUX4tcTBlrHTDonXAo2CyKHrxs+OSkfykt0kUs4uRdfb1PVWIDeotysR2gG2rJkVmabSXiPcQheaooJUw3He+gfOhOOXS0rF7BY08SsgQa/q2cUiqc/2JKxc6ljdq0cQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by SN6PR15MB2432.namprd15.prod.outlook.com (2603:10b6:805:24::28) with
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SJ0PR15MB4503.namprd15.prod.outlook.com (2603:10b6:a03:378::8) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.12; Fri, 21 Jan
- 2022 20:56:41 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::b0ca:a63e:fb69:6437]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::b0ca:a63e:fb69:6437%6]) with mapi id 15.20.4909.012; Fri, 21 Jan 2022
- 20:56:41 +0000
-Date:   Fri, 21 Jan 2022 12:56:37 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <sdf@google.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+ 2022 21:15:38 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::11fa:b11a:12b5:a7f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::11fa:b11a:12b5:a7f0%5]) with mapi id 15.20.4909.010; Fri, 21 Jan 2022
+ 21:15:38 +0000
+Message-ID: <170be4e4-6709-cfae-f728-81fc4452f111@fb.com>
+Date:   Fri, 21 Jan 2022 13:15:34 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.0
+Subject: Re: [PATCH v6 bpf-next 1/3] bpf: Add bpf_copy_from_user_task() helper
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Kenny Yu <kennyyu@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Miller <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, <kernel-team@fb.com>,
-        Willem de Bruijn <willemb@google.com>
-Subject: Re: [RFC PATCH v3 net-next 4/4] bpf: Add
- __sk_buff->mono_delivery_time and handle __sk_buff->tstamp based on
- tc_at_ingress
-Message-ID: <20220121205637.ip4eax3mhsaod74k@kafai-mbp.dhcp.thefacebook.com>
-References: <20220121073026.4173996-1-kafai@fb.com>
- <20220121073051.4180328-1-kafai@fb.com>
- <YesAbHLRYBJ8FwiK@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YesAbHLRYBJ8FwiK@google.com>
-X-ClientProxiedBy: MWHPR19CA0062.namprd19.prod.outlook.com
- (2603:10b6:300:94::24) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Gabriele <phoenix1987@gmail.com>
+References: <20220113233158.1582743-1-kennyyu@fb.com>
+ <20220121193047.3225019-1-kennyyu@fb.com>
+ <20220121193047.3225019-2-kennyyu@fb.com>
+ <CAEf4BzYfQ4EbSa+c1-G0x_Zh4L6=TbutmH3qndTmv7wb2dAf1w@mail.gmail.com>
+ <c8c18806-69ce-02f7-bb60-e2b2be30a809@fb.com>
+ <CAEf4BzbqP1os=mB-WjQNareKumQrGUeqVEw8f+WZwKxN3Kq77A@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAEf4BzbqP1os=mB-WjQNareKumQrGUeqVEw8f+WZwKxN3Kq77A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR11CA0003.namprd11.prod.outlook.com
+ (2603:10b6:301:1::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 12a09613-54ca-4860-c8f5-08d9dd20867a
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2432:EE_
-X-Microsoft-Antispam-PRVS: <SN6PR15MB24322CBA5590567EFB711268D55B9@SN6PR15MB2432.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: d9643593-bf3b-429b-da0b-08d9dd232bee
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4503:EE_
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4503CF499F84435C0167628DD35B9@SJ0PR15MB4503.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DRqaJOjWUowDcG1FZaHAG+qd+46gtUyu/MvQyldDxDtlylTi6MF/qtdO+svNZA6S1xMmwRcLIjnO+0WH8IFJQvr57H5w/W1uktOClGueS8meVeF04mHN+PuC7YMrE5Kn1h4L5jAMzi0YxM9Ge4rxiq5cR7T3QW7WgwtVujxx13KMuE5DWNVIWbjytkFGxFTitUfYSBFIbQLppdffFSWKrdmQAcu9gVBAzufyRZ5E3smfQddFT4nhRcxunK5tMiEn1LPs70X+aAoMXkS4eFaRA99+T4ZTpzv+bQNL7r9uSBwbWFUdGBeyyAvZMHNmlpGlDaVeMyJMkfbJyqI36i2d+l7CeWWWSlPM92Sc4An9p204dGVlXYLqjSwDTHLQULIO2fYZ6Lol7WyT1rxR1egDNs4+IQn1hE8X6eTkwCw3iFfkbT9ORxqCwY2DABOcRFHv6EtPsk67Nm3HHPytbhJtISdt0p9c26fEeeLNlfugj0y8Akuc8a6oRqVgrEwHBgLoIHuO4jxkaHo5HN5kLI70MGrmlPKTURlMbzje8nVjavSrKa2vJebtal+Ops3CH8qlfba6i5JtYyY7439s1YQlbIDXHgj8rWaUrSzx7DSUilN4pGE1JpJKBhiCrOFPcT5OUUwpslAPiK8lMXX2EHaovTpKVhHhtPqK4O5PVdE7eANqF42UIfLaxVH82mpdz7HX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(2906002)(9686003)(83380400001)(6512007)(316002)(6506007)(186003)(52116002)(5660300002)(30864003)(8676002)(66946007)(66476007)(508600001)(66556008)(4326008)(6916009)(1076003)(6486002)(7416002)(8936002)(86362001)(54906003)(6666004)(309714004);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: BwqGFlGjtJwM/rpDgEga6t3Fy0sBjf7NFL2Mlnc/3FKoIjQr8r/hpwJrArNFcZs1hLmMcChkJu6+ADimm3UJg9fi9aYsYItWQImQ7S0Icw9Tfafq37SkLbq6JjOF2tZg53psxrDI7x6IZod1beab2s3KwanxQDATdCeb8D0P27eBrylBuQTTePeww22g5akzwVb9D7/YQlUd/0Y9YQ2CrE69B7O5mc6HmUQMOesQNm+51RdQUkb5wBsR1izwVyizVjb3C7g6F91T30fNteEPFYO1TVQrshej2Nw2pWLDpRQauJJv9KgQNcpFYKsGnaS9ftzmEkpY+D8Yh2G9dgtvW69Q/3irPapZdGVCOglKmyd4l6CLvD8NEgWF61EGgyaABMlfDcdih2PSCs/s5vYoQdne+4SqiGumBeVqlGVMgPiYD+yrJuHKpkGZz8UkcD8Qup1fSPSDZPnbaHNI0o7+hSIfMDTKvrnkhlXYzUC0zo7BwPDTMFynQ+usU52sK4QdS1x1UId8zoANHHtEI3VqXE0bV6gqJhmYHMs9mi2whCcvcLMhUulpP8vdoD8S86XZsBGKs2kXWmei/pYEGxLQ6wSYLITqGcZ/zrjJffyHNovrdOPLtmaN5463nxEFX6+63lS6B9LdGhL+0kHp6lGIyElEuIdZgTzb98KBs1SSQuZ6zjCVbOb8+/EuDC3wZNNevFO+qQeO51xFt80p0SayEpNwOSboSaB7+VC302FhN5mEseXe/JHC77/1IBqAeITn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(6486002)(8936002)(36756003)(4326008)(6916009)(6666004)(54906003)(31696002)(86362001)(6512007)(83380400001)(53546011)(6506007)(52116002)(186003)(316002)(31686004)(38100700002)(2906002)(66946007)(66476007)(508600001)(66556008)(5660300002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ciOE6070EMps9+RTNp1tmw3b4xFqysHSo908ipk33AI60HUI8gSZAcQWuJz+?=
- =?us-ascii?Q?Gmv8mFvS7XBdY2ImASjIzv16cLbB5HV6wBV92gQ9Z46gdehJbgLlwktvi3ev?=
- =?us-ascii?Q?RiVYcPQQEX5ZhtqGyUbJckBCPQDpv7JKF7CxfzcCqEpGJJ2TPoBY8q6Xt64I?=
- =?us-ascii?Q?6/UQIT3dF1g27NWvFmeJ8uq/8pNKCLW+6EpkHbNFFNSpII26g5jLoh0itwE4?=
- =?us-ascii?Q?vlsEYGDuS/mtoeOC1hxO1tH1jaFhRh2p2YdNsbd3KrDJNT0NOLXPUUeVWZe4?=
- =?us-ascii?Q?pd8E2tuCNLB2kO/F+0PKENxa4FS70qGg5LmtsjTfhhpsQ32mkiMWa0x3j9tD?=
- =?us-ascii?Q?QXvBNAxP5gdwidJ8IVI3WF57UiOaJuIiC5e4fvP0ULHJA053AJIwq/ZARxcJ?=
- =?us-ascii?Q?rjuHwFujRidd3mM1ByXupINw2A4Z47iF5FcTJ8g0MoSuQKhe7a1+j7uHeweI?=
- =?us-ascii?Q?b55g8syS8lQaLNPdWr+4AqZI83mQCEFOhu+fC9H9ZvQ3JAyRbfrPs1zo9oXZ?=
- =?us-ascii?Q?2RGbPkLpa8sKI/Q6p52sOPc+LglstceA3G0yOisH2X356wxLpX5bgsVuXDGg?=
- =?us-ascii?Q?b/USU563nddBR1W4j5fLt+D9+RDnITCjUuyVQWs7w+pcX4VcvnJRwZRP5UPE?=
- =?us-ascii?Q?zSiPQ6TjS/JUirwlEzM5ZLS4zmR0W2qensTAzlwWrINFy0vJOzSttcX8mTvK?=
- =?us-ascii?Q?I0VQFO36LuhqG/ZzcxHwd8Qk9vIlyqY/peYrZTPGQH4Be/rMrCBCssooo0zg?=
- =?us-ascii?Q?XiDKE7Jr1HH6ZupGv8+CQhrHPq6dRQ4KMQKFvJ0UZI4NH90yCmxe5vH8GLLM?=
- =?us-ascii?Q?RaWAjr0bfDPFRKJNtBnH67NsBS32d6j46fBfWjcFqihR9liwG6waLr5kUoOo?=
- =?us-ascii?Q?Tq2m998IugUDcGwLiVw2sYEpQqvm6+vWqrfForM6YQgaP8xAqUsxFmN90BON?=
- =?us-ascii?Q?4pEo9gNrxVf+PPeFQwLZCm9CmvyHUrR1ljXB3WKMf/Yi1mWOPt/l8WuoDnyh?=
- =?us-ascii?Q?5A4dITxJCMRBZOCWSYK3wZ2UIAWForeXfo05/fxtE8+TPUy4Jq/IfiEk0s3V?=
- =?us-ascii?Q?quSdvmRoqVQpzhPqYgivtk2D9bGWFMTqaai+bH3aD1Tx1IuZYrCHbAu7wbqE?=
- =?us-ascii?Q?s00zp29L3996h83mIUkpr/3ZS/skh+sVod130bZWmmFxIiw0xTfSItyO2jUh?=
- =?us-ascii?Q?etD8I494vLDFUY4DFwGNoUtCJGWEUeB/ihOjegdBBxq4pUFYv3rCEVaBiQKe?=
- =?us-ascii?Q?WU8S9PIS6IKhp7DRrBoWscQhIyz6bNHFxhSo+usHiVBUAv9hp5efbWIw1wSl?=
- =?us-ascii?Q?LxPKMftWtyhTkYyMZn8pfYEQR+Aw7jcLmECp3wDGee0FkG/87m0xJxE4i8UZ?=
- =?us-ascii?Q?SA9yBKSS2R/fK8ZmD1lVZNSCvnPy33cOZ/yLUDJ6vUA0I71l2bJTMn7B0fBe?=
- =?us-ascii?Q?zlJuY/DBCR13Io00fmeSh5jakR3njUyz8dl5q+nojYY7cdQ/zQWKc1KPXnan?=
- =?us-ascii?Q?XBxW6CaCfSx46mvO12XLkNJhKqIK94zQfILH1/uJ9fIKo0JDDXdHks3Rs6QS?=
- =?us-ascii?Q?SSxEARRlB5/PpjOErG8MEYrfIwiKvFUKyJo9OF3k?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12a09613-54ca-4860-c8f5-08d9dd20867a
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXAweGNJa2FIQ1EwK2JIaEY4NVBDYTMzd0NtS083SmZqRjlRRmlTTFkvREV2?=
+ =?utf-8?B?OW1Ddm1oNjJVM2tWUktVVFNKWWdsOGtaOTl2WDQ0WUN6K05iNEVVYmxRcmEx?=
+ =?utf-8?B?OHZRcXRzdDhrM1RrL0NSK1BsNXB6cHMzNTlkcG9jNkQ3R0JLM1A1ZStrY0xP?=
+ =?utf-8?B?bkIreVltckZRdzdhRmc2VkZqYUdaUmRTSGpjYXJOTGEza1NCWlhBUnpGMllt?=
+ =?utf-8?B?Ni8wSnNDeGhUdlBGQk9LNGhuMXpLbGY5QkYxSVZUeXZGUEwrejRGTlhiNnpo?=
+ =?utf-8?B?MUc3WGsxOWpFc1RMQ2xrZkVHRXVkK0gxNW56eXk3ZFhtQktjdlJPMmVkYStP?=
+ =?utf-8?B?OSs5UklHNjE0ZG1QdkdwNDl5RlBMVEEzSFBqSWYvMTVjbVMzNCtqd1A4MDJX?=
+ =?utf-8?B?NlBwNEUxS1JDR3NaV3hRa0wydzI1emxuTEUzRStJU3J0aStRV0lzY2pWeWRs?=
+ =?utf-8?B?ODBoTUpOa21US0orSXM3aHRvN0F2VVZZNnh2K2lOWER3UlQvc3dYYVJwKzZa?=
+ =?utf-8?B?WnNwSHBZWlRQZUJ5QlpwQUlrMTFsQUdEbkZTbmljaHBpT0wrMkgvRXk3amll?=
+ =?utf-8?B?dkFvZ0xjUGx4cUY5TnBQV3d6bUNjUEpQdUdxWkx1QUhNeUxHa0ExbkhlcThL?=
+ =?utf-8?B?NENrVWlxejZMVzlCSmhnUndRS2IzUlRxK0JvMDkxS2RIV2VCdmhPZHJnTFBI?=
+ =?utf-8?B?TDdmUlNLNEV6bFZ2Rmwyckw2ZWNvM2dIRXZJNElZcWFhS3JFUnNaakFyKzFR?=
+ =?utf-8?B?SmxjeEZzVkhlcVdkVWQ2RFd6RktzY0o1R0dlVGovaDIzK2k2UjN0L2hHbENM?=
+ =?utf-8?B?MldBb1AwclFvZzV6NFhibzdFdGx3eElsSFlsRllZUjdxZnFscGE0dWN6d1k5?=
+ =?utf-8?B?NlA1cUhqUG9vOFFSYlJ3RGViV01TTlpmMDFvemRGTVYzbXZSeTNzdTdERmt5?=
+ =?utf-8?B?Ry9zSDZGRmtjK1hubG9FekZydkVUdkFyT2NHZXRqbWdFTFlQY3pUazJwcWlK?=
+ =?utf-8?B?QnZQeWkwWURqMkl6QjN6cGZ2NDEwYzhLTUN2cC9EMU9FWlZmVWlBTGMwZmkz?=
+ =?utf-8?B?YjVPeW8wQTdWb3RRT05OTTBVait1QmlvR0F5eXRpbm9uOWQ5ZSt0d2NhcWJx?=
+ =?utf-8?B?TGh2TVpDTTAwNldGRkwvU3FvK0NHZmF0T3Y5cytSaTJaTWczbE1QcDJHcERO?=
+ =?utf-8?B?ektXRjhQbzRwYWgyb0FoL0V0VEpneHl3bkhEWTJ6b0luVTI3Q2dEdlRXWDBr?=
+ =?utf-8?B?MC9TcEFkanhpTy92VWpON0E1Yk5aS0ZQRUpSejZnQTc4TjVnZkEraW9JVUU4?=
+ =?utf-8?B?YjRia1FvSUJJQit6SzZHZmkvQk1qVUpkMHF5b1dseENML3hvL093U0pHUnIw?=
+ =?utf-8?B?Mkp3MFgxakszeXNndWJ0eHlsc252djdQTnU1Sy85Qk52NjRXZVpjSEZUcVF3?=
+ =?utf-8?B?Sm9DNWlwUzd1QU92Tm4wMmFtaWlCRkpEUCtOOVBsK2c2b2c5MnJTQnU1VlFR?=
+ =?utf-8?B?VWtPVHJWS2Zad3JBQUdEbzhHUU83NTI5RE44RFM2ZnVuU0xDb1MrR05zc2Ir?=
+ =?utf-8?B?T1hNRTFNNXJSSzJ1VGNPa1B4cE1TSUNoMnJOOXlBY1RmWjBzaW9Dd2FkN3hO?=
+ =?utf-8?B?TzNCdktGTVg2dCtBNWNOanlFOFVydVRDVzBSYW45bVlNdnJwaitldWQrcTB6?=
+ =?utf-8?B?ZkZEb3Q4TnpqTUlzaEtZNEYwM21OcTdTSFQ1L3JJVmZXSDZpSElYcm9CTWNI?=
+ =?utf-8?B?MDcza0V6TkhyNzVSNVVGNUFyeVMzQjdCQkVIOVk2aTNHMm1YODFWQWhJVnV1?=
+ =?utf-8?B?dnZQVGRrMHhKNndoUVhuT1d3WUpnMGF0eWkvWjNQMFJaYkw0Sm14eUk5UVBo?=
+ =?utf-8?B?V1dkSTJaRVY1UnE0UUZKTkxRUmp0YW5XQVAxZFVOUy81UVo3VlVpOU9wS1l4?=
+ =?utf-8?B?WkN0eEI3Wm9VQXlRdXZzMENLUWlsV1NTOVlKcVVJbEZpSEtMc3FJaURjclFp?=
+ =?utf-8?B?ZjkyQm94Y1M2SkcrL1pPdUdWZ3ZpWWU0LzFTUUlSMnhVREdZV1QwWWJNYzhv?=
+ =?utf-8?B?bnN6NkhVMndqdHpsWUgwV09XRHBhT2RXK0p0ekFRamFPRC9VTlJhdXpKNlN2?=
+ =?utf-8?Q?6PJl0hqq62M+JRSrx48x2HJ2R?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9643593-bf3b-429b-da0b-08d9dd232bee
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2022 20:56:41.7489
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2022 21:15:38.1709
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4K4npvmye0Kz9kZXL2hq/uM4eO15hPKZezDukkwWu11K7EsqJGUaBsYsRIprAh0u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2432
+X-MS-Exchange-CrossTenant-UserPrincipalName: D030IMRhNg/IdrqepPSxU8G9BLGljRo8lLhdGj5BnRnu5/WioHD4x9fB8iUyIg+y
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4503
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: LJ29S-eZk_evTHGcJG4Xmpdz4ExTL_p2
-X-Proofpoint-GUID: LJ29S-eZk_evTHGcJG4Xmpdz4ExTL_p2
+X-Proofpoint-ORIG-GUID: dF9SX9MdJPDUYFLN3i295lKcSBPy_JSu
+X-Proofpoint-GUID: dF9SX9MdJPDUYFLN3i295lKcSBPy_JSu
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-21_10,2022-01-21_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- spamscore=0 malwarescore=0 adultscore=0 clxscore=1011 mlxlogscore=999
- bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201210133
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
+ phishscore=0 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 spamscore=0 impostorscore=0 clxscore=1015 mlxscore=0
+ malwarescore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2201210135
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 10:50:20AM -0800, sdf@google.com wrote:
-> On 01/20, Martin KaFai Lau wrote:
-> > __sk_buff->mono_delivery_time:
-> > This patch adds __sk_buff->mono_delivery_time to
-> > read and write the mono delivery_time in skb->tstamp.
-> 
-> > The bpf rewrite is like:
-> > /* BPF_READ: __u64 a = __sk_buff->mono_delivery_time; */
-> > if (skb->mono_delivery_time)
-> > 	a = skb->tstamp;
-> > else
-> > 	a = 0;
-> 
-> > /* BPF_WRITE: __sk_buff->mono_delivery_time = a; */
-> > skb->tstamp = a;
-> > skb->mono_delivery_time = !!a;
-> 
-> > __sk_buff->tstamp:
-> > The bpf rewrite is like:
-> > /* BPF_READ: __u64 a = __sk_buff->tstamp; */
-> > if (skb->tc_at_ingress && skb->mono_delivery_time)
-> > 	a = 0;
-> > else
-> > 	a = skb->tstamp;
-> 
-> > /* BPF_WRITE: __sk_buff->tstamp = a; */
-> > skb->tstamp = a;
-> > if (skb->tc_at_ingress || !a)
-> > 	skb->mono_delivery_time = 0;
-> 
-> > At egress, reading is the same as before.  All skb->tstamp
-> > is the delivery_time.  Writing will not change the (kernel)
-> > skb->mono_delivery_time also unless 0 is being written.  This
-> > will be the same behavior as before.
-> 
-> > (#) At ingress, the current bpf prog can only expect the
-> > (rcv) timestamp.  Thus, both reading and writing are now treated as
-> > operating on the (rcv) timestamp for the existing bpf prog.
-> 
-> > During bpf load time, the verifier will learn if the
-> > bpf prog has accessed the new __sk_buff->mono_delivery_time.
-> 
-> > When reading at ingress, if the bpf prog does not access the
-> > new __sk_buff->mono_delivery_time, it will be treated as the
-> > existing behavior as mentioned in (#) above.  If the (kernel) skb->tstamp
-> > currently has a delivery_time,  it will temporary be saved first and then
-> > set the skb->tstamp to either the ktime_get_real() or zero.  After
-> > the bpf prog finished running, if the bpf prog did not change
-> > the skb->tstamp,  the saved delivery_time will be restored
-> > back to the skb->tstamp.
-> 
-> > When writing __sk_buff->tstamp at ingress, the
-> > skb->mono_delivery_time will be cleared because of
-> > the (#) mentioned above.
-> 
-> > If the bpf prog does access the new __sk_buff->mono_delivery_time
-> > at ingress, it indicates that the bpf prog is aware of this new
-> > kernel support:
-> > the (kernel) skb->tstamp can have the delivery_time or the
-> > (rcv) timestamp at ingress.  If the __sk_buff->mono_delivery_time
-> > is available, the __sk_buff->tstamp will not be available and
-> > it will be zero.
-> 
-> > The bpf rewrite needs to access the skb's mono_delivery_time
-> > and tc_at_ingress bit.  They are moved up in sk_buff so
-> > that bpf rewrite can be done at a fixed offset.  tc_skip_classify
-> > is moved together with tc_at_ingress.  To get one bit for
-> > mono_delivery_time, csum_not_inet is moved down and this bit
-> > is currently used by sctp.
-> 
-> > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > ---
-> >   include/linux/filter.h         |  31 +++++++-
-> >   include/linux/skbuff.h         |  20 +++--
-> >   include/uapi/linux/bpf.h       |   1 +
-> >   net/core/filter.c              | 134 ++++++++++++++++++++++++++++++---
-> >   net/sched/act_bpf.c            |   5 +-
-> >   net/sched/cls_bpf.c            |   6 +-
-> >   tools/include/uapi/linux/bpf.h |   1 +
-> >   7 files changed, 171 insertions(+), 27 deletions(-)
-> 
-> > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > index 71fa57b88bfc..5cef695d6575 100644
-> > --- a/include/linux/filter.h
-> > +++ b/include/linux/filter.h
-> > @@ -572,7 +572,8 @@ struct bpf_prog {
-> >   				has_callchain_buf:1, /* callchain buffer allocated? */
-> >   				enforce_expected_attach_type:1, /* Enforce expected_attach_type
-> > checking at attach time */
-> >   				call_get_stack:1, /* Do we call bpf_get_stack() or
-> > bpf_get_stackid() */
-> > -				call_get_func_ip:1; /* Do we call get_func_ip() */
-> > +				call_get_func_ip:1, /* Do we call get_func_ip() */
-> > +				delivery_time_access:1; /* Accessed __sk_buff->mono_delivery_time */
-> >   	enum bpf_prog_type	type;		/* Type of BPF program */
-> >   	enum bpf_attach_type	expected_attach_type; /* For some prog types */
-> >   	u32			len;		/* Number of filter blocks */
-> > @@ -699,6 +700,34 @@ static inline void bpf_compute_data_pointers(struct
-> > sk_buff *skb)
-> >   	cb->data_end  = skb->data + skb_headlen(skb);
-> >   }
-> 
-> > +static __always_inline u32 bpf_prog_run_at_ingress(const struct
-> > bpf_prog *prog,
-> > +						   struct sk_buff *skb)
-> > +{
-> > +	ktime_t tstamp, delivery_time = 0;
-> > +	int filter_res;
-> > +
-> > +	if (unlikely(skb->mono_delivery_time) && !prog->delivery_time_access) {
-> > +		delivery_time = skb->tstamp;
-> > +		skb->mono_delivery_time = 0;
-> > +		if (static_branch_unlikely(&netstamp_needed_key))
-> > +			skb->tstamp = tstamp = ktime_get_real();
-> > +		else
-> > +			skb->tstamp = tstamp = 0;
-> > +	}
-> > +
-> > +	/* It is safe to push/pull even if skb_shared() */
-> > +	__skb_push(skb, skb->mac_len);
-> > +	bpf_compute_data_pointers(skb);
-> > +	filter_res = bpf_prog_run(prog, skb);
-> > +	__skb_pull(skb, skb->mac_len);
-> > +
-> > +	/* __sk_buff->tstamp was not changed, restore the delivery_time */
-> > +	if (unlikely(delivery_time) && skb_tstamp(skb) == tstamp)
-> > +		skb_set_delivery_time(skb, delivery_time, true);
-> > +
-> > +	return filter_res;
-> > +}
-> > +
-> >   /* Similar to bpf_compute_data_pointers(), except that save orginal
-> >    * data in cb->data and cb->meta_data for restore.
-> >    */
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 4677bb6c7279..a14b04b86c13 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -866,22 +866,23 @@ struct sk_buff {
-> >   	__u8			vlan_present:1;	/* See PKT_VLAN_PRESENT_BIT */
-> >   	__u8			csum_complete_sw:1;
-> >   	__u8			csum_level:2;
-> > -	__u8			csum_not_inet:1;
-> >   	__u8			dst_pending_confirm:1;
-> > +	__u8			mono_delivery_time:1;
-> > +
-> > +#ifdef CONFIG_NET_CLS_ACT
-> > +	__u8			tc_skip_classify:1;
-> > +	__u8			tc_at_ingress:1;
-> > +#endif
-> >   #ifdef CONFIG_IPV6_NDISC_NODETYPE
-> >   	__u8			ndisc_nodetype:2;
-> >   #endif
-> > -
-> > +	__u8			csum_not_inet:1;
-> >   	__u8			ipvs_property:1;
-> >   	__u8			inner_protocol_type:1;
-> >   	__u8			remcsum_offload:1;
-> >   #ifdef CONFIG_NET_SWITCHDEV
-> >   	__u8			offload_fwd_mark:1;
-> >   	__u8			offload_l3_fwd_mark:1;
-> > -#endif
-> > -#ifdef CONFIG_NET_CLS_ACT
-> > -	__u8			tc_skip_classify:1;
-> > -	__u8			tc_at_ingress:1;
-> >   #endif
-> >   	__u8			redirected:1;
-> >   #ifdef CONFIG_NET_REDIRECT
-> > @@ -894,7 +895,6 @@ struct sk_buff {
-> >   	__u8			decrypted:1;
-> >   #endif
-> >   	__u8			slow_gro:1;
-> > -	__u8			mono_delivery_time:1;
-> 
-> >   #ifdef CONFIG_NET_SCHED
-> >   	__u16			tc_index;	/* traffic control index */
-> > @@ -972,10 +972,16 @@ struct sk_buff {
-> >   /* if you move pkt_vlan_present around you also must adapt these
-> > constants */
-> >   #ifdef __BIG_ENDIAN_BITFIELD
-> >   #define PKT_VLAN_PRESENT_BIT	7
-> > +#define TC_AT_INGRESS_SHIFT	0
-> > +#define SKB_MONO_DELIVERY_TIME_SHIFT 2
-> >   #else
-> >   #define PKT_VLAN_PRESENT_BIT	0
-> > +#define TC_AT_INGRESS_SHIFT	7
-> > +#define SKB_MONO_DELIVERY_TIME_SHIFT 5
-> >   #endif
-> >   #define PKT_VLAN_PRESENT_OFFSET	offsetof(struct sk_buff,
-> > __pkt_vlan_present_offset)
-> > +#define TC_AT_INGRESS_OFFSET offsetof(struct sk_buff,
-> > __pkt_vlan_present_offset)
-> > +#define SKB_MONO_DELIVERY_TIME_OFFSET offsetof(struct sk_buff,
-> > __pkt_vlan_present_offset)
-> 
-> >   #ifdef __KERNEL__
-> >   /*
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index b0383d371b9a..83725c891f3c 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -5437,6 +5437,7 @@ struct __sk_buff {
-> >   	__u32 gso_size;
-> >   	__u32 :32;		/* Padding, future use. */
-> >   	__u64 hwtstamp;
-> > +	__u64 mono_delivery_time;
-> >   };
-> 
-> >   struct bpf_tunnel_key {
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 4fc53d645a01..db17812f0f8c 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -7832,6 +7832,7 @@ static bool bpf_skb_is_valid_access(int off, int
-> > size, enum bpf_access_type type
-> >   			return false;
-> >   		break;
-> >   	case bpf_ctx_range(struct __sk_buff, tstamp):
-> > +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   		if (size != sizeof(__u64))
-> >   			return false;
-> >   		break;
-> > @@ -7872,6 +7873,7 @@ static bool sk_filter_is_valid_access(int off, int
-> > size,
-> >   	case bpf_ctx_range(struct __sk_buff, tstamp):
-> >   	case bpf_ctx_range(struct __sk_buff, wire_len):
-> >   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
-> > +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   		return false;
-> >   	}
-> 
-> > @@ -7911,6 +7913,7 @@ static bool cg_skb_is_valid_access(int off, int
-> > size,
-> >   		case bpf_ctx_range_till(struct __sk_buff, cb[0], cb[4]):
-> >   			break;
-> >   		case bpf_ctx_range(struct __sk_buff, tstamp):
-> > +		case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   			if (!bpf_capable())
-> >   				return false;
-> >   			break;
-> > @@ -7943,6 +7946,7 @@ static bool lwt_is_valid_access(int off, int size,
-> >   	case bpf_ctx_range(struct __sk_buff, tstamp):
-> >   	case bpf_ctx_range(struct __sk_buff, wire_len):
-> >   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
-> > +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   		return false;
-> >   	}
-> 
-> > @@ -8169,6 +8173,7 @@ static bool tc_cls_act_is_valid_access(int off,
-> > int size,
-> >   		case bpf_ctx_range_till(struct __sk_buff, cb[0], cb[4]):
-> >   		case bpf_ctx_range(struct __sk_buff, tstamp):
-> >   		case bpf_ctx_range(struct __sk_buff, queue_mapping):
-> > +		case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   			break;
-> >   		default:
-> >   			return false;
-> > @@ -8445,6 +8450,7 @@ static bool sk_skb_is_valid_access(int off, int
-> > size,
-> >   	case bpf_ctx_range(struct __sk_buff, tstamp):
-> >   	case bpf_ctx_range(struct __sk_buff, wire_len):
-> >   	case bpf_ctx_range(struct __sk_buff, hwtstamp):
-> > +	case bpf_ctx_range(struct __sk_buff, mono_delivery_time):
-> >   		return false;
-> >   	}
-> 
-> > @@ -8603,6 +8609,114 @@ static struct bpf_insn
-> > *bpf_convert_shinfo_access(const struct bpf_insn *si,
-> >   	return insn;
-> >   }
-> 
-> 
-> [..]
-> 
-> > +static struct bpf_insn *bpf_convert_tstamp_read(const struct bpf_insn
-> > *si,
-> > +						struct bpf_insn *insn)
-> > +{
-> > +	__u8 value_reg = si->dst_reg;
-> > +	__u8 skb_reg = si->src_reg;
-> > +	__u8 tmp_reg = BPF_REG_AX;
-> > +
-> > +#ifdef CONFIG_NET_CLS_ACT
-> > +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, TC_AT_INGRESS_OFFSET);
-> > +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, 1 << TC_AT_INGRESS_SHIFT);
-> > +	*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0, 5);
-> > +	/* @ingress, read __sk_buff->tstamp as the (rcv) timestamp,
-> > +	 * so check the skb->mono_delivery_time.
-> > +	 */
-> > +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
-> > +			      SKB_MONO_DELIVERY_TIME_OFFSET);
-> > +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
-> > +				1 << SKB_MONO_DELIVERY_TIME_SHIFT);
-> > +	*insn++ = BPF_JMP32_IMM(BPF_JEQ, tmp_reg, 0, 2);
-> > +	/* skb->mono_delivery_time is set, read 0 as the (rcv) timestamp. */
-> > +	*insn++ = BPF_MOV64_IMM(value_reg, 0);
-> > +	*insn++ = BPF_JMP_A(1);
-> > +#endif
-> > +
-> > +	*insn++ = BPF_LDX_MEM(BPF_DW, value_reg, skb_reg,
-> > +			      offsetof(struct sk_buff, tstamp));
-> > +	return insn;
-> > +}
-> > +
-> > +static struct bpf_insn *bpf_convert_tstamp_write(const struct bpf_insn
-> > *si,
-> > +						 struct bpf_insn *insn)
-> > +{
-> > +	__u8 value_reg = si->src_reg;
-> > +	__u8 skb_reg = si->dst_reg;
-> > +	__u8 tmp_reg = BPF_REG_AX;
-> > +
-> > +	/* skb->tstamp = tstamp */
-> > +	*insn++ = BPF_STX_MEM(BPF_DW, skb_reg, value_reg,
-> > +			      offsetof(struct sk_buff, tstamp));
-> > +
-> > +#ifdef CONFIG_NET_CLS_ACT
-> > +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg, TC_AT_INGRESS_OFFSET);
-> > +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg, 1 << TC_AT_INGRESS_SHIFT);
-> > +	*insn++ = BPF_JMP32_IMM(BPF_JNE, tmp_reg, 0, 1);
-> > +#endif
-> > +
-> > +	/* test tstamp != 0 */
-> > +	*insn++ = BPF_JMP_IMM(BPF_JNE, value_reg, 0, 3);
-> > +	/* writing __sk_buff->tstamp at ingress or writing 0,
-> > +	 * clear the skb->mono_delivery_time.
-> > +	 */
-> > +	*insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
-> > +			      SKB_MONO_DELIVERY_TIME_OFFSET);
-> > +	*insn++ = BPF_ALU32_IMM(BPF_AND, tmp_reg,
-> > +				~(1 << SKB_MONO_DELIVERY_TIME_SHIFT));
-> > +	*insn++ = BPF_STX_MEM(BPF_B, skb_reg, tmp_reg,
-> > +			      SKB_MONO_DELIVERY_TIME_OFFSET);
-> > +
-> > +	return insn;
-> > +}
-> 
-> I wonder if we'll see the regression from this. We read/write tstamp
-> frequently and I'm not sure we care about the forwarding case.
->
-> As a future work/follow up, do you think we can support cases like
-> bpf_prog_load(prog_type=SCHED_CLS expected_attach_type=TC_EGRESS) where
-> we can generate bytecode with only BPF_LDX_MEM/BPF_STX_MEM for skb->tstamp?
-> (essentially a bytecode as it was prior to your patch series)
->
-> Since we know that that specific program will run only at egress,
-> I'm assuming we can generate simpler bytecode? (of coarse it needs more
-> work on cls_bpf to enforce this new expected_attach_type constraint)
-The common (if not the only useful?) use case for reading/writing
-skb->tstamp should be at egress now.  For this case, the patch added
-test on skb->tc_at_ingress and test the writing value is non-zero.  The
-skb->mono_delivery_time bit should not be touched in this common
-case at egress.  Even with expected_attach_type=TC_EGRESS, it could save
-testing the tc_at_ingress (3 bpf insns) but it still needs to test the
-writing value is non-zero (1 bpf insn).  Regardless, I  doubt there
-is any meaningful difference for these two new tests considering other
-things that a typical bpf prog is doing (e.g. parsing header,
-lookup map...) and also other logic in the stack's egress path.
 
-For adding expected_attach_type=TC_EGRESS in the future for perf reason
-alone... hmm... I suspect it will make it harder/confuse to use but yeah if
-there is a convincing difference to justify that.
 
-Unrelated to the perf topic but related to adding expected_attach_type,
-I had considered adding an expected_attach_type but not for the
-perf reason.
+On 1/21/22 12:07 PM, Andrii Nakryiko wrote:
+> On Fri, Jan 21, 2022 at 12:04 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 1/21/22 11:53 AM, Andrii Nakryiko wrote:
+>>> On Fri, Jan 21, 2022 at 11:31 AM Kenny Yu <kennyyu@fb.com> wrote:
+>>>>
+>>>> This adds a helper for bpf programs to read the memory of other
+>>>> tasks. This also adds the ability for bpf iterator programs to
+>>>> be sleepable.
+>>>>
+>>>> This changes `bpf_iter_run_prog` to use the appropriate synchronization for
+>>>> sleepable bpf programs. With sleepable bpf iterator programs, we can no
+>>>> longer use `rcu_read_lock()` and must use `rcu_read_lock_trace()` instead
+>>>> to protect the bpf program.
+>>>>
+>>>> As an example use case at Meta, we are using a bpf task iterator program
+>>>> and this new helper to print C++ async stack traces for all threads of
+>>>> a given process.
+>>>>
+>>>> Signed-off-by: Kenny Yu <kennyyu@fb.com>
+>>>> ---
+>>>>    include/linux/bpf.h            |  1 +
+>>>>    include/uapi/linux/bpf.h       | 10 ++++++++++
+>>>>    kernel/bpf/bpf_iter.c          | 20 ++++++++++++++-----
+>>>>    kernel/bpf/helpers.c           | 35 ++++++++++++++++++++++++++++++++++
+>>>>    kernel/trace/bpf_trace.c       |  2 ++
+>>>>    tools/include/uapi/linux/bpf.h | 10 ++++++++++
+>>>>    6 files changed, 73 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>>>> index 80e3387ea3af..5917883e528b 100644
+>>>> --- a/include/linux/bpf.h
+>>>> +++ b/include/linux/bpf.h
+>>>> @@ -2229,6 +2229,7 @@ extern const struct bpf_func_proto bpf_kallsyms_lookup_name_proto;
+>>>>    extern const struct bpf_func_proto bpf_find_vma_proto;
+>>>>    extern const struct bpf_func_proto bpf_loop_proto;
+>>>>    extern const struct bpf_func_proto bpf_strncmp_proto;
+>>>> +extern const struct bpf_func_proto bpf_copy_from_user_task_proto;
+>>>>
+>>>>    const struct bpf_func_proto *tracing_prog_func_proto(
+>>>>      enum bpf_func_id func_id, const struct bpf_prog *prog);
+>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>>>> index fe2272defcd9..d82d9423874d 100644
+>>>> --- a/include/uapi/linux/bpf.h
+>>>> +++ b/include/uapi/linux/bpf.h
+>>>> @@ -5049,6 +5049,15 @@ union bpf_attr {
+>>>>     *             This helper is currently supported by cgroup programs only.
+>>>>     *     Return
+>>>>     *             0 on success, or a negative error in case of failure.
+>>>> + *
+>>>> + * long bpf_copy_from_user_task(void *dst, u32 size, const void *user_ptr, struct task_struct *tsk, u64 flags)
+>>>> + *     Description
+>>>> + *             Read *size* bytes from user space address *user_ptr* in *tsk*'s
+>>>> + *             address space, and stores the data in *dst*. *flags* is not
+>>>> + *             used yet and is provided for future extensibility. This helper
+>>>> + *             can only be used by sleepable programs.
+>>>
+>>> "On error dst buffer is zeroed out."? This is an explicit guarantee.
+>>>
+>>>> + *     Return
+>>>> + *             0 on success, or a negative error in case of failure.
+>>>>     */
+>>>>    #define __BPF_FUNC_MAPPER(FN)          \
+>>>>           FN(unspec),                     \
+>>>> @@ -5239,6 +5248,7 @@ union bpf_attr {
+>>>>           FN(get_func_arg_cnt),           \
+>>>>           FN(get_retval),                 \
+>>>>           FN(set_retval),                 \
+>>>> +       FN(copy_from_user_task),        \
+>>>>           /* */
+>>>>
+>>>>    /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>>>> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
+>>>> index b7aef5b3416d..110029ede71e 100644
+>>>> --- a/kernel/bpf/bpf_iter.c
+>>>> +++ b/kernel/bpf/bpf_iter.c
+>>>> @@ -5,6 +5,7 @@
+>>>>    #include <linux/anon_inodes.h>
+>>>>    #include <linux/filter.h>
+>>>>    #include <linux/bpf.h>
+>>>> +#include <linux/rcupdate_trace.h>
+>>>>
+>>>>    struct bpf_iter_target_info {
+>>>>           struct list_head list;
+>>>> @@ -684,11 +685,20 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
+>>>>    {
+>>>>           int ret;
+>>>>
+>>>> -       rcu_read_lock();
+>>>> -       migrate_disable();
+>>>> -       ret = bpf_prog_run(prog, ctx);
+>>>> -       migrate_enable();
+>>>> -       rcu_read_unlock();
+>>>> +       if (prog->aux->sleepable) {
+>>>> +               rcu_read_lock_trace();
+>>>> +               migrate_disable();
+>>>> +               might_fault();
+>>>> +               ret = bpf_prog_run(prog, ctx);
+>>>> +               migrate_enable();
+>>>> +               rcu_read_unlock_trace();
+>>>> +       } else {
+>>>> +               rcu_read_lock();
+>>>> +               migrate_disable();
+>>>> +               ret = bpf_prog_run(prog, ctx);
+>>>> +               migrate_enable();
+>>>> +               rcu_read_unlock();
+>>>> +       }
+>>>>
+>>>
+>>> I think this sleepable bpf_iter change deserves its own patch. It has
+>>> nothing to do with bpf_copy_from_user_task() helper.
+>>
+>> Without the above change, using bpf_copy_from_user_task() will trigger
+>> rcu warning and may produce incorrect result. One option is to put
+>> the above in a preparation patch before introducing
+>> bpf_copy_from_user_task() so we won't have bisecting issues.
+> 
+> Sure, patch #1 for sleepable bpf_iter, patch #2 for the helper? I
+> mean, it's not a big deal, but both seem to deserve their own focused
+> patches.
 
-The consideration was to use expected_attach_type to distinguish the
-__sk_buff->tstamp behavior on ingress, although I have a hard time
-thinking of a reasonable use case on accessing __sk_buff->tstamp at ingress
-other than printing the (rcv) timestamp out (which could also be 0).
+okay with me.
 
-However, I guess we have to assume we cannot break the ingress
-behavior now.  The dance in bpf_prog_run_at_ingress() in this patch
-is to keep the (rcv) timestamp behavior for the existing tc-bpf@ingress.
-My initial thought was to add expected_attach_type=TC_DELIVERY_TIME
-to signal the bpf prog is expecting skb->tstamp could have the delviery_time at
-ingress but then later I think learning this in prog->delivery_time_access
-during verification should be as good, so dismissed the expected_attach_type
-idea and save the user from remembering when to use this
-new expected_attach_type.
-
-Thanks for the review !
+> 
+>>
+>>>
+>>>>           /* bpf program can only return 0 or 1:
+>>>>            *  0 : okay
+>> [...]
