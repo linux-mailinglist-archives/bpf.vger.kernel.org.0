@@ -2,246 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA50495F07
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 13:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC64C495F11
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 13:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350354AbiAUMbD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 07:31:03 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8406 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350448AbiAUMbD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 07:31:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642768263; x=1674304263;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=g2+q/0TyWLIkGrlTtki0UMmiIWWbLn11z8//HSr8MTE=;
-  b=Rv4IXw1StgAykBgfsQM6it4y03vRe0WER6PAslHYmKY9ETgnBDFEirPg
-   p+GRtlW4VNhYLfi7WkICbA5PzC6+ujnigvpiYZq8FfMjL7eLux0kSyjkz
-   BdYW9EebKOgrcpQ6L33B+No707A9qXjzmAylpVcus8UJQ1KwaO3l3Ok/O
-   WjuZDkOqyJxxiw9OCwl8NMmyXjwsNSzUoJVCMkmP/g7r7hiLPo1KquZgC
-   2Vje8h67IyHIYRZ274PjlnNFKUAUXE9j/co/wHNxhwMtYChCTG6Ffrk/7
-   7mgZ5hipBwYbDuyzVIqODhAOGz2jPeHGhkiQoYQ2KjxaiN3BpY+z0V5Wg
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="308971241"
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="308971241"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 04:31:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="616493322"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Jan 2022 04:31:00 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 20LCUx7H027132;
-        Fri, 21 Jan 2022 12:30:59 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com
-Subject: Re: [PATCH bpf-next v3 2/7] ice: xsk: handle SW XDP ring wrap and bump tail more often
-Date:   Fri, 21 Jan 2022 13:29:20 +0100
-Message-Id: <20220121122920.23679-1-alexandr.lobakin@intel.com>
+        id S1350556AbiAUMfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 07:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234816AbiAUMfd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 07:35:33 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686E0C061574;
+        Fri, 21 Jan 2022 04:35:33 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id r132-20020a1c448a000000b0034e043aaac7so4772436wma.5;
+        Fri, 21 Jan 2022 04:35:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lSQv1WzBfL2CFgqdZY9tvPFMl+7QRXaGc3x2B0zIHGY=;
+        b=VlSeYJT3XdXIv1GaC/PRL28nrmUydrMK/t0BrCpDxJRSD3T0/HsKp8h8/EYLK9SqTK
+         pA+p+vDilrey2Xn/LSVVyVhrUZBjffi89kCqhzXYo1X0kLlbZpy1PM6h5TjDbMnvMQtD
+         Of2tUZ1HYVaEK0fRyp+sIj+BbiBTJWZ8/4xui73oPT+ZU6uJ81mu1MKkl8XIOIHNHLaX
+         2JsFE6EfC4SBI1bwf3B82QRPiMQ00TpgS7vTsmXgv/XnGLnTkl3WMuVoIwjh5RCkAAew
+         /PjstZHIUzY9rj3CRBqd8mu7/+3TyZRKKUTHPHpchgwxYtXikYnCz+81seRMQIH0GkoM
+         ySpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lSQv1WzBfL2CFgqdZY9tvPFMl+7QRXaGc3x2B0zIHGY=;
+        b=qi+1O/KiEyFN17YiJ/sOre+K4wzr0Iz74WGTdXSGMyMELwZYB/Ei0Jm1X8dzTYtRAT
+         eecamP4uP4ekEroQWaVuiKOBh8QyFBhTi2Bt7AmnSpR9p1e96mCcdJ4kWEJGAjDLl+pW
+         FmZuanYoT54lOGLwX1oy8h4jMuzBIf6FWFQEOvOs6Ije+ARztsDm4NG1LHcC7nLgcr8Z
+         JLYQSuI8e66ejv7v871LjymaYnka23hBYPAubaLVV/9cSNzcOh83cQDOpGZc2P2jchHI
+         hcdfPytk5P3ALk0Bk7vje1MhK6BIoakPoQlQEmpw27xYFaYMxwWdRKAxseqOanjBpCul
+         lpjA==
+X-Gm-Message-State: AOAM530EyYp0fuxrDI9nFLLe+Z65RXpiNOJG294KGnTLxXzbf30swrOM
+        GMzsgpSF0D5XWfO/T+LRCKmwyYa1Vgg/SD/g
+X-Google-Smtp-Source: ABdhPJz1/gWjaOFpwcNjOopqE9JvRPisMPSw1YNN0GYcPXrVD33aQGOcjqtq+mVNBDlKvcjGlFGSBQ==
+X-Received: by 2002:adf:a141:: with SMTP id r1mr3610094wrr.124.1642768531335;
+        Fri, 21 Jan 2022 04:35:31 -0800 (PST)
+Received: from localhost.localdomain ([188.149.128.194])
+        by smtp.gmail.com with ESMTPSA id 6sm2013638wry.69.2022.01.21.04.35.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 Jan 2022 04:35:30 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com
+Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] selftests: xsk: fix rx_full stats test
+Date:   Fri, 21 Jan 2022 13:35:08 +0100
+Message-Id: <20220121123508.12759-1-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220121120011.49316-3-maciej.fijalkowski@intel.com>
-References: <20220121120011.49316-1-maciej.fijalkowski@intel.com> <20220121120011.49316-3-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Date: Fri, 21 Jan 2022 13:00:06 +0100
+From: Magnus Karlsson <magnus.karlsson@intel.com>
 
-> Currently, if ice_clean_rx_irq_zc() processed the whole ring and
-> next_to_use != 0, then ice_alloc_rx_buf_zc() would not refill the whole
-> ring even if the XSK buffer pool would have enough free entries (either
-> from fill ring or the internal recycle mechanism) - it is because ring
-> wrap is not handled.
-> 
-> Improve the logic in ice_alloc_rx_buf_zc() to address the problem above.
-> Do not clamp the count of buffers that is passed to
-> xsk_buff_alloc_batch() in case when next_to_use + buffer count >=
-> rx_ring->count,  but rather split it and have two calls to the mentioned
-> function - one for the part up until the wrap and one for the part after
-> the wrap.
-> 
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx.h |  2 +
->  drivers/net/ethernet/intel/ice/ice_xsk.c  | 99 ++++++++++++++++++-----
->  2 files changed, 81 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> index b7b3bd4816f0..94a46e0e5ed0 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> @@ -111,6 +111,8 @@ static inline int ice_skb_pad(void)
->  	(u16)((((R)->next_to_clean > (R)->next_to_use) ? 0 : (R)->count) + \
->  	      (R)->next_to_clean - (R)->next_to_use - 1)
->  
-> +#define ICE_RING_QUARTER(R) ((R)->count / 4)
+Fix the rx_full stats test so that it correctly reports pass even when
+the fill ring is not full of buffers.
 
-I would use `>> 2` here just to show off :D
+Fixes: 872a1184dbf2 ("selftests: xsk: Put the same buffer only once in the fill ring")
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+---
+ tools/testing/selftests/bpf/xdpxceiver.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> +
->  #define ICE_TX_FLAGS_TSO	BIT(0)
->  #define ICE_TX_FLAGS_HW_VLAN	BIT(1)
->  #define ICE_TX_FLAGS_SW_VLAN	BIT(2)
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 2388837d6d6c..0463fc594d08 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -359,33 +359,28 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
->  }
->  
->  /**
-> - * ice_alloc_rx_bufs_zc - allocate a number of Rx buffers
-> - * @rx_ring: Rx ring
-> + * ice_fill_rx_descs - pick buffers from XSK buffer pool and use it
-> + * @pool: XSK Buffer pool to pull the buffers from
-> + * @xdp: SW ring of xdp_buff that will hold the buffers
-> + * @rx_desc: Pointer to Rx descriptors that will be filled
->   * @count: The number of buffers to allocate
->   *
->   * This function allocates a number of Rx buffers from the fill ring
->   * or the internal recycle mechanism and places them on the Rx ring.
->   *
-> - * Returns true if all allocations were successful, false if any fail.
-> + * Note that ring wrap should be handled by caller of this function.
-> + *
-> + * Returns the amount of allocated Rx descriptors
->   */
-> -bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
-> +static u16 ice_fill_rx_descs(struct xsk_buff_pool *pool, struct xdp_buff **xdp,
-> +			     union ice_32b_rx_flex_desc *rx_desc, u16 count)
->  {
-> -	union ice_32b_rx_flex_desc *rx_desc;
-> -	u16 ntu = rx_ring->next_to_use;
-> -	struct xdp_buff **xdp;
-> -	u32 nb_buffs, i;
->  	dma_addr_t dma;
-> +	u16 buffs;
-> +	int i;
->  
-> -	rx_desc = ICE_RX_DESC(rx_ring, ntu);
-> -	xdp = ice_xdp_buf(rx_ring, ntu);
-> -
-> -	nb_buffs = min_t(u16, count, rx_ring->count - ntu);
-> -	nb_buffs = xsk_buff_alloc_batch(rx_ring->xsk_pool, xdp, nb_buffs);
-> -	if (!nb_buffs)
-> -		return false;
-> -
-> -	i = nb_buffs;
-> -	while (i--) {
-> +	buffs = xsk_buff_alloc_batch(pool, xdp, count);
-> +	for (i = 0; i < buffs; i++) {
->  		dma = xsk_buff_xdp_get_dma(*xdp);
->  		rx_desc->read.pkt_addr = cpu_to_le64(dma);
->  		rx_desc->wb.status_error0 = 0;
-> @@ -394,13 +389,77 @@ bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
->  		xdp++;
->  	}
->  
-> +	return buffs;
-> +}
-> +
-> +/**
-> + * __ice_alloc_rx_bufs_zc - allocate a number of Rx buffers
-> + * @rx_ring: Rx ring
-> + * @count: The number of buffers to allocate
-> + *
-> + * Place the @count of descriptors onto Rx ring. Handle the ring wrap
-> + * for case where space from next_to_use up to the end of ring is less
-> + * than @count. Finally do a tail bump.
-> + *
-> + * Returns true if all allocations were successful, false if any fail.
-> + */
-> +static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
-> +{
-> +	union ice_32b_rx_flex_desc *rx_desc;
-> +	u32 nb_buffs_extra = 0, nb_buffs;
-> +	u16 ntu = rx_ring->next_to_use;
-> +	u16 total_count = count;
-> +	struct xdp_buff **xdp;
-> +
-> +	rx_desc = ICE_RX_DESC(rx_ring, ntu);
-> +	xdp = ice_xdp_buf(rx_ring, ntu);
-> +
-> +	if (ntu + count >= rx_ring->count) {
-> +		nb_buffs_extra = ice_fill_rx_descs(rx_ring->xsk_pool, xdp,
-> +						   rx_desc,
-> +						   rx_ring->count - ntu);
-> +		rx_desc = ICE_RX_DESC(rx_ring, 0);
-> +		xdp = ice_xdp_buf(rx_ring, 0);
-> +		ntu = 0;
-> +		count -= nb_buffs_extra;
-> +		ice_release_rx_desc(rx_ring, 0);
-> +	}
-> +
-> +	nb_buffs = ice_fill_rx_descs(rx_ring->xsk_pool, xdp, rx_desc, count);
-> +
->  	ntu += nb_buffs;
->  	if (ntu == rx_ring->count)
->  		ntu = 0;
->  
-> -	ice_release_rx_desc(rx_ring, ntu);
-> +	if (rx_ring->next_to_use != ntu)
-> +		ice_release_rx_desc(rx_ring, ntu);
-> +
-> +	return total_count == (nb_buffs_extra + nb_buffs);
-> +}
-> +
-> +/**
-> + * ice_alloc_rx_bufs_zc - allocate a number of Rx buffers
-> + * @rx_ring: Rx ring
-> + * @count: The number of buffers to allocate
-> + *
-> + * Wrapper for internal allocation routine; figure out how many tail
-> + * bumps should take place based on the given threshold
-> + *
-> + * Returns true if all calls to internal alloc routine succeeded
-> + */
-> +bool ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
-> +{
-> +	u16 rx_thresh = ICE_RING_QUARTER(rx_ring);
-> +	u16 batched, leftover, i, tail_bumps;
-> +
-> +	batched = count & ~(rx_thresh - 1);
+diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+index 0a5d23da486d..ffa5502ad95e 100644
+--- a/tools/testing/selftests/bpf/xdpxceiver.c
++++ b/tools/testing/selftests/bpf/xdpxceiver.c
+@@ -906,7 +906,10 @@ static bool rx_stats_are_valid(struct ifobject *ifobject)
+ 			return true;
+ 		case STAT_TEST_RX_FULL:
+ 			xsk_stat = stats.rx_ring_full;
+-			expected_stat -= RX_FULL_RXQSIZE;
++			if (ifobject->umem->num_frames < XSK_RING_PROD__DEFAULT_NUM_DESCS)
++				expected_stat = ifobject->umem->num_frames - RX_FULL_RXQSIZE;
++			else
++				expected_stat = XSK_RING_PROD__DEFAULT_NUM_DESCS - RX_FULL_RXQSIZE;
+ 			break;
+ 		case STAT_TEST_RX_FILL_EMPTY:
+ 			xsk_stat = stats.rx_fill_ring_empty_descs;
 
-The ring size can be a non power-of-two unfortunately, it is rather
-aligned to just 32: [0]. So it can be e.g. 96 and the mask will
-break then.
-You could use roundup_pow_of_two(ICE_RING_QUARTER(rx_ring)), but
-might can be a little slower due to fls_long() (bitsearch) inside.
+base-commit: 820e6e227c4053b6b631ae65ef1f65d560cb392b
+-- 
+2.34.1
 
-(I would generally prohibit non-pow-2 ring sizes at all from inside
- the Ethtool callbacks since it makes no sense to me :p)
-
-Also, it's not recommended to open-code align-down since we got
-the ALIGN_DOWN(value, pow_of_two_alignment) macro. The macro hell
-inside expands to the same op you do in here.
-
-> +	tail_bumps = batched / rx_thresh;
-> +	leftover = count & (rx_thresh - 1);
->  
-> -	return count == nb_buffs;
-> +	for (i = 0; i < tail_bumps; i++)
-> +		if (!__ice_alloc_rx_bufs_zc(rx_ring, rx_thresh))
-> +			return false;
-> +	return __ice_alloc_rx_bufs_zc(rx_ring, leftover);
->  }
->  
->  /**
-> -- 
-> 2.33.1
-
-[0] https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/intel/ice/ice_ethtool.c#L2729
-
-Thanks,
-Al
