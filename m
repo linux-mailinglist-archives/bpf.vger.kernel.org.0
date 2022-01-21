@@ -2,131 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9BF496448
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 18:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C69496458
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 18:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243755AbiAURnI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 12:43:08 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14600 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1381861AbiAURmF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 12:42:05 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LFOtxe030526
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 09:42:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=Bz78JfwWjGJ4pBT0jPDNxLvllwwcf7AGTgAg/kyoE1w=;
- b=rl8uStR1gtTPo6ay0wGkVvOxgIdhN2u7H4bIDW36z+rg95N5EGgqb1TZ4gwsRVWwKUBS
- /7LF2RZ7kyg8PNdL4ltCEXXCMCgw2lB/5k0G7rOt3e03GskeO8+HpVm9M1EaiRayd3Hk
- RPLJycuimvxmUzAFIuCMz7VOUCLu/fiGo5Y= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqhyr4pfc-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 09:42:03 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Fri, 21 Jan 2022 09:42:01 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 9A9E695B769A; Fri, 21 Jan 2022 09:41:53 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <andrii.nakryiko@gmail.com>
-CC:     <alexei.starovoitov@gmail.com>, <andrii@kernel.org>,
-        <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <kennyyu@fb.com>, <phoenix1987@gmail.com>, <yhs@fb.com>
-Subject: Re: [PATCH v5 bpf-next 1/3] bpf: Add bpf_access_process_vm() helper
-Date:   Fri, 21 Jan 2022 09:41:45 -0800
-Message-ID: <20220121174145.3433628-1-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAEf4Bzaen2f2njYOAJuyWot2YvXn0YV=2zBVyFZw=_CqJdggPw@mail.gmail.com>
-References: <CAEf4Bzaen2f2njYOAJuyWot2YvXn0YV=2zBVyFZw=_CqJdggPw@mail.gmail.com>
+        id S1350102AbiAURoB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 12:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241855AbiAURoA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 12:44:00 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327F7C06173B;
+        Fri, 21 Jan 2022 09:44:00 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id a18so8259724ilq.6;
+        Fri, 21 Jan 2022 09:44:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GplninHFlFzbdqdmhzEeftSSvF4HoGpCbqikRsKn7lI=;
+        b=fDGGlBxRKn+5WGJxDyN3rutp/mIXh9hhsqeSIOwnGZU1JLU2kDiRJUsmONuxsCLb4i
+         wHqTDJMS3yUARe+gneSsWBYW8ALF4M4Fwe6N6ff9kpJRQLbBjwqUax/DpVtvNcM1Hu8h
+         n9DYOoRSLbS5KUugfMwvZCqqU3PSfwt1ie5ODaDAyvI9fmlV3A+Buz8/loixBb6jvtdQ
+         0H4xY9mWEcH5+sjE6Ufaad1+0debx0v842frjcnhEfb83hCmrSXETKfe63uGsoHqLl3X
+         qe7lIrDUjkK24YqjXkdMc8wL0mE2vIpeSVjmu27RWA3qxqULJz7ou5E5xF3/0bIkyH6J
+         jkuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GplninHFlFzbdqdmhzEeftSSvF4HoGpCbqikRsKn7lI=;
+        b=xZScQC9nirVBHNfVaW3j8k0PIBlyFJwYNwwZKaI2iiZdnvke+Os1U783OaQ5+WcbL8
+         4UU7ZKuife/he7D9PsXp2Q7ZrEV/ECZHQgVIlGlmG1hUn8vO7V90Cu2FW2Qoto6Cv3bH
+         ChvQWez76IN4vG1PrhFmmSbnUPupAoIwW3r850VMqrfDfQPwMsFXgkSXrj1QZk+EfEUX
+         h9UvV73gmeGCYF7dd+pIPaobgS9bjGThpkm017fSxE187zdubFT4YWq0FDHsnucN8IZz
+         omf3ldqzbZlRoprTCeGyeknApCZIAjwzWqwq8EZAkiHb1XYd+pPdrFBhs0cOl1LF9uyN
+         PKFQ==
+X-Gm-Message-State: AOAM532L9U0v3YJ9dJXjfEASkN8keX0T8Zp+i/P/BusI5WN+Jbjq1q2Z
+        RosT+b2XLWg+jSzqMRJ0+dnDABrJGsDvNODxz0Q=
+X-Google-Smtp-Source: ABdhPJwKF9Es+QvYMsOg1HDRktr99HnixuopglqMv4SgU1P3z2cKC41omoQWPinM+sihiXNf+Eu6TF7aAUiCsM2eH2g=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr1997765ilu.71.1642787039545;
+ Fri, 21 Jan 2022 09:43:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 0YlLqql1sWGYZj_3pFffaTHAglWMhAbd
-X-Proofpoint-GUID: 0YlLqql1sWGYZj_3pFffaTHAglWMhAbd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-21_09,2022-01-21_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- mlxlogscore=999 lowpriorityscore=0 adultscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0 phishscore=0
- bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201210115
-X-FB-Internal: deliver
+References: <20220121135632.136976-1-houtao1@huawei.com> <20220121135632.136976-2-houtao1@huawei.com>
+In-Reply-To: <20220121135632.136976-2-houtao1@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Jan 2022 09:43:48 -0800
+Message-ID: <CAEf4BzYUWzf6gL0xeixucFskV+6dcd+R0WkAeV76=nr1bDLyzQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: use raw_tp program for atomic test
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > How about bpf_copy_from_user_task() ?
-> > The task is the second to last argument, so the name fits ?
->=20
-> yeah, I like the name
-
-I'll change the name to `bpf_copy_from_user_task`.
-
-> > Especially if we call it this way it would be best to align
-> > return codes with bpf_copy_from_user.
-> > Adding memset() in case of failure is mandatory too.
-> > I've missed this bit earlier.
+On Fri, Jan 21, 2022 at 5:57 AM Hou Tao <houtao1@huawei.com> wrote:
 >
-> Yep, good catch! Seems like copy_from_user() currently returns amount
-> of bytes *not* read and memsets those unread bytes to zero. So for
-> efficiency we could probably memset only those that were read.
+> Now atomic tests will attach fentry program and run it through
+> bpf_prog_test_run(), but attaching fentry program depends on bpf
+> trampoline which is only available under x86-64. Considering many
+> archs have atomic support, using raw_tp program instead.
 >
-> > The question is to decide what to do with
-> > ret > 0 && ret < size condition.
-> > Is it a failure and we should memset() the whole buffer and
-> > return -EFAULT or memset only the leftover bytes and return 0?
-> > I think the former is best to align with bpf_copy_from_user.
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+
+Nits about using generic ASSERT_TRUE instead of dedicated ASSERT_OK
+checks, but otherwise LGTM
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+
+>  .../selftests/bpf/prog_tests/atomics.c        | 114 +++++-------------
+>  tools/testing/selftests/bpf/progs/atomics.c   |  29 ++---
+>  2 files changed, 44 insertions(+), 99 deletions(-)
 >
-> Yeah, I think all or nothing approach (either complete success and
-> zero return, or memset and error return) is best and most in line with
-> other similar helpers.
-
-Thanks for the suggestions! I'll go with the all-or-nothing approach to
-be consistent with `bpf_copy_from_user` and will make the following chang=
-es:
-
-* Return value: returns 0 on success, or negative error on failure.
-* If we had a partial read, we will memset the read bytes to 0 and return
-  -EFAULT
-
-> Another thing, I think it's important to mention that this helper can
-> be used only from sleepable BPF programs.
-
-Will add that to the docs.
-
-> > That would be difficult. There is no suitable kernel api for that.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
+> index 86b7d5d84eec..0de292c1ec02 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/atomics.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
+> @@ -8,18 +8,13 @@ static void test_add(struct atomics_lskel *skel)
+>  {
+>         int err, prog_fd;
+>         __u32 duration = 0, retval;
+> -       int link_fd;
+> -
+> -       link_fd = atomics_lskel__add__attach(skel);
+> -       if (!ASSERT_GT(link_fd, 0, "attach(add)"))
+> -               return;
 >
-> Ok, but maybe we can add it later. Otherwise it will be hard to
-> profiler Python processes and such, because you most certainly will
-> need to read zero-terminated strings there.
+> +       /* No need to attach it, just run it directly */
+>         prog_fd = skel->progs.add.prog_fd;
+> -       err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+> +       err = bpf_prog_test_run(prog_fd, 0, NULL, 0,
+>                                 NULL, NULL, &retval, &duration);
+> -       if (CHECK(err || retval, "test_run add",
+> -                 "err %d errno %d retval %d duration %d\n", err, errno, retval, duration))
+> -               goto cleanup;
+> +       if (!ASSERT_TRUE(!err && !retval, "test_run add"))
 
-I will NOT add a C string helper in this patch series, and I'll explore
-how to add this in the future once this patch series is merged.
+please do this as two separate asserts: ASSERT_OK(err) and ASSERT_OK(retval)
 
-> > +       skel =3D bpf_iter_task__open_and_load();
-> > +       if (CHECK(!skel, "bpf_iter_task__open_and_load",
-> > +                 "skeleton open_and_load failed\n"))
+> +               return;
 >
-> Please use ASSERT_OK_PTR() instead.
-
-Will fix.
-
-> > +       numread =3D bpf_access_process_vm(&user_data,
-> > +                                       sizeof(uint32_t),
-> > +                                       ptr,
-> > +                                       task,
-> > +                                       0);
+>         ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
+>         ASSERT_EQ(skel->bss->add64_result, 1, "add64_result");
+> @@ -31,28 +26,19 @@ static void test_add(struct atomics_lskel *skel)
+>         ASSERT_EQ(skel->bss->add_stack_result, 1, "add_stack_result");
 >
-> nit: keep it on one line (up to 100 characters is ok)
+>         ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noreturn_value");
+> -
+> -cleanup:
+> -       close(link_fd);
+>  }
+>
+>  static void test_sub(struct atomics_lskel *skel)
+>  {
+>         int err, prog_fd;
+>         __u32 duration = 0, retval;
+> -       int link_fd;
+> -
+> -       link_fd = atomics_lskel__sub__attach(skel);
+> -       if (!ASSERT_GT(link_fd, 0, "attach(sub)"))
+> -               return;
+>
+> +       /* No need to attach it, just run it directly */
+>         prog_fd = skel->progs.sub.prog_fd;
+> -       err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+> +       err = bpf_prog_test_run(prog_fd, 0, NULL, 0,
+>                                 NULL, NULL, &retval, &duration);
+> -       if (CHECK(err || retval, "test_run sub",
+> -                 "err %d errno %d retval %d duration %d\n",
+> -                 err, errno, retval, duration))
+> -               goto cleanup;
+> +       if (!ASSERT_TRUE(!err && !retval, "test_run sub"))
 
-Will fix.
+same as above, same below for all the CHECKs replaced with ASSERT_TRUE
 
-Thanks for the suggestions everyone!
+> +               return;
+>
+>         ASSERT_EQ(skel->data->sub64_value, -1, "sub64_value");
+>         ASSERT_EQ(skel->bss->sub64_result, 1, "sub64_result");
+> @@ -64,27 +50,19 @@ static void test_sub(struct atomics_lskel *skel)
+>         ASSERT_EQ(skel->bss->sub_stack_result, 1, "sub_stack_result");
+>
+>         ASSERT_EQ(skel->data->sub_noreturn_value, -1, "sub_noreturn_value");
+> -
+> -cleanup:
+> -       close(link_fd);
+>  }
+>
 
-Kenny
+[...]
