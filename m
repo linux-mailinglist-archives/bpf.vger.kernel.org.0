@@ -2,211 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6614963F6
-	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 18:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9BF496448
+	for <lists+bpf@lfdr.de>; Fri, 21 Jan 2022 18:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239251AbiAUR3M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 12:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239235AbiAUR3M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 12:29:12 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57560C06173B;
-        Fri, 21 Jan 2022 09:29:12 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id a12so11609022iod.9;
-        Fri, 21 Jan 2022 09:29:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pxx5+dedxwsbxUwPpO+y+Jo/u0tmJLQOqrqCLV0C2A8=;
-        b=LQ2wwyLmNtAFLXuOXZ/Z08GUog+Y+6sz+0h9wf0CsJ0Mexo3wyH6YNeTjfYx379pwi
-         GIixxdtpTJf8utkTaWa/2hYEF/dGWGBMAeuua60nNhtzAuBcLSgveBjBzzsAXRJH0QOT
-         I0qKrO7EPrhsfX7xZKtmVW8lI8qXc+v5L7Uv+04REe30qjGSnMAlI+1g1D42qB0mIVZ8
-         XiDCFiid+fjvz4l+osX4uEGHp5CciXWDnQZcdCjd9vajvYY06JWUIGsWWQsMjC/otLpQ
-         p82HzVlk1Z9JNItBaoppURs+vCxZF05EvviC4d119dlUE4Jx+Gp03qC9+BiMjGQmfvHC
-         3+ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pxx5+dedxwsbxUwPpO+y+Jo/u0tmJLQOqrqCLV0C2A8=;
-        b=UoznBMKgtLa8vErjVEp1DEu9a1Mqy9nerI80LKEyt4D3sy7ZkWy1LIX2hvnMizBVGC
-         IUjCuctu1NJ8i03rUiK+cED9JUeuQRkLeGjVwNAz9ct5po2apMjzX+KPTbfwdXrux5Yv
-         MvDgoMLT9Az9JMPGrzcgQzYiBzcA24A++RA/SOC7djztyN3gWCQHBFg1i4zqHFctw2q9
-         EHbnnXg6TNIYDyswLl4u5Ip7Tlw3BM+ndZ5G78DKs40vNI8PdGiFbPjJ+nPZCvCxMcgH
-         qnIwE8SiXg9L+KYCY3oqRSwY/44X6UnAOSaCkzkmjZBTpe7jDXibprpuhslyti8xLPrN
-         d5lw==
-X-Gm-Message-State: AOAM530fGOAnkis8avNb1OvD1hIboywASGGADv2mHCVYBtoIa4lmJLlm
-        4F/iyevkuop7/VJCbTyIXT+99nMrhMFyez+f2Vw=
-X-Google-Smtp-Source: ABdhPJxnAkzZ2btp1riRTJDTiZqGNUEKW3tXrJvFiOWF1KEdDzTraJ4K4YYZ8ddnSNd7U0H+hsR5oJ+dK0zJEPnb+3Y=
-X-Received: by 2002:a6b:c891:: with SMTP id y139mr2565820iof.63.1642786151726;
- Fri, 21 Jan 2022 09:29:11 -0800 (PST)
+        id S243755AbiAURnI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 12:43:08 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:14600 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1381861AbiAURmF (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 21 Jan 2022 12:42:05 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20LFOtxe030526
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 09:42:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=Bz78JfwWjGJ4pBT0jPDNxLvllwwcf7AGTgAg/kyoE1w=;
+ b=rl8uStR1gtTPo6ay0wGkVvOxgIdhN2u7H4bIDW36z+rg95N5EGgqb1TZ4gwsRVWwKUBS
+ /7LF2RZ7kyg8PNdL4ltCEXXCMCgw2lB/5k0G7rOt3e03GskeO8+HpVm9M1EaiRayd3Hk
+ RPLJycuimvxmUzAFIuCMz7VOUCLu/fiGo5Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dqhyr4pfc-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 09:42:03 -0800
+Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Fri, 21 Jan 2022 09:42:01 -0800
+Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
+        id 9A9E695B769A; Fri, 21 Jan 2022 09:41:53 -0800 (PST)
+From:   Kenny Yu <kennyyu@fb.com>
+To:     <andrii.nakryiko@gmail.com>
+CC:     <alexei.starovoitov@gmail.com>, <andrii@kernel.org>,
+        <ast@kernel.org>, <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <kennyyu@fb.com>, <phoenix1987@gmail.com>, <yhs@fb.com>
+Subject: Re: [PATCH v5 bpf-next 1/3] bpf: Add bpf_access_process_vm() helper
+Date:   Fri, 21 Jan 2022 09:41:45 -0800
+Message-ID: <20220121174145.3433628-1-kennyyu@fb.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAEf4Bzaen2f2njYOAJuyWot2YvXn0YV=2zBVyFZw=_CqJdggPw@mail.gmail.com>
+References: <CAEf4Bzaen2f2njYOAJuyWot2YvXn0YV=2zBVyFZw=_CqJdggPw@mail.gmail.com>
 MIME-Version: 1.0
-References: <164260419349.657731.13913104835063027148.stgit@devnote2>
- <CAEf4Bzbbimea3ydwafXSHFiEffYx5zAcwGNKk8Zi6QZ==Vn0Ug@mail.gmail.com> <20220121135510.7cfa6540e31824aa39b1c1b8@kernel.org>
-In-Reply-To: <20220121135510.7cfa6540e31824aa39b1c1b8@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 Jan 2022 09:29:00 -0800
-Message-ID: <CAEf4Bza0eTft2kjcm9HhKpAm=AuXnGwZfZ+sYpVVBvj93PBreQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/9] fprobe: Introduce fprobe function entry/exit probe
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 0YlLqql1sWGYZj_3pFffaTHAglWMhAbd
+X-Proofpoint-GUID: 0YlLqql1sWGYZj_3pFffaTHAglWMhAbd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-21_09,2022-01-21_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 spamscore=0 mlxscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201210115
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 8:55 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
->
-> On Thu, 20 Jan 2022 14:24:15 -0800
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > On Wed, Jan 19, 2022 at 6:56 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > Hello Jiri,
-> > >
-> > > Here is the 3rd version of fprobe. I added some comments and
-> > > fixed some issues. But I still saw some problems when I add
-> > > your selftest patches.
-> > >
-> > > This series introduces the fprobe, the function entry/exit probe
-> > > with multiple probe point support. This also introduces the rethook
-> > > for hooking function return as same as kretprobe does. This
-> > > abstraction will help us to generalize the fgraph tracer,
-> > > because we can just switch it from rethook in fprobe, depending
-> > > on the kernel configuration.
-> > >
-> > > The patch [1/9] and [7/9] are from Jiri's series[1]. Other libbpf
-> > > patches will not be affected by this change.
-> > >
-> > > [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-> > >
-> > > However, when I applied all other patches on top of this series,
-> > > I saw the "#8 bpf_cookie" test case has been stacked (maybe related
-> > > to the bpf_cookie issue which Andrii and Jiri talked?) And when I
-> > > remove the last selftest patch[2], the selftest stopped at "#112
-> > > raw_tp_test_run".
-> > >
-> > > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#m242d2b3a3775eeb5baba322424b15901e5e78483
-> > >
-> > > Note that I used tools/testing/selftests/bpf/vmtest.sh to check it.
-> > >
-> > > This added 2 more out-of-tree patches. [8/9] is for adding wildcard
-> > > support to the sample program, [9/9] is a testing patch for replacing
-> > > kretprobe trampoline with rethook.
-> > > According to this work, I noticed that using rethook in kretprobe
-> > > needs 2 steps.
-> > >  1. port the rethook on all architectures which supports kretprobes.
-> > >     (some arch requires CONFIG_KPROBES for rethook)
-> > >  2. replace kretprobe trampoline with rethook for all archs, at once.
-> > >     This must be done by one treewide patch.
-> > >
-> > > Anyway, I'll do the kretprobe update in the next step as another series.
-> > > (This testing patch is just for confirming the rethook is correctly
-> > >  implemented.)
-> > >
-> > > BTW, on the x86, ftrace (with fentry) location address is same as
-> > > symbol address. But on other archs, it will be different (e.g. arm64
-> > > will need 2 instructions to save link-register and call ftrace, the
-> > > 2nd instruction will be the ftrace location.)
-> > > Does libbpf correctly handle it?
-> >
-> > libbpf doesn't do anything there. The interface for kprobe is based on
-> > function name and kernel performs name lookups internally to resolve
-> > IP. For fentry it's similar (kernel handles IP resolution), but
-> > instead of function name we specify BTF ID of a function type.
->
-> Hmm, according to Jiri's original patch, it seems to pass an array of
-> addresses. So I thought that has been resolved by libbpf.
->
-> +                       struct {
-> +                               __aligned_u64   addrs;
+> > How about bpf_copy_from_user_task() ?
+> > The task is the second to last argument, so the name fits ?
+>=20
+> yeah, I like the name
 
-I think this is a pointer to an array of pointers to zero-terminated C strings
+I'll change the name to `bpf_copy_from_user_task`.
 
-> +                               __u32           cnt;
-> +                               __u64           bpf_cookie;
-> +                       } kprobe;
+> > Especially if we call it this way it would be best to align
+> > return codes with bpf_copy_from_user.
+> > Adding memset() in case of failure is mandatory too.
+> > I've missed this bit earlier.
 >
-> Anyway, fprobe itself also has same issue. I'll try to fix it.
+> Yep, good catch! Seems like copy_from_user() currently returns amount
+> of bytes *not* read and memsets those unread bytes to zero. So for
+> efficiency we could probably memset only those that were read.
 >
-> Thank you!
+> > The question is to decide what to do with
+> > ret > 0 && ret < size condition.
+> > Is it a failure and we should memset() the whole buffer and
+> > return -EFAULT or memset only the leftover bytes and return 0?
+> > I think the former is best to align with bpf_copy_from_user.
 >
-> >
-> > >
-> > > Thank you,
-> > >
-> > > ---
-> > >
-> > > Jiri Olsa (2):
-> > >       ftrace: Add ftrace_set_filter_ips function
-> > >       bpf: Add kprobe link for attaching raw kprobes
-> > >
-> > > Masami Hiramatsu (7):
-> > >       fprobe: Add ftrace based probe APIs
-> > >       rethook: Add a generic return hook
-> > >       rethook: x86: Add rethook x86 implementation
-> > >       fprobe: Add exit_handler support
-> > >       fprobe: Add sample program for fprobe
-> > >       [DO NOT MERGE] Out-of-tree: Support wildcard symbol option to sample
-> > >       [DO NOT MERGE] out-of-tree: kprobes: Use rethook for kretprobe
-> > >
-> > >
-> > >  arch/x86/Kconfig                |    1
-> > >  arch/x86/include/asm/unwind.h   |    8 +
-> > >  arch/x86/kernel/Makefile        |    1
-> > >  arch/x86/kernel/kprobes/core.c  |  106 --------------
-> > >  arch/x86/kernel/rethook.c       |  115 +++++++++++++++
-> > >  include/linux/bpf_types.h       |    1
-> > >  include/linux/fprobe.h          |   84 +++++++++++
-> > >  include/linux/ftrace.h          |    3
-> > >  include/linux/kprobes.h         |   85 +----------
-> > >  include/linux/rethook.h         |   99 +++++++++++++
-> > >  include/linux/sched.h           |    4 -
-> > >  include/uapi/linux/bpf.h        |   12 ++
-> > >  kernel/bpf/syscall.c            |  195 +++++++++++++++++++++++++-
-> > >  kernel/exit.c                   |    3
-> > >  kernel/fork.c                   |    4 -
-> > >  kernel/kallsyms.c               |    1
-> > >  kernel/kprobes.c                |  265 +++++------------------------------
-> > >  kernel/trace/Kconfig            |   22 +++
-> > >  kernel/trace/Makefile           |    2
-> > >  kernel/trace/fprobe.c           |  179 ++++++++++++++++++++++++
-> > >  kernel/trace/ftrace.c           |   54 ++++++-
-> > >  kernel/trace/rethook.c          |  295 +++++++++++++++++++++++++++++++++++++++
-> > >  kernel/trace/trace_kprobe.c     |    4 -
-> > >  kernel/trace/trace_output.c     |    2
-> > >  samples/Kconfig                 |    7 +
-> > >  samples/Makefile                |    1
-> > >  samples/fprobe/Makefile         |    3
-> > >  samples/fprobe/fprobe_example.c |  154 ++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h  |   12 ++
-> > >  29 files changed, 1283 insertions(+), 439 deletions(-)
-> > >  create mode 100644 arch/x86/kernel/rethook.c
-> > >  create mode 100644 include/linux/fprobe.h
-> > >  create mode 100644 include/linux/rethook.h
-> > >  create mode 100644 kernel/trace/fprobe.c
-> > >  create mode 100644 kernel/trace/rethook.c
-> > >  create mode 100644 samples/fprobe/Makefile
-> > >  create mode 100644 samples/fprobe/fprobe_example.c
-> > >
-> > > --
-> > > Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
+> Yeah, I think all or nothing approach (either complete success and
+> zero return, or memset and error return) is best and most in line with
+> other similar helpers.
+
+Thanks for the suggestions! I'll go with the all-or-nothing approach to
+be consistent with `bpf_copy_from_user` and will make the following chang=
+es:
+
+* Return value: returns 0 on success, or negative error on failure.
+* If we had a partial read, we will memset the read bytes to 0 and return
+  -EFAULT
+
+> Another thing, I think it's important to mention that this helper can
+> be used only from sleepable BPF programs.
+
+Will add that to the docs.
+
+> > That would be difficult. There is no suitable kernel api for that.
 >
+> Ok, but maybe we can add it later. Otherwise it will be hard to
+> profiler Python processes and such, because you most certainly will
+> need to read zero-terminated strings there.
+
+I will NOT add a C string helper in this patch series, and I'll explore
+how to add this in the future once this patch series is merged.
+
+> > +       skel =3D bpf_iter_task__open_and_load();
+> > +       if (CHECK(!skel, "bpf_iter_task__open_and_load",
+> > +                 "skeleton open_and_load failed\n"))
 >
-> --
-> Masami Hiramatsu <mhiramat@kernel.org>
+> Please use ASSERT_OK_PTR() instead.
+
+Will fix.
+
+> > +       numread =3D bpf_access_process_vm(&user_data,
+> > +                                       sizeof(uint32_t),
+> > +                                       ptr,
+> > +                                       task,
+> > +                                       0);
+>
+> nit: keep it on one line (up to 100 characters is ok)
+
+Will fix.
+
+Thanks for the suggestions everyone!
+
+Kenny
