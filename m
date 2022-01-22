@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72D8496CCF
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 16:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D9F496CD1
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 16:44:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229597AbiAVPc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Jan 2022 10:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
+        id S230097AbiAVPog (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Jan 2022 10:44:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbiAVPcz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Jan 2022 10:32:55 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA676C06173B
-        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:32:54 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id y4so22553046uad.1
-        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:32:54 -0800 (PST)
+        with ESMTP id S229569AbiAVPof (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Jan 2022 10:44:35 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 812A4C06173B
+        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:44:35 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id b37so4826318uad.12
+        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:44:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Ajnk2pCYaAWt4fTLFRp3nCyf05VftFBuQlso4UaDqqE=;
-        b=JCyFtgGvycs1DyFhg7br3ZC3L1xcjPIWn85d03PVcZafZCuEue4zKXkCaCpZpnftt4
-         fV7wyca8TsAbglx6VuPBV2cZgbheepCx2eLHc6vqwiko4GwjLafaWhK9ly6V3PF+Dphy
-         oRMwGus+xFlbY+cA3f25N4hkYCy6MfpO60vPJ4fllle3dAvdZsqtGCY176ddSMbVAbkK
-         3uVd3Oz0Z7bS2f2ONSD1UxUvKZVEHBSyNby/MtCqAJJHx/APyToe3+Y8b8adqeZT8Yub
-         YbE93GbMD9sVZuyeBIrt8tB8wJhd0E89xDHFTwU3pc9YsVr5gnZX5WxO/Q/2WJHtBo8u
-         FiYg==
+        bh=qKHNtClKUhbwQyylwxNg9fvZ9bh5uQ3MmBsM/8No1e0=;
+        b=PqJah3TikQXL0fyUcqlI2ZR/83rYihjbck2ib+0DB9QZTgw7d1XUU7pYObrgHPw2DW
+         pE4bRtq/4GifzoEcP7VJtzKuVYSLilX0FBPImCI0mah3o5ZKbzWrVcQj+MLAjpXjjYLz
+         xqzFrIB5znkp/XLoy12dtpgJDfQNQ5XSaoWHs/2vC5jItuX3jULn9x+zHOBTYoxoEZwG
+         TSjTQN2mtdtg+Jp0oghU0QeZHiG3EmHtRNmKQ1Z4fxu/ZcpI2rWlwSDP8gciOiL1E8GO
+         q/DppZMf/eLTuJJ+P0jMzO4PMJdIS7v4PNdzBuOg4mcuQUSFeAHBpdO4YJRfRqb9Y+sw
+         rW2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Ajnk2pCYaAWt4fTLFRp3nCyf05VftFBuQlso4UaDqqE=;
-        b=Q37oA6gEchsQKpWkMtnRK3Hh6w7SFAE7rV/nL5wnOueTOcUJ/5y79sKt8XfJbOiQb/
-         2DJ+sbe3ACLpUpydfwaCcohOgHay1nhWiW8goo7n1SqbuNi9fNrDjNhvbBiiLpd3XoLc
-         +PSj5e9EOcnQQT0jE35sWte1IYueCG7oPq7kOf5/XzWOlt+ybDipYBSQQHMegnikwX+x
-         SJTgcreWy1FmOz/jwnCtnXOE9vXq2mtJZRadThp0sXJ9l9JONEMcqvrItU2/4BhcnE8P
-         ToJ35ncL89J0w3TRZUOROEhloJ0iekdzpysxHqVW/641+C4rZnOpyPu0/svb69Gcq8tT
-         HGXA==
-X-Gm-Message-State: AOAM531/8LeR87ZRzUNkCuQ66hcoZoF7O3LvMOvSU5dkzCOS/ubRzz4F
-        GJgQ8QCZS/REA/kf2GV/Bsfuck1d+rE=
-X-Google-Smtp-Source: ABdhPJxcvx3NRYOiwltzSdCCeBXzDamm+2MWrFnpjExuM0Eg2VPwG4pGUBNomRM+paob4qJ2XroU6g==
-X-Received: by 2002:a05:6102:3581:: with SMTP id h1mr3503469vsu.5.1642865573750;
-        Sat, 22 Jan 2022 07:32:53 -0800 (PST)
-Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com. [209.85.221.181])
-        by smtp.gmail.com with ESMTPSA id p2sm2378935uao.1.2022.01.22.07.32.52
+        bh=qKHNtClKUhbwQyylwxNg9fvZ9bh5uQ3MmBsM/8No1e0=;
+        b=M3EcR+TbLL+iX5mh9sDNOr5hDI9mrrKmAB/nbwoTtHhdXhbDjfSZyzyX83tQO4AExz
+         EBKz6BUaUuhuC4o/mZdCAbEMbjsvuD8mVMTvfjj8/XU6K5G2tbKu1D6oILCkvRbtAIxg
+         jOsWI5LtB7+1J6kZ/LN8HwixOA4rPxYp7aFWGS+Wv9dsOT0c/x/yiUm/DrHAge9wDe4f
+         pB8uWypMiYZI9aEWtWfXvITVl8JhlzW6US7ZlsWpDkkHQgK+Yl9fZWbIwLUCXL0Hot14
+         BYVnGhGPKQO7pRyKtvR1j1OD1UBj/L3cOlhmyMR++QWk5Zky+7w1gwep0EPV4W8Fuwsc
+         mBjQ==
+X-Gm-Message-State: AOAM532wt1fd5MA/F6PT7aKJvRu9RKUXtH5FIOjAhv7W2yXSvxxjEW7a
+        ig/JEkPaxi1XGt8mRem+n9UfM5oqpZQ=
+X-Google-Smtp-Source: ABdhPJxSvJNRZRDCC65jv+KTP0fQLVrZ9F3Cjg2pD0dqbAY6Fhfp+cfqcz6z+Q7a0GUvi2ovSVDe1Q==
+X-Received: by 2002:a05:6130:411:: with SMTP id ba17mr4109617uab.70.1642866274486;
+        Sat, 22 Jan 2022 07:44:34 -0800 (PST)
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com. [209.85.221.177])
+        by smtp.gmail.com with ESMTPSA id v24sm2147955vkn.38.2022.01.22.07.44.33
         for <bpf@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Jan 2022 07:32:52 -0800 (PST)
-Received: by mail-vk1-f181.google.com with SMTP id v192so7395884vkv.4
-        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:32:52 -0800 (PST)
-X-Received: by 2002:ac5:cda4:: with SMTP id l4mr3577855vka.10.1642865572000;
- Sat, 22 Jan 2022 07:32:52 -0800 (PST)
+        Sat, 22 Jan 2022 07:44:34 -0800 (PST)
+Received: by mail-vk1-f177.google.com with SMTP id d189so7431055vkg.3
+        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 07:44:33 -0800 (PST)
+X-Received: by 2002:a05:6122:2091:: with SMTP id i17mr94847vkd.2.1642866273648;
+ Sat, 22 Jan 2022 07:44:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20220121073026.4173996-1-kafai@fb.com> <20220121073032.4176877-1-kafai@fb.com>
-In-Reply-To: <20220121073032.4176877-1-kafai@fb.com>
+References: <20220121073026.4173996-1-kafai@fb.com>
+In-Reply-To: <20220121073026.4173996-1-kafai@fb.com>
 From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sat, 22 Jan 2022 10:32:16 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSe1d91JC_bQvFGdoAaAEG4fur6KfzkNheA-ymnnMharXQ@mail.gmail.com>
-Message-ID: <CA+FuTSe1d91JC_bQvFGdoAaAEG4fur6KfzkNheA-ymnnMharXQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 net-next 1/4] net: Add skb->mono_delivery_time to
- distinguish mono delivery_time from (rcv) timestamp
+Date:   Sat, 22 Jan 2022 10:43:57 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSe83TdzkvYLdfbZDZrW3BGq74_KmmksrCjDKKua7pE1jA@mail.gmail.com>
+Message-ID: <CA+FuTSe83TdzkvYLdfbZDZrW3BGq74_KmmksrCjDKKua7pE1jA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 net-next 0/4] Preserve mono delivery time (EDT) in skb->tstamp
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
@@ -90,96 +89,77 @@ On Fri, Jan 21, 2022 at 2:30 AM Martin KaFai Lau <kafai@fb.com> wrote:
 > While it makes sense to always clear the (rcv) timestamp in skb->tstamp
 > to avoid confusing sch_fq that expects the delivery_time, it is a
 > performance issue [0] to clear the delivery_time if the skb finally
-> egress to a fq@phy-dev.  For example, when forwarding from egress to
-> ingress and then finally back to egress:
+> egress to a fq@phy-dev.
 >
->             tcp-sender => veth@netns => veth@hostns => fq@eth0@hostns
->                                      ^              ^
->                                      reset          rest
+> v3:
+> - Feedback from v2 is using shinfo(skb)->tx_flags could be racy.
+> - Considered to reuse a few bits in skb->tstamp to represent
+>   different semantics, other than more code churns, it will break
+>   the bpf usecase which currently can write and then read back
+>   the skb->tstamp.
+> - Went back to v1 idea on adding a bit to skb and address the
+>   feedbacks on v1:
+> - Added one bit skb->mono_delivery_time to flag that
+>   the skb->tstamp has the mono delivery_time (EDT), instead
+>   of adding a bit to flag if the skb->tstamp has been forwarded or not.
+> - Instead of resetting the delivery_time back to the (rcv) timestamp
+>   during recvmsg syscall which may be too late and not useful,
+>   the delivery_time reset in v3 happens earlier once the stack
+>   knows that the skb will be delivered locally.
+> - Handled the tapping@ingress case by af_packet
+> - No need to change the (rcv) timestamp to mono clock base as in v1.
+>   The added one bit to flag skb->mono_delivery_time is enough
+>   to keep the EDT delivery_time during forward.
+> - Added logic to the bpf side to make the existing bpf
+>   running at ingress can still get the (rcv) timestamp
+>   when reading the __sk_buff->tstamp.  New __sk_buff->mono_delivery_time
+>   is also added.  Test is still needed to test this piece.
 >
-> [0] (slide 22): https://linuxplumbersconf.org/event/11/contributions/953/attachments/867/1658/LPC_2021_BPF_Datapath_Extensions.pdf
+> Martin KaFai Lau (4):
+>   net: Add skb->mono_delivery_time to distinguish mono delivery_time
+>     from (rcv) timestamp
+>   net: Add skb_clear_tstamp() to keep the mono delivery_time
+>   net: Set skb->mono_delivery_time and clear it when delivering locally
+>   bpf: Add __sk_buff->mono_delivery_time and handle __sk_buff->tstamp
+>     based on tc_at_ingress
 >
-> This patch adds one bit skb->mono_delivery_time to flag the skb->tstamp
-> is storing the mono delivery_time instead of the (rcv) timestamp.
+>  drivers/net/loopback.c                     |   2 +-
+>  include/linux/filter.h                     |  31 ++++-
+>  include/linux/skbuff.h                     |  64 ++++++++--
+>  include/uapi/linux/bpf.h                   |   1 +
+>  net/bridge/br_forward.c                    |   2 +-
+>  net/bridge/netfilter/nf_conntrack_bridge.c |   5 +-
+>  net/core/dev.c                             |   4 +-
+>  net/core/filter.c                          | 140 +++++++++++++++++++--
+>  net/core/skbuff.c                          |   8 +-
+>  net/ipv4/ip_forward.c                      |   2 +-
+>  net/ipv4/ip_input.c                        |   1 +
+>  net/ipv4/ip_output.c                       |   5 +-
+>  net/ipv4/tcp_output.c                      |  16 +--
+>  net/ipv6/ip6_input.c                       |   1 +
+>  net/ipv6/ip6_output.c                      |   7 +-
+>  net/ipv6/netfilter.c                       |   5 +-
+>  net/netfilter/ipvs/ip_vs_xmit.c            |   6 +-
+>  net/netfilter/nf_dup_netdev.c              |   2 +-
+>  net/netfilter/nf_flow_table_ip.c           |   4 +-
+>  net/netfilter/nft_fwd_netdev.c             |   2 +-
+>  net/openvswitch/vport.c                    |   2 +-
+>  net/packet/af_packet.c                     |   4 +-
+>  net/sched/act_bpf.c                        |   5 +-
+>  net/sched/cls_bpf.c                        |   6 +-
+>  net/xfrm/xfrm_interface.c                  |   2 +-
+>  tools/include/uapi/linux/bpf.h             |   1 +
+>  26 files changed, 265 insertions(+), 63 deletions(-)
 >
-> The current use case is to keep the TCP mono delivery_time (EDT) and
-> to be used with sch_fq.  The later patch will also allow tc-bpf to read
-> and change the mono delivery_time.
->
-> In the future, another bit (e.g. skb->user_delivery_time) can be added
-> for the SCM_TXTIME where the clock base is tracked by sk->sk_clockid.
->
-> [ This patch is a prep work.  The following patch will
->   get the other parts of the stack ready first.  Then another patch
->   after that will finally set the skb->mono_delivery_time. ]
->
-> skb_set_delivery_time() function is added.  It is used by the tcp_output.c
-> and during ip[6] fragmentation to assign the delivery_time to
-> the skb->tstamp and also set the skb->mono_delivery_time.
->
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> ---
->  include/linux/skbuff.h                     | 13 +++++++++++++
->  net/bridge/netfilter/nf_conntrack_bridge.c |  5 +++--
->  net/ipv4/ip_output.c                       |  5 +++--
->  net/ipv4/tcp_output.c                      | 16 +++++++++-------
->  net/ipv6/ip6_output.c                      |  5 +++--
->  net/ipv6/netfilter.c                       |  5 +++--
->  6 files changed, 34 insertions(+), 15 deletions(-)
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index bf11e1fbd69b..b9e20187242a 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -720,6 +720,10 @@ typedef unsigned char *sk_buff_data_t;
->   *     @dst_pending_confirm: need to confirm neighbour
->   *     @decrypted: Decrypted SKB
->   *     @slow_gro: state present at GRO time, slower prepare step required
-> + *     @mono_delivery_time: When set, skb->tstamap has the
+> --
 
-tstamp
+This overall looks great to me.
 
-> + *             delivery_time in mono clock base (i.e. EDT).  Otherwise, the
-> + *             skb->tstamp has the (rcv) timestamp at ingress and
-> + *             delivery_time at egress.
->   *     @napi_id: id of the NAPI struct this skb came from
->   *     @sender_cpu: (aka @napi_id) source CPU in XPS
->   *     @secmark: security marking
-> @@ -890,6 +894,7 @@ struct sk_buff {
->         __u8                    decrypted:1;
->  #endif
->         __u8                    slow_gro:1;
-> +       __u8                    mono_delivery_time:1;
+The only effect on timestamping is slightly delayed receive timestamp
+for packets arriving over a virtual loop (loopback, veth, ..)
+interface, as the timestamp is now captured at the network protocol
+input.
 
-This bit fills a hole, does not change sk_buff size, right?
-
->
->  #ifdef CONFIG_NET_SCHED
->         __u16                   tc_index;       /* traffic control index */
-> @@ -3903,6 +3908,14 @@ static inline ktime_t net_invalid_timestamp(void)
->         return 0;
->  }
->
-> +static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
-> +                                        bool mono)
-> +{
-> +       skb->tstamp = kt;
-> +       /* Setting mono_delivery_time will be enabled later */
-> +       /* skb->mono_delivery_time = kt && mono; */
-> +}
-> +
->  static inline u8 skb_metadata_len(const struct sk_buff *skb)
->  {
->         return skb_shinfo(skb)->meta_len;
-> diff --git a/net/bridge/netfilter/nf_conntrack_bridge.c b/net/bridge/netfilter/nf_conntrack_bridge.c
-> index fdbed3158555..ebfb2a5c59e4 100644
-> --- a/net/bridge/netfilter/nf_conntrack_bridge.c
-> +++ b/net/bridge/netfilter/nf_conntrack_bridge.c
-> @@ -32,6 +32,7 @@ static int nf_br_ip_fragment(struct net *net, struct sock *sk,
->                                            struct sk_buff *))
->  {
->         int frag_max_size = BR_INPUT_SKB_CB(skb)->frag_max_size;
-> +       bool mono_delivery_time = skb->mono_delivery_time;
-
-This use of a local variable is just a style choice, not needed for
-correctness, correct?
+Actually, while writing that: timestamping is a socket level option,
+not specific to IP. Might this break receive timestamping over such
+interfaces for other protocols?
