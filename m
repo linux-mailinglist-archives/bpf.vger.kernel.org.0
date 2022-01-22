@@ -2,193 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 675C34969F2
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 04:57:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5C14969F6
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 05:04:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbiAVD45 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 22:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55938 "EHLO
+        id S230161AbiAVEEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 23:04:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiAVD45 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 22:56:57 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF81C06173B
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 19:56:57 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id w12-20020a17090a528c00b001b276aa3aabso15351746pjh.0
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 19:56:57 -0800 (PST)
+        with ESMTP id S229455AbiAVEEL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 23:04:11 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C34C06173B
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 20:04:10 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id e9so9812812pgb.3
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 20:04:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=5ad1JKMu2lqygC/ALepI/EKZbee98pAx1t3pJ3YT+wI=;
-        b=fQebTkBhxlsQRKMQg95Rq4TJwXPCUxbRgaoBkDaCvhHqFfg4+gPoMJz0IfR94W5vFt
-         WY59zQ9cYnSRZ0NEdzTWSvDIxEEWH+rbP/3xjvmdg3okqNFV0SAAZrEiRGHXm2vbf+E6
-         aRloOWCOGgdHEpnLB7KQKd+p8PwspaKv4pv+fXnOG2Mry2299QYN/35I/OmZerBZsb2b
-         Ns1xbT1l/PW2SyG0fRkdm7M5qq1vPVv7c+sb6KOmec+Qw0upHBk64KMNv/YAYg4PW14Q
-         PNiwGENT7GtfzTFZ9/v7Siy3vfl3ZWXCLmieIeV8fwReYjibRFerBGWBLcYK9V2IG8Bu
-         S7AQ==
+        bh=6Sj3IAP8j/pQg0SkrShFbMxDbQ2btM1z82T4TI0GJGg=;
+        b=F/vJGRcEBfKqjfqrO3VCfBv3JfAM0z++MmcYn2rnTl9YeggcxAB/bB/VpaHTZBZ7+i
+         Amlst2vyMpL49PQYXMpHZJwkIziKCC6YMT0a64y8fxbk+VaznGLzYl00IQ2cbCTHgPue
+         b4t8poVBShp4Z4o0S/uW6iC6y4CcRHZyK9s5ZnEHquftRrCRyrTe0tbuQwr7hKLrEcGk
+         HH3Oo74f8tv0pfYbsW7saOcl9w8PD1e3mNcveOlaZ/cYxOiHaA0Q/EqSBAXyb9oP6GOT
+         7Ur1BlBm0YV0uuQ35CNNDpe7qTEEGrK2wZZXkA8XMUwlNjnkcKzlmwZFHf7FWkX2VLy1
+         qb6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5ad1JKMu2lqygC/ALepI/EKZbee98pAx1t3pJ3YT+wI=;
-        b=7GmLBauzAmzBUh65PKsZH0JpV7ok278We3WyzLomG/rNXHiLC9JmugpvosojsFe/Bg
-         qlrtIzIqUHtb+urr7zjHfgb2cWMVyDFf06IOqVYd/KpR+gN5DFYE2Dzlmaq0jIKfHBtN
-         doXhEHN/cTRwxlUPfZ2jvq3Dbtc9vIGcX49lWw2nVnQRFnebXBFZ5dt+Fu+AgiNW6xGG
-         wAl4AGmEM5WIRtMTitNV+hFM4glv2oU1cp3LhZE2XOL/b1TQ3Xj/Nbabn5ylb0dAUbk/
-         6mh18ouby6w98geFc1cyWNNpxSefd1Y7u95xDMmMgFtb4VbGtpMg5eb3am6m6MsqjxFg
-         BPOw==
-X-Gm-Message-State: AOAM53000OhyftvkWkgEi+BDKFHSSZ8tczenpvoxvSASipG3iNR+ORbd
-        OT6n98npk6AgqIXqgtl4g2Q=
-X-Google-Smtp-Source: ABdhPJzV5zTQjwmsetCpQhReabE/ARlxZ9omekQcjCJWDEF9jpNWyYEoz2YTlL4fEncMGJ5E+0sI3w==
-X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr3587631pjb.51.1642823816532;
-        Fri, 21 Jan 2022 19:56:56 -0800 (PST)
+        bh=6Sj3IAP8j/pQg0SkrShFbMxDbQ2btM1z82T4TI0GJGg=;
+        b=CYv84yA7AY3+8nWTbwo+KZDtyIqxdgjIy1JsuJ8hi1F3mWQXAN/+0/it2EEZAKilSr
+         XT7oDU2ZC6ZbQ9/26N+dzYyU0s08euuHmVfaWV0rxmAqjyeSnFfOzq2Ptt3bMIkFbVr4
+         CEFMiHnNGLqYFkRQLzZfefglnTrbjIN14l6IOSwEYBMPV2fjKMLy8MIhTwZJKK17x9GP
+         zEeRB8KSjuREWHEDgyLd8FJR/gUhQblkwSC5A3QLznhIgp12iiT2ffCy7JqC+nfrU8Ad
+         0sEt3PkzuGKbwAn4+iBx4tqZw8FrA8vDhUAquvzeZ5c0YqCjJQYdurB70gnL9uIqIqjn
+         kHYQ==
+X-Gm-Message-State: AOAM530jFM8WxYRo8DjaSrJr3txNACZ6IMJDEQxo9nXsQ8BTVrCtTsvn
+        GJCz+0u1oTgNLHYZ3w0gRL8=
+X-Google-Smtp-Source: ABdhPJz0bizOIx1APpkwQ8gBDZwNW6EKtWtrdD2r++2qUVYe27vJ2Q4XRY8Rii5jjFLD5Fgi/wRRHw==
+X-Received: by 2002:a05:6a00:10d5:b0:4bc:a0eb:c6a0 with SMTP id d21-20020a056a0010d500b004bca0ebc6a0mr6310649pfu.70.1642824250115;
+        Fri, 21 Jan 2022 20:04:10 -0800 (PST)
 Received: from localhost ([2405:201:6014:d064:1fb1:21a:3dae:742c])
-        by smtp.gmail.com with ESMTPSA id x17sm7944242pfj.117.2022.01.21.19.56.55
+        by smtp.gmail.com with ESMTPSA id g12sm7937329pfm.119.2022.01.21.20.04.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jan 2022 19:56:56 -0800 (PST)
-Date:   Sat, 22 Jan 2022 09:26:42 +0530
+        Fri, 21 Jan 2022 20:04:09 -0800 (PST)
+Date:   Sat, 22 Jan 2022 09:34:07 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii.nakryiko@gmail.com, fam.zheng@bytedance.com,
-        cong.wang@bytedance.com, song@kernel.org
-Subject: Re: [RFC bpf-next 2/3] bpf: add support for module helpers in
- verifier
-Message-ID: <20220122035642.7cax2eoz5xqaycq3@thp>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Usama Arif <usama.arif@bytedance.com>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii.nakryiko@gmail.com,
+        fam.zheng@bytedance.com, cong.wang@bytedance.com, song@kernel.org
+Subject: Re: [RFC bpf-next 0/3] bpf: Introduce module helper functions
+Message-ID: <20220122040407.p5qbax5qtuywvyf3@thp>
 References: <20220121193956.198120-1-usama.arif@bytedance.com>
- <20220121193956.198120-3-usama.arif@bytedance.com>
- <20220122033133.ph4wrxcorl5uvspy@thp>
+ <20220121224813.6necsmszanxg5p5e@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220122033133.ph4wrxcorl5uvspy@thp>
+In-Reply-To: <20220121224813.6necsmszanxg5p5e@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 22, 2022 at 09:01:33AM IST, Kumar Kartikeya Dwivedi wrote:
-> On Sat, Jan 22, 2022 at 01:09:55AM IST, Usama Arif wrote:
-> > After the kernel module registers the helper, its BTF id
-> > and func_proto are available during verification. During
-> > verification, it is checked to see if insn->imm is available
-> > in the list of module helper btf ids. If it is,
-> > check_helper_call is called, otherwise check_kfunc_call.
-> > The module helper function proto is obtained in check_helper_call
-> > via get_mod_helper_proto function.
+On Sat, Jan 22, 2022 at 04:18:13AM IST, Alexei Starovoitov wrote:
+> On Fri, Jan 21, 2022 at 07:39:53PM +0000, Usama Arif wrote:
+> > This patchset is a working prototype that adds support for calling helper
+> > functions in eBPF applications that have been defined in a kernel module.
 > >
-> > Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> > ---
-> >  kernel/bpf/verifier.c | 50 +++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 39 insertions(+), 11 deletions(-)
+> > It would require further work including code refractoring (not included in
+> > the patchset) to rename functions, data structures and variables that are
+> > used for kfunc as well to be appropriately renamed for module helper usage.
+> > If the idea of module helper functions and the approach used in this patchset
+> > is acceptable to the bpf community, I can send a follow up patchset with the
+> > code refractoring included to make it ready for review.
 > >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 8c5a46d41f28..bf7605664b95 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -6532,19 +6532,39 @@ static int check_helper_call(struct bpf_verifier_env *env, struct bpf_insn *insn
-> >  	int insn_idx = *insn_idx_p;
-> >  	bool changes_data;
-> >  	int i, err, func_id;
-> > +	const struct btf_type *func;
-> > +	const char *func_name;
-> > +	struct btf *desc_btf;
-> >
-> >  	/* find function prototype */
-> >  	func_id = insn->imm;
-> > -	if (func_id < 0 || func_id >= __BPF_FUNC_MAX_ID) {
-> > -		verbose(env, "invalid func %s#%d\n", func_id_name(func_id),
-> > -			func_id);
-> > -		return -EINVAL;
-> > -	}
-> >
-> >  	if (env->ops->get_func_proto)
-> >  		fn = env->ops->get_func_proto(func_id, env->prog);
-> > -	if (!fn) {
-> > -		verbose(env, "unknown func %s#%d\n", func_id_name(func_id),
-> > +
-> > +	if (func_id >= __BPF_FUNC_MAX_ID) {
-> > +		desc_btf = find_kfunc_desc_btf(env, insn->imm, insn->off);
+> > Module helpers are useful as:
+> > - They support more argument and return types when compared to module
+> > kfunc.
 >
-> I am not sure this is right, even if we reached this point. add_kfunc_call would
-> not be called for a helper call, which means the kfunc_btf_tab will not be
-> populated. I think this code is not reachable from your test, which is why you
-> didn't see this. More below.
->
-> > +		if (IS_ERR(desc_btf))
-> > +			return PTR_ERR(desc_btf);
-> > +
-> > +		fn = get_mod_helper_proto(desc_btf, func_id);
-> > +		if (!fn) {
-> > +			func = btf_type_by_id(desc_btf, func_id);
-> > +			func_name = btf_name_by_offset(desc_btf, func->name_off);
-> > +			verbose(env, "unknown module helper func %s#%d\n", func_name,
-> > +				func_id);
-> > +			return -EACCES;
-> > +		}
-> > +	} else if (func_id >= 0) {
-> > +		if (env->ops->get_func_proto)
-> > +			fn = env->ops->get_func_proto(func_id, env->prog);
-> > +		if (!fn) {
-> > +			verbose(env, "unknown in-kernel helper func %s#%d\n", func_id_name(func_id),
-> > +				func_id);
-> > +			return -EINVAL;
-> > +		}
-> > +	} else {
-> > +		verbose(env, "invalid func %s#%d\n", func_id_name(func_id),
-> >  			func_id);
-> >  		return -EINVAL;
-> >  	}
-> > @@ -11351,6 +11371,7 @@ static int do_check(struct bpf_verifier_env *env)
-> >  	int insn_cnt = env->prog->len;
-> >  	bool do_print_state = false;
-> >  	int prev_insn_idx = -1;
-> > +	struct btf *desc_btf;
-> >
-> >  	for (;;) {
-> >  		struct bpf_insn *insn;
-> > @@ -11579,10 +11600,17 @@ static int do_check(struct bpf_verifier_env *env)
-> >  				}
-> >  				if (insn->src_reg == BPF_PSEUDO_CALL)
-> >  					err = check_func_call(env, insn, &env->insn_idx);
-> > -				else if (insn->src_reg == BPF_PSEUDO_KFUNC_CALL)
-> > -					err = check_kfunc_call(env, insn, &env->insn_idx);
-> > -				else
-> > -					err = check_helper_call(env, insn, &env->insn_idx);
-> > +				else {
-> > +					desc_btf = find_kfunc_desc_btf(env, insn->imm, insn->off);
-> > +					if (IS_ERR(desc_btf))
-> > +						return PTR_ERR(desc_btf);
-> > +
->
-> I didn't get this part at all.
->
-> At this point src_reg can be BPF_PSEUDO_KFUNC_CALL, or 0 (for helper call). If
-> it is a helper call, then find_kfunc_desc_btf using insn->imm and insn->off
-> would be a bug.
->
-> > +					if (insn->src_reg == BPF_K ||
->
-> [...]
+> What exactly is missing?
 >
 
-Ah, I think I see what you are doing: BPF_K is zero, so either when it is a
-helper call or it is a module helper (which will be a kfunc), you call
-check_helper_call. get_mod_helper_proto would return true in that case.
+I looked at the set. I think the only difference between existing support and
+this series is that you are using bpf_func_proto for argument checks, right? Is
+there anything else it is adding?
 
-But if it is an in-kernel helper, calling find_kfunc_desc_btf would still be a
-bug, since imm encodes func_id.
+We discussed whether to use bpf_func_proto for kfunc in [0], the conclusion was
+that BTF has enough info that we don't have to use it. The only thing missing
+is making the verifier assume type of argument from kernel BTF rather than
+passed in argument register.
 
-It's also a bit confusing that check_helper_call is called for a kfunc.
+e.g. same argument can currently work with PTR_TO_BTF_ID and PTR_TO_MEM. On
+Alexei's suggestion, we disabled the bad cases by limiting PTR_TO_MEM support
+to struct with scalars. For current usecase that works fine.
 
-> > +					   get_mod_helper_proto(desc_btf, insn->imm))
-> > +						err = check_helper_call(env, insn, &env->insn_idx);
-> > +					else
-> > +						err = check_kfunc_call(env, insn, &env->insn_idx);
-> > +				}
-> >  				if (err)
-> >  					return err;
-> >  			} else if (opcode == BPF_JA) {
-> > --
-> > 2.25.1
-> >
+I think once BTF tags are supported, we will be able to tag the function
+argument as __arg_mem or __arg_btf_id and make the verifier more strict.
+Same can be done for the return value (instead of ret_null_set as it is now).
+
+  [0]: https://lore.kernel.org/bpf/20211105204908.4cqxk2nbkas6bduw@ast-mbp.dhcp.thefacebook.com/
+
+> > - This adds a way to have helper functions that would be too specialized
+> > for a specific usecase to merge upstream, but are functions that can have
+> > a constant API and can be maintained in-kernel modules.
+>
+> Could you give an example of something that would be "too specialized" that
+> it's worth maintaining in a module, but not worth maintaining in the kernel?
+>
+> Also see:
+> https://www.kernel.org/doc/html/latest/bpf/bpf_design_QA.html#q-new-functionality-via-kernel-modules
+>
+> Why do you think we made that rule years ago?
