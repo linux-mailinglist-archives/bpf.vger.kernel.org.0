@@ -2,115 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5C14969F6
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 05:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2486B496B95
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 10:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbiAVEEL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 23:04:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S232037AbiAVJ6P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Jan 2022 04:58:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbiAVEEL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 23:04:11 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C34C06173B
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 20:04:10 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id e9so9812812pgb.3
-        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 20:04:10 -0800 (PST)
+        with ESMTP id S229773AbiAVJ6M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 22 Jan 2022 04:58:12 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E74FC06173B
+        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 01:58:12 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id p1so21279689uap.9
+        for <bpf@vger.kernel.org>; Sat, 22 Jan 2022 01:58:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Sj3IAP8j/pQg0SkrShFbMxDbQ2btM1z82T4TI0GJGg=;
-        b=F/vJGRcEBfKqjfqrO3VCfBv3JfAM0z++MmcYn2rnTl9YeggcxAB/bB/VpaHTZBZ7+i
-         Amlst2vyMpL49PQYXMpHZJwkIziKCC6YMT0a64y8fxbk+VaznGLzYl00IQ2cbCTHgPue
-         b4t8poVBShp4Z4o0S/uW6iC6y4CcRHZyK9s5ZnEHquftRrCRyrTe0tbuQwr7hKLrEcGk
-         HH3Oo74f8tv0pfYbsW7saOcl9w8PD1e3mNcveOlaZ/cYxOiHaA0Q/EqSBAXyb9oP6GOT
-         7Ur1BlBm0YV0uuQ35CNNDpe7qTEEGrK2wZZXkA8XMUwlNjnkcKzlmwZFHf7FWkX2VLy1
-         qb6Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lu/zIOfEdkENIGU4eW+IpZQWkxTjt7kZCgepCHmgDwc=;
+        b=g1IPPhBrj8E8f0Hh/cPZQEPRRnW5iA2WkcmwhhPBP4YZ/ZZvQeCz9m2R++LtvM3JS0
+         rg0V2Lw6tXD41Br+A2mmjQyp+s9HEJsi/NjHRPdtRzP/4ehJ8RefF7DoNxZvnH0rU7z2
+         b6COPuue5x4KoL86mGsaLioTwqMhR50x8/NURN1KuCMOs4urSTbbaUnNsB50TJVcjffj
+         J81zdSx41/vXc3CtozQjoz1WSICGh3H2MbkxKGEnZxLFkjZ+V/YpekFj8m1wxzMDuO8/
+         Q5r6YCzD5rnqmqn6nGMtdEXvpxJb2y7vIo4PsB6gspmoq+yi68hdt4iWx6HZ8qXYD5hj
+         4x5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Sj3IAP8j/pQg0SkrShFbMxDbQ2btM1z82T4TI0GJGg=;
-        b=CYv84yA7AY3+8nWTbwo+KZDtyIqxdgjIy1JsuJ8hi1F3mWQXAN/+0/it2EEZAKilSr
-         XT7oDU2ZC6ZbQ9/26N+dzYyU0s08euuHmVfaWV0rxmAqjyeSnFfOzq2Ptt3bMIkFbVr4
-         CEFMiHnNGLqYFkRQLzZfefglnTrbjIN14l6IOSwEYBMPV2fjKMLy8MIhTwZJKK17x9GP
-         zEeRB8KSjuREWHEDgyLd8FJR/gUhQblkwSC5A3QLznhIgp12iiT2ffCy7JqC+nfrU8Ad
-         0sEt3PkzuGKbwAn4+iBx4tqZw8FrA8vDhUAquvzeZ5c0YqCjJQYdurB70gnL9uIqIqjn
-         kHYQ==
-X-Gm-Message-State: AOAM530jFM8WxYRo8DjaSrJr3txNACZ6IMJDEQxo9nXsQ8BTVrCtTsvn
-        GJCz+0u1oTgNLHYZ3w0gRL8=
-X-Google-Smtp-Source: ABdhPJz0bizOIx1APpkwQ8gBDZwNW6EKtWtrdD2r++2qUVYe27vJ2Q4XRY8Rii5jjFLD5Fgi/wRRHw==
-X-Received: by 2002:a05:6a00:10d5:b0:4bc:a0eb:c6a0 with SMTP id d21-20020a056a0010d500b004bca0ebc6a0mr6310649pfu.70.1642824250115;
-        Fri, 21 Jan 2022 20:04:10 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:1fb1:21a:3dae:742c])
-        by smtp.gmail.com with ESMTPSA id g12sm7937329pfm.119.2022.01.21.20.04.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jan 2022 20:04:09 -0800 (PST)
-Date:   Sat, 22 Jan 2022 09:34:07 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Usama Arif <usama.arif@bytedance.com>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii.nakryiko@gmail.com,
-        fam.zheng@bytedance.com, cong.wang@bytedance.com, song@kernel.org
-Subject: Re: [RFC bpf-next 0/3] bpf: Introduce module helper functions
-Message-ID: <20220122040407.p5qbax5qtuywvyf3@thp>
-References: <20220121193956.198120-1-usama.arif@bytedance.com>
- <20220121224813.6necsmszanxg5p5e@ast-mbp.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lu/zIOfEdkENIGU4eW+IpZQWkxTjt7kZCgepCHmgDwc=;
+        b=plTg415noRlUlB9ED+qyIOFRpJPrgPNFFYpNvaVisp5jlIJoZjnbaFjFyjq7wZQY3g
+         EefxjBTKbitZ+cNNQnT+rAV78YjG4Mr+zqILBH5tiSxGhdO9tOnjf4zjfN3uFARz4z0c
+         3KG3BFkuL3+Yfrn46cgrp3hTFwoFIe3D+5/v4yVxlyPSnGsTRZwdh1Xg2K8iUwm9gaGo
+         Bfs38YuLnofQPoYS5yoeVJrqY9Y823JNatInDOvI6ucpfUQ10fJv3RPkElc+VyprxdGW
+         65pl4KYlyMZFZORv5lJXAYl3n0Lqi72gjtpH/W7JS3s2YMp3ejZS+F3afTXRTdGW1ptA
+         SjUA==
+X-Gm-Message-State: AOAM533WhVRtQui7cv6QUx0v+UleAECl8v9dVFiO51pUnhhMh/bFgcK1
+        nDsUVGosVdtp7fptrPDfB4HkyBbHfQcAgccpNQTpwdacnq8CO1Is
+X-Google-Smtp-Source: ABdhPJx99YCAhZiuuWtfLWKt9WIOt4q9gEgtMfc1sIeTp1OAuZUx9tMZVwMusA4z8z+0jQoDC1PiGpgvIplkjzcw8Qg=
+X-Received: by 2002:a9f:2d95:: with SMTP id v21mr3236641uaj.106.1642845491714;
+ Sat, 22 Jan 2022 01:58:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220121224813.6necsmszanxg5p5e@ast-mbp.dhcp.thefacebook.com>
+References: <20220113233158.1582743-1-kennyyu@fb.com> <20220121193047.3225019-1-kennyyu@fb.com>
+ <20220121193047.3225019-2-kennyyu@fb.com> <CAEf4BzYfQ4EbSa+c1-G0x_Zh4L6=TbutmH3qndTmv7wb2dAf1w@mail.gmail.com>
+In-Reply-To: <CAEf4BzYfQ4EbSa+c1-G0x_Zh4L6=TbutmH3qndTmv7wb2dAf1w@mail.gmail.com>
+From:   Gabriele <phoenix1987@gmail.com>
+Date:   Sat, 22 Jan 2022 09:58:02 +0000
+Message-ID: <CAGnuNNseH=oLjYSUCfxyyxcGmJ3Na0NnTXCBQP21YqTX1GhYPg@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/3] bpf: Add bpf_copy_from_user_task() helper
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Kenny Yu <kennyyu@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 22, 2022 at 04:18:13AM IST, Alexei Starovoitov wrote:
-> On Fri, Jan 21, 2022 at 07:39:53PM +0000, Usama Arif wrote:
-> > This patchset is a working prototype that adds support for calling helper
-> > functions in eBPF applications that have been defined in a kernel module.
-> >
-> > It would require further work including code refractoring (not included in
-> > the patchset) to rename functions, data structures and variables that are
-> > used for kfunc as well to be appropriately renamed for module helper usage.
-> > If the idea of module helper functions and the approach used in this patchset
-> > is acceptable to the bpf community, I can send a follow up patchset with the
-> > code refractoring included to make it ready for review.
-> >
-> > Module helpers are useful as:
-> > - They support more argument and return types when compared to module
-> > kfunc.
+On Fri, 21 Jan 2022 at 19:53, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
-> What exactly is missing?
+> "On error dst buffer is zeroed out."? This is an explicit guarantee.
 >
 
-I looked at the set. I think the only difference between existing support and
-this series is that you are using bpf_func_proto for argument checks, right? Is
-there anything else it is adding?
-
-We discussed whether to use bpf_func_proto for kfunc in [0], the conclusion was
-that BTF has enough info that we don't have to use it. The only thing missing
-is making the verifier assume type of argument from kernel BTF rather than
-passed in argument register.
-
-e.g. same argument can currently work with PTR_TO_BTF_ID and PTR_TO_MEM. On
-Alexei's suggestion, we disabled the bad cases by limiting PTR_TO_MEM support
-to struct with scalars. For current usecase that works fine.
-
-I think once BTF tags are supported, we will be able to tag the function
-argument as __arg_mem or __arg_btf_id and make the verifier more strict.
-Same can be done for the return value (instead of ret_null_set as it is now).
-
-  [0]: https://lore.kernel.org/bpf/20211105204908.4cqxk2nbkas6bduw@ast-mbp.dhcp.thefacebook.com/
-
-> > - This adds a way to have helper functions that would be too specialized
-> > for a specific usecase to merge upstream, but are functions that can have
-> > a constant API and can be maintained in-kernel modules.
->
-> Could you give an example of something that would be "too specialized" that
-> it's worth maintaining in a module, but not worth maintaining in the kernel?
->
-> Also see:
-> https://www.kernel.org/doc/html/latest/bpf/bpf_design_QA.html#q-new-functionality-via-kernel-modules
->
-> Why do you think we made that rule years ago?
+I appreciate that existing helpers already do this and it's good to
+follow suit for consistency, but what is the rationale behind zeroing
+memory on failure? Can't this step be skipped for performance and
+leave it up to the callee to perform if they need it?
