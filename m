@@ -2,114 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A75049687B
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 01:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 609C84968A3
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 01:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbiAVAFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 19:05:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
+        id S230162AbiAVAVC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 19:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiAVAFH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 19:05:07 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D53C06173B;
-        Fri, 21 Jan 2022 16:05:07 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id s9so8254736plg.7;
-        Fri, 21 Jan 2022 16:05:07 -0800 (PST)
+        with ESMTP id S230077AbiAVAVB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 19:21:01 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235CCC06173B
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 16:21:01 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id h30so8958169ila.12
+        for <bpf@vger.kernel.org>; Fri, 21 Jan 2022 16:21:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=viE1Ba1MfJX/JHAyJbMY2WkVEPZgZXlRHnMC2OHwpL4=;
-        b=nTCwCaIVbDf8KnEZeG7pc7Zqe/JN8MVjG9McZxUDnbXyD2JeJhxtU6tafs8QhBFRCN
-         1XvP1Wdal2CjoURlM9cLoOSCLV9LfmDtOEgkzWcvzkPqJ5PV6mGwPgjYhoIr+2I6KgLC
-         g7JNiPjx8YN483+wh3yLiV4V1qTxcwsO0k2e8+GHkN3axGyM+ltw/rgi1mHw9N3plokb
-         qTPz/LGylV9Zs+tLCp3AHXHEVzhC970G91COJ+cUhBYKdM8KIgADFhI/nTWiJwzUxjAF
-         sJWx4pQowlYq9ItPbiJhfh1vGwKAYb7mqWBfZn3WkV424SVsP9T4wkvwsgLsW3nl86+M
-         s1Ag==
+        bh=caWghlziGwnD6Fz2N0i9H9xPCom1QiCOQ2ZU4ivWROc=;
+        b=dYaOXxusLMH+mFWtNyC64Bkknq2Q8FkzpLkFN1IHMbcQR6qe6cHGG6mkxXZgB777U7
+         VzUGWiRxLLzfvuYXwS9vhd+wlsSgPg7b2pdK8lxy0niIJ1jKtEnxXtluvNShumFHvJyp
+         qMl0KfcvB5jSW3fhlAGTE5mjPCMFybnIpW01lSwVCyxVnd2OBJqrg+wgJHZfpPWJ2dru
+         7kZpRnsPlptN+ePaUkaXamFIIKtbcR4+knYOzqv/ZNLeTAPmV+i6Avkx5oiriziBzOuw
+         iM0k6FUqMuBG/JWdV3ixU50XRo7AuGFLzibO9JdPGe719bIWE8h2Mbah4vx7WNuCu4Mz
+         2U+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=viE1Ba1MfJX/JHAyJbMY2WkVEPZgZXlRHnMC2OHwpL4=;
-        b=0RalzpapDELDkgsU88ihilWE/rlHDpBiaWR7TGO7yvSNBDt0Pb4/fdk3rHQEZiaq7R
-         Ea5btBA2fXvfh76xFq9TzZWpK+giKrZVap0i+G5gNCBfGENYtofC80KJeI0+kR3SUXYU
-         fYrrgD4Vj9ClmOE4r6WRUew+uCIhPoqnIYaXKocFK7T+75Bf1trIrz9N2laUEVFbGJZx
-         Uc/DZuk0y8yMZm2LSyyEnSmRPz6+w25XnmgIEFBxMu/q23vpSrZg2B+xa1tmVj0EnskP
-         ClReRiSwxuhiuxBjTkkAEIcKOKMnEypDF4/a5NkHY4cnn47ZDtdW+1jaNxVeLpgr9EXD
-         egcA==
-X-Gm-Message-State: AOAM532RG8+ziyzVOa6/t9iykSiFiryPYXpvA9JBu68P7T1FW9vZMUKd
-        hPQGeMyl3s6156G/rbbzaGcZlpIV9K8N+sC/f6iTIqhI7EQ=
-X-Google-Smtp-Source: ABdhPJykX73NPz5uOgpQKPHt8AzvOpmYxndwzFrl3h2qDcxtPEvPoEojsn+pNUg1ERrxzv4T06m7kMGWmTCAeraGEoc=
-X-Received: by 2002:a17:90b:224c:: with SMTP id hk12mr2979165pjb.62.1642809906597;
- Fri, 21 Jan 2022 16:05:06 -0800 (PST)
+        bh=caWghlziGwnD6Fz2N0i9H9xPCom1QiCOQ2ZU4ivWROc=;
+        b=annzRnuGYZ0br7SkcOM6+OtTpBofxyZLC+61+gxjmgfIg2av76cuRIVfE/rlEqR21l
+         cctxY8bpkUtxpWggiT4CNeOPfzhvKsv8pLdabznHPLJjgjgPXzNSDOhCEvAQVBEc4GOZ
+         lAzM9EwdgOW0p1ae5XNJuopq+hHjqah7vVuCazkTY9/5Olw+Zmf1BSlBAG27WNtqcPzC
+         Q1RbMf7NRSp5fXC1Zb69lHegc388tCgq1wea/NpcrljTiIyQTmtmDBI9v7WXv47lTRA3
+         fMut5ggSxpW57Loe6JDQXfLeA7v8r6yqcIKcGQkNgxDbFyGK6ylRKUL6dJAZtipnQT0G
+         PQxQ==
+X-Gm-Message-State: AOAM533NbasVtiLtwA0Cy8Ak8HnMmqSoldp/ABru2n0PUhSiThtlVrfo
+        yegWrT9Mkbzz7p+zuoktUgHLnEwSmUJBsb7bzbz8V6Zw
+X-Google-Smtp-Source: ABdhPJy7ngYUzhHjzB7QbHMIOmgVecXWtl1+0s7xgT/RAQULasdJUft7gqb4d8LF7gt3gxmun2m5LYOlzLHmSKht/ls=
+X-Received: by 2002:a92:db0b:: with SMTP id b11mr3539183iln.98.1642810860514;
+ Fri, 21 Jan 2022 16:21:00 -0800 (PST)
 MIME-Version: 1.0
-References: <87o85ftc3p.fsf@smart-cactus.org>
-In-Reply-To: <87o85ftc3p.fsf@smart-cactus.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Jan 2022 16:04:55 -0800
-Message-ID: <CAADnVQ++57u30cdooEqXSDVGEgKTy70TChg8+2h8mihHbwdpOg@mail.gmail.com>
-Subject: Re: Sampling of non-C-like stacks with eBPF and perf_events?
-To:     Ben Gamari <ben@smart-cactus.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>
+References: <551ee65533bb987a43f93d88eaf2368b416ccd32.1642518457.git.fmaurer@redhat.com>
+ <164271840972.1166.16358307258129760252.git-patchwork-notify@kernel.org>
+In-Reply-To: <164271840972.1166.16358307258129760252.git-patchwork-notify@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 Jan 2022 16:20:49 -0800
+Message-ID: <CAEf4BzagVFiv0BS=OP3n7uuF0a9Fn8ZBZL04a-DXKip5453sgQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] selftests: bpf: Fix bind on used port
+To:     patchwork-bot+netdevbpf@kernel.org
+Cc:     Felix Maurer <fmaurer@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>, Martin Lau <kafai@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 17, 2021 at 1:53 PM Ben Gamari <ben@smart-cactus.org> wrote:
+On Fri, Jan 21, 2022 at 4:18 PM <patchwork-bot+netdevbpf@kernel.org> wrote:
 >
-> Hi all,
+> Hello:
 >
-> I have recently been exploring the possibility of using a
-> BPF_PROG_TYPE_PERF_EVENT program to implement stack sampling for
-> languages which do not use the platform's %sp for their stack pointer
-> (in my case, GHC/Haskell [1], which on x86-64 uses %rbp for its stack
-> pointer). Specifically, the idea is to use a sampling perf_events
-> session with an eBPF overflow handler which locates the
-> currently-running thread's stack and records it in the sample ringbuffer
-> (see [2] for my current attempt). At this point I only care about
-> user-space samples.
->
-> However, I quickly ran up against the fact that perf_event's stack
-> sampling logic (namely perf_output_sample_ustack) is called from an IRQ
-> context. This appears to preclude use of a sleepable BPF program, which
-> would be necessary to use bpf_copy_from_user. Indeed, the fact that the
-> usual stack sampling logic uses copy_from_user_inatomic rather than
-> copy_from_user suggests that this isn't a safe context for sleeping.
->
-> So, I'm at this point a bit unclear on how to proceed. I can see a few
-> possible directions forward, although none are particularly enticing:
->
-> * Add a bpf_copy_from_user_atomic helper, which can be called from a
->   non-sleepable context like a perf_events overflow handler. This would
->   take the same set_fs() and pagefault_disable() precautions as
->   perf_output_sample_ustack to ensure that the access is safe and aborts
->   on fault.
->
-> * Introduce a new BPF program type,
->   BPF_PROG_TYPE_PERF_EVENT_STACK_LOCATOR, which can be invoked by
->   perf_output_sample_ustack to locate the stack to be sampled.
->
-> Do either of these ideas sound upstreamable? Perhaps there are other
-> ideas on how to attack this general problem? I do not believe Haskell is
-> alone in its struggle with the current inflexibility of stack sampling;
-> the JVM introduced framepointer support specifically to allow callgraph
-> sampling; however, dedicating a register and code to this seems like an
-> unfortunate compromise, especially on x86-64 where registers are already
-> fairly precious.
->
-> Any thoughts or suggestions would be greatly appreciated.
+> This patch was applied to bpf/bpf-next.git (master)
+> by Andrii Nakryiko <andrii@kernel.org>:
 
-Hi Ben,
+Better late than never :)
 
-if you're sampling the stack trace of the current process
-there is no need for copy_from_user and sleepable.
-The memory with the stack trace unlikely was paged out.
-So normal bpf_probe_read_user() will work fine.
-
-This approach was used to implement 'pyperf'.
-It walks python stack traces:
-https://github.com/iovisor/bcc/tree/master/examples/cpp/pyperf
-What you're trying to do for haskel sounds very similar.
+>
+> On Tue, 18 Jan 2022 16:11:56 +0100 you wrote:
+> > The bind_perm BPF selftest failed when port 111/tcp was already in use
+> > during the test. To fix this, the test now runs in its own network name
+> > space.
+> >
+> > To use unshare, it is necessary to reorder the includes. The style of
+> > the includes is adapted to be consistent with the other prog_tests.
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - [bpf,v2] selftests: bpf: Fix bind on used port
+>     https://git.kernel.org/bpf/bpf-next/c/8c0be0631d81
+>
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+>
