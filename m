@@ -2,168 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6A0496869
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 00:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A75049687B
+	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 01:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbiAUXz1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 21 Jan 2022 18:55:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
+        id S230016AbiAVAFI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 21 Jan 2022 19:05:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbiAUXz0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 21 Jan 2022 18:55:26 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545D0C06173B;
-        Fri, 21 Jan 2022 15:55:26 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id d5so8086101pjk.5;
-        Fri, 21 Jan 2022 15:55:26 -0800 (PST)
+        with ESMTP id S229517AbiAVAFH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 21 Jan 2022 19:05:07 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D53C06173B;
+        Fri, 21 Jan 2022 16:05:07 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id s9so8254736plg.7;
+        Fri, 21 Jan 2022 16:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Q8HQt1HvGyw6p2m9jE0xI96X7Drt+WwhJJItVuCPdG4=;
-        b=AEn3ht+IvGHRh+8N2pnJhxmlOQxdgAcLE62J40D76oDg3HTNW2LI0IC5t8s+/fgRZR
-         n4oIQYpZNAYulc9nvN+b7EMOwNWMUPygVccUBjj/vhUIXX7b5IWwe9OHPKkAEyPZcFSu
-         5+U6IU8MYGETZY7qh/eL9qnshHH+14EREYGRUR+p+22k9gNc7YOYsubGRGfHPYcgL9GE
-         NHZjIOaUgLDikXWKZ8PNWkt4chPfHsXyBAyQcBNAG41rGk/l4XZQQ9cIEN+u9ayL2fii
-         OZo1GJBdkyVm1Wfd6tiTHzy8YrOFY2CebPcQLWd25GPDcUJ1jhNW3MXAppkBc4ACpSSw
-         GrHg==
+        bh=viE1Ba1MfJX/JHAyJbMY2WkVEPZgZXlRHnMC2OHwpL4=;
+        b=nTCwCaIVbDf8KnEZeG7pc7Zqe/JN8MVjG9McZxUDnbXyD2JeJhxtU6tafs8QhBFRCN
+         1XvP1Wdal2CjoURlM9cLoOSCLV9LfmDtOEgkzWcvzkPqJ5PV6mGwPgjYhoIr+2I6KgLC
+         g7JNiPjx8YN483+wh3yLiV4V1qTxcwsO0k2e8+GHkN3axGyM+ltw/rgi1mHw9N3plokb
+         qTPz/LGylV9Zs+tLCp3AHXHEVzhC970G91COJ+cUhBYKdM8KIgADFhI/nTWiJwzUxjAF
+         sJWx4pQowlYq9ItPbiJhfh1vGwKAYb7mqWBfZn3WkV424SVsP9T4wkvwsgLsW3nl86+M
+         s1Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Q8HQt1HvGyw6p2m9jE0xI96X7Drt+WwhJJItVuCPdG4=;
-        b=UuiWopMktPOYS5lYZwPoAEoDZ5scfSDYBzNNkL5D7dXRBtx9SuMviadnDqJJsS2JPt
-         +iculaQtj8KC5mVdvuaVc8QG7IGd0sjMyEQSZP15FPO0bVXcAnfNLMoFrF6mJuw2+unr
-         3F9+fmywcPiPISF71QaO+ghkzTLp2F7x21wGJ4cNijdySa49Zph+GhNUC4VMhqGVuQ7L
-         rsG2IFzRs/O+mu/4pPgNR+4k/k3YxK1bgcn2ND9Qjro1YwGnyVo+kyRMhxIrqeNi4YDR
-         lcVSPfHEX0oBuKCavkPL7HdAdOGqV0/mmIi21snEYW2UiPVRw8jsx8hawJrjzMGi2t0J
-         rSug==
-X-Gm-Message-State: AOAM531+ZpxSn2spcGO2q2JTeO40AI8is1cy5/RGLci0DhBkFRg56nfy
-        pY9xQqNz8qyQYWcMgQllCfs6ApXVJuohBbaAG7HYtpbZC6g=
-X-Google-Smtp-Source: ABdhPJx86p3K7XTaMBGZAt5t6KGfJNh508gK3uEngsI/OO5MJW6GbRwsKvZTTAPLgnbfwt3tSHrhBg3IaYflv0hOL1g=
-X-Received: by 2002:a17:90a:c78b:: with SMTP id gn11mr3015934pjb.138.1642809325739;
- Fri, 21 Jan 2022 15:55:25 -0800 (PST)
+        bh=viE1Ba1MfJX/JHAyJbMY2WkVEPZgZXlRHnMC2OHwpL4=;
+        b=0RalzpapDELDkgsU88ihilWE/rlHDpBiaWR7TGO7yvSNBDt0Pb4/fdk3rHQEZiaq7R
+         Ea5btBA2fXvfh76xFq9TzZWpK+giKrZVap0i+G5gNCBfGENYtofC80KJeI0+kR3SUXYU
+         fYrrgD4Vj9ClmOE4r6WRUew+uCIhPoqnIYaXKocFK7T+75Bf1trIrz9N2laUEVFbGJZx
+         Uc/DZuk0y8yMZm2LSyyEnSmRPz6+w25XnmgIEFBxMu/q23vpSrZg2B+xa1tmVj0EnskP
+         ClReRiSwxuhiuxBjTkkAEIcKOKMnEypDF4/a5NkHY4cnn47ZDtdW+1jaNxVeLpgr9EXD
+         egcA==
+X-Gm-Message-State: AOAM532RG8+ziyzVOa6/t9iykSiFiryPYXpvA9JBu68P7T1FW9vZMUKd
+        hPQGeMyl3s6156G/rbbzaGcZlpIV9K8N+sC/f6iTIqhI7EQ=
+X-Google-Smtp-Source: ABdhPJykX73NPz5uOgpQKPHt8AzvOpmYxndwzFrl3h2qDcxtPEvPoEojsn+pNUg1ERrxzv4T06m7kMGWmTCAeraGEoc=
+X-Received: by 2002:a17:90b:224c:: with SMTP id hk12mr2979165pjb.62.1642809906597;
+ Fri, 21 Jan 2022 16:05:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20220121194926.1970172-1-song@kernel.org> <20220121194926.1970172-7-song@kernel.org>
-In-Reply-To: <20220121194926.1970172-7-song@kernel.org>
+References: <87o85ftc3p.fsf@smart-cactus.org>
+In-Reply-To: <87o85ftc3p.fsf@smart-cactus.org>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 21 Jan 2022 15:55:14 -0800
-Message-ID: <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
-To:     Song Liu <song@kernel.org>
+Date:   Fri, 21 Jan 2022 16:04:55 -0800
+Message-ID: <CAADnVQ++57u30cdooEqXSDVGEgKTy70TChg8+2h8mihHbwdpOg@mail.gmail.com>
+Subject: Re: Sampling of non-C-like stacks with eBPF and perf_events?
+To:     Ben Gamari <ben@smart-cactus.org>
 Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Song Liu <songliubraving@fb.com>
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 11:49 AM Song Liu <song@kernel.org> wrote:
+On Fri, Dec 17, 2021 at 1:53 PM Ben Gamari <ben@smart-cactus.org> wrote:
 >
-> +static struct bpf_binary_header *
-> +__bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
-> +                      unsigned int alignment,
-> +                      bpf_jit_fill_hole_t bpf_fill_ill_insns,
-> +                      u32 round_up_to)
-> +{
-> +       struct bpf_binary_header *hdr;
-> +       u32 size, hole, start;
-> +
-> +       WARN_ON_ONCE(!is_power_of_2(alignment) ||
-> +                    alignment > BPF_IMAGE_ALIGNMENT);
-> +
-> +       /* Most of BPF filters are really small, but if some of them
-> +        * fill a page, allow at least 128 extra bytes to insert a
-> +        * random section of illegal instructions.
-> +        */
-> +       size = round_up(proglen + sizeof(*hdr) + 128, round_up_to);
-> +
-> +       if (bpf_jit_charge_modmem(size))
-> +               return NULL;
-> +       hdr = bpf_jit_alloc_exec(size);
-> +       if (!hdr) {
-> +               bpf_jit_uncharge_modmem(size);
-> +               return NULL;
-> +       }
-> +
-> +       /* Fill space with illegal/arch-dep instructions. */
-> +       bpf_fill_ill_insns(hdr, size);
-> +
-> +       hdr->size = size;
-> +       hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
-> +                    PAGE_SIZE - sizeof(*hdr));
-
-It probably should be 'round_up_to' instead of PAGE_SIZE ?
-
-> +       start = (get_random_int() % hole) & ~(alignment - 1);
-> +
-> +       /* Leave a random number of instructions before BPF code. */
-> +       *image_ptr = &hdr->image[start];
-> +
-> +       return hdr;
-> +}
-> +
->  struct bpf_binary_header *
->  bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
->                      unsigned int alignment,
->                      bpf_jit_fill_hole_t bpf_fill_ill_insns)
-> +{
-> +       return __bpf_jit_binary_alloc(proglen, image_ptr, alignment,
-> +                                     bpf_fill_ill_insns, PAGE_SIZE);
-> +}
-> +
-> +struct bpf_binary_header *
-> +bpf_jit_binary_alloc_pack(unsigned int proglen, u8 **image_ptr,
-> +                         unsigned int alignment,
-> +                         bpf_jit_fill_hole_t bpf_fill_ill_insns)
->  {
->         struct bpf_binary_header *hdr;
->         u32 size, hole, start;
-> @@ -875,11 +1034,16 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
->          * fill a page, allow at least 128 extra bytes to insert a
->          * random section of illegal instructions.
->          */
-> -       size = round_up(proglen + sizeof(*hdr) + 128, PAGE_SIZE);
-> +       size = round_up(proglen + sizeof(*hdr) + 128, BPF_PROG_CHUNK_SIZE);
-> +
-> +       /* for too big program, use __bpf_jit_binary_alloc. */
-> +       if (size > BPF_PROG_MAX_PACK_PROG_SIZE)
-> +               return __bpf_jit_binary_alloc(proglen, image_ptr, alignment,
-> +                                             bpf_fill_ill_insns, PAGE_SIZE);
+> Hi all,
 >
->         if (bpf_jit_charge_modmem(size))
->                 return NULL;
-> -       hdr = bpf_jit_alloc_exec(size);
-> +       hdr = bpf_prog_pack_alloc(size);
->         if (!hdr) {
->                 bpf_jit_uncharge_modmem(size);
->                 return NULL;
-> @@ -888,9 +1052,8 @@ bpf_jit_binary_alloc(unsigned int proglen, u8 **image_ptr,
->         /* Fill space with illegal/arch-dep instructions. */
->         bpf_fill_ill_insns(hdr, size);
+> I have recently been exploring the possibility of using a
+> BPF_PROG_TYPE_PERF_EVENT program to implement stack sampling for
+> languages which do not use the platform's %sp for their stack pointer
+> (in my case, GHC/Haskell [1], which on x86-64 uses %rbp for its stack
+> pointer). Specifically, the idea is to use a sampling perf_events
+> session with an eBPF overflow handler which locates the
+> currently-running thread's stack and records it in the sample ringbuffer
+> (see [2] for my current attempt). At this point I only care about
+> user-space samples.
 >
-> -       hdr->size = size;
+> However, I quickly ran up against the fact that perf_event's stack
+> sampling logic (namely perf_output_sample_ustack) is called from an IRQ
+> context. This appears to preclude use of a sleepable BPF program, which
+> would be necessary to use bpf_copy_from_user. Indeed, the fact that the
+> usual stack sampling logic uses copy_from_user_inatomic rather than
+> copy_from_user suggests that this isn't a safe context for sleeping.
+>
+> So, I'm at this point a bit unclear on how to proceed. I can see a few
+> possible directions forward, although none are particularly enticing:
+>
+> * Add a bpf_copy_from_user_atomic helper, which can be called from a
+>   non-sleepable context like a perf_events overflow handler. This would
+>   take the same set_fs() and pagefault_disable() precautions as
+>   perf_output_sample_ustack to ensure that the access is safe and aborts
+>   on fault.
+>
+> * Introduce a new BPF program type,
+>   BPF_PROG_TYPE_PERF_EVENT_STACK_LOCATOR, which can be invoked by
+>   perf_output_sample_ustack to locate the stack to be sampled.
+>
+> Do either of these ideas sound upstreamable? Perhaps there are other
+> ideas on how to attack this general problem? I do not believe Haskell is
+> alone in its struggle with the current inflexibility of stack sampling;
+> the JVM introduced framepointer support specifically to allow callgraph
+> sampling; however, dedicating a register and code to this seems like an
+> unfortunate compromise, especially on x86-64 where registers are already
+> fairly precious.
+>
+> Any thoughts or suggestions would be greatly appreciated.
 
-I'm missing where it's assigned.
-Looks like hdr->size stays zero, so free is never performed?
+Hi Ben,
 
->         hole = min_t(unsigned int, size - (proglen + sizeof(*hdr)),
-> -                    PAGE_SIZE - sizeof(*hdr));
-> +                    BPF_PROG_CHUNK_SIZE - sizeof(*hdr));
+if you're sampling the stack trace of the current process
+there is no need for copy_from_user and sleepable.
+The memory with the stack trace unlikely was paged out.
+So normal bpf_probe_read_user() will work fine.
 
-Before this change size - (proglen + sizeof(*hdr)) would
-be at least 128 and potentially bigger than PAGE_SIZE
-when extra 128 crossed page boundary.
-Hence min() was necessary with the 2nd arg being PAGE_SIZE - sizeof(*hdr).
-
-With new code size - (proglen + sizeof(*hdr)) would
-be between 128 and 128+64
-while BPF_PROG_CHUNK_SIZE - sizeof(*hdr) is a constant less than 64.
-What is the point of min() ?
+This approach was used to implement 'pyperf'.
+It walks python stack traces:
+https://github.com/iovisor/bcc/tree/master/examples/cpp/pyperf
+What you're trying to do for haskel sounds very similar.
