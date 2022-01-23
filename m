@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD90D4975F3
-	for <lists+bpf@lfdr.de>; Sun, 23 Jan 2022 23:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993024975F4
+	for <lists+bpf@lfdr.de>; Sun, 23 Jan 2022 23:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240330AbiAWWTq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 23 Jan 2022 17:19:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31856 "EHLO
+        id S234697AbiAWWTx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 23 Jan 2022 17:19:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51333 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240318AbiAWWTq (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 23 Jan 2022 17:19:46 -0500
+        by vger.kernel.org with ESMTP id S240318AbiAWWTw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 23 Jan 2022 17:19:52 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1642976385;
+        s=mimecast20190719; t=1642976392;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=czb04J0iAWuUi7wF0DsloRGiID6eNktOBNNduQ6TsS8=;
-        b=iHqGMl8ZPcUiwTB8mZL32T/GdyMpc9hI0/zKLG8vATnp1W7Zya6T1zhCpaoeG6ZbeByVy9
-        4WN+7KBiF7n2jqKyV54IRM0cRXgfNQCRVsPQMZMztFE87gSKbhO0lKC+/oDxnKVecCAOGq
-        FNx1Sgw5iZ4j4an+0sY60q2KJGYuwcc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=rpD4RE3uS/46Az++QExWH/f6Mdi5HuK6/iaxYRMQJHA=;
+        b=dQ0m/mu9AFMgaxEmWZzleagZ51xTTSbmvn1OzvIadX7dY86a9yLDbFPnbjdh48yyCUshlW
+        MyuYKpydsH6BPWOyTSEt4Wdw4V7QhbC0uVZzHb2J4Qn7yIhTLXJCEs6cAgSPcO2YjKj/VH
+        hIgYfISk6hMBw6t7S+ghVIlUcNLPMBU=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-540--w7MeARHOf65ITu3cMSkcw-1; Sun, 23 Jan 2022 17:19:44 -0500
-X-MC-Unique: -w7MeARHOf65ITu3cMSkcw-1
-Received: by mail-ed1-f70.google.com with SMTP id c8-20020a05640227c800b003fdc1684cdeso11902723ede.12
-        for <bpf@vger.kernel.org>; Sun, 23 Jan 2022 14:19:44 -0800 (PST)
+ us-mta-614-cnMu4qQDOr20mBDIaN0o9w-1; Sun, 23 Jan 2022 17:19:50 -0500
+X-MC-Unique: cnMu4qQDOr20mBDIaN0o9w-1
+Received: by mail-ed1-f69.google.com with SMTP id k10-20020a50cb8a000000b00403c8326f2aso11918794edi.6
+        for <bpf@vger.kernel.org>; Sun, 23 Jan 2022 14:19:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=czb04J0iAWuUi7wF0DsloRGiID6eNktOBNNduQ6TsS8=;
-        b=q0kZG6WBZY73ABhMGmvrkljPrh92BRRMWQ/m27vk4VFfJo1ppi6maILDD6AG8C553E
-         b+UhOsucswqKO+86gosvbpMciNuOCGv14wdQK3V84YEoIxKvfjgskJrshUPq0/ei5myx
-         UMk3eCsfXxEkZnai1Iz0K+YDvGiO6ousNreZz9n8VFDeBmFzaYkwBKOz5fJC1hCcU3Re
-         Hga3rCsMe31ilLADlhimxybjzWUKJ51VpMQYfUtQp4jlA8p2rkvG8+BiK8BEzs9iJWHO
-         FGkSRPtKIGWVzeWCG1OhVgBSvgIs61ZGi/kor7gDnYho0Sb4Hlgw/bqQEv9jUpTyXj6V
-         6EOA==
-X-Gm-Message-State: AOAM530zt+7W6jLqsrVCn58Pb7kGumfjBpBx6SBcowDJR/2A/UVfnnXb
-        iYpdw7u9ZqF7uLtrG4pgXXOEM5zb35k6k1HI1NA5dg5s2VnFLEBwuXBxQYCXzIdImQEW9T8EKdL
-        Npv+/89DNuHy7
-X-Received: by 2002:a05:6402:1e91:: with SMTP id f17mr2067740edf.355.1642976383240;
-        Sun, 23 Jan 2022 14:19:43 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwVYuF7CsxJM5oRyzYgfNF2Xpl0p8rJr6QVptDj3JmLvWsVzNWVHxl6z9JAMFl/bFntGavjpA==
-X-Received: by 2002:a05:6402:1e91:: with SMTP id f17mr2067720edf.355.1642976382965;
-        Sun, 23 Jan 2022 14:19:42 -0800 (PST)
+        bh=rpD4RE3uS/46Az++QExWH/f6Mdi5HuK6/iaxYRMQJHA=;
+        b=h2ApzHvSd3DH7fw/H72Ka7wXTSqkyrdKFv6AKV1fIt19TJnURoahn8cUEmMJCwdSlV
+         dWih75kEDUi9iPhVDsqYoeOeum7GE03m89dUDP6OMmM3wPozqf7pwQILra3xM6MGVdHn
+         Xxl2lu5pJygIocAVnJKjji518EgAgUiN3875qgmVnEpHO9QxKRHoGHLHiHzoWTrEGT7E
+         p2uFyV8j24V09wFdd5qTglgmDun+BnL2HoI5ZDzaQWRiQ3Zu0ucrLcNqBAt4H6KHWTgY
+         OImSFZPiXSiZpz37DLeQJWRqJeRjG4/flZvSfTc75C7Vcxs79bi+GpiioPuWIHWCCEyG
+         F93A==
+X-Gm-Message-State: AOAM532ZYh32IzFuY7W7XDmQVQVXJ4GblxSl7Tj0b4oJGOIvmpZTnTz8
+        ttDwiDtxMonO2SboZbwXk+qTEF5UUpQtkKHuRUB/p5DjemacRJLaMAVzRyx0PGdn+J8nYJfzca1
+        K3yHxdmdapHMa
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr12996514edu.237.1642976389400;
+        Sun, 23 Jan 2022 14:19:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwI802xOVZpySC1BV+0Pbb0Zp6jskKyQ40L/Z8mYLOOALNihv/wPD6GaoryEw9cZjEl0N/0ng==
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr12996493edu.237.1642976389205;
+        Sun, 23 Jan 2022 14:19:49 -0800 (PST)
 Received: from krava.redhat.com ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id f4sm4210708ejh.93.2022.01.23.14.19.41
+        by smtp.gmail.com with ESMTPSA id f19sm867305edu.22.2022.01.23.14.19.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jan 2022 14:19:42 -0800 (PST)
+        Sun, 23 Jan 2022 14:19:48 -0800 (PST)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -63,9 +63,9 @@ Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
         Ian Rogers <irogers@google.com>,
         linux-perf-users@vger.kernel.org, Christy Lee <christylee@fb.com>,
         Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-Subject: [PATCH 2/3] perf/bpf: Remove special bpf config support
-Date:   Sun, 23 Jan 2022 23:19:31 +0100
-Message-Id: <20220123221932.537060-2-jolsa@kernel.org>
+Subject: [PATCH 3/3] perf tests: Remove bpf prologue generation test
+Date:   Sun, 23 Jan 2022 23:19:32 +0100
+Message-Id: <20220123221932.537060-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220123221932.537060-1-jolsa@kernel.org>
 References: <20220123221932.537060-1-jolsa@kernel.org>
@@ -75,230 +75,193 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With bpf program prologue code removed, we can also remove
-the program section parsing, because it is no longer used.
+Removing bpf prologue generation test, because its
+support was removed in previous patches.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/bpf-loader.c | 177 ++---------------------------------
- 1 file changed, 8 insertions(+), 169 deletions(-)
+ tools/perf/tests/Build  |  9 +-------
+ tools/perf/tests/bpf.c  | 51 -----------------------------------------
+ tools/perf/tests/llvm.c | 19 ---------------
+ tools/perf/tests/llvm.h |  2 --
+ 4 files changed, 1 insertion(+), 80 deletions(-)
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index f9f329a48892..f7682eb7009e 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -129,179 +129,18 @@ clear_prog_priv(struct bpf_program *prog __maybe_unused,
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index af2b37ef7c70..10a5287dbc94 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -36,7 +36,7 @@ perf-y += sample-parsing.o
+ perf-y += parse-no-sample-id-all.o
+ perf-y += kmod-path.o
+ perf-y += thread-map.o
+-perf-y += llvm.o llvm-src-base.o llvm-src-kbuild.o llvm-src-prologue.o llvm-src-relocation.o
++perf-y += llvm.o llvm-src-base.o llvm-src-kbuild.o llvm-src-relocation.o
+ perf-y += bpf.o
+ perf-y += topology.o
+ perf-y += mem.o
+@@ -81,13 +81,6 @@ $(OUTPUT)tests/llvm-src-kbuild.c: tests/bpf-script-test-kbuild.c tests/Build
+ 	$(Q)sed -e 's/"/\\"/g' -e 's/\(.*\)/"\1\\n"/g' $< >> $@
+ 	$(Q)echo ';' >> $@
+ 
+-$(OUTPUT)tests/llvm-src-prologue.c: tests/bpf-script-test-prologue.c tests/Build
+-	$(call rule_mkdir)
+-	$(Q)echo '#include <tests/llvm.h>' > $@
+-	$(Q)echo 'const char test_llvm__bpf_test_prologue_prog[] =' >> $@
+-	$(Q)sed -e 's/"/\\"/g' -e 's/\(.*\)/"\1\\n"/g' $< >> $@
+-	$(Q)echo ';' >> $@
+-
+ $(OUTPUT)tests/llvm-src-relocation.c: tests/bpf-script-test-relocation.c tests/Build
+ 	$(call rule_mkdir)
+ 	$(Q)echo '#include <tests/llvm.h>' > $@
+diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
+index 573490530194..c7ade2debbbf 100644
+--- a/tools/perf/tests/bpf.c
++++ b/tools/perf/tests/bpf.c
+@@ -37,29 +37,6 @@ static int epoll_pwait_loop(void)
+ 	return 0;
  }
  
- static int
--prog_config__exec(const char *value, struct perf_probe_event *pev)
+-#ifdef HAVE_BPF_PROLOGUE
+-
+-static int llseek_loop(void)
 -{
--	pev->uprobes = true;
--	pev->target = strdup(value);
--	if (!pev->target)
--		return -ENOMEM;
--	return 0;
--}
+-	int fds[2], i;
 -
--static int
--prog_config__module(const char *value, struct perf_probe_event *pev)
--{
--	pev->uprobes = false;
--	pev->target = strdup(value);
--	if (!pev->target)
--		return -ENOMEM;
--	return 0;
--}
+-	fds[0] = open("/dev/null", O_RDONLY);
+-	fds[1] = open("/dev/null", O_RDWR);
 -
--static int
--prog_config__bool(const char *value, bool *pbool, bool invert)
--{
--	int err;
--	bool bool_value;
+-	if (fds[0] < 0 || fds[1] < 0)
+-		return -1;
 -
--	if (!pbool)
--		return -EINVAL;
--
--	err = strtobool(value, &bool_value);
--	if (err)
--		return err;
--
--	*pbool = invert ? !bool_value : bool_value;
--	return 0;
--}
--
--static int
--prog_config__inlines(const char *value,
--		     struct perf_probe_event *pev __maybe_unused)
--{
--	return prog_config__bool(value, &probe_conf.no_inlines, true);
--}
--
--static int
--prog_config__force(const char *value,
--		   struct perf_probe_event *pev __maybe_unused)
--{
--	return prog_config__bool(value, &probe_conf.force_add, false);
--}
--
--static struct {
--	const char *key;
--	const char *usage;
--	const char *desc;
--	int (*func)(const char *, struct perf_probe_event *);
--} bpf_prog_config_terms[] = {
--	{
--		.key	= "exec",
--		.usage	= "exec=<full path of file>",
--		.desc	= "Set uprobe target",
--		.func	= prog_config__exec,
--	},
--	{
--		.key	= "module",
--		.usage	= "module=<module name>    ",
--		.desc	= "Set kprobe module",
--		.func	= prog_config__module,
--	},
--	{
--		.key	= "inlines",
--		.usage	= "inlines=[yes|no]        ",
--		.desc	= "Probe at inline symbol",
--		.func	= prog_config__inlines,
--	},
--	{
--		.key	= "force",
--		.usage	= "force=[yes|no]          ",
--		.desc	= "Forcibly add events with existing name",
--		.func	= prog_config__force,
--	},
--};
--
--static int
--do_prog_config(const char *key, const char *value,
--	       struct perf_probe_event *pev)
--{
--	unsigned int i;
--
--	pr_debug("config bpf program: %s=%s\n", key, value);
--	for (i = 0; i < ARRAY_SIZE(bpf_prog_config_terms); i++)
--		if (strcmp(key, bpf_prog_config_terms[i].key) == 0)
--			return bpf_prog_config_terms[i].func(value, pev);
--
--	pr_debug("BPF: ERROR: invalid program config option: %s=%s\n",
--		 key, value);
--
--	pr_debug("\nHint: Valid options are:\n");
--	for (i = 0; i < ARRAY_SIZE(bpf_prog_config_terms); i++)
--		pr_debug("\t%s:\t%s\n", bpf_prog_config_terms[i].usage,
--			 bpf_prog_config_terms[i].desc);
--	pr_debug("\n");
--
--	return -BPF_LOADER_ERRNO__PROGCONF_TERM;
--}
--
--static const char *
--parse_prog_config_kvpair(const char *config_str, struct perf_probe_event *pev)
--{
--	char *text = strdup(config_str);
--	char *sep, *line;
--	const char *main_str = NULL;
--	int err = 0;
--
--	if (!text) {
--		pr_debug("Not enough memory: dup config_str failed\n");
--		return ERR_PTR(-ENOMEM);
+-	for (i = 0; i < NR_ITERS; i++) {
+-		lseek(fds[i % 2], i, (i / 2) % 2 ? SEEK_CUR : SEEK_SET);
+-		lseek(fds[(i + 1) % 2], i, (i / 2) % 2 ? SEEK_CUR : SEEK_SET);
 -	}
--
--	line = text;
--	while ((sep = strchr(line, ';'))) {
--		char *equ;
--
--		*sep = '\0';
--		equ = strchr(line, '=');
--		if (!equ) {
--			pr_warning("WARNING: invalid config in BPF object: %s\n",
--				   line);
--			pr_warning("\tShould be 'key=value'.\n");
--			goto nextline;
--		}
--		*equ = '\0';
--
--		err = do_prog_config(line, equ + 1, pev);
--		if (err)
--			break;
--nextline:
--		line = sep + 1;
--	}
--
--	if (!err)
--		main_str = config_str + (line - text);
--	free(text);
--
--	return err ? ERR_PTR(err) : main_str;
+-	close(fds[0]);
+-	close(fds[1]);
+-	return 0;
 -}
 -
--static int
--parse_prog_config(const char *config_str, const char **p_main_str,
--		  bool *is_tp, struct perf_probe_event *pev)
-+parse_prog_config(const char *config_str, bool *is_tp,
-+		  struct perf_probe_event *pev)
+-#endif
+-
+ static struct {
+ 	enum test_llvm__testcase prog_id;
+ 	const char *name;
+@@ -86,16 +63,6 @@ static struct {
+ 		.expect_result	  = (NR_ITERS + 1) / 2,
+ 		.pin		  = true,
+ 	},
+-#ifdef HAVE_BPF_PROLOGUE
+-	{
+-		.prog_id	  = LLVM_TESTCASE_BPF_PROLOGUE,
+-		.name		  = "[bpf_prologue_test]",
+-		.msg_compile_fail = "fix kbuild first",
+-		.msg_load_fail	  = "check your vmlinux setting?",
+-		.target_func	  = &llseek_loop,
+-		.expect_result	  = (NR_ITERS + 1) / 4,
+-	},
+-#endif
+ };
+ 
+ static int do_test(struct bpf_object *obj, int (*func)(void),
+@@ -355,31 +322,13 @@ static int test__bpf_pinning(struct test_suite *test __maybe_unused,
+ #endif
+ }
+ 
+-static int test__bpf_prologue_test(struct test_suite *test __maybe_unused,
+-				   int subtest __maybe_unused)
+-{
+-#if defined(HAVE_LIBBPF_SUPPORT) && defined(HAVE_BPF_PROLOGUE)
+-	return test__bpf(2);
+-#else
+-	pr_debug("Skip BPF test because BPF support is not compiled\n");
+-	return TEST_SKIP;
+-#endif
+-}
+-
+-
+ static struct test_case bpf_tests[] = {
+ #ifdef HAVE_LIBBPF_SUPPORT
+ 	TEST_CASE("Basic BPF filtering", basic_bpf_test),
+ 	TEST_CASE("BPF pinning", bpf_pinning),
+-#ifdef HAVE_BPF_PROLOGUE
+-	TEST_CASE("BPF prologue generation", bpf_prologue_test),
+-#else
+-	TEST_CASE_REASON("BPF prologue generation", bpf_prologue_test, "not compiled in"),
+-#endif
+ #else
+ 	TEST_CASE_REASON("Basic BPF filtering", basic_bpf_test, "not compiled in"),
+ 	TEST_CASE_REASON("BPF pinning", bpf_pinning, "not compiled in"),
+-	TEST_CASE_REASON("BPF prologue generation", bpf_prologue_test, "not compiled in"),
+ #endif
+ 	{ .name = NULL, }
+ };
+diff --git a/tools/perf/tests/llvm.c b/tools/perf/tests/llvm.c
+index 8ac0a3a457ef..b57f24185dda 100644
+--- a/tools/perf/tests/llvm.c
++++ b/tools/perf/tests/llvm.c
+@@ -33,10 +33,6 @@ static struct {
+ 		.source = test_llvm__bpf_test_kbuild_prog,
+ 		.desc = "kbuild searching",
+ 	},
+-	[LLVM_TESTCASE_BPF_PROLOGUE] = {
+-		.source = test_llvm__bpf_test_prologue_prog,
+-		.desc = "Compile source for BPF prologue generation",
+-	},
+ 	[LLVM_TESTCASE_BPF_RELOCATION] = {
+ 		.source = test_llvm__bpf_test_relocation,
+ 		.desc = "Compile source for BPF relocation",
+@@ -172,17 +168,6 @@ static int test__llvm__bpf_test_kbuild_prog(struct test_suite *test __maybe_unus
+ #endif
+ }
+ 
+-static int test__llvm__bpf_test_prologue_prog(struct test_suite *test __maybe_unused,
+-					      int subtest __maybe_unused)
+-{
+-#ifdef HAVE_LIBBPF_SUPPORT
+-	return test__llvm(LLVM_TESTCASE_BPF_PROLOGUE);
+-#else
+-	pr_debug("Skip LLVM test because BPF support is not compiled\n");
+-	return TEST_SKIP;
+-#endif
+-}
+-
+ static int test__llvm__bpf_test_relocation(struct test_suite *test __maybe_unused,
+ 					   int subtest __maybe_unused)
  {
- 	int err;
--	const char *main_str = parse_prog_config_kvpair(config_str, pev);
--
--	if (IS_ERR(main_str))
--		return PTR_ERR(main_str);
--
--	*p_main_str = main_str;
--	if (!strchr(main_str, '=')) {
--		/* Is a tracepoint event? */
--		const char *s = strchr(main_str, ':');
--
--		if (!s) {
--			pr_debug("bpf: '%s' is not a valid tracepoint\n",
--				 config_str);
--			return -BPF_LOADER_ERRNO__CONFIG;
--		}
+@@ -199,14 +184,10 @@ static struct test_case llvm_tests[] = {
+ #ifdef HAVE_LIBBPF_SUPPORT
+ 	TEST_CASE("Basic BPF llvm compile", llvm__bpf_base_prog),
+ 	TEST_CASE("kbuild searching", llvm__bpf_test_kbuild_prog),
+-	TEST_CASE("Compile source for BPF prologue generation",
+-		  llvm__bpf_test_prologue_prog),
+ 	TEST_CASE("Compile source for BPF relocation", llvm__bpf_test_relocation),
+ #else
+ 	TEST_CASE_REASON("Basic BPF llvm compile", llvm__bpf_base_prog, "not compiled in"),
+ 	TEST_CASE_REASON("kbuild searching", llvm__bpf_test_kbuild_prog, "not compiled in"),
+-	TEST_CASE_REASON("Compile source for BPF prologue generation",
+-			llvm__bpf_test_prologue_prog, "not compiled in"),
+ 	TEST_CASE_REASON("Compile source for BPF relocation",
+ 			llvm__bpf_test_relocation, "not compiled in"),
+ #endif
+diff --git a/tools/perf/tests/llvm.h b/tools/perf/tests/llvm.h
+index f68b0d9b8ae2..8e1c4352b1cc 100644
+--- a/tools/perf/tests/llvm.h
++++ b/tools/perf/tests/llvm.h
+@@ -11,13 +11,11 @@ extern "C" {
  
-+	if (strchr(config_str, ':')) {
- 		*is_tp = true;
- 		return 0;
- 	}
+ extern const char test_llvm__bpf_base_prog[];
+ extern const char test_llvm__bpf_test_kbuild_prog[];
+-extern const char test_llvm__bpf_test_prologue_prog[];
+ extern const char test_llvm__bpf_test_relocation[];
  
- 	*is_tp = false;
--	err = parse_perf_probe_command(main_str, pev);
-+	err = parse_perf_probe_command(config_str, pev);
- 	if (err < 0) {
- 		pr_debug("bpf: '%s' is not a valid config string\n",
- 			 config_str);
-@@ -316,7 +155,7 @@ config_bpf_program(struct bpf_program *prog)
- {
- 	struct perf_probe_event *pev = NULL;
- 	struct bpf_prog_priv *priv = NULL;
--	const char *config_str, *main_str;
-+	const char *config_str;
- 	bool is_tp = false;
- 	int err;
- 
-@@ -333,15 +172,15 @@ config_bpf_program(struct bpf_program *prog)
- 
- 	config_str = bpf_program__section_name(prog);
- 	pr_debug("bpf: config program '%s'\n", config_str);
--	err = parse_prog_config(config_str, &main_str, &is_tp, pev);
-+	err = parse_prog_config(config_str, &is_tp, pev);
- 	if (err)
- 		goto errout;
- 
- 	if (is_tp) {
--		char *s = strchr(main_str, ':');
-+		char *s = strchr(config_str, ':');
- 
- 		priv->is_tp = true;
--		priv->sys_name = strndup(main_str, s - main_str);
-+		priv->sys_name = strndup(config_str, s - config_str);
- 		priv->evt_name = strdup(s + 1);
- 		goto set_priv;
- 	}
+ enum test_llvm__testcase {
+ 	LLVM_TESTCASE_BASE,
+ 	LLVM_TESTCASE_KBUILD,
+-	LLVM_TESTCASE_BPF_PROLOGUE,
+ 	LLVM_TESTCASE_BPF_RELOCATION,
+ 	__LLVM_TESTCASE_MAX,
+ };
 -- 
 2.34.1
 
