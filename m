@@ -2,558 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA10D496E15
-	for <lists+bpf@lfdr.de>; Sat, 22 Jan 2022 22:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE3D496F5A
+	for <lists+bpf@lfdr.de>; Sun, 23 Jan 2022 02:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234868AbiAVVJ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 22 Jan 2022 16:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230339AbiAVVJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 22 Jan 2022 16:09:27 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C84C06173B;
-        Sat, 22 Jan 2022 13:09:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 025DBB80AE6;
-        Sat, 22 Jan 2022 21:09:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63436C004E1;
-        Sat, 22 Jan 2022 21:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642885762;
-        bh=txFGDt7T+/NgV1BUt0eUzgszxjHToV44EmD+kDDqnLw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q4Lr3g9aebzzsU9JlJyQYVbPcaIUA/bDPTaDtksF0R+4pNhGOy8t5P3eY36+de5Mv
-         ioor3LmhImFeEvbN6c91PxrNlACfDvs8DvtfLSCXu7yFXwJGElyCNQ6Mc3R1LuxSpO
-         Yhk1NnCxy1g0OZs2X0GNJT+H6Svj8Jwllo+BdibdMwljllZr0fjq+op8m/OFAIUox7
-         Z+h4ganNB0xMHSgnJyOjRUH8XNxksJzuiJYY+Z1Pkhs82hthSMi0rWiFgKPvfQgW7u
-         OLeIRu7MvvApbheX5VL2oNkWWB0Mhy7vEWbr5rb6wkI1ZN2VaTEz2l/Lmd4gnGGS+m
-         XeGEKqYxM6E8g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 03BB540C99; Sat, 22 Jan 2022 18:07:19 -0300 (-03)
-Date:   Sat, 22 Jan 2022 18:07:19 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Christy Lee <christylee@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Christy Lee <christyc.y.lee@gmail.com>,
+        id S235113AbiAWBDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 22 Jan 2022 20:03:30 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33700 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231594AbiAWBD3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 22 Jan 2022 20:03:29 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20N0HKTk016914;
+        Sat, 22 Jan 2022 17:03:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=vO5O4sN/JUMtWTPOqw2jNM6kMFYx+etZvkinuZWKQXw=;
+ b=ilVuyO2IBENM6nxqWdf2yGf/MyV5ngctl8hkHOUF82CADaIq5ty3kDf68jHPGnMkooV/
+ dVzszTOk3Sjc/WCM/T31jlbKJDw1XhLTMgm91xszMhZx2XhiuLtK/5bNIiqRgiKS7W0N
+ VscNcd7+xOOzZqDdFfoi3fs24MpK54VsGco= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dre4ntn9a-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 22 Jan 2022 17:03:27 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 22 Jan 2022 17:03:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oE86gf/UjX5m6dXWCYn7WwBqTu4aKyxYNc0Cu/vrh5ni04SnG1A3cjIfODpNIIue3k1phr5g4jg1N5V6WHbfSFgItg4YZebuMIzmJnSDtqvyvVqERIh8kc72L1sVmi48oTrDYWL/JF+KoIa1dfNUzlp6Z7uG9N8Qz/4n4Wislq/sISvfzvCPjARicDDEtn/Pq0MWJZggKM36cWqFjTqERBlDlCf1vD2wy33ccX0iJjDMyU55HLDmWxgDmi+dh0n3mzN96ehndFE+ctEHuS/2UHZPb2P3fumM2yVEtLpd1mHUAgrU8lzhYzkvy7IYuB2hvtqntQ5JACh2U0t7IVrVmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vO5O4sN/JUMtWTPOqw2jNM6kMFYx+etZvkinuZWKQXw=;
+ b=ffmV8QNsAvQ8+yLvTZf22qHqlG0XkiXwJVCGYMzMkM4zVuH9EVrDVnymivvkNtd62z5v0azkYduc+kIVPqiFgAOUvWHk+G3iZzh9UijgbcEwwOkZaXqyOb0ulzSjT549cBQ6fZkjPkOksKEu89Skt2F3AGJsJjpiHskV5h799+Ye1HQGGvpMVEd+Sfhema2ls5wpAccnn0H0llYW5JdlmOqTBXxZMwL85VXn6NyWj2PB1Ja1HdsN7VzOcqIMz28DmE32B18czkK7lsE/ZkO5nT60MG1z00lsrRSBlkPuhuV3HdeJSBA9wG/qqeuxYSKAm930MU/zgDKp2XryNJPVtg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by SJ0PR15MB4424.namprd15.prod.outlook.com (2603:10b6:a03:375::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.12; Sun, 23 Jan
+ 2022 01:03:25 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::1d7e:c02b:ebe1:bf5e%7]) with mapi id 15.20.4909.014; Sun, 23 Jan 2022
+ 01:03:25 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Ilya Leoshkevich <iii@linux.ibm.com>, Song Liu <song@kernel.org>,
         bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [PATCH bpf-next v4 0/2] perf: stop using deprecated bpf APIs
-Message-ID: <YexyB2VvjpCgVJdH@kernel.org>
-References: <20220119230636.1752684-1-christylee@fb.com>
- <CAEf4BzbODQmEH+wuFsEPFdtRoZ1Y-vDJKAKkBLsUDBLoQOmrvg@mail.gmail.com>
- <YexirjnVa7KpvrP9@kernel.org>
- <YexrYDEeoAdcqoDE@kernel.org>
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
+Thread-Topic: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
+Thread-Index: AQHYDwA7v2eTErzZP02KrqTA2Ue2qKxuJqkAgAAH3QCAAAUSgIAABaKAgAAC8wCAAAUaAIAAC8WAgAF+/gA=
+Date:   Sun, 23 Jan 2022 01:03:25 +0000
+Message-ID: <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com>
+References: <20220121194926.1970172-1-song@kernel.org>
+ <20220121194926.1970172-7-song@kernel.org>
+ <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
+ <7393B983-3295-4B14-9528-B7BD04A82709@fb.com>
+ <CAADnVQJLHXaU7tUJN=EM-Nt28xtu4vw9+Ox_uQsjh-E-4VNKoA@mail.gmail.com>
+ <5407DA0E-C0F8-4DA9-B407-3DE657301BB2@fb.com>
+ <CAADnVQLOpgGG9qfR4EAgzrdMrfSg9ftCY=9psR46GeBWP7aDvQ@mail.gmail.com>
+ <5F4DEFB2-5F5A-4703-B5E5-BBCE05CD3651@fb.com>
+ <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
+In-Reply-To: <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.40.0.1.81)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b8933bc7-f15c-474b-ad43-08d9de0c2892
+x-ms-traffictypediagnostic: SJ0PR15MB4424:EE_
+x-microsoft-antispam-prvs: <SJ0PR15MB4424E4303EA47CD1BAF89325B35D9@SJ0PR15MB4424.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uh98YVgCA/kW69W2JcJG0qmJebm32sRS0dazdntaAjYCrj9Xy/1FUzZdLw7xvukREV0ZYxTDE4yfLU2Nlc91vRoYlNwN5I7RvtcSc1H4hi+EONZgZ793CXvFxvnAsVNmqviWs94Nt3wfXa+/xjODuh+xqWAdfC6ngI2DASVnG9gBhOF803N8IWIcbWTlx26i23hqDdyl1UUYg3ZfUhVSv4frKF812iRIpIQ3cmHivm2CXMOF6yzUNKhivrpI0M/7sblYBvnjGfHis+XVZb8z7ldg1DDjjx4m6THlS570d039b+vQS5Dmt/sQM3LFfv3MbylqojVtr56CJabM/1t462v/rauLIn1YPZmrZ4plWXvGkZelrbbr81dtsdNBp5w4v6opLqjz5aGflSGVYxxtpybdctr2IhNMN9LdoTXnPzij/olv8c35qS4ooSSsVr9uFXSTF6+OFgf1vrxY/zplzz/YMlZP5ReOEnUTQo1U8yN+TEAO6WmT6SEcheNeY8nPCgj0g5Cid1/QobC6s5ZZP1W8cjTQxZrLtvR66P0/EPMI9DxzfIRjtW3KzTgAkiTNH0iiZyKy2h8fqp0umThS4D/zJwYJBANdAEPTZo6Qsr1TSgYnEnqMUA1/W/bkM+j8HxeWsMhFPeVPWgMfmv0YLliHIMcLWVuASbNw8FWFil3D+/mTH5chYNsMpoklp6k2HeaRXfInPkBZTh3peC/vMEXoRla7yxF1bc81/dDfNOw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(53546011)(8676002)(54906003)(2616005)(122000001)(64756008)(6506007)(8936002)(36756003)(5660300002)(86362001)(66446008)(186003)(4326008)(6486002)(38100700002)(91956017)(316002)(66556008)(7416002)(66476007)(83380400001)(2906002)(6512007)(33656002)(66946007)(71200400001)(76116006)(38070700005)(508600001)(6916009)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gLKQVzgUIZk8pxfCe0UNVeOXPCVVKDTfplUIkI9FkWum64Z5/3g/nq9GOx0p?=
+ =?us-ascii?Q?7IKP7oXb1C1xjAX9ACoNf0T7TdmomdSWxHcEN4QdxpPkL4LfH/Cx+9vUkM+0?=
+ =?us-ascii?Q?fUlJqa7lRp6XmwX1RLzh8/yeK6zgS/Oq21H0MjM9vmlZ9GCyXTSGGgpDYd0M?=
+ =?us-ascii?Q?lVzmbyi+UEc2g6VIANrCdSZdrYX/NkY0LcpQZ8C+ewQ+NduE/hqmzqqCTAn3?=
+ =?us-ascii?Q?6rXXh42N1YaNUQ/zUwDLO5iHdhn9QXeQ5MlLkpmsbIj0wlNhSDWe5goXIQsd?=
+ =?us-ascii?Q?autK14IuqlVJ6F2GcxofiYOYIpnNnxZFNHycft/TItWGMbHETAK4yxnXl3Aj?=
+ =?us-ascii?Q?FnbZl2FZ/ddHRydPFsHYN2c1hETF/Seq1C1YdaxgYbf6WmWP3yj6AKvCpRLy?=
+ =?us-ascii?Q?W8Y9Cj736RnOpz/zoiBaF+Sh29gYd3U+Y7f/+10CD116oNlxmAzCk8aoGKwy?=
+ =?us-ascii?Q?b78v2v0MIxh0JH94dHmavi7RWfwEMYh2Dk+csTXpsHaabrNOcVldvFgHgWPk?=
+ =?us-ascii?Q?fZeOqtb8dJOFceKFpXHH74qRr0r0VZ/ltLoesCGssVpbL/aDXCdBwRmNBSNP?=
+ =?us-ascii?Q?Mw4xeznUGBrsRcMlYxqck2f2gwQ98ImNM1wscWUVJs1JAHEZ6tWkUCDYo9aw?=
+ =?us-ascii?Q?wD/p9FUNuJS1maOfD4G8hPBdkr+bnWdaY4F/XOITcX7bE2AxT8xeatI2Cten?=
+ =?us-ascii?Q?k91zQMsed4eISz/dvpeFH7YcnFmW+1Fet4rJT8Ke7EeTSub8elC5ElAbA6AB?=
+ =?us-ascii?Q?vth6lYivaHNeo9W+RqW5adVjz43jkWjjVlsZbcYHtvEV9vV/lw++IWybGGSr?=
+ =?us-ascii?Q?yyAHDnks98yNRN9AheKdS2ZslzuGj0d5bh6Re/I4Q+wUWiUXlwffT2qhJGEh?=
+ =?us-ascii?Q?Jzf5gO39ArnEz+C5AqyIGGc79hF4w4Zbjtwxqh/38Pm8UItwNKK79cbBK7td?=
+ =?us-ascii?Q?kNIjSy9hNPjuUZKOjDDg1hiqgfTFkBdn+eBrGK3JN5U0WhgNMlFvZEoKbY5t?=
+ =?us-ascii?Q?9wTA8p+MSmw+FjDU07S0FA+6s2VW6QXgTCF2oJH6hyj5F9PCCtK+gr5OhNjR?=
+ =?us-ascii?Q?kLYZ9SrM5xaE8rhyPzPc6X+vHwbHMJ44AwztMnoDH+K/orwu15pX6DAzk6AR?=
+ =?us-ascii?Q?qnTQMD33PTELkZeqIhABmgTI/33Mee9KoW/PZ7A/nPkBRl/tJz2vT7ynf31I?=
+ =?us-ascii?Q?OTXZfKXu3WqpFQ23NwiaeMeQlJVAxmWFwjrC68a3Bcw3IdZO3dY4hdw1Hgf9?=
+ =?us-ascii?Q?miR9X/F/gRct1SqJBQSgGLxlBOpPcoXwjbQ9CV1WWyyoawpgNM1izhbHgzzF?=
+ =?us-ascii?Q?jZ7haVWIjN7Sih7H3W1qYF8SGQrbdM4qv9Vto4uIN4F2zFjmMcI6yPGL9yPN?=
+ =?us-ascii?Q?KIjqBB9AnnQa4JmoUurVb8inUFAm0VwIvPKsAxYKk1ZCo4CHcdYOUCQlzXnm?=
+ =?us-ascii?Q?9I0nhhBgu2wrylvYZvi69ov3CTz70hxOqwTDTwvXxWb5hnk931v8O3pbTqf5?=
+ =?us-ascii?Q?7VNl3ooR5V0pRD4eojWLkpD07HblKgz3qkuWwpUI6r8Dh2kDIbuceAPgWmFg?=
+ =?us-ascii?Q?6Jf67eDbRdoSd2Eej01We4eaG0bEUBPvFgfImeBD387DEk467idVNGRtGiYs?=
+ =?us-ascii?Q?HHaSNmI+qB71QXPOl3CidWRwM6IKNkoNCE6r5mfs76A4CugnJ/NXpgFYtH9b?=
+ =?us-ascii?Q?YXCYMA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <5B7F2F9442F8164F90D7E633B99CED81@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YexrYDEeoAdcqoDE@kernel.org>
-X-Url:  http://acmel.wordpress.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8933bc7-f15c-474b-ad43-08d9de0c2892
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2022 01:03:25.0842
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: tQn6c0yPqPity6NeSq8LJ7Z15IFNVE7rIqUzVVuCTev6X6RX0NMnnPr9aMm9pyz7i3Sr06PXmhOEfGkVn8r09g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4424
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: SsDQVoNF9OEg6m3gk0CYTsndYApQ23kt
+X-Proofpoint-GUID: SsDQVoNF9OEg6m3gk0CYTsndYApQ23kt
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-22_10,2022-01-21_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ clxscore=1015 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2201230005
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, Jan 22, 2022 at 05:38:56PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Sat, Jan 22, 2022 at 05:01:50PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > Em Thu, Jan 20, 2022 at 02:58:29PM -0800, Andrii Nakryiko escreveu:
-> > > On Wed, Jan 19, 2022 at 3:09 PM Christy Lee <christylee@fb.com> wrote:
-> > > >
-> > > > libbpf's bpf_load_program() and bpf__object_next() APIs are deprecated.
-> > > > remove perf's usage of these deprecated functions. After this patch
-> > > > set, the only remaining libbpf deprecated APIs in perf would be
-> > > > bpf_program__set_prep() and bpf_program__nth_fd().
-> > > >
-> > > 
-> > > Arnaldo, do you want to take this through perf tree or should we apply
-> > > this to bpf-next? If the latter, can you give your ack as well?
-> > > Thanks!
-> > 
-> > I'd love to be able to test it with the containers, after I push the
-> > current batch to Linus.
+
+
+> On Jan 21, 2022, at 6:12 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 > 
-> I just looked at it, simple enough, applied.
+> On Fri, Jan 21, 2022 at 5:30 PM Song Liu <songliubraving@fb.com> wrote:
+>> 
+>> 
+>> 
+>>> On Jan 21, 2022, at 5:12 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>>> 
+>>> On Fri, Jan 21, 2022 at 5:01 PM Song Liu <songliubraving@fb.com> wrote:
+>>>> 
+>>>> In this way, we need to allocate rw_image here, and free it in
+>>>> bpf_jit_comp.c. This feels a little weird to me, but I guess that
+>>>> is still the cleanest solution for now.
+>>> 
+>>> You mean inside bpf_jit_binary_alloc?
+>>> That won't be arch independent.
+>>> It needs to be split into generic piece that stays in core.c
+>>> and callbacks like bpf_jit_fill_hole_t
+>>> or into multiple helpers with prep in-between.
+>>> Don't worry if all archs need to be touched.
+>> 
+>> How about we introduce callback bpf_jit_set_header_size_t? Then we
+>> can split x86's jit_fill_hole() into two functions, one to fill the
+>> hole, the other to set size. The rest of the logic gonna stay the same.
+>> 
+>> Archs that do not use bpf_prog_pack won't need bpf_jit_set_header_size_t.
+> 
+> That's not any better.
+> 
+> Currently the choice of bpf_jit_binary_alloc_pack vs bpf_jit_binary_alloc
+> leaks into arch bits and bpf_prog_pack_max_size() doesn't
+> really make it generic.
+> 
+> Ideally all archs continue to use bpf_jit_binary_alloc()
+> and magic happens in a generic code.
+> If not then please remove bpf_prog_pack_max_size(),
+> since it doesn't provide much value and pick
+> bpf_jit_binary_alloc_pack() signature to fit x86 jit better.
+> It wouldn't need bpf_jit_fill_hole_t callback at all.
+> Please think it through so we don't need to redesign it
+> when another arch will decide to use huge pages for bpf progs.
+> 
+> cc-ing Ilya for ideas on how that would fit s390.
 
-I take that back, it breaks a BPF test case in 'perf test'
+I guess we have a few different questions here:
 
-[root@quaco ~]# perf test 42
- 42: BPF filter                                                      :
- 42.1: Basic BPF filtering                                           : Ok
- 42.2: BPF pinning                                                   : FAILED!
- 42.3: BPF prologue generation                                       : FAILED!
-[root@quaco ~]#
+1. Can we use bpf_jit_binary_alloc() for both regular page and shared 
+huge page? 
 
-And it leaves the test probe in place:
+I think the answer is no, as bpf_jit_binary_alloc() allocates a rw 
+buffer, and arch calls bpf_jit_binary_lock_ro after JITing. The new 
+allocator will return a slice of a shared huge page, which is locked
+RO before JITing. 
 
-[root@quaco ~]# perf probe -l
-  perf_bpf_probe:func  (on do_epoll_wait@fs/eventpoll.c)
-[root@quaco ~]#
+2. The problem with bpf_prog_pack_max_size() limitation. 
 
-So I have to remove it manually:
+I think this is the worst part of current version of bpf_prog_pack, 
+but it shouldn't be too hard to fix. I will remove this limitation 
+in the next version. 
 
-[root@quaco ~]# perf probe -d perf_bpf_probe:func
-Removed event: perf_bpf_probe:func
-[root@quaco ~]#
+3. How to set proper header->size? 
 
-Then revert this patch and try again, back working:
-
-[root@quaco ~]# perf test 42
- 42: BPF filter                                                      :
- 42.1: Basic BPF filtering                                           : Ok
- 42.2: BPF pinning                                                   : Ok
- 42.3: BPF prologue generation                                       : Ok
-[root@quaco ~]#
+I guess we can introduce something similar to bpf_arch_text_poke() 
+for this? 
 
 
-With the patch, you can get a verbose output, I'll continue this later
-if noone fixes it before:
+My proposal for the next version is:
+1. No changes to archs that do not use huge page, just keep using 
+   bpf_jit_binary_alloc.
 
-[root@quaco ~]# perf test -v 42
- 42: BPF filter                                                      :
- 42.1: Basic BPF filtering                                           :
---- start ---
-test child forked, pid 1344304
-Kernel build dir is set to /lib/modules/5.15.7-200.fc35.x86_64/build
-set env: KBUILD_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-unset env: KBUILD_OPTS
-include option is set to -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: NR_CPUS=8
-set env: LINUX_VERSION_CODE=0x50f07
-set env: CLANG_EXEC=/usr/lib64/ccache/clang
-set env: CLANG_OPTIONS=-xc -g
-set env: KERNEL_INC_OPTIONS=-nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: PERF_BPF_INC_OPTIONS=-I/home/acme/lib/perf/include/bpf
-set env: WORKING_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-set env: CLANG_SOURCE=-
-llvm compiling command template: echo '// SPDX-License-Identifier: GPL-2.0
-/*
- * bpf-script-example.c
- * Test basic LLVM building
- */
-#ifndef LINUX_VERSION_CODE
-# error Need LINUX_VERSION_CODE
-# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-#endif
-#define BPF_ANY 0
-#define BPF_MAP_TYPE_ARRAY 2
-#define BPF_FUNC_map_lookup_elem 1
-#define BPF_FUNC_map_update_elem 2
+2. For x86_64 (and other arch that would support bpf program on huge
+   pages):
+   2.1 arch/bpf_jit_comp calls bpf_jit_binary_alloc_pack() to allocate
+       an RO bpf_binary_header;
+   2.2 arch allocates a temporary buffer for JIT. Once JIT is done, 
+       use text_poke_copy to copy the code to the RO bpf_binary_header. 
 
-static void *(*bpf_map_lookup_elem)(void *map, void *key) =
-	(void *) BPF_FUNC_map_lookup_elem;
-static void *(*bpf_map_update_elem)(void *map, void *key, void *value, int flags) =
-	(void *) BPF_FUNC_map_update_elem;
+3. Remove bpf_prog_pack_max_size limitation. 
 
-struct bpf_map_def {
-	unsigned int type;
-	unsigned int key_size;
-	unsigned int value_size;
-	unsigned int max_entries;
-};
 
-#define SEC(NAME) __attribute__((section(NAME), used))
-struct bpf_map_def SEC("maps") flip_table = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(int),
-	.value_size = sizeof(int),
-	.max_entries = 1,
-};
+Does this sound reasonable?
 
-SEC("func=do_epoll_wait")
-int bpf_func__SyS_epoll_pwait(void *ctx)
-{
-	int ind =0;
-	int *flag = bpf_map_lookup_elem(&flip_table, &ind);
-	int new_flag;
-	if (!flag)
-		return 0;
-	/* flip flag and store back */
-	new_flag = !*flag;
-	bpf_map_update_elem(&flip_table, &ind, &new_flag, BPF_ANY);
-	return new_flag;
-}
-char _license[] SEC("license") = "GPL";
-int _version SEC("version") = LINUX_VERSION_CODE;
-' | $CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS -DLINUX_VERSION_CODE=$LINUX_VERSION_CODE $CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS -Wno-unused-value -Wno-pointer-sign -working-directory $WORKING_DIR -c "$CLANG_SOURCE" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE
-llvm compiling command : echo '// SPDX-License-Identifier: GPL-2.0
-/*
- * bpf-script-example.c
- * Test basic LLVM building
- */
-#ifndef LINUX_VERSION_CODE
-# error Need LINUX_VERSION_CODE
-# error Example: for 4.2 kernel, put 'clang-opt=-DLINUX_VERSION_CODE=0x40200 into llvm section of ~/.perfconfig'
-#endif
-#define BPF_ANY 0
-#define BPF_MAP_TYPE_ARRAY 2
-#define BPF_FUNC_map_lookup_elem 1
-#define BPF_FUNC_map_update_elem 2
-
-static void *(*bpf_map_lookup_elem)(void *map, void *key) =
-	(void *) BPF_FUNC_map_lookup_elem;
-static void *(*bpf_map_update_elem)(void *map, void *key, void *value, int flags) =
-	(void *) BPF_FUNC_map_update_elem;
-
-struct bpf_map_def {
-	unsigned int type;
-	unsigned int key_size;
-	unsigned int value_size;
-	unsigned int max_entries;
-};
-
-#define SEC(NAME) __attribute__((section(NAME), used))
-struct bpf_map_def SEC(maps) flip_table = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(int),
-	.value_size = sizeof(int),
-	.max_entries = 1,
-};
-
-SEC(func=do_epoll_wait)
-int bpf_func__SyS_epoll_pwait(void *ctx)
-{
-	int ind =0;
-	int *flag = bpf_map_lookup_elem(&flip_table, &ind);
-	int new_flag;
-	if (!flag)
-		return 0;
-	/* flip flag and store back */
-	new_flag = !*flag;
-	bpf_map_update_elem(&flip_table, &ind, &new_flag, BPF_ANY);
-	return new_flag;
-}
-char _license[] SEC(license) = GPL;
-int _version SEC(version) = LINUX_VERSION_CODE;
-' | /usr/lib64/ccache/clang -D__KERNEL__ -D__NR_CPUS__=8 -DLINUX_VERSION_CODE=0x50f07 -xc -g -I/home/acme/lib/perf/include/bpf -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h  -Wno-unused-value -Wno-pointer-sign -working-directory /lib/modules/5.15.7-200.fc35.x86_64/build -c - -target bpf  -O2 -o - 
-libbpf: loading object '[basic_bpf_test]' from buffer
-libbpf: elf: section(3) func=do_epoll_wait, size 192, link 0, flags 6, type=1
-libbpf: sec 'func=do_epoll_wait': found program 'bpf_func__SyS_epoll_pwait' at insn offset 0 (0 bytes), code size 24 insns (192 bytes)
-libbpf: elf: section(4) .relfunc=do_epoll_wait, size 32, link 22, flags 0, type=9
-libbpf: elf: section(5) maps, size 16, link 0, flags 3, type=1
-libbpf: elf: section(6) license, size 4, link 0, flags 3, type=1
-libbpf: license of [basic_bpf_test] is GPL
-libbpf: elf: section(7) version, size 4, link 0, flags 3, type=1
-libbpf: kernel version of [basic_bpf_test] is 50f07
-libbpf: elf: section(13) .BTF, size 575, link 0, flags 0, type=1
-libbpf: elf: section(15) .BTF.ext, size 256, link 0, flags 0, type=1
-libbpf: elf: section(22) .symtab, size 336, link 1, flags 0, type=2
-libbpf: looking for externs among 14 symbols...
-libbpf: collected 0 externs total
-libbpf: elf: found 1 legacy map definitions (16 bytes) in [basic_bpf_test]
-libbpf: map 'flip_table' (legacy): at sec_idx 5, offset 0.
-libbpf: map 11 is "flip_table"
-libbpf: prog 'bpf_func__SyS_epoll_pwait': unrecognized ELF section name 'func=do_epoll_wait'
-libbpf: sec '.relfunc=do_epoll_wait': collecting relocation for section(3) 'func=do_epoll_wait'
-libbpf: sec '.relfunc=do_epoll_wait': relo #0: insn #4 against 'flip_table'
-libbpf: prog 'bpf_func__SyS_epoll_pwait': found map 0 (flip_table, sec 5, off 0) for insn #4
-libbpf: sec '.relfunc=do_epoll_wait': relo #1: insn #17 against 'flip_table'
-libbpf: prog 'bpf_func__SyS_epoll_pwait': found map 0 (flip_table, sec 5, off 0) for insn #17
-bpf: config program 'func=do_epoll_wait'
-symbol:do_epoll_wait file:(null) line:0 offset:0 return:0 lazy:(null)
-bpf: config 'func=do_epoll_wait' is ok
-Looking at the vmlinux_path (8 entries long)
-symsrc__init: build id mismatch for vmlinux.
-Using /usr/lib/debug/lib/modules/5.15.7-200.fc35.x86_64/vmlinux for symbols
-Open Debuginfo file: /usr/lib/debug/.build-id/cb/36dde59d9c2c72bf9dbb845549e6073181579d.debug
-Try to find probe point from debuginfo.
-Matched function: do_epoll_wait [3917119]
-Probe point found: do_epoll_wait+0
-Found 1 probe_trace_events.
-Opening /sys/kernel/tracing//kprobe_events write=1
-Opening /sys/kernel/tracing//README write=0
-Writing event: p:perf_bpf_probe/func _text+3829568
-libbpf: map:flip_table container_name:____btf_map_flip_table cannot be found in BTF. Missing BPF_ANNOTATE_KV_PAIR?
-libbpf: map 'flip_table': created successfully, fd=4
-add bpf event perf_bpf_probe:func and attach bpf program 5
-adding perf_bpf_probe:func
-adding perf_bpf_probe:func to 0x2f5f630
-Using CPUID GenuineIntel-6-8E-A
-mmap size 1052672B
-test child finished with 0
----- end ----
-BPF filter subtest 1: Ok
- 42.2: BPF pinning                                                   :
---- start ---
-test child forked, pid 1344478
-Kernel build dir is set to /lib/modules/5.15.7-200.fc35.x86_64/build
-set env: KBUILD_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-unset env: KBUILD_OPTS
-include option is set to -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: NR_CPUS=8
-set env: LINUX_VERSION_CODE=0x50f07
-set env: CLANG_EXEC=/usr/lib64/ccache/clang
-set env: CLANG_OPTIONS=-xc -g
-set env: KERNEL_INC_OPTIONS=-nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: PERF_BPF_INC_OPTIONS=-I/home/acme/lib/perf/include/bpf
-set env: WORKING_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-set env: CLANG_SOURCE=-
-llvm compiling command template: echo '// SPDX-License-Identifier: GPL-2.0
-/*
- * bpf-script-example.c
- * Test basic LLVM building
- */
-#ifndef LINUX_VERSION_CODE
-# error Need LINUX_VERSION_CODE
-# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-#endif
-#define BPF_ANY 0
-#define BPF_MAP_TYPE_ARRAY 2
-#define BPF_FUNC_map_lookup_elem 1
-#define BPF_FUNC_map_update_elem 2
-
-static void *(*bpf_map_lookup_elem)(void *map, void *key) =
-	(void *) BPF_FUNC_map_lookup_elem;
-static void *(*bpf_map_update_elem)(void *map, void *key, void *value, int flags) =
-	(void *) BPF_FUNC_map_update_elem;
-
-struct bpf_map_def {
-	unsigned int type;
-	unsigned int key_size;
-	unsigned int value_size;
-	unsigned int max_entries;
-};
-
-#define SEC(NAME) __attribute__((section(NAME), used))
-struct bpf_map_def SEC("maps") flip_table = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(int),
-	.value_size = sizeof(int),
-	.max_entries = 1,
-};
-
-SEC("func=do_epoll_wait")
-int bpf_func__SyS_epoll_pwait(void *ctx)
-{
-	int ind =0;
-	int *flag = bpf_map_lookup_elem(&flip_table, &ind);
-	int new_flag;
-	if (!flag)
-		return 0;
-	/* flip flag and store back */
-	new_flag = !*flag;
-	bpf_map_update_elem(&flip_table, &ind, &new_flag, BPF_ANY);
-	return new_flag;
-}
-char _license[] SEC("license") = "GPL";
-int _version SEC("version") = LINUX_VERSION_CODE;
-' | $CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS -DLINUX_VERSION_CODE=$LINUX_VERSION_CODE $CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS -Wno-unused-value -Wno-pointer-sign -working-directory $WORKING_DIR -c "$CLANG_SOURCE" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE
-llvm compiling command : echo '// SPDX-License-Identifier: GPL-2.0
-/*
- * bpf-script-example.c
- * Test basic LLVM building
- */
-#ifndef LINUX_VERSION_CODE
-# error Need LINUX_VERSION_CODE
-# error Example: for 4.2 kernel, put 'clang-opt=-DLINUX_VERSION_CODE=0x40200 into llvm section of ~/.perfconfig'
-#endif
-#define BPF_ANY 0
-#define BPF_MAP_TYPE_ARRAY 2
-#define BPF_FUNC_map_lookup_elem 1
-#define BPF_FUNC_map_update_elem 2
-
-static void *(*bpf_map_lookup_elem)(void *map, void *key) =
-	(void *) BPF_FUNC_map_lookup_elem;
-static void *(*bpf_map_update_elem)(void *map, void *key, void *value, int flags) =
-	(void *) BPF_FUNC_map_update_elem;
-
-struct bpf_map_def {
-	unsigned int type;
-	unsigned int key_size;
-	unsigned int value_size;
-	unsigned int max_entries;
-};
-
-#define SEC(NAME) __attribute__((section(NAME), used))
-struct bpf_map_def SEC(maps) flip_table = {
-	.type = BPF_MAP_TYPE_ARRAY,
-	.key_size = sizeof(int),
-	.value_size = sizeof(int),
-	.max_entries = 1,
-};
-
-SEC(func=do_epoll_wait)
-int bpf_func__SyS_epoll_pwait(void *ctx)
-{
-	int ind =0;
-	int *flag = bpf_map_lookup_elem(&flip_table, &ind);
-	int new_flag;
-	if (!flag)
-		return 0;
-	/* flip flag and store back */
-	new_flag = !*flag;
-	bpf_map_update_elem(&flip_table, &ind, &new_flag, BPF_ANY);
-	return new_flag;
-}
-char _license[] SEC(license) = GPL;
-int _version SEC(version) = LINUX_VERSION_CODE;
-' | /usr/lib64/ccache/clang -D__KERNEL__ -D__NR_CPUS__=8 -DLINUX_VERSION_CODE=0x50f07 -xc -g -I/home/acme/lib/perf/include/bpf -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h  -Wno-unused-value -Wno-pointer-sign -working-directory /lib/modules/5.15.7-200.fc35.x86_64/build -c - -target bpf  -O2 -o - 
-libbpf: loading object '[bpf_pinning]' from buffer
-libbpf: elf: section(3) func=do_epoll_wait, size 192, link 0, flags 6, type=1
-libbpf: sec 'func=do_epoll_wait': found program 'bpf_func__SyS_epoll_pwait' at insn offset 0 (0 bytes), code size 24 insns (192 bytes)
-libbpf: elf: section(4) .relfunc=do_epoll_wait, size 32, link 22, flags 0, type=9
-libbpf: elf: section(5) maps, size 16, link 0, flags 3, type=1
-libbpf: elf: section(6) license, size 4, link 0, flags 3, type=1
-libbpf: license of [bpf_pinning] is GPL
-libbpf: elf: section(7) version, size 4, link 0, flags 3, type=1
-libbpf: kernel version of [bpf_pinning] is 50f07
-libbpf: elf: section(13) .BTF, size 575, link 0, flags 0, type=1
-libbpf: elf: section(15) .BTF.ext, size 256, link 0, flags 0, type=1
-libbpf: elf: section(22) .symtab, size 336, link 1, flags 0, type=2
-libbpf: looking for externs among 14 symbols...
-libbpf: collected 0 externs total
-libbpf: elf: found 1 legacy map definitions (16 bytes) in [bpf_pinning]
-libbpf: map 'flip_table' (legacy): at sec_idx 5, offset 0.
-libbpf: map 11 is "flip_table"
-libbpf: prog 'bpf_func__SyS_epoll_pwait': unrecognized ELF section name 'func=do_epoll_wait'
-libbpf: sec '.relfunc=do_epoll_wait': collecting relocation for section(3) 'func=do_epoll_wait'
-libbpf: sec '.relfunc=do_epoll_wait': relo #0: insn #4 against 'flip_table'
-libbpf: prog 'bpf_func__SyS_epoll_pwait': found map 0 (flip_table, sec 5, off 0) for insn #4
-libbpf: sec '.relfunc=do_epoll_wait': relo #1: insn #17 against 'flip_table'
-libbpf: prog 'bpf_func__SyS_epoll_pwait': found map 0 (flip_table, sec 5, off 0) for insn #17
-bpf: config program 'func=do_epoll_wait'
-symbol:do_epoll_wait file:(null) line:0 offset:0 return:0 lazy:(null)
-bpf: config 'func=do_epoll_wait' is ok
-Looking at the vmlinux_path (8 entries long)
-symsrc__init: build id mismatch for vmlinux.
-Using /usr/lib/debug/lib/modules/5.15.7-200.fc35.x86_64/vmlinux for symbols
-Open Debuginfo file: /usr/lib/debug/.build-id/cb/36dde59d9c2c72bf9dbb845549e6073181579d.debug
-Try to find probe point from debuginfo.
-Matched function: do_epoll_wait [3917119]
-Probe point found: do_epoll_wait+0
-Found 1 probe_trace_events.
-Opening /sys/kernel/tracing//kprobe_events write=1
-Parsing probe_events: p:perf_bpf_probe/func _text+3829568
-Group:perf_bpf_probe Event:func probe:p
-Error: event "func" already exists.
- Hint: Remove existing event by 'perf probe -d'
-       or force duplicates by 'perf probe -f'
-       or set 'force=yes' in BPF source.
-bpf_probe: failed to apply perf probe events
-Failed to add events selected by BPF
-test child finished with -1
----- end ----
-BPF filter subtest 2: FAILED!
- 42.3: BPF prologue generation                                       :
---- start ---
-test child forked, pid 1344652
-Kernel build dir is set to /lib/modules/5.15.7-200.fc35.x86_64/build
-set env: KBUILD_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-unset env: KBUILD_OPTS
-include option is set to -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: NR_CPUS=8
-set env: LINUX_VERSION_CODE=0x50f07
-set env: CLANG_EXEC=/usr/lib64/ccache/clang
-set env: CLANG_OPTIONS=-xc -g
-set env: KERNEL_INC_OPTIONS=-nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
-set env: PERF_BPF_INC_OPTIONS=-I/home/acme/lib/perf/include/bpf
-set env: WORKING_DIR=/lib/modules/5.15.7-200.fc35.x86_64/build
-set env: CLANG_SOURCE=-
-llvm compiling command template: echo '// SPDX-License-Identifier: GPL-2.0
-/*
- * bpf-script-test-prologue.c
- * Test BPF prologue
- */
-#ifndef LINUX_VERSION_CODE
-# error Need LINUX_VERSION_CODE
-# error Example: for 4.2 kernel, put 'clang-opt="-DLINUX_VERSION_CODE=0x40200" into llvm section of ~/.perfconfig'
-#endif
-#define SEC(NAME) __attribute__((section(NAME), used))
-
-#include <uapi/linux/fs.h>
-
-/*
- * If CONFIG_PROFILE_ALL_BRANCHES is selected,
- * 'if' is redefined after include kernel header.
- * Recover 'if' for BPF object code.
- */
-#ifdef if
-# undef if
-#endif
-
-#define FMODE_READ		0x1
-#define FMODE_WRITE		0x2
-
-static void (*bpf_trace_printk)(const char *fmt, int fmt_size, ...) =
-	(void *) 6;
-
-SEC("func=null_lseek file->f_mode offset orig")
-int bpf_func__null_lseek(void *ctx, int err, unsigned long _f_mode,
-			 unsigned long offset, unsigned long orig)
-{
-	fmode_t f_mode = (fmode_t)_f_mode;
-
-	if (err)
-		return 0;
-	if (f_mode & FMODE_WRITE)
-		return 0;
-	if (offset & 1)
-		return 0;
-	if (orig == SEEK_CUR)
-		return 0;
-	return 1;
-}
-
-char _license[] SEC("license") = "GPL";
-int _version SEC("version") = LINUX_VERSION_CODE;
-' | $CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS -DLINUX_VERSION_CODE=$LINUX_VERSION_CODE $CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS -Wno-unused-value -Wno-pointer-sign -working-directory $WORKING_DIR -c "$CLANG_SOURCE" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE
-llvm compiling command : 
-libbpf: loading object '[bpf_prologue_test]' from buffer
-libbpf: elf: section(3) func=null_lseek file->f_mode offset orig, size 112, link 0, flags 6, type=1
-libbpf: sec 'func=null_lseek file->f_mode offset orig': found program 'bpf_func__null_lseek' at insn offset 0 (0 bytes), code size 14 insns (112 bytes)
-libbpf: elf: section(4) license, size 4, link 0, flags 3, type=1
-libbpf: license of [bpf_prologue_test] is GPL
-libbpf: elf: section(5) version, size 4, link 0, flags 3, type=1
-libbpf: kernel version of [bpf_prologue_test] is 50f07
-libbpf: elf: section(11) .BTF, size 488, link 0, flags 0, type=1
-libbpf: elf: section(13) .BTF.ext, size 144, link 0, flags 0, type=1
-libbpf: elf: section(20) .symtab, size 312, link 1, flags 0, type=2
-libbpf: looking for externs among 13 symbols...
-libbpf: collected 0 externs total
-libbpf: prog 'bpf_func__null_lseek': unrecognized ELF section name 'func=null_lseek file->f_mode offset orig'
-bpf: config program 'func=null_lseek file->f_mode offset orig'
-symbol:null_lseek file:(null) line:0 offset:0 return:0 lazy:(null)
-parsing arg: file->f_mode into file, f_mode(1)
-parsing arg: offset into offset
-parsing arg: orig into orig
-bpf: config 'func=null_lseek file->f_mode offset orig' is ok
-Looking at the vmlinux_path (8 entries long)
-symsrc__init: build id mismatch for vmlinux.
-Using /usr/lib/debug/lib/modules/5.15.7-200.fc35.x86_64/vmlinux for symbols
-Open Debuginfo file: /usr/lib/debug/.build-id/cb/36dde59d9c2c72bf9dbb845549e6073181579d.debug
-Try to find probe point from debuginfo.
-Opening /sys/kernel/tracing//README write=0
-Matched function: null_lseek [763cb6b]
-Probe point found: null_lseek+0
-Searching 'file' variable in context.
-Converting variable file into trace event.
-converting f_mode in file
-f_mode type is unsigned int.
-Searching 'offset' variable in context.
-Converting variable offset into trace event.
-offset type is long long int.
-Searching 'orig' variable in context.
-Converting variable orig into trace event.
-orig type is int.
-Found 1 probe_trace_events.
-Opening /sys/kernel/tracing//kprobe_events write=1
-Parsing probe_events: p:perf_bpf_probe/func _text+3829568
-Group:perf_bpf_probe Event:func probe:p
-Error: event "func" already exists.
- Hint: Remove existing event by 'perf probe -d'
-       or force duplicates by 'perf probe -f'
-       or set 'force=yes' in BPF source.
-bpf_probe: failed to apply perf probe events
-Failed to add events selected by BPF
-test child finished with -1
----- end ----
-BPF filter subtest 3: FAILED!
-[root@quaco ~]# 
+Thanks,
+Song
 
 
