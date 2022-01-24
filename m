@@ -2,216 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C113498674
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 18:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D174986D5
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 18:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244603AbiAXRVV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 12:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244415AbiAXRUj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 12:20:39 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D716C061748
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 09:20:39 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id v74so13354633pfc.1
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 09:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uvbVlssiuOL2o7l4VGo9wAQ7yG1g9QxFoYPbSYFtdqo=;
-        b=b8kkFS5/WqRt/uGkxgdO4EPtPACa7K4UyA5rdihYBP0zQfEvfu9Hc7L6wke4IFyhtQ
-         9F3JxaZcx3rKTh3OX8pgIvYfgQCZqMuNZnRymYeySn88lJEFnMJ1FFqAGqDns740oe0g
-         y5gJShOglcZEdDYr2VYR12OQOXlCAACHa0JQ0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uvbVlssiuOL2o7l4VGo9wAQ7yG1g9QxFoYPbSYFtdqo=;
-        b=GtSVqQpRXnWNITS/UACcYba3q3q12EQO/xNFbp7H5OK8lxfMSJG8cGhAJwWCDOU6/e
-         ASSF2FOplbEg9cZWvPN2GXZZCZCoB8uwJYQq8ftUsbes/DHn6RYjVHoouogQsBBRB+Wl
-         UhxsjxPQujF3VeuepxLz0OLVxsnjgnST+OajQf55FNvhA7scIGf3a/xKLu2tivCSOa/G
-         XMYAbS/mVZznfX2mrIVyOS4JglA3epUy7UM2xWn6AAkv3YlJ5eo95bdxrHeVFqGiOLhR
-         c5bG92Fmzebx4mi5xAvZBztVUTdo/cr6cgSIjNhWA7rYawjm4qhlp0VOKxzhm6XGBwYY
-         dBiQ==
-X-Gm-Message-State: AOAM5318dbJ6uktpm8KNV8Yqvu05y+zfis0zusYh1zBfBIfqyQp5gbbB
-        a1vc9iuDM4fqrUkDcwziB+s3Ig==
-X-Google-Smtp-Source: ABdhPJwOxnazNMZcXd19bSVJ9MoN8ZvyCdEePmDJfQKMV6Sw4mYioXg78RY4Q74VmtnF7JqMgDdW1Q==
-X-Received: by 2002:a63:204a:: with SMTP id r10mr12454750pgm.502.1643044838506;
-        Mon, 24 Jan 2022 09:20:38 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l26sm12555173pgm.73.2022.01.24.09.20.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 09:20:38 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v2 RESEND] net/mlx5e: Avoid field-overflowing memcpy()
-Date:   Mon, 24 Jan 2022 09:20:28 -0800
-Message-Id: <20220124172028.2410761-1-keescook@chromium.org>
+        id S244480AbiAXRbu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 12:31:50 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60326 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244442AbiAXRbu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 12:31:50 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20OHVhvn019301
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 09:31:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=AQNNK9l8/JAKp2jzg+ctyYoaHfk/NvhYvMPFixSRRTk=;
+ b=NWcaf0cZtGQlkjDG+IklSuNsUzzcNE3AfAJ4JJ9U0xp5CMCH1gns1TQgj0ywdzl+CCMX
+ X/7/oXtQNu5kdMCUTzagRwXttJbAIcVc6uXxxataHdQOWpv3bdvf4w0TGM416i6q/yNS
+ ds4IM7hBxjuFcimvDwxHNspNGzaVlbQ7ips= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dswd8hhr9-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 09:31:48 -0800
+Received: from twshared13833.42.prn1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 24 Jan 2022 09:30:40 -0800
+Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
+        id BD52E9808C20; Mon, 24 Jan 2022 09:30:34 -0800 (PST)
+From:   Kenny Yu <kennyyu@fb.com>
+To:     <yhs@fb.com>
+CC:     <alexei.starovoitov@gmail.com>, <andrii.nakryiko@gmail.com>,
+        <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <kennyyu@fb.com>, <phoenix1987@gmail.com>
+Subject: Re: [PATCH v6 bpf-next 1/3] bpf: Add bpf_copy_from_user_task() helper
+Date:   Mon, 24 Jan 2022 09:30:27 -0800
+Message-ID: <20220124173027.1868912-1-kennyyu@fb.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <170be4e4-6709-cfae-f728-81fc4452f111@fb.com>
+References: <170be4e4-6709-cfae-f728-81fc4452f111@fb.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6160; h=from:subject; bh=VQqeo576slnncrVuQigWvgwHbkmaogPwolkC5v46MpQ=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBh7t/bEEizP4HPXunI0lIL+G351adCgzYP8rg/gvyC Pv5SX/WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYe7f2wAKCRCJcvTf3G3AJm6VD/ 9jlPxoUFcLSoP71xgroQBRupcIYrG31w6xXFGdiZs8oSKGJPTYGWEbRd+EcSiDEc0WILjMWRh5qlq3 xCKyFF0jgopugVAQ5bOoCAAuYlm+OxpDaV9qq3aU7ITc7dbSwgB36A/qFxX8fVBv9RisFb0iJPwZp6 5u/67EShGoip2rkulhk4qSkLBaqGB6x/lK4Jego5xxn3iMBBkNK2H3sAD+uTDqpDde44GHbvRK5O/w hG+d4vQSXKy9IotXNQTD0cak7N0d/KXigldG6jUkLX7PX1I95EQHO80E4YzUzE5PizdAPK0FoghAAq ThRukak3eD7WZwU+Ls8P+fL/3EDVFFb6z0mr9ZLs7lcAMbsy17qxZJgQw+p8X+/RMZwM9SZoE2IdHd AR1WKqub7atfYkCGBMCvRBjqaVtBPkU3v6ID9nnN+U67xPc8vedjC6qeHJ3A6aWMxV5qd9+0cWejQE 4iAqY3HzPuwttaOoYs1PUBReTmMmk8QfHBPNMGFurW8HBEfIhgg7j4cAo0mDFuNIYuCCf5Dqo9zFF6 5Z6gsWMiM+yN8zjJUDV/zYHO4grzBp/BUM1Wli/iGpuKUWg9DBmUbdd+en8GTGeghoCHAIk6D1aemY UjQkOLAF0Kyi3rp7rjcTWXjtBLEiPlGZCGnCGloSwEG0DUWTfSh34Ny1lSLQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: BxK4-AgDLU7y9NjLxZupSGjQ7d6SigeU
+X-Proofpoint-ORIG-GUID: BxK4-AgDLU7y9NjLxZupSGjQ7d6SigeU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-24_09,2022-01-24_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201240116
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+> "On error dst buffer is zeroed out."? This is an explicit guarantee.
 
-Use flexible arrays instead of zero-element arrays (which look like they
-are always overflowing) and split the cross-field memcpy() into two halves
-that can be appropriately bounds-checked by the compiler.
+Will add to the docs.
 
-We were doing:
+> is there a point in calling access_process_vm() with size =3D=3D 0? It
+> would validate that get_task_mm() succeeds, but that's pretty much it?
+> So maybe instead just exit early if size is zero? It will be also less
+> convoluted logic:
+>=20
+> if (size =3D=3D 0)
+>     return 0;
+> if (access_process_vm(...)) {
+>     memset(0);
+>     return -EFAULT;
+> }
+> return 0;
 
-	#define ETH_HLEN  14
-	#define VLAN_HLEN  4
-	...
-	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
-	...
-        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
-	...
-        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
-        struct mlx5_wqe_data_seg *dseg = wqe->data;
-	...
-	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+Will do an explicit check for `size =3D=3D 0`.
+Note that we still need to check if the return value of
+`access_process_vm` =3D=3D `size` to see if we have a partial read.
 
-target is wqe->eth.inline_hdr.start (which the compiler sees as being
-2 bytes in size), but copying 18, intending to write across start
-(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
-wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
-(8 bytes).
+> > Without the above change, using bpf_copy_from_user_task() will trigge=
+r
+> > rcu warning and may produce incorrect result. One option is to put
+> > the above in a preparation patch before introducing
+> > bpf_copy_from_user_task() so we won't have bisecting issues.
+>
+> Sure, patch #1 for sleepable bpf_iter, patch #2 for the helper? I
+> mean, it's not a big deal, but both seem to deserve their own focused
+> patches.
 
-struct mlx5e_tx_wqe {
-        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
-        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
-        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+I'll split this into 2 patches and place the bpf_iter patch first.
 
-        /* size: 32, cachelines: 1, members: 3 */
-        /* last cacheline: 32 bytes */
-};
+> I appreciate that existing helpers already do this and it's good to
+> follow suit for consistency, but what is the rationale behind zeroing
+> memory on failure?
 
-struct mlx5_wqe_eth_seg {
-        u8                         swp_outer_l4_offset;  /*     0     1 */
-        u8                         swp_outer_l3_offset;  /*     1     1 */
-        u8                         swp_inner_l4_offset;  /*     2     1 */
-        u8                         swp_inner_l3_offset;  /*     3     1 */
-        u8                         cs_flags;             /*     4     1 */
-        u8                         swp_flags;            /*     5     1 */
-        __be16                     mss;                  /*     6     2 */
-        __be32                     flow_table_metadata;  /*     8     4 */
-        union {
-                struct {
-                        __be16     sz;                   /*    12     2 */
-                        u8         start[2];             /*    14     2 */
-                } inline_hdr;                            /*    12     4 */
-                struct {
-                        __be16     type;                 /*    12     2 */
-                        __be16     vlan_tci;             /*    14     2 */
-                } insert;                                /*    12     4 */
-                __be32             trailer;              /*    12     4 */
-        };                                               /*    12     4 */
+I believe the intent behind this is for security/privacy reasons.
+On error, we don't want to unintentionally leak partially read data.
 
-        /* size: 16, cachelines: 1, members: 9 */
-        /* last cacheline: 16 bytes */
-};
+Thanks everyone for the suggestions!
 
-struct mlx5_wqe_data_seg {
-        __be32                     byte_count;           /*     0     4 */
-        __be32                     lkey;                 /*     4     4 */
-        __be64                     addr;                 /*     8     8 */
-
-        /* size: 16, cachelines: 1, members: 3 */
-        /* last cacheline: 16 bytes */
-};
-
-So, split the memcpy() so the compiler can reason about the buffer
-sizes.
-
-"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
-nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
-code changes (i.e. only source line number induced differences and
-optimizations).
-
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Since this results in no binary differences, I will carry this in my tree
-unless someone else wants to pick it up. It's one of the last remaining
-clean-ups needed for the next step in memcpy() hardening.
----
- drivers/net/ethernet/mellanox/mlx5/core/en.h     | 6 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index 812e6810cb3b..c14e06ca64d8 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -224,7 +224,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
- struct mlx5e_tx_wqe {
- 	struct mlx5_wqe_ctrl_seg ctrl;
- 	struct mlx5_wqe_eth_seg  eth;
--	struct mlx5_wqe_data_seg data[0];
-+	struct mlx5_wqe_data_seg data[];
- };
- 
- struct mlx5e_rx_wqe_ll {
-@@ -241,8 +241,8 @@ struct mlx5e_umr_wqe {
- 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
- 	struct mlx5_mkey_seg           mkc;
- 	union {
--		struct mlx5_mtt inline_mtts[0];
--		struct mlx5_klm inline_klms[0];
-+		DECLARE_FLEX_ARRAY(struct mlx5_mtt, inline_mtts);
-+		DECLARE_FLEX_ARRAY(struct mlx5_klm, inline_klms);
- 	};
- };
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 338d65e2c9ce..56e10c84a706 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 
- 	/* copy the inline part if required */
- 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
--		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
-+		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
- 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
-+		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
-+		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
- 		dma_len  -= MLX5E_XDP_MIN_INLINE;
- 		dma_addr += MLX5E_XDP_MIN_INLINE;
- 		dseg++;
--- 
-2.30.2
-
+Kenny
