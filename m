@@ -2,194 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF7549A857
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 05:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D46949A8A8
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 05:14:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357277AbiAYDDR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 22:03:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
+        id S1343844AbiAYDKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 22:10:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1455412AbiAXVfX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 16:35:23 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A4CC0BD104;
-        Mon, 24 Jan 2022 12:22:22 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id d188so6704968iof.7;
-        Mon, 24 Jan 2022 12:22:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4mZfIWY8oZHBJvbezAfQki3gasCfLQjRP0A4uvZXh/s=;
-        b=f3bagKMjQoICG1f7F8PAR6AfPBuB2sPAAYOn+F/1y8nGDFV+mhKSTRK66UYPdoZhF4
-         b4b8kuWi/F9c1+OUlM1lZpaBQxYZkAuRWxGBMH3okjSHBe85wr6Gc7cq5e4G51dDD5Lh
-         h8DJEhC8EMutrkRSGEpGU4pcwPfuh0/Lhhpo5UIGY/V17w7IG0oP1XFnZ2qL5zWTzksR
-         2QTJvsBxtEyrRbbDOCQZc3wHVpW9PGcdr7sEOpiLbYkUs3Ehilz53s5vBSOQjgVPK8ZK
-         o02VCW6NDe6DRGsuwdKArQVJv/RniD3vc5uaJoiKnxYkFIjuysXH/xJdVmimnPSHFJMA
-         PwaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4mZfIWY8oZHBJvbezAfQki3gasCfLQjRP0A4uvZXh/s=;
-        b=ZLzaRBkVvBO/fYZpkdBYJptGmA86GdcU8yBuICu3VwoO5MvmXIUXeghgsgeL/L+ZTZ
-         AUZTL9yeB+BX6wgeTPaUNhRKYicvbNf3NZuT+J8lwxWHnnBhBGDmMun6QCdz7loKZVnY
-         AMEtxRq+WQJPauPpflC2+2+1cZgXZ4E2h7mISJcZ26MdYrbMZLe/eXB2RD+vUGSXEy/4
-         AF69qAeNqfGDJc6VvsrDanyBgrBkYVjQARUE4KqvNaGO/7/mTS7B2Lnb1yXk3OuiyJBS
-         NjOxAt0AWmInNf9S6HUEMXqftH3eV+ycZzDYsNYnyQpZMa4JJnS2bkJDdcb+Id0DoqE/
-         gxBQ==
-X-Gm-Message-State: AOAM531vUL1/g526sW1gjRiEmlHWJJBQuB3iCoN1EScVLPb8BBNBtY1/
-        vBwyxRuD/nBLG2CQqiR/yP3UL01xU52vjV73xIE=
-X-Google-Smtp-Source: ABdhPJwwtlX+lokeNR+f3H0pCCz3YM3DTq4o8pav9NyzwHzMKwIBjf3M3TKTL9htJz0svoFvh2ziB1+HWC6Cc14m5/8=
-X-Received: by 2002:a05:6638:1212:: with SMTP id n18mr4604420jas.93.1643055741615;
- Mon, 24 Jan 2022 12:22:21 -0800 (PST)
-MIME-Version: 1.0
-References: <164260419349.657731.13913104835063027148.stgit@devnote2>
- <CAEf4Bzbbimea3ydwafXSHFiEffYx5zAcwGNKk8Zi6QZ==Vn0Ug@mail.gmail.com>
- <20220121135510.7cfa6540e31824aa39b1c1b8@kernel.org> <CAEf4Bza0eTft2kjcm9HhKpAm=AuXnGwZfZ+sYpVVBvj93PBreQ@mail.gmail.com>
- <Ye3ptcW0eAFRYm58@krava> <20220124092405.665e9e0fc3ce14b16a1a9fcf@kernel.org> <Ye6ZyeHQtPfUoSvX@krava>
-In-Reply-To: <Ye6ZyeHQtPfUoSvX@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 24 Jan 2022 12:22:10 -0800
-Message-ID: <CAEf4BzbrVBXDJA4qbCgudiiLGtHNyUQAOuE=AUwfxzMrF=Wr=w@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/9] fprobe: Introduce fprobe function entry/exit probe
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        with ESMTP id S1385568AbiAXXsq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 18:48:46 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B090C0419C8;
+        Mon, 24 Jan 2022 13:44:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4JjNlv5dl4z4yHs;
+        Tue, 25 Jan 2022 08:43:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1643060636;
+        bh=ZkOTg+PQZOto/jxd0gHdYNssTz91wrZxO1zggumS00Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aln8qIoFF8b8KzHXY4Ci3oIfL6C1CflWgj/Rd1bbUyjAYboOiMCqSt1iMZNIgY9Mb
+         2zacFBL0uPBLgFcOiLMlqUt2BkwpYgnv3Ma6eY9zdrOkRzIl2Lca4qfgff8B63wPRX
+         HKxJkqTKuWGuKesruP490b6DNV6bPCulmf954D2m1UpaljwTlDbSSZ4uVLVwGKrpof
+         LoRkIP7CR7mB5Wne52fRbW+FjF+mXDgHgqJn1ag8JGuqNR6QDPut905gBJvLTy9cQG
+         PXd3EPgxjiyghPVMWF1h+C2AvwY1o6SX+RJ0cmNTrn4AqQnfsKLKE5te05vvbSKOLn
+         cfiRVxW7Zh3Dw==
+Date:   Tue, 25 Jan 2022 08:43:53 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with Linus' tree
+Message-ID: <20220125084353.5fc682d9@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/xJqTwuSaouszgSpnNlM3wk0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 4:21 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Jan 24, 2022 at 09:24:05AM +0900, Masami Hiramatsu wrote:
-> > On Mon, 24 Jan 2022 00:50:13 +0100
-> > Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > > On Fri, Jan 21, 2022 at 09:29:00AM -0800, Andrii Nakryiko wrote:
-> > > > On Thu, Jan 20, 2022 at 8:55 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > >
-> > > > > On Thu, 20 Jan 2022 14:24:15 -0800
-> > > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > > On Wed, Jan 19, 2022 at 6:56 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > > > > >
-> > > > > > > Hello Jiri,
-> > > > > > >
-> > > > > > > Here is the 3rd version of fprobe. I added some comments and
-> > > > > > > fixed some issues. But I still saw some problems when I add
-> > > > > > > your selftest patches.
-> > > > > > >
-> > > > > > > This series introduces the fprobe, the function entry/exit probe
-> > > > > > > with multiple probe point support. This also introduces the rethook
-> > > > > > > for hooking function return as same as kretprobe does. This
-> > > > > > > abstraction will help us to generalize the fgraph tracer,
-> > > > > > > because we can just switch it from rethook in fprobe, depending
-> > > > > > > on the kernel configuration.
-> > > > > > >
-> > > > > > > The patch [1/9] and [7/9] are from Jiri's series[1]. Other libbpf
-> > > > > > > patches will not be affected by this change.
-> > > > > > >
-> > > > > > > [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-> > > > > > >
-> > > > > > > However, when I applied all other patches on top of this series,
-> > > > > > > I saw the "#8 bpf_cookie" test case has been stacked (maybe related
-> > > > > > > to the bpf_cookie issue which Andrii and Jiri talked?) And when I
-> > > > > > > remove the last selftest patch[2], the selftest stopped at "#112
-> > > > > > > raw_tp_test_run".
-> > > > > > >
-> > > > > > > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#m242d2b3a3775eeb5baba322424b15901e5e78483
-> > > > > > >
-> > > > > > > Note that I used tools/testing/selftests/bpf/vmtest.sh to check it.
-> > > > > > >
-> > > > > > > This added 2 more out-of-tree patches. [8/9] is for adding wildcard
-> > > > > > > support to the sample program, [9/9] is a testing patch for replacing
-> > > > > > > kretprobe trampoline with rethook.
-> > > > > > > According to this work, I noticed that using rethook in kretprobe
-> > > > > > > needs 2 steps.
-> > > > > > >  1. port the rethook on all architectures which supports kretprobes.
-> > > > > > >     (some arch requires CONFIG_KPROBES for rethook)
-> > > > > > >  2. replace kretprobe trampoline with rethook for all archs, at once.
-> > > > > > >     This must be done by one treewide patch.
-> > > > > > >
-> > > > > > > Anyway, I'll do the kretprobe update in the next step as another series.
-> > > > > > > (This testing patch is just for confirming the rethook is correctly
-> > > > > > >  implemented.)
-> > > > > > >
-> > > > > > > BTW, on the x86, ftrace (with fentry) location address is same as
-> > > > > > > symbol address. But on other archs, it will be different (e.g. arm64
-> > > > > > > will need 2 instructions to save link-register and call ftrace, the
-> > > > > > > 2nd instruction will be the ftrace location.)
-> > > > > > > Does libbpf correctly handle it?
-> > >
-> > > hm, I'm probably missing something, but should this be handled by arm
-> > > specific kernel code? user passes whatever is found in kallsyms, right?
-> >
-> > In x86, fentry nop is always placed at the first instruction of the function,
-> > but the other arches couldn't do that if they use LR (link register) for
-> > storing return address instead of stack. E.g. arm64 saves lr and call the
-> > ftrace. Then ftrace location address of a function is not the symbol address.
-> >
-> > Anyway, I updated fprobe to handle those cases. I also found some issues
-> > on rethook, so let me update the series again.
->
-> great, I reworked the bpf fprobe link change and need to add the
-> symbols attachment support, so you don't need to include it in
-> new version.. I'll rebase it and send on top of your patchset
+--Sig_/xJqTwuSaouszgSpnNlM3wk0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Using just addresses (IPs) for retsnoop and bpftrace is fine because
-such generic tools are already parsing kallsyms and probably building
-some lookup table. But in general, having IP-based attachment is a
-regression from current perf_event_open-based kprobe, where user is
-expected to pass symbolic function name. Using IPs has an advantage of
-being unambiguous (e.g., when same static function name in kernel
-belongs to multiple actual functions), so there is that. But I was
-also wondering wouldn't kernel need to do symbol to IP resolution
-anyways just to check that we are attaching to function entry?
+Hi all,
 
-I'll wait for your patch set to see how did you go about it in a new revision.
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
+  include/linux/bpf_verifier.h
 
->
-> thanks,
-> jirka
->
-> >
-> > > > > >
-> > > > > > libbpf doesn't do anything there. The interface for kprobe is based on
-> > > > > > function name and kernel performs name lookups internally to resolve
-> > > > > > IP. For fentry it's similar (kernel handles IP resolution), but
-> > > > > > instead of function name we specify BTF ID of a function type.
-> > > > >
-> > > > > Hmm, according to Jiri's original patch, it seems to pass an array of
-> > > > > addresses. So I thought that has been resolved by libbpf.
-> > > > >
-> > > > > +                       struct {
-> > > > > +                               __aligned_u64   addrs;
-> > > >
-> > > > I think this is a pointer to an array of pointers to zero-terminated C strings
-> > >
-> > > I used direct addresses, because bpftrace already has them, so there was
-> > > no point passing strings, I cann add support for that
-> >
-> > So now both direct address array or symbol array are OK.
-> >
-> > Thank you,
-> >
-> > --
-> > Masami Hiramatsu <mhiramat@kernel.org>
-> >
->
+between commit:
+
+  be80a1d3f9db ("bpf: Generalize check_ctx_reg for reuse with other types")
+
+from Linus' tree and commit:
+
+  d583691c47dc ("bpf: Introduce mem, size argument pair support for kfunc")
+
+from the bpf-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/bpf_verifier.h
+index e9993172f892,ac4797155412..000000000000
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@@ -519,8 -519,10 +519,10 @@@ bpf_prog_offload_replace_insn(struct bp
+  void
+  bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 =
+cnt);
+ =20
+ -int check_ctx_reg(struct bpf_verifier_env *env,
+ -		  const struct bpf_reg_state *reg, int regno);
+ +int check_ptr_off_reg(struct bpf_verifier_env *env,
+ +		      const struct bpf_reg_state *reg, int regno);
++ int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg=
+_state *reg,
++ 			     u32 regno);
+  int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+  		   u32 regno, u32 mem_size);
+ =20
+
+--Sig_/xJqTwuSaouszgSpnNlM3wk0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmHvHZoACgkQAVBC80lX
+0GyjPAf/afQFcqFrWODtd6LIcDAuOpFlLbPE4b//f8oTwsJZvWIMmE8i50CFSf5u
+UnAgolVEivNANlUmGfGF98sYvv06b9q0VIE63u1B2suV9J9OsFtzTtmCF9Sw8Gsi
+zY8Gq8mShYOETKpwEf3deRDx6JC7sp5M7kQtg9W+75RNZfvvUvu2r0DAErxJsvhg
+mR91JCR2o6QrJhRN7MsYVs506632Gc00sPx3gk32aRyEhEwmxXEGG0wbTNqcykz4
+X79YDv90iopGuwofTvUPEAbDhOyyeajDgJLxALleROKh/dg6MZ9oI+0yENnJyjHR
+t7GtJbtQUV+NkWJUi6q9oJ1p+Hi4lg==
+=HokY
+-----END PGP SIGNATURE-----
+
+--Sig_/xJqTwuSaouszgSpnNlM3wk0--
