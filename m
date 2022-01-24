@@ -2,75 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78003497FC1
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 13:45:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB0B498039
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 14:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239736AbiAXMpn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 07:45:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40366 "EHLO
+        id S230307AbiAXNAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 08:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbiAXMpl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 07:45:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58334C06173B;
-        Mon, 24 Jan 2022 04:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EMEz1rACRULVBrKHzXgo2kunk9zl7ssga+Po9YSgMds=; b=GIX/sPYE/AU2KLF59arUOB3Wx8
-        DDIu/x/4XnAmMZHkDHwFbUEV3sEEEIKiBGQpTkmog4sxOBFCNx5bZGnOgVaWFOALZG5ZBDKjTfcpH
-        pwEMEbPs71j6SwllrDW4vQGJWi1lTADrzrDJPomOzzVQ4We1muqPai912uGbmdjnPKeBT1kshPhXo
-        heAMRMKe+gW2WsSFZk261JczqbK2UA3mlN2gwPkejmBulCWb3KheBHerXhaVqP2aoRdR7fhGZ0HX/
-        cPPuHNB2K+OCdC9DBgnrTu1pfhZQ+Nm6N3Rcgy8FE/j9AXLIqYOCisA7pzrTrSRP9A2Gsl1S7oqZq
-        yxy6hDWA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nByip-000dUC-R8; Mon, 24 Jan 2022 12:45:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 41CCE300222;
-        Mon, 24 Jan 2022 13:45:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 23B282027C5FC; Mon, 24 Jan 2022 13:45:22 +0100 (CET)
-Date:   Mon, 24 Jan 2022 13:45:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>, X86 ML <x86@kernel.org>
-Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
-Message-ID: <Ye6fYhwF9f+0NvhI@hirez.programming.kicks-ass.net>
-References: <20220121194926.1970172-1-song@kernel.org>
- <20220121194926.1970172-7-song@kernel.org>
- <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
- <7393B983-3295-4B14-9528-B7BD04A82709@fb.com>
- <CAADnVQJLHXaU7tUJN=EM-Nt28xtu4vw9+Ox_uQsjh-E-4VNKoA@mail.gmail.com>
- <5407DA0E-C0F8-4DA9-B407-3DE657301BB2@fb.com>
- <CAADnVQLOpgGG9qfR4EAgzrdMrfSg9ftCY=9psR46GeBWP7aDvQ@mail.gmail.com>
- <5F4DEFB2-5F5A-4703-B5E5-BBCE05CD3651@fb.com>
- <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
- <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com>
+        with ESMTP id S229941AbiAXNAP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 08:00:15 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1E5C06173B;
+        Mon, 24 Jan 2022 05:00:15 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id y15so40794059lfa.9;
+        Mon, 24 Jan 2022 05:00:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZHXDNawBJLq0H1Ii/ahl9brsS3WPDA+iilcuuxor1JA=;
+        b=fuboRRqywCiSDbp6ipvJZHJXyiKEPVKZFZuKLBri+oR4dlqAC8XuG2PEmQvbzvpKqi
+         1Xq4zijJslw8w2LuN58q/gBeG+jsLKXz47inujmKqZih3NIWQB4y4SQeA+efprBcxuHt
+         /lFXhMp6cWRIO2ToDBKmMIyua1QFpMmv+yO8rvUJaGZOWLd5sQJDXdCFxgTCj0avTVKf
+         /Y71XFiqRUtJhQELIN3Api+GtxRuO9tdvaa4sbUHMlKKSgFyLW3XX8F5TN1wNWDFJRiW
+         uiaE+LZYy6QfVJnvzEl+MkBxIGjj61o+Rgl3EZME8wZP61ODQO+SvD3xvYkGkblPsdsL
+         5JWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZHXDNawBJLq0H1Ii/ahl9brsS3WPDA+iilcuuxor1JA=;
+        b=biuf5qOPDCRgJSB5xi3EnBlY2Qpqk88aXDaRZ9GVCOqe7iPLd+tk0Xg9iPcMmDgFHk
+         lVg3KYT+JtZRdOtSKnamIOPAmBX94067M9oZYfMsRCicx6hldoYxylP6ioIMKY0XwVwR
+         mVAk70ZBZ6+xc2AJPddqH6z78QXLAG3MyQf6NCWavPbtUBDkRd4sfq/yYLHdRJfLoDsm
+         9d7TfX9JjptQj7p2P9DMuqbR6/vX7A6TSlNr0CbuZgG4HZ3ATChB1/E+DDZUVbv7tZZW
+         P/av6F0qsW7ylkHkfFhWP9558csVlQ2mJgfcmANnjE3eslOf6rxS1KwAg9UMHEV9CYQZ
+         T5rQ==
+X-Gm-Message-State: AOAM5330IvyRP7Flb2Gk9RUCoUTQQ73Jm9anh26qlwvYqOoNVUpmeEmD
+        pE7YFXUIR0+lgAgUjEal8jVTdhacgAy9pFIr7Kk=
+X-Google-Smtp-Source: ABdhPJzTHtUYGliUWXKQsx7KpchvBCjC0ABXft1jdLdC9AabPks7FtrbI+KXJ0yD+SnAoBLxY1uFdquw/vUHSqrJLfE=
+X-Received: by 2002:a05:6512:230c:: with SMTP id o12mr5081114lfu.341.1643029213847;
+ Mon, 24 Jan 2022 05:00:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com>
+References: <000000000000cdb89d05ca134e47@google.com>
+In-Reply-To: <000000000000cdb89d05ca134e47@google.com>
+From:   Vegard Nossum <vegard.nossum@gmail.com>
+Date:   Mon, 24 Jan 2022 14:00:01 +0100
+Message-ID: <CAOMGZ=FdNnYS8wa8gViXiMrvtrESzPURfW8Pofx0y9BNk+PEZw@mail.gmail.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel NULL pointer dereference in unix_shutdown
+To:     syzbot <syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com>
+Cc:     Rao.Shoaib@oracle.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, cong.wang@bytedance.com, daniel@iogearbox.net,
+        "David S. Miller" <davem@davemloft.net>, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        Al Viro <viro@zeniv.linux.org.uk>, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 23, 2022 at 01:03:25AM +0000, Song Liu wrote:
+On Sat, 21 Aug 2021 at 17:19, syzbot
+<syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    9803fb968c8c Add linux-next specific files for 20210817
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1727c65e300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=681282daead30d81
+> dashboard link: https://syzkaller.appspot.com/bug?extid=cd7ceee0d3b5892f07af
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fb6ff9300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15272861300000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+cd7ceee0d3b5892f07af@syzkaller.appspotmail.com
+>
+> BUG: kernel NULL pointer dereference, address: 0000000000000000
 
-> I guess we can introduce something similar to bpf_arch_text_poke() 
-> for this? 
+Looks like this was only ever hit in linux-next and fixed before it
+got to mainline? Anyway, I can confirm the following patch fixes the
+issue:
 
-IIRC the s390 version of the text_poke_copy() function is called
-s390_kernel_write().
+#syz fix: af_unix: Fix NULL pointer bug in unix_shutdown
+
+
+Vegard
