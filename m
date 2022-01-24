@@ -2,18 +2,18 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C277498994
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 19:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BA1498A1B
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 20:02:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343826AbiAXS5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 13:57:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23172 "EHLO
+        id S1344170AbiAXTBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 14:01:32 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43262 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1344660AbiAXSy7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 13:54:59 -0500
+        by vger.kernel.org with ESMTP id S1344158AbiAXS6B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 13:58:01 -0500
 Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20OHVmFA020366
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:54:58 -0800
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20OHVl8n020276
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:57:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
@@ -21,14 +21,14 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc
  b=BkooCdBh60Z8o94jkNKgmQ7Fy0LPV/KfBPBs1TKxpyE1/60y6zxq3npTP1de9Jw6Ka9g
  /CB5cDmzDDWq5riKJX0J2ttHO9TXwP8YNpaLOc1nqOlvgafGK1JVRPRY9n4ugIR8CWBY
  XWUnO5o88NX74i7wp9Y+upWPTEUlEt6/sBI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3dsk2q51sd-3
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3dsk2q52d4-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:54:58 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:57:58 -0800
+Received: from twshared11487.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 24 Jan 2022 10:54:56 -0800
+ 15.1.2308.21; Mon, 24 Jan 2022 10:57:55 -0800
 Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
         id 06A6798161CA; Mon, 24 Jan 2022 10:54:48 -0800 (PST)
 From:   Kenny Yu <kennyyu@fb.com>
@@ -48,14 +48,14 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: yxbS9p64lHClEEMjVHRj3jH64kY54VV_
-X-Proofpoint-ORIG-GUID: yxbS9p64lHClEEMjVHRj3jH64kY54VV_
+X-Proofpoint-GUID: n_UKNOP10uHF_hw0DHZ1gt0Ywth-EWku
+X-Proofpoint-ORIG-GUID: n_UKNOP10uHF_hw0DHZ1gt0Ywth-EWku
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-01-24_09,2022-01-24_02,2021-12-02_01
 X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
  spamscore=0 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=820
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=823
  priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2201110000 definitions=main-2201240124
 X-FB-Internal: deliver
