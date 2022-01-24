@@ -2,139 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A8AE499191
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 21:13:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E19F4498D97
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 20:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379626AbiAXUMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 15:12:03 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49662 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378266AbiAXUGn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 15:06:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 0E42CB8124F;
-        Mon, 24 Jan 2022 20:06:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C61C340E5;
-        Mon, 24 Jan 2022 20:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1643054800;
-        bh=8qphzB9DIKFYeekh22vyIkpyTJNnlON5enOGNgmM+ZM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XHtu7o+AGXFMas5iaCTdivZ6VNdOZPxB8S64VaEPBQIKfmyQ+rFC/PL1eUSeOQ3bO
-         kcvu10d05oBhQJqCEgJVxbVy42gUbBOH6pc3/bHGfWbfQXPZBlt0vqN+UP/WSGnQnl
-         NYxhXv70r36mAvNN4PdTOgsFJkVVn6O5y6t8gvRo=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chase Conklin <chase.conklin@arm.com>,
-        German Gomez <german.gomez@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
+        id S1347329AbiAXTds (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 14:33:48 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26900 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1353012AbiAXTbr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 14:31:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643052707; x=1674588707;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TG2q+/j5awwYR/POyqAYX1Q9rqeQKWr70oDpRqB7LlU=;
+  b=OpeDbzmomFhVe/xtmUHEXwiUECnmsupX24xydig8bqPJAE5iSyZgGV3H
+   HJ+0C+aNTyHd4KkdlBG29Sn/pJ4oSasnJXF5WxUysDFU2+iii87KTouIL
+   kn3/EAqHOXOkEUuH5quaTwI+Emhq7Du0i5Wb7tVv38iajEl72jtCc7KQ/
+   Us7CAamZ6YgUxIX+No0AScHuXwiQM2uJBAp8IpOQPqjQ8l2EbcYCAJ8AI
+   I66TYZFHxPLRVakCtpIeHpM7XObVYSoFjh8O2dntFAuZ+T05/rC9Ci+De
+   dtPLukTA5Xbt3srOjVQVswkIWZBge1LnyrY2lG0Jp6v9YwhVDAPGsUSY3
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="270567357"
+X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; 
+   d="scan'208";a="270567357"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2022 11:25:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,311,1635231600"; 
+   d="scan'208";a="768782484"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 24 Jan 2022 11:25:03 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nC4xa-000IoP-Oz; Mon, 24 Jan 2022 19:25:02 +0000
+Date:   Tue, 25 Jan 2022 03:24:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     kbuild-all@lists.01.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 5.10 508/563] perf evsel: Override attr->sample_period for non-libpfm4 events
-Date:   Mon, 24 Jan 2022 19:44:33 +0100
-Message-Id: <20220124184042.036113932@linuxfoundation.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220124184024.407936072@linuxfoundation.org>
-References: <20220124184024.407936072@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH v4 5/9] ARM: rethook: Add rethook arm implementation
+Message-ID: <202201250328.drn6ia3n-lkp@intel.com>
+References: <164304061932.1680787.11603911228891618150.stgit@devnote2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164304061932.1680787.11603911228891618150.stgit@devnote2>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: German Gomez <german.gomez@arm.com>
+Hi Masami,
 
-commit 3606c0e1a1050d397ad759a62607e419fd8b0ccb upstream.
+I love your patch! Yet something to improve:
 
-A previous patch preventing "attr->sample_period" values from being
-overridden in pfm events changed a related behaviour in arm-spe.
+[auto build test ERROR on rostedt-trace/for-next]
+[also build test ERROR on arm64/for-next/core tip/x86/core linus/master v5.17-rc1 next-20220124]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Before said patch:
+url:    https://github.com/0day-ci/linux/commits/Masami-Hiramatsu/fprobe-Introduce-fprobe-function-entry-exit-probe/20220125-001253
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
+config: arm-aspeed_g5_defconfig (https://download.01.org/0day-ci/archive/20220125/202201250328.drn6ia3n-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/df6df88bb474db78d80fc5619d39b25ec15d5d16
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Masami-Hiramatsu/fprobe-Introduce-fprobe-function-entry-exit-probe/20220125-001253
+        git checkout df6df88bb474db78d80fc5619d39b25ec15d5d16
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash arch/arm/kernel/
 
-  perf record -c 10000 -e arm_spe_0// -- sleep 1
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Would yield an SPE event with period=10000. After the patch, the period
-in "-c 10000" was being ignored because the arm-spe code initializes
-sample_period to a non-zero value.
+All errors (new ones prefixed by >>):
 
-This patch restores the previous behaviour for non-libpfm4 events.
+   arch/arm/kernel/stacktrace.c: In function 'unwind_frame':
+>> arch/arm/kernel/stacktrace.c:71:56: error: 'struct stackframe' has no member named 'tsk'
+      71 |                 frame->pc = rethook_find_ret_addr(frame->tsk, frame->fp,
+         |                                                        ^~
+>> arch/arm/kernel/stacktrace.c:72:57: error: 'struct stackframe' has no member named 'kr_cur'
+      72 |                                                   &frame->kr_cur);
+         |                                                         ^~
 
-Fixes: ae5dcc8abe31 (“perf record: Prevent override of attr->sample_period for libpfm4 events”)
-Reported-by: Chase Conklin <chase.conklin@arm.com>
-Signed-off-by: German Gomez <german.gomez@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Link: http://lore.kernel.org/lkml/20220118144054.2541-1-german.gomez@arm.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+vim +71 arch/arm/kernel/stacktrace.c
+
+    12	
+    13	#if defined(CONFIG_FRAME_POINTER) && !defined(CONFIG_ARM_UNWIND)
+    14	/*
+    15	 * Unwind the current stack frame and store the new register values in the
+    16	 * structure passed as argument. Unwinding is equivalent to a function return,
+    17	 * hence the new PC value rather than LR should be used for backtrace.
+    18	 *
+    19	 * With framepointer enabled, a simple function prologue looks like this:
+    20	 *	mov	ip, sp
+    21	 *	stmdb	sp!, {fp, ip, lr, pc}
+    22	 *	sub	fp, ip, #4
+    23	 *
+    24	 * A simple function epilogue looks like this:
+    25	 *	ldm	sp, {fp, sp, pc}
+    26	 *
+    27	 * When compiled with clang, pc and sp are not pushed. A simple function
+    28	 * prologue looks like this when built with clang:
+    29	 *
+    30	 *	stmdb	{..., fp, lr}
+    31	 *	add	fp, sp, #x
+    32	 *	sub	sp, sp, #y
+    33	 *
+    34	 * A simple function epilogue looks like this when built with clang:
+    35	 *
+    36	 *	sub	sp, fp, #x
+    37	 *	ldm	{..., fp, pc}
+    38	 *
+    39	 *
+    40	 * Note that with framepointer enabled, even the leaf functions have the same
+    41	 * prologue and epilogue, therefore we can ignore the LR value in this case.
+    42	 */
+    43	int notrace unwind_frame(struct stackframe *frame)
+    44	{
+    45		unsigned long high, low;
+    46		unsigned long fp = frame->fp;
+    47	
+    48		/* only go to a higher address on the stack */
+    49		low = frame->sp;
+    50		high = ALIGN(low, THREAD_SIZE);
+    51	
+    52	#ifdef CONFIG_CC_IS_CLANG
+    53		/* check current frame pointer is within bounds */
+    54		if (fp < low + 4 || fp > high - 4)
+    55			return -EINVAL;
+    56	
+    57		frame->sp = frame->fp;
+    58		frame->fp = *(unsigned long *)(fp);
+    59		frame->pc = *(unsigned long *)(fp + 4);
+    60	#else
+    61		/* check current frame pointer is within bounds */
+    62		if (fp < low + 12 || fp > high - 4)
+    63			return -EINVAL;
+    64	
+    65		/* restore the registers from the stack frame */
+    66		frame->fp = *(unsigned long *)(fp - 12);
+    67		frame->sp = *(unsigned long *)(fp - 8);
+    68		frame->pc = *(unsigned long *)(fp - 4);
+    69	#endif
+    70		if (IS_ENABLED(CONFIG_RETHOOK) && is_rethook_trampoline(frame->pc))
+  > 71			frame->pc = rethook_find_ret_addr(frame->tsk, frame->fp,
+  > 72							  &frame->kr_cur);
+    73	#ifdef CONFIG_KRETPROBES
+    74		if (is_kretprobe_trampoline(frame->pc))
+    75			frame->pc = kretprobe_find_ret_addr(frame->tsk,
+    76						(void *)frame->fp, &frame->kr_cur);
+    77	#endif
+    78	
+    79		return 0;
+    80	}
+    81	#endif
+    82	
+
 ---
- tools/perf/util/evsel.c |   25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
-
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1014,6 +1014,17 @@ struct evsel_config_term *__evsel__get_c
- 	return found_term;
- }
- 
-+static void evsel__set_default_freq_period(struct record_opts *opts,
-+					   struct perf_event_attr *attr)
-+{
-+	if (opts->freq) {
-+		attr->freq = 1;
-+		attr->sample_freq = opts->freq;
-+	} else {
-+		attr->sample_period = opts->default_interval;
-+	}
-+}
-+
- /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1080,14 +1091,12 @@ void evsel__config(struct evsel *evsel,
- 	 * We default some events to have a default interval. But keep
- 	 * it a weak assumption overridable by the user.
- 	 */
--	if (!attr->sample_period) {
--		if (opts->freq) {
--			attr->freq		= 1;
--			attr->sample_freq	= opts->freq;
--		} else {
--			attr->sample_period = opts->default_interval;
--		}
--	}
-+	if ((evsel->is_libpfm_event && !attr->sample_period) ||
-+	    (!evsel->is_libpfm_event && (!attr->sample_period ||
-+					 opts->user_freq != UINT_MAX ||
-+					 opts->user_interval != ULLONG_MAX)))
-+		evsel__set_default_freq_period(opts, attr);
-+
- 	/*
- 	 * If attr->freq was set (here or earlier), ask for period
- 	 * to be sampled.
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
