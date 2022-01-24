@@ -2,149 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9702497EBD
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 13:13:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28231497F35
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 13:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238527AbiAXMNW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 07:13:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238441AbiAXMNW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 07:13:22 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E84C061401
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 04:13:21 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id u15so13178346wrt.3
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 04:13:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=GhtPulvMMvxVxHkXwmGN5OOcWf+zin1IuANHI429XiA=;
-        b=vhUdBa5e5phGf16M7X10ivFsYKMNEs2uEM8QWXX/wJVqAH/4jXakcZHThDNvpiGa9y
-         iP1xIcc9pg0yUXT0MxsEMcZNOgLKWLSy+vfNn03zjPA9DGAaDEz1oMth5wKN+SXRFYBm
-         Bdsub7CS9NIkvS6KjivyqjTxrqYHzDf03OB7OK06PU0LB2sjdA0QemKbgJZGdDzi2KOV
-         q8+DSRcJWgSiP00hfeZQHYLA+FyfTEEAydZwNmBNBo+z4ne27b2gsrLlSWgiOjPeCQPI
-         5ZM90M4dyQNf1iVPvX8Wyp0LNIUmtMPDbano943c203sB6Kq2hAiFZSlFoIWCtXPpWIa
-         l7vg==
+        id S239355AbiAXMVg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 07:21:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37160 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239284AbiAXMVf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 07:21:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643026894;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kTQ7PaifhtIuOUaGkRwV0rZi7ijH/GseKpb0aQu503M=;
+        b=fqodM0oAkov2yURvwLTqkZ9aB3fhAZDKxKYqjCiHOJRkrhK6rPIzC3aViW/ENDkzT1lknI
+        XRoQ4GvBPhp4wzcBdGTWiaXpuubV7pRXwbmuS2sPxzTypf1h3qLa8nI8yW0VrQZKFk+MD+
+        qoXaUzIhTED2tIbMfPSDaeUhKIOzhWM=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-601-0A83aL0HPcW0ITteK9Qz0A-1; Mon, 24 Jan 2022 07:21:33 -0500
+X-MC-Unique: 0A83aL0HPcW0ITteK9Qz0A-1
+Received: by mail-ej1-f70.google.com with SMTP id q3-20020a17090676c300b006a9453c33b0so1995598ejn.13
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 04:21:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GhtPulvMMvxVxHkXwmGN5OOcWf+zin1IuANHI429XiA=;
-        b=iJWyjcrYuTsUjEhB417HU5vmy91wYnV1xpiRq7BkjjHmUhn41UM0O9CWzJMgROZeSP
-         6K8s5qsPm8AjJ8SdtzI3iIyKL6uT0MeIfTTRFOvGJCiKKx0/nbg82auyV9byThoxUid6
-         yuLycsGEONWk8se0VDbIPslRayMJxQHMS4Hk0hiy2teKUMpQIfk0mZP4zznhHacNVvKn
-         iqBTBEty/voJONR9mkaklryozpk4chKpo/0RzawBTkGIb1uUWxaBzH5LqXfxWlKPrQ/4
-         JaTtSM6+AYpNqF4MhtltOIGd7fTT4ayQKU8cux10Za7Iz/isb6/BQ77zLeiWHwZ7bqAK
-         LoCQ==
-X-Gm-Message-State: AOAM530l0iDV0OCjapHj2Rc6bYy7XuZx6fdOZmfqlqkTjRCh7UjNScJN
-        sl3+PJ5bs7LZwWtYK1wixHla0A==
-X-Google-Smtp-Source: ABdhPJwzeVQ7KfAPHIdf5+7iuGzzghyIeHx+bc5IqXQTmjaqrqIAMfEAcZZLqeEcriSQzGWy/ESgcA==
-X-Received: by 2002:adf:fc0c:: with SMTP id i12mr5308402wrr.173.1643026400470;
-        Mon, 24 Jan 2022 04:13:20 -0800 (PST)
-Received: from [192.168.1.8] ([149.86.85.114])
-        by smtp.gmail.com with ESMTPSA id v3sm6333055wru.15.2022.01.24.04.13.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jan 2022 04:13:19 -0800 (PST)
-Message-ID: <127cb5f6-a969-82df-3dff-a5ac288d7043@isovalent.com>
-Date:   Mon, 24 Jan 2022 12:13:19 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kTQ7PaifhtIuOUaGkRwV0rZi7ijH/GseKpb0aQu503M=;
+        b=tubvkryqbNL4cz+dKXPLzFM39KvePfLJN1kgecRiD+3sUD6uED1154ctxQ+aDDiDdx
+         x6n0/xkNHj5E26UH1itNIwN8c65mI35cplOaQ8OqRVekp+CxP3JBNIH4da20dMJEf9lh
+         EUWb/P6njpzsmh97PKvnvCChCPOUD+sU9LIhcMdidAwEp+d7Ziroz99rylUy93mm94gt
+         mV0YaUCTMKZ9eKRVLKAJH24W8lqlsHr4poYghBqIIkTv5GuqIeg8nyWWEPP3ErfYA0Yw
+         75fdLjyphv0ypYZZakTDFfT5wbN88Fp6HE59iq/czEV+L46kKhpsFzhcIGx+SFNGmWgX
+         Po8w==
+X-Gm-Message-State: AOAM533iORcjSoSkIoofwuqAt6ZWpVYmHBiJegPqPXuVFWZpLhi0a/st
+        DaVFQQafpOwjyvLfvQMMT/cvmNhkaO9eVOKYGx1tlLu/s9sK8ac6sGG89oJFYP+GYjTDrzUwQK5
+        rSEgnxLwKrvZ8
+X-Received: by 2002:a17:907:7215:: with SMTP id dr21mr12510958ejc.75.1643026892281;
+        Mon, 24 Jan 2022 04:21:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzS7uK/kism/BhI8pUrfROMKoK9OgoCpLIy8AaFqvZDEgRt4IY3hBtM8Sx8szftVyw6NcmdTA==
+X-Received: by 2002:a17:907:7215:: with SMTP id dr21mr12510940ejc.75.1643026892036;
+        Mon, 24 Jan 2022 04:21:32 -0800 (PST)
+Received: from krava ([83.240.63.12])
+        by smtp.gmail.com with ESMTPSA id l3sm6455280edr.61.2022.01.24.04.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jan 2022 04:21:31 -0800 (PST)
+Date:   Mon, 24 Jan 2022 13:21:29 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v3 0/9] fprobe: Introduce fprobe function entry/exit
+ probe
+Message-ID: <Ye6ZyeHQtPfUoSvX@krava>
+References: <164260419349.657731.13913104835063027148.stgit@devnote2>
+ <CAEf4Bzbbimea3ydwafXSHFiEffYx5zAcwGNKk8Zi6QZ==Vn0Ug@mail.gmail.com>
+ <20220121135510.7cfa6540e31824aa39b1c1b8@kernel.org>
+ <CAEf4Bza0eTft2kjcm9HhKpAm=AuXnGwZfZ+sYpVVBvj93PBreQ@mail.gmail.com>
+ <Ye3ptcW0eAFRYm58@krava>
+ <20220124092405.665e9e0fc3ce14b16a1a9fcf@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Bpftool mirror now available
-Content-Language: en-GB
-To:     Dave Thaler <dthaler@microsoft.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-References: <267a35a6-a045-c025-c2d9-78afbf6fc325@isovalent.com>
- <CH2PR21MB14640448106792E7197A042CA35A9@CH2PR21MB1464.namprd21.prod.outlook.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CH2PR21MB14640448106792E7197A042CA35A9@CH2PR21MB1464.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220124092405.665e9e0fc3ce14b16a1a9fcf@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-01-20 14:19 UTC+0000 ~ Dave Thaler <dthaler@microsoft.com>
-> Quentin Monnet <quentin@isovalent.com> wrote:
->> Hi, I have the pleasure to announce the availability of a mirror for bpftool on GitHub, at the following URL:
->> [...]
->> 3. Another objective was to help other projects build on top of the existing sources for bpftool. I'm thinking in
->> particular of eBPF-for-Windows, which has been working on a proof-of-concept port of the tool for Windows [1]. 
->> Bpftool's mirror keeps the minimal amount of necessary headers, and stripped most of them from the definitions
->> that are not required in our context, which should make it easier to uncouple bpftool from Linux.
->> [...]
->> Just to make it clear, bpftool's mirror does not change the fact that all bpftool development happens on the
->> kernel mailing-lists (in particular, the BPF mailing-list), and that the sources hosted in the kernel repository
->> remain the reference for the tool. At this time the GitHub repository is just a mirror, and will not accept pull
->> requests on bpftool's sources.
+On Mon, Jan 24, 2022 at 09:24:05AM +0900, Masami Hiramatsu wrote:
+> On Mon, 24 Jan 2022 00:50:13 +0100
+> Jiri Olsa <jolsa@redhat.com> wrote:
 > 
-> Thanks Quentin, this is a great first step!   I can update the ebpf-for-windows project to use this as a submodule.
+> > On Fri, Jan 21, 2022 at 09:29:00AM -0800, Andrii Nakryiko wrote:
+> > > On Thu, Jan 20, 2022 at 8:55 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > On Thu, 20 Jan 2022 14:24:15 -0800
+> > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > > On Wed, Jan 19, 2022 at 6:56 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > > > >
+> > > > > > Hello Jiri,
+> > > > > >
+> > > > > > Here is the 3rd version of fprobe. I added some comments and
+> > > > > > fixed some issues. But I still saw some problems when I add
+> > > > > > your selftest patches.
+> > > > > >
+> > > > > > This series introduces the fprobe, the function entry/exit probe
+> > > > > > with multiple probe point support. This also introduces the rethook
+> > > > > > for hooking function return as same as kretprobe does. This
+> > > > > > abstraction will help us to generalize the fgraph tracer,
+> > > > > > because we can just switch it from rethook in fprobe, depending
+> > > > > > on the kernel configuration.
+> > > > > >
+> > > > > > The patch [1/9] and [7/9] are from Jiri's series[1]. Other libbpf
+> > > > > > patches will not be affected by this change.
+> > > > > >
+> > > > > > [1] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> > > > > >
+> > > > > > However, when I applied all other patches on top of this series,
+> > > > > > I saw the "#8 bpf_cookie" test case has been stacked (maybe related
+> > > > > > to the bpf_cookie issue which Andrii and Jiri talked?) And when I
+> > > > > > remove the last selftest patch[2], the selftest stopped at "#112
+> > > > > > raw_tp_test_run".
+> > > > > >
+> > > > > > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#m242d2b3a3775eeb5baba322424b15901e5e78483
+> > > > > >
+> > > > > > Note that I used tools/testing/selftests/bpf/vmtest.sh to check it.
+> > > > > >
+> > > > > > This added 2 more out-of-tree patches. [8/9] is for adding wildcard
+> > > > > > support to the sample program, [9/9] is a testing patch for replacing
+> > > > > > kretprobe trampoline with rethook.
+> > > > > > According to this work, I noticed that using rethook in kretprobe
+> > > > > > needs 2 steps.
+> > > > > >  1. port the rethook on all architectures which supports kretprobes.
+> > > > > >     (some arch requires CONFIG_KPROBES for rethook)
+> > > > > >  2. replace kretprobe trampoline with rethook for all archs, at once.
+> > > > > >     This must be done by one treewide patch.
+> > > > > >
+> > > > > > Anyway, I'll do the kretprobe update in the next step as another series.
+> > > > > > (This testing patch is just for confirming the rethook is correctly
+> > > > > >  implemented.)
+> > > > > >
+> > > > > > BTW, on the x86, ftrace (with fentry) location address is same as
+> > > > > > symbol address. But on other archs, it will be different (e.g. arm64
+> > > > > > will need 2 instructions to save link-register and call ftrace, the
+> > > > > > 2nd instruction will be the ftrace location.)
+> > > > > > Does libbpf correctly handle it?
+> > 
+> > hm, I'm probably missing something, but should this be handled by arm
+> > specific kernel code? user passes whatever is found in kallsyms, right?
 > 
-> Longer term, is the goal to make the mirror be the authoritative reference, or to make the Linux kernel repository
-> not be Linux-only but accept non-Linux patches to bpftool?
+> In x86, fentry nop is always placed at the first instruction of the function,
+> but the other arches couldn't do that if they use LR (link register) for
+> storing return address instead of stack. E.g. arm64 saves lr and call the
+> ftrace. Then ftrace location address of a function is not the symbol address.
+> 
+> Anyway, I updated fprobe to handle those cases. I also found some issues
+> on rethook, so let me update the series again.
 
-Hi Dave, longer term goals have not been established yet, and the
-discussion about what happens to bpftool next still needs to happen. I
-understand that you have been working on making bpftool cross-OS, and
-that this raises the question of how to contribute Windows-related
-patches upstream.
+great, I reworked the bpf fprobe link change and need to add the
+symbols attachment support, so you don't need to include it in
+new version.. I'll rebase it and send on top of your patchset
 
-Moving bpftool out of the kernel and into its own tree (whether on
-GitHub or on kernel.org) would make sense to me, although it comes with
-a number of things to sort out. First, bpftool is now being used
-directly by a number of components in the kernel, for loading programs
-or for its ability to generate BPF skeletons for programs. As far as I
-can tell, this concerns the following items:
+thanks,
+jirka
 
-- The kernel itself, when configured with CONFIG_BPF_PRELOAD, requires
-bpftool to build, because BPF pre-loaded iterators rely on BPF skeletons
-(see kernel/bpf/preload/iterators/Makefile).
+> 
+> > > > >
+> > > > > libbpf doesn't do anything there. The interface for kprobe is based on
+> > > > > function name and kernel performs name lookups internally to resolve
+> > > > > IP. For fentry it's similar (kernel handles IP resolution), but
+> > > > > instead of function name we specify BTF ID of a function type.
+> > > >
+> > > > Hmm, according to Jiri's original patch, it seems to pass an array of
+> > > > addresses. So I thought that has been resolved by libbpf.
+> > > >
+> > > > +                       struct {
+> > > > +                               __aligned_u64   addrs;
+> > > 
+> > > I think this is a pointer to an array of pointers to zero-terminated C strings
+> > 
+> > I used direct addresses, because bpftrace already has them, so there was
+> > no point passing strings, I cann add support for that
+> 
+> So now both direct address array or symbol array are OK.
+> 
+> Thank you,
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+> 
 
-- BPF samples and selftests (samples/bpf/Makefile,
-tools/bpf/runqslower/Makefile) use BPF for a number of use cases.
-
-- Other tools hosted in the kernel repository, in particular runqslower
-(tools/bpf/runqslower/Makefile) and perf (tools/perf/Makefile.perf), use
-bpftool to produce BPF skeletons as well.
-
-As far as I can tell, the above do not rely on cutting-edge bpftool
-features, and they could maybe be adjusted to consider bpftool as an
-external dependency for BPF, somewhat like pahole or clang/LLVM have
-been so far.
-
-Another thing to consider is that keeping bpftool next to the kernel
-sources has been useful to help keeping the tool in sync, for example
-for adding new type names to bpftool's lists when the kernel get new
-program/map types. We have recently introduced some CI checks that could
-be adjusted to work with an external repo and mitigate this issue, but
-still, it is harder to tell people to submit changes to a second
-repository when what they want is just to update the kernel. I fear this
-would result in a bit more maintenance on bpftool's side (but then
-bpftool's requirements in terms of maintenance are not that big when
-compared to bigger tools, and maybe some of it could be automated).
-
-Then the other solution, as you mentioned, would be to take
-Windows-related patches for bpftool in the Linux repo. For what it's
-worth, I don't have any personal objection to it, but it raises the
-problems of testing and ownership (who fixes bugs) for these patches.
-I'm also unsure what it would mean in terms of development workflow:
-would Windows-related contributions be reviewed and tested beforehand,
-and treated somewhat like vendor code, or would all the discussions
-(Windows-related bug reports, contributions to Windows support but
-external to Microsoft, etc.) happen on the BPF mailing list?
-
-If we want bpftool to become fully cross-OS, my feeling is that it would
-be maybe more work, but more sensible to move it outside of the kernel
-tree (although this does not have to be immediate, obviously - let's see
-how the Windows port is doing first). However, this decision is not mine
-alone to take, and the maintainers will surely have their say in it
-(this could also be a topic for you to raise at the next BSC meeting, I
-guess). I hope the considerations above can help for this discussion.
-
-Best regards,
-Quentin
