@@ -2,129 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06555499EBC
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 00:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5ED049A8A7
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 05:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1579308AbiAXWnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 17:43:21 -0500
-Received: from mga05.intel.com ([192.55.52.43]:61240 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1583831AbiAXWdB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 17:33:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643063580; x=1674599580;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Fxf9gxg/X1RfJSgX8EYRn9ZdFJkbiAutWxK6z4YLqo8=;
-  b=VVJ/lUY+K5Zv2ppMm2ibdlaX2+/F3Dba+gzfvUKMqZkWSDD/1Syds6Y3
-   31r5uDvcW7e7fRECAcxGGGudXwOf//269HCNmoT3F3MivmyRi9dWmTOiD
-   68Snp1oXmLXGHMwm8q/YtiEuwCq+MFoFnVhsTDMjGxV0f4Kr30L+IPn8h
-   ciARJTk+hrtpXylzaPpq9TTxxxHFHqs7OuoeAcLogK6zL/AmIiWFVVOcc
-   0W33bsafNN1Rs3bfmz6+3H4TLICfpE62dFoDXy8yjMIIOdAy+XByIzeqf
-   60WxCFqTvBgq6CgGRlqvXAHjKylLnBzfSjNwM54uEkoGZREoJLTCgz4yY
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="332516879"
-X-IronPort-AV: E=Sophos;i="5.88,313,1635231600"; 
-   d="scan'208";a="332516879"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2022 14:24:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,313,1635231600"; 
-   d="scan'208";a="695588184"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 24 Jan 2022 14:24:10 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nC7kv-000Iz8-KA; Mon, 24 Jan 2022 22:24:09 +0000
-Date:   Tue, 25 Jan 2022 06:23:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     kbuild-all@lists.01.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        id S239825AbiAYDKV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 22:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2364073AbiAXXqo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 18:46:44 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C400C0613B2;
+        Mon, 24 Jan 2022 13:42:01 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0C15F6150E;
+        Mon, 24 Jan 2022 21:42:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0449C340E4;
+        Mon, 24 Jan 2022 21:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1643060520;
+        bh=bZB8LXzuRpRqd1OdmxiHwhFIwlaujiAsLxkUGVGfxqo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=nymYwyfvy6p62pEdV4oxB9yEl7aA72qMZTqyki7Vu8K9OL9yk8q8tieh5cGHg+hLD
+         apqBqd6b25oesLzGaR9TW4ExBYCPIjDM/5xPaRWN1ZHyFAxMr09Xqm5Ym8AYzwvil3
+         +HdgwuNVxgtlVT6o4+0h3h9S3oxbsvBVRgJ5dFho=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Chase Conklin <chase.conklin@arm.com>,
+        German Gomez <german.gomez@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH v4 4/9] rethook: x86: Add rethook x86 implementation
-Message-ID: <202201250509.MSbKNePn-lkp@intel.com>
-References: <164304060913.1680787.1167309209346264268.stgit@devnote2>
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.16 0943/1039] perf evsel: Override attr->sample_period for non-libpfm4 events
+Date:   Mon, 24 Jan 2022 19:45:32 +0100
+Message-Id: <20220124184156.987692281@linuxfoundation.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124184125.121143506@linuxfoundation.org>
+References: <20220124184125.121143506@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <164304060913.1680787.1167309209346264268.stgit@devnote2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Masami,
+From: German Gomez <german.gomez@arm.com>
 
-I love your patch! Yet something to improve:
+commit 3606c0e1a1050d397ad759a62607e419fd8b0ccb upstream.
 
-[auto build test ERROR on rostedt-trace/for-next]
-[also build test ERROR on tip/x86/core linus/master v5.17-rc1 next-20220124]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+A previous patch preventing "attr->sample_period" values from being
+overridden in pfm events changed a related behaviour in arm-spe.
 
-url:    https://github.com/0day-ci/linux/commits/Masami-Hiramatsu/fprobe-Introduce-fprobe-function-entry-exit-probe/20220125-001253
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git for-next
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20220125/202201250509.MSbKNePn-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/6366c7f830e71242dd9538fbdb09acdccea6e786
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Masami-Hiramatsu/fprobe-Introduce-fprobe-function-entry-exit-probe/20220125-001253
-        git checkout 6366c7f830e71242dd9538fbdb09acdccea6e786
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash arch/x86/kernel/
+Before said patch:
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+  perf record -c 10000 -e arm_spe_0// -- sleep 1
 
-All errors (new ones prefixed by >>):
+Would yield an SPE event with period=10000. After the patch, the period
+in "-c 10000" was being ignored because the arm-spe code initializes
+sample_period to a non-zero value.
 
-   In file included from arch/x86/kernel/process.c:48:
-   arch/x86/include/asm/unwind.h: In function 'unwind_recover_kretprobe':
->> arch/x86/include/asm/unwind.h:113:17: error: 'struct unwind_state' has no member named 'kr_cur'
-     113 |           &state->kr_cur);
-         |                 ^~
-   arch/x86/kernel/process.c: At top level:
-   arch/x86/kernel/process.c:887:13: warning: no previous prototype for 'arch_post_acpi_subsys_init' [-Wmissing-prototypes]
-     887 | void __init arch_post_acpi_subsys_init(void)
-         |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
---
-   In file included from arch/x86/kernel/unwind_guess.c:7:
-   arch/x86/include/asm/unwind.h: In function 'unwind_recover_kretprobe':
->> arch/x86/include/asm/unwind.h:113:17: error: 'struct unwind_state' has no member named 'kr_cur'
-     113 |           &state->kr_cur);
-         |                 ^~
+This patch restores the previous behaviour for non-libpfm4 events.
 
-
-vim +113 arch/x86/include/asm/unwind.h
-
-   106	
-   107	static inline
-   108	unsigned long unwind_recover_kretprobe(struct unwind_state *state,
-   109					       unsigned long addr, unsigned long *addr_p)
-   110	{
-   111		if (IS_ENABLED(CONFIG_RETHOOK) && is_rethook_trampoline(addr))
-   112			return rethook_find_ret_addr(state->task, (unsigned long)addr_p,
- > 113						     &state->kr_cur);
-   114	#ifdef CONFIG_KRETPROBES
-   115		return is_kretprobe_trampoline(addr) ?
-   116			kretprobe_find_ret_addr(state->task, addr_p, &state->kr_cur) :
-   117			addr;
-   118	#else
-   119		return addr;
-   120	#endif
-   121	}
-   122	
-
+Fixes: ae5dcc8abe31 (“perf record: Prevent override of attr->sample_period for libpfm4 events”)
+Reported-by: Chase Conklin <chase.conklin@arm.com>
+Signed-off-by: German Gomez <german.gomez@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20220118144054.2541-1-german.gomez@arm.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ tools/perf/util/evsel.c |   25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
+
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1064,6 +1064,17 @@ void __weak arch_evsel__fixup_new_cycles
+ {
+ }
+ 
++static void evsel__set_default_freq_period(struct record_opts *opts,
++					   struct perf_event_attr *attr)
++{
++	if (opts->freq) {
++		attr->freq = 1;
++		attr->sample_freq = opts->freq;
++	} else {
++		attr->sample_period = opts->default_interval;
++	}
++}
++
+ /*
+  * The enable_on_exec/disabled value strategy:
+  *
+@@ -1130,14 +1141,12 @@ void evsel__config(struct evsel *evsel,
+ 	 * We default some events to have a default interval. But keep
+ 	 * it a weak assumption overridable by the user.
+ 	 */
+-	if (!attr->sample_period) {
+-		if (opts->freq) {
+-			attr->freq		= 1;
+-			attr->sample_freq	= opts->freq;
+-		} else {
+-			attr->sample_period = opts->default_interval;
+-		}
+-	}
++	if ((evsel->is_libpfm_event && !attr->sample_period) ||
++	    (!evsel->is_libpfm_event && (!attr->sample_period ||
++					 opts->user_freq != UINT_MAX ||
++					 opts->user_interval != ULLONG_MAX)))
++		evsel__set_default_freq_period(opts, attr);
++
+ 	/*
+ 	 * If attr->freq was set (here or earlier), ask for period
+ 	 * to be sampled.
+
+
