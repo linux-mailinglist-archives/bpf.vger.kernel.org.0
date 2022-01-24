@@ -2,86 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BBE498490
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 17:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593C1498492
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 17:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbiAXQVn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 11:21:43 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42906 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243666AbiAXQVm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 11:21:42 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nC25u-0002qy-So; Mon, 24 Jan 2022 17:21:26 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nC25u-000L2R-Hz; Mon, 24 Jan 2022 17:21:26 +0100
-Subject: Re: [PATCH bpf-next] bpf, arm64: enable kfunc call
-To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20220119144942.305568-1-houtao1@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b54b3297-086c-1b64-1c25-01f70c6412af@iogearbox.net>
-Date:   Mon, 24 Jan 2022 17:21:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S243654AbiAXQV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 11:21:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243642AbiAXQV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 11:21:58 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32DBBC06173B
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 08:21:58 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id i62so4456256ioa.1
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 08:21:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Nm1qwEi8bHEN6BRmyZX7p8WAjWAuqT/uxFxvafemUko=;
+        b=CnSRzPdEkADFaLFY8FIJslaQYwpd/FrH16Yfk2i8wNL06p6p02ADXr4MEGkwhBowfd
+         6Z6D0RIeXVMv/pSDPiWzDogNor046WOkFvso7Wc28gb2sNRmLqzKQun6YckqKV39q2bx
+         YpYjd6SUSQ+7kAMrRulNvF8pS4F/6MvenZOSKIzKX1GO7iH6WAom10yQdRApXy68ldXo
+         9vvBjIO5QNOKAa40qPJDlbBG8lFF4g94o4fcKI59XURCN79mAkAZpA4yFvmmL3yBqiC1
+         XoyKy7W2rltN32EynPtOIKSPhxmKlTQ0L85JYIndo2I3h3/jipSUXnm4piGGV811VyfR
+         AUvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Nm1qwEi8bHEN6BRmyZX7p8WAjWAuqT/uxFxvafemUko=;
+        b=26NHw+0puB0CcoNwJc0/okQf3RVljCpjuL9yWfn04IClN2stl1kYm6wHoa4AAXQp31
+         Zx7xLx2gEiA7KOQTO4Np9yGAeLC/vQ9zTsUgdflGvxkLsu5m1AjC7nPyIs0G5EcejlmF
+         Tf61hDGW6aFB+uCdocS/xl3aRAfYFg+mzq8vY3WSZef4hN9emohMRJ9FhenWNkQDRXC2
+         IZJ98+hI6szugRNoLpJzf4yicfKdxaxUyZp0p9EkYwQmhNsOMq8GHYeETZ8u/hYrY8NY
+         xBD9KBeujf+s1xZXM4dbDiQ7trgXZHD5SLtZmBpylO/hC8Y3HJMJrnfBt/f6Ejvc4Odr
+         0ihg==
+X-Gm-Message-State: AOAM530UUpGW8hpu/KkV0NjEco6vUiqJDSL4JAxAOMsKmgtJiGSKpPjY
+        fhn+tfAg+VMH2aovNWwdU9LfVavK+e76Mmkevktw5zMp
+X-Google-Smtp-Source: ABdhPJyPTscrvD1jKAkfiWNaoSAgvjr8yZiqfywbXHmGujjVQCPfn++S9Il+QfNykL7ap5YS+twQOmruyNzRmP6XhWg=
+X-Received: by 2002:a6b:ee16:: with SMTP id i22mr2725277ioh.63.1643041317523;
+ Mon, 24 Jan 2022 08:21:57 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20220119144942.305568-1-houtao1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26432/Mon Jan 24 10:24:33 2022)
+References: <20220120060529.1890907-1-andrii@kernel.org> <20220120060529.1890907-4-andrii@kernel.org>
+ <87wniu7hss.fsf@toke.dk> <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
+ <87lez87rbm.fsf@toke.dk> <e58aabf9-af55-8eac-1047-b18801141d80@gmail.com>
+In-Reply-To: <e58aabf9-af55-8eac-1047-b18801141d80@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 24 Jan 2022 08:21:46 -0800
+Message-ID: <CAEf4BzaiZz3mW97qXX=Ee5nQS=oRk8zOcv7LMw9r-P4w9k5RPA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map definitions
+To:     David Ahern <dsahern@gmail.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/19/22 3:49 PM, Hou Tao wrote:
-> Since commit b2eed9b58811 ("arm64/kernel: kaslr: reduce module
-> randomization range to 2 GB"), for arm64 whether KASLR is enabled
-> or not, the module is placed within 2GB of the kernel region, so
-> s32 in bpf_kfunc_desc is sufficient to represente the offset of
-> module function relative to __bpf_call_base. The only thing needed
-> is to override bpf_jit_supports_kfunc_call().
-> 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+On Fri, Jan 21, 2022 at 2:04 PM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 1/21/22 1:43 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >
+> >> On Thu, Jan 20, 2022 at 3:44 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >>>
+> >>> Andrii Nakryiko <andrii@kernel.org> writes:
+> >>>
+> >>>> Enact deprecation of legacy BPF map definition in SEC("maps") ([0]).=
+ For
+> >>>> the definitions themselves introduce LIBBPF_STRICT_MAP_DEFINITIONS f=
+lag
+> >>>> for libbpf strict mode. If it is set, error out on any struct
+> >>>> bpf_map_def-based map definition. If not set, libbpf will print out
+> >>>> a warning for each legacy BPF map to raise awareness that it goes
+> >>>> away.
+> >>>
+> >>> We've touched upon this subject before, but I (still) don't think it'=
+s a
+> >>> good idea to remove this support entirely: It makes it impossible to
+> >>> write a loader that can handle both new and old BPF objects.
+> >>>
+> >>> So discourage the use of the old map definitions, sure, but please do=
+n't
+> >>> make it completely impossible to load such objects.
+> >>
+> >> BTF-defined maps have been around for quite a long time now and only
+> >> have benefits on top of the bpf_map_def way. The source code
+> >> translation is also very straightforward. If someone didn't get around
+> >> to update their BPF program in 2 years, I don't think we can do much
+> >> about that.
+> >>
+> >> Maybe instead of trying to please everyone (especially those that
+> >> refuse to do anything to their BPF programs), let's work together to
+> >> nudge laggards to actually modernize their source code a little bit
+> >> and gain some benefits from that along the way?
+> >
+> > I'm completely fine with nudging people towards the newer features, and
+> > I think the compile-time deprecation warning when someone is using the
+> > old-style map definitions in their BPF programs is an excellent way to
+> > do that.
+> >
+> > I'm also fine with libbpf *by default* refusing to load programs that
+> > use the old-style map definitions, but if the code is removed completel=
+y
+> > it becomes impossible to write general-purpose loaders that can handle
+> > both old and new programs. The obvious example of such a loader is
+> > iproute2, the loader in xdp-tools is another.
+> >
+>
+> I agree with Toke's response.
+>
+> 2 years is a very small amount of time when it comes to OS and kernel
+> versions. Many companies base products on enterprise distributions and
+> run them for 10+ years. During that time there will be needs to update
+> some components - like kernel version or some tool but that is done with
+> the least amount of churn possible. Every update has the potential to
+> bring in unknown behavior changes. Requiring updates to entire tool
+> chains, multiple tool sets and libraries to accommodate some deprecation
+> will only hinder being able to update anything.
+>
+> Further, programs (e.g., debugging as just one example) can and will
+> need to be used across many OS and kernel versions.
 
-Lgtm, could we also add a BPF selftest to assert that this assumption
-won't break in future when bpf_jit_supports_kfunc_call() returns true?
-
-E.g. extending lib/test_bpf.ko could be an option, wdyt?
-
-> ---
->   arch/arm64/net/bpf_jit_comp.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> index e96d4d87291f..74f9a9b6a053 100644
-> --- a/arch/arm64/net/bpf_jit_comp.c
-> +++ b/arch/arm64/net/bpf_jit_comp.c
-> @@ -1143,6 +1143,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
->   	return prog;
->   }
->   
-> +bool bpf_jit_supports_kfunc_call(void)
-> +{
-> +	return true;
-> +}
-> +
->   u64 bpf_jit_alloc_exec_limit(void)
->   {
->   	return VMALLOC_END - VMALLOC_START;
-> 
-
+Which is why all the things that are being deprecated have better
+alternatives that work *right now* with libbpf v0.x and will keep
+working with v1.x.
