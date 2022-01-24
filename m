@@ -2,188 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BA1498A1B
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 20:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8AE499191
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 21:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344170AbiAXTBc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 14:01:32 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43262 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1344158AbiAXS6B (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 13:58:01 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 20OHVl8n020276
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:57:58 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=NpNHzuKmtb53iafq0y2vxSYb9O2ctA0ynTJPE7Ne5bw=;
- b=BkooCdBh60Z8o94jkNKgmQ7Fy0LPV/KfBPBs1TKxpyE1/60y6zxq3npTP1de9Jw6Ka9g
- /CB5cDmzDDWq5riKJX0J2ttHO9TXwP8YNpaLOc1nqOlvgafGK1JVRPRY9n4ugIR8CWBY
- XWUnO5o88NX74i7wp9Y+upWPTEUlEt6/sBI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3dsk2q52d4-8
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:57:58 -0800
-Received: from twshared11487.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 24 Jan 2022 10:57:55 -0800
-Received: by devbig014.vll3.facebook.com (Postfix, from userid 7377)
-        id 06A6798161CA; Mon, 24 Jan 2022 10:54:48 -0800 (PST)
-From:   Kenny Yu <kennyyu@fb.com>
-To:     <kennyyu@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <yhs@fb.com>,
-        <alexei.starovoitov@gmail.com>, <andrii.nakryiko@gmail.com>,
-        <phoenix1987@gmail.com>
-Subject: [PATCH v7 bpf-next 4/4] selftests/bpf: Add test for sleepable bpf iterator programs
-Date:   Mon, 24 Jan 2022 10:54:03 -0800
-Message-ID: <20220124185403.468466-5-kennyyu@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220124185403.468466-1-kennyyu@fb.com>
-References: <20220113233158.1582743-1-kennyyu@fb.com>
- <20220124185403.468466-1-kennyyu@fb.com>
+        id S1379626AbiAXUMD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 15:12:03 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:49662 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1378266AbiAXUGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 15:06:43 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0E42CB8124F;
+        Mon, 24 Jan 2022 20:06:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36C61C340E5;
+        Mon, 24 Jan 2022 20:06:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1643054800;
+        bh=8qphzB9DIKFYeekh22vyIkpyTJNnlON5enOGNgmM+ZM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XHtu7o+AGXFMas5iaCTdivZ6VNdOZPxB8S64VaEPBQIKfmyQ+rFC/PL1eUSeOQ3bO
+         kcvu10d05oBhQJqCEgJVxbVy42gUbBOH6pc3/bHGfWbfQXPZBlt0vqN+UP/WSGnQnl
+         NYxhXv70r36mAvNN4PdTOgsFJkVVn6O5y6t8gvRo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Chase Conklin <chase.conklin@arm.com>,
+        German Gomez <german.gomez@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Stephane Eranian <eranian@google.com>,
+        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH 5.10 508/563] perf evsel: Override attr->sample_period for non-libpfm4 events
+Date:   Mon, 24 Jan 2022 19:44:33 +0100
+Message-Id: <20220124184042.036113932@linuxfoundation.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124184024.407936072@linuxfoundation.org>
+References: <20220124184024.407936072@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: n_UKNOP10uHF_hw0DHZ1gt0Ywth-EWku
-X-Proofpoint-ORIG-GUID: n_UKNOP10uHF_hw0DHZ1gt0Ywth-EWku
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-24_09,2022-01-24_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- spamscore=0 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 mlxlogscore=823
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2201240124
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a test for bpf iterator programs to make use of sleepable
-bpf helpers.
+From: German Gomez <german.gomez@arm.com>
 
-Signed-off-by: Kenny Yu <kennyyu@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+commit 3606c0e1a1050d397ad759a62607e419fd8b0ccb upstream.
+
+A previous patch preventing "attr->sample_period" values from being
+overridden in pfm events changed a related behaviour in arm-spe.
+
+Before said patch:
+
+  perf record -c 10000 -e arm_spe_0// -- sleep 1
+
+Would yield an SPE event with period=10000. After the patch, the period
+in "-c 10000" was being ignored because the arm-spe code initializes
+sample_period to a non-zero value.
+
+This patch restores the previous behaviour for non-libpfm4 events.
+
+Fixes: ae5dcc8abe31 (“perf record: Prevent override of attr->sample_period for libpfm4 events”)
+Reported-by: Chase Conklin <chase.conklin@arm.com>
+Signed-off-by: German Gomez <german.gomez@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20220118144054.2541-1-german.gomez@arm.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- .../selftests/bpf/prog_tests/bpf_iter.c       | 20 +++++++
- .../selftests/bpf/progs/bpf_iter_task.c       | 54 +++++++++++++++++++
- 2 files changed, 74 insertions(+)
+ tools/perf/util/evsel.c |   25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index b84f859b1267..5142a7d130b2 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -138,6 +138,24 @@ static void test_task(void)
- 	bpf_iter_task__destroy(skel);
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1014,6 +1014,17 @@ struct evsel_config_term *__evsel__get_c
+ 	return found_term;
  }
-=20
-+static void test_task_sleepable(void)
+ 
++static void evsel__set_default_freq_period(struct record_opts *opts,
++					   struct perf_event_attr *attr)
 +{
-+	struct bpf_iter_task *skel;
-+
-+	skel =3D bpf_iter_task__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_iter_task__open_and_load"))
-+		return;
-+
-+	do_dummy_read(skel->progs.dump_task_sleepable);
-+
-+	ASSERT_GT(skel->bss->num_expected_failure_copy_from_user_task, 0,
-+		  "num_expected_failure_copy_from_user_task");
-+	ASSERT_GT(skel->bss->num_success_copy_from_user_task, 0,
-+		  "num_success_copy_from_user_task");
-+
-+	bpf_iter_task__destroy(skel);
-+}
-+
- static void test_task_stack(void)
- {
- 	struct bpf_iter_task_stack *skel;
-@@ -1252,6 +1270,8 @@ void test_bpf_iter(void)
- 		test_bpf_map();
- 	if (test__start_subtest("task"))
- 		test_task();
-+	if (test__start_subtest("task_sleepable"))
-+		test_task_sleepable();
- 	if (test__start_subtest("task_stack"))
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task.c b/tools/te=
-sting/selftests/bpf/progs/bpf_iter_task.c
-index c86b93f33b32..d22741272692 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include "bpf_iter.h"
- #include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-=20
- char _license[] SEC("license") =3D "GPL";
-=20
-@@ -23,3 +24,56 @@ int dump_task(struct bpf_iter__task *ctx)
- 	BPF_SEQ_PRINTF(seq, "%8d %8d\n", task->tgid, task->pid);
- 	return 0;
- }
-+
-+int num_expected_failure_copy_from_user_task =3D 0;
-+int num_success_copy_from_user_task =3D 0;
-+
-+SEC("iter.s/task")
-+int dump_task_sleepable(struct bpf_iter__task *ctx)
-+{
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	static const char info[] =3D "    =3D=3D=3D END =3D=3D=3D";
-+	struct pt_regs *regs;
-+	void *ptr;
-+	uint32_t user_data =3D 0;
-+	int ret;
-+
-+	if (task =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+
-+	/* Read an invalid pointer and ensure we get an error */
-+	ptr =3D NULL;
-+	ret =3D bpf_copy_from_user_task(&user_data, sizeof(uint32_t), ptr, task=
-, 0);
-+	if (ret) {
-+		++num_expected_failure_copy_from_user_task;
++	if (opts->freq) {
++		attr->freq = 1;
++		attr->sample_freq = opts->freq;
 +	} else {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
++		attr->sample_period = opts->default_interval;
 +	}
-+
-+	/* Try to read the contents of the task's instruction pointer from the
-+	 * remote task's address space.
-+	 */
-+	regs =3D (struct pt_regs *)bpf_task_pt_regs(task);
-+	if (regs =3D=3D (void *)0) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+	ptr =3D (void *)PT_REGS_IP(regs);
-+
-+	ret =3D bpf_copy_from_user_task(&user_data, sizeof(uint32_t), ptr, task=
-, 0);
-+	if (ret) {
-+		BPF_SEQ_PRINTF(seq, "%s\n", info);
-+		return 0;
-+	}
-+	++num_success_copy_from_user_task;
-+
-+	if (ctx->meta->seq_num =3D=3D 0)
-+		BPF_SEQ_PRINTF(seq, "    tgid      gid     data\n");
-+
-+	BPF_SEQ_PRINTF(seq, "%8d %8d %8d\n", task->tgid, task->pid, user_data);
-+	return 0;
 +}
---=20
-2.30.2
++
+ /*
+  * The enable_on_exec/disabled value strategy:
+  *
+@@ -1080,14 +1091,12 @@ void evsel__config(struct evsel *evsel,
+ 	 * We default some events to have a default interval. But keep
+ 	 * it a weak assumption overridable by the user.
+ 	 */
+-	if (!attr->sample_period) {
+-		if (opts->freq) {
+-			attr->freq		= 1;
+-			attr->sample_freq	= opts->freq;
+-		} else {
+-			attr->sample_period = opts->default_interval;
+-		}
+-	}
++	if ((evsel->is_libpfm_event && !attr->sample_period) ||
++	    (!evsel->is_libpfm_event && (!attr->sample_period ||
++					 opts->user_freq != UINT_MAX ||
++					 opts->user_interval != ULLONG_MAX)))
++		evsel__set_default_freq_period(opts, attr);
++
+ 	/*
+ 	 * If attr->freq was set (here or earlier), ask for period
+ 	 * to be sampled.
+
 
