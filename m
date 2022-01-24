@@ -2,104 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D07949791B
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 08:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08D2497D45
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 11:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbiAXHHK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 02:07:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46908 "EHLO
+        id S233832AbiAXKhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 05:37:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbiAXHHH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 02:07:07 -0500
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4538C06173B
-        for <bpf@vger.kernel.org>; Sun, 23 Jan 2022 23:07:06 -0800 (PST)
-Received: by mail-vk1-xa2f.google.com with SMTP id w206so9552273vkd.10
-        for <bpf@vger.kernel.org>; Sun, 23 Jan 2022 23:07:06 -0800 (PST)
+        with ESMTP id S234250AbiAXKhd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 05:37:33 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5B1C061748
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 02:37:33 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id r10so24724339edt.1
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 02:37:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
-        b=a9Pm3gW6Dx19rcWktyoQHHY7M8nyT9W42AWClmhIa7sAr61b27tWH4/RB8kolVK6yD
-         vcohVnRu/wrXcVRraWQ4Yh7E8D2XxnQIiLqcAM020KE9VoEYFt56wE4ZcYJ+WdNiCAWH
-         GBWkhCQsrLeXBySd2KQ7wZcP1krkftE1dyhP62xR05f5ADw/hTEn2cZVpJI4+VeAgSDy
-         ZvcvnZmZaKpV01/jCDcqGPSeKmIBUAiJO4gAzZLwaNXXZwYwt6EHpB99bUE07vS3rMlC
-         6M9HJi4IO6mIXppCC8RST0S/yz2ZgvFQGBT9wzHgeSJhxih+3iWjdXOibL6H7m+Y41zs
-         Xoiw==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=rSQeUpcdlaVxnlyHPZlA/Ygg7QddjkAcIgXh5+dK4ZA=;
+        b=E7O+yFPXvOVsUYSz5zQWo2D9xtg2H9UXlQ/JIEjYlqzFFujW2FXR+rOUbFixqb7Jkz
+         Wfk/OrqKKQWA8d4CjyOBoCP81Zko9goCKO7TNH0/1vTgTNgorhJqUlVoKkYpbXZeEUpV
+         9NB9AOG+qstYRWdjMmRIYPs15/2Xtghvqt8it/7WXoKRwwLZjJNcZHHa0FMu7rxXvmgP
+         dECAy3gFD9OMGs+HH3bSmTZVb4+jQfEwrkz3lBw9mZTvvH+SiMCozWU4Xqf+jf9kicKn
+         eTRi0QzYUU78TFKg6S2WxE5aC3LsxcKI089As6Fdq427ctQ6+2ju96BZezLkrvlWkFTo
+         L1pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
-        b=xlsc1ng/KBsn0ypPG3+fRFCgruAK68xDmWEi8Ct89Wq1R7kNulcR2dfxcVFLSyXaCe
-         52poA15Fq4DJZDAAmMhTL/AsS8aTiPWKB0NMzDkS9H5ysIXEWH1xhMJOuivNwjtgxSr4
-         Oi1EsbacoDX6YfYoQ2pjqr52+0wAXoix/VlbZ6KP+fvewha5T334+lB7fpL6hNP3UI7b
-         9sq2yXECtdWgugI15yK40bv2pwWje49I9hAUav0ytuVIMqGGy1s++2/qODafgP6+iM4o
-         7XCbzA0G0tl6f2O1GxBhXTlPv20o4FFlwQVDh0ZC2PZ9oa+KQQ85PEiZWXgGwd9qpLXH
-         dW2Q==
-X-Gm-Message-State: AOAM530AF+P/5G6wAHDQENK2T92Ptjo77LwM3mxO82WU2iWGSeVLWf8e
-        Gr8VrJZZT+oeEB/k3XiPprBKKm6mSYWeaF2407Y=
-X-Google-Smtp-Source: ABdhPJyz7SvcbDWO5xJuWDqlhCfiDd+DKhM8676zyu4OprNVNxGZ71ljl8BuEytbuG7Nv2QYCPbaxH0fTcr8Q16rQso=
-X-Received: by 2002:a1f:3f42:: with SMTP id m63mr823374vka.7.1643008025895;
- Sun, 23 Jan 2022 23:07:05 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=rSQeUpcdlaVxnlyHPZlA/Ygg7QddjkAcIgXh5+dK4ZA=;
+        b=b2ox9++d5eTyP+6iWXsJkAiS3PP5Dq0sRTOcC6cH/I36sbUKTupyiCZgg/d2V+7hCF
+         ip6yTUcnY3ahqWnaIx0YDoUXqOWJzkxmVe4j9qNe375JrRa9311rPu/59yS0sZ5UWa+y
+         8S+iDpgvaK1+2xdo9LAQGVno5WBYCko4YnC7zqfiWhcIIVKhetkwpI2RC4ipYOmaE2y8
+         qkYdUKQ3YO9JiESIi4hu5EbZ0W5ykb9kVRaaidn6W0ULaEGkycQ/wYu1eKAiD+9V3UnO
+         eOXJ7lOEIc7q+hY+j0BDhQnH7UoUGcmlXTgbmxinzDaX2ceQpcFuc5/zzTuVGsm8Kz7J
+         jRbg==
+X-Gm-Message-State: AOAM530+FwTZW3tM8dO2Ehxtuc2YXB2LUBZy0JZcfW1hizISlxEtMLX9
+        YfLL+eevE6F2oXwMIzAtNa23Ew==
+X-Google-Smtp-Source: ABdhPJyR81z+nPMmqT+s+6dYEX7jRS7cDIaT4GXBCfwJpdqDc6v9er/YadU9xc6kuBfX2Zm0MzhDig==
+X-Received: by 2002:a05:6402:34c1:: with SMTP id w1mr10663162edc.403.1643020651530;
+        Mon, 24 Jan 2022 02:37:31 -0800 (PST)
+Received: from [192.168.1.8] ([149.86.95.103])
+        by smtp.gmail.com with ESMTPSA id oz3sm4690259ejb.219.2022.01.24.02.37.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jan 2022 02:37:30 -0800 (PST)
+Message-ID: <15f76929-a953-e540-014f-170dd95dddb1@isovalent.com>
+Date:   Mon, 24 Jan 2022 10:37:30 +0000
 MIME-Version: 1.0
-Sender: jameswiliamsjw682@gmail.com
-Received: by 2002:a59:ca85:0:b0:282:df4:318e with HTTP; Sun, 23 Jan 2022
- 23:07:05 -0800 (PST)
-From:   DINA MCKENNA <dinamckennahowley@gmail.com>
-Date:   Mon, 24 Jan 2022 07:07:05 +0000
-X-Google-Sender-Auth: EadPQbAdIA9CR0UdSAur_iHOk6I
-Message-ID: <CAJMpOne0FMRDs4QUkyksKOBbOJKhfQpbcgVbRDZO+Yh-rDuyuQ@mail.gmail.com>
-Subject: Calvary greetings.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: Bpftool mirror now available
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Dave Thaler <dthaler@microsoft.com>
+References: <267a35a6-a045-c025-c2d9-78afbf6fc325@isovalent.com>
+ <CAEf4Bzbu4wc9anr19yG1AtFEcnxFsBrznynkrVZajQT1x_o6cA@mail.gmail.com>
+ <ac3f95ed-bead-e8ea-b477-edcbd809452c@isovalent.com>
+ <CAEf4BzaiUbAT4hBKTVYadGdygccA3c6jgPsu8VW9sLo+4Ofsvw@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4BzaiUbAT4hBKTVYadGdygccA3c6jgPsu8VW9sLo+4Ofsvw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello my dear,
+2022-01-20 11:07 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Thu, Jan 20, 2022 at 4:35 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> 2022-01-19 22:25 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>>> On Wed, Jan 19, 2022 at 6:47 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> [...]
+>>
+>>>> 2. Because it is easier to compile and ship, this mirror should
+>>>> hopefully simplify bpftool packaging for distributions.
+>>>
+>>> Right, I hope disto packagers will be quick to adopt the new mirror
+>>> repo for packaging bpftool. Let's figure out bpftool versioning schema
+>>> as a next step. Given bpftool heavily relies on libbpf and isn't
+>>> really coupled to kernel versions, it makes sense for bpftool to
+>>> reflect libbpf version rather than kernel's. WDYT?
+>>
+>> Personally, I don't mind finding another scheme, as long as we keep it
+>> consistent between the reference sources in the kernel repo and the mirror.
+>>
+>> I also agree that it would make sense to align it to libbpf, but that
+>> would mean going backward on the numbers (current version is 5.16.0,
+>> libbpf's is 0.7.0) and this will mess up with every script trying to
+>> compare versions. We could maybe add a prefix to indicate that the
+>> scheme has changed ('l_0.7.0), but similarly, it would break a good
+>> number of tools that expect semantic versioning, I don't think this is
+>> any better.
+>>
+>> The other alternative I see would be to pick a different major version
+>> number and arbitrarily declare that bpftool's version is aligned on
+>> libbpf's, but with a difference of 6 for the version number. So we would
+>> start at 6.7.0 and reach 7.0.0 when libbpf 1.0.0 is released. This is
+>> not ideal, but we would keep some consistency, and we can always add the
+>> version of libbpf used for the build to "bpftool version"'s output. How
+>> would you feel about it? Did you have something else in mind?
+> 
+> Yeah, this off-by-6 major version difference seems ok-ish to me, I
+> don't mind that. Another alternative is to have a completely
+> independent versioning (and report used libbpf version in bpftool
+> --version output  separately). But I think divorcing it from kernel
+> version is a must, too much confusion.
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina. Howley Mckenna, a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country  for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die.. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
+Right, let's not tie it to libbpf either, having an independent
+versioning scheme is probably the best solution indeed. I'll send a
+patchset shortly to update the version and also print the one from libbpf.
 
-I'm waiting for your immediate reply..
-
-May God Bless you,
-Mrs. Dina. Howley Mckenna.
+Thanks,
+Quentin
