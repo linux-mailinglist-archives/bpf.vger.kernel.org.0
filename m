@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ACB4981EC
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 15:19:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B64E4981EF
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 15:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbiAXOTh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 09:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S236965AbiAXOUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 09:20:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237582AbiAXOTg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 09:19:36 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B4B1C06173B
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 06:19:36 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id 128so16100095pfe.12
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 06:19:36 -0800 (PST)
+        with ESMTP id S234653AbiAXOUD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 09:20:03 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A94C06173B
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 06:20:03 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id l16so16629941pjl.4
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 06:20:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CFNto2ZDbv17BLgqSUnizRi7njDl8BMdYOADyx3Bz64=;
-        b=a8c9kxs/c0Juc5E0eEvMGe2eHfEdXj5XUEdhuGlhJN1PVSpRgzUIZcgLH+uT7UugPw
-         887AWPj97AobRqrYahqRzn2ypoPk+YNA6h98znm6q2FjO2bUcAzx4IScqdvcWeazj4oy
-         s6917IVs6/QCRQQ4qGmkXcEH9FopeFLZvxcT+CkOMFWa7XE6LFKvPqZ2KongvtyJsjq0
-         HoIOot1+Di1/paX+7XPRLZ+0PX9/xvVzXA8/0TRqQy4mCJBN8cnopH4fDFC8QwYkQ5lK
-         auM/DHvXqkGAueE2U+jFQoCqQN4FYj3Gl6Tg6iqDmBgh/7hqdo8sx1imtJzv5Xu6LQDe
-         aR2g==
+        bh=87p3l3fxuGIq9G+G6eKvm0G/7xNycGNVbKaNr8vrvmY=;
+        b=AYK6Ml4bcyxBZ6NR1VRZMiuIhOXbJOCkdhZfgVo0QNOnr/V7s7fcyVhrBh0F369MWw
+         sZVvB4y/tvF9geTBsz8ydp5YuoAXTS56/eVylcGvQvj0Faj6AyHyvgbJclg4hCGpXUOf
+         b+FYoXj06t6CFUF7Fz0OSM1kNmuqLMohMBUMn6U1FRo6S6is5/N9j5ObDon+n2PMcnPm
+         I4+yAfOLvvZTkxLAmSO6TwNEme5PFICrw+vxkkFzJaw25i1+b7iuSAi3RewLZhtvFOJI
+         GoXZFAz70RNNwxvXvGTxBylSN0a93qfpszqYMzmMggiR0UWcvvtkh10zG2WDYBHEocA2
+         Hftg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=CFNto2ZDbv17BLgqSUnizRi7njDl8BMdYOADyx3Bz64=;
-        b=BpI4o5+6x33KKXRTpLz8zLDg6puW6RGMbq0vAJRhkGDY/2frRjOszfvD6+mRnpIDku
-         ioPkQR7UFhvI3CsKfI7aCU82brzgb/GCefd9W2y+Xl+mMrUnKCmAGqC+PZfUFlNsq4yk
-         CeLPdbC4+GM6Llgni9l/UEBbg5EhpxTv3JnpDPMZw5rtaZX9XF4Bo48sIVeF9YaT5oay
-         RlIccqWN+7VcAWrwgyZqmNFSBlm7Azt7D1P3rK9kItbjeVnwaX55j+xziMJKtrGKLaba
-         VykmjDeTa6+PFbPQRBGUuCbNiRHEJMmsabASJ1YjfnWI7gSZ79iTpxBHpBjPhkSDfwNG
-         lhTQ==
-X-Gm-Message-State: AOAM531kXbpxo1c/uBRMJhsts3OgZ0amoW1Oli6RebXgtx+8tGkrPH7l
-        HRJxtEFOcAxf3dZg9xS0ViE=
-X-Google-Smtp-Source: ABdhPJyeQBG/+/ufrGYiG/junuj7gvMI0zLxU6GHEKKRrkCRNKjg+kORD1VnzMo1QMEIbdL+IIbITQ==
-X-Received: by 2002:a63:90c1:: with SMTP id a184mr12017024pge.372.1643033976120;
-        Mon, 24 Jan 2022 06:19:36 -0800 (PST)
+        bh=87p3l3fxuGIq9G+G6eKvm0G/7xNycGNVbKaNr8vrvmY=;
+        b=VqzxTIWZ3e9PmNi6jCW5me04pECxe55+bYhqC7ztr7oQEj5n0WAJhDZ3wk/0Xy2Q5Q
+         G3L8f1tDXUbGl80KImGdFPHYx+gSt0DCkTxbyM06gfU/WY/Mt+PoJRaFT/jzQpOeaWkH
+         Hbf/osL30nXppN6XsdJgDOW1gFaLz+FNuX6cBbIpgfDpbBPf8FyvUSPB9aj61LR11NWM
+         31XMsKXYA503aVdU9uR0YTR4ZmhiA+sMd1OR0KMNz1oCbGDqU7PdJRUIXgO3sVYlsn0U
+         yBQce2QT837hdsgjiweRA6e+2AXw9u5i6CpkDDvHlsIwydXii5UJibG87riyE7YMlYMI
+         NlVQ==
+X-Gm-Message-State: AOAM530Etzu4bgleOUeP7F9BGmVLsUg5BrrZLNkoLexas2py+FXaJfW3
+        3OjR5BsMPEwwch8kl003xn8=
+X-Google-Smtp-Source: ABdhPJwMbIxwd8ugqJstFYUmTvfl1cu//h1u2oOHc52naa2GSQG91otmsGwe4xMwegHZXegwRd/SHg==
+X-Received: by 2002:a17:903:1c8:b0:14b:6b63:b3fa with SMTP id e8-20020a17090301c800b0014b6b63b3famr492633plh.156.1643034003351;
+        Mon, 24 Jan 2022 06:20:03 -0800 (PST)
 Received: from ktada-Stealth-15M-A11UEK.. ([240d:1a:2e0:8a00:d1c2:4b2a:8ba8:7b43])
-        by smtp.gmail.com with ESMTPSA id 13sm15629855pfm.161.2022.01.24.06.19.33
+        by smtp.gmail.com with ESMTPSA id 13sm15629855pfm.161.2022.01.24.06.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 06:19:35 -0800 (PST)
+        Mon, 24 Jan 2022 06:20:03 -0800 (PST)
 Sender: KENTA TADA <kenta.tada.s@gmail.com>
 From:   Kenta Tada <Kenta.Tada@sony.com>
 To:     andrii@kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
         songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
         kpsingh@kernel.org, Kenta Tada <Kenta.Tada@sony.com>
-Subject: [PATCH v5 2/3] libbpf: Fix the incorrect register read for syscalls on x86_64
-Date:   Mon, 24 Jan 2022 23:16:21 +0900
-Message-Id: <20220124141622.4378-3-Kenta.Tada@sony.com>
+Subject: [PATCH v5 3/3] libbpf: Add a test to confirm PT_REGS_PARM4_SYSCALL
+Date:   Mon, 24 Jan 2022 23:16:22 +0900
+Message-Id: <20220124141622.4378-4-Kenta.Tada@sony.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220124141622.4378-1-Kenta.Tada@sony.com>
 References: <20220124141622.4378-1-Kenta.Tada@sony.com>
@@ -65,82 +65,156 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently, rcx is read as the fourth parameter of syscall on x86_64.
-But x86_64 Linux System Call convention uses r10 actually.
-This commit adds the wrapper for users who want to access to
-syscall params to analyze the user space.
+Add a selftest to verify the behavior of PT_REGS_xxx
+and the CORE variant.
 
 Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
 ---
- tools/lib/bpf/bpf_tracing.h | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ .../bpf/prog_tests/test_bpf_syscall_macro.c   | 63 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_syscall_macro.c   | 64 +++++++++++++++++++
+ 2 files changed, 127 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index 90f56b0f585f..032ba809f3e5 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -70,6 +70,7 @@
- #define __PT_PARM2_REG si
- #define __PT_PARM3_REG dx
- #define __PT_PARM4_REG cx
-+#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
- #define __PT_PARM5_REG r8
- #define __PT_RET_REG sp
- #define __PT_FP_REG bp
-@@ -99,6 +100,7 @@
- #define __PT_PARM2_REG rsi
- #define __PT_PARM3_REG rdx
- #define __PT_PARM4_REG rcx
-+#define __PT_PARM4_REG_SYSCALL r10 /* syscall uses r10 */
- #define __PT_PARM5_REG r8
- #define __PT_RET_REG rsp
- #define __PT_FP_REG rbp
-@@ -263,6 +265,26 @@ struct pt_regs;
- 
- #endif
- 
-+#define PT_REGS_PARM1_SYSCALL(x) PT_REGS_PARM1(x)
-+#define PT_REGS_PARM2_SYSCALL(x) PT_REGS_PARM2(x)
-+#define PT_REGS_PARM3_SYSCALL(x) PT_REGS_PARM3(x)
-+#ifdef __PT_PARM4_REG_SYSCALL
-+#define PT_REGS_PARM4_SYSCALL(x) (__PT_REGS_CAST(x)->__PT_PARM4_REG_SYSCALL)
-+#else /* __PT_PARM4_REG_SYSCALL */
-+#define PT_REGS_PARM4_SYSCALL(x) PT_REGS_PARM4(x)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+new file mode 100644
+index 000000000000..f5f4c8adf539
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright 2022 Sony Group Corporation */
++#include <sys/prctl.h>
++#include <test_progs.h>
++#include "bpf_syscall_macro.skel.h"
++
++void test_bpf_syscall_macro(void)
++{
++	struct bpf_syscall_macro *skel = NULL;
++	int err;
++	int exp_arg1 = 1001;
++	unsigned long exp_arg2 = 12;
++	unsigned long exp_arg3 = 13;
++	unsigned long exp_arg4 = 14;
++	unsigned long exp_arg5 = 15;
++
++	/* check whether it can open program */
++	skel = bpf_syscall_macro__open();
++	if (!ASSERT_OK_PTR(skel, "bpf_syscall_macro__open"))
++		return;
++
++	skel->rodata->filter_pid = getpid();
++
++	/* check whether it can load program */
++	err = bpf_syscall_macro__load(skel);
++	if (!ASSERT_OK(err, "bpf_syscall_macro__load"))
++		goto cleanup;
++
++	/* check whether it can attach kprobe */
++	err = bpf_syscall_macro__attach(skel);
++	if (!ASSERT_OK(err, "bpf_syscall_macro__attach"))
++		goto cleanup;
++
++	/* check whether args of syscall are copied correctly */
++	prctl(exp_arg1, exp_arg2, exp_arg3, exp_arg4, exp_arg5);
++	ASSERT_EQ(skel->bss->arg1, exp_arg1, "syscall_arg1");
++	ASSERT_EQ(skel->bss->arg2, exp_arg2, "syscall_arg2");
++	ASSERT_EQ(skel->bss->arg3, exp_arg3, "syscall_arg3");
++	/* it cannot copy arg4 when uses PT_REGS_PARM4 on x86_64 */
++#ifdef __x86_64__
++	ASSERT_NEQ(skel->bss->arg4_cx, exp_arg4, "syscall_arg4_from_cx");
++#else
++	ASSERT_EQ(skel->bss->arg4_cx, exp_arg4, "syscall_arg4_from_cx");
 +#endif
-+#define PT_REGS_PARM5_SYSCALL(x) PT_REGS_PARM5(x)
++	ASSERT_EQ(skel->bss->arg4, exp_arg4, "syscall_arg4");
++	ASSERT_EQ(skel->bss->arg5, exp_arg5, "syscall_arg5");
 +
-+#define PT_REGS_PARM1_CORE_SYSCALL(x) PT_REGS_PARM1_CORE(x)
-+#define PT_REGS_PARM2_CORE_SYSCALL(x) PT_REGS_PARM2_CORE(x)
-+#define PT_REGS_PARM3_CORE_SYSCALL(x) PT_REGS_PARM3_CORE(x)
-+#ifdef __PT_PARM4_REG_SYSCALL
-+#define PT_REGS_PARM4_CORE_SYSCALL(x) BPF_CORE_READ(__PT_REGS_CAST(x), __PT_PARM4_REG_SYSCALL)
-+#else /* __PT_PARM4_REG_SYSCALL */
-+#define PT_REGS_PARM4_CORE_SYSCALL(x) PT_REGS_PARM4_CORE(x)
++	/* check whether args of syscall are copied correctly for CORE variants */
++	ASSERT_EQ(skel->bss->arg1_core, exp_arg1, "syscall_arg1_core_variant");
++	ASSERT_EQ(skel->bss->arg2_core, exp_arg2, "syscall_arg2_core_variant");
++	ASSERT_EQ(skel->bss->arg3_core, exp_arg3, "syscall_arg3_core_variant");
++	/* it cannot copy arg4 when uses PT_REGS_PARM4_CORE on x86_64 */
++#ifdef __x86_64__
++	ASSERT_NEQ(skel->bss->arg4_core_cx, exp_arg4, "syscall_arg4_from_cx_core_variant");
++#else
++	ASSERT_EQ(skel->bss->arg4_core_cx, exp_arg4, "syscall_arg4_from_cx_core_variant");
 +#endif
-+#define PT_REGS_PARM5_CORE_SYSCALL(x) PT_REGS_PARM5_CORE(x)
++	ASSERT_EQ(skel->bss->arg4_core, exp_arg4, "syscall_arg4_core_variant");
++	ASSERT_EQ(skel->bss->arg5_core, exp_arg5, "syscall_arg5_core_variant");
 +
- #else /* defined(bpf_target_defined) */
- 
- #define PT_REGS_PARM1(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-@@ -290,6 +312,18 @@ struct pt_regs;
- #define BPF_KPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
- #define BPF_KRETPROBE_READ_RET_IP(ip, ctx) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
- 
-+#define PT_REGS_PARM1_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM2_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM3_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM4_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM5_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++cleanup:
++	bpf_syscall_macro__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+new file mode 100644
+index 000000000000..cfeccd85f40e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright 2022 Sony Group Corporation */
++#include <vmlinux.h>
 +
-+#define PT_REGS_PARM1_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM2_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM3_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM4_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
-+#define PT_REGS_PARM5_CORE_SYSCALL(x) ({ _Pragma(__BPF_TARGET_MISSING); 0l; })
++#include <bpf/bpf_core_read.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
 +
- #endif /* defined(bpf_target_defined) */
- 
- #ifndef ___bpf_concat
++int arg1 = 0;
++unsigned long arg2 = 0;
++unsigned long arg3 = 0;
++unsigned long arg4_cx = 0;
++unsigned long arg4 = 0;
++unsigned long arg5 = 0;
++
++int arg1_core = 0;
++unsigned long arg2_core = 0;
++unsigned long arg3_core = 0;
++unsigned long arg4_core_cx = 0;
++unsigned long arg4_core = 0;
++unsigned long arg5_core = 0;
++
++const volatile pid_t filter_pid = 0;
++
++SEC("kprobe/" SYS_PREFIX "sys_prctl")
++int BPF_KPROBE(handle_sys_prctl)
++{
++	struct pt_regs *real_regs;
++	int orig_arg1;
++	unsigned long orig_arg2, orig_arg3, orig_arg4_cx, orig_arg4, orig_arg5;
++	pid_t pid = bpf_get_current_pid_tgid() >> 32;
++
++	if (pid != filter_pid)
++		return 0;
++
++	/* test for PT_REGS_PARM */
++	real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
++	bpf_probe_read_kernel(&orig_arg1, sizeof(orig_arg1), &PT_REGS_PARM1_SYSCALL(real_regs));
++	bpf_probe_read_kernel(&orig_arg2, sizeof(orig_arg2), &PT_REGS_PARM2_SYSCALL(real_regs));
++	bpf_probe_read_kernel(&orig_arg3, sizeof(orig_arg3), &PT_REGS_PARM3_SYSCALL(real_regs));
++	bpf_probe_read_kernel(&orig_arg4_cx, sizeof(orig_arg4_cx), &PT_REGS_PARM4(real_regs));
++	bpf_probe_read_kernel(&orig_arg4, sizeof(orig_arg4), &PT_REGS_PARM4_SYSCALL(real_regs));
++	bpf_probe_read_kernel(&orig_arg5, sizeof(orig_arg5), &PT_REGS_PARM5_SYSCALL(real_regs));
++	/* copy all actual args and the wrong arg4 on x86_64 */
++	arg1 = orig_arg1;
++	arg2 = orig_arg2;
++	arg3 = orig_arg3;
++	arg4_cx = orig_arg4_cx;
++	arg4 = orig_arg4;
++	arg5 = orig_arg5;
++
++	/* test for the CORE variant of PT_REGS_PARM */
++	arg1_core = PT_REGS_PARM1_CORE_SYSCALL(real_regs);
++	arg2_core = PT_REGS_PARM2_CORE_SYSCALL(real_regs);
++	arg3_core = PT_REGS_PARM3_CORE_SYSCALL(real_regs);
++	arg4_core_cx = PT_REGS_PARM4_CORE(real_regs);
++	arg4_core = PT_REGS_PARM4_CORE_SYSCALL(real_regs);
++	arg5_core = PT_REGS_PARM5_CORE_SYSCALL(real_regs);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.32.0
 
