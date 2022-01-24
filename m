@@ -2,124 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17AF84983C8
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 16:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498AA498445
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 17:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbiAXPtX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 10:49:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
+        id S243426AbiAXQJ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 11:09:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbiAXPtW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 10:49:22 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA095C06173B;
-        Mon, 24 Jan 2022 07:49:21 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id s18so14397881wrv.7;
-        Mon, 24 Jan 2022 07:49:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KF14cNo922qXUySZr8b4eXt5binLR7ntNn5ZLkuqMxI=;
-        b=eW+zvFkn6EuVlgQoGWuKofVxTrQUe8wrRC5FTXhzP2PAchRpQl6gb/Hf+juoOrEKJK
-         dBrlBWbnXxM4H1fTG8sZkp6iMQre309r6kzFgqJvwv1J22wfwm2ia7wulie+AQUjDSrJ
-         uDCJuro0/0iC9q80ODMDTr0VI+2xUKai0Fb7AzfH5OE4Lg/Um9tf4CDaocbm1PfBG9bh
-         2hENG6ikDn+Ax0WtSDyWucUcOinTy1xdCUmiEXgtZoU0skHKh1VPABeynDMoFj6C6SS2
-         Vk6HBEFwNJE+pxZn88P2WW+gClxzbSsWFlvTP0ZBhKtGiI3/nYi0jcwlAcuQlc8N7aX/
-         Lakw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KF14cNo922qXUySZr8b4eXt5binLR7ntNn5ZLkuqMxI=;
-        b=FzJDKonQsnJfeAjHk7LKuF4mCQLDj0sqbxk4giNr9rpQoKTrQJoDXP5iZZY0GonyB0
-         kfzESiapBdjKKu/Mqy0bVg3n2/zplmeqsvX686700kkFVc/wv00QakoqCxaqi+QHOqE8
-         85dwnnx8dUDRYY8nWjTWKUWegq9FD86X0ZsLk2uFRHKR+IfH6xDeDTi/oR/jy5/E49Nt
-         YnaXu4SAfGp1JydZj+HAGuMHmu7jHT0GnRbgCP3iWeW9cqH8mPkOTdHSPTLGMwIKayap
-         +QQhbsK471oa+MpbNoDaYNq3ihVPWC4C19Myh1jYED0rj1YYltQz7hQJ5zhu284y1+B6
-         tgMw==
-X-Gm-Message-State: AOAM533/KQcqgLAyex9S3yWXw5tvUj6TgxKYAWXlCsmB7Q6E+DBpMlNn
-        WtCj979bTex00PT1JLtNsb7MjU+WKDI=
-X-Google-Smtp-Source: ABdhPJzP0ILdTkVAtjOkBVjTwukCZ7FikdQlrYj05PTF/qb+D2b96+lAqTig6V3ZB3XYSij8vk4N1A==
-X-Received: by 2002:adf:e2c4:: with SMTP id d4mr14294936wrj.247.1643039360422;
-        Mon, 24 Jan 2022 07:49:20 -0800 (PST)
-Received: from [192.168.8.198] ([148.252.132.47])
-        by smtp.gmail.com with ESMTPSA id 31sm17685504wrl.27.2022.01.24.07.49.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jan 2022 07:49:20 -0800 (PST)
-Message-ID: <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com>
-Date:   Mon, 24 Jan 2022 15:46:33 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S241925AbiAXQJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 11:09:29 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406F7C06173B;
+        Mon, 24 Jan 2022 08:09:29 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D386060907;
+        Mon, 24 Jan 2022 16:09:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE52C340E5;
+        Mon, 24 Jan 2022 16:09:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643040568;
+        bh=ENESVzvy5zShp1NelCApLRU9rhgIjz+UqegaWzoG/EM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T05rJH45oJL2ZYVBIT0hqOn1c1sbl8TO7ARu2Q/yGVi4VtbF/maFF9uDjrgZiSF++
+         m2rrks8PLljz1Pj+2QdpAFra2GZsuA5l6wsS4K5+Jc4CH3SFcCO8RiXb8/AHenbABg
+         E6s6wl4prsOXEgjFSYkloVv2hVdvKw/TB6iyaxlHsCpFBPyL92mKk9qFND/Y3XG6yI
+         LYSFMmXsLnNRTc1z6heKIzAkbAGhbACmSCVy/w3W+3suGuBaElU/k301X8dc0sxndo
+         DYRjSowHqPIfw5EAY63nUAO2qan8b/Jns5SDi3Zss9BVnmT8pD7KzxsGIPPbzcL7ZA
+         O/N3W19Z7GwfA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-References: <Yboc/G18R1Vi1eQV@google.com>
- <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com>
- <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
- <Yboy2WwaREgo95dy@google.com>
- <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
- <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
- <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com>
- <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
- <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com>
- <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v4 0/9] fprobe: Introduce fprobe function entry/exit probe 
+Date:   Tue, 25 Jan 2022 01:09:21 +0900
+Message-Id: <164304056155.1680787.14081905648619647218.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/16/21 18:24, Stanislav Fomichev wrote:
-> On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
->> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
->>> On 12/15/21 22:07, Stanislav Fomichev wrote:
->>>>> I'm skeptical I'll be able to measure inlining one function,
->>>>> variability between boots/runs is usually greater and would hide it.
->>>>
->>>> Right, that's why I suggested to mirror what we do in set/getsockopt
->>>> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
->>>> to you, Martin and the rest.
->> I also suggested to try to stay with one way for fullsock context in v2
->> but it is for code readability reason.
->>
->> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
->> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
-> 
-> SG!
-> 
->> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
->> want to check if there is bpf to run before proceeding everything else
->> and then I don't need to jump to the non-inline function itself to see
->> if there is other prog array empty check.
->>
->> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
->> when there is bpf prog to run for set/getsockopt()?  I think
->> it should be mostly noise from looking at
->> __cgroup_bpf_run_filter_*sockopt()?
-> 
-> Yeah, my concern is also mostly about readability/consistency. Either
-> __cgroup_bpf_prog_array_is_empty everywhere or this new
-> CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
-> __cgroup_bpf_prog_array_is_empty because I don't believe direct
-> function calls add any visible overhead and macros are ugly :-) But
-> either way is fine as long as it looks consistent.
+Hello Jiri,
 
-Martin, Stanislav, do you think it's good to go? Any other concerns?
-It feels it might end with bikeshedding and would be great to finally
-get it done, especially since I find the issue to be pretty simple.
+Here is the 4th version of fprobe. I fixed some issues on fprobe
+and rethook. I dropped out-of-tree patches and Jiri's bpf patch
+and add rethook arm/arm64 support and fprobe documentation.
+The previous version is here[1];
 
--- 
-Pavel Begunkov
+[1] https://lore.kernel.org/all/164260419349.657731.13913104835063027148.stgit@devnote2/T/#u
+
+The biggest change of this version is supporting ftrace location
+conversion correctly. Previous version can not find ftrace location
+if the dynamic ftrace nop is not placed a the symbol address.
+
+This series introduces the fprobe, the function entry/exit probe
+with multiple probe point support. This also introduces the rethook
+for hooking function return as same as kretprobe does. This
+abstraction will help us to generalize the fgraph tracer,
+because we can just switch it from rethook in fprobe, depending
+on the kernel configuration.
+
+The patch [1/9] is from Jiri's series[2].
+
+[2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+
+I'll continue porting rethook to other archs, and after that replace
+the current kretprobe with the rethook. This design change will make
+the fgraph/kretprobe integration easier because if fgraph is not available,
+kretprobe can use rethook.
+
+
+Thank you,
+
+---
+
+Jiri Olsa (1):
+      ftrace: Add ftrace_set_filter_ips function
+
+Masami Hiramatsu (8):
+      fprobe: Add ftrace based probe APIs
+      rethook: Add a generic return hook
+      rethook: x86: Add rethook x86 implementation
+      ARM: rethook: Add rethook arm implementation
+      arm64: rethook: Add arm64 rethook implementation
+      fprobe: Add exit_handler support
+      fprobe: Add sample program for fprobe
+      docs: fprobe: Add fprobe description to ftrace-use.rst
+
+
+ Documentation/trace/fprobe.rst                |  131 +++++++++++
+ Documentation/trace/index.rst                 |    1 
+ arch/arm/Kconfig                              |    1 
+ arch/arm/kernel/stacktrace.c                  |    4 
+ arch/arm/probes/Makefile                      |    1 
+ arch/arm/probes/rethook.c                     |   71 ++++++
+ arch/arm64/Kconfig                            |    1 
+ arch/arm64/kernel/probes/Makefile             |    1 
+ arch/arm64/kernel/probes/rethook.c            |   25 ++
+ arch/arm64/kernel/probes/rethook_trampoline.S |   87 +++++++
+ arch/arm64/kernel/stacktrace.c                |    3 
+ arch/x86/Kconfig                              |    1 
+ arch/x86/include/asm/unwind.h                 |    4 
+ arch/x86/kernel/Makefile                      |    1 
+ arch/x86/kernel/rethook.c                     |  115 +++++++++
+ include/linux/fprobe.h                        |   86 +++++++
+ include/linux/ftrace.h                        |    3 
+ include/linux/rethook.h                       |   99 ++++++++
+ include/linux/sched.h                         |    3 
+ kernel/exit.c                                 |    2 
+ kernel/fork.c                                 |    3 
+ kernel/trace/Kconfig                          |   24 ++
+ kernel/trace/Makefile                         |    2 
+ kernel/trace/fprobe.c                         |  198 ++++++++++++++++
+ kernel/trace/ftrace.c                         |   53 ++++
+ kernel/trace/rethook.c                        |  311 +++++++++++++++++++++++++
+ samples/Kconfig                               |    7 +
+ samples/Makefile                              |    1 
+ samples/fprobe/Makefile                       |    3 
+ samples/fprobe/fprobe_example.c               |  103 ++++++++
+ 30 files changed, 1336 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/trace/fprobe.rst
+ create mode 100644 arch/arm/probes/rethook.c
+ create mode 100644 arch/arm64/kernel/probes/rethook.c
+ create mode 100644 arch/arm64/kernel/probes/rethook_trampoline.S
+ create mode 100644 arch/x86/kernel/rethook.c
+ create mode 100644 include/linux/fprobe.h
+ create mode 100644 include/linux/rethook.h
+ create mode 100644 kernel/trace/fprobe.c
+ create mode 100644 kernel/trace/rethook.c
+ create mode 100644 samples/fprobe/Makefile
+ create mode 100644 samples/fprobe/fprobe_example.c
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
