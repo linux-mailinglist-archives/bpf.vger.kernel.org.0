@@ -2,147 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F209E498769
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 19:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA92D498844
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 19:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244791AbiAXR77 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 12:59:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59000 "EHLO
+        id S245227AbiAXSZZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 13:25:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244797AbiAXR75 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 12:59:57 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D23AC06173B;
-        Mon, 24 Jan 2022 09:59:57 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id b14so51649439lff.3;
-        Mon, 24 Jan 2022 09:59:57 -0800 (PST)
+        with ESMTP id S245230AbiAXSZT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 13:25:19 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F00CC06173B
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:25:19 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id a12so6328401qkk.9
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 10:25:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QsKXVrw3F9lsxKkyvC/zU4uBfnyL7GghuKOugyivPGg=;
-        b=atoDIWiXRXzO2zgMjOO4EYNXE6CRElkM/2OZOgAY2s45Y+UHV5GTmIVx3sv9xRCo18
-         ZXvU4wM/afAaItzf/aged/MaiYFmzom3v89hwqW5bXtM2ADd/sNryCuABt/GPAPB73YP
-         VN59N9Cd2NW/F2L34Fs4hPSGkrkOH/3mk0Y89uMmNXy2YKTEJOYjdzyUHzLxa6QJPrTy
-         0wJ5H+NARAVTSXFoMwzcUFzn8tgf0DELPMbdX6dnzLnPMpo/HllaeUSewtUvHoYLnuZS
-         h0ZkdWH0ywlZbO4z9401dVwkmiMbXj5ODLWqPqZQqw/sHfB7B4pJDccFUT2bM7hvE6Dp
-         /Vsw==
+        bh=K6etE/ly2g0VeXSdeIkDpJwMBD9Oa8SeCLG1zWSfgrU=;
+        b=Pcs1V+CdhZCKff3WNADfaPdxie2c9AoWyjHN3xGrBOrslo+5Ry9Su4Wg81Yg58YjO+
+         e5PtYQEs05Ne337BKKtfad0inw/4ziYXpp3kIwYQVfkfLnKx3wJNjIuaMh/X2QszO+Zl
+         9kyxYlWKd3aiMhUU7Ow7VTonasdUwHVTJPUcv/aYE1uyGc9M2WJtUVTM5Y2vLsYjTIeJ
+         z0087J0F1jlYYFkzLgeejHJCAqKyDFadvc5knPzsPD7nHcSIQl27ffC4veEliT7/PpD5
+         JjP/3wJ0hs7WCnfe1pNTb+rX5iQcEstoRA3wi8llqhD4Sp0J/82l7yfrEcGUOn3IaMTv
+         ozQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QsKXVrw3F9lsxKkyvC/zU4uBfnyL7GghuKOugyivPGg=;
-        b=xkcQhI+uncRuuDO8Md+tBhozEFHbOb2EAYVrzOD2HFzBeIGA7GRzYzlco+yu4JaK2r
-         YPFzEYtLiZvKLLWh3EPj0AXxstnpDAlmx6unOdYxLLxjEQgteFxaFcy9MmjR4u14zmzd
-         9DNr6JHe6QymhsTyfq7gw7wigpj6RDci5PcPGorDudqOTC0krVerNbj+r+dxKNO4/URs
-         pXhA6kVkOSX7cRrdVXY004+/W8Obl4k8WVJEgvUi7mxFnf6fAW6xB0/Zi/RnVdX5zwQe
-         fJF1BA0y43Efb6jVp9TghBkIkgmKuE+FJCrqYMPxnZFp+sGEnwGwMNllRDlLhU+aUWLP
-         QYZw==
-X-Gm-Message-State: AOAM531WkUwI8KOBmBJb59R9OQaaR+LGqmKs4Y13P+E8q3TNA3D784/C
-        3KaixRJYf+ZePSMbiiZ4iJ7LZ3H4K6ZSVabSpchUYv1yx+TjIA==
-X-Google-Smtp-Source: ABdhPJwygNmDgklD8cKvzdK0UVdDB4x4K7zqKqK/YUzVjQRboVf5gkZ+wAnkrRrfKD8aQX+/kKGWbdnfU3L9PaOlTXM=
-X-Received: by 2002:a05:6512:1681:: with SMTP id bu1mr13902600lfb.499.1643047195689;
- Mon, 24 Jan 2022 09:59:55 -0800 (PST)
+        bh=K6etE/ly2g0VeXSdeIkDpJwMBD9Oa8SeCLG1zWSfgrU=;
+        b=0HOLRf1jAnMbzhniPyB/Kk3cLQwEbOXb7cvwBTMg+RMGDT9fatxTuxqyKOXRowpbih
+         mKJknX4EfSaRNTOKj+2TbBdSaQ1PTar2GULh3ADDK56+h2C6aZtncp3RT6asQYNGub8e
+         9+hjDIKs9UzOpzacZ55Vtls01i5lBMjv4v3bn+QCQd2cOthyUbVI6Lhr6c2MPl5c2wfA
+         8I3454tHMLXjXSC8XoQCCoq6tycTvKDdWjx8azI2/J5MHDpnCYoZ0Qxw+NnY/mXsFk1G
+         I+ecRddX2DR10/imvddv6ItYdrVhenSA6ZEq4P2TcaSLCIW7QsGNEkyqBfVSERdmYNXJ
+         UcMA==
+X-Gm-Message-State: AOAM531MuXDtB+p4kcnzSby6mTaygLqfplF+RSWNxwLXfwUlczY2zInS
+        4BXOctesbnIwqfu/WIfPE3aa2t3yUBmkIolz64sSwnmv/M+rfQ==
+X-Google-Smtp-Source: ABdhPJwVmpBJh+L3pkv2NUpvbujhb1GpxAtUDey9JzaQf/umiNBIUxrPnv3lzPWtoX0EddYiSt5MEAJmYzwoi9JSu7w=
+X-Received: by 2002:a05:620a:4689:: with SMTP id bq9mr12401158qkb.496.1643048718462;
+ Mon, 24 Jan 2022 10:25:18 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000588c2c05aa156b2b@google.com> <00000000000087569605b8928ce3@google.com>
- <CACT4Y+a3Xe11dAkRAAewXQ7b=KzK1pk36Arwq=vCR7R-KQy9DQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+a3Xe11dAkRAAewXQ7b=KzK1pk36Arwq=vCR7R-KQy9DQ@mail.gmail.com>
-From:   Vegard Nossum <vegard.nossum@gmail.com>
-Date:   Mon, 24 Jan 2022 18:59:43 +0100
-Message-ID: <CAOMGZ=Eyfq4+H_7Uray9jXceTDAugm5bRorGoHZUf2W314Kr+w@mail.gmail.com>
-Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
+References: <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+ <Yboy2WwaREgo95dy@google.com> <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
+ <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
+ <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com> <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
+ <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com> <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com> <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com>
+In-Reply-To: <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Mon, 24 Jan 2022 10:25:07 -0800
+Message-ID: <CAKH8qBvX8_vy0aYhiO-do0rh3y3CzgDGfHqt1bB6uRcr_DxncQ@mail.gmail.com>
+Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        jonathan.lemon@gmail.com, Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Andy Lutomirski <luto@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        marekx.majtyka@intel.com, Ingo Molnar <mingo@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 10:16, Dmitry Vyukov <dvyukov@google.com> wrote:
+On Mon, Jan 24, 2022 at 7:49 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> On Sun, Jan 10, 2021 at 10:34 PM syzbot
-> <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com> wrote:
+> On 12/16/21 18:24, Stanislav Fomichev wrote:
+> > On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> >> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
+> >>> On 12/15/21 22:07, Stanislav Fomichev wrote:
+> >>>>> I'm skeptical I'll be able to measure inlining one function,
+> >>>>> variability between boots/runs is usually greater and would hide it.
+> >>>>
+> >>>> Right, that's why I suggested to mirror what we do in set/getsockopt
+> >>>> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
+> >>>> to you, Martin and the rest.
+> >> I also suggested to try to stay with one way for fullsock context in v2
+> >> but it is for code readability reason.
+> >>
+> >> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
+> >> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
 > >
-> > syzbot suspects this issue was fixed by commit:
+> > SG!
 > >
-> > commit 537cf4e3cc2f6cc9088dcd6162de573f603adc29
-> > Author: Magnus Karlsson <magnus.karlsson@intel.com>
-> > Date:   Fri Nov 20 11:53:39 2020 +0000
+> >> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
+> >> want to check if there is bpf to run before proceeding everything else
+> >> and then I don't need to jump to the non-inline function itself to see
+> >> if there is other prog array empty check.
+> >>
+> >> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
+> >> when there is bpf prog to run for set/getsockopt()?  I think
+> >> it should be mostly noise from looking at
+> >> __cgroup_bpf_run_filter_*sockopt()?
 > >
-> >     xsk: Fix umem cleanup bug at socket destruct
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139f3dfb500000
-> > start commit:   e87d24fc Merge branch 'net-iucv-fixes-2020-11-09'
-> > git tree:       net
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=5f326d255ca648131f87
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d10006500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126c9eaa500000
-> >
-> > If the result looks correct, please mark the issue as fixed by replying with:
-> >
-> > #syz fix: xsk: Fix umem cleanup bug at socket destruct
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > Yeah, my concern is also mostly about readability/consistency. Either
+> > __cgroup_bpf_prog_array_is_empty everywhere or this new
+> > CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
+> > __cgroup_bpf_prog_array_is_empty because I don't believe direct
+> > function calls add any visible overhead and macros are ugly :-) But
+> > either way is fine as long as it looks consistent.
 >
-> FTR, the bisection log looks clean, but this does not look like the
-> fix for this. The reproducer does not destroy sockets.
+> Martin, Stanislav, do you think it's good to go? Any other concerns?
+> It feels it might end with bikeshedding and would be great to finally
+> get it done, especially since I find the issue to be pretty simple.
 
-I think it's the correct fix.
-
-The crash report also has this, which shows the reproducer does
-actually destroy sockets:
-
- xdp_umem_addr_unmap net/xdp/xdp_umem.c:44 [inline]
- xdp_umem_release net/xdp/xdp_umem.c:62 [inline]
- xdp_put_umem+0x113/0x330 net/xdp/xdp_umem.c:80
- xsk_destruct net/xdp/xsk.c:1150 [inline]
- xsk_destruct+0xc0/0xf0 net/xdp/xsk.c:1142
- __sk_destruct+0x4b/0x8f0 net/core/sock.c:1759
- rcu_do_batch kernel/rcu/tree.c:2476 [inline]
-
-I've tested the reproducer on both 537cf4e3cc2f and 537cf4e3cc2f^ and
-it only reproduces on 537cf4e3cc2f^ here (with the same stack trace as
-the syzbot report).
-
-The repro I used was
-https://syzkaller.appspot.com/text?tag=ReproSyz&x=10d10006500000 which
-is just:
-
-r0 = socket$xdp(0x2c, 0x3, 0x0)
-setsockopt$XDP_UMEM_REG(r0, 0x11b, 0x4,
-&(0x7f0000000040)={&(0x7f0000000000)=""/2, 0x1000000, 0x1000}, 0x20)
-
-so the socket definitely gets created/destroyed.
-
-Feel free to undo if you disagree:
-
-#syz fix: xsk: Fix umem cleanup bug at socket destruct
-
-
-Vegard
+I'll leave it up to the bpf maintainers/reviewers. Personally, I'd
+still prefer a respin with a consistent
+__cgroup_bpf_prog_array_is_empty or CGROUP_BPF_TYPE_ENABLED everywhere
+(shouldn't be a lot of effort?)
