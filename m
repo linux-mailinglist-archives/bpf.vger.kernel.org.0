@@ -2,292 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6723A49838E
-	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 16:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AF84983C8
+	for <lists+bpf@lfdr.de>; Mon, 24 Jan 2022 16:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242318AbiAXPae (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 10:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        id S234630AbiAXPtX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 10:49:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243241AbiAXPad (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 10:30:33 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996B7C061401;
-        Mon, 24 Jan 2022 07:30:32 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id C033210008F; Mon, 24 Jan 2022 15:30:28 +0000 (UTC)
-From:   Sean Young <sean@mess.org>
-To:     Shuah Khan <shuah@kernel.org>, linux-media@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] tools headers UAPI: remove stale lirc.h
-Date:   Mon, 24 Jan 2022 15:30:28 +0000
-Message-Id: <20220124153028.394409-1-sean@mess.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S230097AbiAXPtW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 24 Jan 2022 10:49:22 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA095C06173B;
+        Mon, 24 Jan 2022 07:49:21 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id s18so14397881wrv.7;
+        Mon, 24 Jan 2022 07:49:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=KF14cNo922qXUySZr8b4eXt5binLR7ntNn5ZLkuqMxI=;
+        b=eW+zvFkn6EuVlgQoGWuKofVxTrQUe8wrRC5FTXhzP2PAchRpQl6gb/Hf+juoOrEKJK
+         dBrlBWbnXxM4H1fTG8sZkp6iMQre309r6kzFgqJvwv1J22wfwm2ia7wulie+AQUjDSrJ
+         uDCJuro0/0iC9q80ODMDTr0VI+2xUKai0Fb7AzfH5OE4Lg/Um9tf4CDaocbm1PfBG9bh
+         2hENG6ikDn+Ax0WtSDyWucUcOinTy1xdCUmiEXgtZoU0skHKh1VPABeynDMoFj6C6SS2
+         Vk6HBEFwNJE+pxZn88P2WW+gClxzbSsWFlvTP0ZBhKtGiI3/nYi0jcwlAcuQlc8N7aX/
+         Lakw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=KF14cNo922qXUySZr8b4eXt5binLR7ntNn5ZLkuqMxI=;
+        b=FzJDKonQsnJfeAjHk7LKuF4mCQLDj0sqbxk4giNr9rpQoKTrQJoDXP5iZZY0GonyB0
+         kfzESiapBdjKKu/Mqy0bVg3n2/zplmeqsvX686700kkFVc/wv00QakoqCxaqi+QHOqE8
+         85dwnnx8dUDRYY8nWjTWKUWegq9FD86X0ZsLk2uFRHKR+IfH6xDeDTi/oR/jy5/E49Nt
+         YnaXu4SAfGp1JydZj+HAGuMHmu7jHT0GnRbgCP3iWeW9cqH8mPkOTdHSPTLGMwIKayap
+         +QQhbsK471oa+MpbNoDaYNq3ihVPWC4C19Myh1jYED0rj1YYltQz7hQJ5zhu284y1+B6
+         tgMw==
+X-Gm-Message-State: AOAM533/KQcqgLAyex9S3yWXw5tvUj6TgxKYAWXlCsmB7Q6E+DBpMlNn
+        WtCj979bTex00PT1JLtNsb7MjU+WKDI=
+X-Google-Smtp-Source: ABdhPJzP0ILdTkVAtjOkBVjTwukCZ7FikdQlrYj05PTF/qb+D2b96+lAqTig6V3ZB3XYSij8vk4N1A==
+X-Received: by 2002:adf:e2c4:: with SMTP id d4mr14294936wrj.247.1643039360422;
+        Mon, 24 Jan 2022 07:49:20 -0800 (PST)
+Received: from [192.168.8.198] ([148.252.132.47])
+        by smtp.gmail.com with ESMTPSA id 31sm17685504wrl.27.2022.01.24.07.49.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 Jan 2022 07:49:20 -0800 (PST)
+Message-ID: <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com>
+Date:   Mon, 24 Jan 2022 15:46:33 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
+Content-Language: en-US
+To:     Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+References: <Yboc/G18R1Vi1eQV@google.com>
+ <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com>
+ <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+ <Yboy2WwaREgo95dy@google.com>
+ <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
+ <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
+ <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com>
+ <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
+ <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com>
+ <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The lirc.h file is an old copy of lirc.h from the kernel sources. It is
-out of date, and the bpf lirc tests don't need a new copy anyway. As
-long as /usr/include/linux/lirc.h is from kernel v5.2 or newer, the tests
-will compile fine.
+On 12/16/21 18:24, Stanislav Fomichev wrote:
+> On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
+>>> On 12/15/21 22:07, Stanislav Fomichev wrote:
+>>>>> I'm skeptical I'll be able to measure inlining one function,
+>>>>> variability between boots/runs is usually greater and would hide it.
+>>>>
+>>>> Right, that's why I suggested to mirror what we do in set/getsockopt
+>>>> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
+>>>> to you, Martin and the rest.
+>> I also suggested to try to stay with one way for fullsock context in v2
+>> but it is for code readability reason.
+>>
+>> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
+>> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
+> 
+> SG!
+> 
+>> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
+>> want to check if there is bpf to run before proceeding everything else
+>> and then I don't need to jump to the non-inline function itself to see
+>> if there is other prog array empty check.
+>>
+>> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
+>> when there is bpf prog to run for set/getsockopt()?  I think
+>> it should be mostly noise from looking at
+>> __cgroup_bpf_run_filter_*sockopt()?
+> 
+> Yeah, my concern is also mostly about readability/consistency. Either
+> __cgroup_bpf_prog_array_is_empty everywhere or this new
+> CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
+> __cgroup_bpf_prog_array_is_empty because I don't believe direct
+> function calls add any visible overhead and macros are ugly :-) But
+> either way is fine as long as it looks consistent.
 
-Signed-off-by: Sean Young <sean@mess.org>
----
- tools/include/uapi/linux/lirc.h               | 229 ------------------
- .../selftests/bpf/test_lirc_mode2_user.c      |   1 -
- 2 files changed, 230 deletions(-)
- delete mode 100644 tools/include/uapi/linux/lirc.h
+Martin, Stanislav, do you think it's good to go? Any other concerns?
+It feels it might end with bikeshedding and would be great to finally
+get it done, especially since I find the issue to be pretty simple.
 
-diff --git a/tools/include/uapi/linux/lirc.h b/tools/include/uapi/linux/lirc.h
-deleted file mode 100644
-index 45fcbf99d72e..000000000000
---- a/tools/include/uapi/linux/lirc.h
-+++ /dev/null
-@@ -1,229 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--/*
-- * lirc.h - linux infrared remote control header file
-- * last modified 2010/07/13 by Jarod Wilson
-- */
--
--#ifndef _LINUX_LIRC_H
--#define _LINUX_LIRC_H
--
--#include <linux/types.h>
--#include <linux/ioctl.h>
--
--#define PULSE_BIT       0x01000000
--#define PULSE_MASK      0x00FFFFFF
--
--#define LIRC_MODE2_SPACE     0x00000000
--#define LIRC_MODE2_PULSE     0x01000000
--#define LIRC_MODE2_FREQUENCY 0x02000000
--#define LIRC_MODE2_TIMEOUT   0x03000000
--
--#define LIRC_VALUE_MASK      0x00FFFFFF
--#define LIRC_MODE2_MASK      0xFF000000
--
--#define LIRC_SPACE(val) (((val)&LIRC_VALUE_MASK) | LIRC_MODE2_SPACE)
--#define LIRC_PULSE(val) (((val)&LIRC_VALUE_MASK) | LIRC_MODE2_PULSE)
--#define LIRC_FREQUENCY(val) (((val)&LIRC_VALUE_MASK) | LIRC_MODE2_FREQUENCY)
--#define LIRC_TIMEOUT(val) (((val)&LIRC_VALUE_MASK) | LIRC_MODE2_TIMEOUT)
--
--#define LIRC_VALUE(val) ((val)&LIRC_VALUE_MASK)
--#define LIRC_MODE2(val) ((val)&LIRC_MODE2_MASK)
--
--#define LIRC_IS_SPACE(val) (LIRC_MODE2(val) == LIRC_MODE2_SPACE)
--#define LIRC_IS_PULSE(val) (LIRC_MODE2(val) == LIRC_MODE2_PULSE)
--#define LIRC_IS_FREQUENCY(val) (LIRC_MODE2(val) == LIRC_MODE2_FREQUENCY)
--#define LIRC_IS_TIMEOUT(val) (LIRC_MODE2(val) == LIRC_MODE2_TIMEOUT)
--
--/* used heavily by lirc userspace */
--#define lirc_t int
--
--/*** lirc compatible hardware features ***/
--
--#define LIRC_MODE2SEND(x) (x)
--#define LIRC_SEND2MODE(x) (x)
--#define LIRC_MODE2REC(x) ((x) << 16)
--#define LIRC_REC2MODE(x) ((x) >> 16)
--
--#define LIRC_MODE_RAW                  0x00000001
--#define LIRC_MODE_PULSE                0x00000002
--#define LIRC_MODE_MODE2                0x00000004
--#define LIRC_MODE_SCANCODE             0x00000008
--#define LIRC_MODE_LIRCCODE             0x00000010
--
--
--#define LIRC_CAN_SEND_RAW              LIRC_MODE2SEND(LIRC_MODE_RAW)
--#define LIRC_CAN_SEND_PULSE            LIRC_MODE2SEND(LIRC_MODE_PULSE)
--#define LIRC_CAN_SEND_MODE2            LIRC_MODE2SEND(LIRC_MODE_MODE2)
--#define LIRC_CAN_SEND_LIRCCODE         LIRC_MODE2SEND(LIRC_MODE_LIRCCODE)
--
--#define LIRC_CAN_SEND_MASK             0x0000003f
--
--#define LIRC_CAN_SET_SEND_CARRIER      0x00000100
--#define LIRC_CAN_SET_SEND_DUTY_CYCLE   0x00000200
--#define LIRC_CAN_SET_TRANSMITTER_MASK  0x00000400
--
--#define LIRC_CAN_REC_RAW               LIRC_MODE2REC(LIRC_MODE_RAW)
--#define LIRC_CAN_REC_PULSE             LIRC_MODE2REC(LIRC_MODE_PULSE)
--#define LIRC_CAN_REC_MODE2             LIRC_MODE2REC(LIRC_MODE_MODE2)
--#define LIRC_CAN_REC_SCANCODE          LIRC_MODE2REC(LIRC_MODE_SCANCODE)
--#define LIRC_CAN_REC_LIRCCODE          LIRC_MODE2REC(LIRC_MODE_LIRCCODE)
--
--#define LIRC_CAN_REC_MASK              LIRC_MODE2REC(LIRC_CAN_SEND_MASK)
--
--#define LIRC_CAN_SET_REC_CARRIER       (LIRC_CAN_SET_SEND_CARRIER << 16)
--#define LIRC_CAN_SET_REC_DUTY_CYCLE    (LIRC_CAN_SET_SEND_DUTY_CYCLE << 16)
--
--#define LIRC_CAN_SET_REC_DUTY_CYCLE_RANGE 0x40000000
--#define LIRC_CAN_SET_REC_CARRIER_RANGE    0x80000000
--#define LIRC_CAN_GET_REC_RESOLUTION       0x20000000
--#define LIRC_CAN_SET_REC_TIMEOUT          0x10000000
--#define LIRC_CAN_SET_REC_FILTER           0x08000000
--
--#define LIRC_CAN_MEASURE_CARRIER          0x02000000
--#define LIRC_CAN_USE_WIDEBAND_RECEIVER    0x04000000
--
--#define LIRC_CAN_SEND(x) ((x)&LIRC_CAN_SEND_MASK)
--#define LIRC_CAN_REC(x) ((x)&LIRC_CAN_REC_MASK)
--
--#define LIRC_CAN_NOTIFY_DECODE            0x01000000
--
--/*** IOCTL commands for lirc driver ***/
--
--#define LIRC_GET_FEATURES              _IOR('i', 0x00000000, __u32)
--
--#define LIRC_GET_SEND_MODE             _IOR('i', 0x00000001, __u32)
--#define LIRC_GET_REC_MODE              _IOR('i', 0x00000002, __u32)
--#define LIRC_GET_REC_RESOLUTION        _IOR('i', 0x00000007, __u32)
--
--#define LIRC_GET_MIN_TIMEOUT           _IOR('i', 0x00000008, __u32)
--#define LIRC_GET_MAX_TIMEOUT           _IOR('i', 0x00000009, __u32)
--
--/* code length in bits, currently only for LIRC_MODE_LIRCCODE */
--#define LIRC_GET_LENGTH                _IOR('i', 0x0000000f, __u32)
--
--#define LIRC_SET_SEND_MODE             _IOW('i', 0x00000011, __u32)
--#define LIRC_SET_REC_MODE              _IOW('i', 0x00000012, __u32)
--/* Note: these can reset the according pulse_width */
--#define LIRC_SET_SEND_CARRIER          _IOW('i', 0x00000013, __u32)
--#define LIRC_SET_REC_CARRIER           _IOW('i', 0x00000014, __u32)
--#define LIRC_SET_SEND_DUTY_CYCLE       _IOW('i', 0x00000015, __u32)
--#define LIRC_SET_TRANSMITTER_MASK      _IOW('i', 0x00000017, __u32)
--
--/*
-- * when a timeout != 0 is set the driver will send a
-- * LIRC_MODE2_TIMEOUT data packet, otherwise LIRC_MODE2_TIMEOUT is
-- * never sent, timeout is disabled by default
-- */
--#define LIRC_SET_REC_TIMEOUT           _IOW('i', 0x00000018, __u32)
--
--/* 1 enables, 0 disables timeout reports in MODE2 */
--#define LIRC_SET_REC_TIMEOUT_REPORTS   _IOW('i', 0x00000019, __u32)
--
--/*
-- * if enabled from the next key press on the driver will send
-- * LIRC_MODE2_FREQUENCY packets
-- */
--#define LIRC_SET_MEASURE_CARRIER_MODE	_IOW('i', 0x0000001d, __u32)
--
--/*
-- * to set a range use LIRC_SET_REC_CARRIER_RANGE with the
-- * lower bound first and later LIRC_SET_REC_CARRIER with the upper bound
-- */
--#define LIRC_SET_REC_CARRIER_RANGE     _IOW('i', 0x0000001f, __u32)
--
--#define LIRC_SET_WIDEBAND_RECEIVER     _IOW('i', 0x00000023, __u32)
--
--/*
-- * Return the recording timeout, which is either set by
-- * the ioctl LIRC_SET_REC_TIMEOUT or by the kernel after setting the protocols.
-- */
--#define LIRC_GET_REC_TIMEOUT	       _IOR('i', 0x00000024, __u32)
--
--/*
-- * struct lirc_scancode - decoded scancode with protocol for use with
-- *	LIRC_MODE_SCANCODE
-- *
-- * @timestamp: Timestamp in nanoseconds using CLOCK_MONOTONIC when IR
-- *	was decoded.
-- * @flags: should be 0 for transmit. When receiving scancodes,
-- *	LIRC_SCANCODE_FLAG_TOGGLE or LIRC_SCANCODE_FLAG_REPEAT can be set
-- *	depending on the protocol
-- * @rc_proto: see enum rc_proto
-- * @keycode: the translated keycode. Set to 0 for transmit.
-- * @scancode: the scancode received or to be sent
-- */
--struct lirc_scancode {
--	__u64	timestamp;
--	__u16	flags;
--	__u16	rc_proto;
--	__u32	keycode;
--	__u64	scancode;
--};
--
--/* Set if the toggle bit of rc-5 or rc-6 is enabled */
--#define LIRC_SCANCODE_FLAG_TOGGLE	1
--/* Set if this is a nec or sanyo repeat */
--#define LIRC_SCANCODE_FLAG_REPEAT	2
--
--/**
-- * enum rc_proto - the Remote Controller protocol
-- *
-- * @RC_PROTO_UNKNOWN: Protocol not known
-- * @RC_PROTO_OTHER: Protocol known but proprietary
-- * @RC_PROTO_RC5: Philips RC5 protocol
-- * @RC_PROTO_RC5X_20: Philips RC5x 20 bit protocol
-- * @RC_PROTO_RC5_SZ: StreamZap variant of RC5
-- * @RC_PROTO_JVC: JVC protocol
-- * @RC_PROTO_SONY12: Sony 12 bit protocol
-- * @RC_PROTO_SONY15: Sony 15 bit protocol
-- * @RC_PROTO_SONY20: Sony 20 bit protocol
-- * @RC_PROTO_NEC: NEC protocol
-- * @RC_PROTO_NECX: Extended NEC protocol
-- * @RC_PROTO_NEC32: NEC 32 bit protocol
-- * @RC_PROTO_SANYO: Sanyo protocol
-- * @RC_PROTO_MCIR2_KBD: RC6-ish MCE keyboard
-- * @RC_PROTO_MCIR2_MSE: RC6-ish MCE mouse
-- * @RC_PROTO_RC6_0: Philips RC6-0-16 protocol
-- * @RC_PROTO_RC6_6A_20: Philips RC6-6A-20 protocol
-- * @RC_PROTO_RC6_6A_24: Philips RC6-6A-24 protocol
-- * @RC_PROTO_RC6_6A_32: Philips RC6-6A-32 protocol
-- * @RC_PROTO_RC6_MCE: MCE (Philips RC6-6A-32 subtype) protocol
-- * @RC_PROTO_SHARP: Sharp protocol
-- * @RC_PROTO_XMP: XMP protocol
-- * @RC_PROTO_CEC: CEC protocol
-- * @RC_PROTO_IMON: iMon Pad protocol
-- * @RC_PROTO_RCMM12: RC-MM protocol 12 bits
-- * @RC_PROTO_RCMM24: RC-MM protocol 24 bits
-- * @RC_PROTO_RCMM32: RC-MM protocol 32 bits
-- */
--enum rc_proto {
--	RC_PROTO_UNKNOWN	= 0,
--	RC_PROTO_OTHER		= 1,
--	RC_PROTO_RC5		= 2,
--	RC_PROTO_RC5X_20	= 3,
--	RC_PROTO_RC5_SZ		= 4,
--	RC_PROTO_JVC		= 5,
--	RC_PROTO_SONY12		= 6,
--	RC_PROTO_SONY15		= 7,
--	RC_PROTO_SONY20		= 8,
--	RC_PROTO_NEC		= 9,
--	RC_PROTO_NECX		= 10,
--	RC_PROTO_NEC32		= 11,
--	RC_PROTO_SANYO		= 12,
--	RC_PROTO_MCIR2_KBD	= 13,
--	RC_PROTO_MCIR2_MSE	= 14,
--	RC_PROTO_RC6_0		= 15,
--	RC_PROTO_RC6_6A_20	= 16,
--	RC_PROTO_RC6_6A_24	= 17,
--	RC_PROTO_RC6_6A_32	= 18,
--	RC_PROTO_RC6_MCE	= 19,
--	RC_PROTO_SHARP		= 20,
--	RC_PROTO_XMP		= 21,
--	RC_PROTO_CEC		= 22,
--	RC_PROTO_IMON		= 23,
--	RC_PROTO_RCMM12		= 24,
--	RC_PROTO_RCMM24		= 25,
--	RC_PROTO_RCMM32		= 26,
--};
--
--#endif
-diff --git a/tools/testing/selftests/bpf/test_lirc_mode2_user.c b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-index ebf68dce5504..2893e9f2f1e0 100644
---- a/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-+++ b/tools/testing/selftests/bpf/test_lirc_mode2_user.c
-@@ -28,7 +28,6 @@
- // 5. We can read keycode from same /dev/lirc device
- 
- #include <linux/bpf.h>
--#include <linux/lirc.h>
- #include <linux/input.h>
- #include <errno.h>
- #include <stdio.h>
 -- 
-2.34.1
-
+Pavel Begunkov
