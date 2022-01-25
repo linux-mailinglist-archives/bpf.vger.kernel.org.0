@@ -2,217 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A4549B3B6
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 13:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C6349B4F5
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 14:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376330AbiAYMQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 07:16:16 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:55544 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347223AbiAYMNc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 07:13:32 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B9E42B817ED;
-        Tue, 25 Jan 2022 12:13:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 220CDC340E8;
-        Tue, 25 Jan 2022 12:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643112806;
-        bh=YP8yR2ULzF4ht0C7ZypYUVFYi3bHtPsRHNq8KOsRvFg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QICtXK9EGK6UyhVFqu9JINjfmGO3rDXfJkp8XDa5XBt87C4KS2Y62sfKRZww6dEtc
-         wABAUbMNGJt3hwecun7YjslUMKug9JupiSFIqgVEKcB7L84JHNm1swPUISJFAUV6Wb
-         uRfwCiVR9XDMrzyhTyrs3H2rz0jrJS+mSfvnsZLRDZvS9CY9jc6HzucotRhnJV/k+D
-         kWuWulVVl5+FcOdf7l+vsGgZoXnUxVDblKPvsF/rMgnhn35NbqPsuUq282TVsUb7p2
-         dP18ld3ehy1nw+6nEM7nKHHKNDu14Z7KKf4aRqvbDc//US5iHZefMwe2gsT9IZLupB
-         CD8A/hvLb3KVA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: [PATCH v5 9/9] docs: fprobe: Add fprobe description to ftrace-use.rst
-Date:   Tue, 25 Jan 2022 21:13:19 +0900
-Message-Id: <164311279968.1933078.10295698671764269513.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <164311269435.1933078.6963769885544050138.stgit@devnote2>
-References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
-User-Agent: StGit/0.19
+        id S1357542AbiAYNZN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 08:25:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1576379AbiAYNVg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 08:21:36 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F52CC06176C
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 05:21:14 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 23so61576620ybf.7
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 05:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=LRAdUkaGVgOWhURgWMxB0fasLqzT/dLNQI9U1y2JNzs=;
+        b=Dt/BzJ4O8GoTcjn1u3jKTDGNUTDgutkcHJXOLXp+qafNFKMm15n/wsAETmsxhUt8VS
+         2ZQPto/BcCchgHE47UuUF8oYXJlJe65tQA26kokbUZwnZeGyj5112qREJqD2gl7E0AfE
+         ID4+GkzLnf0pp0Wfx/xAM6F584zX8iHQCz0WxpBKIkQnlElBeh5KsAEE+jOkzZAub+jc
+         Yh2Jk8F8Ep6NT9ukvDde27dzIZ29Suoqq5mdBlTSp5GoUHBWvvXuKrkAhfQ1eGqK3kKx
+         +rVKlIwRqQF7vALeNrltc8QZdqOqEndSjEOD/WdGWZVgY9siZVIUevVCKBKqXeDQkkeP
+         ECqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=LRAdUkaGVgOWhURgWMxB0fasLqzT/dLNQI9U1y2JNzs=;
+        b=q+7Y0fZIStG29YHGErJ9IqEzi3DpnDjRNEB0s81ChOfxTb09aoFZOrEs4TANX51LEz
+         cyiGs6gilbV9gnr0YsPuluFo7exVXgRxGxthB4Y51x0dF4H1bp9fpJyRSV8D/l44I3y3
+         IDRjwIsBENgUU5puepQUncTip5hyFJG7MlgYnZWTBG0qjccC3LohmVlbO1Vze4aRj7lc
+         aumG4y+Ivq7z3Rk3D59q3u++ci7/KA/0EB7KsTd8ZWxkg8QvlLk4GaB+65jQGRRdd1+1
+         h/dwXkn131HimZxODwtVwi4w/ITb2fC2Ek9ReN5QRMGtwWkeJK/RosxTYuyRpf8l73OA
+         jTzw==
+X-Gm-Message-State: AOAM530qL54/0vbS08ePZ58dPKu8WQJcPzN1LroH1JLv0uHB8zpGH6gX
+        R4XN6dWLASyb1xw9aaatZvIKiE5hybaIV8NV25I=
+X-Google-Smtp-Source: ABdhPJxZXFdFk/7gLoCvCEJtvVUeKzdmFQDxhnDFcB7xKZgvBmz+DrQy1L+mgNfVID0VTZtTYsEk7mvFscFzXAVZtpw=
+X-Received: by 2002:a05:6902:1206:: with SMTP id s6mr28098276ybu.120.1643116873860;
+ Tue, 25 Jan 2022 05:21:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:7110:31d0:b0:122:8999:44c0 with HTTP; Tue, 25 Jan 2022
+ 05:21:13 -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <whitemrshannah@gmail.com>
+Date:   Tue, 25 Jan 2022 05:21:13 -0800
+Message-ID: <CAPOLZiw8opQsF_Y8YfvYpv5Z59ApUP0DkfRZ3=BkR5JyCiJWNw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a documentation of fprobe for the user who needs
-this interface.
+Please bear with me. I am writing this letter to you with tears and sorrow
+from my heart.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Documentation/trace/fprobe.rst |  131 ++++++++++++++++++++++++++++++++++++++++
- Documentation/trace/index.rst  |    1 
- 2 files changed, 132 insertions(+)
- create mode 100644 Documentation/trace/fprobe.rst
+I am Aisha Muammar Gaddafi, the only daughter of the embattled president of
+Libya, Hon. Muammar Gaddafi. I know my mail might come to you as a surprise
+because you don=E2=80=99t know me, but due to the unsolicited nature of my
+situation here in Refugee camp Ouagadougou Burkina Faso i decided to
+contact you for help. I have passed through pains and sorrowful moments
+since the death of my father. At the same time, my family is the target of
+Western nations led by Nato who want to destroy my father at all costs. Our
+investments and bank accounts in several countries are their targets to
+freeze.
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-new file mode 100644
-index 000000000000..c53950a1f91e
---- /dev/null
-+++ b/Documentation/trace/fprobe.rst
-@@ -0,0 +1,131 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==================================
-+Fprobe - Function entry/exit probe
-+==================================
-+
-+.. Author: Masami Hiramatsu <mhiramat@kernel.org>
-+
-+Introduction
-+============
-+
-+Instead of using ftrace full feature, if you only want to attach callbacks
-+on function entry and exit, similar to the kprobes and kretprobes, you can
-+use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
-+instrumentation for multiple functions with single handler. This document
-+describes how to use fprobe.
-+
-+The usage of fprobe
-+===================
-+
-+The fprobe is a wrapper of ftrace (+ kretprobe-like return callback) to
-+attach callbacks to multiple function entry and exit. User needs to set up
-+the `struct fprobe` and pass it to `register_fprobe()`.
-+
-+Typically, `fprobe` data structure is initialized with the `syms`, `nentry`
-+and `entry_handler` and/or `exit_handler` as below.
-+
-+.. code-block:: c
-+
-+ char targets[] = {"func1", "func2", "func3"};
-+ struct fprobe fp = {
-+        .syms           = targets,
-+        .nentry         = ARRAY_SIZE(targets),
-+        .entry_handler  = my_entry_callback,
-+        .exit_handler   = my_exit_callback,
-+ };
-+
-+The ftrace_ops in the fprobe is automatically set. The FTRACE_OPS_FL_SAVE_REGS
-+and FTRACE_OPS_FL_RECURSION
-+flag will be set. If you need other flags, please set it by yourself.
-+
-+.. code-block:: c
-+
-+ fp.ops.flags |= FTRACE_OPS_FL_RCU;
-+
-+To enable this fprobe, call::
-+
-+  register_fprobe(&fp);
-+
-+To disable (remove from functions) this fprobe, call::
-+
-+  unregister_fprobe(&fp);
-+
-+You can temporally (soft) disable the fprobe by::
-+
-+  disable_fprobe(&fp);
-+
-+and resume by::
-+
-+  enable_fprobe(&fp);
-+
-+The above is defined by including the header::
-+
-+  #include <linux/fprobe.h>
-+
-+Same as ftrace, the registered callback will start being called some time
-+after the register_fprobe() is called and before it returns. See
-+:file:`Documentation/trace/ftrace.rst`.
-+
-+
-+The fprobe entry/exit handler
-+=============================
-+
-+The prototype of the entry/exit callback function is as follows:
-+
-+.. code-block:: c
-+
-+ void callback_func(struct fprobe *fp, unsigned long entry_ip, struct pt_regs *regs);
-+
-+Note that both entry and exit callback has same ptototype. The @entry_ip is
-+saved at function entry and passed to exit handler.
-+
-+@fp
-+        This is the address of `fprobe` data structure related to this handler.
-+        You can embed the `fprobe` to your data structure and get it by
-+        container_of() macro from @fp. The @fp must not be NULL.
-+
-+@entry_ip
-+        This is the entry address of the traced function (both entry and exit).
-+
-+@regs
-+        This is the `pt_regs` data structure at the entry and exit. Note that
-+        the instruction pointer of @regs may be different from the @entry_ip
-+        in the entry_handler. If you need traced instruction pointer, you need
-+        to use @entry_ip. On the other hand, in the exit_handler, the instruction
-+        pointer of @regs is set to the currect return address.
-+
-+
-+Use fprobe with raw address list
-+================================
-+
-+Instead of passing the array of symbols, you can pass a array of raw
-+function addresses via `fprobe::addrs`. In this case, the value of
-+this array will be changed automatically to the dynamic ftrace NOP
-+location addresses in the given kernel function. So please take care
-+if you share this array with others.
-+
-+
-+The missed counter
-+==================
-+
-+The `fprobe` data structure has `fprobe::nmissed` counter field as same as
-+kprobes.
-+This counter counts up when;
-+
-+ - fprobe fails to take ftrace_recursion lock. This usually means that a function
-+   which is traced by other ftrace users is called from the entry_handler.
-+
-+ - fprobe fails to setup the function exit because of the shortage of rethook
-+   (the shadow stack for hooking the function return.)
-+
-+Note that `fprobe::nmissed` field is counted up in both case. The former case
-+will skip both of entry and exit callback, and the latter case will skip exit
-+callback, but in both case the counter is just increased by 1.
-+
-+Functions and structures
-+========================
-+
-+.. kernel-doc:: include/linux/fprobe.h
-+.. kernel-doc:: kernel/trace/fprobe.c
-+
-diff --git a/Documentation/trace/index.rst b/Documentation/trace/index.rst
-index 3769b9b7aed8..b9f3757f8269 100644
---- a/Documentation/trace/index.rst
-+++ b/Documentation/trace/index.rst
-@@ -9,6 +9,7 @@ Linux Tracing Technologies
-    tracepoint-analysis
-    ftrace
-    ftrace-uses
-+   fprobe
-    kprobes
-    kprobetrace
-    uprobetracer
+My Father of blessed memory deposited the sum of $27.5M (Twenty Seven
+Million Five Hundred Thousand Dollars) in a Bank at Burkina Faso which he
+used my name as the next of kin. I have been commissioned by the (BOA) bank
+to present an interested foreign investor/partner who can stand as my
+trustee and receive the fund in his account for a possible investment in
+his country due to my refugee status here in Burkina Faso.
 
+I am in search of an honest and reliable person who will help me and stand
+as my trustee so that I will present him to the Bank for the transfer of
+the fund to his bank account overseas. I have chosen to contact you after
+my prayers and I believe that you will not betray my trust but rather take
+me as your own sister or daughter. If this transaction interests you, you
+don't have to disclose it to anybody because of what is going on with my
+entire family, if the United nation happens to know this account, they will
+freeze it as they freeze others, so please keep this transaction only to
+yourself until we finalize it.
+
+Sorry for my pictures. I will enclose it in my next mail and more about me
+when I hear from you okay.
