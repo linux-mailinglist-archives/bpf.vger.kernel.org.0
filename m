@@ -2,85 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17B349BF43
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 00:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5F749BF4C
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 00:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbiAYXBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 18:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        id S234563AbiAYXDA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 18:03:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234547AbiAYXBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 18:01:41 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539A1C06161C;
-        Tue, 25 Jan 2022 15:01:41 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id x52-20020a05683040b400b0059ea92202daso12007701ott.7;
-        Tue, 25 Jan 2022 15:01:41 -0800 (PST)
+        with ESMTP id S234586AbiAYXCt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 18:02:49 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A59C06173B;
+        Tue, 25 Jan 2022 15:02:49 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id u11so20779936plh.13;
+        Tue, 25 Jan 2022 15:02:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=NR6Pkk/NLS3eDNHWIfVB64jIoL3Ged0GrnyD1pBXw6w=;
-        b=EbUXI95kVJPvvjukvKMbw/yhxSnQnecUxPZyOx1DU5gGD2h4+niDU8tOBbPZwBfEoP
-         1aXGRLfEM5CNy3eoIhbKVtj/kUR/9Jw7HqM89+jFtpbVdPQN8QovzpDRxHAAiR+H9fhi
-         LwRbmlC9JgVKWdm76EIcK6GgILAocULzdisO8Zj88u2ljfLjFn/ZWoT9fwo6ACb7no6s
-         oddqUONOEcI7mJkjUrgRuY+zvQmtjyxa2v1mt44O/oH+kq+hHbruijMIqmGIrQ2XJCbK
-         /WSW0x8nRYWpyuBKMr09qh5lZnP6K6xIhbOr5Q5AJ7x4V/QE/U/4yY1FVoFBxkiGeeg8
-         14SQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EBImikir9ryAT25BALwOBZaIdeZpyfkOerp8AGfow0Y=;
+        b=nS/qs9KssIJBTLzoLDLJszdVUiXxpkn92Gj/mSrQkvnuM5mgW1SQgyG1o+8jAruIj7
+         ECS09HKz/+dnA+KNFP2GgHqKwmKO2hCXnqNDrNrDNuKMBTs+5Z+l4C0tk/fZMCZnoZdr
+         YhC3VN2lfAFgR/0mdLfFIUG4PJRoh7kFfMHP3pqhfdEsCUT78J5zjm1dWL8MFMZ8d0pX
+         WuURUQf53/4jtwjRwdI9Dxw5Y8rZR7KHJRXKizykEq7xkNycQK5bwgeSMYMBj17IFW+r
+         mblklustS3N81EEQYEu675+sO1LupmJjWR4M2HVHsEYGXegfUO32PGTktkreTBVB37VZ
+         +OQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=NR6Pkk/NLS3eDNHWIfVB64jIoL3Ged0GrnyD1pBXw6w=;
-        b=rUSemHLAGg+atJHr/MnJGVGeE0N8mjqAe5utCFHxUbH8z+lp9olnu3MvD/08lb5xUC
-         9UkA3ChJWVlqAfxU6ZHFA7NUwLM6PrQKrbiHnGAPTDP8sIBSphZJo4wEcTLWf4B7z3h6
-         cHC8JAsCykN8aHj1lBp6loZIA7h5CvM4ajayjIiZGp7/SX5ClAEnxSWFJq3VpzHz0WN9
-         2E/E5NAu6xkI2ip54yo1H0+TbedHnbpr1sMWbAv5HvT8CvsArjr+Hj0IX5F0SXtU8yIO
-         9gEt1wj0k+0UkJx3F7/Q/7Dx+Qemdj7Pu/B0GkXX7D/2gHIL584xmjdJhDtkdIpy+YlJ
-         fWUA==
-X-Gm-Message-State: AOAM532EvzuQWw/qK7GXw3QsAOUzn6a7+TvB5Kx0b/ZdTBgh6HnpjDwI
-        MW2kv79mC0MHkdBhJ+9Y9sQ=
-X-Google-Smtp-Source: ABdhPJywrXOrU/BvQ6rubLqGaMFfqIJ/dK1Gi06eo0oYpj760tktyaB9qEUO2I0h+zQXKzNZI9b4sw==
-X-Received: by 2002:a05:6830:812:: with SMTP id r18mr464812ots.136.1643151700722;
-        Tue, 25 Jan 2022 15:01:40 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id v26sm4185317ooq.20.2022.01.25.15.01.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jan 2022 15:01:40 -0800 (PST)
-Date:   Tue, 25 Jan 2022 15:01:33 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
-        magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org
-Message-ID: <61f0814d74004_30a59208bf@john.notmuch>
-In-Reply-To: <20220125082945.26179-1-magnus.karlsson@gmail.com>
-References: <20220125082945.26179-1-magnus.karlsson@gmail.com>
-Subject: RE: [PATCH bpf-next] selftests: xsk: fix bpf_res cleanup test
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EBImikir9ryAT25BALwOBZaIdeZpyfkOerp8AGfow0Y=;
+        b=okBwUwq6UTYsMQhAX2djnD4sxagRhUPIwoCkT0VIwEdcvYeTlD2gCJnj4Siz13NK06
+         ikN9705PjjPrDXmaaQo/qytClKv4VNB3y2D52PviZqS4xAyWSzuNQRt5V8QQvKnjeIWy
+         Z6+pbf1d1gRUwL0wmtWidM5eZUk7OW5F7OxS+o4W/746PSBudOJAnH1tjfz6PEiuxNoI
+         Ed2Gv5ccH2HNOmpPFLnGGXdXnFpQqsmFObgFjWA0SDzghyu6IxD9hf+6WxCTGiVqrc1I
+         XLKsU+X+rAiPMtX2CylA+1YZtf0OSyCtMAJ8yljYS+UL+9sakvB+8je+cinTtTSzleZw
+         6a/g==
+X-Gm-Message-State: AOAM532xm9DnCjwiERDDxWlvOIyKrtLILdU+CGmUNqUajIyuLcHhKXfN
+        bFBjG5yLO0k+F7T+g0Bqt0q3J3Dboak4wq1tuoU=
+X-Google-Smtp-Source: ABdhPJy5YQg3TdenuLu2bpBojTq87dI7qwnNcwo4fmhj3+xZGz079adASMz1cchAxmmJBkXWlv8d72PId6c8m90wEOk=
+X-Received: by 2002:a17:90b:3b4c:: with SMTP id ot12mr5749610pjb.62.1643151768394;
+ Tue, 25 Jan 2022 15:02:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20220113070245.791577-1-imagedong@tencent.com>
+ <87sftbobys.fsf@cloudflare.com> <20220125224524.fkodqvknsluihw74@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20220125224524.fkodqvknsluihw74@kafai-mbp.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 25 Jan 2022 15:02:37 -0800
+Message-ID: <CAADnVQKbYCCYjCMhEV7p1YzkAVSKvg-1VKfWVQYVL0TaESNxBQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct bpf_sock'
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Menglong Dong <menglong8.dong@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Mengen Sun <mengensun@tencent.com>, flyingpeng@tencent.com,
+        mungerjiang@tencent.com, Menglong Dong <imagedong@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Magnus Karlsson wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
-> 
-> After commit 710ad98c363a ("veth: Do not record rx queue hint in
-> veth_xmit"), veth no longer receives traffic on the same queue as it
-> was sent on. This breaks the bpf_res test for the AF_XDP selftests as
-> the socket tied to queue 1 will not receive traffic anymore. Modify
-> the test so that two sockets are tied to queue id 0 using a shared
-> umem instead. When killing the first socket enter the second socket
-> into the xskmap so that traffic will flow to it. This will still test
-> that the resources are not cleaned up until after the second socket
-> dies, without having to rely on veth supporting rx_queue hints.
-> 
-> Reported-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
+On Tue, Jan 25, 2022 at 2:45 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Jan 25, 2022 at 08:24:27PM +0100, Jakub Sitnicki wrote:
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index b0383d371b9a..891a182a749a 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -5500,7 +5500,11 @@ struct bpf_sock {
+> > >     __u32 src_ip4;
+> > >     __u32 src_ip6[4];
+> > >     __u32 src_port;         /* host byte order */
+> > > -   __u32 dst_port;         /* network byte order */
+> > > +   __u32 dst_port;         /* low 16-bits are in network byte order,
+> > > +                            * and high 16-bits are filled by 0.
+> > > +                            * So the real port in host byte order is
+> > > +                            * bpf_ntohs((__u16)dst_port).
+> > > +                            */
+> > >     __u32 dst_ip4;
+> > >     __u32 dst_ip6[4];
+> > >     __u32 state;
+> >
+> > I'm probably missing something obvious, but is there anything stopping
+> > us from splitting the field, so that dst_ports is 16-bit wide?
+> >
+> > I gave a quick check to the change below and it seems to pass verifier
+> > checks and sock_field tests.
+> >
+> > IDK, just an idea. Didn't give it a deeper thought.
+> >
+> > --8<--
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 4a2f7041ebae..344d62ccafba 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5574,7 +5574,8 @@ struct bpf_sock {
+> >       __u32 src_ip4;
+> >       __u32 src_ip6[4];
+> >       __u32 src_port;         /* host byte order */
+> > -     __u32 dst_port;         /* network byte order */
+> > +     __u16 unused;
+> > +     __u16 dst_port;         /* network byte order */
+> This will break the existing bpf prog.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+I think Jakub's idea is partially expressed:
++       case offsetof(struct bpf_sock, dst_port):
++               bpf_ctx_record_field_size(info, sizeof(__u16));
++               return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
+
+Either 'unused' needs to be after dst_port or
+bpf_sock_is_valid_access() needs to allow offset at 'unused'
+and at 'dst_port'.
+And allow u32 access though the size is actually u16.
+Then the existing bpf progs (without recompiling) should work?
