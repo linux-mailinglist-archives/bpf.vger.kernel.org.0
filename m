@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CF249ADD9
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BF249AE2F
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378300AbiAYIPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 03:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S1379445AbiAYIgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 03:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1448689AbiAYILJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 03:11:09 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17FCC0A102C;
-        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id 9so6889914iou.2;
-        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
+        with ESMTP id S1450731AbiAYIdX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 03:33:23 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A4DC061290;
+        Mon, 24 Jan 2022 23:04:41 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id o10so16085994ilh.0;
+        Mon, 24 Jan 2022 23:04:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=vVmvTKTsaxOlONO4QYlutZhtuDsocbdCqgwaw+TJzb4=;
-        b=k3m12SknLZlwKx/vo2br6QSN5nsdltw57FXTxRspt8AyV/vXsNVmXsj2l+Vv7noQb4
-         /wcZHwYRjIpRb3+8biyzNWGVa3z1VLT/32odwiJH5oEm1jROcwzw369C7S6/w57iOBkP
-         Tt4EoV+fKiBGFEdaRwj3d415SUmGKl5lXls0IjorS0FPEx6RZwh6hh3q3pUyWfUf5aBe
-         IvdPOevH1lbWLecH4Ouqo6rVTZzKVk5KMKA+8gJ8mJzE4JX/0NEaxfRCh7NNdUp/u5yW
-         H2uZ6tCAy6iaDjLaeX95kf4UFdUIp6F2STAvzQzb++afxA8Dwg1kTJL396SLgVNx892R
-         CQiA==
+        bh=4mNtJKL4HQgQkY9btV767Gf4EXhzAnjyYSo6Uxupisw=;
+        b=SetAMpByN6ia20pJuSAz+LUw5IBghr4Jb4MdiFqfsA4NjQieFHyr++NRMGUPXfLSd3
+         CWzH6n3PbWYg/JgOTH1WdtIe3rYUxJf0+MLntbTsAvEFPql+hqSpt3ADIwBK/cvnrrKk
+         Sk/ltgwdACLMeUjW8A4UNEL/5l4z7TgDIWsOQpbf2jeizXFWPEFe0Cf128RE9lTMz6cG
+         J9dlN/uezqLuah9kGK9VkIubGhOn4ZaxWMyFrGVk5QJv2V9zdu93Q9pS5p/zKbgGpKF8
+         MJ2gagpzI8WIJqmAOgRxabikx0IgvVwAJ8SlBTbEH22gvh+jBRaWfa9rF/nlvC2f01fs
+         vnBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=vVmvTKTsaxOlONO4QYlutZhtuDsocbdCqgwaw+TJzb4=;
-        b=5VX6sES/OU5xSymT4vD+0OqvCiUF23NU/aLQt0TQK8k9devFN4zSMupEk4HYb4eA4s
-         3ANOcla46r3I1IHhT4XWNIEsVJixbUA+h2WT7uUT2kgU13NLNztn9Cc+QrR1UGegU259
-         vf0HToyJfa8Ob9CajywZ0eRr9r/1bHBv3TyrqJAIye6+PaxON6pIRNCGW/WRYEmXGks2
-         H9A7a9VvWROMN9mLbdb6wwioRMfpxxXPBmkgma+NtpsxyFAxiV35aOYz2VPFwFtoV3X6
-         gvDZw4UanCwV8zPe+LMV/N0kEgZUwE8KJrA9DEyBpb1uWPtB7wDGeKU3dNRDiw7UR7Ss
-         3JoQ==
-X-Gm-Message-State: AOAM532ONfIX8QRUbL8QFKpK47UQyMBxkX6KruyAuJJuWhQALv3zJZhU
-        e8lK7NMWIO9FniN/ZQcuRMI=
-X-Google-Smtp-Source: ABdhPJzQ9IAlJ7cZFJwi5Eo7AwlA+zg7rkd9KQMgU92Fjhaoijao9sbiCdvy945D8wb/aU19iNTxvA==
-X-Received: by 2002:a02:852e:: with SMTP id g43mr4676240jai.31.1643093094101;
-        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
+        bh=4mNtJKL4HQgQkY9btV767Gf4EXhzAnjyYSo6Uxupisw=;
+        b=Rg60obq8KRb61kRx9AQ4IKsChDety2EWQa+pz70UClm5OztC8xBHDMcpg6NkNsVx/P
+         MIx2C1AT6jH5L67+iPJ9zP6+7R0AKUfkxfXglpH5MhOudBQYjliT/d0agJQ0dPk+d16Y
+         1xJJoEwZeyOaE9R6pI+pm7lLRfehg/SlornfPtWj9zecyqaKSBIqpYLBm5ffAm+n3XHD
+         yU5KuLM0c9cLcwLyAp6LWRR7HePzRp+i777UvBZcJ+DKsHFenI9Fo8Hu5DNu86i4Nf2D
+         LGXduD8I+Nig1eUnRXU93gbry5uMAQUXbF9SaFkSWt422ynll42Yh5HWKm8vP3H8NtYI
+         7ZMQ==
+X-Gm-Message-State: AOAM533WwKZUkS+eQllQUb0aFdOCqTbVr1Aw40Xbs9nxqThsvdKMJlTc
+        L4e2ZuStYmTLEmfWZST+pbc=
+X-Google-Smtp-Source: ABdhPJzEhNiX4C4ZHSGIxQeH4w9KUxwUEieWmGB615JFoANsY7YXEdWYh3xNztnD3RydwYaQxumY+A==
+X-Received: by 2002:a05:6e02:927:: with SMTP id o7mr9936105ilt.43.1643094280888;
+        Mon, 24 Jan 2022 23:04:40 -0800 (PST)
 Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id k1sm7497654iov.6.2022.01.24.22.44.52
+        by smtp.gmail.com with ESMTPSA id x1sm8503952ilv.30.2022.01.24.23.04.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 22:44:53 -0800 (PST)
-Date:   Mon, 24 Jan 2022 22:44:45 -0800
+        Mon, 24 Jan 2022 23:04:40 -0800 (PST)
+Date:   Mon, 24 Jan 2022 23:04:35 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Maxim Mikityanskiy <maximmi@nvidia.com>, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
@@ -63,12 +63,12 @@ Cc:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Eric Dumazet <edumazet@google.com>,
         Maxim Mikityanskiy <maximmi@nvidia.com>
-Message-ID: <61ef9c5d6056_274ca208a@john.notmuch>
-In-Reply-To: <20220124151146.376446-2-maximmi@nvidia.com>
+Message-ID: <61efa1032e925_274ca208fb@john.notmuch>
+In-Reply-To: <20220124151146.376446-3-maximmi@nvidia.com>
 References: <20220124151146.376446-1-maximmi@nvidia.com>
- <20220124151146.376446-2-maximmi@nvidia.com>
-Subject: RE: [PATCH bpf v2 1/4] bpf: Use ipv6_only_sock in
- bpf_tcp_gen_syncookie
+ <20220124151146.376446-3-maximmi@nvidia.com>
+Subject: RE: [PATCH bpf v2 2/4] bpf: Support dual-stack sockets in
+ bpf_tcp_check_syncookie
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -78,14 +78,44 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Maxim Mikityanskiy wrote:
-> Instead of querying the sk_ipv6only field directly, use the dedicated
-> ipv6_only_sock helper.
+> bpf_tcp_gen_syncookie looks at the IP version in the IP header and
+> validates the address family of the socket. It supports IPv4 packets in
+> AF_INET6 dual-stack sockets.
 > 
-> Fixes: 70d66244317e ("bpf: add bpf_tcp_gen_syncookie helper")
+> On the other hand, bpf_tcp_check_syncookie looks only at the address
+> family of the socket, ignoring the real IP version in headers, and
+> validates only the packet size. This implementation has some drawbacks:
+> 
+> 1. Packets are not validated properly, allowing a BPF program to trick
+>    bpf_tcp_check_syncookie into handling an IPv6 packet on an IPv4
+>    socket.
+
+These programs are all CAP_NET_ADMIN I believe so not so sure this is
+critical from a BPF program might trick the helper, but consistency
+is nice.
+
+> 
+> 2. Dual-stack sockets fail the checks on IPv4 packets. IPv4 clients end
+>    up receiving a SYNACK with the cookie, but the following ACK gets
+>    dropped.
+
+Agree we need to fix this. Also would be nice to add a test to capture
+this case so we don't break it again later. Its a bit subtle so might
+not be caught right away without a selftest.
+
+> 
+> This patch fixes these issues by changing the checks in
+> bpf_tcp_check_syncookie to match the ones in bpf_tcp_gen_syncookie. IP
+> version from the header is taken into account, and it is validated
+> properly with address family.
+
+Code looks good, would be nice to have a test.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+> 
+> Fixes: 399040847084 ("bpf: add helper to check for a valid SYN cookie")
 > Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
 > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
-
-Not really a fix, but LGTM.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+>  net/core/filter.c | 17 +++++++++++++----
