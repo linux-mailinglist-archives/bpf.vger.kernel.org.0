@@ -2,58 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D500449B913
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 17:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACECA49B931
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 17:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231380AbiAYQo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 11:44:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20551 "EHLO
+        id S1451187AbiAYQun (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 11:50:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37788 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1585109AbiAYQl2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jan 2022 11:41:28 -0500
+        by vger.kernel.org with ESMTP id S1586010AbiAYQqO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jan 2022 11:46:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643128887;
+        s=mimecast20190719; t=1643129172;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GbY3XP61M3uD9sP2FFUZOwoizO9Z7SgKKtfr4x3BErc=;
-        b=VejCggiVheMdoxcliVm59WLZ8cI4JiPonkrW10Ip8MF5LLdsC1uVMNMT9/3mlA7a15Oorm
-        97B+WAlhu87Rn3QAzv0GLfNMIlQ1QhpmH9wUBHCkkQLolcZ6ynP5gbBxH1t/Ma0kIGDp73
-        Vd1rRYwjNF/55ran80KXnjOBQpRNn0Q=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=a7zU+HQutEO/qQ6hrk2sWMOj/1/xvFwsw5cfqIUqTFg=;
+        b=YXrLkOqQp00vD3xY5HGVg5e3UoHk1GahXyyxKgAcMSt3+3YLwBHuvpMooY7pnkgMAa+p3o
+        wFj3ugFNbmmgZqzPSOeY/n3IzZdhqLUM24+NenDLZ07lAys9Q5bCKIRvpW3uxja3iLVwdY
+        Rb6B0atUerd7QdR1G/k+BmVgAHRi87s=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-475-dEOjJg5gNKSsVoNE82C7fQ-1; Tue, 25 Jan 2022 11:41:26 -0500
-X-MC-Unique: dEOjJg5gNKSsVoNE82C7fQ-1
-Received: by mail-ej1-f70.google.com with SMTP id h22-20020a1709060f5600b006b11a2d3dcfso3655153ejj.4
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 08:41:25 -0800 (PST)
+ us-mta-642-OS-Ala2mO_yIOpeMLXBDwg-1; Tue, 25 Jan 2022 11:46:11 -0500
+X-MC-Unique: OS-Ala2mO_yIOpeMLXBDwg-1
+Received: by mail-wm1-f70.google.com with SMTP id c16-20020a1c9a10000000b0034dd409329eso1750115wme.3
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 08:46:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GbY3XP61M3uD9sP2FFUZOwoizO9Z7SgKKtfr4x3BErc=;
-        b=s3gHDSYb3N8A6pU2dLsrhEi+us8Nu9EEWdB9AuEtZe7vhxkEzS7HD/+talUsdV6CiU
-         iek2EYJzbJoxFpZuqMaXAgvnqP10QbiBTsGrPoKE7i783vwN2D6U1ypgVxv/BOqDcgeO
-         7yfg+sPg+3mXTcN9NG833LuiA6H45SxiYPLMlI+EGC2JuKFPeuUHa+AcaaOoviUHU9tA
-         N6Y+JhcAkGnPnjNkV4dhXa4y1TIcQWdTyTUShlGGh/nmBAI+/CCE+phBEvMs9QETq3yE
-         7mVm7Jp+u6PwxdPX6gFygU8nWL4S/pF69KCIrEcWJwr0IS+8XYVoAI47Nppq//SFvIKh
-         gKwQ==
-X-Gm-Message-State: AOAM530GsWMNgj0Lz8SadWRbv3YrvN8W+J1K2lDeZZN0kss+BQpivx9Z
-        KJY50rP6q2yY9OnY724BUbQpLx4pziwD0fx9BxJbvMrcYEALUlj8JVFGhGCujSZstxrlaD3IjLC
-        iH8a/SV1KH++s
-X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr6272874ejc.358.1643128884403;
-        Tue, 25 Jan 2022 08:41:24 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwg37J+bP3Vw6kcPaqHnw/mAqqdxblwP1MOYVrCrqDDNprj6rBqlub90ZLbiCa3i8cWgEnxKg==
-X-Received: by 2002:a17:907:3f29:: with SMTP id hq41mr6272861ejc.358.1643128884190;
-        Tue, 25 Jan 2022 08:41:24 -0800 (PST)
+        bh=a7zU+HQutEO/qQ6hrk2sWMOj/1/xvFwsw5cfqIUqTFg=;
+        b=P1CtVwCTq5sZ8HWlNL2uua2IsSTKa+9ylahKqc9y8RQaT9yoBfWLCBEnk606piqeL8
+         L/fMY84jNmmqNqhlr5MmzTgmfAZxB+9hrYMK+4Phfs9eHJseevVcARtw5EZREpRWVJZV
+         Qe1wku6U8P/95AVOFZ6M29e/GBoyIvjlQh8oyiERss0LlCKfT+u3rTySyh9pMjGMTKaN
+         d5de8ObEhiBlAgxu1+P5ng/PS9Tunfx7+WzcDx4mW/nMFsz4AqIKumaBUKznDB82b4fe
+         A7WsV30rxnRRnqJJsX54QYpBjch+qjsmQTx2z4jdd8MNzhD3SLTOdffLmqWMBt9HuTKn
+         W0dA==
+X-Gm-Message-State: AOAM533+EWd8tFVMoiYWtdVkSWz7WAjtoTLZUBf55H5bMYXK/aUXJJg8
+        FH++g3oNvPIhY/xqB4T87Q+QFBMO2nC9YOQNpKdYIU4CqiCdes8n/X9FXGdt65Egzq4YTL+EVoj
+        AoLSA/O2SDRgW
+X-Received: by 2002:a05:600c:3583:: with SMTP id p3mr2201512wmq.172.1643129169980;
+        Tue, 25 Jan 2022 08:46:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwIqCv/3FYPOntW4ojvotT2V0jZL/2g+sZaZcGFbPNk+L/RtU0NW5/Vdzdeumf5jW5EHMfqMA==
+X-Received: by 2002:a05:600c:3583:: with SMTP id p3mr2201493wmq.172.1643129169747;
+        Tue, 25 Jan 2022 08:46:09 -0800 (PST)
 Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id a14sm8449020edx.96.2022.01.25.08.41.23
+        by smtp.gmail.com with ESMTPSA id 8sm21412748wrz.57.2022.01.25.08.46.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jan 2022 08:41:23 -0800 (PST)
-Date:   Tue, 25 Jan 2022 17:41:21 +0100
+        Tue, 25 Jan 2022 08:46:09 -0800 (PST)
+Date:   Tue, 25 Jan 2022 17:46:07 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
         bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
@@ -61,84 +62,126 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
         "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
         Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
         "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 2/9] fprobe: Add ftrace based probe APIs
-Message-ID: <YfAoMW6i4gqw2Na0@krava>
+Subject: Re: [PATCH v5 1/9] ftrace: Add ftrace_set_filter_ips function
+Message-ID: <YfApT8uAoCODPAGu@krava>
 References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
- <164311271777.1933078.9066058105807126444.stgit@devnote2>
+ <164311270629.1933078.4596694198103138848.stgit@devnote2>
+ <20220125110659.2cc8df29@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <164311271777.1933078.9066058105807126444.stgit@devnote2>
+In-Reply-To: <20220125110659.2cc8df29@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 09:11:57PM +0900, Masami Hiramatsu wrote:
+On Tue, Jan 25, 2022 at 11:06:59AM -0500, Steven Rostedt wrote:
 
 SNIP
 
-> +
-> +/* Convert ftrace location address from symbols */
-> +static int convert_func_addresses(struct fprobe *fp)
-> +{
-> +	unsigned long addr, size;
-> +	unsigned int i;
-> +
-> +	/* Convert symbols to symbol address */
-> +	if (fp->syms) {
-> +		fp->addrs = kcalloc(fp->nentry, sizeof(*fp->addrs), GFP_KERNEL);
-> +		if (!fp->addrs)
-> +			return -ENOMEM;
-> +
-> +		for (i = 0; i < fp->nentry; i++) {
-> +			fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
-> +			if (!fp->addrs[i])	/* Maybe wrong symbol */
-> +				goto error;
-> +		}
-> +	}
-> +
-> +	/* Convert symbol address to ftrace location. */
-> +	for (i = 0; i < fp->nentry; i++) {
-> +		if (!kallsyms_lookup_size_offset(fp->addrs[i], &size, NULL))
-> +			size = MCOUNT_INSN_SIZE;
-> +		addr = ftrace_location_range(fp->addrs[i], fp->addrs[i] + size);
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index be5f6b32a012..39350aa38649 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -4958,7 +4958,7 @@ ftrace_notrace_write(struct file *file, const char __user *ubuf,
+> >  }
+> >  
+> >  static int
+> > -ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+> > +__ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+> >  {
+> >  	struct ftrace_func_entry *entry;
+> >  
+> > @@ -4976,9 +4976,25 @@ ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
+> >  	return add_hash_entry(hash, ip);
+> >  }
+> >  
+> > +static int
+> > +ftrace_match_addr(struct ftrace_hash *hash, unsigned long *ips,
+> > +		  unsigned int cnt, int remove)
+> > +{
+> > +	unsigned int i;
+> > +	int err;
+> > +
+> > +	for (i = 0; i < cnt; i++) {
+> > +		err = __ftrace_match_addr(hash, ips[i], remove);
+> > +		if (err)
+> > +			return err;
+> 
+> On error should we revert what was done?
+> 
+> 			goto err;
+> > +	}
+> > +	return 0;
+> 
+> err:
+> 	for (i--; i >= 0; i--)
+> 		__ftrace_match_addr(hash, ips[i], !remove);
+> 	return err;
+> 
+> Although it may not matter as it looks like it is only used on a temporary
+> hash. But either it should be commented that is the case, or we do the above
+> just to be more robust.
 
-you need to substract 1 from 'end' in here, as explained in
-__within_notrace_func comment:
+yes, that's the case.. it populates just the hash at this point
+and if __ftrace_match_addr fails, the thehash is relased after
+jumping to out_regex_unlock
 
-        /*
-         * Since ftrace_location_range() does inclusive range check, we need
-         * to subtract 1 byte from the end address.
-         */
+> 
+> > +}
+> > +
+> >  static int
+> >  ftrace_set_hash(struct ftrace_ops *ops, unsigned char *buf, int len,
+> > -		unsigned long ip, int remove, int reset, int enable)
+> > +		unsigned long *ips, unsigned int cnt,
+> > +		int remove, int reset, int enable)
+> >  {
+> >  	struct ftrace_hash **orig_hash;
+> >  	struct ftrace_hash *hash;
+> > @@ -5008,8 +5024,8 @@ ftrace_set_hash(struct ftrace_ops *ops, unsigned char *buf, int len,
+> >  		ret = -EINVAL;
+> >  		goto out_regex_unlock;
+> >  	}
+> > -	if (ip) {
+> > -		ret = ftrace_match_addr(hash, ip, remove);
+> > +	if (ips) {
+> > +		ret = ftrace_match_addr(hash, ips, cnt, remove);
+> >  		if (ret < 0)
+> >  			goto out_regex_unlock;
+> >  	}
+> > @@ -5026,10 +5042,10 @@ ftrace_set_hash(struct ftrace_ops *ops, unsigned char *buf, int len,
+> >  }
+> >  
+> >  static int
+> > -ftrace_set_addr(struct ftrace_ops *ops, unsigned long ip, int remove,
+> > -		int reset, int enable)
+> > +ftrace_set_addr(struct ftrace_ops *ops, unsigned long *ips, unsigned int cnt,
+> > +		int remove, int reset, int enable)
+> >  {
+> > -	return ftrace_set_hash(ops, NULL, 0, ip, remove, reset, enable);
+> > +	return ftrace_set_hash(ops, NULL, 0, ips, cnt, remove, reset, enable);
+> >  }
+> >  
+> >  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
+> > @@ -5634,10 +5650,29 @@ int ftrace_set_filter_ip(struct ftrace_ops *ops, unsigned long ip,
+> >  			 int remove, int reset)
+> >  {
+> >  	ftrace_ops_init(ops);
+> > -	return ftrace_set_addr(ops, ip, remove, reset, 1);
+> > +	return ftrace_set_addr(ops, &ip, 1, remove, reset, 1);
+> >  }
+> >  EXPORT_SYMBOL_GPL(ftrace_set_filter_ip);
+> >  
+> > +/**
+> > + * ftrace_set_filter_ips - set a functions to filter on in ftrace by addresses
+> 
+> 		- set functions to filter on ...
 
-like in the patch below
-
-also this convert is for archs where address from kallsyms does not match
-the real attach addresss, like for arm you mentioned earlier, right?
-
-could we have that arch specific, so we don't have extra heavy search
-loop for archs that do not need it?
+will fix,
 
 thanks,
 jirka
-
-
----
-diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
-index 4d089dda89c2..7970418820e7 100644
---- a/kernel/trace/fprobe.c
-+++ b/kernel/trace/fprobe.c
-@@ -91,7 +91,7 @@ static int convert_func_addresses(struct fprobe *fp)
- 	for (i = 0; i < fp->nentry; i++) {
- 		if (!kallsyms_lookup_size_offset(fp->addrs[i], &size, NULL))
- 			size = MCOUNT_INSN_SIZE;
--		addr = ftrace_location_range(fp->addrs[i], fp->addrs[i] + size);
-+		addr = ftrace_location_range(fp->addrs[i], fp->addrs[i] + size - 1);
- 		if (!addr) /* No dynamic ftrace there. */
- 			goto error;
- 		fp->addrs[i] = addr;
 
