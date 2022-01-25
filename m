@@ -2,56 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A5149B008
+	by mail.lfdr.de (Postfix) with ESMTP id BE59E49B009
 	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 10:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344616AbiAYJZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 04:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
+        id S1380246AbiAYJZc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 04:25:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1456999AbiAYJNw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 04:13:52 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ECDC061744;
-        Tue, 25 Jan 2022 01:06:24 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id x11so12833922plg.6;
-        Tue, 25 Jan 2022 01:06:24 -0800 (PST)
+        with ESMTP id S1457601AbiAYJP7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 04:15:59 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE9E7C061392;
+        Tue, 25 Jan 2022 01:09:38 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id b15so4065281plg.3;
+        Tue, 25 Jan 2022 01:09:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NSZ2MCYaAgnou8TOlrpilfOFZgn86OLEFUO+LImgoUI=;
-        b=D1XSzdhpeqcHpFkLgUViW7bE3eKL+8VLkOyuXZGFc9lwCfHwLy9biWBU51hsWZ8PgX
-         In2DhTbBd/BAm024SFnXAoAF4//Viwfmq78NJNPPrhOVRAcUsRQFakTQ+6Tq2d/XD2ST
-         cNZjdGfDJkgY3H6Lv9f6FmfbwQbLOgaQuYcrVk3avgZilmqNvhrS4lrJ4VgljTbACvcZ
-         x3xQSDcgfQQ0zowiUYL1b8bI7uvvla0qGPyDW41VhrWcg3LU62j3Fxqa1PeVM6GmBmSY
-         saGKcl4YvH7paEiWd4U/XPUBxoiEuVxEtoxOxJ8TmkDAXYKfODX++KDon0Zumlrz2mUB
-         gRwQ==
+        bh=42lpJKH/197MI5hsdw9tU1SEO23Oa2DGBNUGHdx2ufE=;
+        b=EDq+QJiMmK5DiOm8LZw4vU6lKmBQLJ8R/nKBBXhnpRIa9jalF+nt+2GvEs1LjZz4/S
+         sCWADAp7bh2s35uVU1PYNu7sTU32szid/b6bxYGSUZNHqc/3unCq72mF5yacBzuvyg4A
+         8IHWW73PtZXSK1apnqFhCwxWCaLhrxhXw1zT8JwKoC25NIodn+3PmKTJVjtUPuR3h3TI
+         IVxOiiyXr9Mw0KPtsg/yJfnKM2EvRlWSFNpgIMiWFFgIf/Z72z1ftkN4uinJoSICE5q3
+         H+LfAuxfkKCwRKRCwPZarO1wP7SmLcCYhyqHFiGXF54QI8rQ0qhP4IgZKKi+hYNWrXg7
+         tQ5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NSZ2MCYaAgnou8TOlrpilfOFZgn86OLEFUO+LImgoUI=;
-        b=4t4C231Yb/t5+E4Ei6Cht2HfE/2ik8wrwT7PdHVhCFlVnvSxZonyZ2Ultm7RNn4ptw
-         NW2rjUoac+50QbFhhH7DQM4yw8FI3rr/UvOnE7W4JKmCNxVMbL3dxnu+0zqeuQx8T4Mw
-         eEFny7dhhfDQE4REbSbrSPsieUwqqcjnEZLi7/vBH4PyYBd+YBBNd+oU+cElXJaHB9y1
-         eTCeXXD2FM2I6DcqVonncBcSSh36J/T6txsVb9p+OTQlouyo+mFKxQNV95V/jswnA+g+
-         qUrZ1Sp1Kycdnh2rFflckVXZDXgMcuKSwSbtsJk4/hfBGCLA0TA2TYLoJflN/fj9AW7u
-         lXTQ==
-X-Gm-Message-State: AOAM530bd1+FfHlgd7JPy8JSvzObmvGP/ZBSaiDGU566KyvrtHOp3cyo
-        pm8mKD6CO4UDUnFHwoZWUd1b8V+FcfmQjc+BwWGwJMtrnKpK07+G
-X-Google-Smtp-Source: ABdhPJy+zkAEsFS42pQrvVT0J2jq+oXJn6lE0OUpa5TDxwUwzHLfjfzM1R1pRoAYvSNR0a/voSFWX28s4jCuLkFBHqw=
-X-Received: by 2002:a17:902:b110:b0:14a:197:dfea with SMTP id
- q16-20020a170902b11000b0014a0197dfeamr17449396plr.142.1643101584150; Tue, 25
- Jan 2022 01:06:24 -0800 (PST)
+        bh=42lpJKH/197MI5hsdw9tU1SEO23Oa2DGBNUGHdx2ufE=;
+        b=cTSByIQtFB7eqfNyDGF2a3ot2idF5Gmrxt8wQca+J2CiLVfQjw1FLs5JaPAyv1dwZQ
+         RQLEAwFm66qj9xR2SO/YR9VeZcLBRI7Vh6KH6OXSjEm0qlQc/pH9WZ5zu9yqob7Ev9Sd
+         V2DdXMFx6Q01Zqs/p79qYPEYYhndmTJUcDjfYUXnRlUE4kg0Wloag8ibwg/pr7f6V/Vd
+         FDd50frlrI+BqIyqvIta36hvxIMMjV/DHqVoKtu5nYMTfb2m942ZPqWiVAoh6h+eC+dL
+         dJGu+3rzD+rd0WSjxsU4Qu5VxdKLeEopRflIll9Qi9kaErVtPLISZmxul3Y/OD4A9TWx
+         useg==
+X-Gm-Message-State: AOAM530Ow/6Aj2kIdsmR0lfoSrcHS9dt87z0GzU6hj0nOSK49Mm2GSsw
+        vQiokSvucdKLgfefmGCuo0qf3GLycKkcwsz6uzj3aa1t0YmvhiDM
+X-Google-Smtp-Source: ABdhPJyqTFWftoQFx9H1Jiob42r1oDUTGn8X2rO0mPftKpNbSvZbQbr3Hz4gl9r61MHuv1Pud+yfBAbv8h8ZDQ/7iBY=
+X-Received: by 2002:a17:90b:3912:: with SMTP id ob18mr2514051pjb.112.1643101778133;
+ Tue, 25 Jan 2022 01:09:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-3-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220124165547.74412-3-maciej.fijalkowski@intel.com>
+References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-5-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220124165547.74412-5-maciej.fijalkowski@intel.com>
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 25 Jan 2022 10:06:13 +0100
-Message-ID: <CAJ8uoz1a-71CBCYTd5-F1zsueMq+eu9LUqUsPgQH_SawdO6GEQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/8] ice: xsk: force rings to be sized to
- power of 2
+Date:   Tue, 25 Jan 2022 10:09:27 +0100
+Message-ID: <CAJ8uoz3Mq7JtfbwN4MvacBkV+7Rpv-=CyFwNdsZ1PN3jFH=7AQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 4/8] ice: make Tx threshold dependent on ring length
 To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -66,59 +64,142 @@ X-Mailing-List: bpf@vger.kernel.org
 On Mon, Jan 24, 2022 at 8:38 PM Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> With the upcoming introduction of batching to XSK data path,
-> performance wise it will be the best to have the ring descriptor count
-> to be aligned to power of 2.
+> XDP_TX workloads use a concept of Tx threshold that indicates the
+> interval of setting RS bit on descriptors which in turn tells the HW to
+> generate an interrupt to signal the completion of Tx on HW side. It is
+> currently based on a constant value of 32 which might not work out well
+> for various sizes of ring combined with for example batch size that can
+> be set via SO_BUSY_POLL_BUDGET.
 >
-> Check if rings sizes that user is going to attach the XSK socket fulfill
+> Internal tests based on AF_XDP showed that most convenient setup of
+> mentioned threshold is when it is equal to quarter of a ring length.
+>
+> Make use of recently introduced ICE_RING_QUARTER macro and use this
+> value as a substitute for ICE_TX_THRESH.
+>
+> Align also ethtool -G callback so that next_dd/next_rs fields are up to
+> date in terms of the ring size.
 
-nit: rings -> ring if you are making a v5 for some other reason.
-
-> the condition above. For Tx side, although check is being done against
-> the Tx queue and in the end the socket will be attached to the XDP
-> queue, it is fine since XDP queues get the ring->count setting from Tx
-> queues.
-
-For me, this is fine as it makes the driver simpler and faster. But if
-anyone out there is using a non power-of-2 ring size together with the
-ice zero-copy driver and wants to keep it that way, now would be a
-good time to protest.
+Thanks Maciej.
 
 Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-> Suggested-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  drivers/net/ethernet/intel/ice/ice_ethtool.c  |  2 ++
+>  drivers/net/ethernet/intel/ice/ice_main.c     |  4 ++--
+>  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 -
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 14 ++++++++------
+>  4 files changed, 12 insertions(+), 9 deletions(-)
 >
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 2388837d6d6c..0350f9c22c62 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -327,6 +327,14 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
->         bool if_running, pool_present = !!pool;
->         int ret = 0, pool_failure = 0;
+> diff --git a/drivers/net/ethernet/intel/ice/ice_ethtool.c b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> index e2e3ef7fba7f..e3df0134dc77 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
+> @@ -2803,6 +2803,8 @@ ice_set_ringparam(struct net_device *netdev, struct ethtool_ringparam *ring,
+>                 /* clone ring and setup updated count */
+>                 xdp_rings[i] = *vsi->xdp_rings[i];
+>                 xdp_rings[i].count = new_tx_cnt;
+> +               xdp_rings[i].next_dd = ICE_RING_QUARTER(&xdp_rings[i]) - 1;
+> +               xdp_rings[i].next_rs = ICE_RING_QUARTER(&xdp_rings[i]) - 1;
+>                 xdp_rings[i].desc = NULL;
+>                 xdp_rings[i].tx_buf = NULL;
+>                 err = ice_setup_tx_ring(&xdp_rings[i]);
+> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+> index 30814435f779..1980eff8f0e7 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> @@ -2495,10 +2495,10 @@ static int ice_xdp_alloc_setup_rings(struct ice_vsi *vsi)
+>                 xdp_ring->reg_idx = vsi->txq_map[xdp_q_idx];
+>                 xdp_ring->vsi = vsi;
+>                 xdp_ring->netdev = NULL;
+> -               xdp_ring->next_dd = ICE_TX_THRESH - 1;
+> -               xdp_ring->next_rs = ICE_TX_THRESH - 1;
+>                 xdp_ring->dev = dev;
+>                 xdp_ring->count = vsi->num_tx_desc;
+> +               xdp_ring->next_dd = ICE_RING_QUARTER(xdp_ring) - 1;
+> +               xdp_ring->next_rs = ICE_RING_QUARTER(xdp_ring) - 1;
+>                 WRITE_ONCE(vsi->xdp_rings[i], xdp_ring);
+>                 if (ice_setup_tx_ring(xdp_ring))
+>                         goto free_xdp_rings;
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> index f70a5eb74839..611dd7c4a631 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> @@ -13,7 +13,6 @@
+>  #define ICE_MAX_CHAINED_RX_BUFS        5
+>  #define ICE_MAX_BUF_TXD                8
+>  #define ICE_MIN_TX_LEN         17
+> -#define ICE_TX_THRESH          32
 >
-> +       if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
-> +           !is_power_of_2(vsi->tx_rings[qid]->count)) {
-> +               netdev_err(vsi->netdev,
-> +                          "Please align ring sizes at idx %d to power of 2\n", qid);
-> +               pool_failure = -EINVAL;
-> +               goto failure;
-> +       }
-> +
->         if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
+>  /* The size limit for a transmit buffer in a descriptor is (16K - 1).
+>   * In order to align with the read requests we will align the value to
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> index 0e87b98e0966..9677cf880a4b 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> @@ -222,6 +222,7 @@ ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag)
+>  static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
+>  {
+>         unsigned int total_bytes = 0, total_pkts = 0;
+> +       u16 tx_thresh = ICE_RING_QUARTER(xdp_ring);
+>         u16 ntc = xdp_ring->next_to_clean;
+>         struct ice_tx_desc *next_dd_desc;
+>         u16 next_dd = xdp_ring->next_dd;
+> @@ -233,7 +234,7 @@ static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
+>             cpu_to_le64(ICE_TX_DESC_DTYPE_DESC_DONE)))
+>                 return;
 >
->         if (if_running) {
-> @@ -349,6 +357,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
->                         netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
+> -       for (i = 0; i < ICE_TX_THRESH; i++) {
+> +       for (i = 0; i < tx_thresh; i++) {
+>                 tx_buf = &xdp_ring->tx_buf[ntc];
+>
+>                 total_bytes += tx_buf->bytecount;
+> @@ -254,9 +255,9 @@ static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
 >         }
 >
-> +failure:
->         if (pool_failure) {
->                 netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
->                            pool_present ? "en" : "dis", pool_failure);
+>         next_dd_desc->cmd_type_offset_bsz = 0;
+> -       xdp_ring->next_dd = xdp_ring->next_dd + ICE_TX_THRESH;
+> +       xdp_ring->next_dd = xdp_ring->next_dd + tx_thresh;
+>         if (xdp_ring->next_dd > xdp_ring->count)
+> -               xdp_ring->next_dd = ICE_TX_THRESH - 1;
+> +               xdp_ring->next_dd = tx_thresh - 1;
+>         xdp_ring->next_to_clean = ntc;
+>         ice_update_tx_ring_stats(xdp_ring, total_pkts, total_bytes);
+>  }
+> @@ -269,12 +270,13 @@ static void ice_clean_xdp_irq(struct ice_tx_ring *xdp_ring)
+>   */
+>  int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
+>  {
+> +       u16 tx_thresh = ICE_RING_QUARTER(xdp_ring);
+>         u16 i = xdp_ring->next_to_use;
+>         struct ice_tx_desc *tx_desc;
+>         struct ice_tx_buf *tx_buf;
+>         dma_addr_t dma;
+>
+> -       if (ICE_DESC_UNUSED(xdp_ring) < ICE_TX_THRESH)
+> +       if (ICE_DESC_UNUSED(xdp_ring) < tx_thresh)
+>                 ice_clean_xdp_irq(xdp_ring);
+>
+>         if (!unlikely(ICE_DESC_UNUSED(xdp_ring))) {
+> @@ -306,7 +308,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
+>                 tx_desc = ICE_TX_DESC(xdp_ring, xdp_ring->next_rs);
+>                 tx_desc->cmd_type_offset_bsz |=
+>                         cpu_to_le64(ICE_TX_DESC_CMD_RS << ICE_TXD_QW1_CMD_S);
+> -               xdp_ring->next_rs = ICE_TX_THRESH - 1;
+> +               xdp_ring->next_rs = tx_thresh - 1;
+>         }
+>         xdp_ring->next_to_use = i;
+>
+> @@ -314,7 +316,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
+>                 tx_desc = ICE_TX_DESC(xdp_ring, xdp_ring->next_rs);
+>                 tx_desc->cmd_type_offset_bsz |=
+>                         cpu_to_le64(ICE_TX_DESC_CMD_RS << ICE_TXD_QW1_CMD_S);
+> -               xdp_ring->next_rs += ICE_TX_THRESH;
+> +               xdp_ring->next_rs += tx_thresh;
+>         }
+>
+>         return ICE_XDP_TX;
 > --
 > 2.33.1
 >
