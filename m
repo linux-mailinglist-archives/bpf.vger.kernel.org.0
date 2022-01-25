@@ -2,111 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5B249BD84
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 21:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C37C49BDDC
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 22:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbiAYUxc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 15:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        id S233105AbiAYV1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 16:27:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbiAYUxE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 15:53:04 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE03FC061744
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 12:53:03 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id e81so33523699oia.6
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 12:53:03 -0800 (PST)
+        with ESMTP id S233101AbiAYV13 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 16:27:29 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7966DC061744
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 13:27:29 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id g12so2198486qto.13
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 13:27:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Fq8x8ml7RGTMF1BNhU+21LQjT13NU5BwcX2axrLdABU=;
-        b=K6cIcUJLN7E85by1UH5ucmSC9v6Y24s89Ctc2Oa8c0fFSihKhvEWFQQzsGUjDK2vH1
-         ZVafi/DTHadG1/WzwKStDISboHIH/Hd6bt2bEQoAhIFmhlZrfps7PDx8vYla3ss+u0UP
-         0A82qjjTrveNHUEkpE3n++22QotfZIzMLJfvjVxOwOiOJO1Sqh5Ux5H3g9bbiuEeOn7+
-         d3msRmx46oB3s7CBsFsUW5n5OgJUIkVWArmBoy9EZyUA675nJWYO/1JV7/mdfRGJ76YR
-         EWN2Y4KLqYU/LSnmSckllZowNtXHLoRDEIJX7fq+ysgbUVyhcVERN8syEys9XnLAivJ1
-         Jf9Q==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h5SSh6nJHHvPVmsJSI+vEXdltA1GV2tgb9vC7RDs5Dw=;
+        b=ecg4PDMzVWLxJkebhbl1fQpefiKywwl9qWbu4wGisfvshkHU8Je5+O+eBQkwffkjYS
+         mkpasBUqDZb9584KWqzLYP07Y2gg/6hstu6VoOAVasDyvxGyr2YLdQoXAde1NliSiG/l
+         U2vOcLTWgrN6SSRwn2bNGhPhPmyqjksasUX4XeasmykLTmdsbDV96ocfm+W7u6FCwt/u
+         0W8zv8P2B6VbgPC0lE4C7ANmp2ThA3fTFbFFI2l7Elgssx4tkKqIYZthJ2uUkADpbCjb
+         WiyA3qj1MaHdlkwNQ3nZtY4VDLxziKOX+FF2ipVV99OAkfrEBdAKeHVxa++Yhovq6tdh
+         KxHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Fq8x8ml7RGTMF1BNhU+21LQjT13NU5BwcX2axrLdABU=;
-        b=WvbPI29+9H6xfHcfPzqzcUaJ+buQOXxW9UT23SkgU0Qqjo/0zEKNfIhqDdyA9xR0+S
-         VmvAhgPldOUNEK7vlOED1EPVzNGbhF/w4b8Z/GYMUEQF5L4qjsrRKdNz49JyTAUIhklf
-         uQN8uuv9LPhWTkQ32oY3FJs3irDxlwZfdbl0/9XIG4DfcjKYwX+s/mzHPGTjWd/X3D/q
-         6n1oCxIv5aO3Ew4nx8Vhu6zVsFZ+a3q/KxJHEi5sxdv/255ruC0s3MkPlloWUPBqYbkf
-         fgpOIui4EIv4Jy1pvFlzSCmQwZ5UEoZjCDUdiMNa/3Yn+YnkvHH6uVLtRvUatRVXcgRT
-         v+9A==
-X-Gm-Message-State: AOAM533DY8u78yO7WVjlT45voHkdSd5vfOsta/v6zN3mAWVP+F4NxyuM
-        VjI/QSXm+q2S1bDr4rsmqQk=
-X-Google-Smtp-Source: ABdhPJwKMPZQaUbnuIz8OZSND+Cgkoqe5h0yFIlZcuAlO7L76G/zNTIn9o6av+Cnobo6MYu45UXp4Q==
-X-Received: by 2002:a05:6808:1381:: with SMTP id c1mr1650810oiw.271.1643143983333;
-        Tue, 25 Jan 2022 12:53:03 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id t20sm6333339oov.35.2022.01.25.12.53.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jan 2022 12:53:02 -0800 (PST)
-Date:   Tue, 25 Jan 2022 12:52:56 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com
-Message-ID: <61f0632858dd3_2e4c520882@john.notmuch>
-In-Reply-To: <20220120060529.1890907-1-andrii@kernel.org>
-References: <20220120060529.1890907-1-andrii@kernel.org>
-Subject: RE: [PATCH v2 bpf-next 0/4] libbpf: deprecate legacy BPF map
- definitions
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h5SSh6nJHHvPVmsJSI+vEXdltA1GV2tgb9vC7RDs5Dw=;
+        b=WwEd8dF09pfzmn7RisYpmjCpfUJhcevWBlrgUPFmrsqHO/i8yfS+PEizW1U6R9KewL
+         vw1VtA6/eETycv71KPrisUlnRIxd9duZPjkdtyv8GdQLU4rr34O4sqYUrXxYWlkENRUt
+         hRKSKMhZpP+8aQXP0MHKALlxZ5oKWQrqXeK/J571FKQ/2SrKJuZg1rF6N4PdKKGTUc9e
+         GeF0D6yxsWpkSfEsBnHnuvUZwSBkUCheWN954qTlS5Y2k9nOOSXrVsEed8U48GqqFWLd
+         rXuufKmJTJQfuWdkCFnkk4XC4e/G8Exs22SeuwxnZFeAX7O21BNafKV1Rd/1GXDk/+qI
+         5/3w==
+X-Gm-Message-State: AOAM532KFPQThcM1ITxxnCmVV6CHL0yG2u0joCcfa5Rwrn7RL7NGEbvt
+        hVomn5Pbe3vH77MUii0FtzAZ93jQBvnpXG0cQGucZZWIEsOr8Q==
+X-Google-Smtp-Source: ABdhPJyeQavyvs3YFtYpuC19nWKfqoYonkE0/NbRWUStqzfvITyHg15jrXM0uRkM9BbFKYdvxUsQyDIIs56jEMAOPz8=
+X-Received: by 2002:ac8:1083:: with SMTP id a3mr18184689qtj.125.1643146047873;
+ Tue, 25 Jan 2022 13:27:27 -0800 (PST)
+MIME-Version: 1.0
+References: <Yboc/G18R1Vi1eQV@google.com> <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
+ <Ybom69OyOjsR7kmZ@google.com> <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
+ <Yboy2WwaREgo95dy@google.com> <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
+ <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
+ <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com> <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
+ <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com> <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
+ <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
+ <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com> <CAKH8qBvX8_vy0aYhiO-do0rh3y3CzgDGfHqt1bB6uRcr_DxncQ@mail.gmail.com>
+ <ea0b2f62-9145-575e-d007-cce2c7244f77@gmail.com>
+In-Reply-To: <ea0b2f62-9145-575e-d007-cce2c7244f77@gmail.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 25 Jan 2022 13:27:17 -0800
+Message-ID: <CAKH8qBtGvWqLpE7Dy1kiTZc1MnVyJSKH1e-Nz0=KNEOrZFqEFw@mail.gmail.com>
+Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
-> Officially deprecate legacy BPF map definitions in libbpf. They've been slated
-> for deprecation for a while in favor of more powerful BTF-defined map
-> definitions and this patch set adds warnings and a way to enforce this in
-> libbpf through LIBBPF_STRICT_MAP_DEFINITIONS strict mode flag.
-> 
-> Selftests are fixed up and updated, BPF documentation is updated, bpftool's
-> strict mode usage is adjusted to avoid breaking users unnecessarily.
-> 
-> v1->v2:
->   - replace missed bpf_map_def case in Documentation/bpf/btf.rst (Alexei).
+On Tue, Jan 25, 2022 at 10:55 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> On 1/24/22 18:25, Stanislav Fomichev wrote:
+> > On Mon, Jan 24, 2022 at 7:49 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >>
+> >> On 12/16/21 18:24, Stanislav Fomichev wrote:
+> >>> On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
+> >>>> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
+> >>>>> On 12/15/21 22:07, Stanislav Fomichev wrote:
+> >>>>>>> I'm skeptical I'll be able to measure inlining one function,
+> >>>>>>> variability between boots/runs is usually greater and would hide it.
+> >>>>>>
+> >>>>>> Right, that's why I suggested to mirror what we do in set/getsockopt
+> >>>>>> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
+> >>>>>> to you, Martin and the rest.
+> >>>> I also suggested to try to stay with one way for fullsock context in v2
+> >>>> but it is for code readability reason.
+> >>>>
+> >>>> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
+> >>>> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
+> >>>
+> >>> SG!
+> >>>
+> >>>> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
+> >>>> want to check if there is bpf to run before proceeding everything else
+> >>>> and then I don't need to jump to the non-inline function itself to see
+> >>>> if there is other prog array empty check.
+> >>>>
+> >>>> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
+> >>>> when there is bpf prog to run for set/getsockopt()?  I think
+> >>>> it should be mostly noise from looking at
+> >>>> __cgroup_bpf_run_filter_*sockopt()?
+> >>>
+> >>> Yeah, my concern is also mostly about readability/consistency. Either
+> >>> __cgroup_bpf_prog_array_is_empty everywhere or this new
+> >>> CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
+> >>> __cgroup_bpf_prog_array_is_empty because I don't believe direct
+> >>> function calls add any visible overhead and macros are ugly :-) But
+> >>> either way is fine as long as it looks consistent.
+> >>
+> >> Martin, Stanislav, do you think it's good to go? Any other concerns?
+> >> It feels it might end with bikeshedding and would be great to finally
+> >> get it done, especially since I find the issue to be pretty simple.
+> >
+> > I'll leave it up to the bpf maintainers/reviewers. Personally, I'd
+> > still prefer a respin with a consistent
+> > __cgroup_bpf_prog_array_is_empty or CGROUP_BPF_TYPE_ENABLED everywhere
+> > (shouldn't be a lot of effort?)
+>
+> I can make CGROUP_BPF_TYPE_ENABLED() used everywhere, np.
+>
+> I'll leave out unification with cgroup_bpf_enabled() as don't
+> really understand the fullsock dancing in
+> BPF_CGROUP_RUN_PROG_INET_EGRESS(). Any idea whether it's needed
+> and/or how to shove it out of inlined checks?
 
-LGTM.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
-
-> 
-> Andrii Nakryiko (4):
->   selftests/bpf: fail build on compilation warning
->   selftests/bpf: convert remaining legacy map definitions
->   libbpf: deprecate legacy BPF map definitions
->   docs/bpf: update BPF map definition example
-> 
->  Documentation/bpf/btf.rst                     | 32 ++++++++-----------
->  tools/bpf/bpftool/main.c                      |  9 +++++-
->  tools/lib/bpf/bpf_helpers.h                   |  2 +-
->  tools/lib/bpf/libbpf.c                        |  8 +++++
->  tools/lib/bpf/libbpf_legacy.h                 |  5 +++
->  tools/testing/selftests/bpf/Makefile          |  4 +--
->  tools/testing/selftests/bpf/prog_tests/btf.c  |  4 +++
->  .../bpf/progs/freplace_cls_redirect.c         | 12 +++----
->  .../selftests/bpf/progs/sample_map_ret0.c     | 24 +++++++-------
->  .../selftests/bpf/progs/test_btf_haskv.c      |  3 ++
->  .../selftests/bpf/progs/test_btf_newkv.c      |  3 ++
->  .../selftests/bpf/progs/test_btf_nokv.c       | 12 +++----
->  .../bpf/progs/test_skb_cgroup_id_kern.c       | 12 +++----
->  .../testing/selftests/bpf/progs/test_tc_edt.c | 12 +++----
->  .../bpf/progs/test_tcp_check_syncookie_kern.c | 12 +++----
->  15 files changed, 90 insertions(+), 64 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
-
-
+I'm not sure we can do anything better than whatever you did in your
+patch. This request_sk->full_sk conversion is needed because
+request_sk doesn't really have any cgroup association and we need to
+pull it from the listener ("full_sk"). So you wave to get full_sk and
+then run CGROUP_BPF_TYPE_ENABLED on it.
