@@ -2,88 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023A849A8B4
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 05:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CA049A8B6
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 05:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380788AbiAYDK6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 24 Jan 2022 22:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S3415460AbiAYBqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 24 Jan 2022 20:46:38 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F691C06179A
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 16:38:49 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id e130-20020a255088000000b006126feb051eso38352201ybb.18
-        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 16:38:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=AE42NXyGuF++OsviAYaBM/aTmpTPsKa7gHXSQEZykMk=;
-        b=epqnPUKasiEtVVChbxwzoIKZvsEye6JpyuSU3+3TTjN6k+SwW/3ePaZzTsoMMIKl7a
-         smbzhVEuKtL+O7FpT8UhKnSYwfd2IOxl5sQYEMIdtPqj7GR6EETLVOzJ+id/rbL5cfpX
-         +0PWD4TSsL5dXEXsG2q/jLVwx6WbZ6UawAQzhFOekBDUfUEl93AexIEJPqkfeZi/a168
-         tYGCif8PANqr6Tjf/cYay9ZjfFjeKDzh7mvGHozh6UEHXYGV5bvrZgj9FqXd2n+RvH48
-         xqeiQzjWSnO0tD2GpNkb+bUYmxSBXLfZjJB/bu6GeeR/R6Jz69TU9+2Cn1xUj1BmTMnf
-         XlBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=AE42NXyGuF++OsviAYaBM/aTmpTPsKa7gHXSQEZykMk=;
-        b=2SFPMtg9DE8kYP9CfMeRT2HN5BL7AD+ixlYLigxIVXQCRfuev0+sB0eIUippILNTUA
-         jXJKse0GhGDDAnIMR7GYN3J0RkedZjs/QFR8gXnzOsss0RTDUBdEf+er0LA7GonYnjzQ
-         Olg8ko8Vi/aKPQBrp5xlTNHpWYrbPAHN7+mnUnAuU4OQlT2NqQgwzEIhMmSd5cY/KJhX
-         y+jqh9jwWOlXvq/kTLAc8n2DibAIcNHHegQxAkPRiEkBvE1T7o9KQgmKQ0R2peNBrwrz
-         esTyZ0iJLa1jyjds71XOheiqtyLRzS6/jssgRYvmWv4bpql+zW6pPVUC4JHHvVNi0v3r
-         tw7w==
-X-Gm-Message-State: AOAM532QA3QHmMWe6IJ9C39DZitPTCakYAoAqd74DhZggo4PVkSYv/Ep
-        YXSnPD4uUByHvyThPro6cTGgdlo=
-X-Google-Smtp-Source: ABdhPJygJaFOA7hjd6Q/A1ZwXd9SVSFn5POPN1pc7ztOjwG/0r9GVBFJUKADFz0f7LuhzSjy+h+j+XA=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:2b4e:2e9:6635:b685])
- (user=sdf job=sendgmr) by 2002:a0d:d701:0:b0:2ca:287c:6bb4 with SMTP id
- 00721157ae682-2ca287c6e03mr2441197b3.89.1643071128462; Mon, 24 Jan 2022
- 16:38:48 -0800 (PST)
-Date:   Mon, 24 Jan 2022 16:38:45 -0800
-Message-Id: <20220125003845.2857801-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
-Subject: [PATCH bpf-next] bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1848445AbiAYDLK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 24 Jan 2022 22:11:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48988 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S3415832AbiAYBwZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 24 Jan 2022 20:52:25 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20P0RFPY032189
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 16:59:41 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=/wuHF6PKXyzwMthEJFK2kCrksFCsztPULufavb8uNNw=;
+ b=i//WOYYGcydq9DaAHxaIIPf+rIgSBD+OIYTjMn/z1R953K1WWXYQrwBYR9yhMZXajmpb
+ EkZesj93JhtgqhMEOxVWeiIqrRxdPrks8Mmyglz5tMSzFWjeqT8dPWUfmFE0jfEnx/zn
+ IVVoYZD7x19UfgiFpuEISARPGjAYGlADXkQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dswd8me5n-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 24 Jan 2022 16:59:41 -0800
+Received: from twshared13036.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 24 Jan 2022 16:59:39 -0800
+Received: by devbig921.prn2.facebook.com (Postfix, from userid 132113)
+        id 6D65022A478E; Mon, 24 Jan 2022 16:59:30 -0800 (PST)
+From:   Christy Lee <christylee@fb.com>
+To:     <andrii@kernel.org>, <arnaldo.melo@gmail.com>,
+        <christyc.y.lee@gmail.com>
+CC:     <bpf@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+        <kernel-team@fb.com>, Christy Lee <christylee@fb.com>
+Subject: [PATCH bpf-next 0/2] deprecate bpf_object__open_buffer() API
+Date:   Mon, 24 Jan 2022 16:59:21 -0800
+Message-ID: <20220125005923.418339-1-christylee@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: ezi36KO003HD1-GVUh2LqqItbwXUx-TG
+X-Proofpoint-ORIG-GUID: ezi36KO003HD1-GVUh2LqqItbwXUx-TG
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-24_10,2022-01-24_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 mlxscore=0
+ impostorscore=0 bulkscore=0 mlxlogscore=738 malwarescore=0 clxscore=1015
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201250004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
-breaks loading of some modules when CONFIG_DEBUG_INFO_BTF is not set.
-register_btf_kfunc_id_set returns -ENOENT to the callers when
-there is no module btf. Let's return 0 (success) instead to let
-those modules work in !CONFIG_DEBUG_INFO_BTF cases.
+Deprecate bpf_object__open_buffer() API, replace all usage
+with bpf_object__open_mem().
 
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Fixes: dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  [0] closes: https://github.com/libbpf/libbpf/issues/287
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 57f5fd5af2f9..24205c2d4f7e 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6741,7 +6741,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
- 
- 	btf = btf_get_module_btf(kset->owner);
- 	if (IS_ERR_OR_NULL(btf))
--		return btf ? PTR_ERR(btf) : -ENOENT;
-+		return btf ? PTR_ERR(btf) : 0;
- 
- 	hook = bpf_prog_type_to_kfunc_hook(prog_type);
- 	ret = btf_populate_kfunc_set(btf, hook, kset);
--- 
-2.35.0.rc0.227.g00780c9af4-goog
+Christy Lee (2):
+  libbpf: mark bpf_object__open_buffer() API deprecated
+  perf: stop using bpf_object__open_buffer() API
+
+ tools/lib/bpf/libbpf.h       |  1 +
+ tools/perf/tests/llvm.c      |  2 +-
+ tools/perf/util/bpf-event.c  | 10 ++++++++++
+ tools/perf/util/bpf-loader.c | 10 ++++++++--
+ 4 files changed, 20 insertions(+), 3 deletions(-)
+
+--=20
+2.30.2
 
