@@ -2,198 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9C449BBFF
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 20:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEFEB49BC82
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 20:55:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbiAYTYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 14:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
+        id S230519AbiAYTz2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 14:55:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbiAYTYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 14:24:34 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DB4C06173E
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 11:24:31 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id i187-20020a1c3bc4000000b0034d2ed1be2aso2332446wma.1
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 11:24:30 -0800 (PST)
+        with ESMTP id S230488AbiAYTzZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 14:55:25 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4DEC06173B;
+        Tue, 25 Jan 2022 11:55:25 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id w5so13573677ilo.2;
+        Tue, 25 Jan 2022 11:55:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=2GxzEUJrbvJEXdIt4dxtW3JqvSSBS0SEXbo+rF+J2Es=;
-        b=h/LU+OQkCLJaflAwiAhLZhROf9gu0u04QOiiywp8MbAdXWHbLv9BJWIWqdgLBJqXlQ
-         jziDd2CzVsTHo9l/pMK7FMnADO1aIFzR7RehLiBIFJYQtWmj4qmOrQMgv1SEOxjkeksa
-         /HWOr+68PnTLuFbyEPa22a3ia8ELcYfVJ1+TY=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=mwx4R51tDde945NwTITMzneq7WCyFOACKE0rm7tkswc=;
+        b=jqLyFOBxbBXhtPgKrMFF+1wcWKHCyNfChGoR8WkBZxbYbQW0a0tsiYuzZG77QMF7wd
+         phetNVLJcRps5G0f9jc8sMPmklJziKbtlIprJ7i/p2Fc5lCS85zTSvCQVJuTfLrxaAuI
+         uh8I0qTmDmnr4lP5wU4Zv7/VOkwWugko98SEd5h4TfE5fO3p7tdByH3+sWN6H2ptgM6H
+         oAaZT+GYQ4bQIEEjVE2oZaPa1RszBkK7V0af2g6FBLI8Pv2OcO47fgqWKi+cNqzEiEt3
+         3hDzwjjT3uNE/ajqs+WuWWvWi4JzJO2aGMzhPQiZJ9C+yyeMSWvngdqNnV+XGmzBQllL
+         m+UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=2GxzEUJrbvJEXdIt4dxtW3JqvSSBS0SEXbo+rF+J2Es=;
-        b=2T++03+hm/FCdp1vHe5uLPTA65U6v1l8M+fK2Kku309NvH7HDym6hCd2vOOEjaQ4T5
-         LR6noDOeFnH4twuIrQd3j9TTESZwzaYnqDwzH3lXP+atqRwZl4L0ZyE4NdeABJQ1EAKk
-         cvYsBPnBCXVGTRytTK3Tl5M3nUSu2QuyjxpOfe8q1Lwafv08Ukt1VnR03GD6vrcx64mO
-         SRagrm1SEdtTj5cJatWfT9DFGC2sAWu2Oj+Kik9DOqNuu6csvHsIpCU2rePibzo3aM3O
-         DzVmCRxNa45lJz/PXoC1lrFOh/zmGmW22m/rTsVN/YWL2okF9n38anyn9WqBQDfHk/+h
-         z5XA==
-X-Gm-Message-State: AOAM532Fib8RiJbzZ2yu2e+DDFnJxoaRJYdSuPyiEJjniVASxUWydFCz
-        /qp0Ukrna3hyrAFYIRppMpaJNQ==
-X-Google-Smtp-Source: ABdhPJyGrZuTRIehTH5rIo4cKX3JZjHM45w9hw7K1RgCCI0IgmWRQrkgjedGBbyeSK4Ic7PRc0cpDg==
-X-Received: by 2002:a05:600c:4e46:: with SMTP id e6mr4165180wmq.15.1643138669440;
-        Tue, 25 Jan 2022 11:24:29 -0800 (PST)
-Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0e00.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::e00])
-        by smtp.gmail.com with ESMTPSA id h127sm1279065wmh.27.2022.01.25.11.24.27
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=mwx4R51tDde945NwTITMzneq7WCyFOACKE0rm7tkswc=;
+        b=a0gHJyUN1mqFsGJbOmItJFSjHjPqUBgMaUC0qa5gcSSFtAo5HyYDQtgZbNDNA6P8Ae
+         xcPAtenkNqbeiP6+68Td6WjgubcGShyDCZuw/m5Jpz4gnBUUgm/hbNPvMs5gLIuUOPi+
+         uvNDusd//l5i8CTv172hbktkMIVWWbgT00gtIlTVlKmCYK1KTqpj2SiEkasFfYP/EFep
+         r8+gWJh/vQJJ+FTIQXaP+NjTltOpVTI1+2we2b41k58Tt2JdXTf4VJ/YBCnlL2UWow7o
+         xPOnZFk01oEug3qky0G40ds3XfasBrxReZSLERlM7F1co8CwAIbd0R9zT6DjPR56HmGc
+         QBSQ==
+X-Gm-Message-State: AOAM530KKkrNLRXOHlrteGXVijeL8ZMVZnB53e6Rv5B79MLT2SHOnZs9
+        7+GmKKCbxPycfa8ohkxcBDs=
+X-Google-Smtp-Source: ABdhPJywhrD1lQyMvj4JDiOC9v80DY/8AHWvMwZslYWooJ6fPjdqAtqc8LGvmtNi/mDQmrvTfR9sZA==
+X-Received: by 2002:a05:6e02:1786:: with SMTP id y6mr12777811ilu.99.1643140524520;
+        Tue, 25 Jan 2022 11:55:24 -0800 (PST)
+Received: from localhost ([99.197.200.79])
+        by smtp.gmail.com with ESMTPSA id q14sm2803192iow.1.2022.01.25.11.55.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jan 2022 11:24:28 -0800 (PST)
-References: <20220113070245.791577-1-imagedong@tencent.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     menglong8.dong@gmail.com
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mengensun@tencent.com,
-        flyingpeng@tencent.com, mungerjiang@tencent.com,
-        Menglong Dong <imagedong@tencent.com>
-Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct
- bpf_sock'
-In-reply-to: <20220113070245.791577-1-imagedong@tencent.com>
-Date:   Tue, 25 Jan 2022 20:24:27 +0100
-Message-ID: <87sftbobys.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Tue, 25 Jan 2022 11:55:24 -0800 (PST)
+Date:   Tue, 25 Jan 2022 11:55:16 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     He Fengqing <hefengqing@huawei.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com
+Cc:     songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-ID: <61f055a4b6451_2e4c520871@john.notmuch>
+In-Reply-To: <20220122102936.1219518-1-hefengqing@huawei.com>
+References: <20220122102936.1219518-1-hefengqing@huawei.com>
+Subject: RE: [bpf-next] bpf: Fix possible race in inc_misses_counter
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 08:02 AM CET, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <imagedong@tencent.com>
->
-> The description of 'dst_port' in 'struct bpf_sock' is not accurated.
-> In fact, 'dst_port' is not in network byte order, it is 'partly' in
-> network byte order.
->
-> We can see it in bpf_sock_convert_ctx_access():
->
->> case offsetof(struct bpf_sock, dst_port):
->> 	*insn++ = BPF_LDX_MEM(
->> 		BPF_FIELD_SIZEOF(struct sock_common, skc_dport),
->> 		si->dst_reg, si->src_reg,
->> 		bpf_target_off(struct sock_common, skc_dport,
->> 			       sizeof_field(struct sock_common,
->> 					    skc_dport),
->> 			       target_size));
->
-> It simply passes 'sock_common->skc_dport' to 'bpf_sock->dst_port',
-> which makes that the low 16-bits of 'dst_port' is equal to 'skc_port'
-> and is in network byte order, but the high 16-bites of 'dst_port' is
-> 0. And the actual port is 'bpf_ntohs((__u16)dst_port)', and
-> 'bpf_ntohl(dst_port)' is totally not the right port.
->
-> This is different form 'remote_port' in 'struct bpf_sock_ops' or
-> 'struct __sk_buff':
->
->> case offsetof(struct __sk_buff, remote_port):
->> 	BUILD_BUG_ON(sizeof_field(struct sock_common, skc_dport) != 2);
->>
->> 	*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
->> 			      si->dst_reg, si->src_reg,
->> 				      offsetof(struct sk_buff, sk));
->> 	*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->dst_reg,
->> 			      bpf_target_off(struct sock_common,
->> 					     skc_dport,
->> 					     2, target_size));
->> #ifndef __BIG_ENDIAN_BITFIELD
->> 	*insn++ = BPF_ALU32_IMM(BPF_LSH, si->dst_reg, 16);
->> #endif
->
-> We can see that it will left move 16-bits in little endian, which makes
-> the whole 'remote_port' is in network byte order, and the actual port
-> is bpf_ntohl(remote_port).
->
-> Note this in the document of 'dst_port'. ( Maybe this should be unified
-> in the code? )
->
-> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+He Fengqing wrote:
+> It seems inc_misses_counter() suffers from same issue fixed in
+> the commit d979617aa84d ("bpf: Fixes possible race in update_prog_stats()
+> for 32bit arches"):
+> As it can run while interrupts are enabled, it could
+> be re-entered and the u64_stats syncp could be mangled.
+> 
+> Fixes: 9ed9e9ba2337 ("bpf: Count the number of times recursion was prevented")
+> Signed-off-by: He Fengqing <hefengqing@huawei.com>
 > ---
->  include/uapi/linux/bpf.h | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index b0383d371b9a..891a182a749a 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5500,7 +5500,11 @@ struct bpf_sock {
->  	__u32 src_ip4;
->  	__u32 src_ip6[4];
->  	__u32 src_port;		/* host byte order */
-> -	__u32 dst_port;		/* network byte order */
-> +	__u32 dst_port;		/* low 16-bits are in network byte order,
-> +				 * and high 16-bits are filled by 0.
-> +				 * So the real port in host byte order is
-> +				 * bpf_ntohs((__u16)dst_port).
-> +				 */
->  	__u32 dst_ip4;
->  	__u32 dst_ip6[4];
->  	__u32 state;
+>  kernel/bpf/trampoline.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 
-I'm probably missing something obvious, but is there anything stopping
-us from splitting the field, so that dst_ports is 16-bit wide?
+Appears possible through sleepable progs.
 
-I gave a quick check to the change below and it seems to pass verifier
-checks and sock_field tests.
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-IDK, just an idea. Didn't give it a deeper thought.
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 4b6974a195c1..5e7edf913060 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -550,11 +550,12 @@ static __always_inline u64 notrace bpf_prog_start_time(void)
+>  static void notrace inc_misses_counter(struct bpf_prog *prog)
+>  {
+>  	struct bpf_prog_stats *stats;
+> +	unsigned int flags;
+>  
+>  	stats = this_cpu_ptr(prog->stats);
+> -	u64_stats_update_begin(&stats->syncp);
+> +	flags = u64_stats_update_begin_irqsave(&stats->syncp);
+>  	u64_stats_inc(&stats->misses);
+> -	u64_stats_update_end(&stats->syncp);
+> +	u64_stats_update_end_irqrestore(&stats->syncp, flags);
+>  }
+>  
+>  /* The logic is similar to bpf_prog_run(), but with an explicit
+> -- 
+> 2.25.1
+> 
 
---8<--
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 4a2f7041ebae..344d62ccafba 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5574,7 +5574,8 @@ struct bpf_sock {
- 	__u32 src_ip4;
- 	__u32 src_ip6[4];
- 	__u32 src_port;		/* host byte order */
--	__u32 dst_port;		/* network byte order */
-+	__u16 unused;
-+	__u16 dst_port;		/* network byte order */
- 	__u32 dst_ip4;
- 	__u32 dst_ip6[4];
- 	__u32 state;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index a06931c27eeb..c56b8ba82de5 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -8276,7 +8276,6 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 	case offsetof(struct bpf_sock, family):
- 	case offsetof(struct bpf_sock, type):
- 	case offsetof(struct bpf_sock, protocol):
--	case offsetof(struct bpf_sock, dst_port):
- 	case offsetof(struct bpf_sock, src_port):
- 	case offsetof(struct bpf_sock, rx_queue_mapping):
- 	case bpf_ctx_range(struct bpf_sock, src_ip4):
-@@ -8285,6 +8284,9 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
- 	case bpf_ctx_range_till(struct bpf_sock, dst_ip6[0], dst_ip6[3]):
- 		bpf_ctx_record_field_size(info, size_default);
- 		return bpf_ctx_narrow_access_ok(off, size, size_default);
-+	case offsetof(struct bpf_sock, dst_port):
-+		bpf_ctx_record_field_size(info, sizeof(__u16));
-+		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
- 	}
-
- 	return size == size_default;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4a2f7041ebae..344d62ccafba 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5574,7 +5574,8 @@ struct bpf_sock {
- 	__u32 src_ip4;
- 	__u32 src_ip6[4];
- 	__u32 src_port;		/* host byte order */
--	__u32 dst_port;		/* network byte order */
-+	__u16 unused;
-+	__u16 dst_port;		/* network byte order */
- 	__u32 dst_ip4;
- 	__u32 dst_ip6[4];
- 	__u32 state;
