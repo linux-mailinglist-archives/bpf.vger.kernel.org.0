@@ -2,140 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922C949BB9B
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 19:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9C449BBFF
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 20:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbiAYSz4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 13:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42984 "EHLO
+        id S229845AbiAYTYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 14:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbiAYSzk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 13:55:40 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5448DC06173B;
-        Tue, 25 Jan 2022 10:55:37 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id z22so64772509edd.12;
-        Tue, 25 Jan 2022 10:55:37 -0800 (PST)
+        with ESMTP id S229847AbiAYTYe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 14:24:34 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DB4C06173E
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 11:24:31 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id i187-20020a1c3bc4000000b0034d2ed1be2aso2332446wma.1
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 11:24:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=dImgiAhROth/y9Q7puzLJb/vBES0iEIrDyLBhYakYAI=;
-        b=ao7GO+W+V/9V61dpGwBLk1VnJMjMkObtBPM8LSgBA1NOJg4g0CV5aZ5b8CqYPxi8hw
-         9p7F9ybxKmXn/MhvLyD6sWL5HBYg+OPH568Jt6EZmYIauUJH6XIl+YWUFlB/wFhNKfA+
-         OjoL7RQrpjk4Iff5ENzadIn/p5qps08XEkUR8kwsLvYNB8D6y8bPbvZUxPF/gpwhvlSU
-         xyh2RVp49O00ryc8UqbKwaVSIuYxFsB6SULWcPKZLHzRsW6Ij4ui7F7VKI7WkG5xyx4q
-         qdltEkAYgfcS0IPIXByYLTcr9a+yWkWf5KtH/+ythLCH8BrK5wT2FtbEwSyPnb+bkaQH
-         l9tg==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=2GxzEUJrbvJEXdIt4dxtW3JqvSSBS0SEXbo+rF+J2Es=;
+        b=h/LU+OQkCLJaflAwiAhLZhROf9gu0u04QOiiywp8MbAdXWHbLv9BJWIWqdgLBJqXlQ
+         jziDd2CzVsTHo9l/pMK7FMnADO1aIFzR7RehLiBIFJYQtWmj4qmOrQMgv1SEOxjkeksa
+         /HWOr+68PnTLuFbyEPa22a3ia8ELcYfVJ1+TY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=dImgiAhROth/y9Q7puzLJb/vBES0iEIrDyLBhYakYAI=;
-        b=gixNnlKSKbXMfnHrwc4AnXm3J+XQstHu8F6gIXQ4OKCQW2Fxdv0oo+LsSI7QWKtNAI
-         ZJOi14ERAiprl3PbA4HM6zdniG5j6QiyMIxTnDuYWABNS1aInrSGyEtb9JXfNr3vywEB
-         F/SWhH6Gvsxvhs4cxnCaC0psudIM17bEMVoYKdLsnwEzjom/CWn+44DIL/q+/MGjPipE
-         nIXiPUh03AEgR716qCiqTFUIrJJGVMcMf+YFqoGtKqEqa7njC+mx/0VxCMZz7l532iJ+
-         EDJ6ivnMYinuLBjt62y0gWqiqX5v/v+GCKJOXRuliNhpJ8PYUfTjO2zG74s7eJn45yeE
-         KKhw==
-X-Gm-Message-State: AOAM530dynfUvVm18qKl02VAmzryGb6oqQsqwaV+OPr95mfi8+GezHAM
-        acX5qZIFz6U66hifUh4priE=
-X-Google-Smtp-Source: ABdhPJxQPbPHUSC1k2iBlm7YhwmNdqJ9aVrvQaAgARhfkch2YJaOGr9ttI0Na4589qbDfeGou65m9g==
-X-Received: by 2002:a05:6402:2794:: with SMTP id b20mr11231560ede.340.1643136935787;
-        Tue, 25 Jan 2022 10:55:35 -0800 (PST)
-Received: from [192.168.8.198] ([85.255.233.187])
-        by smtp.gmail.com with ESMTPSA id b30sm8725582edn.16.2022.01.25.10.55.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 25 Jan 2022 10:55:35 -0800 (PST)
-Message-ID: <ea0b2f62-9145-575e-d007-cce2c7244f77@gmail.com>
-Date:   Tue, 25 Jan 2022 18:54:23 +0000
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=2GxzEUJrbvJEXdIt4dxtW3JqvSSBS0SEXbo+rF+J2Es=;
+        b=2T++03+hm/FCdp1vHe5uLPTA65U6v1l8M+fK2Kku309NvH7HDym6hCd2vOOEjaQ4T5
+         LR6noDOeFnH4twuIrQd3j9TTESZwzaYnqDwzH3lXP+atqRwZl4L0ZyE4NdeABJQ1EAKk
+         cvYsBPnBCXVGTRytTK3Tl5M3nUSu2QuyjxpOfe8q1Lwafv08Ukt1VnR03GD6vrcx64mO
+         SRagrm1SEdtTj5cJatWfT9DFGC2sAWu2Oj+Kik9DOqNuu6csvHsIpCU2rePibzo3aM3O
+         DzVmCRxNa45lJz/PXoC1lrFOh/zmGmW22m/rTsVN/YWL2okF9n38anyn9WqBQDfHk/+h
+         z5XA==
+X-Gm-Message-State: AOAM532Fib8RiJbzZ2yu2e+DDFnJxoaRJYdSuPyiEJjniVASxUWydFCz
+        /qp0Ukrna3hyrAFYIRppMpaJNQ==
+X-Google-Smtp-Source: ABdhPJyGrZuTRIehTH5rIo4cKX3JZjHM45w9hw7K1RgCCI0IgmWRQrkgjedGBbyeSK4Ic7PRc0cpDg==
+X-Received: by 2002:a05:600c:4e46:: with SMTP id e6mr4165180wmq.15.1643138669440;
+        Tue, 25 Jan 2022 11:24:29 -0800 (PST)
+Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0e00.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::e00])
+        by smtp.gmail.com with ESMTPSA id h127sm1279065wmh.27.2022.01.25.11.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jan 2022 11:24:28 -0800 (PST)
+References: <20220113070245.791577-1-imagedong@tencent.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     menglong8.dong@gmail.com
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mengensun@tencent.com,
+        flyingpeng@tencent.com, mungerjiang@tencent.com,
+        Menglong Dong <imagedong@tencent.com>
+Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct
+ bpf_sock'
+In-reply-to: <20220113070245.791577-1-imagedong@tencent.com>
+Date:   Tue, 25 Jan 2022 20:24:27 +0100
+Message-ID: <87sftbobys.fsf@cloudflare.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v3] cgroup/bpf: fast path skb BPF filtering
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-References: <Yboc/G18R1Vi1eQV@google.com>
- <b2af633d-aaae-d0c5-72f9-0688b76b4505@gmail.com>
- <Ybom69OyOjsR7kmZ@google.com>
- <634c2c87-84c9-0254-3f12-7d993037495c@gmail.com>
- <Yboy2WwaREgo95dy@google.com>
- <e729a63a-cded-da9c-3860-a90013b87e2d@gmail.com>
- <CAKH8qBv+GsPz3JTTmLZ+Q2iMSC3PS+bE1xOLbxZyjfno7hqpSA@mail.gmail.com>
- <92f69969-42dc-204a-4138-16fdaaebb78d@gmail.com>
- <CAKH8qBuZxBen871AWDK1eDcxJenK7UkSQCZQsHCPhk6nk9e=Ng@mail.gmail.com>
- <7ca623df-73ed-9191-bec7-a4728f2f95e6@gmail.com>
- <20211216181449.p2izqxgzmfpknbsw@kafai-mbp.dhcp.thefacebook.com>
- <CAKH8qBuAZoVQddMUkyhur=WyQO5b=z9eom1RAwgwraXg2WTj5w@mail.gmail.com>
- <9b8632f9-6d7a-738f-78dc-0287d441d1cc@gmail.com>
- <CAKH8qBvX8_vy0aYhiO-do0rh3y3CzgDGfHqt1bB6uRcr_DxncQ@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAKH8qBvX8_vy0aYhiO-do0rh3y3CzgDGfHqt1bB6uRcr_DxncQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/22 18:25, Stanislav Fomichev wrote:
-> On Mon, Jan 24, 2022 at 7:49 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+On Thu, Jan 13, 2022 at 08:02 AM CET, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+>
+> The description of 'dst_port' in 'struct bpf_sock' is not accurated.
+> In fact, 'dst_port' is not in network byte order, it is 'partly' in
+> network byte order.
+>
+> We can see it in bpf_sock_convert_ctx_access():
+>
+>> case offsetof(struct bpf_sock, dst_port):
+>> 	*insn++ = BPF_LDX_MEM(
+>> 		BPF_FIELD_SIZEOF(struct sock_common, skc_dport),
+>> 		si->dst_reg, si->src_reg,
+>> 		bpf_target_off(struct sock_common, skc_dport,
+>> 			       sizeof_field(struct sock_common,
+>> 					    skc_dport),
+>> 			       target_size));
+>
+> It simply passes 'sock_common->skc_dport' to 'bpf_sock->dst_port',
+> which makes that the low 16-bits of 'dst_port' is equal to 'skc_port'
+> and is in network byte order, but the high 16-bites of 'dst_port' is
+> 0. And the actual port is 'bpf_ntohs((__u16)dst_port)', and
+> 'bpf_ntohl(dst_port)' is totally not the right port.
+>
+> This is different form 'remote_port' in 'struct bpf_sock_ops' or
+> 'struct __sk_buff':
+>
+>> case offsetof(struct __sk_buff, remote_port):
+>> 	BUILD_BUG_ON(sizeof_field(struct sock_common, skc_dport) != 2);
 >>
->> On 12/16/21 18:24, Stanislav Fomichev wrote:
->>> On Thu, Dec 16, 2021 at 10:14 AM Martin KaFai Lau <kafai@fb.com> wrote:
->>>> On Thu, Dec 16, 2021 at 01:21:26PM +0000, Pavel Begunkov wrote:
->>>>> On 12/15/21 22:07, Stanislav Fomichev wrote:
->>>>>>> I'm skeptical I'll be able to measure inlining one function,
->>>>>>> variability between boots/runs is usually greater and would hide it.
->>>>>>
->>>>>> Right, that's why I suggested to mirror what we do in set/getsockopt
->>>>>> instead of the new extra CGROUP_BPF_TYPE_ENABLED. But I'll leave it up
->>>>>> to you, Martin and the rest.
->>>> I also suggested to try to stay with one way for fullsock context in v2
->>>> but it is for code readability reason.
->>>>
->>>> How about calling CGROUP_BPF_TYPE_ENABLED() just next to cgroup_bpf_enabled()
->>>> in BPF_CGROUP_RUN_PROG_*SOCKOPT_*() instead ?
->>>
->>> SG!
->>>
->>>> It is because both cgroup_bpf_enabled() and CGROUP_BPF_TYPE_ENABLED()
->>>> want to check if there is bpf to run before proceeding everything else
->>>> and then I don't need to jump to the non-inline function itself to see
->>>> if there is other prog array empty check.
->>>>
->>>> Stan, do you have concern on an extra inlined sock_cgroup_ptr()
->>>> when there is bpf prog to run for set/getsockopt()?  I think
->>>> it should be mostly noise from looking at
->>>> __cgroup_bpf_run_filter_*sockopt()?
->>>
->>> Yeah, my concern is also mostly about readability/consistency. Either
->>> __cgroup_bpf_prog_array_is_empty everywhere or this new
->>> CGROUP_BPF_TYPE_ENABLED everywhere. I'm slightly leaning towards
->>> __cgroup_bpf_prog_array_is_empty because I don't believe direct
->>> function calls add any visible overhead and macros are ugly :-) But
->>> either way is fine as long as it looks consistent.
->>
->> Martin, Stanislav, do you think it's good to go? Any other concerns?
->> It feels it might end with bikeshedding and would be great to finally
->> get it done, especially since I find the issue to be pretty simple.
-> 
-> I'll leave it up to the bpf maintainers/reviewers. Personally, I'd
-> still prefer a respin with a consistent
-> __cgroup_bpf_prog_array_is_empty or CGROUP_BPF_TYPE_ENABLED everywhere
-> (shouldn't be a lot of effort?)
+>> 	*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, sk),
+>> 			      si->dst_reg, si->src_reg,
+>> 				      offsetof(struct sk_buff, sk));
+>> 	*insn++ = BPF_LDX_MEM(BPF_H, si->dst_reg, si->dst_reg,
+>> 			      bpf_target_off(struct sock_common,
+>> 					     skc_dport,
+>> 					     2, target_size));
+>> #ifndef __BIG_ENDIAN_BITFIELD
+>> 	*insn++ = BPF_ALU32_IMM(BPF_LSH, si->dst_reg, 16);
+>> #endif
+>
+> We can see that it will left move 16-bits in little endian, which makes
+> the whole 'remote_port' is in network byte order, and the actual port
+> is bpf_ntohl(remote_port).
+>
+> Note this in the document of 'dst_port'. ( Maybe this should be unified
+> in the code? )
+>
+> Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> ---
+>  include/uapi/linux/bpf.h | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b0383d371b9a..891a182a749a 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5500,7 +5500,11 @@ struct bpf_sock {
+>  	__u32 src_ip4;
+>  	__u32 src_ip6[4];
+>  	__u32 src_port;		/* host byte order */
+> -	__u32 dst_port;		/* network byte order */
+> +	__u32 dst_port;		/* low 16-bits are in network byte order,
+> +				 * and high 16-bits are filled by 0.
+> +				 * So the real port in host byte order is
+> +				 * bpf_ntohs((__u16)dst_port).
+> +				 */
+>  	__u32 dst_ip4;
+>  	__u32 dst_ip6[4];
+>  	__u32 state;
 
-I can make CGROUP_BPF_TYPE_ENABLED() used everywhere, np.
+I'm probably missing something obvious, but is there anything stopping
+us from splitting the field, so that dst_ports is 16-bit wide?
 
-I'll leave out unification with cgroup_bpf_enabled() as don't
-really understand the fullsock dancing in
-BPF_CGROUP_RUN_PROG_INET_EGRESS(). Any idea whether it's needed
-and/or how to shove it out of inlined checks?
+I gave a quick check to the change below and it seems to pass verifier
+checks and sock_field tests.
 
--- 
-Pavel Begunkov
+IDK, just an idea. Didn't give it a deeper thought.
+
+--8<--
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 4a2f7041ebae..344d62ccafba 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -5574,7 +5574,8 @@ struct bpf_sock {
+ 	__u32 src_ip4;
+ 	__u32 src_ip6[4];
+ 	__u32 src_port;		/* host byte order */
+-	__u32 dst_port;		/* network byte order */
++	__u16 unused;
++	__u16 dst_port;		/* network byte order */
+ 	__u32 dst_ip4;
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
+diff --git a/net/core/filter.c b/net/core/filter.c
+index a06931c27eeb..c56b8ba82de5 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -8276,7 +8276,6 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case offsetof(struct bpf_sock, family):
+ 	case offsetof(struct bpf_sock, type):
+ 	case offsetof(struct bpf_sock, protocol):
+-	case offsetof(struct bpf_sock, dst_port):
+ 	case offsetof(struct bpf_sock, src_port):
+ 	case offsetof(struct bpf_sock, rx_queue_mapping):
+ 	case bpf_ctx_range(struct bpf_sock, src_ip4):
+@@ -8285,6 +8284,9 @@ bool bpf_sock_is_valid_access(int off, int size, enum bpf_access_type type,
+ 	case bpf_ctx_range_till(struct bpf_sock, dst_ip6[0], dst_ip6[3]):
+ 		bpf_ctx_record_field_size(info, size_default);
+ 		return bpf_ctx_narrow_access_ok(off, size, size_default);
++	case offsetof(struct bpf_sock, dst_port):
++		bpf_ctx_record_field_size(info, sizeof(__u16));
++		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
+ 	}
+
+ 	return size == size_default;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 4a2f7041ebae..344d62ccafba 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -5574,7 +5574,8 @@ struct bpf_sock {
+ 	__u32 src_ip4;
+ 	__u32 src_ip6[4];
+ 	__u32 src_port;		/* host byte order */
+-	__u32 dst_port;		/* network byte order */
++	__u16 unused;
++	__u16 dst_port;		/* network byte order */
+ 	__u32 dst_ip4;
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
