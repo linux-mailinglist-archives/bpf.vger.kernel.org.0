@@ -2,100 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AC749BA25
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 18:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A88AA49BA83
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 18:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1454164AbiAYRTU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 12:19:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
+        id S1379374AbiAYRjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 12:39:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1453946AbiAYRPh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 12:15:37 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 983F9C061753
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 09:14:53 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id f12-20020a056902038c00b006116df1190aso42458050ybs.20
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 09:14:53 -0800 (PST)
+        with ESMTP id S243159AbiAYRis (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 12:38:48 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BCEC061753
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 09:38:47 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id m4so32209841ejb.9
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 09:38:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=RanNWL6m6SDNGXcdCXC0nYewgVRzYkuqflNw1ZDbcaY=;
-        b=tGBoAf6UUkNXCLH352WEO49FAEh9DU40x5cPr6e3czEJrrTwvIdAQfY0nns4M7XPOn
-         rAwqwfiFfixziQLWvVVemLSEvmCrH9nEAHpEUk/4gzSBEp7tt18UUXt6Whf9UGeTDEsL
-         W3lE7UgDmy7AZF4BHTHiHkig9Lnr16Yp3tk3ODeIOx+jGyRtjrDFR2/diTVhNPquQgLU
-         c4nGxfCaRWu29JRNpu37BBTlXtspmsFZ3o07ZCm1GmSDfUg4Kc9ydUUK4YU4YaH+vf0K
-         iuZseJPXrrUnOLHd4HsYIBU3/llBKuVJ83585AwzdVfM7EqDgmNaINVmjmxtJo++EsPp
-         MvIw==
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=a9DMXpY512K46gZjExH5r1SImRcDwJo0q7ygzaLfVLY=;
+        b=enfCrepSo5+x3mT4StEcRyib6XtIgvubZMZUZEb/3XKqnRawsttNEUaig8DnpR5nUK
+         rJgv0hzV1S79ZD4gBYf+cu0A90xIw8MCRX9Wj1K/LxsfadQS0VerUZYbeCBq1OPkkmnX
+         2YlSRPiKvqJY0Sj8WjBcbKTkmVWEuOAR2QH8u4WB+MZB5J6btZNIkg78uRZF/vd0boQa
+         2CVDCZsuchW40ExTKYIoBL/HHJdK0wexDLMi2QlHLjFPCT4xcEV6niEflLveF2wTszWE
+         bV2BVz2ozEb7uNQJ037F9OyD3td8qhLMMCQ00Cs/DSpcdQHyHggY3yHRbOxtb9D7/H+U
+         rvBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=RanNWL6m6SDNGXcdCXC0nYewgVRzYkuqflNw1ZDbcaY=;
-        b=q6cjM2W/fqdVkUWDK9R/9hWgJ2+fcIG3GCxB9zIhT9DdeNJcWWPiB5xvZ1/VsdwMCs
-         o0s5AEhB4DWTepx/AGu/YN6mOA+aZaHc96P95wH6w1Yfp8hMOzF4hcUTIJhswlQHsBHk
-         kBjDfq6hVFZ4Siy3R/8zWabo7cj/rVkK8BaEyyeTIzKdG2vvgOvkoF+SajCDRyzP8N8l
-         r8Qfrl2EDJ7jOoryEvx40QYjeaHBnAtM2yCcGiwx1JCJCnb7ASDrMUBp46AY9DUXUhBQ
-         yjqFLTlSZ55d2+IRglVOqcKmhgaOv4+YuS9D/QgeD93AoxtM/4ssEMHbDheWNA4nhz7s
-         2+5w==
-X-Gm-Message-State: AOAM533gB788wWiio6GVwOV4dpVJiniK0qBcLJcoqCsFlwIZTFRVXXyM
-        IZWCJu56xw7CPbePew8+46eLppw=
-X-Google-Smtp-Source: ABdhPJwo6U8gI+G+CIWABexRo2H1/1K7gOS3BFtecInwhYKRu7O0ehfHqCB7jsC73m7nt3oF1vWrlm8=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f696:cb26:7b81:e8f1])
- (user=sdf job=sendgmr) by 2002:a25:5489:: with SMTP id i131mr31085865ybb.169.1643130892871;
- Tue, 25 Jan 2022 09:14:52 -0800 (PST)
-Date:   Tue, 25 Jan 2022 09:14:50 -0800
-In-Reply-To: <6f569cca2e45473f9a724d54d03fdfb45f29e35f.1643129402.git.fmaurer@redhat.com>
-Message-Id: <YfAwCh+uA30Ji8wE@google.com>
-Mime-Version: 1.0
-References: <6f569cca2e45473f9a724d54d03fdfb45f29e35f.1643129402.git.fmaurer@redhat.com>
-Subject: Re: [PATCH bpf-next] selftests: bpf: Less strict size check in sockopt_sk
-From:   sdf@google.com
-To:     Felix Maurer <fmaurer@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        kafai@fb.com, yauheni.kaliuta@redhat.com, zhuyifei@google.com,
-        jbenc@redhat.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=a9DMXpY512K46gZjExH5r1SImRcDwJo0q7ygzaLfVLY=;
+        b=BWkE/oKb8fIY4j8qTmUMhkLfg3Rg8JDXl+OZIr19OKVNeu2O4NYDSuEosoB3rmrMgi
+         IyO8imErU8XVHz64YzgzCsSs2j9yG7DY2jnHNHw354pFuRUD3XylXh0tLWIKOnL3Fx7e
+         n6gS3nvY9UHrcLBhWpnAzxmFEEyoy18VlARTY//x1GuFK4Ol0dP/JtHyE0/3mFnEdyfe
+         5tvk9ThMVOkTHa8Y+W2WbQ6zLHdAVBYhYjzUPSjP0omuZG3nQ7MBfl3IcJgu9n1xp+S5
+         vrsObvDSb2wSyX1Kq+ugxVIYRTFQMi8JbHqV0qh7bYHFw2n5nJJE03O8q1PyMs9S1Q9z
+         Z/QA==
+X-Gm-Message-State: AOAM530r3dS9zcvzrlu8SDp6QtAH0rk1soaBHndyX5nbbmI6dz/oJGDu
+        yBLWLZPA+VK6CF0K5BveIr/jvfrqaisIq73EhvyoLyeYsZ3PNw==
+X-Google-Smtp-Source: ABdhPJyb1ioW6i0hSz48Ldpg2n7xo+WrSv3c7VMQtr9cn23YSxm/QepdqVnFV4U0y3T+PDYmKr22OxqUgjTPNQElxJY=
+X-Received: by 2002:a17:907:3f84:: with SMTP id hr4mr17457275ejc.443.1643132325935;
+ Tue, 25 Jan 2022 09:38:45 -0800 (PST)
+MIME-Version: 1.0
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Tue, 25 Jan 2022 09:38:34 -0800
+Message-ID: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
+Subject: can't get BTF: type .rodata.cst32: not found
+To:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/25, Felix Maurer wrote:
-> Originally, the kernel strictly checked the size of the optval in
-> getsockopt(TCP_ZEROCOPY_RECEIVE) to be equal to sizeof(struct
-> tcp_zerocopy_receive). With c8856c0514549, this was changed to allow
-> optvals of different sizes.
+Hi
 
-> The bpf code in the sockopt_sk test was still performing the strict size
-> check. This fix adapts the kernel behavior from c8856c0514549 in the
-> selftest, i.e., just check if the required fields are there.
+While developing Cilium VTEP integration feature
+https://github.com/cilium/cilium/pull/17370, I found a strange issue
+that seems related to BTF and probably caused by my specific
+implementation, the issue is described in
+https://github.com/cilium/cilium/issues/18616, I don't know much about
+BTF and not sure if my implementation is seriously flawed or just some
+implementation bug or maybe not compatible with BTF. Strangely, the
+issue appears related to number of VTEPs I use, no problem with 1 or 2
+VTEP, 3, 4 VTEPs will have problem with BTF, any guidance from BTF
+experts  are appreciated :-).
 
-Looks good, thank you!
+Thanks
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-
-> Fixes: 9cacf81f81611 ("bpf: Remove extra lock_sock for  
-> TCP_ZEROCOPY_RECEIVE")
-> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-> ---
->   tools/testing/selftests/bpf/progs/sockopt_sk.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-
-> diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c  
-> b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> index d0298dccedcd..c8d810010a94 100644
-> --- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> +++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-> @@ -72,7 +72,8 @@ int _getsockopt(struct bpf_sockopt *ctx)
->   		 * reasons.
->   		 */
-
-> -		if (optval + sizeof(struct tcp_zerocopy_receive) > optval_end)
-> +		/* Check that optval contains address (__u64) */
-> +		if (optval + sizeof(__u64) > optval_end)
->   			return 0; /* bounds check */
-
->   		if (((struct tcp_zerocopy_receive *)optval)->address != 0)
-> --
-> 2.34.1
-
+Vincent
