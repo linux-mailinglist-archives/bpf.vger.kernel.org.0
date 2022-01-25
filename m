@@ -2,146 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAE349BB01
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 19:12:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C25749BB84
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 19:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbiAYSMA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 13:12:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30057 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233711AbiAYSL7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jan 2022 13:11:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643134318;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZYZFcKeTPsQCFaSsqNlB8G3oqmreXQCJIoK82/wxEkU=;
-        b=XEI8APwOLMstwDfrWdiGxohk0Tj8iYSCVRKmV+JMtqSXFTuhnopJyp3loDxYaHHf8o6WO3
-        zXkPX9jUNBdvt/mZ5qSie953p3xwpFT67vrMTvNMTWIr8HrCqg8yCIjR4ZExKqYfBDjcK3
-        WoGPRhqRNFS9hfmvU8oHnW67UDy54qE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-504-JGXaFftgN9ykUQMIDNMlDQ-1; Tue, 25 Jan 2022 13:11:56 -0500
-X-MC-Unique: JGXaFftgN9ykUQMIDNMlDQ-1
-Received: by mail-ej1-f71.google.com with SMTP id r18-20020a17090609d200b006a6e943d09eso3773080eje.20
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 10:11:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZYZFcKeTPsQCFaSsqNlB8G3oqmreXQCJIoK82/wxEkU=;
-        b=rMimxcWj2+9FTEnwz/aggVzsV7KuqcszpTeNCEdjEgVeO9QgKQvjI7H0CyAnAPtvvi
-         yShy7pvEGj7d0L2yLNI6ZCdtwzr6hxelLYppyOHONPA0LPCf7ED4G65M5xgyhQkJCDwB
-         P+nMICpFRmmG8L6Q+TDfDtvtXZLrZYD98RlffJTgsyZs2AUU6Gyv33dbMonTU8aXw3dP
-         ZJ2c8edMhr5eWD4Roq/ZfCvBrqOAFtRhjkgiO/B4YM6oaRvQvIizedAqaOkHfqWER5CC
-         U17FC6EONLL2tVX5ZZtimCOXNGcyV/zwsMKRlIhv4S1XSrMBrNymuJ/GJl1bmzCuJgvo
-         gFKQ==
-X-Gm-Message-State: AOAM5339WD+Wy+vp42QYkuoEbANLQg/GLkNR/X3tDS8GIbCMQk4+Goey
-        Xszazqmjmz8w087aNpiCzvpA4CAdnyeFAA3BuJx9jZ1+5ZPokyezQkIncpBMCmdEIvAbDVkqpCB
-        zAUg+gwHef/8z
-X-Received: by 2002:a17:907:9605:: with SMTP id gb5mr17348654ejc.685.1643134315381;
-        Tue, 25 Jan 2022 10:11:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyoPAYB5FVJEoP403NezL+MUS0Tv2jX6/UgHpSL8/pKp8IUbV8+JT6INoyPbobrfnoWYRryPQ==
-X-Received: by 2002:a17:907:9605:: with SMTP id gb5mr17348639ejc.685.1643134315151;
-        Tue, 25 Jan 2022 10:11:55 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id k7sm6425341ejp.182.2022.01.25.10.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jan 2022 10:11:54 -0800 (PST)
-Date:   Tue, 25 Jan 2022 19:11:52 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S231220AbiAYSvF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 13:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230503AbiAYSuf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 13:50:35 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EB9C061744;
+        Tue, 25 Jan 2022 10:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wgDA9fP7U4eL48s1ELGNzJnpgnC00E8ctU7slTh1x70=; b=BDrV42wP0MTNpKdOsq+CgxPR41
+        XylFLZEfpc7AhwKkAvQlmqFNZybub36TqSMxrzODwNdvzWVBjYifALdKPVLoxIMF+cf3B/ewAmFH9
+        GWUvJc7NHgpAJIVHBgYVE0uR29Lumc40neFkHLfFycszbeP9wG/qo0ps54soiTfE1hPxyUJyTsDdT
+        iDu1lMyLzRHaOAVHithuQETPKoodbCqfm7forTkYLFm3kmXd9/vT+2Crc8zvaeeeL5I/kgVCTg0c8
+        DJ4p//fQoNMKCO8sKipbtWVD/7oo8L5cJXKlag0lVCM7Gbwy4844sutAc5Z7RyilIuNsexgSfAu0f
+        3m5ZR0dg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nCQtm-009G7u-1e; Tue, 25 Jan 2022 18:50:34 +0000
+Date:   Tue, 25 Jan 2022 10:50:34 -0800
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 2/9] fprobe: Add ftrace based probe APIs
-Message-ID: <YfA9aC5quQNc89Hc@krava>
-References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
- <164311271777.1933078.9066058105807126444.stgit@devnote2>
- <YfAoMW6i4gqw2Na0@krava>
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCH bpf-next v6 01/11] kernel: Implement try_module_get_live
+Message-ID: <YfBGetHxW+qdk8WD@bombadil.infradead.org>
+References: <20220102162115.1506833-1-memxor@gmail.com>
+ <20220102162115.1506833-2-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YfAoMW6i4gqw2Na0@krava>
+In-Reply-To: <20220102162115.1506833-2-memxor@gmail.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 05:41:24PM +0100, Jiri Olsa wrote:
-> On Tue, Jan 25, 2022 at 09:11:57PM +0900, Masami Hiramatsu wrote:
+On Sun, Jan 02, 2022 at 09:51:05PM +0530, Kumar Kartikeya Dwivedi wrote:
+> Refactor shared functionality between strong_try_module_get and
+> try_module_get into a common helper, and expose try_module_get_live
+> that returns a bool similar to try_module_get.
 > 
-> SNIP
+> It will be used in the next patch for btf_try_get_module, to eliminate a
+> race between module __init function invocation and module_put from BPF
+> side.
 > 
-> > +
-> > +/* Convert ftrace location address from symbols */
-> > +static int convert_func_addresses(struct fprobe *fp)
-> > +{
-> > +	unsigned long addr, size;
-> > +	unsigned int i;
-> > +
-> > +	/* Convert symbols to symbol address */
-> > +	if (fp->syms) {
-> > +		fp->addrs = kcalloc(fp->nentry, sizeof(*fp->addrs), GFP_KERNEL);
-> > +		if (!fp->addrs)
-> > +			return -ENOMEM;
-> > +
-> > +		for (i = 0; i < fp->nentry; i++) {
-> > +			fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
-> > +			if (!fp->addrs[i])	/* Maybe wrong symbol */
-> > +				goto error;
-> > +		}
-> > +	}
-> > +
-> > +	/* Convert symbol address to ftrace location. */
-> > +	for (i = 0; i < fp->nentry; i++) {
-> > +		if (!kallsyms_lookup_size_offset(fp->addrs[i], &size, NULL))
-> > +			size = MCOUNT_INSN_SIZE;
-> > +		addr = ftrace_location_range(fp->addrs[i], fp->addrs[i] + size);
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Jessica Yu <jeyu@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-modules@vger.kernel.org
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/module.h | 26 +++++++++++++++++++-------
+>  kernel/module.c        | 20 ++++++++------------
+>  2 files changed, 27 insertions(+), 19 deletions(-)
 > 
-> you need to substract 1 from 'end' in here, as explained in
-> __within_notrace_func comment:
-> 
->         /*
->          * Since ftrace_location_range() does inclusive range check, we need
->          * to subtract 1 byte from the end address.
->          */
-> 
-> like in the patch below
-> 
-> also this convert is for archs where address from kallsyms does not match
-> the real attach addresss, like for arm you mentioned earlier, right?
-> 
-> could we have that arch specific, so we don't have extra heavy search
-> loop for archs that do not need it?
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index c9f1200b2312..eb83aaeaa76e 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -608,17 +608,17 @@ void symbol_put_addr(void *addr);
+>  /* Sometimes we know we already have a refcount, and it's easier not
+>     to handle the error case (which only happens with rmmod --wait). */
+>  extern void __module_get(struct module *module);
+> -
+> -/* This is the Right Way to get a module: if it fails, it's being removed,
+> - * so pretend it's not there. */
+> -extern bool try_module_get(struct module *module);
+> -
+> +extern int __try_module_get(struct module *module, bool strong);
+>  extern void module_put(struct module *module);
+>  
+>  #else /*!CONFIG_MODULE_UNLOAD*/
+> -static inline bool try_module_get(struct module *module)
+> +static inline int __try_module_get(struct module *module, bool strong)
+>  {
+> -	return !module || module_is_live(module);
+> +	if (module && !module_is_live(module))
+> +		return -ENOENT;
+> +	if (strong && module && module->state == MODULE_STATE_COMING)
+> +		return -EBUSY;
+> +	return 0;
+>  }
 
-one more question..
+The bool return is clear here before on try_module_get().
 
-I'm adding support for user to pass function symbols to bpf fprobe link
-and I thought I'd pass symbols array to register_fprobe, but I'd need to
-copy the whole array of strings from user space first, which could take
-lot of memory considering attachment of 10k+ functions
+>  static inline void module_put(struct module *module)
+>  {
+> @@ -631,6 +631,18 @@ static inline void __module_get(struct module *module)
+>  
+>  #endif /* CONFIG_MODULE_UNLOAD */
+>  
+> +/* This is the Right Way to get a module: if it fails, it's being removed,
+> + * so pretend it's not there. */
+> +static inline bool try_module_get(struct module *module)
+> +{
+> +	return !__try_module_get(module, false);
 
-so I'm thinking better way is to resolve symbols already in bpf fprobe
-link code and pass just addresses to register_fprobe
+Now you're making it negate an int return... 
 
-I assume you want to keep symbol interface, right? could we have some
-flag ensuring the conversion code is skipped, so we don't go through
-it twice?
+> +}
+> +/* Only take reference for modules which have fully initialized */
+> +static inline bool try_module_get_live(struct module *module)
+> +{
+> +	return !__try_module_get(module, true);
+> +}
+> +
+>  /* This is a #define so the string doesn't get put in every .o file */
+>  #define module_name(mod)			\
+>  ({						\
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 84a9141a5e15..a9bb0a5576c8 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -318,12 +318,7 @@ EXPORT_SYMBOL(unregister_module_notifier);
+>  static inline int strong_try_module_get(struct module *mod)
+>  {
+>  	BUG_ON(mod && mod->state == MODULE_STATE_UNFORMED);
+> -	if (mod && mod->state == MODULE_STATE_COMING)
+> -		return -EBUSY;
+> -	if (try_module_get(mod))
+> -		return 0;
+> -	else
+> -		return -ENOENT;
 
-in any case I need addresses before I call register_fprobe, because
-of the bpf cookies setup
+Before this change, this check had no disabled preemption
+prior to the first branch, now we are having it moved with
+preemption disabled. That's an OK change, but it is a
+small functional change.
 
-thanks,
-jirka
+Because of these two things NACK on this patch for now.
+Please split the patch up if you intend to make a new
+functional change. And this patch should be easy to read,
+this is not.
 
+  Luis
