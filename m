@@ -2,87 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5BF49AE3B
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0B049AE68
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1451514AbiAYIjK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 03:39:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40530 "EHLO
+        id S1376442AbiAYIsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 03:48:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378799AbiAYIhB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 03:37:01 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76574C0619C4;
-        Mon, 24 Jan 2022 23:12:14 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id x3so1337320ilm.3;
-        Mon, 24 Jan 2022 23:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Wr6MBiDCqaag82bO8+vycX38s7bu91IDkhXZbPknFdc=;
-        b=hq4kgi9ZgN2z8RzzdyYHL1f8FVzmY6gQ5uAvQiq2Inh2o4tkZpKN9P73Wn4F7NBB7x
-         gUJ5+io+Lkx7+radIsa+GQp+l47r6a0JAsCejA5WMvQ14VFeUrrLOVmY6f/ACU98650t
-         7uD4R4n1KERqw/RfKCzn8eZzCm9pFCUQBZRpYQSU2Fjq+CfA1ghU2nbp1lMGStn3UruC
-         eQIpLrvaXB9nz82fq9IIC1hGwsKQG2qqjI26irrgqhuo7Rh7hnJC7SovHZjgw6Yw88ZI
-         Ye4+bZJXjNz7TgH3DCWe7UMOryaRrA53jcFgvNi1mtqhi3W3/evGrWPibF2RjSr6CYyz
-         YpkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Wr6MBiDCqaag82bO8+vycX38s7bu91IDkhXZbPknFdc=;
-        b=PCRGcnB0ZEVGH6sj6beVzYOkiuEDS89IzytnsEzpklRYnyLOoiFzw96BMAx1WQsNA8
-         P/vOXmcd3p+IWrSrZ2fUbjr2LThrpXOevhwX1nkQtNUwPSB4ZlzNGdWP7VWgGwnwg7Ls
-         3l3hSzNB/8N7Tz6y9dsao0L2VgtJXm+Pv4qfujRXQeBMP9GOJKACbCwWb8tc0v9bOvbf
-         LhbuntTUXSVVbm0Ga4rxD/fi4KbtS9008xgzfsqmnkQ0dvL/5zRh/nC0b2f6BqkKyBN8
-         28RpjebzUNKhxmbxZYFrStXYpYUHspCEy2ZK12xjcwrt+CCq4P95xmeLGkiIGy8WFyDF
-         zG5A==
-X-Gm-Message-State: AOAM530NRKNFuvTlnj4jzTsOmcrTLtTPg6H0UTD82UYdlWOK/JsfqOFw
-        9/+fu0N71P3oV5fB9cwiYoQEomGjmiBumA==
-X-Google-Smtp-Source: ABdhPJzIqkUlHv1G/SCFnY20v7/cB/6l6e6kwMzyI3WBGtcg7hYSVlbQ4BA9oDQaaKMvVdKsXBK9ZQ==
-X-Received: by 2002:a05:6e02:1b82:: with SMTP id h2mr10086709ili.116.1643094733907;
-        Mon, 24 Jan 2022 23:12:13 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id y6sm8800111ilv.6.2022.01.24.23.12.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 23:12:13 -0800 (PST)
-Date:   Mon, 24 Jan 2022 23:12:07 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>, bpf@vger.kernel.org,
+        with ESMTP id S1452376AbiAYIql (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 03:46:41 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961EDC055A8C;
+        Mon, 24 Jan 2022 23:21:30 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FFE161307;
+        Tue, 25 Jan 2022 07:21:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5A75C340E8;
+        Tue, 25 Jan 2022 07:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643095289;
+        bh=/7vav1tP1IFHJLsPaTScBMjyW/1YdDoF34LK07MnAaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=O2BCshx+Gvniy0Y60rn1m43b24EsUlYsOT6aMKgW8HlxYziOQZJiE79PEhUYG0ISg
+         pCph+I+WK0BwuVIcqeEODNwzEfgOWgjPdVAqI3kPxC0340goLtbFMAyh8GFGX5c7tb
+         jjEttOxIEKlFt8LZRUWRh6yJaMrMAkD3jLqFUoBekbt8FY7iwye7gNQXe9zmIQwsDS
+         bjnLAS/424xi2N9ry4FETJlYKAsRCoEmHrjs3T2PWZzNIjlYG/EympisqdFXttfH7z
+         Q6nKFMH7wnju6NVVBzuMelO4G/VlXRxiWQuwUIg6ouGrwX2BLtjT59DYRUHMcJPh2F
+         Ld2dDFkb5pLkA==
+Received: by mail-yb1-f177.google.com with SMTP id k17so3718029ybk.6;
+        Mon, 24 Jan 2022 23:21:29 -0800 (PST)
+X-Gm-Message-State: AOAM533pIRDiaHX8ID7cV64He8OZZRp5OnPNuiVNYONZN13Vsqr83Oqm
+        xKMBz/rlfLamP1AmA5C5wFQzbvoB+9XjT6tm0M0=
+X-Google-Smtp-Source: ABdhPJyqYR4DFbAGWIBtoB383m5E/+ETS5HAwrtiClUKnfSskVUeJQfarucshkcm6G/i3SfpNfQq1VBWaHCevUsDBfw=
+X-Received: by 2002:a5b:c01:: with SMTP id f1mr27513023ybq.47.1643095288812;
+ Mon, 24 Jan 2022 23:21:28 -0800 (PST)
+MIME-Version: 1.0
+References: <20220121194926.1970172-1-song@kernel.org> <20220121194926.1970172-7-song@kernel.org>
+ <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
+ <7393B983-3295-4B14-9528-B7BD04A82709@fb.com> <CAADnVQJLHXaU7tUJN=EM-Nt28xtu4vw9+Ox_uQsjh-E-4VNKoA@mail.gmail.com>
+ <5407DA0E-C0F8-4DA9-B407-3DE657301BB2@fb.com> <CAADnVQLOpgGG9qfR4EAgzrdMrfSg9ftCY=9psR46GeBWP7aDvQ@mail.gmail.com>
+ <5F4DEFB2-5F5A-4703-B5E5-BBCE05CD3651@fb.com> <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
+ <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com> <adec88f9-b3e6-bfe4-c09e-54825a60f45d@linux.ibm.com>
+ <2AAC8B8C-96F1-400F-AFA6-D4AF41EC82F4@fb.com> <CAADnVQKgdMMeONmjUhbq_3X39t9HNQWteDuyWVfcxmTerTnaMw@mail.gmail.com>
+In-Reply-To: <CAADnVQKgdMMeONmjUhbq_3X39t9HNQWteDuyWVfcxmTerTnaMw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 24 Jan 2022 23:21:17 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4AXLirZwjH4YfJLYj1VUU2muQx1wTkkUpeBBH9kvw2Ag@mail.gmail.com>
+Message-ID: <CAPhsuW4AXLirZwjH4YfJLYj1VUU2muQx1wTkkUpeBBH9kvw2Ag@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org
-Cc:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>
-Message-ID: <61efa2c79c9b8_274ca208ca@john.notmuch>
-In-Reply-To: <20220124151146.376446-1-maximmi@nvidia.com>
-References: <20220124151146.376446-1-maximmi@nvidia.com>
-Subject: RE: [PATCH bpf v2 0/4] Bugfixes for syncookie BPF helpers
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maxim Mikityanskiy wrote:
-> This series contains generic bugfixes for the syncookie BPF helpers. It
-> used to be part of series [1], but has been separated to apply to the
-> bpf branch as fixes.
+On Mon, Jan 24, 2022 at 9:21 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jan 24, 2022 at 10:27 AM Song Liu <songliubraving@fb.com> wrote:
+> > >
+> > > Are arches expected to allocate rw buffers in different ways? If not,
+> > > I would consider putting this into the common code as well. Then
+> > > arch-specific code would do something like
+> > >
+> > >  header = bpf_jit_binary_alloc_pack(size, &prg_buf, &prg_addr, ...);
+> > >  ...
+> > >  /*
+> > >   * Generate code into prg_buf, the code should assume that its first
+> > >   * byte is located at prg_addr.
+> > >   */
+> > >  ...
+> > >  bpf_jit_binary_finalize_pack(header, prg_buf);
+> > >
+> > > where bpf_jit_binary_finalize_pack() would copy prg_buf to header and
+> > > free it.
+>
+> It feels right, but bpf_jit_binary_finalize_pack() sounds 100% arch
+> dependent. The only thing it will do is perform a copy via text_poke.
+> What else?
+>
+> > I think this should work.
+> >
+> > We will need an API like: bpf_arch_text_copy, which uses text_poke_copy()
+> > for x86_64 and s390_kernel_write() for x390. We will use bpf_arch_text_copy
+> > to
+> >   1) write header->size;
+> >   2) do finally copy in bpf_jit_binary_finalize_pack().
+>
+> we can combine all text_poke operations into one.
+>
+> Can we add an 'image' pointer into struct bpf_binary_header ?
 
-2/4 looks like the only real fix here. I think it would be more effective
-to push 2/4 with a selftest and get that out of the way. The others are
-nice but could go via bpf-next imo and 3/4 can likely be dropped imo. 
+There is a 4-byte hole in bpf_binary_header. How about we put
+image_offset there? Actually we only need 2 bytes for offset.
 
-Thanks for the fix.
-John
+> Then do:
+> int bpf_jit_binary_alloc_pack(size, &ro_hdr, &rw_hdr);
+>
+> ro_hdr->image would be the address used to compute offsets by JIT.
+
+If we only do one text_poke(), we cannot write ro_hdr->image yet. We
+can use ro_hdr + rw_hdr->image_offset instead.
+
+> rw_hdr->image would point to kvmalloc-ed area for emitting insns.
+> rw_hdr->size would already be populated.
+>
+> The JITs would write insns into rw_hdr->image including 'int 3' insns.
+> At the end the JIT will do text_poke_copy(ro_hdr, rw_hdr, rw_hdr->size);
+> That would be the only copy that will transfer everything into final
+> location.
+> Then kvfree(rw_hdr)
+
+The only problem is the asymmetry of allocating rw_hdr from bpf/core.c,
+and freeing it from arch/bpf_jit_comp.c. But it doesn't bother me too much.
+
+Thanks,
+Song
