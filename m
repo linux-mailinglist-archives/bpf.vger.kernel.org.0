@@ -2,147 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DCA49B3B4
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 13:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE0B49B3A2
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 13:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348659AbiAYMQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 07:16:06 -0500
-Received: from mga06.intel.com ([134.134.136.31]:23168 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1379384AbiAYMKC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 07:10:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643112602; x=1674648602;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WbtdMQpA0b/hAmGDVIfi73Bnwrx+JLFaahziTy+BY6o=;
-  b=mEE7tmrMYpkwI0LcXEiYwiDCV97KT5KwdqOBplEUIfzPzedzNBU089Wn
-   AwmTOVqglbRauZAUyH5QIkCWX3ajZpk1JmhOqn6jpJCefUuZd75yLmh0V
-   SbnJYRM9jWABwrlFdg5V3HzjeTinsUDJ1gP/X0VVnVgK7KIMKf1CIkVkS
-   uEg82HUMyGHH8BG/xrSSKKDRmBGBsZIbYNPQC5W7T7I/w+y4FmuPY0jmw
-   2DqsNKWHmjONwjaCICCJMLDAemDmByttVHjNZKVrP/wz5SJPcArWF9E1d
-   GD/lV12DYbXXQWS6zpX73DPV8oTYZC7bJJLOanI6+eugnrD2K6yQgACFA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="307000647"
-X-IronPort-AV: E=Sophos;i="5.88,314,1635231600"; 
-   d="scan'208";a="307000647"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2022 04:02:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,314,1635231600"; 
-   d="scan'208";a="532395674"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 25 Jan 2022 04:02:55 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 20PC2sVD027873;
-        Tue, 25 Jan 2022 12:02:54 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com
-Subject: Re: [PATCH bpf-next v4 2/8] ice: xsk: force rings to be sized to power of 2
-Date:   Tue, 25 Jan 2022 13:00:33 +0100
-Message-Id: <20220125120033.748345-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <Ye/j0FjYCeJlbWR/@boxer>
-References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-3-maciej.fijalkowski@intel.com> <20220125112306.746139-1-alexandr.lobakin@intel.com> <Ye/e9GqLkuekqFos@boxer> <20220125114202.748079-1-alexandr.lobakin@intel.com> <Ye/j0FjYCeJlbWR/@boxer>
+        id S1382750AbiAYMPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 07:15:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346834AbiAYMKX (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 25 Jan 2022 07:10:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643112609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=42Z6BCPlgS1+hVY7pB4+6uGo5ji54cdCInILV50rNl4=;
+        b=i++A+IbiQNfoN6V4b8DRfdQ2ANWIsZ6VtmBwBNu+SsHBdz1xsMWbhqEdSANvUCix9LCc8G
+        EKe8IfNnEYB/0Wpl8FsK5xn7IZaYzpl100Zz7rdHEYFBj/IyunVXV1tHQGh0jUOv10rA3j
+        hnV8cYCmJFVA+OmKozw0yNhlPnVcNoo=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-644---RRu4VwMTePrsbUpjX01A-1; Tue, 25 Jan 2022 07:10:08 -0500
+X-MC-Unique: --RRu4VwMTePrsbUpjX01A-1
+Received: by mail-ej1-f71.google.com with SMTP id x16-20020a170906135000b006b5b4787023so3446330ejb.12
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 04:10:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=42Z6BCPlgS1+hVY7pB4+6uGo5ji54cdCInILV50rNl4=;
+        b=pYtCmwlgyMD4geXMJ1Ici6r+2LofM6CMnPSyBrt6eysYwAbyJnNQ0KLcvKc/1ackHA
+         rScRpmO5rKuPhLRSm2yfbGS3n0zFHVSh6WR4A5wTcAGutzTRVVJ2Q4LHKY3LpUOXEWOG
+         KrspqrK7LNaWxP9rPShINWa4ybX5PVzCr312JQ72xUHoy96MxP0YuawNgnDDTsULRGDo
+         bM8Lr20r0z8WwNzc3TM+vjrVPRh3ECYhZBIeBiY9tuftGHkWbsMN1W4nvGS4+cTKayH9
+         6KJu4dWwLxpwSYJ9VCgv89xiN5FFU3ApAeU43Xp406BNDRcZhE3nXrI/dX4QKxuRvMdZ
+         ThTw==
+X-Gm-Message-State: AOAM5308R40E2qMpYsVxxtUkcjwlm6/vBFYvuRrV+fis0P0DfHtRFs0l
+        llsPieNRt8BYw2DeTRZHjnSwXErmNs/mZXIJk8Yc5JaDotsIqcqUBSsw1yFVKkcDEqLh6mVNEbN
+        fwCqCMJoWb6HM
+X-Received: by 2002:a17:906:90b:: with SMTP id i11mr16444748ejd.661.1643112607118;
+        Tue, 25 Jan 2022 04:10:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyy2JHArd+XerdRh9ICOs+QUEpJZrnqBkT+hSh9sSxhUCcC+g8rCsJft6WzhLhwMjet0V7nHA==
+X-Received: by 2002:a17:906:90b:: with SMTP id i11mr16444704ejd.661.1643112606564;
+        Tue, 25 Jan 2022 04:10:06 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id lv15sm6061140ejb.51.2022.01.25.04.10.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 25 Jan 2022 04:10:05 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A2CA51805FA; Tue, 25 Jan 2022 13:10:03 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map
+ definitions
+In-Reply-To: <CAEf4BzYJ9_1OpfCe9KZnDUDvezbc=bLFjq78n4tjBh=p_WFb3Q@mail.gmail.com>
+References: <20220120060529.1890907-1-andrii@kernel.org>
+ <20220120060529.1890907-4-andrii@kernel.org> <87wniu7hss.fsf@toke.dk>
+ <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
+ <87lez87rbm.fsf@toke.dk>
+ <CAEf4BzYJ9_1OpfCe9KZnDUDvezbc=bLFjq78n4tjBh=p_WFb3Q@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 25 Jan 2022 13:10:03 +0100
+Message-ID: <87lez43tk4.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Date: Tue, 25 Jan 2022 12:49:36 +0100
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Tue, Jan 25, 2022 at 12:42:02PM +0100, Alexander Lobakin wrote:
-> > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > Date: Tue, 25 Jan 2022 12:28:52 +0100
-> > 
-> > > On Tue, Jan 25, 2022 at 12:23:06PM +0100, Alexander Lobakin wrote:
-> > > > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > Date: Mon, 24 Jan 2022 17:55:41 +0100
-> > > > 
-> > > > > With the upcoming introduction of batching to XSK data path,
-> > > > > performance wise it will be the best to have the ring descriptor count
-> > > > > to be aligned to power of 2.
-> > > > > 
-> > > > > Check if rings sizes that user is going to attach the XSK socket fulfill
-> > > > > the condition above. For Tx side, although check is being done against
-> > > > > the Tx queue and in the end the socket will be attached to the XDP
-> > > > > queue, it is fine since XDP queues get the ring->count setting from Tx
-> > > > > queues.
-> > > > > 
-> > > > > Suggested-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > > > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > > ---
-> > > > >  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++++++
-> > > > >  1 file changed, 9 insertions(+)
-> > > > > 
-> > > > > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > index 2388837d6d6c..0350f9c22c62 100644
-> > > > > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > @@ -327,6 +327,14 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
-> > > > >  	bool if_running, pool_present = !!pool;
-> > > > >  	int ret = 0, pool_failure = 0;
-> > > > >  
-> > > > > +	if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
-> > > > > +	    !is_power_of_2(vsi->tx_rings[qid]->count)) {
-> > > > > +		netdev_err(vsi->netdev,
-> > > > > +			   "Please align ring sizes at idx %d to power of 2\n", qid);
-> > > > 
-> > > > Ideally I'd pass xdp->extack from ice_xdp() to print this message
-> > > > directly in userspace (note that NL_SET_ERR_MSG{,_MOD}() don't
-> > > > support string formatting, but the user already knows QID at this
-> > > > point).
-> > > 
-> > > I thought about that as well but it seemed to me kinda off to have a
-> > > single extack usage in here. Updating the rest of error paths in
-> > > ice_xsk_pool_setup() to make use of extack is a candidate for a separate
-> > > patch to me.
-> > > 
-> > > WDYT?
-> > 
-> > The rest uses string formatting to print the error code, and thus
-> > would lose their meaning. This one to me is more of the same kind
-> > as let's say "MTU too large for XDP" message, i.e. user config
-> > constraints check fail. But I'm fine if you'd prefer to keep a
-> > single source of output messages throughout the function.
-> 
-> Doubling the logs wouldn't hurt - keep current netdev_err with ret codes
-> and have more meaningful messages carried up to userspace via
-> NL_SET_ERR_MSG_MOD.
+> On Fri, Jan 21, 2022 at 12:43 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
+edhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Thu, Jan 20, 2022 at 3:44 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+>> >>
+>> >> Andrii Nakryiko <andrii@kernel.org> writes:
+>> >>
+>> >> > Enact deprecation of legacy BPF map definition in SEC("maps") ([0])=
+. For
+>> >> > the definitions themselves introduce LIBBPF_STRICT_MAP_DEFINITIONS =
+flag
+>> >> > for libbpf strict mode. If it is set, error out on any struct
+>> >> > bpf_map_def-based map definition. If not set, libbpf will print out
+>> >> > a warning for each legacy BPF map to raise awareness that it goes
+>> >> > away.
+>> >>
+>> >> We've touched upon this subject before, but I (still) don't think it'=
+s a
+>> >> good idea to remove this support entirely: It makes it impossible to
+>> >> write a loader that can handle both new and old BPF objects.
+>> >>
+>> >> So discourage the use of the old map definitions, sure, but please do=
+n't
+>> >> make it completely impossible to load such objects.
+>> >
+>> > BTF-defined maps have been around for quite a long time now and only
+>> > have benefits on top of the bpf_map_def way. The source code
+>> > translation is also very straightforward. If someone didn't get around
+>> > to update their BPF program in 2 years, I don't think we can do much
+>> > about that.
+>> >
+>> > Maybe instead of trying to please everyone (especially those that
+>> > refuse to do anything to their BPF programs), let's work together to
+>> > nudge laggards to actually modernize their source code a little bit
+>> > and gain some benefits from that along the way?
+>>
+>> I'm completely fine with nudging people towards the newer features, and
+>> I think the compile-time deprecation warning when someone is using the
+>> old-style map definitions in their BPF programs is an excellent way to
+>> do that.
+>>
+>> I'm also fine with libbpf *by default* refusing to load programs that
+>> use the old-style map definitions, but if the code is removed completely
+>> it becomes impossible to write general-purpose loaders that can handle
+>> both old and new programs. The obvious example of such a loader is
+>> iproute2, the loader in xdp-tools is another.
+>
+> This is because you want to deviate from underlying BPF loader's
+> behavior and feature set and dictate your own extended feature set in
+> xdp-tools/iproute2/etc. You can technically do that, but with a lot of
+> added complexity and headaches. But demanding libbpf to maintain
+> deprecated and discouraged features/APIs/practices for 10+ years and
+> accumulate all the internal cruft and maintenance burden isn't a great
+> solution either.
 
-Ah, right, this works as well. Let's leave it as it is for now then.
+Right, so work with me to find a solution? I already suggested several
+ideas, and you just keep repeating "just use the old library", which is
+tantamount to saying "take a hike".
 
-> 
-> > 
-> > > 
-> > > > 
-> > > > > +		pool_failure = -EINVAL;
-> > > > > +		goto failure;
-> > > > > +	}
-> > > > > +
-> > > > >  	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
-> > > > >  
-> > > > >  	if (if_running) {
-> > > > > @@ -349,6 +357,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
-> > > > >  			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
-> > > > >  	}
-> > > > >  
-> > > > > +failure:
-> > > > >  	if (pool_failure) {
-> > > > >  		netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
-> > > > >  			   pool_present ? "en" : "dis", pool_failure);
-> > > > > -- 
-> > > > > 2.33.1
-> > > > 
-> > > > Thanks,
-> > > > Al
-> > 
-> > Al
+I'm perfectly fine with having to jump through some more hoops to load
+old programs, and moving the old maps section parsing out of libbpf and
+into the caller is fine as well; but then we'd need to add some hooks to
+libbpf to create the maps inside the bpf_object. I can submit patches to
+do this, but I'm not going to bother if you're just going to reject them
+because you don't want to accommodate anything other than your way of
+doing things :/
 
-Al
+-Toke
+
