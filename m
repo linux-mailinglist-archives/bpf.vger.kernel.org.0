@@ -2,169 +2,174 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4B249BF60
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 00:09:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F03249BFB6
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 00:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbiAYXJh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 18:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
+        id S230472AbiAYXqm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 18:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234660AbiAYXJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 18:09:34 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46E50C06161C;
-        Tue, 25 Jan 2022 15:09:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 96887CE1B70;
-        Tue, 25 Jan 2022 23:09:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B03CC340EE;
-        Tue, 25 Jan 2022 23:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643152170;
-        bh=LOMrUiyIHgsNDTx3vAWDhuWxHmuk2gjyVrwtUk6gu8A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZAkaIE/Gj9GJgqqI8WYv8FuktPvTInCnAXzJ0h+F6sA/Kh0gFf21RXlQ0yumHCu46
-         xCaSssZRxku6HaokLRwxkCGuKKEXKtj3mXENaCK8+Z2kQvGttL+AGMX7EdEvuNsd8a
-         yU11dFwOuudGhYp3LpnZgIJmbj+N2FRCXooa2RDsQrWwgl40GnEKb25gIbVX9RQsyU
-         2tJtp2UBQTT71kaIG+VdcQ5DJxVMC08bAdmO5HsAO0xVtp7pnJU3RKVd0U0Ur+TM8i
-         FWmD1mUSTEdIhcY8csplDZDJeyh8AyhSMaPbX06WZ8p61QvMNDpdJxOvOUNThns/aG
-         VRg6LWv5cuyeg==
-Received: by mail-yb1-f172.google.com with SMTP id p5so66066990ybd.13;
-        Tue, 25 Jan 2022 15:09:29 -0800 (PST)
-X-Gm-Message-State: AOAM532uCiuLzGNwJEkVN34pNYSF9c+XbAp4LBvh0lvV+/TiGZ/ItziJ
-        CrNbWLMj22HTHHOVdN2l0GmbV4JJU5+Pu2SBpKo=
-X-Google-Smtp-Source: ABdhPJzoiUW3GraN2bn5nJm+QtYEaBoQ2F8JLg42y/MpPJLnmhsLoeljoRnFtGgcOcu3l6dMrtV+krTfYZKTrFJyJDU=
-X-Received: by 2002:a25:8b85:: with SMTP id j5mr31467798ybl.558.1643152169079;
- Tue, 25 Jan 2022 15:09:29 -0800 (PST)
+        with ESMTP id S234973AbiAYXql (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 18:46:41 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46337C06173B
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 15:46:41 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id n17so9822453iod.4
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 15:46:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1b/uLvSRLDyePx4KMXlKmFT6YPRke3tAynjkTkI7G7s=;
+        b=QcVYvPogfjQkDxi6xOoOIA/8w+Vs7Ql6ZcgAPHDQUAd7DNSUoMRB3U5074QBGihpZw
+         5fcOssN30VMNHzc2K6ekgDQDq1Hx2pRUysPdZkbFp6jcOjaPoixetUMuoP0mOky7LuEN
+         hMj9Kworf8pihu4Tnt90UNeqzSK3tf9RJ031cggWg0DqjPFYv767tdgJcr68OSHrr81j
+         QEhefmq8vGfR8XZyI/gS6Q14e4lk9S5cwrXyZGcO2zsgRIvNvZtDir/ftDZkBJDZJZA3
+         otxgvElSxHZAAG8If2TaGxOh6S7XxQoCjoG/aV4k04+8cjCTgQAYVSAvoyyWuSB+3Jzr
+         ta9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1b/uLvSRLDyePx4KMXlKmFT6YPRke3tAynjkTkI7G7s=;
+        b=CAwEKqNVVBvwi6T9W1+ELBxus7zNva+BtGG/fRsfEIdH1KlMP0IKBWSk6W8cHYd3ec
+         Jr/B4FQuVcvV/3cCHFYyg/yFsMhdJyOjg25klKsY0SN6dTY3ZKVoxrGC1u7K8iTOqSl9
+         P9tFSHZA7HbOZI/NMbs4VOsCtqHDc5GqCz2QUQkwxPGKANdW41ITxXTfdsX164IBG1fO
+         iiX7niPBxmrei60axpPEZCVb+w4+Zh6q2BVdw3Ba4YSI2KphTj2aAjH+hOYE/gnv+Svv
+         ys0spJn/IJvZtDuyWmBR6qigQuTPtsB9UQBHlncZ0S1vYC/z9FfHaeHYIW/1Coz499C7
+         300w==
+X-Gm-Message-State: AOAM532oYlteaNQpvtJQPcWryVKPO1y+4XJF/pCJ6v5/zMhnqPocskxB
+        NSFC9dcGBjZ3X00o3oqPC04kkvdK9LnxUG6pkEo=
+X-Google-Smtp-Source: ABdhPJybkyswcfYCwEeZQMkn8ly2X+FZhl1LHwKoOeAtYaf8RH25jEIh/UybJxnIt+1Z6sv6Rj6oByaMpUPHBv2P4b8=
+X-Received: by 2002:a05:6638:1212:: with SMTP id n18mr7316576jas.93.1643154400619;
+ Tue, 25 Jan 2022 15:46:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20220121194926.1970172-1-song@kernel.org> <20220121194926.1970172-7-song@kernel.org>
- <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
- <7393B983-3295-4B14-9528-B7BD04A82709@fb.com> <CAADnVQJLHXaU7tUJN=EM-Nt28xtu4vw9+Ox_uQsjh-E-4VNKoA@mail.gmail.com>
- <5407DA0E-C0F8-4DA9-B407-3DE657301BB2@fb.com> <CAADnVQLOpgGG9qfR4EAgzrdMrfSg9ftCY=9psR46GeBWP7aDvQ@mail.gmail.com>
- <5F4DEFB2-5F5A-4703-B5E5-BBCE05CD3651@fb.com> <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
- <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com> <adec88f9-b3e6-bfe4-c09e-54825a60f45d@linux.ibm.com>
- <2AAC8B8C-96F1-400F-AFA6-D4AF41EC82F4@fb.com> <CAADnVQKgdMMeONmjUhbq_3X39t9HNQWteDuyWVfcxmTerTnaMw@mail.gmail.com>
- <CAPhsuW4AXLirZwjH4YfJLYj1VUU2muQx1wTkkUpeBBH9kvw2Ag@mail.gmail.com>
- <CAADnVQL8-Hq=g3u65AOoOcB5y-LcOEA4wwMb1Ep0usWdCCSAcA@mail.gmail.com>
- <CAPhsuW4K+oDsytLvz4n44Fe3Pbjmpu6tnCk63A-UVxCZpz_rjg@mail.gmail.com> <CAADnVQJ8-XVYb21bFRgsaoj7hzd89NSbSOBj0suwsYSL89pxsg@mail.gmail.com>
-In-Reply-To: <CAADnVQJ8-XVYb21bFRgsaoj7hzd89NSbSOBj0suwsYSL89pxsg@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Tue, 25 Jan 2022 15:09:18 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7AzQL5y+4stw_MZCg2sR3e5qe1YS0L1evxhCvfTWF5+Q@mail.gmail.com>
-Message-ID: <CAPhsuW7AzQL5y+4stw_MZCg2sR3e5qe1YS0L1evxhCvfTWF5+Q@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+References: <20220120060529.1890907-1-andrii@kernel.org> <20220120060529.1890907-4-andrii@kernel.org>
+ <87wniu7hss.fsf@toke.dk> <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
+ <87lez87rbm.fsf@toke.dk> <CAEf4BzYJ9_1OpfCe9KZnDUDvezbc=bLFjq78n4tjBh=p_WFb3Q@mail.gmail.com>
+ <87lez43tk4.fsf@toke.dk>
+In-Reply-To: <87lez43tk4.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 25 Jan 2022 15:46:29 -0800
+Message-ID: <CAEf4BzbPzDn-f-jZh4fDdjPo+ek7qSjMCzMFekGAfY4kuL1dMw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map definitions
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
+        Kernel Team <kernel-team@fb.com>,
+        David Ahern <dsahern@kernel.org>,
+        Stephen Hemminger <stephen@networkplumber.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 2:48 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jan 25, 2022 at 4:10 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> On Tue, Jan 25, 2022 at 2:25 PM Song Liu <song@kernel.org> wrote:
-> >
-> > On Tue, Jan 25, 2022 at 12:00 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Mon, Jan 24, 2022 at 11:21 PM Song Liu <song@kernel.org> wrote:
-> > > >
-> > > > On Mon, Jan 24, 2022 at 9:21 PM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Jan 24, 2022 at 10:27 AM Song Liu <songliubraving@fb.com> wrote:
-> > > > > > >
-> > > > > > > Are arches expected to allocate rw buffers in different ways? If not,
-> > > > > > > I would consider putting this into the common code as well. Then
-> > > > > > > arch-specific code would do something like
-> > > > > > >
-> > > > > > >  header = bpf_jit_binary_alloc_pack(size, &prg_buf, &prg_addr, ...);
-> > > > > > >  ...
-> > > > > > >  /*
-> > > > > > >   * Generate code into prg_buf, the code should assume that its first
-> > > > > > >   * byte is located at prg_addr.
-> > > > > > >   */
-> > > > > > >  ...
-> > > > > > >  bpf_jit_binary_finalize_pack(header, prg_buf);
-> > > > > > >
-> > > > > > > where bpf_jit_binary_finalize_pack() would copy prg_buf to header and
-> > > > > > > free it.
-> > > > >
-> > > > > It feels right, but bpf_jit_binary_finalize_pack() sounds 100% arch
-> > > > > dependent. The only thing it will do is perform a copy via text_poke.
-> > > > > What else?
-> > > > >
-> > > > > > I think this should work.
-> > > > > >
-> > > > > > We will need an API like: bpf_arch_text_copy, which uses text_poke_copy()
-> > > > > > for x86_64 and s390_kernel_write() for x390. We will use bpf_arch_text_copy
-> > > > > > to
-> > > > > >   1) write header->size;
-> > > > > >   2) do finally copy in bpf_jit_binary_finalize_pack().
-> > > > >
-> > > > > we can combine all text_poke operations into one.
-> > > > >
-> > > > > Can we add an 'image' pointer into struct bpf_binary_header ?
-> > > >
-> > > > There is a 4-byte hole in bpf_binary_header. How about we put
-> > > > image_offset there? Actually we only need 2 bytes for offset.
-> > > >
-> > > > > Then do:
-> > > > > int bpf_jit_binary_alloc_pack(size, &ro_hdr, &rw_hdr);
-> > > > >
-> > > > > ro_hdr->image would be the address used to compute offsets by JIT.
-> > > >
-> > > > If we only do one text_poke(), we cannot write ro_hdr->image yet. We
-> > > > can use ro_hdr + rw_hdr->image_offset instead.
-> > >
-> > > Good points.
-> > > Maybe let's go back to Ilya's suggestion and return 4 pointers
-> > > from bpf_jit_binary_alloc_pack ?
-> >
-> > How about we use image_offset, like:
-> >
-> > struct bpf_binary_header {
-> >         u32 size;
-> >         u32 image_offset;
-> >         u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
-> > };
-> >
-> > Then we can use
-> >
-> > image = (void *)header + header->image_offset;
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 >
-> I'm not excited about it, since it leaks header details into JITs.
-> Looks like we don't need JIT to be aware of it.
-> How about we do random() % roundup(sizeof(struct bpf_binary_header), 64)
-> to pick the image start and populate
-> image-sizeof(struct bpf_binary_header) range
-> with 'int 3'.
-> This way we can completely hide binary_header inside generic code.
-> The bpf_jit_binary_alloc_pack() would return ro_image and rw_image only.
-> And JIT would pass them back into bpf_jit_binary_finalize_pack().
-> From the image pointer it would be trivial to get to binary_header with &63.
-> The 128 byte offset that we use today was chosen arbitrarily.
-> We were burning the whole page for a single program, so 128 bytes zone
-> at the front was ok.
-> Now we will be packing progs rounded up to 64 bytes, so it's better
-> to avoid wasting those 128 bytes regardless.
+> > On Fri, Jan 21, 2022 at 12:43 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke=
+@redhat.com> wrote:
+> >>
+> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+> >>
+> >> > On Thu, Jan 20, 2022 at 3:44 AM Toke H=C3=B8iland-J=C3=B8rgensen <to=
+ke@redhat.com> wrote:
+> >> >>
+> >> >> Andrii Nakryiko <andrii@kernel.org> writes:
+> >> >>
+> >> >> > Enact deprecation of legacy BPF map definition in SEC("maps") ([0=
+]). For
+> >> >> > the definitions themselves introduce LIBBPF_STRICT_MAP_DEFINITION=
+S flag
+> >> >> > for libbpf strict mode. If it is set, error out on any struct
+> >> >> > bpf_map_def-based map definition. If not set, libbpf will print o=
+ut
+> >> >> > a warning for each legacy BPF map to raise awareness that it goes
+> >> >> > away.
+> >> >>
+> >> >> We've touched upon this subject before, but I (still) don't think i=
+t's a
+> >> >> good idea to remove this support entirely: It makes it impossible t=
+o
+> >> >> write a loader that can handle both new and old BPF objects.
+> >> >>
+> >> >> So discourage the use of the old map definitions, sure, but please =
+don't
+> >> >> make it completely impossible to load such objects.
+> >> >
+> >> > BTF-defined maps have been around for quite a long time now and only
+> >> > have benefits on top of the bpf_map_def way. The source code
+> >> > translation is also very straightforward. If someone didn't get arou=
+nd
+> >> > to update their BPF program in 2 years, I don't think we can do much
+> >> > about that.
+> >> >
+> >> > Maybe instead of trying to please everyone (especially those that
+> >> > refuse to do anything to their BPF programs), let's work together to
+> >> > nudge laggards to actually modernize their source code a little bit
+> >> > and gain some benefits from that along the way?
+> >>
+> >> I'm completely fine with nudging people towards the newer features, an=
+d
+> >> I think the compile-time deprecation warning when someone is using the
+> >> old-style map definitions in their BPF programs is an excellent way to
+> >> do that.
+> >>
+> >> I'm also fine with libbpf *by default* refusing to load programs that
+> >> use the old-style map definitions, but if the code is removed complete=
+ly
+> >> it becomes impossible to write general-purpose loaders that can handle
+> >> both old and new programs. The obvious example of such a loader is
+> >> iproute2, the loader in xdp-tools is another.
+> >
+> > This is because you want to deviate from underlying BPF loader's
+> > behavior and feature set and dictate your own extended feature set in
+> > xdp-tools/iproute2/etc. You can technically do that, but with a lot of
+> > added complexity and headaches. But demanding libbpf to maintain
+> > deprecated and discouraged features/APIs/practices for 10+ years and
+> > accumulate all the internal cruft and maintenance burden isn't a great
+> > solution either.
+>
+> Right, so work with me to find a solution? I already suggested several
+> ideas, and you just keep repeating "just use the old library", which is
+> tantamount to saying "take a hike".
 
-In bpf_jit_binary_hdr(), we calculate header as image & PAGE_MASK.
-If we want s/PAGE_MASK/63 for x86_64, we will have different versions
-of bpf_jit_binary_hdr(). It is not on any hot path, so we can use __weak for
-it. Other than this, I think the solution works fine.
+I also proposed a solution: log warning, so that your users will be
+aware and can modernize their code base and be ready for libbpf 1.0.
+You also keep ignoring this.
 
-Thanks,
-Song
+Adding more obscure APIs and callbacks to let libxdp or iproute2
+emulate old libbpf map definition syntax is not a good solution from
+my point of view.
+
+>
+> I'm perfectly fine with having to jump through some more hoops to load
+> old programs, and moving the old maps section parsing out of libbpf and
+> into the caller is fine as well; but then we'd need to add some hooks to
+> libbpf to create the maps inside the bpf_object. I can submit patches to
+> do this, but I'm not going to bother if you're just going to reject them
+> because you don't want to accommodate anything other than your way of
+> doing things :/
+
+It's not just parsing the definition. We'll need to define an entire
+new protocol to dynamically add new custom BPF maps, and tie them
+together to BPF program code, adding/resolving relocations, etc. It's
+an overkill and not a good solution.
+
+You keep fighting hard to let users not do anything and use BPF object
+files generated years ago without recompilation and any source code
+changes. I so far haven't seen any *user* actually complain about
+this, only "middleman" libxdp and iproute2 are complaining right now.
+Did you check with your users how much of a problem it really is?
+
+In practice I've seen BPF users are quite willing to accommodate much
+more radical changes to their code with no problem. And John's reply
+just adds to that case.
+
+>
+> -Toke
+>
