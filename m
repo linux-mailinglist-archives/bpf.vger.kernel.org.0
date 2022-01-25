@@ -2,115 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C668549AE30
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A1BD49AD36
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 08:15:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1450763AbiAYIg7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 03:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1450881AbiAYIeV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 03:34:21 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F03C067A65;
-        Mon, 24 Jan 2022 23:06:36 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id z4so870524ilz.4;
-        Mon, 24 Jan 2022 23:06:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=XkEXtjfj5tnMePJhCr34XCaoEd1OT4vImrqiyvQGwjI=;
-        b=HfwAH3hAOJweTswFlUQ/SNXg3BnH31JU1JBtiB8BAfd4rUcCbLOLC3DXHFZZSbTZIg
-         6D8lBuy195UIs3UlvUyjzL56qAudRVdcXLhIODB8wL4IGb7k1yEUyrb77jLScF6q/Eef
-         X8yqdHntE30WlgX4x9E+6IAST0MYSJptWdMSZrfHCIR/fQNWqcwrh15Us8o2oHr1GFm4
-         sKZO7QvdIqUU5GGeXuyU2vjziCJHH08yTOEeWcQgVO+7TDiYs+tbyZKxYDPhm5/WLSzQ
-         GcL6uDPnSAsL9vIJu7d+27IWEW8EQtbAaRvbmtd4em9xdZTvC0O0pKJkQgRna+00lNvZ
-         RZ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=XkEXtjfj5tnMePJhCr34XCaoEd1OT4vImrqiyvQGwjI=;
-        b=Eup7uEawU0mUV0VILF8Iiy4aLsyJIU6OPEVqFbHsk7rEPVVwfP0KWb6QbOEV3Vc/3J
-         Jcr//cbpo0vnqcp3d5Cx0mp7cBWi6xE7nQP5VDVa3AmiBn+zkfb4fj8gBMoTWs5UWkDo
-         /Easd+YRr9XB/aJnM6/fl1KNYDX0ka7d7LqGy+vEmkxEYf7BRb0V4kY7FC/oJrlraG44
-         Zbd6J3S5FbXmMNQTLLcx/7tkp+Ul8YFqBZa02q6kyOexz4t2JKc7ZBjzcIE2gUZXA/qf
-         HCP7bFA6mYKpTu5EwtNy/clJwY7RYz6GxPZWDXc0bCn89bLR0i5IGQv1KWj1JKuCQobB
-         mw9w==
-X-Gm-Message-State: AOAM533TzAy16bYCMa73pnYyFVKr37/rFnEzd4sZTlE43G0HBm0f3Zw0
-        7MNzJpZkF5G+NZfnU48rzMw=
-X-Google-Smtp-Source: ABdhPJx9w8Fz8i2yQXSJZnqRxlTcoTdTcYjAj2ZeMfBIR5za0cG2/bQFx+ms06APnXEHCIZeiPsA7Q==
-X-Received: by 2002:a05:6e02:19cd:: with SMTP id r13mr10793858ill.89.1643094395674;
-        Mon, 24 Jan 2022 23:06:35 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id d8sm7837025ilg.81.2022.01.24.23.06.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 23:06:35 -0800 (PST)
-Date:   Mon, 24 Jan 2022 23:06:29 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1442392AbiAYHKk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 02:10:40 -0500
+Received: from sin.source.kernel.org ([145.40.73.55]:54032 "EHLO
+        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1442405AbiAYHIP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 02:08:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id BFE87CE1764;
+        Tue, 25 Jan 2022 07:07:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13D93C340E6;
+        Tue, 25 Jan 2022 07:07:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643094477;
+        bh=u4sZb43o6v9pvDvs7BsPPpiWoB/VBKMPiOOl3tPLaEs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GftWM3c1oIqLFALD23owKTErEZfdczcMT8uVPxGLP1FOkBmR1KtCfQlDYB8d6riL8
+         DPO4fVeV5rN4oKIV/NGuFFriOPq0d9MNMXrycCIeRnZtIDSC888/FqYqeJAd1loBtA
+         hXx+UyrWJRWu5z0Liq3idU4Acw4Krc4kyOXxUymIUCtW2CeSt/my0j5CtcpE11hz82
+         efA+jIDbZ5nwan6om754XfkbxhyZ1x7WanhNeGUoHS6K4izmm/GuBYsh/FFkJyAM+d
+         4eJsnOwPf+hR2epbDvchWReD02znUZ4KI+EtbSobJIn5nlYbvmni6AuNhx6MRAVv3e
+         3cd7v/zi0KY/A==
+Received: by mail-yb1-f169.google.com with SMTP id r65so55267861ybc.11;
+        Mon, 24 Jan 2022 23:07:57 -0800 (PST)
+X-Gm-Message-State: AOAM532Eymuk8g76qQJeJ6llUNBNDzuA8/8PA7ajb2YILHgMD/VEIpmI
+        9+2GPoYApt17FypcDiJAlIx31dcZcOAgMwd6Ajk=
+X-Google-Smtp-Source: ABdhPJxhRopogeep+UB2H+4fwzAnBfxW+obMKHyynYJuQjl+/u9U0011KEHGoECdFaAAZ+09H1f4CSH4mTvEV+mXA4s=
+X-Received: by 2002:a25:fd6:: with SMTP id 205mr29018898ybp.654.1643094475930;
+ Mon, 24 Jan 2022 23:07:55 -0800 (PST)
+MIME-Version: 1.0
+References: <CA+khW7gh=vO8m-_SVnwWwj7kv+EDeUPcuWFqebf2Zmi9T_oEAQ@mail.gmail.com>
+In-Reply-To: <CA+khW7gh=vO8m-_SVnwWwj7kv+EDeUPcuWFqebf2Zmi9T_oEAQ@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 24 Jan 2022 23:07:45 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7F4KritXPXixoPSw4zbCsqpfZaYBuw5BgD+KKXaoeGxg@mail.gmail.com>
+Message-ID: <CAPhsuW7F4KritXPXixoPSw4zbCsqpfZaYBuw5BgD+KKXaoeGxg@mail.gmail.com>
+Subject: Re: [Question] How to reliably get BuildIDs from bpf prog
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org
-Cc:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>
-Message-ID: <61efa17548a0_274ca2089c@john.notmuch>
-In-Reply-To: <20220124151146.376446-4-maximmi@nvidia.com>
-References: <20220124151146.376446-1-maximmi@nvidia.com>
- <20220124151146.376446-4-maximmi@nvidia.com>
-Subject: RE: [PATCH bpf v2 3/4] bpf: Use EOPNOTSUPP in bpf_tcp_check_syncookie
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Blake Jones <blakejones@google.com>,
+        Alexey Alexandrov <aalexand@google.com>,
+        Namhyung Kim <namhyung@google.com>,
+        Ian Rogers <irogers@google.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maxim Mikityanskiy wrote:
-> When CONFIG_SYN_COOKIES is off, bpf_tcp_check_syncookie returns
-> ENOTSUPP. It's a non-standard and deprecated code. The related function
-> bpf_tcp_gen_syncookie and most of the other functions use EOPNOTSUPP if
-> some feature is not available. This patch changes ENOTSUPP to EOPNOTSUPP
-> in bpf_tcp_check_syncookie.
-> 
-> Fixes: 399040847084 ("bpf: add helper to check for a valid SYN cookie")
-> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+On Mon, Jan 24, 2022 at 2:43 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Dear BPF experts,
+>
+> I'm working on collecting some kernel performance data using BPF
+> tracing prog. Our performance profiling team wants to associate the
+> data with user stack information. One of the requirements is to
+> reliably get BuildIDs from bpf_get_stackid() and other similar helpers
+> [1].
+>
+> As part of an early investigation, we found that there are a couple
+> issues that make bpf_get_stackid() much less reliable than we'd like
+> for our use:
+>
+> 1. The first page of many binaries (which contains the ELF headers and
+> thus the BuildID that we need) is often not in memory. The failure of
+> find_get_page() (called from build_id_parse()) is higher than we would
+> want.
 
-This came up in another thread? Or was it the same and we lost the context
-in the commit msg. Either way I don't think we should start one-off
-changing these user facing error codes. Its not the only spot we do this
-and its been this way for sometime.
+Our top use case of bpf_get_stack() is called from NMI, so there isn't
+much we can do. Maybe it is possible to improve it by changing the
+layout of the binary and the libraries? Specifically, if the text is
+also in the first page, it is likely to stay in memory?
 
-Is it causing a real problem?
+> 2. When anonymous huge pages are used to hold some regions of process
+> text, build_id_parse() also fails to get a BuildID because
+> vma->vm_file is NULL.
 
-> ---
->  net/core/filter.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 780e635fb52a..2c9106704821 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -6814,7 +6814,7 @@ BPF_CALL_5(bpf_tcp_check_syncookie, struct sock *, sk, void *, iph, u32, iph_len
->  
->  	return -ENOENT;
->  #else
-> -	return -ENOTSUPP;
-> +	return -EOPNOTSUPP;
->  #endif
->  }
->  
-> -- 
-> 2.30.2
-> 
+How did the text get in anonymous memory? I guess it is NOT from JIT?
+We had a hack to use transparent huge page for application text. The
+hack looks like:
+
+"At run time, the application creates an 8MB temporary buffer and the
+hot section of the executable memory is copied to it. The 8MB region in
+the executable memory is then converted to a huge page (by way of an
+mmap() to anonymous pages and an madvise() to create a huge page), the
+data is copied back to it, and it is made executable again using
+mprotect()."
+
+If your case is the same (or similar), it can probably be fixed with
+CONFIG_READ_ONLY_THP_FOR_FS, and modified user space.
+
+Thanks,
+Song
