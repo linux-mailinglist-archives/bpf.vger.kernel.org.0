@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C6F49B006
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 10:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A5149B008
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 10:40:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235087AbiAYJZ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 04:25:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
+        id S1344616AbiAYJZa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 04:25:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1456547AbiAYJLu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 04:11:50 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2403C0613BD;
-        Tue, 25 Jan 2022 00:59:43 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id j10so5582738pgc.6;
-        Tue, 25 Jan 2022 00:59:43 -0800 (PST)
+        with ESMTP id S1456999AbiAYJNw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 04:13:52 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ECDC061744;
+        Tue, 25 Jan 2022 01:06:24 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id x11so12833922plg.6;
+        Tue, 25 Jan 2022 01:06:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D2Pwb8PW5CwIzNE75soX35+MKq6BniCq9jN56JT7JlY=;
-        b=LurrwbANv5tg9gFcE3KVTLHWLgmUGBZ7ivGJqedDXBjCImvF47nY3dV+pry1Jd+O25
-         JlHdODB5mYqrE3ehzIgW/uMoXMqis0wmNHQ9TqE0iqKymiZviJGRYcphiXBkDrUeuIVW
-         4IfSS+d7B6pmCd+5i3HKev2FNnYeIr2Lo2s4gEyoKeT/YfqWcDmlUAvMkypKMErz5+vA
-         i5KTZpRlKe3cDAlFjEhJCsNmSU54552YAE95solEj3MH1ChdcYpzNOhoEWJ0qNy52zS0
-         Rk5kUM94M9QhUU9yFPfFfkSkwsOgrvPvhH7XdZF7qJxNZ+UXvw7zXzEUUnWOR9oHF1Sa
-         BFBA==
+        bh=NSZ2MCYaAgnou8TOlrpilfOFZgn86OLEFUO+LImgoUI=;
+        b=D1XSzdhpeqcHpFkLgUViW7bE3eKL+8VLkOyuXZGFc9lwCfHwLy9biWBU51hsWZ8PgX
+         In2DhTbBd/BAm024SFnXAoAF4//Viwfmq78NJNPPrhOVRAcUsRQFakTQ+6Tq2d/XD2ST
+         cNZjdGfDJkgY3H6Lv9f6FmfbwQbLOgaQuYcrVk3avgZilmqNvhrS4lrJ4VgljTbACvcZ
+         x3xQSDcgfQQ0zowiUYL1b8bI7uvvla0qGPyDW41VhrWcg3LU62j3Fxqa1PeVM6GmBmSY
+         saGKcl4YvH7paEiWd4U/XPUBxoiEuVxEtoxOxJ8TmkDAXYKfODX++KDon0Zumlrz2mUB
+         gRwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D2Pwb8PW5CwIzNE75soX35+MKq6BniCq9jN56JT7JlY=;
-        b=R+jo51EGXVpDyBJJHHXmlqQ2mHgXLPpOIbqjYIKA1rT/CkNcxUtMa3Hn5oR4fQWgTE
-         AtK8cQGPh0owjtMIRGzkyJnCItOpcNB8N6xkJ3jNpy5mcFnPykF+YfgOL2buDR4wdw3/
-         WYwTl2GlTrDwW9Ze9hCYjx3XEgzAAifmd+mcQ7fbswoLQqDyh4q8I5qhS9qbEICMrchb
-         WDOgdgAFfysMH0GYddSEo3SETqaQ87WESjPGZQN9973CDMQY4z/ArNKPWy4jP2av2nbR
-         db58rdU0/Yv72dnlakVdvtGdlOHYwjcXd8ibgxh9In7asSO/VdqkjwsLK7FP7coToCE+
-         IiBA==
-X-Gm-Message-State: AOAM532Z0hZjAWXXGvsScZNYT4Ir66IUygPXB7kkSFGHWwtshfuh/osB
-        5ls1VtU/dhRL9k2AbQCsRVMxrv1D6fNZKucW+uh6zFx1cmE/bZlZ
-X-Google-Smtp-Source: ABdhPJzbqVHYlYUnRTSnunDpDlCqvGZAPN84D4rCKVyN24U7wwMDeAtnr74qTFMyCpUDYpcG5igCHZdaOYTCry/CUVM=
-X-Received: by 2002:a05:6a00:14c7:b0:4c7:4d90:7648 with SMTP id
- w7-20020a056a0014c700b004c74d907648mr15988655pfu.51.1643101183395; Tue, 25
- Jan 2022 00:59:43 -0800 (PST)
+        bh=NSZ2MCYaAgnou8TOlrpilfOFZgn86OLEFUO+LImgoUI=;
+        b=4t4C231Yb/t5+E4Ei6Cht2HfE/2ik8wrwT7PdHVhCFlVnvSxZonyZ2Ultm7RNn4ptw
+         NW2rjUoac+50QbFhhH7DQM4yw8FI3rr/UvOnE7W4JKmCNxVMbL3dxnu+0zqeuQx8T4Mw
+         eEFny7dhhfDQE4REbSbrSPsieUwqqcjnEZLi7/vBH4PyYBd+YBBNd+oU+cElXJaHB9y1
+         eTCeXXD2FM2I6DcqVonncBcSSh36J/T6txsVb9p+OTQlouyo+mFKxQNV95V/jswnA+g+
+         qUrZ1Sp1Kycdnh2rFflckVXZDXgMcuKSwSbtsJk4/hfBGCLA0TA2TYLoJflN/fj9AW7u
+         lXTQ==
+X-Gm-Message-State: AOAM530bd1+FfHlgd7JPy8JSvzObmvGP/ZBSaiDGU566KyvrtHOp3cyo
+        pm8mKD6CO4UDUnFHwoZWUd1b8V+FcfmQjc+BwWGwJMtrnKpK07+G
+X-Google-Smtp-Source: ABdhPJy+zkAEsFS42pQrvVT0J2jq+oXJn6lE0OUpa5TDxwUwzHLfjfzM1R1pRoAYvSNR0a/voSFWX28s4jCuLkFBHqw=
+X-Received: by 2002:a17:902:b110:b0:14a:197:dfea with SMTP id
+ q16-20020a170902b11000b0014a0197dfeamr17449396plr.142.1643101584150; Tue, 25
+ Jan 2022 01:06:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-2-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220124165547.74412-2-maciej.fijalkowski@intel.com>
+References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-3-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220124165547.74412-3-maciej.fijalkowski@intel.com>
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Tue, 25 Jan 2022 09:59:32 +0100
-Message-ID: <CAJ8uoz3R1zzqmRO66TVUHEhBJvTd7Lsmf-OZw7aWSE+ZWdgngg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/8] ice: remove likely for napi_complete_done
+Date:   Tue, 25 Jan 2022 10:06:13 +0100
+Message-ID: <CAJ8uoz1a-71CBCYTd5-F1zsueMq+eu9LUqUsPgQH_SawdO6GEQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/8] ice: xsk: force rings to be sized to
+ power of 2
 To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,30 +66,59 @@ X-Mailing-List: bpf@vger.kernel.org
 On Mon, Jan 24, 2022 at 8:38 PM Maciej Fijalkowski
 <maciej.fijalkowski@intel.com> wrote:
 >
-> Remove the likely before napi_complete_done as this is the unlikely case
-> when busy-poll is used. Removing this has a positive performance impact
-> for busy-poll and no negative impact to the regular case.
+> With the upcoming introduction of batching to XSK data path,
+> performance wise it will be the best to have the ring descriptor count
+> to be aligned to power of 2.
+>
+> Check if rings sizes that user is going to attach the XSK socket fulfill
+
+nit: rings -> ring if you are making a v5 for some other reason.
+
+> the condition above. For Tx side, although check is being done against
+> the Tx queue and in the end the socket will be attached to the XDP
+> queue, it is fine since XDP queues get the ring->count setting from Tx
+> queues.
+
+For me, this is fine as it makes the driver simpler and faster. But if
+anyone out there is using a non power-of-2 ring size together with the
+ice zero-copy driver and wants to keep it that way, now would be a
+good time to protest.
 
 Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
+> Suggested-by: Alexander Lobakin <alexandr.lobakin@intel.com>
 > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > ---
->  drivers/net/ethernet/intel/ice/ice_txrx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> index 3e38695f1c9d..e661d0e45b9b 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> @@ -1513,7 +1513,7 @@ int ice_napi_poll(struct napi_struct *napi, int budget)
->         /* Exit the polling mode, but don't re-enable interrupts if stack might
->          * poll us due to busy-polling
->          */
-> -       if (likely(napi_complete_done(napi, work_done))) {
-> +       if (napi_complete_done(napi, work_done)) {
->                 ice_net_dim(q_vector);
->                 ice_enable_interrupt(q_vector);
->         } else {
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index 2388837d6d6c..0350f9c22c62 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -327,6 +327,14 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+>         bool if_running, pool_present = !!pool;
+>         int ret = 0, pool_failure = 0;
+>
+> +       if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
+> +           !is_power_of_2(vsi->tx_rings[qid]->count)) {
+> +               netdev_err(vsi->netdev,
+> +                          "Please align ring sizes at idx %d to power of 2\n", qid);
+> +               pool_failure = -EINVAL;
+> +               goto failure;
+> +       }
+> +
+>         if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
+>
+>         if (if_running) {
+> @@ -349,6 +357,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+>                         netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
+>         }
+>
+> +failure:
+>         if (pool_failure) {
+>                 netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
+>                            pool_present ? "en" : "dis", pool_failure);
 > --
 > 2.33.1
 >
