@@ -2,190 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2842749B7A3
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 16:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4F849B7F7
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 16:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353326AbiAYPa6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 10:30:58 -0500
-Received: from mga09.intel.com ([134.134.136.24]:27223 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349233AbiAYP3A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 10:29:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643124540; x=1674660540;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ULg4leY6X8BAN2e9AP3dMu8QMfm9aWcndEJARw1vmoQ=;
-  b=IkpErf0R2WQNmrkrbHj98KZEw60oDWKJsGslha4CZ3HjNRAybnED+Hj0
-   xbOLH791CJ+tq/phPJioOnFOXsx5B9p6d4GDJ67ns29mPSiowmHAiA6EV
-   gwXlHp76GKgHTzI5Gv1eIpAC6yrCrTmDRxRKaHrcjZO4FYG0ItkTzCRe2
-   t5pHLJ6L3Dj/OaD5kW+Acomrr3joQLQq2eDB7PxjqJ+NeKaBlW42AiZ41
-   0FJdqiBxfMSi2C9IUXM9vwvmhVGrr1Re0XGFB6cJ0qS8rLZTOjig1dIMb
-   5CaLBa5MO1OWTr5sXI9RlG5lYS+MYZ2L/KD5SOy1AMOorNlV3ZNPYXeFS
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="246108417"
-X-IronPort-AV: E=Sophos;i="5.88,315,1635231600"; 
-   d="scan'208";a="246108417"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2022 07:26:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,315,1635231600"; 
-   d="scan'208";a="627965453"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by orsmga004.jf.intel.com with ESMTP; 25 Jan 2022 07:26:32 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 20PFQVdg014105;
-        Tue, 25 Jan 2022 15:26:31 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, magnus.karlsson@intel.com
-Subject: Re: [PATCH bpf-next v4 2/8] ice: xsk: force rings to be sized to power of 2
-Date:   Tue, 25 Jan 2022 16:24:39 +0100
-Message-Id: <20220125152439.831365-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <YfAQrME95s758ITD@boxer>
-References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-3-maciej.fijalkowski@intel.com> <20220125112306.746139-1-alexandr.lobakin@intel.com> <Ye/e9GqLkuekqFos@boxer> <20220125114202.748079-1-alexandr.lobakin@intel.com> <Ye/j0FjYCeJlbWR/@boxer> <20220125120033.748345-1-alexandr.lobakin@intel.com> <YfAQrME95s758ITD@boxer>
+        id S1582579AbiAYPuM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 10:50:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1582433AbiAYPsA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 10:48:00 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE40C06175B
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 07:47:57 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id h23so24073072iol.11
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 07:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=IEMma1eGW5sQblzU1//BqOEn5E488+F+nzzq2q8j3TU=;
+        b=fOS9t/4WIMWIIiK5hLKXdT0Po9uD+kzDn6VOR2znUTqPMFzLaexDBWz0/XVpZDVVF6
+         BLhx7LQ6EJASCmS1cJ2gBSroupwLUVLpgGtDmofkp94T0dIx0hUzt25XJGThpBeRaS2l
+         dSnhJldTv4kCaVTwQemnC5B2GfP3YXrF7gyeiQuD0+OeM6rMggY8gW4EEwzwWuDmmIPi
+         RZwQ5nPnAJv4O02s08IynswwjoK3oYzdAQqslk7VNKYr3eS4/vXBTJEwfKFMq7fGgL1R
+         MjoORe+Q8ZLuVr10WKwic1IXyV4krSlQy4/GD4pWI1wV9ewFfj1fplFqCtKbWAllHoan
+         lyZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=IEMma1eGW5sQblzU1//BqOEn5E488+F+nzzq2q8j3TU=;
+        b=JGtZC1xyo1rI9VG54XqNpERlIWpy8PBiUJtZ0JAHFH9aa0kPyVV02pWJqOe3DmkD51
+         8G3KK9YDrjKRxodS1aHN8Qp3247TxJ/9DOgwXBSHSz/K7yhI8zazotbDaACJhrOtuhwu
+         tjE83Upo7+LNHeYdDal9fMlB5TiF1mPTXMosg8BazPHQPD3tX8UZD8UMxuHCqioaBrkC
+         MHOybDLdrrVV2Avu/dfhRVp8tqwwoyoo40yl1GXMd2YYy8/fkOmr8vlTjtYrnzTkhgDH
+         NDWWbBRstxNnB9SQnM7gJv/28RmuSRLFhZyWeGqBgMBEQbXUHBXuk4zEwT8Ay5It0DH8
+         qJJw==
+X-Gm-Message-State: AOAM533FQQjk5j2M2JXV++/J7ewj0dH4fySh5/yNtjNgm9CHjYsp5iHN
+        YcaDK4EkYeAfkI90R+zSccon8lF+squhkkDbLjo=
+X-Google-Smtp-Source: ABdhPJybsVyo/ViKGbsZAyN3QH5WDtQ4NHwh5GDBRzwxoSOxx/XwZxqhjDQ8DcHMYJW2qGEymLF0XoencV3PZSK19NA=
+X-Received: by 2002:a02:8407:: with SMTP id k7mr5730588jah.106.1643125677196;
+ Tue, 25 Jan 2022 07:47:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6638:3044:0:0:0:0 with HTTP; Tue, 25 Jan 2022 07:47:56
+ -0800 (PST)
+Reply-To: abrahammorrison443@gmail.com
+From:   Abraham Morrison <barrmorr111@gmail.com>
+Date:   Tue, 25 Jan 2022 07:47:56 -0800
+Message-ID: <CAKy4BjGgAaBUmpL3ro5QQ4AC4JftuZoYTdfdUd=7EP-t7p3S8A@mail.gmail.com>
+Subject: Good day!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Date: Tue, 25 Jan 2022 16:01:00 +0100
+Prosz=C4=99 o uwag=C4=99,
 
-> On Tue, Jan 25, 2022 at 01:00:33PM +0100, Alexander Lobakin wrote:
-> > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > Date: Tue, 25 Jan 2022 12:49:36 +0100
-> > 
-> > > On Tue, Jan 25, 2022 at 12:42:02PM +0100, Alexander Lobakin wrote:
-> > > > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > Date: Tue, 25 Jan 2022 12:28:52 +0100
-> > > > 
-> > > > > On Tue, Jan 25, 2022 at 12:23:06PM +0100, Alexander Lobakin wrote:
-> > > > > > From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > > > Date: Mon, 24 Jan 2022 17:55:41 +0100
-> > > > > > 
-> > > > > > > With the upcoming introduction of batching to XSK data path,
-> > > > > > > performance wise it will be the best to have the ring descriptor count
-> > > > > > > to be aligned to power of 2.
-> > > > > > > 
-> > > > > > > Check if rings sizes that user is going to attach the XSK socket fulfill
-> > > > > > > the condition above. For Tx side, although check is being done against
-> > > > > > > the Tx queue and in the end the socket will be attached to the XDP
-> > > > > > > queue, it is fine since XDP queues get the ring->count setting from Tx
-> > > > > > > queues.
-> > > > > > > 
-> > > > > > > Suggested-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > > > > > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > > > > ---
-> > > > > > >  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++++++
-> > > > > > >  1 file changed, 9 insertions(+)
-> > > > > > > 
-> > > > > > > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > > > index 2388837d6d6c..0350f9c22c62 100644
-> > > > > > > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > > > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> > > > > > > @@ -327,6 +327,14 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
-> > > > > > >  	bool if_running, pool_present = !!pool;
-> > > > > > >  	int ret = 0, pool_failure = 0;
-> > > > > > >  
-> > > > > > > +	if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
-> > > > > > > +	    !is_power_of_2(vsi->tx_rings[qid]->count)) {
-> > > > > > > +		netdev_err(vsi->netdev,
-> > > > > > > +			   "Please align ring sizes at idx %d to power of 2\n", qid);
-> > > > > > 
-> > > > > > Ideally I'd pass xdp->extack from ice_xdp() to print this message
-> > > > > > directly in userspace (note that NL_SET_ERR_MSG{,_MOD}() don't
-> > > > > > support string formatting, but the user already knows QID at this
-> > > > > > point).
-> > > > > 
-> > > > > I thought about that as well but it seemed to me kinda off to have a
-> > > > > single extack usage in here. Updating the rest of error paths in
-> > > > > ice_xsk_pool_setup() to make use of extack is a candidate for a separate
-> > > > > patch to me.
-> > > > > 
-> > > > > WDYT?
-> > > > 
-> > > > The rest uses string formatting to print the error code, and thus
-> > > > would lose their meaning. This one to me is more of the same kind
-> > > > as let's say "MTU too large for XDP" message, i.e. user config
-> > > > constraints check fail. But I'm fine if you'd prefer to keep a
-> > > > single source of output messages throughout the function.
-> > > 
-> > > Doubling the logs wouldn't hurt - keep current netdev_err with ret codes
-> > > and have more meaningful messages carried up to userspace via
-> > > NL_SET_ERR_MSG_MOD.
-> > 
-> > Ah, right, this works as well. Let's leave it as it is for now then.
-> 
-> Well, I had a feeling that we don't utilize extack for a reason. Turns out
-> for XDP_SETUP_XSK_POOL we simply don't provide it.
-> 
-> struct netdev_bpf {
-> 	enum bpf_netdev_command command;
-> 	union {
-> 		/* XDP_SETUP_PROG */
-> 		struct {
-> 			u32 flags;
-> 			struct bpf_prog *prog;
-> 			struct netlink_ext_ack *extack;
-> 		};
-> 		/* BPF_OFFLOAD_MAP_ALLOC, BPF_OFFLOAD_MAP_FREE */
-> 		struct {
-> 			struct bpf_offloaded_map *offmap;
-> 		};
-> 		/* XDP_SETUP_XSK_POOL */
-> 		struct {
-> 			struct xsk_buff_pool *pool;
-> 			u16 queue_id;
-> 		} xsk;
-> 	};
-> 
-> I forgot about that :<
+Jak si=C4=99 masz? Mam nadziej=C4=99, =C5=BCe jeste=C5=9B zdrowy i zdrowy? =
+Informuj=C4=99, =C5=BCe
+uda=C5=82o mi si=C4=99 zako=C5=84czy=C4=87 transakcj=C4=99 z pomoc=C4=85 no=
+wego partnera z Indii i
+teraz =C5=9Brodki zosta=C5=82y przelane do Indii na konto bankowe nowego
+partnera.
 
-Wooh, I missed it completely at some point. I thought it's always
-there and available.
+W mi=C4=99dzyczasie zdecydowa=C5=82em si=C4=99 zrekompensowa=C4=87 ci sum=
+=C4=99 500 000 $
+(tylko pi=C4=99=C4=87set tysi=C4=99cy dolar=C3=B3w ameryka=C5=84skich) z po=
+wodu twoich
+wcze=C5=9Bniejszych wysi=C5=82k=C3=B3w, chocia=C5=BC mnie rozczarowa=C5=82e=
+=C5=9B. Niemniej jednak
+bardzo si=C4=99 ciesz=C4=99 z pomy=C5=9Blnego zako=C5=84czenia transakcji b=
+ez =C5=BCadnego
+problemu i dlatego postanowi=C5=82em zrekompensowa=C4=87 Ci kwot=C4=99 500 =
+000 $,
+aby=C5=9B podzieli=C5=82 si=C4=99 ze mn=C4=85 rado=C5=9Bci=C4=85.
 
-From me for the series (writing it here instead of replying to 0/8
-since you're going to drop v5 soon anyways :p):
+Radz=C4=99 skontaktowa=C4=87 si=C4=99 z moj=C4=85 sekretark=C4=85 w sprawie=
+ karty bankomatowej
+o warto=C5=9Bci 500 000 $, kt=C3=B3r=C4=85 zachowa=C5=82em dla Ciebie. Skon=
+taktuj si=C4=99 z
+ni=C4=85 teraz bez zw=C5=82oki.
 
-Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Imi=C4=99: Linda Koffi
+E-mail: koffilinda785@gmail.com
 
-> 
-> };
-> > 
-> > > 
-> > > > 
-> > > > > 
-> > > > > > 
-> > > > > > > +		pool_failure = -EINVAL;
-> > > > > > > +		goto failure;
-> > > > > > > +	}
-> > > > > > > +
-> > > > > > >  	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
-> > > > > > >  
-> > > > > > >  	if (if_running) {
-> > > > > > > @@ -349,6 +357,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
-> > > > > > >  			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
-> > > > > > >  	}
-> > > > > > >  
-> > > > > > > +failure:
-> > > > > > >  	if (pool_failure) {
-> > > > > > >  		netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
-> > > > > > >  			   pool_present ? "en" : "dis", pool_failure);
-> > > > > > > -- 
-> > > > > > > 2.33.1
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > Al
-> > > > 
-> > > > Al
-> > 
-> > Al
 
-Thanks!
-Al
+Uprzejmie potwierd=C5=BA jej nast=C4=99puj=C4=85ce informacje:
+
+Twoje pe=C5=82ne imi=C4=99:........
+Tw=C3=B3j adres:..........
+Tw=C3=B3j kraj:..........
+Tw=C3=B3j wiek:.........
+Tw=C3=B3j zaw=C3=B3d:..........
+Tw=C3=B3j numer telefonu kom=C3=B3rkowego:..........
+Tw=C3=B3j paszport lub prawo jazdy:........
+
+Pami=C4=99taj, =C5=BCe je=C5=9Bli nie prze=C5=9Blesz jej powy=C5=BCszych in=
+formacji
+kompletnych, nie wyda ci karty bankomatowej, poniewa=C5=BC musi si=C4=99
+upewni=C4=87, =C5=BCe to ty. Popro=C5=9B j=C4=85, aby przes=C5=82a=C5=82a C=
+i ca=C5=82kowit=C4=85 sum=C4=99 (500 000
+USD) karty bankomatowej, kt=C3=B3r=C4=85 dla Ciebie zachowa=C5=82em.
+
+Z wyrazami szacunku,
+
+Pan Abraham Morrison
