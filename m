@@ -2,638 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF37D49B933
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 17:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6144149B954
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 17:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1584651AbiAYQuo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 11:50:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S1586044AbiAYQvm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 11:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1586333AbiAYQsy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 11:48:54 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02DE5C061787;
-        Tue, 25 Jan 2022 08:46:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 922CCB818FB;
-        Tue, 25 Jan 2022 16:46:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B180C340E6;
-        Tue, 25 Jan 2022 16:46:16 +0000 (UTC)
-Date:   Tue, 25 Jan 2022 11:46:15 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 3/9] rethook: Add a generic return hook
-Message-ID: <20220125114615.0533446c@gandalf.local.home>
-In-Reply-To: <164311272945.1933078.2077074421506087620.stgit@devnote2>
-References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
-        <164311272945.1933078.2077074421506087620.stgit@devnote2>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S1585911AbiAYQuz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 11:50:55 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4D8C061401
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 08:50:54 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id n198-20020a2540cf000000b00614c2ee23b7so25415617yba.9
+        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 08:50:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=1LKOjXAIIlgntfyDu9pWO5nPxeTOqnqZePeokqECWZ8=;
+        b=cgm3vY4Th8XQrtpStt6Fqu+Hh5qHMW957MGyWX2qCfrii1XennUHAIe7Sxg7j2Xa7W
+         nu1Tg7f1D0TKEO2xo5EIndrqJBcWTDa4cvlieWMh1g8iNbtYqPVoxGLwSepm90wa4CNO
+         MxxH00859CJRNyHgVYzjf+obf/lWNhXV0ayq3gi8EJpUCeW9+xOMwEZLxrvQ3truURS4
+         Uip5E3B1jcf2Otn4KohiLqme3w7r450DWUPq11cJrhfvx/AQLAFAiemWCXSFVd50QSGZ
+         p5h317iwXIBSX0lOFgdV4iypTdc9kak11cV430da7PpJmGxPMO1/JZLyUazpPiSjHfXd
+         yVdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=1LKOjXAIIlgntfyDu9pWO5nPxeTOqnqZePeokqECWZ8=;
+        b=HXPmG7/JjvwV2VnwHRAcPBtz3K6ZWxL/MvI9y3WL6POsAupFFPHbmjtTD1e6caNk0K
+         F4QeI+SjO8FEISYrid0lbADyTPNsEQK6LIJiaDqxVKsZXAYPdr6+HR99oS5UjqVOmcOX
+         klPFBMruJ180rQiX2Y4IYzTq0oBUbbwWnsrhvJq1zknzZ/iErV1YhUb1T2xfUSEVaTDb
+         7Jv8ytGVnajGiXfb4g38hqP1lBCWyXzphIOKL6V/4vvs1PB6v4oD/GnTxfIycvJRTm5h
+         V9fxhp0B2Vf68TuUNPVSKmWFHOz9TAUkFZC05/1NOxnHCyJBUE9US/jejk67e70AFhKD
+         3eVg==
+X-Gm-Message-State: AOAM530aYLJCLB7YPTu0lXd0cLJpddAPbHT3gfHjsIxDZPe0MSHUsyhM
+        up7Xny1Y3vbRVR3MpaqHPo/to4I=
+X-Google-Smtp-Source: ABdhPJykEDOOJxvn21e7Y+nCib6sl+vVR0yK1mJF/wcjfAc4VIVm76e6o0csqr+H0c4Nh5Ndqhc2jy4=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f696:cb26:7b81:e8f1])
+ (user=sdf job=sendgmr) by 2002:a25:2415:: with SMTP id k21mr29485748ybk.345.1643129453923;
+ Tue, 25 Jan 2022 08:50:53 -0800 (PST)
+Date:   Tue, 25 Jan 2022 08:50:51 -0800
+In-Reply-To: <20220125021008.lo6k6lmpleoli73r@apollo.legion>
+Message-Id: <YfAqa0iVZ8IHiUtH@google.com>
+Mime-Version: 1.0
+References: <20220125003845.2857801-1-sdf@google.com> <20220125021008.lo6k6lmpleoli73r@apollo.legion>
+Subject: Re: [PATCH bpf-next] bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF
+From:   sdf@google.com
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Jan 2022 21:12:09 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On 01/25, Kumar Kartikeya Dwivedi wrote:
+> On Tue, Jan 25, 2022 at 06:08:45AM IST, Stanislav Fomichev wrote:
+> > Commit dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
+> > breaks loading of some modules when CONFIG_DEBUG_INFO_BTF is not set.
+> > register_btf_kfunc_id_set returns -ENOENT to the callers when
+> > there is no module btf. Let's return 0 (success) instead to let
+> > those modules work in !CONFIG_DEBUG_INFO_BTF cases.
+> >
+> > Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > Fixes: dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
 
-> Add a return hook framework which hooks the function
-> return. Most of the idea came from the kretprobe, but
-> this is independent from kretprobe.
-> Note that this is expected to be used with other
-> function entry hooking feature, like ftrace, fprobe,
-> adn kprobes. Eventually this will replace the
-> kretprobe (e.g. kprobe + rethook = kretprobe), but
-> at this moment, this is just a additional hook.
+> Thanks for the fix.
 
-BTW, 74 characters is the recommended width of a change log (I usually use
-76). Not sure why your width is set to 55 characters.
+> >  kernel/bpf/btf.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 57f5fd5af2f9..24205c2d4f7e 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -6741,7 +6741,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type  
+> prog_type,
+> >
+> >  	btf = btf_get_module_btf(kset->owner);
+> >  	if (IS_ERR_OR_NULL(btf))
+> > -		return btf ? PTR_ERR(btf) : -ENOENT;
+> > +		return btf ? PTR_ERR(btf) : 0;
 
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  Changes in v4:
->   - Fix rethook_trampoline_handler() loops as same as
->     what currently kretprobe does.  This will fix some
->     stacktrace issue in the rethook handler.
-> ---
->  include/linux/rethook.h |   99 +++++++++++++++
->  include/linux/sched.h   |    3 
->  kernel/exit.c           |    2 
->  kernel/fork.c           |    3 
->  kernel/trace/Kconfig    |   11 ++
->  kernel/trace/Makefile   |    1 
->  kernel/trace/rethook.c  |  311 +++++++++++++++++++++++++++++++++++++++++++++++
->  7 files changed, 430 insertions(+)
->  create mode 100644 include/linux/rethook.h
->  create mode 100644 kernel/trace/rethook.c
-> 
-> diff --git a/include/linux/rethook.h b/include/linux/rethook.h
-> new file mode 100644
-> index 000000000000..39cfbff1a03c
-> --- /dev/null
-> +++ b/include/linux/rethook.h
-> @@ -0,0 +1,99 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Return hooking with list-based shadow stack.
-> + */
-> +#ifndef _LINUX_RETHOOK_H
-> +#define _LINUX_RETHOOK_H
-> +
-> +#include <linux/compiler.h>
-> +#include <linux/freelist.h>
-> +#include <linux/llist.h>
-> +#include <linux/rcupdate.h>
-> +#include <linux/refcount.h>
-> +
-> +struct rethook_node;
-> +
-> +typedef void (*rethook_handler_t) (struct rethook_node *, void *, struct pt_regs *);
-> +
-> +/**
-> + * struct rethook - The rethook management data structure.
-> + * @data: The user-defined data storage.
-> + * @handler: The user-defined return hook handler.
-> + * @pool: The pool of struct rethook_node.
-> + * @ref: The reference counter.
-> + * @rcu: The rcu_head for deferred freeing.
-> + *
-> + * Don't embed to another data structure, because this is a self-destructive
-> + * data structure when all rethook_node are freed.
-> + */
-> +struct rethook {
-> +	void			*data;
-> +	rethook_handler_t	handler;
-> +	struct freelist_head	pool;
-> +	refcount_t		ref;
-> +	struct rcu_head		rcu;
-> +};
-> +
-> +/**
-> + * struct rethook_node - The rethook shadow-stack entry node.
-> + * @freelist: The freelist, linked to struct rethook::pool.
-> + * @rcu: The rcu_head for deferred freeing.
-> + * @llist: The llist, linked to a struct task_struct::rethooks.
-> + * @rethook: The pointer to the struct rethook.
-> + * @ret_addr: The storage for the real return address.
-> + * @frame: The stroage for the frame pointer.
+> I think it should still be an error when CONFIG_DEBUG_INFO_BTF is enabled.
 
-		"storage"
+> How about doing it differently:
 
-> + *
-> + * You can embed this with your extended data structure to store any data
-> + * on the entry of shadow stack.
+> Make register_btf_kfunc_id_set, btf_kfunc_id_set_contains, and functions  
+> only
+> called by them all dependent upon CONFIG_DEBUG_INFO_BTF. Then code picks  
+> the
+> static inline definition from the header and it works fine with 'return  
+> 0' and
+> 'return false'.
 
-	"the shadow stack"?
+> In case CONFIG_DEBUG_INFO_BTF is enabled, but  
+> CONFIG_DEBUG_INFO_BTF_MODULES is
+> disabled, we can do the error upgrade but inside btf_get_module_btf.
 
-> + */
-> +struct rethook_node {
-> +	union {
-> +		struct freelist_node freelist;
-> +		struct rcu_head      rcu;
-> +	};
-> +	struct llist_node	llist;
-> +	struct rethook		*rethook;
-> +	unsigned long		ret_addr;
-> +	unsigned long		frame;
-> +};
-> +
-> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
-> +void rethook_free(struct rethook *rh);
-> +void rethook_add_node(struct rethook *rh, struct rethook_node *node);
-> +struct rethook_node *rethook_try_get(struct rethook *rh);
-> +void rethook_recycle(struct rethook_node *node);
-> +void rethook_hook(struct rethook_node *node, struct pt_regs *regs);
-> +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
-> +				    struct llist_node **cur);
-> +
-> +/* Arch dependent code must implement arch_* and trampoline code */
-> +void arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs);
-> +void arch_rethook_trampoline(void);
-> +
-> +/**
-> + * is_rethook_trampoline() - Check whether the address is rethook trampoline
-> + * @addr: The address to be checked
-> + *
-> + * Return true if the @addr is rethook trampoline address.
+> I.e. extend the comment it has to say that when it returns NULL, it means  
+> there
+> is no BTF (hence nothing to do), but it never returns NULL when  
+> DEBUF_INFO_BTF*
+> is enabled, but upgrades the btf == NULL to a PTR_ERR(-ENOENT), because  
+> the btf
+> should be there when the options are enabled.
 
-	"is a rethook"
+> e.g. If CONFIG_DEBUG_INFO_BTF=y but CONFIG_DEBUG_INFO_BTF_MODULES=n, it  
+> can
+> return NULL for owner == <some module ptr>, but not for owner == NULL  
+> (vmlinux),
+> because CONFIG_DEBUG_INFO_BTF is set. If both are disabled, it can return  
+> NULL
+> for both. If both are set, it will never return NULL.
 
-> + */
-> +static inline bool is_rethook_trampoline(unsigned long addr)
-> +{
-> +	return addr == (unsigned long)arch_rethook_trampoline;
+> Then the caller can just special case NULL depending on their usage.
 
-Will this work on architectures like PPC that have strange ways of holding
-the function addresses? Or is that what the below fixup handles?
+> And your current diff remains same combined with the above changes.
 
-> +}
-> +
-> +/* If the architecture needs a fixup the return address, implement it. */
+> WDYT? Does this look correct or did I miss something important?
 
-	"needs to fixup the"
-
-> +void arch_rethook_fixup_return(struct pt_regs *regs,
-> +			       unsigned long correct_ret_addr);
-> +
-> +/* Generic trampoline handler, arch code must prepare asm stub */
-> +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
-> +					 unsigned long frame);
-> +
-> +#ifdef CONFIG_RETHOOK
-> +void rethook_flush_task(struct task_struct *tk);
-> +#else
-> +#define rethook_flush_task(tsk)	do { } while (0)
-> +#endif
-> +
-> +#endif
-> +
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 78c351e35fec..2bfabf5355b7 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1473,6 +1473,9 @@ struct task_struct {
->  #ifdef CONFIG_KRETPROBES
->  	struct llist_head               kretprobe_instances;
->  #endif
-> +#ifdef CONFIG_RETHOOK
-> +	struct llist_head               rethooks;
-> +#endif
->  
->  #ifdef CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH
->  	/*
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index f702a6a63686..a39a321c1f37 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -64,6 +64,7 @@
->  #include <linux/compat.h>
->  #include <linux/io_uring.h>
->  #include <linux/kprobes.h>
-> +#include <linux/rethook.h>
->  
->  #include <linux/uaccess.h>
->  #include <asm/unistd.h>
-> @@ -169,6 +170,7 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
->  	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
->  
->  	kprobe_flush_task(tsk);
-> +	rethook_flush_task(tsk);
->  	perf_event_delayed_put(tsk);
->  	trace_sched_process_free(tsk);
->  	put_task_struct(tsk);
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 3244cc56b697..ffae38be64c4 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2282,6 +2282,9 @@ static __latent_entropy struct task_struct *copy_process(
->  #ifdef CONFIG_KRETPROBES
->  	p->kretprobe_instances.first = NULL;
->  #endif
-> +#ifdef CONFIG_RETHOOK
-> +	p->rethooks.first = NULL;
-> +#endif
->  
->  	/*
->  	 * Ensure that the cgroup subsystem policies allow the new process to be
-> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-> index 23483dd474b0..4d27e56c6e76 100644
-> --- a/kernel/trace/Kconfig
-> +++ b/kernel/trace/Kconfig
-> @@ -10,6 +10,17 @@ config USER_STACKTRACE_SUPPORT
->  config NOP_TRACER
->  	bool
->  
-> +config HAVE_RETHOOK
-> +	bool
-> +
-> +config RETHOOK
-> +	bool
-> +	depends on HAVE_RETHOOK
-> +	help
-> +	  Enable generic return hooking feature. This is an internal
-> +	  API, which will be used by other function-entry hooking
-> +	  feature like fprobe and kprobes.
-
-	"features"
-
-> +
->  config HAVE_FUNCTION_TRACER
->  	bool
->  	help
-> diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
-> index 79255f9de9a4..c6f11a139eac 100644
-> --- a/kernel/trace/Makefile
-> +++ b/kernel/trace/Makefile
-> @@ -98,6 +98,7 @@ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
->  obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
->  obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
->  obj-$(CONFIG_FPROBE) += fprobe.o
-> +obj-$(CONFIG_RETHOOK) += rethook.o
->  
->  obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
->  
-> diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
-> new file mode 100644
-> index 000000000000..76c9848b44a9
-> --- /dev/null
-> +++ b/kernel/trace/rethook.c
-> @@ -0,0 +1,311 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#define pr_fmt(fmt) "rethook: " fmt
-> +
-> +#include <linux/bug.h>
-> +#include <linux/kallsyms.h>
-> +#include <linux/kprobes.h>
-> +#include <linux/preempt.h>
-> +#include <linux/rethook.h>
-> +#include <linux/slab.h>
-> +#include <linux/sort.h>
-> +
-> +/* Return hook list (shadow stack by list) */
-> +
-> +/*
-> + * This function is called from delayed_put_task_struct() when a task is
-> + * dead and cleaned up to recycle any kretprobe instances associated with
-> + * this task. These left over instances represent probed functions that
-> + * have been called but will never return.
-> + */
-> +void rethook_flush_task(struct task_struct *tk)
-> +{
-> +	struct rethook_node *rhn;
-> +	struct llist_node *node;
-> +
-> +	preempt_disable();
-> +
-> +	node = __llist_del_all(&tk->rethooks);
-
-Hmm, this keeps preemption disabled for the entire walk of the list.
-Can we enable it here, and then just disable it when calling
-rethook_recycle()?
-
-> +	while (node) {
-> +		rhn = container_of(node, struct rethook_node, llist);
-> +		node = node->next;
-
-		preempt_disable();
-> +		rethook_recycle(rhn);
-		preempt_enable();
-
-? I'm concerned about the latency that this can add on RT tasks.
-
-> +	}
-> +
-> +	preempt_enable();
-> +}
-> +
-> +static void rethook_free_rcu(struct rcu_head *head)
-> +{
-> +	struct rethook *rh = container_of(head, struct rethook, rcu);
-> +	struct rethook_node *rhn;
-> +	struct freelist_node *node;
-> +	int count = 1;
-> +
-> +	node = rh->pool.head;
-> +	while (node) {
-> +		rhn = container_of(node, struct rethook_node, freelist);
-> +		node = node->next;
-> +		kfree(rhn);
-> +		count++;
-> +	}
-> +
-> +	/* The rh->ref is the number of pooled node + 1 */
-> +	if (refcount_sub_and_test(count, &rh->ref))
-> +		kfree(rh);
-> +}
-> +
-> +/**
-> + * rethook_free() - Free struct rethook.
-> + * @rh: the struct rethook to be freed.
-> + *
-> + * Free the rethook. Before calling this function, user must ensure the
-> + * @rh::data is cleaned if needed (or, the handler can access it after
-> + * calling this function.) This function will set the @rh to be freed
-> + * after all rethook_node are freed (not soon). And the caller must
-> + * not touch @rh after calling this.
-> + */
-> +void rethook_free(struct rethook *rh)
-> +{
-> +	rcu_assign_pointer(rh->handler, NULL);
-> +
-> +	call_rcu(&rh->rcu, rethook_free_rcu);
-> +}
-> +
-> +/**
-> + * rethook_alloc() - Allocate struct rethook.
-> + * @data: a data to pass the @handler when hooking the return.
-> + * @handler: the return hook callback function.
-> + *
-> + * Allocate and initialize a new rethook with @data and @handler.
-> + * Return NULL if memory allocation fails or @handler is NULL.
-> + * Note that @handler == NULL means this rethook is going to be freed.
-> + */
-> +struct rethook *rethook_alloc(void *data, rethook_handler_t handler)
-> +{
-> +	struct rethook *rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
-> +
-> +	if (!rh || !handler)
-> +		return NULL;
-> +
-> +	rh->data = data;
-> +	rh->handler = handler;
-> +	rh->pool.head = NULL;
-> +	refcount_set(&rh->ref, 1);
-> +
-> +	return rh;
-> +}
-> +
-> +/**
-> + * rethook_add_node() - Add a new node to the rethook.
-> + * @rh: the struct rethook.
-> + * @node: the struct rethook_node to be added.
-> + *
-> + * Add @node to @rh. User must allocate @node (as a part of user's
-> + * data structure.) The @node fields are initialized in this function.
-> + */
-> +void rethook_add_node(struct rethook *rh, struct rethook_node *node)
-> +{
-> +	node->rethook = rh;
-> +	freelist_add(&node->freelist, &rh->pool);
-> +	refcount_inc(&rh->ref);
-> +}
-> +
-> +static void free_rethook_node_rcu(struct rcu_head *head)
-> +{
-> +	struct rethook_node *node = container_of(head, struct rethook_node, rcu);
-> +
-> +	if (refcount_dec_and_test(&node->rethook->ref))
-> +		kfree(node->rethook);
-> +	kfree(node);
-> +}
-> +
-> +/**
-> + * rethook_recycle() - return the node to rethook.
-> + * @node: The struct rethook_node to be returned.
-> + *
-> + * Return back the @node to @node::rethook. If the @node::rethook is already
-> + * marked as freed, this will free the @node.
-> + */
-> +void rethook_recycle(struct rethook_node *node)
-> +{
-> +	lockdep_assert_preemption_disabled();
-> +
-> +	if (likely(READ_ONCE(node->rethook->handler)))
-> +		freelist_add(&node->freelist, &node->rethook->pool);
-> +	else
-> +		call_rcu(&node->rcu, free_rethook_node_rcu);
-> +}
-> +NOKPROBE_SYMBOL(rethook_recycle);
-> +
-> +/**
-> + * rethook_try_get() - get an unused rethook node.
-> + * @rh: The struct rethook which pools the nodes.
-> + *
-> + * Get an unused rethook node from @rh. If the node pool is empty, this
-> + * will return NULL. Caller must disable preemption.
-> + */
-> +struct rethook_node *rethook_try_get(struct rethook *rh)
-> +{
-> +	rethook_handler_t handler = READ_ONCE(rh->handler);
-> +	struct freelist_node *fn;
-> +
-> +	lockdep_assert_preemption_disabled();
-> +
-> +	/* Check whether @rh is going to be freed. */
-> +	if (unlikely(!handler))
-> +		return NULL;
-> +
-> +	fn = freelist_try_get(&rh->pool);
-> +	if (!fn)
-> +		return NULL;
-> +
-> +	return container_of(fn, struct rethook_node, freelist);
-> +}
-> +NOKPROBE_SYMBOL(rethook_try_get);
-> +
-> +/**
-> + * rethook_hook() - Hook the current function return.
-> + * @node: The struct rethook node to hook the function return.
-> + * @regs: The struct pt_regs for the function entry.
-> + *
-> + * Hook the current running function return. This must be called when the
-> + * function entry (or at least @regs must be the registers of the function
-> + * entry.)
-> + */
-> +void rethook_hook(struct rethook_node *node, struct pt_regs *regs)
-> +{
-> +	arch_rethook_prepare(node, regs);
-> +	__llist_add(&node->llist, &current->rethooks);
-> +}
-> +NOKPROBE_SYMBOL(rethook_hook);
-> +
-> +/* This assumes the 'tsk' is the current task or the is not running. */
-
-	"or the is not running" ?
-
-> +static unsigned long __rethook_find_ret_addr(struct task_struct *tsk,
-> +					     struct llist_node **cur)
-> +{
-> +	struct rethook_node *rh = NULL;
-> +	struct llist_node *node = *cur;
-> +
-> +	if (!node)
-> +		node = tsk->rethooks.first;
-> +	else
-> +		node = node->next;
-> +
-> +	while (node) {
-> +		rh = container_of(node, struct rethook_node, llist);
-> +		if (rh->ret_addr != (unsigned long)arch_rethook_trampoline) {
-> +			*cur = node;
-> +			return rh->ret_addr;
-> +		}
-> +		node = node->next;
-> +	}
-> +	return 0;
-> +}
-> +NOKPROBE_SYMBOL(__rethook_find_ret_addr);
-> +
-> +/**
-> + * rethook_find_ret_addr -- Find correct return address modified by rethook
-> + * @tsk: Target task
-> + * @frame: A frame pointer
-> + * @cur: a storage of the loop cursor llist_node pointer for next call
-> + *
-> + * Find the correct return address modified by a rethook on @tsk in unsigned
-> + * long type. If it finds the return address, this returns that address value,
-> + * or this returns 0.
-
-space
-
-> + * The @tsk must be 'current' or a task which is not running. @frame is a hint
-
-How do you know a tsk is not running? How can that be guaranteed?
-
-> + * to get the currect return address - which is compared with the
-> + * rethook::frame field. The @cur is a loop cursor for searching the
-> + * kretprobe return addresses on the @tsk. The '*@cur' should be NULL at the
-> + * first call, but '@cur' itself must NOT NULL.
-
-I know you state what the return value is above, but it should be stated
-(again) here. As kernel-doc should have a separate section for return
-values:
-
- * Returns found address value or zero if not found.
-
-> + */
-> +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
-> +				    struct llist_node **cur)
-> +{
-> +	struct rethook_node *rhn = NULL;
-> +	unsigned long ret;
-> +
-> +	if (WARN_ON_ONCE(!cur))
-> +		return 0;
-> +
-> +	do {
-> +		ret = __rethook_find_ret_addr(tsk, cur);
-> +		if (!ret)
-> +			break;
-> +		rhn = container_of(*cur, struct rethook_node, llist);
-> +	} while (rhn->frame != frame);
-> +
-> +	return ret;
-> +}
-
--- Steve
+I initially started with this approach, adding ifdef
+CONFIG_DEBUG_INFO_BTF/CONFIG_DEBUG_INFO_BTF_MODULES, but it quickly
+became a bit ugly :-( I can retry if you prefer, but how about, instead,
+we handle it explicitly this way in the caller?
 
 
-> +NOKPROBE_SYMBOL(rethook_find_ret_addr);
-> +
-> +void __weak arch_rethook_fixup_return(struct pt_regs *regs,
-> +				      unsigned long correct_ret_addr)
-> +{
-> +	/*
-> +	 * Do nothing by default. If the architecture which uses a
-> +	 * frame pointer to record real return address on the stack,
-> +	 * it should fill this function to fixup the return address
-> +	 * so that stacktrace works from the rethook handler.
-> +	 */
-> +}
-> +
-> +/* This function will be called from each arch-defined trampoline. */
-> +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
-> +					 unsigned long frame)
-> +{
-> +	struct llist_node *first, *node = NULL;
-> +	unsigned long correct_ret_addr;
-> +	rethook_handler_t handler;
-> +	struct rethook_node *rhn;
-> +
-> +	correct_ret_addr = __rethook_find_ret_addr(current, &node);
-> +	if (!correct_ret_addr) {
-> +		pr_err("rethook: Return address not found! Maybe there is a bug in the kernel\n");
-> +		BUG_ON(1);
-> +	}
-> +
-> +	instruction_pointer_set(regs, correct_ret_addr);
-> +
-> +	/*
-> +	 * These loops must be protected from rethook_free_rcu() because those
-> +	 * are accessing 'rhn->rethook'.
-> +	 */
-> +	preempt_disable();
-> +
-> +	/*
-> +	 * Run the handler on the shadow stack. Do not unlink the list here because
-> +	 * stackdump inside the handlers needs to decode it.
-> +	 */
-> +	first = current->rethooks.first;
-> +	while (first) {
-> +		rhn = container_of(first, struct rethook_node, llist);
-> +		if (WARN_ON_ONCE(rhn->frame != frame))
-> +			break;
-> +		handler = READ_ONCE(rhn->rethook->handler);
-> +		if (handler)
-> +			handler(rhn, rhn->rethook->data, regs);
-> +
-> +		if (first == node)
-> +			break;
-> +		first = first->next;
-> +	}
-> +
-> +	/* Fixup registers for returning to correct address. */
-> +	arch_rethook_fixup_return(regs, correct_ret_addr);
-> +
-> +	/* Unlink used shadow stack */
-> +	first = current->rethooks.first;
-> +	current->rethooks.first = node->next;
-> +	node->next = NULL;
-> +
-> +	while (first) {
-> +		rhn = container_of(first, struct rethook_node, llist);
-> +		first = first->next;
-> +		rethook_recycle(rhn);
-> +	}
-> +	preempt_enable();
-> +
-> +	return correct_ret_addr;
-> +}
-> +NOKPROBE_SYMBOL(rethook_trampoline_handler);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 24205c2d4f7e..e66f60b288d0 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6740,8 +6740,19 @@ int register_btf_kfunc_id_set(enum bpf_prog_type  
+prog_type,
+  	int ret;
 
+  	btf = btf_get_module_btf(kset->owner);
+-	if (IS_ERR_OR_NULL(btf))
+-		return btf ? PTR_ERR(btf) : 0;
++	if (!btf) {
++		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
++			pr_err("missing vmlinux BTF\n");
++			return -ENOENT;
++		}
++		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)) {
++			pr_err("missing module BTF\n");
++			return -ENOENT;
++		}
++		return 0;
++	}
++	if (IS_ERR(btf))
++		return PTR_ERR(btf);
+
+  	hook = bpf_prog_type_to_kfunc_hook(prog_type);
+  	ret = btf_populate_kfunc_set(btf, hook, kset);
+
+Basically, treat as error the cases we care about:
+- non-module && CONFIG_DEBUG_INFO_BTF -> ENOENT
+- module && CONFIG_DEBUG_INFO_BTF_MODULES -> ENOENT
+
+Also give the user some hint on what went wrong; insmod gave me "Unknown
+symbol in module, or unknown parameter (see dmesg)" for ENOENT (and
+dmesg was empty).
