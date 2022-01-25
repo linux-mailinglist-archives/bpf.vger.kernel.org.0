@@ -2,110 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4F849B7F7
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 16:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5011549B82C
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 17:08:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1582579AbiAYPuM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 10:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1582433AbiAYPsA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 10:48:00 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE40C06175B
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 07:47:57 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id h23so24073072iol.11
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 07:47:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=IEMma1eGW5sQblzU1//BqOEn5E488+F+nzzq2q8j3TU=;
-        b=fOS9t/4WIMWIIiK5hLKXdT0Po9uD+kzDn6VOR2znUTqPMFzLaexDBWz0/XVpZDVVF6
-         BLhx7LQ6EJASCmS1cJ2gBSroupwLUVLpgGtDmofkp94T0dIx0hUzt25XJGThpBeRaS2l
-         dSnhJldTv4kCaVTwQemnC5B2GfP3YXrF7gyeiQuD0+OeM6rMggY8gW4EEwzwWuDmmIPi
-         RZwQ5nPnAJv4O02s08IynswwjoK3oYzdAQqslk7VNKYr3eS4/vXBTJEwfKFMq7fGgL1R
-         MjoORe+Q8ZLuVr10WKwic1IXyV4krSlQy4/GD4pWI1wV9ewFfj1fplFqCtKbWAllHoan
-         lyZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=IEMma1eGW5sQblzU1//BqOEn5E488+F+nzzq2q8j3TU=;
-        b=JGtZC1xyo1rI9VG54XqNpERlIWpy8PBiUJtZ0JAHFH9aa0kPyVV02pWJqOe3DmkD51
-         8G3KK9YDrjKRxodS1aHN8Qp3247TxJ/9DOgwXBSHSz/K7yhI8zazotbDaACJhrOtuhwu
-         tjE83Upo7+LNHeYdDal9fMlB5TiF1mPTXMosg8BazPHQPD3tX8UZD8UMxuHCqioaBrkC
-         MHOybDLdrrVV2Avu/dfhRVp8tqwwoyoo40yl1GXMd2YYy8/fkOmr8vlTjtYrnzTkhgDH
-         NDWWbBRstxNnB9SQnM7gJv/28RmuSRLFhZyWeGqBgMBEQbXUHBXuk4zEwT8Ay5It0DH8
-         qJJw==
-X-Gm-Message-State: AOAM533FQQjk5j2M2JXV++/J7ewj0dH4fySh5/yNtjNgm9CHjYsp5iHN
-        YcaDK4EkYeAfkI90R+zSccon8lF+squhkkDbLjo=
-X-Google-Smtp-Source: ABdhPJybsVyo/ViKGbsZAyN3QH5WDtQ4NHwh5GDBRzwxoSOxx/XwZxqhjDQ8DcHMYJW2qGEymLF0XoencV3PZSK19NA=
-X-Received: by 2002:a02:8407:: with SMTP id k7mr5730588jah.106.1643125677196;
- Tue, 25 Jan 2022 07:47:57 -0800 (PST)
+        id S1349569AbiAYQHI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 11:07:08 -0500
+Received: from mga18.intel.com ([134.134.136.126]:4805 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1378583AbiAYQFl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 11:05:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643126734; x=1674662734;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CnlZMqcGxfG17qng5ojVFTXiEjhmUc0dIKX37XwxteY=;
+  b=NXZH8XDYE9V2+g878bP1LL80LHE60iwU3Qr9s/ll2y5q+jFBfpRluADw
+   3AJFlscxA+PsPv9GEGhKjx4h+ox+SfFQmMGYdIRqouvm4WQUvBSRcYwKj
+   G+p1D/J/wtwMgnZ+y2NlTDJ7NaRc/gUJ9eXmNY1e6wUHRnyAr1RAgZxW0
+   PqFslbJykRqxX4ckm7CdNrKuh9JTrv06bLnSPh71CmbzwS3fZAXxcbwLE
+   P15WSGK2NupXClmRKFm2rYfxWMkzkZyyiaBVbucoSNGVTLOzMu9RjRB9T
+   Qqk3LAeMLBdp0hY1h2frOsHrf/RcvtPAEYFHb1TCDKgUP8ZSP2f2oLNh9
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="229911548"
+X-IronPort-AV: E=Sophos;i="5.88,315,1635231600"; 
+   d="scan'208";a="229911548"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2022 08:04:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,315,1635231600"; 
+   d="scan'208";a="534789198"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by orsmga008.jf.intel.com with ESMTP; 25 Jan 2022 08:04:48 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net
+Cc:     netdev@vger.kernel.org, magnus.karlsson@intel.com,
+        alexandr.lobakin@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v5 bpf-next 0/8] xsk: Intel driver improvements
+Date:   Tue, 25 Jan 2022 17:04:38 +0100
+Message-Id: <20220125160446.78976-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Received: by 2002:a05:6638:3044:0:0:0:0 with HTTP; Tue, 25 Jan 2022 07:47:56
- -0800 (PST)
-Reply-To: abrahammorrison443@gmail.com
-From:   Abraham Morrison <barrmorr111@gmail.com>
-Date:   Tue, 25 Jan 2022 07:47:56 -0800
-Message-ID: <CAKy4BjGgAaBUmpL3ro5QQ4AC4JftuZoYTdfdUd=7EP-t7p3S8A@mail.gmail.com>
-Subject: Good day!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Prosz=C4=99 o uwag=C4=99,
+Hi,
 
-Jak si=C4=99 masz? Mam nadziej=C4=99, =C5=BCe jeste=C5=9B zdrowy i zdrowy? =
-Informuj=C4=99, =C5=BCe
-uda=C5=82o mi si=C4=99 zako=C5=84czy=C4=87 transakcj=C4=99 z pomoc=C4=85 no=
-wego partnera z Indii i
-teraz =C5=9Brodki zosta=C5=82y przelane do Indii na konto bankowe nowego
-partnera.
+Unfortunately, similar scalability issues that were addressed for XDP
+processing in ice, exist for XDP in the zero-copy driver used by AF_XDP.
+Let's resolve them in mostly the same way as we did in [0] and utilize
+the Tx batching API from XSK buffer pool.
 
-W mi=C4=99dzyczasie zdecydowa=C5=82em si=C4=99 zrekompensowa=C4=87 ci sum=
-=C4=99 500 000 $
-(tylko pi=C4=99=C4=87set tysi=C4=99cy dolar=C3=B3w ameryka=C5=84skich) z po=
-wodu twoich
-wcze=C5=9Bniejszych wysi=C5=82k=C3=B3w, chocia=C5=BC mnie rozczarowa=C5=82e=
-=C5=9B. Niemniej jednak
-bardzo si=C4=99 ciesz=C4=99 z pomy=C5=9Blnego zako=C5=84czenia transakcji b=
-ez =C5=BCadnego
-problemu i dlatego postanowi=C5=82em zrekompensowa=C4=87 Ci kwot=C4=99 500 =
-000 $,
-aby=C5=9B podzieli=C5=82 si=C4=99 ze mn=C4=85 rado=C5=9Bci=C4=85.
+Move the array of Tx descriptors that is used with batching approach to
+the XSK buffer pool. This means that future users of this API will not
+have carry the array on their own side, they can simple refer to pool's
+tx_desc array.
 
-Radz=C4=99 skontaktowa=C4=87 si=C4=99 z moj=C4=85 sekretark=C4=85 w sprawie=
- karty bankomatowej
-o warto=C5=9Bci 500 000 $, kt=C3=B3r=C4=85 zachowa=C5=82em dla Ciebie. Skon=
-taktuj si=C4=99 z
-ni=C4=85 teraz bez zw=C5=82oki.
+We also improve the Rx side where we extend ice_alloc_rx_buf_zc() to
+handle the ring wrap and bump Rx tail more frequently. By doing so,
+Rx side is adjusted to Tx and it was needed for l2fwd scenario.
 
-Imi=C4=99: Linda Koffi
-E-mail: koffilinda785@gmail.com
+Here are the improvements of performance numbers that this set brings
+measured with xdpsock app in busy poll mode for 1 and 2 core modes.
+Both Tx and Rx rings were sized to 1k length and busy poll budget was
+256.
+
+----------------------------------------------------------------
+     |      txonly:      |      l2fwd      |      rxdrop
+----------------------------------------------------------------
+1C   |       149%        |       14%       |        3%
+----------------------------------------------------------------
+2C   |       134%        |       20%       |        5%
+----------------------------------------------------------------
+
+Next step will be to introduce batching onto Rx side.
 
 
-Uprzejmie potwierd=C5=BA jej nast=C4=99puj=C4=85ce informacje:
+v5:
+* collect acks
+* fix typos
+* correct comments showing cache line boundaries in ice_tx_ring struct
+v4 - address Alexandr's review:
+* new patch (2) for making sure ring size is pow(2) when attaching
+  xsk socket
+* don't open code ALIGN_DOWN (patch 3)
+* resign from storing tx_thresh in ice_tx_ring (patch 4)
+* scope variables in a better way for Tx batching (patch 7)
+v3:
+* drop likely() that was wrapping napi_complete_done (patch 1)
+* introduce configurable Tx threshold (patch 2)
+* handle ring wrap on Rx side when allocating buffers (patch 3)
+* respect NAPI budget when cleaning Tx descriptors in ZC (patch 6)
+v2:
+* introduce new patch that resets @next_dd and @next_rs fields
+* use batching API for AF_XDP Tx on ice side
 
-Twoje pe=C5=82ne imi=C4=99:........
-Tw=C3=B3j adres:..........
-Tw=C3=B3j kraj:..........
-Tw=C3=B3j wiek:.........
-Tw=C3=B3j zaw=C3=B3d:..........
-Tw=C3=B3j numer telefonu kom=C3=B3rkowego:..........
-Tw=C3=B3j paszport lub prawo jazdy:........
+Thanks,
+Maciej
 
-Pami=C4=99taj, =C5=BCe je=C5=9Bli nie prze=C5=9Blesz jej powy=C5=BCszych in=
-formacji
-kompletnych, nie wyda ci karty bankomatowej, poniewa=C5=BC musi si=C4=99
-upewni=C4=87, =C5=BCe to ty. Popro=C5=9B j=C4=85, aby przes=C5=82a=C5=82a C=
-i ca=C5=82kowit=C4=85 sum=C4=99 (500 000
-USD) karty bankomatowej, kt=C3=B3r=C4=85 dla Ciebie zachowa=C5=82em.
+[0]: https://lore.kernel.org/bpf/20211015162908.145341-8-anthony.l.nguyen@intel.com/
 
-Z wyrazami szacunku,
 
-Pan Abraham Morrison
+Maciej Fijalkowski (7):
+  ice: remove likely for napi_complete_done
+  ice: xsk: force rings to be sized to power of 2
+  ice: xsk: handle SW XDP ring wrap and bump tail more often
+  ice: make Tx threshold dependent on ring length
+  ice: xsk: avoid potential dead AF_XDP Tx processing
+  ice: xsk: improve AF_XDP ZC Tx and use batching API
+  ice: xsk: borrow xdp_tx_active logic from i40e
+
+Magnus Karlsson (1):
+  i40e: xsk: move tmp desc array from driver to pool
+
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  11 -
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   1 -
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |   4 +-
+ drivers/net/ethernet/intel/ice/ice_ethtool.c  |   2 +
+ drivers/net/ethernet/intel/ice/ice_main.c     |   4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   6 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  10 +-
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  15 +-
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 374 ++++++++++++------
+ drivers/net/ethernet/intel/ice/ice_xsk.h      |  27 +-
+ include/net/xdp_sock_drv.h                    |   5 +-
+ include/net/xsk_buff_pool.h                   |   1 +
+ net/xdp/xsk.c                                 |  13 +-
+ net/xdp/xsk_buff_pool.c                       |   7 +
+ net/xdp/xsk_queue.h                           |  12 +-
+ 15 files changed, 330 insertions(+), 162 deletions(-)
+
+-- 
+2.33.1
+
