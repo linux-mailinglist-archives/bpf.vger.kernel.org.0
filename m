@@ -2,120 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9338949AD3A
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 08:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CF249ADD9
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 09:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354655AbiAYHLo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 02:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
+        id S1378300AbiAYIPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 03:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442577AbiAYHJ0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 02:09:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31032C0619C8;
-        Mon, 24 Jan 2022 22:02:58 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB3F2B815AD;
-        Tue, 25 Jan 2022 06:02:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3C99C340E0;
-        Tue, 25 Jan 2022 06:02:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643090574;
-        bh=lYHCTAfuBpcW1fQv1mxPpJzytki5j6wH1OTSPUKFVR8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X+ETSgoBC0jQWUiVRbZpaZN6tRrzqVuvEwUWlBxilgPYDFrfpnuJQghWNmN3toE7v
-         tA5mQXh/7m4WnjgvP/FjKWr5Rj/C/M/JbEQ+0immcsceu3+hR0IIRzCgxIUsV0fSQT
-         o+yOXCexL8RsducOQhBbMIGQCmTWkIWOX7VeBhhBApdgJtZWFL6eNVuCLLjQBjS8LU
-         Mb7TITx/6nrUOYTSqk+5JFbFz+2GEL7HS6ld0ZTea4miSGor8m9x+DTpoYIbbO9Q4J
-         rvJz2C3kZ74y8ThllmOeEVyV+F+q8EtG7Fj4DQNWCjz5+gN3e8GGO7tbc8+StDz6Eg
-         srn3D29dsq86w==
-Date:   Tue, 25 Jan 2022 15:02:49 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1448689AbiAYILJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 03:11:09 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17FCC0A102C;
+        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id 9so6889914iou.2;
+        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=vVmvTKTsaxOlONO4QYlutZhtuDsocbdCqgwaw+TJzb4=;
+        b=k3m12SknLZlwKx/vo2br6QSN5nsdltw57FXTxRspt8AyV/vXsNVmXsj2l+Vv7noQb4
+         /wcZHwYRjIpRb3+8biyzNWGVa3z1VLT/32odwiJH5oEm1jROcwzw369C7S6/w57iOBkP
+         Tt4EoV+fKiBGFEdaRwj3d415SUmGKl5lXls0IjorS0FPEx6RZwh6hh3q3pUyWfUf5aBe
+         IvdPOevH1lbWLecH4Ouqo6rVTZzKVk5KMKA+8gJ8mJzE4JX/0NEaxfRCh7NNdUp/u5yW
+         H2uZ6tCAy6iaDjLaeX95kf4UFdUIp6F2STAvzQzb++afxA8Dwg1kTJL396SLgVNx892R
+         CQiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=vVmvTKTsaxOlONO4QYlutZhtuDsocbdCqgwaw+TJzb4=;
+        b=5VX6sES/OU5xSymT4vD+0OqvCiUF23NU/aLQt0TQK8k9devFN4zSMupEk4HYb4eA4s
+         3ANOcla46r3I1IHhT4XWNIEsVJixbUA+h2WT7uUT2kgU13NLNztn9Cc+QrR1UGegU259
+         vf0HToyJfa8Ob9CajywZ0eRr9r/1bHBv3TyrqJAIye6+PaxON6pIRNCGW/WRYEmXGks2
+         H9A7a9VvWROMN9mLbdb6wwioRMfpxxXPBmkgma+NtpsxyFAxiV35aOYz2VPFwFtoV3X6
+         gvDZw4UanCwV8zPe+LMV/N0kEgZUwE8KJrA9DEyBpb1uWPtB7wDGeKU3dNRDiw7UR7Ss
+         3JoQ==
+X-Gm-Message-State: AOAM532ONfIX8QRUbL8QFKpK47UQyMBxkX6KruyAuJJuWhQALv3zJZhU
+        e8lK7NMWIO9FniN/ZQcuRMI=
+X-Google-Smtp-Source: ABdhPJzQ9IAlJ7cZFJwi5Eo7AwlA+zg7rkd9KQMgU92Fjhaoijao9sbiCdvy945D8wb/aU19iNTxvA==
+X-Received: by 2002:a02:852e:: with SMTP id g43mr4676240jai.31.1643093094101;
+        Mon, 24 Jan 2022 22:44:54 -0800 (PST)
+Received: from localhost ([99.197.200.79])
+        by smtp.gmail.com with ESMTPSA id k1sm7497654iov.6.2022.01.24.22.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jan 2022 22:44:53 -0800 (PST)
+Date:   Mon, 24 Jan 2022 22:44:45 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org
+Cc:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v4 4/9] rethook: x86: Add rethook x86 implementation
-Message-Id: <20220125150249.620fe4dc6bbefb5dcfdff816@kernel.org>
-In-Reply-To: <164304060913.1680787.1167309209346264268.stgit@devnote2>
-References: <164304056155.1680787.14081905648619647218.stgit@devnote2>
-        <164304060913.1680787.1167309209346264268.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Petar Penkov <ppenkov@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>
+Message-ID: <61ef9c5d6056_274ca208a@john.notmuch>
+In-Reply-To: <20220124151146.376446-2-maximmi@nvidia.com>
+References: <20220124151146.376446-1-maximmi@nvidia.com>
+ <20220124151146.376446-2-maximmi@nvidia.com>
+Subject: RE: [PATCH bpf v2 1/4] bpf: Use ipv6_only_sock in
+ bpf_tcp_gen_syncookie
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Jan 2022 01:10:09 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> Add rethook for x86 implementation. Most of the code
-> has been copied from kretprobes on x86.
+Maxim Mikityanskiy wrote:
+> Instead of querying the sk_ipv6only field directly, use the dedicated
+> ipv6_only_sock helper.
 > 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> Fixes: 70d66244317e ("bpf: add bpf_tcp_gen_syncookie helper")
+> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 > ---
->  Changes in v4:
->   - fix stack backtrace as same as kretprobe does.
-> ---
->  arch/x86/Kconfig              |    1 
->  arch/x86/include/asm/unwind.h |    4 +
->  arch/x86/kernel/Makefile      |    1 
->  arch/x86/kernel/rethook.c     |  115 +++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 121 insertions(+)
->  create mode 100644 arch/x86/kernel/rethook.c
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 5c2ccb85f2ef..0a7d48a63787 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -219,6 +219,7 @@ config X86
->  	select HAVE_KPROBES_ON_FTRACE
->  	select HAVE_FUNCTION_ERROR_INJECTION
->  	select HAVE_KRETPROBES
-> +	select HAVE_RETHOOK
->  	select HAVE_KVM
->  	select HAVE_LIVEPATCH			if X86_64
->  	select HAVE_MIXED_BREAKPOINTS_REGS
-> diff --git a/arch/x86/include/asm/unwind.h b/arch/x86/include/asm/unwind.h
-> index 2a1f8734416d..9fe5f73f22f1 100644
-> --- a/arch/x86/include/asm/unwind.h
-> +++ b/arch/x86/include/asm/unwind.h
-> @@ -5,6 +5,7 @@
->  #include <linux/sched.h>
->  #include <linux/ftrace.h>
->  #include <linux/kprobes.h>
-> +#include <linux/rethook.h>
->  #include <asm/ptrace.h>
->  #include <asm/stacktrace.h>
->  
-> @@ -107,6 +108,9 @@ static inline
->  unsigned long unwind_recover_kretprobe(struct unwind_state *state,
->  				       unsigned long addr, unsigned long *addr_p)
->  {
-> +	if (IS_ENABLED(CONFIG_RETHOOK) && is_rethook_trampoline(addr))
-> +		return rethook_find_ret_addr(state->task, (unsigned long)addr_p,
-> +					     &state->kr_cur);
 
-Hm, I found that this doesn't work since state->kr_cur is not defined when
-CONFIG_KRETPROBES=n. Even if I define it with CONFIG_RETHOOK=y, if both
-CONFIG_RETHOOK and CONFIG_KRETPROBES are 'n', the compiler caused a build
-error. So I decided to use #ifdef here in the next version.
+Not really a fix, but LGTM.
 
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
