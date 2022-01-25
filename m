@@ -2,134 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A52C49B254
-	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 11:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C331949B2E0
+	for <lists+bpf@lfdr.de>; Tue, 25 Jan 2022 12:26:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348621AbiAYKtY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 05:49:24 -0500
-Received: from foss.arm.com ([217.140.110.172]:34102 "EHLO foss.arm.com"
+        id S1381257AbiAYLZ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 06:25:59 -0500
+Received: from mga17.intel.com ([192.55.52.151]:1939 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1355114AbiAYKou (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 05:44:50 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 792DB1FB;
-        Tue, 25 Jan 2022 02:44:44 -0800 (PST)
-Received: from ip-10-252-15-108.eu-west-1.compute.internal (unknown [10.252.15.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 9E0813F7D8;
-        Tue, 25 Jan 2022 02:44:41 -0800 (PST)
-From:   German Gomez <german.gomez@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org
-Cc:     irogers@google.com, German Gomez <german.gomez@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexandre Truong <alexandre.truong@arm.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] perf test: update arm64 perf_event_attr tests for --call-graph
-Date:   Tue, 25 Jan 2022 10:44:34 +0000
-Message-Id: <20220125104435.2737-1-german.gomez@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1382187AbiAYLZL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 06:25:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643109910; x=1674645910;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+QEDba3uxX3WN/hSrnEQXGbRY4/0xMWBNHzT5CMR/O0=;
+  b=jnoiRY7PQmy1A7wQ+nLFJUJT8IOBg195aPESHRaVsj4IlX/ueyllf+9D
+   WnTPax+ilHcfpVbqJSxhI36wjmA++JrpqPqds3tliJdL2yDARkdfQUciB
+   FdmnvzG99Hk1cAbfmDEKmeM9oJC3OH0dAwc2N2/0g7VgX5VfNGsTz7gVW
+   y9XLJnD3HQhR7nNWFx3OosxRcgZYvLb4k+RyVVNhfMWKSPPwZxDRJ4DUX
+   3/kQ1vM8yoUgnsd9olP7dmc/srEdTAuqUw8lIJZqIhbUBT3JyvuS2ak8Z
+   k2gMtL3akCWJNoBbLC1biRK0vtmCM7LJ4oTn2YhoJOIQJW0b83Pd4cmGJ
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10237"; a="226950256"
+X-IronPort-AV: E=Sophos;i="5.88,314,1635231600"; 
+   d="scan'208";a="226950256"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2022 03:25:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,314,1635231600"; 
+   d="scan'208";a="769005503"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Jan 2022 03:25:02 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 20PBP1Kr017449;
+        Tue, 25 Jan 2022 11:25:01 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, magnus.karlsson@intel.com
+Subject: Re: [PATCH bpf-next v4 2/8] ice: xsk: force rings to be sized to power of 2
+Date:   Tue, 25 Jan 2022 12:23:06 +0100
+Message-Id: <20220125112306.746139-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220124165547.74412-3-maciej.fijalkowski@intel.com>
+References: <20220124165547.74412-1-maciej.fijalkowski@intel.com> <20220124165547.74412-3-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The struct perf_event_attr is initialised differently in Arm64 when
-recording in call-graph fp mode, so update the relevant tests, and add
-two extra arm64-only tests.
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Date: Mon, 24 Jan 2022 17:55:41 +0100
 
-Fixes: 7248e308a575 ("perf tools: Record ARM64 LR register automatically")
-Signed-off-by: German Gomez <german.gomez@arm.com>
----
- tools/perf/tests/attr/README                            | 2 ++
- tools/perf/tests/attr/test-record-graph-default         | 2 ++
- tools/perf/tests/attr/test-record-graph-default-aarch64 | 9 +++++++++
- tools/perf/tests/attr/test-record-graph-fp              | 2 ++
- tools/perf/tests/attr/test-record-graph-fp-aarch64      | 9 +++++++++
- 5 files changed, 24 insertions(+)
- create mode 100644 tools/perf/tests/attr/test-record-graph-default-aarch64
- create mode 100644 tools/perf/tests/attr/test-record-graph-fp-aarch64
+> With the upcoming introduction of batching to XSK data path,
+> performance wise it will be the best to have the ring descriptor count
+> to be aligned to power of 2.
+> 
+> Check if rings sizes that user is going to attach the XSK socket fulfill
+> the condition above. For Tx side, although check is being done against
+> the Tx queue and in the end the socket will be attached to the XDP
+> queue, it is fine since XDP queues get the ring->count setting from Tx
+> queues.
+> 
+> Suggested-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index 2388837d6d6c..0350f9c22c62 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -327,6 +327,14 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+>  	bool if_running, pool_present = !!pool;
+>  	int ret = 0, pool_failure = 0;
+>  
+> +	if (!is_power_of_2(vsi->rx_rings[qid]->count) ||
+> +	    !is_power_of_2(vsi->tx_rings[qid]->count)) {
+> +		netdev_err(vsi->netdev,
+> +			   "Please align ring sizes at idx %d to power of 2\n", qid);
 
-diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
-index a36f49fb4dbe..1116fc6bf2ac 100644
---- a/tools/perf/tests/attr/README
-+++ b/tools/perf/tests/attr/README
-@@ -45,8 +45,10 @@ Following tests are defined (with perf commands):
-   perf record -d kill                           (test-record-data)
-   perf record -F 100 kill                       (test-record-freq)
-   perf record -g kill                           (test-record-graph-default)
-+  perf record -g kill                           (test-record-graph-default-aarch64)
-   perf record --call-graph dwarf kill		(test-record-graph-dwarf)
-   perf record --call-graph fp kill              (test-record-graph-fp)
-+  perf record --call-graph fp kill              (test-record-graph-fp-aarch64)
-   perf record --group -e cycles,instructions kill (test-record-group)
-   perf record -e '{cycles,instructions}' kill   (test-record-group1)
-   perf record -e '{cycles/period=1/,instructions/period=2/}:S' kill (test-record-group2)
-diff --git a/tools/perf/tests/attr/test-record-graph-default b/tools/perf/tests/attr/test-record-graph-default
-index 5d8234d50845..f0a18b4ea4f5 100644
---- a/tools/perf/tests/attr/test-record-graph-default
-+++ b/tools/perf/tests/attr/test-record-graph-default
-@@ -2,6 +2,8 @@
- command = record
- args    = --no-bpf-event -g kill >/dev/null 2>&1
- ret     = 1
-+# arm64 enables registers in the default mode (fp)
-+arch    = !aarch64
- 
- [event:base-record]
- sample_type=295
-diff --git a/tools/perf/tests/attr/test-record-graph-default-aarch64 b/tools/perf/tests/attr/test-record-graph-default-aarch64
-new file mode 100644
-index 000000000000..e98d62efb6f7
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-graph-default-aarch64
-@@ -0,0 +1,9 @@
-+[config]
-+command = record
-+args    = --no-bpf-event -g kill >/dev/null 2>&1
-+ret     = 1
-+arch    = aarch64
-+
-+[event:base-record]
-+sample_type=4391
-+sample_regs_user=1073741824
-diff --git a/tools/perf/tests/attr/test-record-graph-fp b/tools/perf/tests/attr/test-record-graph-fp
-index 5630521c0b0f..a6e60e839205 100644
---- a/tools/perf/tests/attr/test-record-graph-fp
-+++ b/tools/perf/tests/attr/test-record-graph-fp
-@@ -2,6 +2,8 @@
- command = record
- args    = --no-bpf-event --call-graph fp kill >/dev/null 2>&1
- ret     = 1
-+# arm64 enables registers in fp mode
-+arch    = !aarch64
- 
- [event:base-record]
- sample_type=295
-diff --git a/tools/perf/tests/attr/test-record-graph-fp-aarch64 b/tools/perf/tests/attr/test-record-graph-fp-aarch64
-new file mode 100644
-index 000000000000..cbeea9971285
---- /dev/null
-+++ b/tools/perf/tests/attr/test-record-graph-fp-aarch64
-@@ -0,0 +1,9 @@
-+[config]
-+command = record
-+args    = --no-bpf-event --call-graph fp kill >/dev/null 2>&1
-+ret     = 1
-+arch    = aarch64
-+
-+[event:base-record]
-+sample_type=4391
-+sample_regs_user=1073741824
--- 
-2.25.1
+Ideally I'd pass xdp->extack from ice_xdp() to print this message
+directly in userspace (note that NL_SET_ERR_MSG{,_MOD}() don't
+support string formatting, but the user already knows QID at this
+point).
 
+> +		pool_failure = -EINVAL;
+> +		goto failure;
+> +	}
+> +
+>  	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
+>  
+>  	if (if_running) {
+> @@ -349,6 +357,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+>  			netdev_err(vsi->netdev, "ice_qp_ena error = %d\n", ret);
+>  	}
+>  
+> +failure:
+>  	if (pool_failure) {
+>  		netdev_err(vsi->netdev, "Could not %sable buffer pool, error = %d\n",
+>  			   pool_present ? "en" : "dis", pool_failure);
+> -- 
+> 2.33.1
+
+Thanks,
+Al
