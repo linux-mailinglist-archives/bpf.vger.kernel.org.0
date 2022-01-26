@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0AF49D2ED
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 589BF49D2F2
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbiAZT6k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 14:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        id S229505AbiAZT7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 14:59:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbiAZT6k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 14:58:40 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9097BC06173B;
-        Wed, 26 Jan 2022 11:58:39 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id i14so626738ila.11;
-        Wed, 26 Jan 2022 11:58:39 -0800 (PST)
+        with ESMTP id S229457AbiAZT7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 14:59:24 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C14C06161C;
+        Wed, 26 Jan 2022 11:59:24 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id w5so673501ilo.2;
+        Wed, 26 Jan 2022 11:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=jxQFkds46Y2ifZWhEndwMrXN0P9DVV4itU3txOVyclQ=;
-        b=Q/kDTPp8P2pb+DlyuHzNItcqG3nCZlzdPicfcs2wENfrT5zUrywd8XCbimiNPBzpUR
-         6rly7TYa5iaLJ2UapYd7w1SnxAlkVLFn/rvEOrL8Xz0W2hTlRB89+jwCwoC9NSDhKQl4
-         owO1p0FK6e90jCk88TTQ5i4iLwb/lzuomP02pe5YPJdrG6j1L/HawP1HK5FTKoaOZfgE
-         JB8g07Zz2xKVi7cCn4pooZUU98dXWe4BMDe/5tefUCRy8rxuRfMRuIHQkeruBk5kIvzA
-         Uqsa/eZmnFmu2rsDLEyyNPmCNS2UdQOZF9FLpQyR/V0QQ0T1GDUqjnK2TykN/3qkY9hq
-         M2Xg==
+        bh=NtLwZ9wolvYhQ4t71Zy4HRm3vN3/8SsJVrsDB3RmbEg=;
+        b=WXBluTD1HB9nlcAVq1r0GhNguO1kf/CFU7z+4TpqNHyWsMQWuZ0+KyqxaJqQLRWLkj
+         jwYKprkDp2YW3PRPTFsBFni+ihDaGu1okEjU2NRyYQQEvp3TdtIEZoUtMx9VBQJBSOET
+         AVlYVUHYPwUMoT3GWuseuLbNScxzcWG9EB8QL8pPqxCmq3lcgdS4rk5HE6Z9z4gLFuCu
+         5dnTRXxQ91gobO05D0bvRIg3nTC80iol9HSUKz/GI2ccxMsmXYTryZBAwY0NeAtL3CVK
+         r1lItZfe9VeQC1vQmM0NiN4aqHDilcJtBzGd7cvC0kyrLRMBo5JGdKutoA/YrdCDsPrc
+         Fjbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=jxQFkds46Y2ifZWhEndwMrXN0P9DVV4itU3txOVyclQ=;
-        b=ij63W5z3NtFdvGLvTtZ4YtEEiIkfl+ICFodFrXE3WV+v2AioO9o5ljA8uQ4voXIbs9
-         ngehx8wNboFvdYAa0vTgUh46/+IdOAHEXQgiihUtVJHCw+/fgPqti0FvXQsCYQILzK0y
-         Qz7nHB8ez8k3g/vOjfD8gGvKHScBF0iA3YOvIPhKUBbZWLZB3DUp54i+Z74stg4Xjc8Z
-         6B8GH2JZf1WrXUGrZU1DhE3cEROWNOysiC/IuvJ9j91jKTKsaOCHxWCtWWavynNc4aUd
-         FMvkIgi1+74w3nYq7QEOvA3WdtQAtcjQuXdl76w7/WBTRaCHe5Yayyqb1zeYxbQXldWe
-         uMmw==
-X-Gm-Message-State: AOAM533Apyz+pZpY7Q9jzSqdiMay8XLxAjE+Vw96uG0On3cpPG/GH/ej
-        rtMImNoqcjee4JMXx7XN6ITw5b24fkHFgu/mzBM=
-X-Google-Smtp-Source: ABdhPJxEjBhHLzKYRCKg6pDSylE7LEMtBPmMP3p3s0ScfXwtfsPd7BqVk4WBd9Ky28Va89CSI6/5Fck89EjIME7pmeo=
-X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr472581ilu.71.1643227118636;
- Wed, 26 Jan 2022 11:58:38 -0800 (PST)
+        bh=NtLwZ9wolvYhQ4t71Zy4HRm3vN3/8SsJVrsDB3RmbEg=;
+        b=CTHWQVw9ofkSlnEWz20aJ8SSrsowDaI9StiPTQblei1VZay9ZV4wF7GyHSnPAMRSEA
+         6C8+xMxGgurd5ryCnq19Womo/1ScKSolg5HZwSBYk74O0xdKlZzSSkzwYn8UotTcFg9F
+         hhuVuW9bcUDtbBnM4sn7g8hJPL0M4sf9qKNOMSY1wH4sI0ADInGx/lYqlZB1XUO5lMfz
+         441NiysGcZeAUannRhS7IjcdRZkXm27iW418AwWLzI9+et3e6gN6AmS/eEmQFqReGyiR
+         TFf+Ncjv1dZRNVUKwT/PwILk21ff+udMSEUy8KvDIzZY37YAxcF0InN98B0llIjeLYGf
+         rKLQ==
+X-Gm-Message-State: AOAM532hk/8Rw5etkaeFcYX1fcyQoOppfuAxCY22RaPqobbOqhX/Vsks
+        Lp8sQG7uCrwIsEKq7VYNQzFUZLi9ByFPm+o9Qvc=
+X-Google-Smtp-Source: ABdhPJwDaX3L8enllW4nOp+5SVwxs8n29V4yATky8Bgd7sofLBknlew2psujaamcSyWhQrELmPhdgoUr52HsW4TVP0U=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr473939ilu.71.1643227164214;
+ Wed, 26 Jan 2022 11:59:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126192039.2840752-1-kuifeng@fb.com> <20220126192039.2840752-4-kuifeng@fb.com>
-In-Reply-To: <20220126192039.2840752-4-kuifeng@fb.com>
+References: <20220126192039.2840752-1-kuifeng@fb.com> <20220126192039.2840752-5-kuifeng@fb.com>
+In-Reply-To: <20220126192039.2840752-5-kuifeng@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Jan 2022 11:58:27 -0800
-Message-ID: <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
-Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
+Date:   Wed, 26 Jan 2022 11:59:13 -0800
+Message-ID: <CAEf4BzYN426pX_ge1wQS1jceHSm8ooAN83p-BL1y=SfX2k32Ag@mail.gmail.com>
+Subject: Re: [PATCH dwarves v4 4/4] libbpf: Update libbpf to a new revision.
 To:     Kui-Feng Lee <kuifeng@fb.com>
 Cc:     dwarves@vger.kernel.org,
         Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
@@ -64,28 +63,17 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 >
-> Create an instance of btf for each worker thread, and add type info to
-> the local btf instance in the steal-function of pahole without mutex
-> acquiring.  Once finished with all worker threads, merge all
-> per-thread btf instances to the primary btf instance.
+> Replace deprecated APIs with new ones.
 >
 > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > ---
 
-There are still unnecessary casts and missing {} in the else branch,
-but I'll let Arnaldo decide or fix it up.
-
-Once this lands, can you please send kernel patch to use -j if pahole
-support it during the kernel build? See scripts/pahole-version.sh and
-scripts/link-vmlinux.sh for how pahole is set up and used in the
-kernel. Thanks!
-
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  btf_encoder.c |   5 ++
->  btf_encoder.h |   2 +
->  pahole.c      | 125 ++++++++++++++++++++++++++++++++++++++++++++++----
->  3 files changed, 124 insertions(+), 8 deletions(-)
+>  btf_encoder.c | 20 ++++++++++----------
+>  btf_loader.c  |  2 +-
+>  lib/bpf       |  2 +-
+>  3 files changed, 12 insertions(+), 12 deletions(-)
 >
 
 [...]
