@@ -2,19 +2,19 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A2549C467
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A43FB49C466
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237898AbiAZHfm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 02:35:42 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:57805 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237872AbiAZHfk (ORCPT
+        id S237874AbiAZHfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 02:35:41 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34290 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237881AbiAZHfk (ORCPT
         <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2uc6jX_1643182536;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2uc6jX_1643182536)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2ubkjl_1643182537;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2ubkjl_1643182537)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Jan 2022 15:35:37 +0800
+          Wed, 26 Jan 2022 15:35:38 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
@@ -25,9 +25,9 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 03/17] virtio: queue_reset: struct virtio_config_ops add callbacks for queue_reset
-Date:   Wed, 26 Jan 2022 15:35:19 +0800
-Message-Id: <20220126073533.44994-4-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v3 04/17] virtio: queue_reset: add helper
+Date:   Wed, 26 Jan 2022 15:35:20 +0800
+Message-Id: <20220126073533.44994-5-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
 References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
@@ -37,101 +37,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Performing reset on a queue is divided into two steps:
+Add helper for virtio queue reset.
 
-1. reset_vq: reset one vq
-2. enable_reset_vq: re-enable the reset queue
-
-In the first step, these tasks will be completed:
-    1. notify the hardware queue to reset
-    2. recycle the buffer from vq
-    3. release the ring of the vq
-
-The second step is similar to find vqs, passing parameters callback and
-name, etc. Based on the original vq, the ring is re-allocated and
-configured to the backend.
-
-So add two callbacks reset_vq, enable_reset_vq to struct
-virtio_config_ops.
-
-Add a structure for passing parameters. This will facilitate subsequent
-expansion of the parameters of enable reset vq.
-There is currently only one default extended parameter ring_num.
+* virtio_reset_vq: reset a queue individually
+* virtio_enable_resetq: enable a reset queue
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/linux/virtio_config.h | 43 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 42 insertions(+), 1 deletion(-)
+ include/linux/virtio_config.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 4d107ad31149..51dd8461d1b6 100644
+index 51dd8461d1b6..3c971d9a0a59 100644
 --- a/include/linux/virtio_config.h
 +++ b/include/linux/virtio_config.h
-@@ -16,6 +16,44 @@ struct virtio_shm_region {
- 	u64 len;
- };
+@@ -260,6 +260,38 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+ 				      desc);
+ }
  
-+typedef void vq_callback_t(struct virtqueue *);
-+
-+/* virtio_reset_vq: specify parameters for queue_reset
++/**
++ * virtio_reset_vq - reset a queue individually
++ * @param: struct virtio_reset_vq
 + *
-+ *	vdev: the device
-+ *	queue_index: the queue index
++ * returns 0 on success or error status
 + *
-+ *	free_unused_cb: callback to free unused bufs
-+ *	data: used by free_unused_cb
-+ *
-+ *	callback: callback for the virtqueue, NULL for vq that do not need a
-+ *	          callback
-+ *	name: virtqueue names (mainly for debugging), NULL for vq unused by
-+ *	      driver
-+ *	ctx: ctx
-+ *
-+ *	ring_num: specify ring num for the vq to be re-enabled. 0 means use the
-+ *	          default value. MUST be a power of 2.
 + */
-+struct virtio_reset_vq;
-+typedef void vq_reset_callback_t(struct virtio_reset_vq *param, void *buf);
-+struct virtio_reset_vq {
-+	struct virtio_device *vdev;
-+	u16 queue_index;
++static inline
++int virtio_reset_vq(struct virtio_reset_vq *param)
++{
++	if (!param->vdev->config->reset_vq)
++		return -ENOENT;
 +
-+	/* reset vq param */
-+	vq_reset_callback_t *free_unused_cb;
-+	void *data;
++	return param->vdev->config->reset_vq(param);
++}
 +
-+	/* enable reset vq param */
-+	vq_callback_t *callback;
-+	const char *name;
-+	const bool *ctx;
++/**
++ * virtio_enable_resetq - enable a reset queue
++ * @param: struct virtio_reset_vq
++ *
++ * returns vq on success or error status
++ *
++ */
++static inline
++struct virtqueue *virtio_enable_resetq(struct virtio_reset_vq *param)
++{
++	if (!param->vdev->config->enable_reset_vq)
++		return ERR_PTR(-ENOENT);
 +
-+	/* ext enable reset vq param */
-+	u16 ring_num;
-+};
++	return param->vdev->config->enable_reset_vq(param);
++}
 +
  /**
-  * virtio_config_ops - operations for configuring a virtio device
-  * Note: Do not assume that a transport implements all of the operations
-@@ -74,8 +112,9 @@ struct virtio_shm_region {
-  * @set_vq_affinity: set the affinity for a virtqueue (optional).
-  * @get_vq_affinity: get the affinity for a virtqueue (optional).
-  * @get_shm_region: get a shared memory region based on the index.
-+ * @reset_vq: reset a queue individually
-+ * @enable_reset_vq: enable a reset queue
-  */
--typedef void vq_callback_t(struct virtqueue *);
- struct virtio_config_ops {
- 	void (*enable_cbs)(struct virtio_device *vdev);
- 	void (*get)(struct virtio_device *vdev, unsigned offset,
-@@ -100,6 +139,8 @@ struct virtio_config_ops {
- 			int index);
- 	bool (*get_shm_region)(struct virtio_device *vdev,
- 			       struct virtio_shm_region *region, u8 id);
-+	int (*reset_vq)(struct virtio_reset_vq *param);
-+	struct virtqueue *(*enable_reset_vq)(struct virtio_reset_vq *param);
- };
- 
- /* If driver didn't advertise the feature, it will never appear. */
+  * virtio_device_ready - enable vq use in probe function
+  * @vdev: the device
 -- 
 2.31.0
 
