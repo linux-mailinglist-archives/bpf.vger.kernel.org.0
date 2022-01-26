@@ -2,255 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A76149C48B
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797A549C4DE
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 09:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237916AbiAZHgC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 02:36:02 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:48342 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237948AbiAZHfz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:55 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2uPGQG_1643182552;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2uPGQG_1643182552)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Jan 2022 15:35:52 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 17/17] virtio_net: support pair disable/enable
-Date:   Wed, 26 Jan 2022 15:35:33 +0800
-Message-Id: <20220126073533.44994-18-xuanzhuo@linux.alibaba.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
-References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
+        id S230112AbiAZIH2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 03:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230011AbiAZIH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 03:07:27 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51195C06161C;
+        Wed, 26 Jan 2022 00:07:27 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id h20-20020a17090adb9400b001b518bf99ffso3993730pjv.1;
+        Wed, 26 Jan 2022 00:07:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WK1m9YGMIOU47nTvl2kdOoyGhuyNMDYzbDohinKezdc=;
+        b=N+YPh5xjqoSydTKNpzJ5hMlKUC7AnDBc9HPQRM+ImxjektnmmydPb5CIdeNLqd7nWN
+         d8qrH6pgPDKnwno7lJMYvOC3Q2wnB/TjwxgtHT8UR86RB6lQUbzL6ctoHKmoTFJfSTKn
+         4GWoYUNE+6SPe93nXEU0CkVMmD7jXN4HQBYxogHu/JXGHjYYL/10SV+KdfBOPPMQe113
+         isPsdFmyDbN07Zt0fvN3B58TiwvbnxddzkatQAR/7tvsqw5IfhYise4TBzX99eCU78uV
+         wEIMpuAEB0Eu6JlBGaVoX9D1UbiIFY6l6T6qVqCd4LLVjFrKw67SocY84iIUjTrgMwmC
+         F2Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WK1m9YGMIOU47nTvl2kdOoyGhuyNMDYzbDohinKezdc=;
+        b=CrgO++NezBDW+YYpQNRcoFMqp5oOgqpSogDKUnHpx5crYeN8wGn2vnfbCFnUtBTyPf
+         jN0vHJkPV72jNpRCyD2Lma2ooW2qV9HdaG2XjwRQkTZrXJNO51F8mbV90QQftuyugwnc
+         oirOpKo0jWxRahMOpQmnM+IFTdu/TZ9FnaMWRRVVWqgm+I6k8I2VB7/vsXCHpsiJziqI
+         i09DWlfwS/2rAVKklXTPT04mO7Pif5LjCSfx0tlHhz9fkFkf0WOUdmhfoEu3pOuzW1EF
+         uEzwHIpQVj79fX2bjOuC2BJU1cIz/0VVfnjo6C/K8dzrOZoTKG7lMeT9dQccA0cvDRCr
+         XYdw==
+X-Gm-Message-State: AOAM530InIRO20dT92Jya3QPuyil2CV21swMVf9SRqpXwAYndIxI4/OR
+        qmBIxTZEx3DKKJftbvAWuuvh1vEepr3AJckVPRKLGY74L7V0mg==
+X-Google-Smtp-Source: ABdhPJy3npHkp4muntCPuuN3taHcWgfTMM2vPynP6YkfKJnoorurZfnd8xG08Slqmy8zPP3aXigdPCi3eKrEnpx3JAk=
+X-Received: by 2002:a17:902:7148:b0:14b:650c:4ce7 with SMTP id
+ u8-20020a170902714800b0014b650c4ce7mr8969378plm.4.1643184446641; Wed, 26 Jan
+ 2022 00:07:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220125160446.78976-1-maciej.fijalkowski@intel.com> <20220125160446.78976-9-maciej.fijalkowski@intel.com>
+In-Reply-To: <20220125160446.78976-9-maciej.fijalkowski@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 26 Jan 2022 09:07:15 +0100
+Message-ID: <CAJ8uoz39QX5weOyJEgQC9r-V58C1wqTYSnbc+s+uZSxnsWP=qw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 8/8] ice: xsk: borrow xdp_tx_active logic from i40e
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch implements virtio-net rx/tx pair disable/enable functionality
-based on virtio queue reset. The purpose of the current implementation
-is to quickly recycle the buffer submitted to vq.
+On Tue, Jan 25, 2022 at 11:58 PM Maciej Fijalkowski
+<maciej.fijalkowski@intel.com> wrote:
+>
+> One of the things that commit 5574ff7b7b3d ("i40e: optimize AF_XDP Tx
+> completion path") introduced was the @xdp_tx_active field. Its usage
+> from i40e can be adjusted to ice driver and give us positive performance
+> results.
+>
+> If the descriptor that @next_dd points to has been sent by HW (its DD
+> bit is set), then we are sure that at least quarter of the ring is ready
+> to be cleaned. If @xdp_tx_active is 0 which means that related xdp_ring
+> is not used for XDP_{TX, REDIRECT} workloads, then we know how many XSK
+> entries should placed to completion queue, IOW walking through the ring
+> can be skipped.
 
-In the process of pair disable, in theory, as long as virtio supports
-queue reset, there will be no exceptions.
+Thanks Maciej.
 
-However, in the process of pari enable, there may be exceptions due to
-memory allocation. In this case, vq == NULL, but napi will still
-be enabled. Because napi_disable is similar to a lock, napi_enable must
-be called after calling napi_disable.
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Since enable fails, the driver will not receive an interrupt from the
-device to wake up napi, so the driver is safe. But we still need to add
-vq checks in some places to ensure safety, such as refill_work().
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- drivers/net/virtio_net.c | 168 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 168 insertions(+)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ea90a1a57c9e..cf77ef1bad1c 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -1369,6 +1369,9 @@ static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
- {
- 	napi_enable(napi);
- 
-+	if (!vq)
-+		return;
-+
- 	/* If all buffers were filled by other side before we napi_enabled, we
- 	 * won't get another interrupt, so process any outstanding packets now.
- 	 * Call local_bh_enable after to trigger softIRQ processing.
-@@ -1413,6 +1416,10 @@ static void refill_work(struct work_struct *work)
- 		struct receive_queue *rq = &vi->rq[i];
- 
- 		napi_disable(&rq->napi);
-+		if (!rq->vq) {
-+			virtnet_napi_enable(rq->vq, &rq->napi);
-+			continue;
-+		}
- 		still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
- 		virtnet_napi_enable(rq->vq, &rq->napi);
- 
-@@ -2871,6 +2878,167 @@ static unsigned int mergeable_min_buf_len(struct virtnet_info *vi, struct virtqu
- 		   (unsigned int)GOOD_PACKET_LEN);
- }
- 
-+static void virtnet_rq_free_unused_buf_cb(struct virtio_reset_vq *param,
-+					  void *buf)
-+{
-+	virtnet_rq_free_unused_buf(param->vdev->priv, param->data, buf);
-+}
-+
-+static void virtnet_sq_free_unused_buf_cb(struct virtio_reset_vq *param,
-+					  void *buf)
-+{
-+	virtnet_rq_free_unused_buf(param->vdev->priv, param->data, buf);
-+}
-+
-+static int __virtnet_rx_vq_disable(struct virtnet_info *vi,
-+				   struct receive_queue *rq)
-+{
-+	struct virtio_reset_vq param = {0};
-+	int err, qnum;
-+
-+	qnum = rxq2vq(rq - vi->rq);
-+
-+	napi_disable(&rq->napi);
-+
-+	param.vdev = vi->vdev;
-+	param.queue_index = qnum;
-+	param.free_unused_cb = virtnet_rq_free_unused_buf_cb;
-+	param.data = rq;
-+
-+	err = virtio_reset_vq(&param);
-+	if (err) {
-+		virtnet_napi_enable(rq->vq, &rq->napi);
-+		return err;
-+	}
-+
-+	rq->vq = NULL;
-+
-+	return err;
-+}
-+
-+static int __virtnet_tx_vq_disable(struct virtnet_info *vi,
-+				   struct send_queue *sq)
-+{
-+	struct virtio_reset_vq param = {0};
-+	struct netdev_queue *txq;
-+	int err, qnum;
-+
-+	qnum = txq2vq(sq - vi->sq);
-+
-+	netif_stop_subqueue(vi->dev, sq - vi->sq);
-+	virtnet_napi_tx_disable(&sq->napi);
-+
-+	/* wait xmit done */
-+	txq = netdev_get_tx_queue(vi->dev, qnum);
-+	__netif_tx_lock(txq, raw_smp_processor_id());
-+	__netif_tx_unlock(txq);
-+
-+	param.vdev = vi->vdev;
-+	param.queue_index = qnum;
-+	param.free_unused_cb = virtnet_sq_free_unused_buf_cb;
-+	param.data = sq;
-+
-+	err = virtio_reset_vq(&param);
-+	if (err) {
-+		virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+		netif_start_subqueue(vi->dev, sq - vi->sq);
-+		return err;
-+	}
-+
-+	sq->vq = NULL;
-+
-+	return err;
-+}
-+
-+static int virtnet_pair_disable(struct virtnet_info *vi, int i)
-+{
-+	int err;
-+
-+	err = __virtnet_rx_vq_disable(vi, vi->rq + i);
-+	if (err)
-+		return err;
-+
-+	return __virtnet_tx_vq_disable(vi, vi->sq + i);
-+}
-+
-+static int virtnet_enable_resetq(struct virtnet_info *vi,
-+				 struct receive_queue *rq,
-+				 struct send_queue *sq)
-+{
-+	struct virtio_reset_vq param = {0};
-+	vq_callback_t *callback;
-+	struct virtqueue *vq;
-+	const char *name;
-+	int vq_idx;
-+	bool ctx;
-+
-+	if (rq) {
-+		vq = rq->vq;
-+		vq_idx = rxq2vq(rq - vi->rq);
-+		callback = skb_recv_done;
-+		name = rq->name;
-+
-+	} else {
-+		vq = sq->vq;
-+		vq_idx = txq2vq(sq - vi->sq);
-+		callback = skb_xmit_done;
-+		name = sq->name;
-+	}
-+
-+	if (vq)
-+		return -EBUSY;
-+
-+	if (!vi->big_packets || vi->mergeable_rx_bufs)
-+		ctx = true;
-+	else
-+		ctx = false;
-+
-+	param.vdev = vi->vdev;
-+	param.queue_index = vq_idx;
-+	param.callback = callback;
-+	param.name = name;
-+	param.ctx = &ctx;
-+	param.ring_num = 0;
-+
-+	vq = virtio_enable_resetq(&param);
-+	if (IS_ERR(vq))
-+		return PTR_ERR(vq);
-+
-+	if (rq)
-+		rq->vq = vq;
-+	else
-+		sq->vq = vq;
-+
-+	return 0;
-+}
-+
-+static int virtnet_pair_enable(struct virtnet_info *vi, int i)
-+{
-+	struct receive_queue *rq;
-+	struct send_queue *sq;
-+	int err;
-+
-+	rq = vi->rq + i;
-+	sq = vi->sq + i;
-+
-+	/* tx */
-+	err = virtnet_enable_resetq(vi, NULL, sq);
-+	if (err)
-+		goto err;
-+	else
-+		netif_start_subqueue(vi->dev, sq - vi->sq);
-+
-+	/* rx */
-+	err = virtnet_enable_resetq(vi, rq, NULL);
-+	if (err)
-+		return err;
-+
-+err:
-+	virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
-+	virtnet_napi_enable(rq->vq, &rq->napi);
-+	return 0;
-+}
-+
- static int virtnet_find_vqs(struct virtnet_info *vi)
- {
- 	vq_callback_t **callbacks;
--- 
-2.31.0
-
+> Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> ---
+>  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  1 +
+>  drivers/net/ethernet/intel/ice/ice_xsk.c      | 15 ++++++++++++---
+>  3 files changed, 14 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> index 666db35a2919..466253ac2ee1 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> @@ -333,6 +333,7 @@ struct ice_tx_ring {
+>         spinlock_t tx_lock;
+>         u32 txq_teid;                   /* Added Tx queue TEID */
+>         /* CL4 - 4th cacheline starts here */
+> +       u16 xdp_tx_active;
+>  #define ICE_TX_FLAGS_RING_XDP          BIT(0)
+>         u8 flags;
+>         u8 dcb_tc;                      /* Traffic class of ring */
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> index 9677cf880a4b..eb21cec1d772 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> @@ -302,6 +302,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
+>         tx_desc->cmd_type_offset_bsz = ice_build_ctob(ICE_TX_DESC_CMD_EOP, 0,
+>                                                       size, 0);
+>
+> +       xdp_ring->xdp_tx_active++;
+>         i++;
+>         if (i == xdp_ring->count) {
+>                 i = 0;
+> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> index 8b6acb4afb7f..2976991c0ab2 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> @@ -687,6 +687,7 @@ static void
+>  ice_clean_xdp_tx_buf(struct ice_tx_ring *xdp_ring, struct ice_tx_buf *tx_buf)
+>  {
+>         xdp_return_frame((struct xdp_frame *)tx_buf->raw_buf);
+> +       xdp_ring->xdp_tx_active--;
+>         dma_unmap_single(xdp_ring->dev, dma_unmap_addr(tx_buf, dma),
+>                          dma_unmap_len(tx_buf, len), DMA_TO_DEVICE);
+>         dma_unmap_len_set(tx_buf, len, 0);
+> @@ -703,9 +704,8 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
+>  {
+>         u16 tx_thresh = ICE_RING_QUARTER(xdp_ring);
+>         int budget = napi_budget / tx_thresh;
+> -       u16 ntc = xdp_ring->next_to_clean;
+>         u16 next_dd = xdp_ring->next_dd;
+> -       u16 cleared_dds = 0;
+> +       u16 ntc, cleared_dds = 0;
+>
+>         do {
+>                 struct ice_tx_desc *next_dd_desc;
+> @@ -721,6 +721,12 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
+>
+>                 cleared_dds++;
+>                 xsk_frames = 0;
+> +               if (likely(!xdp_ring->xdp_tx_active)) {
+> +                       xsk_frames = tx_thresh;
+> +                       goto skip;
+> +               }
+> +
+> +               ntc = xdp_ring->next_to_clean;
+>
+>                 for (i = 0; i < tx_thresh; i++) {
+>                         tx_buf = &xdp_ring->tx_buf[ntc];
+> @@ -736,6 +742,10 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
+>                         if (ntc >= xdp_ring->count)
+>                                 ntc = 0;
+>                 }
+> +skip:
+> +               xdp_ring->next_to_clean += tx_thresh;
+> +               if (xdp_ring->next_to_clean >= desc_cnt)
+> +                       xdp_ring->next_to_clean -= desc_cnt;
+>                 if (xsk_frames)
+>                         xsk_tx_completed(xdp_ring->xsk_pool, xsk_frames);
+>                 next_dd_desc->cmd_type_offset_bsz = 0;
+> @@ -744,7 +754,6 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
+>                         next_dd = tx_thresh - 1;
+>         } while (budget--);
+>
+> -       xdp_ring->next_to_clean = ntc;
+>         xdp_ring->next_dd = next_dd;
+>
+>         return cleared_dds * tx_thresh;
+> --
+> 2.33.1
+>
