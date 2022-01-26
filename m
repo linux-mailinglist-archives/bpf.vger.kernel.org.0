@@ -2,282 +2,659 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C5A49BFCE
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4187249BFFB
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbiAZAB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 19:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235066AbiAZAB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 19:01:28 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF27C06161C
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:01:28 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id h7so7784873iof.3
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:01:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jWfCjNWCEhMWon9UUHLFPjNtw3Kor3VZQS+vpY6I5Ds=;
-        b=fFSdQIv+leaQ6tKep/k8JrQKb0A5jgkuE3ycE3FQd5boeuJgXxnwHR14N+Uy5FvZFB
-         Cf9hX1Ixj6/xBHmcTPawdLnd+Hg7OHAj8okckJw5wDg0/w1saDZ+yMl3WeVHBAOXMaYW
-         xZWZ34iLGvwEsYOkR4TsS7lq/+4jH8Ixvbw19hjH68Dbtl4w1V7DKaF9sWzT1sNkzBKs
-         iAyTD6vozmiTNAE7LCxp437r4AQtUrfbFhHoeWe5l6zBL3JziyN+TgAIO1sgPCcFeOuX
-         iRt5hKjL8/x2A+sSWtI2Ereqpc+ispR0NDfgClXauik52kFKookVGG/ToGPsVkZua9PQ
-         c5TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jWfCjNWCEhMWon9UUHLFPjNtw3Kor3VZQS+vpY6I5Ds=;
-        b=RHJG+PfD1ldA7IOLvsvLfhg0N5zZBPilsMFQ4ZY9CJ/+BwthdrxKuyl3UeeaxH6QCH
-         BCeKRtCIOz5SGlGRtzM1w85f4AmX2M1lapjVjQaMXS6JUyVzOsxCxj9hURXCQFQoPqfB
-         OGVyhVQt8oALm/D/ji2RSfIE824j8Rxc2etGRcFNzU3paVmmnyeglqerz7RIc0v1zRCN
-         GGfGE2zP3zUcEq8abtEw8vnnoJmF3j0PV4N8SU1/bwa1XnD98ClSbX9Gs8IziFKHpYxu
-         Yw28OFScDj/IwPAXAc/EZw6gyqlBrXXRDxsbWKDPoonYUSYFzIH/29J9y+FM0Q+WD8S9
-         G3uw==
-X-Gm-Message-State: AOAM533T+Ws9E9cUVWuli5FAALMCxU0WR9AnJ3FcZEwG5GXKOD6ZK4g+
-        10oK0JpXrWwCcvKBUaenr5FwIO27M+Gmy7TAqzs=
-X-Google-Smtp-Source: ABdhPJyFNTsU2Pl1NJ5yk6erqW0iyjYKkRMmNok4MgHC80ntgPUI8u7W8A6taAAm/TDLukDIGNQ4lMRoEpZtB25wHUs=
-X-Received: by 2002:a05:6638:1212:: with SMTP id n18mr7340440jas.93.1643155287506;
- Tue, 25 Jan 2022 16:01:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20220120060529.1890907-1-andrii@kernel.org> <20220120060529.1890907-4-andrii@kernel.org>
- <87wniu7hss.fsf@toke.dk> <CAEf4BzYpwK+iPPSx7G2-fTSc8dO-4+ObVP72cmu46z+gzFT0Cg@mail.gmail.com>
- <87lez87rbm.fsf@toke.dk> <CAEf4BzYJ9_1OpfCe9KZnDUDvezbc=bLFjq78n4tjBh=p_WFb3Q@mail.gmail.com>
- <87lez43tk4.fsf@toke.dk> <61f06309dabcc_2e4c52085d@john.notmuch>
- <87pmof32l4.fsf@toke.dk> <61f07b3ac6bbb_30a5920833@john.notmuch>
-In-Reply-To: <61f07b3ac6bbb_30a5920833@john.notmuch>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 25 Jan 2022 16:01:16 -0800
-Message-ID: <CAEf4BzZ1Aynmb=f2kSE1gGqLb2o_ce8-R87ADGjh=c8ASB05Vg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: deprecate legacy BPF map definitions
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S235131AbiAZAKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 19:10:48 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:55082 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234522AbiAZAKs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 19:10:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8E936B81B22;
+        Wed, 26 Jan 2022 00:10:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0315C340E0;
+        Wed, 26 Jan 2022 00:10:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643155845;
+        bh=fcvVheY6KEP9/xzQaEGswBRspHKXPacM372oYOIteds=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KRfOXfCDlv+nAl4erp2GLW0mr4+P2UEzjAkxjZnH1U1iWlEnsKgV27w6YdAkhRo0V
+         5zeOaXCmuEmK11DoQATco9qCB0+k3rCz472NfPaSf7qikiuHyZeth2VtAZxuLO5O1Q
+         wHOmaWAmSUjIIehFva7IXgM45ep3AEXRsxo3NTLqupjP4ukNOEWEZVpMqWxe87Prna
+         TOcrr0IRRSOUY5EKOV5p/g/uXUW2hIj/AAUySyxeXBW+ulSadK/Lx4MaR2ZkE/dy1D
+         5igqWnp2r4OALqesfIS1vASQkTBjuC/XvW5QXHKJFIwqFwKbbc4UhbtXxjjYTtM4mL
+         PoozkK/rKSfrw==
+Date:   Wed, 26 Jan 2022 09:10:38 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        David Ahern <dsahern@kernel.org>,
-        Stephen Hemminger <stephen@networkplumber.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 3/9] rethook: Add a generic return hook
+Message-Id: <20220126091038.6264717640f4b18ddcf5b408@kernel.org>
+In-Reply-To: <20220125114615.0533446c@gandalf.local.home>
+References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
+        <164311272945.1933078.2077074421506087620.stgit@devnote2>
+        <20220125114615.0533446c@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 2:35 PM John Fastabend <john.fastabend@gmail.com> w=
-rote:
->
-> Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > John Fastabend <john.fastabend@gmail.com> writes:
-> >
-> > > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> > >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> > >>
-> > >> > On Fri, Jan 21, 2022 at 12:43 PM Toke H=C3=B8iland-J=C3=B8rgensen =
-<toke@redhat.com> wrote:
-> > >> >>
-> > >> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-> > >> >>
-> > >> >> > On Thu, Jan 20, 2022 at 3:44 AM Toke H=C3=B8iland-J=C3=B8rgense=
-n <toke@redhat.com> wrote:
-> > >> >> >>
-> > >> >> >> Andrii Nakryiko <andrii@kernel.org> writes:
-> > >> >> >>
-> > >> >> >> > Enact deprecation of legacy BPF map definition in SEC("maps"=
-) ([0]). For
-> > >> >> >> > the definitions themselves introduce LIBBPF_STRICT_MAP_DEFIN=
-ITIONS flag
-> > >> >> >> > for libbpf strict mode. If it is set, error out on any struc=
-t
-> > >> >> >> > bpf_map_def-based map definition. If not set, libbpf will pr=
-int out
-> > >> >> >> > a warning for each legacy BPF map to raise awareness that it=
- goes
-> > >> >> >> > away.
-> > >> >> >>
-> > >> >> >> We've touched upon this subject before, but I (still) don't th=
-ink it's a
-> > >> >> >> good idea to remove this support entirely: It makes it impossi=
-ble to
-> > >> >> >> write a loader that can handle both new and old BPF objects.
-> > >> >> >>
-> > >> >> >> So discourage the use of the old map definitions, sure, but pl=
-ease don't
-> > >> >> >> make it completely impossible to load such objects.
-> > >> >> >
-> > >> >> > BTF-defined maps have been around for quite a long time now and=
- only
-> > >> >> > have benefits on top of the bpf_map_def way. The source code
-> > >> >> > translation is also very straightforward. If someone didn't get=
- around
-> > >> >> > to update their BPF program in 2 years, I don't think we can do=
- much
-> > >> >> > about that.
-> > >> >> >
-> > >> >> > Maybe instead of trying to please everyone (especially those th=
-at
-> > >> >> > refuse to do anything to their BPF programs), let's work togeth=
-er to
-> > >> >> > nudge laggards to actually modernize their source code a little=
- bit
-> > >> >> > and gain some benefits from that along the way?
-> > >> >>
-> > >> >> I'm completely fine with nudging people towards the newer feature=
-s, and
-> > >> >> I think the compile-time deprecation warning when someone is usin=
-g the
-> > >> >> old-style map definitions in their BPF programs is an excellent w=
-ay to
-> > >> >> do that.
-> > >> >>
-> > >> >> I'm also fine with libbpf *by default* refusing to load programs =
-that
-> > >> >> use the old-style map definitions, but if the code is removed com=
-pletely
-> > >> >> it becomes impossible to write general-purpose loaders that can h=
-andle
-> > >> >> both old and new programs. The obvious example of such a loader i=
-s
-> > >> >> iproute2, the loader in xdp-tools is another.
-> > >> >
-> > >> > This is because you want to deviate from underlying BPF loader's
-> > >> > behavior and feature set and dictate your own extended feature set=
- in
-> > >> > xdp-tools/iproute2/etc. You can technically do that, but with a lo=
-t of
-> > >> > added complexity and headaches. But demanding libbpf to maintain
-> > >> > deprecated and discouraged features/APIs/practices for 10+ years a=
-nd
-> > >> > accumulate all the internal cruft and maintenance burden isn't a g=
-reat
-> > >> > solution either.
-> > >>
-> > >> Right, so work with me to find a solution? I already suggested sever=
-al
-> > >> ideas, and you just keep repeating "just use the old library", which=
- is
-> > >> tantamount to saying "take a hike".
-> > >
-> > > I'll just throw my $.02 here as I'm reviewing. On major versions its
-> > > fairly common to not force API compat with the libs I'm used to worki=
-ng
-> > > with. Most recent example that comes to my mind (just did this yester=
-day
-> > > for example) was porting code into openssl3.x from older version. I
-> > > mumbled a bit, but still did it so that I could get my tools working =
-on
-> > > latest and greatest.
-> > >
-> > > Going from 0.x -> 1.0 seems reasonable to break compat, users don't
-> > > need to update immediately right? They can linger around on 0.x relea=
-se
-> > > until they have some time or reason to jump onto 1.0? Distro's can
-> > > carry all versions for as long as necessary. Thats the value add of
-> > > distributions in my mind anyways. And a 0.x version somewhat implies
-> > > its not stable yet imo.
-> >
-> > I'm fine with breaking compatibility of the library. We already handle
-> > that in xdp-tools via standard configure probing. The problem here is
-> > with breaking compatibility the data file format (i.e., BPF ELF files);
-> > in your openssl example that would correspond to new versions of openss=
-l
-> > refusing to read certificate files that were issued before the upgrade.
+On Tue, 25 Jan 2022 11:46:15 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Comparing something so complex and rapidly evolving as BPF ecosystem,
-which includes kernel, compiler, libbpf (and other BPF loaders) and
-BPF-related tooling (like, bpftool) all interacting with each other to
-loading a certificate file is a bit unfair, don't you think? Requiring
-something that was written and compiled 2 years ago to work with a
-complex BPF loader after a major version bump and a year+ warning
-ahead of time is also a bit unfair.
+> On Tue, 25 Jan 2022 21:12:09 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > Add a return hook framework which hooks the function
+> > return. Most of the idea came from the kretprobe, but
+> > this is independent from kretprobe.
+> > Note that this is expected to be used with other
+> > function entry hooking feature, like ftrace, fprobe,
+> > adn kprobes. Eventually this will replace the
+> > kretprobe (e.g. kprobe + rethook = kretprobe), but
+> > at this moment, this is just a additional hook.
+> 
+> BTW, 74 characters is the recommended width of a change log (I usually use
+> 76). Not sure why your width is set to 55 characters.
 
-Even extremely widely used programming languages, like C++ and its
-standard library, do deprecate and remove stuff over time.
+OK, let me make it wider. It's my strange habit (maybe came from
+writing text email.)
 
-> >
-> > I really don't get why this distinction is so hard to explain? Is there
-> > some mental model disconnect here somewhere, or something?
->
-> Ah I think the difference is, in my mental model a BPF Program is the
-> BPF object file, the loader code, user space components to manage BPF
-> maps/perf-rings/objects, and a bunch of other user space code to do
-> something useful with whatever is showing up in maps, perf ring, etc.
-> These are one program in my model. A BPF object on its own has little
-> value in my model. (A BPF lib on the other hand implementing common
-> functionality is very useful though) Even if the BPF object files are
-> coming from a different team we have to work closely together because
-> map value/keys have an API, perf-ring events have an API and so on.
->
-> I don't see it as a paticularly major problem if we break old things
-> here because the only things in my model that get loaded over these
-> loaders are debug progs and experimental code. Super useful stuff
-> by the way, but something I would expect a human to go 'oh it didn't
-> load' I guess I shouldn't have ignored the warning for the last
-> year and then they fix it. Or if it is a program shell'ing out to
-> the tool they manage the versions carefully so wouldn't upgrade
-> to latest version until their system is ready. I'm not seeing how
-> this would end up breaking a deployed production system.
+Thank you!
 
-Great point, thanks!
+> 
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  Changes in v4:
+> >   - Fix rethook_trampoline_handler() loops as same as
+> >     what currently kretprobe does.  This will fix some
+> >     stacktrace issue in the rethook handler.
+> > ---
+> >  include/linux/rethook.h |   99 +++++++++++++++
+> >  include/linux/sched.h   |    3 
+> >  kernel/exit.c           |    2 
+> >  kernel/fork.c           |    3 
+> >  kernel/trace/Kconfig    |   11 ++
+> >  kernel/trace/Makefile   |    1 
+> >  kernel/trace/rethook.c  |  311 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  7 files changed, 430 insertions(+)
+> >  create mode 100644 include/linux/rethook.h
+> >  create mode 100644 kernel/trace/rethook.c
+> > 
+> > diff --git a/include/linux/rethook.h b/include/linux/rethook.h
+> > new file mode 100644
+> > index 000000000000..39cfbff1a03c
+> > --- /dev/null
+> > +++ b/include/linux/rethook.h
+> > @@ -0,0 +1,99 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Return hooking with list-based shadow stack.
+> > + */
+> > +#ifndef _LINUX_RETHOOK_H
+> > +#define _LINUX_RETHOOK_H
+> > +
+> > +#include <linux/compiler.h>
+> > +#include <linux/freelist.h>
+> > +#include <linux/llist.h>
+> > +#include <linux/rcupdate.h>
+> > +#include <linux/refcount.h>
+> > +
+> > +struct rethook_node;
+> > +
+> > +typedef void (*rethook_handler_t) (struct rethook_node *, void *, struct pt_regs *);
+> > +
+> > +/**
+> > + * struct rethook - The rethook management data structure.
+> > + * @data: The user-defined data storage.
+> > + * @handler: The user-defined return hook handler.
+> > + * @pool: The pool of struct rethook_node.
+> > + * @ref: The reference counter.
+> > + * @rcu: The rcu_head for deferred freeing.
+> > + *
+> > + * Don't embed to another data structure, because this is a self-destructive
+> > + * data structure when all rethook_node are freed.
+> > + */
+> > +struct rethook {
+> > +	void			*data;
+> > +	rethook_handler_t	handler;
+> > +	struct freelist_head	pool;
+> > +	refcount_t		ref;
+> > +	struct rcu_head		rcu;
+> > +};
+> > +
+> > +/**
+> > + * struct rethook_node - The rethook shadow-stack entry node.
+> > + * @freelist: The freelist, linked to struct rethook::pool.
+> > + * @rcu: The rcu_head for deferred freeing.
+> > + * @llist: The llist, linked to a struct task_struct::rethooks.
+> > + * @rethook: The pointer to the struct rethook.
+> > + * @ret_addr: The storage for the real return address.
+> > + * @frame: The stroage for the frame pointer.
+> 
+> 		"storage"
+> 
+> > + *
+> > + * You can embed this with your extended data structure to store any data
+> > + * on the entry of shadow stack.
+> 
+> 	"the shadow stack"?
+> 
+> > + */
+> > +struct rethook_node {
+> > +	union {
+> > +		struct freelist_node freelist;
+> > +		struct rcu_head      rcu;
+> > +	};
+> > +	struct llist_node	llist;
+> > +	struct rethook		*rethook;
+> > +	unsigned long		ret_addr;
+> > +	unsigned long		frame;
+> > +};
+> > +
+> > +struct rethook *rethook_alloc(void *data, rethook_handler_t handler);
+> > +void rethook_free(struct rethook *rh);
+> > +void rethook_add_node(struct rethook *rh, struct rethook_node *node);
+> > +struct rethook_node *rethook_try_get(struct rethook *rh);
+> > +void rethook_recycle(struct rethook_node *node);
+> > +void rethook_hook(struct rethook_node *node, struct pt_regs *regs);
+> > +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
+> > +				    struct llist_node **cur);
+> > +
+> > +/* Arch dependent code must implement arch_* and trampoline code */
+> > +void arch_rethook_prepare(struct rethook_node *node, struct pt_regs *regs);
+> > +void arch_rethook_trampoline(void);
+> > +
+> > +/**
+> > + * is_rethook_trampoline() - Check whether the address is rethook trampoline
+> > + * @addr: The address to be checked
+> > + *
+> > + * Return true if the @addr is rethook trampoline address.
+> 
+> 	"is a rethook"
+> 
+> > + */
+> > +static inline bool is_rethook_trampoline(unsigned long addr)
+> > +{
+> > +	return addr == (unsigned long)arch_rethook_trampoline;
+> 
+> Will this work on architectures like PPC that have strange ways of holding
+> the function addresses? Or is that what the below fixup handles?
+> 
+> > +}
+> > +
+> > +/* If the architecture needs a fixup the return address, implement it. */
+> 
+> 	"needs to fixup the"
+> 
+> > +void arch_rethook_fixup_return(struct pt_regs *regs,
+> > +			       unsigned long correct_ret_addr);
+> > +
+> > +/* Generic trampoline handler, arch code must prepare asm stub */
+> > +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+> > +					 unsigned long frame);
+> > +
+> > +#ifdef CONFIG_RETHOOK
+> > +void rethook_flush_task(struct task_struct *tk);
+> > +#else
+> > +#define rethook_flush_task(tsk)	do { } while (0)
+> > +#endif
+> > +
+> > +#endif
+> > +
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 78c351e35fec..2bfabf5355b7 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -1473,6 +1473,9 @@ struct task_struct {
+> >  #ifdef CONFIG_KRETPROBES
+> >  	struct llist_head               kretprobe_instances;
+> >  #endif
+> > +#ifdef CONFIG_RETHOOK
+> > +	struct llist_head               rethooks;
+> > +#endif
+> >  
+> >  #ifdef CONFIG_ARCH_HAS_PARANOID_L1D_FLUSH
+> >  	/*
+> > diff --git a/kernel/exit.c b/kernel/exit.c
+> > index f702a6a63686..a39a321c1f37 100644
+> > --- a/kernel/exit.c
+> > +++ b/kernel/exit.c
+> > @@ -64,6 +64,7 @@
+> >  #include <linux/compat.h>
+> >  #include <linux/io_uring.h>
+> >  #include <linux/kprobes.h>
+> > +#include <linux/rethook.h>
+> >  
+> >  #include <linux/uaccess.h>
+> >  #include <asm/unistd.h>
+> > @@ -169,6 +170,7 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
+> >  	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
+> >  
+> >  	kprobe_flush_task(tsk);
+> > +	rethook_flush_task(tsk);
+> >  	perf_event_delayed_put(tsk);
+> >  	trace_sched_process_free(tsk);
+> >  	put_task_struct(tsk);
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 3244cc56b697..ffae38be64c4 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -2282,6 +2282,9 @@ static __latent_entropy struct task_struct *copy_process(
+> >  #ifdef CONFIG_KRETPROBES
+> >  	p->kretprobe_instances.first = NULL;
+> >  #endif
+> > +#ifdef CONFIG_RETHOOK
+> > +	p->rethooks.first = NULL;
+> > +#endif
+> >  
+> >  	/*
+> >  	 * Ensure that the cgroup subsystem policies allow the new process to be
+> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> > index 23483dd474b0..4d27e56c6e76 100644
+> > --- a/kernel/trace/Kconfig
+> > +++ b/kernel/trace/Kconfig
+> > @@ -10,6 +10,17 @@ config USER_STACKTRACE_SUPPORT
+> >  config NOP_TRACER
+> >  	bool
+> >  
+> > +config HAVE_RETHOOK
+> > +	bool
+> > +
+> > +config RETHOOK
+> > +	bool
+> > +	depends on HAVE_RETHOOK
+> > +	help
+> > +	  Enable generic return hooking feature. This is an internal
+> > +	  API, which will be used by other function-entry hooking
+> > +	  feature like fprobe and kprobes.
+> 
+> 	"features"
+> 
+> > +
+> >  config HAVE_FUNCTION_TRACER
+> >  	bool
+> >  	help
+> > diff --git a/kernel/trace/Makefile b/kernel/trace/Makefile
+> > index 79255f9de9a4..c6f11a139eac 100644
+> > --- a/kernel/trace/Makefile
+> > +++ b/kernel/trace/Makefile
+> > @@ -98,6 +98,7 @@ obj-$(CONFIG_UPROBE_EVENTS) += trace_uprobe.o
+> >  obj-$(CONFIG_BOOTTIME_TRACING) += trace_boot.o
+> >  obj-$(CONFIG_FTRACE_RECORD_RECURSION) += trace_recursion_record.o
+> >  obj-$(CONFIG_FPROBE) += fprobe.o
+> > +obj-$(CONFIG_RETHOOK) += rethook.o
+> >  
+> >  obj-$(CONFIG_TRACEPOINT_BENCHMARK) += trace_benchmark.o
+> >  
+> > diff --git a/kernel/trace/rethook.c b/kernel/trace/rethook.c
+> > new file mode 100644
+> > index 000000000000..76c9848b44a9
+> > --- /dev/null
+> > +++ b/kernel/trace/rethook.c
+> > @@ -0,0 +1,311 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#define pr_fmt(fmt) "rethook: " fmt
+> > +
+> > +#include <linux/bug.h>
+> > +#include <linux/kallsyms.h>
+> > +#include <linux/kprobes.h>
+> > +#include <linux/preempt.h>
+> > +#include <linux/rethook.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/sort.h>
+> > +
+> > +/* Return hook list (shadow stack by list) */
+> > +
+> > +/*
+> > + * This function is called from delayed_put_task_struct() when a task is
+> > + * dead and cleaned up to recycle any kretprobe instances associated with
+> > + * this task. These left over instances represent probed functions that
+> > + * have been called but will never return.
+> > + */
+> > +void rethook_flush_task(struct task_struct *tk)
+> > +{
+> > +	struct rethook_node *rhn;
+> > +	struct llist_node *node;
+> > +
+> > +	preempt_disable();
+> > +
+> > +	node = __llist_del_all(&tk->rethooks);
+> 
+> Hmm, this keeps preemption disabled for the entire walk of the list.
+> Can we enable it here, and then just disable it when calling
+> rethook_recycle()?
+> 
+> > +	while (node) {
+> > +		rhn = container_of(node, struct rethook_node, llist);
+> > +		node = node->next;
+> 
+> 		preempt_disable();
+> > +		rethook_recycle(rhn);
+> 		preempt_enable();
+> 
+> ? I'm concerned about the latency that this can add on RT tasks.
+> 
+> > +	}
+> > +
+> > +	preempt_enable();
+> > +}
+> > +
+> > +static void rethook_free_rcu(struct rcu_head *head)
+> > +{
+> > +	struct rethook *rh = container_of(head, struct rethook, rcu);
+> > +	struct rethook_node *rhn;
+> > +	struct freelist_node *node;
+> > +	int count = 1;
+> > +
+> > +	node = rh->pool.head;
+> > +	while (node) {
+> > +		rhn = container_of(node, struct rethook_node, freelist);
+> > +		node = node->next;
+> > +		kfree(rhn);
+> > +		count++;
+> > +	}
+> > +
+> > +	/* The rh->ref is the number of pooled node + 1 */
+> > +	if (refcount_sub_and_test(count, &rh->ref))
+> > +		kfree(rh);
+> > +}
+> > +
+> > +/**
+> > + * rethook_free() - Free struct rethook.
+> > + * @rh: the struct rethook to be freed.
+> > + *
+> > + * Free the rethook. Before calling this function, user must ensure the
+> > + * @rh::data is cleaned if needed (or, the handler can access it after
+> > + * calling this function.) This function will set the @rh to be freed
+> > + * after all rethook_node are freed (not soon). And the caller must
+> > + * not touch @rh after calling this.
+> > + */
+> > +void rethook_free(struct rethook *rh)
+> > +{
+> > +	rcu_assign_pointer(rh->handler, NULL);
+> > +
+> > +	call_rcu(&rh->rcu, rethook_free_rcu);
+> > +}
+> > +
+> > +/**
+> > + * rethook_alloc() - Allocate struct rethook.
+> > + * @data: a data to pass the @handler when hooking the return.
+> > + * @handler: the return hook callback function.
+> > + *
+> > + * Allocate and initialize a new rethook with @data and @handler.
+> > + * Return NULL if memory allocation fails or @handler is NULL.
+> > + * Note that @handler == NULL means this rethook is going to be freed.
+> > + */
+> > +struct rethook *rethook_alloc(void *data, rethook_handler_t handler)
+> > +{
+> > +	struct rethook *rh = kzalloc(sizeof(struct rethook), GFP_KERNEL);
+> > +
+> > +	if (!rh || !handler)
+> > +		return NULL;
+> > +
+> > +	rh->data = data;
+> > +	rh->handler = handler;
+> > +	rh->pool.head = NULL;
+> > +	refcount_set(&rh->ref, 1);
+> > +
+> > +	return rh;
+> > +}
+> > +
+> > +/**
+> > + * rethook_add_node() - Add a new node to the rethook.
+> > + * @rh: the struct rethook.
+> > + * @node: the struct rethook_node to be added.
+> > + *
+> > + * Add @node to @rh. User must allocate @node (as a part of user's
+> > + * data structure.) The @node fields are initialized in this function.
+> > + */
+> > +void rethook_add_node(struct rethook *rh, struct rethook_node *node)
+> > +{
+> > +	node->rethook = rh;
+> > +	freelist_add(&node->freelist, &rh->pool);
+> > +	refcount_inc(&rh->ref);
+> > +}
+> > +
+> > +static void free_rethook_node_rcu(struct rcu_head *head)
+> > +{
+> > +	struct rethook_node *node = container_of(head, struct rethook_node, rcu);
+> > +
+> > +	if (refcount_dec_and_test(&node->rethook->ref))
+> > +		kfree(node->rethook);
+> > +	kfree(node);
+> > +}
+> > +
+> > +/**
+> > + * rethook_recycle() - return the node to rethook.
+> > + * @node: The struct rethook_node to be returned.
+> > + *
+> > + * Return back the @node to @node::rethook. If the @node::rethook is already
+> > + * marked as freed, this will free the @node.
+> > + */
+> > +void rethook_recycle(struct rethook_node *node)
+> > +{
+> > +	lockdep_assert_preemption_disabled();
+> > +
+> > +	if (likely(READ_ONCE(node->rethook->handler)))
+> > +		freelist_add(&node->freelist, &node->rethook->pool);
+> > +	else
+> > +		call_rcu(&node->rcu, free_rethook_node_rcu);
+> > +}
+> > +NOKPROBE_SYMBOL(rethook_recycle);
+> > +
+> > +/**
+> > + * rethook_try_get() - get an unused rethook node.
+> > + * @rh: The struct rethook which pools the nodes.
+> > + *
+> > + * Get an unused rethook node from @rh. If the node pool is empty, this
+> > + * will return NULL. Caller must disable preemption.
+> > + */
+> > +struct rethook_node *rethook_try_get(struct rethook *rh)
+> > +{
+> > +	rethook_handler_t handler = READ_ONCE(rh->handler);
+> > +	struct freelist_node *fn;
+> > +
+> > +	lockdep_assert_preemption_disabled();
+> > +
+> > +	/* Check whether @rh is going to be freed. */
+> > +	if (unlikely(!handler))
+> > +		return NULL;
+> > +
+> > +	fn = freelist_try_get(&rh->pool);
+> > +	if (!fn)
+> > +		return NULL;
+> > +
+> > +	return container_of(fn, struct rethook_node, freelist);
+> > +}
+> > +NOKPROBE_SYMBOL(rethook_try_get);
+> > +
+> > +/**
+> > + * rethook_hook() - Hook the current function return.
+> > + * @node: The struct rethook node to hook the function return.
+> > + * @regs: The struct pt_regs for the function entry.
+> > + *
+> > + * Hook the current running function return. This must be called when the
+> > + * function entry (or at least @regs must be the registers of the function
+> > + * entry.)
+> > + */
+> > +void rethook_hook(struct rethook_node *node, struct pt_regs *regs)
+> > +{
+> > +	arch_rethook_prepare(node, regs);
+> > +	__llist_add(&node->llist, &current->rethooks);
+> > +}
+> > +NOKPROBE_SYMBOL(rethook_hook);
+> > +
+> > +/* This assumes the 'tsk' is the current task or the is not running. */
+> 
+> 	"or the is not running" ?
+> 
+> > +static unsigned long __rethook_find_ret_addr(struct task_struct *tsk,
+> > +					     struct llist_node **cur)
+> > +{
+> > +	struct rethook_node *rh = NULL;
+> > +	struct llist_node *node = *cur;
+> > +
+> > +	if (!node)
+> > +		node = tsk->rethooks.first;
+> > +	else
+> > +		node = node->next;
+> > +
+> > +	while (node) {
+> > +		rh = container_of(node, struct rethook_node, llist);
+> > +		if (rh->ret_addr != (unsigned long)arch_rethook_trampoline) {
+> > +			*cur = node;
+> > +			return rh->ret_addr;
+> > +		}
+> > +		node = node->next;
+> > +	}
+> > +	return 0;
+> > +}
+> > +NOKPROBE_SYMBOL(__rethook_find_ret_addr);
+> > +
+> > +/**
+> > + * rethook_find_ret_addr -- Find correct return address modified by rethook
+> > + * @tsk: Target task
+> > + * @frame: A frame pointer
+> > + * @cur: a storage of the loop cursor llist_node pointer for next call
+> > + *
+> > + * Find the correct return address modified by a rethook on @tsk in unsigned
+> > + * long type. If it finds the return address, this returns that address value,
+> > + * or this returns 0.
+> 
+> space
+> 
+> > + * The @tsk must be 'current' or a task which is not running. @frame is a hint
+> 
+> How do you know a tsk is not running? How can that be guaranteed?
+> 
+> > + * to get the currect return address - which is compared with the
+> > + * rethook::frame field. The @cur is a loop cursor for searching the
+> > + * kretprobe return addresses on the @tsk. The '*@cur' should be NULL at the
+> > + * first call, but '@cur' itself must NOT NULL.
+> 
+> I know you state what the return value is above, but it should be stated
+> (again) here. As kernel-doc should have a separate section for return
+> values:
+> 
+>  * Returns found address value or zero if not found.
+> 
+> > + */
+> > +unsigned long rethook_find_ret_addr(struct task_struct *tsk, unsigned long frame,
+> > +				    struct llist_node **cur)
+> > +{
+> > +	struct rethook_node *rhn = NULL;
+> > +	unsigned long ret;
+> > +
+> > +	if (WARN_ON_ONCE(!cur))
+> > +		return 0;
+> > +
+> > +	do {
+> > +		ret = __rethook_find_ret_addr(tsk, cur);
+> > +		if (!ret)
+> > +			break;
+> > +		rhn = container_of(*cur, struct rethook_node, llist);
+> > +	} while (rhn->frame != frame);
+> > +
+> > +	return ret;
+> > +}
+> 
+> -- Steve
+> 
+> 
+> > +NOKPROBE_SYMBOL(rethook_find_ret_addr);
+> > +
+> > +void __weak arch_rethook_fixup_return(struct pt_regs *regs,
+> > +				      unsigned long correct_ret_addr)
+> > +{
+> > +	/*
+> > +	 * Do nothing by default. If the architecture which uses a
+> > +	 * frame pointer to record real return address on the stack,
+> > +	 * it should fill this function to fixup the return address
+> > +	 * so that stacktrace works from the rethook handler.
+> > +	 */
+> > +}
+> > +
+> > +/* This function will be called from each arch-defined trampoline. */
+> > +unsigned long rethook_trampoline_handler(struct pt_regs *regs,
+> > +					 unsigned long frame)
+> > +{
+> > +	struct llist_node *first, *node = NULL;
+> > +	unsigned long correct_ret_addr;
+> > +	rethook_handler_t handler;
+> > +	struct rethook_node *rhn;
+> > +
+> > +	correct_ret_addr = __rethook_find_ret_addr(current, &node);
+> > +	if (!correct_ret_addr) {
+> > +		pr_err("rethook: Return address not found! Maybe there is a bug in the kernel\n");
+> > +		BUG_ON(1);
+> > +	}
+> > +
+> > +	instruction_pointer_set(regs, correct_ret_addr);
+> > +
+> > +	/*
+> > +	 * These loops must be protected from rethook_free_rcu() because those
+> > +	 * are accessing 'rhn->rethook'.
+> > +	 */
+> > +	preempt_disable();
+> > +
+> > +	/*
+> > +	 * Run the handler on the shadow stack. Do not unlink the list here because
+> > +	 * stackdump inside the handlers needs to decode it.
+> > +	 */
+> > +	first = current->rethooks.first;
+> > +	while (first) {
+> > +		rhn = container_of(first, struct rethook_node, llist);
+> > +		if (WARN_ON_ONCE(rhn->frame != frame))
+> > +			break;
+> > +		handler = READ_ONCE(rhn->rethook->handler);
+> > +		if (handler)
+> > +			handler(rhn, rhn->rethook->data, regs);
+> > +
+> > +		if (first == node)
+> > +			break;
+> > +		first = first->next;
+> > +	}
+> > +
+> > +	/* Fixup registers for returning to correct address. */
+> > +	arch_rethook_fixup_return(regs, correct_ret_addr);
+> > +
+> > +	/* Unlink used shadow stack */
+> > +	first = current->rethooks.first;
+> > +	current->rethooks.first = node->next;
+> > +	node->next = NULL;
+> > +
+> > +	while (first) {
+> > +		rhn = container_of(first, struct rethook_node, llist);
+> > +		first = first->next;
+> > +		rethook_recycle(rhn);
+> > +	}
+> > +	preempt_enable();
+> > +
+> > +	return correct_ret_addr;
+> > +}
+> > +NOKPROBE_SYMBOL(rethook_trampoline_handler);
+> 
 
-If someone is unwilling to fix and recompile their BPF program, they
-should be OK not upgrading iproute2 or whatnot.
 
->
-> So my mental model doesn't seem to have the same issues here of some
-> long lived/unmaintained and isolated BPF object file that doesn't have
-> close ties to the loader. A bit curious how you get these
-> BPF programs that are not changeable and don't control the loader.
->
-> >
-> > >> I'm perfectly fine with having to jump through some more hoops to lo=
-ad
-> > >> old programs, and moving the old maps section parsing out of libbpf =
-and
-> > >> into the caller is fine as well; but then we'd need to add some hook=
-s to
-> > >> libbpf to create the maps inside the bpf_object. I can submit patche=
-s to
-> > >> do this, but I'm not going to bother if you're just going to reject =
-them
-> > >> because you don't want to accommodate anything other than your way o=
-f
-> > >> doing things :/
-> > >
-> > > Can't xdp-tools run on 0.x for as long as wanted and flip over when
-> > > it is ready? Same for iproute2 'tc' loader? I'm not seeing what would
-> > > break except for random people trying to use tools in debug or
-> > > experiments.
-> >
-> > New stuff would break. I.e., then xdp-tools / tc would be stuck on that
-> > version forever, and wouldn't be able to load any BPF programs that rel=
-y
-> > on features added to libbpf after 1.0.
-> >
-> > > FWIW the dumb netlink based loader I wrote to attach create qdiscs an=
-d
-> > > attach filters is <100 lines of code so its not a huge lift if you en=
-d
-> > > up having to roll your own here.
-> >
-> > We're not just talking about "creating qdiscs and attaching filters"
-> > here, we're talking about the loading of BPF object files. "Rolling my
-> > own" means writing code that parses elf files, populates maps, creates
-> > them in the kernel, does the relocations etc. That's essentially a
-> > rewrite / fork of libbpf, which is what I'm trying to avoid...
->
-> In practice I just forked/wrote my own loader code where needed and
-> libbpf didn't have what was needed. The thinking being my use case was so
-> niche it didn't make much sense to put in a general purpose lib and
-> burden everyone with the support/maintenance/cluter cost. I
-> think its ok for a library to not support all possible use cases.
->
-> .John
->
-> >
-> > -Toke
-> >
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
