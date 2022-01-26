@@ -2,355 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BDC49D27F
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4A049D2DD
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237756AbiAZTbO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 26 Jan 2022 14:31:14 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5784 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230462AbiAZTbO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 14:31:14 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20QGV0jU002515
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:31:13 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dtvbew6ke-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:31:13 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 26 Jan 2022 11:31:11 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id A1F221002C4D2; Wed, 26 Jan 2022 11:31:05 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: fix uprobe offset calculation in selftests
-Date:   Wed, 26 Jan 2022 11:30:58 -0800
-Message-ID: <20220126193058.3390292-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S244612AbiAZTzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 14:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244588AbiAZTzB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 14:55:01 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCD1C06161C;
+        Wed, 26 Jan 2022 11:55:01 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id x3so659181ilm.3;
+        Wed, 26 Jan 2022 11:55:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qiRNFPZxx1b8Iw6otnphrPffoT1d2DXkPIgcH6aNRiI=;
+        b=Yx4khfrNQxL3A9k2WXIK2mxpQBiJM8K1suQ7zdXZEJcc/2kgHlegfIvI4TN2YZ2CTL
+         SB/qWj3Qjjm5wTYXeFUSBufCUw+8PjyNxKMaX1FTE0VAc8ruj2SWPITYwSr5Zlptu5Tx
+         Gy545LLZJzd3G8KmVGJLHOZtqWzwTHE4sVtUym/geTteM5cchbFuX9H5cWZZxcMvIhZe
+         eYIkfkKJxQp+VEboUOCpLvLyXQx8wuz2luUCjAhLZsKkEP7lSba+2sSlBsJGHGMiuNC+
+         apyi0vJ8P2cs8Q7hw/S7SH5mBy16UIQU+jQQ4s3kER5yJ/B3mA2f0nt2a0cmGDrPWjn/
+         zbxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qiRNFPZxx1b8Iw6otnphrPffoT1d2DXkPIgcH6aNRiI=;
+        b=1Koya33+/tVEhytXV0kbZERgK3GGvSBzNv68fo1VkzBhCwvl8C+LRrAFVby+TSqelM
+         VJZzt5aT5akkAlhCRKRD1SrNAT9DhJvrsDNSsQtDSW/5HnE1b/llnbHvH0seYCbXaDlx
+         lSuO7sjwUdueycXalLeOWGcwNYaHf+R1GpEP0qI+REC0GPt5r9JLQthHbMcc1jv6+vd+
+         1MNxLNlJ1vIBcJMeJYrJ/8DDe1gPks1lU1Bjwf5yxkZdapD5JjvaiEv4UGtjl8H8FZym
+         g1KmNv9o/YJVoXMKfxg7wocJBPeYznSgsAnf8cG8mLdqvyiaV5Li9RPYTf3dK8hZ88Jx
+         BnKw==
+X-Gm-Message-State: AOAM531ATfBzgvKx0TXmWHOd6f9yxFMpiygpbd7wKYOL5YXTr8Rfz2IS
+        Kdj4302nvAtpknGp1mmdijz5/H6MVqWzrDwKdMM=
+X-Google-Smtp-Source: ABdhPJyKE04RoZE+IZPtzP8FeJy2FcEZAiMfZ9/noeQzrxfqxcUCoOT3oMnHmzTSSgffwPoN1RyrkIdDnwH7LmrW4AA=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr447352ili.239.1643226900740;
+ Wed, 26 Jan 2022 11:55:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: mrTKCGYJgnYSzJ-38Pmou7_odvHrzW_8
-X-Proofpoint-ORIG-GUID: mrTKCGYJgnYSzJ-38Pmou7_odvHrzW_8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-26_07,2022-01-26_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
- lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 mlxscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
- adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2201260116
-X-FB-Internal: deliver
+References: <20220126040509.1862767-1-kuifeng@fb.com> <20220126040509.1862767-4-kuifeng@fb.com>
+ <CAEf4BzYsjsWZASrF0rjBYion7nL7L9gRvGm_VJ7-1Ojds34b=A@mail.gmail.com> <624acf82a7c43ca0f9b0203a77b13fa6539ce967.camel@fb.com>
+In-Reply-To: <624acf82a7c43ca0f9b0203a77b13fa6539ce967.camel@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Jan 2022 11:54:49 -0800
+Message-ID: <CAEf4Bzbi12AK2YxYmgY73Mord-zDt-PMKBCQpVveodrgC0kGcw@mail.gmail.com>
+Subject: Re: [PATCH dwarves v3 3/4] pahole: Use per-thread btf instances to
+ avoid mutex locking.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix how selftests determine relative offset of a function that is
-uprobed. Previously, there was an assumption that uprobed function is
-always in the first executable region, which is not always the case
-(libbpf CI hits this case now). So get_base_addr() approach in isolation
-doesn't work anymore. So teach get_uprobe_offset() to determine correct
-memory mapping and calculate uprobe offset correctly.
+On Wed, Jan 26, 2022 at 10:39 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+>
+> On Tue, 2022-01-25 at 22:07 -0800, Andrii Nakryiko wrote:
+> > On Tue, Jan 25, 2022 at 8:07 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+> > >
+> > > Create an instance of btf for each worker thread, and add type info
+> > > to
+> > > the local btf instance in the steal-function of pahole without
+> > > mutex
+> > > acquiring.  Once finished with all worker threads, merge all
+> > > per-thread btf instances to the primary btf instance.
+> > >
+> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > >
+> ............ cut ...........
+> > > +       struct thread_data *thread = thr_data;
+> > > +
+> > > +       if (thread == NULL)
+> > > +               return 0;
+> > > +
+> > > +       /*
+> > > +        * Here we will call btf__dedup() here once we extend
+> > > +        * btf__dedup().
+> > > +        */
+> > > +
+> > > +       if (thread->encoder == btf_encoder) {
+> > > +               /* Release the lock acuqired when created
+> > > btf_encoder */
+> >
+> > typo: acquired
+> >
+> > > +               pthread_mutex_unlock(&btf_encoder_lock);
+> >
+> > Splitting pthread_mutex lock/unlock like this is extremely dangerous
+> > and error prone. If that's the price for reusing global btf_encoder
+> > for first worker, then I'd rather not reuse btf_encoder or revert
+> > back
+> > to doing btf__add_btf() and doing btf_encoder__delete() in the main
+> > thread.
+> >
+> > Please question and push back the approach and code review feedback
+> > if
+> > something doesn't feel natural or is causing more problems than
+> > solves.
+> >
+> > I think the cleanest solution would be to not reuse global btf_encoder
+> > for the first worker. I suspect the time difference isn't big, so I'd
+> > optimize for simplicity and clean separation. But if it is causing
+> > unnecessary slowdown, then as I said, let's just revert back to your
+> > previous approach with doing btf__add_btf() in the main thread.
+> >
+>
+> Your concerns make sense.
+> I tried the solutions w/ & w/o reusing btf_encoder.  The differencies
+> are obviously.  So, I will rollback to calling btf__add_btf() at the
+> main thread.
+>
+> w/o reusing: AVG 5.78467 P50 5.88 P70 6.03 P90 6.10
+> w/  reusing: AVG 5.304 P50 5.12 P70 5.17 P90 5.46
+>
 
-While at it, I merged together two implementations of
-get_uprobe_offset() helper, moving powerpc64-specific logic inside (had
-to add extra {} block to avoid unused variable error for insn).
+Half a second, wow. Ok, yeah, makes sense.
 
-Also ensured that uprobed functions are never inlined, but are still
-static (and thus local to each selftest), by using a no-op asm volatile
-block internally. I didn't want to keep them global __weak, because some
-tests use uprobe's ref counter offset (to test USDT-like logic) which is
-not compatible with non-refcounted uprobe. So it's nicer to have each
-test uprobe target local to the file and guaranteed to not be inlined or
-skipped by the compiler (which can happen with static functions,
-especially if compiling selftests with -O2).
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/benchs/bench_trigger.c      |  6 +-
- .../selftests/bpf/prog_tests/attach_probe.c   | 18 +++--
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 16 +++--
- .../selftests/bpf/prog_tests/task_pt_regs.c   | 16 +++--
- tools/testing/selftests/bpf/trace_helpers.c   | 70 ++++++++-----------
- tools/testing/selftests/bpf/trace_helpers.h   |  3 +-
- 6 files changed, 63 insertions(+), 66 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/benchs/bench_trigger.c b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-index 7f957c55a3ca..0c481de2833d 100644
---- a/tools/testing/selftests/bpf/benchs/bench_trigger.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_trigger.c
-@@ -154,7 +154,6 @@ static void *uprobe_producer_without_nop(void *input)
- static void usetup(bool use_retprobe, bool use_nop)
- {
- 	size_t uprobe_offset;
--	ssize_t base_addr;
- 	struct bpf_link *link;
- 
- 	setup_libbpf();
-@@ -165,11 +164,10 @@ static void usetup(bool use_retprobe, bool use_nop)
- 		exit(1);
- 	}
- 
--	base_addr = get_base_addr();
- 	if (use_nop)
--		uprobe_offset = get_uprobe_offset(&uprobe_target_with_nop, base_addr);
-+		uprobe_offset = get_uprobe_offset(&uprobe_target_with_nop);
- 	else
--		uprobe_offset = get_uprobe_offset(&uprobe_target_without_nop, base_addr);
-+		uprobe_offset = get_uprobe_offset(&uprobe_target_without_nop);
- 
- 	link = bpf_program__attach_uprobe(ctx.skel->progs.bench_trigger_uprobe,
- 					  use_retprobe,
-diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-index d0bd51eb23c8..d48f6e533e1e 100644
---- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-+++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-@@ -5,9 +5,10 @@
- /* this is how USDT semaphore is actually defined, except volatile modifier */
- volatile unsigned short uprobe_ref_ctr __attribute__((unused)) __attribute((section(".probes")));
- 
--/* attach point */
--static void method(void) {
--	return ;
-+/* uprobe attach point */
-+static void trigger_func(void)
-+{
-+	asm volatile ("");
- }
- 
- void test_attach_probe(void)
-@@ -17,8 +18,7 @@ void test_attach_probe(void)
- 	struct bpf_link *kprobe_link, *kretprobe_link;
- 	struct bpf_link *uprobe_link, *uretprobe_link;
- 	struct test_attach_probe* skel;
--	size_t uprobe_offset;
--	ssize_t base_addr, ref_ctr_offset;
-+	ssize_t uprobe_offset, ref_ctr_offset;
- 	bool legacy;
- 
- 	/* Check if new-style kprobe/uprobe API is supported.
-@@ -34,11 +34,9 @@ void test_attach_probe(void)
- 	 */
- 	legacy = access("/sys/bus/event_source/devices/kprobe/type", F_OK) != 0;
- 
--	base_addr = get_base_addr();
--	if (CHECK(base_addr < 0, "get_base_addr",
--		  "failed to find base addr: %zd", base_addr))
-+	uprobe_offset = get_uprobe_offset(&trigger_func);
-+	if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset"))
- 		return;
--	uprobe_offset = get_uprobe_offset(&method, base_addr);
- 
- 	ref_ctr_offset = get_rel_offset((uintptr_t)&uprobe_ref_ctr);
- 	if (!ASSERT_GE(ref_ctr_offset, 0, "ref_ctr_offset"))
-@@ -103,7 +101,7 @@ void test_attach_probe(void)
- 		goto cleanup;
- 
- 	/* trigger & validate uprobe & uretprobe */
--	method();
-+	trigger_func();
- 
- 	if (CHECK(skel->bss->uprobe_res != 3, "check_uprobe_res",
- 		  "wrong uprobe res: %d\n", skel->bss->uprobe_res))
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-index 5eea3c3a40fe..cd10df6cd0fc 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -8,6 +8,12 @@
- #include <test_progs.h>
- #include "test_bpf_cookie.skel.h"
- 
-+/* uprobe attach point */
-+static void trigger_func(void)
-+{
-+	asm volatile ("");
-+}
-+
- static void kprobe_subtest(struct test_bpf_cookie *skel)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-@@ -62,11 +68,11 @@ static void uprobe_subtest(struct test_bpf_cookie *skel)
- 	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
- 	struct bpf_link *link1 = NULL, *link2 = NULL;
- 	struct bpf_link *retlink1 = NULL, *retlink2 = NULL;
--	size_t uprobe_offset;
--	ssize_t base_addr;
-+	ssize_t uprobe_offset;
- 
--	base_addr = get_base_addr();
--	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
-+	uprobe_offset = get_uprobe_offset(&trigger_func);
-+	if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset"))
-+		goto cleanup;
- 
- 	/* attach two uprobes */
- 	opts.bpf_cookie = 0x100;
-@@ -99,7 +105,7 @@ static void uprobe_subtest(struct test_bpf_cookie *skel)
- 		goto cleanup;
- 
- 	/* trigger uprobe && uretprobe */
--	get_base_addr();
-+	trigger_func();
- 
- 	ASSERT_EQ(skel->bss->uprobe_res, 0x100 | 0x200, "uprobe_res");
- 	ASSERT_EQ(skel->bss->uretprobe_res, 0x1000 | 0x2000, "uretprobe_res");
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-index 37c20b5ffa70..61935e7e056a 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_pt_regs.c
-@@ -3,18 +3,22 @@
- #include <test_progs.h>
- #include "test_task_pt_regs.skel.h"
- 
-+/* uprobe attach point */
-+static void trigger_func(void)
-+{
-+	asm volatile ("");
-+}
-+
- void test_task_pt_regs(void)
- {
- 	struct test_task_pt_regs *skel;
- 	struct bpf_link *uprobe_link;
--	size_t uprobe_offset;
--	ssize_t base_addr;
-+	ssize_t uprobe_offset;
- 	bool match;
- 
--	base_addr = get_base_addr();
--	if (!ASSERT_GT(base_addr, 0, "get_base_addr"))
-+	uprobe_offset = get_uprobe_offset(&trigger_func);
-+	if (!ASSERT_GE(uprobe_offset, 0, "uprobe_offset"))
- 		return;
--	uprobe_offset = get_uprobe_offset(&get_base_addr, base_addr);
- 
- 	skel = test_task_pt_regs__open_and_load();
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
-@@ -32,7 +36,7 @@ void test_task_pt_regs(void)
- 	skel->links.handle_uprobe = uprobe_link;
- 
- 	/* trigger & validate uprobe */
--	get_base_addr();
-+	trigger_func();
- 
- 	if (!ASSERT_EQ(skel->bss->uprobe_res, 1, "check_uprobe_res"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 7b7f918eda77..65ab533c2516 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -138,6 +138,29 @@ void read_trace_pipe(void)
- 	}
- }
- 
-+ssize_t get_uprobe_offset(const void *addr)
-+{
-+	size_t start, end, base;
-+	char buf[256];
-+	bool found;
-+	FILE *f;
-+
-+	f = fopen("/proc/self/maps", "r");
-+	if (!f)
-+		return -errno;
-+
-+	while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf, &base) == 4) {
-+		if (buf[2] == 'x' && (uintptr_t)addr >= start && (uintptr_t)addr < end) {
-+			found = true;
-+			break;
-+		}
-+	}
-+
-+	fclose(f);
-+
-+	if (!found)
-+		return -ESRCH;
-+
- #if defined(__powerpc64__) && defined(_CALL_ELF) && _CALL_ELF == 2
- 
- #define OP_RT_RA_MASK   0xffff0000UL
-@@ -145,10 +168,6 @@ void read_trace_pipe(void)
- #define ADDIS_R2_R12    0x3c4c0000UL
- #define ADDI_R2_R2      0x38420000UL
- 
--ssize_t get_uprobe_offset(const void *addr, ssize_t base)
--{
--	u32 *insn = (u32 *)(uintptr_t)addr;
--
- 	/*
- 	 * A PPC64 ABIv2 function may have a local and a global entry
- 	 * point. We need to use the local entry point when patching
-@@ -165,43 +184,16 @@ ssize_t get_uprobe_offset(const void *addr, ssize_t base)
- 	 * lis   r2,XXXX
- 	 * addi  r2,r2,XXXX
- 	 */
--	if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
--	     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
--	    ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
--		return (ssize_t)(insn + 2) - base;
--	else
--		return (uintptr_t)addr - base;
--}
--
--#else
-+	{
-+		const u32 *insn = (const u32 *)(uintptr_t)addr;
- 
--ssize_t get_uprobe_offset(const void *addr, ssize_t base)
--{
--	return (uintptr_t)addr - base;
--}
--
--#endif
--
--ssize_t get_base_addr(void)
--{
--	size_t start, offset;
--	char buf[256];
--	FILE *f;
--
--	f = fopen("/proc/self/maps", "r");
--	if (!f)
--		return -errno;
--
--	while (fscanf(f, "%zx-%*x %s %zx %*[^\n]\n",
--		      &start, buf, &offset) == 3) {
--		if (strcmp(buf, "r-xp") == 0) {
--			fclose(f);
--			return start - offset;
--		}
-+		if ((((*insn & OP_RT_RA_MASK) == ADDIS_R2_R12) ||
-+		     ((*insn & OP_RT_RA_MASK) == LIS_R2)) &&
-+		    ((*(insn + 1) & OP_RT_RA_MASK) == ADDI_R2_R2))
-+			return (uintptr_t)(insn + 2) - start + base;
- 	}
--
--	fclose(f);
--	return -EINVAL;
-+#endif
-+	return (uintptr_t)addr - start + base;
- }
- 
- ssize_t get_rel_offset(uintptr_t addr)
-diff --git a/tools/testing/selftests/bpf/trace_helpers.h b/tools/testing/selftests/bpf/trace_helpers.h
-index d907b445524d..238a9c98cde2 100644
---- a/tools/testing/selftests/bpf/trace_helpers.h
-+++ b/tools/testing/selftests/bpf/trace_helpers.h
-@@ -18,8 +18,7 @@ int kallsyms_find(const char *sym, unsigned long long *addr);
- 
- void read_trace_pipe(void);
- 
--ssize_t get_uprobe_offset(const void *addr, ssize_t base);
--ssize_t get_base_addr(void);
-+ssize_t get_uprobe_offset(const void *addr);
- ssize_t get_rel_offset(uintptr_t addr);
- 
- #endif
--- 
-2.30.2
-
+>
+>
