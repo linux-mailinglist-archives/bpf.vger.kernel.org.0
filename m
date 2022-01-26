@@ -2,170 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB8949D2D9
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5291149D2DF
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244584AbiAZTy4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 14:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
+        id S234640AbiAZTzi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 14:55:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244579AbiAZTy4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 14:54:56 -0500
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40056C06161C
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:54:56 -0800 (PST)
-Received: by mail-qv1-xf2c.google.com with SMTP id k9so813614qvv.9
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:54:56 -0800 (PST)
+        with ESMTP id S229772AbiAZTzh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 14:55:37 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A90C06161C;
+        Wed, 26 Jan 2022 11:55:37 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id p63so77048iod.11;
+        Wed, 26 Jan 2022 11:55:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=/b9yrYylsR3IXw2MBkgKmnslMTaks1EUQq+pWFo3vMU=;
-        b=jIM+Tc+JfN7AxN6yCV944hevmEwbziOmVrsSDKFKhxcK5czEdfwuGa1+JKEm5p153D
-         slLmda6m/yCZO8ZIHlLZl6IqweIwHdlxDpwmS9sacFA2fhuXmFY8LEFoX+85O/+Bx4OE
-         iGciw+hNYyVKtUVlJOaV2lZ+sKD0MAsMcI/LQl+lQZdZ70jf6CnR8vIw7OtQFvUwfrZJ
-         lhlzFUgt9mOyvy8aEn4Oyx65EgV/2T/N1fYGTTkn2R2iHkCpwr0QXQR7i6xi6krzpt4Q
-         B7QgV0Cbl2yPbyxMuyZmyWX6EsCRk/5btemPGasR9kB/RKqdVkmYF45VVp+Q7EiGvBjs
-         T3MQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FCcmxFpU45CVJaKqVqEZ5RigfSTDPZSXSs6SLwCWSc8=;
+        b=e1fjksAv0rMm+3yGNhg1rzBWl0q1wfZ9qiFXdI19KrlLjJVu5aIxUWLJzR1n4yq1rA
+         DvizfYzWIla6/YF8pwwbLy5bRWdw6oIQCak4584/lXcXpRB0GjP5xZoQ/VyCvo3i2pe2
+         obdS5ums9VcP36N320MuNZnQ1ZtBAkNz8qY9IQeIBXgibbc92wJ0TTO2e1edPVOXnM7y
+         +NRy12OQBUQVYaUiLX4FBhthf70aAQwbKlMVZD7qmlpJoBy2rwKNpfxNMf4tvhpSBWQj
+         +2xLogpbPsCQ/gMz84yE5JOD4kK8XhFnwReXw9xEUFMe6umF/Qg3Heuv+8QuqJ6dqNYH
+         Q8kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=/b9yrYylsR3IXw2MBkgKmnslMTaks1EUQq+pWFo3vMU=;
-        b=YsKSvcb+znLFMwdxiyOBWPkBhgqfoUI5X8obx9aJSBrznzRetZu0UijN1+UMKlSTnr
-         iLgvSiDH4Ll+o90/H12n6uOJVAhWrkxn39EAONwxinJCiOj9s/k8oqfeCx9gzrnvw9l9
-         zvpeJh1Y9oyf2tqjZwz+7ZFz4oDWrUGoLhoDP+YBasZMxJ+dTlRjmp65geHIqksaaQUW
-         av/4G86G3Zg3IFSVuACEkxuqhReqXGqLgDkDBI0VmODw10Ec4t68IA5Li0QkFSde6StA
-         0Ae2c3rs4v6qunbMEfAaRPDeIbJXQ35Zu2zolSeMYXldx6HW+J3L9PYm5LBbZq+gQCBX
-         Kuwg==
-X-Gm-Message-State: AOAM533OpYefXuiEVPvmJzywftcCVKqQSvQnl2Zu1DETSK2gp1BdFyVK
-        oLVZebJwDhsRcCLAlsPYuDsfTQ==
-X-Google-Smtp-Source: ABdhPJzDiy8lWJPalTqmHodK4vLPsn5OI+iOGQeHou4Hn9uAp27KEpv7ql8yuu4Af0KUxh9Hg0NE3g==
-X-Received: by 2002:a05:6214:e45:: with SMTP id o5mr364368qvc.10.1643226894754;
-        Wed, 26 Jan 2022 11:54:54 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id bs33sm148633qkb.103.2022.01.26.11.54.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jan 2022 11:54:54 -0800 (PST)
-Date:   Wed, 26 Jan 2022 14:54:53 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc@lists.linuxfoundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: LSF/MM/BPF: 2022: Call for Proposals
-Message-ID: <YfGnDRM/Pe4jzbSr@localhost.localdomain>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FCcmxFpU45CVJaKqVqEZ5RigfSTDPZSXSs6SLwCWSc8=;
+        b=6JMOV1k1Qgoed1HtHxjENbAlqkvDg1r/TuXic4YGriBLzMn/3v/0bqhaw7R9/+ENoK
+         3g/5CIFJaQ9D4RR/aP+gV+HM9U8SyhuUk8ql/E8lf+kezst/6+OJ3Qm7BxoCEshvuH8Y
+         L2EzYz+pIKdBDhIivIw8QS3D9Nim4jHmprdzumUq8mweR2hgqk0FN4RXlR3l2LsKURid
+         ZpXZdd87f9atJF3sixpO75IYQTismyhuvrJv7mhMaDZk2o1AME8u9WGB0Y6sKrNZyyS+
+         pZiHvYlKhmlS6wpc2GomN7DJZW9ePrEs4f35blv7Nw+5IFTCx+dLgs/ViTZ/+mfRtj+m
+         CuAw==
+X-Gm-Message-State: AOAM533V7C0NbZRIFjoPYbyvKqBNnzKr1+9g1Etr0Lm1y9armFSq5AbZ
+        UKw5fQAGKoFSgeTKEJiW9XynNgobQa//rxO9KRQ=
+X-Google-Smtp-Source: ABdhPJwFvwgOlncZo7cKeCd8cfzLIBNmtpwi3miI/1WqBc3GTdL4/3Ygf4ULNtCKut2ZGaPXqpKVA6fKE4sIQ2QuOoY=
+X-Received: by 2002:a02:2422:: with SMTP id f34mr92251jaa.237.1643226936465;
+ Wed, 26 Jan 2022 11:55:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20220126192039.2840752-1-kuifeng@fb.com> <20220126192039.2840752-2-kuifeng@fb.com>
+In-Reply-To: <20220126192039.2840752-2-kuifeng@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 26 Jan 2022 11:55:25 -0800
+Message-ID: <CAEf4BzarN4L8U+hLnvZrNg0CR-oQr25OFs_W_tfW3aAHGAVFWw@mail.gmail.com>
+Subject: Re: [PATCH dwarves v4 1/4] dwarf_loader: Receive per-thread data on
+ worker threads.
+To:     Kui-Feng Lee <kuifeng@fb.com>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2022 will be held from May 2 to May 4 at The
-Margaritaville Resort Palm Springs in Palm Springs, California.
-LSF/MM/BPF is an invitation-only technical workshop to map out
-improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
+On Wed, Jan 26, 2022 at 11:20 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+>
+> Add arguments to steal and thread_exit callbacks of conf_load to
+> receive per-thread data.
+>
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
 
-COVID is at the front of our minds as we attempt to put together the
-best and safest conference we can arrange.  The logistics of how to hold
-an in person event will change and evolve as we get closer to the actual
-date, but rest assured we will do everything recommended by public
-health officials.
+Please carry over acks you got on previous revisions, unless you did
+some drastic changes to already acked patches.
 
-LSF/MM/BPF 2022 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
-
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic as
-soon as possible.
-
-This years instructions are similar to our previous attempts.  We're
-asking that you please let us know you want to be invited by March 1,
-2022.  We realize that travel is an ever changing target, but it helps
-us get an idea of possible attendance numbers.  Clearly things can and
-will change, so consider the request to attend deadline more about
-planning and less about concrete plans.
-
-1) Fill out the following Google form to request attendance and
-suggest any topics
-
-	https://forms.gle/uD5tbZYGpaRXPnE19
-
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
-
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
-
-        lsf-pc@lists.linux-foundation.org
-
-and CC the mailing lists that are relevant for the topic in question:
-
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-        Josef Bacik (Filesystems)
-        Amir Goldstein (Filesystems)
-        Martin K. Petersen (Storage)
-        Omar Sandoval (Storage)
-        Michal Hocko (MM)
-        Dan Williams (MM)
-        Alexei Starovoitov (BPF)
-        Daniel Borkmann (BPF)
+>  btf_loader.c   | 2 +-
+>  ctf_loader.c   | 2 +-
+>  dwarf_loader.c | 4 ++--
+>  dwarves.h      | 5 +++--
+>  pahole.c       | 3 ++-
+>  pdwtags.c      | 3 ++-
+>  pfunct.c       | 4 +++-
+>  7 files changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/btf_loader.c b/btf_loader.c
+> index 7a5b16ff393e..b61cadd55127 100644
+> --- a/btf_loader.c
+> +++ b/btf_loader.c
+> @@ -624,7 +624,7 @@ static int cus__load_btf(struct cus *cus, struct conf_load *conf, const char *fi
+>          * The app stole this cu, possibly deleting it,
+>          * so forget about it
+>          */
+> -       if (conf && conf->steal && conf->steal(cu, conf))
+> +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
+>                 return 0;
+>
+>         cus__add(cus, cu);
+> diff --git a/ctf_loader.c b/ctf_loader.c
+> index 7c34739afdce..de6d4dbfce97 100644
+> --- a/ctf_loader.c
+> +++ b/ctf_loader.c
+> @@ -722,7 +722,7 @@ int ctf__load_file(struct cus *cus, struct conf_load *conf,
+>          * The app stole this cu, possibly deleting it,
+>          * so forget about it
+>          */
+> -       if (conf && conf->steal && conf->steal(cu, conf))
+> +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
+>                 return 0;
+>
+>         cus__add(cus, cu);
+> diff --git a/dwarf_loader.c b/dwarf_loader.c
+> index e30b03c1c541..bf9ea3765419 100644
+> --- a/dwarf_loader.c
+> +++ b/dwarf_loader.c
+> @@ -2686,7 +2686,7 @@ static int cu__finalize(struct cu *cu, struct conf_load *conf)
+>  {
+>         cu__for_all_tags(cu, class_member__cache_byte_size, conf);
+>         if (conf && conf->steal) {
+> -               return conf->steal(cu, conf);
+> +               return conf->steal(cu, conf, NULL);
+>         }
+>         return LSK__KEEPIT;
+>  }
+> @@ -2930,7 +2930,7 @@ static void *dwarf_cus__process_cu_thread(void *arg)
+>                         goto out_abort;
+>         }
+>
+> -       if (dcus->conf->thread_exit && dcus->conf->thread_exit() != 0)
+> +       if (dcus->conf->thread_exit && dcus->conf->thread_exit(dcus->conf, NULL) != 0)
+>                 goto out_abort;
+>
+>         return (void *)DWARF_CB_OK;
+> diff --git a/dwarves.h b/dwarves.h
+> index 52d162d67456..9a8e4de8843a 100644
+> --- a/dwarves.h
+> +++ b/dwarves.h
+> @@ -48,8 +48,9 @@ struct conf_fprintf;
+>   */
+>  struct conf_load {
+>         enum load_steal_kind    (*steal)(struct cu *cu,
+> -                                        struct conf_load *conf);
+> -       int                     (*thread_exit)(void);
+> +                                        struct conf_load *conf,
+> +                                        void *thr_data);
+> +       int                     (*thread_exit)(struct conf_load *conf, void *thr_data);
+>         void                    *cookie;
+>         char                    *format_path;
+>         int                     nr_jobs;
+> diff --git a/pahole.c b/pahole.c
+> index f3a51cb2fe74..f3eeaaca4cdf 100644
+> --- a/pahole.c
+> +++ b/pahole.c
+> @@ -2799,7 +2799,8 @@ out:
+>  static struct type_instance *header;
+>
+>  static enum load_steal_kind pahole_stealer(struct cu *cu,
+> -                                          struct conf_load *conf_load)
+> +                                          struct conf_load *conf_load,
+> +                                          void *thr_data)
+>  {
+>         int ret = LSK__DELETE;
+>
+> diff --git a/pdwtags.c b/pdwtags.c
+> index 2b5ba1bf6745..8b1d6f1c96cb 100644
+> --- a/pdwtags.c
+> +++ b/pdwtags.c
+> @@ -72,7 +72,8 @@ static int cu__emit_tags(struct cu *cu)
+>  }
+>
+>  static enum load_steal_kind pdwtags_stealer(struct cu *cu,
+> -                                           struct conf_load *conf_load __maybe_unused)
+> +                                           struct conf_load *conf_load __maybe_unused,
+> +                                           void *thr_data __maybe_unused)
+>  {
+>         cu__emit_tags(cu);
+>         return LSK__DELETE;
+> diff --git a/pfunct.c b/pfunct.c
+> index 5485622e639b..314915b774f4 100644
+> --- a/pfunct.c
+> +++ b/pfunct.c
+> @@ -489,7 +489,9 @@ int elf_symtabs__show(char *filenames[])
+>         return EXIT_SUCCESS;
+>  }
+>
+> -static enum load_steal_kind pfunct_stealer(struct cu *cu, struct conf_load *conf_load __maybe_unused)
+> +static enum load_steal_kind pfunct_stealer(struct cu *cu,
+> +                                          struct conf_load *conf_load __maybe_unused,
+> +                                          void *thr_data __maybe_unused)
+>  {
+>
+>         if (function_name) {
+> --
+> 2.30.2
+>
