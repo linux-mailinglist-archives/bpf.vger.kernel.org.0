@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C3B49C6C3
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 10:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0722D49C6DE
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 10:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbiAZJqV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 04:46:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S232833AbiAZJtz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 04:49:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbiAZJqV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 04:46:21 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C856AC06161C
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:46:20 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id x11so61980718lfa.2
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:46:20 -0800 (PST)
+        with ESMTP id S232742AbiAZJtz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 04:49:55 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A812AC06161C
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:49:54 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id q127so5776872ljq.2
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:49:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LpTaU2Ptr8MQ/wN++pzUGfYSFa+pffVDK7J691el+xI=;
-        b=yMvK6vPPbGBnuLsvGBBDXyTE2AbQ4G1HcCUAjxDkxfT8BG+8bRZBDWCRIzxqaIVOCO
-         NYBVPjfpPcFa+ZCUk6/uuRfnFi0AV2lJzlHLSCzXCLqFJaaZME0SIO5SgQcitMs4E23r
-         ciPEfJVik7FUyYExCFSqmXAgN0+y+ecIexyG4=
+        bh=nsYmZZVmVWqgaLKAmBGCRvkPtBIIUYO7KDL76PCx8zY=;
+        b=fjELwJfGvWtFkfklukvBIQ3ks4Y3vrDw0wHWgLA2ad2D9t8u16gxYhTo7fwIf8HMQv
+         Z1WUIDnxts7VKzpvVkSFz5K3O9k6r128BRXxycL9ra4As8+tYjW2Qxkpvi3N3U/Q2QzC
+         z5H4++UeDhnbAjqraFN2gvcI+1wp9f7NEGeoE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LpTaU2Ptr8MQ/wN++pzUGfYSFa+pffVDK7J691el+xI=;
-        b=5SljAt0/5bKX9gI3/48hVE8/bHbnmZrhQ+ZrIeVWxIlIXcrZfs8P7r13H3ZEq33uYg
-         JlEYc5qZV38gUU9PzjzQHwLe2RpdMrfDyMnbMIUA3+FPr//n38wncrXaaWqXr52DiUjK
-         QWlkcc0YnV/HX0Nm0QkW3TtNDZCrQUX8TjAC70h+UN56rZ0Jij9NdYWpdyj98yiGOsKV
-         viJwwiAIV5v7CFaZrih7hrokO+kSdQmhbEQFOCKRaOAWkNybj06vuWaPkM7fkGht07J7
-         9J9BEiXE7GkErP03v9w8LCCALlmEYavEMBaknt2pEvEo4BcRW9grbz5f4rb0pd4DQNbN
-         B1SA==
-X-Gm-Message-State: AOAM531NvVMykqUSK1WzFBddteCYOVnzilS1oJzb7lzSVFCDU4aOJL7p
-        dVCJKQC1vsV/Lk/bdyOWeMuXVYcZpi8OOUtoZfbRZA==
-X-Google-Smtp-Source: ABdhPJyJUeBUcRbKBBc5OZhT3CTkWd+leTIulW72WHw2OORXwCdM8BcPQZqWcWkYa2JBBQ1HO7kLz8pv/jPLIi1IO5k=
-X-Received: by 2002:a05:6512:3086:: with SMTP id z6mr4373391lfd.102.1643190379153;
- Wed, 26 Jan 2022 01:46:19 -0800 (PST)
+        bh=nsYmZZVmVWqgaLKAmBGCRvkPtBIIUYO7KDL76PCx8zY=;
+        b=m//IqMzXdeRDa7R82grS5zbOawZ2CedznwPD/Y1g5j0KzQeCJ1xOMlo3QZNIdqjQhz
+         37OIzdd6/BOPI6mShtQLxrMdTJ2/oeOwFyR1qlNqH9HVakfmilGJA6drf4P7vojfhrRi
+         Z8zMtlJFXhoi7eNsTtW85nOlF8bnDbGwX41ejEkVYw+/UwKGK6Tx2V1ArOhoL/ugfzKm
+         PcvRxZvwjb3opRApn7TRVMVmBj2bOoCK3mvGPMmpzihu8nBpYwYHs/iZfp2xGOzWmsN/
+         ychYcYbwyr/zAcbCJnc22t5EuQLUa933/vX0Z3QJYjkE5ZQZH1Uzqf9AV9H8lvE+dv7w
+         XrVg==
+X-Gm-Message-State: AOAM530e6Mb+Em7ch3DE174J4kJpmfsstaElQxg73F4LhbnguNLKwUVG
+        2O+PHchb3mY8Ige2gS7nhOqQPHCcLNoJN4e9Fj4mAQ==
+X-Google-Smtp-Source: ABdhPJxYlr85SblyBnozf1GKr6NTo2JW/LSIixbq1P1TK1EWw8J1poyqjpZITrAU14nn+s+iNIthF8KizZRPvvdKRVI=
+X-Received: by 2002:a2e:9e0a:: with SMTP id e10mr17200025ljk.121.1643190592988;
+ Wed, 26 Jan 2022 01:49:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20220124151146.376446-1-maximmi@nvidia.com> <20220124151146.376446-2-maximmi@nvidia.com>
-In-Reply-To: <20220124151146.376446-2-maximmi@nvidia.com>
+References: <20220124151146.376446-1-maximmi@nvidia.com> <20220124151146.376446-3-maximmi@nvidia.com>
+In-Reply-To: <20220124151146.376446-3-maximmi@nvidia.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 26 Jan 2022 09:46:08 +0000
-Message-ID: <CACAyw98mbtZSH3yddaptKb4Qi7Grxzt80ihqiHA3qw9n4XwVjg@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 1/4] bpf: Use ipv6_only_sock in bpf_tcp_gen_syncookie
+Date:   Wed, 26 Jan 2022 09:49:42 +0000
+Message-ID: <CACAyw9_mA-yBWbU6Sf8hq6P46PfiTpEZYTGSKmNG6ZiFWGz=ZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 2/4] bpf: Support dual-stack sockets in bpf_tcp_check_syncookie
 To:     Maxim Mikityanskiy <maximmi@nvidia.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,14 +68,63 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, 24 Jan 2022 at 15:13, Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
 >
-> Instead of querying the sk_ipv6only field directly, use the dedicated
-> ipv6_only_sock helper.
+> bpf_tcp_gen_syncookie looks at the IP version in the IP header and
+> validates the address family of the socket. It supports IPv4 packets in
+> AF_INET6 dual-stack sockets.
 >
-> Fixes: 70d66244317e ("bpf: add bpf_tcp_gen_syncookie helper")
+> On the other hand, bpf_tcp_check_syncookie looks only at the address
+> family of the socket, ignoring the real IP version in headers, and
+> validates only the packet size. This implementation has some drawbacks:
+>
+> 1. Packets are not validated properly, allowing a BPF program to trick
+>    bpf_tcp_check_syncookie into handling an IPv6 packet on an IPv4
+>    socket.
+>
+> 2. Dual-stack sockets fail the checks on IPv4 packets. IPv4 clients end
+>    up receiving a SYNACK with the cookie, but the following ACK gets
+>    dropped.
+>
+> This patch fixes these issues by changing the checks in
+> bpf_tcp_check_syncookie to match the ones in bpf_tcp_gen_syncookie. IP
+> version from the header is taken into account, and it is validated
+> properly with address family.
+>
+> Fixes: 399040847084 ("bpf: add helper to check for a valid SYN cookie")
 > Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
 > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+> ---
+>  net/core/filter.c | 17 +++++++++++++----
+>  1 file changed, 13 insertions(+), 4 deletions(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 05efa691b796..780e635fb52a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -6774,24 +6774,33 @@ BPF_CALL_5(bpf_tcp_check_syncookie, struct sock *, sk, void *, iph, u32, iph_len
+>         if (!th->ack || th->rst || th->syn)
+>                 return -ENOENT;
+>
+> +       if (unlikely(iph_len < sizeof(struct iphdr)))
+> +               return -EINVAL;
+> +
+>         if (tcp_synq_no_recent_overflow(sk))
+>                 return -ENOENT;
+>
+>         cookie = ntohl(th->ack_seq) - 1;
+>
+> -       switch (sk->sk_family) {
+> -       case AF_INET:
+> -               if (unlikely(iph_len < sizeof(struct iphdr)))
+> +       /* Both struct iphdr and struct ipv6hdr have the version field at the
+> +        * same offset so we can cast to the shorter header (struct iphdr).
+> +        */
+> +       switch (((struct iphdr *)iph)->version) {
+> +       case 4:
+> +               if (sk->sk_family == AF_INET6 && ipv6_only_sock(sk))
+>                         return -EINVAL;
 
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+Wouldn't this allow an arbitrary value for sk->sk_family, since there
+is no further check that sk_family is AF_INET?
 
 -- 
 Lorenz Bauer  |  Systems Engineer
