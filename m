@@ -2,166 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3303049D3EE
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 21:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A471A49D47D
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 22:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbiAZU5h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 15:57:37 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52028 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231430AbiAZU5g (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 15:57:36 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20QEIr8f022420;
-        Wed, 26 Jan 2022 12:57:36 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=XQQf3BS5nV5T0hoqsYf9NWHqVTARiNoym42LmquOYBE=;
- b=Ock2+/jwsQv/M3NHMVmB5QkkbXdCmbva8h1qqBGWubQPNiBX2l5r73hFQ4d8jE+5y4B5
- JNva1E59GaccpH5absJMuO1CH7u6FEyMSj6pPRpR+bfn9Yybre6vW5crm4w743C3Zv9Q
- Q9IWd7/Cc8cKy/7O96yvMmAN1rj4S/udzAY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dtfjgk04j-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 26 Jan 2022 12:57:36 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 26 Jan 2022 12:57:34 -0800
+        id S232184AbiAZV2a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 16:28:30 -0500
+Received: from mail-mw2nam12on2083.outbound.protection.outlook.com ([40.107.244.83]:26657
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231297AbiAZV23 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 16:28:29 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MR2paper5xy2lILsj8G3kUxoXGkFiVWmboBTe3IalRnr5XQSkuiOQDYVeJw31e+RegTqXw2JgkHMI/yyRw7QbQh+s49/Rrtg9d+HXMEsEf2DD99xl70Lt/lpCPMQuZ6xg+9EweJSBW1fMkCrL8lOjDaMIo/PYIpu7yzlHEXVlnQHaj1if34V1d1d+wY8AINHvXzF3HEdufI+jlo+FlVCypqlNYCSB0D4SVYQNgXx2O/SJ/wfUxL6D+luRQwbOsEmLjvxxzPykngTcuAaigmYMHVd5/Yiw1f77BzHqV4ZnwvPl9nJxYCva+frt0eVioALYUT3Uui+a71Ma4ylFc4VrA==
+ b=Cgadzw7s0YC0ExPnAuTawteR0e2Vu+WZjC/5i5850OTYoNr/HtKlN5zUfrBP6LRxqnqeeX36M4i0I4g/o1J6ACFVzZGhmpW2SlFB2udya0hhTI9PXspf8C+TUgcp34uHQPuaVK+06Kk1pWYomAj7acCC5b/hqnNyPd81V7wIm62rzhDuFwl/KA1WguC5CVWgr7vsud+YlPjO4E8mhyd3fdKrTd6oMiRFb8Z+CG1EG/SrJr02XhjkNXVvUeuFYgHFPQmZcAA6izT767fWZm2JflDW2YqLIkFXWiFeymVB7I9WTLKdyEYbtODsJ7wb3UbVZWnU+uyfDPwFIxq0Ff4sCw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XQQf3BS5nV5T0hoqsYf9NWHqVTARiNoym42LmquOYBE=;
- b=HrVyFfiMp0GD7MfLc8cWvGgeTjWwDmgxOKhQ78awU0h/Ok7aZSFKUoi+t4OQHVA/fUYfmN0H6uopqyowIHTpjwfA9ZEc7BKcDRNejerIYGd6ebvN/vDm8Gf5fT9TFDIkOLY0/azxFpPnC+P2YInw+1WINc5sjfeUsNlPiD7LmyhL0DM8WYPLYX37JlNeRRRPKXjbOA7dgLN/GEHoyM+buCX31tF+5iwuyfjAltiPSPZDImLK2mxc79fFCGu2yXENeRgApijjDx2AeEo+dIcVuwbMDIb2L4nDE+f28tcSboAPNhuHsK+UgOYQCrVrTEW1xVXh44ned/bOpiqsYB7rWg==
+ bh=3Rx1wueTyoB4x61u0P7Y/8jQuOkj/CeOIW/zolDmcQY=;
+ b=oAnH9g5lhc9bowl7tnUdfywLGML12nffCW53IUqn1CTRYSEZ1V08XIpMlSM10+ab0aiz5j7SZWq/vDyyfpR5NCcHWpgIUbCaTd13QZvD7b21ULiMpaKffquy1jpL7eJLP/m8rOw3jgKDkdZf8ots1hsQQB/nZYA0Dc9iETgANv7DsxpyXi8rWKVISXrhgKsfzYD01YAKAr+kj2RnxEv6cEfBzt83Zfb1QH6XYUC0BPuCNpXVmLDTjzgTBLNwZMFJVV4VeXT+MkfhEt8UZpbnZRe9tSPdwMuZy82MiJMh6jSe+ZqLFxqFnNQWHlF2yt4y4VDyfW6rxSsA2alBrn9tGQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com (2603:10b6:a03:1f7::15)
- by SA1PR15MB4904.namprd15.prod.outlook.com (2603:10b6:806:1d3::14) with
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3Rx1wueTyoB4x61u0P7Y/8jQuOkj/CeOIW/zolDmcQY=;
+ b=YwGKmW64WrE9pNuoRYJ8tZ1QPt07xmHbgFo44MSyQo/tErjcXeh62r+3it4bJbGOPaMahjmuBTxLa1IWZN5AfLZxLtYmlPyGs5u13sCprJJq1TbH5x5+TcSMWruJDQvoAwAehaFIXnAInPD1yJlxkUyNiVzwVXwjGHwVpzsLw0V3jpbiMtyE1KyBJiTl0EsxAex/F6/jhm/N+PfBUi1afPKJQSl0CboAJRHr/HPKE3vWG6IeFJDAjNEQo5VV/8HACjqoLCaH9q6ujY6YQ1Put1dEoOP6CUySjgsjzsGXcrOe1PtWxSYSPI9drEP1N9jh/nesYVy3Sy9v0tDQ3WYW3g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by DM6PR12MB3465.namprd12.prod.outlook.com (2603:10b6:5:3a::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.13; Wed, 26 Jan
- 2022 20:57:33 +0000
-Received: from BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::74e2:d175:a6f7:cf24]) by BY5PR15MB3651.namprd15.prod.outlook.com
- ([fe80::74e2:d175:a6f7:cf24%6]) with mapi id 15.20.4930.017; Wed, 26 Jan 2022
- 20:57:33 +0000
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-Thread-Topic: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-Thread-Index: AQHYEunbzdmpTCH2G0W5LF0fnFB0wqx1uFaAgAAQggA=
-Date:   Wed, 26 Jan 2022 20:57:33 +0000
-Message-ID: <313f0f08405a5312af7d73e914348c19ce2f8565.camel@fb.com>
-References: <20220126192039.2840752-1-kuifeng@fb.com>
-         <20220126192039.2840752-4-kuifeng@fb.com>
-         <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e6fd6a35-4f76-43e6-fa76-08d9e10e7968
-x-ms-traffictypediagnostic: SA1PR15MB4904:EE_
-x-microsoft-antispam-prvs: <SA1PR15MB4904A6FA27940F279DA669C4CC209@SA1PR15MB4904.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8VR6AGyaOv2Y7oupiOjT5xMSpispIE8OCUAHPkjkMZowF1rpUHTsmOPbBVhyD2xhPjKzArMOAyPCzTQWhlgi9TS4xxpXHfW1Hf2bjR1F7u9xurXErlt4gVO6hsMmjxzbFGCB4ROXRw8VjBW7sXCqVpeKAD/0LtOnv6C0yAkj3j189t1gC29BCc22cCw6qv+yWNmD74938v329pXeEjec+KM6VENl5sj8RI9D5LPx3WDwcBVKpdLwGg0vq9Pwb5FNAMj8sJvwPy45jt20CZsqwmEReVXlmGOgDMXR53PVVHGXEyTlJhXMCzLYX2vvzgEQQDBY3vdMBdbkN2WadNexGcgwlI8RURPRi3ujGZxt9acH8anlDB9IKFqyVskxUjPI1fW+B76IWRP0dsYiyin7N6Od1rCHmOJXeZl94lSlzo9lEfCLGmFKH/XwpD/FSJM9gpmcJZCmDM0Yo0OloCmF4wIJKVnn7pmygox+NvoG3uQEViJECzaZObSXbdIDCgsYwb1cZzARC+Ivuaje91rPUOGyTsp0wMp3pM/Mgnq8YH9m7W2Ddw4MaQyGzPcs5NgR89Zxm7zqQKX7Dp45U7Gr6mL+NdhkkofwbsH14VyoAw2EpBkwZ7PUEjaQy9oUHakS2zkS3sQow2myPJ35Xv2cVeVe5IZVT2FF4djNkeSXVFapoLc2/U2NZfq4RBNzf33zlLMdim4k+oSVM2z/Kdro7Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3651.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(71200400001)(36756003)(64756008)(66446008)(6916009)(66476007)(86362001)(66556008)(53546011)(2616005)(122000001)(4744005)(38070700005)(76116006)(316002)(6506007)(2906002)(38100700002)(66946007)(8936002)(508600001)(8676002)(186003)(6486002)(4326008)(54906003)(6512007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZE92aWgzTW9kUGVmdVk3OTZUaGZFWEcvalcrVUZuQUE4MGg4WWVka1dPTlJM?=
- =?utf-8?B?UDMwMkZDTk1IUUJOZ1BxQmY1eGhjYy9xV1pSelJFcTlGOEc0TERJQ3pISVBp?=
- =?utf-8?B?MUltYnl5VEVlalNYZTNzV1dOM3lmWnBCWXhreXBoR0pCVEZuR0lLVWF4blh2?=
- =?utf-8?B?cW9MbmkrT2wwVTZrcGxRWWZEcXdCb3puTnJ3by93YWxmOHBhKzZOdlZ6K1RS?=
- =?utf-8?B?bVJpODVZd1FYVjR2MGoxWjhxcjdITVZwWWorcnUvVnJPdUNDUjhzWFVPK2ll?=
- =?utf-8?B?bWRBWDlLZ0ptckwwRGNsQzNrY204YXBaaUNnSjkwWlpha2RmbXVlcDdKbmlJ?=
- =?utf-8?B?RDRzUUg4UWlIb3VuejZKMHZMRm9abVZnL3NpcTZWYzJzKzVselFuaTA3a0Fr?=
- =?utf-8?B?V2pwbzVBQnV0QjUxZUxyeGJUTm9QWXRBWCt1RXVFd1duZmxDWnliUEdPYkYz?=
- =?utf-8?B?a0l2OHRpZlZFbDFKM3FsSDBlWjl3dXBmY0pJY09YVFVUNDRWd3k5VnNXWFFl?=
- =?utf-8?B?OEhHU0FiQklUaitTMWFzaHRZWDJjR0RnV2I5K3p3WmFXSWFCWHp6QUxnbHZX?=
- =?utf-8?B?Z0I2MXQzWnZ6ZUt1dEk1WlUwNHY4eHlWUTBqc2V5d0Q2WElxT0VCTlRsNEc5?=
- =?utf-8?B?aTQ5d21NWlo1ckNkU3MrajNwQmNCWlcrUFdKKzFIRzdFUkphQ3BuUHJBcUxD?=
- =?utf-8?B?dEJzamw0N3ZraURWaTIzTVlSRkNJRzVNc1Z1djhtRThtOGF0ZFpZSGhzaHJB?=
- =?utf-8?B?b0FNbXN0ZTRWQ2xzcmg0emI2MlFDZERhT1dUQU1pUFpiMHJ3U2hHdkF1OWRj?=
- =?utf-8?B?alQzd3BBQUd4S3Z1dGFtN3hablpoNlhKVW5uTGpNS0NMRDI1MWFNZHYyYkpL?=
- =?utf-8?B?a3hQZWVrbVc2OCtncklleStVdFRIanQwbkdZZ2VPdGxYanZ0cFJSUVB6anZ1?=
- =?utf-8?B?N3d2SWpIWnh5ZnhhM09yeEcvTW8wTENoV3RJRHhXeFgrTUlqK2NPL2VhYWE5?=
- =?utf-8?B?L1F6T2JZdEJ0RTE2dHBGampBVGtkU2d3VFU1UnFoekhQVE9aOE0vdndkL0RE?=
- =?utf-8?B?OWd5NjVxdG5pamNlMnpWY2Y5RE9ES1VtMUFnNml4WDhtalYyRUdtSTdqV2Jy?=
- =?utf-8?B?MWxRWFY2clBUMExsZ1NML3BzUzh5ZE5qODdKNGJHZ0Q1cG5wM01BWFpyQTIv?=
- =?utf-8?B?R3JCUTk3M1lmdUpVbEpnQW5XeGYzVnpqemZ6OUVUR3drYjQxTk5MVmNKb0hT?=
- =?utf-8?B?Nnk0Zk1WeDkwdTk2d0tSdmxXY21yNFJuTHp6UVJkRXVRZnByYnBuZzQ2VTYv?=
- =?utf-8?B?ek9IcEY5b3FPSlNYelNSWXVMWXNmRDB3Zjl6Ky9naXVYbEhkNXRMMzA2c21N?=
- =?utf-8?B?VDN6VVN0dFBKL2d1SzEwd29laDR5Q3ZiN2hDeEhmTFh6NktpdFl4OHRlTzB3?=
- =?utf-8?B?RCtqQUNGcVUwYmE3QXRmWmpJSVpyalJTV2lhbVZHK2N6bVpTNGk0TUgvUjV3?=
- =?utf-8?B?OXp2SFhkU2M5RnZIWG5ScE1YazhINVVFWXA3YmRsQ095RkVpZUw2RHU5cm0r?=
- =?utf-8?B?ZmNYRmdqNE9UU0hvRWZiS2hmQVhDeUVLbDVoditPNUE1YmhzNzFHS1N2ZFNT?=
- =?utf-8?B?N1pTR0gxbzVDWEZtUGpuYXdla29FRElodVpVVXdWRjhxV0JaZWN0U2VjSVNo?=
- =?utf-8?B?dVAyMVRVSFFVWndUZWlEaTlrTWhzRnRKQjFRWWttTDRsZWRwTGRlRkt5S3lR?=
- =?utf-8?B?MTBQZWMyNzBNSVJxaG1TdTVDY0t6VXBmeGNPVi9BL2psekZVM1hSSWxwVnhT?=
- =?utf-8?B?N2RWYWs0WFRITCsremEvR3RQUEQxRGhsaVdDbzZRUzFpdFEweW9waXpGZmZa?=
- =?utf-8?B?Q25yckhYUEIxY29uOHY5RXVJRkFuRTljOU5lN29JaDdNWDJEeDlNdkdZakxH?=
- =?utf-8?B?UlllWVNqZzBFQVlBZHdIejBKWit2WTZNMU9yMXRsUy9BZVByV3ZNQkFlMzFm?=
- =?utf-8?B?ODZ1ZEFhMm41QTBJWStoRERWREtxakl3K3pjZHo0T2s5alI2Y0ZsZ2NZVU1m?=
- =?utf-8?B?NmMydkpFRXpWS0tGNTRIYzZxK1JUejBVK2JzbXNoWHIwdG8xcW8weEg2MW82?=
- =?utf-8?B?RDIxNWhNa2FibnVleGhoVTdoRHRIS3NpNmZNaEw4eVg4T29ZSWhLa2dUTEwx?=
- =?utf-8?B?SFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E6A05E913DCAB54DABAB9310CA545CE7@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4909.8; Wed, 26 Jan
+ 2022 21:28:27 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::35a1:8b68:d0f7:7496]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::35a1:8b68:d0f7:7496%4]) with mapi id 15.20.4930.017; Wed, 26 Jan 2022
+ 21:28:27 +0000
+Date:   Wed, 26 Jan 2022 13:28:25 -0800
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 RESEND] net/mlx5e: Avoid field-overflowing memcpy()
+Message-ID: <20220126212825.ph3w3umkwvpvtokx@sx1>
+References: <20220124172028.2410761-1-keescook@chromium.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20220124172028.2410761-1-keescook@chromium.org>
+X-ClientProxiedBy: SJ0PR03CA0155.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::10) To BY5PR12MB4209.namprd12.prod.outlook.com
+ (2603:10b6:a03:20d::22)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f1989e22-f02e-4cc3-fd08-08d9e112ca4f
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3465:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR12MB34650F881788030C2CE85C12B3209@DM6PR12MB3465.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: P5vzU1nJGOChMvdmkYThdWl4/t2gi3WZbrIpCWtNWd4IFXHpHO0x89F9ncqopa9q0CWuD8/C0uvl4EnPWyVHj0V6JqvTk7QOA4EUyqsmwaEkM09mdrhx8v/wuen/sdJd7EKFwDh7HGMU1Fhm5WDLrnDmztX4CVk2f0ps0Z3OT07B45X/SXdpp9H+wL6ormcLwp7CZ4PBaxjqaDD9A3T57MNguiYMAXFV+/Vw2QKKuT+kJcTGO3nZlNmiPJDcWXzLg2sUdMAWVlGe2cta4uf+kCjccbMsQ3FS5TpHu0erOvPMmKh9osv/MQUyjNzdziJCzjougRGCmFBayWk20EON67bqgZuAm6C5gJxpBoYCqINvxLya6RofJdJ7tr7/etaL66XCehVWOOE1jw9Gv1nCNjPyBIUzcZaqGFUR4AEmmqvAZX1z4y3/mlziEYLafCNPRoWNPpym0ybg/tH5OXLlS2tSdIEkmSTo7lE5duy7UdqozqDbwu6//KV3Cdu3ruVVLmt5p111vZ30vyFqs6UMHmZfUmpm0OnEUfreUulFESc6r4zaW/U7z+GGsdPlMyHVUNP/N/c2KR8mYGmcJUY2WbxfSu9c9D0TuNXKCgeUggLPs54Id7mo472cZTfzfkshNmShVfUT05Qgnkwljbe1NBR1eEmCaU9DXi1cToN8tW6wY80VUAgZBdqA+WidASxSQRxECZpqfnvzoT5uiGW0Gw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(6486002)(6916009)(6506007)(186003)(26005)(54906003)(66946007)(9686003)(52116002)(5660300002)(6512007)(1076003)(4326008)(2906002)(8936002)(86362001)(7416002)(8676002)(66476007)(66556008)(38350700002)(33716001)(38100700002)(316002)(508600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?B7DqMBeE7kVM8SHJVG+opUTta3s4g00TJHM0g8EWedxb4y8cUOoULcUsU0Ra?=
+ =?us-ascii?Q?0tJx/ALKxYWf7o/pJ7EpOjjSp6j2E+lLToTgJ70rpIO0wtS20OyXDz1d5mXe?=
+ =?us-ascii?Q?g6oEEMAlDxYRg9nGFN/G5lv5oO9+NK35eSKZGBLUjuzbnJEFmrI0MGAUIdck?=
+ =?us-ascii?Q?4OfQmzJKujTy44rd/MSwjKeJpGuJ2OI+wBeiWt7HlNvXNOJiFw7off7CQ9Cf?=
+ =?us-ascii?Q?f88NPwB7+boQOIB0gX78MNRdSP3iuErCajQwm5MtSwBWqwWr6NVanilUsLrN?=
+ =?us-ascii?Q?qmPVbOZgF3j09ydukXBA6uq3msMzI9m3aSJijW01oV1x/ulbcCfGUWyiUrnV?=
+ =?us-ascii?Q?KhZ+bop0tAg6sBstyxHu58/F+UkqPQjgjCdHGHJg5SICM/31ilByEDLhSReW?=
+ =?us-ascii?Q?0FlRH2oqPmE941IflGrbiV12cLuiB1lVo8Pj9XOvStqZQaOoeonY0CYEs/hk?=
+ =?us-ascii?Q?oB2Nis86zZVSzGZBrIJv+x9kgpLwPxx3+VDIMsRbeWVckUxdMjBjpMY4P+/V?=
+ =?us-ascii?Q?1JGbvHIB69as2PXjfng2a9bCHM0T1ztGGm/KQC65QwbnVbAIZfym9B4jpsxv?=
+ =?us-ascii?Q?fX7jJHOGI1nLz6LCJFS62jBNbXqauC47dK0neYZzVFYZs5XbVytDwz4f3g+I?=
+ =?us-ascii?Q?BU52Mu7VyyxgRYoNcKS3TYZbpljwa3mPqfNbJ9PAXYJxYtIHUWq/elxJU/8P?=
+ =?us-ascii?Q?eTTvo/KdP0Jo0PAhTIu/NXRQ6XnAoNFLKv5XYcjtT8UTPDLCl/P9NEKdff2q?=
+ =?us-ascii?Q?lqKTRHDyon58gFwOYP/T/5T9lZHSkgbZ7DBYR3oGtyAYNfUJzEqQf2On63FE?=
+ =?us-ascii?Q?UCMx4MG6ZqpSWaIp99eCQv6Hz/MAhntDqv+y/xc4i8aetNkvrzv2CAmlzWcK?=
+ =?us-ascii?Q?GbHCrKBLORsFpARyQw8NjsCBAdMQLFOoQm2OyLuoDSFdDTdP+evoiNa1D3X6?=
+ =?us-ascii?Q?PR0AA3TVt6QYQWK/7jMCJkUh+8X/PqT9fCVYcLed2SaKoVvti14gYns2B0Jw?=
+ =?us-ascii?Q?yLttWDefTiUGGzye1AtaCT/0veLrP0WF6KfW75OEO9EzZsICjPmAoU5gR8eP?=
+ =?us-ascii?Q?HTwKi6lfaVs3sadQ6Z0Wv7PaeAHZiDA9U/VCjed37NeUDbAGpc4JTQiElRfC?=
+ =?us-ascii?Q?Rs4rQCYHP+osMAb8b9kybvL2mMbcD4oY5bMtHSU1pDWvRzSqDxuvhCV5QMn0?=
+ =?us-ascii?Q?y1l5J/S0wuclNJcVwwl97HwM8l9iBNj130tZIg32ef6LduR3KXAO9AcPS7OD?=
+ =?us-ascii?Q?aGXkpZ+xCsUwwjOJRGKg5Xg1BD093RePlaJtnnYiRu7MvVNEtW0XFEVDzAkx?=
+ =?us-ascii?Q?VBs0btdEb9YhKyD+dWKSayzb7o1aF7DxWQ2tC+ZkwuhxIIXmpkAYZHEKYGte?=
+ =?us-ascii?Q?UKeVehvw85/5dTNmY+kwZQEjy7Nj9KubLEki+U/jIR/kmSzOTWRr0VznuOvG?=
+ =?us-ascii?Q?6ponuEqKEpqIAf0AJ6djyosdluoGO5K8lmvMlbK8ojjNxZhkDImIr1B6RI95?=
+ =?us-ascii?Q?o3jCNetWQID5u+AL0d7Hu5eJyTK2mSKAWN7vAZphE7OA+9wsLTcDatDlarzA?=
+ =?us-ascii?Q?V95FBN0Y8Vv8FUED/yEirfs/KZMihlxSpWgMGBxztzOEqVRhSvcWsDqxOhuW?=
+ =?us-ascii?Q?KZ3GpA4M9zA4+64Fh8VkpVE=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f1989e22-f02e-4cc3-fd08-08d9e112ca4f
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3651.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6fd6a35-4f76-43e6-fa76-08d9e10e7968
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jan 2022 20:57:33.1725
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2022 21:28:27.1737
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fUgMa1mgVp5+s5Z4jPpc/3j/7becNy+w0jrXtBgpD1aeHKANa5eJCDrdbuiktDt2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4904
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: OS6yXb5hbtZkYIdr-lu-plsJslg5d2eO
-X-Proofpoint-ORIG-GUID: OS6yXb5hbtZkYIdr-lu-plsJslg5d2eO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-26_08,2022-01-26_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
- bulkscore=0 phishscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 impostorscore=0 priorityscore=1501
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2201260121
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UFTCEm83FxUIY6N2I5YMzcpvmwDPE124ynf7m/bVPK1EmjmYD9L8N7NkMcV/HPuNrdZZF+WZC50TjP08cGvx0Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3465
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gV2VkLCAyMDIyLTAxLTI2IGF0IDExOjU4IC0wODAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6
-DQo+IE9uIFdlZCwgSmFuIDI2LCAyMDIyIGF0IDExOjIxIEFNIEt1aS1GZW5nIExlZSA8a3VpZmVu
-Z0BmYi5jb20+IHdyb3RlOg0KPiA+IA0KPiA+IENyZWF0ZSBhbiBpbnN0YW5jZSBvZiBidGYgZm9y
-IGVhY2ggd29ya2VyIHRocmVhZCwgYW5kIGFkZCB0eXBlIGluZm8NCj4gPiB0bw0KPiA+IHRoZSBs
-b2NhbCBidGYgaW5zdGFuY2UgaW4gdGhlIHN0ZWFsLWZ1bmN0aW9uIG9mIHBhaG9sZSB3aXRob3V0
-DQo+ID4gbXV0ZXgNCj4gPiBhY3F1aXJpbmcuwqAgT25jZSBmaW5pc2hlZCB3aXRoIGFsbCB3b3Jr
-ZXIgdGhyZWFkcywgbWVyZ2UgYWxsDQo+ID4gcGVyLXRocmVhZCBidGYgaW5zdGFuY2VzIHRvIHRo
-ZSBwcmltYXJ5IGJ0ZiBpbnN0YW5jZS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBLdWktRmVu
-ZyBMZWUgPGt1aWZlbmdAZmIuY29tPg0KPiA+IC0tLQ0KPiANCj4gVGhlcmUgYXJlIHN0aWxsIHVu
-bmVjZXNzYXJ5IGNhc3RzIGFuZCBtaXNzaW5nIHt9IGluIHRoZSBlbHNlIGJyYW5jaCwNCj4gYnV0
-IEknbGwgbGV0IEFybmFsZG8gZGVjaWRlIG9yIGZpeCBpdCB1cC4NCj4gDQo+IE9uY2UgdGhpcyBs
-YW5kcywgY2FuIHlvdSBwbGVhc2Ugc2VuZCBrZXJuZWwgcGF0Y2ggdG8gdXNlIC1qIGlmIHBhaG9s
-ZQ0KPiBzdXBwb3J0IGl0IGR1cmluZyB0aGUga2VybmVsIGJ1aWxkPyBTZWUgc2NyaXB0cy9wYWhv
-bGUtdmVyc2lvbi5zaCBhbmQNCj4gc2NyaXB0cy9saW5rLXZtbGludXguc2ggZm9yIGhvdyBwYWhv
-bGUgaXMgc2V0IHVwIGFuZCB1c2VkIGluIHRoZQ0KPiBrZXJuZWwuIFRoYW5rcyENCg0KU3VyZSEN
-Cg0K
+On 24 Jan 09:20, Kees Cook wrote:
+>In preparation for FORTIFY_SOURCE performing compile-time and run-time
+>field bounds checking for memcpy(), memmove(), and memset(), avoid
+>intentionally writing across neighboring fields.
+>
+>Use flexible arrays instead of zero-element arrays (which look like they
+>are always overflowing) and split the cross-field memcpy() into two halves
+>that can be appropriately bounds-checked by the compiler.
+>
+>We were doing:
+>
+>	#define ETH_HLEN  14
+>	#define VLAN_HLEN  4
+>	...
+>	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
+>	...
+>        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
+>	...
+>        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
+>        struct mlx5_wqe_data_seg *dseg = wqe->data;
+>	...
+>	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+>
+>target is wqe->eth.inline_hdr.start (which the compiler sees as being
+>2 bytes in size), but copying 18, intending to write across start
+>(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
+>wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
+>(8 bytes).
+>
+>struct mlx5e_tx_wqe {
+>        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
+>        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
+>        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+>
+>        /* size: 32, cachelines: 1, members: 3 */
+>        /* last cacheline: 32 bytes */
+>};
+>
+>struct mlx5_wqe_eth_seg {
+>        u8                         swp_outer_l4_offset;  /*     0     1 */
+>        u8                         swp_outer_l3_offset;  /*     1     1 */
+>        u8                         swp_inner_l4_offset;  /*     2     1 */
+>        u8                         swp_inner_l3_offset;  /*     3     1 */
+>        u8                         cs_flags;             /*     4     1 */
+>        u8                         swp_flags;            /*     5     1 */
+>        __be16                     mss;                  /*     6     2 */
+>        __be32                     flow_table_metadata;  /*     8     4 */
+>        union {
+>                struct {
+>                        __be16     sz;                   /*    12     2 */
+>                        u8         start[2];             /*    14     2 */
+>                } inline_hdr;                            /*    12     4 */
+>                struct {
+>                        __be16     type;                 /*    12     2 */
+>                        __be16     vlan_tci;             /*    14     2 */
+>                } insert;                                /*    12     4 */
+>                __be32             trailer;              /*    12     4 */
+>        };                                               /*    12     4 */
+>
+>        /* size: 16, cachelines: 1, members: 9 */
+>        /* last cacheline: 16 bytes */
+>};
+>
+>struct mlx5_wqe_data_seg {
+>        __be32                     byte_count;           /*     0     4 */
+>        __be32                     lkey;                 /*     4     4 */
+>        __be64                     addr;                 /*     8     8 */
+>
+>        /* size: 16, cachelines: 1, members: 3 */
+>        /* last cacheline: 16 bytes */
+>};
+>
+>So, split the memcpy() so the compiler can reason about the buffer
+>sizes.
+>
+>"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
+>nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
+>code changes (i.e. only source line number induced differences and
+>optimizations).
+>
+>Cc: Saeed Mahameed <saeedm@nvidia.com>
+>Cc: Leon Romanovsky <leon@kernel.org>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Alexei Starovoitov <ast@kernel.org>
+>Cc: Daniel Borkmann <daniel@iogearbox.net>
+>Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+>Cc: John Fastabend <john.fastabend@gmail.com>
+>Cc: netdev@vger.kernel.org
+>Cc: linux-rdma@vger.kernel.org
+>Cc: bpf@vger.kernel.org
+>Signed-off-by: Kees Cook <keescook@chromium.org>
+>---
+>Since this results in no binary differences, I will carry this in my tree
+>unless someone else wants to pick it up. It's one of the last remaining
+>clean-ups needed for the next step in memcpy() hardening.
+
+applied to net-next-mlx5.
+
+Thanks,
+Saeed
