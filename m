@@ -2,76 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5009149C65B
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 10:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC49649C6BF
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239193AbiAZJc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 04:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44838 "EHLO
+        id S231967AbiAZJpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 04:45:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239230AbiAZJcm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 04:32:42 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45DBC061744
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:32:41 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id z7so16226098ljj.4
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:32:41 -0800 (PST)
+        with ESMTP id S232049AbiAZJpN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 04:45:13 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66173C061744
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:45:13 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id t9so8816056lji.12
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 01:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VBMj6kNPnAsXT4KCcvojdleZo/R9epjnx+Luiy+QWUg=;
-        b=hl41LzSXwl0/6IkzJZxlsZQdcl3YmA8fRtB0fi3frmniBg6ULOcv5q7+jnVyLmB4cx
-         xSe7rKqHPq1+wTJuVLOWs8j6ACBsugSjdDkIQlfxcWULLnHqmNf6X5mGtk1CBuz4UZrT
-         DaacmgNnwPdUh98kJeqQCEgkTQiFZrdV/jPxE=
+        bh=bnkwPVjd8gERi15PejeRSl6RpasvAU7m0QgLpZCryOE=;
+        b=o2OH/SX+q0f8PhXQtrCtcIu4R/3petNi4CdvQYzPn605fTwCcNeoxPLdZ44byyZrC8
+         KuskMFXGnFSMMbEguRaDdN41l8HNpOSXlaAH9xkWTTdsI7MOiN6YngkK6qPPbuSDl4iL
+         XmDyL7URVClIZqSyDg8Ae9wg5F2vRbtcKpvnU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VBMj6kNPnAsXT4KCcvojdleZo/R9epjnx+Luiy+QWUg=;
-        b=5dFW/6VMhqOSp95Jkf+VFLsg24U5xipit8agTka13Gc0i9mOw+fOiod2jjZF7Ub3IS
-         E17cDhxus1o3cX/4bQL6CElpwUT8VXdr/DyOoWyH/WdMvnodWPDvNzjDeTL1YRtB3UAr
-         5nfiwyXY5Px/ClLU/wGRsAkRgh6+OgUtc09Q5H1WsFnqbGzgJ8lxjGyvaf5dyxKVQMox
-         khQU0diZMxerH6xWc1gpuDGMjFZ7wmPVDnwYKeBipdLwO2iQcgtmDdt6T8KZt6UD/C7+
-         UKItTTezvEhuy13IbJ6mEcupZTVmrnmm73HcPzSYtIG+l3XHLZG09ff9GehOaxvaVORu
-         aafA==
-X-Gm-Message-State: AOAM532pvRb59Bek+Q+y55j9V8t2kkand3bsecAIbiepRUrh7+Ve5KQG
-        1Uwn7tJu7p9DMkdvmao+Pee9/sD9GA0AJFWR6QZRGQ==
-X-Google-Smtp-Source: ABdhPJwT1x9vtPAArlZ9FqxFhIhYLwmDIZYJexf81w0hGGUxSd6t+RWrwjsXux21tYDQt4gr+ISCjveJNro1QFhOzXU=
-X-Received: by 2002:a05:651c:11d0:: with SMTP id z16mr1015741ljo.111.1643189560247;
- Wed, 26 Jan 2022 01:32:40 -0800 (PST)
+        bh=bnkwPVjd8gERi15PejeRSl6RpasvAU7m0QgLpZCryOE=;
+        b=VIDPgGeDA2UYSZ5OgFj3puOsef5y+eY8xiAU2kvLwMiNiP+HRJ5S9zleSjHFX6Uemg
+         BX2acQ7zE1ikNsFaHWVyhOnlk3hntH3gK2sTJZp8nkWGtnmg3+yeLnevmHc/+FJDz2NN
+         6pWY3FpwBIdA90BuxYGgEEdzQeymWypWcGZcbCk9RoSLerfFqEZWKVofMQSkf80c6WIA
+         cuRc42gfRMI8mUjY11y1PGZ5cDAiwzbZpSVrEIpysJPZCbmzymwTziXrIY+Av5iGIe46
+         qofbME2hIXdkvKz0CIDupd3luVRSDx7Ud19DRIhx5+z/rMVc5itm24mft5aTTO+efsv8
+         2rig==
+X-Gm-Message-State: AOAM533BSJfsr1GapHaDrpcPTqRrxT3vNVL4yq9I2aQ5SlT212tCLhfU
+        8y852F3X4cRGCx1W6/SbwF/+p/4nhGEk9a/9vX30tA==
+X-Google-Smtp-Source: ABdhPJw1RxhrH2QiGQh8zOXtB0UG0Owa8Qaj/JCeYoea+5nUdaNK9tV2INvRQ2plcyqlF41LuRieL9I+0nqD3rrHHV8=
+X-Received: by 2002:a2e:6e0e:: with SMTP id j14mr5158246ljc.510.1643190311516;
+ Wed, 26 Jan 2022 01:45:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20220125081717.1260849-1-liuhangbin@gmail.com> <20220125081717.1260849-6-liuhangbin@gmail.com>
-In-Reply-To: <20220125081717.1260849-6-liuhangbin@gmail.com>
+References: <20220124151146.376446-1-maximmi@nvidia.com> <20220124151146.376446-5-maximmi@nvidia.com>
+In-Reply-To: <20220124151146.376446-5-maximmi@nvidia.com>
 From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Wed, 26 Jan 2022 09:32:29 +0000
-Message-ID: <CACAyw99e+TUxpXcxgrp6PN1G5b+SGxhUWXCKJW7B4QHoqLF+kw@mail.gmail.com>
-Subject: Re: [PATCH bpf 5/7] selftests/bpf/test_tcp_check_syncookie: use temp
- netns for testing
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 26 Jan 2022 09:45:00 +0000
+Message-ID: <CACAyw9_5-T5Y9AQpAmCe=aj9A0Q=SMyx1cMz6TRQvnW=NU9ygA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 4/4] bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
+To:     Maxim Mikityanskiy <maximmi@nvidia.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Mathieu Xhonneux <m.xhonneux@gmail.com>,
-        William Tu <u9012063@gmail.com>,
-        Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
+        Petar Penkov <ppenkov@google.com>,
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 25 Jan 2022 at 08:18, Hangbin Liu <liuhangbin@gmail.com> wrote:
+On Mon, 24 Jan 2022 at 15:13, Maxim Mikityanskiy <maximmi@nvidia.com> wrote:
 >
-> Use temp netns instead of hard code name for testing in case the
-> netns already exists.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> bpf_tcp_gen_syncookie and bpf_tcp_check_syncookie expect the full length
+> of the TCP header (with all extensions). Fix the documentation that says
+> it should be sizeof(struct tcphdr).
 
-Acked-by: Lorenz Bauer <lmb@cloudflare.com>
+I don't understand this change, sorry. Are you referring to the fact
+that the check is len < sizeof(*th) instead of len != sizeof(*th)?
+
+Your commit message makes me think that the helpers will access data
+in the extension headers, which isn't true as far as I can tell. That
+would be a problem in fact, since it could be used to read memory that
+the verifier hasn't deemed safe.
 
 -- 
 Lorenz Bauer  |  Systems Engineer
