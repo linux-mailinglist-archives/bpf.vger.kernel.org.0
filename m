@@ -2,19 +2,19 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC0949C464
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A2549C467
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237873AbiAZHfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 02:35:41 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:40462 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237878AbiAZHfj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:39 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2uVHlA_1643182535;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2uVHlA_1643182535)
+        id S237898AbiAZHfm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 02:35:42 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:57805 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237872AbiAZHfk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:40 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2uc6jX_1643182536;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2uc6jX_1643182536)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Jan 2022 15:35:36 +0800
+          Wed, 26 Jan 2022 15:35:37 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
@@ -25,9 +25,9 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 02/17] virtio: queue_reset: add VIRTIO_F_RING_RESET
-Date:   Wed, 26 Jan 2022 15:35:18 +0800
-Message-Id: <20220126073533.44994-3-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v3 03/17] virtio: queue_reset: struct virtio_config_ops add callbacks for queue_reset
+Date:   Wed, 26 Jan 2022 15:35:19 +0800
+Message-Id: <20220126073533.44994-4-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
 References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
@@ -37,37 +37,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Added VIRTIO_F_RING_RESET, it came from here
-https://github.com/oasis-tcs/virtio-spec/issues/124
+Performing reset on a queue is divided into two steps:
+
+1. reset_vq: reset one vq
+2. enable_reset_vq: re-enable the reset queue
+
+In the first step, these tasks will be completed:
+    1. notify the hardware queue to reset
+    2. recycle the buffer from vq
+    3. release the ring of the vq
+
+The second step is similar to find vqs, passing parameters callback and
+name, etc. Based on the original vq, the ring is re-allocated and
+configured to the backend.
+
+So add two callbacks reset_vq, enable_reset_vq to struct
+virtio_config_ops.
+
+Add a structure for passing parameters. This will facilitate subsequent
+expansion of the parameters of enable reset vq.
+There is currently only one default extended parameter ring_num.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/uapi/linux/virtio_config.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ include/linux/virtio_config.h | 43 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/virtio_config.h b/include/uapi/linux/virtio_config.h
-index b5eda06f0d57..0862be802ff8 100644
---- a/include/uapi/linux/virtio_config.h
-+++ b/include/uapi/linux/virtio_config.h
-@@ -52,7 +52,7 @@
-  * rest are per-device feature bits.
-  */
- #define VIRTIO_TRANSPORT_F_START	28
--#define VIRTIO_TRANSPORT_F_END		38
-+#define VIRTIO_TRANSPORT_F_END		41
+diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+index 4d107ad31149..51dd8461d1b6 100644
+--- a/include/linux/virtio_config.h
++++ b/include/linux/virtio_config.h
+@@ -16,6 +16,44 @@ struct virtio_shm_region {
+ 	u64 len;
+ };
  
- #ifndef VIRTIO_CONFIG_NO_LEGACY
- /* Do we get callbacks when the ring is completely used, even if we've
-@@ -92,4 +92,9 @@
-  * Does the device support Single Root I/O Virtualization?
-  */
- #define VIRTIO_F_SR_IOV			37
++typedef void vq_callback_t(struct virtqueue *);
 +
-+/*
-+ * This feature indicates that the driver can reset a queue individually.
++/* virtio_reset_vq: specify parameters for queue_reset
++ *
++ *	vdev: the device
++ *	queue_index: the queue index
++ *
++ *	free_unused_cb: callback to free unused bufs
++ *	data: used by free_unused_cb
++ *
++ *	callback: callback for the virtqueue, NULL for vq that do not need a
++ *	          callback
++ *	name: virtqueue names (mainly for debugging), NULL for vq unused by
++ *	      driver
++ *	ctx: ctx
++ *
++ *	ring_num: specify ring num for the vq to be re-enabled. 0 means use the
++ *	          default value. MUST be a power of 2.
 + */
-+#define VIRTIO_F_RING_RESET		40
- #endif /* _UAPI_LINUX_VIRTIO_CONFIG_H */
++struct virtio_reset_vq;
++typedef void vq_reset_callback_t(struct virtio_reset_vq *param, void *buf);
++struct virtio_reset_vq {
++	struct virtio_device *vdev;
++	u16 queue_index;
++
++	/* reset vq param */
++	vq_reset_callback_t *free_unused_cb;
++	void *data;
++
++	/* enable reset vq param */
++	vq_callback_t *callback;
++	const char *name;
++	const bool *ctx;
++
++	/* ext enable reset vq param */
++	u16 ring_num;
++};
++
+ /**
+  * virtio_config_ops - operations for configuring a virtio device
+  * Note: Do not assume that a transport implements all of the operations
+@@ -74,8 +112,9 @@ struct virtio_shm_region {
+  * @set_vq_affinity: set the affinity for a virtqueue (optional).
+  * @get_vq_affinity: get the affinity for a virtqueue (optional).
+  * @get_shm_region: get a shared memory region based on the index.
++ * @reset_vq: reset a queue individually
++ * @enable_reset_vq: enable a reset queue
+  */
+-typedef void vq_callback_t(struct virtqueue *);
+ struct virtio_config_ops {
+ 	void (*enable_cbs)(struct virtio_device *vdev);
+ 	void (*get)(struct virtio_device *vdev, unsigned offset,
+@@ -100,6 +139,8 @@ struct virtio_config_ops {
+ 			int index);
+ 	bool (*get_shm_region)(struct virtio_device *vdev,
+ 			       struct virtio_shm_region *region, u8 id);
++	int (*reset_vq)(struct virtio_reset_vq *param);
++	struct virtqueue *(*enable_reset_vq)(struct virtio_reset_vq *param);
+ };
+ 
+ /* If driver didn't advertise the feature, it will never appear. */
 -- 
 2.31.0
 
