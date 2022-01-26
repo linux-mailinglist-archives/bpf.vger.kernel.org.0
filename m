@@ -2,172 +2,245 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 797A549C4DE
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 09:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B196549C5CB
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 10:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbiAZIH2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 03:07:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbiAZIH1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 03:07:27 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51195C06161C;
-        Wed, 26 Jan 2022 00:07:27 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id h20-20020a17090adb9400b001b518bf99ffso3993730pjv.1;
-        Wed, 26 Jan 2022 00:07:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WK1m9YGMIOU47nTvl2kdOoyGhuyNMDYzbDohinKezdc=;
-        b=N+YPh5xjqoSydTKNpzJ5hMlKUC7AnDBc9HPQRM+ImxjektnmmydPb5CIdeNLqd7nWN
-         d8qrH6pgPDKnwno7lJMYvOC3Q2wnB/TjwxgtHT8UR86RB6lQUbzL6ctoHKmoTFJfSTKn
-         4GWoYUNE+6SPe93nXEU0CkVMmD7jXN4HQBYxogHu/JXGHjYYL/10SV+KdfBOPPMQe113
-         isPsdFmyDbN07Zt0fvN3B58TiwvbnxddzkatQAR/7tvsqw5IfhYise4TBzX99eCU78uV
-         wEIMpuAEB0Eu6JlBGaVoX9D1UbiIFY6l6T6qVqCd4LLVjFrKw67SocY84iIUjTrgMwmC
-         F2Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WK1m9YGMIOU47nTvl2kdOoyGhuyNMDYzbDohinKezdc=;
-        b=CrgO++NezBDW+YYpQNRcoFMqp5oOgqpSogDKUnHpx5crYeN8wGn2vnfbCFnUtBTyPf
-         jN0vHJkPV72jNpRCyD2Lma2ooW2qV9HdaG2XjwRQkTZrXJNO51F8mbV90QQftuyugwnc
-         oirOpKo0jWxRahMOpQmnM+IFTdu/TZ9FnaMWRRVVWqgm+I6k8I2VB7/vsXCHpsiJziqI
-         i09DWlfwS/2rAVKklXTPT04mO7Pif5LjCSfx0tlHhz9fkFkf0WOUdmhfoEu3pOuzW1EF
-         uEzwHIpQVj79fX2bjOuC2BJU1cIz/0VVfnjo6C/K8dzrOZoTKG7lMeT9dQccA0cvDRCr
-         XYdw==
-X-Gm-Message-State: AOAM530InIRO20dT92Jya3QPuyil2CV21swMVf9SRqpXwAYndIxI4/OR
-        qmBIxTZEx3DKKJftbvAWuuvh1vEepr3AJckVPRKLGY74L7V0mg==
-X-Google-Smtp-Source: ABdhPJy3npHkp4muntCPuuN3taHcWgfTMM2vPynP6YkfKJnoorurZfnd8xG08Slqmy8zPP3aXigdPCi3eKrEnpx3JAk=
-X-Received: by 2002:a17:902:7148:b0:14b:650c:4ce7 with SMTP id
- u8-20020a170902714800b0014b650c4ce7mr8969378plm.4.1643184446641; Wed, 26 Jan
- 2022 00:07:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20220125160446.78976-1-maciej.fijalkowski@intel.com> <20220125160446.78976-9-maciej.fijalkowski@intel.com>
-In-Reply-To: <20220125160446.78976-9-maciej.fijalkowski@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 26 Jan 2022 09:07:15 +0100
-Message-ID: <CAJ8uoz39QX5weOyJEgQC9r-V58C1wqTYSnbc+s+uZSxnsWP=qw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 8/8] ice: xsk: borrow xdp_tx_active logic from i40e
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S231404AbiAZJG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 04:06:29 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:50322 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230019AbiAZJG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 04:06:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 478E16148C;
+        Wed, 26 Jan 2022 09:06:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 090C9C340E3;
+        Wed, 26 Jan 2022 09:06:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643187987;
+        bh=915lXUlz+7KXHUvlQ+F2n82DHNWW5u2VIKGWr3z3SnU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UxpSclEb4Az39DweLKoJHfII764GLFs4Q0e3un9/vyR0im00VDpOJqyHFrFuAfhMn
+         oXERpK2vPOAnSQg/c0BCv159rTi5iAD8IIn5vLhLv2THWq7ReZfG3OaszOTgvZhT+p
+         HXWYp5u4eCZf8AKeFLV5uTMx9XNsUvhZexmiUK+Z2PcRGmTBmzay7WJJGrGFGZoyC8
+         jTWT+2d4vbvARNKFIRkWbsaAt1puaxcmbyPEPXWMq6N/sc7bfW6JwPFS0kRHhEteTp
+         XXiU/mh4mTI8/1+cLR58z73TtI1fBiOh8FQm6msSqO3qBXxAlOSwSusXS0V3C9S01u
+         p6pfgOVz1IhzQ==
+Date:   Wed, 26 Jan 2022 18:06:23 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexander Lobakin <alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 2/9] fprobe: Add ftrace based probe APIs
+Message-Id: <20220126180623.52c4da59c7996b27dd56e01f@kernel.org>
+In-Reply-To: <20220125112123.515b7450@gandalf.local.home>
+References: <164311269435.1933078.6963769885544050138.stgit@devnote2>
+        <164311271777.1933078.9066058105807126444.stgit@devnote2>
+        <20220125112123.515b7450@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 11:58 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> One of the things that commit 5574ff7b7b3d ("i40e: optimize AF_XDP Tx
-> completion path") introduced was the @xdp_tx_active field. Its usage
-> from i40e can be adjusted to ice driver and give us positive performance
-> results.
->
-> If the descriptor that @next_dd points to has been sent by HW (its DD
-> bit is set), then we are sure that at least quarter of the ring is ready
-> to be cleaned. If @xdp_tx_active is 0 which means that related xdp_ring
-> is not used for XDP_{TX, REDIRECT} workloads, then we know how many XSK
-> entries should placed to completion queue, IOW walking through the ring
-> can be skipped.
+On Tue, 25 Jan 2022 11:21:23 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Thanks Maciej.
+> On Tue, 25 Jan 2022 21:11:57 +0900
+> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> 
+> > The fprobe is a wrapper API for ftrace function tracer.
+> > Unlike kprobes, this probes only supports the function entry, but
+> > it can probe multiple functions by one fprobe. The usage is almost
+> > same as the kprobe, user will specify the function names by
+> > fprobe::syms, the number of syms by fprobe::nentry,
+> > and the user handler by fprobe::entry_handler.
+> > 
+> > struct fprobe fp = { 0 };
+> > const char *targets[] = { "func1", "func2", "func3"};
+> > 
+> > fp.handler = user_handler;
+> > fp.nentry = ARRAY_SIZE(targets);
+> > fp.syms = targets;
+> > 
+> > ret = register_fprobe(&fp);
+> > 
+> > CAUTION: if user entry handler changes registers including
+> > ip address, it will be applied when returns from the
+> > entry handler. So user handler must recover it.
+> 
+> Can you rephrase the above, I'm not sure what you mean by it.
 
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+OK, but I think this should be written in the document.
+I meant entry_handler can change the regs, but that will change
+the execution path. So for some reason if it needs to change the
+registers, those should be recovered in the same entry_handler.
 
-> Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c |  1 +
->  drivers/net/ethernet/intel/ice/ice_xsk.c      | 15 ++++++++++++---
->  3 files changed, 14 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> index 666db35a2919..466253ac2ee1 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> @@ -333,6 +333,7 @@ struct ice_tx_ring {
->         spinlock_t tx_lock;
->         u32 txq_teid;                   /* Added Tx queue TEID */
->         /* CL4 - 4th cacheline starts here */
-> +       u16 xdp_tx_active;
->  #define ICE_TX_FLAGS_RING_XDP          BIT(0)
->         u8 flags;
->         u8 dcb_tc;                      /* Traffic class of ring */
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index 9677cf880a4b..eb21cec1d772 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -302,6 +302,7 @@ int ice_xmit_xdp_ring(void *data, u16 size, struct ice_tx_ring *xdp_ring)
->         tx_desc->cmd_type_offset_bsz = ice_build_ctob(ICE_TX_DESC_CMD_EOP, 0,
->                                                       size, 0);
->
-> +       xdp_ring->xdp_tx_active++;
->         i++;
->         if (i == xdp_ring->count) {
->                 i = 0;
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 8b6acb4afb7f..2976991c0ab2 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -687,6 +687,7 @@ static void
->  ice_clean_xdp_tx_buf(struct ice_tx_ring *xdp_ring, struct ice_tx_buf *tx_buf)
->  {
->         xdp_return_frame((struct xdp_frame *)tx_buf->raw_buf);
-> +       xdp_ring->xdp_tx_active--;
->         dma_unmap_single(xdp_ring->dev, dma_unmap_addr(tx_buf, dma),
->                          dma_unmap_len(tx_buf, len), DMA_TO_DEVICE);
->         dma_unmap_len_set(tx_buf, len, 0);
-> @@ -703,9 +704,8 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
->  {
->         u16 tx_thresh = ICE_RING_QUARTER(xdp_ring);
->         int budget = napi_budget / tx_thresh;
-> -       u16 ntc = xdp_ring->next_to_clean;
->         u16 next_dd = xdp_ring->next_dd;
-> -       u16 cleared_dds = 0;
-> +       u16 ntc, cleared_dds = 0;
->
->         do {
->                 struct ice_tx_desc *next_dd_desc;
-> @@ -721,6 +721,12 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
->
->                 cleared_dds++;
->                 xsk_frames = 0;
-> +               if (likely(!xdp_ring->xdp_tx_active)) {
-> +                       xsk_frames = tx_thresh;
-> +                       goto skip;
-> +               }
-> +
-> +               ntc = xdp_ring->next_to_clean;
->
->                 for (i = 0; i < tx_thresh; i++) {
->                         tx_buf = &xdp_ring->tx_buf[ntc];
-> @@ -736,6 +742,10 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
->                         if (ntc >= xdp_ring->count)
->                                 ntc = 0;
->                 }
-> +skip:
-> +               xdp_ring->next_to_clean += tx_thresh;
-> +               if (xdp_ring->next_to_clean >= desc_cnt)
-> +                       xdp_ring->next_to_clean -= desc_cnt;
->                 if (xsk_frames)
->                         xsk_tx_completed(xdp_ring->xsk_pool, xsk_frames);
->                 next_dd_desc->cmd_type_offset_bsz = 0;
-> @@ -744,7 +754,6 @@ static u16 ice_clean_xdp_irq_zc(struct ice_tx_ring *xdp_ring, int napi_budget)
->                         next_dd = tx_thresh - 1;
->         } while (budget--);
->
-> -       xdp_ring->next_to_clean = ntc;
->         xdp_ring->next_dd = next_dd;
->
->         return cleared_dds * tx_thresh;
-> --
-> 2.33.1
->
+[SNIP]
+> > +/* Convert ftrace location address from symbols */
+> > +static int convert_func_addresses(struct fprobe *fp)
+> > +{
+> > +	unsigned long addr, size;
+> > +	unsigned int i;
+> > +
+> > +	/* Convert symbols to symbol address */
+> > +	if (fp->syms) {
+> > +		fp->addrs = kcalloc(fp->nentry, sizeof(*fp->addrs), GFP_KERNEL);
+> > +		if (!fp->addrs)
+> > +			return -ENOMEM;
+> > +
+> > +		for (i = 0; i < fp->nentry; i++) {
+> > +			fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
+> > +			if (!fp->addrs[i])	/* Maybe wrong symbol */
+> > +				goto error;
+> > +		}
+> > +	}
+> 
+> I wonder if we should just copy the addrs when fp->syms is not set, and
+> not have to worry about not freeing addrs (see below). This will make
+> things easier to maintain. Or better yet, have the syms and addrs passed
+> in, and then we assign it.
+> 
+> static int convert_func_addresses(struct fprobe *fp, const char **syms,
+> 				  unsigned long *addrs)
+> {
+> 	unsigned int i;
+> 
+> 	fp->addrs = kcalloc(fp->nentry, sizeof(*fp->addrs), GFP_KERNEL);
+> 	if (!fp->addrs)
+> 		return -ENOMEM;
+> 
+> 	if (syms) {
+> 		for (i = 0; i < fp->nentry; i++) {
+> 			fp->addrs[i] = kallsyms_lookup_name(fp->syms[i]);
+> 			if (!fp->addrs[i])	/* Maybe wrong symbol */
+> 				goto error;
+> 		}
+> 	} else {
+> 		memcpy(fp->addrs, addrs, fp->nentry * sizeof(*addrs));
+> 	}
+
+Actually, since fprobe doesn't touch the addrs and syms except for the
+registering time, instead of changing the fp->addrs, I would like
+to make a temporary address array just for ftrace_filter_ips(). Then
+we don't need to free it later.
+
+> 
+> > +
+> > +	/* Convert symbol address to ftrace location. */
+> > +	for (i = 0; i < fp->nentry; i++) {
+> > +		if (!kallsyms_lookup_size_offset(fp->addrs[i], &size, NULL))
+> > +			size = MCOUNT_INSN_SIZE;
+> > +		addr = ftrace_location_range(fp->addrs[i], fp->addrs[i] + size);
+> > +		if (!addr) /* No dynamic ftrace there. */
+> > +			goto error;
+> > +		fp->addrs[i] = addr;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +error:
+> > +	kfree(fp->addrs);
+> 
+> The above doesn't check if fp->syms was set, so if it wasn't we just freed
+> the addrs that was passed in. Again, I think these should be passed into
+> the register function as separate parameters and not via the fp handle.
+
+Agreed. I also would like to remove those params from struct fprobe.
+
+> 
+> > +	fp->addrs = NULL;
+> > +	return -ENOENT;
+> > +}
+> > +
+> > +/**
+> > + * register_fprobe() - Register fprobe to ftrace
+> > + * @fp: A fprobe data structure to be registered.
+> > + *
+> > + * This expects the user set @fp::entry_handler, @fp::syms or @fp:addrs,
+> > + * and @fp::nentry. If @fp::addrs are set, that will be updated to point
+> > + * the ftrace location. If @fp::addrs are NULL, this will generate it
+> > + * from @fp::syms.
+> > + * Note that you do not set both of @fp::addrs and @fp::syms.
+> 
+> Again, I think this should pass in the syms and addrs as parameters.
+
+That's good to me :)
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> > + */
+> > +int register_fprobe(struct fprobe *fp)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (!fp || !fp->nentry || (!fp->syms && !fp->addrs) ||
+> > +	    (fp->syms && fp->addrs))
+> > +		return -EINVAL;
+> > +
+> > +	ret = convert_func_addresses(fp);
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	fp->nmissed = 0;
+> > +	fp->ops.func = fprobe_handler;
+> > +	fp->ops.flags = FTRACE_OPS_FL_SAVE_REGS;
+> > +
+> > +	ret = ftrace_set_filter_ips(&fp->ops, fp->addrs, fp->nentry, 0, 0);
+> > +	if (!ret)
+> > +		ret = register_ftrace_function(&fp->ops);
+> > +
+> > +	if (ret < 0 && fp->syms) {
+> > +		kfree(fp->addrs);
+> > +		fp->addrs = NULL;
+> > +	}
+> > +
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(register_fprobe);
+> > +
+> > +/**
+> > + * unregister_fprobe() - Unregister fprobe from ftrace
+> > + * @fp: A fprobe data structure to be unregistered.
+> > + *
+> > + * Unregister fprobe (and remove ftrace hooks from the function entries).
+> > + * If the @fp::addrs are generated by register_fprobe(), it will be removed
+> > + * automatically.
+> > + */
+> > +int unregister_fprobe(struct fprobe *fp)
+> > +{
+> > +	int ret;
+> > +
+> > +	if (!fp || !fp->nentry || !fp->addrs)
+> > +		return -EINVAL;
+> > +
+> > +	ret = unregister_ftrace_function(&fp->ops);
+> > +
+> > +	if (!ret && fp->syms) {
+> > +		kfree(fp->addrs);
+> > +		fp->addrs = NULL;
+> > +	}
+> > +	return ret;
+> > +}
+> > +EXPORT_SYMBOL_GPL(unregister_fprobe);
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
