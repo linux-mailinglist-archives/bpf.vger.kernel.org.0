@@ -2,100 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF75349BFFF
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09F949C009
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbiAZANq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 19:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbiAZANp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 19:13:45 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEA99C06173B
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:13:43 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id a4-20020a5b0ec4000000b00615dc8c1623so7320305ybs.17
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:13:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=QFRzZDPnA/0TvQFMVmNO9mTYm/ihfWre/Uu0W1MeXms=;
-        b=ZY1auMlwc5qAW4ncj/+it0vmImgSe9uvoKWr/3HAQRLEy1rol47vQzI8LMqnRKX0wB
-         true/3FtNnPVrFUEXia4toBVntufoS9YBUiXrxioZ6Gpci77UiJ28SrCGMWLzWXXbjqL
-         2TwmzklfeJ7eVyV1aY4JshGnYhjoOSPr8eN7T+SOZ1lG3w9rSrtxEf13ECFrqbUnrsAW
-         fFSCsxaWXCoppN5D4r6X6tlC/UeaDpcnBpszIXCKvZNMsJ8wbNIaPzu61Xg/NLNDxyfi
-         zRq8WqwSUAS3OZl05fmjU+3Ac/5S4WOiM+tHI2TcNdL+nmXqk3KmtTi5SIbs61Afh3jE
-         gHNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=QFRzZDPnA/0TvQFMVmNO9mTYm/ihfWre/Uu0W1MeXms=;
-        b=ljOZIBk+KGdppyOcv0BNXvIWuW4WcGFTpD57kw05niPv0+zdTVYTcOUfrwPsmRhACT
-         q9NeFrM+esDbo0OcjdrlAvDD1gnfc2qCq0vM1sjWfyw459FgbgBduWSgb9JV7KCirEzE
-         bCAj4G+uZS/ayuq4VCaLRru+DRUpkeig0R8P7X5okHBZdUnVVqv0MFZE2wRSYIJtH5n8
-         aSOfn4F7vsGbNsOXs6DSOyt8Y2Q7Zgr3Iy+oD51qeHD8h78l24h8m2g3vQK18mFzsYoW
-         plwnG5AWc8W5LRyQhXdmRAGkyhybH7hMWKbSvB6rlMd49vIaHEKSlR4Y8S0Hp660f0pB
-         Nxew==
-X-Gm-Message-State: AOAM532Z+cyPbKXZ1VNsjCjXmi9QlOo5LZh91/Jige1vwHYmSgJ2wCH6
-        othHt9MyLpReR2OlQvAWmDT+rRQ=
-X-Google-Smtp-Source: ABdhPJwpfXqF2Fp2WNoXNv2YVpUEUA65IPffUln+t6g8e0uYUSz4NBAmdYIcZ3X6zTz5CbQl1dPLDvo=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f696:cb26:7b81:e8f1])
- (user=sdf job=sendgmr) by 2002:a25:acc1:: with SMTP id x1mr34626697ybd.96.1643156023204;
- Tue, 25 Jan 2022 16:13:43 -0800 (PST)
-Date:   Tue, 25 Jan 2022 16:13:40 -0800
-Message-Id: <20220126001340.1573649-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.0.rc0.227.g00780c9af4-goog
-Subject: [PATCH bpf-next v2] bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+        id S235187AbiAZAQW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 19:16:22 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:56346 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233947AbiAZAQU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 19:16:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6667BB81B8C;
+        Wed, 26 Jan 2022 00:16:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25F02C340E9;
+        Wed, 26 Jan 2022 00:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643156178;
+        bh=nNya5xBFq1T0FSdPlCDjqGLn9d3mBQRG0+SS4LR5nuU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CRS+bb8KHILgT4i2AsI0NvilErAf3oO59C68FNNLAFBBLSNqhkynl+3+FdbGpObtp
+         veBPpm5A9yFBbWISFqE8HzqJiyLJ4d65ev8koIRkZNTvTuqDPqS1msZX7+kIC30VBJ
+         EB/PJ6v3YpAOWTCaskEsRrHMOBYNmTuURXdzaeNWuOA/acLxqqvkoZbP8L8W0EdbZ5
+         2zyXUdUP8UMHYH22bIa97yVOOT6Y5qV7Sc3AlVwVlIuX+SII3TXlhjMqNOcQPo0xgF
+         PRenasU/9kYcdFSzJJiOUiWIcd3ADwGA8ZCDfSHggV/YzalT05MWW/1ot0ATWkRZBq
+         HbuDkFswd6Yag==
+Received: by mail-yb1-f171.google.com with SMTP id i62so20160235ybg.5;
+        Tue, 25 Jan 2022 16:16:18 -0800 (PST)
+X-Gm-Message-State: AOAM533gFsr70Ga7Z8do2DD2jfKwLKO7HUshGimv6b44klWSeZrGvuQ0
+        FFbthSnhJziE97Y+PG9E69aks8LSd74c8peeRWo=
+X-Google-Smtp-Source: ABdhPJxAilAcenABWiQWnjUGp2g7zXeU4dloPT2KdcBM9tUVfrSg0MHmChiOlDcbLG19RGyrScuW87jCZigCxVfYOLw=
+X-Received: by 2002:a25:fd6:: with SMTP id 205mr34295767ybp.654.1643156177185;
+ Tue, 25 Jan 2022 16:16:17 -0800 (PST)
+MIME-Version: 1.0
+References: <CA+khW7gh=vO8m-_SVnwWwj7kv+EDeUPcuWFqebf2Zmi9T_oEAQ@mail.gmail.com>
+ <CAPhsuW7F4KritXPXixoPSw4zbCsqpfZaYBuw5BgD+KKXaoeGxg@mail.gmail.com> <CA+khW7jx_4K46gH+tyZZn9ApSYGMqYpxCm0ywmuWdSiogv7dqw@mail.gmail.com>
+In-Reply-To: <CA+khW7jx_4K46gH+tyZZn9ApSYGMqYpxCm0ywmuWdSiogv7dqw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Tue, 25 Jan 2022 16:16:06 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4JJiMNqvzK+8SKM3=72xgsF+jxB3m-u-Jz9Fe7Z4i9fg@mail.gmail.com>
+Message-ID: <CAPhsuW4JJiMNqvzK+8SKM3=72xgsF+jxB3m-u-Jz9Fe7Z4i9fg@mail.gmail.com>
+Subject: Re: [Question] How to reliably get BuildIDs from bpf prog
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Blake Jones <blakejones@google.com>,
+        Alexey Alexandrov <aalexand@google.com>,
+        Namhyung Kim <namhyung@google.com>,
+        Ian Rogers <irogers@google.com>,
+        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
-breaks loading of some modules when CONFIG_DEBUG_INFO_BTF is not set.
-register_btf_kfunc_id_set returns -ENOENT to the callers when
-there is no module btf. Let's return 0 (success) instead to let
-those modules work in !CONFIG_DEBUG_INFO_BTF cases.
+On Tue, Jan 25, 2022 at 3:54 PM Hao Luo <haoluo@google.com> wrote:
+>
+> Thanks Song for your suggestion.
+>
+> On Mon, Jan 24, 2022 at 11:08 PM Song Liu <song@kernel.org> wrote:
+> >
+> > On Mon, Jan 24, 2022 at 2:43 PM Hao Luo <haoluo@google.com> wrote:
+> > >
+> > > Dear BPF experts,
+> > >
+> > > I'm working on collecting some kernel performance data using BPF
+> > > tracing prog. Our performance profiling team wants to associate the
+> > > data with user stack information. One of the requirements is to
+> > > reliably get BuildIDs from bpf_get_stackid() and other similar helpers
+> > > [1].
+> > >
+> > > As part of an early investigation, we found that there are a couple
+> > > issues that make bpf_get_stackid() much less reliable than we'd like
+> > > for our use:
+> > >
+> > > 1. The first page of many binaries (which contains the ELF headers and
+> > > thus the BuildID that we need) is often not in memory. The failure of
+> > > find_get_page() (called from build_id_parse()) is higher than we would
+> > > want.
+> >
+> > Our top use case of bpf_get_stack() is called from NMI, so there isn't
+> > much we can do. Maybe it is possible to improve it by changing the
+> > layout of the binary and the libraries? Specifically, if the text is
+> > also in the first page, it is likely to stay in memory?
+> >
+>
+> We are seeing 30-40% of stack frames not able to get build ids due to
+> this. This is a place where we could improve the reliability of build
+> id.
+>
+> There were a few proposals coming up when we found this issue. One of
+> them is to have userspace mlock the first page. This would be the
+> easiest fix, if it works. Another proposal from Ian Rogers (cc'ed) is
+> to embed build id in vma. This is an idea similar to [1], but it's
+> unclear (at least to me) where to store the string. I'm wondering if
+> we can introduce a sleepable version of bpf_get_stack() if it helps.
+> When a page is not present, sleepable bpf_get_stack() can bring in the
+> page.
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Fixes: dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/btf.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+I guess it is possible to have different flavors of bpf_get_stack().
+However, I am not sure whether the actual use case could use sleepable
+BPF programs. Our user of bpf_get_stack() is a profiler. The BPF program
+which triggers a perf_event from NMI, where we really cannot sleep.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 57f5fd5af2f9..db8d6bb7f29f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -6740,8 +6740,19 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
- 	int ret;
- 
- 	btf = btf_get_module_btf(kset->owner);
--	if (IS_ERR_OR_NULL(btf))
--		return btf ? PTR_ERR(btf) : -ENOENT;
-+	if (!btf) {
-+		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-+			pr_err("missing vmlinux BTF, cannot register kfuncs\n");
-+			return -ENOENT;
-+		}
-+		if (kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)) {
-+			pr_err("missing module BTF, cannot register kfuncs\n");
-+			return -ENOENT;
-+		}
-+		return 0;
-+	}
-+	if (IS_ERR(btf))
-+		return PTR_ERR(btf);
- 
- 	hook = bpf_prog_type_to_kfunc_hook(prog_type);
- 	ret = btf_populate_kfunc_set(btf, hook, kset);
--- 
-2.35.0.rc0.227.g00780c9af4-goog
+If we have target use case that could sleep, sleepable bpf_get_stack() sounds
+reasonable to me.
 
+>
+> [1] https://lwn.net/Articles/867818/
+>
+> > > 2. When anonymous huge pages are used to hold some regions of process
+> > > text, build_id_parse() also fails to get a BuildID because
+> > > vma->vm_file is NULL.
+> >
+> > How did the text get in anonymous memory? I guess it is NOT from JIT?
+> > We had a hack to use transparent huge page for application text. The
+> > hack looks like:
+> >
+> > "At run time, the application creates an 8MB temporary buffer and the
+> > hot section of the executable memory is copied to it. The 8MB region in
+> > the executable memory is then converted to a huge page (by way of an
+> > mmap() to anonymous pages and an madvise() to create a huge page), the
+> > data is copied back to it, and it is made executable again using
+> > mprotect()."
+> >
+> > If your case is the same (or similar), it can probably be fixed with
+> > CONFIG_READ_ONLY_THP_FOR_FS, and modified user space.
+> >
+>
+> In our use cases, we have text mapped to huge pages that are not
+> backed by files. vma->vm_file could be null or points some fake file.
+> This causes challenges for us on getting build id for these code text.
+
+So, what is the ideal output in these cases? If there isn't a back file, we
+don't really have good build-id for it, right?
+
+Thanks,
+Song
