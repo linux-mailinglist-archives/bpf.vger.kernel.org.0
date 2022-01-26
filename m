@@ -2,19 +2,19 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A43FB49C466
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E11DB49C46A
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 08:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237874AbiAZHfl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 02:35:41 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34290 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237881AbiAZHfk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2ubkjl_1643182537;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2ubkjl_1643182537)
+        id S237889AbiAZHfn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 02:35:43 -0500
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:56021 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237870AbiAZHfl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 02:35:41 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V2ubkjx_1643182538;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V2ubkjx_1643182538)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Jan 2022 15:35:38 +0800
+          Wed, 26 Jan 2022 15:35:39 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
@@ -25,9 +25,9 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: [PATCH v3 04/17] virtio: queue_reset: add helper
-Date:   Wed, 26 Jan 2022 15:35:20 +0800
-Message-Id: <20220126073533.44994-5-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v3 05/17] vritio_ring: queue_reset: extract the release function of the vq ring
+Date:   Wed, 26 Jan 2022 15:35:21 +0800
+Message-Id: <20220126073533.44994-6-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
 References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
@@ -37,59 +37,47 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add helper for virtio queue reset.
-
-* virtio_reset_vq: reset a queue individually
-* virtio_enable_resetq: enable a reset queue
+Extract a function __vring_del_virtqueue() from vring_del_virtqueue() to
+handle releasing vq's ring.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- include/linux/virtio_config.h | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/virtio/virtio_ring.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-index 51dd8461d1b6..3c971d9a0a59 100644
---- a/include/linux/virtio_config.h
-+++ b/include/linux/virtio_config.h
-@@ -260,6 +260,38 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
- 				      desc);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 028b05d44546..b6434e36c447 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -2300,12 +2300,10 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
  }
+ EXPORT_SYMBOL_GPL(vring_new_virtqueue);
  
-+/**
-+ * virtio_reset_vq - reset a queue individually
-+ * @param: struct virtio_reset_vq
-+ *
-+ * returns 0 on success or error status
-+ *
-+ */
-+static inline
-+int virtio_reset_vq(struct virtio_reset_vq *param)
-+{
-+	if (!param->vdev->config->reset_vq)
-+		return -ENOENT;
-+
-+	return param->vdev->config->reset_vq(param);
+-void vring_del_virtqueue(struct virtqueue *_vq)
++static void __vring_del_virtqueue(struct vring_virtqueue *vq)
+ {
+-	struct vring_virtqueue *vq = to_vvq(_vq);
+-
+ 	spin_lock(&vq->vq.vdev->vqs_list_lock);
+-	list_del(&_vq->list);
++	list_del(&vq->vq.list);
+ 	spin_unlock(&vq->vq.vdev->vqs_list_lock);
+ 
+ 	if (vq->we_own_ring) {
+@@ -2338,6 +2336,13 @@ void vring_del_virtqueue(struct virtqueue *_vq)
+ 		kfree(vq->split.desc_state);
+ 		kfree(vq->split.desc_extra);
+ 	}
 +}
 +
-+/**
-+ * virtio_enable_resetq - enable a reset queue
-+ * @param: struct virtio_reset_vq
-+ *
-+ * returns vq on success or error status
-+ *
-+ */
-+static inline
-+struct virtqueue *virtio_enable_resetq(struct virtio_reset_vq *param)
++void vring_del_virtqueue(struct virtqueue *_vq)
 +{
-+	if (!param->vdev->config->enable_reset_vq)
-+		return ERR_PTR(-ENOENT);
++	struct vring_virtqueue *vq = to_vvq(_vq);
 +
-+	return param->vdev->config->enable_reset_vq(param);
-+}
-+
- /**
-  * virtio_device_ready - enable vq use in probe function
-  * @vdev: the device
++	__vring_del_virtqueue(vq);
+ 	kfree(vq);
+ }
+ EXPORT_SYMBOL_GPL(vring_del_virtqueue);
 -- 
 2.31.0
 
