@@ -2,130 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4A049D2DD
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EB8949D2D9
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 20:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244612AbiAZTzB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 14:55:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50348 "EHLO
+        id S244584AbiAZTy4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 14:54:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244588AbiAZTzB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 14:55:01 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BCD1C06161C;
-        Wed, 26 Jan 2022 11:55:01 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id x3so659181ilm.3;
-        Wed, 26 Jan 2022 11:55:01 -0800 (PST)
+        with ESMTP id S244579AbiAZTy4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 14:54:56 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40056C06161C
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:54:56 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id k9so813614qvv.9
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 11:54:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qiRNFPZxx1b8Iw6otnphrPffoT1d2DXkPIgcH6aNRiI=;
-        b=Yx4khfrNQxL3A9k2WXIK2mxpQBiJM8K1suQ7zdXZEJcc/2kgHlegfIvI4TN2YZ2CTL
-         SB/qWj3Qjjm5wTYXeFUSBufCUw+8PjyNxKMaX1FTE0VAc8ruj2SWPITYwSr5Zlptu5Tx
-         Gy545LLZJzd3G8KmVGJLHOZtqWzwTHE4sVtUym/geTteM5cchbFuX9H5cWZZxcMvIhZe
-         eYIkfkKJxQp+VEboUOCpLvLyXQx8wuz2luUCjAhLZsKkEP7lSba+2sSlBsJGHGMiuNC+
-         apyi0vJ8P2cs8Q7hw/S7SH5mBy16UIQU+jQQ4s3kER5yJ/B3mA2f0nt2a0cmGDrPWjn/
-         zbxQ==
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=/b9yrYylsR3IXw2MBkgKmnslMTaks1EUQq+pWFo3vMU=;
+        b=jIM+Tc+JfN7AxN6yCV944hevmEwbziOmVrsSDKFKhxcK5czEdfwuGa1+JKEm5p153D
+         slLmda6m/yCZO8ZIHlLZl6IqweIwHdlxDpwmS9sacFA2fhuXmFY8LEFoX+85O/+Bx4OE
+         iGciw+hNYyVKtUVlJOaV2lZ+sKD0MAsMcI/LQl+lQZdZ70jf6CnR8vIw7OtQFvUwfrZJ
+         lhlzFUgt9mOyvy8aEn4Oyx65EgV/2T/N1fYGTTkn2R2iHkCpwr0QXQR7i6xi6krzpt4Q
+         B7QgV0Cbl2yPbyxMuyZmyWX6EsCRk/5btemPGasR9kB/RKqdVkmYF45VVp+Q7EiGvBjs
+         T3MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qiRNFPZxx1b8Iw6otnphrPffoT1d2DXkPIgcH6aNRiI=;
-        b=1Koya33+/tVEhytXV0kbZERgK3GGvSBzNv68fo1VkzBhCwvl8C+LRrAFVby+TSqelM
-         VJZzt5aT5akkAlhCRKRD1SrNAT9DhJvrsDNSsQtDSW/5HnE1b/llnbHvH0seYCbXaDlx
-         lSuO7sjwUdueycXalLeOWGcwNYaHf+R1GpEP0qI+REC0GPt5r9JLQthHbMcc1jv6+vd+
-         1MNxLNlJ1vIBcJMeJYrJ/8DDe1gPks1lU1Bjwf5yxkZdapD5JjvaiEv4UGtjl8H8FZym
-         g1KmNv9o/YJVoXMKfxg7wocJBPeYznSgsAnf8cG8mLdqvyiaV5Li9RPYTf3dK8hZ88Jx
-         BnKw==
-X-Gm-Message-State: AOAM531ATfBzgvKx0TXmWHOd6f9yxFMpiygpbd7wKYOL5YXTr8Rfz2IS
-        Kdj4302nvAtpknGp1mmdijz5/H6MVqWzrDwKdMM=
-X-Google-Smtp-Source: ABdhPJyKE04RoZE+IZPtzP8FeJy2FcEZAiMfZ9/noeQzrxfqxcUCoOT3oMnHmzTSSgffwPoN1RyrkIdDnwH7LmrW4AA=
-X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr447352ili.239.1643226900740;
- Wed, 26 Jan 2022 11:55:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=/b9yrYylsR3IXw2MBkgKmnslMTaks1EUQq+pWFo3vMU=;
+        b=YsKSvcb+znLFMwdxiyOBWPkBhgqfoUI5X8obx9aJSBrznzRetZu0UijN1+UMKlSTnr
+         iLgvSiDH4Ll+o90/H12n6uOJVAhWrkxn39EAONwxinJCiOj9s/k8oqfeCx9gzrnvw9l9
+         zvpeJh1Y9oyf2tqjZwz+7ZFz4oDWrUGoLhoDP+YBasZMxJ+dTlRjmp65geHIqksaaQUW
+         av/4G86G3Zg3IFSVuACEkxuqhReqXGqLgDkDBI0VmODw10Ec4t68IA5Li0QkFSde6StA
+         0Ae2c3rs4v6qunbMEfAaRPDeIbJXQ35Zu2zolSeMYXldx6HW+J3L9PYm5LBbZq+gQCBX
+         Kuwg==
+X-Gm-Message-State: AOAM533OpYefXuiEVPvmJzywftcCVKqQSvQnl2Zu1DETSK2gp1BdFyVK
+        oLVZebJwDhsRcCLAlsPYuDsfTQ==
+X-Google-Smtp-Source: ABdhPJzDiy8lWJPalTqmHodK4vLPsn5OI+iOGQeHou4Hn9uAp27KEpv7ql8yuu4Af0KUxh9Hg0NE3g==
+X-Received: by 2002:a05:6214:e45:: with SMTP id o5mr364368qvc.10.1643226894754;
+        Wed, 26 Jan 2022 11:54:54 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id bs33sm148633qkb.103.2022.01.26.11.54.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jan 2022 11:54:54 -0800 (PST)
+Date:   Wed, 26 Jan 2022 14:54:53 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: LSF/MM/BPF: 2022: Call for Proposals
+Message-ID: <YfGnDRM/Pe4jzbSr@localhost.localdomain>
 MIME-Version: 1.0
-References: <20220126040509.1862767-1-kuifeng@fb.com> <20220126040509.1862767-4-kuifeng@fb.com>
- <CAEf4BzYsjsWZASrF0rjBYion7nL7L9gRvGm_VJ7-1Ojds34b=A@mail.gmail.com> <624acf82a7c43ca0f9b0203a77b13fa6539ce967.camel@fb.com>
-In-Reply-To: <624acf82a7c43ca0f9b0203a77b13fa6539ce967.camel@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Jan 2022 11:54:49 -0800
-Message-ID: <CAEf4Bzbi12AK2YxYmgY73Mord-zDt-PMKBCQpVveodrgC0kGcw@mail.gmail.com>
-Subject: Re: [PATCH dwarves v3 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "arnaldo.melo@gmail.com" <arnaldo.melo@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "dwarves@vger.kernel.org" <dwarves@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 10:39 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
->
-> On Tue, 2022-01-25 at 22:07 -0800, Andrii Nakryiko wrote:
-> > On Tue, Jan 25, 2022 at 8:07 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > >
-> > > Create an instance of btf for each worker thread, and add type info
-> > > to
-> > > the local btf instance in the steal-function of pahole without
-> > > mutex
-> > > acquiring.  Once finished with all worker threads, merge all
-> > > per-thread btf instances to the primary btf instance.
-> > >
-> > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > >
-> ............ cut ...........
-> > > +       struct thread_data *thread = thr_data;
-> > > +
-> > > +       if (thread == NULL)
-> > > +               return 0;
-> > > +
-> > > +       /*
-> > > +        * Here we will call btf__dedup() here once we extend
-> > > +        * btf__dedup().
-> > > +        */
-> > > +
-> > > +       if (thread->encoder == btf_encoder) {
-> > > +               /* Release the lock acuqired when created
-> > > btf_encoder */
-> >
-> > typo: acquired
-> >
-> > > +               pthread_mutex_unlock(&btf_encoder_lock);
-> >
-> > Splitting pthread_mutex lock/unlock like this is extremely dangerous
-> > and error prone. If that's the price for reusing global btf_encoder
-> > for first worker, then I'd rather not reuse btf_encoder or revert
-> > back
-> > to doing btf__add_btf() and doing btf_encoder__delete() in the main
-> > thread.
-> >
-> > Please question and push back the approach and code review feedback
-> > if
-> > something doesn't feel natural or is causing more problems than
-> > solves.
-> >
-> > I think the cleanest solution would be to not reuse global btf_encoder
-> > for the first worker. I suspect the time difference isn't big, so I'd
-> > optimize for simplicity and clean separation. But if it is causing
-> > unnecessary slowdown, then as I said, let's just revert back to your
-> > previous approach with doing btf__add_btf() in the main thread.
-> >
->
-> Your concerns make sense.
-> I tried the solutions w/ & w/o reusing btf_encoder.  The differencies
-> are obviously.  So, I will rollback to calling btf__add_btf() at the
-> main thread.
->
-> w/o reusing: AVG 5.78467 P50 5.88 P70 6.03 P90 6.10
-> w/  reusing: AVG 5.304 P50 5.12 P70 5.17 P90 5.46
->
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2022 will be held from May 2 to May 4 at The
+Margaritaville Resort Palm Springs in Palm Springs, California.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
 
-Half a second, wow. Ok, yeah, makes sense.
+COVID is at the front of our minds as we attempt to put together the
+best and safest conference we can arrange.  The logistics of how to hold
+an in person event will change and evolve as we get closer to the actual
+date, but rest assured we will do everything recommended by public
+health officials.
 
->
->
+LSF/MM/BPF 2022 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
+
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
+
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
+
+This years instructions are similar to our previous attempts.  We're
+asking that you please let us know you want to be invited by March 1,
+2022.  We realize that travel is an ever changing target, but it helps
+us get an idea of possible attendance numbers.  Clearly things can and
+will change, so consider the request to attend deadline more about
+planning and less about concrete plans.
+
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/uD5tbZYGpaRXPnE19
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+We will try to cap attendance at around 25-30 per track to facilitate
+discussions although the final numbers will depend on the room sizes
+at the venue.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+There will be no recording or audio bridge. However, we expect that
+written minutes will be published as we did in previous years:
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
