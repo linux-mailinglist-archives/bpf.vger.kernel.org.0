@@ -2,293 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C0B49C024
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:29:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E6A49C03D
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 01:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235281AbiAZA3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 25 Jan 2022 19:29:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
+        id S235369AbiAZAip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 25 Jan 2022 19:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235276AbiAZA3C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 25 Jan 2022 19:29:02 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446D1C06173B
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:29:02 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id g12so2669961qto.13
-        for <bpf@vger.kernel.org>; Tue, 25 Jan 2022 16:29:02 -0800 (PST)
+        with ESMTP id S235363AbiAZAim (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 25 Jan 2022 19:38:42 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF905C06161C;
+        Tue, 25 Jan 2022 16:38:41 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id g20so1584373pgn.10;
+        Tue, 25 Jan 2022 16:38:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/OclBSSviCWldlmnDUDK3gAMkjNp0A9O+u9/XCIBFLM=;
-        b=J4PlJj2uNR+uD4L30MoMfvZHGmd7aj+QdlaXUodF6C6MQxIlD9E7XCF9eGh3IN+xkY
-         oyD3LEG8/ZhK96mhTaZdaiXKgYqMBqS1SXXO0K92YThUidaArb8F3TDcZqZd0pPBPOY3
-         6YI2T87GdSWnC+UIkzri1ov2un2TzWQswlbdcNOX8xsFF6TBqQHFsUo+wk1JqXDsxpTz
-         ge2w2/0SiiSPwi8Lu1jc8XK9Us8moFczSLnTxAOPK+fHV1qL47V6Lqv+XQJtLw1GL5MI
-         jBYujsg25TyfOa+KMC7donbDUw0T94dVTVLEdP9Nqt9m+WwLXIVPkrwiqyo0DcE8N/hq
-         8mjg==
+        bh=NtkJr2IBKuac+Zd2uR46StBGmwougS0PNqmUosDvkQE=;
+        b=ERJrUj0ckOW0ncuvoPEMrR79XbmGd+VR+98pCyf6EEG5If+dsGjozeLcQac4tZ6xoa
+         zW7KxMyw9qBmPshd5LWZMsCPNQMkg+Cw+7Q1NB0ikDDxkbn813Y+8qEl3XqVh/Vf4BZa
+         pxP22kzZCQBYgvoPr6MQGv+Nc/8fDttiGkuhi1Wk+0eMyUYbjPe5zaXoqIfGJJ8HFWoh
+         x20ivMvWo+ZsfiOBCsYXyGzjihV72esPMbQM6VMem45reHC5LwKDqhKgqQiJMpx5QUTi
+         LxWXe1JexZTPYOiucsJx3ZNNC+5HfqHzaeMkwwNzJUKT+F4NwwCMDoQ5DE+y0QnIIW0z
+         pBEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/OclBSSviCWldlmnDUDK3gAMkjNp0A9O+u9/XCIBFLM=;
-        b=gOF7kwYWa8c71yjuOJSXOrI0HV7Z5HWO3Zme+yxzxFQS6G48d+FQF72CT9QDfxtn5e
-         KasQNxgeiHhbLc7AZJonKC4hzv5No6ultvbpKE4cypNmHlus89bqfeg5TedBY3z3LhoG
-         /vIoMJYaWEa858VwTcMVDE0Jdt0cz0myVjDXesLgAMkOOLzDDtO7e8V32qdHqGQGIC/5
-         ivsu6xh0kRJiHV+vyklbPDlK71BBWoTX6fzkhEyU2MnSIEkG2SCU6gY8GC7pcl5ID7RR
-         scXjbtm66PCPXKfCRMMInxgjPYeDOdSrTajiOs4Gdo2jNr4gNtSM8xvF7Zjd7bWIzOfU
-         15Ew==
-X-Gm-Message-State: AOAM532ri8sV/Ra8Vxi9Time2A8e8/GqMq/YtZyp7FdTcKAv5mvoJpc5
-        nctjaobuhsRgju0R3IAf68YuUkTbbbboa0SBAikAew==
-X-Google-Smtp-Source: ABdhPJzDoS7OQTcGtYudltrCgWCbYNGqL+dVhKCUdeEPp02Bbsi4hfIyZqXCRWgRVTiIBHPIlIWxkxK9/FiqfpLiQDE=
-X-Received: by 2002:ac8:5c4d:: with SMTP id j13mr18773640qtj.375.1643156941173;
- Tue, 25 Jan 2022 16:29:01 -0800 (PST)
+        bh=NtkJr2IBKuac+Zd2uR46StBGmwougS0PNqmUosDvkQE=;
+        b=3hvMXKryw5oJp0lXxze+veAszofChtKY6oCTCePceMDFSaJZR2q95Trgy5BS7ifSWR
+         rX4sCp2c7REIHxDUcWoNiJDtpPEb7TXsHpQ+UsmHjI6dPOXTRc6c/joEweTuVOYGLK17
+         vpna6jo+ggISgbSuuLwcjzrVXtJQ1acIdPmH83Lbz/Y8kKuRfGiwhGLviMHDE6wa0c8g
+         3r6yulVGEMGXzADYuaUJqdwf1G9buULcz3LUIfSiBel0rMV2Pl5O4Bh+LkHfCPN6XJMH
+         inlc6BBUEwiJ3m42n9ziW0wLLQoqwG/o3bdNIbpJohJ8KmDWAXtnKhxzm7IJMxyo0+tL
+         VF3A==
+X-Gm-Message-State: AOAM533xXRvx5Gn1nZZcB6wxWmXEmJGCmwKKDBhL/Q+SFMpsuHvfcx9o
+        VXPDsDuMc7N6CaS5FiAAn6OoOMFYCvz4TtfyK00=
+X-Google-Smtp-Source: ABdhPJzWVrOM6sLb47lYb6dRtbJ/jn8y+2WF2SWulFpMqyO0i74Tr7bgDB8kYHMJNr48JMU2FyE2cQ07nDz6kx5qBHQ=
+X-Received: by 2002:a63:8043:: with SMTP id j64mr686536pgd.95.1643157521317;
+ Tue, 25 Jan 2022 16:38:41 -0800 (PST)
 MIME-Version: 1.0
-References: <94e36de3cc2b579e45f95c189a6f5378bf1480ac.1643156174.git.asml.silence@gmail.com>
-In-Reply-To: <94e36de3cc2b579e45f95c189a6f5378bf1480ac.1643156174.git.asml.silence@gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 25 Jan 2022 16:28:50 -0800
-Message-ID: <CAKH8qBt3uVBzj3rW-9afuBz6R09ARnkv8ocvV4unn4ji9Eh9Rg@mail.gmail.com>
-Subject: Re: [PATCH for-next v4] cgroup/bpf: fast path skb BPF filtering
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+References: <20220121194926.1970172-1-song@kernel.org> <20220121194926.1970172-7-song@kernel.org>
+ <CAADnVQK6+gWTUDo2z1H6AE5_DtuBBetW+VTwwKz03tpVdfuoHA@mail.gmail.com>
+ <7393B983-3295-4B14-9528-B7BD04A82709@fb.com> <CAADnVQJLHXaU7tUJN=EM-Nt28xtu4vw9+Ox_uQsjh-E-4VNKoA@mail.gmail.com>
+ <5407DA0E-C0F8-4DA9-B407-3DE657301BB2@fb.com> <CAADnVQLOpgGG9qfR4EAgzrdMrfSg9ftCY=9psR46GeBWP7aDvQ@mail.gmail.com>
+ <5F4DEFB2-5F5A-4703-B5E5-BBCE05CD3651@fb.com> <CAADnVQLXGu_eF8VT6NmxKVxOHmfx7C=mWmmWF8KmsjFXg6P5OA@mail.gmail.com>
+ <5E70BF53-E3FB-4F7A-B55D-199C54A8FDCA@fb.com> <adec88f9-b3e6-bfe4-c09e-54825a60f45d@linux.ibm.com>
+ <2AAC8B8C-96F1-400F-AFA6-D4AF41EC82F4@fb.com> <CAADnVQKgdMMeONmjUhbq_3X39t9HNQWteDuyWVfcxmTerTnaMw@mail.gmail.com>
+ <CAPhsuW4AXLirZwjH4YfJLYj1VUU2muQx1wTkkUpeBBH9kvw2Ag@mail.gmail.com>
+ <CAADnVQL8-Hq=g3u65AOoOcB5y-LcOEA4wwMb1Ep0usWdCCSAcA@mail.gmail.com>
+ <CAPhsuW4K+oDsytLvz4n44Fe3Pbjmpu6tnCk63A-UVxCZpz_rjg@mail.gmail.com>
+ <CAADnVQJ8-XVYb21bFRgsaoj7hzd89NSbSOBj0suwsYSL89pxsg@mail.gmail.com> <CAPhsuW7AzQL5y+4stw_MZCg2sR3e5qe1YS0L1evxhCvfTWF5+Q@mail.gmail.com>
+In-Reply-To: <CAPhsuW7AzQL5y+4stw_MZCg2sR3e5qe1YS0L1evxhCvfTWF5+Q@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 25 Jan 2022 16:38:30 -0800
+Message-ID: <CAADnVQLn0UFjMx_5rQhWbSPXK1PUbJR04cxSgrTH-KuUVy8C9g@mail.gmail.com>
+Subject: Re: [PATCH v6 bpf-next 6/7] bpf: introduce bpf_prog_pack allocator
+To:     Song Liu <song@kernel.org>
+Cc:     Song Liu <songliubraving@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
+        Kernel Team <Kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 4:22 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+On Tue, Jan 25, 2022 at 3:09 PM Song Liu <song@kernel.org> wrote:
 >
-> Even though there is a static key protecting from overhead from
-> cgroup-bpf skb filtering when there is nothing attached, in many cases
-> it's not enough as registering a filter for one type will ruin the fast
-> path for all others. It's observed in production servers I've looked
-> at but also in laptops, where registration is done during init by
-> systemd or something else.
+> On Tue, Jan 25, 2022 at 2:48 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Tue, Jan 25, 2022 at 2:25 PM Song Liu <song@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 25, 2022 at 12:00 PM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jan 24, 2022 at 11:21 PM Song Liu <song@kernel.org> wrote:
+> > > > >
+> > > > > On Mon, Jan 24, 2022 at 9:21 PM Alexei Starovoitov
+> > > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, Jan 24, 2022 at 10:27 AM Song Liu <songliubraving@fb.com> wrote:
+> > > > > > > >
+> > > > > > > > Are arches expected to allocate rw buffers in different ways? If not,
+> > > > > > > > I would consider putting this into the common code as well. Then
+> > > > > > > > arch-specific code would do something like
+> > > > > > > >
+> > > > > > > >  header = bpf_jit_binary_alloc_pack(size, &prg_buf, &prg_addr, ...);
+> > > > > > > >  ...
+> > > > > > > >  /*
+> > > > > > > >   * Generate code into prg_buf, the code should assume that its first
+> > > > > > > >   * byte is located at prg_addr.
+> > > > > > > >   */
+> > > > > > > >  ...
+> > > > > > > >  bpf_jit_binary_finalize_pack(header, prg_buf);
+> > > > > > > >
+> > > > > > > > where bpf_jit_binary_finalize_pack() would copy prg_buf to header and
+> > > > > > > > free it.
+> > > > > >
+> > > > > > It feels right, but bpf_jit_binary_finalize_pack() sounds 100% arch
+> > > > > > dependent. The only thing it will do is perform a copy via text_poke.
+> > > > > > What else?
+> > > > > >
+> > > > > > > I think this should work.
+> > > > > > >
+> > > > > > > We will need an API like: bpf_arch_text_copy, which uses text_poke_copy()
+> > > > > > > for x86_64 and s390_kernel_write() for x390. We will use bpf_arch_text_copy
+> > > > > > > to
+> > > > > > >   1) write header->size;
+> > > > > > >   2) do finally copy in bpf_jit_binary_finalize_pack().
+> > > > > >
+> > > > > > we can combine all text_poke operations into one.
+> > > > > >
+> > > > > > Can we add an 'image' pointer into struct bpf_binary_header ?
+> > > > >
+> > > > > There is a 4-byte hole in bpf_binary_header. How about we put
+> > > > > image_offset there? Actually we only need 2 bytes for offset.
+> > > > >
+> > > > > > Then do:
+> > > > > > int bpf_jit_binary_alloc_pack(size, &ro_hdr, &rw_hdr);
+> > > > > >
+> > > > > > ro_hdr->image would be the address used to compute offsets by JIT.
+> > > > >
+> > > > > If we only do one text_poke(), we cannot write ro_hdr->image yet. We
+> > > > > can use ro_hdr + rw_hdr->image_offset instead.
+> > > >
+> > > > Good points.
+> > > > Maybe let's go back to Ilya's suggestion and return 4 pointers
+> > > > from bpf_jit_binary_alloc_pack ?
+> > >
+> > > How about we use image_offset, like:
+> > >
+> > > struct bpf_binary_header {
+> > >         u32 size;
+> > >         u32 image_offset;
+> > >         u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
+> > > };
+> > >
+> > > Then we can use
+> > >
+> > > image = (void *)header + header->image_offset;
+> >
+> > I'm not excited about it, since it leaks header details into JITs.
+> > Looks like we don't need JIT to be aware of it.
+> > How about we do random() % roundup(sizeof(struct bpf_binary_header), 64)
+> > to pick the image start and populate
+> > image-sizeof(struct bpf_binary_header) range
+> > with 'int 3'.
+> > This way we can completely hide binary_header inside generic code.
+> > The bpf_jit_binary_alloc_pack() would return ro_image and rw_image only.
+> > And JIT would pass them back into bpf_jit_binary_finalize_pack().
+> > From the image pointer it would be trivial to get to binary_header with &63.
+> > The 128 byte offset that we use today was chosen arbitrarily.
+> > We were burning the whole page for a single program, so 128 bytes zone
+> > at the front was ok.
+> > Now we will be packing progs rounded up to 64 bytes, so it's better
+> > to avoid wasting those 128 bytes regardless.
 >
-> Add a per-socket fast path check guarding from such overhead. This
-> affects both receive and transmit paths of TCP, UDP and other
-> protocols. It showed ~1% tx/s improvement in small payload UDP
-> send benchmarks using a real NIC and in a server environment and the
-> number jumps to 2-3% for preemtible kernels.
->
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->
-> v2: replace bitmask appoach with empty_prog_array
-> v3: add "bpf_" prefix to empty_prog_array
-> v4: replace macros with inline functions
->     use cgroup_bpf_sock_enabled for set/getsockopt() filters
+> In bpf_jit_binary_hdr(), we calculate header as image & PAGE_MASK.
+> If we want s/PAGE_MASK/63 for x86_64, we will have different versions
+> of bpf_jit_binary_hdr(). It is not on any hot path, so we can use __weak for
+> it. Other than this, I think the solution works fine.
 
-LGTM, thank you for following up!
+I think it can stay generic.
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
+The existing bpf_jit_binary_hdr() will do & PAGE_MASK
+while bpf_jit_binary_hdr_pack() will do & 63.
 
->  include/linux/bpf-cgroup.h | 26 +++++++++++++++++++++-----
->  include/linux/bpf.h        | 13 +++++++++++++
->  kernel/bpf/cgroup.c        | 30 ------------------------------
->  kernel/bpf/core.c          | 16 ++++------------
->  4 files changed, 38 insertions(+), 47 deletions(-)
->
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index b525d8cdc25b..165b0ba3d6c3 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -8,6 +8,7 @@
->  #include <linux/jump_label.h>
->  #include <linux/percpu.h>
->  #include <linux/rbtree.h>
-> +#include <net/sock.h>
->  #include <uapi/linux/bpf.h>
->
->  struct sock;
-> @@ -165,11 +166,23 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
->  int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->                                      void *value, u64 flags);
->
-> +/* Opportunistic check to see whether we have any BPF program attached*/
-> +static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
-> +                                          enum cgroup_bpf_attach_type type)
-> +{
-> +       struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> +       struct bpf_prog_array *array;
-> +
-> +       array = rcu_access_pointer(cgrp->bpf.effective[type]);
-> +       return array != &bpf_empty_prog_array.hdr;
-> +}
-> +
->  /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enabled. */
->  #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)                            \
->  ({                                                                           \
->         int __ret = 0;                                                        \
-> -       if (cgroup_bpf_enabled(CGROUP_INET_INGRESS))                  \
-> +       if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) && sk &&                  \
-> +           cgroup_bpf_sock_enabled(sk, CGROUP_INET_INGRESS))         \
->                 __ret = __cgroup_bpf_run_filter_skb(sk, skb,                  \
->                                                     CGROUP_INET_INGRESS); \
->                                                                               \
-> @@ -181,9 +194,10 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->         int __ret = 0;                                                         \
->         if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk && sk == skb->sk) { \
->                 typeof(sk) __sk = sk_to_full_sk(sk);                           \
-> -               if (sk_fullsock(__sk))                                         \
-> +               if (sk_fullsock(__sk) &&                                       \
-> +                   cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))         \
->                         __ret = __cgroup_bpf_run_filter_skb(__sk, skb,         \
-> -                                                     CGROUP_INET_EGRESS); \
-> +                                                     CGROUP_INET_EGRESS);     \
->         }                                                                      \
->         __ret;                                                                 \
->  })
-> @@ -347,7 +361,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->                                        kernel_optval)                          \
->  ({                                                                            \
->         int __ret = 0;                                                         \
-> -       if (cgroup_bpf_enabled(CGROUP_SETSOCKOPT))                             \
-> +       if (cgroup_bpf_enabled(CGROUP_SETSOCKOPT) &&                           \
-> +           cgroup_bpf_sock_enabled(sock, CGROUP_SETSOCKOPT))                  \
->                 __ret = __cgroup_bpf_run_filter_setsockopt(sock, level,        \
->                                                            optname, optval,    \
->                                                            optlen,             \
-> @@ -367,7 +382,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->                                        max_optlen, retval)                     \
->  ({                                                                            \
->         int __ret = retval;                                                    \
-> -       if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))                             \
-> +       if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&                           \
-> +           cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))                  \
->                 if (!(sock)->sk_prot->bpf_bypass_getsockopt ||                 \
->                     !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
->                                         tcp_bpf_bypass_getsockopt,             \
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 394305a5e02f..dcfe2de59b59 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1233,6 +1233,19 @@ struct bpf_prog_array {
->         struct bpf_prog_array_item items[];
->  };
->
-> +struct bpf_empty_prog_array {
-> +       struct bpf_prog_array hdr;
-> +       struct bpf_prog *null_prog;
-> +};
-> +
-> +/* to avoid allocating empty bpf_prog_array for cgroups that
-> + * don't have bpf program attached use one global 'bpf_empty_prog_array'
-> + * It will not be modified the caller of bpf_prog_array_alloc()
-> + * (since caller requested prog_cnt == 0)
-> + * that pointer should be 'freed' by bpf_prog_array_free()
-> + */
-> +extern struct bpf_empty_prog_array bpf_empty_prog_array;
-> +
->  struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags);
->  void bpf_prog_array_free(struct bpf_prog_array *progs);
->  int bpf_prog_array_length(struct bpf_prog_array *progs);
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 279ebbed75a5..098632fdbc45 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1384,20 +1384,6 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
->  }
->
->  #ifdef CONFIG_NET
-> -static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
-> -                                            enum cgroup_bpf_attach_type attach_type)
-> -{
-> -       struct bpf_prog_array *prog_array;
-> -       bool empty;
-> -
-> -       rcu_read_lock();
-> -       prog_array = rcu_dereference(cgrp->bpf.effective[attach_type]);
-> -       empty = bpf_prog_array_is_empty(prog_array);
-> -       rcu_read_unlock();
-> -
-> -       return empty;
-> -}
-> -
->  static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
->                              struct bpf_sockopt_buf *buf)
->  {
-> @@ -1456,19 +1442,11 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->         };
->         int ret, max_optlen;
->
-> -       /* Opportunistic check to see whether we have any BPF program
-> -        * attached to the hook so we don't waste time allocating
-> -        * memory and locking the socket.
-> -        */
-> -       if (__cgroup_bpf_prog_array_is_empty(cgrp, CGROUP_SETSOCKOPT))
-> -               return 0;
-> -
->         /* Allocate a bit more than the initial user buffer for
->          * BPF program. The canonical use case is overriding
->          * TCP_CONGESTION(nv) to TCP_CONGESTION(cubic).
->          */
->         max_optlen = max_t(int, 16, *optlen);
-> -
->         max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
->         if (max_optlen < 0)
->                 return max_optlen;
-> @@ -1550,15 +1528,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
->         };
->         int ret;
->
-> -       /* Opportunistic check to see whether we have any BPF program
-> -        * attached to the hook so we don't waste time allocating
-> -        * memory and locking the socket.
-> -        */
-> -       if (__cgroup_bpf_prog_array_is_empty(cgrp, CGROUP_GETSOCKOPT))
-> -               return retval;
-> -
->         ctx.optlen = max_optlen;
-> -
->         max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
->         if (max_optlen < 0)
->                 return max_optlen;
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 0a1cfd8544b9..04a8d5bea552 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -1968,18 +1968,10 @@ static struct bpf_prog_dummy {
->         },
->  };
->
-> -/* to avoid allocating empty bpf_prog_array for cgroups that
-> - * don't have bpf program attached use one global 'empty_prog_array'
-> - * It will not be modified the caller of bpf_prog_array_alloc()
-> - * (since caller requested prog_cnt == 0)
-> - * that pointer should be 'freed' by bpf_prog_array_free()
-> - */
-> -static struct {
-> -       struct bpf_prog_array hdr;
-> -       struct bpf_prog *null_prog;
-> -} empty_prog_array = {
-> +struct bpf_empty_prog_array bpf_empty_prog_array = {
->         .null_prog = NULL,
->  };
-> +EXPORT_SYMBOL(bpf_empty_prog_array);
->
->  struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
->  {
-> @@ -1989,12 +1981,12 @@ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
->                                (prog_cnt + 1),
->                                flags);
->
-> -       return &empty_prog_array.hdr;
-> +       return &bpf_empty_prog_array.hdr;
->  }
->
->  void bpf_prog_array_free(struct bpf_prog_array *progs)
->  {
-> -       if (!progs || progs == &empty_prog_array.hdr)
-> +       if (!progs || progs == &bpf_empty_prog_array.hdr)
->                 return;
->         kfree_rcu(progs, rcu);
->  }
-> --
-> 2.34.1
->
+
+
+> Thanks,
+> Song
