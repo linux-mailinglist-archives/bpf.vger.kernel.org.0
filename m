@@ -2,177 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6950949C8DC
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 12:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD2649C937
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 13:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240838AbiAZLmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 06:42:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240836AbiAZLmU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 06:42:20 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEB2C06161C;
-        Wed, 26 Jan 2022 03:42:20 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2CC14618D1;
-        Wed, 26 Jan 2022 11:42:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10C6DC340E3;
-        Wed, 26 Jan 2022 11:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643197339;
-        bh=LqJHs8a8li/256j1Xfz1YCxmaaeabo+fkmMvyqOS0K4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SeIy7IoMZxOCv99ELjPRyeJFJ0GiO+xSt0Ea1lxvoiO2kX5OC6BQDsBh4s2fjOKT6
-         Jgoeg8igpqWF62l8muoZ81a/gRXQlD1hNcPlY751Srvlk4qzAsjoB+EDYb9Xx/CGyQ
-         UeiosPCbGkdKJqPDON+XxSBb3vTVZK07wEL66ROkbtf69t39fpKOQF8VJt4D6+OVCP
-         Kp9SPObGSNDEj6e8BeB86N1/vLe8iFZrPu3LPx4W/nA5wADDq5ICqWR2OM3eFHv4Rs
-         +yppPeu8Einin1Jq+iyBipUt+T7hcNwaDgijlhP+4mDGGKsh080Sr0WMBBMpFg6VXx
-         oT3JEF8XBttkg==
-Date:   Wed, 26 Jan 2022 12:42:15 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, dsahern@kernel.org,
-        komachi.yoshiki@gmail.com, brouer@redhat.com, memxor@gmail.com,
-        andrii.nakryiko@gmail.com
+        id S241042AbiAZMCa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 07:02:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58063 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241031AbiAZMC3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 07:02:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643198548;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JffvNSe2BvAV1CIblV/we+uBV7wt/SYCRMsaGQKbhCY=;
+        b=bVM0tDtUtVXr0Mj6dbicCiqUP4CYbhp5hp7AZ2blCjRm3ikx6G589XY0qveoKVssd6Gwz1
+        WfXcbVd+JfIsbG9q/+uEmCnc/oMeytqGidHDNqHM72wcVIYMfhBbTpGEEZJc5RVpDcZ+eS
+        wdEb+AdyosdBzukZWqptWBlC+8yKAI4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-192-0CT83-tEM0GwUtBpxETQ1A-1; Wed, 26 Jan 2022 07:02:27 -0500
+X-MC-Unique: 0CT83-tEM0GwUtBpxETQ1A-1
+Received: by mail-ej1-f69.google.com with SMTP id r18-20020a17090609d200b006a6e943d09eso4783977eje.20
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 04:02:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=JffvNSe2BvAV1CIblV/we+uBV7wt/SYCRMsaGQKbhCY=;
+        b=452YmmHA3imVUJi37bFzcsqP3DQTjB4UnW2blZObZ1p+ZRTrq5f61wqQt5Do1AA924
+         buKXItF6lIHBBkVpNF++EtW+KpFQfv4iEZx1zYtkxrLyC6a1UexnlPMNB3MrIpBwd63f
+         kV5QXdWkFBieCr2g5M3/sVZInknm2VWEOl0Jt2cl8Ms7BhlM88cgrmn96tuLTEeMViYt
+         lxGE/Ua/ah3WQrMWDUX6kiy/A46+JqARe/AIhCxhKfE3JpWLY03ty54PL5Hx2J6Yyt+A
+         F4mgb/79KLCri7wSjvmZzNo2f8k+2Y1RqUuR3jVxsnEOFiExtaKoGQbmcY/jsomvi87J
+         JPuQ==
+X-Gm-Message-State: AOAM5323k8BLSlmMPU+DSoJtd4VdnExPqFU8Q4FU/XnehP8pV+RD0v93
+        nw3jEBqhlX3NAtUPEzzNV04kjR2mm6WtPxjJd+C52sMHEelhhRRTnxCA8R4//yAVeRKLBlfqYyj
+        FtVHePwRcBVg9
+X-Received: by 2002:a17:907:7208:: with SMTP id dr8mr20302097ejc.503.1643198546014;
+        Wed, 26 Jan 2022 04:02:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy0+dKaLOqKZ04M8CubkNiWEfd6Zntql4B7K4J5CdeX8Zg49omzBwDYV9V8DA87HIjWqq5ZZw==
+X-Received: by 2002:a17:907:7208:: with SMTP id dr8mr20302068ejc.503.1643198545600;
+        Wed, 26 Jan 2022 04:02:25 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id e19sm6248161ejl.225.2022.01.26.04.02.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Jan 2022 04:02:25 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 513FF1805FA; Wed, 26 Jan 2022 13:02:24 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Nikolay Aleksandrov <nikolay@nvidia.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Ahern <dsahern@kernel.org>,
+        Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        Ido Schimmel <idosch@idosch.org>
 Subject: Re: [RFC bpf-next 1/2] net: bridge: add unstable
  br_fdb_find_port_from_ifindex helper
-Message-ID: <YfEzl0wL+51wa6z7@lore-desk>
+In-Reply-To: <YfEr3Soy8YuJczHk@lore-desk>
 References: <cover.1643044381.git.lorenzo@kernel.org>
  <720907692575488526f06edc2cf5c8f783777d4f.1643044381.git.lorenzo@kernel.org>
- <878rv558fy.fsf@toke.dk>
+ <61553c87-a3d3-07ae-8c2f-93cf0cb52263@nvidia.com>
+ <CAADnVQLv=45+Symc-8Y9QuzOAG40e3XkvVxQ-ibO-HOCyJhETw@mail.gmail.com>
+ <YfEr3Soy8YuJczHk@lore-desk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 26 Jan 2022 13:02:24 +0100
+Message-ID: <87ee4u3dtb.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NAWMkjDihtnCxxji"
-Content-Disposition: inline
-In-Reply-To: <878rv558fy.fsf@toke.dk>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
---NAWMkjDihtnCxxji
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>> On Mon, Jan 24, 2022 at 10:32 AM Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
+>> > >
+>> > > +int br_fdb_find_port_from_ifindex(struct xdp_md *xdp_ctx,
+>> > > +                               struct bpf_fdb_lookup *opt,
+>> > > +                               u32 opt__sz)
+>> > > +{
+>> > > +     struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+>> > > +     struct net_bridge_port *port;
+>> > > +     struct net_device *dev;
+>> > > +     int ret = -ENODEV;
+>> > > +
+>> > > +     BUILD_BUG_ON(sizeof(struct bpf_fdb_lookup) != NF_BPF_FDB_OPTS_SZ);
+>> > > +     if (!opt || opt__sz != sizeof(struct bpf_fdb_lookup))
+>> > > +             return -ENODEV;
+>> > > +
+>> > > +     rcu_read_lock();
+>> > > +
+>> > > +     dev = dev_get_by_index_rcu(dev_net(ctx->rxq->dev), opt->ifindex);
+>> > > +     if (!dev)
+>> > > +             goto out;
+>> 
+>> imo that is way too much wrapping for an unstable helper.
+>> The dev lookup is not cheap.
+>> 
+>> With all the extra checks the XDP acceleration gets reduced.
+>> I think it would be better to use kprobe/fentry on bridge
+>> functions that operate on fdb and replicate necessary
+>> data into bpf map.
+>> Then xdp prog would do a single cheap lookup from that map
+>> to figure out 'port'.
+>
+> ack, right. This is a very interesting approach. I will investigate
+> it. Thanks.
 
-> [ snip to focus on the API ]
->=20
-> > +int br_fdb_find_port_from_ifindex(struct xdp_md *xdp_ctx,
-> > +				  struct bpf_fdb_lookup *opt,
-> > +				  u32 opt__sz)
-> > +{
-> > +	struct xdp_buff *ctx =3D (struct xdp_buff *)xdp_ctx;
-> > +	struct net_bridge_port *port;
-> > +	struct net_device *dev;
-> > +	int ret =3D -ENODEV;
-> > +
-> > +	BUILD_BUG_ON(sizeof(struct bpf_fdb_lookup) !=3D NF_BPF_FDB_OPTS_SZ);
-> > +	if (!opt || opt__sz !=3D sizeof(struct bpf_fdb_lookup))
-> > +		return -ENODEV;
->=20
-> Why is the BUILD_BUG_ON needed? Or why is the NF_BPF_FDB_OPTS_SZ
-> constant even needed?
+I think it would be interesting to try both, and compare their
+performance. I'm a bit sceptical about Alexei's assertion that
+dev_get_by_index_rcu() is that expensive: we do such a lookup in the XDP
+redirect code when using the non-map bpf_redirect() helper, and I have
+not been able to measure a significant performance difference between
+the map and non-map variants (after we added bulking to the latter).
 
-I added it to be symmetric with respect to ct counterpart
+If looking up devices by ifindex does turn out to be too expensive,
+maybe what we really need is a way to pass around 'struct net_device'
+pointers to BPF helpers, so a given BPF program only has to do the
+lookup once if it's calling multiple dev-based helpers? I think this
+should be doable with BTF, no?
 
->=20
-> > +	rcu_read_lock();
->=20
-> This is not needed when the function is only being called from XDP...
+-Toke
 
-don't we need it since we do not hold the rtnl here?
-
->=20
-> > +
-> > +	dev =3D dev_get_by_index_rcu(dev_net(ctx->rxq->dev), opt->ifindex);
-> > +	if (!dev)
-> > +		goto out;
-> > +
-> > +	if (unlikely(!netif_is_bridge_port(dev)))
-> > +		goto out;
-> > +
-> > +	port =3D br_port_get_check_rcu(dev);
-> > +	if (unlikely(!port || !port->br))
-> > +		goto out;
-> > +
-> > +	dev =3D __br_fdb_find_port(port->br->dev, opt->addr, opt->vid, true);
-> > +	if (dev)
-> > +		ret =3D dev->ifindex;
-> > +out:
-> > +	rcu_read_unlock();
-> > +
-> > +	return ret;
-> > +}
-> > +
-> >  struct net_bridge_fdb_entry *br_fdb_find_rcu(struct net_bridge *br,
-> >  					     const unsigned char *addr,
-> >  					     __u16 vid)
-> > diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-> > index 2661dda1a92b..64d4f1727da2 100644
-> > --- a/net/bridge/br_private.h
-> > +++ b/net/bridge/br_private.h
-> > @@ -18,6 +18,7 @@
-> >  #include <linux/if_vlan.h>
-> >  #include <linux/rhashtable.h>
-> >  #include <linux/refcount.h>
-> > +#include <linux/bpf.h>
-> > =20
-> >  #define BR_HASH_BITS 8
-> >  #define BR_HASH_SIZE (1 << BR_HASH_BITS)
-> > @@ -2094,4 +2095,15 @@ void br_do_proxy_suppress_arp(struct sk_buff *sk=
-b, struct net_bridge *br,
-> >  void br_do_suppress_nd(struct sk_buff *skb, struct net_bridge *br,
-> >  		       u16 vid, struct net_bridge_port *p, struct nd_msg *msg);
-> >  struct nd_msg *br_is_nd_neigh_msg(struct sk_buff *skb, struct nd_msg *=
-m);
-> > +
-> > +#define NF_BPF_FDB_OPTS_SZ	12
-> > +struct bpf_fdb_lookup {
-> > +	u8	addr[ETH_ALEN]; /* ETH_ALEN */
-> > +	u16	vid;
-> > +	u32	ifindex;
-> > +};
->=20
-> It seems like addr and ifindex should always be required, right? So why
-> not make them regular function args? That way the ptr to eth addr could
-> be a ptr directly to the packet header (saving a memcpy), and the common
-> case(?) could just pass a NULL opts struct?
-
-ack, right. I agree.
-
->=20
-> > +int br_fdb_find_port_from_ifindex(struct xdp_md *xdp_ctx,
-> > +				  struct bpf_fdb_lookup *opt,
-> > +				  u32 opt__sz);
->=20
-> It should probably be documented that the return value is an ifindex as
-> well; I guess one of the drawbacks of kfunc's relative to regular
-> helpers is that there is no convention for how to document their usage -
-> maybe we should fix that before we get too many of them? :)
-
-kfunc is probably too new :)
-
-Regards,
-Lorenzo
-
->=20
-> -Toke
->=20
-
---NAWMkjDihtnCxxji
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYfEzlwAKCRA6cBh0uS2t
-rNEUAQDfv2ulJGR7fq6AxrFOPC/3t7QKbEUBJozNXBypP6TIDQEA64FSX8ZWuLH7
-iCtHro3CxlcVibjiiqKYKd019/k95ws=
-=uH2b
------END PGP SIGNATURE-----
-
---NAWMkjDihtnCxxji--
