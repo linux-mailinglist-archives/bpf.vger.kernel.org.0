@@ -2,111 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC56B49D320
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 21:07:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F272349D32F
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 21:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbiAZUH6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 15:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53490 "EHLO
+        id S230061AbiAZULb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 15:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiAZUH5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 15:07:57 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8C1C06161C
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 12:07:57 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id s18so947084ioa.12
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 12:07:57 -0800 (PST)
+        with ESMTP id S229849AbiAZULa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 15:11:30 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3F6C06161C;
+        Wed, 26 Jan 2022 12:11:30 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id r144so980026iod.9;
+        Wed, 26 Jan 2022 12:11:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2LRYekgQCmmLNPUFDqEkwdQfaeSfSIIK9dg3zxbzjXw=;
-        b=kL9Ndx6e/gZV9enccXP9lYasT+ZxiuEYQJ05BuqAaFdujpbzrOokqMKKzCqthcyU1W
-         TvGHwis1jpf19vHCJjv0ehZy2ohtZKG6NvI/TplDBjT+7QTbtHWgxmDqwarP/zD6c59d
-         tH3AW3XsvYCPW+RIQhYvXC1NeGFQseheyAJ9H+Nu8HhSuqQm9Cxj6gbHOKNo0C5bb7Qf
-         QrVOE6fNzNFvEficKkGNgt5vf+hbarIm2gahxJfnznfX+NePqeixa0geFEY+bq8kMvS8
-         6bK2sc7o8Mn/kdc2VnlPXe1zF7k9bz1qFpMe0hmUUsCGTbHuGzxN8UuvAoEEQpAsN5Lo
-         MHkA==
+        bh=iHNtswCZ20T9YzzMlWIKYcpHmw5B2cY7fU1N6zk6jhY=;
+        b=MUUklsnuILZdwYcpoefRhuACqNULLEkCfTo9JO0Vwq3j4q7Wb3Wd1D6bkZIlVmHALE
+         Z8M0HSaehqLJ/MwZnHdvaZUkxRnXqk5CbM87YXmHvRv/y1PIaV+D+HhEfn7CKuSqZzEK
+         6qp5zNHb5fiFsCE0pxEkk3u141TDoVfdpp4DOwqNe538hgJdlXZfU5UwX83rFcGmO0dT
+         ADzH0deDRnQYthSHtOlvgJAmUfE7WsDvs6ljDI1HSOkigW1O5Snot1imT1bLvXsRh7vQ
+         Fq9BS2/tbSMHG2kHlJQ2JCsRaAkSQLI47J6jnw8jDH8g4yj7WiCQcRDiUHCa3NZtYbeh
+         iohg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2LRYekgQCmmLNPUFDqEkwdQfaeSfSIIK9dg3zxbzjXw=;
-        b=bnelzHi2DEcSxDrYvKRSwZ3pcUSgKyqrkMcyTWX7p7Maa4Nc9tlVuxWQxGMpK6ZWlJ
-         4PNJAAtON+YvaParBd+Deq7lAg7BSST+HzjpPqXgJH0E0GfwqK+Lb5A6svzoPcDzItpl
-         UaTndnDstXNE7mC+Di2rI5xVrRMnK2XBChpVodsybqJHL6ZGMbYutpTgiaCRHQPfEgWp
-         IViTMBcJavaM8QydF0ftol/LzkZGEWK2JoEZgHGQ1F30SF79c+pW4Nl6KW6VAg3KZ5ya
-         jd4glUnDoQVTZg+FFAJw1cjrQCYf2hBLRS2g5Cp9dxhl6aMIzK8o1ZUm2y3jg3fBk8VK
-         rSKw==
-X-Gm-Message-State: AOAM532LbuDs/6AbTWXJgZl8gn4tPKILVX0hp2PhIBUkJAkMeTfZyzFd
-        fQgOA9RlM3ptWE3T8C32zLVZYTwEkTY68Atksmg=
-X-Google-Smtp-Source: ABdhPJy3ynSvAUNzgNEvq2G62YmIc0TCbjaWg4wX6wnSIbUow21sLx8mjliVrSfHktpFaVCCOkGmiDaSCrum5JJLmnA=
-X-Received: by 2002:a02:7417:: with SMTP id o23mr138493jac.145.1643227676875;
- Wed, 26 Jan 2022 12:07:56 -0800 (PST)
+        bh=iHNtswCZ20T9YzzMlWIKYcpHmw5B2cY7fU1N6zk6jhY=;
+        b=gQfQgPlWbrG6GsCJq5pFpLYkxkr1uV7/LW+Gbmb28GdEPdbivFvmEAeg1KNEiSlNsr
+         0sl43PrjtXLrhFaOWyuyr3XBl904vR7GEqrKckkGgJDLv+jOoLLF3hgV0VBISa5jrAZk
+         1GFuwF14GhS0B6JWuNTiQC2XFF/LQDiCCfy/OsYuLnprbI124lFvuOdVYx6xPxcc6Cwj
+         OWhi+zR/oYz1FISbaFSMhjGx4xcvv8xz0nZ2aiUmzogmEOz/4fOadikyRpirVHMgYyWf
+         CjEZOfY+GE/Ncl17mt9Vo72P9ejkG6pRdcS3AhG8csNa/BSeFAx+IJytnhUCR6uEbZcY
+         L6OA==
+X-Gm-Message-State: AOAM530s+TIbvT2slAham571fSRZ3X+WSExXo5qz4WgXvl7VG89mr40D
+        yd8QQZKj0rnLYj1WJ930cNwde6ff72aqwpBwzvOcqoeL1Q0=
+X-Google-Smtp-Source: ABdhPJyv5AB5nanXtf5ZSvkcZs6a++KGKqOTEZ+RaQPMXJrIR6J417txQpGFOv+VG436pQuXhfXFTNcv65xYC5tOtUo=
+X-Received: by 2002:a5e:8406:: with SMTP id h6mr154510ioj.144.1643227889490;
+ Wed, 26 Jan 2022 12:11:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126181940.4105997-1-yhs@fb.com>
-In-Reply-To: <20220126181940.4105997-1-yhs@fb.com>
+References: <cover.1643044381.git.lorenzo@kernel.org> <720907692575488526f06edc2cf5c8f783777d4f.1643044381.git.lorenzo@kernel.org>
+ <878rv558fy.fsf@toke.dk> <YfEzl0wL+51wa6z7@lore-desk> <20220126120347.cp3xvuxkwyi2o5wx@apollo.legion>
+In-Reply-To: <20220126120347.cp3xvuxkwyi2o5wx@apollo.legion>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 26 Jan 2022 12:07:46 -0800
-Message-ID: <CAEf4BzZrgk9Hjs14vVCN=UshGqEbhKNGjRvrQXaTKvxL9i3DGQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix a clang compilation error
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 26 Jan 2022 12:11:18 -0800
+Message-ID: <CAEf4BzYfUb2fQeUAMcjfXdCyzAdGS6NtTkV87G8yOnrdMdOWqg@mail.gmail.com>
+Subject: Re: [RFC bpf-next 1/2] net: bridge: add unstable br_fdb_find_port_from_ifindex
+ helper
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        David Ahern <dsahern@kernel.org>,
+        Yoshiki Komachi <komachi.yoshiki@gmail.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 10:19 AM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Jan 26, 2022 at 4:05 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Compiling kernel and selftests/bpf with latest llvm like blow:
->   make -j LLVM=1
->   make -C tools/testing/selftests/bpf -j LLVM=1
-> I hit the following compilation error:
->   /.../prog_tests/log_buf.c:215:6: error: variable 'log_buf' is used uninitialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitialized]
->           if (!ASSERT_OK_PTR(raw_btf_data, "raw_btf_data_good"))
->               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /.../prog_tests/log_buf.c:264:7: note: uninitialized use occurs here
->           free(log_buf);
->                ^~~~~~~
->   /.../prog_tests/log_buf.c:215:2: note: remove the 'if' if its condition is always false
->           if (!ASSERT_OK_PTR(raw_btf_data, "raw_btf_data_good"))
->           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   /.../prog_tests/log_buf.c:205:15: note: initialize the variable 'log_buf' to silence this warning
->           char *log_buf;
->                        ^
->                         = NULL
->   1 error generated.
+> On Wed, Jan 26, 2022 at 05:12:15PM IST, Lorenzo Bianconi wrote:
+> > > [ snip to focus on the API ]
+> > >
+> > > > +int br_fdb_find_port_from_ifindex(struct xdp_md *xdp_ctx,
+> > > > +                           struct bpf_fdb_lookup *opt,
+> > > > +                           u32 opt__sz)
+> > > > +{
+> > > > + struct xdp_buff *ctx = (struct xdp_buff *)xdp_ctx;
+> > > > + struct net_bridge_port *port;
+> > > > + struct net_device *dev;
+> > > > + int ret = -ENODEV;
+> > > > +
+> > > > + BUILD_BUG_ON(sizeof(struct bpf_fdb_lookup) != NF_BPF_FDB_OPTS_SZ);
+> > > > + if (!opt || opt__sz != sizeof(struct bpf_fdb_lookup))
+> > > > +         return -ENODEV;
+> > >
+> > > Why is the BUILD_BUG_ON needed? Or why is the NF_BPF_FDB_OPTS_SZ
+> > > constant even needed?
+> >
+> > I added it to be symmetric with respect to ct counterpart
 >
-> Compiler rightfully detected that log_buf is uninitialized in one of failure path as indicated
-> in the above.
->
+> But the constant needs to be an enum, not a define, otherwise it will not be
+> emitted to BTF, I added it so that one could easily check the struct 'version'
+> (because sizeof is not relocated in BPF programs).
 
-Yep, strange that GCC didn't detect this. Applied to bpf-next, thanks!
+Without reading the rest of the thread, bpf_core_type_size(struct
+bpf_fdb_lookup) would be a CO-RE-relocatable way to get the actual
+size of the type in the kernel.
 
-> Proper initialization of 'log_buf' variable fixed the issue.
 >
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/log_buf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Yes, bpf_core_field_exists and would also work, but the size is fixed anyway and
+> we need to check it, so it felt better to give it a name and also make it
+> visible to BPF programs at the same time.
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/log_buf.c b/tools/testing/selftests/bpf/prog_tests/log_buf.c
-> index e469b023962b..1ef377a7e731 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/log_buf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/log_buf.c
-> @@ -202,7 +202,7 @@ static void bpf_btf_load_log_buf(void)
->         const void *raw_btf_data;
->         __u32 raw_btf_size;
->         struct btf *btf;
-> -       char *log_buf;
-> +       char *log_buf = NULL;
->         int fd = -1;
+> >
+> >  [...]
 >
->         btf = btf__new_empty();
 > --
-> 2.30.2
->
+> Kartikeya
