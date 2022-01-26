@@ -2,175 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FD249CF4F
-	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 17:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA96A49D18F
+	for <lists+bpf@lfdr.de>; Wed, 26 Jan 2022 19:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238524AbiAZQLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 11:11:50 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:39554 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237681AbiAZQLt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 11:11:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 82462B81EE4
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 16:11:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAFC4C340E3;
-        Wed, 26 Jan 2022 16:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643213507;
-        bh=6cqkzEIIRW0gmQwT/9KKv45+rfMvDK9BX5KVJS4bgkg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HfH19ouYbd7qK3wk48i/Y9Amlrbg/71IS7i04dBetTpwt4HqeyissxTyh/5jicR+N
-         Lt9zvurse5PeKDvepbkpN6pc6QeA61FndAkftTTsjjMUvi4W1gWKnf0l9C0UODLUhP
-         zwQqZQMt7EdesiImoeeQQUPRJmNEZIP7d+HQHs647e44ZmkDO2RuENPy+o/VIYsTuH
-         znE0i0AELAKMVVxAuB4eLWub0kSID0w1aMi+3xXn6doBh26kwcmGOohhNizznyMDii
-         sb6zdXViv08RLgbpNkQHVsPc0+pHEcMxqfoxdfVQfnDIYiY//7jkMtiGGzA06OI3B5
-         6ykhXGeTjQg2Q==
-Date:   Wed, 26 Jan 2022 17:11:43 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Cc:     Zvi Effron <zeffron@riotgames.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        john fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Eelco Chaudron <echaudro@redhat.com>
-Subject: Re: [PATCH v21 bpf-next 18/23] libbpf: Add SEC name for xdp_mb
- programs
-Message-ID: <YfFyv8l6xDNM70eZ@lore-desk>
-References: <Yd82J8vxSAR9tvQt@lore-desk>
- <8735lshapk.fsf@toke.dk>
- <47a3863b-080c-3ac2-ff2d-466b74d82c1c@redhat.com>
- <Yd/9SPHAPH3CpSnN@lore-desk>
- <CAADnVQJaB8mmnD1Z4jxva0CqA2D0aQDmXggMEQPX2MRLZvoLzA@mail.gmail.com>
- <YeC8sOAeZjpc4j8+@lore-desk>
- <CAADnVQ+=0k1YBbkMmSKSBtkmiG8VCYZ5oKGjPPr4s9c53QF-mQ@mail.gmail.com>
- <e86ccea8-af77-83bf-e90e-dce88b26f07c@redhat.com>
- <CAC1LvL3M9OaSanES0uzp=vvgK23qPGRPpcAR6Z_Vqcvma3K5Qg@mail.gmail.com>
- <CAEf4BzZAMtmqW4sMfhEX8WtAzmQoVQ=WupqeqXa=5KbYXAbQNA@mail.gmail.com>
+        id S239311AbiAZSTv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 13:19:51 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48222 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235901AbiAZSTv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 26 Jan 2022 13:19:51 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20QGHq9N002566
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 10:19:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=N7FD39xl1wIazm0gF6D6J08Ezu22M+1y8m3Jm3Ni0rM=;
+ b=ZHrjsKdw75lD1rsS7cVKPxrL4Bw+s/i7w+foBv+CH12NMPrlUwgpbZI0vjQaZn+17zJX
+ qxCVTq1iI1/NHXbvg1ffbfDhg1cwVxTqyDxj9U1jV9fKFhS1/OJAYVTMLjv2V+rP9b0f
+ jACGnP0EQjNMgcBpGOlnvSZMzaSxvfPCCuU= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dtvbevq0e-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 10:19:50 -0800
+Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 26 Jan 2022 10:19:49 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 4F9D55989F08; Wed, 26 Jan 2022 10:19:40 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix a clang compilation error
+Date:   Wed, 26 Jan 2022 10:19:40 -0800
+Message-ID: <20220126181940.4105997-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="F5B0qkXAbrXnTAJt"
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZAMtmqW4sMfhEX8WtAzmQoVQ=WupqeqXa=5KbYXAbQNA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: RXq7KDfRlWpZOuYYxsOiFnh661PnzATT
+X-Proofpoint-ORIG-GUID: RXq7KDfRlWpZOuYYxsOiFnh661PnzATT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-26_06,2022-01-26_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 spamscore=0
+ malwarescore=0 mlxscore=0 mlxlogscore=794 impostorscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2201260111
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Compiling kernel and selftests/bpf with latest llvm like blow:
+  make -j LLVM=3D1
+  make -C tools/testing/selftests/bpf -j LLVM=3D1
+I hit the following compilation error:
+  /.../prog_tests/log_buf.c:215:6: error: variable 'log_buf' is used unin=
+itialized whenever 'if' condition is true [-Werror,-Wsometimes-uninitiali=
+zed]
+          if (!ASSERT_OK_PTR(raw_btf_data, "raw_btf_data_good"))
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /.../prog_tests/log_buf.c:264:7: note: uninitialized use occurs here
+          free(log_buf);
+               ^~~~~~~
+  /.../prog_tests/log_buf.c:215:2: note: remove the 'if' if its condition=
+ is always false
+          if (!ASSERT_OK_PTR(raw_btf_data, "raw_btf_data_good"))
+          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /.../prog_tests/log_buf.c:205:15: note: initialize the variable 'log_bu=
+f' to silence this warning
+          char *log_buf;
+                       ^
+                        =3D NULL
+  1 error generated.
 
---F5B0qkXAbrXnTAJt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Compiler rightfully detected that log_buf is uninitialized in one of fail=
+ure path as indicated
+in the above.
 
-> On Fri, Jan 14, 2022 at 10:55 AM Zvi Effron <zeffron@riotgames.com> wrote:
-> >
-> > On Fri, Jan 14, 2022 at 8:50 AM Jesper Dangaard Brouer
-> > <jbrouer@redhat.com> wrote:
-> > >
-> > >
-> > >
-> > > On 14/01/2022 03.09, Alexei Starovoitov wrote:
-> > > > On Thu, Jan 13, 2022 at 3:58 PM Lorenzo Bianconi <lorenzo@kernel.or=
-g> wrote:
-> > > >>>
-> > > >>> Btw "xdp_cpumap" should be cleaned up.
-> > > >>> xdp_cpumap is an attach type. It's not prog type.
-> > > >>> Probably it should be "xdp/cpumap" to align with "cgroup/bind[46]=
-" ?
-> > > >>
-> > > >> so for xdp "mb" or xdp "frags" it will be xdp/cpumap.mb (xdp/devma=
-p.mb) or
-> > > >> xdp/cpumap.frags (xdp/devmap.frags), right?
-> > > >
-> > > > xdp.frags/cpumap
-> > > > xdp.frags/devmap
-> > > >
-> > > > The current de-facto standard for SEC("") in libbpf:
-> > > > prog_type.prog_flags/attach_place
-> > >
-> > > Ups, did we make a mistake with SEC("xdp_devmap/")
-> > >
-> > > and can we correct without breaking existing programs?
-> > >
-> >
-> > We can (at the very least) add the correct sections, even if we leave t=
-he
-> > current incorrect ones as well. Ideally we'd mark the incorrect ones de=
-precated
-> > and either remove them before libbpf 1.0 or as part of 2.0?
-> >
->=20
-> Correct, those would need to be new aliases. We can also deprecate old
-> ones, if we have consensus on that. We can teach libbpf to emit
-> warnings (through logs, of course) for such uses of to-be-removed
-> sections aliases. We still have probably a few months before the final
-> 1.0 release, should hopefully be plenty of time to people to adapt.
+Proper initialization of 'log_buf' variable fixed the issue.
 
-If we all agree on old cpumap/devmap sec deprecation and replace them with
-xdp/cpumap and xdp/devmap, would it be ok something like the patch below or
-would be necessary something different?
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/prog_tests/log_buf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Lorenzo
-
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -6575,6 +6575,12 @@ static int libbpf_preload_prog(struct bpf_program *p=
-rog,
- 	if (prog->type =3D=3D BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS))
- 		opts->prog_flags |=3D BPF_F_XDP_HAS_FRAGS;
+diff --git a/tools/testing/selftests/bpf/prog_tests/log_buf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/log_buf.c
+index e469b023962b..1ef377a7e731 100644
+--- a/tools/testing/selftests/bpf/prog_tests/log_buf.c
++++ b/tools/testing/selftests/bpf/prog_tests/log_buf.c
+@@ -202,7 +202,7 @@ static void bpf_btf_load_log_buf(void)
+ 	const void *raw_btf_data;
+ 	__u32 raw_btf_size;
+ 	struct btf *btf;
+-	char *log_buf;
++	char *log_buf =3D NULL;
+ 	int fd =3D -1;
 =20
-+	if (strstr(prog->sec_name, "xdp_devmap") ||
-+	    strstr(prog->sec_name, "xdp_cpumap")) {
-+		pr_warn("sec_name '%s' is deprecated, use xdp/devmap or xdp_cpumap inste=
-ad\n",
-+			prog->sec_name);
-+	}
-+
- 	if ((prog->type =3D=3D BPF_PROG_TYPE_TRACING ||
- 	     prog->type =3D=3D BPF_PROG_TYPE_LSM ||
- 	     prog->type =3D=3D BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
-@@ -8618,8 +8624,10 @@ static const struct bpf_sec_def section_defs[] =3D {
- 	SEC_DEF("iter.s/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPAB=
-LE, attach_iter),
- 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
- 	SEC_DEF("xdp.frags/devmap",	XDP, BPF_XDP_DEVMAP, SEC_XDP_FRAGS),
-+	SEC_DEF("xdp/devmap",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
- 	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
- 	SEC_DEF("xdp.frags/cpumap",	XDP, BPF_XDP_CPUMAP, SEC_XDP_FRAGS),
-+	SEC_DEF("xdp/cpumap",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
- 	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
- 	SEC_DEF("xdp.frags",		XDP, BPF_XDP, SEC_XDP_FRAGS),
- 	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	btf =3D btf__new_empty();
+--=20
+2.30.2
 
-
->=20
-> > --Zvi
-> >
-> > > > "attach_place" is either function_name for fentry/, tp/, lsm/, etc.
-> > > > or attach_type/hook/target for cgroup/bind4, cgroup_skb/egress.
-> > > >
-> > > > lsm.s/socket_bind -> prog_type =3D LSM, flags =3D SLEEPABLE
-> > > > lsm/socket_bind -> prog_type =3D LSM, non sleepable.
-> > > >
-> > >
-
---F5B0qkXAbrXnTAJt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYfFyvgAKCRA6cBh0uS2t
-rIUlAP9K6P0vUuCMOnM4qdHkmQFR+xEZdLpY/74wSXQrNljTnQD9Ht91FZTehAYA
-Z4ouOg4v6RNoB8x2alXcScdjNj3MhQw=
-=zPgV
------END PGP SIGNATURE-----
-
---F5B0qkXAbrXnTAJt--
