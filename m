@@ -2,231 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B282949E21F
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 13:12:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E6449E3E6
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 14:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233601AbiA0MMs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 07:12:48 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:44192 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241043AbiA0MMr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 07:12:47 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4E57FB82229
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 12:12:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 059FBC340E4;
-        Thu, 27 Jan 2022 12:12:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643285565;
-        bh=wgcHJFhCZ9qCRG1fCzIXc6gdNyX8YjOj+nw9LyDPWIw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fhanXZ8fKa7bjSo1nnqRnSLwIlhrew6U0fvHqh90NWYXOZlnx1GEuy1lrfUxpt1G7
-         CH9CDiBhgrQkYoT4qpNRlW4GM5+kh9lmzRT9ECqTp99N+9dSo+GIiH9TeMXAEbS74w
-         cJViRqCrXdDm0AwldueOcZr7EzHbA92SD/44OQya6ZpSTpi1a/D0qoa+ab8UXtRSIo
-         4ARSAl/fkQz4mzsPTv/3Kl9v6Sl7opupYi+Qf0B85+IiAJ4/dVjhqJJB8brJWE5pkM
-         fDenXht+pvOE++7AtmV/IfrBu5sBEJpy6slsrf5boguIub8A17NqKkfgGMJHBG02dJ
-         1G7jIZfECYskA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, dsahern@kernel.org,
-        brouer@redhat.com, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        andrii@kernel.org, john.fastabend@gmail.com
-Subject: [PATCH bpf-next] libbpf: deprecate xdp_cpumap and xdp_devmap sec definitions
-Date:   Thu, 27 Jan 2022 13:12:33 +0100
-Message-Id: <d7f8f9e3370d33be0a3385c7604d8925e10c91d1.1643285321.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        id S233312AbiA0Nx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 08:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbiA0Nx0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 08:53:26 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D164DC061714;
+        Thu, 27 Jan 2022 05:53:25 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id j2so6020794ejk.6;
+        Thu, 27 Jan 2022 05:53:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4pBdb6D0daP2qnvL0qQ826/MiGsIBaizvdm2ms6Tt/I=;
+        b=q6re+DCs3ZPrM5z8ejNF3OvYq89TT8hUqFMciLwyGTeq9p8DEdTBIAn1XRdNBbGRlF
+         tbxnRr8dLKIdmCpJ7TY7Q+fBRFom1KhkofUt1dGOoFdxs9raCKodl395SUeXVtckovwJ
+         hbPSGEjynYdW/EhWo10mwkONNuXPCeMt5ARxiYCKbtMfYBDSS/tUJuQeX6CaN5xYVPFl
+         sNbQtuX6jwPdCqkJIf3KLHYoZWOVgyc/65+duznUquDe3ZyEX5ioZhi2YTfFGgaTBwZW
+         z564FALU4WfV7aYaSOyXqbCULnO3b4BX9a+f4JATqsqZiRhtxvCJ6rDM0bmSMtgnhIxK
+         6aVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4pBdb6D0daP2qnvL0qQ826/MiGsIBaizvdm2ms6Tt/I=;
+        b=EoiV91s1YhMkTOp+C/opyMhgdM3tHxxYZmgTeIy+BkK36N6jLDY5z8kXz1csf0lTix
+         duD1Dxi8T6PvweSbSawLhZW0sWyy/V7exra9FlsXhffUtTcw/VOSNvxipGl6IPQalOUd
+         eHk0qMKOtZODIceSgbt5om28Ufxh5J/jZsHA1v8iIMR9UTQbvI87iipQerpCxjdWBurs
+         napLtF4iUhZNrJMK5fhp26lKON8jfH9o8K8/Ali9yJTRJvpAtnNG0wQOxQzOwo/hWqpn
+         EXqag+dyytstJJuNs0wImxZdSp/72ilA2LtT/+84LTsRoY5ExTm9PdsvdY61WOvErTGo
+         BRqA==
+X-Gm-Message-State: AOAM531bDnQo2plCcwwq54t77H3vmFrZTmd6Rf1NewqhFubXfRHId6gs
+        IOPo3HYrR6u97CBKNuGdV34=
+X-Google-Smtp-Source: ABdhPJxdH0FAutV6NuZIOOZwdCQ4yJsiw3KoLuHdyvZG/BqZadKeJ3ogTVXiDYbvXxoMdP5C84TfKQ==
+X-Received: by 2002:a17:907:1c0f:: with SMTP id nc15mr2956133ejc.673.1643291604282;
+        Thu, 27 Jan 2022 05:53:24 -0800 (PST)
+Received: from [192.168.8.198] ([85.255.234.222])
+        by smtp.gmail.com with ESMTPSA id z6sm8803250ejd.96.2022.01.27.05.53.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Jan 2022 05:53:23 -0800 (PST)
+Message-ID: <12d6b267-7c1b-1f2b-2ab1-8d24433f16ea@gmail.com>
+Date:   Thu, 27 Jan 2022 13:53:29 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH for-next v4] cgroup/bpf: fast path skb BPF filtering
+Content-Language: en-US
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+References: <94e36de3cc2b579e45f95c189a6f5378bf1480ac.1643156174.git.asml.silence@gmail.com>
+ <20220126203055.3xre2m276g2q2tkx@kafai-mbp.dhcp.thefacebook.com>
+ <fbc8acbe-4c12-9c68-0418-51e97457d30b@gmail.com>
+ <CAADnVQ+p0B-2_b8hYHEW4UGJ7-T0RMfnZ8cZ4NgpvjMiTo6YKA@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAADnVQ+p0B-2_b8hYHEW4UGJ7-T0RMfnZ8cZ4NgpvjMiTo6YKA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Deprecate xdp_cpumap xdp_devmap sec definitions.
-Introduce xdp/devmap and xdp/cpumap definitions according to the standard
-for SEC("") in libbpf:
-- prog_type.prog_flags/attach_place
-Update cpumap/devmap samples and kselftests
+On 1/27/22 05:08, Alexei Starovoitov wrote:
+> On Wed, Jan 26, 2022 at 1:29 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 1/26/22 20:30, Martin KaFai Lau wrote:
+>>> On Wed, Jan 26, 2022 at 12:22:13AM +0000, Pavel Begunkov wrote:
+>>>>    #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)                        \
+>>>>    ({                                                                       \
+>>>>       int __ret = 0;                                                        \
+>>>> -    if (cgroup_bpf_enabled(CGROUP_INET_INGRESS))                  \
+>>>> +    if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) && sk &&                  \
+>>>   From reading sk_filter_trim_cap() where this will be called, sk cannot be NULL.
+>>> If yes, the new sk test is not needed.
+>>
+>> Well, there is no sane way to verify how it's used considering
+>>
+>> EXPORT_SYMBOL(__cgroup_bpf_run_filter_skb);
+> 
+> BPF_CGROUP_RUN_PROG_INET_INGRESS() is used in one place.
+> Are you folks saying that you want to remove !sk check
+> from __cgroup_bpf_run_filter_skb()?
+> Seems like micro optimization, but sure why not.
+> 
+> EXPORT_SYMBOL() is there because of "ipv6 as a module" mess.
+> So it's not a concern.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- samples/bpf/xdp_redirect_cpu.bpf.c                   |  8 ++++----
- samples/bpf/xdp_redirect_map.bpf.c                   |  2 +-
- samples/bpf/xdp_redirect_map_multi.bpf.c             |  2 +-
- tools/lib/bpf/libbpf.c                               | 12 ++++++++++--
- .../bpf/progs/test_xdp_with_cpumap_frags_helpers.c   |  2 +-
- .../bpf/progs/test_xdp_with_cpumap_helpers.c         |  2 +-
- .../bpf/progs/test_xdp_with_devmap_frags_helpers.c   |  2 +-
- .../bpf/progs/test_xdp_with_devmap_helpers.c         |  2 +-
- .../selftests/bpf/progs/xdp_redirect_multi_kern.c    |  2 +-
- 9 files changed, 21 insertions(+), 13 deletions(-)
+Ok. I'd usually assume symbols for internal use only to be GPL.
 
-diff --git a/samples/bpf/xdp_redirect_cpu.bpf.c b/samples/bpf/xdp_redirect_cpu.bpf.c
-index 25e3a405375f..87c54bfdbb70 100644
---- a/samples/bpf/xdp_redirect_cpu.bpf.c
-+++ b/samples/bpf/xdp_redirect_cpu.bpf.c
-@@ -491,7 +491,7 @@ int  xdp_prognum5_lb_hash_ip_pairs(struct xdp_md *ctx)
- 	return bpf_redirect_map(&cpu_map, cpu_dest, 0);
- }
- 
--SEC("xdp_cpumap/redirect")
-+SEC("xdp/cpumap")
- int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
-@@ -507,19 +507,19 @@ int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
- 	return bpf_redirect_map(&tx_port, 0, 0);
- }
- 
--SEC("xdp_cpumap/pass")
-+SEC("xdp/cpumap")
- int xdp_redirect_cpu_pass(struct xdp_md *ctx)
- {
- 	return XDP_PASS;
- }
- 
--SEC("xdp_cpumap/drop")
-+SEC("xdp/cpumap")
- int xdp_redirect_cpu_drop(struct xdp_md *ctx)
- {
- 	return XDP_DROP;
- }
- 
--SEC("xdp_devmap/egress")
-+SEC("xdp/devmap")
- int xdp_redirect_egress_prog(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
-diff --git a/samples/bpf/xdp_redirect_map.bpf.c b/samples/bpf/xdp_redirect_map.bpf.c
-index 59efd656e1b2..415bac1758e3 100644
---- a/samples/bpf/xdp_redirect_map.bpf.c
-+++ b/samples/bpf/xdp_redirect_map.bpf.c
-@@ -68,7 +68,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
- 	return xdp_redirect_map(ctx, &tx_port_native);
- }
- 
--SEC("xdp_devmap/egress")
-+SEC("xdp/devmap")
- int xdp_redirect_map_egress(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
-diff --git a/samples/bpf/xdp_redirect_map_multi.bpf.c b/samples/bpf/xdp_redirect_map_multi.bpf.c
-index bb0a5a3bfcf0..8b2fd4ec2c76 100644
---- a/samples/bpf/xdp_redirect_map_multi.bpf.c
-+++ b/samples/bpf/xdp_redirect_map_multi.bpf.c
-@@ -53,7 +53,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
- 	return xdp_redirect_map(ctx, &forward_map_native);
- }
- 
--SEC("xdp_devmap/egress")
-+SEC("xdp/devmap")
- int xdp_devmap_prog(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4ce94f4ed34a..1d97bc346be6 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -237,6 +237,8 @@ enum sec_def_flags {
- 	SEC_SLOPPY_PFX = 16,
- 	/* BPF program support non-linear XDP buffer */
- 	SEC_XDP_FRAGS = 32,
-+	/* deprecated sec definitions not supposed to be used */
-+	SEC_DEPRECATED = 64,
- };
- 
- struct bpf_sec_def {
-@@ -6575,6 +6577,10 @@ static int libbpf_preload_prog(struct bpf_program *prog,
- 	if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS))
- 		opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
- 
-+	if (def & SEC_DEPRECATED)
-+		pr_warn("sec '%s' is deprecated, please use new version instead\n",
-+			prog->sec_name);
-+
- 	if ((prog->type == BPF_PROG_TYPE_TRACING ||
- 	     prog->type == BPF_PROG_TYPE_LSM ||
- 	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
-@@ -8618,9 +8624,11 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("iter.s/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
- 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
- 	SEC_DEF("xdp.frags/devmap",	XDP, BPF_XDP_DEVMAP, SEC_XDP_FRAGS),
--	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
-+	SEC_DEF("xdp/devmap",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
-+	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
- 	SEC_DEF("xdp.frags/cpumap",	XDP, BPF_XDP_CPUMAP, SEC_XDP_FRAGS),
--	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
-+	SEC_DEF("xdp/cpumap",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
-+	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
- 	SEC_DEF("xdp.frags",		XDP, BPF_XDP, SEC_XDP_FRAGS),
- 	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
- 	SEC_DEF("perf_event",		PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
-index 62fb7cd4d87a..97ed625bb70a 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
-@@ -12,7 +12,7 @@ struct {
- 	__uint(max_entries, 4);
- } cpu_map SEC(".maps");
- 
--SEC("xdp_cpumap/dummy_cm")
-+SEC("xdp/cpumap")
- int xdp_dummy_cm(struct xdp_md *ctx)
- {
- 	return XDP_PASS;
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-index 48007f17dfa8..20ec6723df18 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
-@@ -24,7 +24,7 @@ int xdp_dummy_prog(struct xdp_md *ctx)
- 	return XDP_PASS;
- }
- 
--SEC("xdp_cpumap/dummy_cm")
-+SEC("xdp/cpumap")
- int xdp_dummy_cm(struct xdp_md *ctx)
- {
- 	if (ctx->ingress_ifindex == IFINDEX_LO)
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
-index e1caf510b7d2..cdcf7de7ec8c 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
-@@ -12,7 +12,7 @@ struct {
- /* valid program on DEVMAP entry via SEC name;
-  * has access to egress and ingress ifindex
-  */
--SEC("xdp_devmap/map_prog")
-+SEC("xdp/devmap")
- int xdp_dummy_dm(struct xdp_md *ctx)
- {
- 	return XDP_PASS;
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
-index 8ae11fab8316..4139a14f9996 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
-@@ -27,7 +27,7 @@ int xdp_dummy_prog(struct xdp_md *ctx)
- /* valid program on DEVMAP entry via SEC name;
-  * has access to egress and ingress ifindex
-  */
--SEC("xdp_devmap/map_prog")
-+SEC("xdp/devmap")
- int xdp_dummy_dm(struct xdp_md *ctx)
- {
- 	char fmt[] = "devmap redirect: dev %u -> dev %u len %u\n";
-diff --git a/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c b/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
-index 8395782b6e0a..97b26a30b59a 100644
---- a/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
-@@ -70,7 +70,7 @@ int xdp_redirect_map_all_prog(struct xdp_md *ctx)
- 				BPF_F_BROADCAST | BPF_F_EXCLUDE_INGRESS);
- }
- 
--SEC("xdp_devmap/map_prog")
-+SEC("xdp/devmap")
- int xdp_devmap_prog(struct xdp_md *ctx)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
+
+> Pls tag the subj of the patch with [PATCH bpf-next]
+> instead of "for-next".
+
 -- 
-2.34.1
-
+Pavel Begunkov
