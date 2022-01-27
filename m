@@ -2,87 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0399E49E772
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 17:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A27249E7AD
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 17:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243678AbiA0QZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 11:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243690AbiA0QZW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 11:25:22 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FC0C061714;
-        Thu, 27 Jan 2022 08:25:21 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id A386FB803F6;
-        Thu, 27 Jan 2022 16:25:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CA0C340E4;
-        Thu, 27 Jan 2022 16:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643300719;
-        bh=pF7kw3/tUBe2qDEKYIHJG6832skQUBXDz81kmFkASmU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YgdLtqSj23XX0RwAdGMAY7I407WAOdwoQZKruWIDxWfA+/9l9wkReNAXpYlehPN4e
-         KyrPwxt0FAFxDvoJzWw0uL1yc7f3iYW0meqeGEQ+gxOw2L6RGwVP4s0TTN5N+TBn+u
-         wd/lrfay21uml/TXhhF9loJsN5gP5/pBPrxmm6Kl3pRDl46+4KOR9//gWXIem7hV3s
-         ivpMrbzjM4hd5uGCs10l0it8Mjd5xkV+7Ki9jznA8+tnHnWAm+i4Hh9Ick18fjdcx7
-         To/qCYp203HUMUmizs9mEW3w64DSg5Ie6ZnxIte/t3eKGWpKZHgV7ItkHBqcr1yqFK
-         J/WNvgCVVrEYw==
-Date:   Thu, 27 Jan 2022 08:25:17 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
+        id S229546AbiA0Qhf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 11:37:35 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:4458 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229477AbiA0Qhe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 27 Jan 2022 11:37:34 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20RGaedi031157
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 08:37:34 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=KnhRcazG6lt7WiZn8QYXkyxhQiHkh4SDlGWlADX/QzI=;
+ b=le7FFIcFbyD4SIhLMGNe6mS6dkmx3zNLUb6RMMgqtT/f/zXiQNC84F0mkavvcAhghtR3
+ JtRiTSKQC1z2fcPECip3b2RYkMGpTgfAFHTkMov6Xh+xFiUjEcZ0Ufp9y7Ofi3qnlVPN
+ r/pjRfXUN4ctXq1w0DJA0X+khz28mafb37U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dukpkkgne-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 08:37:34 -0800
+Received: from twshared3205.02.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 27 Jan 2022 08:37:31 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 327925A29032; Thu, 27 Jan 2022 08:37:26 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        =?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?= <bjorn@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: remove unused static inlines
-Message-ID: <20220127082517.1b1bd7e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAADnVQ+nn4m8HWpBM0KNC5Z6tpc_QCLk0SjpYKWyQNfTCmLndA@mail.gmail.com>
-References: <20220126185412.2776254-1-kuba@kernel.org>
-        <61f22a5863695_57f03208a8@john.notmuch>
-        <CAADnVQ+nn4m8HWpBM0KNC5Z6tpc_QCLk0SjpYKWyQNfTCmLndA@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix a clang compilation error
+Date:   Thu, 27 Jan 2022 08:37:26 -0800
+Message-ID: <20220127163726.1442032-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 4F76xjxTZ9XlbwR2mZcQb8z3ByBLPcV5
+X-Proofpoint-GUID: 4F76xjxTZ9XlbwR2mZcQb8z3ByBLPcV5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-27_03,2022-01-27_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ phishscore=0 spamscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=762
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201270100
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 26 Jan 2022 21:22:03 -0800 Alexei Starovoitov wrote:
-> On Wed, Jan 26, 2022 at 9:15 PM John Fastabend <john.fastabend@gmail.com> wrote:
-> >
-> > Jakub Kicinski wrote:  
-> > > Remove two dead stubs, sk_msg_clear_meta() was never
-> > > used, use of xskq_cons_is_full() got replaced by
-> > > xsk_tx_writeable() in v5.10.
-> > >
-> > > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > > ---  
-> >
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>  
-> 
-> Applied.
-> How did you find them?
+When building selftests/bpf with clang
+  make -j LLVM=3D1
+  make -C tools/testing/selftests/bpf -j LLVM=3D1
+I hit the following compilation error:
 
-regex and some bash:
+  trace_helpers.c:152:9: error: variable 'found' is used uninitialized wh=
+enever 'while' loop exits because its condition is false [-Werror,-Wsomet=
+imes-uninitialized]
+          while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf,=
+ &base) =3D=3D 4) {
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~
+  trace_helpers.c:161:7: note: uninitialized use occurs here
+          if (!found)
+               ^~~~~
+  trace_helpers.c:152:9: note: remove the condition if it is always true
+          while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf,=
+ &base) =3D=3D 4) {
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~
+                 1
+  trace_helpers.c:145:12: note: initialize the variable 'found' to silenc=
+e this warning
+          bool found;
+                    ^
+                     =3D false
 
-for f in $(sed -n '/static inline [^(]*$/N;s@static inline.*[^_a-z0-9A-Z]\([_a-z0-9A-Z]*\)([a-z_].*@\1@p' $(find include/ -type f) ); do cnt=$(git grep $f | wc -l); [ $cnt -le 1 ] && echo $f >> single; done
+It is possible that for sane /proc/self/maps we may never hit the above i=
+ssue
+in practice. But let us initialize variable 'found' properly to silence t=
+he
+compilation error.
 
-takes too long to run to put it in a CI directly, unfortunately, 
-more intelligence would be needed. Luckily there isn't that many
-instances throughout netdev and bpf so perhaps not even worth 
-the hassle.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
+selftests/bpf/trace_helpers.c
+index 65ab533c2516..ca6abae9b09c 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -142,7 +142,7 @@ ssize_t get_uprobe_offset(const void *addr)
+ {
+ 	size_t start, end, base;
+ 	char buf[256];
+-	bool found;
++	bool found =3D false;
+ 	FILE *f;
+=20
+ 	f =3D fopen("/proc/self/maps", "r");
+--=20
+2.30.2
+
