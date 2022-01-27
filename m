@@ -2,108 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E356D49D63E
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 00:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D74A49D818
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 03:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbiAZXi2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 18:38:28 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35925 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbiAZXi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 18:38:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643240308; x=1674776308;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QofndZE4dqqc9k8fIVlrjpWk4keaHkjoT/z0yldgmu4=;
-  b=lj9ePwPULtUCRmFSWxstSh2w9/iSy/8FVmkeO+l+dG5HsJd0B7pIImop
-   jFW/0A+/UaFQaCXnXcsJoBfXRgiWWglqEVRSBXhNo/FjRrYc2uvEc2xXg
-   c7FvhvruT4nrg1kygG3dspONa57jDH7rFSs2ra+YsFzqWDyZ14NjKgd0+
-   TXZbZIWQpTyyPH6YD12WdAZ7BZwOax3qs19VtS9WsP/2Y0JktDJyoq1vQ
-   B2qFy3waiJGLGJBxidZre0tNvjoEleCLiRSFkdRrH/kxbDMiUxfcKBF7+
-   IWhRpe1g0woS2nrCVMijSRSKEP4gFfOGqY0TvCjp58Z7gSlXOGAzQHFIA
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10239"; a="226665035"
-X-IronPort-AV: E=Sophos;i="5.88,319,1635231600"; 
-   d="scan'208";a="226665035"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2022 15:38:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,319,1635231600"; 
-   d="scan'208";a="480068914"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 26 Jan 2022 15:38:25 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nCrrs-000Lni-Sn; Wed, 26 Jan 2022 23:38:24 +0000
-Date:   Thu, 27 Jan 2022 07:38:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org
-Cc:     kbuild-all@lists.01.org, Kui-Feng Lee <kuifeng@fb.com>
-Subject: Re: [PATCH bpf-next 5/5] bpf: Implement bpf_get_attach_cookie() for
- tracing programs.
-Message-ID: <202201270704.kcMiWFUK-lkp@intel.com>
-References: <20220126214809.3868787-6-kuifeng@fb.com>
+        id S235188AbiA0Ce2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 26 Jan 2022 21:34:28 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:32063 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232931AbiA0Ce1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 26 Jan 2022 21:34:27 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Jkl1d4mkyz1FD4Y;
+        Thu, 27 Jan 2022 10:30:29 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 27 Jan
+ 2022 10:34:24 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>
+Subject: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize ring buffer size
+Date:   Thu, 27 Jan 2022 10:49:39 +0800
+Message-ID: <20220127024939.364016-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220126214809.3868787-6-kuifeng@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kui-Feng,
+4096 is OK for x86-64, but for other archs with greater than 4KB
+page size (e.g. 64KB under arm64), test_verifier for test case
+"check valid spill/fill, ptr to mem" will fail, so just use
+getpagesize() to initialize the ring buffer size. Do this for
+test_progs as well.
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/0day-ci/linux/commits/Kui-Feng-Lee/Attach-a-cookie-to-a-tracing-program/20220127-054929
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20220127/202201270704.kcMiWFUK-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/6dffffc1fe68f386715b4ee396fb6a5c738fb065
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Kui-Feng-Lee/Attach-a-cookie-to-a-tracing-program/20220127-054929
-        git checkout 6dffffc1fe68f386715b4ee396fb6a5c738fb065
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=mips SHELL=/bin/bash kernel/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   kernel/trace/bpf_trace.c: In function '____bpf_get_attach_cookie_tracing':
->> kernel/trace/bpf_trace.c:1095:16: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-    1095 |         prog = (const struct bpf_prog *)((u64 *)ctx)[-off];
-         |                ^
-
-
-vim +1095 kernel/trace/bpf_trace.c
-
-  1086	
-  1087	BPF_CALL_1(bpf_get_attach_cookie_tracing, void *, ctx)
-  1088	{
-  1089		const struct bpf_prog *prog;
-  1090		int off = get_trampo_var_off(ctx, BPF_TRAMP_F_PROG_ID);
-  1091	
-  1092		if (off < 0)
-  1093			return 0;
-  1094	
-> 1095		prog = (const struct bpf_prog *)((u64 *)ctx)[-off];
-  1096	
-  1097		return prog->aux->cookie;
-  1098	}
-  1099	
-
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ tools/testing/selftests/bpf/prog_tests/d_path.c | 14 ++++++++++++--
+ .../testing/selftests/bpf/prog_tests/test_ima.c | 17 +++++++++++++----
+ tools/testing/selftests/bpf/progs/ima.c         |  1 -
+ .../bpf/progs/test_d_path_check_types.c         |  1 -
+ tools/testing/selftests/bpf/test_verifier.c     |  2 +-
+ 5 files changed, 26 insertions(+), 9 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
+index 911345c526e6..abfa3697e34d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/d_path.c
++++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
+@@ -171,10 +171,20 @@ static void test_d_path_check_rdonly_mem(void)
+ static void test_d_path_check_types(void)
+ {
+ 	struct test_d_path_check_types *skel;
++	int err;
++
++	skel = test_d_path_check_types__open();
++	if (!ASSERT_OK_PTR(skel, "d_path_check_types open failed"))
++		return;
+ 
+-	skel = test_d_path_check_types__open_and_load();
+-	ASSERT_ERR_PTR(skel, "unexpected_load_passing_wrong_type");
++	err = bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
++	if (!ASSERT_OK(err, "set max entries"))
++		goto cleanup;
+ 
++	err = test_d_path_check_types__load(skel);
++	ASSERT_EQ(err, -EACCES, "unexpected_load_passing_wrong_type");
++
++cleanup:
+ 	test_d_path_check_types__destroy(skel);
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+index 97d8a6f84f4a..ffc4d8b6e753 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+@@ -48,11 +48,19 @@ void test_test_ima(void)
+ 	char cmd[256];
+ 
+ 	int err, duration = 0;
+-	struct ima *skel = NULL;
++	struct ima *skel;
+ 
+-	skel = ima__open_and_load();
+-	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
+-		goto close_prog;
++	skel = ima__open();
++	if (!ASSERT_OK_PTR(skel, "skel open"))
++		return;
++
++	err = bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
++	if (!ASSERT_OK(err, "set max entries"))
++		goto destroy_skel;
++
++	err = ima__load(skel);
++	if (!ASSERT_OK(err, "skel load"))
++		goto destroy_skel;
+ 
+ 	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
+ 				   process_sample, NULL, NULL);
+@@ -86,5 +94,6 @@ void test_test_ima(void)
+ 	CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno);
+ close_prog:
+ 	ring_buffer__free(ringbuf);
++destroy_skel:
+ 	ima__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
+index 96060ff4ffc6..e192a9f16aea 100644
+--- a/tools/testing/selftests/bpf/progs/ima.c
++++ b/tools/testing/selftests/bpf/progs/ima.c
+@@ -13,7 +13,6 @@ u32 monitored_pid = 0;
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_RINGBUF);
+-	__uint(max_entries, 1 << 12);
+ } ringbuf SEC(".maps");
+ 
+ char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+index 7e02b7361307..1b68d4a65abb 100644
+--- a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
++++ b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+@@ -8,7 +8,6 @@ extern const int bpf_prog_active __ksym;
+ 
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_RINGBUF);
+-	__uint(max_entries, 1 << 12);
+ } ringbuf SEC(".maps");
+ 
+ SEC("fentry/security_inode_getattr")
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 29bbaa58233c..6acb5e747715 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -931,7 +931,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+ 	}
+ 	if (*fixup_map_ringbuf) {
+ 		map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
+-					   0, 4096);
++					   0, getpagesize());
+ 		do {
+ 			prog[*fixup_map_ringbuf].imm = map_fds[20];
+ 			fixup_map_ringbuf++;
+-- 
+2.29.2
+
