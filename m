@@ -2,101 +2,231 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3B049DFBD
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 11:48:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B282949E21F
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 13:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239644AbiA0KsU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 05:48:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239468AbiA0KsS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 05:48:18 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A614C06173B
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 02:48:18 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id s5so4935402ejx.2
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 02:48:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AzOHmZ2n9+gsqUuicrYJlhYW5U/YGENeiTXZgdwdecQ=;
-        b=GjFYtKexJXjCC2HBI1UDTG+OgIPhwu5Xdb2VPH+val+8BijKTI/NCUsMgy85sqBx9U
-         IwRaTauFhD5r4ENsT0Xw5/ZrBeJYEVwaacKxYKhIVvU+VL9biwSLVfWlNvBMkCpVB82T
-         Vlqlckjrga4eRNT6+ZD0zaVlFKeNRTV5/VDCbpj7EIcxPrihERYxkITY5Is4LkFhgD5a
-         cc6dZubXrc00xtXRZ5QupfV1cn2QQSbuIxyYYnnCJbG8QSLEVLdGU4pLgaUrHAuvQE59
-         h0eeELZC4tYhgJXxpEsoisnLe6we/bJyXnH5tCKQ1EesovMivAxrTVfpqR7KE3ypTWkw
-         xcrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AzOHmZ2n9+gsqUuicrYJlhYW5U/YGENeiTXZgdwdecQ=;
-        b=JMY55dT3e0TtkA+BNzsDkdzUhZpbpjJwXE+zuv2Y2BxPxpxX1WFIynfQBW3qvQfyTb
-         TzRDsOUvAlJu5mYrmnOXHDPEeXAgyz3DsaSsGPklZ7CGBvnDrFOGASv83/ot4HuPBY0X
-         ssPJsIPZZVF2vlL0jsGEfUlq5zMEAPcEGe9/cD9ZzkxxyYla9V5Picqd3LACa4H1Noqw
-         pR8e/5lYUlA6xN5bntDzE5gBpBxoegUCrW58Ber1P0yFSjp3QEVy5lhX55P7CDWz1QWL
-         FaBNRU/Ysufk+uAEcxjYBFlID/xsTsYAqMc60teYhicn7e0abPTSodsdOiXeZuWDshI0
-         58Fg==
-X-Gm-Message-State: AOAM531xDefk4LL5hCOTr/QiD4FUyQ9EOW9IGnRMHbq/DqAz/8Imqmpr
-        siG2uvf9oMNBwjKvzjBcdCU6Y5rzC1HEwfXBkeF7qw==
-X-Google-Smtp-Source: ABdhPJwUvrZCQQ3V4jxxg3A1li1+Vftf/mj2106/RMlhBLDJD9f9yDvtRBh3SX+om2TI+Ket5Oaqk2ycOeGV+kBIOA4=
-X-Received: by 2002:a17:907:6091:: with SMTP id ht17mr2504214ejc.626.1643280496825;
- Thu, 27 Jan 2022 02:48:16 -0800 (PST)
+        id S233601AbiA0MMs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 07:12:48 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:44192 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241043AbiA0MMr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 07:12:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4E57FB82229
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 12:12:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 059FBC340E4;
+        Thu, 27 Jan 2022 12:12:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643285565;
+        bh=wgcHJFhCZ9qCRG1fCzIXc6gdNyX8YjOj+nw9LyDPWIw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fhanXZ8fKa7bjSo1nnqRnSLwIlhrew6U0fvHqh90NWYXOZlnx1GEuy1lrfUxpt1G7
+         CH9CDiBhgrQkYoT4qpNRlW4GM5+kh9lmzRT9ECqTp99N+9dSo+GIiH9TeMXAEbS74w
+         cJViRqCrXdDm0AwldueOcZr7EzHbA92SD/44OQya6ZpSTpi1a/D0qoa+ab8UXtRSIo
+         4ARSAl/fkQz4mzsPTv/3Kl9v6Sl7opupYi+Qf0B85+IiAJ4/dVjhqJJB8brJWE5pkM
+         fDenXht+pvOE++7AtmV/IfrBu5sBEJpy6slsrf5boguIub8A17NqKkfgGMJHBG02dJ
+         1G7jIZfECYskA==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, dsahern@kernel.org,
+        brouer@redhat.com, toke@redhat.com, lorenzo.bianconi@redhat.com,
+        andrii@kernel.org, john.fastabend@gmail.com
+Subject: [PATCH bpf-next] libbpf: deprecate xdp_cpumap and xdp_devmap sec definitions
+Date:   Thu, 27 Jan 2022 13:12:33 +0100
+Message-Id: <d7f8f9e3370d33be0a3385c7604d8925e10c91d1.1643285321.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20220127083240.1425481-1-houtao1@huawei.com>
-In-Reply-To: <20220127083240.1425481-1-houtao1@huawei.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Thu, 27 Jan 2022 11:48:02 +0100
-Message-ID: <CA+i-1C2HBja-8Am4gHkcrYdkruw0+sOaGDejc9DS-HfYVXVfyQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, x86: remove unnecessary handling of BPF_SUB
- atomic op
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Yep - BPF_SUB is also excluded in Documentation/networking/filter.rst,
-plus the interpreter and verifier don't support it.
+Deprecate xdp_cpumap xdp_devmap sec definitions.
+Introduce xdp/devmap and xdp/cpumap definitions according to the standard
+for SEC("") in libbpf:
+- prog_type.prog_flags/attach_place
+Update cpumap/devmap samples and kselftests
 
-Thanks,
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ samples/bpf/xdp_redirect_cpu.bpf.c                   |  8 ++++----
+ samples/bpf/xdp_redirect_map.bpf.c                   |  2 +-
+ samples/bpf/xdp_redirect_map_multi.bpf.c             |  2 +-
+ tools/lib/bpf/libbpf.c                               | 12 ++++++++++--
+ .../bpf/progs/test_xdp_with_cpumap_frags_helpers.c   |  2 +-
+ .../bpf/progs/test_xdp_with_cpumap_helpers.c         |  2 +-
+ .../bpf/progs/test_xdp_with_devmap_frags_helpers.c   |  2 +-
+ .../bpf/progs/test_xdp_with_devmap_helpers.c         |  2 +-
+ .../selftests/bpf/progs/xdp_redirect_multi_kern.c    |  2 +-
+ 9 files changed, 21 insertions(+), 13 deletions(-)
 
-Acked-by: Brendan Jackman <jackmanb@google.com>
+diff --git a/samples/bpf/xdp_redirect_cpu.bpf.c b/samples/bpf/xdp_redirect_cpu.bpf.c
+index 25e3a405375f..87c54bfdbb70 100644
+--- a/samples/bpf/xdp_redirect_cpu.bpf.c
++++ b/samples/bpf/xdp_redirect_cpu.bpf.c
+@@ -491,7 +491,7 @@ int  xdp_prognum5_lb_hash_ip_pairs(struct xdp_md *ctx)
+ 	return bpf_redirect_map(&cpu_map, cpu_dest, 0);
+ }
+ 
+-SEC("xdp_cpumap/redirect")
++SEC("xdp/cpumap")
+ int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
+ {
+ 	void *data_end = (void *)(long)ctx->data_end;
+@@ -507,19 +507,19 @@ int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
+ 	return bpf_redirect_map(&tx_port, 0, 0);
+ }
+ 
+-SEC("xdp_cpumap/pass")
++SEC("xdp/cpumap")
+ int xdp_redirect_cpu_pass(struct xdp_md *ctx)
+ {
+ 	return XDP_PASS;
+ }
+ 
+-SEC("xdp_cpumap/drop")
++SEC("xdp/cpumap")
+ int xdp_redirect_cpu_drop(struct xdp_md *ctx)
+ {
+ 	return XDP_DROP;
+ }
+ 
+-SEC("xdp_devmap/egress")
++SEC("xdp/devmap")
+ int xdp_redirect_egress_prog(struct xdp_md *ctx)
+ {
+ 	void *data_end = (void *)(long)ctx->data_end;
+diff --git a/samples/bpf/xdp_redirect_map.bpf.c b/samples/bpf/xdp_redirect_map.bpf.c
+index 59efd656e1b2..415bac1758e3 100644
+--- a/samples/bpf/xdp_redirect_map.bpf.c
++++ b/samples/bpf/xdp_redirect_map.bpf.c
+@@ -68,7 +68,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
+ 	return xdp_redirect_map(ctx, &tx_port_native);
+ }
+ 
+-SEC("xdp_devmap/egress")
++SEC("xdp/devmap")
+ int xdp_redirect_map_egress(struct xdp_md *ctx)
+ {
+ 	void *data_end = (void *)(long)ctx->data_end;
+diff --git a/samples/bpf/xdp_redirect_map_multi.bpf.c b/samples/bpf/xdp_redirect_map_multi.bpf.c
+index bb0a5a3bfcf0..8b2fd4ec2c76 100644
+--- a/samples/bpf/xdp_redirect_map_multi.bpf.c
++++ b/samples/bpf/xdp_redirect_map_multi.bpf.c
+@@ -53,7 +53,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
+ 	return xdp_redirect_map(ctx, &forward_map_native);
+ }
+ 
+-SEC("xdp_devmap/egress")
++SEC("xdp/devmap")
+ int xdp_devmap_prog(struct xdp_md *ctx)
+ {
+ 	void *data_end = (void *)(long)ctx->data_end;
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4ce94f4ed34a..1d97bc346be6 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -237,6 +237,8 @@ enum sec_def_flags {
+ 	SEC_SLOPPY_PFX = 16,
+ 	/* BPF program support non-linear XDP buffer */
+ 	SEC_XDP_FRAGS = 32,
++	/* deprecated sec definitions not supposed to be used */
++	SEC_DEPRECATED = 64,
+ };
+ 
+ struct bpf_sec_def {
+@@ -6575,6 +6577,10 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+ 	if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS))
+ 		opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
+ 
++	if (def & SEC_DEPRECATED)
++		pr_warn("sec '%s' is deprecated, please use new version instead\n",
++			prog->sec_name);
++
+ 	if ((prog->type == BPF_PROG_TYPE_TRACING ||
+ 	     prog->type == BPF_PROG_TYPE_LSM ||
+ 	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+@@ -8618,9 +8624,11 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("iter.s/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
+ 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
+ 	SEC_DEF("xdp.frags/devmap",	XDP, BPF_XDP_DEVMAP, SEC_XDP_FRAGS),
+-	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
++	SEC_DEF("xdp/devmap",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
++	SEC_DEF("xdp_devmap/",		XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+ 	SEC_DEF("xdp.frags/cpumap",	XDP, BPF_XDP_CPUMAP, SEC_XDP_FRAGS),
+-	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
++	SEC_DEF("xdp/cpumap",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
++	SEC_DEF("xdp_cpumap/",		XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+ 	SEC_DEF("xdp.frags",		XDP, BPF_XDP, SEC_XDP_FRAGS),
+ 	SEC_DEF("xdp",			XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+ 	SEC_DEF("perf_event",		PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
+index 62fb7cd4d87a..97ed625bb70a 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_frags_helpers.c
+@@ -12,7 +12,7 @@ struct {
+ 	__uint(max_entries, 4);
+ } cpu_map SEC(".maps");
+ 
+-SEC("xdp_cpumap/dummy_cm")
++SEC("xdp/cpumap")
+ int xdp_dummy_cm(struct xdp_md *ctx)
+ {
+ 	return XDP_PASS;
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+index 48007f17dfa8..20ec6723df18 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_with_cpumap_helpers.c
+@@ -24,7 +24,7 @@ int xdp_dummy_prog(struct xdp_md *ctx)
+ 	return XDP_PASS;
+ }
+ 
+-SEC("xdp_cpumap/dummy_cm")
++SEC("xdp/cpumap")
+ int xdp_dummy_cm(struct xdp_md *ctx)
+ {
+ 	if (ctx->ingress_ifindex == IFINDEX_LO)
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
+index e1caf510b7d2..cdcf7de7ec8c 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_frags_helpers.c
+@@ -12,7 +12,7 @@ struct {
+ /* valid program on DEVMAP entry via SEC name;
+  * has access to egress and ingress ifindex
+  */
+-SEC("xdp_devmap/map_prog")
++SEC("xdp/devmap")
+ int xdp_dummy_dm(struct xdp_md *ctx)
+ {
+ 	return XDP_PASS;
+diff --git a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
+index 8ae11fab8316..4139a14f9996 100644
+--- a/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
++++ b/tools/testing/selftests/bpf/progs/test_xdp_with_devmap_helpers.c
+@@ -27,7 +27,7 @@ int xdp_dummy_prog(struct xdp_md *ctx)
+ /* valid program on DEVMAP entry via SEC name;
+  * has access to egress and ingress ifindex
+  */
+-SEC("xdp_devmap/map_prog")
++SEC("xdp/devmap")
+ int xdp_dummy_dm(struct xdp_md *ctx)
+ {
+ 	char fmt[] = "devmap redirect: dev %u -> dev %u len %u\n";
+diff --git a/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c b/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+index 8395782b6e0a..97b26a30b59a 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
++++ b/tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+@@ -70,7 +70,7 @@ int xdp_redirect_map_all_prog(struct xdp_md *ctx)
+ 				BPF_F_BROADCAST | BPF_F_EXCLUDE_INGRESS);
+ }
+ 
+-SEC("xdp_devmap/map_prog")
++SEC("xdp/devmap")
+ int xdp_devmap_prog(struct xdp_md *ctx)
+ {
+ 	void *data_end = (void *)(long)ctx->data_end;
+-- 
+2.34.1
 
-
-On Thu, 27 Jan 2022 at 09:17, Hou Tao <houtao1@huawei.com> wrote:
->
-> According to the LLVM commit (https://reviews.llvm.org/D72184),
-> sync_fetch_and_sub() is implemented as a negation followed by
-> sync_fetch_and_add(), so there will be no BPF_SUB op and just
-> remove it.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index ce1f86f245c9..5d643ebb1e56 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -787,7 +787,6 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
->         /* emit opcode */
->         switch (atomic_op) {
->         case BPF_ADD:
-> -       case BPF_SUB:
->         case BPF_AND:
->         case BPF_OR:
->         case BPF_XOR:
-> --
-> 2.29.2
->
