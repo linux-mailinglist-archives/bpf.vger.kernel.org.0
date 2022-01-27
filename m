@@ -2,393 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E046849E8E6
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 18:24:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A849D49E90D
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 18:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbiA0RYz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 12:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S244628AbiA0Rbx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 12:31:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239536AbiA0RYy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 12:24:54 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B52BC06173B
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:24:54 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id r7so2424224wmq.5
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:24:54 -0800 (PST)
+        with ESMTP id S244620AbiA0Rbx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 12:31:53 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1CEC06173B
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:31:52 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id o12so6705145lfg.12
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:31:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=EmcVHXFNBQEm9/n632DcDHmCucKJfX8G1I+Eh4YcVmE=;
-        b=KiIWQSv0fJbz9pDpdSx1ydg6IchIf6Etwf8ZyYDDJXFi3vKg+2Rf0DTfisbEhcZA4n
-         29Tv7n/Yfp+zLvXu+kcQbD7eeDbHL53j9qKFDNjnn7dRczKJ/V6MfAaAS+YHnx2GkOS/
-         EhsoIrWUVvXQAQtGQiihh/FVMek+0Gml06s+U=
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=Xawp1TwtSo/uo/1tbPqTEzWBuDJ4Y6t+ZX2/4mqpc+o=;
+        b=tvJb51SK9pl9ihres+CxFmedKvEw9bFtuhVR5WdFnCRdDOTuIEMwabJE1kAZ5hmw9k
+         TY28PIoWYpejGKA2zB6kDzlh6wFuzsVoFcRWRbXhVTVQpUv2RpezpOw6Qi8k28/x3LhM
+         1bZMx1x/Kw8Ieybgn5Lyl7NsR1ymit5pUoq6I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=EmcVHXFNBQEm9/n632DcDHmCucKJfX8G1I+Eh4YcVmE=;
-        b=I3yVj7T9dOnPQHgkbkDkD/914+4sPVZdrJqAU3gfJWdA4pKui9R9FO547smjL1vo34
-         Poy1lUFGGo6aXaHi9cdu0tF6LfiFii2QBzd1YyhBp3ALxQHCcRcWIE+d/ouOmIRa44SK
-         dbBank/+LvP6fkTTh5Ng4iR8S7hW+lMUPjNEZMTl6jTeE+oiiCOx7KdpJu98m72MDX3B
-         0RWq2ZfY+lM4M0m+gQnxYvDJrxmGq2VynaxUicXqiVSEhJh7XcBc6fAUFK41pjY+jN2I
-         5/KuT/pIO77pmYMtwdNzyZreTmY6dJLyru7sbCThchvA2FmEMeD9K6c6J+Y642YWDkQV
-         R2XA==
-X-Gm-Message-State: AOAM5302YKBMY/LUylxAFVTsGOWMTc0sg1fseUMlSxN8Xmy5I3yB3zhT
-        IrWAL2MPNC5R16jZkjOaIFVXskvSAa5dBQ==
-X-Google-Smtp-Source: ABdhPJz09le3R1VhnUSlFYFGL+onrMUcxtfPo7bfZfmnihM/dyjLHdWVkJiNY8aER6XLXanrZ/Dwjw==
-X-Received: by 2002:a05:600c:8a9:: with SMTP id l41mr4209772wmp.51.1643304292518;
-        Thu, 27 Jan 2022 09:24:52 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=Xawp1TwtSo/uo/1tbPqTEzWBuDJ4Y6t+ZX2/4mqpc+o=;
+        b=X6EDIx5kvwZ3naolTn4x9qY62bp2A8MYOYQazWsJf5lfRQxkshtAQrSD/PX6unlM/Q
+         la5XIJ7dEYOjQxhIoOfMe9h8SIUL1IyhObSg982obT63Vsf+97JX/JQf9sV5HvXRX1ab
+         ASTK2WpxNFSLQuQfnbkPsOg/SogxLSHI6HPHgAzLbCDVuZ+GiHQaMuoMtC5K1IdzNPWN
+         KBZXE1M8RZqC+C4HE+caPYdpaOaFEzDJYT/cgz2uabT61BvDnbOCE0roxqQH3/wRc6/m
+         QjPb54qUf1efU8Hk/j6zly/1PT9oNs7o9TzOSAfWZevO7GZ3nDH4pWHtpQ/aneCG7ZkX
+         5dQA==
+X-Gm-Message-State: AOAM532bZjKwkuRcASrq8lzV2g/h/2CTsdEuaonyXLBOB4/QSJMxHIOr
+        xnUlpTKTjv/TqTUzlP1qd3DcYQ==
+X-Google-Smtp-Source: ABdhPJwPFC+0A5GkkdbCXcsa0Ip2DOjbqTjkpo4pPeBBj03PC4LuT64RBW9Hc31DrO3FWxxzkR4DOw==
+X-Received: by 2002:a05:6512:3408:: with SMTP id i8mr3356039lfr.17.1643304710661;
+        Thu, 27 Jan 2022 09:31:50 -0800 (PST)
 Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
-        by smtp.gmail.com with ESMTPSA id j13sm2601980wrw.116.2022.01.27.09.24.51
+        by smtp.gmail.com with ESMTPSA id i1sm958936ljn.39.2022.01.27.09.31.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jan 2022 09:24:52 -0800 (PST)
+        Thu, 27 Jan 2022 09:31:49 -0800 (PST)
+References: <20220113070245.791577-1-imagedong@tencent.com>
+ <87sftbobys.fsf@cloudflare.com>
+ <20220125224524.fkodqvknsluihw74@kafai-mbp.dhcp.thefacebook.com>
+ <CAADnVQKbYCCYjCMhEV7p1YzkAVSKvg-1VKfWVQYVL0TaESNxBQ@mail.gmail.com>
+ <20220125235320.fx775qsdtqon272v@kafai-mbp.dhcp.thefacebook.com>
+User-agent: mu4e 1.1.0; emacs 27.2
 From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Menglong Dong <menglong8.dong@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Menglong Dong <imagedong@tencent.com>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Extend verifier and bpf_sock tests for dst_port loads
-Date:   Thu, 27 Jan 2022 18:24:48 +0100
-Message-Id: <20220127172448.155686-3-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220127172448.155686-1-jakub@cloudflare.com>
-References: <20220127172448.155686-1-jakub@cloudflare.com>
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "Network Development" <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Mengen Sun <mengensun@tencent.com>, flyingpeng@tencent.com,
+        mungerjiang@tencent.com, Menglong Dong <imagedong@tencent.com>
+Subject: Re: [PATCH bpf-next] bpf: Add document for 'dst_port' of 'struct
+ bpf_sock'
+In-reply-to: <20220125235320.fx775qsdtqon272v@kafai-mbp.dhcp.thefacebook.com>
+Date:   Thu, 27 Jan 2022 18:31:48 +0100
+Message-ID: <8735l9rsor.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add coverage to the verifier tests and tests for reading bpf_sock fields to
-ensure that 32-bit, 16-bit, and 8-bit loads from dst_port field are allowed
-only at intended offsets and produce expected values.
+On Wed, Jan 26, 2022 at 12:53 AM CET, Martin KaFai Lau wrote:
+> On Tue, Jan 25, 2022 at 03:02:37PM -0800, Alexei Starovoitov wrote:
+>> On Tue, Jan 25, 2022 at 2:45 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>> >
+>> > On Tue, Jan 25, 2022 at 08:24:27PM +0100, Jakub Sitnicki wrote:
+>> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> > > > index b0383d371b9a..891a182a749a 100644
+>> > > > --- a/include/uapi/linux/bpf.h
+>> > > > +++ b/include/uapi/linux/bpf.h
+>> > > > @@ -5500,7 +5500,11 @@ struct bpf_sock {
+>> > > >     __u32 src_ip4;
+>> > > >     __u32 src_ip6[4];
+>> > > >     __u32 src_port;         /* host byte order */
+>> > > > -   __u32 dst_port;         /* network byte order */
+>> > > > +   __u32 dst_port;         /* low 16-bits are in network byte order,
+>> > > > +                            * and high 16-bits are filled by 0.
+>> > > > +                            * So the real port in host byte order is
+>> > > > +                            * bpf_ntohs((__u16)dst_port).
+>> > > > +                            */
+>> > > >     __u32 dst_ip4;
+>> > > >     __u32 dst_ip6[4];
+>> > > >     __u32 state;
+>> > >
+>> > > I'm probably missing something obvious, but is there anything stopping
+>> > > us from splitting the field, so that dst_ports is 16-bit wide?
+>> > >
+>> > > I gave a quick check to the change below and it seems to pass verifier
+>> > > checks and sock_field tests.
+>> > >
+>> > > IDK, just an idea. Didn't give it a deeper thought.
+>> > >
+>> > > --8<--
+>> > >
+>> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> > > index 4a2f7041ebae..344d62ccafba 100644
+>> > > --- a/include/uapi/linux/bpf.h
+>> > > +++ b/include/uapi/linux/bpf.h
+>> > > @@ -5574,7 +5574,8 @@ struct bpf_sock {
+>> > >       __u32 src_ip4;
+>> > >       __u32 src_ip6[4];
+>> > >       __u32 src_port;         /* host byte order */
+>> > > -     __u32 dst_port;         /* network byte order */
+>> > > +     __u16 unused;
+>> > > +     __u16 dst_port;         /* network byte order */
+>> > This will break the existing bpf prog.
+>> 
+>> I think Jakub's idea is partially expressed:
+>> +       case offsetof(struct bpf_sock, dst_port):
+>> +               bpf_ctx_record_field_size(info, sizeof(__u16));
+>> +               return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
+>> 
+>> Either 'unused' needs to be after dst_port or
+>> bpf_sock_is_valid_access() needs to allow offset at 'unused'
+>> and at 'dst_port'.
+>> And allow u32 access though the size is actually u16.
+>> Then the existing bpf progs (without recompiling) should work?
+> Yes, I think that should work with the existing bpf progs.
+> I suspect putting 'dst_port' first and then followed by 'unused'
+> may be easier.  That will also serve as a natural doc for the
+> current behavior (the value is in the lower 16 bits).
 
-While 16-bit and 8-bit access to dst_port field is straight-forward, 32-bit
-wide loads need be allowed and produce a zero-padded 16-bit value for
-backward compatibility.
+You're right. I can't count. Now fixed in [1].
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- tools/include/uapi/linux/bpf.h                |  3 +-
- .../selftests/bpf/prog_tests/sock_fields.c    | 58 +++++++++----
- .../selftests/bpf/progs/test_sock_fields.c    | 41 ++++++++++
- tools/testing/selftests/bpf/verifier/sock.c   | 81 ++++++++++++++++++-
- 4 files changed, 162 insertions(+), 21 deletions(-)
+>
+> It can be extended to bpf_sk_lookup? bpf_sk_lookup can read at any
+> offset of these 4 bytes, so may need to read 0 during
+> convert_ctx_accesses?
 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 4a2f7041ebae..027e84b18b51 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5574,7 +5574,8 @@ struct bpf_sock {
- 	__u32 src_ip4;
- 	__u32 src_ip6[4];
- 	__u32 src_port;		/* host byte order */
--	__u32 dst_port;		/* network byte order */
-+	__be16 dst_port;	/* network byte order */
-+	__u16 zero_padding;
- 	__u32 dst_ip4;
- 	__u32 dst_ip6[4];
- 	__u32 state;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sock_fields.c b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
-index 9fc040eaa482..9d211b5c22c4 100644
---- a/tools/testing/selftests/bpf/prog_tests/sock_fields.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sock_fields.c
-@@ -1,9 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2019 Facebook */
- 
-+#define _GNU_SOURCE
- #include <netinet/in.h>
- #include <arpa/inet.h>
- #include <unistd.h>
-+#include <sched.h>
- #include <stdlib.h>
- #include <string.h>
- #include <errno.h>
-@@ -20,6 +22,7 @@
- enum bpf_linum_array_idx {
- 	EGRESS_LINUM_IDX,
- 	INGRESS_LINUM_IDX,
-+	READ_SK_DST_PORT_LINUM_IDX,
- 	__NR_BPF_LINUM_ARRAY_IDX,
- };
- 
-@@ -42,8 +45,16 @@ static __u64 child_cg_id;
- static int linum_map_fd;
- static __u32 duration;
- 
--static __u32 egress_linum_idx = EGRESS_LINUM_IDX;
--static __u32 ingress_linum_idx = INGRESS_LINUM_IDX;
-+static bool create_netns(void)
-+{
-+	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
-+		return false;
-+
-+	if (!ASSERT_OK(system("ip link set dev lo up"), "bring up lo"))
-+		return false;
-+
-+	return true;
-+}
- 
- static void print_sk(const struct bpf_sock *sk, const char *prefix)
- {
-@@ -91,19 +102,24 @@ static void check_result(void)
- {
- 	struct bpf_tcp_sock srv_tp, cli_tp, listen_tp;
- 	struct bpf_sock srv_sk, cli_sk, listen_sk;
--	__u32 ingress_linum, egress_linum;
-+	__u32 idx, ingress_linum, egress_linum, linum;
- 	int err;
- 
--	err = bpf_map_lookup_elem(linum_map_fd, &egress_linum_idx,
--				  &egress_linum);
-+	idx = EGRESS_LINUM_IDX;
-+	err = bpf_map_lookup_elem(linum_map_fd, &idx, &egress_linum);
- 	CHECK(err < 0, "bpf_map_lookup_elem(linum_map_fd)",
- 	      "err:%d errno:%d\n", err, errno);
- 
--	err = bpf_map_lookup_elem(linum_map_fd, &ingress_linum_idx,
--				  &ingress_linum);
-+	idx = INGRESS_LINUM_IDX;
-+	err = bpf_map_lookup_elem(linum_map_fd, &idx, &ingress_linum);
- 	CHECK(err < 0, "bpf_map_lookup_elem(linum_map_fd)",
- 	      "err:%d errno:%d\n", err, errno);
- 
-+	idx = READ_SK_DST_PORT_LINUM_IDX;
-+	err = bpf_map_lookup_elem(linum_map_fd, &idx, &linum);
-+	ASSERT_OK(err, "bpf_map_lookup_elem(linum_map_fd, READ_SK_DST_PORT_IDX)");
-+	ASSERT_EQ(linum, 0, "failure in read_sk_dst_port on line");
-+
- 	memcpy(&srv_sk, &skel->bss->srv_sk, sizeof(srv_sk));
- 	memcpy(&srv_tp, &skel->bss->srv_tp, sizeof(srv_tp));
- 	memcpy(&cli_sk, &skel->bss->cli_sk, sizeof(cli_sk));
-@@ -262,7 +278,7 @@ static void test(void)
- 	char buf[DATA_LEN];
- 
- 	/* Prepare listen_fd */
--	listen_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-+	listen_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0xcafe, 0);
- 	/* start_server() has logged the error details */
- 	if (CHECK_FAIL(listen_fd == -1))
- 		goto done;
-@@ -330,8 +346,12 @@ static void test(void)
- 
- void serial_test_sock_fields(void)
- {
--	struct bpf_link *egress_link = NULL, *ingress_link = NULL;
- 	int parent_cg_fd = -1, child_cg_fd = -1;
-+	struct bpf_link *link;
-+
-+	/* Use a dedicated netns to have a fixed listen port */
-+	if (!create_netns())
-+		return;
- 
- 	/* Create a cgroup, get fd, and join it */
- 	parent_cg_fd = test__join_cgroup(PARENT_CGROUP);
-@@ -352,15 +372,20 @@ void serial_test_sock_fields(void)
- 	if (CHECK(!skel, "test_sock_fields__open_and_load", "failed\n"))
- 		goto done;
- 
--	egress_link = bpf_program__attach_cgroup(skel->progs.egress_read_sock_fields,
--						 child_cg_fd);
--	if (!ASSERT_OK_PTR(egress_link, "attach_cgroup(egress)"))
-+	link = bpf_program__attach_cgroup(skel->progs.egress_read_sock_fields, child_cg_fd);
-+	if (!ASSERT_OK_PTR(link, "attach_cgroup(egress_read_sock_fields)"))
-+		goto done;
-+	skel->links.egress_read_sock_fields = link;
-+
-+	link = bpf_program__attach_cgroup(skel->progs.ingress_read_sock_fields, child_cg_fd);
-+	if (!ASSERT_OK_PTR(link, "attach_cgroup(ingress_read_sock_fields)"))
- 		goto done;
-+	skel->links.ingress_read_sock_fields = link;
- 
--	ingress_link = bpf_program__attach_cgroup(skel->progs.ingress_read_sock_fields,
--						  child_cg_fd);
--	if (!ASSERT_OK_PTR(ingress_link, "attach_cgroup(ingress)"))
-+	link = bpf_program__attach_cgroup(skel->progs.read_sk_dst_port, child_cg_fd);
-+	if (!ASSERT_OK_PTR(link, "attach_cgroup(read_sk_dst_port"))
- 		goto done;
-+	skel->links.read_sk_dst_port = link;
- 
- 	linum_map_fd = bpf_map__fd(skel->maps.linum_map);
- 	sk_pkt_out_cnt_fd = bpf_map__fd(skel->maps.sk_pkt_out_cnt);
-@@ -369,8 +394,7 @@ void serial_test_sock_fields(void)
- 	test();
- 
- done:
--	bpf_link__destroy(egress_link);
--	bpf_link__destroy(ingress_link);
-+	test_sock_fields__detach(skel);
- 	test_sock_fields__destroy(skel);
- 	if (child_cg_fd >= 0)
- 		close(child_cg_fd);
-diff --git a/tools/testing/selftests/bpf/progs/test_sock_fields.c b/tools/testing/selftests/bpf/progs/test_sock_fields.c
-index 81b57b9aaaea..246f1f001813 100644
---- a/tools/testing/selftests/bpf/progs/test_sock_fields.c
-+++ b/tools/testing/selftests/bpf/progs/test_sock_fields.c
-@@ -12,6 +12,7 @@
- enum bpf_linum_array_idx {
- 	EGRESS_LINUM_IDX,
- 	INGRESS_LINUM_IDX,
-+	READ_SK_DST_PORT_LINUM_IDX,
- 	__NR_BPF_LINUM_ARRAY_IDX,
- };
- 
-@@ -250,4 +251,44 @@ int ingress_read_sock_fields(struct __sk_buff *skb)
- 	return CG_OK;
- }
- 
-+static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
-+{
-+	__u32 *word = (__u32 *)&sk->dst_port;
-+	return word[0] == bpf_htonl(0xcafe0000);
-+}
-+
-+static __noinline bool sk_dst_port__load_half(struct bpf_sock *sk)
-+{
-+	__u16 *half = (__u16 *)&sk->dst_port;
-+	return half[0] == bpf_htons(0xcafe);
-+}
-+
-+static __noinline bool sk_dst_port__load_byte(struct bpf_sock *sk)
-+{
-+	__u8 *byte = (__u8 *)&sk->dst_port;
-+	return byte[0] == 0xca && byte[1] == 0xfe;
-+}
-+
-+SEC("cgroup_skb/egress")
-+int read_sk_dst_port(struct __sk_buff *skb)
-+{
-+	__u32 linum, linum_idx;
-+	struct bpf_sock *sk;
-+
-+	linum_idx = READ_SK_DST_PORT_LINUM_IDX;
-+
-+	sk = skb->sk;
-+	if (!sk)
-+		RET_LOG();
-+
-+	if (!sk_dst_port__load_word(sk))
-+		RET_LOG();
-+	if (!sk_dst_port__load_half(sk))
-+		RET_LOG();
-+	if (!sk_dst_port__load_byte(sk))
-+		RET_LOG();
-+
-+	return CG_OK;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/verifier/sock.c b/tools/testing/selftests/bpf/verifier/sock.c
-index ce13ece08d51..3d9d89c5fe65 100644
---- a/tools/testing/selftests/bpf/verifier/sock.c
-+++ b/tools/testing/selftests/bpf/verifier/sock.c
-@@ -121,7 +121,25 @@
- 	.result = ACCEPT,
- },
- {
--	"sk_fullsock(skb->sk): sk->dst_port [narrow load]",
-+	"sk_fullsock(skb->sk): sk->dst_port [word load] (backward compatibility)",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, dst_port)),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.result = ACCEPT,
-+},
-+{
-+	"sk_fullsock(skb->sk): sk->dst_port [half load]",
- 	.insns = {
- 	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
- 	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-@@ -139,7 +157,64 @@
- 	.result = ACCEPT,
- },
- {
--	"sk_fullsock(skb->sk): sk->dst_port [load 2nd byte]",
-+	"sk_fullsock(skb->sk): sk->dst_port [half load] (invalid)",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, dst_port) + 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.result = REJECT,
-+	.errstr = "invalid sock access",
-+},
-+{
-+	"sk_fullsock(skb->sk): sk->dst_port [byte load]",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_2, BPF_REG_0, offsetof(struct bpf_sock, dst_port)),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_2, BPF_REG_0, offsetof(struct bpf_sock, dst_port) + 1),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.result = ACCEPT,
-+},
-+{
-+	"sk_fullsock(skb->sk): sk->dst_port [byte load] (invalid)",
-+	.insns = {
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_EMIT_CALL(BPF_FUNC_sk_fullsock),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, dst_port) + 2),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
-+	.result = REJECT,
-+	.errstr = "invalid sock access",
-+},
-+{
-+	"sk_fullsock(skb->sk): sk->zero_padding [half load] (invalid)",
- 	.insns = {
- 	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, offsetof(struct __sk_buff, sk)),
- 	BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, 2),
-@@ -149,7 +224,7 @@
- 	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 2),
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
--	BPF_LDX_MEM(BPF_B, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, dst_port) + 1),
-+	BPF_LDX_MEM(BPF_H, BPF_REG_0, BPF_REG_0, offsetof(struct bpf_sock, zero_padding)),
- 	BPF_MOV64_IMM(BPF_REG_0, 0),
- 	BPF_EXIT_INSN(),
- 	},
--- 
-2.31.1
+Let's see what the feedback to [1] will be.
 
+[1] https://lore.kernel.org/bpf/20220127172448.155686-1-jakub@cloudflare.com/T/#t
