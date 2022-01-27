@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 667F849EAF8
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 20:22:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1965A49EC52
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 21:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237518AbiA0TWO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 14:22:14 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:50032 "EHLO
+        id S235646AbiA0UOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 15:14:08 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:37634 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbiA0TWO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 14:22:14 -0500
+        with ESMTP id S229827AbiA0UOI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 15:14:08 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D07ABB8234B;
-        Thu, 27 Jan 2022 19:22:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48A88C340E4;
-        Thu, 27 Jan 2022 19:22:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 00DD5B8210C;
+        Thu, 27 Jan 2022 20:14:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE82C340E4;
+        Thu, 27 Jan 2022 20:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643311331;
-        bh=G0W1gkFLQ1WPXxiPGFlbFbWH1HHtaM5GRw62C6zgmnA=;
+        s=k20201202; t=1643314445;
+        bh=qC/sToCd37ePUJElRKoLB3ok7yAQpQWzRiK39nvgDZM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nFHtN82TtA0xq+6rrktzS8p8HeVLrhnQ9oZsI0Da3DJFLx2mW9GX86vjamzU8Lppm
-         wQJZIx7P6JbNbSEvrcJynMhwagNTZRdi4JQl9/xW3g9zyLWFNeboEtp/v1nZXlHdEV
-         jcqflkPMY4wOPRPTbWX5kZZu/+Rwte32Fl/y6Fjk+ZcpGq6+UT60L5a90Ed1XlaUhZ
-         pwzV3pMDzTJ9AlSiSJowVPGrqLigLQtGaHvuAe8F0eUkAPyQSL8JNnrqVsWxiX4vaU
-         BsL6T2RVSxM+YU4bAThnhp53V4taGpAvOn7/7xq6NgJ02Jp0eThAdJ66VMPoCeZIjs
-         C2+YKQB8fVkZg==
+        b=GU/u3aN/+jg2tKNHvCGTzY6gFrbkkGBsQFtZEAyxQW6/QybW3mFpOie+9WkFz2+GI
+         aHbzMf7LxJFhYGuUbejHpKoALLd7gf2lWzmyKwrX8wGa9O3J9I5a+epzgJXAbpqgz2
+         hMDsLbc7iG1sUtnL1HvIokVjSaVqGZCF29n/2eDuAo75YZIpGCMmH9hp7L0Z9ezLz9
+         qt9W6yXTDUh1m8pJ+e0TY4JXHXKpgMOf+O6jgbCQUIScQSJzgfOBNLD+cQvzkKJc+W
+         a5fe5UEpXfdccqaZ2jyOsHA6+QjIi+KBzGRF7NQTnX/GMJwGt3+ybDqrJnrY/NAWHM
+         ALX8pdY5m/l0g==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DF1AD40D0E; Thu, 27 Jan 2022 07:05:41 -0300 (-03)
-Date:   Thu, 27 Jan 2022 07:05:41 -0300
+        id E89C240C99; Thu, 27 Jan 2022 17:12:02 -0300 (-03)
+Date:   Thu, 27 Jan 2022 17:12:02 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
@@ -38,161 +38,115 @@ Cc:     Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH dwarves v4 1/4] dwarf_loader: Receive per-thread data on
- worker threads.
-Message-ID: <YfJudZmSS1yTkeP/@kernel.org>
+Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
+ avoid mutex locking.
+Message-ID: <YfL8kjM30uHN3qxs@kernel.org>
 References: <20220126192039.2840752-1-kuifeng@fb.com>
- <20220126192039.2840752-2-kuifeng@fb.com>
- <CAEf4BzarN4L8U+hLnvZrNg0CR-oQr25OFs_W_tfW3aAHGAVFWw@mail.gmail.com>
+ <20220126192039.2840752-4-kuifeng@fb.com>
+ <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzarN4L8U+hLnvZrNg0CR-oQr25OFs_W_tfW3aAHGAVFWw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jan 26, 2022 at 11:55:25AM -0800, Andrii Nakryiko escreveu:
-> On Wed, Jan 26, 2022 at 11:20 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+Em Wed, Jan 26, 2022 at 11:58:27AM -0800, Andrii Nakryiko escreveu:
+> On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
 > >
-> > Add arguments to steal and thread_exit callbacks of conf_load to
-> > receive per-thread data.
+> > Create an instance of btf for each worker thread, and add type info to
+> > the local btf instance in the steal-function of pahole without mutex
+> > acquiring.  Once finished with all worker threads, merge all
+> > per-thread btf instances to the primary btf instance.
 > >
 > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
 > > ---
 > 
-> Please carry over acks you got on previous revisions, unless you did
-> some drastic changes to already acked patches.
-
-Yes, please do so.
-
-I'll collect them this time, no need to resend.
-
-- Arnaldo
- 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> There are still unnecessary casts and missing {} in the else branch,
+> but I'll let Arnaldo decide or fix it up.
 > 
-> >  btf_loader.c   | 2 +-
-> >  ctf_loader.c   | 2 +-
-> >  dwarf_loader.c | 4 ++--
-> >  dwarves.h      | 5 +++--
-> >  pahole.c       | 3 ++-
-> >  pdwtags.c      | 3 ++-
-> >  pfunct.c       | 4 +++-
-> >  7 files changed, 14 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/btf_loader.c b/btf_loader.c
-> > index 7a5b16ff393e..b61cadd55127 100644
-> > --- a/btf_loader.c
-> > +++ b/btf_loader.c
-> > @@ -624,7 +624,7 @@ static int cus__load_btf(struct cus *cus, struct conf_load *conf, const char *fi
-> >          * The app stole this cu, possibly deleting it,
-> >          * so forget about it
-> >          */
-> > -       if (conf && conf->steal && conf->steal(cu, conf))
-> > +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
-> >                 return 0;
-> >
-> >         cus__add(cus, cu);
-> > diff --git a/ctf_loader.c b/ctf_loader.c
-> > index 7c34739afdce..de6d4dbfce97 100644
-> > --- a/ctf_loader.c
-> > +++ b/ctf_loader.c
-> > @@ -722,7 +722,7 @@ int ctf__load_file(struct cus *cus, struct conf_load *conf,
-> >          * The app stole this cu, possibly deleting it,
-> >          * so forget about it
-> >          */
-> > -       if (conf && conf->steal && conf->steal(cu, conf))
-> > +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
-> >                 return 0;
-> >
-> >         cus__add(cus, cu);
-> > diff --git a/dwarf_loader.c b/dwarf_loader.c
-> > index e30b03c1c541..bf9ea3765419 100644
-> > --- a/dwarf_loader.c
-> > +++ b/dwarf_loader.c
-> > @@ -2686,7 +2686,7 @@ static int cu__finalize(struct cu *cu, struct conf_load *conf)
-> >  {
-> >         cu__for_all_tags(cu, class_member__cache_byte_size, conf);
-> >         if (conf && conf->steal) {
-> > -               return conf->steal(cu, conf);
-> > +               return conf->steal(cu, conf, NULL);
-> >         }
-> >         return LSK__KEEPIT;
-> >  }
-> > @@ -2930,7 +2930,7 @@ static void *dwarf_cus__process_cu_thread(void *arg)
-> >                         goto out_abort;
-> >         }
-> >
-> > -       if (dcus->conf->thread_exit && dcus->conf->thread_exit() != 0)
-> > +       if (dcus->conf->thread_exit && dcus->conf->thread_exit(dcus->conf, NULL) != 0)
-> >                 goto out_abort;
-> >
-> >         return (void *)DWARF_CB_OK;
-> > diff --git a/dwarves.h b/dwarves.h
-> > index 52d162d67456..9a8e4de8843a 100644
-> > --- a/dwarves.h
-> > +++ b/dwarves.h
-> > @@ -48,8 +48,9 @@ struct conf_fprintf;
-> >   */
-> >  struct conf_load {
-> >         enum load_steal_kind    (*steal)(struct cu *cu,
-> > -                                        struct conf_load *conf);
-> > -       int                     (*thread_exit)(void);
-> > +                                        struct conf_load *conf,
-> > +                                        void *thr_data);
-> > +       int                     (*thread_exit)(struct conf_load *conf, void *thr_data);
-> >         void                    *cookie;
-> >         char                    *format_path;
-> >         int                     nr_jobs;
-> > diff --git a/pahole.c b/pahole.c
-> > index f3a51cb2fe74..f3eeaaca4cdf 100644
-> > --- a/pahole.c
-> > +++ b/pahole.c
-> > @@ -2799,7 +2799,8 @@ out:
-> >  static struct type_instance *header;
-> >
-> >  static enum load_steal_kind pahole_stealer(struct cu *cu,
-> > -                                          struct conf_load *conf_load)
-> > +                                          struct conf_load *conf_load,
-> > +                                          void *thr_data)
-> >  {
-> >         int ret = LSK__DELETE;
-> >
-> > diff --git a/pdwtags.c b/pdwtags.c
-> > index 2b5ba1bf6745..8b1d6f1c96cb 100644
-> > --- a/pdwtags.c
-> > +++ b/pdwtags.c
-> > @@ -72,7 +72,8 @@ static int cu__emit_tags(struct cu *cu)
-> >  }
-> >
-> >  static enum load_steal_kind pdwtags_stealer(struct cu *cu,
-> > -                                           struct conf_load *conf_load __maybe_unused)
-> > +                                           struct conf_load *conf_load __maybe_unused,
-> > +                                           void *thr_data __maybe_unused)
-> >  {
-> >         cu__emit_tags(cu);
-> >         return LSK__DELETE;
-> > diff --git a/pfunct.c b/pfunct.c
-> > index 5485622e639b..314915b774f4 100644
-> > --- a/pfunct.c
-> > +++ b/pfunct.c
-> > @@ -489,7 +489,9 @@ int elf_symtabs__show(char *filenames[])
-> >         return EXIT_SUCCESS;
-> >  }
-> >
-> > -static enum load_steal_kind pfunct_stealer(struct cu *cu, struct conf_load *conf_load __maybe_unused)
-> > +static enum load_steal_kind pfunct_stealer(struct cu *cu,
-> > +                                          struct conf_load *conf_load __maybe_unused,
-> > +                                          void *thr_data __maybe_unused)
-> >  {
-> >
-> >         if (function_name) {
-> > --
-> > 2.30.2
-> >
+> Once this lands, can you please send kernel patch to use -j if pahole
+> support it during the kernel build? See scripts/pahole-version.sh and
+> scripts/link-vmlinux.sh for how pahole is set up and used in the
+> kernel. Thanks!
 
--- 
+I also tweaked this:
+
+diff --git a/pahole.c b/pahole.c
+index 8dcd6bf951fe1f93..1b2b19b2be45d30c 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -2887,13 +2887,13 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
+                static pthread_mutex_t btf_lock = PTHREAD_MUTEX_INITIALIZER;
+                struct btf_encoder *encoder;
+
++               pthread_mutex_lock(&btf_lock);
+                /*
+                 * FIXME:
+                 *
+                 * This should be really done at main(), but since in the current codebase only at this
+                 * point we'll have cu->elf setup...
+                 */
+-               pthread_mutex_lock(&btf_lock);
+                if (!btf_encoder) {
+                        /*
+                         * btf_encoder is the primary encoder.
+⬢[acme@toolbox pahole]$
+
+As moving it to after that comment will only make the patch a bit
+larger, changing nothing.
+
++++ b/pahole.c
+@@ -2900,11 +2900,9 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
+                         * And, it is used by the thread
+                         * create it.
+                         */
+-                       btf_encoder = btf_encoder__new(cu, detached_btf_filename,
+-                                                      conf_load->base_btf,
+-                                                      skip_encoding_btf_vars,
+-                                                      btf_encode_force,
+-                                                      btf_gen_floats, global_verbose);
++                       btf_encoder = btf_encoder__new(cu, detached_btf_filename, conf_load->base_btf, skip_encoding_btf_vars,
++                                                      btf_encode_force, btf_gen_floats, global_verbose);
++
+                        if (btf_encoder && thr_data) {
+                                struct thread_data *thread = thr_data;
+
+⬢[acme@toolbox pahole]$
+
+i.e. cosmetic stuff to make the patch smaller by keeping preexisting
+lines as-is.
+
+And the missing {} Andrii noticed:
+
+diff --git a/pahole.c b/pahole.c
+index 7e2e37582f21c566..8c0a982f05c9ae3d 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -2937,8 +2937,9 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
+                                thread->btf = btf_encoder__btf(thread->encoder);
+                        }
+                        encoder = thread->encoder;
+-               } else
++               } else {
+                        encoder = btf_encoder;
++               }
+
+                if (btf_encoder__encode_cu(encoder, cu)) {
+                        fprintf(stderr, "Encountered error while encoding BTF.\n");
+⬢[acme@toolbox pahole]$
+
+I'll look at the needless casts and push it to the 'next' and tmp.master
+branches so that libbpf's CI can have a chance to test it.
+
+I also added 'perf stat' results for 1.21 (the one in this fedora 34
+workstation), 1.23 (parallel DWARF loading) and with your patches + the
+libbpf update as a committer testing section, please add performance
+numbers in in future work.
+
+Thanks, applied!
 
 - Arnaldo
