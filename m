@@ -2,151 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1965A49EC52
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 21:14:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FE349EC5C
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 21:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235646AbiA0UOI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 15:14:08 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:37634 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbiA0UOI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 15:14:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 00DD5B8210C;
-        Thu, 27 Jan 2022 20:14:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DE82C340E4;
-        Thu, 27 Jan 2022 20:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643314445;
-        bh=qC/sToCd37ePUJElRKoLB3ok7yAQpQWzRiK39nvgDZM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GU/u3aN/+jg2tKNHvCGTzY6gFrbkkGBsQFtZEAyxQW6/QybW3mFpOie+9WkFz2+GI
-         aHbzMf7LxJFhYGuUbejHpKoALLd7gf2lWzmyKwrX8wGa9O3J9I5a+epzgJXAbpqgz2
-         hMDsLbc7iG1sUtnL1HvIokVjSaVqGZCF29n/2eDuAo75YZIpGCMmH9hp7L0Z9ezLz9
-         qt9W6yXTDUh1m8pJ+e0TY4JXHXKpgMOf+O6jgbCQUIScQSJzgfOBNLD+cQvzkKJc+W
-         a5fe5UEpXfdccqaZ2jyOsHA6+QjIi+KBzGRF7NQTnX/GMJwGt3+ybDqrJnrY/NAWHM
-         ALX8pdY5m/l0g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E89C240C99; Thu, 27 Jan 2022 17:12:02 -0300 (-03)
-Date:   Thu, 27 Jan 2022 17:12:02 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-Message-ID: <YfL8kjM30uHN3qxs@kernel.org>
-References: <20220126192039.2840752-1-kuifeng@fb.com>
- <20220126192039.2840752-4-kuifeng@fb.com>
- <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
+        id S1343960AbiA0USL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 15:18:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343953AbiA0USL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 15:18:11 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692BCC061714
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 12:18:11 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id d5so4184386pjk.5
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 12:18:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JRztxCEXRkYqVcx8cR6KmBrcEp0VUsVgPz7qryXQ21Q=;
+        b=dVxPohU2MJ2aB1MFJWyRhVBYqpa3sIz/KWenfSPBc2BY4Shm5NyNn+0U6kJ5m0WUJ/
+         9cKDHLqEwBCTct05VyUsh0g/4Gt7daW+KlPsGHwPA9SzQS7j4PDp6npNhNYbr/fzD3dX
+         4N7FWi4mb8pX1PrNdfPk7f/gai41nzJ7+Gm3/bMgN/Jn2R7AZ+HN9P2a81wVyVMHE0c+
+         BGhn8xPHJMjmiZZTL3Muf8Nx+93DK2ReEmEYpWwsfagzaQD5Wzw6b7nzVdEXPSOtFlL1
+         eZM6lLgWLde2EzNiqbofuGr6ZAyMUGRRgp8rvwcbuHqTYiKAxXxT6T5+weSUU7D02uCE
+         EgLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JRztxCEXRkYqVcx8cR6KmBrcEp0VUsVgPz7qryXQ21Q=;
+        b=ZnQs6zZR9HjuYFqAglOEfqeY7OkZ1QNAQ/VCJ3Jz7gdQqvHaVAAp0LgmEKKuSHTZ1z
+         1DR+i9K+z3NETbbSGX9kYklqY99yyfk4UYjLMjRCG2eo840/nrnOjd+oNA1DzhfBZ5fS
+         vqy5VHc6pFrBHZ9IZqpeU7UhtmbwiULXlx1YzGVH1TkCveD+aGdg+rpTYFW0rpZw4pgZ
+         0qqjMSbdORJB2lqFi5LuZb1uo/opmxYJzJaYYayPwATuCFfKxZhXl0zqXSYZd9u4anrX
+         ybL4zdUtywjB1rU75KH1iXZU+1Skga9Pk4+Lo2uo42+cVifq5GtspfsKNaxIGLtMLSMX
+         tV+Q==
+X-Gm-Message-State: AOAM5310glJ+m+3n8n2mSVFb8hv+02p09whFXAMxM2Eb+4mNhlg5EFKD
+        Yw8s42TIdgMZI5GHRmvutCGI2y7lXJB/cJDuzlk=
+X-Google-Smtp-Source: ABdhPJz9rtHGV2h+2+bHSAtVZICYJIo/k/uswrrjwkd5G0KaNOOGbkw5B7rnXdymspPvTk1WeKKJRsgg7QBupzqQvTA=
+X-Received: by 2002:a17:902:b682:: with SMTP id c2mr4673082pls.126.1643314690821;
+ Thu, 27 Jan 2022 12:18:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20220127154555.650886-1-yhs@fb.com>
+In-Reply-To: <20220127154555.650886-1-yhs@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 27 Jan 2022 12:17:59 -0800
+Message-ID: <CAADnVQLWL5Dx00FJGdQ6BgsAYW1p4bJ=juLNk4-uk+oe-f9Mcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/6] bpf: add __user tagging support in
+ vmlinux BTF
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
+        Kernel Team <kernel-team@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Wed, Jan 26, 2022 at 11:58:27AM -0800, Andrii Nakryiko escreveu:
-> On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> >
-> > Create an instance of btf for each worker thread, and add type info to
-> > the local btf instance in the steal-function of pahole without mutex
-> > acquiring.  Once finished with all worker threads, merge all
-> > per-thread btf instances to the primary btf instance.
-> >
-> > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
-> > ---
-> 
-> There are still unnecessary casts and missing {} in the else branch,
-> but I'll let Arnaldo decide or fix it up.
-> 
-> Once this lands, can you please send kernel patch to use -j if pahole
-> support it during the kernel build? See scripts/pahole-version.sh and
-> scripts/link-vmlinux.sh for how pahole is set up and used in the
-> kernel. Thanks!
+On Thu, Jan 27, 2022 at 7:46 AM Yonghong Song <yhs@fb.com> wrote:
+>
+> The __user attribute is currently mainly used by sparse for type checking.
+> The attribute indicates whether a memory access is in user memory address
+> space or not. Such information is important during tracing kernel
+> internal functions or data structures as accessing user memory often
+> has different mechanisms compared to accessing kernel memory. For example,
+> the perf-probe needs explicit command line specification to indicate a
+> particular argument or string in user-space memory ([1], [2], [3]).
+> Currently, vmlinux BTF is available in kernel with many distributions.
+> If __user attribute information is available in vmlinux BTF, the explicit
+> user memory access information from users will not be necessary as
+> the kernel can figure it out by itself with vmlinux BTF.
+>
+> Besides the above possible use for perf/probe, another use case is
+> for bpf verifier. Currently, for bpf BPF_PROG_TYPE_TRACING type of bpf
+> programs, users can write direct code like
+>   p->m1->m2
+> and "p" could be a function parameter. Without __user information in BTF,
+> the verifier will assume p->m1 accessing kernel memory and will generate
+> normal loads. Let us say "p" actually tagged with __user in the source
+> code.  In such cases, p->m1 is actually accessing user memory and direct
+> load is not right and may produce incorrect result. For such cases,
+> bpf_probe_read_user() will be the correct way to read p->m1.
+>
+> To support encoding __user information in BTF, a new attribute
+>   __attribute__((btf_type_tag("<arbitrary_string>")))
+> is implemented in clang ([4]). For example, if we have
+>   #define __user __attribute__((btf_type_tag("user")))
+> during kernel compilation, the attribute "user" information will
+> be preserved in dwarf. After pahole converting dwarf to BTF, __user
+> information will be available in vmlinux BTF and such information
+> can be used by bpf verifier, perf/probe or other use cases.
+>
+> Currently btf_type_tag is only supported in clang (>= clang14) and
+> pahole (>= 1.23). gcc support is also proposed and under development ([5]).
+>
+> In the rest of patch set, Patch 1 added support of __user btf_type_tag
+> during compilation. Patch 2 added bpf verifier support to utilize __user
+> tag information to reject bpf programs not using proper helper to access
+> user memories. Patches 3-5 are for bpf selftests which demonstrate verifier
+> can reject direct user memory accesses.
+>
+>   [1] http://lkml.kernel.org/r/155789874562.26965.10836126971405890891.stgit@devnote2
+>   [2] http://lkml.kernel.org/r/155789872187.26965.4468456816590888687.stgit@devnote2
+>   [3] http://lkml.kernel.org/r/155789871009.26965.14167558859557329331.stgit@devnote2
+>   [4] https://reviews.llvm.org/D111199
+>   [5] https://lore.kernel.org/bpf/0cbeb2fb-1a18-f690-e360-24b1c90c2a91@fb.com/
+>
+> Changelog:
+>   v2 -> v3:
+>     - remove FLAG_DONTCARE enumerator and just use 0 as dontcare flag.
+>     - explain how btf type_tag is encoded in btf type chain.
 
-I also tweaked this:
-
-diff --git a/pahole.c b/pahole.c
-index 8dcd6bf951fe1f93..1b2b19b2be45d30c 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -2887,13 +2887,13 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
-                static pthread_mutex_t btf_lock = PTHREAD_MUTEX_INITIALIZER;
-                struct btf_encoder *encoder;
-
-+               pthread_mutex_lock(&btf_lock);
-                /*
-                 * FIXME:
-                 *
-                 * This should be really done at main(), but since in the current codebase only at this
-                 * point we'll have cu->elf setup...
-                 */
--               pthread_mutex_lock(&btf_lock);
-                if (!btf_encoder) {
-                        /*
-                         * btf_encoder is the primary encoder.
-⬢[acme@toolbox pahole]$
-
-As moving it to after that comment will only make the patch a bit
-larger, changing nothing.
-
-+++ b/pahole.c
-@@ -2900,11 +2900,9 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
-                         * And, it is used by the thread
-                         * create it.
-                         */
--                       btf_encoder = btf_encoder__new(cu, detached_btf_filename,
--                                                      conf_load->base_btf,
--                                                      skip_encoding_btf_vars,
--                                                      btf_encode_force,
--                                                      btf_gen_floats, global_verbose);
-+                       btf_encoder = btf_encoder__new(cu, detached_btf_filename, conf_load->base_btf, skip_encoding_btf_vars,
-+                                                      btf_encode_force, btf_gen_floats, global_verbose);
-+
-                        if (btf_encoder && thr_data) {
-                                struct thread_data *thread = thr_data;
-
-⬢[acme@toolbox pahole]$
-
-i.e. cosmetic stuff to make the patch smaller by keeping preexisting
-lines as-is.
-
-And the missing {} Andrii noticed:
-
-diff --git a/pahole.c b/pahole.c
-index 7e2e37582f21c566..8c0a982f05c9ae3d 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -2937,8 +2937,9 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
-                                thread->btf = btf_encoder__btf(thread->encoder);
-                        }
-                        encoder = thread->encoder;
--               } else
-+               } else {
-                        encoder = btf_encoder;
-+               }
-
-                if (btf_encoder__encode_cu(encoder, cu)) {
-                        fprintf(stderr, "Encountered error while encoding BTF.\n");
-⬢[acme@toolbox pahole]$
-
-I'll look at the needless casts and push it to the 'next' and tmp.master
-branches so that libbpf's CI can have a chance to test it.
-
-I also added 'perf stat' results for 1.21 (the one in this fedora 34
-workstation), 1.23 (parallel DWARF loading) and with your patches + the
-libbpf update as a committer testing section, please add performance
-numbers in in future work.
-
-Thanks, applied!
-
-- Arnaldo
+Applied. Thanks
