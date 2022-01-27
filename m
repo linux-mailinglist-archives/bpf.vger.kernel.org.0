@@ -2,159 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D74A49D818
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 03:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D72349D9D4
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 06:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbiA0Ce2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 26 Jan 2022 21:34:28 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:32063 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbiA0Ce1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 26 Jan 2022 21:34:27 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Jkl1d4mkyz1FD4Y;
-        Thu, 27 Jan 2022 10:30:29 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
- (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 27 Jan
- 2022 10:34:24 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <houtao1@huawei.com>
-Subject: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize ring buffer size
-Date:   Thu, 27 Jan 2022 10:49:39 +0800
-Message-ID: <20220127024939.364016-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S231853AbiA0FIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 00:08:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231201AbiA0FIg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 00:08:36 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 439A0C06161C;
+        Wed, 26 Jan 2022 21:08:36 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id c3so1526210pls.5;
+        Wed, 26 Jan 2022 21:08:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YwFBiJwCNR2Ej7oenh8eiccZ78vpn8xgNO2lAje6Aiw=;
+        b=gGsznywtVegD8GK1UXhoZE+oLJZwTKV/nyRjdwL76E6WGjPLf4UM1NicsEbFD5gEyg
+         FhqbHtfyUlDq8Y9XsvHo4z9OYFdNc/ZZ/vbgog9H+dHGvWR2R2/ILtrBv/AiMp53ssUH
+         BSN4HcjOWO8lrhPYYScTFUdn32VBaslS7KHGYQyVTvIN3R/Y1z7yADtr/ElTyghjLNlu
+         TIMU6UJki74ZTCta8ps+LBs8sCcVkIdg/r+V2IQdMdWz3wSvKgdtrpWmuLvb68KsWkE8
+         zVZ2IMJlBRMO7wRGoGZM7m5Ok+XsM63mKFntFN2ymU9w7kv4e7IpMq+GOOnjmB65rcw0
+         HA1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YwFBiJwCNR2Ej7oenh8eiccZ78vpn8xgNO2lAje6Aiw=;
+        b=7XG3MSFikTeC9FQrL2GGISogXZRarCvvp0vyY0rkT1nsUQH3KJ8jDOYBVDoi6I3Z/b
+         beaPX3FakCbYtWK0rnBLObtew+xvP8OsXka6IEmx3TTeCzngR8IYUwe6/BjYO8a0FHir
+         bh5QXnMGvFdQ1kIk+FXZwosQLEn9gfqQEbMEa/F/hFgOPUKZiMYqGPtgVBKA8nEZUM9v
+         cckUbn+wAw3K5W8z6hjP9+VvN2f4pGeSX4Jx59Ak2QMyEhxvpWqTb0JGBSDn/OOnaD3W
+         4/0pTA+d+8wyNFE9DPn2Az8uSMZpeb7D0ZIRFeLpcb8+KpTrxHXGN+2uNIEctwbA9+E3
+         v6+g==
+X-Gm-Message-State: AOAM531EbDHXzjklQw6CiCC+yuKDnA46gN1mtMeavoNY3TwE4jOTLnAG
+        sLZrPD5t7a4N1LbJtMwWW9wF4+YaVjxBxjozF7F8YkaJLds=
+X-Google-Smtp-Source: ABdhPJwv6+BA2S3Eve7EWuG+FOX430GePS/AzhqEpIUvzionmqPAOA3oyJ6tjd85IJAxQmkl799KzaVPCyai1XH5bd4=
+X-Received: by 2002:a17:90a:d203:: with SMTP id o3mr12237180pju.122.1643260115628;
+ Wed, 26 Jan 2022 21:08:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
+References: <94e36de3cc2b579e45f95c189a6f5378bf1480ac.1643156174.git.asml.silence@gmail.com>
+ <20220126203055.3xre2m276g2q2tkx@kafai-mbp.dhcp.thefacebook.com> <fbc8acbe-4c12-9c68-0418-51e97457d30b@gmail.com>
+In-Reply-To: <fbc8acbe-4c12-9c68-0418-51e97457d30b@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 26 Jan 2022 21:08:24 -0800
+Message-ID: <CAADnVQ+p0B-2_b8hYHEW4UGJ7-T0RMfnZ8cZ4NgpvjMiTo6YKA@mail.gmail.com>
+Subject: Re: [PATCH for-next v4] cgroup/bpf: fast path skb BPF filtering
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-4096 is OK for x86-64, but for other archs with greater than 4KB
-page size (e.g. 64KB under arm64), test_verifier for test case
-"check valid spill/fill, ptr to mem" will fail, so just use
-getpagesize() to initialize the ring buffer size. Do this for
-test_progs as well.
+On Wed, Jan 26, 2022 at 1:29 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>
+> On 1/26/22 20:30, Martin KaFai Lau wrote:
+> > On Wed, Jan 26, 2022 at 12:22:13AM +0000, Pavel Begunkov wrote:
+> >>   #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)                        \
+> >>   ({                                                                       \
+> >>      int __ret = 0;                                                        \
+> >> -    if (cgroup_bpf_enabled(CGROUP_INET_INGRESS))                  \
+> >> +    if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) && sk &&                  \
+> >  From reading sk_filter_trim_cap() where this will be called, sk cannot be NULL.
+> > If yes, the new sk test is not needed.
+>
+> Well, there is no sane way to verify how it's used considering
+>
+> EXPORT_SYMBOL(__cgroup_bpf_run_filter_skb);
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- tools/testing/selftests/bpf/prog_tests/d_path.c | 14 ++++++++++++--
- .../testing/selftests/bpf/prog_tests/test_ima.c | 17 +++++++++++++----
- tools/testing/selftests/bpf/progs/ima.c         |  1 -
- .../bpf/progs/test_d_path_check_types.c         |  1 -
- tools/testing/selftests/bpf/test_verifier.c     |  2 +-
- 5 files changed, 26 insertions(+), 9 deletions(-)
+BPF_CGROUP_RUN_PROG_INET_INGRESS() is used in one place.
+Are you folks saying that you want to remove !sk check
+from __cgroup_bpf_run_filter_skb()?
+Seems like micro optimization, but sure why not.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/d_path.c b/tools/testing/selftests/bpf/prog_tests/d_path.c
-index 911345c526e6..abfa3697e34d 100644
---- a/tools/testing/selftests/bpf/prog_tests/d_path.c
-+++ b/tools/testing/selftests/bpf/prog_tests/d_path.c
-@@ -171,10 +171,20 @@ static void test_d_path_check_rdonly_mem(void)
- static void test_d_path_check_types(void)
- {
- 	struct test_d_path_check_types *skel;
-+	int err;
-+
-+	skel = test_d_path_check_types__open();
-+	if (!ASSERT_OK_PTR(skel, "d_path_check_types open failed"))
-+		return;
- 
--	skel = test_d_path_check_types__open_and_load();
--	ASSERT_ERR_PTR(skel, "unexpected_load_passing_wrong_type");
-+	err = bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+	if (!ASSERT_OK(err, "set max entries"))
-+		goto cleanup;
- 
-+	err = test_d_path_check_types__load(skel);
-+	ASSERT_EQ(err, -EACCES, "unexpected_load_passing_wrong_type");
-+
-+cleanup:
- 	test_d_path_check_types__destroy(skel);
- }
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-index 97d8a6f84f4a..ffc4d8b6e753 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-@@ -48,11 +48,19 @@ void test_test_ima(void)
- 	char cmd[256];
- 
- 	int err, duration = 0;
--	struct ima *skel = NULL;
-+	struct ima *skel;
- 
--	skel = ima__open_and_load();
--	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
--		goto close_prog;
-+	skel = ima__open();
-+	if (!ASSERT_OK_PTR(skel, "skel open"))
-+		return;
-+
-+	err = bpf_map__set_max_entries(skel->maps.ringbuf, getpagesize());
-+	if (!ASSERT_OK(err, "set max entries"))
-+		goto destroy_skel;
-+
-+	err = ima__load(skel);
-+	if (!ASSERT_OK(err, "skel load"))
-+		goto destroy_skel;
- 
- 	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
- 				   process_sample, NULL, NULL);
-@@ -86,5 +94,6 @@ void test_test_ima(void)
- 	CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno);
- close_prog:
- 	ring_buffer__free(ringbuf);
-+destroy_skel:
- 	ima__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-index 96060ff4ffc6..e192a9f16aea 100644
---- a/tools/testing/selftests/bpf/progs/ima.c
-+++ b/tools/testing/selftests/bpf/progs/ima.c
-@@ -13,7 +13,6 @@ u32 monitored_pid = 0;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
- } ringbuf SEC(".maps");
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-index 7e02b7361307..1b68d4a65abb 100644
---- a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-+++ b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-@@ -8,7 +8,6 @@ extern const int bpf_prog_active __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_RINGBUF);
--	__uint(max_entries, 1 << 12);
- } ringbuf SEC(".maps");
- 
- SEC("fentry/security_inode_getattr")
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 29bbaa58233c..6acb5e747715 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -931,7 +931,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	}
- 	if (*fixup_map_ringbuf) {
- 		map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
--					   0, 4096);
-+					   0, getpagesize());
- 		do {
- 			prog[*fixup_map_ringbuf].imm = map_fds[20];
- 			fixup_map_ringbuf++;
--- 
-2.29.2
+EXPORT_SYMBOL() is there because of "ipv6 as a module" mess.
+So it's not a concern.
 
+Pls tag the subj of the patch with [PATCH bpf-next]
+instead of "for-next".
