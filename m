@@ -2,152 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A4049F57F
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 09:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BCC49F622
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 10:19:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243158AbiA1Il6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 03:41:58 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:17825 "EHLO
+        id S1347562AbiA1JTy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 04:19:54 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:17826 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbiA1Il4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 03:41:56 -0500
+        with ESMTP id S238053AbiA1JTy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 04:19:54 -0500
 Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JlWB846Tyz9sbn;
-        Fri, 28 Jan 2022 16:40:32 +0800 (CST)
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JlX1z2Y97z9sTp;
+        Fri, 28 Jan 2022 17:18:31 +0800 (CST)
 Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
  (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Fri, 28 Jan
- 2022 16:41:49 +0800
+ 2022 17:19:37 +0800
 From:   Hou Tao <houtao1@huawei.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
         <houtao1@huawei.com>, Zi Shen Lim <zlim.lnx@gmail.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: check whether s32 is sufficient for kfunc offset
-Date:   Thu, 27 Jan 2022 15:15:32 +0800
-Message-ID: <20220127071532.384888-3-houtao1@huawei.com>
+Subject: [PATCH bpf-next v2 0/2] arm64, bpf: support more atomic ops
+Date:   Thu, 27 Jan 2022 15:53:20 +0800
+Message-ID: <20220127075322.675323-1-houtao1@huawei.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220127071532.384888-1-houtao1@huawei.com>
-References: <20220127071532.384888-1-houtao1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In add_kfunc_call(), bpf_kfunc_desc->imm with type s32 is used to
-represent the offset of called kfunc from __bpf_call_base, so
-add a test to ensure that the offset will not be overflowed.
+Hi,
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/ksyms_module.c   | 72 +++++++++++++++++++
- 1 file changed, 72 insertions(+)
+Atomics support in bpf has already been done by "Atomics for eBPF"
+patch series [1], but it only adds support for x86, and this patchset
+adds support for arm64.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-index d490ad80eccb..ce0cd3446931 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-@@ -6,6 +6,76 @@
- #include "test_ksyms_module.lskel.h"
- #include "test_ksyms_module.skel.h"
- 
-+/* Most logic comes from bpf_object__read_kallsyms_file() */
-+static int test_find_func_in_kallsyms(const char *func, unsigned long *addr)
-+{
-+	/* Same as KSYM_NAME_LEN */
-+	char sym_name[128];
-+	char sym_type;
-+	unsigned long sym_addr;
-+	int ret, err;
-+	FILE *f;
-+
-+	f = fopen("/proc/kallsyms", "r");
-+	if (!f)
-+		return -errno;
-+
-+	err = -ENOENT;
-+	while (true) {
-+		ret = fscanf(f, "%lx %c %127s%*[^\n]\n",
-+			     &sym_addr, &sym_type, sym_name);
-+		if (ret == EOF && feof(f))
-+			break;
-+
-+		if (ret != 3) {
-+			err = -EINVAL;
-+			break;
-+		}
-+
-+		if ((sym_type == 't' || sym_type == 'T') &&
-+		    !strcmp(sym_name, func)) {
-+			*addr = sym_addr;
-+			err = 0;
-+			break;
-+		}
-+	}
-+
-+	fclose(f);
-+	return err;
-+}
-+
-+/*
-+ * Check whether or not s32 in bpf_kfunc_desc is sufficient
-+ * to represent the offset between bpf_testmod_test_mod_kfunc
-+ * and __bpf_call_base.
-+ */
-+void test_ksyms_module_valid_offset(void)
-+{
-+	unsigned long kfunc_addr;
-+	unsigned long base_addr;
-+	int used_offset;
-+	long actual_offset;
-+	int err;
-+
-+	if (!env.has_testmod) {
-+		test__skip();
-+		return;
-+	}
-+
-+	err = test_find_func_in_kallsyms("bpf_testmod_test_mod_kfunc",
-+					 &kfunc_addr);
-+	if (!ASSERT_OK(err, "find kfunc addr"))
-+		return;
-+
-+	err = test_find_func_in_kallsyms("__bpf_call_base", &base_addr);
-+	if (!ASSERT_OK(err, "find base addr"))
-+		return;
-+
-+	used_offset = kfunc_addr - base_addr;
-+	actual_offset = kfunc_addr - base_addr;
-+	ASSERT_EQ((long)used_offset, actual_offset, "kfunc offset overflowed");
-+}
-+
- void test_ksyms_module_lskel(void)
- {
- 	struct test_ksyms_module_lskel *skel;
-@@ -55,6 +125,8 @@ void test_ksyms_module_libbpf(void)
- 
- void test_ksyms_module(void)
- {
-+	if (test__start_subtest("valid_offset"))
-+		test_ksyms_module_valid_offset();
- 	if (test__start_subtest("lskel"))
- 		test_ksyms_module_lskel();
- 	if (test__start_subtest("libbpf"))
+Patch #1 changes the type of test program from fentry/ to raw_tp/ for
+atomics test, because bpf trampoline is not available for arm64 now.
+After the change, atomics test will be available for arm64 and other
+archs.
+
+Patch #2 implements atomic[64]_fetch_add, atomic[64]_[fetch_]{and,or,xor}
+and atomic[64]_{xchg|cmpxchg} for arm64. For no-LSE-ATOMICS case and
+cpus_have_cap(ARM64_HAS_LSE_ATOMICS) case, both ./test_verifier and
+"./test_progs -t atomic" are exercised and passed correspondingly.
+
+Comments are always welcome.
+
+Regards,
+Tao
+
+[1]: https://lore.kernel.org/bpf/20210114181751.768687-2-jackmanb@google.com/
+
+Change Log:
+v2:
+  * patch #1: use two seperated ASSERT_OK() instead of ASSERT_TRUE()
+  * add Acked-by tag for both patches
+
+v1: https://lore.kernel.org/bpf/20220121135632.136976-1-houtao1@huawei.com/
+
+
+Hou Tao (2):
+  selftests/bpf: use raw_tp program for atomic test
+  arm64, bpf: support more atomic operations
+
+ arch/arm64/include/asm/insn.h                 |  45 +++-
+ arch/arm64/lib/insn.c                         | 155 +++++++++++--
+ arch/arm64/net/bpf_jit.h                      |  43 +++-
+ arch/arm64/net/bpf_jit_comp.c                 | 216 ++++++++++++++----
+ .../selftests/bpf/prog_tests/atomics.c        | 121 +++-------
+ tools/testing/selftests/bpf/progs/atomics.c   |  28 +--
+ 6 files changed, 444 insertions(+), 164 deletions(-)
+
 -- 
 2.27.0
 
