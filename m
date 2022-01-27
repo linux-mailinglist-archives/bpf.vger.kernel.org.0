@@ -2,101 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814F549E68B
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 16:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0399E49E772
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 17:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243124AbiA0Pqd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 10:46:33 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12384 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243120AbiA0Pqc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 27 Jan 2022 10:46:32 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20RFTXSV013081
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 07:46:32 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=014yT/mw6bbh3Id0CZDdXxIo1HyLhW69KglGu9QAXo4=;
- b=V10AWVbBVWtF0KpyssIaV+xm0hl45RZLfVw60PTtpfZJiWp/FsuMm+NQmoKW4yXqloNO
- VjIBOGxqPDNOmTS+8j26nZdsfUOoeMnPDRh8ORfUvIUz8yy9PxZzP1ByBwAIhmZ4XB/F
- 5LVHMnSmuWQ3wzu1Qv8s5Wke8accKZSflEk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dujv3ucfu-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 07:46:31 -0800
-Received: from twshared3205.02.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 27 Jan 2022 07:46:30 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 6905C5A22BE1; Thu, 27 Jan 2022 07:46:27 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        id S243678AbiA0QZW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 11:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243690AbiA0QZW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 11:25:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3FC0C061714;
+        Thu, 27 Jan 2022 08:25:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A386FB803F6;
+        Thu, 27 Jan 2022 16:25:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2CA0C340E4;
+        Thu, 27 Jan 2022 16:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643300719;
+        bh=pF7kw3/tUBe2qDEKYIHJG6832skQUBXDz81kmFkASmU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YgdLtqSj23XX0RwAdGMAY7I407WAOdwoQZKruWIDxWfA+/9l9wkReNAXpYlehPN4e
+         KyrPwxt0FAFxDvoJzWw0uL1yc7f3iYW0meqeGEQ+gxOw2L6RGwVP4s0TTN5N+TBn+u
+         wd/lrfay21uml/TXhhF9loJsN5gP5/pBPrxmm6Kl3pRDl46+4KOR9//gWXIem7hV3s
+         ivpMrbzjM4hd5uGCs10l0it8Mjd5xkV+7Ki9jznA8+tnHnWAm+i4Hh9Ick18fjdcx7
+         To/qCYp203HUMUmizs9mEW3w64DSg5Ie6ZnxIte/t3eKGWpKZHgV7ItkHBqcr1yqFK
+         J/WNvgCVVrEYw==
+Date:   Thu, 27 Jan 2022 08:25:17 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        "Jose E . Marchesi" <jose.marchesi@oracle.com>,
-        <kernel-team@fb.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf-next v3 6/6] docs/bpf: clarify how btf_type_tag gets encoded in the type chain
-Date:   Thu, 27 Jan 2022 07:46:27 -0800
-Message-ID: <20220127154627.665163-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220127154555.650886-1-yhs@fb.com>
-References: <20220127154555.650886-1-yhs@fb.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        =?UTF-8?B?Qmo=?= =?UTF-8?B?w7ZybiBUw7ZwZWw=?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: remove unused static inlines
+Message-ID: <20220127082517.1b1bd7e9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAADnVQ+nn4m8HWpBM0KNC5Z6tpc_QCLk0SjpYKWyQNfTCmLndA@mail.gmail.com>
+References: <20220126185412.2776254-1-kuba@kernel.org>
+        <61f22a5863695_57f03208a8@john.notmuch>
+        <CAADnVQ+nn4m8HWpBM0KNC5Z6tpc_QCLk0SjpYKWyQNfTCmLndA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mXgFyAjl9qOdeJMxh5hLc-BDw_bKEUnR
-X-Proofpoint-GUID: mXgFyAjl9qOdeJMxh5hLc-BDw_bKEUnR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-27_03,2022-01-27_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- mlxscore=0 suspectscore=0 mlxlogscore=897 spamscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 adultscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2201270096
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Clarify where the BTF_KIND_TYPE_TAG gets encoded in the type chain,
-so applications and kernel can properly parse them.
+On Wed, 26 Jan 2022 21:22:03 -0800 Alexei Starovoitov wrote:
+> On Wed, Jan 26, 2022 at 9:15 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Jakub Kicinski wrote:  
+> > > Remove two dead stubs, sk_msg_clear_meta() was never
+> > > used, use of xskq_cons_is_full() got replaced by
+> > > xsk_tx_writeable() in v5.10.
+> > >
+> > > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > > ---  
+> >
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>  
+> 
+> Applied.
+> How did you find them?
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- Documentation/bpf/btf.rst | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+regex and some bash:
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index ab08852e53ae..7940da9bc6c1 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -503,6 +503,19 @@ valid index (starting from 0) pointing to a member o=
-r an argument.
-  * ``info.vlen``: 0
-  * ``type``: the type with ``btf_type_tag`` attribute
-=20
-+Currently, ``BTF_KIND_TYPE_TAG`` is only emitted for pointer types.
-+It has the following btf type chain:
-+::
-+
-+  ptr -> [type_tag]*
-+      -> [const | volatile | restrict | typedef]*
-+      -> base_type
-+
-+Basically, a pointer type points to zero or more
-+type_tag, then zero or more const/volatile/restrict/typedef
-+and finally the base type. The base type is one of
-+int, ptr, array, struct, union, enum, func_proto and float types.
-+
- 3. BTF Kernel API
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
---=20
-2.30.2
+for f in $(sed -n '/static inline [^(]*$/N;s@static inline.*[^_a-z0-9A-Z]\([_a-z0-9A-Z]*\)([a-z_].*@\1@p' $(find include/ -type f) ); do cnt=$(git grep $f | wc -l); [ $cnt -le 1 ] && echo $f >> single; done
 
+takes too long to run to put it in a CI directly, unfortunately, 
+more intelligence would be needed. Luckily there isn't that many
+instances throughout netdev and bpf so perhaps not even worth 
+the hassle.
