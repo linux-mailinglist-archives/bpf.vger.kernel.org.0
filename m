@@ -2,95 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEFF49D9E6
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 06:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF9AF49D9EF
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 06:22:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbiA0FRU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 00:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
+        id S236118AbiA0FWQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 00:22:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbiA0FRT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 00:17:19 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18DD7C06161C
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 21:17:19 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id c9so1503621plg.11
-        for <bpf@vger.kernel.org>; Wed, 26 Jan 2022 21:17:19 -0800 (PST)
+        with ESMTP id S231364AbiA0FWP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 00:22:15 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF2CC06161C;
+        Wed, 26 Jan 2022 21:22:15 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id f8so1287615pgf.8;
+        Wed, 26 Jan 2022 21:22:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P8+WFZtdjVLzDgn7NAlmMVq9ZkDSoYmtOgTspQC1xf8=;
-        b=I5zPuuDauw263c2+c9zGj9F7FP81IxHMb1Jz2/V7jMXmcSoPx6xenq7OKGnXUjPoGD
-         cc5fFbb27GzYnjSouWSxX6cA4eBC+HaolirA5g9ckfeed2YEo0j+oM+0/AMw/Q2Rt3nl
-         GkFITxZJ4vlbh0alAyN1k+bJe07QBvs8E03FMCSWkNejqiSb6YkO7wzBHvbLgWk3jVYe
-         QWqqQNDsa9M/rMDcT85KaKoBHxop6Dw8giSVesFCDLZAz4hIexZqcG8EPIkOiEIMXj0o
-         klAsip7oQnrvhGMuM7B5vFfkUL5RriloXzzifMOOYFo7JcBhcOqdmrqYaqMlvhs9uOr6
-         eUpA==
+        bh=e8DGiYEjVgGtuhn/o4jRZapOl1uwC4X5UKRJiu5FmMQ=;
+        b=mJVyDldnI2g0d6dnQFdUa0gz3JmtX+XNk8UL1y/W3Smj9vE7SxEQ86IB8mPppYf+iw
+         BUS9zto66TBUTUwGcnSfsmYdW8C1c4I4/6w4jLKef6C7vsCEmO2vfvRoJy0uNt/sfU3o
+         wALh/msvFhnVbtj9YEtQsxJ0WJSiN5/14Xd6DOMgK32K+nxdl3a5KMPsXAfpqJSc7nh9
+         wmDYgtdBWFQNh1mXpERIpJSwV07WIOyXCNLngFcmy3n3jm1Jv2WbwchcBVtQDCzHAwe/
+         L35eWS2q3X8qjbIZFjIi8lPuJe6EtKUguVoX+y1VKILOHc72zPnLicuHhE0TIHgCnCYv
+         Qr3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P8+WFZtdjVLzDgn7NAlmMVq9ZkDSoYmtOgTspQC1xf8=;
-        b=7g7rHOMppWntHCEeNagM3BtFqMvTXp8yUkqEwejgU2I6swlqioXwlqBpZASSZBvaZb
-         U9nqgAWmdyBnLl1/I4Mqjog6h9I/QPFK7fjOrbYs1a1+ABIMQrwXtYMy/vikFO3AQ4hO
-         Q3qBC+iot+KvtKL4mMze0/2E85pCrTHS6eHRaK4lyKHoCgerW8IotZDPZswc8gWu692H
-         bHkh0dofQCi8rDAwisgqbBt9n/T56c4Cvf/3aRPjuh8j8QdnYP68SEdODnFp+4nUQkX6
-         23SUapahRZaRu/MybmpJuZPJCcqpQ1kEsZwiUG+/aTfaCSp7poN7+TqlFHS5DeH4+0/z
-         kjyg==
-X-Gm-Message-State: AOAM5306mSBA5YsMzu7mxhv5Y8uTbkdokPrejTttW1h/BYzTQUJ1oiQy
-        BeFCbpwfpEVMkw+E3bdPZVqq4nXW4HZ0QxTmLsHeA9oLXkM=
-X-Google-Smtp-Source: ABdhPJw27tq7O3V/qt2t/247DaKtQS2TxqzhOOvGLbBRWLPHeILuhXYFlikOJbLSdUO1VGRY1Fp/za0JeAeAPhVpHXA=
-X-Received: by 2002:a17:90b:1e41:: with SMTP id pi1mr2444604pjb.62.1643260638544;
- Wed, 26 Jan 2022 21:17:18 -0800 (PST)
+        bh=e8DGiYEjVgGtuhn/o4jRZapOl1uwC4X5UKRJiu5FmMQ=;
+        b=CXhtF69hiVjYXjFADUKqV5UOCkgQc8wivhi3xra58VKvKWP7TDbjx0IY1vC0DW4TTE
+         9Kn1ZpC8X9SqaXpdo9QkurYNwJThdGbTkc6DoHcZTyokQWC5tWSnzDwfzz3NKcdCxqaC
+         QLNyNh0eBlMuwSErPKovnmAuQHj8AHeXZY3cxMchvNHOxKy0C4fT1Cg97JfV6Gf1t3vk
+         bVyrsoEifTUzFI1Ih2/bKfKwc7trE7WkDBtN8LVO7LnCJZKfRmFqZkvTJzm50eFAunMW
+         1h2Bb6PHZcvmUy4zchMMm2+zz9Rc9Npusd8hsTMZAPFiiudklOl7NOH3rzH0j+Us/9UR
+         66gw==
+X-Gm-Message-State: AOAM531qk8SRMafVrezjg2BExFlGKQXc0BHcReqH/nfKMc5g6yI+hdnP
+        T1lT+K8zj2/PhYaPUh5wERoCgJXdejTUQeWO5arP3jGV
+X-Google-Smtp-Source: ABdhPJySRJXUlobXXYb33H/6/6WG79jbr1r1vwCirqbYeIykv//CJ5QtneaosvHTuLp+PTn/2hqX6XxRje686CP4/cM=
+X-Received: by 2002:a62:15c3:: with SMTP id 186mr1667041pfv.59.1643260934891;
+ Wed, 26 Jan 2022 21:22:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126214809.3868787-1-kuifeng@fb.com>
-In-Reply-To: <20220126214809.3868787-1-kuifeng@fb.com>
+References: <20220126185412.2776254-1-kuba@kernel.org> <61f22a5863695_57f03208a8@john.notmuch>
+In-Reply-To: <61f22a5863695_57f03208a8@john.notmuch>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 26 Jan 2022 21:17:07 -0800
-Message-ID: <CAADnVQKkJCj+_aoJN2YtS3-Hc68uk1S2vN=5+0M0Q9KRVuxqoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] Attach a cookie to a tracing program.
-To:     Kui-Feng Lee <kuifeng@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 26 Jan 2022 21:22:03 -0800
+Message-ID: <CAADnVQ+nn4m8HWpBM0KNC5Z6tpc_QCLk0SjpYKWyQNfTCmLndA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: remove unused static inlines
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 1:48 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
+On Wed, Jan 26, 2022 at 9:15 PM John Fastabend <john.fastabend@gmail.com> wrote:
 >
-> Allow users to attach a 64-bits cookie to a BPF program when link it
-> to fentry, fexit, or fmod_ret of a function.
+> Jakub Kicinski wrote:
+> > Remove two dead stubs, sk_msg_clear_meta() was never
+> > used, use of xskq_cons_is_full() got replaced by
+> > xsk_tx_writeable() in v5.10.
+> >
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > ---
 >
-> This changeset includes several major changes.
->
->  - Add a new field bpf_cookie to struct raw_tracepoint, so that a user
->    can attach a cookie to a program.
->
->  - Store flags in trampoline frames to provide the flexibility of
->    storing more values in these frames.
->
->  - Store the program ID of the current BPF program in the trampoline
->    frame.
->
->  - The implmentation of bpf_get_attach_cookie() for tracing programs
->    to read the attached cookie.
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-flags, prog_id, cookie... I don't follow what's going on here.
-
-cookie is supposed to be per link.
-Doing it for fentry only will be inconvenient for users.
-For existing kprobes there is no good place to store it. iirc.
-For multi attach kprobes there won't be a good place either.
-I think cookie should be out of band.
-Maybe lets try a resizable map[ip]->cookie and don't add
-'cookie' arrays to multi-kprobe attach,
-'cookie' field to kprobe, fentry, and other attach apis.
-Adding 'cookie' to all of them is quite a bit of churn for kernel
-and user space.
-I think resizable bpf map[u64]->u64 solves this problem.
-Maybe cookie isn't even needed.
-If the bpf prog can have a clean map[bpf_get_func_ip()] that
-doesn't have to be sized up front it will address the need.
+Applied.
+How did you find them?
