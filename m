@@ -2,209 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AF249E8E1
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 18:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B4949E8E3
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 18:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbiA0RYW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 12:24:22 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:51100 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbiA0RYW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 12:24:22 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ABE5D61B10
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 17:24:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FCE8C340E4;
-        Thu, 27 Jan 2022 17:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643304261;
-        bh=MLL1wKJpT7La/NQH2wHUVjkfLuHzAgNomf2UCn0Ixv8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jBdMw0yQmteH7/leQTgF9Ns31ouyQp89W/7rI/LS3PGdOSv5all0ci565WRsgl/q7
-         10OSJ+wEs4sazOdmBOip1mdxQwhjorBg5bwvawKqqZRAO0aop74lsVm4sPXIDkhDuE
-         noSvnA27Kmsjpv2WGEizxhCPBVkD8a4J4jpEkGDoiEGgbdh8g0ukVqI2t5pVmLJxXS
-         +LcfbZ36UVwjVT9MugxZZhhZOkpNIKA6isdt4cftpPmWQcQHnEpGrgRBHQ0X4cx2U6
-         UrShm9wCmQwEwkFLUecT2fMDPjYtkYlkPAVaAH4rbELj2qB/3MVk9d/m2ncDprCLL2
-         4o0FcA1+KBwyA==
-Date:   Thu, 27 Jan 2022 18:24:16 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S237319AbiA0RYw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 12:24:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232315AbiA0RYv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 27 Jan 2022 12:24:51 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6BFC06173B
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:24:51 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id w11so6090328wra.4
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 09:24:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fK+oJcKgMcWWWrq9i21ZgzQKrYXc3WUerqyecUfwfNk=;
+        b=jr16Oeqj4M6JLMyVsipYEVvVIvded5FfOcE157uvxzOGZxzmRP7rqcBG3dDr81ekz/
+         sHAlPRKtfRvcgblGgpNm673V9YLy7Dw/ENUP7bnqdidi9Fz8GU+jrCqTs2PeSinI/32f
+         lDca0Au5N4jWSqWgGXlsQsXFG6aSgywaF6gXI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fK+oJcKgMcWWWrq9i21ZgzQKrYXc3WUerqyecUfwfNk=;
+        b=XlvMYtZxJsTtsA2KuupIiDZAcEg24FOnJD07T2RppNMPGrJ1QxGXCRYSA6fhWHJC+z
+         meYcvJ1bNKIv/J8Fk0PsJo6nNsJdQ9z3+KToW46SjylwzyHXYo+/pQiyFl6GyBKdV1/0
+         gVswmwy89XSjcX2Gawn39c+zURO3bzyNECpNecSVyCHAXJeDnzYJT69SAFuebHFrzbCJ
+         rsLovk69hhrrzK5pUOmAEP9kFt5FTJvCMnb78xvBc7oDoXF1E9xIYbAjq8cPwmVmBxXC
+         1W2VxNrHTYS+0xjbJ5/sDYoGJMzWUzJ8zlVKdA93t3BOYWTh1FtgzXQyJofQ6VTe1Yl3
+         cYDQ==
+X-Gm-Message-State: AOAM532nteYv611Qo6KBK7LRx+Xlb2NpAodjt6oDA6y93izURYUtIIhr
+        2fjFH7L+K0HuaMUi4XUbYS3p2ow32dX2LQ==
+X-Google-Smtp-Source: ABdhPJz8mf34rI88UHVzNtKZTD75FOr4XOkhBAJyijwbCDSNNj+qrw51eCzG4JGmZAxB3m/KbIwXoA==
+X-Received: by 2002:a5d:6d05:: with SMTP id e5mr3779678wrq.398.1643304289766;
+        Thu, 27 Jan 2022 09:24:49 -0800 (PST)
+Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
+        by smtp.gmail.com with ESMTPSA id az16sm2420578wmb.15.2022.01.27.09.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jan 2022 09:24:49 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: deprecate xdp_cpumap and xdp_devmap sec
- definitions
-Message-ID: <YfLVQAbbR+dcZfii@lore-desk>
-References: <d7f8f9e3370d33be0a3385c7604d8925e10c91d1.1643285321.git.lorenzo@kernel.org>
- <87pmod196i.fsf@toke.dk>
- <CAEf4BzYOZ6fi_SSgJmWRD7TM44w71L_+QPv9H13OCA08f9RHww@mail.gmail.com>
+        Menglong Dong <imagedong@tencent.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next 0/2] Split bpf_sock dst_port field
+Date:   Thu, 27 Jan 2022 18:24:46 +0100
+Message-Id: <20220127172448.155686-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xxIdjWXUF11Vp8zp"
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYOZ6fi_SSgJmWRD7TM44w71L_+QPv9H13OCA08f9RHww@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This is a follow-up to discussion around the idea of making dst_port in struct
+bpf_sock a 16-bit field that happened in [1]. I have fleshed it out further:
 
---xxIdjWXUF11Vp8zp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v1:
+- keep dst_field offset unchanged to prevent existing BPF program breakage
+  (Martin)
+- allow 8-bit loads from dst_port[0] and [1]
+- add test coverage for the verifier and the context access converter
 
-> On Thu, Jan 27, 2022 at 7:37 AM Toke H=F8iland-J=F8rgensen <toke@redhat.c=
-om> wrote:
-> >
-> > Lorenzo Bianconi <lorenzo@kernel.org> writes:
-> >
-> > > Deprecate xdp_cpumap xdp_devmap sec definitions.
-> > > Introduce xdp/devmap and xdp/cpumap definitions according to the stan=
-dard
-> > > for SEC("") in libbpf:
-> > > - prog_type.prog_flags/attach_place
-> > > Update cpumap/devmap samples and kselftests
-> > >
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >  samples/bpf/xdp_redirect_cpu.bpf.c                   |  8 ++++----
-> > >  samples/bpf/xdp_redirect_map.bpf.c                   |  2 +-
-> > >  samples/bpf/xdp_redirect_map_multi.bpf.c             |  2 +-
-> > >  tools/lib/bpf/libbpf.c                               | 12 ++++++++++=
---
-> > >  .../bpf/progs/test_xdp_with_cpumap_frags_helpers.c   |  2 +-
-> > >  .../bpf/progs/test_xdp_with_cpumap_helpers.c         |  2 +-
-> > >  .../bpf/progs/test_xdp_with_devmap_frags_helpers.c   |  2 +-
-> > >  .../bpf/progs/test_xdp_with_devmap_helpers.c         |  2 +-
-> > >  .../selftests/bpf/progs/xdp_redirect_multi_kern.c    |  2 +-
-> > >  9 files changed, 21 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/samples/bpf/xdp_redirect_cpu.bpf.c b/samples/bpf/xdp_red=
-irect_cpu.bpf.c
-> > > index 25e3a405375f..87c54bfdbb70 100644
-> > > --- a/samples/bpf/xdp_redirect_cpu.bpf.c
-> > > +++ b/samples/bpf/xdp_redirect_cpu.bpf.c
-> > > @@ -491,7 +491,7 @@ int  xdp_prognum5_lb_hash_ip_pairs(struct xdp_md =
-*ctx)
-> > >       return bpf_redirect_map(&cpu_map, cpu_dest, 0);
-> > >  }
-> > >
-> > > -SEC("xdp_cpumap/redirect")
-> > > +SEC("xdp/cpumap")
-> > >  int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
-> > >  {
-> > >       void *data_end =3D (void *)(long)ctx->data_end;
-> > > @@ -507,19 +507,19 @@ int xdp_redirect_cpu_devmap(struct xdp_md *ctx)
-> > >       return bpf_redirect_map(&tx_port, 0, 0);
-> > >  }
-> > >
-> > > -SEC("xdp_cpumap/pass")
-> > > +SEC("xdp/cpumap")
-> > >  int xdp_redirect_cpu_pass(struct xdp_md *ctx)
-> > >  {
-> > >       return XDP_PASS;
-> > >  }
-> > >
-> > > -SEC("xdp_cpumap/drop")
-> > > +SEC("xdp/cpumap")
-> > >  int xdp_redirect_cpu_drop(struct xdp_md *ctx)
-> > >  {
-> > >       return XDP_DROP;
-> > >  }
-> > >
-> > > -SEC("xdp_devmap/egress")
-> > > +SEC("xdp/devmap")
-> > >  int xdp_redirect_egress_prog(struct xdp_md *ctx)
-> > >  {
-> > >       void *data_end =3D (void *)(long)ctx->data_end;
-> > > diff --git a/samples/bpf/xdp_redirect_map.bpf.c b/samples/bpf/xdp_red=
-irect_map.bpf.c
-> > > index 59efd656e1b2..415bac1758e3 100644
-> > > --- a/samples/bpf/xdp_redirect_map.bpf.c
-> > > +++ b/samples/bpf/xdp_redirect_map.bpf.c
-> > > @@ -68,7 +68,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
-> > >       return xdp_redirect_map(ctx, &tx_port_native);
-> > >  }
-> > >
-> > > -SEC("xdp_devmap/egress")
-> > > +SEC("xdp/devmap")
-> > >  int xdp_redirect_map_egress(struct xdp_md *ctx)
-> > >  {
-> > >       void *data_end =3D (void *)(long)ctx->data_end;
-> > > diff --git a/samples/bpf/xdp_redirect_map_multi.bpf.c b/samples/bpf/x=
-dp_redirect_map_multi.bpf.c
-> > > index bb0a5a3bfcf0..8b2fd4ec2c76 100644
-> > > --- a/samples/bpf/xdp_redirect_map_multi.bpf.c
-> > > +++ b/samples/bpf/xdp_redirect_map_multi.bpf.c
-> > > @@ -53,7 +53,7 @@ int xdp_redirect_map_native(struct xdp_md *ctx)
-> > >       return xdp_redirect_map(ctx, &forward_map_native);
-> > >  }
-> > >
-> > > -SEC("xdp_devmap/egress")
-> > > +SEC("xdp/devmap")
-> > >  int xdp_devmap_prog(struct xdp_md *ctx)
-> > >  {
-> > >       void *data_end =3D (void *)(long)ctx->data_end;
-> > > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > > index 4ce94f4ed34a..1d97bc346be6 100644
-> > > --- a/tools/lib/bpf/libbpf.c
-> > > +++ b/tools/lib/bpf/libbpf.c
-> > > @@ -237,6 +237,8 @@ enum sec_def_flags {
-> > >       SEC_SLOPPY_PFX =3D 16,
-> > >       /* BPF program support non-linear XDP buffer */
-> > >       SEC_XDP_FRAGS =3D 32,
-> > > +     /* deprecated sec definitions not supposed to be used */
-> > > +     SEC_DEPRECATED =3D 64,
-> > >  };
-> > >
-> > >  struct bpf_sec_def {
-> > > @@ -6575,6 +6577,10 @@ static int libbpf_preload_prog(struct bpf_prog=
-ram *prog,
-> > >       if (prog->type =3D=3D BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS=
-))
-> > >               opts->prog_flags |=3D BPF_F_XDP_HAS_FRAGS;
-> > >
-> > > +     if (def & SEC_DEPRECATED)
-> > > +             pr_warn("sec '%s' is deprecated, please use new version=
- instead\n",
-> > > +                     prog->sec_name);
-> > > +
-> >
-> > How is the user supposed to figure out what "the new version" is?
->=20
->=20
-> Let's add the section to
-> https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide and
-> link to it from the deprecation warning.
+[1] https://lore.kernel.org/bpf/87sftbobys.fsf@cloudflare.com/
 
-so, is it better to add an utility routine to map the deprecated sec_name to
-the new one, or is it enough to add a section in Libbpf-1.0-migration-guide?
-I am fine both ways.
+Jakub Sitnicki (2):
+  bpf: Make dst_port field in struct bpf_sock 16-bit wide
+  selftests/bpf: Extend verifier and bpf_sock tests for dst_port loads
 
-Regards,
-Lorenzo
+ include/uapi/linux/bpf.h                      |  3 +-
+ net/core/filter.c                             |  9 ++-
+ tools/include/uapi/linux/bpf.h                |  3 +-
+ .../selftests/bpf/prog_tests/sock_fields.c    | 58 +++++++++----
+ .../selftests/bpf/progs/test_sock_fields.c    | 41 ++++++++++
+ tools/testing/selftests/bpf/verifier/sock.c   | 81 ++++++++++++++++++-
+ 6 files changed, 172 insertions(+), 23 deletions(-)
 
->=20
-> >
-> > -Toke
-> >
+-- 
+2.31.1
 
---xxIdjWXUF11Vp8zp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYfLVQAAKCRA6cBh0uS2t
-rN9mAQCWWk67dkrGvz4wAQcrPkOkbhejR0UbEVUGf/SCZEppnAEAhxoCkxf6DZO2
-BUrlGaBRsVVqjE5XdtSAeUhkEB4JwgI=
-=6KPz
------END PGP SIGNATURE-----
-
---xxIdjWXUF11Vp8zp--
