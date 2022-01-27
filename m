@@ -2,80 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D3349EA44
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 19:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3650B49EA47
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 19:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239538AbiA0SV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 13:21:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231634AbiA0SV0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 13:21:26 -0500
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85BFC061714
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 10:21:26 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id u130so3375741pfc.2
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 10:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cju3nifTKKUK6H86ANdteppMEv77ZEUpYOv9PC19Uu8=;
-        b=fz38Ko3bcUBeNoGTUFiL2DH/g2JarLMtg3NnUDNkAor9fh7E5yPdKB0Hz8P3sxQ9rp
-         56uad/aU4IKoQCoWVoszsWTRnLjHMXABtNrFlxbg+1QuSF1IrlHnwJAnkOjlZ0T+bb1y
-         82v7mLSfZchQhKgsb5OVPEKzAHXCKcb2VM0y2hEukPJbLu71UWopw2TxUvIRCf7dQEzD
-         7f5FR/Wt0dneKNAIDV9e0VF6effJPo1pZU5inC2q1UUavbWfQgqzgjiRb/O4iiDFYodF
-         sdQr8XWFtmizyKTEW/CdirBmLWo9GEAc7Oo+HY32UoYP8cV4dgA3Ma8JMivpB2ymqNW0
-         qlhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cju3nifTKKUK6H86ANdteppMEv77ZEUpYOv9PC19Uu8=;
-        b=8RD5HFV+4XxP0EduTZh/ncGnqjXLAVWBoDrnvCgiNvKNDtTq3v9yZYLxtUW3k4WYAE
-         aAo7l7wnWub5kzlQ0mGjLobqH6flOgZPYPTkrR5eUuAbZjn4akTj3wXDv6ZFMT9MBESi
-         ej9Zny/UZJzfVVWBJ0wkLxCdbB7rDSBqcni8+Bnvl8ekfm38ToSwc7CoDztq2TOWJR9f
-         UKoF+4w6rQaP9X/9Cqywh7zqy1rxcf6dPVHyDCFcOx6YF/0qq4e86eohRJe6jBfw1HWY
-         aXaKQ+XzDeTC1ZEuU3vMCJjJMIINGn3pbk1ojqeWeq53x15FUpkVDe2RMcIJpkNvGyWX
-         wwSQ==
-X-Gm-Message-State: AOAM532h6U5vsb6JSNhz0zkkrYgFTKbUc55XtwrFdtgxYhX+fuX6yGXU
-        FKIvEJ5fQX4jroeIHMAN2WdCSgTYEWXsMj2r2ACPLE/c
-X-Google-Smtp-Source: ABdhPJy9QOsQMBaxWemODEJwt6HBMdqAA5mKj2TYK6OA3n2z9UzwQHs+g90JaBOzFHQgZ6rmQC+RfIOrCXe6SIRX8WY=
-X-Received: by 2002:a63:580d:: with SMTP id m13mr3497759pgb.497.1643307685808;
- Thu, 27 Jan 2022 10:21:25 -0800 (PST)
-MIME-Version: 1.0
-References: <d8c58857113185a764927a46f4b5a058d36d3ec3.1643292455.git.asml.silence@gmail.com>
- <20220127180854.i6snxqt4r3eq4huv@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220127180854.i6snxqt4r3eq4huv@kafai-mbp.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 27 Jan 2022 10:21:14 -0800
-Message-ID: <CAADnVQ+LU+HZKVQ37ZeWQtj4xdk3wTSN_HGA7b54rXa9Ta4DpQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6] cgroup/bpf: fast path skb BPF filtering
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Pavel Begunkov <asml.silence@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S243801AbiA0SWF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 13:22:05 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32704 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231634AbiA0SWE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 27 Jan 2022 13:22:04 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 20RHIolc025270
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 10:22:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=bNnwjkogBsgTRzOWl+HXrib8phuz1G4UYxe3aEwSvGM=;
+ b=Wc0WMHUcQZVUu8SXf+uO6l+8YO48qvkiJp2pMbBTQe0/v2iwoD3K9SsrMEK4kEZDk4Gj
+ GAnUh+Evptqmut//UmCFEhsaIpKVh5MAltvW1y+41TIGhbsSm8CmyPfKgG6MIyUTfORZ
+ BGU6/zIT1ZNOvDlK/fOaIJa7ej3TIGrW34c= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dujva4ec6-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 10:22:02 -0800
+Received: from twshared2974.18.frc3.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 27 Jan 2022 10:22:01 -0800
+Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
+        id 17FFBCF9E1AD; Thu, 27 Jan 2022 10:21:56 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH bpf-next] libbpf: deprecate btf_ext rec_size APIs
+Date:   Thu, 27 Jan 2022 10:21:54 -0800
+Message-ID: <20220127182154.751999-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: MoXBKF083Pan9He8Q-aSy208loC__2PB
+X-Proofpoint-ORIG-GUID: MoXBKF083Pan9He8Q-aSy208loC__2PB
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-27_03,2022-01-27_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0
+ mlxlogscore=954 adultscore=0 clxscore=1011 mlxscore=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201270106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 10:09 AM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Thu, Jan 27, 2022 at 02:09:13PM +0000, Pavel Begunkov wrote:
-> > Even though there is a static key protecting from overhead from
-> > cgroup-bpf skb filtering when there is nothing attached, in many cases
-> > it's not enough as registering a filter for one type will ruin the fast
-> > path for all others. It's observed in production servers I've looked
-> > at but also in laptops, where registration is done during init by
-> > systemd or something else.
-> >
-> > Add a per-socket fast path check guarding from such overhead. This
-> > affects both receive and transmit paths of TCP, UDP and other
-> > protocols. It showed ~1% tx/s improvement in small payload UDP
-> > send benchmarks using a real NIC and in a server environment and the
-> > number jumps to 2-3% for preemtible kernels.
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+btf_ext__{func,line}_info_rec_size functions are used in conjunction
+with already-deprecated btf_ext__reloc_{func,line}_info functions. Since
+struct btf_ext is opaque to the user it was necessary to expose rec_size
+getters in the past.
 
-Applied. Thanks
+btf_ext__reloc_{func,line}_info were deprecated in commit 8505e8709b5ee
+("libbpf: Implement generalized .BTF.ext func/line info adjustment")
+as they're not compatible with support for multiple programs per
+section. It was decided[0] that users of these APIs should implement their
+own .btf.ext parsing to access this data, in which case the rec_size
+getters are unnecessary. So deprecate them from libbpf 0.7.0 onwards.
+
+  [0] Closes: https://github.com/libbpf/libbpf/issues/277
+
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+---
+ tools/lib/bpf/btf.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 96b44d55db6e..c2f89a2cca11 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -168,7 +168,9 @@ int btf_ext__reloc_line_info(const struct btf *btf,
+ 			     const struct btf_ext *btf_ext,
+ 			     const char *sec_name, __u32 insns_cnt,
+ 			     void **line_info, __u32 *cnt);
++LIBBPF_DEPRECATED_SINCE(0, 7, "btf_ext__reloc_func_info is deprecated; wri=
+te custom func_info parsing to fetch rec_size")
+ LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext=
+);
++LIBBPF_DEPRECATED_SINCE(0, 7, "btf_ext__reloc_line_info is deprecated; wri=
+te custom line_info parsing to fetch rec_size")
+ LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext=
+);
+=20
+ LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
+--=20
+2.30.2
+
