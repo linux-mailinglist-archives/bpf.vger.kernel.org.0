@@ -2,289 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F109B49E42D
-	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 15:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187BC49E582
+	for <lists+bpf@lfdr.de>; Thu, 27 Jan 2022 16:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242237AbiA0OJQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 27 Jan 2022 09:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242232AbiA0OJQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 27 Jan 2022 09:09:16 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244C1C061714
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 06:09:16 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id u18so3815892edt.6
-        for <bpf@vger.kernel.org>; Thu, 27 Jan 2022 06:09:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IkQ13HwtKpw76h0x6aTQYWuHofjJPXbsBGd9+X7KjNg=;
-        b=geEQAOB5hGlPYYOtMmcZ5Po1dBZXpghK0GLaiPksVN+8kirJNS7Ynk5sSumHzGkR+1
-         c4y1bBCxR1gBFamSjkikxliJxr5ZzLyFfmi8h4g3Zz8XrQSjXTzfQXZOJiU8cvg/27cx
-         YPg2swazd40MucMtMe2h+H6K4i+0VaVtBlzBbblSj1qd+1J1vvPN8O172HPxYD3+vs61
-         Ehcmq9ZAFboqASv49iZtwoNHMcr+VkPpXGJ2tZ6OGNe/qmi60QStDRHpBy/gnkk9NqyT
-         +OWYHfetdYDEFA+rJbBxkxFto6JUMiDaLaC81epOY9WsH955q7xT+RtH1UYj+uVE8BfA
-         QPXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IkQ13HwtKpw76h0x6aTQYWuHofjJPXbsBGd9+X7KjNg=;
-        b=4d7IXJrjyACLdFxOa3G8HqDoboh11KSDDRn2QxPc/iWrw2kp2+L0sl6+1rwwepUm1O
-         rqe7j34t+CI0p7wIftoYoXw7W7ZVwEgzDctharmtQCVxT2NmSJYeTH68srssZuaSn7QA
-         vZzw9PE2A4m6/wVrv16DwNGIg+VgGAFjteD/yFsfQuWVPQNkAKYBKu4stvQhvNC63qfX
-         SykxlOYSnpnYOlqW8l8lKJwT64vmjiVvkqJBccGWdMsfGBOzD7+43a0ExG2INlVcPQPA
-         gL0YJpE0dpLM6dclZ8D0/ZBn379W5HSzs35IBZsi/GF/Ods9YwF7NXYQQYJpmgvsZbYN
-         TStQ==
-X-Gm-Message-State: AOAM530eL93MfF8pHrJ+GWiIDsA0M3jv9lv291Z1Rz0QKishBYs1ygOo
-        9Kd/FZ8dkPMcxvfCnq/TtGpOYdqdh8E=
-X-Google-Smtp-Source: ABdhPJxaUfGOOSoG0NngkCN20gvAqf0P3K/pk2hV4UWdsuFNlmSmp8ezKGHYPuzrbZlEfF6yiGwRMQ==
-X-Received: by 2002:a05:6402:2707:: with SMTP id y7mr3872862edd.30.1643292554520;
-        Thu, 27 Jan 2022 06:09:14 -0800 (PST)
-Received: from 127.0.0.1localhost ([85.255.234.222])
-        by smtp.gmail.com with ESMTPSA id by22sm8786555ejb.5.2022.01.27.06.09.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jan 2022 06:09:14 -0800 (PST)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Subject: [PATCH bpf-next v6] cgroup/bpf: fast path skb BPF filtering
-Date:   Thu, 27 Jan 2022 14:09:13 +0000
-Message-Id: <d8c58857113185a764927a46f4b5a058d36d3ec3.1643292455.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        id S237402AbiA0PK5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 27 Jan 2022 10:10:57 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:50040 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237375AbiA0PK4 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 27 Jan 2022 10:10:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1643296255;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Cdx+xUfecmdjsw2CMR2ZgqzLpq0kcnsYUPIvUPgob8s=;
+        b=J4VEqiqH7U/UrnQpFIhvrexQFgcwlDkvhvDNpqwdydUCch8PFuc/AbTsEtO9W2ZPc705Jx
+        fGAGIBrwB4KsNJbWJPCIlMZQ1dPHfrPi5j1GqtJmoAMpehDGg/FoVPHma5ju7dyc6ikH+s
+        fUB5Aj2fmiNb3iWuTzYCOwmx4r46qWA=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2057.outbound.protection.outlook.com [104.47.14.57]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-22-qvuXX2LQNO-TJl0_f21p_Q-1; Thu, 27 Jan 2022 16:10:54 +0100
+X-MC-Unique: qvuXX2LQNO-TJl0_f21p_Q-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Xjqza4KN1fPOSc6CRpO3ZiWZ2gGoclLY7sXZflp1N/yEUapw7SxcVxujEFncWaAEmvf+/ueR9kCPQqjPfIi7u80PzVX7ScLiJQZMlrYfNdrAPPXBIKIDYCZW5aziCb5lgM6k+47zy5M2kBMB2GXlXyjlRJcegb6o3ThNRF8uC/2lofCmfOQdWLTXMw+oqtkmb1Cn/6QHcpFVjTJx2bKyzHWpjFDQd2YmlNrfLyrpezaT+M40jx2aXQrqAKjkImDVuS2VLln6CsvKTPyJg1jQN4aJ5KLdPKsdVZX8PHdJQ/+5rz93Pgw/DPkWcnL/NlFmF3ZMxJPGRTioes+uzxs1eA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Cdx+xUfecmdjsw2CMR2ZgqzLpq0kcnsYUPIvUPgob8s=;
+ b=ZGLl3MnNQWbTgSigvq9X/opCTGu/2CkeQLvZAXSKlr/TevFBJHZ/Ig113jF6q58hXgQRpWoC4wwsFpqm2DlU2/nrD754gzU7d5EQvaJQYCdVZOFLSeTJSpo0dIkaRpxsgbUDsYInpa3+uTEcPWLdUhcdwCBxRzI92pKwxUCZUSDIKySbibCfEL+a10O0IPYWoJSe8j9E6HN8obIt+V2aCTloVS2KbHP5kxvyRWNUmpzYCWAUJlInkT4LcgrtS67rOpCsPIe8buOeUR/2yXExGsB9k7k2l6C3uHbizuJc9Sjs/BlVU/XUfJbPd9agbMZ6yilUyYOYQZZfVrJYc8FLUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com (2603:10a6:10:243::20)
+ by VI1PR0401MB2239.eurprd04.prod.outlook.com (2603:10a6:800:30::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.17; Thu, 27 Jan
+ 2022 15:10:49 +0000
+Received: from DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::e1c3:5223:dd71:3b6f]) by DB9PR04MB8107.eurprd04.prod.outlook.com
+ ([fe80::e1c3:5223:dd71:3b6f%7]) with mapi id 15.20.4930.017; Thu, 27 Jan 2022
+ 15:10:49 +0000
+Date:   Thu, 27 Jan 2022 23:10:43 +0800
+From:   Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: BTF compatibility issue across builds
+Message-ID: <YfK18x/XrYL4Vw8o@syu-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-ClientProxiedBy: AM5PR0101CA0008.eurprd01.prod.exchangelabs.com
+ (2603:10a6:206:16::21) To DB9PR04MB8107.eurprd04.prod.outlook.com
+ (2603:10a6:10:243::20)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a820b47-5381-4d5d-beb1-08d9e1a73384
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2239:EE_
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2239FF10D72CE08EEDB79FEEBF219@VI1PR0401MB2239.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uqIQxTLiQfzE0ej64+xWNaP6KG6Qh4J/2NRXHhKJyYRABWMUF1RenBwaAVItv4XefGYfkm3Y2UX40ftpzfeQiVbtebl541IhUXN92t1iq2a/fsDu70oeHWdLMcpYr1mwIvcB3YqvqW8a6+VzOWE3TR4H43Fi4txU9TyojqfutF09AV8WmMy3wx5H0xZIMupGuRGpVTm6BbYZa8pyJCYhjzlbxculUNgMbmN/Oy+hpRfnx7cI3KDlrNXcORtvvhRJKT4gPQGjQv3ESbS5n5YsmokdmtLWxkKd7HpUxI8rX5fQczxZbOCOdQjyy4XGIXetEr+umTcvZLGtGKeVLJE8RjC3H5AxINowpvUvH/t/utrM1UzVpu71GpdAB8r49jS27TOD+alcaWUZ8bek5WpQ1bW0ABI9Rf74MQmwj7wXXjFpL/qFb2TqxyLPb4EsbqmPisuQ9G4YvMCeqQP0GJYaYfmdzn13HC9c4T5QIoT80LxJoWZgKyeQefP+MAcqIG+z4jyiRhMU3wdAGmzeWDNS92VdLjBPOPaQzJxV3bU0N6O98WKHrquMZ3GzEpWHzlANTSaEh90eT9FkDiQfCfsecqtcw97Cq00A1JBnnhD0iHAODe41PH09wTXInCgfG23sqNOAnOk1iDDJtRngmYNDth9pfHzDeS4ZTYAf61uRQKb2q0eAJkfjpNGi2YMz4sKd1ha/Pcl4ZSVm5VuFyiTxO0gqee+SzJEQapyg61C8KNo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB8107.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(54906003)(966005)(6486002)(86362001)(38100700002)(186003)(6916009)(26005)(6666004)(9686003)(6512007)(316002)(508600001)(5660300002)(66476007)(66556008)(66946007)(8936002)(4326008)(8676002)(33716001)(2906002)(6506007)(83380400001)(20210929001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkVHTXNEdWtlbFliOVRJdVBhVGhDamtITXpoamdla2IyT2VvNlFISjc0dXZW?=
+ =?utf-8?B?NDJubkx5YW02VHA2T3Rud3RJQUNPSGRTUzVTa29MbUdualQ4elFqYnl2dXBV?=
+ =?utf-8?B?VUFpSnhmTlpNamZhVnlFWW4vVVlmbU1hckl0ZGp2RGYvWFVUa3A3SXkrRi9Q?=
+ =?utf-8?B?TVMyaFFDL2hNeTZ0TjVZZW5KdGtXNmlyYjk2djRaNmdLYVBnTzdQdHUvMHB0?=
+ =?utf-8?B?RVRwR1dNeERsNjRnTXRqY2dQenNnWHFCRGgveElDUkhlZXVyODE5clMrcjVB?=
+ =?utf-8?B?bVdaVWh0VG9RS3hKU3ZkdzVWMEJFRDQvSTI0ZTRPV0RKdmlSS0w3SXB4cHA3?=
+ =?utf-8?B?c25rTEJyY1ZCSDdPZHFDdTBodU5TUlUxZXhyRlVSVGhvVzBBR2huNHlMVzAv?=
+ =?utf-8?B?NG54NElpVUQ5WGZkVWdRam9DVGRpRmMyTUFqVEQ2TmtSVi81azRYRERpU0t6?=
+ =?utf-8?B?RzVUZVNjLzQxWU5mbktiTGRQQlYveFhTRlhzUXpKQk5jZnlFVkdrQUZDakto?=
+ =?utf-8?B?MXA1MVJlZXk0TVdiNG51UCtabGYrRlRaNDkyYlB5QUlMelA1OTFEUk92Sysy?=
+ =?utf-8?B?NXNCR1ZZd2dLdDc2RjlwbjY3eGk2QXh3RzhTK0h6Y3VPdkI4STk4TGtFSDd3?=
+ =?utf-8?B?Z2NLdk5tLzNZTDd2NHc1eHZ0SDBWTVBWdEFFUVQ5YnFqaTc2V09FSHBMUExw?=
+ =?utf-8?B?bUg4U1J0d1RpMjdoQkVDSWtoZG56dXBIMkNwdHpTU1ZHV2lacmtKenFCazJX?=
+ =?utf-8?B?UEY2ZG5abzRuWlhFMlJNSUptMEtsYURyS1V1Myt4cFBaTExwc2JHanp5YWVr?=
+ =?utf-8?B?UEZNRFE1UkR1dE1od2pDUVRkcXl3NGJQOUVIUTJiOEozVEsvM05rVWtnbTZ0?=
+ =?utf-8?B?NExRYUc5U1BySHNxelM2alBPQmhCNHhVQVBlUmt5SUwvKy8zYU8zYTVSMG1P?=
+ =?utf-8?B?Q1NvbWQxZ3JSdzlpeEF4bnNsL0JDTS9LSlZySUFGWENGVnF3QlUySmVodnRj?=
+ =?utf-8?B?VnZhWUx6cHRTR0cvQSs4T1FHeW9NbVhERmhVcy9vb3ErYS9mV2lmY0g5RHQv?=
+ =?utf-8?B?NXhhMGxERVMvVUk0TjRyNVB2WitEY1pDZk9hdENYQmRyZnVodmJkMEZiMEkv?=
+ =?utf-8?B?SE5iMDZDTkpGVkJuTzU5TGMwVXRrMDBES21ZaHlrL1N3cmMxQzNsRytrdFVr?=
+ =?utf-8?B?VHB3bFgxYWRTMUNiM01UNkN1c2YyWEhQdCs0NVJzMWYwZnFmQjBzY0RUTlVv?=
+ =?utf-8?B?YldPMEJMMzJhN3owVTJYWlZETUtlZW1uOWFkaDc5OEUydVNuY0JiR2NEWjBV?=
+ =?utf-8?B?TVhNQyttMldVTUNzcnhhdCtxeTBrOUlZRGJvK2JmOUt4dUg1L0UrNk9mOE5J?=
+ =?utf-8?B?a3oyYmkwTnFqVmc0M1RDQ0R6Y2VSUjczRlhtTTU4UWlQd1gxemFXNVJjSEpu?=
+ =?utf-8?B?WGgxWUlWL1NuZ2VETE4yUXRldUFzSXlRSm5PZ2dTcWwwMkloME5MWU1BMHhJ?=
+ =?utf-8?B?cmNselNPdThjQXZJNlBQWXhlaHNIc2R2TkdYazhydEo2NGY4NWI4Y3ViOWxu?=
+ =?utf-8?B?ZkpDTlRta0hyTkd5YXB3RkNSZXVDdTFlZ1pVY0ZSZWpOTHR2VGxhdXpESzFn?=
+ =?utf-8?B?RjJFU0xPaVZtVEYyd1pKaW9KdGNKaTlTNkRVbFN5ZnJrOHN3K2JiQUNSRnBa?=
+ =?utf-8?B?bFpmWkRGK09BUWVSSzVVbHZzNGYzR2RKV05GakZremtSUVl3dHF4V3ZJaUsy?=
+ =?utf-8?B?WlhjcHpTRUVKV29yN2JVVFViUEFydWVydGk2WmVWREtRTTA2OVM5SWRORkI2?=
+ =?utf-8?B?bldWMC84QitCVHF3U0svbnBvMGU0VFdVYzM5NTR2eXEreUczdEs1Z09jY0RB?=
+ =?utf-8?B?eHpMaEZSbmVpQ1NzU3cybnlwZmR6dmc1UjZROThUQUEwV0pMUldRZjlCbkVm?=
+ =?utf-8?B?VU1LR08vbW10MWl5TlF6SDBXWkY2TDB2TkF2UHBaUEZtWEZRK0JXWUNPZVNU?=
+ =?utf-8?B?Uk9KaUsxa2taZ1FUcDVPWTNzdU5OOHZwdE1pVm5IZkxLZ011YS9ydzZpODZ3?=
+ =?utf-8?B?S2FIdWM0VnBTVDRsYlpCbGtITytMY05BMDhLWDdQN1B6bnJsWityVG8xNGY2?=
+ =?utf-8?B?bmpWTzM5d1lLY2YyVXV4Z0h1RWtpSWd5cVptQnlGV0xiVTlLSldWYXlwWTNU?=
+ =?utf-8?Q?i/tAKVplErVplyRcoW/8zyw=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a820b47-5381-4d5d-beb1-08d9e1a73384
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB8107.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2022 15:10:49.6478
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UWrFoLHIpnPizyfLne6tG0il2D7C39jM31UFvGcqtUpeGfXR+Y96KAV3thdQJs1rVr6cgxqKqitfvS0AGDGOnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2239
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Even though there is a static key protecting from overhead from
-cgroup-bpf skb filtering when there is nothing attached, in many cases
-it's not enough as registering a filter for one type will ruin the fast
-path for all others. It's observed in production servers I've looked
-at but also in laptops, where registration is done during init by
-systemd or something else.
+Hi,
 
-Add a per-socket fast path check guarding from such overhead. This
-affects both receive and transmit paths of TCP, UDP and other
-protocols. It showed ~1% tx/s improvement in small payload UDP
-send benchmarks using a real NIC and in a server environment and the
-number jumps to 2-3% for preemtible kernels.
+We recently run into module load failure related to split BTF on openSUSE
+Tumbleweed[1], which I believe is something that may also happen on other
+rolling distros.
 
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
+The error looks like the follow (though failure is not limited to ipheth)
 
-v2: replace bitmask appoach with empty_prog_array
-v3: add "bpf_" prefix to empty_prog_array
-v4: replace macros with inline functions
-    use cgroup_bpf_sock_enabled for set/getsockopt() filters
-v5: kill null sk check
+    BPF:[103111] STRUCT BPF:size=152 vlen=2 BPF: BPF:Invalid name BPF:
 
- include/linux/bpf-cgroup.h | 24 ++++++++++++++++++++----
- include/linux/bpf.h        | 13 +++++++++++++
- kernel/bpf/cgroup.c        | 30 ------------------------------
- kernel/bpf/core.c          | 16 ++++------------
- 4 files changed, 37 insertions(+), 46 deletions(-)
+    failed to validate module [ipheth] BTF: -22
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index b525d8cdc25b..88a51b242adc 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -8,6 +8,7 @@
- #include <linux/jump_label.h>
- #include <linux/percpu.h>
- #include <linux/rbtree.h>
-+#include <net/sock.h>
- #include <uapi/linux/bpf.h>
- 
- struct sock;
-@@ -165,11 +166,23 @@ int bpf_percpu_cgroup_storage_copy(struct bpf_map *map, void *key, void *value);
- int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 				     void *value, u64 flags);
- 
-+/* Opportunistic check to see whether we have any BPF program attached*/
-+static inline bool cgroup_bpf_sock_enabled(struct sock *sk,
-+					   enum cgroup_bpf_attach_type type)
-+{
-+	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_prog_array *array;
-+
-+	array = rcu_access_pointer(cgrp->bpf.effective[type]);
-+	return array != &bpf_empty_prog_array.hdr;
-+}
-+
- /* Wrappers for __cgroup_bpf_run_filter_skb() guarded by cgroup_bpf_enabled. */
- #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)			      \
- ({									      \
- 	int __ret = 0;							      \
--	if (cgroup_bpf_enabled(CGROUP_INET_INGRESS))		      \
-+	if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) &&			      \
-+	    cgroup_bpf_sock_enabled(sk, CGROUP_INET_INGRESS))		      \
- 		__ret = __cgroup_bpf_run_filter_skb(sk, skb,		      \
- 						    CGROUP_INET_INGRESS); \
- 									      \
-@@ -181,7 +194,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 	int __ret = 0;							       \
- 	if (cgroup_bpf_enabled(CGROUP_INET_EGRESS) && sk && sk == skb->sk) { \
- 		typeof(sk) __sk = sk_to_full_sk(sk);			       \
--		if (sk_fullsock(__sk))					       \
-+		if (sk_fullsock(__sk) &&				       \
-+		    cgroup_bpf_sock_enabled(__sk, CGROUP_INET_EGRESS))	       \
- 			__ret = __cgroup_bpf_run_filter_skb(__sk, skb,	       \
- 						      CGROUP_INET_EGRESS); \
- 	}								       \
-@@ -347,7 +361,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 				       kernel_optval)			       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled(CGROUP_SETSOCKOPT))			       \
-+	if (cgroup_bpf_enabled(CGROUP_SETSOCKOPT) &&			       \
-+	    cgroup_bpf_sock_enabled(sock, CGROUP_SETSOCKOPT))		       \
- 		__ret = __cgroup_bpf_run_filter_setsockopt(sock, level,	       \
- 							   optname, optval,    \
- 							   optlen,	       \
-@@ -367,7 +382,8 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 				       max_optlen, retval)		       \
- ({									       \
- 	int __ret = retval;						       \
--	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT))			       \
-+	if (cgroup_bpf_enabled(CGROUP_GETSOCKOPT) &&			       \
-+	    cgroup_bpf_sock_enabled(sock, CGROUP_GETSOCKOPT))		       \
- 		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
- 		    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
- 					tcp_bpf_bypass_getsockopt,	       \
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 394305a5e02f..dcfe2de59b59 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1233,6 +1233,19 @@ struct bpf_prog_array {
- 	struct bpf_prog_array_item items[];
- };
- 
-+struct bpf_empty_prog_array {
-+	struct bpf_prog_array hdr;
-+	struct bpf_prog *null_prog;
-+};
-+
-+/* to avoid allocating empty bpf_prog_array for cgroups that
-+ * don't have bpf program attached use one global 'bpf_empty_prog_array'
-+ * It will not be modified the caller of bpf_prog_array_alloc()
-+ * (since caller requested prog_cnt == 0)
-+ * that pointer should be 'freed' by bpf_prog_array_free()
-+ */
-+extern struct bpf_empty_prog_array bpf_empty_prog_array;
-+
- struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags);
- void bpf_prog_array_free(struct bpf_prog_array *progs);
- int bpf_prog_array_length(struct bpf_prog_array *progs);
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 279ebbed75a5..098632fdbc45 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1384,20 +1384,6 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
- }
- 
- #ifdef CONFIG_NET
--static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
--					     enum cgroup_bpf_attach_type attach_type)
--{
--	struct bpf_prog_array *prog_array;
--	bool empty;
--
--	rcu_read_lock();
--	prog_array = rcu_dereference(cgrp->bpf.effective[attach_type]);
--	empty = bpf_prog_array_is_empty(prog_array);
--	rcu_read_unlock();
--
--	return empty;
--}
--
- static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
- 			     struct bpf_sockopt_buf *buf)
- {
-@@ -1456,19 +1442,11 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	};
- 	int ret, max_optlen;
- 
--	/* Opportunistic check to see whether we have any BPF program
--	 * attached to the hook so we don't waste time allocating
--	 * memory and locking the socket.
--	 */
--	if (__cgroup_bpf_prog_array_is_empty(cgrp, CGROUP_SETSOCKOPT))
--		return 0;
--
- 	/* Allocate a bit more than the initial user buffer for
- 	 * BPF program. The canonical use case is overriding
- 	 * TCP_CONGESTION(nv) to TCP_CONGESTION(cubic).
- 	 */
- 	max_optlen = max_t(int, 16, *optlen);
--
- 	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
-@@ -1550,15 +1528,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	};
- 	int ret;
- 
--	/* Opportunistic check to see whether we have any BPF program
--	 * attached to the hook so we don't waste time allocating
--	 * memory and locking the socket.
--	 */
--	if (__cgroup_bpf_prog_array_is_empty(cgrp, CGROUP_GETSOCKOPT))
--		return retval;
--
- 	ctx.optlen = max_optlen;
--
- 	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 0a1cfd8544b9..04a8d5bea552 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1968,18 +1968,10 @@ static struct bpf_prog_dummy {
- 	},
- };
- 
--/* to avoid allocating empty bpf_prog_array for cgroups that
-- * don't have bpf program attached use one global 'empty_prog_array'
-- * It will not be modified the caller of bpf_prog_array_alloc()
-- * (since caller requested prog_cnt == 0)
-- * that pointer should be 'freed' by bpf_prog_array_free()
-- */
--static struct {
--	struct bpf_prog_array hdr;
--	struct bpf_prog *null_prog;
--} empty_prog_array = {
-+struct bpf_empty_prog_array bpf_empty_prog_array = {
- 	.null_prog = NULL,
- };
-+EXPORT_SYMBOL(bpf_empty_prog_array);
- 
- struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
- {
-@@ -1989,12 +1981,12 @@ struct bpf_prog_array *bpf_prog_array_alloc(u32 prog_cnt, gfp_t flags)
- 			       (prog_cnt + 1),
- 			       flags);
- 
--	return &empty_prog_array.hdr;
-+	return &bpf_empty_prog_array.hdr;
- }
- 
- void bpf_prog_array_free(struct bpf_prog_array *progs)
- {
--	if (!progs || progs == &empty_prog_array.hdr)
-+	if (!progs || progs == &bpf_empty_prog_array.hdr)
- 		return;
- 	kfree_rcu(progs, rcu);
- }
--- 
-2.34.1
+The error comes down to trying to load BTF of *kernel modules from a
+different build* than the runtime kernel (but the source is the same), where
+the base BTF of the two build is different.
+
+While it may be too far stretched to call this a bug, solving this might
+make BTF adoption easier. I'd natively think that we could further split
+base BTF into two part to avoid this issue, where .BTF only contain exported
+types, and the other (still residing in vmlinux) holds the unexported types.
+
+Does that sound like something reasonable to work on?
+
+
+## Root case (in case anyone is interested in a verbose version)
+
+On openSUSE Tumbleweed there can be several builds of the same source. Since
+the source is the same, the binaries are simply replaced when a package with
+a larger build number is installed during upgrade.
+
+In our case, a rebuild is triggered[2], and resulted in changes in base BTF.
+More precisely, the BTF_KIND_FUNC{,_PROTO} of i2c_smbus_check_pec(u8 cpec,
+struct i2c_msg *msg) and inet_lhash2_bucket_sk(struct inet_hashinfo *h,
+struct sock *sk) was added to the base BTF of 5.15.12-1.3. Those functions
+are previously missing in base BTF of 5.15.12-1.1.
+
+The addition of entries in BTF type and string table caused extra offset of
+type IDs and string position in the base BTF, and as such the same type ID
+may refers to a totally different type, and as does name_off of types.
+
+When users on build#1 (ie 5.15.12-1.1) installs build#3 (ie 5.15.12-1.3),
+and then tries to load kernel module, they will be loading build#3 module on
+build#1 kernel; and with base BTF of the two builds different, name_off of
+some types will end up pointing at invalid string, and the kernel bails out.
+
+
+Best,
+Shung-Hsi Yu
+
+1: https://bugzilla.opensuse.org/show_bug.cgi?id=1194501
+2: my guess is rebuild is trigger due to compiler toolchain update, but I
+   wasn't able to pin down exactly what changed
 
