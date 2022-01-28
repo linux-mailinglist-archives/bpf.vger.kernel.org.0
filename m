@@ -2,137 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 744794A0014
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 19:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F3A4A005D
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 19:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350539AbiA1S2F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 13:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245735AbiA1S2E (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 13:28:04 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A02C061714
-        for <bpf@vger.kernel.org>; Fri, 28 Jan 2022 10:28:04 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id ah7so18772078ejc.4
-        for <bpf@vger.kernel.org>; Fri, 28 Jan 2022 10:28:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5csExDfAq2CF8PZL0mkHHlS63LpDZtNGmh8ny+7VJoI=;
-        b=BJ2qacWQk1W0mSFC054Ild1AjYez4k8r/d3g3Z2MGtvlH6evdm0rtup7+yofvm8ctX
-         1B4I42V7dZ2bBbDPqicaP6UaDWdA2ELARICaVckhTbH3A70rAsKN0T/noEnPnPxYXQL3
-         oo/IQ9dUrqTB6s6WT4bNxqhzgs6Aq6gkJIH/fhRvhdyCrcHgORJWtfLd3/TJWFVGSdH+
-         0hGXSB2Uf7lA2zX3Z+0d07bSbOb9uF5SXPZ7zsqhA4Qrhw1Mh/yejmZyTNJAzu5zFAeA
-         P1Pi4zag+VzdRWi6OvIumI3Unvw/QBnU6Q1DRjcuq270TUcH5KTv5Z6jaNVwBkQe4GOE
-         qP9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5csExDfAq2CF8PZL0mkHHlS63LpDZtNGmh8ny+7VJoI=;
-        b=yhrc96jJbSZbfnv1YmeEOT6kzZyzqDjco9JQzanUKUbVQTC+2/x/zVhosCkkrPHz9P
-         35YCT4zO0EI4goOM0GdFaZ+108Ik00Ok1WNKjzOEYCiWP95lGV5ykzJi03MwnIP52lyt
-         fYVTRMbJeYOI2DovCaMlTAbOvOMoVt0cDhcccrShxB+gELWbPqfSHwvUBiJoHda6VXNR
-         Q12/090m8eNT53lFV0ZJvrkTgvdzNPEDBcRjkuZCyBIi1GzGSnWubaVdH8MP9szpljr1
-         a+OhyON9cbywEgjP00V68B9tCeBXZEWKvMHzWUFFNy99AHRFs9u5EQCp/CRmvbckxcRX
-         mkqQ==
-X-Gm-Message-State: AOAM532vYcHuqwliMQ05b1pdzzMbE9gGMeh9rI9dOF9LW2px0LzixYvU
-        RdVWGiYF4V3x8wbrLex9u1EhkKxoVUCSrKfgyDP2Ae2fLc4=
-X-Google-Smtp-Source: ABdhPJwu6ZorpNknD9rhKD2+FWtf2QUX2FWktWVq0aOXzFCLnIaQ76Hm16r1G1O1DXjimo2YGc/4wu57imRBvCJrWZ8=
-X-Received: by 2002:a17:907:7241:: with SMTP id ds1mr8189065ejc.199.1643394482971;
- Fri, 28 Jan 2022 10:28:02 -0800 (PST)
+        id S237539AbiA1Sv7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 13:51:59 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:45742 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229888AbiA1Sv6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 13:51:58 -0500
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9399420B6C61;
+        Fri, 28 Jan 2022 10:51:58 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9399420B6C61
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1643395918;
+        bh=jUz1vj3LTc4nxky/K07D6wr8fvEcSpU5/ssFz4z4Z1Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lvbGvOvrQkNC8NCKPz1Tr0PkCbQ0YOisGb+WePML4fTeR5kF6MJP5BBrDDIz8jDce
+         XfydGHauwuFBYflYXCDPql8GE7Yx418XXlUdMv/t/+gprQ8n9NFabrRQY8ENPIGjSq
+         Dqpqu22Ta2GPknyCpSHrmUziFjKaPMmfZKGxOuNQ=
+Received: by mail-pl1-f171.google.com with SMTP id c9so6895311plg.11;
+        Fri, 28 Jan 2022 10:51:58 -0800 (PST)
+X-Gm-Message-State: AOAM532p/zmu9vWHqJ1pmCoVaNSv4zmuHBXu8HNFwVoVY6d//TuPxS64
+        HLmV/l5cXOp7NzaOigPYull59qR7CN1PB0qzp+4=
+X-Google-Smtp-Source: ABdhPJyXDI9twZ31dbqy14P/uFAhzQvWl8ehe9Ifkthejo3c3swvZgsDFKoH1rBIu7s6RRrPOhBpvpEOAFTFcZT7iIE=
+X-Received: by 2002:a17:902:e891:: with SMTP id w17mr9523373plg.33.1643395918172;
+ Fri, 28 Jan 2022 10:51:58 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
- <CAK3+h2ybqBVKoaL-2p8eu==4LxPY2kfLyMsyOuWEVbRf+S-GbA@mail.gmail.com>
- <CAK3+h2zLv6BcfOO7HZmRdXZcHf_zvY91iUH08OgpcetOJkM=EQ@mail.gmail.com> <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com>
-In-Reply-To: <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com>
-From:   Vincent Li <vincent.mc.li@gmail.com>
-Date:   Fri, 28 Jan 2022 10:27:51 -0800
-Message-ID: <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
-Subject: Re: can't get BTF: type .rodata.cst32: not found
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>
+References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
+ <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
+ <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com>
+ <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
+ <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+ <CAFnufp35YbxhbQR7stq39WOhAZm4LYHu6FfYBeHJ8-xRSo7TnQ@mail.gmail.com>
+ <177da568-8410-36d6-5f95-c5792ba47d62@fb.com> <CAADnVQJZvgpo-VjUCBL8YZy8J+s7O0mv5FW+5sx8NK84Lm6FUQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJZvgpo-VjUCBL8YZy8J+s7O0mv5FW+5sx8NK84Lm6FUQ@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 28 Jan 2022 19:51:22 +0100
+X-Gmail-Original-Message-ID: <CAFnufp3ybOFMY=ObZFvbmr+c70CPUrL2uYp1oZQmffQBTyVy_A@mail.gmail.com>
+Message-ID: <CAFnufp3ybOFMY=ObZFvbmr+c70CPUrL2uYp1oZQmffQBTyVy_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, Jan 28, 2022 at 6:31 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> On 1/25/22 12:32 PM, Vincent Li wrote:
-> > On Tue, Jan 25, 2022 at 9:52 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>
-> >> this is macro I suspected in my implementation that could cause issue with BTF
-> >>
-> >> #define ENABLE_VTEP 1
-> >> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
-> >> 0x2048a90a, }
-> >> #define VTEP_MAC (__u64[]){0x562e984c3682, 0x582e984c3682,
-> >> 0x5eaaed93fdf2, 0x5faaed93fdf2, }
-> >> #define VTEP_NUMS 4
-> >>
-> >> On Tue, Jan 25, 2022 at 9:38 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>
-> >>> Hi
-> >>>
-> >>> While developing Cilium VTEP integration feature
-> >>> https://github.com/cilium/cilium/pull/17370, I found a strange issue
-> >>> that seems related to BTF and probably caused by my specific
-> >>> implementation, the issue is described in
-> >>> https://github.com/cilium/cilium/issues/18616, I don't know much about
-> >>> BTF and not sure if my implementation is seriously flawed or just some
-> >>> implementation bug or maybe not compatible with BTF. Strangely, the
-> >>> issue appears related to number of VTEPs I use, no problem with 1 or 2
-> >>> VTEP, 3, 4 VTEPs will have problem with BTF, any guidance from BTF
-> >>> experts  are appreciated :-).
-> >>>
-> >>> Thanks
-> >>>
-> >>> Vincent
+> On Mon, Dec 20, 2021 at 10:34 PM Yonghong Song <yhs@fb.com> wrote:
 > >
-> > Sorry for previous top post
 > >
-> > it looks the compiler compiles the cilium bpf_lxc.c to bpf_lxc.o
-> > differently and added " [21] .rodata.cst32     PROGBITS
-> > 0000000000000000  00011e68" when  following macro exceeded 2 members
+> > https://reviews.llvm.org/D116063 improved the error message as below
+> > to make it a little bit more evident what is the problem:
 > >
-> > #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
-> > 0x2048a90a, }
+> > $ clang -target bpf -O2 -g -c bug.c
 > >
-> > no ".rodata.cst32" compiled in bpf_lxc.o  when above VTEP_ENDPOINT
-> > member <=2. any reason why compiler would do that?
+> > fatal error: error in backend: SubroutineType not supported for
+> > BTF_TYPE_ID_REMOTE reloc
 >
-> Regarding to why compiler generates .rodata.cst32, the reason is
-> you have some 32-byte constants which needs to be saved somewhere.
-> For example,
+> Hi Matteo,
 >
-> $ cat t.c
-> struct t {
->    long c[2];
->    int d[4];
-> };
-> struct t g;
-> int test()
-> {
->     struct t tmp  = {.c = {1, 2}, .d = {3, 4}};
->     g = tmp;
->     return 0;
-> }
+> Are you still working on a test?
+> What's a timeline to repost the patch set?
 >
-> $ clang -target bpf -O2 -c t.c
-> $ llvm-readelf -S t.o
-> ...
->    [ 4] .rodata.cst32     PROGBITS        0000000000000000 0000a8 000020
-> 20  AM  0   0  8
-> ...
->
-> In the above code, if you change the struct size, say from 32 bytes to
-> 40 bytes, the rodata.cst32 will go away.
+> Thanks!
 
-Thanks Yonghong! I guess it is cilium/ebpf needs to recognize rodata.cst32 then
+Hi Alexei,
 
-Vincent
+The change itself is ready, I'm just stuck at writing a test which
+will effectively calls __bpf_core_types_are_compat() with some
+recursion.
+I guess that I have to generate a BTF_KIND_FUNC_PROTO type somehow, so
+__bpf_core_types_are_compat() is called again to check the prototipe
+arguments type.
+I tried with these two, with no luck:
+
+// 1
+typedef int (*func_proto_typedef)(struct sk_buff *);
+bpf_core_type_exists(func_proto_typedef);
+
+// 2
+void func_proto(int, unsigned int);
+bpf_core_type_id_kernel(func_proto);
+
+Which is a simple way to generate a BTF_KIND_FUNC_PROTO BTF field?
+
+Regards,
+-- 
+per aspera ad upstream
