@@ -2,261 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562744A0121
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 20:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 774CC4A0182
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 21:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234876AbiA1Tw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 14:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        id S1351172AbiA1UJE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 15:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231653AbiA1Twz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 14:52:55 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EF4C061714;
-        Fri, 28 Jan 2022 11:52:55 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE937B826F4;
-        Fri, 28 Jan 2022 19:52:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF19C340E7;
-        Fri, 28 Jan 2022 19:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643399572;
-        bh=v3Wcxo183ymd1gi0izPA2SQvu3G31sfPXNjD61VK7jM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q7ON/jIOC7vcyczl00y4UE3e+p3wxL8WoKl3ztesIJ9SsP46QiDP8LdqsAyB+i+WP
-         eq+YI+r+ig3dXdvYdddhQ1xnrOM5uE7a+DxdipzRq90/+NC0ujfansMuvu0648VT9E
-         WxgU9IA1JBPvth0u/VGP8WDmnSUVpmX6xCf/FW5haRmtBucCRcX1DhI9QK5VTd9cGB
-         9S/Is1QC22/qAr3ec1AzeJv0CmKU3IEcPuM1uwSnmADzVbEGNcEUbROxRwbA/MnuUj
-         0hWHFOnV+UHz0gUmcnFjeDXvrBw7KviPI+AHJfE3GCTHJcYlO89QQJhdhmlgZcjNx1
-         brdxQYqkUk09A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7AC2E40C99; Fri, 28 Jan 2022 16:50:48 -0300 (-03)
-Date:   Fri, 28 Jan 2022 16:50:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Mark Wielaard <mjw@redhat.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
+        with ESMTP id S1351158AbiA1UJB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 15:09:01 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F27CC061714;
+        Fri, 28 Jan 2022 12:09:01 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id g20so6100549pgn.10;
+        Fri, 28 Jan 2022 12:09:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ItmyUeFlJF2ukP6dmtzj5DFTHsPNEXlvRiFYHGt7LTY=;
+        b=pYWbuf7Ugj9LHzCqhRZTfv4gKyTjGV8TaqnZHdv3TDd5Z3qjKo91qmkAXvPiizZ/Ss
+         +NKCuSmCAUK7HeKBlyjCxV1VO11z0d86krj7iAwTaUqdgoACWforSCaO7OO8RBTrDZAQ
+         1iwiPmvKLXpJcmFpiQCYjVLVHDi4zD1KQsbNZYlu6YM0c7yxhbXxtz0OtCveq94bgmuI
+         fi3fzYZLlMwYMZENq29b9tgtLSjWjFCZL7GbfgZ67xGT1/sEs2Rq4Hh4GOECydQLGbKf
+         E1TBUC0EK5oLu9r7s7qmvQocsEH1I2z4WTORB4LyGyIhBhHsKpCY/Ys2c17hzECVaIH3
+         2a/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ItmyUeFlJF2ukP6dmtzj5DFTHsPNEXlvRiFYHGt7LTY=;
+        b=Go0Lir4jGXVmAQ1TGcUQGrlOE1wR3p0tJMEFm3+7hJ/GmuY6ZBv5TF1auXNh6ScLNr
+         q4/p0hMbC9lKdfbs8HoNA8M6H0OcM2ZkDdelKohSPsaCUk0kg3ksQv0PpbbmnX3eCufH
+         l7SUcVX8tdMWXSsjMwVz2qp9r6aG9IXm/Namamr/+xakUpbgarW/9nXKg/MaXEu5jdHa
+         tcBAtQN+r7yw7Zw6T2ZX8mN86g9pkqKTGBA77N1Y/flIoheuPw7OhKIJd34l+dTfQ/tu
+         OkJPpqCvl91xiTeEli11Fvhvrz9fpoKhuiCr7aKXh/aa1jWSUgX/y3Vbn2VAYNHe4hSh
+         rIew==
+X-Gm-Message-State: AOAM531G43Qt5wkOnJLovfYBildkgSKrYS3zpfttas3h9c//9mmPgJbp
+        /kcDMKBIlyFtw+51FTVYkbKrUI26BMZH14RVGaLt4oLdqgk=
+X-Google-Smtp-Source: ABdhPJy4VXiKGbt20/7Qt2ACZyavtHPmXbdWrmwU1bxV5X1DwNcxgv2hUBGKF1RlgplRm4XLUIbcXem34VHes21nJzc=
+X-Received: by 2002:a65:6182:: with SMTP id c2mr7917724pgv.95.1643400540997;
+ Fri, 28 Jan 2022 12:09:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
+ <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
+ <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com>
+ <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
+ <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+ <CAFnufp35YbxhbQR7stq39WOhAZm4LYHu6FfYBeHJ8-xRSo7TnQ@mail.gmail.com>
+ <177da568-8410-36d6-5f95-c5792ba47d62@fb.com> <CAADnVQJZvgpo-VjUCBL8YZy8J+s7O0mv5FW+5sx8NK84Lm6FUQ@mail.gmail.com>
+ <CAFnufp3ybOFMY=ObZFvbmr+c70CPUrL2uYp1oZQmffQBTyVy_A@mail.gmail.com>
+In-Reply-To: <CAFnufp3ybOFMY=ObZFvbmr+c70CPUrL2uYp1oZQmffQBTyVy_A@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 28 Jan 2022 12:08:49 -0800
+Message-ID: <CAADnVQ+cvD2rwa-hRQP8agj8=SXuun3dv-PZpK5=kJ2Ea_0KCg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
+To:     Matteo Croce <mcroce@linux.microsoft.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-Message-ID: <YfRJGJ35SQCy+98H@kernel.org>
-References: <20220126192039.2840752-1-kuifeng@fb.com>
- <20220126192039.2840752-4-kuifeng@fb.com>
- <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
- <YfL8kjM30uHN3qxs@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YfL8kjM30uHN3qxs@kernel.org>
-X-Url:  http://acmel.wordpress.com
+        Andrii Nakryiko <andrii@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jan 27, 2022 at 05:12:02PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Wed, Jan 26, 2022 at 11:58:27AM -0800, Andrii Nakryiko escreveu:
-> > On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > > Create an instance of btf for each worker thread, and add type info to
-> > > the local btf instance in the steal-function of pahole without mutex
-> > > acquiring.  Once finished with all worker threads, merge all
-> > > per-thread btf instances to the primary btf instance.
+On Fri, Jan 28, 2022 at 10:51 AM Matteo Croce
+<mcroce@linux.microsoft.com> wrote:
+>
+> On Fri, Jan 28, 2022 at 6:31 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Dec 20, 2021 at 10:34 PM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > > https://reviews.llvm.org/D116063 improved the error message as below
+> > > to make it a little bit more evident what is the problem:
+> > >
+> > > $ clang -target bpf -O2 -g -c bug.c
+> > >
+> > > fatal error: error in backend: SubroutineType not supported for
+> > > BTF_TYPE_ID_REMOTE reloc
+> >
+> > Hi Matteo,
+> >
+> > Are you still working on a test?
+> > What's a timeline to repost the patch set?
+> >
+> > Thanks!
+>
+> Hi Alexei,
+>
+> The change itself is ready, I'm just stuck at writing a test which
+> will effectively calls __bpf_core_types_are_compat() with some
+> recursion.
+> I guess that I have to generate a BTF_KIND_FUNC_PROTO type somehow, so
+> __bpf_core_types_are_compat() is called again to check the prototipe
+> arguments type.
+> I tried with these two, with no luck:
+>
+> // 1
+> typedef int (*func_proto_typedef)(struct sk_buff *);
+> bpf_core_type_exists(func_proto_typedef);
+>
+> // 2
+> void func_proto(int, unsigned int);
+> bpf_core_type_id_kernel(func_proto);
+>
+> Which is a simple way to generate a BTF_KIND_FUNC_PROTO BTF field?
 
-> > There are still unnecessary casts and missing {} in the else branch,
-> > but I'll let Arnaldo decide or fix it up.
+What do you mean 'no luck'?
+Have you tried what progs/test_core_reloc_type_id.c is doing?
+typedef int (*func_proto_typedef)(long);
+bpf_core_type_id_kernel(func_proto_typedef);
 
-So its just one unneeded cast as thr_data here is just a 'void *':
+Without macros:
+typedef int (*func_proto_typedef)(long);
 
-diff --git a/pahole.c b/pahole.c
-index 8c0a982f05c9ae3d..39e18804100dbfda 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -2924,7 +2924,7 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
-                 * avoids copying the data collected by the first thread.
-                 */
-                if (thr_data) {
--                       struct thread_data *thread = (struct thread_data *)thr_data;
-+                       struct thread_data *thread = thr_data;
-
-                        if (thread->encoder == NULL) {
-                                thread->encoder =
-
-
-This other is needed as it is a "void **":
-
-@@ -2832,7 +2832,7 @@ static int pahole_thread_exit(struct conf_load *conf, void *thr_data)
- static int pahole_threads_collect(struct conf_load *conf, int nr_threads, void **thr_data,
-                                  int error)
- {
--       struct thread_data **threads = (struct thread_data **)thr_data;
-+       struct thread_data **threads = thr_data;
-        int i;
-        int err = 0;
-
-
-Removing it:
-
-/var/home/acme/git/pahole/pahole.c: In function ‘pahole_threads_collect’:
-/var/home/acme/git/pahole/pahole.c:2835:40: warning: initialization of ‘struct thread_data **’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
- 2835 |         struct thread_data **threads = thr_data;
-      |                                        ^~~~~~~~
-
-
-And I did some more profiling, now the focus should go to elfutils:
-
-⬢[acme@toolbox pahole]$ perf report --no-children -s dso --call-graph none 2> /dev/null | head -20
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 27K of event 'cycles:u'
-# Event count (approx.): 27956766207
-#
-# Overhead  Shared Object
-# ........  ...................
-#
-    46.70%  libdwarves.so.1.0.0
-    39.84%  libdw-0.186.so
-     9.70%  libc-2.33.so
-     2.14%  libpthread-2.33.so
-     1.47%  [unknown]
-     0.09%  ld-2.33.so
-     0.06%  libelf-0.186.so
-     0.00%  libcrypto.so.1.1.1l
-     0.00%  libk5crypto.so.3.1
-⬢[acme@toolbox pahole]$
-
-$ perf report -g graph,0.5,2 --stdio --no-children -s dso --dso libdw-0.186.so
-
-# To display the perf.data header info, please use --header/--header-only options.
-#
-# dso: libdw-0.186.so
-#
-# Total Lost Samples: 0
-#
-# Samples: 27K of event 'cycles:u'
-# Event count (approx.): 27956766207
-#
-# Overhead  Shared Object 
-# ........  ..............
-#
-    39.84%  libdw-0.186.so
-            |          
-            |--25.66%--__libdw_find_attr
-            |          |          
-            |          |--20.96%--__dwarf_attr_internal (inlined)
-            |          |          |          
-            |          |          |--10.94%--attr_numeric
-            |          |          |          |          
-            |          |          |          |--9.96%--die__process_class
-            |          |          |          |          __die__process_tag
-            |          |          |          |          die__process_unit
-            |          |          |          |          die__process
-            |          |          |          |          dwarf_cus__create_and_process_cu
-            |          |          |          |          dwarf_cus__process_cu_thread
-            |          |          |          |          start_thread
-            |          |          |          |          __GI___clone (inlined)
-            |          |          |          |          
-            |          |          |           --0.61%--type__init
-            |          |          |                     __die__process_tag
-            |          |          |                     die__process_unit
-            |          |          |                     die__process
-            |          |          |                     dwarf_cus__create_and_process_cu
-            |          |          |                     dwarf_cus__process_cu_thread
-            |          |          |                     start_thread
-            |          |          |                     __GI___clone (inlined)
-            |          |          |          
-            |          |          |--5.43%--attr_type
-            |          |          |          |          
-            |          |          |           --4.94%--tag__init
-            |          |          |                     |          
-            |          |          |                     |--2.60%--die__process_class
-            |          |          |                     |          __die__process_tag
-            |          |          |                     |          die__process_unit
-            |          |          |                     |          die__process
-            |          |          |                     |          dwarf_cus__create_and_process_cu
-            |          |          |                     |          dwarf_cus__process_cu_thread
-            |          |          |                     |          start_thread
-            |          |          |                     |          __GI___clone (inlined)
-            |          |          |                     |          
-            |          |          |                     |--0.99%--__die__process_tag
-            |          |          |                     |          |          
-            |          |          |                     |           --0.98%--die__process_unit
-            |          |          |                     |                     die__process
-            |          |          |                     |                     dwarf_cus__create_and_process_cu
-            |          |          |                     |                     dwarf_cus__process_cu_thread
-            |          |          |                     |                     start_thread
-            |          |          |                     |                     __GI___clone (inlined)
-            |          |          
-            |          |--4.01%--__dwarf_siblingof_internal (inlined)
-            |          |          |          
-            |          |          |--1.41%--die__process_class
-            |          |          |          __die__process_tag
-            |          |          |          die__process_unit
-            |          |          |          die__process
-            |          |          |          dwarf_cus__create_and_process_cu
-            |          |          |          dwarf_cus__process_cu_thread
-            |          |          |          start_thread
-            |          |          |          __GI___clone (inlined)
-            |          |          |          
-            |          |          |--1.02%--die__process
-            |          |          |          dwarf_cus__create_and_process_cu
-            |          |          |          dwarf_cus__process_cu_thread
-            |          |          |          start_thread
-            |          |          |          __GI___clone (inlined)
-            |          
-            |--2.38%--__libdw_form_val_compute_len
-            |          __libdw_find_attr
-            |          |          
-            |           --1.86%--__dwarf_attr_internal (inlined)
-            |                     |          
-            |                     |--0.94%--attr_numeric
-            |                     |          |          
-            |                     |           --0.83%--die__process_class
-            |                     |                     __die__process_tag
-            |                     |                     die__process_unit
-            |                     |                     die__process
-            |                     |                     dwarf_cus__create_and_process_cu
-            |                     |                     dwarf_cus__process_cu_thread
-            |                     |                     start_thread
-            |                     |                     __GI___clone (inlined)
-            |                     |          
-            |                      --0.56%--attr_type
-            |                                |          
-            |                                 --0.53%--tag__init
+int test() {
+   return __builtin_btf_type_id(*(typeof(func_proto_typedef) *)0, 1);
+}
+int test2() {
+   return __builtin_preserve_type_info(*(typeof(func_proto_typedef) *)0, 0);
+}
 
 
-
-#
-# (Tip: If you have debuginfo enabled, try: perf report -s sym,srcline)
-#
-
-This find_attr thing needs improvements, its a linear search AFAIK, some
-hashtable could do wonders, I guess.
-
-Mark, was this considered at some point?
-
-⬢[acme@toolbox pahole]$ rpm -q elfutils-libs
-elfutils-libs-0.186-1.fc34.x86_64
-
-Andrii https://github.com/libbpf/libbpf/actions/workflows/pahole.yml is
-in failure mode for 3 days, and only yesterday I pushed these changes,
-seems unrelated to pahole:
-
-Tests exit status: 1
-Test Results:
-             bpftool: PASS
-          test_progs: FAIL (returned 1)
- test_progs-no_alu32: FAIL (returned 1)
-       test_verifier: PASS
-            shutdown: CLEAN
-Error: Process completed with exit code 1.
-
-Can you please check?
-
-- Arnaldo
+compiles fine and generates relos.
