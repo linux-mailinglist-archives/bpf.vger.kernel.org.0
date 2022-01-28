@@ -2,138 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFAE4A0347
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 23:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279EB4A03B5
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 23:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344477AbiA1WGW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 17:06:22 -0500
-Received: from mga17.intel.com ([192.55.52.151]:41251 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229608AbiA1WGV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 17:06:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643407581; x=1674943581;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=t24vwgVtLBEZI6DLnLJFgIhaUz97/DCwP4/ZWj3byU0=;
-  b=HRxW5BWiGeY0fJWxpELIjQt6eEOchkIfG6HPDkNrTrzs+Is/IZ7Kk8oB
-   ijQHa+86LTnjgiquGEvTHUte4cVuYcN5oNw6Cs5XVuNGr6pf/PWadRj30
-   hIMTOYhYMtPTGyNs8e94dMF5irrQpyNMGBJoMRsOpwDsPMBdgv6PuTvYR
-   52SDBasczRm8+x9mzSWTWMtcG+Gqmm8EWHUEWwL/ZMCkkUtUTDHGg3Kev
-   4ul7ECxyznHCrBUtsmfLPaY0+AWjf4yVO01A3NEl3dd2IaS7sCARPYuIg
-   zw+/udbM1NPuIwRV9XdYLAcWtJKvEaJJG+qk8texUpuzWpohumO/LeuLo
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10241"; a="227874509"
-X-IronPort-AV: E=Sophos;i="5.88,325,1635231600"; 
-   d="scan'208";a="227874509"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2022 14:06:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,325,1635231600"; 
-   d="scan'208";a="770232931"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 28 Jan 2022 14:06:04 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nDZNb-000ONu-RA; Fri, 28 Jan 2022 22:06:03 +0000
-Date:   Sat, 29 Jan 2022 06:05:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Akhmat Karakotov <hmukos@yandex-team.ru>, netdev@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, eric.dumazet@gmail.com, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        tom@herbertland.com
-Subject: Re: [PATCH net-next v4 2/5] txhash: Add socket option to control TX
- hash rethink behavior
-Message-ID: <202201290514.oladOq5e-lkp@intel.com>
-References: <20220128194408.17742-3-hmukos@yandex-team.ru>
+        id S1351683AbiA1Wd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 17:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350593AbiA1Wd2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 17:33:28 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E453C061714
+        for <bpf@vger.kernel.org>; Fri, 28 Jan 2022 14:33:28 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id g145so6928173qke.3
+        for <bpf@vger.kernel.org>; Fri, 28 Jan 2022 14:33:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ofa1ZPh7IyV0aVXuAj6kXq/cJHpIUcIeYq4Vw4IfdQ4=;
+        b=dBWSOqfS8hAUs6gpy8qLoJ3At8PQjbVR+FabfSJToucq3HsGLW9A50+1k16MEuYkNW
+         +UAPsKb+K+9tsfcFutJEcAhhMVZDNuhajaSP8LZQdKLhEeN8E+qBNMMj807VqNLw5Mgl
+         A/6jb2693ZdghRrvdIYW9rOiv2/7ydHiil3w0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ofa1ZPh7IyV0aVXuAj6kXq/cJHpIUcIeYq4Vw4IfdQ4=;
+        b=35faMxAMhXq49XeJbu8tu+3VdXBPaX0U9pa/oji0r4wkKAgua3jCYCloCycs7PpE5H
+         2Xi6ohuPrruoUU//x8B2Oosck+1qU0/Pile4jeGZMHBdXJxcRq+3iWhyQ2gCxcMtSvd7
+         MM9UrfWiyXW2VARG62Kc5g2P/rXCr0huVFsbcAB5/ye+nU0V4F/rdO0jVqqrBU+Ouu+0
+         Iby8NdLqVeHCcpjdzseMBUi3BSaHa+YzGSCSuAEpm7NG/OunJuLm1+dPHztFqmOTeRF8
+         k7TDt3lqfuxyZleCVtuF2YDujoNqPnepTkk0VP0duCmjf7rVZ+l36nEriziVon//yL07
+         ZZAg==
+X-Gm-Message-State: AOAM532cH/CErOOCcPLzjyDYLJa59B6+HumLRhcs9YsoBS73HDA7XmQB
+        lnhABPgW9oS/r6/IDY3MUCiR5w==
+X-Google-Smtp-Source: ABdhPJxizn+IluGvHGXs3r8vF2wbRy1AA1U01pB5k2a7XWmd6ErNx5hfxPcUm0lRJiUV1zjJt8IoHw==
+X-Received: by 2002:a05:620a:4014:: with SMTP id h20mr4982105qko.275.1643409206718;
+        Fri, 28 Jan 2022 14:33:26 -0800 (PST)
+Received: from localhost.localdomain ([181.136.110.101])
+        by smtp.gmail.com with ESMTPSA id i18sm3723972qka.80.2022.01.28.14.33.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jan 2022 14:33:26 -0800 (PST)
+From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Subject: [PATCH bpf-next v5 0/9] libbpf: Implement BTFGen
+Date:   Fri, 28 Jan 2022 17:33:03 -0500
+Message-Id: <20220128223312.1253169-1-mauricio@kinvolk.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220128194408.17742-3-hmukos@yandex-team.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Akhmat,
+CO-RE requires to have BTF information describing the kernel types in
+order to perform the relocations. This is usually provided by the kernel
+itself when it's configured with CONFIG_DEBUG_INFO_BTF. However, this
+configuration is not enabled in all the distributions and it's not
+available on kernels before 5.12.
 
-Thank you for the patch! Yet something to improve:
+It's possible to use CO-RE in kernels without CONFIG_DEBUG_INFO_BTF
+support by providing the BTF information from an external source.
+BTFHub[0] contains BTF files to each released kernel not supporting BTF,
+for the most popular distributions.
 
-[auto build test ERROR on net-next/master]
+Providing this BTF file for a given kernel has some challenges:
+1. Each BTF file is a few MBs big, then it's not possible to ship the
+eBPF program with all the BTF files needed to run in different kernels.
+(The BTF files will be in the order of GBs if you want to support a high
+number of kernels)
+2. Downloading the BTF file for the current kernel at runtime delays the
+start of the program and it's not always possible to reach an external
+host to download such a file.
 
-url:    https://github.com/0day-ci/linux/commits/Akhmat-Karakotov/Make-hash-rethink-configurable/20220129-034621
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git b76bbb34dc80258f5079b4067f0dae07b394b8fe
-config: nds32-allnoconfig (https://download.01.org/0day-ci/archive/20220129/202201290514.oladOq5e-lkp@intel.com/config)
-compiler: nds32le-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/92d1267cbe457eff1ea65aa32f38356861bfa5f5
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Akhmat-Karakotov/Make-hash-rethink-configurable/20220129-034621
-        git checkout 92d1267cbe457eff1ea65aa32f38356861bfa5f5
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=nds32 SHELL=/bin/bash
+Providing the BTF file with the information about all the data types of
+the kernel for running an eBPF program is an overkill in many of the
+cases. Usually the eBPF programs access only some kernel fields.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+This series implements BTFGen support in bpftool. This idea was
+discussed during the "Towards truly portable eBPF"[1] presentation at
+Linux Plumbers 2021.
 
-All errors (new ones prefixed by >>):
+There is a good example[2] on how to use BTFGen and BTFHub together
+to generate multiple BTF files, to each existing/supported kernel,
+tailored to one application. For example: a complex bpf object might
+support nearly 400 kernels by having BTF files summing only 1.5 MB.
 
-   In file included from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:92,
-                    from include/net/ipv6.h:12,
-                    from include/linux/sunrpc/clnt.h:29,
-                    from include/linux/nfs_fs.h:32,
-                    from init/do_mounts.c:23:
-   include/net/sock.h: In function 'sk_rethink_txhash':
->> include/net/sock.h:2071:34: error: 'struct sock' has no member named 'sk_txrehash'; did you mean 'sk_txhash'?
-    2071 |         if (sk->sk_txhash && sk->sk_txrehash == SOCK_TXREHASH_ENABLED) {
-         |                                  ^~~~~~~~~~~
-         |                                  sk_txhash
---
-   In file included from fs/io_uring.c:63:
-   include/net/sock.h: In function 'sk_rethink_txhash':
->> include/net/sock.h:2071:34: error: 'struct sock' has no member named 'sk_txrehash'; did you mean 'sk_txhash'?
-    2071 |         if (sk->sk_txhash && sk->sk_txrehash == SOCK_TXREHASH_ENABLED) {
-         |                                  ^~~~~~~~~~~
-         |                                  sk_txhash
-   fs/io_uring.c: In function '__io_submit_flush_completions':
-   fs/io_uring.c:2523:40: warning: variable 'prev' set but not used [-Wunused-but-set-variable]
-    2523 |         struct io_wq_work_node *node, *prev;
-         |                                        ^~~~
---
-   In file included from include/linux/tcp.h:19,
-                    from include/linux/ipv6.h:92,
-                    from include/net/addrconf.h:52,
-                    from lib/vsprintf.c:40:
-   include/net/sock.h: In function 'sk_rethink_txhash':
->> include/net/sock.h:2071:34: error: 'struct sock' has no member named 'sk_txrehash'; did you mean 'sk_txhash'?
-    2071 |         if (sk->sk_txhash && sk->sk_txrehash == SOCK_TXREHASH_ENABLED) {
-         |                                  ^~~~~~~~~~~
-         |                                  sk_txhash
-   lib/vsprintf.c: In function 'va_format':
-   lib/vsprintf.c:1684:9: warning: function 'va_format' might be a candidate for 'gnu_printf' format attribute [-Wsuggest-attribute=format]
-    1684 |         buf += vsnprintf(buf, end > buf ? end - buf : 0, va_fmt->fmt, va);
-         |         ^~~
+[0]: https://github.com/aquasecurity/btfhub/
+[1]: https://www.youtube.com/watch?v=igJLKyP1lFk&t=2418s
+[2]: https://github.com/aquasecurity/btfhub/tree/main/tools
 
+Changelog:
+v4 > v5:
+- move some checks before invoking prog->obj->gen_loader
+- use p_info() instead of printf()
+- improve command output
+- fix issue with record_relo_core()
+- implement bash completion
+- write man page
+- implement some tests
 
-vim +2071 include/net/sock.h
+v3 > v4:
+- parse BTF and BTF.ext sections in bpftool and use
+  bpf_core_calc_relo_insn() directly
+- expose less internal details from libbpf to bpftool
+- implement support for enum-based relocations
+- split commits in a more granular way
 
-  2068	
-  2069	static inline bool sk_rethink_txhash(struct sock *sk)
-  2070	{
-> 2071		if (sk->sk_txhash && sk->sk_txrehash == SOCK_TXREHASH_ENABLED) {
-  2072			sk_set_txhash(sk);
-  2073			return true;
-  2074		}
-  2075		return false;
-  2076	}
-  2077	
+v2 > v3:
+- expose internal libbpf APIs to bpftool instead
+- implement btfgen in bpftool
+- drop btf__raw_data() from libbpf
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+v1 > v2:
+- introduce bpf_object__prepare() and ‘record_core_relos’ to expose
+  CO-RE relocations instead of bpf_object__reloc_info_gen()
+- rename btf__save_to_file() to btf__raw_data()
+
+v1: https://lore.kernel.org/bpf/20211027203727.208847-1-mauricio@kinvolk.io/
+v2: https://lore.kernel.org/bpf/20211116164208.164245-1-mauricio@kinvolk.io/
+v3: https://lore.kernel.org/bpf/20211217185654.311609-1-mauricio@kinvolk.io/
+v4: https://lore.kernel.org/bpf/20220112142709.102423-1-mauricio@kinvolk.io/
+
+Mauricio Vásquez (8):
+  libbpf: Implement changes needed for BTFGen in bpftool
+  bpftool: Add gen min_core_btf command
+  bpftool: Implement btf_save_raw()
+  bpftool: Add struct definitions and helpers for BTFGen
+  bpftool: Implement btfgen()
+  bpftool: Implement relocations recording for BTFGen
+  bpftool: Implement btfgen_get_btf()
+  selftest/bpf: Implement tests for bpftool gen min_core_btf
+
+Rafael David Tinoco (1):
+  bpftool: gen min_core_btf explanation and examples
+
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  85 ++
+ tools/bpf/bpftool/Makefile                    |   8 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   6 +-
+ tools/bpf/bpftool/gen.c                       | 836 +++++++++++++++++-
+ tools/lib/bpf/libbpf.c                        |  44 +-
+ tools/lib/bpf/libbpf_internal.h               |  12 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ .../selftests/bpf/progs/btfgen_btf_source.c   |  12 +
+ .../bpf/progs/btfgen_primitives_array.c       |  39 +
+ .../bpf/progs/btfgen_primitives_struct.c      |  40 +
+ .../bpf/progs/btfgen_primitives_struct2.c     |  44 +
+ .../bpf/progs/btfgen_primitives_union.c       |  32 +
+ tools/testing/selftests/bpf/test_bpftool.c    | 228 +++++
+ 14 files changed, 1367 insertions(+), 24 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btfgen_btf_source.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btfgen_primitives_array.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btfgen_primitives_struct.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btfgen_primitives_struct2.c
+ create mode 100644 tools/testing/selftests/bpf/progs/btfgen_primitives_union.c
+ create mode 100644 tools/testing/selftests/bpf/test_bpftool.c
+
+-- 
+2.25.1
+
