@@ -2,113 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09CB49FD80
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 17:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB35C49FDB8
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 17:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349843AbiA1QCU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 11:02:20 -0500
-Received: from mout.perfora.net ([74.208.4.196]:59719 "EHLO mout.perfora.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349922AbiA1QCO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 11:02:14 -0500
-Received: from localhost.localdomain ([81.221.85.15]) by mrelay.perfora.net
- (mreueus003 [74.208.5.2]) with ESMTPSA (Nemesis) id 0Mapv2-1myhhP094k-00KN5f;
- Fri, 28 Jan 2022 17:01:41 +0100
-From:   Marcel Ziswiler <marcel@ziswiler.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Marek Vasut <marek.vasut@gmail.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
-        Song Liu <songliubraving@fb.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Olof Johansson <olof@lixom.net>,
-        Shawn Guo <shawnguo@kernel.org>, Will Deacon <will@kernel.org>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH v3 06/12] arm64: defconfig: enable bpf/cgroup firewalling
-Date:   Fri, 28 Jan 2022 17:00:54 +0100
-Message-Id: <20220128160100.1228537-7-marcel@ziswiler.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20220128160100.1228537-1-marcel@ziswiler.com>
-References: <20220128160100.1228537-1-marcel@ziswiler.com>
+        id S1349646AbiA1QLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 11:11:37 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:51902 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239183AbiA1QLh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 11:11:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 93CAE61EED;
+        Fri, 28 Jan 2022 16:11:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFFAC340E0;
+        Fri, 28 Jan 2022 16:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643386296;
+        bh=2xkH+1LgGol6+y7sPa8zttF8hI+fLxq5zVrB9XQOefs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lHHBqAb/2Z7ccloUIAG6e+FJZ1C/2YyzDNKNTpa02d9QD+DjSsw4dqpn5iHba9hXD
+         EApdoBdaeIM1UOnbTs5cOuK0eu2VUdHuHvPPfnZJo/QpdGlGyHWiZ1uwDMGbPtgBZe
+         +Y+vOlbuFveSdNqtcQAn/ymKWYFb4emEaoQQ513MrVUxM/3R1d/HSkozP+05oHVoZV
+         eKIcf858e5ILQmGQcsdxlRiGKYfJ+euNwWCYMxPVcFxIQ4hJJsCSkVfnPreY/hvdT/
+         vFEehNq/6G1x5JOkz2xRTmVmZT2GhyKrlisCcUU1Jb+DHqM9z1U+RcFDgElnk4Bw1k
+         rdre5tdIovTlA==
+Date:   Fri, 28 Jan 2022 08:11:34 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Akhmat Karakotov <hmukos@yandex-team.ru>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        eric.dumazet@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, tom@herbertland.com,
+        zeil@yandex-team.ru, mitradir@yandex-team.ru
+Subject: Re: [PATCH net-next v3 1/4] txhash: Make rethinking txhash behavior
+ configurable via sysctl
+Message-ID: <20220128081134.12023513@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220128151602.2748-2-hmukos@yandex-team.ru>
+References: <20220128151602.2748-1-hmukos@yandex-team.ru>
+        <20220128151602.2748-2-hmukos@yandex-team.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:lCyq7oT7xqkY7LNjfnI4x8Dtx3qyHtYLHe/llVnaOPQ9aTb3oFD
- k7Njrij81UMQ8unFiEyyQKZykXjSl+cCV7nM95h9lS1tJ6S76ux7awBi3bnfUFtUKxEDBvL
- zDGFPa1AQPGeq55JtT1LsPBB9AunhQQbXyZDTiUT0LrKXvVkD+fAjQWe3CQpwDF1DCqY8OD
- 9aR4ciQASawMpCUUoOqwg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gog9tXXFDu0=:E+27g7MTVjhtkr46XDmsWf
- PMNNDnpFawiYo9JM/d11URftIcgVdVK6sIS2K6Md4ANQmdvMWZ977ePg4cGOMDFpkYDYTHU6F
- ZbOTrAFp4drUONmikUZJaHptR791HiPbWBpSFzXyUMdKwi+EblXpvv/oGMoWoTUnmTETCq4SY
- Sa0d4jLefO74IDzDoVPBluI07hYy0bqpxUw4DBHcvLzuovMvsCe9qK6g4toM86IZ7qEWXjyER
- JXYxlYeybrPTuwssSDEp8BKbEbSZoZQ7eDS3cnf4bgqhRcE60FQ5vIssmjE1mMEw5wDQawnHp
- mgTnPaNIszfeyad7vMB1IxtzKRAXTUuuZE+p4ASDWK5iCd2r3nkxCMLFZIcOaKFqX09naeFSz
- ndGGB7a9Yx+0A0p+efa0+mxoI/d+0IY/1v4jN1aKvpQWKgRln3Bfvn/jcUVXfo9Go/j4396ps
- infDFx9PUv+al4PUvHTO1RWhPwrcMvUMaluNjFpqLirz0zBKbf+f5Na+S5PySUBHFCJjoTa40
- apN0ydTQLy9ChrwyGJNGv4vKeFG8fieQqhi3Sf0bbvme4gHVC1Whr4Cw7Cg9RQEmb/J7aL9cs
- MZBU8F20zznozQ3cEMabZYws+zHd/7pw1Ay5P5jOPh0UfLH1zGNUEzTdTRjzN2vNU5iA4/NFS
- NueGGBlP1ZZsEIUGq6sjpoZLbjvjY7ZgjE+umSmN08oQIywqMRw8hRAp/ehMK+Ve98hs=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+On Fri, 28 Jan 2022 18:15:59 +0300 Akhmat Karakotov wrote:
+> Add a per ns sysctl that controls the txhash rethink behavior,
+> sk_rethink_txhash. When enabled, the same behavior is retained, when
+> disabled, rethink is not performed. Sysctl is enabled by default.
 
-This avoids the following systemd warning:
+The new knob needs to be documented in
+Documentation/admin-guide/sysctl/net.rst.
 
-[    2.618538] systemd[1]: system-getty.slice: unit configures an IP
- firewall, but the local system does not support BPF/cgroup firewalling.
-[    2.630916] systemd[1]: (This warning is only shown for the first
- unit using IP firewalling.)
+The series also does not apply cleanly to net-next, could you rebase?
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
----
-
-Changes in v3:
-- Add Krzysztof's reviewed-by tag.
-
-Changes in v2:
-- Add Song's acked-by tag.
-
- arch/arm64/configs/defconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 530ad076b5cb..444fec9ec73a 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -3,6 +3,7 @@ CONFIG_POSIX_MQUEUE=y
- CONFIG_AUDIT=y
- CONFIG_NO_HZ_IDLE=y
- CONFIG_HIGH_RES_TIMERS=y
-+CONFIG_BPF_SYSCALL=y
- CONFIG_BPF_JIT=y
- CONFIG_PREEMPT=y
- CONFIG_IRQ_TIME_ACCOUNTING=y
-@@ -22,6 +23,7 @@ CONFIG_CPUSETS=y
- CONFIG_CGROUP_DEVICE=y
- CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_PERF=y
-+CONFIG_CGROUP_BPF=y
- CONFIG_USER_NS=y
- CONFIG_SCHED_AUTOGROUP=y
- CONFIG_BLK_DEV_INITRD=y
--- 
-2.33.1
-
+Thanks!
