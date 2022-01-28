@@ -2,169 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8DB49FBEA
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 15:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AF549FCA9
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 16:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349426AbiA1OnB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 09:43:01 -0500
-Received: from www62.your-server.de ([213.133.104.62]:58490 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349397AbiA1Omz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 28 Jan 2022 09:42:55 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nDSSX-0000FP-76; Fri, 28 Jan 2022 15:42:41 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nDSSW-000Tvp-Qt; Fri, 28 Jan 2022 15:42:40 +0100
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: check whether s32 is
- sufficient for kfunc offset
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20220127071532.384888-1-houtao1@huawei.com>
- <20220127071532.384888-3-houtao1@huawei.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ba562bf9-c328-1258-940f-b4d9a3169776@iogearbox.net>
-Date:   Fri, 28 Jan 2022 15:42:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20220127071532.384888-3-houtao1@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26436/Fri Jan 28 10:22:17 2022)
+        id S243682AbiA1PS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 10:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240219AbiA1PS5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 10:18:57 -0500
+X-Greylist: delayed 121 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 28 Jan 2022 07:18:57 PST
+Received: from forwardcorp1o.mail.yandex.net (forwardcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F172C061714
+        for <bpf@vger.kernel.org>; Fri, 28 Jan 2022 07:18:57 -0800 (PST)
+Received: from sas1-3cba3404b018.qloud-c.yandex.net (sas1-3cba3404b018.qloud-c.yandex.net [IPv6:2a02:6b8:c08:bd26:0:640:3cba:3404])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 881102E0EBE;
+        Fri, 28 Jan 2022 18:16:54 +0300 (MSK)
+Received: from sas1-9d43635d01d6.qloud-c.yandex.net (sas1-9d43635d01d6.qloud-c.yandex.net [2a02:6b8:c08:793:0:640:9d43:635d])
+        by sas1-3cba3404b018.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id xQmXyswljI-GrHmT5rL;
+        Fri, 28 Jan 2022 18:16:54 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1643383014; bh=xTDkiWUMaKhBA1dAHoTjjZw4AKyosWhq9XUAyfaBobo=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=JLhlKK1/HcMy3rU/cmumx29O015snYv+t5XplirXZhWFLEOLwk3ANvvby/DITTID0
+         NOh1JrChYZVLobsxaLCuNImkZHN7NuggCbcw61H9DkV5+zj8IYQgTz/otvgmfD/+hl
+         d2w7dbqONiMSsZG1PexyQkVsw7U3t4rbDAlLkFu0=
+Authentication-Results: sas1-3cba3404b018.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from vmhmukos.sas.yp-c.yandex.net (vmhmukos.sas.yp-c.yandex.net [2a02:6b8:c10:288:0:696:6af:0])
+        by sas1-9d43635d01d6.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id IrjHL3bpzz-GrIO7Hhl;
+        Fri, 28 Jan 2022 18:16:53 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Akhmat Karakotov <hmukos@yandex-team.ru>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        eric.dumazet@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, tom@herbertland.com,
+        hmukos@yandex-team.ru, zeil@yandex-team.ru, mitradir@yandex-team.ru
+Subject: [PATCH net-next v3 0/4] txhash: Make hash rethink configurable
+Date:   Fri, 28 Jan 2022 18:15:58 +0300
+Message-Id: <20220128151602.2748-1-hmukos@yandex-team.ru>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/22 8:15 AM, Hou Tao wrote:
-> In add_kfunc_call(), bpf_kfunc_desc->imm with type s32 is used to
-> represent the offset of called kfunc from __bpf_call_base, so
-> add a test to ensure that the offset will not be overflowed.
-> 
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+As it was shown in the report by Alexander Azimov, hash rethink at the
+client-side may lead to connection timeout toward stateful anycast
+services. Tom Herbert created a patchset to address this issue by applying
+hash rethink only after a negative routing event (3RTOs) [1]. This change
+also affects server-side behavior, which we found undesirable. This
+patchset changes defaults in a way to make them safe: hash rethink at the
+client-side is disabled and enabled at the server-side upon each RTO
+event or in case of duplicate acknowledgments.
 
-Thanks for looking into this!
+This patchset provides two options to change default behaviour. The hash
+rethink may be disabled at the server-side by the new sysctl option.
+Changes in the sysctl option don't affect default behavior at the
+client-side.
 
-> ---
->   .../selftests/bpf/prog_tests/ksyms_module.c   | 72 +++++++++++++++++++
->   1 file changed, 72 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-> index d490ad80eccb..ce0cd3446931 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-> @@ -6,6 +6,76 @@
->   #include "test_ksyms_module.lskel.h"
->   #include "test_ksyms_module.skel.h"
->   
-> +/* Most logic comes from bpf_object__read_kallsyms_file() */
-> +static int test_find_func_in_kallsyms(const char *func, unsigned long *addr)
-> +{
-> +	/* Same as KSYM_NAME_LEN */
-> +	char sym_name[128];
-> +	char sym_type;
-> +	unsigned long sym_addr;
-> +	int ret, err;
-> +	FILE *f;
-> +
-> +	f = fopen("/proc/kallsyms", "r");
-> +	if (!f)
-> +		return -errno;
-> +
-> +	err = -ENOENT;
-> +	while (true) {
-> +		ret = fscanf(f, "%lx %c %127s%*[^\n]\n",
-> +			     &sym_addr, &sym_type, sym_name);
-> +		if (ret == EOF && feof(f))
-> +			break;
-> +
-> +		if (ret != 3) {
-> +			err = -EINVAL;
-> +			break;
-> +		}
-> +
-> +		if ((sym_type == 't' || sym_type == 'T') &&
-> +		    !strcmp(sym_name, func)) {
-> +			*addr = sym_addr;
-> +			err = 0;
-> +			break;
-> +		}
-> +	}
-> +
-> +	fclose(f);
-> +	return err;
-> +}
+Hash rethink can also be enabled/disabled with socket option or bpf
+syscalls which ovewrite both default and sysctl settings. This socket
+option is available on both client and server-side. This should provide
+mechanics to enable hash rethink inside administrative domain, such as DC,
+where hash rethink at the client-side can be desirable.
 
-Could we just reuse kallsyms_find() from trace_helpers.c which is also used
-in couple of other prog_tests already?
+[1] https://lore.kernel.org/netdev/20210809185314.38187-1-tom@herbertland.com/
 
-> +
-> +/*
-> + * Check whether or not s32 in bpf_kfunc_desc is sufficient
-> + * to represent the offset between bpf_testmod_test_mod_kfunc
-> + * and __bpf_call_base.
-> + */
-> +void test_ksyms_module_valid_offset(void)
-> +{
-> +	unsigned long kfunc_addr;
-> +	unsigned long base_addr;
-> +	int used_offset;
-> +	long actual_offset;
-> +	int err;
-> +
-> +	if (!env.has_testmod) {
-> +		test__skip();
-> +		return;
-> +	}
-> +
-> +	err = test_find_func_in_kallsyms("bpf_testmod_test_mod_kfunc",
-> +					 &kfunc_addr);
-> +	if (!ASSERT_OK(err, "find kfunc addr"))
-> +		return;
-> +
-> +	err = test_find_func_in_kallsyms("__bpf_call_base", &base_addr);
-> +	if (!ASSERT_OK(err, "find base addr"))
-> +		return;
-> +
-> +	used_offset = kfunc_addr - base_addr;
-> +	actual_offset = kfunc_addr - base_addr;
-> +	ASSERT_EQ((long)used_offset, actual_offset, "kfunc offset overflowed");
+v2:
+	- Changed sysctl default to ENABLED in all patches. Reduced sysctl
+	  and socket option size to u8. Fixed netns bug reported by kernel
+	  test robot.
 
-Is the above also executed in case bpf_jit_supports_kfunc_call() falls back to
-the default __weak callback, returning false? If yes, then the ASSERT_EQ() may
-fail on archs like s390, ppc, etc where the offset may not be enough.
+v3:
+	- Fixed bug with bad u8 comparison. Moved sk->txrehash to use less
+	  bytes in struct. Added WRITE_ONCE() in setsockopt in and
+	  READ_ONCE() in tcp_rtx_synack.
 
-> +}
-> +
->   void test_ksyms_module_lskel(void)
->   {
->   	struct test_ksyms_module_lskel *skel;
-> @@ -55,6 +125,8 @@ void test_ksyms_module_libbpf(void)
->   
->   void test_ksyms_module(void)
->   {
-> +	if (test__start_subtest("valid_offset"))
-> +		test_ksyms_module_valid_offset();
->   	if (test__start_subtest("lskel"))
->   		test_ksyms_module_lskel();
->   	if (test__start_subtest("libbpf"))
-> 
+
+Akhmat Karakotov (4):
+  txhash: Make rethinking txhash behavior configurable via sysctl
+  txhash: Add socket option to control TX hash rethink behavior
+  bpf: Add SO_TXREHASH setsockopt
+  tcp: change SYN ACK retransmit behaviour to account for rehash
+
+ arch/alpha/include/uapi/asm/socket.h  |  2 ++
+ arch/mips/include/uapi/asm/socket.h   |  2 ++
+ arch/parisc/include/uapi/asm/socket.h |  2 ++
+ arch/sparc/include/uapi/asm/socket.h  |  2 ++
+ include/net/netns/core.h              |  1 +
+ include/net/sock.h                    | 28 ++++++++++++++-------------
+ include/uapi/asm-generic/socket.h     |  2 ++
+ include/uapi/linux/socket.h           |  4 ++++
+ net/core/filter.c                     | 10 ++++++++++
+ net/core/net_namespace.c              |  2 ++
+ net/core/sock.c                       | 14 ++++++++++++++
+ net/core/sysctl_net_core.c            | 14 ++++++++++++--
+ net/ipv4/inet_connection_sock.c       |  3 +++
+ net/ipv4/tcp_output.c                 |  4 +++-
+ 14 files changed, 74 insertions(+), 16 deletions(-)
+
+-- 
+2.17.1
 
