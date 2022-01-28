@@ -2,89 +2,261 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3454A0119
-	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 20:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562744A0121
+	for <lists+bpf@lfdr.de>; Fri, 28 Jan 2022 20:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347806AbiA1Top (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 28 Jan 2022 14:44:45 -0500
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:58086 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350985AbiA1Tom (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 28 Jan 2022 14:44:42 -0500
-Received: from sas1-3cba3404b018.qloud-c.yandex.net (sas1-3cba3404b018.qloud-c.yandex.net [IPv6:2a02:6b8:c08:bd26:0:640:3cba:3404])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 6799B2E0F03;
-        Fri, 28 Jan 2022 22:44:40 +0300 (MSK)
-Received: from sas1-9d43635d01d6.qloud-c.yandex.net (sas1-9d43635d01d6.qloud-c.yandex.net [2a02:6b8:c08:793:0:640:9d43:635d])
-        by sas1-3cba3404b018.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id isxMrLzvDY-icH0qf9s;
-        Fri, 28 Jan 2022 22:44:40 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1643399080; bh=j4U2jtrFsLeWTOxAH2b7Xp32cslmhqOpKYBa0qDcEKI=;
-        h=References:Date:Subject:To:From:Message-Id:In-Reply-To:Cc;
-        b=Gsqe+HB7jc925/UrogopYJiDeavFAotcjBsVvRMvYviqpSrNTvMKINf+0Kid6yRzZ
-         6WkvL4d4hLEI2AO9d3DhGm6qHbh9L9XMNnjMz5WHVmjnPatXWSvue5a0WA8St+hR3d
-         VUh5AD5TWXSW+GaSWk2J7V5DcoQaJisAFqvgLLdA=
-Authentication-Results: sas1-3cba3404b018.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from vmhmukos.sas.yp-c.yandex.net (vmhmukos.sas.yp-c.yandex.net [2a02:6b8:c10:288:0:696:6af:0])
-        by sas1-9d43635d01d6.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id AubVxLDYQ9-icIGu1Ag;
-        Fri, 28 Jan 2022 22:44:38 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-X-Yandex-Fwd: 2
-From:   Akhmat Karakotov <hmukos@yandex-team.ru>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-        eric.dumazet@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, tom@herbertland.com,
-        hmukos@yandex-team.ru, zeil@yandex-team.ru, mitradir@yandex-team.ru
-Subject: [PATCH net-next v4 5/5] tcp: Change SYN ACK retransmit behaviour to account for rehash
-Date:   Fri, 28 Jan 2022 22:44:08 +0300
-Message-Id: <20220128194408.17742-6-hmukos@yandex-team.ru>
-In-Reply-To: <20220128194408.17742-1-hmukos@yandex-team.ru>
-References: <20220128194408.17742-1-hmukos@yandex-team.ru>
+        id S234876AbiA1Tw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 28 Jan 2022 14:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231653AbiA1Twz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 28 Jan 2022 14:52:55 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EF4C061714;
+        Fri, 28 Jan 2022 11:52:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id BE937B826F4;
+        Fri, 28 Jan 2022 19:52:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF19C340E7;
+        Fri, 28 Jan 2022 19:52:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643399572;
+        bh=v3Wcxo183ymd1gi0izPA2SQvu3G31sfPXNjD61VK7jM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q7ON/jIOC7vcyczl00y4UE3e+p3wxL8WoKl3ztesIJ9SsP46QiDP8LdqsAyB+i+WP
+         eq+YI+r+ig3dXdvYdddhQ1xnrOM5uE7a+DxdipzRq90/+NC0ujfansMuvu0648VT9E
+         WxgU9IA1JBPvth0u/VGP8WDmnSUVpmX6xCf/FW5haRmtBucCRcX1DhI9QK5VTd9cGB
+         9S/Is1QC22/qAr3ec1AzeJv0CmKU3IEcPuM1uwSnmADzVbEGNcEUbROxRwbA/MnuUj
+         0hWHFOnV+UHz0gUmcnFjeDXvrBw7KviPI+AHJfE3GCTHJcYlO89QQJhdhmlgZcjNx1
+         brdxQYqkUk09A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7AC2E40C99; Fri, 28 Jan 2022 16:50:48 -0300 (-03)
+Date:   Fri, 28 Jan 2022 16:50:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Mark Wielaard <mjw@redhat.com>
+Cc:     Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
+ avoid mutex locking.
+Message-ID: <YfRJGJ35SQCy+98H@kernel.org>
+References: <20220126192039.2840752-1-kuifeng@fb.com>
+ <20220126192039.2840752-4-kuifeng@fb.com>
+ <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
+ <YfL8kjM30uHN3qxs@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YfL8kjM30uHN3qxs@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Disabling rehash behavior did not affect SYN ACK retransmits because hash
-was forcefully changed bypassing the sk_rethink_hash function. This patch
-adds a condition which checks for rehash mode before resetting hash.
+Em Thu, Jan 27, 2022 at 05:12:02PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Wed, Jan 26, 2022 at 11:58:27AM -0800, Andrii Nakryiko escreveu:
+> > On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+> > > Create an instance of btf for each worker thread, and add type info to
+> > > the local btf instance in the steal-function of pahole without mutex
+> > > acquiring.  Once finished with all worker threads, merge all
+> > > per-thread btf instances to the primary btf instance.
 
-Signed-off-by: Akhmat Karakotov <hmukos@yandex-team.ru>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
----
- net/core/sock.c       | 3 ++-
- net/ipv4/tcp_output.c | 4 +++-
- 2 files changed, 5 insertions(+), 2 deletions(-)
+> > There are still unnecessary casts and missing {} in the else branch,
+> > but I'll let Arnaldo decide or fix it up.
 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 5e711b42898f..d6804685f17f 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1452,7 +1452,8 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
- 			ret = -EINVAL;
- 			break;
- 		}
--		sk->sk_txrehash = (u8)val;
-+		/* Paired with READ_ONCE() in tcp_rtx_synack() */
-+		WRITE_ONCE(sk->sk_txrehash, (u8)val);
- 		break;
- 
- 	default:
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index 11c06b9db801..e76bf1e9251e 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -4092,7 +4092,9 @@ int tcp_rtx_synack(const struct sock *sk, struct request_sock *req)
- 	struct flowi fl;
- 	int res;
- 
--	tcp_rsk(req)->txhash = net_tx_rndhash();
-+	/* Paired with WRITE_ONCE() in sock_setsockopt() */
-+	if (READ_ONCE(sk->sk_txrehash) == SOCK_TXREHASH_ENABLED)
-+		tcp_rsk(req)->txhash = net_tx_rndhash();
- 	res = af_ops->send_synack(sk, NULL, &fl, req, NULL, TCP_SYNACK_NORMAL,
- 				  NULL);
- 	if (!res) {
--- 
-2.17.1
+So its just one unneeded cast as thr_data here is just a 'void *':
 
+diff --git a/pahole.c b/pahole.c
+index 8c0a982f05c9ae3d..39e18804100dbfda 100644
+--- a/pahole.c
++++ b/pahole.c
+@@ -2924,7 +2924,7 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
+                 * avoids copying the data collected by the first thread.
+                 */
+                if (thr_data) {
+-                       struct thread_data *thread = (struct thread_data *)thr_data;
++                       struct thread_data *thread = thr_data;
+
+                        if (thread->encoder == NULL) {
+                                thread->encoder =
+
+
+This other is needed as it is a "void **":
+
+@@ -2832,7 +2832,7 @@ static int pahole_thread_exit(struct conf_load *conf, void *thr_data)
+ static int pahole_threads_collect(struct conf_load *conf, int nr_threads, void **thr_data,
+                                  int error)
+ {
+-       struct thread_data **threads = (struct thread_data **)thr_data;
++       struct thread_data **threads = thr_data;
+        int i;
+        int err = 0;
+
+
+Removing it:
+
+/var/home/acme/git/pahole/pahole.c: In function ‘pahole_threads_collect’:
+/var/home/acme/git/pahole/pahole.c:2835:40: warning: initialization of ‘struct thread_data **’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
+ 2835 |         struct thread_data **threads = thr_data;
+      |                                        ^~~~~~~~
+
+
+And I did some more profiling, now the focus should go to elfutils:
+
+⬢[acme@toolbox pahole]$ perf report --no-children -s dso --call-graph none 2> /dev/null | head -20
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 27K of event 'cycles:u'
+# Event count (approx.): 27956766207
+#
+# Overhead  Shared Object
+# ........  ...................
+#
+    46.70%  libdwarves.so.1.0.0
+    39.84%  libdw-0.186.so
+     9.70%  libc-2.33.so
+     2.14%  libpthread-2.33.so
+     1.47%  [unknown]
+     0.09%  ld-2.33.so
+     0.06%  libelf-0.186.so
+     0.00%  libcrypto.so.1.1.1l
+     0.00%  libk5crypto.so.3.1
+⬢[acme@toolbox pahole]$
+
+$ perf report -g graph,0.5,2 --stdio --no-children -s dso --dso libdw-0.186.so
+
+# To display the perf.data header info, please use --header/--header-only options.
+#
+# dso: libdw-0.186.so
+#
+# Total Lost Samples: 0
+#
+# Samples: 27K of event 'cycles:u'
+# Event count (approx.): 27956766207
+#
+# Overhead  Shared Object 
+# ........  ..............
+#
+    39.84%  libdw-0.186.so
+            |          
+            |--25.66%--__libdw_find_attr
+            |          |          
+            |          |--20.96%--__dwarf_attr_internal (inlined)
+            |          |          |          
+            |          |          |--10.94%--attr_numeric
+            |          |          |          |          
+            |          |          |          |--9.96%--die__process_class
+            |          |          |          |          __die__process_tag
+            |          |          |          |          die__process_unit
+            |          |          |          |          die__process
+            |          |          |          |          dwarf_cus__create_and_process_cu
+            |          |          |          |          dwarf_cus__process_cu_thread
+            |          |          |          |          start_thread
+            |          |          |          |          __GI___clone (inlined)
+            |          |          |          |          
+            |          |          |           --0.61%--type__init
+            |          |          |                     __die__process_tag
+            |          |          |                     die__process_unit
+            |          |          |                     die__process
+            |          |          |                     dwarf_cus__create_and_process_cu
+            |          |          |                     dwarf_cus__process_cu_thread
+            |          |          |                     start_thread
+            |          |          |                     __GI___clone (inlined)
+            |          |          |          
+            |          |          |--5.43%--attr_type
+            |          |          |          |          
+            |          |          |           --4.94%--tag__init
+            |          |          |                     |          
+            |          |          |                     |--2.60%--die__process_class
+            |          |          |                     |          __die__process_tag
+            |          |          |                     |          die__process_unit
+            |          |          |                     |          die__process
+            |          |          |                     |          dwarf_cus__create_and_process_cu
+            |          |          |                     |          dwarf_cus__process_cu_thread
+            |          |          |                     |          start_thread
+            |          |          |                     |          __GI___clone (inlined)
+            |          |          |                     |          
+            |          |          |                     |--0.99%--__die__process_tag
+            |          |          |                     |          |          
+            |          |          |                     |           --0.98%--die__process_unit
+            |          |          |                     |                     die__process
+            |          |          |                     |                     dwarf_cus__create_and_process_cu
+            |          |          |                     |                     dwarf_cus__process_cu_thread
+            |          |          |                     |                     start_thread
+            |          |          |                     |                     __GI___clone (inlined)
+            |          |          
+            |          |--4.01%--__dwarf_siblingof_internal (inlined)
+            |          |          |          
+            |          |          |--1.41%--die__process_class
+            |          |          |          __die__process_tag
+            |          |          |          die__process_unit
+            |          |          |          die__process
+            |          |          |          dwarf_cus__create_and_process_cu
+            |          |          |          dwarf_cus__process_cu_thread
+            |          |          |          start_thread
+            |          |          |          __GI___clone (inlined)
+            |          |          |          
+            |          |          |--1.02%--die__process
+            |          |          |          dwarf_cus__create_and_process_cu
+            |          |          |          dwarf_cus__process_cu_thread
+            |          |          |          start_thread
+            |          |          |          __GI___clone (inlined)
+            |          
+            |--2.38%--__libdw_form_val_compute_len
+            |          __libdw_find_attr
+            |          |          
+            |           --1.86%--__dwarf_attr_internal (inlined)
+            |                     |          
+            |                     |--0.94%--attr_numeric
+            |                     |          |          
+            |                     |           --0.83%--die__process_class
+            |                     |                     __die__process_tag
+            |                     |                     die__process_unit
+            |                     |                     die__process
+            |                     |                     dwarf_cus__create_and_process_cu
+            |                     |                     dwarf_cus__process_cu_thread
+            |                     |                     start_thread
+            |                     |                     __GI___clone (inlined)
+            |                     |          
+            |                      --0.56%--attr_type
+            |                                |          
+            |                                 --0.53%--tag__init
+
+
+
+#
+# (Tip: If you have debuginfo enabled, try: perf report -s sym,srcline)
+#
+
+This find_attr thing needs improvements, its a linear search AFAIK, some
+hashtable could do wonders, I guess.
+
+Mark, was this considered at some point?
+
+⬢[acme@toolbox pahole]$ rpm -q elfutils-libs
+elfutils-libs-0.186-1.fc34.x86_64
+
+Andrii https://github.com/libbpf/libbpf/actions/workflows/pahole.yml is
+in failure mode for 3 days, and only yesterday I pushed these changes,
+seems unrelated to pahole:
+
+Tests exit status: 1
+Test Results:
+             bpftool: PASS
+          test_progs: FAIL (returned 1)
+ test_progs-no_alu32: FAIL (returned 1)
+       test_verifier: PASS
+            shutdown: CLEAN
+Error: Process completed with exit code 1.
+
+Can you please check?
+
+- Arnaldo
