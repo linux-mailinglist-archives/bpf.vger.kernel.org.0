@@ -2,102 +2,350 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5F64A337F
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 04:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E37274A34C5
+	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 08:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbiA3DYf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jan 2022 22:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52228 "EHLO
+        id S1354238AbiA3HJk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jan 2022 02:09:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233631AbiA3DYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jan 2022 22:24:34 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89745C061714;
-        Sat, 29 Jan 2022 19:24:34 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id x11so9601131plg.6;
-        Sat, 29 Jan 2022 19:24:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9FFTPRo1ckhhB49b7ONOxUt8kngEsKVIvbF1sVTmt/4=;
-        b=U89GNBjeWygL7EqhNjqrhmmPiksJpQDJKXhXK6hODoZQQJAZiELHz5SsAYNKRMnqsQ
-         4m22UVupd733icWt2/FVKrL89JZpVwnfjhMSDes/sfNJbEb5yTEhEp5RDRJgsztIgPWT
-         F5xx9rNvc1LPAo2Hfs6c5AdJnMn3vFb3iLZpCTrdTIcYSKEJrHZ0ziCB79MeBztqmXz4
-         QBOXq1iRat58ipcdw1pUcFdJbAFMJYtVdGd8c9T8WQwAv7q3RM3RzYj5oMrj359afWLh
-         kGLPaDG99xCEslQgubgLLniKmTjdAbQyHF8EQ7q6Y5e4gxeKsiQgytxMM91yGpZV4aGn
-         ubbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9FFTPRo1ckhhB49b7ONOxUt8kngEsKVIvbF1sVTmt/4=;
-        b=0LWp3xAUbtMdIM8899fm2DrinoL6bsfkJvoDaaWBwqasRrJllBmGDclmUDmKVJ0LYt
-         RMwhCygIiQf4UIrz/hgHruyvRGA1l4IvNU3alRXpnUlA8CX6yyTsL12aYPQHXqa8Uc6f
-         1N+NYaKAvTfXw3YiknPJmiuKQdry/+tv8l2mngMjyJmgdsgW/6Qg1J7D9p9ufMkF3PUr
-         5szmDbzsCdTEWJatHpe8Ej71Fqr52hKiTg9fkm4mz4MgI4J7Z3JG0bP+1kcMpG573Ide
-         0zlUmwGRxQaHB2AGINir2mGy9Gp7zTQ7wTnA5xTnMQAgOPVWFJvN60JGucrNNaJzOuMY
-         u/1g==
-X-Gm-Message-State: AOAM533FvHgp0bw7klG8CTj0PaDmdYLzmu1CMitWlWw8tAYWsO1H70fr
-        7evFu+YVKeFsEmplwFGyYvqfUDg1G0hwiEOcS30=
-X-Google-Smtp-Source: ABdhPJww7iq0LVImSpVjIhrRV3uTdPmM26QE4/u/LWzFds87ER0EpkxN5SOIDtsWpLZSNQSMsXUbX4bmU2Kj6x4sGik=
-X-Received: by 2002:a17:902:b682:: with SMTP id c2mr14899085pls.126.1643513073847;
- Sat, 29 Jan 2022 19:24:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20220130030352.2710479-1-hefengqing@huawei.com>
-In-Reply-To: <20220130030352.2710479-1-hefengqing@huawei.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sat, 29 Jan 2022 19:24:22 -0800
-Message-ID: <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com>
-Subject: Re: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
-To:     He Fengqing <hefengqing@huawei.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marek Majkowski <marek@cloudflare.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1353446AbiA3HJk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jan 2022 02:09:40 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F144C061714;
+        Sat, 29 Jan 2022 23:09:40 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCAA961011;
+        Sun, 30 Jan 2022 07:09:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2352C340E4;
+        Sun, 30 Jan 2022 07:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643526578;
+        bh=tTPAQtDIGEnVU5RkyCGGJre+Trs0HwTrP9s3QlyXJhE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gPCm/gd/id+aX9D4MmZSvMMWgj2AiD2rJHvaeUVb6hHGFn+AdkZ/aX5PfGv00dV/Q
+         9C+8jCi2MEBGwfHLvU42qDi/F4YIJGootA83y3LVIpGyt9UuNZ9h0JsazIhAxVo94Q
+         b0HXMGE0AHiCJCOIQhtpI/lv3EKLdEcGaMhkCjUQaL1+NjMAhckAJ4K56+DK+Q9N7D
+         ql2uC1uSOK1X3h+BdjxgO0VhT92a39iB+g8WBI9g31EcowZ61+pWiQawajtvlHh+vI
+         dWqZ5Edp8xMcfEmgSudT+q6PWE0DIbCK0JsaKN+ZM90mCqTZtXTTgRcgby1mVOv5aa
+         mAg+GaFN4f4aw==
+Date:   Sun, 30 Jan 2022 16:09:32 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v6 07/10] fprobe: Add exit_handler support
+Message-Id: <20220130160932.30f7d4bd0af58eda4ea263c8@kernel.org>
+In-Reply-To: <164338039561.2429999.13188362820100127912.stgit@devnote2>
+References: <164338031590.2429999.6203979005944292576.stgit@devnote2>
+        <164338039561.2429999.13188362820100127912.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 29, 2022 at 6:16 PM He Fengqing <hefengqing@huawei.com> wrote:
->
-> SK_LOOKUP program type was introduced in commit e9ddbb7707ff
-> ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
-> but the commit did not add SK_LOOKUP program type in net admin prog type.
-> I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
-> program type in net_admin_prog_type.
+On Fri, 28 Jan 2022 23:33:15 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-I'm afraid it's too late to change.
-
-Jakub, Marek, wdyt?
-
-
-> Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
->
-> Signed-off-by: He Fengqing <hefengqing@huawei.com>
+> Add exit_handler to fprobe. fprobe + rethook allows us to hook the kernel
+> function return. The rethook will be enabled only if the
+> fprobe::exit_handler is set.
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > ---
->  kernel/bpf/syscall.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 9befb1123770..2a8a4a5266fb 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2163,6 +2163,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
->         case BPF_PROG_TYPE_SK_MSG:
->         case BPF_PROG_TYPE_LIRC_MODE2:
->         case BPF_PROG_TYPE_FLOW_DISSECTOR:
-> +       case BPF_PROG_TYPE_SK_LOOKUP:
->         case BPF_PROG_TYPE_CGROUP_DEVICE:
->         case BPF_PROG_TYPE_CGROUP_SOCK:
->         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
-> --
-> 2.25.1
->
+>  Changes in v6:
+>   - Update according to the fprobe update.
+>  Changes in v5:
+>   - Add dependency for HAVE_RETHOOK.
+>  Changes in v4:
+>   - Check fprobe is disabled in the exit handler.
+>  Changes in v3:
+>   - Make sure to clear rethook->data before free.
+>   - Handler checks the data is not NULL.
+>   - Free rethook only if the rethook is using.
+> ---
+>  include/linux/fprobe.h |    6 ++
+>  kernel/trace/Kconfig   |    2 +
+>  kernel/trace/fprobe.c  |  127 +++++++++++++++++++++++++++++++++++++++++++-----
+>  3 files changed, 123 insertions(+), 12 deletions(-)
+> 
+> diff --git a/include/linux/fprobe.h b/include/linux/fprobe.h
+> index b920dc1b2969..acfdcc37acf6 100644
+> --- a/include/linux/fprobe.h
+> +++ b/include/linux/fprobe.h
+> @@ -5,19 +5,25 @@
+>  
+>  #include <linux/compiler.h>
+>  #include <linux/ftrace.h>
+> +#include <linux/rethook.h>
+>  
+>  /**
+>   * struct fprobe - ftrace based probe.
+>   * @ops: The ftrace_ops.
+>   * @nmissed: The counter for missing events.
+>   * @flags: The status flag.
+> + * @rethook: The rethook data structure. (internal data)
+>   * @entry_handler: The callback function for function entry.
+> + * @exit_handler: The callback function for function exit.
+>   */
+>  struct fprobe {
+>  	struct ftrace_ops	ops;
+>  	unsigned long		nmissed;
+>  	unsigned int		flags;
+> +	struct rethook		*rethook;
+> +
+>  	void (*entry_handler)(struct fprobe *fp, unsigned long entry_ip, struct pt_regs *regs);
+> +	void (*exit_handler)(struct fprobe *fp, unsigned long entry_ip, struct pt_regs *regs);
+>  };
+>  
+>  #define FPROBE_FL_DISABLED	1
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index 9e66fd29d94e..3c1f808969f1 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -245,6 +245,8 @@ config FPROBE
+>  	bool "Kernel Function Probe (fprobe)"
+>  	depends on FUNCTION_TRACER
+>  	depends on DYNAMIC_FTRACE_WITH_REGS
+> +	depends on HAVE_RETHOOK
+> +	select RETHOOK
+>  	default n
+>  	help
+>  	  This option enables kernel function probe (fprobe) based on ftrace,
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 081aef6bf531..408dcb6503fe 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -8,12 +8,22 @@
+>  #include <linux/fprobe.h>
+>  #include <linux/kallsyms.h>
+>  #include <linux/kprobes.h>
+> +#include <linux/rethook.h>
+>  #include <linux/slab.h>
+>  #include <linux/sort.h>
+>  
+> +#include "trace.h"
+> +
+> +struct fprobe_rethook_node {
+> +	struct rethook_node node;
+> +	unsigned long entry_ip;
+> +};
+> +
+>  static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  			   struct ftrace_ops *ops, struct ftrace_regs *fregs)
+>  {
+> +	struct fprobe_rethook_node *fpr;
+> +	struct rethook_node *rh;
+>  	struct fprobe *fp;
+>  	int bit;
+>  
+> @@ -30,10 +40,37 @@ static void fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  	if (fp->entry_handler)
+>  		fp->entry_handler(fp, ip, ftrace_get_regs(fregs));
+>  
+> +	if (fp->exit_handler) {
+> +		rh = rethook_try_get(fp->rethook);
+> +		if (!rh) {
+> +			fp->nmissed++;
+> +			goto out;
+> +		}
+> +		fpr = container_of(rh, struct fprobe_rethook_node, node);
+> +		fpr->entry_ip = ip;
+> +		rethook_hook(rh, ftrace_get_regs(fregs));
+> +	}
+> +
+> +out:
+>  	ftrace_test_recursion_unlock(bit);
+>  }
+>  NOKPROBE_SYMBOL(fprobe_handler);
+>  
+> +static void fprobe_exit_handler(struct rethook_node *rh, void *data,
+> +				struct pt_regs *regs)
+> +{
+> +	struct fprobe *fp = (struct fprobe *)data;
+> +	struct fprobe_rethook_node *fpr;
+> +
+> +	if (!fp || fprobe_disabled(fp))
+> +		return;
+> +
+> +	fpr = container_of(rh, struct fprobe_rethook_node, node);
+> +
+> +	fp->exit_handler(fp, fpr->entry_ip, regs);
+> +}
+> +NOKPROBE_SYMBOL(fprobe_exit_handler);
+> +
+>  /* Convert ftrace location address from symbols */
+>  static unsigned long *get_ftrace_locations(const char **syms, int num)
+>  {
+> @@ -76,6 +113,48 @@ static void fprobe_init(struct fprobe *fp)
+>  	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+>  }
+>  
+> +static int fprobe_init_rethook(struct fprobe *fp, int num)
+> +{
+> +	int i, size;
+> +
+> +	if (num < 0)
+> +		return -EINVAL;
+> +
+> +	if (!fp->exit_handler) {
+> +		fp->rethook = NULL;
+> +		return 0;
+> +	}
+> +
+> +	/* Initialize rethook if needed */
+> +	size = num * num_possible_cpus() * 2;
+> +	if (size < 0)
+> +		return -E2BIG;
+> +
+> +	fp->rethook = rethook_alloc((void *)fp, fprobe_exit_handler);
+> +	for (i = 0; i < size; i++) {
+> +		struct rethook_node *node;
+> +
+> +		node = kzalloc(sizeof(struct fprobe_rethook_node), GFP_KERNEL);
+> +		if (!node) {
+> +			rethook_free(fp->rethook);
+> +			fp->rethook = NULL;
+> +			return -ENOMEM;
+> +		}
+> +		rethook_add_node(fp->rethook, node);
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void fprobe_fail_cleanup(struct fprobe *fp)
+> +{
+> +	if (fp->rethook) {
+> +		/* Don't need to cleanup rethook->handler because this is not used. */
+> +		rethook_free(fp->rethook);
+> +		fp->rethook = NULL;
+> +	}
+> +	ftrace_free_filter(&fp->ops);
+> +}
+> +
+>  /**
+>   * register_fprobe() - Register fprobe to ftrace by pattern.
+>   * @fp: A fprobe data structure to be registered.
+> @@ -89,6 +168,7 @@ static void fprobe_init(struct fprobe *fp)
+>   */
+>  int register_fprobe(struct fprobe *fp, const char *filter, const char *notfilter)
+>  {
+> +	struct ftrace_hash *hash;
+>  	unsigned char *str;
+>  	int ret, len;
+>  
+> @@ -113,10 +193,21 @@ int register_fprobe(struct fprobe *fp, const char *filter, const char *notfilter
+>  			goto out;
+>  	}
+>  
+> -	ret = register_ftrace_function(&fp->ops);
+> +	/* TODO:
+> +	 * correctly calculate the total number of filtered symbols
+> +	 * from both filter and notfilter.
+> +	 */
+> +	hash = fp->ops.local_hash.filter_hash;
+> +	if (WARN_ON_ONCE(!hash))
+> +		goto out;
+> +
+> +	ret = fprobe_init_rethook(fp, (int)hash->count);
+> +	if (!ret)
+> +		ret = register_ftrace_function(&fp->ops);
+> +
+>  out:
+>  	if (ret)
+> -		ftrace_free_filter(&fp->ops);
+> +		fprobe_fail_cleanup(fp);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(register_fprobe);
+> @@ -144,12 +235,15 @@ int register_fprobe_ips(struct fprobe *fp, unsigned long *addrs, int num)
+>  	fprobe_init(fp);
+>  
+>  	ret = ftrace_set_filter_ips(&fp->ops, addrs, num, 0, 0);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = fprobe_init_rethook(fp, num);
+>  	if (!ret)
+>  		ret = register_ftrace_function(&fp->ops);
+>  
+>  	if (ret)
+> -		ftrace_free_filter(&fp->ops);
+> -
+> +		fprobe_fail_cleanup(fp);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(register_fprobe_ips);
+> @@ -179,14 +273,16 @@ int register_fprobe_syms(struct fprobe *fp, const char **syms, int num)
+>  		return PTR_ERR(addrs);
+>  
+>  	ret = ftrace_set_filter_ips(&fp->ops, addrs, num, 0, 0);
+> +	kfree(addrs);
+>  	if (ret)
+> -		goto out;
+> -	ret = register_ftrace_function(&fp->ops);
+> -	if (ret)
+> -		ftrace_free_filter(&fp->ops);
+> +		return ret;
+>  
+> -out:
+> -	kfree(addrs);
+> +	ret = fprobe_init_rethook(fp, num);
+> +	if (!ret)
+> +		ret = register_ftrace_function(&fp->ops);
+> +
+> +	if (ret)
+> +		fprobe_fail_cleanup(fp);
+>  
+>  	return ret;
+>  }
+> @@ -210,9 +306,16 @@ int unregister_fprobe(struct fprobe *fp)
+>  		return -EINVAL;
+>  
+>  	ret = unregister_ftrace_function(&fp->ops);
+> +	if (ret < 0)
+> +		return ret;
+>  
+> -	if (!ret)
+> -		ftrace_free_filter(&fp->ops);
+> +	if (fp->rethook) {
+> +		/* Make sure to clear rethook->data before freeing. */
+> +		WRITE_ONCE(fp->rethook->data, NULL);
+> +		barrier();
+> +		rethook_free(fp->rethook);
+> +	}
+
+Oops, I felt uncomfortable on this part, and I found that this rethook_free()
+must be called before unregister_ftrace_function() so that no more rethook will
+be used, and also need to wait for rcu before returning (this is also done
+in unregister_ftrace_function().)
+
+Let me update this part.
+
+Thank you,
+
+
+> +	ftrace_free_filter(&fp->ops);
+>  
+>  	return ret;
+>  }
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
