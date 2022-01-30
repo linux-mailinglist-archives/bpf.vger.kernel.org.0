@@ -2,151 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01714A355C
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 10:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC974A360E
+	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 12:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354468AbiA3Jae (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jan 2022 04:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S245141AbiA3LzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jan 2022 06:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354465AbiA3Jae (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Jan 2022 04:30:34 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E697DC061714;
-        Sun, 30 Jan 2022 01:30:33 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id g15-20020a17090a67cf00b001b7d5b6bedaso1551871pjm.4;
-        Sun, 30 Jan 2022 01:30:33 -0800 (PST)
+        with ESMTP id S237006AbiA3LzW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jan 2022 06:55:22 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C073FC06173B
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 03:55:21 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id v13so19968446wrv.10
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 03:55:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ueDBeTvh6E3uYQIJcGjSDWIJHO5uP2AyA8BgDmH0/x8=;
-        b=XAnu+rkl3csF10DXVpN8bDe05Ux7nKR5lL63gaV21DqAS2Lj1ls2o1Cu5pH7ZpmZ4U
-         J3MadUSTy0rG2LDOx2zHogcXGtRxrP4RAOUhpMZMglJYfBmWTgZMm9hjVmYEjAX0LTTw
-         basatcDS5iq9Lndx1t49VWoKx0L3ycTw5nbvhbDZF71QrsdSi5FGNjbkruEvqRh27c8P
-         G0ieH8ivE5JajurByZgm312WBAj03sJkaksquBSCzJdG3ISWNFEdwseT/lV4As3Qc8ON
-         amVc8PJJmYaiHCunuSq+NT3MKcnlw+nMwW4gkkYiAMLqIEHXg5CYDofSnmqk7cn2+hbU
-         +psA==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zgAN6AfkAHmymf1Qj+a2DASXNblLOsBwBSSNe3gcYkE=;
+        b=P58c/Xiod8wKiTNWJWDNjxA3x0tmrYvILy+U717qHcslUbw7oUnl1cCWAF+hO739sB
+         fXMgMwy7EUpE/72lbd96STM39OYjTn3+itMdiC41bBgkawoIxsfcoMqiOG9WzSmaGcBd
+         3l/a1ZcZoBunrSm3w6/mJcM97xct28T603/SM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ueDBeTvh6E3uYQIJcGjSDWIJHO5uP2AyA8BgDmH0/x8=;
-        b=w5KG2jvfa4CyOXjFM9sDPUaG83v6bO9420T3/HMGmuE446qMFEqisQjnICWvA7cFV7
-         yM0Fp8f0jlQc9ER+nk98mNNAFqIMxAb8RCG9nxhjDpmI19qktn0sJLW/fC0Cj43lNvfi
-         cWfMweuKjXA6mVrR6FD8dum2V+eZSYVnlEYbQMnVp40WWHj3zgrLKHD6KyZ0KUEwn9ES
-         YOgHSj69AG7Sbh5fe0OISkKhNn6GuS2Z3333Sc34Vrr75t5jrh3jsnrFOCIz0BQcAyg/
-         Dnz/GtJP16Lky6Tvx4pmKvPefMFBWiJMdc0qGOR5zK9r4ZyAqOI1G5JdHZ8GyPyKOsL8
-         TXQw==
-X-Gm-Message-State: AOAM530bJnkN5ph04PQl2zkwpmfcStPf1vFM7WY8YOOpkfNr7+7V/zyM
-        jU8UjGqsRypNFWkGbKriRLQ=
-X-Google-Smtp-Source: ABdhPJxvClpGoupxFezGR1EJD5z2XSnsdE9wibhe+RrEz2KSCaDlkw1IP1xkBk9tmMVZw2wDkjXl5w==
-X-Received: by 2002:a17:902:bcc6:: with SMTP id o6mr16526122pls.116.1643535033488;
-        Sun, 30 Jan 2022 01:30:33 -0800 (PST)
-Received: from localhost (61-223-193-169.dynamic-ip.hinet.net. [61.223.193.169])
-        by smtp.gmail.com with ESMTPSA id o7sm13641025pfk.184.2022.01.30.01.30.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zgAN6AfkAHmymf1Qj+a2DASXNblLOsBwBSSNe3gcYkE=;
+        b=0HgPU/cvMLjMJHNekiOhZM9ewsb7da8xvpP09raN6QpzxWy8Q9uSEJR5JGlt2yz7Vi
+         xMqKbjyMMgyx9I1/sGrtscjiE5UpOSCbDevLFEcOn+eHUQc8FiyU8Ly4g9fHbP8wnN7X
+         HmIBQF20CVWW3J7823n5wxD2ytRz1WuoEhHatHsz9vj9silF5NtWfyCxgqBprWAt9x1K
+         aAZuby/A6EwMnhJeop65cLLwLwkrZvr9tVVHfOVsK6bW1pHXldRpV6Pl5qHJv1PHMhK2
+         uxsi2MVQrapOe1a+fh/C3/eqJLVwZmNhn8lw4cxrz1n+sF6es3YopCI1yefaZLRP4dFl
+         4/WA==
+X-Gm-Message-State: AOAM533L/sKq+RliAA3anFEkTU+P0pmTxKNJswNt5vwoMyGtQHfSIUH6
+        +Ir5HTkarYSuwtOboT+LPQSZdsaluqW4Xg==
+X-Google-Smtp-Source: ABdhPJwNmoxEk89FcTGAahyRrFCzr1Ei7psU4G9u/ToIiPbziij7BjxkxIhbp97RYlxys4KQcSK3ig==
+X-Received: by 2002:adf:f80a:: with SMTP id s10mr13097614wrp.440.1643543720071;
+        Sun, 30 Jan 2022 03:55:20 -0800 (PST)
+Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0e00.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::e00])
+        by smtp.gmail.com with ESMTPSA id ay3sm3255446wmb.44.2022.01.30.03.55.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 01:30:32 -0800 (PST)
-From:   Hou Tao <hotforest@gmail.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Sun, 30 Jan 2022 03:55:19 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, houtao1@huawei.com,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: check whether s32 is sufficient for kfunc offset
-Date:   Sun, 30 Jan 2022 17:29:17 +0800
-Message-Id: <20220130092917.14544-4-hotforest@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220130092917.14544-1-hotforest@gmail.com>
-References: <20220130092917.14544-1-hotforest@gmail.com>
+        Menglong Dong <imagedong@tencent.com>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next v2 0/2] Split bpf_sock dst_port field
+Date:   Sun, 30 Jan 2022 12:55:16 +0100
+Message-Id: <20220130115518.213259-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+This is a follow-up to discussion around the idea of making dst_port in struct
+bpf_sock a 16-bit field that happened in [1].
 
-In add_kfunc_call(), bpf_kfunc_desc->imm with type s32 is used to
-represent the offset of called kfunc from __bpf_call_base, so
-add a test to ensure that the offset will not be overflowed.
+v2:
+- use an anonymous field for zero padding (Alexei)
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/ksyms_module.c   | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+v1:
+- keep dst_field offset unchanged to prevent existing BPF program breakage
+  (Martin)
+- allow 8-bit loads from dst_port[0] and [1]
+- add test coverage for the verifier and the context access converter
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-index 997aa90dea64..955a9ede4756 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-@@ -3,9 +3,49 @@
- 
- #include <test_progs.h>
- #include <network_helpers.h>
-+#include <trace_helpers.h>
- #include "test_ksyms_module.lskel.h"
- #include "test_ksyms_module.skel.h"
- 
-+/*
-+ * Check whether or not s32 in bpf_kfunc_desc is sufficient
-+ * to represent the offset between bpf_testmod_test_mod_kfunc
-+ * and __bpf_call_base.
-+ */
-+static void test_ksyms_module_valid_offset(void)
-+{
-+	struct test_ksyms_module *skel;
-+	unsigned long long kfunc_addr;
-+	unsigned long long base_addr;
-+	long long actual_offset;
-+	int used_offset;
-+	int err;
-+
-+	if (!env.has_testmod) {
-+		test__skip();
-+		return;
-+	}
-+
-+	/* Ensure kfunc call is supported */
-+	skel = test_ksyms_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_ksyms_module__open"))
-+		return;
-+
-+	err = kallsyms_find("bpf_testmod_test_mod_kfunc", &kfunc_addr);
-+	if (!ASSERT_OK(err, "find kfunc addr"))
-+		goto cleanup;
-+
-+	err = kallsyms_find("__bpf_call_base", &base_addr);
-+	if (!ASSERT_OK(err, "find base addr"))
-+		goto cleanup;
-+
-+	used_offset = kfunc_addr - base_addr;
-+	actual_offset = kfunc_addr - base_addr;
-+	ASSERT_EQ((long long)used_offset, actual_offset, "kfunc offset overflowed");
-+cleanup:
-+	test_ksyms_module__destroy(skel);
-+}
-+
- static void test_ksyms_module_lskel(void)
- {
- 	struct test_ksyms_module_lskel *skel;
-@@ -55,6 +95,8 @@ static void test_ksyms_module_libbpf(void)
- 
- void test_ksyms_module(void)
- {
-+	if (test__start_subtest("valid_offset"))
-+		test_ksyms_module_valid_offset();
- 	if (test__start_subtest("lskel"))
- 		test_ksyms_module_lskel();
- 	if (test__start_subtest("libbpf"))
+[1] https://lore.kernel.org/bpf/87sftbobys.fsf@cloudflare.com/
+
+Jakub Sitnicki (2):
+  bpf: Make dst_port field in struct bpf_sock 16-bit wide
+  selftests/bpf: Extend verifier and bpf_sock tests for dst_port loads
+
+ include/uapi/linux/bpf.h                      |  3 +-
+ net/core/filter.c                             | 10 ++-
+ tools/include/uapi/linux/bpf.h                |  3 +-
+ .../selftests/bpf/prog_tests/sock_fields.c    | 58 +++++++++----
+ .../selftests/bpf/progs/test_sock_fields.c    | 41 ++++++++++
+ tools/testing/selftests/bpf/verifier/sock.c   | 81 ++++++++++++++++++-
+ 6 files changed, 173 insertions(+), 23 deletions(-)
+
 -- 
-2.20.1
+2.31.1
 
