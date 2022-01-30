@@ -2,93 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9964A3635
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 13:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1C94A3AC7
+	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 23:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354775AbiA3MZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jan 2022 07:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354767AbiA3MZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Jan 2022 07:25:39 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35320C061741
-        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:25:38 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id k25so33832012ejp.5
-        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:25:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=PMTYH8vYxJzYzIKQ4wJ1Cn/QVbnABT43BbzXgdJrWQI=;
-        b=apo0H/0Dyl2t3hk8E0D2z85aDd6iOJNXpJKyEbBY7/JTNGPCdkbdnzGkICjahHHvdg
-         ikbaCSmfvGWZBU6IZXUhNElfru0/txxioJdYFDH5e/cXST9poMaEGPF58kTHE38lu4h0
-         h8EdekFT0o5IRjk4tqQ0MYnPW0lGioEBYLaYk=
+        id S241956AbiA3WvG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jan 2022 17:51:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233869AbiA3WvG (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 30 Jan 2022 17:51:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643583065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=CEJtYC/ux9V7Xcz3H8zZRGhZ6hJ78FKjbpvst1x3iao=;
+        b=MkQPaSGghvmNf5ZQSQrZ2AvX58WjsnXBjr9FtqIdNTJz09tDUt4ArMbfvknHcIbzjAo9c7
+        mEBllmScspmmroCC5CQrOLfwNlN9hazPGY5R6nN2AB0Z34YnDQlYzHWc9JxlckRFV2AaDK
+        gjIB74bWLMU3fkq86MetLaUVD6N49j0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-492-c4P3OP6DPTyUQZKA3cPKKA-1; Sun, 30 Jan 2022 17:51:04 -0500
+X-MC-Unique: c4P3OP6DPTyUQZKA3cPKKA-1
+Received: by mail-wm1-f72.google.com with SMTP id l20-20020a05600c1d1400b0035153bf34c3so6704891wms.2
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 14:51:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=PMTYH8vYxJzYzIKQ4wJ1Cn/QVbnABT43BbzXgdJrWQI=;
-        b=NgD/HVvHks+OAsCJgOw3JaX95zwWSeTmmgEZjsrVGGdc81khBU68o5HANAGzQHz1a9
-         dufCJtDmqphQ56B8xD2VBXV8FRZEb9K/8wMtHGm441ZENjonYqsvXmz38UyZrpfxeA1q
-         AkWpHuzBoTcG2v5k643jee0fmuVYBn/lvju6JCCuhiAyoi9v2Zq1iKWorSajpXyhW4sC
-         qms3k5pwTb6ewEn7t7aovipfIOYQtefB+oeDltTkNMzZXGhgWxZ6N6W5K14Yecotkvl4
-         rov2MB5tt8arY9Ux6YBpeUpvM0xBTR4jgHxU8jMV2b1tsCwXnf8dYKg15U0ABFRKaYPS
-         A6/A==
-X-Gm-Message-State: AOAM532Oz37SsK+TH4ntePlZRbC9DjV4FqsbaiHpLzd8QbtUCqKw/wU/
-        g3A1cDlOPdTyRcg79kEkW360YQ==
-X-Google-Smtp-Source: ABdhPJy3rWsVAeaHCILbvxyPLUIcCktog468JC/fPRiLCOsjiBYoYIRU/3dSm2dhcMilSbKwZrs6iA==
-X-Received: by 2002:a17:906:730a:: with SMTP id di10mr13618818ejc.489.1643545536662;
-        Sun, 30 Jan 2022 04:25:36 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
-        by smtp.gmail.com with ESMTPSA id s19sm13891576edr.23.2022.01.30.04.25.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CEJtYC/ux9V7Xcz3H8zZRGhZ6hJ78FKjbpvst1x3iao=;
+        b=4UmmDkuEh8bq2JvSow712t8PpWig5yu3cC429Z+nz1N5AXhPWdHWFS9neuEbdP8nQ0
+         w50jamuiOZ4kdtSNXoS3IpezDQXsbbfjO0ypRQnP3kxfDrmVIUoqziTWE/IU+gCzZmFK
+         XEcfU1XtbPX+aU0r8L8hokK9Emc2BLYraaiDXPlbZPm6xR/FFfxihkWAXdaGuevrX+3z
+         RdLeGaeaFRy/orx4VUpea/Sf8Om/xOjICImRyqY7lqE2+ShKSksSVldUdEYR0EHOJ9A5
+         jcga6H52lHz9qsr9yrrO4wc5UJIZ4uLOVKiSuFp34A3bYJ3nS1owoeyelPGlsRTJOn6X
+         m+qw==
+X-Gm-Message-State: AOAM533OModDUrjGUGh8EvzM8vGdXfmmg9KYiQyh8KkvN1DtZJjp9eYF
+        Jsbj0NbHTUWrQxR8JK8CRRrlrghokJnzIf3MXxRpW7hlffLkspP6RRWAc8eV9L4vE3o/cgA3K1j
+        Wxkza95YIqrkd
+X-Received: by 2002:a05:6000:11cb:: with SMTP id i11mr15047139wrx.19.1643583062894;
+        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxNMYOMGCWToKpdzI1/qcneuiwFkDNoNMorUn6kmTaBO2y0zoRoKbuOxTjvZrDqB2vj4CtDAA==
+X-Received: by 2002:a05:6000:11cb:: with SMTP id i11mr15047118wrx.19.1643583062694;
+        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
+Received: from krava.redhat.com ([83.240.63.12])
+        by smtp.gmail.com with ESMTPSA id c11sm11851213wri.43.2022.01.30.14.51.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 04:25:36 -0800 (PST)
-References: <20220130030352.2710479-1-hefengqing@huawei.com>
- <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     He Fengqing <hefengqing@huawei.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
-In-reply-to: <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com>
-Date:   Sun, 30 Jan 2022 13:25:35 +0100
-Message-ID: <87zgndqukg.fsf@cloudflare.com>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>
+Subject: [RFC] failing selftests/bpf/test_offload.py
+Date:   Sun, 30 Jan 2022 23:51:01 +0100
+Message-Id: <20220130225101.47514-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 30, 2022 at 04:24 AM CET, Alexei Starovoitov wrote:
-> On Sat, Jan 29, 2022 at 6:16 PM He Fengqing <hefengqing@huawei.com> wrote:
->>
->> SK_LOOKUP program type was introduced in commit e9ddbb7707ff
->> ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
->> but the commit did not add SK_LOOKUP program type in net admin prog type.
->> I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
->> program type in net_admin_prog_type.
->
-> I'm afraid it's too late to change.
->
-> Jakub, Marek, wdyt?
+hi,
+I have failing test_offload.py with following output:
 
-That's definitely an oversight on my side, considering that CAP_BPF came
-in 5.8, and sk_lookup program first appeared in 5.9.
+  # ./test_offload.py
+  ...
+  Test bpftool bound info reporting (own ns)...
+  FAIL: 3 BPF maps loaded, expected 2
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1177, in <module>
+      check_dev_info(False, "")
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 645, in check_dev_info
+      maps = bpftool_map_list(expected=2, ns=ns)
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 190, in bpftool_map_list
+      fail(True, "%d BPF maps loaded, expected %d" %
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 86, in fail
+      tb = "".join(traceback.extract_stack().format())
 
-Today it's possible to build a usable sk_lookup program without
-CAP_NET_ADMIN if you go for REUSEPORT_SOCKARRAY map instead of
-SOCKMAP/HASH.
+it fails to detect maps from bpftool's feature detection,
+that did not make it yet through deferred removal
 
-Best I can come up is a "phase it out" approach. Put the CAP_NET_ADMIN
-load-time check behind a config option, defaulting to true?, and wait
-for it to become obsolete.
+with the fix below I have this subtest passed, but it fails
+further on:
+
+  # ./test_offload.py
+  ...
+  Test bpftool bound info reporting (own ns)...
+  Test bpftool bound info reporting (other ns)...
+  Test bpftool bound info reporting (remote ns)...
+  Test bpftool bound info reporting (back to own ns)...
+  Test bpftool bound info reporting (removed dev)...
+  Test map update (no flags)...
+  Test map update (exists)...
+  Test map update (noexist)...
+  Test map dump...
+  Test map dump...
+  Traceback (most recent call last):
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1251, in <module>
+      _, entries = bpftool("map dump id %d" % (m["id"]))
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 169, in bpftool
+      return tool("bpftool", args, {"json":"-p"}, JSON=JSON, ns=ns,
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 155, in tool
+      ret, stdout = cmd(ns + name + " " + params + args,
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 109, in cmd
+      return cmd_result(proc, include_stderr=include_stderr, fail=fail)
+    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 131, in cmd_result
+      raise Exception("Command failed: %s\n%s" % (proc.args, stderr))
+  Exception: Command failed: bpftool -p map dump id 4325
+
+the test seems to expect maps having BTF loaded, which for some reason
+did not happen, so the test fails with bpftool pretty dump fail
+
+the test loads the object with 'ip link ...', which I never touched,
+so I wanted ask first before I dive in, perhaps I miss some setup
+
+thoughts? ;-)
+
+thanks,
+jirka
+---
+ tools/lib/bpf/libbpf.c                      | 6 +++---
+ tools/testing/selftests/bpf/test_offload.py | 6 +++++-
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 4ce94f4ed34a..881c88eceed0 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4407,7 +4407,7 @@ static int probe_kern_global_data(void)
+ 	};
+ 	int ret, map, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
++	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "global_data", sizeof(int), 32, 1, NULL);
+ 	if (map < 0) {
+ 		ret = -errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+@@ -4540,7 +4540,7 @@ static int probe_kern_array_mmap(void)
+ 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
+ 	int fd;
+ 
+-	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), sizeof(int), 1, &opts);
++	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "array_mmap", sizeof(int), sizeof(int), 1, &opts);
+ 	return probe_fd(fd);
+ }
+ 
+@@ -4587,7 +4587,7 @@ static int probe_prog_bind_map(void)
+ 	};
+ 	int ret, map, prog, insn_cnt = ARRAY_SIZE(insns);
+ 
+-	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
++	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "bind_map_detect", sizeof(int), 32, 1, NULL);
+ 	if (map < 0) {
+ 		ret = -errno;
+ 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index edaffd43da83..0cf93d246804 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -769,7 +769,11 @@ skip(ret != 0, "bpftool not installed")
+ base_progs = progs
+ _, base_maps = bpftool("map")
+ base_map_names = [
+-    'pid_iter.rodata' # created on each bpftool invocation
++    # created on each bpftool invocation
++    'pid_iter.rodata',
++    'bind_map_detect',
++    'global_data',
++    'array_mmap',
+ ]
+ 
+ # Check netdevsim
+-- 
+2.31.1
+
