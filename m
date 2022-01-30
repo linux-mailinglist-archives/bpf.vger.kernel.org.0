@@ -2,69 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126194A3624
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 13:13:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9964A3635
+	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 13:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354752AbiA3MNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jan 2022 07:13:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
+        id S1354775AbiA3MZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jan 2022 07:25:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345500AbiA3MNQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 30 Jan 2022 07:13:16 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A26C061714
-        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:13:15 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id n8so21178094lfq.4
-        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:13:15 -0800 (PST)
+        with ESMTP id S1354767AbiA3MZj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jan 2022 07:25:39 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35320C061741
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:25:38 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id k25so33832012ejp.5
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 04:25:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=zQkTUmYoTL+SMI6Wsd3fvGoSJtSFgIC/KqZ6cq0Rgvo=;
-        b=hVfXkcDYHof7fsdPsrx0qGxjMxvFiYJ7ZsQzHewbTsjpITmX9/uYl74H0oHgBAu0wo
-         k15vScKYBo0IrhFrygG7xurjO4qcgH5ohOwFB/rCZxGBqHkAK+Ozwz0Sf2MyKEmaf82z
-         HhUikiVaX+x1/lLIDSFFagfdEuWEaCG11TrFTGbVMAhNZLGKmJ1+9AkP1I1FzduCyfnD
-         Uf5+kqJrr4rIjCVfoWJ2swKko/4BuRSKf7cacqVFAVxXUQzWEOD4//UB2ui0qpSuA1+G
-         PaMRdLlZUv8d+YlZ8ILS3J7GZF+58SD6vsFCSSqfI7a1gWneIzSMf9gQUA9qkRlIerDi
-         7Tvg==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version;
+        bh=PMTYH8vYxJzYzIKQ4wJ1Cn/QVbnABT43BbzXgdJrWQI=;
+        b=apo0H/0Dyl2t3hk8E0D2z85aDd6iOJNXpJKyEbBY7/JTNGPCdkbdnzGkICjahHHvdg
+         ikbaCSmfvGWZBU6IZXUhNElfru0/txxioJdYFDH5e/cXST9poMaEGPF58kTHE38lu4h0
+         h8EdekFT0o5IRjk4tqQ0MYnPW0lGioEBYLaYk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=zQkTUmYoTL+SMI6Wsd3fvGoSJtSFgIC/KqZ6cq0Rgvo=;
-        b=wYHnk2/Te1qEPP/lRGjxIUUBzPn3OllJ5eDzAfQzdhsEkE4ktb+xG6cESd91aDJppP
-         8xeJ5xawMhNsZHE+Ar9i53zPZBnyKbheuJQmR1eDevHtsGpoP8oYGgl9NFS76LY6Zja1
-         2QIlQ2aSFDC7kyK0pUqwSis446JNMZsIWC8apwi1X/cyIGjzFalMydXGmUnB/v4sVCxv
-         tF8IPORryYwCfhr923MXXnZUKMckF09MTNrU2CRhvitueatrRK4fw2GaqTsbr0NxY9Ke
-         UYpHpXgIrx2UXNn6MEJWL/iwb/mR6we7PuKc7HQQaEU8ygJi061ZKzB7j4DILTkpLN3b
-         CJAA==
-X-Gm-Message-State: AOAM5320sswrQ7OsufBQMGfxO+qFgbBQzBPg445xeLhxFO2Rmf7Kk0W6
-        aIJCf0RLR86lhhmqykIVqbqUKmbWlYW1nPCvwdA=
-X-Google-Smtp-Source: ABdhPJyTuVFIxmw5DxdcWvHpCvWIXRWol4tejoccWMlKCLkFKhqITQNyDl9p7CLqrHp7HPXcmdXe4Eer1H6bjG9SB0U=
-X-Received: by 2002:a05:6512:2249:: with SMTP id i9mr5482917lfu.461.1643544793912;
- Sun, 30 Jan 2022 04:13:13 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version;
+        bh=PMTYH8vYxJzYzIKQ4wJ1Cn/QVbnABT43BbzXgdJrWQI=;
+        b=NgD/HVvHks+OAsCJgOw3JaX95zwWSeTmmgEZjsrVGGdc81khBU68o5HANAGzQHz1a9
+         dufCJtDmqphQ56B8xD2VBXV8FRZEb9K/8wMtHGm441ZENjonYqsvXmz38UyZrpfxeA1q
+         AkWpHuzBoTcG2v5k643jee0fmuVYBn/lvju6JCCuhiAyoi9v2Zq1iKWorSajpXyhW4sC
+         qms3k5pwTb6ewEn7t7aovipfIOYQtefB+oeDltTkNMzZXGhgWxZ6N6W5K14Yecotkvl4
+         rov2MB5tt8arY9Ux6YBpeUpvM0xBTR4jgHxU8jMV2b1tsCwXnf8dYKg15U0ABFRKaYPS
+         A6/A==
+X-Gm-Message-State: AOAM532Oz37SsK+TH4ntePlZRbC9DjV4FqsbaiHpLzd8QbtUCqKw/wU/
+        g3A1cDlOPdTyRcg79kEkW360YQ==
+X-Google-Smtp-Source: ABdhPJy3rWsVAeaHCILbvxyPLUIcCktog468JC/fPRiLCOsjiBYoYIRU/3dSm2dhcMilSbKwZrs6iA==
+X-Received: by 2002:a17:906:730a:: with SMTP id di10mr13618818ejc.489.1643545536662;
+        Sun, 30 Jan 2022 04:25:36 -0800 (PST)
+Received: from cloudflare.com ([2a01:110f:4809:d800::e00])
+        by smtp.gmail.com with ESMTPSA id s19sm13891576edr.23.2022.01.30.04.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jan 2022 04:25:36 -0800 (PST)
+References: <20220130030352.2710479-1-hefengqing@huawei.com>
+ <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     He Fengqing <hefengqing@huawei.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
+In-reply-to: <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com>
+Date:   Sun, 30 Jan 2022 13:25:35 +0100
+Message-ID: <87zgndqukg.fsf@cloudflare.com>
 MIME-Version: 1.0
-Reply-To: roslza294@gmail.com
-Sender: haman2015zakaraya@gmail.com
-Received: by 2002:a05:6520:428c:b0:158:bd6e:c205 with HTTP; Sun, 30 Jan 2022
- 04:13:13 -0800 (PST)
-From:   Roslinawati Zainal <roslinawatizainal@gmail.com>
-Date:   Sun, 30 Jan 2022 04:13:13 -0800
-X-Google-Sender-Auth: UogpfG2DXD2k33sQ25S4vaC9RAk
-Message-ID: <CAB_VX0o934wvxK-v0KtSQXpJG68nx-K_U6=OXeMYLOjuTAyhXg@mail.gmail.com>
-Subject: HAPPY NEW YEAR.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-HAPPY NEW YEAR.
+On Sun, Jan 30, 2022 at 04:24 AM CET, Alexei Starovoitov wrote:
+> On Sat, Jan 29, 2022 at 6:16 PM He Fengqing <hefengqing@huawei.com> wrote:
+>>
+>> SK_LOOKUP program type was introduced in commit e9ddbb7707ff
+>> ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
+>> but the commit did not add SK_LOOKUP program type in net admin prog type.
+>> I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
+>> program type in net_admin_prog_type.
+>
+> I'm afraid it's too late to change.
+>
+> Jakub, Marek, wdyt?
 
-My name is Ms. Zainal from Malaysia. I am writing you this mail to
-solicit for your cooperation in a very confidential business
-transaction of $3.9 million, I will give you details of the
-transaction upon your positive reply.
+That's definitely an oversight on my side, considering that CAP_BPF came
+in 5.8, and sk_lookup program first appeared in 5.9.
 
+Today it's possible to build a usable sk_lookup program without
+CAP_NET_ADMIN if you go for REUSEPORT_SOCKARRAY map instead of
+SOCKMAP/HASH.
 
-Kind regards
-Ms Zainal.
+Best I can come up is a "phase it out" approach. Put the CAP_NET_ADMIN
+load-time check behind a config option, defaulting to true?, and wait
+for it to become obsolete.
