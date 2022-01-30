@@ -2,66 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2B94A336E
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 03:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8887D4A333C
+	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 03:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242306AbiA3C7S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 29 Jan 2022 21:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233631AbiA3C7S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 29 Jan 2022 21:59:18 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE43C061714
-        for <bpf@vger.kernel.org>; Sat, 29 Jan 2022 18:59:17 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id e2so18630446wra.2
-        for <bpf@vger.kernel.org>; Sat, 29 Jan 2022 18:59:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=SefC7bk8DJo43dYmJYW3Mb3dSRhJ/oIXvO0dX8VPfsoL7YhZxL5lKppAOBJCTzKCYv
-         sHxse0b/SebR3RuWaOo9IiGbTo58zjmn5K5NQ7sW5ncXEX94Sh/W1YRa8Wgm4KlsOlsY
-         s4BtzTL0wSpLqL5kRmyQbo5PL/rN6YstRkZr0pSCxACPye0GG3xWTcXk3e2qA6URDDke
-         T/kz/NCaTLNgt4CR7n5DNe1VWfZ008io6V7ThAkheKPep9oFxYO89CQHTJo8IZs672rh
-         9eFCTTurduQ3IzrNEEuXLZurnsZnjGPoTW/b41Cz2FsS1EPTS3SxGMXJemTuQP1rVzy0
-         TEqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=HF3cGEC3P+FzTQ0oAn4jNTylyZrUdG8vsmkwZmgdcF1KPm8u9LxDK9axIUZ0XsAG3d
-         +okXf8JYQXg+Lyl8M/qXdTruTvg9SyhMmBsbhrERxKr5QAz9G1gz4bRQ/mBjg3NkvA0m
-         Vpjhfqm5Zw716UpMJdSrvM7fXzNXlCaYTeyo1PgeAB6Kt3hPTg++IA92eyia+Iuqlyd5
-         zmBv+49DxK4IGKzyp8wDyINP24Vv8wC/Wkw/GgwQG+cGyah8v0dJGy+hIiWAqpm6W1D1
-         Y1tCKNrijGzSm5hI19sFHsWISGoWkrIU+UCLSRDQHuhTZ+IBOhmiOrJzMuZeS/8F8YMR
-         hUvA==
-X-Gm-Message-State: AOAM531q+0SIS+yNWssWTyBENAsnp5GEIVj4j+QHecXQZLqPD5c/ubFV
-        UF2UefCLAbmMcd8IZi6ufP8Ui5dDdKwdabmlDEg=
-X-Google-Smtp-Source: ABdhPJyIc6S9rqOZqBUucbuNMyND/We1jFwAbGY0yOpnAT0FRIJJLHQmM1CeCxKtek5NWq+7XOPx9kr1/gZmRmAIXDs=
-X-Received: by 2002:a5d:64e6:: with SMTP id g6mr2702197wri.184.1643511555329;
- Sat, 29 Jan 2022 18:59:15 -0800 (PST)
+        id S1353762AbiA3CQu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 29 Jan 2022 21:16:50 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16934 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1353761AbiA3CQt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 29 Jan 2022 21:16:49 -0500
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JmZTq5ZHRzZfNw;
+        Sun, 30 Jan 2022 10:12:47 +0800 (CST)
+Received: from k03.huawei.com (10.67.174.111) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sun, 30 Jan 2022 10:16:47 +0800
+From:   He Fengqing <hefengqing@huawei.com>
+To:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>
+Subject: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
+Date:   Sun, 30 Jan 2022 03:03:52 +0000
+Message-ID: <20220130030352.2710479-1-hefengqing@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a05:6000:15c4:0:0:0:0 with HTTP; Sat, 29 Jan 2022 18:59:14
- -0800 (PST)
-Reply-To: mrs.bill.chantalone01@gmail.com
-From:   Bill Chantal Lawrence <appiahmensah577@gmail.com>
-Date:   Sun, 30 Jan 2022 03:59:14 +0100
-Message-ID: <CADr6Hime6wpzBWmcf1_+RSuL9vVr=CKssYpj6riEnDF0G7wvhA@mail.gmail.com>
-Subject: Hello....
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.111]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-You have been compensated with the sum of 9.5 million dollars in this
-united nation the payment will be issue into atm visa  card and send
-to you from the santander bank we need your address and your
-Whatsapp number  + 1 6465853907  this my email.ID
-( mrs.bill.chantal.roland@gmail.com )  contact  me
+SK_LOOKUP program type was introduced in commit e9ddbb7707ff
+("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
+but the commit did not add SK_LOOKUP program type in net admin prog type.
+I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
+program type in net_admin_prog_type.
 
-Thanks my
+Fixes: e9ddbb7707ff ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point")
 
-mrs bill chantal
+Signed-off-by: He Fengqing <hefengqing@huawei.com>
+---
+ kernel/bpf/syscall.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 9befb1123770..2a8a4a5266fb 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2163,6 +2163,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+ 	case BPF_PROG_TYPE_SK_MSG:
+ 	case BPF_PROG_TYPE_LIRC_MODE2:
+ 	case BPF_PROG_TYPE_FLOW_DISSECTOR:
++	case BPF_PROG_TYPE_SK_LOOKUP:
+ 	case BPF_PROG_TYPE_CGROUP_DEVICE:
+ 	case BPF_PROG_TYPE_CGROUP_SOCK:
+ 	case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+-- 
+2.25.1
+
