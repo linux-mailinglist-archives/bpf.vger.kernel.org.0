@@ -2,61 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3934A47FC
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 14:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F224A482B
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 14:33:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347966AbiAaNYC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 08:24:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359643AbiAaNX7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 08:23:59 -0500
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAB9C06173B
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 05:23:59 -0800 (PST)
-Received: by mail-io1-xd41.google.com with SMTP id i62so16833456ioa.1
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 05:23:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=mXXhocnz02IhA9jxVUrBosARbBFQhYVknSM94NXnjAc=;
-        b=RdJAZD6PV2ABP1BTuoco+cZV9KiudiTLP0dB7mWgQ1hjH5oaZQ3KUIJHANYeUoKfXS
-         tlxxmiaL5c/+YTgGsHWuoyKsomFIdG5ErrRMQZcrgzUx7Mm3JJwc9J57anijoGFcN+Dc
-         tjbzsXcsKJPZLPhd2Pi3vMlE5PL2gVe+063xCp1Z1FRBtTSdjbbvk1vQ/M6CdfvyLfTp
-         27A1F2Le4yxWbmfPIRn9X8UG+4OZGPyD0AxCMrMxf5w6/p8NSrM9ScpvfA6b6o8B1V7t
-         C6wY+vQpdpnVPwrCho0t+xxeLCwp8snsc1O+WMc8mbYBxUd0ExXi//UB8gShLKTje/T4
-         vhJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=mXXhocnz02IhA9jxVUrBosARbBFQhYVknSM94NXnjAc=;
-        b=iF3evYW3TwRf+qLNc40sNQU7BN9rL0p3bHeNhvLHzSoJ3qtm71U4ihV4Kf0XsMlzr9
-         sp6DkPANfHwKu0VYoieR5K/nn8I4gCuI9DjUgFl/ITf1Qz6S0EJQle7u+8ItYM3cjcal
-         3uX0XT9pMTIQ5FWhEYnE2WsLb9RrY6qPXgYp+o8UaCvG7vttajYbskaEBbISMLm7S8QB
-         UZfjZARMo13ohzIPmNfLY2JC+Tcl2hDi0NMASpJ4Ou3hHN3TX6yoalEZClgTbAnlZPUF
-         sVIi9JTtkGKrMWjtAPC967DYpCqED8xXwXQfiLcv7SO05KvQbI7nAngJIpRAKo4erPY/
-         TcBw==
-X-Gm-Message-State: AOAM532MfontGn69xaW6C19I5m8VrIKVIm0GK8dxv89X8lPXBjp/U6uB
-        WDULd/532gvZNSl/26NPhxUoqlCHn1lSKd2xprU=
-X-Google-Smtp-Source: ABdhPJyFV9rWh7LzLSQvijo8SmdBhvks8PmqdY2FyQLKNlYJ7zGgwxxjnNKl9ogF8Kkq1TNq9R/0frC3Cobw0jbT4j0=
-X-Received: by 2002:a02:9429:: with SMTP id a38mr10752608jai.43.1643635439106;
- Mon, 31 Jan 2022 05:23:59 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:6638:24cc:0:0:0:0 with HTTP; Mon, 31 Jan 2022 05:23:58
- -0800 (PST)
-From:   JAN NOR <jn7353386@gmail.com>
-Date:   Mon, 31 Jan 2022 14:23:58 +0100
-Message-ID: <CA+7WKKtq_xemYK3eo7dwPvB=W2pH8TiaexGQmyoz8uEAYJyzsg@mail.gmail.com>
-Subject: GOOD NEWS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S233957AbiAaNdG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 08:33:06 -0500
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:53608 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1379024AbiAaNbo (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 31 Jan 2022 08:31:44 -0500
+Received: from sas1-3cba3404b018.qloud-c.yandex.net (sas1-3cba3404b018.qloud-c.yandex.net [IPv6:2a02:6b8:c08:bd26:0:640:3cba:3404])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 6F9872E0C6A;
+        Mon, 31 Jan 2022 16:31:40 +0300 (MSK)
+Received: from sas1-9d43635d01d6.qloud-c.yandex.net (sas1-9d43635d01d6.qloud-c.yandex.net [2a02:6b8:c08:793:0:640:9d43:635d])
+        by sas1-3cba3404b018.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id 50xm73fQr6-VaGiP9N4;
+        Mon, 31 Jan 2022 16:31:40 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1643635900; bh=/QTiU1RXcrb5KfRgFKqKXsNjxtJAMyFB7TOvTGUsdCk=;
+        h=Date:Subject:To:From:Message-Id:Cc;
+        b=eLj6tEpTScTeJWaxbo0zVoiA7ZeYuvn3xN3RjyD9SpBIx2/lnKLNMjCzWnr5WA0/4
+         BejLm7DnhFmnBem2l/t/N5Q50wIrbw8rTH/sKen57DIxWJzrAExAuYg10WmfCEE/oX
+         Tt0ncmqHiqPqLeB7qnVBBr7CJ9tGfmgQizZGRfSI=
+Authentication-Results: sas1-3cba3404b018.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from vmhmukos.sas.yp-c.yandex.net (vmhmukos.sas.yp-c.yandex.net [2a02:6b8:c10:288:0:696:6af:0])
+        by sas1-9d43635d01d6.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id KT3glRaQ9Z-VaIONEH0;
+        Mon, 31 Jan 2022 16:31:36 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+X-Yandex-Fwd: 2
+From:   Akhmat Karakotov <hmukos@yandex-team.ru>
+To:     netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        eric.dumazet@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, tom@herbertland.com,
+        hmukos@yandex-team.ru, zeil@yandex-team.ru, mitradir@yandex-team.ru
+Subject: [PATCH net-next v5 0/5] Make hash rethink configurable
+Date:   Mon, 31 Jan 2022 16:31:20 +0300
+Message-Id: <20220131133125.32007-1-hmukos@yandex-team.ru>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+As it was shown in the report by Alexander Azimov, hash rethink at the
+client-side may lead to connection timeout toward stateful anycast
+services. Tom Herbert created a patchset to address this issue by applying
+hash rethink only after a negative routing event (3RTOs) [1]. This change
+also affects server-side behavior, which we found undesirable. This
+patchset changes defaults in a way to make them safe: hash rethink at the
+client-side is disabled and enabled at the server-side upon each RTO
+event or in case of duplicate acknowledgments.
+
+This patchset provides two options to change default behaviour. The hash
+rethink may be disabled at the server-side by the new sysctl option.
+Changes in the sysctl option don't affect default behavior at the
+client-side.
+
+Hash rethink can also be enabled/disabled with socket option or bpf
+syscalls which ovewrite both default and sysctl settings. This socket
+option is available on both client and server-side. This should provide
+mechanics to enable hash rethink inside administrative domain, such as DC,
+where hash rethink at the client-side can be desirable.
+
+[1] https://lore.kernel.org/netdev/20210809185314.38187-1-tom@herbertland.com/
+
+v2:
+	- Changed sysctl default to ENABLED in all patches. Reduced sysctl
+	  and socket option size to u8. Fixed netns bug reported by kernel
+	  test robot.
+
+v3:
+	- Fixed bug with bad u8 comparison. Moved sk_txrehash to use less
+	  bytes in struct. Added WRITE_ONCE() in setsockopt in and
+	  READ_ONCE() in tcp_rtx_synack.
+
+v4:
+	- Rebase and add documentation for sysctl option.
+
+v5:
+	- Move sk_txrehash out of busy poll ifdef.
+
+
+Akhmat Karakotov (5):
+  txhash: Make rethinking txhash behavior configurable via sysctl
+  txhash: Add socket option to control TX hash rethink behavior
+  txhash: Add txrehash sysctl description
+  bpf: Add SO_TXREHASH setsockopt
+  tcp: Change SYN ACK retransmit behaviour to account for rehash
+
+ Documentation/admin-guide/sysctl/net.rst |  9 ++++++++
+ arch/alpha/include/uapi/asm/socket.h     |  2 ++
+ arch/mips/include/uapi/asm/socket.h      |  2 ++
+ arch/parisc/include/uapi/asm/socket.h    |  2 ++
+ arch/sparc/include/uapi/asm/socket.h     |  2 ++
+ include/net/netns/core.h                 |  1 +
+ include/net/sock.h                       | 28 +++++++++++++-----------
+ include/uapi/asm-generic/socket.h        |  2 ++
+ include/uapi/linux/socket.h              |  4 ++++
+ net/core/filter.c                        | 10 +++++++++
+ net/core/net_namespace.c                 |  2 ++
+ net/core/sock.c                          | 14 ++++++++++++
+ net/core/sysctl_net_core.c               | 14 ++++++++++--
+ net/ipv4/inet_connection_sock.c          |  3 +++
+ net/ipv4/tcp_output.c                    |  4 +++-
+ 15 files changed, 83 insertions(+), 16 deletions(-)
+
 -- 
-MY DEAR.
+2.17.1
 
-DID YOU RECEIVE MY MAIL OR MESSAGE ?
-
-KINDLY GET BACK TO ME VIA EMAIL : jet4003@gmail.com
