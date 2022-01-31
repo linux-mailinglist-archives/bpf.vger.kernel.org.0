@@ -2,181 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D0C4A512F
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 22:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907B04A5147
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 22:18:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236230AbiAaVMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 16:12:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbiAaVMj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 16:12:39 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7664C061714;
-        Mon, 31 Jan 2022 13:12:38 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id p63so17801855iod.11;
-        Mon, 31 Jan 2022 13:12:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=eQEG6jy9BWsAyEBx6ILTdnPSlhitzjQY3ldZv0CPhSs=;
-        b=JwS6KvijBayJNJWezyT0f01VGikWNDxlGbXPXW37fcY/o54qU8cDHSY6lION88HWh6
-         PZQ5KmzpJz6AHwfv7KinMO8uitdFwlwR7okw3rK/gAaG3y97JHthCMXd6SFLVLL//vCm
-         I2iUZwk03vfZNGY8glmJwyZLJMWvKEwbEAGbQ0uasOwcvUE6tCDdWbsRBSq9nay0gKQM
-         81b9HRopOQuoG0WzuOm1lgyQWcxqfbuEGZmCNwA2e54+YpTsTK+310Vsbz3Ppo8+meb3
-         EipVtNmAoR3P93ix47S2+ZSfhe8oAzamgtgfRCPg8adai6GTdTFekaHwzBTH1u1vYxuq
-         6cqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=eQEG6jy9BWsAyEBx6ILTdnPSlhitzjQY3ldZv0CPhSs=;
-        b=i5JofJaLwsdhFctA3ICV92c0SvDxUWrzVC9Z4LPJlMU6Oj3hkyD0tjqd6IBD8Z7GkH
-         tBdmn2BCRXtNcbxPs7ZEB0HLDtgvLC34ufiqlZ6OX713l8UVv3nTvD94XJmugs/YJi9H
-         P9yv8HfpfE9DeYe+MsCYurgTcTjgx8e+s/OP3ye7oENmHOr4DZjzXBCs5tWhCOXt2N6t
-         V1COVVqi+K94Ko538VHmcE/lZlCLt7KBTGnyJUG989fQdtgxW8LJOQK7tjf4ywH/0TJ6
-         SdpKdBqUy3mh5Ic0RNJ4/waPfv5R51fHEQ1gu126csRqqpSgMzLyT4T/W7ESt9x2IGKC
-         gVLA==
-X-Gm-Message-State: AOAM533OGbCM/PP207ozSJp5MEpQrkyRpl2mQg1RLMJ6bIOiy+0wF4X7
-        /FCT4RbQEEBVxr14xNcU2Wc=
-X-Google-Smtp-Source: ABdhPJykFC5jvO3y/XCzG6ZE7Zalauh8LaHb1hosmbb8FUM3Lo3ZJXFq27bUazQFvFnvrzP49ZqCnQ==
-X-Received: by 2002:a05:6638:3781:: with SMTP id w1mr10382789jal.26.1643663558195;
-        Mon, 31 Jan 2022 13:12:38 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id y22sm186808iow.2.2022.01.31.13.12.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 13:12:37 -0800 (PST)
-Date:   Mon, 31 Jan 2022 13:12:29 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Petar Penkov <ppenkov@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Joe Stringer <joe@cilium.io>,
-        Florent Revest <revest@chromium.org>,
-        linux-kselftest@vger.kernel.org,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@toke.dk>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Florian Westphal <fw@strlen.de>
-Message-ID: <61f850bdf1b23_8597208f8@john.notmuch>
-In-Reply-To: <8f5fecac-ce6e-adc8-305b-a2ee76328bce@nvidia.com>
-References: <20220124151340.376807-1-maximmi@nvidia.com>
- <20220124151340.376807-3-maximmi@nvidia.com>
- <61efacc6980f4_274ca2083e@john.notmuch>
- <8f5fecac-ce6e-adc8-305b-a2ee76328bce@nvidia.com>
-Subject: Re: [PATCH bpf-next v2 2/3] bpf: Add helpers to issue and check SYN
- cookies in XDP
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1380007AbiAaVSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 16:18:04 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57804 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241083AbiAaVSC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 16:18:02 -0500
+Received: from [78.46.152.42] (helo=sslproxy04.your-server.de)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEe3e-0008dE-5l; Mon, 31 Jan 2022 22:17:54 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy04.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEe3d-000FrK-SR; Mon, 31 Jan 2022 22:17:53 +0100
+Subject: Re: [PATCH net-next 4/4] net, neigh: Add NTF_MANAGED flag for managed
+ neighbor entries
+To:     Eric Dumazet <eric.dumazet@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     roopa@nvidia.com, dsahern@kernel.org, m@lambda.lt,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20211011121238.25542-1-daniel@iogearbox.net>
+ <20211011121238.25542-5-daniel@iogearbox.net>
+ <949e2f20-5eef-ac9b-2583-f3937cf032d1@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d431eb12-0625-a9c4-802d-dd7fa7719662@iogearbox.net>
+Date:   Mon, 31 Jan 2022 22:17:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <949e2f20-5eef-ac9b-2583-f3937cf032d1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26439/Mon Jan 31 10:24:40 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maxim Mikityanskiy wrote:
-> On 2022-01-25 09:54, John Fastabend wrote:
-> > Maxim Mikityanskiy wrote:
-> >> The new helpers bpf_tcp_raw_{gen,check}_syncookie allow an XDP program
-> >> to generate SYN cookies in response to TCP SYN packets and to check
-> >> those cookies upon receiving the first ACK packet (the final packet of
-> >> the TCP handshake).
-> >>
-> >> Unlike bpf_tcp_{gen,check}_syncookie these new helpers don't need a
-> >> listening socket on the local machine, which allows to use them together
-> >> with synproxy to accelerate SYN cookie generation.
-> >>
-> >> Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> >> Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> >> ---
-> > 
-> > [...]
-> > 
-> >> +
-> >> +BPF_CALL_4(bpf_tcp_raw_check_syncookie, void *, iph, u32, iph_len,
-> >> +	   struct tcphdr *, th, u32, th_len)
-> >> +{
-> >> +#ifdef CONFIG_SYN_COOKIES
-> >> +	u32 cookie;
-> >> +	int ret;
-> >> +
-> >> +	if (unlikely(th_len < sizeof(*th)))
-> >> +		return -EINVAL;
-> >> +
-> >> +	if (!th->ack || th->rst || th->syn)
-> >> +		return -EINVAL;
-> >> +
-> >> +	if (unlikely(iph_len < sizeof(struct iphdr)))
-> >> +		return -EINVAL;
-> >> +
-> >> +	cookie = ntohl(th->ack_seq) - 1;
-> >> +
-> >> +	/* Both struct iphdr and struct ipv6hdr have the version field at the
-> >> +	 * same offset so we can cast to the shorter header (struct iphdr).
-> >> +	 */
-> >> +	switch (((struct iphdr *)iph)->version) {
-> >> +	case 4:
-> > 
-> > Did you consider just exposing __cookie_v4_check() and __cookie_v6_check()?
+On 1/31/22 9:43 PM, Eric Dumazet wrote:
+[...]
+>> @@ -1539,6 +1564,20 @@ int neigh_direct_output(struct neighbour *neigh, struct sk_buff *skb)
+>>   }
+>>   EXPORT_SYMBOL(neigh_direct_output);
+>> +static void neigh_managed_work(struct work_struct *work)
+>> +{
+>> +    struct neigh_table *tbl = container_of(work, struct neigh_table,
+>> +                           managed_work.work);
+>> +    struct neighbour *neigh;
+>> +
+>> +    write_lock_bh(&tbl->lock);
+>> +    list_for_each_entry(neigh, &tbl->managed_list, managed_list)
+>> +        neigh_event_send(neigh, NULL);
 > 
-> No, I didn't, I just implemented it consistently with 
-> bpf_tcp_check_syncookie, but let's consider it.
+> neigh_event_send() can need to lock tbl->lock, leading to a deadlock ?
+
+Thanks for forwarding the syzbot report! I'll take a look.
+
+> __raw_write_lock_bh include/linux/rwlock_api_smp.h:202 [inline]
+>   _raw_write_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:334
+>   ___neigh_create+0x9e1/0x2990 net/core/neighbour.c:652
+>   ip6_finish_output2+0x1070/0x14f0 net/ipv6/ip6_output.c:123
+>   __ip6_finish_output net/ipv6/ip6_output.c:191 [inline]
+>   __ip6_finish_output+0x61e/0xe90 net/ipv6/ip6_output.c:170
+>   ip6_finish_output+0x32/0x200 net/ipv6/ip6_output.c:201
+>   NF_HOOK_COND include/linux/netfilter.h:296 [inline]
+>   ip6_output+0x1e4/0x530 net/ipv6/ip6_output.c:224
+>   dst_output include/net/dst.h:451 [inline]
+>   NF_HOOK include/linux/netfilter.h:307 [inline]
+>   ndisc_send_skb+0xa99/0x17f0 net/ipv6/ndisc.c:508
+>   ndisc_send_ns+0x3a9/0x840 net/ipv6/ndisc.c:650
+>   ndisc_solicit+0x2cd/0x4f0 net/ipv6/ndisc.c:742
+>   neigh_probe+0xc2/0x110 net/core/neighbour.c:1040
+>   __neigh_event_send+0x37d/0x1570 net/core/neighbour.c:1201
+>   neigh_event_send include/net/neighbour.h:470 [inline]
+>   neigh_managed_work+0x162/0x250 net/core/neighbour.c:1574
+>   process_one_work+0x9ac/0x1650 kernel/workqueue.c:2307
+>   worker_thread+0x657/0x1110 kernel/workqueue.c:2454
+>   kthread+0x2e9/0x3a0 kernel/kthread.c:377
+>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
 > 
-> I can't just pass a pointer from BPF without passing the size, so I 
-> would need some wrappers around __cookie_v{4,6}_check anyway. The checks 
-> for th_len and iph_len would have to stay in the helpers. The check for 
-> TCP flags (ACK, !RST, !SYN) could be either in the helper or in BPF. The 
-> switch would obviously be gone.
-
-I'm not sure you would need the len checks in helper, they provide
-some guarantees I guess, but the void * is just memory I don't see
-any checks on its size. It could be the last byte of a value for
-example?
-
-> 
-> The bottom line is that it would be the same code, but without the 
-> switch, and repeated twice. What benefit do you see in this approach? 
-
-The only benefit would be to shave some instructions off the program.
-XDP is about performance so I figure we shouldn't be adding arbitrary
-stuff here. OTOH you're already jumping into a helper so it might
-not matter at all.
-
->  From my side, I only see the ability to drop one branch at the expense 
-> of duplicating the code above the switch (th_len and iph_len checks).
-
-Just not sure you need the checks either, can you just assume the user
-gives good data?
-
-> 
-> > My code at least has already run the code above before it would ever call
-> > this helper so all the other bits are duplicate.
-> 
-> Sorry, I didn't quite understand this part. What "your code" are you 
-> referring to?
-
-Just that the XDP code I maintain has a if ipv4 {...} else ipv6{...}
-structure in it so could use a v4_check... and v6_check... then call
-the correct version directly, removing the switch from the helper.
-
-Do you think there could be a performance reason to drop out those
-instructions or is it just hid by the hash itself. Also it seems
-a bit annoying if user is calling multiple helpers and they keep
-doing the same checks over and over.
+>> +    queue_delayed_work(system_power_efficient_wq, &tbl->managed_work,
+>> +               NEIGH_VAR(&tbl->parms, DELAY_PROBE_TIME));
+>> +    write_unlock_bh(&tbl->lock);
+>> +}
+>> +
+>>   static void neigh_proxy_process(struct timer_list *t)
+>>   {
+>>       struct neigh_table *tbl = from_timer(tbl, t, proxy_timer);
+>> @@ -1685,6 +1724,8 @@ void neigh_table_init(int index, struct neigh_table *tbl)
+>>       INIT_LIST_HEAD(&tbl->parms_list);
+>>       INIT_LIST_HEAD(&tbl->gc_list);
+>> +    INIT_LIST_HEAD(&tbl->managed_list);
+>> +
