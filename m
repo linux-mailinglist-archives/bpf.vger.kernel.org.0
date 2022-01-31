@@ -2,118 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B43F4A4C92
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 17:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD4E4A4CB7
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 18:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380669AbiAaQ4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 11:56:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1380671AbiAaQ4W (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 Jan 2022 11:56:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643648181;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Lpe4J6TXyayllLvpj0n33m3bv6dU5xN6j72mEXZSOkY=;
-        b=CBSNoRgo3oAs86/KgdixhUDMb6PvG+HA0pvlD3A2lff6M5SNibeaPGc37eNMnLBm29+WMg
-        M8rJOuiXzXGunhKt+X7IKmT9tjhrrCHnDzAMJ85CaFzgq+mW9iic2ExwFxoteRgFohQnmm
-        di4Alf83FZCUFZnpaSZmqNvJLsnBD/I=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-333-qmubfugSMcSYAoWXuABTcw-1; Mon, 31 Jan 2022 11:56:20 -0500
-X-MC-Unique: qmubfugSMcSYAoWXuABTcw-1
-Received: by mail-ed1-f69.google.com with SMTP id v15-20020a50a44f000000b004094f4a8f3bso7295658edb.0
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 08:56:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Lpe4J6TXyayllLvpj0n33m3bv6dU5xN6j72mEXZSOkY=;
-        b=1bNgzJMN+0Ni66Cg9lC94NTghqG04I2LO+Z42XBmHM0pAiVzx2xitVCFlr7+au6+a9
-         et7HwiZen0cvQKpI2kx/n3dHaf/CpKgD+pcloRerzSztDOEiNy7TNpTEnR93LNloDdzH
-         6i2SlPQDWMBFUJAD1/TkaLEq2cKyCsI16BN2UCnAaamBGiLa/zM57y9G71BWCGjodjTh
-         INGHJ6PTzw5YGRKT+iiG9X1QPBI1M8u7BAvAZPm38sIeWZNoNARwkylAgzySFwxf4/47
-         nar10yrfLmRVouBl56EEhfiIh4FPeBYwbOTAilPWIwv6QawJaZXplQk9vnNvD6KzNi6G
-         KEqQ==
-X-Gm-Message-State: AOAM532cvcP0aiuiB/5tg1DMDpuwDWMKV/Ft8U/ONVs7QP0kMy2WygKE
-        +ODgrBy9cTEu3HXFXpjGBHobWlQ4Fog7Gurrg2KoGGkSqZpzILaH2PxP63jtI2pINkApT4h7v0K
-        fLgCYNEbCXwZQ
-X-Received: by 2002:a17:907:8a1d:: with SMTP id sc29mr17693515ejc.326.1643648178631;
-        Mon, 31 Jan 2022 08:56:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyctQHqJl8JnIY34NCeaf7CoVDfmYj1HmbGNsKfMZkb58IUdGBWA1NbnUQkN+lsoj29a+qzvg==
-X-Received: by 2002:a17:907:8a1d:: with SMTP id sc29mr17693502ejc.326.1643648178434;
-        Mon, 31 Jan 2022 08:56:18 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id cr8sm17858097edb.47.2022.01.31.08.56.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 08:56:17 -0800 (PST)
-Date:   Mon, 31 Jan 2022 17:56:15 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 0/5] Attach a cookie to a tracing program.
-Message-ID: <YfgUr4tAdYDpVziO@krava>
-References: <20220126214809.3868787-1-kuifeng@fb.com>
- <CAADnVQKkJCj+_aoJN2YtS3-Hc68uk1S2vN=5+0M0Q9KRVuxqoQ@mail.gmail.com>
+        id S243395AbiAaRFB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 12:05:01 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:51302 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236802AbiAaRFB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 12:05:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 48BB4B82BB2;
+        Mon, 31 Jan 2022 17:05:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4484AC340E8;
+        Mon, 31 Jan 2022 17:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643648699;
+        bh=pDzbp6f0HP5rjgsIA8RZqs5AWAal0sGi8t9sZ7151Gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ud05AO+Wt0B90QaIuKiHIlCDF6SHbATDdBwqlME+y9LXrtMGCOjXXLG1HUR0atKj6
+         InX1i8qd/ncc5zTu3HbkqsfnNJH8Shdu5L51WU2C3V1GuWCdIkbpgAemzUgZupF3Ny
+         5V7qinsghUyczMvgU0z8TbZzCPP5UdaOd3pPJ8DEYV4xUIC2fB5zxuYIyiqWYGcl7z
+         yBofYT362EJp5VA/u3OTHqKQ9vjMuc/0pUa4DkoAwTvokpwectqOhMJuXxMxygBBha
+         GDswlJLD1PLIk83PPDvTiINzXB8NpsExENQ+moaHpcD6ncPj1V6duAhbCAUB67EyeJ
+         ju1PBCQFLO+xQ==
+Date:   Mon, 31 Jan 2022 10:04:53 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        shuah@kernel.org, ndesaulniers@google.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, quentin@isovalent.com, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH bpf-next v2 1/6] tools: Help cross-building with clang
+Message-ID: <YfgWtQkTj69zPZY/@dev-arch.archlinux-ax161>
+References: <20211216163842.829836-1-jean-philippe@linaro.org>
+ <20211216163842.829836-2-jean-philippe@linaro.org>
+ <YfSUAPnZX/wP8U+p@archlinux-ax161>
+ <Yfft1sqfXGTAjwJ8@myrica>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKkJCj+_aoJN2YtS3-Hc68uk1S2vN=5+0M0Q9KRVuxqoQ@mail.gmail.com>
+In-Reply-To: <Yfft1sqfXGTAjwJ8@myrica>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 09:17:07PM -0800, Alexei Starovoitov wrote:
-> On Wed, Jan 26, 2022 at 1:48 PM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> >
-> > Allow users to attach a 64-bits cookie to a BPF program when link it
-> > to fentry, fexit, or fmod_ret of a function.
-> >
-> > This changeset includes several major changes.
-> >
-> >  - Add a new field bpf_cookie to struct raw_tracepoint, so that a user
-> >    can attach a cookie to a program.
-> >
-> >  - Store flags in trampoline frames to provide the flexibility of
-> >    storing more values in these frames.
-> >
-> >  - Store the program ID of the current BPF program in the trampoline
-> >    frame.
-> >
-> >  - The implmentation of bpf_get_attach_cookie() for tracing programs
-> >    to read the attached cookie.
+On Mon, Jan 31, 2022 at 02:10:30PM +0000, Jean-Philippe Brucker wrote:
+> Hi Nathan,
 > 
-> flags, prog_id, cookie... I don't follow what's going on here.
+> On Fri, Jan 28, 2022 at 06:10:24PM -0700, Nathan Chancellor wrote:
+> > > diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+> > > index 071312f5eb92..b0be5f40a3f1 100644
+> > > --- a/tools/scripts/Makefile.include
+> > > +++ b/tools/scripts/Makefile.include
+> > > @@ -87,7 +87,18 @@ LLVM_STRIP	?= llvm-strip
+> > >  
+> > >  ifeq ($(CC_NO_CLANG), 1)
+> > >  EXTRA_WARNINGS += -Wstrict-aliasing=3
+> > > -endif
+> > > +
+> > > +else ifneq ($(CROSS_COMPILE),)
+> > > +CLANG_CROSS_FLAGS := --target=$(notdir $(CROSS_COMPILE:%-=%))
+> > > +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)gcc))
+> > 
+> > Apologies for noticing this so late, I only ran into this recently.
+> > 
+> > This line causes a warning when running 'make clean' when
+> > '$(CROSS_COMPILE)gcc' does not exist in PATH. For example:
+> > 
+> > $ make -skj"$(nproc)" ARCH=powerpc CROSS_COMPILE=powerpc-linux-gnu- LLVM=1 LLVM_IAS=0 clean
+> > which: no powerpc-linux-gnu-gcc in ($PATH)
+> > 
+> > I only have powerpc-linux-gnu binutils in my PATH, not GCC, as I am only
+> > working with clang.
+> > 
+> > This happens because of the 'resolve_btfids_clean target', which always
+> > runs when running the 'clean' target on an in-tree build (since
+> > $(objtree) = $(srctree)).
+> > 
+> > I tried looking into the best way to fix this but I am not at all
+> > familiar with the tools/ build system; would you mind taking a look?
+> > I see some machinery at the top of tools/bpf/Makefile for avoiding
+> > running some commands under certain commands but I am unsure how to
+> > shuffle that around to make everything work.
 > 
-> cookie is supposed to be per link.
-> Doing it for fentry only will be inconvenient for users.
-> For existing kprobes there is no good place to store it. iirc.
-> For multi attach kprobes there won't be a good place either.
-> I think cookie should be out of band.
-> Maybe lets try a resizable map[ip]->cookie and don't add
-> 'cookie' arrays to multi-kprobe attach,
-> 'cookie' field to kprobe, fentry, and other attach apis.
-> Adding 'cookie' to all of them is quite a bit of churn for kernel
-> and user space.
-> I think resizable bpf map[u64]->u64 solves this problem.
+> I think it's simpler than that, we should just suppress the errors from
+> 'which'. It's fine that $(CROSS_COMPILE)gcc doesn't exist and
+> $(GCC_TOOLCHAIN_DIR) is empty, but 'which' should keep quiet about it.
 
-so you mean passing such map fd to link and have bpf_get_attach_cookie
-using that map to get the cookie? that could be generic way for all
-the links
+Ha, that's what I get for looking into something at the very end of a
+long work week because that is a great and simple solution I probably
+would not have seen :)
 
-I have the 'cookie arrays to multi-kprobe attach' code ready and I think 
-it should be faster than map[ip] hash lookup? I'll need to check
+> I did test this patch with cross-build and no gcc, but Debian's 'which' is
+> quiet by default so I missed the error. I'll send a fix shortly.
 
-jirka
+Ah, that is an interesting observation. TIL that Debian rolls their own
+which [1], versus most other distros, which use GNU which [2].
 
-> Maybe cookie isn't even needed.
-> If the bpf prog can have a clean map[bpf_get_func_ip()] that
-> doesn't have to be sized up front it will address the need.
-> 
+I will keep an eye out for your patch so I can review it.
 
+[1]: https://salsa.debian.org/debian/debianutils/-/blob/de14223e5bffe15e374a441302c528ffc1cbed57/which
+[2]: https://savannah.gnu.org/projects/which/
+
+Cheers,
+Nathan
