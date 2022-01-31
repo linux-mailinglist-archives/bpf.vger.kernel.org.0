@@ -2,98 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C13A4A4676
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 12:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3CB4A47DA
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 14:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376348AbiAaL6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 06:58:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378545AbiAaL6C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 06:58:02 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41EEC06175A;
-        Mon, 31 Jan 2022 03:46:12 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id k17so12181738plk.0;
-        Mon, 31 Jan 2022 03:46:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2LshZ+k3yxfozJYiL0Vvmb7zr16k7OxfcJf3YiQB8OU=;
-        b=gVEqmyYpS4E5wGPfzb+OCHerQ0kpTF2TUYWo5J3fb+FenZtuWOpANbT8qkI1PiWehd
-         kvzfB8SbZV5QSs6t8BEaQHotxt6Lj3FyRQ67IdsU3D1t6+rSK3v6uA1tG0Ob/zkfeYw6
-         PvV5G6dL/QNzshf9MQyz3bKRhM7ON3i307Nz2SMaPNdivLPQ48HKv8Cw+WfTdNZIL8va
-         c0qpxsXtRTn2gqMH/t7BUSt9akPP6nwHjeg3YVLmIF4aomGuGd3EPDl+XiLGlro9IM9L
-         4t+9GdSBkFCB32armWBE6doeh3m573hrBR2+x2HvUKN9V/ZRD+dQrG/UAHfXNzcz5RC1
-         112Q==
+        id S234914AbiAaNPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 08:15:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49212 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234808AbiAaNPP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 31 Jan 2022 08:15:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643634914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4FeGLRifRzLE6TznX8Ku8/uOBOutTsIkvk9v4ykgx0E=;
+        b=dCGF+7RbscA2RVTZ4Uiv/bNNf/9PEYENOt8LzloDFQVjnpWtH7RVBjMhJyKDciRxkkR9UH
+        zvpgzvBX0CcwrEP56yyKhb00kUM/UFm94BIaz4CC7JvANKmSCBal1izjN5vlLLYcieLBPV
+        saPlYaExox4gEoKP0fZhtgV2fr+EEhs=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-638-A7f_1vv2MbuhLc0PyIe2Pw-1; Mon, 31 Jan 2022 08:15:13 -0500
+X-MC-Unique: A7f_1vv2MbuhLc0PyIe2Pw-1
+Received: by mail-ot1-f72.google.com with SMTP id h36-20020a9d2f27000000b0059e33f1f8a0so7953162otb.19
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 05:15:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2LshZ+k3yxfozJYiL0Vvmb7zr16k7OxfcJf3YiQB8OU=;
-        b=qKcD49QgQS2o/9//Jh0JQlBXzi2Nkts3JtgJblwEBsTpGDqQPrg7DG3O0j5s4dOM14
-         lKy07II3wS48M32HzITBmrzMTHT7jRC0AqnWCo/OOEejAYAmTAk92Lgj85xOwLL0e5gN
-         4jlibbmV1Tce/idBT2VOkl1AteqBUn1GqPzZK/GS1rqGYqFUdmm9/xHO+mKfQUB/Vrmm
-         uffG110bi+7HibD5yADllz45sB0ZxOXKCa92N+jCfkhDdRzrJjiIFYmLYlUrVoz4Qzco
-         sBmc0aP2cB0rogGQE4Ko+fY0jj/r8XlfkFq4rp6QWmmNW0z3veK9HMEWqXqOcIkYxJ34
-         /C5w==
-X-Gm-Message-State: AOAM533pvuyceEeTZBEhvBKe5cMl4S1oDq+C+aMSkXBaUprSzfavhv1Y
-        WAN7H2djFyhInBFrSTrZfumsM8ZacCClzA==
-X-Google-Smtp-Source: ABdhPJyrokr21nAAo8ywhF0RHkt/UlLAJ7G1HaG4SUfaJepDBODWmTOxwC3WSvMa1eRD2ZLDwwaCSg==
-X-Received: by 2002:a17:903:188:: with SMTP id z8mr1147290plg.119.1643629572454;
-        Mon, 31 Jan 2022 03:46:12 -0800 (PST)
-Received: from localhost (61-223-193-169.dynamic-ip.hinet.net. [61.223.193.169])
-        by smtp.gmail.com with ESMTPSA id nn4sm11123246pjb.39.2022.01.31.03.46.11
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=4FeGLRifRzLE6TznX8Ku8/uOBOutTsIkvk9v4ykgx0E=;
+        b=ZA860ZDDUTjyGYOO0eVjVwzSYW4kKEOEFYjn9jHbUAOOj9FSkSd0vr04pSw8+v/sUp
+         rEJm4JypR/WNkOAPPDz7yJhQDJnRwFU5jGXHGiauMrtroIvWesVV28EkXypkPJ5a/+3/
+         VoZiD5cLmEWsXOjwOo6dtal1uFfMO+Qpizry51xC7tcpxwT01qyR4KZNd7dj+qEUCmFo
+         az4Jd/11xd2FjndjrvII/wNMQrOiSwopowxx9FWJg0QXT2PDE4bRi4JCgd7Xax02XtOU
+         j6hivq/krk7+7Oz5rmWbe5/vxpotoG79Nd1FFiOm7Pg5P8NdDfed1yjFIpkO2PXIXKFL
+         O+yQ==
+X-Gm-Message-State: AOAM532KJS0PSuEWfyqZ45ywpDAA2JrjRsqxae1bStg+C5rAbboxLE2q
+        ZD1uAnnHUK0SmUP3uaO82grIfrXEMk6rpKXLSmRcwJzK9RX+wtcYY9v6y/fxeyUjD5qr0M7FU0+
+        Rkr4xYoJW1X0i
+X-Received: by 2002:a05:6808:23c6:: with SMTP id bq6mr17754656oib.99.1643634912235;
+        Mon, 31 Jan 2022 05:15:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwg+PlgnvIqsLU9wdXdToRYaNCz/5k5B8bAtO1B3Ld/EJlpN9xGPW04bWDX+KnYUCyo0PUyZg==
+X-Received: by 2002:a05:6808:23c6:: with SMTP id bq6mr17754636oib.99.1643634911837;
+        Mon, 31 Jan 2022 05:15:11 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id e5sm13714981oti.59.2022.01.31.05.15.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 03:46:11 -0800 (PST)
-From:   Hou Tao <hotforest@gmail.com>
-X-Google-Original-From: Hou Tao <houtao1@huawei.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        Mon, 31 Jan 2022 05:15:11 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 87CF81806B4; Mon, 31 Jan 2022 14:15:07 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, houtao1@huawei.com
-Subject: [PATCH bpf-next] bpf: use VM_MAP instead of VM_ALLOC for ringbuf
-Date:   Mon, 31 Jan 2022 19:46:00 +0800
-Message-Id: <20220131114600.21849-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        KP Singh <kpsingh@chromium.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>
+Subject: Re: [RFC] failing selftests/bpf/test_offload.py
+In-Reply-To: <20220130225101.47514-1-jolsa@kernel.org>
+References: <20220130225101.47514-1-jolsa@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 31 Jan 2022 14:15:07 +0100
+Message-ID: <87k0egt5b8.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now the ringbuf area in /proc/vmallocinfo is showed as vmalloc,
-but VM_ALLOC is only used for vmalloc(), and for the ringbuf area
-it is created by mapping allocated pages, so use VM_MAP instead.
+Jiri Olsa <jolsa@redhat.com> writes:
 
-After the change, ringbuf info in /proc/vmallocinfo will changed from:
-  [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmalloc user
-to
-  [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmap user
+> hi,
+> I have failing test_offload.py with following output:
+>
+>   # ./test_offload.py
+>   ...
+>   Test bpftool bound info reporting (own ns)...
+>   FAIL: 3 BPF maps loaded, expected 2
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1177, in <module>
+>       check_dev_info(False, "")
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 645, in check_dev_info
+>       maps = bpftool_map_list(expected=2, ns=ns)
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 190, in bpftool_map_list
+>       fail(True, "%d BPF maps loaded, expected %d" %
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 86, in fail
+>       tb = "".join(traceback.extract_stack().format())
+>
+> it fails to detect maps from bpftool's feature detection,
+> that did not make it yet through deferred removal
+>
+> with the fix below I have this subtest passed, but it fails
+> further on:
+>
+>   # ./test_offload.py
+>   ...
+>   Test bpftool bound info reporting (own ns)...
+>   Test bpftool bound info reporting (other ns)...
+>   Test bpftool bound info reporting (remote ns)...
+>   Test bpftool bound info reporting (back to own ns)...
+>   Test bpftool bound info reporting (removed dev)...
+>   Test map update (no flags)...
+>   Test map update (exists)...
+>   Test map update (noexist)...
+>   Test map dump...
+>   Test map dump...
+>   Traceback (most recent call last):
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1251, in <module>
+>       _, entries = bpftool("map dump id %d" % (m["id"]))
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 169, in bpftool
+>       return tool("bpftool", args, {"json":"-p"}, JSON=JSON, ns=ns,
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 155, in tool
+>       ret, stdout = cmd(ns + name + " " + params + args,
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 109, in cmd
+>       return cmd_result(proc, include_stderr=include_stderr, fail=fail)
+>     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 131, in cmd_result
+>       raise Exception("Command failed: %s\n%s" % (proc.args, stderr))
+>   Exception: Command failed: bpftool -p map dump id 4325
+>
+> the test seems to expect maps having BTF loaded, which for some reason
+> did not happen, so the test fails with bpftool pretty dump fail
+>
+> the test loads the object with 'ip link ...', which I never touched,
+> so I wanted ask first before I dive in, perhaps I miss some setup
+>
+> thoughts? ;-)
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- kernel/bpf/ringbuf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It looks like the test_offload.py has been using 'bpftool -p' since its
+inception (in commit: 417ec26477a5 ("selftests/bpf: add offload test
+based on netdevsim") introduced in December 2017), so this sounds like a
+regression in bpftool?
 
-diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-index 638d7fd7b375..710ba9de12ce 100644
---- a/kernel/bpf/ringbuf.c
-+++ b/kernel/bpf/ringbuf.c
-@@ -104,7 +104,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
- 	}
- 
- 	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
--		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
-+		  VM_MAP | VM_USERMAP, PAGE_KERNEL);
- 	if (rb) {
- 		kmemleak_not_leak(pages);
- 		rb->pages = pages;
--- 
-2.20.1
+-Toke
 
