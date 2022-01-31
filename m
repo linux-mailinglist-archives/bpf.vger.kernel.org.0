@@ -2,187 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C94A3AC7
-	for <lists+bpf@lfdr.de>; Sun, 30 Jan 2022 23:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3536D4A3CD6
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 05:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241956AbiA3WvG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 30 Jan 2022 17:51:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233869AbiA3WvG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 30 Jan 2022 17:51:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643583065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=CEJtYC/ux9V7Xcz3H8zZRGhZ6hJ78FKjbpvst1x3iao=;
-        b=MkQPaSGghvmNf5ZQSQrZ2AvX58WjsnXBjr9FtqIdNTJz09tDUt4ArMbfvknHcIbzjAo9c7
-        mEBllmScspmmroCC5CQrOLfwNlN9hazPGY5R6nN2AB0Z34YnDQlYzHWc9JxlckRFV2AaDK
-        gjIB74bWLMU3fkq86MetLaUVD6N49j0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-492-c4P3OP6DPTyUQZKA3cPKKA-1; Sun, 30 Jan 2022 17:51:04 -0500
-X-MC-Unique: c4P3OP6DPTyUQZKA3cPKKA-1
-Received: by mail-wm1-f72.google.com with SMTP id l20-20020a05600c1d1400b0035153bf34c3so6704891wms.2
-        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 14:51:03 -0800 (PST)
+        id S237101AbiAaEG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 30 Jan 2022 23:06:29 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:57009 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1357500AbiAaEG0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 30 Jan 2022 23:06:26 -0500
+Received: by mail-io1-f70.google.com with SMTP id q24-20020a5d8358000000b006133573a011so8992876ior.23
+        for <bpf@vger.kernel.org>; Sun, 30 Jan 2022 20:06:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CEJtYC/ux9V7Xcz3H8zZRGhZ6hJ78FKjbpvst1x3iao=;
-        b=4UmmDkuEh8bq2JvSow712t8PpWig5yu3cC429Z+nz1N5AXhPWdHWFS9neuEbdP8nQ0
-         w50jamuiOZ4kdtSNXoS3IpezDQXsbbfjO0ypRQnP3kxfDrmVIUoqziTWE/IU+gCzZmFK
-         XEcfU1XtbPX+aU0r8L8hokK9Emc2BLYraaiDXPlbZPm6xR/FFfxihkWAXdaGuevrX+3z
-         RdLeGaeaFRy/orx4VUpea/Sf8Om/xOjICImRyqY7lqE2+ShKSksSVldUdEYR0EHOJ9A5
-         jcga6H52lHz9qsr9yrrO4wc5UJIZ4uLOVKiSuFp34A3bYJ3nS1owoeyelPGlsRTJOn6X
-         m+qw==
-X-Gm-Message-State: AOAM533OModDUrjGUGh8EvzM8vGdXfmmg9KYiQyh8KkvN1DtZJjp9eYF
-        Jsbj0NbHTUWrQxR8JK8CRRrlrghokJnzIf3MXxRpW7hlffLkspP6RRWAc8eV9L4vE3o/cgA3K1j
-        Wxkza95YIqrkd
-X-Received: by 2002:a05:6000:11cb:: with SMTP id i11mr15047139wrx.19.1643583062894;
-        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNMYOMGCWToKpdzI1/qcneuiwFkDNoNMorUn6kmTaBO2y0zoRoKbuOxTjvZrDqB2vj4CtDAA==
-X-Received: by 2002:a05:6000:11cb:: with SMTP id i11mr15047118wrx.19.1643583062694;
-        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
-Received: from krava.redhat.com ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id c11sm11851213wri.43.2022.01.30.14.51.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 14:51:02 -0800 (PST)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jiri Pirko <jiri@mellanox.com>
-Subject: [RFC] failing selftests/bpf/test_offload.py
-Date:   Sun, 30 Jan 2022 23:51:01 +0100
-Message-Id: <20220130225101.47514-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=g94eSPEms4siUdIAdsRyOE4Be2jkZcPOC6JzxK9ZLK8=;
+        b=5y8fUG4xkLYAO9ibmHTxz7nsWvU4HY+uoKp/z13wILWZJBLVCnOAaSW0H51AeatJ1y
+         ZleO8RsVmjsAAhAkjsO+gFBsMBmj8ZbhV6kykVSV9m0gT8UOzrVA9bYTq3a7mUnaAP7r
+         6ukr39Y1yAkXJM85AQQ+x/EbKwQcrgXS3AvRFDFKoP019gb6UQ5hK56KGzFTHCIFCKjl
+         kmWdOPZqc/+uyFjQ04qYPsiGXLje9C1eEuWEYYsI9w4PCFrPCq6+W5T27ZevBqD9FPWo
+         09bxS64ptpqMkafWFD3qdaQa2H2hYu6cDIzrlNri9w+dZgK7YXPThQWcnfJ5/BIrQrHL
+         hiRw==
+X-Gm-Message-State: AOAM533NxPjP2Te+OoXY9sShcZ6DXSPUgixivrEY85+KZ4wZKHUiXNom
+        bzyOrWXJUDcJhTqGUI0XFDj0DglmEvT3csXXXmcv1P+oVDxc
+X-Google-Smtp-Source: ABdhPJxvB0QpL9iq7aqUHusv5YGj0nOjyxGkqWzz3tjPSN1ALfuPK1LnSE49Vc+mBj26HXvhNUNEQ6IhDqTSr/mTs9iS8sw/WAXx
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:24d0:: with SMTP id y16mr8925319jat.170.1643601986334;
+ Sun, 30 Jan 2022 20:06:26 -0800 (PST)
+Date:   Sun, 30 Jan 2022 20:06:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008c32e305d6d8e802@google.com>
+Subject: [syzbot] general protection fault in submit_bio_checks
+From:   syzbot <syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-I have failing test_offload.py with following output:
+Hello,
 
-  # ./test_offload.py
-  ...
-  Test bpftool bound info reporting (own ns)...
-  FAIL: 3 BPF maps loaded, expected 2
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1177, in <module>
-      check_dev_info(False, "")
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 645, in check_dev_info
-      maps = bpftool_map_list(expected=2, ns=ns)
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 190, in bpftool_map_list
-      fail(True, "%d BPF maps loaded, expected %d" %
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 86, in fail
-      tb = "".join(traceback.extract_stack().format())
+syzbot found the following issue on:
 
-it fails to detect maps from bpftool's feature detection,
-that did not make it yet through deferred removal
+HEAD commit:    b605fdc54c2b Add linux-next specific files for 20220128
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=150084b8700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da5090473475f3ca
+dashboard link: https://syzkaller.appspot.com/bug?extid=2b3f18414c37b42dcc94
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-with the fix below I have this subtest passed, but it fails
-further on:
+Unfortunately, I don't have any reproducer for this issue yet.
 
-  # ./test_offload.py
-  ...
-  Test bpftool bound info reporting (own ns)...
-  Test bpftool bound info reporting (other ns)...
-  Test bpftool bound info reporting (remote ns)...
-  Test bpftool bound info reporting (back to own ns)...
-  Test bpftool bound info reporting (removed dev)...
-  Test map update (no flags)...
-  Test map update (exists)...
-  Test map update (noexist)...
-  Test map dump...
-  Test map dump...
-  Traceback (most recent call last):
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1251, in <module>
-      _, entries = bpftool("map dump id %d" % (m["id"]))
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 169, in bpftool
-      return tool("bpftool", args, {"json":"-p"}, JSON=JSON, ns=ns,
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 155, in tool
-      ret, stdout = cmd(ns + name + " " + params + args,
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 109, in cmd
-      return cmd_result(proc, include_stderr=include_stderr, fail=fail)
-    File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 131, in cmd_result
-      raise Exception("Command failed: %s\n%s" % (proc.args, stderr))
-  Exception: Command failed: bpftool -p map dump id 4325
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com
 
-the test seems to expect maps having BTF loaded, which for some reason
-did not happen, so the test fails with bpftool pretty dump fail
+general protection fault, probably for non-canonical address 0xdffffc000000002f: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000178-0x000000000000017f]
+CPU: 1 PID: 3642 Comm: syz-executor.5 Not tainted 5.17.0-rc1-next-20220128-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:blk_throtl_bio block/blk-throttle.h:175 [inline]
+RIP: 0010:submit_bio_checks+0x7c0/0x1bf0 block/blk-core.c:765
+Code: 08 3c 03 0f 8e 4a 11 00 00 48 b8 00 00 00 00 00 fc ff df 44 8b 6d 10 41 83 e5 01 4a 8d bc 2b 7c 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 09 11 00 00
+RSP: 0018:ffffc900028cf680 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000002f RSI: ffffffff83d5f41e RDI: 000000000000017d
+RBP: ffff88801e8be500 R08: ffffffff8a241580 R09: 0000000000000000
+R10: ffffffff83d5f410 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: 00000000fffffffe R15: ffff88801ad9a4cc
+FS:  0000555556299400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fed92bd5ec9 CR3: 000000003b65d000 CR4: 00000000003526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __submit_bio+0xaf/0x360 block/blk-core.c:802
+ __submit_bio_noacct_mq block/blk-core.c:881 [inline]
+ submit_bio_noacct block/blk-core.c:907 [inline]
+ submit_bio_noacct+0x6c9/0x8a0 block/blk-core.c:896
+ submit_bio block/blk-core.c:968 [inline]
+ submit_bio+0x1ea/0x430 block/blk-core.c:926
+ write_dev_flush fs/btrfs/disk-io.c:4243 [inline]
+ barrier_all_devices fs/btrfs/disk-io.c:4293 [inline]
+ write_all_supers+0x3038/0x4440 fs/btrfs/disk-io.c:4388
+ btrfs_commit_transaction+0x1be3/0x3180 fs/btrfs/transaction.c:2362
+ btrfs_commit_super+0xc1/0x100 fs/btrfs/disk-io.c:4562
+ close_ctree+0x314/0xccc fs/btrfs/disk-io.c:4671
+ generic_shutdown_super+0x14c/0x400 fs/super.c:462
+ kill_anon_super+0x36/0x60 fs/super.c:1056
+ btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2365
+ deactivate_locked_super+0x94/0x160 fs/super.c:332
+ deactivate_super+0xad/0xd0 fs/super.c:363
+ cleanup_mnt+0x3a2/0x540 fs/namespace.c:1159
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fe814b274c7
+Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe14eb15c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007fe814b274c7
+RDX: 00007ffe14eb169b RSI: 000000000000000a RDI: 00007ffe14eb1690
+RBP: 00007ffe14eb1690 R08: 00000000ffffffff R09: 00007ffe14eb1460
+R10: 000055555629a8b3 R11: 0000000000000246 R12: 00007fe814b7f1ea
+R13: 00007ffe14eb2750 R14: 000055555629a810 R15: 00007ffe14eb2790
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:blk_throtl_bio block/blk-throttle.h:175 [inline]
+RIP: 0010:submit_bio_checks+0x7c0/0x1bf0 block/blk-core.c:765
+Code: 08 3c 03 0f 8e 4a 11 00 00 48 b8 00 00 00 00 00 fc ff df 44 8b 6d 10 41 83 e5 01 4a 8d bc 2b 7c 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 09 11 00 00
+RSP: 0018:ffffc900028cf680 EFLAGS: 00010203
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 000000000000002f RSI: ffffffff83d5f41e RDI: 000000000000017d
+RBP: ffff88801e8be500 R08: ffffffff8a241580 R09: 0000000000000000
+R10: ffffffff83d5f410 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: 00000000fffffffe R15: ffff88801ad9a4cc
+FS:  0000555556299400(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffeece8b278 CR3: 000000003b65d000 CR4: 00000000003526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	08 3c 03             	or     %bh,(%rbx,%rax,1)
+   3:	0f 8e 4a 11 00 00    	jle    0x1153
+   9:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  10:	fc ff df
+  13:	44 8b 6d 10          	mov    0x10(%rbp),%r13d
+  17:	41 83 e5 01          	and    $0x1,%r13d
+  1b:	4a 8d bc 2b 7c 01 00 	lea    0x17c(%rbx,%r13,1),%rdi
+  22:	00
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	48 89 fa             	mov    %rdi,%rdx
+  31:	83 e2 07             	and    $0x7,%edx
+  34:	38 d0                	cmp    %dl,%al
+  36:	7f 08                	jg     0x40
+  38:	84 c0                	test   %al,%al
+  3a:	0f 85 09 11 00 00    	jne    0x1149
 
-the test loads the object with 'ip link ...', which I never touched,
-so I wanted ask first before I dive in, perhaps I miss some setup
 
-thoughts? ;-)
-
-thanks,
-jirka
 ---
- tools/lib/bpf/libbpf.c                      | 6 +++---
- tools/testing/selftests/bpf/test_offload.py | 6 +++++-
- 2 files changed, 8 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 4ce94f4ed34a..881c88eceed0 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4407,7 +4407,7 @@ static int probe_kern_global_data(void)
- 	};
- 	int ret, map, insn_cnt = ARRAY_SIZE(insns);
- 
--	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
-+	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "global_data", sizeof(int), 32, 1, NULL);
- 	if (map < 0) {
- 		ret = -errno;
- 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
-@@ -4540,7 +4540,7 @@ static int probe_kern_array_mmap(void)
- 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
- 	int fd;
- 
--	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), sizeof(int), 1, &opts);
-+	fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "array_mmap", sizeof(int), sizeof(int), 1, &opts);
- 	return probe_fd(fd);
- }
- 
-@@ -4587,7 +4587,7 @@ static int probe_prog_bind_map(void)
- 	};
- 	int ret, map, prog, insn_cnt = ARRAY_SIZE(insns);
- 
--	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
-+	map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "bind_map_detect", sizeof(int), 32, 1, NULL);
- 	if (map < 0) {
- 		ret = -errno;
- 		cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
-diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index edaffd43da83..0cf93d246804 100755
---- a/tools/testing/selftests/bpf/test_offload.py
-+++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -769,7 +769,11 @@ skip(ret != 0, "bpftool not installed")
- base_progs = progs
- _, base_maps = bpftool("map")
- base_map_names = [
--    'pid_iter.rodata' # created on each bpftool invocation
-+    # created on each bpftool invocation
-+    'pid_iter.rodata',
-+    'bind_map_detect',
-+    'global_data',
-+    'array_mmap',
- ]
- 
- # Check netdevsim
--- 
-2.31.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
