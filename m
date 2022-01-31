@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8624A5202
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 23:05:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F984A5203
+	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 23:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbiAaWFe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 17:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S231146AbiAaWFj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 17:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbiAaWFe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 17:05:34 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AC8C061714
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:34 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id r59so15253902pjg.4
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:34 -0800 (PST)
+        with ESMTP id S231145AbiAaWFh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 17:05:37 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F26C061714
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:37 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id z10-20020a17090acb0a00b001b520826011so533149pjt.5
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=kp/qZI7ABVWIc8r6VAMU4dL8spjPGtGcgh4LRGbNcFE=;
-        b=Z+g0hfk0Huz/XW8fgj0Yu7P1nCdriV3c9rVDnppk/5ZyKaFm2/yCXi+CvEPyKL12oE
-         ZV3wDt2H53AIl+yeua+mLMMJkb7RDJ+BNi5WmXHbCBlwRLcC0gke/udj4GFbc7ValXuQ
-         4gFW3GFvdKUoTMd5r59eIOA6GcCLgjhb3cx5zqZRaN7JzR/ytBEW95Y7XdMoAIUMDVLR
-         ok70H38Qk1LfJRGsIeoCGlU4OmParqT+MzIMnftq6ZDKt8gayGYl+whS9YpLbD+Qrixv
-         lxWb02Q/1KCl5zUYTf8/gFbGsEwOQywCPY6DOUrWhjYM13mnwSefDQ5TcXGAXsZq0KkW
-         Z+/w==
+        bh=ExzQCm1Cob3B/RxP+ekQVOx0efrBc719H5atIcS561A=;
+        b=i3XT1q6PmQl4+gp58wXmv3L/jUbXqzYxGCrwi/fv5pBWPTZ2BQPdpShZIDrBSfL8DD
+         LJ3CIERxT9Rwgi/OFPkt3BEpm+uxBt/JuwEChX1tupj3l0TLHu0dmRJVgzWOIMrkLTNe
+         AIzJslvtX9T9a/EzGtNBU0kx6z8O5IYLdLFgREf21puLHLI7kRaXDxzhXReT1cQokjcX
+         A0F8aGb8Ik3z3xBSXz1+MWM4mueDnEGVPH4xEBm3wwp5zO4KiFl5JbM3dsklWyRtwyQm
+         V7NfQ3/pRQTm9a8RE3KWHXoc4T6EbThMrIWYdwrqmIpuIqvsZ1zKkGDV8R2NmV6aXMwg
+         wtBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kp/qZI7ABVWIc8r6VAMU4dL8spjPGtGcgh4LRGbNcFE=;
-        b=AiRzNjrRnKoGaAYoZFhEbO5FEC8zyvCTOVaCMpGymg11Wz5Ifoen4mXeQfeM9jr8zQ
-         TbG4QPP3kIp7PUGk1V7KDgPqnlSlv+JlxFWNRjrFHnsf2380WpXDJQ/Dt2gIyXoLRP5U
-         yCNqEu9YiH6jHzqF1VDaB4UXjxJm7ys9EMW8+DeEm17tYW8PzlwNaYzlGxL//erUlMeu
-         gwOtKGOaTrzB8NUGUX8pp8FcoFVMOTTfRWwFb/553VUAzRKKkZLkVlJA134jBU7ledQw
-         ZTYYvi57dxQgNbbnEZ7vi0inltbL6S12nCPSrUMmMoZxRNnFtxQjxqRBks/DBkjzF268
-         CPKw==
-X-Gm-Message-State: AOAM5324edT6DRTQXUWzV/eHGvMVXkeqwMo9kraNHWhrEHA+82W7hkLG
-        pEcz657rY52WYhe+9WGhzR0=
-X-Google-Smtp-Source: ABdhPJz+GQh9DfZJCIJjKpvJtkg7zsBjmQYUJ9qkX2nOal+UiOOOTX6iBPUQTm+vdfCHldY2bpZb7Q==
-X-Received: by 2002:a17:902:bb83:: with SMTP id m3mr22661166pls.114.1643666733862;
-        Mon, 31 Jan 2022 14:05:33 -0800 (PST)
+        bh=ExzQCm1Cob3B/RxP+ekQVOx0efrBc719H5atIcS561A=;
+        b=dvogqANx972qtMr/4t8PDlc0/MtvWDUlr6v2ay7iPJtcYy3oSx/XwZeWWiuoiiKLz3
+         CPZa6xCB0YCjgQffIb4DbMO7rImM02nLI1xmhFnpa2LVBanhOpXEKtoZYcUszS448rMC
+         WCNz05Zjmf+Uzzn4vI1nMmHh/7C1zXqq6ZgE0aTQnRi5YPPi2DZr4JNuHocI6d3aeFlN
+         DHXB0Iya/89h3Lh4MXl/4EEY633BIZdseHqcuPWkl/91jlwCTIpq/i9CEyTPvIA+WEox
+         SwtNzrpQbY/KORsqptrvfLKAlEsD4zE+2DqWTJASgnHjBlqAdfWZlDzCVWxsTlliQ9xC
+         NinQ==
+X-Gm-Message-State: AOAM531BZcmv486Td6X4qhYwek5nl2x0KlRFdPLuE0lUb68L+i9HYt1s
+        OrR4L5SxE5dRCo2HaoLpuYU=
+X-Google-Smtp-Source: ABdhPJzvfn0xJNKzof7bnUYpEWonXZn/mqf3qdq8iAIbtejlFgSvqECt1NRrvkoetP6NCEpkYQg+Qw==
+X-Received: by 2002:a17:902:f682:: with SMTP id l2mr22535105plg.114.1643666736712;
+        Mon, 31 Jan 2022 14:05:36 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:78b6])
-        by smtp.gmail.com with ESMTPSA id t9sm272417pjg.44.2022.01.31.14.05.33
+        by smtp.gmail.com with ESMTPSA id l8sm19883755pfc.187.2022.01.31.14.05.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 14:05:33 -0800 (PST)
+        Mon, 31 Jan 2022 14:05:36 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH bpf-next 1/7] libbpf: Add support for bpf iter in light skeleton.
-Date:   Mon, 31 Jan 2022 14:05:22 -0800
-Message-Id: <20220131220528.98088-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 2/7] libbpf: Open code low level bpf commands.
+Date:   Mon, 31 Jan 2022 14:05:23 -0800
+Message-Id: <20220131220528.98088-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
 References: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
@@ -65,30 +65,80 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-bpf iterator programs should use bpf_link_create to attach instead of
-bpf_raw_tracepoint_open like other tracing programs.
+Open code low level bpf commands used by light skeleton to
+be able to avoid full libbpf eventually.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/bpf/bpftool/gen.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ tools/lib/bpf/skel_internal.h | 44 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 42 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index 8f78c27d41f0..8eacfc79ec43 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -384,7 +384,10 @@ static void codegen_attach_detach(struct bpf_object *obj, const char *obj_name)
- 			printf("\tint fd = bpf_raw_tracepoint_open(\"%s\", prog_fd);\n", tp_name);
- 			break;
- 		case BPF_PROG_TYPE_TRACING:
--			printf("\tint fd = bpf_raw_tracepoint_open(NULL, prog_fd);\n");
-+			if (bpf_program__expected_attach_type(prog) == BPF_TRACE_ITER)
-+				printf("\tint fd = bpf_link_create(prog_fd, 0, BPF_TRACE_ITER, NULL);\n");
-+			else
-+				printf("\tint fd = bpf_raw_tracepoint_open(NULL, prog_fd);\n");
- 			break;
- 		default:
- 			printf("\tint fd = ((void)prog_fd, 0); /* auto-attach not supported */\n");
+diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+index 0b84d8e6b72a..57507f1c1934 100644
+--- a/tools/lib/bpf/skel_internal.h
++++ b/tools/lib/bpf/skel_internal.h
+@@ -70,19 +70,59 @@ static inline int skel_closenz(int fd)
+ 	return -EINVAL;
+ }
+ 
++#ifndef offsetofend
++#define offsetofend(TYPE, MEMBER) \
++	(offsetof(TYPE, MEMBER)	+ sizeof((((TYPE *)0)->MEMBER)))
++#endif
++
++static inline int skel_map_create(enum bpf_map_type map_type,
++				  const char *map_name,
++				  __u32 key_size,
++				  __u32 value_size,
++				  __u32 max_entries)
++{
++	const size_t attr_sz = offsetofend(union bpf_attr, map_extra);
++	union bpf_attr attr;
++
++	memset(&attr, 0, attr_sz);
++
++	attr.map_type = map_type;
++	strncpy(attr.map_name, map_name, sizeof(attr.map_name));
++	attr.key_size = key_size;
++	attr.value_size = value_size;
++	attr.max_entries = max_entries;
++
++	return skel_sys_bpf(BPF_MAP_CREATE, &attr, attr_sz);
++}
++
++static inline int skel_map_update_elem(int fd, const void *key,
++				       const void *value, __u64 flags)
++{
++	const size_t attr_sz = offsetofend(union bpf_attr, flags);
++	union bpf_attr attr;
++
++	memset(&attr, 0, attr_sz);
++	attr.map_fd = fd;
++	attr.key = (long) key;
++	attr.value = (long) value;
++	attr.flags = flags;
++
++	return skel_sys_bpf(BPF_MAP_UPDATE_ELEM, &attr, attr_sz);
++}
++
+ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+ {
+ 	int map_fd = -1, prog_fd = -1, key = 0, err;
+ 	union bpf_attr attr;
+ 
+-	map_fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1, NULL);
++	map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
+ 	if (map_fd < 0) {
+ 		opts->errstr = "failed to create loader map";
+ 		err = -errno;
+ 		goto out;
+ 	}
+ 
+-	err = bpf_map_update_elem(map_fd, &key, opts->data, 0);
++	err = skel_map_update_elem(map_fd, &key, opts->data, 0);
+ 	if (err < 0) {
+ 		opts->errstr = "failed to update loader map";
+ 		err = -errno;
 -- 
 2.30.2
 
