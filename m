@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C212A4A54A1
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D9A4A54AF
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbiBABYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 20:24:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
+        id S231863AbiBABc0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 20:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbiBABYT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 20:24:19 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B8AC061714
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:24:19 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id p63so18446364iod.11
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:24:19 -0800 (PST)
+        with ESMTP id S231829AbiBABcZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 20:32:25 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B7DC061714
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:32:25 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id x6so502235ilg.9
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:32:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GPzDRFhI8dEV1K62qS8fdrcCWOLIUlLzR+DRf7FGUCs=;
-        b=K3BVzvxeCUB5IuI6e+kx0syWnyV8Lv/iO8FGPTKrJA0zkmgK1rQ/b/D3jxdLzd2o4h
-         MCvBZeDbUGwto/o6lhrou9rrBCh4HnE+LDMJfeC37YBI3nx4LMzRPoQKFGZ/qe/M127q
-         ZS7vQszD1qxRvpkW5OxECv7zDum+/AtQmSg9N5GL1L9B891ab1KRg+Eib2Q3NTt9phoI
-         jatT9CDMIsU3m03C66Z5OK4lSrsoUTh8P+wK304HM6LgB118m7HR0nB/q0MYy+93xhl+
-         NqTdtVt757BqGrcwqebHXCguG5/bckh7IXhVQF75Y3alDVouMDgdXnCIBIormfosmCas
-         4psA==
+        bh=CdU9vcK2zuGqHz/vYNGBNH9JUXoxq/3mI0RmDX5pRSc=;
+        b=WfGUhVT6/0MQeZqKESSVNXQ7BAywAgYjSCRz2mVPunBwZKgvDD5496d1dhCrsEcq8p
+         NJj4OcmZK4AsoGY6edprIo6zPxcnaZLY++luZtWayJO+w+Yi+xNeuD6D2lghChggePvt
+         uac2MN3LwH5zcB32eMnS8ZqydqIJlXePHI4Q1kFSBHdUm75oxYHIUVm6iyCpMEy2QTOs
+         WQq1/7COubMoxf1uy9f7nxRHoKuDGBnOh8QNrdq3kguyORAt6BXb6HvYYAxbkK/zdHf7
+         DxOH7KUbmpjFmxOg77ES6Z8f898xnEhyLUQGE8Gxbq7IDwB4Ad00XUGiUiP7w0kmxNVZ
+         5xyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GPzDRFhI8dEV1K62qS8fdrcCWOLIUlLzR+DRf7FGUCs=;
-        b=c9gFxy3D38N/KNPTukbM9Zjs7U5Dt9pkIBR4etAi35OjeJlwHsKEddGHjBH5RlLjf2
-         Q8i3oR21mv11hi0PHOY/BmlDWNvdCH8Vuhz7sWQVEkDAymZr2Loz5BoyHbjqj+8T8JQl
-         MRUfADazSrv5+nIzUEqMTsoi63uWZQtnBWe6YJV1F/opNepva8ziMb7qph9dmInvBxmj
-         xPI3mQIV6wz8xdMXetdYOG314gyEE0Z3ZquyUmH21ga0VeyfKzDFyfKgRLPPglbtrUIx
-         408jIs5rPDdQ80yNfN5xSQ5aTrEOF62H0S1fOUiUXpUMClWdeOUDrP/F6avC6gJ/kT8Y
-         rDPw==
-X-Gm-Message-State: AOAM530SiNzphTMonft0bKGnl9KkLMRijQiCD+pS7FJLnduk4CQNbrOg
-        Z/vt2lDYLbUqZEWOKoOaOrQud3lo2vjrXWg5GQqy36ebg5o=
-X-Google-Smtp-Source: ABdhPJwZofauqkWbeUkYd5Uu/clCkI0Z/a5xSfFUnh1oRDBCL2Mu9Kzy5XoPhdvGQhlBSmOxN1Ni1oagS1IhC4x/kZk=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr10045490jak.103.1643678658406;
- Mon, 31 Jan 2022 17:24:18 -0800 (PST)
+        bh=CdU9vcK2zuGqHz/vYNGBNH9JUXoxq/3mI0RmDX5pRSc=;
+        b=JXFzZS+XeKPoA8KNNGSoFc86gZ70UD3DpWmVN8j+PFY932mcXhLr6btjiiythrAl1i
+         aulQspKSjYbiN7TBDV2duJqRLp3aT1X6GF6izWt6SegvJASWIMqLDao0q80Jb54w+Pur
+         WX/eeOHSZS8kUosn1zgcEdj9aKjHJtDJ4DsObBTT+XX+n0pldnHRr2Z65fNij+bRQ08a
+         lTLa7JauNETXSDnFAWQCkTSFloOLyh+cv0BYsb8ME64nWd58U8lc19ACtIXgA7hhOGMU
+         wiW5VGuA4Zhr72UD1P8JxwO0f+ZgPCvo6kmmwp95ljnElpe2r9ulpn7RWKPGqpQEtZhM
+         VvcQ==
+X-Gm-Message-State: AOAM533pThB2855FTppW0cPhsTvOMp1/Bj54eKvyO+orsKmUKBzBDTjI
+        GtTAlEwalt6wlg1yaQDhIDPuz1CEjvM5TdGa/3A=
+X-Google-Smtp-Source: ABdhPJzhB7Fr9B+RIlYzuEy9d/eJYf8jnUL5GmNL8pUH8tqK2SaEuy27ktZ3BBEGOuXq9WLcHsIaUePG+7zSceLdOmw=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr14232182ili.239.1643679145244;
+ Mon, 31 Jan 2022 17:32:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128012319.2494472-1-delyank@fb.com> <20220128012319.2494472-2-delyank@fb.com>
-In-Reply-To: <20220128012319.2494472-2-delyank@fb.com>
+References: <20220128012319.2494472-1-delyank@fb.com> <20220128012319.2494472-3-delyank@fb.com>
+In-Reply-To: <20220128012319.2494472-3-delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 31 Jan 2022 17:24:07 -0800
-Message-ID: <CAEf4Bzbg50Ki=ii-Y0AqzpyQnAUEc5qGLx7LW5yGebDeb540BA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] selftests: bpf: migrate from bpf_prog_test_run
+Date:   Mon, 31 Jan 2022 17:32:14 -0800
+Message-ID: <CAEf4BzaQhqL+qQt6RcK5kUZHAy39GqRLCPH8zeJBaiYh+f65vQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] selftests: bpf: migrate from bpf_prog_test_run_xattr
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -59,150 +59,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 5:26 PM Delyan Kratunov <delyank@fb.com> wrote:
+On Thu, Jan 27, 2022 at 5:23 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
 > Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  .../selftests/bpf/prog_tests/atomics.c        |  86 +++---
->  .../testing/selftests/bpf/prog_tests/bpf_nf.c |  10 +-
->  .../selftests/bpf/prog_tests/fentry_fexit.c   |  33 ++-
->  .../selftests/bpf/prog_tests/fentry_test.c    |   9 +-
->  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  33 ++-
->  .../selftests/bpf/prog_tests/fexit_stress.c   |  26 +-
->  .../selftests/bpf/prog_tests/fexit_test.c     |   9 +-
->  .../prog_tests/flow_dissector_load_bytes.c    |  27 +-
->  .../selftests/bpf/prog_tests/for_each.c       |  32 ++-
->  .../bpf/prog_tests/get_func_args_test.c       |  14 +-
->  .../bpf/prog_tests/get_func_ip_test.c         |  12 +-
->  .../selftests/bpf/prog_tests/global_data.c    |  25 +-
->  .../bpf/prog_tests/global_func_args.c         |  13 +-
->  .../selftests/bpf/prog_tests/kfunc_call.c     |  46 ++--
->  .../selftests/bpf/prog_tests/ksyms_module.c   |  23 +-
->  .../selftests/bpf/prog_tests/l4lb_all.c       |  35 ++-
->  .../selftests/bpf/prog_tests/map_lock.c       |  15 +-
->  .../selftests/bpf/prog_tests/map_ptr.c        |  18 +-
->  .../selftests/bpf/prog_tests/modify_return.c  |  38 +--
->  .../selftests/bpf/prog_tests/pkt_access.c     |  27 +-
->  .../selftests/bpf/prog_tests/pkt_md_access.c  |  15 +-
->  .../bpf/prog_tests/queue_stack_map.c          |  43 +--
->  .../bpf/prog_tests/raw_tp_writable_test_run.c |  16 +-
->  .../selftests/bpf/prog_tests/signal_pending.c |  24 +-
->  .../selftests/bpf/prog_tests/spinlock.c       |  15 +-
->  .../selftests/bpf/prog_tests/tailcalls.c      | 245 ++++++++++--------
->  .../bpf/prog_tests/test_skb_pkt_end.c         |  15 +-
->  .../testing/selftests/bpf/prog_tests/timer.c  |   9 +-
->  .../selftests/bpf/prog_tests/timer_mim.c      |   9 +-
->  .../selftests/bpf/prog_tests/trace_ext.c      |  28 +-
->  tools/testing/selftests/bpf/prog_tests/xdp.c  |  35 ++-
->  .../bpf/prog_tests/xdp_adjust_frags.c         |  34 ++-
->  .../bpf/prog_tests/xdp_adjust_tail.c          | 114 +++++---
->  .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    |  16 +-
->  .../selftests/bpf/prog_tests/xdp_noinline.c   |  45 ++--
->  .../selftests/bpf/prog_tests/xdp_perf.c       |  19 +-
->  tools/testing/selftests/bpf/test_lru_map.c    |  11 +-
->  tools/testing/selftests/bpf/test_progs.h      |   2 +
->  tools/testing/selftests/bpf/test_verifier.c   |  16 +-
->  39 files changed, 727 insertions(+), 515 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> index 86b7d5d84eec..12ecb3ae5c28 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/atomics.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> @@ -7,18 +7,20 @@
->  static void test_add(struct atomics_lskel *skel)
->  {
->         int err, prog_fd;
-> -       __u32 duration = 0, retval;
->         int link_fd;
-> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
-> +               .repeat = 1,
-> +       );
 
-for simple case like this you can just keep it single line:
+You can avoid a bunch of code churn if you name the new opts variable
+as tattr, let's do that in this patch?
 
-LIBBPF_OPTS(bpf_test_run_opts, topts, .repeat = 1)
+CHECK_FLOW_KEYS() is probably justified, so feel free to stick to
+using CHECK() internally for extra formatting capabilities (we might
+extend ASSERT_xxx() macros eventually to support vararg format args).
 
-But, it seems like the kernel does `if (!repeat) repeat = 1;` logic
-for program types that support repeat feature, so I'd suggest just
-drop .repeat = 1 and keep it simple.
+Also, forgot to mention in the previous patch reply, please use
+"selftests/bpf: " subject prefix. We are never perfectly consistent,
+but stats still favor selftests/bpf heavily:
 
->
->         link_fd = atomics_lskel__add__attach(skel);
->         if (!ASSERT_GT(link_fd, 0, "attach(add)"))
->                 return;
->
->         prog_fd = skel->progs.add.prog_fd;
-> -       err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> -                               NULL, NULL, &retval, &duration);
-> -       if (CHECK(err || retval, "test_run add",
-> -                 "err %d errno %d retval %d duration %d\n", err, errno, retval, duration))
-> +       err = bpf_prog_test_run_opts(prog_fd, &topts);
-> +       if (CHECK_OPTS(err || topts.retval, "test_run add",
+$ git log --oneline -- . | rg 'selftests: bpf: ' | wc -l
+102
+$ git log --oneline -- . | rg 'selftests/bpf: ' | wc -l
+1090
 
-let's not add new CHECK*() variants, CHECK() and its derivative are
-deprecated, we are using ASSERT_xxx() macros for all new code.
-
-In this case, I think it's best to replace CHECK() with just:
-
-ASSERT_OK(err, "run_err");
-ASSERT_OK(topts.retval, "run_ret_val");
-
-I don't think logging duration is useful for most, if not all, tests,
-so I wouldn't bother.
-
-
-> +                      "err %d errno %d retval %d duration %d\n", err, errno,
-> +                      topts.retval, topts.duration))
->                 goto cleanup;
->
->         ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-> index 4374ac8a8a91..cb0bcd9bb950 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
-> @@ -9,38 +9,43 @@ void test_fentry_fexit(void)
->         struct fentry_test_lskel *fentry_skel = NULL;
->         struct fexit_test_lskel *fexit_skel = NULL;
->         __u64 *fentry_res, *fexit_res;
-> -       __u32 duration = 0, retval;
->         int err, prog_fd, i;
-> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
-> +               .repeat = 1,
-> +       );
->
->         fentry_skel = fentry_test_lskel__open_and_load();
-> -       if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
-> +       if (CHECK_OPTS(!fentry_skel, "fentry_skel_load",
-> +                      "fentry skeleton failed\n"))
-
-You didn't have to touch this code, you could have just kept duration
-= 0 (which CHECK() internally assumes, unfortunately).
-
-Alternatively, just switch to ASSERT_OK_PTR(fentry_skel,
-"fentry_skel_load"); and be done with it. As I mentioned, we are in a
-gradual process of removing CHECK()s, I was actually surprised how far
-we've progressed already:
-
-$ rg CHECK | wc -l
-2024
-$ rg ASSERT_ | wc -l
-1782
-
-At some point we'll do the final push and remove CHECK() altogether,
-but it doesn't have to be part of this patch set (unless you are
-interested in doing some more mechanical conversions, of course, it's
-greatly appreciated, but I didn't yet have heart to ask anyone to do
-those 2000 conversions...).
-
->                 goto close_prog;
->         fexit_skel = fexit_test_lskel__open_and_load();
-> -       if (CHECK(!fexit_skel, "fexit_skel_load", "fexit skeleton failed\n"))
-> +       if (CHECK_OPTS(!fexit_skel, "fexit_skel_load",
-> +                      "fexit skeleton failed\n"))
->                 goto close_prog;
+>  .../selftests/bpf/prog_tests/check_mtu.c      | 47 +++++-----
+>  .../selftests/bpf/prog_tests/cls_redirect.c   | 30 +++---
+>  .../selftests/bpf/prog_tests/dummy_st_ops.c   | 31 +++----
+>  .../selftests/bpf/prog_tests/flow_dissector.c | 75 ++++++++-------
+>  .../selftests/bpf/prog_tests/kfree_skb.c      | 16 ++--
+>  .../selftests/bpf/prog_tests/prog_run_xattr.c |  5 +
+>  .../bpf/prog_tests/raw_tp_test_run.c          | 85 ++++++++---------
+>  .../selftests/bpf/prog_tests/skb_ctx.c        | 93 ++++++++-----------
+>  .../selftests/bpf/prog_tests/skb_helpers.c    | 16 ++--
+>  .../selftests/bpf/prog_tests/sockmap_basic.c  | 19 ++--
+>  .../selftests/bpf/prog_tests/syscall.c        | 12 +--
+>  .../selftests/bpf/prog_tests/test_profiler.c  | 16 ++--
+>  .../bpf/prog_tests/xdp_adjust_tail.c          | 34 +++----
+>  13 files changed, 227 insertions(+), 252 deletions(-)
 >
 
 [...]
