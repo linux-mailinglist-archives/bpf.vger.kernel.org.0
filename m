@@ -2,106 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F634A5538
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 03:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3384A5600
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 06:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbiBACZV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 21:25:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbiBACZU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 21:25:20 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BD5C061714;
-        Mon, 31 Jan 2022 18:25:20 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id z20so22039331ljo.6;
-        Mon, 31 Jan 2022 18:25:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3NFcpSNbn5N8Qa2Q7ec108f+HMS/1rOzdxpFaqBQx3Y=;
-        b=Zf7933wUxyldB+3Qj26LgRwrkn3jZN981YT1o/kND9/6oRNwee7M12QtzvDRG19HkP
-         WGehHovTmgHSYvn1+vx/TwmF3aymj5Yu/3dEeok5PDSCz9cym7t0MV9oSKPKoAfcVKPU
-         l51C0HGBTgkFA2I1VOcGjvz/Jx/YjtjHRd/0HnpfRfF/9MvSkgW8vuSGSL1c3m+L8Ew6
-         flrPnTiUVf3KT6HvvYSkm6cFT1+tQdcT8rJB08DBHsGPkUOX4NkShccufmDN6ZOjfAm4
-         uvEMlUyxDSWBJ/gQWY0L/uoQmpIi679IJw79qIIK857NxOs3r4wvnIEWsZ25IAFfiD6r
-         jL5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3NFcpSNbn5N8Qa2Q7ec108f+HMS/1rOzdxpFaqBQx3Y=;
-        b=8QWSt6nmWUw7ieQA8WyE6wvGqbskzmF1akD87Ecoxktq/f46iTYAm0MpTdM3PwFLeN
-         QMfD/2ZCpKK1zS6ch/onmcBPxmfQrapLU+5j9edVGr442qEb27CS/B0iguPZeieXO3X9
-         HP4lGW0TZkY64noMrf/CaQ/C6iDpUWvLmD8DmZW/eSWqhYo17C1FKRiTtfvBY+BPeOB6
-         O2Q1HXVlR5Ix8cYrh5rkLWIwPe3rsSQHSGfXe5UFa/QBaUT1TsjtBRbKyAWI/mPXBiQg
-         8kqe10u6wJF17i8teJ87gtCzWyPXmxwQhaj96DqxmWjNACGEotQOpCgqbWJcTm/x3LK/
-         R1wQ==
-X-Gm-Message-State: AOAM530VNsb7n8mg40zWezzcMOSeRHZXgWvLyKek5LUir8ziKzpswTrv
-        PPhaR7/QAma7V8QrIsQM6KPGaNK+a2MejKYt5Og=
-X-Google-Smtp-Source: ABdhPJyU2s2NAFGnCYn+is4A64/LbHpz8swj5c9UlhKMBGs6BaQqdbFMID0H3hoo6ZTnlbOhy7ypqY/ZpKcvuLQc3Zw=
-X-Received: by 2002:a2e:9b8c:: with SMTP id z12mr9531343lji.476.1643682318491;
- Mon, 31 Jan 2022 18:25:18 -0800 (PST)
+        id S229492AbiBAFCN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 00:02:13 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:56478 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229445AbiBAFCN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 00:02:13 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id AEBC4B82CEC;
+        Tue,  1 Feb 2022 05:02:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14E6CC340EF;
+        Tue,  1 Feb 2022 05:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643691730;
+        bh=pqNrAJYzoXsKukFOIumUYolAMg6fjd282YRHNnKXT58=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hSgqVzbgwPhOmPyttp9T/sRLd6qG7vExPDGFaVkgujJTemvPlJw6RSRdwuvdXylE5
+         Y1ejmwXdoH90BWZJuN9l5haxlgb1Qhyx9f4qrVti6/xmP+8CMuW/A9Rhi18z2YnjrI
+         R6RrAlWXo0hisQf6RN3qwZTzOt9FB0xzrAMhObsiy9bfkSlOuUSBX88qBXUK1nVUJM
+         K4cisZTxLgNv6xdyR+fgNqLL7IzgLiYGmeuJz11YGYM+SaPVo8QoxX3a90ciSTJ2TW
+         gVHGxJEJ7j+z450h3+TylYuRJpPgZAPc89t/S8JprsDkY/de+Dd43NPM7ZPCFJPo4M
+         JQhsdOhteOlTQ==
+Date:   Mon, 31 Jan 2022 21:02:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Akhmat Karakotov <hmukos@yandex-team.ru>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+        eric.dumazet@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, tom@herbertland.com,
+        zeil@yandex-team.ru, mitradir@yandex-team.ru
+Subject: Re: [PATCH net-next v5 0/5] Make hash rethink configurable
+Message-ID: <20220131210208.69c671de@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220131133125.32007-1-hmukos@yandex-team.ru>
+References: <20220131133125.32007-1-hmukos@yandex-team.ru>
 MIME-Version: 1.0
-References: <20220131114600.21849-1-houtao1@huawei.com> <36954dbd-beab-9599-3579-105037822045@iogearbox.net>
-In-Reply-To: <36954dbd-beab-9599-3579-105037822045@iogearbox.net>
-From:   htbegin <hotforest@gmail.com>
-Date:   Tue, 1 Feb 2022 10:25:06 +0800
-Message-ID: <CANUnq3ZneUy1LZBsR59s-QwzqK0pfRrf-2DPL7nQ3rgCnANJ6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: use VM_MAP instead of VM_ALLOC for ringbuf
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Mon, 31 Jan 2022 16:31:20 +0300 Akhmat Karakotov wrote:
+> As it was shown in the report by Alexander Azimov, hash rethink at the
+> client-side may lead to connection timeout toward stateful anycast
+> services. Tom Herbert created a patchset to address this issue by applying
+> hash rethink only after a negative routing event (3RTOs) [1]. This change
+> also affects server-side behavior, which we found undesirable. This
+> patchset changes defaults in a way to make them safe: hash rethink at the
+> client-side is disabled and enabled at the server-side upon each RTO
+> event or in case of duplicate acknowledgments.
+> 
+> This patchset provides two options to change default behaviour. The hash
+> rethink may be disabled at the server-side by the new sysctl option.
+> Changes in the sysctl option don't affect default behavior at the
+> client-side.
+> 
+> Hash rethink can also be enabled/disabled with socket option or bpf
+> syscalls which ovewrite both default and sysctl settings. This socket
+> option is available on both client and server-side. This should provide
+> mechanics to enable hash rethink inside administrative domain, such as DC,
+> where hash rethink at the client-side can be desirable.
 
-On Tue, Feb 1, 2022 at 12:28 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/31/22 12:46 PM, Hou Tao wrote:
-> > Now the ringbuf area in /proc/vmallocinfo is showed as vmalloc,
-> > but VM_ALLOC is only used for vmalloc(), and for the ringbuf area
-> > it is created by mapping allocated pages, so use VM_MAP instead.
-> >
-> > After the change, ringbuf info in /proc/vmallocinfo will changed from:
-> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmalloc user
-> > to
-> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmap user
->
-> Could you elaborate in the commit msg if this also has some other internal
-> effect aside from the /proc/vmallocinfo listing? Thanks!
->
-For now, the VM_MAP flag only affects the output in /proc/vmallocinfo.
-
-Thanks,
-Tao
-> > Signed-off-by: Hou Tao <houtao1@huawei.com>
-> > ---
-> >   kernel/bpf/ringbuf.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
-> > index 638d7fd7b375..710ba9de12ce 100644
-> > --- a/kernel/bpf/ringbuf.c
-> > +++ b/kernel/bpf/ringbuf.c
-> > @@ -104,7 +104,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
-> >       }
-> >
-> >       rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
-> > -               VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
-> > +               VM_MAP | VM_USERMAP, PAGE_KERNEL);
-> >       if (rb) {
-> >               kmemleak_not_leak(pages);
-> >               rb->pages = pages;
-> >
->
+This appears to be 01b2a995156d ("Merge branch 'hash-rethink'") in
+net-next, thanks!
