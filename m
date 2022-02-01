@@ -2,74 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7FC4A678E
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 23:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11074A684E
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 00:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237211AbiBAWKM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 17:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S242426AbiBAXAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 18:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbiBAWKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 17:10:11 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482C0C061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 14:10:11 -0800 (PST)
+        with ESMTP id S234815AbiBAXAO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 18:00:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0C7C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 15:00:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 27DF860B28
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 22:10:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 871C4C340EC;
-        Tue,  1 Feb 2022 22:10:09 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9DBF6B8241E
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 23:00:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B8FDC340ED;
+        Tue,  1 Feb 2022 23:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643753409;
-        bh=/kxPn70+aiTjThAhlwHInFCWXGg5+ihQn61++eepcp8=;
+        s=k20201202; t=1643756411;
+        bh=wV3peNLO4kqZ0pZtGIiKLma+VDtdCPQBKIuF9r5zNuc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=dz9Tlqg0+IQmJw8P9oGgVOZ89FOG7fUGy4Y0JyNJhMNieQJ4CFGDxG2U+uEont+/5
-         tENRiJosbvYsTk46kjETLcNKWlM7B7pL2InhFAVEiLEySpO6R9vARTcYvO+SEKuCLj
-         3FojIJnLerkDysCgErBOG50iI0F8IqMl8RKHd4PbhIABuaCOSr5tOHb82BPIhfyygB
-         W1fkuXp9Wr+rD39m3A5xC0UF/+K6xMbR3p8NlAl6KpPvjRqF5YtWhEDPHS7wSTaXWL
-         IRzakWGbpik7MxwuAK99Jv4aVuT4ZFTx78iz3iQW3p6zUaGD1tpNYpP+khUKb4Ey34
-         tQLPdbhjFmHgg==
+        b=iWiZf1TsFCZQ3x4+a5dsssdQb9JTU0lhRTzdaqHLEm0pdNysXozCIQzjrdMD0bbjs
+         Yq/aRFBIhKu1MtekVbYUZ7vokvcrDz3Wt4MFPD54JcQtJVP5MWgF18WERYqFnwA6cS
+         RCvzaRFiOoCaaf16SfCHOlW8lUxG5pkmUcXLR6ojk0Dt9UzS4XoLOzwzfTyJmWd8bw
+         iTPbUjl0RG6k9MCUvPisfUnvzUcKzM19DdFUqbnLeSjt/gf1v426wZjfo1VuaLqRGx
+         sL8bI2xMgjFW1YwGNswq6I88++lU4Q0t1q8b+96thMTBvJJmNpdN3B4ymSx5898pPE
+         zeaTXwr/YdEIA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6F433E5D07D;
-        Tue,  1 Feb 2022 22:10:09 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4AEAFE6BB30;
+        Tue,  1 Feb 2022 23:00:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] tools: Ignore errors from `which' when searching a GCC
- toolchain
+Subject: Re: [PATCH bpf-next 0/7] bpf: drop libbpf from bpf preload.
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164375340944.14402.9754013878528437003.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Feb 2022 22:10:09 +0000
-References: <20220201093119.1713207-1-jean-philippe@linaro.org>
-In-Reply-To: <20220201093119.1713207-1-jean-philippe@linaro.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     nathan@kernel.org, ndesaulniers@google.com, llvm@lists.linux.dev,
-        bpf@vger.kernel.org, andrii@kernel.org, quentin@isovalent.com
+Message-Id: <164375641130.5554.16675850401091381766.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Feb 2022 23:00:11 +0000
+References: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf.git (master)
+This series was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue,  1 Feb 2022 09:31:20 +0000 you wrote:
-> When cross-building tools with clang, we run `which $(CROSS_COMPILE)gcc`
-> to detect whether a GCC toolchain provides the standard libraries. It is
-> only a helper because some distros put libraries where LLVM does not
-> automatically find them. On other systems, LLVM detects the libc
-> automatically and does not need this. There, it is completely fine not
-> to have a GCC at all, but some versions of `which' display an error when
-> the command is not found:
+On Mon, 31 Jan 2022 14:05:21 -0800 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> CO-RE in the kernel support allows bpf preload to switch to light skeleton
+> and remove libbpf dependency.
+> This reduces the size of bpf_preload_umd from 300kbyte to 19kbyte and
+> eventually will make "kernel skeleton" possible.
 > 
 > [...]
 
 Here is the summary with links:
-  - tools: Ignore errors from `which' when searching a GCC toolchain
-    https://git.kernel.org/bpf/bpf/c/b7892f7d5cb2
+  - [bpf-next,1/7] libbpf: Add support for bpf iter in light skeleton.
+    https://git.kernel.org/bpf/bpf-next/c/42d1d53fedc9
+  - [bpf-next,2/7] libbpf: Open code low level bpf commands.
+    https://git.kernel.org/bpf/bpf-next/c/e981f41fd029
+  - [bpf-next,3/7] libbpf: Open code raw_tp_open and link_create commands.
+    https://git.kernel.org/bpf/bpf-next/c/c69f94a33d12
+  - [bpf-next,4/7] bpf: Remove unnecessary setrlimit from bpf preload.
+    https://git.kernel.org/bpf/bpf-next/c/1ddbddd70651
+  - [bpf-next,5/7] bpf: Convert bpf preload to light skeleton.
+    https://git.kernel.org/bpf/bpf-next/c/79b203926d18
+  - [bpf-next,6/7] bpf: Open code obj_get_info_by_fd in bpf preload.
+    https://git.kernel.org/bpf/bpf-next/c/18ef5dac934a
+  - [bpf-next,7/7] bpf: Drop libbpf, libelf, libz dependency from bpf preload.
+    https://git.kernel.org/bpf/bpf-next/c/e96f2d64c812
 
 You are awesome, thank you!
 -- 
