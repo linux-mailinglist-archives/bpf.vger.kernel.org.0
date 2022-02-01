@@ -2,106 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 869254A58B0
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 09:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ED44A58C1
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 09:46:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235639AbiBAIn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 03:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235642AbiBAInS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 03:43:18 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B3EC06173D;
-        Tue,  1 Feb 2022 00:43:17 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id v74so15243758pfc.1;
-        Tue, 01 Feb 2022 00:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Y2h1hzJ8oosH1T+OVnMREJPCQe4mb+AhZZLP9TvxW6I=;
-        b=D5TTCpWgRvCSVrI/Az8MyU59WKp3Sih2WLEYwzyYUwu4la6YVL7muLHCc4cLUdrFTT
-         OTQzcw8BWxS0XiP4FGvSh88DI3QRlgCUCRPO7icoq45+TrmLXXUwWP41/q5qRfUwW5rH
-         uTpLjkX9IHh4Ghb0FR8w+iCkrNRwlTh/I4wueG/yvyk18HttcdxYa0BRvQmnhUQvkT5Z
-         zdxpqRwW8VvblTCIajnJJCIzQUZY9iRifMYCyUCK877s2NpbMlQGsfgJV9+jYAHtWM7h
-         UELXeC3I5st7yqxRlEgmB8d/LA0FJxApDSVh6YCw3PywYlV+FzyQQSpBW999qDxN5D+G
-         wlZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Y2h1hzJ8oosH1T+OVnMREJPCQe4mb+AhZZLP9TvxW6I=;
-        b=E+P97iurYwwjNnCk61Rpme1n2xXGjG8wmB3WAa0di5nRmxAF7tKm0tpIJL3kUKcmmZ
-         XpJHYgp54nG77EUul1h8nxqrioP7k5ST+36WweYcx94pKDGTA4RQaj/vMrEPRHaYBCtO
-         2A4f6rq5ZjVr3YkSU33mQ7yZcgH0ZYQCo0XrqqK2FI5vUz6slmdV6nRSorr5tTjsMGj7
-         euudTttLpGt/rEGWybJQwiVwYzWJxof9m6eAGeXhbYAG/M5z3Jne/g10rTc0ngqxMmbo
-         9bONC9sHRUpcHqMDMHx7b/dImiZVEEO2MJ6kjm85tY/F5pfppzRdIOHBBMK7h5CZcpZq
-         ed9g==
-X-Gm-Message-State: AOAM530buFpL5ZeOaf0yO99FRsWoK8Nj2zO+fH873GudTplIXDggxXOm
-        wLPh3qbOFOgSwSlfMGFDk7w=
-X-Google-Smtp-Source: ABdhPJyyOAAr6FPeUq2uGi2FkZMZMPJn4JEVm0V0qP9g//Qd50v93j2k9Jz20gMZejoh5F6i9knKeA==
-X-Received: by 2002:a05:6a00:1508:: with SMTP id q8mr23837783pfu.3.1643704997406;
-        Tue, 01 Feb 2022 00:43:17 -0800 (PST)
-Received: from localhost (61-223-193-169.dynamic-ip.hinet.net. [61.223.193.169])
-        by smtp.gmail.com with ESMTPSA id i127sm5150608pfg.142.2022.02.01.00.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Feb 2022 00:43:16 -0800 (PST)
-From:   Hou Tao <hotforest@gmail.com>
-X-Google-Original-From: Hou Tao <houtao1@huawei.com>
-To:     andrii.nakryiko@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, houtao1@huawei.com,
-        kafai@fb.com, kuba@kernel.org, netdev@vger.kernel.org, yhs@fb.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize ring buffer size
-Date:   Tue,  1 Feb 2022 16:43:13 +0800
-Message-Id: <20220201084313.23395-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <CAEf4BzYHggCfbSGb8autEDcHhZXabK-n36rggyjJeL0uLEr+DQ@mail.gmail.com>
-References: <CAEf4BzYHggCfbSGb8autEDcHhZXabK-n36rggyjJeL0uLEr+DQ@mail.gmail.com>
+        id S235710AbiBAIqp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 03:46:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59276 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233828AbiBAIqo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 03:46:44 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEooE-0002k2-Pz; Tue, 01 Feb 2022 09:46:42 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEooE-000C8V-GV; Tue, 01 Feb 2022 09:46:42 +0100
+Subject: Re: [PATCH v2 bpf-next] libbpf: deprecate xdp_cpumap and xdp_devmap
+ sec definitions
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>
+References: <d456931681fe2344ae56225a698a0bd1d5c63b88.1643375942.git.lorenzo@kernel.org>
+ <CAEf4Bzbt--iLcctUq+D_CXY0qyDRi3_uWc=vvOV4z-eQvum2cA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ac647bb-e596-0dd1-8120-3c93a262202a@iogearbox.net>
+Date:   Tue, 1 Feb 2022 09:46:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzbt--iLcctUq+D_CXY0qyDRi3_uWc=vvOV4z-eQvum2cA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26439/Mon Jan 31 10:24:40 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
-
-> >
-> > 4096 is OK for x86-64, but for other archs with greater than 4KB
-> > page size (e.g. 64KB under arm64), test_verifier for test case
-> > "check valid spill/fill, ptr to mem" will fail, so just use
-> > getpagesize() to initialize the ring buffer size. Do this for
-> > test_progs as well.
-> >
-[...]
-
-> > diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-> > index 96060ff4ffc6..e192a9f16aea 100644
-> > --- a/tools/testing/selftests/bpf/progs/ima.c
-> > +++ b/tools/testing/selftests/bpf/progs/ima.c
-> > @@ -13,7 +13,6 @@ u32 monitored_pid = 0;
-> >
-> >  struct {
-> >         __uint(type, BPF_MAP_TYPE_RINGBUF);
-> > -       __uint(max_entries, 1 << 12);
+On 2/1/22 6:50 AM, Andrii Nakryiko wrote:
+> On Fri, Jan 28, 2022 at 5:29 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>>
+>> Deprecate xdp_cpumap xdp_devmap sec definitions.
+>> Introduce xdp/devmap and xdp/cpumap definitions according to the standard
+>> for SEC("") in libbpf:
+>> - prog_type.prog_flags/attach_place
+>> Update cpumap/devmap samples and kselftests
+>>
+>> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> ---
+>> Changes since v1:
+>> - refer to Libbpf-1.0-migration-guide in the warning rised by libbpf
+>> ---
+>>   samples/bpf/xdp_redirect_cpu.bpf.c                   |  8 ++++----
+>>   samples/bpf/xdp_redirect_map.bpf.c                   |  2 +-
+>>   samples/bpf/xdp_redirect_map_multi.bpf.c             |  2 +-
+>>   tools/lib/bpf/libbpf.c                               | 12 ++++++++++--
+>>   .../bpf/progs/test_xdp_with_cpumap_frags_helpers.c   |  2 +-
+>>   .../bpf/progs/test_xdp_with_cpumap_helpers.c         |  2 +-
+>>   .../bpf/progs/test_xdp_with_devmap_frags_helpers.c   |  2 +-
+>>   .../bpf/progs/test_xdp_with_devmap_helpers.c         |  2 +-
+>>   .../selftests/bpf/progs/xdp_redirect_multi_kern.c    |  2 +-
 > 
-> Should we just bump it to 64/128/256KB instead? It's quite annoying to
-> do a split open and then load just due to this...
->
-Agreed.
+> Please split samples/bpf, selftests/bpf, and libbpf changes into
+> separate patches. We keep them separate whenever possible.
+> 
+>>   9 files changed, 21 insertions(+), 13 deletions(-)
+>>
+> 
+> [...]
+> 
+>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>> index 4ce94f4ed34a..ba003cabe4a4 100644
+>> --- a/tools/lib/bpf/libbpf.c
+>> +++ b/tools/lib/bpf/libbpf.c
+>> @@ -237,6 +237,8 @@ enum sec_def_flags {
+>>          SEC_SLOPPY_PFX = 16,
+>>          /* BPF program support non-linear XDP buffer */
+>>          SEC_XDP_FRAGS = 32,
+>> +       /* deprecated sec definitions not supposed to be used */
+>> +       SEC_DEPRECATED = 64,
+>>   };
+>>
+>>   struct bpf_sec_def {
+>> @@ -6575,6 +6577,10 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+>>          if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS))
+>>                  opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
+>>
+>> +       if (def & SEC_DEPRECATED)
+>> +               pr_warn("sec '%s' is deprecated, please take a look at https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide\n",
+>> +                       prog->sec_name);
+>> +
+> 
+> Please add a link directly to [0]. I just added a new section listing
+> xdp_devmap and xdp_cpumap. I also added SEC("classifier") ->
+> SEC("tc"), so let's mark SEC("classifier") as deprecated as well in
+> the next revision?
+> 
+> Daniel, does that sound reasonable to you or should we leave
+> SEC("classifier") intact?
 
-> I'm also wondering if we should either teach kernel to round up to
-> closes power-of-2 of page_size internally, or teach libbpf to do this
-> for RINGBUF maps. Thoughts?
->
-It seems that max_entries doesn't need to be page-aligned. For example
-if max_entries is 4096 and page size is 65536, we can allocate a
-65536-sized page and set rb->mask 4095 and it will work. The only
-downside is 60KB memory is waster, but it is the implementation
-details and can be improved if subpage mapping can be supported.
+Yeap, sounds reasonable, lets mark "classifier" as SEC_DEPRECATED, too.
 
-So how about removing the page-aligned restraint in kernel ?
+> Let's use also the syntax consistent with the code people write.
+> Something like "SEC(\"%s\") is deprecated, please see
+> https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide#bpf-program-sec-annotation-deprecations
+> for details"?
+> 
+>    [0] https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide#bpf-program-sec-annotation-deprecations
+> 
+>>          if ((prog->type == BPF_PROG_TYPE_TRACING ||
+>>               prog->type == BPF_PROG_TYPE_LSM ||
+>>               prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+>> @@ -8618,9 +8624,11 @@ static const struct bpf_sec_def section_defs[] = {
+>>          SEC_DEF("iter.s/",              TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
+>>          SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+>>          SEC_DEF("xdp.frags/devmap",     XDP, BPF_XDP_DEVMAP, SEC_XDP_FRAGS),
+>> -       SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+>> +       SEC_DEF("xdp/devmap",           XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+>> +       SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+>>          SEC_DEF("xdp.frags/cpumap",     XDP, BPF_XDP_CPUMAP, SEC_XDP_FRAGS),
+>> -       SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+>> +       SEC_DEF("xdp/cpumap",           XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+>> +       SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+>>          SEC_DEF("xdp.frags",            XDP, BPF_XDP, SEC_XDP_FRAGS),
+>>          SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+>>          SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
+> 
+> [...]
+> 
 
-Regards,
-Tao
