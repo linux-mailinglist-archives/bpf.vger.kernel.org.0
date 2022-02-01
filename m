@@ -2,126 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A484A5208
-	for <lists+bpf@lfdr.de>; Mon, 31 Jan 2022 23:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E831E4A53A7
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 01:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbiAaWFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 17:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57838 "EHLO
+        id S229932AbiBAACN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 19:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbiAaWFw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 17:05:52 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B057FC061714
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:51 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id z10-20020a17090acb0a00b001b520826011so533869pjt.5
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 14:05:51 -0800 (PST)
+        with ESMTP id S229933AbiBAACN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 19:02:13 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D624FC061714;
+        Mon, 31 Jan 2022 16:02:12 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id q204so19105978iod.8;
+        Mon, 31 Jan 2022 16:02:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5zKq2PZXAx/qg7Z0UrTBdBykuUzrcXoLH7EvUQPd0q4=;
-        b=WAdUrb5kajkRD/FfFQu187MCQ2LcQ/rCY95OSy9hSG3RTi/YedQKZhmJjxGXx3WqlS
-         SiwOS9o3haUcbQcAWQkXfsmI/4F0afp4gONFBmKpEOk8xEvUa5Fiuf3SZrc1wnEE33nt
-         4LaM/MeLwNa8t3X/mWBfMil7M75VnzgCujrThLuHmV2PW1Yjn5g3epSZQvakMbIx/JyH
-         nhPjL8+hyEFj654W7Zc+SaOQqeeBtHwDqgPmZHLDo4QFoac1sc/kEKXGulxqOiZaVoWn
-         PGgtByD2rnXe5dZ7wDDTkL80qSlzGchOOgetWqsH0ForqszQv+0TfsGPpHdGNWFRg1zV
-         bj3A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QyO86vvXrvsnYbM9ePprWtNUgK1VSac7vXnAuMxRjnM=;
+        b=Nk/quBFO1BELsTpfs58wjw7GKNvRtuEERY8EEMkyufCHwI2PCskskqPpAm1e7YY2LA
+         Ju9nKgNhP2TdLdrj98SoMcGxSu4esv/MKDYp5j79Q7y8oj7XmADeUwMfuvnmkzfJcY6v
+         L1WQ5Jbd71ANVfnFu4VlJc0SyxOEjJZHE2eGAD/gVlSTROS89xJs/xQvmX+l4f2AeHth
+         SW0HWKrC/rlTDn5YARGwXsrFH9ImkxNknd+MxzNH6oLG892ssGiUUgYdbTUKAkg1SP0e
+         IFoMvb1nS7EvxoOYYySbxZ5vc3GqeQ619PlmqgiOw5+gHORZGZwvAv/8LWQ2UT+5hlt3
+         7c8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5zKq2PZXAx/qg7Z0UrTBdBykuUzrcXoLH7EvUQPd0q4=;
-        b=Szl1KU4yxJk7FNQQHWm19Q5qAPfI8tLT4ccfZIdrw1md9/ghvioJTYszHl4GPFNR1b
-         NfxfCRIp9npQT8RqL1cbPgEhEBylyPx2Vybsy35LLLLiaEdMf3nPFE3YizswA4YeJOJ7
-         du6e6A0KhaoofukyWzm+XH+6xPWaTLMsUZy9rPfJmMYEufaQpO+g+brG0ZsGWiC5zdNt
-         cTvJ/EfPFdOrdfGT4O4T1QyHMa8E4WC1MRnPXrkemN/OYklSuLx7Ywwg5UzTy0A3t/Qr
-         nm1h+OcR8A0Mit8GrjHdSwrQTacpFIGq/P2rOhkezubkHfeWIIMmji6XRrrDqxcvOU/Z
-         RanQ==
-X-Gm-Message-State: AOAM5322W65d1eBgS9kO6vfPlFslG1MGzVQWmCY+m+yh0o+VDoIIhFco
-        qOjpTHoiwJu2aqkB+c+5s8E=
-X-Google-Smtp-Source: ABdhPJw5kyz4Xypm311qWv54hatBOva2hEl9FkZagPI2LxiOeRBD4mNJbaC4MhDEowSW6Z1+eAZM/w==
-X-Received: by 2002:a17:90b:350c:: with SMTP id ls12mr26624379pjb.44.1643666751208;
-        Mon, 31 Jan 2022 14:05:51 -0800 (PST)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:78b6])
-        by smtp.gmail.com with ESMTPSA id n2sm7728142pgf.74.2022.01.31.14.05.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 14:05:50 -0800 (PST)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH bpf-next 7/7] bpf: Drop libbpf, libelf, libz dependency from bpf preload.
-Date:   Mon, 31 Jan 2022 14:05:28 -0800
-Message-Id: <20220131220528.98088-8-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
-References: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QyO86vvXrvsnYbM9ePprWtNUgK1VSac7vXnAuMxRjnM=;
+        b=yfJ8tob5briuBES+oi0c92zgLC5ApsyuyITnvTRGuE3dfoMmjRQz0GMChmTM0Fb2U0
+         HJDGfQ6kjCBpzUSLJmfaXex2tfpLkxYmdJSlEyBFkR/t56yw9Sd9HKwiNivjg3m7+l2a
+         Wg9sWOI4LPyrXi64N7iXcfFSfBBDEopxQkea5n9lKuPzWjE4vsagYyWVtPo4gKtfVCNj
+         aaKIaZd35cBAK+vYhQJkcUEEoVLuoBOzDtqW5Bybzfka3R1euVr7LmGqu3jwdEu/bE1D
+         fDUDq22U5GQNM6oXWaKjgmIgmeyknTenWP1KJGKHuVtVs/fEodJnFCgxeweXoIxKKroL
+         BwJg==
+X-Gm-Message-State: AOAM531xF6urFBYGHjz0IKZ4YXXOckqdzYm33JMHWqy+xB3O/ag5Vy74
+        1fpTTtzQTv4aeJUEs6WPjsM9CFJ79MskLt69wcw=
+X-Google-Smtp-Source: ABdhPJynksQgC7hnEFS7wyoTCvzTvG+zpxsgeWJTLDNUTwXwHDGfkGrUcngSUD+tLEGMr2L0wm31ZD9wy7WzgIMRFbw=
+X-Received: by 2002:a05:6638:d88:: with SMTP id l8mr5018495jaj.234.1643673732190;
+ Mon, 31 Jan 2022 16:02:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220127024939.364016-1-houtao1@huawei.com>
+In-Reply-To: <20220127024939.364016-1-houtao1@huawei.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 31 Jan 2022 16:02:00 -0800
+Message-ID: <CAEf4BzYHggCfbSGb8autEDcHhZXabK-n36rggyjJeL0uLEr+DQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize
+ ring buffer size
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Jan 26, 2022 at 6:34 PM Hou Tao <houtao1@huawei.com> wrote:
+>
+> 4096 is OK for x86-64, but for other archs with greater than 4KB
+> page size (e.g. 64KB under arm64), test_verifier for test case
+> "check valid spill/fill, ptr to mem" will fail, so just use
+> getpagesize() to initialize the ring buffer size. Do this for
+> test_progs as well.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/d_path.c | 14 ++++++++++++--
+>  .../testing/selftests/bpf/prog_tests/test_ima.c | 17 +++++++++++++----
+>  tools/testing/selftests/bpf/progs/ima.c         |  1 -
+>  .../bpf/progs/test_d_path_check_types.c         |  1 -
+>  tools/testing/selftests/bpf/test_verifier.c     |  2 +-
+>  5 files changed, 26 insertions(+), 9 deletions(-)
+>
 
-Drop libbpf, libelf, libz dependency from bpf preload.
-This reduces bpf_preload_umd binary size
-from 1.7M to 30k unstripped with debug info
-and from 300k to 19k stripped.
+[...]
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/preload/Makefile | 28 ++--------------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
+> @@ -86,5 +94,6 @@ void test_test_ima(void)
+>         CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno);
+>  close_prog:
+>         ring_buffer__free(ringbuf);
+> +destroy_skel:
+>         ima__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
+> index 96060ff4ffc6..e192a9f16aea 100644
+> --- a/tools/testing/selftests/bpf/progs/ima.c
+> +++ b/tools/testing/selftests/bpf/progs/ima.c
+> @@ -13,7 +13,6 @@ u32 monitored_pid = 0;
+>
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
 
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-index 1400ac58178e..baf47d9c7557 100644
---- a/kernel/bpf/preload/Makefile
-+++ b/kernel/bpf/preload/Makefile
-@@ -1,40 +1,16 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
--LIBBPF_OUT = $(abspath $(obj))/libbpf
--LIBBPF_A = $(LIBBPF_OUT)/libbpf.a
--LIBBPF_DESTDIR = $(LIBBPF_OUT)
--LIBBPF_INCLUDE = $(LIBBPF_DESTDIR)/include
--
--# Although not in use by libbpf's Makefile, set $(O) so that the "dummy" test
--# in tools/scripts/Makefile.include always succeeds when building the kernel
--# with $(O) pointing to a relative path, as in "make O=build bindeb-pkg".
--$(LIBBPF_A): | $(LIBBPF_OUT)
--	$(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(LIBBPF_OUT)/ OUTPUT=$(LIBBPF_OUT)/   \
--		DESTDIR=$(LIBBPF_DESTDIR) prefix=			       \
--		$(LIBBPF_OUT)/libbpf.a install_headers
--
--libbpf_hdrs: $(LIBBPF_A)
--
--.PHONY: libbpf_hdrs
--
--$(LIBBPF_OUT):
--	$(call msg,MKDIR,$@)
--	$(Q)mkdir -p $@
-+LIBBPF_INCLUDE = $(LIBBPF_SRCS)/..
- 
- userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
- 	-I $(LIBBPF_INCLUDE) -Wno-unused-result
- 
- userprogs := bpf_preload_umd
- 
--clean-files := libbpf/
--
--$(obj)/iterators/iterators.o: | libbpf_hdrs
--
- bpf_preload_umd-objs := iterators/iterators.o
--bpf_preload_umd-userldlibs := $(LIBBPF_A) -lelf -lz
- 
--$(obj)/bpf_preload_umd: $(LIBBPF_A)
-+$(obj)/bpf_preload_umd:
- 
- $(obj)/bpf_preload_umd_blob.o: $(obj)/bpf_preload_umd
- 
--- 
-2.30.2
+Should we just bump it to 64/128/256KB instead? It's quite annoying to
+do a split open and then load just due to this...
 
+I'm also wondering if we should either teach kernel to round up to
+closes power-of-2 of page_size internally, or teach libbpf to do this
+for RINGBUF maps. Thoughts?
+
+
+>  } ringbuf SEC(".maps");
+>
+>  char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+> index 7e02b7361307..1b68d4a65abb 100644
+> --- a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+> +++ b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
+> @@ -8,7 +8,6 @@ extern const int bpf_prog_active __ksym;
+>
+>  struct {
+>         __uint(type, BPF_MAP_TYPE_RINGBUF);
+> -       __uint(max_entries, 1 << 12);
+>  } ringbuf SEC(".maps");
+>
+>  SEC("fentry/security_inode_getattr")
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index 29bbaa58233c..6acb5e747715 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -931,7 +931,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
+>         }
+>         if (*fixup_map_ringbuf) {
+>                 map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
+> -                                          0, 4096);
+> +                                          0, getpagesize());
+>                 do {
+>                         prog[*fixup_map_ringbuf].imm = map_fds[20];
+>                         fixup_map_ringbuf++;
+> --
+> 2.29.2
+>
