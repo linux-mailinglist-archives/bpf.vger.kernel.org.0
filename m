@@ -2,108 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772374A54C2
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F634A5538
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 03:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbiBABqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 20:46:18 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46002 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbiBABqR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 31 Jan 2022 20:46:17 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21111PGN009200
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:46:17 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=FmSTvm0Ii+vy4ZhORbNMsUpp23j4kFGrD6lHPXCnGew=;
- b=Nl2T8R1Lab9qaTmuRJagb2ikNi3BUT01xlfhvfgEGG7SYq1qms8hr1/u2/8rzkPzBcz1
- Sekta8xWO0Q4jxnWijP/mdYlHWsYp2Ifd6U5pd/Y2GImMLf0iKo6fobiwSJ7nnczu9dG
- y+LCAcTVk/J2OanU4grZVB48peuLH0wdUw0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dxm2p2yr5-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:46:17 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 31 Jan 2022 17:46:16 -0800
-Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
-        id 2AF45D2D6072; Mon, 31 Jan 2022 17:46:12 -0800 (PST)
-From:   Dave Marchevsky <davemarchevsky@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next] libbpf: deprecate btf_ext rec_size APIs
-Date:   Mon, 31 Jan 2022 17:46:10 -0800
-Message-ID: <20220201014610.3522985-1-davemarchevsky@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: Wbe8605bZeBlUVglS_PeRAPtOMC9bqvO
-X-Proofpoint-ORIG-GUID: Wbe8605bZeBlUVglS_PeRAPtOMC9bqvO
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S232202AbiBACZV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 21:25:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbiBACZU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 21:25:20 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BD5C061714;
+        Mon, 31 Jan 2022 18:25:20 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id z20so22039331ljo.6;
+        Mon, 31 Jan 2022 18:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3NFcpSNbn5N8Qa2Q7ec108f+HMS/1rOzdxpFaqBQx3Y=;
+        b=Zf7933wUxyldB+3Qj26LgRwrkn3jZN981YT1o/kND9/6oRNwee7M12QtzvDRG19HkP
+         WGehHovTmgHSYvn1+vx/TwmF3aymj5Yu/3dEeok5PDSCz9cym7t0MV9oSKPKoAfcVKPU
+         l51C0HGBTgkFA2I1VOcGjvz/Jx/YjtjHRd/0HnpfRfF/9MvSkgW8vuSGSL1c3m+L8Ew6
+         flrPnTiUVf3KT6HvvYSkm6cFT1+tQdcT8rJB08DBHsGPkUOX4NkShccufmDN6ZOjfAm4
+         uvEMlUyxDSWBJ/gQWY0L/uoQmpIi679IJw79qIIK857NxOs3r4wvnIEWsZ25IAFfiD6r
+         jL5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3NFcpSNbn5N8Qa2Q7ec108f+HMS/1rOzdxpFaqBQx3Y=;
+        b=8QWSt6nmWUw7ieQA8WyE6wvGqbskzmF1akD87Ecoxktq/f46iTYAm0MpTdM3PwFLeN
+         QMfD/2ZCpKK1zS6ch/onmcBPxmfQrapLU+5j9edVGr442qEb27CS/B0iguPZeieXO3X9
+         HP4lGW0TZkY64noMrf/CaQ/C6iDpUWvLmD8DmZW/eSWqhYo17C1FKRiTtfvBY+BPeOB6
+         O2Q1HXVlR5Ix8cYrh5rkLWIwPe3rsSQHSGfXe5UFa/QBaUT1TsjtBRbKyAWI/mPXBiQg
+         8kqe10u6wJF17i8teJ87gtCzWyPXmxwQhaj96DqxmWjNACGEotQOpCgqbWJcTm/x3LK/
+         R1wQ==
+X-Gm-Message-State: AOAM530VNsb7n8mg40zWezzcMOSeRHZXgWvLyKek5LUir8ziKzpswTrv
+        PPhaR7/QAma7V8QrIsQM6KPGaNK+a2MejKYt5Og=
+X-Google-Smtp-Source: ABdhPJyU2s2NAFGnCYn+is4A64/LbHpz8swj5c9UlhKMBGs6BaQqdbFMID0H3hoo6ZTnlbOhy7ypqY/ZpKcvuLQc3Zw=
+X-Received: by 2002:a2e:9b8c:: with SMTP id z12mr9531343lji.476.1643682318491;
+ Mon, 31 Jan 2022 18:25:18 -0800 (PST)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-01-31_07,2022-01-31_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
- phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202010008
-X-FB-Internal: deliver
+References: <20220131114600.21849-1-houtao1@huawei.com> <36954dbd-beab-9599-3579-105037822045@iogearbox.net>
+In-Reply-To: <36954dbd-beab-9599-3579-105037822045@iogearbox.net>
+From:   htbegin <hotforest@gmail.com>
+Date:   Tue, 1 Feb 2022 10:25:06 +0800
+Message-ID: <CANUnq3ZneUy1LZBsR59s-QwzqK0pfRrf-2DPL7nQ3rgCnANJ6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: use VM_MAP instead of VM_ALLOC for ringbuf
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Hou Tao <houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-btf_ext__{func,line}_info_rec_size functions are used in conjunction
-with already-deprecated btf_ext__reloc_{func,line}_info functions. Since
-struct btf_ext is opaque to the user it was necessary to expose rec_size
-getters in the past.
+Hi,
 
-btf_ext__reloc_{func,line}_info were deprecated in commit 8505e8709b5ee
-("libbpf: Implement generalized .BTF.ext func/line info adjustment")
-as they're not compatible with support for multiple programs per
-section. It was decided[0] that users of these APIs should implement their
-own .btf.ext parsing to access this data, in which case the rec_size
-getters are unnecessary. So deprecate them from libbpf 0.7.0 onwards.
+On Tue, Feb 1, 2022 at 12:28 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 1/31/22 12:46 PM, Hou Tao wrote:
+> > Now the ringbuf area in /proc/vmallocinfo is showed as vmalloc,
+> > but VM_ALLOC is only used for vmalloc(), and for the ringbuf area
+> > it is created by mapping allocated pages, so use VM_MAP instead.
+> >
+> > After the change, ringbuf info in /proc/vmallocinfo will changed from:
+> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmalloc user
+> > to
+> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmap user
+>
+> Could you elaborate in the commit msg if this also has some other internal
+> effect aside from the /proc/vmallocinfo listing? Thanks!
+>
+For now, the VM_MAP flag only affects the output in /proc/vmallocinfo.
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/277
-
-Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
----
-
-v2: LIBBPF_DEPRECATED_SINCE -> LIBBPF_DEPRECATED to match
-    reloc_{func,line}_info deprecations [Daniel]
-
- tools/lib/bpf/btf.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 96b44d55db6e..b10729fd830c 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -168,8 +168,10 @@ int btf_ext__reloc_line_info(const struct btf *btf,
- 			     const struct btf_ext *btf_ext,
- 			     const char *sec_name, __u32 insns_cnt,
- 			     void **line_info, __u32 *cnt);
--LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext=
-);
--LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext=
-);
-+LIBBPF_API LIBBPF_DEPRECATED("btf_ext__reloc_func_info is deprecated; writ=
-e custom func_info parsing to fetch rec_size")
-+__u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext);
-+LIBBPF_API LIBBPF_DEPRECATED("btf_ext__reloc_line_info is deprecated; writ=
-e custom line_info parsing to fetch rec_size")
-+__u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext);
-=20
- LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
- LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
---=20
-2.30.2
-
+Thanks,
+Tao
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > ---
+> >   kernel/bpf/ringbuf.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> > index 638d7fd7b375..710ba9de12ce 100644
+> > --- a/kernel/bpf/ringbuf.c
+> > +++ b/kernel/bpf/ringbuf.c
+> > @@ -104,7 +104,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+> >       }
+> >
+> >       rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+> > -               VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+> > +               VM_MAP | VM_USERMAP, PAGE_KERNEL);
+> >       if (rb) {
+> >               kmemleak_not_leak(pages);
+> >               rb->pages = pages;
+> >
+>
