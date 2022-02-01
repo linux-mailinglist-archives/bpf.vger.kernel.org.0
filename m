@@ -2,81 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672794A6316
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 19:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44444A6339
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 19:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbiBASAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 13:00:12 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:47222 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbiBASAL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 13:00:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AFBB261408
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 18:00:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1A428C340F0;
-        Tue,  1 Feb 2022 18:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643738411;
-        bh=sKU77e7D7oVRyejeyAj8qm0QpzuqFzoYKHQ80WU6lUY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=JnN4UnrgZOrNzz1UtFhvnrPSdMQlpur8FqW6DdGNR9F8i8431i9AN8cQBHIdzMMsN
-         1g1mM1pzTZdjb4JOeaCQAoyweRorEoBLeHPy8XiIUwlxbOEnGPWuAw8/BFlS7PhD+F
-         nidyQzH2P0hRhPt/qFlcAyCehIzYRQmiWvtqyLwaDzP82YApRYklAG7vyQvngNf78f
-         3E9jeBIkrRBHO/rHvVLcDNs+gLmIIUX8rEliFMDMzF8OTGYqJQjF8364QIH+4vceRa
-         9oSfGLZNtv3SUjNTp6bIc7wn469HCTtNLpIk+alc2M/JwjSiggKN9/j8cXG8SXMeBP
-         1bRUtwDTV25mQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E69E8E5D07D;
-        Tue,  1 Feb 2022 18:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S241793AbiBASIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 13:08:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241791AbiBASIA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 13:08:00 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8822C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 10:07:59 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id l5so35960376edv.3
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 10:07:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kj2AWNrmMybXToRIPNwaahVyriZN8lqGUxAg0dzkXCQ=;
+        b=ZdvRBsgNDdmig3qfMFHBdunqjPFOtqgkzIXZV8mQfIyPufdYxixJ/HNYuM9O9OV//m
+         d63O1Wxn0wgMAon+CmeuMflBqkSUZamng2WxUwHCT4+3XjwtZSVPGTTy+8qAxmDxyHaU
+         MAkP3KONPhvrdPapVr62D69/WyYYPjaBVRIkXZqfH/SfMhk9rFtplIJrvbYamNHnzLNT
+         nDXWfdi0gFH+FFjFktFgl7AB6J7XcpW5FuzBDYcvYmGaMcoAlSa0MXPTJ/IZ53dt3zia
+         Gzt6BLviGzhoIroov9cwmAFhfHBP0z+lwdB6ZjtQi+1YM3eRclGSQrw+hT2pHOo73CCF
+         l3Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kj2AWNrmMybXToRIPNwaahVyriZN8lqGUxAg0dzkXCQ=;
+        b=NCWGgWCRJPQOOsbJsG0+/MVTL7YmGmBpkh+hoS0xe6DslELXQn0U54ikPMEDBqA2ji
+         rzViEC4KickLCC6r25/aeA3I77LTeB7NUGqwQWXneHTAdgg7aVUeM0fUaBGCY8/2SN5q
+         YJmJEGK+I+DbIopDqQfYsa4Y58mKyKtrbzcXLXxQR9e/RhCNoca7yKqMq8c5yB25WqxF
+         cmaTZwmks8T7c0QVmjnyvnTufyuC065YhIZBj5qMVrrJ1GItER4qk4Bqpa94AcXHYYzm
+         sNZi2gKEUI/E7GZnB2I5h4SxvEQFNjFtRGkxosGKyXixhLA5uOIEmDuDtiVmlYHIlKnz
+         ZmXQ==
+X-Gm-Message-State: AOAM5321y/+an9aNEPRlVjXfZhMmMlGAFx8AE6LdRg6LuoUZHmTWchJI
+        rmrpJgE/EajKPOFhdMaSXAhtdn7xjGiTNJ9jM9YQHEBaO1E=
+X-Google-Smtp-Source: ABdhPJx6wS812wNRCdpg4BuzRxQ/KLjRHaGkK1u+qzDKLx4ljmq/jjNu8/y7tbodleOtOSRW5VeTURze2owB2BkWgpg=
+X-Received: by 2002:aa7:c659:: with SMTP id z25mr26784648edr.148.1643738878210;
+ Tue, 01 Feb 2022 10:07:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf-next 0/3] libbpf: deprecate xdp_cpumap,
- xdp_devmap and classifier sec definitions
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164373841092.21178.15446692367658403571.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Feb 2022 18:00:10 +0000
-References: <cover.1643727185.git.lorenzo@kernel.org>
-In-Reply-To: <cover.1643727185.git.lorenzo@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        dsahern@kernel.org, brouer@redhat.com, toke@redhat.com,
-        lorenzo.bianconi@redhat.com, andrii@kernel.org,
-        john.fastabend@gmail.com
+References: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
+ <CAK3+h2ybqBVKoaL-2p8eu==4LxPY2kfLyMsyOuWEVbRf+S-GbA@mail.gmail.com>
+ <CAK3+h2zLv6BcfOO7HZmRdXZcHf_zvY91iUH08OgpcetOJkM=EQ@mail.gmail.com>
+ <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com> <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
+In-Reply-To: <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Tue, 1 Feb 2022 10:07:46 -0800
+Message-ID: <CAK3+h2x5pHC+8qJtY7qrJRhrJCeyvgPEY1G+utdvbzLiZLzB3A@mail.gmail.com>
+Subject: Re: can't get BTF: type .rodata.cst32: not found
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Jan 28, 2022 at 10:27 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+>
+> On Thu, Jan 27, 2022 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
+> >
+> >
+> >
+> > On 1/25/22 12:32 PM, Vincent Li wrote:
+> > > On Tue, Jan 25, 2022 at 9:52 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > >>
+> > >> this is macro I suspected in my implementation that could cause issue with BTF
+> > >>
+> > >> #define ENABLE_VTEP 1
+> > >> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
+> > >> 0x2048a90a, }
+> > >> #define VTEP_MAC (__u64[]){0x562e984c3682, 0x582e984c3682,
+> > >> 0x5eaaed93fdf2, 0x5faaed93fdf2, }
+> > >> #define VTEP_NUMS 4
+> > >>
+> > >> On Tue, Jan 25, 2022 at 9:38 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> > >>>
+> > >>> Hi
+> > >>>
+> > >>> While developing Cilium VTEP integration feature
+> > >>> https://github.com/cilium/cilium/pull/17370, I found a strange issue
+> > >>> that seems related to BTF and probably caused by my specific
+> > >>> implementation, the issue is described in
+> > >>> https://github.com/cilium/cilium/issues/18616, I don't know much about
+> > >>> BTF and not sure if my implementation is seriously flawed or just some
+> > >>> implementation bug or maybe not compatible with BTF. Strangely, the
+> > >>> issue appears related to number of VTEPs I use, no problem with 1 or 2
+> > >>> VTEP, 3, 4 VTEPs will have problem with BTF, any guidance from BTF
+> > >>> experts  are appreciated :-).
+> > >>>
+> > >>> Thanks
+> > >>>
+> > >>> Vincent
+> > >
+> > > Sorry for previous top post
+> > >
+> > > it looks the compiler compiles the cilium bpf_lxc.c to bpf_lxc.o
+> > > differently and added " [21] .rodata.cst32     PROGBITS
+> > > 0000000000000000  00011e68" when  following macro exceeded 2 members
+> > >
+> > > #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
+> > > 0x2048a90a, }
+> > >
+> > > no ".rodata.cst32" compiled in bpf_lxc.o  when above VTEP_ENDPOINT
+> > > member <=2. any reason why compiler would do that?
+> >
+> > Regarding to why compiler generates .rodata.cst32, the reason is
+> > you have some 32-byte constants which needs to be saved somewhere.
+> > For example,
+> >
+> > $ cat t.c
+> > struct t {
+> >    long c[2];
+> >    int d[4];
+> > };
+> > struct t g;
+> > int test()
+> > {
+> >     struct t tmp  = {.c = {1, 2}, .d = {3, 4}};
+> >     g = tmp;
+> >     return 0;
+> > }
+> >
+> > $ clang -target bpf -O2 -c t.c
+> > $ llvm-readelf -S t.o
+> > ...
+> >    [ 4] .rodata.cst32     PROGBITS        0000000000000000 0000a8 000020
+> > 20  AM  0   0  8
+> > ...
+> >
+> > In the above code, if you change the struct size, say from 32 bytes to
+> > 40 bytes, the rodata.cst32 will go away.
+>
+> Thanks Yonghong! I guess it is cilium/ebpf needs to recognize rodata.cst32 then
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Hi Yonghong,
 
-On Tue,  1 Feb 2022 15:58:07 +0100 you wrote:
-> Deprecate xdp_cpumap, xdp_devmap and classifier sec definitions.
-> Update cpumap/devmap samples and kselftests.
-> 
-> Changes since v2:
-> - update warning log
-> - split libbpf and samples/kselftests changes
-> - deprecate classifier sec definition
-> 
-> [...]
+Here is a follow-up question, it looks cilium/ebpf parse vmlinux and
+stores BTF type info in btf.Spec.namedTypes, but the elf object file
+provided by user may have section like rodata.cst32 generated by
+compiler that does not have accompanying BTF type info stored in
+btf.Spec.NamedTypes for the rodata.cst32, how vmlinux can be
+guaranteed to  have every BTF type info from application/user provided
+elf object file ? I guess there is no guarantee.
 
-Here is the summary with links:
-  - [v3,bpf-next,1/3] libbpf: deprecate xdp_cpumap, xdp_devmap and classifier sec definitions
-    https://git.kernel.org/bpf/bpf-next/c/4a4d4cee48e2
-  - [v3,bpf-next,2/3] selftests/bpf: update cpumap/devmap sec_name
-    https://git.kernel.org/bpf/bpf-next/c/439f0336566c
-  - [v3,bpf-next,3/3] samples/bpf: update cpumap/devmap sec_name
-    https://git.kernel.org/bpf/bpf-next/c/8bab53223340
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Vincent
