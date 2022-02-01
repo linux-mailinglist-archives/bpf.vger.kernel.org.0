@@ -2,95 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94CB84A60E9
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 17:01:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FB24A61F3
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240775AbiBAQB6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 11:01:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240769AbiBAQB6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 11:01:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15615C061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 08:01:57 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9C32D616FD
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 16:01:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6B85C340EB;
-        Tue,  1 Feb 2022 16:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643731317;
-        bh=hGfZZ9bBYY+bCNNU83upYdVCO5KAqgPJ2wkt7zm1oNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dBk75CJldupzxQ2UDc7nl+vwG8ynrxmAVKQGCLo/HQp8A2T0sG10v7zuNr2DBRGdE
-         HySQq2yjeeHF6OuMd+zj3k9TZ1cGOOzOuGM6c+KV9x7f0AaAjgMdyJn8cCUWkZXcOP
-         BbX0VHCc9BR7GrtAdkhYefwrLh+ttA0M7c2B99VxmRj1DRBduYUR7evdHyQgu+mrOs
-         mL/LJ3ypu/8Bete+/xMckuFWLAMGR/96dBXiBqsOqK15IkmijEstrJjpKLG1YZfnYQ
-         Jrew3ot986hSFgsZV6AtCBPbQtv+q8jjwn53hqGtJMaIoSkqGbVnXvPmvda1PMlN+e
-         rQ1P6saoJGuMA==
-Date:   Tue, 1 Feb 2022 09:01:52 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     ndesaulniers@google.com, llvm@lists.linux.dev, bpf@vger.kernel.org,
-        andrii@kernel.org, quentin@isovalent.com
-Subject: Re: [PATCH] tools: Ignore errors from `which' when searching a GCC
- toolchain
-Message-ID: <YflZcEjaPoN8G84c@dev-arch.archlinux-ax161>
-References: <20220201093119.1713207-1-jean-philippe@linaro.org>
+        id S229893AbiBARKb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 1 Feb 2022 12:10:31 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57352 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229683AbiBARK3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Feb 2022 12:10:29 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 211GAVEn029611
+        for <bpf@vger.kernel.org>; Tue, 1 Feb 2022 09:10:28 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dy6n9s54e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 09:10:28 -0800
+Received: from twshared9880.08.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 1 Feb 2022 09:10:27 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 3F3602914E08C; Tue,  1 Feb 2022 09:07:30 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <peterz@infradead.org>, <x86@kernel.org>,
+        <iii@linux.ibm.com>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH v8 bpf-next 8/9] bpf: introduce bpf_jit_binary_pack_[alloc|finalize|free]
+Date:   Mon, 31 Jan 2022 22:28:02 -0800
+Message-ID: <20220201062803.2675204-9-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220201062803.2675204-1-song@kernel.org>
+References: <20220201062803.2675204-1-song@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220201093119.1713207-1-jean-philippe@linaro.org>
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 0Uk16lUwY_7_HNtvhgkGGopJUWoex-Ab
+X-Proofpoint-GUID: 0Uk16lUwY_7_HNtvhgkGGopJUWoex-Ab
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-01_08,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
+ spamscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ phishscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202010096
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 01, 2022 at 09:31:20AM +0000, Jean-Philippe Brucker wrote:
-> When cross-building tools with clang, we run `which $(CROSS_COMPILE)gcc`
-> to detect whether a GCC toolchain provides the standard libraries. It is
-> only a helper because some distros put libraries where LLVM does not
-> automatically find them. On other systems, LLVM detects the libc
-> automatically and does not need this. There, it is completely fine not
-> to have a GCC at all, but some versions of `which' display an error when
-> the command is not found:
-> 
-> 	which: no aarch64-linux-gnu-gcc in ($PATH)
-> 
-> Since the error can safely be ignored, throw it to /dev/null.
-> 
-> Fixes: cebdb7374577 ("tools: Help cross-building with clang")
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+From: Song Liu <songliubraving@fb.com>
 
-Thanks a lot for the quick fix!
+This is the jit binary allocator built on top of bpf_prog_pack.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+bpf_prog_pack allocates RO memory, which cannot be used directly by the
+JIT engine. Therefore, a temporary rw buffer is allocated for the JIT
+engine. Once JIT is done, bpf_jit_binary_pack_finalize is used to copy
+the program to the RO memory.
 
-It would be nice if this could go in via bpf, as cebdb7374577 was merged
-in 5.17-rc1.
+bpf_jit_binary_pack_alloc reserves 16 bytes of extra space for illegal
+instructions, which is small than the 128 bytes space reserved by
+bpf_jit_binary_alloc. This change is necessary for bpf_jit_binary_hdr
+to find the correct header. Also, flag use_bpf_prog_pack is added to
+differentiate a program allocated by bpf_jit_binary_pack_alloc.
 
-> ---
->  tools/scripts/Makefile.include | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
-> index b0be5f40a3f1..79d102304470 100644
-> --- a/tools/scripts/Makefile.include
-> +++ b/tools/scripts/Makefile.include
-> @@ -90,7 +90,7 @@ EXTRA_WARNINGS += -Wstrict-aliasing=3
->  
->  else ifneq ($(CROSS_COMPILE),)
->  CLANG_CROSS_FLAGS := --target=$(notdir $(CROSS_COMPILE:%-=%))
-> -GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)gcc))
-> +GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)gcc 2>/dev/null))
->  ifneq ($(GCC_TOOLCHAIN_DIR),)
->  CLANG_CROSS_FLAGS += --prefix=$(GCC_TOOLCHAIN_DIR)$(notdir $(CROSS_COMPILE))
->  CLANG_CROSS_FLAGS += --sysroot=$(shell $(CROSS_COMPILE)gcc -print-sysroot)
-> -- 
-> 2.34.1
-> 
-> 
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ include/linux/bpf.h    |   1 +
+ include/linux/filter.h |  21 ++++----
+ kernel/bpf/core.c      | 108 ++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 120 insertions(+), 10 deletions(-)
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index ea0d7fd4a410..2fc7e5c5ef41 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -953,6 +953,7 @@ struct bpf_prog_aux {
+ 	bool sleepable;
+ 	bool tail_call_reachable;
+ 	bool xdp_has_frags;
++	bool use_bpf_prog_pack;
+ 	struct hlist_node tramp_hlist;
+ 	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+ 	const struct btf_type *attach_func_proto;
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 5855eb474c62..1cb1af917617 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -890,15 +890,6 @@ static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
+ 	set_memory_x((unsigned long)hdr, hdr->size >> PAGE_SHIFT);
+ }
+ 
+-static inline struct bpf_binary_header *
+-bpf_jit_binary_hdr(const struct bpf_prog *fp)
+-{
+-	unsigned long real_start = (unsigned long)fp->bpf_func;
+-	unsigned long addr = real_start & PAGE_MASK;
+-
+-	return (void *)addr;
+-}
+-
+ int sk_filter_trim_cap(struct sock *sk, struct sk_buff *skb, unsigned int cap);
+ static inline int sk_filter(struct sock *sk, struct sk_buff *skb)
+ {
+@@ -1068,6 +1059,18 @@ void *bpf_jit_alloc_exec(unsigned long size);
+ void bpf_jit_free_exec(void *addr);
+ void bpf_jit_free(struct bpf_prog *fp);
+ 
++struct bpf_binary_header *
++bpf_jit_binary_pack_alloc(unsigned int proglen, u8 **ro_image,
++			  unsigned int alignment,
++			  struct bpf_binary_header **rw_hdr,
++			  u8 **rw_image,
++			  bpf_jit_fill_hole_t bpf_fill_ill_insns);
++int bpf_jit_binary_pack_finalize(struct bpf_prog *prog,
++				 struct bpf_binary_header *ro_header,
++				 struct bpf_binary_header *rw_header);
++void bpf_jit_binary_pack_free(struct bpf_binary_header *ro_header,
++			      struct bpf_binary_header *rw_header);
++
+ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+ 				struct bpf_jit_poke_descriptor *poke);
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 7ae590897b73..306aa63fa58e 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1031,6 +1031,109 @@ void bpf_jit_binary_free(struct bpf_binary_header *hdr)
+ 	bpf_jit_uncharge_modmem(size);
+ }
+ 
++/* Allocate jit binary from bpf_prog_pack allocator.
++ * Since the allocated memory is RO+X, the JIT engine cannot write directly
++ * to the memory. To solve this problem, a RW buffer is also allocated at
++ * as the same time. The JIT engine should calculate offsets based on the
++ * RO memory address, but write JITed program to the RW buffer. Once the
++ * JIT engine finishes, it calls bpf_jit_binary_pack_finalize, which copies
++ * the JITed program to the RO memory.
++ */
++struct bpf_binary_header *
++bpf_jit_binary_pack_alloc(unsigned int proglen, u8 **image_ptr,
++			  unsigned int alignment,
++			  struct bpf_binary_header **rw_header,
++			  u8 **rw_image,
++			  bpf_jit_fill_hole_t bpf_fill_ill_insns)
++{
++	struct bpf_binary_header *ro_header;
++	u32 size, hole, start;
++
++	WARN_ON_ONCE(!is_power_of_2(alignment) ||
++		     alignment > BPF_IMAGE_ALIGNMENT);
++
++	/* add 16 bytes for a random section of illegal instructions */
++	size = round_up(proglen + sizeof(*ro_header) + 16, BPF_PROG_CHUNK_SIZE);
++
++	if (bpf_jit_charge_modmem(size))
++		return NULL;
++	ro_header = bpf_prog_pack_alloc(size);
++	if (!ro_header) {
++		bpf_jit_uncharge_modmem(size);
++		return NULL;
++	}
++
++	*rw_header = kvmalloc(size, GFP_KERNEL);
++	if (!*rw_header) {
++		bpf_prog_pack_free(ro_header);
++		bpf_jit_uncharge_modmem(size);
++		return NULL;
++	}
++
++	/* Fill space with illegal/arch-dep instructions. */
++	bpf_fill_ill_insns(*rw_header, size);
++	(*rw_header)->size = size;
++
++	hole = min_t(unsigned int, size - (proglen + sizeof(*ro_header)),
++		     BPF_PROG_CHUNK_SIZE - sizeof(*ro_header));
++	start = (get_random_int() % hole) & ~(alignment - 1);
++
++	*image_ptr = &ro_header->image[start];
++	*rw_image = &(*rw_header)->image[start];
++
++	return ro_header;
++}
++
++/* Copy JITed text from rw_header to its final location, the ro_header. */
++int bpf_jit_binary_pack_finalize(struct bpf_prog *prog,
++				 struct bpf_binary_header *ro_header,
++				 struct bpf_binary_header *rw_header)
++{
++	void *ptr;
++
++	ptr = bpf_arch_text_copy(ro_header, rw_header, rw_header->size);
++
++	kvfree(rw_header);
++
++	if (IS_ERR(ptr)) {
++		bpf_prog_pack_free(ro_header);
++		return PTR_ERR(ptr);
++	}
++	prog->aux->use_bpf_prog_pack = true;
++	return 0;
++}
++
++/* bpf_jit_binary_pack_free is called in two different scenarios:
++ *   1) when the program is freed after;
++ *   2) when the JIT engine fails (before bpf_jit_binary_pack_finalize).
++ * For case 2), we need to free both the RO memory and the RW buffer.
++ * Also, ro_header->size in 2) is not properly set yet, so rw_header->size
++ * is used for uncharge.
++ */
++void bpf_jit_binary_pack_free(struct bpf_binary_header *ro_header,
++			      struct bpf_binary_header *rw_header)
++{
++	u32 size = rw_header ? rw_header->size : ro_header->size;
++
++	bpf_prog_pack_free(ro_header);
++	kvfree(rw_header);
++	bpf_jit_uncharge_modmem(size);
++}
++
++static inline struct bpf_binary_header *
++bpf_jit_binary_hdr(const struct bpf_prog *fp)
++{
++	unsigned long real_start = (unsigned long)fp->bpf_func;
++	unsigned long addr;
++
++	if (fp->aux->use_bpf_prog_pack)
++		addr = real_start & BPF_PROG_CHUNK_MASK;
++	else
++		addr = real_start & PAGE_MASK;
++
++	return (void *)addr;
++}
++
+ /* This symbol is only overridden by archs that have different
+  * requirements than the usual eBPF JITs, f.e. when they only
+  * implement cBPF JIT, do not set images read-only, etc.
+@@ -1040,7 +1143,10 @@ void __weak bpf_jit_free(struct bpf_prog *fp)
+ 	if (fp->jited) {
+ 		struct bpf_binary_header *hdr = bpf_jit_binary_hdr(fp);
+ 
+-		bpf_jit_binary_free(hdr);
++		if (fp->aux->use_bpf_prog_pack)
++			bpf_jit_binary_pack_free(hdr, NULL /* rw_buffer */);
++		else
++			bpf_jit_binary_free(hdr);
+ 
+ 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(fp));
+ 	}
+-- 
+2.30.2
+
