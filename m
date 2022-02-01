@@ -2,103 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F3C4A546E
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:04:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C212A4A54A1
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbiBABEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 20:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
+        id S231713AbiBABYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 20:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231331AbiBABEj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 20:04:39 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8552C061714
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:04:39 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id e79so19204361iof.13
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:04:39 -0800 (PST)
+        with ESMTP id S229928AbiBABYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 20:24:19 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20B8AC061714
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:24:19 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id p63so18446364iod.11
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:24:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yp/ZNrB2YOKIe7LderK+pnpBX9FIJpjIRoC88pgxD00=;
-        b=JDu6JilFA2e4fgp/dDvXw/TPbOnt5uzDtAkgxGQWtEChzyjr1ZLRjzbmahx1p4rYO3
-         LIPD+YEvntL7LoGy4/C3a40hVfdoTGVSdkQMIUU0aX2HQX1/ALfw4lzZyznUM1mhlBu5
-         chapilT8C67dFU1FHYgCMH2pnbJS8R2vwlybivsRZ6CHo3eQkuyk/g1+WrN925vFw04L
-         9mWvzRXoAij/OPfXW8s+xLf6naBdfmBPz6XlBDr/We0Aszcj4pYKYVpQ2bhjPkld5WLy
-         ZWAt4HbZ69W5JRFhYg1pMfrBujy200/NoILr/5WAC9eokaOoNVTf7Unot3j0UGNv/jfV
-         yCSw==
+        bh=GPzDRFhI8dEV1K62qS8fdrcCWOLIUlLzR+DRf7FGUCs=;
+        b=K3BVzvxeCUB5IuI6e+kx0syWnyV8Lv/iO8FGPTKrJA0zkmgK1rQ/b/D3jxdLzd2o4h
+         MCvBZeDbUGwto/o6lhrou9rrBCh4HnE+LDMJfeC37YBI3nx4LMzRPoQKFGZ/qe/M127q
+         ZS7vQszD1qxRvpkW5OxECv7zDum+/AtQmSg9N5GL1L9B891ab1KRg+Eib2Q3NTt9phoI
+         jatT9CDMIsU3m03C66Z5OK4lSrsoUTh8P+wK304HM6LgB118m7HR0nB/q0MYy+93xhl+
+         NqTdtVt757BqGrcwqebHXCguG5/bckh7IXhVQF75Y3alDVouMDgdXnCIBIormfosmCas
+         4psA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yp/ZNrB2YOKIe7LderK+pnpBX9FIJpjIRoC88pgxD00=;
-        b=4Jl43NIHQGTjlLaS/t942N5/ajo2hIXgjl+c8X0IQJ6xmlsSkUSJzZZPJNwVKXJ2ou
-         y7lTq5rzTCoQo47rE1YxTe9ST/o+/sz7Qlkpla4Ml0CXBPuBhx+BLCdo0hXQGJW+4Oyq
-         uFEg6Vbcpy2xUp5rLJGgicEw7tiBz/oitqD4BkfU/nukWbyAXa+bi9X7KQwGsSyZmcMQ
-         z2FAeKe3BHehAu4gKCyW8y1eONdprbAmZQvilaVajJo9Pb/HFbkimBtAfsXoO4+H4ORV
-         6iGpQCuEiwdsA4DWLWeCZVQpgY3i4un272w8+qAX+1e0mutGGrNIqUSRIp9kjOAjkINs
-         cd+A==
-X-Gm-Message-State: AOAM531M4714UjPPZH8CgFL41vSqOspDArMaGm+BNuxR3XjWLAUhhDwF
-        o0DsOqhX7kGWjS9CgyJeOPJNeA2TpNm5pbsUe3luMW1X
-X-Google-Smtp-Source: ABdhPJzzIOWPqJ4iJ/Suc2mjCcj9HAFI1I3HQip/dq/H9vDPzQ0CZeoo+luBJvsWK0Of91uKyQhmku5oxaL5371hbLs=
-X-Received: by 2002:a05:6602:2e88:: with SMTP id m8mr6167877iow.79.1643677479179;
- Mon, 31 Jan 2022 17:04:39 -0800 (PST)
+        bh=GPzDRFhI8dEV1K62qS8fdrcCWOLIUlLzR+DRf7FGUCs=;
+        b=c9gFxy3D38N/KNPTukbM9Zjs7U5Dt9pkIBR4etAi35OjeJlwHsKEddGHjBH5RlLjf2
+         Q8i3oR21mv11hi0PHOY/BmlDWNvdCH8Vuhz7sWQVEkDAymZr2Loz5BoyHbjqj+8T8JQl
+         MRUfADazSrv5+nIzUEqMTsoi63uWZQtnBWe6YJV1F/opNepva8ziMb7qph9dmInvBxmj
+         xPI3mQIV6wz8xdMXetdYOG314gyEE0Z3ZquyUmH21ga0VeyfKzDFyfKgRLPPglbtrUIx
+         408jIs5rPDdQ80yNfN5xSQ5aTrEOF62H0S1fOUiUXpUMClWdeOUDrP/F6avC6gJ/kT8Y
+         rDPw==
+X-Gm-Message-State: AOAM530SiNzphTMonft0bKGnl9KkLMRijQiCD+pS7FJLnduk4CQNbrOg
+        Z/vt2lDYLbUqZEWOKoOaOrQud3lo2vjrXWg5GQqy36ebg5o=
+X-Google-Smtp-Source: ABdhPJwZofauqkWbeUkYd5Uu/clCkI0Z/a5xSfFUnh1oRDBCL2Mu9Kzy5XoPhdvGQhlBSmOxN1Ni1oagS1IhC4x/kZk=
+X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr10045490jak.103.1643678658406;
+ Mon, 31 Jan 2022 17:24:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128012319.2494472-1-delyank@fb.com> <310cca5f-ecca-5624-e4c2-e2ee79069e0b@iogearbox.net>
- <6025eb29983a0b7a6d62b845510f9e61480b745d.camel@fb.com>
-In-Reply-To: <6025eb29983a0b7a6d62b845510f9e61480b745d.camel@fb.com>
+References: <20220128012319.2494472-1-delyank@fb.com> <20220128012319.2494472-2-delyank@fb.com>
+In-Reply-To: <20220128012319.2494472-2-delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 31 Jan 2022 17:04:28 -0800
-Message-ID: <CAEf4BzY1oMMpVV9iZCyt-9aDsLRCGvRpwsrttsvx2Gg+AE_m2w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/4] migrate from bpf_prog_test_run{,_xattr}
+Date:   Mon, 31 Jan 2022 17:24:07 -0800
+Message-ID: <CAEf4Bzbg50Ki=ii-Y0AqzpyQnAUEc5qGLx7LW5yGebDeb540BA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] selftests: bpf: migrate from bpf_prog_test_run
 To:     Delyan Kratunov <delyank@fb.com>
-Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "lmb@cloudflare.com" <lmb@cloudflare.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 12:12 PM Delyan Kratunov <delyank@fb.com> wrote:
+On Thu, Jan 27, 2022 at 5:26 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> Thanks for taking a look, Daniel!
+> Signed-off-by: Delyan Kratunov <delyank@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/atomics.c        |  86 +++---
+>  .../testing/selftests/bpf/prog_tests/bpf_nf.c |  10 +-
+>  .../selftests/bpf/prog_tests/fentry_fexit.c   |  33 ++-
+>  .../selftests/bpf/prog_tests/fentry_test.c    |   9 +-
+>  .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  33 ++-
+>  .../selftests/bpf/prog_tests/fexit_stress.c   |  26 +-
+>  .../selftests/bpf/prog_tests/fexit_test.c     |   9 +-
+>  .../prog_tests/flow_dissector_load_bytes.c    |  27 +-
+>  .../selftests/bpf/prog_tests/for_each.c       |  32 ++-
+>  .../bpf/prog_tests/get_func_args_test.c       |  14 +-
+>  .../bpf/prog_tests/get_func_ip_test.c         |  12 +-
+>  .../selftests/bpf/prog_tests/global_data.c    |  25 +-
+>  .../bpf/prog_tests/global_func_args.c         |  13 +-
+>  .../selftests/bpf/prog_tests/kfunc_call.c     |  46 ++--
+>  .../selftests/bpf/prog_tests/ksyms_module.c   |  23 +-
+>  .../selftests/bpf/prog_tests/l4lb_all.c       |  35 ++-
+>  .../selftests/bpf/prog_tests/map_lock.c       |  15 +-
+>  .../selftests/bpf/prog_tests/map_ptr.c        |  18 +-
+>  .../selftests/bpf/prog_tests/modify_return.c  |  38 +--
+>  .../selftests/bpf/prog_tests/pkt_access.c     |  27 +-
+>  .../selftests/bpf/prog_tests/pkt_md_access.c  |  15 +-
+>  .../bpf/prog_tests/queue_stack_map.c          |  43 +--
+>  .../bpf/prog_tests/raw_tp_writable_test_run.c |  16 +-
+>  .../selftests/bpf/prog_tests/signal_pending.c |  24 +-
+>  .../selftests/bpf/prog_tests/spinlock.c       |  15 +-
+>  .../selftests/bpf/prog_tests/tailcalls.c      | 245 ++++++++++--------
+>  .../bpf/prog_tests/test_skb_pkt_end.c         |  15 +-
+>  .../testing/selftests/bpf/prog_tests/timer.c  |   9 +-
+>  .../selftests/bpf/prog_tests/timer_mim.c      |   9 +-
+>  .../selftests/bpf/prog_tests/trace_ext.c      |  28 +-
+>  tools/testing/selftests/bpf/prog_tests/xdp.c  |  35 ++-
+>  .../bpf/prog_tests/xdp_adjust_frags.c         |  34 ++-
+>  .../bpf/prog_tests/xdp_adjust_tail.c          | 114 +++++---
+>  .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    |  16 +-
+>  .../selftests/bpf/prog_tests/xdp_noinline.c   |  45 ++--
+>  .../selftests/bpf/prog_tests/xdp_perf.c       |  19 +-
+>  tools/testing/selftests/bpf/test_lru_map.c    |  11 +-
+>  tools/testing/selftests/bpf/test_progs.h      |   2 +
+>  tools/testing/selftests/bpf/test_verifier.c   |  16 +-
+>  39 files changed, 727 insertions(+), 515 deletions(-)
 >
-> On Fri, 2022-01-28 at 14:07 +0100, Daniel Borkmann wrote:
-> > On 1/28/22 2:23 AM, Delyan Kratunov wrote:
-> > > Adding this behavior to prog_test_run_opts is one option, keeping the test as-is
-> > > and cloning it to use bpf_prog_test_run_opts is another possibility.
-> >
-> > I would suggest to do the former rather than duplicating, if there's nothing
-> > particularly blocking us from adding this to prog_test_run_opts.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/tools/testing/selftests/bpf/prog_tests/atomics.c
+> index 86b7d5d84eec..12ecb3ae5c28 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/atomics.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
+> @@ -7,18 +7,20 @@
+>  static void test_add(struct atomics_lskel *skel)
+>  {
+>         int err, prog_fd;
+> -       __u32 duration = 0, retval;
+>         int link_fd;
+> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +               .repeat = 1,
+> +       );
+
+for simple case like this you can just keep it single line:
+
+LIBBPF_OPTS(bpf_test_run_opts, topts, .repeat = 1)
+
+But, it seems like the kernel does `if (!repeat) repeat = 1;` logic
+for program types that support repeat feature, so I'd suggest just
+drop .repeat = 1 and keep it simple.
+
 >
-> I looked into this a bit more. Unfortunately, bpf_test_finish unconditionally
-> copies data_size_out back into the uattr, even if data_out is NULL.
-> (net/bpf/test_run.c:180)
+>         link_fd = atomics_lskel__add__attach(skel);
+>         if (!ASSERT_GT(link_fd, 0, "attach(add)"))
+>                 return;
 >
-> This makes the ergonomics of reusing the same topts struct for multiple
-> bpf_prog_test_run calls pretty horrendous - you'd need to clear data_size_out
-> before every call, even if you don't care about it otherwise (and you don't, you
-> didn't set data_out!).
+>         prog_fd = skel->progs.add.prog_fd;
+> -       err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
+> -                               NULL, NULL, &retval, &duration);
+> -       if (CHECK(err || retval, "test_run add",
+> -                 "err %d errno %d retval %d duration %d\n", err, errno, retval, duration))
+> +       err = bpf_prog_test_run_opts(prog_fd, &topts);
+> +       if (CHECK_OPTS(err || topts.retval, "test_run add",
+
+let's not add new CHECK*() variants, CHECK() and its derivative are
+deprecated, we are using ASSERT_xxx() macros for all new code.
+
+In this case, I think it's best to replace CHECK() with just:
+
+ASSERT_OK(err, "run_err");
+ASSERT_OK(topts.retval, "run_ret_val");
+
+I don't think logging duration is useful for most, if not all, tests,
+so I wouldn't bother.
+
+
+> +                      "err %d errno %d retval %d duration %d\n", err, errno,
+> +                      topts.retval, topts.duration))
+>                 goto cleanup;
 >
-> In practicality, adding the logic from _xattr to _opts results in a significant
-> number of test failures. I'm a bit worried it might break libbpf users if they
-> use similar opts reuse patterns.
+>         ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
+
+[...]
+
+> diff --git a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+> index 4374ac8a8a91..cb0bcd9bb950 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/fentry_fexit.c
+> @@ -9,38 +9,43 @@ void test_fentry_fexit(void)
+>         struct fentry_test_lskel *fentry_skel = NULL;
+>         struct fexit_test_lskel *fexit_skel = NULL;
+>         __u64 *fentry_res, *fexit_res;
+> -       __u32 duration = 0, retval;
+>         int err, prog_fd, i;
+> +       LIBBPF_OPTS(bpf_test_run_opts, topts,
+> +               .repeat = 1,
+> +       );
+>
+>         fentry_skel = fentry_test_lskel__open_and_load();
+> -       if (CHECK(!fentry_skel, "fentry_skel_load", "fentry skeleton failed\n"))
+> +       if (CHECK_OPTS(!fentry_skel, "fentry_skel_load",
+> +                      "fentry skeleton failed\n"))
+
+You didn't have to touch this code, you could have just kept duration
+= 0 (which CHECK() internally assumes, unfortunately).
+
+Alternatively, just switch to ASSERT_OK_PTR(fentry_skel,
+"fentry_skel_load"); and be done with it. As I mentioned, we are in a
+gradual process of removing CHECK()s, I was actually surprised how far
+we've progressed already:
+
+$ rg CHECK | wc -l
+2024
+$ rg ASSERT_ | wc -l
+1782
+
+At some point we'll do the final push and remove CHECK() altogether,
+but it doesn't have to be part of this patch set (unless you are
+interested in doing some more mechanical conversions, of course, it's
+greatly appreciated, but I didn't yet have heart to ask anyone to do
+those 2000 conversions...).
+
+>                 goto close_prog;
+>         fexit_skel = fexit_test_lskel__open_and_load();
+> -       if (CHECK(!fexit_skel, "fexit_skel_load", "fexit skeleton failed\n"))
+> +       if (CHECK_OPTS(!fexit_skel, "fexit_skel_load",
+> +                      "fexit skeleton failed\n"))
+>                 goto close_prog;
 >
 
-Seems like kernel doesn't enforce that data_size_out == 0 if data_out
-is NULL, so I'd say let's just keep bpf_test_run_opts() as is and
-defer to kernel for error checking (e.g., for raw_tp data_out isn't
-allowed to be NULL, but libbpf doesn't check that, right, it just lets
-kernel do all the nuanced error checking).
-
-So I'd say let's keep _opts() as is and let's remove parts of
-prog_run_xattr.c selftest that check this specific error check?
-
-> > As you have it looks good to me. One small nit, please also add a non-empty
-> > commit message with rationale to each of the patches rather than just SoB alone.
->
-> Will do!
->
+[...]
