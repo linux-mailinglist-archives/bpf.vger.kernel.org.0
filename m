@@ -2,88 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11074A684E
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 00:00:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1FC4A68A7
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 00:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242426AbiBAXAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 18:00:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234815AbiBAXAO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 18:00:14 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0C7C061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 15:00:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9DBF6B8241E
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 23:00:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B8FDC340ED;
-        Tue,  1 Feb 2022 23:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643756411;
-        bh=wV3peNLO4kqZ0pZtGIiKLma+VDtdCPQBKIuF9r5zNuc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iWiZf1TsFCZQ3x4+a5dsssdQb9JTU0lhRTzdaqHLEm0pdNysXozCIQzjrdMD0bbjs
-         Yq/aRFBIhKu1MtekVbYUZ7vokvcrDz3Wt4MFPD54JcQtJVP5MWgF18WERYqFnwA6cS
-         RCvzaRFiOoCaaf16SfCHOlW8lUxG5pkmUcXLR6ojk0Dt9UzS4XoLOzwzfTyJmWd8bw
-         iTPbUjl0RG6k9MCUvPisfUnvzUcKzM19DdFUqbnLeSjt/gf1v426wZjfo1VuaLqRGx
-         sL8bI2xMgjFW1YwGNswq6I88++lU4Q0t1q8b+96thMTBvJJmNpdN3B4ymSx5898pPE
-         zeaTXwr/YdEIA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4AEAFE6BB30;
-        Tue,  1 Feb 2022 23:00:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
+        id S242927AbiBAXmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 18:42:21 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12040 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229921AbiBAXmV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Feb 2022 18:42:21 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 211LwAwp010082;
+        Tue, 1 Feb 2022 23:42:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=YhuuXR/mMMnXv1C62C7F07DUCSr7xpUk/pULf0oEdzI=;
+ b=cxtowzz8OCxVa+s/6E5ZcgHeeCf9kBqNd3qGk2rOV0hEJkY/6s2gZxm85VBFvaKyI1GX
+ sEW8OtVaYnMtDLwhtnk2gcGekqzhz1qIhMrJXsdsFigPhAOhucpLXFJKkBYCEqKWxfkN
+ d0qcRQF8HNfBJKED/WWBpbU0d3jZQbTzE7mHkEJOJEQ40brPbzbN6lrj35BCdO35wMUJ
+ YmK7OTupM1H2D3p5niQB+2q2uNnpkpZZFQ5ZYhuoWzN7VnKvd9QMC08NTb40RxVQE0r/
+ mePzdlv6YHHe6r7Y11Jyaor6jijWc2OEsY7kOCYbsHD50W/jq2ERgUdmHXXnAVPk9aPN dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3dyd8ahfak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Feb 2022 23:42:08 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 211Ng8st018845;
+        Tue, 1 Feb 2022 23:42:08 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3dyd8ahfa7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Feb 2022 23:42:08 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 211NcuA4022556;
+        Tue, 1 Feb 2022 23:42:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3dvw79rn62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Feb 2022 23:42:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 211NWCo449676674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 1 Feb 2022 23:32:12 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8EA5C11C04A;
+        Tue,  1 Feb 2022 23:42:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1B34211C04C;
+        Tue,  1 Feb 2022 23:42:02 +0000 (GMT)
+Received: from heavy.lan (unknown [9.171.78.41])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  1 Feb 2022 23:42:02 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next 0/3] libbpf: Fix accessing the first syscall argument on s390
+Date:   Wed,  2 Feb 2022 00:41:57 +0100
+Message-Id: <20220201234200.1836443-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.34.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aOefDmFthO0J-3rp12sL536D4qDvO_t6
+X-Proofpoint-ORIG-GUID: K35qkGh08_dmwyOhbY6Eh6_uAkh9ZuUs
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/7] bpf: drop libbpf from bpf preload.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164375641130.5554.16675850401091381766.git-patchwork-notify@kernel.org>
-Date:   Tue, 01 Feb 2022 23:00:11 +0000
-References: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220131220528.98088-1-alexei.starovoitov@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-01_10,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0 phishscore=0
+ mlxscore=0 mlxlogscore=999 spamscore=0 lowpriorityscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202010130
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+libbpf CI reported a bpf_syscall_macro test failure on s390 [1], which
+happens because the code uses gprs[2] instead of orig_gpr2 to access
+the first syscall argument. Patches 1-2 are preparations, patch 3 fixes
+the issue.
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+@Heiko, @Vasily, @Christian, @Alexander - could you please review
+patch 1, which touches arch/s390? Would it be ok to put it into
+bpf-next tree?
 
-On Mon, 31 Jan 2022 14:05:21 -0800 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> CO-RE in the kernel support allows bpf preload to switch to light skeleton
-> and remove libbpf dependency.
-> This reduces the size of bpf_preload_umd from 300kbyte to 19kbyte and
-> eventually will make "kernel skeleton" possible.
-> 
-> [...]
+[1] https://github.com/libbpf/libbpf/runs/5025905587
 
-Here is the summary with links:
-  - [bpf-next,1/7] libbpf: Add support for bpf iter in light skeleton.
-    https://git.kernel.org/bpf/bpf-next/c/42d1d53fedc9
-  - [bpf-next,2/7] libbpf: Open code low level bpf commands.
-    https://git.kernel.org/bpf/bpf-next/c/e981f41fd029
-  - [bpf-next,3/7] libbpf: Open code raw_tp_open and link_create commands.
-    https://git.kernel.org/bpf/bpf-next/c/c69f94a33d12
-  - [bpf-next,4/7] bpf: Remove unnecessary setrlimit from bpf preload.
-    https://git.kernel.org/bpf/bpf-next/c/1ddbddd70651
-  - [bpf-next,5/7] bpf: Convert bpf preload to light skeleton.
-    https://git.kernel.org/bpf/bpf-next/c/79b203926d18
-  - [bpf-next,6/7] bpf: Open code obj_get_info_by_fd in bpf preload.
-    https://git.kernel.org/bpf/bpf-next/c/18ef5dac934a
-  - [bpf-next,7/7] bpf: Drop libbpf, libelf, libz dependency from bpf preload.
-    https://git.kernel.org/bpf/bpf-next/c/e96f2d64c812
+Ilya Leoshkevich (3):
+  s390/bpf: Add orig_gpr2 to user_pt_regs
+  selftests/bpf: Fix an endianness issue in bpf_syscall_macro test
+  libbpf: Fix accessing the first syscall argument on s390
 
-You are awesome, thank you!
+ arch/s390/include/asm/ptrace.h                        | 2 +-
+ arch/s390/include/uapi/asm/ptrace.h                   | 1 +
+ tools/lib/bpf/bpf_tracing.h                           | 9 +++++++++
+ tools/testing/selftests/bpf/progs/bpf_syscall_macro.c | 5 ++++-
+ 4 files changed, 15 insertions(+), 2 deletions(-)
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
