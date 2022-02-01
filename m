@@ -2,141 +2,210 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E831E4A53A7
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 01:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D45594A53BD
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 01:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229932AbiBAACN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 19:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbiBAACN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 19:02:13 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D624FC061714;
-        Mon, 31 Jan 2022 16:02:12 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id q204so19105978iod.8;
-        Mon, 31 Jan 2022 16:02:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QyO86vvXrvsnYbM9ePprWtNUgK1VSac7vXnAuMxRjnM=;
-        b=Nk/quBFO1BELsTpfs58wjw7GKNvRtuEERY8EEMkyufCHwI2PCskskqPpAm1e7YY2LA
-         Ju9nKgNhP2TdLdrj98SoMcGxSu4esv/MKDYp5j79Q7y8oj7XmADeUwMfuvnmkzfJcY6v
-         L1WQ5Jbd71ANVfnFu4VlJc0SyxOEjJZHE2eGAD/gVlSTROS89xJs/xQvmX+l4f2AeHth
-         SW0HWKrC/rlTDn5YARGwXsrFH9ImkxNknd+MxzNH6oLG892ssGiUUgYdbTUKAkg1SP0e
-         IFoMvb1nS7EvxoOYYySbxZ5vc3GqeQ619PlmqgiOw5+gHORZGZwvAv/8LWQ2UT+5hlt3
-         7c8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QyO86vvXrvsnYbM9ePprWtNUgK1VSac7vXnAuMxRjnM=;
-        b=yfJ8tob5briuBES+oi0c92zgLC5ApsyuyITnvTRGuE3dfoMmjRQz0GMChmTM0Fb2U0
-         HJDGfQ6kjCBpzUSLJmfaXex2tfpLkxYmdJSlEyBFkR/t56yw9Sd9HKwiNivjg3m7+l2a
-         Wg9sWOI4LPyrXi64N7iXcfFSfBBDEopxQkea5n9lKuPzWjE4vsagYyWVtPo4gKtfVCNj
-         aaKIaZd35cBAK+vYhQJkcUEEoVLuoBOzDtqW5Bybzfka3R1euVr7LmGqu3jwdEu/bE1D
-         fDUDq22U5GQNM6oXWaKjgmIgmeyknTenWP1KJGKHuVtVs/fEodJnFCgxeweXoIxKKroL
-         BwJg==
-X-Gm-Message-State: AOAM531xF6urFBYGHjz0IKZ4YXXOckqdzYm33JMHWqy+xB3O/ag5Vy74
-        1fpTTtzQTv4aeJUEs6WPjsM9CFJ79MskLt69wcw=
-X-Google-Smtp-Source: ABdhPJynksQgC7hnEFS7wyoTCvzTvG+zpxsgeWJTLDNUTwXwHDGfkGrUcngSUD+tLEGMr2L0wm31ZD9wy7WzgIMRFbw=
-X-Received: by 2002:a05:6638:d88:: with SMTP id l8mr5018495jaj.234.1643673732190;
- Mon, 31 Jan 2022 16:02:12 -0800 (PST)
+        id S230039AbiBAAGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 19:06:06 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55566 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbiBAAGG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 19:06:06 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEggN-00065t-Jt; Tue, 01 Feb 2022 01:06:03 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nEggN-000N71-9E; Tue, 01 Feb 2022 01:06:03 +0100
+Subject: Re: [PATCH v7 bpf-next 7/9] bpf: introduce bpf_prog_pack allocator
+To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kernel-team@fb.com,
+        peterz@infradead.org, x86@kernel.org, iii@linux.ibm.com,
+        npiggin@gmail.com
+References: <20220128234517.3503701-1-song@kernel.org>
+ <20220128234517.3503701-8-song@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ab7e0a98-fced-23b3-6876-01ce711bd579@iogearbox.net>
+Date:   Tue, 1 Feb 2022 01:06:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220127024939.364016-1-houtao1@huawei.com>
-In-Reply-To: <20220127024939.364016-1-houtao1@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 31 Jan 2022 16:02:00 -0800
-Message-ID: <CAEf4BzYHggCfbSGb8autEDcHhZXabK-n36rggyjJeL0uLEr+DQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize
- ring buffer size
-To:     Hou Tao <houtao1@huawei.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20220128234517.3503701-8-song@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26439/Mon Jan 31 10:24:40 2022)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 6:34 PM Hou Tao <houtao1@huawei.com> wrote:
->
-> 4096 is OK for x86-64, but for other archs with greater than 4KB
-> page size (e.g. 64KB under arm64), test_verifier for test case
-> "check valid spill/fill, ptr to mem" will fail, so just use
-> getpagesize() to initialize the ring buffer size. Do this for
-> test_progs as well.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+On 1/29/22 12:45 AM, Song Liu wrote:
+> Most BPF programs are small, but they consume a page each. For systems
+> with busy traffic and many BPF programs, this could add significant
+> pressure to instruction TLB.
+> 
+> Introduce bpf_prog_pack allocator to pack multiple BPF programs in a huge
+> page. The memory is then allocated in 64 byte chunks.
+> 
+> Memory allocated by bpf_prog_pack allocator is RO protected after initial
+> allocation. To write to it, the user (jit engine) need to use text poke
+> API.
+
+Did you benchmark the program load times under this API, e.g. how much
+overhead is expected for very large programs?
+
+> Signed-off-by: Song Liu <song@kernel.org>
 > ---
->  tools/testing/selftests/bpf/prog_tests/d_path.c | 14 ++++++++++++--
->  .../testing/selftests/bpf/prog_tests/test_ima.c | 17 +++++++++++++----
->  tools/testing/selftests/bpf/progs/ima.c         |  1 -
->  .../bpf/progs/test_d_path_check_types.c         |  1 -
->  tools/testing/selftests/bpf/test_verifier.c     |  2 +-
->  5 files changed, 26 insertions(+), 9 deletions(-)
->
+>   kernel/bpf/core.c | 127 ++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 127 insertions(+)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index dc0142e20c72..25e34caa9a95 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -805,6 +805,133 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>   	return slot;
+>   }
+>   
+> +/*
+> + * BPF program pack allocator.
+> + *
+> + * Most BPF programs are pretty small. Allocating a hole page for each
+> + * program is sometime a waste. Many small bpf program also adds pressure
+> + * to instruction TLB. To solve this issue, we introduce a BPF program pack
+> + * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+> + * to host BPF programs.
+> + */
+> +#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+> +#define BPF_PROG_CHUNK_SHIFT	6
+> +#define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+> +#define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+> +#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+> +
+> +struct bpf_prog_pack {
+> +	struct list_head list;
+> +	void *ptr;
+> +	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
+> +};
+> +
+> +#define BPF_PROG_MAX_PACK_PROG_SIZE	HPAGE_PMD_SIZE
+> +#define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+> +
+> +static DEFINE_MUTEX(pack_mutex);
+> +static LIST_HEAD(pack_list);
+> +
+> +static struct bpf_prog_pack *alloc_new_pack(void)
+> +{
+> +	struct bpf_prog_pack *pack;
+> +
+> +	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
+> +	if (!pack)
+> +		return NULL;
+> +	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
+> +	if (!pack->ptr) {
+> +		kfree(pack);
+> +		return NULL;
+> +	}
+> +	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
+> +	list_add_tail(&pack->list, &pack_list);
+> +
+> +	set_vm_flush_reset_perms(pack->ptr);
+> +	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+> +	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+> +	return pack;
+> +}
+> +
+> +static void *bpf_prog_pack_alloc(u32 size)
+> +{
+> +	unsigned int nbits = BPF_PROG_SIZE_TO_NBITS(size);
+> +	struct bpf_prog_pack *pack;
+> +	unsigned long pos;
+> +	void *ptr = NULL;
+> +
+> +	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
+> +		size = round_up(size, PAGE_SIZE);
+> +		ptr = module_alloc(size);
+> +		if (ptr) {
+> +			set_vm_flush_reset_perms(ptr);
+> +			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
+> +			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
+> +		}
+> +		return ptr;
+> +	}
+> +	mutex_lock(&pack_mutex);
+> +	list_for_each_entry(pack, &pack_list, list) {
+> +		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+> +						 nbits, 0);
+> +		if (pos < BPF_PROG_CHUNK_COUNT)
+> +			goto found_free_area;
+> +	}
+> +
+> +	pack = alloc_new_pack();
+> +	if (!pack)
+> +		goto out;
 
-[...]
+Will this effectively disable the JIT for all bpf_prog_pack_alloc requests <=
+BPF_PROG_MAX_PACK_PROG_SIZE when vmap_allow_huge is false (e.g. boot param via
+nohugevmalloc) ?
 
-> @@ -86,5 +94,6 @@ void test_test_ima(void)
->         CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno);
->  close_prog:
->         ring_buffer__free(ringbuf);
-> +destroy_skel:
->         ima__destroy(skel);
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-> index 96060ff4ffc6..e192a9f16aea 100644
-> --- a/tools/testing/selftests/bpf/progs/ima.c
-> +++ b/tools/testing/selftests/bpf/progs/ima.c
-> @@ -13,7 +13,6 @@ u32 monitored_pid = 0;
->
->  struct {
->         __uint(type, BPF_MAP_TYPE_RINGBUF);
-> -       __uint(max_entries, 1 << 12);
+> +	pos = 0;
+> +
+> +found_free_area:
+> +	bitmap_set(pack->bitmap, pos, nbits);
+> +	ptr = (void *)(pack->ptr) + (pos << BPF_PROG_CHUNK_SHIFT);
+> +
+> +out:
+> +	mutex_unlock(&pack_mutex);
+> +	return ptr;
+> +}
+> +
+> +static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+> +{
+> +	struct bpf_prog_pack *pack = NULL, *tmp;
+> +	unsigned int nbits;
+> +	unsigned long pos;
+> +	void *pack_ptr;
+> +
+> +	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
+> +		module_memfree(hdr);
+> +		return;
+> +	}
+> +
+> +	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
+> +	mutex_lock(&pack_mutex);
+> +
+> +	list_for_each_entry(tmp, &pack_list, list) {
+> +		if (tmp->ptr == pack_ptr) {
+> +			pack = tmp;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (WARN_ONCE(!pack, "bpf_prog_pack bug\n"))
+> +		goto out;
+> +
+> +	nbits = BPF_PROG_SIZE_TO_NBITS(hdr->size);
+> +	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+> +
+> +	bitmap_clear(pack->bitmap, pos, nbits);
+> +	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+> +				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
+> +		list_del(&pack->list);
+> +		module_memfree(pack->ptr);
+> +		kfree(pack);
+> +	}
+> +out:
+> +	mutex_unlock(&pack_mutex);
+> +}
+> +
+>   static atomic_long_t bpf_jit_current;
+>   
+>   /* Can be overridden by an arch's JIT compiler if it has a custom,
+> 
 
-Should we just bump it to 64/128/256KB instead? It's quite annoying to
-do a split open and then load just due to this...
-
-I'm also wondering if we should either teach kernel to round up to
-closes power-of-2 of page_size internally, or teach libbpf to do this
-for RINGBUF maps. Thoughts?
-
-
->  } ringbuf SEC(".maps");
->
->  char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-> index 7e02b7361307..1b68d4a65abb 100644
-> --- a/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-> +++ b/tools/testing/selftests/bpf/progs/test_d_path_check_types.c
-> @@ -8,7 +8,6 @@ extern const int bpf_prog_active __ksym;
->
->  struct {
->         __uint(type, BPF_MAP_TYPE_RINGBUF);
-> -       __uint(max_entries, 1 << 12);
->  } ringbuf SEC(".maps");
->
->  SEC("fentry/security_inode_getattr")
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 29bbaa58233c..6acb5e747715 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -931,7 +931,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
->         }
->         if (*fixup_map_ringbuf) {
->                 map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
-> -                                          0, 4096);
-> +                                          0, getpagesize());
->                 do {
->                         prog[*fixup_map_ringbuf].imm = map_fds[20];
->                         fixup_map_ringbuf++;
-> --
-> 2.29.2
->
