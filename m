@@ -2,152 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518404A54BD
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772374A54C2
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 02:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbiBABiG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 20:38:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbiBABiF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 20:38:05 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A53C061714
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:38:05 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id p63so18474335iod.11
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:38:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=poJfGET8hyBovtj83eO2jFHvzD+bAmvDzIwihkMXMPY=;
-        b=dNozvOOxMiXlwlJQA3rTIfQMWrOON0/7lTtZZrI9Zme2eOk2WZmeJ1CQEjQqp/5R/8
-         G7kqvVjSs9hq0hHeCKSc03h36vYIw0fh20qVrZNZJFLRKkvN5iy4bRttJSAAAaVeLHd4
-         +y1LLNTJ3zyL7tGalguierhWKtvC1gDa05m9Gz2ONULhAOn9PnUqxrzAwrl0m+zT36aA
-         dFYi3QOH4ReJRK10mNNwQUwAAycsnv1dgWBQ2DeASAfeGJNTExpHOp7NUnbX4w17g7SH
-         RKRRZvFQpzZNv7T+q7Uc4NZ4Ufy3xnXRSjy5C4cvr0RVQIZB9oj2iqi7klVxjx7eHPRq
-         e4CA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=poJfGET8hyBovtj83eO2jFHvzD+bAmvDzIwihkMXMPY=;
-        b=Yf25/fQfqEjYkOjW/+6KB2DfZYTbh4aLB2VDXJQLAoHrywfQ3eeo5ngOB5U5jWywpQ
-         qlMMSL4YgwGLcF60J9W73TVWGhisP2yoWqEo1QsueDG7R5dO/4DDAzrpXyeon1KJBEBS
-         79copvJYvyv/6PxcCi/EaQ+6oQ19ARleDMdQ9WWzK6NItkPzwiRY5q+NVcaMLYTtSt2m
-         UQ3HQn5/YDE1KzWy2cfibnMnZAhUMLEJ8/OvtQsSxJfwBi2SD0xbkeHhH30yv8sXpmOS
-         ssd50SaS7kUMOAzrRi6SVPl3nAMHqdSgSUSXF+5+ohF0RVan0+8OEz1IWZZVV4FKKKCn
-         euFQ==
-X-Gm-Message-State: AOAM5311baznh9Ouyw9vO17GXA5aIpu8yWwQd2hVwGuVsxIBnG7z3Dos
-        oSwbrW6rsXG4eLGNq99RrXPa6ogluR/nEmP/3f4=
-X-Google-Smtp-Source: ABdhPJxvp8Cjgwk9pAeqjO4gEIiqQEpOgfe0k3C/qpRBe5E16rg1yD2+KxhcVIK5e1iA8z3v63K4sWwcOVmvfzt0SgU=
-X-Received: by 2002:a5e:a806:: with SMTP id c6mr12451973ioa.112.1643679484955;
- Mon, 31 Jan 2022 17:38:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20220128012319.2494472-1-delyank@fb.com> <20220128012319.2494472-5-delyank@fb.com>
-In-Reply-To: <20220128012319.2494472-5-delyank@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 31 Jan 2022 17:37:53 -0800
-Message-ID: <CAEf4BzaGXMt+3W1wkCT7OncKqezqhwcER5ppF3F+ZGmzHP5V6A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] libbpf: Deprecate bpf_prog_test_run_xattr
- and bpf_prog_test_run
-To:     Delyan Kratunov <delyank@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S230343AbiBABqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 20:46:18 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46002 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229824AbiBABqR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 31 Jan 2022 20:46:17 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21111PGN009200
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:46:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=FmSTvm0Ii+vy4ZhORbNMsUpp23j4kFGrD6lHPXCnGew=;
+ b=Nl2T8R1Lab9qaTmuRJagb2ikNi3BUT01xlfhvfgEGG7SYq1qms8hr1/u2/8rzkPzBcz1
+ Sekta8xWO0Q4jxnWijP/mdYlHWsYp2Ifd6U5pd/Y2GImMLf0iKo6fobiwSJ7nnczu9dG
+ y+LCAcTVk/J2OanU4grZVB48peuLH0wdUw0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dxm2p2yr5-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 17:46:17 -0800
+Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 31 Jan 2022 17:46:16 -0800
+Received: by devbig030.frc3.facebook.com (Postfix, from userid 158236)
+        id 2AF45D2D6072; Mon, 31 Jan 2022 17:46:12 -0800 (PST)
+From:   Dave Marchevsky <davemarchevsky@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Marchevsky <davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next] libbpf: deprecate btf_ext rec_size APIs
+Date:   Mon, 31 Jan 2022 17:46:10 -0800
+Message-ID: <20220201014610.3522985-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: Wbe8605bZeBlUVglS_PeRAPtOMC9bqvO
+X-Proofpoint-ORIG-GUID: Wbe8605bZeBlUVglS_PeRAPtOMC9bqvO
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-31_07,2022-01-31_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 spamscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202010008
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 5:23 PM Delyan Kratunov <delyank@fb.com> wrote:
->
-> Closes: https://github.com/libbpf/libbpf/issues/286
+btf_ext__{func,line}_info_rec_size functions are used in conjunction
+with already-deprecated btf_ext__reloc_{func,line}_info functions. Since
+struct btf_ext is opaque to the user it was necessary to expose rec_size
+getters in the past.
 
-As Daniel mentioned, please add non-empty commit message. As for the
-"Closes: ", it's not one of "supported" tags in Linux repo, so we've
-been using a "reference" syntax to introduce it. So something like
-this commit message would do the trick:
+btf_ext__reloc_{func,line}_info were deprecated in commit 8505e8709b5ee
+("libbpf: Implement generalized .BTF.ext func/line info adjustment")
+as they're not compatible with support for multiple programs per
+section. It was decided[0] that users of these APIs should implement their
+own .btf.ext parsing to access this data, in which case the rec_size
+getters are unnecessary. So deprecate them from libbpf 0.7.0 onwards.
 
-Deprecate non-extendable bpf_prog_test_run_xattr() in favor of
-OPTS-based bpf_prog_test_run_opts() ([0]).
+  [0] Closes: https://github.com/libbpf/libbpf/issues/277
 
-  [0] Closes: https://github.com/libbpf/libbpf/issues/286
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+---
 
-> Signed-off-by: Delyan Kratunov <delyank@fb.com>
-> ---
->  tools/lib/bpf/bpf.h |  8 +++++---
->  tools/lib/bpf/xsk.c | 11 +++++++----
->  2 files changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-> index c2e8327010f9..e3d87b35435d 100644
-> --- a/tools/lib/bpf/bpf.h
-> +++ b/tools/lib/bpf/bpf.h
-> @@ -453,13 +453,15 @@ struct bpf_prog_test_run_attr {
->                              * out: length of cxt_out */
->  };
->
-> -LIBBPF_API int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
-> +LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_test_run_opts() instead")
+v2: LIBBPF_DEPRECATED_SINCE -> LIBBPF_DEPRECATED to match
+    reloc_{func,line}_info deprecations [Daniel]
 
-please don't remove LIBBPF_API, it still has to be marked with
-LIBBPF_API for proper shared library visibility
+ tools/lib/bpf/btf.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-> +int bpf_prog_test_run_xattr(struct bpf_prog_test_run_attr *test_attr);
->
->  /*
->   * bpf_prog_test_run does not check that data_out is large enough. Consider
-> - * using bpf_prog_test_run_xattr instead.
-> + * using bpf_prog_test_run_opts instead.
->   */
-> -LIBBPF_API int bpf_prog_test_run(int prog_fd, int repeat, void *data,
-> +LIBBPF_DEPRECATED_SINCE(0, 7, "use bpf_prog_test_run_opts() instead")
-> +int bpf_prog_test_run(int prog_fd, int repeat, void *data,
->                                  __u32 size, void *data_out, __u32 *size_out,
->                                  __u32 *retval, __u32 *duration);
->  LIBBPF_API int bpf_prog_get_next_id(__u32 start_id, __u32 *next_id);
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index edafe56664f3..843d03b8f58c 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 96b44d55db6e..b10729fd830c 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -168,8 +168,10 @@ int btf_ext__reloc_line_info(const struct btf *btf,
+ 			     const struct btf_ext *btf_ext,
+ 			     const char *sec_name, __u32 insns_cnt,
+ 			     void **line_info, __u32 *cnt);
+-LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext=
+);
+-LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext=
+);
++LIBBPF_API LIBBPF_DEPRECATED("btf_ext__reloc_func_info is deprecated; writ=
+e custom func_info parsing to fetch rec_size")
++__u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext);
++LIBBPF_API LIBBPF_DEPRECATED("btf_ext__reloc_line_info is deprecated; writ=
+e custom line_info parsing to fetch rec_size")
++__u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext);
+=20
+ LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
+ LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
+--=20
+2.30.2
 
-don't bother with xsk.c, entire file is marked as deprecated and will
-be removed in libbpf v1.0. It already has deprecation suppressing
-pragma, so you shouldn't see any compilation warning.
-
-> @@ -369,8 +369,7 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
->  static enum xsk_prog get_xsk_prog(void)
->  {
->         enum xsk_prog detected = XSK_PROG_FALLBACK;
-> -       __u32 size_out, retval, duration;
-> -       char data_in = 0, data_out;
-> +       char data_in = 0;
->         struct bpf_insn insns[] = {
->                 BPF_LD_MAP_FD(BPF_REG_1, 0),
->                 BPF_MOV64_IMM(BPF_REG_2, 0),
-> @@ -378,6 +377,10 @@ static enum xsk_prog get_xsk_prog(void)
->                 BPF_EMIT_CALL(BPF_FUNC_redirect_map),
->                 BPF_EXIT_INSN(),
->         };
-> +       LIBBPF_OPTS(bpf_test_run_opts, test_opts,
-> +               .data_in = &data_in,
-> +               .data_size_in = 1,
-> +       );
->         int prog_fd, map_fd, ret, insn_cnt = ARRAY_SIZE(insns);
->
->         map_fd = bpf_map_create(BPF_MAP_TYPE_XSKMAP, NULL, sizeof(int), sizeof(int), 1, NULL);
-> @@ -392,8 +395,8 @@ static enum xsk_prog get_xsk_prog(void)
->                 return detected;
->         }
->
-> -       ret = bpf_prog_test_run(prog_fd, 0, &data_in, 1, &data_out, &size_out, &retval, &duration);
-> -       if (!ret && retval == XDP_PASS)
-> +       ret = bpf_prog_test_run_opts(prog_fd, &test_opts);
-> +       if (!ret && test_opts.retval == XDP_PASS)
->                 detected = XSK_PROG_REDIRECT_FLAGS;
->         close(prog_fd);
->         close(map_fd);
-> --
-> 2.30.2
->
