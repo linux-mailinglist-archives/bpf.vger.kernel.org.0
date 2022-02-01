@@ -2,40 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D45594A53BD
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 01:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC75D4A53F9
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 01:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbiBAAGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 31 Jan 2022 19:06:06 -0500
-Received: from www62.your-server.de ([213.133.104.62]:55566 "EHLO
+        id S230195AbiBAAVI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 31 Jan 2022 19:21:08 -0500
+Received: from www62.your-server.de ([213.133.104.62]:57544 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbiBAAGG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 31 Jan 2022 19:06:06 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S230140AbiBAAVI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 31 Jan 2022 19:21:08 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nEggN-00065t-Jt; Tue, 01 Feb 2022 01:06:03 +0100
+        id 1nEguw-0007qv-C9; Tue, 01 Feb 2022 01:21:06 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nEggN-000N71-9E; Tue, 01 Feb 2022 01:06:03 +0100
-Subject: Re: [PATCH v7 bpf-next 7/9] bpf: introduce bpf_prog_pack allocator
+        id 1nEguw-000PnY-1l; Tue, 01 Feb 2022 01:21:06 +0100
+Subject: Re: [PATCH v7 bpf-next 8/9] bpf: introduce
+ bpf_jit_binary_pack_[alloc|finalize|free]
 To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     ast@kernel.org, andrii@kernel.org, kernel-team@fb.com,
         peterz@infradead.org, x86@kernel.org, iii@linux.ibm.com,
-        npiggin@gmail.com
+        Song Liu <songliubraving@fb.com>
 References: <20220128234517.3503701-1-song@kernel.org>
- <20220128234517.3503701-8-song@kernel.org>
+ <20220128234517.3503701-9-song@kernel.org>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ab7e0a98-fced-23b3-6876-01ce711bd579@iogearbox.net>
-Date:   Tue, 1 Feb 2022 01:06:02 +0100
+Message-ID: <c5100e9a-3e8a-a554-1d77-50d7b296340b@iogearbox.net>
+Date:   Tue, 1 Feb 2022 01:21:05 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20220128234517.3503701-8-song@kernel.org>
+In-Reply-To: <20220128234517.3503701-9-song@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,166 +47,91 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 1/29/22 12:45 AM, Song Liu wrote:
-> Most BPF programs are small, but they consume a page each. For systems
-> with busy traffic and many BPF programs, this could add significant
-> pressure to instruction TLB.
-> 
-> Introduce bpf_prog_pack allocator to pack multiple BPF programs in a huge
-> page. The memory is then allocated in 64 byte chunks.
-> 
-> Memory allocated by bpf_prog_pack allocator is RO protected after initial
-> allocation. To write to it, the user (jit engine) need to use text poke
-> API.
-
-Did you benchmark the program load times under this API, e.g. how much
-overhead is expected for very large programs?
-
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->   kernel/bpf/core.c | 127 ++++++++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 127 insertions(+)
-> 
+[...]
 > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index dc0142e20c72..25e34caa9a95 100644
+> index 25e34caa9a95..ff0c51ef1cb7 100644
 > --- a/kernel/bpf/core.c
 > +++ b/kernel/bpf/core.c
-> @@ -805,6 +805,133 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->   	return slot;
+> @@ -1031,6 +1031,109 @@ void bpf_jit_binary_free(struct bpf_binary_header *hdr)
+>   	bpf_jit_uncharge_modmem(size);
 >   }
 >   
-> +/*
-> + * BPF program pack allocator.
-> + *
-> + * Most BPF programs are pretty small. Allocating a hole page for each
-> + * program is sometime a waste. Many small bpf program also adds pressure
-> + * to instruction TLB. To solve this issue, we introduce a BPF program pack
-> + * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
-> + * to host BPF programs.
+> +/* Allocate jit binary from bpf_prog_pack allocator.
+> + * Since the allocated meory is RO+X, the JIT engine cannot write directly
+
+nit: meory
+
+> + * to the memory. To solve this problem, a RW buffer is also allocated at
+> + * as the same time. The JIT engine should calculate offsets based on the
+> + * RO memory address, but write JITed program to the RW buffer. Once the
+> + * JIT engine finishes, it calls bpf_jit_binary_pack_finalize, which copies
+> + * the JITed program to the RO memory.
 > + */
-> +#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
-> +#define BPF_PROG_CHUNK_SHIFT	6
-> +#define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
-> +#define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
-> +#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+> +struct bpf_binary_header *
+> +bpf_jit_binary_pack_alloc(unsigned int proglen, u8 **image_ptr,
+> +			  unsigned int alignment,
+> +			  struct bpf_binary_header **rw_header,
+> +			  u8 **rw_image,
+> +			  bpf_jit_fill_hole_t bpf_fill_ill_insns)
+> +{
+> +	struct bpf_binary_header *ro_header;
+> +	u32 size, hole, start;
 > +
-> +struct bpf_prog_pack {
-> +	struct list_head list;
+> +	WARN_ON_ONCE(!is_power_of_2(alignment) ||
+> +		     alignment > BPF_IMAGE_ALIGNMENT);
+> +
+> +	/* add 16 bytes for a random section of illegal instructions */
+> +	size = round_up(proglen + sizeof(*ro_header) + 16, BPF_PROG_CHUNK_SIZE);
+> +
+> +	if (bpf_jit_charge_modmem(size))
+> +		return NULL;
+> +	ro_header = bpf_prog_pack_alloc(size);
+> +	if (!ro_header) {
+> +		bpf_jit_uncharge_modmem(size);
+> +		return NULL;
+> +	}
+> +
+> +	*rw_header = kvmalloc(size, GFP_KERNEL);
+> +	if (!*rw_header) {
+> +		bpf_prog_pack_free(ro_header);
+> +		bpf_jit_uncharge_modmem(size);
+> +		return NULL;
+> +	}
+> +
+> +	/* Fill space with illegal/arch-dep instructions. */
+> +	bpf_fill_ill_insns(*rw_header, size);
+> +	(*rw_header)->size = size;
+> +
+> +	hole = min_t(unsigned int, size - (proglen + sizeof(*ro_header)),
+> +		     BPF_PROG_CHUNK_SIZE - sizeof(*ro_header));
+> +	start = (get_random_int() % hole) & ~(alignment - 1);
+> +
+> +	*image_ptr = &ro_header->image[start];
+> +	*rw_image = &(*rw_header)->image[start];
+> +
+> +	return ro_header;
+> +}
+> +
+> +/* Copy JITed text from rw_header to its final location, the ro_header. */
+> +int bpf_jit_binary_pack_finalize(struct bpf_prog *prog,
+> +				 struct bpf_binary_header *ro_header,
+> +				 struct bpf_binary_header *rw_header)
+> +{
 > +	void *ptr;
-> +	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
-> +};
 > +
-> +#define BPF_PROG_MAX_PACK_PROG_SIZE	HPAGE_PMD_SIZE
-> +#define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+> +	ptr = bpf_arch_text_copy(ro_header, rw_header, rw_header->size);
+
+Does this need to be wrapped with a text_mutex lock/unlock pair given
+text_poke_copy() internally relies on __text_poke() ?
+
+> +	kvfree(rw_header);
 > +
-> +static DEFINE_MUTEX(pack_mutex);
-> +static LIST_HEAD(pack_list);
-> +
-> +static struct bpf_prog_pack *alloc_new_pack(void)
-> +{
-> +	struct bpf_prog_pack *pack;
-> +
-> +	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
-> +	if (!pack)
-> +		return NULL;
-> +	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
-> +	if (!pack->ptr) {
-> +		kfree(pack);
-> +		return NULL;
+> +	if (IS_ERR(ptr)) {
+> +		bpf_prog_pack_free(ro_header);
+> +		return PTR_ERR(ptr);
 > +	}
-> +	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
-> +	list_add_tail(&pack->list, &pack_list);
-> +
-> +	set_vm_flush_reset_perms(pack->ptr);
-> +	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> +	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> +	return pack;
+> +	prog->aux->use_bpf_prog_pack = true;
+> +	return 0;
 > +}
 > +
-> +static void *bpf_prog_pack_alloc(u32 size)
-> +{
-> +	unsigned int nbits = BPF_PROG_SIZE_TO_NBITS(size);
-> +	struct bpf_prog_pack *pack;
-> +	unsigned long pos;
-> +	void *ptr = NULL;
-> +
-> +	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-> +		size = round_up(size, PAGE_SIZE);
-> +		ptr = module_alloc(size);
-> +		if (ptr) {
-> +			set_vm_flush_reset_perms(ptr);
-> +			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
-> +			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
-> +		}
-> +		return ptr;
-> +	}
-> +	mutex_lock(&pack_mutex);
-> +	list_for_each_entry(pack, &pack_list, list) {
-> +		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
-> +						 nbits, 0);
-> +		if (pos < BPF_PROG_CHUNK_COUNT)
-> +			goto found_free_area;
-> +	}
-> +
-> +	pack = alloc_new_pack();
-> +	if (!pack)
-> +		goto out;
-
-Will this effectively disable the JIT for all bpf_prog_pack_alloc requests <=
-BPF_PROG_MAX_PACK_PROG_SIZE when vmap_allow_huge is false (e.g. boot param via
-nohugevmalloc) ?
-
-> +	pos = 0;
-> +
-> +found_free_area:
-> +	bitmap_set(pack->bitmap, pos, nbits);
-> +	ptr = (void *)(pack->ptr) + (pos << BPF_PROG_CHUNK_SHIFT);
-> +
-> +out:
-> +	mutex_unlock(&pack_mutex);
-> +	return ptr;
-> +}
-> +
-> +static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
-> +{
-> +	struct bpf_prog_pack *pack = NULL, *tmp;
-> +	unsigned int nbits;
-> +	unsigned long pos;
-> +	void *pack_ptr;
-> +
-> +	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-> +		module_memfree(hdr);
-> +		return;
-> +	}
-> +
-> +	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
-> +	mutex_lock(&pack_mutex);
-> +
-> +	list_for_each_entry(tmp, &pack_list, list) {
-> +		if (tmp->ptr == pack_ptr) {
-> +			pack = tmp;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (WARN_ONCE(!pack, "bpf_prog_pack bug\n"))
-> +		goto out;
-> +
-> +	nbits = BPF_PROG_SIZE_TO_NBITS(hdr->size);
-> +	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
-> +
-> +	bitmap_clear(pack->bitmap, pos, nbits);
-> +	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
-> +				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
-> +		list_del(&pack->list);
-> +		module_memfree(pack->ptr);
-> +		kfree(pack);
-> +	}
-> +out:
-> +	mutex_unlock(&pack_mutex);
-> +}
-> +
->   static atomic_long_t bpf_jit_current;
->   
->   /* Can be overridden by an arch's JIT compiler if it has a custom,
-> 
-
+[...]
