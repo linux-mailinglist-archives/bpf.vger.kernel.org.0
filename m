@@ -2,97 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89BE54A658E
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 21:17:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC064A65A1
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 21:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239788AbiBAURu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 15:17:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50344 "EHLO
+        id S230217AbiBAUZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 15:25:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239259AbiBAURt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 15:17:49 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0EEC061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 12:17:49 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id b1-20020a17090a990100b001b14bd47532so3816313pjp.0
-        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 12:17:49 -0800 (PST)
+        with ESMTP id S229793AbiBAUZx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:25:53 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFD0C061714;
+        Tue,  1 Feb 2022 12:25:53 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 132so5409965pga.5;
+        Tue, 01 Feb 2022 12:25:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=GwBCSnCCzUrn1U9jsc6LiigvHAh+jLOqf16IvcLLCyc=;
-        b=SXIUfBmEd3u6dftdc44NpRlcovK5cgZyRyyPGIF0VXl1riPnIFN67+s3HKgqWt2vFp
-         7NMbCXlGDqm120YIWDj6oTanDRLl973VMPAYUbrRYEtmaWj+mmoHV2mBBhgfdd5cBYDT
-         vIVPNbqlv+lxD2WOdP62Txb+UAaQ4t4PJj0ILKWExdSY+tOiE1WVuObEFPfvUmU/l8YA
-         rMdh7ooBvj0cpMJlLAo14xanD805aGm4AvPRR12rCTvzy7PoIJGDq6CY8hR1vH3B6kYR
-         MqiRSHfTO5RablGfjg4I1MP1fED0A+4o44z8JPEwAQoL94WcXjvqSV23ofNr+u8QHtLa
-         Tsqg==
+        bh=ExdrZIgp39XVpTkA829D6pTDC2kNpI9DYEfWRWuVVbU=;
+        b=ITc9Q24cgjgfgZIRPMUETmA1BvsoPuDTxd8akeVWC6NEkNr5mwgVfkTYcLFmbMbZ8W
+         pyiO7xU2fLRPcNVKQ3o1N4+zzRWyjhUf+Vcaa4e1+8OjJOHEFGAXSujp/zo6rnD1g/zL
+         QlEe0OP66UsZK0/9jwRVsB102DGV6VLSPYMbb2D4QfIBhOumzCEJsSFJXtkHDsn2c/LK
+         9qolP4HxL1Ty1zxhk0TB+/KmY+9XlG7Alsrq/MeLK0v5XSnG8rruw879bv0WYQQYCVsn
+         HZmPL8cv9HcJRmll17chuNrjnLe24BPDwcHjHgvr3fVxsBXwpuWolwqRWzlkkbt/ANhO
+         9tSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=GwBCSnCCzUrn1U9jsc6LiigvHAh+jLOqf16IvcLLCyc=;
-        b=rEMPDenoi5KkgIqzrSlVUOQgQmrqMOt+GVmmY8Z8+/a6E3FaXdSK1t6maJFzwsW6z0
-         pUrVLLBuEzWhZ3ehjAXCn9KUoBm6qcuWASkMf6oB14sEpn1mZAHBacRiLYbCeEIF4Hkj
-         x+fyS37VMpf6QFVhFEWThSiqU9XcULO1H/FC213mzH29HgNyxmRcPmstAPS9rHbI59/I
-         gQ7XAg4KbZR9dn+wyn+BlWi2iEHD0VXWTVJtNxQqSF4zgURmN7KuzC6LBxjPJeXlUqEI
-         f2kVlMLwjgef4z8DIPSoyc1ojQBVOBzzzTo7R+43ilkvF5dH/OecMf67EBZPY53UvzEP
-         G04w==
-X-Gm-Message-State: AOAM530jJKAQBxMW+pE5Ys1aM2+m6y18hGIsr9G0sBm+LRpD6OrN6u0l
-        jGX6DCH1t6CeIrkz7OLpLUOWo+M5xQXDagIF5Bw=
-X-Google-Smtp-Source: ABdhPJz6FcJYF6Uyejd1HydpMd7yH9nH6yWXV0nKJeKD8JzJypqwL/D/j4qbnIqFj7qut4fLfECnmD3JUQ1PTbkdqY8=
-X-Received: by 2002:a17:902:e54c:: with SMTP id n12mr26826404plf.78.1643746669174;
- Tue, 01 Feb 2022 12:17:49 -0800 (PST)
+        bh=ExdrZIgp39XVpTkA829D6pTDC2kNpI9DYEfWRWuVVbU=;
+        b=US7D3np/sjN7X3UUlrWjuqeHstvg5EAVfcax7Y/DqAR6TG+ZztxpL0NC2DIIsPHBu/
+         mcAoenlW4dubGKpTPaMl+oa/EDBM1sx/B4EJpVgRFvN2hO6R5+DyV37YjQbpM7rHA5ER
+         gkzkY+OhqmVAh3HfQ9oytwGbqDDeFdw+a9DlONaJVtdFB17jstAXDrCNSATR/3YOGDBg
+         kOAvB2cpCuoNFXBcqehRLAteEq9PLcaCA0pEcJTMxrka4mN2etE/1+OTuSlhYo8SSvxx
+         C+Vng5U7gcoDW/S1BnZpgZ1kkDWJF51nir21423byUYIheG8SNVW3GJWzC9B/koJxXLq
+         qnXg==
+X-Gm-Message-State: AOAM532lrep4A1jmguI+7BVuqi5trdVEHIHTLsn3uHsU/7ozmD0wkDXY
+        d3G6TH+ZQtOFb9LT/XAcT/8i8yg5h6lnfmkW4ac=
+X-Google-Smtp-Source: ABdhPJy0q73D2jETQlZoAmIweTsGb4uPIiFseF1cAdCI2gLgedABAXPmVvU8fXTFwpCRy5HnbjEWYEaeEDiJ1HOoBhU=
+X-Received: by 2002:aa7:888e:: with SMTP id z14mr26785456pfe.46.1643747152532;
+ Tue, 01 Feb 2022 12:25:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126214809.3868787-1-kuifeng@fb.com> <20220126214809.3868787-5-kuifeng@fb.com>
- <CAEf4BzaLaPfnYTQppVq1ixACLQJcDWYyjMRD42YuQFMUb4rLDA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaLaPfnYTQppVq1ixACLQJcDWYyjMRD42YuQFMUb4rLDA@mail.gmail.com>
+References: <20220130030352.2710479-1-hefengqing@huawei.com>
+ <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com> <87zgndqukg.fsf@cloudflare.com>
+In-Reply-To: <87zgndqukg.fsf@cloudflare.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Feb 2022 12:17:37 -0800
-Message-ID: <CAADnVQKEQFhkcnQLqNWDkmtyBq-35UkPGf0Rcj3BtFXCZQXLQg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Attach a cookie to a BPF program.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf <bpf@vger.kernel.org>,
+Date:   Tue, 1 Feb 2022 12:25:41 -0800
+Message-ID: <CAADnVQKAeP3RB_F-isOdRJNaKns5RBEfs1aYw=_fCtBro64Amw@mail.gmail.com>
+Subject: Re: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     He Fengqing <hefengqing@huawei.com>,
+        Marek Majkowski <marek@cloudflare.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 10:47 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> >  struct bpf_array_aux {
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 16a7574292a5..3fa27346ab4b 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -1425,6 +1425,7 @@ union bpf_attr {
-> >         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
-> >                 __u64 name;
-> >                 __u32 prog_fd;
-> > +               __u64 bpf_cookie;
-> >         } raw_tracepoint;
-> >
+On Sun, Jan 30, 2022 at 4:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
 >
-> As an aside, Alexei, should we bite a bullet and allow attaching
-> raw_tp, fentry/fexit, and other tracing prog attachment through the
-> LINK_CREATE command? BPF_RAW_TRACEPOINT_OPEN makes little sense for
-> anything but raw_tp programs.
+> On Sun, Jan 30, 2022 at 04:24 AM CET, Alexei Starovoitov wrote:
+> > On Sat, Jan 29, 2022 at 6:16 PM He Fengqing <hefengqing@huawei.com> wrote:
+> >>
+> >> SK_LOOKUP program type was introduced in commit e9ddbb7707ff
+> >> ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
+> >> but the commit did not add SK_LOOKUP program type in net admin prog type.
+> >> I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
+> >> program type in net_admin_prog_type.
+> >
+> > I'm afraid it's too late to change.
+> >
+> > Jakub, Marek, wdyt?
+>
+> That's definitely an oversight on my side, considering that CAP_BPF came
+> in 5.8, and sk_lookup program first appeared in 5.9.
+>
+> Today it's possible to build a usable sk_lookup program without
+> CAP_NET_ADMIN if you go for REUSEPORT_SOCKARRAY map instead of
+> SOCKMAP/HASH.
+>
+> Best I can come up is a "phase it out" approach. Put the CAP_NET_ADMIN
+> load-time check behind a config option, defaulting to true?, and wait
+> for it to become obsolete.
 
-raw_tp_open is used for raw_tp, tp_btf, lsm, fentry.
-iirc it's creating a normal bpf_link underneath.
-link_create doesn't exist for raw_tp and friends,
-so this is the best place to add a cookie.
-We can add an alias cmd (instead of raw_tp_open)
-to make it a bit cleaner from uapi naming pov.
-We can allow link_create to do the attach in all those cases as well,
-but it's a different discussion.
-link_create.perf_event.bpf_cookie isn't the best name.
-That name was a cause of confusion for me.
-I thought it applies to perf_event only,
-but it's for kuprobe too.
-So plenty of bikeshedding to do if we decide to do
-link_create for raw_tp. Hence, for now, I'd add a cookie to
-raw_tp/tp_btf/lsm/fentry like this patch is doing.
+I would keep it as-is then. The trouble doesn't feel worth it.
