@@ -2,119 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EED4A5705
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 06:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F304A5712
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 06:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbiBAFkT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 00:40:19 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:38454 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233445AbiBAFkS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 00:40:18 -0500
-Received: by mail-il1-f200.google.com with SMTP id l2-20020a922902000000b002bc386db1beso3428793ilg.5
-        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 21:40:18 -0800 (PST)
+        id S229996AbiBAFuO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 00:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233712AbiBAFuO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 00:50:14 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE62C061714
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 21:50:13 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id q11so5217706ild.11
+        for <bpf@vger.kernel.org>; Mon, 31 Jan 2022 21:50:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2KHA7BkydmzBg2tGpIVbQsCK2ZlzH1qs5ahJoG0Cobk=;
+        b=fo+U8PDqGdTAyPxwMPmK8x+LLHhm3w+7ytsJWSuCXuqj0HUWIKNTdTS9UPd1zN+VD/
+         XkqhIjcyCUghR5Zmt4ham3iMCf8PKjkmbHGAFJkAZ52mdePdfrfnb8KQVOXsCUeeBvW2
+         CrAc+Y3kT0wmpaGEwfdHGVi3SZzoJyqwXGqIxFMUGQJS3ht3vuPMy5DcECUZqrrwz8I+
+         xiFvXgfjzBSXvajFBg9plCYdpQP+tf7VSfq7FsgFMWpuwTpK8uM0nM7SZgFoAPoRGSHI
+         w+sNDVwzUalamNPgoyAdqn7ujhd/0uz+NbBo5nj6NUzshFCG6t8eWITTf/1J+JN66fYe
+         J6fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=1m+jI4c4S9z+N6mXChlR9RZT6vvZARLaqK6ttNYGkXk=;
-        b=yR5+cjxakFdF+HELAH8oWvFaeajXMlWcGQGHDc3JkMi+PKcNPyHL1YJJP0xWGkdlBP
-         HR4dcKGxK9wVgDZ2eWoEdhk6mVF+hVBYvekkL6mupUbxyscluFydD68hnys89DJjB3sL
-         /1b6Lv1xlmCjLOvNR9GfumOWyqe9Tk727Q5zKOxEf5D9g0NWDPCKS228wRUS8e46YVHH
-         9BjY1gc7VC8lVH8D1fQB89N2UudyL/SxjR6I9/VSqmvsnhwWvBiNHHs1FPnEwMCTV2sz
-         BbLG/LJ3iC8fqrfoWerD9fyhq0L+6dau4lkQsYIq3mn/KfhJtRwfqbZJC5IGXFhk1KYU
-         vZ9Q==
-X-Gm-Message-State: AOAM530BH4sBX7Wpw+RviQF74xCDdFFTE8i/t2KFgkz2kmD6nB4GZqLl
-        U9QPLSf1xNKbgENqHKSwPxNfuBW0yd2zcEvp04OHFVGqQwoR
-X-Google-Smtp-Source: ABdhPJzaaoz19EjlZxMINeCMVpTSZ+wpBF77leShEXgm3xpaNWQBj3ypv0S22DYdchPyZsjbmN0o/mCYxEHnpsZYrpCeVlsU03iB
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2KHA7BkydmzBg2tGpIVbQsCK2ZlzH1qs5ahJoG0Cobk=;
+        b=NCJvPQaMNOA//QiQKHhNmcyUMS0n20fFkRsP5jrdr2PvIJLtPKmLr7jKZpdpsnwFjd
+         fHAUpv1BOrJIp26xkZ8qRxtt00HrWZ8fyTWnh53rffY+iQN5MjuqzjkZCKXud0sxtOqI
+         Zr93H2m03HEsEh/8x+xiYwmdOauQFSPGAn42wxcot2Up+ZXSE8MN4qF51EFRVb6IGdxb
+         uc8dGk3vSDuqkOWR/VXMGhTOiGMa/LypizOJwkLIPdOQdikKk/uxdRK0/0958HkJzlPg
+         3Xhhzqpdf1dEtcwWhWXQDWVeqtLkEN946NgFhpAKzNm828M0s1EIjcp13wV6QUL/pljM
+         f1nQ==
+X-Gm-Message-State: AOAM530JV5l/EEMQq2Wd1wdUccA8rdw3KLaCIYTLWFvMBthsUUX48A/u
+        nTJAkDiuXIxmOc4ReUKxATKrXl3brCgoFJSpDZA=
+X-Google-Smtp-Source: ABdhPJyZaztgXuDDoYcNQ3ArWT/8mJrd0nxTbfPyYNfQ8+Fky2VZdnUi0ZZL2jVnhrdmR5mwtSPSS/E5mM73s688i8E=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr14063363ilu.71.1643694612310;
+ Mon, 31 Jan 2022 21:50:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:2420:: with SMTP id f32mr11735192jaa.305.1643694017647;
- Mon, 31 Jan 2022 21:40:17 -0800 (PST)
-Date:   Mon, 31 Jan 2022 21:40:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a9b7d05d6ee565f@google.com>
-Subject: [syzbot] KASAN: vmalloc-out-of-bounds Write in ringbuf_map_alloc
-From:   syzbot <syzbot+5ad567a418794b9b5983@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <d456931681fe2344ae56225a698a0bd1d5c63b88.1643375942.git.lorenzo@kernel.org>
+In-Reply-To: <d456931681fe2344ae56225a698a0bd1d5c63b88.1643375942.git.lorenzo@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 31 Jan 2022 21:50:01 -0800
+Message-ID: <CAEf4Bzbt--iLcctUq+D_CXY0qyDRi3_uWc=vvOV4z-eQvum2cA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: deprecate xdp_cpumap and xdp_devmap
+ sec definitions
+To:     Lorenzo Bianconi <lorenzo@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, Jan 28, 2022 at 5:29 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
+>
+> Deprecate xdp_cpumap xdp_devmap sec definitions.
+> Introduce xdp/devmap and xdp/cpumap definitions according to the standard
+> for SEC("") in libbpf:
+> - prog_type.prog_flags/attach_place
+> Update cpumap/devmap samples and kselftests
+>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+> Changes since v1:
+> - refer to Libbpf-1.0-migration-guide in the warning rised by libbpf
+> ---
+>  samples/bpf/xdp_redirect_cpu.bpf.c                   |  8 ++++----
+>  samples/bpf/xdp_redirect_map.bpf.c                   |  2 +-
+>  samples/bpf/xdp_redirect_map_multi.bpf.c             |  2 +-
+>  tools/lib/bpf/libbpf.c                               | 12 ++++++++++--
+>  .../bpf/progs/test_xdp_with_cpumap_frags_helpers.c   |  2 +-
+>  .../bpf/progs/test_xdp_with_cpumap_helpers.c         |  2 +-
+>  .../bpf/progs/test_xdp_with_devmap_frags_helpers.c   |  2 +-
+>  .../bpf/progs/test_xdp_with_devmap_helpers.c         |  2 +-
+>  .../selftests/bpf/progs/xdp_redirect_multi_kern.c    |  2 +-
 
-syzbot found the following issue on:
+Please split samples/bpf, selftests/bpf, and libbpf changes into
+separate patches. We keep them separate whenever possible.
 
-HEAD commit:    887a333c44eb Add linux-next specific files for 20220131
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=106ea200700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a9a7db1ff785d5c0
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ad567a418794b9b5983
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>  9 files changed, 21 insertions(+), 13 deletions(-)
+>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+[...]
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5ad567a418794b9b5983@syzkaller.appspotmail.com
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 4ce94f4ed34a..ba003cabe4a4 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -237,6 +237,8 @@ enum sec_def_flags {
+>         SEC_SLOPPY_PFX = 16,
+>         /* BPF program support non-linear XDP buffer */
+>         SEC_XDP_FRAGS = 32,
+> +       /* deprecated sec definitions not supposed to be used */
+> +       SEC_DEPRECATED = 64,
+>  };
+>
+>  struct bpf_sec_def {
+> @@ -6575,6 +6577,10 @@ static int libbpf_preload_prog(struct bpf_program *prog,
+>         if (prog->type == BPF_PROG_TYPE_XDP && (def & SEC_XDP_FRAGS))
+>                 opts->prog_flags |= BPF_F_XDP_HAS_FRAGS;
+>
+> +       if (def & SEC_DEPRECATED)
+> +               pr_warn("sec '%s' is deprecated, please take a look at https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide\n",
+> +                       prog->sec_name);
+> +
 
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:110 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_ringbuf_alloc kernel/bpf/ringbuf.c:133 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in ringbuf_map_alloc kernel/bpf/ringbuf.c:172 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in ringbuf_map_alloc+0x725/0x7b0 kernel/bpf/ringbuf.c:148
-Write of size 8 at addr ffffc9001653a078 by task syz-executor.2/9141
+Please add a link directly to [0]. I just added a new section listing
+xdp_devmap and xdp_cpumap. I also added SEC("classifier") ->
+SEC("tc"), so let's mark SEC("classifier") as deprecated as well in
+the next revision?
 
-CPU: 0 PID: 9141 Comm: syz-executor.2 Not tainted 5.17.0-rc2-next-20220131-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x3e0 mm/kasan/report.c:255
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:110 [inline]
- bpf_ringbuf_alloc kernel/bpf/ringbuf.c:133 [inline]
- ringbuf_map_alloc kernel/bpf/ringbuf.c:172 [inline]
- ringbuf_map_alloc+0x725/0x7b0 kernel/bpf/ringbuf.c:148
- find_and_alloc_map kernel/bpf/syscall.c:128 [inline]
- map_create kernel/bpf/syscall.c:863 [inline]
- __sys_bpf+0xc0f/0x5f10 kernel/bpf/syscall.c:4622
- __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fab8b037059
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fab89fac168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007fab8b149f60 RCX: 00007fab8b037059
-RDX: 0000000000000048 RSI: 0000000020000440 RDI: 0000000000000000
-RBP: 00007fab8b09108d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff1a45415f R14: 00007fab89fac300 R15: 0000000000022000
- </TASK>
+Daniel, does that sound reasonable to you or should we leave
+SEC("classifier") intact?
 
+Let's use also the syntax consistent with the code people write.
+Something like "SEC(\"%s\") is deprecated, please see
+https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide#bpf-program-sec-annotation-deprecations
+for details"?
 
-Memory state around the buggy address:
- ffffc90016539f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90016539f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc9001653a000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                                                ^
- ffffc9001653a080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc9001653a100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+  [0] https://github.com/libbpf/libbpf/wiki/Libbpf-1.0-migration-guide#bpf-program-sec-annotation-deprecations
 
+>         if ((prog->type == BPF_PROG_TYPE_TRACING ||
+>              prog->type == BPF_PROG_TYPE_LSM ||
+>              prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+> @@ -8618,9 +8624,11 @@ static const struct bpf_sec_def section_defs[] = {
+>         SEC_DEF("iter.s/",              TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
+>         SEC_DEF("syscall",              SYSCALL, 0, SEC_SLEEPABLE),
+>         SEC_DEF("xdp.frags/devmap",     XDP, BPF_XDP_DEVMAP, SEC_XDP_FRAGS),
+> -       SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp/devmap",           XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp_devmap/",          XDP, BPF_XDP_DEVMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+>         SEC_DEF("xdp.frags/cpumap",     XDP, BPF_XDP_CPUMAP, SEC_XDP_FRAGS),
+> -       SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp/cpumap",           XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE),
+> +       SEC_DEF("xdp_cpumap/",          XDP, BPF_XDP_CPUMAP, SEC_ATTACHABLE | SEC_DEPRECATED),
+>         SEC_DEF("xdp.frags",            XDP, BPF_XDP, SEC_XDP_FRAGS),
+>         SEC_DEF("xdp",                  XDP, BPF_XDP, SEC_ATTACHABLE_OPT | SEC_SLOPPY_PFX),
+>         SEC_DEF("perf_event",           PERF_EVENT, 0, SEC_NONE | SEC_SLOPPY_PFX),
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+[...]
