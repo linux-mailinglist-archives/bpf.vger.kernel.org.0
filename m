@@ -2,107 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56B84A6510
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 20:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEF74A6514
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 20:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbiBATcs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 14:32:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
+        id S229903AbiBAThA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 14:37:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229568AbiBATcs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 14:32:48 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A82AC061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 11:32:48 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id cq9-20020a17090af98900b001b8262fe2d5so496770pjb.0
-        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 11:32:48 -0800 (PST)
+        with ESMTP id S229446AbiBATg7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 14:36:59 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F93C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 11:36:59 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id s18so22537312ioa.12
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 11:36:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0Nowegv2OshyN6XYfmwxnTW+oSzihW0wNJWXbHMJZlo=;
-        b=qu8zegJ2lRQEhmMt6gz8FmduA5n1bp6LVj2SP+WI7Fs0i5DEv2W5s5KcQrTqmhb4qB
-         ikblf6Oyn3+u7/rUYq/Ca7ZzqRBOj8odB3hWI99kKCSDjfBmznKIIyRIBb4+qBNW4kgY
-         utSK6+zmzerZqaW9rIxkstQESFp4viTEt08G+b1pcRszoYlom4MZCtRhZl4nmteuHNru
-         hJIiTxeoJtpIJ87kclP7KawhwVWACfI9vvEPPIjzUeZ77OTZnDLov8j0VimrJUk6vFRt
-         BDKu8tA3SW1KNyY9N74UcgijMItyQk29YT/6WziyXJm1n56Z38IKs0Q8zkqhRh+FuTr2
-         KAsg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmWZSkV1tjQtjrsqgYDnPzudwQGnysCTX2OAzfb6Qjs=;
+        b=jvLdWCg2fUswaxX1A10YuLD1jDp9CSnjO9OuTLoKnJJbPtuaSuOV+Qe0qGVkRjl89q
+         V1QGP1ldq9CDWB+IsvFnpsJMFtvw8MCJ7dQWlWuCo7zXgdD5iCISxJJCkR4d0Aqo8QKS
+         nzSmrpKxNdyl6dJHA1lU+9QT8vch8aiAUvB5XnD/JRWKENFSfKBCeF99EvyfyaG1Uqnj
+         yM0P/19VOlhdFd6EFqiDCxN116uqN5t+/mLm2KPvEuy3/1AJ1r5pn321OWKtzB3WjD8s
+         3Q8SgrxiEQzY7FFFcvIaRqwCfxw0NabSXhN9Wz49IPuLxOFX5mEW4GlqyZQs+tyVkz7o
+         gvsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0Nowegv2OshyN6XYfmwxnTW+oSzihW0wNJWXbHMJZlo=;
-        b=DC1tEmTuwR0x3vy7j6rQz04EnZtYOoL9PkpIfMRf4mulWfVWdZi59mfJBgM7lZz/93
-         J/xXsMZd1NzTjvDoogdabYCQhWxUaj1ulzXP/uzBZbFJwIt/N8ttd2A+FmdX58bE9RPf
-         chRMB3/D58P0gvE5hnx0FjssAyHomlf5oTXCxr+pPS5sYiTGE48OZ5piTbcaXY5b1uG/
-         U4hm78aeCVPVULi6Zj/W96WNbb/IuqEFk56kFlVLpNMFmb6hF8klNflX+Wvfp0nJyGY/
-         Ag12llsrxGppXzSsdqTQvTw/Qtj3Pt/rNQbq/ilMwhw/hHmdlpw5czgOTQlgV1FO6Z4D
-         8baw==
-X-Gm-Message-State: AOAM531wE5JapbiXTJmh+ybvIA7LljBFryIKTrL06ap1LkwLg2KEM+AF
-        DjSFui5cminIP4wfTdksywA=
-X-Google-Smtp-Source: ABdhPJzM6YOZ1uTTmaRIXWl59Wzkg3osYhMBgbYM2h3K+AyCG5yHfPmFSk/5kwKWs6gyB6aD/XwK/A==
-X-Received: by 2002:a17:90b:4b90:: with SMTP id lr16mr4076338pjb.52.1643743967842;
-        Tue, 01 Feb 2022 11:32:47 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::569f])
-        by smtp.gmail.com with ESMTPSA id a19sm23167176pfv.116.2022.02.01.11.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Feb 2022 11:32:47 -0800 (PST)
-Date:   Tue, 1 Feb 2022 11:32:45 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmWZSkV1tjQtjrsqgYDnPzudwQGnysCTX2OAzfb6Qjs=;
+        b=fa1l1vHNYT9RRgPlrRiE7GUOUPjRi04RJ1ZyL475edsI/L6sDFSmm5glKsVyhXbubZ
+         oweRFqP3RgfqT6MZgmbY/qZ7teQlMYYtcG/bKKWgEhlHAEdV+xn8lAAU+uTZGlZIvNHE
+         YtAvEX3Hl1rkr5tSE1zjfiSffZhSbpvdT9P4sqX4PSN/xqZ6Uf3Dco5ooKWVxYDUPqha
+         6kyeKP73oSdfKsAnf+BHKP9hX5yy9BZuqvUDPG/U/RkZTOj30BYivPqxx6dLRkPwbQYR
+         eJHTGcVCLPShU82wZh+w965DhPaHBBBir0wGN70lzqviGqgnKFzlGsmylBymrd1n5f6G
+         fxHA==
+X-Gm-Message-State: AOAM533FNmFiW0ESt4eUAvoftUT5zLU/evDCenaRYfYFaJ8AKK0Rwxfc
+        Ku+gouWvquliQFHHf1UWn99pXvELf++hdbWZo7E=
+X-Google-Smtp-Source: ABdhPJyFDhUIfsYTC/6cMbFxGWXo/1IOqEN83Abocb00rQXkoIa7rLWNvlKukJCNDgGaJ4iQkrRWekiBDMoCchDLACE=
+X-Received: by 2002:a5e:8406:: with SMTP id h6mr14762433ioj.144.1643744219098;
+ Tue, 01 Feb 2022 11:36:59 -0800 (PST)
+MIME-Version: 1.0
+References: <20220124141622.4378-1-Kenta.Tada@sony.com> <20220124141622.4378-4-Kenta.Tada@sony.com>
+ <CAEf4BzZGARxqmCFmGhJduAu+Wsg2t0RVHLXrfX=KuHuhnhv+OA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZGARxqmCFmGhJduAu+Wsg2t0RVHLXrfX=KuHuhnhv+OA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Feb 2022 11:36:48 -0800
+Message-ID: <CAEf4BzaNjGLAzBWXybmbDHaAa4Sse=aVcn1vWV4GXvUYDXF8hw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/3] libbpf: Add a test to confirm PT_REGS_PARM4_SYSCALL
+To:     Kenta Tada <Kenta.Tada@sony.com>,
+        Hengqi Chen <hengqi.chen@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next 0/5] Attach a cookie to a tracing program.
-Message-ID: <20220201193245.w6ucelz6hbrmzyqt@ast-mbp.dhcp.thefacebook.com>
-References: <20220126214809.3868787-1-kuifeng@fb.com>
- <CAADnVQKkJCj+_aoJN2YtS3-Hc68uk1S2vN=5+0M0Q9KRVuxqoQ@mail.gmail.com>
- <CAEf4BzYFFnBnLu0ue8HoeZDD6V3DBKZFFKSA7VnL=duQgqc-nQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYFFnBnLu0ue8HoeZDD6V3DBKZFFKSA7VnL=duQgqc-nQ@mail.gmail.com>
+        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 10:45:53PM -0800, Andrii Nakryiko wrote:
-> 
-> As Jiri mentioned, for multi-attach kprobes the idea was to keep a
-> sorted array of ips and associated cookies to do log(N) search in
-> bpf_get_attach_cookie() helper.
-> 
-> For multi-attach fentry, we could use the same approach if we let
-> either bpf_link or bpf_prog available to fentry/fexit program at
-> runtime.
++cc Ilya
 
-Makes sense to me.
-It's probably better to land multi-attach kprobe and fentry first,
-so we don't need to refactor trampolines once again.
-iirc the trampolines were not easy to refactor for Jiri.
-I'm afraid that adding prog_id or a pointer to the trampoline
-will complicate things even more for multi attach.
 
-It's easy to store hard coded bpf_tramp_image pointer in the generated
-trampoline. Storing prog_id or bpf_prog pointer there is a bit
-harder, since the [sp-X] store needs to happen right in there invoke_bpf_prog()
-(since there can be multiple progs per trampoline).
+On Mon, Jan 24, 2022 at 9:05 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> +cc Hengqi
+>
+> On Mon, Jan 24, 2022 at 6:20 AM Kenta Tada <Kenta.Tada@sony.com> wrote:
+> >
+> > Add a selftest to verify the behavior of PT_REGS_xxx
+> > and the CORE variant.
+> >
+> > Signed-off-by: Kenta Tada <Kenta.Tada@sony.com>
+> > ---
+> >  .../bpf/prog_tests/test_bpf_syscall_macro.c   | 63 ++++++++++++++++++
+> >  .../selftests/bpf/progs/bpf_syscall_macro.c   | 64 +++++++++++++++++++
+> >  2 files changed, 127 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bpf_syscall_macro.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> >
+>
+> [...]
+>
+> > diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > new file mode 100644
+> > index 000000000000..cfeccd85f40e
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
+> > @@ -0,0 +1,64 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright 2022 Sony Group Corporation */
+> > +#include <vmlinux.h>
+> > +
+> > +#include <bpf/bpf_core_read.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +#include "bpf_misc.h"
+> > +
+> > +int arg1 = 0;
+> > +unsigned long arg2 = 0;
+> > +unsigned long arg3 = 0;
+> > +unsigned long arg4_cx = 0;
+> > +unsigned long arg4 = 0;
+> > +unsigned long arg5 = 0;
+> > +
+> > +int arg1_core = 0;
+> > +unsigned long arg2_core = 0;
+> > +unsigned long arg3_core = 0;
+> > +unsigned long arg4_core_cx = 0;
+> > +unsigned long arg4_core = 0;
+> > +unsigned long arg5_core = 0;
+> > +
+> > +const volatile pid_t filter_pid = 0;
+> > +
+> > +SEC("kprobe/" SYS_PREFIX "sys_prctl")
+> > +int BPF_KPROBE(handle_sys_prctl)
+> > +{
+> > +       struct pt_regs *real_regs;
+> > +       int orig_arg1;
+> > +       unsigned long orig_arg2, orig_arg3, orig_arg4_cx, orig_arg4, orig_arg5;
+> > +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
+> > +
+> > +       if (pid != filter_pid)
+> > +               return 0;
+> > +
+> > +       /* test for PT_REGS_PARM */
+> > +       real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
+> > +       bpf_probe_read_kernel(&orig_arg1, sizeof(orig_arg1), &PT_REGS_PARM1_SYSCALL(real_regs));
+> > +       bpf_probe_read_kernel(&orig_arg2, sizeof(orig_arg2), &PT_REGS_PARM2_SYSCALL(real_regs));
+> > +       bpf_probe_read_kernel(&orig_arg3, sizeof(orig_arg3), &PT_REGS_PARM3_SYSCALL(real_regs));
+> > +       bpf_probe_read_kernel(&orig_arg4_cx, sizeof(orig_arg4_cx), &PT_REGS_PARM4(real_regs));
+> > +       bpf_probe_read_kernel(&orig_arg4, sizeof(orig_arg4), &PT_REGS_PARM4_SYSCALL(real_regs));
+> > +       bpf_probe_read_kernel(&orig_arg5, sizeof(orig_arg5), &PT_REGS_PARM5_SYSCALL(real_regs));
+> > +       /* copy all actual args and the wrong arg4 on x86_64 */
+> > +       arg1 = orig_arg1;
+> > +       arg2 = orig_arg2;
+> > +       arg3 = orig_arg3;
+> > +       arg4_cx = orig_arg4_cx;
+> > +       arg4 = orig_arg4;
+> > +       arg5 = orig_arg5;
+>
+> I don't get why you needed orig_argX variables and then copying them
+> into argX variables. I changed this to read directly into argX. I
+> suspect arg1 handling might break on big-endian arches due to int vs
+> long differences, please check that and send a follow up fix.
+>
+> Also keep in mind that selftest changes should come with
+> "selftests/bpf:" subject prefix, not "libbpf:". Fixed that up as well.
+>
+> Applied to bpf-next, thanks.
 
-From there bpf_get_attach_cookie() can either do binary search
-in the ip->cookie array or single load in case of non-multi attach.
+This selftest is failing on s390x (see [0]). Ilya, do you know if
+something special needs to be done for s390x for this case?
 
-Anyway the cookie support in trampoline seems to be easier to design
-when there is a clarity on multi-attach fentry.
+Here are the two failures:
 
-I would probably add support for cookie in raw_tp/tp_btf first,
-since that part is not going to be affected by multi-* work.
+test_bpf_syscall_macro:FAIL:syscall_arg1 unexpected syscall_arg1:
+actual -1 != expected 1001
+test_bpf_syscall_macro:FAIL:syscall_arg1_core_variant unexpected
+syscall_arg1_core_variant: actual -38 != expected 1001
 
-> We don't need all BPF program types, but anything that's useful for
-> generic tracing is much more powerful with cookies. We have them for
-> kprobe, uprobe and perf_event programs already. For multi-attach
-> kprobe/kretprobe and fentry/fexit they are essentially a must to let
-> users use those BPF program types to their fullest.
+  [0] https://github.com/libbpf/libbpf/runs/5025905587?check_suite_focus=true
 
-agree. I missed the part that cookie is already supported with kuprobes
-when attach is done via bpf_link_create.
+>
+> Hopefully Hengqi will build his SYSCALL prog wrapper macros on top of
+> this as a follow up as well.
+>
+> > +
+> > +       /* test for the CORE variant of PT_REGS_PARM */
+> > +       arg1_core = PT_REGS_PARM1_CORE_SYSCALL(real_regs);
+> > +       arg2_core = PT_REGS_PARM2_CORE_SYSCALL(real_regs);
+> > +       arg3_core = PT_REGS_PARM3_CORE_SYSCALL(real_regs);
+> > +       arg4_core_cx = PT_REGS_PARM4_CORE(real_regs);
+> > +       arg4_core = PT_REGS_PARM4_CORE_SYSCALL(real_regs);
+> > +       arg5_core = PT_REGS_PARM5_CORE_SYSCALL(real_regs);
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > --
+> > 2.32.0
+> >
