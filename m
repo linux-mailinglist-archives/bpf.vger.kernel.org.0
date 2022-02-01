@@ -2,95 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC064A65A1
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 21:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9A14A6686
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 21:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbiBAUZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 15:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        id S229814AbiBAUzl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 15:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbiBAUZx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 15:25:53 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFD0C061714;
-        Tue,  1 Feb 2022 12:25:53 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 132so5409965pga.5;
-        Tue, 01 Feb 2022 12:25:53 -0800 (PST)
+        with ESMTP id S229728AbiBAUzk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:55:40 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC107C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 12:55:39 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id r9-20020a6560c9000000b00343fa9529e5so10995511pgv.18
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 12:55:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ExdrZIgp39XVpTkA829D6pTDC2kNpI9DYEfWRWuVVbU=;
-        b=ITc9Q24cgjgfgZIRPMUETmA1BvsoPuDTxd8akeVWC6NEkNr5mwgVfkTYcLFmbMbZ8W
-         pyiO7xU2fLRPcNVKQ3o1N4+zzRWyjhUf+Vcaa4e1+8OjJOHEFGAXSujp/zo6rnD1g/zL
-         QlEe0OP66UsZK0/9jwRVsB102DGV6VLSPYMbb2D4QfIBhOumzCEJsSFJXtkHDsn2c/LK
-         9qolP4HxL1Ty1zxhk0TB+/KmY+9XlG7Alsrq/MeLK0v5XSnG8rruw879bv0WYQQYCVsn
-         HZmPL8cv9HcJRmll17chuNrjnLe24BPDwcHjHgvr3fVxsBXwpuWolwqRWzlkkbt/ANhO
-         9tSg==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=P0fhmv9LunS75BE8jJrWpX2XAenYYbzr/blDuojXLgY=;
+        b=njk9lbaWPVy1YcoQkD++10xy9Pcs66jQhwNO0JLKsPQmGvEyAVsHzj2TlO0ynzeON6
+         wbG9qGdCoW6NH1lq1ZUf3Hn+x4S8UfSRgI1GTggeFpg3Wo6tbIsKuUvJW2Kv6FeCiFEi
+         6oahXtgvhujNvHCf9/JQV8QMlDzbDmHcMRovKzA/fRSb8gKItWGg/5PAk9vtQHcyQbPG
+         d7x4UPwfVcxrEgkopAf+pvzyOZJvY1aVXJgTCat/RnDJRPa63BYQObEqknom0FbFPkE+
+         RoAVCZMCjYZYavsN1cTYmOuB2qYzwhc47dRgOZZ4/qX3aQHOcu62j1EvVyWfm9P37diS
+         M4gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ExdrZIgp39XVpTkA829D6pTDC2kNpI9DYEfWRWuVVbU=;
-        b=US7D3np/sjN7X3UUlrWjuqeHstvg5EAVfcax7Y/DqAR6TG+ZztxpL0NC2DIIsPHBu/
-         mcAoenlW4dubGKpTPaMl+oa/EDBM1sx/B4EJpVgRFvN2hO6R5+DyV37YjQbpM7rHA5ER
-         gkzkY+OhqmVAh3HfQ9oytwGbqDDeFdw+a9DlONaJVtdFB17jstAXDrCNSATR/3YOGDBg
-         kOAvB2cpCuoNFXBcqehRLAteEq9PLcaCA0pEcJTMxrka4mN2etE/1+OTuSlhYo8SSvxx
-         C+Vng5U7gcoDW/S1BnZpgZ1kkDWJF51nir21423byUYIheG8SNVW3GJWzC9B/koJxXLq
-         qnXg==
-X-Gm-Message-State: AOAM532lrep4A1jmguI+7BVuqi5trdVEHIHTLsn3uHsU/7ozmD0wkDXY
-        d3G6TH+ZQtOFb9LT/XAcT/8i8yg5h6lnfmkW4ac=
-X-Google-Smtp-Source: ABdhPJy0q73D2jETQlZoAmIweTsGb4uPIiFseF1cAdCI2gLgedABAXPmVvU8fXTFwpCRy5HnbjEWYEaeEDiJ1HOoBhU=
-X-Received: by 2002:aa7:888e:: with SMTP id z14mr26785456pfe.46.1643747152532;
- Tue, 01 Feb 2022 12:25:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20220130030352.2710479-1-hefengqing@huawei.com>
- <CAADnVQLsom4MQq2oonzfCqrHbhfg9y7YMPCk6Wg6r4bp3Su03g@mail.gmail.com> <87zgndqukg.fsf@cloudflare.com>
-In-Reply-To: <87zgndqukg.fsf@cloudflare.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Feb 2022 12:25:41 -0800
-Message-ID: <CAADnVQKAeP3RB_F-isOdRJNaKns5RBEfs1aYw=_fCtBro64Amw@mail.gmail.com>
-Subject: Re: [bpf-next] bpf: Add CAP_NET_ADMIN for sk_lookup program type
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     He Fengqing <hefengqing@huawei.com>,
-        Marek Majkowski <marek@cloudflare.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=P0fhmv9LunS75BE8jJrWpX2XAenYYbzr/blDuojXLgY=;
+        b=D4ItqG4ITT9lxqiu5VK5/E5S1+6FQ42RPwyjDOoFMxLmm/XKC1pGXxD39WWxtcHu2k
+         GHwFjDAbTDhX5f61PpSQCQC0v12rN9j8Qczrebvdbm2RW/80pM2Ya/9O+3Bzi/S7snjt
+         QnSh1QElMcHpO9JZYiraRCf1dMtG/o7SxW0d7LaO7151Vr4fuUOba/WCaSpwfw2Bvn+H
+         Aen90DTm3zKuHoR6tVG1llYvQIs7zGYa/EydTvlhg1QZyoXo8q0nG0miACViUwTpd8/Y
+         e+GET9tFNUxOgCpyc7R5Cru4YGq9wkQGkh6vxOK3lgT6wyTcgOSHpwvU/I2C+o0XTff0
+         +KHg==
+X-Gm-Message-State: AOAM533onI8h6V1QOet0dpQ0OGwBA36rKydpz4nW7+2nrqYTDFfYAuIL
+        ArIcrJaIaap4Vh45btuBQr7oXDEIsAk=
+X-Google-Smtp-Source: ABdhPJzwiVun/CMtOP9irD+PbxlYzas1r71Z3x/IbYjCYzmYOgFJfJQdpujnottqj6N/F3KM9Fq1QXZEgsw=
+X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:1cdb:a263:2495:80fd])
+ (user=haoluo job=sendgmr) by 2002:a17:903:1042:: with SMTP id
+ f2mr27997904plc.115.1643748939163; Tue, 01 Feb 2022 12:55:39 -0800 (PST)
+Date:   Tue,  1 Feb 2022 12:55:29 -0800
+Message-Id: <20220201205534.1962784-1-haoluo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.0.rc2.247.g8bbb082509-goog
+Subject: [PATCH RFC bpf-next v2 0/5] Extend cgroup interface with bpf
+From:   Hao Luo <haoluo@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 30, 2022 at 4:25 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Sun, Jan 30, 2022 at 04:24 AM CET, Alexei Starovoitov wrote:
-> > On Sat, Jan 29, 2022 at 6:16 PM He Fengqing <hefengqing@huawei.com> wrote:
-> >>
-> >> SK_LOOKUP program type was introduced in commit e9ddbb7707ff
-> >> ("bpf: Introduce SK_LOOKUP program type with a dedicated attach point"),
-> >> but the commit did not add SK_LOOKUP program type in net admin prog type.
-> >> I think SK_LOOKUP program type should need CAP_NET_ADMIN, so add SK_LOOKUP
-> >> program type in net_admin_prog_type.
-> >
-> > I'm afraid it's too late to change.
-> >
-> > Jakub, Marek, wdyt?
->
-> That's definitely an oversight on my side, considering that CAP_BPF came
-> in 5.8, and sk_lookup program first appeared in 5.9.
->
-> Today it's possible to build a usable sk_lookup program without
-> CAP_NET_ADMIN if you go for REUSEPORT_SOCKARRAY map instead of
-> SOCKMAP/HASH.
->
-> Best I can come up is a "phase it out" approach. Put the CAP_NET_ADMIN
-> load-time check behind a config option, defaulting to true?, and wait
-> for it to become obsolete.
+This patchset introduces a new program type to extend the cgroup interfaces.
+It extends the bpf filesystem (bpffs) to allow creating a directory
+hierarchy that tracks any kernfs hierarchy, in particular cgroupfs. Each
+subdirectory in this hierarchy will keep a reference to a corresponding
+kernfs node when created. This is done by associating a new data
+structure (called "tag" in this patchset) to the bpffs directory inodes.
+File inode in bpffs holds a reference to bpf object and directory inode
+may point to a tag, which holds a kernfs node.
 
-I would keep it as-is then. The trouble doesn't feel worth it.
+A bpf object can be pinned in these directories and objects can choose to
+enable inheritance in tagged directories. In this patchset, a new
+program type "cgroup_view" is introduced, which supports inheritance.
+More specifically, when a link to cgroup_view prog is pinned in a bpffs
+directory, it tags the directory and connects the directory to the root
+cgroup. Subdirectories created underneath has to match a subcgroup, and
+when created, they will inherit the pinned cgroup_view link from the
+parent directory.
+
+The pinned cgroup_view objects can be read as files. When the object is
+read, it tries to get the cgroup its parent directory is matched to.
+Failure to get the cgroup's reference will not run the cgroup_view prog.
+Users can implement cgroup_view program to define what to print out to
+the file, given the cgroup object.
+
+See patch 5/5 for an example of how this works.
+
+Userspace has to manually create/remove directories in bpffs to mirror
+the cgroup hierarchy. It was suggested using overlayfs to create a
+hierarchy that contains both cgroupfs and bpffs. But after some
+experiments, I found overlayfs is not intended to be used this way:
+overlayfs assumes the underlying filesystem will not change [1], but our
+underlaying fs (i.e. cgroupfs) will change and cause weird behavior. So
+I didn't pursue in that direction.
+
+This patchset v2 is only for demonstrating the high level design. There
+are a lot of places in its implementation that can be improved. Cgroup_view
+is a type of bpf_iter, because seqfile printing has been supported well
+in bpf_iter, although cgroup_view is not iterating kernel objects.
+
+Changes v1->v2:
+ - Complete redesign. v1 implements pinning bpf objects in cgroupfs[2].
+   v2 implements object inheritance in bpffs. Due to its simplicity,
+   bpffs is better for implementing inheritance compared to cgroupfs.
+ - Extend selftest to include a more realistic use case. The selftests
+   in v2 developed a cgroup-level sched performance metric and exported
+   through the new prog type.
+
+[1] https://www.kernel.org/doc/html/latest/filesystems/overlayfs.html#changes-to-underlying-filesystems
+[2] https://lore.kernel.org/bpf/Ydd1IIUG7%2F3kQRcR@google.com/
+
+Hao Luo (5):
+  bpf: Bpffs directory tag
+  bpf: Introduce inherit list for dir tag.
+  bpf: cgroup_view iter
+  bpf: Pin cgroup_view
+  selftests/bpf: test for pinning for cgroup_view link
+
+ include/linux/bpf.h                           |   2 +
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/bpf_iter.c                         |  11 +
+ kernel/bpf/cgroup_view_iter.c                 | 114 ++++++++
+ kernel/bpf/inode.c                            | 272 +++++++++++++++++-
+ kernel/bpf/inode.h                            |  55 ++++
+ .../selftests/bpf/prog_tests/pinning_cgroup.c | 143 +++++++++
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   7 +
+ .../bpf/progs/bpf_iter_cgroup_view.c          | 232 +++++++++++++++
+ 9 files changed, 829 insertions(+), 9 deletions(-)
+ create mode 100644 kernel/bpf/cgroup_view_iter.c
+ create mode 100644 kernel/bpf/inode.h
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/pinning_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_cgroup_view.c
+
+-- 
+2.35.0.rc2.247.g8bbb082509-goog
+
