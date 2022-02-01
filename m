@@ -2,103 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDDB4A58CC
-	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 09:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846184A58E1
+	for <lists+bpf@lfdr.de>; Tue,  1 Feb 2022 10:00:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233828AbiBAIw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 03:52:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:60382 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231912AbiBAIwZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 03:52:25 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nEote-0003N7-C3; Tue, 01 Feb 2022 09:52:18 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nEote-00059S-1o; Tue, 01 Feb 2022 09:52:18 +0100
-Subject: Re: [PATCH v3 bpf-next 0/4] libbpf: name-based u[ret]probe attach
-To:     Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
-        ast@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        sunyucong@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <1643645554-28723-1-git-send-email-alan.maguire@oracle.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a74d3ab8-152a-b81b-54f3-9a46d6ba682d@iogearbox.net>
-Date:   Tue, 1 Feb 2022 09:52:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S235384AbiBAJAM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 04:00:12 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:33630 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230333AbiBAJAL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 04:00:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 29FCB614DC
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 09:00:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 797FEC340ED;
+        Tue,  1 Feb 2022 09:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643706009;
+        bh=vBVeQQW/PVWtPa9sl9N0z6OdvQfyHklY2IuBcNl7fPw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=b5MGiv0F7lHRoE5EBjVUCj/2W3hqsDnH/QpUWIXusAo1IpdFQebfY9cW06BkyhR55
+         uCjD4+tUyTf6+qLDJHgrdrsICbxqZoE2hrcNzhTpchXwK+r99ZM9SV4pm5N7Xr3aej
+         D/GriV21FTaq9pDJ+zM5+qXS64lmrV9BncyBQaX+iwdmgIggMsJMtj2+Zqv6OePgJE
+         sZVhMqDGhSTP7J548P9iNjgGnY/cmXxerlzE3hImitbAt3gD2cR68bzOxKV5GeJhlQ
+         q30JtR4Q+hsXs0rjNs3WSiJHGx1ZBWBn4H/YSV/j7N/UICVQqLhKhIM2FDYh4mX0ay
+         YMx70FD6A8yAQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6208CE6BB38;
+        Tue,  1 Feb 2022 09:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <1643645554-28723-1-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26439/Mon Jan 31 10:24:40 2022)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] libbpf: deprecate btf_ext rec_size APIs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164370600939.27452.6958793527629660929.git-patchwork-notify@kernel.org>
+Date:   Tue, 01 Feb 2022 09:00:09 +0000
+References: <20220201014610.3522985-1-davemarchevsky@fb.com>
+In-Reply-To: <20220201014610.3522985-1-davemarchevsky@fb.com>
+To:     Dave Marchevsky <davemarchevsky@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Alan,
+Hello:
 
-On 1/31/22 5:12 PM, Alan Maguire wrote:
-> This patch series is a refinement of the RFC patchset [1], focusing
-> on support for attach by name for uprobes and uretprobes. v3
-> because there was an earlier RFC [2].
-> 
-> Currently attach for such probes is done by determining the offset
-> manually, so the aim is to try and mimic the simplicity of kprobe
-> attach, making use of uprobe opts to specify a name string.
-> Patch 1 adds the "func_name" option to allow uprobe attach by
-> name; the mechanics are described there.
-> 
-> Having name-based support allows us to support auto-attach for
-> uprobes; patch 2 adds auto-attach support while attempting
-> to handle backwards-compatibility issues that arise.  The format
-> supported is
-> 
-> u[ret]probe//path/2/binary:[raw_offset|function[+offset]]
-> 
-> For example, to attach to libc malloc:
-> 
-> SEC("uprobe//usr/lib64/libc.so.6:malloc")
-> 
-> Patch 3 introduces a helper function to trace_helpers, allowing
-> us to retrieve the path to a library by reading /proc/self/maps.
-> 
-> Finally patch 4 add tests to the attach_probe selftests covering
-> attach by name, auto-attach and auto-attach failure.
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Looks like the selftest in the series fails the BPF CI (test_progs & test_progs-no_alu32):
+On Mon, 31 Jan 2022 17:46:10 -0800 you wrote:
+> btf_ext__{func,line}_info_rec_size functions are used in conjunction
+> with already-deprecated btf_ext__reloc_{func,line}_info functions. Since
+> struct btf_ext is opaque to the user it was necessary to expose rec_size
+> getters in the past.
+> 
+> btf_ext__reloc_{func,line}_info were deprecated in commit 8505e8709b5ee
+> ("libbpf: Implement generalized .BTF.ext func/line info adjustment")
+> as they're not compatible with support for multiple programs per
+> section. It was decided[0] that users of these APIs should implement their
+> own .btf.ext parsing to access this data, in which case the rec_size
+> getters are unnecessary. So deprecate them from libbpf 0.7.0 onwards.
+> 
+> [...]
 
-https://github.com/kernel-patches/bpf/runs/5012260907?check_suite_focus=true
+Here is the summary with links:
+  - [v2,bpf-next] libbpf: deprecate btf_ext rec_size APIs
+    https://git.kernel.org/bpf/bpf-next/c/5ee32ea24ce7
 
-   [...]
-   test_attach_probe:PASS:uprobe_offset 0 nsec
-   test_attach_probe:PASS:ref_ctr_offset 0 nsec
-   test_attach_probe:PASS:skel_open 0 nsec
-   test_attach_probe:PASS:check_bss 0 nsec
-   test_attach_probe:PASS:attach_kprobe 0 nsec
-   test_attach_probe:PASS:attach_kretprobe 0 nsec
-   test_attach_probe:PASS:uprobe_ref_ctr_before 0 nsec
-   test_attach_probe:PASS:attach_uprobe 0 nsec
-   test_attach_probe:PASS:uprobe_ref_ctr_after 0 nsec
-   test_attach_probe:PASS:attach_uretprobe 0 nsec
-   test_attach_probe:PASS:auto-attach should fail for old-style name 0 nsec
-   test_attach_probe:PASS:attach_uprobe_byname 0 nsec
-   test_attach_probe:PASS:attach_uretprobe_byname 0 nsec
-   test_attach_probe:PASS:get path to libc 0 nsec
-   test_attach_probe:PASS:find libc path in /proc/self/maps 0 nsec
-   libbpf: failed to open 7f55b225c000-7f55b2282000 r--p 00000000 fe:00 3381                       /usr/lib/libc-2.32.so: No such file or directory
-   test_attach_probe:FAIL:attach_uprobe_byname2 unexpected error: -2
-   test_attach_probe:PASS:uprobe_ref_ctr_cleanup 0 nsec
-   #4 attach_probe:FAIL
-   [...]
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks,
-Daniel
+
