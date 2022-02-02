@@ -2,116 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1BD4A7706
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 18:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62CA44A7727
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 18:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240087AbiBBRn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 12:43:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
+        id S240691AbiBBRzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 12:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239840AbiBBRn1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 12:43:27 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF96BC06173B
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 09:43:26 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id r65so800351ybc.11
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 09:43:26 -0800 (PST)
+        with ESMTP id S240652AbiBBRzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 12:55:51 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05793C06173B
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 09:55:51 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id u18so264310edt.6
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 09:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1AqVNZJXvx/IAB9s8Flw5OyXSEScpBI+6YcWS+D12W8=;
-        b=BxzvQAtHR5KBhP3P0dnnBFp5m8j1q7I0zoJaEfXnEuYXsE0wlQA5f0Qap/G6ua7jvw
-         kPZI+TYhPbgERJ4shMsYok/nwiwuO/uuUl7YA0NxQQis2CVfYIV/ZtBeoYlSCqGmPXGz
-         mMv75LtqzzeNfGJgVqsBlWB4SBpoTKhOGT/vZAEnE8zSQLfJk1iWAlxXNt7a10sP3tbp
-         uHSI9+Nij+HV3jwZph0/KLOW0Ll/QiYxQn/sodp6Oytufo9JZ+TOhXp9TVDaS3mLVU+N
-         zgWskg1Q7zYLcV6SiXsa8IL1c4o6fY5/v1PJpGMBtQAVYjkFsf01Mst3wt1vDl2a5UPv
-         rrmQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xb//V0S6CQDlSDJ8cfBwbA51UVe8f0nXhJXeelSNg40=;
+        b=JOZasG8HqttiwmdHXeD7rBtMwVmtuKcEVO/bcGatsdx7PZ2UGkjSPEhfzX99UYYqQC
+         6OUfmssE4MHebA1GQQCLQSU5xbKLS4kE7L0ciLY7D10l+IwgwR3c8ELnl87ck9ebikSV
+         pUHJ/l1Dy5N9BIXVY6vkRQART2ar0ffgRZncpJtl7IaCOPx9v6fLpEBQLcRN/UFvqT/+
+         K1Y8GPpN++R4TWzE5zTRqr/FacEh9tAujDkLFIE7NrME0TyiJ24/wjhJy7kxB25Ocds/
+         ZhWix2rs9p19wOBlty4YhU/drSqgTc5eCyhEBmLZsEkjLFrSMbNVE/jZ9fa1/T1nUVEA
+         HY2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1AqVNZJXvx/IAB9s8Flw5OyXSEScpBI+6YcWS+D12W8=;
-        b=CoyX5fgw5mXAF/dspCSrg69VFUIKnHC7y7AQTya60RZxBXO8nSEkAO5LMdqXp4iv7l
-         c7aTcIdbchyI0ZTK+dB9w6YPZwUfSlDqKC2FZ4Y7lGAMXxCbhSXGwneetaN4F/mj8n0W
-         xSx9nu12glwMg1W++U87TvmVhIfPIIjgI74SBIpJyOtLh4iZTDj1qBcpyKuuKwZ0I86D
-         a25yrCF7Rql6iGo9TR17GqokA8SBF89gl8nRR2u+La0ZNNlNTraJ0WosNh6B1mw87mkz
-         KOodYYgEHSNhHraskL3F+u9K8b2yiFRo8kfT0xa4LGom5hN5Ub+NJJbuKGTdouHURY1K
-         LqEQ==
-X-Gm-Message-State: AOAM5304lv3HT8/QDL/s4ztGiUUSEBjMaHRcnrXK5mJQt4LJmd2q1M3b
-        PKBtu3S3ulaa1P3iECU3VHB+jKy/FeSGkW6YnDtj1Q==
-X-Google-Smtp-Source: ABdhPJwjEnuydmFUL15SM8J+7XZs6gDo5w9dIfFMKog+IlC78B8KY/P8Y4tbajVuXQnvS8z08UwjE8w8ilm/eXuv0QY=
-X-Received: by 2002:a81:9808:: with SMTP id p8mr1660099ywg.531.1643823805765;
- Wed, 02 Feb 2022 09:43:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20220202122848.647635-1-bigeasy@linutronix.de> <20220202122848.647635-4-bigeasy@linutronix.de>
-In-Reply-To: <20220202122848.647635-4-bigeasy@linutronix.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 2 Feb 2022 09:43:14 -0800
-Message-ID: <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/4] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xb//V0S6CQDlSDJ8cfBwbA51UVe8f0nXhJXeelSNg40=;
+        b=4mr9+FW0BEaghhESVXMro6Uedi/nyvK1okrnKq3I4WkgFuIOuBGpthkKPgnX2AM0kd
+         ddHS0TaNNDZTi+ARWUBk1sHUDq5q0q6gZHidKU3zujKNseUObEEWBeu4nLYv1iG1Gc8T
+         8jWpeGYHwmRJ8n+dsQUSA3aK0kSKW4WYmwmVlWaSkC7+E1aMfnyymRBkUjdKaQ+BGMfX
+         NMLpfKtsGylo54TrOaa77kjCgqEi+oNF2vC8TyJn1KvuROigIgyA6H2d8xqym6HAgTx+
+         lR1K5xHOhA3V3sHBn04xQfBDP3zKzPsOntfNfe5bCTgpiC5Olgnb90bQVoB4ZiDf+B/F
+         OAlQ==
+X-Gm-Message-State: AOAM530c0wBrg8ies0eJJVeVdpS/kxWqeiIDkMjpjMxwe06YFJZi/Ki3
+        6X3cHmMiEv7rTpJC2f3JJeYkRsoyY2km+Q==
+X-Google-Smtp-Source: ABdhPJyWS12e4IXoWFSiLHMA35/j8aJ1H/CVTScjeB4oJdQfbzESI/WfCoL/kV8m9gF50o3XYmAvQQ==
+X-Received: by 2002:a05:6402:f0f:: with SMTP id i15mr31239125eda.327.1643824549496;
+        Wed, 02 Feb 2022 09:55:49 -0800 (PST)
+Received: from erthalion.local (dslb-094-223-160-189.094.223.pools.vodafone-ip.de. [94.223.160.189])
+        by smtp.gmail.com with ESMTPSA id n21sm18854620edq.27.2022.02.02.09.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Feb 2022 09:55:49 -0800 (PST)
+Date:   Wed, 2 Feb 2022 18:55:31 +0100
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: Re: [RFC PATCH] bpftool: Add bpf_cookie to perf output
+Message-ID: <20220202175531.nuwk3eee7z7qy4fv@erthalion.local>
+References: <20220127082649.12134-1-9erthalion6@gmail.com>
+ <CAEf4BzbZHm8c=eeMTx=tLHKSddvH-fKQ5qkuULymQnZqd2DgtQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbZHm8c=eeMTx=tLHKSddvH-fKQ5qkuULymQnZqd2DgtQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 4:28 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+> On Mon, Jan 31, 2022 at 04:49:36PM -0800, Andrii Nakryiko wrote:
+> On Thu, Jan 27, 2022 at 12:27 AM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+> >
+> > Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie for
+> > BPF perf links") introduced the concept of user specified bpf_cookie,
+> > which could be accessed by BPF programs using bpf_get_attach_cookie().
+> > For troubleshooting purposes it is convenient to expose bpf_cookie via
+> > bpftool as well, so there is no need to meddle with the target BPF
+> > program itself.
+> >
+> >     $ bpftool perf
+> >     pid 83  fd 9: prog_id 5  bpf_cookie: 123  tracepoint  sched_process_exec
+> >
 >
-> Dave suggested a while ago (eleven years by now) "Let's make netif_rx()
-> work in all contexts and get rid of netif_rx_ni()". Eric agreed and
-> pointed out that modern devices should use netif_receive_skb() to avoid
-> the overhead.
-> In the meantime someone added another variant, netif_rx_any_context(),
-> which behaves as suggested.
->
-> netif_rx() must be invoked with disabled bottom halves to ensure that
-> pending softirqs, which were raised within the function, are handled.
-> netif_rx_ni() can be invoked only from process context (bottom halves
-> must be enabled) because the function handles pending softirqs without
-> checking if bottom halves were disabled or not.
-> netif_rx_any_context() invokes on the former functions by checking
-> in_interrupts().
->
-> netif_rx() could be taught to handle both cases (disabled and enabled
-> bottom halves) by simply disabling bottom halves while invoking
-> netif_rx_internal(). The local_bh_enable() invocation will then invoke
-> pending softirqs only if the BH-disable counter drops to zero.
->
-> Add a local_bh_disable() section in netif_rx() to ensure softirqs are
-> handled if needed. Make netif_rx_ni() and netif_rx_any_context() invoke
-> netif_rx() so they can be removed once they are no more users left.
->
-> Link: https://lkml.kernel.org/r/20100415.020246.218622820.davem@davemloft.net
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> I think a more natural place to expose this would be in `bpftool link
+> show` output, as bpf_cookie is actually per attachment (i.e., link)
+> information (not a per-program). We'll need to anticipate multi-attach
+> use cases (e.g., multi-attach kprobe and fentry programs we are
+> discussing at the moment).
 
-Maybe worth mentioning this commit will show a negative impact, for
-network traffic
-over loopback interface.
-
-My measure of the cost of local_bh_disable()/local_bh_enable() is ~6
-nsec on one of my lab x86 hosts.
-
-Perhaps we could have a generic netif_rx(), and a __netif_rx() for the
-virtual drivers (lo and maybe tunnels).
-
-void __netif_rx(struct sk_buff *skb);
-
-static inline int netif_rx(struct sk_buff *skb)
-{
-   int res;
-    local_bh_disable();
-    res = __netif_rx(skb);
-  local_bh_enable();
-  return res;
-}
+Yes, makes sense. I guess it will require extending bpf_link &
+bpf_link_info to store a cookie on attachment and carry it around,
+otherwise I don't see other ways to extract it. Is that fine, or it's
+not supposed to be extendable (as with bpf_task_fd_query API)?
