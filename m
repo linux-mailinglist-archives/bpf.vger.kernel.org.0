@@ -2,183 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5B84A68E3
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 01:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EC74A68E4
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 01:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243043AbiBBACA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 19:02:00 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48252 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230081AbiBBACA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Feb 2022 19:02:00 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 211MNF5D014228
-        for <bpf@vger.kernel.org>; Tue, 1 Feb 2022 16:01:59 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=80rH/n0ufIuMf0go4OAuTVqiSJpVNugUAS+FmbLmU6Q=;
- b=Q8gJfqupuGCSPFqoj+Ncw+If/rN6MmnLJ3GHKuflXfooXGf4UyGMbfhDNXIApZUWCpki
- cZzEIe+A5aM/Y2bmotZEFT4mOZLZ/HW6XATzWLKA0kDM4rvL51D6M3D4PUixwdQ3QWA8
- /QD8XQMOK7rTWK7z2Bb7AQyjcY9iZgQYHUY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3dybqp18yx-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 16:01:59 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 1 Feb 2022 16:01:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LMu6onoHEvdaeyCAOdOvWgS6zomt3sfI9tQwenKWtle7iKfoGdFBQalaPl38ZZqjQPh/C7atwzppBBPtonxsYAU0di6qERBZiPhYNDliK7wBN2wRT+9RIidV1ZnG07P5gkvR20czZRzCODQCy+OK99tTWol6JR8YTNDsBwCmqRO1JqQD2w8W4qfOqW8DPGGeKyG7gR1wluOSwTJO4A7Kj5VeMGmjgO7yPaFO8Vm/RfKh8tboZZgdzMQkeh4uyZ3smngyeo+M9zsSRcpGIlPbi3S+PxKluLIaMNexAERXZgIL2KISP+rp/uy0GH1XUoI6d4r2KN4zA1z9Nukr8YbIXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=80rH/n0ufIuMf0go4OAuTVqiSJpVNugUAS+FmbLmU6Q=;
- b=Z/PlbekBRgyQ0lfqB+XLijdqf+TmY9BU3ve5qx2fKOiarDeCKEHZTncfB07Qs9B48wmw44G+RFBP6l1ACUXnQfxJ+1pJ/caVegG0iOiWu/IuglRGMLWqhfy0C2h6NLwipR0Zw0JZRI/MvbwWjJjhUzUK7uYR7+C7jPnzvsbBp2qXP44gx0obKU3zpQ2xVsdxS0K2vf11BxBS96Yy/842TbbKeyYeL0CJ2kjCesAoQLou0ifD+kKwNLh+lS3IoCwoQSwHIiEtm7hUbA8EX1UTr4UF0xrnVonaHdDUUvfW0IQ5zqo3DWllejrkOsXRHQoldrifU8EkuqMdv0q05Q5PYA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
- by DM6PR15MB2778.namprd15.prod.outlook.com (2603:10b6:5:1ab::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.22; Wed, 2 Feb
- 2022 00:01:50 +0000
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::f1fc:6c73:10d4:1098]) by SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::f1fc:6c73:10d4:1098%5]) with mapi id 15.20.4930.021; Wed, 2 Feb 2022
- 00:01:48 +0000
-From:   Delyan Kratunov <delyank@fb.com>
-To:     "andrii.nakryiko@gmail.com" <andrii.nakryiko@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v2 1/4] selftests: bpf: migrate from
- bpf_prog_test_run
-Thread-Topic: [PATCH bpf-next v2 1/4] selftests: bpf: migrate from
- bpf_prog_test_run
-Thread-Index: AQHYE+YFTof37UwljUKpPvaQGdR+1Kx97QSAgAF7VQA=
-Date:   Wed, 2 Feb 2022 00:01:48 +0000
-Message-ID: <ae55c8fc5d43517b29b1d6532eace60d82accd8a.camel@fb.com>
-References: <20220128012319.2494472-1-delyank@fb.com>
-         <20220128012319.2494472-2-delyank@fb.com>
-         <CAEf4Bzbg50Ki=ii-Y0AqzpyQnAUEc5qGLx7LW5yGebDeb540BA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbg50Ki=ii-Y0AqzpyQnAUEc5qGLx7LW5yGebDeb540BA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: c88e0b4c-67cf-4cba-069a-08d9e5df358f
-x-ms-traffictypediagnostic: DM6PR15MB2778:EE_
-x-microsoft-antispam-prvs: <DM6PR15MB2778C64265C81F3CAF94A757C1279@DM6PR15MB2778.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QetxgWIQ+MJe42+U/rr04FSPAn8LVCDiOvFCfwGCjnFQnS8FrImNLKjlYG3Mzarq+gPkUgCPih3yyCAhKq4MsZ8U0AO33kING1xN//RgoMW8M+IatikmSUiWKJgQDKoQdC5pglHfLwfWrNCrdyHxhtKv7oiD5M8pxVvVvRt6hxGISa8UfA2VYQoKdhf0xr6wmvRdT86z5U975vUaL1QzFL2KpFrqTOZvODX6daY80KkFV+xjH2b6bBcDBcoxcVPBwmfsmI4r6fuD+mIZTtG+EVfRBWqJV6ICeTNPmhj2MJBFcGseIO41pPngXOvA0yDxM+SFkKQ9sQHQRZ6TgcvAS0q05cyH/i4dpa67IX6MANG9sX9d9x5SJVl4cWScaTKRCl5eNoeFAuyqy0L5lWgW6MdKcOlTrW3aYe1XZD86t6FOb+iybHs/6YtPJpnZFdfTfQw2ykaVdp8sCFvpyI9Hbx7uG0up83ATzhJOb2v7XFP67BQtEZBOQNiGSVftwofJZX4OhPurgoFU8XS9aZofu8gwlSOnXEJBGKSC2MIyXU6eprOjbSbL6krYvbGfZw1YqWhawNqOPdvpYcnIwBChrzdJ/XqZgZ72/xGdTHDIcR2MDma6FKsvGx0+SMlKogpQ05WwRQEWvVMkm696O7HX4+D3aIJDpiprxWup6WFY3gMhVXoxqiek0mRzuabpT5WvUK/wBuyv3TbYUJ95jGMwTO5jTjCMnfqcb2Z/iSNUsGA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(91956017)(6916009)(36756003)(54906003)(316002)(186003)(2616005)(2906002)(6506007)(86362001)(508600001)(71200400001)(38070700005)(38100700002)(6512007)(5660300002)(4326008)(66946007)(122000001)(66556008)(66476007)(8936002)(76116006)(66446008)(8676002)(64756008)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?THFqY1Z5T3BiQVkvYlorK2JQN3F6SlRtQnExS24vOUVWaXRwaE85djBOSjZm?=
- =?utf-8?B?SkV3QUlnbFJIN2dQbHN5TVRINnh4SXlkQzhUaUMvZXAwYmIwUlhTMkNIRmtO?=
- =?utf-8?B?cDBoRldPejhqdWx6bjlnWDNCUGNPMU1yT2lkNWtVVnNiN3liTE13VDhYK1k1?=
- =?utf-8?B?K1RTMEhRdVB6NGpobjNEbmd5dGFJdFpKYXI4anhpWTgvbU84LzJLYzJnbXJV?=
- =?utf-8?B?c0ROWUxYSmNBNjc0RXNLUnkxQ0JVc2p4K2tlcDlwQU9WampmYTF2cUxOSG4v?=
- =?utf-8?B?MFZwZVJ1YW9rLzZBTjVsT0hobFJYbFMwcHBLOU9RZi9SSHA4M1hwekRaMTVJ?=
- =?utf-8?B?eTlCZ1JBMlFBcFUvZDVJSFJ2dkpSNXV4OVRpeEtKeGVFSEJOM1E1K0s5Ukxi?=
- =?utf-8?B?elBMMlNYaEpUQWlZTDkxc0pRWXMxMlcvV0RYOHBPWjlKQ1c1cVY2L3NLZFUz?=
- =?utf-8?B?bU9SU0Y1WkNGQmNlRWZKU0tkT2ppNWZvYmJYTjc5YXQ3N0IxUkQyOVV0djZi?=
- =?utf-8?B?KzI3amlIVVovRU9jV0VuNC81RnUzSFRDYmN6Rkt2U0o5eitReU1sS2JaUXZj?=
- =?utf-8?B?bldaK1hRa202Qzd6R0NYVks4S0g5L0dPb0UyMmYwUVhRM3A2NXNDa3kybmdV?=
- =?utf-8?B?VitwZXNLNlNDeDJxK0Jid2dKS3FlczVZNDFTbGxVWkd6L1c3T0hnekROSEZw?=
- =?utf-8?B?T1RzRW5TaXprRmRxdC8vK2hPaXlXR29tRjdzRzZQdEhyakUrSUVFd21jekgr?=
- =?utf-8?B?bThZU2JidlZhN0FOT1A0a0JYUUowUUoyc3BxVUQ4b3kzTTNDOVM3N0Z5N0h1?=
- =?utf-8?B?eW1NMHlPR1J3ZEs5WjdjR3ZEWkpqcGUrVi9oK3VzOTNCdjI4ZDVlRVlBNjJu?=
- =?utf-8?B?NlJmM3g5cG9RV2ZVUVN5S3VwSnU5bmdZbFF1UFg2cU1iOU01RFBHNTBPdXlU?=
- =?utf-8?B?M0pwRzFpQjAxak0xL240UHloK1VNSWxlYkdRYXRzZ0lJYUpybi8yeFhORUcx?=
- =?utf-8?B?VzNxd3cycnl1dVV1czhLdmxmeTl5NWNmY2lDMVIxOWtVb3RWZmFldzNJajBs?=
- =?utf-8?B?T2tnRzFoUVVpWGltT0xwMzZIU1RWTERuUWxWR3hnSk9VTkF0M2Z5R2EycEI1?=
- =?utf-8?B?YUNzNStscXFTbFA0M3hRcDdSRnBWNkVMS05FOEk0RG8ydjQ3c2dRcnFuT0FP?=
- =?utf-8?B?L0oyK2tEQnAxQzJPZDhVQTJVbTlnc1djZ0gybDhyMEdrNkNJZUl1SFRtKzQ4?=
- =?utf-8?B?QjdhRGJJVlVOaUZ2OEhzR3BtRDVRRUZTcnRPMnpYLzNSeUF4THFJRm4rdlYw?=
- =?utf-8?B?YW05R2k1MXhsUk1GZmh0R1FQM0U0RVpNWUdmZnhZOVNHOTRHdWIwdTBEVTJC?=
- =?utf-8?B?QkwrTFlWUkk4aEszaCtuMmtpUUlwS2xENGNFM1FrUzNNYmsyRUFTZGVsMzFh?=
- =?utf-8?B?ZG85T0FJSEZSV0dPbE9CUEZRem1jTGhqUU9HNy9lclhWaG9zcTU0WnlHVEVS?=
- =?utf-8?B?S0tBKzBKVjRMR3FnMCtGMkNJNVZFSlkzWU1DYlRDaHNJRW1OYXQxZXRnd2Rz?=
- =?utf-8?B?bFkrVHByOWdseGkzTXp1N2dVam5rNm9vVG4xSTdqMUZFc3hIOERrUy9yREZ3?=
- =?utf-8?B?S25SYnFpZE1wS1BIK2lrbWUra0VGQk05UXpNWVpSaEtLWG9rbEZCM0N5eW1S?=
- =?utf-8?B?VUtIbG8yNklhbkZZR0JqZkZwcVBqbFhOMUdhc2pWRXFRb2dYQmNybGhlQlhv?=
- =?utf-8?B?TFh6YjFQdGRXc2pKcmFnZmEyTGdOL2lLNiszUW9wZ3JndlByeCt3MEVlenIw?=
- =?utf-8?B?elFKUzVyanJKSC9TcXMrMUdsZ1Uxd2ltd3NrY2JHQ1NXcnhsREh5VlVWWDRn?=
- =?utf-8?B?UzY3eUxUYlU4N0ZWSzVBN3daOTE3WkJleDF0NVU5RXp6ajBQWU5wTDFpYkFs?=
- =?utf-8?B?Q2grdTVoVlVRUzlBYzgvT2hBalN2UlhMOS9OditSLzVObWRVdG5yZms3N1Ft?=
- =?utf-8?B?RmFzUU96dVpCR3l4a01qbGV0WmdnMGlvMnRGMUd1RnY4NVlkbGhhUDBWcG1M?=
- =?utf-8?B?d0NRYndMQzVJeStxV0M3Wm53NkovWkZyRTJkd1lQYmFVbUlkV2ZaZHAvdlJG?=
- =?utf-8?B?RTN1SlFPOVFqWStvQk9mOGlDMzFsc2FGRTJ2ZCtsK21sOGlXQjB3aUE2QXUr?=
- =?utf-8?B?U3c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D2DF30109A4480489AAA6E81CA28FE83@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S243058AbiBBACu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 19:02:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47019 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242695AbiBBACt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Feb 2022 19:02:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643760169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hsfDlwN8c6tnMU/iltAgO/gq/FAXpbav+vaBqYWS55g=;
+        b=GT6jQtvnkR+5bo8EyVHpVtAsK3anFrrbDDwa1MsIiyERWtj76ozkaW8ASzEyLwkFEAhMN/
+        HTEncIimXw/1CistF7NokNXfIPOknq9Nd631Uh618YBBjoS6p99Jv1Bf3T91raoXOmXR33
+        jMciTQRIbX5lOuESN1h1LA+6/uKUPuw=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-426-5CgWSRihNm-VYqjDUsPisw-1; Tue, 01 Feb 2022 19:02:48 -0500
+X-MC-Unique: 5CgWSRihNm-VYqjDUsPisw-1
+Received: by mail-ej1-f72.google.com with SMTP id d7-20020a1709061f4700b006bbf73a7becso3668884ejk.17
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 16:02:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hsfDlwN8c6tnMU/iltAgO/gq/FAXpbav+vaBqYWS55g=;
+        b=Y2+LQGOUGYOWE3Y93cxPUqadglv5hzdYzISj+YPgfCnk6zAuGEtThrV/Mn/8c0gyRn
+         63YY0e8/STgQYqn3Cl15rg7BfWAs8Vd1SZQv0EroveKsX9pBGCMNYJEXZ5g0W3wc1VZ8
+         Sa8e8ucSrVls3h/CSgxd3NeuRz5M2Lf/vCkOrdY0VOQTEp7tCAC2rSo/YW8yqxmXjnzJ
+         B22ria5ILDZDzt+9I6rOD4sCWP+S4CoF0q6mGJK7EkzZc3hVEauQgr0OipoweaLMLVmr
+         07Z7LfESocuPRB4EK9vL9O5BWoHvkZynUygmgw4h/RqNm8puWYcaTBo+bhUsaa0llytp
+         zZAQ==
+X-Gm-Message-State: AOAM533FcAPra9rubuoL1m2a9JkIUq8YagpNoZefx4zfPgpIGAlMfRsO
+        khZWTEg49sqPUBWv1nKVsLy+ZPMTo2sUl/gu05PhMleeI6F5RHmzwjByZsIWDmT9hnKr7M1nx7K
+        06YCG4ZGTczwq
+X-Received: by 2002:a17:907:7412:: with SMTP id gj18mr23636780ejc.381.1643760167029;
+        Tue, 01 Feb 2022 16:02:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxnLQ/NbTjRUNUcLwZztPQCV/CTnkzZHTDqgRAnlFfFp6XdVIw1PiVg5mtWPg+REBAZREzMgQ==
+X-Received: by 2002:a17:907:7412:: with SMTP id gj18mr23636758ejc.381.1643760166822;
+        Tue, 01 Feb 2022 16:02:46 -0800 (PST)
+Received: from krava ([83.240.63.12])
+        by smtp.gmail.com with ESMTPSA id co19sm20170185edb.7.2022.02.01.16.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Feb 2022 16:02:46 -0800 (PST)
+Date:   Wed, 2 Feb 2022 01:02:43 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v7 00/10] fprobe: Introduce fprobe function entry/exit
+ probe
+Message-ID: <YfnKIyTwi+F3IPdI@krava>
+References: <164360522462.65877.1891020292202285106.stgit@devnote2>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c88e0b4c-67cf-4cba-069a-08d9e5df358f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2022 00:01:48.7575
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4fHtNTbodjSq6MIYPqfxE5/ptUCyMNpEJDLpvhEKEzFFPUfm2fbkx5Q/adSPom7L
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2778
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: nZUjBz4wAwkjvsLz-WEOp7n0Br7r-4kH
-X-Proofpoint-ORIG-GUID: nZUjBz4wAwkjvsLz-WEOp7n0Br7r-4kH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-01_10,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=934 mlxscore=0 impostorscore=0 bulkscore=0
- adultscore=0 phishscore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202010133
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <164360522462.65877.1891020292202285106.stgit@devnote2>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gTW9uLCAyMDIyLTAxLTMxIGF0IDE3OjI0IC0wODAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6
-DQo+IGZvciBzaW1wbGUgY2FzZSBsaWtlIHRoaXMgeW91IGNhbiBqdXN0IGtlZXAgaXQgc2luZ2xl
-IGxpbmU6DQo+IA0KPiBMSUJCUEZfT1BUUyhicGZfdGVzdF9ydW5fb3B0cywgdG9wdHMsIC5yZXBl
-YXQgPSAxKQ0KPiANCj4gQnV0LCBpdCBzZWVtcyBsaWtlIHRoZSBrZXJuZWwgZG9lcyBgaWYgKCFy
-ZXBlYXQpIHJlcGVhdCA9IDE7YCBsb2dpYw0KPiBmb3IgcHJvZ3JhbSB0eXBlcyB0aGF0IHN1cHBv
-cnQgcmVwZWF0IGZlYXR1cmUsIHNvIEknZCBzdWdnZXN0IGp1c3QNCj4gZHJvcCAucmVwZWF0ID0g
-MSBhbmQga2VlcCBpdCBzaW1wbGUuDQoNClN1cmUuDQoNCj4gDQo+IGxldCdzIG5vdCBhZGQgbmV3
-IENIRUNLKigpIHZhcmlhbnRzLCBDSEVDSygpIGFuZCBpdHMgZGVyaXZhdGl2ZSBhcmUNCj4gZGVw
-cmVjYXRlZCwgd2UgYXJlIHVzaW5nIEFTU0VSVF94eHgoKSBtYWNyb3MgZm9yIGFsbCBuZXcgY29k
-ZS4NCj4gDQo+IEluIHRoaXMgY2FzZSwgSSB0aGluayBpdCdzIGJlc3QgdG8gcmVwbGFjZSBDSEVD
-SygpIHdpdGgganVzdDoNCj4gDQo+IEFTU0VSVF9PSyhlcnIsICJydW5fZXJyIik7DQo+IEFTU0VS
-VF9PSyh0b3B0cy5yZXR2YWwsICJydW5fcmV0X3ZhbCIpOw0KPiANCj4gSSBkb24ndCB0aGluayBs
-b2dnaW5nIGR1cmF0aW9uIGlzIHVzZWZ1bCBmb3IgbW9zdCwgaWYgbm90IGFsbCwgdGVzdHMsDQo+
-IHNvIEkgd291bGRuJ3QgYm90aGVyLg0KDQpBaCwgdGhpcyBtYWtlcyBhIGxvdCBvZiBzZW5zZSwg
-SSB3YXMgd29uZGVyaW5nIHdoYXQgd2FzIGdvaW5nIG9uIHdpdGggdGhlc2UNCnF1aXRlIHVucmVh
-ZGFibGUgQ0hFQ0t7LF9BVFRSfSBtYWNyb3MuIEknbGwgcmV3cml0ZSB0aGUgb25lcyBJJ20gY2hh
-bmdpbmcgaW4NCnRoaXMgc2VyaWVzIHRvIHVzZSBBU1NFUlRfKiBpZiB5b3UncmUgb2theSB3aXRo
-IHRoYXQgYW1vdW50IG9mIGNodXJuPw0KDQo+IFlvdSBkaWRuJ3QgaGF2ZSB0byB0b3VjaCB0aGlz
-IGNvZGUsIHlvdSBjb3VsZCBoYXZlIGp1c3Qga2VwdCBkdXJhdGlvbg0KPiA9IDAgKHdoaWNoIENI
-RUNLKCkgaW50ZXJuYWxseSBhc3N1bWVzLCB1bmZvcnR1bmF0ZWx5KS4NCg0KSSBkaWRuJ3QgKmhh
-dmUqIHRvIGJ1dCBsZWF2aW5nIHRoZSB2YXJpYWJsZSBhcm91bmQgdG8gc2F0aXNmeSBhIG1hY3Jv
-IGZlZWxzDQpzdXBlciBhd2t3YXJkLiBIYXBweSB0byBtaW5pbWl6ZSB0aGVzZSBjaGFuZ2VzLCBp
-ZiB0aGV5J3JlIGdvaW5nIG92ZXJib2FyZCBidXQNCkknZCByYXRoZXIgY2xlYW4gdXAgdGhlIENI
-RUNLIHVzYWdlIHdoZXJlIEkgY2FuLg0KDQo+IA0KPiBBbHRlcm5hdGl2ZWx5LCBqdXN0IHN3aXRj
-aCB0byBBU1NFUlRfT0tfUFRSKGZlbnRyeV9za2VsLA0KPiAiZmVudHJ5X3NrZWxfbG9hZCIpOyBh
-bmQgYmUgZG9uZSB3aXRoIGl0LiBBcyBJIG1lbnRpb25lZCwgd2UgYXJlIGluIGENCj4gZ3JhZHVh
-bCBwcm9jZXNzIG9mIHJlbW92aW5nIENIRUNLKClzLCANCj4gWy4uLl0NCj4gQXQgc29tZSBwb2lu
-dCB3ZSdsbCBkbyB0aGUgZmluYWwgcHVzaCBhbmQgcmVtb3ZlIENIRUNLKCkgYWx0b2dldGhlciwN
-Cj4gYnV0IGl0IGRvZXNuJ3QgaGF2ZSB0byBiZSBwYXJ0IG9mIHRoaXMgcGF0Y2ggc2V0ICh1bmxl
-c3MgeW91IGFyZQ0KPiBpbnRlcmVzdGVkIGluIGRvaW5nIHNvbWUgbW9yZSBtZWNoYW5pY2FsIGNv
-bnZlcnNpb25zLCBvZiBjb3Vyc2UsIGl0J3MNCj4gZ3JlYXRseSBhcHByZWNpYXRlZCwgYnV0IEkg
-ZGlkbid0IHlldCBoYXZlIGhlYXJ0IHRvIGFzayBhbnlvbmUgdG8gZG8NCj4gdGhvc2UgMjAwMCBj
-b252ZXJzaW9ucy4uLikuDQoNCkkgZG9uJ3QgdGhpbmsgSSBoYXZlIGl0IGluIG1lIHRvIHZvbHVu
-dGVlciBmb3IgdGhlIHdob2xlIHJlZmFjdG9yIGJ1dCBJJ2xsIGRvIG15DQpiaXQgaW4gdGhlIHVz
-YWdlcyB0aGlzIHNlcmllcyB0b3VjaGVzLiANCg==
+On Mon, Jan 31, 2022 at 02:00:24PM +0900, Masami Hiramatsu wrote:
+> Hi,
+> 
+> Here is the 7th version of fprobe. This version fixes unregister_fprobe()
+> ensures that exit_handler is not called after returning from the
+> unregister_fprobe(), and fixes some comments and documents.
+> 
+> The previous version is here[1];
+> 
+> [1] https://lore.kernel.org/all/164338031590.2429999.6203979005944292576.stgit@devnote2/T/#u
+> 
+> This series introduces the fprobe, the function entry/exit probe
+> with multiple probe point support. This also introduces the rethook
+> for hooking function return as same as the kretprobe does. This
+> abstraction will help us to generalize the fgraph tracer,
+> because we can just switch to it from the rethook in fprobe,
+> depending on the kernel configuration.
+> 
+> The patch [1/10] is from Jiri's series[2].
+> 
+> [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> 
+> And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
+> if user wants to share the same code (or share a same resource) on the
+> fprobe and the kprobes.
+
+hi,
+it works fine for bpf selftests, but when I use it through bpftrace
+to attach more probes with:
+
+  # ./src/bpftrace -e 'kprobe:ksys_* { }'
+  Attaching 27 probes
+
+I'm getting stalls like:
+
+krava33 login: [  988.574069] INFO: task bpftrace:4137 blocked for more than 122 seconds.
+[  988.577577]       Not tainted 5.16.0+ #89
+[  988.580173] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[  988.585538] task:bpftrace        state:D stack:    0 pid: 4137 ppid:  4123 flags:0x00004004
+[  988.589869] Call Trace:
+[  988.591312]  <TASK>
+[  988.592577]  __schedule+0x3a8/0xd30
+[  988.594469]  ? wait_for_completion+0x84/0x110
+[  988.596753]  schedule+0x4e/0xc0
+[  988.598480]  schedule_timeout+0xed/0x130
+[  988.600524]  ? rcu_read_lock_sched_held+0x12/0x70
+[  988.602901]  ? lock_release+0x253/0x4a0
+[  988.604935]  ? lock_acquired+0x1b7/0x410
+[  988.607041]  ? trace_hardirqs_on+0x1b/0xe0
+[  988.609202]  wait_for_completion+0xae/0x110
+[  988.613762]  __wait_rcu_gp+0x127/0x130
+[  988.615787]  synchronize_rcu_tasks_generic+0x46/0xa0
+[  988.618329]  ? call_rcu_tasks+0x20/0x20
+[  988.620600]  ? rcu_tasks_pregp_step+0x10/0x10
+[  988.623232]  ftrace_shutdown.part.0+0x174/0x210
+[  988.625820]  unregister_ftrace_function+0x37/0x60
+[  988.628480]  unregister_fprobe+0x2d/0x50
+[  988.630928]  bpf_link_free+0x4e/0x70
+[  988.633126]  bpf_link_release+0x11/0x20
+[  988.635249]  __fput+0xae/0x270
+[  988.637022]  task_work_run+0x5c/0xa0
+[  988.639016]  exit_to_user_mode_prepare+0x251/0x260
+[  988.641294]  syscall_exit_to_user_mode+0x16/0x50
+[  988.646249]  do_syscall_64+0x48/0x90
+[  988.648218]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  988.650787] RIP: 0033:0x7f9079e95fbb
+[  988.652761] RSP: 002b:00007ffd474fa3b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+[  988.656718] RAX: 0000000000000000 RBX: 00000000011bf8d0 RCX: 00007f9079e95fbb
+[  988.660110] RDX: 0000000000000000 RSI: 00007ffd474fa3b0 RDI: 0000000000000019
+[  988.663512] RBP: 00007ffd474faaf0 R08: 0000000000000000 R09: 000000000000001a
+[  988.666673] R10: 0000000000000064 R11: 0000000000000293 R12: 0000000000000001
+[  988.669770] R13: 00000000004a19a1 R14: 00007f9083428c00 R15: 00000000008c02d8
+[  988.672601]  </TASK>
+[  988.675763] INFO: lockdep is turned off.
+
+I have't investigated yet, any idea?
+
+thanks,
+jirka
+
