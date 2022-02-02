@@ -2,138 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9AB74A78EC
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E94CF4A790E
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346990AbiBBTuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 14:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
+        id S235301AbiBBT4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 14:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346983AbiBBTue (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 14:50:34 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17653C061714;
-        Wed,  2 Feb 2022 11:50:34 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id x6so268949ilg.9;
-        Wed, 02 Feb 2022 11:50:34 -0800 (PST)
+        with ESMTP id S229481AbiBBT4F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 14:56:05 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E454CC061714
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 11:56:04 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id s18so411914ioa.12
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 11:56:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=reFpY/nGEqbODh2C3Y1S9N9DI33hc54Qf2pLCwPc5Lc=;
-        b=VXgajZ+4M55hMA9KfW8qel22D5zpO8LMLO/7Na8AqeVmOMEdxS2E5r+aHk4ZrY1ZiX
-         OptZ5J+Dib4AihcIUQpQjmG0VwKTBQl8bijXPHHtolYbn30QIY6VHsLoonXdydkJ5ZoH
-         m/7+ARO01Wq8q1zx1KH/cpZEpen6qzuX75fXQ8DZXPhm4lxcAd7Q1xxK3XiORd0SECFs
-         aQ91byqjYllBQbj2iy3GtK1llrdoKtmUDrq3SRCekv7ic3UvjMiZwfBY7CafOptYlgNh
-         lG8m0xIryoen/2/1zpTbQl9XtrfkHMzXyAoOVVrPLiKgXxwsKMgUJ0J2Wl9iGBKveFrS
-         h+Xw==
+         :cc;
+        bh=7ws/IBe1pSeBOpUlS8sYdNFetIp6iw16BZq6iIGWUEQ=;
+        b=LhRTuFfAH5OpcdZu2xbRX66sQBAib/RKZ+w9ia8ReemSFIyxMnd7W4QpS5dqtU7g0g
+         izBtuO6ZY1DoZgYjEphOlhhOsTHaihG51A/2Lyf5XfPPBdYsfkTwOXHIsGwG957wx+mx
+         bt9HecGJNv99dUIwbqQFAKQ7hNxs9N0GeNFVwvCi74lSRKYou0iDM0PuiHhSRumHSsKw
+         TU6YNHyM70JHwlvnr8qudkPcU1JcSL5Gpt/Wa0eoSDeyxGHp+6ocI5mChKfCt8Gkk0YA
+         WCw++yGxzP/weFyHIETcqGOMUP+DAW4MMSzt3TgRo7i0hTEo7LGPFvb32vSSb3kbgeLb
+         a+YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=reFpY/nGEqbODh2C3Y1S9N9DI33hc54Qf2pLCwPc5Lc=;
-        b=ql616+yZ/4l7lHoAME+dKVyOYgC7BjTsMZUmSpWFb5GpN8du/Qll73l+LyQZvCgfe5
-         m2f07+EhfiOCjhJL31NF7Wtq+cYm1tDG5DF0IjVnDGCycuLZJE+wAoUPpF2oDpjDv06s
-         m2axw6GGVR2OkhvjBGw7IOtsIq/q7WjWeKX8PxxsffzwcdacCSkHtP/18ipUE38is2Os
-         SDeJngUqvPclv6McJcVCDW/iEjWqv70me5q6TDk3mhu0JI0Ia6QzLo3v0JHAcuQjiqnz
-         Y/bmfpcBlCuZE4YFpeECcWDGJR8LHfqYuBPK5zZ0l0XuAaMdxaKSLuP7z1FxlvMzpQqT
-         np2w==
-X-Gm-Message-State: AOAM533mAlahpw4XLHv/nGuNsfVewmKJZ/KdYtyZ010WCHgYXTkoR4oN
-        i01WqonqIZjvrShkvtZgEzrEYB/nT3Du1lr+08M=
-X-Google-Smtp-Source: ABdhPJwSBox0u3RfcOb/n7tzGCrw9ura9DRPCKY7Woc+BGKYOBB7j5TujoaYpiJiSCw9WwUgp/kn+UTZqPky92ybYMI=
-X-Received: by 2002:a05:6e02:1bc7:: with SMTP id x7mr17619061ilv.98.1643831433071;
- Wed, 02 Feb 2022 11:50:33 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=7ws/IBe1pSeBOpUlS8sYdNFetIp6iw16BZq6iIGWUEQ=;
+        b=J5wop/yIbdw34UuvEIotyPSGujr82PZ1WbuNoZjKrgPr2A226k73NJnCACBfJ70Dtj
+         JxU0VoEfkATlAbhBNx18TGS33jhYmTfoFfMk4hdOOhn6S5pT5//RhXq7HYizUj/Mu9+n
+         kLcw2HYGJ8F5FSRgK5Z/4haNRpolyHBNCIqSAn4ftL4AIEDurO6oRNGLl5B2v1tabj+b
+         IM5sAL9mp+CSR3QW/wfDKPph+KJCWhKYnrJ1l867DDEwHUFUmKaJwkolMAoU28trMenP
+         dpQvQQExB/PVklnc2VPKIMBgLA2Vt3FA4GovDMOP7VcWub7d1Bjiu1IoLdNW0XS9QQuC
+         f0fw==
+X-Gm-Message-State: AOAM531t0QRGr/5mOfpCLH5TNMvjKbyLloGfDjhkRRm0tQGTV1M1l10j
+        k2JiTcjGvo+FfZBXQELTcctw+4o1HFADlA1yjSNq3gTO
+X-Google-Smtp-Source: ABdhPJyGEhrKHV7XiL4FCH3uhyY3WOFubxFHo1XPafbEIjRu0uJ6aducMbMDck+XndH44DDMuXJfbnXmaJvr22yKhUI=
+X-Received: by 2002:a02:2422:: with SMTP id f34mr16242868jaa.237.1643831764257;
+ Wed, 02 Feb 2022 11:56:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-10-mauricio@kinvolk.io>
- <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com>
-In-Reply-To: <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com>
+References: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
+ <CAK3+h2ybqBVKoaL-2p8eu==4LxPY2kfLyMsyOuWEVbRf+S-GbA@mail.gmail.com>
+ <CAK3+h2zLv6BcfOO7HZmRdXZcHf_zvY91iUH08OgpcetOJkM=EQ@mail.gmail.com>
+ <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com> <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
+ <CAK3+h2x5pHC+8qJtY7qrJRhrJCeyvgPEY1G+utdvbzLiZLzB3A@mail.gmail.com>
+ <81a30d50-b5c5-987a-33f2-ab12cbd6e709@fb.com> <4ff8334f-fc51-0738-b8c6-a45403eed9e1@incline.eu>
+In-Reply-To: <4ff8334f-fc51-0738-b8c6-a45403eed9e1@incline.eu>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 11:50:21 -0800
-Message-ID: <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 9/9] selftest/bpf: Implement tests for bpftool
- gen min_core_btf
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Date:   Wed, 2 Feb 2022 11:55:53 -0800
+Message-ID: <CAEf4Bzbs57f8=JM_X11WRpQpGnh2Z-cGvuazh1UXkeCUQ8xU6g@mail.gmail.com>
+Subject: Re: can't get BTF: type .rodata.cst32: not found
+To:     Timo Beckers <timo@incline.eu>
+Cc:     Yonghong Song <yhs@fb.com>, Vincent Li <vincent.mc.li@gmail.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 3:23 PM Mauricio V=C3=A1squez Bernal
-<mauricio@kinvolk.io> wrote:
+On Wed, Feb 2, 2022 at 9:59 AM Timo Beckers <timo@incline.eu> wrote:
 >
-> On Fri, Jan 28, 2022 at 5:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
-o> wrote:
+> On 2/2/22 08:17, Yonghong Song wrote:
 > >
-> > This commit implements some integration tests for "BTFGen". The goal
-> > of such tests is to verify that the generated BTF file contains the
-> > expected types.
+> >
+> > On 2/1/22 10:07 AM, Vincent Li wrote:
+> >> On Fri, Jan 28, 2022 at 10:27 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> >>>
+> >>> On Thu, Jan 27, 2022 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 1/25/22 12:32 PM, Vincent Li wrote:
+> >>>>> On Tue, Jan 25, 2022 at 9:52 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> >>>>>>
+> >>>>>> this is macro I suspected in my implementation that could cause issue with BTF
+> >>>>>>
+> >>>>>> #define ENABLE_VTEP 1
+> >>>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
+> >>>>>> 0x2048a90a, }
+> >>>>>> #define VTEP_MAC (__u64[]){0x562e984c3682, 0x582e984c3682,
+> >>>>>> 0x5eaaed93fdf2, 0x5faaed93fdf2, }
+> >>>>>> #define VTEP_NUMS 4
+> >>>>>>
+> >>>>>> On Tue, Jan 25, 2022 at 9:38 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
+> >>>>>>>
+> >>>>>>> Hi
+> >>>>>>>
+> >>>>>>> While developing Cilium VTEP integration feature
+> >>>>>>> https://github.com/cilium/cilium/pull/17370, I found a strange issue
+> >>>>>>> that seems related to BTF and probably caused by my specific
+> >>>>>>> implementation, the issue is described in
+> >>>>>>> https://github.com/cilium/cilium/issues/18616, I don't know much about
+> >>>>>>> BTF and not sure if my implementation is seriously flawed or just some
+> >>>>>>> implementation bug or maybe not compatible with BTF. Strangely, the
+> >>>>>>> issue appears related to number of VTEPs I use, no problem with 1 or 2
+> >>>>>>> VTEP, 3, 4 VTEPs will have problem with BTF, any guidance from BTF
+> >>>>>>> experts  are appreciated :-).
+> >>>>>>>
+> >>>>>>> Thanks
+> >>>>>>>
+> >>>>>>> Vincent
+> >>>>>
+> >>>>> Sorry for previous top post
+> >>>>>
+> >>>>> it looks the compiler compiles the cilium bpf_lxc.c to bpf_lxc.o
+> >>>>> differently and added " [21] .rodata.cst32     PROGBITS
+> >>>>> 0000000000000000  00011e68" when  following macro exceeded 2 members
+> >>>>>
+> >>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
+> >>>>> 0x2048a90a, }
+> >>>>>
+> >>>>> no ".rodata.cst32" compiled in bpf_lxc.o  when above VTEP_ENDPOINT
+> >>>>> member <=2. any reason why compiler would do that?
+> >>>>
+> >>>> Regarding to why compiler generates .rodata.cst32, the reason is
+> >>>> you have some 32-byte constants which needs to be saved somewhere.
+> >>>> For example,
+> >>>>
+> >>>> $ cat t.c
+> >>>> struct t {
+> >>>>     long c[2];
+> >>>>     int d[4];
+> >>>> };
+> >>>> struct t g;
+> >>>> int test()
+> >>>> {
+> >>>>      struct t tmp  = {.c = {1, 2}, .d = {3, 4}};
+> >>>>      g = tmp;
+> >>>>      return 0;
+> >>>> }
+> >>>>
+> >>>> $ clang -target bpf -O2 -c t.c
+> >>>> $ llvm-readelf -S t.o
+> >>>> ...
+> >>>>     [ 4] .rodata.cst32     PROGBITS        0000000000000000 0000a8 000020
+> >>>> 20  AM  0   0  8
+> >>>> ...
+> >>>>
+> >>>> In the above code, if you change the struct size, say from 32 bytes to
+> >>>> 40 bytes, the rodata.cst32 will go away.
+> >>>
+> >>> Thanks Yonghong! I guess it is cilium/ebpf needs to recognize rodata.cst32 then
+> >>
+> >> Hi Yonghong,
+> >>
+> >> Here is a follow-up question, it looks cilium/ebpf parse vmlinux and
+> >> stores BTF type info in btf.Spec.namedTypes, but the elf object file
+> >> provided by user may have section like rodata.cst32 generated by
+> >> compiler that does not have accompanying BTF type info stored in
+> >> btf.Spec.NamedTypes for the rodata.cst32, how vmlinux can be
+> >> guaranteed to  have every BTF type info from application/user provided
+> >> elf object file ? I guess there is no guarantee.
+> >
+> > vmlinux holds kernel types. rodata.cst32 holds data. If the type of
+> > rodata.cst32 needs to be emitted, the type will be encoded in bpf
+> > program BTF.
+> >
+> > Did you actually find an issue with .rodata.cst32 section? Such a
+> > section is typically generated by the compiler for initial data
+> > inside the function and llvm bpf backend tries to inline the
+> > values through a bunch of load instructions. So even you see
+> > .rodata.cst32, typically you can safely ignore it.
+> >
+> >>
+> >> Vincent
 > >
 >
-> This is not an exhaustive list of test cases. I'm not sure if this is
-> the approach we should follow to implement such tests, it seems to me
-> that checking each generated BTF file by hand is a lot of work but I
-> don't have other ideas to simplify it.
+> Hi Yonghong,
 >
-> I considered different options to write these tests:
-> 1. Use core_reloc_types.h to create a "source" BTF file with a lot of
-> types, then run BTFGen for all test_core_reloc_*.o files and use the
-> generated BTF file as btf_src_file in core_reloc.c. In other words,
-> re-run all test_core_reloc tests using a generated BTF file as source
-> instead of the "btf__core_reloc_" #name ".o" one. I think this test is
-> great because it tests the full functionality and actually checks that
-> the programs are able to run using the generated file. The problem is
-> how do we test that the BTFGen is creating an optimized file? Just
-> copying the source file without any modification will make all those
-> tests pass. We could check that the generated file is small (by
-> checking the size or the number of types) but it doesn't seem a very
-> reliable approach to me.
+> Thanks for the reproducer. Couldn't figure out what to do with .rodata.cst32,
+> since there are no symbols and no BTF info for that section.
+>
+> The values found in .rodata.cst32 are indeed inlined in the bytecode as you
+> mentioned, so it seems like we can ignore it.
+>
+> Why does the compiler emit these sections? cilium/ebpf assumed up until now
+> that all sections starting with '.rodata' are datasecs and must be loaded into
+> the kernel, which of course needs accompanying BTF.
 
-I think this second run after minimizing BTF is a good idea. I
-wouldn't bother to check for "minimal BTF" for this case.
-
-> 2. We could write some .c files with the types we expect to have on
-> the generated file and compare it with the generated file. The issue
-> here is that comparing those BTF files doesn't seem to be too
-> trivial...
-
-But I would add few realistic examples that use various combinations
-of CO-RE relocations against Linux types. Then minimize BTF and
-validate that BTF is what we expect.
-
-As for how to compare BTFs. I've been wanting to do something like
-btf__normalize() API to renumber and resort all the BTF types into
-some "canonical" order, so that two BTFs can be actually compared and
-diffed. It might be finally the time to do that.
-
-The big complication is your decision to dump all the fields of types
-that are used by type-based relocations. I'm not convinced that's the
-best way to do this. I'd keep empty struct/union for such cases,
-actually. That would minimize the number of types and thus BTF in
-general. It also will simplify the logic of emitting minimized BTF a
-bit (all_types checks won't be necessary, I think).
-
-As I also mentioned in previous patches, for types that are only
-referenced through pointer, I'd emit FWD declaration only. Or at best
-empty struct/union.
-
-With all that, after btf__minimize() operation, comparing BTFs would
-be actually pretty easy, because we'll know the order of each type, so
-using the
-VALIDATE_RAW_BTF() (see prog_tests/btf_dedup_split.c) the tests will
-be easy and clean.
-
-
-One last thing, let's not add a new test binary (test_bpftool), let's
-keep adding more tests into test_progs.
+It doesn't need an accompanying BTF. libbpf loads all .rodata.*
+sections (unless BPF program code doesn't reference it at all, which
+is mostly for backwards compatibility with old kernels that don't
+support global variables) and it all works good.
 
 >
-> Do you have any suggestions about it? Thanks!
+> What other .rodata.* should we expect?
+>
+
+I'd suggest instead of whitelisting all possible .rodata.* section
+names just allow any such data section. So that users can have their
+own custom .rodata (and .data) sections as well.
+
+> Thanks,
+>
+> Timo
