@@ -2,109 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A16A24A6DCF
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:30:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE104A6E61
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 11:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239886AbiBBJaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 04:30:23 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:35662 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233133AbiBBJaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 04:30:23 -0500
-Received: by mail-il1-f200.google.com with SMTP id h8-20020a056e021b8800b002ba614f7c5dso13760339ili.2
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:30:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NZ7WdYtQrNmVol7I4UetJhUqWcjgf5izWYmBss2fDeI=;
-        b=vo2cl0bzvLg8/EWMtQ5FRkIuj+5J0VqdZ0jO5qKVuVPXWADwS8c+/647LqsWB1gLcN
-         FmutzG6RUftDeeoFCqK7eUyn6HCQLo9UkVy7fNCOKDnmj4ltkda2TKVS3CtWr/rBtuU9
-         sxykc0yHITFL7LZgolg6ezv/rs583+I8qhaRYh2Rt4nGvreGVjbxXZyhGoKfIk2Ad2Od
-         wbyxt1feyAj5Em5xYN08ZlLd1i+xKjq9TRJhuCjZiP9dS1uYr/CmriMdi8gVUuC491dA
-         opt30bAy6tCRSRvaTRT10RmnzhcYqSY+igSJeosIRW10k3D9zX75JTsX9WCaW5D9vSGx
-         cXqA==
-X-Gm-Message-State: AOAM532HqR3qbV0AGrGMtr75ecyv1/N9B94kpbDvKcOD+ILTSKyjXNYy
-        RwpqV4UBpJWew4B61V6sdB58UDfRqJ/AB9+efsqmahMQSQDR
-X-Google-Smtp-Source: ABdhPJzxRGFGHD/f8nz9jewR6Z8HVVhEyTz1BpTtYuPo9LSEN5UQM2YwD+bThGxUUYDBD1kyZWz0kY7by3sKLnFQTZKMf0QgqeLM
+        id S232804AbiBBKIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 05:08:48 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:37764 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229650AbiBBKIs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 05:08:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 32A21B8306A;
+        Wed,  2 Feb 2022 10:08:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA298C004E1;
+        Wed,  2 Feb 2022 10:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643796526;
+        bh=IIDVZd6xhg6IbKtZ7hn0mo9CpKwGO0GZzXu6zIWWUuc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXyTvIbeQus088m8DJUWfdrOTMtXiau/N40xSfaraPhhbzauYgkC30Ne383DsiAaI
+         Zt7WEywKQrPxDAY3C2U9miaKco+9rQ3ANN6gsUkxJWCNlP6PWwlo0BdtLfSLGNvwjY
+         ud0Y5njlfGiOYk8HnNN4cwOu5EVf1KHAmM3XkYCvSVzkHXacSsWYVQJfJcGlA4YUUm
+         vysLI7zvZn2d2kAGY6BUFJJoKLeymJcMF27n3UIsBymrRu8hWTw9wV1aABQ/eDUqwc
+         RkG59IPjpWmDj2U7qUA4yGptkANS5z++URAqdc5IFpavY+X226xnSiq8IAOUSdJSwC
+         u5Md2OlKe69mg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id ECA8A40466; Wed,  2 Feb 2022 07:08:42 -0300 (-03)
+Date:   Wed, 2 Feb 2022 07:08:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH 1/3] perf/bpf: Remove prologue generation
+Message-ID: <YfpYKri5i+Go9DlU@kernel.org>
+References: <20220123221932.537060-1-jolsa@kernel.org>
+ <CAEf4BzZj7awfwi-JoAB=aahxVF8p6FKhgu4OKpyY_pjePy75ig@mail.gmail.com>
+ <CAEf4BzZrggU7Ym7bucvjG7K+AmtxhD8UGCMPqXdpL3stUhpOEg@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a47:: with SMTP id u7mr7869536ilv.33.1643794222593;
- Wed, 02 Feb 2022 01:30:22 -0800 (PST)
-Date:   Wed, 02 Feb 2022 01:30:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b8c08805d705aaa2@google.com>
-Subject: [syzbot] WARNING: ODEBUG bug in __init_work (3)
-From:   syzbot <syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        lizefan.x@bytedance.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZrggU7Ym7bucvjG7K+AmtxhD8UGCMPqXdpL3stUhpOEg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Em Tue, Feb 01, 2022 at 05:01:38PM -0800, Andrii Nakryiko escreveu:
+> On Mon, Jan 24, 2022 at 12:24 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sun, Jan 23, 2022 at 2:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > Removing code for ebpf program prologue generation.
+> > >
+> > > The prologue code was used to get data for extra arguments specified
+> > > in program section name, like:
+> > >
+> > >   SEC("lock_page=__lock_page page->flags")
+> > >   int lock_page(struct pt_regs *ctx, int err, unsigned long flags)
+> > >   {
+> > >          return 1;
+> > >   }
+> > >
+> > > This code is using deprecated libbpf API and blocks its removal.
+> > >
+> > > This feature was not documented and broken for some time without
+> > > anyone complaining, also original authors are not responding,
+> > > so I'm removing it.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/Makefile.config     |  11 -
+> > >  tools/perf/builtin-record.c    |  14 -
+> > >  tools/perf/util/bpf-loader.c   | 242 +---------------
+> > >  tools/perf/util/bpf-prologue.c | 508 ---------------------------------
+> > >  tools/perf/util/bpf-prologue.h |  37 ---
+> > >  5 files changed, 1 insertion(+), 811 deletions(-)
+> >
+> > Love the stats! Thanks for taking this on!
+> >
+> 
+> Hi,
+> 
+> Was this ever applied? If not, are there any blockers? I assume this
+> will go through the perf tree, right?
 
-syzbot found the following issue on:
+I'll go thru it today.
+ 
+> > >  delete mode 100644 tools/perf/util/bpf-prologue.c
+> > >  delete mode 100644 tools/perf/util/bpf-prologue.h
+> > >
+> >
+> > [...]
 
-HEAD commit:    b76bbb34dc80 net: stmmac: dwmac-sun8i: make clk really gat..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16cccccbb00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae0d71385f83fe54
-dashboard link: https://syzkaller.appspot.com/bug?extid=13b13d204fb13cfda744
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+-- 
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-ODEBUG: init active (active state 0) object type: work_struct hint: css_killed_work_fn+0x0/0x5e0 kernel/cgroup/cgroup.c:3947
-WARNING: CPU: 0 PID: 13 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Modules linked in:
-
-CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.17.0-rc1-syzkaller-00460-gb76bbb34dc80 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
-Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 40 30 06 8a 4c 89 ee 48 c7 c7 40 24 06 8a e8 0c 57 27 05 <0f> 0b 83 05 55 7f b2 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffc90000d27ba8 EFLAGS: 00010286
-
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
-RDX: ffff888011928000 RSI: ffffffff815fa1d8 RDI: fffff520001a4f67
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff815f3f3e R11: 0000000000000000 R12: ffffffff89ab5380
-R13: ffffffff8a062940 R14: ffffffff814bda70 R15: ffffffff90788e18
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2eb22000 CR3: 0000000053d45000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __debug_object_init+0x524/0xd10 lib/debugobjects.c:593
- __init_work+0x48/0x50 kernel/workqueue.c:518
- css_release+0x1a/0x110 kernel/cgroup/cgroup.c:5213
- percpu_ref_put_many.constprop.0+0x22b/0x260 include/linux/percpu-refcount.h:335
- rcu_do_batch kernel/rcu/tree.c:2527 [inline]
- rcu_core+0x7b8/0x1540 kernel/rcu/tree.c:2778
- __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
- run_ksoftirqd kernel/softirq.c:921 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:913
- smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
- kthread+0x2e9/0x3a0 kernel/kthread.c:377
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Arnaldo
