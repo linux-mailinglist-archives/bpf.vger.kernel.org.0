@@ -2,314 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 945054A775E
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 18:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B20B64A77F4
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 19:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbiBBR6b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 12:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbiBBR63 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 12:58:29 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A246C061714;
-        Wed,  2 Feb 2022 09:58:28 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id r144so25595iod.9;
-        Wed, 02 Feb 2022 09:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=r+th5RSgiUIlE9+fwUEbrkoI+KpY8Qdz15Bn4My9lRg=;
-        b=ndHDmoxwAS4DqB2GZ1So2rcrZoA6xNdlR3TIk/L+5++SrAScUgWJ+ODeQfR82EwfxJ
-         neaBEYabFMQsSYuN/XLCX/xP16MUMUP2bKv+pX3qc3heI7m+fU6MAQ//KDDTT3dGlKZZ
-         B+N2jqeJX1mFt+cLlbJyCdm9yAmVjEnxjBVxHhYs1Q1M66Ul7UopbyQDno0p8fGLXKn2
-         lPBZH52//G3emv0OUrfZL07xVTMRupHKHiNgtgqakrq2OEFvaEU5aNpZS5Wg/HmasK+c
-         AFPWgwueNWzRVWCk4LqDgcLKHqrTyFNY2pBfz/Mt59EAVfQ6k5HbS4ECdmqs8gs9v2Wf
-         XBmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=r+th5RSgiUIlE9+fwUEbrkoI+KpY8Qdz15Bn4My9lRg=;
-        b=38AmOLNTOo5XMTJYvF2WZvGEGVeBWhpqSMxDWHKGWSdJULO5fQJ25Sjm32eXuAAJjH
-         mo5Z2hxafGm92oa4yQzhTCmSj3MrTh9wBa5/YVtE8DRtziTUwVkcepOyA1o32fBi879X
-         JNzR5YzkYLHm+wpcZUDIFkcFBDMz1OLDmT5RaGB/C9UyNpdR5bgyGfu5B/kxmwClINXz
-         IJDpeeUezppWCeiH7fOP3N78j+I//O7avFllo6HvnFxAyjsYtnO28bI1PgA/F8GTKvNT
-         l2mMput457piGqkyRXgOoyysfTZzMX/nmZQgF7UvslYhWC3cbqcWxDDXLZejLbXuqVZ/
-         uOAw==
-X-Gm-Message-State: AOAM532UehDUBMEUy+hW+9Z+WpNNgLUE0Cz6GJ+UzslNDC4ENsNuiZn0
-        FDqP6MCk02w68JY8PqaJ5APe0Ygdt4uRo5+xM53PEMw4
-X-Google-Smtp-Source: ABdhPJx9yeuDUU46BBDC0oJyLFzosAmrLKNm8M/ssDs//SDRz6+ifk2i2KrsEBrKkKY2u/P/dQCVawd6VzAeNfxEx5s=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr14314317jak.103.1643824707710;
- Wed, 02 Feb 2022 09:58:27 -0800 (PST)
+        id S1346593AbiBBSao (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 13:30:44 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:56588 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346674AbiBBSam (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 13:30:42 -0500
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 69D1A20B8010;
+        Wed,  2 Feb 2022 10:30:42 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 69D1A20B8010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1643826642;
+        bh=saUwzlBmQw7hsfFOi/x4+4YXpypfM/v+QZi+szh+Erk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=g8MLyghpydSh+CK2jMQTSrXhsn//Y0c3uHtI/JQefyjy58xhROhlmQrjZM3kM1tH8
+         Nj59sVqulm+8CNGgUfF6SansldHxSUlzRcQnXiMNvPphufNatgsCGLsO0Eun7REomJ
+         CukH/nVDGQmitpfRzs2XB7JW37cWN7xMluwbQgns=
+Received: by mail-pj1-f41.google.com with SMTP id y5-20020a17090aca8500b001b8127e3d3aso315718pjt.3;
+        Wed, 02 Feb 2022 10:30:42 -0800 (PST)
+X-Gm-Message-State: AOAM531ItDtPZosOnTrlddhw/opomMedyzjlj+LjZizRYJrxZcCddJiZ
+        qqoZwIvszodGZILnfKOeApRbqHWhYuRzhOcgUSk=
+X-Google-Smtp-Source: ABdhPJyaFGsEEw9s97c2y9b6fB5mOpP0F8wWqK9mIrPFi3+1JqlEmjNySdCFNgf4wyMGxTNADv+bHRIMmcgAhdP5ZmU=
+X-Received: by 2002:a17:90b:4c92:: with SMTP id my18mr9483017pjb.15.1643826641822;
+ Wed, 02 Feb 2022 10:30:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-3-mauricio@kinvolk.io>
-In-Reply-To: <20220128223312.1253169-3-mauricio@kinvolk.io>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 09:58:16 -0800
-Message-ID: <CAEf4BzY3_GZD8C754nb5P_+btFEsmK5QHC-qoHqJqAdSMNKcsQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/9] bpftool: Add gen min_core_btf command
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+References: <20211210172034.13614-1-mcroce@linux.microsoft.com>
+ <CAADnVQJRVpL0HL=Lz8_e-ZU5y0WrQ_Z0KvQXF2w8rE660Jr62g@mail.gmail.com>
+ <CAFnufp33Dm_5gffiFYQ+Maf4Bj9fE3WLMpFf3cJ=F5mm71mTEQ@mail.gmail.com>
+ <CAADnVQ+OeO=f1rzv_F9HFQmJCcJ7=FojkOuZWvx7cT-XLjVDcQ@mail.gmail.com>
+ <CAFnufp3c3pdxu=hse4_TdFU_UZPeQySGH16ie13uTT=3w-TFjA@mail.gmail.com>
+ <CAFnufp35YbxhbQR7stq39WOhAZm4LYHu6FfYBeHJ8-xRSo7TnQ@mail.gmail.com>
+ <177da568-8410-36d6-5f95-c5792ba47d62@fb.com> <CAADnVQJZvgpo-VjUCBL8YZy8J+s7O0mv5FW+5sx8NK84Lm6FUQ@mail.gmail.com>
+ <CAFnufp3ybOFMY=ObZFvbmr+c70CPUrL2uYp1oZQmffQBTyVy_A@mail.gmail.com>
+ <CAADnVQ+cvD2rwa-hRQP8agj8=SXuun3dv-PZpK5=kJ2Ea_0KCg@mail.gmail.com>
+ <CAFnufp3MHW9su8pouUqg__DToSHEx=HZccrpR49hSdsuEnpW0g@mail.gmail.com> <CAADnVQL8D0cBixtqnOok621gfXnBs4sZSTSTKBodrtRzwBFsHQ@mail.gmail.com>
+In-Reply-To: <CAADnVQL8D0cBixtqnOok621gfXnBs4sZSTSTKBodrtRzwBFsHQ@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 2 Feb 2022 19:30:05 +0100
+X-Gmail-Original-Message-ID: <CAFnufp0FTgQ0s_8E5ve+qad4ALMqFatzBK7_OeHSPBskHfqbiw@mail.gmail.com>
+Message-ID: <CAFnufp0FTgQ0s_8E5ve+qad4ALMqFatzBK7_OeHSPBskHfqbiw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: limit bpf_core_types_are_compat() recursion
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
- wrote:
+On Sat, Jan 29, 2022 at 2:11 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> This command is implemented under the "gen" command in bpftool and the
-> syntax is the following:
+> On Fri, Jan 28, 2022 at 4:36 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
+> >
+> > On Fri, Jan 28, 2022 at 9:09 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Jan 28, 2022 at 10:51 AM Matteo Croce
+> > > <mcroce@linux.microsoft.com> wrote:
+> > > >
+> > > > On Fri, Jan 28, 2022 at 6:31 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Mon, Dec 20, 2021 at 10:34 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > > https://reviews.llvm.org/D116063 improved the error message as below
+> > > > > > to make it a little bit more evident what is the problem:
+> > > > > >
+> > > > > > $ clang -target bpf -O2 -g -c bug.c
+> > > > > >
+> > > > > > fatal error: error in backend: SubroutineType not supported for
+> > > > > > BTF_TYPE_ID_REMOTE reloc
+> > > > >
+> > > > > Hi Matteo,
+> > > > >
+> > > > > Are you still working on a test?
+> > > > > What's a timeline to repost the patch set?
+> > > > >
+> > > > > Thanks!
+> > > >
+> > > > Hi Alexei,
+> > > >
+> > > > The change itself is ready, I'm just stuck at writing a test which
+> > > > will effectively calls __bpf_core_types_are_compat() with some
+> > > > recursion.
+> > > > I guess that I have to generate a BTF_KIND_FUNC_PROTO type somehow, so
+> > > > __bpf_core_types_are_compat() is called again to check the prototipe
+> > > > arguments type.
+> > > > I tried with these two, with no luck:
+> > > >
+> > > > // 1
+> > > > typedef int (*func_proto_typedef)(struct sk_buff *);
+> > > > bpf_core_type_exists(func_proto_typedef);
+> > > >
+> > > > // 2
+> > > > void func_proto(int, unsigned int);
+> > > > bpf_core_type_id_kernel(func_proto);
+> > > >
+> > > > Which is a simple way to generate a BTF_KIND_FUNC_PROTO BTF field?
+> > >
+> > > What do you mean 'no luck'?
+> > > Have you tried what progs/test_core_reloc_type_id.c is doing?
+> > > typedef int (*func_proto_typedef)(long);
+> > > bpf_core_type_id_kernel(func_proto_typedef);
+> > >
+> > > Without macros:
+> > > typedef int (*func_proto_typedef)(long);
+> > >
+> > > int test() {
+> > >    return __builtin_btf_type_id(*(typeof(func_proto_typedef) *)0, 1);
+> > > }
+> > > int test2() {
+> > >    return __builtin_preserve_type_info(*(typeof(func_proto_typedef) *)0, 0);
+> > > }
+> > >
+> > >
+> > > compiles fine and generates relos.
+> >
+> > Yes, I tried that one.
+> > We reach bpf_core_apply_relo_insn() but not bpf_core_spec_match(),
+> > since cands->len is 0.
+> >
+> > [   16.424821] bpf_core_apply_relo_insn:1202 cands->len: 0
+> >
+> > That's a very simple raw_tracepoint/sys_enter program:
 >
-> $ bpftool gen min_core_btf INPUT OUTPUT OBJECT(S)
+> Did you forget to attach it ?
 >
-> INPUT can be either a single BTF file or a folder containing BTF files,
-> when it's a folder, a BTF file is generated for each BTF file contained
-> in this folder. OUTPUT is the file (or folder) where generated files are
-> stored and OBJECT(S) is the list of bpf objects we want to generate the
-> BTF file(s) for (each generated BTF file contains all the types needed
-> by all the objects).
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
->  tools/bpf/bpftool/bash-completion/bpftool |   6 +-
->  tools/bpf/bpftool/gen.c                   | 112 +++++++++++++++++++++-
->  2 files changed, 114 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftoo=
-l/bash-completion/bpftool
-> index 493753a4962e..958e1fd71b5c 100644
-> --- a/tools/bpf/bpftool/bash-completion/bpftool
-> +++ b/tools/bpf/bpftool/bash-completion/bpftool
-> @@ -1003,9 +1003,13 @@ _bpftool()
->                              ;;
->                      esac
->                      ;;
-> +                min_core_btf)
-> +                    _filedir
-> +                    return 0
-> +                    ;;
->                  *)
->                      [[ $prev =3D=3D $object ]] && \
-> -                        COMPREPLY=3D( $( compgen -W 'object skeleton hel=
-p' -- "$cur" ) )
-> +                        COMPREPLY=3D( $( compgen -W 'object skeleton hel=
-p min_core_btf' -- "$cur" ) )
->                      ;;
->              esac
->              ;;
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 8f78c27d41f0..7db31b0f265f 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -5,6 +5,7 @@
->  #define _GNU_SOURCE
->  #endif
->  #include <ctype.h>
-> +#include <dirent.h>
->  #include <errno.h>
->  #include <fcntl.h>
->  #include <linux/err.h>
-> @@ -1084,6 +1085,7 @@ static int do_help(int argc, char **argv)
->         fprintf(stderr,
->                 "Usage: %1$s %2$s object OUTPUT_FILE INPUT_FILE [INPUT_FI=
-LE...]\n"
->                 "       %1$s %2$s skeleton FILE [name OBJECT_NAME]\n"
-> +               "       %1$s %2$s min_core_btf INPUT OUTPUT OBJECT(S)\n"
+> If it's doing bpf_core_type_id_kernel(func_proto_typedef)
+> then, of course, cands->len will be zero.
+> You need to add this typedef to bpf_testmod first.
+> Then use two typedef flavors: func_proto_typedef___match
+> and func_proto_typedef___doesnt_match
+> with matching and mismatching prototypes, so
+> both can call into bpf_core_types_are_compat() and
+> return different results.
+> Then build on top to test recursion.
 
-OBJECTS(S) should be OBJECT... for this "CLI notation", no?
+Hi,
 
->                 "       %1$s %2$s help\n"
->                 "\n"
->                 "       " HELP_SPEC_OPTIONS " |\n"
-> @@ -1094,10 +1096,114 @@ static int do_help(int argc, char **argv)
->         return 0;
->  }
->
-> +/* Create BTF file for a set of BPF objects */
-> +static int btfgen(const char *src_btf, const char *dst_btf, const char *=
-objspaths[])
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +static int do_min_core_btf(int argc, char **argv)
-> +{
-> +       char src_btf_path[PATH_MAX], dst_btf_path[PATH_MAX];
-> +       bool input_is_file, output_is_file =3D true;
-> +       const char *input, *output;
-> +       const char **objs =3D NULL;
-> +       struct dirent *dir;
-> +       struct stat st;
-> +       DIR *d =3D NULL;
-> +       int i, err;
-> +
-> +       if (!REQ_ARGS(3)) {
-> +               usage();
-> +               return -1;
-> +       }
-> +
-> +       input =3D GET_ARG();
-> +       if (stat(input, &st) < 0) {
-> +               p_err("failed to stat %s: %s", input, strerror(errno));
-> +               return -errno;
-> +       }
-> +
-> +       if ((st.st_mode & S_IFMT) !=3D S_IFDIR && (st.st_mode & S_IFMT) !=
-=3D S_IFREG) {
-> +               p_err("file type not valid: %s", input);
-> +               return -EINVAL;
-> +       }
-> +
-> +       input_is_file =3D (st.st_mode & S_IFMT) =3D=3D S_IFREG;
+I'm able to trigger __bpf_core_types_are_compat() recursion now.
+What do you think to generate also a prototype which needs 3 recursion
+calls, thus invalid, and check that it returns error?
+e.g.
 
-move before if and use input_is_file in the if itself instead of
-duplicating all the S_IFREG flags?
+typedef int (*func_proto_typedef)(long);
+typedef int (*func_proto_typedef___of)(func_proto_typedef);
 
-> +
-> +       output =3D GET_ARG();
-> +       if (stat(output, &st) =3D=3D 0 && (st.st_mode & S_IFMT) =3D=3D S_=
-IFDIR)
-> +               output_is_file =3D false;
+func_proto_typedef funcp = NULL;
+func_proto_typedef___of funcp_of = NULL;
 
-if stat() succeeds but it's neither directory or file, should be an
-error, right?
+this gives:
 
-> +
-> +       objs =3D (const char **) malloc((argc + 1) * sizeof(*objs));
+[  190.875387] bpf_core_apply_relo_insn:1200 cands->len: 3
+[  190.875435] __bpf_core_types_are_compat:6798 level: 2
+[  190.875479] __bpf_core_types_are_compat:6798 level: 1
+[  190.875506] bpf_core_types_are_compat:6896: ret: 0
+[  190.875541] __bpf_core_types_are_compat:6798 level: 2
+[  190.875570] __bpf_core_types_are_compat:6798 level: 1
+[  190.875599] bpf_core_types_are_compat:6896: ret: 0
+[  190.875629] __bpf_core_types_are_compat:6798 level: 2
+[  190.875659] __bpf_core_types_are_compat:6798 level: 1
+[  190.875686] bpf_core_types_are_compat:6896: ret: -22
+failed to open and/or load BPF object
 
-calloc() seems to be better suited for this (and zero-intialization is
-nice for safety and to avoid objs[argc] =3D NULL after the loop below)
-
-> +       if (!objs) {
-> +               p_err("failed to allocate array for object names");
-> +               return -ENOMEM;
-> +       }
-> +
-> +       i =3D 0;
-> +       while (argc > 0)
-> +               objs[i++] =3D GET_ARG();
-
-for (i =3D 0; i < argc; i++) ?
-
-> +
-> +       objs[i] =3D NULL;
-> +
-> +       /* single BTF file */
-> +       if (input_is_file) {
-> +               p_info("Processing source BTF file: %s", input);
-> +
-> +               if (output_is_file) {
-> +                       err =3D btfgen(input, output, objs);
-> +                       goto out;
-> +               }
-> +               snprintf(dst_btf_path, sizeof(dst_btf_path), "%s/%s", out=
-put,
-> +                        basename(input));
-> +               err =3D btfgen(input, dst_btf_path, objs);
-> +               goto out;
-> +       }
-> +
-> +       if (output_is_file) {
-> +               p_err("can't have just one file as output");
-> +               err =3D -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       /* directory with BTF files */
-> +       d =3D opendir(input);
-> +       if (!d) {
-> +               p_err("error opening input dir: %s", strerror(errno));
-> +               err =3D -errno;
-> +               goto out;
-> +       }
-> +
-> +       while ((dir =3D readdir(d)) !=3D NULL) {
-> +               if (dir->d_type !=3D DT_REG)
-> +                       continue;
-> +
-> +               if (strncmp(dir->d_name + strlen(dir->d_name) - 4, ".btf"=
-, 4))
-> +                       continue;
-
-this whole handling of input directory feels a bit icky, tbh... maybe
-we should require explicit listing of input files always. In CLI
-invocation those could be separated by "keywords", something like
-this:
-
-bpftool gen min_core_btf <output> inputs <file1> <file2> .... objects
-<obj1> <obj2> ...
-
-a bit of a downside is that you can't have a file named "inputs" or
-"objects", but that seems extremely unlikely? Quentin, any opinion as
-well?
-
-I'm mainly off put by a bit random ".btf" naming convention, the
-DT_REG skipping, etc.
-
-Another cleaner alternative from POV of bpftool (but might be less
-convenient for users) is to use @file convention to specify a file
-that contains a list of files. So
-
-bpftool gen min_core_btf <output> @btf_filelist.txt @obj_filelist.txt
-
-would take lists of inputs and outputs from respective files?
-
-
-But actually, let's take a step back again. Why should there be
-multiple inputs and outputs? I can see why multiple objects are
-mandatory (you have an application that has multiple BPF objects used
-internally). But processing single vmlinux BTF at a time seems
-absolutely fine. I don't buy that CO-RE relo processing is that slow
-to require optimized batch processing.
-
-I might have asked this before, sorry, but the duration between each
-iteration of btfgen is pretty long and I'm losing the context.
-
-> +
-> +               snprintf(src_btf_path, sizeof(src_btf_path), "%s%s", inpu=
-t, dir->d_name);
-> +               snprintf(dst_btf_path, sizeof(dst_btf_path), "%s%s", outp=
-ut, dir->d_name);
-> +
-> +               p_info("Processing source BTF file: %s", src_btf_path);
-> +
-> +               err =3D btfgen(src_btf_path, dst_btf_path, objs);
-> +               if (err)
-> +                       goto out;
-> +       }
-> +
-> +out:
-> +       free(objs);
-> +       if (d)
-> +               closedir(d);
-> +       return err;
-> +}
-> +
->  static const struct cmd cmds[] =3D {
-> -       { "object",     do_object },
-> -       { "skeleton",   do_skeleton },
-> -       { "help",       do_help },
-> +       { "object",             do_object },
-> +       { "skeleton",           do_skeleton },
-> +       { "min_core_btf",       do_min_core_btf},
-> +       { "help",               do_help },
->         { 0 }
->  };
->
-> --
-> 2.25.1
->
+-- 
+per aspera ad upstream
