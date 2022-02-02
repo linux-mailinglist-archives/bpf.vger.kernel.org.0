@@ -2,77 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CA04A727C
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 15:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B78B4A72E0
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 15:19:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344567AbiBBOBl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 09:01:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233516AbiBBOBk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 09:01:40 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952C8C061714
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 06:01:40 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id g13so19016776qvw.4
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 06:01:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=E7DjwvpK8fKU+n0BvI0K3vZtJI6EGSLZ3tJ9NtovK9I=;
-        b=Tc9rvSciVyW7X3K1CIKKFb3is0GCHxQO1sZyz+4cIy7yJVuvqAC6Kpb3JpEyTQQG+m
-         3EBq4idA0LxFN2zNvtA4QVHDtXdq12Qwp6Uxu4z/vrQ8mOdvl4rL+Uk7d9ktgqtdnQ8p
-         9U2AnbLaqXDK9cffJ3R6eSHKDf9chpTu/PzEo7oB28N+bH/7dsUqdymyqgbKJDf4PLOL
-         IPVVatnXI2YA6GJLK+o9R3k5srNxq7DpU1Wkx/seJAAG1duuxmgcX4zBq169IT1AAmRm
-         5FiTbo6md7vLnFFx/UU7YlPH7npRRJe+we4FXjIEqB1XDgwkG/xLDD/RvxfDBzaWBvtG
-         O0/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=E7DjwvpK8fKU+n0BvI0K3vZtJI6EGSLZ3tJ9NtovK9I=;
-        b=gPX3RchVI6PiV5r7ZJwZawFbiTw9tO0vQoC0u+oYzLKgsjFD5MdrGIz3s1zm2Bclcw
-         Suzzh/ZTmC+JAFSTCCMxZVF93dYaUH917/xN3gJHoci2NFMW2NIn/Tm6+ouYh7baxCJ7
-         r01UOnigtmKXZLKnOQz9By+ofIAjtMDmnSoa3tlyAXc6GiMmuL/yx3LjkDJkL6FXYsK6
-         KXGuvsbP7iydx/B40r6nGHsyxtHVGqqMjz44kk1NyJsoSSyMAv/e7Q3Iv95Z1CtvXOtY
-         IR6zRcLO96sLiLzw/yXkHVnfkjjUMSgAkx+nVl/1s11GN6bIiZJu1Z3I/8B6AyPyg+Py
-         CsxQ==
-X-Gm-Message-State: AOAM533j3SFk2ZHiNel32aQqnfqfdtbouqqqcJjADk0fhrTOhSuJmcZt
-        ZA9MF5MZn0fxDkcdYv/jetZNLJ3oW5ztl2kH0Nc=
-X-Google-Smtp-Source: ABdhPJxGqJfd6Zr/yuYt+e18U5snvasg/Ex48OGlBaeunN9yXQF8c68jDOEUlqRFfXhKx/yvxL7HocbJ1ydFxXUUGnc=
-X-Received: by 2002:a05:6214:2a4c:: with SMTP id jf12mr26933389qvb.10.1643810499288;
- Wed, 02 Feb 2022 06:01:39 -0800 (PST)
+        id S1344850AbiBBOTj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 09:19:39 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33542 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344866AbiBBOTa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 09:19:30 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 212CeQUR014759;
+        Wed, 2 Feb 2022 14:19:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=I/mu5q+yvmG72n6jgiUrdW1v/7+WWly2Iyic2t43xGM=;
+ b=B/PxEW5tTEw5bD4fVdftFiHbB3iuXajf9bOWzNDascqj3J8XrzebbgsMXrv4DUcb2Yi6
+ U2D4TJfp+gHW+4/i3vSoz/bfe/RcCh9Te5buHMW1rYzG6qI/OPSbcptf/2jgysQacfnW
+ 6B5c6qT646dCbWrXmHCs+9e37bRHmNKfFcPKcNbPJY7bQ64FsuffqVY0EmS+eV/chaFs
+ hwxugL3KufNQG965ET6eIiAJX6UbDrj8eILY7UEg0T3K5uRWVox835DH7aJaX6LKgA7m
+ 7SQR+vYSBjll2XnzE79Tb2Uw/dg9M3vVqSel/iUwR6rqSIihmz/1yEBC0D9Q4qmUqJgc Bw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dysraajw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 14:19:12 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 212DTPwq039381;
+        Wed, 2 Feb 2022 14:19:11 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dysraajvf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 14:19:11 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 212EDFBa024347;
+        Wed, 2 Feb 2022 14:19:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3dvw79wuj3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 14:19:09 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 212EJ6jC19202548
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Feb 2022 14:19:06 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A07DA405C;
+        Wed,  2 Feb 2022 14:19:06 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 28161A405B;
+        Wed,  2 Feb 2022 14:19:06 +0000 (GMT)
+Received: from localhost (unknown [9.171.17.127])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Wed,  2 Feb 2022 14:19:06 +0000 (GMT)
+Date:   Wed, 2 Feb 2022 15:19:04 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
+Message-ID: <your-ad-here.call-01643811544-ext-7630@work.hours>
+References: <20220201234200.1836443-1-iii@linux.ibm.com>
+ <20220201234200.1836443-2-iii@linux.ibm.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6214:250c:0:0:0:0 with HTTP; Wed, 2 Feb 2022 06:01:38
- -0800 (PST)
-Reply-To: orlandomoris56@gmail.com
-From:   Orlando Moris <jonesregina165@gmail.com>
-Date:   Wed, 2 Feb 2022 14:01:38 +0000
-Message-ID: <CAMWeqz0qxf-Tk3kdXRN=QCvUsQrUQ2OU=j4-Dd8xFKUv9ba_YA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20220201234200.1836443-2-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -c-zP2TbeIo64_0GHL2mTTLecR0WhRce
+X-Proofpoint-GUID: AO7uChh7Mb66jT9nnVDE2i5Go14J2dPj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-02_06,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 mlxlogscore=944 mlxscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202020078
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sveiki, informuojame, kad =C5=A1is el. lai=C5=A1kas, kuris atkeliavo =C4=AF=
- j=C5=ABs=C5=B3
-pa=C5=A1to d=C4=97=C5=BEut=C4=99, n=C4=97ra klaida, bet buvo skirtas konkre=
-=C4=8Diai jums, kad
-gal=C4=97tum=C4=97te apsvarstyti. Turiu pasi=C5=ABlym=C4=85 (7 500 000,00 U=
-SD) mano
-velionio kliento in=C5=BEinieriaus Carloso, turin=C4=8Dio t=C4=85 pat=C4=AF=
- vard=C4=85 su
-jumis, kuris dirbo ir gyveno =C4=8Dia, Lome Toge Mano velionis klientas ir
-=C5=A1eima pateko =C4=AF automobilio avarij=C4=85, kuri nusine=C5=A1=C4=97 =
-j=C5=B3 gyvybes. .
-Kreipiuosi =C4=AF jus kaip =C4=AF artim=C4=85 mirusiojo giminait=C4=AF, kad=
- gal=C4=97tum=C4=97te
-gauti l=C4=97=C5=A1as pagal pretenzijas. Gav=C4=99s greit=C4=85 atsakym=C4=
-=85, informuosiu apie
-re=C5=BEimus
-=C5=A1ios sutarties vykdym=C4=85. Susisiekite su manimi =C5=A1iais el
-(orlandomoris56@gmail.com )
+On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
+> user_pt_regs is used by eBPF in order to access userspace registers -
+> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
+> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
+> syscall argument from eBPF programs, we need to export orig_gpr2.
+
+> diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
+> index 4ffa8e7f0ed3..c8698e643904 100644
+> --- a/arch/s390/include/asm/ptrace.h
+> +++ b/arch/s390/include/asm/ptrace.h
+> @@ -83,9 +83,9 @@ struct pt_regs {
+>  			unsigned long args[1];
+>  			psw_t psw;
+>  			unsigned long gprs[NUM_GPRS];
+> +			unsigned long orig_gpr2;
+>  		};
+>  	};
+> -	unsigned long orig_gpr2;
+>  	union {
+>  		struct {
+>  			unsigned int int_code;
+> diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uapi/asm/ptrace.h
+> index ad64d673b5e6..b3dec603f507 100644
+> --- a/arch/s390/include/uapi/asm/ptrace.h
+> +++ b/arch/s390/include/uapi/asm/ptrace.h
+> @@ -295,6 +295,7 @@ typedef struct {
+>  	unsigned long args[1];
+>  	psw_t psw;
+>  	unsigned long gprs[NUM_GPRS];
+> +	unsigned long orig_gpr2;
+>  } user_pt_regs;
+
+It could be a good opportunity to get rid of that "args[1]" which is not
+used for syscall parameters handling since commit baa071588c3f ("[S390]
+cleanup system call parameter setup") [v2.6.37], as well as completely
+unused now, and shouldn't really be exported to eBPF. And luckily eBPF
+never used it.
+
+So, how about reusing "args[1]" slot for orig_gpr2 instead?
