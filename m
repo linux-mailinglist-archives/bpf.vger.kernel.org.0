@@ -2,52 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466F44A6D12
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 09:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A86894A6D6E
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245063AbiBBIlt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 03:41:49 -0500
-Received: from mail.olerise.pl ([46.183.184.59]:50562 "EHLO mail.olerise.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbiBBIlg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 03:41:36 -0500
-Received: by mail.olerise.pl (Postfix, from userid 1001)
-        id A708E41593; Wed,  2 Feb 2022 09:41:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=olerise.pl; s=mail;
-        t=1643791294; bh=ZNYiuZLXlxCdAPtstEG/gwJieB5RBwA/cHj1SZ3Mpl0=;
-        h=Date:From:To:Subject:From;
-        b=MYtEO1XSpg3ontJtdL/P1xvIASANAgQUEQ4OYX62w7viyE983EQfWcEFguhQh/iLK
-         z2sCuWaVtrWiosr0pzxuhy2NbX0inC5XW/HTAEa5o8RUkcTlR+ISeUWNbskCc2K6GS
-         BX9MyP+GhN1DPM7VZlEx8e4TGjYBfgCegJA/AYrVpehzyHfAorj4+bDta7ZuoWiiLc
-         Wpb+0UIItMxMqIdVggqDAX6f1p5Z2QslyT8eF+sPVw96yubrL2zkazTo87s/zMFugZ
-         e1oUrK6Cf4wM934xfviykG7KDZtAh5ntxrhcK6g9UZ1Or5MEsZh7FlcygLL6SQFIxc
-         n6HYPu0l/jerA==
-Received: by mail.olerise.pl for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 08:40:32 GMT
-Message-ID: <20220202084500-0.1.1h.6yg1.0.s9gsck0qun@olerise.pl>
-Date:   Wed,  2 Feb 2022 08:40:32 GMT
-From:   =?UTF-8?Q? "Miko=C5=82aj_Rudzik" ?= <mikolaj.rudzik@olerise.pl>
-To:     <bpf@vger.kernel.org>
-Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
-X-Mailer: mail.olerise.pl
+        id S243815AbiBBJDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 04:03:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29827 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243270AbiBBJDN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 04:03:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643792592;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tBpysxXu/y6O0XEmjrfAdxp73GcDGPjpjHECrtLEYho=;
+        b=MClnfuxlWdR3xk3fK7ptu7qnElJw54QWU0bdH8Q60FQlM7URs2AtmuqsLSr87Co6+rIaTN
+        wYLTcowHbk512YXOiL7uwvUfAakMNTEnTMytqCxYR7hIp4ydEBB43UFo0TWA5Cd8E56gVd
+        Gxzqk7PYSz1oBDHUQkJ6iRWTRqGNKR8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-659-rJpQrE0ZPn6LYd1A3VNbHw-1; Wed, 02 Feb 2022 04:03:11 -0500
+X-MC-Unique: rJpQrE0ZPn6LYd1A3VNbHw-1
+Received: by mail-ej1-f72.google.com with SMTP id lb14-20020a170907784e00b006aa178894fcso7820825ejc.6
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:03:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tBpysxXu/y6O0XEmjrfAdxp73GcDGPjpjHECrtLEYho=;
+        b=Ixx/SWcmxqYDp9cpCUki63TjcBjq0ceWBur7m2xmzCtCY1K5UiCxgynYqaXaU2nLUb
+         kjChMFPYC3Kp5e92PCrWjJ1e03R4BQ+lXnhn60UIPTa/eCTijWVqU+Zlpsg9aagzAeGp
+         xjFfsu35oCPmFFcW2L1iJiMwGHOi7kDqySRCQ6DQEohKzl2vGq7WbOvVaAW2xSClWj51
+         91gGozXwzRlvee1ROy5j0JQ7XRmqX0kJQEz/a1dxjykW+yZh1h0A+vx9yQjU+/7rhjiM
+         PvbVyiPbJs87ADb/L2JGmqwFmeO9g6ohT2ybFaeW+9WDvhs3nW5q7TseOtbOoiOfR0FO
+         Pc6g==
+X-Gm-Message-State: AOAM533fIOLAOXauLxqbSUrgsxl5e9t3v+892qV5fEI7tQkCgiYWTgPT
+        iXoKkKLExvGp9bHTcCtcB4TxFkFx1O3gEGSYNGxAxJqF0vVCXtyl6VgjIsW9byI9m8pxdejjr5E
+        g8wsOKHWt364E
+X-Received: by 2002:a50:fb8d:: with SMTP id e13mr7042910edq.334.1643792590583;
+        Wed, 02 Feb 2022 01:03:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJycrgETHA1TUmaiILhylhEXqD3m5+a4ptG3yUIOx5s8nbaaTUWPlikogxZT5CXm57xkq9MSjg==
+X-Received: by 2002:a50:fb8d:: with SMTP id e13mr7042880edq.334.1643792590349;
+        Wed, 02 Feb 2022 01:03:10 -0800 (PST)
+Received: from krava ([83.240.63.12])
+        by smtp.gmail.com with ESMTPSA id a6sm15414917ejs.214.2022.02.02.01.03.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Feb 2022 01:03:09 -0800 (PST)
+Date:   Wed, 2 Feb 2022 10:03:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v7 00/10] fprobe: Introduce fprobe function entry/exit
+ probe
+Message-ID: <YfpIy+/Pqlw5EcZk@krava>
+References: <164360522462.65877.1891020292202285106.stgit@devnote2>
+ <YfnKIyTwi+F3IPdI@krava>
+ <CAEf4BzYRJuTLJc=Z9P-p3BtuKu_74MtA2MyrY_ceBxofuKuzHQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYRJuTLJc=Z9P-p3BtuKu_74MtA2MyrY_ceBxofuKuzHQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Tue, Feb 01, 2022 at 04:09:05PM -0800, Andrii Nakryiko wrote:
+> On Tue, Feb 1, 2022 at 4:02 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Mon, Jan 31, 2022 at 02:00:24PM +0900, Masami Hiramatsu wrote:
+> > > Hi,
+> > >
+> > > Here is the 7th version of fprobe. This version fixes unregister_fprobe()
+> > > ensures that exit_handler is not called after returning from the
+> > > unregister_fprobe(), and fixes some comments and documents.
+> > >
+> > > The previous version is here[1];
+> > >
+> > > [1] https://lore.kernel.org/all/164338031590.2429999.6203979005944292576.stgit@devnote2/T/#u
+> > >
+> > > This series introduces the fprobe, the function entry/exit probe
+> > > with multiple probe point support. This also introduces the rethook
+> > > for hooking function return as same as the kretprobe does. This
+> > > abstraction will help us to generalize the fgraph tracer,
+> > > because we can just switch to it from the rethook in fprobe,
+> > > depending on the kernel configuration.
+> > >
+> > > The patch [1/10] is from Jiri's series[2].
+> > >
+> > > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+> > >
+> > > And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
+> > > if user wants to share the same code (or share a same resource) on the
+> > > fprobe and the kprobes.
+> >
+> > hi,
+> > it works fine for bpf selftests, but when I use it through bpftrace
+> > to attach more probes with:
+> >
+> >   # ./src/bpftrace -e 'kprobe:ksys_* { }'
+> >   Attaching 27 probes
+> >
+> > I'm getting stalls like:
+> >
+> > krava33 login: [  988.574069] INFO: task bpftrace:4137 blocked for more than 122 seconds.
+> > [  988.577577]       Not tainted 5.16.0+ #89
+> > [  988.580173] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> > [  988.585538] task:bpftrace        state:D stack:    0 pid: 4137 ppid:  4123 flags:0x00004004
+> > [  988.589869] Call Trace:
+> > [  988.591312]  <TASK>
+> > [  988.592577]  __schedule+0x3a8/0xd30
+> > [  988.594469]  ? wait_for_completion+0x84/0x110
+> > [  988.596753]  schedule+0x4e/0xc0
+> > [  988.598480]  schedule_timeout+0xed/0x130
+> > [  988.600524]  ? rcu_read_lock_sched_held+0x12/0x70
+> > [  988.602901]  ? lock_release+0x253/0x4a0
+> > [  988.604935]  ? lock_acquired+0x1b7/0x410
+> > [  988.607041]  ? trace_hardirqs_on+0x1b/0xe0
+> > [  988.609202]  wait_for_completion+0xae/0x110
+> > [  988.613762]  __wait_rcu_gp+0x127/0x130
+> > [  988.615787]  synchronize_rcu_tasks_generic+0x46/0xa0
+> > [  988.618329]  ? call_rcu_tasks+0x20/0x20
+> > [  988.620600]  ? rcu_tasks_pregp_step+0x10/0x10
+> > [  988.623232]  ftrace_shutdown.part.0+0x174/0x210
+> > [  988.625820]  unregister_ftrace_function+0x37/0x60
+> > [  988.628480]  unregister_fprobe+0x2d/0x50
+> > [  988.630928]  bpf_link_free+0x4e/0x70
+> > [  988.633126]  bpf_link_release+0x11/0x20
+> > [  988.635249]  __fput+0xae/0x270
+> > [  988.637022]  task_work_run+0x5c/0xa0
+> > [  988.639016]  exit_to_user_mode_prepare+0x251/0x260
+> > [  988.641294]  syscall_exit_to_user_mode+0x16/0x50
+> > [  988.646249]  do_syscall_64+0x48/0x90
+> > [  988.648218]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > [  988.650787] RIP: 0033:0x7f9079e95fbb
+> > [  988.652761] RSP: 002b:00007ffd474fa3b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+> > [  988.656718] RAX: 0000000000000000 RBX: 00000000011bf8d0 RCX: 00007f9079e95fbb
+> > [  988.660110] RDX: 0000000000000000 RSI: 00007ffd474fa3b0 RDI: 0000000000000019
+> > [  988.663512] RBP: 00007ffd474faaf0 R08: 0000000000000000 R09: 000000000000001a
+> > [  988.666673] R10: 0000000000000064 R11: 0000000000000293 R12: 0000000000000001
+> > [  988.669770] R13: 00000000004a19a1 R14: 00007f9083428c00 R15: 00000000008c02d8
+> > [  988.672601]  </TASK>
+> > [  988.675763] INFO: lockdep is turned off.
+> >
+> > I have't investigated yet, any idea?
+> >
+> 
+> Do you happen to have a CPU count that's not a power of 2? Check if
+> you have [0] in your tree, it might be that.
+> 
+>   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a773abf72eb0cac008743891068ca6edecc44683
 
-chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
-skania nowych zlece=C5=84 ze strony www.
+yes, that helped, thanks
 
-Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
-, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
-=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
-jonowania strony w Google.
+jirka
 
-Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
-
-
-Pozdrawiam
-Miko=C5=82aj Rudzik
