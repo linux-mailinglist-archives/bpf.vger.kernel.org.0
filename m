@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C224A698E
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 02:16:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24F54A6996
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 02:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbiBBBQH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 20:16:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33510 "EHLO
+        id S236419AbiBBBYl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 20:24:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbiBBBQG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 20:16:06 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4208EC061714
-        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 17:16:06 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id z199so23510511iof.10
-        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 17:16:06 -0800 (PST)
+        with ESMTP id S231428AbiBBBYl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 20:24:41 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4315BC061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 17:24:41 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id d3so15777152ilr.10
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 17:24:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=G31TeZUAFKBxWwgAxTza1nQItrffBhUCDy4AHvldAT4=;
-        b=AnT4qU+uu+IrsEZqC3a3nbU2HnVOnxfdPDNIcPYQ0QYGUcZczPvN3rNng+BQz7O9to
-         LDlynH7b+IYPXLRYIiW81yZx6ihBaDJNP72nmZvTTiXbcB6ggPstcKnV+ZG0KOz3BFFZ
-         n9D3Df42zSWjgSYbcz2Wly9zyMjz3Se/0yYkYjnmNrdwd31PgZmFqX98meQTAYAES6A/
-         xI0z4L9Fbn22Q16+xXZLxLJTgmAY4dcdheTDJy/1cVPHSX3etdChMjPcz0ONp0sglEpX
-         nulsHMYgGlXhexKV5EE1QMnBxLfKWQyZB114uEi/EkTF9c/j9CYReBTUCTdQYgeYIV0Y
-         HdoA==
+        bh=CR7c75KqviMmDH1TpHZzc55/DL6CoE+fa6iiDf5qJQ4=;
+        b=igOkQUCj3MqOeRtyWSZZGGtvWKWcpYcdhj9a5bqLRAMkcNjNJ9pMPk9WImmZBATCO1
+         Ri/4Xd8AjtGzi32CJ8DY8081kSrDKDueeLZYO0EDK06ssFUyt+D5BUpkZfOCMhqGyFVW
+         +S8zdaO0NKl4ziC4cAu10cAtvupXZ2g/6dSseQe5Me6YlpTAXakz7jQoP1JuAUYmVdr4
+         XL1bTF27HFRZ1XXLbetcFBERKKxb9BYcqRfvLBjJGV9/Sl1JwY1G/W1HU5Xru7xgZHO/
+         wK6AcobnCBC+185cUwkBm9xMmmE5t2a9tSnXe65GX4tS5kynU/o1XfAtAegXuVNXNwcE
+         igmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=G31TeZUAFKBxWwgAxTza1nQItrffBhUCDy4AHvldAT4=;
-        b=vESvXvGodCoBjL4+UQlAVsjq4YU8e6yB8XloIYRIUKO/WI7pgtseFPWaWKKhS3ZXHG
-         n4kqoI7WnPoaMzk4+QDrna8OMEwR20W3RAW8n47Wu/nP8NJtHGlSziuVTexK08U0+tj7
-         usMApEyTsvOr5mUfTEljoEznmtQpQVaFnepTK1GT35qcc2LV/XZgZWmAh0VH5veLNL9N
-         8jWo7wFVfKubAcOUVnDstEtZb8lkvEwy82L6AS69vBjIQz4RsWgJMtzbNyHBxlEZB3o2
-         ZsGUxpel1aw4uXMYu7Niz8PeJStKk1rXzEx7BohcIGNQVsjT/i1qvxr3bq70oo5HC5As
-         /GuQ==
-X-Gm-Message-State: AOAM533KWz4m622f4IwvBleG7GM/RPmnuIyX3P+us+ErGc5QVoo/DKTq
-        LyJiF0QzubFyeNatCfcWCzxC7o3rFMwQmo40zfA=
-X-Google-Smtp-Source: ABdhPJybi9KgLmEBmXc7FKtqM3C/NSsuD4DkDvzd2T/G1GiBbQNJsj9k3o91iYFlRW/U2X4Eah9cqcfBL0a++Cvz898=
-X-Received: by 2002:a02:2422:: with SMTP id f34mr14464346jaa.237.1643764565664;
- Tue, 01 Feb 2022 17:16:05 -0800 (PST)
+        bh=CR7c75KqviMmDH1TpHZzc55/DL6CoE+fa6iiDf5qJQ4=;
+        b=4sBaGIy01DBNTM+Sft7x4Jzc49tOIBPZHDxRJmFnv+woVPt6Ep9FqJ+gedHACPw4JG
+         xcZxB0u4hlpFG3qOBt8VOHude/+6ejXZHBYf/gGszvIHtkExQkJxDVrJfUr11RSjrGw1
+         AmMM9AMtn5C7e6xg2rA1STM6MzLENCJd23RjMSIDF75NgJJa4lVWld6rVF9AZHxwm8bv
+         WWDOp107RftnrvQSnZn96Z7V3HCupb8W7RdR/xDCafyn8RBEuixjmZdWvVyNt2tKraN7
+         TDUVpJAjFmkW8dwN4DFShiDE69S3FJ+oYwZhZHP+Yezv+ctXUKzgygqKaOMjkhwI2snw
+         RASw==
+X-Gm-Message-State: AOAM531ggXgF/RDk7oj872mJ1MFbv6ZnbjGzCn+cnXWKybaDNZBEzE6M
+        IZxmAv2G+xw/9A2/1x2Py4crUV3YM/+HeQ4DeBE=
+X-Google-Smtp-Source: ABdhPJwFmphZkgtDI5MqtKo8vLXHVnIUMaZ2kbZw5S1pxrQRfTaOuqeYrdAX0FpNLZ0bAFqZy/ajHfuR3mOK9yoGU08=
+X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr11043467ilv.305.1643765080484;
+ Tue, 01 Feb 2022 17:24:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126214809.3868787-1-kuifeng@fb.com> <CAADnVQKkJCj+_aoJN2YtS3-Hc68uk1S2vN=5+0M0Q9KRVuxqoQ@mail.gmail.com>
- <CAEf4BzYFFnBnLu0ue8HoeZDD6V3DBKZFFKSA7VnL=duQgqc-nQ@mail.gmail.com> <20220201193245.w6ucelz6hbrmzyqt@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220201193245.w6ucelz6hbrmzyqt@ast-mbp.dhcp.thefacebook.com>
+References: <20220126214809.3868787-1-kuifeng@fb.com> <20220126214809.3868787-5-kuifeng@fb.com>
+ <CAEf4BzaLaPfnYTQppVq1ixACLQJcDWYyjMRD42YuQFMUb4rLDA@mail.gmail.com> <CAADnVQKEQFhkcnQLqNWDkmtyBq-35UkPGf0Rcj3BtFXCZQXLQg@mail.gmail.com>
+In-Reply-To: <CAADnVQKEQFhkcnQLqNWDkmtyBq-35UkPGf0Rcj3BtFXCZQXLQg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Feb 2022 17:15:54 -0800
-Message-ID: <CAEf4BzamtpsEpi_jnstEY0QLmq+PMUYq0nDhYjQ0dDg4wjLP9A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/5] Attach a cookie to a tracing program.
+Date:   Tue, 1 Feb 2022 17:24:29 -0800
+Message-ID: <CAEf4BzYNedX0W41GpE4Um7iZYUAtg9-edgGRo4KbMhnvJ_AwCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/5] bpf: Attach a cookie to a BPF program.
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     Kui-Feng Lee <kuifeng@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -61,65 +61,65 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 1, 2022 at 11:32 AM Alexei Starovoitov
+On Tue, Feb 1, 2022 at 12:17 PM Alexei Starovoitov
 <alexei.starovoitov@gmail.com> wrote:
 >
-> On Mon, Jan 31, 2022 at 10:45:53PM -0800, Andrii Nakryiko wrote:
+> On Mon, Jan 31, 2022 at 10:47 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > >  struct bpf_array_aux {
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index 16a7574292a5..3fa27346ab4b 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -1425,6 +1425,7 @@ union bpf_attr {
+> > >         struct { /* anonymous struct used by BPF_RAW_TRACEPOINT_OPEN command */
+> > >                 __u64 name;
+> > >                 __u32 prog_fd;
+> > > +               __u64 bpf_cookie;
+> > >         } raw_tracepoint;
+> > >
 > >
-> > As Jiri mentioned, for multi-attach kprobes the idea was to keep a
-> > sorted array of ips and associated cookies to do log(N) search in
-> > bpf_get_attach_cookie() helper.
-> >
-> > For multi-attach fentry, we could use the same approach if we let
-> > either bpf_link or bpf_prog available to fentry/fexit program at
-> > runtime.
+> > As an aside, Alexei, should we bite a bullet and allow attaching
+> > raw_tp, fentry/fexit, and other tracing prog attachment through the
+> > LINK_CREATE command? BPF_RAW_TRACEPOINT_OPEN makes little sense for
+> > anything but raw_tp programs.
 >
-> Makes sense to me.
-> It's probably better to land multi-attach kprobe and fentry first,
-> so we don't need to refactor trampolines once again.
-> iirc the trampolines were not easy to refactor for Jiri.
-> I'm afraid that adding prog_id or a pointer to the trampoline
-> will complicate things even more for multi attach.
+> raw_tp_open is used for raw_tp, tp_btf, lsm, fentry.
+> iirc it's creating a normal bpf_link underneath.
+> link_create doesn't exist for raw_tp and friends,
+> so this is the best place to add a cookie.
+> We can add an alias cmd (instead of raw_tp_open)
+> to make it a bit cleaner from uapi naming pov.
+> We can allow link_create to do the attach in all those cases as well,
+> but it's a different discussion.
 
-Yep, sure, makes sense to me.
+I was actually proposing exactly the latter: to allow LINK_CREATE to
+create all the programs that RAW_TRACEPOINT_OPEN allows. It's already
+confusing because bpf_iter programs are created using LINK_CREATE
+(realized that when I saw your recent patches). Also extension
+programs are attached through LINK_CREATE. So while we can't get rid
+of BPF_RAW_TRACEPOINT_OPEN, I hoped we can add lsm and fentry support
+as well (I don't mind raw_tp/tp_btf there as well for completeness),
+so at least in the future it would be we all just a universal
+LINK_CREATE command.
 
->
-> It's easy to store hard coded bpf_tramp_image pointer in the generated
-> trampoline. Storing prog_id or bpf_prog pointer there is a bit
-> harder, since the [sp-X] store needs to happen right in there invoke_bpf_prog()
-> (since there can be multiple progs per trampoline).
->
-> From there bpf_get_attach_cookie() can either do binary search
-> in the ip->cookie array or single load in case of non-multi attach.
->
-> Anyway the cookie support in trampoline seems to be easier to design
-> when there is a clarity on multi-attach fentry.
->
+> link_create.perf_event.bpf_cookie isn't the best name.
+> That name was a cause of confusion for me.
+> I thought it applies to perf_event only,
+> but it's for kuprobe too.
 
-True. bpf_tramp_image pointer probably won't work for multi-attach
-fentry because one bpf_tramp_image will be shared by multiple
-attachments (bpf_links), right?
+Yeah, not great, but given it was "attach to perf_event FD" command,
+it seemed like the most accurate name at the time :) I still don't
+know what I'd call it today, apart from having separate (and
+duplicate) link_create.kprobe.bpf_cookie,
+link_create.uprobe.bpf_cookie, etc. At least libbpf is hiding it
+behind bpf_program__attach_kprobe and bpf_program__attach_uprobe,
+though.
 
-Ideally we should provide a way to lookup "current bpf_link" at
-runtime from BPF helpers (given fentry ctx) and do that binary search
-there. There could be few other options (e.g., bpf_tramp_image +
-binary search based on prog_id or bpf_prog pointer), but it's a bit
-more cumbersome. It still feels like something per-program would need
-to come from the context to be able to distinguish between multiple
-attachments. But as you said, more clarity on multi-attach fentry
-first would be best.
 
-> I would probably add support for cookie in raw_tp/tp_btf first,
-> since that part is not going to be affected by multi-* work.
+> So plenty of bikeshedding to do if we decide to do
+> link_create for raw_tp. Hence, for now, I'd add a cookie to
+> raw_tp/tp_btf/lsm/fentry like this patch is doing.
 
-Yep, let's try that first.
-
->
-> > We don't need all BPF program types, but anything that's useful for
-> > generic tracing is much more powerful with cookies. We have them for
-> > kprobe, uprobe and perf_event programs already. For multi-attach
-> > kprobe/kretprobe and fentry/fexit they are essentially a must to let
-> > users use those BPF program types to their fullest.
->
-> agree. I missed the part that cookie is already supported with kuprobes
-> when attach is done via bpf_link_create.
+Sure, that's fine, it was a long shot anyway. But I'd like to get back
+to this discussion when we are going to multi-attach fentry/fexit :)
