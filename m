@@ -2,94 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E31734A7699
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 18:14:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7F24A76BB
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 18:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbiBBROg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 12:14:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
+        id S239962AbiBBRVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 12:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiBBROf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 12:14:35 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10645C06173B
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 09:14:35 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id i10so571068ybt.10
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 09:14:35 -0800 (PST)
+        with ESMTP id S229494AbiBBRVu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 12:21:50 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DB4C061714;
+        Wed,  2 Feb 2022 09:21:50 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id c188so26341724iof.6;
+        Wed, 02 Feb 2022 09:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2PHyVUVYWEHQaEKpOEUsKaJbOWLxLTsmgbpmZOLISTU=;
-        b=FBHP57MxCHCtTuFnnvPb5r6y9sh9yrN/3VV7ZtjG4902ARN50XAJ5J0GEMtLNvg85c
-         2y6fwZdD76CpK5LXwbPzH11eW7IqxP1bL2N0qR+TX5+jb83FcmM9VTVPsTSRCuOctvVf
-         RULshAWkIVf6U92OWOgdz33D5ZhYK9LdZ25a8H/deZ5qPMhe32JQMcQyw8OgI7uLNRf4
-         VE2K4k+apfBMnc2ASpBpfYl2EcQuvvDxW8kNCgv481FCsCDBNd0oKZAMBj7mX6tpDaUm
-         l5C7P5iKqJvExfQmU3179+4WsQwSQ7zx49wZatgIZqiJwXKnhRMcghwmalVan/swTLSY
-         X+MQ==
+        bh=l2sPZoZLZM5UNrXAdt0vEGZKUq7ufDiPN15k+FUCD3A=;
+        b=VLTC/554KF+q9bgKU1U6wDk+hmnzrF6ZoVq4Bf7ZlndAgARDnL2c8QzETPocCT4PN1
+         UjuwQc0vi3MAzFCrIu7LTq/y52x7QUE2iYFmW1Es3s1jfqJK3Dktso9FuyiicOsiSkyR
+         9hQrNQ97lvJ9n0KZ4aiOs7pTqwsIUTfxMI82C/LvFYfibkttKGHoGumYINRKhwOJFF1o
+         PCmoqdFudQF/VaiciXZiQGUvsUdUPcFFDvO+6OD891ceTiw+DBodl1/Z+2rUzyxlAil9
+         KoYEF6OAqjUP0/tcERKZ+w/jy5FDRQ8FXZADM1K0nM5PgMdD2VRfHnOE03wF4nXJYa1S
+         LpPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2PHyVUVYWEHQaEKpOEUsKaJbOWLxLTsmgbpmZOLISTU=;
-        b=gIVeVRHNOf2nZlsnEK/Bc7G1c7e6LuTVCoLEsFWg1O7DHYWUw/DnPbgvx7NJn4ymtA
-         spReIAlMfwbENeUuKl5N3SrGzn/9S5fojPopnAFdt1+I+1Qic1OojJXhdjtLFVm2ayzS
-         4mDfO8o9hs65X5YabUR+jYjHeE0UgkhQhrJueMy/nLnXRc7vz8t3SKbBDnS8XwBn0pTN
-         eUmapda5FUFytCo9a0qIA9K1aXJoupNIoy2iZdsISiR4TYzMypg8CHpcsXeE5NGhFeeI
-         OVESMfdoZ/8PTAFxykaoXq0nP4jiGpl0/16sfsrRRTWDl96ZQooGzo2ypW1BQm7uepT6
-         Yztw==
-X-Gm-Message-State: AOAM532FE2IR0SXF0deEp+XSPAi2kaB1whWoIAuJiWo9NskV3ZZZNVAC
-        L3AuTStEIL2s66muC/Ciqz8Qx6lmKaLOk/Q0/yayDlxCi9ABz4Zb
-X-Google-Smtp-Source: ABdhPJzZtM1EDVsi+zSTsCFC2siJzI18W5/giGGoB/BVS0d/5XAW/VrGenGm6xrceO+5Ga5pTv33nL41FZWlT0TIzZ4=
-X-Received: by 2002:a81:8411:: with SMTP id u17mr1627887ywf.414.1643822073954;
- Wed, 02 Feb 2022 09:14:33 -0800 (PST)
+        bh=l2sPZoZLZM5UNrXAdt0vEGZKUq7ufDiPN15k+FUCD3A=;
+        b=1EX6JIeLPqrOVS8GGXpHee384ZQenG8BEWcC5w9uIeFyhsi6eVCHYZ5ClLdXyCoAj6
+         2gC7ej1oqs2nADPEyWMMQV5xL7juIL+FrU5CezD/ul+KeajRgnpbWXnCTHNK8vUOagiK
+         I9ob5jIaR7tD2scnCstK6LFbax4D4LI2EgovBdPKT6y16mmkU7DoOY5ytpVFa/OfBX+I
+         tt0QDBZ6qnpApYdcgPYUSUbje/iEIJ7+nenLKJdOu3GNFfyi36vG0Ms75mtBbUHYXGA7
+         S2cU7HtaPEk92tLQtwkfTaOlTu1Npj3gMj7GR30NBOwoxKvHomkTvCsl0SLnK/UJNv3Q
+         frlg==
+X-Gm-Message-State: AOAM533zmLeWkLqSaNKDc+TjzmJnKKc0TuGFLa2f8ynE0svj+DaZfkiF
+        OZECF2lwDE3D3OZwOXDx/2dW5iuGXbJiWs5W2pM=
+X-Google-Smtp-Source: ABdhPJxDSFxnMdpWOtS6mzv79l9BNzJJ311pt8zNnyjheH9nSQ9ORXSdhmSd3Fo7+5H34nAslT/8RCwWsVfRw4vblEQ=
+X-Received: by 2002:a5d:88c1:: with SMTP id i1mr7185749iol.154.1643822510158;
+ Wed, 02 Feb 2022 09:21:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20220202122848.647635-1-bigeasy@linutronix.de> <20220202122848.647635-3-bigeasy@linutronix.de>
-In-Reply-To: <20220202122848.647635-3-bigeasy@linutronix.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 2 Feb 2022 09:14:22 -0800
-Message-ID: <CANn89iJoLSRP0zckRN0HtY=ii7VDkcoCP0SzMdzL99Tiw=EJDw@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/4] net: dev: Remove get_cpu() in netif_rx_internal().
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20220123221932.537060-1-jolsa@kernel.org> <CAEf4BzZj7awfwi-JoAB=aahxVF8p6FKhgu4OKpyY_pjePy75ig@mail.gmail.com>
+ <CAEf4BzZrggU7Ym7bucvjG7K+AmtxhD8UGCMPqXdpL3stUhpOEg@mail.gmail.com> <YfpYKri5i+Go9DlU@kernel.org>
+In-Reply-To: <YfpYKri5i+Go9DlU@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Feb 2022 09:21:38 -0800
+Message-ID: <CAEf4BzZCOF535S=xiYuUdRbahrQ_C7knetu0_ZrRS6-gyvvYpA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf/bpf: Remove prologue generation
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 4:28 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On Wed, Feb 2, 2022 at 2:08 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> The get_cpu() usage was added in commit
->     b0e28f1effd1d ("net: netif_rx() must disable preemption")
+> Em Tue, Feb 01, 2022 at 05:01:38PM -0800, Andrii Nakryiko escreveu:
+> > On Mon, Jan 24, 2022 at 12:24 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Sun, Jan 23, 2022 at 2:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > Removing code for ebpf program prologue generation.
+> > > >
+> > > > The prologue code was used to get data for extra arguments specified
+> > > > in program section name, like:
+> > > >
+> > > >   SEC("lock_page=__lock_page page->flags")
+> > > >   int lock_page(struct pt_regs *ctx, int err, unsigned long flags)
+> > > >   {
+> > > >          return 1;
+> > > >   }
+> > > >
+> > > > This code is using deprecated libbpf API and blocks its removal.
+> > > >
+> > > > This feature was not documented and broken for some time without
+> > > > anyone complaining, also original authors are not responding,
+> > > > so I'm removing it.
+> > > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >  tools/perf/Makefile.config     |  11 -
+> > > >  tools/perf/builtin-record.c    |  14 -
+> > > >  tools/perf/util/bpf-loader.c   | 242 +---------------
+> > > >  tools/perf/util/bpf-prologue.c | 508 ---------------------------------
+> > > >  tools/perf/util/bpf-prologue.h |  37 ---
+> > > >  5 files changed, 1 insertion(+), 811 deletions(-)
+> > >
+> > > Love the stats! Thanks for taking this on!
+> > >
+> >
+> > Hi,
+> >
+> > Was this ever applied? If not, are there any blockers? I assume this
+> > will go through the perf tree, right?
 >
-> because ip_dev_loopback_xmit() invoked netif_rx() with enabled preemtion
-> causing a warning in smp_processor_id(). The function netif_rx() should
-> only be invoked from an interrupt context which implies disabled
-> preemption. The commit
->    e30b38c298b55 ("ip: Fix ip_dev_loopback_xmit()")
->
-> was addressing this and replaced netif_rx() with in netif_rx_ni() in
-> ip_dev_loopback_xmit().
->
-> Based on the discussion on the list, the former patch (b0e28f1effd1d)
-> should not have been applied only the latter (e30b38c298b55).
->
-> Remove get_cpu() since the function is supossed to be invoked from
-> context with stable per-CPU pointers (either by disabling preemption or
-> software interrupts).
->
-> Link: https://lkml.kernel.org/r/20100415.013347.98375530.davem@davemloft.net
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
+> I'll go thru it today.
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Great, thank you!
 
-Thanks !
+>
+> > > >  delete mode 100644 tools/perf/util/bpf-prologue.c
+> > > >  delete mode 100644 tools/perf/util/bpf-prologue.h
+> > > >
+> > >
+> > > [...]
+>
+> --
+>
+> - Arnaldo
