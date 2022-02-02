@@ -2,125 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 608654A7B4A
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30034A7B55
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347557AbiBBWta (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 17:49:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        id S243149AbiBBWz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 17:55:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbiBBWt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 17:49:29 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277EC061714
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 14:49:29 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id m17so608923ilj.12
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 14:49:29 -0800 (PST)
+        with ESMTP id S231478AbiBBWz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 17:55:56 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A902C061714;
+        Wed,  2 Feb 2022 14:55:56 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id p63so964970iod.11;
+        Wed, 02 Feb 2022 14:55:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sMZh+O+Znnutj2UCDXdXZBgjyz9i+XiLEittzNIlEuE=;
-        b=I9DCqMSD8Xx1/jQce5utIiqCV8WatVX7xlt4mP+gJEY7W51+g3VXCb7CmKC3xUKcL1
-         AKrVQWQBhpdiRs690zjRPJgYV2XOz+AhUVuJ3GDConej46UY9KHySFiQooJphOAys26S
-         MEvB725ULu8cOwnNl9K48YRSRNdOd+3xHhBYSekjK36oaSluSNdbgQB2n744Jr9BwdUI
-         RTkI75QfsT0zgbp0qsAIcW6tEbQ1xjDmuO6BUFtYfbo4FQhT4pPQwPZ+f3zIVLOyRO+d
-         LbltQiHa588gjAsKncJTkfMVLDi0JuWfhlHBq/i6PD6ElXReRGJ5CEmozjI05eYUMEkd
-         J0+w==
+         :cc:content-transfer-encoding;
+        bh=OELsvASIYn9h/x+6wF74orkFSnnpzIluI7lMFjvz9lk=;
+        b=pO96Voi42cmdwTYhFLcsQWHVfmaPBQiAZyaxGi/wASIHvnlPR5HptbsEUBdeJRuSkP
+         jvlhcMmYuCc/6vjiVKzf1loJFBd0PiBfaMP+9qd24CvjpWT9w4N8lSXtQZN6AAxI9Ttc
+         yg8R8iUB6Q9wx6+cd7LqQjDwm8nePJKU0Qrzk3UE0USWJozTFZ9JCleB8+6PY6QcqoTT
+         UQ2Xk8qki5XkkxIlR7l39ERPYNvgNTC0mJoe9ZsJZWHAXhuCU8eepeKLNRLVb44OJLV8
+         MmlYMOv5AjOKGVmsNmP+CmOW8ezt0iyJaODAtBckB9Lv6reA1/pcgMleifZasFXulEIE
+         jyXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sMZh+O+Znnutj2UCDXdXZBgjyz9i+XiLEittzNIlEuE=;
-        b=YiH6qmDjcVUOJOMxoACsgPUy/R0OQJpM+Ohc40bxtg0mUvGzXZQw/s6zytv4ElNP7T
-         6rKrtR3djPyXt4YondWXOk4t4CxFP/lj9ify9VkQswA4Slfoh5hRfJFMdodOdCNe3Gtn
-         9/2GOX8aYPXaBpNvN//ZSAnJf2fQb6WD7yNiWePwMWX1+PCCfbhrrAlEZjHfTRpIHpQt
-         /3PW4h+uN9i/N2hr4Uu+WKXNDdNFMRKyit8O7LYaS2GO6NIFNkc7NgWnNdKn5skwnZtC
-         +Dyw9Nat9Z2oRVh3e5e4PldWnWeXBDZXBHbjqojotu6zrM2qyV0aHMUXxe8Fy42z60t9
-         4EAQ==
-X-Gm-Message-State: AOAM533oAtoUdebWwqsYVv8Dvzdg6JR5TymNfFj7tFm1KJSqfa+l5y/o
-        fXyMq4xoZapQvR4L1olXQ5AzzHDVkB7R+ogQGQSRHWxN
-X-Google-Smtp-Source: ABdhPJxo3+0BxxPttB+tcSyK/5kI9fswVi+XwbfOHuRm3cLqHl9Y9LlUJvio9jkI8plnFfAXQmlW63b0YHN/Mt2K0Jk=
-X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr13166935ilv.305.1643842169163;
- Wed, 02 Feb 2022 14:49:29 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OELsvASIYn9h/x+6wF74orkFSnnpzIluI7lMFjvz9lk=;
+        b=jEu4Vc2D4+PXqzP/Ok2ctMUY2oEsO5ou+LCftDMyG7p0kwj0k8ohAc5v/25psJzcwc
+         mo8WTvV8Z+rV+Wvxo7rzVQVu68otyFFvfDd4A+F2g5Cf424+I2KyZTC3Yc6+CNd+wmSO
+         HCKrUdE8mvp2HRgZI9C0V+TOnF+63HN8Wh0zoQ5zZlBF9TQBvDYtsNfDlb7eKD8iZj3I
+         /hudV4x6lwasXHCitp4gzQ9fRr8Ezvs4BrbBKKY5FqnAp6M0ZZI2cVYFbHIZgcixCAsi
+         iiJH+WlPHNxdztlnFUis9/GHKqK39T3YYsoOLioZ9cQd5cMOG4MANA3Ut8MIM5P7b2hp
+         PftA==
+X-Gm-Message-State: AOAM532UR0y8zaIFwxJvJKuPTgbYkdekgSUqFFSW5kY9Aom6Q8h/5Pn2
+        +jwmHOnbp/RCEk+4AUCBOVbZy//2AvGxBQF9qj0=
+X-Google-Smtp-Source: ABdhPJzGPTAtzeGMnYQuU7H2jOSu82sC2PPZ2jXKy0ZE1LZOy4N4yux1KOkbkPqkQnbsKHaygQdF/ZgicbcCa0Zwvzw=
+X-Received: by 2002:a5e:8406:: with SMTP id h6mr17423704ioj.144.1643842556004;
+ Wed, 02 Feb 2022 14:55:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20220201234200.1836443-1-iii@linux.ibm.com> <20220201234200.1836443-2-iii@linux.ibm.com>
- <YfrmO+pcSqrrbC3E@osiris>
-In-Reply-To: <YfrmO+pcSqrrbC3E@osiris>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-7-mauricio@kinvolk.io>
+In-Reply-To: <20220128223312.1253169-7-mauricio@kinvolk.io>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 14:49:17 -0800
-Message-ID: <CAEf4BzYDumk98_casBB=gnvP7r9hymyVsPC35G5z_Eye=b6ufQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+Date:   Wed, 2 Feb 2022 14:55:44 -0800
+Message-ID: <CAEf4BzZ33dhRcySttxSJ6BA-1pCkbebEksLVa-cR08W=YV6x=w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
+ for BTFGen
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        bpf <bpf@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 12:14 PM Heiko Carstens <hca@linux.ibm.com> wrote:
+On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
+ wrote:
 >
-> On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
-> > user_pt_regs is used by eBPF in order to access userspace registers -
-> > see commit 466698e654e8 ("s390/bpf: correct broken uapi for
-> > BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
-> > syscall argument from eBPF programs, we need to export orig_gpr2.
-> >
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> >  arch/s390/include/asm/ptrace.h      | 2 +-
-> >  arch/s390/include/uapi/asm/ptrace.h | 1 +
-> >  2 files changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
-> > index 4ffa8e7f0ed3..c8698e643904 100644
-> > --- a/arch/s390/include/asm/ptrace.h
-> > +++ b/arch/s390/include/asm/ptrace.h
-> > @@ -83,9 +83,9 @@ struct pt_regs {
-> >                       unsigned long args[1];
-> >                       psw_t psw;
-> >                       unsigned long gprs[NUM_GPRS];
-> > +                     unsigned long orig_gpr2;
-> >               };
-> >       };
-> > -     unsigned long orig_gpr2;
-> >       union {
-> >               struct {
-> >                       unsigned int int_code;
-> > diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uapi/asm/ptrace.h
-> > index ad64d673b5e6..b3dec603f507 100644
-> > --- a/arch/s390/include/uapi/asm/ptrace.h
-> > +++ b/arch/s390/include/uapi/asm/ptrace.h
-> > @@ -295,6 +295,7 @@ typedef struct {
-> >       unsigned long args[1];
-> >       psw_t psw;
-> >       unsigned long gprs[NUM_GPRS];
-> > +     unsigned long orig_gpr2;
-> >  } user_pt_regs;
+> This commit implements the logic to record the relocation information
+> for the different kind of relocations.
 >
-> Isn't this broken on nearly all architectures? I just checked powerpc,
-> arm64, and riscv. While powerpc seems to mirror pt_regs as user_pt_regs,
-> and therefore exports orig_gpr3, the bpf macros still seem to access the
-> wrong location to access the first syscall parameter(?).
+> btfgen_record_field_relo() uses the target specification to save all the
+> types that are involved in a field-based CO-RE relocation. In this case
+> types resolved and added recursively (using btfgen_put_type()).
+> Only the struct and union members and their types) involved in the
+> relocation are added to optimize the size of the generated BTF file.
 >
-> For arm64 and riscv it seems that orig_x0 or orig_a0 respectively need to
-> be added to user_pt_regs too, and the same fix like for s390 needs to be
-> applied as well.
+> On the other hand, btfgen_record_type_relo() saves the types involved in
+> a type-based CO-RE relocation. In this case all the members for the
+> struct and union types are added. This is not strictly required since
+> libbpf doesn't use them while performing this kind of relocation,
+> however that logic could change on the future. Additionally, we expect
+> that the number of this kind of relocations in an BPF object to be very
+> low, hence the impact on the size of the generated BTF should be
+> negligible.
+>
+> Finally, btfgen_record_enumval_relo() saves the whole enum type for
+> enum-based relocations.
+>
+> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> ---
 
-We just recently added syscall-specific macros to libbpf and fixed
-this issue for x86-64. It would be great if people familiar with other
-architectures contribute fixes for other architectures. Thanks!
+I've been thinking about this in background. This proliferation of
+hashmaps to store used types and their members really adds to
+complexity (and no doubt to memory usage and CPU utilization, even
+though I don't think either is too big for this use case).
+
+What if instead of keeping track of used types and members separately,
+we initialize the original struct btf and its btf_type, btf_member,
+btf_enum, etc types. We can carve out one bit in them to mark whether
+that specific entity was used. That way you don't need any extra
+hashmap maintenance. You just set or check bit on each type or its
+member to figure out if it has to be in the resulting BTF.
+
+This can be highest bit of name_off or type fields, depending on
+specific case. This will work well because type IDs never use highest
+bit and string offset can never be as high as to needing full 32 bits.
+
+You'll probably want to have two copies of target BTF for this, of
+course, but I think simplicity of bookkeeping trumps this
+inefficiency. WDYT?
+
+>  tools/bpf/bpftool/gen.c | 260 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 257 insertions(+), 3 deletions(-)
+>
+
+[...]
