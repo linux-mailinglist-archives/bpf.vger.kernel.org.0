@@ -2,36 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614C64A7596
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 17:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34054A762C
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 17:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbiBBQOv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 11:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbiBBQOv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 11:14:51 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F31C061714;
-        Wed,  2 Feb 2022 08:14:51 -0800 (PST)
+        id S1346026AbiBBQrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 11:47:42 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:59038 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346013AbiBBQri (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 11:47:38 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 01721B8311D;
-        Wed,  2 Feb 2022 16:14:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C821C004E1;
-        Wed,  2 Feb 2022 16:14:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CEA3A61763;
+        Wed,  2 Feb 2022 16:47:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90676C340EC;
+        Wed,  2 Feb 2022 16:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643818488;
-        bh=rpDNn5PP1EW37e80KojAMS0/AhW13rer0G1wgDxcZ4M=;
+        s=k20201202; t=1643820457;
+        bh=ze8E3yQ1FF2NJOx3ZouFGw3DDWqI+XQwfKKZzK6gJaA=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rijs+bJNQ0crU27z3nBT2y/9pWQywHFm9uIGkbrVLescriaeTi/YMRfMZdTLi6IAt
-         WyrsCQuRkNZPwcqbNvAbNkZmw84WHNvoTHQx+vlfKdSJB1L5TRwjM2yekTDgOlRGoN
-         bB7LsOBIlA/fnCEQ8TT60n8lw0V/1m45Q74l7qsBgcqkLXq+e5i6SBhm0Ojray5gV2
-         XStUFoywms9UY0L1gmRpSt/IfQPXTvDnPqhlG4eaJIDGLF57LivAVl6I2lumRmwaqM
-         D12OGuRU56rZPtrROgj9JK2OLjslaThVgFTRSQkJadgs72v62JSf//5nzKUIwKh6Ou
-         DJa1bBcfGK/CQ==
-Date:   Wed, 2 Feb 2022 08:14:47 -0800
+        b=Z0rlm+ivd6vA/nxTPxc4gNXEpkBjy+EVK2QBL59hg3p6ID/rIhx94xv/miSu4kFpo
+         JuD6F7ZFefDqHo5vJV3tkjVBCgdgEtlqCiq9iY/ze0n1pyer4gB5+YUOHb/yvuHThe
+         YKKYJaFmeSqTRW1LMpaDDAmZNRN/02eXBzfGWqE+WAexk4YH3zUgZIvsunHJhATy1T
+         ZdzkyW1v5NW+oAHG++pmg1UTmEiM1R5j41ct2e1yUqKePoyVEl6AJnG6pobRJHhBXs
+         0uy1kiKUO8yJGCKHc1uGqtNUucQNQRdo1nf1hIpQsKoPmio0qQBhYiHVhC11VqkEKf
+         /aGKkbONl9rpg==
+Date:   Wed, 2 Feb 2022 08:47:35 -0800
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -41,13 +38,13 @@ Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Eric Dumazet <edumazet@google.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNl?= =?UTF-8?B?bg==?= 
-        <toke@toke.dk>
-Subject: Re: [PATCH net-next 0/4] net: dev: PREEMPT_RT fixups.
-Message-ID: <20220202081447.29f4fe2c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20220202122848.647635-1-bigeasy@linutronix.de>
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net-next 4/4] net: dev: Make rps_lock() disable
+ interrupts.
+Message-ID: <20220202084735.126397eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220202122848.647635-5-bigeasy@linutronix.de>
 References: <20220202122848.647635-1-bigeasy@linutronix.de>
+        <20220202122848.647635-5-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -55,13 +52,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  2 Feb 2022 13:28:44 +0100 Sebastian Andrzej Siewior wrote:
-> Hi,
-> 
-> this series removes or replaces preempt_disable() and local_irq_save()
-> sections which are problematic on PREEMPT_RT.
-> Patch 3 makes netif_rx() work from any context after I found suggestions
-> for it in an old thread. Should that work, then the context-specific
-> variants could be removed.
+On Wed,  2 Feb 2022 13:28:48 +0100 Sebastian Andrzej Siewior wrote:
+>  		/* Schedule NAPI for backlog device
+>  		 * We can use non atomic operation since we own the queue lock
+> +		 * PREEMPT_RT needs to disable interrupts here for
+> +		 * synchronisation needed in napi_schedule.
+>  		 */
+> +		if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +			local_irq_disable();
+> +
+>  		if (!__test_and_set_bit(NAPI_STATE_SCHED, &sd->backlog.state)) {
+>  			if (!rps_ipi_queued(sd))
+>  				____napi_schedule(sd, &sd->backlog);
+>  		}
+> +		if (IS_ENABLED(CONFIG_PREEMPT_RT))
+> +			local_irq_enable();
+>  		goto enqueue;
 
-Let's CC Toke, lest it escapes his attention.
+I think you can re-jig this a little more - rps_ipi_queued() only return
+0 if sd is "local" so maybe we can call __napi_schedule_irqoff()
+instead which already has the if () for PREEMPT_RT?
+
+Maybe moving the ____napi_schedule() into rps_ipi_queued() and
+renaming it to napi_schedule_backlog() or napi_schedule_rps() 
+would make the code easier to follow in that case?
