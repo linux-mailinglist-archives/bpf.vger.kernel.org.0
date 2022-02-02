@@ -2,105 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF8D4A7B8B
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 00:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 193084A7BFA
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 00:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348002AbiBBXMV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 18:12:21 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:39759 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235256AbiBBXMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 18:12:21 -0500
-Received: by mail-io1-f69.google.com with SMTP id p65-20020a6bbf44000000b00604c0757591so579069iof.6
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 15:12:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=htmVlWGuHKKb3tjIfvhIeE41rcc33nqlNcOJ/WR1NFg=;
-        b=eeaD8rvA/LjDxpxq0TnbKAbG5jDHWp06qYnMYxgeIcDqYnKDBnYEe9bkb5qCaEtdFD
-         KOZRxoawXH9QIvQ9fvrE3FdqZhC9ADV6JIWKhReDDQlqxkYqBmPiiHl5z2GCLdJmbIWm
-         xMxRW/geT2qBk5++UT36sNqbXXnB8tk1omCGqh3NcSNCwz6QUvQCZb3Rg329P1uM9Eqi
-         /6kFYV/D5wqCmEsziwh/jtbuyYlDZPPTegPrRa/VU3t7lCyVS67wvZi+gta4AiRn1zrk
-         KMwYooKMLZb0a0EZzCHcod4aJLaDfUFjvsiLiZYsIMsMb39DtVHgQX8nOb/+lQXJHv+w
-         eFEg==
-X-Gm-Message-State: AOAM533DjT4ZPTt4jWZFY8EGDO/SGDaKozNLqEG+icO+xohLDIel9Id7
-        91gwLEgqfnc/ycEp5GyRR3k9RRJR1+1BAqUeZ0OxY/ecd3Jb
-X-Google-Smtp-Source: ABdhPJwfLeBxifdPwKYe9fuxoJzEo+ppyRuD/M/W85+SkRlpjuuPSlnJBOjJ4+VpsKr+HEvsxw1SN6i8HmPmbinpLwQ5GEtxpIJv
+        id S231998AbiBBX4k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 18:56:40 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:8710 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1348201AbiBBX4i (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 18:56:38 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 212LPvTi017028
+        for <bpf@vger.kernel.org>; Wed, 2 Feb 2022 15:56:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=6plUwaNxIx2i9V0GAzrQbx8nUoyyz3llwNmOcFUWsDI=;
+ b=D81HR4/pENq7iMxTA+g1BNlvMwBwWlfOdBmRiyxXapgNwQhOnGmvwoyUKOU1W4/Z6h2c
+ MT0v0OvCuv+H6C7ZKk0f4snzl8z2vZYrQe4yf80qTNSuIECHlnJSvSEn93QHA52VVaMK
+ FFve69VJeORSmpRDTQGdFM665JVQEiIljR0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3dyb3j0vc1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 15:56:37 -0800
+Received: from twshared2974.18.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 2 Feb 2022 15:56:36 -0800
+Received: by devvm3278.frc0.facebook.com (Postfix, from userid 8598)
+        id 28F731C61C184; Wed,  2 Feb 2022 15:56:24 -0800 (PST)
+From:   Delyan Kratunov <delyank@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Delyan Kratunov <delyank@fb.com>
+Subject: [PATCH bpf-next v3 0/4] migrate from bpf_prog_test_run{,_xattr}
+Date:   Wed, 2 Feb 2022 15:54:19 -0800
+Message-ID: <20220202235423.1097270-1-delyank@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Received: by 2002:a02:70c3:: with SMTP id f186mr17553128jac.155.1643843539556;
- Wed, 02 Feb 2022 15:12:19 -0800 (PST)
-Date:   Wed, 02 Feb 2022 15:12:19 -0800
-In-Reply-To: <00000000000061d7eb05d7057144@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003de3e105d7112674@google.com>
-Subject: Re: [syzbot] WARNING in bpf_prog_test_run_xdp
-From:   syzbot <syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: wKWnHCifMeKU97aWO25d6WwhBLuPC8Q_
+X-Proofpoint-ORIG-GUID: wKWnHCifMeKU97aWO25d6WwhBLuPC8Q_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-02_11,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ suspectscore=0 mlxscore=0 malwarescore=0 adultscore=0 spamscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202020130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Fairly straight-forward mechanical transformation from bpf_prog_test_run
+and bpf_prog_test_run_xattr to the bpf_prog_test_run_opts goodness.
 
-HEAD commit:    dd5152ab338c Merge branch 'bpf-btf-dwarf5'
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=138d300c700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b210f94c3ec14b22
-dashboard link: https://syzkaller.appspot.com/bug?extid=79fd1ab62b382be6f337
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17d37f00700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14745624700000
+I did a fair amount of drive-by CHECK/CHECK_ATTR cleanups as well, though
+certainly not everything possible. Primarily, I did not want to just chan=
+ge
+arguments to CHECK calls, though I had to do a bit more than that
+in some cases (overall, -119 CHECK calls and all CHECK_ATTR calls).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com
+v2 -> v3:
+Don't introduce CHECK_OPTS, replace CHECK/CHECK_ATTR usages we need to to=
+uch
+with ASSERT_* calls instead.
+Don't be prescriptive about the opts var name and keep old names where th=
+at would
+minimize unnecessary code churn.
+Drop _xattr-specific checks in prog_run_xattr and rename accordingly.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 3596 at include/linux/thread_info.h:230 check_copy_size include/linux/thread_info.h:230 [inline]
-WARNING: CPU: 1 PID: 3596 at include/linux/thread_info.h:230 copy_from_user include/linux/uaccess.h:191 [inline]
-WARNING: CPU: 1 PID: 3596 at include/linux/thread_info.h:230 bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
-Modules linked in:
-CPU: 1 PID: 3596 Comm: syz-executor589 Not tainted 5.16.0-syzkaller-11587-gdd5152ab338c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:check_copy_size include/linux/thread_info.h:230 [inline]
-RIP: 0010:copy_from_user include/linux/uaccess.h:191 [inline]
-RIP: 0010:bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
-Code: fd 06 48 c1 e5 0c 48 01 c5 e8 b5 71 0d fa 49 81 fe ff ff ff 7f 0f 86 08 fe ff ff 4c 8b 74 24 60 4c 8b 7c 24 68 e8 09 6f 0d fa <0f> 0b 41 bc f2 ff ff ff e9 02 fb ff ff 4c 8b 74 24 60 4c 8b 7c 24
-RSP: 0018:ffffc90002acfb40 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 00000000fffff0de RCX: 0000000000000000
-RDX: ffff88801ad5ba00 RSI: ffffffff876ae697 RDI: 0000000000000003
-RBP: ffff88801e32b000 R08: 000000007fffffff R09: ffffffff8d9399d7
-R10: ffffffff876ae67b R11: 000000000000001f R12: 0000000000000dc0
-R13: ffff888019342000 R14: 0000000000000000 R15: ffffc90000d6e000
-FS:  00005555560c8300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000280 CR3: 000000001df60000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
- __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
- __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fd2338db1d9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd14e00248 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd2338db1d9
-RDX: 0000000000000048 RSI: 00000000200013c0 RDI: 000000000000000a
-RBP: 00007fd23389f1c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fd23389f250
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+v1 -> v2:
+Split selftests/bpf changes into two commits to appease the mailing list.
 
+
+Delyan Kratunov (4):
+  selftests/bpf: migrate from bpf_prog_test_run
+  selftests/bpf: migrate from bpf_prog_test_run_xattr
+  bpftool: migrate from bpf_prog_test_run_xattr
+  libbpf: Deprecate bpf_prog_test_run_xattr and bpf_prog_test_run
+
+ tools/bpf/bpftool/prog.c                      |   5 +-
+ tools/lib/bpf/bpf.h                           |   4 +-
+ .../selftests/bpf/prog_tests/atomics.c        |  72 +++---
+ .../testing/selftests/bpf/prog_tests/bpf_nf.c |  10 +-
+ .../selftests/bpf/prog_tests/check_mtu.c      |  38 +--
+ .../selftests/bpf/prog_tests/cls_redirect.c   |  10 +-
+ .../selftests/bpf/prog_tests/dummy_st_ops.c   |  27 +-
+ .../selftests/bpf/prog_tests/fentry_fexit.c   |  24 +-
+ .../selftests/bpf/prog_tests/fentry_test.c    |   7 +-
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  |  32 ++-
+ .../selftests/bpf/prog_tests/fexit_stress.c   |  22 +-
+ .../selftests/bpf/prog_tests/fexit_test.c     |   7 +-
+ .../selftests/bpf/prog_tests/flow_dissector.c |  31 ++-
+ .../prog_tests/flow_dissector_load_bytes.c    |  24 +-
+ .../selftests/bpf/prog_tests/for_each.c       |  32 ++-
+ .../bpf/prog_tests/get_func_args_test.c       |  12 +-
+ .../bpf/prog_tests/get_func_ip_test.c         |  10 +-
+ .../selftests/bpf/prog_tests/global_data.c    |  24 +-
+ .../bpf/prog_tests/global_func_args.c         |  13 +-
+ .../selftests/bpf/prog_tests/kfree_skb.c      |  16 +-
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  46 ++--
+ .../selftests/bpf/prog_tests/ksyms_module.c   |  23 +-
+ .../selftests/bpf/prog_tests/l4lb_all.c       |  35 ++-
+ .../selftests/bpf/prog_tests/map_lock.c       |  15 +-
+ .../selftests/bpf/prog_tests/map_ptr.c        |  16 +-
+ .../selftests/bpf/prog_tests/modify_return.c  |  33 +--
+ .../selftests/bpf/prog_tests/pkt_access.c     |  26 +-
+ .../selftests/bpf/prog_tests/pkt_md_access.c  |  14 +-
+ .../selftests/bpf/prog_tests/prog_run_opts.c  |  77 ++++++
+ .../selftests/bpf/prog_tests/prog_run_xattr.c |  83 ------
+ .../bpf/prog_tests/queue_stack_map.c          |  46 ++--
+ .../bpf/prog_tests/raw_tp_test_run.c          |  64 ++---
+ .../bpf/prog_tests/raw_tp_writable_test_run.c |  16 +-
+ .../selftests/bpf/prog_tests/signal_pending.c |  23 +-
+ .../selftests/bpf/prog_tests/skb_ctx.c        |  81 +++---
+ .../selftests/bpf/prog_tests/skb_helpers.c    |  16 +-
+ .../selftests/bpf/prog_tests/sockmap_basic.c  |  20 +-
+ .../selftests/bpf/prog_tests/spinlock.c       |  14 +-
+ .../selftests/bpf/prog_tests/syscall.c        |  10 +-
+ .../selftests/bpf/prog_tests/tailcalls.c      | 238 +++++++++---------
+ .../selftests/bpf/prog_tests/test_profiler.c  |  14 +-
+ .../bpf/prog_tests/test_skb_pkt_end.c         |  15 +-
+ .../testing/selftests/bpf/prog_tests/timer.c  |   7 +-
+ .../selftests/bpf/prog_tests/timer_mim.c      |   7 +-
+ .../selftests/bpf/prog_tests/trace_ext.c      |  28 ++-
+ tools/testing/selftests/bpf/prog_tests/xdp.c  |  34 ++-
+ .../bpf/prog_tests/xdp_adjust_frags.c         |  32 ++-
+ .../bpf/prog_tests/xdp_adjust_tail.c          | 122 +++++----
+ .../selftests/bpf/prog_tests/xdp_bpf2bpf.c    |  14 +-
+ .../selftests/bpf/prog_tests/xdp_noinline.c   |  44 ++--
+ .../selftests/bpf/prog_tests/xdp_perf.c       |  19 +-
+ tools/testing/selftests/bpf/test_lru_map.c    |  11 +-
+ tools/testing/selftests/bpf/test_verifier.c   |  16 +-
+ 53 files changed, 872 insertions(+), 807 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/prog_run_opts.=
+c
+ delete mode 100644 tools/testing/selftests/bpf/prog_tests/prog_run_xattr=
+.c
+
+--
+2.30.2
