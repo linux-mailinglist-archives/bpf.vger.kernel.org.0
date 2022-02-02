@@ -2,141 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7FA4A6BFE
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 07:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC5D4A6C07
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 08:02:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236613AbiBBG70 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 01:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S241434AbiBBHC3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 02:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234901AbiBBG7Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 01:59:25 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D62C061714;
-        Tue,  1 Feb 2022 22:59:25 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id h7so24264792iof.3;
-        Tue, 01 Feb 2022 22:59:25 -0800 (PST)
+        with ESMTP id S240449AbiBBHC3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 02:02:29 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4753C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 23:02:28 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id f17so36464888wrx.1
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 23:02:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2IxjCPSQamGn0ge0aPL35vxu066qywElzYY00Z/1OAk=;
-        b=ZrvVtULuaeeLO4AOigmHAWR8nqGHwfgHlzYHaa3Wu2xBMXmFIXp+oaSD2oeMCnU6KL
-         R0rNdOTvPZYQ8udc9clKDrSkuHg6XrnbfcbMB+jffQM6wPrOQ7M5VpcQNFTR+d4YvjSy
-         kMlcjK7SWaoMjlVv/0c9U7YhRYZNx+aKgK/8RmAgjH4NMI3bXxcP2jyR/1ekFnDmJhky
-         F+ZRBnUy14/PL6LdEnSJJg6ZchzbWJlJb3UyyY8FOJm0WlFmc8jxYYkVQB7rmmJDWkcr
-         DuD6H8PXC754fUenmha8suX2/uXIlpXlBEjlTEoQ0AtYMJJdzo48e2RILoHyiShq5x/Z
-         ok+w==
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
+        b=o8mCp3fB8hUQYgDQvGach3OVos3hHIQ3kTIujHyy16pP8x25anT+7asrLGPXM9i+CD
+         Gyqp1Whc2RH86S/WVmYqkhXyTwxuRtvmxHf2c/DLhZbQAHmHyiHRdp63qHJD98t2xIRE
+         K1KmDLqIKPjaS8m990RTR0myZrvTC14ESI54akgI0h0xc67s+XgNW6WfPhG80xth79kp
+         tbXwcZCt9ADjOauvAG65Q2xk8XY9At8FyPu7F36SEbd6N359TbV/TCuJ3cLSx/OgIhWy
+         okrHvCv+rNEMa9/Hck98NBaaTt/1tDD+w05vqGxGaZcyE2b6ZgnMIOw1NHR2QrakOU7j
+         9qrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2IxjCPSQamGn0ge0aPL35vxu066qywElzYY00Z/1OAk=;
-        b=O1kKoZNGzOgp8qSBAPB0Zu3jwC0JzPJnf6Wc+tqt6z6zpJPA7qA7nFshlW4QXjLN9S
-         p8k8fskva93+BdObRzO0IjS3dl0BrdvntcQkeJrLsxpH5HD/WSTiweXXy0kD1Lq9RKN8
-         Hbc1eMMNOMhFZwk++2pducWYGmfq+kHiqIMnOZHyJadxc05Kgo1OwBJdAvsUa0KXLRvX
-         ZhBTGpcq9Wq52K7UuQfKFFfV9M1Oon5cTP39Vw3JCqF6bYz2wvzw9GX3YEcmvheRt0l/
-         XbZE55Eh6JlCRNQoe/QMN9POJkGDMsxkppVRJSNGJKBaaWv9jc6shL7XG6QLXc0SRsPm
-         htCg==
-X-Gm-Message-State: AOAM532j6y4dLJpecRN1xDdjlcgmRIzLJC3dxvMQauJ12vhzPyLtIeYL
-        aQUB0Bu9dWpp6z0uKIPI4f+XKSfQnrrrWUrtqZztrPoC
-X-Google-Smtp-Source: ABdhPJwd6S9clhB+0Mbd33bHueQo3HbGsCCthRhXPgrjhBWcWc6fIFwMXbwk9RHBefw2gTyekBK5hQny85KWB4/4ufU=
-X-Received: by 2002:a02:2422:: with SMTP id f34mr14953219jaa.237.1643785165272;
- Tue, 01 Feb 2022 22:59:25 -0800 (PST)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=zOHJbgxEeKcTUS1M3dbg/CCHL8zxNc7o7Y1pwSiNVNQ=;
+        b=tKHDon0vTzSr3NO2XQQ+wOcsfnAEVOkrmh7e8yggi37scDrCN6N1T4pJimO2wOy1Sh
+         5hs394OrwU/FdzQczEgZzTMoH/cliXPArdydgt2Fo1r+xJMpJuxK2qY1xTVLbWHNIaHb
+         8ucQiO6hZvgAQLqRdlleckNN223+4FIS6OD47+dkW5WIS/FT4iVjzKB3nNRXuweylm+L
+         VGi9H1KaGee3yLTzagF28sNNPVQQ2FIC3reLL1VVCDs3bCtUdMp268eWq2lpVG43Fjyz
+         TN3biNKTPxwYe3GO/Z7rcPIhxGekNDYW7isLFLnJcbr1zcNCt5OUVjdX+EcRF7Eq4yXq
+         ycxg==
+X-Gm-Message-State: AOAM530353zk9e6Lams7oKMOCcgSaiA+iMYTqG9SV94vISKJK637G8li
+        tVhZgghRRSShXz+JoUYou2XyrbYkFyZKurNx9ko=
+X-Google-Smtp-Source: ABdhPJyrex/0Icgoa1oV2FlMW8irUetbz9PATZsZmnf/+kbmNt+NqcTJBnH3VJ9v8VggxBt70jMVLj62diNH+UCtWuo=
+X-Received: by 2002:a05:6000:1a8c:: with SMTP id f12mr14079261wry.153.1643785346854;
+ Tue, 01 Feb 2022 23:02:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20220131211136.71010-1-quentin@isovalent.com> <20220131211136.71010-4-quentin@isovalent.com>
-In-Reply-To: <20220131211136.71010-4-quentin@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Feb 2022 22:59:14 -0800
-Message-ID: <CAEf4BzbB3PDGTXuCou7cSbWHpKiTzZWA52UFTxzM1=Z1o4+Qjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] bpftool: Update versioning scheme
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Sender: donnalouisemchince@gmail.com
+Received: by 2002:a5d:6dc8:0:0:0:0:0 with HTTP; Tue, 1 Feb 2022 23:02:26 -0800 (PST)
+From:   DINA MCKENNA <dinamckennahowley@gmail.com>
+Date:   Wed, 2 Feb 2022 07:02:26 +0000
+X-Google-Sender-Auth: GYCQ_FkWUrItZmeNGwsT3yR7L6o
+Message-ID: <CA+4RuvsRMmS2t2ttkhvmMCkAvWdSpDxhJypumxcbea_zO4qSXg@mail.gmail.com>
+Subject: Calvary greetings.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 1:11 PM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> Since the notion of versions was introduced for bpftool, it has been
-> following the version number of the kernel (using the version number
-> corresponding to the tree in which bpftool's sources are located). The
-> rationale was that bpftool's features are loosely tied to BPF features
-> in the kernel, and that we could defer versioning to the kernel
-> repository itself.
->
-> But this versioning scheme is confusing today, because a bpftool binary
-> should be able to work with both older and newer kernels, even if some
-> of its recent features won't be available on older systems. Furthermore,
-> if bpftool is ported to other systems in the future, keeping a
-> Linux-based version number is not a good option.
->
-> It would make more sense to align bpftool's number on libbpf, maybe.
-> When versioning was introduced in bpftool, libbpf was in its initial
-> phase at v0.0.1. Now it moves faster, with regular version bumps. But
-> there are two issues if we want to pick the same numbers. First, that
-> would mean going backward on the numbering, and will be a huge pain for
-> every script trying to determine which bpftool binary is the most
-> recent (not to mention some possible overlap of the numbers in a distant
-> future). Then, bpftool could get new features or bug fixes between two
-> versions libbpf, so maybe we should not completely tie its versions to
-> libbpf, either.
->
-> Therefore, this commit introduces an independent versioning scheme for
-> bpftool. The new version is v6.0.0, with its major number incremented
-> over the current 5.16.* returned from the kernel's Makefile. The plan is
-> to update this new number from time to time when bpftool gets new
-> features or new bug fixes. These updates could possibly lead to new
-> releases being tagged on the recently created out-of-tree mirror, at
-> https://github.com/libbpf/bpftool.
->
-> Version number is moved higher in the Makefile, to make it more visible.
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
->  tools/bpf/bpftool/Makefile | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index bd5a8cafac49..b7dbdea112d3 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -1,6 +1,8 @@
->  # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->  include ../../scripts/Makefile.include
->
-> +BPFTOOL_VERSION := 6.0.0
-> +
+Hello my dear,
 
-It's going to be a PITA to not forget to update this :( As discussed,
-I'm fine with this, but I also recalled the versioning approach that
-libbpf-sys library is using (see [0]). Maybe we could steal some of
-those ideas. As in, base bpftool version on libbpf (with major version
-+ 6 as you do here), but also have "-1", "-2", etc suffixes for
-bpftool releases for when libbpf version didn't change. Don't know,
-just throwing out the idea for your consideration.
+ I sent this mail praying it will get to you in a good condition of
+health, since I myself are in a very critical health condition in
+which I sleep every night without knowing if I may be alive to see the
+next day. I bring peace and love to you. It is by the grace of God, I
+had no choice than to do what is lawful and right in the sight of God
+for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
+y
+and glory upon my life. I am Mrs. Dina. Howley Mckenna, a widow. I am
+suffering from a long time brain tumor, It has defiled all forms of
+medical treatment, and right now I have about a few months to leave,
+according to medical experts. The situation has gotten complicated
+recently with my inability to hear proper, am communicating with you
+with the help of the chief nurse herein the hospital, from all
+indication my conditions is really deteriorating and it is quite
+obvious that, according to my doctors they have advised me that I may
+not live too long, Because this illness has gotten to a very bad
+stage. I plead that you will not expose or betray this trust and
+confidence that I am about to repose on you for the mutual benefit of
+the orphans and the less privilege. I have some funds I inherited from
+my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
+Having known my condition, I decided to donate this fund to you
+believing that you will utilize it the way i am going to instruct
+herein. I need you to assist me and reclaim this money and use it for
+Charity works therein your country  for orphanages and gives justice
+and help to the poor, needy and widows says The Lord." Jeremiah
+22:15-16.=E2=80=9C and also build schools for less privilege that will be
+named after my late husband if possible and to promote the word of God
+and the effort that the house of God is maintained. I do not want a
+situation where this money will be used in an ungodly manner. That's
+why I'm taking this decision. I'm not afraid of death, so I know where
+I'm going. I accept this decision because I do not have any child who
+will inherit this money after I die.. Please I want your sincerely and
+urgent answer to know if you will be able to execute this project for
+the glory of God, and I will give you more information on how the fund
+will be transferred to your bank account. May the grace, peace, love
+and the truth in the Word of God be with you and all those that you
+love and care for.
 
-  [0] https://github.com/libbpf/libbpf-sys#versioning
+I'm waiting for your immediate reply..
 
-
->  ifeq ($(srctree),)
->  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
->  srctree := $(patsubst %/,%,$(dir $(srctree)))
-> @@ -39,9 +41,6 @@ LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
->  LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
->  LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
->
-> -ifeq ($(BPFTOOL_VERSION),)
-> -BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
-> -endif
->  LIBBPF_VERSION := $(shell make -r --no-print-directory -sC $(BPF_DIR) libbpfversion)
->
->  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
-> --
-> 2.32.0
->
+May God Bless you,
+Mrs. Dina. Howley Mckenna.
