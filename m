@@ -2,139 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAAD4A6BDE
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 07:53:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3D84A6BFF
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 07:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245053AbiBBGxJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 01:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50818 "EHLO
+        id S234935AbiBBG7V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 01:59:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244736AbiBBGwh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 01:52:37 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD1CC061779;
-        Tue,  1 Feb 2022 22:45:25 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id y84so24297526iof.0;
-        Tue, 01 Feb 2022 22:45:25 -0800 (PST)
+        with ESMTP id S234901AbiBBG7U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 01:59:20 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BE7C061714;
+        Tue,  1 Feb 2022 22:59:20 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id z7so16265355ilb.6;
+        Tue, 01 Feb 2022 22:59:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=99PdMSG7fssDvFf9N097p0XNVEdHq9damvGoLVqvdd4=;
-        b=dlVwBGPODkKb2hdVy+RFna1f85hfrd8o3Ho0QhBARg7u9l3AJ36hq434T8O4GRH3Bi
-         7RG5BBiSCUim057fW3I9gmJdpD1opz1dtEdu2qq9Q1WYuG04GTTZJzMWUys82gJ2kuGP
-         v4b5E0s1D00AesONdiJUnVwKeLVZJ+3MA8/4dVJrWcFOvjf+1wNgJVpHbC6Ym3vyV299
-         ghH6BE3VaeIHHExVmdrbe9Za47I30vEkFxPS8dPcyTG/EDVQE4EhmR0CEthTTzkd9YCB
-         1qFWXJLR1EAYRHExscmVmR6dkNqwo2PUZm66mol/HsoLqoLUYduIQO6F/dIPBZBgA4wC
-         3tIQ==
+        bh=PSiXxoo8AU6y5mlDlPCceHkoKwgUM9GGvCE5NbYR96U=;
+        b=BOyehoXFAesWHvML1nrPnxeZLN9hQhGM8LkPyt6oIRg4mBQyz0/4zs45C1B1cvGLmh
+         ALGJrMXhsqF7wbiaxonH/J+zvq/ho28FLkNcAtwBT6RKMulN7vArIsN8D6WRtMQuHEUY
+         Z2aLthDYuDumeQeLN8oDKfHVg95K/bc7kQAbMXMbP2olUoGKv5kJSMu67PZoxLcaOs3L
+         Fj4dago4rviiu4UyAV1OK3/abHTWGmMQQbCkZZWTKUa4RjPPNrWyg+jF8xd2j7Tr1CTA
+         QkW4BXo+Aa+Ce9+wLm+CXI5ojhLArMSiuALBuZ9Zz0gNL9vL4/TnCyukFzCQx1kHB39/
+         woCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=99PdMSG7fssDvFf9N097p0XNVEdHq9damvGoLVqvdd4=;
-        b=4KPXaw9mHpraX4Q29NQzlLTdgiItZ9L46ztjCJB4r8cW1YI7TqX3+8x1gs5V2/QIVb
-         tvzO41NGzCukIQaJm3nBAa6ItdspyL5vqZubGakYyIAjr4fkSavfWIYHw0C4loXGhtqT
-         ZaCuIH/2qWpRT6s8NcBOzhOY54f8CSDHKeTxRu3quv2RAas8zGd+4KvreV292Vldz2v2
-         mW/MATlCp0ot6cSnEVR2SMO/rn5kPm8ZSk33Fuz65GPSBLsP7DxoAkZW/oG3bcAYGysK
-         K8MGgWsZ10x4osh4DqM42uAla5T7I43gjTbr+O9WvIC4WJLsfHNwtrKvbmx/3e42/woR
-         G/FA==
-X-Gm-Message-State: AOAM532Jl+tP3H3hchs9g9jn4ZvaL6haV0BayIiynXFgcI+oXWsl9kus
-        C6zZHpwo78I6lLQOYNXSmG5ia5vbrf8g8ozgO1YZAfab
-X-Google-Smtp-Source: ABdhPJyXBUn6EE7VrnC4QXCLuHj6nBPcboBldShJpWMbYStfQ3wigiLdDyaESZGNveeBCHA2tGVYKqA5qE2hhwsntvE=
-X-Received: by 2002:a05:6602:2e88:: with SMTP id m8mr9299800iow.79.1643784325226;
- Tue, 01 Feb 2022 22:45:25 -0800 (PST)
+        bh=PSiXxoo8AU6y5mlDlPCceHkoKwgUM9GGvCE5NbYR96U=;
+        b=o8BEWytGxlIoOSOCTmKXGLqYNGcifSzCUjTRCGGuiupWeIZzTWMgzow+tYYzyj2lMs
+         Sdto4ovF8mezjwmP6FGsdwSIoW6VkIumUf+BK1nrCpdxIszVF+i8Ln2nI4eER9/DY1CB
+         0csPLUEfTP3J2T7GhoZ6VsemhnqKrAA7bY0qdcY4X83XsvYC2kWKmoLzdQNgML/+NRE4
+         EgfLSphn/8axcFZSWFsm+ewum9zJ1Gz0UPgErib9yvmLAvjPiFgAkKPTxCDfwcpAPzCJ
+         RjCjdFEyVlucjgKZ80ibOZvFWLsJ2NMprgKwCpPQQdRqTfeYwwL5qqcSH9KHFLcBq51f
+         O9gw==
+X-Gm-Message-State: AOAM5317J8o212pgTFuNfSaSVsyspPaBdoZBCV+VGR2kQ3qABECDqJ8t
+        pqaL5wB2gaCdnfZbArzuZhb68Q9tiq8JdU+BfVnJchWe
+X-Google-Smtp-Source: ABdhPJzPQZSBtnWWilL3s4hvZjLiozk8pK5kCj/FKbZkWquaE0anOFNwS+SW6nUI/0ECefJ1n+8pwpPX32T5bG5wy3c=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr17557747ili.239.1643785160135;
+ Tue, 01 Feb 2022 22:59:20 -0800 (PST)
 MIME-Version: 1.0
-References: <CAEf4BzYbbPT_og-_GGQYpsRmpBGRC-c1Xe8=QDybK243DhiKAQ@mail.gmail.com>
- <20220202023616.4687-1-houtao1@huawei.com>
-In-Reply-To: <20220202023616.4687-1-houtao1@huawei.com>
+References: <20220131211136.71010-1-quentin@isovalent.com> <20220131211136.71010-3-quentin@isovalent.com>
+In-Reply-To: <20220131211136.71010-3-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Feb 2022 22:45:14 -0800
-Message-ID: <CAEf4BzY_BGV_8d8+gUMva6dpnHq=JSo8oU0p3tc_o=7ii2gU4A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: use getpagesize() to initialize
- ring buffer size
-To:     Hou Tao <hotforest@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Tue, 1 Feb 2022 22:59:09 -0800
+Message-ID: <CAEf4BzbmXbJzwK1uCRmg+iwX+4TrENNac=WB_eCNSsYtMDALNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpftool: Add libbpf's version number to
+ "bpftool version" output
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hou Tao <houtao1@huawei.com>, Martin Lau <kafai@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Networking <netdev@vger.kernel.org>, Yonghong Song <yhs@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 1, 2022 at 6:36 PM Hou Tao <hotforest@gmail.com> wrote:
+On Mon, Jan 31, 2022 at 1:11 PM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Hi,
+> To help users check what version of libbpf has been used to compile
+> bpftool, embed the version number and print it along with bpftool's own
+> version number.
 >
-> > >
-> > > Hi Andrii,
-> > >
-> > > > >
-> > > > > 4096 is OK for x86-64, but for other archs with greater than 4KB
-> > > > > page size (e.g. 64KB under arm64), test_verifier for test case
-> > > > > "check valid spill/fill, ptr to mem" will fail, so just use
-> > > > > getpagesize() to initialize the ring buffer size. Do this for
-> > > > > test_progs as well.
-> > > > >
-> > > [...]
-> > >
-> > > > > diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-> > > > > index 96060ff4ffc6..e192a9f16aea 100644
-> > > > > --- a/tools/testing/selftests/bpf/progs/ima.c
-> > > > > +++ b/tools/testing/selftests/bpf/progs/ima.c
-> > > > > @@ -13,7 +13,6 @@ u32 monitored_pid = 0;
-> > > > >
-> > > > >  struct {
-> > > > >         __uint(type, BPF_MAP_TYPE_RINGBUF);
-> > > > > -       __uint(max_entries, 1 << 12);
-> > > >
-> > > > Should we just bump it to 64/128/256KB instead? It's quite annoying to
-> > > > do a split open and then load just due to this...
-> > > >
-> > > Agreed.
-> > >
-> > > > I'm also wondering if we should either teach kernel to round up to
-> > > > closes power-of-2 of page_size internally, or teach libbpf to do this
-> > > > for RINGBUF maps. Thoughts?
-> > > >
-> > > It seems that max_entries doesn't need to be page-aligned. For example
-> > > if max_entries is 4096 and page size is 65536, we can allocate a
-> > > 65536-sized page and set rb->mask 4095 and it will work. The only
-> > > downside is 60KB memory is waster, but it is the implementation
-> > > details and can be improved if subpage mapping can be supported.
-> > >
-> > > So how about removing the page-aligned restraint in kernel ?
-> > >
-> >
-> > No, if you read BPF ringbuf code carefully you'll see that we map the
-> > entire ringbuf data twice in the memory (see [0] for lame ASCII
-> > diagram), so that records that are wrapped at the end of the ringbuf
-> > and go back to the start are still accessible as a linear array. It's
-> > a very important guarantee, so it has to be page size multiple. But
-> > auto-increasing it to the closest power-of-2 of page size seems like a
-> > pretty low-impact change. Hard to imagine breaking anything except
-> > some carefully crafted tests for ENOSPC behavior.
-> >
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
+>  tools/bpf/bpftool/Documentation/common_options.rst | 3 ++-
+>  tools/bpf/bpftool/Makefile                         | 2 ++
+>  tools/bpf/bpftool/main.c                           | 3 +++
+>  3 files changed, 7 insertions(+), 1 deletion(-)
 >
-> Yes, i know the double map trick. What i tried to say is that:
-> (1) remove the page-aligned restrain for max_entries
-> (2) still allocate page-aligned memory for ringbuf
+> diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf/bpftool/Documentation/common_options.rst
+> index 908487b9c2ad..24166733d3ae 100644
+> --- a/tools/bpf/bpftool/Documentation/common_options.rst
+> +++ b/tools/bpf/bpftool/Documentation/common_options.rst
+> @@ -4,7 +4,8 @@
+>           Print short help message (similar to **bpftool help**).
 >
-> instead of rounding max_entries up to closest power-of-2 page size
-> directly, so max_entries from userspace is unchanged and double map trick
-> still works.
+>  -V, --version
+> -         Print version number (similar to **bpftool version**), and optional
+> +         Print bpftool's version number (similar to **bpftool version**), the
+> +         version of libbpf that was used to compile the binary, and optional
+>           features that were included when bpftool was compiled. Optional
+>           features include linking against libbfd to provide the disassembler
+>           for JIT-ted programs (**bpftool prog dump jited**) and usage of BPF
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 83369f55df61..bd5a8cafac49 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -42,6 +42,7 @@ LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hash
+>  ifeq ($(BPFTOOL_VERSION),)
+>  BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
+>  endif
+> +LIBBPF_VERSION := $(shell make -r --no-print-directory -sC $(BPF_DIR) libbpfversion)
+>
 
-I don't see how. Knowing the correct and exact size of the ringbuf
-data area is mandatory for correctly consuming ringbuf data from
-user-space. But if I'm missing something, feel free to give it a try
-and see if it actually works.
+why can't you use libbpf_version_string() API instead?
 
+
+
+>  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
+>         $(QUIET_MKDIR)mkdir -p $@
+> @@ -84,6 +85,7 @@ CFLAGS += -DPACKAGE='"bpftool"' -D__EXPORTED_HEADERS__ \
+>         -I$(srctree)/tools/include \
+>         -I$(srctree)/tools/include/uapi
+>  CFLAGS += -DBPFTOOL_VERSION='"$(BPFTOOL_VERSION)"'
+> +CFLAGS += -DLIBBPF_VERSION='"$(LIBBPF_VERSION)"'
+>  ifneq ($(EXTRA_CFLAGS),)
+>  CFLAGS += $(EXTRA_CFLAGS)
+>  endif
+> diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+> index 9d01fa9de033..4bda73057980 100644
+> --- a/tools/bpf/bpftool/main.c
+> +++ b/tools/bpf/bpftool/main.c
+> @@ -89,6 +89,8 @@ static int do_version(int argc, char **argv)
 >
-> > [0] https://github.com/torvalds/linux/blob/master/kernel/bpf/ringbuf.c#L73-L89
+>                 jsonw_name(json_wtr, "version");
+>                 jsonw_printf(json_wtr, "\"%s\"", BPFTOOL_VERSION);
+> +               jsonw_name(json_wtr, "libbpf_version");
+> +               jsonw_printf(json_wtr, "\"%s\"", LIBBPF_VERSION);
 >
-> > > Regards,
-> > > Tao
+>                 jsonw_name(json_wtr, "features");
+>                 jsonw_start_object(json_wtr);   /* features */
+> @@ -102,6 +104,7 @@ static int do_version(int argc, char **argv)
+>                 unsigned int nb_features = 0;
+>
+>                 printf("%s v%s\n", bin_name, BPFTOOL_VERSION);
+> +               printf("using libbpf v%s\n", LIBBPF_VERSION);
+>                 printf("features:");
+>                 if (has_libbfd) {
+>                         printf(" libbfd");
+> --
+> 2.32.0
 >
