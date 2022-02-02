@@ -2,172 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A86894A6D6E
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 534724A6D98
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243815AbiBBJDO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 04:03:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29827 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243270AbiBBJDN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 04:03:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643792592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tBpysxXu/y6O0XEmjrfAdxp73GcDGPjpjHECrtLEYho=;
-        b=MClnfuxlWdR3xk3fK7ptu7qnElJw54QWU0bdH8Q60FQlM7URs2AtmuqsLSr87Co6+rIaTN
-        wYLTcowHbk512YXOiL7uwvUfAakMNTEnTMytqCxYR7hIp4ydEBB43UFo0TWA5Cd8E56gVd
-        Gxzqk7PYSz1oBDHUQkJ6iRWTRqGNKR8=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-rJpQrE0ZPn6LYd1A3VNbHw-1; Wed, 02 Feb 2022 04:03:11 -0500
-X-MC-Unique: rJpQrE0ZPn6LYd1A3VNbHw-1
-Received: by mail-ej1-f72.google.com with SMTP id lb14-20020a170907784e00b006aa178894fcso7820825ejc.6
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:03:11 -0800 (PST)
+        id S238614AbiBBJOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 04:14:21 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:45687 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245365AbiBBJOV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 04:14:21 -0500
+Received: by mail-io1-f70.google.com with SMTP id z28-20020a056602081c00b00611596ef96fso14774887iow.12
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:14:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tBpysxXu/y6O0XEmjrfAdxp73GcDGPjpjHECrtLEYho=;
-        b=Ixx/SWcmxqYDp9cpCUki63TjcBjq0ceWBur7m2xmzCtCY1K5UiCxgynYqaXaU2nLUb
-         kjChMFPYC3Kp5e92PCrWjJ1e03R4BQ+lXnhn60UIPTa/eCTijWVqU+Zlpsg9aagzAeGp
-         xjFfsu35oCPmFFcW2L1iJiMwGHOi7kDqySRCQ6DQEohKzl2vGq7WbOvVaAW2xSClWj51
-         91gGozXwzRlvee1ROy5j0JQ7XRmqX0kJQEz/a1dxjykW+yZh1h0A+vx9yQjU+/7rhjiM
-         PvbVyiPbJs87ADb/L2JGmqwFmeO9g6ohT2ybFaeW+9WDvhs3nW5q7TseOtbOoiOfR0FO
-         Pc6g==
-X-Gm-Message-State: AOAM533fIOLAOXauLxqbSUrgsxl5e9t3v+892qV5fEI7tQkCgiYWTgPT
-        iXoKkKLExvGp9bHTcCtcB4TxFkFx1O3gEGSYNGxAxJqF0vVCXtyl6VgjIsW9byI9m8pxdejjr5E
-        g8wsOKHWt364E
-X-Received: by 2002:a50:fb8d:: with SMTP id e13mr7042910edq.334.1643792590583;
-        Wed, 02 Feb 2022 01:03:10 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJycrgETHA1TUmaiILhylhEXqD3m5+a4ptG3yUIOx5s8nbaaTUWPlikogxZT5CXm57xkq9MSjg==
-X-Received: by 2002:a50:fb8d:: with SMTP id e13mr7042880edq.334.1643792590349;
-        Wed, 02 Feb 2022 01:03:10 -0800 (PST)
-Received: from krava ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id a6sm15414917ejs.214.2022.02.02.01.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Feb 2022 01:03:09 -0800 (PST)
-Date:   Wed, 2 Feb 2022 10:03:07 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v7 00/10] fprobe: Introduce fprobe function entry/exit
- probe
-Message-ID: <YfpIy+/Pqlw5EcZk@krava>
-References: <164360522462.65877.1891020292202285106.stgit@devnote2>
- <YfnKIyTwi+F3IPdI@krava>
- <CAEf4BzYRJuTLJc=Z9P-p3BtuKu_74MtA2MyrY_ceBxofuKuzHQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Y4zMAKmF3fJtUB5SQPyW2jumUn+FB4DDBgKyoPqrmVs=;
+        b=nEDNgymYyRU91TuAzyNG81yKbn7yYdytjgrYos23ISBWs0L0RY8K0E135gNlyfX4n7
+         x/XGoUylYfHSMs654RVnvQyzDxslgU4Btivi7W+xUHDVfMmipmnXBFd9ZtpRmMcyIyj0
+         PcltQU97NHVwgfgmBG0Fom4RwJ6cKwcJ9UFixvmH/+UfKIwRw6vB1SMst6UQoxvCLyyF
+         1AWzBG1uBkqpdvV2HPyFo/9+hhaK44v4TO++mf4UMJT+ZyoW1qFzkrxcJ6dnRmUElrUK
+         HnGg7++g6GuGPikunLDnlz3m7q0tDcopMlvfwGA5F1bh8cnC5vsejzq3pOkmQElDZJj7
+         lJjA==
+X-Gm-Message-State: AOAM532jb3OsdKdCD0nT4/rcQVJsTBtAuiTd2G2yPV/gq7Q9XJVJC0AF
+        TuUyKuzHJLqz8zACfLUpQwRtyDPnnLSy7D78Xwvdk0+84fO2
+X-Google-Smtp-Source: ABdhPJw0U4DGDJ2fpSgP7caUnjZiGgAXuNFu3X7dx25PooA913HBlmaQjKArM091EKapdvbsNSw948hgZ85Y8dFXjR3+xRtUOizi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYRJuTLJc=Z9P-p3BtuKu_74MtA2MyrY_ceBxofuKuzHQ@mail.gmail.com>
+X-Received: by 2002:a05:6602:2c44:: with SMTP id x4mr16114027iov.111.1643793260598;
+ Wed, 02 Feb 2022 01:14:20 -0800 (PST)
+Date:   Wed, 02 Feb 2022 01:14:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000061d7eb05d7057144@google.com>
+Subject: [syzbot] WARNING in bpf_prog_test_run_xdp
+From:   syzbot <syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 01, 2022 at 04:09:05PM -0800, Andrii Nakryiko wrote:
-> On Tue, Feb 1, 2022 at 4:02 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Mon, Jan 31, 2022 at 02:00:24PM +0900, Masami Hiramatsu wrote:
-> > > Hi,
-> > >
-> > > Here is the 7th version of fprobe. This version fixes unregister_fprobe()
-> > > ensures that exit_handler is not called after returning from the
-> > > unregister_fprobe(), and fixes some comments and documents.
-> > >
-> > > The previous version is here[1];
-> > >
-> > > [1] https://lore.kernel.org/all/164338031590.2429999.6203979005944292576.stgit@devnote2/T/#u
-> > >
-> > > This series introduces the fprobe, the function entry/exit probe
-> > > with multiple probe point support. This also introduces the rethook
-> > > for hooking function return as same as the kretprobe does. This
-> > > abstraction will help us to generalize the fgraph tracer,
-> > > because we can just switch to it from the rethook in fprobe,
-> > > depending on the kernel configuration.
-> > >
-> > > The patch [1/10] is from Jiri's series[2].
-> > >
-> > > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-> > >
-> > > And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
-> > > if user wants to share the same code (or share a same resource) on the
-> > > fprobe and the kprobes.
-> >
-> > hi,
-> > it works fine for bpf selftests, but when I use it through bpftrace
-> > to attach more probes with:
-> >
-> >   # ./src/bpftrace -e 'kprobe:ksys_* { }'
-> >   Attaching 27 probes
-> >
-> > I'm getting stalls like:
-> >
-> > krava33 login: [  988.574069] INFO: task bpftrace:4137 blocked for more than 122 seconds.
-> > [  988.577577]       Not tainted 5.16.0+ #89
-> > [  988.580173] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [  988.585538] task:bpftrace        state:D stack:    0 pid: 4137 ppid:  4123 flags:0x00004004
-> > [  988.589869] Call Trace:
-> > [  988.591312]  <TASK>
-> > [  988.592577]  __schedule+0x3a8/0xd30
-> > [  988.594469]  ? wait_for_completion+0x84/0x110
-> > [  988.596753]  schedule+0x4e/0xc0
-> > [  988.598480]  schedule_timeout+0xed/0x130
-> > [  988.600524]  ? rcu_read_lock_sched_held+0x12/0x70
-> > [  988.602901]  ? lock_release+0x253/0x4a0
-> > [  988.604935]  ? lock_acquired+0x1b7/0x410
-> > [  988.607041]  ? trace_hardirqs_on+0x1b/0xe0
-> > [  988.609202]  wait_for_completion+0xae/0x110
-> > [  988.613762]  __wait_rcu_gp+0x127/0x130
-> > [  988.615787]  synchronize_rcu_tasks_generic+0x46/0xa0
-> > [  988.618329]  ? call_rcu_tasks+0x20/0x20
-> > [  988.620600]  ? rcu_tasks_pregp_step+0x10/0x10
-> > [  988.623232]  ftrace_shutdown.part.0+0x174/0x210
-> > [  988.625820]  unregister_ftrace_function+0x37/0x60
-> > [  988.628480]  unregister_fprobe+0x2d/0x50
-> > [  988.630928]  bpf_link_free+0x4e/0x70
-> > [  988.633126]  bpf_link_release+0x11/0x20
-> > [  988.635249]  __fput+0xae/0x270
-> > [  988.637022]  task_work_run+0x5c/0xa0
-> > [  988.639016]  exit_to_user_mode_prepare+0x251/0x260
-> > [  988.641294]  syscall_exit_to_user_mode+0x16/0x50
-> > [  988.646249]  do_syscall_64+0x48/0x90
-> > [  988.648218]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > [  988.650787] RIP: 0033:0x7f9079e95fbb
-> > [  988.652761] RSP: 002b:00007ffd474fa3b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-> > [  988.656718] RAX: 0000000000000000 RBX: 00000000011bf8d0 RCX: 00007f9079e95fbb
-> > [  988.660110] RDX: 0000000000000000 RSI: 00007ffd474fa3b0 RDI: 0000000000000019
-> > [  988.663512] RBP: 00007ffd474faaf0 R08: 0000000000000000 R09: 000000000000001a
-> > [  988.666673] R10: 0000000000000064 R11: 0000000000000293 R12: 0000000000000001
-> > [  988.669770] R13: 00000000004a19a1 R14: 00007f9083428c00 R15: 00000000008c02d8
-> > [  988.672601]  </TASK>
-> > [  988.675763] INFO: lockdep is turned off.
-> >
-> > I have't investigated yet, any idea?
-> >
-> 
-> Do you happen to have a CPU count that's not a power of 2? Check if
-> you have [0] in your tree, it might be that.
-> 
->   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a773abf72eb0cac008743891068ca6edecc44683
+Hello,
 
-yes, that helped, thanks
+syzbot found the following issue on:
 
-jirka
+HEAD commit:    ff58831fa02d Merge branch 'Cadence-ZyncMP-SGMII'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16fe8fe4700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae0d71385f83fe54
+dashboard link: https://syzkaller.appspot.com/bug?extid=79fd1ab62b382be6f337
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com
+
+WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 check_copy_size include/linux/thread_info.h:230 [inline]
+WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 copy_from_user include/linux/uaccess.h:191 [inline]
+WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
+Modules linked in:
+CPU: 0 PID: 13059 Comm: syz-executor.3 Not tainted 5.17.0-rc1-syzkaller-00495-gff58831fa02d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:check_copy_size include/linux/thread_info.h:230 [inline]
+RIP: 0010:copy_from_user include/linux/uaccess.h:191 [inline]
+RIP: 0010:bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
+Code: fd 06 48 c1 e5 0c 48 01 c5 e8 55 76 09 fa 49 81 fe ff ff ff 7f 0f 86 08 fe ff ff 4c 8b 74 24 60 4c 8b 7c 24 68 e8 a9 73 09 fa <0f> 0b 41 bc f2 ff ff ff e9 02 fb ff ff 4c 8b 74 24 60 4c 8b 7c 24
+RSP: 0018:ffffc9000552fb40 EFLAGS: 00010212
+RAX: 000000000000011d RBX: 00000000fffff0a4 RCX: ffffc9000ba49000
+RDX: 0000000000040000 RSI: ffffffff876ee9a7 RDI: 0000000000000003
+RBP: ffff88806d779000 R08: 000000007fffffff R09: ffffffff8d94d717
+R10: ffffffff876ee98b R11: 000000000000001f R12: 0000000000000dc0
+R13: ffff88804f43a000 R14: 0000000000000000 R15: ffffc90002056000
+FS:  00007faff28c2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f4ff63b9058 CR3: 0000000074132000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
+ __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
+ __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7faff3f8f059
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007faff28c2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007faff40a2100 RCX: 00007faff3f8f059
+RDX: 0000000000000048 RSI: 0000000020000180 RDI: 000000000000000a
+RBP: 00007faff3fe908d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc3e8ffe3f R14: 00007faff28c2300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
