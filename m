@@ -2,256 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117BF4A7260
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 14:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CA04A727C
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 15:01:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344746AbiBBNyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 08:54:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51105 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344736AbiBBNy2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 08:54:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643810067;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ndZKvuTAfuQTlyvC6PEP1xi3KVMCTEpQydu3XzbTIRw=;
-        b=B+F3+zJYMQGXEcQEKAbkiBr4Xwk3mI8zsaxPXEudX+YwaZuKxJ2WARBO3SZ1JCrdts7Y9n
-        gw5lghS74xdgUTXd0FJ5E/uQkwPfbbZ4WM3NrqXSnECQWeU3MGXjnDz3n1n94M2LqpRjPL
-        G7mdP9lq5ixEUzif55s1rbQYcHe5nE4=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-167-c1sGtNiRP-SP8x2o0tTlEQ-1; Wed, 02 Feb 2022 08:54:26 -0500
-X-MC-Unique: c1sGtNiRP-SP8x2o0tTlEQ-1
-Received: by mail-ed1-f69.google.com with SMTP id n7-20020a05640205c700b0040b7be76147so5931470edx.10
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 05:54:26 -0800 (PST)
+        id S1344567AbiBBOBl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 09:01:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233516AbiBBOBk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 09:01:40 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 952C8C061714
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 06:01:40 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id g13so19016776qvw.4
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 06:01:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=E7DjwvpK8fKU+n0BvI0K3vZtJI6EGSLZ3tJ9NtovK9I=;
+        b=Tc9rvSciVyW7X3K1CIKKFb3is0GCHxQO1sZyz+4cIy7yJVuvqAC6Kpb3JpEyTQQG+m
+         3EBq4idA0LxFN2zNvtA4QVHDtXdq12Qwp6Uxu4z/vrQ8mOdvl4rL+Uk7d9ktgqtdnQ8p
+         9U2AnbLaqXDK9cffJ3R6eSHKDf9chpTu/PzEo7oB28N+bH/7dsUqdymyqgbKJDf4PLOL
+         IPVVatnXI2YA6GJLK+o9R3k5srNxq7DpU1Wkx/seJAAG1duuxmgcX4zBq169IT1AAmRm
+         5FiTbo6md7vLnFFx/UU7YlPH7npRRJe+we4FXjIEqB1XDgwkG/xLDD/RvxfDBzaWBvtG
+         O0/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ndZKvuTAfuQTlyvC6PEP1xi3KVMCTEpQydu3XzbTIRw=;
-        b=AZ4dMR7/v4ELSQpJXrIzGGnUxiPBBCgzVRmSiesFWwVzNRo+PJW2by6wQeL+dwug3n
-         T2Nzy/rZagwabTlDIpWfbdSBDNZ5jdxuf+6GXysJNVs2np4g0AhOB1YxpP6oHSqyHdeD
-         nJ6gwlZ35e168b345t9BuPmvoPbn8Phb02q4/NlbTcwsYMGJqahUiZbY4KYvWVvkq8Pi
-         776JkAxcQvuplacQCfKXpvTO7UehSWMG0qGxw3BhLW6+FGxpeU3h3d5vwVmzCavdecRb
-         sE94FKUztwd2ce7VyYY7n8FJeTcWZhTjzIvHzuhYld0UbL1V0r/BGqlCB9fFLJtuhVlk
-         YA3w==
-X-Gm-Message-State: AOAM532HiknwH+uYjt0SvfKR/g8/rMM3DD5IBfalQo3pQtlaO9JrLID1
-        V9cd6Gc5vD3G8puQyF1tVoZRAExhbOJSuI0WZzRj34/s+0AOj6QsEbBJxnkBuRoKzWX5HkZ2a27
-        rti71IJXk+6ZK
-X-Received: by 2002:a05:6402:16cf:: with SMTP id r15mr30306470edx.406.1643810065536;
-        Wed, 02 Feb 2022 05:54:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy6fmv5Qiwb3TMVnK4uiLl9uYsqBio1+nlTWUQc1NRXW+Y88hbgmFWbH25fj5/DYfJhAAS34w==
-X-Received: by 2002:a05:6402:16cf:: with SMTP id r15mr30306452edx.406.1643810065387;
-        Wed, 02 Feb 2022 05:54:25 -0800 (PST)
-Received: from krava.redhat.com (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id kw5sm8493321ejc.140.2022.02.02.05.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Feb 2022 05:54:24 -0800 (PST)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: [PATCH 8/8] selftest/bpf: Add fprobe test for bpf_cookie values
-Date:   Wed,  2 Feb 2022 14:53:33 +0100
-Message-Id: <20220202135333.190761-9-jolsa@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220202135333.190761-1-jolsa@kernel.org>
-References: <20220202135333.190761-1-jolsa@kernel.org>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=E7DjwvpK8fKU+n0BvI0K3vZtJI6EGSLZ3tJ9NtovK9I=;
+        b=gPX3RchVI6PiV5r7ZJwZawFbiTw9tO0vQoC0u+oYzLKgsjFD5MdrGIz3s1zm2Bclcw
+         Suzzh/ZTmC+JAFSTCCMxZVF93dYaUH917/xN3gJHoci2NFMW2NIn/Tm6+ouYh7baxCJ7
+         r01UOnigtmKXZLKnOQz9By+ofIAjtMDmnSoa3tlyAXc6GiMmuL/yx3LjkDJkL6FXYsK6
+         KXGuvsbP7iydx/B40r6nGHsyxtHVGqqMjz44kk1NyJsoSSyMAv/e7Q3Iv95Z1CtvXOtY
+         IR6zRcLO96sLiLzw/yXkHVnfkjjUMSgAkx+nVl/1s11GN6bIiZJu1Z3I/8B6AyPyg+Py
+         CsxQ==
+X-Gm-Message-State: AOAM533j3SFk2ZHiNel32aQqnfqfdtbouqqqcJjADk0fhrTOhSuJmcZt
+        ZA9MF5MZn0fxDkcdYv/jetZNLJ3oW5ztl2kH0Nc=
+X-Google-Smtp-Source: ABdhPJxGqJfd6Zr/yuYt+e18U5snvasg/Ex48OGlBaeunN9yXQF8c68jDOEUlqRFfXhKx/yvxL7HocbJ1ydFxXUUGnc=
+X-Received: by 2002:a05:6214:2a4c:: with SMTP id jf12mr26933389qvb.10.1643810499288;
+ Wed, 02 Feb 2022 06:01:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6214:250c:0:0:0:0 with HTTP; Wed, 2 Feb 2022 06:01:38
+ -0800 (PST)
+Reply-To: orlandomoris56@gmail.com
+From:   Orlando Moris <jonesregina165@gmail.com>
+Date:   Wed, 2 Feb 2022 14:01:38 +0000
+Message-ID: <CAMWeqz0qxf-Tk3kdXRN=QCvUsQrUQ2OU=j4-Dd8xFKUv9ba_YA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding bpf_cookie test for kprobe attached by fprobe link.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c     | 73 +++++++++++++++++++
- .../selftests/bpf/progs/fprobe_bpf_cookie.c   | 62 ++++++++++++++++
- 2 files changed, 135 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/fprobe_bpf_cookie.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-index cd10df6cd0fc..bf70d859c598 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -7,6 +7,7 @@
- #include <unistd.h>
- #include <test_progs.h>
- #include "test_bpf_cookie.skel.h"
-+#include "fprobe_bpf_cookie.skel.h"
- 
- /* uprobe attach point */
- static void trigger_func(void)
-@@ -63,6 +64,76 @@ static void kprobe_subtest(struct test_bpf_cookie *skel)
- 	bpf_link__destroy(retlink2);
- }
- 
-+static void fprobe_subtest(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-+	int err, prog_fd, link1_fd = -1, link2_fd = -1;
-+	struct fprobe_bpf_cookie *skel = NULL;
-+	__u32 duration = 0, retval;
-+	__u64 addrs[8], cookies[8];
-+
-+	skel = fprobe_bpf_cookie__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-+		goto cleanup;
-+
-+	kallsyms_find("bpf_fentry_test1", &addrs[0]);
-+	kallsyms_find("bpf_fentry_test2", &addrs[1]);
-+	kallsyms_find("bpf_fentry_test3", &addrs[2]);
-+	kallsyms_find("bpf_fentry_test4", &addrs[3]);
-+	kallsyms_find("bpf_fentry_test5", &addrs[4]);
-+	kallsyms_find("bpf_fentry_test6", &addrs[5]);
-+	kallsyms_find("bpf_fentry_test7", &addrs[6]);
-+	kallsyms_find("bpf_fentry_test8", &addrs[7]);
-+
-+	cookies[0] = 1;
-+	cookies[1] = 2;
-+	cookies[2] = 3;
-+	cookies[3] = 4;
-+	cookies[4] = 5;
-+	cookies[5] = 6;
-+	cookies[6] = 7;
-+	cookies[7] = 8;
-+
-+	opts.fprobe.addrs = (__u64) &addrs;
-+	opts.fprobe.cnt = 8;
-+	opts.fprobe.bpf_cookies = (__u64) &cookies;
-+	prog_fd = bpf_program__fd(skel->progs.test2);
-+
-+	link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FPROBE, &opts);
-+	if (!ASSERT_GE(link1_fd, 0, "link1_fd"))
-+		return;
-+
-+	cookies[0] = 8;
-+	cookies[1] = 7;
-+	cookies[2] = 6;
-+	cookies[3] = 5;
-+	cookies[4] = 4;
-+	cookies[5] = 3;
-+	cookies[6] = 2;
-+	cookies[7] = 1;
-+
-+	opts.flags = BPF_F_FPROBE_RETURN;
-+	prog_fd = bpf_program__fd(skel->progs.test3);
-+
-+	link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FPROBE, &opts);
-+	if (!ASSERT_GE(link2_fd, 0, "link2_fd"))
-+		goto cleanup;
-+
-+	prog_fd = bpf_program__fd(skel->progs.test1);
-+	err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-+				NULL, NULL, &retval, &duration);
-+	ASSERT_OK(err, "test_run");
-+	ASSERT_EQ(retval, 0, "test_run");
-+
-+	ASSERT_EQ(skel->bss->test2_result, 8, "test2_result");
-+	ASSERT_EQ(skel->bss->test3_result, 8, "test3_result");
-+
-+cleanup:
-+	close(link1_fd);
-+	close(link2_fd);
-+	fprobe_bpf_cookie__destroy(skel);
-+}
-+
- static void uprobe_subtest(struct test_bpf_cookie *skel)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-@@ -249,6 +320,8 @@ void test_bpf_cookie(void)
- 
- 	if (test__start_subtest("kprobe"))
- 		kprobe_subtest(skel);
-+	if (test__start_subtest("rawkprobe"))
-+		fprobe_subtest();
- 	if (test__start_subtest("uprobe"))
- 		uprobe_subtest(skel);
- 	if (test__start_subtest("tracepoint"))
-diff --git a/tools/testing/selftests/bpf/progs/fprobe_bpf_cookie.c b/tools/testing/selftests/bpf/progs/fprobe_bpf_cookie.c
-new file mode 100644
-index 000000000000..42cb109e5a30
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fprobe_bpf_cookie.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+extern const void bpf_fentry_test1 __ksym;
-+extern const void bpf_fentry_test2 __ksym;
-+extern const void bpf_fentry_test3 __ksym;
-+extern const void bpf_fentry_test4 __ksym;
-+extern const void bpf_fentry_test5 __ksym;
-+extern const void bpf_fentry_test6 __ksym;
-+extern const void bpf_fentry_test7 __ksym;
-+extern const void bpf_fentry_test8 __ksym;
-+
-+/* No tests, just to trigger bpf_fentry_test* through tracing test_run */
-+SEC("fentry/bpf_modify_return_test")
-+int BPF_PROG(test1)
-+{
-+	return 0;
-+}
-+
-+__u64 test2_result = 0;
-+
-+SEC("kprobe/bpf_fentry_test*")
-+int test2(struct pt_regs *ctx)
-+{
-+	__u64 cookie = bpf_get_attach_cookie(ctx);
-+	__u64 addr = bpf_get_func_ip(ctx);
-+
-+	test2_result += (const void *) addr == &bpf_fentry_test1 && cookie == 1;
-+	test2_result += (const void *) addr == &bpf_fentry_test2 && cookie == 2;
-+	test2_result += (const void *) addr == &bpf_fentry_test3 && cookie == 3;
-+	test2_result += (const void *) addr == &bpf_fentry_test4 && cookie == 4;
-+	test2_result += (const void *) addr == &bpf_fentry_test5 && cookie == 5;
-+	test2_result += (const void *) addr == &bpf_fentry_test6 && cookie == 6;
-+	test2_result += (const void *) addr == &bpf_fentry_test7 && cookie == 7;
-+	test2_result += (const void *) addr == &bpf_fentry_test8 && cookie == 8;
-+
-+	return 0;
-+}
-+
-+__u64 test3_result = 0;
-+
-+SEC("kretprobe/bpf_fentry_test*")
-+int test3(struct pt_regs *ctx)
-+{
-+	__u64 cookie = bpf_get_attach_cookie(ctx);
-+	__u64 addr = bpf_get_func_ip(ctx);
-+
-+	test3_result += (const void *) addr == &bpf_fentry_test1 && cookie == 8;
-+	test3_result += (const void *) addr == &bpf_fentry_test2 && cookie == 7;
-+	test3_result += (const void *) addr == &bpf_fentry_test3 && cookie == 6;
-+	test3_result += (const void *) addr == &bpf_fentry_test4 && cookie == 5;
-+	test3_result += (const void *) addr == &bpf_fentry_test5 && cookie == 4;
-+	test3_result += (const void *) addr == &bpf_fentry_test6 && cookie == 3;
-+	test3_result += (const void *) addr == &bpf_fentry_test7 && cookie == 2;
-+	test3_result += (const void *) addr == &bpf_fentry_test8 && cookie == 1;
-+
-+	return 0;
-+}
--- 
-2.34.1
-
+Sveiki, informuojame, kad =C5=A1is el. lai=C5=A1kas, kuris atkeliavo =C4=AF=
+ j=C5=ABs=C5=B3
+pa=C5=A1to d=C4=97=C5=BEut=C4=99, n=C4=97ra klaida, bet buvo skirtas konkre=
+=C4=8Diai jums, kad
+gal=C4=97tum=C4=97te apsvarstyti. Turiu pasi=C5=ABlym=C4=85 (7 500 000,00 U=
+SD) mano
+velionio kliento in=C5=BEinieriaus Carloso, turin=C4=8Dio t=C4=85 pat=C4=AF=
+ vard=C4=85 su
+jumis, kuris dirbo ir gyveno =C4=8Dia, Lome Toge Mano velionis klientas ir
+=C5=A1eima pateko =C4=AF automobilio avarij=C4=85, kuri nusine=C5=A1=C4=97 =
+j=C5=B3 gyvybes. .
+Kreipiuosi =C4=AF jus kaip =C4=AF artim=C4=85 mirusiojo giminait=C4=AF, kad=
+ gal=C4=97tum=C4=97te
+gauti l=C4=97=C5=A1as pagal pretenzijas. Gav=C4=99s greit=C4=85 atsakym=C4=
+=85, informuosiu apie
+re=C5=BEimus
+=C5=A1ios sutarties vykdym=C4=85. Susisiekite su manimi =C5=A1iais el
+(orlandomoris56@gmail.com )
