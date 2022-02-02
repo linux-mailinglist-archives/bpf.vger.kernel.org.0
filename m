@@ -2,72 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E26BA4A7B42
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 608654A7B4A
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347788AbiBBWsO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 17:48:14 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:33651 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235888AbiBBWsN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 17:48:13 -0500
-Received: by mail-il1-f198.google.com with SMTP id h9-20020a92d849000000b002bc4b7993fbso560441ilq.0
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 14:48:13 -0800 (PST)
+        id S1347557AbiBBWta (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 17:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231298AbiBBWt3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 17:49:29 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277EC061714
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 14:49:29 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id m17so608923ilj.12
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 14:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sMZh+O+Znnutj2UCDXdXZBgjyz9i+XiLEittzNIlEuE=;
+        b=I9DCqMSD8Xx1/jQce5utIiqCV8WatVX7xlt4mP+gJEY7W51+g3VXCb7CmKC3xUKcL1
+         AKrVQWQBhpdiRs690zjRPJgYV2XOz+AhUVuJ3GDConej46UY9KHySFiQooJphOAys26S
+         MEvB725ULu8cOwnNl9K48YRSRNdOd+3xHhBYSekjK36oaSluSNdbgQB2n744Jr9BwdUI
+         RTkI75QfsT0zgbp0qsAIcW6tEbQ1xjDmuO6BUFtYfbo4FQhT4pPQwPZ+f3zIVLOyRO+d
+         LbltQiHa588gjAsKncJTkfMVLDi0JuWfhlHBq/i6PD6ElXReRGJ5CEmozjI05eYUMEkd
+         J0+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wPRVy6cCZjxIGaY7GW0QhGPoF6HyxL4xHm0Y75S1HfY=;
-        b=YfkK7b4PTmYsmG2HUQSrtXXZqDj35+D3EE4NlxhXC6ClBlQerRpJzgdAHciScl/Cxm
-         tKcjFLuMBOiedTLh8zw2YK0w4wC6OiGyw3OTFeKKJrC2diLkKdd6HH3MLDrIEdvPlw8N
-         yS+ycOBZ4CpkTfWa5YvLGYiuNIrAk8VyfslV4WBuJHubkjb7ViFqkTChyB5Ziqmdxfr4
-         DPf+R3UQ+PJz+0T7MBszRpsTfgIuMQ9FOVod4XvjggrF+1HqHrjn0p7iYkR9JBXBsF4p
-         1VeHS5x8kPwR/4RnhQZun5nsieOL2/vNQ46ZqlOyuOmEDcEQI/SrOVNCCVONYUAPmNNR
-         6J6A==
-X-Gm-Message-State: AOAM533cN8dM7xZcyC9cxxOJYd0eQZjjU3cU3j4A49+qGSedOw97kpzS
-        Dgfvf+Sh3Gbe1W2iFfTEM3gdUa+FIJlGWLDya6D4Pg07QhzW
-X-Google-Smtp-Source: ABdhPJxazeG/KSFW4yUcasmzMOdmC/DL0bFZExqauOUeXy/hnReM+RRSSGklrexPTcyyuAPHnKRqalDWqVAqFarV3Dxl2/1VlXzE
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sMZh+O+Znnutj2UCDXdXZBgjyz9i+XiLEittzNIlEuE=;
+        b=YiH6qmDjcVUOJOMxoACsgPUy/R0OQJpM+Ohc40bxtg0mUvGzXZQw/s6zytv4ElNP7T
+         6rKrtR3djPyXt4YondWXOk4t4CxFP/lj9ify9VkQswA4Slfoh5hRfJFMdodOdCNe3Gtn
+         9/2GOX8aYPXaBpNvN//ZSAnJf2fQb6WD7yNiWePwMWX1+PCCfbhrrAlEZjHfTRpIHpQt
+         /3PW4h+uN9i/N2hr4Uu+WKXNDdNFMRKyit8O7LYaS2GO6NIFNkc7NgWnNdKn5skwnZtC
+         +Dyw9Nat9Z2oRVh3e5e4PldWnWeXBDZXBHbjqojotu6zrM2qyV0aHMUXxe8Fy42z60t9
+         4EAQ==
+X-Gm-Message-State: AOAM533oAtoUdebWwqsYVv8Dvzdg6JR5TymNfFj7tFm1KJSqfa+l5y/o
+        fXyMq4xoZapQvR4L1olXQ5AzzHDVkB7R+ogQGQSRHWxN
+X-Google-Smtp-Source: ABdhPJxo3+0BxxPttB+tcSyK/5kI9fswVi+XwbfOHuRm3cLqHl9Y9LlUJvio9jkI8plnFfAXQmlW63b0YHN/Mt2K0Jk=
+X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr13166935ilv.305.1643842169163;
+ Wed, 02 Feb 2022 14:49:29 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d68a:: with SMTP id p10mr3673258iln.85.1643842093461;
- Wed, 02 Feb 2022 14:48:13 -0800 (PST)
-Date:   Wed, 02 Feb 2022 14:48:13 -0800
-In-Reply-To: <000000000000df66a505d68df8d1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000c37d105d710d0e1@google.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in bpf_prog_test_run_xdp
-From:   syzbot <syzbot+6d70ca7438345077c549@syzkaller.appspotmail.com>
-To:     alexei.starovoitov@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, lorenzo@kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, toke@redhat.com, yhs@fb.com
+References: <20220201234200.1836443-1-iii@linux.ibm.com> <20220201234200.1836443-2-iii@linux.ibm.com>
+ <YfrmO+pcSqrrbC3E@osiris>
+In-Reply-To: <YfrmO+pcSqrrbC3E@osiris>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Feb 2022 14:49:17 -0800
+Message-ID: <CAEf4BzYDumk98_casBB=gnvP7r9hymyVsPC35G5z_Eye=b6ufQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, Feb 2, 2022 at 12:14 PM Heiko Carstens <hca@linux.ibm.com> wrote:
+>
+> On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
+> > user_pt_regs is used by eBPF in order to access userspace registers -
+> > see commit 466698e654e8 ("s390/bpf: correct broken uapi for
+> > BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
+> > syscall argument from eBPF programs, we need to export orig_gpr2.
+> >
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> >  arch/s390/include/asm/ptrace.h      | 2 +-
+> >  arch/s390/include/uapi/asm/ptrace.h | 1 +
+> >  2 files changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
+> > index 4ffa8e7f0ed3..c8698e643904 100644
+> > --- a/arch/s390/include/asm/ptrace.h
+> > +++ b/arch/s390/include/asm/ptrace.h
+> > @@ -83,9 +83,9 @@ struct pt_regs {
+> >                       unsigned long args[1];
+> >                       psw_t psw;
+> >                       unsigned long gprs[NUM_GPRS];
+> > +                     unsigned long orig_gpr2;
+> >               };
+> >       };
+> > -     unsigned long orig_gpr2;
+> >       union {
+> >               struct {
+> >                       unsigned int int_code;
+> > diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uapi/asm/ptrace.h
+> > index ad64d673b5e6..b3dec603f507 100644
+> > --- a/arch/s390/include/uapi/asm/ptrace.h
+> > +++ b/arch/s390/include/uapi/asm/ptrace.h
+> > @@ -295,6 +295,7 @@ typedef struct {
+> >       unsigned long args[1];
+> >       psw_t psw;
+> >       unsigned long gprs[NUM_GPRS];
+> > +     unsigned long orig_gpr2;
+> >  } user_pt_regs;
+>
+> Isn't this broken on nearly all architectures? I just checked powerpc,
+> arm64, and riscv. While powerpc seems to mirror pt_regs as user_pt_regs,
+> and therefore exports orig_gpr3, the bpf macros still seem to access the
+> wrong location to access the first syscall parameter(?).
+>
+> For arm64 and riscv it seems that orig_x0 or orig_a0 respectively need to
+> be added to user_pt_regs too, and the same fix like for s390 needs to be
+> applied as well.
 
-commit 1c194998252469cad00a08bd9ef0b99fd255c260
-Author: Lorenzo Bianconi <lorenzo@kernel.org>
-Date:   Fri Jan 21 10:09:58 2022 +0000
-
-    bpf: introduce frags support to bpf_prog_test_run_xdp()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15a1e914700000
-start commit:   000fe940e51f sfc: The size of the RX recycle ring should b..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17a1e914700000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13a1e914700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e029d3b2ccd4c91a
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d70ca7438345077c549
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14c08cc8700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1258f610700000
-
-Reported-by: syzbot+6d70ca7438345077c549@syzkaller.appspotmail.com
-Fixes: 1c1949982524 ("bpf: introduce frags support to bpf_prog_test_run_xdp()")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+We just recently added syscall-specific macros to libbpf and fixed
+this issue for x86-64. It would be great if people familiar with other
+architectures contribute fixes for other architectures. Thanks!
