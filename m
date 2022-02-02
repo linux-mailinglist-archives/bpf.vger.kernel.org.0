@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91A84A7838
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 19:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E204A7843
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 19:54:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346749AbiBBSs1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 13:48:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S1346775AbiBBSyv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 13:54:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346631AbiBBSs0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 13:48:26 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0323C061714;
-        Wed,  2 Feb 2022 10:48:26 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id e8so110264ilm.13;
-        Wed, 02 Feb 2022 10:48:26 -0800 (PST)
+        with ESMTP id S1346773AbiBBSyv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 13:54:51 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5080EC061714;
+        Wed,  2 Feb 2022 10:54:51 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id n17so255176iod.4;
+        Wed, 02 Feb 2022 10:54:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=+8viDUjzHqGkpJNPOlqCPdUq8AHMgUcTsfVkZ36F2po=;
-        b=lpFbu90A6b6oeRuS9UP8cDToVAxddmymexu2a1yejoyT6sMu8RxwbO2wTcniWb6pnI
-         HwkoUfLq1MKpeBnJeM6EgUrn0W+M1dIXED4ntlixW2piLCFHjDDFdXIEYARpLXF6rWm1
-         9q1Wjn/wkchrF15uxn3E1/2ixv6PtSiCXOkSHcsTSHu3lRJQ+g8ib6PVpTUBza31vRKR
-         9kWJGNsqHmA09I/w81I1L1TmW/YpJffUe/08zs6xQ9l3Gp6lVwLiBqCTbhckibfdifXm
-         tTQJqh162neOY0y3Dm9ZbtjBVuYAPhA1BsbSokuBBNZy8QQwekzTejTxZ7r/NZZyRPXL
-         JdPQ==
+        bh=+SA8BEDtHaY4DtfsLBJ5GTSOO/RAlGDy3z/jPtVWjh4=;
+        b=irZ4ATo093IjNnqgmzkV9UDb5FO8sweEev3HK2Tdp2nXeIRSS4Jsbfyzq9vucsZSdV
+         tPt5hZa1l6cafEju0StVQavoFOoNgQ4f58rNStd3miSU7mBVT3D8bQko9qhnUoxt5sY4
+         sJuPX12oCSwgRwVZzv3KCElxM+MiCaWWxrZLxqzTwxnhLduLvYNmIHH5Sntz8e57tW2k
+         EIa+JLNS3wuOzAc2zqIy1ID4FMIuZOEajcrqo7lchBoN7cGC2F/hmOxuIIVGqacV1Unj
+         eIZbaVYgfbGDpF0HgT7JBzHLU/UkB45CEBmk5GKmQiH5d3F7gtpqcXkkAWRd9VktpuvA
+         cfug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+8viDUjzHqGkpJNPOlqCPdUq8AHMgUcTsfVkZ36F2po=;
-        b=Vhmp9kPLGX7KFExTyYHg7yV/hpG3vAsPw6vlxFi9w+7eJmusg9Shp3RS1fTtC9ZNut
-         LSxXgfLgw1krwoomy3R+lPni6HUJrBQzRbdKSUD7he28hFsz1ww6uSerQyKw7tWyBfBF
-         zYNtGULoPLz8eAO5NxZ03n0Fm6hb+Jm5lu05wFA+HGQjjcsrmMLoJF49e7wj1NvOQXRL
-         9J+qig9eEWtGRySvlnY7eVrWo5SZdvqd1DY+XSU38yzgmYc1fJkX3NnxtJ3VZUj3zOuH
-         Bd4iKU7DTkc3I5Fwfm/gno3vXBUBDUaXS8p/vUgD+jEtLu+FeFYCIzGu/FrqX1H+ZQ6d
-         z8WQ==
-X-Gm-Message-State: AOAM531h6Ieg07lB1UU5wxSup3Thms/cd1uMg60E1iNAGt3mFhPxtx8I
-        7DP/cIaBYBXIjZWQKvrMIxNq8uvm4bIwKQb231E=
-X-Google-Smtp-Source: ABdhPJxIUDDFTxQIiQIOnRmGiKYI7bQ9LRvtQpwfahOU6rKuUo2hrRZNC0ttCLwe+qATkbNAlbggLzmbfy45iG2e3io=
-X-Received: by 2002:a05:6e02:2163:: with SMTP id s3mr17354104ilv.252.1643827706231;
- Wed, 02 Feb 2022 10:48:26 -0800 (PST)
+        bh=+SA8BEDtHaY4DtfsLBJ5GTSOO/RAlGDy3z/jPtVWjh4=;
+        b=36Yk6sE+4dcslIn9e4x9ihmVB6qbstHwVnW6ILeGJNOenDijDZxqAXpzJfAVP0b5+D
+         kSyZvhcr+hyd0oBnIGUVQyjRwUgT5miQaac4oSuq1RNKUyrpy9VvxpVNGhKdJWhStDrN
+         Dx5RURGScCb6ZYoKhj1yYbU9x2nF+mrAUVdyh4WlLQ4LWZdHs7mfp0OF87QlSrskhN4S
+         hvc6jvPSO/lBdo779fetLu6PTsYohbTi0ExfeBSr874SOXvvvvSzOLnrfpjrYWCT0vKk
+         PoAYAnlVfBJrMEf+6lSBTBO0Rhyg1LyvVToGsqx9OJM6rXuLnVxUMmeiCVX5xOLcnBPX
+         eglg==
+X-Gm-Message-State: AOAM532Bjlnn0j7i+8sxN0zXuTqMWoICmLfXMGTToNQ61Fx2bmKXc3Jl
+        pOMlTXJgGIUbn1ZL+Iylgj9FChop4+j2//Y6+dUneSwH2n4=
+X-Google-Smtp-Source: ABdhPJzNS70QjI40MlskNX2eQKzAJb9ElBUoMkCuGYQ4MIMrM3DiDN2fPI35+e/gSAd3PpX6NNaT7sZyboG5ryfVP/A=
+X-Received: by 2002:a5e:8406:: with SMTP id h6mr17089100ioj.144.1643828090754;
+ Wed, 02 Feb 2022 10:54:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-4-mauricio@kinvolk.io>
-In-Reply-To: <20220128223312.1253169-4-mauricio@kinvolk.io>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-2-mauricio@kinvolk.io>
+In-Reply-To: <20220128223312.1253169-2-mauricio@kinvolk.io>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 10:48:14 -0800
-Message-ID: <CAEf4BzYW54DRsJxgeXKcHPLSXs45DsCVKumV7WNd2UH=1G4MPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/9] bpftool: Implement btf_save_raw()
+Date:   Wed, 2 Feb 2022 10:54:39 -0800
+Message-ID: <CAEf4BzZQeWg25dxzbQRmDQRjuerYe_SCC775wOuPicKanXxHAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/9] libbpf: Implement changes needed for
+ BTFGen in bpftool
 To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,56 +69,149 @@ X-Mailing-List: bpf@vger.kernel.org
 On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
  wrote:
 >
-> Helper function to save a BTF object to a file.
+> This commit extends libbpf with the features that are needed to
+> implement BTFGen:
+>
+> - Implement bpf_core_create_cand_cache() and bpf_core_free_cand_cache()
+> to handle candidates cache.
+> - Expose bpf_core_add_cands() and bpf_core_free_cands to handle
+> candidates list.
+> - Expose bpf_core_calc_relo_insn() to bpftool.
 >
 > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
 > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
 > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
 > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
 > ---
-
-The logic looks good, but you need to merge adding this static
-function with the patch that's using that static function. Otherwise
-you will break bisectability because compiler will warn about unused
-static function.
-
->  tools/bpf/bpftool/gen.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  tools/lib/bpf/libbpf.c          | 44 ++++++++++++++++++++++-----------
+>  tools/lib/bpf/libbpf_internal.h | 12 +++++++++
+>  2 files changed, 41 insertions(+), 15 deletions(-)
 >
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 7db31b0f265f..64371f466fa6 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1096,6 +1096,28 @@ static int do_help(int argc, char **argv)
->         return 0;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 12771f71a6e7..61384d219e28 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -5195,18 +5195,18 @@ size_t bpf_core_essential_name_len(const char *na=
+me)
+>         return n;
 >  }
 >
-> +static int btf_save_raw(const struct btf *btf, const char *path)
+> -static void bpf_core_free_cands(struct bpf_core_cand_list *cands)
+> +void bpf_core_free_cands(struct bpf_core_cand_list *cands)
+>  {
+>         free(cands->cands);
+>         free(cands);
+>  }
+>
+> -static int bpf_core_add_cands(struct bpf_core_cand *local_cand,
+> -                             size_t local_essent_len,
+> -                             const struct btf *targ_btf,
+> -                             const char *targ_btf_name,
+> -                             int targ_start_id,
+> -                             struct bpf_core_cand_list *cands)
+> +int bpf_core_add_cands(struct bpf_core_cand *local_cand,
+> +                      size_t local_essent_len,
+> +                      const struct btf *targ_btf,
+> +                      const char *targ_btf_name,
+> +                      int targ_start_id,
+> +                      struct bpf_core_cand_list *cands)
+>  {
+>         struct bpf_core_cand *new_cands, *cand;
+>         const struct btf_type *t, *local_t;
+> @@ -5577,6 +5577,25 @@ static int bpf_core_resolve_relo(struct bpf_progra=
+m *prog,
+>                                        targ_res);
+>  }
+>
+> +struct hashmap *bpf_core_create_cand_cache(void)
 > +{
-> +       const void *data;
-> +       FILE *f =3D NULL;
-> +       __u32 data_sz;
-> +       int err =3D 0;
-> +
-> +       data =3D btf__raw_data(btf, &data_sz);
-> +       if (!data)
-> +               return -ENOMEM;
-> +
-> +       f =3D fopen(path, "wb");
-> +       if (!f)
-> +               return -errno;
-> +
-> +       if (fwrite(data, 1, data_sz, f) !=3D data_sz)
-> +               err =3D -errno;
-> +
-> +       fclose(f);
-> +       return err;
+> +       return hashmap__new(bpf_core_hash_fn, bpf_core_equal_fn, NULL);
 > +}
 > +
->  /* Create BTF file for a set of BPF objects */
->  static int btfgen(const char *src_btf, const char *dst_btf, const char *=
-objspaths[])
+> +void bpf_core_free_cand_cache(struct hashmap *cand_cache)
+> +{
+> +       struct hashmap_entry *entry;
+> +       int i;
+> +
+> +       if (IS_ERR_OR_NULL(cand_cache))
+> +               return;
+> +
+> +       hashmap__for_each_entry(cand_cache, entry, i) {
+> +               bpf_core_free_cands(entry->value);
+> +       }
+> +       hashmap__free(cand_cache);
+> +}
+> +
+>  static int
+>  bpf_object__relocate_core(struct bpf_object *obj, const char *targ_btf_p=
+ath)
 >  {
+> @@ -5584,7 +5603,6 @@ bpf_object__relocate_core(struct bpf_object *obj, c=
+onst char *targ_btf_path)
+>         struct bpf_core_relo_res targ_res;
+>         const struct bpf_core_relo *rec;
+>         const struct btf_ext_info *seg;
+> -       struct hashmap_entry *entry;
+>         struct hashmap *cand_cache =3D NULL;
+>         struct bpf_program *prog;
+>         struct bpf_insn *insn;
+> @@ -5603,7 +5621,7 @@ bpf_object__relocate_core(struct bpf_object *obj, c=
+onst char *targ_btf_path)
+>                 }
+>         }
+>
+> -       cand_cache =3D hashmap__new(bpf_core_hash_fn, bpf_core_equal_fn, =
+NULL);
+> +       cand_cache =3D bpf_core_create_cand_cache();
+>         if (IS_ERR(cand_cache)) {
+>                 err =3D PTR_ERR(cand_cache);
+>                 goto out;
+> @@ -5694,12 +5712,8 @@ bpf_object__relocate_core(struct bpf_object *obj, =
+const char *targ_btf_path)
+>         btf__free(obj->btf_vmlinux_override);
+>         obj->btf_vmlinux_override =3D NULL;
+>
+> -       if (!IS_ERR_OR_NULL(cand_cache)) {
+> -               hashmap__for_each_entry(cand_cache, entry, i) {
+> -                       bpf_core_free_cands(entry->value);
+> -               }
+> -               hashmap__free(cand_cache);
+> -       }
+> +       bpf_core_free_cand_cache(cand_cache);
+> +
+>         return err;
+>  }
+>
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_inter=
+nal.h
+> index bc86b82e90d1..686a5654262b 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -529,4 +529,16 @@ static inline int ensure_good_fd(int fd)
+>         return fd;
+>  }
+>
+> +struct hashmap;
+> +
+> +struct hashmap *bpf_core_create_cand_cache(void);
+> +void bpf_core_free_cand_cache(struct hashmap *cand_cache);
+
+looking at patch #5, there is nothing special about this cand_cache,
+it's just a hashmap from u32 to some pointer. There is no need for
+libbpf to expose it to bpftool, you already have hashmap itself and
+also btfgen_hash_fn and equality callback, just do the same thing as
+you do with btfgen_info->types hashmap.
+
+
+> +int bpf_core_add_cands(struct bpf_core_cand *local_cand,
+> +                      size_t local_essent_len,
+> +                      const struct btf *targ_btf,
+> +                      const char *targ_btf_name,
+> +                      int targ_start_id,
+> +                      struct bpf_core_cand_list *cands);
+> +void bpf_core_free_cands(struct bpf_core_cand_list *cands);
+> +
+>  #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
 > --
 > 2.25.1
 >
