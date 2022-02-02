@@ -2,26 +2,26 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4365B4A7B67
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 00:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C88B4A7B5B
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347976AbiBBXCV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Feb 2022 18:02:21 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47412 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233672AbiBBXCU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 18:02:20 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 212LfW1x025982
-        for <bpf@vger.kernel.org>; Wed, 2 Feb 2022 15:02:20 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dyjxu635q-11
+        id S1347967AbiBBW7f convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Feb 2022 17:59:35 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20646 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231336AbiBBW7d (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 17:59:33 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 212Lvg8O028299
+        for <bpf@vger.kernel.org>; Wed, 2 Feb 2022 14:59:33 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dyrahvqf4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 15:02:20 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 14:59:33 -0800
+Received: from twshared13833.42.prn1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 2 Feb 2022 15:02:19 -0800
+ 15.1.2308.21; Wed, 2 Feb 2022 14:59:32 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
         id 3AF52103F6E5F; Wed,  2 Feb 2022 14:59:26 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
@@ -37,15 +37,15 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: KPmg_EQk6S2M9fSrvtJVS4sgYYltH2mj
-X-Proofpoint-ORIG-GUID: KPmg_EQk6S2M9fSrvtJVS4sgYYltH2mj
+X-Proofpoint-GUID: BvqhBmrVLj5XU0DcJeGk2oGKPkLG7qfa
+X-Proofpoint-ORIG-GUID: BvqhBmrVLj5XU0DcJeGk2oGKPkLG7qfa
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-02_11,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
- priorityscore=1501 bulkscore=0 phishscore=0 spamscore=0 malwarescore=0
- mlxlogscore=855 suspectscore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 impostorscore=0 suspectscore=0 phishscore=0
+ mlxlogscore=858 bulkscore=0 malwarescore=0 mlxscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2201110000 definitions=main-2202020125
 X-FB-Internal: deliver
 Precedence: bulk
