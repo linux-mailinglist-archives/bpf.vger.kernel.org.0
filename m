@@ -2,122 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30034A7B55
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:55:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498DA4A7B5D
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 23:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243149AbiBBWz5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 17:55:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbiBBWz4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 17:55:56 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A902C061714;
-        Wed,  2 Feb 2022 14:55:56 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id p63so964970iod.11;
-        Wed, 02 Feb 2022 14:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OELsvASIYn9h/x+6wF74orkFSnnpzIluI7lMFjvz9lk=;
-        b=pO96Voi42cmdwTYhFLcsQWHVfmaPBQiAZyaxGi/wASIHvnlPR5HptbsEUBdeJRuSkP
-         jvlhcMmYuCc/6vjiVKzf1loJFBd0PiBfaMP+9qd24CvjpWT9w4N8lSXtQZN6AAxI9Ttc
-         yg8R8iUB6Q9wx6+cd7LqQjDwm8nePJKU0Qrzk3UE0USWJozTFZ9JCleB8+6PY6QcqoTT
-         UQ2Xk8qki5XkkxIlR7l39ERPYNvgNTC0mJoe9ZsJZWHAXhuCU8eepeKLNRLVb44OJLV8
-         MmlYMOv5AjOKGVmsNmP+CmOW8ezt0iyJaODAtBckB9Lv6reA1/pcgMleifZasFXulEIE
-         jyXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OELsvASIYn9h/x+6wF74orkFSnnpzIluI7lMFjvz9lk=;
-        b=jEu4Vc2D4+PXqzP/Ok2ctMUY2oEsO5ou+LCftDMyG7p0kwj0k8ohAc5v/25psJzcwc
-         mo8WTvV8Z+rV+Wvxo7rzVQVu68otyFFvfDd4A+F2g5Cf424+I2KyZTC3Yc6+CNd+wmSO
-         HCKrUdE8mvp2HRgZI9C0V+TOnF+63HN8Wh0zoQ5zZlBF9TQBvDYtsNfDlb7eKD8iZj3I
-         /hudV4x6lwasXHCitp4gzQ9fRr8Ezvs4BrbBKKY5FqnAp6M0ZZI2cVYFbHIZgcixCAsi
-         iiJH+WlPHNxdztlnFUis9/GHKqK39T3YYsoOLioZ9cQd5cMOG4MANA3Ut8MIM5P7b2hp
-         PftA==
-X-Gm-Message-State: AOAM532UR0y8zaIFwxJvJKuPTgbYkdekgSUqFFSW5kY9Aom6Q8h/5Pn2
-        +jwmHOnbp/RCEk+4AUCBOVbZy//2AvGxBQF9qj0=
-X-Google-Smtp-Source: ABdhPJzGPTAtzeGMnYQuU7H2jOSu82sC2PPZ2jXKy0ZE1LZOy4N4yux1KOkbkPqkQnbsKHaygQdF/ZgicbcCa0Zwvzw=
-X-Received: by 2002:a5e:8406:: with SMTP id h6mr17423704ioj.144.1643842556004;
- Wed, 02 Feb 2022 14:55:56 -0800 (PST)
+        id S1347969AbiBBW7j convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Feb 2022 17:59:39 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33946 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242439AbiBBW7i (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 17:59:38 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 212LkjEP019079
+        for <bpf@vger.kernel.org>; Wed, 2 Feb 2022 14:59:38 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3dyjy4p3bu-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 14:59:38 -0800
+Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 2 Feb 2022 14:59:32 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 15B73103F6E34; Wed,  2 Feb 2022 14:59:20 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next 0/6] Clean up leftover uses of deprecated APIs
+Date:   Wed, 2 Feb 2022 14:59:10 -0800
+Message-ID: <20220202225916.3313522-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-7-mauricio@kinvolk.io>
-In-Reply-To: <20220128223312.1253169-7-mauricio@kinvolk.io>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 14:55:44 -0800
-Message-ID: <CAEf4BzZ33dhRcySttxSJ6BA-1pCkbebEksLVa-cR08W=YV6x=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
- for BTFGen
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: mOggftRjfjLqNtpSbFFE51scYDvmX0a8
+X-Proofpoint-GUID: mOggftRjfjLqNtpSbFFE51scYDvmX0a8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-02_11,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 mlxscore=0 phishscore=0 mlxlogscore=773 malwarescore=0
+ adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202020125
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
- wrote:
->
-> This commit implements the logic to record the relocation information
-> for the different kind of relocations.
->
-> btfgen_record_field_relo() uses the target specification to save all the
-> types that are involved in a field-based CO-RE relocation. In this case
-> types resolved and added recursively (using btfgen_put_type()).
-> Only the struct and union members and their types) involved in the
-> relocation are added to optimize the size of the generated BTF file.
->
-> On the other hand, btfgen_record_type_relo() saves the types involved in
-> a type-based CO-RE relocation. In this case all the members for the
-> struct and union types are added. This is not strictly required since
-> libbpf doesn't use them while performing this kind of relocation,
-> however that logic could change on the future. Additionally, we expect
-> that the number of this kind of relocations in an BPF object to be very
-> low, hence the impact on the size of the generated BTF should be
-> negligible.
->
-> Finally, btfgen_record_enumval_relo() saves the whole enum type for
-> enum-based relocations.
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
+Clean up remaining missed uses of deprecated libbpf APIs across samples/bpf,
+selftests/bpf, libbpf, and bpftool.
 
-I've been thinking about this in background. This proliferation of
-hashmaps to store used types and their members really adds to
-complexity (and no doubt to memory usage and CPU utilization, even
-though I don't think either is too big for this use case).
+Also fix uninit variable warning in bpftool.
 
-What if instead of keeping track of used types and members separately,
-we initialize the original struct btf and its btf_type, btf_member,
-btf_enum, etc types. We can carve out one bit in them to mark whether
-that specific entity was used. That way you don't need any extra
-hashmap maintenance. You just set or check bit on each type or its
-member to figure out if it has to be in the resulting BTF.
+Andrii Nakryiko (6):
+  libbpf: stop using deprecated bpf_map__is_offload_neutral()
+  bpftool: stop supporting BPF offload-enabled feature probing
+  bpftool: fix uninit variable compilation warning
+  selftests/bpf: remove usage of deprecated feature probing APIs
+  selftests/bpf: redo the switch to new libbpf XDP APIs
+  samples/bpf: get rid of bpf_prog_load_xattr() use
 
-This can be highest bit of name_off or type fields, depending on
-specific case. This will work well because type IDs never use highest
-bit and string offset can never be as high as to needing full 32 bits.
+ samples/bpf/xdp1_user.c                       | 16 ++++++----
+ samples/bpf/xdp_adjust_tail_user.c            | 17 +++++++----
+ samples/bpf/xdp_fwd_user.c                    | 15 ++++++----
+ samples/bpf/xdp_router_ipv4_user.c            | 17 ++++++-----
+ samples/bpf/xdp_rxq_info_user.c               | 16 ++++++----
+ samples/bpf/xdp_tx_iptunnel_user.c            | 17 ++++++-----
+ tools/bpf/bpftool/common.c                    |  2 +-
+ tools/bpf/bpftool/feature.c                   | 29 +++++++++++--------
+ tools/lib/bpf/libbpf.c                        |  2 +-
+ .../selftests/bpf/prog_tests/xdp_attach.c     | 29 +++++++++----------
+ .../bpf/prog_tests/xdp_cpumap_attach.c        |  8 ++---
+ .../bpf/prog_tests/xdp_devmap_attach.c        |  8 ++---
+ .../selftests/bpf/prog_tests/xdp_info.c       | 14 ++++-----
+ .../selftests/bpf/prog_tests/xdp_link.c       | 26 ++++++++---------
+ tools/testing/selftests/bpf/test_maps.c       |  2 +-
+ tools/testing/selftests/bpf/test_verifier.c   |  4 +--
+ .../selftests/bpf/xdp_redirect_multi.c        |  8 ++---
+ tools/testing/selftests/bpf/xdping.c          |  4 +--
+ 18 files changed, 132 insertions(+), 102 deletions(-)
 
-You'll probably want to have two copies of target BTF for this, of
-course, but I think simplicity of bookkeeping trumps this
-inefficiency. WDYT?
+-- 
+2.30.2
 
->  tools/bpf/bpftool/gen.c | 260 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 257 insertions(+), 3 deletions(-)
->
-
-[...]
