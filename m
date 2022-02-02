@@ -2,193 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 050024A79C9
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 21:54:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FAA4A79E0
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 21:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347308AbiBBUyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 15:54:25 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:52358 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347294AbiBBUyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 15:54:25 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 73B97B83285
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 20:54:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE60C004E1;
-        Wed,  2 Feb 2022 20:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643835263;
-        bh=eNLKw5Oxs3mNUgs8E8X73M0/wR2OkPv132B/lWbTW9s=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DRCQeM1hLBZ+q3HZE2brRbqUBW0Kd6Wst3dG+Z6HmtQ/qjsyqADH1+ANotE3gLiot
-         OzEnWaW+qtoqT/wylIGoVIgSsp5t2hOe4kgzpC3ELLuhuvteMh/rFHsw0HPvMOHc/S
-         2QROhCACQ96WWpcXUiwGiOnLSwX54J9BxypI9V/a6D8pBklg4ljG0LUw/2vL0CYAdw
-         u9PydRaO5Ct2bluAhFkGylaiK4BqCIcU0Y2D9aoE6wAGIjhOJFLAk62UArb2JbLXos
-         CKjFM/mqIPQe7Ogq7MW3CEdm8hQEj0SBOKSA6v4MD3mNluDn6SHX3ihS+sWkrU1zGe
-         iDongN+WKTR7g==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
+        id S238325AbiBBU70 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 15:59:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230399AbiBBU7Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 15:59:25 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647EFC061714
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 12:59:24 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id a13so852629wrh.9
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 12:59:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=D4AguVXGaTCkeHSfo9EdotBSEnw7/5v1KAUvI8xr3XY=;
+        b=YbmJuNll88M1UyVzT++CM7kXZDZ4Sb+D9ZhGwOvMecq+pqoVmnUwQIb/7P/1Z9t3be
+         POgI0TbLWlx4LjtpKGhjgF3x7bYS1F3aabl1sJuS6f2kZoqR6SNFVuATNbxAvIIqC1qI
+         TeHko+nNRxOnguoppLXYpQDb2p7O4Q3gQSjsKoqiPqEfJ/bnNXCtIgZ/n8b9TZJTIp5H
+         dGyXwc7fvkntgeb/1e+mnLhFrnflZmpMmqymgRExc+Da0llPoMuQ8mVoGHoYDzXNXHDW
+         RyyBGwM7uTzyD9N5VT7u5GMj9fAF0dzXQ9qcIjb3fnxCnMC9KifxFgEkbDdPP0aRJfkT
+         wjwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=D4AguVXGaTCkeHSfo9EdotBSEnw7/5v1KAUvI8xr3XY=;
+        b=dR/k0Qec+XDgx4yMo73XEGx44Fy159nrVaz/6vXNLLl8NRYYANPmm9MfSDhWWC4xYC
+         zUrwwmM4ftAJ+smfZNATDmqMB626d3INb7pPr7i7yXYbmGPkrSHVSEmtxOdtzEgPHN7J
+         cpdrnNcIocNrwC8WKB0dXkwlV6CduQY81NbsiJepJ2c7NpaJHwQUSfgHUj+M5NL4dnFO
+         p8K2KnJCiQuR4pfjgq9ymGe1Ps7sveyp9s1QvmrZREz01SDdegm9Vx/oPNvbgvIQZ/jg
+         Sgbg265utaB4SA+k6LKu1uu6imumM0wFO+POdbx/Za1YdFzi1yanGtXnFYT9fjviyAQD
+         OJKQ==
+X-Gm-Message-State: AOAM533Y3UtD0yY+uEHAD3vAarpztMCqeeihnde3P3DVUXzkKDITKjZO
+        M0edTd03Ph2lV7nPXrBqlTgQTMNnt2kj
+X-Google-Smtp-Source: ABdhPJysPE0d3+X+sd9k3+6hezb7rALOyjeh0l17OAFcZnEy4We5o7JW26L/Q7Nii/2NImM+XdOdwA==
+X-Received: by 2002:a05:6000:18a4:: with SMTP id b4mr27012566wri.228.1643835562855;
+        Wed, 02 Feb 2022 12:59:22 -0800 (PST)
+Received: from Mem (2a01cb088160fc00aceb97be319ea013.ipv6.abo.wanadoo.fr. [2a01:cb08:8160:fc00:aceb:97be:319e:a013])
+        by smtp.gmail.com with ESMTPSA id m12sm21832573wrp.61.2022.02.02.12.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Feb 2022 12:59:22 -0800 (PST)
+Date:   Wed, 2 Feb 2022 21:59:21 +0100
+From:   Paul Chaignon <paul@isovalent.com>
 To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        toke@redhat.com, lorenzo.bianconi@redhat.com, andrii@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: [PATCH bpf-next] bpf: test_run: fix OOB access in bpf_prog_test_run_xdp
-Date:   Wed,  2 Feb 2022 21:53:20 +0100
-Message-Id: <688c26f9dd6e885e58e8e834ede3f0139bb7fa95.1643835097.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.34.1
+Cc:     Yonghong Song <yhs@fb.com>
+Subject: Packet pointers with 32-bit assignments
+Message-ID: <20220202205921.GA96712@Mem>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following kasan issue reported by syzbot:
+Hi,
 
-BUG: KASAN: slab-out-of-bounds in __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
-BUG: KASAN: slab-out-of-bounds in bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
-Write of size 8 at addr ffff888048c75000 by task syz-executor.5/23405
+We're hitting the following verifier error in Cilium, on bpf-next
+(86c7ecad3bf8) with LLVM 10.0.0 and mcpu=v3.
 
-CPU: 1 PID: 23405 Comm: syz-executor.5 Not tainted 5.16.0-syzkaller #0
-Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x8d/0x336 mm/kasan/report.c:255
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
- bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
- bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
- __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
- __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f4ea30dd059
-RSP: 002b:00007f4ea1a52168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f4ea31eff60 RCX: 00007f4ea30dd059
-RDX: 0000000000000048 RSI: 0000000020000000 RDI: 000000000000000a
-RBP: 00007f4ea313708d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc8367c5af R14: 00007f4ea1a52300 R15: 0000000000022000
- </TASK>
+    ; return (void *)(unsigned long)ctx->data;
+    2: (61) r9 = *(u32 *)(r7 +76)
+    ; R7_w=ctx(id=0,off=0,imm=0) R9_w=pkt(id=0,off=0,r=0,imm=0)
+    ; return (void *)(unsigned long)ctx->data;
+    3: (bc) w6 = w9
+    ; R6_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R9_w=pkt(id=0,off=0,r=0,imm=0)
+    ; if (data + tot_len > data_end)
+    4: (bf) r2 = r6
+    ; R2_w=inv(id=1,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6_w=inv(id=1,umax_value=4294967295,var_off=(0x0; 0xffffffff))
+    5: (07) r2 += 54
+    ; R2_w=inv(id=0,umin_value=54,umax_value=4294967349,var_off=(0x0; 0x1ffffffff))
+    ; if (data + tot_len > data_end)
+    6: (2d) if r2 > r1 goto pc+466
+    ; R1_w=pkt_end(id=0,off=0,imm=0) R2_w=inv(id=0,umin_value=54,umax_value=4294967349,var_off=(0x0; 0x1ffffffff))
+    ; tmp = a->d1 - b->d1;
+    7: (71) r2 = *(u8 *)(r6 +22)
+    R6 invalid mem access 'inv'
 
-Allocated by task 23405:
- kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:437 [inline]
- ____kasan_kmalloc mm/kasan/common.c:516 [inline]
- ____kasan_kmalloc mm/kasan/common.c:475 [inline]
- __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:525
- kmalloc include/linux/slab.h:586 [inline]
- kzalloc include/linux/slab.h:715 [inline]
- bpf_test_init.isra.0+0x9f/0x150 net/bpf/test_run.c:411
- bpf_prog_test_run_xdp+0x2f8/0x1150 net/bpf/test_run.c:941
- bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
- __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
- __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+As seen above, the verifier loses track of the packet pointer at
+instruction 3, which then leads to an invalid memory access. Since
+ctx->data is on 32 bits, LLVM generated a 32-bit assignment at
+instruction 3.
 
-The buggy address belongs to the object at ffff888048c74000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 0 bytes to the right of
- 4096-byte region [ffff888048c74000, ffff888048c75000)
-The buggy address belongs to the page:
-page:ffffea0001231c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x48c70
-head:ffffea0001231c00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42140
-raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
- prep_new_page mm/page_alloc.c:2434 [inline]
- get_page_from_freelist+0xa72/0x2f50 mm/page_alloc.c:4165
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5389
- alloc_pages+0x1aa/0x310 mm/mempolicy.c:2271
- alloc_slab_page mm/slub.c:1799 [inline]
- allocate_slab mm/slub.c:1944 [inline]
- new_slab+0x28a/0x3b0 mm/slub.c:2004
- ___slab_alloc+0x87c/0xe90 mm/slub.c:3018
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3105
- slab_alloc_node mm/slub.c:3196 [inline]
- __kmalloc_node_track_caller+0x2cb/0x360 mm/slub.c:4957
- kmalloc_reserve net/core/skbuff.c:354 [inline]
- __alloc_skb+0xde/0x340 net/core/skbuff.c:426
- alloc_skb include/linux/skbuff.h:1159 [inline]
- nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:745 [inline]
- nsim_dev_trap_report drivers/net/netdevsim/dev.c:802 [inline]
- nsim_dev_trap_report_work+0x29a/0xbc0 drivers/net/netdevsim/dev.c:843
- process_one_work+0x9ac/0x1650 kernel/workqueue.c:2307
- worker_thread+0x657/0x1110 kernel/workqueue.c:2454
- kthread+0x2e9/0x3a0 kernel/kthread.c:377
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1352 [inline]
- free_pcp_prepare+0x374/0x870 mm/page_alloc.c:1404
- free_unref_page_prepare mm/page_alloc.c:3325 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3404
- qlink_free mm/kasan/quarantine.c:157 [inline]
- qlist_free_all+0x6d/0x160 mm/kasan/quarantine.c:176
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:283
- __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:447
- kasan_slab_alloc include/linux/kasan.h:260 [inline]
- slab_post_alloc_hook mm/slab.h:732 [inline]
- slab_alloc_node mm/slub.c:3230 [inline]
- slab_alloc mm/slub.c:3238 [inline]
- kmem_cache_alloc+0x202/0x3a0 mm/slub.c:3243
- getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
- getname_flags include/linux/audit.h:323 [inline]
- getname+0x8e/0xd0 fs/namei.c:217
- do_sys_openat2+0xf5/0x4d0 fs/open.c:1208
- do_sys_open fs/open.c:1230 [inline]
- __do_sys_openat fs/open.c:1246 [inline]
- __se_sys_openat fs/open.c:1241 [inline]
- __x64_sys_openat+0x13f/0x1f0 fs/open.c:1241
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+We're usually able to avoid this by removing all 32-bit comparisons and
+additions with the 64-bit variables for data and data_end. But in this
+case, all variables are already on 64 bits.
 
-Memory state around the buggy address:
- ffff888048c74f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888048c74f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888048c75000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                   ^
- ffff888048c75080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888048c75100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Is there maybe a compiler patch we're missing which prevents such
+assignments? If not, could we teach the verifier to track and convert
+such assignments?
 
-Fixes: 1c19499825246 ("bpf: introduce frags support to bpf_prog_test_run_xdp()")
-Reported-by: syzbot+6d70ca7438345077c549@syzkaller.appspotmail.com
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- net/bpf/test_run.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 65b52b4bd6e1..0220b0822d77 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -962,6 +962,11 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			skb_frag_t *frag;
- 			int data_len;
- 
-+			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
-+				ret = -ENOMEM;
-+				goto out;
-+			}
-+
- 			page = alloc_page(GFP_KERNEL);
- 			if (!page) {
- 				ret = -ENOMEM;
--- 
-2.34.1
-
+Regards,
+Paul
