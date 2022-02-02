@@ -2,159 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BA94A6912
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 01:09:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C274A691A
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 01:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbiBBAJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 19:09:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
+        id S243160AbiBBAMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 19:12:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbiBBAJR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 19:09:17 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A29C061714;
-        Tue,  1 Feb 2022 16:09:17 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id c188so23372232iof.6;
-        Tue, 01 Feb 2022 16:09:17 -0800 (PST)
+        with ESMTP id S243127AbiBBAMW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 19:12:22 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB787C061714
+        for <bpf@vger.kernel.org>; Tue,  1 Feb 2022 16:12:21 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id m17so2530486ilj.12
+        for <bpf@vger.kernel.org>; Tue, 01 Feb 2022 16:12:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=h3/JA9Kjrf2sssKnhkWREXvE0A1YuVOdh71JBJknGvo=;
-        b=EzsitlA2IGYvG0LgoRnVrNErszE0SWnc4GlwMdh2YROhar+Q4BhKTkNFsW4g60vk57
-         zUsIg+EJBJUAvWWEjHQ9sUpZD8nnTdwzjNjaDr7behviN7spLxkuwr1xZnwrlZQlgUDH
-         +oKeDuhQgLZ3oGPoB0UzJ2NP1pKR+C4PMcay9l8MBifUKpQrm/Qk3wZCVhAAUd5ejf44
-         ieWbgFSgS6uaJ0uO63PAwYxuIKboGeYmHBgrzgmgKFoDGNNIL837kz/bdCVflI4QVd82
-         PgbkDBucGSvJercPVS1sjO+zC5wX9fVEA4bWonxZj2gJx9CEZ/gtgdzFsQNVpIYLrbC2
-         /uAg==
+        bh=1TD4OvnlttATPFFjMKUsuISAvidOf+StumdRTIsdlU8=;
+        b=mxmIwrJTEs0pwzqmqjueMykhARfqp7MHcSKemaKSynI5NbG8YRa6evIUMNpM74sjqb
+         o0emb+pA/RSCJ6gfRw4Or3gsb4BEpB6OYbMZVkWFp07a9TD6vxUyE0X9pfJGsMl1XwIL
+         qFd9yhPPHouNuzv0H0bSnb0SDZcaEgHCJxFqXsTnvCwO5teyW8m+fWF/A0p2Z9AHOQye
+         JoGplaCvUno60Vtm13etmF8G8cLv/7Ej1sK4ykKlzxwZ5XKkCMLMBHH8maI4/6AatGfe
+         pnvZfCtU//JjR3oV7m/tA1KkrHht40z64+ZM5j6jToaRQf6sZrtWDOm+xn3lwx2qoV/R
+         Xx0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=h3/JA9Kjrf2sssKnhkWREXvE0A1YuVOdh71JBJknGvo=;
-        b=eNLwPYUBtznmEIdx4P5m1McB7bmNoQGDgUrZqv2XLPVF6OPJm6m49ttIcuAo+t1JrS
-         Ewne1VJ9JCLdTcWQEQQM8USWtMP9VfIbx17TEXl0XWDUTHSFIjQS/Cm1R4E3k04P+gLi
-         2qlmAElcKiAl1T9TJgWf9WzXtwm9blWxya52qDM+0047nMKaKNBxjSRAuAyRRO7gLxvu
-         zfdFcQqARbJ4+1Dg8slXoSQyBnzc/ifKscpTICSUpDIGQRRvNuN9GRMydUFxi6bHxTN1
-         uWbYNYvTELpcdbhu7GhOaXBQwiAzcaH9CRkzUsxNfvSAdbY9LltXUJ3fK4b0lULl5LSQ
-         2qEg==
-X-Gm-Message-State: AOAM532a1h7fGU4WjUTdwIhaXZKBk6G3CZyFhPCTOQOrcn6ELt++dekM
-        GNGPcjzwWC0PMUmLttbxlTyY8gC4AOcwRDrzuM4=
-X-Google-Smtp-Source: ABdhPJxZr2pjkmV6p8nqm2vdMuzDQnRMY9pAhmjPG5MAgvi8i3xETI/msJo6AuUCk+g3TWOfrm0YWFgiQ90s/RshbeI=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr12582631jak.103.1643760557134;
- Tue, 01 Feb 2022 16:09:17 -0800 (PST)
+        bh=1TD4OvnlttATPFFjMKUsuISAvidOf+StumdRTIsdlU8=;
+        b=3h870y6eclIz4hASB/2HQBiQkeDIHgLpedEgd8K1/eMEcAl+/uYpgE0paXXu/KJRDq
+         BDPAGyH+0ZcWIGY17oQCN/OGGCSPW0j1X4SFW9RynmkwGBU6ejclhd8RsjjxwYXM3O6Y
+         8FRNNUrPhU5XpxodOPPJGDggwhNNkFMbm4CHhDRzv+ul/JOBmBNY1t4xf3v8UZhBiFnL
+         /0xBRKAfn5qZtZugyu+jLPlC2wtC8X33cJdCJt5y7VSFn2ZnRtNwN6SwBjizmIteZR9O
+         nu1/cH/wowVTnKkQXuGBJ1QjqkTjyQdtGx40YwT/bsoGAQVf/W4MqjGBJBMj/7hpXshp
+         T/NA==
+X-Gm-Message-State: AOAM531io8Og4ozvL78Xb1K93W/lqifvIKmcCZHKXSf01dGKmW0EhBu4
+        OiIVHw+He0W6FGs7pQL5mLDXSerAqke+O2qXfDI=
+X-Google-Smtp-Source: ABdhPJxwIcaxr3rxWZ6WykChrnHo0dryMzCEP4PiY/ZqVKBBoDxepulrpNqPQJQz/RGQEWwkKRJwYyMraf15bEdyTIk=
+X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr10928478ilv.305.1643760741310;
+ Tue, 01 Feb 2022 16:12:21 -0800 (PST)
 MIME-Version: 1.0
-References: <164360522462.65877.1891020292202285106.stgit@devnote2> <YfnKIyTwi+F3IPdI@krava>
-In-Reply-To: <YfnKIyTwi+F3IPdI@krava>
+References: <20220128012319.2494472-1-delyank@fb.com> <20220128012319.2494472-2-delyank@fb.com>
+ <CAEf4Bzbg50Ki=ii-Y0AqzpyQnAUEc5qGLx7LW5yGebDeb540BA@mail.gmail.com> <ae55c8fc5d43517b29b1d6532eace60d82accd8a.camel@fb.com>
+In-Reply-To: <ae55c8fc5d43517b29b1d6532eace60d82accd8a.camel@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Feb 2022 16:09:05 -0800
-Message-ID: <CAEf4BzYRJuTLJc=Z9P-p3BtuKu_74MtA2MyrY_ceBxofuKuzHQ@mail.gmail.com>
-Subject: Re: [PATCH v7 00/10] fprobe: Introduce fprobe function entry/exit probe
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S . Miller" <davem@davemloft.net>
+Date:   Tue, 1 Feb 2022 16:12:10 -0800
+Message-ID: <CAEf4BzY-wv-j=n1HLJBZWR_xtt4grFxwGZEevh7+2LOMh4cJEA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/4] selftests: bpf: migrate from bpf_prog_test_run
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 1, 2022 at 4:02 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Feb 1, 2022 at 4:01 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> On Mon, Jan 31, 2022 at 02:00:24PM +0900, Masami Hiramatsu wrote:
-> > Hi,
+> On Mon, 2022-01-31 at 17:24 -0800, Andrii Nakryiko wrote:
+> > for simple case like this you can just keep it single line:
 > >
-> > Here is the 7th version of fprobe. This version fixes unregister_fprobe()
-> > ensures that exit_handler is not called after returning from the
-> > unregister_fprobe(), and fixes some comments and documents.
+> > LIBBPF_OPTS(bpf_test_run_opts, topts, .repeat = 1)
 > >
-> > The previous version is here[1];
-> >
-> > [1] https://lore.kernel.org/all/164338031590.2429999.6203979005944292576.stgit@devnote2/T/#u
-> >
-> > This series introduces the fprobe, the function entry/exit probe
-> > with multiple probe point support. This also introduces the rethook
-> > for hooking function return as same as the kretprobe does. This
-> > abstraction will help us to generalize the fgraph tracer,
-> > because we can just switch to it from the rethook in fprobe,
-> > depending on the kernel configuration.
-> >
-> > The patch [1/10] is from Jiri's series[2].
-> >
-> > [2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
-> >
-> > And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
-> > if user wants to share the same code (or share a same resource) on the
-> > fprobe and the kprobes.
+> > But, it seems like the kernel does `if (!repeat) repeat = 1;` logic
+> > for program types that support repeat feature, so I'd suggest just
+> > drop .repeat = 1 and keep it simple.
 >
-> hi,
-> it works fine for bpf selftests, but when I use it through bpftrace
-> to attach more probes with:
+> Sure.
 >
->   # ./src/bpftrace -e 'kprobe:ksys_* { }'
->   Attaching 27 probes
+> >
+> > let's not add new CHECK*() variants, CHECK() and its derivative are
+> > deprecated, we are using ASSERT_xxx() macros for all new code.
+> >
+> > In this case, I think it's best to replace CHECK() with just:
+> >
+> > ASSERT_OK(err, "run_err");
+> > ASSERT_OK(topts.retval, "run_ret_val");
+> >
+> > I don't think logging duration is useful for most, if not all, tests,
+> > so I wouldn't bother.
 >
-> I'm getting stalls like:
->
-> krava33 login: [  988.574069] INFO: task bpftrace:4137 blocked for more than 122 seconds.
-> [  988.577577]       Not tainted 5.16.0+ #89
-> [  988.580173] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> [  988.585538] task:bpftrace        state:D stack:    0 pid: 4137 ppid:  4123 flags:0x00004004
-> [  988.589869] Call Trace:
-> [  988.591312]  <TASK>
-> [  988.592577]  __schedule+0x3a8/0xd30
-> [  988.594469]  ? wait_for_completion+0x84/0x110
-> [  988.596753]  schedule+0x4e/0xc0
-> [  988.598480]  schedule_timeout+0xed/0x130
-> [  988.600524]  ? rcu_read_lock_sched_held+0x12/0x70
-> [  988.602901]  ? lock_release+0x253/0x4a0
-> [  988.604935]  ? lock_acquired+0x1b7/0x410
-> [  988.607041]  ? trace_hardirqs_on+0x1b/0xe0
-> [  988.609202]  wait_for_completion+0xae/0x110
-> [  988.613762]  __wait_rcu_gp+0x127/0x130
-> [  988.615787]  synchronize_rcu_tasks_generic+0x46/0xa0
-> [  988.618329]  ? call_rcu_tasks+0x20/0x20
-> [  988.620600]  ? rcu_tasks_pregp_step+0x10/0x10
-> [  988.623232]  ftrace_shutdown.part.0+0x174/0x210
-> [  988.625820]  unregister_ftrace_function+0x37/0x60
-> [  988.628480]  unregister_fprobe+0x2d/0x50
-> [  988.630928]  bpf_link_free+0x4e/0x70
-> [  988.633126]  bpf_link_release+0x11/0x20
-> [  988.635249]  __fput+0xae/0x270
-> [  988.637022]  task_work_run+0x5c/0xa0
-> [  988.639016]  exit_to_user_mode_prepare+0x251/0x260
-> [  988.641294]  syscall_exit_to_user_mode+0x16/0x50
-> [  988.646249]  do_syscall_64+0x48/0x90
-> [  988.648218]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  988.650787] RIP: 0033:0x7f9079e95fbb
-> [  988.652761] RSP: 002b:00007ffd474fa3b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-> [  988.656718] RAX: 0000000000000000 RBX: 00000000011bf8d0 RCX: 00007f9079e95fbb
-> [  988.660110] RDX: 0000000000000000 RSI: 00007ffd474fa3b0 RDI: 0000000000000019
-> [  988.663512] RBP: 00007ffd474faaf0 R08: 0000000000000000 R09: 000000000000001a
-> [  988.666673] R10: 0000000000000064 R11: 0000000000000293 R12: 0000000000000001
-> [  988.669770] R13: 00000000004a19a1 R14: 00007f9083428c00 R15: 00000000008c02d8
-> [  988.672601]  </TASK>
-> [  988.675763] INFO: lockdep is turned off.
->
-> I have't investigated yet, any idea?
->
+> Ah, this makes a lot of sense, I was wondering what was going on with these
+> quite unreadable CHECK{,_ATTR} macros. I'll rewrite the ones I'm changing in
+> this series to use ASSERT_* if you're okay with that amount of churn?
 
-Do you happen to have a CPU count that's not a power of 2? Check if
-you have [0] in your tree, it might be that.
+No, it's fine with me. As I said, I'd like all CHECK()s to be gone, so
+the sooner and closer we get to that the better. We have BPF CI setup
+to make sure that we don't accidentally screw up checks in a major
+way, so it's pretty safe to do.
 
-  [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=a773abf72eb0cac008743891068ca6edecc44683
-
-> thanks,
-> jirka
 >
+> > You didn't have to touch this code, you could have just kept duration
+> > = 0 (which CHECK() internally assumes, unfortunately).
+>
+> I didn't *have* to but leaving the variable around to satisfy a macro feels
+> super awkward. Happy to minimize these changes, if they're going overboard but
+> I'd rather clean up the CHECK usage where I can.
+
+Heh, we do have some selftests doing `static int duration;` in a file
+to satisfy CHECK() :) But I don't mind more selftest code churn to
+convert to ASSERT_xxx() macros.
+
+>
+> >
+> > Alternatively, just switch to ASSERT_OK_PTR(fentry_skel,
+> > "fentry_skel_load"); and be done with it. As I mentioned, we are in a
+> > gradual process of removing CHECK()s,
+> > [...]
+> > At some point we'll do the final push and remove CHECK() altogether,
+> > but it doesn't have to be part of this patch set (unless you are
+> > interested in doing some more mechanical conversions, of course, it's
+> > greatly appreciated, but I didn't yet have heart to ask anyone to do
+> > those 2000 conversions...).
+>
+> I don't think I have it in me to volunteer for the whole refactor but I'll do my
+> bit in the usages this series touches.
+
+No worries and thanks!
