@@ -2,45 +2,46 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534724A6D98
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A16A24A6DCF
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 10:30:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238614AbiBBJOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 04:14:21 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:45687 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245365AbiBBJOV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 04:14:21 -0500
-Received: by mail-io1-f70.google.com with SMTP id z28-20020a056602081c00b00611596ef96fso14774887iow.12
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:14:20 -0800 (PST)
+        id S239886AbiBBJaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 04:30:23 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:35662 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233133AbiBBJaX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 04:30:23 -0500
+Received: by mail-il1-f200.google.com with SMTP id h8-20020a056e021b8800b002ba614f7c5dso13760339ili.2
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 01:30:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Y4zMAKmF3fJtUB5SQPyW2jumUn+FB4DDBgKyoPqrmVs=;
-        b=nEDNgymYyRU91TuAzyNG81yKbn7yYdytjgrYos23ISBWs0L0RY8K0E135gNlyfX4n7
-         x/XGoUylYfHSMs654RVnvQyzDxslgU4Btivi7W+xUHDVfMmipmnXBFd9ZtpRmMcyIyj0
-         PcltQU97NHVwgfgmBG0Fom4RwJ6cKwcJ9UFixvmH/+UfKIwRw6vB1SMst6UQoxvCLyyF
-         1AWzBG1uBkqpdvV2HPyFo/9+hhaK44v4TO++mf4UMJT+ZyoW1qFzkrxcJ6dnRmUElrUK
-         HnGg7++g6GuGPikunLDnlz3m7q0tDcopMlvfwGA5F1bh8cnC5vsejzq3pOkmQElDZJj7
-         lJjA==
-X-Gm-Message-State: AOAM532jb3OsdKdCD0nT4/rcQVJsTBtAuiTd2G2yPV/gq7Q9XJVJC0AF
-        TuUyKuzHJLqz8zACfLUpQwRtyDPnnLSy7D78Xwvdk0+84fO2
-X-Google-Smtp-Source: ABdhPJw0U4DGDJ2fpSgP7caUnjZiGgAXuNFu3X7dx25PooA913HBlmaQjKArM091EKapdvbsNSw948hgZ85Y8dFXjR3+xRtUOizi
+        bh=NZ7WdYtQrNmVol7I4UetJhUqWcjgf5izWYmBss2fDeI=;
+        b=vo2cl0bzvLg8/EWMtQ5FRkIuj+5J0VqdZ0jO5qKVuVPXWADwS8c+/647LqsWB1gLcN
+         FmutzG6RUftDeeoFCqK7eUyn6HCQLo9UkVy7fNCOKDnmj4ltkda2TKVS3CtWr/rBtuU9
+         sxykc0yHITFL7LZgolg6ezv/rs583+I8qhaRYh2Rt4nGvreGVjbxXZyhGoKfIk2Ad2Od
+         wbyxt1feyAj5Em5xYN08ZlLd1i+xKjq9TRJhuCjZiP9dS1uYr/CmriMdi8gVUuC491dA
+         opt30bAy6tCRSRvaTRT10RmnzhcYqSY+igSJeosIRW10k3D9zX75JTsX9WCaW5D9vSGx
+         cXqA==
+X-Gm-Message-State: AOAM532HqR3qbV0AGrGMtr75ecyv1/N9B94kpbDvKcOD+ILTSKyjXNYy
+        RwpqV4UBpJWew4B61V6sdB58UDfRqJ/AB9+efsqmahMQSQDR
+X-Google-Smtp-Source: ABdhPJzxRGFGHD/f8nz9jewR6Z8HVVhEyTz1BpTtYuPo9LSEN5UQM2YwD+bThGxUUYDBD1kyZWz0kY7by3sKLnFQTZKMf0QgqeLM
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2c44:: with SMTP id x4mr16114027iov.111.1643793260598;
- Wed, 02 Feb 2022 01:14:20 -0800 (PST)
-Date:   Wed, 02 Feb 2022 01:14:20 -0800
+X-Received: by 2002:a05:6e02:1a47:: with SMTP id u7mr7869536ilv.33.1643794222593;
+ Wed, 02 Feb 2022 01:30:22 -0800 (PST)
+Date:   Wed, 02 Feb 2022 01:30:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000061d7eb05d7057144@google.com>
-Subject: [syzbot] WARNING in bpf_prog_test_run_xdp
-From:   syzbot <syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com>
+Message-ID: <000000000000b8c08805d705aaa2@google.com>
+Subject: [syzbot] WARNING: ODEBUG bug in __init_work (3)
+From:   syzbot <syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com>
 To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+        cgroups@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, hannes@cmpxchg.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        lizefan.x@bytedance.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -50,57 +51,53 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    ff58831fa02d Merge branch 'Cadence-ZyncMP-SGMII'
+HEAD commit:    b76bbb34dc80 net: stmmac: dwmac-sun8i: make clk really gat..
 git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16fe8fe4700000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16cccccbb00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=ae0d71385f83fe54
-dashboard link: https://syzkaller.appspot.com/bug?extid=79fd1ab62b382be6f337
+dashboard link: https://syzkaller.appspot.com/bug?extid=13b13d204fb13cfda744
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com
+Reported-by: syzbot+13b13d204fb13cfda744@syzkaller.appspotmail.com
 
-WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 check_copy_size include/linux/thread_info.h:230 [inline]
-WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 copy_from_user include/linux/uaccess.h:191 [inline]
-WARNING: CPU: 0 PID: 13059 at include/linux/thread_info.h:230 bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
+------------[ cut here ]------------
+ODEBUG: init active (active state 0) object type: work_struct hint: css_killed_work_fn+0x0/0x5e0 kernel/cgroup/cgroup.c:3947
+WARNING: CPU: 0 PID: 13 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
 Modules linked in:
-CPU: 0 PID: 13059 Comm: syz-executor.3 Not tainted 5.17.0-rc1-syzkaller-00495-gff58831fa02d #0
+
+CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.17.0-rc1-syzkaller-00460-gb76bbb34dc80 #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:check_copy_size include/linux/thread_info.h:230 [inline]
-RIP: 0010:copy_from_user include/linux/uaccess.h:191 [inline]
-RIP: 0010:bpf_prog_test_run_xdp+0xec7/0x1150 net/bpf/test_run.c:978
-Code: fd 06 48 c1 e5 0c 48 01 c5 e8 55 76 09 fa 49 81 fe ff ff ff 7f 0f 86 08 fe ff ff 4c 8b 74 24 60 4c 8b 7c 24 68 e8 a9 73 09 fa <0f> 0b 41 bc f2 ff ff ff e9 02 fb ff ff 4c 8b 74 24 60 4c 8b 7c 24
-RSP: 0018:ffffc9000552fb40 EFLAGS: 00010212
-RAX: 000000000000011d RBX: 00000000fffff0a4 RCX: ffffc9000ba49000
-RDX: 0000000000040000 RSI: ffffffff876ee9a7 RDI: 0000000000000003
-RBP: ffff88806d779000 R08: 000000007fffffff R09: ffffffff8d94d717
-R10: ffffffff876ee98b R11: 000000000000001f R12: 0000000000000dc0
-R13: ffff88804f43a000 R14: 0000000000000000 R15: ffffc90002056000
-FS:  00007faff28c2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd 40 30 06 8a 4c 89 ee 48 c7 c7 40 24 06 8a e8 0c 57 27 05 <0f> 0b 83 05 55 7f b2 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc90000d27ba8 EFLAGS: 00010286
+
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff888011928000 RSI: ffffffff815fa1d8 RDI: fffff520001a4f67
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff815f3f3e R11: 0000000000000000 R12: ffffffff89ab5380
+R13: ffffffff8a062940 R14: ffffffff814bda70 R15: ffffffff90788e18
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4ff63b9058 CR3: 0000000074132000 CR4: 00000000003506f0
+CR2: 0000001b2eb22000 CR3: 0000000053d45000 CR4: 00000000003506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
  <TASK>
- bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
- __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
- __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7faff3f8f059
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007faff28c2168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007faff40a2100 RCX: 00007faff3f8f059
-RDX: 0000000000000048 RSI: 0000000020000180 RDI: 000000000000000a
-RBP: 00007faff3fe908d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc3e8ffe3f R14: 00007faff28c2300 R15: 0000000000022000
+ __debug_object_init+0x524/0xd10 lib/debugobjects.c:593
+ __init_work+0x48/0x50 kernel/workqueue.c:518
+ css_release+0x1a/0x110 kernel/cgroup/cgroup.c:5213
+ percpu_ref_put_many.constprop.0+0x22b/0x260 include/linux/percpu-refcount.h:335
+ rcu_do_batch kernel/rcu/tree.c:2527 [inline]
+ rcu_core+0x7b8/0x1540 kernel/rcu/tree.c:2778
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ run_ksoftirqd kernel/softirq.c:921 [inline]
+ run_ksoftirqd+0x2d/0x60 kernel/softirq.c:913
+ smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
+ kthread+0x2e9/0x3a0 kernel/kthread.c:377
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
  </TASK>
 
 
