@@ -2,140 +2,193 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C9A4A7942
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 21:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050024A79C9
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 21:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344869AbiBBUPS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 15:15:18 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65188 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236790AbiBBUPS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 15:15:18 -0500
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 212JwQBa006846;
-        Wed, 2 Feb 2022 20:14:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=jQDSPRTLZzlBRVEPxF5Nk1BmDHz5yP93GfKt4Mpu8xo=;
- b=knDuO1Yyi8qjdMO5f2UGlAwKSri2PWBP139MVRP8jgNER2GscTeW2ShMeWnb6q0c4Yjc
- cKxQ1Llu1zLhGMcAXKXBja26FVPu4WqDOCaT/GS54FGfi9z3uFsFDjkqcHHUX16sRPPw
- e/vpaq4/+BIleNpjOJDY+nEVjPThAhbiJe04UzhwKlqUnqqffwf4gknFzfUwRdRGvlq/
- XuuYlsxMbdyikpw27q4wqnyH4xBtjj2Isr3+QhGNdQUXB7YjBakf8dmqF58gzTn3EUyg
- r/o4H+M9bGlwgPgAEvQy7PHimN9xoVSPQ2yPnDIhS96fqyRD0lnV06Q7nNx63pN9W2ai bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3dyveh64gk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 20:14:59 +0000
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 212JwWRp007328;
-        Wed, 2 Feb 2022 20:14:58 GMT
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3dyveh64fw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 20:14:58 +0000
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 212K7C4i019138;
-        Wed, 2 Feb 2022 20:14:56 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 3dvw79pnx5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 20:14:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 212KErhj44368268
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Feb 2022 20:14:53 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5041F4C050;
-        Wed,  2 Feb 2022 20:14:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A92EA4C046;
-        Wed,  2 Feb 2022 20:14:52 +0000 (GMT)
-Received: from osiris (unknown [9.145.72.91])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Wed,  2 Feb 2022 20:14:52 +0000 (GMT)
-Date:   Wed, 2 Feb 2022 21:14:51 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        bpf@vger.kernel.org, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
-Message-ID: <YfrmO+pcSqrrbC3E@osiris>
-References: <20220201234200.1836443-1-iii@linux.ibm.com>
- <20220201234200.1836443-2-iii@linux.ibm.com>
+        id S1347308AbiBBUyZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 15:54:25 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:52358 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347294AbiBBUyZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 15:54:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 73B97B83285
+        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 20:54:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CE60C004E1;
+        Wed,  2 Feb 2022 20:54:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643835263;
+        bh=eNLKw5Oxs3mNUgs8E8X73M0/wR2OkPv132B/lWbTW9s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DRCQeM1hLBZ+q3HZE2brRbqUBW0Kd6Wst3dG+Z6HmtQ/qjsyqADH1+ANotE3gLiot
+         OzEnWaW+qtoqT/wylIGoVIgSsp5t2hOe4kgzpC3ELLuhuvteMh/rFHsw0HPvMOHc/S
+         2QROhCACQ96WWpcXUiwGiOnLSwX54J9BxypI9V/a6D8pBklg4ljG0LUw/2vL0CYAdw
+         u9PydRaO5Ct2bluAhFkGylaiK4BqCIcU0Y2D9aoE6wAGIjhOJFLAk62UArb2JbLXos
+         CKjFM/mqIPQe7Ogq7MW3CEdm8hQEj0SBOKSA6v4MD3mNluDn6SHX3ihS+sWkrU1zGe
+         iDongN+WKTR7g==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        toke@redhat.com, lorenzo.bianconi@redhat.com, andrii@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: [PATCH bpf-next] bpf: test_run: fix OOB access in bpf_prog_test_run_xdp
+Date:   Wed,  2 Feb 2022 21:53:20 +0100
+Message-Id: <688c26f9dd6e885e58e8e834ede3f0139bb7fa95.1643835097.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220201234200.1836443-2-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: mThhunb_pLMNwp_edE1Dz8DPpqu7wQYJ
-X-Proofpoint-ORIG-GUID: AgG9nBc2VSo0g2DjOn_Tb9kpuDVfKGXG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-02_09,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=768 adultscore=0 suspectscore=0 malwarescore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202020109
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
-> user_pt_regs is used by eBPF in order to access userspace registers -
-> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
-> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
-> syscall argument from eBPF programs, we need to export orig_gpr2.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  arch/s390/include/asm/ptrace.h      | 2 +-
->  arch/s390/include/uapi/asm/ptrace.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
-> index 4ffa8e7f0ed3..c8698e643904 100644
-> --- a/arch/s390/include/asm/ptrace.h
-> +++ b/arch/s390/include/asm/ptrace.h
-> @@ -83,9 +83,9 @@ struct pt_regs {
->  			unsigned long args[1];
->  			psw_t psw;
->  			unsigned long gprs[NUM_GPRS];
-> +			unsigned long orig_gpr2;
->  		};
->  	};
-> -	unsigned long orig_gpr2;
->  	union {
->  		struct {
->  			unsigned int int_code;
-> diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uapi/asm/ptrace.h
-> index ad64d673b5e6..b3dec603f507 100644
-> --- a/arch/s390/include/uapi/asm/ptrace.h
-> +++ b/arch/s390/include/uapi/asm/ptrace.h
-> @@ -295,6 +295,7 @@ typedef struct {
->  	unsigned long args[1];
->  	psw_t psw;
->  	unsigned long gprs[NUM_GPRS];
-> +	unsigned long orig_gpr2;
->  } user_pt_regs;
+Fix the following kasan issue reported by syzbot:
 
-Isn't this broken on nearly all architectures? I just checked powerpc,
-arm64, and riscv. While powerpc seems to mirror pt_regs as user_pt_regs,
-and therefore exports orig_gpr3, the bpf macros still seem to access the
-wrong location to access the first syscall parameter(?).
+BUG: KASAN: slab-out-of-bounds in __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
+BUG: KASAN: slab-out-of-bounds in bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
+Write of size 8 at addr ffff888048c75000 by task syz-executor.5/23405
 
-For arm64 and riscv it seems that orig_x0 or orig_a0 respectively need to
-be added to user_pt_regs too, and the same fix like for s390 needs to be
-applied as well.
+CPU: 1 PID: 23405 Comm: syz-executor.5 Not tainted 5.16.0-syzkaller #0
+Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x8d/0x336 mm/kasan/report.c:255
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
+ bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
+ bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
+ __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
+ __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f4ea30dd059
+RSP: 002b:00007f4ea1a52168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f4ea31eff60 RCX: 00007f4ea30dd059
+RDX: 0000000000000048 RSI: 0000000020000000 RDI: 000000000000000a
+RBP: 00007f4ea313708d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc8367c5af R14: 00007f4ea1a52300 R15: 0000000000022000
+ </TASK>
+
+Allocated by task 23405:
+ kasan_save_stack+0x1e/0x50 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:437 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:516 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:475 [inline]
+ __kasan_kmalloc+0xa9/0xd0 mm/kasan/common.c:525
+ kmalloc include/linux/slab.h:586 [inline]
+ kzalloc include/linux/slab.h:715 [inline]
+ bpf_test_init.isra.0+0x9f/0x150 net/bpf/test_run.c:411
+ bpf_prog_test_run_xdp+0x2f8/0x1150 net/bpf/test_run.c:941
+ bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
+ __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
+ __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff888048c74000
+ which belongs to the cache kmalloc-4k of size 4096
+The buggy address is located 0 bytes to the right of
+ 4096-byte region [ffff888048c74000, ffff888048c75000)
+The buggy address belongs to the page:
+page:ffffea0001231c00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x48c70
+head:ffffea0001231c00 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42140
+raw: 0000000000000000 0000000080040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+ prep_new_page mm/page_alloc.c:2434 [inline]
+ get_page_from_freelist+0xa72/0x2f50 mm/page_alloc.c:4165
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5389
+ alloc_pages+0x1aa/0x310 mm/mempolicy.c:2271
+ alloc_slab_page mm/slub.c:1799 [inline]
+ allocate_slab mm/slub.c:1944 [inline]
+ new_slab+0x28a/0x3b0 mm/slub.c:2004
+ ___slab_alloc+0x87c/0xe90 mm/slub.c:3018
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3105
+ slab_alloc_node mm/slub.c:3196 [inline]
+ __kmalloc_node_track_caller+0x2cb/0x360 mm/slub.c:4957
+ kmalloc_reserve net/core/skbuff.c:354 [inline]
+ __alloc_skb+0xde/0x340 net/core/skbuff.c:426
+ alloc_skb include/linux/skbuff.h:1159 [inline]
+ nsim_dev_trap_skb_build drivers/net/netdevsim/dev.c:745 [inline]
+ nsim_dev_trap_report drivers/net/netdevsim/dev.c:802 [inline]
+ nsim_dev_trap_report_work+0x29a/0xbc0 drivers/net/netdevsim/dev.c:843
+ process_one_work+0x9ac/0x1650 kernel/workqueue.c:2307
+ worker_thread+0x657/0x1110 kernel/workqueue.c:2454
+ kthread+0x2e9/0x3a0 kernel/kthread.c:377
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1352 [inline]
+ free_pcp_prepare+0x374/0x870 mm/page_alloc.c:1404
+ free_unref_page_prepare mm/page_alloc.c:3325 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3404
+ qlink_free mm/kasan/quarantine.c:157 [inline]
+ qlist_free_all+0x6d/0x160 mm/kasan/quarantine.c:176
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:283
+ __kasan_slab_alloc+0xa2/0xc0 mm/kasan/common.c:447
+ kasan_slab_alloc include/linux/kasan.h:260 [inline]
+ slab_post_alloc_hook mm/slab.h:732 [inline]
+ slab_alloc_node mm/slub.c:3230 [inline]
+ slab_alloc mm/slub.c:3238 [inline]
+ kmem_cache_alloc+0x202/0x3a0 mm/slub.c:3243
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags include/linux/audit.h:323 [inline]
+ getname+0x8e/0xd0 fs/namei.c:217
+ do_sys_openat2+0xf5/0x4d0 fs/open.c:1208
+ do_sys_open fs/open.c:1230 [inline]
+ __do_sys_openat fs/open.c:1246 [inline]
+ __se_sys_openat fs/open.c:1241 [inline]
+ __x64_sys_openat+0x13f/0x1f0 fs/open.c:1241
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff888048c74f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888048c74f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888048c75000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+                   ^
+ ffff888048c75080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888048c75100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+Fixes: 1c19499825246 ("bpf: introduce frags support to bpf_prog_test_run_xdp()")
+Reported-by: syzbot+6d70ca7438345077c549@syzkaller.appspotmail.com
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ net/bpf/test_run.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 65b52b4bd6e1..0220b0822d77 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -962,6 +962,11 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 			skb_frag_t *frag;
+ 			int data_len;
+ 
++			if (sinfo->nr_frags == MAX_SKB_FRAGS) {
++				ret = -ENOMEM;
++				goto out;
++			}
++
+ 			page = alloc_page(GFP_KERNEL);
+ 			if (!page) {
+ 				ret = -ENOMEM;
+-- 
+2.34.1
+
