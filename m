@@ -2,55 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2351D4A78CD
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AB74A78EC
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:50:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbiBBThB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 14:37:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S1346990AbiBBTuf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 14:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbiBBThB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 14:37:01 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B0FC061714;
-        Wed,  2 Feb 2022 11:37:01 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id w7so398438ioj.5;
-        Wed, 02 Feb 2022 11:37:01 -0800 (PST)
+        with ESMTP id S1346983AbiBBTue (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 14:50:34 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17653C061714;
+        Wed,  2 Feb 2022 11:50:34 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id x6so268949ilg.9;
+        Wed, 02 Feb 2022 11:50:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=B1Nrhw+BlYiE7E7WmRuxZJpP8KhLxv9y9+FUzKrhRGQ=;
-        b=eREbdTvplXNrDWzyMkvMYYcvXnrTJapx9ADLhA8wpyR38REepNGbmPLtp3se2ZagGs
-         d//7BQwp+x6og0nVgO6wHf+QUGm+hvCaLXceHuHqIPogLOyjBT96O3fO9xtB44lHRi7z
-         7syuz7Uv32FU2XSdrfDNiybL6AiOOhfP4rH9J8b9i+fu/tXDgoO3QAk9fp2yyNuTW0Nu
-         /kTpDoxLjFPep2kJV1rfVir2/+SDPWvjYeBkodPH00xE2FQMgbHljKkmH1IoX2BddoaX
-         r7SIfXow6hDO/dbVmGFQ0hyeAejqXr9eQXRKUA64QkvTFCD8sqJRHUzH+L8Y6x87IFxj
-         kRcw==
+        bh=reFpY/nGEqbODh2C3Y1S9N9DI33hc54Qf2pLCwPc5Lc=;
+        b=VXgajZ+4M55hMA9KfW8qel22D5zpO8LMLO/7Na8AqeVmOMEdxS2E5r+aHk4ZrY1ZiX
+         OptZ5J+Dib4AihcIUQpQjmG0VwKTBQl8bijXPHHtolYbn30QIY6VHsLoonXdydkJ5ZoH
+         m/7+ARO01Wq8q1zx1KH/cpZEpen6qzuX75fXQ8DZXPhm4lxcAd7Q1xxK3XiORd0SECFs
+         aQ91byqjYllBQbj2iy3GtK1llrdoKtmUDrq3SRCekv7ic3UvjMiZwfBY7CafOptYlgNh
+         lG8m0xIryoen/2/1zpTbQl9XtrfkHMzXyAoOVVrPLiKgXxwsKMgUJ0J2Wl9iGBKveFrS
+         h+Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=B1Nrhw+BlYiE7E7WmRuxZJpP8KhLxv9y9+FUzKrhRGQ=;
-        b=LURXiCRJT2XeD5c8cgb35UgN4QNaFxeNYCaGhcKeJ6TDVnDkT6YJb28be/zMxdZGTD
-         9BVKp3ELWJsa6QKRD5WHeNnKAtsIECceWC442Gx/t5qc+T9EHqV2/3dDaH2TsaxBCJyf
-         zUIb3v6pt9g2lK1Y2h+G/W2O3i8vvM2BcKcRlMt6Z8XOJvz1BYWpOEBMGPtm1aMg5MCQ
-         97hU+uES3y6A1Dr16nHGwb7rP6uyZ6cwsmoUI231k/865fLJYsKjiww7rxwnNOlSXh9J
-         fsNtFH0yR3fTP6MzSZx9r+SMb/oF319yxtOycDeSrYnP590U1JzvlnU3vGytNGMoIyDP
-         dmGg==
-X-Gm-Message-State: AOAM531AbwXySU/DmNpLREI8tvFNevqyhj0ndk7cl82icIj3JonebU9v
-        uCWWinzPmwaOZOV2QB6N+9sIZ3pLLFIi/1zJJhY=
-X-Google-Smtp-Source: ABdhPJxislD3cXxoJshXHyMXKUVjnPq/erpgf3nIl4c8bmdRxQETATVXrCYokp7vibWRFmGlUudEoCGKLDxAIREqOrI=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr14475725jak.103.1643830620751;
- Wed, 02 Feb 2022 11:37:00 -0800 (PST)
+        bh=reFpY/nGEqbODh2C3Y1S9N9DI33hc54Qf2pLCwPc5Lc=;
+        b=ql616+yZ/4l7lHoAME+dKVyOYgC7BjTsMZUmSpWFb5GpN8du/Qll73l+LyQZvCgfe5
+         m2f07+EhfiOCjhJL31NF7Wtq+cYm1tDG5DF0IjVnDGCycuLZJE+wAoUPpF2oDpjDv06s
+         m2axw6GGVR2OkhvjBGw7IOtsIq/q7WjWeKX8PxxsffzwcdacCSkHtP/18ipUE38is2Os
+         SDeJngUqvPclv6McJcVCDW/iEjWqv70me5q6TDk3mhu0JI0Ia6QzLo3v0JHAcuQjiqnz
+         Y/bmfpcBlCuZE4YFpeECcWDGJR8LHfqYuBPK5zZ0l0XuAaMdxaKSLuP7z1FxlvMzpQqT
+         np2w==
+X-Gm-Message-State: AOAM533mAlahpw4XLHv/nGuNsfVewmKJZ/KdYtyZ010WCHgYXTkoR4oN
+        i01WqonqIZjvrShkvtZgEzrEYB/nT3Du1lr+08M=
+X-Google-Smtp-Source: ABdhPJwSBox0u3RfcOb/n7tzGCrw9ura9DRPCKY7Woc+BGKYOBB7j5TujoaYpiJiSCw9WwUgp/kn+UTZqPky92ybYMI=
+X-Received: by 2002:a05:6e02:1bc7:: with SMTP id x7mr17619061ilv.98.1643831433071;
+ Wed, 02 Feb 2022 11:50:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-8-mauricio@kinvolk.io>
-In-Reply-To: <20220128223312.1253169-8-mauricio@kinvolk.io>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-10-mauricio@kinvolk.io>
+ <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com>
+In-Reply-To: <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 11:36:49 -0800
-Message-ID: <CAEf4BzaQ-hwdgqxYro5DjdY_=nnXTJVravt0D9qHW=PQZe-Lfg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 7/9] bpftool: Implement btfgen_get_btf()
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Date:   Wed, 2 Feb 2022 11:50:21 -0800
+Message-ID: <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 9/9] selftest/bpf: Implement tests for bpftool
+ gen min_core_btf
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,237 +67,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
- wrote:
+On Fri, Jan 28, 2022 at 3:23 PM Mauricio V=C3=A1squez Bernal
+<mauricio@kinvolk.io> wrote:
 >
-> The last part of the BTFGen algorithm is to create a new BTF object with
-> all the types that were recorded in the previous steps.
+> On Fri, Jan 28, 2022 at 5:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
+o> wrote:
+> >
+> > This commit implements some integration tests for "BTFGen". The goal
+> > of such tests is to verify that the generated BTF file contains the
+> > expected types.
+> >
 >
-> This function performs two different steps:
-> 1. Add the types to the new BTF object by using btf__add_type(). Some
-> special logic around struct and unions is implemented to only add the
-> members that are really used in the field-based relocations. The type
-> ID on the new and old BTF objects is stored on a map.
-> 2. Fix all the type IDs on the new BTF object by using the IDs saved in
-> the previous step.
+> This is not an exhaustive list of test cases. I'm not sure if this is
+> the approach we should follow to implement such tests, it seems to me
+> that checking each generated BTF file by hand is a lot of work but I
+> don't have other ideas to simplify it.
 >
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
->  tools/bpf/bpftool/gen.c | 158 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 157 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index 7413ec808a80..55e6f640cbbb 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -1599,10 +1599,166 @@ static int btfgen_record_obj(struct btfgen_info =
-*info, const char *obj_path)
->         return err;
->  }
->
-> +static unsigned int btfgen_get_id(struct hashmap *ids, unsigned int old)
-> +{
-> +       uintptr_t new =3D 0;
-> +
-> +       /* deal with BTF_KIND_VOID */
-> +       if (old =3D=3D 0)
-> +               return 0;
-> +
-> +       if (!hashmap__find(ids, uint_as_hash_key(old), (void **)&new)) {
-> +               /* return id for void as it's possible that the ID we're =
-looking for is
-> +                * the type of a pointer that we're not adding.
-> +                */
-> +               return 0;
-> +       }
-> +
-> +       return (unsigned int)(uintptr_t)new;
-> +}
-> +
-> +static int btfgen_add_id(struct hashmap *ids, unsigned int old, unsigned=
- int new)
-> +{
-> +       return hashmap__add(ids, uint_as_hash_key(old), uint_as_hash_key(=
-new));
-> +}
-> +
->  /* Generate BTF from relocation information previously recorded */
->  static struct btf *btfgen_get_btf(struct btfgen_info *info)
->  {
-> -       return ERR_PTR(-EOPNOTSUPP);
-> +       struct hashmap_entry *entry;
-> +       struct btf *btf_new =3D NULL;
-> +       struct hashmap *ids =3D NULL;
-> +       size_t bkt;
-> +       int err =3D 0;
-> +
-> +       btf_new =3D btf__new_empty();
-> +       if (libbpf_get_error(btf_new))
-> +               goto err_out;
-> +
-> +       ids =3D hashmap__new(btfgen_hash_fn, btfgen_equal_fn, NULL);
-> +       if (IS_ERR(ids)) {
-> +               errno =3D -PTR_ERR(ids);
-> +               goto err_out;
-> +       }
-> +
-> +       /* first pass: add all types and add their new ids to the ids map=
- */
-> +       hashmap__for_each_entry(info->types, entry, bkt) {
-> +               struct btfgen_type *btfgen_type =3D entry->value;
-> +               struct btf_type *btf_type =3D btfgen_type->type;
-> +               int new_id;
-> +
-> +               /* we're adding BTF_KIND_VOID to the list but it can't be=
- added to
-> +                * the generated BTF object, hence we skip it here.
-> +                */
-> +               if (btfgen_type->id =3D=3D 0)
-> +                       continue;
-> +
-> +               /* add members for struct and union */
-> +               if (btf_is_struct(btf_type) || btf_is_union(btf_type)) {
-> +                       struct hashmap_entry *member_entry;
-> +                       struct btf_type *btf_type_cpy;
-> +                       int nmembers, index;
-> +                       size_t new_size;
-> +
-> +                       nmembers =3D btfgen_type->members ? hashmap__size=
-(btfgen_type->members) : 0;
-> +                       new_size =3D sizeof(struct btf_type) + nmembers *=
- sizeof(struct btf_member);
-> +
-> +                       btf_type_cpy =3D malloc(new_size);
-> +                       if (!btf_type_cpy)
-> +                               goto err_out;
-> +
-> +                       /* copy header */
-> +                       memcpy(btf_type_cpy, btf_type, sizeof(*btf_type_c=
-py));
-> +
-> +                       /* copy only members that are needed */
-> +                       index =3D 0;
-> +                       if (nmembers > 0) {
-> +                               size_t bkt2;
-> +
-> +                               hashmap__for_each_entry(btfgen_type->memb=
-ers, member_entry, bkt2) {
-> +                                       struct btfgen_member *btfgen_memb=
-er;
-> +                                       struct btf_member *btf_member;
-> +
-> +                                       btfgen_member =3D member_entry->v=
-alue;
-> +                                       btf_member =3D btf_members(btf_ty=
-pe) + btfgen_member->idx;
-> +
-> +                                       memcpy(btf_members(btf_type_cpy) =
-+ index, btf_member,
-> +                                              sizeof(struct btf_member))=
-;
+> I considered different options to write these tests:
+> 1. Use core_reloc_types.h to create a "source" BTF file with a lot of
+> types, then run BTFGen for all test_core_reloc_*.o files and use the
+> generated BTF file as btf_src_file in core_reloc.c. In other words,
+> re-run all test_core_reloc tests using a generated BTF file as source
+> instead of the "btf__core_reloc_" #name ".o" one. I think this test is
+> great because it tests the full functionality and actually checks that
+> the programs are able to run using the generated file. The problem is
+> how do we test that the BTFGen is creating an optimized file? Just
+> copying the source file without any modification will make all those
+> tests pass. We could check that the generated file is small (by
+> checking the size or the number of types) but it doesn't seem a very
+> reliable approach to me.
 
-you know that you are working with btf_type and btf_member, each have
-just a few well known fields, why memcpy instead of just setting each
-field individually? I think that would make code much easier to follow
-and understand what transformations it's doing (and what it doesn't do
-either).
+I think this second run after minimizing BTF is a good idea. I
+wouldn't bother to check for "minimal BTF" for this case.
 
-> +
-> +                                       index++;
-> +                               }
-> +                       }
-> +
-> +                       /* set new vlen */
-> +                       btf_type_cpy->info =3D btf_type_info(btf_kind(btf=
-_type_cpy), nmembers,
-> +                                                          btf_kflag(btf_=
-type_cpy));
-> +
-> +                       err =3D btf__add_type(btf_new, info->src_btf, btf=
-_type_cpy);
-> +                       free(btf_type_cpy);
-> +               } else {
-> +                       err =3D btf__add_type(btf_new, info->src_btf, btf=
-_type);
-> +               }
-> +
-> +               if (err < 0)
-> +                       goto err_out;
-> +
-> +               new_id =3D err;
-> +
-> +               /* add ID mapping */
-> +               err =3D btfgen_add_id(ids, btfgen_type->id, new_id);
-> +               if (err)
-> +                       goto err_out;
-> +       }
-> +
-> +       /* second pass: fix up type ids */
-> +       for (unsigned int i =3D 0; i < btf__type_cnt(btf_new); i++) {
-> +               struct btf_member *btf_member;
-> +               struct btf_type *btf_type;
-> +               struct btf_param *params;
-> +               struct btf_array *array;
-> +
-> +               btf_type =3D (struct btf_type *) btf__type_by_id(btf_new,=
- i);
-> +
-> +               switch (btf_kind(btf_type)) {
-> +               case BTF_KIND_STRUCT:
-> +               case BTF_KIND_UNION:
-> +                       for (unsigned short j =3D 0; j < btf_vlen(btf_typ=
-e); j++) {
-> +                               btf_member =3D btf_members(btf_type) + j;
-> +                               btf_member->type =3D btfgen_get_id(ids, b=
-tf_member->type);
-> +                       }
-> +                       break;
-> +               case BTF_KIND_PTR:
-> +               case BTF_KIND_TYPEDEF:
-> +               case BTF_KIND_VOLATILE:
-> +               case BTF_KIND_CONST:
-> +               case BTF_KIND_RESTRICT:
-> +               case BTF_KIND_FUNC:
-> +               case BTF_KIND_VAR:
-> +                       btf_type->type =3D btfgen_get_id(ids, btf_type->t=
-ype);
-> +                       break;
-> +               case BTF_KIND_ARRAY:
-> +                       array =3D btf_array(btf_type);
-> +                       array->index_type =3D btfgen_get_id(ids, array->i=
-ndex_type);
-> +                       array->type =3D btfgen_get_id(ids, array->type);
-> +                       break;
-> +               case BTF_KIND_FUNC_PROTO:
-> +                       btf_type->type =3D btfgen_get_id(ids, btf_type->t=
-ype);
-> +                       params =3D btf_params(btf_type);
-> +                       for (unsigned short j =3D 0; j < btf_vlen(btf_typ=
-e); j++)
-> +                               params[j].type =3D btfgen_get_id(ids, par=
-ams[j].type);
-> +                       break;
+> 2. We could write some .c files with the types we expect to have on
+> the generated file and compare it with the generated file. The issue
+> here is that comparing those BTF files doesn't seem to be too
+> trivial...
 
-did you try using btf_type_visit_type_ids() instead of this entire loop?
+But I would add few realistic examples that use various combinations
+of CO-RE relocations against Linux types. Then minimize BTF and
+validate that BTF is what we expect.
 
-> +               default:
-> +                       break;
-> +               }
-> +       }
-> +
-> +       hashmap__free(ids);
-> +       return btf_new;
-> +
-> +err_out:
-> +       btf__free(btf_new);
-> +       hashmap__free(ids);
-> +       return NULL;
->  }
+As for how to compare BTFs. I've been wanting to do something like
+btf__normalize() API to renumber and resort all the BTF types into
+some "canonical" order, so that two BTFs can be actually compared and
+diffed. It might be finally the time to do that.
+
+The big complication is your decision to dump all the fields of types
+that are used by type-based relocations. I'm not convinced that's the
+best way to do this. I'd keep empty struct/union for such cases,
+actually. That would minimize the number of types and thus BTF in
+general. It also will simplify the logic of emitting minimized BTF a
+bit (all_types checks won't be necessary, I think).
+
+As I also mentioned in previous patches, for types that are only
+referenced through pointer, I'd emit FWD declaration only. Or at best
+empty struct/union.
+
+With all that, after btf__minimize() operation, comparing BTFs would
+be actually pretty easy, because we'll know the order of each type, so
+using the
+VALIDATE_RAW_BTF() (see prog_tests/btf_dedup_split.c) the tests will
+be easy and clean.
+
+
+One last thing, let's not add a new test binary (test_bpftool), let's
+keep adding more tests into test_progs.
+
 >
->  /* Create BTF file for a set of BPF objects.
-> --
-> 2.25.1
->
+> Do you have any suggestions about it? Thanks!
