@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 894F74A78B9
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2351D4A78CD
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 20:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346432AbiBBTbb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 14:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
+        id S235954AbiBBThB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 14:37:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240428AbiBBTba (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 14:31:30 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD6EC061714;
-        Wed,  2 Feb 2022 11:31:30 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id 9so400571iou.2;
-        Wed, 02 Feb 2022 11:31:30 -0800 (PST)
+        with ESMTP id S229889AbiBBThB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 14:37:01 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B0FC061714;
+        Wed,  2 Feb 2022 11:37:01 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id w7so398438ioj.5;
+        Wed, 02 Feb 2022 11:37:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=OMwY2wvMhB1DUTy+ksrjre4+0Cp7BW70VPY8FVvDBuQ=;
-        b=KTiQh8MMq4dFPx6Tg3XeOVyNDouee91qkWEzPSdc8AdZZlBfBykqfsDdSZue6Oswgs
-         suIbT6RWQ+yuYf0f0OGBSE0YWc2Qv3Mek2B29OEnRjjroX0SPMu9w5HVerUJcpaxW4ts
-         D0/aeZttXnGoBjNTYdEk7zQVAJ3IGWozHdxWcW+20huIXIbPDedVDiqk9J9IAhCo7Gjl
-         fTYSSXWWv/eMI2DoakwZp9RMMJqvAwP52+mzDJhvN6TZTpAfSrRBYJBE9nmpVwWQjERZ
-         K09TDmQxYVqg4xJcbWOGeV7WR/FukoQY0BRElgQJ+LJhBLbOyggcCWDY/0tWJ7OhrM/p
-         11hg==
+        bh=B1Nrhw+BlYiE7E7WmRuxZJpP8KhLxv9y9+FUzKrhRGQ=;
+        b=eREbdTvplXNrDWzyMkvMYYcvXnrTJapx9ADLhA8wpyR38REepNGbmPLtp3se2ZagGs
+         d//7BQwp+x6og0nVgO6wHf+QUGm+hvCaLXceHuHqIPogLOyjBT96O3fO9xtB44lHRi7z
+         7syuz7Uv32FU2XSdrfDNiybL6AiOOhfP4rH9J8b9i+fu/tXDgoO3QAk9fp2yyNuTW0Nu
+         /kTpDoxLjFPep2kJV1rfVir2/+SDPWvjYeBkodPH00xE2FQMgbHljKkmH1IoX2BddoaX
+         r7SIfXow6hDO/dbVmGFQ0hyeAejqXr9eQXRKUA64QkvTFCD8sqJRHUzH+L8Y6x87IFxj
+         kRcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OMwY2wvMhB1DUTy+ksrjre4+0Cp7BW70VPY8FVvDBuQ=;
-        b=H4iyJRSpaaJAMqtcxk2BmpNyolhmjQc8fpvYT/osTT5XIIlhPFu6peHvd+cgyekGtH
-         zFmmNJkgKfovAbqpPUwzWOFflReIdt0ojPBHjx1K+CD+FFK/PAzOVXDIs8143n6ITngW
-         M3tiN3TBa1jLfAdrWbcGtQ8rkAZXVYKZlTnLkdX7Y3Ue7v5LVb3XjGfKOnHMpYGRKsWY
-         pvB3DbPIziPBwpH2AEzOggBjgGloA/B12c4Gt71YU7nEc1R7GZ91SFfMzHVgZ8t/uKJl
-         sF2zdAj8ro56uF6qn1OKBPWa7vJYmJdYr6gbdA9aCselMOC0ftW9PyWZv9iDTNKje3iG
-         bhiw==
-X-Gm-Message-State: AOAM53291cp7gcMfbLjXwRdBaVHoPZGmm0FHTxvVRTN4INMcsdj/ORtv
-        IfWVlv4gxTd8zdZb5KNJaylMnRgwSOg121ekRptLq/Rh
-X-Google-Smtp-Source: ABdhPJxNi75fc8x9/UorufjmjpEc+kwNQ/0nI6k7Joi7LCUPloTkEKV9h513unRd58bxRIvDvU6l3UjibpG42TfXNJ4=
-X-Received: by 2002:a5e:a806:: with SMTP id c6mr16759145ioa.112.1643830290154;
- Wed, 02 Feb 2022 11:31:30 -0800 (PST)
+        bh=B1Nrhw+BlYiE7E7WmRuxZJpP8KhLxv9y9+FUzKrhRGQ=;
+        b=LURXiCRJT2XeD5c8cgb35UgN4QNaFxeNYCaGhcKeJ6TDVnDkT6YJb28be/zMxdZGTD
+         9BVKp3ELWJsa6QKRD5WHeNnKAtsIECceWC442Gx/t5qc+T9EHqV2/3dDaH2TsaxBCJyf
+         zUIb3v6pt9g2lK1Y2h+G/W2O3i8vvM2BcKcRlMt6Z8XOJvz1BYWpOEBMGPtm1aMg5MCQ
+         97hU+uES3y6A1Dr16nHGwb7rP6uyZ6cwsmoUI231k/865fLJYsKjiww7rxwnNOlSXh9J
+         fsNtFH0yR3fTP6MzSZx9r+SMb/oF319yxtOycDeSrYnP590U1JzvlnU3vGytNGMoIyDP
+         dmGg==
+X-Gm-Message-State: AOAM531AbwXySU/DmNpLREI8tvFNevqyhj0ndk7cl82icIj3JonebU9v
+        uCWWinzPmwaOZOV2QB6N+9sIZ3pLLFIi/1zJJhY=
+X-Google-Smtp-Source: ABdhPJxislD3cXxoJshXHyMXKUVjnPq/erpgf3nIl4c8bmdRxQETATVXrCYokp7vibWRFmGlUudEoCGKLDxAIREqOrI=
+X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr14475725jak.103.1643830620751;
+ Wed, 02 Feb 2022 11:37:00 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-7-mauricio@kinvolk.io>
-In-Reply-To: <20220128223312.1253169-7-mauricio@kinvolk.io>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-8-mauricio@kinvolk.io>
+In-Reply-To: <20220128223312.1253169-8-mauricio@kinvolk.io>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Feb 2022 11:31:19 -0800
-Message-ID: <CAEf4BzZu-u1WXGScPZKVQZc+RGjmnYm45mcOGkzXyFLMKS-5gA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
- for BTFGen
+Date:   Wed, 2 Feb 2022 11:36:49 -0800
+Message-ID: <CAEf4BzaQ-hwdgqxYro5DjdY_=nnXTJVravt0D9qHW=PQZe-Lfg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 7/9] bpftool: Implement btfgen_get_btf()
 To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -69,403 +68,234 @@ X-Mailing-List: bpf@vger.kernel.org
 On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
  wrote:
 >
-> This commit implements the logic to record the relocation information
-> for the different kind of relocations.
+> The last part of the BTFGen algorithm is to create a new BTF object with
+> all the types that were recorded in the previous steps.
 >
-> btfgen_record_field_relo() uses the target specification to save all the
-> types that are involved in a field-based CO-RE relocation. In this case
-> types resolved and added recursively (using btfgen_put_type()).
-> Only the struct and union members and their types) involved in the
-> relocation are added to optimize the size of the generated BTF file.
->
-> On the other hand, btfgen_record_type_relo() saves the types involved in
-> a type-based CO-RE relocation. In this case all the members for the
-
-Do I understand correctly that if someone does
-bpf_core_type_size(struct task_struct), you'll save not just
-task_struct, but also any type that directly and indirectly referenced
-from any task_struct's field, even if that is through a pointer. As
-in, do you substitute forward declarations for types that are never
-directly used? If not, that's going to be very suboptimal for
-something like task_struct and any other type that's part of a big
-cluster of types.
-
-> struct and union types are added. This is not strictly required since
-> libbpf doesn't use them while performing this kind of relocation,
-> however that logic could change on the future. Additionally, we expect
-> that the number of this kind of relocations in an BPF object to be very
-> low, hence the impact on the size of the generated BTF should be
-> negligible.
->
-> Finally, btfgen_record_enumval_relo() saves the whole enum type for
-> enum-based relocations.
+> This function performs two different steps:
+> 1. Add the types to the new BTF object by using btf__add_type(). Some
+> special logic around struct and unions is implemented to only add the
+> members that are really used in the field-based relocations. The type
+> ID on the new and old BTF objects is stored on a map.
+> 2. Fix all the type IDs on the new BTF object by using the IDs saved in
+> the previous step.
 >
 > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
 > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
 > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
 > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
 > ---
->  tools/bpf/bpftool/gen.c | 260 +++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 257 insertions(+), 3 deletions(-)
+>  tools/bpf/bpftool/gen.c | 158 +++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 157 insertions(+), 1 deletion(-)
 >
 > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index bb9c56401ee5..7413ec808a80 100644
+> index 7413ec808a80..55e6f640cbbb 100644
 > --- a/tools/bpf/bpftool/gen.c
 > +++ b/tools/bpf/bpftool/gen.c
-> @@ -1119,9 +1119,17 @@ static int btf_save_raw(const struct btf *btf, con=
-st char *path)
+> @@ -1599,10 +1599,166 @@ static int btfgen_record_obj(struct btfgen_info =
+*info, const char *obj_path)
 >         return err;
 >  }
 >
-> +struct btfgen_member {
-> +       struct btf_member *member;
-> +       int idx;
-> +};
+> +static unsigned int btfgen_get_id(struct hashmap *ids, unsigned int old)
+> +{
+> +       uintptr_t new =3D 0;
 > +
->  struct btfgen_type {
->         struct btf_type *type;
->         unsigned int id;
-> +       bool all_members;
+> +       /* deal with BTF_KIND_VOID */
+> +       if (old =3D=3D 0)
+> +               return 0;
 > +
-> +       struct hashmap *members;
->  };
->
->  struct btfgen_info {
-> @@ -1151,6 +1159,19 @@ static void *u32_as_hash_key(__u32 x)
->
->  static void btfgen_free_type(struct btfgen_type *type)
+> +       if (!hashmap__find(ids, uint_as_hash_key(old), (void **)&new)) {
+> +               /* return id for void as it's possible that the ID we're =
+looking for is
+> +                * the type of a pointer that we're not adding.
+> +                */
+> +               return 0;
+> +       }
+> +
+> +       return (unsigned int)(uintptr_t)new;
+> +}
+> +
+> +static int btfgen_add_id(struct hashmap *ids, unsigned int old, unsigned=
+ int new)
+> +{
+> +       return hashmap__add(ids, uint_as_hash_key(old), uint_as_hash_key(=
+new));
+> +}
+> +
+>  /* Generate BTF from relocation information previously recorded */
+>  static struct btf *btfgen_get_btf(struct btfgen_info *info)
 >  {
+> -       return ERR_PTR(-EOPNOTSUPP);
 > +       struct hashmap_entry *entry;
+> +       struct btf *btf_new =3D NULL;
+> +       struct hashmap *ids =3D NULL;
 > +       size_t bkt;
+> +       int err =3D 0;
 > +
-> +       if (!type)
-> +               return;
+> +       btf_new =3D btf__new_empty();
+> +       if (libbpf_get_error(btf_new))
+> +               goto err_out;
 > +
-> +       if (!IS_ERR_OR_NULL(type->members)) {
-> +               hashmap__for_each_entry(type->members, entry, bkt) {
-> +                       free(entry->value);
+> +       ids =3D hashmap__new(btfgen_hash_fn, btfgen_equal_fn, NULL);
+> +       if (IS_ERR(ids)) {
+> +               errno =3D -PTR_ERR(ids);
+> +               goto err_out;
+> +       }
+> +
+> +       /* first pass: add all types and add their new ids to the ids map=
+ */
+> +       hashmap__for_each_entry(info->types, entry, bkt) {
+> +               struct btfgen_type *btfgen_type =3D entry->value;
+> +               struct btf_type *btf_type =3D btfgen_type->type;
+> +               int new_id;
+> +
+> +               /* we're adding BTF_KIND_VOID to the list but it can't be=
+ added to
+> +                * the generated BTF object, hence we skip it here.
+> +                */
+> +               if (btfgen_type->id =3D=3D 0)
+> +                       continue;
+> +
+> +               /* add members for struct and union */
+> +               if (btf_is_struct(btf_type) || btf_is_union(btf_type)) {
+> +                       struct hashmap_entry *member_entry;
+> +                       struct btf_type *btf_type_cpy;
+> +                       int nmembers, index;
+> +                       size_t new_size;
+> +
+> +                       nmembers =3D btfgen_type->members ? hashmap__size=
+(btfgen_type->members) : 0;
+> +                       new_size =3D sizeof(struct btf_type) + nmembers *=
+ sizeof(struct btf_member);
+> +
+> +                       btf_type_cpy =3D malloc(new_size);
+> +                       if (!btf_type_cpy)
+> +                               goto err_out;
+> +
+> +                       /* copy header */
+> +                       memcpy(btf_type_cpy, btf_type, sizeof(*btf_type_c=
+py));
+> +
+> +                       /* copy only members that are needed */
+> +                       index =3D 0;
+> +                       if (nmembers > 0) {
+> +                               size_t bkt2;
+> +
+> +                               hashmap__for_each_entry(btfgen_type->memb=
+ers, member_entry, bkt2) {
+> +                                       struct btfgen_member *btfgen_memb=
+er;
+> +                                       struct btf_member *btf_member;
+> +
+> +                                       btfgen_member =3D member_entry->v=
+alue;
+> +                                       btf_member =3D btf_members(btf_ty=
+pe) + btfgen_member->idx;
+> +
+> +                                       memcpy(btf_members(btf_type_cpy) =
++ index, btf_member,
+> +                                              sizeof(struct btf_member))=
+;
+
+you know that you are working with btf_type and btf_member, each have
+just a few well known fields, why memcpy instead of just setting each
+field individually? I think that would make code much easier to follow
+and understand what transformations it's doing (and what it doesn't do
+either).
+
+> +
+> +                                       index++;
+> +                               }
+> +                       }
+> +
+> +                       /* set new vlen */
+> +                       btf_type_cpy->info =3D btf_type_info(btf_kind(btf=
+_type_cpy), nmembers,
+> +                                                          btf_kflag(btf_=
+type_cpy));
+> +
+> +                       err =3D btf__add_type(btf_new, info->src_btf, btf=
+_type_cpy);
+> +                       free(btf_type_cpy);
+> +               } else {
+> +                       err =3D btf__add_type(btf_new, info->src_btf, btf=
+_type);
 > +               }
-> +               hashmap__free(type->members);
+> +
+> +               if (err < 0)
+> +                       goto err_out;
+> +
+> +               new_id =3D err;
+> +
+> +               /* add ID mapping */
+> +               err =3D btfgen_add_id(ids, btfgen_type->id, new_id);
+> +               if (err)
+> +                       goto err_out;
 > +       }
 > +
->         free(type);
->  }
->
-> @@ -1199,19 +1220,252 @@ btfgen_new_info(const char *targ_btf_path)
->         return info;
->  }
->
-> +static int btfgen_add_member(struct btfgen_type *btfgen_type,
-> +                            struct btf_member *btf_member, int idx)
-> +{
-> +       struct btfgen_member *btfgen_member;
-> +       int err;
+> +       /* second pass: fix up type ids */
+> +       for (unsigned int i =3D 0; i < btf__type_cnt(btf_new); i++) {
+> +               struct btf_member *btf_member;
+> +               struct btf_type *btf_type;
+> +               struct btf_param *params;
+> +               struct btf_array *array;
 > +
-> +       /* create new members hashmap for this btfgen type if needed */
-> +       if (!btfgen_type->members) {
-> +               btfgen_type->members =3D hashmap__new(btfgen_hash_fn, btf=
-gen_equal_fn, NULL);
-> +               if (IS_ERR(btfgen_type->members))
-> +                       return PTR_ERR(btfgen_type->members);
-> +       }
-> +
-> +       btfgen_member =3D calloc(1, sizeof(*btfgen_member));
-> +       if (!btfgen_member)
-> +               return -ENOMEM;
-> +       btfgen_member->member =3D btf_member;
-> +       btfgen_member->idx =3D idx;
-> +       /* add btf_member as member to given btfgen_type */
-> +       err =3D hashmap__add(btfgen_type->members, uint_as_hash_key(btfge=
-n_member->idx),
-> +                          btfgen_member);
-> +       if (err) {
-> +               free(btfgen_member);
-> +               if (err !=3D -EEXIST)
-
-why not check that such a member exists before doing btfgen_member allocati=
-on?
-
-> +                       return err;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static struct btfgen_type *btfgen_get_type(struct btfgen_info *info, int=
- id)
-> +{
-> +       struct btfgen_type *type =3D NULL;
-> +
-> +       hashmap__find(info->types, uint_as_hash_key(id), (void **)&type);
-
-if (!hashmap__find(...))
-   return NULL;
-
-> +
-> +       return type;
-> +}
-> +
-> +static struct btfgen_type *
-> +_btfgen_put_type(struct btf *btf, struct btfgen_info *info, struct btf_t=
-ype *btf_type,
-> +                unsigned int id, bool all_members)
-> +{
-> +       struct btfgen_type *btfgen_type, *tmp;
-> +       struct btf_array *array;
-> +       unsigned int child_id;
-> +       struct btf_member *m;
-> +       int err, i, n;
-> +
-> +       /* check if we already have this type */
-> +       if (hashmap__find(info->types, uint_as_hash_key(id), (void **) &b=
-tfgen_type)) {
-> +               if (!all_members || btfgen_type->all_members)
-> +                       return btfgen_type;
-> +       } else {
-> +               btfgen_type =3D calloc(1, sizeof(*btfgen_type));
-> +               if (!btfgen_type)
-> +                       return NULL;
-> +
-> +               btfgen_type->type =3D btf_type;
-> +               btfgen_type->id =3D id;
-> +
-> +               /* append this type to the types list before anything els=
-e */
-
-what do you mean by "before anything else"?
-
-> +               err =3D hashmap__add(info->types, uint_as_hash_key(btfgen=
-_type->id), btfgen_type);
-> +               if (err) {
-> +                       free(btfgen_type);
-> +                       return NULL;
-> +               }
-> +       }
-> +
-> +       /* avoid infinite recursion and yet be able to add all
-> +        * fields/members for types also managed by this function
-> +        */
-> +       btfgen_type->all_members =3D all_members;
-> +
-> +       /* recursively add other types needed by it */
-> +       switch (btf_kind(btfgen_type->type)) {
-> +       case BTF_KIND_UNKN:
-> +       case BTF_KIND_INT:
-> +       case BTF_KIND_FLOAT:
-> +       case BTF_KIND_ENUM:
-> +               break;
-> +       case BTF_KIND_STRUCT:
-> +       case BTF_KIND_UNION:
-> +               /* doesn't need resolution if not adding all members */
-> +               if (!all_members)
-> +                       break;
-> +
-> +               n =3D btf_vlen(btf_type);
-> +               m =3D btf_members(btf_type);
-> +               for (i =3D 0; i < n; i++, m++) {
-> +                       btf_type =3D (struct btf_type *) btf__type_by_id(=
-btf, m->type);
-
-why `const struct btf_type *` doesn't work everywhere? You are not
-modifying btf_type itself, no?
-
-> +
-> +                       /* add all member types */
-> +                       tmp =3D _btfgen_put_type(btf, info, btf_type, m->=
-type, all_members);
-> +                       if (!tmp)
-> +                               return NULL;
-> +
-> +                       /* add all members */
-> +                       err =3D btfgen_add_member(btfgen_type, m, i);
-> +                       if (err)
-> +                               return NULL;
-> +               }
-> +               break;
-> +       case BTF_KIND_PTR:
-> +               if (!all_members)
-> +                       break;
-> +       /* fall through */
-> +       /* Also add the type it's pointing to when adding all members */
-> +       case BTF_KIND_CONST:
-> +       case BTF_KIND_VOLATILE:
-> +       case BTF_KIND_TYPEDEF:
-> +               child_id =3D btf_type->type;
-> +               btf_type =3D (struct btf_type *) btf__type_by_id(btf, chi=
-ld_id);
-> +
-> +               tmp =3D _btfgen_put_type(btf, info, btf_type, child_id, a=
-ll_members);
-> +               if (!tmp)
-> +                       return NULL;
-> +               break;
-> +       case BTF_KIND_ARRAY:
-> +               array =3D btf_array(btfgen_type->type);
-> +
-> +               /* add type for array type */
-> +               btf_type =3D (struct btf_type *) btf__type_by_id(btf, arr=
-ay->type);
-> +               tmp =3D _btfgen_put_type(btf, info, btf_type, array->type=
-, all_members);
-> +               if (!tmp)
-> +                       return NULL;
-> +
-> +               /* add type for array's index type */
-> +               btf_type =3D (struct btf_type *) btf__type_by_id(btf, arr=
-ay->index_type);
-> +               tmp =3D _btfgen_put_type(btf, info, btf_type, array->inde=
-x_type, all_members);
-> +               if (!tmp)
-> +                       return NULL;
-> +               break;
-> +       /* tells if some other type needs to be handled */
-> +       default:
-> +               p_err("unsupported kind: %s (%d)",
-> +                     btf_kind_str(btfgen_type->type), btfgen_type->id);
-> +               errno =3D EINVAL;
-> +               return NULL;
-> +       }
-> +
-> +       return btfgen_type;
-> +}
-> +
-> +/* Put type in the list. If the type already exists it's returned, other=
-wise a
-> + * new one is created and added to the list. This is called recursively =
-adding
-> + * all the types that are needed for the current one.
-> + */
-> +static struct btfgen_type *
-> +btfgen_put_type(struct btf *btf, struct btfgen_info *info, struct btf_ty=
-pe *btf_type,
-> +               unsigned int id)
-> +{
-> +       return _btfgen_put_type(btf, info, btf_type, id, false);
-> +}
-> +
-> +/* Same as btfgen_put_type, but adding all members, from given complex t=
-ype, recursively */
-> +static struct btfgen_type *
-> +btfgen_put_type_all(struct btf *btf, struct btfgen_info *info,
-> +                   struct btf_type *btf_type, unsigned int id)
-> +{
-> +       return _btfgen_put_type(btf, info, btf_type, id, true);
-> +}
-
-these wrappers seem unnecessary, just pass false/true in 5 call sites
-below without extra wrapping of _btfgen_put_type (and call it
-btfgen_put_type then)
-
-> +
->  static int btfgen_record_field_relo(struct btfgen_info *info, struct bpf=
-_core_spec *targ_spec)
->  {
-> -       return -EOPNOTSUPP;
-> +       struct btf *btf =3D (struct btf *) info->src_btf;
-> +       struct btfgen_type *btfgen_type;
-> +       struct btf_member *btf_member;
-> +       struct btf_type *btf_type;
-> +       struct btf_array *array;
-> +       unsigned int id;
-> +       int idx, err;
-> +
-> +       btf_type =3D (struct btf_type *) btf__type_by_id(btf, targ_spec->=
-root_type_id);
-> +
-> +       /* create btfgen_type for root type */
-> +       btfgen_type =3D btfgen_put_type(btf, info, btf_type, targ_spec->r=
-oot_type_id);
-> +       if (!btfgen_type)
-> +               return -errno;
-> +
-> +       /* add types for complex types (arrays, unions, structures) */
-> +       for (int i =3D 1; i < targ_spec->raw_len; i++) {
-> +               /* skip typedefs and mods */
-> +               while (btf_is_mod(btf_type) || btf_is_typedef(btf_type)) =
-{
-> +                       id =3D btf_type->type;
-> +                       btfgen_type =3D btfgen_get_type(info, id);
-> +                       if (!btfgen_type)
-> +                               return -ENOENT;
-> +                       btf_type =3D (struct btf_type *) btf__type_by_id(=
-btf, id);
-> +               }
+> +               btf_type =3D (struct btf_type *) btf__type_by_id(btf_new,=
+ i);
 > +
 > +               switch (btf_kind(btf_type)) {
 > +               case BTF_KIND_STRUCT:
 > +               case BTF_KIND_UNION:
-> +                       idx =3D targ_spec->raw_spec[i];
-> +                       btf_member =3D btf_members(btf_type) + idx;
-> +                       btf_type =3D (struct btf_type *) btf__type_by_id(=
-btf, btf_member->type);
-> +
-> +                       /* add member to relocation type */
-> +                       err =3D btfgen_add_member(btfgen_type, btf_member=
-, idx);
-> +                       if (err)
-> +                               return err;
-> +                       /* put btfgen type */
-> +                       btfgen_type =3D btfgen_put_type(btf, info, btf_ty=
-pe, btf_member->type);
-> +                       if (!btfgen_type)
-> +                               return -errno;
+> +                       for (unsigned short j =3D 0; j < btf_vlen(btf_typ=
+e); j++) {
+> +                               btf_member =3D btf_members(btf_type) + j;
+> +                               btf_member->type =3D btfgen_get_id(ids, b=
+tf_member->type);
+> +                       }
+> +                       break;
+> +               case BTF_KIND_PTR:
+> +               case BTF_KIND_TYPEDEF:
+> +               case BTF_KIND_VOLATILE:
+> +               case BTF_KIND_CONST:
+> +               case BTF_KIND_RESTRICT:
+> +               case BTF_KIND_FUNC:
+> +               case BTF_KIND_VAR:
+> +                       btf_type->type =3D btfgen_get_id(ids, btf_type->t=
+ype);
 > +                       break;
 > +               case BTF_KIND_ARRAY:
 > +                       array =3D btf_array(btf_type);
-> +                       btfgen_type =3D btfgen_get_type(info, array->type=
-);
-> +                       if (!btfgen_type)
-> +                               return -ENOENT;
-> +                       btf_type =3D (struct btf_type *) btf__type_by_id(=
-btf, array->type);
-
-should index_type be added as well?
-
+> +                       array->index_type =3D btfgen_get_id(ids, array->i=
+ndex_type);
+> +                       array->type =3D btfgen_get_id(ids, array->type);
 > +                       break;
+> +               case BTF_KIND_FUNC_PROTO:
+> +                       btf_type->type =3D btfgen_get_id(ids, btf_type->t=
+ype);
+> +                       params =3D btf_params(btf_type);
+> +                       for (unsigned short j =3D 0; j < btf_vlen(btf_typ=
+e); j++)
+> +                               params[j].type =3D btfgen_get_id(ids, par=
+ams[j].type);
+> +                       break;
+
+did you try using btf_type_visit_type_ids() instead of this entire loop?
+
 > +               default:
-> +                       p_err("unsupported kind: %s (%d)",
-> +                             btf_kind_str(btf_type), btf_type->type);
-> +                       return -EINVAL;
+> +                       break;
 > +               }
 > +       }
 > +
-> +       return 0;
+> +       hashmap__free(ids);
+> +       return btf_new;
+> +
+> +err_out:
+> +       btf__free(btf_new);
+> +       hashmap__free(ids);
+> +       return NULL;
 >  }
 >
->  static int btfgen_record_type_relo(struct btfgen_info *info, struct bpf_=
-core_spec *targ_spec)
->  {
-> -       return -EOPNOTSUPP;
-> +       struct btf *btf =3D (struct btf *) info->src_btf;
-> +       struct btfgen_type *btfgen_type;
-> +       struct btf_type *btf_type;
-> +
-> +       btf_type =3D (struct btf_type *) btf__type_by_id(btf, targ_spec->=
-root_type_id);
-> +
-> +       btfgen_type =3D btfgen_put_type_all(btf, info, btf_type, targ_spe=
-c->root_type_id);
-> +       return btfgen_type ? 0 : -errno;
->  }
->
->  static int btfgen_record_enumval_relo(struct btfgen_info *info, struct b=
-pf_core_spec *targ_spec)
->  {
-> -       return -EOPNOTSUPP;
-> +       struct btf *btf =3D (struct btf *) info->src_btf;
-> +       struct btfgen_type *btfgen_type;
-> +       struct btf_type *btf_type;
-> +
-> +       btf_type =3D (struct btf_type *) btf__type_by_id(btf, targ_spec->=
-root_type_id);
-> +
-> +       btfgen_type =3D btfgen_put_type_all(btf, info, btf_type, targ_spe=
-c->root_type_id);
-> +       return btfgen_type ? 0 : -errno;
->  }
->
->  static int btfgen_record_reloc(struct btfgen_info *info, struct bpf_core=
-_spec *res)
+>  /* Create BTF file for a set of BPF objects.
 > --
 > 2.25.1
 >
