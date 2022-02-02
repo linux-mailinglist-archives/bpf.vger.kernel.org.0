@@ -2,198 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2E24A691F
-	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 01:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 798F44A6976
+	for <lists+bpf@lfdr.de>; Wed,  2 Feb 2022 02:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243248AbiBBAQg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Feb 2022 19:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48466 "EHLO
+        id S243590AbiBBBBv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Feb 2022 20:01:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243178AbiBBAQf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Feb 2022 19:16:35 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C51C061714;
-        Tue,  1 Feb 2022 16:16:34 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B430DB82FDC;
-        Wed,  2 Feb 2022 00:16:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26694C340E9;
-        Wed,  2 Feb 2022 00:16:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643760992;
-        bh=B7fkvLlyyPJefhPM/sjI7DHmR1jImbJstKCoGfEeUTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mBFX593LEwW01QZhVtsF9RmP+U3E90Qb/cwDEZAcuv4Tp/r9DEZTqRSygU6UwHg1K
-         +QkNqdfesubzUb55YGY/TQOGNO6s9Lw7Aizl6HqfU0hiMwRr/POCIaqAT1naF5E+D6
-         rOXKEAGArbmSU910MqLILV5IOlWTVm4Hh/PZeTXyfQ3TbU5RvDwFa14MBL6xZ5e84h
-         QzT8ZQmGB9aKwCJKQAlPt1nY3d5YTSBqP1LrdGNH38+SfUagi2J1rOXoveeNDBlD7U
-         IYOQeWKOPA4CLIHuJVqraLmvDRqt6/gVselNk0JjcI7jYHKIAr8+58aGJPf71IBPZF
-         yIfh4f065HNiA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DC74940466; Tue,  1 Feb 2022 21:16:29 -0300 (-03)
-Date:   Tue, 1 Feb 2022 21:16:29 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Mark Wielaard <mjw@redhat.com>, Kui-Feng Lee <kuifeng@fb.com>,
-        dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH dwarves v4 3/4] pahole: Use per-thread btf instances to
- avoid mutex locking.
-Message-ID: <YfnNXZPFRra3kmhb@kernel.org>
-References: <20220126192039.2840752-1-kuifeng@fb.com>
- <20220126192039.2840752-4-kuifeng@fb.com>
- <CAEf4BzYwOWJsfYMOLPt+cX=AB2pFSbcesH-6q_O-AqVT8=CnsQ@mail.gmail.com>
- <YfL8kjM30uHN3qxs@kernel.org>
- <YfRJGJ35SQCy+98H@kernel.org>
- <CAEf4BzZJzbRZAKgg=Kjg+G2AmD8-H_Pk9j26umicDVAtyWes+g@mail.gmail.com>
+        with ESMTP id S229994AbiBBBBu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Feb 2022 20:01:50 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6531C061714;
+        Tue,  1 Feb 2022 17:01:50 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id r144so23483508iod.9;
+        Tue, 01 Feb 2022 17:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CmP0qq6/ekGkKvGdCo8XfDqIYTpqdkVRVTouUqww8QI=;
+        b=b/Km9mNoWX8njHOWVWF7fZHUDevfwYi72UZvSkekAqn9CC2nAjbdB5fkmGeOcRMn71
+         zM9q+PKqHvS+NAI2yYOSnC4rGHbkTp6xAFPWcvBR4EhFaEzab8u/+x/mCyLBcmyTg6CL
+         IAvZl6G1eACTZmfkhfnueRTodaEMYRZOAda4xBBQyJII/Sg/e2xeQc3LsTROuBzGpOxP
+         kD3nxWZvmf7C6BC/Oi7Y7x2CLZv/MjlWWJ9QPCS3MNz3oVoLTFRJWk4iGM2tyr4dYdsr
+         pHOpd4XkFbbVEVu4kLgPnKslMA9WrKGY2KB/Whk79fEcIOaknXcfHXY9vSzaj39Tkwm8
+         EoKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CmP0qq6/ekGkKvGdCo8XfDqIYTpqdkVRVTouUqww8QI=;
+        b=tnPdvd86kU7Ho/5GRvbjl7efP9Ijs3IFeqcSNIjyfE68bRIrWmGiEv+CIiOdGlsC+c
+         irXV3kqRGTlDeMFukL9cWdzuGASkDXlUaz/Xvm8eva4TuA6qxLJP502UnEOfQY3vNMOz
+         LGQ6B1PnsvOu+WI0yvl7tL5XlWoTCuwHMgJ59g/HiZ9UfzrV238QamMoF3Zih+8RRrem
+         LrR30wFOiBCAwdU1ux0IVSX75bsRMgxkCJr3N3sIGLxZvsM5wfiSNui2u2j3ZLmnaU3R
+         m6flDusdDHqSzbTpXcBQRprM5cqWDlptpn/2ENF8fJYP+yErnLmg/4iRIC5rUtCeyK7x
+         gePg==
+X-Gm-Message-State: AOAM531OVwFsRE8ZRURKGBG49H44iyrtGJyGxJkh0dgx7idwZ9n3k0e5
+        wdM1eABvSADgCD84N7sAMRNJTWdrBQRlaUVl0+I=
+X-Google-Smtp-Source: ABdhPJxKbhDeIkE3mRwXAteUh1zQzA58w8qn25C1Gsc07DPCltjoxAOsOOoCdZzmPPRc3L9u9sowSGv1Bb7KXABoqFI=
+X-Received: by 2002:a02:7417:: with SMTP id o23mr15124921jac.145.1643763710194;
+ Tue, 01 Feb 2022 17:01:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzZJzbRZAKgg=Kjg+G2AmD8-H_Pk9j26umicDVAtyWes+g@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20220123221932.537060-1-jolsa@kernel.org> <CAEf4BzZj7awfwi-JoAB=aahxVF8p6FKhgu4OKpyY_pjePy75ig@mail.gmail.com>
+In-Reply-To: <CAEf4BzZj7awfwi-JoAB=aahxVF8p6FKhgu4OKpyY_pjePy75ig@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Feb 2022 17:01:38 -0800
+Message-ID: <CAEf4BzZrggU7Ym7bucvjG7K+AmtxhD8UGCMPqXdpL3stUhpOEg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] perf/bpf: Remove prologue generation
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 31, 2022 at 10:56:16PM -0800, Andrii Nakryiko escreveu:
-> On Fri, Jan 28, 2022 at 11:52 AM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
+On Mon, Jan 24, 2022 at 12:24 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Jan 23, 2022 at 2:19 PM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > Em Thu, Jan 27, 2022 at 05:12:02PM -0300, Arnaldo Carvalho de Melo escreveu:
-> > > Em Wed, Jan 26, 2022 at 11:58:27AM -0800, Andrii Nakryiko escreveu:
-> > > > On Wed, Jan 26, 2022 at 11:21 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
-> > > > > Create an instance of btf for each worker thread, and add type info to
-> > > > > the local btf instance in the steal-function of pahole without mutex
-> > > > > acquiring.  Once finished with all worker threads, merge all
-> > > > > per-thread btf instances to the primary btf instance.
+> > Removing code for ebpf program prologue generation.
 > >
-> > > > There are still unnecessary casts and missing {} in the else branch,
-> > > > but I'll let Arnaldo decide or fix it up.
+> > The prologue code was used to get data for extra arguments specified
+> > in program section name, like:
 > >
-> > So its just one unneeded cast as thr_data here is just a 'void *':
+> >   SEC("lock_page=__lock_page page->flags")
+> >   int lock_page(struct pt_regs *ctx, int err, unsigned long flags)
+> >   {
+> >          return 1;
+> >   }
 > >
-> > diff --git a/pahole.c b/pahole.c
-> > index 8c0a982f05c9ae3d..39e18804100dbfda 100644
-> > --- a/pahole.c
-> > +++ b/pahole.c
-> > @@ -2924,7 +2924,7 @@ static enum load_steal_kind pahole_stealer(struct cu *cu,
-> >                  * avoids copying the data collected by the first thread.
-> >                  */
-> >                 if (thr_data) {
-> > -                       struct thread_data *thread = (struct thread_data *)thr_data;
-> > +                       struct thread_data *thread = thr_data;
+> > This code is using deprecated libbpf API and blocks its removal.
 > >
-> >                         if (thread->encoder == NULL) {
-> >                                 thread->encoder =
+> > This feature was not documented and broken for some time without
+> > anyone complaining, also original authors are not responding,
+> > so I'm removing it.
 > >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  tools/perf/Makefile.config     |  11 -
+> >  tools/perf/builtin-record.c    |  14 -
+> >  tools/perf/util/bpf-loader.c   | 242 +---------------
+> >  tools/perf/util/bpf-prologue.c | 508 ---------------------------------
+> >  tools/perf/util/bpf-prologue.h |  37 ---
+> >  5 files changed, 1 insertion(+), 811 deletions(-)
+>
+> Love the stats! Thanks for taking this on!
+>
+
+Hi,
+
+Was this ever applied? If not, are there any blockers? I assume this
+will go through the perf tree, right?
+
+> >  delete mode 100644 tools/perf/util/bpf-prologue.c
+> >  delete mode 100644 tools/perf/util/bpf-prologue.h
 > >
-> > This other is needed as it is a "void **":
-> >
-> > @@ -2832,7 +2832,7 @@ static int pahole_thread_exit(struct conf_load *conf, void *thr_data)
-> >  static int pahole_threads_collect(struct conf_load *conf, int nr_threads, void **thr_data,
-> >                                   int error)
-> >  {
-> > -       struct thread_data **threads = (struct thread_data **)thr_data;
-> > +       struct thread_data **threads = thr_data;
-> >         int i;
-> >         int err = 0;
-> >
-> >
-> > Removing it:
-> >
-> > /var/home/acme/git/pahole/pahole.c: In function ‘pahole_threads_collect’:
-> > /var/home/acme/git/pahole/pahole.c:2835:40: warning: initialization of ‘struct thread_data **’ from incompatible pointer type ‘void **’ [-Wincompatible-pointer-types]
-> >  2835 |         struct thread_data **threads = thr_data;
-> >       |                                        ^~~~~~~~
-> >
-> >
-> > And I did some more profiling, now the focus should go to elfutils:
-> >
-> > ⬢[acme@toolbox pahole]$ perf report --no-children -s dso --call-graph none 2> /dev/null | head -20
-> > # To display the perf.data header info, please use --header/--header-only options.
-> > #
-> > #
-> > # Total Lost Samples: 0
-> > #
-> > # Samples: 27K of event 'cycles:u'
-> > # Event count (approx.): 27956766207
-> > #
-> > # Overhead  Shared Object
-> > # ........  ...................
-> > #
-> >     46.70%  libdwarves.so.1.0.0
-> >     39.84%  libdw-0.186.so
-> >      9.70%  libc-2.33.so
-> >      2.14%  libpthread-2.33.so
-> >      1.47%  [unknown]
-> >      0.09%  ld-2.33.so
-> >      0.06%  libelf-0.186.so
-> >      0.00%  libcrypto.so.1.1.1l
-> >      0.00%  libk5crypto.so.3.1
-> > ⬢[acme@toolbox pahole]$
-> >
-> > $ perf report -g graph,0.5,2 --stdio --no-children -s dso --dso libdw-0.186.so
-> >
-> 
+>
 > [...]
-> 
-> >
-> > #
-> > # (Tip: If you have debuginfo enabled, try: perf report -s sym,srcline)
-> > #
-> >
-> > This find_attr thing needs improvements, its a linear search AFAIK, some
-> > hashtable could do wonders, I guess.
-> >
-> > Mark, was this considered at some point?
-> 
-> This would be a great improvement, yes!
-> 
-> But strange that you didn't see any BTF-related functions, are you
-> sure you profiled the entire DWARF to BTF conversion process? BTF
-> encoding is not dominant, but noticeable anyways (e.g., adding unique
-> strings to BTF is relatively expensive still).
-
-It appears under the 
-
-> >     46.70%  libdwarves.so.1.0.0
-
-line, since we statically link libbpf. So yeah, it was unfortunate the
-way I presented the profiling output, I was just trying to point to what
-I think is the low hanging fruit, i.e. optimizing find_attr routines in
-libdw-0.186.so.
- 
-> >
-> > ⬢[acme@toolbox pahole]$ rpm -q elfutils-libs
-> > elfutils-libs-0.186-1.fc34.x86_64
-> >
-> > Andrii https://github.com/libbpf/libbpf/actions/workflows/pahole.yml is
-> > in failure mode for 3 days, and only yesterday I pushed these changes,
-> > seems unrelated to pahole:
-> >
-> > Tests exit status: 1
-> > Test Results:
-> >              bpftool: PASS
-> >           test_progs: FAIL (returned 1)
-> >  test_progs-no_alu32: FAIL (returned 1)
-> >        test_verifier: PASS
-> >             shutdown: CLEAN
-> > Error: Process completed with exit code 1.
-> >
-> > Can you please check?
-> 
-> Yes, it's not related to pahole. This is the BPF selftests issue which
-> I already fixed last week, but didn't get a chance to sync everything
-> to Github repo before leaving for a short vacation. I'll do another
-> sync tonight and it should be all green again.
-
-I'll check tomorrow.
-
-Going green I'll do some more tests and work towards releasing 1.24.
-
-- Arnaldo
