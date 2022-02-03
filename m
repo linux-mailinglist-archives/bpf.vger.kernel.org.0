@@ -2,153 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8F64A7E5D
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 04:36:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1634A7E76
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 04:52:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345136AbiBCDgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 22:36:21 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:35818 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232060AbiBCDgV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 22:36:21 -0500
-Received: by mail-il1-f199.google.com with SMTP id h8-20020a056e021b8800b002ba614f7c5dso907170ili.2
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 19:36:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7x6rKhaHmrAEYlIz/NCtXjuxWLWqRjW+skTvrls9++k=;
-        b=DWzGOqrR9oSSupfzF83xxotPfkhv50RSSOsUvoLwXEE+pWY+HsUIMP2J0NOf465C6Y
-         Oo/QM5szCMrcCHv5bUWfxOMNmx8d1sQW2wYubcUR8aVo8DQyE8dewQiwzqS8FHMY1mGV
-         rTq/TKkO3G84kO6gTFAjxA0dOdFrU9Our5S/CXEvCDA/gEzB0xOYrx3kmrS9ahXoViUm
-         VizsHMambwzuKBbbbpMvP/0Ncvk74nxTFNUgIJ1VvMxF2mr3JCS3K4xJN4ZANzxKo14d
-         vr2QV2o533M4fmRy8pS2CRIjDvPVju4KxUg3+fA37jfKxnl2Oae0clukULjVP+aB2usN
-         Xa8Q==
-X-Gm-Message-State: AOAM533po2TpQNOAxsfkMD7ZEQvcvR3H2aYi0J0VEl1ebhdJJq9jpZIu
-        lEgxg+M88Y3+NBsyr/39z2bcQMSMY0cYH+MJoM0RZTorZR4J
-X-Google-Smtp-Source: ABdhPJzZj1jMw6FAE6SvyayY5zdvayzSv5dg6luJoFgPyYb9thhsd7mbyIirTGhOCU69O6NNT0jIFBW7XgAFoaYYGIIlhZ5vZDyD
+        id S240788AbiBCDwf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 22:52:35 -0500
+Received: from gandalf.ozlabs.org ([150.107.74.76]:60491 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238270AbiBCDwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 22:52:35 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Jq4W24fQDz4xcl;
+        Thu,  3 Feb 2022 14:52:30 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1643860352;
+        bh=/Pfql7CY6zwkVLAHshlAFb3ts0aQsbL6x17I166/5KI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=syW/ju1lzaswpGav7Z30yj30jeTyhgODBXeyOd4SIZRlCJiF8rgJ8fvUchci6dYMV
+         Opbi2pZpD3QULnz172fsHcGBUGp7Phea45IJwzxoe4zUL2JuQy36TTUuzwUIMisAkP
+         uKGMleQCRpIqtJuAJW9LFOVcPVqIoLLxrwujMXBR+igD9ZiBMIn1GN747ebCPUaEUa
+         jVKHUvIXQLH9WLugcvFAiRy1akoesXBDuZ7E+En2qchsTt4Jxbt23W4UUyD7Tl+0Jy
+         RflXRPUhD3q5qkevJ9x68hGYN/okt6108or/UDLu4PdNGZJbO0DGLv8NRaeRlzzDfH
+         4e4r3CYCeZbqQ==
+Date:   Thu, 3 Feb 2022 14:52:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: linux-next: manual merge of the akpm-current tree with the bpf-next
+ tree
+Message-ID: <20220203145229.13dd25e9@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a02:711e:: with SMTP id n30mr16461827jac.235.1643859381164;
- Wed, 02 Feb 2022 19:36:21 -0800 (PST)
-Date:   Wed, 02 Feb 2022 19:36:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079a24b05d714d69f@google.com>
-Subject: [syzbot] general protection fault in btf_decl_tag_resolve
-From:   syzbot <syzbot+53619be9444215e785ed@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Fs/cnTjeiqDNuK302s6W=T2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+--Sig_/Fs/cnTjeiqDNuK302s6W=T2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-syzbot found the following issue on:
+Hi all,
 
-HEAD commit:    b7892f7d5cb2 tools: Ignore errors from `which' when search..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=13181634700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5044676c290190f2
-dashboard link: https://syzkaller.appspot.com/bug?extid=53619be9444215e785ed
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16454914700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ceb884700000
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+53619be9444215e785ed@syzkaller.appspotmail.com
+  lib/Kconfig.debug
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 3592 Comm: syz-executor914 Not tainted 5.16.0-syzkaller-11424-gb7892f7d5cb2 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
-RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
-Code: c1 ea 03 80 3c 02 00 0f 85 90 01 00 00 48 8b 1b e8 b7 c9 e6 ff 48 8d 7b 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 2b
-RSP: 0018:ffffc90001b1fa00 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81918c09 RDI: 0000000000000004
-RBP: ffff888015c32000 R08: 0000000000000008 R09: 0000000000000008
-R10: ffffffff81918bb1 R11: 0000000000000001 R12: 0000000000000004
-R13: 0000000000000008 R14: 0000000000000000 R15: 0000000000000005
-FS:  00005555556fd300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f98c38b8220 CR3: 0000000019537000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btf_resolve+0x251/0x1020 kernel/bpf/btf.c:4198
- btf_check_all_types kernel/bpf/btf.c:4239 [inline]
- btf_parse_type_sec kernel/bpf/btf.c:4280 [inline]
- btf_parse kernel/bpf/btf.c:4513 [inline]
- btf_new_fd+0x19fe/0x2370 kernel/bpf/btf.c:6047
- bpf_btf_load kernel/bpf/syscall.c:4039 [inline]
- __sys_bpf+0x1cbb/0x5970 kernel/bpf/syscall.c:4679
- __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fd57f202099
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe9e5eb898 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd57f202099
-RDX: 0000000000000020 RSI: 0000000020000000 RDI: 0000000000000012
-RBP: 00007fd57f1c6080 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fd57f1c6110
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
-RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
-Code: c1 ea 03 80 3c 02 00 0f 85 90 01 00 00 48 8b 1b e8 b7 c9 e6 ff 48 8d 7b 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 2b
-RSP: 0018:ffffc90001b1fa00 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81918c09 RDI: 0000000000000004
-RBP: ffff888015c32000 R08: 0000000000000008 R09: 0000000000000008
-R10: ffffffff81918bb1 R11: 0000000000000001 R12: 0000000000000004
-R13: 0000000000000008 R14: 0000000000000000 R15: 0000000000000005
-FS:  00005555556fd300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000000 CR3: 0000000019537000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	c1 ea 03             	shr    $0x3,%edx
-   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   7:	0f 85 90 01 00 00    	jne    0x19d
-   d:	48 8b 1b             	mov    (%rbx),%rbx
-  10:	e8 b7 c9 e6 ff       	callq  0xffe6c9cc
-  15:	48 8d 7b 04          	lea    0x4(%rbx),%rdi
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2e:	48 89 f8             	mov    %rdi,%rax
-  31:	83 e0 07             	and    $0x7,%eax
-  34:	83 c0 03             	add    $0x3,%eax
-  37:	38 d0                	cmp    %dl,%al
-  39:	7c 08                	jl     0x43
-  3b:	84 d2                	test   %dl,%dl
-  3d:	0f                   	.byte 0xf
-  3e:	85 2b                	test   %ebp,(%rbx)
+between commit:
 
+  42d9b379e3e1 ("lib/Kconfig.debug: Allow BTF + DWARF5 with pahole 1.21+")
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+from the bpf-next tree and commit:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+  e11ef20106b7 ("Kconfig.debug: make DEBUG_INFO selectable from a choice")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc lib/Kconfig.debug
+index f15dd96028b5,efc1a1908e04..000000000000
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@@ -317,6 -339,7 +339,7 @@@ config DEBUG_INFO_BT
+  	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+  	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+  	depends on BPF_SYSCALL
+ -	depends on !DEBUG_INFO_DWARF5
+++	depends on !DEBUG_INFO_DWARF5 || PAHOLE_VERSION >=3D 121
+  	help
+  	  Generate deduplicated BTF type information from DWARF debug info.
+  	  Turning this on expects presence of pahole tool, which will convert
+
+--Sig_/Fs/cnTjeiqDNuK302s6W=T2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmH7UX0ACgkQAVBC80lX
+0GyIbgf/VJOzAy08G7IWfqLcIuzm27iae0UGXbwUO1lYHVv2BQM+3OotO6Fsiz9H
+VM87r6F/OHtBXF5ERbNQWjlocRuA9HTWp6kSHruhr9g3858A3akFySFOQzDzyKRU
+FN5hQoIFML4QP/Cd3wi/T8vVuM2pGdFlpRYkHjk7N7xeXSNNAYPWt39RmK2nFUgW
+WEIPyJhm30UxiVSOasCAK45UAvRzT+ZcMNWbSbP0sxPnHkIsuFMszAvNyotTqDVN
+ZbU/MT61uQAdJ4jRfTk/6qMLWmF7Fw0Py3TVKmWb3LRKkZfTx0JX/MHw2ud0TsAb
+mBB1dZBN4m5pzPOiIaU08EOyJXYTjQ==
+=Nn+L
+-----END PGP SIGNATURE-----
+
+--Sig_/Fs/cnTjeiqDNuK302s6W=T2--
