@@ -2,117 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC914A8B15
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 19:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06064A8B24
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 19:04:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbiBCSA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 13:00:59 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6186 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1353231AbiBCSAr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Feb 2022 13:00:47 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 213HKtk4011513
-        for <bpf@vger.kernel.org>; Thu, 3 Feb 2022 10:00:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=HJoO6JkEqnUHuvdqq738pTAp6J9kfNTfpWl1pIquAps=;
- b=I8OenNremoBS+UpejPMrnqqcvRw8K5H6P7cMJMYD2r1aBu18bXBaS5xb9iHBCb62XaBK
- wGNOu0Qw+egHnqkbO/mY6E5VnC9TSPEVAbVbbCTEsTmzd1+38a1QpcvKl8WTpti7L+Jp
- /SKPsSnJ6WGuGHXThoMGMfooIuRLZGAOkgE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net (PPS) with ESMTPS id 3e04phd6ap-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 10:00:46 -0800
-Received: from twshared19733.18.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 3 Feb 2022 10:00:44 -0800
-Received: by devvm3278.frc0.facebook.com (Postfix, from userid 8598)
-        id 337401C6C03B8; Thu,  3 Feb 2022 10:00:40 -0800 (PST)
-From:   Delyan Kratunov <delyank@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     Delyan Kratunov <delyank@fb.com>
-Subject: [PATCH bpf-next] libbpf: deprecate priv/set_priv storage
-Date:   Thu, 3 Feb 2022 10:00:32 -0800
-Message-ID: <20220203180032.1921580-1-delyank@fb.com>
-X-Mailer: git-send-email 2.30.2
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: tCBjqWsGcN8irWFSxRrFhGG4enVtuXfG
-X-Proofpoint-GUID: tCBjqWsGcN8irWFSxRrFhGG4enVtuXfG
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230127AbiBCSES (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 13:04:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244530AbiBCSER (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 13:04:17 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 739F5C061714;
+        Thu,  3 Feb 2022 10:04:17 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id i30so2868895pfk.8;
+        Thu, 03 Feb 2022 10:04:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HV0xgY+A1CKwVGFVRLBbClyjgU0eAWxQoYGk3uDgk08=;
+        b=RZUEsIC1A+j6wWueZqUonlzipWqWA1NClQtgZiPCslJwg7a7gLTdzxIrRbgRZ1qByT
+         kx1Q3dwQiqlJrCay5zpiydVFi0k7WdAQgcZr1uAAUKSoWeyvHMM1HjXiBOAgmyjE3CTq
+         PyNT1sPl1/f3AMNNevF6IhT+9Pk0RWnxMANQjV4p4y7AP/Zj3tz1YOE8AOIXjZKsxaFR
+         /9mCA7NCKMt6J9UiN6B304hAxACQgW4ceo9JOeG67TeIkm/pzo50u3lbP0WOivGDpTiN
+         DWPbK/Sc2j6RuEbI6wrA1Uj5LPzDtS1VqWY0hxbhRZGMrhiWhSeCFcjzb3falSw+kH7P
+         ftgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HV0xgY+A1CKwVGFVRLBbClyjgU0eAWxQoYGk3uDgk08=;
+        b=Fr706xOu6Aq4199F+SWzo63SEdUpfoMT/qDBWyu3uRIiMXwzpq3HQR7igHpxSgHyyz
+         efxiXS9xExh/fTi3hfenFUSm4iCZ/1/g+kYXXi5WzHKUI+2n6u5gHVax6BO11N0S8r9e
+         fG4idYt03XFUXH3FPMtSpBBn+G2QS1aBWlUnxFalL2em55UMaILhcrqz8MYJ8swUSo+R
+         wrzh57Z8R4+nURriHN6eURdwHfVLXy/DwR+n/TawPcmUl/AyJ2tpXkGtw5zlt131I60p
+         zbFZEDgfT7vYCGCTtFGJYoDfjSj15RuqseIjxF/l4Vo9A+tpc3yenX43X6YeAeUKgexQ
+         gAdw==
+X-Gm-Message-State: AOAM531HRffxeXBcJIYGiX+MU0Mad6QLaUXd1RxyCTynPMXLmrm64qY1
+        /AZz6kZmSMlqUoDcxUib1AU=
+X-Google-Smtp-Source: ABdhPJwITvv/1cD8c5tYUb4+FWBLkHxjmFTp/fYTUTBlGAI6luRAnsYRAPaca7moWqts00mR2bonUg==
+X-Received: by 2002:a62:cd8f:: with SMTP id o137mr35259796pfg.64.1643911456966;
+        Thu, 03 Feb 2022 10:04:16 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4d88])
+        by smtp.gmail.com with ESMTPSA id a1sm37110669pgm.83.2022.02.03.10.04.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Feb 2022 10:04:16 -0800 (PST)
+Date:   Thu, 3 Feb 2022 10:04:14 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC bpf-next v2 5/5] selftests/bpf: test for pinning for
+ cgroup_view link
+Message-ID: <20220203180414.blk6ou3ccmod2qck@ast-mbp.dhcp.thefacebook.com>
+References: <20220201205534.1962784-1-haoluo@google.com>
+ <20220201205534.1962784-6-haoluo@google.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-03_06,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
- spamscore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202030109
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220201205534.1962784-6-haoluo@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Arbitrary storage via bpf_*__set_priv/__priv is being deprecated
-without a replacement ([1]). perf uses this capability, but most of
-that is going away with the removal of prologue generation ([2]).
-perf is already suppressing deprecation warnings, so the remaining
-cleanup will happen separately.
+On Tue, Feb 01, 2022 at 12:55:34PM -0800, Hao Luo wrote:
+> +
+> +SEC("iter/cgroup_view")
+> +int dump_cgroup_lat(struct bpf_iter__cgroup_view *ctx)
+> +{
+> +	struct seq_file *seq = ctx->meta->seq;
+> +	struct cgroup *cgroup = ctx->cgroup;
+> +	struct wait_lat *lat;
+> +	u64 id;
+> +
+> +	BPF_SEQ_PRINTF(seq, "cgroup_id: %8lu\n", cgroup->kn->id);
+> +	lat = bpf_map_lookup_elem(&cgroup_lat, &id);
 
-  [1]: Closes: https://github.com/libbpf/libbpf/issues/294
-  [2]: https://lore.kernel.org/bpf/20220123221932.537060-1-jolsa@kernel.org/
+Looks like "id = cgroup->kn->id" assignment is missing here?
 
-Signed-off-by: Delyan Kratunov <delyank@fb.com>
----
- tools/lib/bpf/libbpf.h | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Thanks a lot for this test. It explains the motivation well.
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 5762b57aecfc..c8d8daad212e 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -246,8 +246,10 @@ struct bpf_object *bpf_object__next(struct bpf_object =
-*prev);
- 	     (pos) =3D (tmp), (tmp) =3D bpf_object__next(tmp))
+It seems that the patches 1-4 are there to automatically
+supply cgroup pointer into bpf_iter__cgroup_view.
 
- typedef void (*bpf_object_clear_priv_t)(struct bpf_object *, void *);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API int bpf_object__set_priv(struct bpf_object *obj, void *priv,
- 				    bpf_object_clear_priv_t clear_priv);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API void *bpf_object__priv(const struct bpf_object *prog);
-
- LIBBPF_API int
-@@ -279,9 +281,10 @@ bpf_object__prev_program(const struct bpf_object *obj,=
- struct bpf_program *prog)
-
- typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
-
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
- 				     bpf_program_clear_priv_t clear_priv);
--
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
- LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
- 					 __u32 ifindex);
-@@ -769,8 +772,10 @@ LIBBPF_API __u64 bpf_map__map_extra(const struct bpf_m=
-ap *map);
- LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u64 map_extra=
-);
-
- typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
- 				 bpf_map_clear_priv_t clear_priv);
-+LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
- LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
- LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
- 					  const void *data, size_t size);
---
-2.30.2
+Since user space needs to track good part of cgroup dir opreations
+can we task it with the job of patches 1-4 as well?
+It can register notifier for cgroupfs operations and
+do mkdir in bpffs similarly _and_ parametrize 'view' bpf program
+with corresponding cgroup_id.
+Ideally there is no new 'view' program and it's a subset of 'iter'
+bpf program. They're already parametrizable.
+When 'iter' is pinned the user space can tell it which object it should
+iterate on. The 'view' will be an interator of one element and
+argument to it can be cgroup_id.
+When user space pins the same 'view' program in a newly created bpffs
+directory it will parametrize it with a different cgroup_id.
+At the end the same 'view' program will be pinned in multiple directories
+with different cgroup_id arguments.
+This patch 5 will look very much the same, but patches 1-4 will not be
+necessary.
+Of course there are races between cgroup create/destroy and bpffs
+mkdir, prog pin operatiosn, but they will be there regardless.
+The patch 1-4 approach is not race free either.
+Will that work?
