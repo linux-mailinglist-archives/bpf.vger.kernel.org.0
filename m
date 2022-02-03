@@ -2,60 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF104A8630
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 15:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D024A856A
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 14:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243054AbiBCO3l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 09:29:41 -0500
-Received: from mx.rcoi82.ru ([178.34.181.210]:47976 "EHLO mx.rcoi82.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238689AbiBCO3l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 09:29:41 -0500
-Received: from mx.rcoi82.ru (mx.rcoi82.ru [127.0.0.1])
-        by mx.rcoi82.ru (Postfix) with ESMTP id 4JqKxQ4DnCz6Z2sh
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 16:57:45 +0300 (MSK)
-Authentication-Results: mx.rcoi82.ru (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=rcoi82.ru
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rcoi82.ru; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :message-id:date:date:subject:subject:to:from:from:reply-to; s=
-        dkim; t=1643896665; x=1646488666; bh=/8JIKOtBXPDynhRf5HSpjbjwk2S
-        SJu8Oe6cb6+A7xOw=; b=HgJ8oGBEp3z4pqopKgTskYHDLgRPMJIcoljILUP9o/X
-        9FcfuCLdYYJxKnTyGJ1czzzOj1GiqPQqcmmPzl4aIReJXm/+A6XqzwK0b2rtkXSX
-        F6OTitFWdKgwB9dgNM0XRQ29xlhG1M/ABcASCcB15Uro21JLsTy6GrhIq2YP69ag
-        =
-X-Virus-Scanned: Debian amavisd-new at mx.rcoi82.ru
-X-Spam-Flag: NO
-X-Spam-Score: 4.726
-X-Spam-Level: ****
-X-Spam-Status: No, score=4.726 tagged_above=2 required=6.2
-        tests=[ALL_TRUSTED=-1, DEAR_FRIEND=2.604,
-        FREEMAIL_FORGED_REPLYTO=2.503, FREEMAIL_REPLYTO_END_DIGIT=0.25,
-        NO_DNS_FOR_FROM=0.379, T_SCC_BODY_TEXT_LINE=-0.01]
-        autolearn=no autolearn_force=no
-Received: from mx.rcoi82.ru ([127.0.0.1])
-        by mx.rcoi82.ru (mx.rcoi82.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9hVdMhHsJ_dP for <bpf@vger.kernel.org>;
-        Thu,  3 Feb 2022 16:57:45 +0300 (MSK)
-Received: from rcoi82.ru (unknown [20.109.161.97])
-        by mx.rcoi82.ru (Postfix) with ESMTPSA id 4JqKbP0Qkkz6ks0y
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 16:42:08 +0300 (MSK)
-Reply-To: es2299648@gmail.com
-From:   7-litvinenko.m.m@rcoi82.ru
-To:     bpf@vger.kernel.org
-Subject: request
-Date:   03 Feb 2022 13:42:08 +0000
-Message-ID: <20220203134208.6C863F49DAC820E1@rcoi82.ru>
+        id S1349349AbiBCNmt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 08:42:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231362AbiBCNmt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 08:42:49 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20ABC061714
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 05:42:48 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id u15so5164015wrt.3
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 05:42:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=X0COlNB9TPIK/dBWWrbF0GX+csoyIDTyHQWHGE7Rg4Y=;
+        b=exzYmdO4ZCbHnxF5nJdfMacIFRGJKkbUUGZcMkRZrVX0zr4QruaDfHnQGWBXUWXpvo
+         lKDAljByHhWELFIobe+/RHrCLBvvGbzwsROlsAuOFhGKSixITwZYoNzlSZHeQTG0tJ7Y
+         8ee9evIu5v8LzEpHtGfoejfsAP9UVZs55EoXN0x8T07YS3PoSG1u5WZsZ0IGIhpppn2R
+         KXyf58ZSufZWGX5RoJSFO4MlSk8lKeZEDnafY+rWF3pyef1bS/uUkxVkggWN0lCHM00X
+         8ehexBLwXPCKGNImWHFURL+htMVIvcOlRodrrbE27eyiE184Ohnh7gAYnk/h1hJZpTna
+         2mZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=X0COlNB9TPIK/dBWWrbF0GX+csoyIDTyHQWHGE7Rg4Y=;
+        b=oRlnS/WmdFUrmtHeiWSxRvKx28gPZtWEhyt3KvgvyzHp+oGCmY7U9NhUQywIPo1El/
+         5XRiX7Ae+GHJ60rgENfkDyDZIiQ6V39g/vhYNdUfvZvMFlZIPxbl+2/eLe+a/n0o5Szs
+         ra8YVgbqA5Uz9GAU0wDJKJhS79Eamnlogh3NIIIUr6hEpuFg1xZce0wMPLKZpsZYCp19
+         om3BEhNlzUSCG6mR1eEPtGs9+L+0cT0EtSlwQ6KUcrtS3SBskxXP+vb9ETaLJaONYIMX
+         pFTrAvOAXmM0TUcsbeoLcp0+NOJGg/D7FHrasDst6VHjutmwRe34QX7EugsEP7oO/qE+
+         xtpQ==
+X-Gm-Message-State: AOAM532eNZ1f5Av8aQtKXHdl6wnXKo+9ulGxbzpNYLR/8m7MMp61KkuH
+        3HTYijRir8LYXpqRVTo06Dxhn3n9SHf4EgGwZcE=
+X-Google-Smtp-Source: ABdhPJxNE86vTxIGdDgkunx3HT6NapQWauOdQ2ofL5HLi219vl8CrCiREDlGW1JXPSAZ4ytFgP81ZN3sW47Voo/0x+A=
+X-Received: by 2002:a05:6000:1a8f:: with SMTP id f15mr18033456wry.349.1643895767321;
+ Thu, 03 Feb 2022 05:42:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Received: by 2002:a05:6000:128d:0:0:0:0 with HTTP; Thu, 3 Feb 2022 05:42:46
+ -0800 (PST)
+Reply-To: mrsaishag54@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishagaddafi960@gmail.com>
+Date:   Thu, 3 Feb 2022 05:42:46 -0800
+Message-ID: <CABELTfAqSVeEDjtKdD9VYDY5L0pbtf=VRazHW5kdfwEz0U=56Q@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Dear Friend,
-Kindly respond back to me for important payment matters as the=20
-opportunity will be very beneficial for the both of us.
-Best regards
-Sal
+
+I came across your e-mail contact prior to a private search while in
+need of your assistance. I am Aisha Al-Qaddafi, the only biological
+Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
+single Mother and a Widow with three Children.
+
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
+
+I am willing to negotiate an investment/business profit sharing ratio
+with you based on the future investment earning profits.
+
+If you are willing to handle this project on my behalf kindly reply
+urgently to enable me to provide you more information about the
+Best Regards
+Mrs Aisha Al-Qaddafi
+mrsaishag54@gmail.com
