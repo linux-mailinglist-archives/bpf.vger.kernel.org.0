@@ -2,90 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB3E4A8A7F
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 18:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E2C4A8A89
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 18:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240941AbiBCRoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 12:44:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
+        id S1353029AbiBCRp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 12:45:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbiBCRoe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 12:44:34 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B3FC061714;
-        Thu,  3 Feb 2022 09:44:34 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id k17so2808047plk.0;
-        Thu, 03 Feb 2022 09:44:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1PIvakgPFU06Hp4Wyu28bq75cjKrDt9/2hkcT6oy8B8=;
-        b=jqWD7y7l24rzAY2r4cTnoMEwqrdR367M/pL26PNezgtGIblwqP5jGiFLOacVgxBSI5
-         /UrD70K785TyqqNR/63BqFVwnyxpBscZO1GPMjIA26Sncjd9fhQ48/gOioDSLyokYpxB
-         vOOKnVdWU7G4JG59klQJugO+P3ac1SXdXAn2Pggg08Eosp1X4vYt6VdO6IQGNdNAh0m0
-         U4VciJWUZ4beEduPSpY15KWjbFS7ljEGW8EH5aXX3GIngBixNi/jmm858xujJnlmq1M1
-         NLXABfcDLs5/iwMMQn9bMv9Lh51C2R9BHoSqXnG7mV4eA46GUoxZMuU0aooxAQXUrdss
-         tNtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PIvakgPFU06Hp4Wyu28bq75cjKrDt9/2hkcT6oy8B8=;
-        b=figYy7nEyUxOsn8uLRuZKwiWqDH5X82xDw0sHz8cG0CMHmmu+Cyuo+RHAocyDB5FHO
-         10lNiOMHcP/17uLMaayyL6xUXQOi93hETaG+igtIkyszWYHnMTubt9cIteKJnZvr9tmW
-         0Vn/2yd9fo2dTGIonw5U9QkVAb2Sv8FFcGAWtm4hgyPWf7fSzSUksdam9zA+yfv1EBqG
-         URzHojrJywmqtGgCLvpyM7HartxmawavqjlvMBA2cMeZQhaZuW0Hb5DeN4Cu0g16IMFB
-         frCE9cRADnw2K8XNz3uXytsHTQ/3vEw8ZcUjDUSvWn3la7VIAEqt/p+uJKAvG3jZIkpf
-         IcNA==
-X-Gm-Message-State: AOAM533xt4tbcv2Asm31w21Gbg/VFQjUTtrOHWoFJ/ED1tpDvsBC74RA
-        AjUM624DVg/e2QHeG4wHdzQUwbzTd9vxxFx9h4/0g9tlscs=
-X-Google-Smtp-Source: ABdhPJwk6b5mVjhJlsjDQFvnbOwkZywl0OAwUc8iIBA6PBbi6UPk4UepfIHCiOqVQstFxbxcBNExZrN8kBQxwNNQNKw=
-X-Received: by 2002:a17:90a:d203:: with SMTP id o3mr15085386pju.122.1643910273543;
- Thu, 03 Feb 2022 09:44:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20220131183638.3934982-1-hch@lst.de> <20220131183638.3934982-4-hch@lst.de>
- <CAADnVQLiEQFzON5OEV_LVYzqJuZ68e0AnqhNC++vptbed6ioEw@mail.gmail.com> <20220203174010.GA16681@lst.de>
-In-Reply-To: <20220203174010.GA16681@lst.de>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Feb 2022 09:44:22 -0800
-Message-ID: <CAADnVQKjdVybM4-62BP_P5cyMxs7x9G7OpjFqv-tQtVMP4X+hw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] bpf, docs: Better document the legacy packet access instruction
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
+        with ESMTP id S236722AbiBCRp1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 12:45:27 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE858C061714;
+        Thu,  3 Feb 2022 09:45:26 -0800 (PST)
+Date:   Thu, 3 Feb 2022 18:45:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1643910323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LMbK/rkb16pf1pFvu++BiU7C75L+5+l1Z7FWzQOMCJo=;
+        b=U7k595SMwbd43+SlszUhj7UdjhaQmx8EEtn59HssmwEKNfTGXLalxRFH0zhAyld1ghBXu8
+        eiGYsv5xo2XzZUqtg2eL/yql4LkJ7aANY9gu6wBGFnwvDirftSD1Qk1v1OsOV3avLv4zQX
+        uZz7n0lpMEriM4eU4Up8VxIRvRz6xm4X41ds3ReNVeKcoaMlhM8AnS9hYel6bZdIMOE79o
+        sf4FKRi7EbEmZPVoPMsguRG9qcAAII0URU/nzvlo6GNIRz9bS0+P/4uLeV/slgLJT7yMrn
+        CW+ooMcGxOoSDoL6vheRPbHAuzEOGCgEzXPaLQHIAEnT8uPRmyaQz7Yk76Iksw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1643910323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LMbK/rkb16pf1pFvu++BiU7C75L+5+l1Z7FWzQOMCJo=;
+        b=shm9yg7XQi7yUNgXid9vOKRIiEFfkic3J4+yjlKOZhVhYwdVV0VWff/aS1j1ftXijtEYVr
+        Od046CQCK5HhhXBQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH net-next 3/4] net: dev: Makes sure netif_rx() can be
+ invoked in any context.
+Message-ID: <YfwUskgPuOREd9hs@linutronix.de>
+References: <20220202122848.647635-1-bigeasy@linutronix.de>
+ <20220202122848.647635-4-bigeasy@linutronix.de>
+ <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
+ <YfvwbsKm4XtTUlsx@linutronix.de>
+ <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
+ <Yfv3c+5XieVR0xAh@linutronix.de>
+ <CANn89i+t4TgrryvSBmBMfsY63m6Fhxi+smiKfOwHTRAKxvcPLQ@mail.gmail.com>
+ <YfwGcHv6XQytcq68@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YfwGcHv6XQytcq68@linutronix.de>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 3, 2022 at 9:40 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Thu, Feb 03, 2022 at 09:32:38AM -0800, Alexei Starovoitov wrote:
-> > These two places make it sound like it's interpreter only behavior.
-> > I've reworded it like:
-> > -the interpreter context is a pointer to networking packet.  ``BPF_ABS``
-> > +the program context is a pointer to networking packet.  ``BPF_ABS``
-> >
-> > -interpreter will abort the execution of the program.
-> > +program execution will be aborted.
-> >
-> > and pushed to bpf-next with the rest of patches.
->
-> The interpreter thing is actually unchanged from the old text, but I
-> totally agree with your fixup.  Thanks!
+On 2022-02-03 17:44:33 [+0100], To Eric Dumazet wrote:
+> > I guess the cost of the  local_bh_enable()/local_bh_disable() pair
+> > will be roughly the same, please measure it :)
+> 
+> We would avoid that branch maybe that helps. Will measure.
 
-The old doc had:
-"the interpreter will abort the execution of the program. JIT compilers
-therefore must preserve this property."
+|  BH OFF/ON     : 722922586
+|  BH OFF/ON     : 722931661
+|  BH OFF/ON     : 725341486
+|  BH OFF/ON     : 725909591
+|  BH OFF/ON     : 741705606
+|  BH OFF/ON-OPT : 536683873
+|  BH OFF/ON-OPT : 536933779
+|  BH OFF/ON-OPT : 536967581
+|  BH OFF/ON-OPT : 537109700
+|  BH OFF/ON-OPT : 537148631
 
-Since the latter sentence is now gone the former got ambiguous.
+in a tight loop of 100000000 iterations:
+BH OFF/ON = local_bh_disable(); local_bh_enable()
+BH OFF/ON-OPT = local_bh_disable(); local_bh_enable_opt()
+where local_bh_enable_opt() is the proposed function.
+
+725341486 = ~7.3ns for one iteration.
+536967581 = ~5.4ns for one iteration.
+
+This is without tracing+lockdep. So I don't need to sell this to peterz
+and focus one the previously suggested version.
+
+Sebastian
