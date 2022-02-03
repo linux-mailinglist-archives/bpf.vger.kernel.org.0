@@ -2,64 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F045A4A7EC2
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 05:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652E74A7EE1
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 06:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349306AbiBCEzA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 23:55:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42112 "EHLO
+        id S236555AbiBCFOf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 00:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbiBCEzA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Feb 2022 23:55:00 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCA7C061714
-        for <bpf@vger.kernel.org>; Wed,  2 Feb 2022 20:55:00 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id y5-20020a17090aca8500b001b8127e3d3aso1726969pjt.3
-        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 20:55:00 -0800 (PST)
+        with ESMTP id S236553AbiBCFOe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 00:14:34 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA69C061714;
+        Wed,  2 Feb 2022 21:14:34 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id x11so1212645plg.6;
+        Wed, 02 Feb 2022 21:14:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UZB/ckO3baR/5jP++YQnq5de16aSEsdbjVKm6vqGyh0=;
-        b=OGO2vUJTlG3szydstqViDtepw+F4dj4/7GwX7/0SlBHy01FesgX2D1QRDD/EIU7+w5
-         ahZfEgacWmbTR5b+DLiTAYWzmCEOA+QuG9wTfkwp0WFFPTgltwXg7AJiOeM90cb0ML+e
-         iZfyikf76lPgvHjTuMWcAYTc2VQyeOnoGaC/YCIC4/YqmZmFc1xM0P292jM9/hGeHzMA
-         djegP3Sd8jh8Xur8FwvWbHVfz3aNvfubiZHUW8s4uA9pweWbaG1U8lFWsm4X/tTwC2Uk
-         bLfBZ0PTTgLjWtpwnqQynlglnNPjC3i53i+tyTo0WWyOM4iSaTmB7G2H8byu6D8NY1U9
-         YovQ==
+        bh=/XvS1cqfkeqiPvoM6zdk/RybqMUuGn2wKOpu+RAubME=;
+        b=CCKxvnTUr/p5sXzQFArCLzvE25cnccC1MT/MgJBjAgd5J+UBe+VK/8p6BT83Yf2i17
+         3mM3TYLZABXNVsPqTWT9R9dYMLHc0uAyItzV/dyWtli3aW8yTYxlx8Cxzt9tMzzuopL8
+         IqIDXMJWUDw9x5xk6R0nhFpOvLoM/Odfgv5MWqODcFiLXFgnvbR5X3L7NGU4Tw9exNjA
+         CZ95SsvQSqSZtCUPidGCDUEpI17JO8V//RYjEAOcsCWCV0zWi/bqXOnA3zaAKknAV0BS
+         g71mfUyZiP6MNny4sCw92DNaskqcFNvLX7fOgDi20ic/qblsR6zGMswA+MAOoQSyi6T+
+         FT5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UZB/ckO3baR/5jP++YQnq5de16aSEsdbjVKm6vqGyh0=;
-        b=RmK463vgvA2EP2ffdrbMrdP38z92VuNEUHec7nxMV3GoxefHLZWp20hrkD+VE7MKz8
-         Ar+QC6BW7vX/5xyEweuG9hiTKCyRgwNkH4oCDcjLT0jTBRdpn2t3U8ESco92/dUbw8J0
-         F89aYsl2uaNiWKHHjLjw2bQW6YxC+yiQ+Kv3Q1iL54SAyuM2CFkPWCa+UvAY2VnvYT3Q
-         yiLXdWfhyNi9II7GBVwYYhDx+6AM39alCC2cFRZgWtqVhXDVJ5l8d5GZQiHT4dqQh8s3
-         Vm/hs27w2h5SKew2Fj4fHTHweqUBdJ5lNXwWFVWKutsaNmWMyxhnYDBdE8oXLnKvY/0e
-         x2VA==
-X-Gm-Message-State: AOAM533/o55kG9w8zRgReqIhXmZiuOxvNv/f0Iy/HdZHsKpnio0b18TZ
-        2QQCl+vIiHvrvKcZHmvVi09EKkPYWOeLxw==
-X-Google-Smtp-Source: ABdhPJzMjHLZCP2HOdM4VZVpfeTnTbgP5FUZXTvKBtsis352mq8aWyYZUwdkeDdEeS8K57SzCJQVSQ==
-X-Received: by 2002:a17:903:404b:: with SMTP id n11mr21228227pla.129.1643864099524;
-        Wed, 02 Feb 2022 20:54:59 -0800 (PST)
+        bh=/XvS1cqfkeqiPvoM6zdk/RybqMUuGn2wKOpu+RAubME=;
+        b=Lzf2wZ9Fk0T0C/xTij8W9mKaOz/d9PXf3Q1/VES0qz64vS4rG1gGr6kNFFiA1uLyjs
+         U1FxzB4ErUcCZdx6iJCxoasSAF0dWZ1OfkTOE0LXledPdftz3/HeGFds5UjdRoEYPdZ6
+         qL9nlpfYKsDAUhML5sgtnaj5vcWg7TFiLPut/1TEM7dm5bpuHIAMolHRuHy1NMZaEO6E
+         XlrNDnP0Ps/sGSHJ/2c84D38WTMPHIamHffUR+gak7hrDUozvwNxsdVq+O/kuwG9KaTe
+         AyOk0b1OCYN1Tcxoqf1iJOpXuQ7rSe48/7gD4aKKcb7SCKo5BJRK6CmoyK0SFFIVzioN
+         6JNA==
+X-Gm-Message-State: AOAM533LTuWcUHIFd72yJa4VXMU4sRZBdyrxmbIWAzfZi+o025Ri6ojz
+        WbNuA6deuBaDvjNBfdMphn8=
+X-Google-Smtp-Source: ABdhPJwpHPqQgmShBBEKrtoDaUXJcHZ+hFS30gsjm4wgZ4HESicEARK41UA8uChVoJWWGeCFFfGghQ==
+X-Received: by 2002:a17:90a:4045:: with SMTP id k5mr12175403pjg.98.1643865273521;
+        Wed, 02 Feb 2022 21:14:33 -0800 (PST)
 Received: from localhost (61-223-193-169.dynamic-ip.hinet.net. [61.223.193.169])
-        by smtp.gmail.com with ESMTPSA id p22sm25230755pfw.139.2022.02.02.20.54.57
+        by smtp.gmail.com with ESMTPSA id nn12sm8484531pjb.24.2022.02.02.21.14.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Feb 2022 20:54:58 -0800 (PST)
+        Wed, 02 Feb 2022 21:14:32 -0800 (PST)
 From:   Hou Tao <hotforest@gmail.com>
 X-Google-Original-From: Hou Tao <houtao1@huawei.com>
-To:     kafai@fb.com
-Cc:     andrii@kernel.org, ard.biesheuvel@arm.com, ast@kernel.org,
-        bpf@vger.kernel.org, catalin.marinas@arm.com, daniel@iogearbox.net,
-        houtao1@huawei.com, linux-arm-kernel@lists.infradead.org,
-        will@kernel.org, yhs@fb.com, zlim.lnx@gmail.com
-Subject: Re: [PATCH bpf-next v2 2/2] bpf, arm64: calculate offset as byte-offset for bpf line info
-Date:   Thu,  3 Feb 2022 12:54:51 +0800
-Message-Id: <20220203045451.5217-1-houtao1@huawei.com>
+To:     daniel@iogearbox.net
+Cc:     andreyknvl@google.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, hotforest@gmail.com,
+        houtao1@huawei.com, john.fastabend@gmail.com, kafai@fb.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        syzbot+5ad567a418794b9b5983@syzkaller.appspotmail.com, yhs@fb.com
+Subject: Re: [PATCH bpf-next v2] bpf: use VM_MAP instead of VM_ALLOC for ringbuf
+Date:   Thu,  3 Feb 2022 13:14:27 +0800
+Message-Id: <20220203051427.23315-1-houtao1@huawei.com>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220202184525.ydj3a7jc73o64dws@kafai-mbp.dhcp.thefacebook.com>
-References: <20220202184525.ydj3a7jc73o64dws@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <c6c74927-0199-617a-c4b2-bb4d0a733906@iogearbox.net>
+References: <c6c74927-0199-617a-c4b2-bb4d0a733906@iogearbox.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -68,67 +69,60 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hi,
 
-> 
-> On Tue, Jan 25, 2022 at 06:57:07PM +0800, Hou Tao wrote:
-> > insn_to_jit_off passed to bpf_prog_fill_jited_linfo() is calculated
-> > in instruction granularity instead of bytes granularity, but bpf
-> > line info requires byte offset, so fixing it by calculating offset
-> > as byte-offset.
+> On 2/2/22 7:01 AM, Hou Tao wrote:
+> > After commit 2fd3fb0be1d1 ("kasan, vmalloc: unpoison VM_ALLOC pages
+> > after mapping"), non-VM_ALLOC mappings will be marked as accessible
+> > in __get_vm_area_node() when KASAN is enabled. But now the flag for
+> > ringbuf area is VM_ALLOC, so KASAN will complain out-of-bound access
+> > after vmap() returns. Because the ringbuf area is created by mapping
+> > allocated pages, so use VM_MAP instead.
 > > 
+> > After the change, info in /proc/vmallocinfo also changes from
+> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmalloc user
+> > to
+> >    [start]-[end]   24576 ringbuf_map_alloc+0x171/0x290 vmap user
+> > 
+> > Reported-by: syzbot+5ad567a418794b9b5983@syzkaller.appspotmail.com
 > > Signed-off-by: Hou Tao <houtao1@huawei.com>
 > > ---
-> >  arch/arm64/net/bpf_jit_comp.c | 13 ++++++++-----
-> >  1 file changed, 8 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> > index 6a83f3070985..7b94e0c5e134 100644
-> > --- a/arch/arm64/net/bpf_jit_comp.c
-> > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > @@ -152,10 +152,12 @@ static inline int bpf2a64_offset(int bpf_insn, int off,
-> >  	bpf_insn++;
-> >  	/*
-> >  	 * Whereas arm64 branch instructions encode the offset
-> > -	 * from the branch itself, so we must subtract 1 from the
-> > +	 * from the branch itself, so we must subtract 4 from the
-> >  	 * instruction offset.
-> >  	 */
-> > -	return ctx->offset[bpf_insn + off] - (ctx->offset[bpf_insn] - 1);
-> > +	return (ctx->offset[bpf_insn + off] -
-> > +		(ctx->offset[bpf_insn] - AARCH64_INSN_SIZE)) /
-> > +		AARCH64_INSN_SIZE;
-> Is it another bug fix? It does not seem to be related
-> to the change described in the commit message.
+> > v2:
+> >    * explain why VM_ALLOC will lead to vmalloc-oob access
+> 
+> Do you know which tree commit 2fd3fb0be1d1 is, looks like it's neither
+> in bpf nor in bpf-next tree at the moment.
+> 
+It is on linux-next tree:
+ 
+ $ git name-rev 2fd3fb0be1d1
+ 2fd3fb0be1d1 tags/next-20220201~2^2~96
+ 
+> Either way, I presume this fix should be routed via bpf tree rather
+> than bpf-next? (I can add Fixes tag while applying.)
 >
-No, because ctx->offset is byte-offset now, but bpf2a64_offset()
-needs to return instruction offset instead of byte offset, so the
-calculation needs update. But i should not update the comment because
-it is right. Will post v3 to fix it.
+Make sense and thanks for that.
 
-> >  }
-> >  
-> >  static void jit_fill_hole(void *area, unsigned int size)
-> > @@ -946,13 +948,14 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
-> >  		const struct bpf_insn *insn = &prog->insnsi[i];
-> >  		int ret;
-> >  
-> > +		/* BPF line info needs byte-offset instead of insn-offset */
-> >  		if (ctx->image == NULL)
-> > -			ctx->offset[i] = ctx->idx;
-> > +			ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
-> >  		ret = build_insn(insn, ctx, extra_pass);
-> >  		if (ret > 0) {
-> >  			i++;
-> >  			if (ctx->image == NULL)
-> > -				ctx->offset[i] = ctx->idx;
-> > +				ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
-> >  			continue;
-> >  		}
-> >  		if (ret)
-> > @@ -964,7 +967,7 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
-> >  	 * instruction (end of program)
-> >  	 */
-> >  	if (ctx->image == NULL)
-> > -		ctx->offset[i] = ctx->idx;
-> > +		ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
-> Changes in this function makes sense.
+Regards,
+Tao
+
+> >    * add Reported-by tag
+> > v1: https://lore.kernel.org/bpf/CANUnq3a+sT_qtO1wNQ3GnLGN7FLvSSgvit2UVgqQKRpUvs85VQ@mail.gmail.com/T/#t
+> > ---
+> >   kernel/bpf/ringbuf.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> > index 638d7fd7b375..710ba9de12ce 100644
+> > --- a/kernel/bpf/ringbuf.c
+> > +++ b/kernel/bpf/ringbuf.c
+> > @@ -104,7 +104,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+> >   	}
+> >   
+> >   	rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+> > -		  VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+> > +		  VM_MAP | VM_USERMAP, PAGE_KERNEL);
+> >   	if (rb) {
+> >   		kmemleak_not_leak(pages);
+> >   		rb->pages = pages;
+> > 
+> 
 > 
