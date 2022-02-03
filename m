@@ -2,115 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09774A8A36
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 18:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DEB4A8A49
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 18:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243549AbiBCRgu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 12:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233512AbiBCRgt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 12:36:49 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82125C061714;
-        Thu,  3 Feb 2022 09:36:49 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id s6so2718695plg.12;
-        Thu, 03 Feb 2022 09:36:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5I5a2aleiUaHSVG05eSin+O0+2GmadoXbT1CBpGVmVg=;
-        b=YDwf9xGAGoiZuHSers3gN6OILdgsP9eLyNRCH8J26MT2gnOeZKqba+PbqExN6UOHs6
-         /jc5670/4mCF/Odu5BZjQpeFseTMLNsg7dtnSt47OrDxtGNWnuCfYn/bO5s9BbPzdXIz
-         PFuDU+YNZIwf6ijsPZ3cHipUwkTm5SQ+EEZh00cIiscgkVKA/sejW/oZMfYUectIiZo9
-         FNPZOrFvtM/r2VhvsYl05rqbVr46nHdiiXW3YTP97j+TaOJ6NSeXjDj2pA2f7dqsEeH/
-         +QX1PqtRtAs+1gKXk2+FHXequc0mosXqGGMnsbjNEPdJGsRb0X5fXJY6Xl4OUNFXTXSX
-         DMKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5I5a2aleiUaHSVG05eSin+O0+2GmadoXbT1CBpGVmVg=;
-        b=20fxrEiHJ8tR7dMT+isiXnjFAS2gbOzVzWbyIRIxcEMe6ieziKomA0bi/LfaEVKkfr
-         z8mmQyTzEVJWQmthAhf1XTv+PGRWQsCC8j5YO3TVyUXKMhK8VZs2IADHXFa0TuAQCuqq
-         MncfE6H/QcLaAZ02OPnX0qlCNZYDAyX9xQUCNF+vzCDCNEIyQsqZtQD/z1p/wHuH6Qt0
-         e9Jfh9y6sBASspfhFSxo6Ub22PE05YB0dzbeyecJp1GyY2W42eDImcrUYQYgp3IUED+x
-         uvxWE0sge2di8J58r8mMjrkqKqpZhFWGb196FjP+sCkjLqDfJ0XIzOAK7XOfc24PBaXg
-         RXgA==
-X-Gm-Message-State: AOAM5302l6NOwmzI8uKTW7TTUN5Rft+QtO5IOPn+h7PaVhx/5YxTIkte
-        Imnr7aDuJIYz7634krwmtsxXWmtAATsdmknOX+8=
-X-Google-Smtp-Source: ABdhPJxYcrN4bvEQR+zrWc1ogjgqtyMArTJR/wnAUtNmwp9bx3XLZzgrs74tmsW6jlgG+l8ba92xQ/XeVftoXlgmr5s=
-X-Received: by 2002:a17:90b:4ac6:: with SMTP id mh6mr15271610pjb.138.1643909808921;
- Thu, 03 Feb 2022 09:36:48 -0800 (PST)
+        id S1352940AbiBCRkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 12:40:10 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:49026 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239435AbiBCRkK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 12:40:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2960C60B72;
+        Thu,  3 Feb 2022 17:40:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 88136C340ED;
+        Thu,  3 Feb 2022 17:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643910009;
+        bh=SAdLkjNr2RrsDyFMfuy2KN43kJtChi9IrkQ9pgfD/P0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=n7in4HcX96wOqxtz3BVsjMjFf1m0bRM4W1Uk+R+Pf6dPPyKm9SJnup871Z47UA//L
+         nz0kUntVSlXDMmFOcW7kpJJHQ2e29Li505Ag6JHd2fzKebpGN7BdUkDHDp0qB8yDsO
+         10kRvUEnCkZFQfcFDKmF6Y3/z4o8X8ecbdaPOVBtkyjTgf7rjW7f3rB9NvSk3yCNgb
+         UrxdfZDxMrX6uLuIvMOGvl2m6xm2rI8Hyfcd3qLY/z7gEJM4xZDzN0YeEOhxu5BLNn
+         8vMSXE1CcHu5Vh4FtN44JI+AzSefIrt++289tYFQ39QqNC0NxlRf+nk7llWIFy/dzV
+         6AJI/gTwF3Nng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D7B9E5D08C;
+        Thu,  3 Feb 2022 17:40:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220202211328.176481-1-mcroce@linux.microsoft.com> <20220202211328.176481-3-mcroce@linux.microsoft.com>
-In-Reply-To: <20220202211328.176481-3-mcroce@linux.microsoft.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Feb 2022 09:36:38 -0800
-Message-ID: <CAADnVQ+PpCHnQoTxJ2V0305SnSmftngyGGaq1m71ai0KS1jZ9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: test maximum recursion
- depth for bpf_core_types_are_compat()
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/5] bpf, docs: Document the byte swapping instructions
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164391000944.27300.17075086641401753236.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Feb 2022 17:40:09 +0000
+References: <20220131183638.3934982-2-hch@lst.de>
+In-Reply-To: <20220131183638.3934982-2-hch@lst.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 1:13 PM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> bpf_core_types_are_compat() was limited to 2 recursion levels, which are
-> enough to parse a function prototype.
-> Add a test which checks the existence of a function prototype, so to
-> test the bpf_core_types_are_compat() code path.
->
-> Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> ---
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  3 +++
->  tools/testing/selftests/bpf/progs/core_kern.c      | 14 ++++++++++++++
->  2 files changed, 17 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 595d32ab285a..a457071a7751 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -13,6 +13,9 @@
->  #define CREATE_TRACE_POINTS
->  #include "bpf_testmod-events.h"
->
-> +typedef int (*func_proto_typedef)(long);
-> +func_proto_typedef funcp = NULL;
-> +
->  DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) = 123;
->
->  noinline void
-> diff --git a/tools/testing/selftests/bpf/progs/core_kern.c b/tools/testing/selftests/bpf/progs/core_kern.c
-> index 13499cc15c7d..bfea86b42563 100644
-> --- a/tools/testing/selftests/bpf/progs/core_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/core_kern.c
-> @@ -101,4 +101,18 @@ int balancer_ingress(struct __sk_buff *ctx)
->         return 0;
->  }
->
-> +typedef int (*func_proto_typedef___match)(long);
-> +typedef void (*func_proto_typedef___doesnt_match)(char*);
-> +
-> +int out[2];
-> +
-> +SEC("raw_tracepoint/sys_enter")
-> +int core_relo_recur_limit(void *ctx)
-> +{
-> +       out[0] = bpf_core_type_exists(func_proto_typedef___match);
-> +       out[1] = bpf_core_type_exists(func_proto_typedef___doesnt_match);
+Hello:
 
-How does it test it?
-The kernel code could be a nop and there will be no failure in this "test".
-Please make it real.
-Also add tests that exercise the limit of recursion.
-One that goes over and fails and another that is right at the limit
-and passes.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Mon, 31 Jan 2022 19:36:34 +0100 you wrote:
+> Add a section to document the byte swapping instructions.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  Documentation/bpf/instruction-set.rst | 44 ++++++++++++++++++++++++---
+>  1 file changed, 40 insertions(+), 4 deletions(-)
+
+Here is the summary with links:
+  - [1/5] bpf, docs: Document the byte swapping instructions
+    https://git.kernel.org/bpf/bpf-next/c/dd33fb571f5c
+  - [2/5] bpf, docs: Better document the regular load and store instructions
+    https://git.kernel.org/bpf/bpf-next/c/63d8c242b9a5
+  - [3/5] bpf, docs: Better document the legacy packet access instruction
+    https://git.kernel.org/bpf/bpf-next/c/15175336270a
+  - [4/5] bpf, docs: Better document the extended instruction format
+    https://git.kernel.org/bpf/bpf-next/c/5ca15b8a939f
+  - [5/5] bpf, docs: Better document the atomic instructions
+    https://git.kernel.org/bpf/bpf-next/c/594d32348556
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
