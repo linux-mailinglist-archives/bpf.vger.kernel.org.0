@@ -2,94 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281E14A8FB4
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978B44A8FB7
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354618AbiBCVUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 16:20:11 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:38736 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbiBCVUK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 16:20:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9324C6168B
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:20:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 04CE7C340EF;
-        Thu,  3 Feb 2022 21:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643923210;
-        bh=yJvnm+p5kMK1mXorl6FtPXe1GvpofRcmyb0GSrRRSog=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=PvbO4UOdsLDtrX/bKzANzwcSi2o2Uh+cdXn9CGXhjatg55IYE3f3aDz2MkoJ5IiVP
-         OypdSlSymOeP9KEmV6HWiFYxswd3wb+a+DM9HQk7ZYItg2fVgRadhKezHEXtfrzH8v
-         9HTnj3N5zCM4IHnIOPcZK8pU8Ihcvxy4+mkIzz9USUO27rGf+7uuaFrWiXqierVXW6
-         1VQSHt9Z5AnYUCFIxosL/tYTxPgQtKrJBc+QS5eDO28UfqCcbmyWaOl5ftTD4kL0Ce
-         FNQ050GYAQlV8nTOMy/eTLvs8jSsTNKnUrrrvWMFVINeMIHwfQhRuiLmef/5jl9kw/
-         I4NDBtM/0DxZQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E2F7AE5869F;
-        Thu,  3 Feb 2022 21:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1354677AbiBCVUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 16:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354656AbiBCVUq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 16:20:46 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDD74C06173D
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 13:20:45 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id c188so4961440iof.6
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 13:20:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=UETRfPh6Wqht0/YhIX8NetSXGnpaHUGlAB3aQZ/aOxY=;
+        b=OHVHCqax4u2Km7CnFwU2ykPQB3WWJ3+wDEc6u+lpBFuF2b9nhOTKThkj4cYe56dchD
+         b8NvB3icfUqfrsDcnpQGfhKTWpEN3Gabxgvp4klkmKB5dUl3Zl6PcFGBZmOHgZTKcifI
+         /z16bd4rKGd9ue/J7qUrc1gtsMaX1ujOtW0B6xDWn5ywMfw9Bgk0EMyZNdD8+0qxzjul
+         RivdzXirTrrQ+dNVkB+IoKyCONSovlEwDCaVq/PpRR2GCrFINoaOI42aTUw0iIbrHkNA
+         p72cmsdqKOsmCEPNPT7j6ZSMSww4fRl4f8c60SscYg/9iOa+BTo2qNVaHJk9DXuVebBW
+         DF5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UETRfPh6Wqht0/YhIX8NetSXGnpaHUGlAB3aQZ/aOxY=;
+        b=8DcH/At/ylpn7ucFHDGJklGFA/JfpdmdKZS4XKeo0arKxUs22ZC0n/QHe28Lri2vEz
+         iPyrKyiYnVsYBol2Tcver9+T9FRvS3/X6OyPhgzYRBlk770igbE5e5gCfEK0BwAF5bGD
+         VhoS2ilDcwmPnzTXvwrFFZS3z8tRQB8rirSdr1iqN9DuNNQ+VsA7U9/XN9bEGK9Nnvo3
+         Sd1NmwaCFdZmvcsXcvoyHkIWc44AfshsGuPxrc5EilmvxYlhPTGgBBOjsuDvMhdIveho
+         Br1yNAl5wy+3mM26aj0qGMQwDjEPR8Q3aQEsFyTTpMgjvE8e9XcK+tJi6ASzm0xXVDBd
+         g+Sw==
+X-Gm-Message-State: AOAM533oSQ12J/xUEayvBw5O2Hcq1DXaFcOQDzQSlyg8GMpx9qnMvO1F
+        HXlCzFT6ArCPOeEdPhYxbm85ZQ==
+X-Google-Smtp-Source: ABdhPJz6PrX3QvS+M/jEJz6sqfvGlbg88F5EDkuwsyj/dxzoXr+dbILY7vReO4+yIDuq6Yz+1NN/XQ==
+X-Received: by 2002:a05:6638:25d4:: with SMTP id u20mr7173825jat.189.1643923245044;
+        Thu, 03 Feb 2022 13:20:45 -0800 (PST)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id w5sm7805ilu.83.2022.02.03.13.20.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Feb 2022 13:20:44 -0800 (PST)
+Subject: Re: [syzbot] general protection fault in submit_bio_checks
+To:     syzbot <syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        Christoph Hellwig <hch@lst.de>
+References: <0000000000008c32e305d6d8e802@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <fe92753c-f46b-8df0-78cf-226a4a2662ba@kernel.dk>
+Date:   Thu, 3 Feb 2022 14:20:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2] bpf: fix a btf decl_tag bug when tagging a function
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164392320992.7400.15627449270345731975.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Feb 2022 21:20:09 +0000
-References: <20220203191727.741862-1-yhs@fb.com>
-In-Reply-To: <20220203191727.741862-1-yhs@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
-        daniel@iogearbox.net, kernel-team@fb.com,
-        syzbot+53619be9444215e785ed@syzkaller.appspotmail.com
+In-Reply-To: <0000000000008c32e305d6d8e802@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Thu, 3 Feb 2022 11:17:27 -0800 you wrote:
-> syzbot reported a btf decl_tag bug with stack trace below:
+On 1/30/22 9:06 PM, syzbot wrote:
+> Hello,
 > 
->   general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
->   KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
->   CPU: 0 PID: 3592 Comm: syz-executor914 Not tainted 5.16.0-syzkaller-11424-gb7892f7d5cb2 #0
->   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->   RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
->   RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
->   ...
->   Call Trace:
->    <TASK>
->    btf_resolve+0x251/0x1020 kernel/bpf/btf.c:4198
->    btf_check_all_types kernel/bpf/btf.c:4239 [inline]
->    btf_parse_type_sec kernel/bpf/btf.c:4280 [inline]
->    btf_parse kernel/bpf/btf.c:4513 [inline]
->    btf_new_fd+0x19fe/0x2370 kernel/bpf/btf.c:6047
->    bpf_btf_load kernel/bpf/syscall.c:4039 [inline]
->    __sys_bpf+0x1cbb/0x5970 kernel/bpf/syscall.c:4679
->    __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
->    __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
->    __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
->    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> syzbot found the following issue on:
 > 
-> [...]
+> HEAD commit:    b605fdc54c2b Add linux-next specific files for 20220128
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=150084b8700000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=da5090473475f3ca
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2b3f18414c37b42dcc94
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 0xdffffc000000002f: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000178-0x000000000000017f]
+> CPU: 1 PID: 3642 Comm: syz-executor.5 Not tainted 5.17.0-rc1-next-20220128-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:blk_throtl_bio block/blk-throttle.h:175 [inline]
+> RIP: 0010:submit_bio_checks+0x7c0/0x1bf0 block/blk-core.c:765
+> Code: 08 3c 03 0f 8e 4a 11 00 00 48 b8 00 00 00 00 00 fc ff df 44 8b 6d 10 41 83 e5 01 4a 8d bc 2b 7c 01 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 08 84 c0 0f 85 09 11 00 00
+> RSP: 0018:ffffc900028cf680 EFLAGS: 00010203
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 000000000000002f RSI: ffffffff83d5f41e RDI: 000000000000017d
+> RBP: ffff88801e8be500 R08: ffffffff8a241580 R09: 0000000000000000
+> R10: ffffffff83d5f410 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000001 R14: 00000000fffffffe R15: ffff88801ad9a4cc
+> FS:  0000555556299400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007fed92bd5ec9 CR3: 000000003b65d000 CR4: 00000000003526e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __submit_bio+0xaf/0x360 block/blk-core.c:802
+>  __submit_bio_noacct_mq block/blk-core.c:881 [inline]
+>  submit_bio_noacct block/blk-core.c:907 [inline]
+>  submit_bio_noacct+0x6c9/0x8a0 block/blk-core.c:896
+>  submit_bio block/blk-core.c:968 [inline]
+>  submit_bio+0x1ea/0x430 block/blk-core.c:926
+>  write_dev_flush fs/btrfs/disk-io.c:4243 [inline]
+>  barrier_all_devices fs/btrfs/disk-io.c:4293 [inline]
+>  write_all_supers+0x3038/0x4440 fs/btrfs/disk-io.c:4388
+>  btrfs_commit_transaction+0x1be3/0x3180 fs/btrfs/transaction.c:2362
+>  btrfs_commit_super+0xc1/0x100 fs/btrfs/disk-io.c:4562
+>  close_ctree+0x314/0xccc fs/btrfs/disk-io.c:4671
+>  generic_shutdown_super+0x14c/0x400 fs/super.c:462
+>  kill_anon_super+0x36/0x60 fs/super.c:1056
+>  btrfs_kill_super+0x38/0x50 fs/btrfs/super.c:2365
+>  deactivate_locked_super+0x94/0x160 fs/super.c:332
+>  deactivate_super+0xad/0xd0 fs/super.c:363
+>  cleanup_mnt+0x3a2/0x540 fs/namespace.c:1159
+>  task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+>  tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+>  exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+>  do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7fe814b274c7
+> Code: ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
 
-Here is the summary with links:
-  - [bpf,1/2] bpf: fix a btf decl_tag bug when tagging a function
-    https://git.kernel.org/bpf/bpf-next/c/d7e7b42f4f95
-  - [bpf,2/2] selftests/bpf: add a selftest for invalid func btf with btf decl_tag
-    https://git.kernel.org/bpf/bpf-next/c/cf1a4cbce63b
+Christoph, looks like an issue with replacing bio_set_dev() with just
+assigning bio->bi_bdev in bio_reset(). The latter does not associate the
+blkcg, for example, which is what is causing this oops.
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Jens Axboe
 
