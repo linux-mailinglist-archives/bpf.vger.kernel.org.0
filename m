@@ -2,168 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D044A8FAF
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 281E14A8FB4
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354571AbiBCVRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 16:17:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354547AbiBCVRX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 16:17:23 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4590C06173B
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 13:17:22 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id o17so5808052ljp.1
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 13:17:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bRfkm7GrbFMoJBuqK0ida1mpkefkGdsknjo4++yLasA=;
-        b=FbHqN0P9rw8Q0BybW2zMN3/iAfqsRvXrJ0fm8sm7m6s2D6ZhBmUQpkrHYsRB+r/sV/
-         CmgchEvSDsrSY1xqpUbc9+yq4MOxBs9q5USemSuerei3lb0nVu+oPox0LFMKjMpIenGc
-         QQLLBicS659vsfWsYpyIDF4SfLdgeK8NT1n4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bRfkm7GrbFMoJBuqK0ida1mpkefkGdsknjo4++yLasA=;
-        b=yz8a1/2tXa7hugam4YdEKd6kTiRbidLcEhO28OkYEXCnrxj+0RhGxNl57qEEVRYL3D
-         C7L7IeH2gWq3o6NZVnrh11GfjbE9KS0KZ+Q4WNejMRrq6fA3bC6Stg/hlB8fZ4Ri+MTb
-         FJI2ukUfJFsLv2p5s8MZ2Xq1lWt5ducPZCM0DLXPv67l4ijSQoRYgRcflJcd9BVTPL2E
-         ZK5jODmyadlae4eQO0itebT198TXRXmDfH88VE7LKlScaVpMnVpBb/RCSkIJLycjpBdV
-         yixpPdy+zIf0v8b/bzwL05NUGIpMONoxnzRxYHotg7DrgjcELEwCI5Fx7VksaNjrqGMp
-         PBNg==
-X-Gm-Message-State: AOAM530XU2cM3pICGqTvEJg3eQq0E07rIwLz1k3GbgxscVFMUUHM/Gil
-        JchsjEeZkk0b/b3JZzw5a9pqZrbGr146xJfPPTIKVQ==
-X-Google-Smtp-Source: ABdhPJwI/FQ/A34LE1OPELMCwYQPioB5eE3RDTq1WzznT3jPKZdTtcD8jmNuPeoQFmFu66hx5z0zfg3iIg7mBPrKqt0=
-X-Received: by 2002:a2e:b8d6:: with SMTP id s22mr24667013ljp.218.1643923040997;
- Thu, 03 Feb 2022 13:17:20 -0800 (PST)
+        id S1354618AbiBCVUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 16:20:11 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:38736 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231479AbiBCVUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 16:20:10 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9324C6168B
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:20:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 04CE7C340EF;
+        Thu,  3 Feb 2022 21:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643923210;
+        bh=yJvnm+p5kMK1mXorl6FtPXe1GvpofRcmyb0GSrRRSog=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=PvbO4UOdsLDtrX/bKzANzwcSi2o2Uh+cdXn9CGXhjatg55IYE3f3aDz2MkoJ5IiVP
+         OypdSlSymOeP9KEmV6HWiFYxswd3wb+a+DM9HQk7ZYItg2fVgRadhKezHEXtfrzH8v
+         9HTnj3N5zCM4IHnIOPcZK8pU8Ihcvxy4+mkIzz9USUO27rGf+7uuaFrWiXqierVXW6
+         1VQSHt9Z5AnYUCFIxosL/tYTxPgQtKrJBc+QS5eDO28UfqCcbmyWaOl5ftTD4kL0Ce
+         FNQ050GYAQlV8nTOMy/eTLvs8jSsTNKnUrrrvWMFVINeMIHwfQhRuiLmef/5jl9kw/
+         I4NDBtM/0DxZQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E2F7AE5869F;
+        Thu,  3 Feb 2022 21:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-10-mauricio@kinvolk.io>
- <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com> <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Thu, 3 Feb 2022 16:17:09 -0500
-Message-ID: <CAHap4zsiCucKjxWU8NhLGKTxYHoh_wHwjirOcSfMwNF38axDcQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 9/9] selftest/bpf: Implement tests for bpftool
- gen min_core_btf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf 1/2] bpf: fix a btf decl_tag bug when tagging a function
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164392320992.7400.15627449270345731975.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Feb 2022 21:20:09 +0000
+References: <20220203191727.741862-1-yhs@fb.com>
+In-Reply-To: <20220203191727.741862-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        syzbot+53619be9444215e785ed@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 2:50 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Fri, Jan 28, 2022 at 3:23 PM Mauricio V=C3=A1squez Bernal
-> <mauricio@kinvolk.io> wrote:
-> >
-> > On Fri, Jan 28, 2022 at 5:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk=
-.io> wrote:
-> > >
-> > > This commit implements some integration tests for "BTFGen". The goal
-> > > of such tests is to verify that the generated BTF file contains the
-> > > expected types.
-> > >
-> >
-> > This is not an exhaustive list of test cases. I'm not sure if this is
-> > the approach we should follow to implement such tests, it seems to me
-> > that checking each generated BTF file by hand is a lot of work but I
-> > don't have other ideas to simplify it.
-> >
-> > I considered different options to write these tests:
-> > 1. Use core_reloc_types.h to create a "source" BTF file with a lot of
-> > types, then run BTFGen for all test_core_reloc_*.o files and use the
-> > generated BTF file as btf_src_file in core_reloc.c. In other words,
-> > re-run all test_core_reloc tests using a generated BTF file as source
-> > instead of the "btf__core_reloc_" #name ".o" one. I think this test is
-> > great because it tests the full functionality and actually checks that
-> > the programs are able to run using the generated file. The problem is
-> > how do we test that the BTFGen is creating an optimized file? Just
-> > copying the source file without any modification will make all those
-> > tests pass. We could check that the generated file is small (by
-> > checking the size or the number of types) but it doesn't seem a very
-> > reliable approach to me.
->
-> I think this second run after minimizing BTF is a good idea. I
-> wouldn't bother to check for "minimal BTF" for this case.
->
+Hello:
 
-Right. Do you want this to be part of this series or can we merge later on?
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-> > 2. We could write some .c files with the types we expect to have on
-> > the generated file and compare it with the generated file. The issue
-> > here is that comparing those BTF files doesn't seem to be too
-> > trivial...
->
-> But I would add few realistic examples that use various combinations
-> of CO-RE relocations against Linux types. Then minimize BTF and
-> validate that BTF is what we expect.
->
+On Thu, 3 Feb 2022 11:17:27 -0800 you wrote:
+> syzbot reported a btf decl_tag bug with stack trace below:
+> 
+>   general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+>   KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>   CPU: 0 PID: 3592 Comm: syz-executor914 Not tainted 5.16.0-syzkaller-11424-gb7892f7d5cb2 #0
+>   Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>   RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
+>   RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
+>   ...
+>   Call Trace:
+>    <TASK>
+>    btf_resolve+0x251/0x1020 kernel/bpf/btf.c:4198
+>    btf_check_all_types kernel/bpf/btf.c:4239 [inline]
+>    btf_parse_type_sec kernel/bpf/btf.c:4280 [inline]
+>    btf_parse kernel/bpf/btf.c:4513 [inline]
+>    btf_new_fd+0x19fe/0x2370 kernel/bpf/btf.c:6047
+>    bpf_btf_load kernel/bpf/syscall.c:4039 [inline]
+>    __sys_bpf+0x1cbb/0x5970 kernel/bpf/syscall.c:4679
+>    __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
+>    __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
+>    __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
+>    do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>    do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>    entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> [...]
 
-What do you mean by "realistic examples"? Aren't the BPF programs
-(that use core_reloc_types.h) I added in this commit good enough for
-this test?
+Here is the summary with links:
+  - [bpf,1/2] bpf: fix a btf decl_tag bug when tagging a function
+    https://git.kernel.org/bpf/bpf-next/c/d7e7b42f4f95
+  - [bpf,2/2] selftests/bpf: add a selftest for invalid func btf with btf decl_tag
+    https://git.kernel.org/bpf/bpf-next/c/cf1a4cbce63b
 
-> As for how to compare BTFs. I've been wanting to do something like
-> btf__normalize() API to renumber and resort all the BTF types into
-> some "canonical" order, so that two BTFs can be actually compared and
-> diffed. It might be finally the time to do that.
->
-> The big complication is your decision to dump all the fields of types
-> that are used by type-based relocations. I'm not convinced that's the
-> best way to do this. I'd keep empty struct/union for such cases,
-> actually. That would minimize the number of types and thus BTF in
-> general. It also will simplify the logic of emitting minimized BTF a
-> bit (all_types checks won't be necessary, I think).
->
-> As I also mentioned in previous patches, for types that are only
-> referenced through pointer, I'd emit FWD declaration only. Or at best
-> empty struct/union.
->
-> With all that, after btf__minimize() operation, comparing BTFs would
-> be actually pretty easy, because we'll know the order of each type,
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Why do we know the order of each type? I think the order of the types
-in the generated BTF files depends on:
-1. The order or the relocations on the BPF object. (I'm not sure if
-the compiler generates them in the same order as they appear in the
-code)
-2. BTFGen implementation: types are added recursively and there is
-also a hashmap in between.
-3. How bpftool is invoked. bpftool gen min_core_btf ... OBJ1 OBJ2 vs
-bpftool gen min_core_btf ... OBJ2 OBJ1.
 
-What I'm saying is that given a source BTF file and a BPF object I
-don't know what is the order of the output BTF file. I know we could
-run the test, check the generated output and use it for the test but
-it seems like "cheating" to me...
-
-Am I missing something?
-
-> so
-> using the
-> VALIDATE_RAW_BTF() (see prog_tests/btf_dedup_split.c) the tests will
-> be easy and clean.
->
->
-> One last thing, let's not add a new test binary (test_bpftool), let's
-> keep adding more tests into test_progs.
->
-
-Will do.
-
-> >
-> > Do you have any suggestions about it? Thanks!
