@@ -2,52 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA1E4A8855
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 17:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2D74A8857
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 17:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352060AbiBCQHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 11:07:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        id S1349017AbiBCQIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 11:08:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349017AbiBCQHt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 11:07:49 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357F3C06173B
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 08:07:49 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id x23so7116374lfc.0
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 08:07:49 -0800 (PST)
+        with ESMTP id S232684AbiBCQIw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 11:08:52 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DE7C061714
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 08:08:52 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id u6so6936392lfm.10
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 08:08:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kinvolk.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U8C94DRdIZGAroYerjdGjoFnF/GC8q7KFZokkTOxUZs=;
-        b=gDpiugQBFCZYvMpY47vTeHN5scolnvYBOB4bSGLZnNX3gB7Mf/6B1iTEQQ3UCu7D1K
-         jw1x3PlIPKkZ5sv4//YSSWYiMc59xSiVaTDkx8PMqwhfbC292fbKu0dy8NVXPuSOY3jj
-         N5alIlpk1mTLEtAfHFIjo9SS807hGfxRYRFtU=
+         :cc:content-transfer-encoding;
+        bh=BtSlgZlv3rdg4xQgXHdmtk+SFHDQUR6Ka2X6gjGV0AU=;
+        b=a1E3iGitIhUPBwyEXaTzSxlS1kAbC/c745QQnwrUonnxYOtnDPGCAW3J+j5PJrl8GK
+         04CX82yjUKy1dKphMnUVRPkto14UdpVxaBajjH2pmXG+5WdztPvTZ6IVknJFxd8ZRTSl
+         lANZkUhQaVFGk8HDrJzZ3zALPuJm7nhW6ij30=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U8C94DRdIZGAroYerjdGjoFnF/GC8q7KFZokkTOxUZs=;
-        b=SrSUBXOpXQBBupf0b+s7oHXKteXQYAn1fYQG0XRXbWXo/wU+bDWES4IfkngpapeJLy
-         idQIbdY5smwA69kRpYkJfXabbs4klS9k6NoxCbaNQ+ZgIXMfGGeS10S+70L6nKMez5Uw
-         LadHm/xwjMsPk20nObjF8lBZxy/Ado4mU/oZQE3qFMesIvMFYxkV4DULvec5CWVXLv8R
-         eZmOl+df21QeDfjp37uyGcXsDZFRYs9VcThSGKVbGKk09swt9cDbyHpTXu0H+laCLo90
-         ZcyMyeu4gvds80o0/S8y92RGC3FCOWjjUxSvVnr+DHSJQi52u2oWuAadWFRr/XIAgC1/
-         hhZw==
-X-Gm-Message-State: AOAM532NBsp+tCEborxTqWyVon5Gsvp6tL26qgWie0nYke426V9Tmd3K
-        slmIj/KoeAi8Z5jkX/YV3Q3zP+vwrfBzvsbXKQDXMA==
-X-Google-Smtp-Source: ABdhPJwWN6XUZynoQwdD2Uk4RznsvF2cwOFpad/pcBwo8RfeX5K/zELXa30kkC2ev6EIldXn8xHa8+DW+ArbBJaqW00=
-X-Received: by 2002:a05:6512:2342:: with SMTP id p2mr27218556lfu.382.1643904467469;
- Thu, 03 Feb 2022 08:07:47 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BtSlgZlv3rdg4xQgXHdmtk+SFHDQUR6Ka2X6gjGV0AU=;
+        b=6EkhXhpBqyoH5xDaFvcSG2fsj005Fq3uzY3EJkcf3JBVWBCCH6/jys37bAd5a0iCo2
+         VisMYdZiFi1NKTBVzoo4TPqMQzbNFMVt7cpYYMJnsR8b2pDacfLBJ4Xxcnt2oOafFlq1
+         Wg/l9iQZ4MkY3HXbYMTNLGfpp4fTyYDz8dmK/TpSsSP04gYSOsbywI0RBRkjQrHbR1Qr
+         8xMD0I+JhqAhb9ROJhE7nckmpr3ELGf3VHWsqBled95L4pKlwm+sV8Wwj8Y6bZqvRRwP
+         VeofjqZkSQ9fX/YkH1TBVfQXX/Zjr2fjbhXUMgJ38snGOMXA12AdO/9dtqDRSL4v9eVO
+         d4Kw==
+X-Gm-Message-State: AOAM5316/qyHKU9pYg7LYNhUFCprf7pmKQebBofNM9QqhHsXOtcwTUGC
+        lnE0ukM4qWyhRwt8EVBL9Yi9owV37dZpqSS92sDJjQ==
+X-Google-Smtp-Source: ABdhPJyJo2yuToMwvhfoqysChdQOMFkhIbuTAcTvjbunYXV1X/HJWHPrk87mUaU7ZJoqNwDp5oqQyIkBNON5lg6sHbg=
+X-Received: by 2002:a05:6512:3a95:: with SMTP id q21mr25644065lfu.569.1643904530446;
+ Thu, 03 Feb 2022 08:08:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-4-mauricio@kinvolk.io>
- <CAEf4BzYW54DRsJxgeXKcHPLSXs45DsCVKumV7WNd2UH=1G4MPA@mail.gmail.com>
-In-Reply-To: <CAEf4BzYW54DRsJxgeXKcHPLSXs45DsCVKumV7WNd2UH=1G4MPA@mail.gmail.com>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-5-mauricio@kinvolk.io>
+ <CAEf4BzaCJMUZ5ZVNgbVnCE0nmEETBo1iAp75nKp+mh2uKfJ9HQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzaCJMUZ5ZVNgbVnCE0nmEETBo1iAp75nKp+mh2uKfJ9HQ@mail.gmail.com>
 From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Thu, 3 Feb 2022 11:07:36 -0500
-Message-ID: <CAHap4zumCF_pC6-J+dpSiT+qzZVt=scb-AMdpcFSFfz6iSx1HQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/9] bpftool: Implement btf_save_raw()
+Date:   Thu, 3 Feb 2022 11:08:39 -0500
+Message-ID: <CAHap4zuC4EbSfX_N64Uc4m=3hi-hrQWMVuZm9jefPsjPVLNGpw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 4/9] bpftool: Add struct definitions and
+ helpers for BTFGen
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -58,14 +59,143 @@ Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Lorenzo Fontana <lorenzo.fontana@elastic.co>,
         Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> The logic looks good, but you need to merge adding this static
-> function with the patch that's using that static function. Otherwise
-> you will break bisectability because compiler will warn about unused
-> static function.
+On Wed, Feb 2, 2022 at 1:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
+o> wrote:
+> >
+> > Add some structs and helpers that will be used by BTFGen in the next
+> > commits.
+> >
+> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> > ---
+>
+> Similar considerations with unused static functions. It's also harder
+> to review when I don't see how these types are actually used, so
+> probably better to put it in relevant patches that are using this?
 >
 
-It only emits a warning but it compiles fine. Is that still an issue?
+The next iteration splits the patches in a way that types are
+introduced in the same commit they're used.
+
+> >  tools/bpf/bpftool/gen.c | 75 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 75 insertions(+)
+> >
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index 64371f466fa6..68bb88e86b27 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > @@ -1118,6 +1118,81 @@ static int btf_save_raw(const struct btf *btf, c=
+onst char *path)
+> >         return err;
+> >  }
+> >
+> > +struct btfgen_type {
+> > +       struct btf_type *type;
+> > +       unsigned int id;
+> > +};
+> > +
+> > +struct btfgen_info {
+> > +       struct hashmap *types;
+> > +       struct btf *src_btf;
+> > +};
+> > +
+> > +static size_t btfgen_hash_fn(const void *key, void *ctx)
+> > +{
+> > +       return (size_t)key;
+> > +}
+> > +
+> > +static bool btfgen_equal_fn(const void *k1, const void *k2, void *ctx)
+> > +{
+> > +       return k1 =3D=3D k2;
+> > +}
+> > +
+> > +static void *uint_as_hash_key(int x)
+> > +{
+> > +       return (void *)(uintptr_t)x;
+> > +}
+> > +
+> > +static void btfgen_free_type(struct btfgen_type *type)
+> > +{
+> > +       free(type);
+> > +}
+> > +
+> > +static void btfgen_free_info(struct btfgen_info *info)
+> > +{
+> > +       struct hashmap_entry *entry;
+> > +       size_t bkt;
+> > +
+> > +       if (!info)
+> > +               return;
+> > +
+> > +       if (!IS_ERR_OR_NULL(info->types)) {
+> > +               hashmap__for_each_entry(info->types, entry, bkt) {
+> > +                       btfgen_free_type(entry->value);
+> > +               }
+> > +               hashmap__free(info->types);
+> > +       }
+> > +
+> > +       btf__free(info->src_btf);
+> > +
+> > +       free(info);
+> > +}
+> > +
+> > +static struct btfgen_info *
+> > +btfgen_new_info(const char *targ_btf_path)
+> > +{
+> > +       struct btfgen_info *info;
+> > +
+> > +       info =3D calloc(1, sizeof(*info));
+> > +       if (!info)
+> > +               return NULL;
+> > +
+> > +       info->src_btf =3D btf__parse(targ_btf_path, NULL);
+> > +       if (libbpf_get_error(info->src_btf)) {
+>
+> bpftool is using libbpf 1.0 mode, so don't use libbpf_get_error()
+> anymore, just check for NULL
+>
+
+hmm, I got confused because libbpf_get_error() is still used in many
+places in bpftool. I suppose those need to be updated.
+
+> also, if you are using errno for propagating error, you need to store
+> it locally before btfgen_free_info() call, otherwise it can be
+> clobbered
+>
+
+Fixed.
+
+
+
+> > +               btfgen_free_info(info);
+> > +               return NULL;
+> > +       }
+> > +
+> > +       info->types =3D hashmap__new(btfgen_hash_fn, btfgen_equal_fn, N=
+ULL);
+> > +       if (IS_ERR(info->types)) {
+> > +               errno =3D -PTR_ERR(info->types);
+> > +               btfgen_free_info(info);
+> > +               return NULL;
+> > +       }
+> > +
+> > +       return info;
+> > +}
+> > +
+> >  /* Create BTF file for a set of BPF objects */
+> >  static int btfgen(const char *src_btf, const char *dst_btf, const char=
+ *objspaths[])
+> >  {
+> > --
+> > 2.25.1
+> >
