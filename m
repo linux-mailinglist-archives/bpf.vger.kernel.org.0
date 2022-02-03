@@ -2,89 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 408264A87DC
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DBB4A87DD
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:40:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241232AbiBCPkM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 10:40:12 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:37050 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240167AbiBCPkL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 10:40:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D15B60A3C
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 15:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 94885C340F2;
-        Thu,  3 Feb 2022 15:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643902810;
-        bh=JLzv11YokyjicufVqG1Dkx1aGLIznXh+Pl6sO1VxlwM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=r02titVmE6M1ao/q3g/m3PmBVduGDbqoh7EFoo5Xe8jkeP9nZ73NoZrrbEk2h8WvC
-         Bw/yOCxbCcEAER61GYZYIh6jELzvjdtjRXtVcYLaN/SFh0XkIzw2bEJ2aFUZ87Wn5n
-         kvhR7vkT+fcakVNCZUCnX1/ZTreVq7E+mXEGx6exZNOCwbwVWhdb2F40KdTmsY5YtA
-         AuJ8IMgBOOLiINaU5RjLLQAZr5IIj3GbAFzMkk724GRgWuXq4dqD4Fv765XXuvLMuh
-         n02ZHPzcljCy4Nskvs7K7M+VwdNs/YfzV2PTAQQpg75BXlHTVbYsb85H2OMXtVGsuB
-         mqk7SGCZuz/fA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 84FB7E5D09D;
-        Thu,  3 Feb 2022 15:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235751AbiBCPko (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 10:40:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243438AbiBCPkj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 10:40:39 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D635C061714;
+        Thu,  3 Feb 2022 07:40:39 -0800 (PST)
+Date:   Thu, 3 Feb 2022 16:40:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1643902836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18aGWyGNO1weA/CrtPpkhyQkBZ6ZYq86BDBqYv5Eggs=;
+        b=4EPsnViOAQtklcVhBnqsZE8Vfjzd2ST9SGkLLO6vvZYZZW9kwS49Nz+4ss0babhRIesSxp
+        2rePC35D9ELzWY1FnppHfTmmuwKhWdzAg6fXW/onRbLU1QmckcL8TL0NQWVIfMsveUEcwJ
+        NaWHZecGdkWfI1xq6CspOnGhyn2HcOZqtFqalvCCNrSQ0LIiB0Roccf71wfS9uuP2XY4cu
+        C9szV7E1Wk/CMkS3MqXMpcOe41EU/reauusaHBrGabSCkO/tH+y/wXvcmswhDduktSDWZK
+        2UshwvO6BrzNCfbh943Z7no8mbXDtWGWCvhspk6IMaSyU8fvFuPYI4m8C1sXlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1643902836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=18aGWyGNO1weA/CrtPpkhyQkBZ6ZYq86BDBqYv5Eggs=;
+        b=Z0XbRsoSkuyAw0C5kChy+Ap5gzaCcxBhTMUC5sUfrYVhZm7wwxAsOcS1BRzLOHoua/aCcf
+        pbqWzL9lb+ieX/BQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH net-next 3/4] net: dev: Makes sure netif_rx() can be
+ invoked in any context.
+Message-ID: <Yfv3c+5XieVR0xAh@linutronix.de>
+References: <20220202122848.647635-1-bigeasy@linutronix.de>
+ <20220202122848.647635-4-bigeasy@linutronix.de>
+ <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
+ <YfvwbsKm4XtTUlsx@linutronix.de>
+ <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/6] Clean up leftover uses of deprecated APIs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164390281054.30354.12360708187607455235.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Feb 2022 15:40:10 +0000
-References: <20220202225916.3313522-1-andrii@kernel.org>
-In-Reply-To: <20220202225916.3313522-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 2 Feb 2022 14:59:10 -0800 you wrote:
-> Clean up remaining missed uses of deprecated libbpf APIs across samples/bpf,
-> selftests/bpf, libbpf, and bpftool.
+On 2022-02-03 07:25:01 [-0800], Eric Dumazet wrote:
 > 
-> Also fix uninit variable warning in bpftool.
+> No, the loopback device (ifconfig log) I am referring to is in
+> drivers/net/loopback.c
 > 
-> Andrii Nakryiko (6):
->   libbpf: stop using deprecated bpf_map__is_offload_neutral()
->   bpftool: stop supporting BPF offload-enabled feature probing
->   bpftool: fix uninit variable compilation warning
->   selftests/bpf: remove usage of deprecated feature probing APIs
->   selftests/bpf: redo the switch to new libbpf XDP APIs
->   samples/bpf: get rid of bpf_prog_load_xattr() use
-> 
-> [...]
+> loopback_xmit() calls netif_rx() directly, while bh are already disabled.
 
-Here is the summary with links:
-  - [bpf-next,1/6] libbpf: stop using deprecated bpf_map__is_offload_neutral()
-    https://git.kernel.org/bpf/bpf-next/c/a5dd9589f0ab
-  - [bpf-next,2/6] bpftool: stop supporting BPF offload-enabled feature probing
-    https://git.kernel.org/bpf/bpf-next/c/1a56c18e6c2e
-  - [bpf-next,3/6] bpftool: fix uninit variable compilation warning
-    https://git.kernel.org/bpf/bpf-next/c/a9a8ac592e47
-  - [bpf-next,4/6] selftests/bpf: remove usage of deprecated feature probing APIs
-    https://git.kernel.org/bpf/bpf-next/c/32e608f82946
-  - [bpf-next,5/6] selftests/bpf: redo the switch to new libbpf XDP APIs
-    https://git.kernel.org/bpf/bpf-next/c/e4e284a8c0d9
-  - [bpf-next,6/6] samples/bpf: get rid of bpf_prog_load_xattr() use
-    https://git.kernel.org/bpf/bpf-next/c/1e4edb6d8c4f
+ah okay. Makes sense.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Instead of adding a local_bh_disable()/local_bh_enable() in netif_rx()
+> I suggested
+> to rename current netif_rx() to __netif_rx() and add a wrapper, eg :
 
+So we still end up with two interfaces. Do I move a few callers like the
+one you already mentioned over to the __netif_rx() interface or will it
+be the one previously mentioned for now?
 
+Would something like 
+
+diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
+index fc53e0ad56d90..561cbca431ca6 100644
+--- a/include/linux/bottom_half.h
++++ b/include/linux/bottom_half.h
+@@ -30,7 +30,12 @@ static inline void local_bh_enable_ip(unsigned long ip)
+ 
+ static inline void local_bh_enable(void)
+ {
+-	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
++	if (unlikely(softirq_count() == SOFTIRQ_DISABLE_OFFSET)) {
++		__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
++	} else {
++		preempt_count_sub(SOFTIRQ_DISABLE_OFFSET);
++		barrier();
++	}
+ }
+ 
+ #ifdef CONFIG_PREEMPT_RT
+
+lower the overhead to acceptable range? (I still need to sell this to
+peterz first).
+
+Sebastian
