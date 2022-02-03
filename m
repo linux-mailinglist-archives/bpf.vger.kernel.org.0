@@ -2,101 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 805D54A87F6
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B524A8804
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:50:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348076AbiBCPsV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 10:48:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
+        id S239431AbiBCPuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 10:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238679AbiBCPsU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 10:48:20 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96472C061714;
-        Thu,  3 Feb 2022 07:48:20 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id r144so3725270iod.9;
-        Thu, 03 Feb 2022 07:48:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=WLH1O+Vnbs8udHEehPW8PKl/Vsqp6/y9M/lwajCfmXg=;
-        b=O2CfoR+Kidy6Oil62L7eIH2efozt64sP75j6rrjblHbD93lfalaDPECmKMSLR1bMRI
-         MyATwiK8Iq8ewDJjL9wop/yWJRNXHiz+mJrQzvj/rLk2NFXEmmVyCEkcg+achzY/Ujzq
-         rBdpvZRBfpcjJDd2ziUgr3b7rDzDcNBZjr0Gp//MfAvWdMpIeAIpoAiu88IHAI0ldyRG
-         j42emqwxOa9uI2aqBdX7uWycKCXtCy+lxyp3ULgGou70LGIa8eRS1fabpdxJaLNt4Z9c
-         EqohgOdJ2zBGkWXIvlpxH3JWAuZYbjnKP6TLYl5zqR+gElcmUBERluM5d1nIYiV/h6cr
-         sCxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=WLH1O+Vnbs8udHEehPW8PKl/Vsqp6/y9M/lwajCfmXg=;
-        b=kbPlJ2uUhEOa4MCgi5/Tb3MOArMunrCJbx1nfLnal99dDid1n4Dlg8Ocw325aE40gg
-         RPdAAn9o9c9HKMUqh4FlyNWwOTB+BEOTTaiTKt4V8vSqBP8ZJbbNx4YAfnYbb8unuW5x
-         aT7ZHTSiLiYTCP4bo5I9qo+/HbHlUtbednGOKdMEhJ4Tfb/m3dWDhhXTgbxMXmiOvihl
-         iYEDLwZaQPZuvJe959DZnvc1aoResWHz8okEZgOPq5XS4ToZIr/qyVSfcI+8oLW8jeD0
-         ilZxxIGyFCgzMIDzMjovx25OwhzYkqONKps5jnuaW6PI1zYGeJT5sNcIhOA8lhjxKqw4
-         0K4g==
-X-Gm-Message-State: AOAM5323rKQDo+13iY+vy/UrqY1rAOPtbsay+jKSaTtq31UV/uxieU4K
-        Euo8ltYcPleFCsogSmNsrJgTuBM4m4Q=
-X-Google-Smtp-Source: ABdhPJytHT2ainnjTy8kuwJMbb9XvCK+xi9KdImDjah1yKuXQ7fyHkvMjlJDtILNHjHCwvaKCySTwA==
-X-Received: by 2002:a6b:4e18:: with SMTP id c24mr18972137iob.179.1643903300006;
-        Thu, 03 Feb 2022 07:48:20 -0800 (PST)
-Received: from ?IPV6:2601:282:800:dc80:8870:ce19:2c7:3513? ([2601:282:800:dc80:8870:ce19:2c7:3513])
-        by smtp.googlemail.com with ESMTPSA id o7sm8800664ilt.63.2022.02.03.07.48.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Feb 2022 07:48:19 -0800 (PST)
-Message-ID: <e34e03db-9764-4728-9f6a-df85659c5089@gmail.com>
-Date:   Thu, 3 Feb 2022 08:48:17 -0700
+        with ESMTP id S229763AbiBCPuu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 10:50:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FD5C061714;
+        Thu,  3 Feb 2022 07:50:50 -0800 (PST)
+Date:   Thu, 3 Feb 2022 16:50:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1643903449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fm7tpDjpZB6Cmj4+E2uZUNML9F/fugSAgwa3q4DCpm0=;
+        b=uYvvh1fsd8zxKy9m7W4IgHphpT6P24YHY32QRArMeEeufOQPqTCG6Ngtxf0e0TLMuuLnLE
+        KDV1hBpTegJBAFIgWUYw3TblXN/8REg9LpTaoNewtoD2jBxCWODiuXuwXrwbiCxF4sc57i
+        Kl81mZ7IlUz91xo7C5fd6Up4/58PJYwuTs7KLfdRA0P/CRhuQxiroGjomnA/UHvos37PWK
+        cllOj4ONfhiKbSHybMMK8SJ2xgACCL74RCoqgOV2bajWA/hSruSB4k0OcIYbiZ69++6UW0
+        lYB+SrNgXDbSvCzPSFKkIKQkT0/uOlC2qi836bBXFpz3aZoo0UvsYPeZyndr2g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1643903449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fm7tpDjpZB6Cmj4+E2uZUNML9F/fugSAgwa3q4DCpm0=;
+        b=bOvlC4nfRmrsKnVhS/MVYVfXXigKqV5H9GXM21HyTKsNO7v/riCOpISS+5Hvdb5wuM3J3V
+        LKwmhqgihpj0VfBQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+Cc:     Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net-next 1/4] net: dev: Remove the preempt_disable() in
+ netif_rx_internal().
+Message-ID: <Yfv514UZUgmS2dl/@linutronix.de>
+References: <20220202122848.647635-1-bigeasy@linutronix.de>
+ <20220202122848.647635-2-bigeasy@linutronix.de>
+ <CANn89iJm9krQ-kjVBxFzxh0nG46O5RWDg=QyXhiq1nA3Erf9KQ@mail.gmail.com>
+ <87v8xwb1o9.fsf@toke.dk>
+ <YfvH9YpKTIU4EByk@linutronix.de>
+ <87leysazrq.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH RFC 1/4] net: skb: use line number to trace dropped skb
-Content-Language: en-US
-To:     Dongli Zhang <dongli.zhang@oracle.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        edumazet@google.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        imagedong@tencent.com, joao.m.martins@oracle.com,
-        joe.jin@oracle.com
-References: <20220203153731.8992-1-dongli.zhang@oracle.com>
- <20220203153731.8992-2-dongli.zhang@oracle.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20220203153731.8992-2-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87leysazrq.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/22 8:37 AM, Dongli Zhang wrote:
-> Sometimes the kernel may not directly call kfree_skb() to drop the sk_buff.
-> Instead, it "goto drop" and call kfree_skb() at 'drop'. This make it
-> difficult to track the reason that the sk_buff is dropped.
-> 
-> The commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()") has
-> introduced the kfree_skb_reason() to help track the reason. However, we may
-> need to define many reasons for each driver/subsystem.
-> 
-> To avoid introducing so many new reasons, this is to use line number
-> ("__LINE__") to trace where the sk_buff is dropped. As a result, the reason
-> will be generated automatically.
-> 
+On 2022-02-03 13:41:13 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>=20
+> > It would but as mentioned previously: BH is disabled and
+> > smp_processor_id() is stable.
+>=20
+> Ah, right, because of the change in loopback to use netif_rx_ni()? But
+> that bit of the analysis only comes later in your series, so at the very
+> least you should be explaining this in the commit message here. Or you
+> could potentially squash patches 1 and 2 and do both changes at once,
+> since it's changing two bits of the same function and both need the same
+> analysis...
+>=20
+> However, if we're going with Eric's suggestion of an internal
+> __netif_rx() for loopback that *doesn't* do local_bh_disable() then this
+> code would end up being called without BH disable, so we'd need the
+> migrate_disable() anyway, no?
 
-I don't agree with this approach. It is only marginally better than the
-old kfree_skb that only gave the instruction pointer. That tells you the
-function that dropped the packet, but not why the packet is dropped.
-Adding the line number only makes users have to consult the source code.
+Eric suggested to the __netif_rx() for loopback which is already in
+BH-disabled section. So if that is the only "allowed" caller, we
+wouldn't have to worry.
+If __netif_rx() becomes more users and one calls it from preemptible
+context then we have a problem (like netif_rx() vs netif_rx_ni()).
 
-When I watch drop monitor for kfree_skb I want to know *why* the packet
-was dropped, not the line number in the source code. e.g., dropmon
-showing OTHERHOST means too many packets are sent to this host (e.g.,
-hypervisor) that do not belong to the host or the VMs running on it, or
-packets have invalid checksum (IP, TCP, UDP). Usable information by
-everyone, not just someone with access to the source code for that
-specific kernel.
+migrate_disable() will shut up smp_processor_id(), yes, but we need
+something to process pending softirqs. Otherwise they are delayed until
+the next IRQ, spin_unlock_bh(), etc.
 
+> -Toke
+
+Sebastian
