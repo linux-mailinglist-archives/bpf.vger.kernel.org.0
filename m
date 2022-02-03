@@ -2,197 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701854A7E51
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 04:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8F64A7E5D
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 04:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241232AbiBCDY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Feb 2022 22:24:29 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26846 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231626AbiBCDY3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Feb 2022 22:24:29 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2131reTU027393;
-        Wed, 2 Feb 2022 19:24:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=HJz2lB3U3EGb8vH+j3h/vjiutUOTgS0v6k4zJrFjez8=;
- b=fJMHhS+BScaEeC/s2Ps1vMwe629pHReTnedobxUHtZyDSLWSgyi24TunEXXugP0yNEcC
- gG3Z1ZEDcN89jxZg0Es8eKQNflRc90+Ugb+n3actIlp+OqBnmSC2yua5SWRTlur0qbjP
- k4hnq3BjLDoSJBFhiPZTYqio7Ds5dxVsjxk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e05sn8btd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 02 Feb 2022 19:24:27 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 2 Feb 2022 19:24:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jWSXkqkZtyWBhP3Txb1m4sA57LRwyhGVJI7SU8YeBwmlp16tnykrnqbE1eMeCJTojcF4C7QCdIeoAKG/MIHG7gfzNizuuxB6L26bbMaV9nHzbYApIki4gAZ263DWZNPBO+g2FSuOrd0zxPv7j5AftnJd9tPbSPF5lDT08+FrXS2Tu/Ann3rtcM1SMuzTJR4KX8NzincQ0FwbaCNI6qixc7HtIP0gOcnwLGYaDr9QxjdIFIOiaeUzcUZWm9l7Hk+SfVpd1oNx+F5rezzNvTLrP2GjAUHmf2dMoU8SKptpH2vhzvvg+VZgVZ9Lkd+jWyXdqGNw8YlRpkF4aDK+QX42zQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HJz2lB3U3EGb8vH+j3h/vjiutUOTgS0v6k4zJrFjez8=;
- b=A9V4vZvSbcOsWQfk5NIFINb6Nm+GKbZrbqt4IZvNwqH7ddr60mtXdFYXJDRmF8fihrR8/gpg1AEW7TQ9ZkxcLKtCeWPOwnvXemtsAj6HbTgv9LMPgfAh0GiDmKX+4wy5IPwfIy72m63CBgZAjQe4iBVlOBkRka2Ed8xp1YMTPENFBUKVw2JyHSz3Ll2DDfI8VGdnnyOc0+XkIe2VpBq1m4Y6IkmxILz0PK9BuQXITihFFfim5d4E7K63ovh1OydB4Y1i9CwkE/uVZzc8eCM8luSEJpvxNsIZ5TCHKiskwHRI5S52gnh5383+oh5Cp+d7m30+1QKG2uPHGpJVUp3xHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB4251.namprd15.prod.outlook.com (2603:10b6:5:172::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Thu, 3 Feb
- 2022 03:24:24 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::11fa:b11a:12b5:a7f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::11fa:b11a:12b5:a7f0%6]) with mapi id 15.20.4951.012; Thu, 3 Feb 2022
- 03:24:24 +0000
-Message-ID: <c5a76b4d-abed-51f6-bf16-040eb0baf290@fb.com>
-Date:   Wed, 2 Feb 2022 19:24:20 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: Packet pointers with 32-bit assignments
-Content-Language: en-US
-To:     Paul Chaignon <paul@isovalent.com>, <bpf@vger.kernel.org>
-References: <20220202205921.GA96712@Mem>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220202205921.GA96712@Mem>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-ClientProxiedBy: CO2PR04CA0090.namprd04.prod.outlook.com
- (2603:10b6:104:6::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 58415b52-ca46-4b62-c40a-08d9e6c4acf5
-X-MS-TrafficTypeDiagnostic: DM6PR15MB4251:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB4251DD7E541435A9EE95C44BD3289@DM6PR15MB4251.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8DhYcys5iW2yUzCpbq87rW3jEtOOq1f7qp2Gc9vQMdFF3t5/TP63796S3AYhQzQZMm9LXkZZQFbvKm28I5Yt3/W2meVbpKtnWKbLBl5DH/g2kYD4Bq3J3481e0oZ84f0k3Wj/dwrM3tPL53zTUbizFNhlL4UMpn3x118sRW86RhvyRlylPDQM46iD4d6zNHLFVSkqEwi8NsJ7i4QC1UFtFyAHOMi+MofjHvindez8kVqjBVNly7E8yzN+FrANJPjEiPuU9b3G5yg6+ZXRGVwTdGv0EI1gDd9R2jbXmCURujtLZmii0Z/3O+A4kVgAzOQelmJoXeno8IiJqwmJU14XqXEgN9RbLhXx29PphbKiyn7U3eDZz7TpX2BpZtPRKyXnVPM3qrhPV+PHTsrRslIJrUGYgjyFvhuo/EaRr5BNuPSkXEDzrqKUBCUGXI7jLrwhm+ZUCUi4HsTdNyKEDQ5qrfK8CpJBkgE94uLLGmPLRBevSdkEB9QywMZd+VUNE4HPrSpWtSW6VclvA3tZ//KfnDJhkmPe0Z/EhJjzVRMc2/M5JkRtfSIevrOyHEPEmkTm8x10nv4csWA1Nmxqqp6sfIxSSONhzfOsD83mBvRDNghMK9/sD5APH+l2iP/EKrz6VhN2eny24KlvVZTWrnOgQ1S7luMRLr+eP4R3H6paZZNJXuZXPr74GJ1I83wc3DH8BKFCkzOTJURdGeOi6OENLH8FPv1tstie6peZWPmo0iqk9lFkVSRXAUUuF4siZSHIR5y2S2bTfjkjldYYMwiTwRTIhKSthHtwWbIq2h3+GLCVfgOnvwLhDbVn0gQp6aU12OP+DZRcqY9hUocB9rhO6WuyTMqFdVHnKLn/4hAvqs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66476007)(66556008)(86362001)(66946007)(8676002)(6506007)(8936002)(6512007)(316002)(83380400001)(52116002)(6666004)(53546011)(31696002)(186003)(31686004)(966005)(2906002)(38100700002)(36756003)(5660300002)(2616005)(6486002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cnpmemg0dHpYZjBnZ3pWUGJRbzh4U3RaREZaZHFHZCtqa0ZhSDZVUnZJbk9Y?=
- =?utf-8?B?NmYvN01rRGpXU1lUOGY4RDlCUHViUkRRdm1JRnVobml5TlhtY0V0LzRnTVBr?=
- =?utf-8?B?enRvL2Y5MTFYQXRVQ2FGNEtncHhWeXpCV3daQTRROEt6T1dlQTVvTUx5cDh2?=
- =?utf-8?B?VjFhY25xU0hiQjZmQzJXT0NlckxHa3RWSG5FUHR6RTl1OEZqV2QxKzZwUXlp?=
- =?utf-8?B?azAxd2xyeFdqbEFmS1U3blZ1ZzFUWkJXNS82Vk1wb2x4SUZJT1dDeGR4QmlV?=
- =?utf-8?B?MG4raFFQY3dTeWtLdjAwT253eTNHRzFjZ2JXcWFrMFJyRml5bmtBSlk3Vjlj?=
- =?utf-8?B?UzBhNnVBYVRrNEU5L242d0JUSzkyODVQVDFkZFF3aXpTK05TdzdmUWVnaDla?=
- =?utf-8?B?YU5zVFd1elpDbHVONzFTVmlIWHBDVnRvRHQ2MkgyYjJaM2oyeG13Z2F3Tkli?=
- =?utf-8?B?TDJKWUg2U3JIUUlaaGRpZVBiN2hqTW1QME1xaVkydnVaMGlMWkk0ai9Fd00w?=
- =?utf-8?B?TzkrWHVscTVyaGJFZlN4SkM1R05CQ2Z2TWNYbDRCQlFINFhyRmxOalg2dGs1?=
- =?utf-8?B?SkswQ1RwdlYvR0pTTG1QWWVXOHRmcHV6c3ExNW9sMXdJY2tadXhlcjBXcHhI?=
- =?utf-8?B?SHZ2SlRJbGNPN2IxRi8xL2dlTW8wZmI1Y2piaWdyRXVWZGF0UVY1YjJsOXlL?=
- =?utf-8?B?a2FmRXArcXJrV3pqMkdVU09FdmtDUlBtZGRLbGlZYkNvQXJwdkgwRGFBN2Nj?=
- =?utf-8?B?SW5YUlJrK2hQd01pZXRrZE8zc2RDU1BWK0RsUkwyOEJFdG81QkltVE9ESGFE?=
- =?utf-8?B?eStEWGNtS0ovd2cwRDdhYk1Bd2lNb3ZCUGltNnRmc2c2aGlUcngwZm1DSTdl?=
- =?utf-8?B?bHkvUXVPRVkwOU5reHo5TDl3dmE5OHUrOURyM0tEZDFNREY3d1l6SnYrb0l4?=
- =?utf-8?B?UmNvQlp5M3VEcUdGcUttOHdNWWhaWGJ6K2UvMTI5bmpqT0dYQTFyUDhXUDB5?=
- =?utf-8?B?N1hhbjBoS2JGSmVxQStpSUN2SUZVQ0FRU1FrS04yandKcHEwQkloWktIbHFG?=
- =?utf-8?B?RHVTRWx3OXZXUWE2ZCsvZ1hmUEp2T3dRc1JETi81OWs2WHFvbk5lYU96cDZu?=
- =?utf-8?B?UEhXbzZpeTRTS3NnQzJINlFMaFFDa1lMTGxPZFdPeklHbDY4TjM2Q1I2TlRL?=
- =?utf-8?B?Q0NoWE1pQUpFbFlUL3J0UjdsUG44U3c5aHhxK2cvWVFQTGN2eGVsQmtrZnVY?=
- =?utf-8?B?WGxzM3lqV1RWenYveVlwV3B3RnhkUWJzZWJIdmJBRDR1SXRENjFDMEVXM085?=
- =?utf-8?B?REpkQVd4eTRmVEdJbnZrZGJBaUJiVXNFaENPQVBGSWNxOHpkcWJGWWdIZ3Fy?=
- =?utf-8?B?cWgvV08vWC82eXZBeXp6Tm5CWWw2L09tL3dBdjFQYmt4T2NhcUVvQmxEa1Ju?=
- =?utf-8?B?Q2lBNmhoTUVtVDRMWnk0dHVOWlVqM2xldlhHZHh6ZlBXZE1hOWdRWnJoU0c3?=
- =?utf-8?B?RDlnZVdyNzZrdUJ5UWpsTVJHYkJNaTl4QmJqKzdIeUcvejBIaGNtT0RhU3hl?=
- =?utf-8?B?STBmSTBhY2pHNkdXc2Fka3dpNklVYnhGd3Vid1p2am5VaDFMNmRnR0hQUnhs?=
- =?utf-8?B?QjNWeFFCdkNUay9CWGNkU3hCWndLZmY4ZVdIS3QycDRhaU8vMDBPb0RiU2dZ?=
- =?utf-8?B?NGc2R21UajhsYTVqT3Nha3dtemFUMXlKVUZsQkdaMHRCNWYwdFFTQ3RsYVhn?=
- =?utf-8?B?WVltdlhxd1JCaS9LN25xV1h0WUM2NE5PZHRvZnFsWkJSTEZoZ0UrdWRFdUR2?=
- =?utf-8?B?dUxnYmdPd2pOSWoxVFJTU3NZOHJCa0JHWGJqeTZ0bU5FSVBaSk5FeEhiS2xL?=
- =?utf-8?B?NVVWSEd1QkFRYUdBd0hNV3VxTEtJQlZXWXZic2tsS1NOUXJPc0Qra1ZtSWdT?=
- =?utf-8?B?bDZqaWloTWxRZHVTaWhPcEc5YkQ2MGdhdmZJbVd6d2UzSUNMd1BHbGZJRHZ6?=
- =?utf-8?B?S3VpdmtFbHgrRU0zK0xKZ3U1RStCa0N2aUVZUnN5R1huWm9KUTk3czJoY3oy?=
- =?utf-8?B?bDkrTTc5ZlFFUGt0QXhIV0FJZSs2NXZoYjdZUDUvRll3d0ZvaWpreHFPRUhN?=
- =?utf-8?Q?DvITSEst0DKX04MWAMsiTrJRl?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58415b52-ca46-4b62-c40a-08d9e6c4acf5
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Feb 2022 03:24:24.1120
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6Aw5ZszjR2bJmFUFGzxpgT40+u+HFCF7f4VE3056494WHorD6jOs54OYP9gy7aSL
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB4251
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: yYg4Oevv_BTNsRnPYr122njYJe-PYKhb
-X-Proofpoint-GUID: yYg4Oevv_BTNsRnPYr122njYJe-PYKhb
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S1345136AbiBCDgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Feb 2022 22:36:21 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:35818 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232060AbiBCDgV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Feb 2022 22:36:21 -0500
+Received: by mail-il1-f199.google.com with SMTP id h8-20020a056e021b8800b002ba614f7c5dso907170ili.2
+        for <bpf@vger.kernel.org>; Wed, 02 Feb 2022 19:36:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=7x6rKhaHmrAEYlIz/NCtXjuxWLWqRjW+skTvrls9++k=;
+        b=DWzGOqrR9oSSupfzF83xxotPfkhv50RSSOsUvoLwXEE+pWY+HsUIMP2J0NOf465C6Y
+         Oo/QM5szCMrcCHv5bUWfxOMNmx8d1sQW2wYubcUR8aVo8DQyE8dewQiwzqS8FHMY1mGV
+         rTq/TKkO3G84kO6gTFAjxA0dOdFrU9Our5S/CXEvCDA/gEzB0xOYrx3kmrS9ahXoViUm
+         VizsHMambwzuKBbbbpMvP/0Ncvk74nxTFNUgIJ1VvMxF2mr3JCS3K4xJN4ZANzxKo14d
+         vr2QV2o533M4fmRy8pS2CRIjDvPVju4KxUg3+fA37jfKxnl2Oae0clukULjVP+aB2usN
+         Xa8Q==
+X-Gm-Message-State: AOAM533po2TpQNOAxsfkMD7ZEQvcvR3H2aYi0J0VEl1ebhdJJq9jpZIu
+        lEgxg+M88Y3+NBsyr/39z2bcQMSMY0cYH+MJoM0RZTorZR4J
+X-Google-Smtp-Source: ABdhPJzZj1jMw6FAE6SvyayY5zdvayzSv5dg6luJoFgPyYb9thhsd7mbyIirTGhOCU69O6NNT0jIFBW7XgAFoaYYGIIlhZ5vZDyD
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-02_11,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1011
- impostorscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0
- mlxlogscore=740 priorityscore=1501 suspectscore=0 mlxscore=0 spamscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202030016
-X-FB-Internal: deliver
+X-Received: by 2002:a02:711e:: with SMTP id n30mr16461827jac.235.1643859381164;
+ Wed, 02 Feb 2022 19:36:21 -0800 (PST)
+Date:   Wed, 02 Feb 2022 19:36:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000079a24b05d714d69f@google.com>
+Subject: [syzbot] general protection fault in btf_decl_tag_resolve
+From:   syzbot <syzbot+53619be9444215e785ed@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    b7892f7d5cb2 tools: Ignore errors from `which' when search..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=13181634700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5044676c290190f2
+dashboard link: https://syzkaller.appspot.com/bug?extid=53619be9444215e785ed
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16454914700000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16ceb884700000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+53619be9444215e785ed@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 3592 Comm: syz-executor914 Not tainted 5.16.0-syzkaller-11424-gb7892f7d5cb2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
+RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
+Code: c1 ea 03 80 3c 02 00 0f 85 90 01 00 00 48 8b 1b e8 b7 c9 e6 ff 48 8d 7b 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 2b
+RSP: 0018:ffffc90001b1fa00 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff81918c09 RDI: 0000000000000004
+RBP: ffff888015c32000 R08: 0000000000000008 R09: 0000000000000008
+R10: ffffffff81918bb1 R11: 0000000000000001 R12: 0000000000000004
+R13: 0000000000000008 R14: 0000000000000000 R15: 0000000000000005
+FS:  00005555556fd300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f98c38b8220 CR3: 0000000019537000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btf_resolve+0x251/0x1020 kernel/bpf/btf.c:4198
+ btf_check_all_types kernel/bpf/btf.c:4239 [inline]
+ btf_parse_type_sec kernel/bpf/btf.c:4280 [inline]
+ btf_parse kernel/bpf/btf.c:4513 [inline]
+ btf_new_fd+0x19fe/0x2370 kernel/bpf/btf.c:6047
+ bpf_btf_load kernel/bpf/syscall.c:4039 [inline]
+ __sys_bpf+0x1cbb/0x5970 kernel/bpf/syscall.c:4679
+ __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fd57f202099
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe9e5eb898 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd57f202099
+RDX: 0000000000000020 RSI: 0000000020000000 RDI: 0000000000000012
+RBP: 00007fd57f1c6080 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 00007fd57f1c6110
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
+RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
+Code: c1 ea 03 80 3c 02 00 0f 85 90 01 00 00 48 8b 1b e8 b7 c9 e6 ff 48 8d 7b 04 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 2b
+RSP: 0018:ffffc90001b1fa00 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff81918c09 RDI: 0000000000000004
+RBP: ffff888015c32000 R08: 0000000000000008 R09: 0000000000000008
+R10: ffffffff81918bb1 R11: 0000000000000001 R12: 0000000000000004
+R13: 0000000000000008 R14: 0000000000000000 R15: 0000000000000005
+FS:  00005555556fd300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 0000000019537000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	c1 ea 03             	shr    $0x3,%edx
+   3:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   7:	0f 85 90 01 00 00    	jne    0x19d
+   d:	48 8b 1b             	mov    (%rbx),%rbx
+  10:	e8 b7 c9 e6 ff       	callq  0xffe6c9cc
+  15:	48 8d 7b 04          	lea    0x4(%rbx),%rdi
+  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  20:	fc ff df
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
+  2e:	48 89 f8             	mov    %rdi,%rax
+  31:	83 e0 07             	and    $0x7,%eax
+  34:	83 c0 03             	add    $0x3,%eax
+  37:	38 d0                	cmp    %dl,%al
+  39:	7c 08                	jl     0x43
+  3b:	84 d2                	test   %dl,%dl
+  3d:	0f                   	.byte 0xf
+  3e:	85 2b                	test   %ebp,(%rbx)
 
 
-On 2/2/22 12:59 PM, Paul Chaignon wrote:
-> Hi,
-> 
-> We're hitting the following verifier error in Cilium, on bpf-next
-> (86c7ecad3bf8) with LLVM 10.0.0 and mcpu=v3.
-> 
->      ; return (void *)(unsigned long)ctx->data;
->      2: (61) r9 = *(u32 *)(r7 +76)
->      ; R7_w=ctx(id=0,off=0,imm=0) R9_w=pkt(id=0,off=0,r=0,imm=0)
->      ; return (void *)(unsigned long)ctx->data;
->      3: (bc) w6 = w9
->      ; R6_w=inv(id=0,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R9_w=pkt(id=0,off=0,r=0,imm=0)
->      ; if (data + tot_len > data_end)
->      4: (bf) r2 = r6
->      ; R2_w=inv(id=1,umax_value=4294967295,var_off=(0x0; 0xffffffff)) R6_w=inv(id=1,umax_value=4294967295,var_off=(0x0; 0xffffffff))
->      5: (07) r2 += 54
->      ; R2_w=inv(id=0,umin_value=54,umax_value=4294967349,var_off=(0x0; 0x1ffffffff))
->      ; if (data + tot_len > data_end)
->      6: (2d) if r2 > r1 goto pc+466
->      ; R1_w=pkt_end(id=0,off=0,imm=0) R2_w=inv(id=0,umin_value=54,umax_value=4294967349,var_off=(0x0; 0x1ffffffff))
->      ; tmp = a->d1 - b->d1;
->      7: (71) r2 = *(u8 *)(r6 +22)
->      R6 invalid mem access 'inv'
-> 
-> As seen above, the verifier loses track of the packet pointer at
-> instruction 3, which then leads to an invalid memory access. Since
-> ctx->data is on 32 bits, LLVM generated a 32-bit assignment at
-> instruction 3.
-> 
-> We're usually able to avoid this by removing all 32-bit comparisons and
-> additions with the 64-bit variables for data and data_end. But in this
-> case, all variables are already on 64 bits.
-> 
-> Is there maybe a compiler patch we're missing which prevents such
-> assignments? If not, could we teach the verifier to track and convert
-> such assignments?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-We kind of tackled this problem sometimes back. For example, the
-following is a proposed llvm builtin for this purpose:
-   https://reviews.llvm.org/D81479
-   https://reviews.llvm.org/D81480
-the builtin looks like
-   void *ptr = __builtin_bpf_load_u32_to_ptr(void *base,
-                   int const_offset);
-
-The patches are abandoned since the functionality can be
-achieved with bpf asm code. Something likes below
-    asm("%0 = *(u32 *)(%1 + %2)" : "=r"(ptr) : "r"(ctx), "i"(76));
-We could define the above asm insn as a macro and put it
-in bpf_helpers.h.
-
-Could you give a try?
-
-> 
-> Regards,
-> Paul
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
