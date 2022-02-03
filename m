@@ -2,102 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBDD4A8AA3
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 18:50:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC914A8B15
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 19:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239401AbiBCRuK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 12:50:10 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:55410 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbiBCRuJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 12:50:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9A08617A7
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 17:50:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 28E7FC340EF;
-        Thu,  3 Feb 2022 17:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643910609;
-        bh=2ZGA3r6dVMlywubO6vXsoa+otpjUKC0oA245No7JMYk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=XsF+I/tbFhGKg2skrqWoI833joTL1O/6p6MrA74P0jhskJobB2zMJptEySdcH1V9w
-         LbcT037MowYgq8GXYvn7NIQHYmqvR9Si52CsomL25jx7J63qouk/sMlGtd9Z4oOV6V
-         uiu4TMoFiplK5W4HftepfRRwU6NI6xZZz61KUlB01C6/9o3gPkXbUTjSGupbTmaYWR
-         MVeNIckq/PTSdn+VHNoZlvpYnu/5JZ1Fymp5bqNaswBMImi+BJb/ePjPDoH2WxKOH+
-         /7i5wmkkND5+9LGo5Xu8BfkkrrLiXYGq+nOAVTAo44AYRlCh2cf+9VIjn3GaT8Nq5I
-         DPuLmM9laLJUQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0B5F3E5869F;
-        Thu,  3 Feb 2022 17:50:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S235081AbiBCSA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 13:00:59 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6186 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1353231AbiBCSAr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Feb 2022 13:00:47 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 213HKtk4011513
+        for <bpf@vger.kernel.org>; Thu, 3 Feb 2022 10:00:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=HJoO6JkEqnUHuvdqq738pTAp6J9kfNTfpWl1pIquAps=;
+ b=I8OenNremoBS+UpejPMrnqqcvRw8K5H6P7cMJMYD2r1aBu18bXBaS5xb9iHBCb62XaBK
+ wGNOu0Qw+egHnqkbO/mY6E5VnC9TSPEVAbVbbCTEsTmzd1+38a1QpcvKl8WTpti7L+Jp
+ /SKPsSnJ6WGuGHXThoMGMfooIuRLZGAOkgE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net (PPS) with ESMTPS id 3e04phd6ap-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 10:00:46 -0800
+Received: from twshared19733.18.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 3 Feb 2022 10:00:44 -0800
+Received: by devvm3278.frc0.facebook.com (Postfix, from userid 8598)
+        id 337401C6C03B8; Thu,  3 Feb 2022 10:00:40 -0800 (PST)
+From:   Delyan Kratunov <delyank@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Delyan Kratunov <delyank@fb.com>
+Subject: [PATCH bpf-next] libbpf: deprecate priv/set_priv storage
+Date:   Thu, 3 Feb 2022 10:00:32 -0800
+Message-ID: <20220203180032.1921580-1-delyank@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: tCBjqWsGcN8irWFSxRrFhGG4enVtuXfG
+X-Proofpoint-GUID: tCBjqWsGcN8irWFSxRrFhGG4enVtuXfG
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: test_run: fix OOB access in
- bpf_prog_test_run_xdp
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164391060904.1486.6609284418127236354.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Feb 2022 17:50:09 +0000
-References: <688c26f9dd6e885e58e8e834ede3f0139bb7fa95.1643835097.git.lorenzo@kernel.org>
-In-Reply-To: <688c26f9dd6e885e58e8e834ede3f0139bb7fa95.1643835097.git.lorenzo@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        brouer@redhat.com, toke@redhat.com, lorenzo.bianconi@redhat.com,
-        andrii@kernel.org, syzkaller-bugs@googlegroups.com
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-03_06,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
+ malwarescore=0 bulkscore=0 mlxscore=0 mlxlogscore=999 clxscore=1015
+ spamscore=0 phishscore=0 suspectscore=0 impostorscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202030109
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Arbitrary storage via bpf_*__set_priv/__priv is being deprecated
+without a replacement ([1]). perf uses this capability, but most of
+that is going away with the removal of prologue generation ([2]).
+perf is already suppressing deprecation warnings, so the remaining
+cleanup will happen separately.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+  [1]: Closes: https://github.com/libbpf/libbpf/issues/294
+  [2]: https://lore.kernel.org/bpf/20220123221932.537060-1-jolsa@kernel.org/
 
-On Wed,  2 Feb 2022 21:53:20 +0100 you wrote:
-> Fix the following kasan issue reported by syzbot:
-> 
-> BUG: KASAN: slab-out-of-bounds in __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
-> BUG: KASAN: slab-out-of-bounds in bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
-> Write of size 8 at addr ffff888048c75000 by task syz-executor.5/23405
-> 
-> CPU: 1 PID: 23405 Comm: syz-executor.5 Not tainted 5.16.0-syzkaller #0
-> Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->  print_address_description.constprop.0.cold+0x8d/0x336 mm/kasan/report.c:255
->  __kasan_report mm/kasan/report.c:442 [inline]
->  kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
->  __skb_frag_set_page include/linux/skbuff.h:3242 [inline]
->  bpf_prog_test_run_xdp+0x10ac/0x1150 net/bpf/test_run.c:972
->  bpf_prog_test_run kernel/bpf/syscall.c:3356 [inline]
->  __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4658
->  __do_sys_bpf kernel/bpf/syscall.c:4744 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:4742 [inline]
->  __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4742
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x7f4ea30dd059
-> RSP: 002b:00007f4ea1a52168 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> RAX: ffffffffffffffda RBX: 00007f4ea31eff60 RCX: 00007f4ea30dd059
-> RDX: 0000000000000048 RSI: 0000000020000000 RDI: 000000000000000a
-> RBP: 00007f4ea313708d R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffc8367c5af R14: 00007f4ea1a52300 R15: 0000000000022000
->  </TASK>
-> 
-> [...]
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+---
+ tools/lib/bpf/libbpf.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Here is the summary with links:
-  - [bpf-next] bpf: test_run: fix OOB access in bpf_prog_test_run_xdp
-    https://git.kernel.org/bpf/bpf-next/c/a6763080856f
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 5762b57aecfc..c8d8daad212e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -246,8 +246,10 @@ struct bpf_object *bpf_object__next(struct bpf_object =
+*prev);
+ 	     (pos) =3D (tmp), (tmp) =3D bpf_object__next(tmp))
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+ typedef void (*bpf_object_clear_priv_t)(struct bpf_object *, void *);
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API int bpf_object__set_priv(struct bpf_object *obj, void *priv,
+ 				    bpf_object_clear_priv_t clear_priv);
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API void *bpf_object__priv(const struct bpf_object *prog);
 
+ LIBBPF_API int
+@@ -279,9 +281,10 @@ bpf_object__prev_program(const struct bpf_object *obj,=
+ struct bpf_program *prog)
 
+ typedef void (*bpf_program_clear_priv_t)(struct bpf_program *, void *);
+
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API int bpf_program__set_priv(struct bpf_program *prog, void *priv,
+ 				     bpf_program_clear_priv_t clear_priv);
+-
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API void *bpf_program__priv(const struct bpf_program *prog);
+ LIBBPF_API void bpf_program__set_ifindex(struct bpf_program *prog,
+ 					 __u32 ifindex);
+@@ -769,8 +772,10 @@ LIBBPF_API __u64 bpf_map__map_extra(const struct bpf_m=
+ap *map);
+ LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u64 map_extra=
+);
+
+ typedef void (*bpf_map_clear_priv_t)(struct bpf_map *, void *);
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API int bpf_map__set_priv(struct bpf_map *map, void *priv,
+ 				 bpf_map_clear_priv_t clear_priv);
++LIBBPF_DEPRECATED_SINCE(0, 7, "storage via set_priv/priv is deprecated")
+ LIBBPF_API void *bpf_map__priv(const struct bpf_map *map);
+ LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
+ 					  const void *data, size_t size);
+--
+2.30.2
