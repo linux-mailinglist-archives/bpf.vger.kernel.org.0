@@ -2,124 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A69E4A873A
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F344A874B
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351646AbiBCPGt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 10:06:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351637AbiBCPGo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Feb 2022 10:06:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643900803;
+        id S235565AbiBCPKl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 10:10:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:53944 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237585AbiBCPKl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 10:10:41 -0500
+Date:   Thu, 3 Feb 2022 16:10:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1643901040;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=e8niZzxOerSalLROqW1yaPIfEQIUnjkuK5AiQtq2ICQ=;
-        b=F+cnZmXV8r+DqVxrirJEDgmjKeU47sBiCsL3jPXk+l5CsrZAMJi2A8AU0Rk9wDyw6dcZVs
-        5jwU3ySyPWC/09gmADrHbiWWIRGtdzdRwh4JcsVa+PrY3vg3MWAfXJsbJ+esHW3vIQ500E
-        jWWcNriSfxDsGc1cLljiJ2ikk61rpBo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-124-WfTleLtjMamZvapHcelrpg-1; Thu, 03 Feb 2022 10:06:40 -0500
-X-MC-Unique: WfTleLtjMamZvapHcelrpg-1
-Received: by mail-wm1-f71.google.com with SMTP id bg32-20020a05600c3ca000b00349f2aca1beso1436635wmb.9
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 07:06:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=e8niZzxOerSalLROqW1yaPIfEQIUnjkuK5AiQtq2ICQ=;
-        b=EbfT7nj2N5NE9S3ZlTRt7Fda2M+cMDWHZwBC6eoMPjwhXYqhHF3S423ZZyCntZicyI
-         PhdVSLX+61Ctf+fqAchOnfSHwi/V3yUpmnCH02LnuMvkFhrDaIeVIOmH9HZ5no3t3sJg
-         AnIw+bQlMGF/PCL6vwb0EjIdaWZrhfd0WMpIxdj0bWomvAH7Bli8qSv1zwNmIZkK5win
-         knh/Be5fIRd9Oi3nqDVwwhT8cxcLMo50qYgg5Da/+3J5ivJSZN/I0FozrOVfazRfO5RG
-         ET04IHDG2lhBrc+qJeP3xkY2cL5q1e/pFCqUpQTRS1Vy4ubPU1XhNjvax463KkYdWPIp
-         MaPg==
-X-Gm-Message-State: AOAM531jm+TKLrRS7M4HdHBz2SU5sVnmnbU1ybXB+G9bZgxAnC/LSBIf
-        WBXgnN/1NFNyYz6U+PlzXUlBaWmTkyxqJ9Bo4DneTduP3FX0QvYSo/yQn22dI4yHwVnsdDQF9bp
-        nWtNOff6fesdO
-X-Received: by 2002:a5d:584a:: with SMTP id i10mr29740977wrf.305.1643900799582;
-        Thu, 03 Feb 2022 07:06:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz934L+SQrIz7AUepaOSxtsJhAkKBx/N4nuAG+HSxmSd7bSFbI6AAieW+uCHw3WJ9ij5COWtQ==
-X-Received: by 2002:a5d:584a:: with SMTP id i10mr29740953wrf.305.1643900799362;
-        Thu, 03 Feb 2022 07:06:39 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id o10sm9478745wri.69.2022.02.03.07.06.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Feb 2022 07:06:38 -0800 (PST)
-Date:   Thu, 3 Feb 2022 16:06:36 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        bh=fYXrDuFRXBBNMfCcnLUf/H7szb2aMihApRZq+hu5ZW8=;
+        b=12d7UYzGB54nsjoxoS7Rd1yhW64kMf/42ZiLuyln5fE06xkzZmVoZq70Gh9wtRMhTtr6U1
+        D9mHnAEfD55hGVKq3uQzXQ+ydUzzUnGF+gi+Fz6REmRrUUqSsfNkcScLx6PDWhbLrDPB7m
+        bGD0LYaPPez//IWLuBN1aXhhkznGPDTxU26r1SdbeLVZ0fCGCwGDCr13+lhWFyWcE/7YK1
+        pttGMTCIrzHQHocFofDvjdXj3zr3sxhhIO2bc6NN/4iBmx9qZ4k8LCocAcbIKEH3jgkAcc
+        +eTCWbwvUIrHxF6ln0tb6tx6bMxfQ/ed0HsRzy87jl7FQZiGmI1x6zblSnT8sQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1643901040;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fYXrDuFRXBBNMfCcnLUf/H7szb2aMihApRZq+hu5ZW8=;
+        b=4X4Qb2qADonekjerDY8t4eQOFB+rjfq7AyQJDpFKhJarnFbihoTU0UHgdHpzyUaM2LwccV
+        7gx/4ZYFeSNdAkAA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH 0/8] bpf: Add fprobe link
-Message-ID: <YfvvfLlM1FOTgvDm@krava>
-References: <20220202135333.190761-1-jolsa@kernel.org>
- <CAADnVQ+hTWbvNgnvJpAeM_-Ui2-G0YSM3QHB9G2+2kWEd4-Ymw@mail.gmail.com>
- <Yfq+PJljylbwJ3Bf@krava>
- <CAADnVQKeTB=UgY4Gf-46EBa8rwWTu2wvi7hEj2sdVTALGJ0JEg@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH net-next 3/4] net: dev: Makes sure netif_rx() can be
+ invoked in any context.
+Message-ID: <YfvwbsKm4XtTUlsx@linutronix.de>
+References: <20220202122848.647635-1-bigeasy@linutronix.de>
+ <20220202122848.647635-4-bigeasy@linutronix.de>
+ <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAADnVQKeTB=UgY4Gf-46EBa8rwWTu2wvi7hEj2sdVTALGJ0JEg@mail.gmail.com>
+In-Reply-To: <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 09:30:21AM -0800, Alexei Starovoitov wrote:
-> On Wed, Feb 2, 2022 at 9:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Wed, Feb 02, 2022 at 09:09:53AM -0800, Alexei Starovoitov wrote:
-> > > On Wed, Feb 2, 2022 at 5:53 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > hi,
-> > > > this patchset adds new link type BPF_LINK_TYPE_FPROBE that attaches kprobe
-> > > > program through fprobe API [1] instroduced by Masami.
-> > >
-> > > No new prog type please.
-> > > I thought I made my reasons clear earlier.
-> > > It's a multi kprobe. Not a fprobe or any other name.
-> > > The kernel internal names should not leak into uapi.
-> > >
-> >
-> > well it's not new prog type, it's new link type that allows
-> > to attach kprobe program to multiple functions
-> >
-> > the original change used BPF_LINK_TYPE_RAW_KPROBE, which did not
-> > seem to fit anymore, so I moved to FPROBE, because that's what
-> > it is ;-)
+On 2022-02-02 09:43:14 [-0800], Eric Dumazet wrote:
+> Maybe worth mentioning this commit will show a negative impact, for
+> network traffic
+> over loopback interface.
 > 
-> Now I don't like the fprobe name even more.
-> Why invent new names? It's an ftrace interface.
+> My measure of the cost of local_bh_disable()/local_bh_enable() is ~6
+> nsec on one of my lab x86 hosts.
 
-how about ftrace_probe ?
+So you are worried that 
+    dev_loopback_xmit() -> netif_rx_ni()
 
+becomes
+    dev_loopback_xmit() -> netif_rx()
+
+and by that 6nsec slower because of that bh off/on? Can these 6nsec get
+a little lower if we substract the overhead of preempt-off/on? 
+But maybe I picked the wrong loopback here.
+
+> Perhaps we could have a generic netif_rx(), and a __netif_rx() for the
+> virtual drivers (lo and maybe tunnels).
 > 
-> > but if you don't want new name in uapi we could make this more
-> > obvious with link name:
-> >   BPF_LINK_TYPE_MULTI_KPROBE
-> >
-> > and bpf_attach_type:
-> >   BPF_TRACE_MULTI_KPROBE
+> void __netif_rx(struct sk_buff *skb);
 > 
-> I'd rather get rid of fprobe name first.
->
+> static inline int netif_rx(struct sk_buff *skb)
+> {
+>    int res;
+>     local_bh_disable();
+>     res = __netif_rx(skb);
+>   local_bh_enable();
+>   return res;
+> }
 
-Masami, any idea?
+But what is __netif_rx() doing? netif_rx_ni() has this part:
 
-thanks,
-jirka
+|       preempt_disable();
+|       err = netif_rx_internal(skb);
+|       if (local_softirq_pending())
+|               do_softirq();
+|       preempt_enable();
 
+to ensure that smp_processor_id() and friends are quiet plus any raised
+softirqs are processed. With the current netif_rx() we end up with:
+
+|       local_bh_disable();
+|       ret = netif_rx_internal(skb);
+|       local_bh_enable();
+
+which provides the same. Assuming __netif_rx() as:
+
+| int __netif_rx(skb)
+| {
+|         trace_netif_rx_entry(skb);
+| 
+|         ret = netif_rx_internal(skb);
+|         trace_netif_rx_exit(ret);
+| 
+|         return ret;
+| }
+
+and the loopback interface is not invoking this in_interrupt() context.
+
+Sebastian
