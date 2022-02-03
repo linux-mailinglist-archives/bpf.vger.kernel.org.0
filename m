@@ -2,116 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5702E4A8C40
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 20:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523E04A8C57
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 20:17:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353707AbiBCTKU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 14:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353676AbiBCTKT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 14:10:19 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDEFC06173B
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 11:10:19 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id n8so8048198lfq.4
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 11:10:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ynmf8AjH8Et2t1D/8nO4kTjYKzq6oPr1yGjthzD28xc=;
-        b=XppQR1odninb58XQkHQZxOkb7D7s2rQyxjO9nGahV1FN6cGuzbsVLenP9ylclcRBfo
-         uXvFmluELQEC3mgmj4rKiB+Etwd6UJBvMWo80bj54CwX/6r0WDtYHbpYgHmzhhXbKBF6
-         AuTAVn3RsWpFS4SeIRTIlbk1YFkWtFII2Ot4Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ynmf8AjH8Et2t1D/8nO4kTjYKzq6oPr1yGjthzD28xc=;
-        b=MnLTtB9u2lONsD3L1m8BBMHtG4sZiOKiQ/ISRqsVHaunGihi9UVu4EiMbMXvytZa3W
-         0hlMjOtCnaJp82aPUHJdRtE+mgIUWiC48nmMD0qaPEJXSEq0ONCscaJSLMprGTBxE2LB
-         gwXmVStwCQMbKQxdFoe0zLuVpOeyI+3rKflYb08y0sU2yeE8Mg7U4smXh4oziLWKeath
-         KEUrZwldiNiUgYWdkDUi+FXJ3m0uw9p4eewNQ77NnKtTMOIDoyh4l803Kqj/mYZfo5M/
-         N01X7IVPKZ3w4PnwvFhU7rmNmAJcNwIx4SxHisO6fAyckesm5BGj2gqAUbU/SaOE3NUt
-         eB0w==
-X-Gm-Message-State: AOAM530AXLYmAo6CJ1Z+EcGxji/VQ1yNPP2T9Pk2rO8yzkDSD9FwkCQi
-        ZPOSj3dEN6C2ZL4OVtmCXdol7wp8kSDpY41QOVoKBQ==
-X-Google-Smtp-Source: ABdhPJzHIHnWIOTmGvYm8nIKwHSKOYfJgpJULETxSmdV0h3Un1nyIWposC4LAQ9tOs/Ut6LG1jmPr5N+8cKwDXPTzwk=
-X-Received: by 2002:a05:6512:2823:: with SMTP id cf35mr27987626lfb.113.1643915417465;
- Thu, 03 Feb 2022 11:10:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-6-mauricio@kinvolk.io>
- <d1b23ebb-21ac-558b-36a8-918b0c6cf909@isovalent.com>
-In-Reply-To: <d1b23ebb-21ac-558b-36a8-918b0c6cf909@isovalent.com>
-From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
-Date:   Thu, 3 Feb 2022 14:10:05 -0500
-Message-ID: <CAHap4zvBfyFYB8rQo_s3aXGAyG3hEwJ4Xsn4pdrPr5k=GhwQZA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 5/9] bpftool: Implement btfgen()
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S240329AbiBCTRv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 14:17:51 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50032 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1353735AbiBCTRv (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Feb 2022 14:17:51 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 213I6SWI028624
+        for <bpf@vger.kernel.org>; Thu, 3 Feb 2022 11:17:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=1zDoyto5r9tUT/qLII9tIiZWdfx7W4erbMhveSkt7Uc=;
+ b=YJw1exKM+AazQdFyJZ3YL20Hf7kDltwQLt6jwP8/xBr64Ux5nk/cQFE2845X+Jdqva8I
+ Ikia9A3D/lYXMKnOovOqLAhZNsTffHbssiWEBpJHPjWGkl/rTetIQa5mumF/CBsrPbYS
+ Bq96rb7bjulPRklZ8/SGzdgOLbFH+e47O3g= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e0cvcup49-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 11:17:51 -0800
+Received: from twshared22811.39.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 3 Feb 2022 11:17:34 -0800
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+        id 5C96D5EED8E1; Thu,  3 Feb 2022 11:17:27 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <syzbot+53619be9444215e785ed@syzkaller.appspotmail.com>
+Subject: [PATCH bpf 1/2] bpf: fix a btf decl_tag bug when tagging a function
+Date:   Thu, 3 Feb 2022 11:17:27 -0800
+Message-ID: <20220203191727.741862-1-yhs@fb.com>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: 0AYq3yAdyNkmdWWvPEAT0ssGWpyoaO3w
+X-Proofpoint-ORIG-GUID: 0AYq3yAdyNkmdWWvPEAT0ssGWpyoaO3w
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-03_06,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
+ adultscore=0 mlxlogscore=676 spamscore=0 lowpriorityscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202030116
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 1, 2022 at 3:57 PM Quentin Monnet <quentin@isovalent.com> wrote=
-:
->
-> 2022-01-28 17:33 UTC-0500 ~ Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > btfgen() receives the path of a source and destination BTF files and a
-> > list of BPF objects. This function records the relocations for all
-> > objects and then generates the BTF file by calling btfgen_get_btf()
-> > (implemented in the following commits).
-> >
-> > btfgen_record_obj() loads the BTF and BTF.ext sections of the BPF
-> > objects and loops through all CO-RE relocations. It uses
-> > bpf_core_calc_relo_insn() from libbpf and passes the target spec to
-> > btfgen_record_reloc() that saves the types involved in such relocation.
-> >
-> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> > ---
-> >  tools/bpf/bpftool/Makefile |   8 +-
-> >  tools/bpf/bpftool/gen.c    | 221 ++++++++++++++++++++++++++++++++++++-
-> >  2 files changed, 223 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> > index 83369f55df61..97d447135536 100644
-> > --- a/tools/bpf/bpftool/Makefile
-> > +++ b/tools/bpf/bpftool/Makefile
-> > @@ -34,10 +34,10 @@ LIBBPF_BOOTSTRAP_INCLUDE :=3D $(LIBBPF_BOOTSTRAP_DE=
-STDIR)/include
-> >  LIBBPF_BOOTSTRAP_HDRS_DIR :=3D $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
-> >  LIBBPF_BOOTSTRAP :=3D $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
-> >
-> > -# We need to copy hashmap.h and nlattr.h which is not otherwise export=
-ed by
-> > -# libbpf, but still required by bpftool.
-> > -LIBBPF_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nl=
-attr.h)
-> > -LIBBPF_BOOTSTRAP_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_BOOTSTRAP_HDR=
-S_DIR)/,hashmap.h)
-> > +# We need to copy hashmap.h, nlattr.h, relo_core.h and libbpf_internal=
-.h
-> > +# which are not otherwise exported by libbpf, but still required by bp=
-ftool.
-> > +LIBBPF_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nl=
-attr.h relo_core.h libbpf_internal.h)
-> > +LIBBPF_BOOTSTRAP_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_BOOTSTRAP_HDR=
-S_DIR)/,hashmap.h relo_core.h libbpf_internal.h)
->
-> Do you directly call functions from relo_core.h, or is it only required
-> to compile libbpf_internal.h? (Asking because I'm wondering if there
-> would be a way to have one fewer header copied).
+syzbot reported a btf decl_tag bug with stack trace below:
 
-bpf_core_calc_relo_insn() and bpf_core_calc_relo_insn() are used.
+  general protection fault, probably for non-canonical address 0xdffffc00=
+00000000: 0000 [#1] PREEMPT SMP KASAN
+  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+  CPU: 0 PID: 3592 Comm: syz-executor914 Not tainted 5.16.0-syzkaller-114=
+24-gb7892f7d5cb2 #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 01/01/2011
+  RIP: 0010:btf_type_vlen include/linux/btf.h:231 [inline]
+  RIP: 0010:btf_decl_tag_resolve+0x83e/0xaa0 kernel/bpf/btf.c:3910
+  ...
+  Call Trace:
+   <TASK>
+   btf_resolve+0x251/0x1020 kernel/bpf/btf.c:4198
+   btf_check_all_types kernel/bpf/btf.c:4239 [inline]
+   btf_parse_type_sec kernel/bpf/btf.c:4280 [inline]
+   btf_parse kernel/bpf/btf.c:4513 [inline]
+   btf_new_fd+0x19fe/0x2370 kernel/bpf/btf.c:6047
+   bpf_btf_load kernel/bpf/syscall.c:4039 [inline]
+   __sys_bpf+0x1cbb/0x5970 kernel/bpf/syscall.c:4679
+   __do_sys_bpf kernel/bpf/syscall.c:4738 [inline]
+   __se_sys_bpf kernel/bpf/syscall.c:4736 [inline]
+   __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4736
+   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The kasan error is triggered with an illegal BTF like below:
+   type 0: void
+   type 1: int
+   type 2: decl_tag to func type 3
+   type 3: func to func_proto type 8
+The total number of types is 4 and the type 3 is illegal
+since its func_proto type is out of range.
+
+Currently, the target type of decl_tag can be struct/union, var or func.
+Both struct/union and var implemented their own 'resolve' callback functi=
+ons
+and hence handled properly in kernel.
+But func type doesn't have 'resolve' callback function. When
+btf_decl_tag_resolve() tries to check func type, it tries to get
+vlen of its func_proto type, which triggered the above kasan error.
+
+To fix the issue, btf_decl_tag_resolve() needs to do btf_func_check()
+before trying to accessing func_proto type.
+In the current implementation, func type is checked with
+btf_func_check() in the main checking function btf_check_all_types().
+To fix the above kasan issue, let us implement 'resolve' callback
+func type properly. The 'resolve' callback will be also called
+in btf_check_all_types() for func types.
+
+Reported-by: syzbot+53619be9444215e785ed@syzkaller.appspotmail.com
+Fixes: b5ea834dde6b ("bpf: Support for new btf kind BTF_KIND_TAG")
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c | 29 +++++++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index e16dafeb2450..cf76e32a00da 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -403,6 +403,9 @@ static struct btf_type btf_void;
+ static int btf_resolve(struct btf_verifier_env *env,
+ 		       const struct btf_type *t, u32 type_id);
+=20
++static int btf_func_check(struct btf_verifier_env *env,
++			  const struct btf_type *t);
++
+ static bool btf_type_is_modifier(const struct btf_type *t)
+ {
+ 	/* Some of them is not strictly a C modifier
+@@ -579,6 +582,7 @@ static bool btf_type_needs_resolve(const struct btf_t=
+ype *t)
+ 	       btf_type_is_struct(t) ||
+ 	       btf_type_is_array(t) ||
+ 	       btf_type_is_var(t) ||
++	       btf_type_is_func(t) ||
+ 	       btf_type_is_decl_tag(t) ||
+ 	       btf_type_is_datasec(t);
+ }
+@@ -3533,9 +3537,24 @@ static s32 btf_func_check_meta(struct btf_verifier=
+_env *env,
+ 	return 0;
+ }
+=20
++static int btf_func_resolve(struct btf_verifier_env *env,
++			    const struct resolve_vertex *v)
++{
++	const struct btf_type *t =3D v->t;
++	u32 next_type_id =3D t->type;
++	int err;
++
++	err =3D btf_func_check(env, t);
++	if (err)
++		return err;
++
++	env_stack_pop_resolved(env, next_type_id, 0);
++	return 0;
++}
++
+ static struct btf_kind_operations func_ops =3D {
+ 	.check_meta =3D btf_func_check_meta,
+-	.resolve =3D btf_df_resolve,
++	.resolve =3D btf_func_resolve,
+ 	.check_member =3D btf_df_check_member,
+ 	.check_kflag_member =3D btf_df_check_kflag_member,
+ 	.log_details =3D btf_ref_type_log,
+@@ -4156,7 +4175,7 @@ static bool btf_resolve_valid(struct btf_verifier_e=
+nv *env,
+ 		return !btf_resolved_type_id(btf, type_id) &&
+ 		       !btf_resolved_type_size(btf, type_id);
+=20
+-	if (btf_type_is_decl_tag(t))
++	if (btf_type_is_decl_tag(t) || btf_type_is_func(t))
+ 		return btf_resolved_type_id(btf, type_id) &&
+ 		       !btf_resolved_type_size(btf, type_id);
+=20
+@@ -4246,12 +4265,6 @@ static int btf_check_all_types(struct btf_verifier=
+_env *env)
+ 			if (err)
+ 				return err;
+ 		}
+-
+-		if (btf_type_is_func(t)) {
+-			err =3D btf_func_check(env, t);
+-			if (err)
+-				return err;
+-		}
+ 	}
+=20
+ 	return 0;
+--=20
+2.30.2
+
