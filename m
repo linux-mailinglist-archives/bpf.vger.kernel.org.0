@@ -2,104 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5DBB4A87DD
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:40:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 805D54A87F6
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 16:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235751AbiBCPko (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 10:40:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
+        id S1348076AbiBCPsV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 10:48:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243438AbiBCPkj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 10:40:39 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D635C061714;
-        Thu,  3 Feb 2022 07:40:39 -0800 (PST)
-Date:   Thu, 3 Feb 2022 16:40:35 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643902836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18aGWyGNO1weA/CrtPpkhyQkBZ6ZYq86BDBqYv5Eggs=;
-        b=4EPsnViOAQtklcVhBnqsZE8Vfjzd2ST9SGkLLO6vvZYZZW9kwS49Nz+4ss0babhRIesSxp
-        2rePC35D9ELzWY1FnppHfTmmuwKhWdzAg6fXW/onRbLU1QmckcL8TL0NQWVIfMsveUEcwJ
-        NaWHZecGdkWfI1xq6CspOnGhyn2HcOZqtFqalvCCNrSQ0LIiB0Roccf71wfS9uuP2XY4cu
-        C9szV7E1Wk/CMkS3MqXMpcOe41EU/reauusaHBrGabSCkO/tH+y/wXvcmswhDduktSDWZK
-        2UshwvO6BrzNCfbh943Z7no8mbXDtWGWCvhspk6IMaSyU8fvFuPYI4m8C1sXlQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643902836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=18aGWyGNO1weA/CrtPpkhyQkBZ6ZYq86BDBqYv5Eggs=;
-        b=Z0XbRsoSkuyAw0C5kChy+Ap5gzaCcxBhTMUC5sUfrYVhZm7wwxAsOcS1BRzLOHoua/aCcf
-        pbqWzL9lb+ieX/BQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH net-next 3/4] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-Message-ID: <Yfv3c+5XieVR0xAh@linutronix.de>
-References: <20220202122848.647635-1-bigeasy@linutronix.de>
- <20220202122848.647635-4-bigeasy@linutronix.de>
- <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
- <YfvwbsKm4XtTUlsx@linutronix.de>
- <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
+        with ESMTP id S238679AbiBCPsU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 10:48:20 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96472C061714;
+        Thu,  3 Feb 2022 07:48:20 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id r144so3725270iod.9;
+        Thu, 03 Feb 2022 07:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WLH1O+Vnbs8udHEehPW8PKl/Vsqp6/y9M/lwajCfmXg=;
+        b=O2CfoR+Kidy6Oil62L7eIH2efozt64sP75j6rrjblHbD93lfalaDPECmKMSLR1bMRI
+         MyATwiK8Iq8ewDJjL9wop/yWJRNXHiz+mJrQzvj/rLk2NFXEmmVyCEkcg+achzY/Ujzq
+         rBdpvZRBfpcjJDd2ziUgr3b7rDzDcNBZjr0Gp//MfAvWdMpIeAIpoAiu88IHAI0ldyRG
+         j42emqwxOa9uI2aqBdX7uWycKCXtCy+lxyp3ULgGou70LGIa8eRS1fabpdxJaLNt4Z9c
+         EqohgOdJ2zBGkWXIvlpxH3JWAuZYbjnKP6TLYl5zqR+gElcmUBERluM5d1nIYiV/h6cr
+         sCxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WLH1O+Vnbs8udHEehPW8PKl/Vsqp6/y9M/lwajCfmXg=;
+        b=kbPlJ2uUhEOa4MCgi5/Tb3MOArMunrCJbx1nfLnal99dDid1n4Dlg8Ocw325aE40gg
+         RPdAAn9o9c9HKMUqh4FlyNWwOTB+BEOTTaiTKt4V8vSqBP8ZJbbNx4YAfnYbb8unuW5x
+         aT7ZHTSiLiYTCP4bo5I9qo+/HbHlUtbednGOKdMEhJ4Tfb/m3dWDhhXTgbxMXmiOvihl
+         iYEDLwZaQPZuvJe959DZnvc1aoResWHz8okEZgOPq5XS4ToZIr/qyVSfcI+8oLW8jeD0
+         ilZxxIGyFCgzMIDzMjovx25OwhzYkqONKps5jnuaW6PI1zYGeJT5sNcIhOA8lhjxKqw4
+         0K4g==
+X-Gm-Message-State: AOAM5323rKQDo+13iY+vy/UrqY1rAOPtbsay+jKSaTtq31UV/uxieU4K
+        Euo8ltYcPleFCsogSmNsrJgTuBM4m4Q=
+X-Google-Smtp-Source: ABdhPJytHT2ainnjTy8kuwJMbb9XvCK+xi9KdImDjah1yKuXQ7fyHkvMjlJDtILNHjHCwvaKCySTwA==
+X-Received: by 2002:a6b:4e18:: with SMTP id c24mr18972137iob.179.1643903300006;
+        Thu, 03 Feb 2022 07:48:20 -0800 (PST)
+Received: from ?IPV6:2601:282:800:dc80:8870:ce19:2c7:3513? ([2601:282:800:dc80:8870:ce19:2c7:3513])
+        by smtp.googlemail.com with ESMTPSA id o7sm8800664ilt.63.2022.02.03.07.48.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Feb 2022 07:48:19 -0800 (PST)
+Message-ID: <e34e03db-9764-4728-9f6a-df85659c5089@gmail.com>
+Date:   Thu, 3 Feb 2022 08:48:17 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH RFC 1/4] net: skb: use line number to trace dropped skb
+Content-Language: en-US
+To:     Dongli Zhang <dongli.zhang@oracle.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        edumazet@google.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        imagedong@tencent.com, joao.m.martins@oracle.com,
+        joe.jin@oracle.com
+References: <20220203153731.8992-1-dongli.zhang@oracle.com>
+ <20220203153731.8992-2-dongli.zhang@oracle.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20220203153731.8992-2-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022-02-03 07:25:01 [-0800], Eric Dumazet wrote:
+On 2/3/22 8:37 AM, Dongli Zhang wrote:
+> Sometimes the kernel may not directly call kfree_skb() to drop the sk_buff.
+> Instead, it "goto drop" and call kfree_skb() at 'drop'. This make it
+> difficult to track the reason that the sk_buff is dropped.
 > 
-> No, the loopback device (ifconfig log) I am referring to is in
-> drivers/net/loopback.c
+> The commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()") has
+> introduced the kfree_skb_reason() to help track the reason. However, we may
+> need to define many reasons for each driver/subsystem.
 > 
-> loopback_xmit() calls netif_rx() directly, while bh are already disabled.
+> To avoid introducing so many new reasons, this is to use line number
+> ("__LINE__") to trace where the sk_buff is dropped. As a result, the reason
+> will be generated automatically.
+> 
 
-ah okay. Makes sense.
+I don't agree with this approach. It is only marginally better than the
+old kfree_skb that only gave the instruction pointer. That tells you the
+function that dropped the packet, but not why the packet is dropped.
+Adding the line number only makes users have to consult the source code.
 
-> Instead of adding a local_bh_disable()/local_bh_enable() in netif_rx()
-> I suggested
-> to rename current netif_rx() to __netif_rx() and add a wrapper, eg :
+When I watch drop monitor for kfree_skb I want to know *why* the packet
+was dropped, not the line number in the source code. e.g., dropmon
+showing OTHERHOST means too many packets are sent to this host (e.g.,
+hypervisor) that do not belong to the host or the VMs running on it, or
+packets have invalid checksum (IP, TCP, UDP). Usable information by
+everyone, not just someone with access to the source code for that
+specific kernel.
 
-So we still end up with two interfaces. Do I move a few callers like the
-one you already mentioned over to the __netif_rx() interface or will it
-be the one previously mentioned for now?
-
-Would something like 
-
-diff --git a/include/linux/bottom_half.h b/include/linux/bottom_half.h
-index fc53e0ad56d90..561cbca431ca6 100644
---- a/include/linux/bottom_half.h
-+++ b/include/linux/bottom_half.h
-@@ -30,7 +30,12 @@ static inline void local_bh_enable_ip(unsigned long ip)
- 
- static inline void local_bh_enable(void)
- {
--	__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
-+	if (unlikely(softirq_count() == SOFTIRQ_DISABLE_OFFSET)) {
-+		__local_bh_enable_ip(_THIS_IP_, SOFTIRQ_DISABLE_OFFSET);
-+	} else {
-+		preempt_count_sub(SOFTIRQ_DISABLE_OFFSET);
-+		barrier();
-+	}
- }
- 
- #ifdef CONFIG_PREEMPT_RT
-
-lower the overhead to acceptable range? (I still need to sell this to
-peterz first).
-
-Sebastian
