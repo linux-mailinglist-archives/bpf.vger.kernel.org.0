@@ -2,71 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D784A8F88
-	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D044A8FAF
+	for <lists+bpf@lfdr.de>; Thu,  3 Feb 2022 22:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353285AbiBCVGK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 16:06:10 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:47770 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351439AbiBCVGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 16:06:09 -0500
-Received: by mail-io1-f71.google.com with SMTP id 193-20020a6b01ca000000b00612778c712aso2821456iob.14
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 13:06:09 -0800 (PST)
+        id S1354571AbiBCVRX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 16:17:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1354547AbiBCVRX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 16:17:23 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4590C06173B
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 13:17:22 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id o17so5808052ljp.1
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 13:17:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bRfkm7GrbFMoJBuqK0ida1mpkefkGdsknjo4++yLasA=;
+        b=FbHqN0P9rw8Q0BybW2zMN3/iAfqsRvXrJ0fm8sm7m6s2D6ZhBmUQpkrHYsRB+r/sV/
+         CmgchEvSDsrSY1xqpUbc9+yq4MOxBs9q5USemSuerei3lb0nVu+oPox0LFMKjMpIenGc
+         QQLLBicS659vsfWsYpyIDF4SfLdgeK8NT1n4Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=uBmyzhLL0AacmJiOO0ygo8pOFo4TfHCiGIA5EQdvXeE=;
-        b=Xf+qhGTa00Xwel7Jp2nStn/VVcMBttNRXxiGXAIzoh0j4WP1SJDbNOtORBiT28pAIj
-         hT0yHRLZ99Tx/OkXYuRSmdkLOk1GWnTjfeFn2VoOnmwTPkpn2Ci7357ld5Mgg6N14IQO
-         NFXImG2S1i5VmzS+mvJAkYB7R62EYxybd23uVRmTzWouZILpnP2oyUpVPN8jXC6NN3lY
-         ypP9aCUjVkVPijdyX3OTtfXr583IDsKiR8cvvLPtc4BeB4e17gTAnlxyzlSbVa0jTYvu
-         rYjrqzi+YJvgW9NEb0C+xYvlMQ3rjXnZqvh0WI6s8lToJODNhYVQQ5ViWCBOE6G7Z59h
-         Aj1w==
-X-Gm-Message-State: AOAM533E+kNvYTQhJn/14R7yn2CzqSz0E28COX5CUDOJPY5o88HBHHGc
-        p5P+q5ZhsGOE42Pc1qzPn5lfdATXeaanFaDRs1cgP0txTWFd
-X-Google-Smtp-Source: ABdhPJz7/ZbgejMhaE9OEyjG/6HURwiA2GryVh/9fg+CbYb99M8adUZngW39faXgneuMNTyLw+8Sk7QFCH8alyCPJh/ctQrEX+6V
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bRfkm7GrbFMoJBuqK0ida1mpkefkGdsknjo4++yLasA=;
+        b=yz8a1/2tXa7hugam4YdEKd6kTiRbidLcEhO28OkYEXCnrxj+0RhGxNl57qEEVRYL3D
+         C7L7IeH2gWq3o6NZVnrh11GfjbE9KS0KZ+Q4WNejMRrq6fA3bC6Stg/hlB8fZ4Ri+MTb
+         FJI2ukUfJFsLv2p5s8MZ2Xq1lWt5ducPZCM0DLXPv67l4ijSQoRYgRcflJcd9BVTPL2E
+         ZK5jODmyadlae4eQO0itebT198TXRXmDfH88VE7LKlScaVpMnVpBb/RCSkIJLycjpBdV
+         yixpPdy+zIf0v8b/bzwL05NUGIpMONoxnzRxYHotg7DrgjcELEwCI5Fx7VksaNjrqGMp
+         PBNg==
+X-Gm-Message-State: AOAM530XU2cM3pICGqTvEJg3eQq0E07rIwLz1k3GbgxscVFMUUHM/Gil
+        JchsjEeZkk0b/b3JZzw5a9pqZrbGr146xJfPPTIKVQ==
+X-Google-Smtp-Source: ABdhPJwI/FQ/A34LE1OPELMCwYQPioB5eE3RDTq1WzznT3jPKZdTtcD8jmNuPeoQFmFu66hx5z0zfg3iIg7mBPrKqt0=
+X-Received: by 2002:a2e:b8d6:: with SMTP id s22mr24667013ljp.218.1643923040997;
+ Thu, 03 Feb 2022 13:17:20 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3295:: with SMTP id f21mr16186925jav.193.1643922369206;
- Thu, 03 Feb 2022 13:06:09 -0800 (PST)
-Date:   Thu, 03 Feb 2022 13:06:09 -0800
-In-Reply-To: <0000000000008c32e305d6d8e802@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dade8505d72380c9@google.com>
-Subject: Re: [syzbot] general protection fault in submit_bio_checks
-From:   syzbot <syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, axboe@kernel.dk,
-        bpf@vger.kernel.org, daniel@iogearbox.net, hch@lst.de,
-        john.fastabend@gmail.com, kafai@fb.com, kch@nvidia.com,
-        kpsingh@kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-10-mauricio@kinvolk.io>
+ <CAHap4zsWqpTezbzZn7TOWvFA4c2PbSum4vY1_9YB+XSfFor21g@mail.gmail.com> <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZipPWByN-JND=Djhhw+vpEjQScxJEPW5QTyWXozecfcg@mail.gmail.com>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Thu, 3 Feb 2022 16:17:09 -0500
+Message-ID: <CAHap4zsiCucKjxWU8NhLGKTxYHoh_wHwjirOcSfMwNF38axDcQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 9/9] selftest/bpf: Implement tests for bpftool
+ gen min_core_btf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, Feb 2, 2022 at 2:50 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 28, 2022 at 3:23 PM Mauricio V=C3=A1squez Bernal
+> <mauricio@kinvolk.io> wrote:
+> >
+> > On Fri, Jan 28, 2022 at 5:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk=
+.io> wrote:
+> > >
+> > > This commit implements some integration tests for "BTFGen". The goal
+> > > of such tests is to verify that the generated BTF file contains the
+> > > expected types.
+> > >
+> >
+> > This is not an exhaustive list of test cases. I'm not sure if this is
+> > the approach we should follow to implement such tests, it seems to me
+> > that checking each generated BTF file by hand is a lot of work but I
+> > don't have other ideas to simplify it.
+> >
+> > I considered different options to write these tests:
+> > 1. Use core_reloc_types.h to create a "source" BTF file with a lot of
+> > types, then run BTFGen for all test_core_reloc_*.o files and use the
+> > generated BTF file as btf_src_file in core_reloc.c. In other words,
+> > re-run all test_core_reloc tests using a generated BTF file as source
+> > instead of the "btf__core_reloc_" #name ".o" one. I think this test is
+> > great because it tests the full functionality and actually checks that
+> > the programs are able to run using the generated file. The problem is
+> > how do we test that the BTFGen is creating an optimized file? Just
+> > copying the source file without any modification will make all those
+> > tests pass. We could check that the generated file is small (by
+> > checking the size or the number of types) but it doesn't seem a very
+> > reliable approach to me.
+>
+> I think this second run after minimizing BTF is a good idea. I
+> wouldn't bother to check for "minimal BTF" for this case.
+>
 
-commit a7c50c940477bae89fb2b4f51bd969a2d95d7512
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Mon Jan 24 09:11:07 2022 +0000
+Right. Do you want this to be part of this series or can we merge later on?
 
-    block: pass a block_device and opf to bio_reset
+> > 2. We could write some .c files with the types we expect to have on
+> > the generated file and compare it with the generated file. The issue
+> > here is that comparing those BTF files doesn't seem to be too
+> > trivial...
+>
+> But I would add few realistic examples that use various combinations
+> of CO-RE relocations against Linux types. Then minimize BTF and
+> validate that BTF is what we expect.
+>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b4f1cc700000
-start commit:   2d3d8c7643a5 Add linux-next specific files for 20220203
-git tree:       linux-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b4f1cc700000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b4f1cc700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=27a9abf2c11167c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=2b3f18414c37b42dcc94
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14635480700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10eb2d14700000
+What do you mean by "realistic examples"? Aren't the BPF programs
+(that use core_reloc_types.h) I added in this commit good enough for
+this test?
 
-Reported-by: syzbot+2b3f18414c37b42dcc94@syzkaller.appspotmail.com
-Fixes: a7c50c940477 ("block: pass a block_device and opf to bio_reset")
+> As for how to compare BTFs. I've been wanting to do something like
+> btf__normalize() API to renumber and resort all the BTF types into
+> some "canonical" order, so that two BTFs can be actually compared and
+> diffed. It might be finally the time to do that.
+>
+> The big complication is your decision to dump all the fields of types
+> that are used by type-based relocations. I'm not convinced that's the
+> best way to do this. I'd keep empty struct/union for such cases,
+> actually. That would minimize the number of types and thus BTF in
+> general. It also will simplify the logic of emitting minimized BTF a
+> bit (all_types checks won't be necessary, I think).
+>
+> As I also mentioned in previous patches, for types that are only
+> referenced through pointer, I'd emit FWD declaration only. Or at best
+> empty struct/union.
+>
+> With all that, after btf__minimize() operation, comparing BTFs would
+> be actually pretty easy, because we'll know the order of each type,
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Why do we know the order of each type? I think the order of the types
+in the generated BTF files depends on:
+1. The order or the relocations on the BPF object. (I'm not sure if
+the compiler generates them in the same order as they appear in the
+code)
+2. BTFGen implementation: types are added recursively and there is
+also a hashmap in between.
+3. How bpftool is invoked. bpftool gen min_core_btf ... OBJ1 OBJ2 vs
+bpftool gen min_core_btf ... OBJ2 OBJ1.
+
+What I'm saying is that given a source BTF file and a BPF object I
+don't know what is the order of the output BTF file. I know we could
+run the test, check the generated output and use it for the test but
+it seems like "cheating" to me...
+
+Am I missing something?
+
+> so
+> using the
+> VALIDATE_RAW_BTF() (see prog_tests/btf_dedup_split.c) the tests will
+> be easy and clean.
+>
+>
+> One last thing, let's not add a new test binary (test_bpftool), let's
+> keep adding more tests into test_progs.
+>
+
+Will do.
+
+> >
+> > Do you have any suggestions about it? Thanks!
