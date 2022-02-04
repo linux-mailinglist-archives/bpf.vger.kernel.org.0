@@ -2,277 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0167E4A9996
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 14:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F884A9A4E
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 14:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240522AbiBDNAR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 08:00:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244168AbiBDNAP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 08:00:15 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4EA1C06173D;
-        Fri,  4 Feb 2022 05:00:14 -0800 (PST)
-Date:   Fri, 4 Feb 2022 14:00:10 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1643979611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HlD2lT0qLZrqUBY6puOj/ZakQbSaRYkvcZCDkXh3l30=;
-        b=01U5Ghv5Kuo0VXxlC7AcdpNCYRFX0Il7tWUp/gMeH+RkD83gs6jjR4PTr7jkJ3sjigi3BC
-        tQT5zb9gedcPf4tP0sXsQ4sLPHXd9/JB0H391f8ejPapFci9PwXfwic0LD3bQvxpYKzaEy
-        etBaM77flA3MXfn/fSpzDqTBrIXu0zJcA79NQwZNZYo/s6oLM1P4by2+gPTKFpLfM6FraH
-        IRqDyutUBBe9GRfNMv2r7jrkpwd1WOhHoqWPpo7twBdiMNbIBO+aUK6Mf9S5qAFc+if6NO
-        AF6qpGI3mNfuyVgT2LEE93cQnupbgmX5X4uMk1ZdPknTAfUh8yuFJu2mtpjVkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1643979611;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HlD2lT0qLZrqUBY6puOj/ZakQbSaRYkvcZCDkXh3l30=;
-        b=R9eY82lJwMBv6TG8H15PvUP2l0FSMa2m5UuXnYb+ZrTnH9O83igRvOCHRyvuOvaWw9zQ0g
-        qR0R73HLzANo5mBw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S1359015AbiBDNuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 08:50:25 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:34210 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235063AbiBDNuY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 08:50:24 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 214D1UW9017419;
+        Fri, 4 Feb 2022 13:50:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=ZX/Icao0H9j1c9MCBbqCARcaWhtzyaSl8/cxqAyOJhk=;
+ b=byjrAbigWdVKPryIeBo4zzTDEwMXwbv268laRoisxjbA8WDRx9MKmE0EbpL6U5VhFeqk
+ XYCxo8Q2D46zNX4nFboi2rTkuPeiU4/C37U4ugEdORpe2Sy2iv7G3WBisfQokwDJmmQK
+ dQXmwdMsz3mbhjE5cSlWy4Yi+3JoSSzjNVNFBpw9fFfeoGuVoZmykoVGdCYBXvXOx8EU
+ vo8I8V4VnhYYjmX6PLov6tBsUu0keEPTERyW9hXRzkD7plyJkYwWmfpjjAhu1Z8FvfQS
+ BvBaedE0TLBmfQSgQ4ocjdOK3ilsBc1JCPn1fgZA5/RGxBbeROSRS1EDzqnAMBI1lp5f og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0qx36p8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 13:50:04 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 214Cm8n2004717;
+        Fri, 4 Feb 2022 13:50:03 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0qx36p7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 13:50:03 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 214DhTXG029005;
+        Fri, 4 Feb 2022 13:50:01 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06fra.de.ibm.com with ESMTP id 3e0r0yd1yn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Feb 2022 13:50:01 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 214Dntjr46924216
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 4 Feb 2022 13:49:55 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3B4BB42049;
+        Fri,  4 Feb 2022 13:49:55 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BBC9F42041;
+        Fri,  4 Feb 2022 13:49:54 +0000 (GMT)
+Received: from localhost (unknown [9.43.69.119])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  4 Feb 2022 13:49:54 +0000 (GMT)
+Date:   Fri, 04 Feb 2022 13:49:52 +0000
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
+To:     Heiko Carstens <hca@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        =?iso-8859-1?b?Qmr2cm4gVPZwZWw=?= <bjorn@kernel.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        bpf@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH net-next v2 3/4] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-Message-ID: <Yf0jWtF2/0pYcjXI@linutronix.de>
-References: <20220202122848.647635-1-bigeasy@linutronix.de>
- <20220202122848.647635-4-bigeasy@linutronix.de>
- <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
- <YfvwbsKm4XtTUlsx@linutronix.de>
- <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
- <Yfv3c+5XieVR0xAh@linutronix.de>
- <CANn89i+t4TgrryvSBmBMfsY63m6Fhxi+smiKfOwHTRAKxvcPLQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Will Deacon <will@kernel.org>
+References: <20220201234200.1836443-1-iii@linux.ibm.com>
+        <20220201234200.1836443-2-iii@linux.ibm.com> <YfrmO+pcSqrrbC3E@osiris>
+        <1643952491.peuih6eln6.naveen@linux.ibm.com>
+        <1643962017.hhlhw119x7.naveen@linux.ibm.com>
+        <80a92fcc73e537b56491f8313574bea6dfa1c1c8.camel@linux.ibm.com>
+In-Reply-To: <80a92fcc73e537b56491f8313574bea6dfa1c1c8.camel@linux.ibm.com>
+User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
+Message-Id: <1643982436.03nza6qz50.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: oGSB1_DMBhbsXR8vW7IIdm0IwgW40ytd
+X-Proofpoint-GUID: CXsegPChd5iOMHgJH6h1KzBR2OeZfk2n
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CANn89i+t4TgrryvSBmBMfsY63m6Fhxi+smiKfOwHTRAKxvcPLQ@mail.gmail.com>
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-04_04,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
+ bulkscore=0 impostorscore=0 spamscore=0 phishscore=0 adultscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202040076
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dave suggested a while ago (eleven years by now) "Let's make netif_rx()
-work in all contexts and get rid of netif_rx_ni()". Eric agreed and
-pointed out that modern devices should use netif_receive_skb() to avoid
-the overhead.
-In the meantime someone added another variant, netif_rx_any_context(),
-which behaves as suggested.
+Ilya Leoshkevich wrote:
+> On Fri, 2022-02-04 at 08:21 +0000, Naveen N. Rao wrote:
+>> Naveen N. Rao wrote:
+>> > Hi Heiko,
+>> >=20
+>> > Heiko Carstens wrote:
+>> > > On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
+>> > > > user_pt_regs is used by eBPF in order to access userspace
+>> > > > registers -
+>> > > > see commit 466698e654e8 ("s390/bpf: correct broken uapi for
+>> > > > BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the
+>> > > > first
+>> > > > syscall argument from eBPF programs, we need to export
+>> > > > orig_gpr2.
+>> > > >=20
+>> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>> > > > ---
+>> > > > =C2=A0arch/s390/include/asm/ptrace.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ | 2 +-
+>> > > > =C2=A0arch/s390/include/uapi/asm/ptrace.h | 1 +
+>> > > > =C2=A02 files changed, 2 insertions(+), 1 deletion(-)
+>> > > >=20
+>> > > > diff --git a/arch/s390/include/asm/ptrace.h
+>> > > > b/arch/s390/include/asm/ptrace.h
+>> > > > index 4ffa8e7f0ed3..c8698e643904 100644
+>> > > > --- a/arch/s390/include/asm/ptrace.h
+>> > > > +++ b/arch/s390/include/asm/ptrace.h
+>> > > > @@ -83,9 +83,9 @@ struct pt_regs {
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0unsigned long args[1];
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0psw_t psw;
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0unsigned long gprs[NUM_GPRS];
+>> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+unsigned long orig_gpr2;
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0};
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0};
+>> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long orig_gpr2;
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0union {
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct {
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0unsigned int int_code;
+>> > > > diff --git a/arch/s390/include/uapi/asm/ptrace.h
+>> > > > b/arch/s390/include/uapi/asm/ptrace.h
+>> > > > index ad64d673b5e6..b3dec603f507 100644
+>> > > > --- a/arch/s390/include/uapi/asm/ptrace.h
+>> > > > +++ b/arch/s390/include/uapi/asm/ptrace.h
+>> > > > @@ -295,6 +295,7 @@ typedef struct {
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long args=
+[1];
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0psw_t psw;
+>> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long gprs=
+[NUM_GPRS];
+>> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned long orig_gpr2;
+>> > > > =C2=A0} user_pt_regs;
+>> > >=20
+>> > > Isn't this broken on nearly all architectures? I just checked
+>> > > powerpc,
+>> > > arm64, and riscv. While powerpc seems to mirror pt_regs as
+>> > > user_pt_regs,
+>> > > and therefore exports orig_gpr3, the bpf macros still seem to
+>> > > access the
+>> > > wrong location to access the first syscall parameter(?).
+>> >=20
+>> > On powerpc, gpr[3] continues to be valid on syscall entry (so this
+>> > test=20
+>> > passes on powerpc), though orig_gpr3 will remain valid throughout.
+>>=20
+>> Hmm.. we can't use orig_gpr3 since we don't use a syscall wrapper.
+>> All=20
+>> system calls just receive the parameters directly.
+>>=20
+>> - Naveen
+>=20
+> Right, I ran into this yesterday as well.
+> I solved it in v2
+> (https://lore.kernel.org/bpf/20220204041955.1958263-1-iii@linux.ibm.com/)
+> by introducing a macro that hides whether or not an arch uses a syscall
+> wrapper.
 
-netif_rx() must be invoked with disabled bottom halves to ensure that
-pending softirqs, which were raised within the function, are handled.
-netif_rx_ni() can be invoked only from process context (bottom halves
-must be enabled) because the function handles pending softirqs without
-checking if bottom halves were disabled or not.
-netif_rx_any_context() invokes on the former functions by checking
-in_interrupts().
+Thanks. I missed your patches. I will take a look.
 
-netif_rx() could be taught to handle both cases (disabled and enabled
-bottom halves) by simply disabling bottom halves while invoking
-netif_rx_internal(). The local_bh_enable() invocation will then invoke
-pending softirqs only if the BH-disable counter drops to zero.
-
-Eric is concerned about the overhead of BH-disable+enable especially in
-regard to the loopback driver. As critical as this driver is, it will
-receive a shortcut to avoid the additional overhead which is not needed.
-
-Add a local_bh_disable() section in netif_rx() to ensure softirqs are
-handled if needed. Provide the internal bits as __netif_rx() which can
-be used by the loopback driver. This function is not exported so it
-can't be used by modules.
-Make netif_rx_ni() and netif_rx_any_context() invoke netif_rx() so they
-can be removed once they are no more users left.
-
-Link: https://lkml.kernel.org/r/20100415.020246.218622820.davem@davemloft.n=
-et
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v1=E2=80=A6v2:
-  - Provide netif_rx() as in v1 and additionally __netif_rx() without
-    local_bh disable()+enable() for the loopback driver. __netif_rx() is
-    not exported (loopback is built-in only) so it won't be used
-    drivers. If this doesn't work then we can still export/ define a
-    wrapper as Eric suggested.
-
-  - Added a comment that netif_rx() considered legacy.
-
- drivers/net/loopback.c     |  2 +-
- include/linux/netdevice.h  | 14 ++++++++--
- include/trace/events/net.h | 14 ----------
- net/core/dev.c             | 53 +++++++++++---------------------------
- 4 files changed, 28 insertions(+), 55 deletions(-)
-
-diff --git a/drivers/net/loopback.c b/drivers/net/loopback.c
-index ed0edf5884ef8..77f5b564382b6 100644
---- a/drivers/net/loopback.c
-+++ b/drivers/net/loopback.c
-@@ -86,7 +86,7 @@ static netdev_tx_t loopback_xmit(struct sk_buff *skb,
- 	skb->protocol =3D eth_type_trans(skb, dev);
-=20
- 	len =3D skb->len;
--	if (likely(netif_rx(skb) =3D=3D NET_RX_SUCCESS))
-+	if (likely(__netif_rx(skb) =3D=3D NET_RX_SUCCESS))
- 		dev_lstats_add(dev, len);
-=20
- 	return NETDEV_TX_OK;
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index e490b84732d16..c9e883104adb1 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3669,8 +3669,18 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, st=
-ruct xdp_buff *xdp,
- void generic_xdp_tx(struct sk_buff *skb, struct bpf_prog *xdp_prog);
- int do_xdp_generic(struct bpf_prog *xdp_prog, struct sk_buff *skb);
- int netif_rx(struct sk_buff *skb);
--int netif_rx_ni(struct sk_buff *skb);
--int netif_rx_any_context(struct sk_buff *skb);
-+int __netif_rx(struct sk_buff *skb);
-+
-+static inline int netif_rx_ni(struct sk_buff *skb)
-+{
-+	return netif_rx(skb);
-+}
-+
-+static inline int netif_rx_any_context(struct sk_buff *skb)
-+{
-+	return netif_rx(skb);
-+}
-+
- int netif_receive_skb(struct sk_buff *skb);
- int netif_receive_skb_core(struct sk_buff *skb);
- void netif_receive_skb_list_internal(struct list_head *head);
-diff --git a/include/trace/events/net.h b/include/trace/events/net.h
-index 78c448c6ab4c5..032b431b987b6 100644
---- a/include/trace/events/net.h
-+++ b/include/trace/events/net.h
-@@ -260,13 +260,6 @@ DEFINE_EVENT(net_dev_rx_verbose_template, netif_rx_ent=
-ry,
- 	TP_ARGS(skb)
- );
-=20
--DEFINE_EVENT(net_dev_rx_verbose_template, netif_rx_ni_entry,
--
--	TP_PROTO(const struct sk_buff *skb),
--
--	TP_ARGS(skb)
--);
--
- DECLARE_EVENT_CLASS(net_dev_rx_exit_template,
-=20
- 	TP_PROTO(int ret),
-@@ -312,13 +305,6 @@ DEFINE_EVENT(net_dev_rx_exit_template, netif_rx_exit,
- 	TP_ARGS(ret)
- );
-=20
--DEFINE_EVENT(net_dev_rx_exit_template, netif_rx_ni_exit,
--
--	TP_PROTO(int ret),
--
--	TP_ARGS(ret)
--);
--
- DEFINE_EVENT(net_dev_rx_exit_template, netif_receive_skb_list_exit,
-=20
- 	TP_PROTO(int ret),
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 5ef77b53507d4..b7578f47e151c 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4829,6 +4829,16 @@ static int netif_rx_internal(struct sk_buff *skb)
- 	return ret;
- }
-=20
-+int __netif_rx(struct sk_buff *skb)
-+{
-+	int ret;
-+
-+	trace_netif_rx_entry(skb);
-+	ret =3D netif_rx_internal(skb);
-+	trace_netif_rx_exit(ret);
-+	return ret;
-+}
-+
- /**
-  *	netif_rx	-	post buffer to the network code
-  *	@skb: buffer to post
-@@ -4837,58 +4847,25 @@ static int netif_rx_internal(struct sk_buff *skb)
-  *	the upper (protocol) levels to process.  It always succeeds. The buffer
-  *	may be dropped during processing for congestion control or by the
-  *	protocol layers.
-+ *	This interface is considered legacy. Modern NIC driver should use NAPI
-+ *	and GRO.
-  *
-  *	return values:
-  *	NET_RX_SUCCESS	(no congestion)
-  *	NET_RX_DROP     (packet was dropped)
-  *
-  */
--
- int netif_rx(struct sk_buff *skb)
- {
- 	int ret;
-=20
--	trace_netif_rx_entry(skb);
--
--	ret =3D netif_rx_internal(skb);
--	trace_netif_rx_exit(ret);
--
-+	local_bh_disable();
-+	ret =3D __netif_rx(skb);
-+	local_bh_enable();
- 	return ret;
- }
- EXPORT_SYMBOL(netif_rx);
-=20
--int netif_rx_ni(struct sk_buff *skb)
--{
--	int err;
--
--	trace_netif_rx_ni_entry(skb);
--
--	preempt_disable();
--	err =3D netif_rx_internal(skb);
--	if (local_softirq_pending())
--		do_softirq();
--	preempt_enable();
--	trace_netif_rx_ni_exit(err);
--
--	return err;
--}
--EXPORT_SYMBOL(netif_rx_ni);
--
--int netif_rx_any_context(struct sk_buff *skb)
--{
--	/*
--	 * If invoked from contexts which do not invoke bottom half
--	 * processing either at return from interrupt or when softrqs are
--	 * reenabled, use netif_rx_ni() which invokes bottomhalf processing
--	 * directly.
--	 */
--	if (in_interrupt())
--		return netif_rx(skb);
--	else
--		return netif_rx_ni(skb);
--}
--EXPORT_SYMBOL(netif_rx_any_context);
--
- static __latent_entropy void net_tx_action(struct softirq_action *h)
- {
- 	struct softnet_data *sd =3D this_cpu_ptr(&softnet_data);
---=20
-2.34.1
-
+- Naveen
+>=20
