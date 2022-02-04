@@ -2,86 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9B14A921C
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 02:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95174A9235
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 03:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355923AbiBDBsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 20:48:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45110 "EHLO
+        id S1356586AbiBDCHK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 21:07:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbiBDBsH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 20:48:07 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80E7C061714;
-        Thu,  3 Feb 2022 17:48:07 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id y17so3835467plg.7;
-        Thu, 03 Feb 2022 17:48:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EN6ct084o48NExErKXMnp0M0dwlsejuVZ1iLXIP3bUU=;
-        b=d8958Hl7QKvp+EtP1yg0G4oLSo194br5HSPTklmWQw1wQNejU+6tAOEWocZYAVhFpm
-         I/Z0gnV1vp9QOqK7hx0AtsZG56z/qAfwxBsTs5pPq/naC35LI40VayB9tlc+fN2JLgD7
-         JNM8RGlwoUnC5zPoL9HpBcF+CLuz2BmohuypM98MFeIkrudC3fzQTd++Nxo4jMzCjXWj
-         wvhgiLGu19cvt0A5HUvdG0v4x9SGQSRPWU/hqfWsPui4AVnyLR91XfduXLi/HFtSYQCx
-         IlTm5DygRFl4lp37hBWJkfucQoJRtiy9QIzKr70xThc7vl/+qNgrS4ciTVOMhWaVjVgI
-         uoEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EN6ct084o48NExErKXMnp0M0dwlsejuVZ1iLXIP3bUU=;
-        b=vLmeA9wi/RiFArrkvkrhFQpeSgadFIPIjYzRwxlqJlUlCrzjxyVik+/wii/MeZQmfr
-         tQ5p/9Ek0JG1jxg+1afXqI18eMI5D4oqQgSwGk8rACL4HdXAobESxLsacE5uDOhDS330
-         9u8sasv52QNG2O0pOf5ztabErpwHBztXREg8OOoNQ+bb5STQFUCmsg7dUBl92f5e/IAF
-         6xdo9B1Uz8W35yQXf6EjvHwhwZVctkrZgXXAAzS7zLCsDa72AIc7rgD/DE45SrBW/Lxx
-         AkoFE7bMlvnxTMgRYN3UIZ7VD3qYPavWIy1KiL+sBMEdgS50i92/RyVA5T8Q0oPJXIwx
-         sjsA==
-X-Gm-Message-State: AOAM532orw4eYmzQ8Lit5tbxWjUzjNF7WZ1aI0QvhXjp5LCQ0lYUbujg
-        4XyUMIIOg6Ty+v3PlgdQbzlfz1DKWKwNlM/fxPU=
-X-Google-Smtp-Source: ABdhPJxnAvmNYdyPWrQ00kz0ma0OyUCXigt/vTSgGYBpGGYlEO1VlntdKgl3Gno9ftHVLAQI8tHBz33SOZl0ZnOI4v8=
-X-Received: by 2002:a17:902:e54c:: with SMTP id n12mr654484plf.78.1643939287197;
- Thu, 03 Feb 2022 17:48:07 -0800 (PST)
-MIME-Version: 1.0
-References: <000000000000df66a505d68df8d1@google.com> <000000000000d4b6fd05d708ab03@google.com>
- <CAADnVQLjvX54EXbiWC2yXAomypwYoc3MmEdp7fHxG+Zse+83Pw@mail.gmail.com> <Yfwa2qsoDT0+zU7v@lore-desk>
-In-Reply-To: <Yfwa2qsoDT0+zU7v@lore-desk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Feb 2022 17:47:55 -0800
-Message-ID: <CAADnVQLqwumutNcGK92HpiOQL+kpCPc-jyPoii9OSVOXuyNBEQ@mail.gmail.com>
-Subject: Re: [syzbot] KASAN: slab-out-of-bounds Write in bpf_prog_test_run_xdp
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     syzbot <syzbot+6d70ca7438345077c549@syzkaller.appspotmail.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        with ESMTP id S1356589AbiBDCHJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 21:07:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5554C061714;
+        Thu,  3 Feb 2022 18:07:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A707261A38;
+        Fri,  4 Feb 2022 02:07:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5D2CC340E8;
+        Fri,  4 Feb 2022 02:07:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643940428;
+        bh=8Rfsm2X26f+cpjyggcPus8upMsnUdue/pwlCemZkV8Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DJBvgPeTEdCw9GQ0xjyvKlA7HR67qV6rchLqmK9Zq6MZhs40m577x1ONkMvfuto0F
+         vGU1TuPpA9aM0whxuTTyYcQ50C0oY/DnRs6WCJJAtzFKJEijqVPZvaoZHdda+LE4sJ
+         JNweqVJTu42yrLIb5TBspUedRcgGbYvFlOcEbrAdtZJ28YxmVtF1JWSrZFjToPfklj
+         fH8skN+FMFHph0DnMqRybjryo1qldkssk8oM27/ZxksHWwSkZu1g8Cun1JvSKJ1D9v
+         cSgfzF6fQoe+H8VqipVU9BvafmOVNYWEpkQz5HardNHRE87PbJdCJopZk9otSljkiy
+         XQ758Gyogf4yg==
+Date:   Fri, 4 Feb 2022 11:07:04 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Network Development <netdev@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jiri Olsa <olsajiri@gmail.com>
+Subject: Re: [PATCH 0/8] bpf: Add fprobe link
+Message-Id: <20220204110704.7c6eaf43ff9c8f5fe9bf3179@kernel.org>
+In-Reply-To: <CAADnVQJYY0Xm6M9O02E5rOkdQPX39NOOS4tM2jpwRLQvP-qDBg@mail.gmail.com>
+References: <20220202135333.190761-1-jolsa@kernel.org>
+        <CAADnVQ+hTWbvNgnvJpAeM_-Ui2-G0YSM3QHB9G2+2kWEd4-Ymw@mail.gmail.com>
+        <Yfq+PJljylbwJ3Bf@krava>
+        <CAADnVQKeTB=UgY4Gf-46EBa8rwWTu2wvi7hEj2sdVTALGJ0JEg@mail.gmail.com>
+        <YfvvfLlM1FOTgvDm@krava>
+        <20220204094619.2784e00c0b7359356458ca57@kernel.org>
+        <CAADnVQJYY0Xm6M9O02E5rOkdQPX39NOOS4tM2jpwRLQvP-qDBg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 3, 2022 at 10:11 AM Lorenzo Bianconi <lorenzo@kernel.org> wrote:
->
-> > Lorenzo, please take a look. I suspect it's xdp frags related.
->
-> Hi Alexei,
->
-> do you think it is worth to add a test for this condition in
-> test_xdp_update_frags()?
+On Thu, 3 Feb 2022 17:34:54 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-you mean instead of 9000 and implicit PAGE_SIZE splitting
-allocate explicit PAGE_SIZE * MAX_SKB_FRAGS ?
-Yeah. Would be nice.
+> On Thu, Feb 3, 2022 at 4:46 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> > I thought What Alexei pointed was that don't expose the FPROBE name
+> > to user space. If so, I agree with that. We can continue to use
+> > KPROBE for user space. Using fprobe is just for kernel implementation.
+> 
+> Clearly that intent is not working.
+
+Thanks for confirmation :-)
+
+> The "fprobe" name is already leaking outside of the kernel internals.
+> The module interface is being proposed.
+
+Yes, but that is only for making the example module.
+It is easy for me to enclose it inside kernel. I'm preparing KUnit
+selftest code for next version. After integrated that, we don't need
+that example module anymore.
+
+> You'd need to document it, etc.
+
+Yes, I've added a document of the APIs for the series.  :-)
+
+> I think it's only causing confusion to users.
+> The new name serves no additional purpose other than
+> being new and unheard of.
+> fprobe is kprobe on ftrace. That's it.
+
+No, fprobe is NOT kprobe on ftrace, kprobe on ftrace is already implemented
+transparently.
+
+> Just call it kprobe on ftrace in api and everywhere.
+> Please?
+
+Hmm, no, I think that's the work for who provide user-interface, isn't it?.
+Inside kernel, IMHO, the interface named from the programing viewpoint, and
+from that viewpoint, fprobe and kprobe interface are similar but different.
+
+I'm able to allow kprobe-event (of ftrace) to accept "func*" (yeah, that's
+actually good idea), but ftrace interface will not export as fprobe. Even if
+it internally uses fprobe, I don't call it fprobe. It's kprobes from the
+viewpoint of ftrace user. (Yeah, I think it should be called as 
+"dynamic-probe-event-for-kernel" but historically, it is called as kprobe-event.)
+
+Thank you, 
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
