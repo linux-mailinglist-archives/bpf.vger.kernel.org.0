@@ -2,122 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7004AA3D2
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 23:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 313F04AA3F1
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 00:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358179AbiBDW7P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 17:59:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25289 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1357887AbiBDW6k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 17:58:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644015519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BuPkY8aF8foCy1xMQ7K88ilNkVFxYvJg6UfhArqX/OE=;
-        b=ZSFqv3HuT3CEXPpk/G9XpF09bp6r/V0a5gMGQSRGxJUPZm3jG8nG5jFkkanxgaEi3MaNHF
-        qAEyXtCJe+mEH6YhikgIywylmnAIDqOh0iktXTBxnuWuGRd8Nwa3LYNjv8LokFct5chw0h
-        8CLKML641hGs08QigzmaeKH/WsBW8I8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-15-jMyBYFfdOzadgEec5HS7Bg-1; Fri, 04 Feb 2022 17:58:38 -0500
-X-MC-Unique: jMyBYFfdOzadgEec5HS7Bg-1
-Received: by mail-ed1-f69.google.com with SMTP id l14-20020aa7cace000000b003f7f8e1cbbdso3978913edt.20
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 14:58:38 -0800 (PST)
+        id S1377841AbiBDXEe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 18:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1376312AbiBDXEd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:04:33 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9C5DF2D306;
+        Fri,  4 Feb 2022 15:04:32 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id 9so9308844iou.2;
+        Fri, 04 Feb 2022 15:04:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1pu0d3Yf+q8xwC8OB6WG8Zu+IuarbmMd83H8xXGaDAA=;
+        b=AvaK0n/Yfmy2XVA1XWg5y+qZ03Q0D0UV3wjhdcEk41jPkroj3o+yldgJx3fID0JWH4
+         YwzM/hzDJoCQ3OeVWY8RmqN9w5LJPWz9Dp4INgJuPoGzGMXIM/mQPhvFzaLHCdxmvV5p
+         Nita63CWaHMZpp8mxdWpQlWrZck438+iTSueDYwh4fejwjOG6fr+COO5kTpalRo/gjUP
+         L2Tqlg1K4jkZyLuHfW0M70Rmt6XPK/uj+jksaGWtuagti9DV+M6ryf6sD8wNm6BK2km6
+         KukznX/0wf5SFWNyPvxslzMtsZZqq5xVaLT7JSWW7vHBKsY4QwV/JMfdmZGap8O8NH1X
+         9+nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=BuPkY8aF8foCy1xMQ7K88ilNkVFxYvJg6UfhArqX/OE=;
-        b=5PJCfuyOBTJLtiVG5PursXQelen2awnsY8mDc4VrXLlcZWWRXtfgdzGuXjciIi1cPw
-         3rRNZNdRBWs51Q9ggDmjIo3dUGjYqr5KMpmuYE5mJU+HGM/d0lw7pnpn8zAy02WXvCYA
-         qFnsW9SP8Ex/BSL2S7busk9PzGkE2ZTjYntnwAiqOQkH3xgId+pmHwzXrZGW98+jEbbK
-         nU/RW6g5TfibBrUZ0u2Ysp5ZFu+J5c3INnluLWUM0+0W/4KZJI7rklDb6WMNjOtRzx89
-         Q0X4WjhK/3/YNNhVMAvWH0me0+JYuMITR1iQsE28t+TwU4EDaeDyk+oadbLcmJM/ldzl
-         ZNCA==
-X-Gm-Message-State: AOAM531gK3UITPDsFXE3KPsvCY+SiuWdlEWpbzG+od8jZaISkf6dq0fv
-        yeEgT1qjivZpHlbYsmu2qAIKYIJRRhMuFpwqIzd3J9DIzq5JI+jBroUs+BFtrV6HRsahKC1gbqQ
-        +2jovYJIrV42B
-X-Received: by 2002:a17:907:8a1a:: with SMTP id sc26mr989587ejc.334.1644015517719;
-        Fri, 04 Feb 2022 14:58:37 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzfMC0jfCBGSPIZgj8KIZhO3L2DqSwEXEGUdXnhN74v25kVKO9x+CidEyZ1jI72iCp5fKT4dw==
-X-Received: by 2002:a17:907:8a1a:: with SMTP id sc26mr989567ejc.334.1644015517562;
-        Fri, 04 Feb 2022 14:58:37 -0800 (PST)
-Received: from krava.redhat.com ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id d5sm1388884edz.78.2022.02.04.14.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Feb 2022 14:58:37 -0800 (PST)
-From:   Jiri Olsa <jolsa@redhat.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1pu0d3Yf+q8xwC8OB6WG8Zu+IuarbmMd83H8xXGaDAA=;
+        b=ypmUhAOqUQMCGVdwyePXfoMVkYkbya7cCj9gKHDx3jAF/IZf9VksTqYnZFMo0ds9CX
+         qByv4PYE1ikywK+sSCuaT7iIn6le79G1mBa5FfjYeFECBaZszYZwxHgDSAN3HJSj6/4u
+         LgmnunbjqWYBxl0WR4lxvhBr7ho4azVCpTq019tA1FWqt9wmAke8Sb2UpPSf376tx/b8
+         K3yTetIZAWrbZwRNq/HN/hOfd7lPRnhn+SkrAnw5tQ0a8PsHHIVmQR9FAplG2CDHfrJx
+         6vV21QSZ0rbTrehU8vz/n/0ngmIzT/7APcIIiCEX5SqKqJatBXfWAZoRpvPSEXvjzHnH
+         KlyQ==
+X-Gm-Message-State: AOAM533PVYItITtC4alilCD9RlU9tXbwGE/o8jJHAt+x39DAcG4M+Gsr
+        6q9egGGxhQ+4EAsfYyRJEL+J++INNNqcigyNqS8=
+X-Google-Smtp-Source: ABdhPJxGn6X0tnh1ZZV2A823OiJ7fsZdLht1/AEVhJFQddEJRHLe30NZvNA9qCihSXQalGEmXF/wHrx/+33+QHD6cIs=
+X-Received: by 2002:a02:2422:: with SMTP id f34mr626422jaa.237.1644015872355;
+ Fri, 04 Feb 2022 15:04:32 -0800 (PST)
+MIME-Version: 1.0
+References: <20220204225823.339548-1-jolsa@kernel.org>
+In-Reply-To: <20220204225823.339548-1-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Feb 2022 15:04:21 -0800
+Message-ID: <CAEf4BzY66WPKQbDe74AKZ6nFtZjq5e+G3Ji2egcVytB9R6_sGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: Add names for auxiliary maps
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Jiri Pirko <jiri@mellanox.com>
-Subject: [PATCH bpf-next 3/3] bpftool: Fix pretty print dump for maps without BTF loaded
-Date:   Fri,  4 Feb 2022 23:58:23 +0100
-Message-Id: <20220204225823.339548-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220204225823.339548-1-jolsa@kernel.org>
-References: <20220204225823.339548-1-jolsa@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit e5043894b21f ("bpftool: Use libbpf_get_error() to check
-error") forced map dump with pretty print enabled to has BTF loaded,
-which is not necessarily needed.
+On Fri, Feb 4, 2022 at 2:58 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> Adding names for maps that bpftool uses for various detections.
+> These maps can appear in final map show output (due to deferred
+> removal in kernel) so some tests (like test_offload.py) needs
+> to filter them out.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 904cdf83002b..38294ce935d6 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4412,7 +4412,7 @@ static int probe_kern_global_data(void)
+>         };
+>         int ret, map, insn_cnt = ARRAY_SIZE(insns);
+>
+> -       map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
+> +       map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "global_data", sizeof(int), 32, 1, NULL);
 
-Keeping the libbpf_get_error call, but setting errno to 0 because
-get_map_kv_btf does nothing for this case.
+some old kernel versions don't support map names, so you can't just
+blindly specify them and log error
 
-This fixes test_offload.py for me, which failed because of the
-pretty print fails with:
+I'd rather fix test_offload.py instead of "fixing" libbpf.
 
-   Test map dump...
-   Traceback (most recent call last):
-     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 1251, in <module>
-       _, entries = bpftool("map dump id %d" % (m["id"]))
-     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 169, in bpftool
-       return tool("bpftool", args, {"json":"-p"}, JSON=JSON, ns=ns,
-     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 155, in tool
-       ret, stdout = cmd(ns + name + " " + params + args,
-     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 109, in cmd
-       return cmd_result(proc, include_stderr=include_stderr, fail=fail)
-     File "/root/bpf-next/tools/testing/selftests/bpf/./test_offload.py", line 131, in cmd_result
-       raise Exception("Command failed: %s\n%s" % (proc.args, stderr))
-   Exception: Command failed: bpftool -p map dump id 4325
 
-Fixes: e5043894b21f ("bpftool: Use libbpf_get_error() to check error")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/map.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c66a3c979b7a..2ccf85042e75 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -862,6 +862,7 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
- 	prev_key = NULL;
- 
- 	if (wtr) {
-+		errno = 0;
- 		btf = get_map_kv_btf(info);
- 		err = libbpf_get_error(btf);
- 		if (err) {
--- 
-2.34.1
-
+>         if (map < 0) {
+>                 ret = -errno;
+>                 cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+> @@ -4545,7 +4545,7 @@ static int probe_kern_array_mmap(void)
+>         LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_MMAPABLE);
+>         int fd;
+>
+> -       fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), sizeof(int), 1, &opts);
+> +       fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, "array_mmap", sizeof(int), sizeof(int), 1, &opts);
+>         return probe_fd(fd);
+>  }
+>
+> @@ -4592,7 +4592,7 @@ static int probe_prog_bind_map(void)
+>         };
+>         int ret, map, prog, insn_cnt = ARRAY_SIZE(insns);
+>
+> -       map = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, sizeof(int), 32, 1, NULL);
+> +       map = bpf_map_create(BPF_MAP_TYPE_ARRAY, "bind_map_detect", sizeof(int), 32, 1, NULL);
+>         if (map < 0) {
+>                 ret = -errno;
+>                 cp = libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+> --
+> 2.34.1
+>
