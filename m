@@ -2,181 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC134A9EC3
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28644A9EF4
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:27:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234994AbiBDSPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 13:15:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43122 "EHLO
+        id S1377512AbiBDS1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 13:27:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377473AbiBDSPf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 13:15:35 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E14C061714
-        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 10:15:35 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id y17so5562220ilm.1
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:15:35 -0800 (PST)
+        with ESMTP id S237893AbiBDS1M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 13:27:12 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD73BC061714
+        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 10:27:11 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id bs32so5487016qkb.1
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:27:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5Rsuxk5Q3j9IWINQzyUelJm6TEHkYAFKF7Hg1wqxO9E=;
-        b=TClM+UCyTCVdZzjDe31z7jaEzuV6LoooT0uFdWBWMCYad6xxNMY8nG5iFVHYT4/1D+
-         ia/wePbHrt4z+6pmgzPi53QRsuttISubCrUEOoGdZHaxULflVjhiYxbMI1ydSlI0hxRU
-         PAmPbLvCDmgs21JnHPO/uBvuN/UA4WSREJjO2J4qx3n7FspeGso48BdwXwUBruYcSpt1
-         nWUWu8MhzxC+/1r+1ArLagddVVF0fLOg5NA/rOpWyf8Uz7oELn91mfRtVA23Glicpnrw
-         Lt+C/YlWcYMxM93pdizbbC85ziJ4SjhaDeYQMQJCaWkpGwKm36ys5D2Iiufb/sCh225g
-         luyw==
+        bh=jeWAra30FXkZs/gRmR49z6lt/T+9ynnjq9B+AWcFc0M=;
+        b=LOIf1tBuS1tAG6bCCiNP8m5VoC8AK9dgPZpaYYC8CMFPy2FtTuNt3HOG/39ywfFeXf
+         2SvwmqypOW2WfYOvprujZf3zzwP7EZlK6Tw3mksOgbimD03VlJ4E2UTarrCm3HBAsDmp
+         4DFmgTvJAJGS+bcOFGbM78sNuJ2xoCUsTqfsB4AD0F+L/YHeSKzm7Rr5uQMVIpEiqVr6
+         UFVW2VMOW9OTwQEmkjRKzUTUGC4KESydLa4s3Te4ai8t98QE11qc9ljjjW8ZVTgFnvbW
+         4u0WLxTWCwZezv2TYyo0d7dEK1Ejnt98unT3m6/txxJOAPuQ5QAugdqnsGnXMsrYuJjA
+         7k6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5Rsuxk5Q3j9IWINQzyUelJm6TEHkYAFKF7Hg1wqxO9E=;
-        b=G8drJbyIoLBohn3mhtvEYh9dFA9bSc9IVVvS/Nbq+xCJV0hBci5c86tShMrOqzv+sE
-         y0Lvfkf5MgqE6fQVBqT2qcoTnjWquC2zkH33rSVnIy8xcmi50HjOQeSwSj4NG7cwFb1y
-         HncTR1m6wmLEyBXjp21vc+AKkKNKdrd5/EBNvdutgtLGZm9TdJdORZPKXKSTViNcHdkk
-         xys+cRFxDfFLZv25tsE1zmG6iV5Cu6BKwf33vqtp08KhMoFyFV55TLDlP90wyA6KxUa9
-         DwKr+ChlYxwUOXntGdgwxFSKNt7X1nhtUwBdmvQ3MWjn4Dj6tk4epxbc3PTHEoeI7b7b
-         YHoA==
-X-Gm-Message-State: AOAM531koNstTV7lAhQ0Fh8RCsi9y1J2gHL3OslN53oNaKKOWpXCKf04
-        jrAZ72s/USgtgrshrhXNBUIdfcYwANNlYIdmQVk=
-X-Google-Smtp-Source: ABdhPJyYpCALIx8bwAGLlX34jy2czwYVaBHQ0+fAzePYqe7hZml7Fq/0UgQbOiPLudaCSBw541E5qz8oCfuAA9Dqnkw=
-X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr186546ili.239.1643998534635;
- Fri, 04 Feb 2022 10:15:34 -0800 (PST)
+        bh=jeWAra30FXkZs/gRmR49z6lt/T+9ynnjq9B+AWcFc0M=;
+        b=0WlT8qfzgGb/L1x9h23/ZsO6CXUWPqkz1mGzTn54P4Rf+cs7Ybu/HycbkMzkcL7Pef
+         U7DtX7lRZh1L2tvBVBvRj+P9NGuB86mYDScyhV04V69XlJk/4d9ST4fLPEfDQpX3BaZf
+         f4M/Z2iGRR8scRl1xVSC66dAoJm+jYtWRSx3jhxBh9vaxaF7zuPYvfE6t6dfoezNCPOh
+         heTmiO5zBOozn57rOHFU7/rYiGzF1PLcuWTLHbAfiGMSVACp6BJ7thLwVwDj+RgWAUS0
+         3BD4y++6whsaHYB626szgIP1DW8vGrpnRJ/Fb9xo6lSnWtre00P7fcTWI0Od1/x+xeVi
+         bsKA==
+X-Gm-Message-State: AOAM533z7BLn9T7rTFwng0L2pUoN2+dtaeLm7JLTEf2HdpvJYryTdXMt
+        rW7BcdSGRW+Ni7xGapHYNe9qEuNOUHeTbwvkEzZgUg==
+X-Google-Smtp-Source: ABdhPJz8DFPAFaDlhPX2045fX9vYzX/NA6X+81wbKs9VCuJPZx20zm691CYXL4xR4mi3Q2U4HBn+P5UwHAgdFFvqsHs=
+X-Received: by 2002:ae9:ed96:: with SMTP id c144mr241939qkg.221.1643999230713;
+ Fri, 04 Feb 2022 10:27:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20220204145018.1983773-1-iii@linux.ibm.com> <20220204145018.1983773-6-iii@linux.ibm.com>
- <1643991537.bfyv1b2oym.naveen@linux.ibm.com>
-In-Reply-To: <1643991537.bfyv1b2oym.naveen@linux.ibm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Feb 2022 10:15:23 -0800
-Message-ID: <CAEf4BzY5tVGsGNy_Z0apLbbJ3L22Ov6q6+XwZo0_jn2oJCpmFw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 05/11] libbpf: Add PT_REGS_SYSCALL_REGS macro
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+References: <20220201205534.1962784-1-haoluo@google.com> <20220201205534.1962784-6-haoluo@google.com>
+ <20220203180414.blk6ou3ccmod2qck@ast-mbp.dhcp.thefacebook.com>
+ <CA+khW7jkJbvQrTx4oPJAoBZ0EOCtr3C2PKbrzhxj-7euBK8ojg@mail.gmail.com> <CAADnVQLZZ3SM2CDxnzgOnDgRtGU7+6wT9u5v4oFas5MnZF6DsQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLZZ3SM2CDxnzgOnDgRtGU7+6wT9u5v4oFas5MnZF6DsQ@mail.gmail.com>
+From:   Hao Luo <haoluo@google.com>
+Date:   Fri, 4 Feb 2022 10:26:59 -0800
+Message-ID: <CA+khW7i+TScwPZ6-rcFKiXtxMm8hiZYJGH-wYb=7jBvDWg8pJQ@mail.gmail.com>
+Subject: Re: [PATCH RFC bpf-next v2 5/5] selftests/bpf: test for pinning for
+ cgroup_view link
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        bpf <bpf@vger.kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 4, 2022 at 8:46 AM Naveen N. Rao
-<naveen.n.rao@linux.vnet.ibm.com> wrote:
+On Thu, Feb 3, 2022 at 7:33 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Ilya Leoshkevich wrote:
-> > Some architectures pass a pointer to struct pt_regs to syscall
-> > handlers, others unpack it into individual function parameters.
->
-> I think that is just dependent on ARCH_HAS_SYSCALL_WRAPPER, so only x86,
-> arm64 and s390 pass pointers to pt_regs to syscall entry points.
->
-> > Introduce a macro to describe what a particular arch does, using
-> > `passing pt_regs *` as a default.
+> On Thu, Feb 3, 2022 at 2:46 PM Hao Luo <haoluo@google.com> wrote:
 > >
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> >  tools/lib/bpf/bpf_tracing.h | 9 +++++++++
-> >  1 file changed, 9 insertions(+)
+> > On Thu, Feb 3, 2022 at 10:04 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Feb 01, 2022 at 12:55:34PM -0800, Hao Luo wrote:
+> > > > +
+> > > > +SEC("iter/cgroup_view")
+> > > > +int dump_cgroup_lat(struct bpf_iter__cgroup_view *ctx)
+> > > > +{
+> > > > +     struct seq_file *seq = ctx->meta->seq;
+> > > > +     struct cgroup *cgroup = ctx->cgroup;
+> > > > +     struct wait_lat *lat;
+> > > > +     u64 id;
+> > > > +
+> > > > +     BPF_SEQ_PRINTF(seq, "cgroup_id: %8lu\n", cgroup->kn->id);
+> > > > +     lat = bpf_map_lookup_elem(&cgroup_lat, &id);
+> > >
+> > > Looks like "id = cgroup->kn->id" assignment is missing here?
+> > >
 > >
-> > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> > index 30f0964f8c9e..08d2990c006f 100644
-> > --- a/tools/lib/bpf/bpf_tracing.h
-> > +++ b/tools/lib/bpf/bpf_tracing.h
-> > @@ -334,6 +334,15 @@ struct pt_regs;
+> > Ah, yes. I'll fix it.
 > >
-> >  #endif /* defined(bpf_target_defined) */
+> > > Thanks a lot for this test. It explains the motivation well.
+> > >
+> > > It seems that the patches 1-4 are there to automatically
+> > > supply cgroup pointer into bpf_iter__cgroup_view.
+> > >
+> > > Since user space needs to track good part of cgroup dir opreations
+> > > can we task it with the job of patches 1-4 as well?
+> > > It can register notifier for cgroupfs operations and
+> > > do mkdir in bpffs similarly _and_ parametrize 'view' bpf program
+> > > with corresponding cgroup_id.
+> > > Ideally there is no new 'view' program and it's a subset of 'iter'
+> > > bpf program. They're already parametrizable.
+> > > When 'iter' is pinned the user space can tell it which object it should
+> > > iterate on. The 'view' will be an interator of one element and
+> > > argument to it can be cgroup_id.
+> > > When user space pins the same 'view' program in a newly created bpffs
+> > > directory it will parametrize it with a different cgroup_id.
+> > > At the end the same 'view' program will be pinned in multiple directories
+> > > with different cgroup_id arguments.
+> > > This patch 5 will look very much the same, but patches 1-4 will not be
+> > > necessary.
+> > > Of course there are races between cgroup create/destroy and bpffs
+> > > mkdir, prog pin operatiosn, but they will be there regardless.
+> > > The patch 1-4 approach is not race free either.
 > >
-> > +/*
-> > + * When invoked from a syscall handler kprobe, returns a pointer to a
-> > + * struct pt_regs containing syscall arguments and suitable for passing to
-> > + * PT_REGS_PARMn_SYSCALL() and PT_REGS_PARMn_CORE_SYSCALL().
-> > + */
-> > +#ifndef PT_REGS_SYSCALL_REGS
-> > +#define PT_REGS_SYSCALL_REGS(ctx) ((struct pt_regs *)PT_REGS_PARM1(ctx))
-> > +#endif
-> > +
+> > Right. I tried to minimize the races between cgroupfs and bpffs in
+> > this patchset. The cgroup and kernfs APIs called in this patchset
+> > guarantee that the cgroup and kernfs objects are alive once get. Some
+> > states in the objects such as 'id' should be valid at least.
+> >
+> > > Will that work?
+> >
+> > Thanks Alexei for the idea.
+> >
+> > The parameterization part sounds good. By 'parametrize', do you mean a
+> > variable in iter prog (like the 'pid' variable in bpf_iter_task_vma.c
+> > [1])? or some metadata of the program? I assume it's program's
+> > metadata. Either parameterizing with cgroup_id or passing cgroup
+> > object to the prog should work. The problem is at pinning.
 >
-> I think that name is misleading if an architecture doesn't implement syscall
-> wrappers, since you are simply getting access to the kprobe pt_regs, rather
-> than the syscall pt_regs. This can perhaps be named PT_REGS_SYSCALL_UNWRAP() or
-> such to make that clear.
+> The bpf_iter_link_info is used to parametrize the iterator.
+> The map iterator will iterate the given map_fd.
+> iirc pinning is not parameterizable yet,
+> but that's not difficult to add.
+>
 
-UNWRAP implies that there is something to unwrap, always. In case of
-s390x, for example, there is nothing to unwrap. So I think
-PT_REGS_SYSCALL_REGS() makes more sense, it just fetches correct
-pt_regs to work with to get syscall input arguments (and it might be
-exactly the same pt_regs that are passed in).
-
-I think in practice most users won't ever have to use this, as we'll
-add BPF_KPROBE_SYSCALL() macro, similar to BPF_KPROBE that we have
-now, but specific to syscall kprobe.
+I can take a look at that. This will be useful in our use case.
 
 >
-> Also, should this just be keyed off a simpler HAS_SYSCALL_WRAPPER or such,
-> rather than the other way around?
+> > In our use case, we can't ask the users who create cgroups to do the
+> > pinning. Pinning requires root privilege. In our use case, we have
+> > non-root users who can create cgroup directories and still want to
+> > read bpf stats. They can't do pinning by themselves. This is why
+> > inheritance is a requirement for us. With inheritance, they only need
+> > to mkdir in cgroupfs and bpffs (unprivileged operations), no pinning
+> > operation is required. Patch 1-4 are needed to implement inheritance.
+> >
+> > It's also not a good idea in our use case to add a userspace
+> > privileged process to monitor cgroupfs operations and perform the
+> > pinning. It's more complex and has a higher maintenance cost and
+> > runtime overhead, compared to the solution of asking whoever makes
+> > cgroups to mkdir in bpffs. The other problem is: if there are nodes in
+> > the data center that don't have the userspace process deployed, the
+> > stats will be unavailable, which is a no-no for some of our users.
+>
+> The commit log says that there will be a daemon that does that
+> monitoring of cgroupfs. And that daemon needs to mkdir
+> directories in bpffs when a new cgroup is created, no?
+> The kernel is only doing inheritance of bpf progs into
+> new dirs. I think that daemon can pin as well.
+>
+> The cgroup creation is typically managed by an agent like systemd.
+> Sounds like you have your own agent that creates cgroups?
+> If so it has to be privileged and it can mkdir in bpffs and pin too ?
 
-I think the way Ilya did it is totally fine.
-
->
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 032ba809f3e57a..c72f285578d3fc 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -110,6 +110,8 @@
->
->  #endif /* __i386__ */
->
-> +#define HAS_SYSCALL_WRAPPER
-> +
->  #endif /* __KERNEL__ || __VMLINUX_H__ */
->
->  #elif defined(bpf_target_s390)
-> @@ -126,6 +128,7 @@
->  #define __PT_RC_REG gprs[2]
->  #define __PT_SP_REG gprs[15]
->  #define __PT_IP_REG psw.addr
-> +#define HAS_SYSCALL_WRAPPER
->
->  #elif defined(bpf_target_arm)
->
-> @@ -154,6 +157,7 @@
->  #define __PT_RC_REG regs[0]
->  #define __PT_SP_REG sp
->  #define __PT_IP_REG pc
-> +#define HAS_SYSCALL_WRAPPER
->
->  #elif defined(bpf_target_mips)
->
->
-> We can then simply do:
->
-> #ifdef HAS_SYSCALL_WRAPPER
-> #define PT_REGS_SYSCALL_UNWRAP(ctx) ((struct pt_regs *)PT_REGS_PARM1(ctx))
-> #else
-> #define PT_REGS_SYSCALL_unwRAP(ctx) ((struct pt_regs *)(ctx))
-> #endif
->
->
-> Taking this a bit further, it would be nice if we can fold in progs/bpf_misc.h
-> into bpf_traching.h by also including SYS_PREFIX.
-
-As far as I know, SYS_PREFIX depends not just on architecture but also
-on kernel version (older versions of x86-64 kernels didn't need that
-prefix). For selftests, given they follow the latest version of kernel
-it's ok to always append SYS_PREFIX, but generally speaking for user
-BPF apps, they would need to be more careful and check whether they
-need SYS_PREFIX or not. So I don't want to add SYS_PREFIX to
-bpf_tracing.h because it's misleading.
-
->
->
-> - Naveen
->
+Ah, yes, we have our own daemon to manage cgroups. That daemon creates
+the top-level cgroup for each job to run inside. However, the job can
+create its own cgroups inside the top-level cgroup, for fine grained
+resource control. This doesn't go through the daemon. The job-created
+cgroups don't have the pinned objects and this is a no-no for our
+users.
