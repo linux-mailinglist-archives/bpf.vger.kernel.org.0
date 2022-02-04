@@ -1,114 +1,128 @@
 Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69044A9F70
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:46:48 +0100 (CET)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 630FD4A9F92
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239269AbiBDSqr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 13:46:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377725AbiBDSqp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 13:46:45 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12D9C06173E
-        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 10:46:44 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id c19so21427644ybf.2
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:46:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=E5IqHdRqOH58EvmQmiv1heLKaoB5zdzTs0MGfgNcprE=;
-        b=AxlWy810ku0QzeEt9j6ydx3xpW+heVy+MVyOoVCRrdo537hNw31i/JU9jMTISIojKl
-         VLNYG0tsw4NMi3j785UkRIxIgnMqEaazhuHvuzpWG0VDPjgcjkgLlGSIRWDqy7z+uzi+
-         BF4Dixlbe7SXu4tf0BZWTZ4f9nyAmCcC1xJ8Z7Al6dso/vyZaFsgdseY/PA6vR3RJn2O
-         mQd4KRC+2nJFXvuOU300AhkLQBOaTXVOpr+QMDZN6+XtanULlk+GAYkkNTcBOHlWuw3A
-         7y1XT2hZYGbRP0++yqseu865tTTH+pmrqCH0Xyd4XkBEa/z2WLN+p7BoKRWIsgMv/wkJ
-         yeXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E5IqHdRqOH58EvmQmiv1heLKaoB5zdzTs0MGfgNcprE=;
-        b=W7RXhhwMaKxwhtYGzjFcaLlTmyg6DXrMh4yk8gdbe5DznZ7fhCpWe1Skce5gk7Hovx
-         UhJ5U9+ftd841u2s0fLZAAhqqVDmBWSYkNfGYVR42jCjVWrLP8oepzRlU/nQ8twLhMgm
-         aSoxijQzis3MDOBPrSLpab1NydFpk09vUj+SX6t+XX6B1Fvitov0LnWTydMBTvwmdUSx
-         4+UP5DkVV2AKZPKZDE9HYA35H+91fP+c7QOfPOOk72c2P59zrlygmluDJO9HVXHaFNjK
-         WDyZNtfHAtopK/pwHi0R3Jal4EOGqkbtomadsu61nLzDKh/Zzoh6goLxt3KR53O1ORGc
-         DiDg==
-X-Gm-Message-State: AOAM533H7CzLn5y5v2/A5vlTaih2lU+kxz3w4eOhQiJKIKzrs45nzLoa
-        RNxdyKpw4yJi8fc30E2K0P2VN+pPTO8U4wb9/s1pXA==
-X-Google-Smtp-Source: ABdhPJwXLPk+kA8jFN4oekhtgfibKwxEN+Y4Lyzh/9f9UPojXnc5w7kqdcPVMpqfINcYim4G82qrecnb1zshBq3UNBs=
-X-Received: by 2002:a25:3444:: with SMTP id b65mr526514yba.5.1644000403680;
- Fri, 04 Feb 2022 10:46:43 -0800 (PST)
+        id S229587AbiBDS75 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Feb 2022 13:59:57 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2278 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229457AbiBDS75 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 13:59:57 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 214IirLE010108
+        for <bpf@vger.kernel.org>; Fri, 4 Feb 2022 10:59:57 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e0w2fv9jb-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:59:56 -0800
+Received: from twshared11487.23.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 4 Feb 2022 10:59:56 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 9CDC5296C5722; Fri,  4 Feb 2022 10:57:49 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <peterz@infradead.org>, <x86@kernel.org>,
+        <iii@linux.ibm.com>, Song Liu <song@kernel.org>
+Subject: [PATCH v9 bpf-next 0/9] bpf_prog_pack allocator
+Date:   Fri, 4 Feb 2022 10:57:33 -0800
+Message-ID: <20220204185742.271030-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220202122848.647635-1-bigeasy@linutronix.de>
- <20220202122848.647635-4-bigeasy@linutronix.de> <CANn89iLVPnhybrdjRh6ccv6UZHW-_W0ZHRO5c7dnWU44FUgd_g@mail.gmail.com>
- <YfvwbsKm4XtTUlsx@linutronix.de> <CANn89i+66MvzQVp=eTENzZY6s8+B+jQCoKEO_vXdzaDeHVTH5w@mail.gmail.com>
- <Yfv3c+5XieVR0xAh@linutronix.de> <CANn89i+t4TgrryvSBmBMfsY63m6Fhxi+smiKfOwHTRAKxvcPLQ@mail.gmail.com>
- <Yf0jWtF2/0pYcjXI@linutronix.de>
-In-Reply-To: <Yf0jWtF2/0pYcjXI@linutronix.de>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 4 Feb 2022 10:46:32 -0800
-Message-ID: <CANn89iJcK8+3uJm+ikKUnpAqSeWDYhuTXKBMnriRzZfT7wwprg@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 3/4] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: CTnhYxwqtDMAbDkK9g2HZLYpfoP0NpEK
+X-Proofpoint-ORIG-GUID: CTnhYxwqtDMAbDkK9g2HZLYpfoP0NpEK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-04_07,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 suspectscore=0 spamscore=0 mlxlogscore=719
+ impostorscore=0 mlxscore=0 priorityscore=1501 bulkscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202040104
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 4, 2022 at 5:00 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
->
-> Dave suggested a while ago (eleven years by now) "Let's make netif_rx()
-> work in all contexts and get rid of netif_rx_ni()". Eric agreed and
-> pointed out that modern devices should use netif_receive_skb() to avoid
-> the overhead.
-> In the meantime someone added another variant, netif_rx_any_context(),
-> which behaves as suggested.
->
-> netif_rx() must be invoked with disabled bottom halves to ensure that
-> pending softirqs, which were raised within the function, are handled.
-> netif_rx_ni() can be invoked only from process context (bottom halves
-> must be enabled) because the function handles pending softirqs without
-> checking if bottom halves were disabled or not.
-> netif_rx_any_context() invokes on the former functions by checking
-> in_interrupts().
->
-> netif_rx() could be taught to handle both cases (disabled and enabled
-> bottom halves) by simply disabling bottom halves while invoking
-> netif_rx_internal(). The local_bh_enable() invocation will then invoke
-> pending softirqs only if the BH-disable counter drops to zero.
->
-> Eric is concerned about the overhead of BH-disable+enable especially in
-> regard to the loopback driver. As critical as this driver is, it will
-> receive a shortcut to avoid the additional overhead which is not needed.
->
-> Add a local_bh_disable() section in netif_rx() to ensure softirqs are
-> handled if needed. Provide the internal bits as __netif_rx() which can
-> be used by the loopback driver. This function is not exported so it
-> can't be used by modules.
-> Make netif_rx_ni() and netif_rx_any_context() invoke netif_rx() so they
-> can be removed once they are no more users left.
->
-> Link: https://lkml.kernel.org/r/20100415.020246.218622820.davem@davemloft.net
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->
+Changes v8 => v9:
+1. Fix an error with multi function program, in 4/9.
 
-Nice, thanks !
+Changes v7 => v8:
+1. Rebase and fix conflicts.
+2. Lock text_mutex for text_poke_copy. (Daniel)
 
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Changes v6 => v7:
+1. Redesign the interface between generic and arch logic, based on feedback
+   from Alexei and Ilya.
+2. Split 6/7 of v6 to 7/9 and 8/9 in v7, for cleaner logic.
+3. Add bpf_arch_text_copy in 6/9.
+
+Changes v5 => v6:
+1. Make jit_hole_buffer 128 byte long. Only fill the first and last 128
+   bytes of header with INT3. (Alexei)
+2. Use kvmalloc for temporary buffer. (Alexei)
+3. Rename tmp_header/tmp_image => rw_header/rw_image. Remove tmp_image from
+   x64_jit_data. (Alexei)
+4. Change fall back round_up_to in bpf_jit_binary_alloc_pack() from
+   BPF_PROG_MAX_PACK_PROG_SIZE to PAGE_SIZE.
+
+Changes v4 => v5:
+1. Do not use atomic64 for bpf_jit_current. (Alexei)
+
+Changes v3 => v4:
+1. Rename text_poke_jit() => text_poke_copy(). (Peter)
+2. Change comment style. (Peter)
+
+Changes v2 => v3:
+1. Fix tailcall.
+
+Changes v1 => v2:
+1. Use text_poke instead of writing through linear mapping. (Peter)
+2. Avoid making changes to non-x86_64 code.
+
+Most BPF programs are small, but they consume a page each. For systems
+with busy traffic and many BPF programs, this could also add significant
+pressure to instruction TLB. High iTLB pressure usually causes slow down
+for the whole system, which includes visible performance degradation for
+production workloads.
+
+This set tries to solve this problem with customized allocator that pack
+multiple programs into a huge page.
+
+Patches 1-6 prepare the work. Patch 7 contains key logic of bpf_prog_pack
+allocator. Patch 8 contains bpf_jit_binary_pack_alloc logic on top of
+bpf_prog_pack allocator. Patch 9 uses this allocator in x86_64 jit.
+
+Song Liu (9):
+  x86/Kconfig: select HAVE_ARCH_HUGE_VMALLOC with HAVE_ARCH_HUGE_VMAP
+  bpf: use bytes instead of pages for bpf_jit_[charge|uncharge]_modmem
+  bpf: use size instead of pages in bpf_binary_header
+  bpf: use prog->jited_len in  bpf_prog_ksym_set_addr()
+  x86/alternative: introduce text_poke_copy
+  bpf: introduce bpf_arch_text_copy
+  bpf: introduce bpf_prog_pack allocator
+  bpf: introduce bpf_jit_binary_pack_[alloc|finalize|free]
+  bpf, x86_64: use bpf_jit_binary_pack_alloc
+
+ arch/x86/Kconfig                     |   1 +
+ arch/x86/include/asm/text-patching.h |   1 +
+ arch/x86/kernel/alternative.c        |  34 ++++
+ arch/x86/net/bpf_jit_comp.c          |  65 ++++---
+ include/linux/bpf.h                  |   7 +-
+ include/linux/filter.h               |  27 +--
+ kernel/bpf/core.c                    | 269 +++++++++++++++++++++++++--
+ kernel/bpf/trampoline.c              |   6 +-
+ kernel/bpf/verifier.c                |   1 +
+ 9 files changed, 349 insertions(+), 62 deletions(-)
+
+--
+2.30.2
