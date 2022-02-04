@@ -2,159 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5374A9F08
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2F04A9F5A
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377540AbiBDSaz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 13:30:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29440 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237456AbiBDSaz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 13:30:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1643999454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hky5DV8TETGJOkKLGTwiJ+rckhbkE1SoswbmzyRxFIg=;
-        b=Khey4xciJL0UehHBhJSPvgaDSEoRuyUQ2eC4Ua3BCc+E+l1YNiNtYf4jn5bNEPO0pNThhT
-        w8A1W40giUQvm7hMvCSZRtE7ZZSevgQjnlvvCtDlRWF2SqCcRxQVPJr0yZ18DQ82VvtBgu
-        Ob7I/qV8nERx1C7KbPgkaDG3XTfh2l4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-489-zdC2wMwmOmOdbWZjOSeXKw-1; Fri, 04 Feb 2022 13:30:53 -0500
-X-MC-Unique: zdC2wMwmOmOdbWZjOSeXKw-1
-Received: by mail-qt1-f197.google.com with SMTP id g18-20020ac84b72000000b002cf274754c5so5289036qts.14
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:30:53 -0800 (PST)
+        id S240619AbiBDSmG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 13:42:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1356104AbiBDSmF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 13:42:05 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE9FC061714;
+        Fri,  4 Feb 2022 10:42:05 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id z7so5591661ilb.6;
+        Fri, 04 Feb 2022 10:42:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7ODX1hUqLfBCQaglsLxoSRLWLR0TSCQPHptU9mmOuVk=;
+        b=MfZjMp/X4FBwJ0Qxm1yPk4M8QUzOc2pKlDV3LgL9lV+HP2xfWQtDz0jpLafr0r8gj8
+         nxEN69sJhJmFMP+RUmAYGNow1nEsY6sWEE373lV2YW8+xVtJdNrFQxqKIjWAvQHMSzpg
+         iwMs+JoRjdQ5bmnp3QKgoGko425fzxqZYTN2o79Hapt2ybFX02CsMi7+7hdF2gYBz3t6
+         ZHoN9kPmGhOCpfZBZMxGrCKEemnygdrwgdBqnjOFscEr5wwZBhpKP4Nn7LTVPER2idte
+         z0Q5O97mcZkKutO0dHb/009M1gFt/cyDl8wgrJhpumMddt02LsAU7fQeCzmn+FZ2GsGW
+         8SoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hky5DV8TETGJOkKLGTwiJ+rckhbkE1SoswbmzyRxFIg=;
-        b=YP6kjqoTG03fo1o0d8jdwaMY5YR7hkYSxrvKLBCylSFsP050DTtpAvnuBog6PYwbOa
-         6ADGeBd95jXCYuVc7s25daJBWPuEK6+xW9lcM+B7MWen5kr3sUsM2ky3cE3Msz1rCbmt
-         98nbov17aYqn4+Pp4olrKkcsOCB4Zo9LL4ZJY6PoY77hpy1l4gb+7y6xrl3QqtVSTvKu
-         HcylNDm3hT8fCE4Y0xFKEugfJ9ZulkERWLyZ+X9eyOC6tyN7o0HlEqwUGvJLFikIIBJW
-         rBh53uKL49d/MEn3KoKKbux1S8XRGLmJHFY42JWsx5XXNISt4FprjTUcdlxVudNTT+CF
-         cvkw==
-X-Gm-Message-State: AOAM530WBL7ULpJ8aXoOzdgdeMsnM/jJbuJeEhafL7BdfuYj0CwxxaiU
-        MPcCAvpacjOQ7lI8fOReYRG98bEbfowsbThz+Pu0BOWeTvIU0N12+R0SLnBYHabfhDuFHM/K42l
-        qRl7B6AGo5KNR
-X-Received: by 2002:a37:a1c5:: with SMTP id k188mr247390qke.461.1643999452518;
-        Fri, 04 Feb 2022 10:30:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOPY3yoAy87MjHfNDO5xeTaMZyBuP8HYYSVda3BgG9lYhwByyZHrg0XNpqwLCpf5WqlwSz0g==
-X-Received: by 2002:a37:a1c5:: with SMTP id k188mr247369qke.461.1643999452261;
-        Fri, 04 Feb 2022 10:30:52 -0800 (PST)
-Received: from localhost (net-37-182-17-113.cust.vodafonedsl.it. [37.182.17.113])
-        by smtp.gmail.com with ESMTPSA id c14sm1585342qtc.31.2022.02.04.10.30.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Feb 2022 10:30:51 -0800 (PST)
-Date:   Fri, 4 Feb 2022 19:30:48 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        toke@redhat.com, andrii@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftest/bpf: check invalid length in
- test_xdp_update_frags
-Message-ID: <Yf1w2HRokiYBg8w9@lore-desk>
-References: <aff68ca785cae86cd6263355010ceaff24daee1f.1643982947.git.lorenzo@kernel.org>
- <c3858f6b-43d5-18ef-2fc8-b58c13c12b05@fb.com>
- <Yf1nxMWEWy4DSwgN@lore-desk>
- <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7ODX1hUqLfBCQaglsLxoSRLWLR0TSCQPHptU9mmOuVk=;
+        b=Q534S0cuN/4IfU4qelzxITPo1wGIXPhDfog5FMqnx0x/nX4+qPPmFfE9BNhH1nPOFp
+         YwgoJInhsZyl9QVvd1X8PJA4+rW3M5kyChdSyCMZ7oRZsoZVutujYVbhy8WXtH4r8IaL
+         zO4Jp+ZxuaijqZGLaz/CKMlVi3PKIkXiUD6tlKcfR9jyXbTnP6k41G5+OMOWNNDBAinl
+         iiVSe3pqorR6B6Q0gP/v5LRsvf+zEdfDXeKIYvx3tVZzmq5vH4Z1qV1+KKYkw7JmY+ZB
+         vQgz2RuzTJVL8CvcCtdp3xzUzOlR4q8pca7u+41UaQqn5hG9PVMcReWiHmpIFY0jFItK
+         N8kQ==
+X-Gm-Message-State: AOAM532KmjKrK4M8h2XxzlQc1qaFwR0u2FfBvng5bVzGruUzNtwDCcux
+        kSeMNYjxuXPaonQwcczqfCcDylNFpRzcxcs9pUo=
+X-Google-Smtp-Source: ABdhPJxmIQ6e+4aYnU4HgkLOJ7/0u6L8uR72/NFzoDDH5DxhqeCVqPZs8G3OFW5eID3A6KKoinjV6dpDlo1FD/7VEgs=
+X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr232140ilv.305.1644000125085;
+ Fri, 04 Feb 2022 10:42:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="irYz3dtSM2qqlyd7"
-Content-Disposition: inline
-In-Reply-To: <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-7-mauricio@kinvolk.io>
+ <CAEf4BzZu-u1WXGScPZKVQZc+RGjmnYm45mcOGkzXyFLMKS-5gA@mail.gmail.com>
+ <CAHap4zv+bLA4BB9ZJ7RXDCChe6dU0AB3zuCieWskp2OJ5Y-4xw@mail.gmail.com>
+ <CAEf4BzagOBmVbrPOnSwthOxt7CYoqNTuojbtmgskNa_Ad=8EVQ@mail.gmail.com> <8846F5AD-CFD3-4F32-B9C5-E36AB38C37DF@gmail.com>
+In-Reply-To: <8846F5AD-CFD3-4F32-B9C5-E36AB38C37DF@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Feb 2022 10:41:54 -0800
+Message-ID: <CAEf4BzbqXJaAiPgdGi3wNvbLXaRdZ_VL-XLBTjHQ=y8X5RHgXA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
+ for BTFGen
+To:     Rafael David Tinoco <rafaeldtinoco@gmail.com>
+Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Feb 3, 2022 at 10:20 PM Rafael David Tinoco
+<rafaeldtinoco@gmail.com> wrote:
+>
+> >>> As in, do you substitute forward declarations for types that are
+> >>> never directly used? If not, that's going to be very suboptimal for
+> >>> something like task_struct and any other type that's part of a big
+> >>> cluster of types.
+>
+> >> We decided to include the whole types and all direct and indirect
+> >> types referenced from a structure field for type-based relocations.
+> >> Our reasoning is that we don't know if the matching algorithm of
+> >> libbpf could be changed to require more information in the future and
+> >> type-based relocations are few compared to field based relocations.
+>
+> > It will depend on application and which type is used in relocation.
+> > task_struct reaches tons of types and will add a very noticeable size
+> > to minimized BTF, for no good reason, IMO. If we discover that we do
+> > need those types, we'll update bpftool to generate more.
+>
+> Just to see if I understood this part correctly. IIRC, we started type
+> based relocations support in btfgen because of this particular case:
+>
+>         union kernfs_node_id {
+>             struct {
+>                 u32 ino;
+>                 u32 generation;
+>             };
+>             u64 id;
+>         };
+>
+>         struct kernfs_node___older_v55 {
+>             const char *name;
+>             union kernfs_node_id id;
+>         };
+>
+>         struct kernfs_node___rh8 {
+>             const char *name;
+>             union {
+>                 u64 id;
+>                 struct {
+>                     union kernfs_node_id id;
+>                 } rh_kabi_hidden_172;
+>                 union { };
+>             };
+>         };
+>
+> So we have 3 situations:
+>
+> (struct kernfs_node *)->id as u64
+>
+>         [29] STRUCT 'kernfs_node' size=128 vlen=1
+>                 'id' type_id=42 bits_offset=832
+>         [42] TYPEDEF 'u64' type_id=10
+>
+> (struct kernfs_node___older_v55 *)->id as u64 (union kernfs_node_id)->id
+>
+>         [79] STRUCT 'kernfs_node' size=128 vlen=1
+>                 'id' type_id=69 bits_offset=832
+>         [69] UNION 'kernfs_node_id' size=8 vlen=2
+>                 '(anon)' type_id=132 bits_offset=0
+>                 'id' type_id=40 bits_offset=0
+>         [40] TYPEDEF 'u64' type_id=12
+>
+> (struct kernfs_node___rh8 *)->id = (anon union)->id
+>
+>         [56] STRUCT 'kernfs_node' size=128 vlen=1
+>                 '(anon)' type_id=24 bits_offset=832
+>         [24] UNION '(anon)' size=8 vlen=1
+>                 'id' type_id=40 bits_offset=0
+>         [40] TYPEDEF 'u64' type_id=11
+>
+> We're finding needed BTF types, that should be added to generated BTF,
+> based on fields/members of CORE relo info. How we would know we had to
+> add the anon union of the last case if it does not exist in the local
+> BTF ? What is your suggestion ?
+>
 
---irYz3dtSM2qqlyd7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd need to see real BPF program code for this situation, but if you
+don't have field-based relocation that needs that anonymous union,
+then it shouldn't matter if that union is there or not. I suspect you
+do have field-based relocations that access fields of struct
+kernfs_node___rh8 and kernfs_node___older_v55, so both structs and
+necessary fields should be marked as "used" by btfgen algorithm.
 
->=20
-
-[...]
-
-> > >=20
-> > > In kernel, the nr_frags checking is against MAX_SKB_FRAGS,
-> > > but if /proc/sys/net/core/max_skb_flags is 2 or more less
-> > > than MAX_SKB_FRAGS, the test won't fail, right?
-> >=20
-> > yes, you are right. Should we use the same definition used in
-> > include/linux/skbuff.h instead? Something like:
-> >=20
-> > if (65536 / page_size + 1 < 16)
-> > 	max_skb_flags =3D 16;
-> > else
-> > 	max_skb_flags =3D 65536/page_size + 1;
->=20
-> The maximum packet size limit 64KB won't change anytime soon.
-> So the above should work. Some comments to explain why using
-> the above formula will be good.
-
-ack, I will do in v2.
-
-Regards,
-Lorenzo
-
->=20
-> >=20
-> > Regards,
-> > Lorenzo
-> >=20
-> > >=20
-> > > > +
-> > > > +	num =3D fscanf(f, "%d", &max_skb_frags);
-> > > > +	fclose(f);
-> > > > +
-> > > > +	if (!ASSERT_EQ(num, 1, "max_skb_frags read failed"))
-> > > > +		goto out;
-> > > > +
-> > > > +	/* xdp_buff linear area size is always set to 4096 in the
-> > > > +	 * bpf_prog_test_run_xdp routine.
-> > > > +	 */
-> > > > +	buf_size =3D 4096 + (max_skb_frags + 1) * sysconf(_SC_PAGE_SIZE);
-> > > > +	buf =3D malloc(buf_size);
-> > > > +	if (!ASSERT_OK_PTR(buf, "alloc buf"))
-> > > > +		goto out;
-> > > > +
-> > > > +	memset(buf, 0, buf_size);
-> > > > +	offset =3D (__u32 *)buf;
-> > > > +	*offset =3D 16;
-> > > > +	buf[*offset] =3D 0xaa;
-> > > > +	buf[*offset + 15] =3D 0xaa;
-> > > > +
-> > > > +	topts.data_in =3D buf;
-> > > > +	topts.data_out =3D buf;
-> > > > +	topts.data_size_in =3D buf_size;
-> > > > +	topts.data_size_out =3D buf_size;
-> > > > +
-> > > > +	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-> > > > +	ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
-> > > > +	free(buf);
-> > > >    out:
-> > > >    	bpf_object__close(obj);
-> > > >    }
-> > >=20
->=20
-
---irYz3dtSM2qqlyd7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYf1w2AAKCRA6cBh0uS2t
-rCxbAP4sAKdKzKqmJ6s28ObVC75VJ40wpNS+Dk8eqCmFaVM4AAD9FV+GejVCGHut
-Uro6CvBap+3Dw5XbOuC0jJ8JxzGoCg0=
-=vDVZ
------END PGP SIGNATURE-----
-
---irYz3dtSM2qqlyd7--
-
+> Thanks!
+>
+> -rafaeldtinoco
