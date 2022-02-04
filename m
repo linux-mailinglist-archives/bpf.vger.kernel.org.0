@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A87B4AA425
-	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 00:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5385E4AA426
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 00:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378006AbiBDXRS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 18:17:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40264 "EHLO
+        id S1378005AbiBDXRU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 18:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbiBDXRS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:17:18 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E62DFDA6D7
-        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 15:17:16 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id g20so6205267pgn.10
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 15:17:16 -0800 (PST)
+        with ESMTP id S234586AbiBDXRU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 18:17:20 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517D7DFDA6E4
+        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 15:17:19 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id z5so6390862plg.8
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 15:17:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ym0egyZ6wQ+6Evxd/TMe29RTUH+h4dLheTJVj8yT+qk=;
-        b=YU4FMY3Kr/luNSXm0vvEEiaMXgmjVLEVvTvcMrKxiofJpjjZoYilUwuqPz+aAdhJXN
-         bOUmsAobNoA/Lv+pYccvuGn8jHPEG57KVmeElqFxvV+rGcRRIm2CVfBTtNTCFgeJoJ9P
-         7NpJAynyKs6v2ySsTX1CBYg+6GuTqmkukvLRHX9lMU6T0NKZ++NI/GBccNi5YlCy2H9q
-         rl4dZT+P1azc2Gum2gl6bmstBCmgZLtAz2mdj9zlyveGlramIKseieMzVduBOMVJBGMy
-         09wYiBAPXA2RLfX7CJZ/vR8x9+wLFRmKTkoS9snQyvDxgGZb2JcDjP+iT0F8rQP/Kp4x
-         KGSA==
+        bh=UYODaeY9R2B2JnqLrZ6rCIiYeLQeCLssHwMEt39uLGQ=;
+        b=kkQ8o1cMtYF1Mtu4hB6IlDgzH4UUPQqz4/Wa4yfh38pVYanYZboRqOSM1P7LATYiUA
+         WIYt1Y7C0aKJ09aUVopzdzlF0Ex3cBjMQpEMQTuZyjYv7o+z4wWpvIcQZ7mBmbWHPSht
+         kxkp98oM9Zd98NUG0H2iIy+AumVNa1TEyRJgtYLZtJskGK12WQZjuU5Z7TgpNjTeL6aQ
+         Syj6ur2p0vPxnxv1I+h8G6rhPr2FhvA+ZyFtuwyRnqch96/zCWDap+opUl5LBZJTYrVG
+         eXtvSD8ngvkOmwxMfSpyD0iL9+lfCEuyPSB2yJ2ik1Wwpoeo0J5mUvl/NTvdwWWSLwWC
+         NEhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ym0egyZ6wQ+6Evxd/TMe29RTUH+h4dLheTJVj8yT+qk=;
-        b=XADbshv2wWVBPVIKSbykQr4rVo9Gn2DSVRQcg+6BAKhA6NvKdSKJKwVU8PIqb6IDMj
-         RKu08lrxI9IMKigkEdqAA83zMU30SWwbuwXYLLqjbNfuLf12asU63Ck7a7qYnFkhwF5M
-         89fzbIP5vlRUleeJRf5CLTQpOsUz/srunTkki74FBPXGZAnQ9RsV0tO600qz9sYtwIr5
-         RfZjn2Fwq7KGKAdh13A3tIdZmeBQ8DK7oPXkJ2s0sRC4FbaMwYhKKx5ulG07JkpvwzNE
-         sfGHbisEemtcmi4+oFUwvFpBM0b0gGPqKH9NPsbkR6biQi15mB8fskH8mYaZLL6PLhR6
-         uyHQ==
-X-Gm-Message-State: AOAM532niKDvtAVBEXcgwK9gMbsRfK7Aa3BKTSfZYEZGiK1Cs24qMxAO
-        T/ix82pqMhkhutiuMjUiybo=
-X-Google-Smtp-Source: ABdhPJzVrw0aXFLmSq72gRuRlybsX27Wtg84wRaMHnfcZ8wUhbZ0PauDgxEEc82k3Kp2yyUAP+48Og==
-X-Received: by 2002:a65:60d2:: with SMTP id r18mr1058668pgv.444.1644016635619;
-        Fri, 04 Feb 2022 15:17:15 -0800 (PST)
+        bh=UYODaeY9R2B2JnqLrZ6rCIiYeLQeCLssHwMEt39uLGQ=;
+        b=yWfmu03mlJhIALeYfc0wBuRCZsRRgFCshpQJ8UzNFmZeHPzgXIdS+dsX5/vSaH2NgM
+         GpvbjgcQwdaw/D4uQSQb+kAYigIYpphfkNytkrEZP6rda3iq8OYCP3qH5xtdb603q9Oh
+         cPRbDBdUiLSnCCtTZAmmYdZojPAVa2AcvuTcaIyH5Zx/mmkd+4/PpixJnhrUR5+Haov6
+         17894foJV4nuUFOP7ehW1oa0iNZ9pfg9mMCv4xD/hvqO16rfk9604+FDuRBRm9Tqrzw7
+         RomQtQKRK5UKs7uesndE5JH5Ze1wi/h/W3ASPp+i0UKJEj1rhb4MfFgyIBXZAwoOXgsE
+         0gBw==
+X-Gm-Message-State: AOAM5325QTZ39kc4Urb1BXVmNPxuV/l+iT1qvXrw34FlqTiIfFsltfV/
+        WBTAxGhxRugF5+yz1yUs7iM=
+X-Google-Smtp-Source: ABdhPJx+AQ0OTFnHKCktERXpv3sQALbbV0ZUgxe5S0RGNDLsWwhlxKl4sp7NPwOXMu03zDZCZ7v1zg==
+X-Received: by 2002:a17:90b:4d8c:: with SMTP id oj12mr1507831pjb.10.1644016638793;
+        Fri, 04 Feb 2022 15:17:18 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:400::5:e4ee])
-        by smtp.gmail.com with ESMTPSA id il18sm16014726pjb.27.2022.02.04.15.17.14
+        by smtp.gmail.com with ESMTPSA id f15sm3505842pfn.19.2022.02.04.15.17.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Feb 2022 15:17:15 -0800 (PST)
+        Fri, 04 Feb 2022 15:17:18 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH bpf-next 1/5] bpf: Extend sys_bpf commands for bpf_syscall programs.
-Date:   Fri,  4 Feb 2022 15:17:06 -0800
-Message-Id: <20220204231710.25139-2-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 2/5] libbpf: Prepare light skeleton for the kernel.
+Date:   Fri,  4 Feb 2022 15:17:07 -0800
+Message-Id: <20220204231710.25139-3-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220204231710.25139-1-alexei.starovoitov@gmail.com>
 References: <20220204231710.25139-1-alexei.starovoitov@gmail.com>
@@ -71,87 +71,265 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-bpf_sycall programs can be used directly by the kernel modules
-to load programs and create maps via kernel skeleton.
-. Export bpf_sys_bpf syscall wrapper to be used in kernel skeleton.
-. Export bpf_map_get to be used in kernel skeleton.
-. Allow prog_run cmd for bpf_syscall programs with recursion check.
-. Enable link_create and raw_tp_open cmds.
+Prepare light skeleton to be used in the kernel module and in the user space.
+The look and feel of lskel.h is mostly the same with the difference that for
+user space the skel->rodata is the same pointer before and after skel_load
+operation, while in the kernel the skel->rodata after skel_open and the
+skel->rodata after skel_load are different pointers.
+Typical usage of skeleton remains the same for kernel and user space:
+skel = my_bpf__open();
+skel->rodata->my_global_var = init_val;
+err = my_bpf__load(skel);
+err = my_bpf__attach(skel);
+// access skel->rodata->my_global_var;
+// access skel->bss->another_var;
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- kernel/bpf/syscall.c | 38 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 34 insertions(+), 4 deletions(-)
+ tools/lib/bpf/skel_internal.h | 168 +++++++++++++++++++++++++++++++---
+ 1 file changed, 153 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 72ce1edde950..08ac01acc51e 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -985,6 +985,7 @@ struct bpf_map *bpf_map_get(u32 ufd)
+diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+index dcd3336512d4..4d99ef8cbbba 100644
+--- a/tools/lib/bpf/skel_internal.h
++++ b/tools/lib/bpf/skel_internal.h
+@@ -3,9 +3,19 @@
+ #ifndef __SKEL_INTERNAL_H
+ #define __SKEL_INTERNAL_H
  
- 	return map;
- }
-+EXPORT_SYMBOL(bpf_map_get);
- 
- struct bpf_map *bpf_map_get_with_uref(u32 ufd)
- {
-@@ -4756,23 +4757,52 @@ static bool syscall_prog_is_valid_access(int off, int size,
- 	return true;
- }
- 
--BPF_CALL_3(bpf_sys_bpf, int, cmd, void *, attr, u32, attr_size)
-+BPF_CALL_3(bpf_sys_bpf, int, cmd, union bpf_attr *, attr, u32, attr_size)
- {
-+	struct bpf_prog *prog;
-+
- 	switch (cmd) {
- 	case BPF_MAP_CREATE:
- 	case BPF_MAP_UPDATE_ELEM:
- 	case BPF_MAP_FREEZE:
- 	case BPF_PROG_LOAD:
- 	case BPF_BTF_LOAD:
-+	case BPF_LINK_CREATE:
-+	case BPF_RAW_TRACEPOINT_OPEN:
- 		break;
--	/* case BPF_PROG_TEST_RUN:
--	 * is not part of this list to prevent recursive test_run
--	 */
-+#ifdef CONFIG_BPF_JIT /* __bpf_prog_enter_sleepable used by trampoline and JIT */
-+	case BPF_PROG_TEST_RUN:
-+		if (attr->test.data_in || attr->test.data_out ||
-+		    attr->test.ctx_out || attr->test.duration ||
-+		    attr->test.repeat || attr->test.flags)
-+			return -EINVAL;
-+
-+		prog = bpf_prog_get_type(attr->test.prog_fd, BPF_PROG_TYPE_SYSCALL);
-+		if (IS_ERR(prog))
-+			return PTR_ERR(prog);
-+
-+		if (attr->test.ctx_size_in < prog->aux->max_ctx_offset ||
-+		    attr->test.ctx_size_in > U16_MAX) {
-+			bpf_prog_put(prog);
-+			return -EINVAL;
-+		}
-+
-+		if (!__bpf_prog_enter_sleepable(prog)) {
-+			/* recursion detected */
-+			bpf_prog_put(prog);
-+			return -EBUSY;
-+		}
-+		attr->test.retval = bpf_prog_run(prog, (void *) (long) attr->test.ctx_in);
-+		__bpf_prog_exit_sleepable(prog, 0 /* bpf_prog_run does runtime stats */);
-+		bpf_prog_put(prog);
-+		return 0;
++#ifdef __KERNEL__
++#include <linux/fdtable.h>
++#include <linux/mm.h>
++#include <linux/mman.h>
++#include <linux/slab.h>
++#include <linux/bpf.h>
++#else
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ #include <sys/mman.h>
++#include <stdlib.h>
++#include "bpf.h"
 +#endif
- 	default:
- 		return -EINVAL;
- 	}
- 	return __sys_bpf(cmd, KERNEL_BPFPTR(attr), attr_size);
- }
-+EXPORT_SYMBOL(bpf_sys_bpf);
  
- static const struct bpf_func_proto bpf_sys_bpf_proto = {
- 	.func		= bpf_sys_bpf,
+ #ifndef __NR_bpf
+ # if defined(__mips__) && defined(_ABIO32)
+@@ -25,16 +35,12 @@
+  * requested during loader program generation.
+  */
+ struct bpf_map_desc {
+-	union {
+-		/* input for the loader prog */
+-		struct {
+-			__aligned_u64 initial_value;
+-			__u32 max_entries;
+-		};
++	struct {
+ 		/* output of the loader prog */
+-		struct {
+-			int map_fd;
+-		};
++		int map_fd;
++		/* input for the loader prog */
++		__u32 max_entries;
++		__aligned_u64 initial_value;
+ 	};
+ };
+ struct bpf_prog_desc {
+@@ -57,11 +63,135 @@ struct bpf_load_and_run_opts {
+ 	const char *errstr;
+ };
+ 
++long bpf_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
++
+ static inline int skel_sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
+ 			  unsigned int size)
+ {
++#ifdef __KERNEL__
++	return bpf_sys_bpf(cmd, attr, size);
++#else
+ 	return syscall(__NR_bpf, cmd, attr, size);
++#endif
++}
++
++#ifdef __KERNEL__
++static inline int close(int fd)
++{
++	return close_fd(fd);
++}
++static inline void *skel_alloc(size_t size)
++{
++	return kcalloc(1, size, GFP_KERNEL);
++}
++static inline void skel_free(const void *p)
++{
++	kfree(p);
++}
++static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
++{
++	if (addr && addr != ~0ULL)
++		vm_munmap(addr, sz);
++	if (addr != ~0ULL)
++		kvfree(p);
++}
++/* skel->bss/rodata maps are populated in three steps.
++ *
++ * For kernel use:
++ * skel_prep_map_data() allocates kernel memory that kernel module can directly access.
++ * skel_prep_init_value() allocates a region in user space process and copies
++ * potentially modified initial map value into it.
++ * The loader program will perform copy_from_user() from maps.rodata.initial_value.
++ * skel_finalize_map_data() sets skel->rodata to point to actual value in a bpf map.
++ *
++ * For user space:
++ * skel_prep_map_data() mmaps anon memory into skel->rodata that can be accessed directly.
++ * skel_prep_init_value() copies rodata pointer into map.rodata.initial_value.
++ * The loader program will perform copy_from_user() from maps.rodata.initial_value.
++ * skel_finalize_map_data() remaps bpf array map value from the kernel memory into
++ * skel->rodata address.
++ */
++static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
++{
++	void *addr;
++
++	addr = kvmalloc(val_sz, GFP_KERNEL);
++	if (!addr)
++		return NULL;
++	memcpy(addr, val, val_sz);
++	return addr;
++}
++static inline __u64 skel_prep_init_value(void **addr, size_t mmap_sz, size_t val_sz)
++{
++	__u64 ret = 0;
++	void *uaddr;
++
++	uaddr = (void *) vm_mmap(NULL, 0, mmap_sz, PROT_READ | PROT_WRITE,
++				 MAP_SHARED | MAP_ANONYMOUS, 0);
++	if (IS_ERR(uaddr))
++		goto out;
++	if (copy_to_user(uaddr, *addr, val_sz)) {
++		vm_munmap((long) uaddr, mmap_sz);
++		goto out;
++	}
++	ret = (__u64) (long) uaddr;
++out:
++	kvfree(*addr);
++	*addr = NULL;
++	return ret;
+ }
++static inline void *skel_finalize_map_data(__u64 *addr, size_t mmap_sz, int flags, int fd)
++{
++	struct bpf_map *map;
++	void *ptr = NULL;
++
++	vm_munmap(*addr, mmap_sz);
++	*addr = ~0ULL;
++
++	map = bpf_map_get(fd);
++	if (IS_ERR(map))
++		return NULL;
++	if (map->map_type != BPF_MAP_TYPE_ARRAY)
++		goto out;
++	ptr = ((struct bpf_array *)map)->value;
++	/* the ptr stays valid, since FD is not closed */
++out:
++	bpf_map_put(map);
++	return ptr;
++}
++#else
++static inline void *skel_alloc(size_t size)
++{
++	return calloc(1, size);
++}
++static inline void skel_free(void *p)
++{
++	free(p);
++}
++static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
++{
++	munmap(p, sz);
++}
++static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
++{
++	void *addr;
++
++	addr = mmap(NULL, mmap_sz, PROT_READ | PROT_WRITE,
++		    MAP_SHARED | MAP_ANONYMOUS, -1, 0);
++	if (addr == (void *) -1)
++		return NULL;
++	memcpy(addr, val, val_sz);
++	return addr;
++}
++static inline __u64 skel_prep_init_value(void **addr, size_t mmap_sz, size_t val_sz)
++{
++	return (__u64) (long) *addr;
++}
++static inline void *skel_finalize_map_data(__u64 *addr, size_t mmap_sz, int flags, int fd)
++{
++	return mmap((void *)*addr, mmap_sz, flags, MAP_SHARED | MAP_FIXED, fd, 0);
++}
++#endif
+ 
+ static inline int skel_closenz(int fd)
+ {
+@@ -136,22 +266,28 @@ static inline int skel_link_create(int prog_fd, int target_fd,
+ 	return skel_sys_bpf(BPF_LINK_CREATE, &attr, attr_sz);
+ }
+ 
++#ifdef __KERNEL__
++#define set_err
++#else
++#define set_err err = -errno
++#endif
++
+ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+ {
+ 	int map_fd = -1, prog_fd = -1, key = 0, err;
+ 	union bpf_attr attr;
+ 
+-	map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
++	err = map_fd = skel_map_create(BPF_MAP_TYPE_ARRAY, "__loader.map", 4, opts->data_sz, 1);
+ 	if (map_fd < 0) {
+ 		opts->errstr = "failed to create loader map";
+-		err = -errno;
++		set_err;
+ 		goto out;
+ 	}
+ 
+ 	err = skel_map_update_elem(map_fd, &key, opts->data, 0);
+ 	if (err < 0) {
+ 		opts->errstr = "failed to update loader map";
+-		err = -errno;
++		set_err;
+ 		goto out;
+ 	}
+ 
+@@ -166,10 +302,10 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+ 	attr.log_size = opts->ctx->log_size;
+ 	attr.log_buf = opts->ctx->log_buf;
+ 	attr.prog_flags = BPF_F_SLEEPABLE;
+-	prog_fd = skel_sys_bpf(BPF_PROG_LOAD, &attr, sizeof(attr));
++	err = prog_fd = skel_sys_bpf(BPF_PROG_LOAD, &attr, sizeof(attr));
+ 	if (prog_fd < 0) {
+ 		opts->errstr = "failed to load loader prog";
+-		err = -errno;
++		set_err;
+ 		goto out;
+ 	}
+ 
+@@ -181,10 +317,12 @@ static inline int bpf_load_and_run(struct bpf_load_and_run_opts *opts)
+ 	if (err < 0 || (int)attr.test.retval < 0) {
+ 		opts->errstr = "failed to execute loader prog";
+ 		if (err < 0) {
+-			err = -errno;
++			set_err;
+ 		} else {
+ 			err = (int)attr.test.retval;
++#ifndef __KERNEL__
+ 			errno = -err;
++#endif
+ 		}
+ 		goto out;
+ 	}
 -- 
 2.30.2
 
