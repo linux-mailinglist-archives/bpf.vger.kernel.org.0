@@ -2,129 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B474A91B8
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 01:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F894A91C4
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 01:55:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353425AbiBDAq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Feb 2022 19:46:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbiBDAq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Feb 2022 19:46:26 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F62C061714;
-        Thu,  3 Feb 2022 16:46:26 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA6716194A;
-        Fri,  4 Feb 2022 00:46:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAD1C340E8;
-        Fri,  4 Feb 2022 00:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643935585;
-        bh=KnasKzPC2rpJ48+6l141M8t0itDGXTYhKozsZuyWfwE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VzNMyLHs39xZVHVY4WDNUfezDCHiOS96hm/rk8Kgo1uAe0noKV2Rqe/ywnVMU95k4
-         GghhgewCeMMUhO/GVY+pBiIPij16bA2G2OgZH0FhR6fo4mGfz263OxZVqKFxPlp+Ux
-         iD0OjRptj+gb0+0h1nAYo7OTjwLY1H6EZlNT/gAF6kKDbOFxog4W97pVvMRs+oKJEZ
-         XAKuBodVLJpyMR8LYLpV0nRK0L+Aq5+8eHTl+oqFTEcyQkdgOM/Ab0+cQ2XpvOOVWY
-         DHcpDG761xcF/UUwlXCx519tMkXcIBA77LaPpmjsg+yCrmRl3ZTB+tkgy3svTMkbN0
-         Vetsh4AIzMUVw==
-Date:   Fri, 4 Feb 2022 09:46:19 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S1356310AbiBDAzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Feb 2022 19:55:42 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:46950 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbiBDAzl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Feb 2022 19:55:41 -0500
+Received: by mail-wr1-f48.google.com with SMTP id l25so8247242wrb.13;
+        Thu, 03 Feb 2022 16:55:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5aqBFr0LokcPCX2JMr2RbKn4lhTxpGWYtRKhHIEIRvI=;
+        b=DmP0vDvh246xQ/WW7FPmSDxgZWHq9l4AZGmbefGI3KAqaA5TVLv8NoZpG8ssbEQU1g
+         cbIs7Gtj21j0L8X2ge6QYUmad6l0ITwNpiL+965wf3TChm2TMlOcC7fv0ryhldSgNofm
+         Ro/x2L4ePveuXgpRkEo0PZx2oOL3yNBTj11EvwXXu/YhHMVTe5t48V1izhFyz11nHbBX
+         c7s9XjSOiie9YN8NE8QHzBMK3Dmhe3Vgy0T5hdIMe+GGw4axCV0q1CB0Md9wW0+nFcO8
+         n/oot3iKU4kx6jbs9BgPxQL2M6j1ciEa23aPo+/4Aiz0IbbMA5JFveQzw5aE0Ddlqs3T
+         z+2Q==
+X-Gm-Message-State: AOAM531XYQAntRpk+toafU3GHDOuZQlxHOhpHABAkLYGV0dZo5HwZjDL
+        2H/6Q3xE1bAF5FWMPY4/3KiD6XfzlqPCeQ==
+X-Google-Smtp-Source: ABdhPJwvbcHTg+A0p7hWA3LedvyLrkl/kxfbrB42sB3nWR0maunIOLxIlfLhnvwkhvsazBFpu/vG6g==
+X-Received: by 2002:a5d:43c2:: with SMTP id v2mr378218wrr.455.1643936140494;
+        Thu, 03 Feb 2022 16:55:40 -0800 (PST)
+Received: from t490s.teknoraver.net (net-2-35-22-35.cust.vodafonedsl.it. [2.35.22.35])
+        by smtp.gmail.com with ESMTPSA id c8sm240391wmq.34.2022.02.03.16.55.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Feb 2022 16:55:39 -0800 (PST)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf@vger.kernel.org
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH 0/8] bpf: Add fprobe link
-Message-Id: <20220204094619.2784e00c0b7359356458ca57@kernel.org>
-In-Reply-To: <YfvvfLlM1FOTgvDm@krava>
-References: <20220202135333.190761-1-jolsa@kernel.org>
-        <CAADnVQ+hTWbvNgnvJpAeM_-Ui2-G0YSM3QHB9G2+2kWEd4-Ymw@mail.gmail.com>
-        <Yfq+PJljylbwJ3Bf@krava>
-        <CAADnVQKeTB=UgY4Gf-46EBa8rwWTu2wvi7hEj2sdVTALGJ0JEg@mail.gmail.com>
-        <YfvvfLlM1FOTgvDm@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] limit bpf_core_types_are_compat recursion
+Date:   Fri,  4 Feb 2022 01:55:17 +0100
+Message-Id: <20220204005519.60361-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Feb 2022 16:06:36 +0100
-Jiri Olsa <jolsa@redhat.com> wrote:
+From: Matteo Croce <mcroce@microsoft.com>
 
-> On Wed, Feb 02, 2022 at 09:30:21AM -0800, Alexei Starovoitov wrote:
-> > On Wed, Feb 2, 2022 at 9:24 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Wed, Feb 02, 2022 at 09:09:53AM -0800, Alexei Starovoitov wrote:
-> > > > On Wed, Feb 2, 2022 at 5:53 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > > >
-> > > > > hi,
-> > > > > this patchset adds new link type BPF_LINK_TYPE_FPROBE that attaches kprobe
-> > > > > program through fprobe API [1] instroduced by Masami.
-> > > >
-> > > > No new prog type please.
-> > > > I thought I made my reasons clear earlier.
-> > > > It's a multi kprobe. Not a fprobe or any other name.
-> > > > The kernel internal names should not leak into uapi.
-> > > >
-> > >
-> > > well it's not new prog type, it's new link type that allows
-> > > to attach kprobe program to multiple functions
-> > >
-> > > the original change used BPF_LINK_TYPE_RAW_KPROBE, which did not
-> > > seem to fit anymore, so I moved to FPROBE, because that's what
-> > > it is ;-)
-> > 
-> > Now I don't like the fprobe name even more.
-> > Why invent new names? It's an ftrace interface.
-> 
-> how about ftrace_probe ?
+As formerly discussed on the BPF mailing list:
+https://lore.kernel.org/bpf/CAADnVQJDax2j0-7uyqdqFEnpB57om_z+Cqmi1O2QyLpHqkVKwA@mail.gmail.com/
 
-I thought What Alexei pointed was that don't expose the FPROBE name
-to user space. If so, I agree with that. We can continue to use
-KPROBE for user space. Using fprobe is just for kernel implementation.
+changes from v2:
+test the bpf_core_type_exists() return value, and check that the recursion
+limit is enforced.
 
-It means that we may better to keep simple mind model (there are only
-static event or dynamic kprobe event).
+Matteo Croce (2):
+  bpf: limit bpf_core_types_are_compat() recursion
+  selftests/bpf: test maximum recursion depth for
+    bpf_core_types_are_compat()
 
-
-> > > but if you don't want new name in uapi we could make this more
-> > > obvious with link name:
-> > >   BPF_LINK_TYPE_MULTI_KPROBE
-> > >
-> > > and bpf_attach_type:
-> > >   BPF_TRACE_MULTI_KPROBE
-> > 
-> > I'd rather get rid of fprobe name first.
-> >
-> 
-> Masami, any idea?
-
-Can't we continue to use kprobe prog type for user interface
-and internally, if there are multiple kprobes or kretprobes
-required, switch to use fprobe?
-
-Thank you,
-
-> 
-> thanks,
-> jirka
-> 
-
+ include/linux/btf.h                           |   5 +
+ kernel/bpf/btf.c                              | 105 +++++++++++++++++-
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   5 +
+ .../selftests/bpf/prog_tests/core_kern.c      |  15 ++-
+ .../bpf/prog_tests/core_kern_overflow.c       |  13 +++
+ tools/testing/selftests/bpf/progs/core_kern.c |  14 +++
+ .../selftests/bpf/progs/core_kern_overflow.c  |  21 ++++
+ 8 files changed, 177 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/core_kern_overflow.c
+ create mode 100644 tools/testing/selftests/bpf/progs/core_kern_overflow.c
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.34.1
+
