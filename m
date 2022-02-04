@@ -2,157 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EBE4AA27E
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 22:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4DD4AA29A
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 22:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237538AbiBDVoI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 16:44:08 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43568 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236194AbiBDVoH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 16:44:07 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 214JliCu026316
-        for <bpf@vger.kernel.org>; Fri, 4 Feb 2022 13:44:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=mIZyl4F0hjIrFz9KJ2kE3xhOpLeDt+Twz17ojYoeNMg=;
- b=Wg6GVqqb++hCqNECMCbD+D58MywW+wpSdTFG0Btk9Ygij5FvY5jV0BSTaiof8aGOpCM3
- erc3EDbvxFjzoW1SW2sXqEXdrtTeiWZJD/nLOBu87j8vpV1M2JlAe+jEf2RTRon4CCcS
- L+m26+HJsqIPSramcctw6ViHo+b9a6JLkm4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e0puaf6jg-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 13:44:07 -0800
-Received: from twshared18912.14.frc2.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 4 Feb 2022 13:44:06 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 1BAEC5FA84E4; Fri,  4 Feb 2022 13:43:55 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
+        id S243178AbiBDVvo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 16:51:44 -0500
+Received: from ahe0yl.cn ([106.75.146.160]:60032 "EHLO mail.uccard.co.jp"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236976AbiBDVvo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 16:51:44 -0500
+Date:   Sat, 5 Feb 2022 05:51:34 +0800
+From:   =?utf-8?B?44Ki44OD44OI44Om44O844ON44OD44OI?= 
+        <atu@mail.uccard.co.jp>
 To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Delyan Kratunov <delyank@fb.com>
-Subject: [PATCH bpf-next v2] libbpf: fix build issue with llvm-readelf
-Date:   Fri, 4 Feb 2022 13:43:55 -0800
-Message-ID: <20220204214355.502108-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: ceZrmSzrDoEyVOms4i7ZVsydwOlC6ReL
-X-Proofpoint-GUID: ceZrmSzrDoEyVOms4i7ZVsydwOlC6ReL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-04_07,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- bulkscore=0 clxscore=1015 adultscore=0 suspectscore=0 mlxlogscore=952
- lowpriorityscore=0 malwarescore=0 spamscore=0 impostorscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202040120
-X-FB-Internal: deliver
+Subject: =?utf-8?B?44CQ44Om44O844K344O844Kr44O844OJ44CR44GU5pys5Lq65qeY56K66KqN5a6M5LqG44Gu44GU6YCj?=
+        =?utf-8?B?57Wh?=
+Message-ID: <20220205055144443184@mail.uccard.co.jp>
+X-mailer: Foxmail 6, 13, 102, 15 [en]
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are cases where clang compiler is packaged in a way
-readelf is a symbolic link to llvm-readelf. In such cases,
-llvm-readelf will be used instead of default binutils readelf,
-and the following error will appear during libbpf build:
+44GT44Gu44Gf44G044Gv44CBVUPjgqvjg7zjg4njgpLjgZTliKnnlKjjgYTjgZ/jgaDjgY3jgYLj
+gorjgYzjgajjgYbjgZTjgZbjgYTjgb7jgZnjgIINCg0K44GU5pys5Lq65qeY56K66KqN44Gu44Gf
+44KB44Gu6KqN6Ki844GM6KGM44KP44KM44G+44GX44Gf44Gu44Gn44CB44GK55+l44KJ44Gb44GE
+44Gf44GX44G+44GZ44CCDQoNCuacrOOCteODvOODk+OCueOBr+OAgeS4h+OBjOS4gOOAgeOBlOac
+rOS6uuanmOS7peWkluOBq+OCiOOCi+S4jeato+ODreOCsOOCpOODs8K35pON5L2c562J44GM44GC
+44Gj44Gf5aC05ZCI44Gr44CB44GK5a6i5qeY44GM6YCf44KE44GLDQrjgavnorroqo3jgafjgY3j
+govjgojjgYbjgIHov73liqDoqo3oqLzjga7pg73luqbjgIHjg6Hjg7zjg6vjgpLpgIHkv6HjgZnj
+govjgrXjg7zjg5PjgrnjgafjgZnjgIINCg0K44GK5b+D5b2T44KK44Gu44Gq44GE5aC05ZCI44KE
+5LiN5a+p44Gq54K5562J44GU44GW44GE44G+44GX44Gf44KJ44CB5b6h5pep44KB44Gr56K66KqN
+44GX44Gm44GP44Gg44GV44GE44CCDQrjgIrmnKzkurrnorroqo3jga7mlrnms5XjgIsNCg0K4pa8
+44Oe44Kk44Oa44O844K444KI44KK5pys5Lq656K66KqN44KS5a6f5pa944GZ44KLDQogaHR0cHM6
+Ly9hcGktc2Fpc29uY2FyZC1jby1qcC51Y2NhcmQxLnh5eg0KDQoNCg0K77yc44GK5ZWP5ZCI44Gb
+5YWI77yeDQrjgJDmoKrlvI/kvJrnpL7jgq/jg6zjg4fjgqPjgrvjgr7jg7PnmbrooYzjga5VQ+OC
+q+ODvOODieOCkuOBiuaMgeOBoeOBruaWueOAkQ0K44CA44CA5p2x5Lqs44CA44CAMDMtNjg5My04
+MjAwDQrjgIDjgIDlpKfpmKrjgIDjgIAwNi03NzA5LTg1NTUNCuOAgOWWtualreaZgumWk+OAgDk6
+MDDvvZ4xNzowMOOAgDEvMeS8keOBvw0KDQrjgJDmoKrlvI/kvJrnpL7jgq/jg6zjg4fjgqPjgrvj
+gr7jg7PnmbrooYzku6XlpJbjga5VQ+OCq+ODvOODieOCkuOBiuaMgeOBoeOBruaWueOAkQ0K44CA
+44CA5p2x5Lqs44CA44CAMDMtNjg5My00MjcwDQrjgIDjgIDlpKfpmKrjgIDjgIAwNi03NzA5LTgy
+MjMNCuOAgOWWtualreaZgumWk+OAgDk6MDDvvZ4xNzowMOOAgDEvMeS8keOBvw0KDQrjg7vjg7vj
+g7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vj
+g7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vj
+g7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vj
+g7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7vjg7sNCuKAu+OBk+OB
+ruODoeODvOODq+OBr+OAjOOCouODg+ODiOODpuODvOODjeODg+ODiO+8geOAjeOBi+OCieiHquWL
+lemFjeS/oeOBl+OBpuOBiuOCiuOBvuOBmeOAgg0K4oC75pys44Oh44O844Or44Gr44GU6L+U5L+h
+44GE44Gf44Gg44GN44G+44GX44Gm44KC44CB44GU6LOq5ZWP44O744GU5L6d6aC844Gq44Gp44Gr
+DQrjgIDjgYrnrZTjgYjjgafjgY3jgb7jgZvjgpPjga7jgafjgIHjgYLjgonjgYvjgZjjgoHjgZTk
+uobmib/jgY/jgaDjgZXjgYTjgIINCuODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+OD
+u+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+OD
+u+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+OD
+u+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+ODu+OD
+u+ODu+ODu+ODu+ODu+ODu+ODuw0K44Ki44OD44OI44Om44O844ON44OD44OIDQoNCjIwMjIvMi81
+NTo1MTo0Mw0K
 
-  Warning: Num of global symbols in
-   /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf=
-/sharedobjs/libbpf-in.o (367)
-   does NOT match with num of versioned symbols in
-   /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf=
-/libbpf.so libbpf.map (383).
-   Please make sure all LIBBPF_API symbols are versioned in libbpf.map.
-  --- /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/lib=
-bpf/libbpf_global_syms.tmp ...
-  +++ /home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/build/lib=
-bpf/libbpf_versioned_syms.tmp ...
-  @@ -324,6 +324,22 @@
-   btf__str_by_offset
-   btf__type_by_id
-   btf__type_cnt
-  +LIBBPF_0.0.1
-  +LIBBPF_0.0.2
-  +LIBBPF_0.0.3
-  +LIBBPF_0.0.4
-  +LIBBPF_0.0.5
-  +LIBBPF_0.0.6
-  +LIBBPF_0.0.7
-  +LIBBPF_0.0.8
-  +LIBBPF_0.0.9
-  +LIBBPF_0.1.0
-  +LIBBPF_0.2.0
-  +LIBBPF_0.3.0
-  +LIBBPF_0.4.0
-  +LIBBPF_0.5.0
-  +LIBBPF_0.6.0
-  +LIBBPF_0.7.0
-   libbpf_attach_type_by_name
-   libbpf_find_kernel_btf
-   libbpf_find_vmlinux_btf_id
-  make[2]: *** [Makefile:184: check_abi] Error 1
-  make[1]: *** [Makefile:140: all] Error 2
-
-The above failure is due to different printouts for some ABS
-versioned symbols. For example, with the same libbpf.so,
-  $ /bin/readelf --dyn-syms --wide tools/lib/bpf/libbpf.so | grep "LIBBPF=
-" | grep ABS
-     134: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.5.0
-     202: 0000000000000000     0 OBJECT  GLOBAL DEFAULT  ABS LIBBPF_0.6.0
-     ...
-  $ /opt/llvm/bin/readelf --dyn-syms --wide tools/lib/bpf/libbpf.so | gre=
-p "LIBBPF" | grep ABS
-     134: 0000000000000000     0 OBJECT  GLOBAL DEFAULT   ABS LIBBPF_0.5.=
-0@@LIBBPF_0.5.0
-     202: 0000000000000000     0 OBJECT  GLOBAL DEFAULT   ABS LIBBPF_0.6.=
-0@@LIBBPF_0.6.0
-     ...
-The binutils readelf doesn't print out the symbol LIBBPF_* version and ll=
-vm-readelf does.
-Such a difference caused libbpf build failure with llvm-readelf.
-
-The proposed fix filters out all ABS symbols as they are not part of the =
-comparison.
-This works for both binutils readelf and llvm-readelf.
-
-Reported-by: Delyan Kratunov <delyank@fb.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/lib/bpf/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index f947b61b2107..b8b37fe76006 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -131,7 +131,7 @@ GLOBAL_SYM_COUNT =3D $(shell readelf -s --wide $(BPF_=
-IN_SHARED) | \
- 			   sort -u | wc -l)
- VERSIONED_SYM_COUNT =3D $(shell readelf --dyn-syms --wide $(OUTPUT)libbp=
-f.so | \
- 			      sed 's/\[.*\]//' | \
--			      awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}' | \
-+			      awk '/GLOBAL/ && /DEFAULT/ && !/UND|ABS/ {print $$NF}' | \
- 			      grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 | sort -u | wc -l)
-=20
- CMD_TARGETS =3D $(LIB_TARGET) $(PC_FILE)
-@@ -194,7 +194,7 @@ check_abi: $(OUTPUT)libbpf.so $(VERSION_SCRIPT)
- 		    sort -u > $(OUTPUT)libbpf_global_syms.tmp;		 \
- 		readelf --dyn-syms --wide $(OUTPUT)libbpf.so |		 \
- 		    sed 's/\[.*\]//' |					 \
--		    awk '/GLOBAL/ && /DEFAULT/ && !/UND/ {print $$NF}'|  \
-+		    awk '/GLOBAL/ && /DEFAULT/ && !/UND|ABS/ {print $$NF}'|  \
- 		    grep -Eo '[^ ]+@LIBBPF_' | cut -d@ -f1 |		 \
- 		    sort -u > $(OUTPUT)libbpf_versioned_syms.tmp; 	 \
- 		diff -u $(OUTPUT)libbpf_global_syms.tmp			 \
---=20
-2.30.2
 
