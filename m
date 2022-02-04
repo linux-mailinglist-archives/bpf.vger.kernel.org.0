@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2F34A934E
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 06:19:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC904A9356
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 06:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbiBDFT5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 00:19:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
+        id S232371AbiBDFWj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 00:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235223AbiBDFTy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 00:19:54 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33031C061714
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:19:54 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id c188so6047167iof.6
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 21:19:54 -0800 (PST)
+        with ESMTP id S229777AbiBDFWj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 00:22:39 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB17C061714
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:22:39 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id 15so3946766ilg.8
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 21:22:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=EXfFGFiXtFbWokNUMjEY/wfAaXT573uUic8MqdhhUAw=;
-        b=Dm1gZ3FLTG0kW1zfrrLCgZUVr9PUJTdbi56s/1dFtF6f7PPxoMaN9JHjnmVh2YY8d0
-         qpYLlirssXXJ6//+teloypHuxLCx4XJ9vRkH8UGq43O8Va4U8POs/2JnI0vpd2v5Gpvc
-         oCT6Lz660PMX5g/4yjh1njIVPlMuOut9TKChDTQxBHGdIx5LcE6fbwbyNomfznLFCrQn
-         76f8UPvALLUcra3NP/xJlvpRrXO2bU8A3wFOt7ensbmziNEE7+cNCZ5t4K6nhw0wAaaA
-         lD6hbp6Tb0JRfqxt4avlbUhValOmG33ZVGVnMiDWBa5YYTAlyQw8r0yv+WmrRDf6UiJl
-         qabg==
+        bh=94/aY3KSsj/UaPZqjFC+Qcvdm5V4I3iobuicVDul0rI=;
+        b=E1dFjXKIb1L28spl73WbHUcYRuWChyyQKu+3HkG6cTB5xwLpED+pSw5hERn8rivqAV
+         2s+TZGWRDmMZ/BVyaLWdJbC6KD2KY5CIZw64Gyw6B2DnHtqnWrNEru3d1vRn4sYlh/q1
+         txgQNafKDv013TlTuHIcF+pWjVEDfDI0fk1ISdPZ6izSroX0KJFpkDL4tejqdwPO4jzw
+         G7a0f9T1y9yw1wNgknxiyq6bfeGYcTx5k/Cyv6HK3/tsnIlMez31a3z3PHyTWYrrkfBy
+         NoCmVQ2YBBQeYwWF2BnHHFrP64TNJDp+2mR1JI+/sInamy/34KDx9JSNMguK5eoJqEaQ
+         +J5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=EXfFGFiXtFbWokNUMjEY/wfAaXT573uUic8MqdhhUAw=;
-        b=5dd6OMO+r6N+Q5eavtP+ldW1QIWNSVaBxEql2wE1J0gRGsX7jZhZRgJqCmbu6mVtSm
-         JWlQhx6DGGlBhG0Sap64ZGPOislEMhT+GWFGkpyt2rT6hO2fDAuPNZDRmyfUA1BMqVdZ
-         /CKc8tdpR6X5nUEPadBtLdKI9GtM4fVH63BJLl66Rp4/vRZniAxU/o65BD7vMKojIq1I
-         i/vEfyD3kuoFPgUgh9T2cQhXIjJ84PGVfreRapTG+KqjNAo0TcD4dj5ytP6/9OQfYBHk
-         CyXqHpd66LCTYbn6dJYHGT2zmSekiK2VxB4LYz4ffGzbxSQlySftNVIVUIm7c5+q2aD4
-         J0oQ==
-X-Gm-Message-State: AOAM5323U2XvgU2J1JeCkWqZWYYIEvksCVYf0LQFCXhgGRGz+UQCnbWU
-        BOIoxoJlFohM3bEUohnGxZnmenCozju0giK0Z34=
-X-Google-Smtp-Source: ABdhPJxdwPuJ60uSC3+fdsbllpOAalkPDNm0+xysQ+lRNMihETfTZwtaaYpFarHdFJFy6b4CrITQzgfP+x+jj+efwSA=
-X-Received: by 2002:a02:2422:: with SMTP id f34mr593599jaa.237.1643951993555;
- Thu, 03 Feb 2022 21:19:53 -0800 (PST)
+        bh=94/aY3KSsj/UaPZqjFC+Qcvdm5V4I3iobuicVDul0rI=;
+        b=CmE7ezK5C6w9aXEJ+FOQWG5TSEshxaCKLs2nPFh6DfvruHL5LsjG1klyyc9JRsS6Xa
+         N/p4UsPDycSRnYOSWeZWzbC/2XqAGqTGAEGGQKGGHf0cU0DSnaXrfFAuGkHcGRRoi9Fd
+         LcC/CU3znArU31QLuAUTjQcQHsEBN5gwaM5G6hhfttUH2u1x70l2tKgUED0JSnNotJsD
+         OfcbW0mk2kyz4aFZ4bfLx5uWqhJc0mbnpFX6tYeUF1vA7XOvKInscvi5r7hBHUQdq0rd
+         p8XcTceO1i+8rrOKcVGcfEKZ4dECs+NokOcpibV7zosa+SYbjkNEYzOTdt/pBlmqvHRK
+         Z5Xw==
+X-Gm-Message-State: AOAM532Kg62NOVWM75sUM+2GVOpd5t3QirdGb7PNueNr1IYcYBEr9QGe
+        wimOktX4F60QScspvP8zwwkLHO+U3EUirwipZ88=
+X-Google-Smtp-Source: ABdhPJwN8V0P2GCOq7aPOMlkcdGPH4yPyCV6AQ74CHwkTWw5wkecUd17+7WXYpD0UAjDfhbu7IMAI1MRMaH4hSTglcM=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr668252ilu.71.1643952158793;
+ Thu, 03 Feb 2022 21:22:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20220204041955.1958263-1-iii@linux.ibm.com> <20220204041955.1958263-3-iii@linux.ibm.com>
-In-Reply-To: <20220204041955.1958263-3-iii@linux.ibm.com>
+References: <20220204041955.1958263-1-iii@linux.ibm.com> <20220204041955.1958263-6-iii@linux.ibm.com>
+In-Reply-To: <20220204041955.1958263-6-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Feb 2022 21:19:42 -0800
-Message-ID: <CAEf4BzYPdqLE152BZo2twbd9FkpG2vahOFqNM6eYXzdWzDUPLQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/10] s390/bpf: Add orig_gpr2 to user_pt_regs
+Date:   Thu, 3 Feb 2022 21:22:27 -0800
+Message-ID: <CAEf4Bzbz-MP9QX-SaZ4+we1UnWvgiym_+aR580WdpewzmRKKNA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 05/10] libbpf: Add PT_REGS_SYSCALL macro
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -68,59 +68,41 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Feb 3, 2022 at 8:20 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> user_pt_regs is used by eBPF in order to access userspace registers -
-> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
-> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
-> syscall argument from eBPF programs, we need to export orig_gpr2.
->
-> args member is not in use since commit 56e62a737028 ("s390: convert to
-> generic entry"), so move orig_gpr2 in its place.
+> Some architectures pass a pointer to struct pt_regs to syscall
+> handlers, others unpack it into individual function parameters.
+> Introduce a macro to describe what a particular arch does, using
+> `passing pt_regs *` as a default.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  arch/s390/include/asm/ptrace.h      | 3 +--
->  arch/s390/include/uapi/asm/ptrace.h | 2 +-
->  2 files changed, 2 insertions(+), 3 deletions(-)
+>  tools/lib/bpf/bpf_tracing.h | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptrace.h
-> index 4ffa8e7f0ed3..0278bacd61be 100644
-> --- a/arch/s390/include/asm/ptrace.h
-> +++ b/arch/s390/include/asm/ptrace.h
-> @@ -80,12 +80,11 @@ struct pt_regs {
->         union {
->                 user_pt_regs user_regs;
->                 struct {
-> -                       unsigned long args[1];
-> +                       unsigned long orig_gpr2;
->                         psw_t psw;
->                         unsigned long gprs[NUM_GPRS];
->                 };
->         };
-> -       unsigned long orig_gpr2;
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 30f0964f8c9e..400a4f002f77 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -334,6 +334,15 @@ struct pt_regs;
+>
+>  #endif /* defined(bpf_target_defined) */
+>
+> +/*
+> + * When invoked from a syscall handler kprobe, returns a pointer to a
+> + * struct pt_regs containing syscall arguments and suitable for passing to
+> + * PT_REGS_PARMn_SYSCALL() and PT_REGS_PARMn_CORE_SYSCALL().
+> + */
+> +#ifndef PT_REGS_SYSCALL
+> +#define PT_REGS_SYSCALL(ctx) ((struct pt_regs *)PT_REGS_PARM1(ctx))
+> +#endif
 
-Please don't change the physical location of this field, it
-effectively breaks libbpf's syscall tracing macro on all older
-kernels. Let's do what you did in the previous revision and just
-expose the field at its correct offset. That way with up to date UAPI
-header or vmlinux.h all this will work even on old kernels (even
-without CO-RE).
+maybe PT_REGS_SYSCALL_REGS? It returns regs, not the "syscall".
+PT_REGS prefix is for consistency with all other pt_regs macros, but
+"SYSCALL_REGS" is specifying what is actually returned by the macro
 
->         union {
->                 struct {
->                         unsigned int int_code;
-> diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uapi/asm/ptrace.h
-> index ad64d673b5e6..d0cc737b8151 100644
-> --- a/arch/s390/include/uapi/asm/ptrace.h
-> +++ b/arch/s390/include/uapi/asm/ptrace.h
-> @@ -292,7 +292,7 @@ typedef struct {
->   * the in-kernel pt_regs structure to user space.
->   */
->  typedef struct {
-> -       unsigned long args[1];
-> +       unsigned long orig_gpr2;
->         psw_t psw;
->         unsigned long gprs[NUM_GPRS];
->  } user_pt_regs;
+> +
+>  #ifndef ___bpf_concat
+>  #define ___bpf_concat(a, b) a ## b
+>  #endif
 > --
 > 2.34.1
 >
