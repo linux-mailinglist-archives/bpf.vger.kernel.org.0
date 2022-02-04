@@ -2,175 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F754AA049
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 20:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CCC4AA04D
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 20:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbiBDTmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 14:42:39 -0500
-Received: from mail-qt1-f177.google.com ([209.85.160.177]:42878 "EHLO
-        mail-qt1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbiBDTmj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 14:42:39 -0500
-Received: by mail-qt1-f177.google.com with SMTP id s1so6597073qtw.9
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 11:42:39 -0800 (PST)
+        id S234637AbiBDTop (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 14:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231869AbiBDToo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 14:44:44 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A07C061714
+        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 11:44:44 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id a25so9904340lji.9
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 11:44:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=kinvolk.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JbC8+naqmMGFLTWyMj3cT1mIuHoa6H6nQOCtbEqKg3M=;
-        b=q7qWg8FNGY9UBDZDBZn99g/etbMeDQ72KcwFlWHN0TnqmhD3NAFtahRpeGCbbcCzeX
-         vPqicZ7LvR7kuPArucxPFhLPulyHjzMKgWixlInSbhgp7E/TE+rvQ2rCUWGeIY4ohHpq
-         3PADSbc3euSF3ZS7pc6Dygap6BMSjIUZ+Z6Xq5T5ODAPp9n7LvFDmiotkrfyUwtpIZhZ
-         g55YSvXqpvJZkR5X68ri41MWT18rAR3RtHis7BDCGJBl4pLz4vIqrxapkDLXA695Y4Sv
-         FbhQTU5BAQ2GnJlQV9C0DAi2S63hQrbffOgaKv54ndUvvNHrIQcN8/eIpif6TYte6JiM
-         uW/g==
+         :cc:content-transfer-encoding;
+        bh=+7p7SjPlIf2qoaknlsDE3NxXwoy8KpIefdGFaq4c5Ns=;
+        b=eA1Fk3TYR/JpkfnoIDJ8/0lNUUWKOxyaWFCQT3NCLvbgC6Oboh+wn/OpPn/ddhZDA3
+         /95pIPfnF2JZovHsPEnFoWe5cas5SjwcIhk671q8zDPCgcC7U96wijgYT/2HkdOOqwPE
+         5JRuR8kP63wYej2MtAph78zTUZlczL/k3LA4E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JbC8+naqmMGFLTWyMj3cT1mIuHoa6H6nQOCtbEqKg3M=;
-        b=WsZFxPbr4iZ8zayMKLI+FUCTR2Ir2q44TDuiSxh/fzNmR7h9Bhi50tC8KURDqQBshS
-         uc1ab9rczhteDnxsXzH7XFI0NEDFrHDWYIOPwlAHV1C1gZQ02BOD2+0P7x9p800+nVKt
-         3UwFb1TMbWEtdN/qYrkMLJZ2+ldmcEUUBdkfrtYvVZfnap1wFFovCf0lTPKoi3zxAQmm
-         G/7R/hN0habgJfi3LGuVb/h6SIU9rDcnqlGaJkolAmuy89pAmcusmalAdjNfqA1f2fim
-         jd5YJh/djjAf9kwgURa6+IST7WW6haDYMCC/lRFMbB3+0QlTwpHSgh+0wxVHv6BF/qKp
-         qK9g==
-X-Gm-Message-State: AOAM533CyC5oHZd2x4xFSRFWmzEf3Ldd3GnYQ0m6FXVeldeGGX5oxTuE
-        Z+YlwEin+Ez+JmmnXHGyVYZ5NfRIDGXksl5EetUW+w==
-X-Google-Smtp-Source: ABdhPJxrv4h/4iWWl4riwPirpNZczdI8YDtShQ2SED6pPsfgef/eYLZ/fRNSmBMe7hD8Ti77VEc6TPDXMN6LKAI4PvA=
-X-Received: by 2002:ac8:58ce:: with SMTP id u14mr425194qta.299.1644003756857;
- Fri, 04 Feb 2022 11:42:36 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+7p7SjPlIf2qoaknlsDE3NxXwoy8KpIefdGFaq4c5Ns=;
+        b=J8n+FRSGhnVwPZJOQ5bvfJofd2GppOCX0S/LThizz+xE6CLo80OjkXbgO3lwZFAd27
+         LgMCgVlnIFtRfpREQXGhFi9/17XdP0LzsSm3W1KaajkEt8auhB73ygzOGyQs68oBPRo4
+         vHhc2jBbxexSAyNErZZ52ru4mpqvPqogJ8cyzkotzgMsvrgcndcothdylZFdWiilBiyQ
+         jjieYFmd3rI3O363Xk9q37dnIegG6P+uznG87Nr1R7dUUgdm1u7xLCxcUQSgTVfQup8R
+         8Xeqvv9w8F7M8/NJplM8l8M0xKJCZNJTWQGvw/fCWZG5wfFL7szw3dwlxcQheJ8/L616
+         a44g==
+X-Gm-Message-State: AOAM531S9N1zfnDD2/oepW2qATtce0ueEw0fxDTVoWJF7FLL9BCaTIut
+        zJfVQpH7pjCgVriE5nuFIawnvDhzMJjBWsnSKf9G6g==
+X-Google-Smtp-Source: ABdhPJxB5s8BcySQb85Tldwg+UgD9pi2DNN3XJy/FXx6wr0ehlMTKupMk1RDVfqerNUu9G/dP2HfmIS9Y+JH8vUngPQ=
+X-Received: by 2002:a2e:b8d6:: with SMTP id s22mr290009ljp.218.1644003882351;
+ Fri, 04 Feb 2022 11:44:42 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+khW7gh=vO8m-_SVnwWwj7kv+EDeUPcuWFqebf2Zmi9T_oEAQ@mail.gmail.com>
- <CAPhsuW7F4KritXPXixoPSw4zbCsqpfZaYBuw5BgD+KKXaoeGxg@mail.gmail.com>
- <CA+khW7jx_4K46gH+tyZZn9ApSYGMqYpxCm0ywmuWdSiogv7dqw@mail.gmail.com>
- <CAPhsuW4JJiMNqvzK+8SKM3=72xgsF+jxB3m-u-Jz9Fe7Z4i9fg@mail.gmail.com>
- <CA+khW7iaCDcpD7JEg9PB-UbYyUuLaEdryhbfaW5tUQ-SUv2sKQ@mail.gmail.com> <CAPhsuW7g+hj1jsFLeHTucZWrq+eB_qwu8bgkd+ObpbktF0t+DA@mail.gmail.com>
-In-Reply-To: <CAPhsuW7g+hj1jsFLeHTucZWrq+eB_qwu8bgkd+ObpbktF0t+DA@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 4 Feb 2022 11:42:25 -0800
-Message-ID: <CA+khW7iW2TRK_RXOJnJVnAApeBHBp+KZRvowdB1wZB=T4jCL+g@mail.gmail.com>
-Subject: Re: [Question] How to reliably get BuildIDs from bpf prog
-To:     Song Liu <song@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20220128223312.1253169-1-mauricio@kinvolk.io> <20220128223312.1253169-7-mauricio@kinvolk.io>
+ <CAEf4BzZ33dhRcySttxSJ6BA-1pCkbebEksLVa-cR08W=YV6x=w@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ33dhRcySttxSJ6BA-1pCkbebEksLVa-cR08W=YV6x=w@mail.gmail.com>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Fri, 4 Feb 2022 14:44:31 -0500
+Message-ID: <CAHap4zuD8j7CXwOK2a12=j0j0b7twHs6gwKEBNagdryHWNQyWQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
+ for BTFGen
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Blake Jones <blakejones@google.com>,
-        Alexey Alexandrov <aalexand@google.com>,
-        Namhyung Kim <namhyung@google.com>,
-        Ian Rogers <irogers@google.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 4, 2022 at 11:37 AM Song Liu <song@kernel.org> wrote:
+On Wed, Feb 2, 2022 at 5:55 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Fri, Feb 4, 2022 at 11:29 AM Hao Luo <haoluo@google.com> wrote:
+> On Fri, Jan 28, 2022 at 2:33 PM Mauricio V=C3=A1squez <mauricio@kinvolk.i=
+o> wrote:
 > >
-> > On Tue, Jan 25, 2022 at 4:16 PM Song Liu <song@kernel.org> wrote:
-> > >
-> > > On Tue, Jan 25, 2022 at 3:54 PM Hao Luo <haoluo@google.com> wrote:
-> > > >
-> > > > Thanks Song for your suggestion.
-> > > >
-> > > > On Mon, Jan 24, 2022 at 11:08 PM Song Liu <song@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Jan 24, 2022 at 2:43 PM Hao Luo <haoluo@google.com> wrote:
-> > > > > >
-> > > > > > Dear BPF experts,
-> > > > > >
-> > > > > > I'm working on collecting some kernel performance data using BPF
-> > > > > > tracing prog. Our performance profiling team wants to associate the
-> > > > > > data with user stack information. One of the requirements is to
-> > > > > > reliably get BuildIDs from bpf_get_stackid() and other similar helpers
-> > > > > > [1].
-> > > > > >
-> > > > > > As part of an early investigation, we found that there are a couple
-> > > > > > issues that make bpf_get_stackid() much less reliable than we'd like
-> > > > > > for our use:
-> > > > > >
-> > > > > > 1. The first page of many binaries (which contains the ELF headers and
-> > > > > > thus the BuildID that we need) is often not in memory. The failure of
-> > > > > > find_get_page() (called from build_id_parse()) is higher than we would
-> > > > > > want.
-> > > > >
-> > > > > Our top use case of bpf_get_stack() is called from NMI, so there isn't
-> > > > > much we can do. Maybe it is possible to improve it by changing the
-> > > > > layout of the binary and the libraries? Specifically, if the text is
-> > > > > also in the first page, it is likely to stay in memory?
-> > > > >
-> > > >
-> > > > We are seeing 30-40% of stack frames not able to get build ids due to
-> > > > this. This is a place where we could improve the reliability of build
-> > > > id.
-> > > >
-> > > > There were a few proposals coming up when we found this issue. One of
-> > > > them is to have userspace mlock the first page. This would be the
-> > > > easiest fix, if it works. Another proposal from Ian Rogers (cc'ed) is
-> > > > to embed build id in vma. This is an idea similar to [1], but it's
-> > > > unclear (at least to me) where to store the string. I'm wondering if
-> > > > we can introduce a sleepable version of bpf_get_stack() if it helps.
-> > > > When a page is not present, sleepable bpf_get_stack() can bring in the
-> > > > page.
-> > >
-> > > I guess it is possible to have different flavors of bpf_get_stack().
-> > > However, I am not sure whether the actual use case could use sleepable
-> > > BPF programs. Our user of bpf_get_stack() is a profiler. The BPF program
-> > > which triggers a perf_event from NMI, where we really cannot sleep.
-> > >
-> > > If we have target use case that could sleep, sleepable bpf_get_stack() sounds
-> > > reasonable to me.
-> > >
-> > > >
-> > > > [1] https://lwn.net/Articles/867818/
-> > > >
-> > > > > > 2. When anonymous huge pages are used to hold some regions of process
-> > > > > > text, build_id_parse() also fails to get a BuildID because
-> > > > > > vma->vm_file is NULL.
-> > > > >
-> > > > > How did the text get in anonymous memory? I guess it is NOT from JIT?
-> > > > > We had a hack to use transparent huge page for application text. The
-> > > > > hack looks like:
-> > > > >
-> > > > > "At run time, the application creates an 8MB temporary buffer and the
-> > > > > hot section of the executable memory is copied to it. The 8MB region in
-> > > > > the executable memory is then converted to a huge page (by way of an
-> > > > > mmap() to anonymous pages and an madvise() to create a huge page), the
-> > > > > data is copied back to it, and it is made executable again using
-> > > > > mprotect()."
-> > > > >
-> > > > > If your case is the same (or similar), it can probably be fixed with
-> > > > > CONFIG_READ_ONLY_THP_FOR_FS, and modified user space.
-> > > > >
-> > > >
-> > > > In our use cases, we have text mapped to huge pages that are not
-> > > > backed by files. vma->vm_file could be null or points some fake file.
-> > > > This causes challenges for us on getting build id for these code text.
-> > >
-> > > So, what is the ideal output in these cases? If there isn't a back file, we
-> > > don't really have good build-id for it, right?
-> > >
+> > This commit implements the logic to record the relocation information
+> > for the different kind of relocations.
 > >
-> > Right, I don't have a solution for this case unfortunately. Probably
-> > will just discard the failed frames. :(
+> > btfgen_record_field_relo() uses the target specification to save all th=
+e
+> > types that are involved in a field-based CO-RE relocation. In this case
+> > types resolved and added recursively (using btfgen_put_type()).
+> > Only the struct and union members and their types) involved in the
+> > relocation are added to optimize the size of the generated BTF file.
 > >
-> > But in the case where the problem is the page not in mem, Song, do you
-> > also see a similar high rate of build id parsing failure in your use
-> > case (30 ~ 40% of frames)? If no, we may have done something wrong on
-> > our side. If yes, is that a problem for your use case?
+> > On the other hand, btfgen_record_type_relo() saves the types involved i=
+n
+> > a type-based CO-RE relocation. In this case all the members for the
+> > struct and union types are added. This is not strictly required since
+> > libbpf doesn't use them while performing this kind of relocation,
+> > however that logic could change on the future. Additionally, we expect
+> > that the number of this kind of relocations in an BPF object to be very
+> > low, hence the impact on the size of the generated BTF should be
+> > negligible.
+> >
+> > Finally, btfgen_record_enumval_relo() saves the whole enum type for
+> > enum-based relocations.
+> >
+> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> > ---
 >
-> The latest data I found (which is not too recent) is about 3 % missing symbols.
-> I think there must be something different here.
+> I've been thinking about this in background. This proliferation of
+> hashmaps to store used types and their members really adds to
+> complexity (and no doubt to memory usage and CPU utilization, even
+> though I don't think either is too big for this use case).
+>
+> What if instead of keeping track of used types and members separately,
+> we initialize the original struct btf and its btf_type, btf_member,
+> btf_enum, etc types. We can carve out one bit in them to mark whether
+> that specific entity was used. That way you don't need any extra
+> hashmap maintenance. You just set or check bit on each type or its
+> member to figure out if it has to be in the resulting BTF.
+>
+> This can be highest bit of name_off or type fields, depending on
+> specific case. This will work well because type IDs never use highest
+> bit and string offset can never be as high as to needing full 32 bits.
+>
+> You'll probably want to have two copies of target BTF for this, of
+> course, but I think simplicity of bookkeeping trumps this
+> inefficiency. WDYT?
 >
 
-Thanks Song! This is interesting. I'll go look at our user cases.
+It's a very nice idea indeed. I got a version working with this idea.
+I keep two instances of the target BTF (as you suggested) one is only
+for keeping track of the used types/members, the other one is used as
+source when copying the BTF types and also to run the candidate search
+algorithm and so on. Actually there is no need to use the highest bit,
+I'm just setting the whole name_off to UINT32_MAX. It works fine
+because that copy of the BTF isn't used anywhere else. I'm cleaning
+this up and hope to send it early next week.
 
-> Thanks,
-> Song
+Thanks for all the feedback!
