@@ -2,154 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B360F4A93E8
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 07:21:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F004A94AC
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 08:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239762AbiBDGUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 01:20:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        id S234633AbiBDHmN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 02:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbiBDGUb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 01:20:31 -0500
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CBDC061714;
-        Thu,  3 Feb 2022 22:20:30 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id r15-20020a4ae5cf000000b002edba1d3349so3714221oov.3;
-        Thu, 03 Feb 2022 22:20:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=yqq5nruFRyr0PY21hycsFvKd9gLbPgg5hxJ4K19gBbA=;
-        b=ZekAY95ELU3OpUebh3PKjRScyZXRTZjVOqdJ/pVqH8+yILD+n3980r/NIXvjKyYF9D
-         ZD7TwFShY5MpJQbdKMxGupo6YVo4CRLl9kEdgsVXUe4owq7IC6TurbRSJDBnDxhs3ccV
-         p4gICUjong+VuXXPNy+pPKpqA6hX7zo6ClDkDfp3s+9splwk+pEhNIErIAoe6R4dcMgJ
-         j065RWmr3ipjd1ENxmMk4OV7l3qUTfbV2wj4WHusVXpu840bHDMJz+Hv93w82cVPjJh3
-         DWVdxCu2ZeW/OecCCX17E7g94J3qVLU78s1sAVKkKrkGxvUwd7oL+5Gab9dKd6CNtu5N
-         DYbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=yqq5nruFRyr0PY21hycsFvKd9gLbPgg5hxJ4K19gBbA=;
-        b=q+L6EMFt7kLvMGa2m0ULg4DPV5Q0zQ7GGhA983TFAol/zIV2t0oQKqs7ATuJHwA1zu
-         MFRHIsdv/33GQXyx9iC99nK4vs+X5Pbx+bUv5GJOrh0ChBYFvU7Il1sEsjKjLtbwhu/t
-         LuDcr79UIglVJVJphlDIWHlEMxkepP8zvoCXdIz3jGK3isjPmBhTM9sHbWs3AlFxqW6e
-         IJ35C98YEoOUcJG79loz4AyrXiyEDhWzCth6PoymH8XV3ooC0BF77piCacQGiIJFMGz0
-         HZ4Z+o7bZ7c+Oo4ou7FUOMghjuGLBlM6GYb+wW/Mq+aLIv6AavAlnfxK/Y59GPf2+U/o
-         6V/g==
-X-Gm-Message-State: AOAM533DD9GfjyOK0AgggfryU6vLoW7ie+M33aGPTj5XqdYP34N3F5N1
-        K3VtxkaC873uGq47+kz/mw==
-X-Google-Smtp-Source: ABdhPJxh8V8vuXYD6GwKQT3fEgtoNoK0zH4HGnRmcDBB3TCxu3B3Tk0tCHXr4uFOkW3Y33Lpluw+IQ==
-X-Received: by 2002:a05:6870:c343:: with SMTP id e3mr253761oak.54.1643955628869;
-        Thu, 03 Feb 2022 22:20:28 -0800 (PST)
-Received: from smtpclient.apple ([191.177.181.165])
-        by smtp.gmail.com with ESMTPSA id t43sm251788oap.1.2022.02.03.22.20.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Feb 2022 22:20:28 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.40.0.1.81\))
-Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
- for BTFGen
-From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
-In-Reply-To: <CAEf4BzagOBmVbrPOnSwthOxt7CYoqNTuojbtmgskNa_Ad=8EVQ@mail.gmail.com>
-Date:   Fri, 4 Feb 2022 03:20:22 -0300
-Cc:     =?utf-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234310AbiBDHmM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 02:42:12 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E13DC061714;
+        Thu,  3 Feb 2022 23:42:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EB4C9B817E5;
+        Fri,  4 Feb 2022 07:42:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A44D0C340EB;
+        Fri,  4 Feb 2022 07:42:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643960529;
+        bh=Kp4NxRJMhPOrk6yCLmuMuuK4NgUYV4IbJR5q0vDERwg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Mf+Yh0ao1IESxOx9bUslgQDJ/crTGytTfE2ICKsuJBoYFSimt1sHPJzOtRauvpEf4
+         PJniz64kRtHRYhJVOJMdIQzG9lFiDwJ9ymo7nCpSyBbU+CQesxcTiUAOZbtMobgzOP
+         6vNcvrTLykaykyJSEtpk4k+f30zWrMN9dJMDH6ZDDmxCNp9SKCWVgpTrRWy7FudZV0
+         iH7j2nP4shtv0qXNRO2cW62ulfTTPg4crgB64MrHREULX5F8XtmR5cHapwOr1tD/jO
+         meN6bKfdF/t0EA91FCRGB3jIOLcnHnAJc+xsrURKv69Q4yT651siBbU4+va+kZqLo6
+         O9HrNmpRrAhYA==
+Received: by mail-yb1-f172.google.com with SMTP id c6so16316562ybk.3;
+        Thu, 03 Feb 2022 23:42:09 -0800 (PST)
+X-Gm-Message-State: AOAM531J16bhlPBff1eT1aHwvFSa9txZSuU7QpWPLsR6b+lGbJI8x9g7
+        6YFApAk08zoK3NrPaMhMgukVpKvk4mM/pTUF/WU=
+X-Google-Smtp-Source: ABdhPJwSMGxOlip1L6UgkfCgoG8NGTIl8TBqIJgfFKT446WFXImJphA5HC0F8VhEp1CaHrjKKdwxh8bG0ZZzGLnVYTs=
+X-Received: by 2002:a5b:54b:: with SMTP id r11mr1769676ybp.282.1643960528738;
+ Thu, 03 Feb 2022 23:42:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20220201062803.2675204-1-song@kernel.org> <20220201062803.2675204-5-song@kernel.org>
+In-Reply-To: <20220201062803.2675204-5-song@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 3 Feb 2022 23:41:57 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5uG98fPostcQYw9Kk9DTczOw6LJUJRb8NfiDVVgJcHwQ@mail.gmail.com>
+Message-ID: <CAPhsuW5uG98fPostcQYw9Kk9DTczOw6LJUJRb8NfiDVVgJcHwQ@mail.gmail.com>
+Subject: Re: [PATCH v8 bpf-next 4/9] bpf: use prog->jited_len in bpf_prog_ksym_set_addr()
+To:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-X-Mao-Original-Outgoing-Id: 665648422.115451-cac6df2b497e4f0fe853b116de2138d5
-Content-Transfer-Encoding: 7bit
-Message-Id: <8846F5AD-CFD3-4F32-B9C5-E36AB38C37DF@gmail.com>
-References: <20220128223312.1253169-1-mauricio@kinvolk.io>
- <20220128223312.1253169-7-mauricio@kinvolk.io>
- <CAEf4BzZu-u1WXGScPZKVQZc+RGjmnYm45mcOGkzXyFLMKS-5gA@mail.gmail.com>
- <CAHap4zv+bLA4BB9ZJ7RXDCChe6dU0AB3zuCieWskp2OJ5Y-4xw@mail.gmail.com>
- <CAEf4BzagOBmVbrPOnSwthOxt7CYoqNTuojbtmgskNa_Ad=8EVQ@mail.gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-X-Mailer: Apple Mail (2.3693.40.0.1.81)
+        Kernel Team <kernel-team@fb.com>,
+        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
->>> As in, do you substitute forward declarations for types that are
->>> never directly used? If not, that's going to be very suboptimal for
->>> something like task_struct and any other type that's part of a big
->>> cluster of types.
+On Mon, Jan 31, 2022 at 10:31 PM Song Liu <song@kernel.org> wrote:
+>
+> Using prog->jited_len is simpler and more accurate than current
+> estimation (header + header->size).
+>
+> Signed-off-by: Song Liu <song@kernel.org>
 
->> We decided to include the whole types and all direct and indirect
->> types referenced from a structure field for type-based relocations.
->> Our reasoning is that we don't know if the matching algorithm of
->> libbpf could be changed to require more information in the future and
->> type-based relocations are few compared to field based relocations.
+Hmm... CI [1] reports error on test_progs 159/tailcalls, and bisect points to
+this one. However, I couldn't figure out why this breaks tail call.
+round_up(PAGE_SIZE) does fix it though. But that won't be accurate, right?
 
-> It will depend on application and which type is used in relocation.
-> task_struct reaches tons of types and will add a very noticeable size
-> to minimized BTF, for no good reason, IMO. If we discover that we do
-> need those types, we'll update bpftool to generate more.
+Any suggestions on what could be the reason for these failures?
 
-Just to see if I understood this part correctly. IIRC, we started type
-based relocations support in btfgen because of this particular case:
+Thanks,
+Song
 
-	union kernfs_node_id {
-	    struct {
-	        u32 ino;
-	        u32 generation;
-	    };
-	    u64 id;
-	};
+[1] https://github.com/kernel-patches/bpf/runs/5060194776?check_suite_focus=true
 
-	struct kernfs_node___older_v55 {
-	    const char *name;
-	    union kernfs_node_id id;
-	};
-
-	struct kernfs_node___rh8 {
-	    const char *name;
-	    union {
-	        u64 id;
-	        struct {
-	            union kernfs_node_id id;
-	        } rh_kabi_hidden_172;
-	        union { };
-	    };
-	};
-
-So we have 3 situations:
-
-(struct kernfs_node *)->id as u64
-
-	[29] STRUCT 'kernfs_node' size=128 vlen=1
-	        'id' type_id=42 bits_offset=832
-	[42] TYPEDEF 'u64' type_id=10
-
-(struct kernfs_node___older_v55 *)->id as u64 (union kernfs_node_id)->id
-
-	[79] STRUCT 'kernfs_node' size=128 vlen=1
-	        'id' type_id=69 bits_offset=832
-	[69] UNION 'kernfs_node_id' size=8 vlen=2
-	        '(anon)' type_id=132 bits_offset=0
-	        'id' type_id=40 bits_offset=0
-	[40] TYPEDEF 'u64' type_id=12
-
-(struct kernfs_node___rh8 *)->id = (anon union)->id
-
-	[56] STRUCT 'kernfs_node' size=128 vlen=1
-	        '(anon)' type_id=24 bits_offset=832
-	[24] UNION '(anon)' size=8 vlen=1
-	        'id' type_id=40 bits_offset=0
-	[40] TYPEDEF 'u64' type_id=11
-
-We're finding needed BTF types, that should be added to generated BTF,
-based on fields/members of CORE relo info. How we would know we had to
-add the anon union of the last case if it does not exist in the local
-BTF ? What is your suggestion ?
-
-Thanks!
-
--rafaeldtinoco
+> ---
+>  kernel/bpf/core.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 14199228a6f0..e3fe53df0a71 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -537,13 +537,10 @@ long bpf_jit_limit_max __read_mostly;
+>  static void
+>  bpf_prog_ksym_set_addr(struct bpf_prog *prog)
+>  {
+> -       const struct bpf_binary_header *hdr = bpf_jit_binary_hdr(prog);
+> -       unsigned long addr = (unsigned long)hdr;
+> -
+>         WARN_ON_ONCE(!bpf_prog_ebpf_jited(prog));
+>
+>         prog->aux->ksym.start = (unsigned long) prog->bpf_func;
+> -       prog->aux->ksym.end   = addr + hdr->size;
+> +       prog->aux->ksym.end   = prog->aux->ksym.start + prog->jited_len;
+>  }
+>
+>  static void
+> --
+> 2.30.2
+>
