@@ -2,177 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28644A9EF4
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5374A9F08
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 19:30:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377512AbiBDS1N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 13:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237893AbiBDS1M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 13:27:12 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD73BC061714
-        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 10:27:11 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id bs32so5487016qkb.1
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:27:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jeWAra30FXkZs/gRmR49z6lt/T+9ynnjq9B+AWcFc0M=;
-        b=LOIf1tBuS1tAG6bCCiNP8m5VoC8AK9dgPZpaYYC8CMFPy2FtTuNt3HOG/39ywfFeXf
-         2SvwmqypOW2WfYOvprujZf3zzwP7EZlK6Tw3mksOgbimD03VlJ4E2UTarrCm3HBAsDmp
-         4DFmgTvJAJGS+bcOFGbM78sNuJ2xoCUsTqfsB4AD0F+L/YHeSKzm7Rr5uQMVIpEiqVr6
-         UFVW2VMOW9OTwQEmkjRKzUTUGC4KESydLa4s3Te4ai8t98QE11qc9ljjjW8ZVTgFnvbW
-         4u0WLxTWCwZezv2TYyo0d7dEK1Ejnt98unT3m6/txxJOAPuQ5QAugdqnsGnXMsrYuJjA
-         7k6w==
+        id S1377540AbiBDSaz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 13:30:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:29440 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237456AbiBDSaz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 13:30:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1643999454;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hky5DV8TETGJOkKLGTwiJ+rckhbkE1SoswbmzyRxFIg=;
+        b=Khey4xciJL0UehHBhJSPvgaDSEoRuyUQ2eC4Ua3BCc+E+l1YNiNtYf4jn5bNEPO0pNThhT
+        w8A1W40giUQvm7hMvCSZRtE7ZZSevgQjnlvvCtDlRWF2SqCcRxQVPJr0yZ18DQ82VvtBgu
+        Ob7I/qV8nERx1C7KbPgkaDG3XTfh2l4=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-489-zdC2wMwmOmOdbWZjOSeXKw-1; Fri, 04 Feb 2022 13:30:53 -0500
+X-MC-Unique: zdC2wMwmOmOdbWZjOSeXKw-1
+Received: by mail-qt1-f197.google.com with SMTP id g18-20020ac84b72000000b002cf274754c5so5289036qts.14
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 10:30:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jeWAra30FXkZs/gRmR49z6lt/T+9ynnjq9B+AWcFc0M=;
-        b=0WlT8qfzgGb/L1x9h23/ZsO6CXUWPqkz1mGzTn54P4Rf+cs7Ybu/HycbkMzkcL7Pef
-         U7DtX7lRZh1L2tvBVBvRj+P9NGuB86mYDScyhV04V69XlJk/4d9ST4fLPEfDQpX3BaZf
-         f4M/Z2iGRR8scRl1xVSC66dAoJm+jYtWRSx3jhxBh9vaxaF7zuPYvfE6t6dfoezNCPOh
-         heTmiO5zBOozn57rOHFU7/rYiGzF1PLcuWTLHbAfiGMSVACp6BJ7thLwVwDj+RgWAUS0
-         3BD4y++6whsaHYB626szgIP1DW8vGrpnRJ/Fb9xo6lSnWtre00P7fcTWI0Od1/x+xeVi
-         bsKA==
-X-Gm-Message-State: AOAM533z7BLn9T7rTFwng0L2pUoN2+dtaeLm7JLTEf2HdpvJYryTdXMt
-        rW7BcdSGRW+Ni7xGapHYNe9qEuNOUHeTbwvkEzZgUg==
-X-Google-Smtp-Source: ABdhPJz8DFPAFaDlhPX2045fX9vYzX/NA6X+81wbKs9VCuJPZx20zm691CYXL4xR4mi3Q2U4HBn+P5UwHAgdFFvqsHs=
-X-Received: by 2002:ae9:ed96:: with SMTP id c144mr241939qkg.221.1643999230713;
- Fri, 04 Feb 2022 10:27:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Hky5DV8TETGJOkKLGTwiJ+rckhbkE1SoswbmzyRxFIg=;
+        b=YP6kjqoTG03fo1o0d8jdwaMY5YR7hkYSxrvKLBCylSFsP050DTtpAvnuBog6PYwbOa
+         6ADGeBd95jXCYuVc7s25daJBWPuEK6+xW9lcM+B7MWen5kr3sUsM2ky3cE3Msz1rCbmt
+         98nbov17aYqn4+Pp4olrKkcsOCB4Zo9LL4ZJY6PoY77hpy1l4gb+7y6xrl3QqtVSTvKu
+         HcylNDm3hT8fCE4Y0xFKEugfJ9ZulkERWLyZ+X9eyOC6tyN7o0HlEqwUGvJLFikIIBJW
+         rBh53uKL49d/MEn3KoKKbux1S8XRGLmJHFY42JWsx5XXNISt4FprjTUcdlxVudNTT+CF
+         cvkw==
+X-Gm-Message-State: AOAM530WBL7ULpJ8aXoOzdgdeMsnM/jJbuJeEhafL7BdfuYj0CwxxaiU
+        MPcCAvpacjOQ7lI8fOReYRG98bEbfowsbThz+Pu0BOWeTvIU0N12+R0SLnBYHabfhDuFHM/K42l
+        qRl7B6AGo5KNR
+X-Received: by 2002:a37:a1c5:: with SMTP id k188mr247390qke.461.1643999452518;
+        Fri, 04 Feb 2022 10:30:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOPY3yoAy87MjHfNDO5xeTaMZyBuP8HYYSVda3BgG9lYhwByyZHrg0XNpqwLCpf5WqlwSz0g==
+X-Received: by 2002:a37:a1c5:: with SMTP id k188mr247369qke.461.1643999452261;
+        Fri, 04 Feb 2022 10:30:52 -0800 (PST)
+Received: from localhost (net-37-182-17-113.cust.vodafonedsl.it. [37.182.17.113])
+        by smtp.gmail.com with ESMTPSA id c14sm1585342qtc.31.2022.02.04.10.30.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Feb 2022 10:30:51 -0800 (PST)
+Date:   Fri, 4 Feb 2022 19:30:48 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        toke@redhat.com, andrii@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftest/bpf: check invalid length in
+ test_xdp_update_frags
+Message-ID: <Yf1w2HRokiYBg8w9@lore-desk>
+References: <aff68ca785cae86cd6263355010ceaff24daee1f.1643982947.git.lorenzo@kernel.org>
+ <c3858f6b-43d5-18ef-2fc8-b58c13c12b05@fb.com>
+ <Yf1nxMWEWy4DSwgN@lore-desk>
+ <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
 MIME-Version: 1.0
-References: <20220201205534.1962784-1-haoluo@google.com> <20220201205534.1962784-6-haoluo@google.com>
- <20220203180414.blk6ou3ccmod2qck@ast-mbp.dhcp.thefacebook.com>
- <CA+khW7jkJbvQrTx4oPJAoBZ0EOCtr3C2PKbrzhxj-7euBK8ojg@mail.gmail.com> <CAADnVQLZZ3SM2CDxnzgOnDgRtGU7+6wT9u5v4oFas5MnZF6DsQ@mail.gmail.com>
-In-Reply-To: <CAADnVQLZZ3SM2CDxnzgOnDgRtGU7+6wT9u5v4oFas5MnZF6DsQ@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Fri, 4 Feb 2022 10:26:59 -0800
-Message-ID: <CA+khW7i+TScwPZ6-rcFKiXtxMm8hiZYJGH-wYb=7jBvDWg8pJQ@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next v2 5/5] selftests/bpf: test for pinning for
- cgroup_view link
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="irYz3dtSM2qqlyd7"
+Content-Disposition: inline
+In-Reply-To: <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 3, 2022 at 7:33 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Feb 3, 2022 at 2:46 PM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Thu, Feb 3, 2022 at 10:04 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Feb 01, 2022 at 12:55:34PM -0800, Hao Luo wrote:
+
+--irYz3dtSM2qqlyd7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+>=20
+
+[...]
+
+> > >=20
+> > > In kernel, the nr_frags checking is against MAX_SKB_FRAGS,
+> > > but if /proc/sys/net/core/max_skb_flags is 2 or more less
+> > > than MAX_SKB_FRAGS, the test won't fail, right?
+> >=20
+> > yes, you are right. Should we use the same definition used in
+> > include/linux/skbuff.h instead? Something like:
+> >=20
+> > if (65536 / page_size + 1 < 16)
+> > 	max_skb_flags =3D 16;
+> > else
+> > 	max_skb_flags =3D 65536/page_size + 1;
+>=20
+> The maximum packet size limit 64KB won't change anytime soon.
+> So the above should work. Some comments to explain why using
+> the above formula will be good.
+
+ack, I will do in v2.
+
+Regards,
+Lorenzo
+
+>=20
+> >=20
+> > Regards,
+> > Lorenzo
+> >=20
+> > >=20
 > > > > +
-> > > > +SEC("iter/cgroup_view")
-> > > > +int dump_cgroup_lat(struct bpf_iter__cgroup_view *ctx)
-> > > > +{
-> > > > +     struct seq_file *seq = ctx->meta->seq;
-> > > > +     struct cgroup *cgroup = ctx->cgroup;
-> > > > +     struct wait_lat *lat;
-> > > > +     u64 id;
+> > > > +	num =3D fscanf(f, "%d", &max_skb_frags);
+> > > > +	fclose(f);
 > > > > +
-> > > > +     BPF_SEQ_PRINTF(seq, "cgroup_id: %8lu\n", cgroup->kn->id);
-> > > > +     lat = bpf_map_lookup_elem(&cgroup_lat, &id);
-> > >
-> > > Looks like "id = cgroup->kn->id" assignment is missing here?
-> > >
-> >
-> > Ah, yes. I'll fix it.
-> >
-> > > Thanks a lot for this test. It explains the motivation well.
-> > >
-> > > It seems that the patches 1-4 are there to automatically
-> > > supply cgroup pointer into bpf_iter__cgroup_view.
-> > >
-> > > Since user space needs to track good part of cgroup dir opreations
-> > > can we task it with the job of patches 1-4 as well?
-> > > It can register notifier for cgroupfs operations and
-> > > do mkdir in bpffs similarly _and_ parametrize 'view' bpf program
-> > > with corresponding cgroup_id.
-> > > Ideally there is no new 'view' program and it's a subset of 'iter'
-> > > bpf program. They're already parametrizable.
-> > > When 'iter' is pinned the user space can tell it which object it should
-> > > iterate on. The 'view' will be an interator of one element and
-> > > argument to it can be cgroup_id.
-> > > When user space pins the same 'view' program in a newly created bpffs
-> > > directory it will parametrize it with a different cgroup_id.
-> > > At the end the same 'view' program will be pinned in multiple directories
-> > > with different cgroup_id arguments.
-> > > This patch 5 will look very much the same, but patches 1-4 will not be
-> > > necessary.
-> > > Of course there are races between cgroup create/destroy and bpffs
-> > > mkdir, prog pin operatiosn, but they will be there regardless.
-> > > The patch 1-4 approach is not race free either.
-> >
-> > Right. I tried to minimize the races between cgroupfs and bpffs in
-> > this patchset. The cgroup and kernfs APIs called in this patchset
-> > guarantee that the cgroup and kernfs objects are alive once get. Some
-> > states in the objects such as 'id' should be valid at least.
-> >
-> > > Will that work?
-> >
-> > Thanks Alexei for the idea.
-> >
-> > The parameterization part sounds good. By 'parametrize', do you mean a
-> > variable in iter prog (like the 'pid' variable in bpf_iter_task_vma.c
-> > [1])? or some metadata of the program? I assume it's program's
-> > metadata. Either parameterizing with cgroup_id or passing cgroup
-> > object to the prog should work. The problem is at pinning.
->
-> The bpf_iter_link_info is used to parametrize the iterator.
-> The map iterator will iterate the given map_fd.
-> iirc pinning is not parameterizable yet,
-> but that's not difficult to add.
->
+> > > > +	if (!ASSERT_EQ(num, 1, "max_skb_frags read failed"))
+> > > > +		goto out;
+> > > > +
+> > > > +	/* xdp_buff linear area size is always set to 4096 in the
+> > > > +	 * bpf_prog_test_run_xdp routine.
+> > > > +	 */
+> > > > +	buf_size =3D 4096 + (max_skb_frags + 1) * sysconf(_SC_PAGE_SIZE);
+> > > > +	buf =3D malloc(buf_size);
+> > > > +	if (!ASSERT_OK_PTR(buf, "alloc buf"))
+> > > > +		goto out;
+> > > > +
+> > > > +	memset(buf, 0, buf_size);
+> > > > +	offset =3D (__u32 *)buf;
+> > > > +	*offset =3D 16;
+> > > > +	buf[*offset] =3D 0xaa;
+> > > > +	buf[*offset + 15] =3D 0xaa;
+> > > > +
+> > > > +	topts.data_in =3D buf;
+> > > > +	topts.data_out =3D buf;
+> > > > +	topts.data_size_in =3D buf_size;
+> > > > +	topts.data_size_out =3D buf_size;
+> > > > +
+> > > > +	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
+> > > > +	ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
+> > > > +	free(buf);
+> > > >    out:
+> > > >    	bpf_object__close(obj);
+> > > >    }
+> > >=20
+>=20
 
-I can take a look at that. This will be useful in our use case.
+--irYz3dtSM2qqlyd7
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> > In our use case, we can't ask the users who create cgroups to do the
-> > pinning. Pinning requires root privilege. In our use case, we have
-> > non-root users who can create cgroup directories and still want to
-> > read bpf stats. They can't do pinning by themselves. This is why
-> > inheritance is a requirement for us. With inheritance, they only need
-> > to mkdir in cgroupfs and bpffs (unprivileged operations), no pinning
-> > operation is required. Patch 1-4 are needed to implement inheritance.
-> >
-> > It's also not a good idea in our use case to add a userspace
-> > privileged process to monitor cgroupfs operations and perform the
-> > pinning. It's more complex and has a higher maintenance cost and
-> > runtime overhead, compared to the solution of asking whoever makes
-> > cgroups to mkdir in bpffs. The other problem is: if there are nodes in
-> > the data center that don't have the userspace process deployed, the
-> > stats will be unavailable, which is a no-no for some of our users.
->
-> The commit log says that there will be a daemon that does that
-> monitoring of cgroupfs. And that daemon needs to mkdir
-> directories in bpffs when a new cgroup is created, no?
-> The kernel is only doing inheritance of bpf progs into
-> new dirs. I think that daemon can pin as well.
->
-> The cgroup creation is typically managed by an agent like systemd.
-> Sounds like you have your own agent that creates cgroups?
-> If so it has to be privileged and it can mkdir in bpffs and pin too ?
+-----BEGIN PGP SIGNATURE-----
 
-Ah, yes, we have our own daemon to manage cgroups. That daemon creates
-the top-level cgroup for each job to run inside. However, the job can
-create its own cgroups inside the top-level cgroup, for fine grained
-resource control. This doesn't go through the daemon. The job-created
-cgroups don't have the pinned objects and this is a no-no for our
-users.
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYf1w2AAKCRA6cBh0uS2t
+rCxbAP4sAKdKzKqmJ6s28ObVC75VJ40wpNS+Dk8eqCmFaVM4AAD9FV+GejVCGHut
+Uro6CvBap+3Dw5XbOuC0jJ8JxzGoCg0=
+=vDVZ
+-----END PGP SIGNATURE-----
+
+--irYz3dtSM2qqlyd7--
+
