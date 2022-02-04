@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7439E4A938F
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 06:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474154A9398
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 06:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235530AbiBDFZx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 00:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36346 "EHLO
+        id S233178AbiBDF26 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 00:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbiBDFZx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 00:25:53 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C71C061714
-        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:25:53 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id r144so6044485iod.9
-        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 21:25:53 -0800 (PST)
+        with ESMTP id S232187AbiBDF26 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 00:28:58 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB52CC061714
+        for <bpf@vger.kernel.org>; Thu,  3 Feb 2022 21:28:57 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id y17so3994142ilm.1
+        for <bpf@vger.kernel.org>; Thu, 03 Feb 2022 21:28:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aHS4s3XraIYOLvniup7ctP685Jp+gVpWTDXBHSEcjdU=;
-        b=ECjEmk+TP5t4aEiYlmQS3qBXuZfymi7r6uL83yx/LSIaECo3jyXYaE7RuiqqIPivns
-         t1xpr4/oF+KAwgDhW/VJW5w35C+v6vrucFRqWYN6AyL0aRc7yUN+fb1nK6xogF5OAN29
-         XrwCa6NNfE6oiMK74HjkbchrxgJ4DGpbkMUcCm0rpKsGmJWestT7o/+uNUVBkNc3oKHF
-         9O+k30DaRsXmjEMET0Lcm4y3TkwwCnbJHmBi3NJsuYfgwdJHqvJyr8QKK+DZEqTGu+uc
-         4M4dxDi+4fghT6wwKtmR8nH983net2PlrhgIbvfn8EoY3xCwwXs9HZmbYyUOKvUR6VRD
-         aLfg==
+        bh=K2vl++5ocEVVoZofAFviwHbdNlNthAaSTT+xALeyJ2Y=;
+        b=Geg7yuXj4MCGZ9cZ9MbEb6Kk9rascYPYDww69zvxOHwdlZ0I3y02FfD5RJv5gtbznG
+         Tubt+YJDstup21WR9LHqTG5j1QVPkADhFTfn/u0u5xIzoYYxVSjr25mU6ir38IP53Jsy
+         +WUHr8shMcO4VQL/+AxVU2ARFg0TZSKn/a3XHtQtHhTxyi/ZaW0DCG4XQ30ES28nTSWx
+         +kQNx0qEt6NFbOo1uv1RAMtKHvEzkBz13tHgDgUlfTOLHme1lhUSIv2nqpqlAMNtoJN1
+         6YioXyhDofGbxkSGSZwZlQ+C8P1Yb3Asw/fkxM6ynaLEa6YLDQFkY0TEPg12muHmpz0u
+         GHew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aHS4s3XraIYOLvniup7ctP685Jp+gVpWTDXBHSEcjdU=;
-        b=HlF00aErIwSe2dTLPXP8HppQoCYTXivEIPkadPAXuVduu/EtrH1bB1OombqblArD24
-         rhUdkEVSqup70UyIM6cSNFTk8Y7V8GGcaV0bCPdfcQtrB5ASWRTJtpUWBpNVlScbImpy
-         Q/Sl8psIqXSppXKe+OhNs+G00VbCiewnUkQ7g10Ym2a1f8pNrNtwqXwl+kzpld4zy1Ez
-         4m4Dgl6Jo35kDWB6j2mMP8pvIvZqePQyC69EY/eLHa8tg0d/rv+s8dCCSewuFN6RDEqR
-         w+u7IaT3xi3+vT5xKWhYqdOr3ez80TEn20guZ/GC3QfTHpuXSwFqyxKEAALXk+gXUhd0
-         SCCQ==
-X-Gm-Message-State: AOAM531z/9bHL1H3PiCNDlmj/+2Df6tyVOb0MKGBBuliZ61d8E05hkOD
-        JVxs3jPkNhLCQNGBKpekXy5OT2LXKeEuHAhhkz8=
-X-Google-Smtp-Source: ABdhPJxWtZtwgN9gjXgZUMJApuGrY+r2qe99LpFo7ncjkJVWnu3L0VpbYl1mZNBLaqVyiLZTuMAURp64bLsvO1dfzTE=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr625134jak.103.1643952352626;
- Thu, 03 Feb 2022 21:25:52 -0800 (PST)
+        bh=K2vl++5ocEVVoZofAFviwHbdNlNthAaSTT+xALeyJ2Y=;
+        b=MFRkPhrv+5Hg02T+EOvtfjvP3cn00hOiBItm/WeQrjlhFP+6tuhU8lNnrIYZAhhtfe
+         +ejfC9T3jFBgQvA1HqBioV65K3SfCVW0RKnjxdEiNAJE7ZIYR3AMknzeqBJ6blqN2c4x
+         wUxCH/SDIRgJo71FIpRVUKjMSlboL0rygKdRn1jXimGEzqWmBj6lumGsIy3mz7KjMFi9
+         zpBBmLmtQY+yM/YMTVZJ38x8NRie9A/c5ZTUodROeyyGrbQVtUrVVlQXMYEnjEwEF3tv
+         gJ97/dH1xADH4FL4nDoZKqksbCrVz32NFbhf1O+KCYS57R6IfIbIkrN4RdRjVBde1pHA
+         f8Dw==
+X-Gm-Message-State: AOAM533stb+eTgUogrH2DrhkNMyNLyNtkV4OlrcrI1YwsydugC2sv2Oc
+        yBr4yYoC0v3Huh+RuGWA7QSfafi/tVgnqOUKAWQ=
+X-Google-Smtp-Source: ABdhPJzjEIaF2Q9emJVJqlHSZF9eQz3JxVIc5XEEfFJfeWVzcQGrb9HBsP+hWobv+JARoMs4PmqqrV1wD/3O0RxhMP0=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr721695ili.239.1643952537285;
+ Thu, 03 Feb 2022 21:28:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20220204041955.1958263-1-iii@linux.ibm.com> <20220204041955.1958263-10-iii@linux.ibm.com>
-In-Reply-To: <20220204041955.1958263-10-iii@linux.ibm.com>
+References: <20220204041955.1958263-1-iii@linux.ibm.com>
+In-Reply-To: <20220204041955.1958263-1-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Feb 2022 21:25:41 -0800
-Message-ID: <CAEf4BzZMA4eProszPhP_EdxZVrusYA8bqODj-PGrcE1Uradgqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 09/10] libbpf: Fix accessing syscall arguments
- on riscv
+Date:   Thu, 3 Feb 2022 21:28:46 -0800
+Message-ID: <CAEf4BzbCBND=RMXdxY5MEvrTnn288hahkhkPwrQR1KxgBn+CVQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/10] libbpf: Fix accessing syscall arguments
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -69,38 +68,51 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Feb 3, 2022 at 8:20 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> riscv's syscall handlers get "unpacked" arguments instead of a
-> struct pt_regs pointer. Indicate this to libbpf using PT_REGS_SYSCALL
-> macro.
+> libbpf now has macros to access syscall arguments in an
+> architecture-agnostic manner, but unfortunately they have a number of
+> issues on non-Intel arches, that this series aims to fix.
 >
-> Fixes: d084df3b7a4c ("libbpf: Fix the incorrect register read for syscalls on x86_64")
-
-This doesn't really fix that commit, it just adds an analogous fix for
-a different architecture.
-
-> Reported-by: Heiko Carstens <hca@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  tools/lib/bpf/bpf_tracing.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> v1: https://lore.kernel.org/bpf/20220201234200.1836443-1-iii@linux.ibm.com/
+> v1 -> v2:
+> * Put orig_gpr2 in place of args[1] on s390 (Vasily).
+> * Fix arm64, powerpc and riscv (Heiko).
 >
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index c21aaecd711b..2b707aff0763 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -213,7 +213,8 @@
->  #define __PT_FP_REG fp
->  #define __PT_RC_REG a5
->  #define __PT_SP_REG sp
-> -#define __PT_IP_REG epc
-> +#define __PT_IP_REG pc
-
-Is this epc -> pc change intentional? If yes, please split it into a
-separate patch with corresponding Fixes tag and explanation.
-
-> +#define PT_REGS_SYSCALL(ctx) ctx
+> The arm64 fix is similar to the s390 one.
 >
->  #endif
+> powerpc and riscv are different in that they unpack arguments to
+> registers before invoking syscall handlers - libbpf needs to know about
+> this difference, so I've decided to introduce PT_REGS_SYSCALL macro for
+> this (see bpf_syscall_macro test for usage example).
+>
+> Tested in QEMU.
+>
+> @Catalin, @Michael, @Paul: could you please review the arm64, powerpc
+> and riscv parts?
+
+I think it's worth waiting for these fixes before cutting libbpf v0.7
+release, thanks for working on them! Please see my other comments on
+respective patches.
+
+>
+> Ilya Leoshkevich (10):
+>   arm64/bpf: Add orig_x0 to user_pt_regs
+>   s390/bpf: Add orig_gpr2 to user_pt_regs
+>   selftests/bpf: Fix an endianness issue in bpf_syscall_macro test
+>   libbpf: Add __PT_PARM1_REG_SYSCALL macro
+>   libbpf: Add PT_REGS_SYSCALL macro
+>   selftests/bpf: Use PT_REGS_SYSCALL in bpf_syscall_macro
+>   libbpf: Fix accessing the first syscall argument on arm64
+>   libbpf: Fix accessing syscall arguments on powerpc
+>   libbpf: Fix accessing syscall arguments on riscv
+>   libbpf: Fix accessing the first syscall argument on s390
+>
+>  arch/arm64/include/asm/ptrace.h               |  2 +-
+>  arch/arm64/include/uapi/asm/ptrace.h          |  1 +
+>  arch/s390/include/asm/ptrace.h                |  3 +--
+>  arch/s390/include/uapi/asm/ptrace.h           |  2 +-
+>  tools/lib/bpf/bpf_tracing.h                   | 23 ++++++++++++++++++-
+>  .../selftests/bpf/progs/bpf_syscall_macro.c   |  7 ++++--
+>  6 files changed, 31 insertions(+), 7 deletions(-)
 >
 > --
 > 2.34.1
