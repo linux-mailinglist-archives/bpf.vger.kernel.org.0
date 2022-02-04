@@ -2,153 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 362E84A93D8
-	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 07:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B360F4A93E8
+	for <lists+bpf@lfdr.de>; Fri,  4 Feb 2022 07:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229905AbiBDGIi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 01:08:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:53910 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232902AbiBDGIh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 01:08:37 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2144XxXb019263;
-        Fri, 4 Feb 2022 06:07:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=EyV7MzVXbTnpbxkgIJpM77+NePo7XNIQRBgQAWyBHA0=;
- b=caWbBZNOnENeVcgTxAaGmFSphwpKQrnYO45gujumyE/ettSeWY0vc+6Lnc9lySxL97Ex
- S8UBKch3L3HU2WldlQfLfLHXi9sGMBdfe2h1kNPkaXC0kphsq7mGHxyxVIEjkpLPI52W
- mekiZt9QsDqBzkPnly+yYk4BNdcCjXzhh46/2433aJOjdOKjYUqHkhHR2B4T+DFm5PVJ
- FYdPcJqLJpZm5olf4wnUees3hTniu3S3OQaLXCNZg4w82aTykXYFlUBibNLZxgvGkuQu
- hr8o0qxXCuNYKTzjuiR5qpgtY+wOfxiEuAT1BQCjFoS+dGStFMhX6eckiPAnNhO0wJev 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0rj5dkmm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Feb 2022 06:07:56 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2145k8O5016562;
-        Fri, 4 Feb 2022 06:07:55 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0rj5dkkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Feb 2022 06:07:55 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21460lUG002216;
-        Fri, 4 Feb 2022 06:07:51 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 3e0r0n1jwr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 04 Feb 2022 06:07:51 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2145vr7E13828488
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 4 Feb 2022 05:57:53 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 816A9A4065;
-        Fri,  4 Feb 2022 06:07:48 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1418CA4054;
-        Fri,  4 Feb 2022 06:07:48 +0000 (GMT)
-Received: from localhost (unknown [9.43.69.119])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  4 Feb 2022 06:07:48 +0000 (GMT)
-Date:   Fri, 04 Feb 2022 06:07:46 +0000
-From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 1/3] s390/bpf: Add orig_gpr2 to user_pt_regs
-To:     Heiko Carstens <hca@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        id S239762AbiBDGUb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 01:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbiBDGUb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 01:20:31 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CBDC061714;
+        Thu,  3 Feb 2022 22:20:30 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id r15-20020a4ae5cf000000b002edba1d3349so3714221oov.3;
+        Thu, 03 Feb 2022 22:20:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yqq5nruFRyr0PY21hycsFvKd9gLbPgg5hxJ4K19gBbA=;
+        b=ZekAY95ELU3OpUebh3PKjRScyZXRTZjVOqdJ/pVqH8+yILD+n3980r/NIXvjKyYF9D
+         ZD7TwFShY5MpJQbdKMxGupo6YVo4CRLl9kEdgsVXUe4owq7IC6TurbRSJDBnDxhs3ccV
+         p4gICUjong+VuXXPNy+pPKpqA6hX7zo6ClDkDfp3s+9splwk+pEhNIErIAoe6R4dcMgJ
+         j065RWmr3ipjd1ENxmMk4OV7l3qUTfbV2wj4WHusVXpu840bHDMJz+Hv93w82cVPjJh3
+         DWVdxCu2ZeW/OecCCX17E7g94J3qVLU78s1sAVKkKrkGxvUwd7oL+5Gab9dKd6CNtu5N
+         DYbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yqq5nruFRyr0PY21hycsFvKd9gLbPgg5hxJ4K19gBbA=;
+        b=q+L6EMFt7kLvMGa2m0ULg4DPV5Q0zQ7GGhA983TFAol/zIV2t0oQKqs7ATuJHwA1zu
+         MFRHIsdv/33GQXyx9iC99nK4vs+X5Pbx+bUv5GJOrh0ChBYFvU7Il1sEsjKjLtbwhu/t
+         LuDcr79UIglVJVJphlDIWHlEMxkepP8zvoCXdIz3jGK3isjPmBhTM9sHbWs3AlFxqW6e
+         IJ35C98YEoOUcJG79loz4AyrXiyEDhWzCth6PoymH8XV3ooC0BF77piCacQGiIJFMGz0
+         HZ4Z+o7bZ7c+Oo4ou7FUOMghjuGLBlM6GYb+wW/Mq+aLIv6AavAlnfxK/Y59GPf2+U/o
+         6V/g==
+X-Gm-Message-State: AOAM533DD9GfjyOK0AgggfryU6vLoW7ie+M33aGPTj5XqdYP34N3F5N1
+        K3VtxkaC873uGq47+kz/mw==
+X-Google-Smtp-Source: ABdhPJxh8V8vuXYD6GwKQT3fEgtoNoK0zH4HGnRmcDBB3TCxu3B3Tk0tCHXr4uFOkW3Y33Lpluw+IQ==
+X-Received: by 2002:a05:6870:c343:: with SMTP id e3mr253761oak.54.1643955628869;
+        Thu, 03 Feb 2022 22:20:28 -0800 (PST)
+Received: from smtpclient.apple ([191.177.181.165])
+        by smtp.gmail.com with ESMTPSA id t43sm251788oap.1.2022.02.03.22.20.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Feb 2022 22:20:28 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.40.0.1.81\))
+Subject: Re: [PATCH bpf-next v5 6/9] bpftool: Implement relocations recording
+ for BTFGen
+From:   Rafael David Tinoco <rafaeldtinoco@gmail.com>
+In-Reply-To: <CAEf4BzagOBmVbrPOnSwthOxt7CYoqNTuojbtmgskNa_Ad=8EVQ@mail.gmail.com>
+Date:   Fri, 4 Feb 2022 03:20:22 -0300
+Cc:     =?utf-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?iso-8859-1?b?Qmr2cm4gVPZwZWw=?= <bjorn@kernel.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        bpf@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Will Deacon <will@kernel.org>
-References: <20220201234200.1836443-1-iii@linux.ibm.com>
-        <20220201234200.1836443-2-iii@linux.ibm.com> <YfrmO+pcSqrrbC3E@osiris>
-In-Reply-To: <YfrmO+pcSqrrbC3E@osiris>
-MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1643952491.peuih6eln6.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Dp3BBkmfGzzqzpy-WnsVmLxkEzrmhTr0
-X-Proofpoint-GUID: _xPzUWjCdwjEWMPnRCCWYnof5PD8Tbkq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-04_01,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 phishscore=0 spamscore=0 malwarescore=0 clxscore=1011
- mlxlogscore=927 impostorscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202040028
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+X-Mao-Original-Outgoing-Id: 665648422.115451-cac6df2b497e4f0fe853b116de2138d5
+Content-Transfer-Encoding: 7bit
+Message-Id: <8846F5AD-CFD3-4F32-B9C5-E36AB38C37DF@gmail.com>
+References: <20220128223312.1253169-1-mauricio@kinvolk.io>
+ <20220128223312.1253169-7-mauricio@kinvolk.io>
+ <CAEf4BzZu-u1WXGScPZKVQZc+RGjmnYm45mcOGkzXyFLMKS-5gA@mail.gmail.com>
+ <CAHap4zv+bLA4BB9ZJ7RXDCChe6dU0AB3zuCieWskp2OJ5Y-4xw@mail.gmail.com>
+ <CAEf4BzagOBmVbrPOnSwthOxt7CYoqNTuojbtmgskNa_Ad=8EVQ@mail.gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+X-Mailer: Apple Mail (2.3693.40.0.1.81)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Heiko,
+>>> As in, do you substitute forward declarations for types that are
+>>> never directly used? If not, that's going to be very suboptimal for
+>>> something like task_struct and any other type that's part of a big
+>>> cluster of types.
 
-Heiko Carstens wrote:
-> On Wed, Feb 02, 2022 at 12:41:58AM +0100, Ilya Leoshkevich wrote:
->> user_pt_regs is used by eBPF in order to access userspace registers -
->> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
->> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
->> syscall argument from eBPF programs, we need to export orig_gpr2.
->>=20
->> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->> ---
->>  arch/s390/include/asm/ptrace.h      | 2 +-
->>  arch/s390/include/uapi/asm/ptrace.h | 1 +
->>  2 files changed, 2 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/arch/s390/include/asm/ptrace.h b/arch/s390/include/asm/ptra=
-ce.h
->> index 4ffa8e7f0ed3..c8698e643904 100644
->> --- a/arch/s390/include/asm/ptrace.h
->> +++ b/arch/s390/include/asm/ptrace.h
->> @@ -83,9 +83,9 @@ struct pt_regs {
->>  			unsigned long args[1];
->>  			psw_t psw;
->>  			unsigned long gprs[NUM_GPRS];
->> +			unsigned long orig_gpr2;
->>  		};
->>  	};
->> -	unsigned long orig_gpr2;
->>  	union {
->>  		struct {
->>  			unsigned int int_code;
->> diff --git a/arch/s390/include/uapi/asm/ptrace.h b/arch/s390/include/uap=
-i/asm/ptrace.h
->> index ad64d673b5e6..b3dec603f507 100644
->> --- a/arch/s390/include/uapi/asm/ptrace.h
->> +++ b/arch/s390/include/uapi/asm/ptrace.h
->> @@ -295,6 +295,7 @@ typedef struct {
->>  	unsigned long args[1];
->>  	psw_t psw;
->>  	unsigned long gprs[NUM_GPRS];
->> +	unsigned long orig_gpr2;
->>  } user_pt_regs;
->=20
-> Isn't this broken on nearly all architectures? I just checked powerpc,
-> arm64, and riscv. While powerpc seems to mirror pt_regs as user_pt_regs,
-> and therefore exports orig_gpr3, the bpf macros still seem to access the
-> wrong location to access the first syscall parameter(?).
+>> We decided to include the whole types and all direct and indirect
+>> types referenced from a structure field for type-based relocations.
+>> Our reasoning is that we don't know if the matching algorithm of
+>> libbpf could be changed to require more information in the future and
+>> type-based relocations are few compared to field based relocations.
 
-On powerpc, gpr[3] continues to be valid on syscall entry (so this test=20
-passes on powerpc), though orig_gpr3 will remain valid throughout.
+> It will depend on application and which type is used in relocation.
+> task_struct reaches tons of types and will add a very noticeable size
+> to minimized BTF, for no good reason, IMO. If we discover that we do
+> need those types, we'll update bpftool to generate more.
 
-I will submit a patch to use orig_gpr3 on powerpc.
+Just to see if I understood this part correctly. IIRC, we started type
+based relocations support in btfgen because of this particular case:
 
+	union kernfs_node_id {
+	    struct {
+	        u32 ino;
+	        u32 generation;
+	    };
+	    u64 id;
+	};
+
+	struct kernfs_node___older_v55 {
+	    const char *name;
+	    union kernfs_node_id id;
+	};
+
+	struct kernfs_node___rh8 {
+	    const char *name;
+	    union {
+	        u64 id;
+	        struct {
+	            union kernfs_node_id id;
+	        } rh_kabi_hidden_172;
+	        union { };
+	    };
+	};
+
+So we have 3 situations:
+
+(struct kernfs_node *)->id as u64
+
+	[29] STRUCT 'kernfs_node' size=128 vlen=1
+	        'id' type_id=42 bits_offset=832
+	[42] TYPEDEF 'u64' type_id=10
+
+(struct kernfs_node___older_v55 *)->id as u64 (union kernfs_node_id)->id
+
+	[79] STRUCT 'kernfs_node' size=128 vlen=1
+	        'id' type_id=69 bits_offset=832
+	[69] UNION 'kernfs_node_id' size=8 vlen=2
+	        '(anon)' type_id=132 bits_offset=0
+	        'id' type_id=40 bits_offset=0
+	[40] TYPEDEF 'u64' type_id=12
+
+(struct kernfs_node___rh8 *)->id = (anon union)->id
+
+	[56] STRUCT 'kernfs_node' size=128 vlen=1
+	        '(anon)' type_id=24 bits_offset=832
+	[24] UNION '(anon)' size=8 vlen=1
+	        'id' type_id=40 bits_offset=0
+	[40] TYPEDEF 'u64' type_id=11
+
+We're finding needed BTF types, that should be added to generated BTF,
+based on fields/members of CORE relo info. How we would know we had to
+add the anon union of the last case if it does not exist in the local
+BTF ? What is your suggestion ?
 
 Thanks!
-- Naveen
 
+-rafaeldtinoco
