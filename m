@@ -2,269 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7954AA54A
-	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 02:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDC44AA550
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 02:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377694AbiBEB1X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Feb 2022 20:27:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22130 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1354733AbiBEB1W (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 20:27:22 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2150pSI6032700
-        for <bpf@vger.kernel.org>; Fri, 4 Feb 2022 17:27:22 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e0v4gef6b-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 17:27:21 -0800
-Received: from twshared3399.25.prn2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 4 Feb 2022 17:27:20 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 963E21051D370; Fri,  4 Feb 2022 17:27:17 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: add custom SEC() handling selftest
-Date:   Fri, 4 Feb 2022 17:27:05 -0800
-Message-ID: <20220205012705.1077708-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220205012705.1077708-1-andrii@kernel.org>
-References: <20220205012705.1077708-1-andrii@kernel.org>
+        id S1350472AbiBEBdl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 20:33:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349644AbiBEBdl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Feb 2022 20:33:41 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65BF5C061346
+        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 17:33:39 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id e8so6296469ilm.13
+        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 17:33:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vyxoKzP9KlpeQJR5nBCOpj0MCSrCxZWuSRgXUDWulbw=;
+        b=oWCni61hkMZy/w7qP9OE1SXcoY7UNOnRLKoqWerX0eFBDg5nxptrTcWEUP8bt0mf/+
+         +EDtQykdDCttaTrStO0bYZpymMclH085GW+mGgzmDQEGQbSj8Y8bry2fhGbEy9Fztzcq
+         SFZHc9n7iz059JmqK+XkefqJI/C5M2JdNCYHTYLDyu1IolDbA7bGQxpgBn35sQ7xkN5m
+         mp1N5GevdPxDenykUDezvHlXk9CpMWPHJhcAu343umGTWwFbAv91f7JGn7PrUMW/ZK41
+         xsXzz4virq7r8R+DgdJijvE/WmMacfvmfLrYsyepIHhDj3HqsJzYOashKnJMGoxCdCcZ
+         vNjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vyxoKzP9KlpeQJR5nBCOpj0MCSrCxZWuSRgXUDWulbw=;
+        b=PZVdKt15TQOjGyBxtq9VhMWaRKE3kduczDf0Av1LDndHPz5InApJR01geuOtaJHKsq
+         EsKpn12NNm6MGtVDkZc9WHLx8a6+vjLhA3te7at3l2Ucp/NlaiyEnixuwHtE7MfTPd4f
+         PX/AqCJnCGuE+sxvpn5usIZigXtLEt9PdR1JPG83VCj9cSKpx90IlatHq8lPwLRMI6px
+         ktHfC3VaYJcWsHKpKpYpYVVobcR0YkiPDiFKM/atdt8GQ9UE2uSj8D75/XEw1z9pGmlJ
+         Ag8WIR6idzwx3RPvh51ULYZ19PsKwmDmsvOnoLpSl4HmaHZPrmzCG94iUwrLjoKfF6YL
+         HIug==
+X-Gm-Message-State: AOAM532UvYi7dLnxoV7q5GjU9mU5xS/IKhM8shlRSbKG83Kgk7V+BzOz
+        j9K/zsPp7+AkzeV5nSD4HtSlQqpL4CmTZGnmAYo=
+X-Google-Smtp-Source: ABdhPJzxJVLDkuArukuQ6a+iuIYNwK3ED7SarxGLuvy7GF4C1aKXd2twkuMg6sqBAfWoiz1qxUF/RfVL5V2Quc/i2zE=
+X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr876872ilv.305.1644024818791;
+ Fri, 04 Feb 2022 17:33:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: rnzia43yMa3kttuN35bdeCfvkOVQLFdd
-X-Proofpoint-ORIG-GUID: rnzia43yMa3kttuN35bdeCfvkOVQLFdd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-04_07,2022-02-03_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 spamscore=0 phishscore=0 adultscore=0 impostorscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202050004
-X-FB-Internal: deliver
+References: <20220205012705.1077708-1-andrii@kernel.org> <20220205012705.1077708-3-andrii@kernel.org>
+In-Reply-To: <20220205012705.1077708-3-andrii@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 4 Feb 2022 17:33:27 -0800
+Message-ID: <CAEf4BzYCTaQnnKGc83VU6i=qrrAu=b2zoqWRm0J3rtn+oxde0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/1] selftests/bpf: add custom SEC() handling selftest
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a selftest validating various aspects of libbpf's handling of custom
-SEC() handlers. It also demonstrates how libraries can ensure very early
-callbacks registration and unregistration using
-__attribute__((constructor))/__attribute__((destructor)) functions.
+On Fri, Feb 4, 2022 at 5:27 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> Add a selftest validating various aspects of libbpf's handling of custom
+> SEC() handlers. It also demonstrates how libraries can ensure very early
+> callbacks registration and unregistration using
+> __attribute__((constructor))/__attribute__((destructor)) functions.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/custom_sec_handlers.c      | 136 ++++++++++++++++++
- .../bpf/progs/test_custom_sec_handlers.c      |  51 +++++++
- 2 files changed, 187 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+I screwed up submission and sent selftest as 1/1 and 1/3 patch. This
+confuses CI, I'll resubmit entire series as v2, sorry for the noise.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-new file mode 100644
-index 000000000000..8e43c5f21878
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include <test_progs.h>
-+#include "test_custom_sec_handlers.skel.h"
-+
-+#define COOKIE_ABC1 1
-+#define COOKIE_ABC2 2
-+#define COOKIE_CUSTOM 3
-+#define COOKIE_FALLBACK 4
-+
-+static int custom_init_prog(struct bpf_program *prog, long cookie)
-+{
-+	if (cookie == COOKIE_ABC1)
-+		bpf_program__set_autoload(prog, false);
-+
-+	return 0;
-+}
-+
-+static int custom_preload_prog(struct bpf_program *prog,
-+			       struct bpf_prog_load_opts *opts, long cookie)
-+{
-+	return 0;
-+}
-+
-+static int custom_attach_prog(const struct bpf_program *prog, long cookie,
-+			      struct bpf_link **link)
-+{
-+	switch (cookie) {
-+	case COOKIE_ABC2:
-+		*link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
-+		return libbpf_get_error(*link);
-+	case COOKIE_CUSTOM:
-+		*link = bpf_program__attach_tracepoint(prog, "syscalls", "sys_enter_nanosleep");
-+		return libbpf_get_error(*link);
-+	case COOKIE_FALLBACK:
-+		/* no auto-attach for SEC("xyz") */
-+		*link = NULL;
-+		return 0;
-+	default:
-+		ASSERT_FALSE(true, "unexpected cookie");
-+		return -EINVAL;
-+	}
-+}
-+
-+static int abc1_id;
-+static int abc2_id;
-+static int custom_id;
-+static int fallback_id;
-+
-+__attribute__((constructor))
-+static void register_sec_handlers(void)
-+{
-+	abc1_id = libbpf_register_prog_handler("abc",
-+					       BPF_PROG_TYPE_RAW_TRACEPOINT, 0,
-+					       custom_init_prog, custom_preload_prog,
-+					       custom_attach_prog,
-+					       COOKIE_ABC1, NULL);
-+	abc2_id = libbpf_register_prog_handler("abc/",
-+					       BPF_PROG_TYPE_RAW_TRACEPOINT, 0,
-+					       custom_init_prog, custom_preload_prog,
-+					       custom_attach_prog,
-+					       COOKIE_ABC2, NULL);
-+	custom_id = libbpf_register_prog_handler("custom+",
-+						 BPF_PROG_TYPE_TRACEPOINT, 0,
-+						 custom_init_prog, custom_preload_prog,
-+						 custom_attach_prog,
-+						 COOKIE_CUSTOM, NULL);
-+}
-+
-+__attribute__((destructor))
-+static void unregister_sec_handlers(void)
-+{
-+	libbpf_unregister_prog_handler(abc1_id);
-+	libbpf_unregister_prog_handler(abc2_id);
-+	libbpf_unregister_prog_handler(custom_id);
-+}
-+
-+void test_custom_sec_handlers(void)
-+{
-+	struct test_custom_sec_handlers* skel;
-+	int err;
-+
-+	ASSERT_GT(abc1_id, 0, "abc1_id");
-+	ASSERT_GT(abc2_id, 0, "abc2_id");
-+	ASSERT_GT(custom_id, 0, "custom_id");
-+
-+	fallback_id = libbpf_register_prog_handler(NULL, /* fallback handler */
-+						   BPF_PROG_TYPE_KPROBE, 0,
-+						   custom_init_prog, custom_preload_prog,
-+						   custom_attach_prog,
-+						   COOKIE_FALLBACK, NULL);
-+	if (!ASSERT_GT(fallback_id, 0, "fallback_id"))
-+		return;
-+
-+	/* open skeleton and validate assumptions */
-+	skel = test_custom_sec_handlers__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(bpf_program__type(skel->progs.abc1), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc1_type");
-+	ASSERT_FALSE(bpf_program__autoload(skel->progs.abc1), "abc1_autoload");
-+
-+	ASSERT_EQ(bpf_program__type(skel->progs.abc2), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc2_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.custom1), BPF_PROG_TYPE_TRACEPOINT, "custom1_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.custom2), BPF_PROG_TYPE_TRACEPOINT, "custom2_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.xyz), BPF_PROG_TYPE_KPROBE, "xyz_type");
-+
-+	skel->rodata->my_pid = getpid();
-+
-+	/* now attempt to load everything */
-+	err = test_custom_sec_handlers__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	/* now try to auto-attach everything */
-+	err = test_custom_sec_handlers__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger programs */
-+	usleep(1);
-+
-+	/* SEC("abc") is set to not auto-loaded */
-+	ASSERT_FALSE(skel->bss->abc1_called, "abc1_called");
-+	ASSERT_TRUE(skel->bss->abc2_called, "abc2_called");
-+	ASSERT_TRUE(skel->bss->custom1_called, "custom1_called");
-+	ASSERT_TRUE(skel->bss->custom2_called, "custom2_called");
-+	/* SEC("xyz") shouldn't be auto-attached */
-+	ASSERT_FALSE(skel->bss->xyz_called, "xyz_called");
-+
-+cleanup:
-+	test_custom_sec_handlers__destroy(skel);
-+
-+	ASSERT_OK(libbpf_unregister_prog_handler(fallback_id), "unregister_fallback");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
-new file mode 100644
-index 000000000000..2df368783678
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+const volatile int my_pid;
-+
-+bool abc1_called;
-+bool abc2_called;
-+bool custom1_called;
-+bool custom2_called;
-+bool xyz_called;
-+
-+SEC("abc")
-+int abc1(void *ctx)
-+{
-+	abc1_called = true;
-+	return 0;
-+}
-+
-+SEC("abc/whatever")
-+int abc2(void *ctx)
-+{
-+	abc2_called = true;
-+	return 0;
-+}
-+
-+SEC("custom")
-+int custom1(void *ctx)
-+{
-+	custom1_called = true;
-+	return 0;
-+}
-+
-+SEC("custom/something")
-+int custom2(void *ctx)
-+{
-+	custom2_called = true;
-+	return 0;
-+}
-+
-+SEC("xyz/blah")
-+int xyz(void *ctx)
-+{
-+	xyz_called = true;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+>  .../bpf/prog_tests/custom_sec_handlers.c      | 136 ++++++++++++++++++
+>  .../bpf/progs/test_custom_sec_handlers.c      |  51 +++++++
+>  2 files changed, 187 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+>
 
+[...]
