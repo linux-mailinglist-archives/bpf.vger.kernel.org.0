@@ -2,77 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E40054AAC83
-	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 21:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FB9E4AAC8E
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 21:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234628AbiBEUgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Feb 2022 15:36:08 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:39548 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232428AbiBEUgI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Feb 2022 15:36:08 -0500
-Date:   Sat, 5 Feb 2022 21:36:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644093366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=560cbxN7mKYo1ZjnfDECl4wv6yBbemNlcEq8eApjrmg=;
-        b=sUipOuadgP+bmhmZbl3Tev+Kh6wONkj0ICpPs3vPEAxFvq3btg2jdeSe1BBznz0L2f5HLP
-        rYfUM7/1cSfHsK+easkj0K7tWlyFSvW3G3eSlDW+G7GwPfO7Z6gpDkQNe7vrh47GYwZOd1
-        I2qIfy42TmoAE39SMwP1moDPrwPhHGlnnb1h6av5IVZkWOEX+hm9ibgh86hjW98i42noEv
-        8AqZX829cMzShAEoH7+V5FtzT54ND0SXJLkuyelCcFFODZtj9xBbZQdyfXkAXGnW6EEfKa
-        zNisPPVP/T0E7a1lkpM8DbTLKJKqixDqvX9++mtf25V2f2u0+o2FHXBZyKjTDQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644093366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=560cbxN7mKYo1ZjnfDECl4wv6yBbemNlcEq8eApjrmg=;
-        b=sAtyET1A0Wt76uXkqVcl/txZ46Gsxx5lQS4hHRqHjxITVo68Nykmw5xSfhBeEAhTgs93zi
-        2uK2ijbiv13ZerAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH net-next v2 2/3] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-Message-ID: <Yf7ftf+6j52opu5w@linutronix.de>
-References: <20220204201259.1095226-1-bigeasy@linutronix.de>
- <20220204201259.1095226-3-bigeasy@linutronix.de>
- <20220204201715.44f48f4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S236550AbiBEUqw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Feb 2022 15:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45480 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235807AbiBEUqw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Feb 2022 15:46:52 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12715C061348
+        for <bpf@vger.kernel.org>; Sat,  5 Feb 2022 12:46:51 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id w7so11874102ioj.5
+        for <bpf@vger.kernel.org>; Sat, 05 Feb 2022 12:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M9N2jXLn+S5MkUBFgcBd2oA+wekY4hWmrLo2DP2fH+c=;
+        b=GeMbgvrKgWeabysnDujwtnCIADOwlMbusYGIU4uhqyuy1Ua+r7Jp1iS815ClC3D/MD
+         RZVoEmUvQhOLDv6qvrpZv8leCXYz/cFKuiUsqMB3zQ5H9aLOHjvAeXkSQvwtMWTCqhbz
+         48igrE2psVBNlR7kOww29Tt4w1yVi1D3UkFi389K6urnD3cHp1/HCnESRjXs+i7YaoP3
+         BdWZUaR4upRmLKpxMlqFk3tl82qAPvErB28tpGvmVP2kGpy+0E0esKkl/QXaaJK/Hcmw
+         FcOL1PK0XCff1mpZ16eJ/CVQ2PIC/kZTSILet2QF3o3KBJaAF/o9jm7TEHCSX158f+a3
+         w/dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M9N2jXLn+S5MkUBFgcBd2oA+wekY4hWmrLo2DP2fH+c=;
+        b=nLiT55Kuu2vB/Cegj4Eczj6OkqDPXjEm+g7yr1uu70CroMALbbpv5yEMki42+EgfuY
+         y7YtO89Bx9Gs2eq4xRNQmlXsUPE5e56jzwu+kJC+dEPrTPTmmIwTan7CiXt6YMTeBb3O
+         LZsbyrZf0A8pgz6LEF8YRmOIpPENC3hUvWLEu2XtnsfK9ZahCUoqObwtTgWPPOrEhRgY
+         rg3FowDd0OIjExLKXdjYzVeGoQi9PAJ92Iu5j68DvuYYEZAHxBNXkDOpdS3t4hhDsjKY
+         DdFmf6pTIMvvxvWJ1hDLbyUHGQcUmwC2a9326CygWt98a0w3D1Ic4eiuzpy2FgFaJERj
+         T4BQ==
+X-Gm-Message-State: AOAM531yDMjTqg9X5lzIKwHjJTYNNGJdbSrKHRZ2m+xa9Rw6hHosH0/k
+        nyNnNDD+I8itzXU6UzGUdsgrfkg5EAXjGTfslvc=
+X-Google-Smtp-Source: ABdhPJyQxhkC3kf0c3W+tGFvv/4T0Zth4VpBL0JMstHwyYs94Sm2V8VtO0vFGZdR7TGgqRmAaL0//kITPPeGun4beYU=
+X-Received: by 2002:a5e:a806:: with SMTP id c6mr2304130ioa.112.1644094010311;
+ Sat, 05 Feb 2022 12:46:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220204201715.44f48f4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <cover.1643973917.git.naveen.n.rao@linux.vnet.ibm.com>
+In-Reply-To: <cover.1643973917.git.naveen.n.rao@linux.vnet.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 5 Feb 2022 12:46:39 -0800
+Message-ID: <CAEf4BzYAK3g1ELm7UeTDMJWquX2CUS3PJnzRx4i-LLBTVKH2mA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/3] selftests/bpf: Fix tests on non-x86 architectures
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Hari Bathini <hbathini@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022-02-04 20:17:15 [-0800], Jakub Kicinski wrote:
-> On Fri,  4 Feb 2022 21:12:58 +0100 Sebastian Andrzej Siewior wrote:
-> > +int __netif_rx(struct sk_buff *skb)
-> > +{
-> > +	int ret;
-> > +
-> > +	trace_netif_rx_entry(skb);
-> > +	ret = netif_rx_internal(skb);
-> > +	trace_netif_rx_exit(ret);
-> > +	return ret;
-> > +}
-> 
-> Any reason this is not exported? I don't think there's anything wrong
-> with drivers calling this function, especially SW drivers which already
-> know to be in BH. I'd vote for roughly all of $(ls drivers/net/*.c) to
-> get the same treatment as loopback.
+On Fri, Feb 4, 2022 at 3:36 AM Naveen N. Rao
+<naveen.n.rao@linux.vnet.ibm.com> wrote:
+>
+> The first patch fixes an issue with bpf_syscall_macro test to work
+> properly on architectures that don't have a syscall wrapper. The second
+> patch updates SYS_PREFIX for architectures without a syscall wrapper.
+> The final patch fixes some of the tests to use correct syscall entry
+> names on non-x86 architectures.
+>
+> - Naveen
+>
+>
+> Naveen N. Rao (3):
+>   selftests/bpf: Use correct pt_regs on architectures without syscall
+>     wrapper
+>   selftests/bpf: Use "__se_" prefix on architectures without syscall
+>     wrapper
+>   selftests/bpf: Fix tests to use arch-dependent syscall entry points
+>
 
-Don't we end up in the same situation as netif_rx() vs netix_rx_ni()?
+Ilya's patch set made the first patch unnecessary, but I've applied
+2nd and 3rd to bpf-next, thanks!
 
-Sebastian
+
+>  tools/testing/selftests/bpf/progs/bloom_filter_bench.c | 7 ++++---
+>  tools/testing/selftests/bpf/progs/bloom_filter_map.c   | 5 +++--
+>  tools/testing/selftests/bpf/progs/bpf_loop.c           | 9 +++++----
+>  tools/testing/selftests/bpf/progs/bpf_loop_bench.c     | 3 ++-
+>  tools/testing/selftests/bpf/progs/bpf_misc.h           | 2 +-
+>  tools/testing/selftests/bpf/progs/bpf_syscall_macro.c  | 4 ++++
+>  tools/testing/selftests/bpf/progs/fexit_sleep.c        | 9 +++++----
+>  tools/testing/selftests/bpf/progs/perfbuf_bench.c      | 3 ++-
+>  tools/testing/selftests/bpf/progs/ringbuf_bench.c      | 3 ++-
+>  tools/testing/selftests/bpf/progs/test_ringbuf.c       | 3 ++-
+>  tools/testing/selftests/bpf/progs/trace_printk.c       | 3 ++-
+>  tools/testing/selftests/bpf/progs/trace_vprintk.c      | 3 ++-
+>  tools/testing/selftests/bpf/progs/trigger_bench.c      | 9 +++++----
+>  13 files changed, 39 insertions(+), 24 deletions(-)
+>
+>
+> base-commit: 227a0713b319e7a8605312dee1c97c97a719a9fc
+> --
+> 2.34.1
+>
