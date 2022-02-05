@@ -2,106 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 843734AA4CA
-	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 00:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2B64AA51D
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 01:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbiBDX66 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Feb 2022 18:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378237AbiBDX64 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Feb 2022 18:58:56 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF7D4DF37719
-        for <bpf@vger.kernel.org>; Fri,  4 Feb 2022 15:58:54 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id 127-20020a250f85000000b00611ab6484abso16067600ybp.23
-        for <bpf@vger.kernel.org>; Fri, 04 Feb 2022 15:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=LMIBeix/VUud47vb1syBaEi+HAAPiTDgJPRgu2Qqg7E=;
-        b=B31GRYpIJ18EazuZQ8NcHeRwuq9ZzoLaYzdiOcNLtk80g0wvHbBOHwwHRa7sPhwx5Q
-         qlxPHik8tNtK9bigDev1lA5hWWLx9aQqdG5cRL+1MuPpQKxtjAxcLMINFtMBfaVt96se
-         rkUaly2bUy8IdQPIKASNTLyqzqe0VZximtX9doHjTrEeGiDdfEw2lR2YaRMDqYVNqHCP
-         aK5bVj8tKh/ruwUx4SSJRJLI5AGpmBV6vQ7UiaRJ8d8C66NoeIdsb1juP8dMkBfoSimh
-         n2PaaqI7XcEf6zj1MzHlaRLXTa+aBzU+bIxUKU8l7Dv4pKET3NUErtxPotd8uiuP+Di0
-         D9zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=LMIBeix/VUud47vb1syBaEi+HAAPiTDgJPRgu2Qqg7E=;
-        b=27alKFgyjmTSO/aAehYyIrHH+sXxRrtIVH8UPWupiuFhJVEdk09i/JbGboy084bmCp
-         PvuCzMY1+5/2DAZFehG1z7mCe5/EzKM8RLk/mXB0XcA7Xtximr1ZKdvT4zf2FnBphiSa
-         HPjOHNb6CH3kbByM/nRHPvEIqz8QReVjv1U3TzrE3zPCEUE17pWteaP74rqu/g8QT9ne
-         FOsHYlje7F1s6qDFrr0enKxkoZxPzmFqVxIHTcTTORipvzL26mz1scSRsgVqTcnftWDm
-         keLIEYhO6yEccjeb7JMArbIhZBQZiBKqXXAmE37uhbnTeq98r/FcYs3m2jK5oxBNr3y/
-         W2lQ==
-X-Gm-Message-State: AOAM5301RYuorOhujbrgXY5ezU6r/t0679ov0x5lfbPxhOI8iX+Xyy3d
-        aL8BdwkbDpob6LCcW64sACthEBY=
-X-Google-Smtp-Source: ABdhPJxu5jyHPmVmutaq15G1Cfhs4nGeB5BxVLIXZeEAnC2Rla0Jm7pwxWD/5HDffBvEVIgr6NTsVXc=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:f002:9b32:36ff:cceb])
- (user=sdf job=sendgmr) by 2002:a25:e7cf:: with SMTP id e198mr1659399ybh.253.1644019134119;
- Fri, 04 Feb 2022 15:58:54 -0800 (PST)
-Date:   Fri,  4 Feb 2022 15:58:49 -0800
-In-Reply-To: <20220204235849.14658-1-sdf@google.com>
-Message-Id: <20220204235849.14658-2-sdf@google.com>
-Mime-Version: 1.0
-References: <20220204235849.14658-1-sdf@google.com>
-X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
-Subject: [PATCH bpf-next 2/2] bpf: test_run: fix overflow in bpf_test_finish
- frags parsing
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        Stanislav Fomichev <sdf@google.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+        id S231897AbiBEAgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Feb 2022 19:36:41 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30438 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230266AbiBEAgk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Feb 2022 19:36:40 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 214NnKrQ023803;
+        Sat, 5 Feb 2022 00:36:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=19D2PusZXb2cI6QW+3CBlSsDPrdO7trXqWy92AKGvk4=;
+ b=lkP7pO9Gzv3Dr14fpwGziUV+bbH2sUVWoZwrhX+zeKwt1YtaPFN6iZv2kc1UFfoMqcmv
+ RPPY3odaIFzWm6EEyn37NbIAxH24efWLlO0E0jxKusXi1eGdwhbcfInN8pZPSiS2Pft5
+ 2mUprPR2//b+nLa4a520BOpyOY1r+yXO06PVa7jG+yBnURFyN1AKOADsn6pwdPR/RrjY
+ Bvphfn3oiM/YeHEH8Akaov6oJgTHQdpSXCPt2oE2ZgOyGeYbpsOcxYZPPvZP4Cro4G/y
+ vpAPgRMPcNsPAWJrS00hNOey5MQ3l8d935sBf57RS6LaJR+fpHN5lRdjGuyLyrqDy1Hg sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0rj617nh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 00:36:20 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2150aKSE022980;
+        Sat, 5 Feb 2022 00:36:20 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e0rj617n1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 00:36:20 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2150TIZ7018226;
+        Sat, 5 Feb 2022 00:36:17 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3e0r0u8c7u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 00:36:17 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2150aExV46072182
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Feb 2022 00:36:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5FF3B5204F;
+        Sat,  5 Feb 2022 00:36:14 +0000 (GMT)
+Received: from osiris (unknown [9.145.82.196])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id D76FE5204E;
+        Sat,  5 Feb 2022 00:36:13 +0000 (GMT)
+Date:   Sat, 5 Feb 2022 01:36:12 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v3 02/11] s390/bpf: Add orig_gpr2 to user_pt_regs
+Message-ID: <Yf3GfAkkAyXP91mW@osiris>
+References: <20220204145018.1983773-1-iii@linux.ibm.com>
+ <20220204145018.1983773-3-iii@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220204145018.1983773-3-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: bv8q41x_521BhacVNeeIJeOGw8X3W63C
+X-Proofpoint-GUID: ZzT731UMlUUDs5YpC9IUpmz1MEUfvB9I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-04_07,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 phishscore=0 spamscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=805 impostorscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202050000
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This place also uses signed min_t and passes this singed int to
-copy_to_user (which accepts unsigned argument). I don't think
-there is an issue, but let's be consistent.
+On Fri, Feb 04, 2022 at 03:50:09PM +0100, Ilya Leoshkevich wrote:
+> user_pt_regs is used by eBPF in order to access userspace registers -
+> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
+> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
+> syscall argument from eBPF programs, we need to export orig_gpr2.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  arch/s390/include/asm/ptrace.h      | 2 +-
+>  arch/s390/include/uapi/asm/ptrace.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-Fixes: 7855e0db150ad ("bpf: test_run: add xdp_shared_info pointer in bpf_test_finish signature")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- net/bpf/test_run.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 5819a7a5e3c6..cb150f756f3d 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -154,7 +154,8 @@ static int bpf_test_finish(const union bpf_attr *kattr,
- 			goto out;
- 
- 		if (sinfo) {
--			int i, offset = len, data_len;
-+			int i, offset = len;
-+			u32 data_len;
- 
- 			for (i = 0; i < sinfo->nr_frags; i++) {
- 				skb_frag_t *frag = &sinfo->frags[i];
-@@ -164,7 +165,7 @@ static int bpf_test_finish(const union bpf_attr *kattr,
- 					break;
- 				}
- 
--				data_len = min_t(int, copy_size - offset,
-+				data_len = min_t(u32, copy_size - offset,
- 						 skb_frag_size(frag));
- 
- 				if (copy_to_user(data_out + offset,
--- 
-2.35.0.263.gb82422642f-goog
-
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
