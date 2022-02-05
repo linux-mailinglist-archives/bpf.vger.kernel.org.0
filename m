@@ -2,219 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A53AD4AA789
-	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 09:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDC14AA8C8
+	for <lists+bpf@lfdr.de>; Sat,  5 Feb 2022 13:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351125AbiBEIKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Feb 2022 03:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231845AbiBEIKX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Feb 2022 03:10:23 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99599C061346
-        for <bpf@vger.kernel.org>; Sat,  5 Feb 2022 00:10:21 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d1so7068774plh.10
-        for <bpf@vger.kernel.org>; Sat, 05 Feb 2022 00:10:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mRwDG3dHdSCt9JBk2JbCS8GWF1RzkAIy/xnl8iR8W7Y=;
-        b=Efq/YfxkqG5CBZkRIDisd5gefe9br7yxLyzgSlJN58z1Z1XQqxfejULxQmW8IMxsK6
-         pbUElT+8PCYsg8YA/RUK6wr+//t3jug9t+qemcQ5s5H06POYAojLHHsWPMPCAQ7L4XFZ
-         M80w3rSQrn1K0SQBHRJdaEV/7J0Ps+vnOlZ/zk6uarHFQXTDi0zNN99DAZJuOwHkAofb
-         35vVxceWkkJxUCysdnD88PUHrKqu5TdxmfL4iy+ZMTgQHFNE4zlMPmsrmK44dyRJCU/0
-         zK8JAJ5CzTqIgFiLlHyG5eKoi4YgIFtaxoh37za2slQitkcVCkmGhPDYMNielJbbCtha
-         RHJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mRwDG3dHdSCt9JBk2JbCS8GWF1RzkAIy/xnl8iR8W7Y=;
-        b=0zPAv+v1SWs61tU7A55awWp42EIyyDh+RW+g1JY4PT7fA0EJLQGUdnScDfI25Udug5
-         PBEJw72rjmQbFjpXp97c1iyYpB0XKCOFOAsOYCK3eut3RQd2AFL68VD9C27uFNjvzfj3
-         AgOW7hqpbs0uNN8jviwmZLY0yFl0ITmF3zf2O0MkyrdPRh69udmbp5qUNuLSZE0h4Hlx
-         0X8jDdZtMKVcZmbhgMmUa9sqBFxeEVZMLPmlOaRSIyMtZeq1p3825cX88hDlDEZlDyzt
-         cvnJYqNQ2x7U8A3rBvCNa9PrTW1h8zIv9p4E+7lpAdrca8dH7gfvmd/ohIsrsL4ZcU7w
-         7fUA==
-X-Gm-Message-State: AOAM531UBwd+KNCPc+aFu9gce1eB1DPYLVEYLaJxVBubLjPBRMKvVUFG
-        m0Lj9jM4vccrFCYb1eHVvL78K73XUmjWJqI/n4s=
-X-Google-Smtp-Source: ABdhPJyzVREfDn/ZPdBiHrLF3VHliNAMRn8haobaKdARf0TzcgZ2O8oD1Q04EkQAa1rtwqfOjRdutw==
-X-Received: by 2002:a17:902:8483:: with SMTP id c3mr7095691plo.19.1644048620689;
-        Sat, 05 Feb 2022 00:10:20 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([134.195.101.46])
-        by smtp.gmail.com with ESMTPSA id k16sm5118928pfu.140.2022.02.05.00.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Feb 2022 00:10:19 -0800 (PST)
-Date:   Sat, 5 Feb 2022 16:10:13 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     German Gomez <german.gomez@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        id S232587AbiBEMhy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Feb 2022 07:37:54 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25442 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232229AbiBEMhx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Feb 2022 07:37:53 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 215AYQwb004642;
+        Sat, 5 Feb 2022 12:37:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=UOzQXehQQiMF+U2dTPxLPUXcUb3QgMjoDAxXbc2K7YQ=;
+ b=c7X2K90wa9LBfnmKT3Wjnbjh3YO9IMfkzNsLT9hGdeEvLKl74sYBieRBRO1fioQRKBug
+ yUN3Tdbxvn8h2UgyNelVgACerg8bgEotgTqjtU/9TIcGVnjicYI28r5yn8W6YP/m+Yc8
+ EewlaBZb31duahLl0/EZglDaSmUKHwMEIvBFcyYZ5JbesIvQVsV90V7MWW6qahc9fT0S
+ M1YqWMWZ6vE90bu2dBwUPtgBwoaS4S+uPVSIyuSL8bBQ0hl7uftchO+4b2zatk8bxFnl
+ K3WfgHv8vZRhY/AK3sTilGLN6glvdFnJv4fcO5ga5ifeBTGJ8NPsTudGCqI5C0xxDfrf /Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e1hq7nvxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 12:37:27 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 215CZ3Ds024916;
+        Sat, 5 Feb 2022 12:37:26 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e1hq7nvxa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 12:37:26 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 215CHdZY004244;
+        Sat, 5 Feb 2022 12:37:25 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3e1gghhuf0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 05 Feb 2022 12:37:25 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 215CRNLs38797606
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 5 Feb 2022 12:27:23 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CCC294C046;
+        Sat,  5 Feb 2022 12:37:21 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5BD024C044;
+        Sat,  5 Feb 2022 12:37:21 +0000 (GMT)
+Received: from localhost (unknown [9.171.4.88])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat,  5 Feb 2022 12:37:21 +0000 (GMT)
+Date:   Sat, 5 Feb 2022 13:37:20 +0100
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         bpf@vger.kernel.org
-Subject: Re: [PATCH] perf test: Add perf_event_attr tests for the arm_spe
- event
-Message-ID: <20220205081013.GA391033@leoy-ThinkPad-X240s>
-References: <20220126160710.32983-1-german.gomez@arm.com>
+Subject: Re: [PATCH bpf-next v3 02/11] s390/bpf: Add orig_gpr2 to user_pt_regs
+Message-ID: <your-ad-here.call-01644064640-ext-0194@work.hours>
+References: <20220204145018.1983773-1-iii@linux.ibm.com>
+ <20220204145018.1983773-3-iii@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220126160710.32983-1-german.gomez@arm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+In-Reply-To: <20220204145018.1983773-3-iii@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: yQe7oe3RDCR79BTfz5PaJzBpgJgu6GhQ
+X-Proofpoint-ORIG-GUID: h0_rlAEtT75yaVmtxk96e9v6TPJ212Xo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-05_07,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ mlxscore=0 adultscore=0 suspectscore=0 mlxlogscore=846 impostorscore=0
+ spamscore=0 bulkscore=0 clxscore=1011 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202050084
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi German,
-
-On Wed, Jan 26, 2022 at 04:07:09PM +0000, German Gomez wrote:
-> Adds a couple of perf_event_attr tests for the fix introduced in [1].
-> The tests check that the correct sample_period value is set in the
-> struct perf_event_attr of the arm_spe events.
+On Fri, Feb 04, 2022 at 03:50:09PM +0100, Ilya Leoshkevich wrote:
+> user_pt_regs is used by eBPF in order to access userspace registers -
+> see commit 466698e654e8 ("s390/bpf: correct broken uapi for
+> BPF_PROG_TYPE_PERF_EVENT program type"). In order to access the first
+> syscall argument from eBPF programs, we need to export orig_gpr2.
 > 
-> [1]: https://lore.kernel.org/all/20220118144054.2541-1-german.gomez@arm.com/
-> 
-> Signed-off-by: German Gomez <german.gomez@arm.com>
-
-I tested this patch with two commands:
-
-# PERF_TEST_ATTR=/tmp /usr/bin/python2 ./tests/attr.py -d ./tests/attr/ \
-        -p ./perf -vvvvv -t test-record-spe-period
-# PERF_TEST_ATTR=/tmp /usr/bin/python2 ./tests/attr.py -d ./tests/attr/ \
-        -p ./perf -vvvvv -t test-record-spe-period-term
-
-Both testing can pass on Hisilicon D06 board.
-
-One question: I'm a bit concern this case will fail on some Arm64
-platforms which doesn't contain Arm SPE modules.  E.g. below commands
-will always fail on Arm64 platforms if SPE module is absent.  So I am
-wandering if we can add extra checking ARM SPE event is existed or not?
-
-  # ./perf test list
-   17: Setup struct perf_event_attr
-  # ./perf test 17
-
-Thanks,
-Leo
-
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  tools/perf/tests/attr/README                  |  2 +
->  tools/perf/tests/attr/base-record-spe         | 40 +++++++++++++++++++
->  tools/perf/tests/attr/test-record-spe-period  | 12 ++++++
->  .../tests/attr/test-record-spe-period-term    | 12 ++++++
->  4 files changed, 66 insertions(+)
->  create mode 100644 tools/perf/tests/attr/base-record-spe
->  create mode 100644 tools/perf/tests/attr/test-record-spe-period
->  create mode 100644 tools/perf/tests/attr/test-record-spe-period-term
-> 
-> diff --git a/tools/perf/tests/attr/README b/tools/perf/tests/attr/README
-> index 1116fc6bf2ac..454505d343fa 100644
-> --- a/tools/perf/tests/attr/README
-> +++ b/tools/perf/tests/attr/README
-> @@ -58,6 +58,8 @@ Following tests are defined (with perf commands):
->    perf record -c 100 -P kill                    (test-record-period)
->    perf record -c 1 --pfm-events=cycles:period=2 (test-record-pfm-period)
->    perf record -R kill                           (test-record-raw)
-> +  perf record -c 2 -e arm_spe_0// -- kill       (test-record-spe-period)
-> +  perf record -e arm_spe_0/period=3/ -- kill    (test-record-spe-period-term)
->    perf stat -e cycles kill                      (test-stat-basic)
->    perf stat kill                                (test-stat-default)
->    perf stat -d kill                             (test-stat-detailed-1)
-> diff --git a/tools/perf/tests/attr/base-record-spe b/tools/perf/tests/attr/base-record-spe
-> new file mode 100644
-> index 000000000000..08fa96b59240
-> --- /dev/null
-> +++ b/tools/perf/tests/attr/base-record-spe
-> @@ -0,0 +1,40 @@
-> +[event]
-> +fd=*
-> +group_fd=-1
-> +flags=*
-> +cpu=*
-> +type=*
-> +size=*
-> +config=*
-> +sample_period=*
-> +sample_type=*
-> +read_format=*
-> +disabled=*
-> +inherit=*
-> +pinned=*
-> +exclusive=*
-> +exclude_user=*
-> +exclude_kernel=*
-> +exclude_hv=*
-> +exclude_idle=*
-> +mmap=*
-> +comm=*
-> +freq=*
-> +inherit_stat=*
-> +enable_on_exec=*
-> +task=*
-> +watermark=*
-> +precise_ip=*
-> +mmap_data=*
-> +sample_id_all=*
-> +exclude_host=*
-> +exclude_guest=*
-> +exclude_callchain_kernel=*
-> +exclude_callchain_user=*
-> +wakeup_events=*
-> +bp_type=*
-> +config1=*
-> +config2=*
-> +branch_sample_type=*
-> +sample_regs_user=*
-> +sample_stack_user=*
-> diff --git a/tools/perf/tests/attr/test-record-spe-period b/tools/perf/tests/attr/test-record-spe-period
-> new file mode 100644
-> index 000000000000..75f8c9cd8e3f
-> --- /dev/null
-> +++ b/tools/perf/tests/attr/test-record-spe-period
-> @@ -0,0 +1,12 @@
-> +[config]
-> +command = record
-> +args    = --no-bpf-event -c 2 -e arm_spe_0// -- kill >/dev/null 2>&1
-> +ret     = 1
-> +arch    = aarch64
-> +
-> +[event-10:base-record-spe]
-> +sample_period=2
-> +freq=0
-> +
-> +# dummy event
-> +[event-1:base-record-spe]
-> diff --git a/tools/perf/tests/attr/test-record-spe-period-term b/tools/perf/tests/attr/test-record-spe-period-term
-> new file mode 100644
-> index 000000000000..8f60a4fec657
-> --- /dev/null
-> +++ b/tools/perf/tests/attr/test-record-spe-period-term
-> @@ -0,0 +1,12 @@
-> +[config]
-> +command = record
-> +args    = --no-bpf-event -e arm_spe_0/period=3/ -- kill >/dev/null 2>&1
-> +ret     = 1
-> +arch    = aarch64
-> +
-> +[event-10:base-record-spe]
-> +sample_period=3
-> +freq=0
-> +
-> +# dummy event
-> +[event-1:base-record-spe]
-> -- 
-> 2.25.1
-> 
+>  arch/s390/include/asm/ptrace.h      | 2 +-
+>  arch/s390/include/uapi/asm/ptrace.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+
+Acked-by: Vasily Gorbik <gor@linux.ibm.com>
