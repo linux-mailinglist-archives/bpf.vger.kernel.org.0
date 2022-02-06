@@ -2,67 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0892D4AADB4
-	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 05:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28034AAF7C
+	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 14:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229452AbiBFEbl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Feb 2022 23:31:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S239931AbiBFNlM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Feb 2022 08:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbiBFEbj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Feb 2022 23:31:39 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C77C0612A4;
-        Sat,  5 Feb 2022 20:31:39 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id g15-20020a17090a67cf00b001b7d5b6bedaso10048777pjm.4;
-        Sat, 05 Feb 2022 20:31:39 -0800 (PST)
+        with ESMTP id S234549AbiBFNlL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Feb 2022 08:41:11 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34CBC06173B
+        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 05:41:09 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id y15-20020a17090a474f00b001b88562650aso1852192pjg.0
+        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 05:41:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vC14xuAwLUgO0ZY1RnnsKKL6V5krh89PI7ayQM1Ks3s=;
-        b=okezRA0Grqz/tzghW4Wy1w/9fqEZi2qYKrGWDc6NzvQky0EW7kqlFKvBkgcftNAa7k
-         DX5FiOvqMknoEtuKPub0bwYxp63bqa7Aam1lvNRMQOYyf247k34Ylres9c2QxgovL8U6
-         xoWX4111jzWJT1Zeim0ytqxXVdJqUyeno+yOnr2ygBJSEr22dicX4Sh+c4rkdQhPKig9
-         +3f7zJZXvQyQFU0oJod44bOrNWSEN4iV5IwQC/KTiEfvwytZa+z3/+onIZmX25+MJzK9
-         UYftrtGdmaGMy/qemm+/sWefF9Lk+F1R+n4a43vk3slPIhGMoQ4lLaxNIOzICOxBTOAE
-         HXGA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7MdgxYw+wYZgp12jhKedSB9Ak7hju2GWIc/H6lHz74w=;
+        b=mvkxnUszZYptot4wafSVqlQmcH7ACYQ6BakOyTJ6xQw1pcQmSsM2W7JTPQAtewmHz8
+         vCsYtZ46Ip+R4/Sngm02w0RZfBXsVy1FV4uHqZe6JlVneVyX5+/wq007CtmJVzdjtkBC
+         bfdLbCcVKnODhB10Cp3gV26ZKP7mGbB/bZgMNHL4aeoeWo5kZdIPNCZpfVzoN2z8zd3U
+         Ylz+5qPQYBDyKKic4LH4ARquoYpPaQT8+skeAikQSFmJuTFKTglqFszDi/qiryWDPwgZ
+         le1Wpir/gDyyNlAzMaeHo+nn1K9pEv/FAQzFViYVwBXQVR7LK2fvh8B7FS0EkvN0XFzP
+         CsYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vC14xuAwLUgO0ZY1RnnsKKL6V5krh89PI7ayQM1Ks3s=;
-        b=10+PdTE6YIzkgTSZS1kTndoZ7h0dhBOluQ1m/2w0uCSxEfcSOyBJVybo4ty5L7vt2m
-         6zFu89gpN3QCaFvWxytAP+3PTPrcSuUaV7nCOoCoCgRB2/Zq/gBDhsG0jvNumxlbsfBW
-         bl+vPg/tyIpRadk3laO6B8XgNdxJNsZU630Bg1w9+/yIDbyHh2UaHe/XfbzrH9gJfRnz
-         CiJivkD3WIX+YkZFLa4uMB/C//7AxS1QGirhjeWb4q8norJ2iirOWtRgNCjROXFp/Je8
-         F8DJm0cuDLM1JWocM1azRFm2OUvfqSQmu0deVh1Crxi5RVPPnb7IUcwTF9YcbnV7VXbi
-         8MFA==
-X-Gm-Message-State: AOAM530zPX2SEWEQaEN2D26ZYdFB9vktGbbPvY6OQnwwU+1BwyJ7CliR
-        K2uhR4VtAW4Etz3sNe2M3Ec=
-X-Google-Smtp-Source: ABdhPJxHemv7/4d2TTNW99w74pq5dNA87ejaG5CQ+pJwq+F1Tg/hbMbjVv+k9a2PdXXdmmgKdlikog==
-X-Received: by 2002:a17:90a:c095:: with SMTP id o21mr8327250pjs.117.1644121898710;
-        Sat, 05 Feb 2022 20:31:38 -0800 (PST)
-Received: from localhost (61-224-163-139.dynamic-ip.hinet.net. [61.224.163.139])
-        by smtp.gmail.com with ESMTPSA id y8sm5069938pgs.31.2022.02.05.20.31.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7MdgxYw+wYZgp12jhKedSB9Ak7hju2GWIc/H6lHz74w=;
+        b=yRR1Ac+WXs+t1F/BG6L315t4lfNeVvq5DFPOkMOR96BDIG99JgXvc+5aOtZgT/X4RL
+         HzptYskZy1prYhkbDQuotimic2etM5r3yEwybScFAscD1Fpb2OMq/tqqMigZvDOVtUhg
+         oN9Boa/c2ajA4IkEdFPEGQSSSFmNzGKLAR3AaPv34B6BapoXOgTR+pMWGYUtSYfrEO0c
+         GeLAHA4tHXzEKXFMAbPypSYwrA0VSOY41XS4Pcv3wnr/HPk1CEFUJRhrIk0latLE6qpK
+         rWVHVR3zvM0jW9PmGMP+xbGDU24cN6rew0AAYTcWMGawRqL2heLpOw12IzDwLSHWEmbp
+         LXVg==
+X-Gm-Message-State: AOAM532UlLGkd2wn1Apbr2mecFQm9WXlt6S8eIPgSGZaJnEeiYxB8dL/
+        A7kb94/Wn30Gktktv1QjmB2wSxBy/Vnat/YM
+X-Google-Smtp-Source: ABdhPJwTBm8rc8fX5++Tcn8adk/8qQt6tVrkabLGp5Pr0G6HLj6sa38nhY3U7eodSXXoeDJ19sDIwg==
+X-Received: by 2002:a17:903:234b:: with SMTP id c11mr12183642plh.157.1644154869351;
+        Sun, 06 Feb 2022 05:41:09 -0800 (PST)
+Received: from chenhengqi-X1.. ([113.64.186.12])
+        by smtp.gmail.com with ESMTPSA id e17sm8500982pfv.101.2022.02.06.05.41.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Feb 2022 20:31:38 -0800 (PST)
-From:   Hou Tao <hotforest@gmail.com>
-X-Google-Original-From: Hou Tao <houtao1@huawei.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, houtao1@huawei.com
-Subject: [PATCH bpf-next v4 2/2] selftests/bpf: check whether s32 is sufficient for kfunc offset
-Date:   Sun,  6 Feb 2022 12:31:07 +0800
-Message-Id: <20220206043107.18549-3-houtao1@huawei.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220206043107.18549-1-houtao1@huawei.com>
-References: <20220206043107.18549-1-houtao1@huawei.com>
+        Sun, 06 Feb 2022 05:41:09 -0800 (PST)
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     andrii@kernel.org, hengqi.chen@gmail.com
+Subject: [PATCH bpf-next v2 0/2] libbpf: Add syscall-specific variant of BPF_KPROBE
+Date:   Sun,  6 Feb 2022 21:40:49 +0800
+Message-Id: <20220206134051.721574-1-hengqi.chen@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,78 +66,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In add_kfunc_call(), bpf_kfunc_desc->imm with type s32 is used to
-represent the offset of called kfunc from __bpf_call_base, so
-add a test to ensure that the offset will not be overflowed.
+Add new macro BPF_KPROBE_SYSCALL, which provides easy access to syscall
+input arguments. See [0] and [1] for background.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/ksyms_module.c   | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
+  [0]: https://github.com/libbpf/libbpf-bootstrap/issues/57
+  [1]: https://github.com/libbpf/libbpf/issues/425
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-index a1ebac70ec29..8055fbbf720b 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
-@@ -3,9 +3,49 @@
- 
- #include <test_progs.h>
- #include <network_helpers.h>
-+#include <trace_helpers.h>
- #include "test_ksyms_module.lskel.h"
- #include "test_ksyms_module.skel.h"
- 
-+/*
-+ * Check whether or not s32 in bpf_kfunc_desc is sufficient
-+ * to represent the offset between bpf_testmod_test_mod_kfunc
-+ * and __bpf_call_base.
-+ */
-+static void test_ksyms_module_valid_offset(void)
-+{
-+	struct test_ksyms_module *skel;
-+	unsigned long long kfunc_addr;
-+	unsigned long long base_addr;
-+	long long actual_offset;
-+	int used_offset;
-+	int err;
-+
-+	if (!env.has_testmod) {
-+		test__skip();
-+		return;
-+	}
-+
-+	/* Ensure kfunc call is supported */
-+	skel = test_ksyms_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_ksyms_module__open"))
-+		return;
-+
-+	err = kallsyms_find("bpf_testmod_test_mod_kfunc", &kfunc_addr);
-+	if (!ASSERT_OK(err, "find kfunc addr"))
-+		goto cleanup;
-+
-+	err = kallsyms_find("__bpf_call_base", &base_addr);
-+	if (!ASSERT_OK(err, "find base addr"))
-+		goto cleanup;
-+
-+	used_offset = kfunc_addr - base_addr;
-+	actual_offset = kfunc_addr - base_addr;
-+	ASSERT_EQ((long long)used_offset, actual_offset, "kfunc offset overflowed");
-+cleanup:
-+	test_ksyms_module__destroy(skel);
-+}
-+
- static void test_ksyms_module_lskel(void)
- {
- 	struct test_ksyms_module_lskel *skel;
-@@ -62,6 +102,8 @@ static void test_ksyms_module_libbpf(void)
- 
- void test_ksyms_module(void)
- {
-+	if (test__start_subtest("valid_offset"))
-+		test_ksyms_module_valid_offset();
- 	if (test__start_subtest("lskel"))
- 		test_ksyms_module_lskel();
- 	if (test__start_subtest("libbpf"))
--- 
-2.35.1
+Hengqi Chen (2):
+  libbpf: Add BPF_KPROBE_SYSCALL macro
+  selftests/bpf: Test BPF_KPROBE_SYSCALL macro
 
+ tools/lib/bpf/bpf_tracing.h                   | 39 +++++++++++++++++++
+ .../selftests/bpf/prog_tests/kprobe_syscall.c | 37 ++++++++++++++++++
+ .../selftests/bpf/progs/test_kprobe_syscall.c | 34 ++++++++++++++++
+ 3 files changed, 110 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+
+--
+2.30.2
