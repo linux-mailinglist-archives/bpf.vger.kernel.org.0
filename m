@@ -2,166 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DC34AB1C7
-	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 20:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B104AB1D9
+	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 20:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239909AbiBFTln (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Feb 2022 14:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
+        id S233917AbiBFT6M (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Feb 2022 14:58:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231365AbiBFTlm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Feb 2022 14:41:42 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A20C06173B
-        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 11:41:42 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id c188so14304729iof.6
-        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 11:41:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D7gZzXDtYp/dYjS2TgroABKLshbNB0zr6qSOaTHDsQM=;
-        b=VchgyJXbQdS6nL/04DdUDXtRldDFfk24y0GzSf7wz1ZuSszOb9IjCS6F1IZuGYA7jE
-         MaJt7plT0Rqg/OQeRcwLeCM77UdcSw7ggB422PLP1bEH+NBLfNJwdIy3TVhd0wDR+3M4
-         EFlnUXpJV/hv6RjZDX0ueYG1oxSsfPHPzLOtNI7nRDDZe07mLXXsGQt1zQj483x4SVr1
-         2HBTjxuxH3hnSL5VRvoe3N006axcvb8U101kyYz4HqLheVvOnPgzwUEu3YRbFs6t3yYY
-         cIDky77e6zbJ+gGMUJ/9+56FiVHHieIoTAJVRTUP+gNUo8z+fX7wE9KWVAra3M8dddm9
-         944A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D7gZzXDtYp/dYjS2TgroABKLshbNB0zr6qSOaTHDsQM=;
-        b=J8prOHYlHXOABBfAcbLio0/1WmQLsXOFMh1/NICFPkz2vARLca+r8FWTxrV30WHf4K
-         tVhTe+A/zZyaOjRLqnHHeiuQZcE9k/j4dlzYw/ghvt/4PZTuvaUV93dyld3lj6htZOeC
-         jRxTHFPzHF741MiivnOG8VNHT+Ex+PCzZ+NW1Ia18fRLw/kIN18lcSqdqf9I3jdjSxAT
-         SUKE4LgGZZENkfTJ6YdyMvDynG+C4gZA0xM52sv8DxaIvkXDyZoIZKO6NBMHSCS/7FEZ
-         7Khe42CFfN8why0YwnIjV06D/3PKWYnM8Re0OoFDD/Ryl5vIcrq7ztyULIcSD0UA15Wa
-         l48g==
-X-Gm-Message-State: AOAM531rhkBHF38yUxZy9GEbgFGWAMTSqAIj+DtqTOf2BY9ioOwFFpQS
-        WHSyFAeEyIzSlrWlv9KgqImmcdb8FRDWo2+wwoA=
-X-Google-Smtp-Source: ABdhPJzB9RSug5LbyLWAUWgMxVGgterh9XFL1RamT87iT6sAhjS0caYWHeINDXK0SZVQIBM8LKypgHb9yHG/sSKG+uY=
-X-Received: by 2002:a05:6638:d88:: with SMTP id l8mr4399324jaj.234.1644176501422;
- Sun, 06 Feb 2022 11:41:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20220206134051.721574-1-hengqi.chen@gmail.com> <20220206134051.721574-3-hengqi.chen@gmail.com>
-In-Reply-To: <20220206134051.721574-3-hengqi.chen@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Sun, 6 Feb 2022 11:41:30 -0800
-Message-ID: <CAEf4Bzar7adrCPNBo69QUuhM0ge0GJJ+92bNiN0BmckS3LO5bw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Test BPF_KPROBE_SYSCALL macro
-To:     Hengqi Chen <hengqi.chen@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+        with ESMTP id S232935AbiBFT6M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Feb 2022 14:58:12 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F3DC06173B
+        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 11:58:08 -0800 (PST)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 216EoJ4l030270;
+        Sun, 6 Feb 2022 19:57:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=gku3mP8mPtHIZ5Ca9tPRGib2xtMnT4HuAzPvT3lF4kQ=;
+ b=ryGzE4BciAhKsiV1y9x2Xa5WeGb4ql+OL6sBLhfmKfJPhwJPol+YnREPKq7KotdNoG7M
+ Tzuhe+hLl3aV1aZhnF6T+6Y+cDgBboHjjTOYpHeUqWegv7ChSnTN+iSPGzLJLUMtCxIm
+ UbmleT6p6+4CmOKacGCu4QVkGZG4c9ZHAyUxfnA7MnN1MBNF6Gu7wuYaK44aXBIthn5n
+ Xl0dipxxovuix/v+AxIiM2wT5XtRDG2IHIjCL7E3nxz/G7nz0350GqkIOTTH3oohZrVJ
+ vsoewm72wiwTFBGoJBVj8pPRN/e8SfOyJOB8FVF5P5uVgoak0Su+OWeKFacWmWIRQ++x 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e22ssc717-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 06 Feb 2022 19:57:29 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 216JvTE1017016;
+        Sun, 6 Feb 2022 19:57:29 GMT
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e22ssc70x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 06 Feb 2022 19:57:29 +0000
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 216JqUcN014351;
+        Sun, 6 Feb 2022 19:57:26 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 3e1gv8xa10-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 06 Feb 2022 19:57:26 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 216JvKro33161710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 6 Feb 2022 19:57:20 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D211DA4051;
+        Sun,  6 Feb 2022 19:57:20 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 60593A404D;
+        Sun,  6 Feb 2022 19:57:20 +0000 (GMT)
+Received: from [9.171.78.41] (unknown [9.171.78.41])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun,  6 Feb 2022 19:57:20 +0000 (GMT)
+Message-ID: <5e4b012be25cbbb44ecb935de745e17ed5c16f28.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 0/2] Fix bpf_perf_event_data ABI breakage
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>
+Date:   Sun, 06 Feb 2022 20:57:20 +0100
+In-Reply-To: <CAEf4Bzb1To5+uLdRiJEJUJo4PckVDEBEtENC14Cuf-mkxrnxgA@mail.gmail.com>
+References: <20220206145350.2069779-1-iii@linux.ibm.com>
+         <CAEf4Bzb1To5+uLdRiJEJUJo4PckVDEBEtENC14Cuf-mkxrnxgA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 69mWgN38eTk4chGTt90fyal6oh24m5KO
+X-Proofpoint-ORIG-GUID: rXYWFHuziCPhmfZBvxulQ5lAQkTl-DYm
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-06_05,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 impostorscore=0 bulkscore=0 adultscore=0 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202060142
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 6, 2022 at 5:41 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
->
-> Add tests for the newly added BPF_KPROBE_SYSCALL macro.
->
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/kprobe_syscall.c | 37 +++++++++++++++++++
->  .../selftests/bpf/progs/test_kprobe_syscall.c | 34 +++++++++++++++++
->  2 files changed, 71 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
-> new file mode 100644
-> index 000000000000..0ac89c987024
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
-> @@ -0,0 +1,37 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Hengqi Chen */
-> +
-> +#include <test_progs.h>
-> +#include <sys/prctl.h>
-> +#include "test_kprobe_syscall.skel.h"
-> +
-> +void test_kprobe_syscall(void)
-> +{
-> +       struct test_kprobe_syscall *skel;
-> +       int err;
-> +
-> +       skel = test_kprobe_syscall__open();
-> +       if (!ASSERT_OK_PTR(skel, "test_kprobe_syscall__open"))
-> +               return;
-> +
-> +       skel->rodata->my_pid = getpid();
-> +
-> +       err = test_kprobe_syscall__load(skel);
-> +       if (!ASSERT_OK(err, "test_kprobe_syscall__load"))
-> +               goto cleanup;
-> +
-> +       err = test_kprobe_syscall__attach(skel);
-> +       if (!ASSERT_OK(err, "test_kprobe_syscall__attach"))
-> +               goto cleanup;
-> +
-> +       prctl(1, 2, 3, 4, 5);
-> +
-> +       ASSERT_EQ(skel->bss->option, 1, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->arg2, 2, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->arg3, 3, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->arg4, 4, "BPF_KPROBE_SYSCALL failed");
-> +       ASSERT_EQ(skel->bss->arg5, 5, "BPF_KPROBE_SYSCALL failed");
-> +
-> +cleanup:
-> +       test_kprobe_syscall__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
-> new file mode 100644
-> index 000000000000..abd59c3d5b59
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
-> @@ -0,0 +1,34 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2022 Hengqi Chen */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_core_read.h>
-> +#include "bpf_misc.h"
-> +
-> +const volatile pid_t my_pid = 0;
-> +int option = 0;
-> +unsigned long arg2 = 0;
-> +unsigned long arg3 = 0;
-> +unsigned long arg4 = 0;
-> +unsigned long arg5 = 0;
-> +
-> +SEC("kprobe/" SYS_PREFIX "sys_prctl")
-> +int BPF_KPROBE_SYSCALL(prctl_enter, int opt, unsigned long a2,
-> +                      unsigned long a3, unsigned long a4, unsigned long a5)
-> +{
-> +       pid_t pid = bpf_get_current_pid_tgid() >> 32;
-> +
-> +       if (pid != my_pid)
-> +               return 0;
-> +
-> +       option = opt;
-> +       arg2 = a2;
-> +       arg3 = a3;
-> +       arg4 = a4;
-> +       arg5 = a5;
-> +       return 0;
-> +}
-> +
+On Sun, 2022-02-06 at 11:31 -0800, Andrii Nakryiko wrote:
+> On Sun, Feb 6, 2022 at 6:54 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> > 
+> > libbpf CI noticed that my recent changes broke bpf_perf_event_data
+> > ABI
+> > on s390 [1]. Testing shows that they introduced a similar breakage
+> > on
+> > arm64. The problem is that we are not allowed to extend
+> > user_pt_regs,
+> > since it's used by bpf_perf_event_data.
+> > 
+> > This series fixes these problems by removing the new members and
+> > introducing user_pt_regs_v2 instead.
+> > 
+> > [1] https://github.com/libbpf/libbpf/runs/5079938810
+> > 
+> > Ilya Leoshkevich (2):
+> >   s390/bpf: Introduce user_pt_regs_v2
+> >   arm64/bpf: Introduce struct user_pt_regs_v2
+> 
+> Given it is bpf_perf_event_data and thus bpf_user_pt_regs_t
+> definitions that are set in stone now, wouldn't it be better to
+> instead just change
+> 
+> typedef user_pt_regs bpf_user_pt_regs_t; (s390x)
+> typedef struct user_pt_regs bpf_user_pt_regs_t; (arm64)
+> 
+> to just define that fixed layout instead of reusing user_ptr_regs?
+> 
+> This whole v2 business looks really ugly.
 
-Let's add all this into progs/bpf_syscall_macro.c and
-prog_tests/test_bpf_syscall_macro.c, instead of adding a new selftest.
-They are closely related anyways.
+Wouldn't it break compilation of code like this?
 
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.30.2
+    bpf_perf_event_data data;
+    user_pt_regs *regs = &data.regs;
+
+Additionaly, after this I'm no longer sure I haven't missed any other
+places where user_pt_regs might be used. For example, arm64 seems to be
+using it not only for BPF, but also for ptrace?
+
+static int gpr_get(struct task_struct *target,
+                   const struct user_regset *regset,
+                   struct membuf to)
+{
+        struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
+        return membuf_write(&to, uregs, sizeof(*uregs));
+}
+
+and then in e.g. gdb:
+
+static void
+aarch64_fill_gregset (struct regcache *regcache, void *buf)
+{
+  struct user_pt_regs *regset = (struct user_pt_regs *) buf;
+  ...
+
+I'm also not a big fan of the _v2 solution, but it looked the safest
+to me. At least for s390, a viable alternative that Vasily proposed
+would be to go ahead with replacing args[1] with orig_gpr2 and then
+also backporting the patch, so that the new libbpf would still work on
+the old stable kernels. But this won't work for arm64.
