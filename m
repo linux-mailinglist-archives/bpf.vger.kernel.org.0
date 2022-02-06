@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B77F4AAF83
-	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 14:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02934AAF84
+	for <lists+bpf@lfdr.de>; Sun,  6 Feb 2022 14:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239957AbiBFNlX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Feb 2022 08:41:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
+        id S234549AbiBFNl2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Feb 2022 08:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234549AbiBFNlX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Feb 2022 08:41:23 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5F3C06173B
-        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 05:41:22 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id qe15so842665pjb.3
-        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 05:41:22 -0800 (PST)
+        with ESMTP id S239959AbiBFNl1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Feb 2022 08:41:27 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71163C06173B
+        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 05:41:25 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id h14-20020a17090a130e00b001b88991a305so2805787pja.3
+        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 05:41:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lltxwd7ldEvmPt7bJnUNqYqXfLVHgsouvO/vFB7Kby4=;
-        b=MsSL+8JryzA9Ic5V++p6EwijaFZzKqBbRVHxDOHJdQhOC/OcbhWDJ4B6wjKH8lf/4Z
-         1OSa1hlqQmNq45MmQkgSp5St5GfELpOmQZqQz+k/gDiEP5Sit2AoLGHmN+ZzJ15QPrWO
-         gLFGCEupo/7yYQDRaMvC5FqPQQ1/+QfMKD2YM/BDPXYYhiBFuQp7ptwBIBVmN1ojJkOM
-         oXz+/6qP97ESvcnlVxE6DuAExBrFliBVwfCVr61I6DIccWO6PpltK9JbO2NWGDn+vbVX
-         Zxt3DSbsU3ckH3GfxJ8lBNNbCY7fwlTQEljItTvjFHITlRiKdtVZ+0w9NTDT/Ro150a3
-         1ang==
+        bh=VC8SYIAd4q7Hmh+VRltIAWKqtVfFsTW1HXHhsOD2AY8=;
+        b=n2cZ+Lg3XJ1lrx3lwWeGTMERMLBiuPerhqGrba0JLOlukvhaUgPLVS2dz8FfJ6ez4n
+         jm8pk8Eh7UNvqESQObBPxTefW4ioDfZUOcGe+nj8P8UOmLC2nlWsEsqycyonMcSFSUY2
+         lDI8O1PSBfYtezxI0YN4dIe83VxQriYFQDGKv+el7loF6YtBQfMfeBUon9jGaDDeT9JQ
+         4veH/iS/vFTWj8nIQ2jENsiPo2tyICbczIxfrrbfOQXcW7e+vCNs6JnGf0pY99pmvjLs
+         47LE/KlbV0GGL7bnqIxdQBSbEtg3jjwGMMBOIT6l0tHTm5nG5L77W5jy0GhcshR+ZTTO
+         iltQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lltxwd7ldEvmPt7bJnUNqYqXfLVHgsouvO/vFB7Kby4=;
-        b=cKtjjtTFKKz8E2PFnJvOfsFr1GSaQF4P0Abzo6Bc8h39S3/xkKFJ64JRAYNp5x7I4U
-         ZojhTnmGNpDkshAtJQSF5wTyd2G8LLGngA4sjrP8GfqKRJdCzfNjJD5mCEMuZiotCOer
-         ocmXnysAOAsqfLipzXdDB2nrs2ARxC49fMRsR6XOdPsDxkzKkhG6BUhhur4JoGK12WOA
-         5SzxLmH6yiD6DxC403ML4akY5pFHoI7fnDbPIE2XeebPQeP1ux/4R8MwbfxVn3xK7giX
-         4f0Kf/gv8NS3MVLPhDPZFUVOCkfJSX6kW1rOQoHGFdV30HviucKvR+nr3DiNhka8yJpf
-         LONg==
-X-Gm-Message-State: AOAM531rML2Q1HZpXSY0bNMTyC2MHlwiIAMJSPTJ+tru57ry5t878iA7
-        et9N7cB8tOCvBG8hwKdCytn+l8yEwgWtZfhw
-X-Google-Smtp-Source: ABdhPJzj0Ms2SPYAaXNZv8sUEYLAyZJxfQ7Aw0WW36Vpwl2xYscdue5YdTzYPUU7QP+LxDBdWfMTDw==
-X-Received: by 2002:a17:902:9698:: with SMTP id n24mr12417684plp.60.1644154882195;
-        Sun, 06 Feb 2022 05:41:22 -0800 (PST)
+        bh=VC8SYIAd4q7Hmh+VRltIAWKqtVfFsTW1HXHhsOD2AY8=;
+        b=hL6oZ+Fdl2MZQbORzCgVBxQUYhPMh/ErFdYfkmFYZ5AlHu+NULcZli1F1/0fnJCrDw
+         8JLQUXLP9RtTUhv72gzV2OxjmLnySL95BOf5pODNk8gGCsYP7cPS5bKqEe+giIU8SlZN
+         +KsV5wpkBYRetDTRuNZnJYBtv9w05z7/RhgP1Ll2RjClEWB3yjuG7EX+qKw8HSjy2VHx
+         +OTI1xs9BhWt4W2Wd3Gl8LAoyUDG8xeZpU4QyJhPk6mry9ZYdfpJ/s4KshZ3BQ7/C8O0
+         z+hg3l3j9xQ+x0bJMc7FPytUCfelQaePL9h1M3kVEoEJjVFdu7mBynmhMt8KUZlUIc8P
+         0/Qw==
+X-Gm-Message-State: AOAM5311EC2vO8/kevitOAjPbCG68QYIuFxfzSLFaKTuwZx2U9QINF48
+        SOL+G/6u42R51iU1cvAJscdr28vcjFCOYZKu
+X-Google-Smtp-Source: ABdhPJx+7+zZXbCSSS9RIdRRlAfnZYTAUjGXKmA9ONocQ+m2NIeNdu/kA/uNGCP5pchjEpBgiaRhRA==
+X-Received: by 2002:a17:902:b692:: with SMTP id c18mr12500854pls.85.1644154884848;
+        Sun, 06 Feb 2022 05:41:24 -0800 (PST)
 Received: from chenhengqi-X1.. ([113.64.186.12])
-        by smtp.gmail.com with ESMTPSA id e17sm8500982pfv.101.2022.02.06.05.41.16
+        by smtp.gmail.com with ESMTPSA id e17sm8500982pfv.101.2022.02.06.05.41.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Feb 2022 05:41:21 -0800 (PST)
+        Sun, 06 Feb 2022 05:41:24 -0800 (PST)
 From:   Hengqi Chen <hengqi.chen@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     andrii@kernel.org, hengqi.chen@gmail.com
-Subject: [PATCH bpf-next v2 1/2] libbpf: Add BPF_KPROBE_SYSCALL macro
-Date:   Sun,  6 Feb 2022 21:40:50 +0800
-Message-Id: <20220206134051.721574-2-hengqi.chen@gmail.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Test BPF_KPROBE_SYSCALL macro
+Date:   Sun,  6 Feb 2022 21:40:51 +0800
+Message-Id: <20220206134051.721574-3-hengqi.chen@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220206134051.721574-1-hengqi.chen@gmail.com>
 References: <20220206134051.721574-1-hengqi.chen@gmail.com>
@@ -68,81 +68,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add syscall-specific variant of BPF_KPROBE named BPF_KPROBE_SYSCALL ([0]).
-The new macro hides the underlying way of getting syscall input arguments.
-With these new macros, the following code:
-
-    SEC("kprobe/__x64_sys_close")
-    int BPF_KPROBE(do_sys_close, struct pt_regs *regs)
-    {
-        int fd;
-
-        fd = PT_REGS_PARM1_CORE(regs);
-        /* do something with fd */
-    }
-
-can be written as:
-
-    SEC("kprobe/__x64_sys_close")
-    int BPF_KPROBE_SYSCALL(do_sys_close, int fd)
-    {
-        /* do something with fd */
-    }
-
-  [0] Closes: https://github.com/libbpf/libbpf/issues/425
+Add tests for the newly added BPF_KPROBE_SYSCALL macro.
 
 Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
 ---
- tools/lib/bpf/bpf_tracing.h | 39 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ .../selftests/bpf/prog_tests/kprobe_syscall.c | 37 +++++++++++++++++++
+ .../selftests/bpf/progs/test_kprobe_syscall.c | 34 +++++++++++++++++
+ 2 files changed, 71 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
 
-diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-index cf980e54d331..a0b230320335 100644
---- a/tools/lib/bpf/bpf_tracing.h
-+++ b/tools/lib/bpf/bpf_tracing.h
-@@ -461,4 +461,43 @@ typeof(name(0)) name(struct pt_regs *ctx)				    \
- }									    \
- static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
-
-+#define ___bpf_syscall_args0() ctx
-+#define ___bpf_syscall_args1(x) \
-+	___bpf_syscall_args0(), (void *)PT_REGS_PARM1_CORE_SYSCALL(regs)
-+#define ___bpf_syscall_args2(x, args...) \
-+	___bpf_syscall_args1(args), (void *)PT_REGS_PARM2_CORE_SYSCALL(regs)
-+#define ___bpf_syscall_args3(x, args...) \
-+	___bpf_syscall_args2(args), (void *)PT_REGS_PARM3_CORE_SYSCALL(regs)
-+#define ___bpf_syscall_args4(x, args...) \
-+	___bpf_syscall_args3(args), (void *)PT_REGS_PARM4_CORE_SYSCALL(regs)
-+#define ___bpf_syscall_args5(x, args...) \
-+	___bpf_syscall_args4(args), (void *)PT_REGS_PARM5_CORE_SYSCALL(regs)
-+#define ___bpf_syscall_args(args...) \
-+	___bpf_apply(___bpf_syscall_args, ___bpf_narg(args))(args)
+diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
+new file mode 100644
+index 000000000000..0ac89c987024
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/kprobe_syscall.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Hengqi Chen */
 +
-+/*
-+ * BPF_KPROBE_SYSCALL is a variant of BPF_KPROBE, which is intended for
-+ * tracing syscall functions, like __x64_sys_close. It hides the underlying
-+ * platform-specific low-level way of getting syscall input arguments from
-+ * struct pt_regs, and provides a familiar typed and named function arguments
-+ * syntax and semantics of accessing syscall input parameters.
-+ *
-+ * Original struct pt_regs* context is preserved as 'ctx' argument. This might
-+ * be necessary when using BPF helpers like bpf_perf_event_output().
-+ */
-+#define BPF_KPROBE_SYSCALL(name, args...)				    \
-+name(struct pt_regs *ctx);						    \
-+static __attribute__((always_inline)) typeof(name(0))			    \
-+____##name(struct pt_regs *ctx, ##args);				    \
-+typeof(name(0)) name(struct pt_regs *ctx)				    \
-+{									    \
-+	struct pt_regs *regs = (void *)PT_REGS_PARM1(ctx);		    \
-+	_Pragma("GCC diagnostic push")					    \
-+	_Pragma("GCC diagnostic ignored \"-Wint-conversion\"")		    \
-+	return ____##name(___bpf_syscall_args(args));			    \
-+	_Pragma("GCC diagnostic pop")					    \
-+}									    \
-+static __attribute__((always_inline)) typeof(name(0))			    \
-+____##name(struct pt_regs *ctx, ##args)
++#include <test_progs.h>
++#include <sys/prctl.h>
++#include "test_kprobe_syscall.skel.h"
 +
- #endif
++void test_kprobe_syscall(void)
++{
++	struct test_kprobe_syscall *skel;
++	int err;
++
++	skel = test_kprobe_syscall__open();
++	if (!ASSERT_OK_PTR(skel, "test_kprobe_syscall__open"))
++		return;
++
++	skel->rodata->my_pid = getpid();
++
++	err = test_kprobe_syscall__load(skel);
++	if (!ASSERT_OK(err, "test_kprobe_syscall__load"))
++		goto cleanup;
++
++	err = test_kprobe_syscall__attach(skel);
++	if (!ASSERT_OK(err, "test_kprobe_syscall__attach"))
++		goto cleanup;
++
++	prctl(1, 2, 3, 4, 5);
++
++	ASSERT_EQ(skel->bss->option, 1, "BPF_KPROBE_SYSCALL failed");
++	ASSERT_EQ(skel->bss->arg2, 2, "BPF_KPROBE_SYSCALL failed");
++	ASSERT_EQ(skel->bss->arg3, 3, "BPF_KPROBE_SYSCALL failed");
++	ASSERT_EQ(skel->bss->arg4, 4, "BPF_KPROBE_SYSCALL failed");
++	ASSERT_EQ(skel->bss->arg5, 5, "BPF_KPROBE_SYSCALL failed");
++
++cleanup:
++	test_kprobe_syscall__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+new file mode 100644
+index 000000000000..abd59c3d5b59
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_kprobe_syscall.c
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Hengqi Chen */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++const volatile pid_t my_pid = 0;
++int option = 0;
++unsigned long arg2 = 0;
++unsigned long arg3 = 0;
++unsigned long arg4 = 0;
++unsigned long arg5 = 0;
++
++SEC("kprobe/" SYS_PREFIX "sys_prctl")
++int BPF_KPROBE_SYSCALL(prctl_enter, int opt, unsigned long a2,
++		       unsigned long a3, unsigned long a4, unsigned long a5)
++{
++	pid_t pid = bpf_get_current_pid_tgid() >> 32;
++
++	if (pid != my_pid)
++		return 0;
++
++	option = opt;
++	arg2 = a2;
++	arg3 = a3;
++	arg4 = a4;
++	arg5 = a5;
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 --
 2.30.2
