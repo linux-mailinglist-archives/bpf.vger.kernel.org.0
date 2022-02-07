@@ -2,69 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9E994ACAD2
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 22:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 860944ACB43
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 22:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbiBGVBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 16:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S239340AbiBGV1s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 16:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231667AbiBGVBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 16:01:41 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61EBFC06173B;
-        Mon,  7 Feb 2022 13:01:41 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id y9so6529477pjf.1;
-        Mon, 07 Feb 2022 13:01:41 -0800 (PST)
+        with ESMTP id S239342AbiBGV1q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 16:27:46 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462A9C0612A4
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 13:27:46 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id z17so2151872plb.9
+        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 13:27:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FwnKbpTkC/zdPmCdqrahzy52SJ9rfemmtNQ6qp1un1k=;
-        b=mdBf/hKJ/7B7hDsVbKCWNpdxhMkuPUxF+0PCUNUeV4B7/F0tSXEYtNLmofwufiy7PF
-         33C0zLeSB9ip82NjcKe5b1K+LgbtzGt5ubSD3HtaVAgQWZXb9eCelUPgZo0tNeCcouzO
-         RQ748JIssLc69N49BLL6f88Ob9HZCEhToJOrFQdxPUlpAD4rySIQ7JwxmsOoYigL7BP0
-         YF25ZKf41yAUP7rj+PW/q/iI2ZXn4C5q4GgH1HUUF9Yjx7zTBYNdANKIxcInlwmvDcVo
-         ubTnKttmQg1Exb5/EzkpePJSqpT1AANZxtpl5ligRT14obtT866fOsKHNfXrwGpoQF71
-         RA2g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xzktq0nFKpwkfS9KVyPwcTXjLml1DCMFjIHIhtaSzl0=;
+        b=lSe+3n/7iTHRWcKgoOMRytjDDmwsCy6cqjPaPbhYB5YNPH4PuLNeRaTPRGuN9WfysO
+         xr4iL1RIkwUI2wBVV97RnAEdaSE54wUMjwzJy4U7ShFM9dkjpO59gQ41QyKR7qtEkIxU
+         a4TBuxWXRiGgvcRJArD6dC1I25BNTuoe29N2o0t1KYo5WEVdLqS9Mkpk6aopwaV9Q1vq
+         D5121lRqouSLdmPkhzGi/WGClOGxaR12xjj9zPFgxAGqUGvBijVCSYVFrxyht7094xxx
+         GVDgSFkXgR0WzrtrbCgJBjtRfEOa8YxpTrl63MYBV9YAOSP1uEKm23ufZ/bI14959uDv
+         OUcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FwnKbpTkC/zdPmCdqrahzy52SJ9rfemmtNQ6qp1un1k=;
-        b=wwyYQ68IuZlo5uasQKyKsMpsno3So6nQknmhVFlfEwicGLLmi6RsNOV32frrCMGxZF
-         /rTDzQv+JqDxmAjXF/E6V02QYR8xBY8DcdNUi8Uqjg/F7JIocY6QzVbnAEf6lnt5T/48
-         j45e9VvM1psNnz/k+tT9jkEXJUDP2hPxQvAGXX5kPyghtujls1Bh0kh0ahxpZgMcikt7
-         PXtUBDQQ1YSNDxqrpZNhDP8gbMEnxmBW26DIyqj6OyuXKsPp1GlZQP7y2KDkhVDng0aw
-         oUT8qzl6A6FVTrwLaufaH7GYDjDoT8zK99TmpbVpx8p8UmtfGaVSM12BJpxwtIXBzUD/
-         ywRg==
-X-Gm-Message-State: AOAM532MeyiAbcukS6wI4Fe+HpJt+caXpdqubUdMbcISNly9cQC77Nyh
-        kUA4VkcVSbudyijY+4N/aymtnqhI317316uHaOI=
-X-Google-Smtp-Source: ABdhPJzzqnbfte/UsO4CxN7j1V9c+CNHc+B9dLja6d189I3omGBCC6NXzrh0VaXli8IsejwWZzNN9DCp76ionhJwrFQ=
-X-Received: by 2002:a17:902:ced1:: with SMTP id d17mr1249891plg.78.1644267700768;
- Mon, 07 Feb 2022 13:01:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20220202135333.190761-1-jolsa@kernel.org> <20220202135333.190761-3-jolsa@kernel.org>
- <CAEf4Bzbrj01RJq7ArAo-kX-+8rPx9j5OH1OvGHxVJxiq8rn3FA@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbrj01RJq7ArAo-kX-+8rPx9j5OH1OvGHxVJxiq8rn3FA@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xzktq0nFKpwkfS9KVyPwcTXjLml1DCMFjIHIhtaSzl0=;
+        b=VceV9eUxkANjrtbhNhMiFYRjakmP9yMlCsp4Pzx3H1xWqs5ilhoySJhhBudQQnQSp6
+         Kymf/+eFgGifFHbD131OQ/PSG32scR3Bv8uX+mX3Ju3jsramjBZelLVCJxEa5ojSGo0w
+         mOpraBigGuikcLighK3miBaz0Q8dv2gSNAT6cZhiNrEVayteKUOGme9G5BQPP7anZCDb
+         3l09bmQ7d7tGCtuUm7eQQ6ZkzMcEq4+ZIRFtynXa5+wlL88DU++DQ7jOmc7dqksJkz8B
+         tvt2dA3+4Yd5AIqcBJNjb3pWQt1CnAKCZD32vl7hcC5gIx17lIZzsSJ9mr9dhXsZMi5a
+         MLLQ==
+X-Gm-Message-State: AOAM533XAuLVgoXeFSsd2kY2Eh6MpkHSiHIYcJkyJ3oYkr4aXLybeaSd
+        ir942NWQSVxXfbG3eifgnEKZxjVczRw=
+X-Google-Smtp-Source: ABdhPJw3N8CoTTDrd827u8o63zLCg/ZAV1Ovm0w1Sn2ulrQpeRILtsfJzVXMj1uZBsASjeJBrxK6hw==
+X-Received: by 2002:a17:90b:4c8b:: with SMTP id my11mr925904pjb.33.1644269265702;
+        Mon, 07 Feb 2022 13:27:45 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::5f3a])
+        by smtp.gmail.com with ESMTPSA id md9sm290374pjb.6.2022.02.07.13.27.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Feb 2022 13:27:44 -0800 (PST)
+Date:   Mon, 7 Feb 2022 13:27:42 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 7 Feb 2022 13:01:29 -0800
-Message-ID: <CAADnVQ+qRY6ykHUumAhFo4gH8JaurcEkMwC_LOqmrRiqAE7GoA@mail.gmail.com>
-Subject: Re: [PATCH 2/8] bpf: Add bpf_get_func_ip kprobe helper for fprobe link
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 2/5] libbpf: Prepare light skeleton for the
+ kernel.
+Message-ID: <20220207212742.xjx6siycudwzok62@ast-mbp.dhcp.thefacebook.com>
+References: <20220204231710.25139-1-alexei.starovoitov@gmail.com>
+ <20220204231710.25139-3-alexei.starovoitov@gmail.com>
+ <CAEf4BzZQs=QU2=Qz55TYiiWbhw0ne=S8iTBAV3U8Ayr7grG4Ag@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZQs=QU2=Qz55TYiiWbhw0ne=S8iTBAV3U8Ayr7grG4Ag@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,54 +74,81 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 7, 2022 at 10:59 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 2, 2022 at 5:53 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > Adding support to call get_func_ip_fprobe helper from kprobe
-> > programs attached by fprobe link.
-> >
-> > Also adding support to inline it, because it's single load
-> > instruction.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  kernel/bpf/verifier.c    | 19 ++++++++++++++++++-
-> >  kernel/trace/bpf_trace.c | 16 +++++++++++++++-
-> >  2 files changed, 33 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 1ae41d0cf96c..a745ded00635 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -13625,7 +13625,7 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-> >                         continue;
-> >                 }
-> >
-> > -               /* Implement bpf_get_func_ip inline. */
-> > +               /* Implement tracing bpf_get_func_ip inline. */
-> >                 if (prog_type == BPF_PROG_TYPE_TRACING &&
-> >                     insn->imm == BPF_FUNC_get_func_ip) {
-> >                         /* Load IP address from ctx - 16 */
-> > @@ -13640,6 +13640,23 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
-> >                         continue;
-> >                 }
-> >
-> > +               /* Implement kprobe/fprobe bpf_get_func_ip inline. */
-> > +               if (prog_type == BPF_PROG_TYPE_KPROBE &&
-> > +                   eatype == BPF_TRACE_FPROBE &&
-> > +                   insn->imm == BPF_FUNC_get_func_ip) {
-> > +                       /* Load IP address from ctx (struct pt_regs) ip */
-> > +                       insn_buf[0] = BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_1,
-> > +                                                 offsetof(struct pt_regs, ip));
->
-> Isn't this architecture-specific? I'm starting to dislike this
-> inlining whole more and more. It's just a complication in verifier
-> without clear real-world benefits. We are clearly prematurely
-> optimizing here. In practice you'll just call bpf_get_func_ip() once
-> and that's it. Function call overhead will be negligible compare to
-> other *userful* work you'll be doing in your BPF program.
+On Mon, Feb 07, 2022 at 12:04:14PM -0800, Andrii Nakryiko wrote:
+> >   */
+> >  struct bpf_map_desc {
+> > -       union {
+> > -               /* input for the loader prog */
+> > -               struct {
+> > -                       __aligned_u64 initial_value;
+> > -                       __u32 max_entries;
+> > -               };
+> > +       struct {
+> 
+> Is this anonymous struct still needed?
 
-We should be doing inlining when we can.
-Every bit of performance matters.
+Right. Will remove.
+
+> > +static inline void *skel_alloc(size_t size)
+> > +{
+> > +       return kcalloc(1, size, GFP_KERNEL);
+> > +}
+> > +static inline void skel_free(const void *p)
+> > +{
+> > +       kfree(p);
+> > +}
+> 
+> any reason to skim on empty lines between functions? The rest of this
+> file (and libbpf code in general) feels very different in terms of
+> spacing.
+
+Because it's more compact, but I don't mind extra lines.
+
+> > +static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
+> > +{
+> > +       if (addr && addr != ~0ULL)
+> > +               vm_munmap(addr, sz);
+> > +       if (addr != ~0ULL)
+> > +               kvfree(p);
+> 
+> minor nit: a small comment explaining that we set addr to ~0ULL on
+> error (but we still call skel_free_map_data) would help a bit here
+
+ok.
+
+> > +}
+> > +/* skel->bss/rodata maps are populated in three steps.
+> > + *
+> > + * For kernel use:
+> > + * skel_prep_map_data() allocates kernel memory that kernel module can directly access.
+> > + * skel_prep_init_value() allocates a region in user space process and copies
+> > + * potentially modified initial map value into it.
+> > + * The loader program will perform copy_from_user() from maps.rodata.initial_value.
+> 
+> I'm missing something here. If a light skeleton is used from a kernel
+> module, then this initialization data is also pointing to kernel
+> module memory, no? So why the copy_from_user() then?
+> 
+> Also this vm_mmap() and vm_munmap(), is it necessary for in-kernel
+> skeleton itself, or it's required so that if some user-space process
+> would fetch that BPF map by ID and tried to mmap() its content it
+> would be possible? Otherwise it's not clear, as kernel module can
+> access BPF array's value pointer directly anyways, so why the mmaping?
+
+vm_mmap step only to preserve one version of light skeleton that
+works for both user space and kernel. Otherwise bpftool would need another flag
+and test coverage would need to increase. This way light skeleton for kernel
+doesn't need a bunch of new tests.
+Another option would be to add 'is_kernel' flag to bpf_loader_ctx and generate
+loader program like:
+if (ctx->is_kernel)
+  bpf_probe_read_kernel
+else
+  bpf_copy_from_user
+
+but 'ctx' will be modified after signature check, so the user space user
+of light skel might trick it to populate maps with garbage kernel data.
+The loader prog needs cap_perfmon anyway, so there are no security concerns,
+but it's not great to have such room for error.
+vm_mmap approach is not pretty, but looks to be the lesser evil.
+I'm all ears if there are other options.
