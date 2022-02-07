@@ -2,127 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015FD4AB45E
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 07:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEB614AB53C
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 07:54:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbiBGGKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 01:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35826 "EHLO
+        id S230135AbiBGGyN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 01:54:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbiBGDnC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Feb 2022 22:43:02 -0500
-X-Greylist: delayed 120 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 06 Feb 2022 19:43:02 PST
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1A1EEC061A73
-        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 19:43:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644205380;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mPACxARX/I5xiz/m71QMlfbaJbgGVVXIBRuTffqi1uU=;
-        b=hpXg91dHQVRrLGCg0HsKVC0+bjiq6QYzNduOirygxfg6Unx/bsj5vf/PWFhNuU39D18JuX
-        NWV8kkZ2nCSMxhC104PfpzgI/RsGrwt3h80yKsYBCeeP8dYzT9dqtZ/LuJymiZBVpfm0lJ
-        wWn5VYulOI2kU97NNDL39gYRK9YJ8Bs=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-578-WAUhfmaDMJ6ez3p6F8nTVQ-1; Sun, 06 Feb 2022 22:41:13 -0500
-X-MC-Unique: WAUhfmaDMJ6ez3p6F8nTVQ-1
-Received: by mail-pj1-f69.google.com with SMTP id hi22-20020a17090b30d600b001b8b33cf0efso1895660pjb.1
-        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 19:41:13 -0800 (PST)
+        with ESMTP id S244537AbiBGGXc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 01:23:32 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC301C043181
+        for <bpf@vger.kernel.org>; Sun,  6 Feb 2022 22:23:31 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id 9so15504911iou.2
+        for <bpf@vger.kernel.org>; Sun, 06 Feb 2022 22:23:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sr8K4Yndcc366sZygvs0Bamstrw9OIOV3hd79ImvXG4=;
+        b=eJ+nJm25uAmKtVkUSlR/q1XmxSxZ2v3wa7HyhnHBE7YlwCZjnrqwRSiEk5x5lxiQdm
+         Dj8mEF40ZXo5zca0CDk88x+HDib7hN2guLFgueF6EcOqExMC5n0VLwWSGc3wkMQ0/doc
+         MSCqcPgyI6PtWpc1AICkGScY/tyi1PTv1vMC7mRSl/x8mosl25bT+bHr0OnHMB6MxGRj
+         k+Hy8Lpta01rCir1nFqoOTr+bjyLjoZURHG9Vm37cuLFVlZsaxZpawxjVRfTtPtoQcdq
+         z6miFX+/i3zwDQvmwCDm7B6lBFt+88z9w0dboa2NskHqDD/l+MohyT8Ui3ACn6o7iszb
+         vZuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=mPACxARX/I5xiz/m71QMlfbaJbgGVVXIBRuTffqi1uU=;
-        b=orCoxG+p0aTipUWM1QFUGEZeTosd+wfitbfGkGXk7OaK/fqvc32cCEoOY9HvCmZx5O
-         Tn1ToA0rC0JgWnEcnu4iAGS+F3RLT6KgXzXmBh/FGmNt+qjEgX8pXAdxwk4K2S+Z68Nf
-         ymmCPQ+/bHtbZLdZPHBt08u2E/zghMDP2iy4JoB/Sim506nhIaPJ0jgkGT/G/9hz/7Di
-         6AuWfLCBjuG8AL4m60JwcZJyj+gSyesQYOIm55n51TYquoMUgkukS7WWxZ9sgc2d/PwA
-         WUCF8PI+fgX058BV4bFFDFOPJ76I+AfVG/sZyYzKJGlboLA5Lbk9D6EAWrovpspkE47W
-         jlXw==
-X-Gm-Message-State: AOAM532C7vY0SbcdyoHooa1hk9KaNiIs40lQqF8edHRDjWVhdNkImR6K
-        tr+23nl52rdYXuakbq8/9BvRkAn0Ud3HTgHE6i5vp2P22fiWocqKz7ACdR7dek/qn+NjHenUcgN
-        AoJpulh47Ow+f
-X-Received: by 2002:a62:6385:: with SMTP id x127mr13677042pfb.10.1644205272642;
-        Sun, 06 Feb 2022 19:41:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyOe3ubwUCsl51ytoYFQpcbOFgshGwu+VsOh9kV8c5aIWL/MikcAmaOlMl0lJQNMK56KLKFvA==
-X-Received: by 2002:a62:6385:: with SMTP id x127mr13677031pfb.10.1644205272410;
-        Sun, 06 Feb 2022 19:41:12 -0800 (PST)
-Received: from [10.72.12.157] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a12sm5892101pfv.18.2022.02.06.19.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 06 Feb 2022 19:41:11 -0800 (PST)
-Message-ID: <28013a95-4ce4-7859-9ca1-d836265e8792@redhat.com>
-Date:   Mon, 7 Feb 2022 11:41:06 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sr8K4Yndcc366sZygvs0Bamstrw9OIOV3hd79ImvXG4=;
+        b=kAnzKALGElorRCC1CHMVI/molZ4KufpIp3QkKiKLrX0dhT9rxHUimMQG2ecznEpsK4
+         pRj/mO/T0G0gIL/gnIhtHuGLvFgHQL+s79H1NYWPKmZma6SD+13D0SVTlJcyEAnJOZgs
+         3AwekzJ/FJnnVxPGQeFomxZzW3UU+eDNII4oX3Gfr5iXrgl0idgzz5vQCPk3Pe4oq7s5
+         M6Zhajwfwzdu44u57qt6/6rw084k/Bnsx4qplKib+OjByI255zNhF/p8ZNLAgdbKh/8c
+         DIjhvarAR5qvexz1hBSVhofm5fL9HNIF89j2zxwm9YqKXFF3kXXZJTVPDms1d++sLNqE
+         mWqw==
+X-Gm-Message-State: AOAM531SyeX8JcfpT2vq3uOMkGWQMeOWC+zYUdzzFxyJN0LQGZ8SBVFm
+        ajm3CtZlEkGS47nbNXQRbdTo6pM8Y7ez6rmqkKYbXVYyAf0=
+X-Google-Smtp-Source: ABdhPJxpfz16MrchA3RjUrwOWPTdqTliH2F61c1r2DJHZMgmQm/5vK6g2EnXCDZxLzW7CBnKzfxaGpmFfmeU3g8CYd0=
+X-Received: by 2002:a5e:8406:: with SMTP id h6mr5186036ioj.144.1644215010986;
+ Sun, 06 Feb 2022 22:23:30 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH v3 01/17] virtio_pci: struct virtio_pci_common_cfg add
- queue_notify_data
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220206145350.2069779-1-iii@linux.ibm.com> <CAEf4Bzb1To5+uLdRiJEJUJo4PckVDEBEtENC14Cuf-mkxrnxgA@mail.gmail.com>
+ <5e4b012be25cbbb44ecb935de745e17ed5c16f28.camel@linux.ibm.com>
+In-Reply-To: <5e4b012be25cbbb44ecb935de745e17ed5c16f28.camel@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 6 Feb 2022 22:23:19 -0800
+Message-ID: <CAEf4BzZfn4-dbnRcsStu+EoKD12EoKCShcoAVH9Gj0mqieBAaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Fix bpf_perf_event_data ABI breakage
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
- <20220126073533.44994-2-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <20220126073533.44994-2-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-在 2022/1/26 下午3:35, Xuan Zhuo 写道:
-> Add queue_notify_data in struct virtio_pci_common_cfg, which comes from
-> here https://github.com/oasis-tcs/virtio-spec/issues/89
+On Sun, Feb 6, 2022 at 11:57 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> Since I want to add queue_reset after it, I submitted this patch first.
+> On Sun, 2022-02-06 at 11:31 -0800, Andrii Nakryiko wrote:
+> > On Sun, Feb 6, 2022 at 6:54 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > libbpf CI noticed that my recent changes broke bpf_perf_event_data
+> > > ABI
+> > > on s390 [1]. Testing shows that they introduced a similar breakage
+> > > on
+> > > arm64. The problem is that we are not allowed to extend
+> > > user_pt_regs,
+> > > since it's used by bpf_perf_event_data.
+> > >
+> > > This series fixes these problems by removing the new members and
+> > > introducing user_pt_regs_v2 instead.
+> > >
+> > > [1] https://github.com/libbpf/libbpf/runs/5079938810
+> > >
+> > > Ilya Leoshkevich (2):
+> > >   s390/bpf: Introduce user_pt_regs_v2
+> > >   arm64/bpf: Introduce struct user_pt_regs_v2
+> >
+> > Given it is bpf_perf_event_data and thus bpf_user_pt_regs_t
+> > definitions that are set in stone now, wouldn't it be better to
+> > instead just change
+> >
+> > typedef user_pt_regs bpf_user_pt_regs_t; (s390x)
+> > typedef struct user_pt_regs bpf_user_pt_regs_t; (arm64)
+> >
+> > to just define that fixed layout instead of reusing user_ptr_regs?
+> >
+> > This whole v2 business looks really ugly.
 >
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   include/uapi/linux/virtio_pci.h | 1 +
->   1 file changed, 1 insertion(+)
+> Wouldn't it break compilation of code like this?
 >
-> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
-> index 3a86f36d7e3d..492c89f56c6a 100644
-> --- a/include/uapi/linux/virtio_pci.h
-> +++ b/include/uapi/linux/virtio_pci.h
-> @@ -164,6 +164,7 @@ struct virtio_pci_common_cfg {
->   	__le32 queue_avail_hi;		/* read-write */
->   	__le32 queue_used_lo;		/* read-write */
->   	__le32 queue_used_hi;		/* read-write */
-> +	__le16 queue_notify_data;	/* read-write */
->   };
+>     bpf_perf_event_data data;
+>     user_pt_regs *regs = &data.regs;
 
+why would it break? user_pt_regs gained extra fields at the end, so
+whoever works with the assumption of an old definition of user_pt_regs
+*through pointer* should be totally fine. The problem with
+bpf_perf_event_data is that user_pt_regs are embedded in the struct
+directly, so adding anything to it changes bpf_perf_event_data layout.
 
-So I had the same concern as previous version.
+I, of course, can't know if this breaks any other use case (including
+ones you mentioned below), but using user_pt_regs_v2 will probably not
+work with CO-RE, because older kernels won't have such type defined
+(and thus relocations will fail).
 
-This breaks uABI where program may try to use sizeof(struct 
-virtio_pci_common_cfg).
+I'm not sure the origins of the need for user_pt_regs (as opposed to
+using pt_regs directly, like x86-64 does), but with CO-RE and
+vmlinux.h it would be more reliable and straightforward to just stick
+to kernel-internal struct pt_regs everywhere. And for non-CO-RE macros
+maybe just using an offset within struct pt_regs (i.e.,
+offsetofend(gprs)) would do it?
 
-We probably need a container structure here.
-
-THanks
-
-
->   
->   /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
-
+>
+> Additionaly, after this I'm no longer sure I haven't missed any other
+> places where user_pt_regs might be used. For example, arm64 seems to be
+> using it not only for BPF, but also for ptrace?
+>
+> static int gpr_get(struct task_struct *target,
+>                    const struct user_regset *regset,
+>                    struct membuf to)
+> {
+>         struct user_pt_regs *uregs = &task_pt_regs(target)->user_regs;
+>         return membuf_write(&to, uregs, sizeof(*uregs));
+> }
+>
+> and then in e.g. gdb:
+>
+> static void
+> aarch64_fill_gregset (struct regcache *regcache, void *buf)
+> {
+>   struct user_pt_regs *regset = (struct user_pt_regs *) buf;
+>   ...
+>
+> I'm also not a big fan of the _v2 solution, but it looked the safest
+> to me. At least for s390, a viable alternative that Vasily proposed
+> would be to go ahead with replacing args[1] with orig_gpr2 and then
+> also backporting the patch, so that the new libbpf would still work on
+> the old stable kernels. But this won't work for arm64.
