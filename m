@@ -2,60 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC2E4AC800
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 18:54:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50CC14AC82E
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 19:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbiBGRyd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 12:54:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        id S240085AbiBGSDd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 13:03:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345915AbiBGRxl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 12:53:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B545C0401D9;
-        Mon,  7 Feb 2022 09:53:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E79F061265;
-        Mon,  7 Feb 2022 17:53:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A59C004E1;
-        Mon,  7 Feb 2022 17:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644256420;
-        bh=J/5npvl2AWJR5CZyz4n1OKbcZJe3W/JUn6lsfy2Lq2A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WUaGbeOkGK8q0zSj9WIbfCMzICxJHWhH7uPA8uALbb5tft9vuA3gJGKmYh15bMAwT
-         5i+0Rime8i/kN5BBE0SlwLTl62IOycTNsnZRbQ9SUblQ3Pl7gSxCSiiAwNRVXLGbDm
-         w9pRkRK3o8lnvD8B8lMN5HI4a+xMyUHAudJ4BE6W7F3n0KrPx927/DqDWkcFBk22+v
-         GzbwX6liuKM48swPFGl+mp0QNnUYQGQqQGlgEuXmDwLbs+63uMWO7oWjJcxKN0r4Ce
-         YOHEwrpeGvhvgyfuEfzhidjR6LHJnl9/y0gz4i3ovrDD5wfV/nROczEK1JlZcQWQzb
-         OAnACashZrlWQ==
-Date:   Mon, 7 Feb 2022 18:53:35 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        brouer@redhat.com, toke@redhat.com, andrii@kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftest/bpf: check invalid length in
- test_xdp_update_frags
-Message-ID: <YgFcn487ZHk8e2VP@lore-desk>
-References: <aff68ca785cae86cd6263355010ceaff24daee1f.1643982947.git.lorenzo@kernel.org>
- <c3858f6b-43d5-18ef-2fc8-b58c13c12b05@fb.com>
- <Yf1nxMWEWy4DSwgN@lore-desk>
- <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
- <Yf1w2HRokiYBg8w9@lore-desk>
- <Yf15n2GJG70JrxX6@lore-desk>
- <c03f0c81-8e56-6c92-d31a-03a5394b9388@fb.com>
+        with ESMTP id S1344917AbiBGR52 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 12:57:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C79B9C0401DA
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 09:57:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644256646;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6nSrsLxKO5uzyOgVc1p4ANil8NgYxSlUbB/IGZjdK54=;
+        b=i0A+yv7SUBCkA6Jvbn59lU+adTrdEOlPVHt0QmkQw+G41Qp5oxSccGJx46cylHt9KMwuT8
+        Qhxy+hXIxAOXxETu0jBcRw2txT0FvWhrYVZBJ4/9GMRLUFi1OktmSyiVnB6RS0ykQmFz7J
+        WiX47W3FDLIGlOvPKavgOfJchBEdr6M=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-663-vsbmz64ON6-K1Sny252Arw-1; Mon, 07 Feb 2022 12:57:25 -0500
+X-MC-Unique: vsbmz64ON6-K1Sny252Arw-1
+Received: by mail-wr1-f71.google.com with SMTP id l27-20020adfa39b000000b001e315c20064so1114653wrb.10
+        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 09:57:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=6nSrsLxKO5uzyOgVc1p4ANil8NgYxSlUbB/IGZjdK54=;
+        b=x0s5oLUqR12FMnBJSgopWkKVj3/A7kl+9u/oYVkX4q0PNLTXRwmRjt5z9t0LB9s+r7
+         hNj7xWnnN1v1y5ijv5iXTz44ieXNJvYdiQD0vFX91NL1dtsJwb/373+JNBYqr3oJXbR+
+         lNAgh3x+0UV1UwkPEITnR2YVrbGUg48dPIfCdBCYlz1e00H24M7Q1IKAKEC04p0sJsTt
+         /0Sm6wpkYFaCZehqesRplceX6CknwIwm0HeF2LzdRcRf7jo8rxzLahqNRmFvQaArV6x4
+         +/4BY0yfWaD28m2SzdfE5uq2V6N57CF0CjLoBP0YJ+siuhHKuE8WjPZThgnPOTiMgmn7
+         v8oA==
+X-Gm-Message-State: AOAM532RlSEuOHgAN7ICSZbswwwm9qyIXHwLQLLuoJBNoCNVXeDVxA/0
+        Yr+4YxsBzTeTW4vO9g61mtvjf33morchKWcEVip32SErHgfzD0ICg+Dgc4egn8rMNq97roUXwgO
+        2VsnaO+LkqLkI
+X-Received: by 2002:a5d:67cf:: with SMTP id n15mr451477wrw.673.1644256643373;
+        Mon, 07 Feb 2022 09:57:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzQgEs8mKMebfCPlVO2orIk3HGeddGG7PAsLFaQwiVuH4PXW2fVM1ru4fUOVlXYizg6VNg/kg==
+X-Received: by 2002:a5d:67cf:: with SMTP id n15mr451462wrw.673.1644256643183;
+        Mon, 07 Feb 2022 09:57:23 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id l24sm27332wms.24.2022.02.07.09.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Feb 2022 09:57:22 -0800 (PST)
+Date:   Mon, 7 Feb 2022 18:57:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Yinjun Zhang <yinjun.zhang@corigine.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, niklas.soderlund@corigine.com,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH bpf] bpftool: fix the error when lookup in no-btf maps
+Message-ID: <YgFdgOVdEWUx63Ik@krava>
+References: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
+ <CAEf4BzbjVnkb8Oz67p3jDhL-Pv9RG-wq1A7KMV06zowRK9psew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9OLtDuQbpDP0jtNd"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <c03f0c81-8e56-6c92-d31a-03a5394b9388@fb.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzbjVnkb8Oz67p3jDhL-Pv9RG-wq1A7KMV06zowRK9psew@mail.gmail.com>
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,126 +85,51 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Feb 07, 2022 at 09:42:25AM -0800, Andrii Nakryiko wrote:
+> On Mon, Feb 7, 2022 at 8:00 AM Yinjun Zhang <yinjun.zhang@corigine.com> wrote:
+> >
+> > When reworking btf__get_from_id() in commit a19f93cfafdf the error
+> > handling when calling bpf_btf_get_fd_by_id() changed. Before the rework
+> > if bpf_btf_get_fd_by_id() failed the error would not be propagated to
+> > callers of btf__get_from_id(), after the rework it is. This lead to a
+> > change in behavior in print_key_value() that now prints an error when
+> > trying to lookup keys in maps with no btf available.
+> >
+> > Fix this by following the way used in dumping maps to allow to look up
+> > keys in no-btf maps, by which it decides whether and where to get the
+> > btf info according to the btf value type.
+> >
+> > Fixes: a19f93cfafdf ("libbpf: Add internal helper to load BTF data by FD")
+> > Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
+> > Reviewed-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+> > Signed-off-by: Simon Horman <simon.horman@corigine.com>
+> > ---
+> >  tools/bpf/bpftool/map.c | 6 ++----
+> >  1 file changed, 2 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> > index cc530a229812..4fc772d66e3a 100644
+> > --- a/tools/bpf/bpftool/map.c
+> > +++ b/tools/bpf/bpftool/map.c
+> > @@ -1054,11 +1054,9 @@ static void print_key_value(struct bpf_map_info *info, void *key,
+> >         json_writer_t *btf_wtr;
+> >         struct btf *btf;
+> >
+> > -       btf = btf__load_from_kernel_by_id(info->btf_id);
+> > -       if (libbpf_get_error(btf)) {
+> > -               p_err("failed to get btf");
+> > +       btf = get_map_kv_btf(info);
+> > +       if (libbpf_get_error(btf))
+> 
+> See discussion in [0], it seems relevant.
+> 
+>   [0] https://lore.kernel.org/bpf/20220204225823.339548-3-jolsa@kernel.org/
 
---9OLtDuQbpDP0jtNd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I checked and this patch does not fix the problem for me,
+but looks like similar issue, do you have test case for this?
 
->=20
->=20
-> On 2/4/22 11:08 AM, Lorenzo Bianconi wrote:
-> > > >=20
-> > >=20
-> > > [...]
-> > >=20
-> > > > > >=20
-> > > > > > In kernel, the nr_frags checking is against MAX_SKB_FRAGS,
-> > > > > > but if /proc/sys/net/core/max_skb_flags is 2 or more less
-> > > > > > than MAX_SKB_FRAGS, the test won't fail, right?
-> > > > >=20
-> > > > > yes, you are right. Should we use the same definition used in
-> > > > > include/linux/skbuff.h instead? Something like:
-> > > > >=20
-> > > > > if (65536 / page_size + 1 < 16)
-> > > > > 	max_skb_flags =3D 16;
-> > > > > else
-> > > > > 	max_skb_flags =3D 65536/page_size + 1;
-> > > >=20
-> > > > The maximum packet size limit 64KB won't change anytime soon.
-> > > > So the above should work. Some comments to explain why using
-> > > > the above formula will be good.
-> > >=20
-> > > ack, I will do in v2.
-> >=20
-> > I can see there is a on-going discussion here [0] about increasing
-> > MAX_SKB_FRAGS. I guess we can put on-hold this patch and see how
-> > MAX_SKB_FRAGS will be changed.
->=20
-> Thanks for the link. The new patch is going to increase
-> MAX_SKB_FRAGS and it is possible that will be changed again
-> (maybe under some config options).
->=20
-> The default value for
-> /proc/sys/net/core/max_skb_flags is MAX_SKB_FRAGS and I suspect
-> anybody is bothering to change it. So your patch is okay to me.
-> Maybe change a little bit -ENOMEM error message. current,
->   ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
-> to
->   ASSERT_EQ(err, -ENOMEM, "unsupported buffer size, possible non-default
-> /proc/sys/net/core/max_skb_flags?");
+mine is to dump any no-btf map with -p option
 
-ack, I am fine with it.
-@Alexei, Andrii: any hints about it?
+thanks,
+jirka
 
-Regards,
-Lorenzo
-
->=20
-> >=20
-> > Regards,
-> > Lorenzo
-> >=20
-> > [0] https://lore.kernel.org/all/202202031315.B425Ipe8-lkp@intel.com/t/#=
-ma1b2c7e71fe9bc69e24642a62dadf32fda7d5f03
-> >=20
-> > >=20
-> > > Regards,
-> > > Lorenzo
-> > >=20
-> > > >=20
-> > > > >=20
-> > > > > Regards,
-> > > > > Lorenzo
-> > > > >=20
-> > > > > >=20
-> > > > > > > +
-> > > > > > > +	num =3D fscanf(f, "%d", &max_skb_frags);
-> > > > > > > +	fclose(f);
-> > > > > > > +
-> > > > > > > +	if (!ASSERT_EQ(num, 1, "max_skb_frags read failed"))
-> > > > > > > +		goto out;
-> > > > > > > +
-> > > > > > > +	/* xdp_buff linear area size is always set to 4096 in the
-> > > > > > > +	 * bpf_prog_test_run_xdp routine.
-> > > > > > > +	 */
-> > > > > > > +	buf_size =3D 4096 + (max_skb_frags + 1) * sysconf(_SC_PAGE_=
-SIZE);
-> > > > > > > +	buf =3D malloc(buf_size);
-> > > > > > > +	if (!ASSERT_OK_PTR(buf, "alloc buf"))
-> > > > > > > +		goto out;
-> > > > > > > +
-> > > > > > > +	memset(buf, 0, buf_size);
-> > > > > > > +	offset =3D (__u32 *)buf;
-> > > > > > > +	*offset =3D 16;
-> > > > > > > +	buf[*offset] =3D 0xaa;
-> > > > > > > +	buf[*offset + 15] =3D 0xaa;
-> > > > > > > +
-> > > > > > > +	topts.data_in =3D buf;
-> > > > > > > +	topts.data_out =3D buf;
-> > > > > > > +	topts.data_size_in =3D buf_size;
-> > > > > > > +	topts.data_size_out =3D buf_size;
-> > > > > > > +
-> > > > > > > +	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
-> > > > > > > +	ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
-> > > > > > > +	free(buf);
-> > > > > > >     out:
-> > > > > > >     	bpf_object__close(obj);
-> > > > > > >     }
-> > > > > >=20
-> > > >=20
-> >=20
-> >=20
-
---9OLtDuQbpDP0jtNd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYgFcnwAKCRA6cBh0uS2t
-rBo4AQD515rOMGBMkdaQ+noY6PJY1THC3o1ciSn987z53aJr4gD/Z9k2fwFJPnoY
-i3+j93idzNN42dcNIaDFnG1utXGjRgE=
-=Aw/G
------END PGP SIGNATURE-----
-
---9OLtDuQbpDP0jtNd--
