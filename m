@@ -2,151 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8EB4AC7D6
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 18:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC2E4AC800
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 18:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241040AbiBGRqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 12:46:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59292 "EHLO
+        id S229906AbiBGRyd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 12:54:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242411AbiBGRpG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 12:45:06 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8FDC0401D9
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 09:45:05 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 217H9fR2023825;
-        Mon, 7 Feb 2022 09:44:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=4wFMvE2QGNnFKwTdO+C0Ws9LFAvRt1M1W/0FfZxU9fY=;
- b=OQwHteYjW8T9Q8thEoEAcsG1Sr1Uj64/TqJAVwpDVpYVwNE57oRrd+cagZPXJIPT4+Um
- fWRvVhNyKM/fpdK0i7FMOkyOZzsV8V2EV3BfQCkFftnS40L1DSb5xAGaxXJ0PzOmR/gb
- Hqp8zSn/B71olHdUQMA9Zx52YKexdT0RfyE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e2sxm4kgv-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 07 Feb 2022 09:44:50 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 7 Feb 2022 09:44:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XKygfFxAgf+ky8bN/Q0kweqAYebmb/0coirb034pPiUMGFaRQtk/bLZx1otSRgAl36A0WRcBwZ6Ty9zmm35By6Te7fi5MzhWZka3qNrWbrg7zLuLLfma4MVnF7zo/mhTn0w+bn6/yuy8qi58Cbosssk4i0k48Y9Y1OhxSaACFIBUbuVmgfafVgz7e6b3NBY8ODLwhPmLwzH/bsFDhlTA33WU16MTscvchKlE2srnlNFlTKAmeQ9WJoHQOwsaFLDkI0jYcvVawBw3xAM8ePlP94ssqu1Ni8gQgpeoO9/JzCWaICYBSUMRsCibAx5rfw3qkTRQ6yoG93t1uQUAtJ3BCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4wFMvE2QGNnFKwTdO+C0Ws9LFAvRt1M1W/0FfZxU9fY=;
- b=YFTuKGF9MfgqIR1JiZS09jKuhpICBzkvgf0Xnimb7b0RZTMoyD3nHLtN/U3UZFsI9jXhmvXkKIpx/Zjh5VVu+dcW7GiQtrKXSLYI1yQzSTTt5bj3bw/lbOQVz0DLtpakXokh4sqmSbVlZLIdMulVc5Yo//P+h7DkkWCzjrbTbIvXfm5xQYFbv7MwgTt4QPwdl803bQuWLr5BmGpu/3TcS99gXiBkLXSTK1VzFxj8EGAL8bJtMkeMa8bLF3AcK71k4SLId1m8EUMRUIzflzHM4vOWtFVSWn0d2fjzaDZxDmzv1rsmzU6tBf5lZY6bRlN0/wtGefzEBcjLVAHnKG3kAQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SA0PR15MB3887.namprd15.prod.outlook.com (2603:10b6:806:8b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.18; Mon, 7 Feb
- 2022 17:44:46 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::11fa:b11a:12b5:a7f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::11fa:b11a:12b5:a7f0%6]) with mapi id 15.20.4951.019; Mon, 7 Feb 2022
- 17:44:46 +0000
-Message-ID: <9b89ac02-de43-10db-816d-4f4888e71a80@fb.com>
-Date:   Mon, 7 Feb 2022 09:44:43 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH bpf-next 2/2] bpf: test_run: fix overflow in
- bpf_test_finish frags parsing
-Content-Language: en-US
-To:     Stanislav Fomichev <sdf@google.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>
-References: <20220204235849.14658-1-sdf@google.com>
- <20220204235849.14658-2-sdf@google.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220204235849.14658-2-sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0008.namprd03.prod.outlook.com
- (2603:10b6:303:8f::13) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S1345915AbiBGRxl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 12:53:41 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B545C0401D9;
+        Mon,  7 Feb 2022 09:53:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E79F061265;
+        Mon,  7 Feb 2022 17:53:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A59C004E1;
+        Mon,  7 Feb 2022 17:53:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644256420;
+        bh=J/5npvl2AWJR5CZyz4n1OKbcZJe3W/JUn6lsfy2Lq2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WUaGbeOkGK8q0zSj9WIbfCMzICxJHWhH7uPA8uALbb5tft9vuA3gJGKmYh15bMAwT
+         5i+0Rime8i/kN5BBE0SlwLTl62IOycTNsnZRbQ9SUblQ3Pl7gSxCSiiAwNRVXLGbDm
+         w9pRkRK3o8lnvD8B8lMN5HI4a+xMyUHAudJ4BE6W7F3n0KrPx927/DqDWkcFBk22+v
+         GzbwX6liuKM48swPFGl+mp0QNnUYQGQqQGlgEuXmDwLbs+63uMWO7oWjJcxKN0r4Ce
+         YOHEwrpeGvhvgyfuEfzhidjR6LHJnl9/y0gz4i3ovrDD5wfV/nROczEK1JlZcQWQzb
+         OAnACashZrlWQ==
+Date:   Mon, 7 Feb 2022 18:53:35 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        brouer@redhat.com, toke@redhat.com, andrii@kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftest/bpf: check invalid length in
+ test_xdp_update_frags
+Message-ID: <YgFcn487ZHk8e2VP@lore-desk>
+References: <aff68ca785cae86cd6263355010ceaff24daee1f.1643982947.git.lorenzo@kernel.org>
+ <c3858f6b-43d5-18ef-2fc8-b58c13c12b05@fb.com>
+ <Yf1nxMWEWy4DSwgN@lore-desk>
+ <15f829a2-8556-0545-7408-3fca66eb38b7@fb.com>
+ <Yf1w2HRokiYBg8w9@lore-desk>
+ <Yf15n2GJG70JrxX6@lore-desk>
+ <c03f0c81-8e56-6c92-d31a-03a5394b9388@fb.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d43c6b98-07aa-4beb-87b1-08d9ea6187eb
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3887:EE_
-X-Microsoft-Antispam-PRVS: <SA0PR15MB38876A4BB472E75CEB34DCB6D32C9@SA0PR15MB3887.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0TzL2cERmcyk3p3GziTYfauIK5Z6wjl18LY73msHDB45nNKz5z2n6d0oKGesDmh4wognIhUn3wKA0HCXFToT/Y+TTFYmt/ktz8/Md4sgOurN8GcvSzr4f6ZsGUlv386Mkq/HndB0mao++KUR8NdzLowVoZI7N7YP2O7q8YGGcQjc1meFEBjbYLjtVYzfjsidKkbRdk7iivFjJghvo0ykMCDNYakL5obVD/rukOcpE5szr4zogKboLaJfCWjdwOjWoTSuALOFqqeoMaezEx5gccyBMeXX6ON+K2uqtu5rhib8hgJLtWPDqR/V/p2JOtBz1nDGaL080ppQH86sJD7C05i92pNcQ/6Z6QdpjemsqBtdetKebOMrzGQd893xzL/eTW1WaK9NGlUBtm0Hc0krObpjyo6LmsLXxTkG3k1sWEsElttDCTF1/Zxnh5dpgx0tP3yjyaZOlKXIRF1FbBU5v/9DlJnGPCOMsFdH77Cshh7p80fCcS7CDDZgcv8Je3xur8rjs5dH5b+jggTABSucXJLF5QZ8QaTmz7eapCJJUauzqaTV8OP1PsL8WKHH/jsIZFSYkDeh/KtJ0BLvt8zNuYRYog4+1ZV8DQowkdnUoOXoMK4iBTDx0v8lhur1GksK+faFtyAeDaDJ/RKTtvYGyjpgTyDuL/o5SmNIB/Mqipd9QMNcBQ7LqM2xq/4ddWwPZOp78bwginesmTnT4U3o6+3Ow82Tv+Mio/ClXzFcuRm1ihQ8ut29L8QyY+MJXNEj
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(316002)(31696002)(52116002)(186003)(6512007)(36756003)(4744005)(5660300002)(53546011)(8936002)(66476007)(8676002)(83380400001)(66946007)(4326008)(86362001)(6666004)(6506007)(2616005)(2906002)(66556008)(31686004)(6486002)(38100700002)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cE4veDVBT3g4ZlNuN3ZwSzlSTHl6bGhSSVFUZVJvQ210bzBJR3daVXVTbXd0?=
- =?utf-8?B?SVVBTzJWME5MZGxCTEVsRm92REF3M0FMNDdGT2F2TGNvUXBuTFRWZEV2bHJX?=
- =?utf-8?B?cFVJeHRuWi9heTdLb2Ficml0cGllSkpveGFLMmhUbEs3Zjl4bzRVWEhwUmNS?=
- =?utf-8?B?Tk9jTU1TUFpWUUZtWlFMV0VSbkFnM0hmWnBENlh5UkZKR0FaMVlJeXBTQk5P?=
- =?utf-8?B?RmRIUTE4dEZ4cllid1FPR1dmdFcxSGVQOThsaEZ3WHpnajdScUV1aGh6bFRX?=
- =?utf-8?B?RFJlaWVjYjZyYm85RDI5VVpFVkV1a2RVYzdSbGNzaFVoTGp3NmdVeGdsQXNn?=
- =?utf-8?B?UlZKNFJSRzcxd3JLUkc2TlBVQWUwKzRSYXVJdnVXQjByZWMyYnBYSmVCNlhv?=
- =?utf-8?B?MGVodGlLNHVtUGxEaW00dHhPTTRoOHZZOGI3Q1VLVWtKQ1Vva3pVYWVhT1RI?=
- =?utf-8?B?YjJkOVBNZDZpZU9CRGgwV0R2RU11bWI1L3V4blp4bnV4Z3VZY21HMHJqZ01E?=
- =?utf-8?B?S1hFUVovUTNkaCt2NitRNjdrdFowNUU1R3BLTFltQjNPYmRzQzI2RGQySkY2?=
- =?utf-8?B?ajZDZDBhNnVwaTQ5SXFtWjRpc0lRQmtMQWJpNGxFbFBXaG9hRkk1c2twbG5V?=
- =?utf-8?B?RGlDcU5DRjEyM0FyRHh3WDgzT1dHTkNlbWdESmhnT2J4OC8wRG1SREJBZDJn?=
- =?utf-8?B?azJjY2V0L2tHWDlrZWlzbXZQWnVrMWt1SzVGSWJlYTI3ZTFvK2tKYlRIQ2R3?=
- =?utf-8?B?TVJQY2JKaTBkalBqbWRGUGExV1gvU3krK0k3MGRkNWhPaS9CMjFGV0Z4L2k5?=
- =?utf-8?B?bmFiSW5qSkw4K2tZTmF6RVF4RGlvZ0pLQXdNSTZqNi9oMmR0bCtlajUrQmZS?=
- =?utf-8?B?L3FVWXkyaDZOQ1FQbGpaejJ5UitQK3JIWTIzTTI5c0sybWV5QkJMY0h0Lzla?=
- =?utf-8?B?Ymt6V3hPT2tyUjZxV001SXdVcUNoeWxkekZUZlNORTNXQUxORVZjbTZQMkZ3?=
- =?utf-8?B?bHRzTnJVWGtETkVVZytRcFV5MUtGUjNYTGhkeTlnZXZhYm8yK0I5dVNMVU9m?=
- =?utf-8?B?UmhGRlNhcTQ3enk3L3FXSyt5TzI4clJXNVNlNEZSdktuMm5FZlhtZW9UNHM3?=
- =?utf-8?B?cXJJNXh3S1FJQjNHZm5PQThHSkV1SHhWTklvMW53aUNoWWxGN0o0b1NQbjdU?=
- =?utf-8?B?T2FzMEZtWFBsZDNFajdqTEpVOGgwNVpLbU5zeU9tdGo3Wmd5Z3ZBb1MzVXBj?=
- =?utf-8?B?LzNYNEw3NDRScnJUTEE1bGtlWGRyTVZWNUlmTDhkMjU1akR3RzNJSUdtbG5q?=
- =?utf-8?B?ZklkNVBROXBQeGR2YWM4enZMQjJRQm9xaVBtNVc4SGVoMjk2aWNtVFV5OVph?=
- =?utf-8?B?SU9BWmtCTW5ZdjVmbHYzUm5LelhzbEhNYTBCQjlCZXRPTVo4MFZpVEF6c1kv?=
- =?utf-8?B?K3VRdWxGV1JmdFVIeGxPR1pHN1FnTkkvakhsYlBXZXNsaHRjRVFCNzViamV4?=
- =?utf-8?B?SWtlZW91UnZzK29YS2JDcXd6cStpRHN0cEx4N1czSjF1YmRzcTFPMFRuR25i?=
- =?utf-8?B?VStOUUQrKzJQQ0FIQldUc3lYN21PZUNLL1ZSSXdjeHpWQlI1WGlLK1VVbUE5?=
- =?utf-8?B?Sy9yUEtCdHE4UnBGL25BaGJOazgxQjJTZHZqUDFveWtveXI1MEhIYkhWUGRw?=
- =?utf-8?B?WG5nUVFTU0crWVdqcm02QTV5QTRIOXFUQUZ3UHpFVDJYYzJUaUdMMnZyc29M?=
- =?utf-8?B?UGs2end1b0MzOVhzZTJEZWx6T1ROZjZCTXlWWVNuMXhCMlJBQ1dEQ3dubzlo?=
- =?utf-8?B?anBCODJ3RENrNnRyeGJiQ1doUGppZ2RNV0s4TXg3UWU0U0wyS0JaSmNlb29S?=
- =?utf-8?B?dTcva1hUS2VwL0ovMld6WFlvQWxUeVYzMUl6M1dyT2pxN1pjMFVvd3dKOFdG?=
- =?utf-8?B?RUcwY1doZHFpTmUwcjJhSThKbXVsSk1tUzZ6MEE1TDhQdWNWUU1VbDJtTFJI?=
- =?utf-8?B?cjRCdktkc0pIY1pEdFNFRTdodEFISEVDdnVEQUcwN05qT2h3QmVVSy9DYnQ5?=
- =?utf-8?B?eWM1K29LL2lzM0g1QUU2Sjg2S3Fka2M3QkZ5L0tUTS9RL2thS3BGYkN5L3NP?=
- =?utf-8?B?RXVXaHNOSHlmRERnelZnUHJsTmZrN1hIS0p0YzZhY2F5RDBqWmdtbzJzblJ6?=
- =?utf-8?B?R3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d43c6b98-07aa-4beb-87b1-08d9ea6187eb
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2022 17:44:46.4129
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /+uABcJZ80Q0sKBw+/xgXU/+2QUb88sCb4A2lWKwZbYdry7oHBGDsl7Ycqem24kw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3887
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: QUEZ8Ofg-dXZpS454nL3lzp7UxE5XMPq
-X-Proofpoint-ORIG-GUID: QUEZ8Ofg-dXZpS454nL3lzp7UxE5XMPq
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-07_06,2022-02-07_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
- mlxscore=0 phishscore=0 spamscore=0 impostorscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 clxscore=1015 mlxlogscore=866
- malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202070110
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9OLtDuQbpDP0jtNd"
+Content-Disposition: inline
+In-Reply-To: <c03f0c81-8e56-6c92-d31a-03a5394b9388@fb.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -154,19 +64,125 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+--9OLtDuQbpDP0jtNd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2/4/22 3:58 PM, Stanislav Fomichev wrote:
-> This place also uses signed min_t and passes this singed int to
-> copy_to_user (which accepts unsigned argument). I don't think
-> there is an issue, but let's be consistent.
-> 
-> Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-> Fixes: 7855e0db150ad ("bpf: test_run: add xdp_shared_info pointer in bpf_test_finish signature")
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>=20
+>=20
+> On 2/4/22 11:08 AM, Lorenzo Bianconi wrote:
+> > > >=20
+> > >=20
+> > > [...]
+> > >=20
+> > > > > >=20
+> > > > > > In kernel, the nr_frags checking is against MAX_SKB_FRAGS,
+> > > > > > but if /proc/sys/net/core/max_skb_flags is 2 or more less
+> > > > > > than MAX_SKB_FRAGS, the test won't fail, right?
+> > > > >=20
+> > > > > yes, you are right. Should we use the same definition used in
+> > > > > include/linux/skbuff.h instead? Something like:
+> > > > >=20
+> > > > > if (65536 / page_size + 1 < 16)
+> > > > > 	max_skb_flags =3D 16;
+> > > > > else
+> > > > > 	max_skb_flags =3D 65536/page_size + 1;
+> > > >=20
+> > > > The maximum packet size limit 64KB won't change anytime soon.
+> > > > So the above should work. Some comments to explain why using
+> > > > the above formula will be good.
+> > >=20
+> > > ack, I will do in v2.
+> >=20
+> > I can see there is a on-going discussion here [0] about increasing
+> > MAX_SKB_FRAGS. I guess we can put on-hold this patch and see how
+> > MAX_SKB_FRAGS will be changed.
+>=20
+> Thanks for the link. The new patch is going to increase
+> MAX_SKB_FRAGS and it is possible that will be changed again
+> (maybe under some config options).
+>=20
+> The default value for
+> /proc/sys/net/core/max_skb_flags is MAX_SKB_FRAGS and I suspect
+> anybody is bothering to change it. So your patch is okay to me.
+> Maybe change a little bit -ENOMEM error message. current,
+>   ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
+> to
+>   ASSERT_EQ(err, -ENOMEM, "unsupported buffer size, possible non-default
+> /proc/sys/net/core/max_skb_flags?");
 
-Agreed that there is no actual issue as the 'copy_size' should be small 
-here (<= maximum skb total packet size). I tried to add 
--Wsign-conversion to kernel compilation and saw tons of warnings. I guess
-we have to deal with case by case then.
+ack, I am fine with it.
+@Alexei, Andrii: any hints about it?
 
-Acked-by: Yonghong Song <yhs@fb.com>
+Regards,
+Lorenzo
+
+>=20
+> >=20
+> > Regards,
+> > Lorenzo
+> >=20
+> > [0] https://lore.kernel.org/all/202202031315.B425Ipe8-lkp@intel.com/t/#=
+ma1b2c7e71fe9bc69e24642a62dadf32fda7d5f03
+> >=20
+> > >=20
+> > > Regards,
+> > > Lorenzo
+> > >=20
+> > > >=20
+> > > > >=20
+> > > > > Regards,
+> > > > > Lorenzo
+> > > > >=20
+> > > > > >=20
+> > > > > > > +
+> > > > > > > +	num =3D fscanf(f, "%d", &max_skb_frags);
+> > > > > > > +	fclose(f);
+> > > > > > > +
+> > > > > > > +	if (!ASSERT_EQ(num, 1, "max_skb_frags read failed"))
+> > > > > > > +		goto out;
+> > > > > > > +
+> > > > > > > +	/* xdp_buff linear area size is always set to 4096 in the
+> > > > > > > +	 * bpf_prog_test_run_xdp routine.
+> > > > > > > +	 */
+> > > > > > > +	buf_size =3D 4096 + (max_skb_frags + 1) * sysconf(_SC_PAGE_=
+SIZE);
+> > > > > > > +	buf =3D malloc(buf_size);
+> > > > > > > +	if (!ASSERT_OK_PTR(buf, "alloc buf"))
+> > > > > > > +		goto out;
+> > > > > > > +
+> > > > > > > +	memset(buf, 0, buf_size);
+> > > > > > > +	offset =3D (__u32 *)buf;
+> > > > > > > +	*offset =3D 16;
+> > > > > > > +	buf[*offset] =3D 0xaa;
+> > > > > > > +	buf[*offset + 15] =3D 0xaa;
+> > > > > > > +
+> > > > > > > +	topts.data_in =3D buf;
+> > > > > > > +	topts.data_out =3D buf;
+> > > > > > > +	topts.data_size_in =3D buf_size;
+> > > > > > > +	topts.data_size_out =3D buf_size;
+> > > > > > > +
+> > > > > > > +	err =3D bpf_prog_test_run_opts(prog_fd, &topts);
+> > > > > > > +	ASSERT_EQ(err, -ENOMEM, "unsupported buffer size");
+> > > > > > > +	free(buf);
+> > > > > > >     out:
+> > > > > > >     	bpf_object__close(obj);
+> > > > > > >     }
+> > > > > >=20
+> > > >=20
+> >=20
+> >=20
+
+--9OLtDuQbpDP0jtNd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYgFcnwAKCRA6cBh0uS2t
+rBo4AQD515rOMGBMkdaQ+noY6PJY1THC3o1ciSn987z53aJr4gD/Z9k2fwFJPnoY
+i3+j93idzNN42dcNIaDFnG1utXGjRgE=
+=Aw/G
+-----END PGP SIGNATURE-----
+
+--9OLtDuQbpDP0jtNd--
