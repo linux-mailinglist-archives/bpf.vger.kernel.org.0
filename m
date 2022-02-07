@@ -2,98 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A7E4AC21C
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 15:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 692314AC3F0
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 16:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348039AbiBGO5C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 09:57:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        id S242216AbiBGPhq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 10:37:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1442520AbiBGOwY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 09:52:24 -0500
-Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4928C0401C2
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 06:52:23 -0800 (PST)
-Received: by mail-ua1-x92b.google.com with SMTP id g18so13049773uak.5
-        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 06:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Mtx2YBw2ZJ4lWpSF8NYCcRXkDCZX1esZEmumdIEB7tc=;
-        b=U9paWWLNk2naINhsgRGAFDCSxBYYkUqv8/GYR8vpcrB6Pp9fyJC1JBpm3S5vT4qBpf
-         op5bIGf2ej/q6x+AFkX/k6bpdkpG97moFbU8uwTTdRNN+jJqFBGjzbdi61KH/0BrZR/R
-         8ZfQCc9wP8nl5sV1yXdgl/5f4qQjC0+Lnz5fo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Mtx2YBw2ZJ4lWpSF8NYCcRXkDCZX1esZEmumdIEB7tc=;
-        b=Uf0I5Z0OsB0KpfWCgNs/QFEVsrKy7Ez8NsUgtOPxB/WaUh2Muqp5oNlQB3ocSXY6my
-         5s9Y5BGmAiuGanUf3Y1UP/DwEwl4h3bSHTec09qvLHe5mHKmXqgQ2qrF/INZoj4zqQ0X
-         qaCFPjJaiwtItouse7tUhKGGGIEZ5Cm+9G19VrxbhHvdEuw3ihECWIhJfkrXtDnuITTZ
-         Zs7QLY4zNYw293pbNZN8eJaLZ2eYmRhWPFOlvo1sUTAzbMOzQsTsLAxHvB3d+cYGexXo
-         F7wvlTQqEZ69c7ty/vI1/9ritCHdFfgIePICeA9luuZpMFzOm6M7HJ+il481aT5KWXuF
-         aYDQ==
-X-Gm-Message-State: AOAM533US1NYRkdnbvaw8AwAYSOeKYss8kK4xwG5c3FEIcojgbSNfReL
-        LrO8tMu4G/opc4q2TgrAyKAPBv1i/PYW1g==
-X-Google-Smtp-Source: ABdhPJzeQG9FgL2MZ4q9NP9LpbIoI173m00Efi+GPRo9FgOW6LMbiyuUzW1kbiJEpnKsjaRQxlBjHA==
-X-Received: by 2002:a67:f8d7:: with SMTP id c23mr4266012vsp.35.1644245541813;
-        Mon, 07 Feb 2022 06:52:21 -0800 (PST)
-Received: from localhost.localdomain ([181.136.110.101])
-        by smtp.gmail.com with ESMTPSA id r14sm581347vke.20.2022.02.07.06.52.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Feb 2022 06:52:21 -0800 (PST)
-From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Fix strict mode calculation
-Date:   Mon,  7 Feb 2022 09:50:52 -0500
-Message-Id: <20220207145052.124421-4-mauricio@kinvolk.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220207145052.124421-1-mauricio@kinvolk.io>
-References: <20220207145052.124421-1-mauricio@kinvolk.io>
+        with ESMTP id S1357145AbiBGPY6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 10:24:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF067C0401C9
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 07:24:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C8AB6077B
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 15:24:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E78B2C340F0;
+        Mon,  7 Feb 2022 15:24:55 +0000 (UTC)
+Date:   Mon, 7 Feb 2022 10:24:54 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, <bpf@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Jiri Olsa <jolsa@redhat.com>
+Subject: Re: [RFC PATCH 2/3] powerpc/ftrace: Override
+ ftrace_location_lookup() for MPROFILE_KERNEL
+Message-ID: <20220207102454.41b1d6b5@gandalf.local.home>
+In-Reply-To: <fadc5f2a295d6cb9f590bbbdd71fc2f78bf3a085.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
+References: <cover.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
+        <fadc5f2a295d6cb9f590bbbdd71fc2f78bf3a085.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"(__LIBBPF_STRICT_LAST - 1) & ~LIBBPF_STRICT_MAP_DEFINITIONS" is wrong
-as it is equal to 0 (LIBBPF_STRICT_NONE). Let's use
-"LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINITIONS" now that the
-previous commit makes it possible in libbpf.
+On Mon,  7 Feb 2022 12:37:21 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-Fixes: 93b8952d223a ("libbpf: deprecate legacy BPF map definitions")
+> --- a/arch/powerpc/kernel/trace/ftrace.c
+> +++ b/arch/powerpc/kernel/trace/ftrace.c
+> @@ -1137,3 +1137,14 @@ char *arch_ftrace_match_adjust(char *str, const char *search)
+>  		return str;
+>  }
+>  #endif /* PPC64_ELF_ABI_v1 */
+> +
+> +#ifdef CONFIG_MPROFILE_KERNEL
+> +unsigned long ftrace_location_lookup(unsigned long ip)
+> +{
+> +	/*
+> +	 * Per livepatch.h, ftrace location is always within the first
+> +	 * 16 bytes of a function on powerpc with -mprofile-kernel.
+> +	 */
+> +	return ftrace_location_range(ip, ip + 16);
 
-Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
----
- tools/testing/selftests/bpf/prog_tests/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think this is the wrong approach for the implementation and error prone.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index 14f9b6136794..4b93789acd86 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -4561,7 +4561,7 @@ static void do_test_file(unsigned int test_num)
- 	btf_ext__free(btf_ext);
- 
- 	/* temporary disable LIBBPF_STRICT_MAP_DEFINITIONS to test legacy maps */
--	libbpf_set_strict_mode((__LIBBPF_STRICT_LAST - 1) & ~LIBBPF_STRICT_MAP_DEFINITIONS);
-+	libbpf_set_strict_mode(LIBBPF_STRICT_ALL & ~LIBBPF_STRICT_MAP_DEFINITIONS);
- 	obj = bpf_object__open(test->file);
- 	err = libbpf_get_error(obj);
- 	if (CHECK(err, "obj: %d", err))
--- 
-2.25.1
+> +}
+> +#endif
+> -- 
 
+What I believe is a safer approach is to use the record address and add the
+range to it.
+
+That is, you know that the ftrace modification site is a range (multiple
+instructions), where in the ftrace infrastructure, only one ip represents
+that range. What you want is if you pass in an ip, and that ip is within
+that range, you return the ip that represents that range to ftrace.
+
+It looks like we need to change the compare function in the bsearch.
+
+Perhaps add a new macro to define the size of the range to be searched,
+instead of just using MCOUNT_INSN_SIZE? Then we may not even need this new
+lookup function?
+
+static int ftrace_cmp_recs(const void *a, const void *b)
+{
+	const struct dyn_ftrace *key = a;
+	const struct dyn_ftrace *rec = b;
+
+	if (key->flags < rec->ip)
+		return -1;
+	if (key->ip >= rec->ip + ARCH_IP_SIZE)
+		return 1;
+	return 0;
+}
+
+Where ARCH_IP_SIZE is defined to MCOUNT_INSN_SIZE by default, but an arch
+could define it to something else, like 16.
+
+Would that work for you, or am I missing something?
+
+-- Steve
