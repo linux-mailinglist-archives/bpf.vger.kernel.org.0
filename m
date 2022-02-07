@@ -2,65 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179A44ACBAD
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 22:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E22D74ACBB6
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 22:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243209AbiBGVyL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 16:54:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36138 "EHLO
+        id S233819AbiBGV6q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 16:58:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243125AbiBGVyL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 16:54:11 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C36C061355
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 13:54:10 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id m17so12296840ilj.12
-        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 13:54:10 -0800 (PST)
+        with ESMTP id S229584AbiBGV6p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 16:58:45 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E8DC061355
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 13:58:45 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id m8so5792095ilg.7
+        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 13:58:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cEbfBMsSStNuAUwDuo0e8CIjcwACMsYDUM5kPbYPHyQ=;
-        b=WD0kj0/7WID3SIoxdPnjAOygwsuV65eFc5RtgtzG4G6x8jPr3S2Z8906uWf9putBkO
-         DrcsO0yqOE2vmc7h/ZN+Qdub72DEYFfK0rd8vPL+rOSkfuZFX+EL67REuKY+60XRlUlF
-         Ti2ZLkjDHMRP1/MSuMQ6axlBYCA76xn1174TZPmBgAlQMmF6CpvX4nWHGuEwWmxzythx
-         qMkbkXpmKeHFiOZsgl2/KkNQNVhinTdVDVMQaqKNVBj4k4H0TovHukyacY8qyAisLoKP
-         bn9NZiaSQeQ5PrQO0a8bB+px2s0ztt1wC8obQE9LCNjBoj1sEXQIU3uN9MwyF6ND8EqY
-         g80g==
+        bh=/s/DznC4l93AHWub7AMW1LpDRWlVy3eb1R7FLxngTAk=;
+        b=jqumonjbVtZhP59y50ye/BUaQ8wsMoaUCxdTXj7NqP3XRr1a2AwBgASupyXZUWyaKc
+         gLDWbQiSlnSxarHgGjpDzM+c/8M8lBUG8nhh6V/UaN43MZULEZ4aD5mUuOk4S7Exbzzs
+         9gmK2Oj8egxggvaq1qYkhoiZ+B3Fu+DTIPOdMRu4IQCxEKhT9j1mJqCdtTlD4fzmmmkg
+         PHDmQqmmbsh92CV4CWk2pMsigt5CfxFpTUEgdt7wG+2aYL2q/VVUMAjitHFGaXWUp4mL
+         VYaNNbUZAQbLPlQF34VeGr1pfB9wNb0uTMmD+tfkCptxInw1w0kXAOJyLmzIsmnzjbsP
+         HhHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cEbfBMsSStNuAUwDuo0e8CIjcwACMsYDUM5kPbYPHyQ=;
-        b=n0Yrfy+C0LfdHEIlPoIP19tBCS4uV/WG95yJLIdZb4T1UlPm2D0muVcf+IEGqlWS3I
-         OzUzam8rhuYegBU4RojQoisN9UcEk+iFafRisC797kSfMl1BNx+UyDwX2gOFa5xCQ1FL
-         Mgtb/z09c3huYMQZsHbMMpCadVnI1ps6uBTq6KvOaK4Lc3ejZODoXxNwH85Wlr6HRn0j
-         Ntsd32RH+6jGywC7SenXklbikrlNYD1Yy8R17YM5HNAuLR0BjEdawf9AnuptLD2einOD
-         uJ1qt6knTVdJLYAX8F2b91QUmM6lqJ/ZT/lQXssqi8U05x6uUaWaQFlThpmJC0fQupAl
-         +dDA==
-X-Gm-Message-State: AOAM531H9+L52PNXYlAxbYhEkRPTmVMCIjpaucvBaaa7TdB2F4J1r3wL
-        PwwJ8UNSy8skkt1OVM/jp6WhVJ+BpqT8wzr4CD8=
-X-Google-Smtp-Source: ABdhPJw8GCeKE6cta7wvGWjLp+M1EA8dzPLf107Ba75R3TTyJ6lPX2xdL+wew71m1862EIWeKBNhY2+cuYHv/M2gLzg=
-X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr707357ilv.305.1644270849552;
- Mon, 07 Feb 2022 13:54:09 -0800 (PST)
+        bh=/s/DznC4l93AHWub7AMW1LpDRWlVy3eb1R7FLxngTAk=;
+        b=4Hh3132tTeu/Rw3mROToVbit1hIEWJmcWj5829C3mrUdTUgMWG+AdU4chiX7tNz8Fs
+         3g5hl1ZPiWwHj3efRGZh8knEY0uqKsKRs+3S2jdYvmBMcd86NhDcUmjWEBb/fa/Yuwoj
+         /lHrNeq+X1/D/11hUntylQUe2bRCjn9+uFFBpS/vyT84MfhVz6XAIKRqFtCIr4aPnG+c
+         eSb5ZGv+VbdKtrZK98A35TClhWXbvlOSEayKrgec0HiLJUlwh+8NKmA/9x7r85au/q/w
+         kWzVFdF9PkJTZSbhI/gGJWnLTOu3dvOuBeBAWOsqODPkMVqFL/SV/FC7K4IfETHCXzq5
+         rcpg==
+X-Gm-Message-State: AOAM533SPnbvC5VU+Qer28JfUB96Y8CxTU4gYoO7kBIR5X9Dxjo7laFY
+        72472z1EjRWWfcVveaKIeuYNpO/MUBG69Z5xsmITRBgS
+X-Google-Smtp-Source: ABdhPJxSL4x9R59x9kH3vVFOrzTHSE7WO4HQaJ6NxFZq3V5JLQqtiAdMINLhmqdRwgVDAHQx4QaKSQ83h91nYbrVU0k=
+X-Received: by 2002:a05:6e02:2163:: with SMTP id s3mr691953ilv.252.1644271124905;
+ Mon, 07 Feb 2022 13:58:44 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
- <CAK3+h2ybqBVKoaL-2p8eu==4LxPY2kfLyMsyOuWEVbRf+S-GbA@mail.gmail.com>
- <CAK3+h2zLv6BcfOO7HZmRdXZcHf_zvY91iUH08OgpcetOJkM=EQ@mail.gmail.com>
- <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com> <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
- <CAK3+h2x5pHC+8qJtY7qrJRhrJCeyvgPEY1G+utdvbzLiZLzB3A@mail.gmail.com>
- <81a30d50-b5c5-987a-33f2-ab12cbd6e709@fb.com> <4ff8334f-fc51-0738-b8c6-a45403eed9e1@incline.eu>
- <85800d3d-d8d5-caba-e6c9-2505788d42b7@fb.com> <24b0f506-00f5-77b9-dff8-9a1db8aaa1c5@incline.eu>
- <b33e24d0-3539-3c7c-8be0-7d9ea335b28d@fb.com> <CAK3+h2zMRNKqA5k6FE4BG8RnJ2Tx1itVJiJGbhXaCu=v=0U47w@mail.gmail.com>
- <5bc02911-9ebf-6f4a-3804-d72c405326b6@fb.com>
-In-Reply-To: <5bc02911-9ebf-6f4a-3804-d72c405326b6@fb.com>
+References: <20220207143134.2977852-1-hengqi.chen@gmail.com> <20220207143134.2977852-2-hengqi.chen@gmail.com>
+In-Reply-To: <20220207143134.2977852-2-hengqi.chen@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Feb 2022 13:53:58 -0800
-Message-ID: <CAEf4BzaYyxHETUj5wSFsOCY4_ZZiv=-w08e0fYACowUGLO+UgQ@mail.gmail.com>
-Subject: Re: can't get BTF: type .rodata.cst32: not found
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Vincent Li <vincent.mc.li@gmail.com>,
-        Timo Beckers <timo@incline.eu>, bpf <bpf@vger.kernel.org>
+Date:   Mon, 7 Feb 2022 13:58:33 -0800
+Message-ID: <CAEf4BzaQvpS+Zh3zEmxqPC0nADXdjPV8UoWW90UJ8F7ZBFhQDQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] libbpf: Add BPF_KPROBE_SYSCALL macro
+To:     Hengqi Chen <hengqi.chen@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -72,263 +63,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 5, 2022 at 2:38 AM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Feb 7, 2022 at 6:31 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
 >
+> Add syscall-specific variant of BPF_KPROBE named BPF_KPROBE_SYSCALL ([0]).
+> The new macro hides the underlying way of getting syscall input arguments.
+> With the new macro, the following code:
 >
+>     SEC("kprobe/__x64_sys_close")
+>     int BPF_KPROBE(do_sys_close, struct pt_regs *regs)
+>     {
+>         int fd;
 >
-> On 2/4/22 11:39 AM, Vincent Li wrote:
-> > On Fri, Feb 4, 2022 at 10:04 AM Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2/4/22 3:11 AM, Timo Beckers wrote:
-> >>> On 2/3/22 03:11, Yonghong Song wrote:
-> >>>>
-> >>>>
-> >>>> On 2/2/22 5:47 AM, Timo Beckers wrote:
-> >>>>> On 2/2/22 08:17, Yonghong Song wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 2/1/22 10:07 AM, Vincent Li wrote:
-> >>>>>>> On Fri, Jan 28, 2022 at 10:27 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>>>>>>
-> >>>>>>>> On Thu, Jan 27, 2022 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>>
-> >>>>>>>>> On 1/25/22 12:32 PM, Vincent Li wrote:
-> >>>>>>>>>> On Tue, Jan 25, 2022 at 9:52 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>>>>>>>>>
-> >>>>>>>>>>> this is macro I suspected in my implementation that could cause issue with BTF
-> >>>>>>>>>>>
-> >>>>>>>>>>> #define ENABLE_VTEP 1
-> >>>>>>>>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
-> >>>>>>>>>>> 0x2048a90a, }
-> >>>>>>>>>>> #define VTEP_MAC (__u64[]){0x562e984c3682, 0x582e984c3682,
-> >>>>>>>>>>> 0x5eaaed93fdf2, 0x5faaed93fdf2, }
-> >>>>>>>>>>> #define VTEP_NUMS 4
-> >>>>>>>>>>>
-> >>>>>>>>>>> On Tue, Jan 25, 2022 at 9:38 AM Vincent Li <vincent.mc.li@gmail.com> wrote:
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Hi
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> While developing Cilium VTEP integration feature
-> >>>>>>>>>>>> https://github.com/cilium/cilium/pull/17370, I found a strange issue
-> >>>>>>>>>>>> that seems related to BTF and probably caused by my specific
-> >>>>>>>>>>>> implementation, the issue is described in
-> >>>>>>>>>>>> https://github.com/cilium/cilium/issues/18616, I don't know much about
-> >>>>>>>>>>>> BTF and not sure if my implementation is seriously flawed or just some
-> >>>>>>>>>>>> implementation bug or maybe not compatible with BTF. Strangely, the
-> >>>>>>>>>>>> issue appears related to number of VTEPs I use, no problem with 1 or 2
-> >>>>>>>>>>>> VTEP, 3, 4 VTEPs will have problem with BTF, any guidance from BTF
-> >>>>>>>>>>>> experts  are appreciated :-).
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Thanks
-> >>>>>>>>>>>>
-> >>>>>>>>>>>> Vincent
-> >>>>>>>>>>
-> >>>>>>>>>> Sorry for previous top post
-> >>>>>>>>>>
-> >>>>>>>>>> it looks the compiler compiles the cilium bpf_lxc.c to bpf_lxc.o
-> >>>>>>>>>> differently and added " [21] .rodata.cst32     PROGBITS
-> >>>>>>>>>> 0000000000000000  00011e68" when  following macro exceeded 2 members
-> >>>>>>>>>>
-> >>>>>>>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a, 0x1f48a90a,
-> >>>>>>>>>> 0x2048a90a, }
-> >>>>>>>>>>
-> >>>>>>>>>> no ".rodata.cst32" compiled in bpf_lxc.o  when above VTEP_ENDPOINT
-> >>>>>>>>>> member <=2. any reason why compiler would do that?
-> >>>>>>>>>
-> >>>>>>>>> Regarding to why compiler generates .rodata.cst32, the reason is
-> >>>>>>>>> you have some 32-byte constants which needs to be saved somewhere.
-> >>>>>>>>> For example,
-> >>>>>>>>>
-> >>>>>>>>> $ cat t.c
-> >>>>>>>>> struct t {
-> >>>>>>>>>        long c[2];
-> >>>>>>>>>        int d[4];
-> >>>>>>>>> };
-> >>>>>>>>> struct t g;
-> >>>>>>>>> int test()
-> >>>>>>>>> {
-> >>>>>>>>>         struct t tmp  = {.c = {1, 2}, .d = {3, 4}};
-> >>>>>>>>>         g = tmp;
-> >>>>>>>>>         return 0;
-> >>>>>>>>> }
-> >>>>>>>>>
-> >>>>>>>>> $ clang -target bpf -O2 -c t.c
-> >>>>>>>>> $ llvm-readelf -S t.o
-> >>>>>>>>> ...
-> >>>>>>>>>        [ 4] .rodata.cst32     PROGBITS        0000000000000000 0000a8 000020
-> >>>>>>>>> 20  AM  0   0  8
-> >>>>>>>>> ...
-> >>>>>>>>>
-> >>>>>>>>> In the above code, if you change the struct size, say from 32 bytes to
-> >>>>>>>>> 40 bytes, the rodata.cst32 will go away.
-> >>>>>>>>
-> >>>>>>>> Thanks Yonghong! I guess it is cilium/ebpf needs to recognize rodata.cst32 then
-> >>>>>>>
-> >>>>>>> Hi Yonghong,
-> >>>>>>>
-> >>>>>>> Here is a follow-up question, it looks cilium/ebpf parse vmlinux and
-> >>>>>>> stores BTF type info in btf.Spec.namedTypes, but the elf object file
-> >>>>>>> provided by user may have section like rodata.cst32 generated by
-> >>>>>>> compiler that does not have accompanying BTF type info stored in
-> >>>>>>> btf.Spec.NamedTypes for the rodata.cst32, how vmlinux can be
-> >>>>>>> guaranteed to  have every BTF type info from application/user provided
-> >>>>>>> elf object file ? I guess there is no guarantee.
-> >>>>>>
-> >>>>>> vmlinux holds kernel types. rodata.cst32 holds data. If the type of
-> >>>>>> rodata.cst32 needs to be emitted, the type will be encoded in bpf
-> >>>>>> program BTF.
-> >>>>>>
-> >>>>>> Did you actually find an issue with .rodata.cst32 section? Such a
-> >>>>>> section is typically generated by the compiler for initial data
-> >>>>>> inside the function and llvm bpf backend tries to inline the
-> >>>>>> values through a bunch of load instructions. So even you see
-> >>>>>> .rodata.cst32, typically you can safely ignore it.
-> >>>>>>
-> >>>>>>>
-> >>>>>>> Vincent
-> >>>>>>
-> >>>>>
-> >>>>> Hi Yonghong,
-> >>>>>
-> >>>>> Thanks for the reproducer. Couldn't figure out what to do with .rodata.cst32,
-> >>>>> since there are no symbols and no BTF info for that section.
-> >>>>>
-> >>>>> The values found in .rodata.cst32 are indeed inlined in the bytecode as you
-> >>>>> mentioned, so it seems like we can ignore it.
-> >>>>>
-> >>>>> Why does the compiler emit these sections? cilium/ebpf assumed up until now
-> >>>>> that all sections starting with '.rodata' are datasecs and must be loaded into
-> >>>>> the kernel, which of course needs accompanying BTF.
-> >>>>
-> >>>> The clang frontend emits these .rodata.* sections. In early days, kernel
-> >>>> doesn't support global data so llvm bpf backend implements an
-> >>>> optimization to inline these values. But llvm bpf backend didn't completely remove them as the backend doesn't have a global view
-> >>>> whether these .rodata.* are being used in other places or not.
-> >>>>
-> >>>> Now, llvm bpf backend has better infrastructure and we probably can
-> >>>> implement an IR pass to detect all uses of .rodata.*, inline these
-> >>>> uses, and remove the .rodata.* global variable.
-> >>>>
-> >>>> You can check relocation section of the program text. If the .rodata.*
-> >>>> section is referenced, you should preserve it. Otherwise, you can
-> >>>> ignore that .rodata.* section.
-> >>>>
-> >>>>>
-> >>>>> What other .rodata.* should we expect?
-> >>>>
-> >>>> Glancing through llvm code, you may see .rodata.{4,8,16,32},
-> >>>> .rodata.str*.
-> >>>>
-> >>>>>
-> >>>>> Thanks,
-> >>>>>
-> >>>>> Timo
-> >>>
-> >>> Thanks for the replies all, very insightful. We were already doing things mostly
-> >>> right wrt. .rodata.*, but found a few subtle bugs walking through the code again.
-> >>>
-> >>> I've gotten a hold of the ELF Vincent was trying to load, and I saw a few things
-> >>> that I found unusual. In his case, the values in cst32 are not inlined. Instead,
-> >>> this ELF has a .Lconstinit symbol pointing at the start of .rodata.cst32, and it's
-> >>> an STT_OBJECT with STB_LOCAL. Our relocation handler is fairly strict and requires
-> >>> STT_OBJECTs to be global (for supporting non-static consts).
-> >>
-> >> There are two ways to resolve the issue. First, extend the loader
-> >> support to handle STB_LOCAL as well. Or Second, change the code like
-> >>       struct t v = {1, 5, 29, ...};
-> >> to
-> >>       struct t v;
-> >>       __builtin_memset(&v, 0, sizeof(struct t));
-> >>       v.field1 = ...;
-> >>       v.field2 = ...;
-> >>
-> >>
-> >>>
-> >>> ---
-> >>> ~ llvm-readelf -ar bpf_lxc.o
-> >>>
-> >>> Symbol table '.symtab' contains 606 entries:
-> >>>      Num:    Value          Size Type    Bind   Vis       Ndx Name
-> >>>        2: 0000000000000000    32 OBJECT  LOCAL  DEFAULT    21 .Lconstinit
-> >>>
-> >>> Relocation section '.rel2/7' at offset 0x6bdf0 contains 173 entries:
-> >>>       Offset             Info             Type               Symbol's Value  Symbol's Name
-> >>> 0000000000007300  0000000200000001 R_BPF_64_64            0000000000000000 .Lconstinit
-> >>> ---
-> >>>
-> >>> ---
-> >>> ~ llvm-objdump -S -r -j 2/7 -j .rodata.cst32 bpf_lxc.o
-> >>> warning: failed to compute relocation: R_BPF_64_64, Invalid data was encountered while parsing the file
-> >>> ... <2 more of these> ...
-> >>>
-> >>> Disassembly of section 2/7:
-> >>>
-> >>> 00000000000072f8 <LBB1_476>:
-> >>>       3679:       67 08 00 00 03 00 00 00 r8 <<= 3
-> >>>       3680:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2 = 0 ll
-> >>>                   0000000000007300:  R_BPF_64_64  .Lconstinit
-> >>>       3682:       0f 82 00 00 00 00 00 00 r2 += r8
-> >>>       3683:       79 22 00 00 00 00 00 00 r2 = *(u64 *)(r2 + 0)
-> >>>       3684:       7b 2a 58 ff 00 00 00 00 *(u64 *)(r10 - 168) = r2
-> >>>
-> >>> Disassembly of section .rodata.cst32:
-> >>>
-> >>> 0000000000000000 <.Lconstinit>:
-> >>>          0:       82 36 4c 98 2e 56 00 00 <unknown>
-> >>>          1:       82 36 4c 98 2e 55 00 00 <unknown>
-> >>> ---
-> >>>
-> >>>
-> >>> This symbol doesn't exist in the program. Worth noting is that the code that accesses
-> >>> this static data sits within a subscope, but not sure what the effect of this would be.
-> >>>
-> >>> Vincent, maybe try removing the enclosing {} to see if that changes anything?
-> >>>
-> >>> ---
-> >>> static __always_inline int foo(struct __ctx_buff *ctx,
-> >>>
-> >>> ... <snip> ...
-> >>>
-> >>>        {
-> >>>                int i;
-> >>>
-> >>>                for (i = 0; i < VTEP_NUMS; i) {
-> >>>                        if (tunnel_endpoint == VTEP_ENDPOINT[i]) {
-> >>>                                vtep_mac = VTEP_MAC[i];
-> >>>                                break;
-> >>>                        }
-> >>>                }
-> >>>        }
-> >>> ---
-> >>>
-> >>> Is this perhaps something that needs to be addressed in the compiler?
-> >>
-> >> If you can give a reproducible test (with .c or .i file), I can take a
-> >> look at what is missing in llvm compiler and improve it.
-> >>
-> >
-> > not sure if it would help, here is my step to generate the bpf_lxc.o
-> > object file with the .rodata.cst32
-> >
-> > git clone https://github.com/f5devcentral/cilium.git
-> > cd cilium; git checkout vli-vxlan; KERNEL=54 make -C bpf
-> > llvm-objdump -S -r -j 2/7 -j .rodata.cst32 bpf/bpf_lxc.o
+>         fd = PT_REGS_PARM1_CORE(regs);
+>         /* do something with fd */
+>     }
 >
-> Thanks. I can reproduce the issue now. Will take a look
-> and get back to you as soon as I got any concrete results.
+> can be written as:
 >
+>     SEC("kprobe/__x64_sys_close")
+>     int BPF_KPROBE_SYSCALL(do_sys_close, int fd)
+>     {
+>         /* do something with fd */
+>     }
+>
+>   [0] Closes: https://github.com/libbpf/libbpf/issues/425
+>
+> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 33 +++++++++++++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index cf980e54d331..7ad9cdea99e1 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -461,4 +461,37 @@ typeof(name(0)) name(struct pt_regs *ctx)                              \
+>  }                                                                          \
+>  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+>
+> +#define ___bpf_syscall_args0()           ctx
+> +#define ___bpf_syscall_args1(x)          ___bpf_syscall_args0(), (void *)PT_REGS_PARM1_CORE_SYSCALL(regs)
+> +#define ___bpf_syscall_args2(x, args...) ___bpf_syscall_args1(args), (void *)PT_REGS_PARM2_CORE_SYSCALL(regs)
+> +#define ___bpf_syscall_args3(x, args...) ___bpf_syscall_args2(args), (void *)PT_REGS_PARM3_CORE_SYSCALL(regs)
+> +#define ___bpf_syscall_args4(x, args...) ___bpf_syscall_args3(args), (void *)PT_REGS_PARM4_CORE_SYSCALL(regs)
+> +#define ___bpf_syscall_args5(x, args...) ___bpf_syscall_args4(args), (void *)PT_REGS_PARM5_CORE_SYSCALL(regs)
+> +#define ___bpf_syscall_args(args...)     ___bpf_apply(___bpf_syscall_args, ___bpf_narg(args))(args)
+> +
+> +/*
+> + * BPF_KPROBE_SYSCALL is a variant of BPF_KPROBE, which is intended for
+> + * tracing syscall functions, like __x64_sys_close. It hides the underlying
+> + * platform-specific low-level way of getting syscall input arguments from
+> + * struct pt_regs, and provides a familiar typed and named function arguments
+> + * syntax and semantics of accessing syscall input parameters.
+> + *
+> + * Original struct pt_regs* context is preserved as 'ctx' argument. This might
+> + * be necessary when using BPF helpers like bpf_perf_event_output().
+> + */
 
-All the emails are arriving heavily out of order, it's confusing to
-follow. Does this affect cilium/ebpf library or libbpf can't handle
-this as well?
+LGTM. Please also mention that this macro relies on CO-RE so that
+users are aware.
 
-> >
-> >>>
-> >>>
-> >>> Thanks again,
-> >>>
-> >>> Timo
+Unfortunately we had to back out Ilya's patches with
+PT_REGS_SYSCALL_REGS() and PT_REGS_PARMx_CORE_SYSCALL(), so we'll need
+to wait a bit before merging this.
+
+
+> +#define BPF_KPROBE_SYSCALL(name, args...)                                  \
+> +name(struct pt_regs *ctx);                                                 \
+> +static __attribute__((always_inline)) typeof(name(0))                      \
+> +____##name(struct pt_regs *ctx, ##args);                                   \
+> +typeof(name(0)) name(struct pt_regs *ctx)                                  \
+> +{                                                                          \
+> +       struct pt_regs *regs = PT_REGS_SYSCALL_REGS(ctx);                   \
+> +       _Pragma("GCC diagnostic push")                                      \
+> +       _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")              \
+> +       return ____##name(___bpf_syscall_args(args));                       \
+> +       _Pragma("GCC diagnostic pop")                                       \
+> +}                                                                          \
+> +static __attribute__((always_inline)) typeof(name(0))                      \
+> +____##name(struct pt_regs *ctx, ##args)
+> +
+>  #endif
+> --
+> 2.30.2
