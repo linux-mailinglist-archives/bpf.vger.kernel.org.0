@@ -2,215 +2,242 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF0B4AC88E
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 19:31:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3244AC8AE
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 19:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbiBGSbe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 13:31:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51608 "EHLO
+        id S233077AbiBGSgv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 13:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236513AbiBGS0g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 13:26:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D87ADC0401D9
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 10:26:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644258395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8frE26fsDjG0Wt6AT8xDPgAVJFo8aA64oEGzjmK67mE=;
-        b=HPMNVM/qJlCoYWlg/ogZRN80WXBz8Rp7lVPRJ+7S45STYvq4c9+cT1YyBA2pTa3nb+FtER
-        S82++WrDDc5eZhPL5OszvqarLpN5PksC//KEfyFy1BG87CWOL9CxJgFt6NGF9yQr5nTAgM
-        RLpF2O8/r0QVV+U5XoWYUN8uvlMa/vs=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-595-BrDh6k0DMJKYA0cPDO1qGg-1; Mon, 07 Feb 2022 13:26:33 -0500
-X-MC-Unique: BrDh6k0DMJKYA0cPDO1qGg-1
-Received: by mail-ej1-f69.google.com with SMTP id z26-20020a1709067e5a00b006cbe0628826so985641ejr.10
-        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 10:26:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=8frE26fsDjG0Wt6AT8xDPgAVJFo8aA64oEGzjmK67mE=;
-        b=1bvTESmrCEJmD7Jr5Yhnxyzfm3/AS8+5NjiX0TUZmBsf5yBC0gVq5zqN9U5zbUWObO
-         Nb0cRyWi7xM/AMQ3N/mN0kT4I6gbj/o0FhY5FINo4eXyiBocIGzNjtzrgpH9n8MW27t0
-         NEX0XicatcogUCeRTeNe3VmmLtWRrvinRPP4Be2x3OOzCYo4oN1IOlGzgTaJWrKxhxGn
-         xorNc8OjKMyyc+9BrivC0z2K9m7qP/6aGcddEJuCgyJR0QDfcGVvD0D8XoNHEs3jL9HU
-         gL+tCnkNQVVQVnATmPhSs+Hm14Wbaze90+0Kfr7VvnMT1YJ7uZ5tJGgoOMqrmPBIfRax
-         8X4Q==
-X-Gm-Message-State: AOAM531b/zJk/ivPsRQyW9zIJ7F9KjRojq7v1l80QFtvxre/GlAFyygP
-        b1eeyS6CpF+JmleULqSz9HcYuYUq2SvMx+UFRbt4CBlp77jvCOKAlCfoTUejqdrTbWY69CW4DF+
-        nuj6WBwkAnJj5
-X-Received: by 2002:a05:6402:1910:: with SMTP id e16mr763625edz.11.1644258392046;
-        Mon, 07 Feb 2022 10:26:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy9vPOMXCazRuIkRJzSTxpwkvx61vkLwYpZ0vocfzGkkDbBBBFbidhx5M2+GF/IibPb0ke6Xg==
-X-Received: by 2002:a05:6402:1910:: with SMTP id e16mr763610edz.11.1644258391865;
-        Mon, 07 Feb 2022 10:26:31 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id n14sm306571eja.219.2022.02.07.10.26.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Feb 2022 10:26:31 -0800 (PST)
-Date:   Mon, 7 Feb 2022 19:26:29 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yinjun Zhang <yinjun.zhang@corigine.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, niklas.soderlund@corigine.com,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH bpf] bpftool: fix the error when lookup in no-btf maps
-Message-ID: <YgFkVXggmihEpO/o@krava>
-References: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
- <CAEf4BzbjVnkb8Oz67p3jDhL-Pv9RG-wq1A7KMV06zowRK9psew@mail.gmail.com>
- <YgFdgOVdEWUx63Ik@krava>
+        with ESMTP id S235781AbiBGSeT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 13:34:19 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D723AC0401D9;
+        Mon,  7 Feb 2022 10:34:18 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 217H9Y10025613;
+        Mon, 7 Feb 2022 10:33:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=WB5t/Jzvq+bzciRnP9RyGGFEhWenEodUJlNBeaSyLFw=;
+ b=nwWz5NGeKZ4idz3nySzMmrae8ihr5v7Dmw3ZCZsKdgc6i/z21JZS2DcLrzKJDoFyxZC/
+ b7G71SjdY73LYK8W3slE+JbTQZ3MoxUR2Cp1r8LRQnGvVCeXmukoY+Y6vDktmFl8Yj0/
+ VuFmua9lr2DEpBoCkSRjKML/xqpXXh9Z8PE= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e2xd5v2rp-6
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 07 Feb 2022 10:33:50 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Mon, 7 Feb 2022 10:33:48 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bs7asiN5XaQvpvLMSKz4TkVoQFQT62C/J2dMF1XFgPVX+4imhEcarH85cwcNA7h6lJXeaM+M/gyuI/7nKkifTsZqLjcPjmJ6NJHJKAZy6Hc30g67hsE5xUfvEAAaJ9lkPU2VBZjOmM6Gz6WmhzK/9LJxLrf/dzYeu+5NqgSbsxjFO+qVcXxCmXmKqdMx2hzs+p/2K+hR680x+QHOdniZqDQUBasY72yhMHdsRtgIHDO6RjF3MdSb3Fl/Un4G7Vm6yQ0dyTn2mT3ASdMXfAyqhwbrV297IOKSBYIf/sAf6aKcjgMpy44f5WtIoZKvqxE4f5w3kvsntQBTxBG7vV5GcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=WB5t/Jzvq+bzciRnP9RyGGFEhWenEodUJlNBeaSyLFw=;
+ b=EpUqQNRTZ1DePywCgOoa01A3DjKBB0i9vYMy9rap90eOonsu2bNRtZJ/m+f0i2MHntfJngcghZ3j38nnC953MKNlWCxn5o6UN9ireAcaMlhefwauTaf5EwaNTYzZ6NEsnq0czY/uYnbRdu/9RPwrG6uhLbI3y5vTptFQ7kX9Ng+9oxXT05vjZOxh3GFEfBKWVBZrkVubYYwB2hMGnbmcQJBOKvPlldwRVu4Dz3lYKQxpr6hMJXdhfh4jWthBnZ5e9KVrAr2OGvO2e/e233RcgIIw8V1FG3j+cEwy4mmXYmw/6loKQF4b1WqfEuKJIhfZXq20ZzdxXnU8JTn9OpgQAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM5PR15MB1865.namprd15.prod.outlook.com (2603:10b6:4:4e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.18; Mon, 7 Feb
+ 2022 18:33:46 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::11fa:b11a:12b5:a7f0]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::11fa:b11a:12b5:a7f0%6]) with mapi id 15.20.4951.019; Mon, 7 Feb 2022
+ 18:33:46 +0000
+Message-ID: <585256c2-318f-3895-8175-e7d7cbe1cd4f@fb.com>
+Date:   Mon, 7 Feb 2022 10:33:43 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: check whether s32 is
+ sufficient for kfunc offset
+Content-Language: en-US
+To:     Hou Tao <hotforest@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <houtao1@huawei.com>
+References: <20220206043107.18549-1-houtao1@huawei.com>
+ <20220206043107.18549-3-houtao1@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220206043107.18549-3-houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR11CA0037.namprd11.prod.outlook.com
+ (2603:10b6:300:115::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YgFdgOVdEWUx63Ik@krava>
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 502671bd-d975-4ecf-dd0c-08d9ea68606e
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1865:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR15MB18651396ADDDCCCDBE974D9BD32C9@DM5PR15MB1865.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eZFxYoMFDYzgbB+AxoaeyX4TUzC3ylCFezIcbV7GfcEmGQTzkHALdwghsSlBkPOKJLABRyZ2j5S7HUinvRsaJCOD6w/V9P8pOGeHKRbq5aVx5HKu3f5W9Y8vzo+ozXJ2pobh6AeRGiWgQ8kER0Q9M0umaigF91SQ6TFO7rUzuID4WOjUverUWui1tS7PEnh8X+Xk4wJW4SE6qDIOpP3Wr0dFP5wlZgm/tl4NGPZZ1mIPN+PPxjUW9onUeEvely9ysmFkRDOmCyNh/5/QC/H4c8hS+Q4tqOgafIgV19NV9fuFkfO2lCf2xNQwOQlywsWbf7UKJINOYAozscXX1FK/CYxW2R4BUexvND8YXbrQ1gM9vBgdC+pJv8NWNiMOpF+KUQVvVossDo3y1vEJJkkHWsjWvSOJoyjoDvFsR8jBM2oTeADq8WyQfPtBrgvODe4GSi09a3lbqMdOru5pTgskye6vrsL2t/ms4FEfSpUOP9ZGmVsmdvdr90gDjcF1haFx4Kagkjjm1qby2uOt3tuv8mazsMCboJ4PL2Uo66nS3wOuBoNnHcRtnZ8kSOudYDgXZ0JRjHuSfeFjTdqsLL+zdV15kbXZr5IMdna8ugzyTKuSg+duNO3dR+DWnYk60oATT41SYKL5ga3XKN5ZbdRjPLpaySxffy3vkt3cgtQRXM+IHnQIGTIYK8KA8dDAk9n9tStmG84yy3NcYYBmUoIozGdpJAYmp+StWzo3HXW7ebmNd0tr7sRYGU1oNhPMazP6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(31696002)(5660300002)(66476007)(6666004)(66946007)(8936002)(66556008)(6512007)(4326008)(6506007)(8676002)(7416002)(36756003)(53546011)(52116002)(31686004)(6486002)(508600001)(110136005)(2616005)(86362001)(2906002)(38100700002)(186003)(316002)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NjlRWnVGYnJTYTY5TDlHUXNCVzJWaTFTZ2lGVVlOREpnV3BpTkRvcFVscGZ5?=
+ =?utf-8?B?Vk4waGs4ODZYbW9yYVk3U0FVbGoyRDdvTnVsRDB0amR3dVM3UEhOeFJ0Yzkx?=
+ =?utf-8?B?TVBNYkxjWnhLR2V3M0UvTG1OdExMVkRXWW5sUnVnZWd0T2x2TnU3alU3RkRx?=
+ =?utf-8?B?Nnd3UkFQbkw4QmEvcHNwT2M1NWk5cU9wbktyZmxSUWRCSkJWcXM1UThYdkdr?=
+ =?utf-8?B?N3RLUVRXcW1iYjVFT2VxbjNKczRKTk5vdE4zYnNHc3RMYkdrWUR3RDhzMnMv?=
+ =?utf-8?B?NHNaU01tS0djaEZCRnZMU2FRM2xZcHYrUzlmR1NHR05aR3NYelFyaXVONlFK?=
+ =?utf-8?B?cEx3WFVPNVNQd0V1eVNMY01XM1BtV1dzaE9vMlU0WW1ZU3FOalFUZHB2VE5k?=
+ =?utf-8?B?dHJFNm1tN25URngvZTlzOHgzay90bDh2WHptZVBrdUM4T1cyWmZBN2djYWh3?=
+ =?utf-8?B?bXJRNWpkaTduMkhvRFJhVW5za3JEaGlFRGp3NlpNRDVuTjBnOWtmdGxyeGky?=
+ =?utf-8?B?RndIME9oSVRCSVVudHB0NWZ3Y2NkdjhlL2lUbE5aRDhJWWVWL2NLQzRyZE1q?=
+ =?utf-8?B?UXJmbDI2Z0gvemtmcldicS94cHlJK1Y1ODFFUnVQME1CbW9La0pTcUNSQ0tS?=
+ =?utf-8?B?MlpGRURFci9Rc040R0Z2c29uRGhteVIveEZCc3pJUjIzelRscTJXZnV6Mk5v?=
+ =?utf-8?B?SnJEcjdDWW5KSUhveDdCTmpPci9EYXdOR0ZUOTVJdm13SmNzS2JINVVtMU1C?=
+ =?utf-8?B?b1Y1VXJoS2FkV3NXSW1ORUpDWUlUUStCb3VrRHJDWEU1cjZrNFpKUHgzZk5M?=
+ =?utf-8?B?TEppSXQxeW9yMTUwSUoxZ2M5b3RnWStpN0d6YW0rQ1NlVmJEd09OaVZSc2pP?=
+ =?utf-8?B?eWJJdU1FdmRad1pFY1Rsbm9zNEZrNzlzM29IK1JBTlFBdndTbHhVS0doTkN3?=
+ =?utf-8?B?S0c2MDlvQndQRmZUTkJBRmhOQldQR1RzQm5RUzYyWWRFdk5XdjZHdTYyQWYz?=
+ =?utf-8?B?K1VSRXcvVU5YQWdPaWV3NldUbnAxK3k1alNnV3hRZkMvRkNaYjhyU0ZnRzJL?=
+ =?utf-8?B?a0szVVlHTnA0YUpwNTl1dUZkajVMYVNKUVIrZWpLalhCamNoS3NXR1BaSmlF?=
+ =?utf-8?B?THl6VkU2bUhiZmZTdmZ3RDA3TExzSUVneENnSnhHSTF3Y3ZrZk9DRDM1M25F?=
+ =?utf-8?B?ODVEN2IzeTJ2UktnM1Bvb0JPV3p5TFVaeUVKd0lVNms0RHdEWFNoN0NwNFFZ?=
+ =?utf-8?B?S3BTaVNOaUNGRVFHeWxJSkRvU1hwRFVLZFVVTGV3L1dreldjTXdPc3oxdmhL?=
+ =?utf-8?B?UUtsYk5zVlByU1l1YU4vOExIM2dxSU5xT3lPYzJEU0JzK3lyNzZwVmJNR3hy?=
+ =?utf-8?B?YUwvWjVZY1I0SDV4SnlreTNIazNGS1FyeU9kN1NJRjVVV1JMZkljWDFxZUJp?=
+ =?utf-8?B?alMxQWE3eGlBemhOeXpjc3Q0RGl0TGNOcHhMQ2ZWQ3pWZ09TSnRhUzJ1djFH?=
+ =?utf-8?B?WmR0eUlRZElRYU5ZeXA5TndJS1dPVDJuL1UzU21Ra25BN1VYRWZaT0I2L3BT?=
+ =?utf-8?B?NGdJWkJDY1NLMnZETlU4QTIzNzVLL0Z3bmFnUDZnd0gzY0ZYSnNNTW53N2lC?=
+ =?utf-8?B?N09ucW1NbFladStBc3FsUXZkTjlxK3RnbFNBNFo1UHFWelFwN0N5eng1R2NC?=
+ =?utf-8?B?SUt2WUNYZUREekFjSVowV2RVZUdjbTc4YzVRMThiUjhSbG1iSERBMGpuMjJN?=
+ =?utf-8?B?OFY2SlQyc2VlVnBBWXBpemNZTStlQ2FpZTNGYi9qZlVGZiswOCs4NzgvaHZY?=
+ =?utf-8?B?aTNiN2RqQVp1RGpJT0RIQ3lvK3FUd25CQWNFOW9PcHJ3b0ZzQmZNbEI1NFIx?=
+ =?utf-8?B?a2l6NWxqSXdyeldSTlFrMG9YQUxPa1lNc1pPblZzVVd5b0J5cm9JNkpoNFh0?=
+ =?utf-8?B?cVdCNGs2OHhCZG9xeW1VSEFlZFJSSC9uZkJSakJISnZMQUl4Qnl2cGNOVjZH?=
+ =?utf-8?B?bi84THRROVd6Zk55N01lL0ZwWG9pTzFMUm4yNVY5aTlQUFkwS2pxNTZTWnNV?=
+ =?utf-8?B?SE8waFJqMHhNM2MvOFRxdDczY2ZxSTk3N2lweHJvRWcvMVJSVTF2UURlVEdp?=
+ =?utf-8?B?L0Z2V1piYlNoN2FiNklVeTloR2lxWUhXdmF0QzNRVjBQbStDR2FSaTVIT2VG?=
+ =?utf-8?B?Wmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 502671bd-d975-4ecf-dd0c-08d9ea68606e
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2022 18:33:46.6418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tWGK67imCYqJu1+ZOMnDnqg6rUJp46+1KQH2EojSadSOcTqeCCSzjlcj8ZPxXT8E
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1865
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 7PP2Hqe-75udI4InSpz-Yc0HqXEC3Dz2
+X-Proofpoint-ORIG-GUID: 7PP2Hqe-75udI4InSpz-Yc0HqXEC3Dz2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-07_06,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ phishscore=0 impostorscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ lowpriorityscore=0 adultscore=0 malwarescore=0 clxscore=1015 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202070113
+X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 07, 2022 at 06:57:20PM +0100, Jiri Olsa wrote:
-> On Mon, Feb 07, 2022 at 09:42:25AM -0800, Andrii Nakryiko wrote:
-> > On Mon, Feb 7, 2022 at 8:00 AM Yinjun Zhang <yinjun.zhang@corigine.com> wrote:
-> > >
-> > > When reworking btf__get_from_id() in commit a19f93cfafdf the error
-> > > handling when calling bpf_btf_get_fd_by_id() changed. Before the rework
-> > > if bpf_btf_get_fd_by_id() failed the error would not be propagated to
-> > > callers of btf__get_from_id(), after the rework it is. This lead to a
-> > > change in behavior in print_key_value() that now prints an error when
-> > > trying to lookup keys in maps with no btf available.
-> > >
-> > > Fix this by following the way used in dumping maps to allow to look up
-> > > keys in no-btf maps, by which it decides whether and where to get the
-> > > btf info according to the btf value type.
-> > >
-> > > Fixes: a19f93cfafdf ("libbpf: Add internal helper to load BTF data by FD")
-> > > Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
-> > > Reviewed-by: Niklas Söderlund <niklas.soderlund@corigine.com>
-> > > Signed-off-by: Simon Horman <simon.horman@corigine.com>
-> > > ---
-> > >  tools/bpf/bpftool/map.c | 6 ++----
-> > >  1 file changed, 2 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> > > index cc530a229812..4fc772d66e3a 100644
-> > > --- a/tools/bpf/bpftool/map.c
-> > > +++ b/tools/bpf/bpftool/map.c
-> > > @@ -1054,11 +1054,9 @@ static void print_key_value(struct bpf_map_info *info, void *key,
-> > >         json_writer_t *btf_wtr;
-> > >         struct btf *btf;
-> > >
-> > > -       btf = btf__load_from_kernel_by_id(info->btf_id);
-> > > -       if (libbpf_get_error(btf)) {
-> > > -               p_err("failed to get btf");
-> > > +       btf = get_map_kv_btf(info);
-> > > +       if (libbpf_get_error(btf))
-> > 
-> > See discussion in [0], it seems relevant.
-> > 
-> >   [0] https://lore.kernel.org/bpf/20220204225823.339548-3-jolsa@kernel.org/
+
+
+On 2/5/22 8:31 PM, Hou Tao wrote:
+> In add_kfunc_call(), bpf_kfunc_desc->imm with type s32 is used to
+> represent the offset of called kfunc from __bpf_call_base, so
+> add a test to ensure that the offset will not be overflowed.
 > 
-> I checked and this patch does not fix the problem for me,
-> but looks like similar issue, do you have test case for this?
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>   .../selftests/bpf/prog_tests/ksyms_module.c   | 42 +++++++++++++++++++
+>   1 file changed, 42 insertions(+)
 > 
-> mine is to dump any no-btf map with -p option
+> diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+> index a1ebac70ec29..8055fbbf720b 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+> @@ -3,9 +3,49 @@
+>   
+>   #include <test_progs.h>
+>   #include <network_helpers.h>
+> +#include <trace_helpers.h>
+>   #include "test_ksyms_module.lskel.h"
+>   #include "test_ksyms_module.skel.h"
+>   
+> +/*
+> + * Check whether or not s32 in bpf_kfunc_desc is sufficient
+> + * to represent the offset between bpf_testmod_test_mod_kfunc
+> + * and __bpf_call_base.
+> + */
+> +static void test_ksyms_module_valid_offset(void)
+> +{
+> +	struct test_ksyms_module *skel;
+> +	unsigned long long kfunc_addr;
+> +	unsigned long long base_addr;
+> +	long long actual_offset;
+> +	int used_offset;
+> +	int err;
+> +
+> +	if (!env.has_testmod) {
+> +		test__skip();
+> +		return;
+> +	}
+> +
+> +	/* Ensure kfunc call is supported */
+> +	skel = test_ksyms_module__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "test_ksyms_module__open"))
+> +		return;
+> +
+> +	err = kallsyms_find("bpf_testmod_test_mod_kfunc", &kfunc_addr);
+> +	if (!ASSERT_OK(err, "find kfunc addr"))
+> +		goto cleanup;
+> +
+> +	err = kallsyms_find("__bpf_call_base", &base_addr);
+> +	if (!ASSERT_OK(err, "find base addr"))
+> +		goto cleanup;
+> +
+> +	used_offset = kfunc_addr - base_addr;
+> +	actual_offset = kfunc_addr - base_addr;
+> +	ASSERT_EQ((long long)used_offset, actual_offset, "kfunc offset overflowed");
 
-anyway I think your change should go in separately,
-I can send change below (v2 for [0] above) on top of yours
+I am a little bit confused about motivation here. Maybe I missed 
+something. If we indeed have kfunc offset overflow,
+should kernel verifier just reject the program? Specially,
+we should make the above test_ksyms_module__open_and_load()
+fail?
 
-thanks,
-jirka
-
-
----
- tools/bpf/bpftool/map.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
-
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index c66a3c979b7a..8562add7417d 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -805,29 +805,28 @@ static int maps_have_btf(int *fds, int nb_fds)
- 
- static struct btf *btf_vmlinux;
- 
--static struct btf *get_map_kv_btf(const struct bpf_map_info *info)
-+static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
- {
--	struct btf *btf = NULL;
-+	int err = 0;
- 
- 	if (info->btf_vmlinux_value_type_id) {
- 		if (!btf_vmlinux) {
- 			btf_vmlinux = libbpf_find_kernel_btf();
--			if (libbpf_get_error(btf_vmlinux))
-+			err = libbpf_get_error(btf_vmlinux);
-+			if (err) {
- 				p_err("failed to get kernel btf");
-+				return err;
-+			}
- 		}
--		return btf_vmlinux;
-+		*btf = btf_vmlinux;
- 	} else if (info->btf_value_type_id) {
--		int err;
--
--		btf = btf__load_from_kernel_by_id(info->btf_id);
--		err = libbpf_get_error(btf);
--		if (err) {
-+		*btf = btf__load_from_kernel_by_id(info->btf_id);
-+		err = libbpf_get_error(*btf);
-+		if (err)
- 			p_err("failed to get btf");
--			btf = ERR_PTR(err);
--		}
- 	}
- 
--	return btf;
-+	return err;
- }
- 
- static void free_map_kv_btf(struct btf *btf)
-@@ -862,8 +861,7 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
- 	prev_key = NULL;
- 
- 	if (wtr) {
--		btf = get_map_kv_btf(info);
--		err = libbpf_get_error(btf);
-+		err = get_map_kv_btf(info, &btf);
- 		if (err) {
- 			goto exit_free;
- 		}
-@@ -1054,11 +1052,8 @@ static void print_key_value(struct bpf_map_info *info, void *key,
- 	json_writer_t *btf_wtr;
- 	struct btf *btf;
- 
--	btf = btf__load_from_kernel_by_id(info->btf_id);
--	if (libbpf_get_error(btf)) {
--		p_err("failed to get btf");
-+	if (get_map_kv_btf(info, &btf))
- 		return;
--	}
- 
- 	if (json_output) {
- 		print_entry_json(info, key, value, btf);
--- 
-2.34.1
-
+> +cleanup:
+> +	test_ksyms_module__destroy(skel);
+> +}
+> +
+>   static void test_ksyms_module_lskel(void)
+>   {
+>   	struct test_ksyms_module_lskel *skel;
+> @@ -62,6 +102,8 @@ static void test_ksyms_module_libbpf(void)
+>   
+>   void test_ksyms_module(void)
+>   {
+> +	if (test__start_subtest("valid_offset"))
+> +		test_ksyms_module_valid_offset();
+>   	if (test__start_subtest("lskel"))
+>   		test_ksyms_module_lskel();
+>   	if (test__start_subtest("libbpf"))
