@@ -2,137 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C6A4AC139
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 15:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 665FA4AC131
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 15:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347774AbiBGOX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 09:23:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50918 "EHLO
+        id S1356440AbiBGOX5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 09:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1390357AbiBGN53 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 08:57:29 -0500
+        with ESMTP id S1357291AbiBGOVL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 09:21:11 -0500
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0AFC03FEFD
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 05:57:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1C1C0401C0
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 06:21:10 -0800 (PST)
 Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 217DdoA3004446;
-        Mon, 7 Feb 2022 13:56:53 GMT
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 217DdoHn004446;
+        Mon, 7 Feb 2022 14:20:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : in-reply-to : message-id : references : content-type :
  mime-version; s=corp-2021-07-09;
- bh=g95Hj8kY54svepeb2DnriZJF4dxQKTHQhRyozfvbMSM=;
- b=nz14p8TyP4RvCR1jHv+7xSDauTPtKVbzHLv3kSuOuiDNHIlnT202j3dc10xSB3YXBG2i
- oNU0abdaxEIuz25jtfeDny0D5iy7H+491yBiqlRfP3Qlq4LN1tumwgHmNYtDYUVdAGPW
- 9R0y+DvVaO4i0FZ6vDdpGYZxeuREUiTL4kgckklG/UxODIHV6SnpB7r/9mS6Q7oksOmj
- of+Em+ZxwnB7dUzq3wWLDgySry0pRkt63SAOK3CymmY/XdP0BlW1sLASlLNT728zfFbk
- iVLUWINS3JrOCaymgG2G5UjkE00uy+ywOnkjyec4e+By1ZCXCdwTZHTqV8YmEbQ8hydc qw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3e1g13pbt7-1
+ bh=lB0LQyqZ7Kew2BTTUjp0c898rnubzycipfVwaoMwWRo=;
+ b=AdgrwEOH2rOmLghCWIDK7XFhCEnTbfPs9u4H1tgMJBIek8uHAmfkjOaifUxL/Ii3nYJV
+ QFBDQBCJ73cgqg/JM8WlNiiUF6t+mvg/OUWE2F+gF5bByvv3cokgixRaLwrXKmGhE/Ow
+ lVXOCCCQ9d7hTkGKLqCDmldEFVo56jd8XGz5OUlbvFdfP1hVKaIkaBWfzqtnYynCPBGG
+ J5B60XTS4UnSB/L1gl6BZqLa6TiClGq5GJ6x6WBYMPz/jxEXWz80LnBddHBjwlgVAieF
+ bp44DRvlchB0X4MecWGFh2D8Zgq+AmHCRGu97HWQlacrmZY3EFIuXGMihAP5++GpZ/eg +A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3e1g13pdrj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Feb 2022 13:56:52 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 217Dthx1025737;
-        Mon, 7 Feb 2022 13:56:51 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
-        by userp3030.oracle.com with ESMTP id 3e1ebx4c3u-1
+        Mon, 07 Feb 2022 14:20:52 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 217EC2j3008516;
+        Mon, 7 Feb 2022 14:20:51 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by aserp3030.oracle.com with ESMTP id 3e1f9debdy-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 07 Feb 2022 13:56:51 +0000
+        Mon, 07 Feb 2022 14:20:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D3TnQb/eC+pc/19bE5B043qL9xmL/EgdtQ4i+54GJgn9fKwbL8rNC9wMjTfqQk1IhzEoRcMKfujl361KSeEAsGTIpi4ValVTxOe1L5eF/iK5kAgi9AcMnQ94eKLt7mUhUrfJgA201jJ+huwF8O9oQBw3pM3suY49UDeE77K/T1eam1PRjoXBHVqGJaQIDiaS8GM9aJQk9dEeJM/m3Jr8evwbShq/aqu3uLGfcjJaq9UyE5krkMoV4+/jSiLEgUL738BKDJXQr/YFC7u07tP9t7oF0LqY21io3ESL9J/B6BZRLvr4aUI6bgaQpN/jlYqBxZbewSCtCRCuDhCjku9y8Q==
+ b=E6/0LdJd04dH9SSRrIg0Jt9bprQupUaDM4EdjEyacts8jLq1wq0UcqpVNvf7v6ycBtTyVmzr/iKW7uwsPTTU65jgxIlmSlFUaJSc2ZS+vELDutxJs4kBPqiuEBuPcS/mfCapRVbNbT5ni8hkoWQmKXWU6Rrj4DPjOOZOoYGMnesD0dOywvna3lFkQrwt8muRYWAifmngL8uvroANtKhLGPZwMCl8yLH9XsGzgwK6MC0fgezMsRJmH0gz3wGX+SC+BdYocWfC8+3yj5mNSeSyzhXIwX537SynI6SvwjeLlfxgez3ZLghSUiOYvgjxz3FZcPwgERbAfY2ZlX8C6d/UzQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g95Hj8kY54svepeb2DnriZJF4dxQKTHQhRyozfvbMSM=;
- b=SSMlq4R1BCMlBJ71/hOYE2ucBl0SOAP+JrVPKoMs/Snhb3VFpELtqNBn4Ayy0E+rD31ak7Ddgb7ZG5+OG9F7Jsscr1lLUG1rZvg93bKVyrQ7RBKJJiNmp2pjiBpsw3ULzH5M2eoxYtoK2NMKn4vdrX1YTWsdxAfB5e0Scbo1RK0zoV4CGvYO+a1KN7K1tqpJeQ34RHIV4TRk5fb6IWeJuuVk86p4PUP86HB/L8Ys+G/ZP7jlhHLUoS16AtZ+eycOIR8awcEpTnZnofpjV36EU/99dMfQ/sHHNNilTx2wyl9Zpoj/d+3CYwP8WMb/ffX24UDsFvX9Cs6EwBbbdVcB/w==
+ bh=lB0LQyqZ7Kew2BTTUjp0c898rnubzycipfVwaoMwWRo=;
+ b=Kj9M3lwFH0mzESFsNNcjrvGuFuqmRBqy36p+HJd/aRUSdtaxtkDQFGGjvpq5kt0QMncmBdE3H+hQfNyCHbz3CFu+AhLwfg9mgVrZ0xYjT+oVrrYI113tfdF1h+gqfN+x/YNMPibdXecbGVKzgDHHxD/Y/FsvLGBFE98LXIYmibenQoVkPmD6+oPf6/F58PoYDfbjKn4EP7aII25FfQ0/syQBCqfUjYAao/HNaBreEcGC5KD0DlzGxtTvn3S4DUEaq6WjTmJIXnq0tOMpHb55sK4+fHOyDCMPXK5M/yG8GkMyk4ccGHastkggPVY6k/fifeTMOICW5vRHjTB2CCxTuw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g95Hj8kY54svepeb2DnriZJF4dxQKTHQhRyozfvbMSM=;
- b=IWWZow05FfOC73DwrtfnBwq0a+/r4RFmjEFwKROun9a/sVf/sxxdLg/zICCbVuCRh/XQHzu3n6pZpCZRvJbEZUH+0AvjWb3TNzzfN0/QCsTKHbw4KhUriuJT2WxyKymdxw/2GXaew2uVIjlac+lRTTxPW2XNSmVQQxaxph3jT0Y=
+ bh=lB0LQyqZ7Kew2BTTUjp0c898rnubzycipfVwaoMwWRo=;
+ b=Pqepsu3vwtBvqjyG6A1I4NroDVklx8NJSJ/JNA7eHBNE6UZwaZcoPkO0+KKpZEkC2S4nj6lvL2FLnE0TIvLBI+JVdAIQxxUSvswJMbETww18ZmqNSYQcqp6TMSfKYMr0Ld1y7E0rBsC8O2dg6kmYn76Efq2KUwRBdlhkckNsMF8=
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by BN6PR10MB1268.namprd10.prod.outlook.com (2603:10b6:405:10::10) with
+ by BN0PR10MB5320.namprd10.prod.outlook.com (2603:10b6:408:12a::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Mon, 7 Feb
- 2022 13:56:48 +0000
+ 2022 14:20:49 +0000
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::9484:fe8e:904f:1835]) by BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::9484:fe8e:904f:1835%4]) with mapi id 15.20.4951.019; Mon, 7 Feb 2022
- 13:56:48 +0000
-Date:   Mon, 7 Feb 2022 13:56:45 +0000 (GMT)
+ 14:20:49 +0000
+Date:   Mon, 7 Feb 2022 14:20:45 +0000 (GMT)
 From:   Alan Maguire <alan.maguire@oracle.com>
 X-X-Sender: alan@MyRouter
 To:     Andrii Nakryiko <andrii@kernel.org>
 cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
         kernel-team@fb.com, Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH bpf-next 2/3] libbpf: support custom SEC() handlers
-In-Reply-To: <20220205012705.1077708-4-andrii@kernel.org>
-Message-ID: <alpine.LRH.2.23.451.2202071222170.9037@MyRouter>
-References: <20220205012705.1077708-1-andrii@kernel.org> <20220205012705.1077708-4-andrii@kernel.org>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add custom SEC() handling
+ selftest
+In-Reply-To: <20220205012705.1077708-5-andrii@kernel.org>
+Message-ID: <alpine.LRH.2.23.451.2202071400210.9037@MyRouter>
+References: <20220205012705.1077708-1-andrii@kernel.org> <20220205012705.1077708-5-andrii@kernel.org>
 Content-Type: text/plain; charset=US-ASCII
-X-ClientProxiedBy: LO4P123CA0328.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18c::9) To BLAPR10MB5267.namprd10.prod.outlook.com
+X-ClientProxiedBy: LO4P123CA0076.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:190::9) To BLAPR10MB5267.namprd10.prod.outlook.com
  (2603:10b6:208:30e::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ca84c548-76d2-4a3d-4ba9-08d9ea41af55
-X-MS-TrafficTypeDiagnostic: BN6PR10MB1268:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR10MB1268A05B22656DA1DFEBB873EF2C9@BN6PR10MB1268.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: abdcf57f-4517-459d-22f3-08d9ea450a19
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5320:EE_
+X-Microsoft-Antispam-PRVS: <BN0PR10MB53201DCBD20567860B25B559EF2C9@BN0PR10MB5320.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: faOinVwOTD9xb+MsgWtorCmXoad9/8Kc9jMcvMXb6BkDR5UxC2c6bpSfU4qtGDlQ0tetXRhfXoJCZyYFDJl1hjeItofKy7eiI8f4hM+lfkCfW+NYyIH7DkF7WCi1flFdPmfrJ0IkOZwoAcLXlMgtgc5FW9NG3B1jUE3iI7yoEw93Bghcx4XgII5okslMahxZI+n/5HQT0NeVAm9ONRULiiVcVQApC9+pw/3FyKePMFry2/j7WOaaLgEzSQUA24gMmofKJtRQ0A60iKPKKOw72PWfS12rtGmbsq1heXZmPU/sek0ig2MpUMsn01VjLasq2rSwKcYWYoV9kOtzxzHccMfs5845UaBFGGRGkR8qU8k7/UGdO89Y4cXTrdsR0ije02u5WotnHi+ubj6/XU+Ma0lPMiFgZEiYoY/qy3l80ID6quPGnFXnurNtaYekSA9085DonTtv7i6ApOD7pOdjyAuJpfIypsIrO6+xSuyh69bWGGSOAW7jR4/2jixRviLiNG51O47ibFI6+pyp05dP3ucVtvfTtrVLjNpjSo1CRT/qyEa4aZQKOsJIh8RSZwMNK3wb5yLos00ULB7VE3GDJd/uj2Dt4yTwFc/oCOUEePdZqDAaBRxo3d7vNvBMcxnGym1G6pOf8SoDshv25019sA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(6666004)(9686003)(6512007)(6506007)(52116002)(186003)(6916009)(30864003)(316002)(66556008)(8676002)(8936002)(5660300002)(66476007)(107886003)(4326008)(508600001)(44832011)(66946007)(6486002)(38100700002)(2906002)(33716001)(86362001)(83380400001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: gSHpgQ9NMXIXNngzvpL1zZqU1JJ7DByGdHPdlCW7ggjlHSqR2mmZkCYciTYM4NbumljertwU/N6KYsW7XQXklTWglGLQ6tIHAZMzRHW8LjpTYHX3QoAq82yKbfPteq/aUYTDUxOiqIXoIZ52tnlE6hsAeTwAdRn2n6AUHmaAtb3tinqmoNGVX9MSdiwXAhhq/WGgHDcqD1/Llf85xkCAbLIsczcwW13dXO6EZqFzJEI4iCv54EBoNFUhnBfqTnxGKv95SVjsVsn82v3Z1vW+9nZPiYwv53KAdQCEhm4lAm8Qs5JaPdrIb3VcwjoxtNqWkwkSYHN+Jyn1HkccGOc04FsIdAysdvs2OTxLTqKxOMgFRAM8IyMq/suhJ+TWi8BwPrApPpSqyN1nDXKgflEvYtEI/669V+yU94eRUidx0ugc0gcaYF/oQoBvunjlNFGecHUuB2JbUYOQDCDXVThknSxnMVx9Uw8NAZ2lRuDVRJ+t7USB0RQZi9FhJpDS34e8yjhMPELJIfuvkIwquYzk0sQxC2x4izW5UbbRv5cRCCKZHTWFChi8I1vlOQ2RX21vpY3FoCUFev0fLVzK1HVXyYHqpPCZewNHpt83jK+4y5pa5jTLT4qSicGb3V6LvFDqw7qHDcw0SK/UXk3AAqSwuA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(366004)(107886003)(8936002)(38100700002)(4326008)(8676002)(66476007)(66556008)(66946007)(5660300002)(83380400001)(52116002)(44832011)(6486002)(508600001)(6666004)(6512007)(6506007)(9686003)(6916009)(2906002)(316002)(33716001)(86362001)(186003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?52UGUyguLGlGDWFZ954qZyL3vwn2RcFy0MTWosbdmLqjNtenR82epwDJIOer?=
- =?us-ascii?Q?qQ3+dRSmW917y5do5UPIvunJECW3A8DNo1catInf3zYG0x2WJvguxaHgAL4D?=
- =?us-ascii?Q?+ZJ/ck5JV+50Ve8FecA9YSQtu8lzpZHYzQiTIjpr0N+kW9Sm/qtZPdI6frhF?=
- =?us-ascii?Q?nVR40dpHlpeoog8KtOsri4PPhFzPZf7zh954uus4L6ogwwsglsarYsZff4Xv?=
- =?us-ascii?Q?sjyxIVKh0vrqa4vmh/yVYpdx4tyi1sw0ntCyxcgp7Hnm4xQ1d1+4ID0GSymY?=
- =?us-ascii?Q?7jhPj4LcJ1I6Oisg6kz2gpZzzxa1ZMQu4MjTiBJ8BMtxA5GKewzerdu+Cuqp?=
- =?us-ascii?Q?HVKUeWbjhOWUawLd2RqkwGe7sVH+NpFJiiFCPydxPoFqFce3n/LWnd1QU6Ob?=
- =?us-ascii?Q?gRcnnDiU6VDlTUTZXdB+E800mdq7uXvG/Fp8wl3RH3B/4BK2vZX4u72X96k8?=
- =?us-ascii?Q?/P5mVo74LJLwmtIMGZgkknVF33Av1IfsW/DAHLvEsHoNUr1XoTq1yIJYz79c?=
- =?us-ascii?Q?07jxRA6fjrZ4FAzRSmihPn/RG/y5CFUKujOgveqj7kL/cbjDy53QZCuTuxAv?=
- =?us-ascii?Q?tLy6DxsiZN+wmadl6SptCvSTvdnMaNauNg5KrS4aSKRJ6gkAaF/15wQbOyHW?=
- =?us-ascii?Q?OqLz8RAayWObgwr4kWdbq+MCyLcDSF7QmW384rlhm+wl3KYAlYtHmXQW/xwm?=
- =?us-ascii?Q?9wijBg036qbiFwxK7WGGmLyR/9wgrK/Gc68DwKwsHnv4WwrUBKxjEmlHx141?=
- =?us-ascii?Q?nvH17TR+3Z2JO/hltfiDhMDc1e3L9MZVHZY3cA9ASHpQMLsurH5CViOCUmuQ?=
- =?us-ascii?Q?VzeebmwGZzMZ3FSM41qu0QluknMZX/U+h/zHTvkOWUsvpHLS0Lykxs1cTRuf?=
- =?us-ascii?Q?Lxo0edMZmoq2xyrS7OuTVczu70+hNW17qRf9sYGZIoL0NhC6w/CApFpKrqbk?=
- =?us-ascii?Q?X1zBWYHMBP755Yr2+M1eCzo0twKAaYT74KdDC5G6JERX37MhT1ss7hvesFjs?=
- =?us-ascii?Q?eQ8pcHd2y/lrV7SLHmzZJBy+WAA80Pgul75ZhB1qqCujuk1beXQ3VvGp5LiV?=
- =?us-ascii?Q?RNPzx9p9TArupTwAECL6PXoO8Ene7Id282MubAYcZtiWnFB5AC1tzxk9vQLU?=
- =?us-ascii?Q?vuaEPbWCWhCvNE28NEVZUEr6eyNtqa0AQl7LNGRoBuPQ2A/A+1uEbgvUYJwV?=
- =?us-ascii?Q?sQyniOEVvTFabdsiwJMLqS+tHec6H95h+rtWbT6vu0gBsDGBAk88glwdf0QH?=
- =?us-ascii?Q?zKy0sVMSlDLLCjamyfazpTP+cf3QpkK5dBCyg/9q1dQO2tht6qpXlVSxzLBU?=
- =?us-ascii?Q?u3mPXg0tMi9qbOXZd1odwMscBFxuEQtMYnvedPfXUiqzsmH1UfhHnJIEYext?=
- =?us-ascii?Q?BostLpOvfT8TeOVFZJJQqqUBt6dR5EhGBiKMJrjEqkjRukBGYa8jTstqCwAd?=
- =?us-ascii?Q?pNoh4dXYr87A1jQrIpilnrclfDnJSoE4zNbhGMP1ujR8+D3PBPR1O3aeQP+R?=
- =?us-ascii?Q?nbo9SEkYVHaMXlFjJzscRQnzwHbikTozJ+LPA+gldQixnh7PQBmV8yl3zSJ3?=
- =?us-ascii?Q?Q596srC7zxyMzpQYtGJBpU+oZMS1wmEUqydxit0uvK5rjHl2yv4TDjYVDXgf?=
- =?us-ascii?Q?+PNmaERMPCZ3/81ec8+1Dn/LilV6uQwqL6VM4SH4dSD2s57JC5Tw+r5+SNG/?=
- =?us-ascii?Q?OkYxgQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nozImkEkEWXUnRMIl/CkUt5wdmuvcVsx/6PA+PDdBUsKP0iBKWeU8bbx+EYC?=
+ =?us-ascii?Q?Qqt9juVCwx7klO1KsPXj8fprp65T3AgWjVtODaaIaVYBy3NiuDKxc8fFkM+0?=
+ =?us-ascii?Q?7fBY5tqLtD2GOh2wpCgbwVNRXaKM9ZD8dNFoARxZYuqcwMeBj9P/n0Q+h5eX?=
+ =?us-ascii?Q?llYjmAx+/xgKG5/VatC1jPDobnSlear5Yx2o1qCsSQOaDHPfQ0ErBedhe8Kc?=
+ =?us-ascii?Q?yI+Gf9KZXjeS9gV9ZBrpEuOvskf6r8pV8j/ge2ftINy4X6JKbETunJ4fi+pW?=
+ =?us-ascii?Q?kzOtrCvZcBBu9kqE/CJO8C/Mou0C0Qpz+bK9Fb+8KCoDJ2MV1AWgIbDHFpMh?=
+ =?us-ascii?Q?HiJI1gd2+lG+9wc1JO/rzZzQSr6gjDfSloTbawZW6HPdgWMONiv90veYRGIV?=
+ =?us-ascii?Q?wTrh29VsDYNZwNNfFfoaFojQhhOfsC5byTq9WepJX9lZe5Lh0s3IGSqtvfgC?=
+ =?us-ascii?Q?fte8wFs4u0vJyVm/khvxtL+99pFhdb0LyAN45N9HH8KgoFW7JBalFMvMWRMW?=
+ =?us-ascii?Q?U+R6vMsPgcbJcy50p8aMndRqUJG60GyuS1HICyn1eFiByNQJQ4/EEE73JK2C?=
+ =?us-ascii?Q?s2uHZA2uaxX8ECAQyBRoxrxsFc4TwKB8+5hVT+F4SM2N0G0VgoPas08KHHia?=
+ =?us-ascii?Q?RCrhosYThnnJsFX8DH4zYZTbA/RiUysZF84zFeCA/R8Qc79SoTB4XeiG2lMq?=
+ =?us-ascii?Q?01x1A0h624D0HCE+sJotIdyfRfgPJ7RG2OwZg4VL7Sn2YY8W1src3SnWeRA9?=
+ =?us-ascii?Q?JLbI2tHXnYMUytH0/jkp8SswBurDR2fRUD3X7coCTNdUsvJEvccYoN+/cTqO?=
+ =?us-ascii?Q?pQoY162Bnd4AQChOBGcIPzut1ylclk3r5T6FmlxfHDeRk+Ou9Ny0xm+fXHo+?=
+ =?us-ascii?Q?/2yDTwaI0uSksDHazVjaYNzRjIt9R+2R0ojiY0RVGgBjKrYVYnFq0xTM9/E1?=
+ =?us-ascii?Q?eDReF7Mb7gJ0sElPPqmJYy8RgLubGO1ICSh7LrsgOEhY4ueahNs9lbu+DgiP?=
+ =?us-ascii?Q?OfVffSQBj6OsdXbKGDT1w+WlGsEm22XI691mcLrCBUzVjBgi+FrNrCTxAZ55?=
+ =?us-ascii?Q?3Woe+EDpAXxtfESt4pxVlrxn3TTWP+pPCMA3NmMalR8z03mrE9gYByVuotUk?=
+ =?us-ascii?Q?pW1mEZNVfAAxU+9rAXGKZXTaSNmPQFtKS3b4lJDzyCT+Z5pxF/+XoUQZ8nEo?=
+ =?us-ascii?Q?SfoyHn6lWHhXC4D97x4NGRMG5UK4Kx7WL9pJ8TTfTGo57P+TrOo6zo7no5Ob?=
+ =?us-ascii?Q?CCr0wkJMfuRBZIC3ue9O1SZqMI5WYI3OMKaWPiE0FOGZytYRVWE9omzaW2lj?=
+ =?us-ascii?Q?IYjDM4oa2Wy00CU0RwAu3hzCgfWXichNJW8oHOvrztqKoQ3jPTR8TGJEJ4Ii?=
+ =?us-ascii?Q?N6UQubDmCuxQ8IFPSzuLSFxjOTWlcsyUEJpdFQb0pcsZ1Pgo/yCdhG21oLLk?=
+ =?us-ascii?Q?tAvkL2Z2kFDSOepsgp9wxInGQRruDVO9UQsc4tZ/fOFWD+vHVEw7s2bJ0P/V?=
+ =?us-ascii?Q?xhWfxH+MkfdMHXvQctfPKu/z4xy+5vJ1hZnCeUDeK3GCy9ihsCqvoc9Fv7NC?=
+ =?us-ascii?Q?nk5Rg7kS0R1OVHtoQPb0H95nfv6M3nFNqCywOWkwnO8WY00lyeE2NNb7XUYm?=
+ =?us-ascii?Q?9hUHJSJ6zQ8pMeDYu62oVwXnGfFMS04aOUBL2IdnnJjwnQuAhlbQLC4UGhHO?=
+ =?us-ascii?Q?082qgg=3D=3D?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ca84c548-76d2-4a3d-4ba9-08d9ea41af55
+X-MS-Exchange-CrossTenant-Network-Message-Id: abdcf57f-4517-459d-22f3-08d9ea450a19
 X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2022 13:56:48.6418
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Feb 2022 14:20:49.4275
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5mS4ik/kl2O3cTm24sBElHeij/W/FgENtZC7CiXnJMPvfp+B8HlCO9ekA6tyKQTdMW8KLPiq/m2+y1i7uL/5kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR10MB1268
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4yky8zeXP5Y5LH5VK991cVAF99wLSdPztKywX7XaqIf6veqeq08AteiudhCY7e5fppO4Y/G5thW6LyG0HHybWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5320
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10250 signatures=673430
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 malwarescore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
+ mlxlogscore=999 suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202070090
-X-Proofpoint-GUID: rO3Djm2fPYUJ-VsJr_XaDbxtLR-DjFQU
-X-Proofpoint-ORIG-GUID: rO3Djm2fPYUJ-VsJr_XaDbxtLR-DjFQU
+ definitions=main-2202070092
+X-Proofpoint-GUID: vPzchY--i9d_E6PN4sIgpSInrMmUH124
+X-Proofpoint-ORIG-GUID: vPzchY--i9d_E6PN4sIgpSInrMmUH124
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -145,418 +146,233 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sat, 5 Feb 2022, Andrii Nakryiko wrote:
 
-> Allow registering and unregistering custom handlers for BPF program.
-> This allows user applications and libraries to plug into libbpf's
-> declarative SEC() definition handling logic. This allows to offload
-> complex and intricate custom logic into external libraries, but still
-> provide a great user experience.
-> 
-> One such example is USDT handling library, which has a lot of code and
-> complexity which doesn't make sense to put into libbpf directly, but it
-> would be really great for users to be able to specify BPF programs with
-> something like SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_name>")
-> and have correct BPF program type set (BPF_PROGRAM_TYPE_KPROBE, as it is
-> uprobe) and even support BPF skeleton's auto-attach logic.
-> 
-> In some cases, it might be even good idea to override libbpf's default
-> handling, like for SEC("perf_event") programs. With custom library, it's
-> possible to extend logic to support specifying perf event specification
-> right there in SEC() definition without burdening libbpf with lots of
-> custom logic or extra library dependecies (e.g., libpfm4). With current
-> patch it's possible to override libbpf's SEC("perf_event") handling and
-> specify a completely custom ones.
-> 
-> Further, it's possible to specify a generic fallback handling for any
-> SEC() that doesn't match any other custom or standard libbpf handlers.
-> This allows to accommodate whatever legacy use cases there might be, if
-> necessary.
-> 
-> See doc comments for libbpf_register_prog_handler() and
-> libbpf_unregister_prog_handler() for detailed semantics.
+> Add a selftest validating various aspects of libbpf's handling of custom
+> SEC() handlers. It also demonstrates how libraries can ensure very early
+> callbacks registration and unregistration using
+> __attribute__((constructor))/__attribute__((destructor)) functions.
 > 
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+A few suggestions here for additional tests, but
+
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com> 
+
+Should we override a default attach method to demonstrate that
+custom handlers can do that? Or would that break parallel
+testing mode?
+
+Also might be good to have a test that captured the difference
+in auto-attach behaviour between a skeleton attach and an
+explicit bpf_prog__attach(); running the bpf_prog__attach on the 
+SEC("xyz") should result in -EOPNOTSUPP.
+
+
 > ---
->  tools/lib/bpf/libbpf.c   | 201 +++++++++++++++++++++++++++++----------
->  tools/lib/bpf/libbpf.h   |  81 ++++++++++++++++
->  tools/lib/bpf/libbpf.map |   2 +
->  3 files changed, 232 insertions(+), 52 deletions(-)
+>  .../bpf/prog_tests/custom_sec_handlers.c      | 136 ++++++++++++++++++
+>  .../bpf/progs/test_custom_sec_handlers.c      |  51 +++++++
+>  2 files changed, 187 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
 > 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 2902534def2c..d78a6365ba74 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -209,13 +209,6 @@ struct reloc_desc {
->  	};
->  };
->  
-> -typedef int (*libbpf_prog_init_fn_t)(struct bpf_program *prog, long cookie);
-> -typedef int (*libbpf_prog_preload_fn_t)(struct bpf_program *prog,
-> -					struct bpf_prog_load_opts *opts, long cookie);
-> -/* If auto-attach is not supported, callback should return 0 and set link to NULL */
-> -typedef int (*libbpf_prog_attach_fn_t)(const struct bpf_program *prog, long cookie,
-> -				       struct bpf_link **link);
-> -
->  /* stored as sec_def->cookie for all libbpf-supported SEC()s */
->  enum sec_def_flags {
->  	SEC_NONE = 0,
-> @@ -243,10 +236,11 @@ enum sec_def_flags {
->  };
->  
->  struct bpf_sec_def {
-> -	const char *sec;
-> +	char *sec;
->  	enum bpf_prog_type prog_type;
->  	enum bpf_attach_type expected_attach_type;
->  	long cookie;
-> +	int handler_id;
->  
->  	libbpf_prog_init_fn_t init_fn;
->  	libbpf_prog_preload_fn_t preload_fn;
-> @@ -8582,7 +8576,7 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
->  }
->  
->  #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
-> -	.sec = sec_pfx,							    \
-> +	.sec = (char *)sec_pfx,						    \
->  	.prog_type = BPF_PROG_TYPE_##ptype,				    \
->  	.expected_attach_type = atype,					    \
->  	.cookie = (long)(flags),					    \
-> @@ -8675,61 +8669,164 @@ static const struct bpf_sec_def section_defs[] = {
->  	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
->  };
->  
-> -#define MAX_TYPE_NAME_SIZE 32
-> +static size_t custom_sec_def_cnt;
-> +static struct bpf_sec_def *custom_sec_defs;
-> +static struct bpf_sec_def custom_fallback_def;
-> +static bool has_custom_fallback_def;
->  
-> -static const struct bpf_sec_def *find_sec_def(const char *sec_name)
-> +static int last_custom_sec_def_handler_id;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+> new file mode 100644
+> index 000000000000..8e43c5f21878
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+> @@ -0,0 +1,136 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Facebook */
 > +
-> +int libbpf_register_prog_handler(const char *sec,
-> +				 enum bpf_prog_type prog_type,
-> +				 enum bpf_attach_type exp_attach_type,
-> +				 libbpf_prog_init_fn_t prog_init_fn,
-> +				 libbpf_prog_preload_fn_t prog_preload_fn,
-> +				 libbpf_prog_attach_fn_t prog_attach_fn,
-> +				 long cookie,
-> +				 const void *opts)
->  {
-> -	const struct bpf_sec_def *sec_def;
-> -	enum sec_def_flags sec_flags;
-> -	int i, n = ARRAY_SIZE(section_defs), len;
-> -	bool strict = libbpf_mode & LIBBPF_STRICT_SEC_NAME;
-> +	struct bpf_sec_def *sec_def;
->  
-> -	for (i = 0; i < n; i++) {
-> -		sec_def = &section_defs[i];
-> -		sec_flags = sec_def->cookie;
-> -		len = strlen(sec_def->sec);
-> +	if (opts)
-> +		return libbpf_err(-EINVAL);
-> +	if (last_custom_sec_def_handler_id == INT_MAX) /* prevent overflow */
-> +		return libbpf_err(-E2BIG);
->  
-> -		/* "type/" always has to have proper SEC("type/extras") form */
-> -		if (sec_def->sec[len - 1] == '/') {
-> -			if (str_has_pfx(sec_name, sec_def->sec))
-> -				return sec_def;
-> -			continue;
-> -		}
-> +	if (sec) {
-> +		sec_def = libbpf_reallocarray(custom_sec_defs, custom_sec_def_cnt + 1,
-> +					      sizeof(*sec_def));
-> +		if (!sec_def)
-> +			return libbpf_err(-ENOMEM);
->  
-> -		/* "type+" means it can be either exact SEC("type") or
-> -		 * well-formed SEC("type/extras") with proper '/' separator
-> -		 */
-> -		if (sec_def->sec[len - 1] == '+') {
-> -			len--;
-> -			/* not even a prefix */
-> -			if (strncmp(sec_name, sec_def->sec, len) != 0)
-> -				continue;
-> -			/* exact match or has '/' separator */
-> -			if (sec_name[len] == '\0' || sec_name[len] == '/')
-> -				return sec_def;
-> -			continue;
-> -		}
-> +		custom_sec_defs = sec_def;
-> +		sec_def = &custom_sec_defs[custom_sec_def_cnt];
-> +	} else {
-> +		if (has_custom_fallback_def)
-> +			return libbpf_err(-EBUSY);
->  
-> -		/* SEC_SLOPPY_PFX definitions are allowed to be just prefix
-> -		 * matches, unless strict section name mode
-> -		 * (LIBBPF_STRICT_SEC_NAME) is enabled, in which case the
-> -		 * match has to be exact.
-> -		 */
-> -		if ((sec_flags & SEC_SLOPPY_PFX) && !strict)  {
-> -			if (str_has_pfx(sec_name, sec_def->sec))
-> -				return sec_def;
-> -			continue;
-> -		}
-> +		sec_def = &custom_fallback_def;
-> +	}
->  
-> -		/* Definitions not marked SEC_SLOPPY_PFX (e.g.,
-> -		 * SEC("syscall")) are exact matches in both modes.
-> -		 */
-> -		if (strcmp(sec_name, sec_def->sec) == 0)
-> +	sec_def->sec = sec ? strdup(sec) : NULL;
-> +	if (sec && !sec_def->sec)
-> +		return libbpf_err(-ENOMEM);
+> +#include <test_progs.h>
+> +#include "test_custom_sec_handlers.skel.h"
 > +
-> +	sec_def->prog_type = prog_type;
-> +	sec_def->expected_attach_type = exp_attach_type;
-> +	sec_def->cookie = cookie;
+> +#define COOKIE_ABC1 1
+> +#define COOKIE_ABC2 2
+> +#define COOKIE_CUSTOM 3
+> +#define COOKIE_FALLBACK 4
 > +
-> +	sec_def->init_fn = prog_init_fn;
-> +	sec_def->preload_fn = prog_preload_fn;
-> +	sec_def->attach_fn = prog_attach_fn;
-> +
-> +	sec_def->handler_id = ++last_custom_sec_def_handler_id;
-> +
-> +	if (sec)
-> +		custom_sec_def_cnt++;
-> +	else
-> +		has_custom_fallback_def = true;
-> +
-
-should we try and deal with the (unlikely) case that multiple
-fallback definitions are supplied, since only the first will
-be used? i.e 
-
-if (!sec && has_custom_fallback_def)
-	return -EEXIST;
-
-?
-
-> +	return sec_def->handler_id;
-> +}
-> +
-> +int libbpf_unregister_prog_handler(int handler_id)
+> +static int custom_init_prog(struct bpf_program *prog, long cookie)
 > +{
-> +	int i;
-> +
-> +	if (handler_id <= 0)
-> +		return libbpf_err(-EINVAL);
-> +
-> +	if (has_custom_fallback_def && custom_fallback_def.handler_id == handler_id) {
-> +		memset(&custom_fallback_def, 0, sizeof(custom_fallback_def));
-> +		has_custom_fallback_def = false;
-> +		return 0;
-> +	}
-> +
-> +	for (i = 0; i < custom_sec_def_cnt; i++) {
-> +		if (custom_sec_defs[i].handler_id == handler_id)
-> +			break;
-> +	}
-> +
-> +	if (i == custom_sec_def_cnt)
-> +		return libbpf_err(-ENOENT);
-> +
-> +	free(custom_sec_defs[i].sec);
-> +	for (i = i + 1; i < custom_sec_def_cnt; i++)
-> +		custom_sec_defs[i - 1] = custom_sec_defs[i];
-> +	custom_sec_def_cnt--;
-
-We're leaking a custom table entry each time we register/deregister.
-We could libbpf_reallocarray() to trim here I think.
-
+> +	if (cookie == COOKIE_ABC1)
+> +		bpf_program__set_autoload(prog, false);
 > +
 > +	return 0;
 > +}
 > +
-> +static bool sec_def_matches(const struct bpf_sec_def *sec_def, const char *sec_name,
-> +			    bool allow_sloppy)
+> +static int custom_preload_prog(struct bpf_program *prog,
+> +			       struct bpf_prog_load_opts *opts, long cookie)
 > +{
-> +	size_t len = strlen(sec_def->sec);
-> +
-> +	/* "type/" always has to have proper SEC("type/extras") form */
-> +	if (sec_def->sec[len - 1] == '/') {
-> +		if (str_has_pfx(sec_name, sec_def->sec))
-> +			return true;
-> +		return false;
-> +	}
-> +
-> +	/* "type+" means it can be either exact SEC("type") or
-> +	 * well-formed SEC("type/extras") with proper '/' separator
-> +	 */
-> +	if (sec_def->sec[len - 1] == '+') {
-> +		len--;
-> +		/* not even a prefix */
-> +		if (strncmp(sec_name, sec_def->sec, len) != 0)
-> +			return false;
-> +		/* exact match or has '/' separator */
-> +		if (sec_name[len] == '\0' || sec_name[len] == '/')
-> +			return true;
-> +		return false;
-> +	}
-> +
-> +	/* SEC_SLOPPY_PFX definitions are allowed to be just prefix
-> +	 * matches, unless strict section name mode
-> +	 * (LIBBPF_STRICT_SEC_NAME) is enabled, in which case the
-> +	 * match has to be exact.
-> +	 */
-> +	if (allow_sloppy && str_has_pfx(sec_name, sec_def->sec))
-> +		return true;
-> +
-> +	/* Definitions not marked SEC_SLOPPY_PFX (e.g.,
-> +	 * SEC("syscall")) are exact matches in both modes.
-> +	 */
-> +	return strcmp(sec_name, sec_def->sec) == 0;
+> +	return 0;
 > +}
 > +
-> +static const struct bpf_sec_def *find_sec_def(const char *sec_name)
+> +static int custom_attach_prog(const struct bpf_program *prog, long cookie,
+> +			      struct bpf_link **link)
 > +{
-> +	const struct bpf_sec_def *sec_def;
-> +	int i, n;
-> +	bool strict = libbpf_mode & LIBBPF_STRICT_SEC_NAME, allow_sloppy;
-> +
-> +	n = custom_sec_def_cnt;
-> +	for (i = 0; i < n; i++) {
-> +		sec_def = &custom_sec_defs[i];
-> +		if (sec_def_matches(sec_def, sec_name, false))
->  			return sec_def;
->  	}
-> +
-> +	n = ARRAY_SIZE(section_defs);
-> +	for (i = 0; i < n; i++) {
-> +		sec_def = &section_defs[i];
-> +		allow_sloppy = (sec_def->cookie & SEC_SLOPPY_PFX) && !strict;
-> +		if (sec_def_matches(sec_def, sec_name, allow_sloppy))
-> +			return sec_def;
+> +	switch (cookie) {
+> +	case COOKIE_ABC2:
+> +		*link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
+> +		return libbpf_get_error(*link);
+> +	case COOKIE_CUSTOM:
+> +		*link = bpf_program__attach_tracepoint(prog, "syscalls", "sys_enter_nanosleep");
+> +		return libbpf_get_error(*link);
+> +	case COOKIE_FALLBACK:
+> +		/* no auto-attach for SEC("xyz") */
+> +		*link = NULL;
+> +		return 0;
+> +	default:
+> +		ASSERT_FALSE(true, "unexpected cookie");
+> +		return -EINVAL;
 > +	}
+> +}
 > +
-> +	if (has_custom_fallback_def)
-> +		return &custom_fallback_def;
+> +static int abc1_id;
+> +static int abc2_id;
+> +static int custom_id;
+> +static int fallback_id;
 > +
->  	return NULL;
->  }
->  
-> +#define MAX_TYPE_NAME_SIZE 32
+> +__attribute__((constructor))
+> +static void register_sec_handlers(void)
+> +{
+> +	abc1_id = libbpf_register_prog_handler("abc",
+> +					       BPF_PROG_TYPE_RAW_TRACEPOINT, 0,
+> +					       custom_init_prog, custom_preload_prog,
+> +					       custom_attach_prog,
+> +					       COOKIE_ABC1, NULL);
+> +	abc2_id = libbpf_register_prog_handler("abc/",
+> +					       BPF_PROG_TYPE_RAW_TRACEPOINT, 0,
+> +					       custom_init_prog, custom_preload_prog,
+> +					       custom_attach_prog,
+> +					       COOKIE_ABC2, NULL);
+> +	custom_id = libbpf_register_prog_handler("custom+",
+> +						 BPF_PROG_TYPE_TRACEPOINT, 0,
+> +						 custom_init_prog, custom_preload_prog,
+> +						 custom_attach_prog,
+> +						 COOKIE_CUSTOM, NULL);
+> +}
 > +
->  static char *libbpf_get_type_names(bool attach_type)
->  {
->  	int i, len = ARRAY_SIZE(section_defs) * MAX_TYPE_NAME_SIZE;
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index c8d8daad212e..6e665c26dcc7 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -1328,6 +1328,87 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker,
->  LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
->  LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
->  
-> +/*
-> + * Custom handling of BPF program's SEC() definitions
-> + */
+> +__attribute__((destructor))
+> +static void unregister_sec_handlers(void)
+> +{
+> +	libbpf_unregister_prog_handler(abc1_id);
+> +	libbpf_unregister_prog_handler(abc2_id);
+> +	libbpf_unregister_prog_handler(custom_id);
+> +}
 > +
-> +struct bpf_prog_load_opts; /* defined in bpf.h */
+> +void test_custom_sec_handlers(void)
+> +{
+> +	struct test_custom_sec_handlers* skel;
+> +	int err;
 > +
-> +/* Called during bpf_object__open() for each recognized BPF program. Callback
-> + * can use various bpf_program__set_*() setters to adjust whatever properties
-> + * are necessary.
-> + */
-> +typedef int (*libbpf_prog_init_fn_t)(struct bpf_program *prog, long cookie);
+> +	ASSERT_GT(abc1_id, 0, "abc1_id");
+> +	ASSERT_GT(abc2_id, 0, "abc2_id");
+> +	ASSERT_GT(custom_id, 0, "custom_id");
 > +
-> +/* Called right before libbpf performs bpf_prog_load() to load BPF program
-> + * into the kernel. Callback can adjust opts as necessary.
-> + */
-> +typedef int (*libbpf_prog_preload_fn_t)(struct bpf_program *prog,
-> +					struct bpf_prog_load_opts *opts, long cookie);
+> +	fallback_id = libbpf_register_prog_handler(NULL, /* fallback handler */
+> +						   BPF_PROG_TYPE_KPROBE, 0,
+> +						   custom_init_prog, custom_preload_prog,
+> +						   custom_attach_prog,
+> +						   COOKIE_FALLBACK, NULL);
+> +	if (!ASSERT_GT(fallback_id, 0, "fallback_id"))
+> +		return;
 > +
-> +/* Called during skeleton attach or through bpf_program__attach(). If
-> + * auto-attach is not supported, callback should return 0 and set link to
-> + * NULL (it's not considered an error during skeleton attach, but it will be
-> + * an error for bpf_program__attach() calls). On error, error should be
-> + * returned directly and link set to NULL. On success, return 0 and set link
-> + * to a valid struct bpf_link.
-> + */
-> +typedef int (*libbpf_prog_attach_fn_t)(const struct bpf_program *prog, long cookie,
-> +				       struct bpf_link **link);
+> +	/* open skeleton and validate assumptions */
+> +	skel = test_custom_sec_handlers__open();
+> +	if (!ASSERT_OK_PTR(skel, "skel_open"))
+> +		goto cleanup;
 > +
-> +/**
-> + * @brief **libbpf_register_prog_handler()** registers a custom BPF program
-> + * SEC() handler.
-> + * @param sec section prefix for which custom handler is registered
-> + * @param prog_type BPF program type associated with specified section
-> + * @param exp_attach_type Expected BPF attach type associated with specified section
-> + * @param prog_init_fn BPF program initialization callback (see libbpf_prog_init_fn_t)
-> + * @param prog_preload_fn BPF program loading callback (see libbpf_prog_preload_fn_t)
-> + * @param prog_attach_fn BPF program attach callback (see libbpf_prog_attach_fn_t)
-> + * @param cookie User-provided cookie passed to each callback
-> + * @param opts reserved for future extensibility, should be NULL
-> + * @return Non-negative handler ID is returned on success. This handler ID has
-> + * to be passed to *libbpf_unregister_prog_handler()* to unregister such
-> + * custom handler. Negative error code is returned on error.
-> + *
-> + * *sec* defines which SEC() definitions are handled by this custom handler
-> + * registration. *sec* can have few different forms:
-> + *   - if *sec* is just a plain string (e.g., "abc"), it will match only
-> + *   SEC("abc"). If BPF program specifies SEC("abc/whatever") it will result
-> + *   in an error;
-> + *   - if *sec* is of the form "abc/", proper SEC() form is
-> + *   SEC("abc/something"), where acceptable "something" should be checked by
-> + *   *prog_init_fn* callback, if there are additional restrictions;
-> + *   - if *sec* is of the form "abc+", it will successfully match both
-> + *   SEC("abc") and SEC("abc/whatever") forms;
-> + *   - if *sec* is NULL, custom handler is registered for any BPF program that
-> + *   doesn't match any of the registered (custom or libbpf's own) SEC()
-> + *   handlers. There could be only one such generic custom handler registered
-> + *   at any given time.
-> + *
-> + * All custom handlers (except the one with *sec* == NULL) are processed
-> + * before libbpf's own SEC() handlers. It is allowed to "override" libbpf's
-> + * SEC() handlers by registering custom ones for the same section prefix
-> + * (i.e., it's possible to have custom SEC("perf_event/LLC-load-misses")
-> + * handler).
-> + */
-
-Nicely documented!
-
-> +LIBBPF_API int libbpf_register_prog_handler(const char *sec,
-> +					    enum bpf_prog_type prog_type,
-> +					    enum bpf_attach_type exp_attach_type,
-> +					    libbpf_prog_init_fn_t prog_init_fn,
-> +					    libbpf_prog_preload_fn_t prog_preload_fn,
-> +					    libbpf_prog_attach_fn_t prog_attach_fn,
-
-Naming nit: a prog_handler sounds less specific; would
-"sec_handler" or "prog_sec_handler" be more descriptive perhaps?
-
-Also, would it make sense to pass the functions in as options instead?
-They can all be NULL potentially I think, and it's possible we'd
-want additional future handlers too..
-
-> +					    long cookie,
-> +					    const void *opts);
-> +/**
-> + * @brief *libbpf_unregister_prog_handler()* unregisters previously registered
-> + * custom BPF program SEC() handler.
-> + * @param handler_id handler ID returned by *libbpf_register_prog_handler()*
-> + * after successful registration
-> + * @return 0 on success, negative error code if handler isn't found
-> + */
-> +LIBBPF_API int libbpf_unregister_prog_handler(int handler_id);
+> +	ASSERT_EQ(bpf_program__type(skel->progs.abc1), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc1_type");
+> +	ASSERT_FALSE(bpf_program__autoload(skel->progs.abc1), "abc1_autoload");
 > +
->  #ifdef __cplusplus
->  } /* extern "C" */
->  #endif
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index aef6253a90c8..4e75f06c1a00 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -438,4 +438,6 @@ LIBBPF_0.7.0 {
->  		libbpf_probe_bpf_map_type;
->  		libbpf_probe_bpf_prog_type;
->  		libbpf_set_memlock_rlim_max;
-> +		libbpf_register_prog_handler;
-> +		libbpf_unregister_prog_handler;
->  };
+> +	ASSERT_EQ(bpf_program__type(skel->progs.abc2), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc2_type");
+> +	ASSERT_EQ(bpf_program__type(skel->progs.custom1), BPF_PROG_TYPE_TRACEPOINT, "custom1_type");
+> +	ASSERT_EQ(bpf_program__type(skel->progs.custom2), BPF_PROG_TYPE_TRACEPOINT, "custom2_type");
+> +	ASSERT_EQ(bpf_program__type(skel->progs.xyz), BPF_PROG_TYPE_KPROBE, "xyz_type");
+> +
+> +	skel->rodata->my_pid = getpid();
+> +
+> +	/* now attempt to load everything */
+> +	err = test_custom_sec_handlers__load(skel);
+> +	if (!ASSERT_OK(err, "skel_load"))
+> +		goto cleanup;
+> +
+> +	/* now try to auto-attach everything */
+> +	err = test_custom_sec_handlers__attach(skel);
+> +	if (!ASSERT_OK(err, "skel_attach"))
+> +		goto cleanup;
+> +
+> +	/* trigger programs */
+> +	usleep(1);
+> +
+> +	/* SEC("abc") is set to not auto-loaded */
+> +	ASSERT_FALSE(skel->bss->abc1_called, "abc1_called");
+> +	ASSERT_TRUE(skel->bss->abc2_called, "abc2_called");
+> +	ASSERT_TRUE(skel->bss->custom1_called, "custom1_called");
+> +	ASSERT_TRUE(skel->bss->custom2_called, "custom2_called");
+> +	/* SEC("xyz") shouldn't be auto-attached */
+> +	ASSERT_FALSE(skel->bss->xyz_called, "xyz_called");
+> +
+> +cleanup:
+> +	test_custom_sec_handlers__destroy(skel);
+> +
+> +	ASSERT_OK(libbpf_unregister_prog_handler(fallback_id), "unregister_fallback");
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+> new file mode 100644
+> index 000000000000..2df368783678
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2022 Facebook */
+> +
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +const volatile int my_pid;
+> +
+> +bool abc1_called;
+> +bool abc2_called;
+> +bool custom1_called;
+> +bool custom2_called;
+> +bool xyz_called;
+> +
+> +SEC("abc")
+> +int abc1(void *ctx)
+> +{
+> +	abc1_called = true;
+> +	return 0;
+> +}
+> +
+> +SEC("abc/whatever")
+> +int abc2(void *ctx)
+> +{
+> +	abc2_called = true;
+> +	return 0;
+> +}
+> +
+> +SEC("custom")
+> +int custom1(void *ctx)
+> +{
+> +	custom1_called = true;
+> +	return 0;
+> +}
+> +
+> +SEC("custom/something")
+> +int custom2(void *ctx)
+> +{
+> +	custom2_called = true;
+> +	return 0;
+> +}
+> +
+> +SEC("xyz/blah")
+> +int xyz(void *ctx)
+> +{
+> +	xyz_called = true;
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 > -- 
 > 2.30.2
 > 
