@@ -2,76 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36C24AB666
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 09:15:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 886ED4AB83F
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 11:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbiBGIOZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 03:14:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48992 "EHLO
+        id S232629AbiBGKAs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 05:00:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244072AbiBGIGa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 03:06:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E04CC043186
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 00:06:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644221189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hrBG/poLkL/lLZ3kXUYigUvYKKxYkaMg+jNVui/yCn4=;
-        b=bfo/skn0HcyXTB5gfikfNiJUs41xkyUCSzRvrUdoNse4aOWvXYuc+kGU+F37CBBfhFi9Od
-        pIyTDoBhAwKK4Bv2+cMk/iqsKQLUFPuH054DO7yt6IwpnvcKIpHmutvYVYZf/lRJG+3A8T
-        8MEWGHN7edQHaePQpuztViqvJLk+91c=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-170-g92_2bHKPL6xGPVSmpMnjw-1; Mon, 07 Feb 2022 03:06:27 -0500
-X-MC-Unique: g92_2bHKPL6xGPVSmpMnjw-1
-Received: by mail-lj1-f198.google.com with SMTP id p10-20020a2ea4ca000000b0023c8545494fso4110910ljm.2
-        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 00:06:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hrBG/poLkL/lLZ3kXUYigUvYKKxYkaMg+jNVui/yCn4=;
-        b=kLaaa6slFPTCueZkVqBeGFN9YVmRrNaznbzWrkYU1edJgJ4UnbAafpHw/RcYJ42xX8
-         E5EkTn85oCNnAoKTc1WhwUyqHWAKdYHMeBCeICy+kD1NNI7jSbK8RdEWrf1BGq/lKoYH
-         DdgwXPwEzbjejl6CBUPkyQ+A8RF7gc2INF/E/JQKe/g6NtlL4CINtUfNbWY/qel6IoN1
-         p2gG+rYQzwBo+6R2zOcGK4FhKJKVp8tP3Cq1woQOq9N1xEtsyfRSKrgafVTYSSprpfXB
-         Jv4hKDff0dHB9BidCfvcTEhLS17T1F8w2rct/Jxff123Mj6U0QBuzrPlrU18BhP1AS6j
-         SPFQ==
-X-Gm-Message-State: AOAM532fFUSywiW0TzDNiFaNLoAA+tlVOVQg5CxyBzH87TFHgtHJZjUv
-        LY/a5lwe45LLMUSIJ4Yp4oKV/B76P79acNUG00eEWf4uXNC6Aw2YE+AqD2H1nt5omRilsh6j9p1
-        OGoElBsv6RiOhGHg/YQhWoynJehrv
-X-Received: by 2002:a05:6512:e9c:: with SMTP id bi28mr6687388lfb.498.1644221186150;
-        Mon, 07 Feb 2022 00:06:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw0DHyEmoITa1BBraG4UZnw98YqyHS8LEhTKBkLYYBW2asYSlz9ovqB44ewRvgt48bhRU26fe8jVPKrnUet8ao=
-X-Received: by 2002:a05:6512:e9c:: with SMTP id bi28mr6687376lfb.498.1644221185952;
- Mon, 07 Feb 2022 00:06:25 -0800 (PST)
-MIME-Version: 1.0
-References: <28013a95-4ce4-7859-9ca1-d836265e8792@redhat.com> <1644213876.065673-2-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1644213876.065673-2-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 7 Feb 2022 16:06:15 +0800
-Message-ID: <CACGkMEuJ_v5g2ypLZ3eNhAcUM9Q3PpWuiaeWVfEC6KACGzWAZw@mail.gmail.com>
-Subject: Re: [PATCH v3 01/17] virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S245293AbiBGJqb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 04:46:31 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE79C043181
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 01:46:30 -0800 (PST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21787I23031671;
+        Mon, 7 Feb 2022 09:46:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=D1GSY+CdtktwglLxgHLudRXixVrVmahIWv7W8k+9jpU=;
+ b=YLGmwyngoI3C28XHdxl7O0nH4y9I/aP9fyxMcmdv2LGOLL8XYX0MSZBTPX6RnTygJHDv
+ lPHVyaB9lS3xcLVUt036TJE742798hf+iyRAIu19Yf+oxuSWRPQdRHA4+dRuwLsm6uSk
+ v0LT1O8tbrK7l1u9i1MmKIbVBoo0Qo+/XapzTHxg5bM4G5mzzjB0xw471i9avRihKjOY
+ HwpBR3w+qgL2Avz0IRq6e07c7fAKdh/8nCXG/PlYFiPKMVuqKN/vlAT8TbyyMsEOclff
+ cnIxbIZHDgzEKTh+RCMBo+cQe4/cbT9ZrkicN5lopwDBai/oo4NurrEcREN2mZoHSGMb Sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e2318ye0w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Feb 2022 09:46:16 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2179Tkgw023674;
+        Mon, 7 Feb 2022 09:46:15 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e2318ye0n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Feb 2022 09:46:15 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2179cPZD000502;
+        Mon, 7 Feb 2022 09:46:13 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 3e1gv92mh6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Feb 2022 09:46:13 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2179kAVo37683544
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Feb 2022 09:46:10 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 544754C052;
+        Mon,  7 Feb 2022 09:46:10 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E3A934C050;
+        Mon,  7 Feb 2022 09:46:09 +0000 (GMT)
+Received: from osiris (unknown [9.145.87.217])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  7 Feb 2022 09:46:09 +0000 (GMT)
+Date:   Mon, 7 Feb 2022 10:46:08 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 0/2] Fix bpf_perf_event_data ABI breakage
+Message-ID: <YgDqYFsLwkWZvX0+@osiris>
+References: <20220206145350.2069779-1-iii@linux.ibm.com>
+ <CAEf4Bzb1To5+uLdRiJEJUJo4PckVDEBEtENC14Cuf-mkxrnxgA@mail.gmail.com>
+ <5e4b012be25cbbb44ecb935de745e17ed5c16f28.camel@linux.ibm.com>
+ <CAEf4BzZfn4-dbnRcsStu+EoKD12EoKCShcoAVH9Gj0mqieBAaw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZfn4-dbnRcsStu+EoKD12EoKCShcoAVH9Gj0mqieBAaw@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LIuFXOi4ZHVHSGIpHYOAJusMXFKS4Y9P
+X-Proofpoint-GUID: jiPfSTcBngPYZvz65F96krOPXdAm1M7W
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-07_03,2022-02-03_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 adultscore=0
+ mlxlogscore=963 suspectscore=0 spamscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202070061
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,66 +98,26 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 7, 2022 at 2:07 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote=
-:
->
-> On Mon, 7 Feb 2022 11:41:06 +0800, Jason Wang <jasowang@redhat.com> wrote=
-:
-> >
-> > =E5=9C=A8 2022/1/26 =E4=B8=8B=E5=8D=883:35, Xuan Zhuo =E5=86=99=E9=81=
-=93:
-> > > Add queue_notify_data in struct virtio_pci_common_cfg, which comes fr=
-om
-> > > here https://github.com/oasis-tcs/virtio-spec/issues/89
-> > >
-> > > Since I want to add queue_reset after it, I submitted this patch firs=
-t.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >   include/uapi/linux/virtio_pci.h | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/vir=
-tio_pci.h
-> > > index 3a86f36d7e3d..492c89f56c6a 100644
-> > > --- a/include/uapi/linux/virtio_pci.h
-> > > +++ b/include/uapi/linux/virtio_pci.h
-> > > @@ -164,6 +164,7 @@ struct virtio_pci_common_cfg {
-> > >     __le32 queue_avail_hi;          /* read-write */
-> > >     __le32 queue_used_lo;           /* read-write */
-> > >     __le32 queue_used_hi;           /* read-write */
-> > > +   __le16 queue_notify_data;       /* read-write */
-> > >   };
-> >
-> >
-> > So I had the same concern as previous version.
-> >
-> > This breaks uABI where program may try to use sizeof(struct
-> > virtio_pci_common_cfg).
-> >
-> > We probably need a container structure here.
->
-> I see, I plan to add a struct like this, do you think it's appropriate?
->
-> struct virtio_pci_common_cfg_v1 {
->         struct virtio_pci_common_cfg cfg;
->         __le16 queue_notify_data;       /* read-write */
-> }
+On Sun, Feb 06, 2022 at 10:23:19PM -0800, Andrii Nakryiko wrote:
+> I'm not sure the origins of the need for user_pt_regs (as opposed to
+> using pt_regs directly, like x86-64 does), but with CO-RE and
+> vmlinux.h it would be more reliable and straightforward to just stick
+> to kernel-internal struct pt_regs everywhere. And for non-CO-RE macros
+> maybe just using an offset within struct pt_regs (i.e.,
+> offsetofend(gprs)) would do it?
 
-Something like this but we probably need a better name.
+user_pt_regs was introduced on s390 because struct pt_regs is _not_
+stable. Only the first n entries (aka user_pt_regs) are supposed to be
+stable.
 
-Thanks
+We could of course reduce struct pt_regs to the bare minimum, which seems
+to be the current user_pt_regs plus orig_gpr2; which semantically would
+match more or less what x86 has.
 
->
-> Thanks.
->
-> >
-> > THanks
-> >
-> >
-> > >
-> > >   /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
-> >
->
+Then move pt_regs to uapi, so it is clear that it cannot be changed
+anymore, and have additional data in a separate structure on the stack,
+which has pt_regs at the beginning, and access this additional data with
+container_of & friends.
 
+I guess that could work, even though this requires to keep user_pt_regs
+"for historical reasons".
