@@ -2,157 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA8E4ACBCE
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 23:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CCE4ACBDC
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 23:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242061AbiBGWFE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 17:05:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40520 "EHLO
+        id S241144AbiBGWLY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 17:11:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243558AbiBGWFA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 17:05:00 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBAE6C0401C9;
-        Mon,  7 Feb 2022 14:04:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644271498; x=1675807498;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Vgdqpg9gutTd0WnwyDDJKP2Z5/j1e3fIAXT24D+glyQ=;
-  b=XFnCJJ/leuuENdn8AikHjXodeUm4D/Rp/N6ph/aR6nEQRu8zjkzXQwnK
-   jU77nZu2KVRM2JQ4/oI/cBhkCMOgu1And+rnOIGygaN8BJ1k/WATj5E5T
-   ZOYchgtVy4fdzs9YREbUOOaePGramlRV+NzizFsEWo8aJYu5NdEyHJ1v1
-   pcxqgUnotQp1qGH7GNthmnUP1IUbh9fnTuNzmeY/RUQoxlR1QKKucX4Pn
-   9+eE9DMnPLsb8Zi1O1I8VhRPO12+NqNemQFSM4j45EZ8YhvZaGo520jKw
-   6HB7zfwxs+BUnuw9Vhvg6c6xw25PlEi+LNho1kUeQmBg+OX7CP1fewu2L
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10251"; a="229466298"
-X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; 
-   d="scan'208";a="229466298"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2022 14:04:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,350,1635231600"; 
-   d="scan'208";a="484582375"
-Received: from lkp-server01.sh.intel.com (HELO 9dd77a123018) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 07 Feb 2022 14:04:56 -0800
-Received: from kbuild by 9dd77a123018 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nHC7z-00011a-Ir; Mon, 07 Feb 2022 22:04:55 +0000
-Date:   Tue, 8 Feb 2022 06:04:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, kernel-team@cloudflare.com
-Subject: Re: [PATCH bpf-next 1/2] bpf: Make remote_port field in struct
- bpf_sk_lookup 16-bit wide
-Message-ID: <202202080631.n8UjqRXy-lkp@intel.com>
-References: <20220207131459.504292-2-jakub@cloudflare.com>
+        with ESMTP id S238499AbiBGWLX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 17:11:23 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CFCC061355
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 14:11:22 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id m17so12330897ilj.12
+        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 14:11:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SsOQ9LUap2p4+car5kLzEWJjUPh80TmKSTQhE7aPkoQ=;
+        b=WySfExzJN78EO03XiJzMwmtN0jyYHLpiGdrnkd1fmFLZ7CCqSQ4h9Vqp99r/qrCOP1
+         l29Tq7IJuxRIGkC+C+cag9yFGZxbrOMgOHT7aKL6yzH0a5yoPVubyW7C/dpIc87+kiFU
+         qnbATF/g1f3iY6f/VBgPxYDGlt+7XAOQQPicshYzRa6WqGmRGLPN4XnlXGUpgNr6lHI5
+         QTmEJfWyP90fjcTXc5Af4Ksf/N5PaY7uDaZkQLJaqi2yAGi2MQf5t3CVyEU87fb9afdr
+         hUo0cfx3CZOsE4pLbXbj8soPb7Vx+RiTIF0dZnWzZlJyKppbe0Iz3o7wR9FR38xNkGY0
+         Jdrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SsOQ9LUap2p4+car5kLzEWJjUPh80TmKSTQhE7aPkoQ=;
+        b=J9d4TIOeHnXjO8wy2jXt0cnY/ko7OHH3jholeqdoTnihdQ5fxUWYUzH7gbXn+/1Hro
+         dmA8bhvMO6ZgFPSDWO/p3EiDioWJLgyApNfTGrHvrq+9iGJd+eiRuqVjQr8zRBZc0IoX
+         IsBi6gpZErXPk5QfEGuMH7lZAw5EXd2arLKFNSEWawnpeto85BEH5S8Dyc0YFKwaSUpv
+         0DdE/oHHwYKysWVChc3N1qfTt1nckwj+GG87HWdc8zEjBTdXdn2ZDrUo7CyCc9GKRhwu
+         sNuireVIzS6Yi2A66qc/XP8NKZm6Nts73ouyDH1JizAkPsVqchNG+mprJwVOaxwNFaGU
+         XfgQ==
+X-Gm-Message-State: AOAM5302Af4fhhxYsTBgg1V9LVffrFReWJVz8Qwzn9/MYccS8y+md/VL
+        zfbWqOsek+7I4d1GH3a9LGKdidQC9JLHhX8HhWu1MTg1QA8=
+X-Google-Smtp-Source: ABdhPJxPei5C6iZF2IcOH8/SwwIc2ZOGmdCdSzWU8oEznSYTATysXbcUXA2bBCil4TtAczo9mqJYNPRCyak+rtUpHEU=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr724459ilu.71.1644271882330;
+ Mon, 07 Feb 2022 14:11:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220207131459.504292-2-jakub@cloudflare.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220204181146.8429-1-9erthalion6@gmail.com>
+In-Reply-To: <20220204181146.8429-1-9erthalion6@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Feb 2022 14:11:11 -0800
+Message-ID: <CAEf4BzYiT-HRn9bLy=qoyOhOQ1ESCB3mB97xt98JWapgB_nbBw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] bpftool: Add bpf_cookie to link output
+To:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jakub,
-
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/0day-ci/linux/commits/Jakub-Sitnicki/Split-bpf_sk_lookup-remote_port-field/20220207-215137
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: sparc-randconfig-s031-20220207 (https://download.01.org/0day-ci/archive/20220208/202202080631.n8UjqRXy-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/b859a90e4c32a55e71d2731dd8dae96d7ad1defe
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Jakub-Sitnicki/Split-bpf_sk_lookup-remote_port-field/20220207-215137
-        git checkout b859a90e4c32a55e71d2731dd8dae96d7ad1defe
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=sparc SHELL=/bin/bash net/bpf/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+On Fri, Feb 4, 2022 at 10:12 AM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+>
+> Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie for
+> BPF perf links") introduced the concept of user specified bpf_cookie,
+> which could be accessed by BPF programs using bpf_get_attach_cookie().
+> For troubleshooting purposes it is convenient to expose bpf_cookie via
+> bpftool as well, so there is no need to meddle with the target BPF
+> program itself.
+>
+>     $ bpftool link
+>     1: type 7  prog 5  bpf_cookie 123
+>         pids bootstrap(87)
+>
+> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
+> ---
+> Changes in v2:
+>     - Display bpf_cookie in bpftool link command instead perf
+>
+>     Previous discussion: https://lore.kernel.org/bpf/20220127082649.12134-1-9erthalion6@gmail.com
 
 
-sparse warnings: (new ones prefixed by >>)
->> net/bpf/test_run.c:1149:55: sparse: sparse: restricted __be16 degrades to integer
+So I think this change is pretty straightforward and I don't mind it,
+but I'm not clear how this approach will scale to multi-attach kprobe
+and fentry programs. For those, users will be specifying many bpf
+cookies, one per each target attach function. At that point we'll have
+a bunch of cookies sorted by the attach function IP (not necessarily
+in the original order). I don't think it will be all that useful and
+interesting to the end user. We won't be storing original function
+names (too much memory for storing something that most probably won't
+be ever queried), so restoring original order and original function
+names will be hard. If we don't think this through, we'll end up with
+kernel API that works for just one simple use case.
 
-vim +1149 net/bpf/test_run.c
+Can you please describe your use case which motivated this feature in
+the first place to better understand the importance of this?
 
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1111  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1112  int bpf_prog_test_run_sk_lookup(struct bpf_prog *prog, const union bpf_attr *kattr,
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1113  				union bpf_attr __user *uattr)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1114  {
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1115  	struct bpf_test_timer t = { NO_PREEMPT };
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1116  	struct bpf_prog_array *progs = NULL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1117  	struct bpf_sk_lookup_kern ctx = {};
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1118  	u32 repeat = kattr->test.repeat;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1119  	struct bpf_sk_lookup *user_ctx;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1120  	u32 retval, duration;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1121  	int ret = -EINVAL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1122  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1123  	if (prog->type != BPF_PROG_TYPE_SK_LOOKUP)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1124  		return -EINVAL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1125  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1126  	if (kattr->test.flags || kattr->test.cpu)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1127  		return -EINVAL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1128  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1129  	if (kattr->test.data_in || kattr->test.data_size_in || kattr->test.data_out ||
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1130  	    kattr->test.data_size_out)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1131  		return -EINVAL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1132  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1133  	if (!repeat)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1134  		repeat = 1;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1135  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1136  	user_ctx = bpf_ctx_init(kattr, sizeof(*user_ctx));
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1137  	if (IS_ERR(user_ctx))
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1138  		return PTR_ERR(user_ctx);
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1139  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1140  	if (!user_ctx)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1141  		return -EINVAL;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1142  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1143  	if (user_ctx->sk)
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1144  		goto out;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1145  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1146  	if (!range_is_zero(user_ctx, offsetofend(typeof(*user_ctx), local_port), sizeof(*user_ctx)))
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1147  		goto out;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1148  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03 @1149  	if (user_ctx->local_port > U16_MAX || user_ctx->remote_port > U16_MAX) {
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1150  		ret = -ERANGE;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1151  		goto out;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1152  	}
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1153  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1154  	ctx.family = (u16)user_ctx->family;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1155  	ctx.protocol = (u16)user_ctx->protocol;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1156  	ctx.dport = (u16)user_ctx->local_port;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1157  	ctx.sport = (__force __be16)user_ctx->remote_port;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1158  
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1159  	switch (ctx.family) {
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1160  	case AF_INET:
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1161  		ctx.v4.daddr = (__force __be32)user_ctx->local_ip4;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1162  		ctx.v4.saddr = (__force __be32)user_ctx->remote_ip4;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1163  		break;
-7c32e8f8bc33a5f Lorenz Bauer 2021-03-03  1164  
+BTW, bpftool can technically implement this today without kernel
+changes by fetching such bpf_cookies from the kernel using its pid
+iterator BPF program. See skeleton/pid_iter.bpf.c for pointers. I
+wonder if it would make more sense to start with doing this purely on
+the bpftool side first.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+As an aside (and probably something more generally useful), it seems
+like we have a bpf_iter__bpf_map iterator, but we don't have prog and
+link iterators implemented. Would it be a good idea to add that to the
+kernel? Yonghong, Alexei, any thoughts?
+
+>
+>  include/uapi/linux/bpf.h       |  3 +++
+>  kernel/bpf/syscall.c           | 13 +++++++++++++
+>  tools/bpf/bpftool/link.c       |  2 ++
+>  tools/include/uapi/linux/bpf.h |  3 +++
+>  4 files changed, 21 insertions(+)
+>
+
+[...]
