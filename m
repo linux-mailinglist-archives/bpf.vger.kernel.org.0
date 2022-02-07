@@ -2,59 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DE04ACA1A
-	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 21:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97994ACA0F
+	for <lists+bpf@lfdr.de>; Mon,  7 Feb 2022 21:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240666AbiBGUIk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Feb 2022 15:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
+        id S235303AbiBGUJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Feb 2022 15:09:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241337AbiBGUE0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Feb 2022 15:04:26 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0114BC0401E1
-        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 12:04:26 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id i62so18402624ioa.1
-        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 12:04:25 -0800 (PST)
+        with ESMTP id S238898AbiBGUIj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Feb 2022 15:08:39 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE6EC0401DA
+        for <bpf@vger.kernel.org>; Mon,  7 Feb 2022 12:08:39 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id m17so12058910ilj.12
+        for <bpf@vger.kernel.org>; Mon, 07 Feb 2022 12:08:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=cIU/SRERWGf2PIPis1LpCx3u5LzTA94O6pyuTSzxMAg=;
-        b=JuYrPDlNBTuppsxpru0ehULobpfhWQFuXy02e6GcP/rHMNeSVaxU6p1Sc2Z7HXx0DP
-         76TOSuz/f6dp0cAyneKVa8n2/KIZ35jqEx5Q2ouH0fhfVXXZxOuRwU6DbbntWJs0rz7L
-         h0ILVi/Y3plmy0o45hQAQ9zXfE9um6dcl9J++tQgYdAMSco5TaaWQt5Ya3Ri+Vj4ILUw
-         0tgsU34mjNsnzi8fmX0bhX7P2BBSI+gl21g69Sz3fmCwGouylntZsJxJQcni+mZJX5Fs
-         wRMfYDWX1x2bv0N/rQGMoaDJStnMhvrJ4PsAK0SEve+ZzbYRyV552dssxXIlHebe9SgN
-         agGg==
+        bh=BDedeMsdV9ZFHfYVa+OoEpxOnzvrU7cWSly4ZXcsTHM=;
+        b=nEv4BTT61pdi+ZJsF4kA08sUGIrtSDT4K+MbBz8amgXB9+sXdwbJCulY0VxEuStJAD
+         6GQv+Zjh/5Lvy4/EoxG+puZ3fCgQ1tdj5lmd6U4BqW16oYy6d+4MuF9LBg8lw48/D9oB
+         MK1jwcOt7gzvhL/fQFv1NKSuBUaj63A4ML6jkb7ll9EwiHVPihMokonaTCuMIU1pHDAS
+         /ZX9eKtNl2zk7LCLALesESa4nL6h/ACQZXfPEo5dMVOI1NkFjZrhuKIW2Q4UbRPBRfyr
+         z+xeiL9/ic2s4sxIdO1kvIlopuSChK5hgEx29hB6aSw4MzhyqDMSqNiGa8VhGJlnPLRI
+         JUcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=cIU/SRERWGf2PIPis1LpCx3u5LzTA94O6pyuTSzxMAg=;
-        b=dc10cuXbOAD1V4ab8BTyPxxQZ9rMlfOb8/s9NpwzxyWLa2f+tD4Gy0BiFlomRSP4sx
-         /GW6pxez4ZbXF/uHPqaJBgAcAohW3+hsmbL0lKAQHC50Ou3Cggi6b8nlvliCpErr3pZQ
-         a5n0pWZFENBlpw6iU1525HUN3VKH6/y+vJxYyu7CecqhZmryk2ZzI4Eej8Sxc3BAe3AN
-         kAmCW6oJ053HzRSw4gYukMtTaHmcYe73TA6ATaGIJ/8rOXwizH8KAH2GJ5mYC836lu80
-         Qu7iO8UoUfd7ik92JsedODxhuuR8HOjnX6ahdBuZaLn0YKSp7fRI+065M+bbELs31uOw
-         N/Lg==
-X-Gm-Message-State: AOAM531NYgqVhSHrFZc+XDFWVOEHLs2AKuN6daOZKgXuycsseHDrGvI2
-        JNR3uTBf9RKAJ609ngYgerI2K3SmJFijATjCkprbV6o8hME=
-X-Google-Smtp-Source: ABdhPJzUUc7106UgW2kYPXtfRWK/OaEP8nNMIXVV8mRSz5eYcY3D3poH7eQOCNu6zPFZBodGGbnyqt9n67uNCx9OluE=
-X-Received: by 2002:a05:6638:d88:: with SMTP id l8mr650128jaj.234.1644264265409;
- Mon, 07 Feb 2022 12:04:25 -0800 (PST)
+        bh=BDedeMsdV9ZFHfYVa+OoEpxOnzvrU7cWSly4ZXcsTHM=;
+        b=QemQ6fN8ycxHu+pRwvOH3BfqoSfNkY992fqrcWsjE8CAfQZoK5BUXNXnKnetjmbDW2
+         6wtC6WhU7+KTvGYa78E1QsUFUyA5HR0oENY5GiWHcCoQ95sQ/P6bT1qQOwN2CcfQB+fB
+         osbRrizhPJ6coyEnTXWFXD+eveirNK4wb1KWUYZ1nKCOA9o9a3O4S06kg+KQXPv70uXQ
+         OsdRiYzv8bUsUcLn3D6cbx23MW1QnG6rheVFKnz/SHyJh17TNwZIP7GtVluzCROsTdzt
+         opn8peveKkMWeZSbGVfGL1F28HXYYTWcQjSAQiSga1r9SB633XhdPrhL7zj3Uvg+zc3l
+         EYBA==
+X-Gm-Message-State: AOAM5338xJn7hNq7VpSglpPjE+oJY/1q+3bdzD2fJqCzZpaxJWzyNsXf
+        qDrwCezw99wAUb6F2thirKkb7rW+gLQVhDqZVig=
+X-Google-Smtp-Source: ABdhPJwtSpJCUh5GFsHq5r5NZpvCXgnL6nZffnf4ecoydOlT3+9fLJRWFMhY9fX3oSI/DWmcSw6x2oId4SnB2m9mnaE=
+X-Received: by 2002:a05:6e02:1bcd:: with SMTP id x13mr579596ilv.98.1644264518514;
+ Mon, 07 Feb 2022 12:08:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20220204231710.25139-1-alexei.starovoitov@gmail.com> <20220204231710.25139-3-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220204231710.25139-3-alexei.starovoitov@gmail.com>
+References: <20220206145350.2069779-1-iii@linux.ibm.com> <CAEf4Bzb1To5+uLdRiJEJUJo4PckVDEBEtENC14Cuf-mkxrnxgA@mail.gmail.com>
+ <5e4b012be25cbbb44ecb935de745e17ed5c16f28.camel@linux.ibm.com>
+ <CAEf4BzZfn4-dbnRcsStu+EoKD12EoKCShcoAVH9Gj0mqieBAaw@mail.gmail.com> <e01e42fdb43deefacda093ba2e6add680179600f.camel@linux.ibm.com>
+In-Reply-To: <e01e42fdb43deefacda093ba2e6add680179600f.camel@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Feb 2022 12:04:14 -0800
-Message-ID: <CAEf4BzZQs=QU2=Qz55TYiiWbhw0ne=S8iTBAV3U8Ayr7grG4Ag@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/5] libbpf: Prepare light skeleton for the kernel.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+Date:   Mon, 7 Feb 2022 12:08:27 -0800
+Message-ID: <CAEf4BzaRMrM5KzJzm+Q8rDXEZTcehHNWct=afBkRDfL7N3CrnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Fix bpf_perf_event_data ABI breakage
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,160 +72,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 4, 2022 at 3:17 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, Feb 7, 2022 at 3:52 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> On Sun, 2022-02-06 at 22:23 -0800, Andrii Nakryiko wrote:
+> > On Sun, Feb 6, 2022 at 11:57 AM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
+> > >
+> > > On Sun, 2022-02-06 at 11:31 -0800, Andrii Nakryiko wrote:
+> > > > On Sun, Feb 6, 2022 at 6:54 AM Ilya Leoshkevich
+> > > > <iii@linux.ibm.com>
+> > > > wrote:
+> > > > >
+> > > > > libbpf CI noticed that my recent changes broke
+> > > > > bpf_perf_event_data
+> > > > > ABI
+> > > > > on s390 [1]. Testing shows that they introduced a similar
+> > > > > breakage
+> > > > > on
+> > > > > arm64. The problem is that we are not allowed to extend
+> > > > > user_pt_regs,
+> > > > > since it's used by bpf_perf_event_data.
+> > > > >
+> > > > > This series fixes these problems by removing the new members
+> > > > > and
+> > > > > introducing user_pt_regs_v2 instead.
+> > > > >
+> > > > > [1] https://github.com/libbpf/libbpf/runs/5079938810
+> > > > >
+> > > > > Ilya Leoshkevich (2):
+> > > > >   s390/bpf: Introduce user_pt_regs_v2
+> > > > >   arm64/bpf: Introduce struct user_pt_regs_v2
+> > > >
+> > > > Given it is bpf_perf_event_data and thus bpf_user_pt_regs_t
+> > > > definitions that are set in stone now, wouldn't it be better to
+> > > > instead just change
+> > > >
+> > > > typedef user_pt_regs bpf_user_pt_regs_t; (s390x)
+> > > > typedef struct user_pt_regs bpf_user_pt_regs_t; (arm64)
+> > > >
+> > > > to just define that fixed layout instead of reusing
+> > > > user_ptr_regs?
+> > > >
+> > > > This whole v2 business looks really ugly.
+> > >
+> > > Wouldn't it break compilation of code like this?
+> > >
+> > >     bpf_perf_event_data data;
+> > >     user_pt_regs *regs = &data.regs;
+> >
+> > why would it break? user_pt_regs gained extra fields at the end, so
+> > whoever works with the assumption of an old definition of
+> > user_pt_regs
+> > *through pointer* should be totally fine. The problem with
+> > bpf_perf_event_data is that user_pt_regs are embedded in the struct
+> > directly, so adding anything to it changes bpf_perf_event_data
+> > layout.
 >
-> Prepare light skeleton to be used in the kernel module and in the user space.
-> The look and feel of lskel.h is mostly the same with the difference that for
-> user space the skel->rodata is the same pointer before and after skel_load
-> operation, while in the kernel the skel->rodata after skel_open and the
-> skel->rodata after skel_load are different pointers.
-> Typical usage of skeleton remains the same for kernel and user space:
-> skel = my_bpf__open();
-> skel->rodata->my_global_var = init_val;
-> err = my_bpf__load(skel);
-> err = my_bpf__attach(skel);
-> // access skel->rodata->my_global_var;
-> // access skel->bss->another_var;
+> I meant only building from source, at runtime it should be fine. At
+> compile time, the compiler should at least warn that pointer types
+> don't match.
+
+Oh, you meant that cast would be necessary. Well, strictly speaking
+code like in your example is broken, it should use the type specified
+in struct bpf_perf_event_data: bpf_user_pt_regs_t. But the fix to
+satisfy compilation is trivial as well, so doesn't matter much.
+
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  tools/lib/bpf/skel_internal.h | 168 +++++++++++++++++++++++++++++++---
->  1 file changed, 153 insertions(+), 15 deletions(-)
+> > I, of course, can't know if this breaks any other use case (including
+> > ones you mentioned below), but using user_pt_regs_v2 will probably
+> > not
+> > work with CO-RE, because older kernels won't have such type defined
+> > (and thus relocations will fail).
+> >
+> > I'm not sure the origins of the need for user_pt_regs (as opposed to
+> > using pt_regs directly, like x86-64 does), but with CO-RE and
+> > vmlinux.h it would be more reliable and straightforward to just stick
+> > to kernel-internal struct pt_regs everywhere. And for non-CO-RE
+> > macros
+> > maybe just using an offset within struct pt_regs (i.e.,
+> > offsetofend(gprs)) would do it?
 >
-> diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
-> index dcd3336512d4..4d99ef8cbbba 100644
-> --- a/tools/lib/bpf/skel_internal.h
-> +++ b/tools/lib/bpf/skel_internal.h
-> @@ -3,9 +3,19 @@
->  #ifndef __SKEL_INTERNAL_H
->  #define __SKEL_INTERNAL_H
+> offsetofend sounds like a nice compromise. I'll give it a try, thanks.
+
+It's kind of dangerous as well, let's maybe leave a comment in pt_regs
+that this orig_gpr2 location is assumed by libbpf's tracing macros so
+shouldn't be willy-nilly moved
+
 >
-> +#ifdef __KERNEL__
-> +#include <linux/fdtable.h>
-> +#include <linux/mm.h>
-> +#include <linux/mman.h>
-> +#include <linux/slab.h>
-> +#include <linux/bpf.h>
-> +#else
->  #include <unistd.h>
->  #include <sys/syscall.h>
->  #include <sys/mman.h>
-> +#include <stdlib.h>
-> +#include "bpf.h"
-> +#endif
+> > >
+> > > Additionaly, after this I'm no longer sure I haven't missed any
+> > > other
+> > > places where user_pt_regs might be used. For example, arm64 seems
+> > > to be
+> > > using it not only for BPF, but also for ptrace?
+> > >
+> > > static int gpr_get(struct task_struct *target,
+> > >                    const struct user_regset *regset,
+> > >                    struct membuf to)
+> > > {
+> > >         struct user_pt_regs *uregs = &task_pt_regs(target)-
+> > > >user_regs;
+> > >         return membuf_write(&to, uregs, sizeof(*uregs));
+> > > }
+> > >
+> > > and then in e.g. gdb:
+> > >
+> > > static void
+> > > aarch64_fill_gregset (struct regcache *regcache, void *buf)
+> > > {
+> > >   struct user_pt_regs *regset = (struct user_pt_regs *) buf;
+> > >   ...
+> > >
+> > > I'm also not a big fan of the _v2 solution, but it looked the
+> > > safest
+> > > to me. At least for s390, a viable alternative that Vasily proposed
+> > > would be to go ahead with replacing args[1] with orig_gpr2 and then
+> > > also backporting the patch, so that the new libbpf would still work
+> > > on
+> > > the old stable kernels. But this won't work for arm64.
 >
->  #ifndef __NR_bpf
->  # if defined(__mips__) && defined(_ABIO32)
-> @@ -25,16 +35,12 @@
->   * requested during loader program generation.
->   */
->  struct bpf_map_desc {
-> -       union {
-> -               /* input for the loader prog */
-> -               struct {
-> -                       __aligned_u64 initial_value;
-> -                       __u32 max_entries;
-> -               };
-> +       struct {
-
-Is this anonymous struct still needed?
-
->                 /* output of the loader prog */
-> -               struct {
-> -                       int map_fd;
-> -               };
-> +               int map_fd;
-> +               /* input for the loader prog */
-> +               __u32 max_entries;
-> +               __aligned_u64 initial_value;
->         };
->  };
->  struct bpf_prog_desc {
-> @@ -57,11 +63,135 @@ struct bpf_load_and_run_opts {
->         const char *errstr;
->  };
->
-> +long bpf_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
-> +
->  static inline int skel_sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
->                           unsigned int size)
->  {
-> +#ifdef __KERNEL__
-> +       return bpf_sys_bpf(cmd, attr, size);
-> +#else
->         return syscall(__NR_bpf, cmd, attr, size);
-> +#endif
-> +}
-> +
-> +#ifdef __KERNEL__
-> +static inline int close(int fd)
-> +{
-> +       return close_fd(fd);
-> +}
-> +static inline void *skel_alloc(size_t size)
-> +{
-> +       return kcalloc(1, size, GFP_KERNEL);
-> +}
-> +static inline void skel_free(const void *p)
-> +{
-> +       kfree(p);
-> +}
-
-any reason to skim on empty lines between functions? The rest of this
-file (and libbpf code in general) feels very different in terms of
-spacing.
-
-> +static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
-> +{
-> +       if (addr && addr != ~0ULL)
-> +               vm_munmap(addr, sz);
-> +       if (addr != ~0ULL)
-> +               kvfree(p);
-
-minor nit: a small comment explaining that we set addr to ~0ULL on
-error (but we still call skel_free_map_data) would help a bit here
-
-> +}
-> +/* skel->bss/rodata maps are populated in three steps.
-> + *
-> + * For kernel use:
-> + * skel_prep_map_data() allocates kernel memory that kernel module can directly access.
-> + * skel_prep_init_value() allocates a region in user space process and copies
-> + * potentially modified initial map value into it.
-> + * The loader program will perform copy_from_user() from maps.rodata.initial_value.
-
-I'm missing something here. If a light skeleton is used from a kernel
-module, then this initialization data is also pointing to kernel
-module memory, no? So why the copy_from_user() then?
-
-Also this vm_mmap() and vm_munmap(), is it necessary for in-kernel
-skeleton itself, or it's required so that if some user-space process
-would fetch that BPF map by ID and tried to mmap() its content it
-would be possible? Otherwise it's not clear, as kernel module can
-access BPF array's value pointer directly anyways, so why the mmaping?
-
-
-> + * skel_finalize_map_data() sets skel->rodata to point to actual value in a bpf map.
-> + *
-> + * For user space:
-> + * skel_prep_map_data() mmaps anon memory into skel->rodata that can be accessed directly.
-> + * skel_prep_init_value() copies rodata pointer into map.rodata.initial_value.
-> + * The loader program will perform copy_from_user() from maps.rodata.initial_value.
-> + * skel_finalize_map_data() remaps bpf array map value from the kernel memory into
-> + * skel->rodata address.
-> + */
-> +static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
-> +{
-> +       void *addr;
-> +
-> +       addr = kvmalloc(val_sz, GFP_KERNEL);
-> +       if (!addr)
-> +               return NULL;
-> +       memcpy(addr, val, val_sz);
-> +       return addr;
-> +}
-
-[...]+
