@@ -2,192 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5044AD826
-	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 13:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102394AD8E7
+	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 14:16:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347570AbiBHMHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 07:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49808 "EHLO
+        id S1349772AbiBHNQG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 08:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347758AbiBHMHB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 07:07:01 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1D1C03FED0
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 04:06:58 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id s21so23365830ejx.12
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 04:06:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bysXayoj/ZOqXC0/8UAT3GEQ7MEmhAEIOcxkwiZ3yAY=;
-        b=VQMyTU4CXnn06uzQHW3sjNfiXj1subUzOFgdW3kbOYxPbFUPR9AUYedox4V4h5j/jS
-         3FmyJ+OOEaQ5VY3JlpYojxUBYuAJ14tPfw/k9FTfIPkwPhUudUdsZqs8U8cRuvw12K3/
-         p9Kv/eL1NLkgHE7x5h5nPetQuIU2o4hHyBFd7mNBIvaeLGz5RUE4k4myHh8eAf+j89OA
-         E1B6ukeH3zf8ugb6fv9xUTxGKzP/+2YQKqGPqzdGGPng+njUKQPwKWaNE1Pj5UezghLs
-         jF0BHvJF02bn00KPZMEKQqAe8TvEhIr3jnH8DEUkNL7Hn/bmE2oaFrER5wOCNP7bTA+C
-         Av7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bysXayoj/ZOqXC0/8UAT3GEQ7MEmhAEIOcxkwiZ3yAY=;
-        b=5P25FeyiJRfVKV3khU8SmO2TwEJZyt6nZTwfX/6r4e6i/azAd2jxF9eXLy55aBEcwE
-         wdXIeEIoud2mLO1vnqra37onOQRbJoAQL+BEOHuE/IQIBHOyaTA7MCVmmZD2b/WdAVl0
-         d5gWyGqS8ZnBz4RkUui2mL9hHL9KDBC5v63ppaCkW+e+6E9OICh85+WLANLA8aAqnkhh
-         5dVLjV0cQJgUxkPG9IyS1HusxrRgJnvMT/NqAEUa/Rcl6+YB7/E0w2JYoQ0wghNOso08
-         mb2+mbdNtePTOpR2liuEDPnL5RQHnKDHfjc8qpvD4fvcB16XFPziwsoYwGt2f20x4K6v
-         pXRA==
-X-Gm-Message-State: AOAM532Bv+EuFVQKKE1gukCO1hgbVo/sh5DFK1HydXufkg7gk5il8zyI
-        r8UTuu8R5NXWjT3m26LnBW6R9w==
-X-Google-Smtp-Source: ABdhPJy1VMXQiImoWz6SJVctnTicPlW8qYp1+ulx7E1TdRYZI0rTwKDFz0yENg3CU95v+/g4MAvdRQ==
-X-Received: by 2002:a17:907:7f0e:: with SMTP id qf14mr3479255ejc.152.1644322016601;
-        Tue, 08 Feb 2022 04:06:56 -0800 (PST)
-Received: from localhost.localdomain ([149.86.77.242])
-        by smtp.gmail.com with ESMTPSA id m17sm5567351edr.62.2022.02.08.04.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 04:06:56 -0800 (PST)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1348514AbiBHMeC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 07:34:02 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6070C03FEC0;
+        Tue,  8 Feb 2022 04:34:00 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JtMlZ1JzFz1FCjK;
+        Tue,  8 Feb 2022 20:29:46 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Tue, 8 Feb
+ 2022 20:33:57 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v2 3/3] bpftool: Update versioning scheme, align on libbpf's version number
-Date:   Tue,  8 Feb 2022 12:06:48 +0000
-Message-Id: <20220208120648.49169-4-quentin@isovalent.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220208120648.49169-1-quentin@isovalent.com>
-References: <20220208120648.49169-1-quentin@isovalent.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <houtao1@huawei.com>
+Subject: [PATCH bpf-next v2] bpf: reject kfunc calls that overflow insn->imm
+Date:   Tue, 8 Feb 2022 20:33:48 +0800
+Message-ID: <20220208123348.40360-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the notion of versions was introduced for bpftool, it has been
-following the version number of the kernel (using the version number
-corresponding to the tree in which bpftool's sources are located). The
-rationale was that bpftool's features are loosely tied to BPF features
-in the kernel, and that we could defer versioning to the kernel
-repository itself.
+Now kfunc call uses s32 to represent the offset between the address
+of kfunc and __bpf_call_base, but it doesn't check whether or not
+s32 will be overflowed, so add an extra checking to reject these
+invalid kfunc calls.
 
-But this versioning scheme is confusing today, because a bpftool binary
-should be able to work with both older and newer kernels, even if some
-of its recent features won't be available on older systems. Furthermore,
-if bpftool is ported to other systems in the future, keeping a
-Linux-based version number is not a good option.
-
-Looking at other options, we could either have a totally independent
-scheme for bpftool, or we could align it on libbpf's version number
-(with an offset on the major version number, to avoid going backwards).
-The latter comes with a few drawbacks:
-
-- We may want bpftool releases in-between two libbpf versions. We can
-  always append pre-release numbers to distinguish versions, although
-  those won't look as "official" as something with a proper release
-  number. But at the same time, having bpftool with version numbers that
-  look "official" hasn't really been an issue so far.
-
-- If no new feature lands in bpftool for some time, we may move from
-  e.g. 6.7.0 to 6.8.0 when libbpf levels up and have two different
-  versions which are in fact the same.
-
-- Following libbpf's versioning scheme sounds better than kernel's, but
-  ultimately it doesn't make too much sense either, because even though
-  bpftool uses the lib a lot, its behaviour is not that much conditioned
-  by the internal evolution of the library (or by new APIs that it may
-  not use).
-
-Having an independent versioning scheme solves the above, but at the
-cost of heavier maintenance. Developers will likely forget to increase
-the numbers when adding features or bug fixes, and we would take the
-risk of having to send occasional "catch-up" patches just to update the
-version number.
-
-Based on these considerations, this patch aligns bpftool's version
-number on libbpf's. This is not a perfect solution, but 1) it's
-certainly an improvement over the current scheme, 2) the issues raised
-above are all minor at the moment, and 3) we can still move to an
-independent scheme in the future if we realise we need it.
-
-Given that libbpf is currently at version 0.7.0, and bpftool, before
-this patch, was at 5.16, we use an offset of 6 for the major version,
-bumping bpftool to 6.7.0.
-
-It remains possible to manually override the version number by setting
-BPFTOOL_VERSION when calling make.
-
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
-Contrarily to the previous discussion and to what the first patch of the
-set does, I chose not to use the libbpf_version_string() API from libbpf
-to compute the version for bpftool. There were three reasons for that:
+v2:
+ * instead of checking the overflow in selftests, just reject
+   these kfunc calls directly in verifier
 
-- I don't feel comfortable having bpftool's version number computed at
-  runtime. Somehow it really feels like we should now it when we compile
-  it. We link statically against libbpf today, but if we were to support
-  dynamic linking in the future we may forget to update and would have
-  bpftool's version changing based on the libbpf version installed
-  beside it, which does not make sense.
-
-- We cannot get the patch version for libbpf, the current API only
-  returns the major and minor version numbers (we could fix it, although
-  I'm not sure if desirable to expose the patch number).
-
-- I found it less elegant to compute the version strings in the code,
-  which meant malloc() and error handling just for printing a version
-  number, and having a separate case for when $(BPFTOOL_VERSION) is
-  defined, whereas passing a macro from the Makefile makes things
-  straightforwards.
+v1: https://lore.kernel.org/bpf/20220206043107.18549-1-houtao1@huawei.com
 ---
- tools/bpf/bpftool/Makefile | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 83369f55df61..8dd30abff3d9 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -7,14 +7,21 @@ srctree := $(patsubst %/,%,$(dir $(srctree)))
- srctree := $(patsubst %/,%,$(dir $(srctree)))
- endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a39eedecc93a..fd836e64b701 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1832,6 +1832,13 @@ static struct btf *find_kfunc_desc_btf(struct bpf_verifier_env *env,
+ 	return btf_vmlinux ?: ERR_PTR(-ENOENT);
+ }
  
-+BPF_DIR = $(srctree)/tools/lib/bpf
++static inline bool is_kfunc_call_imm_overflowed(unsigned long addr)
++{
++	unsigned long offset = BPF_CALL_IMM(addr);
 +
-+# bpftool's version is libbpf's with a fixed offset for the major version.
-+# This is because bpftool's version was higher than libbpf's when we adopted
-+# this scheme.
-+BPFTOOL_MAJOR_OFFSET := 6
-+LIBBPF_VERSION := $(shell make -r --no-print-directory -sC $(BPF_DIR) libbpfversion)
-+BPFTOOL_VERSION ?= $(shell lv="$(LIBBPF_VERSION)"; echo "$$((${lv%%.*} + $(BPFTOOL_MAJOR_OFFSET))).$${lv#*.}")
++	return (unsigned long)(s32)offset != offset;
++}
 +
- ifeq ($(V),1)
-   Q =
- else
-   Q = @
- endif
+ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ {
+ 	const struct btf_type *func, *func_proto;
+@@ -1925,6 +1932,12 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
+ 		return -EINVAL;
+ 	}
  
--BPF_DIR = $(srctree)/tools/lib/bpf
--
- ifneq ($(OUTPUT),)
-   _OUTPUT := $(OUTPUT)
- else
-@@ -39,10 +46,6 @@ LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
- LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
- LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
- 
--ifeq ($(BPFTOOL_VERSION),)
--BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
--endif
--
- $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
- 	$(QUIET_MKDIR)mkdir -p $@
- 
++	if (is_kfunc_call_imm_overflowed(addr)) {
++		verbose(env, "address of kernel function %s is out of range\n",
++			func_name);
++		return -EINVAL;
++	}
++
+ 	desc = &tab->descs[tab->nr_descs++];
+ 	desc->func_id = func_id;
+ 	desc->imm = BPF_CALL_IMM(addr);
 -- 
-2.32.0
+2.29.2
 
