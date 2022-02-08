@@ -2,144 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 260694ADC6E
-	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 16:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9A74ADDC5
+	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 16:58:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379966AbiBHPW5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 10:22:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38850 "EHLO
+        id S232350AbiBHP6G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 10:58:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbiBHPWz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 10:22:55 -0500
-Received: from mx1.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFB4C061576;
-        Tue,  8 Feb 2022 07:22:54 -0800 (PST)
-Received: from localhost.localdomain (ip5f5aebc2.dynamic.kabel-deutschland.de [95.90.235.194])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 51C0D61E6478B;
-        Tue,  8 Feb 2022 16:22:52 +0100 (CET)
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1381766AbiBHP6F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 10:58:05 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE64C061576;
+        Tue,  8 Feb 2022 07:58:04 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 218E75Sm013818;
+        Tue, 8 Feb 2022 07:57:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=Tyx4oW8fOvIHCIhS0bQuy6hnH3L+XQZltU/DVfuGU5g=;
+ b=eBiaGf/zZfa4CMKjMOqwa/cXpzT2r7RPtRh5i/SlP4KCn2/VQBMLcAWZruLyRswecdaJ
+ Byhnz7onAwqJN3W0km4EZGCKjgYXD/Jfm3d6svYxhDzTxf48eF5S3h24/Mezk9wKI3Pa
+ 5lAF9VDQNNQRZxqDeNCzPFhY29cZzvkRZp4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e3puw1ux3-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Feb 2022 07:57:38 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 8 Feb 2022 07:57:36 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dOlDqkmjEre2kTgWaXt/G5tzUzI2HZL8ucAonJZuUGBeFnUiHFwXD0YM5+b1sd93tjk7sx0fA+FfLl98GPaQmtPBdYNIbArqV8rPzkNGZZWsYmUI42kynEox4FjoTBC324Ksg2rGPOHKapSkzi60KTgCZsVea8z3gRFJJ9hsjl8XD+pYu0Vj3CDa670q3MpdHLRj0f2YoNOZu5zGN1/b7dVdZplWBPNvGAO29f74zrWRjAxFIb9GXe+GtgRo0MY+nXOQRmjKbD2Hmmzz40S3RwzhdrtJSNDI8HDEdVy5ODUnngL9M3nbklSx0kRTQzKbViZL8mCPOw+oZstVoGrZqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Tyx4oW8fOvIHCIhS0bQuy6hnH3L+XQZltU/DVfuGU5g=;
+ b=caoY43hee8BZJqVEFRSuR6bFDOEYE+TlYryQ3KlRGYBJ88A+ZjwKjvRcXk3bskjaWRLfgu88Uo3bb3Iv1W721oDcCRBLB3kYNOFbXcgZWxe/Wu37Qq1a2xdL5mPwWgXhExMNKJ0G7y9HAgNnXYwZeFISkm4ZPLvZZdfYBrMJCs6F37ypsaKwsigVPDphYGcyCl3mxdp36wldlLz2wsHzlm/ig83qbOxUJcXYOoczqkMIHfg2VTu22Ib5UZ0hSweW1uERpg2BM2QOhVVHz2M81RbRFgfjOZjGTjTukeAFMynxgYBJ2534wf4HmzBqlFWBJ9VuhCCN3/DFfJI4i+yJ9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by SA0PR15MB3869.namprd15.prod.outlook.com (2603:10b6:806:8c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Tue, 8 Feb
+ 2022 15:57:35 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::c5d8:3f44:f36d:1d4b]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::c5d8:3f44:f36d:1d4b%6]) with mapi id 15.20.4951.018; Tue, 8 Feb 2022
+ 15:57:35 +0000
+Message-ID: <5f455130-f73e-bf2a-ed54-e81b75585a21@fb.com>
+Date:   Tue, 8 Feb 2022 07:57:32 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH bpf-next v5] selftests/bpf: do not export subtest as
+ standalone test
+Content-Language: en-US
+To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org,
-        Matt Brown <matthew.brown.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v2 1/2] lib/raid6/test/Makefile: Use `$(pound)` instead of `\#` for Make 4.3
-Date:   Tue,  8 Feb 2022 16:21:48 +0100
-Message-Id: <20220208152148.48534-1-pmenzel@molgen.mpg.de>
-X-Mailer: git-send-email 2.34.1
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20220208065444.648778-1-houtao1@huawei.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220208065444.648778-1-houtao1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR10CA0013.namprd10.prod.outlook.com (2603:10b6:301::23)
+ To DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7538f566-5a07-4ffd-bc86-08d9eb1bb916
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3869:EE_
+X-Microsoft-Antispam-PRVS: <SA0PR15MB3869A3054EC544CBE09AAA34D32D9@SA0PR15MB3869.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pXMSy4mjAdx9+0nz897DBFp6DkcRsj5shYeOapxeDHtoHrk5P0xmqkZxKKYRtv9g4odZ/S5+FG3TOIywtHfclVJb0bVzoGumu5KfTpOC1AgD+qrJKEFyiZgRd9JJU8oPmpPrnlFf/pAB4YqXgaBFR/S6tvGFG4Oz+aOUIbbDM9gXmrCOx5zqROQJiG/lQUNt/kkCq4CfVp46xNGtsxDAjZbOv/XIh8qV5Ui0NztBcZXEdu/LpXX8F6Fvnjte2lZ/4J8F8FBo79xjQdvZLqieFNEwij2JkJIaQJqrs89aotOx9BjWgU/jnux5P37bKkMax+WCY+gQmVDDJ+ZRxvkzYQvRMovwSLF9vvFuEwuf3cQA/FwiIJE7lSoSSPVXV9hgBV/AMB6fKANtjvdl5gjeGSr+6gG0v221dGXC2f0gJ2jUSEcBNnhLMVJfmTpegwVx6NTmO/+sfwVi+JYUQ0SydMmamHXIiiskxBemDRISt+ksBV45iVfOUGeXsCTHkZ55a497YnlFidAxp73hHxpupb7dmKxnYQABFJtNTZCSnlrR6kkHZulJr4sEztDJthRmic9rA6A8wctlwkPBMpvogKFdAhVW+XiMwI9+erBgo/9kOSwZ1tF++vYzDceXFF3YVHWec5Ztq9eOXPL9Ar3Q8VZP32fi9ItaPV52BS9NppwEzeEWjGFPxdQEKJI77OZgKTo/cNhlcnykLyfR7FlTjuOa4Lc5ksBlkybzWJqIx4k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(31686004)(4744005)(4326008)(8676002)(66946007)(8936002)(31696002)(2616005)(186003)(66476007)(66556008)(53546011)(52116002)(38100700002)(36756003)(2906002)(5660300002)(508600001)(6486002)(110136005)(54906003)(316002)(6666004)(6512007)(6506007)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cDBOVzFhb1ZWeVBmcGlpVGxmK1pnN01qclFSMEhGemFPRTNQM25rTlBFSFA1?=
+ =?utf-8?B?QTZMQzF6azV6MkFVTlR4dWxUMng4MXhvWC9wbEs4d0w1VmtFWXg5d3QvMDU1?=
+ =?utf-8?B?V2c5dTJNZzBaNjI3YmkreWFSbjhLNys4R3AxS1Z1QmFHVjZ1WktOa2J6Rlkr?=
+ =?utf-8?B?aGg1NG0zWHlyelJqK2NmOTFUcGlQRnd2b2YvTVZRazNxK29QU2pNK1M2QnZZ?=
+ =?utf-8?B?RGdvRzJtaUlQTTAydTFsZVFTS1dtcEk5dURqY2VEdlFMd3dDV0dDbUZqNlJC?=
+ =?utf-8?B?TTZaSkozeCtLTG4rd0JHQW5RemRSRjVxN2lPT091T2JBaTF5QzVRWmNaRlFT?=
+ =?utf-8?B?S2NWQjFPRklFUm42d1dNb1lONlZUbHUzRzRnUkZESDNoMGdKSUpxR1RBa2F6?=
+ =?utf-8?B?WXlYZmc5dHphd3E1YmIyYTk3eUtVVFBpdEVGT1F3KzlVeVRBNktHRmFFZzhW?=
+ =?utf-8?B?V2Q5eFo3ZkxTQTMyMDhRWS9mam5OelZKNENIaUVud0hoS0hTUThjczNLNUZO?=
+ =?utf-8?B?S3pPM1Y1RUFZc0lRend5VzV6SW5UL1RaZlZkU2FrcVlvektpTVdaa3ZoODJ1?=
+ =?utf-8?B?bVY0bmh4b3BUZzk1c3VCRkF1YWRUa29WcDFmMGNYYXdESUJEdUxWUDl6VUhN?=
+ =?utf-8?B?enRmcUNYVjM5WGRpTVVZSHJreGl6UmMwN0NYaGVKa0gyVlIxb2ZQWktkaTVu?=
+ =?utf-8?B?UVZCdFRBWjFjdHNSV0ovcU1ScjVwZHp4SXNnN3N4V3IyVUxSWlFuUTQxNHFk?=
+ =?utf-8?B?UlhrdEorUVYvR2FRZUU3MVpyKzVEeXBJUG5remp4bEZzeEdiM0pYRXRCb0w5?=
+ =?utf-8?B?THI5d0QyK0h2T2c2WC9QdW5qYzVkN3pYZmcwZTY1eUl5R25RTmllVThUUjhQ?=
+ =?utf-8?B?OHpOblFINEtxYUhTQUhEMWpJRHljVlcxbzN1bFI2aFVNdmNFaXFXdGJLd045?=
+ =?utf-8?B?VVBKV2J5UlJZZFBhVkN4cHZ1bFhTYzcrNytCL3ZPVXNRMXQybHRXcVVNR3N6?=
+ =?utf-8?B?ZFpLTW5JZHJHZHVMYUtkeWYxZ0ZrT0ZTUEwrZC9qU0lleThxaE9CYWV2dEh6?=
+ =?utf-8?B?OVRPVTl4ZFJnbzBRTitpUWtEZWUwZ0dNUXhwUThwU3NpOWxMckRmbytvQ3FW?=
+ =?utf-8?B?b0hCWDYzeDN4NWRFaTJhK2RGZmFCK1VaUGw4eVJpWi91MG8vWGg3dDVYYThq?=
+ =?utf-8?B?RVRiSFkyaEtpUVhoRWQ0aEVVdXZDWmJreDY1UEF4UFBqSVgzcnRPZVJBS2Nh?=
+ =?utf-8?B?MmE3ckV0aGY1eTdCelQ2akNiUGc3V28wZUZWb2dDSGZ5U2hiZ2xFR3d4Syt6?=
+ =?utf-8?B?ZW94N2diWkVPNm1BbEFDTGpaRnM3dk1qb2N5OG5vTUQrR1BXSUhvSGFHSk5Q?=
+ =?utf-8?B?bnBiUTMrSEV2V0QwTC9vcXB5L2g5N0pGbUZxdUdWYW01NHJ2eXdwSC9sc0hG?=
+ =?utf-8?B?SmpMaHNiNEl6ZzdGdWVaeWFXTXpnRUw4QW12NXdvQzZyTy9taVVHOUlVWVA1?=
+ =?utf-8?B?ZExpOW5DM0NCbnF0WStvYUpWWEtOVGVLTm8wWmRKK2lHRi83U0hRK2k2Zmlw?=
+ =?utf-8?B?b3E2alVHd0ptVFJ5bFJMREp4cm04WGxPTnJtOGdnM3lmTlhTNEh4NXZHWHBT?=
+ =?utf-8?B?cVhuWTkyNGlYa1FyaEpTWFZ1Q01xc2xRcFp4QUNQK1N4UGhiSFBWeFBYMGNw?=
+ =?utf-8?B?SzV0YS9xUEFib1FBMGhES09tSFJKc094WkQ0cEplSjF5MEcvdGFzbGFya1gw?=
+ =?utf-8?B?d2tmYlBRc3QzQ1cvLzdYZk5ORFVFS21VR1NOTmF0dlNWeFk2WDdMWnMvWis2?=
+ =?utf-8?B?Z2t3d1NoTFIycGU4anEweDFLMHZlZkdveU9GRzQwMVhCWGlpVGI1RUhvbDlJ?=
+ =?utf-8?B?c3hYQWJXY1M4bm5tRXIwMjBwc09jSVVFelk5cW1TVXJpSkJOeFo5Y2hQaUlr?=
+ =?utf-8?B?YkgxcXlwekd0ZnBleURGLyt2KzhzVmRzNmxvWXRYaW9FeGpicXY0eTJ3eFBz?=
+ =?utf-8?B?cUQxREp2VTVIR3dseTR6UHJsLzZpWVp0UEVKOHZxNjluOFh4dkpvVGJxRTJX?=
+ =?utf-8?B?eDNUMWt0VUtGL201WlFkNXM5T2xidTdsbm5VaWZNWWlkcmhSd3ZidFVwZ2g4?=
+ =?utf-8?Q?lB2/h8L6OAf6Wgv8YNJaQaJN+?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7538f566-5a07-4ffd-bc86-08d9eb1bb916
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2022 15:57:35.4211
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: V8hvagikJ6wCPzjGJVeSxo5dPkaX0g3+ZXUBfCgTcdhzuhhbFn+Bdnse9YSXmQbC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3869
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: CAkLqhfuflb8hQFmJi29pgcpj2NLcngY
+X-Proofpoint-ORIG-GUID: CAkLqhfuflb8hQFmJi29pgcpj2NLcngY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-08_05,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202080098
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Buidling `raid6test` on Ubuntu 21.10 (ppc64le) with GNU Make 4.3 shows the
-errors below:
 
-    $ cd lib/raid6/test/
-    $ make
-    <stdin>:1:1: error: stray ‘\’ in program
-    <stdin>:1:2: error: stray ‘#’ in program
-    <stdin>:1:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘<’ token
-    cp -f ../int.uc int.uc
-    awk -f ../unroll.awk -vN=1 < int.uc > int1.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int1.o int1.c
-    awk -f ../unroll.awk -vN=2 < int.uc > int2.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int2.o int2.c
-    awk -f ../unroll.awk -vN=4 < int.uc > int4.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int4.o int4.c
-    awk -f ../unroll.awk -vN=8 < int.uc > int8.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int8.o int8.c
-    awk -f ../unroll.awk -vN=16 < int.uc > int16.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int16.o int16.c
-    awk -f ../unroll.awk -vN=32 < int.uc > int32.c
-    gcc -I.. -I ../../../include -g -O2                      -c -o int32.o int32.c
-    rm -f raid6.a
-    ar cq raid6.a int1.o int2.o int4.o int8.o int16.o int32.o recov.o algos.o tables.o
-    ranlib raid6.a
-    gcc -I.. -I ../../../include -g -O2                      -o raid6test test.c raid6.a
-    /usr/bin/ld: raid6.a(algos.o):/dev/shm/linux/lib/raid6/test/algos.c:28: multiple definition of `raid6_call'; /scratch/local/ccIJjN8s.o:/dev/shm/linux/lib/raid6/test/test.c:22: first defined here
-    collect2: error: ld returned 1 exit status
-    make: *** [Makefile:72: raid6test] Error 1
 
-The errors come from the `HAS_ALTIVEC` test, which fails, and the POWER
-optimized versions are not built. That’s also reason nobody noticed on the
-other architectures.
+On 2/7/22 10:54 PM, Hou Tao wrote:
+> Two subtests in ksyms_module.c are not qualified as static, so these
+> subtests are exported as standalone tests in tests.h and lead to
+> confusion for the output of "./test_progs -t ksyms_module".
+> 
+> By using the following command:
+> 
+>    grep "^void \(serial_\)\?test_[a-zA-Z0-9_]\+(\(void\)\?)" \
+>        tools/testing/selftests/bpf/prog_tests/*.c | \
+> 	awk -F : '{print $1}' | sort | uniq -c | awk '$1 != 1'
+> 
+> find out that other tests also have the similar problem, so fix
+> these tests by marking subtests in these tests as static.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
-GNU Make 4.3 does not remove the backslash anymore. From the 4.3 release
-announcment:
-
-> * WARNING: Backward-incompatibility!
->   Number signs (#) appearing inside a macro reference or function invocation
->   no longer introduce comments and should not be escaped with backslashes:
->   thus a call such as:
->     foo := $(shell echo '#')
->   is legal.  Previously the number sign needed to be escaped, for example:
->     foo := $(shell echo '\#')
->   Now this latter will resolve to "\#".  If you want to write makefiles
->   portable to both versions, assign the number sign to a variable:
->     H := \#
->     foo := $(shell echo '$H')
->   This was claimed to be fixed in 3.81, but wasn't, for some reason.
->   To detect this change search for 'nocomment' in the .FEATURES variable.
-
-So, do the same as commit 9564a8cf422d ("Kbuild: fix # escaping in .cmd
-files for future Make") and commit 929bef467771 ("bpf: Use $(pound) instead
-of \# in Makefiles") and define and use a `$(pound)` variable.
-
-Reference for the change in make:
-https://git.savannah.gnu.org/cgit/make.git/commit/?id=c6966b323811c37acedff05b57
-
-Cc: Matt Brown <matthew.brown.dev@gmail.com>
-Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
----
-v2: Fix checkpatch.pl errors by adding missing quotes around git commit
-message summary/title.
-
- lib/raid6/test/Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index a4c7cd74cff5..4fb7700a741b 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -4,6 +4,8 @@
- # from userspace.
- #
- 
-+pound := \#
-+
- CC	 = gcc
- OPTFLAGS = -O2			# Adjust as desired
- CFLAGS	 = -I.. -I ../../../include -g $(OPTFLAGS)
-@@ -42,7 +44,7 @@ else ifeq ($(HAS_NEON),yes)
-         OBJS   += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
-         CFLAGS += -DCONFIG_KERNEL_MODE_NEON=1
- else
--        HAS_ALTIVEC := $(shell printf '\#include <altivec.h>\nvector int a;\n' |\
-+        HAS_ALTIVEC := $(shell printf '$(pound)include <altivec.h>\nvector int a;\n' |\
-                          gcc -c -x c - >/dev/null && rm ./-.o && echo yes)
-         ifeq ($(HAS_ALTIVEC),yes)
-                 CFLAGS += -I../../../arch/powerpc/include
--- 
-2.34.1
-
+Acked-by: Yonghong Song <yhs@fb.com>
