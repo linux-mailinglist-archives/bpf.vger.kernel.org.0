@@ -2,272 +2,439 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3454AE05F
-	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 19:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A4E4AE0CA
+	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 19:29:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237074AbiBHSJZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 13:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S242067AbiBHS3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 13:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384579AbiBHSJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 13:09:24 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C22C0613C9;
-        Tue,  8 Feb 2022 10:09:23 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 218GVOub011035;
-        Tue, 8 Feb 2022 18:08:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=EwZpFB06xB5F1n2xgR3CWwIoLEp9Z963hlBDe/MasK0=;
- b=D2y3zX12YVl9qCC177hyK0R00tWyhPkteQSpq3D+8BziT5qIPIw5iAhVyPVa3oFGGZIp
- DshupY/sRXgnz0ksDXc05OsUN84T6IWA0xGfQCuaDoyWlVRuwgiBi2ZqUyNjqbkpQKKx
- x4MYeB/LzD2pw02cESyy8Dl8jpqusVDV1blG1mMWb159GnLNUmljYcsbksxOlKH7Q2/0
- B4mSsbcyDE/xbwvrCTygmW2RNaJ6HexvEnla3tvsLs9MV61bcAGI1giVTgMCb1wk0Bv3
- mVXJNzMJYYNLWHhIAfzv4i6aL6iEer9Lc3CwHr+LBinYe/e1fqR73udyV63iClFGUDYu xA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3e3hdst7bx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Feb 2022 18:08:16 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 218I27Fe139477;
-        Tue, 8 Feb 2022 18:08:15 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
-        by aserp3030.oracle.com with ESMTP id 3e1f9fsyba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Feb 2022 18:08:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H7xxQSmGUJnhx4qxb0xoQCDvSMFkhRroY7eqf2w7KkQOJwb2WO2/zl0j+D4iPb8h2rBBX3p5Sg7jgLiYEkXp6761De3jqeKgdD9h9U9NTa2xSB2phLXrwdEVfJaQGU8DU78H+gaF+QndGoES8Bolz7gb/8XsO/RkdBbCoEaIFn0WuO3W4NqwaqTnPUAzluLFn34tAvbY9E0GxtI5LY7vDL7s6MU3czU7oEe0M8P4uSd9pMZ3PEr0ksxgJztsPoMtYUV/9xUEy66VygWQcxTItY/ahfiyF0U0GkHiGhsTnRmsObz579vZvE6ifUa7ADaOdC33xt1HLZU7p/gEuPxkTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EwZpFB06xB5F1n2xgR3CWwIoLEp9Z963hlBDe/MasK0=;
- b=ZjviKl9tfrZbjDYx5urL5j2sKIhgFae52WyLL6fEBMuOxsiOrgIlQzJrmqCNtifzQty/aot8lIxYb2kMz1wuBpLeKaPmEJrVYdMN2av4IOckVxAmBZq4uJZtrfTnqtb3b/kFPbBGtEZanuQDILl76nMsqo58d4Q9aZcGXqOESSojvnNbscQ2xzMoRxd3cNg0cdwH/B23ccNePZFUMgZDcjwyIkXqmiK/PoMqJ4ZdOP2Zk388pZWL53ik3LuMVAWVPQGMil+NbeCNIIIR6EjXvh4kokzJN25a5LJS/eLNN78hJ7G02P7hoid4BfoF2LYY6pGRsZm1IFw+WKVr9NKjIg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
+        with ESMTP id S240912AbiBHS3B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 13:29:01 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB5EC061576
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 10:29:00 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id st12so294885ejc.4
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 10:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EwZpFB06xB5F1n2xgR3CWwIoLEp9Z963hlBDe/MasK0=;
- b=xQMiEmFz2Z/Rv15o2G7kDDXC1pUKa2j+EA1YxFIgJbnRZU4VedTHU5we1+zsnj/XrUqj4h1qq87zzGrTwsnyXA4gM7pTSYlgglvsg6/ANKmUV3gnr+cOqVYkQ+AkabhrFAtD/2srStdmqMOp7nrJruJkYawvZmAyJZEbDmh2qYg=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by BN0PR10MB5144.namprd10.prod.outlook.com (2603:10b6:408:127::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Tue, 8 Feb
- 2022 18:08:13 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::a0d5:610d:bcf:9b47]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::a0d5:610d:bcf:9b47%4]) with mapi id 15.20.4951.019; Tue, 8 Feb 2022
- 18:08:13 +0000
-Subject: Re: [PATCH 2/2] net: tun: track dropped skb via kfree_skb_reason()
-To:     David Ahern <dsahern@gmail.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
-        joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
-References: <20220208035510.1200-1-dongli.zhang@oracle.com>
- <20220208035510.1200-3-dongli.zhang@oracle.com>
- <f1d1f29b-45e8-1ba3-bdbd-4c892b6a4e0f@gmail.com>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <1467d007-c472-1f08-1db5-c6d2ba2b3a55@oracle.com>
-Date:   Tue, 8 Feb 2022 10:08:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <f1d1f29b-45e8-1ba3-bdbd-4c892b6a4e0f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR04CA0090.namprd04.prod.outlook.com
- (2603:10b6:805:f2::31) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tQ7ETPhFowJy5gbmxe8tao+bGKyuYJi8tAGsIEg/zsE=;
+        b=cUMosPvwxokRyNK/6yylTo0k35rEwMimwkiFo8H43tS9g6j5CAKcCRUs3ivF/RFMwR
+         McJe/6V8qKgB0gn/QhP/VbpZuCcShJusgqHNA9RKuSFrGmxb3dudbKcDxejgBaKPbQRi
+         GOwcQZwU243PxahRNZhX0Tu2zNBmqc08kdGISLzo0ycCBzyCU1/cvOV25R/GKQNjVRw0
+         Q0aTiego0KEbl86TJ1KfAi4/z3ookFc3fPFi3l8k15+9eJETD/fv18ouKdz+7Z+JvXU2
+         q63wKXqm5Y/7s2GkmyOvnaYZH5pRv7qn0fgK/qe0kaerPi2rSAnr1aq0LcWwcKfXwX67
+         z2ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tQ7ETPhFowJy5gbmxe8tao+bGKyuYJi8tAGsIEg/zsE=;
+        b=Pj1W+wqs6D0vN0R/VnnfASOnsK2S6rdHDWnPQLEOTZHAKki39qo7fo+07Nm4fGKHuF
+         sMfoj6PM8HxNFqpqWzDcbb77X16b1HMSZL/+Nzk3dmWrc61XTzZfimDeWMLwi8JONwkW
+         Nr8n1UU0rcX1W31VnwceYsbn7wCaZblIV7ngCAqIcrboiTQ4pJgnHD/fJPpJ5vacK5B2
+         msNhGcg23RbD6MjB1p+GfJSjU7FkNGbse1KaBXCS6G5Ou2Dfgw1LDuqCiUpekPRZctkq
+         wb3sZtAV9/4FGzcolr2Rhms58cghkDfYaPEAvttrLioaga1Kaw9RQN3ONtXcWPNYASmm
+         9W0w==
+X-Gm-Message-State: AOAM530HgEJYN0TTy4tnohELNsa09FBWnKrLOQajhkcE/islkGu1gClD
+        NrBzPGIn3dXTApYHnYZjpHgIzxjKcMe6JKkfqww=
+X-Google-Smtp-Source: ABdhPJwBJuqe45bAcz0X18qZtb1l9kNo07Lvo3hJAEDtYjpXVsLrlTyf6PMMf9GvTYrm77NlKmudMSlAvG41ZZMY9h8=
+X-Received: by 2002:a17:906:1611:: with SMTP id m17mr4751560ejd.443.1644344938456;
+ Tue, 08 Feb 2022 10:28:58 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f83392ea-1814-41de-dbeb-08d9eb2df8e7
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5144:EE_
-X-Microsoft-Antispam-PRVS: <BN0PR10MB5144B714ECEFCFD5411BFA5CF02D9@BN0PR10MB5144.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CG28dl6PGHYwwo/ncIdeBtX6wkoD3vOLr12CVny0wHYQIxoXu2jOmsUVUUR7+neOF9IZvAaXTLbQxuPQk+K80b6ZJzyRLEfbuOqxrYxy+P9gLms8WR7phmeHH+qO8I6Uj0bEAR/hh00VBD8Ca82v/ZSN3bKy//xkkqmkNSxE+cy0KIf5Zv+YQUBs5M27jROyx7qSHy2i8Gxq53+NnvkeCy7UfRJEwn7zVNhsgKj3TY60MhkmGB1qJri9zSSdYPx95n7457Fvvg9oNtDQQwgX+jxaxJs1KH0GP4ckp5z0T7n3+zFba++GWWFDWoTKMYPyqWAVCqgoR68a1PL6sTBgzWdqSG7h25YL9K9kkN0W9Zy/74k/d2Hf3m9UoqnPJdTd2DAoTHZzsE/3y2tn97ct2RzTMDQ143Dzf1vl9HhPCZfnS09BhYrdFc1n4sO1UUXddjzRtbFbpej+3mSi5LC3jZPCwUMax8yvFMQfadiHCdGbwiv+EdzJnMZZH7VH2PEPwDlK5Ms6bqwga29RKmrfWdtOsGkOuEKYbGkg7xhyymh9lRFkqTCvycVGV5Eowzm9yI2hXfDPVoWxs9uvG0MKCUYL8+8DDoTJ+qmxjP1JGC0/WjEoKdaSayhhNOYI0M1Ppe6+5tlvip2M5nTBseft1y6SvqjRaIcUp9f9Vgp5sCj7rpcE/FBd0CGNNpOWn6sc2q9iqRyrUvnC1izZ5q4cGwgUuQoXOYC/NbLd+yPhITr5e9wxIehkEbeyGbBqTOLs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(7416002)(6512007)(66556008)(5660300002)(2616005)(31686004)(6506007)(31696002)(44832011)(316002)(186003)(83380400001)(8936002)(66476007)(66946007)(8676002)(4326008)(508600001)(2906002)(6486002)(86362001)(38100700002)(53546011)(6666004)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U2JubU1aUk1PYkRYNk9tWjl1TmN6ekFLeUVEWEZOQVVOcnB2bVowOFJYSmI1?=
- =?utf-8?B?Z3M5cjdFQ3VjbVR6S3ptNDR2aHgwc2hyVUt0YXpGS3dmWHd2cnk3TnF1YmU3?=
- =?utf-8?B?ZWxQNE5YRldUQ3pvTy8vcXJ3MEY0ZmlLQmI2bDFyWDFacFdMajVuSkMySk5o?=
- =?utf-8?B?M2lhN1pucWJ0SEovbGxLMnpta0JjZzF4Yjc0dHEvMTdqNWk0cE1pMzN6MFNm?=
- =?utf-8?B?RlJra0RxOXBGL1hXZ09ZMVhDY1pQQ3kxN1duRWtXa0lWOHBCaHhFWDlHMUxp?=
- =?utf-8?B?WEFoL3pxbFRWTHVsS1JmR2ZXaXJEVmVCMEVpMUlIRFZXRjVzNmFNcStGMmND?=
- =?utf-8?B?ZSszOGQ5dW92QUFWVWhEMEpKbnVUeGlXSnZmdjQ0VGdYNlJvRm9RakNTODBD?=
- =?utf-8?B?MFNBLzN6TDRLZzBjVDhBd01sOS9PT3kwRDBEalg5UDZjdksvUGg0U0x5ZTZr?=
- =?utf-8?B?R2trRVVZcVZRS1VudTlET0srdjErS2FrYmRXV0VOc25XQVVBcytOREJjUkh2?=
- =?utf-8?B?SEhiUTdVNTgwUjRCRzV4eGRDeCtjeXA4aGMxaUxWSEtEQnhQb21OZUJtV0Ru?=
- =?utf-8?B?L0hLeTRwREJsYldnbXhxdzVxb2tQSlBLdWtTcVRONm9hOUdDUE1OUTFMUWp2?=
- =?utf-8?B?cWxJc2dqdis5VldNWldOK3ZVMWdBSDhDRU5oWWpsMktIczZYUGNoWXdoSXBx?=
- =?utf-8?B?M3lNNG5CdXExY0dvNXNlSWFPbVJFVXc5bFo5a0ZqMHEwTEhtU20vNEpsRU9I?=
- =?utf-8?B?TmROVmVoaC9MQzhIc0c1azd2K1drTVNibjFHblV3M1p0VmtWNmpma1BYWTBS?=
- =?utf-8?B?cmZXd3BlZ3VJUE01K015blQ2Q2NSNXJ6Mk8veFcxTks3bEFxS0JzRzlnRVZh?=
- =?utf-8?B?ckhuQlM4R3Y1U3hTYWcxV3pEMGdRQjB3Z254UUxpRll1SDdsSTdLZGFoTVpl?=
- =?utf-8?B?RzdSK3ZmK21LcTJ0TjlqZUVxMUlhMmkvbXBNZWN2RFZHNG5SUnh4ME1LL3Jj?=
- =?utf-8?B?ZEJjbjR5VTMzazRJQjVCWGM2OXhJMlBjMVNYVHRxNE9mbjFIelpTblZmREJE?=
- =?utf-8?B?dkFtdGdYNks4WExocHRzUS8zVjBKNVdnbDQyMXdDRnpJVWV4VFoxWXR1QXkw?=
- =?utf-8?B?TmtYVDNGTnFNSHJCMmFCTTlQM2tZWW1xc2pFKzVmREs4aVJ2dnNodThkTkUw?=
- =?utf-8?B?bGJCRnRVQkVQNHJrMEE0cngrQ2o5RndabUY4U1Z1QStjUU5ydTlReHFvaVNZ?=
- =?utf-8?B?QVN1NzcvaWFZRUxJR0hCRDk2Rng5S05jRDA1bUVrbGRyUjZsT3NVeVlzRm5D?=
- =?utf-8?B?SVptS005UjZJdEFIRWI4ek53eHFqUENjdHhvR0NTRndkS1g1SHgwaE1NR1FH?=
- =?utf-8?B?dUpJajdMYUxIUElYT2hMUTQyam5MVW9FNjVHMkxxVVkvMnVKbTFmUXhwUzRX?=
- =?utf-8?B?a2gzRU1mVDR3TDZOV0R3V0o3RXp0QXRZYlVXQ281RjQ3a1Y3bU5MV2Qzdmc5?=
- =?utf-8?B?cXJMWjlVVFVzSTFtZCt2cGV0bDdLWkZCSGhaOHRyNERURG1RVjM2a0tQcDZR?=
- =?utf-8?B?QzdoV0lNWnpQamZrdFpvelEybU1LN0xpczVBazl4b2lWVkhYMEdta3VKaW9G?=
- =?utf-8?B?RU0rYzVuZlh3MWNTQVFuU1FRZGh1cXVsWCtRUDBiUDF0dFh5ajBraDVKWDhP?=
- =?utf-8?B?Y0FaRjRvalFaeTNDQVFzbk9Xa1NuRGJSMUVXbitINHo0MkIxMGdVb1BidUhh?=
- =?utf-8?B?MEZZdnFvdUFuV28wYzVyMldZWlpIQjdaT1VXWWdNVWNNQWNGVUhTRGViejV2?=
- =?utf-8?B?Y2YyWjlCeEl1ZUw3WGttU3RQNGI5YlBjTlFDZDI5OTFGdWNYQ1U1T3ZXanJn?=
- =?utf-8?B?VTVzWVNKNUlUQ1RMaEwrRTgrRTdZR2hiQUlUYTdDLzJZdlFXL2JrVkY2Yk5K?=
- =?utf-8?B?aFR5ZU1UVkF3Z3Y4SWlLczNrU1FMcHIrSzRaeTNmODJPakgra2dXVWFreGNY?=
- =?utf-8?B?aDIyUmFMS1dveFFGK0IrQW5SOWxETEFUYkk3aGlEUTVWQktnOWZrSHZkSUVM?=
- =?utf-8?B?STg5ZDYxL3FjckxFMTE5NVhtZ2hnMit0NUkrWnZla0xUM1NoUUpIcnJEa2Np?=
- =?utf-8?B?akRNdkJaTGR4SXNESUxKKzIyUGJpKzBCaThGQTR5Qm03NEQxM1FrY0pMU3pk?=
- =?utf-8?B?bFN4dkI5eTFXVGVvaWdoNjkvQnlHR3NEVnlnY3IxcVhLa2c4eFpieSswNmlr?=
- =?utf-8?B?TmRCM0U4N0VRWjFFVkpubXNmc1ZBPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f83392ea-1814-41de-dbeb-08d9eb2df8e7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2022 18:08:13.3979
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: saRU3u2LhJit38tu2d5Du63tAaT3/TrTd9cFjsZ6AaaxmWCfd00qZiiejv73zFYr1yXTtaK8IG/9mx9SC6xedA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5144
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10252 signatures=673431
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spamscore=0 adultscore=0
- mlxlogscore=999 suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202080106
-X-Proofpoint-GUID: o9vqhEf3Ga37b99RAL0rluOezNVwP43y
-X-Proofpoint-ORIG-GUID: o9vqhEf3Ga37b99RAL0rluOezNVwP43y
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <CAK3+h2wcDceeGyFVDU3n7kPm=zgp7r1q4WK0=abxBsj9pyFN-g@mail.gmail.com>
+ <CAK3+h2ybqBVKoaL-2p8eu==4LxPY2kfLyMsyOuWEVbRf+S-GbA@mail.gmail.com>
+ <CAK3+h2zLv6BcfOO7HZmRdXZcHf_zvY91iUH08OgpcetOJkM=EQ@mail.gmail.com>
+ <41e809b6-62ac-355a-082f-559fa4b1ffea@fb.com> <CAK3+h2xD5h9oKqvkCTsexKprCjL0UEaqzBJ3xR65q-k0y_Rg1A@mail.gmail.com>
+ <CAK3+h2x5pHC+8qJtY7qrJRhrJCeyvgPEY1G+utdvbzLiZLzB3A@mail.gmail.com>
+ <81a30d50-b5c5-987a-33f2-ab12cbd6e709@fb.com> <4ff8334f-fc51-0738-b8c6-a45403eed9e1@incline.eu>
+ <85800d3d-d8d5-caba-e6c9-2505788d42b7@fb.com> <24b0f506-00f5-77b9-dff8-9a1db8aaa1c5@incline.eu>
+ <b33e24d0-3539-3c7c-8be0-7d9ea335b28d@fb.com> <CAK3+h2zMRNKqA5k6FE4BG8RnJ2Tx1itVJiJGbhXaCu=v=0U47w@mail.gmail.com>
+ <5bc02911-9ebf-6f4a-3804-d72c405326b6@fb.com> <a9afc769-5e6c-cdb9-7adf-90ed1a6c1974@fb.com>
+In-Reply-To: <a9afc769-5e6c-cdb9-7adf-90ed1a6c1974@fb.com>
+From:   Vincent Li <vincent.mc.li@gmail.com>
+Date:   Tue, 8 Feb 2022 10:28:46 -0800
+Message-ID: <CAK3+h2zD0NGjGoqK8rZqtp=-c4e7YV8OJEooun1XF8=y1kxo+A@mail.gmail.com>
+Subject: Re: can't get BTF: type .rodata.cst32: not found
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Timo Beckers <timo@incline.eu>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
+On Mon, Feb 7, 2022 at 10:47 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/4/22 1:22 PM, Yonghong Song wrote:
+> >
+> >
+> > On 2/4/22 11:39 AM, Vincent Li wrote:
+> >> On Fri, Feb 4, 2022 at 10:04 AM Yonghong Song <yhs@fb.com> wrote:
+> >>>
+> >>>
+> >>>
+> >>> On 2/4/22 3:11 AM, Timo Beckers wrote:
+> >>>> On 2/3/22 03:11, Yonghong Song wrote:
+> >>>>>
+> >>>>>
+> >>>>> On 2/2/22 5:47 AM, Timo Beckers wrote:
+> >>>>>> On 2/2/22 08:17, Yonghong Song wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 2/1/22 10:07 AM, Vincent Li wrote:
+> >>>>>>>> On Fri, Jan 28, 2022 at 10:27 AM Vincent Li
+> >>>>>>>> <vincent.mc.li@gmail.com> wrote:
+> >>>>>>>>>
+> >>>>>>>>> On Thu, Jan 27, 2022 at 5:50 PM Yonghong Song <yhs@fb.com> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>>
+> >>>>>>>>>> On 1/25/22 12:32 PM, Vincent Li wrote:
+> >>>>>>>>>>> On Tue, Jan 25, 2022 at 9:52 AM Vincent Li
+> >>>>>>>>>>> <vincent.mc.li@gmail.com> wrote:
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> this is macro I suspected in my implementation that could
+> >>>>>>>>>>>> cause issue with BTF
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> #define ENABLE_VTEP 1
+> >>>>>>>>>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a,
+> >>>>>>>>>>>> 0x1f48a90a,
+> >>>>>>>>>>>> 0x2048a90a, }
+> >>>>>>>>>>>> #define VTEP_MAC (__u64[]){0x562e984c3682, 0x582e984c3682,
+> >>>>>>>>>>>> 0x5eaaed93fdf2, 0x5faaed93fdf2, }
+> >>>>>>>>>>>> #define VTEP_NUMS 4
+> >>>>>>>>>>>>
+> >>>>>>>>>>>> On Tue, Jan 25, 2022 at 9:38 AM Vincent Li
+> >>>>>>>>>>>> <vincent.mc.li@gmail.com> wrote:
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Hi
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> While developing Cilium VTEP integration feature
+> >>>>>>>>>>>>> https://github.com/cilium/cilium/pull/17370, I found a
+> >>>>>>>>>>>>> strange issue
+> >>>>>>>>>>>>> that seems related to BTF and probably caused by my specific
+> >>>>>>>>>>>>> implementation, the issue is described in
+> >>>>>>>>>>>>> https://github.com/cilium/cilium/issues/18616, I don't know
+> >>>>>>>>>>>>> much about
+> >>>>>>>>>>>>> BTF and not sure if my implementation is seriously flawed
+> >>>>>>>>>>>>> or just some
+> >>>>>>>>>>>>> implementation bug or maybe not compatible with BTF.
+> >>>>>>>>>>>>> Strangely, the
+> >>>>>>>>>>>>> issue appears related to number of VTEPs I use, no problem
+> >>>>>>>>>>>>> with 1 or 2
+> >>>>>>>>>>>>> VTEP, 3, 4 VTEPs will have problem with BTF, any guidance
+> >>>>>>>>>>>>> from BTF
+> >>>>>>>>>>>>> experts  are appreciated :-).
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Thanks
+> >>>>>>>>>>>>>
+> >>>>>>>>>>>>> Vincent
+> >>>>>>>>>>>
+> >>>>>>>>>>> Sorry for previous top post
+> >>>>>>>>>>>
+> >>>>>>>>>>> it looks the compiler compiles the cilium bpf_lxc.c to bpf_lxc.o
+> >>>>>>>>>>> differently and added " [21] .rodata.cst32     PROGBITS
+> >>>>>>>>>>> 0000000000000000  00011e68" when  following macro exceeded 2
+> >>>>>>>>>>> members
+> >>>>>>>>>>>
+> >>>>>>>>>>> #define VTEP_ENDPOINT (__u32[]){0xec48a90a, 0xee48a90a,
+> >>>>>>>>>>> 0x1f48a90a,
+> >>>>>>>>>>> 0x2048a90a, }
+> >>>>>>>>>>>
+> >>>>>>>>>>> no ".rodata.cst32" compiled in bpf_lxc.o  when above
+> >>>>>>>>>>> VTEP_ENDPOINT
+> >>>>>>>>>>> member <=2. any reason why compiler would do that?
+> >>>>>>>>>>
+> >>>>>>>>>> Regarding to why compiler generates .rodata.cst32, the reason is
+> >>>>>>>>>> you have some 32-byte constants which needs to be saved
+> >>>>>>>>>> somewhere.
+> >>>>>>>>>> For example,
+> >>>>>>>>>>
+> >>>>>>>>>> $ cat t.c
+> >>>>>>>>>> struct t {
+> >>>>>>>>>>        long c[2];
+> >>>>>>>>>>        int d[4];
+> >>>>>>>>>> };
+> >>>>>>>>>> struct t g;
+> >>>>>>>>>> int test()
+> >>>>>>>>>> {
+> >>>>>>>>>>         struct t tmp  = {.c = {1, 2}, .d = {3, 4}};
+> >>>>>>>>>>         g = tmp;
+> >>>>>>>>>>         return 0;
+> >>>>>>>>>> }
+> >>>>>>>>>>
+> >>>>>>>>>> $ clang -target bpf -O2 -c t.c
+> >>>>>>>>>> $ llvm-readelf -S t.o
+> >>>>>>>>>> ...
+> >>>>>>>>>>        [ 4] .rodata.cst32     PROGBITS        0000000000000000
+> >>>>>>>>>> 0000a8 000020
+> >>>>>>>>>> 20  AM  0   0  8
+> >>>>>>>>>> ...
+> >>>>>>>>>>
+> >>>>>>>>>> In the above code, if you change the struct size, say from 32
+> >>>>>>>>>> bytes to
+> >>>>>>>>>> 40 bytes, the rodata.cst32 will go away.
+> >>>>>>>>>
+> >>>>>>>>> Thanks Yonghong! I guess it is cilium/ebpf needs to recognize
+> >>>>>>>>> rodata.cst32 then
+> >>>>>>>>
+> >>>>>>>> Hi Yonghong,
+> >>>>>>>>
+> >>>>>>>> Here is a follow-up question, it looks cilium/ebpf parse vmlinux
+> >>>>>>>> and
+> >>>>>>>> stores BTF type info in btf.Spec.namedTypes, but the elf object
+> >>>>>>>> file
+> >>>>>>>> provided by user may have section like rodata.cst32 generated by
+> >>>>>>>> compiler that does not have accompanying BTF type info stored in
+> >>>>>>>> btf.Spec.NamedTypes for the rodata.cst32, how vmlinux can be
+> >>>>>>>> guaranteed to  have every BTF type info from application/user
+> >>>>>>>> provided
+> >>>>>>>> elf object file ? I guess there is no guarantee.
+> >>>>>>>
+> >>>>>>> vmlinux holds kernel types. rodata.cst32 holds data. If the type of
+> >>>>>>> rodata.cst32 needs to be emitted, the type will be encoded in bpf
+> >>>>>>> program BTF.
+> >>>>>>>
+> >>>>>>> Did you actually find an issue with .rodata.cst32 section? Such a
+> >>>>>>> section is typically generated by the compiler for initial data
+> >>>>>>> inside the function and llvm bpf backend tries to inline the
+> >>>>>>> values through a bunch of load instructions. So even you see
+> >>>>>>> .rodata.cst32, typically you can safely ignore it.
+> >>>>>>>
+> >>>>>>>>
+> >>>>>>>> Vincent
+> >>>>>>>
+> >>>>>>
+> >>>>>> Hi Yonghong,
+> >>>>>>
+> >>>>>> Thanks for the reproducer. Couldn't figure out what to do with
+> >>>>>> .rodata.cst32,
+> >>>>>> since there are no symbols and no BTF info for that section.
+> >>>>>>
+> >>>>>> The values found in .rodata.cst32 are indeed inlined in the
+> >>>>>> bytecode as you
+> >>>>>> mentioned, so it seems like we can ignore it.
+> >>>>>>
+> >>>>>> Why does the compiler emit these sections? cilium/ebpf assumed up
+> >>>>>> until now
+> >>>>>> that all sections starting with '.rodata' are datasecs and must be
+> >>>>>> loaded into
+> >>>>>> the kernel, which of course needs accompanying BTF.
+> >>>>>
+> >>>>> The clang frontend emits these .rodata.* sections. In early days,
+> >>>>> kernel
+> >>>>> doesn't support global data so llvm bpf backend implements an
+> >>>>> optimization to inline these values. But llvm bpf backend didn't
+> >>>>> completely remove them as the backend doesn't have a global view
+> >>>>> whether these .rodata.* are being used in other places or not.
+> >>>>>
+> >>>>> Now, llvm bpf backend has better infrastructure and we probably can
+> >>>>> implement an IR pass to detect all uses of .rodata.*, inline these
+> >>>>> uses, and remove the .rodata.* global variable.
+> >>>>>
+> >>>>> You can check relocation section of the program text. If the .rodata.*
+> >>>>> section is referenced, you should preserve it. Otherwise, you can
+> >>>>> ignore that .rodata.* section.
+> >>>>>
+> >>>>>>
+> >>>>>> What other .rodata.* should we expect?
+> >>>>>
+> >>>>> Glancing through llvm code, you may see .rodata.{4,8,16,32},
+> >>>>> .rodata.str*.
+> >>>>>
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>>
+> >>>>>> Timo
+> >>>>
+> >>>> Thanks for the replies all, very insightful. We were already doing
+> >>>> things mostly
+> >>>> right wrt. .rodata.*, but found a few subtle bugs walking through
+> >>>> the code again.
+> >>>>
+> >>>> I've gotten a hold of the ELF Vincent was trying to load, and I saw
+> >>>> a few things
+> >>>> that I found unusual. In his case, the values in cst32 are not
+> >>>> inlined. Instead,
+> >>>> this ELF has a .Lconstinit symbol pointing at the start of
+> >>>> .rodata.cst32, and it's
+> >>>> an STT_OBJECT with STB_LOCAL. Our relocation handler is fairly
+> >>>> strict and requires
+> >>>> STT_OBJECTs to be global (for supporting non-static consts).
+> >>>
+> >>> There are two ways to resolve the issue. First, extend the loader
+> >>> support to handle STB_LOCAL as well. Or Second, change the code like
+> >>>       struct t v = {1, 5, 29, ...};
+> >>> to
+> >>>       struct t v;
+> >>>       __builtin_memset(&v, 0, sizeof(struct t));
+> >>>       v.field1 = ...;
+> >>>       v.field2 = ...;
+> >>>
+> >>>
+> >>>>
+> >>>> ---
+> >>>> ~ llvm-readelf -ar bpf_lxc.o
+> >>>>
+> >>>> Symbol table '.symtab' contains 606 entries:
+> >>>>      Num:    Value          Size Type    Bind   Vis       Ndx Name
+> >>>>        2: 0000000000000000    32 OBJECT  LOCAL  DEFAULT    21
+> >>>> .Lconstinit
+> >>>>
+> >>>> Relocation section '.rel2/7' at offset 0x6bdf0 contains 173 entries:
+> >>>>       Offset             Info             Type
+> >>>> Symbol's Value  Symbol's Name
+> >>>> 0000000000007300  0000000200000001 R_BPF_64_64
+> >>>> 0000000000000000 .Lconstinit
+> >>>> ---
+> >>>>
+> >>>> ---
+> >>>> ~ llvm-objdump -S -r -j 2/7 -j .rodata.cst32 bpf_lxc.o
+> >>>> warning: failed to compute relocation: R_BPF_64_64, Invalid data was
+> >>>> encountered while parsing the file
+> >>>> ... <2 more of these> ...
+> >>>>
+> >>>> Disassembly of section 2/7:
+> >>>>
+> >>>> 00000000000072f8 <LBB1_476>:
+> >>>>       3679:       67 08 00 00 03 00 00 00 r8 <<= 3
+> >>>>       3680:       18 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r2
+> >>>> = 0 ll
+> >>>>                   0000000000007300:  R_BPF_64_64  .Lconstinit
+> >>>>       3682:       0f 82 00 00 00 00 00 00 r2 += r8
+> >>>>       3683:       79 22 00 00 00 00 00 00 r2 = *(u64 *)(r2 + 0)
+> >>>>       3684:       7b 2a 58 ff 00 00 00 00 *(u64 *)(r10 - 168) = r2
+> >>>>
+> >>>> Disassembly of section .rodata.cst32:
+> >>>>
+> >>>> 0000000000000000 <.Lconstinit>:
+> >>>>          0:       82 36 4c 98 2e 56 00 00 <unknown>
+> >>>>          1:       82 36 4c 98 2e 55 00 00 <unknown>
+> >>>> ---
+> >>>>
+> >>>>
+> >>>> This symbol doesn't exist in the program. Worth noting is that the
+> >>>> code that accesses
+> >>>> this static data sits within a subscope, but not sure what the
+> >>>> effect of this would be.
+> >>>>
+> >>>> Vincent, maybe try removing the enclosing {} to see if that changes
+> >>>> anything?
+> >>>>
+> >>>> ---
+> >>>> static __always_inline int foo(struct __ctx_buff *ctx,
+> >>>>
+> >>>> ... <snip> ...
+> >>>>
+> >>>>        {
+> >>>>                int i;
+> >>>>
+> >>>>                for (i = 0; i < VTEP_NUMS; i) {
+> >>>>                        if (tunnel_endpoint == VTEP_ENDPOINT[i]) {
+> >>>>                                vtep_mac = VTEP_MAC[i];
+> >>>>                                break;
+> >>>>                        }
+> >>>>                }
+> >>>>        }
+> >>>> ---
+> >>>>
+> >>>> Is this perhaps something that needs to be addressed in the compiler?
+> >>>
+> >>> If you can give a reproducible test (with .c or .i file), I can take a
+> >>> look at what is missing in llvm compiler and improve it.
+> >>>
+> >>
+> >> not sure if it would help, here is my step to generate the bpf_lxc.o
+> >> object file with the .rodata.cst32
+> >>
+> >> git clone https://github.com/f5devcentral/cilium.git
+> >> cd cilium; git checkout vli-vxlan; KERNEL=54 make -C bpf
+> >> llvm-objdump -S -r -j 2/7 -j .rodata.cst32 bpf/bpf_lxc.o
+> >
+> > Thanks. I can reproduce the issue now. Will take a look
+> > and get back to you as soon as I got any concrete results.
+>
+> Okay, I found the reason.
+>
+> For the code,
+>
+>                  for (i = 0; i < VTEP_NUMS; i++) {
+>                          if (tunnel_endpoint == VTEP_ENDPOINT[i]) {
+>                                  vtep_mac = VTEP_MAC[i];
+>                                  break;
+>                          }
+>                  }
+>
+> The compiler transformed to something like
+>
+> i = 0; if (tunnerl_endpoint == VTEP_ENDPOINT[0]) goto end;
+> i = 1; if (tunnerl_endpoint == VTEP_ENDPOINT[1]) goto end;
+> i = 2; if (tunnerl_endpoint == VTEP_ENDPOINT[2]) goto end;
+> i = 3; if (tunnerl_endpoint == VTEP_ENDPOINT[3]) goto end;
+>
+> end:
+>     vtep_mac = VTEP_MAC[i];
+>
+> The compiler cannot inline VTEP_MAC[i] since 'i' is not
+> a constant. Hence later we have a memory load from
+> a non-global .rodata section.
+>
+> As I mentioned earlier, there are two options to fix the issue.
+> First is for cilium to track and handle non-global .rodata
+> sections. And the second you can apply the below code change,
+>
+> diff --git a/bpf/node_config.h b/bpf/node_config.h
+> index 9783e44548..b80dd2b27b 100644
+> --- a/bpf/node_config.h
+> +++ b/bpf/node_config.h
+> @@ -176,15 +176,15 @@ DEFINE_IPV6(HOST_IP, 0xbe, 0xef, 0x0, 0x0, 0x0,
+> 0x0, 0x0, 0x1, 0x0, 0x0, 0xa, 0x
+>   #endif
+>
+>   #ifdef ENABLE_VTEP
+> -#define VTEP_ENDPOINT (__u32[]){0xeb48a90a, 0xec48a90a, 0xed48a90a,
+> 0xee48a90a, }
+> +#define VTEP_NUMS 4
+> +__u32 VTEP_ENDPOINT[VTEP_NUMS] = {0xeb48a90a, 0xec48a90a, 0xed48a90a,
+> 0xee48a90a};
+>   /* HEX representation of VTEP IP
+>    * 10.169.72.235, 10.169.72.236, 10.169.72.237, 10.169.72.238
+>    */
+> -#define VTEP_MAC (__u64[]){0x562e984c3682, 0x552e984c3682,
+> 0x542e984c3682, 0x532e984c3682}
+> +__u64 VTEP_MAC[VTEP_NUMS] = {0x562e984c3682, 0x552e984c3682,
+> 0x542e984c3682, 0x532e984c3682};
+>   /* VTEP MAC address
+>    * 82:36:4c:89:2e:56, 82:36:4c:89:2e:55, 82:36:4c:89:2e:54,
+> 82:36:4c:89:2e:53
+>    */
+> -#define VTEP_NUMS 4
+>   #endif
+>
 
-On 2/7/22 9:03 PM, David Ahern wrote:
-> On 2/7/22 7:55 PM, Dongli Zhang wrote:
->> The TUN can be used as vhost-net backend. E.g, the tun_net_xmit() is the
->> interface to forward the skb from TUN to vhost-net/virtio-net.
->>
->> However, there are many "goto drop" in the TUN driver. Therefore, the
->> kfree_skb_reason() is involved at each "goto drop" to help userspace
->> ftrace/ebpf to track the reason for the loss of packets.
->>
->> Cc: Joao Martins <joao.m.martins@oracle.com>
->> Cc: Joe Jin <joe.jin@oracle.com>
->> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
->> ---
->>  drivers/net/tun.c          | 33 +++++++++++++++++++++++++--------
->>  include/linux/skbuff.h     |  6 ++++++
->>  include/trace/events/skb.h |  6 ++++++
->>  3 files changed, 37 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
->> index fed85447701a..d67f2419dbb4 100644
->> --- a/drivers/net/tun.c
->> +++ b/drivers/net/tun.c
->> @@ -1062,13 +1062,16 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
->>  	struct netdev_queue *queue;
->>  	struct tun_file *tfile;
->>  	int len = skb->len;
->> +	int drop_reason = SKB_DROP_REASON_NOT_SPECIFIED;
-> 
+Thank you Yonghong for the suggestion, the original code is kind of
+hack from me to work around some issue :). now we decided to abandon
+above code and use BPF hash map for VTEP lookup in Cilium to avoid
+this issue and to be more flexible, so it is up to cilium/ebpf to
+decide to address the rodata or not.
 
-I will avoid initializing here.
-
-> 
->>  
->>  	rcu_read_lock();
->>  	tfile = rcu_dereference(tun->tfiles[txq]);
->>  
->>  	/* Drop packet if interface is not attached */
->> -	if (!tfile)
->> +	if (!tfile) {
->> +		drop_reason = SKB_DROP_REASON_DEV_NOT_ATTACHED;
-
-Initially I was using TUN_NOT_ATTACHED. I used a more generic DEV_NOT_ATTACHED
-in order to re-use the reason in the future.
-
-How about TUN specific TUN_NOT_ATTACHED, as the core issue is because the below
-is not hit.
-
-rcu_assign_pointer(tun->tfiles[tun->numqueues], tfile);
-
-> 
-> That is going to be a confusing reason code (tap device existed to get
-> here) and does not really explain this error.
-> 
-> 
->>  		goto drop;
->> +	}
->>  
->>  	if (!rcu_dereference(tun->steering_prog))
->>  		tun_automq_xmit(tun, skb);
->> @@ -1078,19 +1081,27 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
->>  	/* Drop if the filter does not like it.
->>  	 * This is a noop if the filter is disabled.
->>  	 * Filter can be enabled only for the TAP devices. */
->> -	if (!check_filter(&tun->txflt, skb))
->> +	if (!check_filter(&tun->txflt, skb)) {
->> +		drop_reason = SKB_DROP_REASON_TAP_RUN_FILTER;
-> 
-> just SKB_DROP_REASON_TAP_FILTER
-
-I will use SKB_DROP_REASON_TAP_FILTER.
-
-> 
->>  		goto drop;
->> +	}
->>  
->>  	if (tfile->socket.sk->sk_filter &&
->> -	    sk_filter(tfile->socket.sk, skb))
->> +	    sk_filter(tfile->socket.sk, skb)) {
->> +		drop_reason = SKB_DROP_REASON_SKB_TRIM;
-> 
-> SKB_DROP_REASON_SOCKET_FILTER
-
-Sorry for my mistake, I should have re-used this SKB_DROP_REASON_SOCKET_FILTER.
-
-> 
-> The remainder of your changes feels like another variant of your
-> previous "function / line" reason code. You are creating new reason
-> codes for every goto failure with a code based name. The reason needs to
-> be the essence of the failure in a user friendly label.
-> 
-
-The remainder are:
-
-- SKB_DROP_REASON_SKB_TRIM
-- SKB_DROP_REASON_SKB_ORPHAN_FRAGS
-- SKB_DROP_REASON_SKB_PULL
-- SKB_DROP_REASON_DEV_DOWN
-- SKB_DROP_REASON_SKB_COPY_DATA (introduced by Patch 1/2)
-
-I tried to make them self-explaining and re-usable to other developers.
-
-Yes, I am creating new reason codes for every goto failure with a code based
-name because each function might be failed due to many reasons. In addition, I
-need to avoid duplicate 'drop_reason' returned by a function in order to help
-developer identify the specific line of code that the sk_buff is dropped.
-
-Thank you very much!
-
-Dongli Zhang
+>   /* It appears that we can support around the below number of prefixes
+> in an
+>
+> >
+> >>
+> >>>>
+> >>>>
+> >>>> Thanks again,
+> >>>>
+> >>>> Timo
