@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F024AD41D
-	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 09:56:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977434AD456
+	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 10:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352348AbiBHI4J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 03:56:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S1352821AbiBHJHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 04:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352330AbiBHI4I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 03:56:08 -0500
+        with ESMTP id S1352896AbiBHJHq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 04:07:46 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6DE4DC03FEC3
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 00:56:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 67047C03FEC5
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 01:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644310566;
+        s=mimecast20190719; t=1644311264;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HqHf6EUSPiajiRiec1PDYOjczpr3OtMb+80DurOQm1Q=;
-        b=ezOyJQgyV11S8QI8LeSycVL1pEqDadexsV7uNrc+JbyLYz+iBP+vcWHQktmIIoyUfeMc9D
-        5naXFgjdljni+Z6Kt06TZ0SdGpinuNyEvWBKLGh9pFDpa48tPGvfrablRsE6NWNuc8EbJl
-        xIBcYOGfPbBqJ4xuIphX0Vhy4wR8DLM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=uhdlsV5Hw0E2wCGOFGtk8LwW+bkl7Wdke1pbQZoX6ck=;
+        b=dB5Zr37fczl8FoH2F4tTqEbMv36knLvELU74xni8d372WIpPtZwPSDmOT/Rtg74RMyGAzU
+        sUD3PVb9FjApHmdCpiCl82ojB7MJAuIAhaJuoaNv2nlyAumbVZSyQq9fLigb96kSy/io3c
+        RuA9jbhTQU6FjvuzxpIDalC2XTdKOS8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-83-Qx8-_Q7BM1ODz3c9l8aE_Q-1; Tue, 08 Feb 2022 03:56:05 -0500
-X-MC-Unique: Qx8-_Q7BM1ODz3c9l8aE_Q-1
-Received: by mail-ed1-f72.google.com with SMTP id cr7-20020a056402222700b0040f59dae606so4144590edb.11
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 00:56:04 -0800 (PST)
+ us-mta-471-ry-LBbpIO56TZfNQn8w8hQ-1; Tue, 08 Feb 2022 04:07:43 -0500
+X-MC-Unique: ry-LBbpIO56TZfNQn8w8hQ-1
+Received: by mail-ed1-f71.google.com with SMTP id ed6-20020a056402294600b004090fd8a936so9349963edb.23
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 01:07:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HqHf6EUSPiajiRiec1PDYOjczpr3OtMb+80DurOQm1Q=;
-        b=XLlIlzVhX3gK6jV2tmubTvnLxYcMy204yQ7yc5xgK/UROPNnoAPgAWfmtjpiaMg/OY
-         z5ivPGuqLnYDEcnPTSkv5m1zBWxH5ndh5KJaz8/UEp18T+4L6sMvvGglEDrKKalw2ItT
-         Wju4S0NjTQe9ZtnYnnzpkJLZ8IVHGU+SuPrgPfZDietYaR3obG3AhCBYrveA4Dqdajz8
-         NUnnf7/iZqUr2fspC1bV33rwiTRrFkm+KKoFlJ4ebhXOjssMrLXNgs24lEq8QBqFkvzu
-         m60J79D4CrABVFtMrnoGZsojpWLd653cbLYo99MRK37AZt20NOFJfKCOLsV352EFpTpp
-         SIMA==
-X-Gm-Message-State: AOAM533/7G0HJpeHf8SR3wj9RV+Zd+GTZ+h6ylU4qqbmvqeI809T64xU
-        vWuM5HxZdacD1ZR91DsDFR7FAyhZOiS6Q/OhpE3Th8Tf/9a5bE1GNYt73RUSuOZnVF7ifZOR12u
-        qxjsKmluv2+Ky
-X-Received: by 2002:a17:906:ece8:: with SMTP id qt8mr2833152ejb.738.1644310563747;
-        Tue, 08 Feb 2022 00:56:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxgmPnTDJ6VlcDa8upD9ktiB96Y6h6udXwi5BYuSzgtm0wmNJhiXp3oe3DRP7Kchc8LQVc1Ew==
-X-Received: by 2002:a17:906:ece8:: with SMTP id qt8mr2833120ejb.738.1644310563433;
-        Tue, 08 Feb 2022 00:56:03 -0800 (PST)
+        bh=uhdlsV5Hw0E2wCGOFGtk8LwW+bkl7Wdke1pbQZoX6ck=;
+        b=6aEIudtUUijoIxQFAinXngvZPMPLk4mmxVkzSx/3ZRt87LElafNJk89B9K8mYqIwRl
+         lkU85+TiAKtctR6dlDzjY+BOLX6VAvmYU9a8yyF0yCwXArNJ+QI+BkutSL8U4jUsjnRO
+         1tMmMEMl4Y9S3UDzQBatg4a+hE5z6Mysx7CLoICFOcu41+BPHUQ4gdP5O6Do+KqwHaeX
+         l5i/EDnoSa2OJU+9RqqQFjzuEL6gv49gtKJ5Wv6Dc7oB5IsyxT7wPu0nV4Xt+7OG5jYv
+         itLu4C4Q8pRurYFwT8c0OVb1yvU8nbReKNcDbfMvqdZeEkboaTP1nhHYZ4lYVLeVnJrk
+         fA0Q==
+X-Gm-Message-State: AOAM5320RX25Hzu+8uZ0Ah93vdeaPJS+m7X5mzpwP7dpf6ZHhbiofaeB
+        bJVRdazt5ATKeNR+fnybeqiOAQP9AV2kWEl9BQ0XlfNWb8bmfwgVyW8ILJpjRBMBgslYFZIKkO8
+        s6CMi2D993Dc0
+X-Received: by 2002:a05:6402:3588:: with SMTP id y8mr3494446edc.104.1644311261733;
+        Tue, 08 Feb 2022 01:07:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxm3eLkmkVwDgFHnDa5VHYKz7e3NN/Q/ywM+jr8/Mbd05p25RRm+wfRHVOTh1+LBeamTv9ItA==
+X-Received: by 2002:a05:6402:3588:: with SMTP id y8mr3494429edc.104.1644311261538;
+        Tue, 08 Feb 2022 01:07:41 -0800 (PST)
 Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id hw16sm1427914ejc.10.2022.02.08.00.56.02
+        by smtp.gmail.com with ESMTPSA id g3sm1379535ejz.180.2022.02.08.01.07.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 00:56:02 -0800 (PST)
-Date:   Tue, 8 Feb 2022 09:56:01 +0100
+        Tue, 08 Feb 2022 01:07:41 -0800 (PST)
+Date:   Tue, 8 Feb 2022 10:07:39 +0100
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -68,15 +68,15 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Jiri Olsa <olsajiri@gmail.com>
-Subject: Re: [PATCH 1/8] bpf: Add support to attach kprobe program with fprobe
-Message-ID: <YgIwISCfw+DfIBTR@krava>
+Subject: Re: [PATCH 3/8] bpf: Add bpf_cookie support to fprobe
+Message-ID: <YgIy2yCzbNmKPoxv@krava>
 References: <20220202135333.190761-1-jolsa@kernel.org>
- <20220202135333.190761-2-jolsa@kernel.org>
- <CAEf4BzZYepTYLN6LrPAAaOXUtCBv07bQQJzgarntu03L+cj2GQ@mail.gmail.com>
+ <20220202135333.190761-4-jolsa@kernel.org>
+ <CAEf4BzbPeQbURZOD93TgPudOk3JD4odsZ9uwriNkrphes9V4dg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZYepTYLN6LrPAAaOXUtCBv07bQQJzgarntu03L+cj2GQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbPeQbURZOD93TgPudOk3JD4odsZ9uwriNkrphes9V4dg@mail.gmail.com>
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
@@ -87,220 +87,215 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 07, 2022 at 10:59:14AM -0800, Andrii Nakryiko wrote:
-> On Wed, Feb 2, 2022 at 5:53 AM Jiri Olsa <jolsa@redhat.com> wrote:
+On Mon, Feb 07, 2022 at 10:59:21AM -0800, Andrii Nakryiko wrote:
+> On Wed, Feb 2, 2022 at 5:54 AM Jiri Olsa <jolsa@redhat.com> wrote:
 > >
-> > Adding new link type BPF_LINK_TYPE_FPROBE that attaches kprobe program
-> > through fprobe API.
+> > Adding support to call bpf_get_attach_cookie helper from
+> > kprobe program attached by fprobe link.
 > >
-> > The fprobe API allows to attach probe on multiple functions at once very
-> > fast, because it works on top of ftrace. On the other hand this limits
-> > the probe point to the function entry or return.
+> > The bpf_cookie is provided by array of u64 values, where
+> > each value is paired with provided function address with
+> > the same array index.
 > >
-> > The kprobe program gets the same pt_regs input ctx as when it's attached
-> > through the perf API.
-> >
-> > Adding new attach type BPF_TRACE_FPROBE that enables such link for kprobe
-> > program.
-> >
-> > User provides array of addresses or symbols with count to attach the kprobe
-> > program to. The new link_create uapi interface looks like:
-> >
-> >   struct {
-> >           __aligned_u64   syms;
-> >           __aligned_u64   addrs;
-> >           __u32           cnt;
-> >           __u32           flags;
-> >   } fprobe;
-> >
-> > The flags field allows single BPF_F_FPROBE_RETURN bit to create return fprobe.
-> >
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > ---
-> >  include/linux/bpf_types.h      |   1 +
-> >  include/uapi/linux/bpf.h       |  13 ++
-> >  kernel/bpf/syscall.c           | 248 ++++++++++++++++++++++++++++++++-
-> >  tools/include/uapi/linux/bpf.h |  13 ++
-> >  4 files changed, 270 insertions(+), 5 deletions(-)
+> >  include/linux/bpf.h            |  2 +
+> >  include/uapi/linux/bpf.h       |  1 +
+> >  kernel/bpf/syscall.c           | 83 +++++++++++++++++++++++++++++++++-
+> >  kernel/trace/bpf_trace.c       | 16 ++++++-
+> >  tools/include/uapi/linux/bpf.h |  1 +
+> >  5 files changed, 100 insertions(+), 3 deletions(-)
 > >
-> 
-> [...]
-> 
+> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > index 6eb0b180d33b..7b65f05c0487 100644
+> > --- a/include/linux/bpf.h
+> > +++ b/include/linux/bpf.h
+> > @@ -1301,6 +1301,8 @@ static inline void bpf_reset_run_ctx(struct bpf_run_ctx *old_ctx)
+> >  #endif
+> >  }
 > >
-> > +#ifdef CONFIG_FPROBE
+> > +u64 bpf_fprobe_cookie(struct bpf_run_ctx *ctx, u64 ip);
 > > +
-> > +struct bpf_fprobe_link {
-> > +       struct bpf_link link;
-> > +       struct fprobe fp;
-> > +       unsigned long *addrs;
-> > +};
-> > +
-> > +static void bpf_fprobe_link_release(struct bpf_link *link)
-> > +{
-> > +       struct bpf_fprobe_link *fprobe_link;
-> > +
-> > +       fprobe_link = container_of(link, struct bpf_fprobe_link, link);
-> > +       unregister_fprobe(&fprobe_link->fp);
-> > +}
-> > +
-> > +static void bpf_fprobe_link_dealloc(struct bpf_link *link)
-> > +{
-> > +       struct bpf_fprobe_link *fprobe_link;
-> > +
-> > +       fprobe_link = container_of(link, struct bpf_fprobe_link, link);
-> > +       kfree(fprobe_link->addrs);
-> > +       kfree(fprobe_link);
-> > +}
-> > +
-> > +static const struct bpf_link_ops bpf_fprobe_link_lops = {
-> > +       .release = bpf_fprobe_link_release,
-> > +       .dealloc = bpf_fprobe_link_dealloc,
-> > +};
-> > +
+> >  /* BPF program asks to bypass CAP_NET_BIND_SERVICE in bind. */
+> >  #define BPF_RET_BIND_NO_CAP_NET_BIND_SERVICE                   (1 << 0)
+> >  /* BPF program asks to set CN on the packet. */
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index c0912f0a3dfe..0dc6aa4f9683 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -1484,6 +1484,7 @@ union bpf_attr {
+> >                                 __aligned_u64   addrs;
+> >                                 __u32           cnt;
+> >                                 __u32           flags;
+> > +                               __aligned_u64   bpf_cookies;
 > 
-> should this whole new link implementation (including
-> fprobe_link_prog_run() below) maybe live in kernel/trace/bpf_trace.c?
-> Seems a bit more fitting than kernel/bpf/syscall.c
-
-right, it's trace related
-
-> 
-> > +static int fprobe_link_prog_run(struct bpf_fprobe_link *fprobe_link,
-> > +                               struct pt_regs *regs)
-> > +{
-> > +       int err;
-> > +
-> > +       if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
-> > +               err = 0;
-> > +               goto out;
-> > +       }
-> > +
-> > +       rcu_read_lock();
-> > +       migrate_disable();
-> > +       err = bpf_prog_run(fprobe_link->link.prog, regs);
-> > +       migrate_enable();
-> > +       rcu_read_unlock();
-> > +
-> > + out:
-> > +       __this_cpu_dec(bpf_prog_active);
-> > +       return err;
-> > +}
-> > +
-> > +static void fprobe_link_entry_handler(struct fprobe *fp, unsigned long entry_ip,
-> > +                                     struct pt_regs *regs)
-> > +{
-> > +       unsigned long saved_ip = instruction_pointer(regs);
-> > +       struct bpf_fprobe_link *fprobe_link;
-> > +
-> > +       /*
-> > +        * Because fprobe's regs->ip is set to the next instruction of
-> > +        * dynamic-ftrace insturction, correct entry ip must be set, so
-> > +        * that the bpf program can access entry address via regs as same
-> > +        * as kprobes.
-> > +        */
-> > +       instruction_pointer_set(regs, entry_ip);
-> > +
-> > +       fprobe_link = container_of(fp, struct bpf_fprobe_link, fp);
-> > +       fprobe_link_prog_run(fprobe_link, regs);
-> > +
-> > +       instruction_pointer_set(regs, saved_ip);
-> > +}
-> > +
-> > +static void fprobe_link_exit_handler(struct fprobe *fp, unsigned long entry_ip,
-> > +                                    struct pt_regs *regs)
-> 
-> isn't it identical to fprobe_lnk_entry_handler? Maybe use one callback
-> for both entry and exit?
-
-heh, did not notice that :) yep, looks that way, will check
-
-> 
-> > +{
-> > +       unsigned long saved_ip = instruction_pointer(regs);
-> > +       struct bpf_fprobe_link *fprobe_link;
-> > +
-> > +       instruction_pointer_set(regs, entry_ip);
-> > +
-> > +       fprobe_link = container_of(fp, struct bpf_fprobe_link, fp);
-> > +       fprobe_link_prog_run(fprobe_link, regs);
-> > +
-> > +       instruction_pointer_set(regs, saved_ip);
-> > +}
-> > +
-> > +static int fprobe_resolve_syms(const void *usyms, u32 cnt,
-> > +                              unsigned long *addrs)
-> > +{
-> > +       unsigned long addr, size;
-> > +       const char **syms;
-> > +       int err = -ENOMEM;
-> > +       unsigned int i;
-> > +       char *func;
-> > +
-> > +       size = cnt * sizeof(*syms);
-> > +       syms = kzalloc(size, GFP_KERNEL);
-> 
-> any reason not to use kvzalloc() here?
-
-probably just my ignorance ;-) will check
-
-> 
-> > +       if (!syms)
-> > +               return -ENOMEM;
-> > +
-> 
-> [...]
-> 
-> > +
-> > +static int bpf_fprobe_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-> > +{
-> > +       struct bpf_fprobe_link *link = NULL;
-> > +       struct bpf_link_primer link_primer;
-> > +       unsigned long *addrs;
-> > +       u32 flags, cnt, size;
-> > +       void __user *uaddrs;
-> > +       void __user *usyms;
-> > +       int err;
-> > +
-> > +       /* no support for 32bit archs yet */
-> > +       if (sizeof(u64) != sizeof(void *))
-> > +               return -EINVAL;
-> 
-> -EOPNOTSUPP?
+> maybe put it right after addrs, they are closely related and cnt
+> describes all of syms/addrs/cookies.
 
 ok
 
 > 
+> >                         } fprobe;
+> >                 };
+> >         } link_create;
+> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> > index 0cfbb112c8e1..6c5e74bc43b6 100644
+> > --- a/kernel/bpf/syscall.c
+> > +++ b/kernel/bpf/syscall.c
+> > @@ -33,6 +33,8 @@
+> >  #include <linux/rcupdate_trace.h>
+> >  #include <linux/memcontrol.h>
+> >  #include <linux/fprobe.h>
+> > +#include <linux/bsearch.h>
+> > +#include <linux/sort.h>
+> >
+> >  #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+> >                           (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+> > @@ -3025,10 +3027,18 @@ static int bpf_perf_link_attach(const union bpf_attr *attr, struct bpf_prog *pro
+> >
+> >  #ifdef CONFIG_FPROBE
+> >
+> > +struct bpf_fprobe_cookie {
+> > +       unsigned long addr;
+> > +       u64 bpf_cookie;
+> > +};
 > > +
-> > +       if (prog->expected_attach_type != BPF_TRACE_FPROBE)
-> > +               return -EINVAL;
-> > +
-> > +       flags = attr->link_create.fprobe.flags;
-> > +       if (flags & ~BPF_F_FPROBE_RETURN)
-> > +               return -EINVAL;
-> > +
-> > +       uaddrs = u64_to_user_ptr(attr->link_create.fprobe.addrs);
-> > +       usyms = u64_to_user_ptr(attr->link_create.fprobe.syms);
-> > +       if ((!uaddrs && !usyms) || (uaddrs && usyms))
-> > +               return -EINVAL;
+> >  struct bpf_fprobe_link {
+> >         struct bpf_link link;
+> >         struct fprobe fp;
+> >         unsigned long *addrs;
+> > +       struct bpf_run_ctx run_ctx;
+> > +       struct bpf_fprobe_cookie *bpf_cookies;
 > 
-> !!uaddrs == !!usyms ?
+> you already have all the addrs above, why keeping a second copy of
+> each addrs in bpf_fprobe_cookie. Let's have two arrays: addrs
+> (unsigned long) and cookies (u64) and make sure that they are sorted
+> together. Then lookup addrs, calculate index, use that index to fetch
+> cookie.
+> 
+> Seems like sort_r() provides exactly the interface you'd need to do
+> this very easily. Having addrs separate from cookies also a bit
+> advantageous in terms of TLB misses (if you need any more persuasion
+> ;)
 
-ah right, will change
+no persuation needed, I actually tried that but it turned out sort_r
+is not ready yet ;-)
+
+because you can't pass priv pointer to the swap callback, so we can't
+swap the other array.. I did a change to allow that, but it's not trivial
+and will need some bigger testing/review because the original sort
+calls sort_r, and of course there are many 'sort' users ;-)
 
 > 
+> > +       u32 cnt;
+> >  };
+> >
+> >  static void bpf_fprobe_link_release(struct bpf_link *link)
+> > @@ -3045,6 +3055,7 @@ static void bpf_fprobe_link_dealloc(struct bpf_link *link)
+> >
+> >         fprobe_link = container_of(link, struct bpf_fprobe_link, link);
+> >         kfree(fprobe_link->addrs);
+> > +       kfree(fprobe_link->bpf_cookies);
+> >         kfree(fprobe_link);
+> >  }
+> >
+> > @@ -3053,9 +3064,37 @@ static const struct bpf_link_ops bpf_fprobe_link_lops = {
+> >         .dealloc = bpf_fprobe_link_dealloc,
+> >  };
+> >
+> > +static int bpf_fprobe_cookie_cmp(const void *_a, const void *_b)
+> > +{
+> > +       const struct bpf_fprobe_cookie *a = _a;
+> > +       const struct bpf_fprobe_cookie *b = _b;
 > > +
-> > +       cnt = attr->link_create.fprobe.cnt;
-> > +       if (!cnt)
-> > +               return -EINVAL;
+> > +       if (a->addr == b->addr)
+> > +               return 0;
+> > +       return a->addr < b->addr ? -1 : 1;
+> > +}
 > > +
-> > +       size = cnt * sizeof(*addrs);
-> > +       addrs = kzalloc(size, GFP_KERNEL);
+> > +u64 bpf_fprobe_cookie(struct bpf_run_ctx *ctx, u64 ip)
+> > +{
+> > +       struct bpf_fprobe_link *fprobe_link;
+> > +       struct bpf_fprobe_cookie *val, key = {
+> > +               .addr = (unsigned long) ip,
+> > +       };
+> > +
+> > +       if (!ctx)
+> > +               return 0;
 > 
-> same, why not kvzalloc? Also, aren't you overwriting each addrs entry
-> anyway, so "z" is not necessary, right?
+> is it allowed to have ctx == NULL?
 
-true, no need for zeroing
+nope, I was also thinking this is more 'WARN_ON[_ONCE]' check
+
+> 
+> > +       fprobe_link = container_of(ctx, struct bpf_fprobe_link, run_ctx);
+> > +       if (!fprobe_link->bpf_cookies)
+> > +               return 0;
+> > +       val = bsearch(&key, fprobe_link->bpf_cookies, fprobe_link->cnt,
+> > +                     sizeof(key), bpf_fprobe_cookie_cmp);
+> > +       return val ? val->bpf_cookie : 0;
+> > +}
+> > +
+> >  static int fprobe_link_prog_run(struct bpf_fprobe_link *fprobe_link,
+> >                                 struct pt_regs *regs)
+> >  {
+> > +       struct bpf_run_ctx *old_run_ctx;
+> >         int err;
+> >
+> >         if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> > @@ -3063,12 +3102,16 @@ static int fprobe_link_prog_run(struct bpf_fprobe_link *fprobe_link,
+> >                 goto out;
+> >         }
+> >
+> > +       old_run_ctx = bpf_set_run_ctx(&fprobe_link->run_ctx);
+> > +
+> >         rcu_read_lock();
+> >         migrate_disable();
+> >         err = bpf_prog_run(fprobe_link->link.prog, regs);
+> >         migrate_enable();
+> >         rcu_read_unlock();
+> >
+> > +       bpf_reset_run_ctx(old_run_ctx);
+> > +
+> >   out:
+> >         __this_cpu_dec(bpf_prog_active);
+> >         return err;
+> > @@ -3161,10 +3204,12 @@ static int fprobe_resolve_syms(const void *usyms, u32 cnt,
+> >
+> >  static int bpf_fprobe_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >  {
+> > +       struct bpf_fprobe_cookie *bpf_cookies = NULL;
+> >         struct bpf_fprobe_link *link = NULL;
+> >         struct bpf_link_primer link_primer;
+> > +       void __user *ubpf_cookies;
+> > +       u32 flags, cnt, i, size;
+> >         unsigned long *addrs;
+> > -       u32 flags, cnt, size;
+> >         void __user *uaddrs;
+> >         void __user *usyms;
+> >         int err;
+> > @@ -3205,6 +3250,37 @@ static int bpf_fprobe_link_attach(const union bpf_attr *attr, struct bpf_prog *p
+> >                         goto error;
+> >         }
+> >
+> > +       ubpf_cookies = u64_to_user_ptr(attr->link_create.fprobe.bpf_cookies);
+> 
+> nit: let's call all this "cookies", this bpf_ prefix feels a bit
+> redundant (I know about perf_event.bpf_cookie, but still).
+
+ok
+
+> 
+> > +       if (ubpf_cookies) {
+> > +               u64 *tmp;
+> > +
+> > +               err = -ENOMEM;
+> > +               tmp = kzalloc(size, GFP_KERNEL);
+> 
+> kvmalloc?
+
+ok
 
 thanks,
 jirka
