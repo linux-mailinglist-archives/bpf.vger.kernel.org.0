@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0754AE395
-	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 23:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 163A94AE387
+	for <lists+bpf@lfdr.de>; Tue,  8 Feb 2022 23:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243764AbiBHWXG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 17:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
+        id S1386493AbiBHWW7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 17:22:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1387246AbiBHWMe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 17:12:34 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB1CC0612B8
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 14:12:32 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id c188so869917iof.6
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 14:12:32 -0800 (PST)
+        with ESMTP id S1387253AbiBHWOR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 17:14:17 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BD1C0612B8
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 14:14:16 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id s18so826331ioa.12
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 14:14:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=q/JRuom9cxKorU/cRFTyfuqc+/tlOWGfQ5tERGHOm7Y=;
-        b=H+LUp+guAYgCMg9MXnZ9qW1CAqS1ybgo7+B/OgD7t8ySt3/dB0nzzaOqPNGo3QVHHi
-         SlRPmf6OKCPmzLdSe7teARWY1LklkfQPs041gquCJLCbc9Hz99CgVNDGh+OjrgFEqKTq
-         gphjTqIkNY+FwaYIlqr4NINcNuoSYmwU4R6jLOqPqkbDxLi1SH+zzhSfCmIawalE6ZLG
-         2Uk1QGFn/KoPTXx6IaQus/w7LZD4afvFNYOupYqRCMjIIQR3v3dErTm8wcnDFN3I7OO9
-         zd/HqOR+ecA3OMZScDa5FvdqVX3bKKUdqJRYEF/ZvlXgXIF+BptXwXhEbORCJyuUAogZ
-         m8vQ==
+        bh=2LdxQlBQ8/TvLVNrRm8ZrnrXZDWaEwW134kzxx2JltA=;
+        b=AHhc9mW0C7kdRN9BuXvhiZ8Y9ZgZWcdp31GpN+Mai+5uvcgeX9fliTP7rNSsg3AKJz
+         BdzQCv7PJaIjg9JkKhnNLiYwQw3WpXzlvtaDbByCebMGX+UVPQm/UzlRypvPnY0YJsLz
+         CTtPCmCsgsrU5n/eWXxFm7s6mztrSOZgUDVj/41RCLEpjh7AqvsCB7ZMS3/HltAlKf+i
+         F23fmn1X3BSTM/PWViicIMQGQwC94q9qinb60h5ztXhzRhZRqo6HxyNrGi579DhtNJ2Y
+         u76sYHDhZeKh42U1akabgj0yCvQaJBF4A0wt2z2MEBByx50QB9bpwcnPI9GSYEGk/sS/
+         PmkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=q/JRuom9cxKorU/cRFTyfuqc+/tlOWGfQ5tERGHOm7Y=;
-        b=3LG0OowEtV2HAzLaZtPTPIIeM2Th5aO3U4gkEgINBMek2PQpWNMud8RoXZIncKP4+W
-         JiWjMlRu/aY+NXa85GnFKM7lxrVbupvBqGfmRv7SRCoO0euNCEOBPpz246QBaRVfWNwU
-         QzpUOVwtOoKMYN+Jg4WWcvWx6AA4ESBbJBgWUBqbT8VSWgmYdTe2UwXkv2dHxCvrsPzD
-         vqBtneluGRjhpaMXvIA6cIe769MeqR64zY8He1mc+Dxtd7kBu8siM+s8T4KdfGx4WCXi
-         NSec+mbGoY1+AO/yVaLnE1HMZfT6T9xbLUKIR0DTi2MMnsCyaq34sN41/ADOIk9EYpjx
-         GHTw==
-X-Gm-Message-State: AOAM532M+jKlNKocOAFzEf5PbtRM3MtNbdyvHKLRg8NrTTmCa14hgYzi
-        d+JzQi3J8jA1vmLYHwQ4P1DyRKYPK/KCf1+Metg=
-X-Google-Smtp-Source: ABdhPJxZSdmJr+A2Lr7e7s66+W377Q+K8vzOZubQjGHhNaU2B58+/2eJW/u7wV5VQ6c9DaEdiuo/LZHkB4hyNNJ2LAk=
-X-Received: by 2002:a02:1181:: with SMTP id 123mr3106870jaf.93.1644358351463;
- Tue, 08 Feb 2022 14:12:31 -0800 (PST)
+        bh=2LdxQlBQ8/TvLVNrRm8ZrnrXZDWaEwW134kzxx2JltA=;
+        b=D2oD/8C05t41nmrC+J4ABN22UJWFgk4x8tRyF9VXCiCV/ZQnrRwj99S5oypS4KEFCl
+         qBSGhM7UQ8gPC/gqqriK863cOM9Cz+MnKiqa/SfLqaoUGKHWp3mUWnu9u4C16CZq6iwB
+         1Wd9HnKN4ArEEKdvEfj9iC1OcyanpcAEVGCOdXNHlAn37nauCHGuGrSO0s+ThK/Fjngx
+         Dt80G140spXBNeXu24zKkL/Av4PojcGj2bnvpEaBji3e6ptscqalfF3TyUTKMb3dyueS
+         FzkdVX1OAYq3va2aIax4FTJA8Zr6R3tgEQlw34zVjVAKG5VNCSEZiQdc50CuStvtJlP/
+         EX8w==
+X-Gm-Message-State: AOAM531uo2e/BVWq/coK/INaF4WCc7W943rj1dEu8ZZsyUK8sIMobf1r
+        qGnR3siVCjOXHjbXEEJAAD1ME5Dm3eMDrGQAQI0=
+X-Google-Smtp-Source: ABdhPJycHV0quE5lOaCgu0k2/FXwj2k+V49tRBJHLAzLvgFkXnKaoboR+8rjWZNEJrAt4gVC7Zempr2pVCCa4DJ90Is=
+X-Received: by 2002:a02:1181:: with SMTP id 123mr3109351jaf.93.1644358455557;
+ Tue, 08 Feb 2022 14:14:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20220208051635.2160304-1-iii@linux.ibm.com> <20220208051635.2160304-9-iii@linux.ibm.com>
-In-Reply-To: <20220208051635.2160304-9-iii@linux.ibm.com>
+References: <20220208051635.2160304-1-iii@linux.ibm.com> <20220208051635.2160304-11-iii@linux.ibm.com>
+In-Reply-To: <20220208051635.2160304-11-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Feb 2022 14:12:20 -0800
-Message-ID: <CAEf4Bzbt4Bj=a0QmmDyrRE0dk1khvKE6XqErH2vimGp-Smi+oQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 08/14] libbpf: Use struct pt_regs when
- compiling with kernel headers
+Date:   Tue, 8 Feb 2022 14:14:04 -0800
+Message-ID: <CAEf4BzbWqzWDhvZqT9WqMhwXpnRX7m85XTHQ3zacwmtdhJJDeg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 10/14] libbpf: Move data structure
+ manipulation macros to bpf_common_helpers.h
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -76,78 +76,131 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Feb 7, 2022 at 9:16 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> Andrii says: "... with CO-RE and vmlinux.h it would be more reliable
-> and straightforward to just stick to kernel-internal struct pt_regs
-> everywhere ...".
->
-> Actually, if vmlinux.h is available, then it's ok to do so for both
-> CO-RE and non-CO-RE cases, since the beginning of struct pt_regs must
-> match (struct) user_pt_regs, which must never change.
->
-> Implement this by not defining __PT_REGS_CAST if the user included
-> vmlinux.h.
+> These macros are useful for both libbpf and bpf progs, so put them into
+> a separate header dedicated to this use case.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
-
-If we are using CO-RE we don't have to assume vmlinux.h, we can define
-our own definition of pt_regs with custom "flavor":
-
-struct pt_regs___s390x {
-    long gprs[10];
-    long orig_gpr2; /* whatever the right types and names, but order
-doesn't matter */
-} __attribute__((preserve_access_index));
-
-
-And then use `struct pt_regs__s390x` for s390x macros. That way we
-don't assume any specific included header, we have minimal definition
-we need (and it can be different for each architecture. It's still
-CO-RE, still relocatable, and we don't need all these ugly #if
-defined() checks.
-
->  tools/lib/bpf/bpf_tracing.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  tools/lib/bpf/Makefile                 |  2 +-
+>  tools/lib/bpf/bpf_common_helpers.h     | 30 ++++++++++++++++++++++++++
+>  tools/lib/bpf/bpf_helpers.h            | 15 +------------
+>  tools/testing/selftests/bpf/bpf_util.h | 10 +--------
+>  4 files changed, 33 insertions(+), 24 deletions(-)
+>  create mode 100644 tools/lib/bpf/bpf_common_helpers.h
 >
-> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
-> index 7a015ee8fb11..07e291d77e83 100644
-> --- a/tools/lib/bpf/bpf_tracing.h
-> +++ b/tools/lib/bpf/bpf_tracing.h
-> @@ -118,8 +118,11 @@
+> diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
+> index b8b37fe76006..60b06c22e0a1 100644
+> --- a/tools/lib/bpf/Makefile
+> +++ b/tools/lib/bpf/Makefile
+> @@ -239,7 +239,7 @@ install_lib: all_cmd
 >
->  #define __BPF_ARCH_HAS_SYSCALL_WRAPPER
+>  SRC_HDRS := bpf.h libbpf.h btf.h libbpf_common.h libbpf_legacy.h xsk.h      \
+>             bpf_helpers.h bpf_tracing.h bpf_endian.h bpf_core_read.h         \
+> -           skel_internal.h libbpf_version.h
+> +           skel_internal.h libbpf_version.h bpf_common_helpers.h
+
+Wait, how did we get from fixing s390x syscall arg fetching to
+exposing a new public API header from libbpf?... I feel like I missed
+a few revisions and discussion threads.
+
+>  GEN_HDRS := $(BPF_GENERATED)
 >
-> +#if !defined(__KERNEL__) && !defined(__VMLINUX_H__)
->  /* s390 provides user_pt_regs instead of struct pt_regs to userspace */
->  #define __PT_REGS_CAST(x) ((const user_pt_regs *)(x))
+>  INSTALL_PFX := $(DESTDIR)$(prefix)/include/bpf
+> diff --git a/tools/lib/bpf/bpf_common_helpers.h b/tools/lib/bpf/bpf_common_helpers.h
+> new file mode 100644
+> index 000000000000..79db303b6ae2
+> --- /dev/null
+> +++ b/tools/lib/bpf/bpf_common_helpers.h
+> @@ -0,0 +1,30 @@
+> +/* SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause) */
+> +#ifndef __BPF_COMMON_HELPERS__
+> +#define __BPF_COMMON_HELPERS__
+> +
+> +/*
+> + * Helper macros that can be used both by libbpf and bpf progs.
+> + */
+> +
+> +#ifndef offsetof
+> +#define offsetof(TYPE, MEMBER) ((unsigned long)&((TYPE *)0)->MEMBER)
 > +#endif
 > +
->  #define __PT_PARM1_REG gprs[2]
->  #define __PT_PARM2_REG gprs[3]
->  #define __PT_PARM3_REG gprs[4]
-> @@ -148,8 +151,11 @@
->
->  #define __BPF_ARCH_HAS_SYSCALL_WRAPPER
->
-> +#if !defined(__KERNEL__) && !defined(__VMLINUX_H__)
->  /* arm64 provides struct user_pt_regs instead of struct pt_regs to userspace */
->  #define __PT_REGS_CAST(x) ((const struct user_pt_regs *)(x))
+> +#ifndef sizeof_field
+> +#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
 > +#endif
 > +
->  #define __PT_PARM1_REG regs[0]
->  #define __PT_PARM2_REG regs[1]
->  #define __PT_PARM3_REG regs[2]
-> @@ -207,7 +213,10 @@
->
->  #elif defined(bpf_target_riscv)
->
-> +#if !defined(__KERNEL__) && !defined(__VMLINUX_H__)
->  #define __PT_REGS_CAST(x) ((const struct user_regs_struct *)(x))
+> +#ifndef offsetofend
+> +#define offsetofend(TYPE, MEMBER) \
+> +       (offsetof(TYPE, MEMBER) + sizeof_field(TYPE, MEMBER))
 > +#endif
 > +
->  #define __PT_PARM1_REG a0
->  #define __PT_PARM2_REG a1
->  #define __PT_PARM3_REG a2
+> +#ifndef container_of
+> +#define container_of(ptr, type, member)                                \
+> +       ({                                                      \
+> +               void *__mptr = (void *)(ptr);                   \
+> +               ((type *)(__mptr - offsetof(type, member)));    \
+> +       })
+> +#endif
+> +
+> +#endif
+> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+> index 44df982d2a5c..1e8b609c1000 100644
+> --- a/tools/lib/bpf/bpf_helpers.h
+> +++ b/tools/lib/bpf/bpf_helpers.h
+> @@ -2,6 +2,7 @@
+>  #ifndef __BPF_HELPERS__
+>  #define __BPF_HELPERS__
+>
+> +#include "bpf_common_helpers.h"
+>  /*
+>   * Note that bpf programs need to include either
+>   * vmlinux.h (auto-generated from BTF) or linux/types.h
+> @@ -61,20 +62,6 @@
+>  #define KERNEL_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + ((c) > 255 ? 255 : (c)))
+>  #endif
+>
+> -/*
+> - * Helper macros to manipulate data structures
+> - */
+> -#ifndef offsetof
+> -#define offsetof(TYPE, MEMBER) ((unsigned long)&((TYPE *)0)->MEMBER)
+> -#endif
+> -#ifndef container_of
+> -#define container_of(ptr, type, member)                                \
+> -       ({                                                      \
+> -               void *__mptr = (void *)(ptr);                   \
+> -               ((type *)(__mptr - offsetof(type, member)));    \
+> -       })
+> -#endif
+> -
+>  /*
+>   * Helper macro to throw a compilation error if __bpf_unreachable() gets
+>   * built into the resulting code. This works given BPF back end does not
+> diff --git a/tools/testing/selftests/bpf/bpf_util.h b/tools/testing/selftests/bpf/bpf_util.h
+> index a3352a64c067..bc0b741b1eef 100644
+> --- a/tools/testing/selftests/bpf/bpf_util.h
+> +++ b/tools/testing/selftests/bpf/bpf_util.h
+> @@ -6,6 +6,7 @@
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <errno.h>
+> +#include <bpf/bpf_common_helpers.h>
+>  #include <bpf/libbpf.h> /* libbpf_num_possible_cpus */
+>
+>  static inline unsigned int bpf_num_possible_cpus(void)
+> @@ -31,13 +32,4 @@ static inline unsigned int bpf_num_possible_cpus(void)
+>  # define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+>  #endif
+>
+> -#ifndef sizeof_field
+> -#define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
+> -#endif
+> -
+> -#ifndef offsetofend
+> -#define offsetofend(TYPE, MEMBER) \
+> -       (offsetof(TYPE, MEMBER) + sizeof_field(TYPE, MEMBER))
+> -#endif
+> -
+>  #endif /* __BPF_UTIL__ */
 > --
 > 2.34.1
 >
