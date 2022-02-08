@@ -2,204 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCAF4AE564
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 00:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAB24AE569
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 00:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbiBHXYW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 18:24:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        id S236579AbiBHX1C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 18:27:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234907AbiBHXYV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 18:24:21 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80B83C061576;
-        Tue,  8 Feb 2022 15:24:19 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id b5so291358ile.11;
-        Tue, 08 Feb 2022 15:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=icW1CmJt7V7nnYt5AEHzW1LfQUR9u0/06jxrbW0ydIE=;
-        b=jWTvazfUXIGZM4J993OHGxm2ZT3pV/4rQPbUpZfltxws6BXlwBQBM2zYTSjY4Rm/Jt
-         pmCf2lp0vaijmggY0iiIvc0is4diW9zh72iCOlZHinv7lbxSSZU962g9QzsHC55DN7t/
-         6Ov6Op+kTCxBjT94pLbDXuyQ71l7it10AJouojfJCWSDGCeBLdHSGFLdrmAYVN1LXAgf
-         NTgdRwvZendUKApqUXOKwNFdEN1AseLeyEHkBHAbrAUGgiWSbSKwOK2W40bPf08L5kq5
-         sAbq7euYFesaYWWTcr5jmpyMk+xTcwyRDHWb+IkpT4CUbkuVSiy0BMjFawXX3HAdTAOu
-         wwyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=icW1CmJt7V7nnYt5AEHzW1LfQUR9u0/06jxrbW0ydIE=;
-        b=JprkbFj/ZYZocFmqI0GwfA+8R5RPw8oNl46UospMctLu3ki+q09Luk/11zh9TJYh7q
-         XWpqYf6QXTza07EaIfTcnENxNmK2ty3zZUnpnjL3WAc4/cAS0CofgpGDwSg/88as/Puq
-         Ppsntdq/vL0KB3bK0NM+wtqIaEF4topYU5ptTuLf/CsgDGwJvk6RY9mic8rJBo5fSSNf
-         UFi0+0VkJAcgbvCj2d/3ZDl/0ni1MIyuEVn21yKFG5mgVY2ngDbbzRuCUzQDFQWGhnUP
-         vzqU1JBK3EkdyEu0iq75o6SGiNqh+RAlOc3cOR4jiU3XJTXnqoY2qg4chIjEXDz/6238
-         eJnA==
-X-Gm-Message-State: AOAM531x1dok55d1nnrOf1O2EpWl7L2y/ZelcBVZZlc9XsJbjfoArQlZ
-        hNX+Y0hZCKEy2gMPELMzUTUvQJKdetd9uGWtqrA=
-X-Google-Smtp-Source: ABdhPJwNnNt82Ke50ji96jl+FazzkYyliOjKQ0J1l3/mxC7Bq/ioquSrgo/Vj0t9xSSu5YUxI/clxSsg1CoqZiW/JLw=
-X-Received: by 2002:a05:6e02:1bcd:: with SMTP id x13mr3347247ilv.98.1644362658855;
- Tue, 08 Feb 2022 15:24:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20220202135333.190761-1-jolsa@kernel.org> <20220202135333.190761-9-jolsa@kernel.org>
- <CAEf4Bzbi3t_zZL2=8NyBeJ9q95ODH7pXF+EybtgBQp7LTyfr6Q@mail.gmail.com> <YgI0zJDJ3jrb3q49@krava>
-In-Reply-To: <YgI0zJDJ3jrb3q49@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Feb 2022 15:24:07 -0800
-Message-ID: <CAEf4BzaJc6uE52JL8Ac=nam0KOS_+haWh3pBVOSMsDM2jv_AXQ@mail.gmail.com>
-Subject: Re: [PATCH 8/8] selftest/bpf: Add fprobe test for bpf_cookie values
-To:     Jiri Olsa <jolsa@redhat.com>
+        with ESMTP id S234907AbiBHX1A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 18:27:00 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829DDC061576
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 15:26:59 -0800 (PST)
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 218LAJxB010856;
+        Tue, 8 Feb 2022 23:26:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=4N7PXe++9OQZaloz9PQammt7hRj3Dc5Q7D6IG8NEJ1Y=;
+ b=UGrhjw0MRGRovb2yKnJr/DbVwZrNPGOfCOWK2s7JjHe3zp9jvHE5HFdl3MJvNJLBAyIQ
+ jN52dQJG/PEEIfAAmiYlElMm0V+NROAFb8GG0/nxEbKZCI/nLvIZ3lMLkYuZjqRgbp65
+ 1eppc6lV6UoQ/RUlr98F3Zr0QJp8mZ79tZpzMCppYQv/ICLGRbb3tSuT9gGCBQ+BCytZ
+ fcB9Bfu2OjKlnQg+2buJliAuInr9SspFXkeo8ZDKCxlgtSI0K2oz0TOEJZOFwyniXQYu
+ v0JDQ8/acED2Wyad62uhJLQTkEWyH4bjfgnYFLiXcLMmXELGwzHNipY9/k/lLr+JZ888 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e406ptp29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 23:26:40 +0000
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 218NCd9p000395;
+        Tue, 8 Feb 2022 23:26:40 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e406ptp1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 23:26:39 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 218N99SI020730;
+        Tue, 8 Feb 2022 23:26:37 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3e1gv99xk0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 23:26:37 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 218NQY4346465378
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Feb 2022 23:26:34 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A0D242054;
+        Tue,  8 Feb 2022 23:26:34 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC80E42045;
+        Tue,  8 Feb 2022 23:26:33 +0000 (GMT)
+Received: from [9.171.78.41] (unknown [9.171.78.41])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Feb 2022 23:26:33 +0000 (GMT)
+Message-ID: <aac0bbcaa484df34484eb928af208743167d50dc.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v4 06/14] libbpf: Add PT_REGS_SYSCALL_REGS macro
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jiri Olsa <olsajiri@gmail.com>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>, bpf <bpf@vger.kernel.org>
+Date:   Wed, 09 Feb 2022 00:26:33 +0100
+In-Reply-To: <CAEf4BzagHVnAEz+22eFU=EeFuwvBGyGUbfT8XCmv4zF97KdUBA@mail.gmail.com>
+References: <20220208051635.2160304-1-iii@linux.ibm.com>
+         <20220208051635.2160304-7-iii@linux.ibm.com>
+         <CAEf4BzagHVnAEz+22eFU=EeFuwvBGyGUbfT8XCmv4zF97KdUBA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: A7leChberKuva_4nOs04EaXFjSnrg1iQ
+X-Proofpoint-GUID: YU3tNy80xyjUzFnZx_R8Pw_eMU4rH9mV
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-08_07,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 impostorscore=0 malwarescore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 spamscore=0 clxscore=1015
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202080134
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 1:16 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Mon, Feb 07, 2022 at 10:59:32AM -0800, Andrii Nakryiko wrote:
-> > On Wed, Feb 2, 2022 at 5:54 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > Adding bpf_cookie test for kprobe attached by fprobe link.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/bpf_cookie.c     | 73 +++++++++++++++++++
-> > >  .../selftests/bpf/progs/fprobe_bpf_cookie.c   | 62 ++++++++++++++++
-> > >  2 files changed, 135 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/fprobe_bpf_cookie.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > > index cd10df6cd0fc..bf70d859c598 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> > > @@ -7,6 +7,7 @@
-> > >  #include <unistd.h>
-> > >  #include <test_progs.h>
-> > >  #include "test_bpf_cookie.skel.h"
-> > > +#include "fprobe_bpf_cookie.skel.h"
-> > >
-> > >  /* uprobe attach point */
-> > >  static void trigger_func(void)
-> > > @@ -63,6 +64,76 @@ static void kprobe_subtest(struct test_bpf_cookie *skel)
-> > >         bpf_link__destroy(retlink2);
-> > >  }
-> > >
-> > > +static void fprobe_subtest(void)
-> > > +{
-> > > +       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
-> > > +       int err, prog_fd, link1_fd = -1, link2_fd = -1;
-> > > +       struct fprobe_bpf_cookie *skel = NULL;
-> > > +       __u32 duration = 0, retval;
-> > > +       __u64 addrs[8], cookies[8];
-> > > +
-> > > +       skel = fprobe_bpf_cookie__open_and_load();
-> > > +       if (!ASSERT_OK_PTR(skel, "fentry_raw_skel_load"))
-> > > +               goto cleanup;
-> > > +
-> > > +       kallsyms_find("bpf_fentry_test1", &addrs[0]);
-> > > +       kallsyms_find("bpf_fentry_test2", &addrs[1]);
-> > > +       kallsyms_find("bpf_fentry_test3", &addrs[2]);
-> > > +       kallsyms_find("bpf_fentry_test4", &addrs[3]);
-> > > +       kallsyms_find("bpf_fentry_test5", &addrs[4]);
-> > > +       kallsyms_find("bpf_fentry_test6", &addrs[5]);
-> > > +       kallsyms_find("bpf_fentry_test7", &addrs[6]);
-> > > +       kallsyms_find("bpf_fentry_test8", &addrs[7]);
-> > > +
-> > > +       cookies[0] = 1;
-> > > +       cookies[1] = 2;
-> > > +       cookies[2] = 3;
-> > > +       cookies[3] = 4;
-> > > +       cookies[4] = 5;
-> > > +       cookies[5] = 6;
-> > > +       cookies[6] = 7;
-> > > +       cookies[7] = 8;
-> > > +
-> > > +       opts.fprobe.addrs = (__u64) &addrs;
-> >
-> > we should have ptr_to_u64() for test_progs, but if not, let's either
-> > add it or it should be (__u64)(uintptr_t)&addrs. Otherwise we'll be
-> > getting compilation warnings on some architectures.
->
-> there's one in btf.c, bpf.c and libbpf.c ;-) so I guess it could go to bpf.h
+On Tue, 2022-02-08 at 14:08 -0800, Andrii Nakryiko wrote:
+> On Mon, Feb 7, 2022 at 9:16 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> > 
+> > Depending on whether or not an arch has ARCH_HAS_SYSCALL_WRAPPER,
+> > syscall arguments must be accessed through a different set of
+> > registers. Provide PT_REGS_SYSCALL_REGS macro to abstract away
+> > that difference.
+> > 
+> > Reported-by: Heiko Carstens <hca@linux.ibm.com>
+> > Co-developed-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> > Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> 
+> Again, there was nothing wrong with the way you did it in v3, please
+> revert to that one.
 
-No, it shouldn't, bpf.h is a public API header. Let's keep internal
-helpers internal. Just copy/paste.
+I've realized that, even though fully correct, v3 looked somewhat
+ad-hoc: it defined PT_REGS_SYSCALL_REGS for different architectures
+without explaining why this particular arch has this parciular way to
+access syscall arguments.
 
->
-> >
-> > > +       opts.fprobe.cnt = 8;
-> > > +       opts.fprobe.bpf_cookies = (__u64) &cookies;
-> > > +       prog_fd = bpf_program__fd(skel->progs.test2);
-> > > +
-> > > +       link1_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FPROBE, &opts);
-> > > +       if (!ASSERT_GE(link1_fd, 0, "link1_fd"))
-> > > +               return;
-> > > +
-> > > +       cookies[0] = 8;
-> > > +       cookies[1] = 7;
-> > > +       cookies[2] = 6;
-> > > +       cookies[3] = 5;
-> > > +       cookies[4] = 4;
-> > > +       cookies[5] = 3;
-> > > +       cookies[6] = 2;
-> > > +       cookies[7] = 1;
-> > > +
-> > > +       opts.flags = BPF_F_FPROBE_RETURN;
-> > > +       prog_fd = bpf_program__fd(skel->progs.test3);
-> > > +
-> > > +       link2_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_FPROBE, &opts);
-> > > +       if (!ASSERT_GE(link2_fd, 0, "link2_fd"))
-> > > +               goto cleanup;
-> > > +
-> > > +       prog_fd = bpf_program__fd(skel->progs.test1);
-> > > +       err = bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> > > +                               NULL, NULL, &retval, &duration);
-> > > +       ASSERT_OK(err, "test_run");
-> > > +       ASSERT_EQ(retval, 0, "test_run");
-> > > +
-> > > +       ASSERT_EQ(skel->bss->test2_result, 8, "test2_result");
-> > > +       ASSERT_EQ(skel->bss->test3_result, 8, "test3_result");
-> > > +
-> > > +cleanup:
-> > > +       close(link1_fd);
-> > > +       close(link2_fd);
-> > > +       fprobe_bpf_cookie__destroy(skel);
-> > > +}
-> > > +
-> > >  static void uprobe_subtest(struct test_bpf_cookie *skel)
-> > >  {
-> > >         DECLARE_LIBBPF_OPTS(bpf_uprobe_opts, opts);
-> > > @@ -249,6 +320,8 @@ void test_bpf_cookie(void)
-> > >
-> > >         if (test__start_subtest("kprobe"))
-> > >                 kprobe_subtest(skel);
-> > > +       if (test__start_subtest("rawkprobe"))
-> >
-> > kprobe.multi?
->
-> yes
->
-> thanks,
-> jirka
->
+So I've decided to switch to the existing terminology, as Naveen
+proposed [1]:
+
+- arches that select ARCH_HAS_SYSCALL_WRAPPER in Kconfig get a
+  __BPF_ARCH_HAS_SYSCALL_WRAPPER in bpf_tracing.h
+
+- syscall handler calling convention is (at least partially) determined
+  by whether or not an arch has a sycall wrapper as described in
+  ARCH_HAS_SYSCALL_WRAPPER help text
+
+I can, of course, switch back to v3 - both patches look functionally
+identical - but this one seems to be a bit easier to understand.
+
+[1]
+https://lore.kernel.org/bpf/1643991537.bfyv1b2oym.naveen@linux.ibm.com/#t
+
+> 
+> >  tools/lib/bpf/bpf_tracing.h | 17 +++++++++++++++++
+> >  1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/tools/lib/bpf/bpf_tracing.h
+> > b/tools/lib/bpf/bpf_tracing.h
+> > index 82f1e935d549..7a015ee8fb11 100644
+> > --- a/tools/lib/bpf/bpf_tracing.h
+> > +++ b/tools/lib/bpf/bpf_tracing.h
+> > @@ -64,6 +64,8 @@
+> > 
+> >  #if defined(bpf_target_x86)
+> > 
+> > +#define __BPF_ARCH_HAS_SYSCALL_WRAPPER
+> > +
+> >  #if defined(__KERNEL__) || defined(__VMLINUX_H__)
+> > 
+> >  #define __PT_PARM1_REG di
+> > @@ -114,6 +116,8 @@
+> > 
+> >  #elif defined(bpf_target_s390)
+> > 
+> > +#define __BPF_ARCH_HAS_SYSCALL_WRAPPER
+> > +
+> >  /* s390 provides user_pt_regs instead of struct pt_regs to
+> > userspace */
+> >  #define __PT_REGS_CAST(x) ((const user_pt_regs *)(x))
+> >  #define __PT_PARM1_REG gprs[2]
+> > @@ -142,6 +146,8 @@
+> > 
+> >  #elif defined(bpf_target_arm64)
+> > 
+> > +#define __BPF_ARCH_HAS_SYSCALL_WRAPPER
+> > +
+> >  /* arm64 provides struct user_pt_regs instead of struct pt_regs to
+> > userspace */
+> >  #define __PT_REGS_CAST(x) ((const struct user_pt_regs *)(x))
+> >  #define __PT_PARM1_REG regs[0]
+> > @@ -344,6 +350,17 @@ struct pt_regs;
+> > 
+> >  #endif /* defined(bpf_target_defined) */
+> > 
+> > +/*
+> > + * When invoked from a syscall handler BPF_KPROBE, returns a
+> > pointer to a
+> > + * struct pt_regs containing syscall arguments, that is suitable
+> > for passing to
+> > + * PT_REGS_PARMn_SYSCALL() and PT_REGS_PARMn_CORE_SYSCALL().
+> > + */
+> > +#ifdef __BPF_ARCH_HAS_SYSCALL_WRAPPER
+> > +#define PT_REGS_SYSCALL_REGS(ctx) ((struct pt_regs
+> > *)PT_REGS_PARM1(ctx))
+> > +#else
+> > +#define PT_REGS_SYSCALL_REGS(ctx) ctx
+> > +#endif
+> > +
+> >  #ifndef ___bpf_concat
+> >  #define ___bpf_concat(a, b) a ## b
+> >  #endif
+> > --
+> > 2.34.1
+> > 
+
