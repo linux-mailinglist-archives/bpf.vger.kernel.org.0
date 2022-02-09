@@ -2,232 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7140D4AE97D
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EFC4AE981
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbiBIFqH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 00:46:07 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:60012 "EHLO
+        id S235585AbiBIFqM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 00:46:12 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:58788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238705AbiBIFkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 00:40:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C5B9C035452
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 21:40:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644385189;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KdjkngOKMA7bg2oJfUtSkQw+6lC1kyEXHsbHAdltn3U=;
-        b=Zrd4BeC3p7uCF7cRFnyXm0aZBpI7N+b8x+7xkcXa5eZXEtOUXeVlkCKRLV0qpHU6QbA5HC
-        BoENYUI777fuUBdfWSkEA0UHAlgbB2gfYT0nNiHPaH8IGrYW9KIY+OdKYTzL9lg5wWBAhb
-        PAz4qgZI6FUrT2ZuE4D6XKZkPR5+paY=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-524-uC0vs1DfMiWZQyKXY0sgbw-1; Wed, 09 Feb 2022 00:39:48 -0500
-X-MC-Unique: uC0vs1DfMiWZQyKXY0sgbw-1
-Received: by mail-lj1-f199.google.com with SMTP id n9-20020a2e82c9000000b002435af2e8b9so607074ljh.20
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 21:39:48 -0800 (PST)
+        with ESMTP id S236669AbiBIFjv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 00:39:51 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB380C00438B
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 21:39:49 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id m8so844530ilg.7
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 21:39:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lxnioln6o+F7clc5D4CXpZgXwRHr0MI68/7pSnQ50Gs=;
+        b=McwurSd7SQeof7Spy/1Q4edxuMql/ZWi/i08hUz+n0CrNpE298+HO+CmUEXblNTzoE
+         ac87iCIbJXpZHgPAqHS5pxxXJmg4hSc9jaPDZeSRE8zk0mmAep4Djq2A5ic9lE05x+GW
+         cCiev/9Y0ITOZoBhYgQpQBJ3w+a+vNCI0kq3/eXGneHWAmTo1kYYsPBsnbETlmlXKTik
+         6fyXVV9+GxWuPMu0PEn3eekMOhC6ySiqerEcCbORoCLoCwxkQ81+Ll/6bReoenj6cJai
+         uy282lIp/zEJ0zyuLWdf+SMR62blOCqxCGC6qdxekh3hHrWmrpGVDp9zKWljdbsX/za/
+         WLmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KdjkngOKMA7bg2oJfUtSkQw+6lC1kyEXHsbHAdltn3U=;
-        b=Q3I6ATpwpL0U1nE5xEv3S6KOd49hFvKBeeWFQU8T3zVDdnvgayLkZcBA3QI7tOH5K/
-         WHgnkmr/7iUFJKeFJ2JIPnPqiC+sTloAELlBnQbCz57z7yw9csXl0xhsXd/boaralzsG
-         eodGpcDdTHhphPXDvTCSYmjs/7x2aSagaXHs83p21bswKzWn30ZOEzVegUkPjLe3OwOf
-         Fqx+NGonIf2ChxCXiUZUeJbtPel/hMV6wuA1G09qkHWj0j+bHjiI56LbWDaApE4QOJec
-         +VM1DcuZXeK/GxctCKS4bWzX+nZwEAsxaUkyqWatLvC/E3las8VoDwjU/3/HXE1stgOT
-         0nFw==
-X-Gm-Message-State: AOAM532V4GioKCcKGCgCZmfkcRAHGQ1gAADnBWU6NreEwzM30PGpdsLE
-        B7Ob3MHXlqlDZ2F2/D06Ge3f1e7pA1RrrYI+TqotVw8dWfZu6azXr4sx4AZYyDFLsuyfjoPY0V3
-        Uw+TAD8AGsDrjgXrLW74rgguxQ6Bm
-X-Received: by 2002:a05:6512:3986:: with SMTP id j6mr507291lfu.84.1644385186741;
-        Tue, 08 Feb 2022 21:39:46 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzZ9V3a+WzslPsO4MNBWqkV/COHINFv3Uj3aM34m0bEvE0naK1G1+iv8ZX11UDJsX92pxLP529TE7r9laOD8mw=
-X-Received: by 2002:a05:6512:3986:: with SMTP id j6mr507283lfu.84.1644385186483;
+         :message-id:subject:to:cc;
+        bh=lxnioln6o+F7clc5D4CXpZgXwRHr0MI68/7pSnQ50Gs=;
+        b=oB4qmF5e7imveVy6D8jNOGWW4TI5017Ac3XpczZhwe6ZFjG91otRiU8FoAMkmFZ5xx
+         qp37yR28zeOdW0mg+ZfIh1dK/PT/u3l7DkaxYyyqy7PRXjzTWtneBB1T2ij5AGhpal+C
+         Dixlf/y9B1ouzBW6WoMY6GZTyRsEYVVLmJqew7WkbLXsyAPFK1KZ+dXZSwzUOzO6oAqP
+         PeAopB8bUPTPsj9BLIDzPSiYFkM2vo6ZLvWyFLWH0CEwwlvrnzI+/DeM5O1QU+EJ7SX5
+         uHU208GvlX7MFlmSdlkZ3F098F3zN4nWa/X/JcqbdGIjZCZ/3hg5wEqwYzquUuaw+zZq
+         l2Tw==
+X-Gm-Message-State: AOAM53278h5jQKgkVIwKfaiHZNxacOtIYxKVQWK5Cq6jzyrXupwKLWn1
+        U+ZT9uuRQ5FUVwSwYji+PYIo6tNj/WeRFE1sbbg=
+X-Google-Smtp-Source: ABdhPJzPp4K104g7x7PxGUctGaTDPSmviH1lWrKCIexnTj7V6X439Z1v4DQTGFHqC1Em4jYYJD6wYiQHllq9pCppRc0=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr330005ili.239.1644385186634;
  Tue, 08 Feb 2022 21:39:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20220126073533.44994-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEspyHTmcSaq9fgpU88VCZGzu21Khp9H+fqL-pb5GLdEpA@mail.gmail.com>
- <1644213739.5846965-1-xuanzhuo@linux.alibaba.com> <7d1e2d5b-a9a1-cbb7-4d80-89df1cb7bf15@redhat.com>
- <1644290085.868939-2-xuanzhuo@linux.alibaba.com> <1644306673.8360631-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1644306673.8360631-1-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 9 Feb 2022 13:39:34 +0800
-Message-ID: <CACGkMEsnupEVKukgdom85gUwbGoLcHT8bM9OqR_U11DzGdz1rw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/17] virtio pci support VIRTIO_F_RING_RESET
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     Jesper Dangaard Brouer <hawk@kernel.org>,
+References: <20220209021745.2215452-1-iii@linux.ibm.com> <20220209021745.2215452-10-iii@linux.ibm.com>
+In-Reply-To: <20220209021745.2215452-10-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Feb 2022 21:39:35 -0800
+Message-ID: <CAEf4BzYunGCapVMZVFznh_qsRmOPdunvk2ZZfJOVVo29vrZwOw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 09/10] libbpf: Fix accessing the first syscall
+ argument on arm64
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 3:56 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote=
-:
+On Tue, Feb 8, 2022 at 6:18 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Tue, 08 Feb 2022 11:14:45 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com=
-> wrote:
-> > On Tue, 8 Feb 2022 10:59:48 +0800, Jason Wang <jasowang@redhat.com> wro=
-te:
-> > >
-> > > =E5=9C=A8 2022/2/7 =E4=B8=8B=E5=8D=882:02, Xuan Zhuo =E5=86=99=E9=81=
-=93:
-> > > > On Mon, 7 Feb 2022 11:39:36 +0800, Jason Wang <jasowang@redhat.com>=
- wrote:
-> > > >> On Wed, Jan 26, 2022 at 3:35 PM Xuan Zhuo <xuanzhuo@linux.alibaba.=
-com> wrote:
-> > > >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >>> The virtio spec already supports the virtio queue reset function.=
- This patch set
-> > > >>> is to add this function to the kernel. The relevant virtio spec i=
-nformation is
-> > > >>> here:
-> > > >>>
-> > > >>>      https://github.com/oasis-tcs/virtio-spec/issues/124
-> > > >>>
-> > > >>> Also regarding MMIO support for queue reset, I plan to support it=
- after this
-> > > >>> patch is passed.
-> > > >>>
-> > > >>> #14-#17 is the disable/enable function of rx/tx pair implemented =
-by virtio-net
-> > > >>> using the new helper.
-> > > >> One thing that came to mind is the steering. E.g if we disable an =
-RX,
-> > > >> should we stop steering packets to that queue?
+> On arm64, the first syscall argument should be accessed via orig_x0
+> (see arch/arm64/include/asm/syscall.h). Currently regs[0] is used
+> instead, leading to bpf_syscall_macro test failure.
 >
-> Regarding this spec, if there are multiple queues disabled at the same ti=
-me, it
-> will be a troublesome problem for the backend to select the queue,
-
-I don't understand this, for such a kind of backend or device it can
-simply claim not to support this feature.
-
-> so I want to
-> directly define that only one queue is allowed to reset at the same time,=
- do you
-> think this is appropriate?
-
-This sounds very complicated. E.g how can we define an API that can
-reset more than one queues? (currently PCI only support MMIO access).
-
+> orig_x0 cannot be added to struct user_pt_regs, since its layout is a
+> part of the ABI. Therefore provide access to it only through
+> PT_REGS_PARM1_CORE_SYSCALL() by using a struct pt_regs flavor.
 >
-> In terms of the implementation of backend queue reselection, it would be =
-more
-> convenient to implement if we drop packets directly. Do you think we must
-> implement this reselection function?
-
-Rethink of this. It should be fine and much simpler.
-
-Thanks
-
+> Reported-by: Heiko Carstens <hca@linux.ibm.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
-> Thanks.
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index f364f1f4710e..928f85f7961c 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -142,8 +142,18 @@
 >
-> > > > Yes, we should reselect a queue.
-> > > >
-> > > > Thanks.
-> > >
-> > >
-> > > Maybe a spec patch for that?
-> >
-> > Yes, I also realized this. Although virtio-net's disable/enable is impl=
-emented
-> > based on queue reset, virtio-net still has to define its own flag and d=
-efine
-> > some more detailed implementations.
-> >
-> > I'll think about it and post a spec patch.
-> >
-> > Thanks.
-> >
-> > >
-> > > Thanks
-> > >
-> > >
-> > > >
-> > > >> Thanks
-> > > >>
-> > > >>> This function is not currently referenced by other
-> > > >>> functions. It is more to show the usage of the new helper, I not =
-sure if they
-> > > >>> are going to be merged together.
-> > > >>>
-> > > >>> Please review. Thanks.
-> > > >>>
-> > > >>> v3:
-> > > >>>    1. keep vq, irq unreleased
-> > > >>>
-> > > >>> Xuan Zhuo (17):
-> > > >>>    virtio_pci: struct virtio_pci_common_cfg add queue_notify_data
-> > > >>>    virtio: queue_reset: add VIRTIO_F_RING_RESET
-> > > >>>    virtio: queue_reset: struct virtio_config_ops add callbacks fo=
-r
-> > > >>>      queue_reset
-> > > >>>    virtio: queue_reset: add helper
-> > > >>>    vritio_ring: queue_reset: extract the release function of the =
-vq ring
-> > > >>>    virtio_ring: queue_reset: split: add __vring_init_virtqueue()
-> > > >>>    virtio_ring: queue_reset: split: support enable reset queue
-> > > >>>    virtio_ring: queue_reset: packed: support enable reset queue
-> > > >>>    virtio_ring: queue_reset: add vring_reset_virtqueue()
-> > > >>>    virtio_pci: queue_reset: update struct virtio_pci_common_cfg a=
-nd
-> > > >>>      option functions
-> > > >>>    virtio_pci: queue_reset: release vq by vp_dev->vqs
-> > > >>>    virtio_pci: queue_reset: setup_vq use vring_setup_virtqueue()
-> > > >>>    virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
-> > > >>>    virtio_net: virtnet_tx_timeout() fix style
-> > > >>>    virtio_net: virtnet_tx_timeout() stop ref sq->vq
-> > > >>>    virtio_net: split free_unused_bufs()
-> > > >>>    virtio_net: support pair disable/enable
-> > > >>>
-> > > >>>   drivers/net/virtio_net.c               | 220 ++++++++++++++++++=
-++++---
-> > > >>>   drivers/virtio/virtio_pci_common.c     |  62 ++++---
-> > > >>>   drivers/virtio/virtio_pci_common.h     |  11 +-
-> > > >>>   drivers/virtio/virtio_pci_legacy.c     |   5 +-
-> > > >>>   drivers/virtio/virtio_pci_modern.c     | 120 +++++++++++++-
-> > > >>>   drivers/virtio/virtio_pci_modern_dev.c |  28 ++++
-> > > >>>   drivers/virtio/virtio_ring.c           | 144 +++++++++++-----
-> > > >>>   include/linux/virtio.h                 |   1 +
-> > > >>>   include/linux/virtio_config.h          |  75 ++++++++-
-> > > >>>   include/linux/virtio_pci_modern.h      |   2 +
-> > > >>>   include/linux/virtio_ring.h            |  42 +++--
-> > > >>>   include/uapi/linux/virtio_config.h     |   7 +-
-> > > >>>   include/uapi/linux/virtio_pci.h        |   2 +
-> > > >>>   13 files changed, 618 insertions(+), 101 deletions(-)
-> > > >>>
-> > > >>> --
-> > > >>> 2.31.0
-> > > >>>
-> > >
-> > _______________________________________________
-> > Virtualization mailing list
-> > Virtualization@lists.linux-foundation.org
-> > https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+>  #elif defined(bpf_target_arm64)
 >
+> +struct pt_regs___arm64 {
+> +       unsigned long orig_x0;
+> +} __attribute__((preserve_access_index));
+> +
 
+I just realized that this will probably break anyone who's using old
+Clang to compile a non-CORE BPF program because preserve_access_index
+attribute will be unknown.
+
+But we don't have to use __attribute__((preserve_access_index)) here,
+because we use BPF_CORE_READ() in those macro, which will make
+accesses CO-RE-relocatable anyways. So I dropped
+__attribute__((preserve_access_index)) for better backwards
+compatibility.
+
+>  /* arm64 provides struct user_pt_regs instead of struct pt_regs to userspace */
+>  #define __PT_REGS_CAST(x) ((const struct user_pt_regs *)(x))
+> +#define PT_REGS_PARM1_SYSCALL(x) ({ \
+> +       _Pragma("GCC error \"PT_REGS_PARM1_SYSCALL() is not supported on arm64, use PT_REGS_PARM1_CORE_SYSCALL() instead\""); \
+> +       0l; \
+> +})
+
+I shortened message to just "use PT_REGS_PARM1_CORE_SYSCALL() instead"
+and made it into a single-liner
+
+> +#define PT_REGS_PARM1_CORE_SYSCALL(x) \
+> +       BPF_CORE_READ((const struct pt_regs___arm64 *)(x), orig_x0)
+
+also made this into a single-liner
+
+
+>  #define __PT_PARM1_REG regs[0]
+>  #define __PT_PARM2_REG regs[1]
+>  #define __PT_PARM3_REG regs[2]
+> --
+> 2.34.1
+>
