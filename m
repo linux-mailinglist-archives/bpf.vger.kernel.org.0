@@ -2,63 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27274AEAB6
+	by mail.lfdr.de (Postfix) with ESMTP id 68F304AEAB5
 	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 08:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbiBIHDa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 02:03:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S231335AbiBIHDb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 02:03:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbiBIHD1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 02:03:27 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0613C0613CB
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 23:03:30 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id w1so1439253plb.6
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 23:03:30 -0800 (PST)
+        with ESMTP id S235596AbiBIHDa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 02:03:30 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E28C0613CB
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 23:03:34 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id z13so2754257pfa.3
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 23:03:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=K1tE6ZW/NUDkpxrW0ZRNI1iBfcwyP1tiyNWTroz+6QI=;
-        b=XWgaMd+wEZQ+EKhGBWjbIg0BSTIIjSyYW9BIi15jCU8aa12vnEowmHQPInjm7Gl6Xj
-         EhV/lnxUckYV6VIgjZyAzIDoKIEvzl4q4N8OGkgnLIW8o9kLMlPVcTRJhSaaxLWjFyKG
-         QKRD8GaX7C5VnzndkBmfVuvqAY6Ew3vvmHc1/ZSVGrluh36mp3fCxjgp7ZvZ0gkiKy4p
-         kAx0GUccemRmHd98TIZP6Ic7lzLZVtm+YPPTX2yqnNyY/lI+LPCUzzaPFzfLPnja7UGV
-         ETYA77vhj0TDxAUeIqWfWa7FUczYVjTH1cU7koAJHEo1PNQKL3cnbJb6uae8QZjcnQXF
-         yy9Q==
+        bh=ziTgGvt2AQdEu6oqdTDzDr96IYfUqbOyG6ugebX3/rM=;
+        b=J/W/yqov9FZ3Df1xqnbCmGnUYeJWF+vglcLGIS+u3iSKlXcpPmjJjuIetrOUWNa211
+         iL16Af9h9QbN4r9XrVACoESljTM3sS1pCLCZX71HvDtDDiUf15JsX7cW1eoNnzcPZmfZ
+         wI4qLp8yDhJzRbJ00dz9ijv0n0b7RbOCC53s1U71CHnULbLvqStfqJBilDOVDmkYZnpk
+         FC9Ozd/+rd6AKmgAAJGvrcfB7XA9tXTK6MOs91VmzyxJT0UtH84NGh/J1ZDdHzg3kgno
+         rtR0eT/uS94KMHREb1rbcn71PX5N1vkVA2CYk/hFeP0Use7wu6a1BUkZMnFIUxDsrKks
+         B9TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K1tE6ZW/NUDkpxrW0ZRNI1iBfcwyP1tiyNWTroz+6QI=;
-        b=7ckbaWHXTOfFcjY2J3342lgozcUGm0D3WSz5JRdyk41jri7K9BOSVhl2klMO6OPoU6
-         BlNkubg0ku7+sICL2tE0QZ+Weoq8w5fGUK4lMALk8fX4aWgaLQ+eOiqoMKjbYQeIIYa0
-         C1c9YPZPBqURic9CF/NKlk4ya6S7yMfLgS+yOBmBfVWF7HcHGzJkie8hbChvkqaHM+pO
-         rhFwdGUC07NoHAXZNwy/3AK5KJdIONdz108jSA7VQ9QW0pMBdoMuK5yxSHk0o/Smg5QV
-         i3AR/1Y8E+uE2d3KM8UiRv4DcPDFTyInrX8UlHR0PYlUTIzD+qI6OFWbtMDEnDTqJpzI
-         ofNQ==
-X-Gm-Message-State: AOAM531eKIeNAYKpM/8Ze5jPeAOWkChy0x8OUz5KRbTd6uxuVmfv7UAo
-        mOBC2JgxyDp69uYcXPnsB1U7n7VbNIg=
-X-Google-Smtp-Source: ABdhPJxfHgo+SujcOap2AbHN07JYqTHEX3fH+5aw8G5hyq/KmR3Irf5XP7sx2TVjOq5UxYzThYQ0+w==
-X-Received: by 2002:a17:90b:1b46:: with SMTP id nv6mr1039044pjb.178.1644390210328;
-        Tue, 08 Feb 2022 23:03:30 -0800 (PST)
+        bh=ziTgGvt2AQdEu6oqdTDzDr96IYfUqbOyG6ugebX3/rM=;
+        b=nQbL9d4wNsWQpQ3uZAz8ZlVI6IqMS8DHiD6Oy9/iTLXCdpWAmqf79kinV+zWwa34dw
+         UGRpWhcnEYkp9GlgB92sRk93H+VpZ4EHqcXxHHl/u7oGigaLpLNhIFwJJT/ecSKce8Q9
+         PHhKUwSKVH12lZ12DkhVLgg6XSCsFufudIyHL9k/rArN2/+91N6+CjdQKFqc5zapkKKc
+         316lCvvdAZ06j56lIIPDgTRS5+BgxJuQIvgSyFBHz2pKnIt/hvGBJw9kxLLpJUwkRsc/
+         ON/yIO9iTF6FXwMmW/Ehp0CeW4gCtaBGWKLlSJ/sra1PgQJ9m1ekVVNt0Qeb8JYP1paL
+         7C0w==
+X-Gm-Message-State: AOAM533+LpXzbDbzKlV0V/5FQyewhq/54dWwLPkVi9twrHJpfwRwXfRj
+        sBPcw91TCFTHcxE4h0OIfrTwwbrLaGc=
+X-Google-Smtp-Source: ABdhPJzHT03y6zSF3n2CG9eY4d2S26GjeY5DKB2sb7qfByt7maoNrn88ES5A+06hOcb2OsGRM2AbHw==
+X-Received: by 2002:a62:bd0c:: with SMTP id a12mr828978pff.26.1644390213565;
+        Tue, 08 Feb 2022 23:03:33 -0800 (PST)
 Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id b12sm17524650pfm.154.2022.02.08.23.03.29
+        by smtp.gmail.com with ESMTPSA id q8sm19657944pfl.143.2022.02.08.23.03.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 23:03:30 -0800 (PST)
+        Tue, 08 Feb 2022 23:03:33 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf v2 1/2] bpf: Fix crash due to incorrect copy_map_value
-Date:   Wed,  9 Feb 2022 12:33:23 +0530
-Message-Id: <20220209070324.1093182-2-memxor@gmail.com>
+Subject: [PATCH bpf v2 2/2] selftests/bpf: Add test for bpf_timer overwriting crash
+Date:   Wed,  9 Feb 2022 12:33:24 +0530
+Message-Id: <20220209070324.1093182-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220209070324.1093182-1-memxor@gmail.com>
 References: <20220209070324.1093182-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3899; h=from:subject; bh=9R9wYd4Dv3KVqE+B05p0sZedNr6tZnbW7fB/57aUdZU=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiA2cPHKFZmbwVDSids4zQGnGpNYCXe75oK5SsEV1C GdTS93yJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYgNnDwAKCRBM4MiGSL8RykoCD/ 9MzvQroXyT18GRVVFcRkOQkunj4+ynaLtJKRo+6wUIUcy2//c0135xIU8x3w2wklbioyAhkBzapZRa zSm+8IN8CMBHJo40HjQYGKfDBOiqnDRrpvBcMy/F0j9EtZxkCWAjTITyLE8H3ADBmE7O5Rqav8x6+s 7q5E1QNSEP0vGLtqBZNm9/N8mwVyqqhSQEQfqAz/ZZlyy5ADP7FZb8z153uTUvfukGCyxbYajeCNNF 2Pep/wHoqiHiRItF5ZxVy/PmwwMqFoUtWy7qmLYrh+zH05XhmI0+gJJvhDndhNp99vz+bLCnWm/6HD LRLoMTY01zj9qolXoljwqLbLuRMr3klMRP34Nuy14SldJv2rHPelo0Iz3wq2BZ0Gi2a1aGA9pARVoB Wrk4/m3kHgGnyI1wixRWSqbSz+Pum4MWQ5b4G933TW7xLHccGuSd5PrFr0GyGORVbdrs5M+ydzRwB2 vJ9iWWOx5Rt8aQJTieNQfqH6NNE7nPkPZMwPvpPgD9N5wyZMMeoLanxtvx7qNFTw175HTOLtAXc3xL 2RuCoHfwWNRmNnrwuVBquf+sMM2EEfDtn6kO/vKzEKlTKeO5Qu7SmOybW5G+Q4obUcubOa0J/KoQt7 dwbwsqVrG1laVZINLtIeixVZD7hpaxPOzP1aC8J8u0iV5HPvT5+oGELUCCnA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3140; h=from:subject; bh=hqXfmLDxF0Uw4Yt5XYbQmoUpTAnSdez7PCI55CrXMP8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiA2cPJ/fCxMxuQ/GMlf4m2CoLn5l7eKO6/QOtTpi0 DlUwNb2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYgNnDwAKCRBM4MiGSL8RykdKD/ 9zKEJ3diVLILUaG5SYcsF6dnHZ41n8+CzumeUAfz3As25LwYGvQ/LsUMYdSWuZ1WjUzuwQXwBlLfW2 kXdyhtza7R9jBiVUmlzxdRCN7+okM6YjCnb5VcWD/l9bgIjEbtZXtundMdsEX3zgtQCpG2Eh6WNXqz 73t3Lgedd9C0v+wfDjk16guJJpaGu4Y8Z+PEwPRTlEUNl90mGDl7VDO+tN+arPP9xO9szAPUqhE5Fw pSPQU03G1o5x59qhn05tBrOoxbw/hs8lvbItKN/i/6FTgC0bpgQwj442jFpiNgR2YRan5Gpcs2Zqy+ nLREjBJY772BPY8GFXDuS3F4ivp/bL7JBd2iDn1WhBfUNfcRqVdFxrNKKWAw6GkqmNRgkZPDxbBPF7 c1z+/81Txi5KiRpfp+L6XDuEiiPxbpVJ8Uye2mk8Ysoo3y3E3S/zKydOLzI27U2qJS1p1UFGSoI+F6 2D5edoNLPp6wLOl78VEmtTO570IKGs7cfmXt9I0Nx4p+jwnTL7TAzv2/uQr/edEZDwq0Y+VkTIcpAV YJjpu8mHWQoivMTrdro5D+rHzG2lXCkF5X0ycvTzNh2MDKZ6OLQYia5RmjsrfwfJG4BfNmK+125rze tJwj7OW6dc+oqexbcazmL9R4k5/v+tY3HdO5Ydbq8sAqrS8RAt0/ndyJUQ2A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,80 +71,116 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When both bpf_spin_lock and bpf_timer are present in a BPF map value,
-copy_map_value needs to skirt both objects when copying a value into and
-out of the map. However, the current code does not set both s_off and
-t_off in copy_map_value, which leads to a crash when e.g. bpf_spin_lock
-is placed in map value with bpf_timer, as bpf_map_update_elem call will
-be able to overwrite the other timer object.
+Add a test that validates that timer value is not overwritten when doing
+a copy_map_value call in the kernel. Without the prior fix, this test
+triggers a crash.
 
-When the issue is not fixed, an overwriting can produce the following
-splat:
-
-[root@(none) bpf]# ./test_progs -t timer_crash
-[   15.930339] bpf_testmod: loading out-of-tree module taints kernel.
-[   16.037849] ==================================================================
-[   16.038458] BUG: KASAN: user-memory-access in __pv_queued_spin_lock_slowpath+0x32b/0x520
-[   16.038944] Write of size 8 at addr 0000000000043ec0 by task test_progs/325
-[   16.039399]
-[   16.039514] CPU: 0 PID: 325 Comm: test_progs Tainted: G           OE     5.16.0+ #278
-[   16.039983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.15.0-1 04/01/2014
-[   16.040485] Call Trace:
-[   16.040645]  <TASK>
-[   16.040805]  dump_stack_lvl+0x59/0x73
-[   16.041069]  ? __pv_queued_spin_lock_slowpath+0x32b/0x520
-[   16.041427]  kasan_report.cold+0x116/0x11b
-[   16.041673]  ? __pv_queued_spin_lock_slowpath+0x32b/0x520
-[   16.042040]  __pv_queued_spin_lock_slowpath+0x32b/0x520
-[   16.042328]  ? memcpy+0x39/0x60
-[   16.042552]  ? pv_hash+0xd0/0xd0
-[   16.042785]  ? lockdep_hardirqs_off+0x95/0xd0
-[   16.043079]  __bpf_spin_lock_irqsave+0xdf/0xf0
-[   16.043366]  ? bpf_get_current_comm+0x50/0x50
-[   16.043608]  ? jhash+0x11a/0x270
-[   16.043848]  bpf_timer_cancel+0x34/0xe0
-[   16.044119]  bpf_prog_c4ea1c0f7449940d_sys_enter+0x7c/0x81
-[   16.044500]  bpf_trampoline_6442477838_0+0x36/0x1000
-[   16.044836]  __x64_sys_nanosleep+0x5/0x140
-[   16.045119]  do_syscall_64+0x59/0x80
-[   16.045377]  ? lock_is_held_type+0xe4/0x140
-[   16.045670]  ? irqentry_exit_to_user_mode+0xa/0x40
-[   16.046001]  ? mark_held_locks+0x24/0x90
-[   16.046287]  ? asm_exc_page_fault+0x1e/0x30
-[   16.046569]  ? asm_exc_page_fault+0x8/0x30
-[   16.046851]  ? lockdep_hardirqs_on+0x7e/0x100
-[   16.047137]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-[   16.047405] RIP: 0033:0x7f9e4831718d
-[   16.047602] Code: b4 0c 00 0f 05 eb a9 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b3 6c 0c 00 f7 d8 64 89 01 48
-[   16.048764] RSP: 002b:00007fff488086b8 EFLAGS: 00000206 ORIG_RAX: 0000000000000023
-[   16.049275] RAX: ffffffffffffffda RBX: 00007f9e48683740 RCX: 00007f9e4831718d
-[   16.049747] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007fff488086d0
-[   16.050225] RBP: 00007fff488086f0 R08: 00007fff488085d7 R09: 00007f9e4cb594a0
-[   16.050648] R10: 0000000000000000 R11: 0000000000000206 R12: 00007f9e484cde30
-[   16.051124] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[   16.051608]  </TASK>
-[   16.051762] ==================================================================
-
-Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/timer_crash.c    | 32 +++++++++++
+ .../testing/selftests/bpf/progs/timer_crash.c | 54 +++++++++++++++++++
+ 2 files changed, 86 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_crash.c
+ create mode 100644 tools/testing/selftests/bpf/progs/timer_crash.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index fa517ae604ad..31a83449808b 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -224,7 +224,8 @@ static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
- 	if (unlikely(map_value_has_spin_lock(map))) {
- 		s_off = map->spin_lock_off;
- 		s_sz = sizeof(struct bpf_spin_lock);
--	} else if (unlikely(map_value_has_timer(map))) {
+diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
+new file mode 100644
+index 000000000000..f74b82305da8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <test_progs.h>
++#include "timer_crash.skel.h"
++
++enum {
++	MODE_ARRAY,
++	MODE_HASH,
++};
++
++static void test_timer_crash_mode(int mode)
++{
++	struct timer_crash *skel;
++
++	skel = timer_crash__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
++		return;
++	skel->bss->pid = getpid();
++	skel->bss->crash_map = mode;
++	if (!ASSERT_OK(timer_crash__attach(skel), "timer_crash__attach"))
++		goto end;
++	usleep(1);
++end:
++	timer_crash__destroy(skel);
++}
++
++void test_timer_crash(void)
++{
++	if (test__start_subtest("array"))
++		test_timer_crash_mode(MODE_ARRAY);
++	if (test__start_subtest("hash"))
++		test_timer_crash_mode(MODE_HASH);
++}
+diff --git a/tools/testing/selftests/bpf/progs/timer_crash.c b/tools/testing/selftests/bpf/progs/timer_crash.c
+new file mode 100644
+index 000000000000..f8f7944e70da
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/timer_crash.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_helpers.h>
++
++struct map_elem {
++	struct bpf_timer timer;
++	struct bpf_spin_lock lock;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct map_elem);
++} amap SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct map_elem);
++} hmap SEC(".maps");
++
++int pid = 0;
++int crash_map = 0; /* 0 for amap, 1 for hmap */
++
++SEC("fentry/do_nanosleep")
++int sys_enter(void *ctx)
++{
++	struct map_elem *e, value = {};
++	void *map = crash_map ? (void *)&hmap : (void *)&amap;
++
++	if (bpf_get_current_task_btf()->tgid != pid)
++		return 0;
++
++	*(void **)&value = (void *)0xdeadcaf3;
++
++	bpf_map_update_elem(map, &(int){0}, &value, 0);
++	/* For array map, doing bpf_map_update_elem will do a
++	 * check_and_free_timer_in_array, which will trigger the crash if timer
++	 * pointer was overwritten, for hmap we need to use bpf_timer_cancel.
++	 */
++	if (crash_map == 1) {
++		e = bpf_map_lookup_elem(map, &(int){0});
++		if (!e)
++			return 0;
++		bpf_timer_cancel(&e->timer);
 +	}
-+	if (unlikely(map_value_has_timer(map))) {
- 		t_off = map->timer_off;
- 		t_sz = sizeof(struct bpf_timer);
- 	}
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.35.1
 
