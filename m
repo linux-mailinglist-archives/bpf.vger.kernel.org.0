@@ -2,78 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2604AE8EE
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 932024AE8EF
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbiBIFL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 00:11:29 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:56656 "EHLO
+        id S230153AbiBIFNj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 00:13:39 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:59880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbiBIFCS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 00:02:18 -0500
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C81C03E926;
-        Tue,  8 Feb 2022 21:02:19 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0V3ze3Rg_1644382934;
-Received: from 30.225.24.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0V3ze3Rg_1644382934)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Feb 2022 13:02:15 +0800
-Message-ID: <4da041e7-d88c-16ba-d180-f8e8b8c2ef31@linux.alibaba.com>
-Date:   Wed, 9 Feb 2022 13:02:13 +0800
+        with ESMTP id S232978AbiBIFFV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 00:05:21 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3BEC0612C3
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 21:05:25 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id n23so2349736pfo.1
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 21:05:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1zTDqW7UUA/zydwPQfG6NCion3xne5o6ekt+bgOOPjg=;
+        b=TjlvGb64DvXcLh6IlsTBwgyCAmSTgeuXn0qzZV+qYt5Mk8eR5Nlpj7I2XqOVKK4dNd
+         VCDMluePdc71lOfdBljiYo47A530CS073tMyW5EVEM/lh97VLfFmgHyqObrDfM/4IsnF
+         kRX+3/uAsM6eMybdzw7Fgmn97kT5FEAD+H71iq8NueFNw3+za6uF5ywGl/oDQLljR0+w
+         edVoltoHYRlmanR+micaubmcTOiCgLvQYLhbu61unjxXpYGqu81jYKYmhaQAQVR8RS0/
+         Br6yLsPawaRKlhCfz7T4mSTB2pwY6CF6nyInSeNg1zSMXTt2N7bWjZb5bODTWPNGkh7T
+         +rWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1zTDqW7UUA/zydwPQfG6NCion3xne5o6ekt+bgOOPjg=;
+        b=2FuoilxZQaoZPorpQGZeG4S9rqzAKfPJ5bHMI1ZoV+WQ8UiUxKwhhjpG+PB8QeIT0x
+         UZaphPlQmItzdZQzelTJdYWCgX5NsXOqCp9r2L4JYzN17Pkmia7qmEM45EyI6cPsEDvD
+         +m9f/AMIN1Nu2oKNG+Wpr7sBn0Yr77Cgdqa2dvzB6JzOuHIEuo56MIAwsuq/LmOWix5P
+         YWxOYHflav8HLjVHAO4UwulQbBd+W0yd0hqPYTTg6rNmSigvd3XlHwESfySlMAWEmQzL
+         PqG0TUt5BzKXif8cvY6ndQH9aLorC+XmXF7FoEd1/AwbPGyHJaHGwJDKCD9z3U4KbDlY
+         nH1Q==
+X-Gm-Message-State: AOAM533GFqRG5t6OrF2p2Fdo3niBHVgxcMC552MCoFxSUqZLhPlnPnTF
+        O/sHWb9aDNJD1J9/q2MbftwNCehFNTx/mFLX7rw=
+X-Google-Smtp-Source: ABdhPJwSgAH38K+8kOzrVsx3SRDUALKcozBJJihOBCykFygTluUJo8Iif4xwbm7ZAc3K8JEfpika/QMZ4xBQwSvQ82o=
+X-Received: by 2002:a05:6a00:2301:: with SMTP id h1mr521559pfh.77.1644383124480;
+ Tue, 08 Feb 2022 21:05:24 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.4.0
-Subject: Re: [syzbot] BUG: MAX_LOCK_DEPTH too low! (3)
-To:     syzbot <syzbot+4de3c0e8a263e1e499bc@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-References: <0000000000006d045e05d78776f6@google.com>
-From:   Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <0000000000006d045e05d78776f6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
+References: <20220208191306.6136-1-alexei.starovoitov@gmail.com>
+ <20220208191306.6136-5-alexei.starovoitov@gmail.com> <CAEf4BzbZK_DG46Tf06UmcqT5rFtGg2Wwe7HB57vLOy_RdmRtJQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbZK_DG46Tf06UmcqT5rFtGg2Wwe7HB57vLOy_RdmRtJQ@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 8 Feb 2022 21:05:13 -0800
+Message-ID: <CAADnVQK6-CVoh3mvQLmFX3fZ85vkHAaxEtazhXPSAZuZUdMd0w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/5] bpf: Update iterators.lskel.h.
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Feb 8, 2022 at 8:40 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > -       skel->rodata =
+> > -               mmap(skel->rodata, 4096, PROT_READ, MAP_SHARED | MAP_FIXED,
+> > -                       skel->maps.rodata.map_fd, 0);
+> > +       skel->rodata = skel_finalize_map_data(&skel->maps.rodata.initial_value,
+> > +                       4096, PROT_READ, skel->maps.rodata.map_fd);
+>
+> here seems like both before and now, on error, nothing happens. For
+> kernel mode it matches skeleton behavior (rodata will be NULL), but
+> for user-space code you'll have (void *)-1, which is probably not
+> great.
 
-
-On 2022/2/9 4:21 am, syzbot wrote:
-
-> 
-> The issue was bisected to:
-> 
-> commit 341adeec9adad0874f29a0a1af35638207352a39
-> Author: Wen Gu <guwen@linux.alibaba.com>
-> Date:   Wed Jan 26 15:33:04 2022 +0000
-> 
->      net/smc: Forward wakeup to smc socket waitqueue after fallback
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c2637c700000
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13c2637c700000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15c2637c700000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4de3c0e8a263e1e499bc@syzkaller.appspotmail.com
-> Fixes: 341adeec9ada ("net/smc: Forward wakeup to smc socket waitqueue after fallback")
-> 
-> BUG: MAX_LOCK_DEPTH too low!
-> turning off the locking correctness validator.
-> depth: 48  max: 48!
-
-Thanks for syzbot's report.
-
-I will look into this issue and give feedback as soon as possible.
-
-Thanks,
-Wen Gu
+Yeah, not a regression, but let's add the checks while at it.
