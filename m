@@ -2,87 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B80A4AF11E
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 13:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B4A4AF1D9
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 13:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232194AbiBIMLr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 07:11:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57598 "EHLO
+        id S232141AbiBIMhr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 07:37:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233073AbiBIMLK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 07:11:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C0AE024633;
-        Wed,  9 Feb 2022 04:00:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E6F33B82073;
-        Wed,  9 Feb 2022 12:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AB161C340EF;
-        Wed,  9 Feb 2022 12:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644408012;
-        bh=W50OIA2qnvEJLm1zMiBVquRpXEdxaNVuRW3Edd8fiJI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uPwcJr6JYYAYGRWdQHy3tjB2x3ADqLPj6HpLuClhmSfzUvQncwDcTuCRlTFMkZFIt
-         0uMxo++NUor0zm16Xkr/Gi1IeWuXIe1Z1PLyVc1ckc9e/Wk++jtJw5ZKFoJM8yACnj
-         ICCzKGWUzIYMMTLYwtoPSLLoyFtI5OghLADCm0c/LzPGlgzZrFbYeu4B6YDa0gO3Ii
-         EeahSgwBvVyRgzh0bO4uKlWTWYFSAYBkfHYXpR8fzl7EiP6PFnr2m+XiwcqR8TYZNy
-         fAujoqcvg9vXXjjMHuZz00qzjNNxxsAT5ZZcjUld+neOeJS+V4/1BZ5hmNtCUzkmMH
-         LVgK2s8rnknvA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 99DB5E6D45A;
-        Wed,  9 Feb 2022 12:00:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230341AbiBIMhq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 07:37:46 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F13EC05CB86
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 04:37:49 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id p15so6877310ejc.7
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 04:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=1+NIHmF3jGIfwBL0llP4PbdZW7hIYHsdBm0P162GCfc=;
+        b=YqY7IvoRN2VJE/ISpb30G7u8eFvgUhwVHhTwpq/lXcixis6CJbASmwQNQfu89Lnh03
+         wPgaiaETxPI4ByH6zx7YGSBvAo8fLpGmqHfLDP7MR48rkjBbXOOhQH9ihLEx+YLuDV38
+         MrknQM8FcHHeMYuYTqpyRbjgEIskyEmj1cUB7DyzRE6btCT+dXvKYvknIkaVB+t9xRYn
+         AySrmeYFnhrjzOd6kW8LZCr7vvGdOJfNIrhNQM3ryRjtAcFa5UR5pI2ZfraKeX8SioOM
+         h1x72WlIlDQPPX179JALo3HyKq7Jr00i7ttgxSpaQaXkCveY45VigI8bwKXlQ1A2vhMu
+         737A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1+NIHmF3jGIfwBL0llP4PbdZW7hIYHsdBm0P162GCfc=;
+        b=ZUeUY1+Uf1V+lv7/Kt28B+20oyx8J+BVYowrbeoDDoZsMEzCOl/2LqArGiaPJENlEz
+         VMVFjmj71eosmsGoy1eOEm/3UDgiFfn+/eh5TRGaAY/YGjEs2KVwFVxBMgK7/xM1ucp+
+         MI41PWw1ubX0ujUxVCEi+CrkQjrDmYnpu8dEMGkPEyuuSUwbAUMyFlapXqUcCVJPiJ9n
+         NDyxSRx9GdwfBoaDWciUo12H3jJL/IoA4mzIBXrgROVjvVOikKszhtQZu08AODHEWACg
+         x9vQjotNP0AvaUSxlG+KZNggg9msarZbSEHIbq19EGUxkcw9vndZeBWoWQyeVy0x90Hw
+         RhEw==
+X-Gm-Message-State: AOAM531Y5mfCqTl6jw1Zc2/lIB2fLLd7CP1tZLQ+jTfpYRwXOOOzvUXK
+        v9Yn4CIScX68zfihRtN6Sm+8LpV9sR1+1Q==
+X-Google-Smtp-Source: ABdhPJyVnRGCQEtCz6n0Nu8dZw5CN/7XYH7nUmD70QYey/HvLYE9vvM/4hJb9s/zvCVrRChfJuCJLQ==
+X-Received: by 2002:a17:906:2ed0:: with SMTP id s16mr1737592eji.327.1644410267908;
+        Wed, 09 Feb 2022 04:37:47 -0800 (PST)
+Received: from [192.168.1.8] ([149.86.66.80])
+        by smtp.gmail.com with ESMTPSA id m4sm885982ejl.45.2022.02.09.04.37.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Feb 2022 04:37:47 -0800 (PST)
+Message-ID: <82da0b01-af9f-ea0d-17a4-76a4c48bc879@isovalent.com>
+Date:   Wed, 9 Feb 2022 12:37:46 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/2][pull request] 1GbE Intel Wired LAN Driver
- Updates 2022-02-07
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164440801262.11178.4494190850958498766.git-patchwork-notify@kernel.org>
-Date:   Wed, 09 Feb 2022 12:00:12 +0000
-References: <20220207233246.1172958-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20220207233246.1172958-1-anthony.l.nguyen@intel.com>
-To:     Nguyen@ci.codeaurora.org, Anthony L <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        vinschen@redhat.com, maciej.fijalkowski@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH bpf-next v2 3/3] bpftool: Update versioning scheme, align
+ on libbpf's version number
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20220208120648.49169-1-quentin@isovalent.com>
+ <20220208120648.49169-4-quentin@isovalent.com>
+ <CAEf4BzaH1OKZpJ8-CC4TbhGmYe+jv_0iqOTwhOG9+98Lze9Lew@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <CAEf4BzaH1OKZpJ8-CC4TbhGmYe+jv_0iqOTwhOG9+98Lze9Lew@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by Tony Nguyen <anthony.l.nguyen@intel.com>:
-
-On Mon,  7 Feb 2022 15:32:44 -0800 you wrote:
-> Corinna Vinschen says:
+2022-02-08 16:39 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Tue, Feb 8, 2022 at 4:07 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> Since the notion of versions was introduced for bpftool, it has been
+>> following the version number of the kernel (using the version number
+>> corresponding to the tree in which bpftool's sources are located). The
+>> rationale was that bpftool's features are loosely tied to BPF features
+>> in the kernel, and that we could defer versioning to the kernel
+>> repository itself.
+>>
+>> But this versioning scheme is confusing today, because a bpftool binary
+>> should be able to work with both older and newer kernels, even if some
+>> of its recent features won't be available on older systems. Furthermore,
+>> if bpftool is ported to other systems in the future, keeping a
+>> Linux-based version number is not a good option.
+>>
+>> Looking at other options, we could either have a totally independent
+>> scheme for bpftool, or we could align it on libbpf's version number
+>> (with an offset on the major version number, to avoid going backwards).
+>> The latter comes with a few drawbacks:
+>>
+>> - We may want bpftool releases in-between two libbpf versions. We can
+>>   always append pre-release numbers to distinguish versions, although
+>>   those won't look as "official" as something with a proper release
+>>   number. But at the same time, having bpftool with version numbers that
+>>   look "official" hasn't really been an issue so far.
+>>
+>> - If no new feature lands in bpftool for some time, we may move from
+>>   e.g. 6.7.0 to 6.8.0 when libbpf levels up and have two different
+>>   versions which are in fact the same.
+>>
+>> - Following libbpf's versioning scheme sounds better than kernel's, but
+>>   ultimately it doesn't make too much sense either, because even though
+>>   bpftool uses the lib a lot, its behaviour is not that much conditioned
+>>   by the internal evolution of the library (or by new APIs that it may
+>>   not use).
+>>
+>> Having an independent versioning scheme solves the above, but at the
+>> cost of heavier maintenance. Developers will likely forget to increase
+>> the numbers when adding features or bug fixes, and we would take the
+>> risk of having to send occasional "catch-up" patches just to update the
+>> version number.
+>>
+>> Based on these considerations, this patch aligns bpftool's version
+>> number on libbpf's. This is not a perfect solution, but 1) it's
+>> certainly an improvement over the current scheme, 2) the issues raised
+>> above are all minor at the moment, and 3) we can still move to an
+>> independent scheme in the future if we realise we need it.
+>>
+>> Given that libbpf is currently at version 0.7.0, and bpftool, before
+>> this patch, was at 5.16, we use an offset of 6 for the major version,
+>> bumping bpftool to 6.7.0.
+>>
+>> It remains possible to manually override the version number by setting
+>> BPFTOOL_VERSION when calling make.
+>>
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
+>> Contrarily to the previous discussion and to what the first patch of the
+>> set does, I chose not to use the libbpf_version_string() API from libbpf
+>> to compute the version for bpftool. There were three reasons for that:
+>>
+>> - I don't feel comfortable having bpftool's version number computed at
+>>   runtime. Somehow it really feels like we should now it when we compile
 > 
-> Fix the kernel warning "Missing unregister, handled but fix driver"
-> when running, e.g.,
+> Fair, but why not use LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION to
+> define BPFTOOL_VERSION (unless it's overridden).
+
+I forgot the macros were exposed, which is silly, because I was the one
+to help expose them in the first place. Anyway.
+
+> Which all seems to be
+> doable at compilation time in C code, not in Makefile. This will work
+> with Github version of libbpf just as well with no extra Makefile
+> changes (and in general, the less stuff is done in Makefile the
+> better, IMO).
 > 
->   $ ethtool -G eth0 rx 1024
-> 
-> [...]
+> Version string can also be "composed" at compile time with a bit of
+> helper macro, see libbpf_version_string() implementation in libbpf.
 
-Here is the summary with links:
-  - [net-next,1/2] igc: avoid kernel warning when changing RX ring parameters
-    https://git.kernel.org/netdev/net-next/c/453307b569a0
-  - [net-next,2/2] igb: refactor XDP registration
-    https://git.kernel.org/netdev/net-next/c/e62ad74aa534
+Sounds good, I can do that.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+This won't give me the patch number, though, only major and minor
+version. We could add an additional LIBBPF_PATCH_VERSION to libbpf.
+Although thinking about it, I'm not sure we need a patch version for
+bpftool at the moment, because changes in libbpf's patch number is
+unlikely to reflect any change in bpftool, so it makes little sense to
+copy it. So I'm considering just leaving it at 0 in bpftool, and having
+updates on major/minor numbers only when libbpf releases a major/minor
+version. If we do want bugfix releases, it will still be possible to
+overwrite the version number with BPFTOOL_VERSION anyway. What do you think?
 
-
+Quentin
