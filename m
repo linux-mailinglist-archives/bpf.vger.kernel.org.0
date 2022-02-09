@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA664AE6A3
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 03:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744204AE697
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 03:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243253AbiBICjm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 21:39:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
+        id S234453AbiBICjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 21:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244821AbiBICSM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 21:18:12 -0500
+        with ESMTP id S244808AbiBICSL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 21:18:11 -0500
 Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F57FC0613CC
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 18:18:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 057C5C0613CC
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 18:18:10 -0800 (PST)
 Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2191sBcc016603;
-        Wed, 9 Feb 2022 02:17:57 GMT
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2191sDoL016628;
+        Wed, 9 Feb 2022 02:17:58 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=r/2W2KjDaElgmhFuGbKdO+t8FyFDkAa5S4OPlOx1hIE=;
- b=eBp8IDMq/AbcmkQJPNswgkWsSkZk30jNFpfy1wQSJ57waYk5Xu1PV0ry7zNWFUTHO16H
- D+HakXQsX27zYQtwNMXSeSr8NYLVSMT3PtBb+h0qMKvPKRq/ezqYt/HcJOiAS4IgdLyq
- qrFJYO5VatNEgvzkT9r5yaCmWlO1knnNprsZKA+nCjAwedfWMS6hWWW4ExVFpY7jNFfV
- LJGGCCxA8DfhqcK8dWu1ChD6N4R+GNf9NxzK8F5KQ9FoztA+oT5npz06ucySaLorqsrX
- jcxwa5IoOSSz96pFm4jMl86eYC6jo6jd8/DAb1qMgBEXWyZB2ZeXydqGpYe/OkiqQUz/ mQ== 
+ bh=ZPoBvtdrsyfk1phNJCGwmS9x97BaFXO/N7T0bDK9J64=;
+ b=owR6wfhR6YMFvWRz/BTeYKyJed47RQVi8x+Rj1IsV+KHBLtLzBByUEUiW+qmIPkVB9uy
+ wdJ/CCibxyntXK+cmurqhPvqcDY9XwLc7qBiO8VuYBSuowtrHbp9kviBVH/kBa/w3+lz
+ TDfsqBJgRF10P7HtL2wdkrybcDpJ1g+1VpUM5RuZZcb17MwBsWWVlqq1oZ/XL1anFEyL
+ cYu/U+KLUNiCVdh9qibRVkrjtmoRvBjAPpc3ur9tHpQdgJaEUMzZWqJarkJbaY20iubN
+ jvJNsRcAvonQUCITclgEljWLoQKCQU9zJW14kr28Muo/tBBNd3GejZ2+qB3HPz31Mt7k vw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3e44bygcn0-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e44bygcn2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Feb 2022 02:17:58 +0000
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2192HvlQ011998;
+        Wed, 9 Feb 2022 02:17:57 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e44bygcmn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 09 Feb 2022 02:17:57 +0000
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2191uS6V027083;
-        Wed, 9 Feb 2022 02:17:57 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3e44bygcme-1
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2192D7qi007281;
+        Wed, 9 Feb 2022 02:17:55 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3e1gva97ny-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Feb 2022 02:17:56 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2192CuEK001934;
-        Wed, 9 Feb 2022 02:17:54 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 3e1ggk2m4e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Feb 2022 02:17:54 +0000
+        Wed, 09 Feb 2022 02:17:55 +0000
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2192Hptl39911712
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2192Hq8W38928696
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Feb 2022 02:17:51 GMT
+        Wed, 9 Feb 2022 02:17:52 GMT
 Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 43E38A4060;
+        by IMSVA (Postfix) with ESMTP id 4C36AA405C;
+        Wed,  9 Feb 2022 02:17:52 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BF2F8A4054;
         Wed,  9 Feb 2022 02:17:51 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C3ECBA4054;
-        Wed,  9 Feb 2022 02:17:50 +0000 (GMT)
 Received: from heavy.lan (unknown [9.171.78.41])
         by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Feb 2022 02:17:50 +0000 (GMT)
+        Wed,  9 Feb 2022 02:17:51 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,18 +65,19 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Christian Borntraeger <borntraeger@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next v5 03/10] selftests/bpf: Use PT_REGS_SYSCALL_REGS in bpf_syscall_macro
-Date:   Wed,  9 Feb 2022 03:17:38 +0100
-Message-Id: <20220209021745.2215452-4-iii@linux.ibm.com>
+Cc:     bpf@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: [PATCH bpf-next v5 04/10] libbpf: Fix accessing syscall arguments on powerpc
+Date:   Wed,  9 Feb 2022 03:17:39 +0100
+Message-Id: <20220209021745.2215452-5-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220209021745.2215452-1-iii@linux.ibm.com>
 References: <20220209021745.2215452-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: HwBdlmVofUiM6a7PW_Ov18OPNNbz2zFM
-X-Proofpoint-ORIG-GUID: xMxQEgx32iis3LBfgsQ6FvtkMchZlpWs
+X-Proofpoint-GUID: EVcb7dNd8Ek2UdXvEzLtq6O736SNRXCU
+X-Proofpoint-ORIG-GUID: pVExWYSIFH7p7yaJpgvB7yBp4ftsj0YD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-08_08,2022-02-07_02,2021-12-02_01
@@ -95,25 +96,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure that PT_REGS_SYSCALL_REGS works correctly.
+powerpc does not select ARCH_HAS_SYSCALL_WRAPPER, so its syscall
+handlers take "unpacked" syscall arguments. Indicate this to libbpf
+using PT_REGS_SYSCALL_REGS macro.
 
+Reported-by: Heiko Carstens <hca@linux.ibm.com>
+Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_syscall_macro.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/bpf_tracing.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-index f5c6ef2ff6d1..e7c622cb6a39 100644
---- a/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_syscall_macro.c
-@@ -33,7 +33,7 @@ int BPF_KPROBE(handle_sys_prctl)
- 	if (pid != filter_pid)
- 		return 0;
+diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+index a5e92656bfba..20bc63770c9f 100644
+--- a/tools/lib/bpf/bpf_tracing.h
++++ b/tools/lib/bpf/bpf_tracing.h
+@@ -180,6 +180,8 @@
+ #define __PT_RC_REG gpr[3]
+ #define __PT_SP_REG sp
+ #define __PT_IP_REG nip
++/* powerpc does not select ARCH_HAS_SYSCALL_WRAPPER. */
++#define PT_REGS_SYSCALL_REGS(ctx) ctx
  
--	real_regs = (struct pt_regs *)PT_REGS_PARM1(ctx);
-+	real_regs = PT_REGS_SYSCALL_REGS(ctx);
- 
- 	/* test for PT_REGS_PARM */
+ #elif defined(bpf_target_sparc)
  
 -- 
 2.34.1
