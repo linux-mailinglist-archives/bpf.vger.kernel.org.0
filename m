@@ -2,185 +2,183 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F304AEAB5
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 08:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B93F94AEAED
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 08:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbiBIHDb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 02:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+        id S231375AbiBIHTO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 02:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbiBIHDa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 02:03:30 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E28C0613CB
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 23:03:34 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id z13so2754257pfa.3
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 23:03:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=ziTgGvt2AQdEu6oqdTDzDr96IYfUqbOyG6ugebX3/rM=;
-        b=J/W/yqov9FZ3Df1xqnbCmGnUYeJWF+vglcLGIS+u3iSKlXcpPmjJjuIetrOUWNa211
-         iL16Af9h9QbN4r9XrVACoESljTM3sS1pCLCZX71HvDtDDiUf15JsX7cW1eoNnzcPZmfZ
-         wI4qLp8yDhJzRbJ00dz9ijv0n0b7RbOCC53s1U71CHnULbLvqStfqJBilDOVDmkYZnpk
-         FC9Ozd/+rd6AKmgAAJGvrcfB7XA9tXTK6MOs91VmzyxJT0UtH84NGh/J1ZDdHzg3kgno
-         rtR0eT/uS94KMHREb1rbcn71PX5N1vkVA2CYk/hFeP0Use7wu6a1BUkZMnFIUxDsrKks
-         B9TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ziTgGvt2AQdEu6oqdTDzDr96IYfUqbOyG6ugebX3/rM=;
-        b=nQbL9d4wNsWQpQ3uZAz8ZlVI6IqMS8DHiD6Oy9/iTLXCdpWAmqf79kinV+zWwa34dw
-         UGRpWhcnEYkp9GlgB92sRk93H+VpZ4EHqcXxHHl/u7oGigaLpLNhIFwJJT/ecSKce8Q9
-         PHhKUwSKVH12lZ12DkhVLgg6XSCsFufudIyHL9k/rArN2/+91N6+CjdQKFqc5zapkKKc
-         316lCvvdAZ06j56lIIPDgTRS5+BgxJuQIvgSyFBHz2pKnIt/hvGBJw9kxLLpJUwkRsc/
-         ON/yIO9iTF6FXwMmW/Ehp0CeW4gCtaBGWKLlSJ/sra1PgQJ9m1ekVVNt0Qeb8JYP1paL
-         7C0w==
-X-Gm-Message-State: AOAM533+LpXzbDbzKlV0V/5FQyewhq/54dWwLPkVi9twrHJpfwRwXfRj
-        sBPcw91TCFTHcxE4h0OIfrTwwbrLaGc=
-X-Google-Smtp-Source: ABdhPJzHT03y6zSF3n2CG9eY4d2S26GjeY5DKB2sb7qfByt7maoNrn88ES5A+06hOcb2OsGRM2AbHw==
-X-Received: by 2002:a62:bd0c:: with SMTP id a12mr828978pff.26.1644390213565;
-        Tue, 08 Feb 2022 23:03:33 -0800 (PST)
-Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id q8sm19657944pfl.143.2022.02.08.23.03.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 23:03:33 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf v2 2/2] selftests/bpf: Add test for bpf_timer overwriting crash
-Date:   Wed,  9 Feb 2022 12:33:24 +0530
-Message-Id: <20220209070324.1093182-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220209070324.1093182-1-memxor@gmail.com>
-References: <20220209070324.1093182-1-memxor@gmail.com>
+        with ESMTP id S230282AbiBIHTL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 02:19:11 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A60CC0613CB
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 23:19:14 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 218NebU2022307;
+        Tue, 8 Feb 2022 23:19:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=TKfpr65R8Yzitq3WSv+P3GAvnyp0k2lPcl8ygh34r5M=;
+ b=cYsAhxCb1HO5LvnyBraPaWsudcclEWsC5VX9xl9D690v15+Ol8Hb49zUfZhq3dAD4gzp
+ vsd3a5hBbFUegjV9iiphGlo/81YiRRETsls2X7g9lryrR2wzfjwN9WMUr/vmt8HsX6w4
+ HNDvnJNRHfSOIFBghacwNfV8n+Tq6QbKl0s= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e3tybdmu9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Feb 2022 23:19:00 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 8 Feb 2022 23:18:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YvBQGs3HyPc65s00jKZ0dmom65h8G5cJNacMDjfXZw7OaB5pBElhHJkD9jZkLFXuVPs+V90lIPFED48HlF7oWSnbK6qojP/z3MUwY8h69MsiG31ZUfxGRTzYl/rVoMbvXFHcvXI25zbYvy1MKUQed0WZjPssKgL8OTZf0xN9VhjWgA+eTEIH1Q4Ob3bMCDG6h1brWCvEmbG09ZcvJguLX3DrJOszx28Fd364esFndN15gDyqAZOKX7Ooib1oueb5r9U7WY1p3UmGXyT308i12osc/rbwM0BJt4FOhPE7zphkrXayOSDV1UI4hp6nOX6LTBpSLNtczsVU1qzXoMbfRQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TKfpr65R8Yzitq3WSv+P3GAvnyp0k2lPcl8ygh34r5M=;
+ b=nx07dugg9fOpxr/6iypnCxh7omA+mXS0HfhvDRq2RRiGu2069aKyZZCcduU3ucH3JYSXVFp6XXtNYJdPH90moeTXdf4VUKE2jVhwkCQ4OhTkSIvOm7NNjfmBtuw2gOOGSNG0iteQ3c2+lLFYWB4oQrGcjWZ/ZtvGGp7yvkMbhk56M1C5sLcuTkmLScMNhPRqIJuAVXgt4YaYgXcdOQaGw/CRpyvm0Pr993SIUhluOeVLhsmIg0RKbxfMLuN4nB2xsO5IfWkyfPODBJwXv2U9rQfEnONAfoGREAV4+bbVIedUSHf5asfZhTxbLqhhmQ4IsjX0ptr00J4VSlYGtqSxKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by DM6PR15MB3627.namprd15.prod.outlook.com (2603:10b6:5:1fb::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.19; Wed, 9 Feb
+ 2022 07:18:51 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f54e:cd09:acc2:1092]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::f54e:cd09:acc2:1092%4]) with mapi id 15.20.4975.011; Wed, 9 Feb 2022
+ 07:18:51 +0000
+Message-ID: <00d2caf2-27a8-b46c-060b-dde41477526e@fb.com>
+Date:   Tue, 8 Feb 2022 23:18:46 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH bpf-next] libbpf: fix compilation warning due to
+ mismatched printf format
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>
+References: <20220209063909.1268319-1-andrii@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220209063909.1268319-1-andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR1201CA0016.namprd12.prod.outlook.com
+ (2603:10b6:301:4a::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3140; h=from:subject; bh=hqXfmLDxF0Uw4Yt5XYbQmoUpTAnSdez7PCI55CrXMP8=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiA2cPJ/fCxMxuQ/GMlf4m2CoLn5l7eKO6/QOtTpi0 DlUwNb2JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYgNnDwAKCRBM4MiGSL8RykdKD/ 9zKEJ3diVLILUaG5SYcsF6dnHZ41n8+CzumeUAfz3As25LwYGvQ/LsUMYdSWuZ1WjUzuwQXwBlLfW2 kXdyhtza7R9jBiVUmlzxdRCN7+okM6YjCnb5VcWD/l9bgIjEbtZXtundMdsEX3zgtQCpG2Eh6WNXqz 73t3Lgedd9C0v+wfDjk16guJJpaGu4Y8Z+PEwPRTlEUNl90mGDl7VDO+tN+arPP9xO9szAPUqhE5Fw pSPQU03G1o5x59qhn05tBrOoxbw/hs8lvbItKN/i/6FTgC0bpgQwj442jFpiNgR2YRan5Gpcs2Zqy+ nLREjBJY772BPY8GFXDuS3F4ivp/bL7JBd2iDn1WhBfUNfcRqVdFxrNKKWAw6GkqmNRgkZPDxbBPF7 c1z+/81Txi5KiRpfp+L6XDuEiiPxbpVJ8Uye2mk8Ysoo3y3E3S/zKydOLzI27U2qJS1p1UFGSoI+F6 2D5edoNLPp6wLOl78VEmtTO570IKGs7cfmXt9I0Nx4p+jwnTL7TAzv2/uQr/edEZDwq0Y+VkTIcpAV YJjpu8mHWQoivMTrdro5D+rHzG2lXCkF5X0ycvTzNh2MDKZ6OLQYia5RmjsrfwfJG4BfNmK+125rze tJwj7OW6dc+oqexbcazmL9R4k5/v+tY3HdO5Ydbq8sAqrS8RAt0/ndyJUQ2A==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8ec9ea24-5ca8-47b3-6ef4-08d9eb9c6c24
+X-MS-TrafficTypeDiagnostic: DM6PR15MB3627:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR15MB36271920430864B12370C667D32E9@DM6PR15MB3627.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:330;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: b/Eiw0UQ8cFX+fL2dBF5dLUx5YTwfm0Ml1n4Qy4IkSUUbux4l3JNHfl6mQYKTEaPW/nea2RCty6ptBhDYk2Shq/NEmvmq8ng+eIR0KogTgi4EehU/7YxE+SPPyrrO9NS5FWIoaC/ZAX1oLkA6xkM1V43aqIzWLC+FXwzqg/ZELbCKsZMYs2bJSLFcSKzwu/WFjV+1TbT0c1GJouJQz6hQrbbiBGgr0Lt8zxLk2QQQWzscYHA1caX+i133+Vapo9xPa/2dxZzsVLRP1LRmg5npCU3Bl7dUaD0OqxF53L4oPbFOXdNWoe4U1hnrZbL7g/ZcvGp2mB/5KXis+mX7pWsBA8qJcCtj/nsZSM4saNwBiJDJ+bcpJ37esA9PMD8bJpMGP/66vMDrJjDzWKDXfatZrt/86mifGiHb7KM5zgGcz39EGYM2zbztoswxXySlJ1PZ7A1wNt9dBY2xSBxNsHLZC5e7Lko6peMjkcsvBj6a9C5+DRo18Cj9vPasOqgKbiFT4gDqUSCGV0HLXJ8FWLuCnMLebnC15ECjVsSskKa13fEAX6iJjx5eBT1SgyvyS3Yke/JQtIoo3VPFH/kOgyzqpuoMFarQIkNAcuIW9kGhk9pVBUX1FuL4ef4Fl0COGOwRs9oqCv9wCIPjxEzT4WSAt9rLci2yA5yjcgGn6cvxxzaNFMkEWKpolPe1oFsRkwWYajJzESjsNU3JrA3x0OEKooo1O3NueJaR+AG80BEj4k=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6666004)(31686004)(66556008)(8936002)(66946007)(66476007)(36756003)(316002)(186003)(8676002)(2616005)(4326008)(83380400001)(508600001)(6506007)(6512007)(31696002)(53546011)(86362001)(52116002)(5660300002)(2906002)(38100700002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RmFvOU9OSXd6Qjd1SlNNbTM0NUNpTkt5dFIrUG52OUl2eVpwSnY4dmszTGQv?=
+ =?utf-8?B?aTcvWjkwNGpkTFdpbHZIQjBpY1lMVHZZK2YzMUtxY1JZNEpBZXJmbkJEL1VX?=
+ =?utf-8?B?bTFQL1l6QlhyeVdQT0psUmJZVlBwU0ViRXBvdTdTMTFvM1BQZW0zQTNaayt3?=
+ =?utf-8?B?QThVZHRlaUJ5QXZZMmhqZGxwU2lJckNlQUJYZUNzc0VkZFNNYisyclFVUld0?=
+ =?utf-8?B?U0I5K3lyd2c3RGJIYTZzTjMvMDRmR0xDVHZaRWJyVVVud3F0K2ZNTC9haElE?=
+ =?utf-8?B?S3JUSTM1MkVwdytnUjBCZ21zUG9xaVEzNVYrdDd2OStwR3UrY1hWcldWRk94?=
+ =?utf-8?B?RFdBMUFVK1JnU1U3TG1qN0h5bHdiM2JQVlBKNmc5a1pOOFo3dy9LcEVCalJm?=
+ =?utf-8?B?b3JZY05yelI0M000QzQyS2MyVzVpWldDd2NQb09VTVZTakoxVmtlRWZyRE1Q?=
+ =?utf-8?B?OCthZ212RkoyMjlqM2xZVHJ1Wk9jMGZSdkRRd2NMZUZOM2lKaUNIeWZJSlJm?=
+ =?utf-8?B?cnBOcjdsMTU5dnJZZ2hkU0ZNQ2E1QklTWkFFZExkVTNkMW0zV1ZEN3gyQjN2?=
+ =?utf-8?B?S1RaL3hSZCtYc3RWTlpyRitTbHJ4V25BQ0hOV2F6T2V1YjFLa1RDeVBnRFFF?=
+ =?utf-8?B?OU9SbEtmTTdFdDJEay9hcFR3Slhza2hHRjFxZ3BCVDJqUFNiK3NvWklJa0Vp?=
+ =?utf-8?B?NWQ0ZXVsYVZaV3FleEZ1RTNMQUdHVjc2YWZiT3JWcmtXNEhoNHlobFREeExu?=
+ =?utf-8?B?NERwaHVPRTZibkR6Sy90d2JLbnJvaW5VbU02SlI1S0dxT3dzQ1BNZzhUQUFm?=
+ =?utf-8?B?aW05ellqWmZJN01telJiWXVPdktkY05MUTVabXFKVXlPZEI0dlJPaU8zZ2tr?=
+ =?utf-8?B?bi9XVEdJM3MzMzNhK2tQUEhiS3I1dVNyaVhST2x1ejRLNGZUeTZQdStqNW9F?=
+ =?utf-8?B?SFNCSEVMZHJnUkZhVTZjeVpIK2Zyb3JWRkVDc05DNWNPTEEvQldlWkVBV3p4?=
+ =?utf-8?B?Rk5NY0Y0RnlCcUh1ZnVTZDVvLzhSR3RGSWxxNEhsaXRXR0ZQSGZHZUdsSTJX?=
+ =?utf-8?B?VUtZNXpwTE1yd0JWckhsVWNtR0w2dDRYem1FOUVGbU96ZVBhRCtmcWlkemVS?=
+ =?utf-8?B?L29tMDRXd3dGREFjSzlnSHR3dFR6VzZyZXl5Wkl6R0s5ZU5rYVl3U2d0eTZl?=
+ =?utf-8?B?MXhuRHFDSnBucTR5dUNQNXh1cVpQdVJDMC9LMnhDalNObG1iN2Q1Yjl5Z3g2?=
+ =?utf-8?B?NGRSb3Q0WnNnNmpzYzd2VFpVOUNBZnA5WlZLa3lHUDdZWlRvNk10NVhVOU9o?=
+ =?utf-8?B?MkQ1c2F4WEhhcU90TnJ4ckJiM25JL2pwUHVFT3AwbG1JRXF4MkpjVGFNc0E3?=
+ =?utf-8?B?dnp3NU5FNFcxSmdSTm56bTAzYS9iUk9DQVRWQ29JMG5NZXEvRDVUVXdvNUZC?=
+ =?utf-8?B?YVpxdVAwTTNyUWhFdDNaL254T1VWVGpnZENSaUI0dXR5ckk2S3crdXBydldO?=
+ =?utf-8?B?WktUb2VHWmNER21tMTRaQjhVcFNpVEdJblNsWWFTKzNKVU4rYUpYL2NrN0JV?=
+ =?utf-8?B?TUlVdmRuZGxCdzFJM1NJUDRCclVLK0wxbkYwU2ZYSFVySEJ4Y1pzZkxsZndI?=
+ =?utf-8?B?dmRoQWFIMmh5Rlo3TmtGby9USTBINlNaemdjQ05xSURRa3IyWjFKcUpVYXhV?=
+ =?utf-8?B?cWpRK0xsZTRFUDRmV0VEWlU3dDBkK0QwWVo4bUJmbnh0bG1Hb3dXS3NMUnFN?=
+ =?utf-8?B?RzBDMWZxb1V0Mk1lYmdCY0RDbnlEbytvbnI5WlNzMWkzdndCWnl2UmhBUGdQ?=
+ =?utf-8?B?eFpOSm9WODdBWnpUQ3JqT1pYeVY3SmNLZjlLc1B4N0t1MHZOVVcxbVMrLzFS?=
+ =?utf-8?B?NjUrZ0pxRlFRUXNmS1QxMUd4SmtCRldMNVhyaW5odTE2K01XaGswZmNrUFRW?=
+ =?utf-8?B?QmoraWlZRmJOUGhrQWgwMXR5ZGttQVl6bnpJWGZFNmpTRmVNNXZvaDI5NTMv?=
+ =?utf-8?B?RVM2ZkNMRFF6WmgwZ2Q3aVUrendvcGZqdEpwTUtXbVh4ZDBJMkxkRkJzM2Y1?=
+ =?utf-8?B?UDZIT0lnRG5pc01jN2hyV3Z4dm80VzhxczlpMjhGSk5kRlFoc2NwR2kzMUpC?=
+ =?utf-8?Q?qLVc32uV2lzfHrzxG8UqqxdQO?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ec9ea24-5ca8-47b3-6ef4-08d9eb9c6c24
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2022 07:18:51.3732
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yAMSY8FvxsuQAlOgiuJ51i+jqtrNXDaVjR2ar0LjbfF9Rlc4kL0sQgCKDtp8kXF+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3627
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: pCLlqN8ar3R3mkBy3I-OgGTLCYiIfKEv
+X-Proofpoint-GUID: pCLlqN8ar3R3mkBy3I-OgGTLCYiIfKEv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-09_03,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 phishscore=0
+ clxscore=1015 malwarescore=0 spamscore=0 mlxlogscore=992 mlxscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202090050
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test that validates that timer value is not overwritten when doing
-a copy_map_value call in the kernel. Without the prior fix, this test
-triggers a crash.
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../selftests/bpf/prog_tests/timer_crash.c    | 32 +++++++++++
- .../testing/selftests/bpf/progs/timer_crash.c | 54 +++++++++++++++++++
- 2 files changed, 86 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_crash.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_crash.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-new file mode 100644
-index 000000000000..f74b82305da8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "timer_crash.skel.h"
-+
-+enum {
-+	MODE_ARRAY,
-+	MODE_HASH,
-+};
-+
-+static void test_timer_crash_mode(int mode)
-+{
-+	struct timer_crash *skel;
-+
-+	skel = timer_crash__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
-+		return;
-+	skel->bss->pid = getpid();
-+	skel->bss->crash_map = mode;
-+	if (!ASSERT_OK(timer_crash__attach(skel), "timer_crash__attach"))
-+		goto end;
-+	usleep(1);
-+end:
-+	timer_crash__destroy(skel);
-+}
-+
-+void test_timer_crash(void)
-+{
-+	if (test__start_subtest("array"))
-+		test_timer_crash_mode(MODE_ARRAY);
-+	if (test__start_subtest("hash"))
-+		test_timer_crash_mode(MODE_HASH);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_crash.c b/tools/testing/selftests/bpf/progs/timer_crash.c
-new file mode 100644
-index 000000000000..f8f7944e70da
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_crash.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct map_elem {
-+	struct bpf_timer timer;
-+	struct bpf_spin_lock lock;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_elem);
-+} amap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_elem);
-+} hmap SEC(".maps");
-+
-+int pid = 0;
-+int crash_map = 0; /* 0 for amap, 1 for hmap */
-+
-+SEC("fentry/do_nanosleep")
-+int sys_enter(void *ctx)
-+{
-+	struct map_elem *e, value = {};
-+	void *map = crash_map ? (void *)&hmap : (void *)&amap;
-+
-+	if (bpf_get_current_task_btf()->tgid != pid)
-+		return 0;
-+
-+	*(void **)&value = (void *)0xdeadcaf3;
-+
-+	bpf_map_update_elem(map, &(int){0}, &value, 0);
-+	/* For array map, doing bpf_map_update_elem will do a
-+	 * check_and_free_timer_in_array, which will trigger the crash if timer
-+	 * pointer was overwritten, for hmap we need to use bpf_timer_cancel.
-+	 */
-+	if (crash_map == 1) {
-+		e = bpf_map_lookup_elem(map, &(int){0});
-+		if (!e)
-+			return 0;
-+		bpf_timer_cancel(&e->timer);
-+	}
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.35.1
+On 2/8/22 10:39 PM, Andrii Nakryiko wrote:
+> On ppc64le architecture __s64 is long int and requires %ld. Cast to
+> ssize_t and use %zd to avoid architecture-specific specifiers.
+> 
+> Fixes: 4172843ed4a3 ("libbpf: Fix signedness bug in btf_dump_array_data()")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
+Acked-by: Yonghong Song <yhs@fb.com>
+
+> ---
+>   tools/lib/bpf/btf_dump.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+> index 55aed9e398c3..07ebe70d3a30 100644
+> --- a/tools/lib/bpf/btf_dump.c
+> +++ b/tools/lib/bpf/btf_dump.c
+> @@ -1869,7 +1869,8 @@ static int btf_dump_array_data(struct btf_dump *d,
+>   	elem_type = skip_mods_and_typedefs(d->btf, elem_type_id, NULL);
+>   	elem_size = btf__resolve_size(d->btf, elem_type_id);
+>   	if (elem_size <= 0) {
+> -		pr_warn("unexpected elem size %lld for array type [%u]\n", elem_size, id);
+> +		pr_warn("unexpected elem size %zd for array type [%u]\n",
+> +			(ssize_t)elem_size, id);
+
+Does using "%ld" and "(long)elem_size" work?
+
+>   		return -EINVAL;
+>   	}
+>   
