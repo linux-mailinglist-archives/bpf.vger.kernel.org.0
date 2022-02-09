@@ -2,61 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 207E84AE623
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 01:39:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987B54AE637
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 01:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbiBIAj3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Feb 2022 19:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S240745AbiBIApC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Feb 2022 19:45:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbiBIAj3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 19:39:29 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B20C061576;
-        Tue,  8 Feb 2022 16:39:27 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id y84so1319715iof.0;
-        Tue, 08 Feb 2022 16:39:27 -0800 (PST)
+        with ESMTP id S231954AbiBIApA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Feb 2022 19:45:00 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32E1C061576
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 16:44:59 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id v4so711454pjh.2
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 16:44:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YvdgdZPu8X2JxF35aY7XOUFxDoXmluHF8hlVweX1af8=;
-        b=gU708QnxL5cnOd6ZzusLpzOLe71X6171fQKLZQ3xM0sfUlI5bRsrF7G+jNcOtfVGxj
-         OSrR2SoxQXVbgS72bJux2OcW3F9ok/EWQ4k/wE9igpetIyLZ2AiuqMhI0WVaY2XyccVa
-         IsRUykJFOCUKdFyIssk/yJLjKVTZIW45YFMPxPaShTfG5dfZdkEpZbv856ePphIAgtMY
-         aRdhzkVzXHNGZB/wZY1eI6gbJbjSQs03YdS3sHwDz7q8w6Zopp9DoemPUB2J7xnTGzwh
-         944fgFsHjXXF+59uMA5XfPjTOaL7QFWpIw/FX3tqZpr9e5xoEv6ITQvFrf5zdOK4UV9B
-         L5Zg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VAeEte2xzCQsoQiFoHeHH1i7niGH30ckZsTXC9qY5vc=;
+        b=SUFlHkwuON9PhsyAzkLl5JkafBr8ZJmHbx0KqN3Y1f6QIRuFX6poDHuspTlX0ctwUc
+         9eThKGwW19LoUteY7lhy6EQj0lzU13FH6fjEgjy8FCl8POPqaetq7gaHyAVG3FT6EMS7
+         7s8ArcWEdixordKl+N3KLGwf+AY/GLJyE5qXv2XgrbyFCXmkX4ryV20G/5yOlRQGMOXZ
+         c6+mFceTTPKgfgh1eodNT13Kri5v9l7qxZ8uA4yp1vPhuBoP/Yu+vx8wsd0y1NPimKQv
+         gnG6oG50TrGxkNRiw7H4vwv5YsWxhTj9t+wMbRGEQufp5rJrpkb7vuF/k1dILpzZRJUg
+         o0zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YvdgdZPu8X2JxF35aY7XOUFxDoXmluHF8hlVweX1af8=;
-        b=5w1L89SFvqtRXVPPVaPX6SbPRoeEC3sARwGBvStWOxogw9E8FpK3QohzvkAQKdhtTI
-         NENyLvk753i9hQMXVUilOi8ZgJ+wG8NjD+Xkj79vJEzNWte+iaLlCv/6acDJzoTDT0fC
-         vOWl66PS3rpiJoKg4hnrjsT4GLPGGtQMlejWN+L263d9C2kE4ZtUNR6L4utdPHn9P4BV
-         I0flPpeZsxVMBbWJkGykwo4qLI5zxlvQB/+x0ndDSA/SLkxdUhyOULpk+oMqJGE5N00b
-         W6F49/qG8ocxnkJZMOjmrqnFrcADNzvEJzIYUSJ4Hym3d7vp1NEnV5ZQ8hji35dbh6Ya
-         NNNQ==
-X-Gm-Message-State: AOAM532MQqbEBT98NlHdTYrjNO3uJ2ocJo+mErfGaj+XiR/emOrn2c8/
-        /kHYrLsKbhNcxfHkguysfbBfVDiOi0ql7Ej/mdY+gqrW3ds=
-X-Google-Smtp-Source: ABdhPJzkhQUiMbIkH9HebSRwp4NzCGGbOaiDSRi+1lPnhICmOUSK6918Xegqj2Xwu2JMEzc45iPrLcv0hvxK0shV7EU=
-X-Received: by 2002:a02:2422:: with SMTP id f34mr3338476jaa.237.1644367167019;
- Tue, 08 Feb 2022 16:39:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VAeEte2xzCQsoQiFoHeHH1i7niGH30ckZsTXC9qY5vc=;
+        b=gNpBqhLzSj2M99ezIstWIcJd4kuU4/6WTMlRa74n7i3IJMWsDvhKZJJYnh1GM3i/Gg
+         TyOJ65IJK6q1+GVl7P0ruyB9MzQDiMmU4+Pypdfrcr73/W8Wl0I1npjMYYMefzTw/tPW
+         UsYNd67wOSEpjt0uaB9iOvvR6Qg5EdEHRBaZnoor8aC81lSPmFLqn02vpaTDdqGvdVNe
+         NqNFyB4hOxBgmTzliPwJyzW75M3RS619C5OvkFpu5W0bwrFaon6CuuSzlXhaa1+7sYNh
+         CSeLplJGwt/Mke1im1EI/rp9O7wcOFwx2JIOXwX8WTlfGDQFyxnzb2/OaTny7NGCP5pk
+         MrTQ==
+X-Gm-Message-State: AOAM530fjgVrInJ/oPKHhhfy6CFAIMTraXnTRGPskttm4EAlVKRJMHbH
+        iWgXPAzq12ilGNrQP8ACloM=
+X-Google-Smtp-Source: ABdhPJyD0chp96d6kfUPZJCGXPpyMNBhYhkTrcn7G4zcEqO/N0MH74EeGhPNMV9RE5CQA6nhmB/BXA==
+X-Received: by 2002:a17:90b:1e05:: with SMTP id pg5mr616228pjb.127.1644367498936;
+        Tue, 08 Feb 2022 16:44:58 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:cbf])
+        by smtp.gmail.com with ESMTPSA id ls13sm3941076pjb.54.2022.02.08.16.44.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Feb 2022 16:44:58 -0800 (PST)
+Date:   Tue, 8 Feb 2022 16:44:56 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf-next 2/5] libbpf: Prepare light skeleton for the
+ kernel.
+Message-ID: <20220209004456.axst5cynliegcnjl@ast-mbp.dhcp.thefacebook.com>
+References: <20220208191306.6136-1-alexei.starovoitov@gmail.com>
+ <20220208191306.6136-3-alexei.starovoitov@gmail.com>
+ <e90685a5-dad0-4a4b-aa8b-275eaef79e60@fb.com>
 MIME-Version: 1.0
-References: <20220208120648.49169-1-quentin@isovalent.com> <20220208120648.49169-4-quentin@isovalent.com>
-In-Reply-To: <20220208120648.49169-4-quentin@isovalent.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Feb 2022 16:39:16 -0800
-Message-ID: <CAEf4BzaH1OKZpJ8-CC4TbhGmYe+jv_0iqOTwhOG9+98Lze9Lew@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpftool: Update versioning scheme, align
- on libbpf's version number
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e90685a5-dad0-4a4b-aa8b-275eaef79e60@fb.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -67,138 +72,191 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 4:07 AM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> Since the notion of versions was introduced for bpftool, it has been
-> following the version number of the kernel (using the version number
-> corresponding to the tree in which bpftool's sources are located). The
-> rationale was that bpftool's features are loosely tied to BPF features
-> in the kernel, and that we could defer versioning to the kernel
-> repository itself.
->
-> But this versioning scheme is confusing today, because a bpftool binary
-> should be able to work with both older and newer kernels, even if some
-> of its recent features won't be available on older systems. Furthermore,
-> if bpftool is ported to other systems in the future, keeping a
-> Linux-based version number is not a good option.
->
-> Looking at other options, we could either have a totally independent
-> scheme for bpftool, or we could align it on libbpf's version number
-> (with an offset on the major version number, to avoid going backwards).
-> The latter comes with a few drawbacks:
->
-> - We may want bpftool releases in-between two libbpf versions. We can
->   always append pre-release numbers to distinguish versions, although
->   those won't look as "official" as something with a proper release
->   number. But at the same time, having bpftool with version numbers that
->   look "official" hasn't really been an issue so far.
->
-> - If no new feature lands in bpftool for some time, we may move from
->   e.g. 6.7.0 to 6.8.0 when libbpf levels up and have two different
->   versions which are in fact the same.
->
-> - Following libbpf's versioning scheme sounds better than kernel's, but
->   ultimately it doesn't make too much sense either, because even though
->   bpftool uses the lib a lot, its behaviour is not that much conditioned
->   by the internal evolution of the library (or by new APIs that it may
->   not use).
->
-> Having an independent versioning scheme solves the above, but at the
-> cost of heavier maintenance. Developers will likely forget to increase
-> the numbers when adding features or bug fixes, and we would take the
-> risk of having to send occasional "catch-up" patches just to update the
-> version number.
->
-> Based on these considerations, this patch aligns bpftool's version
-> number on libbpf's. This is not a perfect solution, but 1) it's
-> certainly an improvement over the current scheme, 2) the issues raised
-> above are all minor at the moment, and 3) we can still move to an
-> independent scheme in the future if we realise we need it.
->
-> Given that libbpf is currently at version 0.7.0, and bpftool, before
-> this patch, was at 5.16, we use an offset of 6 for the major version,
-> bumping bpftool to 6.7.0.
->
-> It remains possible to manually override the version number by setting
-> BPFTOOL_VERSION when calling make.
->
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
-> Contrarily to the previous discussion and to what the first patch of the
-> set does, I chose not to use the libbpf_version_string() API from libbpf
-> to compute the version for bpftool. There were three reasons for that:
->
-> - I don't feel comfortable having bpftool's version number computed at
->   runtime. Somehow it really feels like we should now it when we compile
+On Tue, Feb 08, 2022 at 04:13:01PM -0800, Yonghong Song wrote:
+> 
+> 
+> On 2/8/22 11:13 AM, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> > 
+> > Prepare light skeleton to be used in the kernel module and in the user space.
+> > The look and feel of lskel.h is mostly the same with the difference that for
+> > user space the skel->rodata is the same pointer before and after skel_load
+> > operation, while in the kernel the skel->rodata after skel_open and the
+> > skel->rodata after skel_load are different pointers.
+> > Typical usage of skeleton remains the same for kernel and user space:
+> > skel = my_bpf__open();
+> > skel->rodata->my_global_var = init_val;
+> > err = my_bpf__load(skel);
+> > err = my_bpf__attach(skel);
+> > // access skel->rodata->my_global_var;
+> > // access skel->bss->another_var;
+> > 
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >   tools/lib/bpf/skel_internal.h | 193 +++++++++++++++++++++++++++++++---
+> >   1 file changed, 176 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/skel_internal.h b/tools/lib/bpf/skel_internal.h
+> > index dcd3336512d4..d16544666341 100644
+> > --- a/tools/lib/bpf/skel_internal.h
+> > +++ b/tools/lib/bpf/skel_internal.h
+> > @@ -3,9 +3,19 @@
+> >   #ifndef __SKEL_INTERNAL_H
+> >   #define __SKEL_INTERNAL_H
+> > +#ifdef __KERNEL__
+> > +#include <linux/fdtable.h>
+> > +#include <linux/mm.h>
+> > +#include <linux/mman.h>
+> > +#include <linux/slab.h>
+> > +#include <linux/bpf.h>
+> > +#else
+> >   #include <unistd.h>
+> >   #include <sys/syscall.h>
+> >   #include <sys/mman.h>
+> > +#include <stdlib.h>
+> > +#include "bpf.h"
+> > +#endif
+> >   #ifndef __NR_bpf
+> >   # if defined(__mips__) && defined(_ABIO32)
+> > @@ -25,17 +35,11 @@
+> >    * requested during loader program generation.
+> >    */
+> >   struct bpf_map_desc {
+> > -	union {
+> > -		/* input for the loader prog */
+> > -		struct {
+> > -			__aligned_u64 initial_value;
+> > -			__u32 max_entries;
+> > -		};
+> > -		/* output of the loader prog */
+> > -		struct {
+> > -			int map_fd;
+> > -		};
+> > -	};
+> > +	/* output of the loader prog */
+> > +	int map_fd;
+> > +	/* input for the loader prog */
+> > +	__u32 max_entries;
+> > +	__aligned_u64 initial_value;
+> >   };
+> >   struct bpf_prog_desc {
+> >   	int prog_fd;
+> > @@ -57,12 +61,159 @@ struct bpf_load_and_run_opts {
+> >   	const char *errstr;
+> >   };
+> > +long bpf_sys_bpf(__u32 cmd, void *attr, __u32 attr_size);
+> > +
+> >   static inline int skel_sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr,
+> >   			  unsigned int size)
+> >   {
+> > +#ifdef __KERNEL__
+> > +	return bpf_sys_bpf(cmd, attr, size);
+> > +#else
+> >   	return syscall(__NR_bpf, cmd, attr, size);
+> > +#endif
+> > +}
+> > +
+> > +#ifdef __KERNEL__
+> > +static inline int close(int fd)
+> > +{
+> > +	return close_fd(fd);
+> > +}
+> > +
+> > +static inline void *skel_alloc(size_t size)
+> > +{
+> > +	return kcalloc(1, size, GFP_KERNEL);
+> > +}
+> > +
+> > +static inline void skel_free(const void *p)
+> > +{
+> > +	kfree(p);
+> > +}
+> > +
+> > +/* skel->bss/rodata maps are populated in three steps.
+> > + *
+> > + * For kernel use:
+> > + * skel_prep_map_data() allocates kernel memory that kernel module can directly access.
+> > + * skel_prep_init_value() allocates a region in user space process and copies
+> > + * potentially modified initial map value into it.
+> > + * The loader program will perform copy_from_user() from maps.rodata.initial_value.
+> > + * skel_finalize_map_data() sets skel->rodata to point to actual value in a bpf map and
+> > + * does maps.rodata.initial_value = ~0ULL to signal skel_free_map_data() that kvfree
+> > + * is not nessary.
+> > + *
+> > + * For user space:
+> > + * skel_prep_map_data() mmaps anon memory into skel->rodata that can be accessed directly.
+> > + * skel_prep_init_value() copies rodata pointer into map.rodata.initial_value.
+> > + * The loader program will perform copy_from_user() from maps.rodata.initial_value.
+> > + * skel_finalize_map_data() remaps bpf array map value from the kernel memory into
+> > + * skel->rodata address.
+> > + *
+> > + * The "bpftool gen skeleton -L" command generates lskel.h that is suitable for
+> > + * both kernel and user space. The generated loader program does
+> > + * copy_from_user() from intial_value. Therefore the vm_mmap+copy_to_user step
+> > + * is need when lskel is used from the kernel module.
+> > + */
+> > +static inline void skel_free_map_data(void *p, __u64 addr, size_t sz)
+> > +{
+> > +	if (addr && addr != ~0ULL)
+> > +		vm_munmap(addr, sz);
+> > +	if (addr != ~0ULL)
+> > +		kvfree(p);
+> > +	/* When addr == ~0ULL the 'p' points to
+> > +	 * ((struct bpf_array *)map)->value. See skel_finalize_map_data.
+> > +	 */
+> > +}
+> > +
+> > +static inline void *skel_prep_map_data(const void *val, size_t mmap_sz, size_t val_sz)
+> > +{
+> > +	void *addr;
+> > +
+> > +	addr = kvmalloc(val_sz, GFP_KERNEL);
+> > +	if (!addr)
+> > +		return NULL;
+> > +	memcpy(addr, val, val_sz);
+> > +	return addr;
+> > +}
+> > +
+> > +static inline __u64 skel_prep_init_value(void **addr, size_t mmap_sz, size_t val_sz)
+> > +{
+> > +	__u64 ret = 0;
+> > +	void *uaddr;
+> > +
+> > +	uaddr = (void *) vm_mmap(NULL, 0, mmap_sz, PROT_READ | PROT_WRITE,
+> > +				 MAP_SHARED | MAP_ANONYMOUS, 0);
+> > +	if (IS_ERR(uaddr))
+> > +		goto out;
+> > +	if (copy_to_user(uaddr, *addr, val_sz)) {
+> > +		vm_munmap((long) uaddr, mmap_sz);
+> > +		goto out;
+> > +	}
+> > +	ret = (__u64) (long) uaddr;
+> > +out:
+> > +	kvfree(*addr);
+> > +	*addr = NULL;
+> > +	return ret;
+> >   }
+> > +static inline void *skel_finalize_map_data(__u64 *addr, size_t mmap_sz, int flags, int fd)
+> > +{
+> > +	struct bpf_map *map;
+> > +	void *ptr = NULL;
+> > +
+> > +	vm_munmap(*addr, mmap_sz);
+> > +	*addr = ~0ULL;
+> > +
+> > +	map = bpf_map_get(fd);
+> > +	if (IS_ERR(map))
+> > +		return NULL;
+> > +	if (map->map_type != BPF_MAP_TYPE_ARRAY)
+> > +		goto out;
+> 
+> Should we do more map validation here, e.g., max_entries = 1
+> and also checking value_size?
 
-Fair, but why not use LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION to
-define BPFTOOL_VERSION (unless it's overridden). Which all seems to be
-doable at compilation time in C code, not in Makefile. This will work
-with Github version of libbpf just as well with no extra Makefile
-changes (and in general, the less stuff is done in Makefile the
-better, IMO).
-
-Version string can also be "composed" at compile time with a bit of
-helper macro, see libbpf_version_string() implementation in libbpf.
-
-
->   it. We link statically against libbpf today, but if we were to support
->   dynamic linking in the future we may forget to update and would have
->   bpftool's version changing based on the libbpf version installed
->   beside it, which does not make sense.
->
-> - We cannot get the patch version for libbpf, the current API only
->   returns the major and minor version numbers (we could fix it, although
->   I'm not sure if desirable to expose the patch number).
->
-> - I found it less elegant to compute the version strings in the code,
->   which meant malloc() and error handling just for printing a version
->   number, and having a separate case for when $(BPFTOOL_VERSION) is
->   defined, whereas passing a macro from the Makefile makes things
->   straightforwards.
-> ---
->  tools/bpf/bpftool/Makefile | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-> index 83369f55df61..8dd30abff3d9 100644
-> --- a/tools/bpf/bpftool/Makefile
-> +++ b/tools/bpf/bpftool/Makefile
-> @@ -7,14 +7,21 @@ srctree := $(patsubst %/,%,$(dir $(srctree)))
->  srctree := $(patsubst %/,%,$(dir $(srctree)))
->  endif
->
-> +BPF_DIR = $(srctree)/tools/lib/bpf
-> +
-> +# bpftool's version is libbpf's with a fixed offset for the major version.
-> +# This is because bpftool's version was higher than libbpf's when we adopted
-> +# this scheme.
-> +BPFTOOL_MAJOR_OFFSET := 6
-> +LIBBPF_VERSION := $(shell make -r --no-print-directory -sC $(BPF_DIR) libbpfversion)
-> +BPFTOOL_VERSION ?= $(shell lv="$(LIBBPF_VERSION)"; echo "$$((${lv%%.*} + $(BPFTOOL_MAJOR_OFFSET))).$${lv#*.}")
-> +
->  ifeq ($(V),1)
->    Q =
->  else
->    Q = @
->  endif
->
-> -BPF_DIR = $(srctree)/tools/lib/bpf
-> -
->  ifneq ($(OUTPUT),)
->    _OUTPUT := $(OUTPUT)
->  else
-> @@ -39,10 +46,6 @@ LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
->  LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
->  LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
->
-> -ifeq ($(BPFTOOL_VERSION),)
-> -BPFTOOL_VERSION := $(shell make -rR --no-print-directory -sC ../../.. kernelversion)
-> -endif
-> -
->  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
->         $(QUIET_MKDIR)mkdir -p $@
->
-> --
-> 2.32.0
->
+The map_type check is a sanity check.
+It should be valid by construction of loader prog.
+The map is also mmap-able and when signed progs will come to life it will be
+frozen and signature checked.
+rodata map should be readonly too, but ((struct bpf_array *)map)->value
+direct access assumes that the kernel module won't mess with the values.
+imo map_type check is enough. More checks feels like overkill.
