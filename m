@@ -2,558 +2,207 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 111674B0121
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 00:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155954B02B0
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:01:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbiBIXUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 18:20:30 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:42452 "EHLO
+        id S233482AbiBJCAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 21:00:21 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiBIXUX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 18:20:23 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C0CE06A63B
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 15:20:18 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id d15-20020a17090a564f00b001b937f4ae2fso1440925pji.4
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 15:20:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZDz5jomKuezfVBxNU4lbggtwu1PEv0I/3DRU5KQ0YZA=;
-        b=YqJK/rtRuel1EhK4vVCfq+aY5CRa9eT7PBLkDjifDOCdpU55oIbM/OSKRnkxFCuY3o
-         mZKv6wBZ7U1sa+KX1U7FqQ/ZYmKpgY9AmnPYhsCsLKNqCx+ngvGR3ErD9nhSpM4hAYQj
-         YiUwAT1RiBA+0sKS5mdt9JnrjdD0XSLt5vihR8DAelwH9/pBXeGKWIDhU2hhjEAH4DSj
-         rExdsLijuVUUEAIR2rHt2dHBSrOen9MJlpzEdP08q2KiEPhSeitBWDO42Ty+7g7II3c+
-         TQ5a4neAk/IU3lNGAiajPk7F4MSvtNCI2nmPOEZwPn+nW0U0tG3M2YTAhvC+VA89bqIU
-         YLog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZDz5jomKuezfVBxNU4lbggtwu1PEv0I/3DRU5KQ0YZA=;
-        b=qWPjAmDWDbytrYDFYIg/UoUJZSNlKdP6ljP1Cpo3UWItTToVUK/V9r+mVU13K+l2/W
-         RR4wkuOAw5vSYSLj9IYqMitobaHZdnXImwyL5NLl0qBdV77bwci96gw1SnPhaRaj1966
-         r5TKXuAvqEux107zswLuYsSJh0ILscK8fmxPnhn97cUmMny3F0BsGqC2aa1gopQS8Bc4
-         CoNlwX2bZLTLN8NiFaIU2AWG31jFlnODQUCxqy+hXwyVjbLq3saG9NLTgmSPrSoJZXzr
-         DNp1PG6uY3wfkiWmVzl2YghZkTMznkvjpZYS8v7SlFy2SLLOaXqqm100JSNUmhIz5Va8
-         8vvQ==
-X-Gm-Message-State: AOAM533d1kq0WKem1xSC0Y5q67xVYa0tNb0Y7hfnPqBrXFDIwZcEHSwW
-        mWSPmB1yEgTImyvkKdTzWb0=
-X-Google-Smtp-Source: ABdhPJxtPlcvEYyMHapplHV4O9J3s1oKty7kpoaLzQgxO3AqatiT9h+V3W+jXJscY1wbtV3H2pNFFw==
-X-Received: by 2002:a17:902:ef47:: with SMTP id e7mr4655766plx.73.1644448818257;
-        Wed, 09 Feb 2022 15:20:18 -0800 (PST)
-Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::2:9eba])
-        by smtp.gmail.com with ESMTPSA id ng16sm7940122pjb.12.2022.02.09.15.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 15:20:17 -0800 (PST)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 5/5] bpf: Convert bpf_preload.ko to use light skeleton.
-Date:   Wed,  9 Feb 2022 15:20:01 -0800
-Message-Id: <20220209232001.27490-6-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220209232001.27490-1-alexei.starovoitov@gmail.com>
-References: <20220209232001.27490-1-alexei.starovoitov@gmail.com>
+        with ESMTP id S234595AbiBJB7X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 20:59:23 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF622AABB;
+        Wed,  9 Feb 2022 17:42:46 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NY9bj028497;
+        Wed, 9 Feb 2022 15:40:39 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=CFGZET++CoApEKXIkltHxWrf1nh48MtGheWkuqvpIYE=;
+ b=Jl+0Jv/ZB8hOBJP2HXSRZ/qV5txQpEqGtSFuylnpM6KSVBS3A1kX8J9whrfcAW1ICsrt
+ aewQRwOYu2AlYqsWluhrsQZ1BTUYxripg1ZR4m6NfsFPfDec0mO0U1h7pddym6VrEg+j
+ JFx3k6QBG0tou2l/a6R/NpLbxLRtPKOaoJI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4h9fjwec-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 09 Feb 2022 15:40:38 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 9 Feb 2022 15:40:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NurKN3X3jHtKQhuZ2sskq65MWQf5VGvb3SwF1U5dzJ9HbYQxDL5asaHkCp6kt86ZabM7EyoV2/T3lmQnB8ZDFNs10ilcYXvk8ZaJARZPX2qfzn6CZE0cvqJrySox4IbCsMYgyfOgG3UBBGvX2h9DlbGOz8iLvbBrgK8lZdnpflX/xFFa7c9auz9L57J6rF3Uth3emXOjnjbvwmJ4yKS+QgE/dfqZUi+Vqx4xhsQArrsOwikHGEEyUxN6IEZt4ORMSDpLOrrY6UPOyizp6+YYDIhH5SBOv/lB03lvBdI4iIfr3kNlOGDAbhXgu9KBH46qYIl4Slw/HKXp0NlNnM9mSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CFGZET++CoApEKXIkltHxWrf1nh48MtGheWkuqvpIYE=;
+ b=hM53j34chf116k2ezC8i770cK6ZhgXISHUDrNtkyCcGTg6xwcjbdUx/qIRvhH/O5JeqOaVxe7TnQNtWg1hDLGsfInA/vuWQryyHySwu1X+UBGvaYNNKF4UHCMBIWJtqkjPqoIEgzW3irrUUBuA3pN9lk4qr+2SMRwC0Ibvt9mtAPMOLDKAuCkR2DOTJx05Ev7SGQ5OqzTFuwXOO8bcUbZIo9nSEuSRUCFoouqanmtb3l9p4Z9B04vKNAPxQ26NgWnKfHaPY1wA2zZJsr9zoRMFuiEHBFO5lMkJwIjNYTq8NELdnW7ors680BKb1X0exXWfbxM9rmWtV7BE0XaNcIBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from CO1PR15MB5017.namprd15.prod.outlook.com (2603:10b6:303:e8::19)
+ by BN8PR15MB2818.namprd15.prod.outlook.com (2603:10b6:408:c8::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Wed, 9 Feb
+ 2022 23:40:36 +0000
+Received: from CO1PR15MB5017.namprd15.prod.outlook.com
+ ([fe80::d1e4:259b:cf19:99c1]) by CO1PR15MB5017.namprd15.prod.outlook.com
+ ([fe80::d1e4:259b:cf19:99c1%3]) with mapi id 15.20.4975.011; Wed, 9 Feb 2022
+ 23:40:35 +0000
+Date:   Wed, 9 Feb 2022 15:40:33 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <sdf@google.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: Re: Override default socket policy per cgroup
+Message-ID: <20220209234033.d4uxiid2lbtentt3@kafai-mbp.dhcp.thefacebook.com>
+References: <YgPz8akQ4+qBz7nf@google.com>
+ <20220209210207.dyhi6queg223tsuy@kafai-mbp.dhcp.thefacebook.com>
+ <YgQ3au11pALDjyub@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YgQ3au11pALDjyub@google.com>
+X-ClientProxiedBy: MW4P220CA0029.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:303:115::34) To CO1PR15MB5017.namprd15.prod.outlook.com
+ (2603:10b6:303:e8::19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 40e4176f-c32c-46cc-e687-08d9ec2591ea
+X-MS-TrafficTypeDiagnostic: BN8PR15MB2818:EE_
+X-Microsoft-Antispam-PRVS: <BN8PR15MB2818C509F937B28F397E06D3D52E9@BN8PR15MB2818.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZSa+Bvwis09U0JsX60cJRYDDahJTZgX17GDKWSneTWwYB7EXiE6k/ZhnMFTt2IXS6gj1kiuMBSevpG9zsN+1qFLOlgAxxgNYMntHbmxNIY9tqGNRRocQyIDtQWOBdOkrvjk/pOXYBP9dEWemmHfuBVO+9W+OAMUoTlDEZKYCXlhcb7x+jDnklNH6nfnaff34TBOl95BxfzDDpSWUMsQ4+OBwc51QwI+jW0yhfxxvaEXS3+R9gh+6sZo4GPkcZtlxZQzSO9grFoir3EAogD56kE8hks3+0iyMiLCWvNOey+/YRSZzSXMJ4GXSFIXQhBKLKXWUSZinI3nF4iV8eR7pXnGmpTdd//LmeqfCNIa5HFSkJiIzM2CvO56YUzcSnVPpUBRRSDDUNtwfPxCo2lHoxMgVWs+LRTDbs6+ErwZoXzCJyIU+eeb9awC1jhae4YGecPiYa0gTpnZfs/ORMWmWu5uQyBOD/9sUwEUyeQrqQH+GVFTP0H1zT5g2Rw4tDuT/DUytI3y9zcbo+6xYyC/kXa+VCZamF9r2MWgXS7gGtsPaW7PDNqfvidvJgATlhGDpq5an4dn81KWMPTLRhtrd9VPqb5A33p6wqPc/XA/mt4SRXz3JbDzAMmPxFG2UZGTdQo80hnlfIwZ+4Lfrba+47A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR15MB5017.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(4326008)(66476007)(66556008)(8676002)(6486002)(6512007)(66946007)(508600001)(316002)(6916009)(6506007)(2906002)(186003)(9686003)(1076003)(83380400001)(52116002)(38100700002)(86362001)(8936002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w0211oTHUSHgrIoktuANJYqxJPfhJs6lt0OPeBEPQNCWSGekCa1XvvIPbG4X?=
+ =?us-ascii?Q?yugFsVuJbLm/c6c5BUNZPy8NYtd0gdpqdoCc+AtV21MEqsSOqR4JKglGEciy?=
+ =?us-ascii?Q?VbszGv8rvP3stln1+BCjQmBfi5y8WQiMe7DttAFVEpx3fFzizYXynw0bMxHI?=
+ =?us-ascii?Q?Z8GJSbD3jVMJhyh2PBPeUtDfn0ZHFxKq1CbOJN7FRmNt7NaLBMXiD/8YGooh?=
+ =?us-ascii?Q?VwoVDud1RPMVHIJheCtpfV0p/vmnmuaPCPsbob6urLRGhtoFLyWsgFP/gIRK?=
+ =?us-ascii?Q?Ny2sEwLJCwer4UXypz2izGMrJ7IsCDeYEHyYF16LiWi51+piUFOqFTYMPyMz?=
+ =?us-ascii?Q?L+n7/Ni7cIev/jrhfYY6gakPsVMs9+cqSvku2fpoDKQg4xUGyhsjTf6N+2yW?=
+ =?us-ascii?Q?q3VF9L9S3mfUqoSiZcl48rftXJqLMslgKqZrjlT1WyfDtDc8I44iNT5d0mn9?=
+ =?us-ascii?Q?TR6c6uQfMLvJHIc0OORpr+LTYRa7ztsqO0ZFZECwFAvJg6oUUsUX9rCa5M95?=
+ =?us-ascii?Q?lRk4RKtqzIzTfb2x6BcfjW0h325n5CvYixOhM4+TMo5ZowvK+TGKwd5c71SL?=
+ =?us-ascii?Q?Ksugr2FO216bZEq+r+3aZiJ64xHG0DTnu0X75ipbpB1onJgbJvTYOPo1P/Lr?=
+ =?us-ascii?Q?DI61fEb/4/vin470+07wOHhRABCf2+gbh2/E+qz6a6TIlMTx5tODJNruEC2n?=
+ =?us-ascii?Q?DB2J1LiyTV/urICe8+6/qpmOYxRQpofo1j7L7dJwcIStHFVe4PAPA6uJCnt8?=
+ =?us-ascii?Q?46eBIvASFFhxMoyvSTmpqJT2cQ+OP9eP0JLSTUUE/SwuoDauMMb/38MTfK4k?=
+ =?us-ascii?Q?KE9IIOiMOgQCA6oTI1eGCvwtyX52jGbXt/qATikIJMDq38mZ/5EerEYITs06?=
+ =?us-ascii?Q?P6cqonnSwtjV1sg+k3Ugc8UBIFKx7RDTe0LaHUJ5TeDDHYKHEjLhLmpxu3lY?=
+ =?us-ascii?Q?zxxM+Hbf1jLI8Eoiymkbf+AlR2NLDN6YtYtFhSfD2QMimvdZPYH07qeF8+dV?=
+ =?us-ascii?Q?qVoV+058WvLUkcDG8rRUC+jgtz0dLAsigiQ8lXXQBx4OL/cW4db2X9tEEbam?=
+ =?us-ascii?Q?a/eTPSnstaGPszfeLPNHd6i6GzIvGSYO5lxTtCtccOLwSV+SF7DolowLiK+/?=
+ =?us-ascii?Q?aDWqWVJ4DkVn5V6NGXuqi5NT01TN43b//IaQjtmQWdodkJl9ERBaev5knOtP?=
+ =?us-ascii?Q?TqMhMwLAbSr0jvDavo3vW7DJf+wzGhagVygCnwf2JUZEJjztoYE1zj4U+XPV?=
+ =?us-ascii?Q?F4I3YlQEGFoWYPDip1sNxIXorFXe4p86ziSVEPIQS/qkVyzHRKoBvnbWt+eL?=
+ =?us-ascii?Q?DqsnVpG2o1aBGmiXAQJ+dgW49FL4IW3YbAHAEoSD8bnr6Wuvz797wDxvTm08?=
+ =?us-ascii?Q?kyGr+Sw2oOg4sYYeAjUfzDkm7iT7OhyywG4o4KegSUgEO7HjU6hU5hZD3jMv?=
+ =?us-ascii?Q?jyH0UVjONfif2n9Pv9LmX76wynMFVrvnz52LZ/NGTS4mPWPm2Gr60SP136Ft?=
+ =?us-ascii?Q?IzDyaiOFDzSmuavPBYsqNfZwjcN+fUW+I8ncfg3dYTBA+WJuCqXsuQyADyW4?=
+ =?us-ascii?Q?obXPwvFruH6WSUor+7Enx3HFyi1SsIxKscVKOv5/?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40e4176f-c32c-46cc-e687-08d9ec2591ea
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR15MB5017.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2022 23:40:35.8639
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iL5sTjLDD6tSB4aRnJZ+YruoRb6uXDO8lSH3lEonS2+PtGnmHsGAURoC0UIiQ2WI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2818
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: qlnfisLrUkgD0REsx6nwiyKr7aPl1JyT
+X-Proofpoint-GUID: qlnfisLrUkgD0REsx6nwiyKr7aPl1JyT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-09_12,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
+ suspectscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202090123
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Feb 09, 2022 at 01:51:38PM -0800, sdf@google.com wrote:
+> On 02/09, Martin KaFai Lau wrote:
+> > On Wed, Feb 09, 2022 at 09:03:45AM -0800, sdf@google.com wrote:
+> > > Let's say I want to set some default sk_priority for all sockets in a
+> > > specific cgroup. I can do it right now using cgroup/sock_create, but it
+> > > applies only to AF_INET{,6} sockets. I'd like to do the same for raw
+> > > (AF_PACKET) sockets and cgroup/sock_create doesn't trigger for them :-(
+> > Other than AF_PACKET and INET[6], do you have use cases for other
+> > families?
+> 
+> No, I only need AF_PACKET for now. But I feel like we should create
+> a more extensible hook point this time (if we go this route).
+> 
+> > > (1) My naive approach would be to add another cgroup/sock_post_create
+> > > which runs late from __sock_create and triggers on everything.
+> > >
+> > > (2) Another approach might be to move BPF_CGROUP_RUN_PROG_INET_SOCK and
+> > > make it work with AF_PACKET. This might be not 100% backwards compatible
+> > > but I'd assume that most users should look at the socket family before
+> > > doing anything. (in this case it feels like we can extend
+> > > sock_bind/release for af_packets as well, just for accounting purposes,
+> > > without any way to override the target ifindex).
+> > If adding a hook at __sock_create, I think having a new
+> > CGROUP_POST_SOCK_CREATE
+> > may be better instead of messing with the current inet assumption
+> > in CGROUP_'INET'_SOCK_CREATE.  Running all CGROUP_*_SOCK_CREATE at
+> > __sock_create could be a nice cleanup such that a few lines can be
+> > removed from inet[6]_create but an extra family check will be needed.
+> 
+> SG. Hopefully I can at least reuse exiting progtype and just introduce
+> new hook point in __sock_create.
+> 
+> > The bpf prog has both bpf_sock->family and bpf_sock->protocol field to
+> > check with, so it should be able to decide the sk type if it is run
+> > at __sock_create.  All bpf_sock fields should make sense or at least 0
+> > to all families (?), please check.
+> 
+> Yeah, that's what I think as well, existing bpf_sock should work
+> as is (it might show empty ip/port for af_packet), but I'll do verify
+> that.
+> 
+> > For af_packet bind, the ip[46]/port probably won't be useful?  What
+> > the bpf prog will need?
+> 
+> For AF_PACKET bind we would need new ifindex and new protocol. I was
+> thinking
+> maybe new bpf_packet_sock type+helper to convert from bpf_sock is the
+> way to go here.
+Right, should follow the existing bpf_skc_to_*() and
+RET_PTR_TO_BTF_ID_OR_NULL pattern to return a 'struct packet_sock *'.
 
-The main change is a move of the single line
-  #include "iterators.lskel.h"
-from iterators/iterators.c to bpf_preload_kern.c.
-Which means that generated light skeleton can be used from user space or
-user mode driver like iterators.c or from the kernel module or the kernel itself.
-The direct use of light skeleton from the kernel module simplifies the code,
-since UMD is no longer necessary. The libbpf.a required user space and UMD. The
-CO-RE in the kernel and generated "loader bpf program" used by the light
-skeleton are capable to perform complex loading operations traditionally
-provided by libbpf. In addition UMD approach was launching UMD process
-every time bpffs has to be mounted. With light skeleton in the kernel
-the bpf_preload kernel module loads bpf iterators once and pins them
-multiple times into different bpffs mounts.
-
-Acked-by: Yonghong Song <yhs@fb.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- kernel/bpf/inode.c                            |  39 ++----
- kernel/bpf/preload/Kconfig                    |   7 +-
- kernel/bpf/preload/Makefile                   |  14 +--
- kernel/bpf/preload/bpf_preload.h              |   8 +-
- kernel/bpf/preload/bpf_preload_kern.c         | 119 ++++++++----------
- kernel/bpf/preload/bpf_preload_umd_blob.S     |   7 --
- .../preload/iterators/bpf_preload_common.h    |  13 --
- kernel/bpf/preload/iterators/iterators.c      | 108 ----------------
- kernel/bpf/syscall.c                          |   2 +
- 9 files changed, 70 insertions(+), 247 deletions(-)
- delete mode 100644 kernel/bpf/preload/bpf_preload_umd_blob.S
- delete mode 100644 kernel/bpf/preload/iterators/bpf_preload_common.h
- delete mode 100644 kernel/bpf/preload/iterators/iterators.c
-
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 5a8d9f7467bf..4f841e16779e 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -710,11 +710,10 @@ static DEFINE_MUTEX(bpf_preload_lock);
- static int populate_bpffs(struct dentry *parent)
- {
- 	struct bpf_preload_info objs[BPF_PRELOAD_LINKS] = {};
--	struct bpf_link *links[BPF_PRELOAD_LINKS] = {};
- 	int err = 0, i;
- 
- 	/* grab the mutex to make sure the kernel interactions with bpf_preload
--	 * UMD are serialized
-+	 * are serialized
- 	 */
- 	mutex_lock(&bpf_preload_lock);
- 
-@@ -722,40 +721,22 @@ static int populate_bpffs(struct dentry *parent)
- 	if (!bpf_preload_mod_get())
- 		goto out;
- 
--	if (!bpf_preload_ops->info.tgid) {
--		/* preload() will start UMD that will load BPF iterator programs */
--		err = bpf_preload_ops->preload(objs);
--		if (err)
-+	err = bpf_preload_ops->preload(objs);
-+	if (err)
-+		goto out_put;
-+	for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
-+		bpf_link_inc(objs[i].link);
-+		err = bpf_iter_link_pin_kernel(parent,
-+					       objs[i].link_name, objs[i].link);
-+		if (err) {
-+			bpf_link_put(objs[i].link);
- 			goto out_put;
--		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
--			links[i] = bpf_link_by_id(objs[i].link_id);
--			if (IS_ERR(links[i])) {
--				err = PTR_ERR(links[i]);
--				goto out_put;
--			}
- 		}
--		for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
--			err = bpf_iter_link_pin_kernel(parent,
--						       objs[i].link_name, links[i]);
--			if (err)
--				goto out_put;
--			/* do not unlink successfully pinned links even
--			 * if later link fails to pin
--			 */
--			links[i] = NULL;
--		}
--		/* finish() will tell UMD process to exit */
--		err = bpf_preload_ops->finish();
--		if (err)
--			goto out_put;
- 	}
- out_put:
- 	bpf_preload_mod_put();
- out:
- 	mutex_unlock(&bpf_preload_lock);
--	for (i = 0; i < BPF_PRELOAD_LINKS && err; i++)
--		if (!IS_ERR_OR_NULL(links[i]))
--			bpf_link_put(links[i]);
- 	return err;
- }
- 
-diff --git a/kernel/bpf/preload/Kconfig b/kernel/bpf/preload/Kconfig
-index 26bced262473..c9d45c9d6918 100644
---- a/kernel/bpf/preload/Kconfig
-+++ b/kernel/bpf/preload/Kconfig
-@@ -18,10 +18,9 @@ menuconfig BPF_PRELOAD
- 
- if BPF_PRELOAD
- config BPF_PRELOAD_UMD
--	tristate "bpf_preload kernel module with user mode driver"
--	depends on CC_CAN_LINK
--	depends on m || CC_CAN_LINK_STATIC
-+	tristate "bpf_preload kernel module"
- 	default m
- 	help
--	  This builds bpf_preload kernel module with embedded user mode driver.
-+	  This builds bpf_preload kernel module with embedded BPF programs for
-+	  introspection in bpffs.
- endif
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-index baf47d9c7557..167534e3b0b4 100644
---- a/kernel/bpf/preload/Makefile
-+++ b/kernel/bpf/preload/Makefile
-@@ -3,16 +3,6 @@
- LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
- LIBBPF_INCLUDE = $(LIBBPF_SRCS)/..
- 
--userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
--	-I $(LIBBPF_INCLUDE) -Wno-unused-result
--
--userprogs := bpf_preload_umd
--
--bpf_preload_umd-objs := iterators/iterators.o
--
--$(obj)/bpf_preload_umd:
--
--$(obj)/bpf_preload_umd_blob.o: $(obj)/bpf_preload_umd
--
- obj-$(CONFIG_BPF_PRELOAD_UMD) += bpf_preload.o
--bpf_preload-objs += bpf_preload_kern.o bpf_preload_umd_blob.o
-+CFLAGS_bpf_preload_kern.o += -I $(LIBBPF_INCLUDE)
-+bpf_preload-objs += bpf_preload_kern.o
-diff --git a/kernel/bpf/preload/bpf_preload.h b/kernel/bpf/preload/bpf_preload.h
-index 2f9932276f2e..f065c91213a0 100644
---- a/kernel/bpf/preload/bpf_preload.h
-+++ b/kernel/bpf/preload/bpf_preload.h
-@@ -2,13 +2,13 @@
- #ifndef _BPF_PRELOAD_H
- #define _BPF_PRELOAD_H
- 
--#include <linux/usermode_driver.h>
--#include "iterators/bpf_preload_common.h"
-+struct bpf_preload_info {
-+	char link_name[16];
-+	struct bpf_link *link;
-+};
- 
- struct bpf_preload_ops {
--        struct umd_info info;
- 	int (*preload)(struct bpf_preload_info *);
--	int (*finish)(void);
- 	struct module *owner;
- };
- extern struct bpf_preload_ops *bpf_preload_ops;
-diff --git a/kernel/bpf/preload/bpf_preload_kern.c b/kernel/bpf/preload/bpf_preload_kern.c
-index 53736e52c1df..30207c048d36 100644
---- a/kernel/bpf/preload/bpf_preload_kern.c
-+++ b/kernel/bpf/preload/bpf_preload_kern.c
-@@ -2,101 +2,80 @@
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- #include <linux/init.h>
- #include <linux/module.h>
--#include <linux/pid.h>
--#include <linux/fs.h>
--#include <linux/sched/signal.h>
- #include "bpf_preload.h"
-+#include "iterators/iterators.lskel.h"
- 
--extern char bpf_preload_umd_start;
--extern char bpf_preload_umd_end;
-+static struct bpf_link *maps_link, *progs_link;
-+static struct iterators_bpf *skel;
- 
--static int preload(struct bpf_preload_info *obj);
--static int finish(void);
-+static void free_links_and_skel(void)
-+{
-+	if (!IS_ERR_OR_NULL(maps_link))
-+		bpf_link_put(maps_link);
-+	if (!IS_ERR_OR_NULL(progs_link))
-+		bpf_link_put(progs_link);
-+	iterators_bpf__destroy(skel);
-+}
-+
-+static int preload(struct bpf_preload_info *obj)
-+{
-+	strlcpy(obj[0].link_name, "maps.debug", sizeof(obj[0].link_name));
-+	obj[0].link = maps_link;
-+	strlcpy(obj[1].link_name, "progs.debug", sizeof(obj[1].link_name));
-+	obj[1].link = progs_link;
-+	return 0;
-+}
- 
--static struct bpf_preload_ops umd_ops = {
--	.info.driver_name = "bpf_preload",
-+static struct bpf_preload_ops ops = {
- 	.preload = preload,
--	.finish = finish,
- 	.owner = THIS_MODULE,
- };
- 
--static int preload(struct bpf_preload_info *obj)
-+static int load_skel(void)
- {
--	int magic = BPF_PRELOAD_START;
--	loff_t pos = 0;
--	int i, err;
--	ssize_t n;
-+	int err;
- 
--	err = fork_usermode_driver(&umd_ops.info);
-+	skel = iterators_bpf__open();
-+	if (!skel)
-+		return -ENOMEM;
-+	err = iterators_bpf__load(skel);
- 	if (err)
--		return err;
--
--	/* send the start magic to let UMD proceed with loading BPF progs */
--	n = kernel_write(umd_ops.info.pipe_to_umh,
--			 &magic, sizeof(magic), &pos);
--	if (n != sizeof(magic))
--		return -EPIPE;
--
--	/* receive bpf_link IDs and names from UMD */
--	pos = 0;
--	for (i = 0; i < BPF_PRELOAD_LINKS; i++) {
--		n = kernel_read(umd_ops.info.pipe_from_umh,
--				&obj[i], sizeof(*obj), &pos);
--		if (n != sizeof(*obj))
--			return -EPIPE;
-+		goto out;
-+	err = iterators_bpf__attach(skel);
-+	if (err)
-+		goto out;
-+	maps_link = bpf_link_get_from_fd(skel->links.dump_bpf_map_fd);
-+	if (IS_ERR(maps_link)) {
-+		err = PTR_ERR(maps_link);
-+		goto out;
- 	}
--	return 0;
--}
--
--static int finish(void)
--{
--	int magic = BPF_PRELOAD_END;
--	struct pid *tgid;
--	loff_t pos = 0;
--	ssize_t n;
--
--	/* send the last magic to UMD. It will do a normal exit. */
--	n = kernel_write(umd_ops.info.pipe_to_umh,
--			 &magic, sizeof(magic), &pos);
--	if (n != sizeof(magic))
--		return -EPIPE;
--
--	tgid = umd_ops.info.tgid;
--	if (tgid) {
--		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
--		umd_cleanup_helper(&umd_ops.info);
-+	progs_link = bpf_link_get_from_fd(skel->links.dump_bpf_prog_fd);
-+	if (IS_ERR(progs_link)) {
-+		err = PTR_ERR(progs_link);
-+		goto out;
- 	}
- 	return 0;
-+out:
-+	free_links_and_skel();
-+	return err;
- }
- 
--static int __init load_umd(void)
-+static int __init load(void)
- {
- 	int err;
- 
--	err = umd_load_blob(&umd_ops.info, &bpf_preload_umd_start,
--			    &bpf_preload_umd_end - &bpf_preload_umd_start);
-+	err = load_skel();
- 	if (err)
- 		return err;
--	bpf_preload_ops = &umd_ops;
-+	bpf_preload_ops = &ops;
- 	return err;
- }
- 
--static void __exit fini_umd(void)
-+static void __exit fini(void)
- {
--	struct pid *tgid;
--
- 	bpf_preload_ops = NULL;
--
--	/* kill UMD in case it's still there due to earlier error */
--	tgid = umd_ops.info.tgid;
--	if (tgid) {
--		kill_pid(tgid, SIGKILL, 1);
--
--		wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
--		umd_cleanup_helper(&umd_ops.info);
--	}
--	umd_unload_blob(&umd_ops.info);
-+	free_links_and_skel();
- }
--late_initcall(load_umd);
--module_exit(fini_umd);
-+late_initcall(load);
-+module_exit(fini);
- MODULE_LICENSE("GPL");
-diff --git a/kernel/bpf/preload/bpf_preload_umd_blob.S b/kernel/bpf/preload/bpf_preload_umd_blob.S
-deleted file mode 100644
-index f1f40223b5c3..000000000000
---- a/kernel/bpf/preload/bpf_preload_umd_blob.S
-+++ /dev/null
-@@ -1,7 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--	.section .init.rodata, "a"
--	.global bpf_preload_umd_start
--bpf_preload_umd_start:
--	.incbin "kernel/bpf/preload/bpf_preload_umd"
--	.global bpf_preload_umd_end
--bpf_preload_umd_end:
-diff --git a/kernel/bpf/preload/iterators/bpf_preload_common.h b/kernel/bpf/preload/iterators/bpf_preload_common.h
-deleted file mode 100644
-index 8464d1a48c05..000000000000
---- a/kernel/bpf/preload/iterators/bpf_preload_common.h
-+++ /dev/null
-@@ -1,13 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef _BPF_PRELOAD_COMMON_H
--#define _BPF_PRELOAD_COMMON_H
--
--#define BPF_PRELOAD_START 0x5555
--#define BPF_PRELOAD_END 0xAAAA
--
--struct bpf_preload_info {
--	char link_name[16];
--	int link_id;
--};
--
--#endif
-diff --git a/kernel/bpf/preload/iterators/iterators.c b/kernel/bpf/preload/iterators/iterators.c
-deleted file mode 100644
-index 4dafe0f4f2b2..000000000000
---- a/kernel/bpf/preload/iterators/iterators.c
-+++ /dev/null
-@@ -1,108 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (c) 2020 Facebook */
--#include <errno.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <sys/resource.h>
--#include <bpf/libbpf.h>
--#include <bpf/bpf.h>
--#include <sys/mount.h>
--#include "iterators.lskel.h"
--#include "bpf_preload_common.h"
--
--int to_kernel = -1;
--int from_kernel = 0;
--
--static int __bpf_obj_get_info_by_fd(int bpf_fd, void *info, __u32 *info_len)
--{
--	union bpf_attr attr;
--	int err;
--
--	memset(&attr, 0, sizeof(attr));
--	attr.info.bpf_fd = bpf_fd;
--	attr.info.info_len = *info_len;
--	attr.info.info = (long) info;
--
--	err = skel_sys_bpf(BPF_OBJ_GET_INFO_BY_FD, &attr, sizeof(attr));
--	if (!err)
--		*info_len = attr.info.info_len;
--	return err;
--}
--
--static int send_link_to_kernel(int link_fd, const char *link_name)
--{
--	struct bpf_preload_info obj = {};
--	struct bpf_link_info info = {};
--	__u32 info_len = sizeof(info);
--	int err;
--
--	err = __bpf_obj_get_info_by_fd(link_fd, &info, &info_len);
--	if (err)
--		return err;
--	obj.link_id = info.id;
--	if (strlen(link_name) >= sizeof(obj.link_name))
--		return -E2BIG;
--	strcpy(obj.link_name, link_name);
--	if (write(to_kernel, &obj, sizeof(obj)) != sizeof(obj))
--		return -EPIPE;
--	return 0;
--}
--
--int main(int argc, char **argv)
--{
--	struct iterators_bpf *skel;
--	int err, magic;
--	int debug_fd;
--
--	debug_fd = open("/dev/console", O_WRONLY | O_NOCTTY | O_CLOEXEC);
--	if (debug_fd < 0)
--		return 1;
--	to_kernel = dup(1);
--	close(1);
--	dup(debug_fd);
--	/* now stdin and stderr point to /dev/console */
--
--	read(from_kernel, &magic, sizeof(magic));
--	if (magic != BPF_PRELOAD_START) {
--		printf("bad start magic %d\n", magic);
--		return 1;
--	}
--	/* libbpf opens BPF object and loads it into the kernel */
--	skel = iterators_bpf__open_and_load();
--	if (!skel) {
--		/* iterators.skel.h is little endian.
--		 * libbpf doesn't support automatic little->big conversion
--		 * of BPF bytecode yet.
--		 * The program load will fail in such case.
--		 */
--		printf("Failed load could be due to wrong endianness\n");
--		return 1;
--	}
--	err = iterators_bpf__attach(skel);
--	if (err)
--		goto cleanup;
--
--	/* send two bpf_link IDs with names to the kernel */
--	err = send_link_to_kernel(skel->links.dump_bpf_map_fd, "maps.debug");
--	if (err)
--		goto cleanup;
--	err = send_link_to_kernel(skel->links.dump_bpf_prog_fd, "progs.debug");
--	if (err)
--		goto cleanup;
--
--	/* The kernel will proceed with pinnging the links in bpffs.
--	 * UMD will wait on read from pipe.
--	 */
--	read(from_kernel, &magic, sizeof(magic));
--	if (magic != BPF_PRELOAD_END) {
--		printf("bad final magic %d\n", magic);
--		err = -EINVAL;
--	}
--cleanup:
--	iterators_bpf__destroy(skel);
--
--	return err != 0;
--}
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 49f88b30662a..35646db3d950 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2490,6 +2490,7 @@ void bpf_link_put(struct bpf_link *link)
- 		bpf_link_free(link);
- 	}
- }
-+EXPORT_SYMBOL(bpf_link_put);
- 
- static int bpf_link_release(struct inode *inode, struct file *filp)
- {
-@@ -2632,6 +2633,7 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd)
- 
- 	return link;
- }
-+EXPORT_SYMBOL(bpf_link_get_from_fd);
- 
- struct bpf_tracing_link {
- 	struct bpf_link link;
--- 
-2.30.2
-
+> For AF_PACKET bind we actually have another use-case where I think
+> generic bind hook might be helpful. I have a working prototype with
+> fmod_ret,
+> but feels like per-cgroup hook is better (let's me access cgroup local
+> storage):
+> We'd like to have a cgroup-enforced TX-only form of raw socket (grant
+> CAP_NET_RAW+restrict RX path). For AF_INET{,6} it means allow only
+> socket(AF_INET{,6}, SOCK_RAW, IPPROTO_RAW); that's easily enforcible with
+> the current hooks. For AF_PACKET it means allow only
+> socket(AF_PACKET, SOCK_RAW, 0 == ETH_P_NONE) and prohibit bind to protocol
+> != 0.
+Meaning a generic hook for bind also?
+hmm... yeah, instead of adding a new one for AF_PACKET, adding a generic
+one may be more useful.
+Just noticed there are INET4_POST_BIND and INET6_POST_BIND
+instead of one INET_POST_BIND.  It may be worth checking if it was due to some
+bummer in the sock.  A quick look seems to be fine, the addrs in the sock are
+not overlapped in a union.
