@@ -2,134 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A9C4B0071
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 23:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7281C4B0094
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 23:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236112AbiBIWiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 17:38:21 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:55568 "EHLO
+        id S236270AbiBIWq0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 17:46:26 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:48526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236259AbiBIWiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 17:38:16 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B194DF28A5A
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 14:38:18 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id c5-20020a25f305000000b0061dd6123f18so7849957ybs.17
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 14:38:18 -0800 (PST)
+        with ESMTP id S236164AbiBIWq0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 17:46:26 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0767C1DF65E
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 14:46:28 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id g14so10285370ybs.8
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 14:46:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Ib123V5iLfjbHcZ4PIw5eMxrsJC+gSwDpXVK3o+dB3g=;
-        b=S9ncoterRMsBZv0Ny234MoaDJTDDS3NyLulE0TB3sbEpy2yvZjoBt0dxyXquO9VPLZ
-         u/oB2oTPAfMp1D03l1U074OIkZBCxo0QhZNGVGzhciQm0x/FrItEwZhUSdP5JdCMF2ZT
-         dwot++JnORcrakDGnFA5rRcqlmKBYeOddD/j6kO0yAiN45ECI+IOTzGfiSMqqx7Oyd9B
-         +moP3fK0OO6vurQZX2i7ppdv/JPwYxgA4KTfKmtM+0p4toeF4ti8rbxSS7FbbwRr7HCY
-         rYYfVsydz3ByHNwvLCdVfQ2A7YkK1z90fz/u/rDk/7K8jG0EPVMIFps13Oese/C+4yJU
-         dKlA==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=aPTFbZr4LhKGppGQDkO7tNLWiZLizgW3cwR+POXjY4E=;
+        b=RUjYCxK0GpjzGui+gibPE5VEKMnPRMFYeV+GI9+6N93lqQAiUb+WgUx3+56dh6uqMk
+         S+yHV5TJagKsiKJuBOq0VurlIOY5uy9SV1L87+rECBZKyPkCR0EBEAUbqkLLxMLdL6hn
+         AXr8bWoxcT4iDVygMfFD8Y5wraNA3Bm10+9ecHWGDYsdgOVuf3cmbnwK1r4eoTeFIN7m
+         gHK6vbiUDyjUYeie/Qic3FtYR3iJGw/rh86orip9q/aX+aHqPfReZ/BP26g7aBy5m/PM
+         bF5EHNCR8fd7EA5gRKU54NLPVoc9H4JaAchELLZzG6J/RiZtOpiARt5VA5YQrsIi/wqj
+         26WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Ib123V5iLfjbHcZ4PIw5eMxrsJC+gSwDpXVK3o+dB3g=;
-        b=OI0IG/Kr3cRHWQTryeeKnGwPdAI7J/oCTW1y5w73qQ49coyaU+M9Y8/mAkinW9UssJ
-         9KihSrDQxyFtqFjGfdGsQ9x286n6qtwOP0+ocdDHHf10K3krT0N+G4gY5evQI4QbV+LW
-         UBTxDgvndw5vcYBHGqEmplgdD5g1VUYR207/obD0YFI8HG6B2kH6wUxtZOvbq7R81eLe
-         XtGdyiqEdamZ8z4S/sIgIog6hSnquKKGcfIQBGDJ2qDQVlhQcCeh7Cyi4KwLGftzSuFJ
-         NLtB2UR5LtynwKSjlN0U50LE6Be3G1rq+tUwmknZ4ykXkxeWXQPVTROKOpNbxvQmSMvT
-         uyLQ==
-X-Gm-Message-State: AOAM530EcdoYWZIJJpfnCDB4BlFgfnB4stj833C6RHTG/yPRiKp2WMiw
-        NT3wh2QK6IaDlvr/kgFVs9yfRLg=
-X-Google-Smtp-Source: ABdhPJx15MYjWWMuxTVtlE7hisOqrWbFhN/8ONrpccG5UN1JHLZpdqbiClritO5ewf/2VC8rH8XIfW4=
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:4d3:1afe:7eeb:c0e6])
- (user=sdf job=sendgmr) by 2002:a25:fe07:: with SMTP id k7mr4328312ybe.589.1644446297749;
- Wed, 09 Feb 2022 14:38:17 -0800 (PST)
-Date:   Wed, 9 Feb 2022 14:38:15 -0800
-In-Reply-To: <CAADnVQKVes3eKcDsFp=TZXRkteMU=WdmqWvXkW7RSMARbnoqxw@mail.gmail.com>
-Message-Id: <YgRCVxaYirEDudjM@google.com>
-Mime-Version: 1.0
-References: <YgPz8akQ4+qBz7nf@google.com> <20220209210207.dyhi6queg223tsuy@kafai-mbp.dhcp.thefacebook.com>
- <YgQ3au11pALDjyub@google.com> <CAADnVQKVes3eKcDsFp=TZXRkteMU=WdmqWvXkW7RSMARbnoqxw@mail.gmail.com>
-Subject: Re: Override default socket policy per cgroup
-From:   sdf@google.com
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=aPTFbZr4LhKGppGQDkO7tNLWiZLizgW3cwR+POXjY4E=;
+        b=Gd/NYPzOGXyrK4OcVY2MSGojbxbGukGm3L6siOX3IsZUYnQJL6/6z+HlvriOPClvox
+         whdx1p/lDfIXG8DdMIk0KTE1Cxb1Fb4RaabhSmplBvt1Eu10nBZR42VPFRLQI3TRJsyV
+         nlccRV5FFLOWjcNkXR/R2Ushwl+PFKo/w2qy3G+O84yHPa0IO7w5e3vWDx6zIfB4vKh5
+         mKEq02BCIMn22Vd/WxkOe9unGCsF0KLXy1Ww22bryfVf8d5zgv5yn4Yl4XQj+N3BF+wa
+         41fZjIhLle+R0YsF8bkUXQMhfduGRsW0E4ssYIr33rrmnMZrykYldlthgj9Zck5F8dVw
+         UUFg==
+X-Gm-Message-State: AOAM532/0mER1KyXpEx4YDUnODNRe+ER3F9aptCFQTCI5ieNvsjaT3Cj
+        DLeH+HbKqUNH/HCJtiIYE3w3fFV1RYUY3FdGNUo=
+X-Google-Smtp-Source: ABdhPJzN2rj0tzCcmtlQvMm+tUQxi7yOdzjZlwM9nylNY6hlRfBFAwIxqmyZOkF8w85W+y7/oL40UivdW9s5nW+HFAw=
+X-Received: by 2002:a5b:247:: with SMTP id g7mr1503262ybp.97.1644446787973;
+ Wed, 09 Feb 2022 14:46:27 -0800 (PST)
+MIME-Version: 1.0
+Reply-To: dr.tracymedicinemed1@gmail.com
+Sender: ra00028671@gmail.com
+Received: by 2002:a05:7010:4da9:b0:20c:2ace:da88 with HTTP; Wed, 9 Feb 2022
+ 14:46:27 -0800 (PST)
+From:   Dr Tracy William <ra6277708@gmail.com>
+Date:   Thu, 10 Feb 2022 06:46:27 +0800
+X-Google-Sender-Auth: CpecWyAoVKDqGJd4lD_OilNm65E
+Message-ID: <CAEWKTYf--+WYuVus13F4pTQPP9NcRh0bhELXAOt2yuOo77ft1w@mail.gmail.com>
+Subject: From Dr Tracy from United States
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:b2c listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [ra00028671[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [ra00028671[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [dr.tracymedicinemed1[at]gmail.com]
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  3.4 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 02/09, Alexei Starovoitov wrote:
-> On Wed, Feb 9, 2022 at 1:51 PM <sdf@google.com> wrote:
-> >
-> > On 02/09, Martin KaFai Lau wrote:
-> > > On Wed, Feb 09, 2022 at 09:03:45AM -0800, sdf@google.com wrote:
-> > > > Let's say I want to set some default sk_priority for all sockets in  
-> a
-> > > > specific cgroup. I can do it right now using cgroup/sock_create,  
-> but it
-> > > > applies only to AF_INET{,6} sockets. I'd like to do the same for raw
-> > > > (AF_PACKET) sockets and cgroup/sock_create doesn't trigger for  
-> them :-(
-> > > Other than AF_PACKET and INET[6], do you have use cases for other
-> > > families?
-> >
-> > No, I only need AF_PACKET for now. But I feel like we should create
-> > a more extensible hook point this time (if we go this route).
-> >
-> > > > (1) My naive approach would be to add another  
-> cgroup/sock_post_create
-> > > > which runs late from __sock_create and triggers on everything.
-> > > >
-> > > > (2) Another approach might be to move BPF_CGROUP_RUN_PROG_INET_SOCK  
-> and
-> > > > make it work with AF_PACKET. This might be not 100% backwards  
-> compatible
-> > > > but I'd assume that most users should look at the socket family  
-> before
-> > > > doing anything. (in this case it feels like we can extend
-> > > > sock_bind/release for af_packets as well, just for accounting  
-> purposes,
-> > > > without any way to override the target ifindex).
-> > > If adding a hook at __sock_create, I think having a new
-> > > CGROUP_POST_SOCK_CREATE
-> > > may be better instead of messing with the current inet assumption
-> > > in CGROUP_'INET'_SOCK_CREATE.  Running all CGROUP_*_SOCK_CREATE at
-> > > __sock_create could be a nice cleanup such that a few lines can be
-> > > removed from inet[6]_create but an extra family check will be needed.
-> >
-> > SG. Hopefully I can at least reuse exiting progtype and just introduce
-> > new hook point in __sock_create.
+Hello Dear,
 
-> Can you take a look at what it would take to add cgroup scope
-> to bpf_lsm ?
-> __sock_create() already has
-> security_socket_create and security_socket_post_create
-> in the right places.
+how are you today,I hope you are doing great.
 
-> bpf_lsm cannot write directly into PTR_TO_BTF_ID like the 1st 'sock'  
-> pointer.
-> We can whitelist the write for certain cases.
-> Maybe prototype it with bpf_lsm and use
-> bpf_current_task_under_cgroup() helper to limit the scope
-> before implementing cgroup-scoped bpf_lsm?
+It is my great pleasure to contact you,I want to make a new and
+special friend,I hope you don't mind. My name is Tracy William from
+the United States, Am an English and French nationalities. I will give
+you pictures and more details about my self as soon as i hear from
+you Kisses.
 
-> There were cases in the past where bpf_lsm hook was in the ideal
-> spot, but lack of cgroup scoping was a show stopper.
-> This use case is another example and motivation to extend
-> what bpf can do with lsm hooks. That's better than
-> adding a new bpf_cgroup hook in the same location.
+Pls resply to my personal email(dr.tracymedicinemed1@gmail.com)
 
-Cool, if you think we can whitelist some writes in lsm/fentry that
-might be a perfect solution (especially if it gets per-cgroup scope).
-I'll try to look in that, thanks!
+Thanks.
+Tracy,
