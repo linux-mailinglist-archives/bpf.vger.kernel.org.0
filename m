@@ -2,66 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 980D94AFDF7
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 21:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 634264AFDFD
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 21:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbiBIUDs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 15:03:48 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:46224 "EHLO
+        id S229768AbiBIUFw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 15:05:52 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231133AbiBIUDr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 15:03:47 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF67E050B8B
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 12:03:41 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id 10so3203996plj.1
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 12:03:41 -0800 (PST)
+        with ESMTP id S231152AbiBIUFt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 15:05:49 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533D8E0536CD
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 12:05:46 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id on2so3111963pjb.4
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 12:05:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=/mtLZta9FSJH85SQQ3odzphHV/Ii2u26wZXe7hdC2Yg=;
-        b=naJsnfJM3pWRlpwRVLs9wBrC+fU6w2hQoU/NDX6/OtkG8zWBN84eoSaVmz5muNeAqu
-         Cuka6raHmFQeGMJuRQWIvI8cJ03J7jDtD5Pt3ncD9j1UOAPhieViHkwV071nFsUK7tpD
-         orIQ+LhKlyZOLrjBVt/2qk1IqQR4Z+38S0HWeLoAbmmyBFcovRoWThb0U3k7EZOkyUJU
-         DOTT+63r+zkjwAtuV75dlb7FECLvRD1ptoeCTJrQPVJ6OsnMQ9pfUjVTaNe8FwNPUcJr
-         xWw4Chh2Mq/AFzRxtfd/GJA/ftwW0TyOrdz52ctYVwisnP80psqaSr77DLbwzina26Do
-         h88g==
+        bh=SSV+JDnPodBI99sJ6DzBVZxzHgbnyx6G98xAxDPVFOs=;
+        b=baRjyJ7fOmhsPgmUEYISwgTD9Wu4t6A+9iX2Z9XHrkqc9SmBRWfHVwWSUjvNDEhFjB
+         cMGbUqtTHy4sXSRWBb46XszTwkuqw1PusBbqwxl/vQIeIq9ZY18K6noVic1x6Bam/iMh
+         2SpR1WEBnE2nW289bw/D/0jQ2p5JAaADlGhpa7bOljcrgiMTpyWHfbl5IB8EUO3hUuR8
+         I3wiRjBo8BNqnx+PQ2UDoZ7BHuHcAwhTt1FdGqlTaKjokx8n7ZxF6rfvAwX09lVqCcB/
+         jxNfsQNsAQvXtoTGtpQAefn6aex6rvBFRFYqcoEfRw2dnASlrn+NW5MVKeHHa1JUOgAN
+         bAKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=/mtLZta9FSJH85SQQ3odzphHV/Ii2u26wZXe7hdC2Yg=;
-        b=e75AyyfceiEnGUGjzLAgHVUqBFIpiO625EginejdB7KT/YbWxRmybI07mqkKmmOmk6
-         BPiOfKJqB+GQm2FeMc989b+xB79aFuNbLrypiY+C8WFUetUx9Vte/nXQLjCTUjDLRdib
-         4y15QGDatP3MrSgcUnsptNnzahhKPhbQcE2JXwZ/VSK4qP1MBknaR2hMvPj1YoAbdprg
-         kmx6KQIw3PGCaTGlNvQHK4k+OIsdNVHwDHJFrsCTYP5sKe6llPRkq/EVNUu3XtpDcyQ+
-         Sd8ITPgZTQLBzqUiuUX/BHG+QalyAJFfgjyLq45+SFrEjTp25bc/NidSsgK2XKYLajR+
-         9JnA==
-X-Gm-Message-State: AOAM531zUht18S90nJoCEK+AVIz1S5n+trsjqZGwdKdrnungIfeNveuN
-        WoX+ID7Twl/ZSqWbzvQ/iIRT7jsoZgaxNw==
-X-Google-Smtp-Source: ABdhPJyijNfcN2KNCVVNSlScxt9TmjZj+W7cKQ4EztlF/G48rm0fNcA9VYPkhALeFm/XC2nNBZARMQ==
-X-Received: by 2002:a17:90b:3e8e:: with SMTP id rj14mr5197903pjb.19.1644437008649;
-        Wed, 09 Feb 2022 12:03:28 -0800 (PST)
+        bh=SSV+JDnPodBI99sJ6DzBVZxzHgbnyx6G98xAxDPVFOs=;
+        b=xXQ/7CqUNwllXUj/n/HCD3j5iD0oe25D/slJXXpABD8GHrN368xcv43zCifupchILh
+         zOolupYgbyhilh4m3v9jZon9ynMvD8+X2JSA3g2zM+cgBHha4H9PWeKhavOCc0RZfYdV
+         wUCImAb/MVDOR5gY4OiaC02Wxqz9nIX3EQRPO5Erc74c0dYxW7U4MuYikEQd31V6Ykbp
+         838FTq1RVKVn7yR+ntu3wJIQlghTjH7ZrFhdJiSF7+6lo+Ho/eV7prYg6BDQI9dLMycV
+         7JNVNbMBTPZghdDPwntqdFvZTMVQDVsVG0NYmq+jGsNhmFIrR/9q7U2Sh/6yZHGTFEtP
+         l+EA==
+X-Gm-Message-State: AOAM532RR55G1TuDftFoslIOXmaIHw3Hea0SNcFhpOEd5T7fjeMzHTv9
+        gbH6dEqLfOFJ8MUCxDGftWNX3jpUOPK2ow==
+X-Google-Smtp-Source: ABdhPJyKBUu7G8EP4YyxIMZ4edG7RiaSGjxUP8B7mKPAlRCJJE2yUFvE6M2eHlAGSweESgeNUCppag==
+X-Received: by 2002:a17:90a:d58b:: with SMTP id v11mr5343058pju.100.1644437145629;
+        Wed, 09 Feb 2022 12:05:45 -0800 (PST)
 Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
-        by smtp.gmail.com with ESMTPSA id 1sm6940003pji.40.2022.02.09.12.03.27
+        by smtp.gmail.com with ESMTPSA id h4sm20533235pfv.166.2022.02.09.12.05.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 12:03:28 -0800 (PST)
-Date:   Thu, 10 Feb 2022 01:33:25 +0530
+        Wed, 09 Feb 2022 12:05:45 -0800 (PST)
+Date:   Thu, 10 Feb 2022 01:35:42 +0530
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf v2 2/2] selftests/bpf: Add test for bpf_timer
- overwriting crash
-Message-ID: <20220209200325.ipydl7jsrwiugujn@apollo.legion>
-References: <20220209070324.1093182-1-memxor@gmail.com>
- <20220209070324.1093182-3-memxor@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 5/5] bpf: Convert bpf_preload.ko to use light
+ skeleton.
+Message-ID: <20220209200542.u6zdxqn3mvgjurjj@apollo.legion>
+References: <20220209054315.73833-1-alexei.starovoitov@gmail.com>
+ <20220209054315.73833-6-alexei.starovoitov@gmail.com>
+ <20220209062235.ddrxjpua2xshoryq@thp>
+ <CAADnVQK_YDBtDtgTchDFYJmZVPjH6u_+=Cw__5tFtZxfKEOkEw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220209070324.1093182-3-memxor@gmail.com>
+In-Reply-To: <CAADnVQK_YDBtDtgTchDFYJmZVPjH6u_+=Cw__5tFtZxfKEOkEw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,134 +75,99 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 12:33:24PM IST, Kumar Kartikeya Dwivedi wrote:
-> Add a test that validates that timer value is not overwritten when doing
-> a copy_map_value call in the kernel. Without the prior fix, this test
-> triggers a crash.
+On Wed, Feb 09, 2022 at 10:04:18PM IST, Alexei Starovoitov wrote:
+> On Tue, Feb 8, 2022 at 10:22 PM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > On Wed, Feb 09, 2022 at 11:13:15AM IST, Alexei Starovoitov wrote:
+> > > From: Alexei Starovoitov <ast@kernel.org>
+> > >
+> > > The main change is a move of the single line
+> > >   #include "iterators.lskel.h"
+> > > from iterators/iterators.c to bpf_preload_kern.c.
+> > > Which means that generated light skeleton can be used from user space or
+> > > user mode driver like iterators.c or from the kernel module or the kernel itself.
+> > > The direct use of light skeleton from the kernel module simplifies the code,
+> > > since UMD is no longer necessary. The libbpf.a required user space and UMD. The
+> > > CO-RE in the kernel and generated "loader bpf program" used by the light
+> > > skeleton are capable to perform complex loading operations traditionally
+> > > provided by libbpf. In addition UMD approach was launching UMD process
+> > > every time bpffs has to be mounted. With light skeleton in the kernel
+> > > the bpf_preload kernel module loads bpf iterators once and pins them
+> > > multiple times into different bpffs mounts.
+> > >
+> > > Acked-by: Yonghong Song <yhs@fb.com>
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > > ---
+> > >  kernel/bpf/inode.c                            |  39 ++----
+> > >  kernel/bpf/preload/Kconfig                    |   7 +-
+> > >  kernel/bpf/preload/Makefile                   |  14 +--
+> > >  kernel/bpf/preload/bpf_preload.h              |   8 +-
+> > >  kernel/bpf/preload/bpf_preload_kern.c         | 119 ++++++++----------
+> > >  kernel/bpf/preload/bpf_preload_umd_blob.S     |   7 --
+> > >  .../preload/iterators/bpf_preload_common.h    |  13 --
+> > >  kernel/bpf/preload/iterators/iterators.c      | 108 ----------------
+> > >  kernel/bpf/syscall.c                          |   2 +
+> > >  9 files changed, 70 insertions(+), 247 deletions(-)
+> > >  delete mode 100644 kernel/bpf/preload/bpf_preload_umd_blob.S
+> > >  delete mode 100644 kernel/bpf/preload/iterators/bpf_preload_common.h
+> > >  delete mode 100644 kernel/bpf/preload/iterators/iterators.c
+> > >
+> > > [...]
+> > >
+> > > -static int __init load_umd(void)
+> > > +static int __init load(void)
+> > >  {
+> > >       int err;
+> > >
+> > > -     err = umd_load_blob(&umd_ops.info, &bpf_preload_umd_start,
+> > > -                         &bpf_preload_umd_end - &bpf_preload_umd_start);
+> > > +     err = load_skel();
+> > >       if (err)
+> > >               return err;
+> > > -     bpf_preload_ops = &umd_ops;
+> > > +     bpf_preload_ops = &ops;
+> > >       return err;
+> > >  }
+> > >
+> > > -static void __exit fini_umd(void)
+> > > +static void __exit fini(void)
+> > >  {
+> > > -     struct pid *tgid;
+> > > -
+> > >       bpf_preload_ops = NULL;
+> > > -
+> > > -     /* kill UMD in case it's still there due to earlier error */
+> > > -     tgid = umd_ops.info.tgid;
+> > > -     if (tgid) {
+> > > -             kill_pid(tgid, SIGKILL, 1);
+> > > -
+> > > -             wait_event(tgid->wait_pidfd, thread_group_exited(tgid));
+> > > -             umd_cleanup_helper(&umd_ops.info);
+> > > -     }
+> > > -     umd_unload_blob(&umd_ops.info);
+> > > +     free_links_and_skel();
+> > >  }
+> > > -late_initcall(load_umd);
+> > > -module_exit(fini_umd);
+> > > +late_initcall(load);
+> >
+> > Since load_skel invokes the loader which resolve kfuncs, and if the module is
+> > builtin, btf_vmlinux's kfunc_set_tab is not fully populated yet (other
+> > register_btf_id_kfunc_set calls may also happen in late_initcall), so I think it
+> > may be a problem.
+> >
+> > When I worked on it we didn't have this case where BPF syscall can be invoked at
+> > this point, but obviously that is true now. So I think ordering it later than
+> > late_initcall (or moving register_btf_id_kfunc_set invoking initcalls before) is
+> > required. WDYT?
 >
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/timer_crash.c    | 32 +++++++++++
->  .../testing/selftests/bpf/progs/timer_crash.c | 54 +++++++++++++++++++
->  2 files changed, 86 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_crash.c
->  create mode 100644 tools/testing/selftests/bpf/progs/timer_crash.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-> new file mode 100644
-> index 000000000000..f74b82305da8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-> @@ -0,0 +1,32 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "timer_crash.skel.h"
-> +
-> +enum {
-> +	MODE_ARRAY,
-> +	MODE_HASH,
-> +};
-> +
-> +static void test_timer_crash_mode(int mode)
-> +{
-> +	struct timer_crash *skel;
-> +
-> +	skel = timer_crash__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
-> +		return;
-> +	skel->bss->pid = getpid();
-> +	skel->bss->crash_map = mode;
-> +	if (!ASSERT_OK(timer_crash__attach(skel), "timer_crash__attach"))
-> +		goto end;
-> +	usleep(1);
-> +end:
-> +	timer_crash__destroy(skel);
-> +}
-> +
-> +void test_timer_crash(void)
-> +{
-> +	if (test__start_subtest("array"))
-> +		test_timer_crash_mode(MODE_ARRAY);
-> +	if (test__start_subtest("hash"))
-> +		test_timer_crash_mode(MODE_HASH);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/timer_crash.c b/tools/testing/selftests/bpf/progs/timer_crash.c
-> new file mode 100644
-> index 000000000000..f8f7944e70da
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/timer_crash.c
-> @@ -0,0 +1,54 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <vmlinux.h>
-> +#include <bpf/bpf_tracing.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct map_elem {
-> +	struct bpf_timer timer;
-> +	struct bpf_spin_lock lock;
-> +};
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_ARRAY);
-> +	__uint(max_entries, 1);
-> +	__type(key, int);
-> +	__type(value, struct map_elem);
-> +} amap SEC(".maps");
-> +
-> +struct {
-> +	__uint(type, BPF_MAP_TYPE_HASH);
-> +	__uint(max_entries, 1);
-> +	__type(key, int);
-> +	__type(value, struct map_elem);
-> +} hmap SEC(".maps");
-> +
-> +int pid = 0;
-> +int crash_map = 0; /* 0 for amap, 1 for hmap */
-> +
-> +SEC("fentry/do_nanosleep")
-> +int sys_enter(void *ctx)
-> +{
-> +	struct map_elem *e, value = {};
-> +	void *map = crash_map ? (void *)&hmap : (void *)&amap;
-> +
-> +	if (bpf_get_current_task_btf()->tgid != pid)
-> +		return 0;
-> +
-> +	*(void **)&value = (void *)0xdeadcaf3;
-> +
-> +	bpf_map_update_elem(map, &(int){0}, &value, 0);
-> +	/* For array map, doing bpf_map_update_elem will do a
-> +	 * check_and_free_timer_in_array, which will trigger the crash if timer
-> +	 * pointer was overwritten, for hmap we need to use bpf_timer_cancel.
-> +	 */
+> Good point. Probably best to convert register_btf_kfunc_id_set invocations
+> to core_initcall.
+> I can follow up with a trivial patch later or you can beat me to it.
 
-Also, in this case, there seems to be a difference of behavior. When we do
-bpf_map_update_elem for array map, it seems to invoke
-check_and_free_timer_in_array and free any timers that were part of the value.
-In case of hash/lru_hash, that doesn't seem to happen, hence why the test has
-two 'modes', to then trigger a dereference of the overwritten pointer using
-bpf_timer_cancel.
-
-So in case of array map it crashes right when doing bpf_map_update_elem, and in
-case of hash it crashes inside bpf_timer_cancel.
-
-This seems inconsistent to me, is there a specific reason behind doing it for
-array map differently than hash map? If not, is it now too late to change this?
-
-> +	if (crash_map == 1) {
-> +		e = bpf_map_lookup_elem(map, &(int){0});
-> +		if (!e)
-> +			return 0;
-> +		bpf_timer_cancel(&e->timer);
-> +	}
-> +	return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.35.1
->
+Cool, I'll post it after this is merged.
 
 --
 Kartikeya
