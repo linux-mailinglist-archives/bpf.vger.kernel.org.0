@@ -2,100 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07994AE959
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:34:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2954F4AE976
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbiBIFeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 00:34:07 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:56776 "EHLO
+        id S230478AbiBIFqF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 00:46:05 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:58172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235833AbiBIFZI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 00:25:08 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C21C035450
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 21:25:12 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id ay10-20020a17090b030a00b001b8a4029ba0so3041757pjb.5
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 21:25:12 -0800 (PST)
+        with ESMTP id S236203AbiBIFjt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 00:39:49 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDA3E00FA5E
+        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 21:39:46 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id w7so1848704ioj.5
+        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 21:39:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=1uteCcqOHI/0uzMt0En4ebHH5gvzXxzw9MhZz5KXgD4=;
-        b=IQmADCKRqBcDLWqGxwMOAV/ntlFvKBjJk8wBMDf2/VG5DCJCbge4vXYImJfFccc++A
-         FCOIryAiTwqcPt2Ose0mF9PMjL9KBQ7/6PWrKYyj6UkAsqtHb+NZNf1XdL0X0NoThMpL
-         ieO6Akmo3Mh60DeJ+NoUTjGFteZD8CATPm/I+5d/ydBFZGHCxfjMjHMtzHTk4VZEIy6h
-         9n/ShJpAMFNJHtDIHkK/MEzbkec+aNII1ATfCq90CtiW6zk3EjxREHjJWmGlRo4zZuYb
-         JilPpQ0FQpnOXEW+VQFDwIW5vWSALo2j8mWBZjnavFR74JID6XTPkkTdqoiHU6irUrtm
-         gsaQ==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7W0cQt9HThUE3jY5ROt7eiAKSbhsflMtY8KfKFWyMQ8=;
+        b=D1msjIagX0n9ZVWAwPR8pK5GL32HIZ8EaHifOKrrF56Oz3Uo4saAEIEe4Xmtzjpf6J
+         U74AFpkihQ6BtqUSqpEJ7x+0105k/iKetYzjCAalzM55mSkwxPvlvkc1bBcaO/HpG1kI
+         QeLM4HjVrCsRoWF+7fLgThh9pUszYjLZffHfSv1CBBhkz4UstoSdNaFhkx9dckSq1OYa
+         emMGSbHfQfGbO/qpqpnyfxAaCxSQ/eq2hxHfNKQ6i+C7rd3QshDmMe1tG1UKbCz6DKY7
+         XSi44DSsJkJtY1NQuEGD9DsMWA1BctwFvrky54aKov6AJyUAwp6AvVlWnRJYKO7Fqtk3
+         CKeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=1uteCcqOHI/0uzMt0En4ebHH5gvzXxzw9MhZz5KXgD4=;
-        b=cgTbvG28hhHgzHxF6rm/Z94/yqIV5ZWXJPWBPddbWIMKIx+ReJ6CaFrw27YweX3AsB
-         MO6svViylr2I7ZbhCy2g4jgM+5BGi1U1+GYo6H9X20sSiceh6GwwnJT4/bQduBTcRXv8
-         m10hcbtSILgx/4ut/hYnaXAVs/yktrTBmv/6bkwB9nuWs4ptxxmWyb0YrhiR+vBPGU+z
-         qJWh4h6RtXDI4KdmlDiI9bGXnBpStKUqQ7bQQUSGZMPzfCNl0IFXIGvzALA70xTZuNMl
-         NNoeZI+j/VHTGGvJNPYB4vTXvDs63TzrMUUzAyDS03yzCgryiAeIy6JM/bM1i4fHGifE
-         KUgw==
-X-Gm-Message-State: AOAM531p8sL1LgHCZ33SPSKjzQ9sT/p7/oQmoRIfZRaygvQgMXDI9wAt
-        3j7bReA8/N8O6GZeC2UzswMigB8jVB5z
-X-Google-Smtp-Source: ABdhPJzglferL7rdNcij5KHw2MyxXfeQS6wr03V//WCG/OaB8ZKXVTKSopF3i4fEW93Gs1qNs/mGYQwMkeNJ
-X-Received: from connoro.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:a99])
- (user=connoro job=sendgmr) by 2002:a05:6a00:1a8d:: with SMTP id
- e13mr600902pfv.82.1644384311846; Tue, 08 Feb 2022 21:25:11 -0800 (PST)
-Date:   Wed,  9 Feb 2022 05:21:40 +0000
-Message-Id: <20220209052141.140063-1-connoro@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.35.0.263.gb82422642f-goog
-Subject: [PATCH bpf-next] lib/Kconfig.debug: add prompt for kernel module BTF
-From:   "Connor O'Brien" <connoro@google.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7W0cQt9HThUE3jY5ROt7eiAKSbhsflMtY8KfKFWyMQ8=;
+        b=gN/jagvypgg4jwsOxQ4ZhnTAHZDNN9llFoV+UXp2FFNhiXm8Donaqwz5M/4Nc8NOo4
+         vqWw/1FhN96Qntve3Ksbq3A5y1/KHqjIXPSBAH2RNL+YSoGDN3fwt7JGtXrRlS8juO/U
+         dmMs4AqXHeuilWFZX699yGoQI+7srb8Mr1eD+1TgqBKZ/KVQq6aX3ibWu0FrwLEK+4TJ
+         muDM5AHpyBtRHg68EUtNvLCd9YZcvP65FUVvZanuX9V4APjAWw13PsPuVa2PqxNaXg9f
+         Q+clZd54cqDerK6bA7oiet84IU7+kn0l4I7P3PGZKPhDmtwh7zbDucLsHK5Lcmh93QvB
+         eR3g==
+X-Gm-Message-State: AOAM533mfQGY8+UjO7y9G1DJG0CIRalJ9EdpFyScK7eWNdKKZy/qIqul
+        8lS735YAPxEc75K0iYZZXbIxt/Vmvbh1JJN++zMMtUEu
+X-Google-Smtp-Source: ABdhPJyyobuUorlnGoC5J1HtxpZBKpYNIOAZUcWQRLcocXAf/cmFE3i19ztmqFGmF9nt8tsPy4PqiVFR4XM37eiZuhk=
+X-Received: by 2002:a05:6602:2d86:: with SMTP id k6mr354760iow.79.1644385175247;
+ Tue, 08 Feb 2022 21:39:35 -0800 (PST)
+MIME-Version: 1.0
+References: <20220209021745.2215452-1-iii@linux.ibm.com>
+In-Reply-To: <20220209021745.2215452-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 8 Feb 2022 21:39:23 -0800
+Message-ID: <CAEf4Bzaa9NZfQ_rbaineqvHd-9+So2gU2ckH4p7ojruCbrdM6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 00/10] Fix accessing syscall arguments
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Connor O'Brien" <connoro@google.com>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With DEBUG_INFO_BTF_MODULES enabled, a BTF mismatch between vmlinux
-and a separately-built module prevents the module from loading, even
-if the ABI is otherwise compatible and the module would otherwise load
-without issues. Currently this can be avoided only by disabling BTF
-entirely; disabling just module BTF would be sufficient but is not
-possible with the current Kconfig.
+On Tue, Feb 8, 2022 at 6:17 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> libbpf now has macros to access syscall arguments in an
+> architecture-agnostic manner, but unfortunately they have a number of
+> issues on non-Intel arches, which this series aims to fix.
+>
+> v1: https://lore.kernel.org/bpf/20220201234200.1836443-1-iii@linux.ibm.com/
+> v1 -> v2:
+> * Put orig_gpr2 in place of args[1] on s390 (Vasily).
+> * Fix arm64, powerpc and riscv (Heiko).
+>
+> v2: https://lore.kernel.org/bpf/20220204041955.1958263-1-iii@linux.ibm.com/
+> v2 -> v3:
+> * Undo args[1] change (Andrii).
+> * Rename PT_REGS_SYSCALL to PT_REGS_SYSCALL_REGS (Andrii).
+> * Split the riscv patch (Andrii).
+>
+> v3: https://lore.kernel.org/bpf/20220204145018.1983773-1-iii@linux.ibm.com/
+> v3 -> v4:
+> * Undo arm64's and s390's user_pt_regs changes.
+> * Use struct pt_regs when vmlinux.h is available (Andrii).
+> * Use offsetofend for accessing orig_gpr2 and orig_x0 (Andrii).
+> * Move libbpf's copy of offsetofend to a new header.
+> * Fix riscv's __PT_FP_REG.
+> * Use PT_REGS_SYSCALL_REGS in test_probe_user.c.
+> * Test bpf_syscall_macro with userspace headers.
+> * Use Naveen's suggestions and code in patches 5 and 6.
+> * Add warnings to arm64's and s390's ptrace.h (Andrii).
+>
+> v4: https://lore.kernel.org/bpf/20220208051635.2160304-1-iii@linux.ibm.com/
+> v4 -> v5:
+> * Go back to v3.
+> * Do not touch arch headers.
+> * Use CO-RE struct flavors to access orig_x0 and orig_gpr2.
+> * Fail compilation if non-CO-RE macros are used to access the first
+>   syscall parameter on arm64 and s390.
+> * Fix accessing frame pointer on riscv.
+>
+> Ilya Leoshkevich (10):
+>   selftests/bpf: Fix an endianness issue in bpf_syscall_macro test
+>   libbpf: Add PT_REGS_SYSCALL_REGS macro
+>   selftests/bpf: Use PT_REGS_SYSCALL_REGS in bpf_syscall_macro
+>   libbpf: Fix accessing syscall arguments on powerpc
+>   libbpf: Fix riscv register names
+>   libbpf: Fix accessing syscall arguments on riscv
+>   selftests/bpf: Skip test_bpf_syscall_macro:syscall_arg1 on arm64 and
+>     s390
+>   libbpf: Allow overriding PT_REGS_PARM1{_CORE}_SYSCALL
+>   libbpf: Fix accessing the first syscall argument on arm64
+>   libbpf: Fix accessing the first syscall argument on s390
+>
 
-Add a prompt for DEBUG_INFO_BTF_MODULES to allow it to be disabled
-independently.
+Applied to bpf-next with few adjustments in patches 8-10, thanks. I'll
+sync all this to Github shortly to run it through s390x CI tests as
+well.
 
-Signed-off-by: Connor O'Brien <connoro@google.com>
----
- lib/Kconfig.debug | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 1555da672275..a6bbd4bb2bde 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -334,7 +334,7 @@ config PAHOLE_HAS_BTF_TAG
- 	  these attributes, so make the config depend on CC_IS_CLANG.
- 
- config DEBUG_INFO_BTF_MODULES
--	def_bool y
-+	bool "Generate BTF typeinfo for modules"
- 	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
- 	help
- 	  Generate compact split BTF type information for kernel modules.
--- 
-2.35.0.263.gb82422642f-goog
-
+>  tools/lib/bpf/bpf_tracing.h                   | 42 ++++++++++++++++++-
+>  .../bpf/prog_tests/test_bpf_syscall_macro.c   |  4 ++
+>  .../selftests/bpf/progs/bpf_syscall_macro.c   |  9 +++-
+>  3 files changed, 51 insertions(+), 4 deletions(-)
+>
+> --
+> 2.34.1
+>
