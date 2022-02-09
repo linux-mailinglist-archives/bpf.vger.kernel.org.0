@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E9D4B011E
+	by mail.lfdr.de (Postfix) with ESMTP id B6F104B0120
 	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 00:21:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229600AbiBIXUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 18:20:24 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:42068 "EHLO
+        id S229646AbiBIXUa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 18:20:30 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:42236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbiBIXUR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 18:20:17 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E696FE06A60A
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 15:20:12 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id ki18-20020a17090ae91200b001b8be87e9abso522225pjb.1
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 15:20:12 -0800 (PST)
+        with ESMTP id S229711AbiBIXUU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 18:20:20 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CFBE06A61C
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 15:20:16 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id h14-20020a17090a130e00b001b88991a305so6720952pja.3
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 15:20:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=d/pfInyWzHhLX7qVlbRTVmblefgi/6AR2+KaR8dBVpk=;
-        b=UIxY1vkpq3sYwGSCbucy3N6gHsmgs9/DeMUBxL2va+twTCcJDnIV3N/GmDgutWrmCm
-         I1OXVsgMZunxBR14dlRlmsngHeYE4pOk1Wvwc4rHVwwf7m7bI4aer8t3oaoRV67z4Kyc
-         yMJfRrZ2uy249Z1iCD9zJoaIfOgSmORswHFCaVr8KyZhA6rd1IVuKMUjGu7ZVZwWmce4
-         AL59wN+3tGKyWCveYRAggqMVtyrgw6n36GKKR+noqJUjOcJ0+QeXAWbMWYN8N8LW4Wdm
-         nuoHsWcupQQQ48vOEWsRVcUazPwRUvmnPZ0VmxjffNuGiPReHVwNcgajyga2Y+UlKbBc
-         BHug==
+        bh=q8BOEr8wa8HNl4JcR5+50xbTStTvRUimpj9cEX22Jfk=;
+        b=OB4boc1DAVETseDK/ORgs9O6MBmr+TcaqJ1gzC2WDB5MlXf2C7rQYobjEZ2vaBW+mO
+         dm6J8O2j0vtzbVcARJqNkWWT9Nmou69Oerm0M/Yxr3+56dTdmpbhGfgFN/1zaIHsKdZY
+         6veK7hmsvVfklV0AsD3Pd60TLLN9u7zZC/OGn/1zqbUUpEy5PMXhI+BhbBgDWPEUy6UV
+         7q+qUzdU1perEDbW2wXbzpC5bfPa7TAzRRs3IMZbdQS4N4LClQKWm+d5gj8QtAG2NOw2
+         jB7gdWhUfFNDBQ+0X2TkS09jtoxtBfitlkx4K8KJ9oK32nudkHELaWDz3c05z4H23f8X
+         c/Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=d/pfInyWzHhLX7qVlbRTVmblefgi/6AR2+KaR8dBVpk=;
-        b=o5yzFuM/piKdLgk4W0xvFOm4z9Jq7xiQJebweIsJXTXG9Sg/NSo+jg5u5fhL3QS8tD
-         BrMIzpBgiA/c1uDQadqLwVE0V7P1FTRqtCVMnVWZN1xplSh7rQauy7StAcHilm8YpW93
-         7pl8ieW/3jYyx73xWuc3FxiIL5ba91MkmAbgtybMgZfmHQ+CAe9lOqd7tjmiJ08hnUzm
-         KEExrTCT13dEOJuAPKhBI/3MvY1Lr78zwbrkjakE4NIRUb2ORpaGuPFWbTg5rpoJKiH1
-         TZvRanvh9hS1oe5v3qfkK528mp6+FIEvH2XAuAlXZ1+TvQIhg8k1zmotOwfl78ZIydnq
-         0ffA==
-X-Gm-Message-State: AOAM5324r5d3U6n1370JYJqCg5UElsiPLWcSipd2NBzJphX8uz8GORfN
-        oKww5dZn1L/VltJiWOtMV6M=
-X-Google-Smtp-Source: ABdhPJyYb8WzXlHiXw4DE/VNDQ2y0fBLqOFBUwYnwETSCRLZHhZhLTVUp7+pABiURVGwD5fzzgUmhg==
-X-Received: by 2002:a17:90b:3908:: with SMTP id ob8mr5249072pjb.73.1644448812358;
-        Wed, 09 Feb 2022 15:20:12 -0800 (PST)
+        bh=q8BOEr8wa8HNl4JcR5+50xbTStTvRUimpj9cEX22Jfk=;
+        b=34Dc7ctJlL1dU5NIQBUh87FUB0Y+FvTEqoot2D10wrtvWbWc+G44u2A9jJliavHVsG
+         AHarJOQG/ETc8QLEIxDq3VC9FHxsoRL77R5hBWNrX1vARGtCziZ7hoFcRqkadHlQanY4
+         GL367mum+66Ilt+xE28lnI577X6yz2nC0lR9P1kt6bHgi2ssHeW3uUsFrlyLibRUxfAI
+         /GPa1bcSNgL//1FbHmtyXaA88QIHOWe0UL5zpv8DW7QFincbpzKZmKC15SZj4bdV7vh+
+         y32I5hHly5erUZeQqGx/SaGAeU/7wfj4MrtzyrbiU7ZE3NRv6bhjf4cnx6H1zitNeXtQ
+         Q2RA==
+X-Gm-Message-State: AOAM532L7Gvi+gC/7yuXxBw1Q3+lWSET1QBsUaYHpGUCCGgN19yhlRsn
+        djANhtPBVmsXpKW5dtlrw+3K5xXVOcM=
+X-Google-Smtp-Source: ABdhPJwCFQ9uTo7p+uOPNfRcXQlsqNltzdbQbAtMsOo8j41FRImWfqY30RvJ0m2E62n3R0ROuPWdaQ==
+X-Received: by 2002:a17:902:eac4:: with SMTP id p4mr4837844pld.90.1644448815399;
+        Wed, 09 Feb 2022 15:20:15 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([2620:10d:c090:500::2:9eba])
-        by smtp.gmail.com with ESMTPSA id h27sm14780409pgb.20.2022.02.09.15.20.11
+        by smtp.gmail.com with ESMTPSA id 13sm20425689pfm.161.2022.02.09.15.20.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Feb 2022 15:20:11 -0800 (PST)
+        Wed, 09 Feb 2022 15:20:15 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 3/5] bpftool: Generalize light skeleton generation.
-Date:   Wed,  9 Feb 2022 15:19:59 -0800
-Message-Id: <20220209232001.27490-4-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 4/5] bpf: Update iterators.lskel.h.
+Date:   Wed,  9 Feb 2022 15:20:00 -0800
+Message-Id: <20220209232001.27490-5-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220209232001.27490-1-alexei.starovoitov@gmail.com>
 References: <20220209232001.27490-1-alexei.starovoitov@gmail.com>
@@ -71,109 +71,209 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Generealize light skeleton by hiding mmap details in skel_internal.h
-In this form generated lskel.h is usable both by user space and by the kernel.
-
-Note that previously #include <bpf/bpf.h> was in *.lskel.h file.
-To avoid #ifdef-s in a generated lskel.h the include of bpf.h is moved
-to skel_internal.h, but skel_internal.h is also used by gen_loader.c
-which is part of libbpf. Therefore skel_internal.h does #include "bpf.h"
-in case of user space, so gen_loader.c and lskel.h have necessary definitions.
+Light skeleton and skel_internal.h have changed.
+Update iterators.lskel.h.
 
 Acked-by: Yonghong Song <yhs@fb.com>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- tools/bpf/bpftool/gen.c | 39 ++++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+ .../bpf/preload/iterators/iterators.lskel.h   | 141 +++++++++---------
+ 1 file changed, 69 insertions(+), 72 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index eacfc6a2060d..6f2e20be0c62 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -472,7 +472,7 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
- 			continue;
- 		if (bpf_map__is_internal(map) &&
- 		    (bpf_map__map_flags(map) & BPF_F_MMAPABLE))
--			printf("\tmunmap(skel->%1$s, %2$zd);\n",
-+			printf("\tskel_free_map_data(skel->%1$s, skel->maps.%1$s.initial_value, %2$zd);\n",
- 			       ident, bpf_map_mmap_sz(map));
- 		codegen("\
- 			\n\
-@@ -481,7 +481,7 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
- 	}
- 	codegen("\
- 		\n\
--			free(skel);					    \n\
-+			skel_free(skel);				    \n\
- 		}							    \n\
- 		",
- 		obj_name);
-@@ -525,7 +525,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct %1$s *skel;				    \n\
- 									    \n\
--			skel = calloc(sizeof(*skel), 1);		    \n\
-+			skel = skel_alloc(sizeof(*skel));		    \n\
- 			if (!skel)					    \n\
- 				goto cleanup;				    \n\
- 			skel->ctx.sz = (void *)&skel->links - (void *)skel; \n\
-@@ -543,19 +543,18 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 			continue;
+diff --git a/kernel/bpf/preload/iterators/iterators.lskel.h b/kernel/bpf/preload/iterators/iterators.lskel.h
+index d90562d672d2..70f236a82fe1 100644
+--- a/kernel/bpf/preload/iterators/iterators.lskel.h
++++ b/kernel/bpf/preload/iterators/iterators.lskel.h
+@@ -3,8 +3,6 @@
+ #ifndef __ITERATORS_BPF_SKEL_H__
+ #define __ITERATORS_BPF_SKEL_H__
  
- 		codegen("\
--			\n\
--				skel->%1$s =					 \n\
--					mmap(NULL, %2$zd, PROT_READ | PROT_WRITE,\n\
--					     MAP_SHARED | MAP_ANONYMOUS, -1, 0); \n\
--				if (skel->%1$s == (void *) -1)			 \n\
--					goto cleanup;				 \n\
--				memcpy(skel->%1$s, (void *)\"\\			 \n\
--			", ident, bpf_map_mmap_sz(map));
-+		\n\
-+			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
-+		", ident);
- 		mmap_data = bpf_map__initial_value(map, &mmap_size);
- 		print_hex(mmap_data, mmap_size);
--		printf("\", %2$zd);\n"
--		       "\tskel->maps.%1$s.initial_value = (__u64)(long)skel->%1$s;\n",
--		       ident, mmap_size);
-+		codegen("\
-+		\n\
-+		\", %1$zd, %2$zd);					    \n\
-+			if (!skel->%3$s)				    \n\
-+				goto cleanup;				    \n\
-+			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
-+		", bpf_map_mmap_sz(map), mmap_size, ident);
- 	}
- 	codegen("\
- 		\n\
-@@ -611,9 +610,13 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		else
- 			mmap_flags = "PROT_READ | PROT_WRITE";
+-#include <stdlib.h>
+-#include <bpf/bpf.h>
+ #include <bpf/skel_internal.h>
  
--		printf("\tskel->%1$s =\n"
--		       "\t\tmmap(skel->%1$s, %2$zd, %3$s, MAP_SHARED | MAP_FIXED,\n"
--		       "\t\t\tskel->maps.%1$s.map_fd, 0);\n",
-+		codegen("\
-+		\n\
-+			skel->%1$s = skel_finalize_map_data(&skel->maps.%1$s.initial_value,  \n\
-+							%2$zd, %3$s, skel->maps.%1$s.map_fd);\n\
-+			if (!skel->%1$s)				    \n\
-+				return -ENOMEM;				    \n\
-+			",
- 		       ident, bpf_map_mmap_sz(map), mmap_flags);
- 	}
- 	codegen("\
-@@ -751,8 +754,6 @@ static int do_skeleton(int argc, char **argv)
- 		#ifndef %2$s						    \n\
- 		#define %2$s						    \n\
- 									    \n\
--		#include <stdlib.h>					    \n\
--		#include <bpf/bpf.h>					    \n\
- 		#include <bpf/skel_internal.h>				    \n\
- 									    \n\
- 		struct %1$s {						    \n\
+ struct iterators_bpf {
+@@ -70,31 +68,28 @@ iterators_bpf__destroy(struct iterators_bpf *skel)
+ 	iterators_bpf__detach(skel);
+ 	skel_closenz(skel->progs.dump_bpf_map.prog_fd);
+ 	skel_closenz(skel->progs.dump_bpf_prog.prog_fd);
+-	munmap(skel->rodata, 4096);
++	skel_free_map_data(skel->rodata, skel->maps.rodata.initial_value, 4096);
+ 	skel_closenz(skel->maps.rodata.map_fd);
+-	free(skel);
++	skel_free(skel);
+ }
+ static inline struct iterators_bpf *
+ iterators_bpf__open(void)
+ {
+ 	struct iterators_bpf *skel;
+ 
+-	skel = calloc(sizeof(*skel), 1);
++	skel = skel_alloc(sizeof(*skel));
+ 	if (!skel)
+ 		goto cleanup;
+ 	skel->ctx.sz = (void *)&skel->links - (void *)skel;
+-	skel->rodata =
+-		mmap(NULL, 4096, PROT_READ | PROT_WRITE,
+-		     MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+-	if (skel->rodata == (void *) -1)
+-		goto cleanup;
+-	memcpy(skel->rodata, (void *)"\
++	skel->rodata = skel_prep_map_data((void *)"\
+ \x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\
+ \x20\x20\x20\x6d\x61\x78\x5f\x65\x6e\x74\x72\x69\x65\x73\x0a\0\x25\x34\x75\x20\
+ \x25\x2d\x31\x36\x73\x25\x36\x64\x0a\0\x20\x20\x69\x64\x20\x6e\x61\x6d\x65\x20\
+ \x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x61\x74\x74\x61\x63\x68\x65\
+-\x64\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x0a\0", 98);
+-	skel->maps.rodata.initial_value = (__u64)(long)skel->rodata;
++\x64\x0a\0\x25\x34\x75\x20\x25\x2d\x31\x36\x73\x20\x25\x73\x20\x25\x73\x0a\0", 4096, 98);
++	if (!skel->rodata)
++		goto cleanup;
++	skel->maps.rodata.initial_value = (__u64) (long) skel->rodata;
+ 	return skel;
+ cleanup:
+ 	iterators_bpf__destroy(skel);
+@@ -326,7 +321,7 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ \0\0\x01\0\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\
+ \0\0\x62\x70\x66\x5f\x69\x74\x65\x72\x5f\x62\x70\x66\x5f\x70\x72\x6f\x67\0\0\0\
+ \0\0\0\0";
+-	opts.insns_sz = 2184;
++	opts.insns_sz = 2216;
+ 	opts.insns = (void *)"\
+ \xbf\x16\0\0\0\0\0\0\xbf\xa1\0\0\0\0\0\0\x07\x01\0\0\x78\xff\xff\xff\xb7\x02\0\
+ \0\x88\0\0\0\xb7\x03\0\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x05\0\x14\0\0\0\0\0\x61\
+@@ -343,70 +338,72 @@ iterators_bpf__load(struct iterators_bpf *skel)
+ \0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x30\x0e\0\0\xb7\x03\0\0\x1c\0\0\0\x85\0\0\0\
+ \xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xd4\xff\0\0\0\0\x63\x7a\x78\xff\0\0\0\0\
+ \x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x0e\0\0\x63\x01\0\0\0\
+-\0\0\0\x61\x60\x20\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
++\0\0\0\x61\x60\x1c\0\0\0\0\0\x15\0\x03\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+ \x5c\x0e\0\0\x63\x01\0\0\0\0\0\0\xb7\x01\0\0\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\
+ \0\x50\x0e\0\0\xb7\x03\0\0\x48\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\
+ \xc5\x07\xc3\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x63\x71\0\0\0\0\0\
+-\0\x79\x63\x18\0\0\0\0\0\x15\x03\x04\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x98\
+-\x0e\0\0\xb7\x02\0\0\x62\0\0\0\x85\0\0\0\x94\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\
+-\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\x63\x01\0\
+-\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+-\x10\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x98\x0e\0\0\x18\
+-\x61\0\0\0\0\0\0\0\0\0\0\x18\x0f\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\0\0\
+-\x18\x62\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\xa6\0\
+-\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\xa3\xff\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\0\
+-\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\x63\x01\0\0\
+-\0\0\0\0\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\xb7\x03\
+-\0\0\x04\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x96\xff\0\0\0\0\
+-\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x78\x11\0\
+-\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x38\x0f\0\0\x18\x61\0\0\0\0\
+-\0\0\0\0\0\0\x70\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x40\
+-\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\
+-\0\0\0\0\0\0\0\0\0\x48\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc8\x11\0\0\x7b\x01\
+-\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\
+-\0\xe8\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x18\x61\
+-\0\0\0\0\0\0\0\0\0\0\xe0\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\0\0\0\x18\
+-\x61\0\0\0\0\0\0\0\0\0\0\x80\x11\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\0\0\0\0\0\
+-\x18\x61\0\0\0\0\0\0\0\0\0\0\x84\x11\0\0\x63\x01\0\0\0\0\0\0\x79\x60\x10\0\0\0\
+-\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x88\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\xa0\x78\
+-\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb0\x11\0\0\x63\x01\0\0\0\0\0\0\x18\
+-\x61\0\0\0\0\0\0\0\0\0\0\xf8\x11\0\0\xb7\x02\0\0\x11\0\0\0\xb7\x03\0\0\x0c\0\0\
+-\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x60\xff\
+-\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x68\x11\0\0\x63\x70\x6c\0\0\0\0\0\x77\x07\
+-\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\0\0\0\0\
+-\0\0\0\0\x68\x11\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\
+-\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd8\x11\0\0\x61\x01\0\0\0\0\0\0\xd5\x01\x02\0\
+-\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x4e\xff\0\0\0\0\x63\
+-\x7a\x80\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x12\0\0\x18\x61\0\0\0\0\0\
+-\0\0\0\0\0\x10\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x18\x12\
+-\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\
+-\0\0\0\0\0\0\0\x28\x14\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x50\x17\0\0\x7b\x01\0\0\
+-\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x14\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
+-\x60\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd0\x15\0\0\x18\
+-\x61\0\0\0\0\0\0\0\0\0\0\x80\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
+-\0\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x78\x17\0\0\x7b\x01\0\0\0\0\0\0\x61\
+-\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x17\0\0\x63\x01\0\0\0\0\0\0\
+-\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x1c\x17\0\0\x63\x01\0\0\0\0\
+-\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\x17\0\0\x7b\x01\0\0\
+-\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x48\x17\0\0\x63\
+-\x01\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x90\x17\0\0\xb7\x02\0\0\x12\0\0\0\
+-\xb7\x03\0\0\x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\
+-\0\0\xc5\x07\x17\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\x63\x70\x6c\
+-\0\0\0\0\0\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\
+-\x18\x62\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\
+-\0\xbf\x07\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x70\x17\0\0\x61\x01\0\0\0\0\
+-\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x05\
+-\xff\0\0\0\0\x63\x7a\x84\xff\0\0\0\0\x61\xa1\x78\xff\0\0\0\0\xd5\x01\x02\0\0\0\
+-\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa0\x80\xff\0\0\0\0\x63\x06\
+-\x28\0\0\0\0\0\x61\xa0\x84\xff\0\0\0\0\x63\x06\x2c\0\0\0\0\0\x18\x61\0\0\0\0\0\
+-\0\0\0\0\0\0\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x18\0\0\0\0\0\xb7\0\0\0\0\0\0\0\
+-\x95\0\0\0\0\0\0\0";
++\0\x79\x63\x20\0\0\0\0\0\x15\x03\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x98\
++\x0e\0\0\xb7\x02\0\0\x62\0\0\0\x61\x60\x04\0\0\0\0\0\x45\0\x02\0\x01\0\0\0\x85\
++\0\0\0\x94\0\0\0\x05\0\x01\0\0\0\0\0\x85\0\0\0\x71\0\0\0\x18\x62\0\0\0\0\0\0\0\
++\0\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\x63\
++\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\
++\0\0\x10\x0f\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x98\x0e\0\0\
++\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x0f\0\0\x7b\x01\0\0\0\0\0\0\xb7\x01\0\0\x02\0\
++\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x08\x0f\0\0\xb7\x03\0\0\x20\0\0\0\x85\0\0\0\
++\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x9f\xff\0\0\0\0\x18\x62\0\0\0\0\0\0\0\0\
++\0\0\0\0\0\0\x61\x20\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\x63\
++\x01\0\0\0\0\0\0\xb7\x01\0\0\x16\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\x28\x0f\0\0\
++\xb7\x03\0\0\x04\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\x92\xff\
++\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x0f\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\
++\x78\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x38\x0f\0\0\x18\
++\x61\0\0\0\0\0\0\0\0\0\0\x70\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\
++\0\0\0\x40\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb8\x11\0\0\x7b\x01\0\0\0\0\0\0\
++\x18\x60\0\0\0\0\0\0\0\0\0\0\x48\x10\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xc8\x11\0\
++\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xe8\x10\0\0\x18\x61\0\0\0\0\
++\0\0\0\0\0\0\xe8\x11\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\0\0\
++\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xe0\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\x60\x08\0\0\
++\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x11\0\0\x63\x01\0\0\0\0\0\0\x61\x60\x0c\
++\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x84\x11\0\0\x63\x01\0\0\0\0\0\0\x79\x60\
++\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x88\x11\0\0\x7b\x01\0\0\0\0\0\0\x61\
++\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xb0\x11\0\0\x63\x01\0\0\0\0\0\
++\0\x18\x61\0\0\0\0\0\0\0\0\0\0\xf8\x11\0\0\xb7\x02\0\0\x11\0\0\0\xb7\x03\0\0\
++\x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\0\0\0\0\0\xc5\x07\
++\x5c\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x68\x11\0\0\x63\x70\x6c\0\0\0\0\0\
++\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\0\0\0\x18\x62\0\0\
++\0\0\0\0\0\0\0\0\x68\x11\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\xa6\0\0\0\xbf\x07\
++\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd8\x11\0\0\x61\x01\0\0\0\0\0\0\xd5\
++\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\x07\x4a\xff\0\0\
++\0\0\x63\x7a\x80\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x10\x12\0\0\x18\x61\0\
++\0\0\0\0\0\0\0\0\0\x10\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\
++\x18\x12\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x08\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\
++\x60\0\0\0\0\0\0\0\0\0\0\x28\x14\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x50\x17\0\0\
++\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x30\x14\0\0\x18\x61\0\0\0\0\0\
++\0\0\0\0\0\x60\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\xd0\x15\
++\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x80\x17\0\0\x7b\x01\0\0\0\0\0\0\x18\x60\0\0\0\
++\0\0\0\0\0\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x78\x17\0\0\x7b\x01\0\0\0\0\
++\0\0\x61\x60\x08\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x18\x17\0\0\x63\x01\0\0\
++\0\0\0\0\x61\x60\x0c\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x1c\x17\0\0\x63\x01\
++\0\0\0\0\0\0\x79\x60\x10\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x20\x17\0\0\x7b\
++\x01\0\0\0\0\0\0\x61\xa0\x78\xff\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x48\x17\0\
++\0\x63\x01\0\0\0\0\0\0\x18\x61\0\0\0\0\0\0\0\0\0\0\x90\x17\0\0\xb7\x02\0\0\x12\
++\0\0\0\xb7\x03\0\0\x0c\0\0\0\xb7\x04\0\0\0\0\0\0\x85\0\0\0\xa7\0\0\0\xbf\x07\0\
++\0\0\0\0\0\xc5\x07\x13\xff\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\x63\
++\x70\x6c\0\0\0\0\0\x77\x07\0\0\x20\0\0\0\x63\x70\x70\0\0\0\0\0\xb7\x01\0\0\x05\
++\0\0\0\x18\x62\0\0\0\0\0\0\0\0\0\0\0\x17\0\0\xb7\x03\0\0\x8c\0\0\0\x85\0\0\0\
++\xa6\0\0\0\xbf\x07\0\0\0\0\0\0\x18\x60\0\0\0\0\0\0\0\0\0\0\x70\x17\0\0\x61\x01\
++\0\0\0\0\0\0\xd5\x01\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\xc5\
++\x07\x01\xff\0\0\0\0\x63\x7a\x84\xff\0\0\0\0\x61\xa1\x78\xff\0\0\0\0\xd5\x01\
++\x02\0\0\0\0\0\xbf\x19\0\0\0\0\0\0\x85\0\0\0\xa8\0\0\0\x61\xa0\x80\xff\0\0\0\0\
++\x63\x06\x28\0\0\0\0\0\x61\xa0\x84\xff\0\0\0\0\x63\x06\x2c\0\0\0\0\0\x18\x61\0\
++\0\0\0\0\0\0\0\0\0\0\0\0\0\x61\x10\0\0\0\0\0\0\x63\x06\x18\0\0\0\0\0\xb7\0\0\0\
++\0\0\0\0\x95\0\0\0\0\0\0\0";
+ 	err = bpf_load_and_run(&opts);
+ 	if (err < 0)
+ 		return err;
+-	skel->rodata =
+-		mmap(skel->rodata, 4096, PROT_READ, MAP_SHARED | MAP_FIXED,
+-			skel->maps.rodata.map_fd, 0);
++	skel->rodata = skel_finalize_map_data(&skel->maps.rodata.initial_value,
++					4096, PROT_READ, skel->maps.rodata.map_fd);
++	if (!skel->rodata)
++		return -ENOMEM;
+ 	return 0;
+ }
+ 
 -- 
 2.30.2
 
