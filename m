@@ -2,175 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574494AF7F9
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 18:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF054AF8B1
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 18:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238096AbiBIRXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 12:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51728 "EHLO
+        id S233576AbiBIRr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 12:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234946AbiBIRXC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 12:23:02 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9729FC0613C9;
-        Wed,  9 Feb 2022 09:23:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644427384; x=1675963384;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=l3L8LFaE+q3XvFKv9Ix9ZJ1NLS/TjuDzKasWZIzIUG4=;
-  b=IBnd339293y6WT5RYcQ5wO2Iuepg9lzdTyIJrN4tEO29aQDqXmPcymws
-   HsU0bsTf8cBIzJmdXnzbTat+h7KRKB63/ea3LXF03sg9NXKy0c3f25ytT
-   xwGTtPFskYVaaWrfhx0tNwdl3LzCmquLnw+TCxwNpsSdrNPmFtWMOSJgk
-   QQewEzS8ls+MASB3F186GJRMllHeuBDhZgy8eRhh8vJVQsqScIOK3EpiQ
-   X9sKtEZi9ecLx+/TZB76+WHCbGAIKfob2LtoxLwRgdEIcRwuBiOio0Qa3
-   31HpSgBL7v2eSGStVc4pXNvd9BMJENhOaVim4XnZNjTHW/xsqvLNPCdCr
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="246843321"
-X-IronPort-AV: E=Sophos;i="5.88,356,1635231600"; 
-   d="scan'208";a="246843321"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2022 09:21:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,356,1635231600"; 
-   d="scan'208";a="485319975"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orsmga006.jf.intel.com with ESMTP; 09 Feb 2022 09:21:04 -0800
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 9 Feb 2022 09:21:04 -0800
-Received: from fmsmsx606.amr.corp.intel.com (10.18.126.86) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Wed, 9 Feb 2022 09:21:03 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20 via Frontend Transport; Wed, 9 Feb 2022 09:21:03 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2308.20; Wed, 9 Feb 2022 09:21:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cmd8+BNG1h6I18u3NM6Njy5OESjKHuo4msML3hPVT0uT0LlVQjpOqrLzziA2VKhq3q+GP9bLm0RFzGY3U/KFB2rVFbcRWg3uCOhHS20HpPDoGqQqRW5szw3MLO5xjwUvdYtdA6F2li3hnegHQxY8HebJAN8WRnF5x7HlC2jfnycq9C2iuzi8aFtu+5l813cEIY6/b5j/s62CdHffaWSZTvEMf/aJ48HFbHY3IXgg3jjxGuEBvlA8xmu4E6/oVCYa1eJCl0LmSb6OGSUESu5+Xm0x4P77ujVyaPPYsUFAv/1eRazQQAhYKVTwxcg4YJ0XOLl2t2Ib00cUUb1SpY0Xkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l3L8LFaE+q3XvFKv9Ix9ZJ1NLS/TjuDzKasWZIzIUG4=;
- b=a466nqZRGCQMAD73LUVnOj9hlRVneojhv/uc8gOrNTSYtC/QiZ3Xwr6P9EEeNTZh65VdVL5I1nc6d2t+CFc9or5fbUcggor86AiHFXI+ZetZGf6/pNzEwBfIHsFyT1RKmYhUsCBUzviJCJE50aUCN/deFufGhK8CT38Zg50G73htwnekYzd1oh24T5K8c7N727f69SzOXSmmEUzNEsNyBk9APdSSidYjm+9uzz5jwMhGQiYPHhPaM04PyOTf42w51BrEJVlfmfOkF/oEyqEOf/d0mpiWVYHEAU/EQ7fBjqKkUm3CimxIuUulSuIIj+884Vmr+0Clod34zD0SqTA/WA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com (2603:10b6:805:ba::28)
- by BN6PR11MB1249.namprd11.prod.outlook.com (2603:10b6:404:3e::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.12; Wed, 9 Feb
- 2022 17:20:54 +0000
-Received: from SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::bded:8c4b:271e:7c1]) by SN6PR11MB3229.namprd11.prod.outlook.com
- ([fe80::bded:8c4b:271e:7c1%5]) with mapi id 15.20.4951.019; Wed, 9 Feb 2022
- 17:20:54 +0000
-From:   "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-To:     "kurt@linutronix.de" <kurt@linutronix.de>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "vinschen@redhat.com" <vinschen@redhat.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/2][pull request] 1GbE Intel Wired LAN Driver
- Updates 2022-02-07
-Thread-Topic: [PATCH net-next 0/2][pull request] 1GbE Intel Wired LAN Driver
- Updates 2022-02-07
-Thread-Index: AQHYHHsTSnJrtK1NZEyF+LUY2IADx6yKrnmAgAAycACAAJjmgA==
-Date:   Wed, 9 Feb 2022 17:20:53 +0000
-Message-ID: <699b8636cafcfa82a99cf290e3cffbab91b6afbb.camel@intel.com>
-References: <20220207233246.1172958-1-anthony.l.nguyen@intel.com>
-         <20220208211305.47dc605f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <87sfssv4nj.fsf@kurt>
-In-Reply-To: <87sfssv4nj.fsf@kurt>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1ef0b559-2df9-4537-ffc5-08d9ebf0870e
-x-ms-traffictypediagnostic: BN6PR11MB1249:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-microsoft-antispam-prvs: <BN6PR11MB1249D6CE855BE38F0CA7837CC62E9@BN6PR11MB1249.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VIoi2cvF2HmGPLXZj+fizwaaDya7m0Mq46ROI1UYN6HF/7X/u8Ncsvvy/iIVeGx1CK7wS5DLANvztdS5S+I3Jw2UZFOCwoa4JCte+pfQGOlI2Vm9N7PpE8VF/p8ylyi+1fII9EKnc7xdk3OT+rCefDLzZR1rCEPrH+gn+aazR3Fek1R+7X3AeokqB8EBTo7fD4XAsUChNJOETGrKAyQxNUmMTXzHA72ppZ8yUwCoSGVC5P/y5PSEmp9Rr53Y/BhipDncXA7wW3FxQX770/SsWRYYxm5qqqSRu6gzqNsX946StKgpcR+8+4Y48R64VOZy23VD2OHv4q30hzgmpGzo1O19DM4gOjhfSFq6bcOyHphD/6/DeZdm8cWawZPYY8wU9YV90vnlLq/Y9df0dGUNEIUADc007hQ9GA73iJ3hOGfE8fswN793GmYQ7zUtjJnh9ZC/7GgwHtnHlilqqWCSJW+/bLnSdQVD2uYLzkBNOGvDRJ3Z2YC5grOQmZEdHehS1Vs36RBNKweQYbTij+xE52kutBYFdyYyInyXqDPXqM5gCUHlUOOBdllTLbc5xffMsYhukzxLA9czX4pn/ZN3lbomlv+RrNqlEP01MF41OvRShI8sN2/BcA8XngEA3O5FTPKA0N/sqDK0qjX7pImJE314TCp5lk50vWOB7nQ6PoAUH7B11s5XcU0JNAMUhfMVVG/bs0n5lVC4pFLbf23iGg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3229.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(186003)(2616005)(5660300002)(26005)(82960400001)(7416002)(38070700005)(2906002)(508600001)(36756003)(38100700002)(122000001)(6486002)(110136005)(76116006)(91956017)(64756008)(4326008)(316002)(66946007)(71200400001)(6512007)(66446008)(8676002)(8936002)(66476007)(6506007)(54906003)(83380400001)(86362001)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UkVrbzMzK1VtVFAyQUtiVHZQMUFwNFE2QW1nYWRFazh5RTZrNmxRN2ROWi9I?=
- =?utf-8?B?bEJTcEtiNW5YaUs2WGQrR0IwZHE2cnBMM21tK0ZCc1ZpQWNrVkJueFBDM1Nm?=
- =?utf-8?B?SUlZbjRQQm95TkxaMXBVbEs4QWdOTE90aFZRZHdhaVlGcnArdlQ4TkdhdkpX?=
- =?utf-8?B?RFV5dXUyV3RNeGtTRS9wZCt0eHh2NExLcUxUVnNIYkc4UTM4dXM5R0ZCTHBV?=
- =?utf-8?B?Q0xPd0hSYlhnaWtNbXFTK2dUanlWZXBRVnIzWmM1cnpDNnNBU2pha1N3TW05?=
- =?utf-8?B?TmJxaCtldmxib2Nkb2VXZjZyT0M3YmhDQ20xeERHWTNleXlrMmlQSEZ2MkJT?=
- =?utf-8?B?bFJKbzN0NVlXRkJRVW9wc2dOdWdsc1lTSUFxSDFtc2RuOEcyQUtoMnBpN1NZ?=
- =?utf-8?B?SXEwdGFKcG9HSzdxbWpKbG8ydjF5WWFidGVSVXdhcVlBeHhCamhTUU9iajhO?=
- =?utf-8?B?Q1B6VXlJYW9MMkJOZkNiNGdlc2RheEFaMkhTTzlEZlZEQW05OSt5QXhyend6?=
- =?utf-8?B?M0RFR013YU50N0JXdXhoTS9nMjRmdVhMR2VkOEtVSUU3NHBBMkF5NVR1NnZo?=
- =?utf-8?B?TWZsOWpjdFJlc016alc3dUZFZk9IYTZqRUdKa1FwZUZJTlJuUCsxU1pLbXZL?=
- =?utf-8?B?NUx0Tm05a2lDbU12SElOeEJwZ2Y0UWFHQ3prZFBNRkwvK29ma0EwUDdSbTB4?=
- =?utf-8?B?UW0rTksxOVdaL2F6VXZvOVFmSlEvYnIvUVVINzJhUjU5b0tyUEgzSnA0MGZZ?=
- =?utf-8?B?VDV5dVIvUXNHWGhNdkZ2OVBzWWJBMzVneG1UMHBEbHc5UEdhM2ppTVRiV1ZI?=
- =?utf-8?B?WkpCVW5oM1ZIbCtlVjFEZVltYXovNE5pRloxaUk5dENhS1l0SG1LWE4vVVg2?=
- =?utf-8?B?dUtKUEcvN2ttdXZTbWh1RE1xZ0FhV0Q1N01BOHl0azljbTVMakpOcnd2OVpx?=
- =?utf-8?B?ZGFUVjFJbFlmbGE1ellMZEpCTDlTbWJwRzVOSFpnemx0U09vS25IcTZBdGNZ?=
- =?utf-8?B?R05nRmg1anU4VFpMTjAvNjNjQ05kNlpkdElzMzZxUWM3S3IwYlpMeUFXVFJW?=
- =?utf-8?B?aVlReEdyNm8waUFQL0txRmg4WUJNZk5RQXRlUVB5ZUpnRnRrVEorZTdBNHRZ?=
- =?utf-8?B?ZDgyaEVDM3pJazFvbXBuWkZJODFLOFl0b2k0RHlMc25DU2I3dVMvREF0Sktv?=
- =?utf-8?B?NStFSGNEZytldVVDZWVWUmtxajRjR2VaYldQMDFCR01iaHJMaklDRzRDL2tJ?=
- =?utf-8?B?ckk0MXBLZFZwTUgxSzlhNnRmNzV4VUtNcVVGOEZtd0VaWHNEbFV3YU1ib0Qy?=
- =?utf-8?B?OS9HbWM2VmViYUtkTTZpdzNCRU9WSTA5VGh4ZzQ2Uk05NVJHTVNEUVpsdlgv?=
- =?utf-8?B?VEJFTjg2a0RhcjUwckROa1FGNjFlREZ6cFUxWTVNZmJQVWR5OXQvTzA2MTU0?=
- =?utf-8?B?OWVoMk9GUU5hY0wycENuOHVTOXQ1bXR5R2FaaHJQL2dSWHVIWXg4enBlREV3?=
- =?utf-8?B?MXZJa3Q1K2ZzN0hRSm84c0FFNUlSSE1iS3Q1aGdJSkc5L2RkTUEzVDZFUWxt?=
- =?utf-8?B?WFhYbHBIU2tVMjg0UnFkZ1ZvYUhvQzRxa1pBNEo1Uml0dFV3NmNiSmpDdXdY?=
- =?utf-8?B?dXVPTkNVL2dVY2c4YU5SUzlWRUV1eFlOM254TjQ4M3c1dlRiZFUxMzh5aXoy?=
- =?utf-8?B?Sm1nYTdEd0NnYzMzd0dEVklWcWlCSjBFeEhTOEN2YTh5REZld3Z1SVdpZHB4?=
- =?utf-8?B?VGdHa3hnSUR6VkNDckRBUmpINVhuTDVuV2dBaDc0Yk5ISmNMS1M0SE93OExJ?=
- =?utf-8?B?NGNhN1BWeGxJT3g1UWE5N2N3SjA1TmloSlo0WUtEQURacDlkWHJnalJEZnU4?=
- =?utf-8?B?aVkwQ21IMlE3cytVMGFBeG56Y2tGUWJVQkpVTDAyUTd1WWdzeERmSHpQaEpo?=
- =?utf-8?B?VmZCTnhLWWRTZ3VBT3orZVlrOW5UM1NKYXFRYUxFYzNGdnYxVXQwemhvR1ox?=
- =?utf-8?B?RXFONUFOVDgzaUtVaWNBc3ZYYmplMlA1LzJUdEFzRHF2RUJaMkI1bW96YzBD?=
- =?utf-8?B?QjJIOE1OSFhhUTlYaGFEMHdNYVVlTU15Z25YcDRvZWVVQzA0R3VWNzZqVmNR?=
- =?utf-8?B?R1hqVng3TGM4MVJHNElHK1pmN0RoKzVrc3QrSnRDaWNqdnJPWFMzejhpdTB5?=
- =?utf-8?B?NXZCMXphMEJOWjRWWUFIeFBzTW1pU2VyUStrVWZHSFdsSThSc0xzUUJueXpS?=
- =?utf-8?Q?SvXxZULC/mLxdNGYliji2hflrB0DVO0/EiccczJ3YQ=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <442BDC3B10433646AD1ECF85CDB3C2F7@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S235315AbiBIRr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 12:47:56 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 081D0C05CB88
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 09:47:58 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id z18so2373672iln.2
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 09:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q0IEMOXIARZSTvPLtDf8TOlc6bO8iOigBKukCcOgFzA=;
+        b=T4TKFiiHzOQQCKEgTtgq4u9KlcXv4TzWqRFtqwXsOxyN9PlMhxjTF4EGkytfv4DQTQ
+         3o0XydUNpGn+RI8bDrkq3w85HScUbrYWt2eEnQeldyRoT3hQdqKn9pX3ot5/amlPip3X
+         yTDtZO5YE/WwqS8dHz2sWQ1j5rVcjzQxld+6AxwjV1zN50nCi6sHPvHExqYYKzFB5rod
+         tlOD7ye2R5O7mWwQ+AYkmwf4AetnKvCxhH/SlAPLlvn+TNHDGkNWla4+piNY8c50MSvD
+         ZNO7wXaVrpmEJfXzEizOaToy/WJHLb5dA+r6r6Md+hmjzMT8z5UD4q7UXejRRZZqKQoo
+         IA9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q0IEMOXIARZSTvPLtDf8TOlc6bO8iOigBKukCcOgFzA=;
+        b=dIa8JxXhEhMCL0N6VthvZoalD9k/PXnL9pVv9cuVvY4o8FhOXoKITf2CbX8RzpW8U8
+         19vQbh/Du8FT+xZHVcpZ4uvtnwOuL4ldrI0TxMdXceIVXmJZo//vvWet/VlgfTmiDSlH
+         7Re3oNN2w39ZxgrqHTj5FDn6bway4b1C8A6Dwc07Iay5ezQhogukTLmy2/KPGZkWiaLo
+         dsiqKz1ZU7z60tjMH+2UozFkrsU28xm/M17DU+oSBH344kXvTdjhvrqhC8RytntsUcpo
+         s8WTNdV6nTz9ezQe1HafW0JByOu8V8zyeQFQ/gxfcRhDV+LEaP82M5QMf02HEXfJIJox
+         Eynw==
+X-Gm-Message-State: AOAM533LO0z/tNVBTOAlovmwse9P8dO5ppOE8VOK40VO1wvAuma3RWl9
+        DeIG7nla3ANVsSr5PmZMTnWeCu95AW4XssAOs2NC46vs
+X-Google-Smtp-Source: ABdhPJyZyqqeZXWdGYDOo2Ad0OCmhlp8FvmkgJxnam2aVlGVCE/lcicr4/1Q1XcwL7dggSsmwv6KKKBbTHyoIcmgrWM=
+X-Received: by 2002:a05:6e02:190e:: with SMTP id w14mr1670761ilu.71.1644428877223;
+ Wed, 09 Feb 2022 09:47:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3229.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ef0b559-2df9-4537-ffc5-08d9ebf0870e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Feb 2022 17:20:53.9127
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +ZGTXex28dAgQ+EklJ8moww1Re/xwIFpJ/r1ShHNetMXmFtTGz6+AbfNLcAMYMb/TtNcg6XJ98/BwBUvdmUasa6EqyF2EjIvjyy8KmfeohA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR11MB1249
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <20220207143134.2977852-1-hengqi.chen@gmail.com>
+ <20220207143134.2977852-2-hengqi.chen@gmail.com> <CAEf4BzaQvpS+Zh3zEmxqPC0nADXdjPV8UoWW90UJ8F7ZBFhQDQ@mail.gmail.com>
+ <CAEf4BzZM_HWA3keM=0FPk2j7G0AVcfCNfBXRx0BJj91uC5g21A@mail.gmail.com> <CAADnVQK9wUd6OWWL_oPcuy_G=-z8Xq7OP3ej40OM8+xfHLfYdg@mail.gmail.com>
+In-Reply-To: <CAADnVQK9wUd6OWWL_oPcuy_G=-z8Xq7OP3ej40OM8+xfHLfYdg@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 9 Feb 2022 09:47:46 -0800
+Message-ID: <CAEf4BzZiC=f8pqZcmfH+upjMrTxx4970n=uqp1NicWx279AvZw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] libbpf: Add BPF_KPROBE_SYSCALL macro
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Hengqi Chen <hengqi.chen@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -178,23 +66,120 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gV2VkLCAyMDIyLTAyLTA5IGF0IDA5OjEzICswMTAwLCBLdXJ0IEthbnplbmJhY2ggd3JvdGU6
-DQo+IEhpIFRvbnksDQo+IA0KPiBPbiBUdWUgRmViIDA4IDIwMjIsIEpha3ViIEtpY2luc2tpIHdy
-b3RlOg0KPiA+IE9uIE1vbizCoCA3IEZlYiAyMDIyIDE1OjMyOjQ0IC0wODAwIFRvbnkgTmd1eWVu
-IHdyb3RlOg0KPiA+ID4gQ29yaW5uYSBWaW5zY2hlbiBzYXlzOg0KPiA+ID4gDQo+ID4gPiBGaXgg
-dGhlIGtlcm5lbCB3YXJuaW5nICJNaXNzaW5nIHVucmVnaXN0ZXIsIGhhbmRsZWQgYnV0IGZpeA0K
-PiA+ID4gZHJpdmVyIg0KPiA+ID4gd2hlbiBydW5uaW5nLCBlLmcuLA0KPiA+ID4gDQo+ID4gPiDC
-oCAkIGV0aHRvb2wgLUcgZXRoMCByeCAxMDI0DQo+ID4gPiANCj4gPiA+IG9uIGlnYy7CoCBSZW1v
-dmUgbWVtc2V0IGhhY2sgZnJvbSBpZ2IgYW5kIGFsaWduIGlnYiBjb2RlIHRvIGlnYy4NCj4gPiAN
-Cj4gPiBXaHkgLW5leHQ/DQoNCkFzIHRoZSBvcmlnaW5hbCBzdWJtaXNzaW9uIHdhcyB0YXJnZXRp
-bmcgLW5leHQsIEkgY2FycmllZCB0aGF0IGZvcndhcmQuDQpTaW5jZSB0aGUgd2FybmluZyBzYWlk
-IGl0IHdhcyBoYW5kbGVkLCBJIHRob3VnaHQgaXQgd2FzIG9rIHRvIGdvIHRoZXJlLg0KDQo+IENh
-biB3ZSBnZXQgdGhlc2UgcGF0Y2hlcyBpbnRvIG5ldCwgcGxlYXNlPyBUaGUgbWVudGlvbmVkIGln
-YyBwcm9ibGVtDQo+IGV4aXN0cyBvbiB2NS4xNS1MVFMgdG9vLg0KDQpJJ2xsIGZvbGxvdyB0aGUg
-aWdjIHBhdGNoIGFuZCBzdWJtaXQgYSByZXF1ZXN0IHRvIHN0YWJsZSB3aGVuIGl0IGhpdHMNCkxp
-bnVzJyB0cmVlLiBGb3IgaWdiLCBhcyBpdCBzb3VuZHMgbGlrZSB0aGluZ3MgYXJlIHdvcmtpbmcs
-IGp1c3Qgbm90DQp3aXRoIHRoZSBwcmVmZXJyZWQgbWV0aG9kLCBzbyBJIGRvbid0IHBsYW4gb24g
-c2VuZGluZyB0aGF0IHRvIHN0YWJsZS4NCk9yIGlzIHRoZXJlIGFuIGlzc3VlIHRoZXJlIHRoYXQg
-dGhpcyBwYXRjaCBuZWVkcyB0byBnbyB0byBzdGFibGUgYXMNCndlbGw/DQoNClRoYW5rcywNClRv
-bnkNCg0KPiBGV0lXLCBUZXN0ZWQtYnk6IEt1cnQgS2FuemVuYmFjaCA8a3VydEBsaW51dHJvbml4
-LmRlPg0KPiANCj4gVGhhbmtzLA0KPiBLdXJ0DQoNCg==
+On Wed, Feb 9, 2022 at 8:38 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Feb 9, 2022 at 2:25 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Feb 7, 2022 at 1:58 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Feb 7, 2022 at 6:31 AM Hengqi Chen <hengqi.chen@gmail.com> wrote:
+> > > >
+> > > > Add syscall-specific variant of BPF_KPROBE named BPF_KPROBE_SYSCALL ([0]).
+> > > > The new macro hides the underlying way of getting syscall input arguments.
+> > > > With the new macro, the following code:
+> > > >
+> > > >     SEC("kprobe/__x64_sys_close")
+> > > >     int BPF_KPROBE(do_sys_close, struct pt_regs *regs)
+> > > >     {
+> > > >         int fd;
+> > > >
+> > > >         fd = PT_REGS_PARM1_CORE(regs);
+> > > >         /* do something with fd */
+> > > >     }
+> > > >
+> > > > can be written as:
+> > > >
+> > > >     SEC("kprobe/__x64_sys_close")
+> > > >     int BPF_KPROBE_SYSCALL(do_sys_close, int fd)
+> > > >     {
+> > > >         /* do something with fd */
+> > > >     }
+> > > >
+> > > >   [0] Closes: https://github.com/libbpf/libbpf/issues/425
+> > > >
+> > > > Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+> > > > ---
+> > > >  tools/lib/bpf/bpf_tracing.h | 33 +++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 33 insertions(+)
+> > > >
+> > > > diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> > > > index cf980e54d331..7ad9cdea99e1 100644
+> > > > --- a/tools/lib/bpf/bpf_tracing.h
+> > > > +++ b/tools/lib/bpf/bpf_tracing.h
+> > > > @@ -461,4 +461,37 @@ typeof(name(0)) name(struct pt_regs *ctx)                              \
+> > > >  }                                                                          \
+> > > >  static __always_inline typeof(name(0)) ____##name(struct pt_regs *ctx, ##args)
+> > > >
+> > > > +#define ___bpf_syscall_args0()           ctx
+> > > > +#define ___bpf_syscall_args1(x)          ___bpf_syscall_args0(), (void *)PT_REGS_PARM1_CORE_SYSCALL(regs)
+> > > > +#define ___bpf_syscall_args2(x, args...) ___bpf_syscall_args1(args), (void *)PT_REGS_PARM2_CORE_SYSCALL(regs)
+> > > > +#define ___bpf_syscall_args3(x, args...) ___bpf_syscall_args2(args), (void *)PT_REGS_PARM3_CORE_SYSCALL(regs)
+> > > > +#define ___bpf_syscall_args4(x, args...) ___bpf_syscall_args3(args), (void *)PT_REGS_PARM4_CORE_SYSCALL(regs)
+> > > > +#define ___bpf_syscall_args5(x, args...) ___bpf_syscall_args4(args), (void *)PT_REGS_PARM5_CORE_SYSCALL(regs)
+> > > > +#define ___bpf_syscall_args(args...)     ___bpf_apply(___bpf_syscall_args, ___bpf_narg(args))(args)
+> > > > +
+> > > > +/*
+> > > > + * BPF_KPROBE_SYSCALL is a variant of BPF_KPROBE, which is intended for
+> > > > + * tracing syscall functions, like __x64_sys_close. It hides the underlying
+> > > > + * platform-specific low-level way of getting syscall input arguments from
+> > > > + * struct pt_regs, and provides a familiar typed and named function arguments
+> > > > + * syntax and semantics of accessing syscall input parameters.
+> > > > + *
+> > > > + * Original struct pt_regs* context is preserved as 'ctx' argument. This might
+> > > > + * be necessary when using BPF helpers like bpf_perf_event_output().
+> > > > + */
+> > >
+> > > LGTM. Please also mention that this macro relies on CO-RE so that
+> > > users are aware.
+> > >
+> >
+> > Now that Ilya's fixes are in again, added a small note about reliance
+> > on BPF CO-RE and pushed to bpf-next, thanks.
+> >
+> >
+> > On a relevant note. The whole __x64_sys_close vs sys_close depending
+> > on architecture and kernel version was always super annoying. BCC
+> > makes this transparent to users (AFAIK) and it always bothered me a
+> > little, but I didn't see a clean solution that fits libbpf.
+> >
+> > I think I finally found it, though. Instead of guessing whether the
+> > kprobe function is a syscall or not based on "sys_" prefix of a kernel
+> > function, we can use libbpf SEC() handling to do this transparently.
+> > What if we define two new SEC() definitions:
+> >
+> > SEC("ksyscall/write") and SEC("kretsyscall/write") (or maybe
+> > SEC("kprobe.syscall/write") and SEC("kretprobe.syscall/write"), not
+> > sure which one is better, voice your opinion, please). And for such
+> > special kprobes, libbpf will perform feature detection of this
+> > ARCH_SYSCALL_WRAPPER (we'll need to see the best way to do this in a
+> > simple and fast way, preferably without parsing kallsyms) and
+> > depending on it substitute either sys_write (or should it be
+> > __se_sys_write, according to Naveen) or __<arch>_sys_write. You get
+> > the idea.
+> >
+> > I like that this is still explicit and in the spirit of libbpf, but
+> > offloads the burden of knowing these intricate differences from users.
+> >
+> > Thoughts?
+>
+> I think it will be just as fragile.
+> That syscall prefix was changed by the kernel few times now.
+> libbpf will be chasing the moving target.
+> I think keeping the magic in .h is simpler and less of a maintenance burden.
+
+Absolutely it is simpler, but it only works for selftests (and even
+then, when prefix changes again we'll need to adjust selftests). But
+the point here is to not require end users to chase this instead. And
+in the real world where users want to work on as wide a range of
+kernel versions as possible SYS_PREFIX trick doesn't work (which is
+why I didn't want to add that to bpf_tracing.h).
+
+It's cheaper (maintenance-wise) to do it in libbpf than require all
+the kprobe users to keep track of this, no? And good thing is that
+libbpf is part of the kernel repo, so whenever someone changes this in
+the kernel we'll get a failing selftest on next net-next -> bpf->next
+sync (at least for architectures that we do test), so we'll be able to
+fix and adjust quickly.
