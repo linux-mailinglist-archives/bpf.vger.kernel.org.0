@@ -2,177 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AD24AF8C8
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 18:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142554AF8CE
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 18:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231911AbiBIRu5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 12:50:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47984 "EHLO
+        id S233045AbiBIRxr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 12:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238478AbiBIRu5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 12:50:57 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8F1C05CB8C
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 09:50:57 -0800 (PST)
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 219HXOnu010863;
-        Wed, 9 Feb 2022 17:50:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=QeqGal7MgbMhenMGOE838rSOY3uP/BzQ/XkJwqD0plE=;
- b=h6SLGacBZkYizKPd9+3hiUu9OQmXJV7iqGiUq+g/CPtTyAr/hOjMHS3+X1aLPwvgc5l8
- AhN8fSBtMfGhPRYS99aNHfbTn6Laoiq0Qey8beGTNtH7XihOxtf/lz/Lewb+AHMna1FK
- +EF/sF3r0feEdXOAdYjCAnk+fPV6bl3VszzgTvfljYCzYbpV8YB565JkGhWSh6fwAmDq
- WokXsWgiExFkyELJfQfQH3gC1LOOpI4umtTwDzZ4R4jTnCD2R8ebWwuwqIYHPKLkT7it
- q9FWEzH4hfzrH2fcr/RVhbWaHxTVmjoywoX97XDKI4IuOrxVfnqxz/UA4KAp7x7v7Uzn gQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e3tsttcvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Feb 2022 17:50:17 +0000
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 219Hh0nl017532;
-        Wed, 9 Feb 2022 17:50:17 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e3tsttct8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Feb 2022 17:50:16 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 219HXPxW021373;
-        Wed, 9 Feb 2022 17:50:14 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3e1gv9qg56-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Feb 2022 17:50:14 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 219HoBXR24641898
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Feb 2022 17:50:11 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 686C0A4067;
-        Wed,  9 Feb 2022 17:50:11 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0825CA4064;
-        Wed,  9 Feb 2022 17:50:11 +0000 (GMT)
-Received: from localhost (unknown [9.43.32.201])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Feb 2022 17:50:10 +0000 (GMT)
-Date:   Wed, 09 Feb 2022 17:50:09 +0000
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 2/3] powerpc/ftrace: Override ftrace_location_lookup()
- for MPROFILE_KERNEL
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-References: <cover.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <fadc5f2a295d6cb9f590bbbdd71fc2f78bf3a085.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20220207102454.41b1d6b5@gandalf.local.home>
-In-Reply-To: <20220207102454.41b1d6b5@gandalf.local.home>
+        with ESMTP id S231628AbiBIRxr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 12:53:47 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24171C0613C9;
+        Wed,  9 Feb 2022 09:53:50 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e8so2337767ilm.13;
+        Wed, 09 Feb 2022 09:53:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hEg0y0wpaA0NxaOXCTb6FxrWQQ0eOZKttfjrv1FpqYo=;
+        b=HKUe2RT5FovFABPNovji/5iHiVLAYEpsmJ/7AjYoUIinKh0yDwrOoncrKmNZsc9xe1
+         wuWJ20lL0rm6ca11iQf0DBMb3ahXuK39ugZbSeDqVcbQbJLNw8/9/+az3dV2WWVc1h9k
+         Ip8b9TlqByMhmESM94ljNCvK4gNhaPQu98s8tIkSA1NkxYsB6g1GuHxIAoO4LZ7sKDzp
+         xz+UxkAw8Vr5srB5FAQBHTOIlozTm/szRsEzxDfCNb41YCjHWEzktBpW/W2egmsnX+Ab
+         HS1zxoCcC6hu4iXhoDil4EhQJa6sZLm7fhZfh/NoqPECeV04ewjShOmkszdmmKfYJ8iN
+         VCSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hEg0y0wpaA0NxaOXCTb6FxrWQQ0eOZKttfjrv1FpqYo=;
+        b=lEdutq+QrIpjOWh0e6SZKbNsnA+6NirwywsnZw2LIJh53hTdf7IUSflm4fSsgkpqbA
+         dqAsZ6Pso1srjsRjVVJO6GRb1deA+PssiRzmfyVQ3EiC94wIPrinOTqL4K9Ulh0JPjPz
+         EAwXjUcEDGGga2lGUAnp/EnjzPGurer9o5bwir/O5xx5FoekVal/c1oIFx5SHssnVAww
+         8gIxEWsNE1zrcJCIVm796HHe8Tqg3iTH29jrDPWQQikeNXnHmudRu6BvQMMNhmeuDCrU
+         6rle3h83hqBSQgNBLanvcEkykEwfVc4/wrJWyag/BWfdNWvp1/dBnyZ1hkQAXg9Dkuth
+         sLNw==
+X-Gm-Message-State: AOAM531Lu1otA6PoFxgzIWViQ74MkAo4mULSqA15XyqqhnjJvMaQcob3
+        H2TDmnp5hqWBTcJYtx4YqPtBr9qoSmXZeKrd6/k=
+X-Google-Smtp-Source: ABdhPJzH41CpYLPV0G/3jSMxAsfT5EiefksDNC/t8TrD2REpjW4hOlWhGKjGs6OD6iSPirO4i04i11jG7QqYuhTYwP8=
+X-Received: by 2002:a05:6e02:1b81:: with SMTP id h1mr1773881ili.239.1644429229412;
+ Wed, 09 Feb 2022 09:53:49 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1644426751.786cjrgqey.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -_rZY9735z-lbnaeR_XjQGVNW1GJwLL2
-X-Proofpoint-GUID: OyACoGB9tlRavdZ1b-quXMIPAIsdqHSX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-09_09,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- malwarescore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
- impostorscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202090096
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220208120648.49169-1-quentin@isovalent.com> <20220208120648.49169-4-quentin@isovalent.com>
+ <CAEf4BzaH1OKZpJ8-CC4TbhGmYe+jv_0iqOTwhOG9+98Lze9Lew@mail.gmail.com> <82da0b01-af9f-ea0d-17a4-76a4c48bc879@isovalent.com>
+In-Reply-To: <82da0b01-af9f-ea0d-17a4-76a4c48bc879@isovalent.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 9 Feb 2022 09:53:38 -0800
+Message-ID: <CAEf4BzYPP28afBFwG+9jW4hpt2-iyy2gqATNUbY9yw0eDJU7Vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 3/3] bpftool: Update versioning scheme, align
+ on libbpf's version number
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Steven Rostedt wrote:
-> On Mon,  7 Feb 2022 12:37:21 +0530
-> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
->=20
->> --- a/arch/powerpc/kernel/trace/ftrace.c
->> +++ b/arch/powerpc/kernel/trace/ftrace.c
->> @@ -1137,3 +1137,14 @@ char *arch_ftrace_match_adjust(char *str, const c=
-har *search)
->>  		return str;
->>  }
->>  #endif /* PPC64_ELF_ABI_v1 */
->> +
->> +#ifdef CONFIG_MPROFILE_KERNEL
->> +unsigned long ftrace_location_lookup(unsigned long ip)
->> +{
->> +	/*
->> +	 * Per livepatch.h, ftrace location is always within the first
->> +	 * 16 bytes of a function on powerpc with -mprofile-kernel.
->> +	 */
->> +	return ftrace_location_range(ip, ip + 16);
->=20
-> I think this is the wrong approach for the implementation and error prone=
-.
->=20
->> +}
->> +#endif
->> --=20
->=20
-> What I believe is a safer approach is to use the record address and add t=
-he
-> range to it.
->=20
-> That is, you know that the ftrace modification site is a range (multiple
-> instructions), where in the ftrace infrastructure, only one ip represents
-> that range. What you want is if you pass in an ip, and that ip is within
-> that range, you return the ip that represents that range to ftrace.
->=20
-> It looks like we need to change the compare function in the bsearch.
->=20
-> Perhaps add a new macro to define the size of the range to be searched,
-> instead of just using MCOUNT_INSN_SIZE? Then we may not even need this ne=
-w
-> lookup function?
->=20
-> static int ftrace_cmp_recs(const void *a, const void *b)
-> {
-> 	const struct dyn_ftrace *key =3D a;
-> 	const struct dyn_ftrace *rec =3D b;
->=20
-> 	if (key->flags < rec->ip)
-> 		return -1;
-> 	if (key->ip >=3D rec->ip + ARCH_IP_SIZE)
-> 		return 1;
-> 	return 0;
-> }
->=20
-> Where ARCH_IP_SIZE is defined to MCOUNT_INSN_SIZE by default, but an arch
-> could define it to something else, like 16.
->=20
-> Would that work for you, or am I missing something?
+On Wed, Feb 9, 2022 at 4:37 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>
+> 2022-02-08 16:39 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > On Tue, Feb 8, 2022 at 4:07 AM Quentin Monnet <quentin@isovalent.com> wrote:
+> >>
+> >> Since the notion of versions was introduced for bpftool, it has been
+> >> following the version number of the kernel (using the version number
+> >> corresponding to the tree in which bpftool's sources are located). The
+> >> rationale was that bpftool's features are loosely tied to BPF features
+> >> in the kernel, and that we could defer versioning to the kernel
+> >> repository itself.
+> >>
+> >> But this versioning scheme is confusing today, because a bpftool binary
+> >> should be able to work with both older and newer kernels, even if some
+> >> of its recent features won't be available on older systems. Furthermore,
+> >> if bpftool is ported to other systems in the future, keeping a
+> >> Linux-based version number is not a good option.
+> >>
+> >> Looking at other options, we could either have a totally independent
+> >> scheme for bpftool, or we could align it on libbpf's version number
+> >> (with an offset on the major version number, to avoid going backwards).
+> >> The latter comes with a few drawbacks:
+> >>
+> >> - We may want bpftool releases in-between two libbpf versions. We can
+> >>   always append pre-release numbers to distinguish versions, although
+> >>   those won't look as "official" as something with a proper release
+> >>   number. But at the same time, having bpftool with version numbers that
+> >>   look "official" hasn't really been an issue so far.
+> >>
+> >> - If no new feature lands in bpftool for some time, we may move from
+> >>   e.g. 6.7.0 to 6.8.0 when libbpf levels up and have two different
+> >>   versions which are in fact the same.
+> >>
+> >> - Following libbpf's versioning scheme sounds better than kernel's, but
+> >>   ultimately it doesn't make too much sense either, because even though
+> >>   bpftool uses the lib a lot, its behaviour is not that much conditioned
+> >>   by the internal evolution of the library (or by new APIs that it may
+> >>   not use).
+> >>
+> >> Having an independent versioning scheme solves the above, but at the
+> >> cost of heavier maintenance. Developers will likely forget to increase
+> >> the numbers when adding features or bug fixes, and we would take the
+> >> risk of having to send occasional "catch-up" patches just to update the
+> >> version number.
+> >>
+> >> Based on these considerations, this patch aligns bpftool's version
+> >> number on libbpf's. This is not a perfect solution, but 1) it's
+> >> certainly an improvement over the current scheme, 2) the issues raised
+> >> above are all minor at the moment, and 3) we can still move to an
+> >> independent scheme in the future if we realise we need it.
+> >>
+> >> Given that libbpf is currently at version 0.7.0, and bpftool, before
+> >> this patch, was at 5.16, we use an offset of 6 for the major version,
+> >> bumping bpftool to 6.7.0.
+> >>
+> >> It remains possible to manually override the version number by setting
+> >> BPFTOOL_VERSION when calling make.
+> >>
+> >> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> >> ---
+> >> Contrarily to the previous discussion and to what the first patch of the
+> >> set does, I chose not to use the libbpf_version_string() API from libbpf
+> >> to compute the version for bpftool. There were three reasons for that:
+> >>
+> >> - I don't feel comfortable having bpftool's version number computed at
+> >>   runtime. Somehow it really feels like we should now it when we compile
+> >
+> > Fair, but why not use LIBBPF_MAJOR_VERSION and LIBBPF_MINOR_VERSION to
+> > define BPFTOOL_VERSION (unless it's overridden).
+>
+> I forgot the macros were exposed, which is silly, because I was the one
+> to help expose them in the first place. Anyway.
+>
+> > Which all seems to be
+> > doable at compilation time in C code, not in Makefile. This will work
+> > with Github version of libbpf just as well with no extra Makefile
+> > changes (and in general, the less stuff is done in Makefile the
+> > better, IMO).
+> >
+> > Version string can also be "composed" at compile time with a bit of
+> > helper macro, see libbpf_version_string() implementation in libbpf.
+>
+> Sounds good, I can do that.
+>
+> This won't give me the patch number, though, only major and minor
+> version. We could add an additional LIBBPF_PATCH_VERSION to libbpf.
+> Although thinking about it, I'm not sure we need a patch version for
+> bpftool at the moment, because changes in libbpf's patch number is
+> unlikely to reflect any change in bpftool, so it makes little sense to
+> copy it. So I'm considering just leaving it at 0 in bpftool, and having
+> updates on major/minor numbers only when libbpf releases a major/minor
+> version. If we do want bugfix releases, it will still be possible to
+> overwrite the version number with BPFTOOL_VERSION anyway. What do you think?
 
-Yes, I hadn't realized that [un]register_ftrace_direct() and=20
-modify_ftrace_direct() internally lookup the correct ftrace location,=20
-and act on that. So, changing ftrace_cmp_recs() does look like it will=20
-work well for powerpc. Thanks for this suggestion.
+So the patch version is not currently reflected in libbpf.map file. I
+do patch version bumps only when we detect some small issue after
+official release. It happened 2 or 3 times so far. I'm hesitant to
+expose that as LIBBPF_PATCH_VERSION, because I'll need to remember to
+bump it manually (and coordinating this between kernel sources and
+Github is a slow nightmare). Let's not rely on patch version, too much
+burden.
 
-However, I think we will not be able to use a fixed range.  I would like=20
-to reserve instructions from function entry till the branch to=20
-_mcount(), and it can be two or four instructions depending on whether a=20
-function has a global entry point. For this, I am considering adding a=20
-field in 'struct dyn_arch_ftrace', and a hook in ftrace_process_locs()=20
-to initialize the same. I may need to override ftrace_cmp_recs().
-
-
-Thanks,
-- Naveen
-
+>
+> Quentin
