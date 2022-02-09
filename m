@@ -2,121 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833C94AE8F2
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2604AE8EE
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235245AbiBIFNl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 00:13:41 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:41874 "EHLO
+        id S230386AbiBIFL3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 00:11:29 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:56656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377815AbiBIElT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Feb 2022 23:41:19 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB925C061579
-        for <bpf@vger.kernel.org>; Tue,  8 Feb 2022 20:41:18 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id i10so775498ilm.4
-        for <bpf@vger.kernel.org>; Tue, 08 Feb 2022 20:41:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7t36LdCGbLq4fNGgL+Fce4M8ZaXugQ2Hp8fiBZ3C2ek=;
-        b=J1qbFg4wUHF+mQa2aJuaHh4fLBOz0m6ygV39pVdJLUNBVFyCVSe7kW9bqHfdMbvUfh
-         8fbxYNFR87OpCx5ZbVDXUbFACINiG/heP9RX9CxBqQLzZeaRMHCUjyPhsqgnDAF+EIrk
-         uol2/TfZXxoSRrb22vtNJkR+TZqAkPpWvKFngQ89wwA38I/HR6K+lc3rE4ZLf6hUORhc
-         rwNfo6+U0Fbbt43FCwhmB/IZMRN+Na7/dS60UyscYRd1mkIGtdoWaCmYUmBXYpN7Rg4U
-         oNem/wLmxTlWZ+MeGZolwhA4WYGAm3oiYz3im0OB2K/4EUzC1JguvaPxmmAdxGnRWj6+
-         YCKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7t36LdCGbLq4fNGgL+Fce4M8ZaXugQ2Hp8fiBZ3C2ek=;
-        b=EKrNKA58kk4tcu39ZQbGneHRx4P9CIPVorAB1i41cpXB2Rb8A5YGCjLpGsDTqIoS89
-         SBt5v4JA9iU4A/S6f/pDa3vJmHHJWD4fLn7kUjO46JcjNcDR0s9LVlA9E5hMaOL0dClJ
-         JzC6bsbpmZVayrXl0A4WNK0xN1Ggb8AGGmATZK72AAbhH2fD1D+p8raa6tKnfIDgKo9Y
-         HeGPRPPR87sssIPxK6tBAQjpklTy7fS9dStLgmNwNxUDz8rXBFBYXNrxvWvydDJeVKAo
-         B17h0isPC9JtOIaBu2NddCGDiPVliaZR2CpcxddbfhEdTxuVmnJf+6xcVZSHp6R2UsF6
-         JhEw==
-X-Gm-Message-State: AOAM533rd1/bRfYGyLXEgZOmi3igSVYjJocS5n97TSF/fvfIOq59Z6H8
-        AB2EWaahyfVAGqzrXQKTWHpSrzbcZh8WjIdKpS0=
-X-Google-Smtp-Source: ABdhPJxoMgLZZf6nTtx7N+Bzk6JAbg1oQ9NIjAr/yKdpkUCm7AlhXm0MHWDlSTC+O6dkYah8WpiG8UU5Wil9pJb/cFs=
-X-Received: by 2002:a05:6e02:1a6c:: with SMTP id w12mr230475ilv.305.1644381677197;
- Tue, 08 Feb 2022 20:41:17 -0800 (PST)
+        with ESMTP id S230153AbiBIFCS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 00:02:18 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C81C03E926;
+        Tue,  8 Feb 2022 21:02:19 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0V3ze3Rg_1644382934;
+Received: from 30.225.24.53(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0V3ze3Rg_1644382934)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Feb 2022 13:02:15 +0800
+Message-ID: <4da041e7-d88c-16ba-d180-f8e8b8c2ef31@linux.alibaba.com>
+Date:   Wed, 9 Feb 2022 13:02:13 +0800
 MIME-Version: 1.0
-References: <20220208191306.6136-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20220208191306.6136-1-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 8 Feb 2022 20:41:06 -0800
-Message-ID: <CAEf4BzYmr-ApTnFsq9Wc2afCZpbzG80Ftx4n=BvoCFCUaSCEzw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/5] bpf: Light skeleton for the kernel.
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.0
+Subject: Re: [syzbot] BUG: MAX_LOCK_DEPTH too low! (3)
+To:     syzbot <syzbot+4de3c0e8a263e1e499bc@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kgraul@linux.ibm.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <0000000000006d045e05d78776f6@google.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <0000000000006d045e05d78776f6@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.4 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 11:13 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> The libbpf performs a set of complex operations to load BPF programs.
-> With "loader program" and "CO-RE in the kernel" the loading job of
-> libbpf was diminished. The light skeleton became lean enough to perform
-> program loading and map creation tasks without libbpf.
-> It's now possible to tweak it further to make light skeleton usable
-> out of user space and out of kernel module.
-> This allows bpf_preload.ko to drop user-mode-driver usage,
-> drop host compiler dependency, allow cross compilation and simplify the code.
-> It's a building block toward safe and portable kernel modules.
->
-> v1->v2:
-> - removed redundant anon struct and added comments (Andrii's reivew)
-> - added Yonghong's ack
-> - fixed build warning when JIT is off
->
-> Alexei Starovoitov (5):
->   bpf: Extend sys_bpf commands for bpf_syscall programs.
->   libbpf: Prepare light skeleton for the kernel.
->   bpftool: Generalize light skeleton generation.
->   bpf: Update iterators.lskel.h.
->   bpf: Convert bpf_preload.ko to use light skeleton.
->
 
-See question about error handling for rodata in skeleton. But otherwise LGTM.
 
-For the series:
+On 2022/2/9 4:21 am, syzbot wrote:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> The issue was bisected to:
+> 
+> commit 341adeec9adad0874f29a0a1af35638207352a39
+> Author: Wen Gu <guwen@linux.alibaba.com>
+> Date:   Wed Jan 26 15:33:04 2022 +0000
+> 
+>      net/smc: Forward wakeup to smc socket waitqueue after fallback
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11c2637c700000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13c2637c700000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15c2637c700000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+4de3c0e8a263e1e499bc@syzkaller.appspotmail.com
+> Fixes: 341adeec9ada ("net/smc: Forward wakeup to smc socket waitqueue after fallback")
+> 
+> BUG: MAX_LOCK_DEPTH too low!
+> turning off the locking correctness validator.
+> depth: 48  max: 48!
 
->  kernel/bpf/inode.c                            |  39 +---
->  kernel/bpf/preload/Kconfig                    |   9 +-
->  kernel/bpf/preload/Makefile                   |  14 +-
->  kernel/bpf/preload/bpf_preload.h              |   8 +-
->  kernel/bpf/preload/bpf_preload_kern.c         | 119 +++++------
->  kernel/bpf/preload/bpf_preload_umd_blob.S     |   7 -
->  .../preload/iterators/bpf_preload_common.h    |  13 --
->  kernel/bpf/preload/iterators/iterators.c      | 108 ----------
->  .../bpf/preload/iterators/iterators.lskel.h   |  28 +--
->  kernel/bpf/syscall.c                          |  40 +++-
->  tools/bpf/bpftool/gen.c                       |  45 ++--
->  tools/lib/bpf/skel_internal.h                 | 193 ++++++++++++++++--
->  12 files changed, 319 insertions(+), 304 deletions(-)
->  delete mode 100644 kernel/bpf/preload/bpf_preload_umd_blob.S
->  delete mode 100644 kernel/bpf/preload/iterators/bpf_preload_common.h
->  delete mode 100644 kernel/bpf/preload/iterators/iterators.c
->
-> --
-> 2.30.2
->
+Thanks for syzbot's report.
+
+I will look into this issue and give feedback as soon as possible.
+
+Thanks,
+Wen Gu
