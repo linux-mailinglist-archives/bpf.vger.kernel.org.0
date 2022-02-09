@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587D14AE8F8
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BFF4AE95A
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 06:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbiBIFOj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 00:14:39 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:38340 "EHLO
+        id S231482AbiBIFeW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 00:34:22 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:48880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348290AbiBIFNF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 00:13:05 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37020C03F91E;
-        Tue,  8 Feb 2022 21:13:09 -0800 (PST)
+        with ESMTP id S232750AbiBIFU1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 00:20:27 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396FDC03CA4E;
+        Tue,  8 Feb 2022 21:20:28 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE338B81EBD;
-        Wed,  9 Feb 2022 05:13:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3794C340E7;
-        Wed,  9 Feb 2022 05:13:05 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 4CF7ACE1E35;
+        Wed,  9 Feb 2022 05:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9012EC340F0;
+        Wed,  9 Feb 2022 05:20:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644383586;
-        bh=OKmszPrcHGGikw3VvLNoWHnD+7XDa2MaWmpt5hxWoUM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ICeETITanenZYMlw45UYMM0KfSKIfjVkEIfvxNfaJhH00s7P4JV5+PFWB9FFREbjl
-         kcdR06MqbLqfAnt3Pj627Z8Te4cdpY2feR4/bjinEU2PtuaQdXHAZsrsxzidiO7zz+
-         FGu0KbgSenR1+e3AFvPQGc17G4c7W5XthayclpesxEeX5hK9A31Z2YGuqCNsSzWx6p
-         tqnqUrc2dAZuzWuGykvwhFOlRRcXbeQQdNYfPyAlUYJJJnr2i26TPipGUDylyuiMGQ
-         TmbBmc5cunwUUS99YgVT67SXYgoKja5xLSiLEOYx66d6CoZ8H+mLlluVNPoeEaNkv/
-         fLZFOK9uszYzA==
-Date:   Tue, 8 Feb 2022 21:13:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, netdev@vger.kernel.org, vinschen@redhat.com,
-        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2][pull request] 1GbE Intel Wired LAN Driver
- Updates 2022-02-07
-Message-ID: <20220208211305.47dc605f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20220207233246.1172958-1-anthony.l.nguyen@intel.com>
-References: <20220207233246.1172958-1-anthony.l.nguyen@intel.com>
+        s=k20201202; t=1644384025;
+        bh=k6PypT7qH2lRLxSC1Wl+El4Grn8uim7k/ofn7s3Gc0A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YZsE6yiZYMfoaSawVVi6oy6IiZxn+u5SeK5Dck+aGKMhulgY5JaxKVHc0HHDzXC9e
+         ashYE7L3yZumzu15qvFFoOd9aU6hd5qZKE/ueING/GkeulPhPK0dUYHDq3Aopyzt7n
+         ytLlolNHPWI+ZaSct46Yn/5KKp8MJJDp9t3iHTl9/n5gLzZY7QtOMELTWn5qKAbw/h
+         31sWVPHvLp7ve+Pi7iNjoDU8PDoUGAo8o5Lx22EIZuY0snHvUcDY9PF+H0uVZm/QII
+         fXwIDwoA71QHSOQiRLN1wl2BysLrUOafmDyjl0o3I84DvcFVVbj8JbZ7SIXppLP3LM
+         xsWcylQPMOrQg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 765DDE5D09D;
+        Wed,  9 Feb 2022 05:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/2] fix bpf_prog_pack build errors
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164438402548.12376.6829583277073012575.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Feb 2022 05:20:25 +0000
+References: <20220208220509.4180389-1-song@kernel.org>
+In-Reply-To: <20220208220509.4180389-1-song@kernel.org>
+To:     Song Liu <song@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kernel-team@fb.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -56,14 +56,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon,  7 Feb 2022 15:32:44 -0800 Tony Nguyen wrote:
-> Corinna Vinschen says:
-> 
-> Fix the kernel warning "Missing unregister, handled but fix driver"
-> when running, e.g.,
-> 
->   $ ethtool -G eth0 rx 1024
-> 
-> on igc.  Remove memset hack from igb and align igb code to igc.
+Hello:
 
-Why -next?
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 8 Feb 2022 14:05:07 -0800 you wrote:
+> Fix build errors reported by kernel test robot.
+> 
+> Song Liu (2):
+>   bpf: fix leftover header->pages in sparc and powerpc code.
+>   bpf: fix bpf_prog_pack build HPAGE_PMD_SIZE
+> 
+>  arch/powerpc/net/bpf_jit_comp.c  | 2 +-
+>  arch/sparc/net/bpf_jit_comp_64.c | 2 +-
+>  kernel/bpf/core.c                | 4 ++++
+>  3 files changed, 6 insertions(+), 2 deletions(-)
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,1/2] bpf: fix leftover header->pages in sparc and powerpc code.
+    https://git.kernel.org/bpf/bpf-next/c/0f350231b5ac
+  - [bpf-next,2/2] bpf: fix bpf_prog_pack build HPAGE_PMD_SIZE
+    https://git.kernel.org/bpf/bpf-next/c/c1b13a9451ab
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
