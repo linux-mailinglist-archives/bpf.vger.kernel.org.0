@@ -2,119 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C349C4B0022
-	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 23:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A0E4B0026
+	for <lists+bpf@lfdr.de>; Wed,  9 Feb 2022 23:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbiBIW0E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 17:26:04 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:54584 "EHLO
+        id S235588AbiBIW21 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 17:28:27 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:58380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235393AbiBIW0C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 17:26:02 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2FBDF28A66;
-        Wed,  9 Feb 2022 14:26:04 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id j4so176495plj.8;
-        Wed, 09 Feb 2022 14:26:04 -0800 (PST)
+        with ESMTP id S235838AbiBIW2Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 17:28:24 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1368DE019770
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 14:27:29 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id b5so3318220qtq.11
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 14:27:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4dNHW4tpxBvXPWZnL5sCZ8U5aYka6vht5SmsbV4tumY=;
-        b=bACtZzVfc0CrmRFmpIMHjt4J4pWr1u55BXfG+7o+a0laPtH2QJSKd4qsRnpenYh144
-         9iT3+1HeuaoJjkbwOO4/EAFcleMa8CoAAzjgj01c1TSOltLDEzKkEjwoHHUx61N0lqoZ
-         hxU/7iIrfmKRvMiII68xxpSYsT2Ei8J4OhGPkYf9FleF1L+/+RL16Rk9t1FuGF0WVEtA
-         ACBDcLZt4jrGVew+hOoPSqr22of9oppgeS4lotkrdCfIxXr85fIlojZRdb2FE/Z2mZss
-         7v1oJPDjr2VD1F0fpEN2sP8h8YClJOF92OqWZCBQHqWngLt4afv3i0DJPJ5HSqFq9/14
-         W3Dg==
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mgM1xpZnMLmgEbXlRNIKS05iOihELWC69IMRvSwJUVQ=;
+        b=OY5b3WhJ3JK4Hxltm7LuGN/2ea+tcsSr8kP0PfqkAChZu6afG/CRdyTUEdfVk+nV47
+         RKX7asgC4SVV3zQdVyanXsccG1eAjNdTa+PSOKUO7jr+vC0o+ZzSfIGAFxo1boq2fxV7
+         h3PCbAPfRyxOyBX5e7obCuXgf8fe2r/bTaWs4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4dNHW4tpxBvXPWZnL5sCZ8U5aYka6vht5SmsbV4tumY=;
-        b=LOl8bWKj7eeN9e0x+2UYp0gzkLbCZErRTF+kHFebEgEGErDCC5h/Icf8mCPrsRZ8G0
-         BbgqBZDXea+aNhTyPEOJIGLg41BEMYk+fH5K176NlNlwmI8DJHGZu8MyBFZkDQSNQQS/
-         KhIzE0ETkEi68OJMW8Ei+VercaGaZuWif4II7uVTI5zSi9ivOkwbzDm/Jh/OZtXnme2u
-         kOf7zLsyDNEhQBPRBcOCxO1nQE5MifBn9c+0kt6lsMp+DUJpxStlEqBJYVeuJTkpMZ69
-         a+j4K2mdZV2P9RHfGYEYhsME48vk69PgV18CIgKMMtBMwAuxWSJ2BGsonScTjVNalVrX
-         nMRw==
-X-Gm-Message-State: AOAM533oEKlc1u+ak9vlvXGq/rfULdNLSknzCtZC8xXUDmFA1pFhR9UN
-        F9/jJQkxF0q3q5hh+8IpuAtVYLpEa31yrp6zQW4=
-X-Google-Smtp-Source: ABdhPJzpxPjkL7xftOLRWEV4hqgMO5cA90ZjicAGos41l5LyxiY/ECZxXBNCMrHDbWShz/zj3OfW7qfT2kYYAODBxkQ=
-X-Received: by 2002:a17:90b:4ac6:: with SMTP id mh6mr5065544pjb.138.1644445564033;
- Wed, 09 Feb 2022 14:26:04 -0800 (PST)
-MIME-Version: 1.0
-References: <YgPz8akQ4+qBz7nf@google.com> <20220209210207.dyhi6queg223tsuy@kafai-mbp.dhcp.thefacebook.com>
- <YgQ3au11pALDjyub@google.com>
-In-Reply-To: <YgQ3au11pALDjyub@google.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 9 Feb 2022 14:25:52 -0800
-Message-ID: <CAADnVQKVes3eKcDsFp=TZXRkteMU=WdmqWvXkW7RSMARbnoqxw@mail.gmail.com>
-Subject: Re: Override default socket policy per cgroup
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mgM1xpZnMLmgEbXlRNIKS05iOihELWC69IMRvSwJUVQ=;
+        b=v9+qeehLH5WFQlucpsHFuujY/e88FYEb4pKosnD2rUE7Z5ag0CtnEwL+VUF2XEoVGH
+         LhVPNkVdZ/Ige5rUUJGdhMeNuRWKAEVUpjRjQ9Y51L7y1xLdlQp8Ok2ZfduEQ7btA6Rk
+         w9nL6HIhFdXss8GLDG0oVKVaLZPKvXNxhmE6DvkWKkxRgBGl0Wx1/d0l5vVGfZ3BxMyj
+         /VNbuAgulwkuMwHnCfJRcz61sT5UxVNt4C7y0vh3xYJtYCZeoR3/JtOhCdAvEX3Ee+0l
+         34Hhtwbpjf1m6iyvZYR2jg2LK03lZ/FJGERHnYCdTY7kIiQksemW3TR6VXGhjFPoAA5a
+         GDPQ==
+X-Gm-Message-State: AOAM531m3bOr/pjmBMqbEYQGJofCmiSl09tUJw54s2dKI8+D4i3FmQN/
+        l69H8Gnp/3r67fgIEXvzdRrCew==
+X-Google-Smtp-Source: ABdhPJyp68FzyeT2405nz56xTJOLB21qZ7rlIt56kmb5cjbQzL7o5YqxEbDo5d34LyNc/De/9+cQHg==
+X-Received: by 2002:ac8:5a0c:: with SMTP id n12mr2917995qta.150.1644445648174;
+        Wed, 09 Feb 2022 14:27:28 -0800 (PST)
+Received: from localhost.localdomain ([181.136.110.101])
+        by smtp.gmail.com with ESMTPSA id h6sm9706287qtx.65.2022.02.09.14.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Feb 2022 14:27:27 -0800 (PST)
+From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+Subject: [PATCH bpf-next v6 0/7] libbpf: Implement BTFGen
+Date:   Wed,  9 Feb 2022 17:26:39 -0500
+Message-Id: <20220209222646.348365-1-mauricio@kinvolk.io>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 9, 2022 at 1:51 PM <sdf@google.com> wrote:
->
-> On 02/09, Martin KaFai Lau wrote:
-> > On Wed, Feb 09, 2022 at 09:03:45AM -0800, sdf@google.com wrote:
-> > > Let's say I want to set some default sk_priority for all sockets in a
-> > > specific cgroup. I can do it right now using cgroup/sock_create, but it
-> > > applies only to AF_INET{,6} sockets. I'd like to do the same for raw
-> > > (AF_PACKET) sockets and cgroup/sock_create doesn't trigger for them :-(
-> > Other than AF_PACKET and INET[6], do you have use cases for other
-> > families?
->
-> No, I only need AF_PACKET for now. But I feel like we should create
-> a more extensible hook point this time (if we go this route).
->
-> > > (1) My naive approach would be to add another cgroup/sock_post_create
-> > > which runs late from __sock_create and triggers on everything.
-> > >
-> > > (2) Another approach might be to move BPF_CGROUP_RUN_PROG_INET_SOCK and
-> > > make it work with AF_PACKET. This might be not 100% backwards compatible
-> > > but I'd assume that most users should look at the socket family before
-> > > doing anything. (in this case it feels like we can extend
-> > > sock_bind/release for af_packets as well, just for accounting purposes,
-> > > without any way to override the target ifindex).
-> > If adding a hook at __sock_create, I think having a new
-> > CGROUP_POST_SOCK_CREATE
-> > may be better instead of messing with the current inet assumption
-> > in CGROUP_'INET'_SOCK_CREATE.  Running all CGROUP_*_SOCK_CREATE at
-> > __sock_create could be a nice cleanup such that a few lines can be
-> > removed from inet[6]_create but an extra family check will be needed.
->
-> SG. Hopefully I can at least reuse exiting progtype and just introduce
-> new hook point in __sock_create.
+CO-RE requires to have BTF information describing the kernel types in
+order to perform the relocations. This is usually provided by the kernel
+itself when it's configured with CONFIG_DEBUG_INFO_BTF. However, this
+configuration is not enabled in all the distributions and it's not
+available on kernels before 5.12.
 
-Can you take a look at what it would take to add cgroup scope
-to bpf_lsm ?
-__sock_create() already has
-security_socket_create and security_socket_post_create
-in the right places.
+It's possible to use CO-RE in kernels without CONFIG_DEBUG_INFO_BTF
+support by providing the BTF information from an external source.
+BTFHub[0] contains BTF files to each released kernel not supporting BTF,
+for the most popular distributions.
 
-bpf_lsm cannot write directly into PTR_TO_BTF_ID like the 1st 'sock' pointer.
-We can whitelist the write for certain cases.
-Maybe prototype it with bpf_lsm and use
-bpf_current_task_under_cgroup() helper to limit the scope
-before implementing cgroup-scoped bpf_lsm?
+Providing this BTF file for a given kernel has some challenges:
+1. Each BTF file is a few MBs big, then it's not possible to ship the
+eBPF program with all the BTF files needed to run in different kernels.
+(The BTF files will be in the order of GBs if you want to support a high
+number of kernels)
+2. Downloading the BTF file for the current kernel at runtime delays the
+start of the program and it's not always possible to reach an external
+host to download such a file.
 
-There were cases in the past where bpf_lsm hook was in the ideal
-spot, but lack of cgroup scoping was a show stopper.
-This use case is another example and motivation to extend
-what bpf can do with lsm hooks. That's better than
-adding a new bpf_cgroup hook in the same location.
+Providing the BTF file with the information about all the data types of
+the kernel for running an eBPF program is an overkill in many of the
+cases. Usually the eBPF programs access only some kernel fields.
+
+This series implements BTFGen support in bpftool. This idea was
+discussed during the "Towards truly portable eBPF"[1] presentation at
+Linux Plumbers 2021.
+
+There is a good example[2] on how to use BTFGen and BTFHub together
+to generate multiple BTF files, to each existing/supported kernel,
+tailored to one application. For example: a complex bpf object might
+support nearly 400 kernels by having BTF files summing only 1.5 MB.
+
+[0]: https://github.com/aquasecurity/btfhub/
+[1]: https://www.youtube.com/watch?v=igJLKyP1lFk&t=2418s
+[2]: https://github.com/aquasecurity/btfhub/tree/main/tools
+
+Changelog:
+v5 > v6:
+- use BTF structure to store used member/types instead of hashmaps
+- remove support for input/output folders
+- remove bpf_core_{created,free}_cand_cache()
+- reorganize commits to avoid having unused static functions
+- remove usage of libbpf_get_error()
+- fix some errno propagation issues
+- do not record full types for type-based relocations
+- add support for BTF_KIND_FUNC_PROTO
+- implement tests based on core_reloc ones
+
+v4 > v5:
+- move some checks before invoking prog->obj->gen_loader
+- use p_info() instead of printf()
+- improve command output
+- fix issue with record_relo_core()
+- implement bash completion
+- write man page
+- implement some tests
+
+v3 > v4:
+- parse BTF and BTF.ext sections in bpftool and use
+  bpf_core_calc_relo_insn() directly
+- expose less internal details from libbpf to bpftool
+- implement support for enum-based relocations
+- split commits in a more granular way
+
+v2 > v3:
+- expose internal libbpf APIs to bpftool instead
+- implement btfgen in bpftool
+- drop btf__raw_data() from libbpf
+
+v1 > v2:
+- introduce bpf_object__prepare() and ‘record_core_relos’ to expose
+  CO-RE relocations instead of bpf_object__reloc_info_gen()
+- rename btf__save_to_file() to btf__raw_data()
+
+v1: https://lore.kernel.org/bpf/20211027203727.208847-1-mauricio@kinvolk.io/
+v2: https://lore.kernel.org/bpf/20211116164208.164245-1-mauricio@kinvolk.io/
+v3: https://lore.kernel.org/bpf/20211217185654.311609-1-mauricio@kinvolk.io/
+v4: https://lore.kernel.org/bpf/20220112142709.102423-1-mauricio@kinvolk.io/
+v5: https://lore.kernel.org/bpf/20220128223312.1253169-1-mauricio@kinvolk.io/
+
+Mauricio Vásquez (6):
+  libbpf: split bpf_core_apply_relo()
+  libbpf: Expose bpf_core_{add,free}_cands() to bpftool
+  bpftool: Add gen min_core_btf command
+  bpftool: Implement minimize_btf() and relocations recording for BTFGen
+  bpftool: Implement btfgen_get_btf()
+  selftests/bpf: Test "bpftool gen min_core_btf"
+
+Rafael David Tinoco (1):
+  bpftool: gen min_core_btf explanation and examples
+
+ kernel/bpf/btf.c                              |  13 +-
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  93 +++
+ tools/bpf/bpftool/Makefile                    |   8 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   6 +-
+ tools/bpf/bpftool/gen.c                       | 624 +++++++++++++++++-
+ tools/lib/bpf/libbpf.c                        |  88 +--
+ tools/lib/bpf/libbpf_internal.h               |   9 +
+ tools/lib/bpf/relo_core.c                     |  79 +--
+ tools/lib/bpf/relo_core.h                     |  42 +-
+ .../selftests/bpf/prog_tests/core_reloc.c     |  46 +-
+ 10 files changed, 896 insertions(+), 112 deletions(-)
+
+-- 
+2.25.1
+
