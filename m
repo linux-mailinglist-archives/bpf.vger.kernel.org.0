@@ -2,118 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 642814B0963
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 10:24:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79C54B0975
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 10:29:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238464AbiBJJXC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 04:23:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48158 "EHLO
+        id S238544AbiBJJ3S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 04:29:18 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235335AbiBJJXA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 04:23:00 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD5CE1039;
-        Thu, 10 Feb 2022 01:22:57 -0800 (PST)
-X-UUID: afb321ee218148edac629f71eafe2e47-20220210
-X-UUID: afb321ee218148edac629f71eafe2e47-20220210
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1793166532; Thu, 10 Feb 2022 17:22:52 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 10 Feb 2022 17:22:50 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 10 Feb 2022 17:22:49 +0800
-From:   Lina Wang <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, <maze@google.com>,
-        <willemb@google.com>, <edumazet@google.com>,
-        <zhuoliang.zhang@mediatek.com>, <chao.song@mediatek.com>,
-        Lina Wang <lina.wang@mediatek.com>
-Subject: [PATCH net v2] net: fix wrong network header length
-Date:   Thu, 10 Feb 2022 17:16:55 +0800
-Message-ID: <20220210091655.17231-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        with ESMTP id S238560AbiBJJ3F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 04:29:05 -0500
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B24910B3
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 01:29:06 -0800 (PST)
+Received: by mail-il1-f199.google.com with SMTP id q15-20020a92ca4f000000b002be3e7707ffso3591638ilo.4
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 01:29:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=lbZClnawL85i6y/f1XZKEH3U2806L2hF7lFn0+Ro7Ew=;
+        b=JULnGOCfhQDDAaTThBeBGpo53DF3ASw9hJ1V5B+lpyC+TbB0qHddCVKbqAnK8Jyx9t
+         a63PaLaEViRHRIYwZWO8NuYcp/6hgL1MZBV4jiASiQkeRwKxsl+cf0R3DMF/wi4oJnIW
+         fOfYKSFm8NWscgY0udezcuZd6NhUNRrVwrY6UGf8W3Uo3FEXIS2tZ9xIq8UC5pP0FQwg
+         rF8tccIgaL+U20xQlKEXanqPK/B51LRYi0AABnXd78JDd2Hc4wpmKOXVhpIH74h6Xooi
+         yLgv3ntFDo4KN+v/xywhL6hfPL0XUYqgoiy4bxBa8beLAoU+302oS4SJeeX2xa7zo43m
+         weWQ==
+X-Gm-Message-State: AOAM530lscHjF15a9D0YnDEAWjs9eO1pdbN//h8YTxBHYfGrDkWBtNiP
+        Nhun+JD1qCQwcJKpx9y4SJoVkmO8WoBnU6uwDaK4QOgUJdxZ
+X-Google-Smtp-Source: ABdhPJx22vdsd9ZwS5xcJlnZq2r7nAA5BqmnE9xXQOkXPLW5oeCWMIkcNmqMItDy/Lg+pycfhLQYxawcp7pQ1kDwS81fqOWh7+0x
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:aa0a:: with SMTP id r10mr3655553jam.246.1644485345948;
+ Thu, 10 Feb 2022 01:29:05 -0800 (PST)
+Date:   Thu, 10 Feb 2022 01:29:05 -0800
+In-Reply-To: <000000000000a16ad7059cbcbe43@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e238bf05d7a69450@google.com>
+Subject: Re: [syzbot] WARNING in bpf_warn_invalid_xdp_action
+From:   syzbot <syzbot+8ce4113dadc4789fac74@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, corbet@lwn.net, daniel@iogearbox.net,
+        davem@davemloft.net, dsahern@gmail.com, dvyukov@google.com,
+        eric.dumazet@gmail.com, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, toke@redhat.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is enable,
-several skbs are gathered in skb_shinfo(skb)->frag_list. The first skb's
-ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
-network_header\transport_header\mac_header have been updated as ipv4 acts,
-but other skbs in frag_list didnot update anything, just ipv6 packets.
+syzbot suspects this issue was fixed by commit:
 
-udp_queue_rcv_skb will call skb_segment_list to traverse other skbs in
-frag_list and make sure right udp payload is delivered to user space.
-Unfortunately, other skbs in frag_list who are still ipv6 packets are
-updated like the first skb and will have wrong transport header length.
+commit 2cbad989033bff0256675c38f96f5faab852af4b
+Author: Paolo Abeni <pabeni@redhat.com>
+Date:   Tue Nov 30 10:08:06 2021 +0000
 
-e.g.before bpf_skb_proto_6_to_4,the first skb and other skbs in frag_list
-has the same network_header(24)& transport_header(64), after
-bpf_skb_proto_6_to_4, ipv6 protocol has been changed to ipv4, the first
-skb's network_header is 44,transport_header is 64, other skbs in frag_list
-didnot change.After skb_segment_list, the other skbs in frag_list has
-different network_header(24) and transport_header(44), so there will be 20
-bytes difference,that is difference between ipv6 header and ipv4 header.
+    bpf: Do not WARN in bpf_warn_invalid_xdp_action()
 
-Actually, there are two solutions to fix it, one is traversing all skbs
-and changing every skb header in bpf_skb_proto_6_to_4, the other is
-modifying frag_list skb's header in skb_segment_list. Considering
-efficiency, adopt the second one--- when the first skb and other skbs in
-frag_list has different network_header length, restore them to make sure
-right udp payload is delivered to user space.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10d50baa700000
+start commit:   b3c8e0de473e Merge branch '40GbE' of git://git.kernel.org/..
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a86c22260afac2f
+dashboard link: https://syzkaller.appspot.com/bug?extid=8ce4113dadc4789fac74
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113c8a3bb00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16eb4307b00000
 
+If the result looks correct, please mark the issue as fixed by replying with:
 
-Signed-off-by: Lina Wang <lina.wang@mediatek.com>
+#syz fix: bpf: Do not WARN in bpf_warn_invalid_xdp_action()
 
----
- net/core/skbuff.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 0118f0afaa4f..68172817bcd6 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3866,6 +3866,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 	struct sk_buff *tail = NULL;
- 	struct sk_buff *nskb, *tmp;
- 	int err;
-+	int len_diff = 0;
- 
- 	skb_push(skb, -skb_network_offset(skb) + offset);
- 
-@@ -3905,9 +3906,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 		skb_push(nskb, -skb_network_offset(nskb) + offset);
- 
- 		skb_release_head_state(nskb);
-+		len_diff = skb_network_header_len(nskb) - skb_network_header_len(skb);
- 		__copy_skb_header(nskb, skb);
- 
- 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
-+		nskb->transport_header += len_diff;
- 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
- 						 nskb->data - tnl_hlen,
- 						 offset + tnl_hlen);
--- 
-2.18.0
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
