@@ -2,90 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E84FC4B14EE
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 19:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A084B1509
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 19:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245525AbiBJSGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 13:06:41 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34226 "EHLO
+        id S245591AbiBJSNf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 13:13:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244796AbiBJSGk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 13:06:40 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AE225D1
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 10:06:41 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id b37so3419540uad.12
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 10:06:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QLAfKqmhSBus4Fd9PwOHU5Gpom66QCfywDWDrHdXm0I=;
-        b=E1HaE37yDHuRfjmHQaBH0z3g8JL0XisVYmChbS9IzmugVv3n3pW65RdfySSHe+ytZi
-         9IFmm0+FzPdULbDNITcsTXApIIjIr0M6PDTufNwROmfpqQ45r5EQFTrFu7fiLBuTK4ze
-         sQ4OGDvMZxIow/kSnMZkThIeRK/Mqpnk6F5LsNGdXjckZm9ie7W3BOcTjEfEbA8uYDpE
-         O5X4zh2F6aaaK7bBFQs4PhiOvWA/1EVuYqaej3yZjeK7iVWmKSOlGwffcfu+I6Nj1RCL
-         7sXecrQAQLL7zTBfzAJX7j0oqvB90KO5Zb8oBQgBLpuU0vMTeAu15pdEAUVe1vKavek+
-         sSsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QLAfKqmhSBus4Fd9PwOHU5Gpom66QCfywDWDrHdXm0I=;
-        b=EinWKDm1DfnIiK0wNEx5uqkaB75E59v1thOsFIr2oH0RApyXHC1BGVijcw6Y4Ck+qg
-         81SfVyYiXM8utjSuKhwXX5+ebdVZnDJ/lf8TzjiR7xnweGcgXCIMfV4qlaNWgy3TjjXZ
-         7VK18pKYedRuNmq+Hn3xCjvCOX2FfiTKxkIDOrra5QB9qzpaScY2MwUxBLWu+BOtILrY
-         rrgwayZ6aFd59YIXyWKMg6kJFJIUuYkmuQBKVwEUzJlb61PUX6N+bsmYg2sMaBwMj9nj
-         iMpfHC0O8F6AEpegkLUS9voObcV+i1dIWQUTGL3cwyfyqV+pbDZ5/5hz4d7Vit1iX5n3
-         k6eA==
-X-Gm-Message-State: AOAM531kfWIs87prDzfYs3dbVIiaGPq9HtwjTOOVsHv9AKu9XGMAc/VT
-        y1iTtMEaPCZz+KF/Q0v7E4x40Dhb4y0xkrl/lXaF+g==
-X-Google-Smtp-Source: ABdhPJyL0ZNYGrR3MjeCiFh0aRSXwUGHcPfhFv1tsW1Cy0Yjm2/GJR4EmgQGi8kwNeTXmb1sUpyY0g/NxVDJGvCs1wY=
-X-Received: by 2002:a9f:35d0:: with SMTP id u16mr2723403uad.87.1644516400582;
- Thu, 10 Feb 2022 10:06:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20220208025511.1019-1-lina.wang@mediatek.com> <0300acca47b10384e6181516f32caddda043f3e4.camel@redhat.com>
- <CANP3RGe8ko=18F2cr0_hVMKw99nhTyOCf4Rd_=SMiwBtQ7AmrQ@mail.gmail.com>
- <a62abfeb0c06bf8be7f4fa271e2bcdef9d86c550.camel@redhat.com>
- <5ca86c46109794a627e6e2a62b140963217984a0.camel@mediatek.com> <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com>
-In-Reply-To: <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Thu, 10 Feb 2022 10:06:28 -0800
-Message-ID: <CANP3RGeCRz5Ea6tbX4qGnYNzP_sq0K3mGKdpzP0OrcL=C6ejgQ@mail.gmail.com>
-Subject: Re: [PATCH] net: fix wrong network header length
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     "lina.wang" <lina.wang@mediatek.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        with ESMTP id S239730AbiBJSNe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 13:13:34 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5357B1167;
+        Thu, 10 Feb 2022 10:13:35 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id A58B1CE2625;
+        Thu, 10 Feb 2022 18:13:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D31FC340EB;
+        Thu, 10 Feb 2022 18:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644516811;
+        bh=g7jIMKjk4AjtcIO0QzOSIrmNcehM6ru1WwL4Z6HKvOo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YooH2w9Njl6oOOavP1PlxNX22+HMHk21uA9nPlCZJzG+Gq1PhNx4C8B1mFnbHSLuF
+         S2ZZsl9g3gC0c8xUJLPjYggjK46wMPOf5z07H2Ol1L2LBPcp1M1sP0P5D0mpMeBGJE
+         kBEnbmODhitoAnZrz49xAnDRWG9sWMG1Qq4SjxkjKlCTyb8l+ENc26vYsub2d+Ozyq
+         +tAIEUBYs2aTH2BWx2DKwOVGTQT/7Dl2UCtr+Nt5mYjFpCpWL5zafajBG/d69AhXGb
+         axabZEwfPtvSR5e28ZFEdDACbKlA2s/8e8w89dLH1fvOz6lEraSsvDuGcR/cBuPqQp
+         UCGdcaBbfMk+g==
+Date:   Thu, 10 Feb 2022 10:13:30 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        Kernel hackers <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem Bruijn <willemb@google.com>,
-        Eric Dumazet <edumazet@google.com>, zhuoliang@mediatek.com,
-        chao.song@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thomas Gleixner <tglx@linutronix.de>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNl?= =?UTF-8?B?bg==?= 
+        <toke@toke.dk>
+Subject: Re: [PATCH net-next v2 2/3] net: dev: Makes sure netif_rx() can be
+ invoked in any context.
+Message-ID: <20220210101330.47165ae0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YgUDiE4FTsdwdVSH@linutronix.de>
+References: <20220204201259.1095226-1-bigeasy@linutronix.de>
+        <20220204201259.1095226-3-bigeasy@linutronix.de>
+        <20220204201715.44f48f4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <Yf7ftf+6j52opu5w@linutronix.de>
+        <20220207084717.5b7126e7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YgUDiE4FTsdwdVSH@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> I'm wondering why don't you simply enable UDP_GRO on the relevant
-> socket?
+On Thu, 10 Feb 2022 13:22:32 +0100 Sebastian Andrzej Siewior wrote:
+> On 2022-02-07 08:47:17 [-0800], Jakub Kicinski wrote:
+> > On Sat, 5 Feb 2022 21:36:05 +0100 Sebastian Andrzej Siewior wrote:  
+> > > Don't we end up in the same situation as netif_rx() vs netix_rx_ni()?  
+> > 
+> > Sort of. TBH my understanding of the motivation is a bit vague.
+> > IIUC you want to reduce the API duplication so drivers know what to
+> > do[1]. I believe the quote from Eric you put in the commit message
+> > pertains to HW devices, where using netif_rx() is quite anachronistic. 
+> > But software devices like loopback, veth or tunnels may want to go via
+> > backlog for good reasons. Would it make it better if we called
+> > netif_rx() netif_rx_backlog() instead? Or am I missing the point?  
+> 
+> So we do netif_rx_backlog() with the bh disable+enable and
+> __netif_rx_backlog() without it and export both tree wide?
 
-Oh this is simple.
-We don't control the socket.  Apps do.  ie. the entirety of the rest
-of the internet.
+At a risk of confusing people about the API we could also name the
+"non-super-optimized" version netif_rx(), like you had in your patch.
+Grepping thru the drivers there's ~250 uses so maybe we don't wanna
+touch all that code. No strong preference, I just didn't expect to 
+see __netif_rx_backlog(), but either way works.
+
+> It would make it more obvious indeed. Could we add
+> 	WARN_ON_ONCE(!(hardirq_count() | softirq_count()))
+> to the shortcut to catch the "you did it wrong folks"? This costs me
+> about 2ns.
+
+Modulo lockdep_..(), so we don't have to run this check on prod kernels?
+
+> TL;DR
+> 
+> The netix_rx_ni() is problematic on RT and I tried to do something about
+> it. I remembered from the in_atomic() cleanup that a few drivers got it
+> wrong (one way or another). We added also netif_rx_any_context() which
+> is used by some of the drivers (which is yet another entry point) while
+> the few other got fixed.
+> Then I stumbled over the thread where the entry (netif_rx() vs
+> netif_rx_ni()) was wrong and Dave suggested to have one entry point for
+> them all. This sounded like a good idea since it would eliminate the
+> several API entry points where things can go wrong and my RT trouble
+> would vanish in one go.
+> The part with deprecated looked promising but I didn't take into account
+> that the overhead for legitimate users (like the backlog or the software
+> tunnels you mention) is not acceptable.
+
+I see. So IIUC primary motivation is replacing preempt disable with bh
+disable but the cleanup seemed like a good idea.
