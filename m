@@ -2,96 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CAA4B1692
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 20:53:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4184B16FB
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 21:32:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237800AbiBJTwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 14:52:45 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51964 "EHLO
+        id S1344231AbiBJUbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 15:31:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbiBJTwl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 14:52:41 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3947192;
-        Thu, 10 Feb 2022 11:52:41 -0800 (PST)
-Date:   Thu, 10 Feb 2022 20:52:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1644522759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oe/W6A7IFgXds0DPkhvExNJ6cgL10GHuQenrKvbMYeA=;
-        b=4XBv8hAjdjZXffVMmR3WTiL3jmIsjmCpbZcKrTVB6r18AoICePYbD5xR1CdZ9iDWeuoSeg
-        NdVT0pppezWQKu8e0gMeHZfjNwKW3DoZmRkrq2akLTLQXp/6ZgjcWmCalEGNrRnb4xfbYT
-        hFqplTC4riWNMZwmfS0yMSCJ3O4lnyLspOkgiZiRyYcmOrFlilrK5VgmqT6BEaAH4wCfgJ
-        RICa+2i61Hv/E17OaG64tXaGMXYdOo57XXRkwGgi+St8SuiwfxEClJaB4XFzNnXMNdwGv7
-        byA2VKfcAydtsbu9QqdP4pm0vwUMjsNM0kIdT8grF9jrP46fm6XvRy7FgMovOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1644522759;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oe/W6A7IFgXds0DPkhvExNJ6cgL10GHuQenrKvbMYeA=;
-        b=kxTBBGbHDqEtxppR4zqmF0aOFlB3ggETYwWCB19N4vK5nrx5onI0ntsKTUCagVsxGEHXt+
-        2IAGmgRs2+eKrHBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
-Subject: Re: [PATCH net-next v2 2/3] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-Message-ID: <YgVtBQdHZdvrzQp7@linutronix.de>
-References: <20220204201259.1095226-1-bigeasy@linutronix.de>
- <20220204201259.1095226-3-bigeasy@linutronix.de>
- <20220204201715.44f48f4f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <Yf7ftf+6j52opu5w@linutronix.de>
- <20220207084717.5b7126e7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YgUDiE4FTsdwdVSH@linutronix.de>
- <20220210101330.47165ae0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        with ESMTP id S238675AbiBJUbS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 15:31:18 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED21B84;
+        Thu, 10 Feb 2022 12:31:19 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21AJ2Pvi017445;
+        Thu, 10 Feb 2022 20:30:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=iFid2oHawZ97i+mh3gez9SH2xyGLZefuUmNiHCuPX2w=;
+ b=XknN75rYi2AgoCpnNSamH2K9QNxTlkdi9KRxli21N1/W8fRMQeJfzR49fafK62sOrQaj
+ emLNVSTEJuWCSRFavxzlWjGRTXOoJPyApt0UsHY1FbjuCYXhWZWbDimCuydeABvuRy28
+ Oz3yK7QpVLt5FmeYWvTq5MZMwdzZt1oZRTHQJj8li4tvytHrFalOIzHYXAqKn4JVzDP1
+ FVYNDbHfDuTNQx0osZAFC2Gna3sNeVwgqcSty11rwZdxQ/QI0OOwDGYJdS188tTBac2c
+ 2Y1H/ucE98SN2J+Z+RSa5Bql9cThk+6Vm6znXtAKFQw4R9Dn0/4SiYFY6t7GGyo7jRjO 1w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3e3h28s748-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Feb 2022 20:30:53 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 21AKKDde180714;
+        Thu, 10 Feb 2022 20:30:52 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 3e51rtyjgk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 10 Feb 2022 20:30:52 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 21AKUp6N023749;
+        Thu, 10 Feb 2022 20:30:51 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
+        by aserp3030.oracle.com with ESMTP id 3e51rtyjfm-1;
+        Thu, 10 Feb 2022 20:30:51 +0000
+From:   Sherry Yang <sherry.yang@oracle.com>
+To:     skhan@linuxfoundation.org, shuah@kernel.org, keescook@chromium.org,
+        luto@amacapital.net, wad@chromium.org, christian@brauner.io,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, sherry.yang@oracle.com
+Subject: [PATCH v2] selftests/seccomp: Fix seccomp failure by adding missing headers
+Date:   Thu, 10 Feb 2022 12:30:49 -0800
+Message-Id: <20220210203049.67249-1-sherry.yang@oracle.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20220210101330.47165ae0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: rTAVfO73xdUzFbd4s-2N81lXGDYe60LF
+X-Proofpoint-GUID: rTAVfO73xdUzFbd4s-2N81lXGDYe60LF
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022-02-10 10:13:30 [-0800], Jakub Kicinski wrote:
-> > So we do netif_rx_backlog() with the bh disable+enable and
-> > __netif_rx_backlog() without it and export both tree wide?
-> 
-> At a risk of confusing people about the API we could also name the
-> "non-super-optimized" version netif_rx(), like you had in your patch.
-> Grepping thru the drivers there's ~250 uses so maybe we don't wanna
-> touch all that code. No strong preference, I just didn't expect to 
-> see __netif_rx_backlog(), but either way works.
+seccomp_bpf failed on tests 47 global.user_notification_filter_empty
+and 48 global.user_notification_filter_empty_threaded when it's
+tested on updated kernel but with old kernel headers. Because old
+kernel headers don't have definition of macro __NR_clone3 which is
+required for these two tests. Since under selftests/, we can install
+headers once for all tests (the default INSTALL_HDR_PATH is
+usr/include), fix it by adding usr/include to the list of directories
+to be searched. Use "-isystem" to indicate it's a system directory as
+the real kernel headers directories are.
 
-So let me keep the naming as-is, export __netif_rx() and update the
-kernel doc with the bits about backlog.
-After that if we are up to rename the function in ~250 drivers then I
-should be simpler.
+Signed-off-by: Sherry Yang <sherry.yang@oracle.com>
+Tested-by: Sherry Yang <sherry.yang@oracle.com>
+---
+ tools/testing/selftests/seccomp/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > It would make it more obvious indeed. Could we add
-> > 	WARN_ON_ONCE(!(hardirq_count() | softirq_count()))
-> > to the shortcut to catch the "you did it wrong folks"? This costs me
-> > about 2ns.
-> 
-> Modulo lockdep_..(), so we don't have to run this check on prod kernels?
+diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
+index 0ebfe8b0e147..585f7a0c10cb 100644
+--- a/tools/testing/selftests/seccomp/Makefile
++++ b/tools/testing/selftests/seccomp/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-CFLAGS += -Wl,-no-as-needed -Wall
++CFLAGS += -Wl,-no-as-needed -Wall -isystem ../../../../usr/include/
+ LDFLAGS += -lpthread
+ 
+ TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
+-- 
+2.31.1
 
-I was worried a little about the corner cases but then lockdep is your
-friend and you should test your code. Okay.
-
-Sebastian
