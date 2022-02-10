@@ -2,42 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C424B0816
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 09:25:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D97E44B0880
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 09:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237311AbiBJIZ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 03:25:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57540 "EHLO
+        id S237506AbiBJIf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 03:35:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237267AbiBJIZz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 03:25:55 -0500
+        with ESMTP id S232971AbiBJIf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 03:35:27 -0500
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D87D109E;
-        Thu, 10 Feb 2022 00:25:56 -0800 (PST)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B717F204;
+        Thu, 10 Feb 2022 00:35:28 -0800 (PST)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nI4lz-000D7n-KY; Thu, 10 Feb 2022 09:25:51 +0100
+        id 1nI4v5-000E2A-Ja; Thu, 10 Feb 2022 09:35:15 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nI4lz-00050p-Be; Thu, 10 Feb 2022 09:25:51 +0100
-Subject: Re: [PATCH bpf-next 2/2] bpf: flexible size for bpf_prog_pack
-To:     Song Liu <song@kernel.org>, linux-mm@kvack.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     ast@kernel.org, andrii@kernel.org, kernel-team@fb.com,
-        akpm@linux-foundation.org, eric.dumazet@gmail.com, mhocko@suse.com
-References: <20220210064108.1095847-1-song@kernel.org>
- <20220210064108.1095847-3-song@kernel.org>
+        id 1nI4v5-000DEK-0s; Thu, 10 Feb 2022 09:35:15 +0100
+Subject: Re: [syzbot] WARNING: kmalloc bug in xdp_umem_create (2)
+To:     Willy Tarreau <w@1wt.eu>,
+        syzbot <syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bjorn.topel@gmail.com, bjorn.topel@intel.com, bjorn@kernel.org,
+        bpf@vger.kernel.org, davem@davemloft.net, fgheet255t@gmail.com,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        magnus.karlsson@intel.com, mudongliangabcd@gmail.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        yhs@fb.com
+References: <000000000000a3571605d27817b5@google.com>
+ <0000000000001f60ef05d7a3c6ad@google.com> <20220210081125.GA4616@1wt.eu>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <34d0ed40-30cf-a1a2-f4eb-fa3d0a55bce8@iogearbox.net>
-Date:   Thu, 10 Feb 2022 09:25:50 +0100
+Message-ID: <359ee592-747f-8610-4180-5e1d2aba1b77@iogearbox.net>
+Date:   Thu, 10 Feb 2022 09:35:14 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20220210064108.1095847-3-song@kernel.org>
+In-Reply-To: <20220210081125.GA4616@1wt.eu>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -52,142 +60,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/10/22 7:41 AM, Song Liu wrote:
-> bpf_prog_pack uses huge pages to reduce pressue on instruction TLB.
-> To guarantee allocating huge pages for bpf_prog_pack, it is necessary to
-> allocate memory of size PMD_SIZE * num_online_nodes().
+On 2/10/22 9:11 AM, Willy Tarreau wrote:
+> On Wed, Feb 09, 2022 at 10:08:07PM -0800, syzbot wrote:
+>> syzbot has bisected this issue to:
+>>
+>> commit 7661809d493b426e979f39ab512e3adf41fbcc69
+>> Author: Linus Torvalds <torvalds@linux-foundation.org>
+>> Date:   Wed Jul 14 16:45:49 2021 +0000
+>>
+>>      mm: don't allow oversized kvmalloc() calls
+>>
+>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13bc74c2700000
+>> start commit:   f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
+>> git tree:       upstream
+>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=107c74c2700000
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=17bc74c2700000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5707221760c00a20
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=11421fbbff99b989670e
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e514a4700000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcdf8a700000
+>>
+>> Reported-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
+>> Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+>>
+>> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 > 
-> On the other hand, if the system doesn't support huge pages, it is more
-> efficient to allocate PAGE_SIZE bpf_prog_pack.
+> Interesting, so in fact syzkaller has shown that the aforementioned
+> patch does its job well and has spotted a call path by which a single
+> userland setsockopt() can request more than 2 GB allocation in the
+> kernel. Most likely that's in fact what needs to be addressed.
 > 
-> Address different scenarios with more flexible bpf_prog_pack_size().
+> FWIW the call trace at the URL above is:
 > 
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->   kernel/bpf/core.c | 47 +++++++++++++++++++++++++++--------------------
->   1 file changed, 27 insertions(+), 20 deletions(-)
+> Call Trace:
+>   kvmalloc include/linux/mm.h:806 [inline]
+>   kvmalloc_array include/linux/mm.h:824 [inline]
+>   kvcalloc include/linux/mm.h:829 [inline]
+>   xdp_umem_pin_pages net/xdp/xdp_umem.c:102 [inline]
+>   xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
+>   xdp_umem_create+0x6a5/0xf00 net/xdp/xdp_umem.c:252
+>   xsk_setsockopt+0x604/0x790 net/xdp/xsk.c:1068
+>   __sys_setsockopt+0x1fd/0x4e0 net/socket.c:2176
+>   __do_sys_setsockopt net/socket.c:2187 [inline]
+>   __se_sys_setsockopt net/socket.c:2184 [inline]
+>   __x64_sys_setsockopt+0xb5/0x150 net/socket.c:2184
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x44/0xae
 > 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 42d96549a804..d961a1f07a13 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -814,46 +814,53 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->    * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
->    * to host BPF programs.
->    */
-> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
-> -#else
-> -#define BPF_PROG_PACK_SIZE	PAGE_SIZE
-> -#endif
->   #define BPF_PROG_CHUNK_SHIFT	6
->   #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
->   #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
-> -#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
->   
->   struct bpf_prog_pack {
->   	struct list_head list;
->   	void *ptr;
-> -	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
-> +	unsigned long bitmap[];
->   };
->   
-> -#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
->   #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
->   
->   static DEFINE_MUTEX(pack_mutex);
->   static LIST_HEAD(pack_list);
->   
-> +static inline int bpf_prog_pack_size(void)
-> +{
-> +	/* If vmap_allow_huge == true, use pack size of the smallest
-> +	 * possible vmalloc huge page: PMD_SIZE * num_online_nodes().
-> +	 * Otherwise, use pack size of PAGE_SIZE.
-> +	 */
-> +	return get_vmap_allow_huge() ? PMD_SIZE * num_online_nodes() : PAGE_SIZE;
-> +}
+> and the meaningful part of the repro is:
+> 
+>    syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+>    syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
+>    syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
+>    intptr_t res = 0;
+>    res = syscall(__NR_socket, 0x2cul, 3ul, 0);
+>    if (res != -1)
+>      r[0] = res;
+>    *(uint64_t*)0x20000080 = 0;
+>    *(uint64_t*)0x20000088 = 0xfff02000000;
+>    *(uint32_t*)0x20000090 = 0x800;
+>    *(uint32_t*)0x20000094 = 0;
+>    *(uint32_t*)0x20000098 = 0;
+>    syscall(__NR_setsockopt, r[0], 0x11b, 4, 0x20000080ul, 0x20ul);
 
-Imho, this is making too many assumptions about implementation details. Can't we
-just add a new module_alloc*() API instead which internally guarantees allocating
-huge pages when enabled/supported (e.g. with a __weak function as fallback)?
+Bjorn had a comment back then when the issue was first raised here:
 
-> +static inline int bpf_prog_chunk_count(void)
-> +{
-> +	return bpf_prog_pack_size() / BPF_PROG_CHUNK_SIZE;
-> +}
-> +
->   static struct bpf_prog_pack *alloc_new_pack(void)
->   {
->   	struct bpf_prog_pack *pack;
->   
-> -	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
-> +	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(bpf_prog_chunk_count()), GFP_KERNEL);
->   	if (!pack)
->   		return NULL;
-> -	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
-> +	pack->ptr = module_alloc(bpf_prog_pack_size());
->   	if (!pack->ptr) {
->   		kfree(pack);
->   		return NULL;
->   	}
-> -	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
-> +	bitmap_zero(pack->bitmap, bpf_prog_pack_size() / BPF_PROG_CHUNK_SIZE);
->   	list_add_tail(&pack->list, &pack_list);
->   
->   	set_vm_flush_reset_perms(pack->ptr);
-> -	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> -	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> +	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size() / PAGE_SIZE);
-> +	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size() / PAGE_SIZE);
->   	return pack;
->   }
->   
-> @@ -864,7 +871,7 @@ static void *bpf_prog_pack_alloc(u32 size)
->   	unsigned long pos;
->   	void *ptr = NULL;
->   
-> -	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-> +	if (size > bpf_prog_pack_size()) {
->   		size = round_up(size, PAGE_SIZE);
->   		ptr = module_alloc(size);
->   		if (ptr) {
-> @@ -876,9 +883,9 @@ static void *bpf_prog_pack_alloc(u32 size)
->   	}
->   	mutex_lock(&pack_mutex);
->   	list_for_each_entry(pack, &pack_list, list) {
-> -		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
-> +		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
->   						 nbits, 0);
-> -		if (pos < BPF_PROG_CHUNK_COUNT)
-> +		if (pos < bpf_prog_chunk_count())
->   			goto found_free_area;
->   	}
->   
-> @@ -904,12 +911,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
->   	unsigned long pos;
->   	void *pack_ptr;
->   
-> -	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-> +	if (hdr->size > bpf_prog_pack_size()) {
->   		module_memfree(hdr);
->   		return;
->   	}
->   
-> -	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
-> +	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size() - 1));
->   	mutex_lock(&pack_mutex);
->   
->   	list_for_each_entry(tmp, &pack_list, list) {
-> @@ -926,8 +933,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
->   	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
->   
->   	bitmap_clear(pack->bitmap, pos, nbits);
-> -	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
-> -				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
-> +	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
-> +				       bpf_prog_chunk_count(), 0) == 0) {
->   		list_del(&pack->list);
->   		module_memfree(pack->ptr);
->   		kfree(pack);
-> 
+   https://lore.kernel.org/bpf/3f854ca9-f5d6-4065-c7b1-5e5b25ea742f@iogearbox.net/
 
+There was earlier discussion from Andrew to potentially retire the warning:
+
+   https://lore.kernel.org/bpf/20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org/
+
+Bjorn / Magnus / Andrew, anyone planning to follow-up on this issue?
+
+Thanks,
+Daniel
