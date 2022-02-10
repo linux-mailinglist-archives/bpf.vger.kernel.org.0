@@ -2,40 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A176E4B067B
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 07:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E65594B0675
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 07:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235366AbiBJGlZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Feb 2022 01:41:25 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49906 "EHLO
+        id S229901AbiBJGlf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Feb 2022 01:41:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234591AbiBJGlZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 01:41:25 -0500
+        with ESMTP id S235381AbiBJGlb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 01:41:31 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43BAA10A8
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 22:41:27 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NYHkt007182
-        for <bpf@vger.kernel.org>; Wed, 9 Feb 2022 22:41:27 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEB710AE
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 22:41:32 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21A5Mg0F026379
+        for <bpf@vger.kernel.org>; Wed, 9 Feb 2022 22:41:32 -0800
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4fxaw948-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4vgh8a2w-9
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 22:41:26 -0800
-Received: from twshared22811.39.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 22:41:32 -0800
+Received: from twshared14630.35.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 9 Feb 2022 22:41:25 -0800
+ 15.1.2308.21; Wed, 9 Feb 2022 22:41:30 -0800
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 42D8229D423BF; Wed,  9 Feb 2022 22:41:19 -0800 (PST)
+        id 9B7AC29D423C9; Wed,  9 Feb 2022 22:41:21 -0800 (PST)
 From:   Song Liu <song@kernel.org>
 To:     <linux-mm@kvack.org>, <bpf@vger.kernel.org>,
         <netdev@vger.kernel.org>
 CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <kernel-team@fb.com>, <akpm@linux-foundation.org>,
         <eric.dumazet@gmail.com>, Song Liu <song@kernel.org>
-Subject: [PATCH bpf-next 1/2] vmalloc: expose vmap_allow_huge via get_vmap_allow_huge()
-Date:   Wed, 9 Feb 2022 22:41:07 -0800
-Message-ID: <20220210064108.1095847-2-song@kernel.org>
+Subject: [PATCH bpf-next 2/2] bpf: flexible size for bpf_prog_pack
+Date:   Wed, 9 Feb 2022 22:41:08 -0800
+Message-ID: <20220210064108.1095847-3-song@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220210064108.1095847-1-song@kernel.org>
 References: <20220210064108.1095847-1-song@kernel.org>
@@ -43,16 +43,16 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 8qvVp8k-vbbcRr47LnIl39pxz1Mc86uD
-X-Proofpoint-GUID: 8qvVp8k-vbbcRr47LnIl39pxz1Mc86uD
+X-Proofpoint-GUID: CheJH6HXHwkmxsAzhiPnP17FhLHjFOeO
+X-Proofpoint-ORIG-GUID: CheJH6HXHwkmxsAzhiPnP17FhLHjFOeO
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-10_02,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202100034
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 adultscore=0 spamscore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202100034
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
@@ -64,44 +64,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Users can use get_vmap_allow_huge() to predict the behavior of vmalloc (or
-its variations). Specifically, if get_vmap_allow_huge() == false, vmalloc
-will never return huge pages.
+bpf_prog_pack uses huge pages to reduce pressue on instruction TLB.
+To guarantee allocating huge pages for bpf_prog_pack, it is necessary to
+allocate memory of size PMD_SIZE * num_online_nodes().
+
+On the other hand, if the system doesn't support huge pages, it is more
+efficient to allocate PAGE_SIZE bpf_prog_pack.
+
+Address different scenarios with more flexible bpf_prog_pack_size().
 
 Signed-off-by: Song Liu <song@kernel.org>
 ---
- include/linux/vmalloc.h | 1 +
- mm/vmalloc.c            | 5 +++++
- 2 files changed, 6 insertions(+)
+ kernel/bpf/core.c | 47 +++++++++++++++++++++++++++--------------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 880227b9f044..22acfcd2d0d1 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -256,6 +256,7 @@ extern long vread(char *buf, char *addr, unsigned long count);
- extern struct list_head vmap_area_list;
- extern __init void vm_area_add_early(struct vm_struct *vm);
- extern __init void vm_area_register_early(struct vm_struct *vm, size_t align);
-+extern bool get_vmap_allow_huge(void);
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 42d96549a804..d961a1f07a13 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -814,46 +814,53 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+  * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+  * to host BPF programs.
+  */
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+-#else
+-#define BPF_PROG_PACK_SIZE	PAGE_SIZE
+-#endif
+ #define BPF_PROG_CHUNK_SHIFT	6
+ #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+ #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+-#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
  
- #ifdef CONFIG_SMP
- # ifdef CONFIG_MMU
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 4165304d3547..895ac81b6bb4 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -72,6 +72,11 @@ early_param("nohugevmalloc", set_nohugevmalloc);
- static const bool vmap_allow_huge = false;
- #endif	/* CONFIG_HAVE_ARCH_HUGE_VMALLOC */
+ struct bpf_prog_pack {
+ 	struct list_head list;
+ 	void *ptr;
+-	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
++	unsigned long bitmap[];
+ };
  
-+bool get_vmap_allow_huge(void)
+-#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
+ #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+ 
+ static DEFINE_MUTEX(pack_mutex);
+ static LIST_HEAD(pack_list);
+ 
++static inline int bpf_prog_pack_size(void)
 +{
-+	return vmap_allow_huge;
++	/* If vmap_allow_huge == true, use pack size of the smallest
++	 * possible vmalloc huge page: PMD_SIZE * num_online_nodes().
++	 * Otherwise, use pack size of PAGE_SIZE.
++	 */
++	return get_vmap_allow_huge() ? PMD_SIZE * num_online_nodes() : PAGE_SIZE;
 +}
 +
- bool is_vmalloc_addr(const void *x)
++static inline int bpf_prog_chunk_count(void)
++{
++	return bpf_prog_pack_size() / BPF_PROG_CHUNK_SIZE;
++}
++
+ static struct bpf_prog_pack *alloc_new_pack(void)
  {
- 	unsigned long addr = (unsigned long)x;
+ 	struct bpf_prog_pack *pack;
+ 
+-	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
++	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(bpf_prog_chunk_count()), GFP_KERNEL);
+ 	if (!pack)
+ 		return NULL;
+-	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
++	pack->ptr = module_alloc(bpf_prog_pack_size());
+ 	if (!pack->ptr) {
+ 		kfree(pack);
+ 		return NULL;
+ 	}
+-	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
++	bitmap_zero(pack->bitmap, bpf_prog_pack_size() / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+ 	set_vm_flush_reset_perms(pack->ptr);
+-	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+-	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size() / PAGE_SIZE);
++	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size() / PAGE_SIZE);
+ 	return pack;
+ }
+ 
+@@ -864,7 +871,7 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	unsigned long pos;
+ 	void *ptr = NULL;
+ 
+-	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (size > bpf_prog_pack_size()) {
+ 		size = round_up(size, PAGE_SIZE);
+ 		ptr = module_alloc(size);
+ 		if (ptr) {
+@@ -876,9 +883,9 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	}
+ 	mutex_lock(&pack_mutex);
+ 	list_for_each_entry(pack, &pack_list, list) {
+-		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
++		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
+ 						 nbits, 0);
+-		if (pos < BPF_PROG_CHUNK_COUNT)
++		if (pos < bpf_prog_chunk_count())
+ 			goto found_free_area;
+ 	}
+ 
+@@ -904,12 +911,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	unsigned long pos;
+ 	void *pack_ptr;
+ 
+-	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (hdr->size > bpf_prog_pack_size()) {
+ 		module_memfree(hdr);
+ 		return;
+ 	}
+ 
+-	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
++	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size() - 1));
+ 	mutex_lock(&pack_mutex);
+ 
+ 	list_for_each_entry(tmp, &pack_list, list) {
+@@ -926,8 +933,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+ 
+ 	bitmap_clear(pack->bitmap, pos, nbits);
+-	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+-				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
++	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
++				       bpf_prog_chunk_count(), 0) == 0) {
+ 		list_del(&pack->list);
+ 		module_memfree(pack->ptr);
+ 		kfree(pack);
 -- 
 2.30.2
 
