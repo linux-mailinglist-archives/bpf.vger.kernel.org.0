@@ -2,139 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D8B4B11F1
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 16:45:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE3974B1245
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 17:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243731AbiBJPpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 10:45:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38380 "EHLO
+        id S237966AbiBJQDD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 11:03:03 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239919AbiBJPps (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 10:45:48 -0500
+        with ESMTP id S232046AbiBJQDD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 11:03:03 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F29419B
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 07:45:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE495C26
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 08:03:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644507948;
+        s=mimecast20190719; t=1644508982;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=urAoWZA9cY9CneK14fA7mIsxjD/CWWERVubOGJ2e0L4=;
-        b=XHBhFVUXmTcrx6q71VyVqqyuBjPbhJU8crXNRSxK/BhsRxa7nCX3Y7kBspMA5gB6Z5Va3q
-        hRJgmjOmp9228EnLMgwoBX9hKLeQKK+rGajiWb27RaK//+xYnT+dq/SyHJkzwYLn6KogRv
-        FY81NsebJvWP5cT2iIzuShCjzi7KZG8=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=XqMRSNji5KHFwBXLfzLcneZQrTGS+nQUHDyGuzlvgWY=;
+        b=XVAvH3G/hI/rIe90fuN4hdHdog03VWW4t/lgIvq+grHoz/2woSEjAaB1EZX0uBQ7+ubE0V
+        2zqEykpMD51cvIuo5VzL2YhuTcDiXCj/uTjjQlmMLWdBZLSQxahuPqYZVJN03Ge1kDfuEc
+        Pe1/c28mcI7nE80NzgoTLzpGfupL2Xw=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-262-JTmDROj-OYqOilJr8gpq6g-1; Thu, 10 Feb 2022 10:45:46 -0500
-X-MC-Unique: JTmDROj-OYqOilJr8gpq6g-1
-Received: by mail-ej1-f71.google.com with SMTP id m4-20020a170906160400b006be3f85906eso2902051ejd.23
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 07:45:46 -0800 (PST)
+ us-mta-608-ILYVvuHxM9yr-WELmEycUg-1; Thu, 10 Feb 2022 11:02:59 -0500
+X-MC-Unique: ILYVvuHxM9yr-WELmEycUg-1
+Received: by mail-qt1-f200.google.com with SMTP id j6-20020ac85f86000000b002d9c2505d01so3735386qta.15
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 08:02:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=urAoWZA9cY9CneK14fA7mIsxjD/CWWERVubOGJ2e0L4=;
-        b=foi9evFG+waWRHKKUsqpcPnt2t3dcbZTvafvBpBQxnV4q82MhluKGq/6Kj0wdcMA2n
-         Q4PZt8OKMKa2TcEvbyt8YbZmKMl2uRy/4uDL8rnywNo2XM1TCkiJS1yhrl4Oky9WE9WX
-         hXkokkG0IFrGkzWxZWk1ZkJ++56SDPq9mlrVmUxe/s9lba5QuJUoWFNYX//z9MSNYLxH
-         Ld9lwl4nQXIUYx7EuTLILS2FMCJ2WqNMBFF1nQSYdTzTjakdUliC5u0opZ5gQsBkmdXI
-         KKcFMurYkwgvoc4J2d1GIfpvKEoqDMyjB9pauxxKjXzmd6UpODvSa5rKlCiq0vk6kS3g
-         Jsdg==
-X-Gm-Message-State: AOAM531V1c2si03iYLBOYZj4i7m0YKEOQhqlrgzX2VtWcLplX74NyvXo
-        bl/w/eP+31+BabEvYynVEUX9ShUYBmJsOx/zCLN8u5y8xOASd13tVgq7niYKHt1Zj2GbIKdKUi0
-        qssLLaKRlBNqj
-X-Received: by 2002:a17:906:519b:: with SMTP id y27mr6797466ejk.18.1644507945394;
-        Thu, 10 Feb 2022 07:45:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx+oLm5OWY+yb22r2ZTF3kwJrcHsI2Dv7SJV68W/rbM7pX3sMkzy4AieP0+rle1eFMDJsfcKQ==
-X-Received: by 2002:a17:906:519b:: with SMTP id y27mr6797443ejk.18.1644507945148;
-        Thu, 10 Feb 2022 07:45:45 -0800 (PST)
-Received: from ?IPV6:2a00:fb8:34ab:1700:30c4:3db1:6d5a:b924? ([2a00:fb8:34ab:1700:30c4:3db1:6d5a:b924])
-        by smtp.gmail.com with ESMTPSA id q7sm4065798ejj.8.2022.02.10.07.45.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Feb 2022 07:45:44 -0800 (PST)
-Message-ID: <f18b9e66-8494-f335-13cc-a9b30a90e32e@redhat.com>
-Date:   Thu, 10 Feb 2022 16:45:43 +0100
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=XqMRSNji5KHFwBXLfzLcneZQrTGS+nQUHDyGuzlvgWY=;
+        b=V2dh2IqbBWk4Ak0s709rEsVFrgKGlH35U9ZqpZT5Y3NZZx1I23dezMJkOvpM7TPCLj
+         nW4ybGHRt9kim/G1BoR2Mv6Z/dcNHlMrzuA/M++CQYDhzV5TS/Rpie4O17YBGTAGKENf
+         mmSQxKdu4hn2B2iXjFD7efYVshXohgJ+wvbfvw+GfOBfN+3SgKTBlp/jWFVRt4Ht8cUu
+         OWBWCED6irLuw6Ov5sJZ2vFLCNXuXnwiujlyuq89mVcZ3scBSRMvFMxmTsQlmkN66/B5
+         o5mtWQ4pxtAH7HVJFHqHREEjq7xnv4SGevvGCJdR6Xvc1ve/Ug1Ovg59SOi/miwBcnmw
+         MlmQ==
+X-Gm-Message-State: AOAM53005jK0QEr6H64qSz6DAHdoKAfRsWjGZopcg2ejPgU2aTmDZ6Sl
+        0HozNSh1bWXSleDI2j5OTtLOx+d5oBWzMzlBZrIrd7Ux5QPBTJlKtR7RmDvPowpUfhNg2GHTGYT
+        11tiqYhISQj+a
+X-Received: by 2002:ac8:470b:: with SMTP id f11mr5264424qtp.428.1644508979076;
+        Thu, 10 Feb 2022 08:02:59 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwJZidFHgX2qaFuNO4wwwWXQrdPSZ6BLsKxCMwzMjl3VQN+p8ixuoDBh/MeuJVBmzm2X+Enig==
+X-Received: by 2002:ac8:470b:: with SMTP id f11mr5264402qtp.428.1644508978832;
+        Thu, 10 Feb 2022 08:02:58 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-96-254.dyn.eolo.it. [146.241.96.254])
+        by smtp.gmail.com with ESMTPSA id p15sm11231377qtk.56.2022.02.10.08.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Feb 2022 08:02:58 -0800 (PST)
+Message-ID: <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com>
+Subject: Re: [PATCH] net: fix wrong network header length
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     "lina.wang" <lina.wang@mediatek.com>,
+        Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Linux NetDev <netdev@vger.kernel.org>,
+        Kernel hackers <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem Bruijn <willemb@google.com>,
+        Eric Dumazet <edumazet@google.com>, zhuoliang@mediatek.com,
+        chao.song@mediatek.com
+Date:   Thu, 10 Feb 2022 17:02:53 +0100
+In-Reply-To: <5ca86c46109794a627e6e2a62b140963217984a0.camel@mediatek.com>
+References: <20220208025511.1019-1-lina.wang@mediatek.com>
+         <0300acca47b10384e6181516f32caddda043f3e4.camel@redhat.com>
+         <CANP3RGe8ko=18F2cr0_hVMKw99nhTyOCf4Rd_=SMiwBtQ7AmrQ@mail.gmail.com>
+         <a62abfeb0c06bf8be7f4fa271e2bcdef9d86c550.camel@redhat.com>
+         <5ca86c46109794a627e6e2a62b140963217984a0.camel@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.3 (3.42.3-1.fc35) 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH bpf-next v2] bpf: Do not try bpf_msg_push_data with len 0
-Content-Language: en-US
-To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org
-References: <df69012695c7094ccb1943ca02b4920db3537466.1644421921.git.fmaurer@redhat.com>
- <cd545202-d948-2ce5-dfae-362822766f90@fb.com>
-From:   Felix Maurer <fmaurer@redhat.com>
-In-Reply-To: <cd545202-d948-2ce5-dfae-362822766f90@fb.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 09.02.22 18:06, Yonghong Song wrote:
-> On 2/9/22 7:55 AM, Felix Maurer wrote:
->> If bpf_msg_push_data is called with len 0 (as it happens during
->> selftests/bpf/test_sockmap), we do not need to do anything and can
->> return early.
->>
->> Calling bpf_msg_push_data with len 0 previously lead to a wrong ENOMEM
->> error: we later called get_order(copy + len); if len was 0, copy + len
->> was also often 0 and get_order returned some undefined value (at the
->> moment 52). alloc_pages caught that and failed, but then
->> bpf_msg_push_data returned ENOMEM. This was wrong because we are most
->> probably not out of memory and actually do not need any additional
->> memory.
->>
->> v2: Add bug description and Fixes tag
->>
->> Fixes: 6fff607e2f14b ("bpf: sk_msg program helper bpf_msg_push_data")
->> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+On Wed, 2022-02-09 at 18:25 +0800, lina.wang wrote:
+> We use NETIF_F_GRO_FRAGLIST not for forwarding scenary, just for
+> software udp gro. 
 > 
-> LGTM. I am wondering why bpf CI didn't catch this problem. Did you
-> modified the test with length 0 in order to trigger that? If this
-> is the case, it would be great you can add such a test to the
-> test_sockmap.
+I'm wondering why don't you simply enable UDP_GRO on the relevant
+socket? 
 
-I did not modify the tests to trigger that. The state of the selftests
-around that is unfortunately not very good. There is no explicit test
-with length 0 but bpf_msg_push_data is still called with length 0,
-because of what I consider to be bugs in the test. On the other hand,
-explicit tests with other lengths are sometimes not called as well. I'll
-elaborate on that in a bit.
+> Whatever NETIF_F_GRO_FRAGLIST or NETIF_F_GRO_FWD,
+> skb_segment_list should not have bugs.
 
-Something easy to fix is that the tests do not check the return value of
-bpf_msg_push_data which they probably should. That may have helped find
-the problem earlier.
+The bug is arguably in bpf_skb_proto_6_to_4(), even if fixing it in
+skb_segment_list() is possibly easier.
 
-Now to the issue mentioned in the beginning: Only some of the BPF
-programs used in test_sockmap actually call bpf_msg_push_data. However,
-they are not always attached, just for particular scenarios:
-txmsg_pass==1, txmsg_redir==1, or txmsg_drop==1. If none of those apply,
-bpf_msg_push_data is never called. This happens for example in
-test_txmsg_push. Out of the four defined tests only one actually calls
-the helper.
+> We modify skb_segment_list, not in epbf. One point is traversing the
+> segments costly, another is what @Maciej said, *other* helper may have
+> the same problem. In skb_segment_list, it calls
+> skb_headers_offset_update to update different headroom, which implys
+> header maybe different.
 
-But after a test, the parameters in the map are reset to 0 (instead of
-being removed). Therefore, when the maps are reused in a subsequent test
-which is one of the scenarios above, the values are present and
-bpf_msg_push_data is called, albeit with the parameters set to 0. This
-is also what triggered the wrong behavior fixed in the patch.
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 75dfbde8d2e6..f15bbb7449ce 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -3682,6 +3682,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>  	struct sk_buff *tail = NULL;
+>  	struct sk_buff *nskb, *tmp;
+>  	int err;
+> +	unsigned int len_diff = 0;
 
-Unfortunately, I do not have the time to fix these issues in the test at
-the moment.
+Mintor nit: please respect the reverse x-mas tree order.
 
-> Acked-by: Yonghong Song <yhs@fb.com>
+>  
+>  	skb_push(skb, -skb_network_offset(skb) + offset);
 
-Thanks!
+> @@ -3721,9 +3722,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>  		skb_push(nskb, -skb_network_offset(nskb) + offset);
+>  
+>  		skb_release_head_state(nskb);
+> +		len_diff = skb_network_header_len(nskb) - skb_network_header_len(skb);
+>  		 __copy_skb_header(nskb, skb);
+>  
+>  		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
+> +		nskb->transport_header += len_diff;
+
+This does not look correct ?!? the network hdr position for nskb will
+still be uncorrect?!? and even the mac hdr likely?!? possibly you need
+to change the offset in skb_headers_offset_update().
+
+Paolo
 
