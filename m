@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D34B186F
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 23:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3FF4B18B9
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 23:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345077AbiBJWm0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 17:42:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59894 "EHLO
+        id S1345120AbiBJWoj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 17:44:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345065AbiBJWm0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 17:42:26 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6816E26D4
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 14:42:26 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id z18so5605069iln.2
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 14:42:26 -0800 (PST)
+        with ESMTP id S1345169AbiBJWoj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 17:44:39 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8CE5589
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 14:44:39 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id 9so9365753iou.2
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 14:44:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Xh+NYF4m3jc7CKjUczD22891+y6dmYsMjUQKIrgDRTE=;
-        b=oS5zG0df3k/mL4XgF2NPR0zfRo8VUor8l+gnOCnYQH0+P6f3120yRnSnBnsiI3II+G
-         4g3Ur2yR2I7NxgtPnRfNao0do8dTmnhiRylwOzsbV0tsDxwklFJX7Ed3YxK7F36gs6xY
-         522sMULefd9PKOtMuqBBbYUuIo31wI+Pd5cVBloHhFX5W+czcZXAArGKfQCwVMjdSYXb
-         CfpOuodFMhKgnb8uoL4fdutVSoRo7wBsiJnLQSd/0aCIaZcXNw45AjfkbwNgU8pU8jgT
-         nmjghG2hEmdBFX0rrRFJ05TgTHQ7iACUmQ2ROgHUfvuOqapp8V5/XO7nJ/YDEdtgRTg1
-         vZyQ==
+        bh=yvRFZxbWx8Kdu/daxRGkkgrusYNwZaQrBCXKGMaiTng=;
+        b=KCcw/iVrm0U8RBWxe7XIhVS3kO96BZt7jpg5iVSg5KdNu6uMfXVEHliO9Mth0O8JkU
+         tO2rAW98woTrqYmc3ut4XRJjsnDITNs9gL16xcdhxHA8FaemHMhFPN2luZQfpvhw4viN
+         Y7e1sfGPBoEgH5enrgKYNJilUlnsoYQpLlFisLOnwhCOaJiZHjYGxqpywtxo0tAwGChA
+         kPcwt6fqkkPw5jlhXYPqmzZjmNKxaJTVmknESCUDxPdwoKY2wBipCjYvQqpJQ7xV2B1Z
+         cvCFtWDXj3fLaRhOzAmeDKjIwtZiQ3DrNDScdcBrF+lt/MvgkXXMqGwqOcpIXdV2+cdl
+         OFQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Xh+NYF4m3jc7CKjUczD22891+y6dmYsMjUQKIrgDRTE=;
-        b=hDllJd3WhyAGLKtZ9S7999WfthbNu2h7tJbkJB/r1xnnd3KJwoRXlzwsx4cgF280ia
-         SVlhZDdxTa5ggvmPoeZtHOWEa8zD8hRcD0aZw86kcjW3stAby24NHalOOxXBUlycsjxV
-         B5zpFHG6dSuj6GVfb/XBduw09JWWtHtnGvkMvCw/YEoueUp8zt/Dep7SidvLfNQihMY6
-         LJpHa4jKMyqNgfSh139CDIis54eZJyJ3Mjr9SpwCn98psRvm2wnhs016IASy2YZ5gRhP
-         ssNhJFy+FhEKSYIpQLglwBWCiu9UbkHAHzivWiGM2izc+1cZiQEAJaZq0FSEihdjDuzT
-         av/A==
-X-Gm-Message-State: AOAM530ZqVHwAN+BuKlolHByC1TN/ZvRFug44yE50bLyrbks6cyqc5xu
-        f2LpKLirhZUQa6N4PNeCGMg3PWK1ZRdmt1jauQM=
-X-Google-Smtp-Source: ABdhPJxIp9b8ApD+eINsYXlSyxBeSHXtkuarS5Ihs0araOjzRv6wzNLBoclk6aDAO1iRcudMeucZeg5djwH8SPJzzVk=
-X-Received: by 2002:a05:6e02:2163:: with SMTP id s3mr4886608ilv.252.1644532945809;
- Thu, 10 Feb 2022 14:42:25 -0800 (PST)
+        bh=yvRFZxbWx8Kdu/daxRGkkgrusYNwZaQrBCXKGMaiTng=;
+        b=6BwBjEEYxNqeMdupgmchoQQZ7hn1b54CUfZy6kVb1LKNKtS6TleovM+3YfBEgDaLBW
+         7X/vYT1g+SrC0SFUq0xEJ2BPECP/pngrixUjEtcWCLzHOscvWifCp+2DRY94ATWb1BYd
+         /29PbbgTmuV1WTicWUQLfctnUlr0h3ZtpXn5rAdpI+/DP4e5IdaLQJenbBn8mlV9y8tD
+         9FiUUW6i7hw+5/7tMhkp3Yc0hP1dtcoJVDd8BJ9kEfAdRbPtI7+AD/n3tk8xCqvTIoOI
+         iilS8kisns4h4Hj/DXk8Iy1SPgpF4ButYxOO+17kzzozYlav0Fj+Y20VJ7Qa8zdnvbKb
+         Uc+g==
+X-Gm-Message-State: AOAM532XIz0VCtcjY2wYE8k4i1NY8r89wIUgX1zT9FAZnnExuHdZ9rEP
+        QlCJcm5xQBl3BT27z/+UplZ/54b3g23yrCdRIFA=
+X-Google-Smtp-Source: ABdhPJwEOpf/4LnFyxAcGOpp0ukuJpbhbQWwgpRezitZxrHiIuT8VGiXGAgFAbXVkgyjajuJmg5l5SDohC6gK44xTWQ=
+X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr5460745jak.103.1644533078863;
+ Thu, 10 Feb 2022 14:44:38 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1644453291.git.delyank@fb.com> <b904faaff6e8a04809e722d33e062ad47e97c84e.1644453291.git.delyank@fb.com>
-In-Reply-To: <b904faaff6e8a04809e722d33e062ad47e97c84e.1644453291.git.delyank@fb.com>
+References: <cover.1644453291.git.delyank@fb.com> <dcb8cfcd9946a937b8d4a93b9c42eaf3aad54038.1644453291.git.delyank@fb.com>
+In-Reply-To: <dcb8cfcd9946a937b8d4a93b9c42eaf3aad54038.1644453291.git.delyank@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Feb 2022 14:42:14 -0800
-Message-ID: <CAEf4BzaCRjik0wA+SjOjO8Yp9Nju-2trxCq_y_izQiTnR5qeNQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/3] bpftool: skeleton uses explicitly sized ints
+Date:   Thu, 10 Feb 2022 14:44:27 -0800
+Message-ID: <CAEf4BzbJvZyAfdY4+kFSBzBv=-dXQU=2Y7EfjwnTB++d_b=SJA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/3] selftests/bpf: add test case for
+ userspace and bpf type size mismatch
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
@@ -68,87 +69,76 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Wed, Feb 9, 2022 at 4:37 PM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> As reported in [0] and [1], kernel and userspace can sometimes disagree
-> on the definition of a typedef (in particular, the size).
-> This leads to trouble when userspace maps the memory of a bpf program
-> and reads/writes to it assuming a different memory layout.
+> Multiple test cases already fail if you add a type whose size is
+> different between userspace and bpf. That said, let's also add an
+> explicit test that ensures mis-sized reads/writes do not actually
+> happen. This test case fails before this patch series and passes after:
 >
-> This commit now uses the libbpf sized ints logic when emitting the
-> skeleton. This resolves int types to int32_t-like equivalents and
-> ensures that typedefs are not just emitted verbatim.
->
-> The drive-by selftest changes fix format specifier issues
-> due to the definitions of [us]64 and (u)int64_t differing in how
-> many longs they use (long long int vs long int on x86_64).
->
->   [0]: https://github.com/iovisor/bcc/pull/3777
->   [1]: Closes: https://github.com/libbpf/libbpf/issues/433
+> test_skeleton:FAIL:writes and reads match size unexpected writes
+> and reads match size: actual 3735928559 != expected 8030895855
+> test_skeleton:FAIL:skeleton uses underlying type unexpected
+> skeleton uses underlying type: actual 8 != expected 4
 >
 > Signed-off-by: Delyan Kratunov <delyank@fb.com>
 > ---
->  tools/bpf/bpftool/gen.c                          |  3 +++
->  .../testing/selftests/bpf/prog_tests/skeleton.c  | 16 ++++++++--------
->  2 files changed, 11 insertions(+), 8 deletions(-)
+>  tools/testing/selftests/bpf/prog_tests/skeleton.c | 6 ++++++
+>  tools/testing/selftests/bpf/progs/test_skeleton.c | 8 ++++++++
+>  2 files changed, 14 insertions(+)
 >
-> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> index eacfc6a2060d..18c3f755ad88 100644
-> --- a/tools/bpf/bpftool/gen.c
-> +++ b/tools/bpf/bpftool/gen.c
-> @@ -146,6 +146,7 @@ static int codegen_datasec_def(struct bpf_object *obj,
->                         .field_name = var_ident,
->                         .indent_level = 2,
->                         .strip_mods = strip_mods,
-> +                       .sizedints = true,
->                 );
->                 int need_off = sec_var->offset, align_off, align;
->                 __u32 var_type_id = var->type;
-> @@ -751,6 +752,7 @@ static int do_skeleton(int argc, char **argv)
->                 #ifndef %2$s                                                \n\
->                 #define %2$s                                                \n\
->                                                                             \n\
-> +               #include <inttypes.h>                                       \n\
-
-if Alexei's patch set will go in first (very likely), you'll need to
-rebase and make sure that you don't include either inttypes.h or
-stdint.h for kernel mode, as those headers don't exist there
-
-
->                 #include <stdlib.h>                                         \n\
->                 #include <bpf/bpf.h>                                        \n\
->                 #include <bpf/skel_internal.h>                              \n\
-> @@ -770,6 +772,7 @@ static int do_skeleton(int argc, char **argv)
->                 #define %2$s                                                \n\
->                                                                             \n\
->                 #include <errno.h>                                          \n\
-> +               #include <inttypes.h>                                       \n\
-
-seems like inttypes.h just includes stdint.h, I'd just include stdint.h directly
-
->                 #include <stdlib.h>                                         \n\
->                 #include <bpf/libbpf.h>                                     \n\
->                                                                             \n\
 > diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> index 180afd632f4c..9894e1b39211 100644
+> index 9894e1b39211..bc07da929566 100644
 > --- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
 > +++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-> @@ -43,13 +43,13 @@ void test_skeleton(void)
->         /* validate values are pre-initialized correctly */
->         CHECK(data->in1 != -1, "in1", "got %d != exp %d\n", data->in1, -1);
->         CHECK(data->out1 != -1, "out1", "got %d != exp %d\n", data->out1, -1);
-> -       CHECK(data->in2 != -1, "in2", "got %lld != exp %lld\n", data->in2, -1LL);
-> -       CHECK(data->out2 != -1, "out2", "got %lld != exp %lld\n", data->out2, -1LL);
-> +       CHECK(data->in2 != -1, "in2", "got %"PRId64" != exp %lld\n", data->in2, -1LL);
-> +       CHECK(data->out2 != -1, "out2", "got %"PRId64" != exp %lld\n", data->out2, -1LL);
-
-we don't use PRIxxx ugliness anywhere in selftests or libbpf code
-base, it would be easier to just convert this to ASSERT_EQ()
-
+> @@ -97,6 +97,9 @@ void test_skeleton(void)
 >
->         CHECK(bss->in3 != 0, "in3", "got %d != exp %d\n", bss->in3, 0);
->         CHECK(bss->out3 != 0, "out3", "got %d != exp %d\n", bss->out3, 0);
-> -       CHECK(bss->in4 != 0, "in4", "got %lld != exp %lld\n", bss->in4, 0LL);
-> -       CHECK(bss->out4 != 0, "out4", "got %lld != exp %lld\n", bss->out4, 0LL);
-> +       CHECK(bss->in4 != 0, "in4", "got %"PRId64" != exp %lld\n", bss->in4, 0LL);
-> +       CHECK(bss->out4 != 0, "out4", "got %"PRId64" != exp %lld\n", bss->out4, 0LL);
+>         skel->data_read_mostly->read_mostly_var = 123;
+>
+> +       /* validate apparent 64-bit value is actually 32-bit */
+> +       skel->data->intest64 = (typeof(skel->data->intest64)) 0xdeadbeefdeadbeefULL;
+> +
+>         err = test_skeleton__attach(skel);
+>         if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+>                 goto cleanup;
+> @@ -126,6 +129,9 @@ void test_skeleton(void)
+>         ASSERT_OK_PTR(elf_bytes, "elf_bytes");
+>         ASSERT_GE(elf_bytes_sz, 0, "elf_bytes_sz");
+>
+> +       ASSERT_EQ(skel->data->outtest64, skel->data->intest64, "writes and reads match size");
+> +       ASSERT_EQ(sizeof(skel->data->intest64), sizeof(u32), "skeleton uses underlying type");
+> +
+>  cleanup:
+>         test_skeleton__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/testing/selftests/bpf/progs/test_skeleton.c
+> index 1b1187d2967b..fd1f4910cf42 100644
+> --- a/tools/testing/selftests/bpf/progs/test_skeleton.c
+> +++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
+> @@ -16,6 +16,13 @@ struct s {
+>  int in1 = -1;
+>  long long in2 = -1;
+>
+> +/* declare the int64_t type to actually be 32-bit to ensure the skeleton
+> + * uses actual sizes and doesn't just copy the type name
+> + */
+> +typedef __s32 int64_t;
+> +int64_t intest64 = -1;
+> +int64_t outtest64 = -1;
 
-[...]
+This will be so confusing... But when you drop __s32 special handling
+you can just use __s32 directly, right?
+
+
+> +
+>  /* .bss section */
+>  char in3 = '\0';
+>  long long in4 __attribute__((aligned(64))) = 0;
+> @@ -62,6 +69,7 @@ int handler(const void *ctx)
+>         out4 = in4;
+>         out5 = in5;
+>         out6 = in.in6;
+> +       outtest64 = intest64;
+>
+>         bpf_syscall = CONFIG_BPF_SYSCALL;
+>         kern_ver = LINUX_KERNEL_VERSION;
+> --
+> 2.34.1
