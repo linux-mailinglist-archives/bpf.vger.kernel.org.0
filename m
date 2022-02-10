@@ -2,130 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 155954B02B0
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8AA4B02F7
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbiBJCAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 21:00:21 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33882 "EHLO
+        id S232986AbiBJCCq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 21:02:46 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:60092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234595AbiBJB7X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 20:59:23 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF622AABB;
-        Wed,  9 Feb 2022 17:42:46 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NY9bj028497;
-        Wed, 9 Feb 2022 15:40:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=CFGZET++CoApEKXIkltHxWrf1nh48MtGheWkuqvpIYE=;
- b=Jl+0Jv/ZB8hOBJP2HXSRZ/qV5txQpEqGtSFuylnpM6KSVBS3A1kX8J9whrfcAW1ICsrt
- aewQRwOYu2AlYqsWluhrsQZ1BTUYxripg1ZR4m6NfsFPfDec0mO0U1h7pddym6VrEg+j
- JFx3k6QBG0tou2l/a6R/NpLbxLRtPKOaoJI= 
+        with ESMTP id S234465AbiBJCAR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 21:00:17 -0500
+X-Greylist: delayed 1854 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 17:57:53 PST
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705B61121
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 17:57:53 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NYMNT000469
+        for <bpf@vger.kernel.org>; Wed, 9 Feb 2022 16:36:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=mQaiR1N/vY9DqHIWA9TgCZG6ThMzPYpvSPSbS1Zx1BM=;
+ b=SDRtnIlrCyN4b09TCuvSDrmoPelp7SEG+B3c9AJQcvL9C/HyeRkXiEivYMrAZ4dSgNoV
+ 1wlZRWwUvh4CBOULcP1dRrt+9sQpsvtgXWH3z9MsIKSdWvk7KeVuvsIH6+0cJ7eotYWi
+ 8RpVHW+srUUo6CT0pnGAoAw2xRpeu4fw4Ec= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4h9fjwec-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 09 Feb 2022 15:40:38 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e3y3s9ke3-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 16:36:56 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 9 Feb 2022 15:40:37 -0800
+ 15.1.2308.21; Wed, 9 Feb 2022 16:36:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NurKN3X3jHtKQhuZ2sskq65MWQf5VGvb3SwF1U5dzJ9HbYQxDL5asaHkCp6kt86ZabM7EyoV2/T3lmQnB8ZDFNs10ilcYXvk8ZaJARZPX2qfzn6CZE0cvqJrySox4IbCsMYgyfOgG3UBBGvX2h9DlbGOz8iLvbBrgK8lZdnpflX/xFFa7c9auz9L57J6rF3Uth3emXOjnjbvwmJ4yKS+QgE/dfqZUi+Vqx4xhsQArrsOwikHGEEyUxN6IEZt4ORMSDpLOrrY6UPOyizp6+YYDIhH5SBOv/lB03lvBdI4iIfr3kNlOGDAbhXgu9KBH46qYIl4Slw/HKXp0NlNnM9mSg==
+ b=X8zf3gek4KRwX5QJrHFGJGlNE5gI4e7bVLmSWt5/3Ntm3eukcvscV0b+3mSq9yql3HwmfVYA5usfdua98tCxdTjawPbcXgK1Lw3PHXlt5wTmRm12zifFG55g32MlV2Ee1ODzJl5q3vGwJxkMgt10G+uu1Z7oYXyjCwzNImdPDp02V9dUiGLXOru3tsJ1tmyZj9CcbRTT19ANKfQSqZSb96H8Y+tDiNO1XeS1g+wgYBehxJnc+7PpdReXf3O40NyRozXGMheKZrPDiWd7iBRAWn8Mxda4qo0luwLyQCEEC8e6rD6/Qw67snz3OIXnALligx017DcmoY1b6vVcAhuHzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CFGZET++CoApEKXIkltHxWrf1nh48MtGheWkuqvpIYE=;
- b=hM53j34chf116k2ezC8i770cK6ZhgXISHUDrNtkyCcGTg6xwcjbdUx/qIRvhH/O5JeqOaVxe7TnQNtWg1hDLGsfInA/vuWQryyHySwu1X+UBGvaYNNKF4UHCMBIWJtqkjPqoIEgzW3irrUUBuA3pN9lk4qr+2SMRwC0Ibvt9mtAPMOLDKAuCkR2DOTJx05Ev7SGQ5OqzTFuwXOO8bcUbZIo9nSEuSRUCFoouqanmtb3l9p4Z9B04vKNAPxQ26NgWnKfHaPY1wA2zZJsr9zoRMFuiEHBFO5lMkJwIjNYTq8NELdnW7ors680BKb1X0exXWfbxM9rmWtV7BE0XaNcIBw==
+ bh=mQaiR1N/vY9DqHIWA9TgCZG6ThMzPYpvSPSbS1Zx1BM=;
+ b=JtpBxuTPlXXNwc3OuoVrUfB543/Z7nUU3n5bUCOJV1BIY4WTey5qDNBaZUTeyBzUgbkJRG22MwKmNZqxVLRCkAaAynqEr/E/A78Ed9/Wu7yXFon9Xs6bTQZa9nNVWCssp3Htkje4O2YzMCJzrTjdS2VI7ZC9DqC03lmn9nhO26CXkSb5LJP3z9jbmE7glLXa1NBhnCjW0MjR7Kei9BLsa1OE6bcXZoHOscnLgLSmbhC6q0WEzhjomsAzSN/LjBbotUs+uvmXMC7iU0Nnc+YmvMrXb1z7v6UYnzGhGZZD6fxltiAfT86XV/OBBU5B+Mk+T8is8cbXRq4hp175jQG56Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
-Received: from CO1PR15MB5017.namprd15.prod.outlook.com (2603:10b6:303:e8::19)
- by BN8PR15MB2818.namprd15.prod.outlook.com (2603:10b6:408:c8::20) with
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
+ by CY4PR15MB1590.namprd15.prod.outlook.com (2603:10b6:903:f5::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Wed, 9 Feb
- 2022 23:40:36 +0000
-Received: from CO1PR15MB5017.namprd15.prod.outlook.com
- ([fe80::d1e4:259b:cf19:99c1]) by CO1PR15MB5017.namprd15.prod.outlook.com
- ([fe80::d1e4:259b:cf19:99c1%3]) with mapi id 15.20.4975.011; Wed, 9 Feb 2022
- 23:40:35 +0000
-Date:   Wed, 9 Feb 2022 15:40:33 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <sdf@google.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-Subject: Re: Override default socket policy per cgroup
-Message-ID: <20220209234033.d4uxiid2lbtentt3@kafai-mbp.dhcp.thefacebook.com>
-References: <YgPz8akQ4+qBz7nf@google.com>
- <20220209210207.dyhi6queg223tsuy@kafai-mbp.dhcp.thefacebook.com>
- <YgQ3au11pALDjyub@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YgQ3au11pALDjyub@google.com>
-X-ClientProxiedBy: MW4P220CA0029.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:303:115::34) To CO1PR15MB5017.namprd15.prod.outlook.com
- (2603:10b6:303:e8::19)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Thu, 10 Feb
+ 2022 00:36:53 +0000
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::f1fc:6c73:10d4:1098]) by SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::f1fc:6c73:10d4:1098%6]) with mapi id 15.20.4951.019; Thu, 10 Feb 2022
+ 00:36:53 +0000
+From:   Delyan Kratunov <delyank@fb.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: [PATCH bpf-next v1 3/3] selftests/bpf: add test case for userspace
+ and bpf type size mismatch
+Thread-Topic: [PATCH bpf-next v1 3/3] selftests/bpf: add test case for
+ userspace and bpf type size mismatch
+Thread-Index: AQHYHhZMs1nTeF9OrEOrzXLcBPCJjQ==
+Date:   Thu, 10 Feb 2022 00:36:53 +0000
+Message-ID: <dcb8cfcd9946a937b8d4a93b9c42eaf3aad54038.1644453291.git.delyank@fb.com>
+References: <cover.1644453291.git.delyank@fb.com>
+In-Reply-To: <cover.1644453291.git.delyank@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 874bc4d2-1754-42b2-e377-08d9ec2d6f3b
+x-ms-traffictypediagnostic: CY4PR15MB1590:EE_
+x-microsoft-antispam-prvs: <CY4PR15MB159099C9C31E2F0F4EC0FF51C12F9@CY4PR15MB1590.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wDKqjDxlHlKAKwLLvp9HtjtchOnqK3jRWba+NJWA7iwIxj4a2KZ/+Z1SgGv4Lwtxbm3hR2/tlcQHSwh1JDETQ++6NJXqA+4PDOOYf+sBxFCRZHqy9JSAisFHm0fJO3zzQAkGqpfcVt4yXbNGGWrFMLBg0LpVwFsftAAwIGySeVV+63QoocJzRkIDZKdSjUSDnUSkCjPcFn8DS7dpHtyASA1a432WWA6xj3T8g9KJ29UDlsIi4hz2DdtMaLoMmY8pl8zHJS9vwclR1ZbGZ1BPXnvAXTTj9LcMO57+GOujGRimTCtLx7jiB93GseXHWwblsKreNn3Z2ZUD0gE+HDJhU4+I25TPH49AgOrsyIKTeD7mYf2F+LRl8lAQWrBD7mdT/C/aoCNbu0rPbXIiWFn7u1r5dD/h+EbJR3XCkKFYA402oJtrZIwerL76NzSZsrgW6XyiQBHan02yOiTJ7uXPNMj4D3YNvu7WWGW+IdN2S9R0xahFfsDzKFZdqsUGLHqDzP62zigcR0FfksVEbjGi2qA6Ip8TWycNlXiDe+FEz7C2L9tPmHvXX6V/PPC5GpSy2NP7HWDqQbGQwMxtoeTZhD2pEOAfmzAjEm3fbd5rjG9oTYv83hIZ8U11/FwzO+cHptXO0VvAjLFwZu3NP+18P3T1uROcCsgBHPz7axW/XoNGkaDUDWV04yMY+K3FYJxnyXcXZRw2sDATsZ4Mma0EpA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(316002)(8936002)(5660300002)(110136005)(2906002)(6512007)(6506007)(122000001)(508600001)(26005)(2616005)(186003)(6486002)(86362001)(76116006)(64756008)(66556008)(66476007)(66446008)(66946007)(71200400001)(8676002)(36756003)(38100700002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?imZMw/GJgDCC8XeM7zshQJwXzVQGrdKr/np9kzvM7BZNZBRwAKvZzkF7Y4?=
+ =?iso-8859-1?Q?4iypweOskL1MjbzlHqxbbr7GM3tAJdAdD3ti1q8/jnQEj3wfcgERdJeKwd?=
+ =?iso-8859-1?Q?khWzFG7zWPXhIknKk4WhNJvWmluMJG8gXcKFpP2MleJ1KVm3igvarK8UjR?=
+ =?iso-8859-1?Q?Ov4xwiMYHgu34DPWmvTp9rbNZYbdmoO4AsjcsQCcdjP2YuarP5S1sqbfUe?=
+ =?iso-8859-1?Q?j7Uvjx98nBL3kfFt9cqOyo6pNDsrLc8blHuUtfRuzjNHgKeQHkBaElr/Ne?=
+ =?iso-8859-1?Q?Owgvv+PusADdj4SPJemKj1daVcFqqeVJTmx2KYkjI/rZYkMdJmToAfZbp1?=
+ =?iso-8859-1?Q?uH0BRkCiFCWVaIykYoUbKfsDMhkMhjyNxopYBcKfEuB+s/zcjSjjo7solU?=
+ =?iso-8859-1?Q?IG344cQDZ3DCqerqgEiatwqWaDFeXUaDkbHS8OI8XG7hfnOVRZi49nwRKK?=
+ =?iso-8859-1?Q?xyjuyj+ATEFZgAF56u/XyotSy+b0brHB0C3Csx+oUSK4dmoXliqZeMG/nm?=
+ =?iso-8859-1?Q?FOtvu2Lv08G0Lo+aytXCQvayrSXup6/pIkmdQhfubumyr1u8NjDl2KYoqN?=
+ =?iso-8859-1?Q?PNbKkivvhnZ9XJMzzfL6D+4tcOeia6ZpICX+E0R3IDDqq3nwt0JMGgdUUZ?=
+ =?iso-8859-1?Q?zUKEs4YSQGD96hRdQQMWOLQdtsBGDwTlUyMmiaZ4e5a+Jweh88rD5YG0Um?=
+ =?iso-8859-1?Q?JmPt6OBdi2xpCztcwgMjqWrnxP0Zl+0ENpFFXgMsVdE6TgprIUTeRaLqbG?=
+ =?iso-8859-1?Q?PUNwwPYC6CqZrW2r6Ayk5K36mjqtP/9APISyuRKsyULdKiBqwe9lDWZYgT?=
+ =?iso-8859-1?Q?hruIksIksFxaR36kCrF7ZgqM9xjxAEEv364cMJTCeOY1LnjM82S4UGIXNd?=
+ =?iso-8859-1?Q?E433Fip57BMBcXVU2ufKeD8cbdTUNUqJ8YBEIZNxY59kq+V4CSyKqFVmI8?=
+ =?iso-8859-1?Q?a+6XODKJh/LumsQMXO7hLwbWOf1cLTEcgUsWSgDuppgP01diPBo9byhiko?=
+ =?iso-8859-1?Q?tX45IRwljF9sJl3V002TDClvZ4qLnAqKna7A2TIBWiEnH8H6ZkyByermsS?=
+ =?iso-8859-1?Q?IYB2xnG1SrmM91j39m4/pmkPpThvGQPlCKcnSSo7IrbQzBgCwhECuvLmgu?=
+ =?iso-8859-1?Q?YtRHvNAxaPtfNjlBlZP7AkN0/8OpYt8VWYKAoNWi8F1QppLxAxr2GTdNKB?=
+ =?iso-8859-1?Q?Q0G2Gmy2oZqV9xwWDszIiOAlyMAlv7C2r5tbj8+Wut2pdMWo8FX8GdNMwj?=
+ =?iso-8859-1?Q?VLtp4VvhmgMWWXTnDImGTgcsWdYDURG9d3c6op3TFF9HvGYuoGNzYRV/AD?=
+ =?iso-8859-1?Q?WqA2xzx8FDHUglPmZU/Rd370q6okhATAnimy7H/9jbpiVqhPrheQLODdPm?=
+ =?iso-8859-1?Q?gDnM6H/0kRDIVouYi1wiRVfMhhSdR2RnPqJpbCj6mh6ycxERg1fhcISgIy?=
+ =?iso-8859-1?Q?n+8QJkKyQflkWx9EawFubhclKA2T/qwq1LMrOSv+L9gJdCNQ9KoXMforeH?=
+ =?iso-8859-1?Q?kZQbObgd21uXmY2OwYlclyqz4Zo6Nzk7rnMfoRbY1xDlktcHXga8sSWJ+P?=
+ =?iso-8859-1?Q?x1ituoGj5MZ/pCjSpMAEeOwuC9D4vIN7/OrF9e6AoK985p6Yo8XX+RI3Xl?=
+ =?iso-8859-1?Q?RzH06FmeyZG8A=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 40e4176f-c32c-46cc-e687-08d9ec2591ea
-X-MS-TrafficTypeDiagnostic: BN8PR15MB2818:EE_
-X-Microsoft-Antispam-PRVS: <BN8PR15MB2818C509F937B28F397E06D3D52E9@BN8PR15MB2818.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZSa+Bvwis09U0JsX60cJRYDDahJTZgX17GDKWSneTWwYB7EXiE6k/ZhnMFTt2IXS6gj1kiuMBSevpG9zsN+1qFLOlgAxxgNYMntHbmxNIY9tqGNRRocQyIDtQWOBdOkrvjk/pOXYBP9dEWemmHfuBVO+9W+OAMUoTlDEZKYCXlhcb7x+jDnklNH6nfnaff34TBOl95BxfzDDpSWUMsQ4+OBwc51QwI+jW0yhfxxvaEXS3+R9gh+6sZo4GPkcZtlxZQzSO9grFoir3EAogD56kE8hks3+0iyMiLCWvNOey+/YRSZzSXMJ4GXSFIXQhBKLKXWUSZinI3nF4iV8eR7pXnGmpTdd//LmeqfCNIa5HFSkJiIzM2CvO56YUzcSnVPpUBRRSDDUNtwfPxCo2lHoxMgVWs+LRTDbs6+ErwZoXzCJyIU+eeb9awC1jhae4YGecPiYa0gTpnZfs/ORMWmWu5uQyBOD/9sUwEUyeQrqQH+GVFTP0H1zT5g2Rw4tDuT/DUytI3y9zcbo+6xYyC/kXa+VCZamF9r2MWgXS7gGtsPaW7PDNqfvidvJgATlhGDpq5an4dn81KWMPTLRhtrd9VPqb5A33p6wqPc/XA/mt4SRXz3JbDzAMmPxFG2UZGTdQo80hnlfIwZ+4Lfrba+47A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR15MB5017.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(4326008)(66476007)(66556008)(8676002)(6486002)(6512007)(66946007)(508600001)(316002)(6916009)(6506007)(2906002)(186003)(9686003)(1076003)(83380400001)(52116002)(38100700002)(86362001)(8936002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w0211oTHUSHgrIoktuANJYqxJPfhJs6lt0OPeBEPQNCWSGekCa1XvvIPbG4X?=
- =?us-ascii?Q?yugFsVuJbLm/c6c5BUNZPy8NYtd0gdpqdoCc+AtV21MEqsSOqR4JKglGEciy?=
- =?us-ascii?Q?VbszGv8rvP3stln1+BCjQmBfi5y8WQiMe7DttAFVEpx3fFzizYXynw0bMxHI?=
- =?us-ascii?Q?Z8GJSbD3jVMJhyh2PBPeUtDfn0ZHFxKq1CbOJN7FRmNt7NaLBMXiD/8YGooh?=
- =?us-ascii?Q?VwoVDud1RPMVHIJheCtpfV0p/vmnmuaPCPsbob6urLRGhtoFLyWsgFP/gIRK?=
- =?us-ascii?Q?Ny2sEwLJCwer4UXypz2izGMrJ7IsCDeYEHyYF16LiWi51+piUFOqFTYMPyMz?=
- =?us-ascii?Q?L+n7/Ni7cIev/jrhfYY6gakPsVMs9+cqSvku2fpoDKQg4xUGyhsjTf6N+2yW?=
- =?us-ascii?Q?q3VF9L9S3mfUqoSiZcl48rftXJqLMslgKqZrjlT1WyfDtDc8I44iNT5d0mn9?=
- =?us-ascii?Q?TR6c6uQfMLvJHIc0OORpr+LTYRa7ztsqO0ZFZECwFAvJg6oUUsUX9rCa5M95?=
- =?us-ascii?Q?lRk4RKtqzIzTfb2x6BcfjW0h325n5CvYixOhM4+TMo5ZowvK+TGKwd5c71SL?=
- =?us-ascii?Q?Ksugr2FO216bZEq+r+3aZiJ64xHG0DTnu0X75ipbpB1onJgbJvTYOPo1P/Lr?=
- =?us-ascii?Q?DI61fEb/4/vin470+07wOHhRABCf2+gbh2/E+qz6a6TIlMTx5tODJNruEC2n?=
- =?us-ascii?Q?DB2J1LiyTV/urICe8+6/qpmOYxRQpofo1j7L7dJwcIStHFVe4PAPA6uJCnt8?=
- =?us-ascii?Q?46eBIvASFFhxMoyvSTmpqJT2cQ+OP9eP0JLSTUUE/SwuoDauMMb/38MTfK4k?=
- =?us-ascii?Q?KE9IIOiMOgQCA6oTI1eGCvwtyX52jGbXt/qATikIJMDq38mZ/5EerEYITs06?=
- =?us-ascii?Q?P6cqonnSwtjV1sg+k3Ugc8UBIFKx7RDTe0LaHUJ5TeDDHYKHEjLhLmpxu3lY?=
- =?us-ascii?Q?zxxM+Hbf1jLI8Eoiymkbf+AlR2NLDN6YtYtFhSfD2QMimvdZPYH07qeF8+dV?=
- =?us-ascii?Q?qVoV+058WvLUkcDG8rRUC+jgtz0dLAsigiQ8lXXQBx4OL/cW4db2X9tEEbam?=
- =?us-ascii?Q?a/eTPSnstaGPszfeLPNHd6i6GzIvGSYO5lxTtCtccOLwSV+SF7DolowLiK+/?=
- =?us-ascii?Q?aDWqWVJ4DkVn5V6NGXuqi5NT01TN43b//IaQjtmQWdodkJl9ERBaev5knOtP?=
- =?us-ascii?Q?TqMhMwLAbSr0jvDavo3vW7DJf+wzGhagVygCnwf2JUZEJjztoYE1zj4U+XPV?=
- =?us-ascii?Q?F4I3YlQEGFoWYPDip1sNxIXorFXe4p86ziSVEPIQS/qkVyzHRKoBvnbWt+eL?=
- =?us-ascii?Q?DqsnVpG2o1aBGmiXAQJ+dgW49FL4IW3YbAHAEoSD8bnr6Wuvz797wDxvTm08?=
- =?us-ascii?Q?kyGr+Sw2oOg4sYYeAjUfzDkm7iT7OhyywG4o4KegSUgEO7HjU6hU5hZD3jMv?=
- =?us-ascii?Q?jyH0UVjONfif2n9Pv9LmX76wynMFVrvnz52LZ/NGTS4mPWPm2Gr60SP136Ft?=
- =?us-ascii?Q?IzDyaiOFDzSmuavPBYsqNfZwjcN+fUW+I8ncfg3dYTBA+WJuCqXsuQyADyW4?=
- =?us-ascii?Q?obXPwvFruH6WSUor+7Enx3HFyi1SsIxKscVKOv5/?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40e4176f-c32c-46cc-e687-08d9ec2591ea
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR15MB5017.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2022 23:40:35.8639
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 874bc4d2-1754-42b2-e377-08d9ec2d6f3b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 00:36:53.2734
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iL5sTjLDD6tSB4aRnJZ+YruoRb6uXDO8lSH3lEonS2+PtGnmHsGAURoC0UIiQ2WI
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2818
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cTu8en1yD+0peicL2CzqjieAXydXVgsZ12K3EhOZlYPF+sWhO07B3kyAPLMTuucs
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1590
 X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: qlnfisLrUkgD0REsx6nwiyKr7aPl1JyT
-X-Proofpoint-GUID: qlnfisLrUkgD0REsx6nwiyKr7aPl1JyT
+X-Proofpoint-GUID: 3U-7BTlxSYufFHuSjKXlhFWoMmL3rBVp
+X-Proofpoint-ORIG-GUID: 3U-7BTlxSYufFHuSjKXlhFWoMmL3rBVp
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-09_12,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- adultscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 phishscore=0
- suspectscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202090123
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ mlxlogscore=999 mlxscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 clxscore=1015 bulkscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202100001
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
@@ -137,72 +144,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 01:51:38PM -0800, sdf@google.com wrote:
-> On 02/09, Martin KaFai Lau wrote:
-> > On Wed, Feb 09, 2022 at 09:03:45AM -0800, sdf@google.com wrote:
-> > > Let's say I want to set some default sk_priority for all sockets in a
-> > > specific cgroup. I can do it right now using cgroup/sock_create, but it
-> > > applies only to AF_INET{,6} sockets. I'd like to do the same for raw
-> > > (AF_PACKET) sockets and cgroup/sock_create doesn't trigger for them :-(
-> > Other than AF_PACKET and INET[6], do you have use cases for other
-> > families?
-> 
-> No, I only need AF_PACKET for now. But I feel like we should create
-> a more extensible hook point this time (if we go this route).
-> 
-> > > (1) My naive approach would be to add another cgroup/sock_post_create
-> > > which runs late from __sock_create and triggers on everything.
-> > >
-> > > (2) Another approach might be to move BPF_CGROUP_RUN_PROG_INET_SOCK and
-> > > make it work with AF_PACKET. This might be not 100% backwards compatible
-> > > but I'd assume that most users should look at the socket family before
-> > > doing anything. (in this case it feels like we can extend
-> > > sock_bind/release for af_packets as well, just for accounting purposes,
-> > > without any way to override the target ifindex).
-> > If adding a hook at __sock_create, I think having a new
-> > CGROUP_POST_SOCK_CREATE
-> > may be better instead of messing with the current inet assumption
-> > in CGROUP_'INET'_SOCK_CREATE.  Running all CGROUP_*_SOCK_CREATE at
-> > __sock_create could be a nice cleanup such that a few lines can be
-> > removed from inet[6]_create but an extra family check will be needed.
-> 
-> SG. Hopefully I can at least reuse exiting progtype and just introduce
-> new hook point in __sock_create.
-> 
-> > The bpf prog has both bpf_sock->family and bpf_sock->protocol field to
-> > check with, so it should be able to decide the sk type if it is run
-> > at __sock_create.  All bpf_sock fields should make sense or at least 0
-> > to all families (?), please check.
-> 
-> Yeah, that's what I think as well, existing bpf_sock should work
-> as is (it might show empty ip/port for af_packet), but I'll do verify
-> that.
-> 
-> > For af_packet bind, the ip[46]/port probably won't be useful?  What
-> > the bpf prog will need?
-> 
-> For AF_PACKET bind we would need new ifindex and new protocol. I was
-> thinking
-> maybe new bpf_packet_sock type+helper to convert from bpf_sock is the
-> way to go here.
-Right, should follow the existing bpf_skc_to_*() and
-RET_PTR_TO_BTF_ID_OR_NULL pattern to return a 'struct packet_sock *'.
+Multiple test cases already fail if you add a type whose size is
+different between userspace and bpf. That said, let's also add an
+explicit test that ensures mis-sized reads/writes do not actually
+happen. This test case fails before this patch series and passes after:
 
-> For AF_PACKET bind we actually have another use-case where I think
-> generic bind hook might be helpful. I have a working prototype with
-> fmod_ret,
-> but feels like per-cgroup hook is better (let's me access cgroup local
-> storage):
-> We'd like to have a cgroup-enforced TX-only form of raw socket (grant
-> CAP_NET_RAW+restrict RX path). For AF_INET{,6} it means allow only
-> socket(AF_INET{,6}, SOCK_RAW, IPPROTO_RAW); that's easily enforcible with
-> the current hooks. For AF_PACKET it means allow only
-> socket(AF_PACKET, SOCK_RAW, 0 == ETH_P_NONE) and prohibit bind to protocol
-> != 0.
-Meaning a generic hook for bind also?
-hmm... yeah, instead of adding a new one for AF_PACKET, adding a generic
-one may be more useful.
-Just noticed there are INET4_POST_BIND and INET6_POST_BIND
-instead of one INET_POST_BIND.  It may be worth checking if it was due to some
-bummer in the sock.  A quick look seems to be fine, the addrs in the sock are
-not overlapped in a union.
+test_skeleton:FAIL:writes and reads match size unexpected writes
+and reads match size: actual 3735928559 !=3D expected 8030895855
+test_skeleton:FAIL:skeleton uses underlying type unexpected
+skeleton uses underlying type: actual 8 !=3D expected 4
+
+Signed-off-by: Delyan Kratunov <delyank@fb.com>
+---
+ tools/testing/selftests/bpf/prog_tests/skeleton.c | 6 ++++++
+ tools/testing/selftests/bpf/progs/test_skeleton.c | 8 ++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/test=
+ing/selftests/bpf/prog_tests/skeleton.c
+index 9894e1b39211..bc07da929566 100644
+--- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
++++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
+@@ -97,6 +97,9 @@ void test_skeleton(void)
+
+ 	skel->data_read_mostly->read_mostly_var =3D 123;
+
++	/* validate apparent 64-bit value is actually 32-bit */
++	skel->data->intest64 =3D (typeof(skel->data->intest64)) 0xdeadbeefdeadbee=
+fULL;
++
+ 	err =3D test_skeleton__attach(skel);
+ 	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+ 		goto cleanup;
+@@ -126,6 +129,9 @@ void test_skeleton(void)
+ 	ASSERT_OK_PTR(elf_bytes, "elf_bytes");
+ 	ASSERT_GE(elf_bytes_sz, 0, "elf_bytes_sz");
+
++	ASSERT_EQ(skel->data->outtest64, skel->data->intest64, "writes and reads =
+match size");
++	ASSERT_EQ(sizeof(skel->data->intest64), sizeof(u32), "skeleton uses under=
+lying type");
++
+ cleanup:
+ 	test_skeleton__destroy(skel);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_skeleton.c b/tools/test=
+ing/selftests/bpf/progs/test_skeleton.c
+index 1b1187d2967b..fd1f4910cf42 100644
+--- a/tools/testing/selftests/bpf/progs/test_skeleton.c
++++ b/tools/testing/selftests/bpf/progs/test_skeleton.c
+@@ -16,6 +16,13 @@ struct s {
+ int in1 =3D -1;
+ long long in2 =3D -1;
+
++/* declare the int64_t type to actually be 32-bit to ensure the skeleton
++ * uses actual sizes and doesn't just copy the type name
++ */
++typedef __s32 int64_t;
++int64_t intest64 =3D -1;
++int64_t outtest64 =3D -1;
++
+ /* .bss section */
+ char in3 =3D '\0';
+ long long in4 __attribute__((aligned(64))) =3D 0;
+@@ -62,6 +69,7 @@ int handler(const void *ctx)
+ 	out4 =3D in4;
+ 	out5 =3D in5;
+ 	out6 =3D in.in6;
++	outtest64 =3D intest64;
+
+ 	bpf_syscall =3D CONFIG_BPF_SYSCALL;
+ 	kern_ver =3D LINUX_KERNEL_VERSION;
+--
+2.34.1=
