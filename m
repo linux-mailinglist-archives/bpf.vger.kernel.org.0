@@ -2,108 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79A74B0B23
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 11:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F05454B0B20
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 11:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239966AbiBJKmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S239962AbiBJKmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Thu, 10 Feb 2022 05:42:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53372 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239962AbiBJKmp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 05:42:45 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF40FE2
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:46 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id ch26so10037882edb.12
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:46 -0800 (PST)
+        with ESMTP id S239969AbiBJKmq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 05:42:46 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913C6FE6
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:47 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id y22so2271982eju.9
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACldz1J+BwQOGN3OqxJcKqTnx4MchwjbpOvWSpw44ZU=;
-        b=hr/n0eE9UUYnrsWyKMvdEzK7QfXmlJVQ1bG7mo1veo2e+2BfJu9ZOcEs57vJC0NNv3
-         GVHgnzUMMEo1YLR615lgWupbkGBS6eaktZ3HikG4Rx9BuGnIQK3Lq4sdJhNHeJ2W5jh8
-         vynivuh8OPhY9RHOhQTDqKxDu1tgmJdH4IphgyfezPs48nKvbKXkM+IDlWNqoQxfSjR6
-         EOmjI/Mrylh1RBdo0p8y3c0jlhyf0OGtkx5nDjVBcof+mQBVOtH2sCPTXUD7P2HmC6PG
-         DZaMP+q+pkw2Fa2UwuY4x5vxn2X8HZqW2BeNLS4i/CQ2VEDrZfN6PR6UCg2JfOMtORa5
-         qMZg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8MCTtOQQV5S6DRMIgEdzgH7o7Z0XnR5RLccuHTb4Jd8=;
+        b=gWyubEMGWUUvIAC7z68ajkZ6Xihr4AsIHu6xju9v4oYuVJCsJKCXyekm8KsXH3fvNq
+         UFymnJUcPSWtm1JiIRi1zAMKehNt34R40m9zWyx3KdLe6E7bIIEjOTAG3OxMwTKTS/rn
+         zdHiUXyEDvysswJIC932CQFn7HGx9rRJj/DuzYY1ElPGv4ZS+8hpKBnpMIUxsL+goFcU
+         ryWkYPbN8PahHCrgb6RLL3cHsvIf+0Q8Q0jX1mSsiXHWKwG1/Nb0nToSiuCMBla/dxgL
+         O1bJd+no8NIObLgL8OYJhtJFSbBTz9EMa3FBUfhlpOLWgOJhNIFZsAqZ8/BRSEPSWlrV
+         jFYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ACldz1J+BwQOGN3OqxJcKqTnx4MchwjbpOvWSpw44ZU=;
-        b=DLATfqupr2nmq6Py4qiIWI4Z40Tu+JKBfuk5IuJ1m4QmQdNaVRJvvdO8uRHdDh4/u8
-         ahQyngRb6dHt8J1pYG06buPNYH15mvur/eqYQqGRIro4WHGqdt0ubuDekqdWtYA1ktCH
-         JKfm0CQoOdiFQR7fp3yJBj5L/xluvVEb1X+/Nz6Di80rdIZsjPWlbgKu+XTb3tZrpITy
-         UmBnQl9wYHArjLYajU/ACqvM1BshFgbqy60d/eJ/MzrWVpNfqc8n9Chz2pubFV+ZTE5y
-         XBS8zwGv5oB0D5uPHz3DQxZuakmRTvy7ullyNaT70uPXiNZNCMHWiG9wpoNto1zLluxE
-         iruA==
-X-Gm-Message-State: AOAM530jbGzAaJQG1RtD1Es0n2Ey3fwmQkD6WHIlXgTd9kwn6OC207Nm
-        W4UB6PsMoESMNb2jnHdiMm5a6Q==
-X-Google-Smtp-Source: ABdhPJySZfs/ZF5+r/kibOa7gGsHZoFVxqg1yj86z7nnik2YTlnxlp802kqyWCEeT513TlyljCokeg==
-X-Received: by 2002:a05:6402:f17:: with SMTP id i23mr7626633eda.196.1644489764672;
-        Thu, 10 Feb 2022 02:42:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8MCTtOQQV5S6DRMIgEdzgH7o7Z0XnR5RLccuHTb4Jd8=;
+        b=G2oeceqn+4fWl2qjOL7nPd23P+xTywd4sGPSFPFwTiAM3p9NwZ9PqLHIQbWSYhvevX
+         yA87VVQh/VNMMNwruuaTVHPiwbLokmAHbEyjaeQC4mYNV8alW1E3QUZGmHg/sEvVSzk4
+         Zb2TprHRTuUrG0KjB8COAOiiQgrAY2ZpkXksXhSm5KphWOV4CMl/TlltdCyZvQ9H+smC
+         tl2i5sLphyI2kTs9TEyeOMdZTFrLZD+oJ50/iu43R69cdu+GbmshPsa5e0p9XyiCqkMG
+         IMfc5KUFr3IF4N0opKUXVkI/NLNLe2Hb4ub7JkmyDMXcTfHwsABoz0jcNiVs6Xk3kimz
+         Qc9A==
+X-Gm-Message-State: AOAM531UY+9q4kwdfwGKAqMcgMJSDFUk6iCqEfzO25TMqBiEsiTIDqIC
+        Hc17JzzWWZTGqtfndJpPmc8p5A==
+X-Google-Smtp-Source: ABdhPJxPkrM+QC2tTR24vJqSQD+T2vvto+GAgPJ+sx8ODa60OYdYBNOTX2GrDV9HxKgdP49YLrI6QQ==
+X-Received: by 2002:a17:906:149a:: with SMTP id x26mr5723043ejc.103.1644489766140;
+        Thu, 10 Feb 2022 02:42:46 -0800 (PST)
 Received: from localhost.localdomain ([149.86.70.238])
-        by smtp.gmail.com with ESMTPSA id w8sm6111839ejo.18.2022.02.10.02.42.43
+        by smtp.gmail.com with ESMTPSA id w8sm6111839ejo.18.2022.02.10.02.42.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 02:42:43 -0800 (PST)
+        Thu, 10 Feb 2022 02:42:45 -0800 (PST)
 From:   Quentin Monnet <quentin@isovalent.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next v3 0/2] bpftool: Switch to new versioning scheme (align on libbpf's)
-Date:   Thu, 10 Feb 2022 10:42:35 +0000
-Message-Id: <20220210104237.11649-1-quentin@isovalent.com>
+Subject: [PATCH bpf-next v3 1/2] bpftool: Add libbpf's version number to "bpftool version" output
+Date:   Thu, 10 Feb 2022 10:42:36 +0000
+Message-Id: <20220210104237.11649-2-quentin@isovalent.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220210104237.11649-1-quentin@isovalent.com>
+References: <20220210104237.11649-1-quentin@isovalent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, this set aims at updating the way bpftool versions are numbered.
-Instead of copying the version from the kernel (given that the sources for
-the kernel and bpftool are shipped together), align it on libbpf's version
-number, with a fixed offset (6) to avoid going backwards. Please refer to
-the description of the second commit for details on the motivations.
+To help users check what version of libbpf is being used with bpftool,
+print the number along with bpftool's own version number.
 
-The patchset also adds the number of the version of libbpf that was used to
-compile to the output of "bpftool version". Bpftool makes such a heavy
-usage of libbpf that it makes sense to indicate what version was used to
-build it.
+Output:
 
-v3:
-- Compute bpftool's version at compile time, but from the macros exposed by
-  libbpf instead of calling a shell to compute $(BPFTOOL_VERSION) in the
-  Makefile.
-- Drop the commit which would add a "libbpfversion" target to libbpf's
-  Makefile. This is no longer necessary.
-- Use libbpf's major, minor versions with jsonw_printf() to avoid
-  offsetting the version string to skip the "v" prefix.
-- Reword documentation change.
+    $ ./bpftool version
+    ./bpftool v5.16.0
+    using libbpf v0.7
+    features: libbfd, libbpf_strict, skeletons
 
-v2:
-- Align on libbpf's version number instead of creating an independent
-  versioning scheme.
-- Use libbpf_version_string() to retrieve and display libbpf's version.
-- Re-order patches (1 <-> 2).
+    $ ./bpftool version --json --pretty
+    {
+        "version": "5.16.0",
+        "libbpf_version": "0.7",
+        "features": {
+            "libbfd": true,
+            "libbpf_strict": true,
+            "skeletons": true
+        }
+    }
 
-Quentin Monnet (2):
-  bpftool: Add libbpf's version number to "bpftool version" output
-  bpftool: Update versioning scheme, align on libbpf's version number
+Note that libbpf does not expose its patch number.
 
- .../bpftool/Documentation/common_options.rst  | 13 +++++-----
- tools/bpf/bpftool/Makefile                    |  6 ++---
- tools/bpf/bpftool/main.c                      | 25 +++++++++++++++++++
- 3 files changed, 34 insertions(+), 10 deletions(-)
+Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+---
+ tools/bpf/bpftool/Documentation/common_options.rst | 13 +++++++------
+ tools/bpf/bpftool/main.c                           |  4 ++++
+ 2 files changed, 11 insertions(+), 6 deletions(-)
 
+diff --git a/tools/bpf/bpftool/Documentation/common_options.rst b/tools/bpf/bpftool/Documentation/common_options.rst
+index 908487b9c2ad..4107a586b68b 100644
+--- a/tools/bpf/bpftool/Documentation/common_options.rst
++++ b/tools/bpf/bpftool/Documentation/common_options.rst
+@@ -4,12 +4,13 @@
+ 	  Print short help message (similar to **bpftool help**).
+ 
+ -V, --version
+-	  Print version number (similar to **bpftool version**), and optional
+-	  features that were included when bpftool was compiled. Optional
+-	  features include linking against libbfd to provide the disassembler
+-	  for JIT-ted programs (**bpftool prog dump jited**) and usage of BPF
+-	  skeletons (some features like **bpftool prog profile** or showing
+-	  pids associated to BPF objects may rely on it).
++	  Print bpftool's version number (similar to **bpftool version**), the
++	  number of the libbpf version in use, and optional features that were
++	  included when bpftool was compiled. Optional features include linking
++	  against libbfd to provide the disassembler for JIT-ted programs
++	  (**bpftool prog dump jited**) and usage of BPF skeletons (some
++	  features like **bpftool prog profile** or showing pids associated to
++	  BPF objects may rely on it).
+ 
+ -j, --json
+ 	  Generate JSON output. For commands that cannot produce JSON, this
+diff --git a/tools/bpf/bpftool/main.c b/tools/bpf/bpftool/main.c
+index 490f7bd54e4c..0f2f8de514a4 100644
+--- a/tools/bpf/bpftool/main.c
++++ b/tools/bpf/bpftool/main.c
+@@ -89,6 +89,9 @@ static int do_version(int argc, char **argv)
+ 
+ 		jsonw_name(json_wtr, "version");
+ 		jsonw_printf(json_wtr, "\"%s\"", BPFTOOL_VERSION);
++		jsonw_name(json_wtr, "libbpf_version");
++		jsonw_printf(json_wtr, "\"%d.%d\"",
++			     libbpf_major_version(), libbpf_minor_version());
+ 
+ 		jsonw_name(json_wtr, "features");
+ 		jsonw_start_object(json_wtr);	/* features */
+@@ -102,6 +105,7 @@ static int do_version(int argc, char **argv)
+ 		unsigned int nb_features = 0;
+ 
+ 		printf("%s v%s\n", bin_name, BPFTOOL_VERSION);
++		printf("using libbpf %s\n", libbpf_version_string());
+ 		printf("features:");
+ 		if (has_libbfd) {
+ 			printf(" libbfd");
 -- 
 2.32.0
 
