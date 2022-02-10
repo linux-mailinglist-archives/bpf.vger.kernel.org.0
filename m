@@ -2,136 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 396854B0295
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DBE4B03A3
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbiBJB55 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 20:57:57 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:60094 "EHLO
+        id S231779AbiBJC7W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 21:59:22 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbiBJB4N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 20:56:13 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 535E42AA97;
-        Wed,  9 Feb 2022 17:38:03 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id i186so7627270pfe.0;
-        Wed, 09 Feb 2022 17:38:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=R8E1uIi3+8OQz5EH8bcJFCimfA9i/IShFnqKSrhw+jA=;
-        b=DnxCQevBUHlaiRVxA8S2V5t0STdyWdb7vCOz1MZmbNfdaAqnQHJ9xL7o+NxwQZJ06i
-         U2SgAyQqMZEqsV1VTgBDMGitHbzXmTCFU2jM7T5dvWJf+cz1vtaTFiHww9lItWJo8viM
-         pjL7Wat8NcOtWXfcnZc4VWTvjR1Yjqcqd8785aC2FBl5fM6nBe5T6YVrGjNl77Ufw1sM
-         ovuNGw5CSdjDbv3qpnqzdHHLUx8bpKJFrb9wJxlbjbhiK9QJi2qvbfttqZ7RBTfnLyKY
-         1Z4aUe+PUJ5x6mfyptluFdpoCHQ/oTADlScIwYVDvJNk1+CbnSD49NCZ5IQUqAI6BIi8
-         CrXw==
+        with ESMTP id S229604AbiBJC7W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 21:59:22 -0500
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583FC25DC4
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 18:59:24 -0800 (PST)
+Received: by mail-il1-f197.google.com with SMTP id a18-20020a923312000000b002b384dccc91so3003826ilf.1
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 18:59:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=R8E1uIi3+8OQz5EH8bcJFCimfA9i/IShFnqKSrhw+jA=;
-        b=sX0CFX5sDXuR6ez/wRloDn18Xfz9Pf6IFkVtmoQbC8plg2HlS9l0uXPzRs0eA0xIcC
-         LXcMYjafm8VE0KVfOGjRUSl3xm5Vo72FyLXjGGMjXDXygHjyF7CStV+tiqjZw2Gb0fBA
-         JYWvxXz+77rFE35mNPbf3i+nDlKu5mgYlc/6fRqvIpOrD5iOQRlZ6akMETSoP9+TzQ8d
-         ze0RpzvIBWgAhTumCYx7TXELRT5BR9n4yN4gg+mGXgMljDfV5cEjSBM66BR5rz3upmPd
-         YeQDSfkBa5r9/fszXBdkoPyrHIRX/WoeEf3Ht3H8J6aXUAcdKD0HsXaKFAXVr7fPR3+Z
-         Q5Aw==
-X-Gm-Message-State: AOAM531Z2N8YJHgxCdhn5OWKR2BPUKhvy3Gi8qrtthkIkpOE9HLmEyA+
-        +6s/FimfblBqvG5COhjywXkUmQLjlMo=
-X-Google-Smtp-Source: ABdhPJy5Fomf6P+kFMcts/ExMC8D+CDsh8XGL9w5xwGkTidzggtLHQyJTHmFq92PBjsNDE0+LNZUeg==
-X-Received: by 2002:a63:5166:: with SMTP id r38mr4138254pgl.99.1644455592404;
-        Wed, 09 Feb 2022 17:13:12 -0800 (PST)
-Received: from [192.168.86.21] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id s14sm21770334pfk.174.2022.02.09.17.13.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Feb 2022 17:13:11 -0800 (PST)
-Message-ID: <3d13bcf4-8d20-0f06-5c00-3880b79363af@gmail.com>
-Date:   Wed, 9 Feb 2022 17:13:09 -0800
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=S1BNNgshEPWXG4irPyuOKxOVu/jqB12cTyepgh3rjw8=;
+        b=5mUSTsfmljuONdE96OhWFha5ilyT08PWhXZAMTja0x7SRbJT9UtOwuguNhzou+qnWo
+         TQ7RJmA1YLHjaQTRHw5Eb0o2sW9h93QXDCbV//twFiOCl3PAhh8KLO8iRTprqscYjw6V
+         xV8NGCRWZKdgHeOgbOxScwqExNYP16MO+B7ERU1NiLSTVs/hCjnEXCLDUxT9sw9a4KXN
+         toI62WVC1T0zy7g6APLY8dsNH0aESJsZNUzdj9ls8i+YhtoMLPaD+kPNe6+9qVgGD+fz
+         injxrMti5/FsZ8+kHyoDfwh1gDq6BB7PoDnOr7s/Y7wkrQMzSXtKigOmpM5xa2HbJVFC
+         pbbg==
+X-Gm-Message-State: AOAM533uKddXpDbsEQCFsapQBediV4e8/INe5jk/Xw4iB2BCzBpwj1UR
+        cNU3JEaqoVd2+BqFzwYiAEqZc+f1DzYBYaIf05DQUOrj3s0C
+X-Google-Smtp-Source: ABdhPJxmKe52Zn6Gp/x+5e0cXt2LQ7ZReqON7Q2jw4jDUel3bcxRFG+bWCzk5PMk+Dl64tmZZkI0PhN+MVpY0jd8zxYKMuPiUYBY
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH bpf-next 2/2] bpf: fix bpf_prog_pack build HPAGE_PMD_SIZE
-Content-Language: en-US
-To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kernel-team@fb.com, kernel test robot <lkp@intel.com>
-References: <20220208220509.4180389-1-song@kernel.org>
- <20220208220509.4180389-3-song@kernel.org>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-In-Reply-To: <20220208220509.4180389-3-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:4cd:: with SMTP id f13mr2987757ils.246.1644461963335;
+ Wed, 09 Feb 2022 18:59:23 -0800 (PST)
+Date:   Wed, 09 Feb 2022 18:59:23 -0800
+In-Reply-To: <000000000000a3571605d27817b5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002bddaa05d7a12362@google.com>
+Subject: Re: [syzbot] WARNING: kmalloc bug in xdp_umem_create (2)
+From:   syzbot <syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bjorn.topel@gmail.com, bjorn.topel@intel.com, bjorn@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        fgheet255t@gmail.com, hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        magnus.karlsson@intel.com, mudongliangabcd@gmail.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-On 2/8/22 14:05, Song Liu wrote:
-> Fix build with CONFIG_TRANSPARENT_HUGEPAGE=n with BPF_PROG_PACK_SIZE as
-> PAGE_SIZE.
->
-> Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->   kernel/bpf/core.c | 4 ++++
->   1 file changed, 4 insertions(+)
->
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 306aa63fa58e..9519264ab1ee 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -814,7 +814,11 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->    * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
->    * to host BPF programs.
->    */
-> +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->   #define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
-> +#else
-> +#define BPF_PROG_PACK_SIZE	PAGE_SIZE
-> +#endif
->   #define BPF_PROG_CHUNK_SHIFT	6
->   #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
->   #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+HEAD commit:    f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12073c74700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5707221760c00a20
+dashboard link: https://syzkaller.appspot.com/bug?extid=11421fbbff99b989670e
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e514a4700000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcdf8a700000
 
-BTW, I do not understand with module_alloc(HPAGE_PMD_SIZE) would 
-necessarily allocate a huge page.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
 
-I am pretty sure it does not on x86_64 and dual socket host (NUMA)
-
-It seems you need to multiply this by num_online_nodes()  or change the 
-way __vmalloc_node_range()
-
-works, because it currently does:
-
-     if (vmap_allow_huge && !(vm_flags & VM_NO_HUGE_VMAP)) {
-         unsigned long size_per_node;
-
-         /*
-          * Try huge pages. Only try for PAGE_KERNEL allocations,
-          * others like modules don't yet expect huge pages in
-          * their allocations due to apply_to_page_range not
-          * supporting them.
-          */
-
-         size_per_node = size;
-         if (node == NUMA_NO_NODE)
-<*>          size_per_node /= num_online_nodes();
-         if (arch_vmap_pmd_supported(prot) && size_per_node >= PMD_SIZE)
-             shift = PMD_SHIFT;
-         else
-             shift = arch_vmap_pte_supported_shift(size_per_node);
-
-
-
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 3590 at mm/util.c:590 kvmalloc_node+0xf5/0x100 mm/util.c:590
+Modules linked in:
+CPU: 0 PID: 3590 Comm: syz-executor153 Not tainted 5.17.0-rc3-syzkaller-00043-gf4bc5bbb5fef #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0xf5/0x100 mm/util.c:590
+Code: 01 00 00 00 48 89 ef e8 c9 0d 0d 00 49 89 c5 e9 62 ff ff ff e8 ec d3 d0 ff 45 89 e5 41 81 cd 00 20 01 00 eb 8e e8 db d3 d0 ff <0f> 0b e9 45 ff ff ff 0f 1f 40 00 55 48 89 fd 53 e8 c6 d3 d0 ff 48
+RSP: 0018:ffffc90002957c48 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff88807297e2c0 RSI: ffffffff81a6da65 RDI: 0000000000000003
+RBP: 00000007ff810000 R08: 000000007fffffff R09: 0000000000000001
+R10: ffffffff81a6da21 R11: 0000000000000000 R12: 0000000000002dc0
+R13: 0000000000000000 R14: 00000000ffffffff R15: 0000000000000700
+FS:  000055555577a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f31855463b0 CR3: 000000001d0ed000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvmalloc include/linux/slab.h:732 [inline]
+ kvmalloc_array include/linux/slab.h:750 [inline]
+ kvcalloc include/linux/slab.h:755 [inline]
+ xdp_umem_pin_pages net/xdp/xdp_umem.c:102 [inline]
+ xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
+ xdp_umem_create+0x563/0x1180 net/xdp/xdp_umem.c:252
+ xsk_setsockopt+0x73e/0x9e0 net/xdp/xsk.c:1051
+ __sys_setsockopt+0x2db/0x610 net/socket.c:2180
+ __do_sys_setsockopt net/socket.c:2191 [inline]
+ __se_sys_setsockopt net/socket.c:2188 [inline]
+ __x64_sys_setsockopt+0xba/0x150 net/socket.c:2188
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f3185535009
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff78e9c498 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3185535009
+RDX: 0000000000000004 RSI: 000000000000011b RDI: 0000000000000003
+RBP: 00007f31854f8ff0 R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000020000080 R11: 0000000000000246 R12: 00007f31854f9080
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
