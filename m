@@ -2,148 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E07004B0A4F
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 11:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79A74B0B23
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 11:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238999AbiBJKJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 05:09:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34238 "EHLO
+        id S239966AbiBJKmq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 05:42:46 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbiBJKJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 05:09:27 -0500
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B4BFD3
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:09:29 -0800 (PST)
-Received: by mail-io1-f72.google.com with SMTP id q24-20020a5d8358000000b006133573a011so3698039ior.23
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:09:29 -0800 (PST)
+        with ESMTP id S239962AbiBJKmp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 05:42:45 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AF40FE2
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:46 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id ch26so10037882edb.12
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 02:42:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACldz1J+BwQOGN3OqxJcKqTnx4MchwjbpOvWSpw44ZU=;
+        b=hr/n0eE9UUYnrsWyKMvdEzK7QfXmlJVQ1bG7mo1veo2e+2BfJu9ZOcEs57vJC0NNv3
+         GVHgnzUMMEo1YLR615lgWupbkGBS6eaktZ3HikG4Rx9BuGnIQK3Lq4sdJhNHeJ2W5jh8
+         vynivuh8OPhY9RHOhQTDqKxDu1tgmJdH4IphgyfezPs48nKvbKXkM+IDlWNqoQxfSjR6
+         EOmjI/Mrylh1RBdo0p8y3c0jlhyf0OGtkx5nDjVBcof+mQBVOtH2sCPTXUD7P2HmC6PG
+         DZaMP+q+pkw2Fa2UwuY4x5vxn2X8HZqW2BeNLS4i/CQ2VEDrZfN6PR6UCg2JfOMtORa5
+         qMZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=H26uhXqNf/HlXPlFIZtr8pmKxHk/dt5G+KNL6a6flEY=;
-        b=Go8q+wNsHYfls+3C8V9tpR+i24mHT0P0ynVr2/5f8H9l9hQ7QMBIktobvbUKeBS5rZ
-         8O+/BIne2cH05Cd3drSvaXDPW2RM25XBXNNBP6MlZZ/Z8wYblztxi+fXCrA0sARa4sRu
-         Ko4wMRwQZcmvzsVStCTgpSYWKRUPAzGA1V7/T+Ay2KkWhWBM93WoGgo0xXkLoxoDQJHW
-         imCHfmTumfAU+6LA7QM1V29rTcIOFfUrbIhioEkcKXLb1AmyKEngseXOZW0mWGRi/L5D
-         UFEcP756yfp/Vo/NfiryOGOXmgHRfKelegNZscef6vdLxmcIqw2H4ixhB2qtMGmYhAIk
-         cDLw==
-X-Gm-Message-State: AOAM530J6k6paDvQu2f8WVDoeGmmZjmgJsHmSOcEAT2ULmcqW+fT4aa+
-        pDdcknil1EtR3TPwspakd9yZXI1Yzie1jGhI6JfoakhEPnqA
-X-Google-Smtp-Source: ABdhPJwI8syl2er5tsXbTrN7FkI8sR4wbX6x0AppvYliZ9wZDmvIk4PegggX7v+PvzrQoenNXd+c/WeOJWXZLZGN23TwQcpJ0BYc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACldz1J+BwQOGN3OqxJcKqTnx4MchwjbpOvWSpw44ZU=;
+        b=DLATfqupr2nmq6Py4qiIWI4Z40Tu+JKBfuk5IuJ1m4QmQdNaVRJvvdO8uRHdDh4/u8
+         ahQyngRb6dHt8J1pYG06buPNYH15mvur/eqYQqGRIro4WHGqdt0ubuDekqdWtYA1ktCH
+         JKfm0CQoOdiFQR7fp3yJBj5L/xluvVEb1X+/Nz6Di80rdIZsjPWlbgKu+XTb3tZrpITy
+         UmBnQl9wYHArjLYajU/ACqvM1BshFgbqy60d/eJ/MzrWVpNfqc8n9Chz2pubFV+ZTE5y
+         XBS8zwGv5oB0D5uPHz3DQxZuakmRTvy7ullyNaT70uPXiNZNCMHWiG9wpoNto1zLluxE
+         iruA==
+X-Gm-Message-State: AOAM530jbGzAaJQG1RtD1Es0n2Ey3fwmQkD6WHIlXgTd9kwn6OC207Nm
+        W4UB6PsMoESMNb2jnHdiMm5a6Q==
+X-Google-Smtp-Source: ABdhPJySZfs/ZF5+r/kibOa7gGsHZoFVxqg1yj86z7nnik2YTlnxlp802kqyWCEeT513TlyljCokeg==
+X-Received: by 2002:a05:6402:f17:: with SMTP id i23mr7626633eda.196.1644489764672;
+        Thu, 10 Feb 2022 02:42:44 -0800 (PST)
+Received: from localhost.localdomain ([149.86.70.238])
+        by smtp.gmail.com with ESMTPSA id w8sm6111839ejo.18.2022.02.10.02.42.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Feb 2022 02:42:43 -0800 (PST)
+From:   Quentin Monnet <quentin@isovalent.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next v3 0/2] bpftool: Switch to new versioning scheme (align on libbpf's)
+Date:   Thu, 10 Feb 2022 10:42:35 +0000
+Message-Id: <20220210104237.11649-1-quentin@isovalent.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2e91:: with SMTP id m17mr3446789iow.96.1644487768576;
- Thu, 10 Feb 2022 02:09:28 -0800 (PST)
-Date:   Thu, 10 Feb 2022 02:09:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000489d6105d7a7255e@google.com>
-Subject: [syzbot] KCSAN: data-race in perf_event_update_userpage /
- perf_event_update_userpage (5)
-From:   syzbot <syzbot+df838a721c117d596976@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, jolsa@redhat.com,
-        kafai@fb.com, kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, mark.rutland@arm.com,
-        mingo@redhat.com, namhyung@kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Hi, this set aims at updating the way bpftool versions are numbered.
+Instead of copying the version from the kernel (given that the sources for
+the kernel and bpftool are shipped together), align it on libbpf's version
+number, with a fixed offset (6) to avoid going backwards. Please refer to
+the description of the second commit for details on the motivations.
 
-syzbot found the following issue on:
+The patchset also adds the number of the version of libbpf that was used to
+compile to the output of "bpftool version". Bpftool makes such a heavy
+usage of libbpf that it makes sense to indicate what version was used to
+build it.
 
-HEAD commit:    dcb85f85fa6f gcc-plugins/stackleak: Use noinstr in favor o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14f2e20c700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a83209f215159f48
-dashboard link: https://syzkaller.appspot.com/bug?extid=df838a721c117d596976
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+v3:
+- Compute bpftool's version at compile time, but from the macros exposed by
+  libbpf instead of calling a shell to compute $(BPFTOOL_VERSION) in the
+  Makefile.
+- Drop the commit which would add a "libbpfversion" target to libbpf's
+  Makefile. This is no longer necessary.
+- Use libbpf's major, minor versions with jsonw_printf() to avoid
+  offsetting the version string to skip the "v" prefix.
+- Reword documentation change.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+v2:
+- Align on libbpf's version number instead of creating an independent
+  versioning scheme.
+- Use libbpf_version_string() to retrieve and display libbpf's version.
+- Re-order patches (1 <-> 2).
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+df838a721c117d596976@syzkaller.appspotmail.com
+Quentin Monnet (2):
+  bpftool: Add libbpf's version number to "bpftool version" output
+  bpftool: Update versioning scheme, align on libbpf's version number
 
-==================================================================
-BUG: KCSAN: data-race in perf_event_update_userpage / perf_event_update_userpage
+ .../bpftool/Documentation/common_options.rst  | 13 +++++-----
+ tools/bpf/bpftool/Makefile                    |  6 ++---
+ tools/bpf/bpftool/main.c                      | 25 +++++++++++++++++++
+ 3 files changed, 34 insertions(+), 10 deletions(-)
 
-write to 0xffff88812430e020 of 8 bytes by task 11328 on cpu 1:
- perf_event_update_userpage+0x328/0x3b0 kernel/events/core.c:5941
- cpu_clock_event_add+0x11d/0x130 kernel/events/core.c:10780
- event_sched_in+0x781/0xe60 kernel/events/core.c:2601
- group_sched_in kernel/events/core.c:2637 [inline]
- merge_sched_in kernel/events/core.c:3802 [inline]
- visit_groups_merge+0x943/0x1a50 kernel/events/core.c:3746
- ctx_flexible_sched_in kernel/events/core.c:3844 [inline]
- ctx_sched_in+0x221/0x240 kernel/events/core.c:3892
- perf_event_sched_in kernel/events/core.c:2741 [inline]
- perf_event_context_sched_in kernel/events/core.c:3943 [inline]
- __perf_event_task_sched_in+0x37c/0x8d0 kernel/events/core.c:3986
- perf_event_task_sched_in include/linux/perf_event.h:1213 [inline]
- finish_task_switch+0x1ef/0x280 kernel/sched/core.c:4861
- context_switch kernel/sched/core.c:4989 [inline]
- __schedule+0x43a/0x690 kernel/sched/core.c:6295
- preempt_schedule_common kernel/sched/core.c:6461 [inline]
- __cond_resched+0x3f/0x90 kernel/sched/core.c:8174
- might_resched include/linux/kernel.h:110 [inline]
- might_alloc include/linux/sched/mm.h:256 [inline]
- slab_pre_alloc_hook mm/slab.h:705 [inline]
- slab_alloc mm/slab.c:3298 [inline]
- kmem_cache_alloc+0x45/0x320 mm/slab.c:3499
- kmem_cache_zalloc include/linux/slab.h:705 [inline]
- __proc_create+0x3cf/0x6a0 fs/proc/generic.c:426
- _proc_mkdir+0x5c/0xf0 fs/proc/generic.c:487
- proc_net_mkdir include/linux/proc_fs.h:226 [inline]
- nfs_fs_proc_net_init+0x79/0x140 fs/nfs/client.c:1329
- nfs_net_init+0x19/0x20 fs/nfs/inode.c:2346
- ops_init+0x1e7/0x230 net/core/net_namespace.c:140
- setup_net+0x29b/0x7e0 net/core/net_namespace.c:330
- copy_net_ns+0x2a9/0x450 net/core/net_namespace.c:474
- create_new_namespaces+0x231/0x560 kernel/nsproxy.c:110
- copy_namespaces+0x116/0x160 kernel/nsproxy.c:178
- copy_process+0x1428/0x2f30 kernel/fork.c:2167
- kernel_clone+0x15c/0x6a0 kernel/fork.c:2555
- __do_sys_clone kernel/fork.c:2672 [inline]
- __se_sys_clone kernel/fork.c:2656 [inline]
- __x64_sys_clone+0xc6/0xf0 kernel/fork.c:2656
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+-- 
+2.32.0
 
-write to 0xffff88812430e020 of 8 bytes by task 11341 on cpu 0:
- perf_event_update_userpage+0x328/0x3b0 kernel/events/core.c:5941
- perf_mmap+0xcd6/0xe50 kernel/events/core.c:6419
- call_mmap include/linux/fs.h:2079 [inline]
- mmap_region+0xb04/0x10b0 mm/mmap.c:1793
- do_mmap+0x781/0xc20 mm/mmap.c:1582
- vm_mmap_pgoff+0x117/0x1f0 mm/util.c:519
- ksys_mmap_pgoff+0x265/0x320 mm/mmap.c:1630
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-value changed: 0x0000000000000000 -> 0x000000000135f629
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 11341 Comm: syz-executor.4 Not tainted 5.17.0-rc2-syzkaller-00167-gdcb85f85fa6f-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
