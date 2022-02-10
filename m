@@ -2,65 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1163A4B0201
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 02:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A64B0346
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 03:22:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbiBJBWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Feb 2022 20:22:47 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:42126 "EHLO
+        id S229488AbiBJCWs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Feb 2022 21:22:48 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbiBJBWl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Feb 2022 20:22:41 -0500
+        with ESMTP id S229522AbiBJCWr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Feb 2022 21:22:47 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F58E1EC47
-        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 17:22:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4628822BC7
+        for <bpf@vger.kernel.org>; Wed,  9 Feb 2022 18:22:49 -0800 (PST)
 Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NYHi3029395
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 219NYHi5029395
         for <bpf@vger.kernel.org>; Wed, 9 Feb 2022 16:36:57 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
  date : message-id : references : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=R4upJ/IquiANQLCltuWGGy6R+6bn4TGeOOM0s2ESvlI=;
- b=S3bEXS0YIC0gtKu8HGdQvnaMH2BcbotPSZSEnvTBNTKWiTBVxhOfSNb+pRE89OtGonfZ
- EnyprmrHv45cIN3J+SyTMXscRVb5w2zxkrHSjxzfjOjJub9sih3hhcrvEQdNQiTS5eJG
- 0Oq/A45YslDhHliA/IJTZVCsEKRkKKe4dcQ= 
+ bh=hTwRg7irlzBwnuu6oczWfaLxt3YkTybNqeR7ha9yFXQ=;
+ b=C+VHB9yxRccOxTvt+QcQGjJFB1LuH88B2wcA+gLPEi276YJLFtHlwuBCZCwmOFqfM+/U
+ 9iwLRHry8MfmEjQUy79INuCBOMER05wbaJc2mLNIpClsTo1vJO3AvnEVFt9XZDeOkeeW
+ 6H0FJ4jCSijGtTuZeg0IeR7ZAtHxAwlF0Ew= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4e8nvnfh-2
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4e8nvnfh-4
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 16:36:56 -0800
+        for <bpf@vger.kernel.org>; Wed, 09 Feb 2022 16:36:57 -0800
 Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
  o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.21; Wed, 9 Feb 2022 16:36:56 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kvbck3W3OrA1JbEzws4ujK9LBmRfsv+/FkQoyKclDGIN5lOdgnV405grqHBmXwc1XjcBvInv37hg24VlRJBLc5u9N91Ju5K4TWxUPaWQhUbXQdKmFA3BxCtqbsYqd6ijoSuk3yxZezvdcL2WYRFzul3F5cOKD2By4vzV5EjejMsoTCCZuICSaVlC+Yj1vp0bkpCf44i7CmEKUqIhjgLtf22r1id1ZjlyT1XI4OrMYALlUqSRPhrvOv+D/281QR8OO86Hn3/Ou6OgdgLeD6Ce2T0q6pgSxLJxwsH7ncxn2fXhkwEZuNHuJur3g5q/b7dLJ6c4xsxYOcXI1FJll5RZEg==
+ b=CUHsT+dossyHYYAMquWQNRVFuGLPVytKzelFQfUIl78ABpC0hPwhcumpC+7nor1fBKlI6p3oIPBuZQuP8yUC5SaxL4Jn+VRXyXsqZVuhwNOh/yWFGaFxNvn6pUgRg18WmZ0KrzzEQsTKCJrnTwOsnBvOLYDszYc4NTKEqtCxT6LMxGuBblVVtG2KVBeY7NcdcOVjSB/OSy215rfAPdT/qKwvod79QkMGZwlHzsnN1O5hdJPOuJXZ79KM510nKyJ8nuMkHZAWhzUQBmc74l2INsI6Sum/jBSbMJOTHnN2clsJW2cut+h7N0X+JmyUnS31r6n3rYwgKvdW+AtojWT+SQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7khCYI7ljTUwy2g6JN04oaknrH1FRqkmEHyG8PhDaks=;
- b=eULv4WZ3AxmwLv8nGEJus2jj4dVc30BwQiaF8STmhoVQPt2L8hAajRVgGCbMloQGrv0al/m7h1RYho5heSWYnpyg9gojI82elcgWco1dGFthjyJOniArBwps1o4n7W7s5+/qNJ0KIwB/Kqduq7xw8R3iDJuldmEsgNGtNaf/91WQrG2abYNR4oJRZqkU4P8Q+mfcyCjLph/fzB0Zu/LCsjjfDV9UvCGC7x61XZM+0IumdFGVBBav2pZgZWFKKnSxniNveRlWcDKOSceVQCMhEt+khvkzGyCAnnGWY2ZvynwDi6oRrQ9LagRHKJixO4CObByWG9+Jd7wynFL3wBoiYw==
+ bh=hTwRg7irlzBwnuu6oczWfaLxt3YkTybNqeR7ha9yFXQ=;
+ b=XXzK1c1z+9ski4RGMpZNoZSyFRg+1/H/Xzk9cAzIGhFOLEFREQVdMafqgmbI9X4vZ0gBsEZCS2Nmd/dWBLcpFbG59FgtFhydbNkl7Zm35HBz7Vui1SB+VKg6vvrAOSX2t6LNtseHv2RPEPbfYYEZPqAidMZ3E/5aNu32jJfBNkWmNRDNJwF3YSAG8hjQNvaQ9zHkKq78/o0TMqPRcWdLTFe7zK976uZhDdAL8/2LwI0uJffPW+FB+LFYirB3mV2AwUem17J1BhD56dn3x9j27pLpZzJi9Bbid7c/osJkcgJAFAcrju4j+usmQ/d/4pmpZdsULWbv3RKLLoXyR1JomA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
  dkim=none; arc=none
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
  by CY4PR15MB1590.namprd15.prod.outlook.com (2603:10b6:903:f5::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Thu, 10 Feb
- 2022 00:36:54 +0000
+ 2022 00:36:55 +0000
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::f1fc:6c73:10d4:1098]) by SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::f1fc:6c73:10d4:1098%6]) with mapi id 15.20.4951.019; Thu, 10 Feb 2022
- 00:36:54 +0000
+ 00:36:55 +0000
 From:   Delyan Kratunov <delyank@fb.com>
 To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next v1 2/3] bpftool: skeleton uses explicitly sized ints
-Thread-Topic: [PATCH bpf-next v1 2/3] bpftool: skeleton uses explicitly sized
+Subject: [PATCH bpf-next v1 1/3] libbpf: btf_dump can produce explicitly sized
  ints
-Thread-Index: AQHYHhZN/e7JuZr7akC7vD+AXIiWjA==
-Date:   Thu, 10 Feb 2022 00:36:54 +0000
-Message-ID: <b904faaff6e8a04809e722d33e062ad47e97c84e.1644453291.git.delyank@fb.com>
+Thread-Topic: [PATCH bpf-next v1 1/3] libbpf: btf_dump can produce explicitly
+ sized ints
+Thread-Index: AQHYHhZNW2xoTni6OUuR9sTJr9fafg==
+Date:   Thu, 10 Feb 2022 00:36:55 +0000
+Message-ID: <c37e39653b133b230dee3b393a07b4def697b61a.1644453291.git.delyank@fb.com>
 References: <cover.1644453291.git.delyank@fb.com>
 In-Reply-To: <cover.1644453291.git.delyank@fb.com>
 Accept-Language: en-US
@@ -68,62 +69,61 @@ Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 65ccafdc-641e-4f2a-9f16-08d9ec2d6fd6
+x-ms-office365-filtering-correlation-id: 006ddca7-fa3c-42b7-4ac6-08d9ec2d7063
 x-ms-traffictypediagnostic: CY4PR15MB1590:EE_
-x-microsoft-antispam-prvs: <CY4PR15MB1590EF626466CC47BC8779C4C12F9@CY4PR15MB1590.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <CY4PR15MB15900C14832C72F3DE7B787AC12F9@CY4PR15MB1590.namprd15.prod.outlook.com>
 x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:101;
+x-ms-oob-tlc-oobclassifiers: OLM:849;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Bz2Kao0FB4pO6u5aNaF+PDuHRoyCIO5ohkwjd8fXopDm2wNntrqMhLZn2IbAFXmLKsklxtHaVuc0qdpB7Ys2/549ZaxBRc2FRG/Um6l/EyG/cGVqCg+eum/eJO60z4ssSHU8MwQFWrYvn+YQnj9kp43wBUoLUleB92nVV7n32Hn2SQIef7ewV4tRHf+RtiHJFIpgxSQ5Ib/jz1HQuAE1Y0RyoRoGY9hOUOxtU/ud+8T743YNWsJo8N1P4XIhWRA9l8olsDM4fTrPRVJ1rySBBD3MFyL5ODbiMwqCC/DNUv07dZnfGHmkKYKSRqV13+AfNf/rOhZeYV+3stMfAtmj30jLr+NqMp6FVQASYyTj+cfIGqSIQ3w2Cu8Fcv6FphXayIL5mbVMGVAfNc+BjcPYWvJyvyvBYS/BMcpjulkuZjQAth1iXgzsQlKIkmSIWm36mf4ZuAvbL2/LJiPjVUkL1djddJDaKJ2ItptZv/yk+TQtTwRWLScYJXL4AmXTmuiru7YUHKUOr3BbJQg9gu2lfZN7pzJROcJLkWftx2xIVy/H6RYpdMCYyTHLszzmbRApHntrtCwSti/jerBIH+I/HVbLxM7YH2V0a6Tt0bhPQ/WKT2w0ffe5DMoMi/yq72LnMMvLhgvxXxvlp3BcSSutZRejyN6FNuE7K0IA8tmSq/ZWMn2AJjTEFlomb62yccpdVLJ4XVtvQSkGU0zqiz1wOqY5viekuvvPzRBSl9rupxEv1oLx/O7TfZdxInyrD2mExtENDDV4ZGzpWxYaMN6LrLjo23ZADHJQw7U+/OFTvrY/eY/FWdki6D4UipGMLxdoPKXGbn6GzcLi2KQkbIcXQA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(316002)(8936002)(5660300002)(110136005)(2906002)(6512007)(6506007)(122000001)(508600001)(26005)(2616005)(186003)(966005)(6486002)(86362001)(76116006)(64756008)(66556008)(66476007)(66446008)(66946007)(71200400001)(8676002)(36756003)(38100700002)(83380400001);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: 2qjwxMhxowDK4avkDVKmiPyw9V76q2n4WimiM6JfgEixSj/RTt2q25y7eQdLZOrXZN5MiTlFDpOuQH3JpOnKPmsqJX3OyUykzijooqAp3MW+rnpEIES9RameNEpTI6P7ROmzAD+mBcl5Nv2l2ckd0q7jR61uJYVQcYs7GAL4OvsK/QFmp5//xZCmtgcmvSyqesSQ5m/ob+bn/zQuAXDVQCQ9rp6baAFhKMKDMaWSkKbmFL8p0T8xFj4qpUHjtLwQCtC0ljXecXELnapUwD4RO7c0RYsYgzzyCN2OMAtZeL6SwOxzwAp7rQdUOTZ+SNSzJmV/RM3nKo/+edAVWQyQPW3YlizNMZARHocGyU7STrdlqvrHaBs+TT/FlFO6TccEzOPYHhQnBoXTPhXLrh37DiGgtwDqLBZhC2Co5ZQG2nR50XqKZrcGwuGxSeg39y7vUoQFfeKyFSEDNqaK0OxTNKfKwsD9puC8VVC3Xkf/jKrHmYj1uXS2HRC6hx141ewwRyA6t+QfdN8yjUXuZqJN9n8CooGeFweZYhEQNM/5bUDy1WW0MxHyqryA+Dp8f6myhEfrgkFMPPpzm2fmvhGJvckiplS/tO5+MZde0h19uW1rzmeiEjYt1qlk1ZSW5OVeWTjv7BCOzoGqvAW/aQ6hRSJClxB03ZtrpjrZ0TkEMIFNgswPePCKh1hZ2wNNWgm3n/P0MQQuO/gOZyV3Fsw3OA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(316002)(8936002)(5660300002)(110136005)(2906002)(6512007)(6506007)(122000001)(508600001)(26005)(2616005)(186003)(6486002)(86362001)(76116006)(64756008)(66556008)(66476007)(66446008)(66946007)(71200400001)(8676002)(36756003)(38100700002)(83380400001);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?eWCnabsD9Odk5SDd/HutxxIWxYTKMWcurTjMBIxGn8DE8Z5556ODDemp78?=
- =?iso-8859-1?Q?e08rg/r+QwcxMCFOXPyzHaYnsuML2Yf9n1S/xARy5UoOfncJfmGZN742Am?=
- =?iso-8859-1?Q?+I2cYXufdFVDuOr2lg3muXd8EeW7aL/+cAt0jsJxe91BRT32yinjYyoTde?=
- =?iso-8859-1?Q?jqqpVpRpaBrroOo96OjRVedrsL/cKoeFo73+e6WJCCfM2IbxL1+w/hhrx8?=
- =?iso-8859-1?Q?TkOTX+Hgh7XR+80OmKRhaf2Kk5Gq8EuR88VpFzMC7A3DkFad/QT53SLfWH?=
- =?iso-8859-1?Q?dfZxeX4uNEK2jcZ+Ce8cFe7Y0zG30g/UohcFPoQXVJMVjXoaI9qvyjUf6K?=
- =?iso-8859-1?Q?uTFOAmmPPF5Ngi7u8GlLRziNj74HiA5vaDW4XsADGORI1Pk24h/IKpVLDf?=
- =?iso-8859-1?Q?eOq3lRL3Kpjk/h6GsgsLQ0TyIK7TvLHAEF1WGicg3zUU+Y5s/CAvwq8NKf?=
- =?iso-8859-1?Q?ep4LyIZhh+byHWnBE0+vVRfe4KhbwPCSaGsHWupSNt0WX1+gWBnnqE8n2A?=
- =?iso-8859-1?Q?GMQ9nhalzDE8UyA5tgskarzwsCkZW4YyUW0lo9LmnJaBVOJooge25qFP2P?=
- =?iso-8859-1?Q?+gtyQFJWqaUNGsoSqaRVFe+9aJvsAbpNVuIC5pi8aLxcTUNPJj/3u96wb5?=
- =?iso-8859-1?Q?/p/gjbtfV61ShUIvIqoNN2B1w2gyuM7+3aAWhXS0D6W7/eRaRDxJSM121e?=
- =?iso-8859-1?Q?AFUHWvJ5yzIyzkbRzyD5jVLBr1acSAWSOuIUm+9EM3moOCcFONbYaPRtl7?=
- =?iso-8859-1?Q?xrNNz3oOPN6Fi7G79NZgX7eC+2l4fEnXV+v1GShKfQDTUxRGWlzoA2+8HC?=
- =?iso-8859-1?Q?yan9J9RppcTgHTExMqIsU+AUhlNai3jMzD1WIwT+o40FfA0Dn4iQ5xmHQJ?=
- =?iso-8859-1?Q?PyEiltDFZy8k3qy5iK89XMHiMi6RFoTMJqEBuzgTjbCm+MbEHwTYsyuuCN?=
- =?iso-8859-1?Q?EvzO11PNEjMpUDH9OjE3H3Cwnt8+B8nBvwmzZA5ePvqvOk4jlETaupt68Z?=
- =?iso-8859-1?Q?n5shpuJJNvUx5N6ntjhQHSJ7QvA2HF7NCbIN3Ux63WyfNLGOTWbpHy1B3h?=
- =?iso-8859-1?Q?tlFRZSO2jt2xFkNAyPyzAMpGpGDegBuZmmQoKXFAciHlm8yiJECx6IVCM5?=
- =?iso-8859-1?Q?AJIYcTHbunXnPvvM2RPy5JQ1y5u821i7BOltikvWvdrlrI2tB6YSkZWsyr?=
- =?iso-8859-1?Q?yZlqVcIHAQuFIU8OaRl6wmHFY4hIAKzDaZT3cDwC7KxYLwHnBC0529q8zz?=
- =?iso-8859-1?Q?6V++tkhujJtb2S/cDtZcv+6wucjWBpq+7Ql4+RlmJpcg4s84bmCKU1lWlD?=
- =?iso-8859-1?Q?S26Mlu4nNEYBDoHlbWf67zIOCh+kZXxpN7G/To1j2RzcA2dU6hYI5BvXlo?=
- =?iso-8859-1?Q?RILkrJTmfpVu/nlaoxas9hv9f+CYFeAw6J6pBsigKlGqMshnnCnpVQjXpC?=
- =?iso-8859-1?Q?T4dXYheGTOSLVzrYT1pAuGnzLURVkmUptjkAi5D+bHJ4TmkTl9nxxUHVuX?=
- =?iso-8859-1?Q?55FSl87RkFdfUZktK+xbu/l8wRkkIwWl+mpMK6vntaGbcisqw/q/J5t/Lu?=
- =?iso-8859-1?Q?RFLgIpUrXYorSHji3cJpZ4C1MScqgHRYDXkiAukLwuEu35sHYH6fqD8gVr?=
- =?iso-8859-1?Q?ksDD4rgkxZiSs=3D?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?acnSkyNBW0H7uwbdc4G3QaeqCoQFRdlifzmi77XwbZ8AH1PQX4lZ0v7iA/?=
+ =?iso-8859-1?Q?t1rLABiG73B581sAdnhv7zvg5TrgajdWM/92TFIzACBkF2hILPlhhSXlgp?=
+ =?iso-8859-1?Q?Yo+dj7HhNzkNoorlzIpOKBHLgNBnbOf2HvrYm3trDHt7XhB9Wo8SUIz5m2?=
+ =?iso-8859-1?Q?jvtVR0RDCwpEillrXmx6SCL80/fKqkHN+Ht/rPw6AM50yOZXcRvS2ZPYxu?=
+ =?iso-8859-1?Q?/WPA3Be/LxAXpU7oTrLRYkBXgEuE4hfwtFcTIhxkoXIRsmvWR6NnCGUNRB?=
+ =?iso-8859-1?Q?2PGbOzLE9eeQ3WwA8Evq1XHvjK+8pJbjB5I0/J/Ys65BkAb7CPTB7TwqHT?=
+ =?iso-8859-1?Q?o+aaM24zOH6nBI2SjbcOH5pi91yfSK+EmZx4MLRRRz3g0kQLDmD897MrhU?=
+ =?iso-8859-1?Q?ntaY0VhCvpukoJd79lgwjycOQ/SwXTq0TMTjbBzR5hLo4tqltqVNyLh1/H?=
+ =?iso-8859-1?Q?PuR0FLdhJMXOUOeq76zkPnl965lop/vYEkAYXSMD8ardX5Fgdp+0q8hNpB?=
+ =?iso-8859-1?Q?7ncykTWqn1+9/2Dl9aBJjxw3TJvsezXnuV8p+M/aupwXFHtt+9Vk2eH7jj?=
+ =?iso-8859-1?Q?rsu4T3D5ZiFxS/73E8U2YCRqqXZzSg/W1TbZfB9lDe4Z2GvrChBY2Z0Vc0?=
+ =?iso-8859-1?Q?qJBDccXdXZYsfe6wmv+IckDfx+20JwjqZByAmNl8RVnW8Ay1l65Qq2J8mo?=
+ =?iso-8859-1?Q?wSAwp0N3gpEojjB4Af/lod95Qesxec4PJlTtC76h9d6EMIc6ApsNpZyxgU?=
+ =?iso-8859-1?Q?McE4cf0nVBbQqvH7XbL8zALnSUAiKUWO32aEuL6/fv1ce/4sZLnQMkFEjG?=
+ =?iso-8859-1?Q?A6E4DDUxMMv6Wv/59BhZlXu34se1lxQoai0TvlkDNAl0Npjtmj7EOo/Vhp?=
+ =?iso-8859-1?Q?ThcmcROAUE/jWAwYaUns3oNF3AmUDT0Jv+dQ2AOw7Y94i260X8zI4MyEnD?=
+ =?iso-8859-1?Q?tC6a4q5521voHoDcHjKUcIsdVGQv+Qj+b3mhGDmqS3Qre+xRL/jCHkn9q7?=
+ =?iso-8859-1?Q?5GF5Xftp6CcGesNjBvhQurBLf9DHfPbJd2qhzypkEiw4jVS4ZCDOZXPbdH?=
+ =?iso-8859-1?Q?Sw/X9x3wL3yy8KmOs/lbuLNldesQYd5FoCImD6ZycHOhO2BdBqR/VkSrAT?=
+ =?iso-8859-1?Q?Q9qcvre9Z6tuFvhqHK0PGW0AC5xxRc4V8HB71Ad8lrv28BNoYuL+n3N0Uc?=
+ =?iso-8859-1?Q?M8vUofTLxqCOmqYauumspyY0wrf+nxxu2drBNIBEdDJ5XytXb30bG0YkS6?=
+ =?iso-8859-1?Q?EzElL3OMRJWGrtZxOgmNPOl/Z1XiN1snAG815sd0MFQ+1lr9TLf4XXR4cb?=
+ =?iso-8859-1?Q?jjU6ai1eA8qJH51QOH1EBesSBr7YkDWAuewokmfK/+b1iuAlBDvvLmSEvZ?=
+ =?iso-8859-1?Q?RqGiU5q4COYEBhAn/MN0WPgLQjknaW9WXZ1F+w3Bb/mKtBpcZCLQ9Q+zL3?=
+ =?iso-8859-1?Q?O1qbD7ELmmvHDeDEUuaGwYMI8zotGQzeEZJXyoHKSb3LX1zoG9EukNrnos?=
+ =?iso-8859-1?Q?dfRdb00h2mX/MZl1ScbhSZcJNcXF4B/6Gjz81cKZvn9a7rVQvm7sSJEnnq?=
+ =?iso-8859-1?Q?kEFd0ilbAPseYMznKrMsT3E5cV6NGk3A4kgSiKLNQCJZUPcrRbCNo8diJk?=
+ =?iso-8859-1?Q?xt2rDJEr5CaRE=3D?=
 Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65ccafdc-641e-4f2a-9f16-08d9ec2d6fd6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 00:36:54.2562
+X-MS-Exchange-CrossTenant-Network-Message-Id: 006ddca7-fa3c-42b7-4ac6-08d9ec2d7063
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 00:36:55.1232
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Rz4yeClBEvfPm8uVYSU1meZWG/r4ldwHXiP7JIKrAyiyxE9Hiip29v4TgqRF5MYv
+X-MS-Exchange-CrossTenant-userprincipalname: 5OLnpjXTiSEU576px7bmGGYcPDWtLFgBxMDp+YGmkrp9Fvp+7FniouRGp0T/EdLj
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1590
 X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: 4Wm11nyt7NoezmuKiSwv7qdx7puD6h7L
-X-Proofpoint-ORIG-GUID: 4Wm11nyt7NoezmuKiSwv7qdx7puD6h7L
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
+X-Proofpoint-GUID: hKnmtiOXKbS-_uBgSFGPEYMTFtjGQpN8
+X-Proofpoint-ORIG-GUID: hKnmtiOXKbS-_uBgSFGPEYMTFtjGQpN8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-09_12,2022-02-09_01,2021-12-02_01
@@ -143,119 +143,179 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As reported in [0] and [1], kernel and userspace can sometimes disagree
-on the definition of a typedef (in particular, the size).
-This leads to trouble when userspace maps the memory of a bpf program
-and reads/writes to it assuming a different memory layout.
+When emitting type declations, btf_dump can now optionally rename
+int types (including typedefs) to standard types with explicit sizes.
+Types like pid_t get renamed but types like __u32, char, and _Bool
+are left alone to preserve cast semantics in as many pre-existing
+programs as possible.
 
-This commit now uses the libbpf sized ints logic when emitting the
-skeleton. This resolves int types to int32_t-like equivalents and
-ensures that typedefs are not just emitted verbatim.
-
-The drive-by selftest changes fix format specifier issues
-due to the definitions of [us]64 and (u)int64_t differing in how
-many longs they use (long long int vs long int on x86_64).
-
-  [0]: https://github.com/iovisor/bcc/pull/3777
-  [1]: Closes: https://github.com/libbpf/libbpf/issues/433
+This option is useful when generating data structures on a system where
+types may differ due to arch differences or just userspace and bpf program
+disagreeing on the definition of a typedef.
 
 Signed-off-by: Delyan Kratunov <delyank@fb.com>
 ---
- tools/bpf/bpftool/gen.c                          |  3 +++
- .../testing/selftests/bpf/prog_tests/skeleton.c  | 16 ++++++++--------
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ tools/lib/bpf/btf.h      |  4 +-
+ tools/lib/bpf/btf_dump.c | 80 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 82 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index eacfc6a2060d..18c3f755ad88 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -146,6 +146,7 @@ static int codegen_datasec_def(struct bpf_object *obj,
- 			.field_name =3D var_ident,
- 			.indent_level =3D 2,
- 			.strip_mods =3D strip_mods,
-+			.sizedints =3D true,
- 		);
- 		int need_off =3D sec_var->offset, align_off, align;
- 		__u32 var_type_id =3D var->type;
-@@ -751,6 +752,7 @@ static int do_skeleton(int argc, char **argv)
- 		#ifndef %2$s						    \n\
- 		#define %2$s						    \n\
- 									    \n\
-+		#include <inttypes.h>					    \n\
- 		#include <stdlib.h>					    \n\
- 		#include <bpf/bpf.h>					    \n\
- 		#include <bpf/skel_internal.h>				    \n\
-@@ -770,6 +772,7 @@ static int do_skeleton(int argc, char **argv)
- 		#define %2$s						    \n\
- 									    \n\
- 		#include <errno.h>					    \n\
-+		#include <inttypes.h>					    \n\
- 		#include <stdlib.h>					    \n\
- 		#include <bpf/libbpf.h>					    \n\
- 									    \n\
-diff --git a/tools/testing/selftests/bpf/prog_tests/skeleton.c b/tools/test=
-ing/selftests/bpf/prog_tests/skeleton.c
-index 180afd632f4c..9894e1b39211 100644
---- a/tools/testing/selftests/bpf/prog_tests/skeleton.c
-+++ b/tools/testing/selftests/bpf/prog_tests/skeleton.c
-@@ -43,13 +43,13 @@ void test_skeleton(void)
- 	/* validate values are pre-initialized correctly */
- 	CHECK(data->in1 !=3D -1, "in1", "got %d !=3D exp %d\n", data->in1, -1);
- 	CHECK(data->out1 !=3D -1, "out1", "got %d !=3D exp %d\n", data->out1, -1);
--	CHECK(data->in2 !=3D -1, "in2", "got %lld !=3D exp %lld\n", data->in2, -1=
-LL);
--	CHECK(data->out2 !=3D -1, "out2", "got %lld !=3D exp %lld\n", data->out2,=
- -1LL);
-+	CHECK(data->in2 !=3D -1, "in2", "got %"PRId64" !=3D exp %lld\n", data->in=
-2, -1LL);
-+	CHECK(data->out2 !=3D -1, "out2", "got %"PRId64" !=3D exp %lld\n", data->=
-out2, -1LL);
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 951ac7475794..dbd41bf93b13 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -347,9 +347,11 @@ struct btf_dump_emit_type_decl_opts {
+ 	int indent_level;
+ 	/* strip all the const/volatile/restrict mods */
+ 	bool strip_mods;
++	/* normalize int fields to (u)?int(16|32|64)_t types */
++	bool sizedints;
+ 	size_t :0;
+ };
+-#define btf_dump_emit_type_decl_opts__last_field strip_mods
++#define btf_dump_emit_type_decl_opts__last_field sizedints
 
- 	CHECK(bss->in3 !=3D 0, "in3", "got %d !=3D exp %d\n", bss->in3, 0);
- 	CHECK(bss->out3 !=3D 0, "out3", "got %d !=3D exp %d\n", bss->out3, 0);
--	CHECK(bss->in4 !=3D 0, "in4", "got %lld !=3D exp %lld\n", bss->in4, 0LL);
--	CHECK(bss->out4 !=3D 0, "out4", "got %lld !=3D exp %lld\n", bss->out4, 0L=
-L);
-+	CHECK(bss->in4 !=3D 0, "in4", "got %"PRId64" !=3D exp %lld\n", bss->in4, =
-0LL);
-+	CHECK(bss->out4 !=3D 0, "out4", "got %"PRId64" !=3D exp %lld\n", bss->out=
-4, 0LL);
+ LIBBPF_API int
+ btf_dump__emit_type_decl(struct btf_dump *d, __u32 id,
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index 07ebe70d3a30..56bafacf1cbd 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -81,6 +81,7 @@ struct btf_dump {
+ 	void *cb_ctx;
+ 	int ptr_sz;
+ 	bool strip_mods;
++	bool sizedints;
+ 	bool skip_anon_defs;
+ 	int last_id;
 
- 	CHECK(rodata->in.in6 !=3D 0, "in6", "got %d !=3D exp %d\n", rodata->in.in=
-6, 0);
- 	CHECK(bss->out6 !=3D 0, "out6", "got %d !=3D exp %d\n", bss->out6, 0);
-@@ -77,9 +77,9 @@ void test_skeleton(void)
+@@ -1130,7 +1131,9 @@ int btf_dump__emit_type_decl(struct btf_dump *d, __u3=
+2 id,
+ 	fname =3D OPTS_GET(opts, field_name, "");
+ 	lvl =3D OPTS_GET(opts, indent_level, 0);
+ 	d->strip_mods =3D OPTS_GET(opts, strip_mods, false);
++	d->sizedints =3D OPTS_GET(opts, sizedints, false);
+ 	btf_dump_emit_type_decl(d, id, fname, lvl);
++	d->sizedints =3D false;
+ 	d->strip_mods =3D false;
+ 	return 0;
+ }
+@@ -1263,6 +1266,34 @@ static void btf_dump_emit_name(const struct btf_dump=
+ *d,
+ 	btf_dump_printf(d, "%s%s", separate ? " " : "", name);
+ }
 
- 	/* validate pre-setup values are still there */
- 	CHECK(data->in1 !=3D 10, "in1", "got %d !=3D exp %d\n", data->in1, 10);
--	CHECK(data->in2 !=3D 11, "in2", "got %lld !=3D exp %lld\n", data->in2, 11=
-LL);
-+	CHECK(data->in2 !=3D 11, "in2", "got %"PRId64" !=3D exp %lld\n", data->in=
-2, 11LL);
- 	CHECK(bss->in3 !=3D 12, "in3", "got %d !=3D exp %d\n", bss->in3, 12);
--	CHECK(bss->in4 !=3D 13, "in4", "got %lld !=3D exp %lld\n", bss->in4, 13LL=
-);
-+	CHECK(bss->in4 !=3D 13, "in4", "got %"PRId64" !=3D exp %lld\n", bss->in4,=
- 13LL);
- 	CHECK(rodata->in.in6 !=3D 14, "in6", "got %d !=3D exp %d\n", rodata->in.i=
-n6, 14);
++/* Encode custom heurstics to find char types since BTF_INT_CHAR is never =
+set. */
++static bool btf_is_char(const struct btf_dump *d, const struct btf_type *t=
+)
++{
++	return btf_is_int(t) &&
++	       t->size =3D=3D 1 &&
++	       strcmp(btf_name_of(d, t->name_off), "char") =3D=3D 0;
++}
++
++static bool btf_is_bool(const struct btf_type *t)
++{
++	return btf_is_int(t) && (btf_int_encoding(t) & BTF_INT_BOOL);
++}
++
++/* returns true if type is of the '__[su](8|16|32|64)' type */
++static bool btf_is_kernel_sizedint(const struct btf_dump *d, const struct =
+btf_type *t)
++{
++	const char *name =3D btf_name_of(d, t->name_off);
++
++	return strcmp(name, "__s8") =3D=3D 0 ||
++	       strcmp(name, "__u8") =3D=3D 0 ||
++	       strcmp(name, "__s16") =3D=3D 0 ||
++	       strcmp(name, "__u16") =3D=3D 0 ||
++	       strcmp(name, "__s32") =3D=3D 0 ||
++	       strcmp(name, "__u32") =3D=3D 0 ||
++	       strcmp(name, "__s64") =3D=3D 0 ||
++	       strcmp(name, "__u64") =3D=3D 0;
++}
++
+ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 				     struct id_stack *decls,
+ 				     const char *fname, int lvl)
+@@ -1277,10 +1308,12 @@ static void btf_dump_emit_type_chain(struct btf_dum=
+p *d,
+ 	 * don't want to prepend space for that last pointer.
+ 	 */
+ 	bool last_was_ptr =3D true;
+-	const struct btf_type *t;
++	const struct btf_type *t, *rest;
+ 	const char *name;
+ 	__u16 kind;
+ 	__u32 id;
++	__u8 intenc;
++	int restypeid;
 
- 	ASSERT_EQ(rodata_dyn->in_dynarr_sz, 4, "in_dynarr_sz");
-@@ -105,9 +105,9 @@ void test_skeleton(void)
- 	usleep(1);
+ 	while (decls->cnt) {
+ 		id =3D decls->ids[--decls->cnt];
+@@ -1295,8 +1328,51 @@ static void btf_dump_emit_type_chain(struct btf_dump=
+ *d,
+ 		t =3D btf__type_by_id(d->btf, id);
+ 		kind =3D btf_kind(t);
 
- 	CHECK(data->out1 !=3D 1, "res1", "got %d !=3D exp %d\n", data->out1, 1);
--	CHECK(data->out2 !=3D 2, "res2", "got %lld !=3D exp %d\n", data->out2, 2);
-+	CHECK(data->out2 !=3D 2, "res2", "got %"PRId64" !=3D exp %d\n", data->out=
-2, 2);
- 	CHECK(bss->out3 !=3D 3, "res3", "got %d !=3D exp %d\n", (int)bss->out3, 3=
-);
--	CHECK(bss->out4 !=3D 4, "res4", "got %lld !=3D exp %d\n", bss->out4, 4);
-+	CHECK(bss->out4 !=3D 4, "res4", "got %"PRId64" !=3D exp %d\n", bss->out4,=
- 4);
- 	CHECK(bss->out5.a !=3D 5, "res5", "got %d !=3D exp %d\n", bss->out5.a, 5);
- 	CHECK(bss->out5.b !=3D 6, "res6", "got %lld !=3D exp %d\n", bss->out5.b, =
-6);
- 	CHECK(bss->out6 !=3D 14, "res7", "got %d !=3D exp %d\n", bss->out6, 14);
++		/* If we're asked to produce stdint declarations, we need
++		 * to only do that in the following cases:
++		 *  - int types other than char and _Bool
++		 *  - typedefs to int types (including char and _Bool) except
++		 *    kernel types like __s16/__u32/etc.
++		 *
++		 * If a typedef resolves to char or _Bool, we do want to use
++		 * the resolved type instead of the stdint types (i.e. char
++		 * instead of int8_t) because the stdint types are explicitly
++		 * signed/unsigned, which affects pointer casts.
++		 *
++		 * If the typedef is of the __s32 variety, we leave it as-is
++		 * due to incompatibilities in e.g. s64 vs int64_t definitions
++		 * (one is `long long` on x86_64 and the other is not).
++		 *
++		 * Unfortunately, the BTF type info never includes BTF_INT_CHAR,
++		 * so we use a size comparison to avoid chars and
++		 * BTF_INT_BOOL to avoid bools.
++		 */
++		if (d->sizedints && kind =3D=3D BTF_KIND_TYPEDEF &&
++		    !btf_is_kernel_sizedint(d, t)) {
++			restypeid =3D btf__resolve_type(d->btf, id);
++			if (restypeid >=3D 0) {
++				rest =3D btf__type_by_id(d->btf, restypeid);
++				if (rest && btf_is_int(rest)) {
++					t =3D rest;
++					kind =3D btf_kind(rest);
++				}
++			}
++		}
++
+ 		switch (kind) {
+ 		case BTF_KIND_INT:
++			btf_dump_emit_mods(d, decls);
++			if (d->sizedints && !btf_is_bool(t) && !btf_is_char(d, t)) {
++				intenc =3D btf_int_encoding(t);
++				btf_dump_printf(d,
++						intenc & BTF_INT_SIGNED ?
++						"int%d_t" : "uint%d_t",
++						t->size * 8);
++			} else {
++				name =3D btf_name_of(d, t->name_off);
++				btf_dump_printf(d, "%s", name);
++			}
++			break;
+ 		case BTF_KIND_FLOAT:
+ 			btf_dump_emit_mods(d, decls);
+ 			name =3D btf_name_of(d, t->name_off);
+@@ -1469,7 +1545,9 @@ static void btf_dump_emit_type_cast(struct btf_dump *=
+d, __u32 id,
+
+ 	d->skip_anon_defs =3D true;
+ 	d->strip_mods =3D true;
++	d->sizedints =3D true;
+ 	btf_dump_emit_type_decl(d, id, "", 0);
++	d->sizedints =3D false;
+ 	d->strip_mods =3D false;
+ 	d->skip_anon_defs =3D false;
+
 --
 2.34.1=
