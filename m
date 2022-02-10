@@ -2,251 +2,240 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB014B1518
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 19:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9844B1616
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 20:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245622AbiBJSR1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 13:17:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42568 "EHLO
+        id S1343873AbiBJTSV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 14:18:21 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234495AbiBJSR0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 13:17:26 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2716E1169;
-        Thu, 10 Feb 2022 10:17:27 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21AF7TFg006986;
-        Thu, 10 Feb 2022 10:17:08 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=YRk8OZzjqdd7Ot3SuMcIgTf//U8f3XeAqoAecaXllVo=;
- b=EmzN9l4ZrNHuLu5TEOz8enD6K2IhsF6yjVWyJZRUaOHKbKreqYWrRkCesMFjzLUdd3ZE
- G2Jl/8cepmIWyrj1kB4alGAwrttafm1n0RdnfSzAl/8c3302mUMAK3kjtuqVKPrcrN80
- rKSzMkAvLZo49gGXaVplyBitep1ZtxW/wng= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e4fxb19yj-15
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 10 Feb 2022 10:17:08 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 10 Feb 2022 10:17:06 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KTkdklrzIYTx71R3gQnnJqmlRgZVgOOmIukJ3/3Lw1W+8z6HJ+yQC32B4jEHEa5VURrvOr3cTD+jPA8tVXtN5UmUtfUfJdSf+Y95vrNxQhAcsSFUj29haYI+qmlylwB1TEGJNFJr8IB2KmPZFNYGGt3PWTqeD+Gfgfi72+RL0ByNDIJIPDHhde7jcVB8s/6Jm7ciUl4y4tY3m1LgSHjUpv6/jrSt94Ba3OBA3uZW8pclmGJwnoqQSRGpmiwLr681LoE05TJxYIUbZ0M1KvsG0jehG8C5YiHtEDe+RflB42TrXbXSukypYBD0WObXMsbsOECnTKsukjo5sTUiAp15eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YRk8OZzjqdd7Ot3SuMcIgTf//U8f3XeAqoAecaXllVo=;
- b=lBXtxr81oEjjP9ZKK3OnEiv64u2tD3i1Bfi/nGWx4m006iZH8439kzaXKWv8tcJsPmKQMnzWnk3xgRTDBDiCve9u3E2k4Ch0/YwjRGLvydKWQvt7y+ciMk90uh24qCCfXtPjo2zOgttSt9qWSEqjY/qHNsDXphgiJAFbBrB+ceOndyDcVZAwqInzq0WKk/dNGpf6QEl2ZMWHHHTeXbIbETsHDOkhcU9GwbaAznDA2ZiXusN3Ef7U349IiacthcFR1MG34bkBCO4cQu5ggL6H7uc65gaABGhOFMzOohW9biqJqL+NwaR8FX8bwCA8IJMx0ldXCGurXtwMSnjHGnXgYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB3258.namprd15.prod.outlook.com (2603:10b6:5:16a::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.18; Thu, 10 Feb
- 2022 18:17:04 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f54e:cd09:acc2:1092]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::f54e:cd09:acc2:1092%4]) with mapi id 15.20.4975.011; Thu, 10 Feb 2022
- 18:17:04 +0000
-Message-ID: <bb445e64-de50-e287-1acc-abfec4568775@fb.com>
-Date:   Thu, 10 Feb 2022 10:17:00 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: BTF compatibility issue across builds
-Content-Language: en-US
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
-CC:     Shung-Hsi Yu <shung-hsi.yu@suse.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <YfK18x/XrYL4Vw8o@syu-laptop>
- <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
- <20220210100153.GA90679@kunlun.suse.cz>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220210100153.GA90679@kunlun.suse.cz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MWHPR19CA0019.namprd19.prod.outlook.com
- (2603:10b6:300:d4::29) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S1343959AbiBJTSR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 14:18:17 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CAF2CB;
+        Thu, 10 Feb 2022 11:18:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7E2CB8272D;
+        Thu, 10 Feb 2022 19:18:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF032C004E1;
+        Thu, 10 Feb 2022 19:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644520694;
+        bh=Fiwgta/9vq2UAQAkLikI+jDg3v2cUKzChDQXHTvQMtw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NHjqkB8oZBNwQp5axgTZgS5EmVaqI4IIPqWMRc87/kW5sDgd9fIXBdsXEHmTuc5pT
+         N7u1NMtAeI2zPErNYSu0PVogmJdkmUq+U8j7kMshhixxfYGofeqaaTfAeEvaCLMo/n
+         0hqUp1Tbe6adk/bB2JEymN/StdU3DfYe+jbGqYZSnFllrhFzSK79aYBUl/uD7J4frw
+         QVm7IEhHnbiUTDPc/ijJ1Zfw9YP35VK5EC2+2NVdX6ubBbgYw0c4nQcielVM90UKJO
+         lzaa8ia/CZmva2A4CseNIKMfjBquRqYUMX9u4yRtQjTz23/jMFjmb34x/s7Je6xMzS
+         995Y2KkvCfnSA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 46FAC400FE; Thu, 10 Feb 2022 16:18:10 -0300 (-03)
+Date:   Thu, 10 Feb 2022 16:18:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        linux-perf-users@vger.kernel.org, Christy Lee <christylee@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/3] perf/bpf: Remove prologue generation
+Message-ID: <YgVk8t6COJhDJyzj@kernel.org>
+References: <20220123221932.537060-1-jolsa@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fec4794a-5fa0-49a9-29a7-08d9ecc18a25
-X-MS-TrafficTypeDiagnostic: DM6PR15MB3258:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB32584CDB869EA8BDEC4E1CC3D32F9@DM6PR15MB3258.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mq9mAvZszrnxY/lzmPNMIg0d/3GpvKQzlggf+UKUduOqK5djjyF2oHLOTccdlUi4xK8oat5ge7Y/cwJAv1uM1wnVw+EDesv+bYfZq6lOM6uD062jorvSi1a/gIfnKyuUiLq1Gkg9ybmudtgg0D+kq5eUL+W4JmIfOqpmUaUUbetlutBo39QrTV3p4i2lqLO6F/8FrwvwEtqf0ms+q6eO2RHqibMDHNf6YNF2Uk4wUVz3uj8pqKBYef4n0x3THh2NIudn3QFydp3ca8IaYe7LrHiQbqFtc01PhC3Ob9m9hCBq7Fo6CwzGSKQp1jkv0Ej+eRcV5SugtMMQQVhabZ2FWlj3S6OJRtnzS3YsXJ/+dHTZldeVmO/6qNJ4rhmI+V1MRXOD+pVMmoVPc7Fr1oyFK2xSwM/vzms6oVT9WsIlyD/4SO6FLi+KYL3aN41fOSQB0YZaAK5dJALHsODyCwIxk53MPKr4FYdFkwjLTFojpRIyNMoUt6N5EFvai0RyEJ5sZtXzLcFOCquHdy/qjwsduQfSZ83GOxmF3DovLUn3YMrGG5ChOl5EfT3xo0nbti6VYnQnaOfZm2LuFMfDRojYD2+XxcbtLONbkBDpY0mqbRqDe+dR8n5A4ciA9yqQPxUf/VkQCRmaqHXcBiMtaaHcGuv+haOeMGC7g8mLmmPamwFcWLDwFv4IT7VN9Vx7w7bIjRJavOACUxiywluSaE81aT26irkgvWYGzSY9Iiu4/hMuUofzhAMo3N2H8Bv3Fvvk
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(2616005)(31686004)(8936002)(4326008)(66556008)(66574015)(66476007)(83380400001)(8676002)(36756003)(6486002)(508600001)(31696002)(38100700002)(54906003)(52116002)(6512007)(53546011)(86362001)(2906002)(6506007)(186003)(6916009)(66946007)(6666004)(316002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UVpEQnRyOHkzekx0MlBaRjlORWxabUh4YVRybWNFR3lINVRxd1R0a01QUWtv?=
- =?utf-8?B?S2R4Rkt3WkpwbDBUekNsMTQrTHR5QWp3YnBtRXREY3hEaGZ3aFNQTmZGTlRj?=
- =?utf-8?B?blBtTmxxMy9XNVBTOXQ0MHNrL0hPUnhETnllclpXVXVkL0QxYmdzRXM4N2Nv?=
- =?utf-8?B?OUlVZnVLQUxUaFhBT3BRU0YxbDJqVG5uRlYyUmhXVTB0R285WlZUczdJMjY1?=
- =?utf-8?B?N2x5cHBoODFURGlsbk9uSnhYSEkxMnNnRVBtd1ZXS1drNlpxMEw2Wkl5dkcv?=
- =?utf-8?B?b0RVdmQzelpjMTZBMFF3ZmlGWDhwVUJBSkk4elhKTFpDbDlGUHdCRW5meTZs?=
- =?utf-8?B?bDlDemJ3S3ErbFhsakRNOEROc05TSmRsanEyTWVrU3FtRTViNWVFQ1B1S3pF?=
- =?utf-8?B?cXVIaWJqNkYyMUl0dy8vczBWSmpsVUZYbkRPdFFlb3hkd2RKdHh5WDVYNnpX?=
- =?utf-8?B?MTNrZEtMMUYwTWxKSVlaSFZ3cFdLa2Q3a0FuUDFtcGRVZjNnUXVnVlFpb3E4?=
- =?utf-8?B?VU5uVWk0d0dpNllKS1d6Y1ZyS28xYUk4TURmZEhGSWV5czc1MDBFd2Y5WjNm?=
- =?utf-8?B?SkVmcWljOVlhaXpUL1dYaTI0QUhpZDZ6SnZjeHRBeG5TamdRQzlPSnkvV2Nj?=
- =?utf-8?B?bTVrL29CWVNYK2JFVnJVM2svWVl4T3Q2OUppc3ptak0rTXVmcU9YOFowMzc2?=
- =?utf-8?B?S3JvRmdQRXE5OTVxR2JiVDllTXpSeWhPaTdKckNJVThXdU9ydGhhRkZ3ZFVO?=
- =?utf-8?B?V1lqUGxFeFk4dm9MZ0IxbmFQTEpIUmZXaEUrWmVESEN6RUwrU1RLbGI4ZENQ?=
- =?utf-8?B?TkZBVFNKbWhCZEhqMGhlcGhaK25TVE5wbzBIdzVSeTA4Ry90bTZKNHJ2Zy9h?=
- =?utf-8?B?VktxRkZ5UlhKQ05zK1BadWpINU9vV1dzU0RoeklyREpEaWZSNjNERHN4N21r?=
- =?utf-8?B?WDNWTEIzQjJXWHRDL24vUmpKNVdWV1pILzNtcmU0UlpiTjJ5ZjgwL0J6c0lB?=
- =?utf-8?B?R1BreXovK3NROWl6TlNtcHhsN3N6VWNMZVRFZEN6T3JSQjFZUzJkTk0rS2R0?=
- =?utf-8?B?dEN3ZHBYOU14S2wyQUptd0w2Zkt5TUo4WnBCalRJeGczYnBjaVYwRjBPblZm?=
- =?utf-8?B?ZFA5cStiRERzU3AraXJOemd4WVRxTkJIQmw5NEt3NGZsOGJXbnAxVFczZ3BY?=
- =?utf-8?B?SXJWYlJ4UTRtMzcrQkw4aENNMExIMEVOSFhoNjJpNjY4UU1EdDBOWm05Y1FH?=
- =?utf-8?B?RWlLaFJVejdoaFQzc1lIaUJaRWcrS3pvUkdJellzYzFWVDM4Y3lUaGJzcFlr?=
- =?utf-8?B?SUtJNDhOSzhQaFVEdDUzOW9XNlFXUkE4VXVWb21PdEhLcVJvSkx2RWEvZmha?=
- =?utf-8?B?N1U2V2YxNXZQRzQrUWlVbUxSeVAydHlRa3I4Y0xEQXQxcnQ3dXU5T2Fqam5Z?=
- =?utf-8?B?QWpta2VXSGJ0cXA0eUpTTndEVXN6T2dkNEVCMEgrbk0rOWhaM3pjcUhJSlNj?=
- =?utf-8?B?a0xMTVBoYldUazdLaENlOG1BbTNCQnVLVmZlZXVYaVJHamIweXJpeEZaT1o4?=
- =?utf-8?B?cjhzZGFzQmJTVXZRdS9wL2VxanZRYXBWMkJ6UHM1bzM2YjhSUFhRdjhwaE5T?=
- =?utf-8?B?NXVMVzN5SFdjL1g0dEdNSGM4aXZKM1FXeis1NnVQaldnWmgwVHlpREdvYld0?=
- =?utf-8?B?MUw1dWh1TmVCNUYzR1dJTHIvbUQ4MjFnbHkzQ2FlOWJFQzVjN1lMcTI2Nzh2?=
- =?utf-8?B?Q0dBNmJlaVRqalFmM3p5cEM1OHorU2RJMC8yRkpmeUN4WVdvUEwrYlNVVnRr?=
- =?utf-8?B?YUhkZjBrQTBFUTBXMUc1M1FDaTBmSk5TWi91SzZqQ1FWazVzY2RZeTVGT3dq?=
- =?utf-8?B?Qk1UQ0N3dHNpNTZ0elZuZzVkUmxOUXNlNE1NVSt1ZDFrNWl2M0pkS0d0R2Zy?=
- =?utf-8?B?S2NTVVZ6akFITTdaVklxRmYwbEVrYzNOSHhwbGRwQTVlTVI5MmZOWjN1Vno0?=
- =?utf-8?B?a0ZyMjdpNitzbzhiZXlkMDA5cFhBWFV4cDJIK1lnWjk4eXgvK3RNQWpha0hB?=
- =?utf-8?B?QW9OQnpQSllhTVl4UnlDdGhpRFBhUVUyMVRldkZ4K1Q4akdpaTZJbWFObVor?=
- =?utf-8?B?ZlNiaTZ2US8yQXAyQzVPWFIxMjA4MEU3b3d4RDl4Skg0U1UzVk5nc0pxMDl0?=
- =?utf-8?B?Zmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fec4794a-5fa0-49a9-29a7-08d9ecc18a25
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Feb 2022 18:17:04.1576
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FxrCrkKVdHvOU/jxx2PlCsJZPJ6qIpPR8+0A3SEoDGM8HlTA4Y87TmxUVYsE/kav
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3258
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: jhnb_dKmoZl5cEAhLLJIHNNVzNy_Z9ia
-X-Proofpoint-GUID: jhnb_dKmoZl5cEAhLLJIHNNVzNy_Z9ia
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-10_08,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0 mlxscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 clxscore=1011 impostorscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202100096
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220123221932.537060-1-jolsa@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Em Sun, Jan 23, 2022 at 11:19:30PM +0100, Jiri Olsa escreveu:
+> Removing code for ebpf program prologue generation.
+> 
+> The prologue code was used to get data for extra arguments specified
+> in program section name, like:
+> 
+>   SEC("lock_page=__lock_page page->flags")
+>   int lock_page(struct pt_regs *ctx, int err, unsigned long flags)
+>   {
+>          return 1;
+>   }
+> 
+> This code is using deprecated libbpf API and blocks its removal.
+> 
+> This feature was not documented and broken for some time without
+> anyone complaining, also original authors are not responding,
+> so I'm removing it.
+
+So, the example below breaks, how hard would be to move the deprecated
+APIs to perf like was done in some other cases?
+
+- Arnaldo
+
+Before:
+
+[root@quaco perf]# cat tools/perf/examples/bpf/5sec.c 
+// SPDX-License-Identifier: GPL-2.0
+/*
+    Description:
+
+    . Disable strace like syscall tracing (--no-syscalls), or try tracing
+      just some (-e *sleep).
+
+    . Attach a filter function to a kernel function, returning when it should
+      be considered, i.e. appear on the output.
+
+    . Run it system wide, so that any sleep of >= 5 seconds and < than 6
+      seconds gets caught.
+
+    . Ask for callgraphs using DWARF info, so that userspace can be unwound
+
+    . While this is running, run something like "sleep 5s".
+
+    . If we decide to add tv_nsec as well, then it becomes:
+
+      int probe(hrtimer_nanosleep, rqtp->tv_sec rqtp->tv_nsec)(void *ctx, int err, long sec, long nsec)
+
+      I.e. add where it comes from (rqtp->tv_nsec) and where it will be
+      accessible in the function body (nsec)
+
+    # perf trace --no-syscalls -e tools/perf/examples/bpf/5sec.c/call-graph=dwarf/
+         0.000 perf_bpf_probe:func:(ffffffff9811b5f0) tv_sec=5
+                                           hrtimer_nanosleep ([kernel.kallsyms])
+                                           __x64_sys_nanosleep ([kernel.kallsyms])
+                                           do_syscall_64 ([kernel.kallsyms])
+                                           entry_SYSCALL_64 ([kernel.kallsyms])
+                                           __GI___nanosleep (/usr/lib64/libc-2.26.so)
+                                           rpl_nanosleep (/usr/bin/sleep)
+                                           xnanosleep (/usr/bin/sleep)
+                                           main (/usr/bin/sleep)
+                                           __libc_start_main (/usr/lib64/libc-2.26.so)
+                                           _start (/usr/bin/sleep)
+    ^C#
+
+   Copyright (C) 2018 Red Hat, Inc., Arnaldo Carvalho de Melo <acme@redhat.com>
+*/
+
+#include <bpf.h>
+
+#define NSEC_PER_SEC	1000000000L
+
+int probe(hrtimer_nanosleep, rqtp)(void *ctx, int err, long long sec)
+{
+	return sec / NSEC_PER_SEC == 5ULL;
+}
+
+license(GPL);
+[root@quaco perf]# perf trace -e tools/perf/examples/bpf/5sec.c  sleep 5s
+     0.000 perf_bpf_probe:hrtimer_nanosleep(__probe_ip: -1994947936, rqtp: 5000000000)
+[root@quaco perf]#
+
+After:
+
+[root@quaco perf]# perf trace -e tools/perf/examples/bpf/5sec.c  sleep 5s
+event syntax error: 'tools/perf/examples/bpf/5sec.c'
+                     \___ Permission denied
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+ Usage: perf trace [<options>] [<command>]
+    or: perf trace [<options>] -- <command> [<options>]
+    or: perf trace record [<options>] [<command>]
+    or: perf trace record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event/syscall selector. use 'perf list' to list available events
+[root@quaco perf]# perf trace -v -e tools/perf/examples/bpf/5sec.c  sleep 5s
+bpf: builtin compilation failed: -95, try external compiler
+Kernel build dir is set to /lib/modules/5.15.18-200.fc35.x86_64/build
+set env: KBUILD_DIR=/lib/modules/5.15.18-200.fc35.x86_64/build
+unset env: KBUILD_OPTS
+include option is set to -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
+set env: NR_CPUS=8
+set env: LINUX_VERSION_CODE=0x50f12
+set env: CLANG_EXEC=/usr/lib64/ccache/clang
+set env: CLANG_OPTIONS=-g
+set env: KERNEL_INC_OPTIONS=-nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
+set env: PERF_BPF_INC_OPTIONS=-I/home/acme/lib/perf/include/bpf
+set env: WORKING_DIR=/lib/modules/5.15.18-200.fc35.x86_64/build
+set env: CLANG_SOURCE=/home/acme/git/perf/tools/perf/examples/bpf/5sec.c
+llvm compiling command template: $CLANG_EXEC -D__KERNEL__ -D__NR_CPUS__=$NR_CPUS -DLINUX_VERSION_CODE=$LINUX_VERSION_CODE $CLANG_OPTIONS $PERF_BPF_INC_OPTIONS $KERNEL_INC_OPTIONS -Wno-unused-value -Wno-pointer-sign -working-directory $WORKING_DIR -c "$CLANG_SOURCE" -target bpf $CLANG_EMIT_LLVM -O2 -o - $LLVM_OPTIONS_PIPE
+llvm compiling command : /usr/lib64/ccache/clang -D__KERNEL__ -D__NR_CPUS__=8 -DLINUX_VERSION_CODE=0x50f12 -g -I/home/acme/lib/perf/include/bpf -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h  -Wno-unused-value -Wno-pointer-sign -working-directory /lib/modules/5.15.18-200.fc35.x86_64/build -c /home/acme/git/perf/tools/perf/examples/bpf/5sec.c -target bpf  -O2 -o - 
+libbpf: loading object 'tools/perf/examples/bpf/5sec.c' from buffer
+libbpf: elf: section(3) hrtimer_nanosleep=hrtimer_nanosleep rqtp, size 64, link 0, flags 6, type=1
+libbpf: sec 'hrtimer_nanosleep=hrtimer_nanosleep rqtp': found program 'hrtimer_nanosleep' at insn offset 0 (0 bytes), code size 8 insns (64 bytes)
+libbpf: elf: section(4) license, size 4, link 0, flags 3, type=1
+libbpf: license of tools/perf/examples/bpf/5sec.c is GPL
+libbpf: elf: section(5) version, size 4, link 0, flags 3, type=1
+libbpf: kernel version of tools/perf/examples/bpf/5sec.c is 50f12
+libbpf: elf: section(11) .BTF, size 558, link 0, flags 0, type=1
+libbpf: elf: section(13) .BTF.ext, size 112, link 0, flags 0, type=1
+libbpf: elf: section(20) .symtab, size 288, link 1, flags 0, type=2
+libbpf: looking for externs among 12 symbols...
+libbpf: collected 0 externs total
+libbpf: prog 'hrtimer_nanosleep': unrecognized ELF section name 'hrtimer_nanosleep=hrtimer_nanosleep rqtp'
+LLVM: dumping tools/perf/examples/bpf/5sec.o
+bpf: config program 'hrtimer_nanosleep=hrtimer_nanosleep rqtp'
+symbol:hrtimer_nanosleep file:(null) line:0 offset:0 return:0 lazy:(null)
+parsing arg: rqtp into rqtp
+bpf: config 'hrtimer_nanosleep=hrtimer_nanosleep rqtp' is ok
+Looking at the vmlinux_path (8 entries long)
+Using /usr/lib/debug/lib/modules/5.15.18-200.fc35.x86_64/vmlinux for symbols
+Open Debuginfo file: /usr/lib/debug/.build-id/a5/6896963dc51b426302a1f1147842fb8f288ef2.debug
+Try to find probe point from debuginfo.
+Opening /sys/kernel/tracing//README write=0
+Matched function: hrtimer_nanosleep [1af0959]
+Probe point found: hrtimer_nanosleep+0
+Searching 'rqtp' variable in context.
+Converting variable rqtp into trace event.
+rqtp type is long long int.
+Found 1 probe_trace_events.
+Opening /sys/kernel/tracing//kprobe_events write=1
+Writing event: p:perf_bpf_probe/hrtimer_nanosleep _text+1540768 rqtp=%di:s64
+libbpf: prog 'hrtimer_nanosleep': BPF program load failed: Permission denied
+libbpf: prog 'hrtimer_nanosleep': -- BEGIN PROG LOAD LOG --
+arg#0 reference type('UNKNOWN ') size cannot be determined: -22
+; int probe(hrtimer_nanosleep, rqtp)(void *ctx, int err, long long sec)
+0: (18) r1 = 0xfffffffed5fa0e00
+; return sec / NSEC_PER_SEC == 5ULL;
+2: (0f) r3 += r1
+R3 !read_ok
+processed 2 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: failed to load program 'hrtimer_nanosleep'
+libbpf: failed to load object 'tools/perf/examples/bpf/5sec.c'
+bpf: load objects failed: err=-13: (Permission denied)
+event syntax error: 'tools/perf/examples/bpf/5sec.c'
+                     \___ Permission denied
+
+(add -v to see detail)
+Run 'perf list' for a list of valid events
+
+ Usage: perf trace [<options>] [<command>]
+    or: perf trace [<options>] -- <command> [<options>]
+    or: perf trace record [<options>] [<command>]
+    or: perf trace record [<options>] -- <command> [<options>]
+
+    -e, --event <event>   event/syscall selector. use 'perf list' to list available events
+Opening /sys/kernel/tracing//kprobe_events write=1
+Opening /sys/kernel/tracing//uprobe_events write=1
+Parsing probe_events: p:perf_bpf_probe/hrtimer_nanosleep _text+1540768 rqtp=%di:s64
+Group:perf_bpf_probe Event:hrtimer_nanosleep probe:p
+Writing event: -:perf_bpf_probe/hrtimer_nanosleep
+[root@quaco perf]# 
 
 
-On 2/10/22 2:01 AM, Michal Suchánek wrote:
-> Hello,
-> 
-> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
->>
->>
->> On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
->>> Hi,
->>>
->>> We recently run into module load failure related to split BTF on openSUSE
->>> Tumbleweed[1], which I believe is something that may also happen on other
->>> rolling distros.
->>>
->>> The error looks like the follow (though failure is not limited to ipheth)
->>>
->>>       BPF:[103111] STRUCT BPF:size=152 vlen=2 BPF: BPF:Invalid name BPF:
->>>
->>>       failed to validate module [ipheth] BTF: -22
->>>
->>> The error comes down to trying to load BTF of *kernel modules from a
->>> different build* than the runtime kernel (but the source is the same), where
->>> the base BTF of the two build is different.
->>>
->>> While it may be too far stretched to call this a bug, solving this might
->>> make BTF adoption easier. I'd natively think that we could further split
->>> base BTF into two part to avoid this issue, where .BTF only contain exported
->>> types, and the other (still residing in vmlinux) holds the unexported types.
->>
->> What is the exported types? The types used by export symbols?
->> This for sure will increase btf handling complexity.
-> 
-> And it will not actually help.
-> 
-> We have modversion ABI which checks the checksum of the symbols that the
-> module imports and fails the load if the checksum for these symbols does
-> not match. It's not concerned with symbols not exported, it's not
-> concerned with symbols not used by the module. This is something that is
-> sustainable across kernel rebuilds with minor fixes/features and what
-> distributions watch for.
-> 
-> Now with BTF the situation is vastly different. There are at least three
-> bugs:
-> 
->   - The BTF check is global for all symbols, not for the symbols the
->     module uses. This is not sustainable. Given the BTF is supposed to
->     allow linking BPF programs that were built in completely different
->     environment with the kernel it is completely within the scope of BTF
->     to solve this problem, it's just neglected.
->   - It is possible to load modules with no BTF but not modules with
->     non-matching BTF. Surely the non-matching BTF could be discarded.
->   - BTF is part of vermagic. This is completely pointless since modules
->     without BTF can be loaded on BTF kernel. Surely it would not be too
->     difficult to do the reverse as well. Given BTF must pass extra check
->     to be used having it in vermagic is just useless moise.
-> 
->>> Does that sound like something reasonable to work on?
->>>
->>>
->>> ## Root case (in case anyone is interested in a verbose version)
->>>
->>> On openSUSE Tumbleweed there can be several builds of the same source. Since
->>> the source is the same, the binaries are simply replaced when a package with
->>> a larger build number is installed during upgrade.
->>>
->>> In our case, a rebuild is triggered[2], and resulted in changes in base BTF.
->>> More precisely, the BTF_KIND_FUNC{,_PROTO} of i2c_smbus_check_pec(u8 cpec,
->>> struct i2c_msg *msg) and inet_lhash2_bucket_sk(struct inet_hashinfo *h,
->>> struct sock *sk) was added to the base BTF of 5.15.12-1.3. Those functions
->>> are previously missing in base BTF of 5.15.12-1.1.
->>
->> As stated in [2] below, I think we should understand why rebuild is
->> triggered. If the rebuild for vmlinux is triggered, why the modules cannot
->> be rebuild at the same time?
-> 
-> They do get rebuilt. However, if you are running the kernel and install
-> the update you get the new modules with the old kernel. If the install
-> script fails to copy the kernel to your EFI partition based on the fact
-> a kernel with the same filename is alreasy there you get the same.
-> 
-> If you have 'stable' distribution adding new symbols is normal and it
-> does not break module loading without BTF but it breaks BTF.
-
-Okay, I see. One possible solution is that if kernel module btf
-does not match vmlinux btf, the kernel module btf will be ignored
-with a dmesg warning but kernel module load will proceed as normal.
-I think this might be also useful for bpf lskel kernel modules as
-well which tries to be portable (with CO-RE) for different kernels.
-
-Alexei, what do you think?
-
-> 
-> Thanks
-> 
-> Michal
