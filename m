@@ -2,137 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97E44B0880
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 09:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CCAC4B0912
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 10:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237506AbiBJIf1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 03:35:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37610 "EHLO
+        id S232598AbiBJJDI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 04:03:08 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbiBJIf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 03:35:27 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B717F204;
-        Thu, 10 Feb 2022 00:35:28 -0800 (PST)
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nI4v5-000E2A-Ja; Thu, 10 Feb 2022 09:35:15 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nI4v5-000DEK-0s; Thu, 10 Feb 2022 09:35:15 +0100
-Subject: Re: [syzbot] WARNING: kmalloc bug in xdp_umem_create (2)
-To:     Willy Tarreau <w@1wt.eu>,
-        syzbot <syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bjorn.topel@gmail.com, bjorn.topel@intel.com, bjorn@kernel.org,
-        bpf@vger.kernel.org, davem@davemloft.net, fgheet255t@gmail.com,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        magnus.karlsson@intel.com, mudongliangabcd@gmail.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        yhs@fb.com
-References: <000000000000a3571605d27817b5@google.com>
- <0000000000001f60ef05d7a3c6ad@google.com> <20220210081125.GA4616@1wt.eu>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <359ee592-747f-8610-4180-5e1d2aba1b77@iogearbox.net>
-Date:   Thu, 10 Feb 2022 09:35:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S238211AbiBJJDH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 04:03:07 -0500
+X-Greylist: delayed 448 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Feb 2022 01:03:08 PST
+Received: from mail.powerangels.com.pl (mail.powerangels.com.pl [45.86.209.159])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE5AD94
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 01:03:08 -0800 (PST)
+Received: by mail.powerangels.com.pl (Postfix, from userid 1001)
+        id A399782AA5; Thu, 10 Feb 2022 03:55:34 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=powerangels.com.pl;
+        s=mail; t=1644483338;
+        bh=07NAgW1e0WiNB9zqagiM2BnwZfWBCpNa2E4+ccxBPgw=;
+        h=Date:From:To:Subject:From;
+        b=sdb9s8KnEblFUyMy/CKzSrJy7HKkzcfIT0ItUlmAP3HBAsKtCpfXUh6NUJ4X8cviC
+         cEAAHO0tWMeNvPF1iLA/5XV6Tl4+OPGAC5J1DW/8mTp1uiQwDOZHP+7bmSvEdw5yWI
+         UvOiCNSo26BS3bRBoOgPkJuSV6BX+W8KHz0W9XJJHXrX+ac6uHwt6tCGXFpeELFSUE
+         1+ykeIFKJn0ME0B9eGhVSMXHBKct2KQuqnLMnRzDsib9qf678eITGtqxK+woTrZSMY
+         FVuv2SXle7a0MgpXwybtlm3lbN6bkwB3ePMhC6mJe2OHNL16Ho1TagHPIO6p75Pv6Z
+         0nk9gZPSbPbww==
+Received: by mail.powerangels.com.pl for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 08:55:33 GMT
+Message-ID: <20220210024500-0.1.7.9aa.0.5fjb8d2nv5@powerangels.com.pl>
+Date:   Thu, 10 Feb 2022 08:55:33 GMT
+From:   "Jakub Daroch" <jakub.daroch@powerangels.com.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.powerangels.com.pl
 MIME-Version: 1.0
-In-Reply-To: <20220210081125.GA4616@1wt.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26448/Wed Feb  9 10:31:19 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/10/22 9:11 AM, Willy Tarreau wrote:
-> On Wed, Feb 09, 2022 at 10:08:07PM -0800, syzbot wrote:
->> syzbot has bisected this issue to:
->>
->> commit 7661809d493b426e979f39ab512e3adf41fbcc69
->> Author: Linus Torvalds <torvalds@linux-foundation.org>
->> Date:   Wed Jul 14 16:45:49 2021 +0000
->>
->>      mm: don't allow oversized kvmalloc() calls
->>
->> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13bc74c2700000
->> start commit:   f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
->> git tree:       upstream
->> final oops:     https://syzkaller.appspot.com/x/report.txt?x=107c74c2700000
->> console output: https://syzkaller.appspot.com/x/log.txt?x=17bc74c2700000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=5707221760c00a20
->> dashboard link: https://syzkaller.appspot.com/bug?extid=11421fbbff99b989670e
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12e514a4700000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15fcdf8a700000
->>
->> Reported-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
->> Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
->>
->> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-> 
-> Interesting, so in fact syzkaller has shown that the aforementioned
-> patch does its job well and has spotted a call path by which a single
-> userland setsockopt() can request more than 2 GB allocation in the
-> kernel. Most likely that's in fact what needs to be addressed.
-> 
-> FWIW the call trace at the URL above is:
-> 
-> Call Trace:
->   kvmalloc include/linux/mm.h:806 [inline]
->   kvmalloc_array include/linux/mm.h:824 [inline]
->   kvcalloc include/linux/mm.h:829 [inline]
->   xdp_umem_pin_pages net/xdp/xdp_umem.c:102 [inline]
->   xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
->   xdp_umem_create+0x6a5/0xf00 net/xdp/xdp_umem.c:252
->   xsk_setsockopt+0x604/0x790 net/xdp/xsk.c:1068
->   __sys_setsockopt+0x1fd/0x4e0 net/socket.c:2176
->   __do_sys_setsockopt net/socket.c:2187 [inline]
->   __se_sys_setsockopt net/socket.c:2184 [inline]
->   __x64_sys_setsockopt+0xb5/0x150 net/socket.c:2184
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> and the meaningful part of the repro is:
-> 
->    syscall(__NR_mmap, 0x1ffff000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->    syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 7ul, 0x32ul, -1, 0ul);
->    syscall(__NR_mmap, 0x21000000ul, 0x1000ul, 0ul, 0x32ul, -1, 0ul);
->    intptr_t res = 0;
->    res = syscall(__NR_socket, 0x2cul, 3ul, 0);
->    if (res != -1)
->      r[0] = res;
->    *(uint64_t*)0x20000080 = 0;
->    *(uint64_t*)0x20000088 = 0xfff02000000;
->    *(uint32_t*)0x20000090 = 0x800;
->    *(uint32_t*)0x20000094 = 0;
->    *(uint32_t*)0x20000098 = 0;
->    syscall(__NR_setsockopt, r[0], 0x11b, 4, 0x20000080ul, 0x20ul);
+Dzie=C5=84 dobry,
 
-Bjorn had a comment back then when the issue was first raised here:
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-   https://lore.kernel.org/bpf/3f854ca9-f5d6-4065-c7b1-5e5b25ea742f@iogearbox.net/
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
 
-There was earlier discussion from Andrew to potentially retire the warning:
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
 
-   https://lore.kernel.org/bpf/20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org/
 
-Bjorn / Magnus / Andrew, anyone planning to follow-up on this issue?
-
-Thanks,
-Daniel
+Pozdrawiam,
+Jakub Daroch
