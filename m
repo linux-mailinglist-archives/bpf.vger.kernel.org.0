@@ -2,72 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D174B13C8
-	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 18:03:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB784B144E
+	for <lists+bpf@lfdr.de>; Thu, 10 Feb 2022 18:35:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbiBJRB4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 12:01:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43212 "EHLO
+        id S233508AbiBJRex (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 12:34:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237101AbiBJRBz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 12:01:55 -0500
+        with ESMTP id S241940AbiBJRex (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 12:34:53 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE47B93
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 09:01:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7787EF1B;
+        Thu, 10 Feb 2022 09:34:54 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DEF8361D97
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 17:01:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DFEFC004E1;
-        Thu, 10 Feb 2022 17:01:54 +0000 (UTC)
-Date:   Thu, 10 Feb 2022 12:01:52 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: Re: [RFC PATCH 2/3] powerpc/ftrace: Override
- ftrace_location_lookup() for MPROFILE_KERNEL
-Message-ID: <20220210120152.00d24b64@gandalf.local.home>
-In-Reply-To: <1644508338.5ucomwqtts.naveen@linux.ibm.com>
-References: <cover.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <fadc5f2a295d6cb9f590bbbdd71fc2f78bf3a085.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20220207102454.41b1d6b5@gandalf.local.home>
-        <1644426751.786cjrgqey.naveen@linux.ibm.com>
-        <20220209161017.2bbdb01a@gandalf.local.home>
-        <1644501274.apfdo9z1hy.naveen@linux.ibm.com>
-        <20220210095944.1fe98b74@gandalf.local.home>
-        <1644508338.5ucomwqtts.naveen@linux.ibm.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E8F361E09;
+        Thu, 10 Feb 2022 17:34:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8ADC340EF;
+        Thu, 10 Feb 2022 17:34:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644514493;
+        bh=RAVYSQx/4ghHVPmoaDi8n9up8m/CMo9DBlGXzYcSIFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CIjUCVaQsjeyd1CU80njQyKfL+bV0DV7/HM7/twCsBGOVRnHLNtbPTmPx/eg5fu3f
+         GqWkvWXr6HGenw0VArRpEe2Pln7aoYsKnNXVeaWZj8HgUrQWWByXNkKbSfOv5wf7YM
+         pb1jEJRpsffvLxGsrYRqbQkdBOc9yIRVmXrygj8qLgUi2FzBWtx2CCgTYHaQzaC2mW
+         un3tSL46ROfv7ACG64P3/APrRvfLGmOCHo+genBe8v/vUgXvxV3E7/eMaLryUi9v21
+         Ue98SDuToMh3Csh46y4CW5JWdT5vfxM76gmwer7KpLoqgxPmeaGb4v5bmkxVkyGEOV
+         zaK6cN2V02QEQ==
+Date:   Thu, 10 Feb 2022 18:34:49 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Toshiaki Makita <toshiaki.makita1@gmail.com>
+Subject: Re: [PATCH bpf-next] net: veth: account total xdp_frame len running
+ ndo_xdp_xmit
+Message-ID: <YgVMufwV+z7HYfH0@lore-desk>
+References: <705a05194508bc0c1b0c1a5de081bbb60f2693a5.1643712078.git.lorenzo@kernel.org>
+ <CAADnVQJoWF8co=9YNdvQkziwsOAoqw=p134aHTL9YZ82=QJcRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fEji8xlfT1CMJWVv"
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJoWF8co=9YNdvQkziwsOAoqw=p134aHTL9YZ82=QJcRA@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Feb 2022 16:40:28 +0000
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-> The other option is to mark ftrace_cmp_recs() as a __weak function, but 
-> I have a vague recollection of you suggesting #ifdef rather than a 
-> __weak function in the past. I might be mis-remembering, so if you think 
-> making this a __weak function is better, I can do that.
+--fEji8xlfT1CMJWVv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No. If I wanted that I would have suggested it. I think this is the
-prettiest of the ugly solutions out there ;-)
+> On Tue, Feb 1, 2022 at 2:46 AM Lorenzo Bianconi <lorenzo@kernel.org> wrot=
+e:
+> >
+> > Introduce xdp_get_frame_len utility routine to get the xdp_frame full
+> > length and account total frame size running XDP_REDIRECT of a
+> > non-linear xdp frame into a veth device.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >  drivers/net/veth.c |  4 ++--
+> >  include/net/xdp.h  | 14 ++++++++++++++
+> >  2 files changed, 16 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index 354a963075c5..22ecaf8b8f98 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -493,7 +493,7 @@ static int veth_xdp_xmit(struct net_device *dev, in=
+t n,
+> >                 struct xdp_frame *frame =3D frames[i];
+> >                 void *ptr =3D veth_xdp_to_ptr(frame);
+> >
+> > -               if (unlikely(frame->len > max_len ||
+> > +               if (unlikely(xdp_get_frame_len(frame) > max_len ||
+> >                              __ptr_ring_produce(&rq->xdp_ring, ptr)))
+> >                         break;
+>=20
+> Looks correct, but could you explain what happens without this fix?
 
-As I said, I can't think of a better solution, and we can go with this
-until something else comes along.
+I guess this is just a theoretical issue, since at the moment we can't perf=
+orm
+a XDP_REDIRECT with a non-linear xdp buffer, but without this patch we will=
+ fail
+to account peer max packet size since we take care of just the linear part =
+of
+the xdp_buff.
+I am working on adding xdp multi-buff support to veth driver so I will repo=
+st this
+patch into the series.
 
--- Steve
+>=20
+> Any other drivers might have the same issue?
+
+I do not think so since other drivers are not able to map multi-frags yet (=
+veth
+already support it since we run __xdp_build_skb_from_frame()).
+
+Regards,
+Lorenzo
+
+--fEji8xlfT1CMJWVv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYgVMuQAKCRA6cBh0uS2t
+rEOlAQCnhlHABC7kVQ+OnphlPVGyPvthx41F4zdr2wZTzkCnDAD/fGkIjtY6oPJ5
+CbjDzGiLMyWhwNYJMpGPO7qthkthSQY=
+=C658
+-----END PGP SIGNATURE-----
+
+--fEji8xlfT1CMJWVv--
