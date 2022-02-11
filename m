@@ -2,58 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5923C4B1CB6
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 03:49:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF6B4B1CD4
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 04:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347498AbiBKCtt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Feb 2022 21:49:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34964 "EHLO
+        id S229987AbiBKDIP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 22:08:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347483AbiBKCts (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 21:49:48 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35AB2115D
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 18:49:48 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21ANrO3X013953
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 18:49:47 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e58e1jw8r-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 18:49:47 -0800
-Received: from twshared7500.02.ash7.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 10 Feb 2022 18:49:45 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id BAD4E29EE530B; Thu, 10 Feb 2022 18:49:41 -0800 (PST)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, <sfr@canb.auug.org.au>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH v2 bpf-next] bpf: fix bpf_prog_pack build for ppc64_defconfig
-Date:   Thu, 10 Feb 2022 18:49:39 -0800
-Message-ID: <20220211024939.2962537-1-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S245120AbiBKDIN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 22:08:13 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA35DBC1
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 19:08:12 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id l19so8015715pfu.2
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 19:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MlhPE+pComRUNWepO2amkpvh8/OxaWeAGui2AE+S9RA=;
+        b=pnyuol1APGSicitz7maGtMlw7Ks+J+4j/3CA+rfFC5IXqNkZLkjJB+i3FsuAixM/Dr
+         2ahI7Pj3xHciJ3E0ko5viPZn2KOl945Mc5bBRssM8iUacIRCqj4KhsYCUKPy9WJqt1Ks
+         BLqCVxtzxQMpubqZGSroazPGI/wPLGoR+G8+N6dSiwi1/le791oaNAQTjbhE7YVqyT3n
+         Mn9VWXJTB4OccbSX37JlApeTYju6zIpdC9S/Ij1qzKseTmE0gJDAkL+1nwZJaEPX0HfH
+         kTRO/bxVHOOWt94JPxNhE2IBgw0ok+hl1JU7Nn1ShTLYFlrgjp9j+yfV+gTWFNLka9aA
+         nVGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MlhPE+pComRUNWepO2amkpvh8/OxaWeAGui2AE+S9RA=;
+        b=upBM3F0LmYBMo2bqiQgG0iLKjkg2M5TJPb9wg9S2u29ru5o0eEXhpYFFcwUOL72lMi
+         qUOybQ16ciRFieA5EbLxh0EoyF4lKvAoR4VMtSX83F/mARs/zeklaVNmSpx9Q3SjL5t3
+         d+33HADbdHybtN+2gdwLB8bblm7dZvQqc2yPMDeWDnljRP76u5js5SZIbEm7da2N1FBg
+         FyM0bw+KY8mj9/bR7eo4bvO6kXQYt3u8kgBr2/YTp8ufT7mANVdCqfQv6iYQQuRURsHc
+         fQp0CyM5ACJ19Oum8id7nB0jq0f/5O6/e4DOO8+VX/W42pqvRttsa0zW6RDlrBJxxBP7
+         GTJw==
+X-Gm-Message-State: AOAM533JCe59mnu1TNcikrcEIppJ4CdDGX5utzaOEcVPN9vcrS503t0C
+        FbBBC6+zfr3e47i5qzwvrGEfuHB+WQnsmxNWac1rX5em
+X-Google-Smtp-Source: ABdhPJx3+tYR0/gkLm5bZcLL0ZqxcRO2fuFXL6rMniHA6kSt44wG2ei771Ce5AH6M0SDrKtrvhZkk9XYc+E2WzZjNto=
+X-Received: by 2002:aa7:8018:: with SMTP id j24mr10414418pfi.59.1644548892167;
+ Thu, 10 Feb 2022 19:08:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: FmbKSJLmphuyTPgx7qBb3j4L-oI7lQAx
-X-Proofpoint-ORIG-GUID: FmbKSJLmphuyTPgx7qBb3j4L-oI7lQAx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-11_01,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- malwarescore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 impostorscore=0
- mlxscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202110011
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <df69012695c7094ccb1943ca02b4920db3537466.1644421921.git.fmaurer@redhat.com>
+ <cd545202-d948-2ce5-dfae-362822766f90@fb.com> <f18b9e66-8494-f335-13cc-a9b30a90e32e@redhat.com>
+ <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
+In-Reply-To: <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 10 Feb 2022 19:08:01 -0800
+Message-ID: <CAADnVQ+T8j4sBX=URhSS19oNtnCVtCVirXC-+ZrNEJjv4hRUyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Do not try bpf_msg_push_data with len 0
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Felix Maurer <fmaurer@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,53 +72,76 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_prog_pack causes build error with powerpc ppc64_defconfig:
+On Thu, Feb 10, 2022 at 10:05 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/10/22 7:45 AM, Felix Maurer wrote:
+> > On 09.02.22 18:06, Yonghong Song wrote:
+> >> On 2/9/22 7:55 AM, Felix Maurer wrote:
+> >>> If bpf_msg_push_data is called with len 0 (as it happens during
+> >>> selftests/bpf/test_sockmap), we do not need to do anything and can
+> >>> return early.
+> >>>
+> >>> Calling bpf_msg_push_data with len 0 previously lead to a wrong ENOMEM
+> >>> error: we later called get_order(copy + len); if len was 0, copy + len
+> >>> was also often 0 and get_order returned some undefined value (at the
+> >>> moment 52). alloc_pages caught that and failed, but then
+> >>> bpf_msg_push_data returned ENOMEM. This was wrong because we are most
+> >>> probably not out of memory and actually do not need any additional
+> >>> memory.
+> >>>
+> >>> v2: Add bug description and Fixes tag
+> >>>
+> >>> Fixes: 6fff607e2f14b ("bpf: sk_msg program helper bpf_msg_push_data")
+> >>> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+> >>
+> >> LGTM. I am wondering why bpf CI didn't catch this problem. Did you
+> >> modified the test with length 0 in order to trigger that? If this
+> >> is the case, it would be great you can add such a test to the
+> >> test_sockmap.
+> >
+> > I did not modify the tests to trigger that. The state of the selftests
+> > around that is unfortunately not very good. There is no explicit test
+> > with length 0 but bpf_msg_push_data is still called with length 0,
+> > because of what I consider to be bugs in the test. On the other hand,
+> > explicit tests with other lengths are sometimes not called as well. I'll
+> > elaborate on that in a bit.
+> >
+> > Something easy to fix is that the tests do not check the return value of
+> > bpf_msg_push_data which they probably should. That may have helped find
+> > the problem earlier.
+> >
+> > Now to the issue mentioned in the beginning: Only some of the BPF
+> > programs used in test_sockmap actually call bpf_msg_push_data. However,
+> > they are not always attached, just for particular scenarios:
+> > txmsg_pass==1, txmsg_redir==1, or txmsg_drop==1. If none of those apply,
+> > bpf_msg_push_data is never called. This happens for example in
+> > test_txmsg_push. Out of the four defined tests only one actually calls
+> > the helper.
+> >
+> > But after a test, the parameters in the map are reset to 0 (instead of
+> > being removed). Therefore, when the maps are reused in a subsequent test
+> > which is one of the scenarios above, the values are present and
+> > bpf_msg_push_data is called, albeit with the parameters set to 0. This
+> > is also what triggered the wrong behavior fixed in the patch.
+> >
+> > Unfortunately, I do not have the time to fix these issues in the test at
+> > the moment.
+>
+> Thanks for detailed explanation. Maybe for the immediate case, can you
+> just fix this in the selftest,
+>
+>    > Something easy to fix is that the tests do not check the return
+> value of
+>    > bpf_msg_push_data which they probably should. That may have helped find
+>    > the problem earlier.
+>
+> This will be enough to verify your kernel change as without it the
+> test will fail.
+>
+> The rest of test improvements can come later.
 
-kernel/bpf/core.c:830:23: error: variably modified 'bitmap' at file scope
-  830 |         unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
-      |                       ^~~~~~
-
-This is because the marco expands as:
-
-unsigned long bitmap[((((((1UL) << (16 + __pte_index_size)) / (1 << 6))) \
-     + ((sizeof(long) * 8)) - 1) / ((sizeof(long) * 8)))];
-
-where __pte_index_size is a global variable.
-
-Fix it by turning bitmap into a 0-length array.
-
-Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Song Liu <song@kernel.org>
-
----
-v2: add information about the build failure.
----
- kernel/bpf/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 42d96549a804..44623c9b5bb1 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -827,7 +827,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
- struct bpf_prog_pack {
- 	struct list_head list;
- 	void *ptr;
--	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
-+	unsigned long bitmap[];
- };
- 
- #define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
-@@ -840,7 +840,7 @@ static struct bpf_prog_pack *alloc_new_pack(void)
- {
- 	struct bpf_prog_pack *pack;
- 
--	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
-+	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
- 	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
--- 
-2.30.2
-
+John,
+what is your take on this fix?
+bpf tree material?
