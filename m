@@ -2,58 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 525154B2F16
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 22:08:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2741D4B2F1F
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 22:12:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238791AbiBKVHN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 16:07:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59686 "EHLO
+        id S238725AbiBKVM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 16:12:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbiBKVHM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 16:07:12 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6532D3
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:07:10 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id y84so13023382iof.0
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:07:10 -0800 (PST)
+        with ESMTP id S231329AbiBKVM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 16:12:28 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1148ABFB;
+        Fri, 11 Feb 2022 13:12:26 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id om7so9136213pjb.5;
+        Fri, 11 Feb 2022 13:12:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wFIdb5TTuh+PICHNtKLwWJf3JIaDx8TDSAwmPAirSUY=;
-        b=otB5UYlo6qfG350iHjzcYqTzM6GKAGZ23/5wiCy+SFJvSYsqc3AlcXIATcJksVmDpd
-         PfflqnQfQEFdcDEkMqw+tYzUj/RJfPZGHs8hS7wIpFIajmUWsmN2wkG2EGAGpi52Dn9q
-         t+PnPBkLMsCs/pdDdxEBeeLSOtoRLFmtzwWTiJCKmREze8bRkxCNtNMyIW5OxMdHXLen
-         oWhGVc6HXKYcOKiPVopsT0wEdbO3Vd7U8dDw9f0eRRRfrv5B+r51TFFpb2KImzhInn2t
-         8KLWoOzXCy9uPYytFtNiLXP4HUFatxrv4elG8J/s/3n6sdFjynYcARkGdzGfITwtn7CJ
-         5vXA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=x8POYbCaaSySzHWe6l3CukXGIHLL9HE7GZC5/X1ii4E=;
+        b=lfhtJAp6+k5GT93BneVzOju5Su5LQoUzD6eSwEt8GbSD25uuDKp17mHBNkdRAKcOjt
+         IlFLNo152dSoS48KaqB+4sjPXLI5CBLXav/yzqQzLxJWBZKTMPo4pJOWaiVBgrqpHebQ
+         I5uKx7SSF1evRkbRrNeWTO+t9xkDAfBZVTidyaAGoB2QzoTKaTT8zilX5wsekhNUMwtN
+         GwpPL/tLG7CJnPhZE7Zodx2g+zQbAxQpcN8ML1mHzjuXHZ6dlTZcxjt8nqGoFbdrhevl
+         2hYSeCGOa9wRWO8PPARJTBFNDul/9Hq3AzMmMmxySAF6GAfG/oKCkADkJoY3Pz0dpC1q
+         nppQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wFIdb5TTuh+PICHNtKLwWJf3JIaDx8TDSAwmPAirSUY=;
-        b=KfhiWYSnzbuk+VP26l78UbWYYyG8xjzMbRPoNpVBWW1e7pwHqZbngrFRLT5hV/mpDy
-         wKc1uGTuNBTtckqjVXmAA5BrMURvuKVicoxVTB0E1FSLbywR6K+zn/Z5MkKgh0A9DCY8
-         gyoK9WbCUoW0RamhnZri9AcHgbhaBDMEVcRdj436mXWmHjokqXRYc2bNEQ5n2Tlz8jjM
-         U0LyciwiLdw2hNY/dOTKiY9bqnr2RwERb6tK6O8P0Dwk1m4D9ptwOgUfK517ORZ89vsK
-         2ImNQpCnalIb2bw56SsMGvUV9LuhOexqZxzWc+aEACoD3WzeA2dPnm/byfhburfOmWWe
-         Ci1w==
-X-Gm-Message-State: AOAM532H9MaEsLMXUXpVH/k9nNt+SPfq46gLPFOmO2z8UhMoHJHWnAp8
-        Ay0zFG+WQaS7AF19JzEiN4KwoUfmo7Xa87T9mJ5KAgDglBU=
-X-Google-Smtp-Source: ABdhPJxCC4w08FX1Nx9Enp4hRmmzCmFLYRmAqhP+hgTnEAymhRlnP0MFOWoRd5D+Z9mZ4UtKsMgMzCakBiDkFqlHM6E=
-X-Received: by 2002:a05:6638:304d:: with SMTP id u13mr1909326jak.103.1644613630053;
- Fri, 11 Feb 2022 13:07:10 -0800 (PST)
-MIME-Version: 1.0
-References: <CAEf4BzYZqzAaJxbC=onWn7=Kra4QXPxXKWxrmv3jBw6Dufh_cQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYZqzAaJxbC=onWn7=Kra4QXPxXKWxrmv3jBw6Dufh_cQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Feb 2022 13:06:59 -0800
-Message-ID: <CAEf4BzZKLHGxv1Kpf5QpFEpdp2-GE05Eej5rErNNu0fqTrAoLg@mail.gmail.com>
-Subject: Re: [ANNOUNCEMENT] libbpf v0.7 release
-To:     bpf <bpf@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=x8POYbCaaSySzHWe6l3CukXGIHLL9HE7GZC5/X1ii4E=;
+        b=TZ33arf6ZZNadIM8ri5QMtQRmD5T1YxLOStHXpi9emSdJn52dElE2jkjRWMlDigeYo
+         NU2REeou/iCH1PyNC7fnRGLtNoJaz8LKLoiETiFNtRw3PSaWQ/ZnK5QagKx4g75NCS0o
+         a2TqBZXe2aeIMSdMiD5S6FDZjyNR56X5+WFNsaU428k1pDD+0jq3fqnkA9TpdLIYSMC0
+         stZdEFlp7eZzl7rEwej97SPNNGEajmVgw2TZbi8j9Ihw0PZ/G89CAp+Zmv1Mq2HtBsKj
+         oDuqjpRDFBcIQuum932gFO0EXAVD7ix+8JnbZ1KKwNBFfHOQvyvmslhzxcmeXX1GqqTU
+         SjTw==
+X-Gm-Message-State: AOAM532mtJB6u67QpLmR5KD4e2Qdb6j8yl/4n449sf9JZLCAvFASYXxo
+        VV7+x6SYSndss1BCC/Y8kPE=
+X-Google-Smtp-Source: ABdhPJw9sezByfs1qcpJLn9zs0tSoH7u9M3WXlRpBtfxJWeAvWqovxCBs03Z0wNZOvkCPDJklJn89Q==
+X-Received: by 2002:a17:90b:3509:: with SMTP id ls9mr2269501pjb.119.1644613945459;
+        Fri, 11 Feb 2022 13:12:25 -0800 (PST)
+Received: from localhost ([47.9.2.133])
+        by smtp.gmail.com with ESMTPSA id f2sm27004637pfj.6.2022.02.11.13.12.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Feb 2022 13:12:25 -0800 (PST)
+Date:   Sat, 12 Feb 2022 02:42:21 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zhiqian Guan <zhguan@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] libbpf: Use dynamically allocated buffer when
+ receiving netlink messages
+Message-ID: <20220211211221.wc5ouk32krtlxhlr@apollo.legion>
+References: <20220211195101.591642-1-toke@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220211195101.591642-1-toke@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -64,79 +79,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 4:25 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sat, Feb 12, 2022 at 01:21:00AM IST, Toke Høiland-Jørgensen wrote:
+> When receiving netlink messages, libbpf was using a statically allocated
+> stack buffer of 4k bytes. This happened to work fine on systems with a 4k
+> page size, but on systems with larger page sizes it can lead to truncated
+> messages. The user-visible impact of this was that libbpf would insist no
+> XDP program was attached to some interfaces because that bit of the netlink
+> message got chopped off.
 >
-> libbpf v0.7 was just released ([0]). It features a bunch of new
-> features, quality of life improvements (e.g., automatic handling of
-> RLIMIT_MEMLOCK), and a bunch of further deprecations. Also, more APIs
-> got better documentation, as well as various bugs were fixed and
-> support for older kernels was improved.
+> Fix this by switching to a dynamically allocated buffer; we borrow the
+> approach from iproute2 of using recvmsg() with MSG_PEEK|MSG_TRUNC to get
+> the actual size of the pending message before receiving it, adjusting the
+> buffer as necessary. While we're at it, also add retries on interrupted
+> system calls around the recvmsg() call.
 >
-> Overall, libbpf v0.7 should be the last version with lots of
-> deprecations before libbpf 1.0 release. libbpf v0.8 should get a few
-> extra features helping with libbpf 1.0 migration, as well as the usual
-> stream of further improvements, but no major new deprecations are
-> planned so far. We are definitely getting pretty close to be ready for
-> the actual v1.0 release!
+> Reported-by: Zhiqian Guan <zhguan@redhat.com>
+> Fixes: 8bbb77b7c7a2 ("libbpf: Add various netlink helpers")
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+> ---
+
+Thanks for the fix!
+
+Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+
+>  tools/lib/bpf/netlink.c | 55 ++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 52 insertions(+), 3 deletions(-)
 >
-> Thanks to all the contributors for pushing libbpf forward!
+> diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+> index c39c37f99d5c..9a6e95206bf0 100644
+> --- a/tools/lib/bpf/netlink.c
+> +++ b/tools/lib/bpf/netlink.c
+> @@ -87,22 +87,70 @@ enum {
+>  	NL_DONE,
+>  };
 >
+> +static int __libbpf_netlink_recvmsg(int sock, struct msghdr *mhdr, int flags)
+> +{
+> +	int len;
+> +
+> +	do {
+> +		len = recvmsg(sock, mhdr, flags);
+> +	} while (len < 0 && (errno == EINTR || errno == EAGAIN));
+> +
+> +	if (len < 0)
+> +		return -errno;
+> +	return len;
+> +}
+> +
+> +static int libbpf_netlink_recvmsg(int sock, struct msghdr *mhdr, char **buf)
+> +{
+> +	struct iovec *iov = mhdr->msg_iov;
+> +	void *nbuf;
+> +	int len;
+> +
+> +	len = __libbpf_netlink_recvmsg(sock, mhdr, MSG_PEEK | MSG_TRUNC);
+> +	if (len < 0)
+> +		return len;
+> +
+> +	if (len < 4096)
+> +		len = 4096;
+> +
+> +	if (len > iov->iov_len) {
+> +		nbuf = realloc(iov->iov_base, len);
+> +		if (!nbuf) {
+> +			free(iov->iov_base);
+> +			return -ENOMEM;
+> +		}
+> +		iov->iov_base = nbuf;
+> +		iov->iov_len = len;
+> +	}
+> +
+> +	len = __libbpf_netlink_recvmsg(sock, mhdr, 0);
+> +	if (len > 0)
+> +		*buf = iov->iov_base;
+> +	return len;
+> +}
+> +
+>  static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+>  			       __dump_nlmsg_t _fn, libbpf_dump_nlmsg_t fn,
+>  			       void *cookie)
+>  {
+> +	struct iovec iov = {};
+> +	struct msghdr mhdr = {
+> +		.msg_iov = &iov,
+> +		.msg_iovlen = 1,
+> +	};
+>  	bool multipart = true;
+>  	struct nlmsgerr *err;
+>  	struct nlmsghdr *nh;
+> -	char buf[4096];
+>  	int len, ret;
+> +	char *buf;
+> +
 >
-> ## Important updates towards Libbpf 1.0
->   - no need for explicit `setrlimi(RLIMIT_MEMLOCK)` when
-> `LIBBPF_STRICT_AUTO_RLIMIT_MEMLOCK` is passed to
-> `libbpf_set_strict_mode()`. libbpf will determine whether this is
-> necessary automatically based on kernel's support for memcg-based
-> memory accounting for BPF;
->   - legacy BPF map definitions (using `struct bpf_map_def`) are
-> deprecated when `LIBBPF_STRICT_MAP_DEFINITIONS` is passed to
-> `libbpf_set_strict_mode()`. Please use BTF-defined map definitions.
->   - another batch of API deprecations.
+>  	while (multipart) {
+>  start:
+>  		multipart = false;
+> -		len = recv(sock, buf, sizeof(buf), 0);
+> +		len = libbpf_netlink_recvmsg(sock, &mhdr, &buf);
+>  		if (len < 0) {
+> -			ret = -errno;
+> +			ret = len;
+>  			goto done;
+>  		}
 >
-> ## New features and APIs:
->   - ability to control and capture BPF verifier log output on
-> per-object and per-program level;
->   - CO-RE support and other improvements for "light skeleton";
->   - further libbpf API documentation improvements;
->   - new feature-probing APIs (`libbpf_probe_bpf_helper()`,
-> `libbpf_probe_bpf_prog_type()`, `libbpf_probe_bpf_map_type()`);
->   - new streamlined low-level XDP APIs (`bpf_xdp_attach()`,
-> `bpf_xdp_detach()`, `bpf_xdp_query()`, `bpf_xdp_query_id()`);
->   - new `SEC("xdp.frags")`, `SEC("xdp.frags/cpumap")`,
-> `SEC("xdp.frags/devmap")` section definitions;
->   - new `SEC("iter.s/xxx")` section definitions for sleepable BPF
-> iterator programs.
+> @@ -151,6 +199,7 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+>  	}
+>  	ret = 0;
+>  done:
+> +	free(iov.iov_base);
+>  	return ret;
+>  }
 >
-> ## BPF-side APIs and features:
->   - `bpf_loop()` helper;
->   - `bpf_func_arg()`, `bpf_func_ret()`, `bpf_func_arg_cnt()` helpers;
->   - added syscall-specific `PT_REGS_xxx()` macros for retrieving
-> syscall arguments;
->   - added `BPF_KPROBE_SYSCALL()` helper macro for syscall kprobes;
->   - `bpf_get_retval()` and `bpf_set_retval()` helpers;
->   - `bpf_xdp_get_buff_len()` helper;
->   - `bpf_copy_from_user_task()` helper for sleepable BPF programs.
->
-> ## Bug fixes and compatibility improvements:
->   - fixed compilation error for C++ due to `btf_dump__new()` macro magic;
->   - improved `LINUX_VERSION_CODE` detection for Ubuntu;
->   - improved multiple kprobe support for legacy kprobe mode on old kernels;
->   - improved compilation when system BTF UAPI headers are outdated;
->   - a bunch of fixes of `PT_REGS_PARMn*()` macros for various architectures.
->
-> **Full Changelog**: https://github.com/libbpf/libbpf/compare/v0.6.0...v0.7.0
->
->   [0] https://github.com/libbpf/libbpf/releases/tag/v0.7.0
+> --
+> 2.35.1
 >
 
-I've noticed that libbpf.map has a bug. LIBBPF_0.7.0 didn't inherit
-from LIBBPF_0.6.0. I cherry picked the fix ([0]) to Github repo and
-updated v0.7.0 tag. Please be advised if you happened to pull the tag
-before this fix, you'll need to re-pull.  Sorry for any
-inconveniences.
-
-  [0] https://github.com/libbpf/libbpf/commit/2cd2d03f63242c048a896179398c68d2dbefe3d6
-
-
-> -- Andrii
+--
+Kartikeya
