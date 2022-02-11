@@ -2,147 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 826E54B2BFB
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 18:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D374B2C1C
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 18:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346242AbiBKRoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 12:44:34 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38620 "EHLO
+        id S1352356AbiBKRwu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 12:52:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243899AbiBKRoe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 12:44:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD844CD5
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:44:32 -0800 (PST)
+        with ESMTP id S241935AbiBKRwu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 12:52:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2D361AF
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:52:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644601472;
+        s=mimecast20190719; t=1644601967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=jsDcn8MRjShFB11jPe5Y0VJvr05nd65Dh+NmbGGIti4=;
-        b=TvhfvsS6emPddVqyAt9UmbJOOHuI9N3o4Zt3ipaAjw0hJzP14hAN5A2Y/xsjEnxXNrrYP2
-        7fNIsLpRi60+fFVtRIbVz0xnBk8BYWSBgB5j/Zz4k1Dz7tkrFnliu7GEaNXFTV2qafnb9a
-        UvDeZCaKxtyKzfsReFjgDGgN8lGcEn8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l23HZHTFBL0IPdh3ovUgxu1B4pTxjdBfAyrfDNSwZ/0=;
+        b=XOClCa8q3D4k3h4pKLXjpD+j/BQBtelE+kgFOXgnN936aWn0k5QANqw5eiTTiEsr5Ius9p
+        thnZRRA0bI66SLwE+BF9gHBRAnnC+V2ynx3WymC89oM3nUgVN49ZnMxcVy3+NMg0pANDd/
+        mee/rHs0Q2igBnmvDTdu3S5f8Vdubfg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-279-6_-Azt_6P8WeNIsB0EEmgg-1; Fri, 11 Feb 2022 12:44:28 -0500
-X-MC-Unique: 6_-Azt_6P8WeNIsB0EEmgg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A25BE84DA41;
-        Fri, 11 Feb 2022 17:44:26 +0000 (UTC)
-Received: from thinkpad.redhat.com (unknown [10.40.192.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D94972DE99;
-        Fri, 11 Feb 2022 17:44:22 +0000 (UTC)
-From:   Felix Maurer <fmaurer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davemarchevsky@fb.com
-Subject: [PATCH bpf-next] selftests: bpf: Check bpf_msg_push_data return value
-Date:   Fri, 11 Feb 2022 18:43:36 +0100
-Message-Id: <89f767bb44005d6b4dd1f42038c438f76b3ebfad.1644601294.git.fmaurer@redhat.com>
+ us-mta-314-7bgdHLSYMrqjBo5r-ZhITQ-1; Fri, 11 Feb 2022 12:52:47 -0500
+X-MC-Unique: 7bgdHLSYMrqjBo5r-ZhITQ-1
+Received: by mail-ed1-f69.google.com with SMTP id z8-20020a05640240c800b0041003c827edso4131664edb.0
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:52:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=l23HZHTFBL0IPdh3ovUgxu1B4pTxjdBfAyrfDNSwZ/0=;
+        b=6gorTVx+OXdwZGjJ7p9qaJd2oenWfa7sXXiTGegNwq3cXq4ZvHB9tUoeOyIp+tAXhO
+         biWZ84pgsd53mGrXMl/S8huWoHVpWJpKeSV6rQ0gfM4Dziobn3oadqPVOY1B6tuVCeVI
+         p80bfpVhTmnMzBJiUJ+WsSVGuy3+HG3BjYTBj+nfalDVjxzNT12Dh6ZWHJRhuNRatB7v
+         8TvfPX2KZWeSGTnCb2WwWnNCssjh4FDUYjtFojsSP7kJvTji/eUjts50D51ltfg1Gu3D
+         Bhu18ZW8CV8SKU/134iQNSnPmQeF7kwyzB9K6cnaCapaYiYeB7OKCyleyJq7US2xoZDX
+         epLw==
+X-Gm-Message-State: AOAM531t1udrLWCPjHELUKE3gqys1+ratrlxzv5q6yyVmg/rnAH8WsEw
+        xuGbW0d4Fuucd+uV7MyYtP/keUazOtddvjTtn5qbMJVBkB5GOy0thR1bD8fDIH/s/uZsJwS5rHO
+        6maq44nbgp+WN
+X-Received: by 2002:a17:907:6d17:: with SMTP id sa23mr2257277ejc.551.1644601964814;
+        Fri, 11 Feb 2022 09:52:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwEnQ+7Bk1ytAgIc7ypJcdQuZFnmUrPKdELhG/wG5SXOeaTTvQJg/TUeOapXYRJhdIQ8wILPA==
+X-Received: by 2002:a17:907:6d17:: with SMTP id sa23mr2257259ejc.551.1644601964552;
+        Fri, 11 Feb 2022 09:52:44 -0800 (PST)
+Received: from ?IPV6:2a00:fb8:34ae:a500:65d6:dbfd:b5fb:c46e? ([2a00:fb8:34ae:a500:65d6:dbfd:b5fb:c46e])
+        by smtp.gmail.com with ESMTPSA id t10sm6445359ejf.79.2022.02.11.09.52.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Feb 2022 09:52:44 -0800 (PST)
+Message-ID: <a2665ecd-12b0-e520-2061-ec8caf1d076a@redhat.com>
+Date:   Fri, 11 Feb 2022 18:52:43 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH bpf-next v2] bpf: Do not try bpf_msg_push_data with len 0
+Content-Language: en-US
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+References: <df69012695c7094ccb1943ca02b4920db3537466.1644421921.git.fmaurer@redhat.com>
+ <cd545202-d948-2ce5-dfae-362822766f90@fb.com>
+ <f18b9e66-8494-f335-13cc-a9b30a90e32e@redhat.com>
+ <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
+From:   Felix Maurer <fmaurer@redhat.com>
+In-Reply-To: <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_msg_push_data may return a non-zero value to indicate an error. The
-return value should be checked to prevent undetected errors.
+On 10.02.22 19:04, Yonghong Song wrote:
+> On 2/10/22 7:45 AM, Felix Maurer wrote:
+>> On 09.02.22 18:06, Yonghong Song wrote:
+>>> On 2/9/22 7:55 AM, Felix Maurer wrote:
+>>>> If bpf_msg_push_data is called with len 0 (as it happens during
+>>>> selftests/bpf/test_sockmap), we do not need to do anything and can
+>>>> return early.
+>>>>
+>>>> Calling bpf_msg_push_data with len 0 previously lead to a wrong ENOMEM
+>>>> error: we later called get_order(copy + len); if len was 0, copy + len
+>>>> was also often 0 and get_order returned some undefined value (at the
+>>>> moment 52). alloc_pages caught that and failed, but then
+>>>> bpf_msg_push_data returned ENOMEM. This was wrong because we are most
+>>>> probably not out of memory and actually do not need any additional
+>>>> memory.
+>>>>
+>>>> v2: Add bug description and Fixes tag
+>>>>
+>>>> Fixes: 6fff607e2f14b ("bpf: sk_msg program helper bpf_msg_push_data")
+>>>> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+>>>
+>>> LGTM. I am wondering why bpf CI didn't catch this problem. Did you
+>>> modified the test with length 0 in order to trigger that? If this
+>>> is the case, it would be great you can add such a test to the
+>>> test_sockmap.
+>>
+>> I did not modify the tests to trigger that. The state of the selftests
+>> around that is unfortunately not very good. There is no explicit test
+>> with length 0 but bpf_msg_push_data is still called with length 0,
+>> because of what I consider to be bugs in the test. On the other hand,
+>> explicit tests with other lengths are sometimes not called as well. I'll
+>> elaborate on that in a bit.
+>>
+>> Something easy to fix is that the tests do not check the return value of
+>> bpf_msg_push_data which they probably should. That may have helped find
+>> the problem earlier.
+>>
+>> Now to the issue mentioned in the beginning: Only some of the BPF
+>> programs used in test_sockmap actually call bpf_msg_push_data. However,
+>> they are not always attached, just for particular scenarios:
+>> txmsg_pass==1, txmsg_redir==1, or txmsg_drop==1. If none of those apply,
+>> bpf_msg_push_data is never called. This happens for example in
+>> test_txmsg_push. Out of the four defined tests only one actually calls
+>> the helper.
+>>
+>> But after a test, the parameters in the map are reset to 0 (instead of
+>> being removed). Therefore, when the maps are reused in a subsequent test
+>> which is one of the scenarios above, the values are present and
+>> bpf_msg_push_data is called, albeit with the parameters set to 0. This
+>> is also what triggered the wrong behavior fixed in the patch.
+>>
+>> Unfortunately, I do not have the time to fix these issues in the test at
+>> the moment.
+> 
+> Thanks for detailed explanation. Maybe for the immediate case, can you
+> just fix this in the selftest,
+> 
+>   > Something easy to fix is that the tests do not check the return
+> value of
+>   > bpf_msg_push_data which they probably should. That may have helped find
+>   > the problem earlier.
+> 
+> This will be enough to verify your kernel change as without it the
+> test will fail.
 
-To indicate an error, the BPF programs now perform a different action
-than their intended one to make the userspace test program notice the
-error, i.e., the programs supposed to pass/redirect drop, the program
-supposed to drop passes.
+I just send a patch checking the return values of the bpf_msg_push_data
+usages in the test [1]. Passing the errors to userspace by dropping
+packets is not very nice, but a straightforward way in the current test
+program.
 
-Fixes: 84fbfe026acaa ("bpf: test_sockmap add options to use msg_push_data")
-Signed-off-by: Felix Maurer <fmaurer@redhat.com>
----
- .../selftests/bpf/progs/test_sockmap_kern.h   | 26 +++++++++++++------
- 1 file changed, 18 insertions(+), 8 deletions(-)
+I did try the same checks of the return values of bpf_msg_pull_data, but
+then the tests fail. So there might be something hidden here as well.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-index 2966564b8497..6c85b00f27b2 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-@@ -235,7 +235,7 @@ SEC("sk_msg1")
- int bpf_prog4(struct sk_msg_md *msg)
- {
- 	int *bytes, zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5;
--	int *start, *end, *start_push, *end_push, *start_pop, *pop;
-+	int *start, *end, *start_push, *end_push, *start_pop, *pop, err = 0;
- 
- 	bytes = bpf_map_lookup_elem(&sock_apply_bytes, &zero);
- 	if (bytes)
-@@ -249,8 +249,11 @@ int bpf_prog4(struct sk_msg_md *msg)
- 		bpf_msg_pull_data(msg, *start, *end, 0);
- 	start_push = bpf_map_lookup_elem(&sock_bytes, &two);
- 	end_push = bpf_map_lookup_elem(&sock_bytes, &three);
--	if (start_push && end_push)
--		bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+	if (start_push && end_push) {
-+		err = bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+		if (err)
-+			return SK_DROP;
-+	}
- 	start_pop = bpf_map_lookup_elem(&sock_bytes, &four);
- 	pop = bpf_map_lookup_elem(&sock_bytes, &five);
- 	if (start_pop && pop)
-@@ -263,6 +266,7 @@ int bpf_prog6(struct sk_msg_md *msg)
- {
- 	int zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5, key = 0;
- 	int *bytes, *start, *end, *start_push, *end_push, *start_pop, *pop, *f;
-+	int err = 0;
- 	__u64 flags = 0;
- 
- 	bytes = bpf_map_lookup_elem(&sock_apply_bytes, &zero);
-@@ -279,8 +283,11 @@ int bpf_prog6(struct sk_msg_md *msg)
- 
- 	start_push = bpf_map_lookup_elem(&sock_bytes, &two);
- 	end_push = bpf_map_lookup_elem(&sock_bytes, &three);
--	if (start_push && end_push)
--		bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+	if (start_push && end_push) {
-+		err = bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+		if (err)
-+			return SK_DROP;
-+	}
- 
- 	start_pop = bpf_map_lookup_elem(&sock_bytes, &four);
- 	pop = bpf_map_lookup_elem(&sock_bytes, &five);
-@@ -338,7 +345,7 @@ SEC("sk_msg5")
- int bpf_prog10(struct sk_msg_md *msg)
- {
- 	int *bytes, *start, *end, *start_push, *end_push, *start_pop, *pop;
--	int zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5;
-+	int zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5, err = 0;
- 
- 	bytes = bpf_map_lookup_elem(&sock_apply_bytes, &zero);
- 	if (bytes)
-@@ -352,8 +359,11 @@ int bpf_prog10(struct sk_msg_md *msg)
- 		bpf_msg_pull_data(msg, *start, *end, 0);
- 	start_push = bpf_map_lookup_elem(&sock_bytes, &two);
- 	end_push = bpf_map_lookup_elem(&sock_bytes, &three);
--	if (start_push && end_push)
--		bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+	if (start_push && end_push) {
-+		err = bpf_msg_push_data(msg, *start_push, *end_push, 0);
-+		if (err)
-+			return SK_PASS;
-+	}
- 	start_pop = bpf_map_lookup_elem(&sock_bytes, &four);
- 	pop = bpf_map_lookup_elem(&sock_bytes, &five);
- 	if (start_pop && pop)
--- 
-2.34.1
+[1]:https://lore.kernel.org/bpf/89f767bb44005d6b4dd1f42038c438f76b3ebfad.1644601294.git.fmaurer@redhat.com/
+
+> The rest of test improvements can come later.
+> 
+>>
+>>> Acked-by: Yonghong Song <yhs@fb.com>
+>>
+>> Thanks!
+>>
+> 
 
