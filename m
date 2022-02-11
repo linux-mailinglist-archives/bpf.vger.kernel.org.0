@@ -2,102 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F354B2487
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 12:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D064B24D0
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 12:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240820AbiBKLiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 06:38:04 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52484 "EHLO
+        id S1349650AbiBKLyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 06:54:14 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345246AbiBKLiD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 06:38:03 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEC9381
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 03:38:02 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21B8MiZa001247;
-        Fri, 11 Feb 2022 11:37:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=MWlKOgEikHFkQbZ2J6EozVGERprdr0dxmmmtMQPQ/GI=;
- b=Kyp1VP9KrRAJxQAU+eXEildp/HeeuivZoTcQt3tNy3crG1ZqqpsvadLHKDG76Dj6Ec0E
- Qt6UUUNfkyY919jTCzCm3dzVJm1z8AbsX+RY/ULK6+USaKSo5Pk2oWJjHE7QBkDISQtD
- /QWtUg44Cqe5DyUB66mXKStFLg0V5zXFUbWXU0j4dI2CLuNtZIhToXWa2GNejqzBxm/b
- xjBlI5i7sZZ+dTjSg94Aj+avXVdHWmGt5lQgy9suAvLLQ7qQZsEI334O4zlEFYbGRf7s
- JPzEZflp8TfuTXRAxJjoCie//O7hJw3/KLVhP6t8zPdbyawFzv7KyXJXECGQXFZ+pMTM uA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e59swe05y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Feb 2022 11:37:07 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21BBMqah008544;
-        Fri, 11 Feb 2022 11:37:06 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e59swe04w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Feb 2022 11:37:06 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21BBW7aM031482;
-        Fri, 11 Feb 2022 11:37:03 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3e1ggks99e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 11 Feb 2022 11:37:03 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21BBb1oT39125434
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 11 Feb 2022 11:37:01 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6F448AE045;
-        Fri, 11 Feb 2022 11:37:01 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00F84AE04D;
-        Fri, 11 Feb 2022 11:37:01 +0000 (GMT)
-Received: from localhost (unknown [9.43.26.72])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 11 Feb 2022 11:37:00 +0000 (GMT)
-Date:   Fri, 11 Feb 2022 17:06:59 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [RFC PATCH 2/3] powerpc/ftrace: Override ftrace_location_lookup()
- for MPROFILE_KERNEL
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-References: <cover.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <fadc5f2a295d6cb9f590bbbdd71fc2f78bf3a085.1644216043.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20220207102454.41b1d6b5@gandalf.local.home>
-        <1644426751.786cjrgqey.naveen@linux.ibm.com>
-        <20220209161017.2bbdb01a@gandalf.local.home>
-        <1644501274.apfdo9z1hy.naveen@linux.ibm.com>
-        <20220210095944.1fe98b74@gandalf.local.home>
-        <1644508338.5ucomwqtts.naveen@linux.ibm.com>
-        <20220210120152.00d24b64@gandalf.local.home>
-In-Reply-To: <20220210120152.00d24b64@gandalf.local.home>
+        with ESMTP id S1345558AbiBKLyO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 06:54:14 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F62EB0;
+        Fri, 11 Feb 2022 03:54:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0317A618CF;
+        Fri, 11 Feb 2022 11:54:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A932C340E9;
+        Fri, 11 Feb 2022 11:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644580452;
+        bh=WDr1wYMBqsy40Pudk1eNzGhiianFBoaG1uB42EhH/Yc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=u49P4uxiQ8AM049ZlWIPnkLHjZ67u6iifufSVkM+/VCa2CGf6B2KIGa8bO7R8XMkB
+         4117f4S7/Gph1wsIv/zM+IZVIcnUsisEtKgbws39L0sauD6MwyDF0ctJ4rsjfTZRVW
+         TbDIxa565YhCP84rZ4IuLAIWSes88H8CD2E0HcnD9xVO6Aene4TXKLrDPNolK0wF3z
+         XfA4bWdqPEF2mM+UFvic6IENeDs4jS9uXWK6GmG27VfFia34d+ozJX6THND1O8qBCX
+         PdOhsbTyDAHABTiJKmO1tw4LJkHuaSyiHFGJzg+/7cENP753NJxHEwKtqZUo/HU+CF
+         3IW5kocrVanZw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH v8 00/11] fprobe: Introduce fprobe function entry/exit probe 
+Date:   Fri, 11 Feb 2022 20:54:06 +0900
+Message-Id: <164458044634.586276.3261555265565111183.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-User-Agent: astroid/4d6b06ad (https://github.com/astroidmail/astroid)
-Message-Id: <1644579392.dotfvngs71.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: aXE9rOkXWLfOtWMO1n9rJTvmZrqufkyp
-X-Proofpoint-ORIG-GUID: THFEPOkaLdLyov42li4LOlLizcBY7b16
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-11_04,2022-02-11_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 spamscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0
- suspectscore=0 lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202110066
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -105,24 +63,105 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Steven Rostedt wrote:
-> On Thu, 10 Feb 2022 16:40:28 +0000
-> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
->=20
->> The other option is to mark ftrace_cmp_recs() as a __weak function, but=20
->> I have a vague recollection of you suggesting #ifdef rather than a=20
->> __weak function in the past. I might be mis-remembering, so if you think=
-=20
->> making this a __weak function is better, I can do that.
->=20
-> No. If I wanted that I would have suggested it. I think this is the
-> prettiest of the ugly solutions out there ;-)
+Hi,
 
-Understood :)
+Here is the 8th version of fprobe. This version fixes a build error
+when CONFIG_FUNCTION_TRACER=n, and add a KUnit based selftest.
 
->=20
-> As I said, I can't think of a better solution, and we can go with this
-> until something else comes along.
+The previous version is here[1];
 
-Thanks,
-- Naveen
+[1] https://lore.kernel.org/all/164360522462.65877.1891020292202285106.stgit@devnote2/T/#u
+
+This series introduces the fprobe, the function entry/exit probe
+with multiple probe point support. This also introduces the rethook
+for hooking function return as same as the kretprobe does. This
+abstraction will help us to generalize the fgraph tracer,
+because we can just switch to it from the rethook in fprobe,
+depending on the kernel configuration.
+
+The patch [1/10] is from Jiri's series[2].
+
+[2] https://lore.kernel.org/all/20220104080943.113249-1-jolsa@kernel.org/T/#u
+
+And the patch [9/10] adds the FPROBE_FL_KPROBE_SHARED flag for the case
+if user wants to share the same code (or share a same resource) on the
+fprobe and the kprobes.
+
+I forcibly updated my kprobes/fprobe branch, you can pull this series
+from:
+
+ https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/fprobe
+
+Thank you,
+
+---
+
+Jiri Olsa (1):
+      ftrace: Add ftrace_set_filter_ips function
+
+Masami Hiramatsu (10):
+      fprobe: Add ftrace based probe APIs
+      rethook: Add a generic return hook
+      rethook: x86: Add rethook x86 implementation
+      ARM: rethook: Add rethook arm implementation
+      arm64: rethook: Add arm64 rethook implementation
+      fprobe: Add exit_handler support
+      fprobe: Add sample program for fprobe
+      fprobe: Introduce FPROBE_FL_KPROBE_SHARED flag for fprobe
+      docs: fprobe: Add fprobe description to ftrace-use.rst
+      fprobe: Add a selftest for fprobe
+
+
+ Documentation/trace/fprobe.rst                |  171 +++++++++++++
+ Documentation/trace/index.rst                 |    1 
+ arch/arm/Kconfig                              |    1 
+ arch/arm/include/asm/stacktrace.h             |    4 
+ arch/arm/kernel/stacktrace.c                  |    6 
+ arch/arm/probes/Makefile                      |    1 
+ arch/arm/probes/rethook.c                     |   71 +++++
+ arch/arm64/Kconfig                            |    1 
+ arch/arm64/include/asm/stacktrace.h           |    2 
+ arch/arm64/kernel/probes/Makefile             |    1 
+ arch/arm64/kernel/probes/rethook.c            |   25 ++
+ arch/arm64/kernel/probes/rethook_trampoline.S |   87 ++++++
+ arch/arm64/kernel/stacktrace.c                |    7 -
+ arch/x86/Kconfig                              |    1 
+ arch/x86/include/asm/unwind.h                 |    8 +
+ arch/x86/kernel/Makefile                      |    1 
+ arch/x86/kernel/kprobes/common.h              |    1 
+ arch/x86/kernel/rethook.c                     |  115 ++++++++
+ include/linux/fprobe.h                        |  105 ++++++++
+ include/linux/ftrace.h                        |    3 
+ include/linux/kprobes.h                       |    3 
+ include/linux/rethook.h                       |  100 +++++++
+ include/linux/sched.h                         |    3 
+ kernel/exit.c                                 |    2 
+ kernel/fork.c                                 |    3 
+ kernel/trace/Kconfig                          |   26 ++
+ kernel/trace/Makefile                         |    2 
+ kernel/trace/fprobe.c                         |  341 +++++++++++++++++++++++++
+ kernel/trace/ftrace.c                         |   58 ++++
+ kernel/trace/rethook.c                        |  313 +++++++++++++++++++++++
+ lib/Kconfig.debug                             |   12 +
+ lib/Makefile                                  |    2 
+ lib/test_fprobe.c                             |  125 +++++++++
+ samples/Kconfig                               |    7 +
+ samples/Makefile                              |    1 
+ samples/fprobe/Makefile                       |    3 
+ samples/fprobe/fprobe_example.c               |  120 +++++++++
+ 37 files changed, 1719 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/trace/fprobe.rst
+ create mode 100644 arch/arm/probes/rethook.c
+ create mode 100644 arch/arm64/kernel/probes/rethook.c
+ create mode 100644 arch/arm64/kernel/probes/rethook_trampoline.S
+ create mode 100644 arch/x86/kernel/rethook.c
+ create mode 100644 include/linux/fprobe.h
+ create mode 100644 include/linux/rethook.h
+ create mode 100644 kernel/trace/fprobe.c
+ create mode 100644 kernel/trace/rethook.c
+ create mode 100644 lib/test_fprobe.c
+ create mode 100644 samples/fprobe/Makefile
+ create mode 100644 samples/fprobe/fprobe_example.c
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
