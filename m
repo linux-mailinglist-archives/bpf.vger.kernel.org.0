@@ -2,50 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF7E4B2F5F
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 22:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA144B2F5E
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 22:30:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352860AbiBKVaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1353651AbiBKVaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Fri, 11 Feb 2022 16:30:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49028 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353650AbiBKVaP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 16:30:15 -0500
+        with ESMTP id S1352860AbiBKVaO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 16:30:14 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53FC3C61
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE03C57
         for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:30:13 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DEE6EB82CF9
+        by ams.source.kernel.org (Postfix) with ESMTPS id C4F8AB82D2F
         for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 21:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6CFB6C340ED;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 73AA8C340F0;
         Fri, 11 Feb 2022 21:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1644615010;
-        bh=Ph4DfRGPigMqDXpL3aN36p5tkUf9hR75wiHF2ZsoVPc=;
+        bh=gTOoTTpkcld0+VdOnr3JU/35x81oepnpIgl1ox/MBKc=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Fso31rbIReVoczMaH7Lx+Lqv8ybMX2SzSm1/yDfadjPxOn71BelDLzjFGgp+izUE/
-         hFIlMy1zMtVoLLTox8jr7RoRt8952bMatwihFpA7hpqmUst6AvEL4NqPVLzg2kaLLf
-         7EHJyw7f7C7tPa5MbniN6Z7dJ3dHxYX4iw1236Owb/a9efl/LrE7+7oSN8Va4B/S3i
-         O4ne9D/3oKHJkU+itEfKjTdy0gQw/4xkA24JXxwey3XmTLAg5v+D2wLEMGLfGBb2Y3
-         H+okiIgsXADjQDuJVuAj/J6jKruyq7KHyb2gVF5LBxVEAwHhzyExNzfkx+KchRn9Qb
-         422CuTqVKZWeg==
+        b=cvCleHvXOdUoNTOJundgiE+0zdIWlj6aWliOIEoRfStyxm6x0+TX4f1Jg5vErqoNm
+         Tm06KKhWZTsNotXjffjE0+GbL/gNDNXcRPpzLK1fwBkd6aLDCtTFkxCC3pVve3vMBA
+         aK4bCdUzJvavXqnZ3tLxAWeAUchZD8S5o86TwXylpjRiTO2YcC/Ge2uD4yY/VcubZJ
+         8eoJJsE73fytGSAPW3qtFzcMCfUquiBohFebXl223zOdQJDV6dKZcsIC9QBpyte/2I
+         aWG5WqM12nahJ9lSsBYiWovwIpbIwmSyUnVpslvQhkmFptAEAQZnbd908jOxvtkeYu
+         ar6YE7O+g0w4Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 559C9E6BB38;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5E586E5D09D;
         Fri, 11 Feb 2022 21:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2 0/2] Fix for crash due to overwrite in copy_map_value
+Subject: Re: [PATCH bpf v4 0/2] bpf: fix a bpf_timer initialization issue
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164461501034.10199.16749469053019311648.git-patchwork-notify@kernel.org>
+Message-Id: <164461501038.10199.4843368758097321221.git-patchwork-notify@kernel.org>
 Date:   Fri, 11 Feb 2022 21:30:10 +0000
-References: <20220209070324.1093182-1-memxor@gmail.com>
-In-Reply-To: <20220209070324.1093182-1-memxor@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org
+References: <20220211194943.3141324-1-yhs@fb.com>
+In-Reply-To: <20220211194943.3141324-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, kernel-team@fb.com, memxor@gmail.com
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,22 +61,21 @@ Hello:
 This series was applied to bpf/bpf.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  9 Feb 2022 12:33:22 +0530 you wrote:
-> A fix for an oversight in copy_map_value that leads to kernel crash.
+On Fri, 11 Feb 2022 11:49:43 -0800 you wrote:
+> The patch [1] exposed a bpf_timer initialization bug in function
+> check_and_init_map_value(). With bug fix here, the patch [1]
+> can be applied with all selftests passed. Please see individual
+> patches for fix details.
 > 
-> Also, a question for BPF developers:
-> It seems in arraymap.c, we always do check_and_free_timer_in_array after we do
-> copy_map_value in map_update_elem callback, but the same is not done for
-> hashtab.c. Is there a specific reason for this difference in behavior, or did I
-> miss that it happens for hashtab.c as well?
+>   [1] https://lore.kernel.org/bpf/20220209070324.1093182-2-memxor@gmail.com/
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf,v2,1/2] bpf: Fix crash due to incorrect copy_map_value
-    https://git.kernel.org/bpf/bpf/c/a8abb0c3dc1e
-  - [bpf,v2,2/2] selftests/bpf: Add test for bpf_timer overwriting crash
-    https://git.kernel.org/bpf/bpf/c/a7e75016a075
+  - [bpf,v4,1/2] bpf: emit bpf_timer in vmlinux BTF
+    https://git.kernel.org/bpf/bpf/c/3bd916ee0ecb
+  - [bpf,v4,2/2] bpf: fix a bpf_timer initialization issue
+    https://git.kernel.org/bpf/bpf/c/5eaed6eedbe9
 
 You are awesome, thank you!
 -- 
