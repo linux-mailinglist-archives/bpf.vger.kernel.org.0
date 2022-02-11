@@ -2,178 +2,194 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FF04B2E00
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 20:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4374B4B2E05
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 20:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236065AbiBKTuF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 14:50:05 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59972 "EHLO
+        id S1353001AbiBKTvf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 14:51:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242073AbiBKTuD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 14:50:03 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E592A5
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 11:50:02 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21BF6hCR004246
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 11:50:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=vKucdm/8VEDUN7ktf9EBcIimdtWR0LqQrEgRQo8i1Wk=;
- b=Bhw9gRZqee7exEi6oGi1S/EVTb4UqIwyGII51hCzSRV85ZFiQww+QiyXMVNaCK2QjBcw
- 2CQPP/qUrfoWdJY2tRkimx4hIuPdS+4nIUJQDS47OQhL7MYqETWyFyy4KUU22RF2geqa
- UmActIDhsHda4WvWrp1EywWn66f7ctYUbII= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e58y9yucb-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 11:50:01 -0800
-Received: from twshared0983.05.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 11 Feb 2022 11:49:57 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id B7A4C6430129; Fri, 11 Feb 2022 11:49:53 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1352986AbiBKTve (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 14:51:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1729B2A1
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 11:51:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644609092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=bne5fux8udNCXVzeyZDnPjq+FWuos4KPEoOYJ7iDvq8=;
+        b=PsWPT4FGfuPMF/p+19DCtEaD5ukAjqAWzNpExLPFMFR1yvXQHlucCW7AhU2szDBqLYIa8o
+        toajuVW10/rO08Oyp3m3YbqZYQTaCktSY2I6zasutsCls8MS/n7WZOv0hI8JQN2km56Pff
+        P/Ey9K+XATluU/rNEv9UzYZMHKOHuWg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-618-fjgKdyphOySUbj6F85gMYg-1; Fri, 11 Feb 2022 14:51:29 -0500
+X-MC-Unique: fjgKdyphOySUbj6F85gMYg-1
+Received: by mail-ej1-f71.google.com with SMTP id la22-20020a170907781600b006a7884de505so4547467ejc.7
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 11:51:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bne5fux8udNCXVzeyZDnPjq+FWuos4KPEoOYJ7iDvq8=;
+        b=b6l0BYker7hIIA8Nr5ket9SgA19mPVBpP9hYVntB9r9BiYwN1aQw9AHmPZKYVeCU19
+         Sull2P5bdQATY5RJQbmSNvqrSnTecNIRDIHYOp0I7M1la7eFBU9otyJ4JPA9DXDinIe3
+         sO0qBsjdntWm8TMgmK70u1m2LW3wUf0SsZ+b4EsezN9uq8FWHtk0RTdu+GX9vEKbv82q
+         44TkOTLQEIr92M3Z0vg15Y3WZ2zk1fNjdTOQR0VHFgBexPWtGG3RnJbgh/0siXOB8nze
+         psMiQ+CJEE6JJ7h8PUKEASAPi+Rf0mt05n5YtjRm+DG9526V+AtmX0Y5bt4R3Tgdw5WS
+         hzMA==
+X-Gm-Message-State: AOAM530uIYE3/+1Vqk995EwWN86CBQj0P+fOMkY7mpK4H6ECnk90ANdx
+        darwtcf7NF1GhSM5RbDJ1fElmw1Vmb+6ZKG0mkLK7ynKhywWkHsgaewWWsIxWa2ySGpQWJ1coMz
+        D9OgVzJNEVGc1
+X-Received: by 2002:a17:906:c149:: with SMTP id dp9mr2692368ejc.57.1644609088012;
+        Fri, 11 Feb 2022 11:51:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw79y+nQK1hJW6XGH9Bj3uYGaHaUO6u5ZDRgmeAfs+pFpPU0EZk6tjQKly3FwpXi1BcLZV7jg==
+X-Received: by 2002:a17:906:c149:: with SMTP id dp9mr2692332ejc.57.1644609087131;
+        Fri, 11 Feb 2022 11:51:27 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id a8sm4958833edy.94.2022.02.11.11.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Feb 2022 11:51:26 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D0159102D8C; Fri, 11 Feb 2022 20:51:25 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf v4 2/2] bpf: fix a bpf_timer initialization issue
-Date:   Fri, 11 Feb 2022 11:49:53 -0800
-Message-ID: <20220211194953.3142152-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220211194943.3141324-1-yhs@fb.com>
-References: <20220211194943.3141324-1-yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-GUID: EIFrxq08M-5px3DFyapzDCk_xh1eha12
-X-Proofpoint-ORIG-GUID: EIFrxq08M-5px3DFyapzDCk_xh1eha12
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Zhiqian Guan <zhguan@redhat.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH bpf-next] libbpf: Use dynamically allocated buffer when receiving netlink messages
+Date:   Fri, 11 Feb 2022 20:51:00 +0100
+Message-Id: <20220211195101.591642-1-toke@redhat.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-11_05,2022-02-11_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1015
- mlxlogscore=428 impostorscore=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 phishscore=0 priorityscore=1501
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202110104
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The patch in [1] intends to fix a bpf_timer related issue,
-but the fix caused existing 'timer' selftest to fail with
-hang or some random errors. After some debug, I found
-an issue with check_and_init_map_value() in the hashtab.c.
-More specifically, in hashtab.c, we have code
-  l_new =3D bpf_map_kmalloc_node(&htab->map, ...)
-  check_and_init_map_value(&htab->map, l_new...)
-Note that bpf_map_kmalloc_node() does not do initialization
-so l_new contains random value.
+When receiving netlink messages, libbpf was using a statically allocated
+stack buffer of 4k bytes. This happened to work fine on systems with a 4k
+page size, but on systems with larger page sizes it can lead to truncated
+messages. The user-visible impact of this was that libbpf would insist no
+XDP program was attached to some interfaces because that bit of the netlink
+message got chopped off.
 
-The function check_and_init_map_value() intends to zero the
-bpf_spin_lock and bpf_timer if they exist in the map.
-But I found bpf_spin_lock is zero'ed but bpf_timer is not zero'ed.
-With [1], later copy_map_value() skips copying of
-bpf_spin_lock and bpf_timer. The non-zero bpf_timer caused
-random failures for 'timer' selftest.
-Without [1], for both bpf_spin_lock and bpf_timer case,
-bpf_timer will be zero'ed, so 'timer' self test is okay.
+Fix this by switching to a dynamically allocated buffer; we borrow the
+approach from iproute2 of using recvmsg() with MSG_PEEK|MSG_TRUNC to get
+the actual size of the pending message before receiving it, adjusting the
+buffer as necessary. While we're at it, also add retries on interrupted
+system calls around the recvmsg() call.
 
-For check_and_init_map_value(), why bpf_spin_lock is zero'ed
-properly while bpf_timer not. In bpf uapi header, we have
-  struct bpf_spin_lock {
-        __u32   val;
-  };
-  struct bpf_timer {
-        __u64 :64;
-        __u64 :64;
-  } __attribute__((aligned(8)));
-
-The initialization code:
-  *(struct bpf_spin_lock *)(dst + map->spin_lock_off) =3D
-      (struct bpf_spin_lock){};
-  *(struct bpf_timer *)(dst + map->timer_off) =3D
-      (struct bpf_timer){};
-It appears the compiler has no obligation to initialize anonymous fields.
-For example, let us use clang with bpf target as below:
-  $ cat t.c
-  struct bpf_timer {
-        unsigned long long :64;
-  };
-  struct bpf_timer2 {
-        unsigned long long a;
-  };
-
-  void test(struct bpf_timer *t) {
-    *t =3D (struct bpf_timer){};
-  }
-  void test2(struct bpf_timer2 *t) {
-    *t =3D (struct bpf_timer2){};
-  }
-  $ clang -target bpf -O2 -c -g t.c
-  $ llvm-objdump -d t.o
-   ...
-   0000000000000000 <test>:
-       0:       95 00 00 00 00 00 00 00 exit
-   0000000000000008 <test2>:
-       1:       b7 02 00 00 00 00 00 00 r2 =3D 0
-       2:       7b 21 00 00 00 00 00 00 *(u64 *)(r1 + 0) =3D r2
-       3:       95 00 00 00 00 00 00 00 exit
-
-gcc11.2 does not have the above issue. But from
-  INTERNATIONAL STANDARD =C2=A9ISO/IEC ISO/IEC 9899:201x
-  Programming languages =E2=80=94 C
-  http://www.open-std.org/Jtc1/sc22/wg14/www/docs/n1547.pdf
-  page 157:
-  Except where explicitly stated otherwise, for the purposes of
-  this subclause unnamed members of objects of structure and union
-  type do not participate in initialization. Unnamed members of
-  structure objects have indeterminate value even after initialization.
-
-To fix the problem, let use memset for bpf_timer case in
-check_and_init_map_value(). For consistency, memset is also
-used for bpf_spin_lock case.
-
-  [1] https://lore.kernel.org/bpf/20220209070324.1093182-2-memxor@gmail.com/
-
-Fixes: 68134668c17f3 ("bpf: Add map side support for bpf timers.")
-Signed-off-by: Yonghong Song <yhs@fb.com>
+Reported-by: Zhiqian Guan <zhguan@redhat.com>
+Fixes: 8bbb77b7c7a2 ("libbpf: Add various netlink helpers")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- include/linux/bpf.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/lib/bpf/netlink.c | 55 ++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 52 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index fa517ae604ad..1a4c73742a1f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -209,11 +209,9 @@ static inline bool map_value_has_timer(const struct bp=
-f_map *map)
- static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index c39c37f99d5c..9a6e95206bf0 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -87,22 +87,70 @@ enum {
+ 	NL_DONE,
+ };
+ 
++static int __libbpf_netlink_recvmsg(int sock, struct msghdr *mhdr, int flags)
++{
++	int len;
++
++	do {
++		len = recvmsg(sock, mhdr, flags);
++	} while (len < 0 && (errno == EINTR || errno == EAGAIN));
++
++	if (len < 0)
++		return -errno;
++	return len;
++}
++
++static int libbpf_netlink_recvmsg(int sock, struct msghdr *mhdr, char **buf)
++{
++	struct iovec *iov = mhdr->msg_iov;
++	void *nbuf;
++	int len;
++
++	len = __libbpf_netlink_recvmsg(sock, mhdr, MSG_PEEK | MSG_TRUNC);
++	if (len < 0)
++		return len;
++
++	if (len < 4096)
++		len = 4096;
++
++	if (len > iov->iov_len) {
++		nbuf = realloc(iov->iov_base, len);
++		if (!nbuf) {
++			free(iov->iov_base);
++			return -ENOMEM;
++		}
++		iov->iov_base = nbuf;
++		iov->iov_len = len;
++	}
++
++	len = __libbpf_netlink_recvmsg(sock, mhdr, 0);
++	if (len > 0)
++		*buf = iov->iov_base;
++	return len;
++}
++
+ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+ 			       __dump_nlmsg_t _fn, libbpf_dump_nlmsg_t fn,
+ 			       void *cookie)
  {
- 	if (unlikely(map_value_has_spin_lock(map)))
--		*(struct bpf_spin_lock *)(dst + map->spin_lock_off) =3D
--			(struct bpf_spin_lock){};
-+		memset(dst + map->spin_lock_off, 0, sizeof(struct bpf_spin_lock));
- 	if (unlikely(map_value_has_timer(map)))
--		*(struct bpf_timer *)(dst + map->timer_off) =3D
--			(struct bpf_timer){};
-+		memset(dst + map->timer_off, 0, sizeof(struct bpf_timer));
++	struct iovec iov = {};
++	struct msghdr mhdr = {
++		.msg_iov = &iov,
++		.msg_iovlen = 1,
++	};
+ 	bool multipart = true;
+ 	struct nlmsgerr *err;
+ 	struct nlmsghdr *nh;
+-	char buf[4096];
+ 	int len, ret;
++	char *buf;
++
+ 
+ 	while (multipart) {
+ start:
+ 		multipart = false;
+-		len = recv(sock, buf, sizeof(buf), 0);
++		len = libbpf_netlink_recvmsg(sock, &mhdr, &buf);
+ 		if (len < 0) {
+-			ret = -errno;
++			ret = len;
+ 			goto done;
+ 		}
+ 
+@@ -151,6 +199,7 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+ 	}
+ 	ret = 0;
+ done:
++	free(iov.iov_base);
+ 	return ret;
  }
-=20
- /* copy everything but bpf_spin_lock and bpf_timer. There could be one of =
-each. */
---=20
-2.30.2
+ 
+-- 
+2.35.1
 
