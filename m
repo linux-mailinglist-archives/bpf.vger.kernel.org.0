@@ -2,178 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85D24B2C31
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 18:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E564B2C46
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 19:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242865AbiBKR5N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 12:57:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46162 "EHLO
+        id S1352364AbiBKR7H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 12:59:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234778AbiBKR5M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 12:57:12 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89201AF
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:57:11 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21BElEf1023246
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:57:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=vKucdm/8VEDUN7ktf9EBcIimdtWR0LqQrEgRQo8i1Wk=;
- b=Riw2+9qymH2tx8IO8CL0/B+tq1CM3Xng2ls628RGNMVjbnad4EHKpV2pWg6/shJJVNqC
- L8/lLmotEwlkg/ZTKqj4b6vjwrjzoDkAbBHQpDpn6A3u423YUskde85a8Q8OZqn60R8G
- G+VT6pqF2K92cZXSNt/WipIj01EzWCh2iLw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e5sv71bke-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:57:11 -0800
-Received: from twshared18912.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 11 Feb 2022 09:57:10 -0800
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-        id 321D264216A2; Fri, 11 Feb 2022 09:57:06 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [PATCH bpf v3 2/2] bpf: fix a bpf_timer initialization issue
-Date:   Fri, 11 Feb 2022 09:57:06 -0800
-Message-ID: <20220211175706.2429063-1-yhs@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220211175655.2426903-1-yhs@fb.com>
-References: <20220211175655.2426903-1-yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-X-FB-Internal: Safe
-X-Proofpoint-GUID: 2VKmzsqiiEyyi6WI_tze0nEZMQ7SOyCS
-X-Proofpoint-ORIG-GUID: 2VKmzsqiiEyyi6WI_tze0nEZMQ7SOyCS
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S1352363AbiBKR7F (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 12:59:05 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A03CF5;
+        Fri, 11 Feb 2022 09:59:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1644602344; x=1676138344;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bG4a0yBTknOUZ8B/vq+2i1CBVRfTMlrNrguDbShw9Fw=;
+  b=h22OHUOWzSWW4JVDqGXSHWveIUmj23aMDQUo9WqoFHww1szJFpHpCNJp
+   vzNiOfKcNIcbCdb186Zu0FepTH+yHR7trqgvFe56JEQBassdjaKXeChjW
+   yIvYkD6c8O6FOQFUGRoTyfeWtMWHU46tAl7T2+cPsg+Ihr6D6evbKHsr9
+   mNaKC4qvYyrRivT3XXyg/8wApRpjuy+iBp/k3HdJgj/AwlB7PHjkseJkK
+   qTzTYXshFT+K82K9uCW4sNGm333KumvvRE3QA+IhU0Ry+2e0ZEyUurpmx
+   +wWAm1aUNOLpjuQ0jSdtqlo8EI8C2jzyaA9+RUvM/mZ8k5C2UiMk9h7j9
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10255"; a="230419969"
+X-IronPort-AV: E=Sophos;i="5.88,361,1635231600"; 
+   d="scan'208";a="230419969"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2022 09:59:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,361,1635231600"; 
+   d="scan'208";a="586424420"
+Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 11 Feb 2022 09:59:01 -0800
+Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nIaCC-0004uC-Vy; Fri, 11 Feb 2022 17:59:00 +0000
+Date:   Sat, 12 Feb 2022 01:58:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org
+Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH 1/4] bpf: Add pin_name into struct bpf_prog_aux
+Message-ID: <202202112213.WGiJCCYD-lkp@intel.com>
+References: <20220211121145.35237-2-laoar.shao@gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-11_05,2022-02-11_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
- adultscore=0 malwarescore=0 bulkscore=0 mlxlogscore=428 clxscore=1015
- phishscore=0 lowpriorityscore=0 spamscore=0 mlxscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202110097
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220211121145.35237-2-laoar.shao@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The patch in [1] intends to fix a bpf_timer related issue,
-but the fix caused existing 'timer' selftest to fail with
-hang or some random errors. After some debug, I found
-an issue with check_and_init_map_value() in the hashtab.c.
-More specifically, in hashtab.c, we have code
-  l_new =3D bpf_map_kmalloc_node(&htab->map, ...)
-  check_and_init_map_value(&htab->map, l_new...)
-Note that bpf_map_kmalloc_node() does not do initialization
-so l_new contains random value.
+Hi Yafang,
 
-The function check_and_init_map_value() intends to zero the
-bpf_spin_lock and bpf_timer if they exist in the map.
-But I found bpf_spin_lock is zero'ed but bpf_timer is not zero'ed.
-With [1], later copy_map_value() skips copying of
-bpf_spin_lock and bpf_timer. The non-zero bpf_timer caused
-random failures for 'timer' selftest.
-Without [1], for both bpf_spin_lock and bpf_timer case,
-bpf_timer will be zero'ed, so 'timer' self test is okay.
+Thank you for the patch! Perhaps something to improve:
 
-For check_and_init_map_value(), why bpf_spin_lock is zero'ed
-properly while bpf_timer not. In bpf uapi header, we have
-  struct bpf_spin_lock {
-        __u32   val;
-  };
-  struct bpf_timer {
-        __u64 :64;
-        __u64 :64;
-  } __attribute__((aligned(8)));
+[auto build test WARNING on bpf/master]
+[also build test WARNING on net/master horms-ipvs/master net-next/master v5.17-rc3 next-20220211]
+[cannot apply to bpf-next/master]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-The initialization code:
-  *(struct bpf_spin_lock *)(dst + map->spin_lock_off) =3D
-      (struct bpf_spin_lock){};
-  *(struct bpf_timer *)(dst + map->timer_off) =3D
-      (struct bpf_timer){};
-It appears the compiler has no obligation to initialize anonymous fields.
-For example, let us use clang with bpf target as below:
-  $ cat t.c
-  struct bpf_timer {
-        unsigned long long :64;
-  };
-  struct bpf_timer2 {
-        unsigned long long a;
-  };
+url:    https://github.com/0day-ci/linux/commits/Yafang-Shao/bpf-Add-more-information-into-bpffs/20220211-201319
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220211/202202112213.WGiJCCYD-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/6cd35bc70f99caee380d84f5ba9256ac5fe03860
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Yafang-Shao/bpf-Add-more-information-into-bpffs/20220211-201319
+        git checkout 6cd35bc70f99caee380d84f5ba9256ac5fe03860
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash kernel/bpf/
 
-  void test(struct bpf_timer *t) {
-    *t =3D (struct bpf_timer){};
-  }
-  void test2(struct bpf_timer2 *t) {
-    *t =3D (struct bpf_timer2){};
-  }
-  $ clang -target bpf -O2 -c -g t.c
-  $ llvm-objdump -d t.o
-   ...
-   0000000000000000 <test>:
-       0:       95 00 00 00 00 00 00 00 exit
-   0000000000000008 <test2>:
-       1:       b7 02 00 00 00 00 00 00 r2 =3D 0
-       2:       7b 21 00 00 00 00 00 00 *(u64 *)(r1 + 0) =3D r2
-       3:       95 00 00 00 00 00 00 00 exit
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-gcc11.2 does not have the above issue. But from
-  INTERNATIONAL STANDARD =C2=A9ISO/IEC ISO/IEC 9899:201x
-  Programming languages =E2=80=94 C
-  http://www.open-std.org/Jtc1/sc22/wg14/www/docs/n1547.pdf
-  page 157:
-  Except where explicitly stated otherwise, for the purposes of
-  this subclause unnamed members of objects of structure and union
-  type do not participate in initialization. Unnamed members of
-  structure objects have indeterminate value even after initialization.
+All warnings (new ones prefixed by >>):
 
-To fix the problem, let use memset for bpf_timer case in
-check_and_init_map_value(). For consistency, memset is also
-used for bpf_spin_lock case.
+   kernel/bpf/inode.c: In function 'bpf_obj_do_pin':
+>> kernel/bpf/inode.c:469:24: warning: ignoring return value of 'strncpy_from_user' declared with attribute 'warn_unused_result' [-Wunused-result]
+     469 |                 (void) strncpy_from_user(aux->pin_name, pathname, BPF_PIN_NAME_LEN);
+         |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  [1] https://lore.kernel.org/bpf/20220209070324.1093182-2-memxor@gmail.com/
 
-Fixes: 68134668c17f3 ("bpf: Add map side support for bpf timers.")
-Signed-off-by: Yonghong Song <yhs@fb.com>
+vim +469 kernel/bpf/inode.c
+
+   437	
+   438	static int bpf_obj_do_pin(const char __user *pathname, void *raw,
+   439				  enum bpf_type type)
+   440	{
+   441		struct bpf_prog_aux *aux;
+   442		struct bpf_prog *prog;
+   443		struct dentry *dentry;
+   444		struct inode *dir;
+   445		struct path path;
+   446		umode_t mode;
+   447		int ret;
+   448	
+   449		dentry = user_path_create(AT_FDCWD, pathname, &path, 0);
+   450		if (IS_ERR(dentry))
+   451			return PTR_ERR(dentry);
+   452	
+   453		mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
+   454	
+   455		ret = security_path_mknod(&path, dentry, mode, 0);
+   456		if (ret)
+   457			goto out;
+   458	
+   459		dir = d_inode(path.dentry);
+   460		if (dir->i_op != &bpf_dir_iops) {
+   461			ret = -EPERM;
+   462			goto out;
+   463		}
+   464	
+   465		switch (type) {
+   466		case BPF_TYPE_PROG:
+   467			prog = raw;
+   468			aux = prog->aux;
+ > 469			(void) strncpy_from_user(aux->pin_name, pathname, BPF_PIN_NAME_LEN);
+   470			aux->pin_name[BPF_PIN_NAME_LEN - 1] = '\0';
+   471			ret = vfs_mkobj(dentry, mode, bpf_mkprog, raw);
+   472			break;
+   473		case BPF_TYPE_MAP:
+   474			ret = vfs_mkobj(dentry, mode, bpf_mkmap, raw);
+   475			break;
+   476		case BPF_TYPE_LINK:
+   477			ret = vfs_mkobj(dentry, mode, bpf_mklink, raw);
+   478			break;
+   479		default:
+   480			ret = -EPERM;
+   481		}
+   482	out:
+   483		done_path_create(&path, dentry);
+   484		return ret;
+   485	}
+   486	
+
 ---
- include/linux/bpf.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index fa517ae604ad..1a4c73742a1f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -209,11 +209,9 @@ static inline bool map_value_has_timer(const struct bp=
-f_map *map)
- static inline void check_and_init_map_value(struct bpf_map *map, void *dst)
- {
- 	if (unlikely(map_value_has_spin_lock(map)))
--		*(struct bpf_spin_lock *)(dst + map->spin_lock_off) =3D
--			(struct bpf_spin_lock){};
-+		memset(dst + map->spin_lock_off, 0, sizeof(struct bpf_spin_lock));
- 	if (unlikely(map_value_has_timer(map)))
--		*(struct bpf_timer *)(dst + map->timer_off) =3D
--			(struct bpf_timer){};
-+		memset(dst + map->timer_off, 0, sizeof(struct bpf_timer));
- }
-=20
- /* copy everything but bpf_spin_lock and bpf_timer. There could be one of =
-each. */
---=20
-2.30.2
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
