@@ -2,52 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDFC4B318A
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 00:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBEB4B3193
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 00:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345849AbiBKXzD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 18:55:03 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46924 "EHLO
+        id S1349511AbiBKX7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 18:59:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244501AbiBKXzD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 18:55:03 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265F4D57;
-        Fri, 11 Feb 2022 15:55:01 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D9072B823AC;
-        Fri, 11 Feb 2022 23:54:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2744EC340E9;
-        Fri, 11 Feb 2022 23:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644623698;
-        bh=i3EIrcFRguUXkqO7NnUo44bcQNMcHfq5i1j7dhUK3BE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=T2u4mUJRSHXvmISE7SHPptFnL0d5aMWT0gGipehf5HypFRpseXdYhlVpAIF8YR0b1
-         Op5DeQ1e5++DotOGzJuHz+MfCNY/2ZJ8/UW6UHOektdMWRIw+0fV0X4htmQtweiUdF
-         xNQ0rnbjQ/FQ50MztmKPGpjvCJ+Lw2y/5M8dYP6ghUlha12V1xWYulpdEdEFVVSqLg
-         09oPlGeN81wvUlgbAN5RmY94dvNnfPwsGQ1+e7rJdP+3JKa1VSUtp4vWeyVu6Bq8YU
-         n6vETtJYIqCmooBtpGN+EuG8l0lBarcqcfOJYOyMXv8ju/jWV+B1MXd7qSqPlpvH/O
-         obXy3VjzS6vgg==
-Date:   Fri, 11 Feb 2022 15:54:56 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Song Liu <song@kernel.org>
-Cc:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <kernel-team@fb.com>,
-        <sfr@canb.auug.org.au>
-Subject: Re: [PATCH bpf-next] bpf: fix bpf_prog_pack build for
- ppc64_defconfig
-Message-ID: <20220211155456.0195575a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20220211014915.2403508-1-song@kernel.org>
-References: <20220211014915.2403508-1-song@kernel.org>
+        with ESMTP id S242360AbiBKX7B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 18:59:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F91BD6C
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 15:58:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644623938;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9jA+96/Jprj8bAz/BjNKVCdwJgPgeH8b3zEaKMPpYE=;
+        b=QTUTNWnKixkpDEpgR1ziVsXdNh7OLuNVvLYy/s/uBrdt8slPSD5cgK+fYDHUDFy8/ayzsw
+        rjQyu7IIVlfKm6JsKLHslRVpnZ83ijD2DD4WsvRjVeUib0pBS5IHff+dZP8JTtarBv0tBV
+        QOayDgfCli1gnj96OtcYTk1VmOIzxS8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-147-CdaxL0r6OlyqEMEFrDUY1A-1; Fri, 11 Feb 2022 18:58:57 -0500
+X-MC-Unique: CdaxL0r6OlyqEMEFrDUY1A-1
+Received: by mail-ed1-f69.google.com with SMTP id l3-20020a50cbc3000000b0041083c11173so942170edi.4
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 15:58:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=i9jA+96/Jprj8bAz/BjNKVCdwJgPgeH8b3zEaKMPpYE=;
+        b=yjlhSbFncDaE7PxnIOuZvApDPEHGzBiJrovp9ztN07rZwVs0q2OBVeHn+ek85DangA
+         yhkW8kJQhsRQbrFVTzgPfn1RV7RIg1Z8cO1oTN4+3OPm4SWtE/ZWyyy4vWqimCXXSTvk
+         uUIKH1vd30dJDp/aRu9kyZFQGEwITZxcCdt4D3fV69mENxDqSSigLDWrsR4Nn7aqOpFD
+         Vv6dN+gijTcretTARvmXDXuP7jjeyzPHrC+gix12MvBHvV4tCwE2es+MU76gper+/wUh
+         4FQOBcgLWjYaQa9sIq2seitVVFoiaWrbERDfoS6MrGdwS387L/LZMeaeB7LSj2ZhKTrH
+         gF5Q==
+X-Gm-Message-State: AOAM5336GLEpha9N8XA+w0bBP1qwbsu2qFfTKEgO2XZxMY9LGruqZSnP
+        daGjlWe/7DwnUQyOfUvYHrKBask5r/SRfyEwvbwonxXWTdP9JCiOmLj37g1Iygm+oEaAr9RKtQW
+        DWtnQTWfnMdie
+X-Received: by 2002:a05:6402:490:: with SMTP id k16mr4400484edv.204.1644623934904;
+        Fri, 11 Feb 2022 15:58:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxxdoPzAxwGhzRv/W37UgGSGb7H6JE3CKofQSeEsHRYqdHiBu2ZsRGlgxcQPDeVnnwzn7SAaQ==
+X-Received: by 2002:a05:6402:490:: with SMTP id k16mr4400400edv.204.1644623933217;
+        Fri, 11 Feb 2022 15:58:53 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l7sm11349032edb.53.2022.02.11.15.58.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Feb 2022 15:58:52 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id F05DA102E52; Sat, 12 Feb 2022 00:58:51 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        Yonghong Song <yhs@fb.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: Re: BTF compatibility issue across builds
+In-Reply-To: <CAEf4BzYJCHB-oYqFqJTfHU4D795ewgkndQtR1Po5H521fH0oMg@mail.gmail.com>
+References: <YfK18x/XrYL4Vw8o@syu-laptop>
+ <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
+ <20220210100153.GA90679@kunlun.suse.cz>
+ <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
+ <87a6ex8gm8.fsf@toke.dk>
+ <CAEf4BzYJCHB-oYqFqJTfHU4D795ewgkndQtR1Po5H521fH0oMg@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Sat, 12 Feb 2022 00:58:51 +0100
+Message-ID: <87v8xl6jlw.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,51 +89,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Feb 2022 17:49:15 -0800 Song Liu wrote:
-> bpf_prog_pack causes build error with powerpc ppc64_defconfig:
-> 
-> kernel/bpf/core.c:830:23: error: variably modified 'bitmap' at file scope
->   830 |         unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
->       |                       ^~~~~~
+Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-No idea what this error means but...
+> On Fri, Feb 11, 2022 at 9:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
+dhat.com> wrote:
+>>
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Thu, Feb 10, 2022 at 2:01 AM Michal Such=C3=A1nek <msuchanek@suse.d=
+e> wrote:
+>> >>
+>> >> Hello,
+>> >>
+>> >> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
+>> >> >
+>> >> >
+>> >> > On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
+>> >> > > Hi,
+>> >> > >
+>> >> > > We recently run into module load failure related to split BTF on =
+openSUSE
+>> >> > > Tumbleweed[1], which I believe is something that may also happen =
+on other
+>> >> > > rolling distros.
+>> >> > >
+>> >> > > The error looks like the follow (though failure is not limited to=
+ ipheth)
+>> >> > >
+>> >> > >      BPF:[103111] STRUCT BPF:size=3D152 vlen=3D2 BPF: BPF:Invalid=
+ name BPF:
+>> >> > >
+>> >> > >      failed to validate module [ipheth] BTF: -22
+>> >> > >
+>> >> > > The error comes down to trying to load BTF of *kernel modules fro=
+m a
+>> >> > > different build* than the runtime kernel (but the source is the s=
+ame), where
+>> >> > > the base BTF of the two build is different.
+>> >> > >
+>> >> > > While it may be too far stretched to call this a bug, solving thi=
+s might
+>> >> > > make BTF adoption easier. I'd natively think that we could furthe=
+r split
+>> >> > > base BTF into two part to avoid this issue, where .BTF only conta=
+in exported
+>> >> > > types, and the other (still residing in vmlinux) holds the unexpo=
+rted types.
+>> >> >
+>> >> > What is the exported types? The types used by export symbols?
+>> >> > This for sure will increase btf handling complexity.
+>> >>
+>> >> And it will not actually help.
+>> >>
+>> >> We have modversion ABI which checks the checksum of the symbols that =
+the
+>> >> module imports and fails the load if the checksum for these symbols d=
+oes
+>> >> not match. It's not concerned with symbols not exported, it's not
+>> >> concerned with symbols not used by the module. This is something that=
+ is
+>> >> sustainable across kernel rebuilds with minor fixes/features and what
+>> >> distributions watch for.
+>> >>
+>> >> Now with BTF the situation is vastly different. There are at least th=
+ree
+>> >> bugs:
+>> >>
+>> >>  - The BTF check is global for all symbols, not for the symbols the
+>> >>    module uses. This is not sustainable. Given the BTF is supposed to
+>> >>    allow linking BPF programs that were built in completely different
+>> >>    environment with the kernel it is completely within the scope of B=
+TF
+>> >>    to solve this problem, it's just neglected.
+>> >
+>> > You refer to BTF use in CO-RE with the latter. It's just one
+>> > application of BTF and it doesn't follow that you can do the same with
+>> > module BTF. It's not a neglect, it's a very big technical difficulty.
+>> >
+>> > Each module's BTFs are designed as logical extensions of vmlinux BTF.
+>> > And each module BTF is independent and isolated from other modules
+>> > extension of the same vmlinux BTF. The way that BTF format is
+>> > designed, any tiny difference in vmlinux BTF effectively invalidates
+>> > all modules' BTFs and they have to be rebuilt.
+>> >
+>> > Imagine that only one BTF type is added to vmlinux BTF. Last BTF type
+>> > ID in vmlinux BTF is shifted from, say, 1000 to 1001. While previously
+>> > every module's BTF type ID started with 1001, now they all have to
+>> > start with 1002 and be shifted by 1.
+>> >
+>> > Now let's say that the order of two BTF types in vmlinux BTF is
+>> > changed, say type 10 becomes type 20 and type 20 becomes type 10 (just
+>> > because of slight difference in DWARF, for instance). Any type
+>> > reference to 10 or 20 in any module BTF has to be renumbered now.
+>> >
+>> > Another one, let's say we add a new string to vmlinux BTF string
+>> > section somewhere at the beginning, say "abc" at offset 100. Any
+>> > string offset after 100 now has to be shifted *both* in vmlinux BTF
+>> > and all module BTFs. And also any string reference in module BTFs have
+>> > to be adjusted as well because now each module's BTF's logical string
+>> > offset is starting at 4 logical bytes higher (due to "abc\0" being
+>> > added and shifting everything right).
+>> >
+>> > As you can see, any tiny change in vmlinux BTF, no matter where,
+>> > beginning, middle, or end, causes massive changes in type IDs and
+>> > offsets everywhere. It's impractical to do any local adjustments, it's
+>> > much simpler and more reliable to completely regenerate BTF
+>> > completely.
+>>
+>> This seems incredibly brittle, though? IIUC this means that if you want
+>> BTF in your modules you *must* have not only the kernel headers of the
+>> kernel it's going to run on, but the full BTF information for the exact
+>
+> From BTF perspective, only vmlinux BTF. Having exact kernel headers
+> would minimize type information duplication.
 
-> Fix it by turning bitmap into a 0-length array.
-> 
-> Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Song Liu <song@kernel.org>
-> ---
->  kernel/bpf/core.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 42d96549a804..44623c9b5bb1 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -827,7 +827,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
->  struct bpf_prog_pack {
->  	struct list_head list;
->  	void *ptr;
-> -	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
-> +	unsigned long bitmap[];
+Right, I meant you'd need the kernel headers to compile the module, and
+the vmlinux BTF to build the module BTF info.
 
-This is really asking to be DECLARE_BITMAP(), does that fix the issue?
+>> kernel image you're going to load that module on? How is that supposed
+>> to work for any kind of environment where everything is not built
+>> together? Third-party modules for distribution kernels is the obvious
+>> example that comes to mind here, but as this thread shows, they don't
+>> necessarily even have to be third party...
+>>
+>> How would you go about "completely regenerating BTF" in practice for a
+>> third-party module, say?
+>
+> Great questions. I was kind of hoping you'll have some suggestions as
+> well, though. Not just complaints.
 
->  };
->  
->  #define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
-> @@ -840,7 +840,7 @@ static struct bpf_prog_pack *alloc_new_pack(void)
->  {
->  	struct bpf_prog_pack *pack;
->  
-> -	pack = kzalloc(sizeof(*pack), GFP_KERNEL);
-> +	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
+Well, I kinda took your "not really a bug either" comment to mean you
+weren't really open to changing the current behaviour. But if that was a
+misunderstanding on my part, I do have one thought:
 
-Otherwise you may want to use struct_size(pack, bitmap, BITS...).
-One of the bots will soon send us a patch to do that.
+The "partial BTF" thing in the modules is done to save space, right?
+I.e., in principle there would be nothing preventing a module from
+including a full (self-contained) set of BTF in its .ko when it is
+compiled? Because if so, we could allow that as an optional mode that
+can be enabled if you don't mind taking the size hit (any idea how large
+that usually is, BTW?). And then we could teach 'modprobe' to do a fresh
+deduplication of this full BTF set against the vmlinux BTF before
+loading such a module into the kernel.
 
->  	if (!pack)
->  		return NULL;
->  	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
+Or am I missing some reason why that wouldn't work?
+
+-Toke
 
