@@ -2,84 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 496D64B2619
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 13:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6884B2697
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 13:58:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350220AbiBKMo7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 07:44:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47212 "EHLO
+        id S1350367AbiBKM6B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Feb 2022 07:58:01 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349788AbiBKMo6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 07:44:58 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45DBF58;
-        Fri, 11 Feb 2022 04:44:57 -0800 (PST)
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nIVID-000AAh-C5; Fri, 11 Feb 2022 13:44:53 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nIVID-000SsD-1w; Fri, 11 Feb 2022 13:44:53 +0100
-Subject: Re: [PATCH 1/4] bpf: Add pin_name into struct bpf_prog_aux
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20220211121145.35237-1-laoar.shao@gmail.com>
- <20220211121145.35237-2-laoar.shao@gmail.com>
- <9db9fcb9-69de-5fb5-c80a-ade5f36ea039@iogearbox.net>
-Message-ID: <f0578614-a27a-53f5-0450-a4dd5775edee@iogearbox.net>
-Date:   Fri, 11 Feb 2022 13:44:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <9db9fcb9-69de-5fb5-c80a-ade5f36ea039@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        with ESMTP id S1349140AbiBKM54 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 07:57:56 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DCF1C0;
+        Fri, 11 Feb 2022 04:57:54 -0800 (PST)
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JwDDQ5zv0z686th;
+        Fri, 11 Feb 2022 20:57:42 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 11 Feb 2022 13:57:52 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
+ Fri, 11 Feb 2022 13:57:52 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Florent Revest <revest@google.com>
+Subject: RE: [PATCH] ima: Calculate digest in ima_inode_hash() if not
+ available
+Thread-Topic: [PATCH] ima: Calculate digest in ima_inode_hash() if not
+ available
+Thread-Index: AQHYHzTu9kKzqhEAHUiW0cSG9MzvPayOOgmAgAAS5hA=
+Date:   Fri, 11 Feb 2022 12:57:52 +0000
+Message-ID: <3d0bdb4599e340a78b06094797e42bc9@huawei.com>
+References: <20220211104828.4061334-1-roberto.sassu@huawei.com>
+ <f9ccc9be6cc084e9cab6cd75e87735492d120002.camel@linux.ibm.com>
+In-Reply-To: <f9ccc9be6cc084e9cab6cd75e87735492d120002.camel@linux.ibm.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26450/Fri Feb 11 10:24:09 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/11/22 1:43 PM, Daniel Borkmann wrote:
-> On 2/11/22 1:11 PM, Yafang Shao wrote:
->> A new member pin_name is added into struct bpf_prog_aux, which will be
->> set when the prog is set and cleared when the pinned file is removed.
->>
->> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->> ---
->>   include/linux/bpf.h      |  2 ++
->>   include/uapi/linux/bpf.h |  1 +
->>   kernel/bpf/inode.c       | 20 +++++++++++++++++++-
->>   3 files changed, 22 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index 0ceb25b..9cf8055 100644
->> --- a/include/linux/bpf.h
->> +++ b/include/linux/bpf.h
->> @@ -933,6 +933,8 @@ struct bpf_prog_aux {
->>           struct work_struct work;
->>           struct rcu_head    rcu;
->>       };
->> +
->> +    char pin_name[BPF_PIN_NAME_LEN];
->>   };
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Friday, February 11, 2022 1:41 PM
+> Hi Roberto,
 > 
-> I'm afraid this is not possible. You are assuming a 1:1 relationship between prog
-> and pin location, but it's really a 1:n (prog can be pinned in multiple locations
-> and also across multiple mount instances). Also, you can create hard links of pins
-> which are not handled via bpf_obj_do_pin().
+> On Fri, 2022-02-11 at 11:48 +0100, Roberto Sassu wrote:
+> > __ima_inode_hash() checks if a digest has been already calculated by
+> > looking for the integrity_iint_cache structure associated to the passed
+> > inode.
+> >
+> > Users of ima_file_hash() and ima_inode_hash() (e.g. eBPF) might be
+> > interested in obtaining the information without having to setup an IMA
+> > policy so that the digest is always available at the time they call one of
+> > those functions.
+> 
+> Things obviously changed, but the original use case for this interface,
+> as I recall, was a quick way to determine if a file had been accessed
+> on the system.
 
-(Same is also true for BPF maps wrt patch 2.)
+Hi Mimi
+
+thanks for the info. I was not sure if I should export a new
+function or reuse the existing one. In my use case, just calculating
+the digest would be sufficient.
+
+For finding whether a file was accessed (assuming that it matches
+the policy), probably bpf_ima_inode_hash() is not anyway too reliable.
+If integrity_iint_cache is evicted from the memory, it would report
+that the inode was not accessed even if it was.
+
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
+
+> --
+> thanks,
+> 
+> Mimi
+
