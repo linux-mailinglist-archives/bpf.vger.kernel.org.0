@@ -2,133 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D66E54B2995
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 17:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67944B2ADF
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 17:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350006AbiBKQDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 11:03:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36090 "EHLO
+        id S243634AbiBKQrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 11:47:46 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349953AbiBKQDR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 11:03:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0B8512C
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 08:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644595394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5SUmE6QHUf23szu6zr/IYA5uaUImDnL5V0qML7K/U8Y=;
-        b=eOfbdTwMLKdF/MYJBy/eAd/k1B0lk/bEzVBtphrDk0vOyWdG0W+ffgiHWts2LRyZDiq9Iw
-        simPKWZYRTlUiA79gKYdqCZ0MOv3TlNBY4Yq7YFGYzAVSsOL1zZEm4qm87i5lQBlKu4FNr
-        sRb0fdlRdZJEfnnOQWoSe20lguwsBTQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-266-zeOJwmdBMHqoFNGYSkmVMA-1; Fri, 11 Feb 2022 11:03:13 -0500
-X-MC-Unique: zeOJwmdBMHqoFNGYSkmVMA-1
-Received: by mail-ej1-f71.google.com with SMTP id v2-20020a170906292200b006a94a27f903so4315041ejd.8
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 08:03:13 -0800 (PST)
+        with ESMTP id S230029AbiBKQrp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 11:47:45 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC14FD
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 08:47:44 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id 10so5140696plj.1
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 08:47:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vJ7J4K2EFU3/EsnFRf8ufMOj7l9QdZ9LQgXKhr/Xz2Q=;
+        b=YaB3UGWaaTJ+vP6XrYwJY7RZ7ts1Nucck//dfLizzz/vvybX1LLTCcSLdfXPH60q7T
+         vFgHHxBK09EXFVYUoJAgSccZkDKOP+D8QCetgQozoveesK8r6Zc9ZPwIl69O1oJ2CY5R
+         Vablp1I6kcRF3DPTbOkC8pZYNj4ZIfd0jIOTKRRWTWb4GVw9z1Sy4MwUuP4hlEDbXIFC
+         MgkgeaTVxwyiH3b0j7lhh+whyz/Ypak98OhwDJ9z62ypYdLc/IUZqM1g2d7ZFB51fAyH
+         lJNkLIoEaNKMekleIy+noVCzUyKpLJiizwCC30wa2VghSeAzv0vC0wczZOrcPaTeON/w
+         NEqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=5SUmE6QHUf23szu6zr/IYA5uaUImDnL5V0qML7K/U8Y=;
-        b=xsTXa0K4wS4lSoqZ6NEr4pVShuk44/o6ACnbFgt3Fn1QGWqRJM76ki9OAvQb5VsWS7
-         waXLjQxgwLnJyt0U1mBBMISWo6Bb/bFPHq+PYuK1quPyNr5qAnXuzMpaqFYNNkQAy5T1
-         QcmnYlu3cG2RWmGo15lCMuqzk5teXVdqhtLlRajlLtHCRRY8O8Hx1czfjkRmPaor/esc
-         FlK/o/A2Cg07q9IoVXjvkkvA0HBG2HUszadPOteU2kmg6taRcP3dUkKFqc9mnM2PLSP3
-         aEoOPD0YCjmJMYg7m0t/e5NAB4Sd86/3DCIXGJnTDf33vN4fVvBIdRRKH82IgzbrNW4u
-         OkyA==
-X-Gm-Message-State: AOAM531pT/ZI8JhdkykpPaBCdGU0yiPArEEhGhDaIYDiyQgrw54ev3NP
-        TnTlvfX//k09bR60xe/hv/jpWqeX3TCMsRVRv0u7rk/4P1JCkw0dbjGOonZf1Ro3fJNqFwZcqPk
-        ovH3zDQYrdmkp
-X-Received: by 2002:a05:6402:2689:: with SMTP id w9mr2633489edd.68.1644595391145;
-        Fri, 11 Feb 2022 08:03:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyvlPI4HeGgTB8NPo1F1+3GqMmRJDR/JlN4rymRpms8At4iTCudgKFtJWA+B6bqZnQ1cgHh2Q==
-X-Received: by 2002:a05:6402:2689:: with SMTP id w9mr2633358edd.68.1644595389929;
-        Fri, 11 Feb 2022 08:03:09 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id en9sm6443160edb.71.2022.02.11.08.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Feb 2022 08:03:08 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AA92F102D4A; Fri, 11 Feb 2022 17:03:07 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: Add "live packet" mode for XDP in
- bpf_prog_run()
-In-Reply-To: <20220211071952.t7e6shipuc5shblv@kafai-mbp.dhcp.thefacebook.com>
-References: <20220107215438.321922-1-toke@redhat.com>
- <20220107215438.321922-2-toke@redhat.com>
- <CAADnVQ+uftgnRQa5nvG4FTJga_=_FMAGxuiPB3O=AFKfEdOg=A@mail.gmail.com>
- <87pmp28iwe.fsf@toke.dk>
- <CAADnVQLWjbm03-3NHYyEx98tWRN68LSaOd3R9fjJoHY5cYoEJg@mail.gmail.com>
- <87mtk67zfm.fsf@toke.dk>
- <20220109022448.bxgatdsx3obvipbu@ast-mbp.dhcp.thefacebook.com>
- <87ee5h852v.fsf@toke.dk>
- <CAADnVQLk6TLdA7EG8TKGHM_R93GgQf76J60PEJohjup8JaP+Xw@mail.gmail.com>
- <20220211071952.t7e6shipuc5shblv@kafai-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 11 Feb 2022 17:03:07 +0100
-Message-ID: <87czjt8k78.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vJ7J4K2EFU3/EsnFRf8ufMOj7l9QdZ9LQgXKhr/Xz2Q=;
+        b=O+vLnvCka2mrHB1dUbm16cGLSfCQiVTVhTDb7M38QsMK4301xmKBvBcVFNLU86uSRj
+         ZFz1EH2+a47dMDZXj/OxwD8pWn/+grU/3MG5gsF6ZJZSRGUMMwDHlqcwfdBuLxc7SfFv
+         P/Oa6+oufJTcR4znL6qQ4BeHaEDKZIWQj13afUqVyH9xV1BjNAvqyuXkrQQjEdAfBxG+
+         p2j1uI3iRxcWDiZvyKs0RH8QAeYKqMOBY5imF9Xa97wPIEV/2b3lYJKgXyuGPcgLPaT2
+         dkPT2Qe9lfFwDBKdkLPFgP7zd00cZ0j1guS2SCXnKPsLFtdg6dBulKxVngzQDb3mI6aX
+         JJNw==
+X-Gm-Message-State: AOAM5336AxMFSqy0ds0y/qtETQEa+8yr4mqCNzg605g86JFMppiWjM3t
+        HhD5w5vk7cBDSzNS466xz0jn7FzbsH6ccwXecEq4+Abu
+X-Google-Smtp-Source: ABdhPJzORcWSIHZJyfJt5QTXMDFtmzWBc7By9ATdIxTffnoZ9MB5OPJasXb+VV01jtLcq0JA5m8N4M0KHUk0ha4Mm60=
+X-Received: by 2002:a17:90b:1a8c:: with SMTP id ng12mr1260673pjb.62.1644598063736;
+ Fri, 11 Feb 2022 08:47:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220211152054.1584283-1-yhs@fb.com> <20220211152059.1584701-1-yhs@fb.com>
+In-Reply-To: <20220211152059.1584701-1-yhs@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 11 Feb 2022 08:47:32 -0800
+Message-ID: <CAADnVQJAMf0u=7gcpuNVgx7DQ8Zayvg4KGHYnQ7eNPjbVmc=cw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: fix a bpf_timer initialization issue
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+On Fri, Feb 11, 2022 at 7:21 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>   struct bpf_spin_lock {
+>         __u32   val;
+>   };
+>   struct bpf_timer {
+>         __u64 :64;
+>         __u64 :64;
+>   } __attribute__((aligned(8)));
+>
+> The initialization code:
+>   *(struct bpf_spin_lock *)(dst + map->spin_lock_off) =
+>       (struct bpf_spin_lock){};
+>   *(struct bpf_timer *)(dst + map->timer_off) =
+>       (struct bpf_timer){};
+> It appears the compiler has no obligation to initialize anonymous fields.
+> For example, let us use clang with bpf target as below:
+>   $ cat t.c
+>   struct bpf_timer {
+>         unsigned long long :64;
+>   };
+>   struct bpf_timer2 {
+>         unsigned long long a;
+>   };
+>
+>   void test(struct bpf_timer *t) {
+>     *t = (struct bpf_timer){};
+>   }
+>   void test2(struct bpf_timer2 *t) {
+>     *t = (struct bpf_timer2){};
+>   }
+>   $ clang -target bpf -O2 -c -g t.c
+>   $ llvm-objdump -d t.o
+>    ...
+>    0000000000000000 <test>:
+>        0:       95 00 00 00 00 00 00 00 exit
+>    0000000000000008 <test2>:
+>        1:       b7 02 00 00 00 00 00 00 r2 = 0
+>        2:       7b 21 00 00 00 00 00 00 *(u64 *)(r1 + 0) = r2
+>        3:       95 00 00 00 00 00 00 00 exit
 
-> On Wed, Jan 12, 2022 at 05:37:54PM -0800, Alexei Starovoitov wrote:
->> On Sun, Jan 9, 2022 at 4:30 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->> >
->> > I left that out on purpose: I feel it's exposing an internal
->> > implementation detail as UAPI (as you said). And I'm not convinced it
->> > really needed (or helpful) - see below.
->>=20
->> It's irrelevant whether it's documented or not.
->> Once this implementation detail is being relied upon
->> by user space it becomes an undocumented uapi that we cannot change.
->>=20
->> > I'll try implementing a TCP stream mode in xdp_trafficgen just to make
->> > sure I'm not missing something. But I believe that sending out a stream
->> > of packets that looks like a coherent TCP stream should be simple
->> > enough, at least. Dealing with the full handshake + CWND control loop
->> > will be harder, though, and right now I think it'll require multiple
->> > trips back to userspace.
->>=20
->> The patch set looks very close to being able to do such TCP streaming.
->> Let's make sure nothing is missing from API before we land it.
-> Hi Toke,  I am also looking at ways to blast tcp packets by using
-> bpf to overcome the pktgen udp-only limitation.
-> Are you planning to respin with a TCP stream mode in xdp_trafficgen ?
-> Thanks !
+wow!
+Is this a clang only behavior or gcc does the same "smart" optimization?
 
-Yes, working on it! Got sidetracked a bit, but hoping to have something
-to show for my efforts sometime next week :)
-
--Toke
-
+We've seen this issue with padding, but I could have never guessed
+that compiler will do so for explicit anon fields.
+I wonder what standard says and what other kernel code is broken
+by this "optimization".
