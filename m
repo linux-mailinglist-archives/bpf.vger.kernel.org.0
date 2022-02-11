@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 956C34B2F28
+	by mail.lfdr.de (Postfix) with ESMTP id E3BE04B2F29
 	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 22:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbiBKVPZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Feb 2022 16:15:25 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42708 "EHLO
+        id S238212AbiBKVP3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Feb 2022 16:15:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229728AbiBKVPT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 16:15:19 -0500
+        with ESMTP id S229728AbiBKVP3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 16:15:29 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA32AC52
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AF9C4E
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:27 -0800 (PST)
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21BI8psW001311
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:16 -0800
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21BI914R001458
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:26 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e5vtqht13-1
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e5vtqht1y-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:15 -0800
-Received: from twshared22811.39.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 13:15:26 -0800
+Received: from twshared45270.41.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 11 Feb 2022 13:15:14 -0800
+ 15.1.2308.21; Fri, 11 Feb 2022 13:15:24 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 6706610BBA507; Fri, 11 Feb 2022 13:15:11 -0800 (PST)
+        id 735BB10BBA512; Fri, 11 Feb 2022 13:15:13 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
 CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v3 bpf-next 2/3] libbpf: support custom SEC() handlers
-Date:   Fri, 11 Feb 2022 13:14:49 -0800
-Message-ID: <20220211211450.2224877-3-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 3/3] selftests/bpf: add custom SEC() handling selftest
+Date:   Fri, 11 Feb 2022 13:14:50 -0800
+Message-ID: <20220211211450.2224877-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220211211450.2224877-1-andrii@kernel.org>
 References: <20220211211450.2224877-1-andrii@kernel.org>
@@ -41,442 +41,292 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: y_RHgLfVQIgfviw1zPJ5Q020RowGhJZB
-X-Proofpoint-GUID: y_RHgLfVQIgfviw1zPJ5Q020RowGhJZB
+X-Proofpoint-ORIG-GUID: VDcVKnHJ8G_UXkdzWwBR631rd7thoye_
+X-Proofpoint-GUID: VDcVKnHJ8G_UXkdzWwBR631rd7thoye_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-11_05,2022-02-11_01,2021-12-02_01
 X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0 bulkscore=0
  lowpriorityscore=0 clxscore=1015 mlxscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=795 suspectscore=0 adultscore=0
+ priorityscore=1501 mlxlogscore=999 suspectscore=0 adultscore=0
  impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2201110000 definitions=main-2202110107
 X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow registering and unregistering custom handlers for BPF program.
-This allows user applications and libraries to plug into libbpf's
-declarative SEC() definition handling logic. This allows to offload
-complex and intricate custom logic into external libraries, but still
-provide a great user experience.
+Add a selftest validating various aspects of libbpf's handling of custom
+SEC() handlers. It also demonstrates how libraries can ensure very early
+callbacks registration and unregistration using
+__attribute__((constructor))/__attribute__((destructor)) functions.
 
-One such example is USDT handling library, which has a lot of code and
-complexity which doesn't make sense to put into libbpf directly, but it
-would be really great for users to be able to specify BPF programs with
-something like SEC("usdt/<path-to-binary>:<usdt_provider>:<usdt_name>")
-and have correct BPF program type set (BPF_PROGRAM_TYPE_KPROBE, as it is
-uprobe) and even support BPF skeleton's auto-attach logic.
-
-In some cases, it might be even good idea to override libbpf's default
-handling, like for SEC("perf_event") programs. With custom library, it's
-possible to extend logic to support specifying perf event specification
-right there in SEC() definition without burdening libbpf with lots of
-custom logic or extra library dependecies (e.g., libpfm4). With current
-patch it's possible to override libbpf's SEC("perf_event") handling and
-specify a completely custom ones.
-
-Further, it's possible to specify a generic fallback handling for any
-SEC() that doesn't match any other custom or standard libbpf handlers.
-This allows to accommodate whatever legacy use cases there might be, if
-necessary.
-
-See doc comments for libbpf_register_prog_handler() and
-libbpf_unregister_prog_handler() for detailed semantics.
-
-This patch also bumps libbpf development version to v0.8 and adds new
-APIs there.
-
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c         | 204 ++++++++++++++++++++++++---------
- tools/lib/bpf/libbpf.h         |  87 ++++++++++++++
- tools/lib/bpf/libbpf.map       |   6 +
- tools/lib/bpf/libbpf_version.h |   2 +-
- 4 files changed, 246 insertions(+), 53 deletions(-)
+ .../bpf/prog_tests/custom_sec_handlers.c      | 176 ++++++++++++++++++
+ .../bpf/progs/test_custom_sec_handlers.c      |  63 +++++++
+ 2 files changed, 239 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index c4acb72d3c7e..2849017aec07 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -201,13 +201,6 @@ struct reloc_desc {
- 	};
- };
- 
--typedef int (*libbpf_prog_init_fn_t)(struct bpf_program *prog, long cookie);
--typedef int (*libbpf_prog_preload_fn_t)(struct bpf_program *prog,
--					struct bpf_prog_load_opts *opts, long cookie);
--/* If auto-attach is not supported, callback should return 0 and set link to NULL */
--typedef int (*libbpf_prog_attach_fn_t)(const struct bpf_program *prog, long cookie,
--				       struct bpf_link **link);
--
- /* stored as sec_def->cookie for all libbpf-supported SEC()s */
- enum sec_def_flags {
- 	SEC_NONE = 0,
-@@ -235,10 +228,11 @@ enum sec_def_flags {
- };
- 
- struct bpf_sec_def {
--	const char *sec;
-+	char *sec;
- 	enum bpf_prog_type prog_type;
- 	enum bpf_attach_type expected_attach_type;
- 	long cookie;
-+	int handler_id;
- 
- 	libbpf_prog_init_fn_t init_fn;
- 	libbpf_prog_preload_fn_t preload_fn;
-@@ -8574,7 +8568,7 @@ int bpf_program__set_log_buf(struct bpf_program *prog, char *log_buf, size_t log
- }
- 
- #define SEC_DEF(sec_pfx, ptype, atype, flags, ...) {			    \
--	.sec = sec_pfx,							    \
-+	.sec = (char *)sec_pfx,						    \
- 	.prog_type = BPF_PROG_TYPE_##ptype,				    \
- 	.expected_attach_type = atype,					    \
- 	.cookie = (long)(flags),					    \
-@@ -8667,61 +8661,167 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("sk_lookup",		SK_LOOKUP, BPF_SK_LOOKUP, SEC_ATTACHABLE | SEC_SLOPPY_PFX),
- };
- 
--#define MAX_TYPE_NAME_SIZE 32
-+static size_t custom_sec_def_cnt;
-+static struct bpf_sec_def *custom_sec_defs;
-+static struct bpf_sec_def custom_fallback_def;
-+static bool has_custom_fallback_def;
- 
--static const struct bpf_sec_def *find_sec_def(const char *sec_name)
-+static int last_custom_sec_def_handler_id;
+diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+new file mode 100644
+index 000000000000..28264528280d
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
 +
-+int libbpf_register_prog_handler(const char *sec,
-+				 enum bpf_prog_type prog_type,
-+				 enum bpf_attach_type exp_attach_type,
-+				 const struct libbpf_prog_handler_opts *opts)
- {
--	const struct bpf_sec_def *sec_def;
--	enum sec_def_flags sec_flags;
--	int i, n = ARRAY_SIZE(section_defs), len;
--	bool strict = libbpf_mode & LIBBPF_STRICT_SEC_NAME;
-+	struct bpf_sec_def *sec_def;
- 
--	for (i = 0; i < n; i++) {
--		sec_def = &section_defs[i];
--		sec_flags = sec_def->cookie;
--		len = strlen(sec_def->sec);
-+	if (!OPTS_VALID(opts, libbpf_prog_handler_opts))
-+		return libbpf_err(-EINVAL);
- 
--		/* "type/" always has to have proper SEC("type/extras") form */
--		if (sec_def->sec[len - 1] == '/') {
--			if (str_has_pfx(sec_name, sec_def->sec))
--				return sec_def;
--			continue;
--		}
-+	if (last_custom_sec_def_handler_id == INT_MAX) /* prevent overflow */
-+		return libbpf_err(-E2BIG);
- 
--		/* "type+" means it can be either exact SEC("type") or
--		 * well-formed SEC("type/extras") with proper '/' separator
--		 */
--		if (sec_def->sec[len - 1] == '+') {
--			len--;
--			/* not even a prefix */
--			if (strncmp(sec_name, sec_def->sec, len) != 0)
--				continue;
--			/* exact match or has '/' separator */
--			if (sec_name[len] == '\0' || sec_name[len] == '/')
--				return sec_def;
--			continue;
--		}
-+	if (sec) {
-+		sec_def = libbpf_reallocarray(custom_sec_defs, custom_sec_def_cnt + 1,
-+					      sizeof(*sec_def));
-+		if (!sec_def)
-+			return libbpf_err(-ENOMEM);
- 
--		/* SEC_SLOPPY_PFX definitions are allowed to be just prefix
--		 * matches, unless strict section name mode
--		 * (LIBBPF_STRICT_SEC_NAME) is enabled, in which case the
--		 * match has to be exact.
--		 */
--		if ((sec_flags & SEC_SLOPPY_PFX) && !strict)  {
--			if (str_has_pfx(sec_name, sec_def->sec))
--				return sec_def;
--			continue;
--		}
-+		custom_sec_defs = sec_def;
-+		sec_def = &custom_sec_defs[custom_sec_def_cnt];
-+	} else {
-+		if (has_custom_fallback_def)
-+			return libbpf_err(-EBUSY);
- 
--		/* Definitions not marked SEC_SLOPPY_PFX (e.g.,
--		 * SEC("syscall")) are exact matches in both modes.
--		 */
--		if (strcmp(sec_name, sec_def->sec) == 0)
-+		sec_def = &custom_fallback_def;
-+	}
++#include <test_progs.h>
++#include "test_custom_sec_handlers.skel.h"
 +
-+	sec_def->sec = sec ? strdup(sec) : NULL;
-+	if (sec && !sec_def->sec)
-+		return libbpf_err(-ENOMEM);
++#define COOKIE_ABC1 1
++#define COOKIE_ABC2 2
++#define COOKIE_CUSTOM 3
++#define COOKIE_FALLBACK 4
++#define COOKIE_KPROBE 5
 +
-+	sec_def->prog_type = prog_type;
-+	sec_def->expected_attach_type = exp_attach_type;
-+	sec_def->cookie = OPTS_GET(opts, cookie, 0);
-+
-+	sec_def->init_fn = OPTS_GET(opts, init_fn, NULL);
-+	sec_def->preload_fn = OPTS_GET(opts, preload_fn, NULL);
-+	sec_def->attach_fn = OPTS_GET(opts, attach_fn, NULL);
-+
-+	sec_def->handler_id = ++last_custom_sec_def_handler_id;
-+
-+	if (sec)
-+		custom_sec_def_cnt++;
-+	else
-+		has_custom_fallback_def = true;
-+
-+	return sec_def->handler_id;
-+}
-+
-+int libbpf_unregister_prog_handler(int handler_id)
++static int custom_init_prog(struct bpf_program *prog, long cookie)
 +{
-+	struct bpf_sec_def *sec_defs;
-+	int i;
-+
-+	if (handler_id <= 0)
-+		return libbpf_err(-EINVAL);
-+
-+	if (has_custom_fallback_def && custom_fallback_def.handler_id == handler_id) {
-+		memset(&custom_fallback_def, 0, sizeof(custom_fallback_def));
-+		has_custom_fallback_def = false;
-+		return 0;
-+	}
-+
-+	for (i = 0; i < custom_sec_def_cnt; i++) {
-+		if (custom_sec_defs[i].handler_id == handler_id)
-+			break;
-+	}
-+
-+	if (i == custom_sec_def_cnt)
-+		return libbpf_err(-ENOENT);
-+
-+	free(custom_sec_defs[i].sec);
-+	for (i = i + 1; i < custom_sec_def_cnt; i++)
-+		custom_sec_defs[i - 1] = custom_sec_defs[i];
-+	custom_sec_def_cnt--;
-+
-+	/* try to shrink the array, but it's ok if we couldn't */
-+	sec_defs = libbpf_reallocarray(custom_sec_defs, custom_sec_def_cnt, sizeof(*sec_defs));
-+	if (sec_defs)
-+		custom_sec_defs = sec_defs;
++	if (cookie == COOKIE_ABC1)
++		bpf_program__set_autoload(prog, false);
 +
 +	return 0;
 +}
 +
-+static bool sec_def_matches(const struct bpf_sec_def *sec_def, const char *sec_name,
-+			    bool allow_sloppy)
++static int custom_preload_prog(struct bpf_program *prog,
++			       struct bpf_prog_load_opts *opts, long cookie)
 +{
-+	size_t len = strlen(sec_def->sec);
++	if (cookie == COOKIE_FALLBACK)
++		opts->prog_flags |= BPF_F_SLEEPABLE;
++	else if (cookie == COOKIE_ABC1)
++		ASSERT_FALSE(true, "unexpected preload for abc");
 +
-+	/* "type/" always has to have proper SEC("type/extras") form */
-+	if (sec_def->sec[len - 1] == '/') {
-+		if (str_has_pfx(sec_name, sec_def->sec))
-+			return true;
-+		return false;
-+	}
-+
-+	/* "type+" means it can be either exact SEC("type") or
-+	 * well-formed SEC("type/extras") with proper '/' separator
-+	 */
-+	if (sec_def->sec[len - 1] == '+') {
-+		len--;
-+		/* not even a prefix */
-+		if (strncmp(sec_name, sec_def->sec, len) != 0)
-+			return false;
-+		/* exact match or has '/' separator */
-+		if (sec_name[len] == '\0' || sec_name[len] == '/')
-+			return true;
-+		return false;
-+	}
-+
-+	/* SEC_SLOPPY_PFX definitions are allowed to be just prefix
-+	 * matches, unless strict section name mode
-+	 * (LIBBPF_STRICT_SEC_NAME) is enabled, in which case the
-+	 * match has to be exact.
-+	 */
-+	if (allow_sloppy && str_has_pfx(sec_name, sec_def->sec))
-+		return true;
-+
-+	/* Definitions not marked SEC_SLOPPY_PFX (e.g.,
-+	 * SEC("syscall")) are exact matches in both modes.
-+	 */
-+	return strcmp(sec_name, sec_def->sec) == 0;
++	return 0;
 +}
 +
-+static const struct bpf_sec_def *find_sec_def(const char *sec_name)
++static int custom_attach_prog(const struct bpf_program *prog, long cookie,
++			      struct bpf_link **link)
 +{
-+	const struct bpf_sec_def *sec_def;
-+	int i, n;
-+	bool strict = libbpf_mode & LIBBPF_STRICT_SEC_NAME, allow_sloppy;
++	switch (cookie) {
++	case COOKIE_ABC2:
++		*link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
++		return libbpf_get_error(*link);
++	case COOKIE_CUSTOM:
++		*link = bpf_program__attach_tracepoint(prog, "syscalls", "sys_enter_nanosleep");
++		return libbpf_get_error(*link);
++	case COOKIE_KPROBE:
++	case COOKIE_FALLBACK:
++		/* no auto-attach for SEC("xyz") and SEC("kprobe") */
++		*link = NULL;
++		return 0;
++	default:
++		ASSERT_FALSE(true, "unexpected cookie");
++		return -EINVAL;
++	}
++}
 +
-+	n = custom_sec_def_cnt;
-+	for (i = 0; i < n; i++) {
-+		sec_def = &custom_sec_defs[i];
-+		if (sec_def_matches(sec_def, sec_name, false))
-+			return sec_def;
++static int abc1_id;
++static int abc2_id;
++static int custom_id;
++static int fallback_id;
++static int kprobe_id;
++
++__attribute__((constructor))
++static void register_sec_handlers(void)
++{
++	LIBBPF_OPTS(libbpf_prog_handler_opts, abc1_opts,
++		.cookie = COOKIE_ABC1,
++		.init_fn = custom_init_prog,
++		.preload_fn = custom_preload_prog,
++		.attach_fn = NULL,
++	);
++	LIBBPF_OPTS(libbpf_prog_handler_opts, abc2_opts,
++		.cookie = COOKIE_ABC2,
++		.init_fn = custom_init_prog,
++		.preload_fn = custom_preload_prog,
++		.attach_fn = custom_attach_prog,
++	);
++	LIBBPF_OPTS(libbpf_prog_handler_opts, custom_opts,
++		.cookie = COOKIE_CUSTOM,
++		.init_fn = NULL,
++		.preload_fn = NULL,
++		.attach_fn = custom_attach_prog,
++	);
++
++	abc1_id = libbpf_register_prog_handler("abc", BPF_PROG_TYPE_RAW_TRACEPOINT, 0, &abc1_opts);
++	abc2_id = libbpf_register_prog_handler("abc/", BPF_PROG_TYPE_RAW_TRACEPOINT, 0, &abc2_opts);
++	custom_id = libbpf_register_prog_handler("custom+", BPF_PROG_TYPE_TRACEPOINT, 0, &custom_opts);
++}
++
++__attribute__((destructor))
++static void unregister_sec_handlers(void)
++{
++	libbpf_unregister_prog_handler(abc1_id);
++	libbpf_unregister_prog_handler(abc2_id);
++	libbpf_unregister_prog_handler(custom_id);
++}
++
++void test_custom_sec_handlers(void)
++{
++	LIBBPF_OPTS(libbpf_prog_handler_opts, opts,
++		.init_fn = custom_init_prog,
++		.preload_fn = custom_preload_prog,
++		.attach_fn = custom_attach_prog,
++	);
++	struct test_custom_sec_handlers* skel;
++	int err;
++
++	ASSERT_GT(abc1_id, 0, "abc1_id");
++	ASSERT_GT(abc2_id, 0, "abc2_id");
++	ASSERT_GT(custom_id, 0, "custom_id");
++
++	/* override libbpf's handle of SEC("kprobe/...") but also allow pure
++	 * SEC("kprobe") due to "kprobe+" specifier. Register it as
++	 * TRACEPOINT, just for fun.
++	 */
++	opts.cookie = COOKIE_KPROBE;
++	kprobe_id = libbpf_register_prog_handler("kprobe+", BPF_PROG_TYPE_TRACEPOINT, 0, &opts);
++	/* fallback treats everything as BPF_PROG_TYPE_SYSCALL program to test
++	 * setting custom BPF_F_SLEEPABLE bit in preload handler
++	 */
++	opts.cookie = COOKIE_FALLBACK;
++	fallback_id = libbpf_register_prog_handler(NULL, BPF_PROG_TYPE_SYSCALL, 0, &opts);
++
++	if (!ASSERT_GT(fallback_id, 0, "fallback_id") /* || !ASSERT_GT(kprobe_id, 0, "kprobe_id")*/) {
++		if (fallback_id > 0)
++			libbpf_unregister_prog_handler(fallback_id);
++		if (kprobe_id > 0)
++			libbpf_unregister_prog_handler(kprobe_id);
++		return;
 +	}
 +
-+	n = ARRAY_SIZE(section_defs);
-+	for (i = 0; i < n; i++) {
-+		sec_def = &section_defs[i];
-+		allow_sloppy = (sec_def->cookie & SEC_SLOPPY_PFX) && !strict;
-+		if (sec_def_matches(sec_def, sec_name, allow_sloppy))
- 			return sec_def;
- 	}
++	/* open skeleton and validate assumptions */
++	skel = test_custom_sec_handlers__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		goto cleanup;
 +
-+	if (has_custom_fallback_def)
-+		return &custom_fallback_def;
++	ASSERT_EQ(bpf_program__type(skel->progs.abc1), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc1_type");
++	ASSERT_FALSE(bpf_program__autoload(skel->progs.abc1), "abc1_autoload");
 +
- 	return NULL;
- }
- 
-+#define MAX_TYPE_NAME_SIZE 32
++	ASSERT_EQ(bpf_program__type(skel->progs.abc2), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc2_type");
++	ASSERT_EQ(bpf_program__type(skel->progs.custom1), BPF_PROG_TYPE_TRACEPOINT, "custom1_type");
++	ASSERT_EQ(bpf_program__type(skel->progs.custom2), BPF_PROG_TYPE_TRACEPOINT, "custom2_type");
++	ASSERT_EQ(bpf_program__type(skel->progs.kprobe1), BPF_PROG_TYPE_TRACEPOINT, "kprobe1_type");
++	ASSERT_EQ(bpf_program__type(skel->progs.xyz), BPF_PROG_TYPE_SYSCALL, "xyz_type");
 +
- static char *libbpf_get_type_names(bool attach_type)
- {
- 	int i, len = ARRAY_SIZE(section_defs) * MAX_TYPE_NAME_SIZE;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index c8d8daad212e..b7b5aa1b30dd 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -1328,6 +1328,93 @@ LIBBPF_API int bpf_linker__add_file(struct bpf_linker *linker,
- LIBBPF_API int bpf_linker__finalize(struct bpf_linker *linker);
- LIBBPF_API void bpf_linker__free(struct bpf_linker *linker);
- 
-+/*
-+ * Custom handling of BPF program's SEC() definitions
-+ */
++	skel->rodata->my_pid = getpid();
 +
-+struct bpf_prog_load_opts; /* defined in bpf.h */
++	/* now attempt to load everything */
++	err = test_custom_sec_handlers__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
 +
-+/* Called during bpf_object__open() for each recognized BPF program. Callback
-+ * can use various bpf_program__set_*() setters to adjust whatever properties
-+ * are necessary.
-+ */
-+typedef int (*libbpf_prog_init_fn_t)(struct bpf_program *prog, long cookie);
++	/* now try to auto-attach everything */
++	err = test_custom_sec_handlers__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		goto cleanup;
 +
-+/* Called right before libbpf performs bpf_prog_load() to load BPF program
-+ * into the kernel. Callback can adjust opts as necessary.
-+ */
-+typedef int (*libbpf_prog_preload_fn_t)(struct bpf_program *prog,
-+					struct bpf_prog_load_opts *opts, long cookie);
++	skel->links.xyz = bpf_program__attach(skel->progs.kprobe1);
++	ASSERT_EQ(errno, EOPNOTSUPP, "xyz_attach_err");
++	ASSERT_ERR_PTR(skel->links.xyz, "xyz_attach");
 +
-+/* Called during skeleton attach or through bpf_program__attach(). If
-+ * auto-attach is not supported, callback should return 0 and set link to
-+ * NULL (it's not considered an error during skeleton attach, but it will be
-+ * an error for bpf_program__attach() calls). On error, error should be
-+ * returned directly and link set to NULL. On success, return 0 and set link
-+ * to a valid struct bpf_link.
-+ */
-+typedef int (*libbpf_prog_attach_fn_t)(const struct bpf_program *prog, long cookie,
-+				       struct bpf_link **link);
++	/* trigger programs */
++	usleep(1);
 +
-+struct libbpf_prog_handler_opts {
-+	/* size of this struct, for forward/backward compatiblity */
-+	size_t sz;
-+	/* User-provided cookie passed to each callback */
-+	long cookie;
-+	/* BPF program initialization callback (see libbpf_prog_init_fn_t) */
-+	libbpf_prog_init_fn_t init_fn;
-+	/* BPF program loading callback (see libbpf_prog_preload_fn_t) */
-+	libbpf_prog_preload_fn_t preload_fn;
-+	/* BPF program attach callback (see libbpf_prog_attach_fn_t) */
-+	libbpf_prog_attach_fn_t attach_fn;
-+};
-+#define libbpf_prog_handler_opts__last_field attach_fn
++	/* SEC("abc") is set to not auto-loaded */
++	ASSERT_FALSE(skel->bss->abc1_called, "abc1_called");
++	ASSERT_TRUE(skel->bss->abc2_called, "abc2_called");
++	ASSERT_TRUE(skel->bss->custom1_called, "custom1_called");
++	ASSERT_TRUE(skel->bss->custom2_called, "custom2_called");
++	/* SEC("kprobe") shouldn't be auto-attached */
++	ASSERT_FALSE(skel->bss->kprobe1_called, "kprobe1_called");
++	/* SEC("xyz") shouldn't be auto-attached */
++	ASSERT_FALSE(skel->bss->xyz_called, "xyz_called");
 +
-+/**
-+ * @brief **libbpf_register_prog_handler()** registers a custom BPF program
-+ * SEC() handler.
-+ * @param sec section prefix for which custom handler is registered
-+ * @param prog_type BPF program type associated with specified section
-+ * @param exp_attach_type Expected BPF attach type associated with specified section
-+ * @param opts optional cookie, callbacks, and other extra options
-+ * @return Non-negative handler ID is returned on success. This handler ID has
-+ * to be passed to *libbpf_unregister_prog_handler()* to unregister such
-+ * custom handler. Negative error code is returned on error.
-+ *
-+ * *sec* defines which SEC() definitions are handled by this custom handler
-+ * registration. *sec* can have few different forms:
-+ *   - if *sec* is just a plain string (e.g., "abc"), it will match only
-+ *   SEC("abc"). If BPF program specifies SEC("abc/whatever") it will result
-+ *   in an error;
-+ *   - if *sec* is of the form "abc/", proper SEC() form is
-+ *   SEC("abc/something"), where acceptable "something" should be checked by
-+ *   *prog_init_fn* callback, if there are additional restrictions;
-+ *   - if *sec* is of the form "abc+", it will successfully match both
-+ *   SEC("abc") and SEC("abc/whatever") forms;
-+ *   - if *sec* is NULL, custom handler is registered for any BPF program that
-+ *   doesn't match any of the registered (custom or libbpf's own) SEC()
-+ *   handlers. There could be only one such generic custom handler registered
-+ *   at any given time.
-+ *
-+ * All custom handlers (except the one with *sec* == NULL) are processed
-+ * before libbpf's own SEC() handlers. It is allowed to "override" libbpf's
-+ * SEC() handlers by registering custom ones for the same section prefix
-+ * (i.e., it's possible to have custom SEC("perf_event/LLC-load-misses")
-+ * handler).
-+ */
-+LIBBPF_API int libbpf_register_prog_handler(const char *sec,
-+					    enum bpf_prog_type prog_type,
-+					    enum bpf_attach_type exp_attach_type,
-+					    const struct libbpf_prog_handler_opts *opts);
-+/**
-+ * @brief *libbpf_unregister_prog_handler()* unregisters previously registered
-+ * custom BPF program SEC() handler.
-+ * @param handler_id handler ID returned by *libbpf_register_prog_handler()*
-+ * after successful registration
-+ * @return 0 on success, negative error code if handler isn't found
-+ */
-+LIBBPF_API int libbpf_unregister_prog_handler(int handler_id);
++cleanup:
++	test_custom_sec_handlers__destroy(skel);
 +
- #ifdef __cplusplus
- } /* extern "C" */
- #endif
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 47e70c9058d9..df1b947792c8 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -439,3 +439,9 @@ LIBBPF_0.7.0 {
- 		libbpf_probe_bpf_prog_type;
- 		libbpf_set_memlock_rlim_max;
- } LIBBPF_0.6.0;
++	ASSERT_OK(libbpf_unregister_prog_handler(fallback_id), "unregister_fallback");
++	ASSERT_OK(libbpf_unregister_prog_handler(kprobe_id), "unregister_kprobe");
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+new file mode 100644
+index 000000000000..4061f701ca50
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+@@ -0,0 +1,63 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Facebook */
 +
-+LIBBPF_0.8.0 {
-+	global:
-+		libbpf_register_prog_handler;
-+		libbpf_unregister_prog_handler;
-+} LIBBPF_0.7.0;
-diff --git a/tools/lib/bpf/libbpf_version.h b/tools/lib/bpf/libbpf_version.h
-index 0fefefc3500b..61f2039404b6 100644
---- a/tools/lib/bpf/libbpf_version.h
-+++ b/tools/lib/bpf/libbpf_version.h
-@@ -4,6 +4,6 @@
- #define __LIBBPF_VERSION_H
- 
- #define LIBBPF_MAJOR_VERSION 0
--#define LIBBPF_MINOR_VERSION 7
-+#define LIBBPF_MINOR_VERSION 8
- 
- #endif /* __LIBBPF_VERSION_H */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++const volatile int my_pid;
++
++bool abc1_called;
++bool abc2_called;
++bool custom1_called;
++bool custom2_called;
++bool kprobe1_called;
++bool xyz_called;
++
++SEC("abc")
++int abc1(void *ctx)
++{
++	abc1_called = true;
++	return 0;
++}
++
++SEC("abc/whatever")
++int abc2(void *ctx)
++{
++	abc2_called = true;
++	return 0;
++}
++
++SEC("custom")
++int custom1(void *ctx)
++{
++	custom1_called = true;
++	return 0;
++}
++
++SEC("custom/something")
++int custom2(void *ctx)
++{
++	custom2_called = true;
++	return 0;
++}
++
++SEC("kprobe")
++int kprobe1(void *ctx)
++{
++	kprobe1_called = true;
++	return 0;
++}
++
++SEC("xyz/blah")
++int xyz(void *ctx)
++{
++	int whatever;
++
++	/* use sleepable helper, custom handler should set sleepable flag */
++	bpf_copy_from_user(&whatever, sizeof(whatever), NULL);
++	xyz_called = true;
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.30.2
 
