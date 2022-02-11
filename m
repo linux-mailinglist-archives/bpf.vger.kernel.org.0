@@ -2,76 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BED14B1E00
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 06:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 530EE4B1E0C
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 07:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237079AbiBKFyh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 00:54:37 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37748 "EHLO
+        id S235310AbiBKGBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 01:01:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232082AbiBKFyg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 00:54:36 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957AA10BA
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 21:54:36 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id t184so9015431vst.13
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 21:54:36 -0800 (PST)
+        with ESMTP id S231756AbiBKGBl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 01:01:41 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125A410C1;
+        Thu, 10 Feb 2022 22:01:41 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id i62so10215875ioa.1;
+        Thu, 10 Feb 2022 22:01:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=EbSg9QvGTEG7MjQvzrDkvoNELNPgB+85sOLBqpa4AUA=;
-        b=SS0XHSKcCaEsbQ4Wwn5QnKULou7/nRrOZDqvOOMFchl7PA2YkNlTMluAlF78eL3OYQ
-         aqnX2q2M8LhDU64/bBNClIsemboTs0HTNUd+0of+BhXy1fFSemYC+igZDiJz/ZESPzRd
-         beXCsmmRUkop/mDS4598qhe4S6adC9cqK24amqV0AX+xQxm2Mwg/jIz1LZa22h3Y/nZx
-         wgvEK8FFChU2l3ty8WWlxGBgcENp62qqVG56A+1mnDMi+ofrJ/XYlh3CuSczlfeWJFoG
-         Jv84tEFBEvjLuwUJl9lTtwqS6hE3/MtPnZeYync0MbqbWslvenfPrOH2XkqynFA+fi9V
-         QpTw==
+        bh=w3aXknb2G2HR+EuSrw45lq11xdturSPWe/7XDoIZqYQ=;
+        b=SNtB5rTwojwU89KMZRniCT7PulmV05agUzSsG7svvllDKFUVPJBF1XncIHu0eT2YO3
+         peWtvP+/MgK5kvXDwQzSn0NKkJ1FJIKq/lhlY9zfpil/UMmLhY1x+EMX0K0bSxPeBDcL
+         O6DlEwFaLEMzN1knYGDeHBOV9AAq2SIbI/w30x8tVuMZHQa5C3yZs1NlGDFSDq/SfJBU
+         yF01RA1Ioz+YhjWp7ps8nAgbVDIYTMrKzoGSbE2GD5vugeglxLZIR/AlxBsmxfW8Wc+k
+         ozvPN+yTEg9/jKXcDwbQRexOHUhzremBQdqFO7F1AUeAOno2+Ko+V/QnRpA7DyBpGshz
+         xb7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EbSg9QvGTEG7MjQvzrDkvoNELNPgB+85sOLBqpa4AUA=;
-        b=f6GbQCH5Qb3F+kfUDuofWomzOrciduNYr4BB6aDXgpE04il4sxn9Pgr3onZG57FkvX
-         f4vq0axcKxAJCYJye8CADNWoL5vur0f1UMwr5GnVceZNSvbmwNMvOYEKP6SAYHJ0VCSS
-         wwfoHf+mDjYEIZxNzO9jldawHjVoegyxLhaftd7KUqSJ9ZDuQcOTv+VxpmyzkJPdmD2h
-         Y3Hlt1H0G3t1QeMdHL4JlOG4btmi6Z+LAPI4T3wS3fLMof8gVAVE3Jkf2G6tSIZOXcpL
-         N7Ao0nxYBxMVvwe0aJVaRoBQOK2mi+99FEQBRrjNRX5n5MXuScbQ0H70HBTGykGJ3uB+
-         o+Dw==
-X-Gm-Message-State: AOAM531uAItJYWgGGy96OuBPmcev23ocSpWJ2YUrKpalVQIFcoaXtxVU
-        cFQn+TF+CD0GlUfxZ3RfGPg88/RBVU9Nnfq9XWzP+A==
-X-Google-Smtp-Source: ABdhPJwgbeKVaaw6rh1wRuo14QINWzu6Y2BM87c7I7UpANzVeKUT6VCRWB95+kN7ykQHSH4158pU9USeGcLsab5G/4I=
-X-Received: by 2002:a67:ea8f:: with SMTP id f15mr45351vso.46.1644558875472;
- Thu, 10 Feb 2022 21:54:35 -0800 (PST)
+        bh=w3aXknb2G2HR+EuSrw45lq11xdturSPWe/7XDoIZqYQ=;
+        b=RMMm/dVAT1tE9BML5t/4rLFAICxoFn7Uk6nujxJB/rK0GKuPUy6IuM/ekHgv7S3YLP
+         axr6v44ZhVapRNcY79adczKUocJaCmox5aUPkRu/NaSKb6Zc3O6mMejPJ34/bb31xExE
+         FF/3G57kUWJ6aH/0FzUVwLkO5quGDF6iLx3tFy/jrbI45vY2OP29qX0Wg6o5kbfVuAFY
+         ki6VdcybXtSn7mKVH5yZiw/w+A03vRUTKQIDupUIoneTLyjNERS4xtyT3tczQkCu29Nw
+         IbV+Qt4U80XRjNXSjFVDtYnRR0xf8gRzRnNKZ6sUFL1/YPWpk93jE1nthgc0b3Dve2C4
+         V7oA==
+X-Gm-Message-State: AOAM532zT1SYcJMiDzZdjh247w4EyQmwzTSRfaKTMgFEAqivHWaKMrnI
+        Rpooku8LS4K+XYofnWC/L4Qpx/s+A92e7+xe3/I=
+X-Google-Smtp-Source: ABdhPJwT+alWB28ZB1KBdtpbxYvzeumJbRLT3RmrfdXWaSdg4FxQzJBW523rqhC91JwrGqN5NycN9W6Ry0Xa8pNHTcE=
+X-Received: by 2002:a05:6638:2606:: with SMTP id m6mr20060jat.93.1644559300249;
+ Thu, 10 Feb 2022 22:01:40 -0800 (PST)
 MIME-Version: 1.0
-References: <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com> <20220211040629.23703-1-lina.wang@mediatek.com>
-In-Reply-To: <20220211040629.23703-1-lina.wang@mediatek.com>
-From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>
-Date:   Thu, 10 Feb 2022 21:54:23 -0800
-Message-ID: <CANP3RGc42sobVoq8LCs=9dAgRZmerV7ev_EMi8Qjb+1ZKeO4jQ@mail.gmail.com>
-Subject: Re: [PATCH] net: fix wrong network header length
-To:     Lina Wang <lina.wang@mediatek.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <YfK18x/XrYL4Vw8o@syu-laptop> <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
+ <20220210100153.GA90679@kunlun.suse.cz>
+In-Reply-To: <20220210100153.GA90679@kunlun.suse.cz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 10 Feb 2022 22:01:29 -0800
+Message-ID: <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
+Subject: Re: BTF compatibility issue across builds
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     Yonghong Song <yhs@fb.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Linux NetDev <netdev@vger.kernel.org>,
-        Kernel hackers <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem Bruijn <willemb@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        zhuoliang.zhang@mediatek.com, chao.song@mediatek.com
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,76 +69,169 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 8:12 PM Lina Wang <lina.wang@mediatek.com> wrote:
+On Thu, Feb 10, 2022 at 2:01 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
+ote:
 >
-> On Thu, 2022-02-10 at 17:02 +0100, Paolo Abeni wrote:
+> Hello,
 >
-> > > @@ -3682,6 +3682,7 @@ struct sk_buff *skb_segment_list(struct
-> > > sk_buff *skb,
-> > >     struct sk_buff *tail =3D NULL;
-> > >     struct sk_buff *nskb, *tmp;
-> > >     int err;
-> > > +   unsigned int len_diff =3D 0;
+> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
 > >
-> > Mintor nit: please respect the reverse x-mas tree order.
 > >
->
-> Yes,v2 has change unsigned int to int
-
-Reverse christmas tree, means from longest to shortest, like so:
-
-     struct sk_buff *tail =3D NULL;
-     struct sk_buff *nskb, *tmp;
-+   int len_diff =3D 0;
-     int err;
-
-That said, I think the =3D 0 is not needed, so this can be just
-
-+ int len_diff, err;
-
->
+> > On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
+> > > Hi,
 > > >
-> > >     skb_push(skb, -skb_network_offset(skb) + offset);
-> > > @@ -3721,9 +3722,11 @@ struct sk_buff *skb_segment_list(struct
-> > > sk_buff *skb,
-> > >             skb_push(nskb, -skb_network_offset(nskb) + offset);
+> > > We recently run into module load failure related to split BTF on open=
+SUSE
+> > > Tumbleweed[1], which I believe is something that may also happen on o=
+ther
+> > > rolling distros.
 > > >
-> > >             skb_release_head_state(nskb);
-> > > +           len_diff =3D skb_network_header_len(nskb) -
-> > > skb_network_header_len(skb);
-> > >              __copy_skb_header(nskb, skb);
+> > > The error looks like the follow (though failure is not limited to iph=
+eth)
 > > >
-> > >             skb_headers_offset_update(nskb, skb_headroom(nskb) -
-> > > skb_headroom(skb));
-> > > +           nskb->transport_header +=3D len_diff;
+> > >      BPF:[103111] STRUCT BPF:size=3D152 vlen=3D2 BPF: BPF:Invalid nam=
+e BPF:
+> > >
+> > >      failed to validate module [ipheth] BTF: -22
+> > >
+> > > The error comes down to trying to load BTF of *kernel modules from a
+> > > different build* than the runtime kernel (but the source is the same)=
+, where
+> > > the base BTF of the two build is different.
+> > >
+> > > While it may be too far stretched to call this a bug, solving this mi=
+ght
+> > > make BTF adoption easier. I'd natively think that we could further sp=
+lit
+> > > base BTF into two part to avoid this issue, where .BTF only contain e=
+xported
+> > > types, and the other (still residing in vmlinux) holds the unexported=
+ types.
 > >
-> > This does not look correct ?!? the network hdr position for nskb will
-> > still be uncorrect?!? and even the mac hdr likely?!? possibly you
-> > need
-> > to change the offset in skb_headers_offset_update().
+> > What is the exported types? The types used by export symbols?
+> > This for sure will increase btf handling complexity.
+>
+> And it will not actually help.
+>
+> We have modversion ABI which checks the checksum of the symbols that the
+> module imports and fails the load if the checksum for these symbols does
+> not match. It's not concerned with symbols not exported, it's not
+> concerned with symbols not used by the module. This is something that is
+> sustainable across kernel rebuilds with minor fixes/features and what
+> distributions watch for.
+>
+> Now with BTF the situation is vastly different. There are at least three
+> bugs:
+>
+>  - The BTF check is global for all symbols, not for the symbols the
+>    module uses. This is not sustainable. Given the BTF is supposed to
+>    allow linking BPF programs that were built in completely different
+>    environment with the kernel it is completely within the scope of BTF
+>    to solve this problem, it's just neglected.
+
+You refer to BTF use in CO-RE with the latter. It's just one
+application of BTF and it doesn't follow that you can do the same with
+module BTF. It's not a neglect, it's a very big technical difficulty.
+
+Each module's BTFs are designed as logical extensions of vmlinux BTF.
+And each module BTF is independent and isolated from other modules
+extension of the same vmlinux BTF. The way that BTF format is
+designed, any tiny difference in vmlinux BTF effectively invalidates
+all modules' BTFs and they have to be rebuilt.
+
+Imagine that only one BTF type is added to vmlinux BTF. Last BTF type
+ID in vmlinux BTF is shifted from, say, 1000 to 1001. While previously
+every module's BTF type ID started with 1001, now they all have to
+start with 1002 and be shifted by 1.
+
+Now let's say that the order of two BTF types in vmlinux BTF is
+changed, say type 10 becomes type 20 and type 20 becomes type 10 (just
+because of slight difference in DWARF, for instance). Any type
+reference to 10 or 20 in any module BTF has to be renumbered now.
+
+Another one, let's say we add a new string to vmlinux BTF string
+section somewhere at the beginning, say "abc" at offset 100. Any
+string offset after 100 now has to be shifted *both* in vmlinux BTF
+and all module BTFs. And also any string reference in module BTFs have
+to be adjusted as well because now each module's BTF's logical string
+offset is starting at 4 logical bytes higher (due to "abc\0" being
+added and shifting everything right).
+
+As you can see, any tiny change in vmlinux BTF, no matter where,
+beginning, middle, or end, causes massive changes in type IDs and
+offsets everywhere. It's impractical to do any local adjustments, it's
+much simpler and more reliable to completely regenerate BTF
+completely.
+
+If it was reasonable to support what you are asking for, I'd probably
+already have done that a long time ago.
+
+>  - It is possible to load modules with no BTF but not modules with
+>    non-matching BTF. Surely the non-matching BTF could be discarded.
+
+We started out with strict behavior like this to be able to detect any
+problems with module BTFs instead of silently ignoring them. It seems
+like that worked, we do know about this problem acutely. But as Alexei
+said, relaxing this is the simplest way forward. It could be easily
+controlled by new Kconfig value, so that default strict behavior can
+be preserved as well.
+
+
+>  - BTF is part of vermagic. This is completely pointless since modules
+>    without BTF can be loaded on BTF kernel. Surely it would not be too
+>    difficult to do the reverse as well. Given BTF must pass extra check
+>    to be used having it in vermagic is just useless moise.
+>
+> > > Does that sound like something reasonable to work on?
+
+No, at least not to me. Splitting vmlinux BTF into two parts (internal
+and external) doesn't help with anything, see above explanation.
+
+> > >
+> > >
+> > > ## Root case (in case anyone is interested in a verbose version)
+> > >
+> > > On openSUSE Tumbleweed there can be several builds of the same source=
+. Since
+> > > the source is the same, the binaries are simply replaced when a packa=
+ge with
+> > > a larger build number is installed during upgrade.
+> > >
+> > > In our case, a rebuild is triggered[2], and resulted in changes in ba=
+se BTF.
+> > > More precisely, the BTF_KIND_FUNC{,_PROTO} of i2c_smbus_check_pec(u8 =
+cpec,
+> > > struct i2c_msg *msg) and inet_lhash2_bucket_sk(struct inet_hashinfo *=
+h,
+> > > struct sock *sk) was added to the base BTF of 5.15.12-1.3. Those func=
+tions
+> > > are previously missing in base BTF of 5.15.12-1.1.
 > >
+> > As stated in [2] below, I think we should understand why rebuild is
+> > triggered. If the rebuild for vmlinux is triggered, why the modules can=
+not
+> > be rebuild at the same time?
 >
-> Network hdr position and mac hdr are both right, because bpf processing &
-> skb_headers_offset_update have updated them to right position. After bpf
-> loading, the first skb's network header&mac_header became 44, transport
-> header still is 64. After skb_headers_offset_update, fraglist skb's mac
-> header and network header are still 24, the same with original packet.
-> Just fraglist skb's transport header became 44, as original is 64.
-> Only transport header cannot be easily updated the same offset, because
-> 6to4 has different network header.
+> They do get rebuilt. However, if you are running the kernel and install
+> the update you get the new modules with the old kernel. If the install
+> script fails to copy the kernel to your EFI partition based on the fact
+> a kernel with the same filename is alreasy there you get the same.
+
+Isn't this failure to copy a new kernel a failure in itself? I'd blame
+module BTF the last in this scenario, but maybe I don't understand the
+case completely.
+
 >
-> Actually,at the beginning, I want to change skb_headers_offset_update, bu=
-t
-> it has been called also in other place, maybe a new function should be
-> needed here.
+> If you have 'stable' distribution adding new symbols is normal and it
+> does not break module loading without BTF but it breaks BTF.
+
+You don't even need to add a new symbol. Just change the order of
+types in DWARF information and you get a different (though equivalent)
+BTF type ID numbering which invalidates module BTFs just as much. I'm
+not saying it's a feature, but it isn't a bug either, IMO. Technical
+decisions and tradeoffs.
+
 >
-> Skb_headers_offset_update has other wrong part in my scenary,
-> inner_transport_header\inner_network_header\inner_mac_header shouldnot be
-> changed, but they are been updated because of different headroom. They ar=
-e
-> not used later, so wrong value didnot affect anything.
+> Thanks
 >
-> > Paolo
-> >
->
-> Thanks!Maciej =C5=BBenczykowski, Kernel Networking Developer @ Google
+> Michal
