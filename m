@@ -2,198 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5557B4B2BA3
+	by mail.lfdr.de (Postfix) with ESMTP id 097E54B2BA2
 	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 18:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352019AbiBKRUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 12:20:40 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41514 "EHLO
+        id S1347133AbiBKRVi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 12:21:38 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243921AbiBKRUk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 12:20:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E975DB5
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644600038;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/XYxOnFvWmBDRRN9eJZCbsz4PFzMIS6mW4rnl0OwGOQ=;
-        b=OF+3ApmJwGoh2Brw4A4H9W7sx8cOhIyurGdbtm6Uae0EwtXfaiknxBgYBNYRi5KYYQiNvu
-        IUqpepnxxaGai4BSWGjfmutwXYZsNWEDlwfDNxvmH4lFCEtYo1dQpucJ2uHzH2O2Fllq/1
-        y9+qBjWYJXd3wHJcgJ1iiGGnP61DLRw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-668-ZOc5_3c-Pj-HuQfHrtgNbg-1; Fri, 11 Feb 2022 12:20:36 -0500
-X-MC-Unique: ZOc5_3c-Pj-HuQfHrtgNbg-1
-Received: by mail-ej1-f72.google.com with SMTP id aj9-20020a1709069a4900b006cd205be806so4387853ejc.18
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:20:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=/XYxOnFvWmBDRRN9eJZCbsz4PFzMIS6mW4rnl0OwGOQ=;
-        b=aMxeEAuWnlQIwCw1v1rqsNeKUE6AfntAB8RfIm30KM+CR+czcky6WgAHW28v7q17NO
-         itoBoVrh8WkaW4n09Jsvey55P13EDePo86bU6Guw7V0O23URiE6cd90xmvwnww5f6xYF
-         UEKquA/CyYVPPmPRKhdKgsJ1FQH4/pHslgPys/4edSmNc95IHmqS3wHELtutvSSdjaXC
-         nifoMdYU/3YgDPrLz1iFGCSBNYAu+K4tVbUysF8Yv08OrJufBuLu3QNVA9+8cgeurhiY
-         pbF5TIUXXOzxNIT/Adx06DU3r6m+/JOGD71RtcyHQR98I51jDCGU4eNKLcXAhbk2xpGO
-         Txpg==
-X-Gm-Message-State: AOAM531wnQPqdyjRrGimM7vo/+hLKR1YVhS13mBh9vFDlg1TtPdpIg49
-        w4ILm6wD6DYHGE9zF5I1qcLCnoOz1JvRZ0N+3I04hxhNMh/zc3Bucs2RDIWUrKLbkAef308xvBE
-        01ZpNDXFmFDhU
-X-Received: by 2002:a17:907:6d93:: with SMTP id sb19mr2245845ejc.634.1644600034056;
-        Fri, 11 Feb 2022 09:20:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2aDAkzQMMZGknbEbqOfslhVJ3HUi+miJl4LbtRA1wHdBmcLzjsR/yXVQi1PnKJkwoLKYg5g==
-X-Received: by 2002:a17:907:6d93:: with SMTP id sb19mr2245780ejc.634.1644600033033;
-        Fri, 11 Feb 2022 09:20:33 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id 27sm557023eji.66.2022.02.11.09.20.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Feb 2022 09:20:32 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 7F5F8102D5F; Fri, 11 Feb 2022 18:20:31 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Michal =?utf-8?Q?Such?= =?utf-8?Q?=C3=A1nek?= 
-        <msuchanek@suse.de>
-Cc:     Yonghong Song <yhs@fb.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        with ESMTP id S236787AbiBKRVi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 12:21:38 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0AFF9E
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 09:21:36 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21BCA6L7007948;
+        Fri, 11 Feb 2022 09:21:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=+uC1nYO4PNcbLcNhBN86yQLNzGb1J54rYVyfFh9e8jI=;
+ b=oM8QeJSDyjcuATb21Rwe+zrGYzyWVRkxrC2W/0VR33bZIT1gEvZGjXye6QkT4J8ypBBp
+ +UQg89BNW8MDBkRc83ErD1dWFtaZFqBQOV90wKzc8kzCisAmN4sERtKdcEvgX9L4gk2r
+ yv1/XvAekMcJcNeOqiEA202c5pIAdRDLVI0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e5853fcm0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 11 Feb 2022 09:21:21 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 11 Feb 2022 09:21:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=a8vRNuiUhMmoClHTPMEczqAHk8+e7ECOUxVp8HBGTeMKPDnfhHzOiemR8julkgYx//+v2DF3aSBo2/pJMZ4IhgEUz839a0ES0RQhHncv7Wjsv/BsMcpPalJ1K4ZnsXeM2i+Zg72Ibo4cro2O5dYQYili5Lrqev56ycRiW2O+8Xqjsbw8HNDVI4tW71MNNBXz7iQLLaufN5akPuw9TnN19IiEirmbx5DGZPELu39TBKMm4uKqSHlUqnxjv7VyeqxHAUYaIQ+oObU/VkT0OM2GHo8iZ/0oS7nhwBdmnviy2CusUMkqsKv96hn44Ulb1PR6YKGUQCvG3WEk19QDlkRxFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+uC1nYO4PNcbLcNhBN86yQLNzGb1J54rYVyfFh9e8jI=;
+ b=Dr8730osLwVDcgyu5zHU43KSM648A2V+e6YEEgWTUBCKFYgyBOmjCTQmvSD9rDRysqjSTWmtmtw43WlVVzwhQXFG9uTMzaOJVRTMs4GFa5JirPu3e946fj2RJYfI/qgBCb9hQMsRtjnYzA4drgRgLQNXM8KJZb48Jw7RPirYXhDOs/Ok62ptzJhltRQQjlUghs6W1OdA/HW7QkLCZK7L1LjKrE3bnBPoaXMxecKdUUk82HvzWj82VKwUmQA8p2YMJ15UCKo5OOL9kSod+jnUYqViGfV2lB6f7V5nYmBR4jlf/OGBWqJeJ3FOf3uBlBKBdpkXwF/mDjbs7urDbPQaKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM5PR15MB1321.namprd15.prod.outlook.com (2603:10b6:3:b7::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.14; Fri, 11 Feb
+ 2022 17:21:19 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::c5d8:3f44:f36d:1d4b]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::c5d8:3f44:f36d:1d4b%6]) with mapi id 15.20.4975.011; Fri, 11 Feb 2022
+ 17:21:19 +0000
+Message-ID: <e3ce949a-b55b-40e2-6b7a-fd148b543100@fb.com>
+Date:   Fri, 11 Feb 2022 09:21:16 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.0
+Subject: Re: [PATCH bpf v2 2/2] bpf: emit bpf_timer in vmlinux BTF
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: BTF compatibility issue across builds
-In-Reply-To: <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
-References: <YfK18x/XrYL4Vw8o@syu-laptop>
- <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
- <20220210100153.GA90679@kunlun.suse.cz>
- <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 11 Feb 2022 18:20:31 +0100
-Message-ID: <87a6ex8gm8.fsf@toke.dk>
+        Kernel Team <kernel-team@fb.com>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <20220211152054.1584283-1-yhs@fb.com>
+ <20220211152104.1586041-1-yhs@fb.com>
+ <CAEf4BzZ=pKn-tu6vBaQwXKN+m0JhRVy0zJhhV_p6ZAQn=gwjvg@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <CAEf4BzZ=pKn-tu6vBaQwXKN+m0JhRVy0zJhhV_p6ZAQn=gwjvg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR20CA0008.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::18) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6d96cafa-742e-426d-79ba-08d9ed82eaf4
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1321:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR15MB1321129BCB9E3715D2B80C3AD3309@DM5PR15MB1321.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:529;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TYVygNIsl8JBHpMSbG4Yp4M0h0wShKZ1i8uWLWgHxyoy6pTzj7ZP6qQiRTTCfxhOwjugcoqz/yReZg0hCYylUROrM4u1RWEAJOe87UqJ67gJIjB+wdPCTo1Ib/kH7p1sPX+bRW+vHQR50xiO/G+/e5RzvMSp74D1jk2S+7r0aC3UMNvhVod/7QftO7KKM1AeLKAWxwYjiDzuIol0DgRA/WhG6pwS+yMDkBs7276742GYTWmCcVGf0X/NAcNKvAQc1QKJmsZsfIeB0KKhGS2+c1qJTen1ljp1ByKSeeBfmTJo2LsWK/upTYN9er+25XFXcTQ4nsQshfSl1elqVLyghVLC2BePgD/r3Szl0ixLulDyHe1rpKAYclzQ5F4or4GwfkpMzvyvPjWkU5V+MrdywW3b/vvO1FqfvvnUY7s+wNvUQOb/W96wBaOVFyaZ6qSoGuexbabSC8lzDMg1zALf2eTd3JfAYMTcgfJEQqMFFxiF3xECeS+eek1bq3UFfbExNpQMk0fv5TL4ZhuJMQOvbebs4FuMd0MgOGKcKim4AtKiKVk8HXG2RObp4wsE3V6aGbBe3d0U9A/EXmh6VIi08ONSjbg4pE/muS1x6XJLaNRFyKgW01YnuIggPr/Xcvo+174XaByneEyFabGuTCT/Bxj/d8NNrhE/k4yknBtu2fBuFUPb2LA0Uf+hRsdCYPhVkbfGVt/hoFiMNIxTfd6Lv3o11o6IdhfJhCmGQfPrlWxn7fmJwUzo5fm5RqZWPoc/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6666004)(53546011)(52116002)(316002)(86362001)(6916009)(6486002)(31686004)(36756003)(54906003)(2616005)(31696002)(6512007)(4326008)(2906002)(66946007)(6506007)(66556008)(66476007)(83380400001)(8936002)(508600001)(8676002)(186003)(38100700002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VDVUQkJib2hBWHQyY3hmdkRwb1kzcW1tazNHLzNqN1FKVDc0WVMzNis3Zll6?=
+ =?utf-8?B?ekNETUxGNDF3VmtNZGIxczNrclRSd0IxZ01FL0ZoanMyQnpqaWhnQnlzaTNq?=
+ =?utf-8?B?UkJhdXNaRyszS3pkOE5hd3BSaUZydFJnZUdvQzhtY09MS3MrcFBOdWo2Ry9C?=
+ =?utf-8?B?QVExMEhKa0sxQ0lYZlZIV0FETHJqaWlkUEZucUJjQTAxRFJ5Tkd6SlVRcjhI?=
+ =?utf-8?B?Tk1pd0tNRUNVbVlBMFlySDhrZkJnVk0zQkRvMnRQMmNlRVh4OVNhUmRSUmVs?=
+ =?utf-8?B?Ri9kQ2NqeFNlRnp1STlzdlJISjlkN2NJWjdCK2kxTGtHVVZrVEZCYjYxWW5Y?=
+ =?utf-8?B?dGFvYXg3L3ZPVEtHdkpDNmZUZmNNQVpiM3lZdFY5QVNIK1l0bHFTcVNLSURD?=
+ =?utf-8?B?T2hrdk9talZVVSszdHdvRjNxSkVNMHEwQkhwakZLSEo2M2F6aW5hY3ZZdnhs?=
+ =?utf-8?B?cVlBM2ZUalU2WGgxdEh3R0dobERhcTVNRm5DaWZOMFRxM3ZYN0lBZlI0bmJq?=
+ =?utf-8?B?T3pwSjhVaEJEV2RBWjFQSENGVksxUm1tNEJzQWR0Zkx6VXpqUDZtZFo0elVp?=
+ =?utf-8?B?RHlpdml2aldTVVN1aWF4cXIxcEJxK2FVa1o5RjRFcEdabHoxWlpCNVRNR1lz?=
+ =?utf-8?B?L3d5T1pGMVZXc1dUVDRKSjZMRDhHRjRhckxGdnJjbzdkTlhvdmNwWHQ2MFFJ?=
+ =?utf-8?B?UnBsUlVjeXcrdTdVYW5rTDlsMUZmZE8xSTF6NENkc1BTWkRUejZYc2U1Qysw?=
+ =?utf-8?B?ZGtKeWFLUkRNb1MxZ0NUSHZEaWZVejRIenFncjY4TTJqMi83VW1SbkJENUZR?=
+ =?utf-8?B?ak1DVUlmaUI4QlBzeFlzcjh3cWFISmUyT1N3UTJUK05XSG1ndytmTmdJSVhL?=
+ =?utf-8?B?ZkFWUVNER3R3L3hhWkY1RllncXZsY0JNenU2eW82WjIzU29OS095TXh4VHNy?=
+ =?utf-8?B?VWdVenBKalVxejJoTEFkd0pZU3VWUjdTM0pKT0Vjb0VteXhZZ2dXT3JPZjN2?=
+ =?utf-8?B?c2ZHRk1BS2tKU20rSHlEdVJtRlQ4YnM5T2hTTnRKYXdZRmhTSEJzNk9tT056?=
+ =?utf-8?B?ei9kb25ETDBnVnQ4V3U2dUxUNlgycE01cEVyNmF3SWUydzJZUzRPSTVXTlp4?=
+ =?utf-8?B?UkVrRzZmdThJSXp3cEZ5NVA3d3pZTDVvY3NkZW9pVGY0SmV2NG05TkU1TGNS?=
+ =?utf-8?B?eThPYUc0Z1lBR1pJby9BcU42d09SV1YzQzZJT3RHZnJvaTc5QytjQ0pYUHdQ?=
+ =?utf-8?B?OHlyQzQ2a01iWUsyRDRMWkhDQ1E0d25RbXFlNDJ4alJmTWgwMUtWY2ZkdllN?=
+ =?utf-8?B?RjI4RGplc1UwUEhweXBjWlYxZlhCSExMYUI0eFlRWUxEcHN2aFpJdmw5YzJX?=
+ =?utf-8?B?bit3bHlnVGI4aFBLNDVlb1k5dVZnMWNVN2tPOW9pTm1PZjZwTzBsMmpSaVFP?=
+ =?utf-8?B?bFpsOEhYT0dtcXZNSG5BT1hPYTBBRUhTbTFENU1nQk5FNWlVUVRSdnlnOVhD?=
+ =?utf-8?B?eGJtMlIzaTRxMDNzK1EzVEtYdkx4OVZ0MG1XdGNZZ1lwM2JOVFhDVnA1YVY4?=
+ =?utf-8?B?WjVQazhyOGZXVlNrTzc4MFRNZURha0JncjdFZFFvU3FualpWbmhBNWJqamtP?=
+ =?utf-8?B?Q1BBaTZEMVFYYXIyTnVwUUZIUVcwd3BBQWM0dVRFbGhCSzFucE0wc1dvTFJW?=
+ =?utf-8?B?bUpzQ0MxcUQwWDlRWVhyVGtvazFyTHdvNmU2WXhIekFkK1VBL1o4Vk90bUIz?=
+ =?utf-8?B?Sll1QVJ3V0d0aWxidEl5M0IyL1hXaU1qRGNENnIwRW1wMGdkUDVreENqeDU4?=
+ =?utf-8?B?SWJ4V1d6YnNCem45UGFaSGJaT1ZCVWE2akgzNGVRU2V0cTM3Tmw3TGpZRWZU?=
+ =?utf-8?B?dC9ZNEZGMktTbXcrQ2xtcDhWdytRNTlXQXJhWTJ5UmVJY2hzaytWMjROMVlr?=
+ =?utf-8?B?S2diRmJQSnB1cXRZQW5OaGdpNzBBVHhzT21UVnhudmoxeW8yRDBHMjNvdnRS?=
+ =?utf-8?B?eDlpSVhJbEN0NUpWblZIUEZIZGhwRlo1ZkM4VC9LclRMWlZBUnhybGVQUDJl?=
+ =?utf-8?B?T2dLc1NxK1NKaDJtSTNmbkRkYWdIa1pmd0JnV3BwdFVQZCtScjlLdXVrTnN6?=
+ =?utf-8?B?bGxJblltTVlKNjhQOVMvYkNYeWpwMSt0Y1lNL21wU3dlQ0ZSMWxtRTNiUWZq?=
+ =?utf-8?B?eVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d96cafa-742e-426d-79ba-08d9ed82eaf4
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2022 17:21:19.3682
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WuFwzkFObFgweYiD7gS2sFXDvBY4X3glihvi36izncn9OQt9D+QAymNKxJjhs0n9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1321
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: IJjkBQe1hqgN2kiZmJX8NDOCNks5Dc7K
+X-Proofpoint-ORIG-GUID: IJjkBQe1hqgN2kiZmJX8NDOCNks5Dc7K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-11_05,2022-02-11_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 phishscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202110093
+X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
 
-> On Thu, Feb 10, 2022 at 2:01 AM Michal Such=C3=A1nek <msuchanek@suse.de> =
-wrote:
->>
->> Hello,
->>
->> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
->> >
->> >
->> > On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
->> > > Hi,
->> > >
->> > > We recently run into module load failure related to split BTF on ope=
-nSUSE
->> > > Tumbleweed[1], which I believe is something that may also happen on =
-other
->> > > rolling distros.
->> > >
->> > > The error looks like the follow (though failure is not limited to ip=
-heth)
->> > >
->> > >      BPF:[103111] STRUCT BPF:size=3D152 vlen=3D2 BPF: BPF:Invalid na=
-me BPF:
->> > >
->> > >      failed to validate module [ipheth] BTF: -22
->> > >
->> > > The error comes down to trying to load BTF of *kernel modules from a
->> > > different build* than the runtime kernel (but the source is the same=
-), where
->> > > the base BTF of the two build is different.
->> > >
->> > > While it may be too far stretched to call this a bug, solving this m=
-ight
->> > > make BTF adoption easier. I'd natively think that we could further s=
-plit
->> > > base BTF into two part to avoid this issue, where .BTF only contain =
-exported
->> > > types, and the other (still residing in vmlinux) holds the unexporte=
-d types.
->> >
->> > What is the exported types? The types used by export symbols?
->> > This for sure will increase btf handling complexity.
->>
->> And it will not actually help.
->>
->> We have modversion ABI which checks the checksum of the symbols that the
->> module imports and fails the load if the checksum for these symbols does
->> not match. It's not concerned with symbols not exported, it's not
->> concerned with symbols not used by the module. This is something that is
->> sustainable across kernel rebuilds with minor fixes/features and what
->> distributions watch for.
->>
->> Now with BTF the situation is vastly different. There are at least three
->> bugs:
->>
->>  - The BTF check is global for all symbols, not for the symbols the
->>    module uses. This is not sustainable. Given the BTF is supposed to
->>    allow linking BPF programs that were built in completely different
->>    environment with the kernel it is completely within the scope of BTF
->>    to solve this problem, it's just neglected.
->
-> You refer to BTF use in CO-RE with the latter. It's just one
-> application of BTF and it doesn't follow that you can do the same with
-> module BTF. It's not a neglect, it's a very big technical difficulty.
->
-> Each module's BTFs are designed as logical extensions of vmlinux BTF.
-> And each module BTF is independent and isolated from other modules
-> extension of the same vmlinux BTF. The way that BTF format is
-> designed, any tiny difference in vmlinux BTF effectively invalidates
-> all modules' BTFs and they have to be rebuilt.
->
-> Imagine that only one BTF type is added to vmlinux BTF. Last BTF type
-> ID in vmlinux BTF is shifted from, say, 1000 to 1001. While previously
-> every module's BTF type ID started with 1001, now they all have to
-> start with 1002 and be shifted by 1.
->
-> Now let's say that the order of two BTF types in vmlinux BTF is
-> changed, say type 10 becomes type 20 and type 20 becomes type 10 (just
-> because of slight difference in DWARF, for instance). Any type
-> reference to 10 or 20 in any module BTF has to be renumbered now.
->
-> Another one, let's say we add a new string to vmlinux BTF string
-> section somewhere at the beginning, say "abc" at offset 100. Any
-> string offset after 100 now has to be shifted *both* in vmlinux BTF
-> and all module BTFs. And also any string reference in module BTFs have
-> to be adjusted as well because now each module's BTF's logical string
-> offset is starting at 4 logical bytes higher (due to "abc\0" being
-> added and shifting everything right).
->
-> As you can see, any tiny change in vmlinux BTF, no matter where,
-> beginning, middle, or end, causes massive changes in type IDs and
-> offsets everywhere. It's impractical to do any local adjustments, it's
-> much simpler and more reliable to completely regenerate BTF
-> completely.
 
-This seems incredibly brittle, though? IIUC this means that if you want
-BTF in your modules you *must* have not only the kernel headers of the
-kernel it's going to run on, but the full BTF information for the exact
-kernel image you're going to load that module on? How is that supposed
-to work for any kind of environment where everything is not built
-together? Third-party modules for distribution kernels is the obvious
-example that comes to mind here, but as this thread shows, they don't
-necessarily even have to be third party...
+On 2/11/22 9:06 AM, Andrii Nakryiko wrote:
+> On Fri, Feb 11, 2022 at 7:21 AM Yonghong Song <yhs@fb.com> wrote:
+>>
+>> Previously, the following code in check_and_init_map_value()
+>>    *(struct bpf_timer *)(dst + map->timer_off) =
+>>        (struct bpf_timer){};
+>> can help generate bpf_timer definition in vmlinuxBTF.
+>> But previous patch replaced the above code with memset
+> 
+> For bisectability the order of the patches should be reverted then.
+> Otherwise we have a commit that will break selftests for no good
+> reason.
 
-How would you go about "completely regenerating BTF" in practice for a
-third-party module, say?
+good point. will send v3 later.
 
--Toke
-
+> 
+>> so bpf_timer definition disappears from vmlinuxBTF.
+>> Let us emit the type explicitly so bpf program can continue
+>> to use it from vmlinux.h.
+>>
+>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>> ---
+>>   kernel/bpf/helpers.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+>> index 01cfdf40c838..66f9ed5093b2 100644
+>> --- a/kernel/bpf/helpers.c
+>> +++ b/kernel/bpf/helpers.c
+>> @@ -16,6 +16,7 @@
+>>   #include <linux/pid_namespace.h>
+>>   #include <linux/proc_ns.h>
+>>   #include <linux/security.h>
+>> +#include <linux/btf.h>
+>>
+>>   #include "../../lib/kstrtox.h"
+>>
+>> @@ -1075,6 +1076,7 @@ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
+>>          void *key;
+>>          u32 idx;
+>>
+>> +       BTF_TYPE_EMIT(struct bpf_timer);
+>>          callback_fn = rcu_dereference_check(t->callback_fn, rcu_read_lock_bh_held());
+>>          if (!callback_fn)
+>>                  goto out;
+>> --
+>> 2.30.2
+>>
