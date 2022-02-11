@@ -2,127 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E17C94B26DC
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 14:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389BC4B2808
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 15:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350450AbiBKNMB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 08:12:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44574 "EHLO
+        id S1349522AbiBKOfk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 09:35:40 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350452AbiBKNMB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 08:12:01 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C06F70
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 05:11:58 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id d3so6803602ilr.10
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 05:11:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7Y2G8AlF6Ncyxq64QoVe4HHceu9Q6Y6j+1knE8xr79k=;
-        b=PDd/NUgnyMl0IPdr2l+PEy0J+VSrp+cpJ/egTOtYonQ6B6I8pU4OrlhS00SJXlRXZI
-         Qeq2qepgDTaSC0OO/FPfTgdS1vIgmYmpR8xO4kIgb/jcOGKx2wIRWjFmW5oIK8Krv6aR
-         rwCgv6ZnlgjIMkGy+f2OKP1+ypX4xS1caGo4k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7Y2G8AlF6Ncyxq64QoVe4HHceu9Q6Y6j+1knE8xr79k=;
-        b=YGgPKs23vk4cHgIwxELFQDjpLMG+UWvPwbKdPyQFqHeppBIe1cRqXl2o+gTft/CHkr
-         EMKgQsYjwOxULundhZr2PWt1zRPsvkejpS0FiD43XWGGSPf2sJU562CH5EmiM9+/OgUT
-         2ZjBuIcfbnt5osLdDonmIGG4WxLO+B7eGhAId4oPMpIMgfQrz6IvDcTOByuPIyrCeCgR
-         yIuuaobal+V/FxHaca3rkH7KKc7p3norxZpUfQuvITsmuVHTJ45MBdyTuFN6LNjd9Ske
-         Ltd7b/vDigMbPMAOyzhezR4oAuSgqw/uhG4Y4h0is6o4m/CdINOtNYN9Lu3INMxyCFQR
-         VnkQ==
-X-Gm-Message-State: AOAM533uaOf9w2IsiROUFjo06i5UzmdKXYjbQnWjqqBnDeKVe3/lT4QG
-        vRf97RYI1p3pCRcG+2Cr9liwcsW8SdBWBeMtSldq3A==
-X-Google-Smtp-Source: ABdhPJwcC9ywc3Spihk7RbD5O7xNxHxMEcbEIUGne7QB9t2HjV1Twx1cR0RDE3cDFxfvXUapBKqnsYZ3Nn30iAF9rhA=
-X-Received: by 2002:a05:6e02:1a47:: with SMTP id u7mr896831ilv.33.1644585118126;
- Fri, 11 Feb 2022 05:11:58 -0800 (PST)
+        with ESMTP id S239104AbiBKOfi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 09:35:38 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1177188;
+        Fri, 11 Feb 2022 06:35:36 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nIX1H-0005ZS-U3; Fri, 11 Feb 2022 15:35:31 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nIX1H-0003vn-Ip; Fri, 11 Feb 2022 15:35:31 +0100
+Subject: Re: [PATCH bpf-next 2/2] bpf: flexible size for bpf_prog_pack
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <20220210064108.1095847-1-song@kernel.org>
+ <20220210064108.1095847-3-song@kernel.org>
+ <34d0ed40-30cf-a1a2-f4eb-fa3d0a55bce8@iogearbox.net>
+ <A3FB68F3-34DC-4598-8C6B-145421DCE73E@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <dd6dee71-94d7-5393-8fe6-c667938ebfac@iogearbox.net>
+Date:   Fri, 11 Feb 2022 15:35:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220211104828.4061334-1-roberto.sassu@huawei.com>
- <f9ccc9be6cc084e9cab6cd75e87735492d120002.camel@linux.ibm.com> <3d0bdb4599e340a78b06094797e42bc9@huawei.com>
-In-Reply-To: <3d0bdb4599e340a78b06094797e42bc9@huawei.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 11 Feb 2022 14:11:47 +0100
-Message-ID: <CABRcYm+Mdtgqo-8uf3ys4XnuVrJ0xgsSwFD9VKeJdHJwxmN7Sg@mail.gmail.com>
-Subject: Re: [PATCH] ima: Calculate digest in ima_inode_hash() if not available
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florent Revest <revest@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <A3FB68F3-34DC-4598-8C6B-145421DCE73E@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26450/Fri Feb 11 10:24:09 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 1:58 PM Roberto Sassu <roberto.sassu@huawei.com> wrote:
->
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Friday, February 11, 2022 1:41 PM
-> > Hi Roberto,
-> >
-> > On Fri, 2022-02-11 at 11:48 +0100, Roberto Sassu wrote:
-> > > __ima_inode_hash() checks if a digest has been already calculated by
-> > > looking for the integrity_iint_cache structure associated to the passed
-> > > inode.
-> > >
-> > > Users of ima_file_hash() and ima_inode_hash() (e.g. eBPF) might be
-> > > interested in obtaining the information without having to setup an IMA
-> > > policy so that the digest is always available at the time they call one of
-> > > those functions.
-> >
-> > Things obviously changed, but the original use case for this interface,
-> > as I recall, was a quick way to determine if a file had been accessed
-> > on the system.
+On 2/10/22 5:51 PM, Song Liu wrote:
+>> On Feb 10, 2022, at 12:25 AM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 2/10/22 7:41 AM, Song Liu wrote:
+>>> bpf_prog_pack uses huge pages to reduce pressue on instruction TLB.
+>>> To guarantee allocating huge pages for bpf_prog_pack, it is necessary to
+>>> allocate memory of size PMD_SIZE * num_online_nodes().
+>>> On the other hand, if the system doesn't support huge pages, it is more
+>>> efficient to allocate PAGE_SIZE bpf_prog_pack.
+>>> Address different scenarios with more flexible bpf_prog_pack_size().
+>>> Signed-off-by: Song Liu <song@kernel.org>
+>>> ---
+>>>   kernel/bpf/core.c | 47 +++++++++++++++++++++++++++--------------------
+>>>   1 file changed, 27 insertions(+), 20 deletions(-)
+>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>> index 42d96549a804..d961a1f07a13 100644
+>>> --- a/kernel/bpf/core.c
+>>> +++ b/kernel/bpf/core.c
+>>> @@ -814,46 +814,53 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+>>>    * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+>>>    * to host BPF programs.
+>>>    */
+>>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>>> -#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+>>> -#else
+>>> -#define BPF_PROG_PACK_SIZE	PAGE_SIZE
+>>> -#endif
+>>>   #define BPF_PROG_CHUNK_SHIFT	6
+>>>   #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+>>>   #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+>>> -#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+>>>     struct bpf_prog_pack {
+>>>   	struct list_head list;
+>>>   	void *ptr;
+>>> -	unsigned long bitmap[BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)];
+>>> +	unsigned long bitmap[];
+>>>   };
+>>>   -#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
+>>>   #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+>>>     static DEFINE_MUTEX(pack_mutex);
+>>>   static LIST_HEAD(pack_list);
+>>>   +static inline int bpf_prog_pack_size(void)
+>>> +{
+>>> +	/* If vmap_allow_huge == true, use pack size of the smallest
+>>> +	 * possible vmalloc huge page: PMD_SIZE * num_online_nodes().
+>>> +	 * Otherwise, use pack size of PAGE_SIZE.
+>>> +	 */
+>>> +	return get_vmap_allow_huge() ? PMD_SIZE * num_online_nodes() : PAGE_SIZE;
+>>> +}
+>>
+>> Imho, this is making too many assumptions about implementation details. Can't we
+>> just add a new module_alloc*() API instead which internally guarantees allocating
+>> huge pages when enabled/supported (e.g. with a __weak function as fallback)?
+> 
+> I agree that this is making too many assumptions. But a new module_alloc_huge()
+> may not work, because we need the caller to know the proper size to ask for.
+> (Or maybe I misunderstood your suggestion?)
+> 
+> How about we introduce something like
+> 
+>      /* minimal size to get huge pages from vmalloc. If not possible,
+>       * return 0 (or -1?)
+>       */
+>      int vmalloc_hpage_min_size(void)
+>      {
+>          return vmap_allow_huge ? PMD_SIZE * num_online_nodes() : 0;
+>      }
 
-I believe we were the main users of this and I can confirm we are no
-longer using this interface to determine if a file has been accessed.
+And that would live inside mm/vmalloc.c and is exported to users ...
 
-> Hi Mimi
->
-> thanks for the info. I was not sure if I should export a new
-> function or reuse the existing one. In my use case, just calculating
-> the digest would be sufficient.
+>      /* minimal size to get huge pages from module_alloc */
+>      int module_alloc_hpage_min_size(void)
+>      {
+>          return vmalloc_hpage_min_size();
+>      }
 
-It would actually be nice for us too, sometimes we attach to hooks
-just before the hash is calculated and being able to calculate the
-hash would be helpful.
+... and this one as wrapper in module alloc infra with __weak attr?
 
-> For finding whether a file was accessed (assuming that it matches
-> the policy), probably bpf_ima_inode_hash() is not anyway too reliable.
-> If integrity_iint_cache is evicted from the memory, it would report
-> that the inode was not accessed even if it was.
+>      static inline int bpf_prog_pack_size(void)
+>      {
+>          return module_alloc_hpage_min_size() ? : PAGE_SIZE;
+>      }
 
-I agree indeed, we'd have better ways to do this now.
+Could probably work. It's not nice, but at least in the corresponding places so it's
+not exposed / hard coded inside bpf and assuming implementation details which could
+potentially break later on.
 
-> Thanks
->
-> Roberto
->
-> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-> Managing Director: Li Peng, Zhong Ronghua
->
-> > --
-> > thanks,
-> >
-> > Mimi
->
+Thanks,
+Daniel
