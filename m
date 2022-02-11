@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F774B1D4A
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 05:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17CF4B1DA5
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 06:20:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239589AbiBKEM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 23:12:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47634 "EHLO
+        id S234015AbiBKFUK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 00:20:10 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbiBKEM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 23:12:27 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA325F97;
-        Thu, 10 Feb 2022 20:12:26 -0800 (PST)
-X-UUID: 79bd38c002254a2183f9557e5681a346-20220211
-X-UUID: 79bd38c002254a2183f9557e5681a346-20220211
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <lina.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 327661395; Fri, 11 Feb 2022 12:12:21 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 11 Feb 2022 12:12:19 +0800
-Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 11 Feb 2022 12:12:18 +0800
-From:   Lina Wang <lina.wang@mediatek.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, <maze@google.com>,
-        <willemb@google.com>, <edumazet@google.com>,
-        <zhuoliang.zhang@mediatek.com>, <chao.song@mediatek.com>
-Subject: Re: [PATCH] net: fix wrong network header length
-Date:   Fri, 11 Feb 2022 12:06:29 +0800
-Message-ID: <20220211040629.23703-1-lina.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com>
-References: <d5dd3f10c144f7150ec508fa8e6d7a78ceabfc10.camel@redhat.com>
+        with ESMTP id S232414AbiBKFUJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 00:20:09 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C512710C4;
+        Thu, 10 Feb 2022 21:20:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55695618C7;
+        Fri, 11 Feb 2022 05:20:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B25A7C340EB;
+        Fri, 11 Feb 2022 05:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644556808;
+        bh=9J9MSIgaoQV6CiZBEgLgrguVIr//L88WN81Q+uDZty4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=bfyrSUkDK/Tddx8YbBFjfveeoeKE3qobnRtrsY/LHh1M5ne9NGm++LMA9zqxsDgex
+         MVYThcvLP7WvdoUsLRrCTq8cs2BKttKMlM/j9E2T5D4DpzOnj3c/CXmhHJlk9mSGi7
+         eNjXC3W/z8YKcc8ChckObv5z/3rVgu2yZ/mrRyUk0JBj+0a447LDePcs5Mby8WSy9H
+         Y8rj+U8yneJ0Ilrc9yOrJ2IveIjC8kItngHmgnnFGJm7Szd2udVesxPDE2VPRUD4YV
+         AVM7tP89/sdlTkmBr1LIWPwGWjTDMcWFIMFk5VCQNuWHv1Q+X/fKPxzA4m4fO/+jf8
+         eMgMzhegsJ5Ug==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 98654E6D3DE;
+        Fri, 11 Feb 2022 05:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3 0/2] bpftool: Switch to new versioning scheme
+ (align on libbpf's)
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164455680862.7855.13945335074780551017.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Feb 2022 05:20:08 +0000
+References: <20220210104237.11649-1-quentin@isovalent.com>
+In-Reply-To: <20220210104237.11649-1-quentin@isovalent.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,60 +57,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-02-10 at 17:02 +0100, Paolo Abeni wrote:
+Hello:
 
-> > @@ -3682,6 +3682,7 @@ struct sk_buff *skb_segment_list(struct
-> > sk_buff *skb,
-> >  	struct sk_buff *tail = NULL;
-> >  	struct sk_buff *nskb, *tmp;
-> >  	int err;
-> > +	unsigned int len_diff = 0;
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Thu, 10 Feb 2022 10:42:35 +0000 you wrote:
+> Hi, this set aims at updating the way bpftool versions are numbered.
+> Instead of copying the version from the kernel (given that the sources for
+> the kernel and bpftool are shipped together), align it on libbpf's version
+> number, with a fixed offset (6) to avoid going backwards. Please refer to
+> the description of the second commit for details on the motivations.
 > 
-> Mintor nit: please respect the reverse x-mas tree order.
+> The patchset also adds the number of the version of libbpf that was used to
+> compile to the output of "bpftool version". Bpftool makes such a heavy
+> usage of libbpf that it makes sense to indicate what version was used to
+> build it.
 > 
+> [...]
 
-Yes,v2 has change unsigned int to int
+Here is the summary with links:
+  - [bpf-next,v3,1/2] bpftool: Add libbpf's version number to "bpftool version" output
+    https://git.kernel.org/bpf/bpf-next/c/61fce9693f03
+  - [bpf-next,v3,2/2] bpftool: Update versioning scheme, align on libbpf's version number
+    https://git.kernel.org/bpf/bpf-next/c/9910a74d6ebf
 
-> >  
-> >  	skb_push(skb, -skb_network_offset(skb) + offset);
-> > @@ -3721,9 +3722,11 @@ struct sk_buff *skb_segment_list(struct
-> > sk_buff *skb,
-> >  		skb_push(nskb, -skb_network_offset(nskb) + offset);
-> >  
-> >  		skb_release_head_state(nskb);
-> > +		len_diff = skb_network_header_len(nskb) -
-> > skb_network_header_len(skb);
-> >  		 __copy_skb_header(nskb, skb);
-> >  
-> >  		skb_headers_offset_update(nskb, skb_headroom(nskb) -
-> > skb_headroom(skb));
-> > +		nskb->transport_header += len_diff;
-> 
-> This does not look correct ?!? the network hdr position for nskb will
-> still be uncorrect?!? and even the mac hdr likely?!? possibly you
-> need
-> to change the offset in skb_headers_offset_update().
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Network hdr position and mac hdr are both right, because bpf processing & 
-skb_headers_offset_update have updated them to right position. After bpf
-loading, the first skb's network header&mac_header became 44, transport
-header still is 64. After skb_headers_offset_update, fraglist skb's mac
-header and network header are still 24, the same with original packet.
-Just fraglist skb's transport header became 44, as original is 64. 
-Only transport header cannot be easily updated the same offset, because 
-6to4 has different network header.
 
-Actually,at the beginning, I want to change skb_headers_offset_update, but 
-it has been called also in other place, maybe a new function should be 
-needed here.
- 
-Skb_headers_offset_update has other wrong part in my scenary, 
-inner_transport_header\inner_network_header\inner_mac_header shouldnot be 
-changed, but they are been updated because of different headroom. They are
-not used later, so wrong value didnot affect anything.
-
-> Paolo
->
-
-Thanks! 
