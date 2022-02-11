@@ -2,179 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369B24B19F4
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 00:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3E84B1A01
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 01:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345953AbiBJX7P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Feb 2022 18:59:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58074 "EHLO
+        id S1346010AbiBKACv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Feb 2022 19:02:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344855AbiBJX7P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Feb 2022 18:59:15 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C39C7B47
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 15:59:15 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21ANrgq0007907
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 15:59:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=eukGbhcuGyVXX4XiuJ/x6PdlAtpdTlRfpUC4pDov4EY=;
- b=nG2Rsrys4QBuGb9D3jDM8pgEr3nvbuHjzYd4DDpcuYTlSUyzOB+FSXRr14fBkf83w9L+
- xK7QtGzkunIamdS7LWmcmuXzByOhXmf+q6cn8Vbpdt1eqARqzjSqyTtYO2RBWI/yUFir
- z12HZj2mhe4L2ZurxdrhgVj9tqmUQkP+YPU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e5853a762-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 15:59:15 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 10 Feb 2022 15:59:13 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZOKqPWBTaVhPIP8g9jMhXG47gKvi9Qiz6oshOFVHuCiegsc4XkRzTIp8OCShGFriI10A+xjoL5NkJmWwmNYluJ/w2n+ix0rvTYD0mttgLCc2T0tg/r3EUaGXL6liM6CbUCzNnXsDBFgW/1e4m4pQLWywguFEfOH9BLndKceGbDvFG/hEglAJe8yPBtagCcMcB/jPpccluPnBCIsDmVXcERGgMfmYHRMcU3rOFZZFCfPlSrMuLrRg2sjgFHMn1LROuItNyXjoecrcaIwfOO9q7ho0wn5JoUnkrA317AerWqgDGUzF46WICini8dD6LkvV4ePUqBTERWB94ASj+zCbpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eukGbhcuGyVXX4XiuJ/x6PdlAtpdTlRfpUC4pDov4EY=;
- b=Dzk+C8jEDIUGbH4lEyIHd0invsT77FYButd7rlsez7NXa6gL+bmXjfh4faIIAXDqSuprJynelXJLSUIfeGh1NRUNrVRcKjdYX2sXcXIcumyJuAik3/Eur5ltpXDxsIu4BwSK3jHbMenn11A9/ijFyAeWC3B8/o+QEqiuvmip9O7SdSIkJl2b6/cpeSMngu3vjBHfo4PSiRoT+cGHIDVl6JUSQxm6braBzvbH9HVaXZgavLpK7fPwjqYADBHGdPSKf9B+azD1YmyUSDCBJp6CwOnngIJ86Gzy4efl56EldKpdXM2o/oGUAu0qLAuX6AMaFU0H4amx0KCpeLfCZrbdTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
- by CO6PR15MB4212.namprd15.prod.outlook.com (2603:10b6:5:353::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Thu, 10 Feb
- 2022 23:59:12 +0000
-Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::7867:90d0:bcaa:2ea7]) by SJ0PR15MB5154.namprd15.prod.outlook.com
- ([fe80::7867:90d0:bcaa:2ea7%5]) with mapi id 15.20.4975.012; Thu, 10 Feb 2022
- 23:59:12 +0000
-From:   Delyan Kratunov <delyank@fb.com>
-To:     Yonghong Song <yhs@fb.com>,
-        "alexei.starovoitov@gmail.com" <alexei.starovoitov@gmail.com>
-CC:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 0/3] Avoid typedef size mismatches in
- skeletons
-Thread-Topic: [PATCH bpf-next v1 0/3] Avoid typedef size mismatches in
- skeletons
-Thread-Index: AQHYHhZOC9SakN/n9kaJ9hboeaEJ6qyNZT2AgAAGcoCAAAtPgA==
-Date:   Thu, 10 Feb 2022 23:59:12 +0000
-Message-ID: <b475429b1521d83c2b538f83b9013c9ee9b13d10.camel@fb.com>
-References: <cover.1644453291.git.delyank@fb.com>
-         <78216409-5892-6410-a82c-0ebf5fdb1504@fb.com>
-         <CAADnVQKk-uOEkEiPuBu7W_oYx=gTGpruK6Kc0ShTcFYEAbCczA@mail.gmail.com>
-In-Reply-To: <CAADnVQKk-uOEkEiPuBu7W_oYx=gTGpruK6Kc0ShTcFYEAbCczA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3a945118-9615-45de-fa05-08d9ecf15613
-x-ms-traffictypediagnostic: CO6PR15MB4212:EE_
-x-microsoft-antispam-prvs: <CO6PR15MB421240E361A642B26352A3FAC12F9@CO6PR15MB4212.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +eClz8dQA8C7Aoj46JhqkLj1c3qlCPHA0hxeGgUc3mvkofyQjVAeJgdvec8F3Sr45QjdsgpAd0k76t28HTmo1mz9+79MNhvWjT9Jsek7cYVTp/qCf9GaGhV2NYSfO8PsBSIV7QyROXyFAS+odiackNGsfgVFHS9pbuKATxGerLsyZL0boSWjAhPTEbFvIG1zDqeyvGfEso1LELdThFwKdyXqtXnJPQdH80cn7qKFIV6D95mAJcIBKX2ngMtMHQ13JUIA1PvFPj+K6CPinLf5/n6upAz35SqpkBv1KgeA8cZqdg8oENVenwhmMCnTcnRQvX0BcadsmeDd5MuWUcPGdKysCrqazlGIMQpMYAKn/5XfuXAAVIWvm5BNb02dfsypaoGeUI92Zm0Ld9meqp6/FkPqhhi1ECRYEJOuGVJzQQtbxFA37LZmuZWELEPfK0JDR4IW8Qux2lIX0gR+x7Hy9ofL3NwvOquWL4SUbXEF3kTJMC0QGqqqbXfdroMl5cgm3oytHHpxdhI31GjMjVE2zLpaEhrTjl1LgFSyI3D4yCl/qwiMu/qz1xu6I0qG8ws+XtUrMSyWzKCSLe9cqj1+3CWuYNPBZczB+v7nNwHLPINZZWIwfMqIiCI8ffS5dR5aNpQTcXCAsjz2J/PFCQsHRk6boU3Hp0WEoaQvHZztUXzRp7L4vokUieX1/5AWqZEmNsspyUjosdv5Uh9FvFXjjw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(91956017)(66556008)(66476007)(66446008)(64756008)(4326008)(66946007)(6512007)(76116006)(508600001)(8676002)(186003)(8936002)(2616005)(71200400001)(2906002)(86362001)(6506007)(38070700005)(38100700002)(122000001)(6486002)(316002)(36756003)(5660300002)(54906003)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZER3TnVxaFhVRDJtd0JFVHMyTFVrVG5vK2F0YmhqaVhDUUN1ancrOWtnWGtE?=
- =?utf-8?B?c3ZxZzBnS1VLY1RYZ1dFbm1JNHVMaTArekxrYTB2eWZhOFI5RWEvZGVJR3N0?=
- =?utf-8?B?dlduTTFmcWVSazJmQ1E5U0M4L3FSUVRhdjh1eW5rc09KRU1VRE1qS25wTkRF?=
- =?utf-8?B?UHlHTUJPNkNPQlNLQkV5VUxyR3pwYUdwMUZldUVHQnBzQWNzU1BlUlE4Vy9n?=
- =?utf-8?B?a2pudnBNMGpvY3JpSWM2bXptczd2VHlvbjJ1cUs4c0I0S2IvdjlEU085c3R1?=
- =?utf-8?B?UXVyZmVZWlUvdW90R01VYnQ3OStwYVUyM2FIWWN2RXU5elZoV0sra1F0M3JG?=
- =?utf-8?B?c3BHRWlrcnR3RnllTWlyS2JjQk5ISENtR2dIY2tSUHRLSk9xVGRkamxqVHB2?=
- =?utf-8?B?THdKaWQvT2YyeElkdm5ZeGM3U09hUmV0ZHVoNXB4Q3o3WWJUSGtCWitSamp1?=
- =?utf-8?B?eG5EdWdNNzhGL2xNNE9yS3RqQmNvbVZHeXJkNXRRUkNjVW9RUmhSSWJtYkVJ?=
- =?utf-8?B?R1kvdHRPT0JLb0ZKNnVuKytFY1pTVDJNUjlPenRJRWxtU3U2UStvbm00aWlw?=
- =?utf-8?B?S0tHbzdTUnVYbmRTR0ZLTGZZZnlRR1cxMlBQUWFkSUNxbTJNZ3RXaHVDVFBv?=
- =?utf-8?B?N0doUXhSbjdJMncvSGxqcTBtb0tMRy9XcTZUelk5a0pjTDM2YlZicU1aU1dm?=
- =?utf-8?B?YVFBcUhHemswMyt1M1RJRXNYelMrL1k1SUZzYkNJaFVtWkFkVkIwajI3bFJP?=
- =?utf-8?B?am9BNHNzazJLMWdHSHdQdEV6YWN4NE8yem9lSGFrV2w2ck9rdklrazAwcEg0?=
- =?utf-8?B?bzhVYlVWWmd0VEJ2RXI2dEcwcjUxQ3I4M1pLRFJEWWhHT0FZUURveGRBV3R4?=
- =?utf-8?B?OFhaMVhIZmE4TVFMaTVWaUxmWkExVUwycllJSnkydnExaUxZN3VHQVdLeGlD?=
- =?utf-8?B?WElKUGNSVmtNSldNWDRtdnNQa2xkS0xkMDZJcUpPaENiZkxtalh1dFpUWFkv?=
- =?utf-8?B?cmlMdUI5Wktvd1d5ZW5YUG1za0t0aVJRZHlKcFZHTDBacGd6Q245N3h5R3JX?=
- =?utf-8?B?M05YTHNwYzYvaEJETGJjRXlVdGNMK2EreHR0ai94TzE4dkJGZmVIcTdFaEFZ?=
- =?utf-8?B?L2ZyNUpHSTlDZytRVGdoeHU1TXJEU3JKMUgwd1VPd2dpaVp0amVUM2o0SjNS?=
- =?utf-8?B?S0tYSFBOUUdJdy8zR1hFVWJXRGJzdWZBV3dwOTczR3AxN2RBVnZBem8wdnBM?=
- =?utf-8?B?aE14VyttMUVRNUtKMDFGcjA2cFA2NGFHNnNhZHdaL3dFSWlIV0QyRGpEM0Nq?=
- =?utf-8?B?U2gwbzJkOFhobHh2dHBqVlZjWFVXbmk1amhJT2FmWDFFNmkvNEZJVFArbTRx?=
- =?utf-8?B?QUdpZGhhb29hay9qdEMzVE1RQjFJdjJZbHVjRzAra3FEZ1VRV1VMVm8zU2Nx?=
- =?utf-8?B?MTAvNlc1RGR0dlJGeHMrdVdiUVpRN3htRGlQTnpFTUpzRUxTSHZ0eXZ2NjUw?=
- =?utf-8?B?Rlkra1RJQVU4VHhzSy96dVVUekxGTUlKVDVaTWRJaEZaaWU4V2k3ZC9vZGlu?=
- =?utf-8?B?Ym5ub1BEVGF0SS91MW9USXVVaGlGRDd1aUVwRXoydStHQktYRTFDMTFObUM1?=
- =?utf-8?B?TGtSTysvZnNtbnhBTXlzYkhjR2p4dkVscjRvU2RjaXZndVNKVFo3UmJ1ZTFy?=
- =?utf-8?B?VnU3SjcxeXJOZmttOXBHMnVHdnFUd3hsYVZaVjNQQmhsTk1IZ2N5VGQrSEk5?=
- =?utf-8?B?aVNlR0dXcFZydlRwV1EwYVV1aDBGUTBJM0duOEppcWt5aTBHY20rRVFFK29l?=
- =?utf-8?B?U0RSb3I3MUtSa2JSOEpxemZvYlBINVpTZldEOUMwTUVndmhJcFMvN1cvem1I?=
- =?utf-8?B?cmQwSlVrQ0FyREtjRDRuNXZ1eUkwZy9qbkh5aXJ5RllmdkdWdGdlNkdMQURG?=
- =?utf-8?B?Z3JIN2FtcDdNRGc1bVdacGp1WWI5WEpoNE5hWFB5aFJQQmpWWU1DcFNHNEow?=
- =?utf-8?B?U3VYNm92MW1yNVk5LzhvYmU1SUh5ZDZPeWkvYjlJVWwvYjRweGZSdmNTYmlT?=
- =?utf-8?B?Q3dYMWhnTkk3bzVlNUlCdWRpWDVRTW9uMVYxTndYeHJ2TWFpNXdmcmo4N1lz?=
- =?utf-8?B?VU5lNVI1UEZOalNGKzB0c1JkSWlDbHRnc3lkVi9CMllGc0E4b0tudi91ZDJs?=
- =?utf-8?B?bUE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A3CECFC2BADF9142AFAB8CE166FD474D@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S1345998AbiBKACu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Feb 2022 19:02:50 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A70B95
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 16:02:50 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id v13-20020a17090ac90d00b001b87bc106bdso10238321pjt.4
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 16:02:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AhDiMG8MvcyCCwavCwamiiurxrRfVoAHjV2a0ZprLC4=;
+        b=VZAfHGwEnR58KMWKI4XwOZRYMqDahoXu2C+g7sQVrj42DxUZCVyVIM0tSKvL6FU98q
+         E9IhsVdnMzy+FyQBB4nI/BqU1QifETO7cD03+whKsPCNQSQdNu4GWYnHbG4ZcxMfMdvN
+         Xm3EZB7BEtfQS41q9Ydw+XbDVOoq3KixZanxkbus+4U2pqRIVwpqeszKINU/1Sjf8DqJ
+         LId5fhKfWp9t3VvVsTkJ+Ri+dMLrxM9ZTBQF2cTPGS3Aa6cuIkIVTjFU05isXxwT54df
+         b6DIlssZH7oWhjw4P/1VIBTJDohj22Gl4WZp1NjMMEWUNSkyRcmYX7cR496Pn6N93fkb
+         RUYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AhDiMG8MvcyCCwavCwamiiurxrRfVoAHjV2a0ZprLC4=;
+        b=I5hxEur7skRfPgucd9jIVB0VrqkJpzs0Epk+1vpJ8EYolHVNbmu3vbP6UdhzhoOUpI
+         NEfPHdmNcOEAC4Wu/9xeJKSgPV7qik/+iG+QaLE2DLEHd5umU0IY5GhphKGlVF0Tk7w+
+         toLgQ4cxq/zJQq3Vm5BfyKyu8TXA0Uv+2yD51n7OK928hrymiBtawE0rsFFLsQHp3sv6
+         Nq/2Yt+AVxQfTVktLQZHU3d9fsBy6GEEiNkS0K/J6I/dfelTPHdxfU66E5suUevaCfPB
+         Zwi2DAc5z9EwWrumr0LgNntBUyaEh00QHPSJ5MIR59buonXYpFk0KTlEeqBipFUc9Ejs
+         qVWA==
+X-Gm-Message-State: AOAM530a4Tqy5EtBn1ZKGrU+ZIo+hGYWIgGfSPtsKctZ8d1v0VGp2Bye
+        5p7+IIT+kMyaXXxU2zBkAMZQSUwuN1c=
+X-Google-Smtp-Source: ABdhPJzUZURiobpb5jIi2mNsdPydPlBjL8zGKQKjr/oPjCjg41Ysdvaczvdq6BZXNhMZCvl7cerh+w==
+X-Received: by 2002:a17:902:d510:: with SMTP id b16mr9936486plg.152.1644537770153;
+        Thu, 10 Feb 2022 16:02:50 -0800 (PST)
+Received: from localhost ([2405:201:6014:d064:3d4e:6265:800c:dc84])
+        by smtp.gmail.com with ESMTPSA id m1sm25817124pfk.202.2022.02.10.16.02.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Feb 2022 16:02:48 -0800 (PST)
+Date:   Fri, 11 Feb 2022 05:32:45 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf v2 1/2] bpf: Fix crash due to incorrect copy_map_value
+Message-ID: <20220211000245.s27zktgzl7pzaqt6@apollo.legion>
+References: <20220209070324.1093182-1-memxor@gmail.com>
+ <20220209070324.1093182-2-memxor@gmail.com>
+ <57359c7b-7c6b-cfc9-22e8-5288a6ce0517@fb.com>
+ <20220209195254.mmugfdxarlrry7ok@apollo.legion>
+ <e74b1aa6-7aa6-d814-5dbf-209506e00553@fb.com>
+ <CAADnVQLUrz=Hwp-3e9k5RMSiD+a_nhZVHjWzR4cneZ4naQqrEQ@mail.gmail.com>
+ <e7b471b5-e93c-d9ed-bc36-970b73df6643@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a945118-9615-45de-fa05-08d9ecf15613
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Feb 2022 23:59:12.4590
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ueANgm9VjAuDZzssvAOmVf6Vz583Fobp43jyDxlrwQKCsUor7ZqHRuPjrUQum1kp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR15MB4212
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: v_N-gga9Z1Np4e8oE0DquW8wMkVpO_zn
-X-Proofpoint-ORIG-GUID: v_N-gga9Z1Np4e8oE0DquW8wMkVpO_zn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-10_11,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- mlxlogscore=565 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 phishscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202100123
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e7b471b5-e93c-d9ed-bc36-970b73df6643@fb.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-T24gVGh1LCAyMDIyLTAyLTEwIGF0IDE1OjE0IC0wODAwLCBBbGV4ZWkgU3Rhcm92b2l0b3Ygd3Jv
-dGU6DQo+IFNvIGFkZGluZw0KPiBfU3RhdGljX2Fzc2VydChzaXplb2YodHlwZV9pbl9za2VsKSA9
-PSBjb25zdF9zaXplX2Zyb21fa2VybmVsKTsNCj4gdG8gc2tlbC5oIHdvdWxkIGZvcmNlIHVzZXJz
-IHRvIHBpY2sgdHlwZXMgdGhhdCBhcmUgdGhlIHNhbWUNCj4gYm90aCBpbiBicGYgcHJvZyBhbmQg
-aW4gY29ycmVzcG9uZGluZyB1c2VyIHNwYWNlIHBhcnQuDQoNCkknbSBub3Qgc3VyZSB1c2VycyBo
-YXZlIHRoaXMgbXVjaCBjb250cm9sIG92ZXIgdGhlIGRlZmluaXRpb24gb2YgdGhlIHR5cGVzIGlu
-DQp0aGVpciBwcm9ncmFtIHRob3VnaC4gSWYgYSBrZXJuZWwgYW5kIHVhcGkgdHlwZWRlZiBkaWZm
-ZXIgaW4gc2l6ZSwgdGhpcyBhcHByb2FjaA0Kd291bGQgZm9yY2UgdGhlIHVzZXIgdG8gdXNlIGtl
-cm5lbCB0eXBlcyBmb3IgdGhlIGVudGlyZSBwcm9ncmFtLg0KDQpJZiwgZm9yIGV4YW1wbGUsIHBp
-ZF90IGlzIGEgZGlmZmVyZW50IHNpemUgaW4gZ2xpYmMgYW5kIHRoZSBrZXJuZWwsIGl0IHdvdWxk
-DQpmb3JjZSB5b3Ugb3V0IG9mIHVzaW5nIGFueSBnbGliYyBmdW5jdGlvbnMgdGFraW5nIHBpZF90
-IChhbmQgcG90ZW50aWFsbHkgYWxsIG9mDQpnbGliYyBkZXBlbmRpbmcgb24gaG93IGVudGFuZ2xl
-ZCB0aGUgaGVhZGVycyBhcmUpLg0KDQpCeSBub3JtYWxpemluZyB0byBzdGRpbnQgdHlwZXMsIHdl
-J3JlIHNheWluZyB0aGF0IHRoZSBjb250cmFjdCByZXByZXNlbnRlZCBieQ0KdGhlIHNrZWwgZG9l
-cyBub3Qgb3BlcmF0ZSB3aXRoIGVpdGhlciB1YXBpIG9yIGtlcm5lbCB0eXBlcyBhbmQgaXQncyB1
-cCB0byB5b3UgdG8NCmVuc3VyZSB5b3UgdXNlIHRoZSByaWdodCBvbmUgKG9yIG1peCBhbmQgbWF0
-Y2gsIGlmIHlvdSBjYW4pLiBJdCBmZWVscw0KZnVuZGFtZW50YWxseSBtb3JlIHBlcm1pc3NpdmUg
-dG8gZGlmZmVyZW50IHR5cGVzIG9mIHNpdHVhdGlvbnMgdGhhbiBmb3JjaW5nIHRoZQ0Kc2tlbCB1
-c2VyIHRvIG9ubHkgdXNlIGtlcm5lbCB0eXBlcyBvciByZWZhY3RvciB0aGVpciBwcm9ncmFtIHRv
-IGlzb2xhdGUgdGhlDQprZXJuZWwgdHlwZSBsZWFrYWdlIHRvIG9ubHkgdGhlIGNvbXBpbGF0aW9u
-IHVuaXQgdXNpbmcgdGhlIHNrZWwuDQo=
+On Fri, Feb 11, 2022 at 05:24:55AM IST, Yonghong Song wrote:
+>
+>
+> On 2/10/22 2:49 PM, Alexei Starovoitov wrote:
+> > On Thu, Feb 10, 2022 at 12:05 AM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > >
+> > > On 2/9/22 11:52 AM, Kumar Kartikeya Dwivedi wrote:
+> > > > On Thu, Feb 10, 2022 at 12:36:08AM IST, Yonghong Song wrote:
+> > > > >
+> > > > >
+> > > > > On 2/8/22 11:03 PM, Kumar Kartikeya Dwivedi wrote:
+> > > > > > When both bpf_spin_lock and bpf_timer are present in a BPF map value,
+> > > > > > copy_map_value needs to skirt both objects when copying a value into and
+> > > > > > out of the map. However, the current code does not set both s_off and
+> > > > > > t_off in copy_map_value, which leads to a crash when e.g. bpf_spin_lock
+> > > > > > is placed in map value with bpf_timer, as bpf_map_update_elem call will
+> > > > > > be able to overwrite the other timer object.
+> > > > > >
+> > > > > > When the issue is not fixed, an overwriting can produce the following
+> > > > > > splat:
+> > > > > >
+> > > > > > [root@(none) bpf]# ./test_progs -t timer_crash
+> > > > > > [   15.930339] bpf_testmod: loading out-of-tree module taints kernel.
+> > > > > > [   16.037849] ==================================================================
+> > > > > > [   16.038458] BUG: KASAN: user-memory-access in __pv_queued_spin_lock_slowpath+0x32b/0x520
+> > > > > > [   16.038944] Write of size 8 at addr 0000000000043ec0 by task test_progs/325
+> > > > > > [   16.039399]
+> > > > > > [   16.039514] CPU: 0 PID: 325 Comm: test_progs Tainted: G           OE     5.16.0+ #278
+> > > > > > [   16.039983] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ArchLinux 1.15.0-1 04/01/2014
+> > > > > > [   16.040485] Call Trace:
+> > > > > > [   16.040645]  <TASK>
+> > > > > > [   16.040805]  dump_stack_lvl+0x59/0x73
+> > > > > > [   16.041069]  ? __pv_queued_spin_lock_slowpath+0x32b/0x520
+> > > > > > [   16.041427]  kasan_report.cold+0x116/0x11b
+> > > > > > [   16.041673]  ? __pv_queued_spin_lock_slowpath+0x32b/0x520
+> > > > > > [   16.042040]  __pv_queued_spin_lock_slowpath+0x32b/0x520
+> > > > > > [   16.042328]  ? memcpy+0x39/0x60
+> > > > > > [   16.042552]  ? pv_hash+0xd0/0xd0
+> > > > > > [   16.042785]  ? lockdep_hardirqs_off+0x95/0xd0
+> > > > > > [   16.043079]  __bpf_spin_lock_irqsave+0xdf/0xf0
+> > > > > > [   16.043366]  ? bpf_get_current_comm+0x50/0x50
+> > > > > > [   16.043608]  ? jhash+0x11a/0x270
+> > > > > > [   16.043848]  bpf_timer_cancel+0x34/0xe0
+> > > > > > [   16.044119]  bpf_prog_c4ea1c0f7449940d_sys_enter+0x7c/0x81
+> > > > > > [   16.044500]  bpf_trampoline_6442477838_0+0x36/0x1000
+> > > > > > [   16.044836]  __x64_sys_nanosleep+0x5/0x140
+> > > > > > [   16.045119]  do_syscall_64+0x59/0x80
+> > > > > > [   16.045377]  ? lock_is_held_type+0xe4/0x140
+> > > > > > [   16.045670]  ? irqentry_exit_to_user_mode+0xa/0x40
+> > > > > > [   16.046001]  ? mark_held_locks+0x24/0x90
+> > > > > > [   16.046287]  ? asm_exc_page_fault+0x1e/0x30
+> > > > > > [   16.046569]  ? asm_exc_page_fault+0x8/0x30
+> > > > > > [   16.046851]  ? lockdep_hardirqs_on+0x7e/0x100
+> > > > > > [   16.047137]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > > > > > [   16.047405] RIP: 0033:0x7f9e4831718d
+> > > > > > [   16.047602] Code: b4 0c 00 0f 05 eb a9 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d b3 6c 0c 00 f7 d8 64 89 01 48
+> > > > > > [   16.048764] RSP: 002b:00007fff488086b8 EFLAGS: 00000206 ORIG_RAX: 0000000000000023
+> > > > > > [   16.049275] RAX: ffffffffffffffda RBX: 00007f9e48683740 RCX: 00007f9e4831718d
+> > > > > > [   16.049747] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007fff488086d0
+> > > > > > [   16.050225] RBP: 00007fff488086f0 R08: 00007fff488085d7 R09: 00007f9e4cb594a0
+> > > > > > [   16.050648] R10: 0000000000000000 R11: 0000000000000206 R12: 00007f9e484cde30
+> > > > > > [   16.051124] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> > > > > > [   16.051608]  </TASK>
+> > > > > > [   16.051762] ==================================================================
+> > > > > >
+> > > > > > Fixes: 68134668c17f ("bpf: Add map side support for bpf timers.")
+> > > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > > > > > ---
+> > > > > >     include/linux/bpf.h | 3 ++-
+> > > > > >     1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> > > > > > index fa517ae604ad..31a83449808b 100644
+> > > > > > --- a/include/linux/bpf.h
+> > > > > > +++ b/include/linux/bpf.h
+> > > > > > @@ -224,7 +224,8 @@ static inline void copy_map_value(struct bpf_map *map, void *dst, void *src)
+> > > > > >      if (unlikely(map_value_has_spin_lock(map))) {
+> > > > > >              s_off = map->spin_lock_off;
+> > > > > >              s_sz = sizeof(struct bpf_spin_lock);
+> > > > > > -   } else if (unlikely(map_value_has_timer(map))) {
+> > > > > > +   }
+> > > > > > +   if (unlikely(map_value_has_timer(map))) {
+> > > > > >              t_off = map->timer_off;
+> > > > > >              t_sz = sizeof(struct bpf_timer);
+> > > > > >      }
+> > > > >
+> > > > > Thanks for the patch. I think we have a bigger problem here with the patch.
+> > > > > It actually exposed a few kernel bugs. If you run current selftests, esp.
+> > > > > ./test_progs -j which is what I tried, you will observe
+> > > > > various testing failures. The reason is due to we preserved the timer or
+> > > > > spin lock information incorrectly for a map value.
+> > > > >
+> > > > > For example, the selftest #179 (timer) will fail with this patch and
+> > > > > the following change can fix it.
+> > > > >
+> > > >
+> > > > I actually only saw the same failures (on bpf/master) as in CI, and it seems
+> > > > they are there even when I do a run without my patch (related to uprobes). The
+> > > > bpftool patch PR in GitHub also has the same error, so I'm guessing it is
+> > > > unrelated to this. I also didn't see any difference when running on bpf-next.
+> > > >
+> > > > As far as others are concerned, I didn't see the failure for timer test, or any
+> > > > other ones, for me all timer tests pass properly after applying it. It could be
+> > > > that my test VM is not triggering it, because it may depend on the runtime
+> > > > system/memory values, etc.
+> > > >
+> > > > Can you share what error you see? Does it crash or does it just fail?
+> > >
+> > > For test #179 (timer), most time I saw a hung. But I also see
+> > > the oops in bpf_timer_set_callback().
+> > >
+> > > >
+> > > > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > > > > index d29af9988f37..3336d76cc5a6 100644
+> > > > > --- a/kernel/bpf/hashtab.c
+> > > > > +++ b/kernel/bpf/hashtab.c
+> > > > > @@ -961,10 +961,11 @@ static struct htab_elem *alloc_htab_elem(struct
+> > > > > bpf_htab *htab, void *key,
+> > > > >                           l_new = ERR_PTR(-ENOMEM);
+> > > > >                           goto dec_count;
+> > > > >                   }
+> > > > > -               check_and_init_map_value(&htab->map,
+> > > > > -                                        l_new->key + round_up(key_size,
+> > > > > 8));
+> > > > >           }
+> > > > >
+> > > > > +       check_and_init_map_value(&htab->map,
+> > > > > +                                l_new->key + round_up(key_size, 8));
+> > > > > +
+> > > >
+> > > > Makes sense, but trying to understand why it would fail:
+> > > > So this is needed because the reused element from per-CPU region might have
+> > > > garbage in the bpf_spin_lock/bpf_timer fields? But I think atleast for timer
+> > > > case, we reset timer->timer to NULL in bpf_timer_cancel_and_free.
+> > > >
+> > > > Earlier copy_map_value further below in this code would also overwrite the timer
+> > > > part (which usually may be zero), but that would also not happen anymore.
+> > >
+> > > That is correct. The preallocated hash tables have a free list. Look
+> > > like when an element is put into a free list, its value is not reset.
+> >
+> > I don't follow. How do you think it can happen?
+> > htab_delete/update are calling free_htab_elem()
+> > which calls check_and_free_timer().
+> > For pre-alloc htab_update calls check_and_free_timer() directly.
+> > There should be never a case when timer is active in the free list.
+>
+> The issue is not a timer active in the free list. It is the timer value
+> is not reset to 0 in the free list.
+> For example,
+>  1. value->timer... is set properly (non zero)
+>  2. value is deleted through update or delete, value->timer
+>     is cancelled and freed, and the hash_elem is put into
+>     free list. But the hash_elem value->timer is not zero.
+
+But in all cases, check_and_free_timer was called right? Which then calls
+bpf_timer_cancel_and_free which does this:
+
+  1336 void bpf_timer_cancel_and_free(void *val)
+  1337 {
+  1338         struct bpf_timer_kern *timer = val;
+  1339         struct bpf_hrtimer *t;
+  1340
+  1341         /* Performance optimization: read timer->timer without lock first. */
+  1342         if (!READ_ONCE(timer->timer))
+  1343                 return;
+  1344
+  1345         __bpf_spin_lock_irqsave(&timer->lock);
+  1346         /* re-read it under lock */
+  1347         t = timer->timer;
+  1348         if (!t)
+  1349                 goto out;
+  1350         drop_prog_refcnt(t);
+  1351         /* The subsequent bpf_timer_start/cancel() helpers won't be able to use
+  1352          * this timer, since it won't be initialized.
+  1353          */
+  1354         timer->timer = NULL;
+  ...
+
+So the timer->timer was set to NULL in the map value.
+
+>  3. one hash_elem is picked up from the free list,
+>     and proper value is copied to the value except value->timer
+>     and value->spinlock (if they exist). This happens with this patch.
+>  4. some later kernel functions may see value->timer is set and
+>     do something bad ...
+
+--
+Kartikeya
