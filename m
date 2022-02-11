@@ -2,63 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 530EE4B1E0C
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 07:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC18C4B1E97
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 07:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235310AbiBKGBm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 01:01:42 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48230 "EHLO
+        id S235382AbiBKGeF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 01:34:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbiBKGBl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 01:01:41 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125A410C1;
-        Thu, 10 Feb 2022 22:01:41 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id i62so10215875ioa.1;
-        Thu, 10 Feb 2022 22:01:41 -0800 (PST)
+        with ESMTP id S244565AbiBKGeF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 01:34:05 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE78E56
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 22:34:04 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id z7so6169652ilb.6
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 22:34:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=w3aXknb2G2HR+EuSrw45lq11xdturSPWe/7XDoIZqYQ=;
-        b=SNtB5rTwojwU89KMZRniCT7PulmV05agUzSsG7svvllDKFUVPJBF1XncIHu0eT2YO3
-         peWtvP+/MgK5kvXDwQzSn0NKkJ1FJIKq/lhlY9zfpil/UMmLhY1x+EMX0K0bSxPeBDcL
-         O6DlEwFaLEMzN1knYGDeHBOV9AAq2SIbI/w30x8tVuMZHQa5C3yZs1NlGDFSDq/SfJBU
-         yF01RA1Ioz+YhjWp7ps8nAgbVDIYTMrKzoGSbE2GD5vugeglxLZIR/AlxBsmxfW8Wc+k
-         ozvPN+yTEg9/jKXcDwbQRexOHUhzremBQdqFO7F1AUeAOno2+Ko+V/QnRpA7DyBpGshz
-         xb7w==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=m1DAp8PpK9HJkpCo7yTOCPf7Sx31QsT/5cMRfiv3pAs=;
+        b=Hap+FerT8BsT/vJE2cj52zyZ9lGi6bfChLjvK5pMpNnAsVARsm/MwtBjyunEWrQtxu
+         EmeW4ZcKzdmn9o7ANAyDlKQLn1TG+kyu2GV0nfeUtvNTIbQ9zc61gMx47zB5THQ9pIg/
+         ClFiopawdlwLSs/S8/AiS9UNCECuTdF83f514Gm5Zd8dO758zoVbtSq8R2LEgxYwhkdj
+         CkB/K+vN9wtWA6lN1/YaAYA2tqRLETYneYPwHtreur3klY4WSW4ymk+2pLsMHaK8LXlc
+         B4E95z+VOBfE5KSofBAZMueAkYcMPJCzKbJMUvHgRGBw6el7jhGSnuaJX5rYDBcSqSgj
+         RyGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=w3aXknb2G2HR+EuSrw45lq11xdturSPWe/7XDoIZqYQ=;
-        b=RMMm/dVAT1tE9BML5t/4rLFAICxoFn7Uk6nujxJB/rK0GKuPUy6IuM/ekHgv7S3YLP
-         axr6v44ZhVapRNcY79adczKUocJaCmox5aUPkRu/NaSKb6Zc3O6mMejPJ34/bb31xExE
-         FF/3G57kUWJ6aH/0FzUVwLkO5quGDF6iLx3tFy/jrbI45vY2OP29qX0Wg6o5kbfVuAFY
-         ki6VdcybXtSn7mKVH5yZiw/w+A03vRUTKQIDupUIoneTLyjNERS4xtyT3tczQkCu29Nw
-         IbV+Qt4U80XRjNXSjFVDtYnRR0xf8gRzRnNKZ6sUFL1/YPWpk93jE1nthgc0b3Dve2C4
-         V7oA==
-X-Gm-Message-State: AOAM532zT1SYcJMiDzZdjh247w4EyQmwzTSRfaKTMgFEAqivHWaKMrnI
-        Rpooku8LS4K+XYofnWC/L4Qpx/s+A92e7+xe3/I=
-X-Google-Smtp-Source: ABdhPJwT+alWB28ZB1KBdtpbxYvzeumJbRLT3RmrfdXWaSdg4FxQzJBW523rqhC91JwrGqN5NycN9W6Ry0Xa8pNHTcE=
-X-Received: by 2002:a05:6638:2606:: with SMTP id m6mr20060jat.93.1644559300249;
- Thu, 10 Feb 2022 22:01:40 -0800 (PST)
-MIME-Version: 1.0
-References: <YfK18x/XrYL4Vw8o@syu-laptop> <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
- <20220210100153.GA90679@kunlun.suse.cz>
-In-Reply-To: <20220210100153.GA90679@kunlun.suse.cz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Feb 2022 22:01:29 -0800
-Message-ID: <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
-Subject: Re: BTF compatibility issue across builds
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Yonghong Song <yhs@fb.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=m1DAp8PpK9HJkpCo7yTOCPf7Sx31QsT/5cMRfiv3pAs=;
+        b=SqHezar3r8pip/cM1pmOA66fCcTysJjArQXNO5Rs0I5EYCODq0twHpD5xuzV04bOwW
+         BahHjvvg9O6WzLCZwfk/yKNOkV5Ql3CKqn5l3+/Xk4fxyV5aJ58aNu2shEM/BZUaMxaw
+         bPs9tbbliz5HFdML14ohuzRTB1LyUIVj8gFGpQq9Mi1wLDV3z34RsXrJ3ga8w0LDcM2O
+         uPGBbL36EHgi+hCKPGZ55FbpFPfDrfnHo/SLgSqbKlfUZHycP3tSqpo9ldhfTEnW2OVJ
+         qA2AaNDxjGijeFyAFsCrC99m6aa05Swe3sHa2ubJIExMvH7m2eqSq5GFO95Ehh/6fiUI
+         DUfQ==
+X-Gm-Message-State: AOAM532jT72wZuS9eQJIZAoV7/qwzoP+0ukMSf0+yG4vW2TpyWfcvBX8
+        XCkp9N3XPMf08pTyczfqhqo=
+X-Google-Smtp-Source: ABdhPJx2Wpitqk7wLqksDDz77QZ1nKVVN25xsvdIWFZ7rzxh/BOImafB0IgE/6cZ+IIOhMrgnICy9A==
+X-Received: by 2002:a92:c24c:: with SMTP id k12mr197804ilo.45.1644561243934;
+        Thu, 10 Feb 2022 22:34:03 -0800 (PST)
+Received: from localhost ([99.197.200.79])
+        by smtp.gmail.com with ESMTPSA id l7sm12033150ilv.75.2022.02.10.22.34.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Feb 2022 22:34:03 -0800 (PST)
+Date:   Thu, 10 Feb 2022 22:33:55 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Yonghong Song <yhs@fb.com>
+Cc:     Felix Maurer <fmaurer@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Message-ID: <620603531daa4_ad36d208b6@john.notmuch>
+In-Reply-To: <CAADnVQ+T8j4sBX=URhSS19oNtnCVtCVirXC-+ZrNEJjv4hRUyA@mail.gmail.com>
+References: <df69012695c7094ccb1943ca02b4920db3537466.1644421921.git.fmaurer@redhat.com>
+ <cd545202-d948-2ce5-dfae-362822766f90@fb.com>
+ <f18b9e66-8494-f335-13cc-a9b30a90e32e@redhat.com>
+ <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
+ <CAADnVQ+T8j4sBX=URhSS19oNtnCVtCVirXC-+ZrNEJjv4hRUyA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Do not try bpf_msg_push_data with len 0
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -69,169 +81,88 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 10, 2022 at 2:01 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
->
-> Hello,
->
-> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
+Alexei Starovoitov wrote:
+> On Thu, Feb 10, 2022 at 10:05 AM Yonghong Song <yhs@fb.com> wrote:
 > >
 > >
-> > On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
-> > > Hi,
-> > >
-> > > We recently run into module load failure related to split BTF on open=
-SUSE
-> > > Tumbleweed[1], which I believe is something that may also happen on o=
-ther
-> > > rolling distros.
-> > >
-> > > The error looks like the follow (though failure is not limited to iph=
-eth)
-> > >
-> > >      BPF:[103111] STRUCT BPF:size=3D152 vlen=3D2 BPF: BPF:Invalid nam=
-e BPF:
-> > >
-> > >      failed to validate module [ipheth] BTF: -22
-> > >
-> > > The error comes down to trying to load BTF of *kernel modules from a
-> > > different build* than the runtime kernel (but the source is the same)=
-, where
-> > > the base BTF of the two build is different.
-> > >
-> > > While it may be too far stretched to call this a bug, solving this mi=
-ght
-> > > make BTF adoption easier. I'd natively think that we could further sp=
-lit
-> > > base BTF into two part to avoid this issue, where .BTF only contain e=
-xported
-> > > types, and the other (still residing in vmlinux) holds the unexported=
- types.
 > >
-> > What is the exported types? The types used by export symbols?
-> > This for sure will increase btf handling complexity.
->
-> And it will not actually help.
->
-> We have modversion ABI which checks the checksum of the symbols that the
-> module imports and fails the load if the checksum for these symbols does
-> not match. It's not concerned with symbols not exported, it's not
-> concerned with symbols not used by the module. This is something that is
-> sustainable across kernel rebuilds with minor fixes/features and what
-> distributions watch for.
->
-> Now with BTF the situation is vastly different. There are at least three
-> bugs:
->
->  - The BTF check is global for all symbols, not for the symbols the
->    module uses. This is not sustainable. Given the BTF is supposed to
->    allow linking BPF programs that were built in completely different
->    environment with the kernel it is completely within the scope of BTF
->    to solve this problem, it's just neglected.
-
-You refer to BTF use in CO-RE with the latter. It's just one
-application of BTF and it doesn't follow that you can do the same with
-module BTF. It's not a neglect, it's a very big technical difficulty.
-
-Each module's BTFs are designed as logical extensions of vmlinux BTF.
-And each module BTF is independent and isolated from other modules
-extension of the same vmlinux BTF. The way that BTF format is
-designed, any tiny difference in vmlinux BTF effectively invalidates
-all modules' BTFs and they have to be rebuilt.
-
-Imagine that only one BTF type is added to vmlinux BTF. Last BTF type
-ID in vmlinux BTF is shifted from, say, 1000 to 1001. While previously
-every module's BTF type ID started with 1001, now they all have to
-start with 1002 and be shifted by 1.
-
-Now let's say that the order of two BTF types in vmlinux BTF is
-changed, say type 10 becomes type 20 and type 20 becomes type 10 (just
-because of slight difference in DWARF, for instance). Any type
-reference to 10 or 20 in any module BTF has to be renumbered now.
-
-Another one, let's say we add a new string to vmlinux BTF string
-section somewhere at the beginning, say "abc" at offset 100. Any
-string offset after 100 now has to be shifted *both* in vmlinux BTF
-and all module BTFs. And also any string reference in module BTFs have
-to be adjusted as well because now each module's BTF's logical string
-offset is starting at 4 logical bytes higher (due to "abc\0" being
-added and shifting everything right).
-
-As you can see, any tiny change in vmlinux BTF, no matter where,
-beginning, middle, or end, causes massive changes in type IDs and
-offsets everywhere. It's impractical to do any local adjustments, it's
-much simpler and more reliable to completely regenerate BTF
-completely.
-
-If it was reasonable to support what you are asking for, I'd probably
-already have done that a long time ago.
-
->  - It is possible to load modules with no BTF but not modules with
->    non-matching BTF. Surely the non-matching BTF could be discarded.
-
-We started out with strict behavior like this to be able to detect any
-problems with module BTFs instead of silently ignoring them. It seems
-like that worked, we do know about this problem acutely. But as Alexei
-said, relaxing this is the simplest way forward. It could be easily
-controlled by new Kconfig value, so that default strict behavior can
-be preserved as well.
-
-
->  - BTF is part of vermagic. This is completely pointless since modules
->    without BTF can be loaded on BTF kernel. Surely it would not be too
->    difficult to do the reverse as well. Given BTF must pass extra check
->    to be used having it in vermagic is just useless moise.
->
-> > > Does that sound like something reasonable to work on?
-
-No, at least not to me. Splitting vmlinux BTF into two parts (internal
-and external) doesn't help with anything, see above explanation.
-
+> > On 2/10/22 7:45 AM, Felix Maurer wrote:
+> > > On 09.02.22 18:06, Yonghong Song wrote:
+> > >> On 2/9/22 7:55 AM, Felix Maurer wrote:
+> > >>> If bpf_msg_push_data is called with len 0 (as it happens during
+> > >>> selftests/bpf/test_sockmap), we do not need to do anything and can
+> > >>> return early.
+> > >>>
+> > >>> Calling bpf_msg_push_data with len 0 previously lead to a wrong ENOMEM
+> > >>> error: we later called get_order(copy + len); if len was 0, copy + len
+> > >>> was also often 0 and get_order returned some undefined value (at the
+> > >>> moment 52). alloc_pages caught that and failed, but then
+> > >>> bpf_msg_push_data returned ENOMEM. This was wrong because we are most
+> > >>> probably not out of memory and actually do not need any additional
+> > >>> memory.
+> > >>>
+> > >>> v2: Add bug description and Fixes tag
+> > >>>
+> > >>> Fixes: 6fff607e2f14b ("bpf: sk_msg program helper bpf_msg_push_data")
+> > >>> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
+> > >>
+> > >> LGTM. I am wondering why bpf CI didn't catch this problem. Did you
+> > >> modified the test with length 0 in order to trigger that? If this
+> > >> is the case, it would be great you can add such a test to the
+> > >> test_sockmap.
 > > >
+> > > I did not modify the tests to trigger that. The state of the selftests
+> > > around that is unfortunately not very good. There is no explicit test
+> > > with length 0 but bpf_msg_push_data is still called with length 0,
+> > > because of what I consider to be bugs in the test. On the other hand,
+> > > explicit tests with other lengths are sometimes not called as well. I'll
+> > > elaborate on that in a bit.
 > > >
-> > > ## Root case (in case anyone is interested in a verbose version)
+> > > Something easy to fix is that the tests do not check the return value of
+> > > bpf_msg_push_data which they probably should. That may have helped find
+> > > the problem earlier.
 > > >
-> > > On openSUSE Tumbleweed there can be several builds of the same source=
-. Since
-> > > the source is the same, the binaries are simply replaced when a packa=
-ge with
-> > > a larger build number is installed during upgrade.
+> > > Now to the issue mentioned in the beginning: Only some of the BPF
+> > > programs used in test_sockmap actually call bpf_msg_push_data. However,
+> > > they are not always attached, just for particular scenarios:
+> > > txmsg_pass==1, txmsg_redir==1, or txmsg_drop==1. If none of those apply,
+> > > bpf_msg_push_data is never called. This happens for example in
+> > > test_txmsg_push. Out of the four defined tests only one actually calls
+> > > the helper.
 > > >
-> > > In our case, a rebuild is triggered[2], and resulted in changes in ba=
-se BTF.
-> > > More precisely, the BTF_KIND_FUNC{,_PROTO} of i2c_smbus_check_pec(u8 =
-cpec,
-> > > struct i2c_msg *msg) and inet_lhash2_bucket_sk(struct inet_hashinfo *=
-h,
-> > > struct sock *sk) was added to the base BTF of 5.15.12-1.3. Those func=
-tions
-> > > are previously missing in base BTF of 5.15.12-1.1.
+> > > But after a test, the parameters in the map are reset to 0 (instead of
+> > > being removed). Therefore, when the maps are reused in a subsequent test
+> > > which is one of the scenarios above, the values are present and
+> > > bpf_msg_push_data is called, albeit with the parameters set to 0. This
+> > > is also what triggered the wrong behavior fixed in the patch.
+> > >
+> > > Unfortunately, I do not have the time to fix these issues in the test at
+> > > the moment.
 > >
-> > As stated in [2] below, I think we should understand why rebuild is
-> > triggered. If the rebuild for vmlinux is triggered, why the modules can=
-not
-> > be rebuild at the same time?
->
-> They do get rebuilt. However, if you are running the kernel and install
-> the update you get the new modules with the old kernel. If the install
-> script fails to copy the kernel to your EFI partition based on the fact
-> a kernel with the same filename is alreasy there you get the same.
+> > Thanks for detailed explanation. Maybe for the immediate case, can you
+> > just fix this in the selftest,
+> >
+> >    > Something easy to fix is that the tests do not check the return
+> > value of
+> >    > bpf_msg_push_data which they probably should. That may have helped find
+> >    > the problem earlier.
+> >
+> > This will be enough to verify your kernel change as without it the
+> > test will fail.
+> >
+> > The rest of test improvements can come later.
+> 
+> John,
+> what is your take on this fix?
 
-Isn't this failure to copy a new kernel a failure in itself? I'd blame
-module BTF the last in this scenario, but maybe I don't understand the
-case completely.
+Fix looks good its nice to return 0 here instead of ENOMEM as a result
+of paticulars of passing 0 to get_order(). Ack for me.
 
->
-> If you have 'stable' distribution adding new symbols is normal and it
-> does not break module loading without BTF but it breaks BTF.
+> bpf tree material?
 
-You don't even need to add a new symbol. Just change the order of
-types in DWARF information and you get a different (though equivalent)
-BTF type ID numbering which invalidates module BTFs just as much. I'm
-not saying it's a feature, but it isn't a bug either, IMO. Technical
-decisions and tradeoffs.
+I checked our code here and we would never pass '0' to pull data. Its hard
+to imagine what type of code would do that, but on the other hand its a
+bug and its only rc3... I've no strong opinion if I wrote the patch I would
+have pointed it at bpf tree so slight preference to push it as a fix.
 
->
-> Thanks
->
-> Michal
+Acked-by: John Fastabend <john.fastabend@gmail.com>
