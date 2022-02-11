@@ -2,167 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC18C4B1E97
-	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 07:35:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071074B1F0B
+	for <lists+bpf@lfdr.de>; Fri, 11 Feb 2022 08:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235382AbiBKGeF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 01:34:05 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35592 "EHLO
+        id S235713AbiBKHMt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 02:12:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244565AbiBKGeF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 01:34:05 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE78E56
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 22:34:04 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id z7so6169652ilb.6
-        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 22:34:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=m1DAp8PpK9HJkpCo7yTOCPf7Sx31QsT/5cMRfiv3pAs=;
-        b=Hap+FerT8BsT/vJE2cj52zyZ9lGi6bfChLjvK5pMpNnAsVARsm/MwtBjyunEWrQtxu
-         EmeW4ZcKzdmn9o7ANAyDlKQLn1TG+kyu2GV0nfeUtvNTIbQ9zc61gMx47zB5THQ9pIg/
-         ClFiopawdlwLSs/S8/AiS9UNCECuTdF83f514Gm5Zd8dO758zoVbtSq8R2LEgxYwhkdj
-         CkB/K+vN9wtWA6lN1/YaAYA2tqRLETYneYPwHtreur3klY4WSW4ymk+2pLsMHaK8LXlc
-         B4E95z+VOBfE5KSofBAZMueAkYcMPJCzKbJMUvHgRGBw6el7jhGSnuaJX5rYDBcSqSgj
-         RyGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=m1DAp8PpK9HJkpCo7yTOCPf7Sx31QsT/5cMRfiv3pAs=;
-        b=SqHezar3r8pip/cM1pmOA66fCcTysJjArQXNO5Rs0I5EYCODq0twHpD5xuzV04bOwW
-         BahHjvvg9O6WzLCZwfk/yKNOkV5Ql3CKqn5l3+/Xk4fxyV5aJ58aNu2shEM/BZUaMxaw
-         bPs9tbbliz5HFdML14ohuzRTB1LyUIVj8gFGpQq9Mi1wLDV3z34RsXrJ3ga8w0LDcM2O
-         uPGBbL36EHgi+hCKPGZ55FbpFPfDrfnHo/SLgSqbKlfUZHycP3tSqpo9ldhfTEnW2OVJ
-         qA2AaNDxjGijeFyAFsCrC99m6aa05Swe3sHa2ubJIExMvH7m2eqSq5GFO95Ehh/6fiUI
-         DUfQ==
-X-Gm-Message-State: AOAM532jT72wZuS9eQJIZAoV7/qwzoP+0ukMSf0+yG4vW2TpyWfcvBX8
-        XCkp9N3XPMf08pTyczfqhqo=
-X-Google-Smtp-Source: ABdhPJx2Wpitqk7wLqksDDz77QZ1nKVVN25xsvdIWFZ7rzxh/BOImafB0IgE/6cZ+IIOhMrgnICy9A==
-X-Received: by 2002:a92:c24c:: with SMTP id k12mr197804ilo.45.1644561243934;
-        Thu, 10 Feb 2022 22:34:03 -0800 (PST)
-Received: from localhost ([99.197.200.79])
-        by smtp.gmail.com with ESMTPSA id l7sm12033150ilv.75.2022.02.10.22.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 22:34:03 -0800 (PST)
-Date:   Thu, 10 Feb 2022 22:33:55 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     Felix Maurer <fmaurer@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S233247AbiBKHMs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 02:12:48 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D83710A4
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 23:12:47 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21ANrLJf013752
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 23:12:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=fThJZV5/pgayFnQZYBK56Ba1uNClKy/R6fc1ciU6QOs=;
+ b=UAIpSPdnIAujyssuS6JFEilF6rg4Q1DYwSIojdWD4ijlOSGBCp1x+msBr53S+n79ecgX
+ OMLFni3IWLXEgTr7PdiVkET+WYc+gX7iK51ahiGw3ulD7XJsIsR8k1nBXv0dGlCgtWa4
+ ieSpActLNZ2O8skMkZggkWOVyjM3R14yQ8Q= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e58e1kxgn-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 10 Feb 2022 23:12:47 -0800
+Received: from twshared0983.05.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 10 Feb 2022 23:12:42 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id 52A6A6C756E3; Thu, 10 Feb 2022 23:12:32 -0800 (PST)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Message-ID: <620603531daa4_ad36d208b6@john.notmuch>
-In-Reply-To: <CAADnVQ+T8j4sBX=URhSS19oNtnCVtCVirXC-+ZrNEJjv4hRUyA@mail.gmail.com>
-References: <df69012695c7094ccb1943ca02b4920db3537466.1644421921.git.fmaurer@redhat.com>
- <cd545202-d948-2ce5-dfae-362822766f90@fb.com>
- <f18b9e66-8494-f335-13cc-a9b30a90e32e@redhat.com>
- <22d98cc5-26fa-8023-3a85-a082a9e08147@fb.com>
- <CAADnVQ+T8j4sBX=URhSS19oNtnCVtCVirXC-+ZrNEJjv4hRUyA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpf: Do not try bpf_msg_push_data with len 0
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, <kernel-team@fb.com>,
+        Willem de Bruijn <willemb@google.com>
+Subject: [PATCH v4 net-next 0/8] Preserve mono delivery time (EDT) in skb->tstamp
+Date:   Thu, 10 Feb 2022 23:12:32 -0800
+Message-ID: <20220211071232.885225-1-kafai@fb.com>
+X-Mailer: git-send-email 2.30.2
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: OoOAGcqkmxNK_tza9wq0ZRsCvwFpOB9g
+X-Proofpoint-ORIG-GUID: OoOAGcqkmxNK_tza9wq0ZRsCvwFpOB9g
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-11_02,2022-02-09_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
+ malwarescore=0 clxscore=1015 bulkscore=0 mlxlogscore=999 impostorscore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202110039
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Alexei Starovoitov wrote:
-> On Thu, Feb 10, 2022 at 10:05 AM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 2/10/22 7:45 AM, Felix Maurer wrote:
-> > > On 09.02.22 18:06, Yonghong Song wrote:
-> > >> On 2/9/22 7:55 AM, Felix Maurer wrote:
-> > >>> If bpf_msg_push_data is called with len 0 (as it happens during
-> > >>> selftests/bpf/test_sockmap), we do not need to do anything and can
-> > >>> return early.
-> > >>>
-> > >>> Calling bpf_msg_push_data with len 0 previously lead to a wrong ENOMEM
-> > >>> error: we later called get_order(copy + len); if len was 0, copy + len
-> > >>> was also often 0 and get_order returned some undefined value (at the
-> > >>> moment 52). alloc_pages caught that and failed, but then
-> > >>> bpf_msg_push_data returned ENOMEM. This was wrong because we are most
-> > >>> probably not out of memory and actually do not need any additional
-> > >>> memory.
-> > >>>
-> > >>> v2: Add bug description and Fixes tag
-> > >>>
-> > >>> Fixes: 6fff607e2f14b ("bpf: sk_msg program helper bpf_msg_push_data")
-> > >>> Signed-off-by: Felix Maurer <fmaurer@redhat.com>
-> > >>
-> > >> LGTM. I am wondering why bpf CI didn't catch this problem. Did you
-> > >> modified the test with length 0 in order to trigger that? If this
-> > >> is the case, it would be great you can add such a test to the
-> > >> test_sockmap.
-> > >
-> > > I did not modify the tests to trigger that. The state of the selftests
-> > > around that is unfortunately not very good. There is no explicit test
-> > > with length 0 but bpf_msg_push_data is still called with length 0,
-> > > because of what I consider to be bugs in the test. On the other hand,
-> > > explicit tests with other lengths are sometimes not called as well. I'll
-> > > elaborate on that in a bit.
-> > >
-> > > Something easy to fix is that the tests do not check the return value of
-> > > bpf_msg_push_data which they probably should. That may have helped find
-> > > the problem earlier.
-> > >
-> > > Now to the issue mentioned in the beginning: Only some of the BPF
-> > > programs used in test_sockmap actually call bpf_msg_push_data. However,
-> > > they are not always attached, just for particular scenarios:
-> > > txmsg_pass==1, txmsg_redir==1, or txmsg_drop==1. If none of those apply,
-> > > bpf_msg_push_data is never called. This happens for example in
-> > > test_txmsg_push. Out of the four defined tests only one actually calls
-> > > the helper.
-> > >
-> > > But after a test, the parameters in the map are reset to 0 (instead of
-> > > being removed). Therefore, when the maps are reused in a subsequent test
-> > > which is one of the scenarios above, the values are present and
-> > > bpf_msg_push_data is called, albeit with the parameters set to 0. This
-> > > is also what triggered the wrong behavior fixed in the patch.
-> > >
-> > > Unfortunately, I do not have the time to fix these issues in the test at
-> > > the moment.
-> >
-> > Thanks for detailed explanation. Maybe for the immediate case, can you
-> > just fix this in the selftest,
-> >
-> >    > Something easy to fix is that the tests do not check the return
-> > value of
-> >    > bpf_msg_push_data which they probably should. That may have helped find
-> >    > the problem earlier.
-> >
-> > This will be enough to verify your kernel change as without it the
-> > test will fail.
-> >
-> > The rest of test improvements can come later.
-> 
-> John,
-> what is your take on this fix?
+skb->tstamp was first used as the (rcv) timestamp.
+The major usage is to report it to the user (e.g. SO_TIMESTAMP).
 
-Fix looks good its nice to return 0 here instead of ENOMEM as a result
-of paticulars of passing 0 to get_order(). Ack for me.
+Later, skb->tstamp is also set as the (future) delivery_time (e.g. EDT in T=
+CP)
+during egress and used by the qdisc (e.g. sch_fq) to make decision on when
+the skb can be passed to the dev.
 
-> bpf tree material?
+Currently, there is no way to tell skb->tstamp having the (rcv) timestamp
+or the delivery_time, so it is always reset to 0 whenever forwarded
+between egress and ingress.
 
-I checked our code here and we would never pass '0' to pull data. Its hard
-to imagine what type of code would do that, but on the other hand its a
-bug and its only rc3... I've no strong opinion if I wrote the patch I would
-have pointed it at bpf tree so slight preference to push it as a fix.
+While it makes sense to always clear the (rcv) timestamp in skb->tstamp
+to avoid confusing sch_fq that expects the delivery_time, it is a
+performance issue [0] to clear the delivery_time if the skb finally
+egress to a fq@phy-dev.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+This set is to keep the mono delivery time and make it available to
+the final egress interface.  Please see individual patch for
+the details.
+
+[0] (slide 22): https://linuxplumbersconf.org/event/11/contributions/953/at=
+tachments/867/1658/LPC_2021_BPF_Datapath_Extensions.pdf
+
+v4:
+netdev:
+- Push the skb_clear_delivery_time() from
+  ip_local_deliver() and ip6_input() to
+  ip_local_deliver_finish() and ip6_input_finish()
+  to accommodate the ipvs forward path.
+  This is the notable change in v4 at the netdev side.
+
+    - Patch 3/8 first does the skb_clear_delivery_time() after
+      sch_handle_ingress() in dev.c and this will make the
+      tc-bpf forward path work via the bpf_redirect_*() helper.
+
+    - The next patch 4/8 (new in v4) will then postpone the
+      skb_clear_delivery_time() from dev.c to
+      the ip_local_deliver_finish() and ip6_input_finish() after
+      taking care of the tstamp usage in the ip defrag case.
+      This will make the kernel forward path also work, e.g.
+      the ip[6]_forward().
+
+- Fixed a case v3 which missed setting the skb->mono_delivery_time bit
+  when sending TCP rst/ack in some cases (e.g. from a ctl_sk).
+  That case happens at ip_send_unicast_reply() and
+  tcp_v6_send_response().  It is fixed in patch 1/8 (and
+  then patch 3/8) in v4.
+
+bpf:
+- Adding __sk_buff->delivery_time_type instead of adding
+  __sk_buff->mono_delivery_time as in v3.  The tc-bpf can stay with
+  one __sk_buff->tstamp instead of having two 'time' fields
+  while one is 0 and another is not.
+  tc-bpf can use the new __sk_buff->delivery_time_type to tell
+  what is stored in __sk_buff->tstamp.
+- bpf_skb_set_delivery_time() helper is added to set
+  __sk_buff->tstamp from non mono delivery_time to
+  mono delivery_time
+- Most of the convert_ctx_access() bpf insn rewrite in v3
+  is gone, so no new rewrite added for __sk_buff->tstamp.
+  The only rewrite added is for reading the new
+  __sk_buff->delivery_time_type.
+- Added selftests, test_tc_dtime.c
+
+v3:
+- Feedback from v2 is using shinfo(skb)->tx_flags could be racy.
+- Considered to reuse a few bits in skb->tstamp to represent
+  different semantics, other than more code churns, it will break
+  the bpf usecase which currently can write and then read back
+  the skb->tstamp.
+- Went back to v1 idea on adding a bit to skb and address the
+  feedbacks on v1:
+- Added one bit skb->mono_delivery_time to flag that
+  the skb->tstamp has the mono delivery_time (EDT), instead
+  of adding a bit to flag if the skb->tstamp has been forwarded or not.
+- Instead of resetting the delivery_time back to the (rcv) timestamp
+  during recvmsg syscall which may be too late and not useful,
+  the delivery_time reset in v3 happens earlier once the stack
+  knows that the skb will be delivered locally.
+- Handled the tapping@ingress case by af_packet
+- No need to change the (rcv) timestamp to mono clock base as in v1.
+  The added one bit to flag skb->mono_delivery_time is enough
+  to keep the EDT delivery_time during forward.
+- Added logic to the bpf side to make the existing bpf
+  running at ingress can still get the (rcv) timestamp
+  when reading the __sk_buff->tstamp.  New __sk_buff->mono_delivery_time
+  is also added.  Test is still needed to test this piece.
+
+Martin KaFai Lau (8):
+  net: Add skb->mono_delivery_time to distinguish mono delivery_time
+    from (rcv) timestamp
+  net: Add skb_clear_tstamp() to keep the mono delivery_time
+  net: Set skb->mono_delivery_time and clear it after
+    sch_handle_ingress()
+  net: Postpone skb_clear_delivery_time() until knowing the skb is
+    delivered locally
+  bpf: Keep the (rcv) timestamp behavior for the existing tc-bpf@ingress
+  bpf: Clear skb->mono_delivery_time bit if needed after running
+    tc-bpf@egress
+  bpf: Add __sk_buff->delivery_time_type and bpf_skb_set_delivery_time()
+  bpf: selftests: test skb->tstamp in redirect_neigh
+
+ drivers/net/loopback.c                        |   2 +-
+ include/linux/filter.h                        |  33 +-
+ include/linux/skbuff.h                        |  64 ++-
+ include/net/inet_frag.h                       |   1 +
+ include/uapi/linux/bpf.h                      |  35 +-
+ net/bridge/br_forward.c                       |   2 +-
+ net/bridge/netfilter/nf_conntrack_bridge.c    |   5 +-
+ net/core/dev.c                                |   4 +-
+ net/core/filter.c                             |  85 +++-
+ net/core/skbuff.c                             |   8 +-
+ net/ipv4/inet_fragment.c                      |   1 +
+ net/ipv4/ip_forward.c                         |   2 +-
+ net/ipv4/ip_fragment.c                        |   1 +
+ net/ipv4/ip_input.c                           |   1 +
+ net/ipv4/ip_output.c                          |   6 +-
+ net/ipv4/tcp_output.c                         |  16 +-
+ net/ipv6/ip6_input.c                          |   1 +
+ net/ipv6/ip6_output.c                         |   7 +-
+ net/ipv6/netfilter.c                          |   5 +-
+ net/ipv6/tcp_ipv6.c                           |   2 +-
+ net/netfilter/ipvs/ip_vs_xmit.c               |   6 +-
+ net/netfilter/nf_dup_netdev.c                 |   2 +-
+ net/netfilter/nf_flow_table_ip.c              |   4 +-
+ net/netfilter/nft_fwd_netdev.c                |   2 +-
+ net/openvswitch/vport.c                       |   2 +-
+ net/packet/af_packet.c                        |   4 +-
+ net/sched/act_bpf.c                           |   7 +-
+ net/sched/cls_bpf.c                           |   8 +-
+ net/xfrm/xfrm_interface.c                     |   2 +-
+ tools/include/uapi/linux/bpf.h                |  35 +-
+ .../selftests/bpf/prog_tests/tc_redirect.c    | 434 ++++++++++++++++++
+ .../selftests/bpf/progs/test_tc_dtime.c       | 348 ++++++++++++++
+ 32 files changed, 1078 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tc_dtime.c
+
+--=20
+2.30.2
+
