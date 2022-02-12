@@ -2,73 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2DB4B31D8
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 01:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 142B54B3202
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 01:31:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbiBLASk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 19:18:40 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55592 "EHLO
+        id S1344273AbiBLAaP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 19:30:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354367AbiBLASi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 19:18:38 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF8DD76
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 16:18:36 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id h7-20020a17090a648700b001b927560c2bso9095528pjj.1
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 16:18:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tv1RwhDDvAXN7IM8e3BduJ11NixN20EYOsnvSUoh0R0=;
-        b=N/XARbSMA9NJ4rtxoS7LjTGWgcJVpSe1aU3xAMDxlAEow/uYnO+5Mz/cT9YG+QgMND
-         UFo0pGHun03J8zgCT3+htzWWeEM415GKiTFWxEN6lJ+L6lF1hR07Y+UCEzX6KA2am+at
-         F2/IR/dRbod25jwmaxuP0KMQFLwNu6E1rYvfQI2tvns3FmmYfDZ4unlOXJ6hQstxwbCu
-         sZEMm+LZUlUhEG/uXd5CcR24wAsepQQyzQ8zV7GcQY7SvN8WAllefqzBdSKV64lmT+XD
-         5lNcYIOcJNU80HG141GRUhjKGTkWKZPwhXyueztziPX31elXv4M81K6zL7xFcz/yINDj
-         pmzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tv1RwhDDvAXN7IM8e3BduJ11NixN20EYOsnvSUoh0R0=;
-        b=zpyaXazn6Whqew+nv9fzGxCsd0MGP+73E/Kocto8qFolr3H7wBhhPk64dFJrLv6Rou
-         fhnVkLyTgwWumLah0xRFVMx2eJd8rMseIuUTi4RUWyBXHCN35kGjs7L1lg4mSyKg5RHq
-         3TGZATEu77+1vlLaON+X9cB3xAzT8myCZGXIstOXyZZITYn1WJTnZi8n9KYqQ34UVDsG
-         z1CBZNXOPwT5G8hHz5edWcxXOwBgrcQ89lq5XMW+DR32x/4edDVRIDJx8tStiBjJyoca
-         UaKMY79GbdMkfZ0YJegkNRkTT+p4FS3K9HoJZgJRDbHda03/3WeK26o14mHpuvkF76qT
-         4Bxg==
-X-Gm-Message-State: AOAM530FBPH/jSv407AZgDd+7wbhGjKYfMk0r1n2TXBAOQWqUALkYcSO
-        TDImEq3wezuA/7YqGGm6JZk=
-X-Google-Smtp-Source: ABdhPJxqUusjimEbj3qF+G2PEGRo5mycu+8b87R4Cy0xSQFholh+LZqKHve94DNCY3DoobVGDvEHWg==
-X-Received: by 2002:a17:902:b68b:: with SMTP id c11mr3925252pls.116.1644625115742;
-        Fri, 11 Feb 2022 16:18:35 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:eb33])
-        by smtp.gmail.com with ESMTPSA id e14sm3954201pgt.1.2022.02.11.16.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Feb 2022 16:18:35 -0800 (PST)
-Date:   Fri, 11 Feb 2022 16:18:32 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH v3 bpf-next 3/3] selftests/bpf: add custom SEC() handling
- selftest
-Message-ID: <20220212001832.2dajubav5tqwaimn@ast-mbp.dhcp.thefacebook.com>
-References: <20220211211450.2224877-1-andrii@kernel.org>
- <20220211211450.2224877-4-andrii@kernel.org>
- <20220211231316.iqhn3jqnxangv5jc@ast-mbp.dhcp.thefacebook.com>
- <CAEf4BzbrdJMX0P=P84D40oYH3BNrL-16xqFNFH48BtYc9DaJHw@mail.gmail.com>
+        with ESMTP id S231404AbiBLAaP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 19:30:15 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA6DD7E
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 16:30:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 571082113D;
+        Sat, 12 Feb 2022 00:30:11 +0000 (UTC)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABC9A13C5E;
+        Sat, 12 Feb 2022 00:30:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id t69xIZL/BmJPDgAAMHmgww
+        (envelope-from <mrostecki@opensuse.org>); Sat, 12 Feb 2022 00:30:10 +0000
+Message-ID: <2b39d482-f31c-783f-2104-07a972dae5f3@opensuse.org>
+Date:   Sat, 12 Feb 2022 00:30:09 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbrdJMX0P=P84D40oYH3BNrL-16xqFNFH48BtYc9DaJHw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: Question about LSM with eBPF
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>
+References: <885e8924a6704f5181c8d774e0a8f74c@huawei.com>
+From:   Michal Rostecki <mrostecki@opensuse.org>
+In-Reply-To: <885e8924a6704f5181c8d774e0a8f74c@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,89 +54,37 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 03:31:56PM -0800, Andrii Nakryiko wrote:
-> On Fri, Feb 11, 2022 at 3:13 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Feb 11, 2022 at 01:14:50PM -0800, Andrii Nakryiko wrote:
-> > > Add a selftest validating various aspects of libbpf's handling of custom
-> > > SEC() handlers. It also demonstrates how libraries can ensure very early
-> > > callbacks registration and unregistration using
-> > > __attribute__((constructor))/__attribute__((destructor)) functions.
-> > >
-> > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  .../bpf/prog_tests/custom_sec_handlers.c      | 176 ++++++++++++++++++
-> > >  .../bpf/progs/test_custom_sec_handlers.c      |  63 +++++++
-> > >  2 files changed, 239 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-> > > new file mode 100644
-> > > index 000000000000..28264528280d
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-> > > @@ -0,0 +1,176 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/* Copyright (c) 2022 Facebook */
-> > > +
-> > > +#include <test_progs.h>
-> > > +#include "test_custom_sec_handlers.skel.h"
-> > > +
-> > > +#define COOKIE_ABC1 1
-> > > +#define COOKIE_ABC2 2
-> > > +#define COOKIE_CUSTOM 3
-> > > +#define COOKIE_FALLBACK 4
-> > > +#define COOKIE_KPROBE 5
-> > > +
-> > > +static int custom_init_prog(struct bpf_program *prog, long cookie)
-> > > +{
-> > > +     if (cookie == COOKIE_ABC1)
-> > > +             bpf_program__set_autoload(prog, false);
-> > > +
-> > > +     return 0;
-> > > +}
-> >
-> > What is the value of init_fn callback?
-> > afaict it was and still unused in libbpf.
-> > The above example doesn't make a compelling case, since set_autoload
-> > can be done out of preload callback.
-> > Maybe drop init_fn for now and extend libbpf_prog_handler_opts
-> > when there is actual need for it?
+On 2/11/22 11:57, Roberto Sassu wrote:
+> Hi
 > 
-> Great question, but no, you can't set_autoload() in the preload
-> handler, because once preload is called, loading of the program is
-> inevitable.
-
-Ahh!, but we can add 'if (prog->load)' in bpf_object_load_prog_instance()
-after preload_fn() was called.
-Surely the libbpf would waste some time preping the prog with relos,
-but that's not a big deal.
-Another option is to move preload_fn earlier.
-Especially since currently it's only setting attach types.
-
-Calling the callback 'preload' when it cannot affect the load is odd too.
-
-> We might need to adjust the obj->loaded flag so that set_autoload()
-> returns an error when called from the preload() callback, but that's a
-> bit orthogonal. I suspect there will be few more adjustments like this
-> as we get actual users of this API in the wild.
+> I'm working on an LSM implemented with eBPF. I have a
+> question about persistence. Is it possible to keep the
+> attached LSM running without the user space process
+> that attached it?
 > 
-> It's not used by libbpf because we do all the initialization outside
-> of the callback, as it is the same for all programs and serves as
-> "default" behavior that custom handlers can override.
+> Thanks
 > 
-> Also, keep in mind that this is the very beginning of v0.8 dev cycle,
-> we'll have time to adjust interfaces and callback contracts in the
-> next 2-3 months, if necessary. USDT library open-sourcing will almost
-> 100% happen during this time frame (though I think USDT library is a
-> pretty simple use case, so isn't a great "stress test"). But it also
-> seems like perf might need to use fallback handler for their crazy
-> SEC() conventions, that will be a good test as well.
+> Roberto
+> 
+> HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+> Managing Director: Li Peng, Zhong Ronghua
+> 
 
-It would be much easier to take your word if there was an actual example
-(like libusdt) that demonstrates the use of callbacks.
-"We will have time to fix things before release" isn't very comforting
-in the case of big api extension like this one.
+Hi Roberto,
+
+Yes, it's possible if you pin the program in BPFFS.
+
+If you are using libbpf, you can use the bpf_program__pin function:
+
+https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L349-L359
+
+If you are using libbpf-rs:
+
+https://docs.rs/libbpf-rs/0.16.0/libbpf_rs/struct.Program.html#method.pin
+
+If you are using Aya:
+
+https://docs.rs/aya/0.10.6/aya/programs/enum.Program.html#method.pin
+
+Cheers,
+Michal
