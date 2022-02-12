@@ -2,236 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBEB4B3193
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 00:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2DB4B31D8
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 01:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349511AbiBKX7C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 18:59:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48486 "EHLO
+        id S231252AbiBLASk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 19:18:40 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242360AbiBKX7B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 18:59:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3F91BD6C
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 15:58:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644623938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i9jA+96/Jprj8bAz/BjNKVCdwJgPgeH8b3zEaKMPpYE=;
-        b=QTUTNWnKixkpDEpgR1ziVsXdNh7OLuNVvLYy/s/uBrdt8slPSD5cgK+fYDHUDFy8/ayzsw
-        rjQyu7IIVlfKm6JsKLHslRVpnZ83ijD2DD4WsvRjVeUib0pBS5IHff+dZP8JTtarBv0tBV
-        QOayDgfCli1gnj96OtcYTk1VmOIzxS8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-147-CdaxL0r6OlyqEMEFrDUY1A-1; Fri, 11 Feb 2022 18:58:57 -0500
-X-MC-Unique: CdaxL0r6OlyqEMEFrDUY1A-1
-Received: by mail-ed1-f69.google.com with SMTP id l3-20020a50cbc3000000b0041083c11173so942170edi.4
-        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 15:58:57 -0800 (PST)
+        with ESMTP id S1354367AbiBLASi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 19:18:38 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF8DD76
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 16:18:36 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id h7-20020a17090a648700b001b927560c2bso9095528pjj.1
+        for <bpf@vger.kernel.org>; Fri, 11 Feb 2022 16:18:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Tv1RwhDDvAXN7IM8e3BduJ11NixN20EYOsnvSUoh0R0=;
+        b=N/XARbSMA9NJ4rtxoS7LjTGWgcJVpSe1aU3xAMDxlAEow/uYnO+5Mz/cT9YG+QgMND
+         UFo0pGHun03J8zgCT3+htzWWeEM415GKiTFWxEN6lJ+L6lF1hR07Y+UCEzX6KA2am+at
+         F2/IR/dRbod25jwmaxuP0KMQFLwNu6E1rYvfQI2tvns3FmmYfDZ4unlOXJ6hQstxwbCu
+         sZEMm+LZUlUhEG/uXd5CcR24wAsepQQyzQ8zV7GcQY7SvN8WAllefqzBdSKV64lmT+XD
+         5lNcYIOcJNU80HG141GRUhjKGTkWKZPwhXyueztziPX31elXv4M81K6zL7xFcz/yINDj
+         pmzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=i9jA+96/Jprj8bAz/BjNKVCdwJgPgeH8b3zEaKMPpYE=;
-        b=yjlhSbFncDaE7PxnIOuZvApDPEHGzBiJrovp9ztN07rZwVs0q2OBVeHn+ek85DangA
-         yhkW8kJQhsRQbrFVTzgPfn1RV7RIg1Z8cO1oTN4+3OPm4SWtE/ZWyyy4vWqimCXXSTvk
-         uUIKH1vd30dJDp/aRu9kyZFQGEwITZxcCdt4D3fV69mENxDqSSigLDWrsR4Nn7aqOpFD
-         Vv6dN+gijTcretTARvmXDXuP7jjeyzPHrC+gix12MvBHvV4tCwE2es+MU76gper+/wUh
-         4FQOBcgLWjYaQa9sIq2seitVVFoiaWrbERDfoS6MrGdwS387L/LZMeaeB7LSj2ZhKTrH
-         gF5Q==
-X-Gm-Message-State: AOAM5336GLEpha9N8XA+w0bBP1qwbsu2qFfTKEgO2XZxMY9LGruqZSnP
-        daGjlWe/7DwnUQyOfUvYHrKBask5r/SRfyEwvbwonxXWTdP9JCiOmLj37g1Iygm+oEaAr9RKtQW
-        DWtnQTWfnMdie
-X-Received: by 2002:a05:6402:490:: with SMTP id k16mr4400484edv.204.1644623934904;
-        Fri, 11 Feb 2022 15:58:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxxdoPzAxwGhzRv/W37UgGSGb7H6JE3CKofQSeEsHRYqdHiBu2ZsRGlgxcQPDeVnnwzn7SAaQ==
-X-Received: by 2002:a05:6402:490:: with SMTP id k16mr4400400edv.204.1644623933217;
-        Fri, 11 Feb 2022 15:58:53 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id l7sm11349032edb.53.2022.02.11.15.58.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tv1RwhDDvAXN7IM8e3BduJ11NixN20EYOsnvSUoh0R0=;
+        b=zpyaXazn6Whqew+nv9fzGxCsd0MGP+73E/Kocto8qFolr3H7wBhhPk64dFJrLv6Rou
+         fhnVkLyTgwWumLah0xRFVMx2eJd8rMseIuUTi4RUWyBXHCN35kGjs7L1lg4mSyKg5RHq
+         3TGZATEu77+1vlLaON+X9cB3xAzT8myCZGXIstOXyZZITYn1WJTnZi8n9KYqQ34UVDsG
+         z1CBZNXOPwT5G8hHz5edWcxXOwBgrcQ89lq5XMW+DR32x/4edDVRIDJx8tStiBjJyoca
+         UaKMY79GbdMkfZ0YJegkNRkTT+p4FS3K9HoJZgJRDbHda03/3WeK26o14mHpuvkF76qT
+         4Bxg==
+X-Gm-Message-State: AOAM530FBPH/jSv407AZgDd+7wbhGjKYfMk0r1n2TXBAOQWqUALkYcSO
+        TDImEq3wezuA/7YqGGm6JZk=
+X-Google-Smtp-Source: ABdhPJxqUusjimEbj3qF+G2PEGRo5mycu+8b87R4Cy0xSQFholh+LZqKHve94DNCY3DoobVGDvEHWg==
+X-Received: by 2002:a17:902:b68b:: with SMTP id c11mr3925252pls.116.1644625115742;
+        Fri, 11 Feb 2022 16:18:35 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:eb33])
+        by smtp.gmail.com with ESMTPSA id e14sm3954201pgt.1.2022.02.11.16.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Feb 2022 15:58:52 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id F05DA102E52; Sat, 12 Feb 2022 00:58:51 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        Fri, 11 Feb 2022 16:18:35 -0800 (PST)
+Date:   Fri, 11 Feb 2022 16:18:32 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: Re: BTF compatibility issue across builds
-In-Reply-To: <CAEf4BzYJCHB-oYqFqJTfHU4D795ewgkndQtR1Po5H521fH0oMg@mail.gmail.com>
-References: <YfK18x/XrYL4Vw8o@syu-laptop>
- <8d17226b-730f-5426-b1cc-99fe43483ed1@fb.com>
- <20220210100153.GA90679@kunlun.suse.cz>
- <CAEf4BzZ6CrNGWt3DENvCBXpUKrvNiZwoK87rR75izP=CDf8YoQ@mail.gmail.com>
- <87a6ex8gm8.fsf@toke.dk>
- <CAEf4BzYJCHB-oYqFqJTfHU4D795ewgkndQtR1Po5H521fH0oMg@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 12 Feb 2022 00:58:51 +0100
-Message-ID: <87v8xl6jlw.fsf@toke.dk>
+        Kernel Team <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCH v3 bpf-next 3/3] selftests/bpf: add custom SEC() handling
+ selftest
+Message-ID: <20220212001832.2dajubav5tqwaimn@ast-mbp.dhcp.thefacebook.com>
+References: <20220211211450.2224877-1-andrii@kernel.org>
+ <20220211211450.2224877-4-andrii@kernel.org>
+ <20220211231316.iqhn3jqnxangv5jc@ast-mbp.dhcp.thefacebook.com>
+ <CAEf4BzbrdJMX0P=P84D40oYH3BNrL-16xqFNFH48BtYc9DaJHw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbrdJMX0P=P84D40oYH3BNrL-16xqFNFH48BtYc9DaJHw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Fri, Feb 11, 2022 at 03:31:56PM -0800, Andrii Nakryiko wrote:
+> On Fri, Feb 11, 2022 at 3:13 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Feb 11, 2022 at 01:14:50PM -0800, Andrii Nakryiko wrote:
+> > > Add a selftest validating various aspects of libbpf's handling of custom
+> > > SEC() handlers. It also demonstrates how libraries can ensure very early
+> > > callbacks registration and unregistration using
+> > > __attribute__((constructor))/__attribute__((destructor)) functions.
+> > >
+> > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  .../bpf/prog_tests/custom_sec_handlers.c      | 176 ++++++++++++++++++
+> > >  .../bpf/progs/test_custom_sec_handlers.c      |  63 +++++++
+> > >  2 files changed, 239 insertions(+)
+> > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+> > >  create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+> > > new file mode 100644
+> > > index 000000000000..28264528280d
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+> > > @@ -0,0 +1,176 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/* Copyright (c) 2022 Facebook */
+> > > +
+> > > +#include <test_progs.h>
+> > > +#include "test_custom_sec_handlers.skel.h"
+> > > +
+> > > +#define COOKIE_ABC1 1
+> > > +#define COOKIE_ABC2 2
+> > > +#define COOKIE_CUSTOM 3
+> > > +#define COOKIE_FALLBACK 4
+> > > +#define COOKIE_KPROBE 5
+> > > +
+> > > +static int custom_init_prog(struct bpf_program *prog, long cookie)
+> > > +{
+> > > +     if (cookie == COOKIE_ABC1)
+> > > +             bpf_program__set_autoload(prog, false);
+> > > +
+> > > +     return 0;
+> > > +}
+> >
+> > What is the value of init_fn callback?
+> > afaict it was and still unused in libbpf.
+> > The above example doesn't make a compelling case, since set_autoload
+> > can be done out of preload callback.
+> > Maybe drop init_fn for now and extend libbpf_prog_handler_opts
+> > when there is actual need for it?
+> 
+> Great question, but no, you can't set_autoload() in the preload
+> handler, because once preload is called, loading of the program is
+> inevitable.
 
-> On Fri, Feb 11, 2022 at 9:20 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Thu, Feb 10, 2022 at 2:01 AM Michal Such=C3=A1nek <msuchanek@suse.d=
-e> wrote:
->> >>
->> >> Hello,
->> >>
->> >> On Mon, Jan 31, 2022 at 09:36:44AM -0800, Yonghong Song wrote:
->> >> >
->> >> >
->> >> > On 1/27/22 7:10 AM, Shung-Hsi Yu wrote:
->> >> > > Hi,
->> >> > >
->> >> > > We recently run into module load failure related to split BTF on =
-openSUSE
->> >> > > Tumbleweed[1], which I believe is something that may also happen =
-on other
->> >> > > rolling distros.
->> >> > >
->> >> > > The error looks like the follow (though failure is not limited to=
- ipheth)
->> >> > >
->> >> > >      BPF:[103111] STRUCT BPF:size=3D152 vlen=3D2 BPF: BPF:Invalid=
- name BPF:
->> >> > >
->> >> > >      failed to validate module [ipheth] BTF: -22
->> >> > >
->> >> > > The error comes down to trying to load BTF of *kernel modules fro=
-m a
->> >> > > different build* than the runtime kernel (but the source is the s=
-ame), where
->> >> > > the base BTF of the two build is different.
->> >> > >
->> >> > > While it may be too far stretched to call this a bug, solving thi=
-s might
->> >> > > make BTF adoption easier. I'd natively think that we could furthe=
-r split
->> >> > > base BTF into two part to avoid this issue, where .BTF only conta=
-in exported
->> >> > > types, and the other (still residing in vmlinux) holds the unexpo=
-rted types.
->> >> >
->> >> > What is the exported types? The types used by export symbols?
->> >> > This for sure will increase btf handling complexity.
->> >>
->> >> And it will not actually help.
->> >>
->> >> We have modversion ABI which checks the checksum of the symbols that =
-the
->> >> module imports and fails the load if the checksum for these symbols d=
-oes
->> >> not match. It's not concerned with symbols not exported, it's not
->> >> concerned with symbols not used by the module. This is something that=
- is
->> >> sustainable across kernel rebuilds with minor fixes/features and what
->> >> distributions watch for.
->> >>
->> >> Now with BTF the situation is vastly different. There are at least th=
-ree
->> >> bugs:
->> >>
->> >>  - The BTF check is global for all symbols, not for the symbols the
->> >>    module uses. This is not sustainable. Given the BTF is supposed to
->> >>    allow linking BPF programs that were built in completely different
->> >>    environment with the kernel it is completely within the scope of B=
-TF
->> >>    to solve this problem, it's just neglected.
->> >
->> > You refer to BTF use in CO-RE with the latter. It's just one
->> > application of BTF and it doesn't follow that you can do the same with
->> > module BTF. It's not a neglect, it's a very big technical difficulty.
->> >
->> > Each module's BTFs are designed as logical extensions of vmlinux BTF.
->> > And each module BTF is independent and isolated from other modules
->> > extension of the same vmlinux BTF. The way that BTF format is
->> > designed, any tiny difference in vmlinux BTF effectively invalidates
->> > all modules' BTFs and they have to be rebuilt.
->> >
->> > Imagine that only one BTF type is added to vmlinux BTF. Last BTF type
->> > ID in vmlinux BTF is shifted from, say, 1000 to 1001. While previously
->> > every module's BTF type ID started with 1001, now they all have to
->> > start with 1002 and be shifted by 1.
->> >
->> > Now let's say that the order of two BTF types in vmlinux BTF is
->> > changed, say type 10 becomes type 20 and type 20 becomes type 10 (just
->> > because of slight difference in DWARF, for instance). Any type
->> > reference to 10 or 20 in any module BTF has to be renumbered now.
->> >
->> > Another one, let's say we add a new string to vmlinux BTF string
->> > section somewhere at the beginning, say "abc" at offset 100. Any
->> > string offset after 100 now has to be shifted *both* in vmlinux BTF
->> > and all module BTFs. And also any string reference in module BTFs have
->> > to be adjusted as well because now each module's BTF's logical string
->> > offset is starting at 4 logical bytes higher (due to "abc\0" being
->> > added and shifting everything right).
->> >
->> > As you can see, any tiny change in vmlinux BTF, no matter where,
->> > beginning, middle, or end, causes massive changes in type IDs and
->> > offsets everywhere. It's impractical to do any local adjustments, it's
->> > much simpler and more reliable to completely regenerate BTF
->> > completely.
->>
->> This seems incredibly brittle, though? IIUC this means that if you want
->> BTF in your modules you *must* have not only the kernel headers of the
->> kernel it's going to run on, but the full BTF information for the exact
->
-> From BTF perspective, only vmlinux BTF. Having exact kernel headers
-> would minimize type information duplication.
+Ahh!, but we can add 'if (prog->load)' in bpf_object_load_prog_instance()
+after preload_fn() was called.
+Surely the libbpf would waste some time preping the prog with relos,
+but that's not a big deal.
+Another option is to move preload_fn earlier.
+Especially since currently it's only setting attach types.
 
-Right, I meant you'd need the kernel headers to compile the module, and
-the vmlinux BTF to build the module BTF info.
+Calling the callback 'preload' when it cannot affect the load is odd too.
 
->> kernel image you're going to load that module on? How is that supposed
->> to work for any kind of environment where everything is not built
->> together? Third-party modules for distribution kernels is the obvious
->> example that comes to mind here, but as this thread shows, they don't
->> necessarily even have to be third party...
->>
->> How would you go about "completely regenerating BTF" in practice for a
->> third-party module, say?
->
-> Great questions. I was kind of hoping you'll have some suggestions as
-> well, though. Not just complaints.
+> We might need to adjust the obj->loaded flag so that set_autoload()
+> returns an error when called from the preload() callback, but that's a
+> bit orthogonal. I suspect there will be few more adjustments like this
+> as we get actual users of this API in the wild.
+> 
+> It's not used by libbpf because we do all the initialization outside
+> of the callback, as it is the same for all programs and serves as
+> "default" behavior that custom handlers can override.
+> 
+> Also, keep in mind that this is the very beginning of v0.8 dev cycle,
+> we'll have time to adjust interfaces and callback contracts in the
+> next 2-3 months, if necessary. USDT library open-sourcing will almost
+> 100% happen during this time frame (though I think USDT library is a
+> pretty simple use case, so isn't a great "stress test"). But it also
+> seems like perf might need to use fallback handler for their crazy
+> SEC() conventions, that will be a good test as well.
 
-Well, I kinda took your "not really a bug either" comment to mean you
-weren't really open to changing the current behaviour. But if that was a
-misunderstanding on my part, I do have one thought:
-
-The "partial BTF" thing in the modules is done to save space, right?
-I.e., in principle there would be nothing preventing a module from
-including a full (self-contained) set of BTF in its .ko when it is
-compiled? Because if so, we could allow that as an optional mode that
-can be enabled if you don't mind taking the size hit (any idea how large
-that usually is, BTW?). And then we could teach 'modprobe' to do a fresh
-deduplication of this full BTF set against the vmlinux BTF before
-loading such a module into the kernel.
-
-Or am I missing some reason why that wouldn't work?
-
--Toke
-
+It would be much easier to take your word if there was an actual example
+(like libusdt) that demonstrates the use of callbacks.
+"We will have time to fix things before release" isn't very comforting
+in the case of big api extension like this one.
