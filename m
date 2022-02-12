@@ -2,256 +2,187 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 588134B3614
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 16:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5874B361B
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 16:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236690AbiBLPvv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 12 Feb 2022 10:51:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56192 "EHLO
+        id S236493AbiBLPyJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Feb 2022 10:54:09 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236711AbiBLPvu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Feb 2022 10:51:50 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3217B2458C
-        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 07:51:43 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21CAbVgI031544
-        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 07:51:42 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e6ba10ugt-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 07:51:42 -0800
-Received: from twshared45270.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 12 Feb 2022 07:51:41 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 8A25310C38C40; Sat, 12 Feb 2022 07:51:31 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <acme@kernel.org>, <linux-perf-users@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, <christylee@fb.com>, <jolsa@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v6 perf/core 2/2] perf: Stop using deprecated bpf_object__next() API
-Date:   Sat, 12 Feb 2022 07:51:25 -0800
-Message-ID: <20220212155125.3406232-3-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220212155125.3406232-1-andrii@kernel.org>
-References: <20220212155125.3406232-1-andrii@kernel.org>
+        with ESMTP id S233997AbiBLPyD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Feb 2022 10:54:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43497212
+        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 07:53:59 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D7722B80759
+        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 15:53:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FEACC340E7;
+        Sat, 12 Feb 2022 15:53:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644681236;
+        bh=FHbBFbuP9gl/I6ZBenH3Q0NgjaX945Z3jjMY8IXU+t0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gXNOMC0ilkcFbno0FVPaVcWyM507D4ZO7ADVzneKP8i93olwmZrvFD7M8Mxy0FyqC
+         +6ipzbOPBGEbp363BWr8JzLSnsjwkUF5SceG4Fp0kxbghhkjUUllOWdzBkLqobcq+a
+         dx2S9ys0qaN2VroVlyMcn/ecxo0z95GqUH+XtIDVKpx5CQGcKPcgGxIrwhle4FfROl
+         J1Isp5wYQo9e1cp98SQnmWdF6Y08GHdwOLcafh7t2eXb48FsXjzLO+ny2yoPF/e/P/
+         FUi0kq3s0ZFZg3tO+38LdqS/eE8KNxLqZITa8UOFUr6cG5qNE8Qohfqb43kv7EGcRR
+         UCFS99IbgCPWQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 9E623400FE; Sat, 12 Feb 2022 12:53:53 -0300 (-03)
+Date:   Sat, 12 Feb 2022 12:53:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Christy Lee <christylee@fb.com>,
+        bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH v5 bpf-next 0/2] perf: stop using deprecated bpf APIs
+Message-ID: <YgfYEdsvP82XEOjx@kernel.org>
+References: <20220212073054.1052880-1-andrii@kernel.org>
+ <YgfToqR6xR5lq0HI@kernel.org>
+ <YgfUEW5pa0eMN3/I@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: iu-PvvdSbhP4AnSJrNn5-OY_TfNrH4_X
-X-Proofpoint-GUID: iu-PvvdSbhP4AnSJrNn5-OY_TfNrH4_X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-12_06,2022-02-11_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
- phishscore=0 bulkscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 clxscore=1015 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202120097
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YgfUEW5pa0eMN3/I@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Christy Lee <christylee@fb.com>
+Em Sat, Feb 12, 2022 at 12:36:49PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Sat, Feb 12, 2022 at 12:34:58PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Feb 11, 2022 at 11:30:52PM -0800, Andrii Nakryiko escreveu:
+> > > libbpf's bpf_prog_load() and bpf__object_next() APIs are deprecated.
+> > > remove perf's usage of these deprecated functions. After this patch
+> > > set, the only remaining libbpf deprecated APIs in perf would be
+> > > bpf_program__set_prep() and bpf_program__nth_fd().
+> > 
+> > Not applying to perf/core, I'm checking...
+> 
+> Just some fuzz on the second patch:
+> 
+> ⬢[acme@toolbox perf]$ patch -p1 < ~/wb/1.patch
+> patching file tools/perf/util/bpf-loader.c
+> Hunk #2 succeeded at 111 with fuzz 1 (offset -1 lines).
+> Hunk #3 succeeded at 156 (offset -2 lines).
+> Hunk #4 succeeded at 1563 (offset 8 lines).
+> Hunk #5 succeeded at 1575 (offset 8 lines).
+> Hunk #6 succeeded at 1628 (offset 8 lines).
+> ⬢[acme@toolbox perf]$
+> 
+> Applying manually to test on the set of test build containers.
 
-Libbpf has deprecated the ability to keep track of object list inside
-libbpf, it now requires applications to track usage multiple bpf
-objects directly. Remove usage of bpf_object__next() API and hoist the
-tracking logic to perf.
+perf test clean, these also work:
 
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Christy Lee <christylee@fb.com>
-Signed-off-by: Jiri Olsa <jolsa@redhat.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/perf/util/bpf-loader.c | 98 +++++++++++++++++++++++++++++-------
- 1 file changed, 79 insertions(+), 19 deletions(-)
+# perf trace -e tools/perf/examples/bpf/augmented_raw_syscalls.c  sleep 1
+[root@quaco perf]# perf trace -e tools/perf/examples/bpf/5sec.c  sleep 5s
+     0.000 perf_bpf_probe:hrtimer_nanosleep(__probe_ip: -1994947936, rqtp: 5000000000)
+[root@quaco perf]#
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index 7ecfaac7536a..db61e09be585 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -49,8 +49,52 @@ struct bpf_prog_priv {
- 	int *type_mapping;
- };
- 
-+struct bpf_perf_object {
-+	struct list_head list;
-+	struct bpf_object *obj;
-+};
-+
-+static LIST_HEAD(bpf_objects_list);
-+
-+static struct bpf_perf_object *
-+bpf_perf_object__next(struct bpf_perf_object *prev)
-+{
-+	struct bpf_perf_object *next;
-+
-+	if (!prev)
-+		next = list_first_entry(&bpf_objects_list,
-+					struct bpf_perf_object,
-+					list);
-+	else
-+		next = list_next_entry(prev, list);
-+
-+	/* Empty list is noticed here so don't need checking on entry. */
-+	if (&next->list == &bpf_objects_list)
-+		return NULL;
-+
-+	return next;
-+}
-+
-+#define bpf_perf_object__for_each(perf_obj, tmp)	\
-+	for ((perf_obj) = bpf_perf_object__next(NULL),	\
-+	     (tmp) = bpf_perf_object__next(perf_obj);	\
-+	     (perf_obj) != NULL;			\
-+	     (perf_obj) = (tmp), (tmp) = bpf_perf_object__next(tmp))
-+
- static bool libbpf_initialized;
- 
-+static int bpf_perf_object__add(struct bpf_object *obj)
-+{
-+	struct bpf_perf_object *perf_obj = zalloc(sizeof(*perf_obj));
-+
-+	if (perf_obj) {
-+		INIT_LIST_HEAD(&perf_obj->list);
-+		perf_obj->obj = obj;
-+		list_add_tail(&perf_obj->list, &bpf_objects_list);
-+	}
-+	return perf_obj ? 0 : -ENOMEM;
-+}
-+
- struct bpf_object *
- bpf__prepare_load_buffer(void *obj_buf, size_t obj_buf_sz, const char *name)
- {
-@@ -67,9 +111,21 @@ bpf__prepare_load_buffer(void *obj_buf, size_t obj_buf_sz, const char *name)
- 		return ERR_PTR(-EINVAL);
- 	}
- 
-+	if (bpf_perf_object__add(obj)) {
-+		bpf_object__close(obj);
-+		return ERR_PTR(-ENOMEM);
-+	}
-+
- 	return obj;
- }
- 
-+static void bpf_perf_object__close(struct bpf_perf_object *perf_obj)
-+{
-+	list_del(&perf_obj->list);
-+	bpf_object__close(perf_obj->obj);
-+	free(perf_obj);
-+}
-+
- struct bpf_object *bpf__prepare_load(const char *filename, bool source)
- {
- 	struct bpf_object *obj;
-@@ -100,24 +156,30 @@ struct bpf_object *bpf__prepare_load(const char *filename, bool source)
- 			llvm__dump_obj(filename, obj_buf, obj_buf_sz);
- 
- 		free(obj_buf);
--	} else
-+	} else {
- 		obj = bpf_object__open(filename);
-+	}
- 
- 	if (IS_ERR_OR_NULL(obj)) {
- 		pr_debug("bpf: failed to load %s\n", filename);
- 		return obj;
- 	}
- 
-+	if (bpf_perf_object__add(obj)) {
-+		bpf_object__close(obj);
-+		return ERR_PTR(-BPF_LOADER_ERRNO__COMPILE);
-+	}
-+
- 	return obj;
- }
- 
- void bpf__clear(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
- 
--	bpf_object__for_each_safe(obj, tmp) {
--		bpf__unprobe(obj);
--		bpf_object__close(obj);
-+	bpf_perf_object__for_each(perf_obj, tmp) {
-+		bpf__unprobe(perf_obj->obj);
-+		bpf_perf_object__close(perf_obj);
- 	}
- }
- 
-@@ -1501,11 +1563,11 @@ apply_obj_config_object(struct bpf_object *obj)
- 
- int bpf__apply_obj_config(void)
- {
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
- 	int err;
- 
--	bpf_object__for_each_safe(obj, tmp) {
--		err = apply_obj_config_object(obj);
-+	bpf_perf_object__for_each(perf_obj, tmp) {
-+		err = apply_obj_config_object(perf_obj->obj);
- 		if (err)
- 			return err;
- 	}
-@@ -1513,26 +1575,24 @@ int bpf__apply_obj_config(void)
- 	return 0;
- }
- 
--#define bpf__for_each_map(pos, obj, objtmp)	\
--	bpf_object__for_each_safe(obj, objtmp)	\
--		bpf_object__for_each_map(pos, obj)
-+#define bpf__perf_for_each_map(map, pobj, tmp)			\
-+	bpf_perf_object__for_each(pobj, tmp)			\
-+		bpf_object__for_each_map(map, pobj->obj)
- 
--#define bpf__for_each_map_named(pos, obj, objtmp, name)	\
--	bpf__for_each_map(pos, obj, objtmp) 		\
--		if (bpf_map__name(pos) && 		\
--			(strcmp(name, 			\
--				bpf_map__name(pos)) == 0))
-+#define bpf__perf_for_each_map_named(map, pobj, pobjtmp, name)	\
-+	bpf__perf_for_each_map(map, pobj, pobjtmp)		\
-+		if (bpf_map__name(map) && (strcmp(name, bpf_map__name(map)) == 0))
- 
- struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
- {
- 	struct bpf_map_priv *tmpl_priv = NULL;
--	struct bpf_object *obj, *tmp;
-+	struct bpf_perf_object *perf_obj, *tmp;
- 	struct evsel *evsel = NULL;
- 	struct bpf_map *map;
- 	int err;
- 	bool need_init = false;
- 
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
- 		struct bpf_map_priv *priv = bpf_map__priv(map);
- 
- 		if (IS_ERR(priv))
-@@ -1568,7 +1628,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
- 		evsel = evlist__last(evlist);
- 	}
- 
--	bpf__for_each_map_named(map, obj, tmp, name) {
-+	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
- 		struct bpf_map_priv *priv = bpf_map__priv(map);
- 
- 		if (IS_ERR(priv))
+containers building:
+
+[perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.100.2/perf/perf-5.17.0-rc3.tar.xz
+[perfbuilder@five ~]$ time dm
+   1   164.81 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-4) , clang version 12.0.1 (Red Hat 12.0.1-4.module_el8.5.0+1025+93159d6c)
+   2    90.60 alpine:3.4                    : Ok   gcc (Alpine 5.3.0) 5.3.0 , clang version 3.8.0 (tags/RELEASE_380/final)
+   3    55.88 alpine:3.5                    : Ok   gcc (Alpine 6.2.1) 6.2.1 20160822 , clang version 3.8.1 (tags/RELEASE_381/final)
+   4    58.69 alpine:3.6                    : Ok   gcc (Alpine 6.3.0) 6.3.0 , clang version 4.0.0 (tags/RELEASE_400/final)
+   5    65.65 alpine:3.7                    : Ok   gcc (Alpine 6.4.0) 6.4.0 , Alpine clang version 5.0.0 (tags/RELEASE_500/final) (based on LLVM 5.0.0)
+   6    69.85 alpine:3.8                    : Ok   gcc (Alpine 6.4.0) 6.4.0 , Alpine clang version 5.0.1 (tags/RELEASE_501/final) (based on LLVM 5.0.1)
+   7    66.83 alpine:3.9                    : Ok   gcc (Alpine 8.3.0) 8.3.0 , Alpine clang version 5.0.1 (tags/RELEASE_502/final) (based on LLVM 5.0.1)
+   8: alpine:3.10
+
+I don't expect problems with those, so probably later today I'll push it
+to perf/core so that it will be on its way t 5.18.
+
+- Arnaldo
+>  
+> > ⬢[acme@toolbox perf]$ b4 am -ctsl --cc-trailers 20220212073054.1052880-1-andrii@kernel.org
+> > Looking up https://lore.kernel.org/r/20220212073054.1052880-1-andrii%40kernel.org
+> > Grabbing thread from lore.kernel.org/all/20220212073054.1052880-1-andrii%40kernel.org/t.mbox.gz
+> > Checking for newer revisions on https://lore.kernel.org/all/
+> > Analyzing 3 messages in the thread
+> > Checking attestation on all messages, may take a moment...
+> > ---
+> >   [PATCH v5 1/2] perf: Stop using deprecated bpf_load_program() API
+> >     + Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >     + Link: https://lore.kernel.org/r/20220212073054.1052880-2-andrii@kernel.org
+> >     + Cc: kernel-team@fb.com
+> >     + Cc: daniel@iogearbox.net
+> >     + Cc: ast@kernel.org
+> >     + Cc: bpf@vger.kernel.org
+> >   [PATCH v5 2/2] perf: Stop using deprecated bpf_object__next() API
+> >     + Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >     + Link: https://lore.kernel.org/r/20220212073054.1052880-3-andrii@kernel.org
+> >     + Cc: kernel-team@fb.com
+> >     + Cc: daniel@iogearbox.net
+> >     + Cc: ast@kernel.org
+> >     + Cc: bpf@vger.kernel.org
+> > ---
+> > Total patches: 2
+> > ---
+> > Cover: ./v5_20220211_andrii_perf_stop_using_deprecated_bpf_apis.cover
+> >  Link: https://lore.kernel.org/r/20220212073054.1052880-1-andrii@kernel.org
+> >  Base: not specified
+> >        git am ./v5_20220211_andrii_perf_stop_using_deprecated_bpf_apis.mbx
+> > ⬢[acme@toolbox perf]$        git am ./v5_20220211_andrii_perf_stop_using_deprecated_bpf_apis.mbx
+> > Applying: perf: Stop using deprecated bpf_load_program() API
+> > Applying: perf: Stop using deprecated bpf_object__next() API
+> > error: patch failed: tools/perf/util/bpf-loader.c:68
+> > error: tools/perf/util/bpf-loader.c: patch does not apply
+> > Patch failed at 0002 perf: Stop using deprecated bpf_object__next() API
+> > hint: Use 'git am --show-current-patch=diff' to see the failed patch
+> > When you have resolved this problem, run "git am --continue".
+> > If you prefer to skip this patch, run "git am --skip" instead.
+> > To restore the original branch and stop patching, run "git am --abort".
+> > 
+> > 
+> > - Arnaldo
+> >  
+> > > v4 -> v5:
+> > >   - add bpf_perf_object__add() and use it where appropriate (Jiri);
+> > >   - use __maybe_unused in first patch;
+> > > v3 -> v4:
+> > >   - Fixed commit title
+> > >   - Added weak definition for deprecated function
+> > > v2 -> v3:
+> > >   - Fixed commit message to use upstream perf
+> > > v1 -> v2:
+> > >   - Added missing commit message
+> > >   - Added more details to commit message and added steps to reproduce
+> > >     original test case.
+> > > 
+> > > Christy Lee (2):
+> > >   perf: Stop using deprecated bpf_load_program() API
+> > >   perf: Stop using deprecated bpf_object__next() API
+> > > 
+> > >  tools/perf/tests/bpf.c       | 14 ++----
+> > >  tools/perf/util/bpf-event.c  | 13 +++++
+> > >  tools/perf/util/bpf-loader.c | 98 +++++++++++++++++++++++++++++-------
+> > >  3 files changed, 96 insertions(+), 29 deletions(-)
+> > > 
+> > > -- 
+> > > 2.30.2
+> > 
+> > -- 
+> > 
+> > - Arnaldo
+> 
+> -- 
+> 
+> - Arnaldo
+
 -- 
-2.30.2
 
+- Arnaldo
