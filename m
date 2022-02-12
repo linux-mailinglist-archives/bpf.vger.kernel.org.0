@@ -2,201 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAC44B3228
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 01:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232204B3246
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 02:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354465AbiBLAnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Feb 2022 19:43:05 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47014 "EHLO
+        id S1345679AbiBLBEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Feb 2022 20:04:21 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354483AbiBLAnB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Feb 2022 19:43:01 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97C9D7F;
-        Fri, 11 Feb 2022 16:42:58 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id w7so13432419ioj.5;
-        Fri, 11 Feb 2022 16:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/MzPakuR15QwPJOT8CCwoQHz12FwVp3iy+BLNSKbaMY=;
-        b=VJZx9kxM2pxDEXnTBmQFihoZKY2Abu9SXJvq9lnuPufcmn4VXkiFVnU6mrZu6FjeyA
-         Dx6EtZpfjjlQv9R04FeU3Z2Eg54CoWIjKYOWwEpLjFTYYgcq5x95MFdwdklSUlyWQ/wX
-         PQOrUlCcmytWOs2et1BsPjt57kI4409AXDqCQXGZi923ETP0otHkJpYPk9mUh0RVfBL7
-         BwDwiL8U7dyhsLeP7ngF/GR5ttm1CAO+bmympOglGbkL4RpreAoFb13PYRwbifEc1qEb
-         vGi43QxHtoUHo2W+wnLS7UQAUG8p7nao2tsbjr9tu0R7Dmrtf1XUnZyaNXVCk8Yq+Pby
-         bFFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/MzPakuR15QwPJOT8CCwoQHz12FwVp3iy+BLNSKbaMY=;
-        b=uA//aqHuqImJUjx5hXQmTpooT0L36EU9a018SG8AnaHWPuldiu83PwL/lU2Z4EYXL6
-         /iGCx25VB4em9P80GyVtiR5iJdwSDZVNNdEM7WH/mPyzQiHBc4oMfIbjxnzYT85337u6
-         QoBSH3VKsKVcMCsh8eQrLouKPGmbVUBKZUREznQoJOv0WxWD9o9iPec12eJVgVeAtSMV
-         pdJQ5iouse28IQnff5eVatQY3yQT0yJdZASHSjf3N63xXwtkF++5NJM5qXGULbb49Ce4
-         OMzMkBp41PZYoJfcc03CmUkHgxTeoIC0kE9KxpyK0LV4Kg/MiyRtABSuMvbP8SY30cyo
-         yXBg==
-X-Gm-Message-State: AOAM533cgrOw64XUwuy9vAg7H5j0CHISY1qLwYw3+303x11ZrLUB92Ig
-        3PIjAY5WkUPkzX8lxTgkXjMC3A8dX+RvF7IVHlV2xp83
-X-Google-Smtp-Source: ABdhPJy2c9OyN88z8/pqMgRQF/1qXyGJxE1ncF2E22Ims1+Q/kd3cprn8FXLPK8HGWiq/2YdDFBRGzkKq9GyZI/9IDg=
-X-Received: by 2002:a05:6638:2606:: with SMTP id m6mr2209762jat.93.1644626578051;
- Fri, 11 Feb 2022 16:42:58 -0800 (PST)
+        with ESMTP id S243505AbiBLBEV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Feb 2022 20:04:21 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28390D82;
+        Fri, 11 Feb 2022 17:04:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DFD2FB82DF8;
+        Sat, 12 Feb 2022 01:04:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CBEDC340E9;
+        Sat, 12 Feb 2022 01:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644627856;
+        bh=Rl10gJDjhOhJM1U/VkUE7/DkPFU8vExw1P0p65rIYco=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e2nUeLfNpn3n5XU1ZcuySu8c9AwRk9RLMMjDgf+L4Fptl1ZU533mZtPKnPiLRxViO
+         t7ftURCx2l8cvZ1W0G9UurKmcORuYqAOwzWqXmXNdaTnk+Ur/+osjd7r1OTI7T9Xdl
+         gm/djS77BBh5KLxZ+xgCTrwLJXT/ZXB5jvnBMPR6NzOT2kmSosQlv6/w5jece8hp5s
+         ewPW6jAO2w7TsTqW0fjZMpA3zSIMdD+mAJ6UJvCvhneF+1oJf8bm603+jsCgzA/uOb
+         2DgD1lSKcdQaSpVSScnusiiIiorMkadQ6oPh12qJ17FbOl/QIuP2cAZgYTqDlSPH4u
+         yYwutvfXiCyHg==
+Date:   Fri, 11 Feb 2022 17:04:14 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        toke@redhat.com, pabeni@redhat.com, echaudro@redhat.com,
+        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
+        andrii@kernel.org
+Subject: Re: [PATCH bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order to
+ accept non-linear skb
+Message-ID: <20220211170414.7223ff09@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <8c5e6e5f06d1ba93139f1b72137f8f010db15808.1644541123.git.lorenzo@kernel.org>
+References: <cover.1644541123.git.lorenzo@kernel.org>
+        <8c5e6e5f06d1ba93139f1b72137f8f010db15808.1644541123.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-References: <20220209222646.348365-1-mauricio@kinvolk.io> <20220209222646.348365-8-mauricio@kinvolk.io>
-In-Reply-To: <20220209222646.348365-8-mauricio@kinvolk.io>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Feb 2022 16:42:47 -0800
-Message-ID: <CAEf4BzZNHHKkOS=bXmKevStq-8hwm58mTz_tnMFs0vETL_z8LQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 7/7] selftests/bpf: Test "bpftool gen min_core_btf"
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 9, 2022 at 2:27 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io> =
-wrote:
->
-> This commit reuses the core_reloc test to check if the BTF files
-> generated with "bpftool gen min_core_btf" are correct. This introduces
-> test_core_btfgen() that runs all the core_reloc tests, but this time
-> the source BTF files are generated by using "bpftool gen min_core_btf".
->
-> The goal of this test is to check that the generated files are usable,
-> and not to check if the algorithm is creating an optimized BTF file.
->
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
->  .../selftests/bpf/prog_tests/core_reloc.c     | 46 ++++++++++++++++++-
->  1 file changed, 45 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/=
-testing/selftests/bpf/prog_tests/core_reloc.c
-> index b8bdd1c3efca..10a1d5fb788e 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -2,6 +2,7 @@
->  #include <test_progs.h>
->  #include "progs/core_reloc_types.h"
->  #include "bpf_testmod/bpf_testmod.h"
-> +#include <linux/limits.h>
->  #include <sys/mman.h>
->  #include <sys/syscall.h>
->  #include <bpf/btf.h>
-> @@ -354,6 +355,8 @@ static int duration =3D 0;
->         .fails =3D true,                                                 =
- \
->  }
->
-> +#define BTFGEN_BTF_PATH "/tmp/btfgen.btf"
+On Fri, 11 Feb 2022 02:20:31 +0100 Lorenzo Bianconi wrote:
+> +	if (skb_shared(skb) || skb_head_is_locked(skb)) {
 
-let's not use fixed file path, better use mkstemp() to create
-temporary file (see core_autosize.c for an example)
-
-> +
->  struct core_reloc_test_case;
->
->  typedef int (*setup_test_fn)(struct core_reloc_test_case *test);
-> @@ -836,7 +839,21 @@ static size_t roundup_page(size_t sz)
->         return (sz + page_size - 1) / page_size * page_size;
->  }
->
-> -void test_core_reloc(void)
-> +static int run_btfgen(const char *src_btf, const char *dst_btf, const ch=
-ar *objpath)
-> +{
-> +       char command[4096];
-> +       int n;
-> +
-> +       n =3D snprintf(command, sizeof(command),
-> +                    "./tools/build/bpftool/bpftool gen min_core_btf %s %=
-s %s",
-> +                    src_btf, dst_btf, objpath);
-> +       if (n < 0 || n >=3D sizeof(command))
-> +               return -1;
-> +
-> +       return system(command);
-> +}
-> +
-> +static void _test_core_reloc(bool btfgen)
-
-ugh, please don't do leading underscore. Call it
-"run_core_reloc_tests" or whatever, it's easy.
-
-another naming nit (I did get confused for a second because of this):
-use_btfgen, otherwise below in the code my first guess was that
-"btfgen" is actually a path to bpftool or something like that
-
-
->  {
->         const size_t mmap_sz =3D roundup_page(sizeof(struct data));
->         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
-> @@ -863,6 +880,22 @@ void test_core_reloc(void)
->                         continue;
->                 }
->
-> +               /* generate a "minimal" BTF file and use it as source */
-> +               if (btfgen) {
-> +                       if (!test_case->btf_src_file || test_case->fails)=
- {
-> +                               test__skip();
-> +                               continue;
-> +                       }
-> +
-> +                       unlink(BTFGEN_BTF_PATH);
-> +                       err =3D run_btfgen(test_case->btf_src_file, BTFGE=
-N_BTF_PATH,
-> +                                        test_case->bpf_obj_file);
-> +                       if (!ASSERT_OK(err, "run_btfgen"))
-> +                               goto cleanup;
-> +
-> +                       test_case->btf_src_file =3D BTFGEN_BTF_PATH;
-> +               }
-> +
->                 if (test_case->setup) {
->                         err =3D test_case->setup(test_case);
->                         if (CHECK(err, "test_setup", "test #%d setup fail=
-ed: %d\n", i, err))
-> @@ -954,8 +987,19 @@ void test_core_reloc(void)
->                         CHECK_FAIL(munmap(mmap_data, mmap_sz));
->                         mmap_data =3D NULL;
->                 }
-> +               unlink(BTFGEN_BTF_PATH);
->                 bpf_link__destroy(link);
->                 link =3D NULL;
->                 bpf_object__close(obj);
->         }
->  }
-> +
-> +void test_core_reloc(void)
-> +{
-> +       _test_core_reloc(false);
-> +}
-> +
-> +void test_core_btfgen(void)
-> +{
-> +       _test_core_reloc(true);
-> +}
-> --
-> 2.25.1
->
+Is this sufficient to guarantee that the frags can be written?
+skb_cow_data() tells a different story.
