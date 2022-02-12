@@ -2,56 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF494B3639
-	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 17:10:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0524B36C5
+	for <lists+bpf@lfdr.de>; Sat, 12 Feb 2022 18:17:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236892AbiBLQKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Feb 2022 11:10:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35068 "EHLO
+        id S237580AbiBLRO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Feb 2022 12:14:56 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbiBLQKN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Feb 2022 11:10:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06745B9;
-        Sat, 12 Feb 2022 08:10:10 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 92FE360FB8;
-        Sat, 12 Feb 2022 16:10:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EBA40C340EE;
-        Sat, 12 Feb 2022 16:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644682209;
-        bh=xgXe8qTCczn3VGYBy5Q25EbQlPSwyzfKjkpPvCN4rHo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GlKcE1fLsk9Vk7tEiuCjgNlfLA/7R+FvVIDR3aBR72/RHoWVgcru7O9v1K7d9Eiwn
-         cLpZ+Cv6sxlVbxp1ysQGI74tphXACGRNroiy8RqTW6IhdPCnOmQwYP/Ea+58cZh2s4
-         ZKW3yD2xSdE2uPZqmFVMW614uO+ViNgdvHhBq8lawWArPy3S5clHKFrq2JTb05twus
-         cVpIFrQ1wGLFZFzGi3p+4G9RW45+vf7cWFvskaUtJLfvXNA219R8CHv9H/HJyH+7Ae
-         dwH8D0cBaYbxPArdLt3YCv5IUae7Vmwb+Ruaqj1Q45Juoz14DH4LUxX0xa1ssCYEuA
-         Eh7rimLuhClrw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D60CAE5D07D;
-        Sat, 12 Feb 2022 16:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S237520AbiBLRO4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Feb 2022 12:14:56 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03991240AC
+        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 09:14:52 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id u16so16050816pfg.3
+        for <bpf@vger.kernel.org>; Sat, 12 Feb 2022 09:14:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=84mi4sLZdI2m5nZb9aKeXn47eOTNcMjjceH3JrENpfA=;
+        b=D1fo4FZcekytY1ykZ6KutYWYi4KcPkuDtWLBJuhG9KnuEPMOMP5iMk0V0k7gTGlfm/
+         YfXo9kXf3qYGek+2cN2RUK45TiDfzvbiKAuGn2sKhH28qFUUwxUuOSks6wOjqXMcVajy
+         hejgEGHo4uYczkQKP1hNC0hmJ6yAoB97pUSs0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=84mi4sLZdI2m5nZb9aKeXn47eOTNcMjjceH3JrENpfA=;
+        b=Jwr9BAcs+V15thAecUM0/FTgxVNi8P0RkrphiVifdCmKq5/3uVEK4SLPff0XtjWKNs
+         Z8wRPtjDZq/2J0asngXcprd9IWCc2VxejOoWZzoBX8cSER//bu7QSiGCWwM2F1oZRIOc
+         a9twuHVwS9aAgzf0UumfxFQ1bqgepp6mqr3XGG0SQLLWfF7kH91drqUVkUg7g6j1kyjx
+         zq+llMLbzRhzJnF14RRHmq987FM7ZlR2rUjkTNeRSW1m9dETedPFCJmSql3+/M9Thqr9
+         W3VLqpirwj2E6aDOab24exh5LSoJnrlMtKduK0EzPYyiMGRQbnYh9uIsKCoxCWx2OUj6
+         8+7g==
+X-Gm-Message-State: AOAM531gInqo4kVJQyfmbij/iTtSFlsE2HA3xgbI3d7GkDiztSg4s54G
+        ggTL/EGQLOMrqsnegCKDofEyuA==
+X-Google-Smtp-Source: ABdhPJzUu40GXOLbD0dD0jWT1NYlbt8YUZ19HsUk/i+9HXc+CU3hO289jMej1GMKD1Amt0ktiMcrAQ==
+X-Received: by 2002:a63:6116:: with SMTP id v22mr5486761pgb.474.1644686091427;
+        Sat, 12 Feb 2022 09:14:51 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ls14sm6239286pjb.0.2022.02.12.09.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Feb 2022 09:14:51 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] etherdevice: Adjust ether_addr* prototypes to silence -Wstringop-overead
+Date:   Sat, 12 Feb 2022 09:14:49 -0800
+Message-Id: <20220212171449.3000885-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2660; h=from:subject; bh=eVRNZb9+/scN9PRdT1Roirs8n4TTSE7XSUI757xJXEg=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBiB+sIVUHseDW+2l3grw1ne1EWyqjHGcHHhXf+atvk CB/an1KJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYgfrCAAKCRCJcvTf3G3AJhs7D/ 443r8N7ZVCj+oC03dpcpCQpU9ac1ACqyZ9F+kU1vzi/Xba89SWTuaXrLQigr/9sinBhdsw9U4c9izS aErYdxXKko/9gLWHfjefU7EGgD1oyxii6K3YT0dwZnu2jPZ4RCzEqX6S1Y8D3gmWgSOEVLi7w/CA6J AAZ9WaQFEAyRbMyxm7XuT136wmilqpdt4+iH7jDoN4erjeF8FKU//m7GmVdaw/w8cDTz0+AEbZWZMT X5I65NUIHLa+ERT7uJ4qnwpM5OsJlmL/Ihat1ZPJUTx/Pxge3a2L8qOyhVPGfLR/1BkGRtAd3//c/d l5fzHgSW7tzHcHVy8p8v+v83q0wYHVcArkUlH+R8CjC0Knkgfxk+gDMeN3sz7YkR3/a35EZbYAunOb 6IpS8dCrMgiUgFNMyCToj+9TpLFSO29VUqXUuvfVl2/Ksw95IZdDpwCoibGjpQ5OvAz22wYwyH1ku3 HJQ6RlcUbjWbSuGFlyrBPc+PcNsDGm212Kld6//3CK/expJ6WlcO+xIrfMWyVF35bIyOwSQfE3LXVm 1LUW6E8SNahsfuMGkz4sXWwW4vOruDhb0WYccJqyQmOWqwiFscTaYcjYTXWvT/RhnM2DKBldJbpRzJ d68iGuY4StYQpqQnIRKBRmpfIj1bUfGW56ZDNNN8SGhojG/yZzXZJaEmW4Yg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] libbpf: Use dynamically allocated buffer when
- receiving netlink messages
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164468220887.25180.6029344474834771929.git-patchwork-notify@kernel.org>
-Date:   Sat, 12 Feb 2022 16:10:08 +0000
-References: <20220211234819.612288-1-toke@redhat.com>
-In-Reply-To: <20220211234819.612288-1-toke@redhat.com>
-To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, memxor@gmail.com,
-        zhguan@redhat.com, netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,28 +77,55 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+With GCC 12, -Wstringop-overread was warning about an implicit cast from
+char[6] to char[8]. However, the extra 2 bytes are always thrown away,
+alignment doesn't matter, and the risk of hitting the edge of unallocated
+memory has been accepted, so this prototype can just be converted to a
+regular char *. Silences:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+net/core/dev.c: In function ‘bpf_prog_run_generic_xdp’: net/core/dev.c:4618:21: warning: ‘ether_addr_equal_64bits’ reading 8 bytes from a region of size 6 [-Wstringop-overread]
+ 4618 |         orig_host = ether_addr_equal_64bits(eth->h_dest, > skb->dev->dev_addr);
+      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+net/core/dev.c:4618:21: note: referencing argument 1 of type ‘const u8[8]’ {aka ‘const unsigned char[8]’}
+net/core/dev.c:4618:21: note: referencing argument 2 of type ‘const u8[8]’ {aka ‘const unsigned char[8]’}
+In file included from net/core/dev.c:91: include/linux/etherdevice.h:375:20: note: in a call to function ‘ether_addr_equal_64bits’
+  375 | static inline bool ether_addr_equal_64bits(const u8 addr1[6+2],
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
 
-On Sat, 12 Feb 2022 00:48:19 +0100 you wrote:
-> When receiving netlink messages, libbpf was using a statically allocated
-> stack buffer of 4k bytes. This happened to work fine on systems with a 4k
-> page size, but on systems with larger page sizes it can lead to truncated
-> messages. The user-visible impact of this was that libbpf would insist no
-> XDP program was attached to some interfaces because that bit of the netlink
-> message got chopped off.
-> 
-> [...]
+Reported-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Tested-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://lore.kernel.org/netdev/20220212090811.uuzk6d76agw2vv73@pengutronix.de
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netdev@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/etherdevice.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Here is the summary with links:
-  - [bpf-next,v2] libbpf: Use dynamically allocated buffer when receiving netlink messages
-    https://git.kernel.org/bpf/bpf-next/c/9c3de619e13e
-
-You are awesome, thank you!
+diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+index 2ad71cc90b37..92b10e67d5f8 100644
+--- a/include/linux/etherdevice.h
++++ b/include/linux/etherdevice.h
+@@ -134,7 +134,7 @@ static inline bool is_multicast_ether_addr(const u8 *addr)
+ #endif
+ }
+ 
+-static inline bool is_multicast_ether_addr_64bits(const u8 addr[6+2])
++static inline bool is_multicast_ether_addr_64bits(const u8 *addr)
+ {
+ #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && BITS_PER_LONG == 64
+ #ifdef __BIG_ENDIAN
+@@ -372,8 +372,7 @@ static inline bool ether_addr_equal(const u8 *addr1, const u8 *addr2)
+  * Please note that alignment of addr1 & addr2 are only guaranteed to be 16 bits.
+  */
+ 
+-static inline bool ether_addr_equal_64bits(const u8 addr1[6+2],
+-					   const u8 addr2[6+2])
++static inline bool ether_addr_equal_64bits(const u8 *addr1, const u8 *addr2)
+ {
+ #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && BITS_PER_LONG == 64
+ 	u64 fold = (*(const u64 *)addr1) ^ (*(const u64 *)addr2);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.30.2
 
