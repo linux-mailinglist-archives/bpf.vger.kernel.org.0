@@ -2,175 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F3C4B3B22
-	for <lists+bpf@lfdr.de>; Sun, 13 Feb 2022 12:30:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C6A4B3B82
+	for <lists+bpf@lfdr.de>; Sun, 13 Feb 2022 14:06:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235487AbiBMLaQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Feb 2022 06:30:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50834 "EHLO
+        id S232849AbiBMNGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Feb 2022 08:06:43 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235444AbiBMLaQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Feb 2022 06:30:16 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C89BB5B3FD;
-        Sun, 13 Feb 2022 03:30:10 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id w8so12197232qkw.8;
-        Sun, 13 Feb 2022 03:30:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MAfft3qmYdHyDeHQqAY1bu6qA/uvI67RzIoiDqXVrwg=;
-        b=bJ6080+aUdvRvFz0f0PQnVLJEF40Ek9bt8KCHIsuVt6xt8GbHOrSGrc8mtz3x4x5AS
-         o379rTSUeYP36W3e17qd1u7HNhpmGlrWGRgvVo31AYxBd8GOF5EOOH83bhE73rWFBlQM
-         +g3hyhhTOd0bS7bFKNKSbqktHZkrw7I2N+4Heccob7U45ivu5viRm5V9rZrFR1wI/jHU
-         B1s7yYVjNECHk9X8uaoEDqPMfqGr5kSiOA9melqEGr2retLAMXTqjDUP+Wh58uaujSO1
-         HZ3COllqO85dAskowHBj9eUEYgjW3wMmyOQ4X4clVzhtfza46sZqZPBQOgsNl53yx6Y/
-         QlpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MAfft3qmYdHyDeHQqAY1bu6qA/uvI67RzIoiDqXVrwg=;
-        b=Bq4HDD779mQ3v9fBxRiswK3NxIGBnI5l5bKPUHfF3y6dqrlijkYqQ4FfxNMNMIij2r
-         KmRV5jcxdIJb9Q5gYiUrtL5zERRcT+yDk/NA/kk3D7WOCoVKinkQ/ItsGQl2iZixby6M
-         /h81I4N088jitObbt9UZHeKQvrwetjUXEb7hY2disLjOeJooGqQWGHcK6CVqcJBZGBMI
-         2PHrbod587EGQh3JCcNEDx2f8i3dAFEw49Plk+34ccKKbuiKQY1fAAWkP6OZiiYSu0KS
-         0oluax8wSMSmBezZgQjW09Irw7K3B3Pg/tzC2mKXotkhTKDwYVVsXIi0StKPdzA8WHBV
-         27gQ==
-X-Gm-Message-State: AOAM530Oj7B7IBDSp2wpOqvHtdOI5yNxuWVlUSSM3L8SN5zSyfg8AUFG
-        GeNYPdK6PsWcqMqsKfRRtj6T1JjZF2R756J0ql8=
-X-Google-Smtp-Source: ABdhPJy57se/vYMqokc4V9TzL0l5qGn0UBkIUYmwiJBtxO1RhqSAoE3wEiMMzcnbF0k5TBRZODlex4E53uhxsyLoYcc=
-X-Received: by 2002:a05:620a:4111:: with SMTP id j17mr4600052qko.451.1644751809986;
- Sun, 13 Feb 2022 03:30:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20220211121145.35237-2-laoar.shao@gmail.com> <202202112213.WGiJCCYD-lkp@intel.com>
-In-Reply-To: <202202112213.WGiJCCYD-lkp@intel.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 13 Feb 2022 19:29:34 +0800
-Message-ID: <CALOAHbD03Dpok4148_n7OgJKN6iM5kSrhfAALcfaX16c4u=eXA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] bpf: Add pin_name into struct bpf_prog_aux
-To:     kernel test robot <lkp@intel.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, kbuild-all@lists.01.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S229674AbiBMNGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Feb 2022 08:06:43 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61735B88E;
+        Sun, 13 Feb 2022 05:06:37 -0800 (PST)
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21DAPOGv007992;
+        Sun, 13 Feb 2022 13:06:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=cQPiw2dyD8PgwyjWmIk8sBpF1FR7uPpYLP5WigSzu+0=;
+ b=oi/0aktaJZz9GBmenntUm1blxvOZlDwfwkiFmHKZdAGwBSRZiU4J0+iC51ml9JhBJa64
+ GTS7HfFh6QjxmhBcyaYKDTLoGg0aJTk/AXN4GsfCwp6mtB7o5n3Svd1MifVsLbegVFng
+ f3RIrQ02HBrLlXjvIkKNoSFgnn5xSOeIs4W/jFiZzAiFNV0c47cZDXGHw21j7BvPjKCd
+ R7sgx5WSEZxY+xXZtk71XX2s5YK4+B3374zwhBmBb2DD6eLlJ3ZlopabtVncTEwzTlg+
+ qoQaEk1fkOgT2vhSuypr4LsqvFkx6AA84dKyZEHoNkSZAIi2+T7R2d3urbI1zMfz4O7e wA== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e6ueedjc0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Feb 2022 13:06:08 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21DD3Ht9003084;
+        Sun, 13 Feb 2022 13:06:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3e645j63u0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 13 Feb 2022 13:06:05 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21DD63VF39715094
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 13 Feb 2022 13:06:03 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 32020AE053;
+        Sun, 13 Feb 2022 13:06:03 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ACE5CAE051;
+        Sun, 13 Feb 2022 13:06:01 +0000 (GMT)
+Received: from sig-9-65-82-84.ibm.com (unknown [9.65.82.84])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 13 Feb 2022 13:06:01 +0000 (GMT)
+Message-ID: <537635732d9cbcc42bcf7be5ed932d284b03d39f.camel@linux.ibm.com>
+Subject: Re: [PATCH] ima: Calculate digest in ima_inode_hash() if not
+ available
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, shuah@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@kernel.org, Florent Revest <revest@chromium.org>
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sun, 13 Feb 2022 08:06:01 -0500
+In-Reply-To: <20220211104828.4061334-1-roberto.sassu@huawei.com>
+References: <20220211104828.4061334-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 9yEoyiBIJvR4y7HasDH_lt1HNEe7aV9K
+X-Proofpoint-GUID: 9yEoyiBIJvR4y7HasDH_lt1HNEe7aV9K
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-13_04,2022-02-11_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 bulkscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ priorityscore=1501 clxscore=1011 adultscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202130089
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 12, 2022 at 1:59 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Yafang,
->
-> Thank you for the patch! Perhaps something to improve:
->
-> [auto build test WARNING on bpf/master]
-> [also build test WARNING on net/master horms-ipvs/master net-next/master v5.17-rc3 next-20220211]
-> [cannot apply to bpf-next/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Yafang-Shao/bpf-Add-more-information-into-bpffs/20220211-201319
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-> config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20220211/202202112213.WGiJCCYD-lkp@intel.com/config)
-> compiler: arceb-elf-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/6cd35bc70f99caee380d84f5ba9256ac5fe03860
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Yafang-Shao/bpf-Add-more-information-into-bpffs/20220211-201319
->         git checkout 6cd35bc70f99caee380d84f5ba9256ac5fe03860
->         # save the config file to linux build tree
->         mkdir build_dir
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arc SHELL=/bin/bash kernel/bpf/
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
->    kernel/bpf/inode.c: In function 'bpf_obj_do_pin':
-> >> kernel/bpf/inode.c:469:24: warning: ignoring return value of 'strncpy_from_user' declared with attribute 'warn_unused_result' [-Wunused-result]
->      469 |                 (void) strncpy_from_user(aux->pin_name, pathname, BPF_PIN_NAME_LEN);
->          |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
+Hi Roberto,
 
-Thanks for the report.
-I will improve it to avoid this warning.
+On Fri, 2022-02-11 at 11:48 +0100, Roberto Sassu wrote:
+> __ima_inode_hash() checks if a digest has been already calculated by
+> looking for the integrity_iint_cache structure associated to the passed
+> inode.
+> 
+> Users of ima_file_hash() and ima_inode_hash() (e.g. eBPF) might be
+> interested in obtaining the information without having to setup an IMA
+> policy so that the digest is always available at the time they call one of
+> those functions.
+> 
+> Open a new file descriptor in __ima_inode_hash(), so that this function
+> could invoke ima_collect_measurement() to calculate the digest if it is not
+> available. Still return -EOPNOTSUPP if the calculation failed.
+> 
+> Instead of opening a new file descriptor, the one from ima_file_hash()
+> could have been used. However, since ima_inode_hash() was created to obtain
+> the digest when the file descriptor is not available, it could benefit from
+> this change too. Also, the opened file descriptor might be not suitable for
+> use (file descriptor opened not for reading).
+> 
+> This change does not cause memory usage increase, due to using a temporary
+> integrity_iint_cache structure for the digest calculation, and due to
+> freeing the ima_digest_data structure inside integrity_iint_cache before
+> exiting from __ima_inode_hash().
+> 
+> Finally, update the test by removing ima_setup.sh (it is not necessary
+> anymore to set an IMA policy) and by directly executing /bin/true.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
->
-> vim +469 kernel/bpf/inode.c
->
->    437
->    438  static int bpf_obj_do_pin(const char __user *pathname, void *raw,
->    439                            enum bpf_type type)
->    440  {
->    441          struct bpf_prog_aux *aux;
->    442          struct bpf_prog *prog;
->    443          struct dentry *dentry;
->    444          struct inode *dir;
->    445          struct path path;
->    446          umode_t mode;
->    447          int ret;
->    448
->    449          dentry = user_path_create(AT_FDCWD, pathname, &path, 0);
->    450          if (IS_ERR(dentry))
->    451                  return PTR_ERR(dentry);
->    452
->    453          mode = S_IFREG | ((S_IRUSR | S_IWUSR) & ~current_umask());
->    454
->    455          ret = security_path_mknod(&path, dentry, mode, 0);
->    456          if (ret)
->    457                  goto out;
->    458
->    459          dir = d_inode(path.dentry);
->    460          if (dir->i_op != &bpf_dir_iops) {
->    461                  ret = -EPERM;
->    462                  goto out;
->    463          }
->    464
->    465          switch (type) {
->    466          case BPF_TYPE_PROG:
->    467                  prog = raw;
->    468                  aux = prog->aux;
->  > 469                  (void) strncpy_from_user(aux->pin_name, pathname, BPF_PIN_NAME_LEN);
->    470                  aux->pin_name[BPF_PIN_NAME_LEN - 1] = '\0';
->    471                  ret = vfs_mkobj(dentry, mode, bpf_mkprog, raw);
->    472                  break;
->    473          case BPF_TYPE_MAP:
->    474                  ret = vfs_mkobj(dentry, mode, bpf_mkmap, raw);
->    475                  break;
->    476          case BPF_TYPE_LINK:
->    477                  ret = vfs_mkobj(dentry, mode, bpf_mklink, raw);
->    478                  break;
->    479          default:
->    480                  ret = -EPERM;
->    481          }
->    482  out:
->    483          done_path_create(&path, dentry);
->    484          return ret;
->    485  }
->    486
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Although this patch doesn't directly modify either ima_file_hash() or
+ima_inode_hash(),  this change affects both functions.  ima_file_hash()
+was introduced to be used with eBPF.  Based on Florent's post, changing
+the ima_file_hash() behavor seems fine.  Since I have no idea whether
+anyone is still using ima_inode_hash(), perhaps it would be safer to
+limit this behavior change to just ima_file_hash().
 
+Please update the ima_file_hash() doc.  While touching this area, I'd
+appreciate your fixing the first doc line in both ima_file_hash() and
+ima_inode_hash() cases, which wraps spanning two lines.
 
+Please split the IMA from the eBPF changes.
 
 -- 
-Thanks
-Yafang
+thanks,
+
+Mimi
+
