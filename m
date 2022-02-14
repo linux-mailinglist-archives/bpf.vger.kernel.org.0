@@ -2,102 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 057FD4B3D2B
-	for <lists+bpf@lfdr.de>; Sun, 13 Feb 2022 20:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80AC4B3FC7
+	for <lists+bpf@lfdr.de>; Mon, 14 Feb 2022 03:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235904AbiBMTpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Feb 2022 14:45:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52506 "EHLO
+        id S239512AbiBNCuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Feb 2022 21:50:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiBMTpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Feb 2022 14:45:36 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9545756C32
-        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 11:45:29 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id z21so2959753edb.13
-        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 11:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=CnehUZwQrYVBpmc2ighYqjEhs4i4jCzhX9nHmTruo5A=;
-        b=dJ2lplGTkJju0aWIBQbK4yFg1I0ft+hQqi8HYctWn5GI3ukByFbay42AxEOHdL6hHL
-         cOoGb2phFJjf4OkOkioFigB357xlcQ+nilzHYgFNTXARTEl6x3b7/taWIpfyM/jvVO+B
-         jav9rnBlRsxcs/M7hgpZt+dpwlnNzC0lX6yEaxsw/S+tRg1REROqZUNx8PSnSIJCAQYy
-         6n+QcxJvaTJV+PUTgCAfUjubftlyCZl6X8+oHf/NrKDocHJTsVDGxU1XIphj3L/zQ71z
-         v9ITUJky4Y4To0GRHYqSZfOCOvIUxeZCRlZ8UoNoX9SjRx5r4nLQ/kRH3bGZiMega08E
-         sJjA==
+        with ESMTP id S239483AbiBNCuY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Feb 2022 21:50:24 -0500
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DC950056
+        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 18:50:18 -0800 (PST)
+Received: by mail-io1-f71.google.com with SMTP id n20-20020a6bed14000000b0060faa0aefd3so9643012iog.20
+        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 18:50:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=CnehUZwQrYVBpmc2ighYqjEhs4i4jCzhX9nHmTruo5A=;
-        b=ejCtucb+m+kicq3HAaRK3acjE7RsVFkMqxlMfqKLsNS3QcHDGNkc5XubJlLyEsmoxO
-         6Fd1vQusN8K4LoESNLCArDIQDD6c3oOXX0EQ1e6CvItxkR/92DPJzMunVsQa2GgO1O1+
-         U0hy+Jq8ZMw93SJORtBDuZZ4lyEHI+YqLq4rIdzhgD2WAORTewFW75paN/rhHYbfh44D
-         9mOt/+rZ2LtBqtsP5sYnLUhF1A8V6ualQT2Qm1T5ZDWpBvl58VOw/ClmhIbCdyNQ+LgS
-         JvCIKKrlTk0n64LEMgV28jv155ylMy2CEo8iHbDbiuu93Wz63byML95fBKLaJ23d78VE
-         Kh/A==
-X-Gm-Message-State: AOAM5305OsMB07mXPDlUz6WStLhWwZ6Vcd8PXj+Z7glouptZ9WE5EmAm
-        89BOn58BzVMcxuNe3VYckBbQiyvHmwl7INRXdeU=
-X-Google-Smtp-Source: ABdhPJwBnu1AFAit/IXX9c6qDpqpG6Q1Su6OlhXdr4cfKk+xPdNwB5xccbt1xFtjHICeDA3Jd40iAi51lEjAwppQnFA=
-X-Received: by 2002:aa7:c793:: with SMTP id n19mr12054623eds.74.1644781527947;
- Sun, 13 Feb 2022 11:45:27 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=+jq+QysxQkWFCMcSOLTxGlsKrZFeW5BnbyJngHYSa6c=;
+        b=hL2PDzGxM3dd+WFGEbaZowlVYF9ChamRw941zSO4qd11HX/zxJigmfjOkmnzEZOdHG
+         7V7wUnyYN4udoc3rL+LRlp0IqCfXgW9KbUMKADKG76kPQEk4IMT8wLs4wNHA0oQaY/CE
+         CncQhf+Q1A0Mt+vmBxNmMJZ6PLdXDXZizhmBhaAlPSue8CjH6MlBZ/M1C5MlVnA3Bm0F
+         gmHLTqS9w/MnTJvL2VEw4rqqCJi0aNrhPYPSIh2JiqKsHF9JFRN1P4cIC5N+lsRQ0w0o
+         jq9mTO7zMyZSP592h2GMU37nvpoxLl3Gnm9MSLQdo8Q/U5m2/iraFJ5FD1PfXCIYbUF1
+         pDxQ==
+X-Gm-Message-State: AOAM530hFfmkvJkTA+U2zzwcNlHyzLsg6DpKLCWYNuQjo5UsOrrVxWOk
+        Of3U3gffsy58h+UpdocE9u2vFsvtjhahbaBGXHZT4FMAYygW
+X-Google-Smtp-Source: ABdhPJzvtqd5odrpnUu7RRRQa+faT7ZRBKYCSLDaK9pFc/byhODAwwGkMKQXgDPoDS3o1oc3URVohypTQVpgtbK81olEaPSLlhw4
 MIME-Version: 1.0
-Received: by 2002:a50:7218:0:0:0:0:0 with HTTP; Sun, 13 Feb 2022 11:45:27
- -0800 (PST)
-Reply-To: werinammawussi@gmail.com
-From:   Werinam Mawussi <christopher.mulei12@gmail.com>
-Date:   Sun, 13 Feb 2022 20:45:27 +0100
-Message-ID: <CADQsUqiTkO0TLfDAw0co205fru10no9SvHR1_pSG7kyoD20L9g@mail.gmail.com>
-Subject: Important Notification
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr7130809jat.219.1644807017384;
+ Sun, 13 Feb 2022 18:50:17 -0800 (PST)
+Date:   Sun, 13 Feb 2022 18:50:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fed00c05d7f179e0@google.com>
+Subject: [syzbot] WARNING: kmalloc bug in xdp_umem_pin_pages
+From:   syzbot <syzbot+1dd093e0edb4647f5b69@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bjorn@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=7.5 required=5.0 tests=BAYES_40,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_FREEM,UNDISC_MONEY autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:535 listed in]
-        [list.dnswl.org]
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2945]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [christopher.mulei12[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [christopher.mulei12[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  3.5 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *******
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I am bringing this notice to your attention in respect of the death of
-a  client of mine that has the same surname as you and his fund valued
-at  $19.9M to be paid to you.contact me at werinammawussi@gmail.com
-for more details.
+Hello,
 
-Yours Sincerely,
-Werinam Mawussi,
-Attorney At Law.
+syzbot found the following issue on:
+
+HEAD commit:    f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13c2aa3c700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=88e0a6a3dbf057cf
+dashboard link: https://syzkaller.appspot.com/bug?extid=1dd093e0edb4647f5b69
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1dd093e0edb4647f5b69@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 5535 at mm/util.c:590 kvmalloc_node+0xd9/0xe0 mm/util.c:590
+Modules linked in:
+CPU: 1 PID: 5535 Comm: syz-executor.2 Not tainted 5.17.0-rc3-syzkaller-00043-gf4bc5bbb5fef #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:kvmalloc_node+0xd9/0xe0 mm/util.c:590
+Code: 00 00 48 89 df 44 89 fa 44 89 f1 5b 41 5e 41 5f 5d e9 5b fd 0b 00 e8 46 46 cc ff 48 89 e8 5b 41 5e 41 5f 5d c3 e8 37 46 cc ff <0f> 0b 31 ed eb eb 90 41 56 53 49 89 f6 48 89 fb e8 22 46 cc ff 48
+RSP: 0018:ffffc90009e67bb0 EFLAGS: 00010287
+RAX: ffffffff81b96759 RBX: 00000007ff810000 RCX: 0000000000040000
+RDX: ffffc90005534000 RSI: 0000000000001ca2 RDI: 0000000000001ca3
+RBP: 0000000000000000 R08: ffffffff81b96719 R09: 00000000ffffffff
+R10: fffff520013ccf49 R11: 0000000000000000 R12: ffff888023eb9d00
+R13: dffffc0000000000 R14: 00000000ffffffff R15: 0000000000002dc0
+FS:  00007fc31c85f700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fdaa9958058 CR3: 0000000075e10000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvmalloc include/linux/slab.h:732 [inline]
+ kvmalloc_array include/linux/slab.h:750 [inline]
+ kvcalloc include/linux/slab.h:755 [inline]
+ xdp_umem_pin_pages+0x57/0x330 net/xdp/xdp_umem.c:102
+ xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
+ xdp_umem_create+0x790/0xb40 net/xdp/xdp_umem.c:252
+ xsk_setsockopt+0x86f/0xac0 net/xdp/xsk.c:1051
+ __sys_setsockopt+0x552/0x980 net/socket.c:2180
+ __do_sys_setsockopt net/socket.c:2191 [inline]
+ __se_sys_setsockopt net/socket.c:2188 [inline]
+ __x64_sys_setsockopt+0xb1/0xc0 net/socket.c:2188
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7fc31deea059
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc31c85f168 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007fc31dffcf60 RCX: 00007fc31deea059
+RDX: 0000000000000004 RSI: 000000000000011b RDI: 0000000000000003
+RBP: 00007fc31df4408d R08: 0000000000000020 R09: 0000000000000000
+R10: 0000000020000080 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff15fae91f R14: 00007fc31c85f300 R15: 0000000000022000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
