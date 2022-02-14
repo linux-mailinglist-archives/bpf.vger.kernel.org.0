@@ -2,125 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D80AC4B3FC7
-	for <lists+bpf@lfdr.de>; Mon, 14 Feb 2022 03:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0324B4180
+	for <lists+bpf@lfdr.de>; Mon, 14 Feb 2022 06:53:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239512AbiBNCuZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Feb 2022 21:50:25 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37076 "EHLO
+        id S231709AbiBNFxF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Feb 2022 00:53:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239483AbiBNCuY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Feb 2022 21:50:24 -0500
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DC950056
-        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 18:50:18 -0800 (PST)
-Received: by mail-io1-f71.google.com with SMTP id n20-20020a6bed14000000b0060faa0aefd3so9643012iog.20
-        for <bpf@vger.kernel.org>; Sun, 13 Feb 2022 18:50:17 -0800 (PST)
+        with ESMTP id S240557AbiBNFxE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Feb 2022 00:53:04 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802075004F;
+        Sun, 13 Feb 2022 21:52:57 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id y84so18733903iof.0;
+        Sun, 13 Feb 2022 21:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FGezhFYDn+FIpD2g9NAEA9h9LALmUmeNx1mmcxyun78=;
+        b=CaKWE/efZEQOf9QdTrU0JX8VjnDEFyrUuuuAj4YxnrKV98W3tibxNbXbaq73eAvsYM
+         ihpxxVnHsTwOiKlJg7kOusMoyVVyXLtRretKO+Qv2kYkxELo2CYCSHs64b8DBvWJhh2U
+         Ikjn0ItCCnvWCZjXPebXOCLK7bCYfPIOUs84fRsGnBcGgiB6NDUh3jCT6H5xnTJ4+oM4
+         bIbhRoyb5sEZAa6d3bYOe4tMCH4Pbcudt+nmnspiFJTNrBTrsgDdgdflSJ3UmLmNs365
+         yywkPnY5fREYF2NQI6wOqJ2y1lWHH7RkkAn9dlhBSo/ZHJCmZImCk1DDMPmJQ9M1xRzO
+         7amA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=+jq+QysxQkWFCMcSOLTxGlsKrZFeW5BnbyJngHYSa6c=;
-        b=hL2PDzGxM3dd+WFGEbaZowlVYF9ChamRw941zSO4qd11HX/zxJigmfjOkmnzEZOdHG
-         7V7wUnyYN4udoc3rL+LRlp0IqCfXgW9KbUMKADKG76kPQEk4IMT8wLs4wNHA0oQaY/CE
-         CncQhf+Q1A0Mt+vmBxNmMJZ6PLdXDXZizhmBhaAlPSue8CjH6MlBZ/M1C5MlVnA3Bm0F
-         gmHLTqS9w/MnTJvL2VEw4rqqCJi0aNrhPYPSIh2JiqKsHF9JFRN1P4cIC5N+lsRQ0w0o
-         jq9mTO7zMyZSP592h2GMU37nvpoxLl3Gnm9MSLQdo8Q/U5m2/iraFJ5FD1PfXCIYbUF1
-         pDxQ==
-X-Gm-Message-State: AOAM530hFfmkvJkTA+U2zzwcNlHyzLsg6DpKLCWYNuQjo5UsOrrVxWOk
-        Of3U3gffsy58h+UpdocE9u2vFsvtjhahbaBGXHZT4FMAYygW
-X-Google-Smtp-Source: ABdhPJzvtqd5odrpnUu7RRRQa+faT7ZRBKYCSLDaK9pFc/byhODAwwGkMKQXgDPoDS3o1oc3URVohypTQVpgtbK81olEaPSLlhw4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FGezhFYDn+FIpD2g9NAEA9h9LALmUmeNx1mmcxyun78=;
+        b=pM10aaSZReqjPoaL/x4Gv/sP2gpCeDz0/3kZ2cM/W83qeapGJYzwPtXivqKZkET/jc
+         oCADBLUTLmPjqz/yHLfM+Wi6uZujgMstk12naL8KyAhmGdhWV0Kht0jtONcMLuGwFmV3
+         GpZQKDDOAeziCu48CvSU9s0iHUKMBwGvjUKCCIdjzybwRvzxlyQgAhR4j1b8YePKhOAn
+         9Ee4HkstG1ZKn6roqid1V0uE5ZglwlejOMm5jxVU/ltyj4xcFhniSQrJyLc5EgQtalK9
+         Qd8gVDmikNjrZ7lOLctsoSa/eoRxJbJ1OrWRrde8XrhhqX/U1uX7IbyBGFwqUz3t7+EZ
+         d/jQ==
+X-Gm-Message-State: AOAM532A3Y1zjAyMuq48zc1yQiQNEtMWT68/TpuZ9P6OdxCCqIZDpwvv
+        5VAhFepEe7Cc5+u9JDi13GDQbfmyejr5/kicoSo=
+X-Google-Smtp-Source: ABdhPJzyNfT3dCCyH23JrWaxnDgYYrTxiIDKzsOq71Fam71i0Yn3AY9c6XUUElOnQ23RvpD5lsairavIkZgjEOZDrBM=
+X-Received: by 2002:a5e:a806:: with SMTP id c6mr6492459ioa.112.1644817976715;
+ Sun, 13 Feb 2022 21:52:56 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2493:: with SMTP id x19mr7130809jat.219.1644807017384;
- Sun, 13 Feb 2022 18:50:17 -0800 (PST)
-Date:   Sun, 13 Feb 2022 18:50:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fed00c05d7f179e0@google.com>
-Subject: [syzbot] WARNING: kmalloc bug in xdp_umem_pin_pages
-From:   syzbot <syzbot+1dd093e0edb4647f5b69@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bjorn@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20220211234819.612288-1-toke@redhat.com> <CAEf4BzYURbRGL2D-WV=VUs6to=024wO2u=bGtwwxLEKc6pmfhQ@mail.gmail.com>
+ <87h7927q3o.fsf@toke.dk>
+In-Reply-To: <87h7927q3o.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sun, 13 Feb 2022 21:52:45 -0800
+Message-ID: <CAEf4BzZO=v8DJkPWibygAy6KAP5fWQZ_00XyKP_kVmpCxVH_Ag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] libbpf: Use dynamically allocated buffer when
+ receiving netlink messages
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Zhiqian Guan <zhguan@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Sun, Feb 13, 2022 at 7:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Fri, Feb 11, 2022 at 3:49 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> When receiving netlink messages, libbpf was using a statically allocat=
+ed
+> >> stack buffer of 4k bytes. This happened to work fine on systems with a=
+ 4k
+> >> page size, but on systems with larger page sizes it can lead to trunca=
+ted
+> >> messages. The user-visible impact of this was that libbpf would insist=
+ no
+> >> XDP program was attached to some interfaces because that bit of the ne=
+tlink
+> >> message got chopped off.
+> >>
+> >> Fix this by switching to a dynamically allocated buffer; we borrow the
+> >> approach from iproute2 of using recvmsg() with MSG_PEEK|MSG_TRUNC to g=
+et
+> >> the actual size of the pending message before receiving it, adjusting =
+the
+> >> buffer as necessary. While we're at it, also add retries on interrupte=
+d
+> >> system calls around the recvmsg() call.
+> >>
+> >> v2:
+> >>   - Move peek logic to libbpf_netlink_recv(), don't double free on ENO=
+MEM.
+> >>
+> >> Reported-by: Zhiqian Guan <zhguan@redhat.com>
+> >> Fixes: 8bbb77b7c7a2 ("libbpf: Add various netlink helpers")
+> >> Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> >> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> >> ---
+> >
+> > Applied to bpf-next.
+>
+> Awesome, thanks!
+>
+> > One improvement would be to avoid initial malloc of 4096, especially
+> > if that size is enough for most cases. You could detect this through
+> > iov.iov_base =3D=3D buf and not free(iov.iov_base) at the end. Seems
+> > reliable and simple enough. I'll leave it up to you to follow up, if
+> > you think it's a good idea.
+>
+> Hmm, seems distributions tend to default the stack size limit to 8k; so
+> not sure if blowing half of that on a buffer just to avoid a call to
+> malloc() in a non-performance-sensitive is ideal to begin with? I think
+> I'd prefer to just keep the dynamic allocation...
 
-syzbot found the following issue on:
+8KB for user-space thread stack, really? Not 2MB by default? Are you
+sure you are not confusing this with kernel threads?
 
-HEAD commit:    f4bc5bbb5fef Merge tag 'nfsd-5.17-2' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13c2aa3c700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=88e0a6a3dbf057cf
-dashboard link: https://syzkaller.appspot.com/bug?extid=1dd093e0edb4647f5b69
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1dd093e0edb4647f5b69@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5535 at mm/util.c:590 kvmalloc_node+0xd9/0xe0 mm/util.c:590
-Modules linked in:
-CPU: 1 PID: 5535 Comm: syz-executor.2 Not tainted 5.17.0-rc3-syzkaller-00043-gf4bc5bbb5fef #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0xd9/0xe0 mm/util.c:590
-Code: 00 00 48 89 df 44 89 fa 44 89 f1 5b 41 5e 41 5f 5d e9 5b fd 0b 00 e8 46 46 cc ff 48 89 e8 5b 41 5e 41 5f 5d c3 e8 37 46 cc ff <0f> 0b 31 ed eb eb 90 41 56 53 49 89 f6 48 89 fb e8 22 46 cc ff 48
-RSP: 0018:ffffc90009e67bb0 EFLAGS: 00010287
-RAX: ffffffff81b96759 RBX: 00000007ff810000 RCX: 0000000000040000
-RDX: ffffc90005534000 RSI: 0000000000001ca2 RDI: 0000000000001ca3
-RBP: 0000000000000000 R08: ffffffff81b96719 R09: 00000000ffffffff
-R10: fffff520013ccf49 R11: 0000000000000000 R12: ffff888023eb9d00
-R13: dffffc0000000000 R14: 00000000ffffffff R15: 0000000000002dc0
-FS:  00007fc31c85f700(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdaa9958058 CR3: 0000000075e10000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- kvmalloc include/linux/slab.h:732 [inline]
- kvmalloc_array include/linux/slab.h:750 [inline]
- kvcalloc include/linux/slab.h:755 [inline]
- xdp_umem_pin_pages+0x57/0x330 net/xdp/xdp_umem.c:102
- xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
- xdp_umem_create+0x790/0xb40 net/xdp/xdp_umem.c:252
- xsk_setsockopt+0x86f/0xac0 net/xdp/xsk.c:1051
- __sys_setsockopt+0x552/0x980 net/socket.c:2180
- __do_sys_setsockopt net/socket.c:2191 [inline]
- __se_sys_setsockopt net/socket.c:2188 [inline]
- __x64_sys_setsockopt+0xb1/0xc0 net/socket.c:2188
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x44/0xd0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fc31deea059
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc31c85f168 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 00007fc31dffcf60 RCX: 00007fc31deea059
-RDX: 0000000000000004 RSI: 000000000000011b RDI: 0000000000000003
-RBP: 00007fc31df4408d R08: 0000000000000020 R09: 0000000000000000
-R10: 0000000020000080 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007fff15fae91f R14: 00007fc31c85f300 R15: 0000000000022000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> -Toke
+>
