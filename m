@@ -2,57 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DB64B5523
-	for <lists+bpf@lfdr.de>; Mon, 14 Feb 2022 16:48:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 403E94B55D9
+	for <lists+bpf@lfdr.de>; Mon, 14 Feb 2022 17:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347226AbiBNPsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Feb 2022 10:48:38 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42458 "EHLO
+        id S231907AbiBNQNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Feb 2022 11:13:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237899AbiBNPsf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Feb 2022 10:48:35 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5967960A94;
-        Mon, 14 Feb 2022 07:48:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E922B61353;
-        Mon, 14 Feb 2022 15:48:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE13FC340E9;
-        Mon, 14 Feb 2022 15:48:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644853706;
-        bh=Y6wdplViBPfzmR5Zmiwo3N4tSfA5jV8d42GUOXWJqTk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=n4uY9RqHn8elKdaB97sqAJ2DaT1DEIV+0+eWE9d/ZgGRfGViOnNaiGbgUh6w3kxol
-         whjtDTHp0ZSnTS9Njz8ZdzZ7BmKSldo1YYEF4sjUFK2uasos/D5xmkTYGdLyHti1Qx
-         a5OxZ6hd3e40haVLcL8cIwg8ov/nusbvKtrhvQvaScuHIWkPfqys4DpRzBUeF0OKLy
-         wccqARNsvuvPE9nzbmJAY2UzTTzkEdZsqXm0bu5pWy9Bq6DZlnwB7uKAyJAaOd7pli
-         JWab3psw81rTYJq04+EQQ4jxu1nJ4hnK/xreO/cSgyujBLTkTcgDL+EsyY6G08tJNn
-         HMrhf1zy6LDIg==
-Date:   Mon, 14 Feb 2022 07:48:24 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        toke@redhat.com, pabeni@redhat.com, echaudro@redhat.com,
-        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
-        andrii@kernel.org
-Subject: Re: [PATCH bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order to
- accept non-linear skb
-Message-ID: <20220214074824.370d7ae6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YgeUFb4LIP7VfeL9@lore-desk>
-References: <cover.1644541123.git.lorenzo@kernel.org>
-        <8c5e6e5f06d1ba93139f1b72137f8f010db15808.1644541123.git.lorenzo@kernel.org>
-        <20220211170414.7223ff09@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YgeUFb4LIP7VfeL9@lore-desk>
+        with ESMTP id S230109AbiBNQNF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Feb 2022 11:13:05 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADF3CFE;
+        Mon, 14 Feb 2022 08:12:57 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: usama.anjum)
+        with ESMTPSA id 6743F1F438A4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1644855176;
+        bh=xszuPxTh+RrzQKdIk/UYX7m0IGZxD+CwZJwkc1byRNE=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=Ox3V1acuR+hSOBVzElsGhFQ8rG9+6L/wP8sjXuVapRZ7yoQjj3DHWjBoqgpyHkoX5
+         76BHrtYZ7MAjYVi99wdgv1CmPmfjQSJBLwO8Rh7tmStfo5U7bk6PALpi3bgMZZtpSr
+         yYiVU1ML3GhZteHchvEssnFHl3rlCAoAHpOljqwjqDsq5fBGYtDIfvIkvlZi3sphjb
+         HyhsDzmYbJYLk8ngZjCRcEeG2IZXu/srQTj2bVX41YOrSspvnoVWMNTIP781NdPTIG
+         cwN9npokyHQJvN5fnS/oyQ9Jvg2ngGwyX58u2AXNgWC4Et2m0cgX8iwnkrxjShlHrQ
+         HfDyy19xoDoLQ==
+Message-ID: <66140ffb-306e-2956-2f6b-c017a38e18f8@collabora.com>
+Date:   Mon, 14 Feb 2022 21:12:46 +0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Cc:     usama.anjum@collabora.com, Shuah Khan <skhan@linuxfoundation.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "luto@amacapital.net" <luto@amacapital.net>,
+        "wad@chromium.org" <wad@chromium.org>,
+        "christian@brauner.io" <christian@brauner.io>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2] selftests/seccomp: Fix seccomp failure by adding
+ missing headers
+Content-Language: en-US
+To:     Sherry Yang <sherry.yang@oracle.com>
+References: <20220210203049.67249-1-sherry.yang@oracle.com>
+ <755ec9b2-8781-a75a-4fd0-39fb518fc484@collabora.com>
+ <85DF69B3-3932-4227-978C-C6DAC7CAE64D@oracle.com>
+From:   Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <85DF69B3-3932-4227-978C-C6DAC7CAE64D@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,21 +71,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 12 Feb 2022 12:03:49 +0100 Lorenzo Bianconi wrote:
-> On Feb 11, Jakub Kicinski wrote:
-> > On Fri, 11 Feb 2022 02:20:31 +0100 Lorenzo Bianconi wrote:  
-> > > +	if (skb_shared(skb) || skb_head_is_locked(skb)) {  
-> > 
-> > Is this sufficient to guarantee that the frags can be written?
-> > skb_cow_data() tells a different story.  
+>> "../../../../usr/include/" directory doesn't have header files if
+>> different output directory is used for kselftests build like "make -C
+>> tools/tests/selftest O=build". Can you try adding recently added
+>> variable, KHDR_INCLUDES here which makes this kind of headers inclusion
+>> easy and correct for other build combinations as well?
+>>
+>>
 > 
-> Do you mean to consider paged part of the skb always not writable, right?
-> In other words, we should check something like:
+> Hi Muhammad,
 > 
-> 	if (skb_shared(skb) || skb_head_is_locked(skb) ||
-> 	    skb_shinfo(skb)->nr_frags) {
-> 	    ...
-> 	}
+> I just pulled linux-next, and tried with KHDR_INCLUDES. It works. Very nice 
+> work! I really appreciate you made headers inclusion compatible. However, 
+> my case is a little more complicated. It will throw warnings with -I, using 
+> -isystem can suppress these warnings, more details please refer to 
+> https://lore.kernel.org/all/C340461A-6FD2-440A-8EFC-D7E85BF48DB5@oracle.com/
+> 
+> According to this case, do you think will it be better to export header path 
+> (KHDR_INCLUDES) without “-I”?
+Well said. I've thought about it and it seems like -isystem is better
+than -I. I've sent a patch:
+https://lore.kernel.org/linux-kselftest/20220214160756.3543590-1-usama.anjum@collabora.com/
+I'm looking forward to discussion on it.
 
-Yes, we do have skb_has_shared_frag() but IDK if it guarantees frags
-are writable :S
+Thanks,
+Usama
