@@ -2,185 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7EF4B739E
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 17:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F4B4B714F
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 17:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241149AbiBOQA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 11:00:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56548 "EHLO
+        id S241343AbiBOQCL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 11:02:11 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241153AbiBOQAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 11:00:36 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17026BD8B4
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 08:00:26 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id w7so24402180ioj.5
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 08:00:26 -0800 (PST)
+        with ESMTP id S241344AbiBOQBs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 11:01:48 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D7ABDE59;
+        Tue, 15 Feb 2022 08:01:37 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id i21so1455103oie.3;
+        Tue, 15 Feb 2022 08:01:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ln466cBvk4n46RRBFGcK7jRh/e4Mb4EMRlH7sHpH99g=;
-        b=hnutSG0hDJ1ewTiqgtme6yt+rwlnSXwWDQOzjj0o/q7y4foytSx0XDickL+1spFD0s
-         3O7V4WZprBIf70zrDfzh8E7hWI9lV0XtEl3UKFeVIYILgB/VNsf4M4st3Z1mL6H14Wq3
-         4Q0Rsd4ne8WfZwPi+tA8/wXVEZC4DAibg66RE=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ogIE3rqM/aOfUAnHNRtYtkVt8rOmyH3L5goPlP4kyqA=;
+        b=VjxiXqR92mOimvY8Kw5ArZr35RSjXNFDBaNmcUBG1SFEP4QuaMk+syxkpkFqB4wGXc
+         aKBox5mNxLjI4reb0tBBnfuQ1vQHz2ieL6s1f4eE1Yb7HCUXU3sTQnjOri6QmZDkAhZl
+         6Xr5wYCYLvcWC2LrSSGnB3rN8+WIy/mNYewgjBTVxRxRp7wB9kO25Dihh0dZpDVN00nI
+         cVOGpZ2J29bnIV8hIPau2rlr0rfVK3/h6jmNVXIfjtUcXH3QFkgKpc+Gel5r8VZ2Jvpg
+         kQ4daCu+NI8jnUeHnPziITFJss5U+/pQzXTT9MHfNnY83pozojtZ86qOJH/QSA4jDAqe
+         A42w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ln466cBvk4n46RRBFGcK7jRh/e4Mb4EMRlH7sHpH99g=;
-        b=srQVH7ZiyOTq4j73ymXVe83MovL9UbEOEXk98tXW2ilnN6MOJEso0rahsgChHKH4q0
-         8OTYXwfI4ZCijmVI0mfP/4XYq9a/tly+aOWWlPPKdCFpARqZwUHxd1zgB/w7Za+uijKJ
-         EerTf2INtcDcLOXkuVC0hHLcER4y7y21Wro+Tl3XWwylTu4l/NTYsPP0guw2aT+rL31T
-         6pCtMbb9Bq78677k8bBR4TFUpoq8YPno6V7enDGDjlXNQjXbQLGil7CGfYYa5PsmHf2d
-         QrXXnoRplZ2cNwN+Su7FNdacf3CznESPJ+8cqWtOmcGnZbfsy5HsaD2paT00zDgNWk4j
-         +gwA==
-X-Gm-Message-State: AOAM532YLUs5vF86ryriOwWzFeZ6QSdRXM+dZ0cYcQ+WlWB/hSWqR4Qm
-        PJGgerQe0XQF2jL7u+OZaAWjFQ==
-X-Google-Smtp-Source: ABdhPJz7k+sronBYrPMHRqk6JnA50TFxzBpXnBbIG0e5py5t7XqYLJRCRLlzObWAlEHLi+ZaPYOgZA==
-X-Received: by 2002:a05:6638:190a:: with SMTP id p10mr3040258jal.313.1644940825457;
-        Tue, 15 Feb 2022 08:00:25 -0800 (PST)
-Received: from [192.168.1.128] ([71.205.29.0])
-        by smtp.gmail.com with ESMTPSA id z5sm8968088ilu.45.2022.02.15.08.00.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Feb 2022 08:00:25 -0800 (PST)
-Subject: Re: [PATCH v2 4/6] selftests/bpf: Add test for bpf_ima_file_hash()
-To:     Roberto Sassu <roberto.sassu@huawei.com>, zohar@linux.ibm.com,
-        shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@kernel.org, revest@chromium.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20220215124042.186506-1-roberto.sassu@huawei.com>
- <20220215124042.186506-5-roberto.sassu@huawei.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <794e362d-17c0-a673-bda9-a29614221c37@linuxfoundation.org>
-Date:   Tue, 15 Feb 2022 09:00:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ogIE3rqM/aOfUAnHNRtYtkVt8rOmyH3L5goPlP4kyqA=;
+        b=HCz1IX/jtm44+k+Vu6sOOTQlfTC7r3cEXp3TREOFJ6RD/KrVeIziToxdVnQrL73eSY
+         tZgWzBP7EQ5s4apTcaD+EYXlf0wAND4FT2QU9CEJMtGYfMgJRcDQBCgNLqDKtx5+ONyW
+         gv24swC5gQacNMhTQnkdCtBHDLrLV3zOWzWxZnvw8NrxVD+0cTwYGyxUYGscAD4v8xeJ
+         DiJjPfsAg9vbwK1iZsADx1c1Jx0l6ZNSUyG5z05A4K81YveK4GjpWwqR3sRfi8rBXSwr
+         e7Hp88MH2ZUc/VDgBaYplUqWntV4yaiN53i1bdnr8FC8NaGDOEFDnRejRPr+J0Q6j2w9
+         7CuA==
+X-Gm-Message-State: AOAM532o/iY+2qVhJe+KV7DXkIylXiNA3soQuT+s9dUJG8X/X/wQOhg0
+        p5nCojM8F3v7ViArQGdrndQm4hGo74Mdsxs/awQ=
+X-Google-Smtp-Source: ABdhPJw65k3dA+9fz3XLLBwaVdv9/sS7+jY5+T2JpRKIXdTTwMdeQ5b12JN4FpPn6Z9TWsNMEqstx3f3i09mRE6BwdI=
+X-Received: by 2002:a05:6808:219c:b0:2ce:27e2:ecf1 with SMTP id
+ be28-20020a056808219c00b002ce27e2ecf1mr1780773oib.129.1644940895203; Tue, 15
+ Feb 2022 08:01:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20220215124042.186506-5-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20220215103639.11739-1-kerneljasonxing@gmail.com> <CANn89iL8vOUOH9bZaiA-cKcms+PotuKCxv7LpVx3RF0dDDSnmg@mail.gmail.com>
+In-Reply-To: <CANn89iL8vOUOH9bZaiA-cKcms+PotuKCxv7LpVx3RF0dDDSnmg@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Wed, 16 Feb 2022 00:00:58 +0800
+Message-ID: <CAL+tcoA3CSBFeHFGyxrs8aQhN7=_vKyp3rmAvj+ObTXapJRNiw@mail.gmail.com>
+Subject: Re: [PATCH] net: do not set SOCK_RCVBUF_LOCK if sk_rcvbuf isn't reduced
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Wei Wang <weiwan@google.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>, Florian Westphal <fw@strlen.de>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jason Xing <xingwanli@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/15/22 5:40 AM, Roberto Sassu wrote:
-> Modify the existing IMA test to call bpf_ima_file_hash() and update the
-> expected result accordingly.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   .../selftests/bpf/prog_tests/test_ima.c       | 29 ++++++++++++++++---
->   tools/testing/selftests/bpf/progs/ima.c       | 10 +++++--
->   2 files changed, 33 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> index 97d8a6f84f4a..62bf0e830453 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-> @@ -13,9 +13,10 @@
->   
->   #include "ima.skel.h"
->   
-> -static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
-> +static int run_measured_process(const char *measured_dir, u32 *monitored_pid,
-> +				bool *use_ima_file_hash)
->   {
-> -	int child_pid, child_status;
-> +	int err, child_pid, child_status;
->   
->   	child_pid = fork();
->   	if (child_pid == 0) {
-> @@ -24,6 +25,21 @@ static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
->   		       NULL);
->   		exit(errno);
->   
-> +	} else if (child_pid > 0) {
-> +		waitpid(child_pid, &child_status, 0);
-> +		err = WEXITSTATUS(child_status);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	child_pid = fork();
-> +	if (child_pid == 0) {
-> +		*monitored_pid = getpid();
-> +		*use_ima_file_hash = true;
-> +		execlp("./ima_setup.sh", "./ima_setup.sh", "run", measured_dir,
-> +		       NULL);
-> +		exit(errno);
-> +
->   	} else if (child_pid > 0) {
->   		waitpid(child_pid, &child_status, 0);
->   		return WEXITSTATUS(child_status);
-> @@ -72,12 +88,17 @@ void test_test_ima(void)
->   	if (CHECK(err, "failed to run command", "%s, errno = %d\n", cmd, errno))
->   		goto close_clean;
->   
-> -	err = run_measured_process(measured_dir, &skel->bss->monitored_pid);
-> +	err = run_measured_process(measured_dir, &skel->bss->monitored_pid,
-> +				   &skel->bss->use_ima_file_hash);
->   	if (CHECK(err, "run_measured_process", "err = %d\n", err))
->   		goto close_clean;
->   
->   	err = ring_buffer__consume(ringbuf);
-> -	ASSERT_EQ(err, 1, "num_samples_or_err");
-> +	/*
-> +	 * 1 sample with use_ima_file_hash = false
-> +	 * 2 samples with use_ima_file_hash = true (./ima_setup.sh, /bin/true)
-> +	 */
-> +	ASSERT_EQ(err, 3, "num_samples_or_err");
->   	ASSERT_NEQ(ima_hash_from_bpf, 0, "ima_hash");
->   
->   close_clean:
-> diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-> index 96060ff4ffc6..9bb63f96cfc0 100644
-> --- a/tools/testing/selftests/bpf/progs/ima.c
-> +++ b/tools/testing/selftests/bpf/progs/ima.c
-> @@ -18,6 +18,8 @@ struct {
->   
->   char _license[] SEC("license") = "GPL";
->   
-> +bool use_ima_file_hash;
-> +
+On Tue, Feb 15, 2022 at 11:25 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Tue, Feb 15, 2022 at 2:37 AM <kerneljasonxing@gmail.com> wrote:
+> >
+> > From: Jason Xing <xingwanli@kuaishou.com>
+> >
+> > Normally, user doesn't care the logic behind the kernel if they're
+> > trying to set receive buffer via setsockopt. However, if the new value
+> > of the receive buffer is not smaller than the initial value which is
+> > sysctl_tcp_rmem[1] implemented in tcp_rcv_space_adjust(), the server's
+> > wscale will shrink and then lead to the bad bandwidth. I think it is
+> > not appropriate.
+>
+> Then do not use SO_RCVBUF ?
+>
+> It is working as intended really.
+>
+> >
+> > Here are some numbers:
+> > $ sysctl -a | grep rmem
+> > net.core.rmem_default = 212992
+> > net.core.rmem_max = 40880000
+> > net.ipv4.tcp_rmem = 4096        425984  40880000
+> >
+> > Case 1
+> > on the server side
+> >     # iperf -s -p 5201
+> > on the client side
+> >     # iperf -c [client ip] -p 5201
+> > It turns out that the bandwidth is 9.34 Gbits/sec while the wscale of
+> > server side is 10. It's good.
+> >
+> > Case 2
+> > on the server side
+> >     #iperf -s -p 5201 -w 425984
+> > on the client side
+> >     # iperf -c [client ip] -p 5201
+> > It turns out that the bandwidth is reduced to 2.73 Gbits/sec while the
+> > wcale is 2, even though the receive buffer is not changed at all at the
+> > very beginning.
+>
+> Great, you discovered auto tuning is working as intended.
+>
 
-This can be statis.
+Thanks.
 
->   SEC("lsm.s/bprm_committed_creds")
->   void BPF_PROG(ima, struct linux_binprm *bprm)
->   {
-> @@ -28,8 +30,12 @@ void BPF_PROG(ima, struct linux_binprm *bprm)
->   
->   	pid = bpf_get_current_pid_tgid() >> 32;
->   	if (pid == monitored_pid) {
+> >
+> > Therefore, I added one condition where only user is trying to set a
+> > smaller rx buffer. After this patch is applied, the bandwidth of case 2
+> > is recovered to 9.34 Gbits/sec.
+> >
+> > Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
+>
+> This commit has nothing to do with your patch or feature.
+>
+> > Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+> > ---
+> >  net/core/filter.c | 7 ++++---
+> >  net/core/sock.c   | 8 +++++---
+> >  2 files changed, 9 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 4603b7c..99f5d9c 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -4795,9 +4795,10 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+> >                 case SO_RCVBUF:
+> >                         val = min_t(u32, val, sysctl_rmem_max);
+> >                         val = min_t(int, val, INT_MAX / 2);
+> > -                       sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+> > -                       WRITE_ONCE(sk->sk_rcvbuf,
+> > -                                  max_t(int, val * 2, SOCK_MIN_RCVBUF));
+> > +                       val = max_t(int, val * 2, SOCK_MIN_RCVBUF);
+> > +                       if (val < sock_net(sk)->ipv4.sysctl_tcp_rmem[1])
+> > +                               sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+> > +                       WRITE_ONCE(sk->sk_rcvbuf, val);
+> >                         break;
+> >                 case SO_SNDBUF:
+> >                         val = min_t(u32, val, sysctl_wmem_max);
+> > diff --git a/net/core/sock.c b/net/core/sock.c
+> > index 4ff806d..e5e9cb0 100644
+> > --- a/net/core/sock.c
+> > +++ b/net/core/sock.c
+> > @@ -923,8 +923,6 @@ static void __sock_set_rcvbuf(struct sock *sk, int val)
+> >          * as a negative value.
+> >          */
+> >         val = min_t(int, val, INT_MAX / 2);
+> > -       sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+> > -
+> >         /* We double it on the way in to account for "struct sk_buff" etc.
+> >          * overhead.   Applications assume that the SO_RCVBUF setting they make
+> >          * will allow that much actual data to be received on that socket.
+> > @@ -935,7 +933,11 @@ static void __sock_set_rcvbuf(struct sock *sk, int val)
+> >          * And after considering the possible alternatives, returning the value
+> >          * we actually used in getsockopt is the most desirable behavior.
+> >          */
+> > -       WRITE_ONCE(sk->sk_rcvbuf, max_t(int, val * 2, SOCK_MIN_RCVBUF));
+> > +       val = max_t(int, val * 2, SOCK_MIN_RCVBUF);
+> > +       if (val < sock_net(sk)->ipv4.sysctl_tcp_rmem[1])
+> > +               sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+> > +
+> > +       WRITE_ONCE(sk->sk_rcvbuf, val);
+> >  }
+> >
+> >  void sock_set_rcvbuf(struct sock *sk, int val)
+>
+> You are breaking applications that want to set sk->sk_rcvbuf  to a fixed value,
+> to control memory usage on millions of active sockets in a host.
+>
+> I think that you want new functionality, with new SO_ socket options,
+> targeting net-next tree (No spurious FIxes: tag)
+>
 
-I also noticed monitored_pid is defined in several bpf. Potentially
-could be made static. This isn't introduced in this patch though.
+I agree with you.
 
-> -		ret = bpf_ima_inode_hash(bprm->file->f_inode, &ima_hash,
-> -					 sizeof(ima_hash));
-> +		if (!use_ima_file_hash)
-> +			ret = bpf_ima_inode_hash(bprm->file->f_inode, &ima_hash,
-> +						 sizeof(ima_hash));
-> +		else
-> +			ret = bpf_ima_file_hash(bprm->file, &ima_hash,
-> +						sizeof(ima_hash));
->   		if (ret < 0 || ima_hash == 0)
->   			return;
->   
-> 
+> For instance letting an application set  or unset  SOCK_RCVBUF_LOCK
+> would be more useful, and would not break applications.
 
-thanks,
--- Shuah
+I would like to change the title of the v2 patch while the title of
+this version is a little bit misleading, say, "net: introduce
+SO_RCVBUFAUTO to unset SOCK_RCVBUF_LOCK flag".
+
+Eric, what do you think of the new name of this socket option, like
+SO_RCVBUFAUTO?
+
+Thanks,
+Jason
