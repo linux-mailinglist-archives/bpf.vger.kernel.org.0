@@ -2,116 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 511104B6D45
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 14:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA50B4B6D08
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 14:08:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbiBONVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 08:21:20 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34044 "EHLO
+        id S231377AbiBONIs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 08:08:48 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236342AbiBONVU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 08:21:20 -0500
-X-Greylist: delayed 1383 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Feb 2022 05:21:08 PST
-Received: from mx0a-00206401.pphosted.com (mx0a-00206401.pphosted.com [IPv6:2620:100:9001:15::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6785F406D;
-        Tue, 15 Feb 2022 05:21:08 -0800 (PST)
-Received: from pps.filterd (m0282761.ppops.net [127.0.0.1])
-        by mx0b-00206401.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21F6xqea023629;
-        Tue, 15 Feb 2022 04:57:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crowdstrike.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=default; bh=Oflpf7XuwFoglG8cJn7pZiYWPQ0sOI0Jw2bnf/d4Ygk=;
- b=Gir/phm0VhIwA0ijS5zBpCPk/00tOj7nY3y4LVfHZcuBzeyTM1iRCpIkX1HkKb+KtwRh
- lxJx6dpkAVzTl/6A7flQFflxMFmhK8TXhWdXSrQH/lGz18L21agubedwP/QvmBLn2Yny
- S22PZ3r0uGNHgJoGjRR1xs+X7eHIhOwzavfCbDNzRk8XkFhKrb4ldcfyv99a6lFCIaBZ
- LaldEL8VROwnn8yaXkWuYvhZdNPDOavTPfUTcLzKBN8A+W+REXDOwX71YkYuocuzjmAy
- hBbpVefmzT0qmzYWEIlknCc++F+gkWJZ7RxZ2RA7lXXkpmpMDci1od6UymM5UuT8IzT6 AA== 
-Received: from 04wpexch03.crowdstrike.sys (dragosx.crowdstrike.com [208.42.231.60])
-        by mx0b-00206401.pphosted.com (PPS) with ESMTPS id 3e7mmet5jj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 04:57:38 -0800
-Received: from 04wpexch04.crowdstrike.sys (10.100.11.94) by
- 04wpexch03.crowdstrike.sys (10.100.11.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.922.20; Tue, 15 Feb 2022 12:57:37 +0000
-Received: from 04wpexch04.crowdstrike.sys ([fe80::f066:b5c1:cf22:763a]) by
- 04wpexch04.crowdstrike.sys ([fe80::f066:b5c1:cf22:763a%5]) with mapi id
- 15.02.0922.020; Tue, 15 Feb 2022 12:57:37 +0000
-From:   Marco Vedovati <marco.vedovati@crowdstrike.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "toke@redhat.com" <toke@redhat.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-team@fb.com" <kernel-team@fb.com>,
-        Martin Kelly <martin.kelly@crowdstrike.com>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>
-Subject: Clarifications on linux/types.h used with libbpf
-Thread-Topic: Clarifications on linux/types.h used with libbpf
-Thread-Index: AQHYImtWLXmUZLJvoESUDAAgE80rXg==
-Date:   Tue, 15 Feb 2022 12:57:37 +0000
-Message-ID: <7b2e447f6ae34022a56158fcbf8dc890@crowdstrike.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.100.11.84]
-x-disclaimer: USA
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S235971AbiBONIr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 08:08:47 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B486EC0853;
+        Tue, 15 Feb 2022 05:08:37 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 44ABB61702;
+        Tue, 15 Feb 2022 13:08:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB5F4C340EB;
+        Tue, 15 Feb 2022 13:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644930516;
+        bh=PoalmMqaKc50oi1r+URZvae0kyLA/F8Qd8LE+/pth4A=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ixQMXt3i2vm3vL3QnsZHWmpC7IHLiztayu75L6ENwQ4SbvOl2kEB3xbTJ+kmIqZn9
+         MF+r885IjLlcrAPgzuqgGD+HytsMZmcJ61SBia6KW1m035bnpJcgLt/vdLjVwYCIBw
+         PNBuA59scesqySQvldesPivEyQNDQv71AVGNkPe9XOSXgR8ZQ3A60gTfepMa3jy+Ia
+         YLdUMqcEwwGHnZivKaqU7AgsOoDlRBl5PPxkpivuCCi2srocLv9w0YDCIvfMMeBjbO
+         gjMB53MMn4LwJVxqElb2SH4E8IO86ZkDkyABHKZ0sCrJ7zw7diH0DjduoA5+KvL+8+
+         j7y3IFQSayd4g==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, brouer@redhat.com, toke@redhat.com,
+        pabeni@redhat.com, echaudro@redhat.com,
+        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
+        andrii@kernel.org
+Subject: [PATCH v2 bpf-next 0/3] introduce xdp frags support to veth driver
+Date:   Tue, 15 Feb 2022 14:08:08 +0100
+Message-Id: <cover.1644930124.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-15_04,2022-02-14_04,2021-12-02_01
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Introduce xdp frags support to veth driver in order to allow increasing the mtu
+over the page boundary if the attached xdp program declares to support xdp
+fragments. Enable NETIF_F_ALL_TSO when the device is running in xdp mode.
+This series has been tested running xdp_router_ipv4 sample available in the
+kernel tree redirecting tcp traffic from veth pair into the mvneta driver.
 
-I have few questions about the linux/types.h file used to build bpf
-applications. This file gets included by both userspace applications using
-libbpf and by bpf programs. E.g., in a userspace application:
-foo.c
-  foo.skel.h
-    bpf/libbpf.h
-      linux/bpf.h
-        linux/types.h
+Changes since v1:
+- always consider skb paged are non-writable
+- fix tpt issue with sctp
+- always use napi if we are running in xdp mode in veth_xmit
 
-Or in a bpf program:
-foo.bpf.c
-  linux/bpf.h
-    linux/types.h
+Lorenzo Bianconi (3):
+  net: veth: account total xdp_frame len running ndo_xdp_xmit
+  veth: rework veth_xdp_rcv_skb in order to accept non-linear skb
+  veth: allow jumbo frames in xdp mode
 
-libbpf provides its own copy of this file in include/linux/types.h.
-As I could understand from the Git history, it was initially copied from
-linux include/linux/types.h, but it is now maintained separately.
+ drivers/net/veth.c | 204 +++++++++++++++++++++++++++++----------------
+ include/net/xdp.h  |  14 ++++
+ net/core/xdp.c     |   1 +
+ 3 files changed, 146 insertions(+), 73 deletions(-)
 
-Both linux bpftool and bpf selftests however are built using another
-types.h from tools/include/uapi/linux/types.h.
-Is there a reason why bpftool and selftests aren't built using the same
-types.h distributed by libbpf?
+-- 
+2.35.1
 
-I also see that the license of the three files differs:
-- (libbpf) include/linux/types.h is "LGPL-2.1 OR BSD-2-Clause"
-- (linux) include/linux/types.h is "GPL-2.0"
-- (linux) tools/include/uapi/linux/types.h is "GPL-2.0"
-Is there a reason why tools/include/uapi/linux/types.h isn't licensed as
-"GPL-2.0 WITH Linux-syscall-note"?
-
-Finally, would it make sense to also have libbpf use
-tools/include/uapi/linux/types.h instead of its own copy?
-The advantages would be:
-- consistency with linux use
-- the only architecture specific header included is "asm/bitsperlong.h",
-  instead of all the ones currently included.
-
-Thanks,
-Marco
