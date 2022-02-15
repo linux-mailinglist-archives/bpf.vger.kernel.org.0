@@ -2,163 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B3DF4B64EB
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 09:00:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847A04B6822
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 10:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235049AbiBOIAw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 15 Feb 2022 03:00:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50032 "EHLO
+        id S231445AbiBOJrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 04:47:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbiBOIAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 03:00:48 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBF313E1B;
-        Tue, 15 Feb 2022 00:00:38 -0800 (PST)
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JyYLg2SbYz67ts3;
-        Tue, 15 Feb 2022 15:56:11 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Feb 2022 09:00:35 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
- Tue, 15 Feb 2022 09:00:35 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] ima: Calculate digest in ima_inode_hash() if not
- available
-Thread-Topic: [PATCH] ima: Calculate digest in ima_inode_hash() if not
- available
-Thread-Index: AQHYHzTu9kKzqhEAHUiW0cSG9MzvPayRZbiAgAHZaqCAAFdHgIAArm+A
-Date:   Tue, 15 Feb 2022 08:00:34 +0000
-Message-ID: <311b5d0b3b824c548a4032a76a408944@huawei.com>
-References: <20220211104828.4061334-1-roberto.sassu@huawei.com>
-         <537635732d9cbcc42bcf7be5ed932d284b03d39f.camel@linux.ibm.com>
-         <cc6bcb7742dc432ba990ee38b5909496@huawei.com>
- <36f85113f181f78eda3576823bd92be3f9cd1802.camel@linux.ibm.com>
-In-Reply-To: <36f85113f181f78eda3576823bd92be3f9cd1802.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S236064AbiBOJrt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 04:47:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0341E6C33
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 01:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644918458;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SwvWeASu6WXtk75r3ZpXR2PmZ4CaNEX5pp7rMM04oMk=;
+        b=jEF+vFcONXN4tvaP1nCVgcqhQDJ33Tr89va2MoSg49aIzyAmeUfEAF1iIT2SfqI298lLrl
+        lpn6qPdBEKlLz0CjUsHcabmH82IPQry3mdXsAF9yz4QwUmDY0V1B86F8nTtV6TliCHqLpe
+        E/tzRTJ9jn/2XFMpL0lMubYyH0/5m7c=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-586-LBRXcddXP9SAqCoGrsV4KQ-1; Tue, 15 Feb 2022 04:47:37 -0500
+X-MC-Unique: LBRXcddXP9SAqCoGrsV4KQ-1
+Received: by mail-ej1-f70.google.com with SMTP id q3-20020a17090676c300b006a9453c33b0so6998658ejn.13
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 01:47:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=SwvWeASu6WXtk75r3ZpXR2PmZ4CaNEX5pp7rMM04oMk=;
+        b=s7AfY3lAQZsyCv52ZzNcZvFlQl9Y35LQXHwxxMppxSvppX7JxHc8S9BNfapEOK+rEq
+         0WfvgRfgAFoqR+EefQvpdXGsEalr0980EIP1ubQdmRhqqWC1EaNSo/s36Ltfi05hRqC6
+         fCNIQq66yzrC/XjvCSl1wG/QKBuLp9iQmaHtI+mGazWK5kDcBYQl0KtH90CTZVgfJyS5
+         S7u0pJr9a1lixuC9xCVeWEulbXKcMU8qWWotPCYIOZhBR6F28SGAilIeg24jYZz7W1y3
+         Che2XhH2kdzPrtMGGk5c4XmmLixgTuOVlFfiU+ccR7B8ryPJH9U/EokKwURaDgbyitXo
+         Ad9Q==
+X-Gm-Message-State: AOAM532fdEtbgdYF31WANDclmWOFtBk2X6URZOap6mNxWAmjSaq0AaFT
+        lAOQT72zy37wmX6GIGbHL3vcTdQr1nuXLdMUtdYnuzgo+bh0+8vYjT/8/ctDXfH96UeQoynjdzq
+        5mXPddzaAvl+Z
+X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr2359632ejo.232.1644918456040;
+        Tue, 15 Feb 2022 01:47:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzE4lQhejJZezEIhm1Dz63I1RLd7aAJaUYILWarQzoC/wcee0fF9OsicbNQEWv/eDz0oy9RxA==
+X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr2359616ejo.232.1644918455837;
+        Tue, 15 Feb 2022 01:47:35 -0800 (PST)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id 23sm2370018ejf.215.2022.02.15.01.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Feb 2022 01:47:35 -0800 (PST)
+Date:   Tue, 15 Feb 2022 10:47:33 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yinjun Zhang <yinjun.zhang@corigine.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        niklas.soderlund@corigine.com,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH bpf] bpftool: fix the error when lookup in no-btf maps
+Message-ID: <Ygt2tfdfRZIQwx5W@krava>
+References: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, February 14, 2022 11:33 PM
-> On Mon, 2022-02-14 at 17:05 +0000, Roberto Sassu wrote:
-> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > Sent: Sunday, February 13, 2022 2:06 PM
-> > > Hi Roberto,
-> > >
-> > > On Fri, 2022-02-11 at 11:48 +0100, Roberto Sassu wrote:
-> > > > __ima_inode_hash() checks if a digest has been already calculated by
-> > > > looking for the integrity_iint_cache structure associated to the passed
-> > > > inode.
-> > > >
-> > > > Users of ima_file_hash() and ima_inode_hash() (e.g. eBPF) might be
-> > > > interested in obtaining the information without having to setup an IMA
-> > > > policy so that the digest is always available at the time they call one of
-> > > > those functions.
-> > > >
-> > > > Open a new file descriptor in __ima_inode_hash(), so that this function
-> > > > could invoke ima_collect_measurement() to calculate the digest if it is not
-> > > > available. Still return -EOPNOTSUPP if the calculation failed.
-> > > >
-> > > > Instead of opening a new file descriptor, the one from ima_file_hash()
-> > > > could have been used. However, since ima_inode_hash() was created to
-> > > obtain
-> > > > the digest when the file descriptor is not available, it could benefit from
-> > > > this change too. Also, the opened file descriptor might be not suitable for
-> > > > use (file descriptor opened not for reading).
-> > > >
-> > > > This change does not cause memory usage increase, due to using a
-> temporary
-> > > > integrity_iint_cache structure for the digest calculation, and due to
-> > > > freeing the ima_digest_data structure inside integrity_iint_cache before
-> > > > exiting from __ima_inode_hash().
-> > > >
-> > > > Finally, update the test by removing ima_setup.sh (it is not necessary
-> > > > anymore to set an IMA policy) and by directly executing /bin/true.
-> > > >
-> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > >
-> > > Although this patch doesn't directly modify either ima_file_hash() or
-> > > ima_inode_hash(),  this change affects both functions.  ima_file_hash()
-> > > was introduced to be used with eBPF.  Based on Florent's post, changing
-> > > the ima_file_hash() behavor seems fine.  Since I have no idea whether
-> > > anyone is still using ima_inode_hash(), perhaps it would be safer to
-> > > limit this behavior change to just ima_file_hash().
-> >
-> > Hi Mimi
-> >
-> > ok.
-> >
-> > I found that just checking that iint->ima_hash is not NULL is not enough
-> > (ima_inode_hash() might still return the old digest after a file write).
-> > Should I replace that check with !(iint->flags & IMA_COLLECTED)?
-> > Or should I do only for ima_file_hash() and recalculate the digest
-> > if necessary?
+On Tue, Feb 08, 2022 at 12:00:25AM +0800, Yinjun Zhang wrote:
+> When reworking btf__get_from_id() in commit a19f93cfafdf the error
+> handling when calling bpf_btf_get_fd_by_id() changed. Before the rework
+> if bpf_btf_get_fd_by_id() failed the error would not be propagated to
+> callers of btf__get_from_id(), after the rework it is. This lead to a
+> change in behavior in print_key_value() that now prints an error when
+> trying to lookup keys in maps with no btf available.
 > 
-> Updating the file hash after each write would really impact IMA
-> performance.  If you really want to detect any file change, no matter
-> how frequently it occurs, your best bet would be to track i_generation
-> and i_version.  Stefan is already adding "i_generation" for IMA
-> namespacing.
-
-I just wanted the ability to get a fresh digest after a file opened
-for writing is closed. Since in my use case I would not use an IMA
-policy, that would not be a problem.
-
-Thanks
-
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Zhong Ronghua
-
-> > > Please update the ima_file_hash() doc.  While touching this area, I'd
-> > > appreciate your fixing the first doc line in both ima_file_hash() and
-> > > ima_inode_hash() cases, which wraps spanning two lines.
-> >
-> > Did you mean to make the description shorter or to have everything
-> > in one line? According to the kernel documentation (kernel-doc.rst),
-> > having the brief description in multiple lines should be fine.
+> Fix this by following the way used in dumping maps to allow to look up
+> keys in no-btf maps, by which it decides whether and where to get the
+> btf info according to the btf value type.
 > 
-> Thanks for checking kernel-doc.   The "brief description"  not wrapping
-> across multiple lines did in fact change.
+> Fixes: a19f93cfafdf ("libbpf: Add internal helper to load BTF data by FD")
+> Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
+> Reviewed-by: Niklas Söderlund <niklas.soderlund@corigine.com>
+> Signed-off-by: Simon Horman <simon.horman@corigine.com>
+
+once this one gets merged, I'd send this fix on top of that:
+  https://lore.kernel.org/bpf/20220204225823.339548-3-jolsa@kernel.org/
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
+jirka
+
+
+> ---
+>  tools/bpf/bpftool/map.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> > > Please split the IMA from the eBPF changes.
-> >
-> > Ok.
+> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
+> index cc530a229812..4fc772d66e3a 100644
+> --- a/tools/bpf/bpftool/map.c
+> +++ b/tools/bpf/bpftool/map.c
+> @@ -1054,11 +1054,9 @@ static void print_key_value(struct bpf_map_info *info, void *key,
+>  	json_writer_t *btf_wtr;
+>  	struct btf *btf;
+>  
+> -	btf = btf__load_from_kernel_by_id(info->btf_id);
+> -	if (libbpf_get_error(btf)) {
+> -		p_err("failed to get btf");
+> +	btf = get_map_kv_btf(info);
+> +	if (libbpf_get_error(btf))
+>  		return;
+> -	}
+>  
+>  	if (json_output) {
+>  		print_entry_json(info, key, value, btf);
+> -- 
+> 1.8.3.1
 > 
-> --
-> thanks,
-> 
-> Mimi
 
