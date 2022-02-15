@@ -2,134 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847A04B6822
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 10:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5734B6967
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 11:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbiBOJrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 04:47:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56478 "EHLO
+        id S233194AbiBOKh3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 05:37:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236064AbiBOJrt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 04:47:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A0341E6C33
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 01:47:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644918458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SwvWeASu6WXtk75r3ZpXR2PmZ4CaNEX5pp7rMM04oMk=;
-        b=jEF+vFcONXN4tvaP1nCVgcqhQDJ33Tr89va2MoSg49aIzyAmeUfEAF1iIT2SfqI298lLrl
-        lpn6qPdBEKlLz0CjUsHcabmH82IPQry3mdXsAF9yz4QwUmDY0V1B86F8nTtV6TliCHqLpe
-        E/tzRTJ9jn/2XFMpL0lMubYyH0/5m7c=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-586-LBRXcddXP9SAqCoGrsV4KQ-1; Tue, 15 Feb 2022 04:47:37 -0500
-X-MC-Unique: LBRXcddXP9SAqCoGrsV4KQ-1
-Received: by mail-ej1-f70.google.com with SMTP id q3-20020a17090676c300b006a9453c33b0so6998658ejn.13
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 01:47:37 -0800 (PST)
+        with ESMTP id S229448AbiBOKh3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 05:37:29 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FA070F7C;
+        Tue, 15 Feb 2022 02:37:18 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id m22so14949849pfk.6;
+        Tue, 15 Feb 2022 02:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o7EA9TEAuJMo56GB1oxjqr4sMG5yZbF1t8svUxaUlWc=;
+        b=nMU/2kft/oSs9PdmnYhOULCiNiCJ/N1FNKZ3dYRsPy4L7W+tiStxq/+4GwfhOig56g
+         yuzlp8ySDrGp1c4Y9JdZjbA7EUqYKG9UgrBDxrYopRsZkYYB8wb5aoydChfKT5ophvNj
+         8kpOZk3p6aafsvb71AwFzkq1fGQNA14iHngpQqTi1YcpdYAXD+LEzVjI6Hexex6Dy90Z
+         KVBMfZXXLtSa92wJgtSextVLesT4PQJxh7as+fhE/pTF60vII7nppoczbLQOxEs3eB+R
+         06LHsSMOzrPx887o5E3SQpoDH7+52gpoBhIYJ1t386dnyYuXoTAvmhba2lwjK2UDRklo
+         9DJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SwvWeASu6WXtk75r3ZpXR2PmZ4CaNEX5pp7rMM04oMk=;
-        b=s7AfY3lAQZsyCv52ZzNcZvFlQl9Y35LQXHwxxMppxSvppX7JxHc8S9BNfapEOK+rEq
-         0WfvgRfgAFoqR+EefQvpdXGsEalr0980EIP1ubQdmRhqqWC1EaNSo/s36Ltfi05hRqC6
-         fCNIQq66yzrC/XjvCSl1wG/QKBuLp9iQmaHtI+mGazWK5kDcBYQl0KtH90CTZVgfJyS5
-         S7u0pJr9a1lixuC9xCVeWEulbXKcMU8qWWotPCYIOZhBR6F28SGAilIeg24jYZz7W1y3
-         Che2XhH2kdzPrtMGGk5c4XmmLixgTuOVlFfiU+ccR7B8ryPJH9U/EokKwURaDgbyitXo
-         Ad9Q==
-X-Gm-Message-State: AOAM532fdEtbgdYF31WANDclmWOFtBk2X6URZOap6mNxWAmjSaq0AaFT
-        lAOQT72zy37wmX6GIGbHL3vcTdQr1nuXLdMUtdYnuzgo+bh0+8vYjT/8/ctDXfH96UeQoynjdzq
-        5mXPddzaAvl+Z
-X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr2359632ejo.232.1644918456040;
-        Tue, 15 Feb 2022 01:47:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzE4lQhejJZezEIhm1Dz63I1RLd7aAJaUYILWarQzoC/wcee0fF9OsicbNQEWv/eDz0oy9RxA==
-X-Received: by 2002:a17:906:7a18:: with SMTP id d24mr2359616ejo.232.1644918455837;
-        Tue, 15 Feb 2022 01:47:35 -0800 (PST)
-Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id 23sm2370018ejf.215.2022.02.15.01.47.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 01:47:35 -0800 (PST)
-Date:   Tue, 15 Feb 2022 10:47:33 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yinjun Zhang <yinjun.zhang@corigine.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        niklas.soderlund@corigine.com,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH bpf] bpftool: fix the error when lookup in no-btf maps
-Message-ID: <Ygt2tfdfRZIQwx5W@krava>
-References: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o7EA9TEAuJMo56GB1oxjqr4sMG5yZbF1t8svUxaUlWc=;
+        b=D1K6UrfNkCODbBzM82iIIyPfC7dFcZLh66hvKC1P8SnjpueEFwbG7NJN7alQg2a0Xq
+         0Hg7c4xclyPqiSZnjlpwx1DLjZDJ7DeSR8xWvBcf+brDFvrp7pPDfFQb0SnllD/uDzEL
+         rM9RQWf6j07hw1gTzhMobvszl/NRWJI1masvMoTXO9NIENfMdFVDWKnoeRagk78ogc51
+         gU6iPZhKWqEuGHQW3e+auCQkDI1S/9MqyKiHahgVj6RyhS4WF1DUz4nX0KhydlNMED6n
+         RnGT602ow5PxYoIpxfEqNC62EqVQ9dXVNfS9XjmfMt6rpaRkVbav69uT1phmI6/SKf7E
+         Pqdw==
+X-Gm-Message-State: AOAM5333HukllsSTi/8EZiH8bhiZZcrK6XkI4gmSXHfeNchVhUSqkQju
+        wTBnIszLlNy03MoqmKA0jdY=
+X-Google-Smtp-Source: ABdhPJwOLEVABPhET1mCtpLiwD7OASr6UCShYK71di9VS/O2Nue+QgDeTSCAYD3igXq+X6ki/obJKA==
+X-Received: by 2002:a63:4e0e:: with SMTP id c14mr3006920pgb.490.1644921438118;
+        Tue, 15 Feb 2022 02:37:18 -0800 (PST)
+Received: from localhost.localdomain ([162.219.34.248])
+        by smtp.gmail.com with ESMTPSA id a17sm16712622pju.15.2022.02.15.02.37.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Feb 2022 02:37:17 -0800 (PST)
+From:   kerneljasonxing@gmail.com
+To:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        weiwan@google.com, aahringo@redhat.com, yangbo.lu@nxp.com,
+        fw@strlen.de, xiangxia.m.yue@gmail.com, tglx@linutronix.de
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kerneljasonxing@gmail.com,
+        Jason Xing <xingwanli@kuaishou.com>
+Subject: [PATCH] net: do not set SOCK_RCVBUF_LOCK if sk_rcvbuf isn't reduced
+Date:   Tue, 15 Feb 2022 18:36:39 +0800
+Message-Id: <20220215103639.11739-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1644249625-22479-1-git-send-email-yinjun.zhang@corigine.com>
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 12:00:25AM +0800, Yinjun Zhang wrote:
-> When reworking btf__get_from_id() in commit a19f93cfafdf the error
-> handling when calling bpf_btf_get_fd_by_id() changed. Before the rework
-> if bpf_btf_get_fd_by_id() failed the error would not be propagated to
-> callers of btf__get_from_id(), after the rework it is. This lead to a
-> change in behavior in print_key_value() that now prints an error when
-> trying to lookup keys in maps with no btf available.
-> 
-> Fix this by following the way used in dumping maps to allow to look up
-> keys in no-btf maps, by which it decides whether and where to get the
-> btf info according to the btf value type.
-> 
-> Fixes: a19f93cfafdf ("libbpf: Add internal helper to load BTF data by FD")
-> Signed-off-by: Yinjun Zhang <yinjun.zhang@corigine.com>
-> Reviewed-by: Niklas Söderlund <niklas.soderlund@corigine.com>
-> Signed-off-by: Simon Horman <simon.horman@corigine.com>
+From: Jason Xing <xingwanli@kuaishou.com>
 
-once this one gets merged, I'd send this fix on top of that:
-  https://lore.kernel.org/bpf/20220204225823.339548-3-jolsa@kernel.org/
+Normally, user doesn't care the logic behind the kernel if they're
+trying to set receive buffer via setsockopt. However, if the new value
+of the receive buffer is not smaller than the initial value which is
+sysctl_tcp_rmem[1] implemented in tcp_rcv_space_adjust(), the server's
+wscale will shrink and then lead to the bad bandwidth. I think it is
+not appropriate.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Here are some numbers:
+$ sysctl -a | grep rmem
+net.core.rmem_default = 212992
+net.core.rmem_max = 40880000
+net.ipv4.tcp_rmem = 4096	425984	40880000
 
-thanks,
-jirka
+Case 1
+on the server side
+    # iperf -s -p 5201
+on the client side
+    # iperf -c [client ip] -p 5201
+It turns out that the bandwidth is 9.34 Gbits/sec while the wscale of
+server side is 10. It's good.
 
+Case 2
+on the server side
+    #iperf -s -p 5201 -w 425984
+on the client side
+    # iperf -c [client ip] -p 5201
+It turns out that the bandwidth is reduced to 2.73 Gbits/sec while the
+wcale is 2, even though the receive buffer is not changed at all at the
+very beginning.
 
-> ---
->  tools/bpf/bpftool/map.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index cc530a229812..4fc772d66e3a 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-> @@ -1054,11 +1054,9 @@ static void print_key_value(struct bpf_map_info *info, void *key,
->  	json_writer_t *btf_wtr;
->  	struct btf *btf;
->  
-> -	btf = btf__load_from_kernel_by_id(info->btf_id);
-> -	if (libbpf_get_error(btf)) {
-> -		p_err("failed to get btf");
-> +	btf = get_map_kv_btf(info);
-> +	if (libbpf_get_error(btf))
->  		return;
-> -	}
->  
->  	if (json_output) {
->  		print_entry_json(info, key, value, btf);
-> -- 
-> 1.8.3.1
-> 
+Therefore, I added one condition where only user is trying to set a
+smaller rx buffer. After this patch is applied, the bandwidth of case 2
+is recovered to 9.34 Gbits/sec.
+
+Fixes: e88c64f0a425 ("tcp: allow effective reduction of TCP's rcv-buffer via setsockopt")
+Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
+---
+ net/core/filter.c | 7 ++++---
+ net/core/sock.c   | 8 +++++---
+ 2 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 4603b7c..99f5d9c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4795,9 +4795,10 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 		case SO_RCVBUF:
+ 			val = min_t(u32, val, sysctl_rmem_max);
+ 			val = min_t(int, val, INT_MAX / 2);
+-			sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+-			WRITE_ONCE(sk->sk_rcvbuf,
+-				   max_t(int, val * 2, SOCK_MIN_RCVBUF));
++			val = max_t(int, val * 2, SOCK_MIN_RCVBUF);
++			if (val < sock_net(sk)->ipv4.sysctl_tcp_rmem[1])
++				sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
++			WRITE_ONCE(sk->sk_rcvbuf, val);
+ 			break;
+ 		case SO_SNDBUF:
+ 			val = min_t(u32, val, sysctl_wmem_max);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 4ff806d..e5e9cb0 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -923,8 +923,6 @@ static void __sock_set_rcvbuf(struct sock *sk, int val)
+ 	 * as a negative value.
+ 	 */
+ 	val = min_t(int, val, INT_MAX / 2);
+-	sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+-
+ 	/* We double it on the way in to account for "struct sk_buff" etc.
+ 	 * overhead.   Applications assume that the SO_RCVBUF setting they make
+ 	 * will allow that much actual data to be received on that socket.
+@@ -935,7 +933,11 @@ static void __sock_set_rcvbuf(struct sock *sk, int val)
+ 	 * And after considering the possible alternatives, returning the value
+ 	 * we actually used in getsockopt is the most desirable behavior.
+ 	 */
+-	WRITE_ONCE(sk->sk_rcvbuf, max_t(int, val * 2, SOCK_MIN_RCVBUF));
++	val = max_t(int, val * 2, SOCK_MIN_RCVBUF);
++	if (val < sock_net(sk)->ipv4.sysctl_tcp_rmem[1])
++		sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
++
++	WRITE_ONCE(sk->sk_rcvbuf, val);
+ }
+ 
+ void sock_set_rcvbuf(struct sock *sk, int val)
+-- 
+1.8.3.1
 
