@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C094B7AE1
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 23:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837784B7AE4
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 23:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244314AbiBOW7i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 17:59:38 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35748 "EHLO
+        id S244737AbiBOW7s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 17:59:48 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244719AbiBOW7g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 17:59:36 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3E49F7479
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:25 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id s1so368931qtw.9
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:25 -0800 (PST)
+        with ESMTP id S244721AbiBOW7j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 17:59:39 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D9AD5F4D
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:28 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id 200so223723qki.2
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kinvolk.io; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tILw9h+EVi7AbXoT3aBKukUH7qRYvz45UG177GTgJcA=;
-        b=E0s49Ieh/pRwCbrvJI0Ml24cAt3gha4CsccQqGePikrjRoWn3N4IqnV/pO7FCPIpH9
-         XQ7wWqJqO64U130d6jyLkIqPwKddLp3ej78YtkQ26ebESRUo5yVwj/o04o28+8SzJRl+
-         5fuNytIvF1gltk8ThVCTZhUtm++XEVMrHFxUU=
+        bh=dUoNVzQd4tS2PRRRezKZ0/UPTa4dRXCSBMWAvOz+mKc=;
+        b=CCYdJjTFdVJ6EMjggu+D7OXeR0bMTTF6sn/Nz+JhdtOFV4qsw07LF3lb9PpUtvXdtG
+         Sh0joJgowkAlbeaoMC5v/dgPD39yoeJZI0OsYfgGCoQfshE4Bxz6wy91JQjMePbdSI5f
+         OZfXh6CLqqQhDNEYLL/+YO2oozBwGhlsBaWeg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tILw9h+EVi7AbXoT3aBKukUH7qRYvz45UG177GTgJcA=;
-        b=GQqC8r4p5tbn2Om+maDmkShyZfbfCVZpxAJqzMZPpvwTWLobzMwz0l7BjF2Gjgb4br
-         VlpGGEaBIU7QgpVDEP7fNUi0a5YM/6MxL6QoAPMcoGLBJpGDcl69QaWfviqh41B2FYOZ
-         rwP1B9G+WjFlCX5pnpkCpLViUDZxniAR983yROtVGYQutRyO9j+2xXpHjRxJb7PRDeYF
-         3L3wM8uj1fyUmLzqFhWLw7NCxDBkXEUL24l4uiK2ShH1W37c19OW5m/EbLStZ+iqc63q
-         RLHvykJEIb8wZG7LeQIPgAnNB4HhnF4D0sF4jWpkY90kGFTZqak8vcEaok3oP3ZC0ku+
-         jtag==
-X-Gm-Message-State: AOAM530S7coDTSz9FU17daoAcdGSycFyKAtcrl34WszgnMnNckehrbgX
-        LvkWCyENBkbvalK1iJnnphK9Og==
-X-Google-Smtp-Source: ABdhPJzCVeUfxFIW/q9anmSD7aSdm8aJUUyIXaIl2XdvfvUaWgD/U9oKbtSjClBLYE5LdAzvkkimZA==
-X-Received: by 2002:a05:622a:205:b0:2d0:a81d:73f3 with SMTP id b5-20020a05622a020500b002d0a81d73f3mr195020qtx.538.1644965964297;
-        Tue, 15 Feb 2022 14:59:24 -0800 (PST)
+        bh=dUoNVzQd4tS2PRRRezKZ0/UPTa4dRXCSBMWAvOz+mKc=;
+        b=HehVRkFnHmAKsKW64+kjgR9lp1p+oL5AFumCvYg5LVWAacKmXC8GevbaIzYrQknMia
+         DYx3IKJQJFx5Ipw/g7AEuP81mKaXRk1baOLRR7CBPwj4sKXLd6DAAIgM+KrHzxgaCAWb
+         +Wt99CTOsr9b/+On+moVY3xu0Wzl3gKrbU52Z/qNB5LTcnPJYUKUYPOU+BnMpvTJac7S
+         y8kEI3BS1I833AsoTrlwMAGSaV9PNZOSUqWUYcRd2hxwrXNpCwGRKcwRzUkwV5JCDq28
+         cbl8yyMjolD5Dc5oihhQBIYK3qg4HwDWVBAucn9phEnlo731kQLZAH73Tbfj/wTprbmS
+         4jnA==
+X-Gm-Message-State: AOAM533UPudQ2wg9Gx09JilkToOejxrWC2vmzGe+1soHA+1ZnA1pWom5
+        nHELLpivH2nWyM0VpM939v06PQ==
+X-Google-Smtp-Source: ABdhPJwpuLKOrkxFmW4pN0qTDfOhCyD2IGz+j8ccsw+ZqTs4sgLlQBH0n193tPNstP1qnzSIEXcYYw==
+X-Received: by 2002:a05:620a:152a:b0:46d:5918:e7cd with SMTP id n10-20020a05620a152a00b0046d5918e7cdmr66549qkk.494.1644965966870;
+        Tue, 15 Feb 2022 14:59:26 -0800 (PST)
 Received: from localhost.localdomain ([181.136.110.101])
-        by smtp.gmail.com with ESMTPSA id w19sm15520021qkp.6.2022.02.15.14.59.22
+        by smtp.gmail.com with ESMTPSA id w19sm15520021qkp.6.2022.02.15.14.59.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 14:59:23 -0800 (PST)
+        Tue, 15 Feb 2022 14:59:26 -0800 (PST)
 From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -53,9 +53,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Rafael David Tinoco <rafaeldtinoco@gmail.com>,
         Lorenzo Fontana <lorenzo.fontana@elastic.co>,
         Leonardo Di Donato <leonardo.didonato@elastic.co>
-Subject: [PATCH bpf-next v7 2/7] libbpf: Expose bpf_core_{add,free}_cands() to bpftool
-Date:   Tue, 15 Feb 2022 17:58:51 -0500
-Message-Id: <20220215225856.671072-3-mauricio@kinvolk.io>
+Subject: [PATCH bpf-next v7 3/7] bpftool: Add gen min_core_btf command
+Date:   Tue, 15 Feb 2022 17:58:52 -0500
+Message-Id: <20220215225856.671072-4-mauricio@kinvolk.io>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220215225856.671072-1-mauricio@kinvolk.io>
 References: <20220215225856.671072-1-mauricio@kinvolk.io>
@@ -72,8 +72,14 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Expose bpf_core_add_cands() and bpf_core_free_cands() to handle
-candidates list.
+This command is implemented under the "gen" command in bpftool and the
+syntax is the following:
+
+$ bpftool gen min_core_btf INPUT OUTPUT OBJECT [OBJECT...]
+
+INPUT is the file that contains all the BTF types for a kernel and
+OUTPUT is the path of the minimize BTF file that will be created with
+only the types needed by the objects.
 
 Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
 Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
@@ -81,61 +87,90 @@ Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
 Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c          | 17 ++++++++++-------
- tools/lib/bpf/libbpf_internal.h |  9 +++++++++
- 2 files changed, 19 insertions(+), 7 deletions(-)
+ tools/bpf/bpftool/bash-completion/bpftool |  6 +++-
+ tools/bpf/bpftool/gen.c                   | 42 +++++++++++++++++++++--
+ 2 files changed, 44 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d3c457fb045e..ad43b6ce825e 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -5192,18 +5192,21 @@ size_t bpf_core_essential_name_len(const char *name)
- 	return n;
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 493753a4962e..958e1fd71b5c 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -1003,9 +1003,13 @@ _bpftool()
+                             ;;
+                     esac
+                     ;;
++                min_core_btf)
++                    _filedir
++                    return 0
++                    ;;
+                 *)
+                     [[ $prev == $object ]] && \
+-                        COMPREPLY=( $( compgen -W 'object skeleton help' -- "$cur" ) )
++                        COMPREPLY=( $( compgen -W 'object skeleton help min_core_btf' -- "$cur" ) )
+                     ;;
+             esac
+             ;;
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index 022f30490567..8e066c747691 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -1108,6 +1108,7 @@ static int do_help(int argc, char **argv)
+ 	fprintf(stderr,
+ 		"Usage: %1$s %2$s object OUTPUT_FILE INPUT_FILE [INPUT_FILE...]\n"
+ 		"       %1$s %2$s skeleton FILE [name OBJECT_NAME]\n"
++		"       %1$s %2$s min_core_btf INPUT OUTPUT OBJECT [OBJECT...]\n"
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
+@@ -1118,10 +1119,45 @@ static int do_help(int argc, char **argv)
+ 	return 0;
  }
  
--static void bpf_core_free_cands(struct bpf_core_cand_list *cands)
-+void bpf_core_free_cands(struct bpf_core_cand_list *cands)
- {
-+	if (!cands)
-+		return;
++/* Create minimized BTF file for a set of BPF objects */
++static int minimize_btf(const char *src_btf, const char *dst_btf, const char *objspaths[])
++{
++	return -EOPNOTSUPP;
++}
 +
- 	free(cands->cands);
- 	free(cands);
- }
- 
--static int bpf_core_add_cands(struct bpf_core_cand *local_cand,
--			      size_t local_essent_len,
--			      const struct btf *targ_btf,
--			      const char *targ_btf_name,
--			      int targ_start_id,
--			      struct bpf_core_cand_list *cands)
-+int bpf_core_add_cands(struct bpf_core_cand *local_cand,
-+		       size_t local_essent_len,
-+		       const struct btf *targ_btf,
-+		       const char *targ_btf_name,
-+		       int targ_start_id,
-+		       struct bpf_core_cand_list *cands)
- {
- 	struct bpf_core_cand *new_cands, *cand;
- 	const struct btf_type *t, *local_t;
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index bc86b82e90d1..4fda8bdf0a0d 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -529,4 +529,13 @@ static inline int ensure_good_fd(int fd)
- 	return fd;
- }
- 
-+/* The following two functions are exposed to bpftool */
-+int bpf_core_add_cands(struct bpf_core_cand *local_cand,
-+		       size_t local_essent_len,
-+		       const struct btf *targ_btf,
-+		       const char *targ_btf_name,
-+		       int targ_start_id,
-+		       struct bpf_core_cand_list *cands);
-+void bpf_core_free_cands(struct bpf_core_cand_list *cands);
++static int do_min_core_btf(int argc, char **argv)
++{
++	const char *input, *output, **objs;
++	int i, err;
 +
- #endif /* __LIBBPF_LIBBPF_INTERNAL_H */
++	if (!REQ_ARGS(3)) {
++		usage();
++		return -1;
++	}
++
++	input = GET_ARG();
++	output = GET_ARG();
++
++	objs = (const char **) calloc(argc + 1, sizeof(*objs));
++	if (!objs) {
++		p_err("failed to allocate array for object names");
++		return -ENOMEM;
++	}
++
++	i = 0;
++	while (argc)
++		objs[i++] = GET_ARG();
++
++	err = minimize_btf(input, output, objs);
++	free(objs);
++	return err;
++}
++
+ static const struct cmd cmds[] = {
+-	{ "object",	do_object },
+-	{ "skeleton",	do_skeleton },
+-	{ "help",	do_help },
++	{ "object",		do_object },
++	{ "skeleton",		do_skeleton },
++	{ "min_core_btf",	do_min_core_btf},
++	{ "help",		do_help },
+ 	{ 0 }
+ };
+ 
 -- 
 2.25.1
 
