@@ -2,188 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C16E4B7AEE
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 23:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669B84B7B37
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 00:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244719AbiBOW7v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 17:59:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36012 "EHLO
+        id S236680AbiBOXbS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 18:31:18 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244729AbiBOW7u (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 17:59:50 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E123FE61CD
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:39 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id d7so576259qvk.2
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 14:59:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=00kNnbEYq6tbiMxdi0KoXmVdKHxRLF0dsYFQaPX8gPo=;
-        b=A5aSlT2CSqucv5QjkGQUWHdoFjjo2yp1qByI2Qx5bXmPZ1rs2UjMc2X2khbQuloVP4
-         G+zGwR0dSH0c+UeowRSsl+SJbk1IravS6GP8jL4/ru/Jgi/SaW58+BeOKE3NIFOqHeQH
-         PLfSujzgpcX3uNmrE0EnHf4Al2sTPY0AP0ULE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=00kNnbEYq6tbiMxdi0KoXmVdKHxRLF0dsYFQaPX8gPo=;
-        b=4Ajtg21YL826tV61jhjL75Kt/ZKCNk1lRzeQFtQokleKnVZlGh7OcbMyJXelusTqin
-         AM+60/XdiAqF8n5N1zH7ZvdNKVDWiKPYmyc9ya4y9vIIVw2YSRyEcUpKjbJlY8VseNSS
-         k+XOEzV3Oo80WzVZh7MgZiMEwbSgUIBqIG16PyIzIydmcqOr4pkzIqdjgleX2odG3uTS
-         tO/Qhb8ye84x0r9xQfn5xrPVNCKCg6l4zsu3Js+Vc6dkeCXaWeBhO4iYed2FG2BHEhSa
-         YKA0IARH3wnxZQ+4NPryxR6+N1ZRIRoPXm89usfOJxQdK/lWlTT9IKXi3huSTY55grbG
-         JtGQ==
-X-Gm-Message-State: AOAM530whvTYTvJ6m6wq52KbTn35/rXjiKHlwfOvIEVGKpwKLRaGHxIv
-        k0mIzK2ycyN/jJa3fJ2r/QmKJw==
-X-Google-Smtp-Source: ABdhPJwBNuVRqYwLOoapcJC89s5ddcVxvGvP3EXFtuiek8WFJ2sGpz3PlidgpEfG/JWec7jzxrb7Yg==
-X-Received: by 2002:a0c:8051:0:b0:42d:ef02:183c with SMTP id 75-20020a0c8051000000b0042def02183cmr212322qva.28.1644965977977;
-        Tue, 15 Feb 2022 14:59:37 -0800 (PST)
-Received: from localhost.localdomain ([181.136.110.101])
-        by smtp.gmail.com with ESMTPSA id w19sm15520021qkp.6.2022.02.15.14.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 14:59:37 -0800 (PST)
-From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+        with ESMTP id S231760AbiBOXbS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 18:31:18 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A9B7F94E9;
+        Tue, 15 Feb 2022 15:31:04 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nK7Hg-000AQn-16; Wed, 16 Feb 2022 00:31:00 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nK7Hf-000R6q-N0; Wed, 16 Feb 2022 00:30:59 +0100
+Subject: Re: [PATCH v4 net-next 5/8] bpf: Keep the (rcv) timestamp behavior
+ for the existing tc-bpf@ingress
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-Subject: [PATCH bpf-next v7 7/7] selftests/bpf: Test "bpftool gen min_core_btf"
-Date:   Tue, 15 Feb 2022 17:58:56 -0500
-Message-Id: <20220215225856.671072-8-mauricio@kinvolk.io>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220215225856.671072-1-mauricio@kinvolk.io>
-References: <20220215225856.671072-1-mauricio@kinvolk.io>
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Willem de Bruijn <willemb@google.com>
+References: <20220211071232.885225-1-kafai@fb.com>
+ <20220211071303.890169-1-kafai@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f0d76498-0bb1-36a6-0c8c-b334f6fb13c2@iogearbox.net>
+Date:   Wed, 16 Feb 2022 00:30:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220211071303.890169-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26454/Tue Feb 15 10:32:17 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit reuses the core_reloc test to check if the BTF files
-generated with "bpftool gen min_core_btf" are correct. This introduces
-test_core_btfgen() that runs all the core_reloc tests, but this time
-the source BTF files are generated by using "bpftool gen min_core_btf".
+On 2/11/22 8:13 AM, Martin KaFai Lau wrote:
+> The current tc-bpf@ingress reads and writes the __sk_buff->tstamp
+> as a (rcv) timestamp.  This patch is to backward compatible with the
+> (rcv) timestamp expectation when the skb->tstamp has a mono delivery_time.
+> 
+> If needed, the patch first saves the mono delivery_time.  Depending on
+> the static key "netstamp_needed_key", it then resets the skb->tstamp to
+> either 0 or ktime_get_real() before running the tc-bpf@ingress.  After
+> the tc-bpf prog returns, if the (rcv) timestamp in skb->tstamp has not
+> been changed, it will restore the earlier saved mono delivery_time.
+> 
+> The current logic to run tc-bpf@ingress is refactored to a new
+> bpf_prog_run_at_ingress() function and shared between cls_bpf and act_bpf.
+> The above new delivery_time save/restore logic is also done together in
+> this function.
+> 
+> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> ---
+>   include/linux/filter.h | 28 ++++++++++++++++++++++++++++
+>   net/sched/act_bpf.c    |  5 +----
+>   net/sched/cls_bpf.c    |  6 +-----
+>   3 files changed, 30 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index d23e999dc032..e43e1701a80e 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -699,6 +699,34 @@ static inline void bpf_compute_data_pointers(struct sk_buff *skb)
+>   	cb->data_end  = skb->data + skb_headlen(skb);
+>   }
+>   
+> +static __always_inline u32 bpf_prog_run_at_ingress(const struct bpf_prog *prog,
+> +						   struct sk_buff *skb)
+> +{
+> +	ktime_t tstamp, saved_mono_dtime = 0;
+> +	int filter_res;
+> +
+> +	if (unlikely(skb->mono_delivery_time)) {
+> +		saved_mono_dtime = skb->tstamp;
+> +		skb->mono_delivery_time = 0;
+> +		if (static_branch_unlikely(&netstamp_needed_key))
+> +			skb->tstamp = tstamp = ktime_get_real();
+> +		else
+> +			skb->tstamp = tstamp = 0;
+> +	}
+> +
+> +	/* It is safe to push/pull even if skb_shared() */
+> +	__skb_push(skb, skb->mac_len);
+> +	bpf_compute_data_pointers(skb);
+> +	filter_res = bpf_prog_run(prog, skb);
+> +	__skb_pull(skb, skb->mac_len);
+> +
+> +	/* __sk_buff->tstamp was not changed, restore the delivery_time */
+> +	if (unlikely(saved_mono_dtime) && skb_tstamp(skb) == tstamp)
+> +		skb_set_delivery_time(skb, saved_mono_dtime, true);
 
-The goal of this test is to check that the generated files are usable,
-and not to check if the algorithm is creating an optimized BTF file.
+So above detour is for skb->tstamp backwards compatibility so users will see real time.
+I don't see why we special case {cls,act}_bpf-only, given this will also be the case
+for other subsystems (e.g. netfilter) when they read access plain skb->tstamp and get
+the egress one instead of ktime_get_real() upon deferred skb_clear_delivery_time().
 
-Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
-Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
----
- .../selftests/bpf/prog_tests/core_reloc.c     | 50 ++++++++++++++++++-
- 1 file changed, 48 insertions(+), 2 deletions(-)
+If we would generally ignore it, then the above bpf_prog_run_at_ingress() save/restore
+detour is not needed (so patch 5/6 should be dropped). (Meaning, if we need to special
+case {cls,act}_bpf only, we could also have gone for simpler bpf-only solution..)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 68e4c8dafa00..fa2908879c77 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -2,6 +2,7 @@
- #include <test_progs.h>
- #include "progs/core_reloc_types.h"
- #include "bpf_testmod/bpf_testmod.h"
-+#include <linux/limits.h>
- #include <sys/mman.h>
- #include <sys/syscall.h>
- #include <bpf/btf.h>
-@@ -836,13 +837,27 @@ static size_t roundup_page(size_t sz)
- 	return (sz + page_size - 1) / page_size * page_size;
- }
- 
--void test_core_reloc(void)
-+static int run_btfgen(const char *src_btf, const char *dst_btf, const char *objpath)
-+{
-+	char command[4096];
-+	int n;
-+
-+	n = snprintf(command, sizeof(command),
-+		     "./tools/build/bpftool/bpftool gen min_core_btf %s %s %s",
-+		     src_btf, dst_btf, objpath);
-+	if (n < 0 || n >= sizeof(command))
-+		return -1;
-+
-+	return system(command);
-+}
-+
-+static void run_core_reloc_tests(bool use_btfgen)
- {
- 	const size_t mmap_sz = roundup_page(sizeof(struct data));
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
- 	struct core_reloc_test_case *test_case;
- 	const char *tp_name, *probe_name;
--	int err, i, equal;
-+	int err, i, equal, fd;
- 	struct bpf_link *link = NULL;
- 	struct bpf_map *data_map;
- 	struct bpf_program *prog;
-@@ -854,6 +869,7 @@ void test_core_reloc(void)
- 	my_pid_tgid = getpid() | ((uint64_t)syscall(SYS_gettid) << 32);
- 
- 	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
-+		char btf_file[] = "/tmp/core_reloc.btf.XXXXXX";
- 		test_case = &test_cases[i];
- 		if (!test__start_subtest(test_case->case_name))
- 			continue;
-@@ -863,6 +879,25 @@ void test_core_reloc(void)
- 			continue;
- 		}
- 
-+		/* generate a "minimal" BTF file and use it as source */
-+		if (use_btfgen) {
-+			if (!test_case->btf_src_file || test_case->fails) {
-+				test__skip();
-+				continue;
-+			}
-+
-+			fd = mkstemp(btf_file);
-+			if (CHECK(fd < 0, "btf_tmp", "failed to create file: %d\n", fd))
-+				goto cleanup;
-+			close(fd); /* we only need the path */
-+			err = run_btfgen(test_case->btf_src_file, btf_file,
-+					 test_case->bpf_obj_file);
-+			if (!ASSERT_OK(err, "run_btfgen"))
-+				goto cleanup;
-+
-+			test_case->btf_src_file = btf_file;
-+		}
-+
- 		if (test_case->setup) {
- 			err = test_case->setup(test_case);
- 			if (CHECK(err, "test_setup", "test #%d setup failed: %d\n", i, err))
-@@ -954,8 +989,19 @@ void test_core_reloc(void)
- 			CHECK_FAIL(munmap(mmap_data, mmap_sz));
- 			mmap_data = NULL;
- 		}
-+		remove(btf_file);
- 		bpf_link__destroy(link);
- 		link = NULL;
- 		bpf_object__close(obj);
- 	}
- }
-+
-+void test_core_reloc(void)
-+{
-+	run_core_reloc_tests(false);
-+}
-+
-+void test_core_btfgen(void)
-+{
-+	run_core_reloc_tests(true);
-+}
--- 
-2.25.1
+> +	return filter_res;
+> +}
+> +
+>   /* Similar to bpf_compute_data_pointers(), except that save orginal
+>    * data in cb->data and cb->meta_data for restore.
+>    */
+> diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+> index a77d8908e737..14c3bd0a5088 100644
+> --- a/net/sched/act_bpf.c
+> +++ b/net/sched/act_bpf.c
+> @@ -45,10 +45,7 @@ static int tcf_bpf_act(struct sk_buff *skb, const struct tc_action *act,
+>   
+>   	filter = rcu_dereference(prog->filter);
+>   	if (at_ingress) {
+> -		__skb_push(skb, skb->mac_len);
+> -		bpf_compute_data_pointers(skb);
+> -		filter_res = bpf_prog_run(filter, skb);
+> -		__skb_pull(skb, skb->mac_len);
+> +		filter_res = bpf_prog_run_at_ingress(filter, skb);
+>   	} else {
+>   		bpf_compute_data_pointers(skb);
+>   		filter_res = bpf_prog_run(filter, skb);
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index df19a847829e..036b2e1f74af 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -93,11 +93,7 @@ static int cls_bpf_classify(struct sk_buff *skb, const struct tcf_proto *tp,
+>   		if (tc_skip_sw(prog->gen_flags)) {
+>   			filter_res = prog->exts_integrated ? TC_ACT_UNSPEC : 0;
+>   		} else if (at_ingress) {
+> -			/* It is safe to push/pull even if skb_shared() */
+> -			__skb_push(skb, skb->mac_len);
+> -			bpf_compute_data_pointers(skb);
+> -			filter_res = bpf_prog_run(prog->filter, skb);
+> -			__skb_pull(skb, skb->mac_len);
+> +			filter_res = bpf_prog_run_at_ingress(prog->filter, skb);
+>   		} else {
+>   			bpf_compute_data_pointers(skb);
+>   			filter_res = bpf_prog_run(prog->filter, skb);
+> 
 
