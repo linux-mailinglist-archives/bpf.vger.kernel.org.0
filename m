@@ -2,84 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DC94B76C9
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 21:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926DD4B75B5
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 21:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236919AbiBOSUX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 13:20:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36626 "EHLO
+        id S243156AbiBOSmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 13:42:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233442AbiBOSUW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 13:20:22 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CFD119879
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 10:20:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4E0F9B81C36
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 18:20:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F351FC340F0;
-        Tue, 15 Feb 2022 18:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644949210;
-        bh=u2eclioaRAYEDUG7s2mcUFulLEkHYB4t/53db+tQi00=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ikpMh4Fn6s568jGbKIYX/vT3/ElwMwwYDnoV3WEfQH2Er7y+3udvSGFQAa3VIiStw
-         lMk1sXnrqLfcmQK466I6daXdau3n7ro7QkvGuzy3D+5ahexP+s4zXO7b2q+U3WRv4z
-         r+CaAClADnG0cxtCTzN9PY9oJPjYag7MHVUaBPEHLQDrG550F7C8ZBQrsZJwtO5WB3
-         xL8yzIueps/iJWy8MKMe7R+undAvhD8K/v6SWBTPrh/X/F0Z3da5IU8ecR8d6tFQwW
-         5IB4RHd6mlffF2Na9ogSgYy4Gv2JXmZWcLuPeOKR/KWlKMM552zCwQ/vHUCQ/daXp1
-         yYy9uDBD6fvnw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DBAC9E6D458;
-        Tue, 15 Feb 2022 18:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S243155AbiBOSmw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 13:42:52 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6929327FEA;
+        Tue, 15 Feb 2022 10:42:42 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21FH4N62029572;
+        Tue, 15 Feb 2022 18:42:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=zXmbrA+nSO5dCXMa3+3nbbOi7Ym51eV5ADJO++TfFv0=;
+ b=oqxhdoF2rIqYW/BJuSS/ErAWNzD765UjQwIZsoI1GRVfs8Q4rXVcbrU0FnnU2cLvawLF
+ AYQae2Cd1+DskOtQ8w0jBO1dosO2XnVLEnsQC0jWQs51B0aIWTzltga+MqrU8TT6TYuE
+ 6wZRUb+QiL0SiOtIHwASsKyJLCAD5FQ09A07Gzue+CMRKkVOs3wDPkZEg1hjEkmZf/0C
+ Y4R6t4FzGXAUV4f/3cdB3op7Dw+UoIkXqGgD7iu/thJxqgEhn1U8mAAj1qbkrBKeemu+
+ cBSwqrCWSrO7kIUkT7hFcBjN4Pf+m4/bIXwZOO2udmhOmdEx6mAWMMzdpbLPqSunLQcQ bw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3e8570taav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Feb 2022 18:42:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 21FIfEKi150005;
+        Tue, 15 Feb 2022 18:42:17 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3e620xg50s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Feb 2022 18:42:17 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 21FIgHrN152289;
+        Tue, 15 Feb 2022 18:42:17 GMT
+Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
+        by userp3030.oracle.com with ESMTP id 3e620xg50h-1;
+        Tue, 15 Feb 2022 18:42:17 +0000
+From:   Sherry Yang <sherry.yang@oracle.com>
+To:     skhan@linuxfoundation.org, shuah@kernel.org, keescook@chromium.org,
+        luto@amacapital.net, wad@chromium.org, christian@brauner.io,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        usama.anjum@collabora.com, sherry.yang@oracle.com
+Subject: [PATCH v3] selftests/seccomp: Fix seccomp failure by adding missing headers
+Date:   Tue, 15 Feb 2022 10:42:15 -0800
+Message-Id: <20220215184215.40093-1-sherry.yang@oracle.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests: bpf: Check bpf_msg_push_data return value
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164494920989.30934.9224774889748870295.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Feb 2022 18:20:09 +0000
-References: <89f767bb44005d6b4dd1f42038c438f76b3ebfad.1644601294.git.fmaurer@redhat.com>
-In-Reply-To: <89f767bb44005d6b4dd1f42038c438f76b3ebfad.1644601294.git.fmaurer@redhat.com>
-To:     Felix Maurer <fmaurer@redhat.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, davemarchevsky@fb.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-ORIG-GUID: NohrFFT0X_beyLbk1JWdxuHwTzUHtHwb
+X-Proofpoint-GUID: NohrFFT0X_beyLbk1JWdxuHwTzUHtHwb
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+seccomp_bpf failed on tests 47 global.user_notification_filter_empty
+and 48 global.user_notification_filter_empty_threaded when it's
+tested on updated kernel but with old kernel headers. Because old
+kernel headers don't have definition of macro __NR_clone3 which is
+required for these two tests. Use KHDR_INCLUDES to correctly reach
+the installed headers.
 
-This patch was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Signed-off-by: Sherry Yang <sherry.yang@oracle.com>
+Tested-by: Sherry Yang <sherry.yang@oracle.com>
+---
+ tools/testing/selftests/seccomp/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Fri, 11 Feb 2022 18:43:36 +0100 you wrote:
-> bpf_msg_push_data may return a non-zero value to indicate an error. The
-> return value should be checked to prevent undetected errors.
-> 
-> To indicate an error, the BPF programs now perform a different action
-> than their intended one to make the userspace test program notice the
-> error, i.e., the programs supposed to pass/redirect drop, the program
-> supposed to drop passes.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] selftests: bpf: Check bpf_msg_push_data return value
-    https://git.kernel.org/bpf/bpf/c/61d06f01f971
-
-You are awesome, thank you!
+diff --git a/tools/testing/selftests/seccomp/Makefile b/tools/testing/selftests/seccomp/Makefile
+index 0ebfe8b0e147..7eaed95ba4b3 100644
+--- a/tools/testing/selftests/seccomp/Makefile
++++ b/tools/testing/selftests/seccomp/Makefile
+@@ -1,5 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+-CFLAGS += -Wl,-no-as-needed -Wall
++CFLAGS += -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
+ LDFLAGS += -lpthread
+ 
+ TEST_GEN_PROGS := seccomp_bpf seccomp_benchmark
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.31.1
 
