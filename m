@@ -2,115 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 198534B63AB
-	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 07:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3DF4B64EB
+	for <lists+bpf@lfdr.de>; Tue, 15 Feb 2022 09:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbiBOGjF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 01:39:05 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50288 "EHLO
+        id S235049AbiBOIAw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 15 Feb 2022 03:00:52 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbiBOGjE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 01:39:04 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF286AE186;
-        Mon, 14 Feb 2022 22:38:54 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4JyWbc24XGz9sgs;
-        Tue, 15 Feb 2022 14:37:16 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
- (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Tue, 15 Feb
- 2022 14:38:52 +0800
-From:   Hou Tao <houtao1@huawei.com>
-To:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <houtao1@huawei.com>
-Subject: [PATCH bpf-next v4] bpf: reject kfunc calls that overflow insn->imm
-Date:   Tue, 15 Feb 2022 14:57:32 +0800
-Message-ID: <20220215065732.3179408-1-houtao1@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        with ESMTP id S235011AbiBOIAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 03:00:48 -0500
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBF313E1B;
+        Tue, 15 Feb 2022 00:00:38 -0800 (PST)
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4JyYLg2SbYz67ts3;
+        Tue, 15 Feb 2022 15:56:11 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 15 Feb 2022 09:00:35 +0100
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
+ Tue, 15 Feb 2022 09:00:35 +0100
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] ima: Calculate digest in ima_inode_hash() if not
+ available
+Thread-Topic: [PATCH] ima: Calculate digest in ima_inode_hash() if not
+ available
+Thread-Index: AQHYHzTu9kKzqhEAHUiW0cSG9MzvPayRZbiAgAHZaqCAAFdHgIAArm+A
+Date:   Tue, 15 Feb 2022 08:00:34 +0000
+Message-ID: <311b5d0b3b824c548a4032a76a408944@huawei.com>
+References: <20220211104828.4061334-1-roberto.sassu@huawei.com>
+         <537635732d9cbcc42bcf7be5ed932d284b03d39f.camel@linux.ibm.com>
+         <cc6bcb7742dc432ba990ee38b5909496@huawei.com>
+ <36f85113f181f78eda3576823bd92be3f9cd1802.camel@linux.ibm.com>
+In-Reply-To: <36f85113f181f78eda3576823bd92be3f9cd1802.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.204.63.33]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Now kfunc call uses s32 to represent the offset between the address of
-kfunc and __bpf_call_base, but it doesn't check whether or not s32 will
-be overflowed. The overflow is possible when kfunc is in module and the
-offset between module and kernel is greater than 2GB. Take arm64 as an
-example, before commit b2eed9b58811 ("arm64/kernel: kaslr: reduce module
-randomization range to 2 GB"), the offset between module symbol and
-__bpf_call_base will in 4GB range due to KASLR and may overflow s32.
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, February 14, 2022 11:33 PM
+> On Mon, 2022-02-14 at 17:05 +0000, Roberto Sassu wrote:
+> > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > > Sent: Sunday, February 13, 2022 2:06 PM
+> > > Hi Roberto,
+> > >
+> > > On Fri, 2022-02-11 at 11:48 +0100, Roberto Sassu wrote:
+> > > > __ima_inode_hash() checks if a digest has been already calculated by
+> > > > looking for the integrity_iint_cache structure associated to the passed
+> > > > inode.
+> > > >
+> > > > Users of ima_file_hash() and ima_inode_hash() (e.g. eBPF) might be
+> > > > interested in obtaining the information without having to setup an IMA
+> > > > policy so that the digest is always available at the time they call one of
+> > > > those functions.
+> > > >
+> > > > Open a new file descriptor in __ima_inode_hash(), so that this function
+> > > > could invoke ima_collect_measurement() to calculate the digest if it is not
+> > > > available. Still return -EOPNOTSUPP if the calculation failed.
+> > > >
+> > > > Instead of opening a new file descriptor, the one from ima_file_hash()
+> > > > could have been used. However, since ima_inode_hash() was created to
+> > > obtain
+> > > > the digest when the file descriptor is not available, it could benefit from
+> > > > this change too. Also, the opened file descriptor might be not suitable for
+> > > > use (file descriptor opened not for reading).
+> > > >
+> > > > This change does not cause memory usage increase, due to using a
+> temporary
+> > > > integrity_iint_cache structure for the digest calculation, and due to
+> > > > freeing the ima_digest_data structure inside integrity_iint_cache before
+> > > > exiting from __ima_inode_hash().
+> > > >
+> > > > Finally, update the test by removing ima_setup.sh (it is not necessary
+> > > > anymore to set an IMA policy) and by directly executing /bin/true.
+> > > >
+> > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > >
+> > > Although this patch doesn't directly modify either ima_file_hash() or
+> > > ima_inode_hash(),  this change affects both functions.  ima_file_hash()
+> > > was introduced to be used with eBPF.  Based on Florent's post, changing
+> > > the ima_file_hash() behavor seems fine.  Since I have no idea whether
+> > > anyone is still using ima_inode_hash(), perhaps it would be safer to
+> > > limit this behavior change to just ima_file_hash().
+> >
+> > Hi Mimi
+> >
+> > ok.
+> >
+> > I found that just checking that iint->ima_hash is not NULL is not enough
+> > (ima_inode_hash() might still return the old digest after a file write).
+> > Should I replace that check with !(iint->flags & IMA_COLLECTED)?
+> > Or should I do only for ima_file_hash() and recalculate the digest
+> > if necessary?
+> 
+> Updating the file hash after each write would really impact IMA
+> performance.  If you really want to detect any file change, no matter
+> how frequently it occurs, your best bet would be to track i_generation
+> and i_version.  Stefan is already adding "i_generation" for IMA
+> namespacing.
 
-So add an extra checking to reject these invalid kfunc calls.
+I just wanted the ability to get a fresh digest after a file opened
+for writing is closed. Since in my use case I would not use an IMA
+policy, that would not be a problem.
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v4:
- * explain why the overflow check is needed.
+Thanks
 
-v3: https://lore.kernel.org/bpf/2339465e-1f87-595a-2954-eb92b6bfa9cc@huawei.com
- * call BPF_CALL_IMM() once (suggested by Yonghong)
+Roberto
 
-v2: https://lore.kernel.org/bpf/20220208123348.40360-1-houtao1@huawei.com
- * instead of checking the overflow in selftests, just reject
-   these kfunc calls directly in verifier
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Zhong Ronghua
 
-v1: https://lore.kernel.org/bpf/20220206043107.18549-1-houtao1@huawei.com
----
- kernel/bpf/verifier.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index bbef86cb4e72..d7473fee247c 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1842,6 +1842,7 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- 	struct bpf_kfunc_desc *desc;
- 	const char *func_name;
- 	struct btf *desc_btf;
-+	unsigned long call_imm;
- 	unsigned long addr;
- 	int err;
- 
-@@ -1926,9 +1927,17 @@ static int add_kfunc_call(struct bpf_verifier_env *env, u32 func_id, s16 offset)
- 		return -EINVAL;
- 	}
- 
-+	call_imm = BPF_CALL_IMM(addr);
-+	/* Check whether or not the relative offset overflows desc->imm */
-+	if ((unsigned long)(s32)call_imm != call_imm) {
-+		verbose(env, "address of kernel function %s is out of range\n",
-+			func_name);
-+		return -EINVAL;
-+	}
-+
- 	desc = &tab->descs[tab->nr_descs++];
- 	desc->func_id = func_id;
--	desc->imm = BPF_CALL_IMM(addr);
-+	desc->imm = call_imm;
- 	desc->offset = offset;
- 	err = btf_distill_func_proto(&env->log, desc_btf,
- 				     func_proto, func_name,
--- 
-2.29.2
+> > > Please update the ima_file_hash() doc.  While touching this area, I'd
+> > > appreciate your fixing the first doc line in both ima_file_hash() and
+> > > ima_inode_hash() cases, which wraps spanning two lines.
+> >
+> > Did you mean to make the description shorter or to have everything
+> > in one line? According to the kernel documentation (kernel-doc.rst),
+> > having the brief description in multiple lines should be fine.
+> 
+> Thanks for checking kernel-doc.   The "brief description"  not wrapping
+> across multiple lines did in fact change.
+> 
+> > > Please split the IMA from the eBPF changes.
+> >
+> > Ok.
+> 
+> --
+> thanks,
+> 
+> Mimi
 
