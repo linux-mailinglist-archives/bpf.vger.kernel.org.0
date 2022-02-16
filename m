@@ -2,90 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771104B8ECC
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 18:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B3C4B8EEF
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 18:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236878AbiBPRFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 12:05:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35278 "EHLO
+        id S236940AbiBPRQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 12:16:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233496AbiBPRFP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 12:05:15 -0500
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F423D2A5981
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 09:05:02 -0800 (PST)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-2d66f95f1d1so5848037b3.0
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 09:05:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2juVayWDeDNiMOSl5byAk4ZO9Dz6MyJWtuklD1EzHsc=;
-        b=Me2QFmo170zKETlbtKN8PcGm3z91iWxBm8JFCZl0dLPpr6c2h9bTwnU4y756hvisXL
-         5skvfAhbQ2/kJsqmTfAtDcdB2tYVqSahp9S0T1oiUckh4F3vEepLix+KRHxWdi0DNzVj
-         HZMXcz4rL+rZujczwWkcbsXz76D1YlZkdz72pxcoMXGmQDrdom3WJgEgrU9Nr/mWLL/t
-         o9rHyGG8/Nl40QSN7F+QKxdDpTZdqHqs5LfMY1oZQEfP0oBFZIbX8e1cRux3TIC0SDx7
-         iwkZ4dOMenFdBk2po2X52T8QtHb7spTFl/9korrlnMv80YKkorD3O3NDiiQOqGosBOZI
-         NQCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2juVayWDeDNiMOSl5byAk4ZO9Dz6MyJWtuklD1EzHsc=;
-        b=KQrNvHv7/oEhRwrkaoyS9Y8o6b5VmRP5j61ur6xrm2XR7Kva1ohqL6/EBWo+anBixY
-         jUxRavbyChRWFtzIVMQuleGKNWhfYeYDmGQI/YxqKeYfB4gU+Pp6+BCGtnYs5GPS1T4p
-         QASvDjx9iOa/mummtT/stwvaXe1phIiKn+wkVPvYREfkgxvLdT9/BHvAaDpUV4HCwQpr
-         3SREgRuO2zB7HDSuQTG9JrNsgBQUUajovqoGUigtxM91b8nKZpxiQsNob9niP99+3ohL
-         19cQeveOHMZ9rZoYAaWTCFtIvVab2JvPuPNhjPiT7vEazmrdpaQKtXneHZvApvGv2MJn
-         QAQw==
-X-Gm-Message-State: AOAM530HAUnBI+5MgCAJV/NVLmECdepwthpIokYYcCb+sQztB/rCxkaH
-        G9xyyvpTNE0ULTHJOdmFbcr+UsKdyr881AECG61u1A==
-X-Google-Smtp-Source: ABdhPJzPZKpp/lmdiJbf1hd+uHL0HzVvyEzxKNLXdYq/W8oDUygcnnrBqzIk0QsOwf5SNcKoOsImPBIsfNXO10j6SmM=
-X-Received: by 2002:a81:993:0:b0:2d6:15f5:b392 with SMTP id
- 141-20020a810993000000b002d615f5b392mr3246691ywj.489.1645031101716; Wed, 16
- Feb 2022 09:05:01 -0800 (PST)
-MIME-Version: 1.0
-References: <20220216035426.2233808-1-imagedong@tencent.com>
-In-Reply-To: <20220216035426.2233808-1-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 16 Feb 2022 09:04:50 -0800
-Message-ID: <CANn89i+gBxse3zf2gSvm5AU3D_2MSztGArKQxF4B2rTpWNUSwA@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/9] net: add skb drop reasons to TCP packet receive
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        with ESMTP id S234331AbiBPRQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 12:16:25 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2362AED9B;
+        Wed, 16 Feb 2022 09:16:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7957BB81DD2;
+        Wed, 16 Feb 2022 17:16:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2545DC340E8;
+        Wed, 16 Feb 2022 17:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645031770;
+        bh=H8UzL8cAWXsf7LlwEbF/oBmPBoQ/jM+fAqEB1ENwlTU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QCJxZWtmlxBfPdaYYXaEiu1ET6Zfkb3z6DZ3Mv+Xgg6BuSO9SAXboaeKo4vpQJRYL
+         u89kcDmK8UCOVLqV3Yby+J9O9jHW8U4wGTEi9Rejt0daCOsEmSKKjXYxh8S/jKXOzb
+         5bNCoFLwjInMq69o5aOeNhLlQm9lqT7AIk93GPeVhYbrJDOD51c3Bt+s9cv/JfqGEj
+         pti01SRHyuCotOcPEjp9uN4kmXxpKLsIrBRh3vpFDn/J7Wxly5m1DWcB0UlrT9tExk
+         6F8wPA/57ugsh0i8446d6SKex0V9tIOXnPuYbYxvZf14WJMvF9qip3Fu4RltTPBgl5
+         /3EEsFDbwKbdA==
+Date:   Wed, 16 Feb 2022 17:16:02 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
         John Fastabend <john.fastabend@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Talal Ahmad <talalahmad@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        flyingpeng@tencent.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Julien Thierry <jthierry@redhat.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next v3 2/4] arm64: insn: add encoders for atomic
+ operations
+Message-ID: <20220216171602.GA10877@willie-the-truck>
+References: <20220129220452.194585-1-houtao1@huawei.com>
+ <20220129220452.194585-3-houtao1@huawei.com>
+ <4524da71-3977-07db-bd6e-cebd1c539805@iogearbox.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4524da71-3977-07db-bd6e-cebd1c539805@iogearbox.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,54 +69,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 7:54 PM <menglong8.dong@gmail.com> wrote:
->
-> From: Menglong Dong <imagedong@tencent.com>
->
-> In this series patches, reasons for skb drops are added to TCP layer, and
-> both TCPv4 and TCPv6 are considered.
->
-> in this series patches, the process of packet ingress in TCP layer is
-> considered, as skb drops hardly happens in the egress path.
->
-> However, it's a little complex for TCP state processing, as I find that
-> it's hard to report skb drop reasons to where it is freed. For example,
-> when skb is dropped in tcp_rcv_state_process(), the reason can be caused
-> by the call of tcp_v4_conn_request(), and it's hard to return a drop
-> reason from tcp_v4_conn_request(). So I just skip such case for this
-> moment.
->
+On Fri, Feb 11, 2022 at 03:39:48PM +0100, Daniel Borkmann wrote:
+> On 1/29/22 11:04 PM, Hou Tao wrote:
+> > It is a preparation patch for eBPF atomic supports under arm64. eBPF
+> > needs support atomic[64]_fetch_add, atomic[64]_[fetch_]{and,or,xor} and
+> > atomic[64]_{xchg|cmpxchg}. The ordering semantics of eBPF atomics are
+> > the same with the implementations in linux kernel.
+> > 
+> > Add three helpers to support LDCLR/LDEOR/LDSET/SWP, CAS and DMB
+> > instructions. STADD/STCLR/STEOR/STSET are simply encoded as aliases for
+> > LDADD/LDCLR/LDEOR/LDSET with XZR as the destination register, so no extra
+> > helper is added. atomic_fetch_add() and other atomic ops needs support for
+> > STLXR instruction, so extend enum aarch64_insn_ldst_type to do that.
+> > 
+> > LDADD/LDEOR/LDSET/SWP and CAS instructions are only available when LSE
+> > atomics is enabled, so just return AARCH64_BREAK_FAULT directly in
+> > these newly-added helpers if CONFIG_ARM64_LSE_ATOMICS is disabled.
+> > 
+> > Signed-off-by: Hou Tao <houtao1@huawei.com>
+> 
+> Hey Mark / Ard / Will / Catalin or others, could we get an Ack on patch 1 & 2
+> at min if it looks good to you?
 
-I think you should add at least in this cover letter, or better in a
-document that can be amended,
-how this can be used on a typical TCP session.
-For someone who is having issues with TCP flows, what would they need to do.
-Think of something that we (kernel dev) could copy paste to future
-email replies.
-It might be mostly clear for some of us reviewing patches at this
-moment, but in one year we will all forget about the details.
+I checked the instruction encodings in patches 1 and 2 and they all look
+fine to me. However, after applying those two locally I get a build failure:
 
+  | In file included from arch/arm64/net/bpf_jit_comp.c:23:
+  | arch/arm64/net/bpf_jit_comp.c: In function ‘build_insn’:
+  | arch/arm64/net/bpf_jit.h:94:2: error: implicit declaration of function ‘aarch64_insn_gen_stadd’; did you mean ‘aarch64_insn_gen_adr’? [-Werror=implicit-function-declaration]
+  |    94 |  aarch64_insn_gen_stadd(Rn, Rs, A64_SIZE(sf))
+  |       |  ^~~~~~~~~~~~~~~~~~~~~~
+  | arch/arm64/net/bpf_jit_comp.c:912:9: note: in expansion of macro ‘A64_STADD’
+  |   912 |    emit(A64_STADD(isdw, reg, src), ctx);
+  |       |         ^~~~~~~~~
+  | cc1: some warnings being treated as errors
 
->
-> Menglong Dong (9):
->   net: tcp: introduce tcp_drop_reason()
->   net: tcp: add skb drop reasons to tcp_v4_rcv()
->   net: tcp: use kfree_skb_reason() for tcp_v6_rcv()
->   net: tcp: add skb drop reasons to tcp_v{4,6}_inbound_md5_hash()
->   net: tcp: add skb drop reasons to tcp_add_backlog()
->   net: tcp: use kfree_skb_reason() for tcp_v{4,6}_do_rcv()
->   net: tcp: use tcp_drop_reason() for tcp_rcv_established()
->   net: tcp: use tcp_drop_reason() for tcp_data_queue()
->   net: tcp: use tcp_drop_reason() for tcp_data_queue_ofo()
->
->  include/linux/skbuff.h     | 28 +++++++++++++++++++++++++
->  include/net/tcp.h          |  3 ++-
->  include/trace/events/skb.h | 10 +++++++++
->  net/ipv4/tcp_input.c       | 42 +++++++++++++++++++++++++++++---------
->  net/ipv4/tcp_ipv4.c        | 36 ++++++++++++++++++++++++--------
->  net/ipv6/tcp_ipv6.c        | 42 +++++++++++++++++++++++++++++---------
->  6 files changed, 131 insertions(+), 30 deletions(-)
->
-> --
-> 2.34.1
->
+Will
