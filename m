@@ -2,91 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 030824B7C0E
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 01:48:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8D04B7C84
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 02:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238170AbiBPAsM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 19:48:12 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43908 "EHLO
+        id S245410AbiBPBUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 20:20:01 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232906AbiBPAsM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 19:48:12 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC529A4FD
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:48:00 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21G0QJsb001704
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:48:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=Hsn20EyE55YrvL674mWeN+GHV/yGyWNlFYcGvDTPsO0=;
- b=YDSVVPRWTdNP/FL1kJ1denPQpU9XEFoytznx9E8Rv5CvwxNj754kD77GgTd8BvBlhjXh
- QEmzI4djMM+y+BfvL6jyQjLxzwJlk7ZvDXREyXG/Lixp4kRIV5ITiA90d+5ZjoRJJl/b
- waDA6PhR+5IuvLUz7gkVaR38YSYs628F3ig= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e8n3d0qbq-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:48:00 -0800
-Received: from twshared14630.35.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 15 Feb 2022 16:47:59 -0800
-Received: by devvm1744.ftw0.facebook.com (Postfix, from userid 460691)
-        id EC61138E9B69; Tue, 15 Feb 2022 16:47:47 -0800 (PST)
-From:   Kui-Feng Lee <kuifeng@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>
-CC:     <kernel-team@fb.com>, Kui-Feng Lee <kuifeng@fb.com>
-Subject: [PATCH bpf-next] scripts/pahole-flags.sh: Enable parallelization of pahole.
-Date:   Tue, 15 Feb 2022 16:46:16 -0800
-Message-ID: <20220216004616.2079689-1-kuifeng@fb.com>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S240360AbiBPBUA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 20:20:00 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70B4F65EF
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 17:19:49 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id z18so373378iln.2
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 17:19:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kqLQ1mfw9yhsSXPgW7TSG6FhUByX1er4jV3NI0iArhI=;
+        b=oKAEpS8HF5ewccULBlcqJq1qvnu7wBgk4RA4GQbZsuo6/Kpw3i3iW8WK49xMoJKwiT
+         FYPOiKEOh8Rc5on8fFy1BXGqeHSHR5+NSWf+0d8CdujneTdfWxA4UQoqWlcvE4JD8i2y
+         9NiM68jRa5Aa/jLxrYHvT3nDUy80cz1cnVbvCViuIh71JOyehTtUGoiN2mpZsOBlCKet
+         ipXI+RkU5xCrxaCxIhjd2vP1S0fa+XXNKXDXB4HlTJJDNTHAKgpCpyYHi2DwzWosswS4
+         eb58crvgjJarRNI1GzhLjEfQPQ74cu93Rv+LBbKuDGMUJiLeLyRjgCQmup7c1aRgxmCZ
+         TJhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kqLQ1mfw9yhsSXPgW7TSG6FhUByX1er4jV3NI0iArhI=;
+        b=Dr7ds2Ks2J85WDw/QQ2P7yBwrkyuxOQPB9al9LpywGojpVf+7gJwflYVSVoV+nyrOt
+         BFrIbkEg/FBJE4Z4KmnO1Kd1X5W0NOygrsXSCfEDOz/q6vVuF0HXG+damxHnFb497TlS
+         Y7j3pyYrJToKD7Ie+KC/qnk7w7PQdcP9/nU4qbE58ht59yWI2DFAYmNO0e9rYqXsu2eR
+         gMifWxT2Q9Qgr9vYWdqhKF0bxG7Nvs02VZzqzM3HTpoWCl7aGy31RX36ZmoJajxesRFt
+         hvpb8Cykn4oPWMg03l1aicN8vZlAlA569dyAcifB8ibqOxZHuOX1HccH3tzywzPbBvOx
+         AYxQ==
+X-Gm-Message-State: AOAM533A0svJN9ZHEeVNfoX+O95gXXfeVUFLk5e5ZEFNodULlv1Gcz24
+        7CQYRn1bVhN5X9PimmicbjsqCMCPrcUotmAFG9ZTSrKnNP8=
+X-Google-Smtp-Source: ABdhPJz9unY90AlifrQpk8SQr742Gxvn0q0goyF5hr7LBl+YA2RvHJu48gszmxkL4gTmveQ6h35seBYAwvxGgNxwJX8=
+X-Received: by 2002:a92:d208:0:b0:2c1:1a3c:7b01 with SMTP id
+ y8-20020a92d208000000b002c11a3c7b01mr278130ily.71.1644974388810; Tue, 15 Feb
+ 2022 17:19:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zu9DovDv-RRYrr_pqhhFtOKLPnqDUTnS
-X-Proofpoint-GUID: zu9DovDv-RRYrr_pqhhFtOKLPnqDUTnS
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-15_07,2022-02-14_04,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0
- impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- mlxlogscore=590 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202160003
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1644970147.git.delyank@fb.com> <b73550a69ea8c02fd93c862f9cfe38f7e1813e7a.1644970147.git.delyank@fb.com>
+In-Reply-To: <b73550a69ea8c02fd93c862f9cfe38f7e1813e7a.1644970147.git.delyank@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 15 Feb 2022 17:19:37 -0800
+Message-ID: <CAEf4BzahTxY+djRkD6cjbGwkv_oevshpN-OpRMdYQ2P0_a1dOA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/1] bpftool: bpf skeletons assert type sizes
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Pass a -j argument to pahole to parse DWARF and generate BTF with
-multithreading.
+On Tue, Feb 15, 2022 at 4:12 PM Delyan Kratunov <delyank@fb.com> wrote:
+>
+> When emitting type declarations in skeletons, bpftool will now also emit
+> static assertions on the size of the data/bss/rodata/etc fields. This
+> ensures that in situations where userspace and kernel types have the same
+> name but differ in size we do not silently produce incorrect results but
+> instead break the build.
+>
+> This was reported in [1] and as expected the repro in [2] fails to build
+> on the new size assert after this change.
+>
+>   [1]: Closes: https://github.com/libbpf/libbpf/issues/433
+>   [2]: https://github.com/fuweid/iovisor-bcc-pr-3777
+>
+> Signed-off-by: Delyan Kratunov <delyank@fb.com>
+> ---
 
-Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
----
- scripts/pahole-flags.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+LGTM with a trivial styling nits. But this doesn't apply cleanly to
+bpf-next (see [0]). Can you please rebase and resend. Also for
+single-patch submissions we don't require cover letter, to please just
+put all the description into one patch without cover letter.
 
-diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-index c293941612e7..73f237ce44e8 100755
---- a/scripts/pahole-flags.sh
-+++ b/scripts/pahole-flags.sh
-@@ -1,7 +1,7 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
-=20
--extra_paholeopt=3D
-+extra_paholeopt=3D-j
-=20
- if ! [ -x "$(command -v ${PAHOLE})" ]; then
- 	exit 0
---=20
-2.30.2
+  [0] https://github.com/kernel-patches/bpf/pull/2563#issuecomment-1040929960
 
+>  tools/bpf/bpftool/gen.c | 134 +++++++++++++++++++++++++++++++++-------
+>  1 file changed, 112 insertions(+), 22 deletions(-)
+
+[...]
+
+> +
+> +       bpf_object__for_each_map(map, obj) {
+> +               if (!bpf_map__is_internal(map))
+> +                       continue;
+> +               if (!(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+> +                       continue;
+> +               if (!get_map_ident(map, map_ident, sizeof(map_ident)))
+> +                       continue;
+> +
+> +               sec = find_type_for_map(obj, map_ident);
+> +
+
+nit: unnecessary empty line between assignment and "error checking"
+
+> +               if (!sec) {
+> +                       /* best effort, couldn't find the type for this map */
+> +                       continue;
+> +               }
+> +
+> +               sec_var = btf_var_secinfos(sec);
+> +               vlen =  btf_vlen(sec);
+> +
+> +               for (i = 0; i < vlen; i++, sec_var++) {
+> +                       const struct btf_type *var = btf__type_by_id(btf, sec_var->type);
+> +                       const char *var_name = btf__name_by_offset(btf, var->name_off);
+> +                       __u32 var_type_id = var->type;
+> +                       __s64 var_size = btf__resolve_size(btf, var_type_id);
+> +
+> +                       if (var_size < 0)
+> +                               continue;
+> +
+> +                       /* static variables are not exposed through BPF skeleton */
+> +                       if (btf_var(var)->linkage == BTF_VAR_STATIC)
+> +                               continue;
+> +
+> +                       var_ident[0] = '\0';
+> +                       strncat(var_ident, var_name, sizeof(var_ident) - 1);
+> +                       sanitize_identifier(var_ident);
+> +
+> +                       printf("\t_Static_assert(");
+> +                       printf("sizeof(s->%1$s->%2$s) == %3$lld, ",
+> +                              map_ident, var_ident, var_size);
+> +                       printf("\"unexpected size of '%1$s'\");\n", var_ident);
+
+nit: I'd keep this as one printf, it makes it a bit easier to follow.
+
+> +               }
+> +       }
+
+[...]
