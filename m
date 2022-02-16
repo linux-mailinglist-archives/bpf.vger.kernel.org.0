@@ -2,148 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B86934B8159
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 08:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3D94B81C8
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 08:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbiBPHWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 02:22:04 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33444 "EHLO
+        id S230257AbiBPHh7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 02:37:59 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:47764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbiBPHWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 02:22:03 -0500
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3278E13D57;
-        Tue, 15 Feb 2022 23:21:47 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V4cGXqR_1644996102;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V4cGXqR_1644996102)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Feb 2022 15:21:43 +0800
-Message-ID: <1644996081.960291-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v5 22/22] virtio_net: support set_ringparam
-Date:   Wed, 16 Feb 2022 15:21:21 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S230280AbiBPHh5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 02:37:57 -0500
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79DD91986F6;
+        Tue, 15 Feb 2022 23:37:17 -0800 (PST)
+X-UUID: 9157c8615f1146ca9f59d6e2acc8c07d-20220216
+X-UUID: 9157c8615f1146ca9f59d6e2acc8c07d-20220216
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <lina.wang@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 956864657; Wed, 16 Feb 2022 15:36:52 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Wed, 16 Feb 2022 15:36:51 +0800
+Received: from mbjsdccf07.mediatek.inc (10.15.20.246) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 16 Feb 2022 15:36:50 +0800
+From:   Lina Wang <lina.wang@mediatek.com>
+To:     "David S . Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-References: <20220214081416.117695-1-xuanzhuo@linux.alibaba.com>
- <20220214081416.117695-23-xuanzhuo@linux.alibaba.com>
- <CACGkMEsQB0XCZb39QVsv9VM0qJpc__jucgUCGV9LU5kPTze6Hg@mail.gmail.com>
-In-Reply-To: <CACGkMEsQB0XCZb39QVsv9VM0qJpc__jucgUCGV9LU5kPTze6Hg@mail.gmail.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        "Andrii Nakryiko" <andrii@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <bpf@vger.kernel.org>,
+        <maze@google.com>, Willem de Bruijn <willemb@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Lina Wang <lina.wang@mediatek.com>
+Subject: [PATCH v3] net: fix wrong network header length
+Date:   Wed, 16 Feb 2022 15:30:55 +0800
+Message-ID: <20220216073055.22642-1-lina.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 16 Feb 2022 12:14:39 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Mon, Feb 14, 2022 at 4:15 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> >
-> > Support set_ringparam based on virtio queue reset.
-> >
-> > The rx,tx_pending required to be passed must be power of 2.
-> >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/net/virtio_net.c | 50 ++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >
-> > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > index f9bb760c6dbd..bf460ea87354 100644
-> > --- a/drivers/net/virtio_net.c
-> > +++ b/drivers/net/virtio_net.c
-> > @@ -2308,6 +2308,55 @@ static void virtnet_get_ringparam(struct net_device *dev,
-> >         ring->tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-> >  }
-> >
-> > +static int virtnet_set_ringparam(struct net_device *dev,
-> > +                                struct ethtool_ringparam *ring,
-> > +                                struct kernel_ethtool_ringparam *kernel_ring,
-> > +                                struct netlink_ext_ack *extack)
-> > +{
-> > +       struct virtnet_info *vi = netdev_priv(dev);
-> > +       u32 rx_pending, tx_pending;
-> > +       int i, err;
-> > +
-> > +       if (ring->rx_mini_pending || ring->rx_jumbo_pending)
-> > +               return -EINVAL;
-> > +
-> > +       rx_pending = virtqueue_get_vring_size(vi->rq[0].vq);
-> > +       tx_pending = virtqueue_get_vring_size(vi->sq[0].vq);
-> > +
-> > +       if (ring->rx_pending == rx_pending &&
-> > +           ring->tx_pending == tx_pending)
-> > +               return 0;
-> > +
-> > +       if (ring->rx_pending > virtqueue_get_vring_max_size(vi->rq[0].vq))
-> > +               return -EINVAL;
-> > +
-> > +       if (ring->tx_pending > virtqueue_get_vring_max_size(vi->sq[0].vq))
-> > +               return -EINVAL;
-> > +
-> > +       if (!is_power_of_2(ring->rx_pending))
-> > +               return -EINVAL;
-> > +
-> > +       if (!is_power_of_2(ring->tx_pending))
-> > +               return -EINVAL;
->
-> We'd better leave those checks to the virtio core where it knows
-> packed virtqueue doesn't have this limitation.
+When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is enable,
+several skbs are gathered in skb_shinfo(skb)->frag_list. The first skb's
+ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
+network_header\transport_header\mac_header have been updated as ipv4 acts,
+but other skbs in frag_list didnot update anything, just ipv6 packets.
 
-OK.
+udp_queue_rcv_skb will call skb_segment_list to traverse other skbs in
+frag_list and make sure right udp payload is delivered to user space.
+Unfortunately, other skbs in frag_list who are still ipv6 packets are
+updated like the first skb and will have wrong transport header length.
 
->
-> > +
-> > +       for (i = 0; i < vi->max_queue_pairs; i++) {
-> > +               if (ring->tx_pending != tx_pending) {
-> > +                       virtio_set_max_ring_num(vi->vdev, ring->tx_pending);
->
-> The name is kind of confusing, I guess it should not be the maximum
-> ring. And this needs to be done after the reset, and it would be even
-> better to disallow such change when virtqueue is not resetted.
+e.g.before bpf_skb_proto_6_to_4,the first skb and other skbs in frag_list
+has the same network_header(24)& transport_header(64), after
+bpf_skb_proto_6_to_4, ipv6 protocol has been changed to ipv4, the first
+skb's network_header is 44,transport_header is 64, other skbs in frag_list
+didnot change.After skb_segment_list, the other skbs in frag_list has
+different network_header(24) and transport_header(44), so there will be 20
+bytes different from original,that is difference between ipv6 header and 
+ipv4 header. Just change transport_header to be the same with original.
 
-OK.
+Actually, there are two solutions to fix it, one is traversing all skbs
+and changing every skb header in bpf_skb_proto_6_to_4, the other is
+modifying frag_list skb's header in skb_segment_list. Considering
+efficiency, adopt the second one--- when the first skb and other skbs in
+frag_list has different network_header length, restore them to make sure
+right udp payload is delivered to user space.
 
-Thanks.
+Signed-off-by: Lina Wang <lina.wang@mediatek.com>
+---
+ net/core/skbuff.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
->
-> > +                       err = virtnet_tx_vq_reset(vi, i);
-> > +                       if (err)
-> > +                               return err;
-> > +               }
-> > +
-> > +               if (ring->rx_pending != rx_pending) {
-> > +                       virtio_set_max_ring_num(vi->vdev, ring->rx_pending);
-> > +                       err = virtnet_rx_vq_reset(vi, i);
-> > +                       if (err)
-> > +                               return err;
-> > +               }
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> >
-> >  static void virtnet_get_drvinfo(struct net_device *dev,
-> >                                 struct ethtool_drvinfo *info)
-> > @@ -2541,6 +2590,7 @@ static const struct ethtool_ops virtnet_ethtool_ops = {
-> >         .get_drvinfo = virtnet_get_drvinfo,
-> >         .get_link = ethtool_op_get_link,
-> >         .get_ringparam = virtnet_get_ringparam,
-> > +       .set_ringparam = virtnet_set_ringparam,
-> >         .get_strings = virtnet_get_strings,
-> >         .get_sset_count = virtnet_get_sset_count,
-> >         .get_ethtool_stats = virtnet_get_ethtool_stats,
-> > --
-> > 2.31.0
-> >
->
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 0118f0afaa4f..f5ea977d8f24 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3865,7 +3865,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+ 	unsigned int delta_len = 0;
+ 	struct sk_buff *tail = NULL;
+ 	struct sk_buff *nskb, *tmp;
+-	int err;
++	int len_diff, err;
+ 
+ 	skb_push(skb, -skb_network_offset(skb) + offset);
+ 
+@@ -3905,9 +3905,11 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+ 		skb_push(nskb, -skb_network_offset(nskb) + offset);
+ 
+ 		skb_release_head_state(nskb);
++		len_diff = skb_network_header_len(nskb) - skb_network_header_len(skb);
+ 		__copy_skb_header(nskb, skb);
+ 
+ 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
++		nskb->transport_header += len_diff;
+ 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
+ 						 nskb->data - tnl_hlen,
+ 						 offset + tnl_hlen);
+-- 
+2.18.0
+
