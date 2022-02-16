@@ -2,70 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 436754B9454
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 00:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C754C4B948B
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 00:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236822AbiBPXJK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 18:09:10 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40402 "EHLO
+        id S230252AbiBPXgI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 16 Feb 2022 18:36:08 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236398AbiBPXJK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 18:09:10 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC218E0AC;
-        Wed, 16 Feb 2022 15:08:55 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id w7so1652449ioj.5;
-        Wed, 16 Feb 2022 15:08:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DQGdwhzxuaQQGT+cGokIeD5v2jSvIV5/tTpED2lEYT8=;
-        b=VrzW9xMaz+iTf8AL+xTD+S27kWbc8aWiEtZDp/mtHeqIxLskwHh2PrT7kGo+tZicLe
-         xI+NJBJpIQzSBtMxfv0gYm/zTI4Pxgo7gjIk1MYeMGMUuf6SIN9d6jolUyQmoAar3ZUf
-         s5W4bolp3St3JAURsaCtE0+mSZD8sNO9Dae1H4k+0uozd+jfXUxScS7vzVAsbj0EI6Wo
-         JcBfVehAeZ+hskjnNnlSTASROb6d3LZX28ZOZkqvWPRhiOiBdJMzJKz0Jip5pfypbUsP
-         YWKmIHK4whuFF+A7Ujw7jHTHdsN7vLVuonz0cesWkV7rzRv9GstjQim7JnXwC2qQ8tfn
-         tkBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DQGdwhzxuaQQGT+cGokIeD5v2jSvIV5/tTpED2lEYT8=;
-        b=I/nrL/n4VdEsVGLE6weVD5K4HdRU28F7rAjla7v4fsWGVeTjtQqqp/LiMO8b5LyPQ5
-         XVg+hdwGgWLxLEyoYV0Arr0npu1uPJJwMSP4rp8GqR8LHy4TLkbSoqXnNeHKI0rLsynj
-         wkau1dyLxXGTwcUlO1yS2N4dKZChHpYS7y2ZfPrynrVIC6B/RJM4qcurbHiPBdhmCCg4
-         NaHqJ5kd70+ykL3umhC4tKsX7veEaFvnUbML18SUma9srvrqQUW4uSGNPt87R7y5nFxf
-         zQQxepnKAkTb6X8sUmxxSm+NNc2LckcGyn9JSR8EyiDYlMdNlutDnYHvZmMlslsvrhwp
-         CE5A==
-X-Gm-Message-State: AOAM5306yYrN2BFPHs9BeD7O/BkRyUIWdew31dgM1Jx/V84veUgH5KSS
-        qlBuLrYIYKdlk+dMcBxZIBEGmOJSa8MtPL8l3CmayECtx8mGsg==
-X-Google-Smtp-Source: ABdhPJwEIuoYnzm7Z8ea6zcujmmC/+dFVlDsv5IiW0c/Y///Zf+yoYJmQU64bva0nG0Aj68NEOBdyBLRoUAvZCYvH3Q=
-X-Received: by 2002:a05:6638:382:b0:30e:3e2e:3227 with SMTP id
- y2-20020a056638038200b0030e3e2e3227mr107859jap.234.1645052935157; Wed, 16 Feb
- 2022 15:08:55 -0800 (PST)
+        with ESMTP id S232038AbiBPXgH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 18:36:07 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A59C2402DB
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 15:35:54 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21GMVFiN023163
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 15:35:53 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e8n3d8d32-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 15:35:53 -0800
+Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 16 Feb 2022 15:35:49 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id CA9601124BCDC; Wed, 16 Feb 2022 15:35:41 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] bpftool: fix C++ additions to skeleton
+Date:   Wed, 16 Feb 2022 15:35:40 -0800
+Message-ID: <20220216233540.216642-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220216092102.125448-1-jolsa@kernel.org>
-In-Reply-To: <20220216092102.125448-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Feb 2022 15:08:44 -0800
-Message-ID: <CAEf4Bza0B1jpZ7ZR4ZBPuDf1J0+t_S2bP2ySH26Ea6sNWbiBoQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpftool: Fix pretty print dump for maps without
- BTF loaded
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yinjun Zhang <yinjun.zhang@corigine.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: OMuEf-CadFBccWJiCBuvEPUmqnCZ1BYH
+X-Proofpoint-GUID: OMuEf-CadFBccWJiCBuvEPUmqnCZ1BYH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-16_11,2022-02-16_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 bulkscore=0 clxscore=1015 adultscore=0
+ impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=706 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202160127
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,100 +59,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 1:21 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> The commit e5043894b21f ("bpftool: Use libbpf_get_error() to check error")
-> fails to dump map without BTF loaded in pretty mode (-p option).
->
-> Fixing this by making sure get_map_kv_btf won't fail in case there's
-> no BTF available for the map.
->
-> Cc: Yinjun Zhang <yinjun.zhang@corigine.com>
-> Fixes: e5043894b21f ("bpftool: Use libbpf_get_error() to check error")
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/bpf/bpftool/map.c | 29 +++++++++++++----------------
->  1 file changed, 13 insertions(+), 16 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-> index 7a341a472ea4..8562add7417d 100644
-> --- a/tools/bpf/bpftool/map.c
-> +++ b/tools/bpf/bpftool/map.c
-> @@ -805,29 +805,28 @@ static int maps_have_btf(int *fds, int nb_fds)
->
->  static struct btf *btf_vmlinux;
->
-> -static struct btf *get_map_kv_btf(const struct bpf_map_info *info)
-> +static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
->  {
-> -       struct btf *btf = NULL;
-> +       int err = 0;
->
->         if (info->btf_vmlinux_value_type_id) {
->                 if (!btf_vmlinux) {
->                         btf_vmlinux = libbpf_find_kernel_btf();
-> -                       if (libbpf_get_error(btf_vmlinux))
-> +                       err = libbpf_get_error(btf_vmlinux);
-> +                       if (err) {
->                                 p_err("failed to get kernel btf");
-> +                               return err;
-> +                       }
->                 }
-> -               return btf_vmlinux;
-> +               *btf = btf_vmlinux;
->         } else if (info->btf_value_type_id) {
-> -               int err;
-> -
-> -               btf = btf__load_from_kernel_by_id(info->btf_id);
-> -               err = libbpf_get_error(btf);
-> -               if (err) {
-> +               *btf = btf__load_from_kernel_by_id(info->btf_id);
-> +               err = libbpf_get_error(*btf);
-> +               if (err)
->                         p_err("failed to get btf");
-> -                       btf = ERR_PTR(err);
-> -               }
->         }
+Mark C++-specific T::open() and other methods as static inline to avoid
+symbol redefinition when multiple files use the same skeleton header in
+an application.
 
-get_map_kv_btf is supposed to set btf to NULL, otherwise you can get a
-crash in the caller
+Fixes: bb8ffe61ea45 ("bpftool: Add C++-specific open/load/etc skeleton wrappers")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/bpf/bpftool/gen.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-I've added
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index e461059a72ee..f8c1413523a3 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -834,13 +834,13 @@ static int do_skeleton(int argc, char **argv)
+ 		\n\
+ 									    \n\
+ 		#ifdef __cplusplus					    \n\
+-			static struct %1$s *open(const struct bpf_object_open_opts *opts = nullptr);\n\
+-			static struct %1$s *open_and_load();		    \n\
+-			static int load(struct %1$s *skel);		    \n\
+-			static int attach(struct %1$s *skel);		    \n\
+-			static void detach(struct %1$s *skel);		    \n\
+-			static void destroy(struct %1$s *skel);		    \n\
+-			static const void *elf_bytes(size_t *sz);	    \n\
++			static inline struct %1$s *open(const struct bpf_object_open_opts *opts = nullptr);\n\
++			static inline struct %1$s *open_and_load();	    \n\
++			static inline int load(struct %1$s *skel);	    \n\
++			static inline int attach(struct %1$s *skel);	    \n\
++			static inline void detach(struct %1$s *skel);	    \n\
++			static inline void destroy(struct %1$s *skel);	    \n\
++			static inline const void *elf_bytes(size_t *sz);    \n\
+ 		#endif /* __cplusplus */				    \n\
+ 		};							    \n\
+ 									    \n\
+-- 
+2.30.2
 
-else {
-    *btf = NULL;
-}
-
-and force-pushed
-
-
->
-> -       return btf;
-> +       return err;
->  }
->
->  static void free_map_kv_btf(struct btf *btf)
-> @@ -862,8 +861,7 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
->         prev_key = NULL;
->
->         if (wtr) {
-> -               btf = get_map_kv_btf(info);
-> -               err = libbpf_get_error(btf);
-> +               err = get_map_kv_btf(info, &btf);
->                 if (err) {
->                         goto exit_free;
->                 }
-> @@ -1054,8 +1052,7 @@ static void print_key_value(struct bpf_map_info *info, void *key,
->         json_writer_t *btf_wtr;
->         struct btf *btf;
->
-> -       btf = get_map_kv_btf(info);
-> -       if (libbpf_get_error(btf))
-> +       if (get_map_kv_btf(info, &btf))
->                 return;
->
->         if (json_output) {
-> --
-> 2.35.1
->
