@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875CA4B7BA8
+	by mail.lfdr.de (Postfix) with ESMTP id D2C3F4B7BA9
 	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 01:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244813AbiBPANK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S244977AbiBPANK (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 15 Feb 2022 19:13:10 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52440 "EHLO
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244968AbiBPANC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 19:13:02 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71DC70332
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:12:51 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id q11-20020a252a0b000000b0061e240c8fb3so707736ybq.22
-        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:12:51 -0800 (PST)
+        with ESMTP id S244700AbiBPANF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 19:13:05 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3735BDCE38
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:12:54 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 2-20020a250d02000000b00623ab738437so972325ybn.0
+        for <bpf@vger.kernel.org>; Tue, 15 Feb 2022 16:12:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=+AggQNb3mZ3envo0A6eMknJWqNQcBktc6H2Lwkg2kWw=;
-        b=aCe0htwJwtSKxXVPoupM01sHwF887WiEUQAN+bSTnwiMTR6DKkaVhlWkK9Lju2F50+
-         cq5K9CQtMe7yr27t8bZsSNMheLjU4QGZnwdEJbiRoKYEIazP+RL20suz9LOmbMike90R
-         pCq6yTO8KEnYTiLmaYU2dtEnqFCdy3kJaU0nMpW8yWGWfQuDQtI2QnWWNGzhKPV1aAQw
-         V5rco74NWWMxm/D7cjfIF52T8FMsdzT7VXXwvZ9pdzoM59LQnZ4KcIa01iTJ4uzlRStc
-         QOt1f/XjtCZGKp85cwBG41y2QOGxmvVg7PuFcrXJjiKPGJopl1gyPVbBM5AG0O44fKWN
-         mFUg==
+        bh=REY3pk0BoGNZKX6Lo+KrxmNqWG6NMmzP12YExN8vbiI=;
+        b=GlEp4DxMa9Jx4nnFsTCvxILiewnVvUIge+4OoL4D9K9oizrqqmavIizzhq5ImBwBbx
+         7nBkKArl6x63laZVyQG/YZgfCdvpd8C3a19tTK+1tcMcVsVHeFc+Sjkx5XQWCU41O5dn
+         VtVrDjZ00+KjHaRDd92944AEBrqzEpPwqqWpuiQnlWQ1M7KKpCqD5nHk+kgRSzdTTzMb
+         6QxZ5rV0Jv+z8ftunIYwp7Wk/nlAJRBRvIs3duhu0L95oW6d/AQW5i6QfAS9KNIbupbF
+         nixXCpcVFFrZQMZpt5+dV9MUpfXTyD9Or885dOhbavq72NUda/RaBm9u4E4C9r6hiCmn
+         ObZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+AggQNb3mZ3envo0A6eMknJWqNQcBktc6H2Lwkg2kWw=;
-        b=T85V4AVM4lZNNevuAlju1jHf6LN4iq3cxbQi15b/OLUKF15d9q7pAx3kSPurUafRgW
-         BVgdm29pk8gaTEMLXCGkTmLWjKzGUyYuDJAI1Mfhx7mYZfgRuw+3oyXKWXoMo2gdUs71
-         iKslBiG7ZzJ19IhQzHmpc36WtHc8uEArQJmmLBO1j/2t0W7AKxiU4J0X83V8cMj9VHGJ
-         BwTX0LP07o+gUp2Nm+ccyKcG0X/aEhbfzsHtbRg4cruds76uuKOrQsvZfVsB8VtYuG2A
-         mtbkSscDtR00jCiZ6MkIGh2tA6aLB4ErjGetl0M71Blz/A+8lVifYhJuMQFgNd6xskTv
-         LqBQ==
-X-Gm-Message-State: AOAM530nNWENrNVtqG9ZscqEAma+l+o/Sf+VptoifKTf2v6MkpM9lo4O
-        B6PQaJM79BKlzh1CBlaLpDQFoO8=
-X-Google-Smtp-Source: ABdhPJx3eNJv+EBdAMz2QAKR6XnqHO3iZaSH9SsfWgQVZvdUJNxpY179YF2zsGgRgbD2xHGSPtwnpiU=
+        bh=REY3pk0BoGNZKX6Lo+KrxmNqWG6NMmzP12YExN8vbiI=;
+        b=fZYgHBi5rreECPjlu8uXoOnneBvaNCVUlPg56mFms2s8Mj2PydyT6ZfkL4b5U0PX59
+         yJP2SI3559pEmQPr2ffgNAEu2f5dpC76y5OOBSqOLs0Uo4QQRpXNFHYPW+xKMF0RykEM
+         19Q7VoGCN7JD+AbZcJSPANlldUY2xHlAfqmHZlYKv9ADzyVZtcXYUApPMkrqNT2PVdVE
+         XvXwDaJU9oVxPhsswAy8AUEoIa2TWn4VEL3B3O/5cotx+9cTHKls5kAt0t/FHwMUZhpg
+         373V/xNrv5Lmo1ET7OaJ1rQtWbfbr8sR9BI5Jw4oeW5xiiMT7RrHnxW4lcjPTbIx1Esx
+         3sQA==
+X-Gm-Message-State: AOAM533WKyI4VdvQeSwosEd6SKXQZ/GXxk/e27NlV86goVQ1pe4XLLQj
+        z8l6JFKRAH6gWg1hAKwbInQeO2M=
+X-Google-Smtp-Source: ABdhPJwuVNflF50dIGT2Y+Umaraw2zGd5e8whT4mYPi0KnAc5SppEKwzXDa1jA9L4wysvWVyGjJKwe0=
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:754a:e17d:48a0:d1db])
- (user=sdf job=sendgmr) by 2002:a25:780c:0:b0:61e:138b:e5b6 with SMTP id
- t12-20020a25780c000000b0061e138be5b6mr70109ybc.689.1644970371094; Tue, 15 Feb
- 2022 16:12:51 -0800 (PST)
-Date:   Tue, 15 Feb 2022 16:12:40 -0800
+ (user=sdf job=sendgmr) by 2002:a25:5f08:0:b0:622:1e92:39ca with SMTP id
+ t8-20020a255f08000000b006221e9239camr69826ybb.715.1644970373462; Tue, 15 Feb
+ 2022 16:12:53 -0800 (PST)
+Date:   Tue, 15 Feb 2022 16:12:41 -0800
 In-Reply-To: <20220216001241.2239703-1-sdf@google.com>
-Message-Id: <20220216001241.2239703-4-sdf@google.com>
+Message-Id: <20220216001241.2239703-5-sdf@google.com>
 Mime-Version: 1.0
 References: <20220216001241.2239703-1-sdf@google.com>
 X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
-Subject: [RFC bpf-next 3/4] libbpf: add lsm_cgoup_sock type
+Subject: [RFC bpf-next 4/4] selftest: lsm_cgroup_sock sample usage
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -67,33 +67,167 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-lsm+expected_attach_type=BPF_LSM_CGROUP_SOCK
+Implement two things I'd like to get from this:
+
+1. apply default sk_priority policy
+2. permit TX-only AF_PACKET socket
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/lib/bpf/libbpf.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bpf/prog_tests/lsm_cgroup_sock.c          | 81 +++++++++++++++++++
+ .../selftests/bpf/progs/lsm_cgroup_sock.c     | 55 +++++++++++++
+ 2 files changed, 136 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/lsm_cgroup_sock.c
+ create mode 100644 tools/testing/selftests/bpf/progs/lsm_cgroup_sock.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2262bcdfee92..840a0274240c 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8615,6 +8615,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("freplace/",		EXT, 0, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("lsm/",			LSM, BPF_LSM_MAC, SEC_ATTACH_BTF, attach_lsm),
- 	SEC_DEF("lsm.s/",		LSM, BPF_LSM_MAC, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_lsm),
-+	SEC_DEF("lsm_cgroup_sock/",	LSM, BPF_LSM_CGROUP_SOCK, SEC_ATTACH_BTF, attach_lsm),
- 	SEC_DEF("iter/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF, attach_iter),
- 	SEC_DEF("iter.s/",		TRACING, BPF_TRACE_ITER, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_iter),
- 	SEC_DEF("syscall",		SYSCALL, 0, SEC_SLEEPABLE),
-@@ -8930,6 +8931,7 @@ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
- 		*kind = BTF_KIND_TYPEDEF;
- 		break;
- 	case BPF_LSM_MAC:
-+	case BPF_LSM_CGROUP_SOCK:
- 		*prefix = BTF_LSM_PREFIX;
- 		*kind = BTF_KIND_FUNC;
- 		break;
+diff --git a/tools/testing/selftests/bpf/prog_tests/lsm_cgroup_sock.c b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup_sock.c
+new file mode 100644
+index 000000000000..4afc40282b15
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/lsm_cgroup_sock.c
+@@ -0,0 +1,81 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <test_progs.h>
++
++#include "lsm_cgroup_sock.skel.h"
++
++void test_lsm_cgroup_sock(void)
++{
++	int post_create_prog_fd = -1, bind_prog_fd = -1;
++	struct lsm_cgroup_sock *skel = NULL;
++	int cgroup_fd, err, fd, prio;
++	socklen_t socklen;
++
++
++	cgroup_fd = test__join_cgroup("/sock_policy");
++	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup"))
++		goto close_skel;
++
++	skel = lsm_cgroup_sock__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		goto close_cgroup;
++
++	err = lsm_cgroup_sock__attach(skel);
++	if (!ASSERT_OK(err, "attach"))
++		goto close_cgroup;
++
++	post_create_prog_fd = bpf_program__fd(skel->progs.socket_post_create);
++	bind_prog_fd = bpf_program__fd(skel->progs.socket_bind);
++
++	err = bpf_prog_attach(post_create_prog_fd, cgroup_fd, BPF_LSM_CGROUP_SOCK, 0);
++	if (!ASSERT_OK(err, "attach post_create_prog_fd"))
++		goto close_cgroup;
++
++	err = bpf_prog_attach(bind_prog_fd, cgroup_fd, BPF_LSM_CGROUP_SOCK, 0);
++	if (!ASSERT_OK(err, "attach bind_prog_fd"))
++		goto detach_cgroup;
++
++	/* AF_INET6 gets default policy (sk_priority).
++	 */
++
++	fd = socket(AF_INET6, SOCK_STREAM, 0);
++	if (!ASSERT_GE(fd, 0, "socket(SOCK_STREAM)"))
++		goto detach_cgroup;
++
++	prio = 0;
++	socklen = sizeof(prio);
++	ASSERT_GE(getsockopt(fd, SOL_SOCKET, SO_PRIORITY, &prio, &socklen), 0, "getsockopt");
++	ASSERT_EQ(prio, 123, "sk_priority");
++
++	close(fd);
++
++	/* TX-only AF_PACKET is allowed.
++	 */
++
++	ASSERT_LT(socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL)), 0, "socket(AF_PACKET, ..., ETH_P_ALL)");
++
++	fd = socket(AF_PACKET, SOCK_RAW, 0);
++	ASSERT_GE(fd, 0, "socket(AF_PACKET, ..., 0)");
++
++	/* TX-only AF_PACKET can not be rebound.
++	 */
++
++	struct sockaddr_ll sa = {
++		.sll_family = AF_PACKET,
++		.sll_protocol = htons(ETH_P_ALL),
++	};
++	ASSERT_LT(bind(fd, (struct sockaddr *)&sa, sizeof(sa)), 0, "bind(ETH_P_ALL)");
++
++	close(fd);
++
++detach_cgroup:
++	bpf_prog_detach2(post_create_prog_fd, cgroup_fd, BPF_LSM_CGROUP_SOCK);
++	bpf_prog_detach2(bind_prog_fd, cgroup_fd, BPF_LSM_CGROUP_SOCK);
++
++close_cgroup:
++	close(cgroup_fd);
++close_skel:
++	lsm_cgroup_sock__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/lsm_cgroup_sock.c b/tools/testing/selftests/bpf/progs/lsm_cgroup_sock.c
+new file mode 100644
+index 000000000000..7fe3da5a8dc7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/lsm_cgroup_sock.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++#ifndef AF_PACKET
++#define AF_PACKET 17
++#endif
++
++#ifndef EPERM
++#define EPERM 1
++#endif
++
++SEC("lsm_cgroup_sock/socket_post_create")
++int BPF_PROG(socket_post_create, struct socket *sock, int family,
++	     int type, int protocol, int kern)
++{
++	struct sock *sk;
++
++	/* Reject non-tx-only AF_PACKET.
++	 */
++	if (family == AF_PACKET && protocol != 0)
++		return 0; /* EPERM */
++
++	sk = sock->sk;
++	if (!sk)
++		return 1;
++
++	/* The rest of the sockets get default policy.
++	 */
++	sk->sk_priority = 123;
++	return 1;
++}
++
++SEC("lsm_cgroup_sock/socket_bind")
++int BPF_PROG(socket_bind, struct socket *sock, struct sockaddr *address,
++	     int addrlen)
++{
++	struct sockaddr_ll sa = {};
++
++	if (sock->sk->__sk_common.skc_family != AF_PACKET)
++		return 1;
++
++	if (sock->sk->sk_kern_sock)
++		return 1;
++
++	bpf_probe_read_kernel(&sa, sizeof(sa), address);
++	if (sa.sll_protocol)
++		return 0; /* EPERM */
++
++	return 1;
++}
 -- 
 2.35.1.265.g69c8d7142f-goog
 
