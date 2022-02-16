@@ -2,66 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 237984B9016
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 19:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C78B4B9030
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 19:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbiBPSVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 13:21:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46912 "EHLO
+        id S237643AbiBPS1p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 13:27:45 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236822AbiBPSVW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 13:21:22 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373F21C55B0;
-        Wed, 16 Feb 2022 10:21:10 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id k18so414555ils.11;
-        Wed, 16 Feb 2022 10:21:10 -0800 (PST)
+        with ESMTP id S237632AbiBPS1o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 13:27:44 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A974C2E78;
+        Wed, 16 Feb 2022 10:27:32 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id f13so449418ilq.5;
+        Wed, 16 Feb 2022 10:27:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ceCMWbh50/66jZx1xnt7I1BjFS8HnV/WnrUpiH5ABZQ=;
-        b=pR+8gufuTKBgV3oqoVCAUjEKP4M7llkkrsO29IVIRnNCQMI7KF9OA+ldij1qKWJuZU
-         I4IMZB5VgaK0ZFPrmEl7D5V3Qcti+DBdmQ7179vFkU4ytUuFiZymXS5sJ1YcDFcqrZxJ
-         CLsK1r6gJajzwYJlFZQPT3mmmQ6HNiSbpDTCcQ0ZhZmUDMGnmfP51y8olFhRwXcs4Xgh
-         BEEzlF/IWeUJBb3Xee2gnT8K+UBaJxd15zmlQF2afUzwjvnYQ4G7fTojOqQnViuYc2IY
-         qWMoJQLTTY7C3LfL4zsoefdRL6z/M5zAApAX3LNEcLnLfl37kWrQK5GNr+iQiUw9+v4e
-         3NQg==
+         :cc;
+        bh=cOcn/3/cCrzj4+eIAU0TlZEiW9Bi0T8velPLnnoMOp0=;
+        b=jOM726r1yxEA2eI2TR0QzX0YLb9iOufgfJvh4rq/1h4SoZupiLLygPCjLAXSAthCoL
+         IjD02c3rvV0JyCS3PqSRNLvfwNaWi7Jep1fksNnvVm7XuVjlRpRCd8qmxyw0Zpk5Nf21
+         UOk5hYAysOfiVCyEhBmeLsUC6CsqitTYndFgTQfAOzw27qLWTRicHkxI9PjHvJrB6swF
+         LWaOI21XTxT6Fmz9Ij3mcqxUZYcnn0+59fA8L6aZ6M8kbEj69gMF5lgf7msjTgsKtGmT
+         u1p+fGNCkY82lE+V0fQViponTbd2A2Hm0+u95UWN6F30EoY6etJcH6+sf8Cne8jkiZWq
+         Pavg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ceCMWbh50/66jZx1xnt7I1BjFS8HnV/WnrUpiH5ABZQ=;
-        b=eusZLVZs7jFMRdF9JMzVUot5l8GIirooFBOPOOtJ2GfFq4xLhrSKpyQe4HZTih2Jlu
-         Fwt/crlhikwWmw+2Q4QkRaZJZRq0T3szIXA16+gRoTdawWDj0rb1GPslGaQe34u4iGEI
-         y5z/6p4oFJ7Au18c4Jv09Mdg7C1Lt6cgFi5Cy74oXc8+mdls94lKHTw1S5ht65FsFJyd
-         ovHP67mTgVKHkIhs1/RSPZ4bWsSmCWPk6UsjuGgcZFX3oRplj/NSxNeigYWYfrRjoQhK
-         RzYQ4AB2SgXwCqxejgSth46KyUZL7nZSMTdnlj5fGbs3s168xOKFPdp656xC8HsVOa3i
-         pbFw==
-X-Gm-Message-State: AOAM533y7V9AYUNJLlmQpLeAJi+89WkzpbMGN59WQ7cO+DWBZ6DdIPVR
-        A8k7io8Krx9JLSu4k2tXwPjqfsDEQaoYhv3XBjw=
-X-Google-Smtp-Source: ABdhPJwM2qA7iV3+VdmujHCpHNDB6X0sQ6SjoLcgkJ4pIQgll17+QtrCisJKMJqapeZ55C3dr4sFjoETXT2IcNQ8hvU=
-X-Received: by 2002:a05:6e02:503:b0:2bf:a929:4dc3 with SMTP id
- d3-20020a056e02050300b002bfa9294dc3mr2596084ils.98.1645035669605; Wed, 16 Feb
- 2022 10:21:09 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=cOcn/3/cCrzj4+eIAU0TlZEiW9Bi0T8velPLnnoMOp0=;
+        b=yDJehPgOOD1ImKncK6sz5xxBqI1DmBq8Bk0HPsVBKhwmUwEffiEzbiikQIPhZMVPnT
+         Av9ZdSB2UkUxUw3kzVIcKhywP11Z5XhKalVO5c+bIimZjD8ixpXdRckWwSJkMKXRiDgZ
+         8JYXAK4v7qsQabZEpTA0vfruYcIVeNYEbhbdTC1D6/oG/y1PDe000C9WHqrQefm4lnrK
+         mgLOFGA8lgMG2+kVydvj+UQJvnvnPk4S2Z87mUeTjrWS3r2KlZQab4r2yb1V5Lv3Ocsc
+         sc40MI2oYNR7bhacrxvF2iPkcFPsXevbR7Pgr+w4rjP7Prz6/+ts9KPUVUHAPw/OCXva
+         1Sjw==
+X-Gm-Message-State: AOAM530+xghtXJqKMnMXddN5lQqnbUTY93bqjFPg8epljI476xPVnvXn
+        vmnDBYbuT8+ydtSt+RI2cJUe2qIm1NDW4iIjzwE=
+X-Google-Smtp-Source: ABdhPJz03m6QSAKciXBJlhqx6g/VA+DU1qsNokOaIwc7qNLUgzmEV9FgtdX5O9XGnzAxX2JjwVYNY08XcmDKePbY5GA=
+X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
+ y6-20020a926406000000b002bbf1dee13emr2561159ilb.305.1645036051512; Wed, 16
+ Feb 2022 10:27:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20220215225856.671072-1-mauricio@kinvolk.io> <20220215225856.671072-8-mauricio@kinvolk.io>
-In-Reply-To: <20220215225856.671072-8-mauricio@kinvolk.io>
+References: <Yfq+PJljylbwJ3Bf@krava> <CAADnVQKeTB=UgY4Gf-46EBa8rwWTu2wvi7hEj2sdVTALGJ0JEg@mail.gmail.com>
+ <YfvvfLlM1FOTgvDm@krava> <20220204094619.2784e00c0b7359356458ca57@kernel.org>
+ <CAADnVQJYY0Xm6M9O02E5rOkdQPX39NOOS4tM2jpwRLQvP-qDBg@mail.gmail.com>
+ <20220204110704.7c6eaf43ff9c8f5fe9bf3179@kernel.org> <CAADnVQJfq_10H0V+u0w0rzyZ9uy7vq=T-3BMDANjEN8A3-prsQ@mail.gmail.com>
+ <20220203211954.67c20cd3@gandalf.local.home> <CAADnVQKjNJjZDs+ZV7vcusEkKuDq+sWhSD3M5GtvNeZMx3Fcmg@mail.gmail.com>
+ <20220204125942.a4bda408f536c2e3248955e1@kernel.org> <Yguo4v7c+3A0oW/h@krava>
+In-Reply-To: <Yguo4v7c+3A0oW/h@krava>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Feb 2022 10:20:58 -0800
-Message-ID: <CAEf4BzYuXTYRP+3Mkk9a1rofdNJOWG52HDMjRsyYosyfs4sQhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 7/7] selftests/bpf: Test "bpftool gen min_core_btf"
-To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 16 Feb 2022 10:27:19 -0800
+Message-ID: <CAEf4BzYO_B51TPgUnDXUPUsK55RSczwcnhuLz9DMbfO5JCj=Cw@mail.gmail.com>
+Subject: Re: [PATCH 0/8] bpf: Add fprobe link
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jiri Olsa <jolsa@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,136 +81,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 2:59 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
- wrote:
+On Tue, Feb 15, 2022 at 5:21 AM Jiri Olsa <olsajiri@gmail.com> wrote:
 >
-> This commit reuses the core_reloc test to check if the BTF files
-> generated with "bpftool gen min_core_btf" are correct. This introduces
-> test_core_btfgen() that runs all the core_reloc tests, but this time
-> the source BTF files are generated by using "bpftool gen min_core_btf".
+> On Fri, Feb 04, 2022 at 12:59:42PM +0900, Masami Hiramatsu wrote:
+> > Hi Alexei,
+> >
+> > On Thu, 3 Feb 2022 18:42:22 -0800
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >
+> > > On Thu, Feb 3, 2022 at 6:19 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > >
+> > > > On Thu, 3 Feb 2022 18:12:11 -0800
+> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > > > No, fprobe is NOT kprobe on ftrace, kprobe on ftrace is already implemented
+> > > > > > transparently.
+> > > > >
+> > > > > Not true.
+> > > > > fprobe is nothing but _explicit_ kprobe on ftrace.
+> > > > > There was an implicit optimization for kprobe when ftrace
+> > > > > could be used.
+> > > > > All this new interface is doing is making it explicit.
+> > > > > So a new name is not warranted here.
+> > > > >
+> > > > > > from that viewpoint, fprobe and kprobe interface are similar but different.
+> > > > >
+> > > > > What is the difference?
+> > > > > I don't see it.
+> > > >
+> > > > IIUC, a kprobe on a function (or ftrace, aka fprobe) gives some extra
+> > > > abilities that a normal kprobe does not. Namely, "what is the function
+> > > > parameters?"
+> > > >
+> > > > You can only reliably get the parameters at function entry. Hence, by
+> > > > having a probe that is unique to functions as supposed to the middle of a
+> > > > function, makes sense to me.
+> > > >
+> > > > That is, the API can change. "Give me parameter X". That along with some
+> > > > BTF reading, could figure out how to get parameter X, and record that.
+> > >
+> > > This is more or less a description of kprobe on ftrace :)
+> > > The bpf+kprobe users were relying on that for a long time.
+> > > See PT_REGS_PARM1() macros in bpf_tracing.h
+> > > They're meaningful only with kprobe on ftrace.
+> > > So, no, fprobe is not inventing anything new here.
+> >
+> > Hmm, you may be misleading why PT_REGS_PARAM1() macro works. You can use
+> > it even if CONFIG_FUNCITON_TRACER=n if your kernel is built with
+> > CONFIG_KPROBES=y. It is valid unless you put a probe out of function
+> > entry.
+> >
+> > > No one is using kprobe in the middle of the function.
+> > > It's too difficult to make anything useful out of it,
+> > > so no one bothers.
+> > > When people say "kprobe" 99 out of 100 they mean
+> > > kprobe on ftrace/fentry.
+> >
+> > I see. But the kprobe is kprobe. It is not designed to support multiple
+> > probe points. If I'm forced to say, I can rename the struct fprobe to
+> > struct multi_kprobe, but that doesn't change the essence. You may need
+> > to use both of kprobes and so-called multi_kprobe properly. (Someone
+> > need to do that.)
 >
-> The goal of this test is to check that the generated files are usable,
-> and not to check if the algorithm is creating an optimized BTF file.
+> hi,
+> tying to kick things further ;-) I was thinking about bpf side of this
+> and we could use following interface:
 >
-> Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
-> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
-> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
-> ---
->  .../selftests/bpf/prog_tests/core_reloc.c     | 50 ++++++++++++++++++-
->  1 file changed, 48 insertions(+), 2 deletions(-)
+>   enum bpf_attach_type {
+>     ...
+>     BPF_TRACE_KPROBE_MULTI
+>   };
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/=
-testing/selftests/bpf/prog_tests/core_reloc.c
-> index 68e4c8dafa00..fa2908879c77 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -2,6 +2,7 @@
->  #include <test_progs.h>
->  #include "progs/core_reloc_types.h"
->  #include "bpf_testmod/bpf_testmod.h"
-> +#include <linux/limits.h>
->  #include <sys/mman.h>
->  #include <sys/syscall.h>
->  #include <bpf/btf.h>
-> @@ -836,13 +837,27 @@ static size_t roundup_page(size_t sz)
->         return (sz + page_size - 1) / page_size * page_size;
->  }
+>   enum bpf_link_type {
+>     ...
+>     BPF_LINK_TYPE_KPROBE_MULTI
+>   };
 >
-> -void test_core_reloc(void)
-> +static int run_btfgen(const char *src_btf, const char *dst_btf, const ch=
-ar *objpath)
-> +{
-> +       char command[4096];
-> +       int n;
-> +
-> +       n =3D snprintf(command, sizeof(command),
-> +                    "./tools/build/bpftool/bpftool gen min_core_btf %s %=
-s %s",
-> +                    src_btf, dst_btf, objpath);
-> +       if (n < 0 || n >=3D sizeof(command))
-> +               return -1;
-> +
-> +       return system(command);
-> +}
-> +
-> +static void run_core_reloc_tests(bool use_btfgen)
->  {
->         const size_t mmap_sz =3D roundup_page(sizeof(struct data));
->         DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
->         struct core_reloc_test_case *test_case;
->         const char *tp_name, *probe_name;
-> -       int err, i, equal;
-> +       int err, i, equal, fd;
->         struct bpf_link *link =3D NULL;
->         struct bpf_map *data_map;
->         struct bpf_program *prog;
-> @@ -854,6 +869,7 @@ void test_core_reloc(void)
->         my_pid_tgid =3D getpid() | ((uint64_t)syscall(SYS_gettid) << 32);
+>   union bpf_attr {
 >
->         for (i =3D 0; i < ARRAY_SIZE(test_cases); i++) {
-> +               char btf_file[] =3D "/tmp/core_reloc.btf.XXXXXX";
->                 test_case =3D &test_cases[i];
->                 if (!test__start_subtest(test_case->case_name))
->                         continue;
-> @@ -863,6 +879,25 @@ void test_core_reloc(void)
->                         continue;
->                 }
+>     struct {
+>       ...
+>       struct {
+>         __aligned_u64   syms;
+>         __aligned_u64   addrs;
+>         __aligned_u64   cookies;
+>         __u32           cnt;
+>         __u32           flags;
+>       } kprobe_multi;
+>     } link_create;
+>   }
 >
-> +               /* generate a "minimal" BTF file and use it as source */
-> +               if (use_btfgen) {
-> +                       if (!test_case->btf_src_file || test_case->fails)=
- {
-> +                               test__skip();
-> +                               continue;
-> +                       }
-> +
-> +                       fd =3D mkstemp(btf_file);
-> +                       if (CHECK(fd < 0, "btf_tmp", "failed to create fi=
-le: %d\n", fd))
-> +                               goto cleanup;
+> because from bpf user POV it's new link for attaching multiple kprobes
+> and I agree new 'fprobe' type name in here brings more confusion, using
+> kprobe_multi is straightforward
+>
+> thoguhts?
 
-no new CHECK()s, please
+I think this makes sense. We do need new type of link to store ip ->
+cookie mapping anyways.
 
-> +                       close(fd); /* we only need the path */
-> +                       err =3D run_btfgen(test_case->btf_src_file, btf_f=
-ile,
-> +                                        test_case->bpf_obj_file);
-> +                       if (!ASSERT_OK(err, "run_btfgen"))
-> +                               goto cleanup;
-> +
-> +                       test_case->btf_src_file =3D btf_file;
-> +               }
-> +
->                 if (test_case->setup) {
->                         err =3D test_case->setup(test_case);
->                         if (CHECK(err, "test_setup", "test #%d setup fail=
-ed: %d\n", i, err))
-> @@ -954,8 +989,19 @@ void test_core_reloc(void)
->                         CHECK_FAIL(munmap(mmap_data, mmap_sz));
->                         mmap_data =3D NULL;
->                 }
-> +               remove(btf_file);
+Is there any chance to support this fast multi-attach for uprobe? If
+yes, we might want to reuse the same link for both (so should we name
+it more generically? on the other hand BPF program type for uprobe is
+BPF_PROG_TYPE_KPROBE anyway, so keeping it as "kprobe" also would be
+consistent with what we have today).
 
-would be a bit safer to do unlink() here instead of remove, but it's
-probably fine as is (I didn't touch this part)
+But yeah, the main question is whether there is something preventing
+us from supporting multi-attach uprobe as well? It would be really
+great for USDT use case.
 
-
->                 bpf_link__destroy(link);
->                 link =3D NULL;
->                 bpf_object__close(obj);
->         }
->  }
-> +
-> +void test_core_reloc(void)
-> +{
-> +       run_core_reloc_tests(false);
-> +}
-> +
-> +void test_core_btfgen(void)
-> +{
-> +       run_core_reloc_tests(true);
-> +}
-> --
-> 2.25.1
 >
+> thanks,
+> jirka
