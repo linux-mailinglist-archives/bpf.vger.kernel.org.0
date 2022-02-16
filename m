@@ -2,78 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6BB4B7D6D
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 03:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D16A4B7DEA
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 03:51:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245747AbiBPCA7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Feb 2022 21:00:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47626 "EHLO
+        id S233597AbiBPChG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Feb 2022 21:37:06 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245757AbiBPCA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Feb 2022 21:00:58 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97490FBA42;
-        Tue, 15 Feb 2022 18:00:47 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id q17so1372811edd.4;
-        Tue, 15 Feb 2022 18:00:47 -0800 (PST)
+        with ESMTP id S1343787AbiBPChF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Feb 2022 21:37:05 -0500
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ACA1FD9;
+        Tue, 15 Feb 2022 18:36:54 -0800 (PST)
+Received: by mail-ed1-x543.google.com with SMTP id z13so1407812edc.12;
+        Tue, 15 Feb 2022 18:36:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sconlSkVQr84rv45aJ7gGXdI67TbSdkvanV4Zo/rcjc=;
-        b=hLZszkoPv+HNK6bt+me14aeW2OrbCDmi6YgRFKks65sbnzrkpb91K6m5v47kmrVn1+
-         BCm+PpfO8XPVgQu2vGltQ6ptoytIAOjRZ27ZkQXHNtV4rjhuXFoHptYxZk7BwoO54NCm
-         6k4CA9cdCN2svdGlYES5pL/awM5kmlvGLYpiM1CJ2hW9yk8M3udRN2p4jo9xhZoDAMQ2
-         mNcKyRFxfoYkGA2xYIICvx8Lhbs2HgWDFhgR4/bpaVITfcONhl9+h+g9woXRqcIIxNVs
-         dN/VO4ZP0LVuuVlZJfGFFAoJJvBmb548eJ4cuC6dj7ZhwoBaAHPzjEE6xSf/IAjkyFSg
-         E3Ag==
+        bh=oi37CwrmvQWu7kYLVP5Qk+0R9r5dukdFd1VytzpZS/k=;
+        b=EDSUeOStPRdTC6e5aVvR3crbzquCKKUUHq9bE/JBhRpM91KRMVWhwlS6PoIvLjB72y
+         QjSm3yKx8nywjkWrNcWqj9gA0rKDsD7PvCAMt9/3EY3WaGEjnuUE6EtSOYytso/LsFpi
+         LJMd1vbP7zV1D9gVnO2RiV3+saydmHnS9GrLpeHG8Xf9PRe0uhybuU1kiw47zGVrnvwH
+         N6E9dc1kAfpjsrKo/gdpDQlTGNVqXjJaN3eBnawmKfP+8eqWtIp1U4yGdAoGoEwSgCkv
+         6YzJis1GlGFGRgomPQXLEGd1zkUsno+wS88vhegX55R3P0g/d3uYQfZeUgPaEjG7z3IX
+         Mokg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sconlSkVQr84rv45aJ7gGXdI67TbSdkvanV4Zo/rcjc=;
-        b=Kbl+P/A2whR/gueRExCWNrooLbLGjCzlYx5Lfv5ifik+Fxfz2JZZiOzG1AjPvEVeeS
-         4jF6zzpJ4zyFjZ3Zmpn9gCyV1jbKXAwEhDtx42D6RlJMV2l7hx3USyffJ1mKX2QaFo/Y
-         oHxCo9yrt1BbzORQsKDoArvSbpjeLYf9f//tQ9otMjBvr+jU7cp5WvVtuVt4i2L2qtiT
-         tBkTUAkuPEpgLWntokHr2DtLCFW2Bt0OCtWjBkP1HNB+SuQhXagzV5PrYQFGb0OXf0Qt
-         93+7P36PACoByXCQV7Pk/cO4Nsb2p9vR+tS9DC6iTWKf5tzNFvhYygco7bpREwhGpiDG
-         vNbQ==
-X-Gm-Message-State: AOAM532LbVAc+Aawj83qrfvlcSBd7luIVMI94x5KP2+Bn4pbEnUoheB7
-        11hfZoxh4MoixaTHx0SahkFstlbkHLP5z0NUq3E=
-X-Google-Smtp-Source: ABdhPJwyUho5csN/Qney7PVE0iId1O0lOc2NtN7/RpdmKciiVquz11cDbaMpq6sMoo0cOYsdD+kNlv6zhxD//ya0Fck=
-X-Received: by 2002:aa7:d7c8:0:b0:3f9:3b65:f2b3 with SMTP id
- e8-20020aa7d7c8000000b003f93b65f2b3mr603272eds.389.1644976846121; Tue, 15 Feb
- 2022 18:00:46 -0800 (PST)
+        bh=oi37CwrmvQWu7kYLVP5Qk+0R9r5dukdFd1VytzpZS/k=;
+        b=bZefY+01iFnC7vR1NU9rBpMYYkBtYgMIrh/s8Fkkc61G4xIM4ToFlGIc37YCdVPbXh
+         x0HFFgXLFiLe2dghNudTCLN2E8xUVgxm2pbXTGHqDE2P48/6tP7kH4u5tSD0E7ZwSCwh
+         A+rLoGNWDgj71NiKCpfDpgfF3DCO9wEUqcuogsQLfFnDtXIOXqc+1n6+tKx9stujuY4Y
+         qL0IOD14NWHhgXHUH9X6NwH1WGdF31348/jkSBGlGXv8uhjlbPNZYAKjqsK5rUwUKdXc
+         NNWSoQfdte8n9u/079SwHSI40nTYouV60nSGavTYBktQBlCNEr5b9ts9QP6OH3ETeRa+
+         rk/g==
+X-Gm-Message-State: AOAM530RIeBbgbtB71ZuIe0l8IMD3YYxmkqxCPguCfrw5L+n9UBhBxAm
+        eRsIyj0h76hNHFdt8qP473jdgTY5qItyejX+Bq8=
+X-Google-Smtp-Source: ABdhPJyRK0CgWIKxOqLj+s3vIq/pIS4hN2pbnh5k1INrJtCXtsRgDOlnXAu9rp/1GcUUmkkbrGKn22Iv06SB4NDAns4=
+X-Received: by 2002:a05:6402:2801:b0:410:a592:a5d0 with SMTP id
+ h1-20020a056402280100b00410a592a5d0mr713990ede.253.1644979012622; Tue, 15 Feb
+ 2022 18:36:52 -0800 (PST)
 MIME-Version: 1.0
 References: <20220215112812.2093852-1-imagedong@tencent.com>
- <20220215080452.2898495a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com> <71823500-3947-0b9a-d53f-5406feb244ac@kernel.org>
-In-Reply-To: <71823500-3947-0b9a-d53f-5406feb244ac@kernel.org>
+ <20220215112812.2093852-2-imagedong@tencent.com> <CANn89iLWOBy=X1CpY+gvukhQ-bb7hDWd5y+m46K7o5XR0Pbt_A@mail.gmail.com>
+In-Reply-To: <CANn89iLWOBy=X1CpY+gvukhQ-bb7hDWd5y+m46K7o5XR0Pbt_A@mail.gmail.com>
 From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Wed, 16 Feb 2022 09:55:34 +0800
-Message-ID: <CADxym3baA1j6soeS9frXd4Qi=7pG83jgdjJm5jj8MQ4oT16Lag@mail.gmail.com>
-Subject: Re: [PATCH net-next 00/19] net: add skb drop reasons for TCP, IP, dev
- and neigh
-To:     David Ahern <dsahern@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
+Date:   Wed, 16 Feb 2022 10:31:41 +0800
+Message-ID: <CADxym3Y+ova1uEouJHy0EmaouK0gWwjE7AAUDzr1+K1D2qGWBg@mail.gmail.com>
+Subject: Re: [PATCH net-next 01/19] net: tcp: introduce tcp_drop_reason()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
         David Miller <davem@davemloft.net>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, hawk@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Menglong Dong <imagedong@tencent.com>,
         Talal Ahmad <talalahmad@google.com>,
-        Kees Cook <keescook@chromium.org>, ilias.apalodimas@linaro.org,
+        Kees Cook <keescook@chromium.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
         Alexander Lobakin <alobakin@pm.me>,
         Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        atenart@kernel.org, bigeasy@linutronix.de,
-        Paolo Abeni <pabeni@redhat.com>, linyunsheng@huawei.com,
-        arnd@arndb.de, yajun.deng@linux.dev,
+        Antoine Tenart <atenart@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Yajun Deng <yajun.deng@linux.dev>,
         Roopa Prabhu <roopa@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>, vvs@virtuozzo.com,
-        Cong Wang <cong.wang@bytedance.com>, luiz.von.dentz@intel.com,
+        Willem de Bruijn <willemb@google.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
         netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         flyingpeng@tencent.com
@@ -88,17 +93,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 12:09 AM David Ahern <dsahern@kernel.org> wrote:
+On Wed, Feb 16, 2022 at 1:34 AM Eric Dumazet <edumazet@google.com> wrote:
 >
-> On 2/15/22 9:04 AM, Jakub Kicinski wrote:
-> > There's no reason to send 19 patches at a time. Please try to send
-> > smaller series, that's are easier to review, under 10 patches
-> > preferably, certainly under 15.
+> On Tue, Feb 15, 2022 at 3:30 AM <menglong8.dong@gmail.com> wrote:
+> >
+> > From: Menglong Dong <imagedong@tencent.com>
+> >
+> > For TCP protocol, tcp_drop() is used to free the skb when it needs
+> > to be dropped. To make use of kfree_skb_reason() and collect drop
+> > reasons, introduce the function tcp_drop_reason().
+> >
+> > tcp_drop_reason() will finally call kfree_skb_reason() and pass the
+> > drop reason to 'kfree_skb' tracepoint.
+> >
+> > PS: __kfree_skb() was used in tcp_drop(), I'm not sure if it's ok
+> > to replace it with kfree_skb_reason().
+> >
+> > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > ---
+> >  net/ipv4/tcp_input.c | 13 +++++++++++--
+> >  1 file changed, 11 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> > index af94a6d22a9d..e3811afd1756 100644
+> > --- a/net/ipv4/tcp_input.c
+> > +++ b/net/ipv4/tcp_input.c
+> > @@ -4684,10 +4684,19 @@ static bool tcp_ooo_try_coalesce(struct sock *sk,
+> >         return res;
+> >  }
+> >
+> > -static void tcp_drop(struct sock *sk, struct sk_buff *skb)
+> > +static void tcp_drop_reason(struct sock *sk, struct sk_buff *skb,
+> > +                           enum skb_drop_reason reason)
+> >  {
+> >         sk_drops_add(sk, skb);
+> > -       __kfree_skb(skb);
+> > +       /* why __kfree_skb() used here before, other than kfree_skb()?
+> > +        * confusing......
 >
-> +1. It takes time to review code paths and make sure the changes are
-> correct.
+> Do not add comments like that if you do not know the difference...
 >
-> Send the first 9 as set; those target the TCP stack and then wait for
-> them to be merged before sending more.
+> __kfree_skb() is used by TCP stack because it owns skb in receive
+> queues, and avoids touching skb->users
+> because it must be one already.
+>
+> (We made sure not using skb_get() in TCP)
+>
+> It seems fine to use kfree_skb() in tcp_drop(), it is hardly fast
+> path, and the added cost is pure noise.
 
-Ok, I'll make the amount of patches at a proper level, thanks!
+I understand why __kfree_skb() was used now, and it seems
+this commit is ok (with the comments removed of course). I'll
+keep it still.
+
+Thanks!
+Menglong Dong
