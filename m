@@ -2,139 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 202434B840B
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 10:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A264B8496
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 10:39:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbiBPJVU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 04:21:20 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:46628 "EHLO
+        id S232302AbiBPJis (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 04:38:48 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbiBPJVT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 04:21:19 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BC52B101A;
-        Wed, 16 Feb 2022 01:21:08 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF37B61852;
-        Wed, 16 Feb 2022 09:21:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DC0FC004E1;
-        Wed, 16 Feb 2022 09:21:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645003267;
-        bh=buF3r5NHAfCdypvyrxaEC4Bc4uajweUHN+QTAl039Do=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gSeLltRjoarypgcXnbV1C+kG48RkviwUFQkHaXgj0XlofgKXE2oQKmUzv4MghyrJ+
-         rLXXgEGl9cn0vjFzzP7MBa8ynlFShOEfVkVhbtlKMFnpK9FMjZ2sAVuUcJhlh8XktI
-         LGZUw1QC191F2DyMpV6mv5Q3Ug5QStqgheQ/xIqfMOr5ykHUxQ6icx25pgiVKwYV3f
-         wGzjwMOkGRrN7luh2JWpofWyOGMeWU0tVWm2sBWPaEL++SkDKBuXZnzkaz7DoraRqf
-         3v/8EHZehPXB+jzi+7eQUpa0rlwwZaOjfdScK9D87c7aFDrPMl33ip3sSfyj8E4zkk
-         oq+XwZBruU2sA==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Yinjun Zhang <yinjun.zhang@corigine.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>
-Subject: [PATCH bpf-next] bpftool: Fix pretty print dump for maps without BTF loaded
-Date:   Wed, 16 Feb 2022 10:21:02 +0100
-Message-Id: <20220216092102.125448-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S232239AbiBPJir (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 04:38:47 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C131EE3C4A
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 01:38:35 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id x13so1574883iop.4
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 01:38:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TE0/N8NKeog4OR15kthhPLLES8UDNjbzbBXNMjFbSeA=;
+        b=k46ucVdPbgxxOSKlRhGU0xaLrcWt4WvHEENMC4xtG30AcZdCSLk57g8b2P9QRNgY+1
+         9qZ/Dm8vza5Pxi+PauLqY+bKOoiY8DXBUAtvlxQEcUal/fNceCyUMhXUbWf9jJeno0jX
+         54L/JdiaF03gbvq+u1prS2TbSAf2HU3aWaDbE/tATuu5+xawh/d20Sy1XxCZC/HrPtUR
+         w7cuG7/th105tvyGMfUkFPGTZH7SIAX9mJXRqBA19ilqY/18gPO/+TnWvjJvYwiyin5q
+         jKnOxd4za/Qlu8N+ZIyAictJKRO/gV56ajIq9T5sWXgF4iuOjXwnZfmCC9wMir1wAgwd
+         vebQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TE0/N8NKeog4OR15kthhPLLES8UDNjbzbBXNMjFbSeA=;
+        b=Uu69Aai0nq5Ae7S5ALOmyFBwDBoNQq9jukiMc0UZ5/MAmeJbLkI/N+9QGYp1qGSlFW
+         R/19OIYfd61qrIMVCxkvBq/Kjy7xMh8hIEDQF71sc0gxvdpqIAHxRnqDEKgkMS+sBlTs
+         tlFna5IZZtWcxohe1eqn6gAwJ3FM8HkHEmOBKxa3CM14zrCYDrw7E6K5LxOnvJ2qRZJO
+         Cu+4mwI01oLoD9bhkVrlnLDf0/dLdKK7taKSYN66tNJ8k4fbVHlgPdUZa91p0cmPU+ak
+         2kRAATFmsDeaxHts0YieQzJywfBXVdD4KC+X98n0tmfgYIKmeV8tj3LTsstR4Lxbj3O9
+         RXjA==
+X-Gm-Message-State: AOAM530QH1x5ZpxKVZ/m/jFaYLEQ8L1DGLOGpVbsmNve9+WVD2aDg+Dt
+        WHX5FYYtzglSrUoGj+vzjodNqE+7Ej3SUS820pWLMw==
+X-Google-Smtp-Source: ABdhPJyNQD9IxCkaSjGSRk/4TtK2L2i/JJLmlTM7W0jsLtAupztU/Ey6mxXkWpEsSw79Y2XlQV2gFXn3smw3IS6hlA0=
+X-Received: by 2002:a05:6638:379b:b0:310:bb27:6c28 with SMTP id
+ w27-20020a056638379b00b00310bb276c28mr1180097jal.71.1645004315038; Wed, 16
+ Feb 2022 01:38:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <00000000000073b3e805d7fed17e@google.com> <462fa505-25a8-fd3f-cc36-5860c6539664@iogearbox.net>
+ <CAPhsuW6rPx3JqpPdQVdZN-YtZp1SbuW1j+SVNs48UVEYv68s1A@mail.gmail.com> <CAPhsuW5JhG07TYKKHRbNVtepOLjZ2ekibePyyqCwuzhH0YoP7Q@mail.gmail.com>
+In-Reply-To: <CAPhsuW5JhG07TYKKHRbNVtepOLjZ2ekibePyyqCwuzhH0YoP7Q@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Wed, 16 Feb 2022 10:38:24 +0100
+Message-ID: <CANp29Y64wUeARFUn8Z0fjk7duxaZ3bJM2uGuVug_0ZmhGG_UTA@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_jit_free
+To:     Song Liu <song@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The commit e5043894b21f ("bpftool: Use libbpf_get_error() to check error")
-fails to dump map without BTF loaded in pretty mode (-p option).
+Hi Song,
 
-Fixing this by making sure get_map_kv_btf won't fail in case there's
-no BTF available for the map.
+Is syzkaller not doing something you expect it to do with this config?
 
-Cc: Yinjun Zhang <yinjun.zhang@corigine.com>
-Fixes: e5043894b21f ("bpftool: Use libbpf_get_error() to check error")
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/map.c | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
+On Wed, Feb 16, 2022 at 2:38 AM Song Liu <song@kernel.org> wrote:
+>
+> On Mon, Feb 14, 2022 at 10:41 PM Song Liu <song@kernel.org> wrote:
+> >
+> > On Mon, Feb 14, 2022 at 3:52 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >
+> > > Song, ptal.
+> > >
+> > > On 2/14/22 7:45 PM, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    e5313968c41b Merge branch 'Split bpf_sk_lookup remote_port..
+> > > > git tree:       bpf-next
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10baced8700000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c40b67275bfe2a58
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
+>
+> How do I run the exact same syzkaller? I am doing something like
+>
+> ./bin/syz-manager -config qemu.cfg
+>
+> with the cfg file like:
+>
+> {
+>         "target": "linux/amd64",
+>         "http": ":56741",
+>         "workdir": "workdir",
+>         "kernel_obj": "linux",
+>         "image": "./pkg/mgrconfig/testdata/stretch.img",
 
-diff --git a/tools/bpf/bpftool/map.c b/tools/bpf/bpftool/map.c
-index 7a341a472ea4..8562add7417d 100644
---- a/tools/bpf/bpftool/map.c
-+++ b/tools/bpf/bpftool/map.c
-@@ -805,29 +805,28 @@ static int maps_have_btf(int *fds, int nb_fds)
- 
- static struct btf *btf_vmlinux;
- 
--static struct btf *get_map_kv_btf(const struct bpf_map_info *info)
-+static int get_map_kv_btf(const struct bpf_map_info *info, struct btf **btf)
- {
--	struct btf *btf = NULL;
-+	int err = 0;
- 
- 	if (info->btf_vmlinux_value_type_id) {
- 		if (!btf_vmlinux) {
- 			btf_vmlinux = libbpf_find_kernel_btf();
--			if (libbpf_get_error(btf_vmlinux))
-+			err = libbpf_get_error(btf_vmlinux);
-+			if (err) {
- 				p_err("failed to get kernel btf");
-+				return err;
-+			}
- 		}
--		return btf_vmlinux;
-+		*btf = btf_vmlinux;
- 	} else if (info->btf_value_type_id) {
--		int err;
--
--		btf = btf__load_from_kernel_by_id(info->btf_id);
--		err = libbpf_get_error(btf);
--		if (err) {
-+		*btf = btf__load_from_kernel_by_id(info->btf_id);
-+		err = libbpf_get_error(*btf);
-+		if (err)
- 			p_err("failed to get btf");
--			btf = ERR_PTR(err);
--		}
- 	}
- 
--	return btf;
-+	return err;
- }
- 
- static void free_map_kv_btf(struct btf *btf)
-@@ -862,8 +861,7 @@ map_dump(int fd, struct bpf_map_info *info, json_writer_t *wtr,
- 	prev_key = NULL;
- 
- 	if (wtr) {
--		btf = get_map_kv_btf(info);
--		err = libbpf_get_error(btf);
-+		err = get_map_kv_btf(info, &btf);
- 		if (err) {
- 			goto exit_free;
- 		}
-@@ -1054,8 +1052,7 @@ static void print_key_value(struct bpf_map_info *info, void *key,
- 	json_writer_t *btf_wtr;
- 	struct btf *btf;
- 
--	btf = get_map_kv_btf(info);
--	if (libbpf_get_error(btf))
-+	if (get_map_kv_btf(info, &btf))
- 		return;
- 
- 	if (json_output) {
--- 
-2.35.1
+This image location looks suspicious - we store some dummy data for
+tests in that folder.
+Instances now run on buildroot-based images, generated with
+https://github.com/google/syzkaller/blob/master/tools/create-buildroot-image.sh
 
+>         "syzkaller": ".",
+>         "disable_syscalls": ["keyctl", "add_key", "request_key"],
+
+For our bpf instances, instead of disable_syscalls we use enable_syscalls:
+
+"enable_syscalls": [
+"bpf", "mkdir", "mount$bpf", "unlink", "close",
+"perf_event_open*", "ioctl$PERF*", "getpid", "gettid",
+"socketpair", "sendmsg", "recvmsg", "setsockopt$sock_attach_bpf",
+"socket$kcm", "ioctl$sock_kcm*", "syz_clone",
+"mkdirat$cgroup*", "openat$cgroup*", "write$cgroup*",
+"openat$tun", "write$tun", "ioctl$TUN*", "ioctl$SIOCSIFHWADDR",
+"openat$ppp", "syz_open_procfs$namespace"
+]
+
+>         "suppressions": ["some known bug"],
+>         "procs": 8,
+
+We usually run with "procs": 6, but it's not that important.
+
+>         "type": "qemu",
+>         "vm": {
+>                 "count": 16,
+>                 "cpu": 2,
+>                 "mem": 2048,
+>                 "kernel": "linux/arch/x86/boot/bzImage"
+>         }
+> }
+
+Otherwise I don't see any really significant differences.
+
+--
+Best Regards
+Aleksandr
+
+>
+> Is this correct? I am using stretch.img from syzkaller site, and the
+> .config from
+> the link above.
+>
+> Thanks,
+> Song
+>
