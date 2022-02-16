@@ -2,62 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB874B900E
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 19:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4593A4B900F
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 19:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbiBPSUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 13:20:19 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46390 "EHLO
+        id S235811AbiBPSUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 13:20:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235354AbiBPSUS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 13:20:18 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 309AE1C4559
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 10:20:06 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id 75so2855182pgb.4
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 10:20:06 -0800 (PST)
+        with ESMTP id S235354AbiBPSUx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 13:20:53 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D4B1C559E;
+        Wed, 16 Feb 2022 10:20:40 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id m185so699072iof.10;
+        Wed, 16 Feb 2022 10:20:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QarYZ27XUuM86zziOp9XW+Oid0Q8Wv2bX81yRN7/vWY=;
-        b=e3DN/lQazxOmOMwugSaWPk3AjaEyJzI6AjAdeeXKmJPcjb4rBlxJwXFKH04j3KaztV
-         tEQlHuQz6/1vw0vxRcVHyzvNbSngS5NjFpxjkQLQd+PXIDSmGyiEn8ELK6/EnB35Wv4i
-         ocNp9QA8nOl3Vtvb6WE9dJH9UMsVczEufzMPUG0V8eqVq2iS7W+UydrFcXZE/QNGQZOi
-         KOgDowsuzTnt+BXgx9D8sTk+UN3uVVlKLS52S88yRKBlUK1Jbp249MhOM7P1oXkQRBQE
-         NGrnnrufacDGyLSVD1KdRHm+Gm4E3cCryinIwDc8nYT/B04/1IvVh1EF5+UMyIPeDJ8X
-         Vf0g==
+         :cc:content-transfer-encoding;
+        bh=KsP8rx0XkdrsC3Lhi1IhRsdvFU9EtlyQ43jY9b8qnY4=;
+        b=L96RhhKiycXAE/uN3LW9lp523pBZShcCx6ZEoDHJBIe4QoxwWS6zmgZ/EeTC9zCaRo
+         ei06R71Fhm4uI7r6CNIN/BsBtqhmCSFwVF03vli6sgEEpR9lvc7YaKadI95lGSH3kxaL
+         mgy2O4UIuFQTS4Y4aDBjC9I4j8qCouqED8qkMdk4IEjmZJVfCzVgihBqZApTLZrNayYa
+         U7QhiWxgaO3Kija69d85Ik0Z/G+g7moh1tXHcoppU8DtCUMQhv4odQv3Q2wgcqJlSXQR
+         BC/9g1bg/Vf5cXckiDeEtR26mmbwFwLw5GY0RON16iyw/gxclAgUHxxz8iTEjklW7Dye
+         rvsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QarYZ27XUuM86zziOp9XW+Oid0Q8Wv2bX81yRN7/vWY=;
-        b=Bq+pcLvziXHVnx0C33Dm3cm6tNb8LuGsaqDMWarPXUqsybHk+2rHsf9GONDvcYSIBB
-         NhUn9iXT4Dq1FdjWOxrQtnYrBoz/NyFH22lAhv6R2sI30o0BoY/fE5fzOFSt/Qub22Jd
-         7Z4toZMC0vRFOh5RUGMPRbDxUFpol05VDxgHTKyb0ZAS1kKWV1qtjTronc56UBctyvVi
-         /Dk/c/8S2xF1Hd4PdgSOPYth2KWMc5asMR9VWIXg84m8uXgOT8Et5FSILACzk+c8PszN
-         j0lBIprDSikF+P9pptjhz1M43lsQEvmp9g18esVWSsM3YiqLR+uLf3JXMIJ2j41Jpazg
-         L3gA==
-X-Gm-Message-State: AOAM530yzXxdsMLcvvQvjRrn143kWyiQpTMDdYDtjcAIp81AGJxVr8NI
-        ab8Yh06FKgOHisAfHv2BUn9HJMqXPjmKZIEXWSszYwQ+KW8=
-X-Google-Smtp-Source: ABdhPJxBC0ePghDBtWhODqLSsTvU6jRON9HpzqV87O2ihq814HNL2Cr5D4YoeqC8hCNWvZf3vjOqeJwVd5MPkUTAcNI=
-X-Received: by 2002:a63:f711:0:b0:373:585d:2fd4 with SMTP id
- x17-20020a63f711000000b00373585d2fd4mr3279038pgh.287.1645035605487; Wed, 16
- Feb 2022 10:20:05 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KsP8rx0XkdrsC3Lhi1IhRsdvFU9EtlyQ43jY9b8qnY4=;
+        b=iKNcfuIL8iaY+f6BIH/OZSMFkBcq6W2DNHjrX+YScv84OwSa8CZQlgIZy9kZeqn7L5
+         Mg/sQtummUwz1TK8LgsMqjWTL/uq3eCe3f61jy2xVfXiLglWOaBry4R7PYGqiOjdOFEy
+         07+NkU7H0Jd0yd3bWejT9KELiFQ7xZtBi2zlAf9+at2wfxpeSINLP8W7mw+INk2CW1UM
+         ivszg41sd8/crdAPM3hXAw/Yeh/bkHSC+b2VdaDdO6Jhnws6BIZXrr/L2cGAbWv7YTN6
+         TkS4C5EP3au8wzojY/UrB9G6YmXfdoWuKBbppH8IAaj50h3whO+EwmhocibZA+SBcdfw
+         jKDg==
+X-Gm-Message-State: AOAM531VAhnbdqCfqbAnQEBG4S+qLGULIGu0ptcuoA6cuq/mp8QNwcfo
+        KaVsA0mIkpK6YoG6kqRJ6fC6aovJ0s+GvCLzzpQ=
+X-Google-Smtp-Source: ABdhPJy4xtHoT4xw7QQRBgR12hSC2bs6zl3H6ZHue+L5QpMX4lmQG+9Dn7+BevAMVOpHCOLLGQJ0T/R9j+hRNr98kOk=
+X-Received: by 2002:a6b:7a45:0:b0:638:ce15:2045 with SMTP id
+ k5-20020a6b7a45000000b00638ce152045mr2632184iop.79.1645035639887; Wed, 16 Feb
+ 2022 10:20:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216091323.513596-1-memxor@gmail.com> <CAADnVQLnurHLFZY3tL+SL9MgnJj63JKx8KjTwSS0mzsNN6JJTw@mail.gmail.com>
- <20220216173348.luidfddtou6yfxed@apollo.legion>
-In-Reply-To: <20220216173348.luidfddtou6yfxed@apollo.legion>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 16 Feb 2022 10:19:54 -0800
-Message-ID: <CAADnVQJ-wMjyBQUYELYCjDTST8M5+TKRw2fi7nfrv79319fwog@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix crash due to OOB access when reg->type > __BPF_REG_TYPE_MAX
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+References: <20220215225856.671072-1-mauricio@kinvolk.io>
+In-Reply-To: <20220215225856.671072-1-mauricio@kinvolk.io>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Feb 2022 10:20:27 -0800
+Message-ID: <CAEf4BzbxcoP8hoHM_1+QX4Nx=F0NPkc-CXDq=H_JkQfc9PAzLQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 0/7] libbpf: Implement BTFGen
+To:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Hao Luo <haoluo@google.com>
+        Quentin Monnet <quentin@isovalent.com>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,94 +72,136 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 9:33 AM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Feb 15, 2022 at 2:59 PM Mauricio V=C3=A1squez <mauricio@kinvolk.io>=
+ wrote:
 >
-> On Wed, Feb 16, 2022 at 09:15:47PM IST, Alexei Starovoitov wrote:
-> > On Wed, Feb 16, 2022 at 1:13 AM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
-> > >
-> > > When commit e6ac2450d6de ("bpf: Support bpf program calling kernel
-> > > function") added kfunc support, it defined reg2btf_ids as a cheap way to
-> > > translate the verifier reg type to the appropriate btf_vmlinux BTF ID,
-> > > however commit c25b2ae13603 ("bpf: Replace PTR_TO_XXX_OR_NULL with
-> > > PTR_TO_XXX | PTR_MAYBE_NULL") moved the __BPF_REG_TYPE_MAX from the last
-> > > member of bpf_reg_type enum to after the base register types, and
-> > > defined other variants using type flag composition. However, now, the
-> > > direct usage of reg->type to index into reg2btf_ids may no longer fall
-> > > into __BPF_REG_TYPE_MAX range, and hence lead to out of bounds access
-> > > and kernel crash on dereference of bad pointer.
-> > ...
-> > > [   20.488393] RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000524156
-> > > [   20.489045] RBP: ffffffffa398c6d4 R08: ffffffffa14dd991 R09: 0000000000000000
-> > > [   20.489696] R10: fffffbfff484f31c R11: 0000000000000001 R12: ffff888007bf8600
-> > > [   20.490377] R13: ffff88800c2f6078 R14: 0000000000000000 R15: 0000000000000001
-> > > [   20.491065] FS:  00007fe06ae70740(0000) GS:ffff88808cc00000(0000) knlGS:0000000000000000
-> > > [   20.491782] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [   20.492272] CR2: 0000000000524156 CR3: 000000000902a004 CR4: 0000000000770ef0
-> > > [   20.492925] PKRU: 55555554
-> >
-> > Please do not include a full kernel dump in the commit log.
-> > It provides no value.
-> > The first paragraph was enough.
-> >
+> CO-RE requires to have BTF information describing the kernel types in
+> order to perform the relocations. This is usually provided by the kernel
+> itself when it's configured with CONFIG_DEBUG_INFO_BTF. However, this
+> configuration is not enabled in all the distributions and it's not
+> available on kernels before 5.12.
 >
-> Ok, won't include next time.
+> It's possible to use CO-RE in kernels without CONFIG_DEBUG_INFO_BTF
+> support by providing the BTF information from an external source.
+> BTFHub[0] contains BTF files to each released kernel not supporting BTF,
+> for the most popular distributions.
 >
-> > > Cc: Martin KaFai Lau <kafai@fb.com>
-> > > Cc: Hao Luo <haoluo@google.com>
-> > > Fixes: c25b2ae13603 ("bpf: Replace PTR_TO_XXX_OR_NULL with PTR_TO_XXX | PTR_MAYBE_NULL")
-> > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > ---
-> > >  kernel/bpf/btf.c | 22 +++++++++++++++-------
-> > >  1 file changed, 15 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index e16dafeb2450..416345798e0a 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -5568,13 +5568,21 @@ int btf_check_type_match(struct bpf_verifier_log *log, const struct bpf_prog *pr
-> > >         return btf_check_func_type_match(log, btf1, t1, btf2, t2);
-> > >  }
-> > >
-> > > -static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
-> > > +static u32 *reg2btf_ids(enum bpf_reg_type type)
-> > > +{
-> > > +       switch (type) {
-> > >  #ifdef CONFIG_NET
-> > > -       [PTR_TO_SOCKET] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK],
-> > > -       [PTR_TO_SOCK_COMMON] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
-> > > -       [PTR_TO_TCP_SOCK] = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
-> > > +       case PTR_TO_SOCKET:
-> > > +               return &btf_sock_ids[BTF_SOCK_TYPE_SOCK];
-> > > +       case PTR_TO_SOCK_COMMON:
-> > > +               return &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON];
-> > > +       case PTR_TO_TCP_SOCK:
-> > > +               return &btf_sock_ids[BTF_SOCK_TYPE_TCP];
-> > >  #endif
-> > > -};
-> > > +       default:
-> > > +               return NULL;
-> > > +       }
-> > > +}
-> > >
-> > >  /* Returns true if struct is composed of scalars, 4 levels of nesting allowed */
-> > >  static bool __btf_type_is_scalar_struct(struct bpf_verifier_log *log,
-> > > @@ -5688,7 +5696,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > >                         }
-> > >                         if (check_ptr_off_reg(env, reg, regno))
-> > >                                 return -EINVAL;
-> > > -               } else if (is_kfunc && (reg->type == PTR_TO_BTF_ID || reg2btf_ids[reg->type])) {
-> > > +               } else if (is_kfunc && (reg->type == PTR_TO_BTF_ID || reg2btf_ids(reg->type))) {
-> >
-> > Just use reg2btf_ids[base_type(reg->type)] instead?
+> Providing this BTF file for a given kernel has some challenges:
+> 1. Each BTF file is a few MBs big, then it's not possible to ship the
+> eBPF program with all the BTF files needed to run in different kernels.
+> (The BTF files will be in the order of GBs if you want to support a high
+> number of kernels)
+> 2. Downloading the BTF file for the current kernel at runtime delays the
+> start of the program and it's not always possible to reach an external
+> host to download such a file.
 >
-> That would be incorrect I think, then we'd allow e.g. PTR_TO_TCP_SOCK_OR_NULL
-> and treat it as PTR_TO_TCP_SOCK, while current code only wants to permit
-> non-NULL variants for these three.
+> Providing the BTF file with the information about all the data types of
+> the kernel for running an eBPF program is an overkill in many of the
+> cases. Usually the eBPF programs access only some kernel fields.
+>
+> This series implements BTFGen support in bpftool. This idea was
+> discussed during the "Towards truly portable eBPF"[1] presentation at
+> Linux Plumbers 2021.
+>
+> There is a good example[2] on how to use BTFGen and BTFHub together
+> to generate multiple BTF files, to each existing/supported kernel,
+> tailored to one application. For example: a complex bpf object might
+> support nearly 400 kernels by having BTF files summing only 1.5 MB.
+>
+> [0]: https://github.com/aquasecurity/btfhub/
+> [1]: https://www.youtube.com/watch?v=3DigJLKyP1lFk&t=3D2418s
+> [2]: https://github.com/aquasecurity/btfhub/tree/main/tools
+>
+> Changelog:
+> v6 > v7:
+> - use array instead of hashmap to store ids
+> - use btf__add_{struct,union}() instead of memcpy()
+> - don't use fixed path for testing BTF file
+> - update example to use DECLARE_LIBBPF_OPTS()
+>
+> v5 > v6:
+> - use BTF structure to store used member/types instead of hashmaps
+> - remove support for input/output folders
+> - remove bpf_core_{created,free}_cand_cache()
+> - reorganize commits to avoid having unused static functions
+> - remove usage of libbpf_get_error()
+> - fix some errno propagation issues
+> - do not record full types for type-based relocations
+> - add support for BTF_KIND_FUNC_PROTO
+> - implement tests based on core_reloc ones
+>
+> v4 > v5:
+> - move some checks before invoking prog->obj->gen_loader
+> - use p_info() instead of printf()
+> - improve command output
+> - fix issue with record_relo_core()
+> - implement bash completion
+> - write man page
+> - implement some tests
+>
+> v3 > v4:
+> - parse BTF and BTF.ext sections in bpftool and use
+>   bpf_core_calc_relo_insn() directly
+> - expose less internal details from libbpf to bpftool
+> - implement support for enum-based relocations
+> - split commits in a more granular way
+>
+> v2 > v3:
+> - expose internal libbpf APIs to bpftool instead
+> - implement btfgen in bpftool
+> - drop btf__raw_data() from libbpf
+>
+> v1 > v2:
+> - introduce bpf_object__prepare() and =E2=80=98record_core_relos=E2=80=99=
+ to expose
+>   CO-RE relocations instead of bpf_object__reloc_info_gen()
+> - rename btf__save_to_file() to btf__raw_data()
+>
+> v1: https://lore.kernel.org/bpf/20211027203727.208847-1-mauricio@kinvolk.=
+io/
+> v2: https://lore.kernel.org/bpf/20211116164208.164245-1-mauricio@kinvolk.=
+io/
+> v3: https://lore.kernel.org/bpf/20211217185654.311609-1-mauricio@kinvolk.=
+io/
+> v4: https://lore.kernel.org/bpf/20220112142709.102423-1-mauricio@kinvolk.=
+io/
+> v5: https://lore.kernel.org/bpf/20220128223312.1253169-1-mauricio@kinvolk=
+.io/
+> v6: https://lore.kernel.org/bpf/20220209222646.348365-1-mauricio@kinvolk.=
+io/
+>
+> Mauricio V=C3=A1squez (6):
+>   libbpf: split bpf_core_apply_relo()
+>   libbpf: Expose bpf_core_{add,free}_cands() to bpftool
+>   bpftool: Add gen min_core_btf command
+>   bpftool: Implement "gen min_core_btf" logic
+>   bpftool: Implement btfgen_get_btf()
+>   selftests/bpf: Test "bpftool gen min_core_btf"
+>
+> Rafael David Tinoco (1):
+>   bpftool: gen min_core_btf explanation and examples
+>
+>  kernel/bpf/btf.c                              |  13 +-
+>  .../bpf/bpftool/Documentation/bpftool-gen.rst |  91 +++
+>  tools/bpf/bpftool/Makefile                    |   8 +-
+>  tools/bpf/bpftool/bash-completion/bpftool     |   6 +-
+>  tools/bpf/bpftool/gen.c                       | 591 +++++++++++++++++-
+>  tools/lib/bpf/libbpf.c                        |  88 +--
+>  tools/lib/bpf/libbpf_internal.h               |   9 +
+>  tools/lib/bpf/relo_core.c                     |  79 +--
+>  tools/lib/bpf/relo_core.h                     |  42 +-
+>  .../selftests/bpf/prog_tests/core_reloc.c     |  50 +-
+>  10 files changed, 864 insertions(+), 113 deletions(-)
+>
+> --
+> 2.25.1
+>
 
-add && !type_flag(reg->type) ?
+Fixed up few things I pointed out in respective patches. Applied to
+bpf-next. Great work, congrats!
 
-But, first, please describe how you found it.
-Tried to pass PTR_TO_BTF_ID_OR_NULL into kfunc?
-Do you have some other changes in the verifier?
+It would be great as a next step to add this as (probably optional at
+first) step for libbpf-tools in BCC repo, so that those CO-RE-based
+tools can be used much more widely than today. How much work that
+would be, do you think? And how slow would it be to download all those
+BTFs and run min_core_btf on all of them?
