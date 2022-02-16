@@ -2,209 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BFE4B829A
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 09:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE124B8316
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 09:39:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiBPIIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 03:08:21 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:41570 "EHLO
+        id S231143AbiBPIfX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 03:35:23 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:58936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbiBPIIU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 03:08:20 -0500
-Received: from out30-42.freemail.mail.aliyun.com (out30-42.freemail.mail.aliyun.com [115.124.30.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B895FEBDCD;
-        Wed, 16 Feb 2022 00:08:08 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V4cKqy5_1644998885;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V4cKqy5_1644998885)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Feb 2022 16:08:06 +0800
-Message-ID: <1644998595.3309107-4-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v5 14/22] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
-Date:   Wed, 16 Feb 2022 16:03:15 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
+        with ESMTP id S230235AbiBPIfW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 03:35:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3EACBB878
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 00:35:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645000509;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZSxXJrZObRrQh2i3Vj+LyNcfDA4urmTPSV8iFvt3qFc=;
+        b=OhEnethYSs5Vw0TdFY86PYzPn3QaY0TEF+h+YoAv/6vFkggr81HIGgWnANeBEpKpCkTZ0l
+        y8KlbjwIwlj+I1NPThTLHJHT3yOMJ0fgS4w3PEKpZy+C8a7RS7C5OZD09yA7h1WkN1CUYV
+        yxbJwqwqFLnHCxgUhabcs+3FSXbDGXk=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-646-TWgkyc4OPnWvLsMacyFVzQ-1; Wed, 16 Feb 2022 03:35:08 -0500
+X-MC-Unique: TWgkyc4OPnWvLsMacyFVzQ-1
+Received: by mail-ej1-f72.google.com with SMTP id ky6-20020a170907778600b0068e4bd99fd1so482160ejc.15
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 00:35:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZSxXJrZObRrQh2i3Vj+LyNcfDA4urmTPSV8iFvt3qFc=;
+        b=5yx0fqjSjXePU0Gg1dL2TFBedy/pdBw0Gsmuhjd2t+l74qsT+H1EP35X0TYTnaeevD
+         SwF38kbKqkl2R7pzSkh+m52VTWOkkF7kh+s+UvlX/OVVqLuI+iVdv+VvBBRvYKxqHwP/
+         NOf3my4W3g7oQzflmXAkT4nL5MMcZ3WhAFmD4lLGWZwitJx1psSf06AWf+5x2eZVZ358
+         UQWvtgHaHjlk+8jriaGpYLiEhBDEkfK25a0M36MAymd1s8vtwQjSxAGwIOJeIXMKNr+i
+         gAf2KWZGD2SNhbielLo0F+wjU8NvV/RyAieLdFUtnLPqzYkR308lIu74YicFmUsHfXtV
+         UykA==
+X-Gm-Message-State: AOAM532N48SG+OQwZyzSc8c9u5C3wHdpdOzDXh+KciuRv4dUawlHOqUo
+        4zvfThE+B5TU1epuG03gdUIqs31VOIX3FpuHxtB7I91Z/5CWFM7bogMM/a3ebggKHNzE50o3r6d
+        lnBdymMifqBqD
+X-Received: by 2002:a17:906:4752:b0:6ce:61d9:b632 with SMTP id j18-20020a170906475200b006ce61d9b632mr1466186ejs.694.1645000506544;
+        Wed, 16 Feb 2022 00:35:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwBlj81teG9+ltzW2N3OaJ3zswtnZDzP8I3rt027iDW5MQPJKcDGDq9+sBrrTwAi+ZfA3fCNA==
+X-Received: by 2002:a17:906:4752:b0:6ce:61d9:b632 with SMTP id j18-20020a170906475200b006ce61d9b632mr1466167ejs.694.1645000506295;
+        Wed, 16 Feb 2022 00:35:06 -0800 (PST)
+Received: from redhat.com ([2a03:c5c0:207e:9596:a2ec:e36:644:698c])
+        by smtp.gmail.com with ESMTPSA id s8sm1325504edd.72.2022.02.16.00.35.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Feb 2022 00:35:05 -0800 (PST)
+Date:   Wed, 16 Feb 2022 03:35:01 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        virtualization <virtualization@lists.linux-foundation.org>,
         netdev <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH v5 17/22] virtio_net: support rx/tx queue reset
+Message-ID: <20220216033322-mutt-send-email-mst@kernel.org>
 References: <20220214081416.117695-1-xuanzhuo@linux.alibaba.com>
- <20220214081416.117695-15-xuanzhuo@linux.alibaba.com>
- <CACGkMEufh3sbGx4wFCkpiXNR0w0WoCC=TNeLHE+QkqrhyXH6Bw@mail.gmail.com>
-In-Reply-To: <CACGkMEufh3sbGx4wFCkpiXNR0w0WoCC=TNeLHE+QkqrhyXH6Bw@mail.gmail.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+ <20220214081416.117695-18-xuanzhuo@linux.alibaba.com>
+ <CACGkMEszV_sUt+7gpLJ=6S1Spa0RmY=Ck0_duEkGf6xKOPG+oQ@mail.gmail.com>
+ <1644998173.7222953-3-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1644998173.7222953-3-xuanzhuo@linux.alibaba.com>
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 16 Feb 2022 12:14:25 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Mon, Feb 14, 2022 at 4:14 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+On Wed, Feb 16, 2022 at 03:56:13PM +0800, Xuan Zhuo wrote:
+> On Wed, 16 Feb 2022 12:14:11 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> > On Mon, Feb 14, 2022 at 4:14 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> > >
+> > > This patch implements the reset function of the rx, tx queues.
+> > >
+> > > Based on this function, it is possible to modify the ring num of the
+> > > queue. And quickly recycle the buffer in the queue.
+> > >
+> > > In the process of the queue disable, in theory, as long as virtio
+> > > supports queue reset, there will be no exceptions.
+> > >
+> > > However, in the process of the queue enable, there may be exceptions due to
+> > > memory allocation.  In this case, vq is not available, but we still have
+> > > to execute napi_enable(). Because napi_disable is similar to a lock,
+> > > napi_enable must be called after calling napi_disable.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >  drivers/net/virtio_net.c | 123 +++++++++++++++++++++++++++++++++++++++
+> > >  1 file changed, 123 insertions(+)
+> > >
+> > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> > > index 9a1445236e23..a4ffd7cdf623 100644
+> > > --- a/drivers/net/virtio_net.c
+> > > +++ b/drivers/net/virtio_net.c
+> > > @@ -251,6 +251,11 @@ struct padded_vnet_hdr {
+> > >         char padding[4];
+> > >  };
+> > >
+> > > +static void virtnet_sq_free_unused_bufs(struct virtnet_info *vi,
+> > > +                                       struct send_queue *sq);
+> > > +static void virtnet_rq_free_unused_bufs(struct virtnet_info *vi,
+> > > +                                       struct receive_queue *rq);
+> > > +
+> > >  static bool is_xdp_frame(void *ptr)
+> > >  {
+> > >         return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+> > > @@ -1369,6 +1374,9 @@ static void virtnet_napi_enable(struct virtqueue *vq, struct napi_struct *napi)
+> > >  {
+> > >         napi_enable(napi);
+> > >
+> > > +       if (vq->reset)
+> > > +               return;
+> > > +
+> > >         /* If all buffers were filled by other side before we napi_enabled, we
+> > >          * won't get another interrupt, so process any outstanding packets now.
+> > >          * Call local_bh_enable after to trigger softIRQ processing.
+> > > @@ -1413,6 +1421,10 @@ static void refill_work(struct work_struct *work)
+> > >                 struct receive_queue *rq = &vi->rq[i];
+> > >
+> > >                 napi_disable(&rq->napi);
+> > > +               if (rq->vq->reset) {
+> > > +                       virtnet_napi_enable(rq->vq, &rq->napi);
+> > > +                       continue;
+> > > +               }
+> > >                 still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
+> > >                 virtnet_napi_enable(rq->vq, &rq->napi);
+> > >
+> > > @@ -1523,6 +1535,9 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+> > >         if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
+> > >                 return;
+> > >
+> > > +       if (sq->vq->reset)
+> > > +               return;
+> > > +
+> > >         if (__netif_tx_trylock(txq)) {
+> > >                 do {
+> > >                         virtqueue_disable_cb(sq->vq);
+> > > @@ -1769,6 +1784,114 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+> > >         return NETDEV_TX_OK;
+> > >  }
+> > >
+> > > +static int virtnet_rx_vq_disable(struct virtnet_info *vi,
+> > > +                                struct receive_queue *rq)
+> > > +{
+> > > +       int err;
+> > > +
+> > > +       napi_disable(&rq->napi);
+> > > +
+> > > +       err = virtio_reset_vq(rq->vq);
+> > > +       if (err)
+> > > +               goto err;
+> > > +
+> > > +       virtnet_rq_free_unused_bufs(vi, rq);
+> > > +
+> > > +       vring_release_virtqueue(rq->vq);
+> > > +
+> > > +       return 0;
+> > > +
+> > > +err:
+> > > +       virtnet_napi_enable(rq->vq, &rq->napi);
+> > > +       return err;
+> > > +}
+> > > +
+> > > +static int virtnet_tx_vq_disable(struct virtnet_info *vi,
+> > > +                                struct send_queue *sq)
+> > > +{
+> > > +       struct netdev_queue *txq;
+> > > +       int err, qindex;
+> > > +
+> > > +       qindex = sq - vi->sq;
+> > > +
+> > > +       txq = netdev_get_tx_queue(vi->dev, qindex);
+> > > +       __netif_tx_lock_bh(txq);
+> > > +
+> > > +       netif_stop_subqueue(vi->dev, qindex);
+> > > +       virtnet_napi_tx_disable(&sq->napi);
+> > > +
+> > > +       err = virtio_reset_vq(sq->vq);
+> > > +       if (err) {
+> > > +               virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
+> > > +               netif_start_subqueue(vi->dev, qindex);
+> > > +
+> > > +               __netif_tx_unlock_bh(txq);
+> > > +               return err;
+> > > +       }
+> > > +       __netif_tx_unlock_bh(txq);
+> > > +
+> > > +       virtnet_sq_free_unused_bufs(vi, sq);
+> > > +
+> > > +       vring_release_virtqueue(sq->vq);
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > > +static int virtnet_tx_vq_enable(struct virtnet_info *vi, struct send_queue *sq)
+> > > +{
+> > > +       int err;
+> > > +
+> > > +       err = virtio_enable_resetq(sq->vq);
+> > > +       if (!err)
+> > > +               netif_start_subqueue(vi->dev, sq - vi->sq);
+> > > +
+> > > +       virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
+> > > +
+> > > +       return err;
+> > > +}
+> > > +
+> > > +static int virtnet_rx_vq_enable(struct virtnet_info *vi,
+> > > +                               struct receive_queue *rq)
+> > > +{
+> > > +       int err;
 > >
-> > This patch implements virtio pci support for QUEUE RESET.
+> > So the API should be design in a consistent way.
 > >
-> > Performing reset on a queue is divided into these steps:
+> > In rx_vq_disable() we do:
 > >
-> > 1. reset_vq: reset one vq
-> > 2. recycle the buffer from vq by virtqueue_detach_unused_buf()
-> > 3. release the ring of the vq by vring_release_virtqueue()
-> > 4. enable_reset_vq: re-enable the reset queue
+> > reset()
+> > detach_unused_bufs()
+> > vring_release_virtqueue()
 > >
-> > This patch implements reset_vq, enable_reset_vq in the pci scenario.
+> > here it's better to exactly the reverse
 > >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > ---
-> >  drivers/virtio/virtio_pci_common.c |  8 ++--
-> >  drivers/virtio/virtio_pci_modern.c | 60 ++++++++++++++++++++++++++++++
-> >  2 files changed, 65 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > index 5a4f750a0b97..9ea319b1d404 100644
-> > --- a/drivers/virtio/virtio_pci_common.c
-> > +++ b/drivers/virtio/virtio_pci_common.c
-> > @@ -255,9 +255,11 @@ static void vp_del_vq(struct virtqueue *vq)
-> >         struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
-> >         unsigned long flags;
-> >
-> > -       spin_lock_irqsave(&vp_dev->lock, flags);
-> > -       list_del(&info->node);
-> > -       spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > +       if (!vq->reset) {
-> > +               spin_lock_irqsave(&vp_dev->lock, flags);
-> > +               list_del(&info->node);
-> > +               spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > +       }
-> >
-> >         vp_dev->del_vq(info);
-> >         kfree(info);
-> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> > index bed3e9b84272..7d28f4c36fc2 100644
-> > --- a/drivers/virtio/virtio_pci_modern.c
-> > +++ b/drivers/virtio/virtio_pci_modern.c
-> > @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
-> >         if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
-> >                         pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
-> >                 __virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
-> > +
-> > +       if (features & BIT_ULL(VIRTIO_F_RING_RESET))
-> > +               __virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
-> >  }
-> >
-> >  /* virtio config->finalize_features() implementation */
-> > @@ -176,6 +179,59 @@ static void vp_reset(struct virtio_device *vdev)
-> >         vp_disable_cbs(vdev);
-> >  }
-> >
-> > +static int vp_modern_reset_vq(struct virtqueue *vq)
-> > +{
-> > +       struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> > +       struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> > +       struct virtio_pci_vq_info *info;
-> > +       unsigned long flags;
-> > +
-> > +       if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
-> > +               return -ENOENT;
-> > +
-> > +       vp_modern_set_queue_reset(mdev, vq->index);
-> > +
-> > +       info = vp_dev->vqs[vq->index];
-> > +
->
-> Any reason that we don't need to disable irq here as the previous versions did?
+> > vring_attach_virtqueue() // this is the helper I guess in patch 5,
+> > reverse of the vring_release_virtqueue()
+> > try_refill_recv() // reverse of the detach_unused_bufs()
+> > enable_reset() // reverse of the reset
+> 
+> Such an api is ok
+> 
+> 1. reset()
+> 2. detach_unused_bufs()
+> 3. vring_release_virtqueue()
+>    ---------------
+> 4. vring_attach_virtqueue()
+> 5. try_refill_recv()
+> 6. enable_reset()
+> 
+> 
+> But if, we just want to recycle the buffer without modifying the ring num. As
+> you mentioned before, in the case where the ring num is not modified, we don't
+> have to reallocate, but can use the original vring.
+> 
+> 1. reset()
+> 2. detach_unused_bufs()
+>    ---------------
+> 3. vring_reset_virtqueue() // just reset, no reallocate
+> 4. try_refill_recv()
+> 5. enable_reset()
+> 
+> Thanks.
 
-Based on the spec, for the case of one interrupt per queue, there will be no
-more interrupts after the reset queue operation. Whether the interrupt is turned
-off or not has no effect. I turned off the interrupt before just to be safe.
+Further, can we queue the buffers instead of detach_unused_bufs
+and just requeue them instead of try_refill_recv?
 
-And for irq sharing scenarios, I don't want to turn off shared interrupts for a
-queue.
-
-And the following list_del has been guaranteed to be safe, so I removed the code
-for closing interrupts in the previous version.
-
-Thanks.
-
->
->
-> > +       /* delete vq from irq handler */
-> > +       spin_lock_irqsave(&vp_dev->lock, flags);
-> > +       list_del(&info->node);
-> > +       spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > +
-> > +       INIT_LIST_HEAD(&info->node);
-> > +
-> > +       vq->reset = VIRTQUEUE_RESET_STAGE_DEVICE;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int vp_modern_enable_reset_vq(struct virtqueue *vq)
-> > +{
-> > +       struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> > +       struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> > +       struct virtio_pci_vq_info *info;
-> > +       struct virtqueue *_vq;
-> > +
-> > +       if (vq->reset != VIRTQUEUE_RESET_STAGE_RELEASE)
-> > +               return -EBUSY;
-> > +
-> > +       /* check queue reset status */
-> > +       if (vp_modern_get_queue_reset(mdev, vq->index) != 1)
-> > +               return -EBUSY;
-> > +
-> > +       info = vp_dev->vqs[vq->index];
-> > +       _vq = vp_setup_vq(vq->vdev, vq->index, NULL, NULL, NULL,
-> > +                        info->msix_vector);
->
-> So we only care about moden devices, this means using vp_setup_vq()
-> with NULL seems tricky.
->
-> As replied in another thread, I would simply ask the caller to call
-> the vring reallocation helper. See the reply for patch 17.
->
-> Thanks
->
->
-> > +       if (IS_ERR(_vq)) {
-> > +               vq->reset = VIRTQUEUE_RESET_STAGE_RELEASE;
-> > +               return PTR_ERR(_vq);
-> > +       }
-> > +
-> > +       vp_modern_set_queue_enable(&vp_dev->mdev, vq->index, true);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-> >  {
-> >         return vp_modern_config_vector(&vp_dev->mdev, vector);
-> > @@ -397,6 +453,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
-> >         .set_vq_affinity = vp_set_vq_affinity,
-> >         .get_vq_affinity = vp_get_vq_affinity,
-> >         .get_shm_region  = vp_get_shm_region,
-> > +       .reset_vq        = vp_modern_reset_vq,
-> > +       .enable_reset_vq = vp_modern_enable_reset_vq,
-> >  };
 > >
-> >  static const struct virtio_config_ops virtio_pci_config_ops = {
-> > @@ -415,6 +473,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
-> >         .set_vq_affinity = vp_set_vq_affinity,
-> >         .get_vq_affinity = vp_get_vq_affinity,
-> >         .get_shm_region  = vp_get_shm_region,
-> > +       .reset_vq        = vp_modern_reset_vq,
-> > +       .enable_reset_vq = vp_modern_enable_reset_vq,
-> >  };
+> > So did for the tx (no need for refill in that case).
 > >
-> >  /* the PCI probing function */
-> > --
-> > 2.31.0
+> > > +
+> > > +       err = virtio_enable_resetq(rq->vq);
+> > > +
+> > > +       virtnet_napi_enable(rq->vq, &rq->napi);
+> > > +
+> > > +       return err;
+> > > +}
+> > > +
+> > > +static int virtnet_rx_vq_reset(struct virtnet_info *vi, int i)
+> > > +{
+> > > +       int err;
+> > > +
+> > > +       err = virtnet_rx_vq_disable(vi, vi->rq + i);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > > +       err = virtnet_rx_vq_enable(vi, vi->rq + i);
+> > > +       if (err)
+> > > +               netdev_err(vi->dev,
+> > > +                          "enable rx reset vq fail: rx queue index: %d err: %d\n", i, err);
+> > > +       return err;
+> > > +}
+> > > +
+> > > +static int virtnet_tx_vq_reset(struct virtnet_info *vi, int i)
+> > > +{
+> > > +       int err;
+> > > +
+> > > +       err = virtnet_tx_vq_disable(vi, vi->sq + i);
+> > > +       if (err)
+> > > +               return err;
+> > > +
+> > > +       err = virtnet_tx_vq_enable(vi, vi->sq + i);
+> > > +       if (err)
+> > > +               netdev_err(vi->dev,
+> > > +                          "enable tx reset vq fail: tx queue index: %d err: %d\n", i, err);
+> > > +       return err;
+> > > +}
+> > > +
+> > >  /*
+> > >   * Send command via the control virtqueue and check status.  Commands
+> > >   * supported by the hypervisor, as indicated by feature bits, should
+> > > --
+> > > 2.31.0
+> > >
 > >
->
+
