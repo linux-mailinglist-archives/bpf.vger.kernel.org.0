@@ -2,106 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B3C4B8EEF
-	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 18:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06544B8F2C
+	for <lists+bpf@lfdr.de>; Wed, 16 Feb 2022 18:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236940AbiBPRQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 12:16:25 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34970 "EHLO
+        id S236860AbiBPReF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 12:34:05 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234331AbiBPRQZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 12:16:25 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2362AED9B;
-        Wed, 16 Feb 2022 09:16:12 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7957BB81DD2;
-        Wed, 16 Feb 2022 17:16:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2545DC340E8;
-        Wed, 16 Feb 2022 17:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645031770;
-        bh=H8UzL8cAWXsf7LlwEbF/oBmPBoQ/jM+fAqEB1ENwlTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QCJxZWtmlxBfPdaYYXaEiu1ET6Zfkb3z6DZ3Mv+Xgg6BuSO9SAXboaeKo4vpQJRYL
-         u89kcDmK8UCOVLqV3Yby+J9O9jHW8U4wGTEi9Rejt0daCOsEmSKKjXYxh8S/jKXOzb
-         5bNCoFLwjInMq69o5aOeNhLlQm9lqT7AIk93GPeVhYbrJDOD51c3Bt+s9cv/JfqGEj
-         pti01SRHyuCotOcPEjp9uN4kmXxpKLsIrBRh3vpFDn/J7Wxly5m1DWcB0UlrT9tExk
-         6F8wPA/57ugsh0i8446d6SKex0V9tIOXnPuYbYxvZf14WJMvF9qip3Fu4RltTPBgl5
-         /3EEsFDbwKbdA==
-Date:   Wed, 16 Feb 2022 17:16:02 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S237118AbiBPReE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 12:34:04 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E34F122219C
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 09:33:51 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c4so2694917pfl.7
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 09:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=R/b4pvVKBosaMZz+EmQWoH+hiG810FwCQCYfzBZ6hw4=;
+        b=XEtXEEI8eTWtCMKYFbCT0Ci8MTZiI+kRFcXTAZMq7C8B8LIweCXRR7pvH/RO6Y/r+X
+         E7xM92vijkEgJnpFTzzmH2Sgez8APJ3KcKBEgw5cvLYqv/X0GAZEAa0KFiyJY0hP4pt3
+         AKIV3cmiELjijqFjrg0JKRdIoRzE3zX7lku2R69bdpxf9BSaH/AVMTpNrq1N2wkuwD2Y
+         8cwYvcZWMglhEwFr6IvnERnFGU3FWsTDj9bTFyWN7bJHwZTpTW4mjS1hlRZkLetZEMIB
+         uLR/A8CMrjSmS5ymZZuojL31tKhT6mDCDNm4cyrccaZysPsOHPw1DpuVfd12qLhRwitg
+         Zg3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R/b4pvVKBosaMZz+EmQWoH+hiG810FwCQCYfzBZ6hw4=;
+        b=PguaAe6ElYupqQAZ+zNHGIBCnHsJxmjpFDKLhHV4FXIIuIlMnDsacSb6Z+WBwvMRyf
+         30/yIdsZIYWHfJdD8C1cr7Veeir+kxuMTATW9NQM6xYJnbWn5YZ+6eIkAOkKp9hhyzez
+         TzVYqTOnvZV31AQeBnzBUwyO+iBh7nQB1SnU8vlxFY0nO+F1b2TKAggDTwlk5D90v9as
+         dCQrQCCx9AHmYLgv8HL6VYYyCTeLfpDO67DHCz26KIkuYdmRFDO6pBQ/ZuxCn1q3eVGW
+         96VHSJHQzhWQ6caKxb3mO+vgbIYNq2JmihnjfFg4/D33ZPHUwj0ObAHSC0BDMQvpbtyi
+         cHqg==
+X-Gm-Message-State: AOAM531m7fTYcfEYJJdOulqEmUmaRXbMGqMpQtwuuZR9SUZPcKfUYzra
+        xgdByJLekAJ0NopICyvhKjE=
+X-Google-Smtp-Source: ABdhPJxmmZGg88WJbyoXDCYhPhfQzcspxilUx9iNqACtmsOzG1ZFjoM1UYDJhkYwU0hBfImvAJQszw==
+X-Received: by 2002:a05:6a00:88a:b0:4df:f3a9:b246 with SMTP id q10-20020a056a00088a00b004dff3a9b246mr4022911pfj.83.1645032831407;
+        Wed, 16 Feb 2022 09:33:51 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id c17sm47480619pfv.68.2022.02.16.09.33.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Feb 2022 09:33:51 -0800 (PST)
+Date:   Wed, 16 Feb 2022 23:03:48 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH bpf-next v3 2/4] arm64: insn: add encoders for atomic
- operations
-Message-ID: <20220216171602.GA10877@willie-the-truck>
-References: <20220129220452.194585-1-houtao1@huawei.com>
- <20220129220452.194585-3-houtao1@huawei.com>
- <4524da71-3977-07db-bd6e-cebd1c539805@iogearbox.net>
+        Martin KaFai Lau <kafai@fb.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf] bpf: Fix crash due to OOB access when reg->type >
+ __BPF_REG_TYPE_MAX
+Message-ID: <20220216173348.luidfddtou6yfxed@apollo.legion>
+References: <20220216091323.513596-1-memxor@gmail.com>
+ <CAADnVQLnurHLFZY3tL+SL9MgnJj63JKx8KjTwSS0mzsNN6JJTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4524da71-3977-07db-bd6e-cebd1c539805@iogearbox.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAADnVQLnurHLFZY3tL+SL9MgnJj63JKx8KjTwSS0mzsNN6JJTw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 03:39:48PM +0100, Daniel Borkmann wrote:
-> On 1/29/22 11:04 PM, Hou Tao wrote:
-> > It is a preparation patch for eBPF atomic supports under arm64. eBPF
-> > needs support atomic[64]_fetch_add, atomic[64]_[fetch_]{and,or,xor} and
-> > atomic[64]_{xchg|cmpxchg}. The ordering semantics of eBPF atomics are
-> > the same with the implementations in linux kernel.
-> > 
-> > Add three helpers to support LDCLR/LDEOR/LDSET/SWP, CAS and DMB
-> > instructions. STADD/STCLR/STEOR/STSET are simply encoded as aliases for
-> > LDADD/LDCLR/LDEOR/LDSET with XZR as the destination register, so no extra
-> > helper is added. atomic_fetch_add() and other atomic ops needs support for
-> > STLXR instruction, so extend enum aarch64_insn_ldst_type to do that.
-> > 
-> > LDADD/LDEOR/LDSET/SWP and CAS instructions are only available when LSE
-> > atomics is enabled, so just return AARCH64_BREAK_FAULT directly in
-> > these newly-added helpers if CONFIG_ARM64_LSE_ATOMICS is disabled.
-> > 
-> > Signed-off-by: Hou Tao <houtao1@huawei.com>
-> 
-> Hey Mark / Ard / Will / Catalin or others, could we get an Ack on patch 1 & 2
-> at min if it looks good to you?
+On Wed, Feb 16, 2022 at 09:15:47PM IST, Alexei Starovoitov wrote:
+> On Wed, Feb 16, 2022 at 1:13 AM Kumar Kartikeya Dwivedi
+> <memxor@gmail.com> wrote:
+> >
+> > When commit e6ac2450d6de ("bpf: Support bpf program calling kernel
+> > function") added kfunc support, it defined reg2btf_ids as a cheap way to
+> > translate the verifier reg type to the appropriate btf_vmlinux BTF ID,
+> > however commit c25b2ae13603 ("bpf: Replace PTR_TO_XXX_OR_NULL with
+> > PTR_TO_XXX | PTR_MAYBE_NULL") moved the __BPF_REG_TYPE_MAX from the last
+> > member of bpf_reg_type enum to after the base register types, and
+> > defined other variants using type flag composition. However, now, the
+> > direct usage of reg->type to index into reg2btf_ids may no longer fall
+> > into __BPF_REG_TYPE_MAX range, and hence lead to out of bounds access
+> > and kernel crash on dereference of bad pointer.
+> ...
+> > [   20.488393] RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000524156
+> > [   20.489045] RBP: ffffffffa398c6d4 R08: ffffffffa14dd991 R09: 0000000000000000
+> > [   20.489696] R10: fffffbfff484f31c R11: 0000000000000001 R12: ffff888007bf8600
+> > [   20.490377] R13: ffff88800c2f6078 R14: 0000000000000000 R15: 0000000000000001
+> > [   20.491065] FS:  00007fe06ae70740(0000) GS:ffff88808cc00000(0000) knlGS:0000000000000000
+> > [   20.491782] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   20.492272] CR2: 0000000000524156 CR3: 000000000902a004 CR4: 0000000000770ef0
+> > [   20.492925] PKRU: 55555554
+>
+> Please do not include a full kernel dump in the commit log.
+> It provides no value.
+> The first paragraph was enough.
+>
 
-I checked the instruction encodings in patches 1 and 2 and they all look
-fine to me. However, after applying those two locally I get a build failure:
+Ok, won't include next time.
 
-  | In file included from arch/arm64/net/bpf_jit_comp.c:23:
-  | arch/arm64/net/bpf_jit_comp.c: In function ‘build_insn’:
-  | arch/arm64/net/bpf_jit.h:94:2: error: implicit declaration of function ‘aarch64_insn_gen_stadd’; did you mean ‘aarch64_insn_gen_adr’? [-Werror=implicit-function-declaration]
-  |    94 |  aarch64_insn_gen_stadd(Rn, Rs, A64_SIZE(sf))
-  |       |  ^~~~~~~~~~~~~~~~~~~~~~
-  | arch/arm64/net/bpf_jit_comp.c:912:9: note: in expansion of macro ‘A64_STADD’
-  |   912 |    emit(A64_STADD(isdw, reg, src), ctx);
-  |       |         ^~~~~~~~~
-  | cc1: some warnings being treated as errors
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Cc: Hao Luo <haoluo@google.com>
+> > Fixes: c25b2ae13603 ("bpf: Replace PTR_TO_XXX_OR_NULL with PTR_TO_XXX | PTR_MAYBE_NULL")
+> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> > ---
+> >  kernel/bpf/btf.c | 22 +++++++++++++++-------
+> >  1 file changed, 15 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index e16dafeb2450..416345798e0a 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -5568,13 +5568,21 @@ int btf_check_type_match(struct bpf_verifier_log *log, const struct bpf_prog *pr
+> >         return btf_check_func_type_match(log, btf1, t1, btf2, t2);
+> >  }
+> >
+> > -static u32 *reg2btf_ids[__BPF_REG_TYPE_MAX] = {
+> > +static u32 *reg2btf_ids(enum bpf_reg_type type)
+> > +{
+> > +       switch (type) {
+> >  #ifdef CONFIG_NET
+> > -       [PTR_TO_SOCKET] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK],
+> > -       [PTR_TO_SOCK_COMMON] = &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON],
+> > -       [PTR_TO_TCP_SOCK] = &btf_sock_ids[BTF_SOCK_TYPE_TCP],
+> > +       case PTR_TO_SOCKET:
+> > +               return &btf_sock_ids[BTF_SOCK_TYPE_SOCK];
+> > +       case PTR_TO_SOCK_COMMON:
+> > +               return &btf_sock_ids[BTF_SOCK_TYPE_SOCK_COMMON];
+> > +       case PTR_TO_TCP_SOCK:
+> > +               return &btf_sock_ids[BTF_SOCK_TYPE_TCP];
+> >  #endif
+> > -};
+> > +       default:
+> > +               return NULL;
+> > +       }
+> > +}
+> >
+> >  /* Returns true if struct is composed of scalars, 4 levels of nesting allowed */
+> >  static bool __btf_type_is_scalar_struct(struct bpf_verifier_log *log,
+> > @@ -5688,7 +5696,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+> >                         }
+> >                         if (check_ptr_off_reg(env, reg, regno))
+> >                                 return -EINVAL;
+> > -               } else if (is_kfunc && (reg->type == PTR_TO_BTF_ID || reg2btf_ids[reg->type])) {
+> > +               } else if (is_kfunc && (reg->type == PTR_TO_BTF_ID || reg2btf_ids(reg->type))) {
+>
+> Just use reg2btf_ids[base_type(reg->type)] instead?
 
-Will
+That would be incorrect I think, then we'd allow e.g. PTR_TO_TCP_SOCK_OR_NULL
+and treat it as PTR_TO_TCP_SOCK, while current code only wants to permit
+non-NULL variants for these three.
+
+--
+Kartikeya
