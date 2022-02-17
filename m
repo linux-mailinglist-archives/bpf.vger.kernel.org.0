@@ -2,118 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A004B9B2F
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 09:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346014B9B5F
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 09:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237748AbiBQIf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 03:35:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58718 "EHLO
+        id S237633AbiBQIpt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 03:45:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:32784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234092AbiBQIf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 03:35:27 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E450A29B9FA
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:35:13 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id e5so5329093vsg.12
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:35:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=r1zJaBUPNQBJIkixJM/WVkMBxWgtgajvPcDkUoia8nw=;
-        b=HY8Ix8IE0ChnmJynkS37c0cZ1oaiYAKMpOJ3Zx7qewl+LYf/f+F9ndUv5sbyMe8+kG
-         TasR0/h3m3h6mLqlnJdVCUJvmycCmIduX3ulvuZNNQUBP+9VA3l4KiZOyJMS10y988EY
-         MCYFAcZKL9o9KT7ZYxt/aes7y0L4oDSn9XYMm8G5aEi08oLXsO+TDe+dI21pITtYL6JX
-         EVmdJka8hSwKy+oJOzGe5ylHYWFEktwAHGZO2IO9LM1/LhRQX/2myK0du7G0/10UswZ0
-         cSZuoxpBMsi1P+iAaozLICNPGPh/vVumG2I+yQcmJcBjSiq2u5Sfkm/DYV+mBuAhZEiE
-         Wbdw==
+        with ESMTP id S238038AbiBQIpr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 03:45:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 113502221B4
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:45:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645087532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l/VQgLhh1DBOYffBqGYngony3TZbnaAH3gw4sPL+y8Y=;
+        b=THEdw38vzB0QWr4jHcxHN+OaOpdlOkXAwUgJbz0PFhdOFvTd7Peg6Z9BVjnBoC8DElB8V1
+        S/zG6gEwFUhy/PVPBynXGnn2tWYNL7XqZAAKk/0/sHS1u6t2l+KRbobbJb6z/Mb/7QIj83
+        Es249uGRRbdMgKDYdUXZpNiVbXBgZc4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-460-Mt4B4Tg6PBOgJfpjfbCemA-1; Thu, 17 Feb 2022 03:45:30 -0500
+X-MC-Unique: Mt4B4Tg6PBOgJfpjfbCemA-1
+Received: by mail-wm1-f69.google.com with SMTP id u14-20020a05600c210e00b0037bddd0562eso1378520wml.1
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:45:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=r1zJaBUPNQBJIkixJM/WVkMBxWgtgajvPcDkUoia8nw=;
-        b=xjVZBts9NdIZ3G7vUZ3jfMWxTGmJgWddH3k4EFGJkG8js/Sywi54Pm8d9/DRRfXTDZ
-         rlHU+Y/pVyQMc1D2G+ApWwX3+j0BdKaOIlqFGSvVGeAng5ls4imlEM1MEGYpqi0l6fwv
-         HWjch+7gwl648oLoGmDdLjkwekfZrpTlFNlVEUYpTtozaXIMqQ+S4VJuEJl0KJxz7otx
-         RM01o/y3giKoTUd3Mt9P9ipuNzI1BreXYsgS2jNDgRS7ghbCvyMBfGTF66UGevf5x8EJ
-         Kpq3TGt3qRmRXQqL3WPQRGfA8r/YUgAPUnid50fonHZPHy8AyPcgp6IaP6hL+VOdW4/O
-         Riig==
-X-Gm-Message-State: AOAM532AWrYtCAChey1uIlGB3NuHdaKL8Z3+F3faD/pJyqBoy5XG1B5c
-        AE+hREBJOfhcrOpz9FboKGDPlmpBNp+D09B9zdw=
-X-Google-Smtp-Source: ABdhPJzNuhCXepAjo64/Yefnz2WpIPGr4pKunKInq4KWG7F7YKO6nmirmBDf3/JpALvrA0o+JE7GMy/o4Vssa4gTVf0=
-X-Received: by 2002:a05:6102:3f54:b0:31b:63ee:371e with SMTP id
- l20-20020a0561023f5400b0031b63ee371emr628651vsv.25.1645086912786; Thu, 17 Feb
- 2022 00:35:12 -0800 (PST)
-MIME-Version: 1.0
-Reply-To: wallaceharrisonun1@gmail.com
-Sender: misaishagagaddafi@gmail.com
-Received: by 2002:a67:e0d7:0:0:0:0:0 with HTTP; Thu, 17 Feb 2022 00:35:12
- -0800 (PST)
-From:   "Mr. wallace harrisonun" <wallaceharrisonun1@gmail.com>
-Date:   Thu, 17 Feb 2022 00:35:12 -0800
-X-Google-Sender-Auth: UQbs2eGoo1vjFG4LvtkqSXufQ2Y
-Message-ID: <CAM8sdMYkvox+29WR1o3BS_G1y3KZM0FRBTz5DeNcjFeFGZzwzQ@mail.gmail.com>
-Subject: Palliative Empowerment
-To:     undisclosed-recipients:;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=l/VQgLhh1DBOYffBqGYngony3TZbnaAH3gw4sPL+y8Y=;
+        b=irEVV7CtUayxCSnARaHwyi6p4+whr78SVfEdRDzsG+BKtTEKRccY4VSOY5IIBM+UkI
+         lp961smK+7HgoJJedt7hsGXUClkRl/oJNVI9gNSaKHSWB+gCVT8MXWXscwyyfxGJ9Ntb
+         fMjkE1sSEVG3lBdj94ctrPzex6xEGeR2p0fnW7BDQuYiq9c8KbhfHrkinYWjcXP+20PW
+         VugHbiGsNKotD6qfSKoKWSgYzo4+4dyHd9pj1CCqUWoxUIuGmE92yoru2nZMa+bbCs2J
+         DiLXfQF7VTxXIbeHMB5VXqUY8ppSNbI7ixblA593eArATwSBqNq28+CIJF4caGrhpDqy
+         Avig==
+X-Gm-Message-State: AOAM5310fWXfhF2u3xW3QLQ/5lgtI4P4vMyWkjxJejVrsCsmgkGHWRW0
+        pFzJN8KNwRSzEcplKGTZQBswLi55DOzDgXP/gfze3bnDKdI5U0ltF0V/MzJgCnrSldGOSJ6YYta
+        VzVS2QJCU7txP
+X-Received: by 2002:a05:600c:4e0a:b0:37b:c548:622a with SMTP id b10-20020a05600c4e0a00b0037bc548622amr5359162wmq.55.1645087529259;
+        Thu, 17 Feb 2022 00:45:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxg9hz9QXiPqil98HtD9zdj/RRqil2JJJiJ6kNUJxNsL96+bttpFtCe95wg8+235HI07HM++Q==
+X-Received: by 2002:a05:600c:4e0a:b0:37b:c548:622a with SMTP id b10-20020a05600c4e0a00b0037bc548622amr5359148wmq.55.1645087529037;
+        Thu, 17 Feb 2022 00:45:29 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-112-206.dyn.eolo.it. [146.241.112.206])
+        by smtp.gmail.com with ESMTPSA id z7sm492824wml.40.2022.02.17.00.45.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Feb 2022 00:45:28 -0800 (PST)
+Message-ID: <41a3e6e4f9331c6a0a62fe838fc6f9084a5c89bc.camel@redhat.com>
+Subject: Re: [PATCH v3] net: fix wrong network header length
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Lina Wang <lina.wang@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        bpf <bpf@vger.kernel.org>,
+        Maciej =?UTF-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Eric Dumazet <edumazet@google.com>
+Date:   Thu, 17 Feb 2022 09:45:27 +0100
+In-Reply-To: <20220217070139.30028-1-lina.wang@mediatek.com>
+References: <CAADnVQK78PN8N6c6u_O2BAxdyXwH_HVYMV_x3oGgyfT50a6ymg@mail.gmail.com>
+         <20220217070139.30028-1-lina.wang@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FORM_SHORT,
-        MONEY_FRAUD_3,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:e36 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [wallaceharrisonun1[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [wallaceharrisonun1[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
-        *      information
-        *  0.8 MONEY_FORM_SHORT Lots of money if you fill out a short form
-        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-        *  2.9 MONEY_FRAUD_3 Lots of money and several fraud phrases
-X-Spam-Level: *******
+User-Agent: Evolution 3.42.3 (3.42.3-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Greetings!
+Hello,
 
- We are writing this message to you from the United Nations Centre to
-inform you that you have been chosen as our Representative in your
-country, to distribute the total sum of $500,000 US Dollars, For
-Palliative Empowerment in order to help the poor people in your city.
-Such as the Disabled people, The homeless, Orphanages, schools, and
-Generals=E2=80=99 Hospitals ,if you receive the message reply to us with yo=
-ur
-details, Your Full Name Your Address: Your Occupation: Via this
-Email:<wallaceharrisonun1@gmail.com>  For more information about the
-payment.
+On Thu, 2022-02-17 at 15:01 +0800, Lina Wang wrote:
+> On Wed, 2022-02-16 at 19:05 -0800, Alexei Starovoitov wrote:
+> > On Tue, Feb 15, 2022 at 11:37 PM Lina Wang <lina.wang@mediatek.com>
+> > wrote:
+> > > 
+> > > When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is
+> > > enable,
+> > > several skbs are gathered in skb_shinfo(skb)->frag_list. The first
+> > > skb's
+> > > ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
+> > > network_header\transport_header\mac_header have been updated as
+> > > ipv4 acts,
+> > > but other skbs in frag_list didnot update anything, just ipv6
+> > > packets.
+> > 
+> > Please add a test that demonstrates the issue and verifies the fix.
+> 
+> I used iperf udp test to verify the patch, server peer enabled -d to debug
+> received packets.
+> 
+> 192.0.0.4 is clatd interface ip, corresponding ipv6 addr is 
+> 2000:1:1:1:afca:1b1f:1a9:b367, server peer ip is 1.1.1.1,
+> whose ipv6 is 2004:1:1:1::101:101.
+> 
+> Without the patch, when udp length 2840 packets received, iperf shows:
+> pcount 1 packet_count 0
+> pcount 27898727 packet_count 1
+> pcount 3 packet_count 27898727
+> 
+> pcount should be 2, but is 27898727(0x1a9b367) , which is 20 bytes put 
+> forward. 
+> 
+> 12:08:02.680299	Unicast to us 2004:1:1:1::101:101   2000:1:1:1:afca:1b1f:1a9:b367 UDP 51196 → 5201 Len=2840
+> 0000   20 00 00 01 00 01 00 01 af ca 1b 1f 01 a9 b3 67   ipv6 dst address
+> 0000   c7 fc 14 51 0b 20 c7 ab                           udp header
+> 0000   00 00 00 ab 00 0e f3 49 00 00 00 01 08 06 69 d2   00000001 is pcount
+> 12:08:02.682084	Unicast to us	1.1.1.1	                 192.0.0.4 	 	  UDP 51196 → 5201 Len=2840
+> 
+> After applied the patch, there is no OOO, pcount acted in order.
 
-Regards
-Dylan.
+To clarify: Alexei is asking to add a test under:
+
+tools/testing/selftests/net/
+
+to cover this specific case. You can propbably extend the existing
+udpgro_fwd.sh.
+
+Please explicitly CC people who gave feedback to previous iterations,
+it makes easier to track the discussion.
+
+/P
+
