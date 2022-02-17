@@ -2,134 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DDD4B9C2F
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 10:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7AD4B9F7F
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 13:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbiBQJi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 04:38:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40030 "EHLO
+        id S240167AbiBQMBC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 07:01:02 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238736AbiBQJiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 04:38:25 -0500
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDEC81E1485;
-        Thu, 17 Feb 2022 01:38:09 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0V4iqipY_1645090685;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V4iqipY_1645090685)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 17 Feb 2022 17:38:06 +0800
-Message-ID: <1645090228.2917905-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v5 20/22] virtio_net: set the default max ring num
-Date:   Thu, 17 Feb 2022 17:30:28 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S236361AbiBQMBC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 07:01:02 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4641829412D;
+        Thu, 17 Feb 2022 04:00:48 -0800 (PST)
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21HBddKk030523;
+        Thu, 17 Feb 2022 12:00:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=RPK02i33myDKA4bIkfBDslJjVJucaG1dFf32Qm6oCgE=;
+ b=rk1u9ymXsuEs3djR5ElAft4xFo4MRy4bFLpasvqVsK46eYuEiMBA81wE25tRWlORrpk8
+ nM3xTNqufSc02jOvf4YeleHIkMGr77nlB0NVyYuUPkKZMUcsVPmMxHb3oIFJJgvgv56g
+ AkiLu1nOZoKtjdU+CRj3WdMI0PkzJADUn90fLa4g4i/QtCcEuJRLMMsykV/jBry3vpjd
+ A3S7sTPbqyYt8mDlN+ohJ1uACV37mQxEo4Dr8OhlIvAgNNfH/nt+ooT5tg+AjyIwxGKQ
+ cTjk7iIXX+2cPATrWE2J7SfLkFn/CprV/GRw/TX94y5t/WJo1IusAuiSiUAI0+GhnHZ/ pA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9k53kyju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 12:00:10 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21HBrw4A016454;
+        Thu, 17 Feb 2022 12:00:09 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9k53kyh6-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 12:00:09 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21HBZwAv022806;
+        Thu, 17 Feb 2022 11:36:46 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 3e64ha7782-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 11:36:45 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21HBahp937028328
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Feb 2022 11:36:43 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 91A4352071;
+        Thu, 17 Feb 2022 11:36:42 +0000 (GMT)
+Received: from li-NotSettable.ibm.com.com (unknown [9.43.115.39])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 1E43852065;
+        Thu, 17 Feb 2022 11:36:39 +0000 (GMT)
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-References: <20220214081416.117695-1-xuanzhuo@linux.alibaba.com>
- <20220214081416.117695-21-xuanzhuo@linux.alibaba.com>
- <CACGkMEvZvhSb0veCynEHN3EfFu_FwbCAb8w1b0Oi3LDc=ffNaw@mail.gmail.com>
- <1644997568.827981-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEt_AEw2Jh9VzkGQ2A8f8Y0nuuFxr193_vnkFpc=JyD2Sg@mail.gmail.com>
-In-Reply-To: <CACGkMEt_AEw2Jh9VzkGQ2A8f8Y0nuuFxr193_vnkFpc=JyD2Sg@mail.gmail.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Nicholas Piggin <npiggin@gmail.com>, <bpf@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/3] powerpc/ftrace: Reserve instructions from function entry for ftrace
+Date:   Thu, 17 Feb 2022 17:06:22 +0530
+Message-Id: <cover.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.27.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DQ6MhTknBE0_u8Dy8aNbZyxfn4xTp6Am
+X-Proofpoint-GUID: 16gxvXOI1def_ltGAETNZW6zLj_LE4PB
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-17_04,2022-02-17_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ lowpriorityscore=0 adultscore=0 impostorscore=0 malwarescore=0
+ suspectscore=0 phishscore=0 mlxscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=564 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202170051
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 17 Feb 2022 15:21:26 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Wed, Feb 16, 2022 at 3:52 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> >
-> > On Wed, 16 Feb 2022 12:14:31 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> > > On Mon, Feb 14, 2022 at 4:14 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > > >
-> > > > Sets the default maximum ring num based on virtio_set_max_ring_num().
-> > > >
-> > > > The default maximum ring num is 1024.
-> > >
-> > > Having a default value is pretty useful, I see 32K is used by default for IFCVF.
-> > >
-> > > Rethink this, how about having a different default value based on the speed?
-> > >
-> > > Without SPEED_DUPLEX, we use 1024. Otherwise
-> > >
-> > > 10g 4096
-> > > 40g 8192
-> >
-> > We can define different default values of tx and rx by the way. This way I can
-> > just use it in the new interface of find_vqs().
-> >
-> > without SPEED_DUPLEX:  tx 512 rx 1024
-> >
->
-> Any reason that TX is smaller than RX?
->
+Previously discussed here:
+https://lore.kernel.org/20220207102454.41b1d6b5@gandalf.local.home
 
-I've seen some NIC drivers with default tx smaller than rx.
+- Naveen
 
-One problem I have now is that inside virtnet_probe, init_vqs is before getting
-speed/duplex. I'm not sure, can the logic to get speed/duplex be put before
-init_vqs? Is there any risk?
 
-Can you help me?
+Naveen N. Rao (3):
+  powerpc/ftrace: Reserve instructions from function entry for ftrace
+  bpf/trampoline: Allow ftrace location to differ from trampoline attach
+    address
+  kprobes: Allow probing on any address belonging to ftrace
 
-Thanks.
+ arch/powerpc/include/asm/ftrace.h  |  15 ++++
+ arch/powerpc/kernel/trace/ftrace.c | 110 ++++++++++++++++++++++++++---
+ kernel/bpf/trampoline.c            |   2 -
+ kernel/kprobes.c                   |  12 ++++
+ kernel/trace/ftrace.c              |   2 +
+ 5 files changed, 129 insertions(+), 12 deletions(-)
 
-> Thanks
->
-> > Thanks.
-> >
-> >
-> > >
-> > > etc.
-> > >
-> > > (The number are just copied from the 10g/40g default parameter from
-> > > other vendors)
-> > >
-> > > Thanks
-> > >
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/net/virtio_net.c | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> > > > index a4ffd7cdf623..77e61fe0b2ce 100644
-> > > > --- a/drivers/net/virtio_net.c
-> > > > +++ b/drivers/net/virtio_net.c
-> > > > @@ -35,6 +35,8 @@ module_param(napi_tx, bool, 0644);
-> > > >  #define GOOD_PACKET_LEN (ETH_HLEN + VLAN_HLEN + ETH_DATA_LEN)
-> > > >  #define GOOD_COPY_LEN  128
-> > > >
-> > > > +#define VIRTNET_DEFAULT_MAX_RING_NUM 1024
-> > > > +
-> > > >  #define VIRTNET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
-> > > >
-> > > >  /* Amount of XDP headroom to prepend to packets for use by xdp_adjust_head */
-> > > > @@ -3045,6 +3047,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
-> > > >                         ctx[rxq2vq(i)] = true;
-> > > >         }
-> > > >
-> > > > +       virtio_set_max_ring_num(vi->vdev, VIRTNET_DEFAULT_MAX_RING_NUM);
-> > > > +
-> > > >         ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
-> > > >                                   names, ctx, NULL);
-> > > >         if (ret)
-> > > > --
-> > > > 2.31.0
-> > > >
-> > >
-> >
->
+
+base-commit: 1b43a74f255c5c00db25a5fedfd75ca0dc029022
+-- 
+2.35.1
+
