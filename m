@@ -2,79 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B74B74BA914
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 20:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 551704BA93D
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 20:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244846AbiBQTA2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 14:00:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55278 "EHLO
+        id S237866AbiBQTHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 14:07:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244864AbiBQTA2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 14:00:28 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B69875C1F
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 11:00:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3B825B823C4
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 19:00:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C1E4BC340F5;
-        Thu, 17 Feb 2022 19:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645124410;
-        bh=pXsQuxbDViV+NtOoOCBRV5RnbYAJtPsXAnE1vuNWvTA=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Wf0ZsWNbSKoIUJYOU4LO+v2GKM9anJGtA/dYale0Ir0iDVS031osC53A+GoXXNifa
-         54IO4ZIRBl8wEv81FBK47sN19ksPx23vDqdC00ZXgVNxu411o8PsvYJr02CD8vjYhE
-         y38Q+JX2xwizVaLRgV7yvyGlu1y3yoW3/6yG30NMH/Y/w6Fw9Ooj2BcVhwACGCQ/uy
-         hRNHR8aXy57CX8lqCRYWslT02boN79YGn/KnIBoILS5zBK8vIngY+vxTB04zjql65+
-         XyJUCywNnq8tJM6N7rZMaDhlUS+XK6GaxdLqZdp91kSGucULw+8u+2SkddWIQIWHvi
-         fT2LwHN4nG/cA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B1337E7BB08;
-        Thu, 17 Feb 2022 19:00:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S244987AbiBQTHq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 14:07:46 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050368567B
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 11:07:32 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id s1so4852047iob.9
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 11:07:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TpKXjcc9BaA1pqX9YdThVlYucA/Xk9TNVNtnkyOAuI0=;
+        b=GWL0PAbz24RBtIxUCOsAr302ucCGAMjTyOeVYOqri6aVuL/ZnHzW/CQj53j5QaySeA
+         ABrgkEUgnmmrK25icyFHg0ih8/noHJIxGoaL/dciwDQMHBULOqtbq4ObyZSK5Z9mkP41
+         jm8jRsdyMGHNdfKBUVkgHFBw+yADA/a1u992WulYps5uxWNvg5BqN9ZA5/eETnq0dsD+
+         d2fQIqXuMdLhvggI330+mS8PA/Ut6UPJcVFcdSTZly1WcS7XxhwfEtoXDucQF1aXujyA
+         xudj+icpImU8Se0fastlzKk6TQVt9h60Rkx9MVReewLgjhvAEAq3vt8Dj6tOWAVKw6sL
+         FT2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TpKXjcc9BaA1pqX9YdThVlYucA/Xk9TNVNtnkyOAuI0=;
+        b=1svyQf733h/0xgKe3V4DhUcb6PrEkUti37jg9hDNLXraO8kq8KykuQpIlL+8AIf0u5
+         zytC2u8RBfZxzwIl23Vb68q+hsorUePL3k/eSSipX/+TYI9rRUbS+HFziWj9AURTzFEh
+         kpeFShbgZCUT3O8gndKeBoZA2tp+fInzFLf445CmvSs19Nvnh7Unn266DazVi64sgubp
+         aVFuz5n1RndcKGCpAVm5qqxv93LTA2HENh/z5g+lFNf61b424R56tHP6uz1dQ5l6ABRc
+         yeszFONd5vD+Boh0bke97oWr/oluADh1xwAoDaDhx+SdxKCEjCqFu+hZxfQsjg90/B5p
+         gmRg==
+X-Gm-Message-State: AOAM5322xOTAeVOWMYnoLj55y7dAOoENKF34TCQnuj58Jg9krJQgqkk5
+        Z81y0ONBscnmYJlT5jR3gS1iIeeUiVKeIlacvwk=
+X-Google-Smtp-Source: ABdhPJwf86ugsOSaXDRKh4NVT28h+Pv82B8+caWV/T+yfXweSB6VE0Yv9qARwtbT1bmu7y1TJTWbuX7evx/M6hVlAIo=
+X-Received: by 2002:a05:6638:1035:b0:306:e5bd:36da with SMTP id
+ n21-20020a056638103500b00306e5bd36damr2988344jan.145.1645124851386; Thu, 17
+ Feb 2022 11:07:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix vmtest.sh to launch smp vm.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164512441071.13752.16041850189800843797.git-patchwork-notify@kernel.org>
-Date:   Thu, 17 Feb 2022 19:00:10 +0000
-References: <20220217155212.2309672-1-fallentree@fb.com>
-In-Reply-To: <20220217155212.2309672-1-fallentree@fb.com>
-To:     Yucong Sun <fallentree@fb.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org, sunyucong@gmail.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220217180210.2981502-1-fallentree@fb.com> <20220217183253.ihfujgc63rgz7mcj@kafai-mbp.dhcp.thefacebook.com>
+ <CAJygYd3m0_EkqD8DepPLX0rk48BO0TwHkqJ81KRfOvaygMg9_w@mail.gmail.com> <CAEf4BzZjCRt5OmrSem5MZCOJRo2Ghv2TR60w4kEphGWGDf7mxA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZjCRt5OmrSem5MZCOJRo2Ghv2TR60w4kEphGWGDf7mxA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 17 Feb 2022 11:07:20 -0800
+Message-ID: <CAEf4BzZHhjSrqqABuZgzVz8j+-qCbbU5GnzOuUpAQUqhLNazrw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix crash in core_reloc when
+ bpftool btfgen fails
+To:     "sunyucong@gmail.com" <sunyucong@gmail.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Yucong Sun <fallentree@fb.com>,
+        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Feb 17, 2022 at 10:57 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Feb 17, 2022 at 10:55 AM sunyucong@gmail.com
+> <sunyucong@gmail.com> wrote:
+> >
+> > > Should it be:
+> > >                 bpf_object__close(obj);
+> > >                 obj = NULL:
+> >
+> > No, the actual crash is caused by this line:
+> > https://github.com/kernel-patches/bpf/blob/bpf-next/tools/testing/selftests/bpf/prog_tests/core_reloc.c#L896
+> >
+> > When run_btfgen fails, the obj contains uninitialized data and then
+> > bpf_object__close(obj) crashes.
+>
+>
+> Martin's point is that you have to NULL out obj so that on the next
+> iteration this doesn't crash again. I'll fix it up while applying.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Thu, 17 Feb 2022 07:52:12 -0800 you wrote:
-> Fix typo in vmtest.sh to make sure it launch proper vm with 8 cpus.
-> 
-> Signed-off-by: Yucong Sun <fallentree@fb.com>
-> ---
->  tools/testing/selftests/bpf/vmtest.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: fix vmtest.sh to launch smp vm.
-    https://git.kernel.org/bpf/bpf-next/c/b38101c57acf
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+But I actually ended up replacing two goto cleanup with continue
+(there is no clean up to do). And adjusted commit message to reflect
+that. Applied to bpf-next, thanks for the fix!
