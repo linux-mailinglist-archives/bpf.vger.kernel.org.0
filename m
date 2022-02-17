@@ -2,71 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EE74BA6AF
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 18:07:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E664BA729
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 18:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243559AbiBQRFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 12:05:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60738 "EHLO
+        id S243717AbiBQRaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 12:30:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbiBQRFe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 12:05:34 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD052B3575;
-        Thu, 17 Feb 2022 09:05:20 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id k60-20020a17090a4cc200b001b932781f3eso6663020pjh.0;
-        Thu, 17 Feb 2022 09:05:20 -0800 (PST)
+        with ESMTP id S232550AbiBQRaV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 12:30:21 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ECD272D8F;
+        Thu, 17 Feb 2022 09:30:06 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id y11so251228pfa.6;
+        Thu, 17 Feb 2022 09:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=igdtx/X4r6DHvG4OHrEKeNV0KHoFSbJa+zOn0lpALxk=;
-        b=h1OjLZWm6AqbT1qg0+826xPUab9KqGWoba4Xk298WYdrZ8LzbETMyMHVLtQ6HL1AG5
-         2nO2RIAJpAcJYQGlhAYIv3SeNTmxNXtGJXTlhl0BmfcTCj0Pbt6p7A54hB+5JgdGyYaj
-         EZug/4GxcTPHi2OXVCZvt3s0z/7Ms8pnBnO+JSx5RZTcEhJo8S00fGlGRgZ/g29vsHEs
-         /KHCzO17dYyPPkZlZXAIQpekt6irno8BivviWOOtG0EEBoBAQgbbmAJNpWvWv0S9a3Ld
-         xku2Ycl0Mr1dmiuKT9aUGcGlSuivfqdN8Wdr+NrOVC9J0Rj13mEB5KkXZwbeLYvdBIaw
-         p/2w==
+        bh=S0mP+gQItL0EexL5aPknfQRXrpjtE7gE4U7C9cJtgV0=;
+        b=Kz/FLUFB0NDlTmKj99fKKrcnTQeB/fx9Uqw/jTCu6dHipjcBAFoLfekUWSdzw4Hlui
+         CIfb35ZI/EwZc2w1inhb02y4CQmXICjByqCDQ2BPY44irZEmjAnMtl3PWbfi8VQoVeYW
+         NNLg6pvOxgWyAJbwxhYDOXyVikHxZj++z4AslfVm9w/r1swFlA72K1beNxhQd9MxeUNr
+         qWTks3mHfsqk3XVu625gH7iVX2+ueUNpqoR1jinzv9zi69TqHYBbrfdNz8EMwaF8wl/v
+         3xupzVGdpvX0kikiXxrfSgYXS5obqL3a9/UCQF33LpHpSfZ7Ev78EK2brmSlLMVF6mz6
+         ZOww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=igdtx/X4r6DHvG4OHrEKeNV0KHoFSbJa+zOn0lpALxk=;
-        b=kCu5a+aSk0HiTUky2z41lTix+uGoscercBHSQ6B9wri2zuGnF1nhRJ5RLdaHo/jmf+
-         nelVEhkvio1SJw624PuvBGlOqupeD6oTFr0rBwqfAw1c3hIAasB7uUZGxgcujmM1txZ9
-         jy9Xc7wbG57dWo5yMFNSxtjHOvBa3E54It1yzfNHIkciHgYAvsuvRF1K3nsXUJ/EuWXI
-         kTUkklakqdZr4L4cH0k6Sxjcckk3WhCAp8jhx7SRDP/s5w1X7MYLvoK9lw5UJIObgtkP
-         M5ritC5gIu060Dyswq3Qd4gLgoF03JwTEh4tkUe6njSIbJQxrfDeSVON+rUxFw052yoW
-         66Bg==
-X-Gm-Message-State: AOAM530TS/b/XGWOfe22bv/qsvZblOPomYLm/3MAJJkaoW6DeE7MazME
-        ni3u+fjrU+dTA9lkS8ib96XuzBIDkEdeIEKT6YrkkasvhOQ=
-X-Google-Smtp-Source: ABdhPJwzgy3e5J9IibSjmbvUM7EdXMF3t4DE7UGqgruUMTFhNWccEXGa2GUfVf7sygbgSmLsGTBoiSAsKgp1SGZ+0a0=
-X-Received: by 2002:a17:902:ce12:b0:14e:e18e:80a4 with SMTP id
- k18-20020a170902ce1200b0014ee18e80a4mr3644185plg.34.1645117519650; Thu, 17
- Feb 2022 09:05:19 -0800 (PST)
+        bh=S0mP+gQItL0EexL5aPknfQRXrpjtE7gE4U7C9cJtgV0=;
+        b=fayBswHwBkUvy+Ywk9aRXWjUYyq7veoLKX4xn6vIJ72gin5bkdLumm0HOMrovzG0R+
+         qCr9Lkqk/Py6VzoylKX9+uS9AYr+9Y024cZ49DxSTqW47ga8EdaFdC1FR/JhUMifMzok
+         2Huk5tb3ruOjS8REWvSo/wxX3BZlHBSi/7HQ8zYWNaGi8qS9ymxHgJtJWoIvnhyKzozJ
+         GNZxHkUx0mX28YiDG9ILfcEIsKOsCA8p7lIypg7s7tjw0UkF5gd/eLdvqLbrn0bzqrpi
+         tPnN73oyrhRElV3Xzz6ov27LZ9viGzyyH5JwozP8BT3CfvftomlBvTHryZeRK+5MBza+
+         QvQQ==
+X-Gm-Message-State: AOAM533TA2fklPpHkv8SlpBiEeZf8F0wj/y8V8x1wnvqNFwAaJb0bKqM
+        8qT7bDbFGZB/tE1IDTu0utsyfRVTNsZ8sr1LWP4=
+X-Google-Smtp-Source: ABdhPJyN1tP+rIxNtkLNTBcv8VhNYwdGPrE+6Ix9rpxGp0PA6bghC6wpL1IbAlkx+BCS5PTp2fOUYtendkuCPisvovw=
+X-Received: by 2002:a63:f711:0:b0:373:585d:2fd4 with SMTP id
+ x17-20020a63f711000000b00373585d2fd4mr3184332pgh.287.1645119005789; Thu, 17
+ Feb 2022 09:30:05 -0800 (PST)
 MIME-Version: 1.0
-References: <CAADnVQK78PN8N6c6u_O2BAxdyXwH_HVYMV_x3oGgyfT50a6ymg@mail.gmail.com>
- <20220217070139.30028-1-lina.wang@mediatek.com> <41a3e6e4f9331c6a0a62fe838fc6f9084a5c89bc.camel@redhat.com>
-In-Reply-To: <41a3e6e4f9331c6a0a62fe838fc6f9084a5c89bc.camel@redhat.com>
+References: <20220217145003.78982-1-cgzones@googlemail.com>
+In-Reply-To: <20220217145003.78982-1-cgzones@googlemail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 17 Feb 2022 09:05:08 -0800
-Message-ID: <CAADnVQJEXOOH6--uA7BvFUPmXY42zeOQVweHmaMqkbj_g5TLqA@mail.gmail.com>
-Subject: Re: [PATCH v3] net: fix wrong network header length
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Lina Wang <lina.wang@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
+Date:   Thu, 17 Feb 2022 09:29:54 -0800
+Message-ID: <CAADnVQJKkrWosMo3S1Ua15_on0S5FWYqUgETi6gqccVOibvEAg@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/2] capability: use new capable_or functionality
+To:     =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Cc:     selinux@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Serge Hallyn <serge@hallyn.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Du Cheng <ducheng2@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Rolf Eike Beer <eb@emlix.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Colin Cross <ccross@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Xiaofeng Cao <cxfcosmos@gmail.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org,
         Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        bpf <bpf@vger.kernel.org>,
-        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Eric Dumazet <edumazet@google.com>
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,73 +120,22 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 12:45 AM Paolo Abeni <pabeni@redhat.com> wrote:
+On Thu, Feb 17, 2022 at 6:50 AM Christian G=C3=B6ttsche
+<cgzones@googlemail.com> wrote:
 >
-> Hello,
+> Use the new added capable_or macro in appropriate cases, where a task
+> is required to have any of two capabilities.
 >
-> On Thu, 2022-02-17 at 15:01 +0800, Lina Wang wrote:
-> > On Wed, 2022-02-16 at 19:05 -0800, Alexei Starovoitov wrote:
-> > > On Tue, Feb 15, 2022 at 11:37 PM Lina Wang <lina.wang@mediatek.com>
-> > > wrote:
-> > > >
-> > > > When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is
-> > > > enable,
-> > > > several skbs are gathered in skb_shinfo(skb)->frag_list. The first
-> > > > skb's
-> > > > ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
-> > > > network_header\transport_header\mac_header have been updated as
-> > > > ipv4 acts,
-> > > > but other skbs in frag_list didnot update anything, just ipv6
-> > > > packets.
-> > >
-> > > Please add a test that demonstrates the issue and verifies the fix.
-> >
-> > I used iperf udp test to verify the patch, server peer enabled -d to de=
-bug
-> > received packets.
-> >
-> > 192.0.0.4 is clatd interface ip, corresponding ipv6 addr is
-> > 2000:1:1:1:afca:1b1f:1a9:b367, server peer ip is 1.1.1.1,
-> > whose ipv6 is 2004:1:1:1::101:101.
-> >
-> > Without the patch, when udp length 2840 packets received, iperf shows:
-> > pcount 1 packet_count 0
-> > pcount 27898727 packet_count 1
-> > pcount 3 packet_count 27898727
-> >
-> > pcount should be 2, but is 27898727(0x1a9b367) , which is 20 bytes put
-> > forward.
-> >
-> > 12:08:02.680299       Unicast to us 2004:1:1:1::101:101   2000:1:1:1:af=
-ca:1b1f:1a9:b367 UDP 51196 =E2=86=92 5201 Len=3D2840
-> > 0000   20 00 00 01 00 01 00 01 af ca 1b 1f 01 a9 b3 67   ipv6 dst addre=
-ss
-> > 0000   c7 fc 14 51 0b 20 c7 ab                           udp header
-> > 0000   00 00 00 ab 00 0e f3 49 00 00 00 01 08 06 69 d2   00000001 is pc=
-ount
-> > 12:08:02.682084       Unicast to us   1.1.1.1                  192.0.0.=
-4                UDP 51196 =E2=86=92 5201 Len=3D2840
-> >
-> > After applied the patch, there is no OOO, pcount acted in order.
+> Reorder CAP_SYS_ADMIN last.
 >
-> To clarify: Alexei is asking to add a test under:
->
-> tools/testing/selftests/net/
->
-> to cover this specific case. You can propbably extend the existing
-> udpgro_fwd.sh.
+> TODO: split into subsystem patches.
 
-Exactly.
-I suspect the setup needs a bit more than just iperf udp test.
-Does it need a specific driver and hw?
-Can it be reproduced with veth or other virtual netdev?
-Also commit talks about bpf_skb_proto_6_to_4.
-So that bpf helper has to be somehow involved, but iperf udp test
-says nothing about it.
-Please craft a _complete_ selftest.
+Yes. Please.
 
-> Please explicitly CC people who gave feedback to previous iterations,
-> it makes easier to track the discussion.
->
-> /P
->
+The bpf side picked the existing order because we were aware
+of that selinux issue.
+Looks like there is no good order that works for all.
+So the new helper makes a lot of sense.
+
+> Fixes: 94c4b4fd25e6 ("block: Check ADMIN before NICE for IOPRIO_CLASS_RT"=
+)
