@@ -2,263 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDD44B99CF
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 08:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CA9B4B99F7
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 08:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbiBQHZq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 02:25:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60780 "EHLO
+        id S236442AbiBQHk3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Feb 2022 02:40:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232960AbiBQHZl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 02:25:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C1BE2A0D56
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:25:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645082726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sNlRlH2sR1zEEfEZx3VUbIdvRvCNZdqDLBN9MKRUPII=;
-        b=XaEap0WseHL/k1FU+1xsW7x8cl07ryMLVOVVmaILeQrJKjvgaLnpyjDE8OckkqtYKDBycX
-        wupynFhNK1kUJSW8JIDjIjSBwNc5WGYz2q2wnvlNGSMZqvardPPUGr61PTUQbSF8x3ojPc
-        4Q3ltUXq9yiVe7V7dEPVkPuh1khBnaA=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-517-B179po5WMCyXNhZ1d_PcsA-1; Thu, 17 Feb 2022 02:25:25 -0500
-X-MC-Unique: B179po5WMCyXNhZ1d_PcsA-1
-Received: by mail-lf1-f70.google.com with SMTP id m18-20020a0565120a9200b004439214844dso1335103lfu.9
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:25:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sNlRlH2sR1zEEfEZx3VUbIdvRvCNZdqDLBN9MKRUPII=;
-        b=U4XgdU77yiFbR9V8rWgBJsecd483mjqrl/MlCMyFP3Bv8cXvZic4cH9bj+GurR/TlM
-         gp4rvvWojN35cDH2IVFD+Ei8mKdHMHdlYA5Y8DLNnjyOhkkn8i10HWk/B6hcIKCgzKBS
-         6xqtKSN3lhG8ryJCbv98mrP14zk2JXD0eRRGLRsqcBwC50P6YMEgAUz4AzLq4kiD5tTa
-         bCE5BDL2INDkOWDIj+n2B06nkKy1ouTVVb2Q/Qj2zgBeGranJPY5l0AVLXs0ylsBfC3c
-         pDI3bQTm+WdZm4w21vNiPFXWNT5Mj1TPdqexLcHYchdxIQcT6s4Ysl87IWy/6xXcW7Zi
-         UFmg==
-X-Gm-Message-State: AOAM532GGfy2n1RFc6C2gnYnT6r3Oe8meCj/siqmoyLb9bgvVVQvHSEH
-        nm0FcuO/XpK45P2fFax7sIOcJYcsEvjiKbWLYM3G7mMoTK6lucuqF3Tev+z3Tg4dUkuSVAIWeyC
-        FcthK7e1m9ZIhyFrWbF9fq7kP7wX7
-X-Received: by 2002:a05:6512:2205:b0:443:7f91:7aaa with SMTP id h5-20020a056512220500b004437f917aaamr1219235lfu.580.1645082723580;
-        Wed, 16 Feb 2022 23:25:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwR8xJrhWSFtYs+Sy66tR0N8p/P8you8W1THZDoS8h2O9oP1Ma/wA/ffCoJjTgZG+XZOmctzCbIL/u5foLKP5w=
-X-Received: by 2002:a05:6512:2205:b0:443:7f91:7aaa with SMTP id
- h5-20020a056512220500b004437f917aaamr1219224lfu.580.1645082723354; Wed, 16
- Feb 2022 23:25:23 -0800 (PST)
+        with ESMTP id S236472AbiBQHk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 02:40:29 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3702B2A39CF
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:15 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21H2IdYc014623
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:15 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e9dfb9885-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:14 -0800
+Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 16 Feb 2022 23:40:14 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id BFFC61132323A; Wed, 16 Feb 2022 23:39:59 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Subject: [PATCH bpf-next] libbpf: fix memleak in libbpf_netlink_recv()
+Date:   Wed, 16 Feb 2022 23:39:58 -0800
+Message-ID: <20220217073958.276959-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220214081416.117695-1-xuanzhuo@linux.alibaba.com>
- <20220214081416.117695-15-xuanzhuo@linux.alibaba.com> <CACGkMEufh3sbGx4wFCkpiXNR0w0WoCC=TNeLHE+QkqrhyXH6Bw@mail.gmail.com>
- <1644998595.3309107-4-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1644998595.3309107-4-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Thu, 17 Feb 2022 15:25:12 +0800
-Message-ID: <CACGkMEtdQXEW9K4j13NMVOxsURCD8bWiBy3u7v5dUu8Ymgx_MA@mail.gmail.com>
-Subject: Re: [PATCH v5 14/22] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: OfQmuHkrNhIZ_GhGPIc2D95Rr23RhPwx
+X-Proofpoint-GUID: OfQmuHkrNhIZ_GhGPIc2D95Rr23RhPwx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-17_03,2022-02-16_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
+ mlxscore=0 malwarescore=0 clxscore=1015 suspectscore=0 phishscore=0
+ spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=612
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202170034
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 4:08 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> On Wed, 16 Feb 2022 12:14:25 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> > On Mon, Feb 14, 2022 at 4:14 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
-> > >
-> > > This patch implements virtio pci support for QUEUE RESET.
-> > >
-> > > Performing reset on a queue is divided into these steps:
-> > >
-> > > 1. reset_vq: reset one vq
-> > > 2. recycle the buffer from vq by virtqueue_detach_unused_buf()
-> > > 3. release the ring of the vq by vring_release_virtqueue()
-> > > 4. enable_reset_vq: re-enable the reset queue
-> > >
-> > > This patch implements reset_vq, enable_reset_vq in the pci scenario.
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > ---
-> > >  drivers/virtio/virtio_pci_common.c |  8 ++--
-> > >  drivers/virtio/virtio_pci_modern.c | 60 ++++++++++++++++++++++++++++++
-> > >  2 files changed, 65 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> > > index 5a4f750a0b97..9ea319b1d404 100644
-> > > --- a/drivers/virtio/virtio_pci_common.c
-> > > +++ b/drivers/virtio/virtio_pci_common.c
-> > > @@ -255,9 +255,11 @@ static void vp_del_vq(struct virtqueue *vq)
-> > >         struct virtio_pci_vq_info *info = vp_dev->vqs[vq->index];
-> > >         unsigned long flags;
-> > >
-> > > -       spin_lock_irqsave(&vp_dev->lock, flags);
-> > > -       list_del(&info->node);
-> > > -       spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > > +       if (!vq->reset) {
-> > > +               spin_lock_irqsave(&vp_dev->lock, flags);
-> > > +               list_del(&info->node);
-> > > +               spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > > +       }
-> > >
-> > >         vp_dev->del_vq(info);
-> > >         kfree(info);
-> > > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> > > index bed3e9b84272..7d28f4c36fc2 100644
-> > > --- a/drivers/virtio/virtio_pci_modern.c
-> > > +++ b/drivers/virtio/virtio_pci_modern.c
-> > > @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_device *vdev, u64 features)
-> > >         if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
-> > >                         pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
-> > >                 __virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
-> > > +
-> > > +       if (features & BIT_ULL(VIRTIO_F_RING_RESET))
-> > > +               __virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
-> > >  }
-> > >
-> > >  /* virtio config->finalize_features() implementation */
-> > > @@ -176,6 +179,59 @@ static void vp_reset(struct virtio_device *vdev)
-> > >         vp_disable_cbs(vdev);
-> > >  }
-> > >
-> > > +static int vp_modern_reset_vq(struct virtqueue *vq)
-> > > +{
-> > > +       struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> > > +       struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> > > +       struct virtio_pci_vq_info *info;
-> > > +       unsigned long flags;
-> > > +
-> > > +       if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
-> > > +               return -ENOENT;
-> > > +
-> > > +       vp_modern_set_queue_reset(mdev, vq->index);
-> > > +
-> > > +       info = vp_dev->vqs[vq->index];
-> > > +
-> >
-> > Any reason that we don't need to disable irq here as the previous versions did?
->
-> Based on the spec, for the case of one interrupt per queue, there will be no
-> more interrupts after the reset queue operation. Whether the interrupt is turned
-> off or not has no effect. I turned off the interrupt before just to be safe.
+Ensure that libbpf_netlink_recv() frees dynamically allocated buffer in
+all code paths.
 
-So:
+Cc: Toke Høiland-Jørgensen <toke@redhat.com>
+Fixes: 9c3de619e13e ("libbpf: Use dynamically allocated buffer when receiving netlink messages")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/netlink.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-1) CPU0 -> get an interrupt
-2) CPU1 -> vp_modern_reset_vq
-2) CPU0 -> do_IRQ()
-
-We still need to synchronize with the irq handler in this case?
-
-Thanks
-
->
-> And for irq sharing scenarios, I don't want to turn off shared interrupts for a
-> queue.
->
-> And the following list_del has been guaranteed to be safe, so I removed the code
-> for closing interrupts in the previous version.
->
-> Thanks.
->
-> >
-> >
-> > > +       /* delete vq from irq handler */
-> > > +       spin_lock_irqsave(&vp_dev->lock, flags);
-> > > +       list_del(&info->node);
-> > > +       spin_unlock_irqrestore(&vp_dev->lock, flags);
-> > > +
-> > > +       INIT_LIST_HEAD(&info->node);
-> > > +
-> > > +       vq->reset = VIRTQUEUE_RESET_STAGE_DEVICE;
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static int vp_modern_enable_reset_vq(struct virtqueue *vq)
-> > > +{
-> > > +       struct virtio_pci_device *vp_dev = to_vp_device(vq->vdev);
-> > > +       struct virtio_pci_modern_device *mdev = &vp_dev->mdev;
-> > > +       struct virtio_pci_vq_info *info;
-> > > +       struct virtqueue *_vq;
-> > > +
-> > > +       if (vq->reset != VIRTQUEUE_RESET_STAGE_RELEASE)
-> > > +               return -EBUSY;
-> > > +
-> > > +       /* check queue reset status */
-> > > +       if (vp_modern_get_queue_reset(mdev, vq->index) != 1)
-> > > +               return -EBUSY;
-> > > +
-> > > +       info = vp_dev->vqs[vq->index];
-> > > +       _vq = vp_setup_vq(vq->vdev, vq->index, NULL, NULL, NULL,
-> > > +                        info->msix_vector);
-> >
-> > So we only care about moden devices, this means using vp_setup_vq()
-> > with NULL seems tricky.
-> >
-> > As replied in another thread, I would simply ask the caller to call
-> > the vring reallocation helper. See the reply for patch 17.
-
-Right.
-
-Thanks.
-
-> >
-> > Thanks
-> >
-> >
-> > > +       if (IS_ERR(_vq)) {
-> > > +               vq->reset = VIRTQUEUE_RESET_STAGE_RELEASE;
-> > > +               return PTR_ERR(_vq);
-> > > +       }
-> > > +
-> > > +       vp_modern_set_queue_enable(&vp_dev->mdev, vq->index, true);
-> > > +
-> > > +       return 0;
-> > > +}
-> > > +
-> > >  static u16 vp_config_vector(struct virtio_pci_device *vp_dev, u16 vector)
-> > >  {
-> > >         return vp_modern_config_vector(&vp_dev->mdev, vector);
-> > > @@ -397,6 +453,8 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
-> > >         .set_vq_affinity = vp_set_vq_affinity,
-> > >         .get_vq_affinity = vp_get_vq_affinity,
-> > >         .get_shm_region  = vp_get_shm_region,
-> > > +       .reset_vq        = vp_modern_reset_vq,
-> > > +       .enable_reset_vq = vp_modern_enable_reset_vq,
-> > >  };
-> > >
-> > >  static const struct virtio_config_ops virtio_pci_config_ops = {
-> > > @@ -415,6 +473,8 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
-> > >         .set_vq_affinity = vp_set_vq_affinity,
-> > >         .get_vq_affinity = vp_get_vq_affinity,
-> > >         .get_shm_region  = vp_get_shm_region,
-> > > +       .reset_vq        = vp_modern_reset_vq,
-> > > +       .enable_reset_vq = vp_modern_enable_reset_vq,
-> > >  };
-> > >
-> > >  /* the PCI probing function */
-> > > --
-> > > 2.31.0
-> > >
-> >
->
+diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
+index a598061f6fea..cbc8967d5402 100644
+--- a/tools/lib/bpf/netlink.c
++++ b/tools/lib/bpf/netlink.c
+@@ -176,7 +176,8 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+ 				libbpf_nla_dump_errormsg(nh);
+ 				goto done;
+ 			case NLMSG_DONE:
+-				return 0;
++				ret = 0;
++				goto done;
+ 			default:
+ 				break;
+ 			}
+@@ -188,9 +189,10 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
+ 				case NL_NEXT:
+ 					goto start;
+ 				case NL_DONE:
+-					return 0;
++					ret = 0;
++					goto done;
+ 				default:
+-					return ret;
++					goto done;
+ 				}
+ 			}
+ 		}
+-- 
+2.30.2
 
