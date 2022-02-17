@@ -2,101 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA9B4B99F7
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 08:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A004B9B2F
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 09:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236442AbiBQHk3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Feb 2022 02:40:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49372 "EHLO
+        id S237748AbiBQIf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 03:35:28 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236472AbiBQHk3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 02:40:29 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3702B2A39CF
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:15 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21H2IdYc014623
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:15 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e9dfb9885-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 16 Feb 2022 23:40:14 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 16 Feb 2022 23:40:14 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id BFFC61132323A; Wed, 16 Feb 2022 23:39:59 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf-next] libbpf: fix memleak in libbpf_netlink_recv()
-Date:   Wed, 16 Feb 2022 23:39:58 -0800
-Message-ID: <20220217073958.276959-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S234092AbiBQIf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 03:35:27 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E450A29B9FA
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:35:13 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id e5so5329093vsg.12
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 00:35:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=r1zJaBUPNQBJIkixJM/WVkMBxWgtgajvPcDkUoia8nw=;
+        b=HY8Ix8IE0ChnmJynkS37c0cZ1oaiYAKMpOJ3Zx7qewl+LYf/f+F9ndUv5sbyMe8+kG
+         TasR0/h3m3h6mLqlnJdVCUJvmycCmIduX3ulvuZNNQUBP+9VA3l4KiZOyJMS10y988EY
+         MCYFAcZKL9o9KT7ZYxt/aes7y0L4oDSn9XYMm8G5aEi08oLXsO+TDe+dI21pITtYL6JX
+         EVmdJka8hSwKy+oJOzGe5ylHYWFEktwAHGZO2IO9LM1/LhRQX/2myK0du7G0/10UswZ0
+         cSZuoxpBMsi1P+iAaozLICNPGPh/vVumG2I+yQcmJcBjSiq2u5Sfkm/DYV+mBuAhZEiE
+         Wbdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=r1zJaBUPNQBJIkixJM/WVkMBxWgtgajvPcDkUoia8nw=;
+        b=xjVZBts9NdIZ3G7vUZ3jfMWxTGmJgWddH3k4EFGJkG8js/Sywi54Pm8d9/DRRfXTDZ
+         rlHU+Y/pVyQMc1D2G+ApWwX3+j0BdKaOIlqFGSvVGeAng5ls4imlEM1MEGYpqi0l6fwv
+         HWjch+7gwl648oLoGmDdLjkwekfZrpTlFNlVEUYpTtozaXIMqQ+S4VJuEJl0KJxz7otx
+         RM01o/y3giKoTUd3Mt9P9ipuNzI1BreXYsgS2jNDgRS7ghbCvyMBfGTF66UGevf5x8EJ
+         Kpq3TGt3qRmRXQqL3WPQRGfA8r/YUgAPUnid50fonHZPHy8AyPcgp6IaP6hL+VOdW4/O
+         Riig==
+X-Gm-Message-State: AOAM532AWrYtCAChey1uIlGB3NuHdaKL8Z3+F3faD/pJyqBoy5XG1B5c
+        AE+hREBJOfhcrOpz9FboKGDPlmpBNp+D09B9zdw=
+X-Google-Smtp-Source: ABdhPJzNuhCXepAjo64/Yefnz2WpIPGr4pKunKInq4KWG7F7YKO6nmirmBDf3/JpALvrA0o+JE7GMy/o4Vssa4gTVf0=
+X-Received: by 2002:a05:6102:3f54:b0:31b:63ee:371e with SMTP id
+ l20-20020a0561023f5400b0031b63ee371emr628651vsv.25.1645086912786; Thu, 17 Feb
+ 2022 00:35:12 -0800 (PST)
 MIME-Version: 1.0
+Reply-To: wallaceharrisonun1@gmail.com
+Sender: misaishagagaddafi@gmail.com
+Received: by 2002:a67:e0d7:0:0:0:0:0 with HTTP; Thu, 17 Feb 2022 00:35:12
+ -0800 (PST)
+From:   "Mr. wallace harrisonun" <wallaceharrisonun1@gmail.com>
+Date:   Thu, 17 Feb 2022 00:35:12 -0800
+X-Google-Sender-Auth: UQbs2eGoo1vjFG4LvtkqSXufQ2Y
+Message-ID: <CAM8sdMYkvox+29WR1o3BS_G1y3KZM0FRBTz5DeNcjFeFGZzwzQ@mail.gmail.com>
+Subject: Palliative Empowerment
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: OfQmuHkrNhIZ_GhGPIc2D95Rr23RhPwx
-X-Proofpoint-GUID: OfQmuHkrNhIZ_GhGPIc2D95Rr23RhPwx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-17_03,2022-02-16_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- mlxscore=0 malwarescore=0 clxscore=1015 suspectscore=0 phishscore=0
- spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=612
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202170034
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: Yes, score=7.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FREEMAIL_REPLYTO_END_DIGIT,LOTS_OF_MONEY,MONEY_FORM_SHORT,
+        MONEY_FRAUD_3,MONEY_FREEMAIL_REPTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_FILL_THIS_FORM_SHORT,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2607:f8b0:4864:20:0:0:0:e36 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [wallaceharrisonun1[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [wallaceharrisonun1[at]gmail.com]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 T_HK_NAME_FM_MR_MRS No description available.
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.0 MONEY_FREEMAIL_REPTO Lots of money from someone using free
+        *      email?
+        *  0.0 T_FILL_THIS_FORM_SHORT Fill in a short form with personal
+        *      information
+        *  0.8 MONEY_FORM_SHORT Lots of money if you fill out a short form
+        *  2.9 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+        *  2.9 MONEY_FRAUD_3 Lots of money and several fraud phrases
+X-Spam-Level: *******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure that libbpf_netlink_recv() frees dynamically allocated buffer in
-all code paths.
+Greetings!
 
-Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-Fixes: 9c3de619e13e ("libbpf: Use dynamically allocated buffer when receiving netlink messages")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/netlink.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ We are writing this message to you from the United Nations Centre to
+inform you that you have been chosen as our Representative in your
+country, to distribute the total sum of $500,000 US Dollars, For
+Palliative Empowerment in order to help the poor people in your city.
+Such as the Disabled people, The homeless, Orphanages, schools, and
+Generals=E2=80=99 Hospitals ,if you receive the message reply to us with yo=
+ur
+details, Your Full Name Your Address: Your Occupation: Via this
+Email:<wallaceharrisonun1@gmail.com>  For more information about the
+payment.
 
-diff --git a/tools/lib/bpf/netlink.c b/tools/lib/bpf/netlink.c
-index a598061f6fea..cbc8967d5402 100644
---- a/tools/lib/bpf/netlink.c
-+++ b/tools/lib/bpf/netlink.c
-@@ -176,7 +176,8 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
- 				libbpf_nla_dump_errormsg(nh);
- 				goto done;
- 			case NLMSG_DONE:
--				return 0;
-+				ret = 0;
-+				goto done;
- 			default:
- 				break;
- 			}
-@@ -188,9 +189,10 @@ static int libbpf_netlink_recv(int sock, __u32 nl_pid, int seq,
- 				case NL_NEXT:
- 					goto start;
- 				case NL_DONE:
--					return 0;
-+					ret = 0;
-+					goto done;
- 				default:
--					return ret;
-+					goto done;
- 				}
- 			}
- 		}
--- 
-2.30.2
-
+Regards
+Dylan.
