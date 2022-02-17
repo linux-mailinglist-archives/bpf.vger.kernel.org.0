@@ -2,61 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252824BA848
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 19:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EE94BA856
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 19:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244451AbiBQScV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 17 Feb 2022 13:32:21 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59100 "EHLO
+        id S244504AbiBQSef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 13:34:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244386AbiBQScL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 13:32:11 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BDEA1AF
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:31:55 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21HFkv6J005151
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:31:54 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e92mqa72x-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:31:54 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 17 Feb 2022 10:31:53 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 434A32A7BFA79; Thu, 17 Feb 2022 10:31:45 -0800 (PST)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, Song Liu <song@kernel.org>,
-        <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
-        <syzbot+ecb1e7e51c52f68f7481@syzkaller.appspotmail.com>,
-        <syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com>
-Subject: [PATCH bpf-next] bpf: bpf_prog_pack: set proper size before freeing ro_header
-Date:   Thu, 17 Feb 2022 10:30:01 -0800
-Message-ID: <20220217183001.1876034-1-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S244452AbiBQSe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 13:34:28 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07C427B11
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:32:55 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id d3so2912071ilr.10
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:32:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5szz1MBv04IhvJQTuicCFg9n79Ee81Ajv+vxZc2S/PM=;
+        b=Ps04vo2SWQavePQsV73gJIC/NPh2WNLyzcfayq16ntkFlSX2GTe8l3tSz+/ZOQ9rwr
+         zjo01q4nEDnBnAhJlmw5sXQNDj2G1pcjNSlcwU7ttHkcHvmigK5ilr4BpG1+9IQPOz5g
+         78kgbQznhJGSMhqaf5gQWhN18EQZoyYiT7n6vBB1NslIhm3kX6QNzUpi9z4YP3tV5dfK
+         4eBktFr9Auh9VJDfwDeGIjXDGaKeCUpoPmXQdPIsXDrTo7wljGR1K0YRvfL8pIe6WcD+
+         Vg00xInx0qnd6EqlKxcFdmMFNd1MtCh9blhKdzrCGvgbv6W0sq3zhGc8LZruaHc47DWE
+         ZnPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5szz1MBv04IhvJQTuicCFg9n79Ee81Ajv+vxZc2S/PM=;
+        b=cHNdHmX/FjhVQKhSAA/6B+lXUaiZNutc8cyPbTdbow/24pVBSLrS0/YmOqtxPA6WpK
+         wUolXC/B++WWezoq1VWWePpFAHPQYHsDIrgMMGDjC9+bTyADBXZCIlAorJ4lJ6svv3Fi
+         ft0i+Bsuu18M+E9sPMxiqZm7hPAixUjmRJPWGP4D7zPixeUuEVwwRLhBx/Lt20kmQaBg
+         oSSWk8SrDA0DL83yRWMA+nijZ96EsF00HGKP9BHWIpa1iJV7HdSYNqNJb+khyAWcZYwn
+         NNetX8AgRT1jSHUwLGlXL7QyhTLURswrO98KIJyWhF4O9cGgZv7RvIfk7v1df34bR/41
+         c5zg==
+X-Gm-Message-State: AOAM531Jy+HnUBLBYX2Sn3dG+fwKStrBBGxn6TJcPkWD5I2bK9hyjAwk
+        L+ONjTuY0deLqdTssUzAcIuDzgyIArtCm/rEK85YDQ==
+X-Google-Smtp-Source: ABdhPJxQ+YQ+5rUSAu8FuSrPRvVUDrwPDiJ0gRVMwUHY6yjrAD08IqApzeUOhk0e4FuIDC6MRxrp88SyyUw6El+2EaI=
+X-Received: by 2002:a05:6e02:1c04:b0:2be:4c61:20f4 with SMTP id
+ l4-20020a056e021c0400b002be4c6120f4mr2814376ilh.245.1645122774541; Thu, 17
+ Feb 2022 10:32:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: G-tzVR-P7nAJh9OqfBT6laQd9-07rtVp
-X-Proofpoint-ORIG-GUID: G-tzVR-P7nAJh9OqfBT6laQd9-07rtVp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-17_07,2022-02-17_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 phishscore=0
- priorityscore=1501 bulkscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=928
- suspectscore=0 clxscore=1034 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202170085
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <00000000000073b3e805d7fed17e@google.com> <462fa505-25a8-fd3f-cc36-5860c6539664@iogearbox.net>
+ <CAPhsuW6rPx3JqpPdQVdZN-YtZp1SbuW1j+SVNs48UVEYv68s1A@mail.gmail.com>
+ <CAPhsuW5JhG07TYKKHRbNVtepOLjZ2ekibePyyqCwuzhH0YoP7Q@mail.gmail.com>
+ <CANp29Y64wUeARFUn8Z0fjk7duxaZ3bJM2uGuVug_0ZmhGG_UTA@mail.gmail.com> <CAPhsuW6YOv_xjvknt_FPGwDhuCuG5s=7Xt1t-xL2+F6UKsJf-w@mail.gmail.com>
+In-Reply-To: <CAPhsuW6YOv_xjvknt_FPGwDhuCuG5s=7Xt1t-xL2+F6UKsJf-w@mail.gmail.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Thu, 17 Feb 2022 19:32:43 +0100
+Message-ID: <CANp29Y4YC_rSKAgkYTaPV1gcN4q4WeGMvs61P2wnMQEv=kiu8A@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_jit_free
+To:     Song Liu <song@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs@googlegroups.com, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,37 +81,136 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-bpf_prog_pack_free() uses header->size to decide whether the header
-should be freed with module_memfree() or the bpf_prog_pack logic.
-However, in kvmalloc() failure path of bpf_jit_binary_pack_alloc(),
-header->size is not set yet. As a result, bpf_prog_pack_free() may treat
-a slice of a pack as a standalone kvmalloc'd header and call
-module_memfree() on the whole pack. This in turn causes use-after-free by
-other users of the pack.
+Hi Song,
 
-Fix this by setting ro_header->size before freeing ro_header.
+On Wed, Feb 16, 2022 at 5:27 PM Song Liu <song@kernel.org> wrote:
+>
+> Hi Aleksandr,
+>
+> Thanks for your kind reply!
+>
+> On Wed, Feb 16, 2022 at 1:38 AM Aleksandr Nogikh <nogikh@google.com> wrote:
+> >
+> > Hi Song,
+> >
+> > Is syzkaller not doing something you expect it to do with this config?
+>
+> I fixed sshkey in the config, and added a suppression for hsr_node_get_first.
+> However, I haven't got a repro overnight.
 
-Fixes: 33c9805860e5 ("bpf: Introduce bpf_jit_binary_pack_[alloc|finalize|free]")
-Reported-by: syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com
-Reported-by: syzbot+ecb1e7e51c52f68f7481@syzkaller.appspotmail.com
-Reported-by: syzbot+87f65c75f4a72db05445@syzkaller.appspotmail.com
-Signed-off-by: Song Liu <song@kernel.org>
----
- kernel/bpf/core.c | 1 +
- 1 file changed, 1 insertion(+)
+Oh, that's unfortunately not a very reliable thing. The bug has so far
+happened only once on syzbot, so it must be pretty rare. Maybe you'll
+have more luck with your local setup :)
 
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 44623c9b5bb1..ebb0193d07f0 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1069,6 +1069,7 @@ bpf_jit_binary_pack_alloc(unsigned int proglen, u8 **image_ptr,
- 
- 	*rw_header = kvmalloc(size, GFP_KERNEL);
- 	if (!*rw_header) {
-+		bpf_arch_text_copy(&ro_header->size, &size, sizeof(size));
- 		bpf_prog_pack_free(ro_header);
- 		bpf_jit_uncharge_modmem(size);
- 		return NULL;
--- 
-2.30.2
+You can try to run syz-repro on the log file that is available on the
+syzbot dashboard:
+https://github.com/google/syzkaller/blob/master/tools/syz-repro/repro.go
+Syzbot has already done it and apparently failed to succeed, but this
+is also somewhat probabilistic, especially when the bug is due to some
+rare race condition. So trying it several times might help.
 
+Also you might want to hack your local syzkaller copy a bit:
+https://github.com/google/syzkaller/blob/master/syz-manager/manager.go#L804
+Here you can drop the limit on the maximum number of repro attempts
+and make needLocalRepro only return true if crash.Title matches the
+title of this particular bug. With this change your local syzkaller
+instance won't waste time reproducing other bugs.
+
+There's also a way to focus syzkaller on some specific kernel
+functions/source files:
+https://github.com/google/syzkaller/blob/master/pkg/mgrconfig/config.go#L125
+
+--
+Best Regards,
+Aleksandr
+
+>
+> >
+> > On Wed, Feb 16, 2022 at 2:38 AM Song Liu <song@kernel.org> wrote:
+> > >
+> > > On Mon, Feb 14, 2022 at 10:41 PM Song Liu <song@kernel.org> wrote:
+> > > >
+> > > > On Mon, Feb 14, 2022 at 3:52 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > >
+> > > > > Song, ptal.
+> > > > >
+> > > > > On 2/14/22 7:45 PM, syzbot wrote:
+> > > > > > Hello,
+> > > > > >
+> > > > > > syzbot found the following issue on:
+> > > > > >
+> > > > > > HEAD commit:    e5313968c41b Merge branch 'Split bpf_sk_lookup remote_port..
+> > > > > > git tree:       bpf-next
+> > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10baced8700000
+> > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=c40b67275bfe2a58
+> > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=2f649ec6d2eea1495a8f
+> > >
+> > > How do I run the exact same syzkaller? I am doing something like
+> > >
+> > > ./bin/syz-manager -config qemu.cfg
+> > >
+> > > with the cfg file like:
+> > >
+> > > {
+> > >         "target": "linux/amd64",
+> > >         "http": ":56741",
+> > >         "workdir": "workdir",
+> > >         "kernel_obj": "linux",
+> > >         "image": "./pkg/mgrconfig/testdata/stretch.img",
+> >
+> > This image location looks suspicious - we store some dummy data for
+> > tests in that folder.
+> > Instances now run on buildroot-based images, generated with
+> > https://github.com/google/syzkaller/blob/master/tools/create-buildroot-image.sh
+>
+> Thanks for the information. I will give it a try.
+>
+> >
+> > >         "syzkaller": ".",
+> > >         "disable_syscalls": ["keyctl", "add_key", "request_key"],
+> >
+> > For our bpf instances, instead of disable_syscalls we use enable_syscalls:
+> >
+> > "enable_syscalls": [
+> > "bpf", "mkdir", "mount$bpf", "unlink", "close",
+> > "perf_event_open*", "ioctl$PERF*", "getpid", "gettid",
+> > "socketpair", "sendmsg", "recvmsg", "setsockopt$sock_attach_bpf",
+> > "socket$kcm", "ioctl$sock_kcm*", "syz_clone",
+> > "mkdirat$cgroup*", "openat$cgroup*", "write$cgroup*",
+> > "openat$tun", "write$tun", "ioctl$TUN*", "ioctl$SIOCSIFHWADDR",
+> > "openat$ppp", "syz_open_procfs$namespace"
+> > ]
+>
+> I will try with the same list. Thanks!
+>
+> Song
+>
+> >
+> > >         "suppressions": ["some known bug"],
+> > >         "procs": 8,
+> >
+> > We usually run with "procs": 6, but it's not that important.
+> >
+> > >         "type": "qemu",
+> > >         "vm": {
+> > >                 "count": 16,
+> > >                 "cpu": 2,
+> > >                 "mem": 2048,
+> > >                 "kernel": "linux/arch/x86/boot/bzImage"
+> > >         }
+> > > }
+> >
+> > Otherwise I don't see any really significant differences.
+> >
+> > --
+> > Best Regards
+> > Aleksandr
+> >
+> > >
+> > > Is this correct? I am using stretch.img from syzkaller site, and the
+> > > .config from
+> > > the link above.
+> > >
+> > > Thanks,
+> > > Song
+> > >
