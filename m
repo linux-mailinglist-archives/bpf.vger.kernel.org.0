@@ -2,175 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE5F4BA857
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 19:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E54C4BA863
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 19:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244477AbiBQSe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 13:34:58 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60816 "EHLO
+        id S244354AbiBQSgo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 13:36:44 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244448AbiBQSer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 13:34:47 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B8D41FBF
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:33:03 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21HGxssO000531;
-        Thu, 17 Feb 2022 10:33:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Nd9OHypsUEHi38BAXSiuA+eJHZuTEgjfHAXzLfHe92Y=;
- b=bGoovcTiHpaFCcfOuy8pI1xzt6Z/RoDE4WvWr0fEw/2vuMb3LHfu4Ry6Cy5Oi5VUVcyY
- lJlMUm449P499v2LjA9t+NXZAj56ztHBw1pNs7MIisl3zDCrX6+3NaW68csq1uSfc4Xx
- KI3VOpIBOI0BvVh1oP0QIXFs79oTzxSeshw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3e9f7rcvge-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Feb 2022 10:33:01 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 17 Feb 2022 10:32:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cVYhy9h6QD4j4Kio4U0K6GIo/6P/1uRYZQQkiRgUw4F8RMwzeuuAAzRzQgleWzPlWm18l7QBtVCkdy+1Z8m/YhzBudy/S6RTQzRRPjYW6yqMKGkYeBT0+KNpK103m/ajIQRPiOQBt2xBpcV+z5YG+dfUZjsQ7OZ6gr1Vv+IxJML0Gi+qBuG7X9lAfGd7DwNzIHVH3bYtt8O1Lfbd/GaPCC92Qicvy+ews5rFfiDrTibDuQwsArzKUqMUDnUjAS0ZpPlH3ObVJYWq+oD5fBmySh1qf86qRXDSWP2+dn15VuUu9El5dSgf1Xom/QCPdBy1KwKsQML8pCzkjQr29O5Q7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nd9OHypsUEHi38BAXSiuA+eJHZuTEgjfHAXzLfHe92Y=;
- b=fVByM/GWd4I21fclkn4GOJZRtSKR8xalT27ZWKMU0DkTwrXjOFNRgTo4VBmrnumm8LFH2CsQ+yfPceC9Ge5EtId58fgou6dd1DluO5XFrCkDm39iruXyFBxqyG2DnHbjm+HhueMnNT7GqDQ7u/ZlKoD1T6NlcengMW+CK+Q3cIZEtSPbDex21MbHXEoDsdFMjfMLhKGcU4N07VRijdJzYE3rHt8EAf7KHqdWqqlUyAGBrTLFAg46LdrNU0xIF+aHKR49stu6UTEfUCahIp0hF0u6RrQzqIzJp93GQAFZXtx2Rv8hlGgcy4Y71ye8nGOe09fVgEVeS2Cjduw0llU9gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by BN6PR15MB1634.namprd15.prod.outlook.com (2603:10b6:404:112::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.16; Thu, 17 Feb
- 2022 18:32:57 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::1d2d:7a0f:fa57:cbdd]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::1d2d:7a0f:fa57:cbdd%6]) with mapi id 15.20.4995.016; Thu, 17 Feb 2022
- 18:32:57 +0000
-Date:   Thu, 17 Feb 2022 10:32:53 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Yucong Sun <fallentree@fb.com>
-CC:     <bpf@vger.kernel.org>, <andrii@kernel.org>, <sunyucong@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: fix crash in core_reloc when
- bpftool btfgen fails
-Message-ID: <20220217183253.ihfujgc63rgz7mcj@kafai-mbp.dhcp.thefacebook.com>
-References: <20220217180210.2981502-1-fallentree@fb.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20220217180210.2981502-1-fallentree@fb.com>
-X-ClientProxiedBy: MWHPR04CA0036.namprd04.prod.outlook.com
- (2603:10b6:300:ee::22) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dcb0b879-3b7a-4e59-ad18-08d9f243eb3d
-X-MS-TrafficTypeDiagnostic: BN6PR15MB1634:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR15MB1634EFD65303AA01070AF653D5369@BN6PR15MB1634.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:207;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Su+uNYAvE82+VwRQhaWjL9BS5kO25nKZrPkwcgkGHbW2RcHJWQLJjIbjMO1QaoK/bedSNo8V5zphd98WTQ9c5Humt6ewRv5v3/b5YzrTI9R62c2yYhpChgHv9oI46swl3OeqmszuTOSl3tOHW7yFkW1mWNBorwmiuExx12VvbSs8AwcQFyjMwc00PBiUzRfLV7Ue43SdRhEi3QJ3ByAIh6oTR4UUSbPHKIDP2V/hv95iE1wSFYvPT/QimAqgJDaxTYu2m9Uy/uE2VZndFJWxBzju6mz+QfuMxoN/OUYHzySd9RKDXsRYa1KTgN/Aw2kfMNaplHAM07Y6FN2L/bhVnviOx06fNFA5ZbfiMLwFK/vK/uPYINzVszEHt27JykTkGm+XkYyt0QfLwkF0wYWRvNnol5gaDHKXpmIQdQtwkCTXmYNuXSygfZ5bQgpp0bdIHPM4M9TOXQZ0OciyWyVdOPvevWSq3KqkqZychNDAThg+XqTotZ1H9NQdPZC0Y9H1JDETELic6IaBkxN6K14Q+METZCp3dUYvOSpgMEqWrC3Y/pPPQFl2p5sA/JPg7PmBOFzHNRG8EeFkCLEqmmGdyeDpLDrUH9FmLHnsMcCO5L4zKsAw2bXvI7Ho3YueobiupAD/F/AGMBYvFTEDoTFZxw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6506007)(52116002)(508600001)(6636002)(6666004)(6486002)(83380400001)(8936002)(6512007)(5660300002)(316002)(2906002)(38100700002)(86362001)(1076003)(4326008)(66476007)(186003)(66556008)(66946007)(6862004)(8676002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Od1NXarDuP+sp7jF9oRq1ibODO7Y0AfdZpyMnWi+bqq520olGFcKFlkQZGCa?=
- =?us-ascii?Q?9/plQpNyhEk/AW7xejw0/l1xQuIbCou7zhXRy9Ts7VWnmt853XLB+8zzgquP?=
- =?us-ascii?Q?rpMqtNy6HMy9+3CS3m4nkQWg14/F/zgaIPIHFdNQy94WE2ME7p44S0xxsJOo?=
- =?us-ascii?Q?UXJqeGY4rEp3b3p2yQpL5DuVdgDWG2QH1NuUwCxA0iD467SFeL1GAkCPOSH9?=
- =?us-ascii?Q?iu/1sgLxJ0Z/StRoVmJdOlQCnrL8j5Vddp+zVGZGfWefxFx/ms0G5IKSzZfo?=
- =?us-ascii?Q?lLPkZ/PzxvimVfGdTwwCzUW672zr9czbpC5aY2QsjA+ulTHtR+YZtb9oYsEc?=
- =?us-ascii?Q?A9dbyc2LgV/9lwKgFieVQ6UYp8soT49PZpTQ7vmDfFmYbHNzDc+tRkBgfx+n?=
- =?us-ascii?Q?aSUOHqUC00MDu0Za3Em9CvEAwW/tfT2beCD6jWvcdUd5n5secXOL3beBowXt?=
- =?us-ascii?Q?8oRUq9ahiuTTRZWWkFnBScfZt1u6pawtO1de+5Ma4cQpWtxzwKR4geME9eBO?=
- =?us-ascii?Q?xQfzzd20shIxdX+GUTvlhIJ3VJ7MZBZbymC1QohIlQFJLMWUgYRbPFanaXKO?=
- =?us-ascii?Q?cZyT07xeNAWrDukzqY2thPQdU6RIMAYVyZZxART5pD9izihT6AtMwqlGmE5R?=
- =?us-ascii?Q?coTWSC7/TxNGsgpDS8hBDxxAlAvrQWaVjH3Wp59SxYI9CMzGJNtEyTz1kPu+?=
- =?us-ascii?Q?oJXAVe8dw9q2b+4YDxNHEGkkS1xF5Qykg5tCBQrHo/3f3BuRs2P42Zyp5krx?=
- =?us-ascii?Q?84qhw0v3z8btMRj1TlS2BIpx0Lda6l4YaR5Lff7HohdjyL2N2P9uo768RVRl?=
- =?us-ascii?Q?7SjqOsH1n8QW7gjhUjfmtUSxGUHkbF9WslxiD3drNtrLYCgx9B+d80otdMxL?=
- =?us-ascii?Q?CdEMXxwi/avzTrQMSFurVEvHrW8hJ52BQ2xpz94KlnTsZa0ik2CiH+hEjw3s?=
- =?us-ascii?Q?uIONZnbvknCTnoj7imH1TGZVSD9s1GBPbXTBKONW90htsxVr8zf5NA5PRb+0?=
- =?us-ascii?Q?0CuGKuBGmEhZLXtkMI1cbPuORAW8aBU4bVbLP/QjXrhLEsCF2upEJPpdsx6Y?=
- =?us-ascii?Q?wxLvO6rbfwJZ66K7b0m/yP1oMFFcjSeGREchP9VhtI8lOpYiEkFgaStpo+lT?=
- =?us-ascii?Q?uzX7WFQUn/xCHxqyrMOAOphP1LkBQpP+2Q9WlPT1/V0lt/+ZdshI4oR48NW6?=
- =?us-ascii?Q?hBIhfrHIR1tfonMZS5M8BgzRxElAR26djU+TNPcWvtRDLaG+Q4rlGPmisZkN?=
- =?us-ascii?Q?JTINiU0TGuyrYNiGldB9XdYmX4EVN0pfGstM95/fPxiTKzaOJkI95Kue5DGg?=
- =?us-ascii?Q?VOqaSeoO6OvNXEWyhY14jZQ8NWA0hFP2UGSkJ7Lsq8+Hp/rWevBD9Ob84Ns+?=
- =?us-ascii?Q?ZTTzLTgHk6GmxIENk0xY8k1Dm6ieZCA0LyvGS3pqvuCrqHJ5oiDklPqfpu1m?=
- =?us-ascii?Q?+BdXg2r3lGtdKIEtsr80dbOGqJl5yE69rY3ZbrKX+SsFlyQZ9r+VhrjjhKad?=
- =?us-ascii?Q?I235PdVWaYK8cOcRMmKBJkUqrviBH4bBrjJZzsHwJbH2IUlEcv2obiVNUrdt?=
- =?us-ascii?Q?42ApJf3mTBuxml7aIHXBJHJ9fC5SKGSvEC7L9ahq?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcb0b879-3b7a-4e59-ad18-08d9f243eb3d
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2022 18:32:57.4786
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jcs65jw+AHAlcRbS5CBD1oj2hd1w6BfO4+uwL1c8LJCpbbgfZrkhfpry4Ln82ZEu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1634
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: LvFbYs6h_ER1-sGxycKdp2QBrPniDbLc
-X-Proofpoint-ORIG-GUID: LvFbYs6h_ER1-sGxycKdp2QBrPniDbLc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-17_07,2022-02-17_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1011 malwarescore=0 bulkscore=0
- adultscore=0 suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202170085
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S239374AbiBQSgb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 13:36:31 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D02B6388
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:36:16 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2d2d45c0df7so20004047b3.1
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 10:36:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=6Lsp7FlapadhdH1wOBRbRlUuGM8Y5XYTfld2Xsf/MHQ=;
+        b=NWEKxLoYxKR83vPwqaj94BPp4XeWLNRuYQkJrlY1+TaNY8F65Vnx/Xq2AvFe2aox4S
+         9FIK893wrF2Y6UjpzZ6PEEZjiHNj82ksJ29EfHYYr4loikvHbhCBgvT9TCaf/KbHKHSM
+         7UVfF5yWa51fuKhjCYQ/rf2pGeVPsEtyAWq/ALwKIw4ctgpeRBAVF1mrzWmOGXvuN/fz
+         4bsJ6qXdHCoGf2auGyJNNpeAvfyCs6lGAcF/uksh95RCyXl2CGF8m2k0MvoTxfKFykXO
+         uFYb5g5ydG0vmHMtc+5asSYnVYMjgbFM75dObo/9jMAefeltJ7rRM3XjX5qA6RDWKjhR
+         TmYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=6Lsp7FlapadhdH1wOBRbRlUuGM8Y5XYTfld2Xsf/MHQ=;
+        b=Nbd/+EvipklnTH1QaCkcA5IOGIMtZWp6SBUVMQvRDzzsxzlVb+H2XcBWb6ED0UGlUv
+         tBZm2wE6DR0UScOUXyUd7ZMRFTlSPWHdUisK0OitAoRh2U1cGVLeDZUKT0fLjSNP38Nl
+         crlZvq5aDU33dYJY6Mvj68GOT8MlnHmeSOh2z1QwRiyvkc4yiC7baphmipHFnSfod4o4
+         VzzKFHNd7DaMDdRUcPmOBulKhX3sQIIectkQ6xCqecClJl9U5eZ5GZlY6HXomhURiH+h
+         CwgknOOL+RQPTHo0jgkJ8FHtp0tpCOVuhvtqQ8VW3fLKoSy8AeV9ul8gX1suqJa+J2yz
+         buVA==
+X-Gm-Message-State: AOAM532a9R8mten8itoabe4JxbulWek2YTJPfHb+UCwcQmpdg2hZJghA
+        MU2VT0FxbLC7x6sP4uj4ecIAouc=
+X-Google-Smtp-Source: ABdhPJyRxHhskWuW/CBOAI8gWW2FZMAD9pw3Z/+GP9xgEovW/ldcVZeL5j6mCvG4YM1PhAMfizDb20E=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:2e4c:d90d:2d44:5aaf])
+ (user=sdf job=sendgmr) by 2002:a25:23d4:0:b0:621:c46d:5011 with SMTP id
+ j203-20020a2523d4000000b00621c46d5011mr3706746ybj.172.1645122975685; Thu, 17
+ Feb 2022 10:36:15 -0800 (PST)
+Date:   Thu, 17 Feb 2022 10:36:13 -0800
+In-Reply-To: <20220217181902.808742-1-eric.dumazet@gmail.com>
+Message-Id: <Yg6VneDwR9su3D4u@google.com>
+Mime-Version: 1.0
+References: <20220217181902.808742-1-eric.dumazet@gmail.com>
+Subject: Re: [PATCH bpf] bpf: add schedule points in batch ops
+From:   sdf@google.com
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>, bpf <bpf@vger.kernel.org>,
+        Brian Vazquez <brianvv@google.com>,
+        syzbot <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 10:02:10AM -0800, Yucong Sun wrote:
-> Initialize obj to null and skip closing if null.
-> 
-> Signed-off-by: Yucong Sun <fallentree@fb.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/core_reloc.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> index baf53c23c08d..7211243a22c3 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-> @@ -861,7 +861,7 @@ static void run_core_reloc_tests(bool use_btfgen)
->  	struct bpf_link *link = NULL;
->  	struct bpf_map *data_map;
->  	struct bpf_program *prog;
-> -	struct bpf_object *obj;
-> +	struct bpf_object *obj = NULL;
->  	uint64_t my_pid_tgid;
->  	struct data *data;
->  	void *mmap_data = NULL;
-> @@ -992,7 +992,8 @@ static void run_core_reloc_tests(bool use_btfgen)
->  		remove(btf_file);
->  		bpf_link__destroy(link);
->  		link = NULL;
-> -		bpf_object__close(obj);
-> +		if (obj)
-> +			bpf_object__close(obj);
-Should it be:
-		bpf_object__close(obj);
-		obj = NULL:
+On 02/17, Eric Dumazet wrote:
+> From: Eric Dumazet <edumazet@google.com>
 
->  	}
->  }
->  
-> -- 
-> 2.30.2
-> 
+> syzbot reported various soft lockups caused by bpf batch operations.
+
+>   INFO: task kworker/1:1:27 blocked for more than 140 seconds.
+>   INFO: task hung in rcu_barrier
+
+> Nothing prevents batch ops to process huge amount of data,
+> we need to add schedule points in them.
+
+> Note that maybe_wait_bpf_programs(map) calls from
+> generic_map_delete_batch() can be factorized by moving
+> the call after the loop.
+
+> This will be done later in -next tree once we get this fix merged,
+> unless there is strong opinion doing this optimization sooner.
+
+> Fixes: aa2e93b8e58e ("bpf: Add generic support for update and delete  
+> batch ops")
+> Fixes: cb4d03ab499d ("bpf: Add generic support for lookup batch op")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Cc: Brian Vazquez <brianvv@google.com>
+> Cc: Stanislav Fomichev <sdf@google.com>
+
+Looks good, thank you!
+
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> ---
+>   kernel/bpf/syscall.c | 3 +++
+>   1 file changed, 3 insertions(+)
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index  
+> fa4505f9b6119bcb219ab9733847a98da65d1b21..ca70fe6fba387937dfb54f10826f19ac55a8a8e7  
+> 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1355,6 +1355,7 @@ int generic_map_delete_batch(struct bpf_map *map,
+>   		maybe_wait_bpf_programs(map);
+>   		if (err)
+>   			break;
+> +		cond_resched();
+>   	}
+>   	if (copy_to_user(&uattr->batch.count, &cp, sizeof(cp)))
+>   		err = -EFAULT;
+> @@ -1412,6 +1413,7 @@ int generic_map_update_batch(struct bpf_map *map,
+
+>   		if (err)
+>   			break;
+> +		cond_resched();
+>   	}
+
+>   	if (copy_to_user(&uattr->batch.count, &cp, sizeof(cp)))
+> @@ -1509,6 +1511,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+>   		swap(prev_key, key);
+>   		retry = MAP_LOOKUP_RETRIES;
+>   		cp++;
+> +		cond_resched();
+>   	}
+
+>   	if (err == -EFAULT)
+> --
+> 2.35.1.265.g69c8d7142f-goog
+
