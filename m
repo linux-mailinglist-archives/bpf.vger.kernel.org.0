@@ -2,62 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 787574B95BA
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 02:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71434B95D4
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 03:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbiBQBz2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Feb 2022 20:55:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35246 "EHLO
+        id S231496AbiBQCQZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Feb 2022 21:16:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbiBQBz1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Feb 2022 20:55:27 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B24A23D5F8;
-        Wed, 16 Feb 2022 17:55:14 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Jzd896mdkz1FDH3;
-        Thu, 17 Feb 2022 09:50:49 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 17 Feb 2022 09:55:11 +0800
-Subject: Re: [PATCH bpf-next v3 2/4] arm64: insn: add encoders for atomic
- operations
-To:     Will Deacon <will@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20220129220452.194585-1-houtao1@huawei.com>
- <20220129220452.194585-3-houtao1@huawei.com>
- <4524da71-3977-07db-bd6e-cebd1c539805@iogearbox.net>
- <20220216171602.GA10877@willie-the-truck>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <9f515f08-6360-0dde-5d26-80b36b7ac525@huawei.com>
-Date:   Thu, 17 Feb 2022 09:55:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        with ESMTP id S229925AbiBQCQY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Feb 2022 21:16:24 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357C229410A;
+        Wed, 16 Feb 2022 18:16:11 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id i5so4469944oih.1;
+        Wed, 16 Feb 2022 18:16:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OqSul6ANW/QbWM5nJmKFQS7sLKmAgK3oE6LVLATJcUM=;
+        b=WBQqF/wMYngujPO86PUQoJDnYbW1Kza0Afi0kWbcC4O0xeaoiR1JLAlhYLxg0U+aeQ
+         KllsxJZh6Lgfge7TFv/qJLh9On+WBvApc9b4D+lJqa3ZX9ifgfm5thq/1uzpy6IuZ8JJ
+         +QiwUx9BS3uoNtW5HHZDddoT1cwuXMFscN4ceVgNAodPsOmdLNV9IZHFtHyrK8tca0uN
+         3vfjdzcpTC0q3UPHBs5RU8ts0DFVXpCm902JQft+eJBk5xrGUEVhFZhIbxmt+FBcKNC2
+         8tfxiWwNHAS8qK8+dH4wxodiKg7/AYMd53RPxg+inPEe6kRTNsxoGUZS25omY4Cn++Xv
+         9SuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OqSul6ANW/QbWM5nJmKFQS7sLKmAgK3oE6LVLATJcUM=;
+        b=622I5myiYVuwOqlpajblyzPlIYdY2ohRRSa0BxaVpz/9yW57PRO/x/yoBNn/HpYhkh
+         VLp+rmMInI0rC31CubOGjE37GRykVhzFdMpTpOqdt0H2hX+L0vxp1TL2ceC8uYoj8YCq
+         XcLqcuZXV0AGyygxr9Tq1Y31Ax/ch+1XViaAyhngFBJU0U7nLT4utYXUDhCCDykRyzq0
+         tgieDSwbkaFCgNCHoPu+8AZZSZrcSaY0QfGcib9LTh44tHz4oGVR6Gxhs6ORboRGAj4s
+         AfdBqOVNT9FUjrbzoy+jksj5ocjcg9QyV0Ybd6+fYr5gE/FlA4fHLGxyiNvaoQzpNpbz
+         byAg==
+X-Gm-Message-State: AOAM530XBHVISi3W51B56zvIrUcw9eOh/e0uoG4oiU/JRS2hWJFLWRgX
+        WwvDlJxCk1WGz98jbzr2+zZ2xLSPcd6kJZmx2FU=
+X-Google-Smtp-Source: ABdhPJzaclshwR5cQLstIxZ+jLltu47WD/h0Kg9Bcy075XYW5dO9RoFPJYY+ZUKRXE7u1rvnBgs2iud51CDLXZSO/AE=
+X-Received: by 2002:aca:1812:0:b0:2d4:426d:c9e0 with SMTP id
+ h18-20020aca1812000000b002d4426dc9e0mr1835063oih.129.1645064170519; Wed, 16
+ Feb 2022 18:16:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20220216171602.GA10877@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500025.china.huawei.com (7.185.36.35)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20220216050320.3222-1-kerneljasonxing@gmail.com>
+ <CANn89i+6Hc7q-a=zh_jcTn9_GM5xP6fzv2RcHY+tneqzE3UnHw@mail.gmail.com>
+ <CAL+tcoBnSDjHk_Xhd_ohQjpMu-Ns2Du4mWhUybrK6+VPXHoETQ@mail.gmail.com> <CANn89iJTrH1sgstrEw17OUwC8jLBS9_uk_oUd5Hj0-FypTvvPw@mail.gmail.com>
+In-Reply-To: <CANn89iJTrH1sgstrEw17OUwC8jLBS9_uk_oUd5Hj0-FypTvvPw@mail.gmail.com>
+From:   Jason Xing <kerneljasonxing@gmail.com>
+Date:   Thu, 17 Feb 2022 10:15:30 +0800
+Message-ID: <CAL+tcoCOX8A4gFDr5_QdLJ0PgwdBAbECtu4yh+RVTTJSp7yQyA@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next] net: introduce SO_RCVBUFAUTO to let the
+ rcv_buf tune automatically
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Wei Wang <weiwan@google.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>, Florian Westphal <fw@strlen.de>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jason Xing <xingwanli@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,49 +83,20 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On 2/17/2022 1:16 AM, Will Deacon wrote:
-> On Fri, Feb 11, 2022 at 03:39:48PM +0100, Daniel Borkmann wrote:
->> On 1/29/22 11:04 PM, Hou Tao wrote:
->>> It is a preparation patch for eBPF atomic supports under arm64. eBPF
->>> needs support atomic[64]_fetch_add, atomic[64]_[fetch_]{and,or,xor} and
->>> atomic[64]_{xchg|cmpxchg}. The ordering semantics of eBPF atomics are
->>> the same with the implementations in linux kernel.
->>>
->>> Add three helpers to support LDCLR/LDEOR/LDSET/SWP, CAS and DMB
->>> instructions. STADD/STCLR/STEOR/STSET are simply encoded as aliases for
->>> LDADD/LDCLR/LDEOR/LDSET with XZR as the destination register, so no extra
->>> helper is added. atomic_fetch_add() and other atomic ops needs support for
->>> STLXR instruction, so extend enum aarch64_insn_ldst_type to do that.
->>>
->>> LDADD/LDEOR/LDSET/SWP and CAS instructions are only available when LSE
->>> atomics is enabled, so just return AARCH64_BREAK_FAULT directly in
->>> these newly-added helpers if CONFIG_ARM64_LSE_ATOMICS is disabled.
->>>
->>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> Hey Mark / Ard / Will / Catalin or others, could we get an Ack on patch 1 & 2
->> at min if it looks good to you?
-> I checked the instruction encodings in patches 1 and 2 and they all look
-> fine to me. However, after applying those two locally I get a build failure:
+On Thu, Feb 17, 2022 at 12:56 AM Eric Dumazet <edumazet@google.com> wrote:
 >
->   | In file included from arch/arm64/net/bpf_jit_comp.c:23:
->   | arch/arm64/net/bpf_jit_comp.c: In function ‘build_insn’:
->   | arch/arm64/net/bpf_jit.h:94:2: error: implicit declaration of function ‘aarch64_insn_gen_stadd’; did you mean ‘aarch64_insn_gen_adr’? [-Werror=implicit-function-declaration]
->   |    94 |  aarch64_insn_gen_stadd(Rn, Rs, A64_SIZE(sf))
->   |       |  ^~~~~~~~~~~~~~~~~~~~~~
->   | arch/arm64/net/bpf_jit_comp.c:912:9: note: in expansion of macro ‘A64_STADD’
->   |   912 |    emit(A64_STADD(isdw, reg, src), ctx);
->   |       |         ^~~~~~~~~
->   | cc1: some warnings being treated as errors
-Thanks for your review. The build failure is my fault. I update A64_STADD() in
-patch 3 instead of patch 2
-after replacing aarch64_insn_get_stadd() by aarch64_insn_gen_atomic_ld_op(), and
-will fix it in v4. If you
-are trying to test the encoder, I suggest you to apply patch 1~3.
+> On Tue, Feb 15, 2022 at 10:58 PM Jason Xing <kerneljasonxing@gmail.com> wrote:
+> > Just now, I found out that the latest kernel has merged a similar
+> > patch (commit 04190bf89) about three months ago.
+>
+> There you go :)
+>
+> >
+> > Is it still necessary to add another separate option to clear the
+> > SOCK_RCVBUF_LOCK explicitly?
+>
+> What do you mean, SO_BUF_LOCK is all that is needed.
 
-Regards,
-Tao
-> Will
-> .
-
+Yeah, I think SO_BUF_LOCK is enough and we don't have to add a new
+option like SOCK_RCVBUF_LOCK as we've talked about before. Thanks,
+Eric.
