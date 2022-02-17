@@ -2,250 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 807294BA293
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 15:10:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B79A54BA2C2
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 15:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241730AbiBQOJS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 09:09:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41632 "EHLO
+        id S239056AbiBQOSy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 09:18:54 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241725AbiBQOJR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 09:09:17 -0500
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8847B2B1654
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 06:08:59 -0800 (PST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20220217140857euoutp01ea83061bb06c6842d5d7a24782871b16~UmAsU5IEp1753917539euoutp01B
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 14:08:57 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20220217140857euoutp01ea83061bb06c6842d5d7a24782871b16~UmAsU5IEp1753917539euoutp01B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1645106937;
-        bh=E/jxehB5hKuAgnYIlP+yIxEeXQin5MI6cKssrtv7qY0=;
-        h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-        b=OGMbzBS1Ia8UWULcPYa0pUQDoWi8dDdJ3R02UUTtR/xAas/AgTJRGyuXe9AXKS3LU
-         m9nCy31SRcHaOgJcLWHB0k3UWB7nqXKaRuHwhTfqaw/SYomG3d/e3XFkPuZlACyLzR
-         2kqtJy5o0POnYRBfO+FpLUF7qrtNDTBWxzsTY94c=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20220217140856eucas1p2a25756618c4c6cb157ee994a7f5b90ce~UmArtYROI1639116391eucas1p2N;
-        Thu, 17 Feb 2022 14:08:56 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id C7.AA.10260.8F65E026; Thu, 17
-        Feb 2022 14:08:56 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20220217140856eucas1p2f7f5ac00303c19b5c9a003474dc41478~UmArMDXCM0184001840eucas1p2i;
-        Thu, 17 Feb 2022 14:08:56 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20220217140856eusmtrp24148a4c1dffac83801b85e102adca7b1~UmArLNG4D3110531105eusmtrp2D;
-        Thu, 17 Feb 2022 14:08:56 +0000 (GMT)
-X-AuditID: cbfec7f5-bddff70000002814-cc-620e56f84fe6
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2F.73.09522.7F65E026; Thu, 17
-        Feb 2022 14:08:55 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20220217140855eusmtip10e0d549c9b287fce0fa9a878f4901234~UmAqeL2ER3156631566eusmtip1f;
-        Thu, 17 Feb 2022 14:08:55 +0000 (GMT)
-Message-ID: <c2a64979-73d1-2c22-e048-c275c9f81558@samsung.com>
-Date:   Thu, 17 Feb 2022 15:08:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.6.0
-Subject: Re: [PATCH net-next] net: Correct wrong BH disable in
- hard-interrupt.
-Content-Language: en-US
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
+        with ESMTP id S233678AbiBQOSx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 09:18:53 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C3F2AA3AE;
+        Thu, 17 Feb 2022 06:18:38 -0800 (PST)
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21HEC9CH027125;
+        Thu, 17 Feb 2022 14:18:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=NvjzEBomC5fbZjfcTUQ5sCHHunjhz1rWtfSasDV8I+Q=;
+ b=m+i3NeNupx/APTrSCtdsMBEnEdZ108LfgYsSotVjh4QufhjyhY73PzFZgMEluZ2ukxJ1
+ +4kUcMGtoeDugzspMZelyFiQvVhYC0hfXrm+6SWDtyzmlUdCn42vWQ8v2VDUvY4DJ2KD
+ LgMVgnWiefZGNaW/0jJME4mLvnm1znRbkz/3ZaoRK4o/rQxxwl+iVfK0EqL8c/A7CWIe
+ j15NONSzXpbdbHX7Mcb1xRFUg/2PydGnMOhsPLlQDkL3MQi9KqZ8HLRjp9hit/d99dfY
+ 037fyWVCmz+89KWCcsmYAAeOK1+tnt6trm3gXzOqsRGSUkSv+YKRdj/qLHW6fUUmeq9D 4Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9mg2vebx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 14:18:23 +0000
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21HEEhMw000943;
+        Thu, 17 Feb 2022 14:18:22 GMT
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9mg2veb5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 14:18:22 +0000
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21HEDctx029529;
+        Thu, 17 Feb 2022 14:18:20 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06fra.de.ibm.com with ESMTP id 3e645k90qm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 14:18:20 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21HEIIu635258698
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Feb 2022 14:18:18 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2B421A405B;
+        Thu, 17 Feb 2022 14:18:18 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 72591A4054;
+        Thu, 17 Feb 2022 14:18:17 +0000 (GMT)
+Received: from [9.171.78.41] (unknown [9.171.78.41])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Feb 2022 14:18:17 +0000 (GMT)
+Message-ID: <e0999e46e5332ca79bdfe4d9b9d7f17e4366a340.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Cover 4-byte load from
+ remote_port in bpf_sk_lookup
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rg?= =?UTF-8?Q?ensen?= 
-        <toke@toke.dk>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgense?= =?UTF-8?Q?n?= 
-        <toke@redhat.com>
-In-Reply-To: <ce67e9c9-966e-3a08-e571-b7f1dacb3814@samsung.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Yonghong Song <yhs@fb.com>
+Date:   Thu, 17 Feb 2022 15:18:17 +0100
+In-Reply-To: <CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com>
+References: <20220209184333.654927-1-jakub@cloudflare.com>
+         <20220209184333.654927-3-jakub@cloudflare.com>
+         <CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: HSuw5ap9S9hRpO3IK3xS40mI5vSD92mo
+X-Proofpoint-ORIG-GUID: dzq2Cyl4fbqlVPCcvfM4J9PxxuG1uAxG
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPKsWRmVeSWpSXmKPExsWy7djP87o/wviSDBZfl7X48vM2u8W0i5OY
-        LT4fOc5msXjhN2aLOedbWCyeHnvEbrGnfTuzRdOOFUwWF7b1sVocWyBmsXnTVGaLS4cfsVhs
-        fb+C3YHXY8vKm0weO2fdZfdYsKnUo+vGJWaPTas62TzenTvH7vF+31U2jy2HLrJ5fN4kF8AZ
-        xWWTkpqTWZZapG+XwJUxoecSY8EWpYp5c16xNTB+kuli5OSQEDCRWPdyPmMXIxeHkMAKRom7
-        M9ewQjhfGCWePJ3CAuF8ZpRYsHc/O0zL+v8v2CESyxklWn8vhar6yChx+/A7VpAqXgE7id+n
-        p7KA2CwCqhLvj79lg4gLSpyc+QQozsEhKpAksWibO0hYWCBA4tDMSWAlzALiEreezGcCsdkE
-        DCW63naBxUUETCUaLx4C28Us0MkiceHeAbBdnAL2Eps+zmCFaJaXaN46mxmkSEJgOafE6q6F
-        bBBnu0h0TlzKCGELS7w6vgXqHRmJ/ztBtoE0NDNKPDy3lh3C6WGUuNw0A6rDWuLOuV9sIGcz
-        C2hKrN+lDxF2lPizupkZJCwhwCdx460gxBF8EpO2TYcK80p0tAlBVKtJzDq+Dm7twQuXmCcw
-        Ks1CCpZZSP6fheSdWQh7FzCyrGIUTy0tzk1PLTbOSy3XK07MLS7NS9dLzs/dxAhMc6f/Hf+6
-        g3HFq496hxiZOBgPMUpwMCuJ8H44yJskxJuSWFmVWpQfX1Sak1p8iFGag0VJnDc5c0OikEB6
-        YklqdmpqQWoRTJaJg1OqgclbKmvP+cNTL6YfkPxwkWv/HSNziR+uOys4l7uzeb1beGnu0pld
-        MRf33bGrcna52pXTd+qgUq3Z0fWSy/XXbKww0Nk6NzG1Szrui3hHVngib6whB4Nhk/vZlmC+
-        yFk/rQ9GiBT8aZzHsmT30ft1HQKnzN8x/Livw1FZWhevkJHB1jBT+ICQ55/yjA8Xly8We/37
-        p9IprQds6Rf7bF4xbG/e2fePn59bqMjj282zQqUhZs373v+c7nWVbeU7Ixl5XY6wUgPB0ruH
-        7mSm2fVJGSXkv7h858+uKZZ/QwrEnp+KsUryyrKqkq6OnJt436r1qUb+zsYNMWofnJtFRXxl
-        XBLt6rTD4tlvrWURC5BXYinOSDTUYi4qTgQAUJXZJ+IDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrAIsWRmVeSWpSXmKPExsVy+t/xu7rfw/iSDDaesrH48vM2u8W0i5OY
-        LT4fOc5msXjhN2aLOedbWCyeHnvEbrGnfTuzRdOOFUwWF7b1sVocWyBmsXnTVGaLS4cfsVhs
-        fb+C3YHXY8vKm0weO2fdZfdYsKnUo+vGJWaPTas62TzenTvH7vF+31U2jy2HLrJ5fN4kF8AZ
-        pWdTlF9akqqQkV9cYqsUbWhhpGdoaaFnZGKpZ2hsHmtlZKqkb2eTkpqTWZZapG+XoJcxoecS
-        Y8EWpYp5c16xNTB+kuli5OSQEDCRWP//BTuILSSwlFHi6XF5iLiMxMlpDawQtrDEn2tdbF2M
-        XEA17xkltr45BJbgFbCT+H16KguIzSKgKvH++Fs2iLigxMmZT8DiogJJEuumz2cGsYUF/CS+
-        PT/DCGIzC4hL3HoynwnEZhMwlOh62wXWKyJgKtF48RALyDJmgV4WieZb61ggrtvKKLFoRhWI
-        zSlgL7Hp4wxWiEFmEl1bu6CGyks0b53NPIFRaBaSO2Yh2TcLScssJC0LGFlWMYqklhbnpucW
-        G+oVJ+YWl+al6yXn525iBEb1tmM/N+9gnPfqo94hRiYOxkOMEhzMSiK8Hw7yJgnxpiRWVqUW
-        5ccXleakFh9iNAUGxkRmKdHkfGBaySuJNzQzMDU0MbM0MLU0M1YS5/Us6EgUEkhPLEnNTk0t
-        SC2C6WPi4JRqYJp49OiDe3wsm3Jb/Y1C4ueqPW5JPfr4tbSaacY3Ro5JgqU++aYFmpFHL773
-        ETr7JJLztNdy/4vXbyYfVZq5a/vfA7wP389sCYxPUjL5+TdNqX3LvIVnzOUPM3HtYln/zeJb
-        3yKnxV7B9YXlEb7dDTdsgjfP0SxM/Dt/EUfMCZ8rvz8eTsj7vkp4V/fqcmlJL8YOXfUzLU1e
-        xgbn7nzR6Z0hoZu5+c7JiI9ppwL3nTaO0Pl6dUvEshwzZR/5vSZ3snS9T57NPpjhuI5h/xvh
-        /c+9dXcsXDchwDYwWjxz/v0qmULpoAnXrS5fz33wPOlEYFQxl/ikNc/5V83PY/DIbnq45MbH
-        0gRBM6Nf1duMLyqxFGckGmoxFxUnAgA2VQp+cwMAAA==
-X-CMS-MailID: 20220217140856eucas1p2f7f5ac00303c19b5c9a003474dc41478
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08
-References: <CGME20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08@eucas1p2.samsung.com>
-        <Yg05duINKBqvnxUc@linutronix.de>
-        <ce67e9c9-966e-3a08-e571-b7f1dacb3814@samsung.com>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-17_05,2022-02-17_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 clxscore=1011 impostorscore=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 phishscore=0 priorityscore=1501 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202170064
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi All,
+On Wed, 2022-02-16 at 13:44 -0800, Andrii Nakryiko wrote:
+> On Wed, Feb 9, 2022 at 10:43 AM Jakub Sitnicki <jakub@cloudflare.com>
+> wrote:
+> > 
+> > Extend the context access tests for sk_lookup prog to cover the
+> > surprising
+> > case of a 4-byte load from the remote_port field, where the
+> > expected value
+> > is actually shifted by 16 bits.
+> > 
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> > ---
+> >  tools/include/uapi/linux/bpf.h                     | 3 ++-
+> >  tools/testing/selftests/bpf/progs/test_sk_lookup.c | 6 ++++++
+> >  2 files changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/include/uapi/linux/bpf.h
+> > b/tools/include/uapi/linux/bpf.h
+> > index a7f0ddedac1f..afe3d0d7f5f2 100644
+> > --- a/tools/include/uapi/linux/bpf.h
+> > +++ b/tools/include/uapi/linux/bpf.h
+> > @@ -6453,7 +6453,8 @@ struct bpf_sk_lookup {
+> >         __u32 protocol;         /* IP protocol (IPPROTO_TCP,
+> > IPPROTO_UDP) */
+> >         __u32 remote_ip4;       /* Network byte order */
+> >         __u32 remote_ip6[4];    /* Network byte order */
+> > -       __u32 remote_port;      /* Network byte order */
+> > +       __be16 remote_port;     /* Network byte order */
+> > +       __u16 :16;              /* Zero padding */
+> >         __u32 local_ip4;        /* Network byte order */
+> >         __u32 local_ip6[4];     /* Network byte order */
+> >         __u32 local_port;       /* Host byte order */
+> > diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> > b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> > index 83b0aaa52ef7..bf5b7caefdd0 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> > @@ -392,6 +392,7 @@ int ctx_narrow_access(struct bpf_sk_lookup
+> > *ctx)
+> >  {
+> >         struct bpf_sock *sk;
+> >         int err, family;
+> > +       __u32 val_u32;
+> >         bool v4;
+> > 
+> >         v4 = (ctx->family == AF_INET);
+> > @@ -418,6 +419,11 @@ int ctx_narrow_access(struct bpf_sk_lookup
+> > *ctx)
+> >         if (LSW(ctx->remote_port, 0) != SRC_PORT)
+> >                 return SK_DROP;
+> > 
+> > +       /* Load from remote_port field with zero padding (backward
+> > compatibility) */
+> > +       val_u32 = *(__u32 *)&ctx->remote_port;
+> > +       if (val_u32 != bpf_htonl(bpf_ntohs(SRC_PORT) << 16))
+> > +               return SK_DROP;
+> > +
+> 
+> Jakub, can you please double check that your patch set doesn't break
+> big-endian architectures? I've noticed that our s390x test runner is
+> now failing in the sk_lookup selftest. See [0]. Also CC'ing Ilya.
 
-On 17.02.2022 07:35, Marek Szyprowski wrote:
-> Hi Andrzej,
->
-> On 16.02.2022 18:50, Sebastian Andrzej Siewior wrote:
->> I missed the obvious case where netif_ix() is invoked from hard-IRQ
->> context.
->>
->> Disabling bottom halves is only needed in process context. This ensures
->> that the code remains on the current CPU and that the soft-interrupts
->> are processed at local_bh_enable() time.
->> In hard- and soft-interrupt context this is already the case and the
->> soft-interrupts will be processed once the context is left (at irq-exit
->> time).
->>
->> Disable bottom halves if neither hard-interrupts nor soft-interrupts are
->> disabled. Update the kernel-doc, mention that interrupts must be enabled
->> if invoked from process context.
->>
->> Fixes: baebdf48c3600 ("net: dev: Makes sure netif_rx() can be invoked 
->> in any context.")
->> Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> ---
->> Marek, does this work for you?
->
-> Yes, this fixed the issue. Thanks!
->
-> Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+I agree that this looks like an endianness issue. The new check seems
+to make little sense on big-endian to me, so I would just #ifdef it
+out.
 
-I've just noticed that there is one more issue left to fix (the $subject 
-patch is already applied) - this one comes from threaded irq (if I got 
-the stack trace right):
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 147 at kernel/softirq.c:363 
-__local_bh_enable_ip+0xa8/0x1c0
-Modules linked in: cpufreq_powersave cpufreq_conservative brcmfmac 
-brcmutil cfg80211 s3fwrn5_i2c s3fwrn5 nci crct10dif_ce exynos_gsc nfc 
-s5p_jpeg hci_uart btqca s
-5p_mfc v4l2_mem2mem btbcm bluetooth videobuf2_dma_contig 
-videobuf2_memops ecdh_generic videobuf2_v4l2 panfrost drm_shmem_helper 
-ecc videobuf2_common gpu_sched rfkill videodev mc ip_tables x_tab
-les ipv6
-CPU: 0 PID: 147 Comm: irq/150-dwc3 Not tainted 5.17.0-rc4-next-20220217+ 
-#4557
-Hardware name: Samsung TM2E board (DT)
-pstate: 400000c5 (nZcv daIF -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __local_bh_enable_ip+0xa8/0x1c0
-lr : netif_rx+0xa4/0x2c0
-...
-
-Call trace:
-  __local_bh_enable_ip+0xa8/0x1c0
-  netif_rx+0xa4/0x2c0
-  rx_complete+0x214/0x250
-  usb_gadget_giveback_request+0x58/0x170
-  dwc3_gadget_giveback+0xe4/0x200
-  dwc3_gadget_endpoint_trbs_complete+0x100/0x388
-  dwc3_thread_interrupt+0x46c/0xe20
-  irq_thread_fn+0x28/0x98
-  irq_thread+0x184/0x238
-  kthread+0x100/0x120
-  ret_from_fork+0x10/0x20
-irq event stamp: 645
-hardirqs last  enabled at (643): [<ffff8000080c93b8>] 
-finish_task_switch+0x98/0x288
-hardirqs last disabled at (644): [<ffff8000090a6e34>] 
-_raw_spin_lock_irqsave+0xb4/0x148
-softirqs last  enabled at (252): [<ffff800008010488>] _stext+0x488/0x5cc
-softirqs last disabled at (645): [<ffff800008ed71b0>] netif_rx+0x188/0x2c0
----[ end trace 0000000000000000 ]---
-
-
->
->>   net/core/dev.c | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/net/core/dev.c b/net/core/dev.c
->> index 909fb38159108..87729491460fc 100644
->> --- a/net/core/dev.c
->> +++ b/net/core/dev.c
->> @@ -4860,7 +4860,9 @@ EXPORT_SYMBOL(__netif_rx);
->>    *    congestion control or by the protocol layers.
->>    *    The network buffer is passed via the backlog NAPI device. 
->> Modern NIC
->>    *    driver should use NAPI and GRO.
->> - *    This function can used from any context.
->> + *    This function can used from interrupt and from process 
->> context. The
->> + *    caller from process context must not disable interrupts before 
->> invoking
->> + *    this function.
->>    *
->>    *    return values:
->>    *    NET_RX_SUCCESS    (no congestion)
->> @@ -4870,12 +4872,15 @@ EXPORT_SYMBOL(__netif_rx);
->>   int netif_rx(struct sk_buff *skb)
->>   {
->>       int ret;
->> +    bool need_bh_off = !(hardirq_count() | softirq_count());
->>   -    local_bh_disable();
->> +    if (need_bh_off)
->> +        local_bh_disable();
->>       trace_netif_rx_entry(skb);
->>       ret = netif_rx_internal(skb);
->>       trace_netif_rx_exit(ret);
->> -    local_bh_enable();
->> +    if (need_bh_off)
->> +        local_bh_enable();
->>       return ret;
->>   }
->>   EXPORT_SYMBOL(netif_rx);
->
-> Best regards
-
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+> 
+>   [0]
+> https://github.com/libbpf/libbpf/runs/5220996832?check_suite_focus=true
+> 
+> >         /* Narrow loads from local_port field. Expect DST_PORT. */
+> >         if (LSB(ctx->local_port, 0) != ((DST_PORT >> 0) & 0xff) ||
+> >             LSB(ctx->local_port, 1) != ((DST_PORT >> 8) & 0xff) ||
+> > --
+> > 2.31.1
+> > 
 
