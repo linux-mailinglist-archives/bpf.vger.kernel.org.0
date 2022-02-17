@@ -2,62 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2427B4BA68A
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 17:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EE74BA6AF
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 18:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234622AbiBQQ62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 11:58:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38058 "EHLO
+        id S243559AbiBQRFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 12:05:35 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234666AbiBQQ61 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 11:58:27 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B92158DA3;
-        Thu, 17 Feb 2022 08:58:13 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id v8-20020a17090a634800b001bb78857ccdso7654427pjs.1;
-        Thu, 17 Feb 2022 08:58:13 -0800 (PST)
+        with ESMTP id S232955AbiBQRFe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 12:05:34 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD052B3575;
+        Thu, 17 Feb 2022 09:05:20 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id k60-20020a17090a4cc200b001b932781f3eso6663020pjh.0;
+        Thu, 17 Feb 2022 09:05:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p8rUjvLAIL/XwjLJsf2D2kvWqtcMkKvDgD4sS2jxGVw=;
-        b=KbKhkgc0nVCJ4HUg9bfB2hgDA4L0g+pgfBLsT+Vj+wu18yFiiu0853fzGrG8pxVNiZ
-         RUu1JAK5jTc0cqSbRjb+0x/XaKJnJrH3FxQUHH+bjlIyLTgzLIxIwCWuN51W108PKvxB
-         IXW6mowcgFyCHUBRzn5YTNF1XbbLWYJmj65cPH0ZftSAV4L0cWJN7y9SVpkvrLfuOj6P
-         UYNCOdo4Bh4b+0Uzg3evxg0LYmWDZByyF7gpkioaB5U+k78YB+jVhRVIH/33bv7zuS8k
-         fBrUBI0eRA+2U/LVB4aWVkcQUlv/Lyn+gfWSKcnmk0JLZmyya4QqQY/dqXB6Fk54sKtN
-         XmQQ==
+         :cc:content-transfer-encoding;
+        bh=igdtx/X4r6DHvG4OHrEKeNV0KHoFSbJa+zOn0lpALxk=;
+        b=h1OjLZWm6AqbT1qg0+826xPUab9KqGWoba4Xk298WYdrZ8LzbETMyMHVLtQ6HL1AG5
+         2nO2RIAJpAcJYQGlhAYIv3SeNTmxNXtGJXTlhl0BmfcTCj0Pbt6p7A54hB+5JgdGyYaj
+         EZug/4GxcTPHi2OXVCZvt3s0z/7Ms8pnBnO+JSx5RZTcEhJo8S00fGlGRgZ/g29vsHEs
+         /KHCzO17dYyPPkZlZXAIQpekt6irno8BivviWOOtG0EEBoBAQgbbmAJNpWvWv0S9a3Ld
+         xku2Ycl0Mr1dmiuKT9aUGcGlSuivfqdN8Wdr+NrOVC9J0Rj13mEB5KkXZwbeLYvdBIaw
+         p/2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p8rUjvLAIL/XwjLJsf2D2kvWqtcMkKvDgD4sS2jxGVw=;
-        b=tzBMjR4LEI/bcSPaVsaXqED1SQSuSzEnJDOHdbLJapS5WiGIrTZhSptYCd6KYyQBFP
-         ZejxJElg1v1hAgjO1BL/+KQ67tGYReM6N2A200QvWrLBaOjihKOkOmN7Uba3cz9k0S+H
-         QnkKJn6Q9sn6oA9byxYJv+lEAk9x4gRTjMAUQxxu+NqL/P/A77QD+0OxQQFTkDrPIuR7
-         XeFqPy2SWl9Xe/BsxFPaGu8tgwr+wPl8uRHaqJ9HfX0mgKQaoew4P39nhRMg2/hdZvft
-         GmJpZndUmYlz3y3mxNCbfmMrk0Z7xKe2VhZMGYT5nttib0a2o78zUpCr2Kbi0N5X89k4
-         2gGw==
-X-Gm-Message-State: AOAM532xbw0etL0T6jI58gOznicWbj0oLbwUFFjFuMY5K1aJTibttEbx
-        iRUUr68gE7Db6uJ2NHbl4XRfuQ67nwTEYB1HWBA=
-X-Google-Smtp-Source: ABdhPJwdAyB6s5HjNWiHvHfuYr/fbddHxWvDwAuLh4GnAmVmvBW5pX09ck0dVlZsWx3jzIyh2QED+TD6sd7KJz9iM98=
-X-Received: by 2002:a17:90a:b017:b0:1b9:485b:3005 with SMTP id
- x23-20020a17090ab01700b001b9485b3005mr8204455pjq.33.1645117092659; Thu, 17
- Feb 2022 08:58:12 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=igdtx/X4r6DHvG4OHrEKeNV0KHoFSbJa+zOn0lpALxk=;
+        b=kCu5a+aSk0HiTUky2z41lTix+uGoscercBHSQ6B9wri2zuGnF1nhRJ5RLdaHo/jmf+
+         nelVEhkvio1SJw624PuvBGlOqupeD6oTFr0rBwqfAw1c3hIAasB7uUZGxgcujmM1txZ9
+         jy9Xc7wbG57dWo5yMFNSxtjHOvBa3E54It1yzfNHIkciHgYAvsuvRF1K3nsXUJ/EuWXI
+         kTUkklakqdZr4L4cH0k6Sxjcckk3WhCAp8jhx7SRDP/s5w1X7MYLvoK9lw5UJIObgtkP
+         M5ritC5gIu060Dyswq3Qd4gLgoF03JwTEh4tkUe6njSIbJQxrfDeSVON+rUxFw052yoW
+         66Bg==
+X-Gm-Message-State: AOAM530TS/b/XGWOfe22bv/qsvZblOPomYLm/3MAJJkaoW6DeE7MazME
+        ni3u+fjrU+dTA9lkS8ib96XuzBIDkEdeIEKT6YrkkasvhOQ=
+X-Google-Smtp-Source: ABdhPJwzgy3e5J9IibSjmbvUM7EdXMF3t4DE7UGqgruUMTFhNWccEXGa2GUfVf7sygbgSmLsGTBoiSAsKgp1SGZ+0a0=
+X-Received: by 2002:a17:902:ce12:b0:14e:e18e:80a4 with SMTP id
+ k18-20020a170902ce1200b0014ee18e80a4mr3644185plg.34.1645117519650; Thu, 17
+ Feb 2022 09:05:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216001241.2239703-1-sdf@google.com> <20220216001241.2239703-2-sdf@google.com>
- <20220217023849.jn5pcwz23rj2772x@ast-mbp.dhcp.thefacebook.com> <Yg52EAB3ncoj22iK@google.com>
-In-Reply-To: <Yg52EAB3ncoj22iK@google.com>
+References: <CAADnVQK78PN8N6c6u_O2BAxdyXwH_HVYMV_x3oGgyfT50a6ymg@mail.gmail.com>
+ <20220217070139.30028-1-lina.wang@mediatek.com> <41a3e6e4f9331c6a0a62fe838fc6f9084a5c89bc.camel@redhat.com>
+In-Reply-To: <41a3e6e4f9331c6a0a62fe838fc6f9084a5c89bc.camel@redhat.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 17 Feb 2022 08:58:01 -0800
-Message-ID: <CAADnVQLHHf=WT2iZ3j7ja6nvy4MzzLM9u7=orVSw9SBj-amRXg@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/4] bpf: cgroup_sock lsm flavor
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 17 Feb 2022 09:05:08 -0800
+Message-ID: <CAADnVQJEXOOH6--uA7BvFUPmXY42zeOQVweHmaMqkbj_g5TLqA@mail.gmail.com>
+Subject: Re: [PATCH v3] net: fix wrong network header length
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Lina Wang <lina.wang@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,62 +79,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 8:21 AM <sdf@google.com> wrote:
-> > As far as api the attach should probably be to a cgroup+lsm_hook pair.
-> > link_create.target_fd will be cgroup_fd.
-> > At prog load time attach_btf_id should probably be one
-> > of existing bpf_lsm_* hooks.
-> > Feels wrong to duplicate the whole set into lsm_cgroup_sock set.
+On Thu, Feb 17, 2022 at 12:45 AM Paolo Abeni <pabeni@redhat.com> wrote:
 >
-> lsm_cgroup_sock is there to further limit which particular lsm
-> hooks BPF_LSM_CGROUP_SOCK can use. I guess I can maybe look at
-> BTF's first argument to verify that it's 'struct socket'? Let
-> me try to see whether it's a good alternative..
-
-That's a great idea.
-We probably would need 2 flavors of __cgroup_bpf_run_lsm_sock wrapper.
-One for 'struct socket *' and another for 'struct sock *'.
-In lsm hooks they come as the first argument and BTF will tell us what it is.
-There are exceptions like socket_create hook
-which would have to use current->cgroup.
-So ideally we can have a single attach_type BPF_LSM_CGROUP
-and use proper wrapper socket/sock/current depending on BTF of the lsm hook.
-
-> > Would it be fast enough?
-> > We went through a bunch of optimization for normal cgroup and ended with:
-> >          if (cgroup_bpf_enabled(CGROUP_INET_INGRESS) &&
-> >              cgroup_bpf_sock_enabled(sk, CGROUP_INET_INGRESS))
-> > Here the trampoline code plus call into __cgroup_bpf_run_lsm_sock
-> > will be there for all cgroups.
-> > Since cgroup specific check will be inside BPF_PROG_RUN_ARRAY_CG.
-> > I suspect it's ok, since the link_create will be for few specific lsm
-> > hooks
-> > which are typically not in the fast path.
-> > Unlike traditional cgroup hook like ingress that is hot.
+> Hello,
 >
-> Right, cgroup_bpf_enabled() is not needed because lsm is by definition
-> off/unattached by default. Seems like we can add cgroup_bpf_sock_enabled()
-> to
-> __cgroup_bpf_run_lsm_sock.
-
-I guess we can, but that feels redundant.
-If we attach the wrapper to a particular lsm hook then cgroup_bpf_sock
-is surely enabled.
-
+> On Thu, 2022-02-17 at 15:01 +0800, Lina Wang wrote:
+> > On Wed, 2022-02-16 at 19:05 -0800, Alexei Starovoitov wrote:
+> > > On Tue, Feb 15, 2022 at 11:37 PM Lina Wang <lina.wang@mediatek.com>
+> > > wrote:
+> > > >
+> > > > When clatd starts with ebpf offloaing, and NETIF_F_GRO_FRAGLIST is
+> > > > enable,
+> > > > several skbs are gathered in skb_shinfo(skb)->frag_list. The first
+> > > > skb's
+> > > > ipv6 header will be changed to ipv4 after bpf_skb_proto_6_to_4,
+> > > > network_header\transport_header\mac_header have been updated as
+> > > > ipv4 acts,
+> > > > but other skbs in frag_list didnot update anything, just ipv6
+> > > > packets.
+> > >
+> > > Please add a test that demonstrates the issue and verifies the fix.
+> >
+> > I used iperf udp test to verify the patch, server peer enabled -d to de=
+bug
+> > received packets.
+> >
+> > 192.0.0.4 is clatd interface ip, corresponding ipv6 addr is
+> > 2000:1:1:1:afca:1b1f:1a9:b367, server peer ip is 1.1.1.1,
+> > whose ipv6 is 2004:1:1:1::101:101.
+> >
+> > Without the patch, when udp length 2840 packets received, iperf shows:
+> > pcount 1 packet_count 0
+> > pcount 27898727 packet_count 1
+> > pcount 3 packet_count 27898727
+> >
+> > pcount should be 2, but is 27898727(0x1a9b367) , which is 20 bytes put
+> > forward.
+> >
+> > 12:08:02.680299       Unicast to us 2004:1:1:1::101:101   2000:1:1:1:af=
+ca:1b1f:1a9:b367 UDP 51196 =E2=86=92 5201 Len=3D2840
+> > 0000   20 00 00 01 00 01 00 01 af ca 1b 1f 01 a9 b3 67   ipv6 dst addre=
+ss
+> > 0000   c7 fc 14 51 0b 20 c7 ab                           udp header
+> > 0000   00 00 00 ab 00 0e f3 49 00 00 00 01 08 06 69 d2   00000001 is pc=
+ount
+> > 12:08:02.682084       Unicast to us   1.1.1.1                  192.0.0.=
+4                UDP 51196 =E2=86=92 5201 Len=3D2840
+> >
+> > After applied the patch, there is no OOO, pcount acted in order.
 >
-> > For BPF_LSM_CGROUP_TASK it will take cgroup from current instead of sock,
-> > right?
+> To clarify: Alexei is asking to add a test under:
 >
-> Right. Seems like the only difference is where we get the cgroup pointer
-> from: current vs sock->cgroup. Although, I'm a bit unsure whether to
-> allow hooks that are clearly sock-cgroup-based to use
-> BPF_LSM_CGROUP_TASK. For example, should we allow
-> BPF_LSM_CGROUP_TASK to attach to that socket_post_create? I'd prohibit that
-> at
-> least initially to avoid some subtle 'why sometimes my
-> programs trigger on the wrong cgroup' types of issues.
+> tools/testing/selftests/net/
+>
+> to cover this specific case. You can propbably extend the existing
+> udpgro_fwd.sh.
 
-Agree. With a single BPF_LSM_CGROUP attach type will get correct
-behavior automatically.
+Exactly.
+I suspect the setup needs a bit more than just iperf udp test.
+Does it need a specific driver and hw?
+Can it be reproduced with veth or other virtual netdev?
+Also commit talks about bpf_skb_proto_6_to_4.
+So that bpf helper has to be somehow involved, but iperf udp test
+says nothing about it.
+Please craft a _complete_ selftest.
 
-Looking forward to non rfc patches. Exciting feature!
+> Please explicitly CC people who gave feedback to previous iterations,
+> it makes easier to track the discussion.
+>
+> /P
+>
