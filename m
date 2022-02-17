@@ -2,91 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 118E94B9FA2
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 13:04:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E564BA09F
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 14:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbiBQMEw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 07:04:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60342 "EHLO
+        id S234653AbiBQNFm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 08:05:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbiBQMEw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 07:04:52 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252DF6433
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 04:04:38 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CDC8C1F37D;
-        Thu, 17 Feb 2022 12:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645099476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=5cZrtj7OWbkDO2euCq+2jbQX1Za47r0nSjfhbrYz0Wc=;
-        b=QsYgIAuGEBkxfMxk2GVEBhypnIK5zDYt4CnM9cPzncl1xozLeogNKePilUN+6O892mkJlz
-        aH4WrfluuKenN+Iqpytf5VkrQFcvifKq7LLgitmHWvp9kw0X004Rgt+tu1fvKwsIYMlcyd
-        3stf+RbBWJe6EA0NpFaGHahKfTvAu2I=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7B93413BDA;
-        Thu, 17 Feb 2022 12:04:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JAEZG9Q5DmLHbgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Thu, 17 Feb 2022 12:04:36 +0000
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     andrii@kernel.org
-Cc:     ast@kernel.org, bpf@vger.kernel.org,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] bpftool: Allow building statically
-Date:   Thu, 17 Feb 2022 14:04:35 +0200
-Message-Id: <20220217120435.2245447-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231142AbiBQNFm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 08:05:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B7052A8D04
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 05:05:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1645103127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HpcZMkbbCh5BkbYlg/SvgeHM4i6/4F8GaJEcQ/x4VQg=;
+        b=QJhKeNj53DIuPcDq148J6R0Ul1fYy0G2YMo6O88e6hZr0AChNACHJSvzxQI5rry1V+odjF
+        HZCj/zT4gsJFUdZ2yBASqnXeVnY/Y0OsCrtdL5R9eW9JV66QbElOY0AA/NvgR0qJeSIs2g
+        ebLBWCW9F3KYmXqWXJ8bBFh8Cn5LVH0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-385-dmr0Oh2RMsmvOL_LniK2Jg-1; Thu, 17 Feb 2022 08:05:26 -0500
+X-MC-Unique: dmr0Oh2RMsmvOL_LniK2Jg-1
+Received: by mail-ed1-f69.google.com with SMTP id cr7-20020a056402222700b0040f59dae606so3478016edb.11
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 05:05:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=HpcZMkbbCh5BkbYlg/SvgeHM4i6/4F8GaJEcQ/x4VQg=;
+        b=dWK/dwqZXe8mGM9hQyBqkFzJXwOC066HG3xA1kDMlzISTNivDkQgqycvvyREhy0ZVz
+         WAS4j8XPuyVaUmZcl6XSy2+0LFGypaGP5rBmcrI6uB/eSMAw5bjXhesVC2/BVLByJ2QH
+         WAB6EzG8r3iezHSR2HtZGU42MK7Vl9e0ZAnKzrb8m+jWCzsf/6P7raTylA11m8zdnLoV
+         yjj/6U9inePzjm2ifUX+nkYWIllrCZA6hTU4c/GW0sE9yu1SpzUaXIEnRSsjdAh1yfBQ
+         l+tPm8n7qOWbqdMDE+IM69Lgdl6VGPdEHMgUFuQkpvZ+eb2ycPVqr3Sj4ptO6u6BrUs/
+         5KJg==
+X-Gm-Message-State: AOAM533zYmzzs6c1X0uWxBpVQGQL0XDJTQFmubleyDtCUnbe9kMEaIB4
+        wMLq5fVNCgfdllpBleuSQbZkMppYNsagxfk2W8dB/iSw3oSxWoFbdvmqimrdmgHgYZczueTEDj7
+        bFRiB6H4wjreC
+X-Received: by 2002:a17:906:3e4b:b0:6cf:7f02:9332 with SMTP id t11-20020a1709063e4b00b006cf7f029332mr2227300eji.404.1645103124265;
+        Thu, 17 Feb 2022 05:05:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyXopXKD89QYgb1WeZKES3DFukCLCJ+EmNSOsHVbM5bzPDRA3viHVG1CUFOwjJ+d7W2tkDcHg==
+X-Received: by 2002:a17:906:3e4b:b0:6cf:7f02:9332 with SMTP id t11-20020a1709063e4b00b006cf7f029332mr2227126eji.404.1645103121650;
+        Thu, 17 Feb 2022 05:05:21 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l6sm1133351ejz.189.2022.02.17.05.05.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Feb 2022 05:05:20 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 451D612E801; Thu, 17 Feb 2022 14:05:20 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net
+Cc:     andrii@kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: fix memleak in libbpf_netlink_recv()
+In-Reply-To: <20220217073958.276959-1-andrii@kernel.org>
+References: <20220217073958.276959-1-andrii@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 17 Feb 2022 14:05:20 +0100
+Message-ID: <87czjl4p9r.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sometime it can be useful to haul around a statically built version of
-bpftool. Simply add support for passing STATIC=1 while building to build
-the tool statically.
+Andrii Nakryiko <andrii@kernel.org> writes:
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
+> Ensure that libbpf_netlink_recv() frees dynamically allocated buffer in
+> all code paths.
+>
+> Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Fixes: 9c3de619e13e ("libbpf: Use dynamically allocated buffer when recei=
+ving netlink messages")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Currently the bpftool being distributed as part of libbpf-tools under bcc project
-is dynamically built on a system using GLIBC 2.28, this makes the tool unusable on
-ubuntu 18.04 for example. Perhaps after this patch has landed the bpftool in bcc
-can be turned into a static binary.
+Oops! I saw there were already 'goto done' labels in that block of code
+so assumed it was all fine and didn't look closer. Thank you for the
+fix!
 
- tools/bpf/bpftool/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
+-Toke
 
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index 83369f55df61..835621e215e4 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -13,6 +13,10 @@ else
-   Q = @
- endif
 
-+ifeq ($(STATIC),1)
-+	CFLAGS += --static
-+endif
-+
- BPF_DIR = $(srctree)/tools/lib/bpf
-
- ifneq ($(OUTPUT),)
---
-2.25.1
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
