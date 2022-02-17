@@ -2,56 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869794BAC0B
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 22:47:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDAE4BAC11
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 22:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbiBQVro (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 16:47:44 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34970 "EHLO
+        id S232099AbiBQVuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 16:50:06 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232099AbiBQVrn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 16:47:43 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9054C102423;
-        Thu, 17 Feb 2022 13:47:28 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id c23so624849ioi.4;
-        Thu, 17 Feb 2022 13:47:28 -0800 (PST)
+        with ESMTP id S231612AbiBQVuF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 16:50:05 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2DCF165C06;
+        Thu, 17 Feb 2022 13:49:50 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id z2so5360998iow.8;
+        Thu, 17 Feb 2022 13:49:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YYu50T47m2X15x/aJyA+exabFEHDtWyNBqkWcs49TkU=;
-        b=ev4QrgJP8rMw+DRyRssNZyhsWtgCHd0RnHRTdh98a+lZvx7PZSRjSZOGd/SYWZoA3j
-         9k2wVHuezrkp7wr2A9zgdwYFDfN+uK9Vj08D4PrvbAyztMfHFwc1rL0PB7xvPanEoyxe
-         t4D7GYrWNS4z8PoKUlj5nqK2QvoMOAKWfEAo1DL7hyIoPbmvQiPN3d/Gapm7GIQfYYug
-         ote3EnGwgPhWWV1/sc/LmwJ0vWq8RwB5/4D5oen9vKWSwnIPHyvSMliw0WGn1OJZF0Oa
-         H+BTaYlcVq68fmxJ1R+UXZh6gP75/RaO1G6USm6FbycX8L4skjZnXWXuJ5vXnLf1bYqX
-         GwnA==
+        bh=/Xms7LO7cPVPOQl8+2SFpWEDKuxRRkay4Sft0SGc9bY=;
+        b=NpXhdUseollFh3xfuow1UWeu6kuIlc8MEd70XdcWOJ0ZWNwN8j8mLttgZn39Nlawfz
+         fx6xL2+OweiX7BAMy6TAENXNOXyhncpxSHYhn5OT7pzWtiniNjXPWRfYbuvCZ+wQHgOf
+         K9N0pvl+B3SS2gJ3+XoFl2Bwe5c6cxXS+bNdFZTsdKfV2nXPFy/vkUR4VJM6H8HuacQ0
+         8hmRjOnTYRhCRx6AxhamgvkGTA9udu6XUYO71bFvD760Fpqe1X04sEIwvfw3+zDnSEFY
+         ZJcQLy/L/iqiFZilkWQDtezVVTxbcaOj95ijAZs5UGIWUvo9e4VYsnGibM+JNyjnTQG1
+         d3jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YYu50T47m2X15x/aJyA+exabFEHDtWyNBqkWcs49TkU=;
-        b=jjRxObVztPxG2x+oA9kImdSY/qZ5fa4X+ravrUm2LNXMyVJ6GHSC42lHBWGJoojXND
-         nsRnEqllqvQ016+ma1RzZMsQyYBM1+CPxxDCVNhq4C+MCr+UjaKqVr8LomTS+qXbhDdF
-         oXkFo4bV/Lss+M0JYytTqytMtAeEKwlE0U8i84dO0eaRa9j5CgLETEklT7VtylhcS40Z
-         M42l8ANGpFUNufrPe5Xl2zAuyTPhwTKcdw4FI7WPVqiVdD6RT86NODvj/H7JqcH2t5FJ
-         Um5YHBXGqY6Fe5ooOk1Kmj49LXovYUgXtJBvACCVFBGrX6kGyxEtiXudefOZ5VcQp62j
-         WJ2w==
-X-Gm-Message-State: AOAM531ogTTmGyiKT/1WNTVonzZgVkzVpCJVd3rkNIkfIAccDUQ91SQz
-        LNbXEk0mzAxcoXwBKc84VbM0x+2iy1DuJD/Z6BQ=
-X-Google-Smtp-Source: ABdhPJzd+vhvEi+KPD/izA7Sc2KQlgP5/XgADNTkal1UP6wv3bPi1YaAgCjZOyPAYgF8PEVAkWJVDzzK65N+Bh1feSs=
+        bh=/Xms7LO7cPVPOQl8+2SFpWEDKuxRRkay4Sft0SGc9bY=;
+        b=jz4evxBYzGTofZZVxx4RKMHEre2FHsXHmGbRNVnOgY/PEEjIcf7k+yTSi4uf3wmNVl
+         WW0AX9IEmi15/ZgG/MLCqpDfPV7CEBNPdWCmyxMysdreTY4gf0OT9wIgFKEBHAHvGaRb
+         FIX+uBcSwj9ZZS+fjLFmvmUpeG+DCJLlrPyrKPU/kCrfnMMJ7RRzxtAnCg7e5IpC0Pbz
+         eR/V5baAgwGMnr50UkU27Mj2OHpeq7tswaEcEeiFynbP7KUBw/Yw7Yt81rtM2GRBokpH
+         IVSk3bTbn9JeWtVAxC5pT9Mug/KX1O//rVDvd6ZzQYy5xyv2dZ5ZOU9abO0Gpl2BCftk
+         0Amw==
+X-Gm-Message-State: AOAM533edzeEeAFO3D1qk7aUVwBgx99p5LbrNxF3Rilv3a56mrEtKhjU
+        jDc9OBIA+MisC/A8fpidC+qWtcI8apTeGueXud8=
+X-Google-Smtp-Source: ABdhPJyWMI8xx72jX8VcSld5R1mofbY2wDIJA5trPclGm8VjqJpjnrrqUbiwvg0BoAGuL51kWFEXJ6xX+Y3qGLlGLuY=
 X-Received: by 2002:a05:6638:22c3:b0:30a:2226:e601 with SMTP id
- j3-20020a05663822c300b0030a2226e601mr3291883jat.237.1645134448000; Thu, 17
- Feb 2022 13:47:28 -0800 (PST)
+ j3-20020a05663822c300b0030a2226e601mr3297478jat.237.1645134590110; Thu, 17
+ Feb 2022 13:49:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20220217131916.50615-1-jolsa@kernel.org> <20220217131916.50615-2-jolsa@kernel.org>
-In-Reply-To: <20220217131916.50615-2-jolsa@kernel.org>
+References: <20220217131916.50615-1-jolsa@kernel.org> <20220217131916.50615-3-jolsa@kernel.org>
+In-Reply-To: <20220217131916.50615-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 17 Feb 2022 13:47:16 -0800
-Message-ID: <CAEf4BzboYd4y53KjKwNMCqE6oV9ms0zbtKCGweEGtjZvCe1f0w@mail.gmail.com>
-Subject: Re: [PATCH 1/3] perf tools: Remove bpf_program__set_priv/bpf_program__priv
- usage
+Date:   Thu, 17 Feb 2022 13:49:39 -0800
+Message-ID: <CAEf4BzYoCioENBuXEb-B7ZK8D0YFzs_j3XFN8NS35PAWY04O+g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] perf tools: Remove bpf_map__set_priv/bpf_map__priv usage
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -77,7 +76,7 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Both bpf_program__set_priv/bpf_program__priv are deprecated
+> Both bpf_map__set_priv/bpf_map__priv are deprecated
 > and will be eventually removed.
 >
 > Using hashmap to replace that functionality.
@@ -85,32 +84,32 @@ On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
 > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/perf/util/bpf-loader.c | 91 +++++++++++++++++++++++++++++-------
->  1 file changed, 75 insertions(+), 16 deletions(-)
+>  tools/perf/util/bpf-loader.c | 62 ++++++++++++++++++++++++++++++++----
+>  1 file changed, 55 insertions(+), 7 deletions(-)
 >
 
 [...]
 
-> +
-> +static int program_set_priv(struct bpf_program *prog, void *priv)
+> +static int map_set_priv(struct bpf_map *map, void *priv)
 > +{
 > +       void *old_priv;
 > +
-> +       if (!bpf_program_hash) {
-> +               bpf_program_hash = hashmap__new(ptr_hash, ptr_equal, NULL);
-> +               if (!bpf_program_hash)
+> +       if (!bpf_map_hash) {
+> +               bpf_map_hash = hashmap__new(ptr_hash, ptr_equal, NULL);
+> +               if (!bpf_map_hash)
 
-should use IS_ERR here
+same as in previous patch, on error this is not going to be NULL
 
 > +                       return -ENOMEM;
 > +       }
 > +
-> +       old_priv = program_priv(prog);
+> +       old_priv = map_priv(map);
 > +       if (old_priv) {
-> +               clear_prog_priv(prog, old_priv);
-> +               return hashmap__set(bpf_program_hash, prog, priv, NULL, NULL);
+> +               bpf_map_priv__clear(map, old_priv);
+> +               return hashmap__set(bpf_map_hash, map, priv, NULL, NULL);
 > +       }
-> +       return hashmap__add(bpf_program_hash, prog, priv);
->  }
+> +       return hashmap__add(bpf_map_hash, map, priv);
+> +}
+> +
 
 [...]
