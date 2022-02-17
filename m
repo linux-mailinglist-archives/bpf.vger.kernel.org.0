@@ -2,144 +2,360 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D901F4BA35C
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 15:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 990A84BA3A7
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 15:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242020AbiBQOo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 09:44:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47490 "EHLO
+        id S240415AbiBQOuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 09:50:52 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232351AbiBQOo0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 09:44:26 -0500
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CA1420D344
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 06:44:10 -0800 (PST)
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20220217144407euoutp02f41a68510d04800c83f33f4bc599e1a1~UmfZ-ExSw0722807228euoutp02R
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 14:44:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20220217144407euoutp02f41a68510d04800c83f33f4bc599e1a1~UmfZ-ExSw0722807228euoutp02R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1645109047;
-        bh=WKwQivU1aXVBSViyMxceD/bLtydyZBoOw9KFoydIfRQ=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=hmMMTa/5scM1lAmzzecr1O3lzOBBwBdqP+1H1wu8yihwZ3W9yfJxIUpDxd4ZyUFTQ
-         zFvwKimWkzgw8wSM7DZD7VRF4lr66YUrWUCCWx03NoTrXZ+7NppiguPfcOvldFRYfh
-         4J7ox+pZRyhAJVi1YImD0BvvScSrLhBVaOJ5c35Y=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20220217144407eucas1p1bce23a558e38be68a47bcca7a25b0bdb~UmfZk17iw1004110041eucas1p1r;
-        Thu, 17 Feb 2022 14:44:07 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id 54.2A.09887.73F5E026; Thu, 17
-        Feb 2022 14:44:07 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20220217144406eucas1p2fe25b2fd40f7f7bf8b5c0dc898c16a2b~UmfY9sTsf2096520965eucas1p2s;
-        Thu, 17 Feb 2022 14:44:06 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20220217144406eusmtrp273b5ac1c84f7daef09e4e61da6b5b95b~UmfY8ves41922319223eusmtrp2k;
-        Thu, 17 Feb 2022 14:44:06 +0000 (GMT)
-X-AuditID: cbfec7f4-45bff7000000269f-c6-620e5f377ee6
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id B2.99.09522.63F5E026; Thu, 17
-        Feb 2022 14:44:06 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20220217144405eusmtip2f713d88659db76b998bcd4242784984b~UmfYJ9t9_2647226472eusmtip2J;
-        Thu, 17 Feb 2022 14:44:05 +0000 (GMT)
-Message-ID: <7bdb9cd2-aed4-f6e5-44a9-7c022201476a@samsung.com>
-Date:   Thu, 17 Feb 2022 15:44:05 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0)
-        Gecko/20100101 Thunderbird/91.6.0
-Subject: Re: [PATCH net-next] net: Correct wrong BH disable in
- hard-interrupt.
-Content-Language: en-US
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S242126AbiBQOut (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 09:50:49 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192CB29E957;
+        Thu, 17 Feb 2022 06:50:34 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id u18so10074738edt.6;
+        Thu, 17 Feb 2022 06:50:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8I41jwLvAiCSwd4V/781omnso87v01pI1AY+lB5wImk=;
+        b=Iupq1Tbr6TrNZdw13BJ6EY0qW3jW8QcWqrMnVX0DfbwV9HN8X6F1VFaQ/Vt4JiwKuI
+         PKHeDAsE5jQo2oYFRH3qKrMg7Y7K10m0OisK4CQxgccvztoWVvEOVDbmSPyb1raXFLY6
+         o5nxC5aZSnG5edIofcjlhWKe4xkKLff54dudYJjGhfUtiRMhvaGqVm1r7MGHEDAXKahY
+         1G7DcLlAh6UPp9o/BEWcfQFzwTlY37PC9K7Ys9nIHgd5QmoP2TMvEHAReyoA4+aHzG4q
+         Y5jTggvJqH2wT2nDtKj7XpD5BO7aSbyi7sWvheo/WNRORQls+Wg9QAN+r091a++WqKJr
+         GsTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8I41jwLvAiCSwd4V/781omnso87v01pI1AY+lB5wImk=;
+        b=ErvFcyuwCsaPWx3bnJD7oYy3GjZztkdKVGXba/4EFvyj3cVqGax/FTJ4UoorsFQrsQ
+         jLBTOcqnDDs2wfsUxoH7yKOHV/MZkoa8iduo/OLH1MmXtmbTxFOdzXUwC2DDLMW+5H71
+         0GwUvGy0NtWhVhQd5/xzVGXwy7uwO9D98WCTEGVMYMk1FAdrGFZ2ZNdsENK2ZOmnv22E
+         1twA4uPtXa+QtchCxVLAlyAYF7EJtGqKBQdpfkG1RdmFoP1uaONP0zt2/pLzAFUOh15u
+         7AQtsMCT9ONv5Db2zq11PUG/0v1mAZf1cZpn7/8iney9aXwYxwuokcQugTu1uThGTQw+
+         WMAA==
+X-Gm-Message-State: AOAM5311NsIe0WE6YovXlMRa7Wv17gEvvscPAg6iNqv78H8F/1KY8tyU
+        ULJauEKV57mxfgEUEIuGRRNeI7JvJ6QPHg==
+X-Google-Smtp-Source: ABdhPJxHWUoGbeHOtiGY24KhCoWJUu2GzbvuQ9rdb+BqJdqLvOi+M7qBX+pMk1LL7YH8WekmXc7HTw==
+X-Received: by 2002:a05:6402:168e:b0:410:d2a4:b0dd with SMTP id a14-20020a056402168e00b00410d2a4b0ddmr2908446edv.403.1645109432560;
+        Thu, 17 Feb 2022 06:50:32 -0800 (PST)
+Received: from debianHome.localdomain (dynamic-077-001-066-240.77.1.pool.telefonica.de. [77.1.66.240])
+        by smtp.gmail.com with ESMTPSA id c11sm3580270edx.42.2022.02.17.06.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Feb 2022 06:50:32 -0800 (PST)
+From:   =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To:     selinux@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefan Haberland <sth@linux.ibm.com>,
+        Jan Hoeppner <hoeppner@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Serge Hallyn <serge@hallyn.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rg?= =?UTF-8?Q?ensen?= 
-        <toke@toke.dk>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgense?= =?UTF-8?Q?n?= 
-        <toke@redhat.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <Yg5Z/bpn/CBJXAqf@linutronix.de>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLKsWRmVeSWpSXmKPExsWy7djPc7rm8XxJBl+2iVl8+Xmb3WLaxUnM
-        Fp+PHGezWLzwG7PFnPMtLBZPjz1it9jTvp3ZomnHCiaLC9v6WC2OLRCz2LxpKrPFpcOPWCy2
-        vl/B7sDrsWXlTSaPnbPusnss2FTq0XXjErPHplWdbB7vzp1j93i/7yqbx5ZDF9k8Pm+SC+CM
-        4rJJSc3JLEst0rdL4MpYcfcva8Fb5ooZ0zIbGLuYuxg5OSQETCQWPG8Esrk4hARWMEqc/bCN
-        DcL5wigx8/sLFgjnM6PE611HGbsYOcBaut5zQcSXM0ocmTQHqv0jo8Scn7/B5vIK2Ems3beb
-        DcRmEVCVeHNtJwtEXFDi5MwnLCCDRAWSJBZtcwcJCwsESByaOQmsnFlAXOLWk/lMILaIgKlE
-        48VDYEcwC3SySFy4d4AVJMEmYCjR9bYLrIFTQFdi85vpTBDN8hLb30IcJCGwnFNi9tVPrBCP
-        ukjsnL6XBcIWlnh1fAs7hC0j8X8nyDaQhmZGiYfn1rJDOD2MEpebZjBCVFlL3Dn3iw3kbGYB
-        TYn1u/Qhwo4Sf1Y3M0OChU/ixltBiCP4JCZtmw4V5pXoaBOCqFaTmHV8HdzagxcuMU9gVJqF
-        FCyzkPw/C8k7sxD2LmBkWcUonlpanJueWmyUl1quV5yYW1yal66XnJ+7iRGY4k7/O/5lB+Py
-        Vx/1DjEycTAeYpTgYFYS4f1wkDdJiDclsbIqtSg/vqg0J7X4EKM0B4uSOG9y5oZEIYH0xJLU
-        7NTUgtQimCwTB6dUA5PwF/Y7DQtuBCgYXVf3jy9duvWxcOLPc1/MgqViBDaev+U00SVIucBo
-        h7IRm/WWh7ujUhW3nbwudoxby+HRZqZd9y36/zGFynK9+fiknqV3Yd3bO8bJZzOqmiVNXcSZ
-        deq4PbUZzB/J/N31SnX29ZuvN9VHf/3PIrtXvlfNh0fbO9rLU239/5kaQaVqf+oqC489+Lgi
-        NDb8y/Ewv7cylwpiRVvvPbWXu/fjb8hBgfbK6mZ+5bh6+yMS37I3RQjtW8i2YBfvdf3e3Tcy
-        NN1ma8sJR65f2PRU6+sy17vC/NzStYdkts34oPr+XO+ckDat2Jpr7y2V2ix2rZv55P7Hubbx
-        kRKJJwubH+mkJBVkKrEUZyQaajEXFScCAK2oDZHgAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPIsWRmVeSWpSXmKPExsVy+t/xe7pm8XxJBr2HtSy+/LzNbjHt4iRm
-        i89HjrNZLF74jdlizvkWFounxx6xW+xp385s0bRjBZPFhW19rBbHFohZbN40ldni0uFHLBZb
-        369gd+D12LLyJpPHzll32T0WbCr16Lpxidlj06pONo93586xe7zfd5XNY8uhi2wenzfJBXBG
-        6dkU5ZeWpCpk5BeX2CpFG1oY6RlaWugZmVjqGRqbx1oZmSrp29mkpOZklqUW6dsl6GWsuPuX
-        teAtc8WMaZkNjF3MXYwcHBICJhJd77m6GLk4hASWMkrsv/2BpYuREyguI3FyWgMrhC0s8eda
-        FxuILSTwnlHi/zIjEJtXwE5i7b7dYHEWAVWJN9d2skDEBSVOznwCZosKJEmsmz6fGcQWFvCT
-        +Pb8DCOIzSwgLnHryXwmEFtEwFSi8eIhFpAjmAV6WSSab61jgbiol0liddMisElsAoYSXW8h
-        ruAU0JXY/GY6E8QkM4murV1QU+Ultr+dwzyBUWgWkkNmIVk4C0nLLCQtCxhZVjGKpJYW56bn
-        FhvqFSfmFpfmpesl5+duYgTG9LZjPzfvYJz36qPeIUYmDsZDjBIczEoivB8O8iYJ8aYkVlal
-        FuXHF5XmpBYfYjQFhsZEZinR5HxgUskriTc0MzA1NDGzNDC1NDNWEuf1LOhIFBJITyxJzU5N
-        LUgtgulj4uCUamDq2HhwY987Fvkzf0O4V3U0yB83rLZ0XuqztrDcz+JcIctmd6GnpnXFW7tr
-        96y0mzDtRptaDY/dbM1fnk/2LG0zdPvY8u/RZ16V63JSm74LOHSqmmuuWiemyt98tNDt4rpJ
-        X46XzlaQ27J0ckZ3fHuMAE+Cqt7cp8ynfzjl3WXe75GitvaVUdAD0afHrB63OU8MPXXTK3vh
-        hAXJsUuUu97Xv7xSXR00f80lrkTRxBsW279/7J7NzX9Q5ZajyZxZq7iWMwTapmb+DXo667zv
-        YY49LY+znB2Ovu+uKubNcN0Ssy3C/MyRj06TTh71P3ZKsWjyu4sNP+3eNH3qt7RIuLTeSsj4
-        /aF9LfOtZdk/LTirxFKckWioxVxUnAgAn9cCunIDAAA=
-X-CMS-MailID: 20220217144406eucas1p2fe25b2fd40f7f7bf8b5c0dc898c16a2b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08
-References: <CGME20220216175054eucas1p2d8aef6c75806dcdab18b37a4e317dd08@eucas1p2.samsung.com>
-        <Yg05duINKBqvnxUc@linutronix.de>
-        <ce67e9c9-966e-3a08-e571-b7f1dacb3814@samsung.com>
-        <c2a64979-73d1-2c22-e048-c275c9f81558@samsung.com>
-        <Yg5Z/bpn/CBJXAqf@linutronix.de>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        KP Singh <kpsingh@kernel.org>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Du Cheng <ducheng2@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexey Gladkov <legion@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        Rolf Eike Beer <eb@emlix.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Colin Cross <ccross@google.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Xiaofeng Cao <cxfcosmos@gmail.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ziyang Xuan <william.xuanziyang@huawei.com>,
+        Alexander Aring <aahringo@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC PATCH 2/2] capability: use new capable_or functionality
+Date:   Thu, 17 Feb 2022 15:49:54 +0100
+Message-Id: <20220217145003.78982-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 17.02.2022 15:21, Sebastian Andrzej Siewior wrote:
-> On 2022-02-17 15:08:55 [+0100], Marek Szyprowski wrote:
->> I've just noticed that there is one more issue left to fix (the $subject
->> patch is already applied) - this one comes from threaded irq (if I got
->> the stack trace right):
-> This is not `threadirqs' on the command line, right?
+Use the new added capable_or macro in appropriate cases, where a task
+is required to have any of two capabilities.
 
-I don't have 'threadirqs' in the kernel cmdline for that board.
+Reorder CAP_SYS_ADMIN last.
 
-Best regards
+TODO: split into subsystem patches.
+
+Fixes: 94c4b4fd25e6 ("block: Check ADMIN before NICE for IOPRIO_CLASS_RT")
+
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+ block/ioprio.c                                   | 9 +--------
+ drivers/media/common/saa7146/saa7146_video.c     | 2 +-
+ drivers/media/pci/bt8xx/bttv-driver.c            | 3 +--
+ drivers/media/pci/saa7134/saa7134-video.c        | 3 +--
+ drivers/media/platform/fsl-viu.c                 | 2 +-
+ drivers/media/test-drivers/vivid/vivid-vid-cap.c | 2 +-
+ drivers/net/caif/caif_serial.c                   | 2 +-
+ drivers/s390/block/dasd_eckd.c                   | 2 +-
+ fs/pipe.c                                        | 2 +-
+ include/linux/capability.h                       | 4 ++--
+ kernel/bpf/syscall.c                             | 2 +-
+ kernel/fork.c                                    | 2 +-
+ kernel/sys.c                                     | 2 +-
+ net/caif/caif_socket.c                           | 2 +-
+ net/unix/scm.c                                   | 2 +-
+ 15 files changed, 16 insertions(+), 25 deletions(-)
+
+diff --git a/block/ioprio.c b/block/ioprio.c
+index 2fe068fcaad5..52d5da286323 100644
+--- a/block/ioprio.c
++++ b/block/ioprio.c
+@@ -37,14 +37,7 @@ int ioprio_check_cap(int ioprio)
+ 
+ 	switch (class) {
+ 		case IOPRIO_CLASS_RT:
+-			/*
+-			 * Originally this only checked for CAP_SYS_ADMIN,
+-			 * which was implicitly allowed for pid 0 by security
+-			 * modules such as SELinux. Make sure we check
+-			 * CAP_SYS_ADMIN first to avoid a denial/avc for
+-			 * possibly missing CAP_SYS_NICE permission.
+-			 */
+-			if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_NICE))
++			if (!capable_or(CAP_SYS_NICE, CAP_SYS_ADMIN))
+ 				return -EPERM;
+ 			fallthrough;
+ 			/* rt has prio field too */
+diff --git a/drivers/media/common/saa7146/saa7146_video.c b/drivers/media/common/saa7146/saa7146_video.c
+index 66215d9106a4..5eabc2e77cc2 100644
+--- a/drivers/media/common/saa7146/saa7146_video.c
++++ b/drivers/media/common/saa7146/saa7146_video.c
+@@ -470,7 +470,7 @@ static int vidioc_s_fbuf(struct file *file, void *fh, const struct v4l2_framebuf
+ 
+ 	DEB_EE("VIDIOC_S_FBUF\n");
+ 
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check args */
+diff --git a/drivers/media/pci/bt8xx/bttv-driver.c b/drivers/media/pci/bt8xx/bttv-driver.c
+index 8cc9bec43688..c2437ff07246 100644
+--- a/drivers/media/pci/bt8xx/bttv-driver.c
++++ b/drivers/media/pci/bt8xx/bttv-driver.c
+@@ -2569,8 +2569,7 @@ static int bttv_s_fbuf(struct file *file, void *f,
+ 	const struct bttv_format *fmt;
+ 	int retval;
+ 
+-	if (!capable(CAP_SYS_ADMIN) &&
+-		!capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check args */
+diff --git a/drivers/media/pci/saa7134/saa7134-video.c b/drivers/media/pci/saa7134/saa7134-video.c
+index 374c8e1087de..356b77c16f87 100644
+--- a/drivers/media/pci/saa7134/saa7134-video.c
++++ b/drivers/media/pci/saa7134/saa7134-video.c
+@@ -1803,8 +1803,7 @@ static int saa7134_s_fbuf(struct file *file, void *f,
+ 	struct saa7134_dev *dev = video_drvdata(file);
+ 	struct saa7134_format *fmt;
+ 
+-	if (!capable(CAP_SYS_ADMIN) &&
+-	   !capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check args */
+diff --git a/drivers/media/platform/fsl-viu.c b/drivers/media/platform/fsl-viu.c
+index a4bfa70b49b2..925c34c2b1b3 100644
+--- a/drivers/media/platform/fsl-viu.c
++++ b/drivers/media/platform/fsl-viu.c
+@@ -803,7 +803,7 @@ static int vidioc_s_fbuf(struct file *file, void *priv, const struct v4l2_frameb
+ 	const struct v4l2_framebuffer *fb = arg;
+ 	struct viu_fmt *fmt;
+ 
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* check args */
+diff --git a/drivers/media/test-drivers/vivid/vivid-vid-cap.c b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+index b9caa4b26209..a0cfcf6c22c4 100644
+--- a/drivers/media/test-drivers/vivid/vivid-vid-cap.c
++++ b/drivers/media/test-drivers/vivid/vivid-vid-cap.c
+@@ -1253,7 +1253,7 @@ int vivid_vid_cap_s_fbuf(struct file *file, void *fh,
+ 	if (dev->multiplanar)
+ 		return -ENOTTY;
+ 
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	if (dev->overlay_cap_owner)
+diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
+index 2a7af611d43a..245c30c469c2 100644
+--- a/drivers/net/caif/caif_serial.c
++++ b/drivers/net/caif/caif_serial.c
+@@ -326,7 +326,7 @@ static int ldisc_open(struct tty_struct *tty)
+ 	/* No write no play */
+ 	if (tty->ops->write == NULL)
+ 		return -EOPNOTSUPP;
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_TTY_CONFIG))
++	if (!capable_or(CAP_SYS_TTY_CONFIG, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 
+ 	/* release devices to avoid name collision */
+diff --git a/drivers/s390/block/dasd_eckd.c b/drivers/s390/block/dasd_eckd.c
+index 8410a25a65c1..9b5d22dd3e7b 100644
+--- a/drivers/s390/block/dasd_eckd.c
++++ b/drivers/s390/block/dasd_eckd.c
+@@ -5319,7 +5319,7 @@ static int dasd_symm_io(struct dasd_device *device, void __user *argp)
+ 	char psf0, psf1;
+ 	int rc;
+ 
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_SYS_RAWIO))
++	if (!capable_or(CAP_SYS_RAWIO, CAP_SYS_ADMIN))
+ 		return -EACCES;
+ 	psf0 = psf1 = 0;
+ 
+diff --git a/fs/pipe.c b/fs/pipe.c
+index cc28623a67b6..47dc9b59b7a5 100644
+--- a/fs/pipe.c
++++ b/fs/pipe.c
+@@ -775,7 +775,7 @@ bool too_many_pipe_buffers_hard(unsigned long user_bufs)
+ 
+ bool pipe_is_unprivileged_user(void)
+ {
+-	return !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN);
++	return !capable_or(CAP_SYS_RESOURCE, CAP_SYS_ADMIN);
+ }
+ 
+ struct pipe_inode_info *alloc_pipe_info(void)
+diff --git a/include/linux/capability.h b/include/linux/capability.h
+index 5c55687a9a05..5ed55b73cb62 100644
+--- a/include/linux/capability.h
++++ b/include/linux/capability.h
+@@ -262,12 +262,12 @@ extern bool file_ns_capable(const struct file *file, struct user_namespace *ns,
+ extern bool ptracer_capable(struct task_struct *tsk, struct user_namespace *ns);
+ static inline bool perfmon_capable(void)
+ {
+-	return capable(CAP_PERFMON) || capable(CAP_SYS_ADMIN);
++	return capable_or(CAP_PERFMON, CAP_SYS_ADMIN);
+ }
+ 
+ static inline bool bpf_capable(void)
+ {
+-	return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
++	return capable_or(CAP_BPF, CAP_SYS_ADMIN);
+ }
+ 
+ static inline bool checkpoint_restore_ns_capable(struct user_namespace *ns)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index fa4505f9b611..108dd09f978a 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2243,7 +2243,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr)
+ 	    !bpf_capable())
+ 		return -EPERM;
+ 
+-	if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !capable(CAP_SYS_ADMIN))
++	if (is_net_admin_prog_type(type) && !capable_or(CAP_NET_ADMIN, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	if (is_perfmon_prog_type(type) && !perfmon_capable())
+ 		return -EPERM;
+diff --git a/kernel/fork.c b/kernel/fork.c
+index d75a528f7b21..067702f2eb15 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2024,7 +2024,7 @@ static __latent_entropy struct task_struct *copy_process(
+ 	retval = -EAGAIN;
+ 	if (is_ucounts_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+ 		if (p->real_cred->user != INIT_USER &&
+-		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
++		    !capable_or(CAP_SYS_RESOURCE, CAP_SYS_ADMIN))
+ 			goto bad_fork_free;
+ 	}
+ 	current->flags &= ~PF_NPROC_EXCEEDED;
+diff --git a/kernel/sys.c b/kernel/sys.c
+index ecc4cf019242..9df6c5e77620 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -481,7 +481,7 @@ static int set_user(struct cred *new)
+ 	 */
+ 	if (is_ucounts_overlimit(new->ucounts, UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC)) &&
+ 			new_user != INIT_USER &&
+-			!capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
++			!capable_or(CAP_SYS_RESOURCE, CAP_SYS_ADMIN))
+ 		current->flags |= PF_NPROC_EXCEEDED;
+ 	else
+ 		current->flags &= ~PF_NPROC_EXCEEDED;
+diff --git a/net/caif/caif_socket.c b/net/caif/caif_socket.c
+index 2b8892d502f7..60498148126c 100644
+--- a/net/caif/caif_socket.c
++++ b/net/caif/caif_socket.c
+@@ -1036,7 +1036,7 @@ static int caif_create(struct net *net, struct socket *sock, int protocol,
+ 		.usersize = sizeof_field(struct caifsock, conn_req.param)
+ 	};
+ 
+-	if (!capable(CAP_SYS_ADMIN) && !capable(CAP_NET_ADMIN))
++	if (!capable_or(CAP_NET_ADMIN, CAP_SYS_ADMIN))
+ 		return -EPERM;
+ 	/*
+ 	 * The sock->type specifies the socket type to use.
+diff --git a/net/unix/scm.c b/net/unix/scm.c
+index aa27a02478dc..821be80e6c85 100644
+--- a/net/unix/scm.c
++++ b/net/unix/scm.c
+@@ -99,7 +99,7 @@ static inline bool too_many_unix_fds(struct task_struct *p)
+ 	struct user_struct *user = current_user();
+ 
+ 	if (unlikely(user->unix_inflight > task_rlimit(p, RLIMIT_NOFILE)))
+-		return !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN);
++		return !capable_or(CAP_SYS_RESOURCE, CAP_SYS_ADMIN);
+ 	return false;
+ }
+ 
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.35.1
 
