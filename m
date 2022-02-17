@@ -2,82 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFCA4BA428
-	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 16:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA9A4BA433
+	for <lists+bpf@lfdr.de>; Thu, 17 Feb 2022 16:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237030AbiBQPU0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 10:20:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43538 "EHLO
+        id S239176AbiBQPXO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 10:23:14 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241364AbiBQPUZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 10:20:25 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826FB2B048E
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 07:20:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 970B161E96
-        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 15:20:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EF9F9C340E9;
-        Thu, 17 Feb 2022 15:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645111210;
-        bh=XUI7yfPTsjzoI8S8ylrY/qsdiK8nDILfH9MP6+mx3z8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UIGtRaIfjjWLntwmvndgphZ8aP4lvHtOT/Pql/+AJ0JjO11mo4XJePCOD5lDgeHpl
-         01iRmATtMlSpNlGp+JVvTouCkqBjb2K1Gyx1cP0QLM01OMZ+qE7hpy1gDxPwT5MzsH
-         fsIUlnbISq1oamuSns/bwDUXRhnpP4YN18VVxDDaULpplnJX7okwIiUDjNTmwtcjeA
-         hgsse8fyFVlKrL9Nlua1SKVfj6LylS/Y1Q6A3NCiIrc13PDWdvjzxiKaVgMU9JzUGm
-         xW8uKZe2kZxXHg/vVqMof/ZSvS9qFj49PMnCuyw01RP2BBGJFLdCIB+eUxBhyev61+
-         xN3Yn5vAtlzWw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D76B3E6D447;
-        Thu, 17 Feb 2022 15:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231217AbiBQPXN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 10:23:13 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E033C2AFE90
+        for <bpf@vger.kernel.org>; Thu, 17 Feb 2022 07:22:57 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nKicR-00069L-DA; Thu, 17 Feb 2022 16:22:55 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nKicR-0006N7-6i; Thu, 17 Feb 2022 16:22:55 +0100
+Subject: Re: [PATCH v2 bpf-next] scripts/pahole-flags.sh: Enable
+ parallelization of pahole.
+To:     Kui-Feng Lee <kuifeng@fb.com>, bpf@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org
+Cc:     kernel-team@fb.com
+References: <20220216193431.2691015-1-kuifeng@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b28839b5-8baf-6733-bd9b-4eab035a8340@iogearbox.net>
+Date:   Thu, 17 Feb 2022 16:22:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: fix memleak in libbpf_netlink_recv()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164511120987.26506.14311462283937671604.git-patchwork-notify@kernel.org>
-Date:   Thu, 17 Feb 2022 15:20:09 +0000
-References: <20220217073958.276959-1-andrii@kernel.org>
-In-Reply-To: <20220217073958.276959-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com, toke@redhat.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220216193431.2691015-1-kuifeng@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26456/Thu Feb 17 10:25:48 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 16 Feb 2022 23:39:58 -0800 you wrote:
-> Ensure that libbpf_netlink_recv() frees dynamically allocated buffer in
-> all code paths.
+On 2/16/22 8:34 PM, Kui-Feng Lee wrote:
+> Pass a -j argument to pahole to parse DWARF and generate BTF with
+> multithreading.
 > 
-> Cc: Toke Høiland-Jørgensen <toke@redhat.com>
-> Fixes: 9c3de619e13e ("libbpf: Use dynamically allocated buffer when receiving netlink messages")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> v2 checks the version of pahole to apply -j only if >= v1.22.
 > 
-> [...]
+> Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> ---
+>   scripts/pahole-flags.sh | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> index c293941612e7..264c05020263 100755
+> --- a/scripts/pahole-flags.sh
+> +++ b/scripts/pahole-flags.sh
+> @@ -16,5 +16,8 @@ fi
+>   if [ "${pahole_ver}" -ge "121" ]; then
+>   	extra_paholeopt="${extra_paholeopt} --btf_gen_floats"
+>   fi
+> +if [ "${pahole_ver}" -ge "122" ]; then
+> +    extra_paholeopt="${extra_paholeopt} -j"
 
-Here is the summary with links:
-  - [bpf-next] libbpf: fix memleak in libbpf_netlink_recv()
-    https://git.kernel.org/bpf/bpf-next/c/1b8c924a0593
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Fixed up whitespace and improved commit desc while applying, thanks!
