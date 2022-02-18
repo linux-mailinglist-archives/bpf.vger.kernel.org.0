@@ -2,61 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675844BBEB6
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 18:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD1B4BBEDD
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 18:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238323AbiBRRu7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 12:50:59 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33608 "EHLO
+        id S238421AbiBRR7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 12:59:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238854AbiBRRuz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 12:50:55 -0500
+        with ESMTP id S238884AbiBRR7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 12:59:24 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7E7E55BD37
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:50:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9E1821B2
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:59:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645206637;
+        s=mimecast20190719; t=1645207145;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mQXbaR0nfjnrgioQog4cSG46d+jwPz5czwsYPjOndl8=;
-        b=LaT+n/TTx+Er6ndZ0KTylm8UV1N6kMG0+jGLO/vOws4uFM80Q53IFsI+DKTWJXgdx351Wr
-        /D08fIUYoJuafWNR59x2lLq4rusph71T7tYn/UZI3jwDX2QgpR/Fr5rpKbg7rAE9EaQvMV
-        52MWRBi2g6tzlhQOW180iWOSFwOUCwk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=p5oI/8dNH/4MFIeI5cLeBF2jrxGnWI8Y2my0AXgZ3EQ=;
+        b=QMxCJlfbp7qrJ88B0U2M8ucEGSXkrQ07J3HPTvwVG7Qgf6WRifJ2KmWw8nRUovV1LBQUfS
+        cD4tmOoxfaIj41ey9ZZLa0ENpZerDV+HaacFXrxnI1QyH26Y9ncLOgdOvS9+Wm/bRo85UX
+        1MGkZPcQ6UpZ33mfbei5qUvbS5P7QB8=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-536-gAuKPmP6O_eqILP1jJmGoA-1; Fri, 18 Feb 2022 12:50:36 -0500
-X-MC-Unique: gAuKPmP6O_eqILP1jJmGoA-1
-Received: by mail-ed1-f70.google.com with SMTP id eq13-20020a056402298d00b00412cfa4bb0eso1121357edb.7
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:50:36 -0800 (PST)
+ us-mta-224-0TwMF7ylN5O8rMej6tBWtA-1; Fri, 18 Feb 2022 12:59:04 -0500
+X-MC-Unique: 0TwMF7ylN5O8rMej6tBWtA-1
+Received: by mail-ed1-f69.google.com with SMTP id m4-20020a50cc04000000b0040edb9d147cso5949539edi.15
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:59:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mQXbaR0nfjnrgioQog4cSG46d+jwPz5czwsYPjOndl8=;
-        b=7oB+lmnw67f5EVlvkmdgtXjSr4+5NzVZONdnXgkkoagVWQ3jSnhIDQa1N3G/cBp1ys
-         LJT/8UfVkbcFiZ31Pjt5mMzFr36KgwypHCczA6hbG2m8kYanliCFJuN0OWf+E3YqYBkA
-         HNfjwPl3JQQciLkzvbu59ze2Zv2I/vhsk2C3g+wVJy8XgDAdYggSwQkycncM/LX+sgvW
-         xJeic/XrA9aR1Esq8+CUqvym6AtqNSp15yVKFbt2vGyPAHPxkOE2KJrGiAWJFktQqbbY
-         BUG3vH/tT0c35G5sUX/EpueI5/cmaGHLnZE7G/qDTK7DXCMhSF5wNM7TDKuX6Igk915Q
-         piYQ==
-X-Gm-Message-State: AOAM533kCKzv0HqYRVQHMiHT3ouFGODQ8pPi7ApUOZV0fqQUVcqSS09B
-        /6ZgiB+lSlqA6x0OZaTO9DwwR0BasVAMEGE5M9Dj6zHpBUzaTrnSposIwoNC7KZq2CrJUUEYiNz
-        Y5UD38uFCxchl
-X-Received: by 2002:a05:6402:438f:b0:412:a96b:a651 with SMTP id o15-20020a056402438f00b00412a96ba651mr8587372edc.40.1645206635101;
-        Fri, 18 Feb 2022 09:50:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxPH/UYaoB2yYlZsUbyqJCQDVwJQ2WBF3hw4xcvyDzaziBJUrJP6EVNMRrT59x4MFXJT7g7Kw==
-X-Received: by 2002:a05:6402:438f:b0:412:a96b:a651 with SMTP id o15-20020a056402438f00b00412a96ba651mr8587337edc.40.1645206634734;
-        Fri, 18 Feb 2022 09:50:34 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id m7sm4958208edb.16.2022.02.18.09.50.32
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=p5oI/8dNH/4MFIeI5cLeBF2jrxGnWI8Y2my0AXgZ3EQ=;
+        b=dfi7iJf0eM46zNuYMRbrTu5a2j1tKBltKvlB5KHFNlWO2l15U08cTIABuAJ1KmAoiv
+         2nyvV++JMX4//XGDju+Az0P4Sdvm21XxM6a1VO7yTxOvWSy/530UjOwalI/ikhsPGBLc
+         nVYV4xAx8+ikheYb/6Vlw0d0gMKF3fMo950UJzPjWlbZ7kO1ZqcnoqM/2V2dQ6ng3H6V
+         4GZnaQvFDP9jpy27+FOtTRNRiq8L9Qrv/rUFJeYTkqUbmKyAHWBmaOvFdsoIG2SsQjeU
+         egSqmoMc3CCuZTnhNb4Au4bTLqVrcZl56/b7Y43zRsfBMC6oKP0qEgWnC5W7yP2ZHy7F
+         ljlw==
+X-Gm-Message-State: AOAM532pUoZmQn/ugbBQyWK9zBdqJeLJmcOASnMafg/wzwEJ5oYAA7zN
+        AQnEi0GHGF06iFoIDVskfqWHCizQxzHQweAANOVNEg/eJ9Zs66oib5elc58a9j2xzxqypMbhBa3
+        RW5WjQY6JZuSE
+X-Received: by 2002:a17:906:aed4:b0:6ba:6d27:ac7 with SMTP id me20-20020a170906aed400b006ba6d270ac7mr7489002ejb.33.1645207142549;
+        Fri, 18 Feb 2022 09:59:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJww0cTfqnVBcid2KvnkIgltIfa8ngQGHX5cBQYZf339vsSNYU9Rk2ynmAwWH2iPxeiWIbVYBw==
+X-Received: by 2002:a17:906:aed4:b0:6ba:6d27:ac7 with SMTP id me20-20020a170906aed400b006ba6d270ac7mr7488872ejb.33.1645207140118;
+        Fri, 18 Feb 2022 09:59:00 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h7sm5077174ede.66.2022.02.18.09.58.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 09:50:33 -0800 (PST)
+        Fri, 18 Feb 2022 09:58:59 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6BBEC130244; Fri, 18 Feb 2022 18:50:32 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        id EF7B5130248; Fri, 18 Feb 2022 18:58:58 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
@@ -67,18 +67,17 @@ To:     Alexei Starovoitov <ast@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next v8 5/5] selftests/bpf: Add selftest for XDP_REDIRECT in BPF_PROG_RUN
-Date:   Fri, 18 Feb 2022 18:50:29 +0100
-Message-Id: <20220218175029.330224-6-toke@redhat.com>
-X-Mailer: git-send-email 2.35.1
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v8 0/5] Add support for transmitting packets
+ using XDP in bpf_prog_run()
 In-Reply-To: <20220218175029.330224-1-toke@redhat.com>
 References: <20220218175029.330224-1-toke@redhat.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 18 Feb 2022 18:58:58 +0100
+Message-ID: <87zgmo12fx.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -89,291 +88,15 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds a selftest for the XDP_REDIRECT facility in BPF_PROG_RUN, that
-redirects packets into a veth and counts them using an XDP program on the
-other side of the veth pair and a TC program on the local side of the veth.
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../bpf/prog_tests/xdp_do_redirect.c          | 176 ++++++++++++++++++
- .../bpf/progs/test_xdp_do_redirect.c          |  85 +++++++++
- 2 files changed, 261 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+> A sample traffic generator, which was included in previous versions of
+> the series, but now moved to xdp-tools
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-new file mode 100644
-index 000000000000..9024bb24c204
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -0,0 +1,176 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include <net/if.h>
-+#include <linux/if_ether.h>
-+#include <linux/if_packet.h>
-+#include <linux/ipv6.h>
-+#include <linux/in6.h>
-+#include <linux/udp.h>
-+#include <bpf/bpf_endian.h>
-+#include "test_xdp_do_redirect.skel.h"
-+
-+#define SYS(fmt, ...)						\
-+	({							\
-+		char cmd[1024];					\
-+		snprintf(cmd, sizeof(cmd), fmt, ##__VA_ARGS__);	\
-+		if (!ASSERT_OK(system(cmd), cmd))		\
-+			goto out;				\
-+	})
-+
-+struct udp_packet {
-+	struct ethhdr eth;
-+	struct ipv6hdr iph;
-+	struct udphdr udp;
-+	__u8 payload[64 - sizeof(struct udphdr)
-+		     - sizeof(struct ethhdr) - sizeof(struct ipv6hdr)];
-+} __packed;
-+
-+static struct udp_packet pkt_udp = {
-+	.eth.h_proto = __bpf_constant_htons(ETH_P_IPV6),
-+	.eth.h_dest = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55},
-+	.eth.h_source = {0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb},
-+	.iph.version = 6,
-+	.iph.nexthdr = IPPROTO_UDP,
-+	.iph.payload_len = bpf_htons(sizeof(struct udp_packet)
-+				     - offsetof(struct udp_packet, udp)),
-+	.iph.hop_limit = 2,
-+	.iph.saddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(1)},
-+	.iph.daddr.s6_addr16 = {bpf_htons(0xfc00), 0, 0, 0, 0, 0, 0, bpf_htons(2)},
-+	.udp.source = bpf_htons(1),
-+	.udp.dest = bpf_htons(1),
-+	.udp.len = bpf_htons(sizeof(struct udp_packet)
-+			     - offsetof(struct udp_packet, udp)),
-+	.payload = {0x42}, /* receiver XDP program matches on this */
-+};
-+
-+static int attach_tc_prog(struct bpf_tc_hook *hook, int fd)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts, .handle = 1, .priority = 1, .prog_fd = fd);
-+	int ret;
-+
-+	ret = bpf_tc_hook_create(hook);
-+	if (!ASSERT_OK(ret, "create tc hook"))
-+		return ret;
-+
-+	ret = bpf_tc_attach(hook, &opts);
-+	if (!ASSERT_OK(ret, "bpf_tc_attach")) {
-+		bpf_tc_hook_destroy(hook);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+#define NUM_PKTS 1000000
-+void test_xdp_do_redirect(void)
-+{
-+	int err, xdp_prog_fd, tc_prog_fd, ifindex_src, ifindex_dst;
-+	char data[sizeof(pkt_udp) + sizeof(__u32)];
-+	struct test_xdp_do_redirect *skel = NULL;
-+	struct nstoken *nstoken = NULL;
-+	struct bpf_link *link;
-+
-+	struct xdp_md ctx_in = { .data = sizeof(__u32),
-+				 .data_end = sizeof(data) };
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = sizeof(data),
-+			    .ctx_in = &ctx_in,
-+			    .ctx_size_in = sizeof(ctx_in),
-+			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-+			    .repeat = NUM_PKTS,
-+			    .batch_size = 64,
-+		);
-+	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-+			    .attach_point = BPF_TC_INGRESS);
-+
-+	memcpy(&data[sizeof(__u32)], &pkt_udp, sizeof(pkt_udp));
-+	*((__u32 *)data) = 0x42; /* metadata test value */
-+
-+	skel = test_xdp_do_redirect__open();
-+	if (!ASSERT_OK_PTR(skel, "skel"))
-+		return;
-+
-+	/* The XDP program we run with bpf_prog_run() will cycle through all
-+	 * three xmit (PASS/TX/REDIRECT) return codes starting from above, and
-+	 * ending up with PASS, so we should end up with two packets on the dst
-+	 * iface and NUM_PKTS-2 in the TC hook. We match the packets on the UDP
-+	 * payload.
-+	 */
-+	SYS("ip netns add testns");
-+	nstoken = open_netns("testns");
-+	if (!ASSERT_OK_PTR(nstoken, "setns"))
-+		goto out;
-+
-+	SYS("ip link add veth_src type veth peer name veth_dst");
-+	SYS("ip link set dev veth_src address 00:11:22:33:44:55");
-+	SYS("ip link set dev veth_dst address 66:77:88:99:aa:bb");
-+	SYS("ip link set dev veth_src up");
-+	SYS("ip link set dev veth_dst up");
-+	SYS("ip addr add dev veth_src fc00::1/64");
-+	SYS("ip addr add dev veth_dst fc00::2/64");
-+	SYS("ip neigh add fc00::2 dev veth_src lladdr 66:77:88:99:aa:bb");
-+
-+	/* We enable forwarding in the test namespace because that will cause
-+	 * the packets that go through the kernel stack (with XDP_PASS) to be
-+	 * forwarded back out the same interface (because of the packet dst
-+	 * combined with the interface addresses). When this happens, the
-+	 * regular forwarding path will end up going through the same
-+	 * veth_xdp_xmit() call as the XDP_REDIRECT code, which can cause a
-+	 * deadlock if it happens on the same CPU. There's a local_bh_disable()
-+	 * in the test_run code to prevent this, but an earlier version of the
-+	 * code didn't have this, so we keep the test behaviour to make sure the
-+	 * bug doesn't resurface.
-+	 */
-+	SYS("sysctl -qw net.ipv6.conf.all.forwarding=1");
-+
-+	ifindex_src = if_nametoindex("veth_src");
-+	ifindex_dst = if_nametoindex("veth_dst");
-+	if (!ASSERT_NEQ(ifindex_src, 0, "ifindex_src") ||
-+	    !ASSERT_NEQ(ifindex_dst, 0, "ifindex_dst"))
-+		goto out;
-+
-+	memcpy(skel->rodata->expect_dst, &pkt_udp.eth.h_dest, ETH_ALEN);
-+	skel->rodata->ifindex_out = ifindex_src; /* redirect back to the same iface */
-+	skel->rodata->ifindex_in = ifindex_src;
-+	ctx_in.ingress_ifindex = ifindex_src;
-+	tc_hook.ifindex = ifindex_src;
-+
-+	if (!ASSERT_OK(test_xdp_do_redirect__load(skel), "load"))
-+		goto out;
-+
-+	link = bpf_program__attach_xdp(skel->progs.xdp_count_pkts, ifindex_dst);
-+	if (!ASSERT_OK_PTR(link, "prog_attach"))
-+		goto out;
-+	skel->links.xdp_count_pkts = link;
-+
-+	tc_prog_fd = bpf_program__fd(skel->progs.tc_count_pkts);
-+	if (attach_tc_prog(&tc_hook, tc_prog_fd))
-+		goto out;
-+
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xdp_redirect);
-+	err = bpf_prog_test_run_opts(xdp_prog_fd, &opts);
-+	if (!ASSERT_OK(err, "prog_run"))
-+		goto out_tc;
-+
-+	/* wait for the packets to be flushed */
-+	kern_sync_rcu();
-+
-+	/* There will be one packet sent through XDP_REDIRECT and one through
-+	 * XDP_TX; these will show up on the XDP counting program, while the
-+	 * rest will be counted at the TC ingress hook (and the counting program
-+	 * resets the packet payload so they don't get counted twice even though
-+	 * they are re-xmited out the veth device
-+	 */
-+	ASSERT_EQ(skel->bss->pkts_seen_xdp, 2, "pkt_count_xdp");
-+	ASSERT_EQ(skel->bss->pkts_seen_tc, NUM_PKTS - 2, "pkt_count_tc");
-+
-+out_tc:
-+	bpf_tc_hook_destroy(&tc_hook);
-+out:
-+	if (nstoken)
-+		close_netns(nstoken);
-+	system("ip netns del testns");
-+	test_xdp_do_redirect__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-new file mode 100644
-index 000000000000..af3cffccc794
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#define ETH_ALEN 6
-+const volatile int ifindex_out;
-+const volatile int ifindex_in;
-+const volatile __u8 expect_dst[ETH_ALEN];
-+volatile int pkts_seen_xdp = 0;
-+volatile int pkts_seen_tc = 0;
-+volatile int retcode = XDP_REDIRECT;
-+
-+SEC("xdp")
-+int xdp_redirect(struct xdp_md *xdp)
-+{
-+	__u32 *metadata = (void *)(long)xdp->data_meta;
-+	void *data = (void *)(long)xdp->data;
-+	int ret = retcode;
-+
-+	if (xdp->ingress_ifindex != ifindex_in)
-+		return XDP_ABORTED;
-+
-+	if (metadata + 1 > data)
-+		return XDP_ABORTED;
-+
-+	if (*metadata != 0x42)
-+		return XDP_ABORTED;
-+
-+	if (bpf_xdp_adjust_meta(xdp, 4))
-+		return XDP_ABORTED;
-+
-+	if (retcode > XDP_PASS)
-+		retcode--;
-+
-+	if (ret == XDP_REDIRECT)
-+		return bpf_redirect(ifindex_out, 0);
-+
-+	return ret;
-+}
-+
-+static bool check_pkt(void *data, void *data_end)
-+{
-+	struct ethhdr *eth = data;
-+	struct ipv6hdr *iph = (void *)(eth + 1);
-+	struct udphdr *udp = (void *)(iph + 1);
-+	__u8 *payload = (void *)(udp + 1);
-+
-+	if (payload + 1 > data_end)
-+		return false;
-+
-+	if (iph->nexthdr != IPPROTO_UDP || *payload != 0x42)
-+		return false;
-+
-+	/* reset the payload so the same packet doesn't get counted twice when
-+	 * it cycles back through the kernel path and out the dst veth
-+	 */
-+	*payload = 0;
-+	return true;
-+}
-+
-+SEC("xdp")
-+int xdp_count_pkts(struct xdp_md *xdp)
-+{
-+	void *data = (void *)(long)xdp->data;
-+	void *data_end = (void *)(long)xdp->data_end;
-+
-+	if (check_pkt(data, data_end))
-+		pkts_seen_xdp++;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("tc")
-+int tc_count_pkts(struct __sk_buff *skb)
-+{
-+	void *data = (void *)(long)skb->data;
-+	void *data_end = (void *)(long)skb->data_end;
-+
-+	if (check_pkt(data, data_end))
-+		pkts_seen_tc++;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.35.1
+This is still a bit rough around the edges, but for those interested, it
+currently resides here:
+
+https://github.com/xdp-project/xdp-tools/pull/169
+
+-Toke
 
