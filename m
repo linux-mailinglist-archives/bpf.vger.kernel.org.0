@@ -2,128 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F12A4BC119
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 21:19:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D5E4BC143
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 21:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239151AbiBRUTy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 15:19:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43144 "EHLO
+        id S239495AbiBRUjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 15:39:31 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238139AbiBRUTx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 15:19:53 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDBA512AA8;
-        Fri, 18 Feb 2022 12:19:36 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21IJBnfM011227;
-        Fri, 18 Feb 2022 20:19:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : cc :
- subject : in-reply-to : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=dWoLYEztVqtFEjEmwzCNIPrr8BRdAZWSR6a77aO+F7k=;
- b=a/OouFi+tVjEUIogG4CGyT5q6Ura9qK1wDhCqqiHQDu5Y3W+/VJ5pgIM3949EJ41OF+k
- IkZO6Nv8z8nMlHf+gSdRmE9jfv7tdAYzdkQa3eq25zFFZ9bqZw5GSSP8J8UFKtB2FjvQ
- /ocwHAlret6H4tZfe2lRWTgm5yXfF+Qw7G+hUKPHKKt8kTNEMIVwBZP0exGuV7mT2gRH
- o8xjnQJWh4E68sw0nLN69CznFgo4cDKVSvKtOSoN4zCUQ1xZ+k5TnJUjpndZLj/2B3QF
- wAPmSGR1+t0OK3TstqTOv12L7B5RxzITChs+lSrGrOor1BflVLANkcr4Z3f2RTUshZTe Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eahd81he4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Feb 2022 20:19:10 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21IJsGTb018251;
-        Fri, 18 Feb 2022 20:19:09 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3eahd81hdg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Feb 2022 20:19:09 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21IKE5SA015730;
-        Fri, 18 Feb 2022 20:19:07 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 3e64hav7hs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Feb 2022 20:19:07 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21IKJ49I46072150
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Feb 2022 20:19:04 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE0DC5204F;
-        Fri, 18 Feb 2022 20:19:04 +0000 (GMT)
-Received: from localhost (unknown [9.171.19.251])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AD7BE5204E;
-        Fri, 18 Feb 2022 20:19:04 +0000 (GMT)
-From:   Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
-To:     memxor@gmail.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brouer@redhat.com, daniel@iogearbox.net, fw@strlen.de,
-        john.fastabend@gmail.com, kafai@fb.com, maximmi@nvidia.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, songliubraving@fb.com, toke@redhat.com,
-        yhs@fb.com
-Subject: Re: [PATCH bpf-next v8 00/10] Introduce unstable CT lookup helpers
-In-Reply-To: <20220114163953.1455836-1-memxor@gmail.com>
-In-Reply-To: 
-Date:   Fri, 18 Feb 2022 21:19:04 +0100
-Message-ID: <87y228q66f.fsf@oc8242746057.ibm.com>
+        with ESMTP id S238115AbiBRUja (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 15:39:30 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324693586B
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:39:12 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id f12so5451535vkl.2
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:39:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E327KRgWtLgKTf0hg5PNAZJONZVaa9eKKN6R4TJwseQ=;
+        b=BoRxfeYCa2uXkpKJvBD7MnGDvGwABdgsp2/7qrzLR6/zUj7cYZFl5mrmZUQnL2e11R
+         iJPdFVvV5JKLsKbt2dddGot2nUsdO1u2kptsdb+K//aM5hsz9qjByXjLK0dnxYJp0m3f
+         sU4l+GEoA/8L379+Wf1EVkTAPHH+9+NZyQSZk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E327KRgWtLgKTf0hg5PNAZJONZVaa9eKKN6R4TJwseQ=;
+        b=rRmTh157SfHxahR8tLHA09ho6mUg/wJZ9//BgEgXpr8iCYhIGqcV4wUFqGutMbQDGZ
+         gzKpZ9hccPYAuknx2lKiYsyYQYeC+snEu/NAfHu3WUfhjzHO5PvftmxCkTRXxNpUE4Qe
+         FEMHyYPUWNvM32ciXwvpKyzbEkP5OkD1Yr12Curnkd9gT0g/USGolbeMGPVJE8NM/tbf
+         XTv3HRSG/KTDFhSnMLVhh3yjuWjYVR9m2uprec9OxK1T9Tc4W2P/q63YNUAO0D6I4BXK
+         CyHVxwQVGEZyN4StjqbJj+iI2Rj14nl0GoqUCTMP9QTq8vdlwn1h0Cb9JxQD25FK/ycS
+         PYWA==
+X-Gm-Message-State: AOAM5306fI6pKxwAk85JH7T2i410US5yoairtMj6MVix5uAKodVj2FBm
+        N7XGSZLqjCNs/z8ISHWi4yxLbIWG6eMEbA==
+X-Google-Smtp-Source: ABdhPJwvh1YEWxtGoG6zx+n1lN5LI5zKOXNIq9GM8X5aYJH96wzRvhRTs9j9Dz8pbIJpvvO/ur29Gg==
+X-Received: by 2002:a05:6122:a1f:b0:32d:a4a4:6c27 with SMTP id 31-20020a0561220a1f00b0032da4a46c27mr4133797vkn.14.1645216749996;
+        Fri, 18 Feb 2022 12:39:09 -0800 (PST)
+Received: from localhost.localdomain ([181.136.110.101])
+        by smtp.gmail.com with ESMTPSA id b78sm4820712vka.56.2022.02.18.12.39.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Feb 2022 12:39:09 -0800 (PST)
+From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
+Subject: [PATCH bpf-next] bpftool: Remove usage of reallocarray()
+Date:   Fri, 18 Feb 2022 15:39:06 -0500
+Message-Id: <20220218203906.317687-1-mauricio@kinvolk.io>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: q2_JNrD740B6SxTKVCCClWOnps0ppJT3
-X-Proofpoint-GUID: k7ymj4nEborQ3HFmzCFJ5UAQe6Me-811
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-18_09,2022-02-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- suspectscore=0 clxscore=1011 priorityscore=1501 lowpriorityscore=0
- mlxscore=0 impostorscore=0 adultscore=0 spamscore=0 mlxlogscore=999
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202180123
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This commit fixes a compilation error on systems with glibc < 2.26 [0]:
 
-Hi,
+```
+In file included from main.h:14:0,
+                 from gen.c:24:
+linux/tools/include/tools/libc_compat.h:11:21: error: attempt to use poisoned "reallocarray"
+ static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
+```
 
-we are having a problem loading nf_conntrack on linux-next:
+This happens because gen.c pulls <bpf/libbpf_internal.h>, and then
+<tools/libc_compat.h> (through main.h). When
+COMPAT_NEED_REALLOCARRAY is set, libc_compat.h defines reallocarray()
+which libbpf_internal.h poisons with a GCC pragma.
 
-# modprobe nf_conntrack
-modprobe: ERROR: could not insert 'nf_conntrack': Unknown symbol in module, or unknown parameter (see dmesg)
-modprobe: ERROR: Error running install command '/sbin/modprobe --ignore-install nf_conntrack  && /sbin/sysctl --quiet --pattern 'net[.]netfilter[.]nf_conntrack.*' --system' for module nf_conntrack: retcode 1
-modprobe: ERROR: could not insert 'nf_conntrack': Invalid argument
+This follows the same approach of libbpf in commit
+029258d7b228 ("libbpf: Remove any use of reallocarray() in libbpf").
 
-# dmesg
-[ 3728.188969] missing module BTF, cannot register kfuncs
-[ 3748.208674] missing module BTF, cannot register kfuncs
-[ 3748.567123] missing module BTF, cannot register kfuncs
-[ 3873.597276] missing module BTF, cannot register kfuncs
-[ 3874.017125] missing module BTF, cannot register kfuncs
-[ 3882.637097] missing module BTF, cannot register kfuncs
-[ 3883.507213] missing module BTF, cannot register kfuncs
-[ 3883.876878] missing module BTF, cannot register kfuncs
+Reported-by: Quentin Monnet <quentin@isovalent.com>
+Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
 
-# zgrep BTF /proc/config.gz
-CONFIG_DEBUG_INFO_BTF=y
-CONFIG_PAHOLE_HAS_SPLIT_BTF=y
-CONFIG_DEBUG_INFO_BTF_MODULES=y
+[0]: https://lore.kernel.org/bpf/3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com/
+---
+ tools/bpf/bpftool/Makefile        |  6 +-----
+ tools/bpf/bpftool/main.h          | 34 ++++++++++++++++++++++++++++++-
+ tools/bpf/bpftool/prog.c          |  6 +++---
+ tools/bpf/bpftool/xlated_dumper.c |  4 ++--
+ 4 files changed, 39 insertions(+), 11 deletions(-)
 
-It seems that nf_conntrack.ko is missing a .BTF section
-which is present in debuginfo within
-/usr/lib/debug/lib/modules/*/kernel/net/netfilter/nf_conntrack.ko.debug instead.
-
-Am i correct in assuming that this is not supported (yet) ?
-
-We use pahole 1.22 and build linux-next on Fedora 35 as a set of custom
-packages. Architecture is s390x.
-
-Thanks
-Regards
-Alex
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index a137db96bd56..ba647aede0d6 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -93,7 +93,7 @@ INSTALL ?= install
+ RM ?= rm -f
  
+ FEATURE_USER = .bpftool
+-FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
++FEATURE_TESTS = libbfd disassembler-four-args zlib libcap \
+ 	clang-bpf-co-re
+ FEATURE_DISPLAY = libbfd disassembler-four-args zlib libcap \
+ 	clang-bpf-co-re
+@@ -118,10 +118,6 @@ ifeq ($(feature-disassembler-four-args), 1)
+ CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
+ endif
+ 
+-ifeq ($(feature-reallocarray), 0)
+-CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
+-endif
+-
+ LIBS = $(LIBBPF) -lelf -lz
+ LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
+ ifeq ($(feature-libcap), 1)
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0c3840596b5a..6a5775373640 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -8,10 +8,10 @@
+ #undef GCC_VERSION
+ #include <stdbool.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <linux/bpf.h>
+ #include <linux/compiler.h>
+ #include <linux/kernel.h>
+-#include <tools/libc_compat.h>
+ 
+ #include <bpf/hashmap.h>
+ #include <bpf/libbpf.h>
+@@ -21,6 +21,9 @@
+ /* Make sure we do not use kernel-only integer typedefs */
+ #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
+ 
++/* prevent accidental re-addition of reallocarray() */
++#pragma GCC poison reallocarray
++
+ static inline __u64 ptr_to_u64(const void *ptr)
+ {
+ 	return (__u64)(unsigned long)ptr;
+@@ -264,4 +267,33 @@ static inline bool hashmap__empty(struct hashmap *map)
+ 	return map ? hashmap__size(map) == 0 : true;
+ }
+ 
++#ifndef __has_builtin
++#define __has_builtin(x) 0
++#endif
++
++/*
++ * Re-implement glibc's reallocarray() for bpftool internal-only use.
++ * reallocarray(), unfortunately, is not available in all versions of glibc,
++ * so requires extra feature detection and using reallocarray() stub from
++ * <tools/libc_compat.h> and COMPAT_NEED_REALLOCARRAY. All this complicates
++ * build of bpftool unnecessarily and is just a maintenance burden. Instead,
++ * it's trivial to implement bpftool-specific internal version and use it
++ * throughout bpftool.
++ * Copied from tools/lib/bpf/libbpf_internal.h
++ */
++static inline void *bpftool_reallocarray(void *ptr, size_t nmemb, size_t size)
++{
++	size_t total;
++
++#if __has_builtin(__builtin_mul_overflow)
++	if (unlikely(__builtin_mul_overflow(nmemb, size, &total)))
++		return NULL;
++#else
++	if (size == 0 || nmemb > ULONG_MAX / size)
++		return NULL;
++	total = nmemb * size;
++#endif
++	return realloc(ptr, total);
++}
++
+ #endif
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 92a6f679ef7d..860ad234166c 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -1558,9 +1558,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
+ 			if (fd < 0)
+ 				goto err_free_reuse_maps;
+ 
+-			new_map_replace = reallocarray(map_replace,
+-						       old_map_fds + 1,
+-						       sizeof(*map_replace));
++			new_map_replace = bpftool_reallocarray(map_replace,
++							       old_map_fds + 1,
++							       sizeof(*map_replace));
+ 			if (!new_map_replace) {
+ 				p_err("mem alloc failed");
+ 				goto err_free_reuse_maps;
+diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
+index f1f32e21d5cd..467bce9eee09 100644
+--- a/tools/bpf/bpftool/xlated_dumper.c
++++ b/tools/bpf/bpftool/xlated_dumper.c
+@@ -32,8 +32,8 @@ void kernel_syms_load(struct dump_data *dd)
+ 		return;
+ 
+ 	while (fgets(buff, sizeof(buff), fp)) {
+-		tmp = reallocarray(dd->sym_mapping, dd->sym_count + 1,
+-				   sizeof(*dd->sym_mapping));
++		tmp = bpftool_reallocarray(dd->sym_mapping, dd->sym_count + 1,
++					   sizeof(*dd->sym_mapping));
+ 		if (!tmp) {
+ out:
+ 			free(dd->sym_mapping);
+-- 
+2.25.1
+
