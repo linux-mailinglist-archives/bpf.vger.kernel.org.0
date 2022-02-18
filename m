@@ -2,144 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E174BC0F2
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 21:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2415F4BC107
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 21:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238852AbiBRUAX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 15:00:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53858 "EHLO
+        id S234088AbiBRUNU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 15:13:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236139AbiBRUAV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 15:00:21 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C474D636
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:00:04 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id e3so16370762wra.0
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:00:04 -0800 (PST)
+        with ESMTP id S229853AbiBRUNT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 15:13:19 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CF224637C
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:13:02 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id h11so5503606ilq.9
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:13:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=BaWIRG9VkIyqheMO545IBGNoL0E4rWyLcXo6hJwMbX0=;
-        b=v/JdIJkCghQeSG5/Pn2f4BYAKRO4TRm9mRbu3aiKd4X1G/nEMHh/Wli4Wj97S/gVMU
-         Rg3emXTVMJml90X9XHXqdWS0/d7qNU60disWZuVkVrU/w0J++KVjTxuDCw3dfOilEnAB
-         IAPOeSFc1Qd55YikvrNGe55IMMKJSTTuloIF4u3gQ7k/BOr0+yZMUz1s3WooI4SRV8yu
-         nIxhCETbdviGsyrtBhr40hs7okAYcOuEzrGO9+ylahPp9aUuUjSMG3KYFRJfby4bAV+w
-         /b7p4VLKoTOeEZ+Sczu8ZDhjf9hUWOW6Tk2Ur0u8saMWhYDwra/2jD7vFQs+wb35nYbS
-         1nbQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gVsHCHmwADKSqOo2GYanEhPkg98MAktxHGKwbeIcwQA=;
+        b=I9BBM++2sTN5aGRqni53EP3taTChxanqlZJ+rnp+WqJODfYkMXtFECQAUiyTgRKCAK
+         eU6xqPVAwBZbNPQXGVxAHM0Rzml12LqzqyZOnYJUARnvNegrbMc531+SYOWD+/jU03zI
+         oS4gee3t77tcfziiVXaxqcvovI8kf9aFSRfN6gnoZFI1MMDx+0O4R1JCyepGKrU0+ItM
+         c2Ke30RLO7gGl/simOSrkbfotOVMqRjfyut+66b3DOkrjvcmqoO/wHrPPkKr6+b/YDYu
+         cHkkdcKzNmcE1RtrUyo1R+EN4M8vxTcbQcFINFHqe+o/tkORYo2lZjcbrTBvOViZCNjb
+         G2Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=BaWIRG9VkIyqheMO545IBGNoL0E4rWyLcXo6hJwMbX0=;
-        b=lfIEfIVlzPFleA7RBOxRD1eShs8GE/cQv4DUt8kNEzJLjC800qwjuvc9a8GtXI+d5r
-         +IWtqP3jszuN0vk/uf1CxxvNReOy+14y1oEI4GEiN/5Dc8L/zCeG7RMjeS++cruQrRjL
-         W2o3jbRXAaynIwFXWlMMpo1qjXDY203ljt5W1bxgADS2U+yBPzzDFWtE1Ywlwt/4DaaH
-         DhAYdFZJBtc4uPCKEbmN7CEqc0o4obTcwuICsfjS8ROUaMkIeZz5tlyO/oYRug1AscHs
-         pjHmqbgGEuMDogrh+6++EZI9ZN/9x/VMRR5gvwoSJGT69B+GcupTHUWxynFgfmFLlupc
-         Rh3g==
-X-Gm-Message-State: AOAM530klO6qJ5Ox5KRqxFR0EsRaWxCkICX97zxN/KHAOAjzMj1X7mUb
-        d1V32hOwmRu9N9rDomn2c1eayCfq7WR+WA==
-X-Google-Smtp-Source: ABdhPJzHtonkt5ghTA+4HPJ9eNAeFameSNFpZJHLktooSFeBSs2r3kOEQtNEUU+BqZQuGD0jliLyQw==
-X-Received: by 2002:a5d:53d2:0:b0:1e3:3a00:8de with SMTP id a18-20020a5d53d2000000b001e33a0008demr6932991wrw.78.1645214402843;
-        Fri, 18 Feb 2022 12:00:02 -0800 (PST)
-Received: from [192.168.1.8] ([149.86.66.54])
-        by smtp.gmail.com with ESMTPSA id n9sm23157722wrx.76.2022.02.18.12.00.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Feb 2022 12:00:02 -0800 (PST)
-Message-ID: <15094ca9-5659-5d12-e6a0-90d9fc2e2cec@isovalent.com>
-Date:   Fri, 18 Feb 2022 20:00:01 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gVsHCHmwADKSqOo2GYanEhPkg98MAktxHGKwbeIcwQA=;
+        b=T67ggCCLQQ8NfLK24Zg3giTssOc/7IOEN2FSOmzKD7qsJ64Ssa/ifaLhixoNZ5nJFN
+         ePXLrVYVAOfmFozh6jrMaBaaQbHFBWNOhQgoukxsCzMPpYLgx/2Dv+PxkNoXm86TAnb9
+         ZfPutGZO63JYQiHTFU7gSjj19/ECYVqUucT8uFUfe9Hok0xEA021ofXLquXEqurxCOm8
+         bOy0yxHuwxjrNc7+I0UfZpwZAQEUPAeV8cp/bS+QNYFtQ9x9djXXTJ7QJVt0eaeTLF+a
+         4Yhp/5oCan6Yo5LNG+GiO1kEaT5vvUAwjiWanQzd8Q1D1qadRlOzp55xaiTrc0BJ+vNj
+         URmg==
+X-Gm-Message-State: AOAM533PX8A7DenVc2UX8CtlRmUNeCq3MiXjYSqQLtNpzhAXoX9Te2lX
+        MJ409P5YQb7D7lacoFFUDbOC1KTUxAMmmXv77rRtvA==
+X-Google-Smtp-Source: ABdhPJz9xqKlKR2n+B2bJRtz8x9xLAQBSZHzS73OpfCRy+cu0hbrw8WHq8/TecendfrhWg59B+OJfszNK/hjMb+P1zg=
+X-Received: by 2002:a05:6e02:1a0f:b0:2c1:a8db:a266 with SMTP id
+ s15-20020a056e021a0f00b002c1a8dba266mr3315687ild.127.1645215181718; Fri, 18
+ Feb 2022 12:13:01 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] bpftool: Allow building statically
-Content-Language: en-GB
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Nikolay Borisov <nborisov@suse.com>, andrii@kernel.org
-Cc:     ast@kernel.org, bpf@vger.kernel.org
-References: <20220217120435.2245447-1-nborisov@suse.com>
- <8c890e30-d701-0da4-c6f9-f5ca7d80d7ee@isovalent.com>
- <dee15742-da4b-1622-8c0a-cc95a6c7ee91@suse.com>
- <8bc2a0fd-2e54-471f-d908-a0144e0588fe@isovalent.com>
- <3bf83a18-6107-ebbc-bb5d-d61fcfb25fcd@iogearbox.net>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <3bf83a18-6107-ebbc-bb5d-d61fcfb25fcd@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000073b3e805d7fed17e@google.com> <462fa505-25a8-fd3f-cc36-5860c6539664@iogearbox.net>
+ <CAPhsuW6rPx3JqpPdQVdZN-YtZp1SbuW1j+SVNs48UVEYv68s1A@mail.gmail.com>
+ <CAPhsuW5JhG07TYKKHRbNVtepOLjZ2ekibePyyqCwuzhH0YoP7Q@mail.gmail.com>
+ <CANp29Y64wUeARFUn8Z0fjk7duxaZ3bJM2uGuVug_0ZmhGG_UTA@mail.gmail.com>
+ <CAPhsuW6YOv_xjvknt_FPGwDhuCuG5s=7Xt1t-xL2+F6UKsJf-w@mail.gmail.com>
+ <CANp29Y4YC_rSKAgkYTaPV1gcN4q4WeGMvs61P2wnMQEv=kiu8A@mail.gmail.com> <2AB2B7C8-5F07-4D41-8CC3-04BE7C74DCCC@fb.com>
+In-Reply-To: <2AB2B7C8-5F07-4D41-8CC3-04BE7C74DCCC@fb.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 18 Feb 2022 21:12:50 +0100
+Message-ID: <CANp29Y5cFKGRTFy9EGqTD=BU4GMsP8uvOXBb=O+Mh0i5ExPsag@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: vmalloc-out-of-bounds Read in bpf_jit_free
+To:     Song Liu <songliubraving@fb.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Song Liu <song@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot <syzbot+2f649ec6d2eea1495a8f@syzkaller.appspotmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin Lau <kafai@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-02-18 20:58 UTC+0100 ~ Daniel Borkmann <daniel@iogearbox.net>
-> On 2/18/22 5:33 PM, Quentin Monnet wrote:
->> 2022-02-18 18:14 UTC+0200 ~ Nikolay Borisov <nborisov@suse.com>
->>> On 18.02.22 г. 18:08 ч., Quentin Monnet wrote:
->>>> 2022-02-17 14:04 UTC+0200 ~ Nikolay Borisov <nborisov@suse.com>
->>>>> Sometime it can be useful to haul around a statically built version of
->>>>> bpftool. Simply add support for passing STATIC=1 while building to
->>>>> build
->>>>> the tool statically.
->>>>>
->>>>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->>>>> ---
->>>>>
->>>>> Currently the bpftool being distributed as part of libbpf-tools under
->>>>> bcc project
->>>>> is dynamically built on a system using GLIBC 2.28, this makes the
->>>>> tool unusable on
->>>>> ubuntu 18.04 for example. Perhaps after this patch has landed the
->>>>> bpftool in bcc
->>>>> can be turned into a static binary.
->>>>>
->>>>>    tools/bpf/bpftool/Makefile | 4 ++++
->>>>>    1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
->>>>> index 83369f55df61..835621e215e4 100644
->>>>> --- a/tools/bpf/bpftool/Makefile
->>>>> +++ b/tools/bpf/bpftool/Makefile
->>>>> @@ -13,6 +13,10 @@ else
->>>>>      Q = @
->>>>>    endif
->>>>>
->>>>> +ifeq ($(STATIC),1)
->>>>> +    CFLAGS += --static
->>>>> +endif
->>>>> +
->>>>>    BPF_DIR = $(srctree)/tools/lib/bpf
->>>>>
->>>>>    ifneq ($(OUTPUT),)
->>>>
->>>> Why not just pass the flag on the command line? I don't think the
->>>> Makefile overwrites it:
->>>>
->>>>       $ CFLAGS=--static make
->>>
->>> Yeah, this also works, I initially thought that overriding a variable on
->>> the command line would require having the override directive in the
->>> makefile but apparently is not the case. I guess this patch can be
->>> scratched.
->>
->> You'd need something if the Makefile was initialising the variable, with
->> something like "CFLAGS = -O2" or "CFLAGS := -O2". But bpftool's Makefile
->> always uses "CFLAGS += ...", meaning it appends to the current value, so
->> you can pass whatever you want from the command line, as long as it
->> doesn't get overwritten by another flag (for example, passing "-O0"
->> would not work I think, since we add "-O2" in the Makefile).
-> 
-> We don't have an in-tree readme, but the `CFLAGS=--static make` use case
-> could probably be documented in [0] at minimum.
-> 
-> Cheers,
-> Daniel
-> 
->   [0] https://github.com/libbpf/bpftool
+Hi Song,
 
-Makes sense, I'll do this. Thanks Daniel!
-Quentin
+On Thu, Feb 17, 2022 at 9:05 PM Song Liu <songliubraving@fb.com> wrote:
+>
+> Hi Aleksandr,
+>
+> > On Feb 17, 2022, at 10:32 AM, Aleksandr Nogikh <nogikh@google.com> wrote:
+> >
+> > Hi Song,
+> >
+> > On Wed, Feb 16, 2022 at 5:27 PM Song Liu <song@kernel.org> wrote:
+> >>
+> >> Hi Aleksandr,
+> >>
+> >> Thanks for your kind reply!
+> >>
+> >> On Wed, Feb 16, 2022 at 1:38 AM Aleksandr Nogikh <nogikh@google.com> wrote:
+> >>>
+> >>> Hi Song,
+> >>>
+> >>> Is syzkaller not doing something you expect it to do with this config?
+> >>
+> >> I fixed sshkey in the config, and added a suppression for hsr_node_get_first.
+> >> However, I haven't got a repro overnight.
+> >
+> > Oh, that's unfortunately not a very reliable thing. The bug has so far
+> > happened only once on syzbot, so it must be pretty rare. Maybe you'll
+> > have more luck with your local setup :)
+> >
+> > You can try to run syz-repro on the log file that is available on the
+> > syzbot dashboard:
+> > https://github.com/google/syzkaller/blob/master/tools/syz-repro/repro.go
+> > Syzbot has already done it and apparently failed to succeed, but this
+> > is also somewhat probabilistic, especially when the bug is due to some
+> > rare race condition. So trying it several times might help.
+> >
+> > Also you might want to hack your local syzkaller copy a bit:
+> > https://github.com/google/syzkaller/blob/master/syz-manager/manager.go#L804
+> > Here you can drop the limit on the maximum number of repro attempts
+> > and make needLocalRepro only return true if crash.Title matches the
+> > title of this particular bug. With this change your local syzkaller
+> > instance won't waste time reproducing other bugs.
+> >
+> > There's also a way to focus syzkaller on some specific kernel
+> > functions/source files:
+> > https://github.com/google/syzkaller/blob/master/pkg/mgrconfig/config.go#L125
+>
+> Thanks for these tips!
+>
+> After fixing some other things. I was able to reproduce one of the three
+> failures modes overnight and some related issues from fault injection.
+> These errors gave me clue to fix the bug (or at least one of the bugs).
+>
+> I have a suggestions on the bug dashboard, like:
+>
+> https://syzkaller.appspot.com/bug?id=86fa0212fb895a0d41fd1f1eecbeaee67191a4c9
+>
+> It isn't obvious to me which image was used in the test. Maybe we can add
+> a link to the image or instructions to build the image? In this case, I
+> think the bug only triggers on some images, so testing with the exact image
+> is important.
+
+Hmm, that's interesting. If the exact image can really make a
+difference, I think we could e.g. remember the images syzbot used for
+the last 1-2 months and make them downloadable from the bug details
+page. I'll check if there are any obstacles, at first sight this
+should not be a problem.
+
+Thanks for the suggestion!
+
+--
+Best Regards,
+Aleksandr
+
+>
+> Thanks again,
+> Song
