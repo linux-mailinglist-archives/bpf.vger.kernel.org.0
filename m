@@ -2,124 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7B64BBFF3
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 19:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B58B4BC064
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 20:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiBRSwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 13:52:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59490 "EHLO
+        id S237499AbiBRToX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 14:44:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234816AbiBRSvy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 13:51:54 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7455132B
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 10:51:37 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id j2so21464073ybu.0
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 10:51:37 -0800 (PST)
+        with ESMTP id S233267AbiBRToX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 14:44:23 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F156F1375B1
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 11:44:05 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id t14so5793904ljh.8
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 11:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=kinvolk.io; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=64Hr5c+MUPH0UtYd4UTCS7fr7Nh+2ZrmXtm/tvR5t7Y=;
-        b=PBtssgXv9m1BoS65xAlWeNHBZBxDv+bK53eCIYGouTr1l3kQbom7SwKhhDFvH4pq5M
-         8rUGREP//MFBKFPb9TpLs3c8kvXdIVLDBjwUcrpZa4G8SQIBQwEpUegD+ej0iee2ftXY
-         +5B0VVMRJ9hpmxejHtdFY/pFS8tnvQ+Rohd+aEFIH5YGkhP8LLE2eucvdTzqngquHkpW
-         BTv69+eHoULBF3/uqiubsv1m42CZ84jEnzKISvZwJo6rbKuO7N1hVtWm4r7m1qK5L/UO
-         Gq3lZG74M22EXNeEXMXMiFut5E4DlIRqURUUO0Yh8Fi0woXvGY6U7QdKupMUA0T/1SOs
-         Aq+g==
+         :cc:content-transfer-encoding;
+        bh=334HlX/dJCg7Lf9UeFSBUXZeG8k9kCyhRbzHePH6JcY=;
+        b=bnVQPPgFqPWhMLaIn0GjcDlqPlDNmBRKuAysfDoAAaeLMmmMso/C9r8oEqd1LjuQ+g
+         OVOApa8Bzzb4XLbxkMk+N8hb1A7k27+bY1FMLzssbC5rzwM2JuueFIymOnOS3SLkuEdK
+         DjXXKYGkVv+2tsIdpSiTW1cR+qARQzciX/yds=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=64Hr5c+MUPH0UtYd4UTCS7fr7Nh+2ZrmXtm/tvR5t7Y=;
-        b=JRFUxboaK382GZwSy03OBH2gLnV3ScMsKdSsFVjZvbaluM+wr/2GKeSg4UeOO0U7xy
-         9QRVngPJokyfz33uVZBRMOt86ay+53MsozUOs07CYlc/hodACBZQFPlJDl+xJ68siuk5
-         098nA3T8tFtyYk4GZeAE634o+3BtPHxMd1JA2YvZTqV2J5AC6GphayCb56Lh+sON+RUz
-         Jxzjy6LZ2TCw9AcO2KajSU/kMeY4KJKWQYyEHsLeZMdOdd28n64lNyjjytvGuqCTKsp+
-         m2/as/1xVl3kxbdS89y4eHNQT69U0yr7/0tic+1kxJb1oM9Td0HyJNi6VVwWqJUIcsFZ
-         NU4g==
-X-Gm-Message-State: AOAM532O2OYnzIZgplbBtjruFbZDpggdhziE8O7ZJZ4thEVtRfl8mFzj
-        X+L7/5sWv9zrHt1eux+XL4Wya/B/HNy6/bz3uhAlBQ==
-X-Google-Smtp-Source: ABdhPJzzv2So3wlSjld8rmD+iS8rbF8mOgwhZ0HfP4AcBs+107yRpT3mG6sh4adNx0Hk62hcCjqjHXmTqyqbgP7tInc=
-X-Received: by 2002:a25:3b17:0:b0:619:4463:a400 with SMTP id
- i23-20020a253b17000000b006194463a400mr8730690yba.36.1645210296676; Fri, 18
- Feb 2022 10:51:36 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=334HlX/dJCg7Lf9UeFSBUXZeG8k9kCyhRbzHePH6JcY=;
+        b=nA07vPsa0Jnl2qQR5vcQ7mSB6yjhASwmGsNd5hvh0ApPGE9Y8+y0kOd+GMlnWGE2vR
+         tKwAuFiLq4zwObzOzWJEl5DqwUn50CJiD98tC+4H/MCB9d5v7AUAY2lryXDBwz7X6ZoC
+         dedIEmkHNrgdBAjHVZ5fHQ11pWg2oFF8zZVoa2CCe9kYO5yHR1+xOvoZ16G1NH5jb0Pu
+         S2XYzuJpqxAq65R2HvyIKtm1ftA9IXX2WsqpRUn+E2T5VNFjJuYC8fOyIGkGmA8sa7AU
+         q2wTRveIDAkNa296n70wvrlCOQ5tqUCmtdtGNlBchjSLK6asUlKTLRA7zTqdDdWMYip1
+         QgrQ==
+X-Gm-Message-State: AOAM530OOhof/EHlx2T+pmoipIMvQ9PDlnHcKbFVBojNTuV8keHkrVJD
+        D317blbOT2pTeTPDVMF8IKGvZznigUwi3AAQ5lgBuw==
+X-Google-Smtp-Source: ABdhPJwtBlcq66g4JCYA+OeGZ0bnav1/va/3BEGgODtqou3Mpp5MUzayoo3RuGFKjfn6H9UoeTKMkoy+SRYQ1Cz7SbY=
+X-Received: by 2002:a2e:990e:0:b0:240:ab6:da94 with SMTP id
+ v14-20020a2e990e000000b002400ab6da94mr6732752lji.274.1645213444205; Fri, 18
+ Feb 2022 11:44:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20220218083133.18031-1-imagedong@tencent.com>
-In-Reply-To: <20220218083133.18031-1-imagedong@tencent.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 18 Feb 2022 10:51:25 -0800
-Message-ID: <CANn89i+ZPrA=ZQKR+y921_WxoqH91_LwRKnw7C2u-SgoAnhcxw@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 0/9] net: add skb drop reasons to TCP packet receive
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+References: <20220215225856.671072-1-mauricio@kinvolk.io> <20220215225856.671072-5-mauricio@kinvolk.io>
+ <3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com>
+In-Reply-To: <3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Fri, 18 Feb 2022 14:43:53 -0500
+Message-ID: <CAHap4zu255wb+e6_rY9SwWtu+GiedZjnSitOCWksN98jtBu=BQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v7 4/7] bpftool: Implement "gen min_core_btf" logic
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Talal Ahmad <talalahmad@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        flyingpeng@tencent.com
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 12:32 AM <menglong8.dong@gmail.com> wrote:
+On Fri, Feb 18, 2022 at 11:20 AM Quentin Monnet <quentin@isovalent.com> wro=
+te:
 >
-> From: Menglong Dong <imagedong@tencent.com>
+> 2022-02-15 17:58 UTC-0500 ~ Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> > This commit implements the logic for the gen min_core_btf command.
+> > Specifically, it implements the following functions:
+> >
+> > - minimize_btf(): receives the path of a source and destination BTF
+> > files and a list of BPF objects. This function records the relocations
+> > for all objects and then generates the BTF file by calling
+> > btfgen_get_btf() (implemented in the following commit).
+> >
+> > - btfgen_record_obj(): loads the BTF and BTF.ext sections of the BPF
+> > objects and loops through all CO-RE relocations. It uses
+> > bpf_core_calc_relo_insn() from libbpf and passes the target spec to
+> > btfgen_record_reloc(), that calls one of the following functions
+> > depending on the relocation kind.
+> >
+> > - btfgen_record_field_relo(): uses the target specification to mark all
+> > the types that are involved in a field-based CO-RE relocation. In this
+> > case types resolved and marked recursively using btfgen_mark_type().
+> > Only the struct and union members (and their types) involved in the
+> > relocation are marked to optimize the size of the generated BTF file.
+> >
+> > - btfgen_record_type_relo(): marks the types involved in a type-based
+> > CO-RE relocation. In this case no members for the struct and union type=
+s
+> > are marked as libbpf doesn't use them while performing this kind of
+> > relocation. Pointed types are marked as they are used by libbpf in this
+> > case.
+> >
+> > - btfgen_record_enumval_relo(): marks the whole enum type for enum-base=
+d
+> > relocations.
+> >
+> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> > Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> > Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> > Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> > ---
+> >  tools/bpf/bpftool/Makefile |   8 +-
+> >  tools/bpf/bpftool/gen.c    | 455 ++++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 457 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> > index 94b2c2f4ad43..a137db96bd56 100644
+> > --- a/tools/bpf/bpftool/Makefile
+> > +++ b/tools/bpf/bpftool/Makefile
+> > @@ -34,10 +34,10 @@ LIBBPF_BOOTSTRAP_INCLUDE :=3D $(LIBBPF_BOOTSTRAP_DE=
+STDIR)/include
+> >  LIBBPF_BOOTSTRAP_HDRS_DIR :=3D $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
+> >  LIBBPF_BOOTSTRAP :=3D $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+> >
+> > -# We need to copy hashmap.h and nlattr.h which is not otherwise export=
+ed by
+> > -# libbpf, but still required by bpftool.
+> > -LIBBPF_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nl=
+attr.h)
+> > -LIBBPF_BOOTSTRAP_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_BOOTSTRAP_HDR=
+S_DIR)/,hashmap.h)
+> > +# We need to copy hashmap.h, nlattr.h, relo_core.h and libbpf_internal=
+.h
+> > +# which are not otherwise exported by libbpf, but still required by bp=
+ftool.
+> > +LIBBPF_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nl=
+attr.h relo_core.h libbpf_internal.h)
+> > +LIBBPF_BOOTSTRAP_INTERNAL_HDRS :=3D $(addprefix $(LIBBPF_BOOTSTRAP_HDR=
+S_DIR)/,hashmap.h relo_core.h libbpf_internal.h)
+> >
+> >  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBB=
+PF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
+> >       $(QUIET_MKDIR)mkdir -p $@
+> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> > index 8e066c747691..806001020841 100644
+> > --- a/tools/bpf/bpftool/gen.c
+> > +++ b/tools/bpf/bpftool/gen.c
+> > @@ -14,6 +14,7 @@
+> >  #include <unistd.h>
+> >  #include <bpf/bpf.h>
+> >  #include <bpf/libbpf.h>
+> > +#include <bpf/libbpf_internal.h>
+> >  #include <sys/types.h>
+> >  #include <sys/stat.h>
+> >  #include <sys/mman.h>
 >
-> In the commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()"),
-> we added the support of reporting the reasons of skb drops to kfree_skb
-> tracepoint. And in this series patches, reasons for skb drops are added
-> to TCP layer (both TCPv4 and TCPv6 are considered).
-> Following functions are processed:
+> Mauricio, did you try this patch on a system with an old Glibc (< 2.26)
+> by any chance? Haven't tried yet but I expect this might break bpftool's
+> build when COMPAT_NEED_REALLOCARRAY is set, because in that case gen.c
+> pulls <bpf/libbpf_internal.h>, and then <tools/libc_compat.h> (through
+> main.h). And libc_compat.h defines reallocarray(), which
+> libbpf_internal.h poisons with a GCC pragma.
 >
 
->
-> /* SKB_DROP_REASON_TCP_MD5* corresponding to LINUX_MIB_TCPMD5* */
-> SKB_DROP_REASON_TCP_MD5NOTFOUND
-> SKB_DROP_REASON_TCP_MD5UNEXPECTED
-> SKB_DROP_REASON_TCP_MD5FAILURE
-> SKB_DROP_REASON_SOCKET_BACKLOG
-> SKB_DROP_REASON_TCP_FLAGS
-> SKB_DROP_REASON_TCP_ZEROWINDOW
-> SKB_DROP_REASON_TCP_OLD_DATA
-> SKB_DROP_REASON_TCP_OVERWINDOW
-> /* corresponding to LINUX_MIB_TCPOFOMERGE */
-> SKB_DROP_REASON_TCP_OFOMERGE
+I just tried on Ubuntu 16.04 with Glibc 2.23 and got the error you mentione=
+d.
+
+> At least this is what I observe when trying to add your patches to the
+> kernel mirror, where reallocarray() is redefined unconditionally. I'm
+> trying to figure out if we should fix this mirror-side, or kernel-side.
+> (I suppose we still need this compatibility layer, Ubuntu 16.04 seems to
+> use Glibc 2.23).
 >
 
-For the whole series:
-
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-
-Thanks !
+I suppose this should be fixed kernel-side, I don't think it's a
+particular problem with the mirror. What about only including
+`<tools/libc_compat.h>` in the places where reallocarray() is used:
+prog.c and xlated_dumper.c?
