@@ -2,215 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D5E4BC143
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 21:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3004BC1CC
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 22:23:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239495AbiBRUjb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 15:39:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59676 "EHLO
+        id S239686AbiBRVYE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 16:24:04 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238115AbiBRUja (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 15:39:30 -0500
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324693586B
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:39:12 -0800 (PST)
-Received: by mail-vk1-xa32.google.com with SMTP id f12so5451535vkl.2
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 12:39:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kinvolk.io; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E327KRgWtLgKTf0hg5PNAZJONZVaa9eKKN6R4TJwseQ=;
-        b=BoRxfeYCa2uXkpKJvBD7MnGDvGwABdgsp2/7qrzLR6/zUj7cYZFl5mrmZUQnL2e11R
-         iJPdFVvV5JKLsKbt2dddGot2nUsdO1u2kptsdb+K//aM5hsz9qjByXjLK0dnxYJp0m3f
-         sU4l+GEoA/8L379+Wf1EVkTAPHH+9+NZyQSZk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E327KRgWtLgKTf0hg5PNAZJONZVaa9eKKN6R4TJwseQ=;
-        b=rRmTh157SfHxahR8tLHA09ho6mUg/wJZ9//BgEgXpr8iCYhIGqcV4wUFqGutMbQDGZ
-         gzKpZ9hccPYAuknx2lKiYsyYQYeC+snEu/NAfHu3WUfhjzHO5PvftmxCkTRXxNpUE4Qe
-         FEMHyYPUWNvM32ciXwvpKyzbEkP5OkD1Yr12Curnkd9gT0g/USGolbeMGPVJE8NM/tbf
-         XTv3HRSG/KTDFhSnMLVhh3yjuWjYVR9m2uprec9OxK1T9Tc4W2P/q63YNUAO0D6I4BXK
-         CyHVxwQVGEZyN4StjqbJj+iI2Rj14nl0GoqUCTMP9QTq8vdlwn1h0Cb9JxQD25FK/ycS
-         PYWA==
-X-Gm-Message-State: AOAM5306fI6pKxwAk85JH7T2i410US5yoairtMj6MVix5uAKodVj2FBm
-        N7XGSZLqjCNs/z8ISHWi4yxLbIWG6eMEbA==
-X-Google-Smtp-Source: ABdhPJwvh1YEWxtGoG6zx+n1lN5LI5zKOXNIq9GM8X5aYJH96wzRvhRTs9j9Dz8pbIJpvvO/ur29Gg==
-X-Received: by 2002:a05:6122:a1f:b0:32d:a4a4:6c27 with SMTP id 31-20020a0561220a1f00b0032da4a46c27mr4133797vkn.14.1645216749996;
-        Fri, 18 Feb 2022 12:39:09 -0800 (PST)
-Received: from localhost.localdomain ([181.136.110.101])
-        by smtp.gmail.com with ESMTPSA id b78sm4820712vka.56.2022.02.18.12.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 12:39:09 -0800 (PST)
-From:   =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH bpf-next] bpftool: Remove usage of reallocarray()
-Date:   Fri, 18 Feb 2022 15:39:06 -0500
-Message-Id: <20220218203906.317687-1-mauricio@kinvolk.io>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S238263AbiBRVYD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 16:24:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 183EC36B52;
+        Fri, 18 Feb 2022 13:23:46 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B7FC2B826F3;
+        Fri, 18 Feb 2022 21:23:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4713DC340E9;
+        Fri, 18 Feb 2022 21:23:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645219423;
+        bh=d8XDys7K7nUuahPS9gIDaGWDjUn6oOQjOqqDtWx4Q94=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=WhO3tBIUtMd1nNnGhBF0nEB1u0UA4xvCuZpYf3BA4R/NgQKnPvs7B40TO4uc3FN6v
+         yZrWiHA0xtUHBmUn6psNhOaSALaBTlULArMCrsKxFb2wRLk3jXER2I7v8vqXVo4aXK
+         t2i5Cv68mHBwAtoG69+8UoCQmp8aa6ulARDgRj6EqXo+BfVTsWkf8JZAVzlNR2OkFV
+         SV+qmCUZAhCii1RXJOezw/by0NTtuvpEXamZero+Ui1sJ+VnjGOw2+ocfxY0j+yznQ
+         xAmz2lr3ccwyds4Zm+X11VGop+EEhGDu7Ge/YOMn3WFwGzo9DPny5flNLtkiNHAjK3
+         c+LY23bjy2S3w==
+Message-ID: <ac145b7b-8c78-88dd-ded5-c780bf7e94e1@kernel.org>
+Date:   Fri, 18 Feb 2022 14:23:39 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.0
+Subject: Re: [PATCH net-next v2 0/9] net: add skb drop reasons to TCP packet
+ receive
+Content-Language: en-US
+To:     menglong8.dong@gmail.com, kuba@kernel.org
+Cc:     edumazet@google.com, davem@davemloft.net, rostedt@goodmis.org,
+        mingo@redhat.com, yoshfuji@linux-ipv6.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        imagedong@tencent.com, talalahmad@google.com,
+        keescook@chromium.org, ilias.apalodimas@linaro.org, alobakin@pm.me,
+        memxor@gmail.com, atenart@kernel.org, bigeasy@linutronix.de,
+        pabeni@redhat.com, linyunsheng@huawei.com, arnd@arndb.de,
+        yajun.deng@linux.dev, roopa@nvidia.com, willemb@google.com,
+        vvs@virtuozzo.com, cong.wang@bytedance.com,
+        luiz.von.dentz@intel.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org, flyingpeng@tencent.com
+References: <20220218083133.18031-1-imagedong@tencent.com>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20220218083133.18031-1-imagedong@tencent.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit fixes a compilation error on systems with glibc < 2.26 [0]:
+On 2/18/22 1:31 AM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> In the commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()"),
+> we added the support of reporting the reasons of skb drops to kfree_skb
+> tracepoint. And in this series patches, reasons for skb drops are added
+> to TCP layer (both TCPv4 and TCPv6 are considered).
+> Following functions are processed:
+> 
+> tcp_v4_rcv()
+> tcp_v6_rcv()
+> tcp_v4_inbound_md5_hash()
+> tcp_v6_inbound_md5_hash()
+> tcp_add_backlog()
+> tcp_v4_do_rcv()
+> tcp_v6_do_rcv()
+> tcp_rcv_established()
+> tcp_data_queue()
+> tcp_data_queue_ofo()
+> 
+> The functions we handled are mostly for packet ingress, as skb drops
+> hardly happens in the egress path of TCP layer. However, it's a little
+> complex for TCP state processing, as I find that it's hard to report skb
+> drop reasons to where it is freed. For example, when skb is dropped in
+> tcp_rcv_state_process(), the reason can be caused by the call of
+> tcp_v4_conn_request(), and it's hard to return a drop reason from
+> tcp_v4_conn_request(). So such cases are skipped  for this moment.
+> 
+> Following new drop reasons are introduced (what they mean can be see
+> in the document for them):
+> 
+> /* SKB_DROP_REASON_TCP_MD5* corresponding to LINUX_MIB_TCPMD5* */
+> SKB_DROP_REASON_TCP_MD5NOTFOUND
+> SKB_DROP_REASON_TCP_MD5UNEXPECTED
+> SKB_DROP_REASON_TCP_MD5FAILURE
+> SKB_DROP_REASON_SOCKET_BACKLOG
+> SKB_DROP_REASON_TCP_FLAGS
+> SKB_DROP_REASON_TCP_ZEROWINDOW
+> SKB_DROP_REASON_TCP_OLD_DATA
+> SKB_DROP_REASON_TCP_OVERWINDOW
+> /* corresponding to LINUX_MIB_TCPOFOMERGE */
+> SKB_DROP_REASON_TCP_OFOMERGE
+> 
+> Here is a example to get TCP packet drop reasons from ftrace:
+> 
+> $ echo 1 > /sys/kernel/debug/tracing/events/skb/kfree_skb/enable
+> $ cat /sys/kernel/debug/tracing/trace
+> $ <idle>-0       [036] ..s1.   647.428165: kfree_skb: skbaddr=000000004d037db6 protocol=2048 location=0000000074cd1243 reason: NO_SOCKET
+> $ <idle>-0       [020] ..s2.   639.676674: kfree_skb: skbaddr=00000000bcbfa42d protocol=2048 location=00000000bfe89d35 reason: PROTO_MEM
+> 
+> From the reason 'PROTO_MEM' we can know that the skb is dropped because
+> the memory configured in net.ipv4.tcp_mem is up to the limition.
+> 
+> Changes since v1:
+> - enrich the document for this series patches in the cover letter,
+>   as Eric suggested
+> - fix compile warning report by Jakub in the 6th patch
+> - let NO_SOCKET trump the XFRM failure in the 2th and 3th patches
+> 
+> Menglong Dong (9):
+>   net: tcp: introduce tcp_drop_reason()
+>   net: tcp: add skb drop reasons to tcp_v4_rcv()
+>   net: tcp: use kfree_skb_reason() for tcp_v6_rcv()
+>   net: tcp: add skb drop reasons to tcp_v{4,6}_inbound_md5_hash()
+>   net: tcp: add skb drop reasons to tcp_add_backlog()
+>   net: tcp: use kfree_skb_reason() for tcp_v{4,6}_do_rcv()
+>   net: tcp: use tcp_drop_reason() for tcp_rcv_established()
+>   net: tcp: use tcp_drop_reason() for tcp_data_queue()
+>   net: tcp: use tcp_drop_reason() for tcp_data_queue_ofo()
+> 
+>  include/linux/skbuff.h     | 34 ++++++++++++++++++++++++++++++
+>  include/net/tcp.h          |  3 ++-
+>  include/trace/events/skb.h | 10 +++++++++
+>  net/ipv4/tcp_input.c       | 42 +++++++++++++++++++++++++++++---------
+>  net/ipv4/tcp_ipv4.c        | 32 +++++++++++++++++++++--------
+>  net/ipv6/tcp_ipv6.c        | 39 +++++++++++++++++++++++++++--------
+>  6 files changed, 132 insertions(+), 28 deletions(-)
+> 
 
-```
-In file included from main.h:14:0,
-                 from gen.c:24:
-linux/tools/include/tools/libc_compat.h:11:21: error: attempt to use poisoned "reallocarray"
- static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
-```
+LGTM. for the set:
 
-This happens because gen.c pulls <bpf/libbpf_internal.h>, and then
-<tools/libc_compat.h> (through main.h). When
-COMPAT_NEED_REALLOCARRAY is set, libc_compat.h defines reallocarray()
-which libbpf_internal.h poisons with a GCC pragma.
-
-This follows the same approach of libbpf in commit
-029258d7b228 ("libbpf: Remove any use of reallocarray() in libbpf").
-
-Reported-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
-
-[0]: https://lore.kernel.org/bpf/3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com/
----
- tools/bpf/bpftool/Makefile        |  6 +-----
- tools/bpf/bpftool/main.h          | 34 ++++++++++++++++++++++++++++++-
- tools/bpf/bpftool/prog.c          |  6 +++---
- tools/bpf/bpftool/xlated_dumper.c |  4 ++--
- 4 files changed, 39 insertions(+), 11 deletions(-)
-
-diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
-index a137db96bd56..ba647aede0d6 100644
---- a/tools/bpf/bpftool/Makefile
-+++ b/tools/bpf/bpftool/Makefile
-@@ -93,7 +93,7 @@ INSTALL ?= install
- RM ?= rm -f
- 
- FEATURE_USER = .bpftool
--FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
-+FEATURE_TESTS = libbfd disassembler-four-args zlib libcap \
- 	clang-bpf-co-re
- FEATURE_DISPLAY = libbfd disassembler-four-args zlib libcap \
- 	clang-bpf-co-re
-@@ -118,10 +118,6 @@ ifeq ($(feature-disassembler-four-args), 1)
- CFLAGS += -DDISASM_FOUR_ARGS_SIGNATURE
- endif
- 
--ifeq ($(feature-reallocarray), 0)
--CFLAGS += -DCOMPAT_NEED_REALLOCARRAY
--endif
--
- LIBS = $(LIBBPF) -lelf -lz
- LIBS_BOOTSTRAP = $(LIBBPF_BOOTSTRAP) -lelf -lz
- ifeq ($(feature-libcap), 1)
-diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-index 0c3840596b5a..6a5775373640 100644
---- a/tools/bpf/bpftool/main.h
-+++ b/tools/bpf/bpftool/main.h
-@@ -8,10 +8,10 @@
- #undef GCC_VERSION
- #include <stdbool.h>
- #include <stdio.h>
-+#include <stdlib.h>
- #include <linux/bpf.h>
- #include <linux/compiler.h>
- #include <linux/kernel.h>
--#include <tools/libc_compat.h>
- 
- #include <bpf/hashmap.h>
- #include <bpf/libbpf.h>
-@@ -21,6 +21,9 @@
- /* Make sure we do not use kernel-only integer typedefs */
- #pragma GCC poison u8 u16 u32 u64 s8 s16 s32 s64
- 
-+/* prevent accidental re-addition of reallocarray() */
-+#pragma GCC poison reallocarray
-+
- static inline __u64 ptr_to_u64(const void *ptr)
- {
- 	return (__u64)(unsigned long)ptr;
-@@ -264,4 +267,33 @@ static inline bool hashmap__empty(struct hashmap *map)
- 	return map ? hashmap__size(map) == 0 : true;
- }
- 
-+#ifndef __has_builtin
-+#define __has_builtin(x) 0
-+#endif
-+
-+/*
-+ * Re-implement glibc's reallocarray() for bpftool internal-only use.
-+ * reallocarray(), unfortunately, is not available in all versions of glibc,
-+ * so requires extra feature detection and using reallocarray() stub from
-+ * <tools/libc_compat.h> and COMPAT_NEED_REALLOCARRAY. All this complicates
-+ * build of bpftool unnecessarily and is just a maintenance burden. Instead,
-+ * it's trivial to implement bpftool-specific internal version and use it
-+ * throughout bpftool.
-+ * Copied from tools/lib/bpf/libbpf_internal.h
-+ */
-+static inline void *bpftool_reallocarray(void *ptr, size_t nmemb, size_t size)
-+{
-+	size_t total;
-+
-+#if __has_builtin(__builtin_mul_overflow)
-+	if (unlikely(__builtin_mul_overflow(nmemb, size, &total)))
-+		return NULL;
-+#else
-+	if (size == 0 || nmemb > ULONG_MAX / size)
-+		return NULL;
-+	total = nmemb * size;
-+#endif
-+	return realloc(ptr, total);
-+}
-+
- #endif
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 92a6f679ef7d..860ad234166c 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -1558,9 +1558,9 @@ static int load_with_options(int argc, char **argv, bool first_prog_only)
- 			if (fd < 0)
- 				goto err_free_reuse_maps;
- 
--			new_map_replace = reallocarray(map_replace,
--						       old_map_fds + 1,
--						       sizeof(*map_replace));
-+			new_map_replace = bpftool_reallocarray(map_replace,
-+							       old_map_fds + 1,
-+							       sizeof(*map_replace));
- 			if (!new_map_replace) {
- 				p_err("mem alloc failed");
- 				goto err_free_reuse_maps;
-diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-index f1f32e21d5cd..467bce9eee09 100644
---- a/tools/bpf/bpftool/xlated_dumper.c
-+++ b/tools/bpf/bpftool/xlated_dumper.c
-@@ -32,8 +32,8 @@ void kernel_syms_load(struct dump_data *dd)
- 		return;
- 
- 	while (fgets(buff, sizeof(buff), fp)) {
--		tmp = reallocarray(dd->sym_mapping, dd->sym_count + 1,
--				   sizeof(*dd->sym_mapping));
-+		tmp = bpftool_reallocarray(dd->sym_mapping, dd->sym_count + 1,
-+					   sizeof(*dd->sym_mapping));
- 		if (!tmp) {
- out:
- 			free(dd->sym_mapping);
--- 
-2.25.1
+Reviewed-by: David Ahern <dsahern@kernel.org>
 
