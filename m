@@ -2,112 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F914BC250
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 22:50:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A887B4BC287
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 23:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240008AbiBRVuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 16:50:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38366 "EHLO
+        id S240111AbiBRWUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 17:20:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239732AbiBRVuw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 16:50:52 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9748E6D86;
-        Fri, 18 Feb 2022 13:50:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645221034; x=1676757034;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=rHLbGSPZIqYXX4HtomSqqnHiSr3268Fjo/PtvPjWgbU=;
-  b=VWH2wnc0uLoM2fZtxR/0TU1xA7H5VwAnHf7G7Jufi6ExU08C71BMHIc7
-   dReGaSk6qSd9U7IZ/uPTrSG1N+nVJFVrE1tB3TgSAlGwtCtUiwevmogzW
-   bu50Zekx9RdkYv4ySvjCv1+bzWW+wF4QXxid9olEFekZffL7Woun5TtPY
-   4odrWjFx1BJnNloojNV2yt4VKkJc1sDD3ilruzWFvGcetYoFgFyu4Xez2
-   VOPKKgj2IFnq0YUvlB/4PUa4daKYKPxX6fostCWeCMmjUkebXehMCIfnt
-   NaYWANxIjU8/wpN2qAsJCPMKLqlHJ+upZWx4ETu0SituQ9w3+EaMmufAB
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10262"; a="251178516"
-X-IronPort-AV: E=Sophos;i="5.88,379,1635231600"; 
-   d="scan'208";a="251178516"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2022 13:50:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,379,1635231600"; 
-   d="scan'208";a="637898585"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga004.jf.intel.com with ESMTP; 18 Feb 2022 13:50:34 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, sassmann@redhat.com, hawk@kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Subject: [PATCH net-next 1/1] i40e: remove dead stores on XSK hotpath
-Date:   Fri, 18 Feb 2022 13:50:33 -0800
-Message-Id: <20220218215033.415004-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S240110AbiBRWUh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 17:20:37 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E69F1B6BD4;
+        Fri, 18 Feb 2022 14:20:20 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id w37so2630321pga.7;
+        Fri, 18 Feb 2022 14:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=spKeknQ9pe+LaczsQGMgqzOrOzdIo9JsxnZq6u+F2ec=;
+        b=L9Fv5ju1Wux73eHYSQheruU0VK34UnKCcL698tNEUV4d1mjQSe0z7iEfwjBDOgcIxl
+         h70PkScsrdK+ffrZ5V9W6CY+akredDx5gHwo6O4hAa4Sg/WMtAN4+xu/XYevdCVyFJDR
+         p9Kxu8VfX3PVq8KgDUVfanzVWRSxLymuBBF5Pzb3EOVU2eJ96YJTNWef+tsgmCtzh6DX
+         hsQ1aHVIwpiZ94h+sRFySJLD9e/ZlkY9iiVxMQ6Ry01krc2eRR3xF2i2iGBGCD+ERU5+
+         boFzY6hjau2fFMzZmjLlxGwr5r5Qvoa8gQiFBnBEpMWSmbj1yAevUBf08+Fp13n280tn
+         KFZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=spKeknQ9pe+LaczsQGMgqzOrOzdIo9JsxnZq6u+F2ec=;
+        b=3265sHlUc/3USwRiBIsyMVYLOyk4Y2QNycMjD+VZc2K+4+xKBKm/65s6XJVWkz3NGK
+         y+5z5m2TonD8btf6IVBLP7sZoqsdXECU55tEQs7HlTA3beL4tm3NtY3HOc1C7xStbGRu
+         dRgVQizhCzzTum+989Ds0rA1W91Ijn7sYIq1xBbySdjtR6svjo6LwMTDNr9uliJgDgjU
+         QOh4qv1rWK/2e+2KVPnKs3xnm5MO1+LfxK2ZG9QadRqQeHwN622GQxitkVZGVkwyqjCV
+         vMKlhxr/NI7fasWs9cIC3mmBnpwCu1JTc5DzrGP0XiSbD8Dse4wMkxyIzmKZagHTRu5w
+         wg4g==
+X-Gm-Message-State: AOAM533trDBlntgUNV4GI5t+0dEx8HYm2G6Q6v7Ex46KVL+aMIOO0uaJ
+        EjkznTy92/bzPcStaxtNFBE=
+X-Google-Smtp-Source: ABdhPJy318HejoB3GaLgZqXptJghFMAXyAzC/+W4/M1wtvDfj6wFyzhu+evE2knVZwCmH/hO/UM2lA==
+X-Received: by 2002:aa7:8819:0:b0:4e7:8ca4:6820 with SMTP id c25-20020aa78819000000b004e78ca46820mr6224030pfo.14.1645222819955;
+        Fri, 18 Feb 2022 14:20:19 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id q21sm4116146pfu.188.2022.02.18.14.20.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Feb 2022 14:20:19 -0800 (PST)
+Date:   Sat, 19 Feb 2022 03:50:17 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        brouer@redhat.com, daniel@iogearbox.net, fw@strlen.de,
+        john.fastabend@gmail.com, kafai@fb.com, maximmi@nvidia.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, songliubraving@fb.com, toke@redhat.com,
+        yhs@fb.com, Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v8 00/10] Introduce unstable CT lookup helpers
+Message-ID: <20220218222017.czshdolesamkqv4j@apollo.legion>
+References: <20220114163953.1455836-1-memxor@gmail.com>
+ <87y228q66f.fsf@oc8242746057.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y228q66f.fsf@oc8242746057.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexander Lobakin <alexandr.lobakin@intel.com>
+On Sat, Feb 19, 2022 at 01:49:04AM IST, Alexander Egorenkov wrote:
+>
+> Hi,
+>
+> we are having a problem loading nf_conntrack on linux-next:
+>
+> # modprobe nf_conntrack
+> modprobe: ERROR: could not insert 'nf_conntrack': Unknown symbol in module, or unknown parameter (see dmesg)
+> modprobe: ERROR: Error running install command '/sbin/modprobe --ignore-install nf_conntrack  && /sbin/sysctl --quiet --pattern 'net[.]netfilter[.]nf_conntrack.*' --system' for module nf_conntrack: retcode 1
+> modprobe: ERROR: could not insert 'nf_conntrack': Invalid argument
+>
+> # dmesg
+> [ 3728.188969] missing module BTF, cannot register kfuncs
+> [ 3748.208674] missing module BTF, cannot register kfuncs
+> [ 3748.567123] missing module BTF, cannot register kfuncs
+> [ 3873.597276] missing module BTF, cannot register kfuncs
+> [ 3874.017125] missing module BTF, cannot register kfuncs
+> [ 3882.637097] missing module BTF, cannot register kfuncs
+> [ 3883.507213] missing module BTF, cannot register kfuncs
+> [ 3883.876878] missing module BTF, cannot register kfuncs
+>
+> # zgrep BTF /proc/config.gz
+> CONFIG_DEBUG_INFO_BTF=y
+> CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+> CONFIG_DEBUG_INFO_BTF_MODULES=y
+>
+> It seems that nf_conntrack.ko is missing a .BTF section
+> which is present in debuginfo within
+> /usr/lib/debug/lib/modules/*/kernel/net/netfilter/nf_conntrack.ko.debug instead.
+>
+> Am i correct in assuming that this is not supported (yet) ?
+>
+> We use pahole 1.22 and build linux-next on Fedora 35 as a set of custom
+> packages. Architecture is s390x.
+>
 
-The 'if (ntu == rx_ring->count)' block in i40e_alloc_rx_buffers_zc()
-was previously residing in the loop, but after introducing the
-batched interface it is used only to wrap-around the NTU descriptor,
-thus no more need to assign 'xdp'.
++Cc Ilya
 
-'cleaned_count' in i40e_clean_rx_irq_zc() was previously being
-incremented in the loop, but after commit f12738b6ec06
-("i40e: remove unnecessary cleaned_count updates") it gets
-assigned only once after it, so the initialization can be dropped.
+Thanks for the report, Alex.
 
-Fixes: 6aab0bb0c5cd ("i40e: Use the xsk batched rx allocation interface")
-Fixes: f12738b6ec06 ("i40e: remove unnecessary cleaned_count updates")
-Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Tested-by: George Kuruvinakunnel <george.kuruvinakunnel@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_xsk.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+My assumption was that if DEBUG_INFO_BTF options was enabled, and BTF was not
+present, it is a problem, but it seems it can happen even when the options are
+enabled.
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index 5a997b0d07d8..c1d25b0b0ca2 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -218,7 +218,6 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
- 	ntu += nb_buffs;
- 	if (ntu == rx_ring->count) {
- 		rx_desc = I40E_RX_DESC(rx_ring, 0);
--		xdp = i40e_rx_bi(rx_ring, 0);
- 		ntu = 0;
- 	}
- 
-@@ -328,11 +327,11 @@ static void i40e_handle_xdp_result_zc(struct i40e_ring *rx_ring,
- int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
- {
- 	unsigned int total_rx_bytes = 0, total_rx_packets = 0;
--	u16 cleaned_count = I40E_DESC_UNUSED(rx_ring);
- 	u16 next_to_clean = rx_ring->next_to_clean;
- 	u16 count_mask = rx_ring->count - 1;
- 	unsigned int xdp_res, xdp_xmit = 0;
- 	bool failure = false;
-+	u16 cleaned_count;
- 
- 	while (likely(total_rx_packets < (unsigned int)budget)) {
- 		union i40e_rx_desc *rx_desc;
--- 
-2.31.1
+I guess if .BTF section isn't supported/emitted on s390x, we have to relax the
+error and print a warning and ignore it, but I am not sure. Ilya would probably
+know the current status.
 
+We have already relaxed it once in (bpf-next):
+
+c446fdacb10d ("bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF")
+
+If this doesn't work on s390x, we should probably just print a warning when
+CONFIG_DEBUG_INFO_BTF is enabled and btf == NULL, and return 0.
+
+> Thanks
+> Regards
+> Alex
+>
+
+--
+Kartikeya
