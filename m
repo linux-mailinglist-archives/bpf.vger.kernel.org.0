@@ -2,70 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A887B4BC287
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 23:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A90DF4BC2D4
+	for <lists+bpf@lfdr.de>; Sat, 19 Feb 2022 00:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240111AbiBRWUj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 17:20:39 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57492 "EHLO
+        id S238077AbiBRXVd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 18:21:33 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240110AbiBRWUh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 17:20:37 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E69F1B6BD4;
-        Fri, 18 Feb 2022 14:20:20 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id w37so2630321pga.7;
-        Fri, 18 Feb 2022 14:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=spKeknQ9pe+LaczsQGMgqzOrOzdIo9JsxnZq6u+F2ec=;
-        b=L9Fv5ju1Wux73eHYSQheruU0VK34UnKCcL698tNEUV4d1mjQSe0z7iEfwjBDOgcIxl
-         h70PkScsrdK+ffrZ5V9W6CY+akredDx5gHwo6O4hAa4Sg/WMtAN4+xu/XYevdCVyFJDR
-         p9Kxu8VfX3PVq8KgDUVfanzVWRSxLymuBBF5Pzb3EOVU2eJ96YJTNWef+tsgmCtzh6DX
-         hsQ1aHVIwpiZ94h+sRFySJLD9e/ZlkY9iiVxMQ6Ry01krc2eRR3xF2i2iGBGCD+ERU5+
-         boFzY6hjau2fFMzZmjLlxGwr5r5Qvoa8gQiFBnBEpMWSmbj1yAevUBf08+Fp13n280tn
-         KFZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=spKeknQ9pe+LaczsQGMgqzOrOzdIo9JsxnZq6u+F2ec=;
-        b=3265sHlUc/3USwRiBIsyMVYLOyk4Y2QNycMjD+VZc2K+4+xKBKm/65s6XJVWkz3NGK
-         y+5z5m2TonD8btf6IVBLP7sZoqsdXECU55tEQs7HlTA3beL4tm3NtY3HOc1C7xStbGRu
-         dRgVQizhCzzTum+989Ds0rA1W91Ijn7sYIq1xBbySdjtR6svjo6LwMTDNr9uliJgDgjU
-         QOh4qv1rWK/2e+2KVPnKs3xnm5MO1+LfxK2ZG9QadRqQeHwN622GQxitkVZGVkwyqjCV
-         vMKlhxr/NI7fasWs9cIC3mmBnpwCu1JTc5DzrGP0XiSbD8Dse4wMkxyIzmKZagHTRu5w
-         wg4g==
-X-Gm-Message-State: AOAM533trDBlntgUNV4GI5t+0dEx8HYm2G6Q6v7Ex46KVL+aMIOO0uaJ
-        EjkznTy92/bzPcStaxtNFBE=
-X-Google-Smtp-Source: ABdhPJy318HejoB3GaLgZqXptJghFMAXyAzC/+W4/M1wtvDfj6wFyzhu+evE2knVZwCmH/hO/UM2lA==
-X-Received: by 2002:aa7:8819:0:b0:4e7:8ca4:6820 with SMTP id c25-20020aa78819000000b004e78ca46820mr6224030pfo.14.1645222819955;
-        Fri, 18 Feb 2022 14:20:19 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id q21sm4116146pfu.188.2022.02.18.14.20.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 14:20:19 -0800 (PST)
-Date:   Sat, 19 Feb 2022 03:50:17 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexander Egorenkov <Alexander.Egorenkov@ibm.com>
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brouer@redhat.com, daniel@iogearbox.net, fw@strlen.de,
-        john.fastabend@gmail.com, kafai@fb.com, maximmi@nvidia.com,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, songliubraving@fb.com, toke@redhat.com,
-        yhs@fb.com, Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v8 00/10] Introduce unstable CT lookup helpers
-Message-ID: <20220218222017.czshdolesamkqv4j@apollo.legion>
-References: <20220114163953.1455836-1-memxor@gmail.com>
- <87y228q66f.fsf@oc8242746057.ibm.com>
+        with ESMTP id S232249AbiBRXVc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 18:21:32 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A821A58E4
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 15:21:14 -0800 (PST)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nLCYd-0007Pf-Np; Sat, 19 Feb 2022 00:20:59 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nLCYd-000PBv-EJ; Sat, 19 Feb 2022 00:20:59 +0100
+Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: calculate offset as
+ byte-offset for bpf line info
+To:     Hou Tao <houtao1@huawei.com>, Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     Ard Biesheuvel <ard.biesheuvel@arm.com>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20220208012539.491753-1-houtao1@huawei.com>
+ <20220208012539.491753-3-houtao1@huawei.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4df19b70-6ed7-c521-ed25-97f92f703483@iogearbox.net>
+Date:   Sat, 19 Feb 2022 00:20:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87y228q66f.fsf@oc8242746057.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <20220208012539.491753-3-houtao1@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26457/Fri Feb 18 10:25:22 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,65 +58,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 19, 2022 at 01:49:04AM IST, Alexander Egorenkov wrote:
->
-> Hi,
->
-> we are having a problem loading nf_conntrack on linux-next:
->
-> # modprobe nf_conntrack
-> modprobe: ERROR: could not insert 'nf_conntrack': Unknown symbol in module, or unknown parameter (see dmesg)
-> modprobe: ERROR: Error running install command '/sbin/modprobe --ignore-install nf_conntrack  && /sbin/sysctl --quiet --pattern 'net[.]netfilter[.]nf_conntrack.*' --system' for module nf_conntrack: retcode 1
-> modprobe: ERROR: could not insert 'nf_conntrack': Invalid argument
->
-> # dmesg
-> [ 3728.188969] missing module BTF, cannot register kfuncs
-> [ 3748.208674] missing module BTF, cannot register kfuncs
-> [ 3748.567123] missing module BTF, cannot register kfuncs
-> [ 3873.597276] missing module BTF, cannot register kfuncs
-> [ 3874.017125] missing module BTF, cannot register kfuncs
-> [ 3882.637097] missing module BTF, cannot register kfuncs
-> [ 3883.507213] missing module BTF, cannot register kfuncs
-> [ 3883.876878] missing module BTF, cannot register kfuncs
->
-> # zgrep BTF /proc/config.gz
-> CONFIG_DEBUG_INFO_BTF=y
-> CONFIG_PAHOLE_HAS_SPLIT_BTF=y
-> CONFIG_DEBUG_INFO_BTF_MODULES=y
->
-> It seems that nf_conntrack.ko is missing a .BTF section
-> which is present in debuginfo within
-> /usr/lib/debug/lib/modules/*/kernel/net/netfilter/nf_conntrack.ko.debug instead.
->
-> Am i correct in assuming that this is not supported (yet) ?
->
-> We use pahole 1.22 and build linux-next on Fedora 35 as a set of custom
-> packages. Architecture is s390x.
->
+On 2/8/22 2:25 AM, Hou Tao wrote:
+> insn_to_jit_off passed to bpf_prog_fill_jited_linfo() is calculated
+> in instruction granularity instead of bytes granularity, but bpf
+> line info requires byte offset, so fixing it by calculating ctx->offset
+> as byte-offset. bpf2a64_offset() needs to return relative instruction
+> offset by using ctx->offfset, so update it accordingly.
+> 
+> Fixes: 37ab566c178d ("bpf: arm64: Enable arm64 jit to provide bpf_line_info")
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 16 +++++++++++-----
+>   1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 68b35c83e637..aed07cba78ec 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -164,9 +164,14 @@ static inline int bpf2a64_offset(int bpf_insn, int off,
+>   	/*
+>   	 * Whereas arm64 branch instructions encode the offset
+>   	 * from the branch itself, so we must subtract 1 from the
+> -	 * instruction offset.
+> +	 * instruction offset. The unit of ctx->offset is byte, so
+> +	 * subtract AARCH64_INSN_SIZE from it. bpf2a64_offset()
+> +	 * returns instruction offset, so divide by AARCH64_INSN_SIZE
+> +	 * at the end.
+>   	 */
+> -	return ctx->offset[bpf_insn + off] - (ctx->offset[bpf_insn] - 1);
+> +	return (ctx->offset[bpf_insn + off] -
+> +		(ctx->offset[bpf_insn] - AARCH64_INSN_SIZE)) /
+> +		AARCH64_INSN_SIZE;
+>   }
+>   
+>   static void jit_fill_hole(void *area, unsigned int size)
+> @@ -1087,13 +1092,14 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+>   		const struct bpf_insn *insn = &prog->insnsi[i];
+>   		int ret;
+>   
+> +		/* BPF line info needs byte-offset instead of insn-offset */
+>   		if (ctx->image == NULL)
+> -			ctx->offset[i] = ctx->idx;
+> +			ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
+>   		ret = build_insn(insn, ctx, extra_pass);
+>   		if (ret > 0) {
+>   			i++;
+>   			if (ctx->image == NULL)
+> -				ctx->offset[i] = ctx->idx;
+> +				ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
+>   			continue;
+>   		}
+>   		if (ret)
+> @@ -1105,7 +1111,7 @@ static int build_body(struct jit_ctx *ctx, bool extra_pass)
+>   	 * instruction (end of program)
+>   	 */
+>   	if (ctx->image == NULL)
+> -		ctx->offset[i] = ctx->idx;
+> +		ctx->offset[i] = ctx->idx * AARCH64_INSN_SIZE;
 
-+Cc Ilya
+Both patches look good to me. For this one specifically, given bpf2a64_offset()
+needs to return relative instruction offset via ctx->offfset, can't we just
+simplify it like this w/o the AARCH64_INSN_SIZE back/forth dance?
 
-Thanks for the report, Alex.
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 74f9a9b6a053..72f4702a9d01 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -999,7 +999,7 @@ struct arm64_jit_data {
 
-My assumption was that if DEBUG_INFO_BTF options was enabled, and BTF was not
-present, it is a problem, but it seems it can happen even when the options are
-enabled.
+  struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+  {
+-	int image_size, prog_size, extable_size;
++	int image_size, prog_size, extable_size, i;
+  	struct bpf_prog *tmp, *orig_prog = prog;
+  	struct bpf_binary_header *header;
+  	struct arm64_jit_data *jit_data;
+@@ -1130,6 +1130,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+  	prog->jited_len = prog_size;
 
-I guess if .BTF section isn't supported/emitted on s390x, we have to relax the
-error and print a warning and ignore it, but I am not sure. Ilya would probably
-know the current status.
-
-We have already relaxed it once in (bpf-next):
-
-c446fdacb10d ("bpf: fix register_btf_kfunc_id_set for !CONFIG_DEBUG_INFO_BTF")
-
-If this doesn't work on s390x, we should probably just print a warning when
-CONFIG_DEBUG_INFO_BTF is enabled and btf == NULL, and return 0.
-
-> Thanks
-> Regards
-> Alex
->
-
---
-Kartikeya
+  	if (!prog->is_func || extra_pass) {
++		/* BPF line info needs byte-offset instead of insn-offset. */
++		for (i = 0; i < prog->len + 1; i++)
++			ctx.offset[i] *= AARCH64_INSN_SIZE;
+  		bpf_prog_fill_jited_linfo(prog, ctx.offset + 1);
+  out_off:
+  		kfree(ctx.offset);
+-- 
+2.21.0
