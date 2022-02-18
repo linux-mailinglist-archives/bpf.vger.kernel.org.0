@@ -2,116 +2,165 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC16E4BBD22
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 17:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D85834BBD60
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 17:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbiBRQOy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 11:14:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33628 "EHLO
+        id S234206AbiBRQVW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 11:21:22 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236329AbiBRQOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 11:14:54 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E01A3762
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 08:14:37 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4F5B91F380;
-        Fri, 18 Feb 2022 16:14:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1645200876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KY6zbDS5Qw1q9IenTlcjGc9l1ESRcLVfbNg8efkstZE=;
-        b=qFBQ15wK0tjfwNQWTc4bXn1hpBOb+8p/GJIzR4GkFBeqTYSkiUhVvdwe5h8MKAAVHhxekQ
-        XeimiZtSocZOJg4outvsXIpzirC5DSUJrAmN1mbQlmRAMzuRqvPotf6M4jteTu8qCIE4Ce
-        Qtr/nTMqP6sTyxGmPD+GSlVeeVKvBTI=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0650313CA1;
-        Fri, 18 Feb 2022 16:14:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WskGOuvFD2IAOgAAMHmgww
-        (envelope-from <nborisov@suse.com>); Fri, 18 Feb 2022 16:14:35 +0000
-Message-ID: <dee15742-da4b-1622-8c0a-cc95a6c7ee91@suse.com>
-Date:   Fri, 18 Feb 2022 18:14:35 +0200
+        with ESMTP id S238418AbiBRQVL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 11:21:11 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199872B5233
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 08:20:50 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id gb39so16256387ejc.1
+        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 08:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=poc9DUiPbdIfDlqClJVZ7+KtOVsWHbqOeRzWYbKxlLk=;
+        b=Ugm49Ow0O5W5nYIIAtidY+bP95bNW8BGPz1ImYbRQkNrjBv03BowFSvrDHmCuFXLKj
+         6uFueWRVJarL3DfMdU+Zb3/mDmBAah/Z73T0YsACqKxIKreu4iPfKQfjvm9VCs1OBkl5
+         irCjirwJPfq3/FYUjDRXro7uar/4V86smBqA+yMIKUYUdkOQ49MccFGpDTsAvRVSsEEe
+         s5oitWpORuCRNUYeTQh7X8ndVi8IyiZjym5oKRvOFFVjUZh8BniBlcm13NrhKPabqTWJ
+         oHw+GPZGWZBhI9iozmq6cId9/UHmE36Uz3dvDleheqLIsJXHaBgMYKno1zZqKcFlSwWK
+         wCNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=poc9DUiPbdIfDlqClJVZ7+KtOVsWHbqOeRzWYbKxlLk=;
+        b=wYEcufP3wjJLyJHnvLXLGGdaLP5NcDwA22lKrfD0HfOjNa1MAgxtGvZlB/b8XBxZTI
+         tmljZAzMVF309WJYW7TpN+6V5kgq/JtiKYaFbLHPOK94VlRH7BR7Mq0q5fAj/JxynrSs
+         dIrtasquosmdKJuoElwpkzx+nCn81KQXZ9Gm5FqhF3Pihw0Z4mmvgNtOKihq00+nYcAl
+         euQMagFGFcMNg5RvVcbXa2gzlZmzZBDTh0ffcijbQ9IzPdarn7no/TMxEdxcptHXdJvL
+         sMZk/84OZLG3x1Ow5IQ70mTq6KnERRwy94Ht5WEpevY+Tjn1YVGqE0i7Vg0Pgkh0ljXT
+         pkWg==
+X-Gm-Message-State: AOAM533ideIMxl5ua0DIXN2JPnLiVyp3vuq+hLN7yJtENj/uf3bcblbH
+        V82q4s/x7xEX/+1nVOYkM6vqdQ==
+X-Google-Smtp-Source: ABdhPJy8PEtvWN7Fnc/dZLi103kGO4Kl8FGoiU5X/LnC1jpeAnTReDgOlI4ZeowHVxcUEYalPuE0Ww==
+X-Received: by 2002:a17:906:cc8d:b0:6c9:6df1:7c55 with SMTP id oq13-20020a170906cc8d00b006c96df17c55mr6979896ejb.317.1645201248540;
+        Fri, 18 Feb 2022 08:20:48 -0800 (PST)
+Received: from [192.168.1.8] ([149.86.66.54])
+        by smtp.gmail.com with ESMTPSA id j1sm2362126ejx.123.2022.02.18.08.20.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Feb 2022 08:20:47 -0800 (PST)
+Message-ID: <3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com>
+Date:   Fri, 18 Feb 2022 16:20:46 +0000
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] bpftool: Allow building statically
-Content-Language: en-US
-To:     Quentin Monnet <quentin@isovalent.com>, andrii@kernel.org
-Cc:     ast@kernel.org, bpf@vger.kernel.org
-References: <20220217120435.2245447-1-nborisov@suse.com>
- <8c890e30-d701-0da4-c6f9-f5ca7d80d7ee@isovalent.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-In-Reply-To: <8c890e30-d701-0da4-c6f9-f5ca7d80d7ee@isovalent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Thunderbird/91.6.0
+Subject: Re: [PATCH bpf-next v7 4/7] bpftool: Implement "gen min_core_btf"
+ logic
+Content-Language: en-GB
+To:     =?UTF-8?Q?Mauricio_V=c3=a1squez?= <mauricio@kinvolk.io>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
+        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
+        Leonardo Di Donato <leonardo.didonato@elastic.co>
+References: <20220215225856.671072-1-mauricio@kinvolk.io>
+ <20220215225856.671072-5-mauricio@kinvolk.io>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220215225856.671072-5-mauricio@kinvolk.io>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 18.02.22 г. 18:08 ч., Quentin Monnet wrote:
-> 2022-02-17 14:04 UTC+0200 ~ Nikolay Borisov <nborisov@suse.com>
->> Sometime it can be useful to haul around a statically built version of
->> bpftool. Simply add support for passing STATIC=1 while building to build
->> the tool statically.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>
->> Currently the bpftool being distributed as part of libbpf-tools under bcc project
->> is dynamically built on a system using GLIBC 2.28, this makes the tool unusable on
->> ubuntu 18.04 for example. Perhaps after this patch has landed the bpftool in bcc
->> can be turned into a static binary.
->>
->>   tools/bpf/bpftool/Makefile | 4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
->> index 83369f55df61..835621e215e4 100644
->> --- a/tools/bpf/bpftool/Makefile
->> +++ b/tools/bpf/bpftool/Makefile
->> @@ -13,6 +13,10 @@ else
->>     Q = @
->>   endif
->>
->> +ifeq ($(STATIC),1)
->> +	CFLAGS += --static
->> +endif
->> +
->>   BPF_DIR = $(srctree)/tools/lib/bpf
->>
->>   ifneq ($(OUTPUT),)
->> --
->> 2.25.1
->>
+2022-02-15 17:58 UTC-0500 ~ Mauricio Vásquez <mauricio@kinvolk.io>
+> This commit implements the logic for the gen min_core_btf command.
+> Specifically, it implements the following functions:
 > 
-> Why not just pass the flag on the command line? I don't think the
-> Makefile overwrites it:
+> - minimize_btf(): receives the path of a source and destination BTF
+> files and a list of BPF objects. This function records the relocations
+> for all objects and then generates the BTF file by calling
+> btfgen_get_btf() (implemented in the following commit).
 > 
->      $ CFLAGS=--static make
+> - btfgen_record_obj(): loads the BTF and BTF.ext sections of the BPF
+> objects and loops through all CO-RE relocations. It uses
+> bpf_core_calc_relo_insn() from libbpf and passes the target spec to
+> btfgen_record_reloc(), that calls one of the following functions
+> depending on the relocation kind.
+> 
+> - btfgen_record_field_relo(): uses the target specification to mark all
+> the types that are involved in a field-based CO-RE relocation. In this
+> case types resolved and marked recursively using btfgen_mark_type().
+> Only the struct and union members (and their types) involved in the
+> relocation are marked to optimize the size of the generated BTF file.
+> 
+> - btfgen_record_type_relo(): marks the types involved in a type-based
+> CO-RE relocation. In this case no members for the struct and union types
+> are marked as libbpf doesn't use them while performing this kind of
+> relocation. Pointed types are marked as they are used by libbpf in this
+> case.
+> 
+> - btfgen_record_enumval_relo(): marks the whole enum type for enum-based
+> relocations.
+> 
+> Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
+> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
+> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
+> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
+> ---
+>  tools/bpf/bpftool/Makefile |   8 +-
+>  tools/bpf/bpftool/gen.c    | 455 ++++++++++++++++++++++++++++++++++++-
+>  2 files changed, 457 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index 94b2c2f4ad43..a137db96bd56 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -34,10 +34,10 @@ LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
+>  LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
+>  LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+>  
+> -# We need to copy hashmap.h and nlattr.h which is not otherwise exported by
+> -# libbpf, but still required by bpftool.
+> -LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
+> -LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
+> +# We need to copy hashmap.h, nlattr.h, relo_core.h and libbpf_internal.h
+> +# which are not otherwise exported by libbpf, but still required by bpftool.
+> +LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h relo_core.h libbpf_internal.h)
+> +LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h relo_core.h libbpf_internal.h)
+>  
+>  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
+>  	$(QUIET_MKDIR)mkdir -p $@
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index 8e066c747691..806001020841 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -14,6 +14,7 @@
+>  #include <unistd.h>
+>  #include <bpf/bpf.h>
+>  #include <bpf/libbpf.h>
+> +#include <bpf/libbpf_internal.h>
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+>  #include <sys/mman.h>
 
-Yeah, this also works, I initially thought that overriding a variable on 
-the command line would require having the override directive in the 
-makefile but apparently is not the case. I guess this patch can be 
-scratched.
+Mauricio, did you try this patch on a system with an old Glibc (< 2.26)
+by any chance? Haven't tried yet but I expect this might break bpftool's
+build when COMPAT_NEED_REALLOCARRAY is set, because in that case gen.c
+pulls <bpf/libbpf_internal.h>, and then <tools/libc_compat.h> (through
+main.h). And libc_compat.h defines reallocarray(), which
+libbpf_internal.h poisons with a GCC pragma.
 
-> 
-> Quentin
-> 
+At least this is what I observe when trying to add your patches to the
+kernel mirror, where reallocarray() is redefined unconditionally. I'm
+trying to figure out if we should fix this mirror-side, or kernel-side.
+(I suppose we still need this compatibility layer, Ubuntu 16.04 seems to
+use Glibc 2.23).
+
+Quentin
