@@ -2,156 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239644BAFD8
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 03:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B9A4BB072
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 04:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbiBRCr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Feb 2022 21:47:59 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:56194 "EHLO
+        id S229593AbiBRD7L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Feb 2022 22:59:11 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbiBRCr6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Feb 2022 21:47:58 -0500
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D830A8C4A7;
-        Thu, 17 Feb 2022 18:47:42 -0800 (PST)
-Received: by mail-ed1-x543.google.com with SMTP id z22so13020501edd.1;
-        Thu, 17 Feb 2022 18:47:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y+eglLVKvKLb5vbfZyFXqBl8wTaLxqW6mXZi4E/J4jQ=;
-        b=i8q7FbaPNB2NsnqfkxHkTkqF/mEwdeY8N6woUAoNdQ42GIRfHEsJSEq2f5wc/15/Xf
-         n5bae1GGXme0nvGkhf/WSIBCKsL+SJltMubfeRdJqKom/UjStl1wAc0MU7G/jxQacdAm
-         57rsd36Iz2E1QJT9gXHTY4yPRM9vcvlC/LegFjwVGVlxab23W3msksTCqodg8vDTmpP8
-         H6RPHyp9w8VFI+oaTVMXfFaxUy2oacLutIPNdYb5ir8XUi6f5MFy5B2psn+dtUBQ+Dof
-         Pp27Cb3uMb3iIw2v80rv29VcajWlZ50mlQp9A1DdG/FX2Z4PZCPCCU3TD+AkyTv9C0ra
-         /gwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y+eglLVKvKLb5vbfZyFXqBl8wTaLxqW6mXZi4E/J4jQ=;
-        b=oz0rziia6R9vqa1bK3VrPF37uJhjwYrAP5poLbtU7jE6zQBVhxtQJL8BpXVn2aJhnL
-         e0pVflKm9IElRZrGXJkcLuwsDzYs+9EvGnKN5EIm8JzhbKDIXDt4LuLvijssIlIEo0F5
-         M+7AmOz0ITfz5anHRgRXr/vIZsQpYh5v6xSyQIkiszCds67zVzTaOFH3LCpczOpFQUNs
-         c3ky8izw2de1iItgCoyRh6gmTzWljBUqtiZGxEuNdVrkCfM6LxqreGj97wBIrStcAWSF
-         6i8zpdzwCCQPW3MD4MbXw5ybki/eA4jfP5Nb3aUkM7lsIvg1QcyRLLX7L5aCYRa4u10M
-         vytQ==
-X-Gm-Message-State: AOAM531W3BQk7BI6lDz7SP2kM4A54zFJk9gEw/B6eKqBhhf4zs3BCsY6
-        uVitpN3RH8PEK/tDD8FOjAXBuc6EK8naHlr4r8M=
-X-Google-Smtp-Source: ABdhPJxk0CUtY6z+ZmPVXhx9zgi6FvKxdgQTNU7/h4QPNsuCmHrtfU/MH1HgzeubfrN1sOKIn6Qos1RAdBKjk0yGtOU=
-X-Received: by 2002:aa7:d7c8:0:b0:3f9:3b65:f2b3 with SMTP id
- e8-20020aa7d7c8000000b003f93b65f2b3mr5758027eds.389.1645152461319; Thu, 17
- Feb 2022 18:47:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20220216035426.2233808-1-imagedong@tencent.com> <CANn89i+gBxse3zf2gSvm5AU3D_2MSztGArKQxF4B2rTpWNUSwA@mail.gmail.com>
-In-Reply-To: <CANn89i+gBxse3zf2gSvm5AU3D_2MSztGArKQxF4B2rTpWNUSwA@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 18 Feb 2022 10:42:27 +0800
-Message-ID: <CADxym3Y-AV6HVyqD0jGj9va-mqDuFK5wDurAeQQXN8tv2C81+g@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/9] net: add skb drop reasons to TCP packet receive
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229561AbiBRD7K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Feb 2022 22:59:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4C4FD08;
+        Thu, 17 Feb 2022 19:58:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 17913B82555;
+        Fri, 18 Feb 2022 03:58:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D5FCC340E9;
+        Fri, 18 Feb 2022 03:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645156732;
+        bh=+7Hj7oyxrzQUnw7hd9+0M8yasZ77tgOV/E6/yQXbfmk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s+fBTWBf3qpXV+6haVc5lJRA8IeZKKJCDxPDj1MRzrFLwzMpV8Lhn/r72LpYKBGNj
+         TUvWbY2CivWrR/U+aF13ng/f3XvQDi1WLTO7t0URG39A7mISq2dWKrVWQS1nUph8WU
+         fN7ADlbGO3TfdzY9tp+/6Y0mJvYZxUFdyjB1IyG4+xODruBJEM/E6N6yMgxv1JU6qn
+         69hbKgTW25IRM2ggDm8i10oKbafLMyo/ItK6PR9omnJ/B/JcNTq/I64QLnnALyE/ra
+         WwRA5qmj+mdbYRPiD/s9spbHkng7vcW5FUDREXtvLaMZIKZ3M1DNVmPGwXUhz/+s5q
+         MkWcDIaerJuBA==
+Date:   Thu, 17 Feb 2022 19:58:50 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        patchwork-bot+netdevbpf@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Menglong Dong <imagedong@tencent.com>,
-        Talal Ahmad <talalahmad@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        flyingpeng@tencent.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: confused pw-bot. Re: pull-request: bpf-next 2022-02-17
+Message-ID: <20220217195850.05b6e939@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAADnVQLK-Y+eTBrqTjKoSE2FHf2U0yDWJ1PXG1=_MAb9WnkFYg@mail.gmail.com>
+References: <20220217232027.29831-1-daniel@iogearbox.net>
+        <164514875640.23246.1698080683417187339.git-patchwork-notify@kernel.org>
+        <20220217174650.5bcea25a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAADnVQLK-Y+eTBrqTjKoSE2FHf2U0yDWJ1PXG1=_MAb9WnkFYg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 1:05 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Tue, Feb 15, 2022 at 7:54 PM <menglong8.dong@gmail.com> wrote:
+On Thu, 17 Feb 2022 18:20:07 -0800 Alexei Starovoitov wrote:
+> On Thu, Feb 17, 2022 at 5:46 PM Jakub Kicinski <kuba@kernel.org> wrote:
 > >
-> > From: Menglong Dong <imagedong@tencent.com>
+> > On Fri, 18 Feb 2022 01:45:56 +0000 patchwork-bot+netdevbpf@kernel.org
+> > wrote:  
+> > > Hello:
+> > >
+> > > This pull request was applied to bpf/bpf.git (master)  
 > >
-> > In this series patches, reasons for skb drops are added to TCP layer, and
-> > both TCPv4 and TCPv6 are considered.
-> >
-> > in this series patches, the process of packet ingress in TCP layer is
-> > considered, as skb drops hardly happens in the egress path.
-> >
-> > However, it's a little complex for TCP state processing, as I find that
-> > it's hard to report skb drop reasons to where it is freed. For example,
-> > when skb is dropped in tcp_rcv_state_process(), the reason can be caused
-> > by the call of tcp_v4_conn_request(), and it's hard to return a drop
-> > reason from tcp_v4_conn_request(). So I just skip such case for this
-> > moment.
-> >
->
-> I think you should add at least in this cover letter, or better in a
-> document that can be amended,
-> how this can be used on a typical TCP session.
-> For someone who is having issues with TCP flows, what would they need to do.
-> Think of something that we (kernel dev) could copy paste to future
-> email replies.
-> It might be mostly clear for some of us reviewing patches at this
-> moment, but in one year we will all forget about the details.
->
+> > :/ gave me a scare. No, it's not pushed, yet, still building.  
 
-Yeah, this cover letter seems too simple to explain what we
-are doing.
+Pushed now.
 
-I'll describe in detail what this series patches do and how
-they can be used in the cover letter, and give some examples.
+> Wow. pw-bot gots things completely wrong :)
+> 
+> It replied to Daniel's bpf-next PR with:
+> "
+> This pull request was applied to bpf/bpf.git (master)
+> by Jakub Kicinski <kuba@kernel.org>:
+> 
+> Here is the summary with links:
+>   - pull-request: bpf-next 2022-02-17
+>     https://git.kernel.org/bpf/bpf/c/7a2fb9128515
+> "
+> that link points to my bpf PR that Jakub landed 8 hours earlier
+> into net tree.
+> 
+> I ffwded bpf tree half an hour ago.
+> I guess that's what confused the bot.
+> 
+> Konstanin, please take a look.
+
+Presumably PRs should be quite trivial thing to handle since:
+
+  for you to fetch changes up to d24d2a2b0a81dd5e9bb99aeb4559ec9734e1416f:
+                                 ^^^^^^^^^^^^
+                                 this
+ends up:
+
+commit a3fc4b1d09d99cdb6a7dbba5a753db15a10b2e9c
+Merge: 2aed49da6c08 d24d2a2b0a81 <= here
+                    ^^^^^^^^^^^^
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Thu Feb 17 17:23:51 2022
+
+    Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next
+    
+    Daniel Borkmann says:
+    
+    ====================
+    bpf-next 2022-02-17
 
 
-Thanks!
-Menglong Dong
->
-> >
-> > Menglong Dong (9):
-> >   net: tcp: introduce tcp_drop_reason()
-> >   net: tcp: add skb drop reasons to tcp_v4_rcv()
-> >   net: tcp: use kfree_skb_reason() for tcp_v6_rcv()
-> >   net: tcp: add skb drop reasons to tcp_v{4,6}_inbound_md5_hash()
-> >   net: tcp: add skb drop reasons to tcp_add_backlog()
-> >   net: tcp: use kfree_skb_reason() for tcp_v{4,6}_do_rcv()
-> >   net: tcp: use tcp_drop_reason() for tcp_rcv_established()
-> >   net: tcp: use tcp_drop_reason() for tcp_data_queue()
-> >   net: tcp: use tcp_drop_reason() for tcp_data_queue_ofo()
-> >
-> >  include/linux/skbuff.h     | 28 +++++++++++++++++++++++++
-> >  include/net/tcp.h          |  3 ++-
-> >  include/trace/events/skb.h | 10 +++++++++
-> >  net/ipv4/tcp_input.c       | 42 +++++++++++++++++++++++++++++---------
-> >  net/ipv4/tcp_ipv4.c        | 36 ++++++++++++++++++++++++--------
-> >  net/ipv6/tcp_ipv6.c        | 42 +++++++++++++++++++++++++++++---------
-> >  6 files changed, 131 insertions(+), 30 deletions(-)
-> >
-> > --
-> > 2.34.1
-> >
+I'm curious if there's something I'm missing, or it's simply a matter 
+of the unrelenting finiteness of a working day :)
