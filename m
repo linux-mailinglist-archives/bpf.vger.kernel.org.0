@@ -2,79 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14D54BB9C5
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 14:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B15184BBA56
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 14:54:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbiBRNDt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 08:03:49 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36938 "EHLO
+        id S234855AbiBRNyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 08:54:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbiBRNDr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 08:03:47 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B629E2B4611;
-        Fri, 18 Feb 2022 05:03:29 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id b13so15481200edn.0;
-        Fri, 18 Feb 2022 05:03:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xOs0uaJkZw6XSqCT47Qsb31OiMxuh3k2TEKng99tzTk=;
-        b=RJOdqj97r0Mfp3qitF7KrOqCBQxXRakn2z7sMDYdQ8e9AMLKTZBr4Ov1BNAzOZsGls
-         MkWCCx9PdEDpp5eQL/xzRCq6fjv+NaNnL9nS5NHoQczeb76mEpEE101gW55xL5Usd4HL
-         pc0dWT3YvREgcaIED9isF76Ljm5oIBegXUMSz+3jhRcjnfblbUBqTT2OSvBOQtbMXKwM
-         sEB/r/EtlipUtdgJSVvVe7/O40N9euGNGr6l3rLhUbIzB2qUU42F0QQRsgBWy5b5LzCk
-         7ky3jEZmk5kUuk2mnVfOOMMYmjZC+uDtlyGOmXRNlgx19DI/S74vLyerraQf+I8sFX84
-         pWbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xOs0uaJkZw6XSqCT47Qsb31OiMxuh3k2TEKng99tzTk=;
-        b=jLtBQSiexM5Izy2IzCPc8W3tKDCcKopGG0BgxRcAX04lCy/KrODC6cyHnaU8RMPHVT
-         L2xXMWpnMTQ9gJ7ksDi0q1HF7WtNS9B4AG6ycyosH1UnhATtmy/hcVBFvYtuIonwKZRM
-         iqhpoeL4aQDqklRd6cHW+Djv2glITzSViDYUzWZZ4RAy8zLr/c0ThTs0BiuWhtVkNtIC
-         q1KQZwv9IsmYmDmOZoLyibMtV5ayD/h7XgmkQOd4+NasLtQoJjrpY8w5wBfT/6s9RPdi
-         2dD8Fz2Ooje6DjVl43jxjDvMZfyQJUhJSCZivzhrxSJ1MeiXEM/MM3Ggkn9lv/pJGi8Z
-         NCLg==
-X-Gm-Message-State: AOAM531TU4l/4TWsrARuhehvcxyHEWVNB3K/2u/pLifdWnSGGZhLnNdd
-        TInVDl4jY2jTmRKMfWc4ylU=
-X-Google-Smtp-Source: ABdhPJyrVGmO0zq32H5QDik2uU8AJSVIfJn4HVkwBhRddi+WF01ShlDGgk41aLwt84TaO7s1chUMRQ==
-X-Received: by 2002:a50:9e2e:0:b0:410:d1b6:4d2e with SMTP id z43-20020a509e2e000000b00410d1b64d2emr7996818ede.201.1645189408145;
-        Fri, 18 Feb 2022 05:03:28 -0800 (PST)
-Received: from krava ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id t3sm2202918ejd.83.2022.02.18.05.03.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 05:03:27 -0800 (PST)
-Date:   Fri, 18 Feb 2022 14:03:25 +0100
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        with ESMTP id S233217AbiBRNyU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 08:54:20 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DB5297236;
+        Fri, 18 Feb 2022 05:54:00 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4K0Y4D4DD0z8wpb;
+        Fri, 18 Feb 2022 21:50:36 +0800 (CST)
+Received: from [10.174.176.117] (10.174.176.117) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 18 Feb 2022 21:53:57 +0800
+Subject: Re: [RFC PATCH bpf-next v2 0/3] bpf: support string key in htab
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] perf tools: Rework prologue generation code
-Message-ID: <Yg+ZHUm4raVBwnQP@krava>
-References: <20220217131916.50615-1-jolsa@kernel.org>
- <20220217131916.50615-4-jolsa@kernel.org>
- <CAEf4BzYP7=JuyuY=xZe71urpxat4ba-JnqeSTcHF=CYmsQbofQ@mail.gmail.com>
- <Yg9geQ0LJjhnrc7j@krava>
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Joanne Koong <joannekoong@fb.com>
+References: <20220214111337.3539-1-houtao1@huawei.com>
+ <20220217035041.axk46atz7j4svi2k@ast-mbp.dhcp.thefacebook.com>
+From:   Hou Tao <houtao1@huawei.com>
+Message-ID: <3b968224-c086-a8b6-159a-55db7ec46011@huawei.com>
+Date:   Fri, 18 Feb 2022 21:53:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yg9geQ0LJjhnrc7j@krava>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20220217035041.axk46atz7j4svi2k@ast-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.176.117]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,114 +55,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 10:01:45AM +0100, Jiri Olsa wrote:
-> On Thu, Feb 17, 2022 at 01:53:16PM -0800, Andrii Nakryiko wrote:
-> > On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > >
-> > > Some functions we use now for bpf prologue generation are
-> > > going to be deprecated, so reworking the current code not
-> > > to use them.
-> > >
-> > > We need to replace following functions/struct:
-> > >    bpf_program__set_prep
-> > >    bpf_program__nth_fd
-> > >    struct bpf_prog_prep_result
-> > >
-> > > Current code uses bpf_program__set_prep to hook perf callback
-> > > before the program is loaded and provide new instructions with
-> > > the prologue.
-> > >
-> > > We workaround this by using objects's 'unloaded' programs instructions
-> > > for that specific program and load new ebpf programs with prologue
-> > > using separate bpf_prog_load calls.
-> > >
-> > > We keep new ebpf program instances descriptors in bpf programs
-> > > private struct.
-> > >
-> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/perf/util/bpf-loader.c | 122 +++++++++++++++++++++++++++++------
-> > >  1 file changed, 104 insertions(+), 18 deletions(-)
-> > >
-> > 
-> > [...]
-> > 
-> > >  errout:
-> > > @@ -696,7 +718,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > >         struct bpf_prog_priv *priv = program_priv(prog);
-> > >         struct perf_probe_event *pev;
-> > >         bool need_prologue = false;
-> > > -       int err, i;
-> > > +       int i;
-> > >
-> > >         if (IS_ERR_OR_NULL(priv)) {
-> > >                 pr_debug("Internal error when hook preprocessor\n");
-> > > @@ -727,6 +749,12 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > >                 return 0;
-> > >         }
-> > >
-> > > +       /*
-> > > +        * Do not load programs that need prologue, because we need
-> > > +        * to add prologue first, check bpf_object__load_prologue.
-> > > +        */
-> > > +       bpf_program__set_autoload(prog, false);
-> > 
-> > if you set autoload to false, program instructions might be invalid in
-> > the end. Libbpf doesn't apply some (all?) relocations to such
-> > programs, doesn't resolve CO-RE, etc, etc. You have to let
-> > "prototypal" BPF program to be loaded before you can grab final
-> > instructions. It's not great, but in your case it should work, right?
-> 
-> hum, do we care? it should all be done when the 'new' program with
-> the prologue is loaded, right?
-> 
-> I switched it off because the verifier failed to load the program
-> without the prologue.. because in the originaal program there's no
-> code to grab the arguments that the rest of the code depends on,
-> so the verifier sees invalid access
-> 
-> > 
-> > > +
-> > >         priv->need_prologue = true;
-> > >         priv->insns_buf = malloc(sizeof(struct bpf_insn) * BPF_MAXINSNS);
-> > >         if (!priv->insns_buf) {
-> > > @@ -734,6 +762,13 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > >                 return -ENOMEM;
-> > >         }
-> > >
-> > 
-> > [...]
-> > 
-> > > +               /*
-> > > +                * For each program that needs prologue we do following:
-> > > +                *
-> > > +                * - take its current instructions and use them
-> > > +                *   to generate the new code with prologue
-> > > +                *
-> > > +                * - load new instructions with bpf_prog_load
-> > > +                *   and keep the fd in proglogue_fds
-> > > +                *
-> > > +                * - new fd will be used bpf__foreach_event
-> > > +                *   to connect this program with perf evsel
-> > > +                */
-> > > +               orig_insns = bpf_program__insns(prog);
-> > > +               orig_insns_cnt = bpf_program__insn_cnt(prog);
-> > > +
-> > > +               pev = &priv->pev;
-> > > +               for (i = 0; i < pev->ntevs; i++) {
-> > > +                       err = preproc_gen_prologue(prog, i, orig_insns,
-> > > +                                                  orig_insns_cnt, &res);
-> > > +                       if (err)
-> > > +                               return err;
-> > > +
-> > > +                       fd = bpf_prog_load(bpf_program__get_type(prog),
-> > 
-> > nit: bpf_program__type() is preferred (we are deprecating/discouraging
-> > "get_" prefixed getters in libbpf 1.0)
-> 
-> ok, will change
+Hi,
 
-hum, I can't see bpf_program__type.. what do I miss?
+On 2/17/2022 11:50 AM, Alexei Starovoitov wrote:
+> On Mon, Feb 14, 2022 at 07:13:34PM +0800, Hou Tao wrote:
+>> Hi,
+>>
+>> In order to use string as hash-table key, key_size must be the storage
+>> size of longest string. If there are large differencies in string
+>> length, the hash distribution will be sub-optimal due to the unused
+>> zero bytes in shorter strings and the lookup will be inefficient due to
+>> unnecessary memcmp().
+>>
+>> Also it is possible the unused part of string key returned from bpf helper
+>> (e.g. bpf_d_path) is not mem-zeroed and if using it directly as lookup key,
+>> the lookup will fail with -ENOENT (as reported in [1]).
+>>
+>> The patchset tries to address the inefficiency by adding support for
+>> string key. There is extensibility problem in v1 because the string key
+>> and its optimization is only available for string-only key. To make it
+>> extensible, v2 introduces bpf_str_key_stor and bpf_str_key_desc and enforce
+>> the layout of hash key struct through BTF as follows:
+>>
+>> 	>the start of hash key
+>> 	...
+>> 	[struct bpf_str_key_desc m;]
+>> 	...
+>> 	[struct bpf_str_key_desc n;]
+>> 	...
+>> 	struct bpf_str_key_stor z;
+>> 	unsigned char raw[N];
+>> 	>the end of hash key
+> Sorry, but this is dead end.
+> The v2 didn't fundamentally change the design.
+> The bpf_str_key_desc has an offset field, but it's unused.
+It is used during key comparison to ensure the offset and length of
+sub-strings are the same and it also can be used to locate the sub-string
+from the raw array.
+> The len field is dynamically checked at run-time and all hash maps
+> users will be paying that penalty though majority will not be
+> using this feature.
+> This patch set is incredibly specific solution to one task.
+> It's far from being generic. We cannot extend bpf this way.
+> All building blocks must be as generic as possible.
+Yes, you are right. I worked in the wrong direction. I tried to keep
+the change set being small and good performance, but forget that it is
+not generic enough.
+> If you want strings as a key then the key must be variable size.
+> This patch doesn't make them so. It still requires some
+> predefined fixed size for largest string. This is no go.
+> Variable sized key means truly variable to megabytes long.
+> The key would need to contain an object (a pointer wrap) to
+> a variable sized object. And this object can be arbitrary
+> blob of bytes. Not just null terminated string.
+> We've been thinking about "dynamic pointer" concept where
+> pointer + length will be represented as an object.
+I have seen the proposal from Joanne Koong on "dynamic pointers".
+It can solve the storage problem of string, but the lookup of
+string is still a problem. Hash is a option but can we support
+two dynamic pointers points to the same internal object and use
+the id of the internal object to represent the string ?
+> The program will be able to allocate it and persist into a map value
+> and potentially into a map key.
+> For storing a bunch of strings one can use a strong hash and store
+> that hash in the key while keeping full string as a variable sized
+> object inside the value.
+Will using a strong hash function impact the lookup performance because
+each lookup will need to calculate the hash ?
 
-jirka
+> Another approach is to introduce a trie to store strings, or dfa,
+> or aho-corasick, etc. There are plenty of data structures that are
+> more suitable for storing and searching strings depending on the use case.
+> Using hash table for strings has its downsides.
+> .
+Before add support for string key in hash table, we had implement tries,
+ternary search tree and hash table in user-space for string lookup. hash
+table shows better performance and memory usage, so we decide to do string
+support in hash table. We will revisit our tests and investigate new string
+data structures.
+
+Regards,
+Tao
+
