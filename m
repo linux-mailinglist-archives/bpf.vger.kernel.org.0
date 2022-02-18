@@ -2,101 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD1B4BBEDD
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 18:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852734BBF5C
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 19:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238421AbiBRR7Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 12:59:25 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39096 "EHLO
+        id S236532AbiBRSSZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 13:18:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238884AbiBRR7Y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 12:59:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9E1821B2
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:59:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645207145;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p5oI/8dNH/4MFIeI5cLeBF2jrxGnWI8Y2my0AXgZ3EQ=;
-        b=QMxCJlfbp7qrJ88B0U2M8ucEGSXkrQ07J3HPTvwVG7Qgf6WRifJ2KmWw8nRUovV1LBQUfS
-        cD4tmOoxfaIj41ey9ZZLa0ENpZerDV+HaacFXrxnI1QyH26Y9ncLOgdOvS9+Wm/bRo85UX
-        1MGkZPcQ6UpZ33mfbei5qUvbS5P7QB8=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-224-0TwMF7ylN5O8rMej6tBWtA-1; Fri, 18 Feb 2022 12:59:04 -0500
-X-MC-Unique: 0TwMF7ylN5O8rMej6tBWtA-1
-Received: by mail-ed1-f69.google.com with SMTP id m4-20020a50cc04000000b0040edb9d147cso5949539edi.15
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 09:59:04 -0800 (PST)
+        with ESMTP id S236189AbiBRSSY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 13:18:24 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778CA12A85;
+        Fri, 18 Feb 2022 10:18:07 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id qe15so9272125pjb.3;
+        Fri, 18 Feb 2022 10:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Br6SCzkS+wuKYi19e3xLSc3mR0U+4wqwOebNtfju5TU=;
+        b=LAfOPblV4LkT5VepGAYShPVXWyu3Lz9xJVfENiMqBOVZBuQ7myckiBXuX3GJv+yDZE
+         kZOpVFD9/3l1eKUpdCqgJSxUeL65/DfAl/TIxxy8qvJwQIL9KYnQJDLMwA3zyWOkVLsk
+         spumhS5n2lDx2h70fE8qqolY+4nz9yFseF4p5IVnnso2NFBeEKVILYw4yOiD1YuZoEFW
+         gZ2fYhpED9pQcl731oFOw1t3wAwlz89/O0vBvJbE2kNyysE17YKGGUVmNukNf0b5nRI+
+         nHmfsQsCDSiQEPcG0eNOQVLUbP0u/gHqN0V16EIkiQvJuZygFylOluUzaQp+sA4trApf
+         urlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=p5oI/8dNH/4MFIeI5cLeBF2jrxGnWI8Y2my0AXgZ3EQ=;
-        b=dfi7iJf0eM46zNuYMRbrTu5a2j1tKBltKvlB5KHFNlWO2l15U08cTIABuAJ1KmAoiv
-         2nyvV++JMX4//XGDju+Az0P4Sdvm21XxM6a1VO7yTxOvWSy/530UjOwalI/ikhsPGBLc
-         nVYV4xAx8+ikheYb/6Vlw0d0gMKF3fMo950UJzPjWlbZ7kO1ZqcnoqM/2V2dQ6ng3H6V
-         4GZnaQvFDP9jpy27+FOtTRNRiq8L9Qrv/rUFJeYTkqUbmKyAHWBmaOvFdsoIG2SsQjeU
-         egSqmoMc3CCuZTnhNb4Au4bTLqVrcZl56/b7Y43zRsfBMC6oKP0qEgWnC5W7yP2ZHy7F
-         ljlw==
-X-Gm-Message-State: AOAM532pUoZmQn/ugbBQyWK9zBdqJeLJmcOASnMafg/wzwEJ5oYAA7zN
-        AQnEi0GHGF06iFoIDVskfqWHCizQxzHQweAANOVNEg/eJ9Zs66oib5elc58a9j2xzxqypMbhBa3
-        RW5WjQY6JZuSE
-X-Received: by 2002:a17:906:aed4:b0:6ba:6d27:ac7 with SMTP id me20-20020a170906aed400b006ba6d270ac7mr7489002ejb.33.1645207142549;
-        Fri, 18 Feb 2022 09:59:02 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJww0cTfqnVBcid2KvnkIgltIfa8ngQGHX5cBQYZf339vsSNYU9Rk2ynmAwWH2iPxeiWIbVYBw==
-X-Received: by 2002:a17:906:aed4:b0:6ba:6d27:ac7 with SMTP id me20-20020a170906aed400b006ba6d270ac7mr7488872ejb.33.1645207140118;
-        Fri, 18 Feb 2022 09:59:00 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h7sm5077174ede.66.2022.02.18.09.58.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Br6SCzkS+wuKYi19e3xLSc3mR0U+4wqwOebNtfju5TU=;
+        b=p49Ud5gNN1SfNvRNUJ5zhQTjMzKZJcGrSInUkYJKsLi/aOHjSveJd+/eFoAC7Mo9K0
+         vf368RB1DZSJ4hz7EzQouQmh8AatOrXbYnTkqmCUH2C2HLYp3zCxpFUYy33aiAoUp4tY
+         hlBXiPuKZrH4IkpLfR6y6CFKqoPx8/cvDDoyQj9otnXPdrKGSXTUN32j+cUnxTRSEogA
+         ZnvrF4+VdhqqmR8FsAhVLUYKsAYW1c4kW75XZujGUIzZWth00pz3hxwao9Ig7R+l2l6x
+         3ksBf6CI17xWmBUEwUjTJbMztUHkdz6eHABA5qatxlGH/NJ8F46Fi2FIqAIh70bXBqhM
+         ei0Q==
+X-Gm-Message-State: AOAM53360xwFU4RP1usSQK/QOy//uMLH6qPSBAfGHDsstLVLyia1CggX
+        zUnHjLpkh1LfA6O/Na88XQy3/i2TeS8=
+X-Google-Smtp-Source: ABdhPJxRjXy6wWms907doYTrCPcJB/YLOSnqYxDZ1Ecdr7ZyMtC5rJ+0US3cn+nWJQ8Frq1ZYqMo2A==
+X-Received: by 2002:a17:90b:3d0e:b0:1bb:8615:78d6 with SMTP id pt14-20020a17090b3d0e00b001bb861578d6mr9687078pjb.4.1645208286992;
+        Fri, 18 Feb 2022 10:18:06 -0800 (PST)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:5c60:79a8:8f41:618f])
+        by smtp.gmail.com with ESMTPSA id nh15-20020a17090b364f00b001bb7ab63027sm51836pjb.49.2022.02.18.10.18.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Feb 2022 09:58:59 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EF7B5130248; Fri, 18 Feb 2022 18:58:58 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+        Fri, 18 Feb 2022 10:18:06 -0800 (PST)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 0/5] Add support for transmitting packets
- using XDP in bpf_prog_run()
-In-Reply-To: <20220218175029.330224-1-toke@redhat.com>
-References: <20220218175029.330224-1-toke@redhat.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 18 Feb 2022 18:58:58 +0100
-Message-ID: <87zgmo12fx.fsf@toke.dk>
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Brian Vazquez <brianvv@google.com>
+Subject: [PATCH bpf-next] bpf: Call maybe_wait_bpf_programs() only once from generic_map_delete_batch()
+Date:   Fri, 18 Feb 2022 10:18:01 -0800
+Message-Id: <20220218181801.2971275-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.35.1.473.g83b2b277ed-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
+From: Eric Dumazet <edumazet@google.com>
 
-> A sample traffic generator, which was included in previous versions of
-> the series, but now moved to xdp-tools
+As stated in the comment found in maybe_wait_bpf_programs(),
+the synchronize_rcu() barrier is only needed before returning
+to userspace, not after each deletion in the batch.
 
-This is still a bit rough around the edges, but for those interested, it
-currently resides here:
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Brian Vazquez <brianvv@google.com>
+---
+ kernel/bpf/syscall.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-https://github.com/xdp-project/xdp-tools/pull/169
-
--Toke
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a72f63d5a7daee057bcec3fa6119aca32e2945f7..9c7a72b65eee0ec8d54d36e2c0ab9ff4962091af 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1352,7 +1352,6 @@ int generic_map_delete_batch(struct bpf_map *map,
+ 		err = map->ops->map_delete_elem(map, key);
+ 		rcu_read_unlock();
+ 		bpf_enable_instrumentation();
+-		maybe_wait_bpf_programs(map);
+ 		if (err)
+ 			break;
+ 		cond_resched();
+@@ -1361,6 +1360,8 @@ int generic_map_delete_batch(struct bpf_map *map,
+ 		err = -EFAULT;
+ 
+ 	kvfree(key);
++
++	maybe_wait_bpf_programs(map);
+ 	return err;
+ }
+ 
+-- 
+2.35.1.473.g83b2b277ed-goog
 
