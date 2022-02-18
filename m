@@ -2,200 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3439C4BC0A2
-	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 20:53:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F00A4BC0BA
+	for <lists+bpf@lfdr.de>; Fri, 18 Feb 2022 20:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238235AbiBRTxP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Feb 2022 14:53:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57200 "EHLO
+        id S238865AbiBRTz7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Feb 2022 14:55:59 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238265AbiBRTxO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Feb 2022 14:53:14 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834E6291FA4
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 11:52:34 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id bg10so17390108ejb.4
-        for <bpf@vger.kernel.org>; Fri, 18 Feb 2022 11:52:34 -0800 (PST)
+        with ESMTP id S235479AbiBRTzp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Feb 2022 14:55:45 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07C129E;
+        Fri, 18 Feb 2022 11:55:27 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id h11so5468680ilq.9;
+        Fri, 18 Feb 2022 11:55:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=17urnpLmQfmhlUpeq0QWYP/sfdh5h7q2Dcro2Fku26c=;
-        b=KpS6TdcjzPETvO27rn4SJn/BV6xdyjqRwNEmWA+7f9Tov6uvLROdJsltmwJ4pu4FY4
-         CUmW/ZNwM2BGrj70DqDx0cp0QMLRm5iyLfL3uOZyIf1YyKp+TCNgake+h6r/IFRfX9hQ
-         qUujekE7d4SqffebioWK9uU+ZNBRvJ64IygSZdOrv43v8CCnjWALZ8kamB/E7ivICktb
-         aad+Ch+xdLV+1IODdgR9bGj7e5gU+Xr7GBCm+bnmPt7zsTTPtQngQuRsKLYIi0BoZhNE
-         A9TPv2B5vMUQIYgrWLbU7pIhap1oKkaY7JC3ZhgkXCE84G8pZ9puQlOLNQOZUXJa9Wjy
-         xVkA==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5uMqrw8+6VchXMRp0bzbPkGR2Iy1g3pLICkvKHQUn5s=;
+        b=Gz+N6F0GuBqFa6mOtU/cqd9YC7sTYPS/YXaUQIwHTo3WhD9LCaPiA2X2CrplBDWlzX
+         d2ie1fQsmGyLhelJ7fLx3PLzYB8+fYH6BazFK1Eoz+uR1nvpZZ07lVUQS9AEq2v7cT6Q
+         sw4KvXulNbKRo4b/FMm7HRUDlf4Mj2ABfjHbt5vmXbVg48xaGBOgJbrEwTHMxJluJBeP
+         KXYzVJU+CNLflQgHSnu8uf0+H570io3eu9QgiCnTk+gxHlxeAe7pD8n0A/Dj40h1zr+l
+         aecSnsUsCE6HoSyLb4pmFFPzzdv4N0SwzsaLeZ/44JItbt03+uC1GiuyAC8Ojurn8/Z1
+         L6rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=17urnpLmQfmhlUpeq0QWYP/sfdh5h7q2Dcro2Fku26c=;
-        b=dbvPx+Rx4fYfIKJe/LYx0iAgatrWZGRU71i8N8a8TwwyTplwz7DzqwLKHi5ot5pYB0
-         CN64m5Gg7dTzqXv651jKoC3fRtwe5qgvXnUs5gF79SUq8ktJyJE4LxlKHgzTitq1k4JG
-         agRK9o0kJU0r+cSEIl3Q2MjdkyyxFEhvzSvCEBNKnwZuAILnPFJ70HORaM6dYNXsj0Cv
-         NdqWSpWV/D5UPelroqhASR0rFswWgCsJtUKHHI5rFS5uonmb4h20B/6XKeTVge0dNeIK
-         ax1YLDwOSS31P8Sutyq03BGwz7n/gye/S8jyrUAfFA4NLX6zqnVHW86q2EP2CzkAVm2l
-         0D0A==
-X-Gm-Message-State: AOAM531BKEEsH9uitBOTgFnwj3m6zgs+Qy3zNN/5dyM3LrJ3/6DTGhq4
-        OM7seYKjcv/HEQBtAhLik3mcGw==
-X-Google-Smtp-Source: ABdhPJwIYrZYou6Vsov+PjdoFYDqmGG597UJ7pnSn0Jy5ppWhV8ZJKLb+H5YlAhmzpXSoHF5v9UJTA==
-X-Received: by 2002:a17:907:7663:b0:6ce:fdd:762d with SMTP id kk3-20020a170907766300b006ce0fdd762dmr7914701ejc.750.1645213952901;
-        Fri, 18 Feb 2022 11:52:32 -0800 (PST)
-Received: from [192.168.1.8] ([149.86.70.182])
-        by smtp.gmail.com with ESMTPSA id s30sm2552088ejm.158.2022.02.18.11.52.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Feb 2022 11:52:32 -0800 (PST)
-Message-ID: <17156a43-7f2b-f284-46d5-d0b3886c07a2@isovalent.com>
-Date:   Fri, 18 Feb 2022 19:52:31 +0000
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5uMqrw8+6VchXMRp0bzbPkGR2Iy1g3pLICkvKHQUn5s=;
+        b=EU+ANyg24Vpcen35b4Z5uBQd5KOuG/DbVRxdnitYjm8h7otRjX4e3gRIO4Ga/TRJmS
+         UPh0N3uzQ8OUUdnO1ucBl6kkRPztLtJmqGQ7W0pxuwhoaffkfRZSAM0wwKd89143/jsa
+         5Gudz/OvrifqMnGaq7ifDNYB5wpTWp6ZcYlQusti3To0GNM4E68D9Jj/5gYeXTawHoLn
+         8NV57aG+d1y/bfNk+YG0Gxp8byMdwAc/QqaYRXSGR6Ygy6dvazRDyx8yYNoIq+qNVYiL
+         zN7CrWT4uYi8Fft50lOKg0rWa2GaKKhz1k6bZfTSDTLoubb+E7RSjAgWtZjsEyKLsp6p
+         0mEQ==
+X-Gm-Message-State: AOAM532WM6sWb6IwaSi+ZRjZTTO6lwME4trzQbv6SpNAZBTUoKKaexfW
+        eJn0E2mvDiHNA9vgE467Jh8EESynHs0U3HlGvFQ6zwjxYYs=
+X-Google-Smtp-Source: ABdhPJwMElGK0zoFWXExXzv66lkDUPkUajOfC5brsjaVY+7cETRxZt3fHRYc7wYWrqv/3bY+JQmsfOL4rp9yZ/BTJrw=
+X-Received: by 2002:a92:d208:0:b0:2c1:1a3c:7b01 with SMTP id
+ y8-20020a92d208000000b002c11a3c7b01mr6454880ily.71.1645214127400; Fri, 18 Feb
+ 2022 11:55:27 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH bpf-next v7 4/7] bpftool: Implement "gen min_core_btf"
- logic
-Content-Language: en-GB
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        =?UTF-8?Q?Mauricio_V=c3=a1squez_Bernal?= <mauricio@kinvolk.io>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20220217131916.50615-1-jolsa@kernel.org> <20220217131916.50615-4-jolsa@kernel.org>
+ <CAEf4BzYP7=JuyuY=xZe71urpxat4ba-JnqeSTcHF=CYmsQbofQ@mail.gmail.com> <Yg9geQ0LJjhnrc7j@krava>
+In-Reply-To: <Yg9geQ0LJjhnrc7j@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 18 Feb 2022 11:55:16 -0800
+Message-ID: <CAEf4BzZaFWhWf73JbfO7gLi82Nn4ma-qmaZBPij=giNzzoSCTQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf tools: Rework prologue generation code
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Rafael David Tinoco <rafaeldtinoco@gmail.com>,
-        Lorenzo Fontana <lorenzo.fontana@elastic.co>,
-        Leonardo Di Donato <leonardo.didonato@elastic.co>
-References: <20220215225856.671072-1-mauricio@kinvolk.io>
- <20220215225856.671072-5-mauricio@kinvolk.io>
- <3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@isovalent.com>
- <CAHap4zu255wb+e6_rY9SwWtu+GiedZjnSitOCWksN98jtBu=BQ@mail.gmail.com>
- <CAEf4BzaE5wj1Tf=GAMVpK-YXz-BRyvosgeabyYzswmQ8n=+Vaw@mail.gmail.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAEf4BzaE5wj1Tf=GAMVpK-YXz-BRyvosgeabyYzswmQ8n=+Vaw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-02-18 11:48 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> On Fri, Feb 18, 2022 at 11:44 AM Mauricio Vásquez Bernal
-> <mauricio@kinvolk.io> wrote:
->>
->> On Fri, Feb 18, 2022 at 11:20 AM Quentin Monnet <quentin@isovalent.com> wrote:
->>>
->>> 2022-02-15 17:58 UTC-0500 ~ Mauricio Vásquez <mauricio@kinvolk.io>
->>>> This commit implements the logic for the gen min_core_btf command.
->>>> Specifically, it implements the following functions:
->>>>
->>>> - minimize_btf(): receives the path of a source and destination BTF
->>>> files and a list of BPF objects. This function records the relocations
->>>> for all objects and then generates the BTF file by calling
->>>> btfgen_get_btf() (implemented in the following commit).
->>>>
->>>> - btfgen_record_obj(): loads the BTF and BTF.ext sections of the BPF
->>>> objects and loops through all CO-RE relocations. It uses
->>>> bpf_core_calc_relo_insn() from libbpf and passes the target spec to
->>>> btfgen_record_reloc(), that calls one of the following functions
->>>> depending on the relocation kind.
->>>>
->>>> - btfgen_record_field_relo(): uses the target specification to mark all
->>>> the types that are involved in a field-based CO-RE relocation. In this
->>>> case types resolved and marked recursively using btfgen_mark_type().
->>>> Only the struct and union members (and their types) involved in the
->>>> relocation are marked to optimize the size of the generated BTF file.
->>>>
->>>> - btfgen_record_type_relo(): marks the types involved in a type-based
->>>> CO-RE relocation. In this case no members for the struct and union types
->>>> are marked as libbpf doesn't use them while performing this kind of
->>>> relocation. Pointed types are marked as they are used by libbpf in this
->>>> case.
->>>>
->>>> - btfgen_record_enumval_relo(): marks the whole enum type for enum-based
->>>> relocations.
->>>>
->>>> Signed-off-by: Mauricio Vásquez <mauricio@kinvolk.io>
->>>> Signed-off-by: Rafael David Tinoco <rafael.tinoco@aquasec.com>
->>>> Signed-off-by: Lorenzo Fontana <lorenzo.fontana@elastic.co>
->>>> Signed-off-by: Leonardo Di Donato <leonardo.didonato@elastic.co>
->>>> ---
->>>>  tools/bpf/bpftool/Makefile |   8 +-
->>>>  tools/bpf/bpftool/gen.c    | 455 ++++++++++++++++++++++++++++++++++++-
->>>>  2 files changed, 457 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
->>>> index 94b2c2f4ad43..a137db96bd56 100644
->>>> --- a/tools/bpf/bpftool/Makefile
->>>> +++ b/tools/bpf/bpftool/Makefile
->>>> @@ -34,10 +34,10 @@ LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
->>>>  LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
->>>>  LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
->>>>
->>>> -# We need to copy hashmap.h and nlattr.h which is not otherwise exported by
->>>> -# libbpf, but still required by bpftool.
->>>> -LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h)
->>>> -LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h)
->>>> +# We need to copy hashmap.h, nlattr.h, relo_core.h and libbpf_internal.h
->>>> +# which are not otherwise exported by libbpf, but still required by bpftool.
->>>> +LIBBPF_INTERNAL_HDRS := $(addprefix $(LIBBPF_HDRS_DIR)/,hashmap.h nlattr.h relo_core.h libbpf_internal.h)
->>>> +LIBBPF_BOOTSTRAP_INTERNAL_HDRS := $(addprefix $(LIBBPF_BOOTSTRAP_HDRS_DIR)/,hashmap.h relo_core.h libbpf_internal.h)
->>>>
->>>>  $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DIR) $(LIBBPF_BOOTSTRAP_HDRS_DIR):
->>>>       $(QUIET_MKDIR)mkdir -p $@
->>>> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
->>>> index 8e066c747691..806001020841 100644
->>>> --- a/tools/bpf/bpftool/gen.c
->>>> +++ b/tools/bpf/bpftool/gen.c
->>>> @@ -14,6 +14,7 @@
->>>>  #include <unistd.h>
->>>>  #include <bpf/bpf.h>
->>>>  #include <bpf/libbpf.h>
->>>> +#include <bpf/libbpf_internal.h>
->>>>  #include <sys/types.h>
->>>>  #include <sys/stat.h>
->>>>  #include <sys/mman.h>
->>>
->>> Mauricio, did you try this patch on a system with an old Glibc (< 2.26)
->>> by any chance? Haven't tried yet but I expect this might break bpftool's
->>> build when COMPAT_NEED_REALLOCARRAY is set, because in that case gen.c
->>> pulls <bpf/libbpf_internal.h>, and then <tools/libc_compat.h> (through
->>> main.h). And libc_compat.h defines reallocarray(), which
->>> libbpf_internal.h poisons with a GCC pragma.
->>>
->>
->> I just tried on Ubuntu 16.04 with Glibc 2.23 and got the error you mentioned.
+On Fri, Feb 18, 2022 at 1:01 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+>
+> On Thu, Feb 17, 2022 at 01:53:16PM -0800, Andrii Nakryiko wrote:
+> > On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > Some functions we use now for bpf prologue generation are
+> > > going to be deprecated, so reworking the current code not
+> > > to use them.
+> > >
+> > > We need to replace following functions/struct:
+> > >    bpf_program__set_prep
+> > >    bpf_program__nth_fd
+> > >    struct bpf_prog_prep_result
+> > >
+> > > Current code uses bpf_program__set_prep to hook perf callback
+> > > before the program is loaded and provide new instructions with
+> > > the prologue.
+> > >
+> > > We workaround this by using objects's 'unloaded' programs instructions
+> > > for that specific program and load new ebpf programs with prologue
+> > > using separate bpf_prog_load calls.
+> > >
+> > > We keep new ebpf program instances descriptors in bpf programs
+> > > private struct.
+> > >
+> > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  tools/perf/util/bpf-loader.c | 122 +++++++++++++++++++++++++++++------
+> > >  1 file changed, 104 insertions(+), 18 deletions(-)
+> > >
+> >
+> > [...]
+> >
+> > >  errout:
+> > > @@ -696,7 +718,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
+> > >         struct bpf_prog_priv *priv = program_priv(prog);
+> > >         struct perf_probe_event *pev;
+> > >         bool need_prologue = false;
+> > > -       int err, i;
+> > > +       int i;
+> > >
+> > >         if (IS_ERR_OR_NULL(priv)) {
+> > >                 pr_debug("Internal error when hook preprocessor\n");
+> > > @@ -727,6 +749,12 @@ static int hook_load_preprocessor(struct bpf_program *prog)
+> > >                 return 0;
+> > >         }
+> > >
+> > > +       /*
+> > > +        * Do not load programs that need prologue, because we need
+> > > +        * to add prologue first, check bpf_object__load_prologue.
+> > > +        */
+> > > +       bpf_program__set_autoload(prog, false);
+> >
+> > if you set autoload to false, program instructions might be invalid in
+> > the end. Libbpf doesn't apply some (all?) relocations to such
+> > programs, doesn't resolve CO-RE, etc, etc. You have to let
+> > "prototypal" BPF program to be loaded before you can grab final
+> > instructions. It's not great, but in your case it should work, right?
+>
+> hum, do we care? it should all be done when the 'new' program with
+> the prologue is loaded, right?
 
-Thanks a lot for testing!
+yeah, you should care. If there is any BPF map involved, it is
+properly resolved to correct FD (which is put into ldimm64 instruction
+in BPF program code) during the load. If program is not autoloaded,
+this is skipped. Same for any global variable or subprog call (if it's
+not always inlined). So you very much should care for any non-trivial
+program.
 
->>
->>> At least this is what I observe when trying to add your patches to the
->>> kernel mirror, where reallocarray() is redefined unconditionally. I'm
->>> trying to figure out if we should fix this mirror-side, or kernel-side.
->>> (I suppose we still need this compatibility layer, Ubuntu 16.04 seems to
->>> use Glibc 2.23).
->>>
->>
->> I suppose this should be fixed kernel-side, I don't think it's a
->> particular problem with the mirror. What about only including
->> `<tools/libc_compat.h>` in the places where reallocarray() is used:
->> prog.c and xlated_dumper.c?
-> 
-> 
-> libbpf abandoned feature probing for this and just uses its own
-> libbpf_reallocarray() implementation. Simple and reliable. Detecting
-> reallocarray() is PITA and isn't worth it.
+>
+> I switched it off because the verifier failed to load the program
+> without the prologue.. because in the original program there's no
+> code to grab the arguments that the rest of the code depends on,
+> so the verifier sees invalid access
 
-We can do the same for bpftool, its mirror already does it [0]. We could
-have this in bpftool's sources and use "bpftool_reallocarray()" instead
-of "reallocarray()", and get rid of this probing. Mauricio are you
-willing to take this?
+Do you have an example of C code and corresponding BPF instructions
+before/after prologue generation? Just curious to see in details how
+this is done.
 
-[0]
-https://github.com/libbpf/bpftool/blob/master/include/tools/libc_compat.h#L25
+>
+> >
+> > > +
+> > >         priv->need_prologue = true;
+> > >         priv->insns_buf = malloc(sizeof(struct bpf_insn) * BPF_MAXINSNS);
+> > >         if (!priv->insns_buf) {
+> > > @@ -734,6 +762,13 @@ static int hook_load_preprocessor(struct bpf_program *prog)
+> > >                 return -ENOMEM;
+> > >         }
+> > >
+> >
+> > [...]
+> >
+> > > +               /*
+> > > +                * For each program that needs prologue we do following:
+> > > +                *
+> > > +                * - take its current instructions and use them
+> > > +                *   to generate the new code with prologue
+> > > +                *
+> > > +                * - load new instructions with bpf_prog_load
+> > > +                *   and keep the fd in proglogue_fds
+> > > +                *
+> > > +                * - new fd will be used bpf__foreach_event
+> > > +                *   to connect this program with perf evsel
+> > > +                */
+> > > +               orig_insns = bpf_program__insns(prog);
+> > > +               orig_insns_cnt = bpf_program__insn_cnt(prog);
+> > > +
+> > > +               pev = &priv->pev;
+> > > +               for (i = 0; i < pev->ntevs; i++) {
+> > > +                       err = preproc_gen_prologue(prog, i, orig_insns,
+> > > +                                                  orig_insns_cnt, &res);
+> > > +                       if (err)
+> > > +                               return err;
+> > > +
+> > > +                       fd = bpf_prog_load(bpf_program__get_type(prog),
+> >
+> > nit: bpf_program__type() is preferred (we are deprecating/discouraging
+> > "get_" prefixed getters in libbpf 1.0)
+>
+> ok, will change
 
-Quentin
+It's been added in v0.7, yeah.
+
+>
+> >
+> > > +                                          bpf_program__name(prog), "GPL",
+> >
+> > would it make sense to give each clone a distinct name?
+>
+> AFAICS the original code uses same prog name for instances,
+> so I'd rather keep it that way
+>
+
+sure, np
+
+> thanks,
+> jirka
+>
+> >
+> > > +                                          res.new_insn_ptr,
+> > > +                                          res.new_insn_cnt, NULL);
+> > > +                       if (fd < 0) {
+> > > +                               char bf[128];
+> > > +
+> >
+> > [...]
