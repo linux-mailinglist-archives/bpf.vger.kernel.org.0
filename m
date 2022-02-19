@@ -2,120 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB5D4BC8E8
-	for <lists+bpf@lfdr.de>; Sat, 19 Feb 2022 15:40:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD1F4BC960
+	for <lists+bpf@lfdr.de>; Sat, 19 Feb 2022 17:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241959AbiBSOkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Feb 2022 09:40:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34620 "EHLO
+        id S242609AbiBSQkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Feb 2022 11:40:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232726AbiBSOkP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Feb 2022 09:40:15 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E9F7004F
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 06:39:56 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id e5so10591299lfr.9
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 06:39:56 -0800 (PST)
+        with ESMTP id S242608AbiBSQkF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Feb 2022 11:40:05 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5824C1BBF61;
+        Sat, 19 Feb 2022 08:39:46 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id i21so4921107pfd.13;
+        Sat, 19 Feb 2022 08:39:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=rm17YSrotUSdRJ6BYuD2Ka29woyCrwxkkMypL8/+Zws=;
-        b=R+QKwOYklID1n9atX296D0nCwG8KM3fO7//cRNML+HEH+UsM8OG1SL5DkZq0BCAUP8
-         2M61zfE1D2iozuGtCmbcMH3zT3/V9en3m+ZgW1MNavcyBHEFx44+uTw8a8cUS8RmKuWj
-         qr5bhJ5U0e5HeEzivlsJDga0OFc08Pw2T+9yg=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U58d365gzPg+r2bYkmkDtyaFXBJMwii/YyeHeGff4Eo=;
+        b=YvWbUDISvPYVGn1LkhxmqlQvW8PUBW6uoxnXk5gZ5tTtCoaLFX2D8lhi1Vu6d1+T4z
+         jrApZeb5KZgWnzrbgPtvLgkCI3Yc6SfjCnF1d/iKYvXI1IBaAqrLCfPrJ3KtPUHMquu+
+         vN1/NlMVbr1URKUrzhoTBRXvvi/N93U5ELzSvPDdeDNgPB21IlRDwkpp1T8//jRyUNuM
+         hNBgls/01YsDnki9KSqx4bnZuDnFvsvswDAlFttExmy8e8+OOj5rKeYf5LbkukC2TjWP
+         /DFEok8UV+M8lUuv7sy/+xPT8i6jN45RJuQ9rg7YXcX03POXcFIVuHfwZkM33bd6AHN+
+         oW/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=rm17YSrotUSdRJ6BYuD2Ka29woyCrwxkkMypL8/+Zws=;
-        b=SBcZABkqCk3AHvdMbJNWRrQm+9D3UsBzPs7CbnbSEJJO9m7B0IjOvXg/3+5k+krXGR
-         vlZAYP+WXrdrbjyH3NcXLI9Jp/L2ejyVeY/IC8Ss67u6Yrf3ty3uBoDH59RqKvBHnOut
-         rBkwYSm8u03Vx0UUaIE69W2cF3X7/olYiGRBhGWqmdxFPtdWpFQnV2WFLYNNIYUPdIlP
-         p+OPlSp8VgGAdbkpcdL2Kya7CeGV9kXsVz12ZIzxMgHDto/Il+wkDl5a166eVuU+7Eag
-         Px38TBzocmNvWDXvogmNpCEJkdfdp/42BFkwH9S4pQfifLC2w5I3Cc9wlHxgk08so1hW
-         HAiQ==
-X-Gm-Message-State: AOAM532daKaAm9pCa/BCQUw8lfXfU5Gjbvyv9YoYkMqV7rujTdhHdlkg
-        8oXssxqUYw0TtaRawky2xmJUQw==
-X-Google-Smtp-Source: ABdhPJymOuYy/bNslmfXFaem6ECNBIlJebCwoNJuz6tFnhk/Bq9TuuigUhywkJVmmTV0bg2FEpbLRw==
-X-Received: by 2002:a05:6512:3e0a:b0:43c:8197:af34 with SMTP id i10-20020a0565123e0a00b0043c8197af34mr8338120lfv.141.1645281594928;
-        Sat, 19 Feb 2022 06:39:54 -0800 (PST)
-Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id r11sm666448ljk.40.2022.02.19.06.39.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U58d365gzPg+r2bYkmkDtyaFXBJMwii/YyeHeGff4Eo=;
+        b=5FQpvolY15D6T2HIoL2WowITk4+idyTTSSL6X31HrRmFBJYy63uVA9z69iDs42ukds
+         xJGfriIcF6UxcMd9SpqZHnuG41XAS3SXwbWs1BN8QvnQ6UfoO1ZPQjnXERjxjPgE3Vxt
+         ngw5UH0PMzhayrNe5AoeQJHZfj+qvPeuGnMgHCQ9TEnCvPPIiCcyuGanOAN5ldUnWen3
+         Ckj+0MjHPxn80N7hvm8+nW287Hqy6spKT5FkyYvbPVlbObhDQQRQLjDZE4hmA5O3Ecod
+         JJPrHF9tp/sr1wt7U/SQ4mF3912x2mg+g7xmitaAFHJ6vcg8DG2gH/ESSBQh/HNXuJto
+         le3Q==
+X-Gm-Message-State: AOAM530KPW3Fuhe1h8GGIwqwhnKgu+Pt8sCOEdGwomJjUs/cwj5mgG9a
+        JRxC/qX31iYFrgSK6Wy6c18=
+X-Google-Smtp-Source: ABdhPJybP2T/Zb/FF6wF8GZtpZHb4kUaoqzLTpY63uuXPaF+a+AkVsIaRdGbrtqL5uPHbkwvxWw7Kg==
+X-Received: by 2002:a63:5f42:0:b0:373:d440:496e with SMTP id t63-20020a635f42000000b00373d440496emr6867491pgb.529.1645288785813;
+        Sat, 19 Feb 2022 08:39:45 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9005:88cd:46e0:823b:7e8c:4cf1])
+        by smtp.gmail.com with ESMTPSA id w198sm7207238pff.96.2022.02.19.08.39.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Feb 2022 06:39:54 -0800 (PST)
-References: <20220209184333.654927-1-jakub@cloudflare.com>
- <20220209184333.654927-3-jakub@cloudflare.com>
- <CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com>
- <e0999e46e5332ca79bdfe4d9b9d7f17e4366a340.camel@linux.ibm.com>
- <87fsohea8q.fsf@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Cover 4-byte load from
- remote_port in bpf_sk_lookup
-Date:   Sat, 19 Feb 2022 15:37:01 +0100
-In-reply-to: <87fsohea8q.fsf@cloudflare.com>
-Message-ID: <87wnhq6htx.fsf@cloudflare.com>
+        Sat, 19 Feb 2022 08:39:44 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, memxor@gmail.com
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Souptick Joarder (HPE)" <jrdr.linux@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] bpf: Initialize ret to 0 inside btf_populate_kfunc_set()
+Date:   Sat, 19 Feb 2022 22:09:15 +0530
+Message-Id: <20220219163915.125770-1-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 05:11 PM +01, Jakub Sitnicki wrote:
-> On Thu, Feb 17, 2022 at 03:18 PM +01, Ilya Leoshkevich wrote:
->> On Wed, 2022-02-16 at 13:44 -0800, Andrii Nakryiko wrote:
->>> On Wed, Feb 9, 2022 at 10:43 AM Jakub Sitnicki <jakub@cloudflare.com>
->>> wrote:
->
-> [...]
->
->>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Load from remote_port field =
-with zero padding (backward
->>> > compatibility) */
->>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val_u32 =3D *(__u32 *)&ctx->rem=
-ote_port;
->>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val_u32 !=3D bpf_htonl(bpf_=
-ntohs(SRC_PORT) << 16))
->>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return SK_DROP;
->>> > +
->>>=20
->>> Jakub, can you please double check that your patch set doesn't break
->>> big-endian architectures? I've noticed that our s390x test runner is
->>> now failing in the sk_lookup selftest. See [0]. Also CC'ing Ilya.
->>
->> I agree that this looks like an endianness issue. The new check seems
->> to make little sense on big-endian to me, so I would just #ifdef it
->> out.
->
-> We have a very similar check for a load from context in
-> progs/test_sock_fields.c, which is not causing problems:
->
-> static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
-> {
-> 	__u32 *word =3D (__u32 *)&sk->dst_port;
-> 	return word[0] =3D=3D bpf_htonl(0xcafe0000);
-> }
->
-> So I think I just messed something up here. Will dig into it.
+From: "Souptick Joarder (HPE)" <jrdr.linux@gmail.com>
 
-Pretty sure the source of the problem here is undefined behaviour. Can't
-legally shift u16 by 16 bits like I did in the `bpf_ntohs(SRC_PORT) <<
-16` expression. Will fix.
+Kernel test robot reported below error ->
+
+kernel/bpf/btf.c:6718 btf_populate_kfunc_set()
+error: uninitialized symbol 'ret'.
+
+Initialize ret to 0.
+
+Fixes: 	dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder (HPE) <jrdr.linux@gmail.com>
+---
+ kernel/bpf/btf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 02d7014417a0..2c4c5dbe2abe 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6706,7 +6706,7 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
+ 				  const struct btf_kfunc_id_set *kset)
+ {
+ 	bool vmlinux_set = !btf_is_module(btf);
+-	int type, ret;
++	int type, ret = 0;
+ 
+ 	for (type = 0; type < ARRAY_SIZE(kset->sets); type++) {
+ 		if (!kset->sets[type])
+-- 
+2.25.1
 
