@@ -2,56 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BBA14BC866
-	for <lists+bpf@lfdr.de>; Sat, 19 Feb 2022 13:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB5D4BC8E8
+	for <lists+bpf@lfdr.de>; Sat, 19 Feb 2022 15:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240894AbiBSMkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Feb 2022 07:40:31 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48916 "EHLO
+        id S241959AbiBSOkQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Feb 2022 09:40:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235226AbiBSMka (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Feb 2022 07:40:30 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C317C197000;
-        Sat, 19 Feb 2022 04:40:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5DA7560AE9;
-        Sat, 19 Feb 2022 12:40:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BCFAEC340F5;
-        Sat, 19 Feb 2022 12:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645274410;
-        bh=JDKK8isPTATGqHDIv4POiJ9KesqfHzhClGsuh7fvIEY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jltWN75cl2QmxD89GeBqm8rqbwZzQmMB7X6BFSdU2RAv2gCk5Pj2fGK9j1OqCU4ft
-         ME/2PXL2ZHx2UN5ReRgC6iucPXipd+mE96aWo5FZBqpqU5tXpC+vV7iSNEp9J/tDOQ
-         mSgpJZ0BsL+3pLghGQRLns8arQZl7geylMlH2DjYXIX1BGLGCp2mxqjNkuKapUkPFI
-         i6hu/5TjSz26xbxX4Y/dApZS8QEr2BAmbgXKFAE8+0gW9X3PwDJBws90fjY83JQXhy
-         rdNHnJVteozlHkJ6RP2QNOag6/SyCFSAdzomdYJZO0zoBmEddg2yLmpA/hy53fjA4u
-         KO2JKQrR58BCg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AA1B7E5D07D;
-        Sat, 19 Feb 2022 12:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232726AbiBSOkP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Feb 2022 09:40:15 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E9F7004F
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 06:39:56 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id e5so10591299lfr.9
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 06:39:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version:content-transfer-encoding;
+        bh=rm17YSrotUSdRJ6BYuD2Ka29woyCrwxkkMypL8/+Zws=;
+        b=R+QKwOYklID1n9atX296D0nCwG8KM3fO7//cRNML+HEH+UsM8OG1SL5DkZq0BCAUP8
+         2M61zfE1D2iozuGtCmbcMH3zT3/V9en3m+ZgW1MNavcyBHEFx44+uTw8a8cUS8RmKuWj
+         qr5bhJ5U0e5HeEzivlsJDga0OFc08Pw2T+9yg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version:content-transfer-encoding;
+        bh=rm17YSrotUSdRJ6BYuD2Ka29woyCrwxkkMypL8/+Zws=;
+        b=SBcZABkqCk3AHvdMbJNWRrQm+9D3UsBzPs7CbnbSEJJO9m7B0IjOvXg/3+5k+krXGR
+         vlZAYP+WXrdrbjyH3NcXLI9Jp/L2ejyVeY/IC8Ss67u6Yrf3ty3uBoDH59RqKvBHnOut
+         rBkwYSm8u03Vx0UUaIE69W2cF3X7/olYiGRBhGWqmdxFPtdWpFQnV2WFLYNNIYUPdIlP
+         p+OPlSp8VgGAdbkpcdL2Kya7CeGV9kXsVz12ZIzxMgHDto/Il+wkDl5a166eVuU+7Eag
+         Px38TBzocmNvWDXvogmNpCEJkdfdp/42BFkwH9S4pQfifLC2w5I3Cc9wlHxgk08so1hW
+         HAiQ==
+X-Gm-Message-State: AOAM532daKaAm9pCa/BCQUw8lfXfU5Gjbvyv9YoYkMqV7rujTdhHdlkg
+        8oXssxqUYw0TtaRawky2xmJUQw==
+X-Google-Smtp-Source: ABdhPJymOuYy/bNslmfXFaem6ECNBIlJebCwoNJuz6tFnhk/Bq9TuuigUhywkJVmmTV0bg2FEpbLRw==
+X-Received: by 2002:a05:6512:3e0a:b0:43c:8197:af34 with SMTP id i10-20020a0565123e0a00b0043c8197af34mr8338120lfv.141.1645281594928;
+        Sat, 19 Feb 2022 06:39:54 -0800 (PST)
+Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
+        by smtp.gmail.com with ESMTPSA id r11sm666448ljk.40.2022.02.19.06.39.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Feb 2022 06:39:54 -0800 (PST)
+References: <20220209184333.654927-1-jakub@cloudflare.com>
+ <20220209184333.654927-3-jakub@cloudflare.com>
+ <CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com>
+ <e0999e46e5332ca79bdfe4d9b9d7f17e4366a340.camel@linux.ibm.com>
+ <87fsohea8q.fsf@cloudflare.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Cover 4-byte load from
+ remote_port in bpf_sk_lookup
+Date:   Sat, 19 Feb 2022 15:37:01 +0100
+In-reply-to: <87fsohea8q.fsf@cloudflare.com>
+Message-ID: <87wnhq6htx.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 1/1] i40e: remove dead stores on XSK hotpath
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164527441069.11752.16243635494122993373.git-patchwork-notify@kernel.org>
-Date:   Sat, 19 Feb 2022 12:40:10 +0000
-References: <20220218215033.415004-1-anthony.l.nguyen@intel.com>
-In-Reply-To: <20220218215033.415004-1-anthony.l.nguyen@intel.com>
-To:     Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, alexandr.lobakin@intel.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org, sassmann@redhat.com,
-        hawk@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        ast@kernel.org, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com, george.kuruvinakunnel@intel.com
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,28 +77,45 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
-
-On Fri, 18 Feb 2022 13:50:33 -0800 you wrote:
-> From: Alexander Lobakin <alexandr.lobakin@intel.com>
-> 
-> The 'if (ntu == rx_ring->count)' block in i40e_alloc_rx_buffers_zc()
-> was previously residing in the loop, but after introducing the
-> batched interface it is used only to wrap-around the NTU descriptor,
-> thus no more need to assign 'xdp'.
-> 
+On Thu, Feb 17, 2022 at 05:11 PM +01, Jakub Sitnicki wrote:
+> On Thu, Feb 17, 2022 at 03:18 PM +01, Ilya Leoshkevich wrote:
+>> On Wed, 2022-02-16 at 13:44 -0800, Andrii Nakryiko wrote:
+>>> On Wed, Feb 9, 2022 at 10:43 AM Jakub Sitnicki <jakub@cloudflare.com>
+>>> wrote:
+>
 > [...]
+>
+>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Load from remote_port field =
+with zero padding (backward
+>>> > compatibility) */
+>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val_u32 =3D *(__u32 *)&ctx->rem=
+ote_port;
+>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val_u32 !=3D bpf_htonl(bpf_=
+ntohs(SRC_PORT) << 16))
+>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 return SK_DROP;
+>>> > +
+>>>=20
+>>> Jakub, can you please double check that your patch set doesn't break
+>>> big-endian architectures? I've noticed that our s390x test runner is
+>>> now failing in the sk_lookup selftest. See [0]. Also CC'ing Ilya.
+>>
+>> I agree that this looks like an endianness issue. The new check seems
+>> to make little sense on big-endian to me, so I would just #ifdef it
+>> out.
+>
+> We have a very similar check for a load from context in
+> progs/test_sock_fields.c, which is not causing problems:
+>
+> static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
+> {
+> 	__u32 *word =3D (__u32 *)&sk->dst_port;
+> 	return word[0] =3D=3D bpf_htonl(0xcafe0000);
+> }
+>
+> So I think I just messed something up here. Will dig into it.
 
-Here is the summary with links:
-  - [net-next,1/1] i40e: remove dead stores on XSK hotpath
-    https://git.kernel.org/netdev/net-next/c/7e1b54d07751
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Pretty sure the source of the problem here is undefined behaviour. Can't
+legally shift u16 by 16 bits like I did in the `bpf_ntohs(SRC_PORT) <<
+16` expression. Will fix.
 
