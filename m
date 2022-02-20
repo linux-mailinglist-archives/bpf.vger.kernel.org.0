@@ -2,57 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7F64BCB67
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 01:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AFB4BCB69
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 01:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243256AbiBTApQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Sat, 19 Feb 2022 19:45:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54616 "EHLO
+        id S231705AbiBTAuY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Feb 2022 19:50:24 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243253AbiBTApP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Feb 2022 19:45:15 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313A95621D
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:56 -0800 (PST)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21K0ZSQm017214
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:55 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eb0r7j03y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:55 -0800
-Received: from twshared33837.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Sat, 19 Feb 2022 16:44:54 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 1A1BD119BD964; Sat, 19 Feb 2022 16:44:49 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
-Subject: [PATCH bpf-next] selftests/bpf: use bootstrap bpftool for core_reloc tests
-Date:   Sat, 19 Feb 2022 16:44:45 -0800
-Message-ID: <20220220004445.2132567-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S230376AbiBTAuX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Feb 2022 19:50:23 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A75AF4704F;
+        Sat, 19 Feb 2022 16:50:03 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id d19so1450816ioc.8;
+        Sat, 19 Feb 2022 16:50:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OH4rp73xFGXlis0xCwWIn46+nuRPJj/iv3AazmDMQPs=;
+        b=LOZsHZ+TaR7BS7x3SAX8VTJQFrR9mNyhk+U3YmEhLDw8+pKPavFpAvPx5MpLkSU5NQ
+         BR04k46q4oK2YB1bv0SHOrTF7XRdv7y8LlTeIV6teHX4pPrDc3z0pyHyJ7PSlvxuw0Je
+         XLOlVxFhrTVp3zvGlg96CqT1lrDWE1JlUEMyWf94AS01ZrLAEo0sBhN+75k1bWuzJ6nZ
+         PNjGv6yhKiVoGv89/HSQORo+WMgKlu7y2MTY2rfbE6Vwu1IN71iVlDXtdmWlrVgR0jPm
+         Ll20JzfekWIJXNf1xK9izK9GPhDbNAnhTCrTZGMHUNYEZL6xSwhiSSzqnVJvOBbBwim5
+         ZMXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OH4rp73xFGXlis0xCwWIn46+nuRPJj/iv3AazmDMQPs=;
+        b=zXRtnKxA799kqrmVsAWhYksgTpoCs/XHlsafaiZTVg22KxVsnwTnp0ZdHaxuR/WgVp
+         kV4PKgoXwCQ2SgJtUHOORKDkJrEFlBuSkEikhJx50q2PuVJYwfKk5l2QhhtsRjUb3ihN
+         7pGtPXyHwTmmIkRy/i6sBnYQtER+Gx4d2/tNmEGuBHWIEYo8nhVKOawwHHK0VCX1sX0n
+         YGNl1apZCb7S7OzHpkmHUa8YMYWWFqM5rhkWM4amcsObF4BdwFux/Swm1bZKQXiyH6tm
+         7HISfNNDp8am7ioRrodYRcE+rWqE1argEBE+JsAL3uH2pEUtKeD4q557+xCtSxnPTZRH
+         bliQ==
+X-Gm-Message-State: AOAM531U5QDimH7idmvtRktKyMoyXl603hN9PsWlcfg/twUamG55AG3a
+        GIIVZZw/oKMjl2Y2boAZyRgak26FEaHHRPUIcS989H9Mr2c=
+X-Google-Smtp-Source: ABdhPJy8kT+IIeEOefE7W+Y0hqUzNF5ZAnOKfakTbw4AnJhKFzzCUAv8BR0s9WSRENnjP/XmZSXb2Xx4SCDCC6HWaYM=
+X-Received: by 2002:a05:6602:210c:b0:640:7616:d93a with SMTP id
+ x12-20020a056602210c00b006407616d93amr7388327iox.154.1645318202985; Sat, 19
+ Feb 2022 16:50:02 -0800 (PST)
 MIME-Version: 1.0
+References: <20220218203906.317687-1-mauricio@kinvolk.io> <0958851a-2ff7-d51c-0e90-1c3e04207529@iogearbox.net>
+In-Reply-To: <0958851a-2ff7-d51c-0e90-1c3e04207529@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Sat, 19 Feb 2022 16:49:52 -0800
+Message-ID: <CAEf4BzaxQ029c8ofsq7PLWJX8xXVO0xDrnF908+6kXF7yQnGow@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: Remove usage of reallocarray()
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-X-Proofpoint-ORIG-GUID: o92M54xwccBuLKP3ri4XD3jqqQDhVeM5
-X-Proofpoint-GUID: o92M54xwccBuLKP3ri4XD3jqqQDhVeM5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-19_04,2022-02-18_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1034
- lowpriorityscore=0 mlxlogscore=944 malwarescore=0 adultscore=0
- impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202200002
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,33 +69,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Use minimal bootstrap version of bpftool for testing min_core_btf
-functionality in core_reloc tests. This avoids unnecessary dependencies
-on libbfd, libcap, etc that full bpftool might have in build host
-differs from the one in which the test is actually run. This is
-currently the case for BPF CI, where build host has libbfd, but stripped
-down Linux image inside QEMU doesn't, which causes CI tests to fail.
+On Fri, Feb 18, 2022 at 3:30 PM Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>
+> On 2/18/22 9:39 PM, Mauricio V=C3=A1squez wrote:
+> > This commit fixes a compilation error on systems with glibc < 2.26 [0]:
+> >
+> > ```
+> > In file included from main.h:14:0,
+> >                   from gen.c:24:
+> > linux/tools/include/tools/libc_compat.h:11:21: error: attempt to use po=
+isoned "reallocarray"
+> >   static inline void *reallocarray(void *ptr, size_t nmemb, size_t size=
+)
+> > ```
+> >
+> > This happens because gen.c pulls <bpf/libbpf_internal.h>, and then
+> > <tools/libc_compat.h> (through main.h). When
+> > COMPAT_NEED_REALLOCARRAY is set, libc_compat.h defines reallocarray()
+> > which libbpf_internal.h poisons with a GCC pragma.
+> >
+> > This follows the same approach of libbpf in commit
+> > 029258d7b228 ("libbpf: Remove any use of reallocarray() in libbpf").
+> >
+> > Reported-by: Quentin Monnet <quentin@isovalent.com>
+> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
+> >
+> > [0]: https://lore.kernel.org/bpf/3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@i=
+sovalent.com/
+> [...]
+> > + * Copied from tools/lib/bpf/libbpf_internal.h
+> > + */
+> > +static inline void *bpftool_reallocarray(void *ptr, size_t nmemb, size=
+_t size)
+> > +{
+> > +     size_t total;
+> > +
+> > +#if __has_builtin(__builtin_mul_overflow)
+> > +     if (unlikely(__builtin_mul_overflow(nmemb, size, &total)))
+> > +             return NULL;
+> > +#else
+> > +     if (size =3D=3D 0 || nmemb > ULONG_MAX / size)
+> > +             return NULL;
+> > +     total =3D nmemb * size;
+> > +#endif
+> > +     return realloc(ptr, total);
+> > +}
+>
+> Can't we just reuse libbpf_reallocarray() given we copy over libbpf_inter=
+nal.h
+> anyway via a9caaba399f9 ("bpftool: Implement "gen min_core_btf" logic")?
+>
 
-Cc: Mauricio Vásquez <mauricio@kinvolk.io>
-Fixes: 704c91e59fe0 ("selftests/bpf: Test "bpftool gen min_core_btf")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/core_reloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+yep, no need to reimplement it
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 8fbb40a832d5..a503ca4433cd 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -843,7 +843,7 @@ static int run_btfgen(const char *src_btf, const char *dst_btf, const char *objp
- 	int n;
- 
- 	n = snprintf(command, sizeof(command),
--		     "./tools/build/bpftool/bpftool gen min_core_btf %s %s %s",
-+		     "./tools/build/bpftool/bootstrap/bpftool gen min_core_btf %s %s %s",
- 		     src_btf, dst_btf, objpath);
- 	if (n < 0 || n >= sizeof(command))
- 		return -1;
--- 
-2.30.2
-
+> Thanks,
+> Daniel
