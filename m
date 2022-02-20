@@ -2,77 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F37624BCEA9
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 14:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F03E4BCED8
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 14:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbiBTNpS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 08:45:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41476 "EHLO
+        id S236669AbiBTNsj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 08:48:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbiBTNpS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 08:45:18 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A72263980F;
-        Sun, 20 Feb 2022 05:44:56 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id gb39so26503496ejc.1;
-        Sun, 20 Feb 2022 05:44:56 -0800 (PST)
+        with ESMTP id S229884AbiBTNsi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 08:48:38 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5029921813;
+        Sun, 20 Feb 2022 05:48:17 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id ay3so2024504plb.1;
+        Sun, 20 Feb 2022 05:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=boFnTExG5hKjFOUm8VmDh61ZUOILR6Fg6Ntc7q3DqNw=;
-        b=FoaPdier7OaXYRTHjnKlE3uXLOoRUgztcADAko1KPGOIg/+SbimWFmQTl3VHlumTdg
-         ocPjn1/T3n7iu7CAlpPTk9UDJVKL4HXvUv7yjWbIFjvloj2XBRoJ75qpq6sJGxxdcl8J
-         jSmGP01niTz1iNC8hVROGU1/UlGDMXvtZPyxvyj9KNGZ9flLPwQRKRQa8x5ncf+kwDTz
-         X8MB7RjybXfGbArSGZLvPxiJDCGNPBOGjCzZxfs87ob1wW72oS/Cb0P0uz4SMoLGqmBi
-         7Qd0oaz7LTaPDGZK3lLYDXuk3QHPZpk9+7cFO8pWPbYvDZXwYhnc6t874XVHWURQ/VPS
-         9ltg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tyzdp/jbfseg65ev0g7jdUi8Rfi1IKTDUUpRhEM4lag=;
+        b=iVoZO2+UF6GzmTL25SzJseUqI1wWLCFh/Z2RVawQD2XqnyGgzZLOaezd054PX/z7Xz
+         hgm1pd40El7Ih3O1zC8i8nqLbpkf5U+9reursUW2Ckv+pIl65gGLkMBLBgStX/p/YuQ1
+         mQtWgwO0nTIBNy3wW76fSHECg2qCA1dT8ovs54GmpKZV1ujsyBGftYeRC77u0801eeWn
+         c/w5YgbfM/IJ5qI/Lz0DlzlLfVKktXnryeaHHRtKwDgpO+fnHN/p4+nspUT8KMR54zp2
+         glOHU95aZEN+Z3bhyzxxEwVXD+kvFukBU0CqCWrsHv09M39FYFCGFpuTlDG4dk5Qhl/t
+         McNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=boFnTExG5hKjFOUm8VmDh61ZUOILR6Fg6Ntc7q3DqNw=;
-        b=MvmP7j4RFqqrxhRXQrosz3BZQFXd0HhY+KuWsgUKY/oGJU9UCvGvydGcu3+69Ys3Rq
-         MCJOhqDhSkWAaJwSK3/mDEkvzewHN9EPLfQzpRAEezAK6ReMxOMXcvOxR9yC4hkM8BLf
-         kFpky9xbMOZs9mTdHRRJwxDv0nksueC4OCyzKNIxja/Rg5UcmmGhLTWwseseFeSIAtJ/
-         +oNS6YXoyfws7b32TwchYdOe3S4OvQUZ4h5/d8pKSke1tiy23v1FBTYCNYcd+juAVPL8
-         NV0gm9+5IjhSyyBej5Ntyv6ynKK5P4iyEuK/FqIQKGPp7ztasL9FgizYBPZnI7QDBMpc
-         DzIQ==
-X-Gm-Message-State: AOAM532jD6OjwutUX++H+0jJKJ9+DxqrIC26iWqI44890gHBLRwFazpO
-        jt/AWJIPK9c+V/P6IiVx2hINccJlW1Xo3g==
-X-Google-Smtp-Source: ABdhPJyh212VdYVSQBeI6ymAbODormq6soaIierLE5F0qU0qArV7pIqbW3je8IL4q2mZ7WqP/4NYOA==
-X-Received: by 2002:a17:906:9d01:b0:6cd:2bfd:6cde with SMTP id fn1-20020a1709069d0100b006cd2bfd6cdemr12572888ejc.478.1645364694884;
-        Sun, 20 Feb 2022 05:44:54 -0800 (PST)
-Received: from krava ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id s9sm7317901edj.48.2022.02.20.05.44.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tyzdp/jbfseg65ev0g7jdUi8Rfi1IKTDUUpRhEM4lag=;
+        b=7uvyViZL4j4VNWd1fTHstoPD7DUjQj6B1dSshYJvspr55O7PCOvZPH+IPrmDUyihe9
+         HZ3e2XZ1I9R8ZfN9uASBi81nzKsbnMg77F2aCuzQq1dMdPBxk15MVkz8Yd/MOu/0+SAL
+         OlY3dWDEfRR8E7jqC0zIEIFrwRXYWcg4V6IGxq7+JylMjZkA73TuvhMuC4R+VShDyp5D
+         j2jnN2Pika9gtJ6lXLD5V0oX33V924L0vAoVsDhgY5t5OXCzaeSQj2Tzbl4EiC3HVdMJ
+         eIhORZMFTJql4AASkLfeO3Ay0sZT9kSdZy5HPv8koLczOnLafZXLXZ5M0qmA3UdXtgte
+         1M1A==
+X-Gm-Message-State: AOAM5317Si+aILImez/o42N8eZXiRGKSXVNE8li1caXyAiYwIfbM2uTD
+        mS0ZBob+4zUy3XzWrRD/fk8SMdLPNrc=
+X-Google-Smtp-Source: ABdhPJz7yDAir3Pp7By8EcC8ZsQw2erTXsUCZA0TU/KByTGLho+tTGXn2BM3gGGFlS2Emyr1Ejhl3A==
+X-Received: by 2002:a17:902:a412:b0:14f:9c99:1690 with SMTP id p18-20020a170902a41200b0014f9c991690mr4863165plq.142.1645364896576;
+        Sun, 20 Feb 2022 05:48:16 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id d8sm10057328pfv.84.2022.02.20.05.48.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Feb 2022 05:44:54 -0800 (PST)
-Date:   Sun, 20 Feb 2022 14:44:51 +0100
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Sun, 20 Feb 2022 05:48:16 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] perf tools: Rework prologue generation code
-Message-ID: <YhJF00d9baPtXjzH@krava>
-References: <20220217131916.50615-1-jolsa@kernel.org>
- <20220217131916.50615-4-jolsa@kernel.org>
- <CAEf4BzYP7=JuyuY=xZe71urpxat4ba-JnqeSTcHF=CYmsQbofQ@mail.gmail.com>
- <Yg9geQ0LJjhnrc7j@krava>
- <CAEf4BzZaFWhWf73JbfO7gLi82Nn4ma-qmaZBPij=giNzzoSCTQ@mail.gmail.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v1 00/15] Introduce typed pointer support in BPF maps
+Date:   Sun, 20 Feb 2022 19:17:58 +0530
+Message-Id: <20220220134813.3411982-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZaFWhWf73JbfO7gLi82Nn4ma-qmaZBPij=giNzzoSCTQ@mail.gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7134; h=from:subject; bh=gN4hB4C2rirVwlB4suNXTjjGmsF7Zx1ocsK735GCqhc=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiEkZXvZi6e1cepTHG/wb9O2j8RRGbgYNvn+RnMikn t4Y8pfWJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYhJGVwAKCRBM4MiGSL8RysOWEA Cb9H6Jy3z7PjK/6K3Hdc6YLgBrZAxD9yjsEkW/XyA69O73Z2hS4XiN76Ilx/3PSDzZcv7u6DIuiXH1 F0IiyXA928mequyQfB3wJI1AKLD2eRYkUr8SIdCtxRuat/8aaTfucI7oVJXHn6JjJIb7GIt6vYxJ+h clbKFcLc+6YIx20MhvxiiHdV1ECr/8YDf/gnjAOcV0lPc/98Uy90QeUTHJ8kNmjjxwEchevJgXD72E ddZEqZJcJbAkcqm+7qyYhke0wgC6Y/EFOPwsTTLc4hPPKZgNs+Pd+UHLGrCZkvTXPwQjJlCxJD3Pqd r+h7kRLT/gRILcA8Ngk8xz8CcMrrCo6TYu9WyshYRn1EaLjoRkjj8t2QpxOvK1f1iU7W+Ga7DZToFQ B4A1ELMDrZSJjHxz3XSq8RmevwjX/RHcELsCvo9s+PSDmPy1MUwLFoj6v/MB4hCgrbKDK1sdgrSfh5 37hMaCmQveHKk7TwV1bbFFD3t3HKJ74x4RKweiiY1Pl+X2+G2GnfOsrUcno3ZXJapABkIUNaag+9k4 BLWG4AuoaEbka2Q5kqnILIlCFS1D+Fg+QXJdYxj3xOpvrvcbYwnMFmUl5Wsy+w3TBus/zIkFeuCJR0 Rytyss0ySbdBMdnxyyxq1hGUQBENMU9Yx/aBeII5UgGSmX+RbRnzq1IhvmCA==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -83,151 +73,149 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 11:55:16AM -0800, Andrii Nakryiko wrote:
-> On Fri, Feb 18, 2022 at 1:01 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Thu, Feb 17, 2022 at 01:53:16PM -0800, Andrii Nakryiko wrote:
-> > > On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Some functions we use now for bpf prologue generation are
-> > > > going to be deprecated, so reworking the current code not
-> > > > to use them.
-> > > >
-> > > > We need to replace following functions/struct:
-> > > >    bpf_program__set_prep
-> > > >    bpf_program__nth_fd
-> > > >    struct bpf_prog_prep_result
-> > > >
-> > > > Current code uses bpf_program__set_prep to hook perf callback
-> > > > before the program is loaded and provide new instructions with
-> > > > the prologue.
-> > > >
-> > > > We workaround this by using objects's 'unloaded' programs instructions
-> > > > for that specific program and load new ebpf programs with prologue
-> > > > using separate bpf_prog_load calls.
-> > > >
-> > > > We keep new ebpf program instances descriptors in bpf programs
-> > > > private struct.
-> > > >
-> > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >  tools/perf/util/bpf-loader.c | 122 +++++++++++++++++++++++++++++------
-> > > >  1 file changed, 104 insertions(+), 18 deletions(-)
-> > > >
-> > >
-> > > [...]
-> > >
-> > > >  errout:
-> > > > @@ -696,7 +718,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > > >         struct bpf_prog_priv *priv = program_priv(prog);
-> > > >         struct perf_probe_event *pev;
-> > > >         bool need_prologue = false;
-> > > > -       int err, i;
-> > > > +       int i;
-> > > >
-> > > >         if (IS_ERR_OR_NULL(priv)) {
-> > > >                 pr_debug("Internal error when hook preprocessor\n");
-> > > > @@ -727,6 +749,12 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > > >                 return 0;
-> > > >         }
-> > > >
-> > > > +       /*
-> > > > +        * Do not load programs that need prologue, because we need
-> > > > +        * to add prologue first, check bpf_object__load_prologue.
-> > > > +        */
-> > > > +       bpf_program__set_autoload(prog, false);
-> > >
-> > > if you set autoload to false, program instructions might be invalid in
-> > > the end. Libbpf doesn't apply some (all?) relocations to such
-> > > programs, doesn't resolve CO-RE, etc, etc. You have to let
-> > > "prototypal" BPF program to be loaded before you can grab final
-> > > instructions. It's not great, but in your case it should work, right?
-> >
-> > hum, do we care? it should all be done when the 'new' program with
-> > the prologue is loaded, right?
-> 
-> yeah, you should care. If there is any BPF map involved, it is
-> properly resolved to correct FD (which is put into ldimm64 instruction
-> in BPF program code) during the load. If program is not autoloaded,
-> this is skipped. Same for any global variable or subprog call (if it's
-> not always inlined). So you very much should care for any non-trivial
-> program.
+Introduction
+------------
 
-ah too bad.. all that is in the load path, ok
+This set enables storing pointers of a certain type in BPF map, and extends the
+verifier to enforce type safety and lifetime correctness properties.
 
-> 
-> >
-> > I switched it off because the verifier failed to load the program
-> > without the prologue.. because in the original program there's no
-> > code to grab the arguments that the rest of the code depends on,
-> > so the verifier sees invalid access
-> 
-> Do you have an example of C code and corresponding BPF instructions
-> before/after prologue generation? Just curious to see in details how
-> this is done.
+The infrastructure being added is generic enough for allowing storing any kind
+of pointers whose type is available using BTF (user or kernel) in the future
+(e.g. strongly typed memory allocation in BPF program), which are internally
+tracked in the verifier as PTR_TO_BTF_ID, but for now the series limits them to
+four kinds of pointers obtained from the kernel.
 
-so with following example:
+Obviously, use of this feature depends on map BTF.
 
-	SEC("func=do_sched_setscheduler param->sched_priority@user")
-	int bpf_func__setscheduler(void *ctx, int err, int param)
-	{
-		char fmt[] = "prio: %ld";
-		bpf_trace_printk(fmt, sizeof(fmt), param);
-		return 1;
-	}
+1. Unreferenced kernel pointer
 
-perf will attach the code to do_sched_setscheduler function,
-and read 'param->sched_priority' into 'param' argument
+In this case, there are very few restrictions. The pointer type being stored
+must match the type declared in the map value. However, such a pointer when
+loaded from the map can only be dereferenced, but not passed to any in-kernel
+helpers or kernel functions available to the program. This is because while the
+verifier's exception handling mechanism coverts BPF_LDX to PROBE_MEM loads,
+which are then handled specially by the JIT implementation, the same liberty is
+not available to accesses inside the kernel. The pointer by the time it is
+passed into a helper has no lifetime related guarantees about the object it is
+pointing to, and may well be referencing invalid memory.
 
-so the resulting clang object expects 'param' to be in R3
+2. Referenced kernel pointer
 
-	0000000000000000 <bpf_func__setscheduler>:
-	       0:       b7 01 00 00 64 00 00 00 r1 = 100
-	       1:       6b 1a f8 ff 00 00 00 00 *(u16 *)(r10 - 8) = r1
-	       2:       18 01 00 00 70 72 69 6f 00 00 00 00 3a 20 25 6c r1 = 77926701655
-	       4:       7b 1a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r1
-	       5:       bf a1 00 00 00 00 00 00 r1 = r10
-	       6:       07 01 00 00 f0 ff ff ff r1 += -16
-	       7:       b7 02 00 00 0a 00 00 00 r2 = 10
-	       8:       85 00 00 00 06 00 00 00 call 6
-	       9:       b7 00 00 00 01 00 00 00 r0 = 1
-	      10:       95 00 00 00 00 00 00 00 exit
+This case imposes a lot of restrictions on the programmer, to ensure safety. To
+transfer the ownership of a reference in the BPF program to the map, the user
+must use the BPF_XCHG instruction, which returns the old pointer contained in
+the map, as an acquired reference, and releases verifier state for the
+referenced pointer being exchanged, as it moves into the map.
 
-and R3 is loaded in the prologue code (first 15 instructions)
-and it also sets 'err' (R2) with the result of the reading:
+This a normal PTR_TO_BTF_ID that can be used with in-kernel helpers and kernel
+functions callable by the program.
 
-	   0: (bf) r6 = r1
-	   1: (79) r3 = *(u64 *)(r6 +96)
-	   2: (bf) r7 = r10
-	   3: (07) r7 += -8
-	   4: (7b) *(u64 *)(r10 -8) = r3
-	   5: (b7) r2 = 8
-	   6: (bf) r1 = r7
-	   7: (85) call bpf_probe_read_user#-60848
-	   8: (55) if r0 != 0x0 goto pc+2
-	   9: (61) r3 = *(u32 *)(r10 -8)
-	  10: (05) goto pc+3
-	  11: (b7) r2 = 1
-	  12: (b7) r3 = 0
-	  13: (05) goto pc+1
-	  14: (b7) r2 = 0
-	  15: (bf) r1 = r6
+However, if BPF_LDX is used to load a referenced pointer from the map, it is
+still not permitted to pass it to in-kernel helpers or kernel functions. To
+obtain a reference usable with helpers, the user must invoke a kfunc helper
+which returns a usable reference (which also must be eventually released before
+BPF_EXIT, or moved into a map).
 
-	  16: (b7) r1 = 100
-	  17: (6b) *(u16 *)(r10 -8) = r1
-	  18: (18) r1 = 0x6c25203a6f697270
-	  20: (7b) *(u64 *)(r10 -16) = r1
-	  21: (bf) r1 = r10
-	  22: (07) r1 += -16
-	  23: (b7) r2 = 10
-	  24: (85) call bpf_trace_printk#-54848
-	  25: (b7) r0 = 1
-	  26: (95) exit
+Since the load of the pointer (preserving data dependency ordering) must happen
+inside the RCU read section, the kfunc helper will take a pointer to the map
+value, which must point to the actual pointer of the object whose reference is
+to be raised. The type will be verified from the BTF information of the kfunc,
+as the prototype must be:
 
+	T *func(T **, ... /* other arguments */);
 
-I'm still scratching my head how to workaround this.. we do want maps
-and all the other updates to the code, but verifier won't let it pass
-without the prologue code
+Then, the verifier checks whether pointer at offset of the map value points to
+the type T, and permits the call.
 
-jirka
+This convention is followed so that such helpers may also be called from
+sleepable BPF programs, where RCU read lock is not necessarily held in the BPF
+program context, hence necessiating the need to pass in a pointer to the actual
+pointer to perform the load inside the RCU read section.
+
+3. per-CPU kernel pointer
+
+These have very little restrictions. The user can store a PTR_TO_PERCPU_BTF_ID
+into the map, and when loading from the map, they must NULL check it before use,
+because while a non-zero value stored into the map should always be valid, it can
+still be reset to zero on updates. After checking it to be non-NULL, it can be
+passed to bpf_per_cpu_ptr and bpf_this_cpu_ptr helpers to obtain a PTR_TO_BTF_ID
+to underlying per-CPU object.
+
+It is also permitted to write 0 and reset the value.
+
+4. Userspace pointer
+
+The verifier recently gained support for annotating BTF with __user type tag.
+This indicates pointers pointing to memory which must be read using the
+bpf_probe_read_user helper to ensure correct results. The set also permits
+storing them into the BPF map, and ensures user pointer cannot be stored
+into other kinds of pointers mentioned above.
+
+When loaded from the map, the only thing that can be done is to pass this
+pointer to bpf_probe_read_user. No dereference is allowed.
+
+Notes
+-----
+
+This set requires the following LLVM fix to pass the BPF CI:
+
+  https://reviews.llvm.org/D119799
+
+Also, I applied Alexei's suggestion of removing callback for btf_find_field, but
+that 'ugly' is still required, since bad offset alignment etc. can return an
+error, and we don't want to leave a partial ptr_off_tab around in that case. The
+other option is freeing inside btf_find_field, but that would be more code
+conditional on BTF_FIELD_KPTR, when the caller can do it based on ret < 0.
+
+TODO
+----
+
+Needs a lot more testing, especially for stuff apart from verifier correctness.
+Will work on that in parallel during v1 review. The idea was to get a little
+more feedback (esp. for kptr_get stuff) before moving forward with adding more
+tests. Posting it now to just get discussion started. The verifier tests fairly
+comprehensively test many edge cases I could think of.
+
+Kumar Kartikeya Dwivedi (15):
+  bpf: Factor out fd returning from bpf_btf_find_by_name_kind
+  bpf: Make btf_find_field more generic
+  bpf: Allow storing PTR_TO_BTF_ID in map
+  bpf: Allow storing referenced PTR_TO_BTF_ID in map
+  bpf: Allow storing PTR_TO_PERCPU_BTF_ID in map
+  bpf: Allow storing __user PTR_TO_BTF_ID in map
+  bpf: Prevent escaping of pointers loaded from maps
+  bpf: Adapt copy_map_value for multiple offset case
+  bpf: Populate pairs of btf_id and destructor kfunc in btf
+  bpf: Wire up freeing of referenced PTR_TO_BTF_ID in map
+  bpf: Teach verifier about kptr_get style kfunc helpers
+  net/netfilter: Add bpf_ct_kptr_get helper
+  libbpf: Add __kptr* macros to bpf_helpers.h
+  selftests/bpf: Add C tests for PTR_TO_BTF_ID in map
+  selftests/bpf: Add verifier tests for PTR_TO_BTF_ID in map
+
+ include/linux/bpf.h                           |  90 ++-
+ include/linux/btf.h                           |  24 +
+ include/net/netfilter/nf_conntrack_core.h     |  17 +
+ kernel/bpf/arraymap.c                         |  13 +-
+ kernel/bpf/btf.c                              | 565 ++++++++++++++--
+ kernel/bpf/hashtab.c                          |  27 +-
+ kernel/bpf/map_in_map.c                       |   5 +-
+ kernel/bpf/syscall.c                          | 227 ++++++-
+ kernel/bpf/verifier.c                         | 311 ++++++++-
+ net/bpf/test_run.c                            |  17 +-
+ net/netfilter/nf_conntrack_bpf.c              | 132 +++-
+ net/netfilter/nf_conntrack_core.c             |  17 -
+ tools/lib/bpf/bpf_helpers.h                   |   4 +
+ .../selftests/bpf/prog_tests/map_btf_ptr.c    |  13 +
+ .../testing/selftests/bpf/progs/map_btf_ptr.c | 105 +++
+ .../testing/selftests/bpf/progs/test_bpf_nf.c |  31 +
+ tools/testing/selftests/bpf/test_verifier.c   |  57 +-
+ .../selftests/bpf/verifier/map_btf_ptr.c      | 624 ++++++++++++++++++
+ 18 files changed, 2144 insertions(+), 135 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_btf_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/map_btf_ptr.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/map_btf_ptr.c
+
+-- 
+2.35.1
+
