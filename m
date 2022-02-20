@@ -2,69 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4710B4BCB64
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 01:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7F64BCB67
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 01:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243171AbiBTAmd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Feb 2022 19:42:33 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47348 "EHLO
+        id S243256AbiBTApQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 19 Feb 2022 19:45:16 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241815AbiBTAmc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Feb 2022 19:42:32 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912373B2A7;
-        Sat, 19 Feb 2022 16:42:12 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id q11so227229pln.11;
-        Sat, 19 Feb 2022 16:42:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5OtJ38Qj62RwZLCcGiYfWZ1y0rTNTwoMvTBrQ3Gxr5w=;
-        b=XxS8lrMoDbChrYMWm3EAZFCFYdrM3sNVQ44m49zvmn24lK8yNLzK9y9ZGo6KDvRVno
-         wCULMmJoGKnd/XYAfDcK/srCGHtQS8Ohfz2OBnNnPtMify0v1NknHO/hCW+FrvMGm/4Y
-         wgPGWP6ZM+B9zbr49Yj47v9AtfSTbDH7y59SJwFl4hPECJJYVmwySze4ajUeZ+jlCdsE
-         f2TOlV3zvbgda6/8cqp89vrSTGrD7kn5iFuWTX6jWFyOY37mwYxbP1DBypx0tpqxkFy0
-         f1QJeywHpJWnFS8u+xMHvC8I3ySdGTAHo3PjNlvuyEMbFo/I2xfe7aFC2/oTaVIVWlup
-         5g+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5OtJ38Qj62RwZLCcGiYfWZ1y0rTNTwoMvTBrQ3Gxr5w=;
-        b=vNLC1o4iyiyI3BUz5JfgvLC8O0cZu/rcMp2En+C8K00CuuOmhQV8y7YAejJvSbPXiW
-         /mqOCShnITV0zFcW9b4by3dq79auyb9khVmjL96M0f0SzCqiYIl4Svnr+tVMsfyK57a6
-         pzbEJ+kKeP9mJ741P4NVixCD5nYezubYpTRfGOD5rlW8KuYfuFoohKcGiyCsrRoAwXhf
-         J8K7mHuvwSHY1P33wU2yuNncqKXZDd1u9HaU0D7O4SodEOldvBJ5VbhJH1kWBSpr03iv
-         x7li2wh8Aekvejgc+FmAT0IoMGLQSuRITCJENH+bPwWyWV9W6Eyg57eTRU5KtQFt4POw
-         GF6g==
-X-Gm-Message-State: AOAM530KBgVK+2MswxVeZy0dwSYspcwW2cR1ejAG0JXoW0WbXRxhAYda
-        fuebPKKI4J0JZbbMD/3/Tb1HUonJ18c=
-X-Google-Smtp-Source: ABdhPJzcTkPAEsmyCfmVu0d+bTdOpxR0Mbo+4BDPq2xo/VhJD95gzBlDVCMgBTwIauaYsCzYYHnQTw==
-X-Received: by 2002:a17:902:bf06:b0:14d:8c72:96c6 with SMTP id bi6-20020a170902bf0600b0014d8c7296c6mr13521454plb.156.1645317732034;
-        Sat, 19 Feb 2022 16:42:12 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id y20sm7468979pfi.155.2022.02.19.16.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Feb 2022 16:42:11 -0800 (PST)
-Date:   Sun, 20 Feb 2022 06:12:09 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Souptick Joarder <jrdr.linux@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] bpf: Initialize ret to 0 inside btf_populate_kfunc_set()
-Message-ID: <20220220004209.hlutexplxhvrmpi6@apollo.legion>
-References: <20220219163915.125770-1-jrdr.linux@gmail.com>
+        with ESMTP id S243253AbiBTApP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Feb 2022 19:45:15 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313A95621D
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:56 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21K0ZSQm017214
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:55 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eb0r7j03y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 16:44:55 -0800
+Received: from twshared33837.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 19 Feb 2022 16:44:54 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 1A1BD119BD964; Sat, 19 Feb 2022 16:44:49 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+Subject: [PATCH bpf-next] selftests/bpf: use bootstrap bpftool for core_reloc tests
+Date:   Sat, 19 Feb 2022 16:44:45 -0800
+Message-ID: <20220220004445.2132567-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220219163915.125770-1-jrdr.linux@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: o92M54xwccBuLKP3ri4XD3jqqQDhVeM5
+X-Proofpoint-GUID: o92M54xwccBuLKP3ri4XD3jqqQDhVeM5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-19_04,2022-02-18_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 clxscore=1034
+ lowpriorityscore=0 mlxlogscore=944 malwarescore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202200002
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,44 +60,33 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 19, 2022 at 10:09:15PM IST, Souptick Joarder wrote:
-> From: "Souptick Joarder (HPE)" <jrdr.linux@gmail.com>
->
-> Kernel test robot reported below error ->
->
-> kernel/bpf/btf.c:6718 btf_populate_kfunc_set()
-> error: uninitialized symbol 'ret'.
->
-> Initialize ret to 0.
->
-> Fixes: 	dee872e124e8 ("bpf: Populate kfunc BTF ID sets in struct btf")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Souptick Joarder (HPE) <jrdr.linux@gmail.com>
-> ---
+Use minimal bootstrap version of bpftool for testing min_core_btf
+functionality in core_reloc tests. This avoids unnecessary dependencies
+on libbfd, libcap, etc that full bpftool might have in build host
+differs from the one in which the test is actually run. This is
+currently the case for BPF CI, where build host has libbfd, but stripped
+down Linux image inside QEMU doesn't, which causes CI tests to fail.
 
-Thanks for the fix.
+Cc: Mauricio Vásquez <mauricio@kinvolk.io>
+Fixes: 704c91e59fe0 ("selftests/bpf: Test "bpftool gen min_core_btf")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/prog_tests/core_reloc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 8fbb40a832d5..a503ca4433cd 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -843,7 +843,7 @@ static int run_btfgen(const char *src_btf, const char *dst_btf, const char *objp
+ 	int n;
+ 
+ 	n = snprintf(command, sizeof(command),
+-		     "./tools/build/bpftool/bpftool gen min_core_btf %s %s %s",
++		     "./tools/build/bpftool/bootstrap/bpftool gen min_core_btf %s %s %s",
+ 		     src_btf, dst_btf, objpath);
+ 	if (n < 0 || n >= sizeof(command))
+ 		return -1;
+-- 
+2.30.2
 
->  kernel/bpf/btf.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 02d7014417a0..2c4c5dbe2abe 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6706,7 +6706,7 @@ static int btf_populate_kfunc_set(struct btf *btf, enum btf_kfunc_hook hook,
->  				  const struct btf_kfunc_id_set *kset)
->  {
->  	bool vmlinux_set = !btf_is_module(btf);
-> -	int type, ret;
-> +	int type, ret = 0;
->
->  	for (type = 0; type < ARRAY_SIZE(kset->sets); type++) {
->  		if (!kset->sets[type])
-> --
-> 2.25.1
->
-
---
-Kartikeya
