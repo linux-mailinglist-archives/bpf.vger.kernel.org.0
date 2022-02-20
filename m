@@ -2,148 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D460D4BD188
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 21:44:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CE64BD1C2
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 22:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244938AbiBTUlQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 15:41:16 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37866 "EHLO
+        id S235916AbiBTVAU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 16:00:20 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244868AbiBTUlP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 15:41:15 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3DF4504D;
-        Sun, 20 Feb 2022 12:40:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645389654; x=1676925654;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=s0jR3gPRePi1saHMkP1Sa718UVGScDkx6b1DLwyOMlo=;
-  b=bTXVls4J39vlsKJv2ytQcKh682Izhu1JUoaq93Rsko+gZajLsvhdLSor
-   u7/H6dPZi4+MElE0M7uHEqK7vdihs8lcBPefFii39RvyKsefS64TVB9i1
-   ksdVQD9SHsA8vrst4jvuYoBu37MWmORXdykDTxC8mnTiXmfPms7iY9joZ
-   EXvWTKYj6tfKWOhFOGA7iFjOlbqpiR1aMlZY+c8+mP9s08L7JUS3gB6pS
-   MqEdogTzHJYbzdqpPwSUPvcHbY/tSJkNPVZgbtdVHIC5RmjItGyKXvlf+
-   jxXSNb3EG3nNvXX9ApmRWaRPR/Vhbj3X83R59KXPLnpmUQ7w2hAbD2Bf0
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="251347924"
-X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
-   d="scan'208";a="251347924"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 12:40:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
-   d="scan'208";a="683014185"
-Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Feb 2022 12:40:51 -0800
-Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nLt0k-0000jT-DX; Sun, 20 Feb 2022 20:40:50 +0000
-Date:   Mon, 21 Feb 2022 04:40:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Hao Luo <haoluo@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 05/15] bpf: Allow storing
- PTR_TO_PERCPU_BTF_ID in map
-Message-ID: <202202210444.8UyLf80r-lkp@intel.com>
-References: <20220220134813.3411982-6-memxor@gmail.com>
+        with ESMTP id S235640AbiBTVAU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 16:00:20 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652252DD47;
+        Sun, 20 Feb 2022 12:59:58 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id y11so6971170pfa.6;
+        Sun, 20 Feb 2022 12:59:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vZ02YZOgDrVwpXxu5Hh2IeZyutIz7L7EXvfRr92KaEQ=;
+        b=FV9CHBay5FKiJSC+n+l9oLKIuj9FLBV15sKCHkhSkn6ryQojFLju4EqcomQbtYIMRK
+         tnKsWZlerzWjR61cah1t9seN9hRUMHrg0MmDS4rAWzLE3xtGmulL8Wkj0oMIdg8+7kiU
+         dZzGKuT3IqYh1KTiTqr/1VRJmkcmPviNw/MrnDkXOCCEVntrxzqEewnM3ZRxTlY6eSHb
+         IMIBARuzjLMQWbNH3a+GW1pv/3svBVfzQS/bG/4BtzrT5flPfeCM3Dvk6SvP7kgs5wsH
+         iDxwz9TAngLGsi5rvYEk6MCILVKDxhHoYKj/wjU44iP5jb0HBlJIIgnPUp2zd1ZAZtb2
+         sKEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vZ02YZOgDrVwpXxu5Hh2IeZyutIz7L7EXvfRr92KaEQ=;
+        b=ZMmfq/3qHKjphxq0be/C8YUI9/9l/UTl/DV9N7uWO7Cq++U0k+qwu2+NpThvijaHG6
+         X9xbZ03CNYb5UCM9tMvvJ9faiHStjsa6/VKI1QJIEXv2Hh+UegcmG8LIgfyc5TkTNyuE
+         Qi1jSmNj5FE9qDPMCysVpe5t/RExZ7hpj3fV6BpOGVBAT4qIpk65rMnJ2G4AXAbFyofw
+         BWxiyb4DSsFwcrc2Du41tpXWih2zKQxGSIx82+SDM1dFYQXzTWXDE6FRlmGrXqCnKLrE
+         noLSzltfW0pnx6JXwPQLWEv11cEzqf2kbmyfDydDu+1hCMcAM46NgbIxQ/MHNkAjyI4U
+         k/yw==
+X-Gm-Message-State: AOAM530h3K96qhvdIqD85CsIycrMZ7lGbl0j7MTx8joIvDySqwsLPwgo
+        SqEzH9Oxx9kIJ0J8llc3LdF95YFpVVYmXuDAGsTOmSOX+Mg=
+X-Google-Smtp-Source: ABdhPJzkfljOiO/45d10wt5Ent2wIyxLX/k2INviYgRDEVaIX/7lgH9wARbj8ccdTKTUJ1kKJ3qxTxApZdJzFHyEWqA=
+X-Received: by 2002:a05:6a00:809:b0:4f1:14bb:40b1 with SMTP id
+ m9-20020a056a00080900b004f114bb40b1mr5767416pfk.69.1645390797775; Sun, 20 Feb
+ 2022 12:59:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220220134813.3411982-6-memxor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220218095612.52082-1-laoar.shao@gmail.com> <20220218095612.52082-3-laoar.shao@gmail.com>
+ <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com> <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
+In-Reply-To: <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sun, 20 Feb 2022 12:59:46 -0800
+Message-ID: <CAADnVQ+FuK2wihDy5GumBN3LVBky0r04CmS4h1JsVoS7QoH6LA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/3] bpf: set attached cgroup name in attach_name
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+On Sun, Feb 20, 2022 at 6:17 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> On Sun, Feb 20, 2022 at 2:27 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Feb 18, 2022 at 1:56 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > >
+> > > Set the cgroup path when a bpf prog is attached to a cgroup, and unset
+> > > it when the bpf prog is detached.
+> > >
+> > > Below is the result after this change,
+> > > $ cat progs.debug
+> > >   id name             attached
+> > >    5 dump_bpf_map     bpf_iter_bpf_map
+> > >    7 dump_bpf_prog    bpf_iter_bpf_prog
+> > >   17 bpf_sockmap      cgroup:/
+> > >   19 bpf_redir_proxy
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > ---
+> > >  kernel/bpf/cgroup.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > > index 43eb3501721b..ebd87e54f2d0 100644
+> > > --- a/kernel/bpf/cgroup.c
+> > > +++ b/kernel/bpf/cgroup.c
+> > > @@ -440,6 +440,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > >         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > >         struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > >         enum cgroup_bpf_attach_type atype;
+> > > +       char cgrp_path[64] = "cgroup:";
+> > >         struct bpf_prog_list *pl;
+> > >         struct list_head *progs;
+> > >         int err;
+> > > @@ -508,6 +509,11 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > >         else
+> > >                 static_branch_inc(&cgroup_bpf_enabled_key[atype]);
+> > >         bpf_cgroup_storages_link(new_storage, cgrp, type);
+> > > +
+> > > +       cgroup_name(cgrp, cgrp_path + strlen("cgroup:"), 64);
+> > > +       cgrp_path[63] = '\0';
+> > > +       prog->aux->attach_name = kstrdup(cgrp_path, GFP_KERNEL);
+> > > +
+> >
+> > This is pure debug code. We cannot have it in the kernel.
+> > Not even under #ifdef.
+> >
+> > Please do such debug code on a side as your own bpf program.
+> > For example by kprobe-ing in this function and keeping the path
+> > in a bpf map or send it to user space via ringbuf.
+> > Or enable cgroup tracepoint and monitor cgroup_mkdir with full path.
+> > Record it in user space or in bpf map, etc.
+> >
+>
+> It is another possible solution to  hook the related kernel functions
+> or tracepoints, but it may be a little complicated to track all the
+> bpf attach types, for example we also want to track
+> BPF_PROG_TYPE_SK_MSG[1], BPF_PROG_TYPE_FLOW_DISSECTOR and etc.
+> While the attach_name provides us a generic way to get how the bpf
+> progs are attached, which can't be got by bpftool.
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on next-20220217]
-[cannot apply to bpf-next/master bpf/master linus/master v5.17-rc4 v5.17-rc3 v5.17-rc2 v5.17-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
-base:    3c30cf91b5ecc7272b3d2942ae0505dd8320b81c
-config: openrisc-randconfig-s032-20220220 (https://download.01.org/0day-ci/archive/20220221/202202210444.8UyLf80r-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 11.2.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/255d8431d2cae10fb3ac6abd44b1bf73f15dd060
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
-        git checkout 255d8431d2cae10fb3ac6abd44b1bf73f15dd060
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=openrisc SHELL=/bin/bash kernel/bpf/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/verifier.c:1568:39: sparse: sparse: mixing different enum types:
->> kernel/bpf/verifier.c:1568:39: sparse:    unsigned int enum bpf_reg_type
->> kernel/bpf/verifier.c:1568:39: sparse:    unsigned int enum bpf_type_flag
-   kernel/bpf/verifier.c:13916:38: sparse: sparse: subtraction of functions? Share your drugs
-   kernel/bpf/verifier.c: note: in included file (through include/linux/bpf.h, include/linux/bpf-cgroup.h):
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:63:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:52:47: sparse: sparse: cast from non-scalar
-
-vim +1568 kernel/bpf/verifier.c
-
-  1555	
-  1556	static void mark_btf_ld_reg(struct bpf_verifier_env *env,
-  1557				    struct bpf_reg_state *regs, u32 regno,
-  1558				    enum bpf_reg_type reg_type,
-  1559				    struct btf *btf, u32 btf_id,
-  1560				    enum bpf_type_flag flag)
-  1561	{
-  1562		if (reg_type == SCALAR_VALUE ||
-  1563		    WARN_ON_ONCE(reg_type != PTR_TO_BTF_ID && reg_type != PTR_TO_PERCPU_BTF_ID)) {
-  1564			mark_reg_unknown(env, regs, regno);
-  1565			return;
-  1566		}
-  1567		mark_reg_known_zero(env, regs, regno);
-> 1568		regs[regno].type = reg_type | flag;
-  1569		regs[regno].btf = btf;
-  1570		regs[regno].btf_id = btf_id;
-  1571	}
-  1572	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+bpftool can certainly print such details.
+See how it's using task_file iterator.
+It can be extended to look into cgroups and sockmap,
+and for each program print "sockmap:%d", map->id if so desired.
