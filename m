@@ -2,264 +2,329 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A59DF4BD0B8
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 19:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0B14BD0E3
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 20:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244539AbiBTSld (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 13:41:33 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44822 "EHLO
+        id S243454AbiBTTWd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 14:22:33 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240337AbiBTSlc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 13:41:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4634731347
-        for <bpf@vger.kernel.org>; Sun, 20 Feb 2022 10:41:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645382469;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=u9wFN1OhvJJ9qPyhnyKnWvWSIZB4hNTwLidVvqGcOC4=;
-        b=eITwxGzUa7N63oi9xpetWntPo4Coj7XLz4bZduKWTudk3DLjBwFx48qF+RytGkAne8Ll+a
-        e35ka408lCUo/XH7C2eWqgHfe/MBXoN4VxPCYThWNlzx7Rq3MVzeKW6pgAl+LjlWjb0oYH
-        gVEgz8fF0X97dqdnJFzBrFevP9rqQ4E=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-147-Y9Kfu6pjNnikGUHqRZrkrA-1; Sun, 20 Feb 2022 13:41:08 -0500
-X-MC-Unique: Y9Kfu6pjNnikGUHqRZrkrA-1
-Received: by mail-qk1-f197.google.com with SMTP id w4-20020a05620a094400b0060dd52a1445so10200454qkw.3
-        for <bpf@vger.kernel.org>; Sun, 20 Feb 2022 10:41:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9wFN1OhvJJ9qPyhnyKnWvWSIZB4hNTwLidVvqGcOC4=;
-        b=wxrMYMSD5RuaZMxL97r7KgLCnFyfttHWp8ZlI7AGR6aSyTdu4l2gHo41EUXzhqqpz8
-         CEpNjVIa67wqeWIWXAqLqQdrvPvoPP/2/a9kymOmLZnXW7Ya/ToyjB4kRtFFgYObwBVD
-         16XyGZ8yqzvZlk77QjGn1Lk/LVRJbYJsF2MhtvAcym1xNXhYRAmIB2kWV6X1h8i864/Z
-         54FyJRxgEd17IMq8BboHoRx8VyiwRmVc53/UT9QENuh6+Ce8TWb72oEH7tORNBhH9XZ9
-         7ruDSRjQDOpgALCdRfflQZ8kLf4x/92wMZNS5nSP0cKL1qei7lCnPRmwqxnnZQ52aQXJ
-         gluw==
-X-Gm-Message-State: AOAM532oPrjNXyikSTOFlqIiH0ulr2lgKKtOFFLKSQu4vaC6u6p6sgsu
-        9CgjhAxkfEk3F82CtAB51hSLjH3N4foEoBjbHR0/TcJNfQOUI+AdN7AiG4L7hEt9nB8iItsj/xF
-        0hK6XtEYTo8b3
-X-Received: by 2002:a05:6214:9c1:b0:42d:b2b8:f760 with SMTP id dp1-20020a05621409c100b0042db2b8f760mr12658524qvb.123.1645382467162;
-        Sun, 20 Feb 2022 10:41:07 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyfFh4O9qEGBB5lVN/I3Jx8V98UFE5oOeE2pUaPVreaUf4ZjLEZzVAcJak7tC+yUs4w/JErdg==
-X-Received: by 2002:a05:6214:9c1:b0:42d:b2b8:f760 with SMTP id dp1-20020a05621409c100b0042db2b8f760mr12658513qvb.123.1645382466857;
-        Sun, 20 Feb 2022 10:41:06 -0800 (PST)
-Received: from localhost.localdomain.com (024-205-208-113.res.spectrum.com. [24.205.208.113])
-        by smtp.gmail.com with ESMTPSA id 16sm29631702qty.86.2022.02.20.10.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Feb 2022 10:41:06 -0800 (PST)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] bpf: cleanup comments
-Date:   Sun, 20 Feb 2022 10:40:55 -0800
-Message-Id: <20220220184055.3608317-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        with ESMTP id S236189AbiBTTWc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 14:22:32 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC653A719
+        for <bpf@vger.kernel.org>; Sun, 20 Feb 2022 11:22:10 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21KGF3vN023532;
+        Sun, 20 Feb 2022 11:22:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=vak8za7iTeQ0nuuH86WcI5qJXfMHiYNvAE4fCKF4k2Y=;
+ b=bRs8KoPWyX6ORLXzbRH4y1b5L1qwqqjhICMVwVsi4FkiWEJ/o6mOLYC/TyR/+ZpjtNh/
+ McCm/p7G0+w+gJDaLxGONCe06DzgWNa2zOTCStbCupbVPakJFo6Q2c++4XtYbppQmFBI
+ jX7c+fGOwNZPe3WPAj86F676jVN+H/GmwKs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eawfrnfx1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 20 Feb 2022 11:22:09 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sun, 20 Feb 2022 11:22:07 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CrUzLcQPJB2cf3kmF8D95H+00AroVT70L/pI27aZqLVAQrd15/dcEGAWmJCc6qrWlzuQntSQqaSPLEDgV1GVRIIF0BXYsLbND3kHWHrswJf28s5mD56+Eu+Q7AV2Pr3bosJybwZvos5A2WZvghSlkc3G2t44QulvmYYZ/te7XcZDkYlATo5I4jwF8Eq2bLbaEgk+h7/2RRwSYShkcn1Lk80Hw7lGGqekU5N3RGC0E3TpdqV2G5nZHriYPl/qWlDJy+LqGxIo5dwzvPz5243hpVxSiHcTyE//aLn1BVA+x+uKWMR9QWpuFAKg0E3IBASw2mtKffJ54mVuArP8q6JKiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vak8za7iTeQ0nuuH86WcI5qJXfMHiYNvAE4fCKF4k2Y=;
+ b=kfZJlkylLKgKHTx9euYdhFYmXZcmJXFLGpwIoNvaECfmw+fnRU+M6m5LIlqj4coD0HEszaSUNi79KahIPsC2vYOakGPm/NOgGWOgUFSBSAYjQCNFkXMUyLg1n7ZXkllrLRIdXszzNpcpHeqvUtGNA8xWWK/grIDwiqTmMMvGmdv2qmZcWFqUtkLBTxIxB++qWF41PK/m9RLo+tuuJqZ2Xhjx8i4TohBNAOto91cXfvi2PAGwvkfUqIJTuS7KF8tGK0vlOjlcXzRbzAw+DDv/9T2unDIidsWurszd45/4Rv4/tlBKg0mEYC32UtHdER7sUBxgy/khF1I5ruGby0PHxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BY3PR15MB4866.namprd15.prod.outlook.com (2603:10b6:a03:3c1::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.26; Sun, 20 Feb
+ 2022 19:22:06 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.4995.026; Sun, 20 Feb 2022
+ 19:22:06 +0000
+Message-ID: <11b93216-2592-adfa-1a0b-d8d870144f90@fb.com>
+Date:   Sun, 20 Feb 2022 11:22:03 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.1
+Subject: Re: BTF type tags not emitted properly when using macros
+Content-Language: en-US
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, <bpf@vger.kernel.org>
+References: <20220220071333.sltv4jrwniool2qy@apollo.legion>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220220071333.sltv4jrwniool2qy@apollo.legion>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-ClientProxiedBy: MWHPR20CA0006.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f7ecc9ec-e22a-4926-93e3-08d9f4a64845
+X-MS-TrafficTypeDiagnostic: BY3PR15MB4866:EE_
+X-Microsoft-Antispam-PRVS: <BY3PR15MB4866B1A1DC2127308DBD5EC8D3399@BY3PR15MB4866.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OFvNRW0gGdaQehkEYe7TziywcXlfwk6wHEGq73aRzTpNSK1NppgYop1kwISzRBoH8julHMKwxSvPR8qQBvhY1U2vraCPVz7yARNEsYVdmncle1Z6HfzdTHxCFkpeOfgmjzokQl3mdnE0SNiTAYAT7SArBsI8jitJQ8KBiI6cfx/1tPwfM+zQEU+CWwPPP+anw0y9GzsWIF4snrtb7XEZJSheCQ0DjTzuvVmdh+0mnHk4T7H1xmLeuB/9v7Jm2WbZUeXmkNsVpEDtvoyl64cBznDSwEaw15oWaiekDIo/S9XDjMQlVtQMWxm3GFAPf4kaYHUWqFcbPhXtIkLmRe+4r81wyr9tcv8L7gedlSDVB22zDwIIt9z6ztOxuE25XGaXhH2Zjz9o3knrASLY8oydnn+msqIpXDn9LynwHQl/aWJ8Uv8bg79GTQ50ItZKpaoVvNBdlI5b8hH9c0w3wHYJabpYzHJGXVNA5M9XO70S1fes+fK9v1gwB7qAbr2/1shNM8xG6v2l8smf+YCysjh+z/n9CsvLikRf+sbs+ZN4ENlIWWWj+jPtJlAgUln+FaStNMMoxwc9eSaRQpqQhJmbEn3tvlMjxdx5Bm8zQqp6fDXsrNQzjKQBFhX8lSoVl1JfBHseU7WoIJWt8ynpUbFsdaOnC++o5AeSMtt2REXcM9Yzz824n0i2lfNwG0tdo1fyg5+GoYZz5iKOG7+O04ZrW5KBQYlw0vb8haIExTbA0wj15S5GSWfeiME3ABPtPsRc9dThdQTexIkpS+gZ1e12I/6H0xjG6zdTyGOzLisgAyMRFJd/cd9TbrPSUX1aTz9L
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(316002)(508600001)(6512007)(6666004)(6506007)(52116002)(53546011)(31686004)(36756003)(83380400001)(8936002)(2906002)(66556008)(86362001)(38100700002)(31696002)(66946007)(66476007)(8676002)(186003)(6486002)(2616005)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TlEzMm5LSGViTTdPakFMNDZVcXVSMk4wTVF0dnRSUVp0clc0Tnd3eVk0ZWJt?=
+ =?utf-8?B?TFV5WEFvcjBxa3JHVmduWUhLd3ZUK2JrTlU3TUVaV09BZVlvUm5TV0w0Nk9F?=
+ =?utf-8?B?MWlJeGJKVGlLU1Nid2UyUWpNa2pZUTlSSk55eWZ5Sy9YazRmTnZaSXgxNzBp?=
+ =?utf-8?B?anpZS0EvTEpqY1JVN015VnB2L2dqbThZeUhtMVVRa1RTd0h3cFJWc3d0aU1I?=
+ =?utf-8?B?Z3JpdjkyTmpUU0F0aXlnTkdLYkFsN0piOGJrcCtxQnhDeDVvZDFSRWQzV1JD?=
+ =?utf-8?B?WUR3akp5cnRXNFVpdUpDcmlFTWlFdzRyNENoOHlvSTJHcUVNY1VBbjYvakF4?=
+ =?utf-8?B?ckdGQzJ6VEJEVEZQMnFQWnVtcG9DbjE0eFJsRmRoY1NmOVBRYWZMaEtaYVl0?=
+ =?utf-8?B?OXRrZnVwN0grMjBuOGFPdWNhTExCckVQczgxc3BXMC9tejF1ZFkybTNLT2tG?=
+ =?utf-8?B?UzBBZ0hVTGlQVWZFSjV6czN0Sy9TUVpUL1BPNjc4UE1ESDZGNndJVEhIRmNN?=
+ =?utf-8?B?QURxQU9CbHdwbHpFUjZEU0lhOFllNkFSOWk3QXhVK1JKVDM3Rjd6cktEL0pz?=
+ =?utf-8?B?WG5Pc3luUEFqVUVIa3N6VFZDNHk2SDVJSHR0ZlhmZkx4U1oreSt5YzFOcGtS?=
+ =?utf-8?B?RGRNRmpmWW9vRzZZdjFqWHg3VXh6cGhFRHBCT1FIdTJiMmgwdGk1VS9LYkNv?=
+ =?utf-8?B?b0trN0FtNkNFdjNldU56eTJqQjZHLzBwZjJnUzFDVWtFZURiU05qVFRKTGF0?=
+ =?utf-8?B?R1IySjIyNHZVMGJHSTdQcEhzSUNCUVNlWlNucGNrTW5KUHA3VmtZNjIvaHYz?=
+ =?utf-8?B?Qlc2Rm1MTjEyN2t0VWRXSmNpaFNoMWRZeloydnNqMnNPK0s3OXJtMjJJemtR?=
+ =?utf-8?B?cUd3S3U0SnpoTC9XUHNMcTI3Slg4MGFZYTRKSThEeU9remcvazhPRWtlb3R6?=
+ =?utf-8?B?QW52cGxoOEtQVExNODlCdGdkVUt2Zis1QTdBTnJMcFdvcDcwSnh3ZHppRGxp?=
+ =?utf-8?B?Z0VrbkRKZnRqNWlmV042d0R0Mk1ON0JnbEpuK3FMeFQzcTdRVjk0dGlTMi9M?=
+ =?utf-8?B?UFdTZzVnRGtWbDBnVnhOT1VWV2NoSVdtOWU4N1c3ckplakxzTzM2aUoxWmlJ?=
+ =?utf-8?B?bDJQejBSRktKQ25sUHQ4SmdHV3BKWW1IVWRZdnVUMG1wUGdUelhMOVhrWVgz?=
+ =?utf-8?B?ZWFSb2J5Ym95Qmw5aU5ReVlPU2hhWm1WeTl0OHo3ZnNtKy9KZlk4RGo4QWo5?=
+ =?utf-8?B?bUcyUnF0MGVON3o3NDhhSHJXQ0s2QUYwK0hTT3cwWDh3S2hHRlVDUFluMVpG?=
+ =?utf-8?B?YkZrc2VjN0pRK1VoQ1dkQnVCajAwZmgxUFg5MVB6eXI3WEEweEZiRUxRTUhX?=
+ =?utf-8?B?aUhHaUR1TjBiMC9WZXlTQ0w2OGhEWmhtLzZBOGFZcWd3K01Fb0JFS05VMExQ?=
+ =?utf-8?B?TXlTaUVxa1B2U0hSL1NJQXpCZkUzcGM0NWt3T01jUjQvUVAxSzlWVCtwdEM3?=
+ =?utf-8?B?aGZ6eEhTcHFsVG9PT2lDRmJTeURGR0xDV3dyeTc5YytUMmI3eWNDckJraXhX?=
+ =?utf-8?B?djlwdGdhTVliTlNnL2NhUkNodnFOY1NtaGRpTkN6K3BscTl1bm9FSEhZbkt1?=
+ =?utf-8?B?K05kWGhSU2pjZnowbENKV0xldStsQ0huZFNWM1hucHhHT1hlZFJrYmpVR0Ev?=
+ =?utf-8?B?dWJRZk13aSswRVFXQ1NoRUdRVDVHWUJaOEFFTHZtUWFmenR0aGtuMzIwSUU4?=
+ =?utf-8?B?bTJwUDBGSmthaUl6d3d6akNvSTBUQkVqYmMvK01Cc0tGdkRYK3cwUUQ3RUJr?=
+ =?utf-8?B?Mm1WdTJyUVJsOGpLQ3Erbkd1c0ovaGRmYm5mT1VtaENSemJaQVEzaVIwMlVm?=
+ =?utf-8?B?R3VBbjQvUWNiL1c0RjBFR0R1bUplUmlBLzZvekoyZjdxQWQwWGM4RFE3ZGJk?=
+ =?utf-8?B?K3d1dHdOWXBwOUhUY0QwVVoyRVczYThRR1ZTSGl0bkQrWlZwZVlTdk5pa3R6?=
+ =?utf-8?B?KzB0L3ZBandyRWgxZWlaS0NJVUlrcTQwU0h2Qms5b1FjY1Vsb3hTK0VvQkpY?=
+ =?utf-8?B?Yzc5ZVJNVGpNQVc2T0IwMnFybkRYbmJyT3lTaHlia1ZEcnI0S3YvRDlIV3l5?=
+ =?utf-8?Q?uvy3hFr1ikEmC5P2vHUMMuMlK?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7ecc9ec-e22a-4926-93e3-08d9f4a64845
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2022 19:22:06.5466
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hL+M6yh4LUNIlXbjuYxJatVPIxS4hKqyC6KUlmpmEAHj2AETSxVswp+Iy1OG8Hwk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY3PR15MB4866
+X-OriginatorOrg: fb.com
+X-Proofpoint-GUID: 3iNe-5MyxFJJ_wuSl-cPdn1qmNzOuv8M
+X-Proofpoint-ORIG-GUID: 3iNe-5MyxFJJ_wuSl-cPdn1qmNzOuv8M
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-20_08,2022-02-18_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
+ phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202200126
+X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-Add leading space to spdx tag
-Use // for spdx c file comment
 
-Replacements
-resereved to reserved
-inbetween to in between
-everytime to every time
-intutivie to intuitive
-currenct to current
-encontered to encountered
-referenceing to referencing
-upto to up to
-exectuted to executed
+On 2/19/22 11:13 PM, Kumar Kartikeya Dwivedi wrote:
+> Hi list,
+> 
+> I noticed another problem in LLVM HEAD wrt BTF type tags.
+> 
+> When I have a file like bad.c:
+> 
+>   ; cat bad.c
+> #define __kptr __attribute__((btf_type_tag("btf_id")))
+> #define __kptr_ref __kptr __attribute__((btf_type_tag("ref")))
+> #define __kptr_percpu __kptr __attribute__((btf_type_tag("percpu")))
+> #define __kptr_user __kptr __attribute__((btf_type_tag("user")))
+> 
+> struct map_value {
+>          int __kptr *a;
+>          int __kptr_ref *b;
+>          int __kptr_percpu *c;
+>          int __kptr_user *d;
+> };
+> 
+> struct map_value *func(void);
+> 
+> int main(void)
+> {
+>          struct map_value *p = func();
+>          return *p->a + *p->b + *p->c + *p->d;
+> }
+> 
+> All tags are not emitted to BTF (neither are they there in llvm-dwarfdump output):
+> 
+>   ; ./src/linux/kptr-map/tools/bpf/bpftool/bpftool btf dump file bad.o format raw
+> [1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
+> [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> [3] FUNC 'main' type_id=1 linkage=global
+> [4] FUNC_PROTO '(anon)' ret_type_id=5 vlen=0
+> [5] PTR '(anon)' type_id=6
+> [6] STRUCT 'map_value' size=32 vlen=4
+>          'a' type_id=8 bits_offset=0
+>          'b' type_id=11 bits_offset=64
+>          'c' type_id=11 bits_offset=128
+>          'd' type_id=11 bits_offset=192
+> [7] TYPE_TAG 'btf_id' type_id=2
+> [8] PTR '(anon)' type_id=7
+> [9] TYPE_TAG 'btf_id' type_id=2
+> [10] TYPE_TAG 'ref' type_id=9
+> [11] PTR '(anon)' type_id=10
+> [12] FUNC 'func' type_id=4 linkage=extern
+> 
+> Notice that only btf_id (__kptr) and btf_id + ref (__kptr_ref) are emitted
+> properly, and then rest of members use type_id=11, instead of emitting more type
+> tags.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- kernel/bpf/bpf_local_storage.c | 2 +-
- kernel/bpf/btf.c               | 6 +++---
- kernel/bpf/cgroup.c            | 8 ++++----
- kernel/bpf/hashtab.c           | 2 +-
- kernel/bpf/helpers.c           | 2 +-
- kernel/bpf/local_storage.c     | 2 +-
- kernel/bpf/reuseport_array.c   | 2 +-
- kernel/bpf/syscall.c           | 2 +-
- kernel/bpf/trampoline.c        | 2 +-
- 9 files changed, 14 insertions(+), 14 deletions(-)
+Thanks for reporting. I think clang frontend may have bugs in handling 
+nested macros. Will debug this.
 
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-index 71de2a89869c..092a1ac772d7 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -136,7 +136,7 @@ bool bpf_selem_unlink_storage_nolock(struct bpf_local_storage *local_storage,
- 		 * will be done by the caller.
- 		 *
- 		 * Although the unlock will be done under
--		 * rcu_read_lock(),  it is more intutivie to
-+		 * rcu_read_lock(),  it is more intuitive to
- 		 * read if the freeing of the storage is done
- 		 * after the raw_spin_unlock_bh(&local_storage->lock).
- 		 *
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 02d7014417a0..8b11d1a9bee1 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -1,4 +1,4 @@
--/* SPDX-License-Identifier: GPL-2.0 */
-+// SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2018 Facebook */
- 
- #include <uapi/linux/btf.h>
-@@ -2547,7 +2547,7 @@ static int btf_ptr_resolve(struct btf_verifier_env *env,
- 	 *
- 	 * We now need to continue from the last-resolved-ptr to
- 	 * ensure the last-resolved-ptr will not referring back to
--	 * the currenct ptr (t).
-+	 * the current ptr (t).
- 	 */
- 	if (btf_type_is_modifier(next_type)) {
- 		const struct btf_type *resolved_type;
-@@ -6148,7 +6148,7 @@ int btf_type_snprintf_show(const struct btf *btf, u32 type_id, void *obj,
- 
- 	btf_type_show(btf, type_id, obj, (struct btf_show *)&ssnprintf);
- 
--	/* If we encontered an error, return it. */
-+	/* If we encountered an error, return it. */
- 	if (ssnprintf.show.state.status)
- 		return ssnprintf.show.state.status;
- 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 098632fdbc45..128028efda64 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1031,7 +1031,7 @@ int cgroup_bpf_prog_query(const union bpf_attr *attr,
-  * __cgroup_bpf_run_filter_skb() - Run a program for packet filtering
-  * @sk: The socket sending or receiving traffic
-  * @skb: The skb that is being sent or received
-- * @type: The type of program to be exectuted
-+ * @type: The type of program to be executed
-  *
-  * If no socket is passed, or the socket is not of type INET or INET6,
-  * this function does nothing and returns 0.
-@@ -1094,7 +1094,7 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_skb);
- /**
-  * __cgroup_bpf_run_filter_sk() - Run a program on a sock
-  * @sk: sock structure to manipulate
-- * @type: The type of program to be exectuted
-+ * @type: The type of program to be executed
-  *
-  * socket is passed is expected to be of type INET or INET6.
-  *
-@@ -1119,7 +1119,7 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
-  *                                       provided by user sockaddr
-  * @sk: sock struct that will use sockaddr
-  * @uaddr: sockaddr struct provided by user
-- * @type: The type of program to be exectuted
-+ * @type: The type of program to be executed
-  * @t_ctx: Pointer to attach type specific context
-  * @flags: Pointer to u32 which contains higher bits of BPF program
-  *         return value (OR'ed together).
-@@ -1166,7 +1166,7 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sock_addr);
-  * @sock_ops: bpf_sock_ops_kern struct to pass to program. Contains
-  * sk with connection information (IP addresses, etc.) May not contain
-  * cgroup info if it is a req sock.
-- * @type: The type of program to be exectuted
-+ * @type: The type of program to be executed
-  *
-  * socket passed is expected to be of type INET or INET6.
-  *
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index d29af9988f37..65877967f414 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1636,7 +1636,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 		value_size = size * num_possible_cpus();
- 	total = 0;
- 	/* while experimenting with hash tables with sizes ranging from 10 to
--	 * 1000, it was observed that a bucket can have upto 5 entries.
-+	 * 1000, it was observed that a bucket can have up to 5 entries.
- 	 */
- 	bucket_size = 5;
- 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 49817755b8c3..ae64110a98b5 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -1093,7 +1093,7 @@ struct bpf_hrtimer {
- struct bpf_timer_kern {
- 	struct bpf_hrtimer *timer;
- 	/* bpf_spin_lock is used here instead of spinlock_t to make
--	 * sure that it always fits into space resereved by struct bpf_timer
-+	 * sure that it always fits into space reserved by struct bpf_timer
- 	 * regardless of LOCKDEP and spinlock debug flags.
- 	 */
- 	struct bpf_spin_lock lock;
-diff --git a/kernel/bpf/local_storage.c b/kernel/bpf/local_storage.c
-index 23f7f9d08a62..497916060ac7 100644
---- a/kernel/bpf/local_storage.c
-+++ b/kernel/bpf/local_storage.c
-@@ -1,4 +1,4 @@
--//SPDX-License-Identifier: GPL-2.0
-+// SPDX-License-Identifier: GPL-2.0
- #include <linux/bpf-cgroup.h>
- #include <linux/bpf.h>
- #include <linux/bpf_local_storage.h>
-diff --git a/kernel/bpf/reuseport_array.c b/kernel/bpf/reuseport_array.c
-index 556a769b5b80..962556917c4d 100644
---- a/kernel/bpf/reuseport_array.c
-+++ b/kernel/bpf/reuseport_array.c
-@@ -143,7 +143,7 @@ static void reuseport_array_free(struct bpf_map *map)
- 
- 	/*
- 	 * Once reaching here, all sk->sk_user_data is not
--	 * referenceing this "array".  "array" can be freed now.
-+	 * referencing this "array".  "array" can be freed now.
- 	 */
- 	bpf_map_area_free(array);
- }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 35646db3d950..ce4657a00dae 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -2562,7 +2562,7 @@ static int bpf_link_alloc_id(struct bpf_link *link)
-  * pre-allocated resources are to be freed with bpf_cleanup() call. All the
-  * transient state is passed around in struct bpf_link_primer.
-  * This is preferred way to create and initialize bpf_link, especially when
-- * there are complicated and expensive operations inbetween creating bpf_link
-+ * there are complicated and expensive operations in between creating bpf_link
-  * itself and attaching it to BPF hook. By using bpf_link_prime() and
-  * bpf_link_settle() kernel code using bpf_link doesn't have to perform
-  * expensive (and potentially failing) roll back operations in a rare case
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 7224691df2ec..0b41fa993825 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -45,7 +45,7 @@ void *bpf_jit_alloc_exec_page(void)
- 
- 	set_vm_flush_reset_perms(image);
- 	/* Keep image as writeable. The alternative is to keep flipping ro/rw
--	 * everytime new program is attached or detached.
-+	 * every time new program is attached or detached.
- 	 */
- 	set_memory_x((long)image, 1);
- 	return image;
--- 
-2.26.3
+> 
+> When I use a mix of macro and direct attributes, or just attributes, it does work:
+> 
+> ; cat good.c
+> #define __kptr __attribute__((btf_type_tag("btf_id")))
+> 
+> struct map_value {
+>          int __kptr *a;
+>          int __kptr __attribute__((btf_type_tag("ref"))) *b;
+>          int __kptr __attribute__((btf_type_tag("percpu"))) *c;
+>          int __kptr __attribute__((btf_type_tag("user"))) *d;
+> };
+> 
+> struct map_value *func(void);
+> 
+> int main(void)
+> {
+>          struct map_value *p = func();
+>          return *p->a + *p->b + *p->c + *p->d;
+> }
+> 
+> Now all tags are there in BTF:
+> 
+>   ; ./src/linux/kptr-map/tools/bpf/bpftool/bpftool btf dump file good.o format raw
+> [1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
+> [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
+> [3] FUNC 'main' type_id=1 linkage=global
+> [4] FUNC_PROTO '(anon)' ret_type_id=5 vlen=0
+> [5] PTR '(anon)' type_id=6
+> [6] STRUCT 'map_value' size=32 vlen=4
+>          'a' type_id=8 bits_offset=0
+>          'b' type_id=11 bits_offset=64
+>          'c' type_id=14 bits_offset=128
+>          'd' type_id=17 bits_offset=192
+> [7] TYPE_TAG 'btf_id' type_id=2
+> [8] PTR '(anon)' type_id=7
+> [9] TYPE_TAG 'btf_id' type_id=2
+> [10] TYPE_TAG 'ref' type_id=9
+> [11] PTR '(anon)' type_id=10
+> [12] TYPE_TAG 'btf_id' type_id=2
+> [13] TYPE_TAG 'percpu' type_id=12
+> [14] PTR '(anon)' type_id=13
+> [15] TYPE_TAG 'btf_id' type_id=2
+> [16] TYPE_TAG 'user' type_id=15
+> [17] PTR '(anon)' type_id=16
+> [18] FUNC 'func' type_id=4 linkage=extern
+> 
+> In both cases, the preprocessed source (using -E) looks to be the same:
+> 
+>   ; /home/kkd/src/llvm-project/llvm/build/bin/clang --target=bpf -g -O2 -c bad.c -E
+> # 1 "bad.c"
+> # 1 "<built-in>" 1
+> # 1 "<built-in>" 3
+> # 323 "<built-in>" 3
+> # 1 "<command line>" 1
+> # 1 "<built-in>" 2
+> # 1 "bad.c" 2
+> 
+> struct map_value {
+>   int __attribute__((btf_type_tag("btf_id"))) *a;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("ref"))) *b;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("percpu"))) *c;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("user"))) *d;
+> };
+> 
+> struct map_value *func(void);
+> 
+> int main(void)
+> {
+>   struct map_value *p = func();
+>   return *p->a + *p->b + *p->c + *p->d;
+> }
+> 
+>   ; /home/kkd/src/llvm-project/llvm/build/bin/clang --target=bpf -g -O2 -c good.c -E
+> # 1 "good.c"
+> # 1 "<built-in>" 1
+> # 1 "<built-in>" 3
+> # 323 "<built-in>" 3
+> # 1 "<command line>" 1
+> # 1 "<built-in>" 2
+> # 1 "good.c" 2
+> 
+> struct map_value {
+>   int __attribute__((btf_type_tag("btf_id"))) *a;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("ref"))) *b;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("percpu"))) *c;
+>   int __attribute__((btf_type_tag("btf_id"))) __attribute__((btf_type_tag("user"))) *d;
+> };
+> 
+> struct map_value *func(void);
+> 
+> int main(void)
+> {
+>   struct map_value *p = func();
+>   return *p->a + *p->b + *p->c + *p->d;
+> }
+> 
+> --
+> 
+> Please let me know if I made some dumb mistake.
+> 
+>   ; /home/kkd/src/llvm-project/llvm/build/bin/clang --version
+> clang version 15.0.0 (https://github.com/llvm/llvm-project.git 290e482342826ee4c65bd6d2aece25736d3f0c7b)
+> Target: x86_64-unknown-linux-gnu
+> Thread model: posix
+> InstalledDir: /home/kkd/src/llvm-project/llvm/build/bin
+> 
+> A side note, but it seems it could avoid emitting the same type tag multiple
+> times to save on space. I.e. in the case of other members, their ref, percpu,
+> user tag could point to the same btf_id type tag that the first member's
+> BTF_KIND_PTR points to.
 
+Right, we might have some type duplication here. I am aware of this 
+since this ONLY happens when types in ptr -> [other modifier types] -> 
+base_type where [other modifier types] might be duplicated due to
+particular llvm BPF backend implementation. In general, this should
+not take much space. Since you are mentioning this, I will try to
+improve it.
+
+> 
+> Thanks.
+> --
+> Kartikeya
