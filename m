@@ -2,149 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6224BCEEA
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 15:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E38A34BCEF7
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 15:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238473AbiBTOSU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 09:18:20 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44652 "EHLO
+        id S241891AbiBTOag (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 09:30:36 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbiBTOSU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 09:18:20 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F35E2DE6;
-        Sun, 20 Feb 2022 06:17:59 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id h16so13089585iol.11;
-        Sun, 20 Feb 2022 06:17:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nKxMOU1DEB+J7C5Ey0mu7XzkZAbcqEABhsAN519jxqI=;
-        b=ZKH1JVuHHfjQWA43hbs0zhrpaEOQhO5ZauhSWa+iwYnduwMlQBosL2Iz3Ed1VT1Dg9
-         I3a5jaHyyW2neiC9cCMeu/yjCNUFHFyOhtYlK0lHlf2rhuuk4eLN5znUxC3ee/uegCNP
-         v6iYA45v5UUuabceYqSn3FG70GqPZ4ohVaNbNTaP8inIVd0cjEI2wmhgY4LdLU+0odpO
-         sCsjIAgm1IgK0Vnu7I04I6wsTTy3vbJceP7GnbVMI51JkZnSncMH/5SH6K3sVxQ7Re6V
-         Yythp8fnH2Mfz93pp4Lb5DnKh/sEBPGza+SaOlXxwvV4VsWIGAj/UJGvwsCC72QZTWSS
-         XB6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nKxMOU1DEB+J7C5Ey0mu7XzkZAbcqEABhsAN519jxqI=;
-        b=6e9UJsYagJffB0rQ3Y0vf9uG5htIiDjEUT+Ap1sxm4d9SKWdbebCWlmt+9E+FQZu0N
-         2qhZ2KzpnbEwTMFvNLTY+hy591ktNOCiq/IfwhfN9g0k/m861VblWAKt3ajg0VzmU4xQ
-         oPvMUXWYJl+pdzr39TSYwJrHGoow6xHvwccj2xRetD2dxcjf/C//xeqxdAiOwICTUUU0
-         bmyyi8a2tXyiYb4sMEyZYVNaByln/MTR2sJWZX9ey1JYXgj2MdzmxVljW6Tl4nJJKarJ
-         Hc282kYtz2KeY622nvDaojbh7znTKBF388Vq2lfeS2AbgBeFKNjpjTJ/mBZgqjfwttsD
-         HKig==
-X-Gm-Message-State: AOAM533TGRipAMswqt3wCfczb65c/Y4bfrUNj3hbD5kIPgmfXiL8o4re
-        740clF1/JcWaTpgkBnga8wx/uT+rGeL0W4WWB60=
-X-Google-Smtp-Source: ABdhPJyivfWBqfm3zm3f9HIv5ygNGQiavKRz100ocmYrz4Riq4wniMs0BySEGZPdq2rfBd+HlW/W6sXlH+KMAKSDQLg=
-X-Received: by 2002:a02:3403:0:b0:314:b71f:eae7 with SMTP id
- x3-20020a023403000000b00314b71feae7mr7906502jae.6.1645366678534; Sun, 20 Feb
- 2022 06:17:58 -0800 (PST)
+        with ESMTP id S229549AbiBTOaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 09:30:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B94240E41;
+        Sun, 20 Feb 2022 06:30:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EED69B80D44;
+        Sun, 20 Feb 2022 14:30:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1704C340F0;
+        Sun, 20 Feb 2022 14:30:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645367411;
+        bh=HeZrcKR/lgSNS+/4ZyVGZPY0lkICBDxbcqGF2W7KZyo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=RiQABvqen/itqZyLL/Pj80FCA5Rxm1u4oh2Fym1aq79VNsSKT+iyWhhOQvnmCIsrG
+         MBOPtN+PT85nVeb+iTULnZpS4e/xIfJx7vtBkOaaC1xAAxXTb/Q5SMHdxZXahq1HPu
+         vlAdWSiVUrF7vPRHMIGUZe1RDiixqxym25761SVkHetcKdKDwUiIXNeNqITRsVxTMZ
+         W1ds95++hNzMNk5DnP2Uk5LFxHzsx9g6WheEIA41IDe+Ul1C8dCLblbMkt48M0V33H
+         xZenHTYFXK9ZhmIcqXa0vayn+c2D+SPht13/3ZLEZGj2AG7r2Sp8VA2ID13nX5AJp+
+         vF11qOuCDlBNQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 910A3E7BB19;
+        Sun, 20 Feb 2022 14:30:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220218095612.52082-1-laoar.shao@gmail.com> <20220218095612.52082-3-laoar.shao@gmail.com>
- <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com>
-In-Reply-To: <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 20 Feb 2022 22:17:22 +0800
-Message-ID: <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/3] bpf: set attached cgroup name in attach_name
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3 0/9] net: add skb drop reasons to TCP packet
+ receive
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164536741158.13103.3993205016299229625.git-patchwork-notify@kernel.org>
+Date:   Sun, 20 Feb 2022 14:30:11 +0000
+References: <20220220070637.162720-1-imagedong@tencent.com>
+In-Reply-To: <20220220070637.162720-1-imagedong@tencent.com>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     dsahern@kernel.org, kuba@kernel.org, edumazet@google.com,
+        davem@davemloft.net, rostedt@goodmis.org, mingo@redhat.com,
+        yoshfuji@linux-ipv6.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, imagedong@tencent.com,
+        talalahmad@google.com, keescook@chromium.org,
+        ilias.apalodimas@linaro.org, alobakin@pm.me, memxor@gmail.com,
+        atenart@kernel.org, bigeasy@linutronix.de, pabeni@redhat.com,
+        linyunsheng@huawei.com, arnd@arndb.de, yajun.deng@linux.dev,
+        roopa@nvidia.com, willemb@google.com, vvs@virtuozzo.com,
+        cong.wang@bytedance.com, luiz.von.dentz@intel.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, flyingpeng@tencent.com, mengensun@tencent.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 2:27 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Fri, Feb 18, 2022 at 1:56 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > Set the cgroup path when a bpf prog is attached to a cgroup, and unset
-> > it when the bpf prog is detached.
-> >
-> > Below is the result after this change,
-> > $ cat progs.debug
-> >   id name             attached
-> >    5 dump_bpf_map     bpf_iter_bpf_map
-> >    7 dump_bpf_prog    bpf_iter_bpf_prog
-> >   17 bpf_sockmap      cgroup:/
-> >   19 bpf_redir_proxy
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  kernel/bpf/cgroup.c | 8 ++++++++
-> >  1 file changed, 8 insertions(+)
-> >
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index 43eb3501721b..ebd87e54f2d0 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -440,6 +440,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> >         struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> >         enum cgroup_bpf_attach_type atype;
-> > +       char cgrp_path[64] = "cgroup:";
-> >         struct bpf_prog_list *pl;
-> >         struct list_head *progs;
-> >         int err;
-> > @@ -508,6 +509,11 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> >         else
-> >                 static_branch_inc(&cgroup_bpf_enabled_key[atype]);
-> >         bpf_cgroup_storages_link(new_storage, cgrp, type);
-> > +
-> > +       cgroup_name(cgrp, cgrp_path + strlen("cgroup:"), 64);
-> > +       cgrp_path[63] = '\0';
-> > +       prog->aux->attach_name = kstrdup(cgrp_path, GFP_KERNEL);
-> > +
->
-> This is pure debug code. We cannot have it in the kernel.
-> Not even under #ifdef.
->
-> Please do such debug code on a side as your own bpf program.
-> For example by kprobe-ing in this function and keeping the path
-> in a bpf map or send it to user space via ringbuf.
-> Or enable cgroup tracepoint and monitor cgroup_mkdir with full path.
-> Record it in user space or in bpf map, etc.
->
+Hello:
 
-It is another possible solution to  hook the related kernel functions
-or tracepoints, but it may be a little complicated to track all the
-bpf attach types, for example we also want to track
-BPF_PROG_TYPE_SK_MSG[1], BPF_PROG_TYPE_FLOW_DISSECTOR and etc.
-While the attach_name provides us a generic way to get how the bpf
-progs are attached, which can't be got by bpftool.
-It is not for debug-only purpose, while it gives us a better way to
-maintain all the bpf progs running on a single host.
+This series was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-> Also please read Documentation/bpf/bpf_devel_QA.rst
-> bpf patches should be based on bpf-next tree.
-> These patches are not.
+On Sun, 20 Feb 2022 15:06:28 +0800 you wrote:
+> From: Menglong Dong <imagedong@tencent.com>
+> 
+> In the commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()"),
+> we added the support of reporting the reasons of skb drops to kfree_skb
+> tracepoint. And in this series patches, reasons for skb drops are added
+> to TCP layer (both TCPv4 and TCPv6 are considered).
+> Following functions are processed:
+> 
+> [...]
 
-My local bpf-next repo is a little old.
-Next time I will pull the newest bpf-next code before sending bpf
-patches. Thanks for the information.
+Here is the summary with links:
+  - [net-next,v3,1/9] net: tcp: introduce tcp_drop_reason()
+    https://git.kernel.org/netdev/net-next/c/082116ffcb74
+  - [net-next,v3,2/9] net: tcp: add skb drop reasons to tcp_v4_rcv()
+    https://git.kernel.org/netdev/net-next/c/255f9034d305
+  - [net-next,v3,3/9] net: tcp: use kfree_skb_reason() for tcp_v6_rcv()
+    https://git.kernel.org/netdev/net-next/c/c0e3154d9c88
+  - [net-next,v3,4/9] net: tcp: add skb drop reasons to tcp_v{4,6}_inbound_md5_hash()
+    https://git.kernel.org/netdev/net-next/c/643b622b51f1
+  - [net-next,v3,5/9] net: tcp: add skb drop reasons to tcp_add_backlog()
+    https://git.kernel.org/netdev/net-next/c/7a26dc9e7b43
+  - [net-next,v3,6/9] net: tcp: use kfree_skb_reason() for tcp_v{4,6}_do_rcv()
+    https://git.kernel.org/netdev/net-next/c/8eba65fa5f06
+  - [net-next,v3,7/9] net: tcp: use tcp_drop_reason() for tcp_rcv_established()
+    https://git.kernel.org/netdev/net-next/c/2a968ef60e1f
+  - [net-next,v3,8/9] net: tcp: use tcp_drop_reason() for tcp_data_queue()
+    https://git.kernel.org/netdev/net-next/c/a7ec381049c0
+  - [net-next,v3,9/9] net: tcp: use tcp_drop_reason() for tcp_data_queue_ofo()
+    https://git.kernel.org/netdev/net-next/c/d25e481be0c5
 
-[1]. https://patchwork.kernel.org/project/netdevbpf/patch/20220218095612.52082-4-laoar.shao@gmail.com/
-
+You are awesome, thank you!
 -- 
-Thanks
-Yafang
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
