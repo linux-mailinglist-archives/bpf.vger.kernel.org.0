@@ -2,70 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338BE4BCBD0
-	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 03:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B102A4BCC28
+	for <lists+bpf@lfdr.de>; Sun, 20 Feb 2022 05:27:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbiBTC7z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Feb 2022 21:59:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37046 "EHLO
+        id S241371AbiBTE15 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sat, 19 Feb 2022 23:27:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbiBTC7y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Feb 2022 21:59:54 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD8225575E
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 18:59:34 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id v13-20020a17090ac90d00b001b87bc106bdso15740930pjt.4
-        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 18:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S7kciw8UwwWy8lzT3Qwv5WfQ+dEnI8GvRE9FTYbT/Kw=;
-        b=qLiVmeTY5i+1jv6mhEIwJyo8PwWnkHHllcOriQipMiQTFr4V7qt9XC9CgLxflssJMn
-         y/FG77bLLp+A1mWyUKrawDnz7wYyIWBPWgX+00fQrnWit5jBSCj+2d6V70k6Sf0yUtPn
-         kHAdvNsJ+LNxMybqibUgTlFaJdK+RqEFc7lTstyfgn+PO/+jVMQDW621XkePT6I7A+xP
-         Ad//FBz0wmmVNxrmz7vniky/qYJeybgqOGDptFYHNLhqIeGSOfoS9QWAsIg/X9XuYzLy
-         BDEjpQ+eirqd6XlJqdliIurrZ6vYfz3IvOEYpNLCh1fW0ZOfN4/XnK1l6GH2trCVQkNT
-         Uuqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S7kciw8UwwWy8lzT3Qwv5WfQ+dEnI8GvRE9FTYbT/Kw=;
-        b=BjV3y/kJUWX2F2ecvo5samKzk5vyN7hS7YwOWlyFw2vmsuu95lNXVra4GxkVLjNFnX
-         wM/EcVyq5D1kHFhZxo/h2Ue6QriOqKCELcq28rifHZ4NX1lJ4BAYAEU9nWO7aiaYQnpk
-         rA6VlxRM27e6PBmNOIfNBVzSEi+adyUX9WkIgUoqSzj3HS/ih9w9YLerkbaa6ggkJIvX
-         x8qwCVsOKhGiYaoNoqfQEaQD64wxWFCI5Xe8Ga/MIbleOOFvU35jDU1L13gnJJIefNzf
-         iOgoq1OgDE3jYa+VkjvXePGi1rZGtyOO2/0XyHgQZhOcTQmJbSTLHGXlfDfJ0SAYxq4V
-         yOlg==
-X-Gm-Message-State: AOAM533gws605NdUU7XN/pKHZq6dQbdnhS7LfEszpY2UvH+nulwyfIZd
-        7dfJf2oC/1mBlmSLxWa8rVuHXvgJt/U=
-X-Google-Smtp-Source: ABdhPJxGcrkPNdq7Izu9+GLEGStg0WchxI9GSJAU/VC4uorRbZtXDpD9Ll6DBC9lEx2ThGTE7VeYaQ==
-X-Received: by 2002:a17:902:b616:b0:14d:be7f:717e with SMTP id b22-20020a170902b61600b0014dbe7f717emr13662978pls.149.1645325974138;
-        Sat, 19 Feb 2022 18:59:34 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id b14sm294566pjl.21.2022.02.19.18.59.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Feb 2022 18:59:33 -0800 (PST)
-Date:   Sun, 20 Feb 2022 08:29:31 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf v1 0/5] More fixes for crashes due to bad
- PTR_TO_BTF_ID reg->off
-Message-ID: <20220220025931.6rhvlii4i4emumik@apollo.legion>
-References: <20220219113744.1852259-1-memxor@gmail.com>
- <20220219121035.c6c5dmvbchzaqqak@apollo.legion>
- <20220220021808.surwmx5jhosasi2d@ast-mbp.dhcp.thefacebook.com>
+        with ESMTP id S229600AbiBTE15 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Feb 2022 23:27:57 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DEAE33E00
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 20:27:37 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21K4RUUi019982
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 20:27:36 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eay4rtr9d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Sat, 19 Feb 2022 20:27:36 -0800
+Received: from twshared10426.24.prn2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Sat, 19 Feb 2022 20:27:35 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id D6D0B11A1CAF9; Sat, 19 Feb 2022 20:27:21 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>
+Subject: [PATCH v3 bpf-next] selftests/bpf: fix btfgen tests
+Date:   Sat, 19 Feb 2022 20:27:20 -0800
+Message-ID: <20220220042720.3336684-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220220021808.surwmx5jhosasi2d@ast-mbp.dhcp.thefacebook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+X-Proofpoint-ORIG-GUID: cVmZlPgOyc-83tOGqQFy_3aHFrPIAvqz
+X-Proofpoint-GUID: cVmZlPgOyc-83tOGqQFy_3aHFrPIAvqz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-19_04,2022-02-18_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 suspectscore=0
+ priorityscore=1501 clxscore=1034 phishscore=0 spamscore=0 mlxlogscore=999
+ bulkscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202200027
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,119 +60,167 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 07:48:08AM IST, Alexei Starovoitov wrote:
-> On Sat, Feb 19, 2022 at 05:40:35PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > On Sat, Feb 19, 2022 at 05:07:39PM IST, Kumar Kartikeya Dwivedi wrote:
-> > > A few more fixes for bad PTR_TO_BTF_ID reg->off being accepted in places, that
-> > > can lead to the kernel crashing. Noticed while making sure my own series for BTF
-> > > ID pointer in map won't allow stores for pointers with incorrect offsets.
-> > >
-> > > I include one example where d_path can crash even if you NULL check
-> > > PTR_TO_BTF_ID, and one example of how missing NULL check in helper taking
-> > > PTR_TO_BTF_ID (like bpf_sock_from_file) is a real problem, see the selftest
-> > > patch.
-> > >
-> > > The &f->f_path becomes NULL + offset in case f is NULL, circumventing NULL
-> > > checks in existing helpers. The only thing needed to trigger this finding an
-> > > object that embeds the object of interest, and then somehow obtaining a NULL
-> > > PTR_TO_BTF_ID to it (not hard, esp. due to exception handler for PROBE_MEM loads
-> > > writing 0 to destination register).
-> > >
-> > > However, for the case of patch 2, it is allowed in my series since the next load
-> > > of the bad pointer stored using:
-> > >   struct file *f = ...; // some pointer walking returning NULL pointer
-> > >   map_val->ptr = &f->f_path; // ptr being struct path *
-> > > ... would be marked as PTR_UNTRUSTED, so it won't be allowed to be passed into
-> > > the kernel, and hence can be permitted. In referenced case, the PTR_TO_BTF_ID
-> > > should not be NULL anyway. kptr_get style helper takes PTR_TO_MAP_VALUE in
-> > > referenced ptr case only, so the load either yields NULL or RCU protected
-> > > pointer.
-> > >
-> > > Tests for patch 1 depend on fixup_kfunc_btf_id in test_verifier, hence will be
-> > > sent after merge window opens, some other changes after bpf tree merges into
-> > > bpf-next, but all pending ones can be seen here [0]. Tests for patch 2 are
-> > > included, and try to trigger crash without the fix, but it's not 100% reliable.
-> > > We may need special testing helpers or kfuncs to make it thorough, but wanted to
-> > > wait before getting feedback.
-> > >
-> > > Issue fixed by patch 2 is a bit more broader in scope, and would require proper
-> > > discussion (before being applied) on the correct way forward, as it is
-> > > technically backwards incompatible change, but hopefully never breaks real
-> > > programs, only malicious or already incorrect ones.
-> > >
-> > > Also, please suggest the right "Fixes" tag for patch 2.
-> > >
-> > > As for patch 3 (selftest), please suggest a better way to get a certain type of
-> > > PTR_TO_BTF_ID which can be NULL or NULL+offset. Can we add kfuncs for testing
-> > > that return such pointers and make them available to e.g. TC progs, if the fix
-> > > in patch 2 is acceptable?
-> > >
-> > >   [0]: https://github.com/kkdwivedi/linux/commits/fixes-bpf-next
-> > >
-> >
-> > Looking at BPF CI [1], it seems it surfaces another problem I was seeing locally
-> > but couldn't craft a reliable test case for, that it forms a non-NULL but
-> > invalid pointer using pointer walking, in some cases RCU read lock provides
-> > protection for those cases, but not all (esp. if kernel doesn't clear the old
-> > pointer that was in use before, and has it sitting in some location). RDI (arg1)
-> > seems to be pointing somewhere behind the faulting address, which means the
-> > &f->f_path is bad.
-> >
-> > But this requires a larger discussion.
-> >
-> > In that case, PAGE_SIZE thing won't help. We may have to introduce a PTR_BPF_REF
-> > flag (e.g. set for ctx args of tracing progs, set based on BTF tagging in other
-> > places) which tells the verifier that the pointer for the duration of program
-> > will be valid, so it can be passed into helpers.
-> >
-> > So for cases like &f->f_path it will work, since file + off will still have
-> > PTR_BPF_REF set in reg state. In case of pointer walking, where dst_reg state
-> > is updated on walk, we may have to explicitly tag members where PTR_BPF_REF can
-> > be inherited if parent object has PTR_BPF_REF (i.e. ref to parent implies ref to
-> > child cases).
-> >
-> > Something like:
-> >
-> > struct foo {
-> > 	...
-> > 	struct bar __bpf_ref *p;
-> > 	struct baz *q;
-> > 	...
-> > }
-> >
-> > ... then if getting:
-> >
-> > 	struct foo *f = ...; // PTR_TO_BTF_ID | PTR_BPF_REF
-> > 	struct bar *p = f->p; // Inherits PTR_BPF_REF
-> > 	struct baz *q = f->q; // Does not inherit PTR_BPF_REF
-> >
-> > Thoughts?
-> >
-> >   [1]: https://github.com/kernel-patches/bpf/runs/5258413028?check_suite_focus=true
->
-> fd_array wasn't zero initialized at alloc time, so it contains garbage.
-> fd_array[63] read that garbage.
-> So patches 2 and 3 don't help.
-> The 'fixes' list for patch 3 is ridiculous. No need.
-> Pls drop patch 2 and in instead of
-> +#define bpf_ptr_is_invalid(p) (unlikely((unsigned long)(p) < PAGE_SIZE))
-> do static inline function that checks
-> if ((unsigned long)p < user_addr_max())
+There turned out to be a few problems with btfgen selftests.
 
-This prevents this specific case, but what happens when PTR_TO_BTF_ID can be
-formed to an already freed object (which seems even more likely to me in
-sleepable progs, because typical RCU grace period won't wait for us)? Or even
-just reading from structures which don't clear pointers they have freed, but are
-themselves not freed (so exception handling zeroing dst reg won't kick in).
+First, core_btfgen tests are failing in BPF CI due to the use of
+full-featured bpftool, which has extra dependencies on libbfd, libcap,
+etc, which are present in BPF CI's build environment, but those shared
+libraries are missing in QEMU image in which test_progs is running.
 
-> and bails out.
-> bpf-next is fine.
-> Not sure whether patch 1 is strictly necessary after above change.
+To fix this problem, use minimal bootstrap version of bpftool instead.
+It only depend on libelf and libz, same as libbpf, so doesn't add any
+new requirements (and bootstrap bpftool still implementes entire
+`bpftool gen` functionality, which is quite convenient).
 
-It is still needed to prevent the var_off case. See [0]. I think it allows you
-to pass PTR_TO_BTF_ID while not actually pointing to the actual object, as long
-as reg->off is 0 (so that btf_struct_ids_match doesn't fail).
+Second problem is even more interesting. Both core_btfgen and core_reloc
+reuse the same set of struct core_reloc_test_case array of test case
+definitions. That in itself is not a problem, but btfgen test replaces
+test_case->btf_src_file property with the path to temporary file into
+which minimized BTF is output by bpftool. This interferes with original
+core_reloc tests, depending on order of tests execution (core_btfgen is
+run first in sequential mode and skrews up subsequent core_reloc run by
+pointing to already deleted temporary file, instead of the original BTF
+files) and whether those two runs share the same process (in parallel
+mode the chances are high for them to run in two separate processes and
+so not interfere with each other).
 
-  [0]: https://github.com/kkdwivedi/linux/commit/51981fd301ff55edb72b6cf346c7ac302b3f1d7d#diff-98f6e99b9859bb0525d345f6b962f028d50a605b2397518ddd77b134b5a98977R124
---
-Kartikeya
+To prevent this interference, create and use local copy of a test
+definition. Mark original array as constant to catch accidental
+modifcations. Note that setup_type_id_case_success() and
+setup_type_id_case_success() still modify common test_case->output
+memory area, but it is ok as each setup function has to re-initialize it
+completely anyways. In sequential mode it leads to deterministic and
+correct initialization. In parallel mode they will either each have
+their own process, or if core_reloc and core_btfgen happen to be run by
+the same worker process, they will still do that sequentially within the
+worker process. If they are sharded across multiple processes, they
+don't really share anything anyways.
+
+Also, rename core_btfgen into core_reloc_btfgen, as it is indeed just
+a "flavor" of core_reloc test, not an independent set of tests. So make
+it more obvious.
+
+Last problem that needed solving was that location of bpftool differs
+between test_progs and test_progs' flavors (e.g., test_progs-no_alu32).
+To keep it simple, create a symlink to bpftool both inside
+selftests/bpf/ directory and selftests/bpf/<flavor> subdirectory. That
+way, from inside core_reloc test, location to bpftool is just "./bpftool".
+
+v2->v3:
+  - fix bpftool location relative the test_progs-no_alu32;
+v1->v2:
+  - fix corruption of core_reloc_test_case.
+
+Cc: Mauricio Vásquez <mauricio@kinvolk.io>
+Fixes: 704c91e59fe0 ("selftests/bpf: Test "bpftool gen min_core_btf")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/.gitignore          |  1 +
+ tools/testing/selftests/bpf/Makefile            |  3 ++-
+ .../selftests/bpf/prog_tests/core_reloc.c       | 17 +++++++++++------
+ 3 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index 1dad8d617da8..a7eead8820a0 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0-only
++bpftool
+ bpf-helpers*
+ bpf-syscall*
+ test_verifier
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 91ea729990da..fe12b4f5fe20 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -470,6 +470,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)			\
+ 	$$(call msg,BINARY,,$$@)
+ 	$(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
+ 	$(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.o $$@
++	$(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool $(if $2,$2/)bpftool
+ 
+ endef
+ 
+@@ -555,7 +556,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o \
+ 
+ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 	prog_tests/tests.h map_tests/tests.h verifier/tests.h		\
+-	feature								\
++	feature bpftool							\
+ 	$(addprefix $(OUTPUT)/,*.o *.skel.h *.lskel.h no_alu32 bpf_gcc bpf_testmod.ko)
+ 
+ .PHONY: docs docs-clean
+diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+index 8fbb40a832d5..f28f75aa9154 100644
+--- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
++++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
+@@ -512,7 +512,7 @@ static int __trigger_module_test_read(const struct core_reloc_test_case *test)
+ }
+ 
+ 
+-static struct core_reloc_test_case test_cases[] = {
++static const struct core_reloc_test_case test_cases[] = {
+ 	/* validate we can find kernel image and use its BTF for relocs */
+ 	{
+ 		.case_name = "kernel",
+@@ -843,7 +843,7 @@ static int run_btfgen(const char *src_btf, const char *dst_btf, const char *objp
+ 	int n;
+ 
+ 	n = snprintf(command, sizeof(command),
+-		     "./tools/build/bpftool/bpftool gen min_core_btf %s %s %s",
++		     "./bpftool gen min_core_btf %s %s %s",
+ 		     src_btf, dst_btf, objpath);
+ 	if (n < 0 || n >= sizeof(command))
+ 		return -1;
+@@ -855,7 +855,7 @@ static void run_core_reloc_tests(bool use_btfgen)
+ {
+ 	const size_t mmap_sz = roundup_page(sizeof(struct data));
+ 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, open_opts);
+-	struct core_reloc_test_case *test_case;
++	struct core_reloc_test_case *test_case, test_case_copy;
+ 	const char *tp_name, *probe_name;
+ 	int err, i, equal, fd;
+ 	struct bpf_link *link = NULL;
+@@ -870,7 +870,10 @@ static void run_core_reloc_tests(bool use_btfgen)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
+ 		char btf_file[] = "/tmp/core_reloc.btf.XXXXXX";
+-		test_case = &test_cases[i];
++
++		test_case_copy = test_cases[i];
++		test_case = &test_case_copy;
++
+ 		if (!test__start_subtest(test_case->case_name))
+ 			continue;
+ 
+@@ -881,6 +884,7 @@ static void run_core_reloc_tests(bool use_btfgen)
+ 
+ 		/* generate a "minimal" BTF file and use it as source */
+ 		if (use_btfgen) {
++
+ 			if (!test_case->btf_src_file || test_case->fails) {
+ 				test__skip();
+ 				continue;
+@@ -989,7 +993,8 @@ static void run_core_reloc_tests(bool use_btfgen)
+ 			CHECK_FAIL(munmap(mmap_data, mmap_sz));
+ 			mmap_data = NULL;
+ 		}
+-		remove(btf_file);
++		if (use_btfgen)
++			remove(test_case->btf_src_file);
+ 		bpf_link__destroy(link);
+ 		link = NULL;
+ 		bpf_object__close(obj);
+@@ -1001,7 +1006,7 @@ void test_core_reloc(void)
+ 	run_core_reloc_tests(false);
+ }
+ 
+-void test_core_btfgen(void)
++void test_core_reloc_btfgen(void)
+ {
+ 	run_core_reloc_tests(true);
+ }
+-- 
+2.30.2
+
