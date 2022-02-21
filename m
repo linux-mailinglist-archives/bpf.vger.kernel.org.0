@@ -2,182 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908124BD447
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 04:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580534BD4C8
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 05:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbiBUDkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 22:40:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38678 "EHLO
+        id S1343884AbiBUEgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 23:36:38 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344304AbiBUDkp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 22:40:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D107651E4B
-        for <bpf@vger.kernel.org>; Sun, 20 Feb 2022 19:40:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645414822;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8ypSbCPo0Gk9NMaMcen+IxNOtD8mEJFJ/jbVr1mxKkM=;
-        b=DZLKs7Rsn+9FlVhNlSHo2+e/ezI1xd7j9eIMCnpuLaBWUXFLg48B+v53boZKF4BkIgRaLP
-        ZbycDd6ADspf1p+Ni20wTmZUw/OGYw65fO8t+OqqMAXiINJIVaCiqicxZDIijuc56c94DJ
-        9vIrDi8HvFtfn1UCr/YA7gU0qbE6EBY=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-491-QoMgJxmeP1uT2GkGLloSSA-1; Sun, 20 Feb 2022 22:40:21 -0500
-X-MC-Unique: QoMgJxmeP1uT2GkGLloSSA-1
-Received: by mail-pg1-f198.google.com with SMTP id k13-20020a65434d000000b00342d8eb46b4so8704268pgq.23
-        for <bpf@vger.kernel.org>; Sun, 20 Feb 2022 19:40:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=8ypSbCPo0Gk9NMaMcen+IxNOtD8mEJFJ/jbVr1mxKkM=;
-        b=VL96ZXdxkVs5m9DuXkp/KobHqseVNxyNGxWlmvhuITvFmrjJULgoEF1/P/87Kr2taS
-         3Omh+AauIUjLAMxCPFSahAXPy2Mw3JXrKKV5LOQFc37DdP1Qx6eHGYKoCV7UqGG8GX8Z
-         EgdHP6ySM1zPzZYpkfY7F7zdoI70AvS0oSNUGQwgfjU8op81NRjNbYkXNnFe34u4bXh2
-         12qOMhe++OtX2rB+9TAes8l9KI9gjeSuU1bfRyTgWhrjJtftsXuLP4cLzfKra8xtd6UR
-         slK2aGcgFdUqXu0w2EQW8+RNpSxrEEx8Nq0/LyT3HR7s1QcH3LL1LV5Nx57YCyZJx/vb
-         hipw==
-X-Gm-Message-State: AOAM533tOEPNBqouiWyuyOjrxKAwV0/OB1y+O1G2q0xesi//JQ12zjqR
-        M17eQCHfk6S4aYtfjByZACKVyJ0m6HFjPP0L7+3DlpBoyLU/JKuJgFJwQDuxc/hyFyjcv6Abx5y
-        C48oZHgKTMqlR
-X-Received: by 2002:a17:902:e34b:b0:14f:af20:4b3c with SMTP id p11-20020a170902e34b00b0014faf204b3cmr4544203plc.56.1645414819995;
-        Sun, 20 Feb 2022 19:40:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyzcIuqLJzByhSvItSubyW/3yRd7BPYRbICv/iy2A+xDF+LqUyhbDkizahPkdOQEPRwWAdvZA==
-X-Received: by 2002:a17:902:e34b:b0:14f:af20:4b3c with SMTP id p11-20020a170902e34b00b0014faf204b3cmr4544182plc.56.1645414819532;
-        Sun, 20 Feb 2022 19:40:19 -0800 (PST)
-Received: from [10.72.12.96] ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id e3sm13908239pga.74.2022.02.20.19.40.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Feb 2022 19:40:19 -0800 (PST)
-Message-ID: <2a7acc5a-2c4d-2176-efd6-2aa828833587@redhat.com>
-Date:   Mon, 21 Feb 2022 11:40:13 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.0
-Subject: Re: [PATCH v5 20/22] virtio_net: set the default max ring num
-Content-Language: en-US
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1343853AbiBUEgc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 23:36:32 -0500
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F940E4E;
+        Sun, 20 Feb 2022 20:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1645418169; x=1676954169;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+Pq+xpA3IEK4JrCzqW93Y+vVzfUMjxuVojVzAftO/+E=;
+  b=EzlP5eH+wtdj5vuOGhRLlszhWiks/Frqcfd8v400TeMUl68X65bvElNq
+   vlje8QW6Red2AqDsgABua17V3moDb05CDkSpZakQfauXluRvegQo3XbWe
+   rw24Kfjki0Id1LaaV+FqhZYKoUqYy7HUI8sQ67SQ/P/8f2+ne1hXqegbR
+   I4PX0dJEgtJSZ7x5qj8qTWdgbFZTOkVtdC8hANi9+TOM7+toEIr6MIZCk
+   0gEttfpFGTThSlQLerJoCNb+QtNDchaIKJZ5N8oIyWoV96Jgp7YRCTkF3
+   OO8tN0xJrx15f66PIGVL5j7rT1BJyI48g45WpRlbMir6llBehdlYGlnTo
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="276023745"
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="276023745"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 20:36:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="547173186"
+Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 20 Feb 2022 20:36:06 -0800
+Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nM0Qf-0001Jm-Te; Mon, 21 Feb 2022 04:36:05 +0000
+Date:   Mon, 21 Feb 2022 12:35:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-References: <20220214081416.117695-1-xuanzhuo@linux.alibaba.com>
- <20220214081416.117695-21-xuanzhuo@linux.alibaba.com>
- <CACGkMEvZvhSb0veCynEHN3EfFu_FwbCAb8w1b0Oi3LDc=ffNaw@mail.gmail.com>
- <1644997568.827981-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEt_AEw2Jh9VzkGQ2A8f8Y0nuuFxr193_vnkFpc=JyD2Sg@mail.gmail.com>
- <1645090228.2917905-1-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-In-Reply-To: <1645090228.2917905-1-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 12/15] net/netfilter: Add bpf_ct_kptr_get
+ helper
+Message-ID: <202202211228.CO4wFX0Q-lkp@intel.com>
+References: <20220220134813.3411982-13-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220220134813.3411982-13-memxor@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Hi Kumar,
 
-在 2022/2/17 下午5:30, Xuan Zhuo 写道:
-> On Thu, 17 Feb 2022 15:21:26 +0800, Jason Wang <jasowang@redhat.com> wrote:
->> On Wed, Feb 16, 2022 at 3:52 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->>> On Wed, 16 Feb 2022 12:14:31 +0800, Jason Wang <jasowang@redhat.com> wrote:
->>>> On Mon, Feb 14, 2022 at 4:14 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->>>>> Sets the default maximum ring num based on virtio_set_max_ring_num().
->>>>>
->>>>> The default maximum ring num is 1024.
->>>> Having a default value is pretty useful, I see 32K is used by default for IFCVF.
->>>>
->>>> Rethink this, how about having a different default value based on the speed?
->>>>
->>>> Without SPEED_DUPLEX, we use 1024. Otherwise
->>>>
->>>> 10g 4096
->>>> 40g 8192
->>> We can define different default values of tx and rx by the way. This way I can
->>> just use it in the new interface of find_vqs().
->>>
->>> without SPEED_DUPLEX:  tx 512 rx 1024
->>>
->> Any reason that TX is smaller than RX?
->>
-> I've seen some NIC drivers with default tx smaller than rx.
+Thank you for the patch! Perhaps something to improve:
 
+[auto build test WARNING on next-20220217]
+[cannot apply to bpf-next/master bpf/master linus/master v5.17-rc4 v5.17-rc3 v5.17-rc2 v5.17-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Interesting, do they use combined channels?
+url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
+base:    3c30cf91b5ecc7272b3d2942ae0505dd8320b81c
+config: s390-defconfig (https://download.01.org/0day-ci/archive/20220221/202202211228.CO4wFX0Q-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/79e35d4e4ee33a7692f0612065012307a361cd56
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
+        git checkout 79e35d4e4ee33a7692f0612065012307a361cd56
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash net/netfilter/
 
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
->
-> One problem I have now is that inside virtnet_probe, init_vqs is before getting
-> speed/duplex. I'm not sure, can the logic to get speed/duplex be put before
-> init_vqs? Is there any risk?
->
-> Can you help me?
+All warnings (new ones prefixed by >>):
 
-
-The feature has been negotiated during probe(), so I don't see any risk.
-
-Thanks
+   net/netfilter/nf_conntrack_bpf.c: In function 'bpf_ct_kptr_get':
+>> net/netfilter/nf_conntrack_bpf.c:226:21: warning: variable 'net' set but not used [-Wunused-but-set-variable]
+     226 |         struct net *net;
+         |                     ^~~
+   net/netfilter/nf_conntrack_bpf.c: At top level:
+   net/netfilter/nf_conntrack_bpf.c:314:5: warning: no previous prototype for 'register_nf_conntrack_bpf' [-Wmissing-prototypes]
+     314 | int register_nf_conntrack_bpf(void)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
 
 
->
-> Thanks.
->
->> Thanks
->>
->>> Thanks.
->>>
->>>
->>>> etc.
->>>>
->>>> (The number are just copied from the 10g/40g default parameter from
->>>> other vendors)
->>>>
->>>> Thanks
->>>>
->>>>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->>>>> ---
->>>>>   drivers/net/virtio_net.c | 4 ++++
->>>>>   1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->>>>> index a4ffd7cdf623..77e61fe0b2ce 100644
->>>>> --- a/drivers/net/virtio_net.c
->>>>> +++ b/drivers/net/virtio_net.c
->>>>> @@ -35,6 +35,8 @@ module_param(napi_tx, bool, 0644);
->>>>>   #define GOOD_PACKET_LEN (ETH_HLEN + VLAN_HLEN + ETH_DATA_LEN)
->>>>>   #define GOOD_COPY_LEN  128
->>>>>
->>>>> +#define VIRTNET_DEFAULT_MAX_RING_NUM 1024
->>>>> +
->>>>>   #define VIRTNET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
->>>>>
->>>>>   /* Amount of XDP headroom to prepend to packets for use by xdp_adjust_head */
->>>>> @@ -3045,6 +3047,8 @@ static int virtnet_find_vqs(struct virtnet_info *vi)
->>>>>                          ctx[rxq2vq(i)] = true;
->>>>>          }
->>>>>
->>>>> +       virtio_set_max_ring_num(vi->vdev, VIRTNET_DEFAULT_MAX_RING_NUM);
->>>>> +
->>>>>          ret = virtio_find_vqs_ctx(vi->vdev, total_vqs, vqs, callbacks,
->>>>>                                    names, ctx, NULL);
->>>>>          if (ret)
->>>>> --
->>>>> 2.31.0
->>>>>
+vim +/net +226 net/netfilter/nf_conntrack_bpf.c
 
+   219	
+   220	/* TODO: Just a PoC, need to reuse code in __nf_conntrack_find_get for this */
+   221	struct nf_conn *bpf_ct_kptr_get(struct nf_conn **ptr, struct bpf_sock_tuple *bpf_tuple,
+   222					u32 tuple__sz, u8 protonum, u8 direction)
+   223	{
+   224		struct nf_conntrack_tuple tuple;
+   225		struct nf_conn *nfct;
+ > 226		struct net *net;
+   227		u64 *nfct_p;
+   228		int ret;
+   229	
+   230		WARN_ON_ONCE(!rcu_read_lock_held());
+   231	
+   232		if ((protonum != IPPROTO_TCP && protonum != IPPROTO_UDP) ||
+   233		    (direction != IP_CT_DIR_ORIGINAL && direction != IP_CT_DIR_REPLY))
+   234			return NULL;
+   235	
+   236		/* ptr is actually pointer to u64 having address, hence recast u64 load
+   237		 * to native pointer width.
+   238		 */
+   239		nfct_p = (u64 *)ptr;
+   240		nfct = (struct nf_conn *)READ_ONCE(*nfct_p);
+   241		if (!nfct || unlikely(!refcount_inc_not_zero(&nfct->ct_general.use)))
+   242			return NULL;
+   243	
+   244		memset(&tuple, 0, sizeof(tuple));
+   245		ret = bpf_fill_nf_tuple(&tuple, bpf_tuple, tuple__sz);
+   246		if (ret < 0)
+   247			goto end;
+   248		tuple.dst.protonum = protonum;
+   249	
+   250		/* XXX: Need to allow passing in struct net *, or take netns_id, this is non-sense */
+   251		net = nf_ct_net(nfct);
+   252		if (!nf_ct_key_equal(&nfct->tuplehash[direction], &tuple,
+   253				     &nf_ct_zone_dflt, nf_ct_net(nfct)))
+   254			goto end;
+   255		return nfct;
+   256	end:
+   257		nf_ct_put(nfct);
+   258		return NULL;
+   259	}
+   260	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
