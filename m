@@ -2,83 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DE914BD276
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 00:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6E04BD2DC
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 01:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245233AbiBTXLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 18:11:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55956 "EHLO
+        id S241965AbiBUAKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 19:10:32 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245232AbiBTXLP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 18:11:15 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 373A02409C;
-        Sun, 20 Feb 2022 15:10:53 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id gb39so28521274ejc.1;
-        Sun, 20 Feb 2022 15:10:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6j1RUXCva8ZMkW9Fdwk3mt0oyRudrNViKQtoLjRiuNs=;
-        b=JBCLX+ryGqJtx2u95SQwxAfg8uApYZOaR9h/mYgi040iUWnPaHOZcM36OumDtdKhA9
-         3W395NNjNlpvR8WXby49I7imT5pXluLDMkk0a9yU5P+QnKthIikDmw+2xKtFbwXyhECw
-         2vIWu6DAg5IDmCguUxvEF3BXwTPIWN92ebPOXqxL6YqmEC2hWVzHX1S4KSVCwnro5NeR
-         zgdwGf1ZGivAxiE31fqVNpxAUi85D9myYKKr4D5fW3I1gGzoB6W4W4sTOI9SrMjBqUe1
-         /Ih3BHsCYavq+jA4/lDL9IMEnXPHP/G1tw4Ido0LCKbx6DQYD+F3+HZx7O/KlDvMNXQO
-         OOFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6j1RUXCva8ZMkW9Fdwk3mt0oyRudrNViKQtoLjRiuNs=;
-        b=d9qqzsjTyupga7+xwTvaU+oEMn0IshvHHVS9kmosSg/yk7QhzGowwSgaHtyGAOwmpE
-         d3eSsYr6wTsCBLnKVLMBvOREsUBFYCJ9gkvSgrRG2sfgpFTN1W+3oxDdT5rQoQIyrHp7
-         feH6lGEzN22yduRgNtTqRwmUre5HqF1WzZ7ldw3rA0OOQjZIazyiUTPaII/H0JFzxThU
-         znjK+L8C0+3M4tpOX8qjjp6ovNyfP/3U49VRxkn7/HOPzXVCkp6ILmxX3/QwFIz/h59w
-         CmFqVc7tK2+iXvx2dCHCN4dlHwD37NobfvAGfr0xJIvnwKcGZSotGGEztEt7KHlEi/D4
-         HcmQ==
-X-Gm-Message-State: AOAM533WCEdQ4gVLDnihy7M2CFuO7FUZP24kDV9psZ0c5S2ZagCdS+ge
-        /fJtUDKwluyYajP/l1RioeE=
-X-Google-Smtp-Source: ABdhPJwxNHuwFil8ZwBsmFK+FAE8xpK8vqVvnhFZ7KWoXhFwQLEZu5sWPcJNn8z0wfCxjS7excxu3Q==
-X-Received: by 2002:a17:907:9870:b0:6d0:ebb7:d4e1 with SMTP id ko16-20020a170907987000b006d0ebb7d4e1mr6929193ejc.471.1645398651540;
-        Sun, 20 Feb 2022 15:10:51 -0800 (PST)
-Received: from krava ([83.240.63.12])
-        by smtp.gmail.com with ESMTPSA id r22sm7542513edt.51.2022.02.20.15.10.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Feb 2022 15:10:51 -0800 (PST)
-Date:   Mon, 21 Feb 2022 00:10:48 +0100
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] perf tools: Rework prologue generation code
-Message-ID: <YhLKeAShYUtELvTJ@krava>
-References: <20220217131916.50615-1-jolsa@kernel.org>
- <20220217131916.50615-4-jolsa@kernel.org>
- <CAEf4BzYP7=JuyuY=xZe71urpxat4ba-JnqeSTcHF=CYmsQbofQ@mail.gmail.com>
- <Yg9geQ0LJjhnrc7j@krava>
- <CAEf4BzZaFWhWf73JbfO7gLi82Nn4ma-qmaZBPij=giNzzoSCTQ@mail.gmail.com>
- <YhJF00d9baPtXjzH@krava>
- <aa29a73b-b40d-6adf-2252-308917603f05@fb.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aa29a73b-b40d-6adf-2252-308917603f05@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        with ESMTP id S229604AbiBUAKc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 19:10:32 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8451944755;
+        Sun, 20 Feb 2022 16:10:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 34CFBB80DB8;
+        Mon, 21 Feb 2022 00:10:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1134C340E8;
+        Mon, 21 Feb 2022 00:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645402206;
+        bh=UH4rwhicB3T7OCjBwUSzbQ/N6789LuIThsEDmHIKvkE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LGrUJZ4UyaTcYs+MJIjPO1TF/cWxhUdi/e9KbXGpzrF+XKWHkvq7psOgln6vZHi+f
+         B4DJr86q9X/OwhWkxRUBHPHj02KoASJO6+n1O1wYwKgw3jGy7N7/JXgwFSBT/g7Lrz
+         snlkih3QKv3t6sk0Q8zDoXYR6r87nRGrcxivG8SY2sShzjg+jEFnxRghiwdnuptR+B
+         DpR5hX7YplhHwObC1P+apzqKzPclFka0fCSmFqkz+7t7+90Bi+Flc85aAa3SyIvRre
+         jPM5Ps9ByTaeUIxfTxQUNLzjLHMtHD+K7ycWDeT9MGvh2T+EE7ntdlx1Dzcoo36ksY
+         Q4uCRLMf+0UZw==
+Date:   Mon, 21 Feb 2022 09:10:02 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>, <bpf@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] powerpc/ftrace: Reserve instructions from function
+ entry for ftrace
+Message-Id: <20220221091002.5581c1effd557c62e06b821e@kernel.org>
+In-Reply-To: <8843d65ac0878232433573d10ebee30457748624.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
+References: <cover.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
+        <8843d65ac0878232433573d10ebee30457748624.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,181 +60,281 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 10:43:42AM -0800, Yonghong Song wrote:
+Hi Naveen,
+
+On Thu, 17 Feb 2022 17:06:23 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+
+> On some architectures, enabling function tracing results in multiple
+> instructions being emitted at function entry. As an example, on
+> powerpc64 with -mprofile-kernel, two instructions are emitted at
+> function entry:
+> 	mflr	r0
+> 	bl	_mcount
 > 
+> It is desirable to nop out both these instructions when ftrace is not
+> active. For that purpose, it is essential to mark both these
+> instructions as belonging to ftrace so that other kernel subsystems
+> (such as kprobes) do not modify these instructions.
+
+Indeed, kprobes must handle this. However, to keep consistency of kprobes
+usage with/without CONFIG_FUNCTION_TRACER, I think KPROBES_ON_FTRACE should
+handle these instructions are virutal single instruction.
+More specifically, it should allow user to put a kprobe on 'mflr r0' address
+and the kprobes on 'bl _mcount' should return -EILSEQ. (because it is not an 
+instruction boundary.) And the kprobe's ftrace handler temporarily modifies
+the instruction pointer to the address of 'mflr'.
+
+Thank you,
+
 > 
-> On 2/20/22 5:44 AM, Jiri Olsa wrote:
-> > On Fri, Feb 18, 2022 at 11:55:16AM -0800, Andrii Nakryiko wrote:
-> > > On Fri, Feb 18, 2022 at 1:01 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> > > > 
-> > > > On Thu, Feb 17, 2022 at 01:53:16PM -0800, Andrii Nakryiko wrote:
-> > > > > On Thu, Feb 17, 2022 at 5:19 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > > > > 
-> > > > > > Some functions we use now for bpf prologue generation are
-> > > > > > going to be deprecated, so reworking the current code not
-> > > > > > to use them.
-> > > > > > 
-> > > > > > We need to replace following functions/struct:
-> > > > > >     bpf_program__set_prep
-> > > > > >     bpf_program__nth_fd
-> > > > > >     struct bpf_prog_prep_result
-> > > > > > 
-> > > > > > Current code uses bpf_program__set_prep to hook perf callback
-> > > > > > before the program is loaded and provide new instructions with
-> > > > > > the prologue.
-> > > > > > 
-> > > > > > We workaround this by using objects's 'unloaded' programs instructions
-> > > > > > for that specific program and load new ebpf programs with prologue
-> > > > > > using separate bpf_prog_load calls.
-> > > > > > 
-> > > > > > We keep new ebpf program instances descriptors in bpf programs
-> > > > > > private struct.
-> > > > > > 
-> > > > > > Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > ---
-> > > > > >   tools/perf/util/bpf-loader.c | 122 +++++++++++++++++++++++++++++------
-> > > > > >   1 file changed, 104 insertions(+), 18 deletions(-)
-> > > > > > 
-> > > > > 
-> > > > > [...]
-> > > > > 
-> > > > > >   errout:
-> > > > > > @@ -696,7 +718,7 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > > > > >          struct bpf_prog_priv *priv = program_priv(prog);
-> > > > > >          struct perf_probe_event *pev;
-> > > > > >          bool need_prologue = false;
-> > > > > > -       int err, i;
-> > > > > > +       int i;
-> > > > > > 
-> > > > > >          if (IS_ERR_OR_NULL(priv)) {
-> > > > > >                  pr_debug("Internal error when hook preprocessor\n");
-> > > > > > @@ -727,6 +749,12 @@ static int hook_load_preprocessor(struct bpf_program *prog)
-> > > > > >                  return 0;
-> > > > > >          }
-> > > > > > 
-> > > > > > +       /*
-> > > > > > +        * Do not load programs that need prologue, because we need
-> > > > > > +        * to add prologue first, check bpf_object__load_prologue.
-> > > > > > +        */
-> > > > > > +       bpf_program__set_autoload(prog, false);
-> > > > > 
-> > > > > if you set autoload to false, program instructions might be invalid in
-> > > > > the end. Libbpf doesn't apply some (all?) relocations to such
-> > > > > programs, doesn't resolve CO-RE, etc, etc. You have to let
-> > > > > "prototypal" BPF program to be loaded before you can grab final
-> > > > > instructions. It's not great, but in your case it should work, right?
-> > > > 
-> > > > hum, do we care? it should all be done when the 'new' program with
-> > > > the prologue is loaded, right?
-> > > 
-> > > yeah, you should care. If there is any BPF map involved, it is
-> > > properly resolved to correct FD (which is put into ldimm64 instruction
-> > > in BPF program code) during the load. If program is not autoloaded,
-> > > this is skipped. Same for any global variable or subprog call (if it's
-> > > not always inlined). So you very much should care for any non-trivial
-> > > program.
-> > 
-> > ah too bad.. all that is in the load path, ok
-> > 
-> > > 
-> > > > 
-> > > > I switched it off because the verifier failed to load the program
-> > > > without the prologue.. because in the original program there's no
-> > > > code to grab the arguments that the rest of the code depends on,
-> > > > so the verifier sees invalid access
-> > > 
-> > > Do you have an example of C code and corresponding BPF instructions
-> > > before/after prologue generation? Just curious to see in details how
-> > > this is done.
-> > 
-> > so with following example:
-> > 
-> > 	SEC("func=do_sched_setscheduler param->sched_priority@user")
-> > 	int bpf_func__setscheduler(void *ctx, int err, int param)
-> > 	{
-> > 		char fmt[] = "prio: %ld";
-> > 		bpf_trace_printk(fmt, sizeof(fmt), param);
-> > 		return 1;
-> > 	}
-> > 
-> > perf will attach the code to do_sched_setscheduler function,
-> > and read 'param->sched_priority' into 'param' argument
-> > 
-> > so the resulting clang object expects 'param' to be in R3
-> > 
-> > 	0000000000000000 <bpf_func__setscheduler>:
-> > 	       0:       b7 01 00 00 64 00 00 00 r1 = 100
-> > 	       1:       6b 1a f8 ff 00 00 00 00 *(u16 *)(r10 - 8) = r1
-> > 	       2:       18 01 00 00 70 72 69 6f 00 00 00 00 3a 20 25 6c r1 = 77926701655
-> > 	       4:       7b 1a f0 ff 00 00 00 00 *(u64 *)(r10 - 16) = r1
-> > 	       5:       bf a1 00 00 00 00 00 00 r1 = r10
-> > 	       6:       07 01 00 00 f0 ff ff ff r1 += -16
-> > 	       7:       b7 02 00 00 0a 00 00 00 r2 = 10
-> > 	       8:       85 00 00 00 06 00 00 00 call 6
-> > 	       9:       b7 00 00 00 01 00 00 00 r0 = 1
-> > 	      10:       95 00 00 00 00 00 00 00 exit
-> > 
-> > and R3 is loaded in the prologue code (first 15 instructions)
-> > and it also sets 'err' (R2) with the result of the reading:
-> > 
-> > 	   0: (bf) r6 = r1
-> > 	   1: (79) r3 = *(u64 *)(r6 +96)
-> > 	   2: (bf) r7 = r10
-> > 	   3: (07) r7 += -8
-> > 	   4: (7b) *(u64 *)(r10 -8) = r3
-> > 	   5: (b7) r2 = 8
-> > 	   6: (bf) r1 = r7
-> > 	   7: (85) call bpf_probe_read_user#-60848
-> > 	   8: (55) if r0 != 0x0 goto pc+2
-> > 	   9: (61) r3 = *(u32 *)(r10 -8)
-> > 	  10: (05) goto pc+3
-> > 	  11: (b7) r2 = 1
-> > 	  12: (b7) r3 = 0
-> > 	  13: (05) goto pc+1
-> > 	  14: (b7) r2 = 0
-> > 	  15: (bf) r1 = r6
-> > 
-> > 	  16: (b7) r1 = 100
-> > 	  17: (6b) *(u16 *)(r10 -8) = r1
-> > 	  18: (18) r1 = 0x6c25203a6f697270
-> > 	  20: (7b) *(u64 *)(r10 -16) = r1
-> > 	  21: (bf) r1 = r10
-> > 	  22: (07) r1 += -16
-> > 	  23: (b7) r2 = 10
-> > 	  24: (85) call bpf_trace_printk#-54848
-> > 	  25: (b7) r0 = 1
-> > 	  26: (95) exit
+> Add support for this by allowing architectures to override
+> ftrace_cmp_recs() and to match against address ranges over and above a
+> single MCOUNT_INSN_SIZE.
 > 
-> Just curious. Is the prologue code generated through C code or through
-> asm code? Is it possible prologue code can be generated through C
+> For powerpc32, we mark the two instructions preceding the call to
+> _mcount() as belonging to ftrace.
+> 
+> For powerpc64, an additional aspect to consider is that functions can
+> have a global entry point for setting up the TOC when invoked from other
+> modules. If present, global entry point always involves two instructions
+> (addis/lis and addi). To handle this, we provide a custom
+> ftrace_init_nop() for powerpc64 where we identify functions having a
+> global entry point and record this information in the LSB of
+> dyn_ftrace->arch.mod. This information is used in ftrace_cmp_recs() to
+> reserve instructions from the global entry point.
+> 
+> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> ---
+>  arch/powerpc/include/asm/ftrace.h  |  15 ++++
+>  arch/powerpc/kernel/trace/ftrace.c | 110 ++++++++++++++++++++++++++---
+>  kernel/trace/ftrace.c              |   2 +
+>  3 files changed, 117 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+> index debe8c4f706260..8eb3235831633d 100644
+> --- a/arch/powerpc/include/asm/ftrace.h
+> +++ b/arch/powerpc/include/asm/ftrace.h
+> @@ -59,6 +59,21 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+>  struct dyn_arch_ftrace {
+>  	struct module *mod;
+>  };
+> +
+> +struct dyn_ftrace;
+> +struct module *ftrace_mod_addr_get(struct dyn_ftrace *rec);
+> +void ftrace_mod_addr_set(struct dyn_ftrace *rec, struct module *mod);
+> +
+> +#ifdef CONFIG_MPROFILE_KERNEL
+> +int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
+> +#define ftrace_init_nop ftrace_init_nop
+> +#endif
+> +
+> +#if defined(CONFIG_MPROFILE_KERNEL) || defined(CONFIG_PPC32)
+> +int ftrace_cmp_recs(const void *a, const void *b);
+> +#define ftrace_cmp_recs ftrace_cmp_recs
+> +#endif
+> +
+>  #endif /* __ASSEMBLY__ */
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> diff --git a/arch/powerpc/kernel/trace/ftrace.c b/arch/powerpc/kernel/trace/ftrace.c
+> index 80b6285769f27c..11ce9296ce3cf2 100644
+> --- a/arch/powerpc/kernel/trace/ftrace.c
+> +++ b/arch/powerpc/kernel/trace/ftrace.c
+> @@ -428,21 +428,21 @@ int ftrace_make_nop(struct module *mod,
+>  	 * We should either already have a pointer to the module
+>  	 * or it has been passed in.
+>  	 */
+> -	if (!rec->arch.mod) {
+> +	if (!ftrace_mod_addr_get(rec)) {
+>  		if (!mod) {
+>  			pr_err("No module loaded addr=%lx\n", addr);
+>  			return -EFAULT;
+>  		}
+> -		rec->arch.mod = mod;
+> +		ftrace_mod_addr_set(rec, mod);
+>  	} else if (mod) {
+> -		if (mod != rec->arch.mod) {
+> +		if (mod != ftrace_mod_addr_get(rec)) {
+>  			pr_err("Record mod %p not equal to passed in mod %p\n",
+> -			       rec->arch.mod, mod);
+> +			       ftrace_mod_addr_get(rec), mod);
+>  			return -EINVAL;
+>  		}
+>  		/* nothing to do if mod == rec->arch.mod */
+>  	} else
+> -		mod = rec->arch.mod;
+> +		mod = ftrace_mod_addr_get(rec);
+>  
+>  	return __ftrace_make_nop(mod, rec, addr);
+>  #else
+> @@ -451,6 +451,96 @@ int ftrace_make_nop(struct module *mod,
+>  #endif /* CONFIG_MODULES */
+>  }
+>  
+> +#define FUNC_MCOUNT_OFFSET_PPC32	8
+> +#define FUNC_MCOUNT_OFFSET_PPC64_LEP	4
+> +#define FUNC_MCOUNT_OFFSET_PPC64_GEP	12
+> +
+> +#ifdef CONFIG_MPROFILE_KERNEL
+> +struct module *ftrace_mod_addr_get(struct dyn_ftrace *rec)
+> +{
+> +	return (struct module *)((unsigned long)rec->arch.mod & ~0x1);
+> +}
+> +
+> +void ftrace_mod_addr_set(struct dyn_ftrace *rec, struct module *mod)
+> +{
+> +	rec->arch.mod = (struct module *)(((unsigned long)rec->arch.mod & 0x1) | (unsigned long)mod);
+> +}
+> +
+> +int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec)
+> +{
+> +	unsigned long offset, ip = rec->ip;
+> +	ppc_inst_t op1, op2;
+> +	int ret;
+> +
+> +	if (!kallsyms_lookup_size_offset(rec->ip, NULL, &offset) ||
+> +	    (offset != FUNC_MCOUNT_OFFSET_PPC64_GEP && offset != FUNC_MCOUNT_OFFSET_PPC64_LEP)) {
+> +		ip -= FUNC_MCOUNT_OFFSET_PPC64_GEP;
+> +		ret = copy_inst_from_kernel_nofault(&op1, (void *)ip);
+> +		ret |= copy_inst_from_kernel_nofault(&op2, (void *)(ip + MCOUNT_INSN_SIZE));
+> +		if (!ret &&
+> +		    ((ppc_inst_val(op1) & 0xffff0000) == PPC_RAW_LIS(_R2, 0) ||
+> +		     (ppc_inst_val(op1) & 0xffff0000) == PPC_RAW_ADDIS(_R2, _R12, 0)) &&
+> +		    (ppc_inst_val(op2) & 0xffff0000) == PPC_RAW_ADDI(_R2, _R2, 0))
+> +			ftrace_mod_addr_set(rec, (struct module *)1);
+> +	} else if (offset == FUNC_MCOUNT_OFFSET_PPC64_GEP) {
+> +		ftrace_mod_addr_set(rec, (struct module *)1);
+> +	}
+> +
+> +	return ftrace_make_nop(mod, rec, MCOUNT_ADDR);
+> +}
+> +#else
+> +struct module *ftrace_mod_addr_get(struct dyn_ftrace *rec)
+> +{
+> +	return rec->arch.mod;
+> +}
+> +
+> +void ftrace_mod_addr_set(struct dyn_ftrace *rec, struct module *mod)
+> +{
+> +	rec->arch.mod = mod;
+> +}
+> +#endif /* CONFIG_MPROFILE_KERNEL */
+> +
+> +#if defined(CONFIG_MPROFILE_KERNEL) || defined(CONFIG_PPC32)
+> +int ftrace_location_get_offset(const struct dyn_ftrace *rec)
+> +{
+> +	if (IS_ENABLED(CONFIG_MPROFILE_KERNEL))
+> +		/*
+> +		 * On ppc64le with -mprofile-kernel, function entry can have:
+> +		 *   addis r2, r12, M
+> +		 *   addi  r2, r2, N
+> +		 *   mflr  r0
+> +		 *   bl    _mcount
+> +		 *
+> +		 * The first two instructions are for TOC setup and represent the global entry
+> +		 * point for cross-module calls, and may be missing if the function is never called
+> +		 * from other modules.
+> +		 */
+> +		return ((unsigned long)rec->arch.mod & 0x1) ? FUNC_MCOUNT_OFFSET_PPC64_GEP :
+> +							      FUNC_MCOUNT_OFFSET_PPC64_LEP;
+> +	else
+> +		/*
+> +		 * On ppc32, function entry always has:
+> +		 *   mflr r0
+> +		 *   stw  r0, 4(r1)
+> +		 *   bl   _mcount
+> +		 */
+> +		return FUNC_MCOUNT_OFFSET_PPC32;
+> +}
+> +
+> +int ftrace_cmp_recs(const void *a, const void *b)
+> +{
+> +	const struct dyn_ftrace *key = a;
+> +	const struct dyn_ftrace *rec = b;
+> +	int offset = ftrace_location_get_offset(rec);
+> +
+> +	if (key->flags < rec->ip - offset)
+> +		return -1;
+> +	if (key->ip >= rec->ip + MCOUNT_INSN_SIZE)
+> +		return 1;
+> +	return 0;
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_MODULES
+>  #ifdef CONFIG_PPC64
+>  /*
+> @@ -494,7 +584,7 @@ __ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  	ppc_inst_t instr;
+>  	void *ip = (void *)rec->ip;
+>  	unsigned long entry, ptr, tramp;
+> -	struct module *mod = rec->arch.mod;
+> +	struct module *mod = ftrace_mod_addr_get(rec);
+>  
+>  	/* read where this goes */
+>  	if (copy_inst_from_kernel_nofault(op, ip))
+> @@ -561,7 +651,7 @@ __ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  	int err;
+>  	ppc_inst_t op;
+>  	u32 *ip = (u32 *)rec->ip;
+> -	struct module *mod = rec->arch.mod;
+> +	struct module *mod = ftrace_mod_addr_get(rec);
+>  	unsigned long tramp;
+>  
+>  	/* read where this goes */
+> @@ -678,7 +768,7 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  	 * Being that we are converting from nop, it had better
+>  	 * already have a module defined.
+>  	 */
+> -	if (!rec->arch.mod) {
+> +	if (!ftrace_mod_addr_get(rec)) {
+>  		pr_err("No module loaded\n");
+>  		return -EINVAL;
+>  	}
+> @@ -699,7 +789,7 @@ __ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
+>  	ppc_inst_t op;
+>  	unsigned long ip = rec->ip;
+>  	unsigned long entry, ptr, tramp;
+> -	struct module *mod = rec->arch.mod;
+> +	struct module *mod = ftrace_mod_addr_get(rec);
+>  
+>  	/* If we never set up ftrace trampolines, then bail */
+>  	if (!mod->arch.tramp || !mod->arch.tramp_regs) {
+> @@ -814,7 +904,7 @@ int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
+>  	/*
+>  	 * Out of range jumps are called from modules.
+>  	 */
+> -	if (!rec->arch.mod) {
+> +	if (!ftrace_mod_addr_get(rec)) {
+>  		pr_err("No module loaded\n");
+>  		return -EINVAL;
+>  	}
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index f9feb197b2daaf..68f20cf34b0c47 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -1510,6 +1510,7 @@ ftrace_ops_test(struct ftrace_ops *ops, unsigned long ip, void *regs)
+>  	}
+>  
+>  
+> +#ifndef ftrace_cmp_recs
+>  static int ftrace_cmp_recs(const void *a, const void *b)
+>  {
+>  	const struct dyn_ftrace *key = a;
+> @@ -1521,6 +1522,7 @@ static int ftrace_cmp_recs(const void *a, const void *b)
+>  		return 1;
+>  	return 0;
+>  }
+> +#endif
+>  
+>  static struct dyn_ftrace *lookup_rec(unsigned long start, unsigned long end)
+>  {
+> -- 
+> 2.35.1
+> 
 
-it's C code in perf generating bpf instructions:
-  https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/tree/tools/perf/util/bpf-prologue.c?h=perf/core
 
-> code with similar mechanism like BPF_PROG macro? Or this is already
-> an API which cannot be changed?
-
-do you mean to have some stub like:
-
-  int bpf_func__setscheduler_stub(void *ctx)
-  {
-          return bpf_func__setscheduler(ctx, 0, 0)
-  }
-
-  int bpf_func__setscheduler(void *ctx, int err, int param)
-  {
-          char fmt[] = "prio: %ld";
-          bpf_trace_printk(fmt, sizeof(fmt), param);
-          return 1;
-  }
-
-to make verifier happy
-
-then we'd need instructions for bpf_func__setscheduler
-
-it looks like subprogram instructions are appended and we should
-be able to locate bpf_func__setscheduler start in instructions
-returned in bpf_program__insns ? anyway does not look nice ;-)
-
-jirka
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
