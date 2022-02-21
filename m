@@ -2,103 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6DF4BE41B
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 18:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 139484BE55B
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 19:00:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345622AbiBUKvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 05:51:48 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49370 "EHLO
+        id S1357840AbiBUM0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 07:26:50 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355812AbiBUKvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 05:51:18 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EDBB70860;
-        Mon, 21 Feb 2022 02:13:20 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K2J4h0g6QzdZSY;
-        Mon, 21 Feb 2022 18:12:04 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 21 Feb 2022 18:13:13 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>
-CC:     <davem@davemloft.net>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
-        <ast@kernel.org>, <andrii@kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH net-next 4/4] bpf, sockmap: Fix double uncharge the mem of sk_msg
-Date:   Mon, 21 Feb 2022 18:31:05 +0800
-Message-ID: <20220221103105.4028557-5-wangyufen@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220221103105.4028557-1-wangyufen@huawei.com>
-References: <20220221103105.4028557-1-wangyufen@huawei.com>
+        with ESMTP id S1357897AbiBUM0s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 07:26:48 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817C413E22
+        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 04:26:24 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id e5so18273678lfr.9
+        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 04:26:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kinvolk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Y2xp4GHZOreqBdq9NTl4mbms3BzgIagOj5DDd+YVyw=;
+        b=jquks9KpBNaSJKvLDOpeUQ1oRx5U9PU5GSFXdkrYCXlHqm1tFqkfVz4WcghzJZgG4g
+         TGTN/Y6L7StN9oOik/6jzGjp3B+AH8XYIFAVcW1cce4y7TDwZHET496ptGnlDDcV+NoK
+         R8Vxs4eUjL/SdzSDgnxb1Im57ucEZb3wPvRdo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Y2xp4GHZOreqBdq9NTl4mbms3BzgIagOj5DDd+YVyw=;
+        b=wqapvkQN9U/B8pjWhq6NwLsKdgTsZ/R/1WNEIi+0nfETyfW9rpqcKYvY96uyDOVS06
+         3wsMEjtAGklgHP1snbOFulGGbLgK8wcuS0aUJJ4asl2noRHFi6JcEBnUnqS3fmouTo2X
+         kB/7Wo/KJ0JGZDq4smAtCzNe8MM2BiFQsrbmYiVBtZ32K06HYw7F0JJTlqfnvW5u+thH
+         X29l+fmEGP4uJMJE5IHWmB+sYyyEzhQ4QziGoFkzWEUn+PVTkOYbuwKjOhHqtgmoi9O1
+         syPSAaH5OkhrF+mXgpsbbihSt46mgQxt/VktvdHzFLlc5+PMRilk6I+FNpZ4aW0VKJmt
+         6pIQ==
+X-Gm-Message-State: AOAM532xYkZkOBj1c47nqIZ8ZvpHgynCWYqCn66bqv7xT54yFmds56vD
+        EEPYiZSvkjmdE28z5zlyq4OG0giw+aZU9CAHtk2BGg==
+X-Google-Smtp-Source: ABdhPJz98Au3SEhVNxRUT1hugWSSaQO9u9n+nc1yP0lSlhw9BA6ca13qMzr4QVaItu7T/OBgSJpYyWyT8/4iXhcyt+w=
+X-Received: by 2002:a05:6512:2611:b0:443:1369:b599 with SMTP id
+ bt17-20020a056512261100b004431369b599mr13482448lfb.569.1645446382829; Mon, 21
+ Feb 2022 04:26:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220220042720.3336684-1-andrii@kernel.org>
+In-Reply-To: <20220220042720.3336684-1-andrii@kernel.org>
+From:   =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>
+Date:   Mon, 21 Feb 2022 07:26:11 -0500
+Message-ID: <CAHap4zsLZ80gceMUtEZnHyx8JLfxBXzGm0_cdMM0EVx5zyC-+Q@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] selftests/bpf: fix btfgen tests
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If tcp_bpf_sendmsg is running during a tear down operation, psock may be
-freed.
+On Sat, Feb 19, 2022 at 11:27 PM Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> There turned out to be a few problems with btfgen selftests.
+>
+> First, core_btfgen tests are failing in BPF CI due to the use of
+> full-featured bpftool, which has extra dependencies on libbfd, libcap,
+> etc, which are present in BPF CI's build environment, but those shared
+> libraries are missing in QEMU image in which test_progs is running.
+>
+> To fix this problem, use minimal bootstrap version of bpftool instead.
+> It only depend on libelf and libz, same as libbpf, so doesn't add any
+> new requirements (and bootstrap bpftool still implementes entire
+> `bpftool gen` functionality, which is quite convenient).
+>
+> Second problem is even more interesting. Both core_btfgen and core_reloc
+> reuse the same set of struct core_reloc_test_case array of test case
+> definitions. That in itself is not a problem, but btfgen test replaces
+> test_case->btf_src_file property with the path to temporary file into
+> which minimized BTF is output by bpftool. This interferes with original
+> core_reloc tests, depending on order of tests execution
 
-tcp_bpf_sendmsg()
- tcp_bpf_send_verdict()
-  sk_msg_return()
-  tcp_bpf_sendmsg_redir()
-   unlikely(!psock))
-   sk_msg_free()
-
-The mem of msg has been uncharged in tcp_bpf_send_verdict() by
-sk_msg_return(), so we need to use sk_msg_free_nocharge while psock
-is null.
-
-This issue can cause the following info:
-WARNING: CPU: 0 PID: 2136 at net/ipv4/af_inet.c:155 inet_sock_destruct+0x13c/0x260
-Call Trace:
- <TASK>
- __sk_destruct+0x24/0x1f0
- sk_psock_destroy+0x19b/0x1c0
- process_one_work+0x1b3/0x3c0
- worker_thread+0x30/0x350
- ? process_one_work+0x3c0/0x3c0
- kthread+0xe6/0x110
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x22/0x30
- </TASK>
-
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
----
- net/ipv4/tcp_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 1f0364e06619..03c037d2a055 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -139,7 +139,7 @@ int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
- 	int ret;
- 
- 	if (unlikely(!psock)) {
--		sk_msg_free(sk, msg);
-+		sk_msg_free_nocharge(sk, msg);
- 		return 0;
- 	}
- 	ret = ingress ? bpf_tcp_ingress(sk, psock, msg, bytes, flags) :
--- 
-2.25.1
-
+ah, good catch! Thanks for the fix!
