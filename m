@@ -2,199 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2214BEC0C
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 21:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652B84BECB6
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 22:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232719AbiBUUqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 15:46:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58024 "EHLO
+        id S233290AbiBUVkP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 16:40:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbiBUUqM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 15:46:12 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1135237F4
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 12:45:48 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d187so9892133pfa.10
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 12:45:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bllUG5h4lz3G5OVvCkGLTSiG3LBMXWNhzzoCnsvsi3Y=;
-        b=FCjNSZhpyf+0XFPlGv2rhLfK7D66JbtK9OwFXcMfYhCqYsaZeCq0MVHo8PpM2lEnfn
-         vTkEI/hxgis9yqkZD2Be9I3wtO4cqWr5+rjeJZwlQ2pk/7YYqs0IVB+mfUQt4V8vh8Zk
-         P5Q/SayZj7hIQ2ofzOiuud5oG4a0gTeGHSm4gOgSPbBO03eaT/bnUO0FSgXJgQFHICDj
-         D8/SZoIHRlvg86jOSDKCyug5YyZy/7H+bElfY3TZo1FXUpat8oTi0XHrZEzTUG15y8GA
-         nKZfq6sMgTzYkLruwrxtiy0tig7F4mBWFGQ2ZxDFHnEkr1QlM/btzPfAp25tg6FH1qJ3
-         FMPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bllUG5h4lz3G5OVvCkGLTSiG3LBMXWNhzzoCnsvsi3Y=;
-        b=lQy9ajiMmvEStcYo4fs+5PP05MG2DH+Jxz+8VoW/+qPk+V/rBSOezABtDUL9+WxnRX
-         oBMpRDySLXrgy9Iqw3Q5v44Cqe0MfOcUj7iIPn9ZEu1AbLiBLhH34RvlfV1vriGhuRIf
-         BCrH/iBfK9d9fXv4luuEcLOgQwCI7k7BJIvmyPC3Pq5fX7g8YXFaYGKRn1EK7QLXF+tj
-         X8tuvZWuN020xnIqI7wNZJCiTc8YXvW4hqez0HBnwYOo5gDrQdSZfArj+jKGspf0sAK6
-         CQyiFwf3pZhPf32G3WBiMPJoX+00TNuRUcHY1IVdf+6eLZYa/+QrfvbbzQ4DMnFETdop
-         O0ng==
-X-Gm-Message-State: AOAM533bBF/zri/5ImpFJDBoPILCvQPKya2kqrUMM7u4wzDqFMBlVvqO
-        UWbZzsloKX2KthdYoIMlXY2LC7uIXtyaPFkEbxvLbysC
-X-Google-Smtp-Source: ABdhPJyeJHwGCJQHKzGq4f3jtoM2C06BcllnWkEx987igMo6ik/f+sK9aUtt9pCOpZ61QtDg7LXawAblhRTzQ+i/8RE=
-X-Received: by 2002:a05:6a00:809:b0:4f1:14bb:40b1 with SMTP id
- m9-20020a056a00080900b004f114bb40b1mr10302467pfk.69.1645476348241; Mon, 21
- Feb 2022 12:45:48 -0800 (PST)
-MIME-Version: 1.0
-References: <20220219113744.1852259-1-memxor@gmail.com> <20220219121035.c6c5dmvbchzaqqak@apollo.legion>
- <20220220021808.surwmx5jhosasi2d@ast-mbp.dhcp.thefacebook.com> <20220220025931.6rhvlii4i4emumik@apollo.legion>
-In-Reply-To: <20220220025931.6rhvlii4i4emumik@apollo.legion>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 21 Feb 2022 12:45:37 -0800
-Message-ID: <CAADnVQJgM+y=hArN4+pNRGO6uM76spJ4Bi3fK7xAvnSHj_wFzw@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 0/5] More fixes for crashes due to bad
- PTR_TO_BTF_ID reg->off
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S234266AbiBUVkN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 16:40:13 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC6422BC6;
+        Mon, 21 Feb 2022 13:39:49 -0800 (PST)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21LKGa2L029930;
+        Mon, 21 Feb 2022 21:39:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=nyPp6LcjRQdl+jD8YL3NMkoQ320FDZBF1gGagRw/u1E=;
+ b=i5VuHrP1uD1UwFD8Py62DgNm6DBB2RfVgFCEV3qrA42RzkcZixROQv6mdkXaUjHZi2e7
+ Uc+XC3rS135kgAB65t6tHVjqE1XgyiYiOEk7T74eox5XkMtsfFKbMit+VFm6n+w2b4Uq
+ SyBj+fWuS4tUR1tqn5Y+M6dRpTIowH6sSisPKzQ9lWXCQKiOCtsLBzsKvY7Zr02Co7Io
+ Os1b00whZhoz4N5ArAFT9KWzp519nYQ3VqGKs0628MkhDSONpNzVtBKz9O2JciNgIM+9
+ rxlnAh9478mR0Y2KixrIQbEdvfaKrAEStEDuQsIbsakBOQKPavGP86QdMrD1wOqHaP3E EA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3echmrhfen-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Feb 2022 21:39:35 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21LLKOt8008854;
+        Mon, 21 Feb 2022 21:39:35 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3echmrhfdr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Feb 2022 21:39:35 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21LLd6Se021813;
+        Mon, 21 Feb 2022 21:39:32 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3ear694ssx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Feb 2022 21:39:32 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21LLdTYK44630420
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Feb 2022 21:39:29 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A7D552054;
+        Mon, 21 Feb 2022 21:39:29 +0000 (GMT)
+Received: from [9.171.78.41] (unknown [9.171.78.41])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BA5E25204F;
+        Mon, 21 Feb 2022 21:39:28 +0000 (GMT)
+Message-ID: <8ff3f2ff692acaffe9494007a3431c269372f822.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix implementation-defined
+ behavior in sk_lookup test
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 21 Feb 2022 22:39:28 +0100
+In-Reply-To: <20220221180358.169101-1-jakub@cloudflare.com>
+References: <20220221180358.169101-1-jakub@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2qFLf_SzKwoVRu9IB5u527-CyEW-WMS9
+X-Proofpoint-GUID: jkyR7W9S7IasmCUnBeZXUXEU8wpYP7RD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-21_10,2022-02-21_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ suspectscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 bulkscore=0 priorityscore=1501
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202210128
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 19, 2022 at 6:59 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sun, Feb 20, 2022 at 07:48:08AM IST, Alexei Starovoitov wrote:
-> > On Sat, Feb 19, 2022 at 05:40:35PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > On Sat, Feb 19, 2022 at 05:07:39PM IST, Kumar Kartikeya Dwivedi wrote:
-> > > > A few more fixes for bad PTR_TO_BTF_ID reg->off being accepted in places, that
-> > > > can lead to the kernel crashing. Noticed while making sure my own series for BTF
-> > > > ID pointer in map won't allow stores for pointers with incorrect offsets.
-> > > >
-> > > > I include one example where d_path can crash even if you NULL check
-> > > > PTR_TO_BTF_ID, and one example of how missing NULL check in helper taking
-> > > > PTR_TO_BTF_ID (like bpf_sock_from_file) is a real problem, see the selftest
-> > > > patch.
-> > > >
-> > > > The &f->f_path becomes NULL + offset in case f is NULL, circumventing NULL
-> > > > checks in existing helpers. The only thing needed to trigger this finding an
-> > > > object that embeds the object of interest, and then somehow obtaining a NULL
-> > > > PTR_TO_BTF_ID to it (not hard, esp. due to exception handler for PROBE_MEM loads
-> > > > writing 0 to destination register).
-> > > >
-> > > > However, for the case of patch 2, it is allowed in my series since the next load
-> > > > of the bad pointer stored using:
-> > > >   struct file *f = ...; // some pointer walking returning NULL pointer
-> > > >   map_val->ptr = &f->f_path; // ptr being struct path *
-> > > > ... would be marked as PTR_UNTRUSTED, so it won't be allowed to be passed into
-> > > > the kernel, and hence can be permitted. In referenced case, the PTR_TO_BTF_ID
-> > > > should not be NULL anyway. kptr_get style helper takes PTR_TO_MAP_VALUE in
-> > > > referenced ptr case only, so the load either yields NULL or RCU protected
-> > > > pointer.
-> > > >
-> > > > Tests for patch 1 depend on fixup_kfunc_btf_id in test_verifier, hence will be
-> > > > sent after merge window opens, some other changes after bpf tree merges into
-> > > > bpf-next, but all pending ones can be seen here [0]. Tests for patch 2 are
-> > > > included, and try to trigger crash without the fix, but it's not 100% reliable.
-> > > > We may need special testing helpers or kfuncs to make it thorough, but wanted to
-> > > > wait before getting feedback.
-> > > >
-> > > > Issue fixed by patch 2 is a bit more broader in scope, and would require proper
-> > > > discussion (before being applied) on the correct way forward, as it is
-> > > > technically backwards incompatible change, but hopefully never breaks real
-> > > > programs, only malicious or already incorrect ones.
-> > > >
-> > > > Also, please suggest the right "Fixes" tag for patch 2.
-> > > >
-> > > > As for patch 3 (selftest), please suggest a better way to get a certain type of
-> > > > PTR_TO_BTF_ID which can be NULL or NULL+offset. Can we add kfuncs for testing
-> > > > that return such pointers and make them available to e.g. TC progs, if the fix
-> > > > in patch 2 is acceptable?
-> > > >
-> > > >   [0]: https://github.com/kkdwivedi/linux/commits/fixes-bpf-next
-> > > >
-> > >
-> > > Looking at BPF CI [1], it seems it surfaces another problem I was seeing locally
-> > > but couldn't craft a reliable test case for, that it forms a non-NULL but
-> > > invalid pointer using pointer walking, in some cases RCU read lock provides
-> > > protection for those cases, but not all (esp. if kernel doesn't clear the old
-> > > pointer that was in use before, and has it sitting in some location). RDI (arg1)
-> > > seems to be pointing somewhere behind the faulting address, which means the
-> > > &f->f_path is bad.
-> > >
-> > > But this requires a larger discussion.
-> > >
-> > > In that case, PAGE_SIZE thing won't help. We may have to introduce a PTR_BPF_REF
-> > > flag (e.g. set for ctx args of tracing progs, set based on BTF tagging in other
-> > > places) which tells the verifier that the pointer for the duration of program
-> > > will be valid, so it can be passed into helpers.
-> > >
-> > > So for cases like &f->f_path it will work, since file + off will still have
-> > > PTR_BPF_REF set in reg state. In case of pointer walking, where dst_reg state
-> > > is updated on walk, we may have to explicitly tag members where PTR_BPF_REF can
-> > > be inherited if parent object has PTR_BPF_REF (i.e. ref to parent implies ref to
-> > > child cases).
-> > >
-> > > Something like:
-> > >
-> > > struct foo {
-> > >     ...
-> > >     struct bar __bpf_ref *p;
-> > >     struct baz *q;
-> > >     ...
-> > > }
-> > >
-> > > ... then if getting:
-> > >
-> > >     struct foo *f = ...; // PTR_TO_BTF_ID | PTR_BPF_REF
-> > >     struct bar *p = f->p; // Inherits PTR_BPF_REF
-> > >     struct baz *q = f->q; // Does not inherit PTR_BPF_REF
-> > >
-> > > Thoughts?
-> > >
-> > >   [1]: https://github.com/kernel-patches/bpf/runs/5258413028?check_suite_focus=true
-> >
-> > fd_array wasn't zero initialized at alloc time, so it contains garbage.
-> > fd_array[63] read that garbage.
-> > So patches 2 and 3 don't help.
-> > The 'fixes' list for patch 3 is ridiculous. No need.
-> > Pls drop patch 2 and in instead of
-> > +#define bpf_ptr_is_invalid(p) (unlikely((unsigned long)(p) < PAGE_SIZE))
-> > do static inline function that checks
-> > if ((unsigned long)p < user_addr_max())
->
-> This prevents this specific case, but what happens when PTR_TO_BTF_ID can be
-> formed to an already freed object (which seems even more likely to me in
-> sleepable progs, because typical RCU grace period won't wait for us)? Or even
-> just reading from structures which don't clear pointers they have freed, but are
-> themselves not freed (so exception handling zeroing dst reg won't kick in).
+On Mon, 2022-02-21 at 19:03 +0100, Jakub Sitnicki wrote:
+> Shifting 16-bit type by 16 bits is implementation-defined for BPF
+> programs.
+> Don't rely on it in case it is causing the test failures we are
+> seeing on
+> s390x z15 target.
+> 
+> Fixes: 2ed0dc5937d3 ("selftests/bpf: Cover 4-byte load from
+> remote_port in bpf_sk_lookup")
+> Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
+> ---
+> 
+> I don't have a dev env for s390x/z15 set up yet, so can't definitely
+> confirm the fix.
+> That said, it seems worth fixing either way.
+> 
+>  tools/testing/selftests/bpf/progs/test_sk_lookup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> index bf5b7caefdd0..7d47276a8964 100644
+> --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
+> @@ -65,6 +65,7 @@ static const __u32 KEY_SERVER_A = SERVER_A;
+>  static const __u32 KEY_SERVER_B = SERVER_B;
+>  
+>  static const __u16 SRC_PORT = bpf_htons(8008);
+> +static const __u32 SRC_PORT_U32 = bpf_htonl(8008U << 16);
+>  static const __u32 SRC_IP4 = IP4(127, 0, 0, 2);
+>  static const __u32 SRC_IP6[] = IP6(0xfd000000, 0x0, 0x0,
+> 0x00000002);
+>  
+> @@ -421,7 +422,7 @@ int ctx_narrow_access(struct bpf_sk_lookup *ctx)
+>  
+>         /* Load from remote_port field with zero padding (backward
+> compatibility) */
+>         val_u32 = *(__u32 *)&ctx->remote_port;
+> -       if (val_u32 != bpf_htonl(bpf_ntohs(SRC_PORT) << 16))
+> +       if (val_u32 != SRC_PORT_U32)
+>                 return SK_DROP;
+>  
+>         /* Narrow loads from local_port field. Expect DST_PORT. */
 
-Right. The above check would prevent a class of issues, but not all of them.
-If kernel code doesn't clear the pointer inside a struct after freeing it
-it would lead to uaf.
-Thankfully most of the code is rcu and typical rcu protected pointer
-usage would replace the pointer before doing call_rcu() to clean it.
-There are corner cases and we need to gradually close such holes.
-My point is that it's not a bpf tree material. No need to
-create panic and do a patch with gadzillion 'fixes' tags.
-With bpf progs calling kfuncs there is a possibility of a crash.
-We need to eliminate such possibilities when we can.
-But we're not going to backport hundred patches to old kernels.
-We will close one hole today and a year later another hole could be found.
-We'll close it too, but we are not going to backport a year worth of
-verifier patches.
-
-> > and bails out.
-> > bpf-next is fine.
-> > Not sure whether patch 1 is strictly necessary after above change.
->
-> It is still needed to prevent the var_off case.
-
-Right. var_off should be prevented.
+Unfortunately this doesn't help with the s390 problem.
+I'll try to debug this.
