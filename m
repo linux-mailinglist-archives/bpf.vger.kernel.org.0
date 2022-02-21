@@ -2,65 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580534BD4C8
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 05:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0F34BD582
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 06:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343884AbiBUEgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 23:36:38 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39752 "EHLO
+        id S1344593AbiBUFiZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 00:38:25 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343853AbiBUEgc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 23:36:32 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F940E4E;
-        Sun, 20 Feb 2022 20:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645418169; x=1676954169;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+Pq+xpA3IEK4JrCzqW93Y+vVzfUMjxuVojVzAftO/+E=;
-  b=EzlP5eH+wtdj5vuOGhRLlszhWiks/Frqcfd8v400TeMUl68X65bvElNq
-   vlje8QW6Red2AqDsgABua17V3moDb05CDkSpZakQfauXluRvegQo3XbWe
-   rw24Kfjki0Id1LaaV+FqhZYKoUqYy7HUI8sQ67SQ/P/8f2+ne1hXqegbR
-   I4PX0dJEgtJSZ7x5qj8qTWdgbFZTOkVtdC8hANi9+TOM7+toEIr6MIZCk
-   0gEttfpFGTThSlQLerJoCNb+QtNDchaIKJZ5N8oIyWoV96Jgp7YRCTkF3
-   OO8tN0xJrx15f66PIGVL5j7rT1BJyI48g45WpRlbMir6llBehdlYGlnTo
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="276023745"
-X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
-   d="scan'208";a="276023745"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 20:36:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
-   d="scan'208";a="547173186"
-Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 20 Feb 2022 20:36:06 -0800
-Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nM0Qf-0001Jm-Te; Mon, 21 Feb 2022 04:36:05 +0000
-Date:   Mon, 21 Feb 2022 12:35:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 12/15] net/netfilter: Add bpf_ct_kptr_get
- helper
-Message-ID: <202202211228.CO4wFX0Q-lkp@intel.com>
-References: <20220220134813.3411982-13-memxor@gmail.com>
+        with ESMTP id S1343958AbiBUFiX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 00:38:23 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4996940A1E;
+        Sun, 20 Feb 2022 21:38:01 -0800 (PST)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21L5OiH2016401;
+        Mon, 21 Feb 2022 05:35:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=Y68ZqUohIQc0hRxJ93YHFLU+KGjFgAMBNJbG6MgMcXs=;
+ b=zPA1UF93AcKCXmeTWvMYES8mJryunGbpk6tbOyA8/LAmmynh3wwdrGvxvDRPne3ABUHj
+ rOgXYhpXYEj2oRM5bD1kZt+J4dDtRNS52oxGNw4dRvLR9E8nbkamfodSFGOj9r1doJ4R
+ x3C0J8ob05WYG82ke6sMS5AGXTHE7sFp8y2NdvnkTI7Ow+XTEPqOB38dFUJBsEP0y+JG
+ y++DLwHhe4i19YoOwzJp4onYQstRZCanXWShX/IxCTNiYf6TjmTYaxNwNeCvRwQeI0bX
+ YvY3Wk1NXJ56kvqtrDWuRCH/+JsZx8SlyGANEQ+KLniASyH8S1Hn/KTRYqFxkAv5wty/ Zg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3eapye33hh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Feb 2022 05:35:14 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 21L5WNA2077278;
+        Mon, 21 Feb 2022 05:35:14 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2042.outbound.protection.outlook.com [104.47.51.42])
+        by aserp3020.oracle.com with ESMTP id 3eb47y8ntk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Feb 2022 05:35:14 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gEYjBWlsOWv87a9eL23wyZTRPveYVBnnaQSVHmp9bpZkX2MiAULKcis577s7B0xH4xs2b6C26OhOxMRV/ezaJpu3v+8AUMfo/kRQwGpaQRZ6uw93Rp/a/2hRluahLIMqtHebGrT5BwnGD3DIpbHfYYY7AwfRYF7So3luqzLAwYp1+iRFILBvS4i4xrdkcvdcEjubrKlDn0t9oMaF8h60dQNDe7pcr8TISD7GFOs61aP9OtlX3G3tcMR+GGyozDU3JaYXal/AgZpCIVLobFGlMHia9AELBioIFbQHj8CsQHPsKaMCYDyL0rI8Dn/Jnaawt7ZlGtphDdhtC6zLYrGkNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Y68ZqUohIQc0hRxJ93YHFLU+KGjFgAMBNJbG6MgMcXs=;
+ b=PV2Xqj37gAkgf+XJJUt1fpi+CNIZijolB0Io7uEfRTWjdoqYIuZO63+cUNstIPRQ/kj2Et23havnujlsU/AuLTzO3H/hcARE4dZ97Pty9M11ThaRAGFezP1rw18h1mSnQb0ZhohUnUsmfj9mpSIFnJ/O7m9sdHHio2VcIAzyHKZ9jUjiOZyRiiLUpig7pP3A8WEGN6mZsTJlKw0WWubiMNzxW1+bYYhSS3NoZRIdTWbSLJwIKsnLo2IbApW3sIpsecKYDmTKMJuSBQ/2c32UyTKT1egwgLheaG2/qeAwARgyp/xSDbd6kscc/ja45eU0sMOHrnjawLp0OOf9dvKl7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Y68ZqUohIQc0hRxJ93YHFLU+KGjFgAMBNJbG6MgMcXs=;
+ b=i8E4i+EoZocvkON6LZawHB1NzZKTIxeB91t9nDVX1S72MfR91kuR8wNFocoSaFbFAAnIt9p5j4F5RYjYN05gjNfQ/UAKtwZXltaeHOkyBvmt4vmMDYHMyWP8MXOpdiBvP6OOKkQqOYI04gmzJFni76/rAokhc3+TTZkTZ/1nvF4=
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
+ by MWHPR10MB1533.namprd10.prod.outlook.com (2603:10b6:300:26::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.17; Mon, 21 Feb
+ 2022 05:35:11 +0000
+Received: from BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::a0d5:610d:bcf:9b47]) by BYAPR10MB2663.namprd10.prod.outlook.com
+ ([fe80::a0d5:610d:bcf:9b47%4]) with mapi id 15.20.4995.027; Mon, 21 Feb 2022
+ 05:35:11 +0000
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
+        joao.m.martins@oracle.com, joe.jin@oracle.com, dsahern@gmail.com,
+        edumazet@google.com
+Subject: [PATCH net-next v3 0/3] tun/tap: use kfree_skb_reason() to trace dropped skb
+Date:   Sun, 20 Feb 2022 21:34:36 -0800
+Message-Id: <20220221053440.7320-1-dongli.zhang@oracle.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SA1P222CA0020.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:22c::21) To BYAPR10MB2663.namprd10.prod.outlook.com
+ (2603:10b6:a02:a9::20)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220220134813.3411982-13-memxor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 236d8261-894b-44f2-ec7a-08d9f4fbed7e
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1533:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR10MB15338E7C8F30DFE040842295F03A9@MWHPR10MB1533.namprd10.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WrrutXBnvvwy54X7PkOoDDwCDd6cTIyL1c0xngPhlbjl0eE4tnc566K8Vx+bDE3P1v6Rxoq/NKrGrG83X+ukWg9smC68JM094it5xXiUoDAhnj0Ub+ThcB23zPGYaZ1V8ONmRsSZ1XOZ4L0mUo3WHYpZEiYlxxxNePuG3fEUZ5GuTdqbmfauRZIomxduQV3+wz0sGRa7mrSaAS3exF3uemmG/cH7z1OkSNxA5RhaolyGw/bh3jbJY5djr/7f8UI4Vj/h0pwMlbHnxh12W3RQOt1WAmoFHrTnT/iUnLtnUABwtBDuNY7/2H5L9HDuJ5jOagIvKVaPRizjzovOKoMMcr+DaSNPBYAEouRPxFtyuQRJjgRrHaRBJUZxVFOcGU4Q8PH+GLtM5ASsAhFKqVIS6qhpv5oWiCmnEuyTi2jpVSj5gb3lLk4ZW2KrWEYAxKX4F5RYWg+Wn5hJsGw4SyQbueWzHy7ib/Gw2WNgQBi0pt5fGa2MJ7o1je7ZY1xMCwSJ5S6v3kTa8T6HlwomGPGoHXOS5G3gose1O5JiEDHdgHW/yRpnS3hptIXf4D76m9GEMYKCU+O9tNFPWnX+RAYnuj6ibUsD0EY607Ju0OxOGf+Z9vAtM/8a6/s0U9TXe89TMHwYUZWLZTOaBOZ+53Sj2kOHYpXihIs2EPl9eqvLhIaLJaaUxkSik34ctbQQJk+4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(4326008)(38100700002)(38350700002)(83380400001)(36756003)(7416002)(44832011)(5660300002)(2906002)(8936002)(2616005)(8676002)(6486002)(6506007)(26005)(52116002)(186003)(66946007)(66556008)(6512007)(1076003)(66476007)(6666004)(508600001)(316002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qnhY4Suz8IS/0Bbs735tPyS/rrrf3TAQNMKw8841JnbTJR1yerOgeR9iC8lP?=
+ =?us-ascii?Q?OK3rmgQeBX0vyKx8wkxKUgKncZznjomzecUa0SX2P1c7t5xDNPBweagH1rXU?=
+ =?us-ascii?Q?kGFp0ml9989wjc7l37eRWgC25TEKQ7D6JoG/q1QkYhItId41NYAhPywBFCJ3?=
+ =?us-ascii?Q?Vnteqz8lUnLGgMLL13QG0703NYnXn7M/Hn0+zufD7VlVBRqbpfUAjE3A+wJr?=
+ =?us-ascii?Q?eCinc6yFk9TKsDkQdXXDW4Z5z8cAWHR5fsyiqJimW0Z5JpVeNsXrHuSLPjQK?=
+ =?us-ascii?Q?MszSDZX6i6lwrWi9csGbmQ2xeRT/xO31tQnNVtKrKf9PXQn1Jr4aK3oK8WWS?=
+ =?us-ascii?Q?GWAtHupRYzLKauewiFKx5x1Kx7gJTeDu5DXVNT/eDBfAIE/TlVaUJOHxJb3I?=
+ =?us-ascii?Q?Ybb6zJ85B/X9ufnkvKOQmWtFs4KdAiqr3TOPcJJU+T938F9B6YreIk+RWGLC?=
+ =?us-ascii?Q?OGLNKLTgG7ZGmAdZIEjQCxUbF40P+yclt08P6obbWVypzDfgAuB56ams8fBw?=
+ =?us-ascii?Q?uP3QHI1McOCzrqhGmwxSHGTjR9zSvNy0jEBi2KhAgeCYEWm9X6wPQhMS3DIu?=
+ =?us-ascii?Q?1pbCP8HczkvnLWHy5XRSD7OK3Iu8Y2OoZHiYEGHaQTBC1m18xva4Y2Wki/g/?=
+ =?us-ascii?Q?A4CSxwBxW5TAtQui8WnDrjfeV/gftGOxFSM/oeebHa3SndaRFU+ipnH0+cR2?=
+ =?us-ascii?Q?U2rfTNWkDjWNmnB/jpsawl3mf7B6MNdJ9wvgqpop8kTWSqVz7WbxElIvYjDB?=
+ =?us-ascii?Q?Bil2gGjkzGRl28G6B3ix8boiNK+3rBFUlTMpm2/qL7qvdYUfZ35o8JAAbIeu?=
+ =?us-ascii?Q?XBTkC+NO4U4xNjgc1JEKLtJuYGEpkvjMMYLt76ErjuGFc/4K5rQAxpyiDQST?=
+ =?us-ascii?Q?66blHFS9xODM2uGVBgAF3EByYXncqwfDAm3di84r2Ck+3z8gAK0ZOcUE7UlM?=
+ =?us-ascii?Q?BhWhx4wB0WfGvDgdT8aTutk3G9QSfyC6NotteYoLbHIzgBAiDNqShwWYR8Yl?=
+ =?us-ascii?Q?qSrjb2EUj8/Levwzd1X6VECbOI06fnsXEpsqOZOzKK7SUVZIZ0U1efcMbhBw?=
+ =?us-ascii?Q?e94OtKD8sN575qYQXSxq4dWfXlnzoes7IF7X/W+9mlQMCXZLVv8E/skdx4HW?=
+ =?us-ascii?Q?aLt53xOx+MohfAOQz7TO9WNnKhA+v7dK8jYnRD/DQaNfBDd2k5BxrANpmH2I?=
+ =?us-ascii?Q?n95dPgp1Ho0Ih4XBBvoGLjlV5WbrnWDkR3dv+2124BHH7jsdCejtiSZu2p0Q?=
+ =?us-ascii?Q?wvC5cMGqemq7/+2NEWWYqDRNDfx+CjpC4LCMFhnHdbketS0ZD2JuEfdjTj6q?=
+ =?us-ascii?Q?qgmXyeNzNHWY9+I8S1U8kcNkV6ecH9DUs57+qfqPS32Z27Fg5qgHAkA5E3B8?=
+ =?us-ascii?Q?lymxV795vaQ9pllw9NHhbR7aYaWN1F53rBWMnCuZOfT1PHqA07pgQXM3FnC8?=
+ =?us-ascii?Q?L+stMbPdICsUcvXZjGpRibXZJnXak8XUIqPb1ZY2+xJDeH73gSD8iPQUfhuS?=
+ =?us-ascii?Q?56UP3YlAFMtN7xsziTgoLZnC4+DmmDpqvac5oyKA4jJs24X+5omcgRkAOlfA?=
+ =?us-ascii?Q?59xb+5dJtZ1K69OmFyvLsEYJNxinkZrs/OjyqTAkOImvWxSxZMc2iXvFZgyr?=
+ =?us-ascii?Q?j3x5LMh/0xh65oifrMtnHwE=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 236d8261-894b-44f2-ec7a-08d9f4fbed7e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2022 05:35:11.0622
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Syu++M5BwvjLzITNQmB3PMSwW+c213WXbIWe2221s5hQqgkzRvbuwY8mnCgDOXHCepIafkCLLfA6zyLBSnobbg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1533
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10264 signatures=677614
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0
+ mlxlogscore=955 adultscore=0 bulkscore=0 phishscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202210034
+X-Proofpoint-ORIG-GUID: oTosf1OsjzxId_RKwUqqgDEAQZm58-4e
+X-Proofpoint-GUID: oTosf1OsjzxId_RKwUqqgDEAQZm58-4e
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,91 +142,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+The commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()") has
+introduced the kfree_skb_reason() to help track the reason.
 
-Thank you for the patch! Perhaps something to improve:
+The tun and tap are commonly used as virtio-net/vhost-net backend. This is to
+use kfree_skb_reason() to trace the dropped skb for those two drivers. 
 
-[auto build test WARNING on next-20220217]
-[cannot apply to bpf-next/master bpf/master linus/master v5.17-rc4 v5.17-rc3 v5.17-rc2 v5.17-rc5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Changed since v1:
+- I have renamed many of the reasons since v1. I make them as generic as
+  possible so that they can be re-used by core networking and drivers.
 
-url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
-base:    3c30cf91b5ecc7272b3d2942ae0505dd8320b81c
-config: s390-defconfig (https://download.01.org/0day-ci/archive/20220221/202202211228.CO4wFX0Q-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/79e35d4e4ee33a7692f0612065012307a361cd56
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
-        git checkout 79e35d4e4ee33a7692f0612065012307a361cd56
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=s390 SHELL=/bin/bash net/netfilter/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
-   net/netfilter/nf_conntrack_bpf.c: In function 'bpf_ct_kptr_get':
->> net/netfilter/nf_conntrack_bpf.c:226:21: warning: variable 'net' set but not used [-Wunused-but-set-variable]
-     226 |         struct net *net;
-         |                     ^~~
-   net/netfilter/nf_conntrack_bpf.c: At top level:
-   net/netfilter/nf_conntrack_bpf.c:314:5: warning: no previous prototype for 'register_nf_conntrack_bpf' [-Wmissing-prototypes]
-     314 | int register_nf_conntrack_bpf(void)
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~
+Changed since v2:
+- declare drop_reason as type "enum skb_drop_reason"
+- handle the drop in skb_list_walk_safe() case for tap driver, and
+  kfree_skb_list_reason() is introduced
 
 
-vim +/net +226 net/netfilter/nf_conntrack_bpf.c
+The following reasons are introduced.
 
-   219	
-   220	/* TODO: Just a PoC, need to reuse code in __nf_conntrack_find_get for this */
-   221	struct nf_conn *bpf_ct_kptr_get(struct nf_conn **ptr, struct bpf_sock_tuple *bpf_tuple,
-   222					u32 tuple__sz, u8 protonum, u8 direction)
-   223	{
-   224		struct nf_conntrack_tuple tuple;
-   225		struct nf_conn *nfct;
- > 226		struct net *net;
-   227		u64 *nfct_p;
-   228		int ret;
-   229	
-   230		WARN_ON_ONCE(!rcu_read_lock_held());
-   231	
-   232		if ((protonum != IPPROTO_TCP && protonum != IPPROTO_UDP) ||
-   233		    (direction != IP_CT_DIR_ORIGINAL && direction != IP_CT_DIR_REPLY))
-   234			return NULL;
-   235	
-   236		/* ptr is actually pointer to u64 having address, hence recast u64 load
-   237		 * to native pointer width.
-   238		 */
-   239		nfct_p = (u64 *)ptr;
-   240		nfct = (struct nf_conn *)READ_ONCE(*nfct_p);
-   241		if (!nfct || unlikely(!refcount_inc_not_zero(&nfct->ct_general.use)))
-   242			return NULL;
-   243	
-   244		memset(&tuple, 0, sizeof(tuple));
-   245		ret = bpf_fill_nf_tuple(&tuple, bpf_tuple, tuple__sz);
-   246		if (ret < 0)
-   247			goto end;
-   248		tuple.dst.protonum = protonum;
-   249	
-   250		/* XXX: Need to allow passing in struct net *, or take netns_id, this is non-sense */
-   251		net = nf_ct_net(nfct);
-   252		if (!nf_ct_key_equal(&nfct->tuplehash[direction], &tuple,
-   253				     &nf_ct_zone_dflt, nf_ct_net(nfct)))
-   254			goto end;
-   255		return nfct;
-   256	end:
-   257		nf_ct_put(nfct);
-   258		return NULL;
-   259	}
-   260	
+- SKB_DROP_REASON_SKB_CSUM
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This is used whenever there is checksum error with sk_buff.
+
+- SKB_DROP_REASON_SKB_COPY_DATA
+
+The kernel may (zero) copy the data to or from sk_buff, e.g.,
+zerocopy_sg_from_iter(), skb_copy_datagram_from_iter() and
+skb_orphan_frags_rx(). This reason is for the copy related error.
+
+- SKB_DROP_REASON_SKB_GSO_SEG
+
+Any error reported when GSO processing the sk_buff. It is frequent to process
+sk_buff gso data and we introduce a new reason to handle that.
+	
+- SKB_DROP_REASON_SKB_PULL
+- SKB_DROP_REASON_SKB_TRIM
+
+It is frequent to pull to sk_buff data or trim the sk_buff data.
+
+- SKB_DROP_REASON_DEV_HDR
+
+Any driver may report error if there is any error in the metadata on the DMA
+ring buffer.
+
+- SKB_DROP_REASON_DEV_READY
+
+The device is not ready/online or initialized to receive data.
+
+- SKB_DROP_REASON_DEV_FILTER
+
+David Ahern suggested SKB_DROP_REASON_TAP_FILTER. I changed from 'TAP' to 'DEV'
+to make it more generic.
+
+- SKB_DROP_REASON_FULL_RING
+
+Suggested by Eric Dumazet.
+
+- SKB_DROP_REASON_BPF_FILTER
+
+Dropped by ebpf filter
+
+
+This is the output for TUN device.
+
+# cat /sys/kernel/debug/tracing/trace_pipe
+          <idle>-0       [018] ..s1.  1478.130490: kfree_skb: skbaddr=00000000c4f21b8d protocol=0 location=00000000aff342c7 reason: NOT_SPECIFIED
+      vhost-9003-9020    [012] b..1.  1478.196264: kfree_skb: skbaddr=00000000b174fb9b protocol=2054 location=000000001cf38db0 reason: FULL_RING
+          arping-9639    [018] b..1.  1479.082993: kfree_skb: skbaddr=00000000c4f21b8d protocol=2054 location=000000001cf38db0 reason: FULL_RING
+          <idle>-0       [012] b.s3.  1479.110472: kfree_skb: skbaddr=00000000e0c3681f protocol=4 location=000000001cf38db0 reason: FULL_RING
+          arping-9639    [018] b..1.  1480.083086: kfree_skb: skbaddr=00000000c4f21b8d protocol=2054 location=000000001cf38db0 reason: FULL_RING
+
+
+This is the output for TAP device.
+
+# cat /sys/kernel/debug/tracing/trace_pipe
+          <idle>-0       [014] ..s1.  1096.418621: kfree_skb: skbaddr=00000000f8f41946 protocol=0 location=00000000aff342c7 reason: NOT_SPECIFIED
+          arping-7006    [001] ..s1.  1096.843961: kfree_skb: skbaddr=000000002ec803a8 protocol=2054 location=000000009a57b32f reason: FULL_RING
+          arping-7006    [001] ..s1.  1097.844035: kfree_skb: skbaddr=000000002ec803a8 protocol=2054 location=000000009a57b32f reason: FULL_RING
+          arping-7006    [001] ..s1.  1098.844102: kfree_skb: skbaddr=00000000295eb0da protocol=2054 location=000000009a57b32f reason: FULL_RING
+          arping-7006    [001] ..s1.  1099.844160: kfree_skb: skbaddr=00000000295eb0da protocol=2054 location=000000009a57b32f reason: FULL_RING
+          arping-7006    [001] ..s1.  1100.844214: kfree_skb: skbaddr=00000000295eb0da protocol=2054 location=000000009a57b32f reason: FULL_RING
+          arping-7006    [001] ..s1.  1101.844230: kfree_skb: skbaddr=00000000295eb0da protocol=2054 location=000000009a57b32f reason: FULL_RING
+
+
+ drivers/net/tap.c          | 35 +++++++++++++++++++++++++----------
+ drivers/net/tun.c          | 38 ++++++++++++++++++++++++++++++--------
+ include/linux/skbuff.h     | 18 ++++++++++++++++++
+ include/trace/events/skb.h | 10 ++++++++++
+ net/core/skbuff.c          | 11 +++++++++--
+ 5 files changed, 92 insertions(+), 20 deletions(-)
+
+Please let me know if there is any suggestion on the definition of reasons.
+
+Thank you very much!
+
+Dongli Zhang
+
+
