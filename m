@@ -2,124 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C89D4BEAAA
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 20:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4304BEBED
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 21:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbiBUSgJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 13:36:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54710 "EHLO
+        id S233425AbiBUUgv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 15:36:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231656AbiBUSgH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 13:36:07 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B92C7E
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 10:35:43 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id j7so20260778lfu.6
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 10:35:43 -0800 (PST)
+        with ESMTP id S233763AbiBUUgu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 15:36:50 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED1C237D2
+        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 12:36:26 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 132so15232388pga.5
+        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 12:36:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=aS5fwHISjksF1kH4Z52luCV4EMSblZ5592TnFHx6Dys=;
-        b=KFCXm5AJ9pQZr8qU4QTrbkqqEgVxTT3rjTbjy6pBLto2Nk8smUu/B53Iz3QxhZ1i8d
-         1qzDRAjOucVVOO51XoNDOViSjbwBjqkltx0YkuvYsI7V8+SUmxnJpayY4s1w+lLei862
-         jBsso0FKt1t4Jf5mcWPBjAoFGwkWG7DouZE1Q=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xpUxuLTBHfOD8R1tB/pLEMruDJTvSn+RjnSlg19SuZ0=;
+        b=Kh4zFj+1eIHukIvlHwvuwwE9w5HzqzK1LTCHLpA0ORQFK9ejaSXKLtTY+0XYH2iQTX
+         bRZp1eXdUWIj0eNgejMvLIuoEA7FT3YZLshA+Q1zosM+FuK5cBJFoG7M7hE0EtAxB/RS
+         SNqyC9sR4EWejtcQHAL8Ob5x+qL+E9G9ReO8t/0hqu+hed3IfC0djoEh0pd3LKTkB4lR
+         KVPCAdrUnAnM/YQ5X/INRgKbaUwiEHD4QL4KEUqzqAdRrXk2d4zpQbfM+ECIjbBSpbn+
+         1gKc3SlMcUXq0SfXW3CBH3nSkbHbz+8Zuswa7ofolksDLyEFgpOkWNbR8Lc8yq5qz4+Y
+         xvjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=aS5fwHISjksF1kH4Z52luCV4EMSblZ5592TnFHx6Dys=;
-        b=TXr7mqet1Ng2qc/T1LVgng4LTFt1CNj5QyULWpGOXkm54bdCVOJBL01grBlyIIrFC6
-         XCrWJRUBMXC84wFrR7eC8CPWl1kZ+aQmdjX5MPx3ZQcbImA0wqN6dCeoG+UxJJiS2+I6
-         46d2P4f7sysktqJWnhb8eI10lVJJCSTylAZPxuOLUCXtNKHoErqfsfksVhdY/g08I4yp
-         pQmkObDVeCX5LE076R5RIDDJoytaVotS4cYIziZEn98BZMls1U7AXrmkDhWoR+l0A20m
-         fJBbUFvY2nH9K9Jv5KDg4DasmBQom9hWUmL7TA7gFYnXDWNExoe/Vg2igoRDXSOvbg9D
-         DH2A==
-X-Gm-Message-State: AOAM531DCEtvWjEK0/Rq+3V8JXRS0Ez5XMmIS+JJHWoWWTYd3GvzhPiJ
-        jh4gGnQo3rXE6iMHAe9nQ/fbQw==
-X-Google-Smtp-Source: ABdhPJy/40LA2vaguKuxP7Jlu18pnkxxWfJrG85/eQOWm0qTJKJ3lAey17/Vnx3KpE5I1qtOT1y4hA==
-X-Received: by 2002:ac2:554f:0:b0:442:ddc3:73e5 with SMTP id l15-20020ac2554f000000b00442ddc373e5mr14615865lfk.64.1645468541582;
-        Mon, 21 Feb 2022 10:35:41 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id e22sm711813ljk.103.2022.02.21.10.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Feb 2022 10:35:41 -0800 (PST)
-References: <20220209184333.654927-1-jakub@cloudflare.com>
- <20220209184333.654927-3-jakub@cloudflare.com>
- <CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com>
- <e0999e46e5332ca79bdfe4d9b9d7f17e4366a340.camel@linux.ibm.com>
- <87fsohea8q.fsf@cloudflare.com> <87wnhq6htx.fsf@cloudflare.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xpUxuLTBHfOD8R1tB/pLEMruDJTvSn+RjnSlg19SuZ0=;
+        b=0+9rINhtri/QdylvCQbsV0/1tAUJ8Vi7kPnz5hwBBWdd5u7VyMqXw/Rv/x/SLNlaED
+         VdwLIM4V3erPRtnYcYRBkP/7Nnox5bDKExhmzXAtxtbsxRYWlOit+4L/FjL/Zwalymxy
+         h/fJHfpFFIiTZBfHi8EPS7Ve2IBp9LJEwRsiTxcyAYM35gUqzWlMnrb5E9LEqxNG+Zyz
+         tJTDTmI7JGVRYPOGwmjNPb7SdGpT6+Lmep6CW7fQooEBCWreJqxY8Y9Bq6nt+ANBs+ck
+         HC6HngP6A7JYGTKSSzme5mwLioKpfMZMPvHfQRm7dEKKSuATxcPEtueBhLCSSS1MFDn5
+         XQIg==
+X-Gm-Message-State: AOAM533uU1AB9tb9d2gHBN4p9D04tPRvmhzcJ3g/rkS49jh8Lw2sJdIl
+        zzUkwVa03z/FdCuYqGqjjDjBaYW0OhrqPtqiquA=
+X-Google-Smtp-Source: ABdhPJzMK7+yS57C692K7vhvj4d8pbF63aFFprwgc3ncra751FjVgFVJATE8t83+UiqRT6Zes0EoOWQ5Iic3NHOuQvI=
+X-Received: by 2002:a63:602:0:b0:373:efe4:8a24 with SMTP id
+ 2-20020a630602000000b00373efe48a24mr11907624pgg.287.1645475786241; Mon, 21
+ Feb 2022 12:36:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20220219113744.1852259-1-memxor@gmail.com> <20220219113744.1852259-2-memxor@gmail.com>
+ <20220220022409.r5y2bovtgz3r2n47@ast-mbp.dhcp.thefacebook.com> <20220220024915.nohjpzvsn5bu2opo@apollo.legion>
+In-Reply-To: <20220220024915.nohjpzvsn5bu2opo@apollo.legion>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 21 Feb 2022 12:36:15 -0800
+Message-ID: <CAADnVQJ-1D8f36EF-mQk_B_UmGyDbHZnEtYC_mNqt_yDncOCNg@mail.gmail.com>
+Subject: Re: [PATCH bpf v1 1/5] bpf: Fix kfunc register offset check for PTR_TO_BTF_ID
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Cover 4-byte load from
- remote_port in bpf_sk_lookup
-Date:   Mon, 21 Feb 2022 19:34:50 +0100
-In-reply-to: <87wnhq6htx.fsf@cloudflare.com>
-Message-ID: <87zgmk2hkz.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 19, 2022 at 03:37 PM +01, Jakub Sitnicki wrote:
-> On Thu, Feb 17, 2022 at 05:11 PM +01, Jakub Sitnicki wrote:
->> On Thu, Feb 17, 2022 at 03:18 PM +01, Ilya Leoshkevich wrote:
->>> On Wed, 2022-02-16 at 13:44 -0800, Andrii Nakryiko wrote:
->>>> On Wed, Feb 9, 2022 at 10:43 AM Jakub Sitnicki <jakub@cloudflare.com>
->>>> wrote:
->>
->> [...]
->>
->>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Load from remote_port field=
- with zero padding (backward
->>>> > compatibility) */
->>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 val_u32 =3D *(__u32 *)&ctx->re=
-mote_port;
->>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (val_u32 !=3D bpf_htonl(bpf=
-_ntohs(SRC_PORT) << 16))
->>>> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return SK_DROP;
->>>> > +
->>>>=20
->>>> Jakub, can you please double check that your patch set doesn't break
->>>> big-endian architectures? I've noticed that our s390x test runner is
->>>> now failing in the sk_lookup selftest. See [0]. Also CC'ing Ilya.
->>>
->>> I agree that this looks like an endianness issue. The new check seems
->>> to make little sense on big-endian to me, so I would just #ifdef it
->>> out.
->>
->> We have a very similar check for a load from context in
->> progs/test_sock_fields.c, which is not causing problems:
->>
->> static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
->> {
->> 	__u32 *word =3D (__u32 *)&sk->dst_port;
->> 	return word[0] =3D=3D bpf_htonl(0xcafe0000);
->> }
->>
->> So I think I just messed something up here. Will dig into it.
+On Sat, Feb 19, 2022 at 6:49 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> Pretty sure the source of the problem here is undefined behaviour. Can't
-> legally shift u16 by 16 bits like I did in the `bpf_ntohs(SRC_PORT) <<
-> 16` expression. Will fix.
+> On Sun, Feb 20, 2022 at 07:54:09AM IST, Alexei Starovoitov wrote:
+> > On Sat, Feb 19, 2022 at 05:07:40PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > >
+> > > +/* Caller ensures reg->type does not have PTR_MAYBE_NULL */
+> > > +int check_func_arg_reg_off(struct bpf_verifier_env *env,
+> > > +                      const struct bpf_reg_state *reg, int regno,
+> > > +                      bool arg_alloc_mem)
+> > > +{
+> > > +   enum bpf_reg_type type = reg->type;
+> > > +   int err;
+> > > +
+> > > +   WARN_ON_ONCE(type & PTR_MAYBE_NULL);
+> >
+> > So the warn was added and made things more difficult and check had to be moved
+> > into check_mem_reg to clear that flag?
+> > Why add that warn in the first place then?
+> > The logic get convoluted because of that.
+> >
+>
+> Ok, will drop.
+>
+> > > +   if (reg->off < 0) {
+> > > +           verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
+> > > +                   reg_type_str(env, reg->type), regno, reg->off);
+> > > +           return -EACCES;
+> > > +   }
+> >
+> > Out of the whole patch this part is useful. The rest seems to dealing
+> > with self inflicted pain.
+> > Just call check_ptr_off_reg() for kfunc ?
+>
+> I still think we should call a common helper.
 
-Proposed fix posted, but forgot to CC Ilya so linking here:
+What is the point of "common helper" when types
+with explicit allow of reg offset like PTR_TO_PACKET cannot
+be passed into kfuncs?
+A common helper would mislead the reader that such checks are necessary.
 
-https://lore.kernel.org/bpf/20220221180358.169101-1-jakub@cloudflare.com/
+>  For kfunc there are also reg->type
+> PTR_TO_SOCK etc., for them fixed offset should be rejected. So we can either
+> have a common helper like this for both kfunc and BPF helpers, or exposing
+> fixed_off_ok parameter in check_ptr_off_reg. Your wish.
+
+Are you saying that we should allow PTR_TO_SOCKET+fixed_off ?
+I guess than it's better to convert this line
+                err = __check_ptr_off_reg(env, reg, regno,
+                                          type == PTR_TO_BTF_ID);
+into a helper.
+And convert this line:
+reg->type == PTR_TO_BTF_ID ||
+   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type))
+
+into another helper.
+Like:
+static inline bool is_ptr_to_btf_id(type)
+{
+  return type == PTR_TO_BTF_ID ||
+   (reg2btf_ids[base_type(type)] && !type_flag(type));
+}
+and
+int check_ptr_off_reg(struct bpf_verifier_env *env,
+                      const struct bpf_reg_state *reg, int regno)
+{
+  return __check_ptr_off_reg(env, reg, regno, is_ptr_to_btf_id(reg->type));
+}
+
+and call check_ptr_off_reg() directly from check_func_arg()
+instead of __check_ptr_off_reg.
+
+and call check_ptr_off_reg() from btf_check_func_arg_match() too.
