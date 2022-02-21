@@ -2,123 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEFD4BD2E7
-	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 01:20:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 117F44BD2EF
+	for <lists+bpf@lfdr.de>; Mon, 21 Feb 2022 01:46:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239402AbiBUAQV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Feb 2022 19:16:21 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45808 "EHLO
+        id S244467AbiBUAk0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Feb 2022 19:40:26 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbiBUAQU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Feb 2022 19:16:20 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B116E344D8;
-        Sun, 20 Feb 2022 16:15:58 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6DD04B80DAA;
-        Mon, 21 Feb 2022 00:15:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B509C340E8;
-        Mon, 21 Feb 2022 00:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645402556;
-        bh=FAHiQRsRhdAMMfAapmFl44a3/9FTSkSi6leb9aKOKcA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A3W6zbWgqlygo5WCNFb0oHIBKSNtZ7Sf7inAorLorqvgrgfZL+ANqoYv8amuWMiKn
-         q2W4LyWNsGMsjgm1Ck0rCalUkCvnUUPQYnr6NwGUpJPv/htT3YjRh5YeDyElHd3QnP
-         9sLlyewF/dEEremdms2IETorBzO+YmpTRtdUfS3O/8p0gTZCGpDyhzXPW5TiMys0Vf
-         r2/+BDfwL7+Izf0KZXhIztMCDyWbt+UgpGlhcMNJZa7Bu92+EdWbzZ8KAT8F0C+al9
-         NggPSitm9tLMhvCeQPafFC/bJPy+YzwWSDdJX3y8EbI2zu6JwSar1ZZpL/Hqng2i5Z
-         XqdBmQnWEAu9w==
-Date:   Mon, 21 Feb 2022 09:15:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        with ESMTP id S239014AbiBUAk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 20 Feb 2022 19:40:26 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C77E49693;
+        Sun, 20 Feb 2022 16:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1645404004; x=1676940004;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jcB/VV1tgM+f7nB7Rbpqdo/SKvwweZ8K+gpxHXDQvwI=;
+  b=IatFIT7VRy6ZjbyM0wwPgZTxJV0yHkKhgBVMDGQiHOUsGKcITO/+7YkF
+   cuso/uH5D4masf7ou+gUjcyFUNZ7agpfdutQmyCdtXX40+SukV4NAvsWV
+   ivlXqyNWlAjQYVmD7dSM/AaraRqtYpMng8UyXyXplDKK5ZRMT8KhEdHTF
+   U7atM2IU9lopYA8U+gaIMPKDqrPSWPKgYcm1gFgxr4xY+wQig4GSnDht+
+   zf3+FTzMBg9A6Us7sHXKkOdX6zJJHfFKLngiaSNE/6cDihUWrYkmXEen2
+   awaEZYyygSwbwrPKmzXYQNxR0XBgYDnZrVAsX/nwZ54Tnqef7bUqYq1Gc
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="232034672"
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="232034672"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 16:40:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="572932144"
+Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 20 Feb 2022 16:40:00 -0800
+Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nLwkB-00015U-Vh; Mon, 21 Feb 2022 00:39:59 +0000
+Date:   Mon, 21 Feb 2022 08:39:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>, bpf@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>, <bpf@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] kprobes: Allow probing on any address belonging to
- ftrace
-Message-Id: <20220221091552.f2b24bde8142df1d3fd63b42@kernel.org>
-In-Reply-To: <78480d05821d45e09fb234f61f9037e26d42f02d.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
-        <78480d05821d45e09fb234f61f9037e26d42f02d.1645096227.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 10/15] bpf: Wire up freeing of referenced
+ PTR_TO_BTF_ID in map
+Message-ID: <202202210811.0jZyZUP1-lkp@intel.com>
+References: <20220220134813.3411982-11-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220220134813.3411982-11-memxor@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 17 Feb 2022 17:06:25 +0530
-"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+Hi Kumar,
 
-> On certain architectures, ftrace can reserve multiple instructions at
-> function entry. Rather than rejecting kprobe on addresses other than the
-> exact ftrace call instruction, use the address returned by ftrace to
-> probe at the correct address when CONFIG_KPROBES_ON_FTRACE is enabled.
-> 
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> ---
->  kernel/kprobes.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 94cab8c9ce56cc..0a797ede3fdf37 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -1497,6 +1497,10 @@ bool within_kprobe_blacklist(unsigned long addr)
->  static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
->  			const char *symbol_name, unsigned int offset)
->  {
-> +#ifdef CONFIG_KPROBES_ON_FTRACE
-> +	unsigned long ftrace_addr = 0;
-> +#endif
-> +
->  	if ((symbol_name && addr) || (!symbol_name && !addr))
->  		goto invalid;
->  
-> @@ -1507,6 +1511,14 @@ static kprobe_opcode_t *_kprobe_addr(kprobe_opcode_t *addr,
->  	}
->  
->  	addr = (kprobe_opcode_t *)(((char *)addr) + offset);
-> +
-> +#ifdef CONFIG_KPROBES_ON_FTRACE
-> +	if (addr)
-> +		ftrace_addr = ftrace_location((unsigned long)addr);
-> +	if (ftrace_addr)
-> +		return (kprobe_opcode_t *)ftrace_addr;
+Thank you for the patch! Yet something to improve:
 
-As I said, this must be
+[auto build test ERROR on next-20220217]
+[cannot apply to bpf-next/master bpf/master linus/master v5.17-rc4 v5.17-rc3 v5.17-rc2 v5.17-rc5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-if (ftrace_addr != addr)
-	return -EILSEQ;
+url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
+base:    3c30cf91b5ecc7272b3d2942ae0505dd8320b81c
+config: microblaze-randconfig-r022-20220220 (https://download.01.org/0day-ci/archive/20220221/202202210811.0jZyZUP1-lkp@intel.com/config)
+compiler: microblaze-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/09a47522ec608218eb6aabd5011316d78ad245e0
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Kumar-Kartikeya-Dwivedi/Introduce-typed-pointer-support-in-BPF-maps/20220220-215105
+        git checkout 09a47522ec608218eb6aabd5011316d78ad245e0
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=microblaze SHELL=/bin/bash
 
-This will prevent users from being confused by the results of probing
-that 'func' and 'func+4' are the same. (now only 'func' is allowed to
-be probed.)
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Thank you,
+All errors (new ones prefixed by >>):
 
-> +#endif
-> +
->  	if (addr)
->  		return addr;
->  
-> -- 
-> 2.35.1
-> 
+   microblaze-linux-ld: kernel/bpf/syscall.o: in function `bpf_map_free_ptr_to_btf_id':
+>> (.text+0x555c): undefined reference to `__generic_xchg_called_with_bad_pointer'
 
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
