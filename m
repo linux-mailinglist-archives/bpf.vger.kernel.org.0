@@ -2,319 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA464BF4E7
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 10:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C17F94BF537
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 10:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbiBVJom (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 04:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
+        id S230344AbiBVJ5r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 04:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbiBVJom (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 04:44:42 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B88115879D;
-        Tue, 22 Feb 2022 01:44:15 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id p4so929735wmg.1;
-        Tue, 22 Feb 2022 01:44:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dVNqyL9r3MPfvQ5xb26vlQN4ML6sGlzuGAxt5vAr1hI=;
-        b=nAWY5xgWfhzSgw1NZIbc5Rajm0zdEdCj0JSEccpV32wy8bvrOqmYaOac/bpbKeJ6CK
-         6VwnRn2dqYEU0Ni3vNKMj+47bpgPLKngVu1cajxsJIV8X5aHWxuq/UyGPi4145QwDanR
-         9sHoxufwH79eOXpWtFHZZJTGM0GLZSLWw/WSripnq6TLmnlm7XSXc3+6sggZ/rQMu2xY
-         yg2QdMa1Qzo95Nwd38pymAYe2CBwgCHsTzaeuYJxJOqXeExPy3W1aO60xNs7TYFgYssq
-         CRuG6uH9+wtfYOtKR4z1LlFoOZNLLStqzlyR4OCAcAHU7ezNSMCkidgCuQdAyvUBin00
-         PY3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dVNqyL9r3MPfvQ5xb26vlQN4ML6sGlzuGAxt5vAr1hI=;
-        b=1j4q+NDnttIsKD8RHpAu0ZtVVF7zUz5F7TlOt+7yo7oxDDkmJdLrp/A+kbixL1Qd2F
-         2vVhdeU5isx3QKpjcSHgbgc1OUQEN0YFFVQyZQU+4Uf/T6hdvLHvR6y0iuGyx3Hw+l8Y
-         zZyvK91ueY6XtaS5EzX1gVxAjbNxNn/QYyuZD0xSwZtIoElAMcMb+iaPHbu0llgN1Hjn
-         9m+KSuUEOFxlSxxqXU9MpHpWr6NemYWnv5VibjRCRCIh1p/EZotov2QnhL54moGpqxHE
-         stnF+OhiqUa6A4DW+GTQXh7u3Wc6q5pZNjXcfP8Seq2nJUx1XuMLY8dDxj9MzvmRsjRk
-         FJUA==
-X-Gm-Message-State: AOAM5317LM3r/3Y/DZiOBvbH4RpC9/r609ZbllDjfRoHsv3snKNZJTcN
-        lLeqaXvdGIkVgRniRtnM58762hyDXRi/NmNS
-X-Google-Smtp-Source: ABdhPJyGNox8F839/VKdWCIThX08yxo5rhQcOfry9GISzgkKSpbWNCeSZTFfcT+kScDHek21B/EnjQ==
-X-Received: by 2002:a05:600c:1d99:b0:37b:b813:c7aa with SMTP id p25-20020a05600c1d9900b0037bb813c7aamr2611063wms.108.1645523053444;
-        Tue, 22 Feb 2022 01:44:13 -0800 (PST)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id n4-20020a7bc5c4000000b0037e0c62604fsm1868311wmk.14.2022.02.22.01.44.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Feb 2022 01:44:13 -0800 (PST)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        Elza Mathew <elza.mathew@intel.com>
-Subject: [PATCH bpf] xsk: fix race at socket teardown
-Date:   Tue, 22 Feb 2022 10:43:47 +0100
-Message-Id: <20220222094347.6010-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S230395AbiBVJ5l (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 04:57:41 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B125DD224C;
+        Tue, 22 Feb 2022 01:57:14 -0800 (PST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxmMhzsxRiHa8EAA--.4515S2;
+        Tue, 22 Feb 2022 17:57:07 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/2] Modify BPF_JIT_ALWAYS_ON and BPF_JIT_DEFAULT_ON
+Date:   Tue, 22 Feb 2022 17:57:04 +0800
+Message-Id: <1645523826-18149-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxmMhzsxRiHa8EAA--.4515S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYh7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
+        CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
+        FIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+        JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
+        j40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r
+        4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOOzVUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+v3:
+  -- Use "return failure" instead of "return in failure".
+  -- Use "Enable BPF JIT by default" for config BPF_JIT_DEFAULT_ON.
 
-Fix a race in the xsk socket teardown code that can lead to a null
-pointer dereference splat. The current xsk unbind code in
-xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
-xs->dev to NULL and then waits for any NAPI processing to terminate
-using synchronize_net(). After that, the release code starts to tear
-down the socket state and free allocated memory.
+v2:
+  -- Use the full path /proc/sys/net/core/bpf_jit_enable in the help text.
+  -- Update the commit message to make it clear in patch #2.
 
-BUG: kernel NULL pointer dereference, address: 00000000000000c0
-PGD 8000000932469067 P4D 8000000932469067 PUD 0
-Oops: 0000 [#1] PREEMPT SMP PTI
-CPU: 25 PID: 69132 Comm: grpcpp_sync_ser Tainted: G          I       5.16.0+ #2
-Hardware name: Dell Inc. PowerEdge R730/0599V5, BIOS 1.2.10 03/09/2015
-RIP: 0010:__xsk_sendmsg+0x2c/0x690
-Code: 44 00 00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 38 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 48 8b 87 08 03 00 00 <f6> 80 c0 00 00 00 01 >
-RSP: 0018:ffffa2348bd13d50 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000040 RCX: ffff8d5fc632d258
-RDX: 0000000000400000 RSI: ffffa2348bd13e10 RDI: ffff8d5fc5489800
-RBP: ffffa2348bd13db0 R08: 0000000000000000 R09: 00007ffffffff000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8d5fc5489800
-R13: ffff8d5fcb0f5140 R14: ffff8d5fcb0f5140 R15: 0000000000000000
-FS:  00007f991cff9400(0000) GS:ffff8d6f1f700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000c0 CR3: 0000000114888005 CR4: 00000000001706e0
-Call Trace:
-<TASK>
-? aa_sk_perm+0x43/0x1b0
-xsk_sendmsg+0xf0/0x110
-sock_sendmsg+0x65/0x70
-__sys_sendto+0x113/0x190
-? debug_smp_processor_id+0x17/0x20
-? fpregs_assert_state_consistent+0x23/0x50
-? exit_to_user_mode_prepare+0xa5/0x1d0
-__x64_sys_sendto+0x29/0x30
-do_syscall_64+0x3b/0xc0
-entry_SYSCALL_64_after_hwframe+0x44/0xae
+Tiezhu Yang (2):
+  bpf: Add some description about BPF_JIT_ALWAYS_ON in Kconfig
+  bpf: Make BPF_JIT_DEFAULT_ON selectable in Kconfig
 
-There are two problems with the current code. First, setting xs->dev
-to NULL before waiting for all users to stop using the socket is not
-correct. The entry to the data plane functions xsk_poll(),
-xsk_sendmsg(), and xsk_recvmsg() are all guarded by a test that
-xs->state is in the state XSK_BOUND and if not, it returns right
-away. But one process might have passed this test but still have not
-gotten to the point in which it uses xs->dev in the code. In this
-interim, a second process executing xsk_unbind_dev() might have set
-xs->dev to NULL which will lead to a crash for the first process. The
-solution here is just to get rid of this NULL assignment since it is
-not used anymore. Before commit 42fddcc7c64b ("xsk: use state member
-for socket synchronization"), xs->dev was the gatekeeper to admit
-processes into the data plane functions, but it was replaced with the
-state variable xs->state in the aforementioned commit.
+ kernel/bpf/Kconfig | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-The second problem is that synchronize_net() does not wait for any
-process in xsk_poll(), xsk_sendmsg(), or xsk_recvmsg() to complete,
-which means that the state they rely on might be cleaned up
-prematurely. This can happen when the notifier gets called (at driver
-unload for example) as it uses xsk_unbind_dev(). Solve this by
-extending the RCU critical region from just the ndo_xsk_wakeup to the
-whole functions mentioned above, so that both the test of xs->state ==
-XSK_BOUND and the last use of any member of xs is covered by the RCU
-critical section. This will guarantee that when synchronize_net()
-completes, there will be no processes left executing xsk_poll(),
-xsk_sendmsg(), or xsk_recvmsg() and state can be cleaned up
-safely. Note that we need to drop the RCU lock for the SKB xmit path
-as it uses functions that might sleep. Due to this, we have to retest
-the xs->state after we grab the mutex that protects the SKB xmit code
-from, among a number of things, an xsk_unbind_dev() being executed
-from the notifier at the same time.
-
-Fixes: 42fddcc7c64b ("xsk: use state member for socket synchronization")
-Reported-by: Elza Mathew <elza.mathew@intel.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 75 ++++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 53 insertions(+), 22 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 28ef3f4465ae..e506635b1981 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -400,21 +400,11 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *
- }
- EXPORT_SYMBOL(xsk_tx_peek_release_desc_batch);
- 
--static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
-+static int xsk_zc_xmit(struct xdp_sock *xs, u8 flags)
- {
- 	struct net_device *dev = xs->dev;
--	int err;
--
--	rcu_read_lock();
--	err = dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
--	rcu_read_unlock();
--
--	return err;
--}
- 
--static int xsk_zc_xmit(struct xdp_sock *xs)
--{
--	return xsk_wakeup(xs, XDP_WAKEUP_TX);
-+	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
- }
- 
- static void xsk_destruct_skb(struct sk_buff *skb)
-@@ -533,6 +523,12 @@ static int xsk_generic_xmit(struct sock *sk)
- 
- 	mutex_lock(&xs->mutex);
- 
-+	/* Since we dropped the RCU read lock, the socket state might have changed. */
-+	if (unlikely(!xsk_is_bound(xs))) {
-+		err = -ENXIO;
-+		goto out;
-+	}
-+
- 	if (xs->queue_id >= xs->dev->real_num_tx_queues)
- 		goto out;
- 
-@@ -596,16 +592,26 @@ static int xsk_generic_xmit(struct sock *sk)
- 	return err;
- }
- 
--static int __xsk_sendmsg(struct sock *sk)
-+static int xsk_xmit(struct sock *sk)
- {
- 	struct xdp_sock *xs = xdp_sk(sk);
-+	int ret;
- 
- 	if (unlikely(!(xs->dev->flags & IFF_UP)))
- 		return -ENETDOWN;
- 	if (unlikely(!xs->tx))
- 		return -ENOBUFS;
- 
--	return xs->zc ? xsk_zc_xmit(xs) : xsk_generic_xmit(sk);
-+	if (xs->zc)
-+		return xsk_zc_xmit(xs, XDP_WAKEUP_TX);
-+
-+	/* Drop the RCU lock since the SKB path might sleep. */
-+	rcu_read_unlock();
-+	ret = xsk_generic_xmit(sk);
-+	/* Reaquire RCU lock before going into common code. */
-+	rcu_read_lock();
-+
-+	return ret;
- }
- 
- static bool xsk_no_wakeup(struct sock *sk)
-@@ -619,7 +625,7 @@ static bool xsk_no_wakeup(struct sock *sk)
- #endif
- }
- 
--static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- {
- 	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
-@@ -639,11 +645,22 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 
- 	pool = xs->pool;
- 	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
--		return __xsk_sendmsg(sk);
-+		return xsk_xmit(sk);
- 	return 0;
- }
- 
--static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
-+static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+{
-+	int ret;
-+
-+	rcu_read_lock();
-+	ret = __xsk_sendmsg(sock, m, total_len);
-+	rcu_read_unlock();
-+
-+	return ret;
-+}
-+
-+static int __xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
- {
- 	bool need_wait = !(flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
-@@ -665,10 +682,21 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
- 		return 0;
- 
- 	if (xs->pool->cached_need_wakeup & XDP_WAKEUP_RX && xs->zc)
--		return xsk_wakeup(xs, XDP_WAKEUP_RX);
-+		return xsk_zc_xmit(xs, XDP_WAKEUP_RX);
- 	return 0;
- }
- 
-+static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
-+{
-+	int ret;
-+
-+	rcu_read_lock();
-+	ret = __xsk_recvmsg(sock, m, len, flags);
-+	rcu_read_unlock();
-+
-+	return ret;
-+}
-+
- static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 			     struct poll_table_struct *wait)
- {
-@@ -679,17 +707,20 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 
- 	sock_poll_wait(file, sock, wait);
- 
--	if (unlikely(!xsk_is_bound(xs)))
-+	rcu_read_lock();
-+	if (unlikely(!xsk_is_bound(xs))) {
-+		rcu_read_unlock();
- 		return mask;
-+	}
- 
- 	pool = xs->pool;
- 
- 	if (pool->cached_need_wakeup) {
- 		if (xs->zc)
--			xsk_wakeup(xs, pool->cached_need_wakeup);
-+			xsk_zc_xmit(xs, pool->cached_need_wakeup);
- 		else
- 			/* Poll needs to drive Tx also in copy mode */
--			__xsk_sendmsg(sk);
-+			xsk_xmit(sk);
- 	}
- 
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
-@@ -697,6 +728,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 	if (xs->tx && xsk_tx_writeable(xs))
- 		mask |= EPOLLOUT | EPOLLWRNORM;
- 
-+	rcu_read_unlock();
- 	return mask;
- }
- 
-@@ -728,7 +760,6 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
- 
- 	/* Wait for driver to stop using the xdp socket. */
- 	xp_del_xsk(xs->pool, xs);
--	xs->dev = NULL;
- 	synchronize_net();
- 	dev_put(dev);
- }
-
-base-commit: 8940e6b669ca1196ce0a0549c819078096390f76
 -- 
-2.34.1
+2.1.0
 
