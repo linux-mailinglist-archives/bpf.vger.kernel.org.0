@@ -2,146 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384F24C016D
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 19:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1537F4C020A
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 20:30:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbiBVSem (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 13:34:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S234928AbiBVTaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 14:30:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbiBVSel (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 13:34:41 -0500
+        with ESMTP id S235214AbiBVTaW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 14:30:22 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A87A5E16A
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:34:15 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21MHpLLu025872
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:34:14 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB9B532E7
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 11:29:55 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21MJS2IH028007
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 11:29:55 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=7RhcuElM9VCiAvQ2bnB4f7z7Cq8PKVq4rS33aV0MyvE=;
- b=mn3fW8rtNunkguGIeReO13e5baSR2Da9s7L9fGPq43+joklrUb9Wg66ZlwUp8ySmkV3w
- 4DvpJo3jAsa0eTiWSffxTLarw/ffWxtcYY+7tWorv3fozmbv+1z4/Rs3lsWQDTKA6Cbc
- B5ag0376vi4HzdxCw2URb0tGW0Gm5NnfV4I= 
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=uTPGnIEzbHEGXOho8BPw98BwQ+H8wn5dYibb9yaoDgw=;
+ b=XaCl0Q3Js2QDld4yIjEPkzTN8XOSXxQDSTAFpBj12tqok/rykdwIWDh1IxQhUROMAi4U
+ iiDkcRCagaCb1NktipuRRDofs1POR9spL3f1QT1XpvpUSgHdgXhB1J4Hko+TdawXtBWR
+ DQrFunmzuwHzDK9scxPCZBbq2l/vYKALMVE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ed4kcga2d-14
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eccdt8d1s-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:34:14 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 11:29:54 -0800
+Received: from twshared5730.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 22 Feb 2022 10:34:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZICCxlpODxprwX449NsoH4h+RTb9LSGYg9weGJKpxPAb6CY/IS5ZVKg3y2w83tDWgIPtWDExAr+YPnNYX+0ScALT/1ADLfeSxxwaH4nC0nkfSA6ejbnuU7D/7wlFcVNJH1B1ZQ0p0sld/fShzbvax8zszFofezccyJjBQl6v10uJC8Zu1bnI1gjfG3l76kshBa7jffK+4oRPxUabjDsIkQDqoX5fwEKkgmbXunCmkgajsHzDmAB+Fx+olBQ8T4BtsCJqsQHgT4gCdLCNBSxg2L77CoEI70qOhF9R9gkg/r67OZcWiqZq0A/USIM6Mbes6HYdqMQ3acEzFoQhM9rO6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7RhcuElM9VCiAvQ2bnB4f7z7Cq8PKVq4rS33aV0MyvE=;
- b=Es5qujRLtEh2ALISHE/O9rzlOgo4BGfXLrJEFsK5KY3lWY7blXUVZ7eVUTvH3y8liHnmPBJpzvlVrKJJwY5EAcdTMMcoIg5qf8avyZL03auq9iChoG7GOtzloA3QR7wf4axaH1XUy/nuVOFsaoxngSNVX5/eV7bv1KvhzDuaCes1SKW0sA0TEOunOjCKzcHjsVxqAq8mZ44XjVqif0U4Wrs1OerQIb2ceSDlndSZkvOwL8Mk33k8bZoa42pEyvUdFcublDi592LOWqbN8WCN7MMyXrCuC1NQckZltnZssjn2CnALKw/4oEfa+x+wQDa2wyBbWxvo6nkH4kPuHoARxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from MW4PR15MB4732.namprd15.prod.outlook.com (2603:10b6:303:10d::15)
- by BY5PR15MB4292.namprd15.prod.outlook.com (2603:10b6:a03:1f6::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.27; Tue, 22 Feb
- 2022 18:34:10 +0000
-Received: from MW4PR15MB4732.namprd15.prod.outlook.com
- ([fe80::79fb:4741:b90a:e871]) by MW4PR15MB4732.namprd15.prod.outlook.com
- ([fe80::79fb:4741:b90a:e871%7]) with mapi id 15.20.4995.027; Tue, 22 Feb 2022
- 18:34:10 +0000
+ 15.1.2308.21; Tue, 22 Feb 2022 11:29:52 -0800
+Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
+        id CD1AF341395C; Tue, 22 Feb 2022 11:29:49 -0800 (PST)
 From:   Mykola Lysenko <mykolal@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>
-Subject: Re: [PATCH bpf-next] Small BPF verifier log improvements
-Thread-Topic: [PATCH bpf-next] Small BPF verifier log improvements
-Thread-Index: AQHYJSjFOevNYseYjkesy8gmKHFbp6ybouOAgARIWoA=
-Date:   Tue, 22 Feb 2022 18:34:09 +0000
-Message-ID: <05EBE285-0588-4B7B-925D-056E5352D47A@fb.com>
-References: <20220219003633.1110239-1-mykolal@fb.com>
- <CAEf4BzbXqnchq5yejT3jhrRLizBRWQcuwb8U43r2-c6GpQEMBg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbXqnchq5yejT3jhrRLizBRWQcuwb8U43r2-c6GpQEMBg@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8dbc8940-157c-483e-e909-08d9f631eab0
-x-ms-traffictypediagnostic: BY5PR15MB4292:EE_
-x-microsoft-antispam-prvs: <BY5PR15MB42923CC318F157ABE789EE4BC03B9@BY5PR15MB4292.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1gcd0Rhblo+HyIYc4vSH+IIm6SuN538IW2JoqdecB3Hp/CQe8cBdOIXUFPp0ntsPtX39aVVeaNorqp9SdNo0+j37xF4POKav/MR+d9J3HO6nRv80VwAk9R2ghyo35WfG3E7sEtiPsJwZP5zzAqPS8+GsaF8YVLPhlUGAnWQOiJNhyHTqJEJnp5I9OXeygNnz6E0Q2X9GUkT0O1QDtYLi7FmJ1qtCW3FCRUr6cWIFh4VOD7Zez1wGrRdsQG72THuskRj3GdISOAXORZdPbmBrwKIkdf34ZNxofYZVRZa/vqwMtRf5+PMzUMYf+7D93TBIPxWpH0ThgDKEo0LSXFciDU780QIC3KIo6Fd5XWq/NUKPShYOQSiBRiWtlC5EVELlzaW/4P59LDKhXzafS3f4S98OpyvjOLL1JojyAUbJV/MFNRF36764u3QmXrLiSyRV15rEjFsY+pQ8kNR6heN53jzWmpHwY7iBSIflfSczp6/SoomQF/4g6RT4DyqW1wpSV1HVUFLSar1WMpPATgQnw7gQDp8BIkAJbrTUVAyRmWYT6bhuTSqDRFUGAXpuvqWB/06PLoBoUmx7NZj1YHbxRb5QkRvf5LyyOi28qLGziA5qxFlkaENn8RXDDot2WSxEzRrNvGcE7MnWOT1D/kEuVBiI5dIMT2HvdTlFbzscWf1j6MLJQNlvCGD/RKBHDPAy0wGvKQCbn8raWPZ24ojBkJWYmBoDahHFY0q8M2vIWC6uESl37+vNGzmOMoi86Ul2
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4732.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(122000001)(2616005)(8936002)(38100700002)(186003)(6512007)(5660300002)(86362001)(2906002)(316002)(66556008)(71200400001)(83380400001)(66446008)(66476007)(76116006)(64756008)(66946007)(6916009)(54906003)(53546011)(6506007)(6486002)(33656002)(36756003)(8676002)(508600001)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?K0lLOUZVTG9wVTJjK1RzdEh2YXEyblhLRjdhNHJaTG95V2R6MVpRZkRzajIy?=
- =?utf-8?B?VVl2RDZkWjAvRzVEMFhXZy9Lbm9VVHhNVFZncXF6YWt6cWgwS2dWbkpYWlh4?=
- =?utf-8?B?TU5wbzVpTUlpeUxEU3YyZWhsOVQyVjhwRTlIeU1XMVNuakh5RFl6Y2lxT1VG?=
- =?utf-8?B?WWt2ZmhBeko0eXo3MzhCN041VktxM3RPbWlpMzV3b2NSQVluTk9ZK092cXJV?=
- =?utf-8?B?em1wUXA2dzN4UkNLa3YvWjExSGYyQ2RoTnNjd3ptakVXTnhaNVhVSUY4S1JD?=
- =?utf-8?B?OVdzRkc0UG5OdThnQkpZQW93RUdINTRXM054b202N0NuRGpueXVZdEJKOTV5?=
- =?utf-8?B?ZnB6RlZneFdpNmc5NldHRUlSTTd1ejk2bldmSlY5WEdpUitTRUFpTE1ZRGx2?=
- =?utf-8?B?WXJrUzBubEI5OXpPYkJMWFk3MXUvbzN4OHBaUlBZYzdJS0JpZFZVUEQ3bkJ5?=
- =?utf-8?B?SU9QazFnYTlJZHVDUmsvVVNOMnVjRnU2dDArMGpjV0YwbXFSeVphMU9aV2lo?=
- =?utf-8?B?NUJRSm5jOXhMS2NLY1hsL1JqR1hwZERma3UwOW90YmR1a0FQdDlUbzkwcmVu?=
- =?utf-8?B?akgwSDJWMmZHM3BIV0JXLzdoUmFyam1MQjAzcC9BNFFUVTJ4NmF2cGlXb1FP?=
- =?utf-8?B?YUxqLzNXT0xBbnBJTm96aVZPQ2NnUDc2aE1OWGVXZFNYSHdsTzZGeGlZMVpM?=
- =?utf-8?B?cm14MWlrUFVFSzVtWllGdWR5TmhpekxRMXA3OFkrdWpyMUdsSjd3YXJrMkxY?=
- =?utf-8?B?WkFlcmxTd1UxZFhDMk5UQTgzek5yZVIvZ1dQK1oxbG05RmFMNEVqUU5pWHEr?=
- =?utf-8?B?bVM5MDFrS2pselRDZGh2dG5wckpzUmhDYUlDRkZJZ0ppMFhKdy9BR1JoTTU0?=
- =?utf-8?B?NUV6L2EwODJIRGNIRm4wcjNnZlhYL3Z4TjBJR09YZlBjenJjUzRCd0xDNkx2?=
- =?utf-8?B?YXM4Tm9jYVROblRUaFVBMFBXNGxoWmFDVW8xNzIzbHpEd1U0Ri94TEtqamZB?=
- =?utf-8?B?enpIOURQT2lGeUxFZlcrSG5pZUpaYVh4SDBNMFlnRGcyN3MzVTc4a0dMMGFp?=
- =?utf-8?B?R3NmSFVacUpTZkpXYk03c0IyaEp1bGNIcWRmelpudWZSeUxXRkU1YkJDVUJ3?=
- =?utf-8?B?UEViTFBhOWlWeDJCdHpXVkdJdklLc2dPWVNxbHowZmNBWHViZ0EyNCthaStq?=
- =?utf-8?B?SUdEbWhsNXlvMVRtS0I2blkxZCtUQm9CektGVmVQVVBBajRhSnE3RDM3UmhD?=
- =?utf-8?B?VlNnbUFLUjk1ZXdYMDBmYW42SVh3dEx1Sk9OWnlsVHRYeFBqbng0VWtRMFhS?=
- =?utf-8?B?aDFOOWtlaVNIbEdhTThBUFR4YnNzOEwwbDZodVUyelN0dWpRUW1ZUUkweG9G?=
- =?utf-8?B?L3gwUlE3LzdCeVBpQ2k4cFQyN0pHNzdIQnFaRGt3Uk55SHhkY2FwS1c4Z2NP?=
- =?utf-8?B?d3U2Q0E0ZjViTlJIVkFGMEtxMCtBNUxNTUE1eG1ZZ3lvcGNxa1FOYi84dFJ1?=
- =?utf-8?B?aTdsVmJoQkM0YmlXejI5aTl6SFJ2TjkrL3ZkOHZsY3p2aE15dnRRSG9zNFF5?=
- =?utf-8?B?aFg2SU5pWm1uUGp1UUd6ai9CZVg3MmdxR0hXam0xd3FGRnVvdmg5c1RXQk5m?=
- =?utf-8?B?SVBWeDBMSXdKMFJxNmJQR2VUbVZOUGZaeWRucUlpYm5PUHo5eE5tU051QUNB?=
- =?utf-8?B?V1dFMlRzVlM5bXdzbU9GZktveGRSd3VFby9xaDQwV0VsTVU3RUlvT253azA0?=
- =?utf-8?B?ejJxejc3UHJtTWFHNkdWTER3N2lZVkpPK1BuYWZpaHJnWE9hZ295OU02bUFV?=
- =?utf-8?B?RDhQbEVOV0k3bVRDM2dOTzgxY3hJSDlMVkxQWjJHbFJwTmUvYzBYQk9QQ3pl?=
- =?utf-8?B?a0t2OGVHMGR3d0dtbG1YM2RtdVlJZFlTWFIxZ0ZSaFBxYlZxRTE3aTRKV1BL?=
- =?utf-8?B?Y1MvcnJVRkpMaDl3RzhHTDdMeWRPRXU3bjd1WmNMY1AzdURGcmJoUm1ycit4?=
- =?utf-8?B?cEdZc0tkZG91WDJyTEhaV1VPalI4eDJwSW5kYXRzak5aaldHZHZKaXYwSEE1?=
- =?utf-8?B?TWdzVmh6a2tGUUovRnNVb1Zac1hhV0dyVHVMcDZOMzRWSTFaRXJ1U0Rlbk9K?=
- =?utf-8?B?eE5qYjNEQjY3VkNVTitLSVJKeFR1SHAzMVdXTG1JQnRNZURpRWNuL1RmdXkz?=
- =?utf-8?B?dFE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <456C871D00342E46B16D908389F8FB4E@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     Mykola Lysenko <mykolal@fb.com>
+Subject: [PATCH v2 bpf-next] Small BPF verifier log improvements
+Date:   Tue, 22 Feb 2022 11:29:44 -0800
+Message-ID: <20220222192944.3618929-1-mykolal@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4732.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8dbc8940-157c-483e-e909-08d9f631eab0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2022 18:34:09.9991
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T4D7KT4oJ+6gvDT/qlpqGyPa25O0qh0DXn2NpXuW1neavOZHp7FrHIcz+z37/Gna
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB4292
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: eSqPOR3JBTOI_gEapWEgm03F4e74kL3l
-X-Proofpoint-GUID: eSqPOR3JBTOI_gEapWEgm03F4e74kL3l
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: -AzSJzojLRCkZOTFKjuox1aZEnOLYEjx
+X-Proofpoint-ORIG-GUID: -AzSJzojLRCkZOTFKjuox1aZEnOLYEjx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
  definitions=2022-02-22_06,2022-02-21_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
- malwarescore=0 suspectscore=0 phishscore=0 adultscore=0 bulkscore=0
- impostorscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
- priorityscore=1501 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202220114
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
+ mlxscore=0 lowpriorityscore=0 phishscore=0 impostorscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1015 suspectscore=0 spamscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202220119
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
@@ -153,175 +66,644 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-DQoNCj4gT24gRmViIDE5LCAyMDIyLCBhdCA1OjEwIFBNLCBBbmRyaWkgTmFrcnlpa28gPGFuZHJp
-aS5uYWtyeWlrb0BnbWFpbC5jb20+IHdyb3RlOg0KPiANCj4gT24gRnJpLCBGZWIgMTgsIDIwMjIg
-YXQgNDozNiBQTSBNeWtvbGEgTHlzZW5rbyA8bXlrb2xhbEBmYi5jb20+IHdyb3RlOg0KPj4gDQo+
-PiBJbiBwYXJ0aWN1bGFyOg0KPj4gMSkgcmVtb3ZlIG91dHB1dCBvZiBpbnYgZm9yIHNjYWxhcnMN
-Cj4+IDIpIHJlbW92ZSBfdmFsdWUgc3VmZml4ZXMgZm9yIHVtaW4vdW1heC9zMzJfbWluL2V0YyAo
-ZXhjZXB0IG1hcF92YWx1ZSkNCj4+IDMpIHJlbW92ZSBvdXRwdXQgb2YgaWQ9MA0KPj4gNCkgcmVt
-b3ZlIG91dHB1dCBvZiByZWZfb2JqX2lkPTANCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogTXlrb2xh
-IEx5c2Vua28gPG15a29sYWxAZmIuY29tPg0KPj4gLS0tDQo+IA0KPiBGZXcgbml0cGlja3MgYmVs
-b3csIGJ1dCB0aGlzIGlzIGEgZ3JlYXQgaW1wcm92ZW1lbnQhDQoNClRoYW5rcyBhIGxvdCBmb3Ig
-dGhlIHN1cGVyIHF1aWNrIHJldmlldyENCg0KPiANCj4+IGtlcm5lbC9icGYvdmVyaWZpZXIuYyAg
-ICAgICAgICAgICAgICAgICAgICAgICB8ICA3MiArKystLS0NCj4+IC4uLi90ZXN0aW5nL3NlbGZ0
-ZXN0cy9icGYvcHJvZ190ZXN0cy9hbGlnbi5jICB8IDIxOCArKysrKysrKystLS0tLS0tLS0NCj4+
-IC4uLi9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvbG9nX2J1Zi5jICAgICAgICB8ICAgNCArLQ0K
-Pj4gMyBmaWxlcyBjaGFuZ2VkLCAxNTYgaW5zZXJ0aW9ucygrKSwgMTM4IGRlbGV0aW9ucygtKQ0K
-Pj4gDQo+PiBkaWZmIC0tZ2l0IGEva2VybmVsL2JwZi92ZXJpZmllci5jIGIva2VybmVsL2JwZi92
-ZXJpZmllci5jDQo+PiBpbmRleCBkNzQ3M2ZlZTI0N2MuLmE0M2JiMGNmNGM0NiAxMDA2NDQNCj4+
-IC0tLSBhL2tlcm5lbC9icGYvdmVyaWZpZXIuYw0KPj4gKysrIGIva2VybmVsL2JwZi92ZXJpZmll
-ci5jDQo+PiBAQCAtNTM5LDcgKzUzOSw3IEBAIHN0YXRpYyBjb25zdCBjaGFyICpyZWdfdHlwZV9z
-dHIoc3RydWN0IGJwZl92ZXJpZmllcl9lbnYgKmVudiwNCj4+ICAgICAgICBjaGFyIHBvc3RmaXhb
-MTZdID0gezB9LCBwcmVmaXhbMzJdID0gezB9Ow0KPj4gICAgICAgIHN0YXRpYyBjb25zdCBjaGFy
-ICogY29uc3Qgc3RyW10gPSB7DQo+PiAgICAgICAgICAgICAgICBbTk9UX0lOSVRdICAgICAgICAg
-ICAgICA9ICI/IiwNCj4+IC0gICAgICAgICAgICAgICBbU0NBTEFSX1ZBTFVFXSAgICAgICAgICA9
-ICJpbnYiLA0KPj4gKyAgICAgICAgICAgICAgIFtTQ0FMQVJfVkFMVUVdICAgICAgICAgID0gIiIs
-DQo+PiAgICAgICAgICAgICAgICBbUFRSX1RPX0NUWF0gICAgICAgICAgICA9ICJjdHgiLA0KPj4g
-ICAgICAgICAgICAgICAgW0NPTlNUX1BUUl9UT19NQVBdICAgICAgPSAibWFwX3B0ciIsDQo+PiAg
-ICAgICAgICAgICAgICBbUFRSX1RPX01BUF9WQUxVRV0gICAgICA9ICJtYXBfdmFsdWUiLA0KPj4g
-QEAgLTY2Niw2ICs2NjYsMTUgQEAgc3RhdGljIHZvaWQgc2NydWJfc3BpbGxlZF9zbG90KHU4ICpz
-dHlwZSkNCj4+ICAgICAgICAgICAgICAgICpzdHlwZSA9IFNUQUNLX01JU0M7DQo+PiB9DQo+PiAN
-Cj4+ICsjZGVmaW5lIHZlcmJvc2VfYXBwZW5kKGZtdCwgLi4uKSBcDQo+PiArKHsgXA0KPj4gKyAg
-ICAgICBpZiAoaXNfZmlyc3RfaXRlbSkgXA0KPj4gKyAgICAgICAgICAgICAgIGlzX2ZpcnN0X2l0
-ZW0gPSBmYWxzZTsgXA0KPj4gKyAgICAgICBlbHNlIFwNCj4+ICsgICAgICAgICAgICAgICB2ZXJi
-b3NlKGVudiwgIiwiKTsgXA0KPj4gKyAgICAgICB2ZXJib3NlKGVudiwgZm10LCBfX1ZBX0FSR1Nf
-Xyk7IFwNCj4+ICt9KQ0KPj4gKw0KPiANCj4gbGV0J3MgbW92ZSB0aGlzIGluc2lkZSBwcmludF92
-ZXJpZmllcl9zdGF0ZSgpIGFuZCAjdW5kZWYgaXQgYXQgdGhlIGVuZA0KPiBvZiB0aGF0IGZ1bmN0
-aW9uLCBnaXZlbiBpdCBzaG91bGQgb25seSBiZSB1c2VkIGluc2lkZSBpdC4NCj4gDQo+IEkgZG9u
-J3Qga25vdyBpZiBpdCdzIGJldHRlciAoaXQgc3Vja3MgZWl0aGVyIHdheSB0aGF0IHdlIG5lZWQg
-dG8NCj4gZGVmaW5lIGV4dHJhIG1hY3JvIGZvciB0aGlzLCBidXQgYWx0ZXJuYXRpdmUgYXBwcm9h
-Y2ggd291bGQgYmUgdG8NCj4gZGVmaW5lIHNlcGFyYXRvcjoNCj4gDQo+IGNvbnN0IGNoYXIgKnNl
-cCA9ICIiOw0KPiANCj4gI2RlZmluZSB2ZXJib3NlX2FwcGVuZChmbXQsIC4uLikgKHsgdmVyYm9z
-ZShlbnYsICIlcyIgZm10LCBzZXAsDQo+IF9fVkFfQVJHU19fKTsgc2VwID0gIiwiOyB9KQ0KDQpJ
-IHdpbGwgdXNlIHlvdXIgYXBwcm9hY2ggYXMgaXQgaXMgbW9yZSBjb21wYWN0IHRoYW4gbWluZQ0K
-DQo+IA0KPj4gc3RhdGljIHZvaWQgcHJpbnRfdmVyaWZpZXJfc3RhdGUoc3RydWN0IGJwZl92ZXJp
-Zmllcl9lbnYgKmVudiwNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3Qg
-c3RydWN0IGJwZl9mdW5jX3N0YXRlICpzdGF0ZSwNCj4+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgYm9vbCBwcmludF9hbGwpDQo+PiBAQCAtNjkzLDY1ICs3MDIsNzQgQEAgc3RhdGlj
-IHZvaWQgcHJpbnRfdmVyaWZpZXJfc3RhdGUoc3RydWN0IGJwZl92ZXJpZmllcl9lbnYgKmVudiwN
-Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgLyogcmVnLT5vZmYgc2hvdWxkIGJlIDAgZm9yIFND
-QUxBUl9WQUxVRSAqLw0KPj4gICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlKGVudiwgIiVs
-bGQiLCByZWctPnZhcl9vZmYudmFsdWUgKyByZWctPm9mZik7DQo+PiAgICAgICAgICAgICAgICB9
-IGVsc2Ugew0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgYm9vbCBpc19maXJzdF9pdGVtID0g
-dHJ1ZTsNCj4+ICsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGJhc2VfdHlwZSh0KSA9
-PSBQVFJfVE9fQlRGX0lEIHx8DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICBiYXNlX3R5
-cGUodCkgPT0gUFRSX1RPX1BFUkNQVV9CVEZfSUQpDQo+PiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgdmVyYm9zZShlbnYsICIlcyIsIGtlcm5lbF90eXBlX25hbWUocmVnLT5idGYsIHJl
-Zy0+YnRmX2lkKSk7DQo+PiAtICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlKGVudiwgIihp
-ZD0lZCIsIHJlZy0+aWQpOw0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgaWYgKHJlZ190eXBl
-X21heV9iZV9yZWZjb3VudGVkX29yX251bGwodCkpDQo+PiAtICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHJlZl9vYmpfaWQ9JWQiLCByZWctPnJlZl9vYmpfaWQp
-Ow0KPj4gKw0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9zZShlbnYsICIoIik7DQo+
-PiArDQo+PiArICAgICAgICAgICAgICAgICAgICAgICBpZiAocmVnLT5pZCkgew0KPj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlKGVudiwgImlkPSVkIiwgcmVnLT5pZCk7
-DQo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlzX2ZpcnN0X2l0ZW0gPSBmYWxz
-ZTsNCj4gDQo+IHNob3VsZCBiZSBhbHNvIHZlcmJvc2VfYXBwZW5kPw0KDQp5ZXMNCg0KPiANCj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgIH0NCj4+ICsNCj4+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIGlmIChyZWdfdHlwZV9tYXlfYmVfcmVmY291bnRlZF9vcl9udWxsKHQpICYmIHJlZy0+cmVm
-X29ial9pZCkNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBl
-bmQoInJlZl9vYmpfaWQ9JWQiLCByZWctPnJlZl9vYmpfaWQpOw0KPj4gICAgICAgICAgICAgICAg
-ICAgICAgICBpZiAodCAhPSBTQ0FMQVJfVkFMVUUpDQo+PiAtICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHZlcmJvc2UoZW52LCAiLG9mZj0lZCIsIHJlZy0+b2ZmKTsNCj4+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBlbmQoIm9mZj0lZCIsIHJlZy0+b2Zm
-KTsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgaWYgKHR5cGVfaXNfcGt0X3BvaW50ZXIodCkp
-DQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHI9JWQi
-LCByZWctPnJhbmdlKTsNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9z
-ZV9hcHBlbmQoInI9JWQiLCByZWctPnJhbmdlKTsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAg
-ZWxzZSBpZiAoYmFzZV90eXBlKHQpID09IENPTlNUX1BUUl9UT19NQVAgfHwNCj4+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgYmFzZV90eXBlKHQpID09IFBUUl9UT19NQVBfS0VZIHx8
-DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJhc2VfdHlwZSh0KSA9PSBQVFJf
-VE9fTUFQX1ZBTFVFKQ0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3Nl
-KGVudiwgIixrcz0lZCx2cz0lZCIsDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgcmVnLT5tYXBfcHRyLT5rZXlfc2l6ZSwNCj4+IC0gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICByZWctPm1hcF9wdHItPnZhbHVlX3NpemUpOw0KPj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlX2FwcGVuZCgia3M9JWQsdnM9JWQiLA0K
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZWctPm1h
-cF9wdHItPmtleV9zaXplLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICByZWctPm1hcF9wdHItPnZhbHVlX3NpemUpOw0KPj4gICAgICAgICAgICAgICAg
-ICAgICAgICBpZiAodG51bV9pc19jb25zdChyZWctPnZhcl9vZmYpKSB7DQo+PiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgLyogVHlwaWNhbGx5IGFuIGltbWVkaWF0ZSBTQ0FMQVJfVkFM
-VUUsIGJ1dA0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqIGNvdWxkIGJlIGEg
-cG9pbnRlciB3aG9zZSBvZmZzZXQgaXMgdG9vIGJpZw0KPj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAqIGZvciByZWctPm9mZg0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAqLw0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlKGVudiwg
-IixpbW09JWxseCIsIHJlZy0+dmFyX29mZi52YWx1ZSk7DQo+PiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHZlcmJvc2VfYXBwZW5kKCJpbW09JWxseCIsIHJlZy0+dmFyX29mZi52YWx1
-ZSk7DQo+PiAgICAgICAgICAgICAgICAgICAgICAgIH0gZWxzZSB7DQo+PiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKHJlZy0+c21pbl92YWx1ZSAhPSByZWctPnVtaW5fdmFsdWUg
-JiYNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVnLT5zbWluX3ZhbHVl
-ICE9IFM2NF9NSU4pDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-dmVyYm9zZShlbnYsICIsc21pbl92YWx1ZT0lbGxkIiwNCj4+IC0gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIChsb25nIGxvbmcpcmVnLT5zbWluX3ZhbHVlKTsN
-Cj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlX2FwcGVu
-ZCgic21pbj0lbGxkIiwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAobG9uZyBsb25nKXJlZy0+c21pbl92YWx1ZSk7DQo+IA0KPiBhIGJ1
-bmNoIG9mIHRoZXNlIHNob3VsZCBmaXQgd2l0aGluIDEwMCBjaGFyYWN0ZXIgc2luZ2xlIGxpbmUs
-IGdpdmVuDQo+IHRoZSBjb2RlIGNodXJuIGFueXdheXMsIGxldCdzICJzdHJhaWdodGVuIiB0aG9z
-ZSB3cmFwcGVkIGxpbmVzIHdoZXJlDQo+IHBvc3NpYmxlPyBpZiB3ZSBnbyB3aXRoIHNvbWV0aGlu
-ZyBzaG9ydGVyIHRoYW4gInZlcmJvc2VfYXBwZW5kIiBldmVuDQo+IG1vcmUgbGluZXMgd291bGQg
-Zml0ICh2ZXJib3NlX2FkZCwgZG9uJ3Qga25vdywgbmFtaW5nIGlzIGhhcmQpLg0KDQpzb3VuZHMg
-Z29vZA0KDQo+IA0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyZWctPnNt
-YXhfdmFsdWUgIT0gcmVnLT51bWF4X3ZhbHVlICYmDQo+PiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHJlZy0+c21heF92YWx1ZSAhPSBTNjRfTUFYKQ0KPj4gLSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHNtYXhfdmFsdWU9JWxs
-ZCIsDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAo
-bG9uZyBsb25nKXJlZy0+c21heF92YWx1ZSk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBlbmQoInNtYXg9JWxsZCIsDQo+PiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGxvbmcgbG9uZyly
-ZWctPnNtYXhfdmFsdWUpOw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChy
-ZWctPnVtaW5fdmFsdWUgIT0gMCkNCj4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB2ZXJib3NlKGVudiwgIix1bWluX3ZhbHVlPSVsbHUiLA0KPj4gLSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZyly
-ZWctPnVtaW5fdmFsdWUpOw0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHZlcmJvc2VfYXBwZW5kKCJ1bWluPSVsbHUiLA0KPj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bnNpZ25lZCBsb25nIGxvbmcpcmVn
-LT51bWluX3ZhbHVlKTsNCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAocmVn
-LT51bWF4X3ZhbHVlICE9IFU2NF9NQVgpDQo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdmVyYm9zZShlbnYsICIsdW1heF92YWx1ZT0lbGx1IiwNCj4+IC0gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICh1bnNpZ25lZCBsb25nIGxv
-bmcpcmVnLT51bWF4X3ZhbHVlKTsNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB2ZXJib3NlX2FwcGVuZCgidW1heD0lbGx1IiwNCj4+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAodW5zaWduZWQgbG9uZyBsb25n
-KXJlZy0+dW1heF92YWx1ZSk7DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaWYg
-KCF0bnVtX2lzX3Vua25vd24ocmVnLT52YXJfb2ZmKSkgew0KPj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY2hhciB0bl9idWZbNDhdOw0KPj4gDQo+PiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0bnVtX3N0cm4odG5fYnVmLCBzaXplb2YodG5f
-YnVmKSwgcmVnLT52YXJfb2ZmKTsNCj4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB2ZXJib3NlKGVudiwgIix2YXJfb2ZmPSVzIiwgdG5fYnVmKTsNCj4+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2ZXJib3NlX2FwcGVuZCgidmFyX29mZj0l
-cyIsIHRuX2J1Zik7DQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfQ0KPj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyZWctPnMzMl9taW5fdmFsdWUgIT0gcmVn
-LT5zbWluX3ZhbHVlICYmDQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
-Zy0+czMyX21pbl92YWx1ZSAhPSBTMzJfTUlOKQ0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHMzMl9taW5fdmFsdWU9JWQiLA0KPj4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKGludCkocmVnLT5z
-MzJfbWluX3ZhbHVlKSk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgdmVyYm9zZV9hcHBlbmQoInMzMl9taW49JWQiLA0KPj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpbnQpKHJlZy0+czMyX21pbl92YWx1
-ZSkpOw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChyZWctPnMzMl9tYXhf
-dmFsdWUgIT0gcmVnLT5zbWF4X3ZhbHVlICYmDQo+PiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHJlZy0+czMyX21heF92YWx1ZSAhPSBTMzJfTUFYKQ0KPj4gLSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHMzMl9tYXhfdmFsdWU9
-JWQiLA0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-KGludCkocmVnLT5zMzJfbWF4X3ZhbHVlKSk7DQo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBlbmQoInMzMl9tYXg9JWQiLA0KPj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChpbnQpKHJlZy0+
-czMyX21heF92YWx1ZSkpOw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChy
-ZWctPnUzMl9taW5fdmFsdWUgIT0gcmVnLT51bWluX3ZhbHVlICYmDQo+PiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHJlZy0+dTMyX21pbl92YWx1ZSAhPSBVMzJfTUlOKQ0KPj4g
-LSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiLHUz
-Ml9taW5fdmFsdWU9JWQiLA0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgKGludCkocmVnLT51MzJfbWluX3ZhbHVlKSk7DQo+PiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBlbmQoInUzMl9taW49JWQiLA0K
-Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IChpbnQpKHJlZy0+dTMyX21pbl92YWx1ZSkpOw0KPj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIGlmIChyZWctPnUzMl9tYXhfdmFsdWUgIT0gcmVnLT51bWF4X3ZhbHVlICYmDQo+PiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZy0+dTMyX21heF92YWx1ZSAhPSBV
-MzJfTUFYKQ0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJv
-c2UoZW52LCAiLHUzMl9tYXhfdmFsdWU9JWQiLA0KPj4gLSAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgKGludCkocmVnLT51MzJfbWF4X3ZhbHVlKSk7DQo+PiAr
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmVyYm9zZV9hcHBlbmQoInUz
-Ml9tYXg9JWQiLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIChpbnQpKHJlZy0+dTMyX21heF92YWx1ZSkpOw0KPj4gICAgICAgICAgICAg
-ICAgICAgICAgICB9DQo+PiAgICAgICAgICAgICAgICAgICAgICAgIHZlcmJvc2UoZW52LCAiKSIp
-Ow0KPj4gICAgICAgICAgICAgICAgfQ0KPiANCj4gW+KApl0NCg0K
+In particular:
+1) remove output of inv for scalars
+2) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
+3) remove output of id=3D0
+4) remove output of ref_obj_id=3D0
+
+Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+---
+ kernel/bpf/verifier.c                         |  58 ++---
+ .../testing/selftests/bpf/prog_tests/align.c  | 218 +++++++++---------
+ .../selftests/bpf/prog_tests/log_buf.c        |   4 +-
+ 3 files changed, 142 insertions(+), 138 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d7473fee247c..fe8e279ad6a4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -539,7 +539,7 @@ static const char *reg_type_str(struct bpf_verifier_e=
+nv *env,
+ 	char postfix[16] =3D {0}, prefix[32] =3D {0};
+ 	static const char * const str[] =3D {
+ 		[NOT_INIT]		=3D "?",
+-		[SCALAR_VALUE]		=3D "inv",
++		[SCALAR_VALUE]		=3D "",
+ 		[PTR_TO_CTX]		=3D "ctx",
+ 		[CONST_PTR_TO_MAP]	=3D "map_ptr",
+ 		[PTR_TO_MAP_VALUE]	=3D "map_value",
+@@ -693,69 +693,73 @@ static void print_verifier_state(struct bpf_verifie=
+r_env *env,
+ 			/* reg->off should be 0 for SCALAR_VALUE */
+ 			verbose(env, "%lld", reg->var_off.value + reg->off);
+ 		} else {
++			const char *sep =3D "";
++
+ 			if (base_type(t) =3D=3D PTR_TO_BTF_ID ||
+ 			    base_type(t) =3D=3D PTR_TO_PERCPU_BTF_ID)
+ 				verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
+-			verbose(env, "(id=3D%d", reg->id);
+-			if (reg_type_may_be_refcounted_or_null(t))
+-				verbose(env, ",ref_obj_id=3D%d", reg->ref_obj_id);
++
++			verbose(env, "(");
++
++#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__);=
+ sep =3D ","; })
++
++			if (reg->id)
++				verbose_a("id=3D%d", reg->id);
++
++			if (reg_type_may_be_refcounted_or_null(t) && reg->ref_obj_id)
++				verbose_a("ref_obj_id=3D%d", reg->ref_obj_id);
+ 			if (t !=3D SCALAR_VALUE)
+-				verbose(env, ",off=3D%d", reg->off);
++				verbose_a("off=3D%d", reg->off);
+ 			if (type_is_pkt_pointer(t))
+-				verbose(env, ",r=3D%d", reg->range);
++				verbose_a("r=3D%d", reg->range);
+ 			else if (base_type(t) =3D=3D CONST_PTR_TO_MAP ||
+ 				 base_type(t) =3D=3D PTR_TO_MAP_KEY ||
+ 				 base_type(t) =3D=3D PTR_TO_MAP_VALUE)
+-				verbose(env, ",ks=3D%d,vs=3D%d",
+-					reg->map_ptr->key_size,
+-					reg->map_ptr->value_size);
++				verbose_a("ks=3D%d,vs=3D%d",
++					  reg->map_ptr->key_size,
++					  reg->map_ptr->value_size);
+ 			if (tnum_is_const(reg->var_off)) {
+ 				/* Typically an immediate SCALAR_VALUE, but
+ 				 * could be a pointer whose offset is too big
+ 				 * for reg->off
+ 				 */
+-				verbose(env, ",imm=3D%llx", reg->var_off.value);
++				verbose_a("imm=3D%llx", reg->var_off.value);
+ 			} else {
+ 				if (reg->smin_value !=3D reg->umin_value &&
+ 				    reg->smin_value !=3D S64_MIN)
+-					verbose(env, ",smin_value=3D%lld",
+-						(long long)reg->smin_value);
++					verbose_a("smin=3D%lld", (long long)reg->smin_value);
+ 				if (reg->smax_value !=3D reg->umax_value &&
+ 				    reg->smax_value !=3D S64_MAX)
+-					verbose(env, ",smax_value=3D%lld",
+-						(long long)reg->smax_value);
++					verbose_a("smax=3D%lld", (long long)reg->smax_value);
+ 				if (reg->umin_value !=3D 0)
+-					verbose(env, ",umin_value=3D%llu",
+-						(unsigned long long)reg->umin_value);
++					verbose_a("umin=3D%llu", (unsigned long long)reg->umin_value);
+ 				if (reg->umax_value !=3D U64_MAX)
+-					verbose(env, ",umax_value=3D%llu",
+-						(unsigned long long)reg->umax_value);
++					verbose_a("umax=3D%llu", (unsigned long long)reg->umax_value);
+ 				if (!tnum_is_unknown(reg->var_off)) {
+ 					char tn_buf[48];
+=20
+ 					tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+-					verbose(env, ",var_off=3D%s", tn_buf);
++					verbose_a("var_off=3D%s", tn_buf);
+ 				}
+ 				if (reg->s32_min_value !=3D reg->smin_value &&
+ 				    reg->s32_min_value !=3D S32_MIN)
+-					verbose(env, ",s32_min_value=3D%d",
+-						(int)(reg->s32_min_value));
++					verbose_a("s32_min=3D%d", (int)(reg->s32_min_value));
+ 				if (reg->s32_max_value !=3D reg->smax_value &&
+ 				    reg->s32_max_value !=3D S32_MAX)
+-					verbose(env, ",s32_max_value=3D%d",
+-						(int)(reg->s32_max_value));
++					verbose_a("s32_max=3D%d", (int)(reg->s32_max_value));
+ 				if (reg->u32_min_value !=3D reg->umin_value &&
+ 				    reg->u32_min_value !=3D U32_MIN)
+-					verbose(env, ",u32_min_value=3D%d",
+-						(int)(reg->u32_min_value));
++					verbose_a("u32_min=3D%d", (int)(reg->u32_min_value));
+ 				if (reg->u32_max_value !=3D reg->umax_value &&
+ 				    reg->u32_max_value !=3D U32_MAX)
+-					verbose(env, ",u32_max_value=3D%d",
+-						(int)(reg->u32_max_value));
++					verbose_a("u32_max=3D%d", (int)(reg->u32_max_value));
+ 			}
+ 			verbose(env, ")");
+ 		}
+ 	}
++
++#undef verbose_append
++
+ 	for (i =3D 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
+ 		char types_buf[BPF_REG_SIZE + 1];
+ 		bool valid =3D false;
+diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testi=
+ng/selftests/bpf/prog_tests/align.c
+index 0ee29e11eaee..210dc6b4a169 100644
+--- a/tools/testing/selftests/bpf/prog_tests/align.c
++++ b/tools/testing/selftests/bpf/prog_tests/align.c
+@@ -39,13 +39,13 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{0, "R1=3Dctx(id=3D0,off=3D0,imm=3D0)"},
++			{0, "R1=3Dctx(off=3D0,imm=3D0)"},
+ 			{0, "R10=3Dfp0"},
+-			{0, "R3_w=3Dinv2"},
+-			{1, "R3_w=3Dinv4"},
+-			{2, "R3_w=3Dinv8"},
+-			{3, "R3_w=3Dinv16"},
+-			{4, "R3_w=3Dinv32"},
++			{0, "R3_w=3D2"},
++			{1, "R3_w=3D4"},
++			{2, "R3_w=3D8"},
++			{3, "R3_w=3D16"},
++			{4, "R3_w=3D32"},
+ 		},
+ 	},
+ 	{
+@@ -67,19 +67,19 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{0, "R1=3Dctx(id=3D0,off=3D0,imm=3D0)"},
++			{0, "R1=3Dctx(off=3D0,imm=3D0)"},
+ 			{0, "R10=3Dfp0"},
+-			{0, "R3_w=3Dinv1"},
+-			{1, "R3_w=3Dinv2"},
+-			{2, "R3_w=3Dinv4"},
+-			{3, "R3_w=3Dinv8"},
+-			{4, "R3_w=3Dinv16"},
+-			{5, "R3_w=3Dinv1"},
+-			{6, "R4_w=3Dinv32"},
+-			{7, "R4_w=3Dinv16"},
+-			{8, "R4_w=3Dinv8"},
+-			{9, "R4_w=3Dinv4"},
+-			{10, "R4_w=3Dinv2"},
++			{0, "R3_w=3D1"},
++			{1, "R3_w=3D2"},
++			{2, "R3_w=3D4"},
++			{3, "R3_w=3D8"},
++			{4, "R3_w=3D16"},
++			{5, "R3_w=3D1"},
++			{6, "R4_w=3D32"},
++			{7, "R4_w=3D16"},
++			{8, "R4_w=3D8"},
++			{9, "R4_w=3D4"},
++			{10, "R4_w=3D2"},
+ 		},
+ 	},
+ 	{
+@@ -96,14 +96,14 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{0, "R1=3Dctx(id=3D0,off=3D0,imm=3D0)"},
++			{0, "R1=3Dctx(off=3D0,imm=3D0)"},
+ 			{0, "R10=3Dfp0"},
+-			{0, "R3_w=3Dinv4"},
+-			{1, "R3_w=3Dinv8"},
+-			{2, "R3_w=3Dinv10"},
+-			{3, "R4_w=3Dinv8"},
+-			{4, "R4_w=3Dinv12"},
+-			{5, "R4_w=3Dinv14"},
++			{0, "R3_w=3D4"},
++			{1, "R3_w=3D8"},
++			{2, "R3_w=3D10"},
++			{3, "R4_w=3D8"},
++			{4, "R4_w=3D12"},
++			{5, "R4_w=3D14"},
+ 		},
+ 	},
+ 	{
+@@ -118,12 +118,12 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{0, "R1=3Dctx(id=3D0,off=3D0,imm=3D0)"},
++			{0, "R1=3Dctx(off=3D0,imm=3D0)"},
+ 			{0, "R10=3Dfp0"},
+-			{0, "R3_w=3Dinv7"},
+-			{1, "R3_w=3Dinv7"},
+-			{2, "R3_w=3Dinv14"},
+-			{3, "R3_w=3Dinv56"},
++			{0, "R3_w=3D7"},
++			{1, "R3_w=3D7"},
++			{2, "R3_w=3D14"},
++			{3, "R3_w=3D56"},
+ 		},
+ 	},
+=20
+@@ -161,19 +161,19 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{6, "R0_w=3Dpkt(id=3D0,off=3D8,r=3D8,imm=3D0)"},
+-			{6, "R3_w=3Dinv(id=3D0,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{7, "R3_w=3Dinv(id=3D0,umax_value=3D510,var_off=3D(0x0; 0x1fe))"},
+-			{8, "R3_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
+-			{9, "R3_w=3Dinv(id=3D0,umax_value=3D2040,var_off=3D(0x0; 0x7f8))"},
+-			{10, "R3_w=3Dinv(id=3D0,umax_value=3D4080,var_off=3D(0x0; 0xff0))"},
+-			{12, "R3_w=3Dpkt_end(id=3D0,off=3D0,imm=3D0)"},
+-			{17, "R4_w=3Dinv(id=3D0,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{18, "R4_w=3Dinv(id=3D0,umax_value=3D8160,var_off=3D(0x0; 0x1fe0))"},
+-			{19, "R4_w=3Dinv(id=3D0,umax_value=3D4080,var_off=3D(0x0; 0xff0))"},
+-			{20, "R4_w=3Dinv(id=3D0,umax_value=3D2040,var_off=3D(0x0; 0x7f8))"},
+-			{21, "R4_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
+-			{22, "R4_w=3Dinv(id=3D0,umax_value=3D510,var_off=3D(0x0; 0x1fe))"},
++			{6, "R0_w=3Dpkt(off=3D8,r=3D8,imm=3D0)"},
++			{6, "R3_w=3D(umax=3D255,var_off=3D(0x0; 0xff))"},
++			{7, "R3_w=3D(umax=3D510,var_off=3D(0x0; 0x1fe))"},
++			{8, "R3_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{9, "R3_w=3D(umax=3D2040,var_off=3D(0x0; 0x7f8))"},
++			{10, "R3_w=3D(umax=3D4080,var_off=3D(0x0; 0xff0))"},
++			{12, "R3_w=3Dpkt_end(off=3D0,imm=3D0)"},
++			{17, "R4_w=3D(umax=3D255,var_off=3D(0x0; 0xff))"},
++			{18, "R4_w=3D(umax=3D8160,var_off=3D(0x0; 0x1fe0))"},
++			{19, "R4_w=3D(umax=3D4080,var_off=3D(0x0; 0xff0))"},
++			{20, "R4_w=3D(umax=3D2040,var_off=3D(0x0; 0x7f8))"},
++			{21, "R4_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{22, "R4_w=3D(umax=3D510,var_off=3D(0x0; 0x1fe))"},
+ 		},
+ 	},
+ 	{
+@@ -194,16 +194,16 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{6, "R3_w=3Dinv(id=3D0,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{7, "R4_w=3Dinv(id=3D1,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{8, "R4_w=3Dinv(id=3D0,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{9, "R4_w=3Dinv(id=3D1,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{10, "R4_w=3Dinv(id=3D0,umax_value=3D510,var_off=3D(0x0; 0x1fe))"},
+-			{11, "R4_w=3Dinv(id=3D1,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{12, "R4_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
+-			{13, "R4_w=3Dinv(id=3D1,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{14, "R4_w=3Dinv(id=3D0,umax_value=3D2040,var_off=3D(0x0; 0x7f8))"},
+-			{15, "R4_w=3Dinv(id=3D0,umax_value=3D4080,var_off=3D(0x0; 0xff0))"},
++			{6, "R3_w=3D(umax=3D255,var_off=3D(0x0; 0xff))"},
++			{7, "R4_w=3D(id=3D1,umax=3D255,var_off=3D(0x0; 0xff))"},
++			{8, "R4_w=3D(umax=3D255,var_off=3D(0x0; 0xff))"},
++			{9, "R4_w=3D(id=3D1,umax=3D255,var_off=3D(0x0; 0xff))"},
++			{10, "R4_w=3D(umax=3D510,var_off=3D(0x0; 0x1fe))"},
++			{11, "R4_w=3D(id=3D1,umax=3D255,var_off=3D(0x0; 0xff))"},
++			{12, "R4_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{13, "R4_w=3D(id=3D1,umax=3D255,var_off=3D(0x0; 0xff))"},
++			{14, "R4_w=3D(umax=3D2040,var_off=3D(0x0; 0x7f8))"},
++			{15, "R4_w=3D(umax=3D4080,var_off=3D(0x0; 0xff0))"},
+ 		},
+ 	},
+ 	{
+@@ -234,14 +234,14 @@ static struct bpf_align_test tests[] =3D {
+ 		},
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.matches =3D {
+-			{2, "R5_w=3Dpkt(id=3D0,off=3D0,r=3D0,imm=3D0)"},
+-			{4, "R5_w=3Dpkt(id=3D0,off=3D14,r=3D0,imm=3D0)"},
+-			{5, "R4_w=3Dpkt(id=3D0,off=3D14,r=3D0,imm=3D0)"},
+-			{9, "R2=3Dpkt(id=3D0,off=3D0,r=3D18,imm=3D0)"},
+-			{10, "R5=3Dpkt(id=3D0,off=3D14,r=3D18,imm=3D0)"},
+-			{10, "R4_w=3Dinv(id=3D0,umax_value=3D255,var_off=3D(0x0; 0xff))"},
+-			{13, "R4_w=3Dinv(id=3D0,umax_value=3D65535,var_off=3D(0x0; 0xffff))"}=
+,
+-			{14, "R4_w=3Dinv(id=3D0,umax_value=3D65535,var_off=3D(0x0; 0xffff))"}=
+,
++			{2, "R5_w=3Dpkt(off=3D0,r=3D0,imm=3D0)"},
++			{4, "R5_w=3Dpkt(off=3D14,r=3D0,imm=3D0)"},
++			{5, "R4_w=3Dpkt(off=3D14,r=3D0,imm=3D0)"},
++			{9, "R2=3Dpkt(off=3D0,r=3D18,imm=3D0)"},
++			{10, "R5=3Dpkt(off=3D14,r=3D18,imm=3D0)"},
++			{10, "R4_w=3D(umax=3D255,var_off=3D(0x0; 0xff))"},
++			{13, "R4_w=3D(umax=3D65535,var_off=3D(0x0; 0xffff))"},
++			{14, "R4_w=3D(umax=3D65535,var_off=3D(0x0; 0xffff))"},
+ 		},
+ 	},
+ 	{
+@@ -296,59 +296,59 @@ static struct bpf_align_test tests[] =3D {
+ 			/* Calculated offset in R6 has unknown value, but known
+ 			 * alignment of 4.
+ 			 */
+-			{6, "R2_w=3Dpkt(id=3D0,off=3D0,r=3D8,imm=3D0)"},
+-			{7, "R6_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{6, "R2_w=3Dpkt(off=3D0,r=3D8,imm=3D0)"},
++			{7, "R6_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
+ 			/* Offset is added to packet pointer R5, resulting in
+ 			 * known fixed offset, and variable offset from R6.
+ 			 */
+-			{11, "R5_w=3Dpkt(id=3D1,off=3D14,r=3D0,umax_value=3D1020,var_off=3D(0=
+x0; 0x3fc))"},
++			{11, "R5_w=3Dpkt(id=3D1,off=3D14,r=3D0,umax=3D1020,var_off=3D(0x0; 0x=
+3fc))"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * it's total offset is NET_IP_ALIGN + reg->off (0) +
+ 			 * reg->aux_off (14) which is 16.  Then the variable
+ 			 * offset is considered using reg->aux_off_align which
+ 			 * is 4 and meets the load's requirements.
+ 			 */
+-			{15, "R4=3Dpkt(id=3D1,off=3D18,r=3D18,umax_value=3D1020,var_off=3D(0x=
+0; 0x3fc))"},
+-			{15, "R5=3Dpkt(id=3D1,off=3D14,r=3D18,umax_value=3D1020,var_off=3D(0x=
+0; 0x3fc))"},
++			{15, "R4=3Dpkt(id=3D1,off=3D18,r=3D18,umax=3D1020,var_off=3D(0x0; 0x3=
+fc))"},
++			{15, "R5=3Dpkt(id=3D1,off=3D14,r=3D18,umax=3D1020,var_off=3D(0x0; 0x3=
+fc))"},
+ 			/* Variable offset is added to R5 packet pointer,
+ 			 * resulting in auxiliary alignment of 4.
+ 			 */
+-			{17, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D0,umax_value=3D1020,var_off=3D(0x=
+0; 0x3fc))"},
++			{17, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D0,umax=3D1020,var_off=3D(0x0; 0x3=
+fc))"},
+ 			/* Constant offset is added to R5, resulting in
+ 			 * reg->off of 14.
+ 			 */
+-			{18, "R5_w=3Dpkt(id=3D2,off=3D14,r=3D0,umax_value=3D1020,var_off=3D(0=
+x0; 0x3fc))"},
++			{18, "R5_w=3Dpkt(id=3D2,off=3D14,r=3D0,umax=3D1020,var_off=3D(0x0; 0x=
+3fc))"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off
+ 			 * (14) which is 16.  Then the variable offset is 4-byte
+ 			 * aligned, so the total offset is 4-byte aligned and
+ 			 * meets the load's requirements.
+ 			 */
+-			{23, "R4=3Dpkt(id=3D2,off=3D18,r=3D18,umax_value=3D1020,var_off=3D(0x=
+0; 0x3fc))"},
+-			{23, "R5=3Dpkt(id=3D2,off=3D14,r=3D18,umax_value=3D1020,var_off=3D(0x=
+0; 0x3fc))"},
++			{23, "R4=3Dpkt(id=3D2,off=3D18,r=3D18,umax=3D1020,var_off=3D(0x0; 0x3=
+fc))"},
++			{23, "R5=3Dpkt(id=3D2,off=3D14,r=3D18,umax=3D1020,var_off=3D(0x0; 0x3=
+fc))"},
+ 			/* Constant offset is added to R5 packet pointer,
+ 			 * resulting in reg->off value of 14.
+ 			 */
+-			{25, "R5_w=3Dpkt(id=3D0,off=3D14,r=3D8"},
++			{25, "R5_w=3Dpkt(off=3D14,r=3D8"},
+ 			/* Variable offset is added to R5, resulting in a
+ 			 * variable offset of (4n).
+ 			 */
+-			{26, "R5_w=3Dpkt(id=3D3,off=3D14,r=3D0,umax_value=3D1020,var_off=3D(0=
+x0; 0x3fc))"},
++			{26, "R5_w=3Dpkt(id=3D3,off=3D14,r=3D0,umax=3D1020,var_off=3D(0x0; 0x=
+3fc))"},
+ 			/* Constant is added to R5 again, setting reg->off to 18. */
+-			{27, "R5_w=3Dpkt(id=3D3,off=3D18,r=3D0,umax_value=3D1020,var_off=3D(0=
+x0; 0x3fc))"},
++			{27, "R5_w=3Dpkt(id=3D3,off=3D18,r=3D0,umax=3D1020,var_off=3D(0x0; 0x=
+3fc))"},
+ 			/* And once more we add a variable; resulting var_off
+ 			 * is still (4n), fixed offset is not changed.
+ 			 * Also, we create a new reg->id.
+ 			 */
+-			{28, "R5_w=3Dpkt(id=3D4,off=3D18,r=3D0,umax_value=3D2040,var_off=3D(0=
+x0; 0x7fc)"},
++			{28, "R5_w=3Dpkt(id=3D4,off=3D18,r=3D0,umax=3D2040,var_off=3D(0x0; 0x=
+7fc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (18)
+ 			 * which is 20.  Then the variable offset is (4n), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{33, "R4=3Dpkt(id=3D4,off=3D22,r=3D22,umax_value=3D2040,var_off=3D(0x=
+0; 0x7fc)"},
+-			{33, "R5=3Dpkt(id=3D4,off=3D18,r=3D22,umax_value=3D2040,var_off=3D(0x=
+0; 0x7fc)"},
++			{33, "R4=3Dpkt(id=3D4,off=3D22,r=3D22,umax=3D2040,var_off=3D(0x0; 0x7=
+fc)"},
++			{33, "R5=3Dpkt(id=3D4,off=3D18,r=3D22,umax=3D2040,var_off=3D(0x0; 0x7=
+fc)"},
+ 		},
+ 	},
+ 	{
+@@ -386,36 +386,36 @@ static struct bpf_align_test tests[] =3D {
+ 			/* Calculated offset in R6 has unknown value, but known
+ 			 * alignment of 4.
+ 			 */
+-			{6, "R2_w=3Dpkt(id=3D0,off=3D0,r=3D8,imm=3D0)"},
+-			{7, "R6_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{6, "R2_w=3Dpkt(off=3D0,r=3D8,imm=3D0)"},
++			{7, "R6_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
+ 			/* Adding 14 makes R6 be (4n+2) */
+-			{8, "R6_w=3Dinv(id=3D0,umin_value=3D14,umax_value=3D1034,var_off=3D(0=
+x2; 0x7fc))"},
++			{8, "R6_w=3D(umin=3D14,umax=3D1034,var_off=3D(0x2; 0x7fc))"},
+ 			/* Packet pointer has (4n+2) offset */
+-			{11, "R5_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin_value=3D14,umax_value=3D10=
+34,var_off=3D(0x2; 0x7fc)"},
+-			{12, "R4=3Dpkt(id=3D1,off=3D4,r=3D0,umin_value=3D14,umax_value=3D1034=
+,var_off=3D(0x2; 0x7fc)"},
++			{11, "R5_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin=3D14,umax=3D1034,var_off=3D=
+(0x2; 0x7fc)"},
++			{12, "R4=3Dpkt(id=3D1,off=3D4,r=3D0,umin=3D14,umax=3D1034,var_off=3D(=
+0x2; 0x7fc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{15, "R5=3Dpkt(id=3D1,off=3D0,r=3D4,umin_value=3D14,umax_value=3D1034=
+,var_off=3D(0x2; 0x7fc)"},
++			{15, "R5=3Dpkt(id=3D1,off=3D0,r=3D4,umin=3D14,umax=3D1034,var_off=3D(=
+0x2; 0x7fc)"},
+ 			/* Newly read value in R6 was shifted left by 2, so has
+ 			 * known alignment of 4.
+ 			 */
+-			{17, "R6_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{17, "R6_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
+ 			/* Added (4n) to packet pointer's (4n+2) var_off, giving
+ 			 * another (4n+2).
+ 			 */
+-			{19, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D0,umin_value=3D14,umax_value=3D20=
+54,var_off=3D(0x2; 0xffc)"},
+-			{20, "R4=3Dpkt(id=3D2,off=3D4,r=3D0,umin_value=3D14,umax_value=3D2054=
+,var_off=3D(0x2; 0xffc)"},
++			{19, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D0,umin=3D14,umax=3D2054,var_off=3D=
+(0x2; 0xffc)"},
++			{20, "R4=3Dpkt(id=3D2,off=3D4,r=3D0,umin=3D14,umax=3D2054,var_off=3D(=
+0x2; 0xffc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{23, "R5=3Dpkt(id=3D2,off=3D0,r=3D4,umin_value=3D14,umax_value=3D2054=
+,var_off=3D(0x2; 0xffc)"},
++			{23, "R5=3Dpkt(id=3D2,off=3D0,r=3D4,umin=3D14,umax=3D2054,var_off=3D(=
+0x2; 0xffc)"},
+ 		},
+ 	},
+ 	{
+@@ -448,18 +448,18 @@ static struct bpf_align_test tests[] =3D {
+ 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
+ 		.result =3D REJECT,
+ 		.matches =3D {
+-			{3, "R5_w=3Dpkt_end(id=3D0,off=3D0,imm=3D0)"},
++			{3, "R5_w=3Dpkt_end(off=3D0,imm=3D0)"},
+ 			/* (ptr - ptr) << 2 =3D=3D unknown, (4n) */
+-			{5, "R5_w=3Dinv(id=3D0,smax_value=3D9223372036854775804,umax_value=3D=
+18446744073709551612,var_off=3D(0x0; 0xfffffffffffffffc)"},
++			{5, "R5_w=3D(smax=3D9223372036854775804,umax=3D18446744073709551612,v=
+ar_off=3D(0x0; 0xfffffffffffffffc)"},
+ 			/* (4n) + 14 =3D=3D (4n+2).  We blow our bounds, because
+ 			 * the add could overflow.
+ 			 */
+-			{6, "R5_w=3Dinv(id=3D0,smin_value=3D-9223372036854775806,smax_value=3D=
+9223372036854775806,umin_value=3D2,umax_value=3D18446744073709551614,var_=
+off=3D(0x2; 0xfffffffffffffffc)"},
++			{6, "R5_w=3D(smin=3D-9223372036854775806,smax=3D9223372036854775806,u=
+min=3D2,umax=3D18446744073709551614,var_off=3D(0x2; 0xfffffffffffffffc)"}=
+,
+ 			/* Checked s>=3D0 */
+-			{9, "R5=3Dinv(id=3D0,umin_value=3D2,umax_value=3D9223372036854775806,=
+var_off=3D(0x2; 0x7ffffffffffffffc)"},
++			{9, "R5=3D(umin=3D2,umax=3D9223372036854775806,var_off=3D(0x2; 0x7fff=
+fffffffffffc)"},
+ 			/* packet pointer + nonnegative (4n+2) */
+-			{11, "R6_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin_value=3D2,umax_value=3D922=
+3372036854775806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
+-			{12, "R4_w=3Dpkt(id=3D1,off=3D4,r=3D0,umin_value=3D2,umax_value=3D922=
+3372036854775806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
++			{11, "R6_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin=3D2,umax=3D922337203685477=
+5806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
++			{12, "R4_w=3Dpkt(id=3D1,off=3D4,r=3D0,umin=3D2,umax=3D922337203685477=
+5806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
+ 			/* NET_IP_ALIGN + (4n+2) =3D=3D (4n), alignment is fine.
+ 			 * We checked the bounds, but it might have been able
+ 			 * to overflow if the packet pointer started in the
+@@ -467,7 +467,7 @@ static struct bpf_align_test tests[] =3D {
+ 			 * So we did not get a 'range' on R6, and the access
+ 			 * attempt will fail.
+ 			 */
+-			{15, "R6_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin_value=3D2,umax_value=3D922=
+3372036854775806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
++			{15, "R6_w=3Dpkt(id=3D1,off=3D0,r=3D0,umin=3D2,umax=3D922337203685477=
+5806,var_off=3D(0x2; 0x7ffffffffffffffc)"},
+ 		}
+ 	},
+ 	{
+@@ -502,23 +502,23 @@ static struct bpf_align_test tests[] =3D {
+ 			/* Calculated offset in R6 has unknown value, but known
+ 			 * alignment of 4.
+ 			 */
+-			{6, "R2_w=3Dpkt(id=3D0,off=3D0,r=3D8,imm=3D0)"},
+-			{8, "R6_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{6, "R2_w=3Dpkt(off=3D0,r=3D8,imm=3D0)"},
++			{8, "R6_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
+ 			/* Adding 14 makes R6 be (4n+2) */
+-			{9, "R6_w=3Dinv(id=3D0,umin_value=3D14,umax_value=3D1034,var_off=3D(0=
+x2; 0x7fc))"},
++			{9, "R6_w=3D(umin=3D14,umax=3D1034,var_off=3D(0x2; 0x7fc))"},
+ 			/* New unknown value in R7 is (4n) */
+-			{10, "R7_w=3Dinv(id=3D0,umax_value=3D1020,var_off=3D(0x0; 0x3fc))"},
++			{10, "R7_w=3D(umax=3D1020,var_off=3D(0x0; 0x3fc))"},
+ 			/* Subtracting it from R6 blows our unsigned bounds */
+-			{11, "R6=3Dinv(id=3D0,smin_value=3D-1006,smax_value=3D1034,umin_value=
+=3D2,umax_value=3D18446744073709551614,var_off=3D(0x2; 0xfffffffffffffffc=
+)"},
++			{11, "R6=3D(smin=3D-1006,smax=3D1034,umin=3D2,umax=3D1844674407370955=
+1614,var_off=3D(0x2; 0xfffffffffffffffc)"},
+ 			/* Checked s>=3D 0 */
+-			{14, "R6=3Dinv(id=3D0,umin_value=3D2,umax_value=3D1034,var_off=3D(0x2=
+; 0x7fc))"},
++			{14, "R6=3D(umin=3D2,umax=3D1034,var_off=3D(0x2; 0x7fc))"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{20, "R5=3Dpkt(id=3D2,off=3D0,r=3D4,umin_value=3D2,umax_value=3D1034,=
+var_off=3D(0x2; 0x7fc)"},
++			{20, "R5=3Dpkt(id=3D2,off=3D0,r=3D4,umin=3D2,umax=3D1034,var_off=3D(0=
+x2; 0x7fc)"},
+=20
+ 		},
+ 	},
+@@ -556,23 +556,23 @@ static struct bpf_align_test tests[] =3D {
+ 			/* Calculated offset in R6 has unknown value, but known
+ 			 * alignment of 4.
+ 			 */
+-			{6, "R2_w=3Dpkt(id=3D0,off=3D0,r=3D8,imm=3D0)"},
+-			{9, "R6_w=3Dinv(id=3D0,umax_value=3D60,var_off=3D(0x0; 0x3c))"},
++			{6, "R2_w=3Dpkt(off=3D0,r=3D8,imm=3D0)"},
++			{9, "R6_w=3D(umax=3D60,var_off=3D(0x0; 0x3c))"},
+ 			/* Adding 14 makes R6 be (4n+2) */
+-			{10, "R6_w=3Dinv(id=3D0,umin_value=3D14,umax_value=3D74,var_off=3D(0x=
+2; 0x7c))"},
++			{10, "R6_w=3D(umin=3D14,umax=3D74,var_off=3D(0x2; 0x7c))"},
+ 			/* Subtracting from packet pointer overflows ubounds */
+-			{13, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D8,umin_value=3D184467440737095515=
+42,umax_value=3D18446744073709551602,var_off=3D(0xffffffffffffff82; 0x7c)=
+"},
++			{13, "R5_w=3Dpkt(id=3D2,off=3D0,r=3D8,umin=3D18446744073709551542,uma=
+x=3D18446744073709551602,var_off=3D(0xffffffffffffff82; 0x7c)"},
+ 			/* New unknown value in R7 is (4n), >=3D 76 */
+-			{14, "R7_w=3Dinv(id=3D0,umin_value=3D76,umax_value=3D1096,var_off=3D(=
+0x0; 0x7fc))"},
++			{14, "R7_w=3D(umin=3D76,umax=3D1096,var_off=3D(0x0; 0x7fc))"},
+ 			/* Adding it to packet pointer gives nice bounds again */
+-			{16, "R5_w=3Dpkt(id=3D3,off=3D0,r=3D0,umin_value=3D2,umax_value=3D108=
+2,var_off=3D(0x2; 0xfffffffc)"},
++			{16, "R5_w=3Dpkt(id=3D3,off=3D0,r=3D0,umin=3D2,umax=3D1082,var_off=3D=
+(0x2; 0xfffffffc)"},
+ 			/* At the time the word size load is performed from R5,
+ 			 * its total fixed offset is NET_IP_ALIGN + reg->off (0)
+ 			 * which is 2.  Then the variable offset is (4n+2), so
+ 			 * the total offset is 4-byte aligned and meets the
+ 			 * load's requirements.
+ 			 */
+-			{20, "R5=3Dpkt(id=3D3,off=3D0,r=3D4,umin_value=3D2,umax_value=3D1082,=
+var_off=3D(0x2; 0xfffffffc)"},
++			{20, "R5=3Dpkt(id=3D3,off=3D0,r=3D4,umin=3D2,umax=3D1082,var_off=3D(0=
+x2; 0xfffffffc)"},
+ 		},
+ 	},
+ };
+@@ -648,8 +648,8 @@ static int do_test_single(struct bpf_align_test *test=
+)
+ 			/* Check the next line as well in case the previous line
+ 			 * did not have a corresponding bpf insn. Example:
+ 			 * func#0 @0
+-			 * 0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+-			 * 0: (b7) r3 =3D 2                 ; R3_w=3Dinv2
++			 * 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
++			 * 0: (b7) r3 =3D 2                 ; R3_w=3D2
+ 			 */
+ 			if (!strstr(line_ptr, m.match)) {
+ 				cur_line =3D -1;
+diff --git a/tools/testing/selftests/bpf/prog_tests/log_buf.c b/tools/tes=
+ting/selftests/bpf/prog_tests/log_buf.c
+index 1ef377a7e731..fe9a23e65ef4 100644
+--- a/tools/testing/selftests/bpf/prog_tests/log_buf.c
++++ b/tools/testing/selftests/bpf/prog_tests/log_buf.c
+@@ -78,7 +78,7 @@ static void obj_load_log_buf(void)
+ 	ASSERT_OK_PTR(strstr(libbpf_log_buf, "prog 'bad_prog': BPF program load=
+ failed"),
+ 		      "libbpf_log_not_empty");
+ 	ASSERT_OK_PTR(strstr(obj_log_buf, "DATASEC license"), "obj_log_not_empt=
+y");
+-	ASSERT_OK_PTR(strstr(good_log_buf, "0: R1=3Dctx(id=3D0,off=3D0,imm=3D0)=
+ R10=3Dfp0"),
++	ASSERT_OK_PTR(strstr(good_log_buf, "0: R1=3Dctx(off=3D0,imm=3D0) R10=3D=
+fp0"),
+ 		      "good_log_verbose");
+ 	ASSERT_OK_PTR(strstr(bad_log_buf, "invalid access to map value, value_s=
+ize=3D16 off=3D16000 size=3D4"),
+ 		      "bad_log_not_empty");
+@@ -175,7 +175,7 @@ static void bpf_prog_load_log_buf(void)
+ 	opts.log_level =3D 2;
+ 	fd =3D bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "good_prog", "GPL",
+ 			   good_prog_insns, good_prog_insn_cnt, &opts);
+-	ASSERT_OK_PTR(strstr(log_buf, "0: R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3D=
+fp0"), "good_log_2");
++	ASSERT_OK_PTR(strstr(log_buf, "0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0")=
+, "good_log_2");
+ 	ASSERT_GE(fd, 0, "good_fd2");
+ 	if (fd >=3D 0)
+ 		close(fd);
+--=20
+2.30.2
+
