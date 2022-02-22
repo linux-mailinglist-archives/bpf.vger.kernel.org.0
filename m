@@ -2,59 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFC24BEF2E
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 02:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD384BEF4D
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 03:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbiBVBtR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 20:49:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37282 "EHLO
+        id S236708AbiBVCBr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 21:01:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbiBVBtO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 20:49:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC63425C4E;
-        Mon, 21 Feb 2022 17:48:49 -0800 (PST)
+        with ESMTP id S229873AbiBVCBn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 21:01:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C481EECA;
+        Mon, 21 Feb 2022 18:01:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 482B261487;
-        Tue, 22 Feb 2022 01:48:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB8E9C340E9;
-        Tue, 22 Feb 2022 01:48:48 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 53A59B8184E;
+        Tue, 22 Feb 2022 02:01:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF4C9C340F0;
+        Tue, 22 Feb 2022 02:01:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645494528;
-        bh=S9TxefCeXQCOUZ6D19FyayuauuaqtfzAGYJ7COJEcVk=;
+        s=k20201202; t=1645495277;
+        bh=82E44GVnMO3ZiuMUchoEAQGuozP+onbtfSj3aYx1p3k=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nExl3/nb+NKaXoksFTavxexjIeQcMxPRmP2dfLSwzL58GIJiCiH6oWuvqJ5SGQ6A+
-         Alw6CrA1lFDjTY56sMrO+gHgU5a/Kc4Wq7waJRvAVfh/D8uDZ1vIh++gvf74IxS8dG
-         mviqsnsexKxGZjsDy4UB7W0nf0rpkXGmPlSPe3p4MWo1dU/LsQ7fCvUdsNd5BDbl37
-         SVhMn+q+l/qlGC22QKBdJRbdwAQzVCMSez7RHDUYLrf3JCSEY0gdogL3d/pt+fzm/3
-         Yc8kNRUN6WjMGD2ooAIV6pa3ja58uYAI9rMG6BxTEt101JeTrMCcO+fXACa5mu4F0j
-         VtSjGynGQFIfA==
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-2d79394434dso14602327b3.5;
-        Mon, 21 Feb 2022 17:48:48 -0800 (PST)
-X-Gm-Message-State: AOAM5312Lw7/ZYoSCTYf9/Tjv4maNjGvqIpr+KWo34epUb954CYTyLNS
-        qWPlO5GlC+uyLZ+goVBJJYGGuzPtxouVhau8riw=
-X-Google-Smtp-Source: ABdhPJxn6W5ZJlfQB0WZuhICe+tXsoTPFFFrHg7xRSqBNkby9ZvDtTQR0NUbs0JXGTnD8SgPsduOUQHVLxpt78jVZZ4=
-X-Received: by 2002:a0d:ea0a:0:b0:2d6:93b9:cda1 with SMTP id
- t10-20020a0dea0a000000b002d693b9cda1mr22092300ywe.460.1645494527807; Mon, 21
- Feb 2022 17:48:47 -0800 (PST)
+        b=dkUjOROGYgxoaIlIjcoJOBbMvpzAWf5eJq3HoFbDKAFnGMpOFr45Syat6S+hiZ8vS
+         c/iHzeccFya/Coon/R673M43Lz7upMuKVjesq5XF9/cfx0toiptc/4850vTUSxaC4n
+         RNb9yO3Rv0QTnxolO61MZdjIlWinrOAyeIdHsdKF/FIJaEhE+QG95C0vUUARrmtoCz
+         kGB0qlsYrfd74MNkAnMQdS2OjFZXhdyPtTnr/VMOZpj38TRN/yO+qDm35YogScoAIf
+         QZI0RfRelWoxpwqJVCRbxzWbhwwfjotoqw3g6zXl7ZIO1tf0SFxQrGWfLffm2cdKvt
+         5A5srA7aTXjfw==
+Received: by mail-yb1-f174.google.com with SMTP id w63so16704191ybe.10;
+        Mon, 21 Feb 2022 18:01:16 -0800 (PST)
+X-Gm-Message-State: AOAM530mExL97lKojVg8n0j+dB6OFDlsuQdyR0PsMskB8hQcmsMoeQLS
+        e20B1sH2nxEU0uvtx+S0YN9hK94RQoNNGvC8UBg=
+X-Google-Smtp-Source: ABdhPJzl/UPdOGfPXb1ow2MxZcuraEWgOUFss7Nj1XxOwAjWoZS9CmM/S0zJjGNZXMPXC+UYuNGhMjCSJcoBUdrAOWI=
+X-Received: by 2002:a25:d60c:0:b0:610:dc8d:b3bd with SMTP id
+ n12-20020a25d60c000000b00610dc8db3bdmr21529172ybg.561.1645495275984; Mon, 21
+ Feb 2022 18:01:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20220221125617.39610-1-mauricio@kinvolk.io> <f2c11f1a-ab7d-2d7b-7583-d1edb94cace9@isovalent.com>
-In-Reply-To: <f2c11f1a-ab7d-2d7b-7583-d1edb94cace9@isovalent.com>
+References: <1645240502-13398-1-git-send-email-yangtiezhu@loongson.cn> <1645240502-13398-2-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1645240502-13398-2-git-send-email-yangtiezhu@loongson.cn>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Feb 2022 17:48:36 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6fRNOOckuULrbkjPdZdZTCeWTu3zv5HJsm=0+=qD0eww@mail.gmail.com>
-Message-ID: <CAPhsuW6fRNOOckuULrbkjPdZdZTCeWTu3zv5HJsm=0+=qD0eww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] bpftool: Remove usage of reallocarray()
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 21 Feb 2022 18:01:05 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6bkhcDXb5k-46G_f4L+ot2QJwbY_-Urd+BEfrPWdmf+Q@mail.gmail.com>
+Message-ID: <CAPhsuW6bkhcDXb5k-46G_f4L+ot2QJwbY_-Urd+BEfrPWdmf+Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add some description about
+ BPF_JIT_ALWAYS_ON in Kconfig
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,38 +70,42 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 21, 2022 at 7:48 AM Quentin Monnet <quentin@isovalent.com> wrot=
-e:
+On Fri, Feb 18, 2022 at 7:15 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> 2022-02-21 07:56 UTC-0500 ~ Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> > This commit fixes a compilation error on systems with glibc < 2.26 [0]:
-> >
-> > ```
-> > In file included from main.h:14:0,
-> >                  from gen.c:24:
-> > linux/tools/include/tools/libc_compat.h:11:21: error: attempt to use po=
-isoned "reallocarray"
-> >  static inline void *reallocarray(void *ptr, size_t nmemb, size_t size)
-> > ```
-> >
-> > This happens because gen.c pulls <bpf/libbpf_internal.h>, and then
-> > <tools/libc_compat.h> (through main.h). When
-> > COMPAT_NEED_REALLOCARRAY is set, libc_compat.h defines reallocarray()
-> > which libbpf_internal.h poisons with a GCC pragma.
-> >
-> > This commit reuses libbpf_reallocarray() implemented in commit
-> > 029258d7b228 ("libbpf: Remove any use of reallocarray() in libbpf").
-> >
-> > v1 -> v2:
-> > - reuse libbpf_reallocarray() instead of reimplementing it
-> >
-> > Reported-by: Quentin Monnet <quentin@isovalent.com>
-> > Signed-off-by: Mauricio V=C3=A1squez <mauricio@kinvolk.io>
-> >
-> > [0]: https://lore.kernel.org/bpf/3bf2bd49-9f2d-a2df-5536-bc0dde70a83b@i=
-sovalent.com/
+> When CONFIG_BPF_JIT_ALWAYS_ON is enabled, /proc/sys/net/core/bpf_jit_enable
+> is permanently set to 1 and setting any other value than that will return
+> in failure.
 >
-> Fixes: a9caaba399f9 ("bpftool: Implement "gen min_core_btf" logic")
-> Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+> Add the above description in the help text of config BPF_JIT_ALWAYS_ON, and
+> then we can distinguish between BPF_JIT_ALWAYS_ON and BPF_JIT_DEFAULT_ON.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  kernel/bpf/Kconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+> index d24d518..cbf3f65 100644
+> --- a/kernel/bpf/Kconfig
+> +++ b/kernel/bpf/Kconfig
+> @@ -58,6 +58,10 @@ config BPF_JIT_ALWAYS_ON
+>           Enables BPF JIT and removes BPF interpreter to avoid speculative
+>           execution of BPF instructions by the interpreter.
+>
+> +         When CONFIG_BPF_JIT_ALWAYS_ON is enabled, /proc/sys/net/core/bpf_jit_enable
+> +         is permanently set to 1 and setting any other value than that will return
+> +         in failure.
+
+nit: "return failure" (no "in").
+
+Other than this,
 
 Acked-by: Song Liu <songliubraving@fb.com>
+
+> +
+>  config BPF_JIT_DEFAULT_ON
+>         def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
+>         depends on HAVE_EBPF_JIT && BPF_JIT
+> --
+> 2.1.0
+>
