@@ -2,71 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DB44BF020
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6B94BF083
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241529AbiBVDWN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 22:22:13 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:52724 "EHLO
+        id S230432AbiBVDYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 22:24:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241607AbiBVDWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 22:22:03 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C774C2714B
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 19:21:28 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id gi6so7437988pjb.1
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 19:21:28 -0800 (PST)
+        with ESMTP id S230154AbiBVDYi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 22:24:38 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9250D5F90;
+        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id m185so18440834iof.10;
+        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SZQjY6MdnJml6E7bf6Sr3CAwV62JND5pzdljz+A+GLU=;
-        b=PRz+mEgKxOk+CCmmFyzxViPYHA8BbnIZ2V/gzFp7+fWf9rxWOpdSFF7xHmcc4U0w1u
-         /Sm+U3SJWEeh9FHoFktL3A1QpiBmn58vOwOnyKFDNixEVp7L8IGBP+8yWsaADKOxk4Tn
-         gfjG3VFyKOpNR+XdCX2P7mht9jVJSDynVK4MSgh4O9pq1Z1Xbu2zcoDLWqnFZhIMigMU
-         jTUtHtCjRLYLG8oiJGlxyiOmikyZkstUXMxy6OJWapC1HKk0EIW5ICHj2OPuxlXaAtoV
-         P17yR2wCXIvK5YnSe//gBl+h9QOPZ/car7WnIu9TKLtkB0rIMyS0AglEpDB66RNEeVTJ
-         Y/4g==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=t9pbxXf5AxDJimERyAK/g611uy98VuNWmmEmuXc8qEw=;
+        b=cQGwRIJzviZF9BcUrpncofuqGASKjdKjS1dBrbatBcOJd+O3l02b0Z301JZGkarEm+
+         15zz8FOCluPEQI6cwB/sOGYFv1SC4APKpE2Pxv2zZDs5AztiNNp1dn4JjR2dkO91okTO
+         1BrgUjfzkTXGjmTCqJNfOGFUfhx+Xeo3VaONlKhYpNh9px33vLRoDjfMXGZ1vJAA1hTN
+         ANPJuFxm8lwLLQy3wJjFGpCwJaW6A62j3FZYxzw+/ukRJOex5tzy+gNmzqg3Dbqh+Pv1
+         uY6i8C8Rm/RQg5VsDK0Yyw9CXylZB1J/xRPtP5KDQfIsTg6r2w4IF3N1SHOxojf+oyS7
+         dUow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SZQjY6MdnJml6E7bf6Sr3CAwV62JND5pzdljz+A+GLU=;
-        b=XNYoYezch2apjl49Os9jDBmaDrvgjm1WiT2QuI3g2Fu+waMeNezWgtOV+ronqxKSnl
-         s0sJSBUnzjwBck9/dQnrPsP0ctgZS8ZTnRdz74rCQnIW85kgYtF2iHvEW3qR/Xkwdzqs
-         zs+XPsuGwyAEgeRktc4xy9/+yioTy6X2dA/wzVpCoJZvLgEZqzFcVdeZ03l6fVghci0T
-         c0uj0YhFS60guRBjbwVJmF4fnBykBRwaYB0WeQXGhrRy1woU5dFHiPuTjh6iu1Jlc34X
-         hFY6dVgg16SAy7Zu+ckJgATy0ZV5hEfGu/NgMD6FMPhS4QqKSdWIMtMdf6CrlDV5GaKQ
-         UU2A==
-X-Gm-Message-State: AOAM530Pc9kO2vjYosN2AwVnDZ/1EBWYzh1XMQLNlifvrXigThEX8/it
-        gdm4oi02ipuIt/0Fi93lFuA=
-X-Google-Smtp-Source: ABdhPJzOT1LYFLRDARj/rugW9x+PFaFEOLR9b6JWaLoU8xOJL+KVS3eNMysAZW82nMgmgUE0o59gJw==
-X-Received: by 2002:a17:90b:e08:b0:1bc:2b0c:65aa with SMTP id ge8-20020a17090b0e0800b001bc2b0c65aamr2022962pjb.102.1645500088064;
-        Mon, 21 Feb 2022 19:21:28 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id 16sm14098576pfm.200.2022.02.21.19.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Feb 2022 19:21:27 -0800 (PST)
-Date:   Tue, 22 Feb 2022 08:51:25 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf v1 0/5] More fixes for crashes due to bad
- PTR_TO_BTF_ID reg->off
-Message-ID: <20220222032125.py5vawh6pfcej4rb@apollo.legion>
-References: <20220219113744.1852259-1-memxor@gmail.com>
- <20220219121035.c6c5dmvbchzaqqak@apollo.legion>
- <20220220021808.surwmx5jhosasi2d@ast-mbp.dhcp.thefacebook.com>
- <20220220025931.6rhvlii4i4emumik@apollo.legion>
- <CAADnVQJgM+y=hArN4+pNRGO6uM76spJ4Bi3fK7xAvnSHj_wFzw@mail.gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=t9pbxXf5AxDJimERyAK/g611uy98VuNWmmEmuXc8qEw=;
+        b=lU4W98uiJ9x0Rb4Bcq1HevpmrG2nXeHKAffHIvJlnpZaRp0W/dudfCjlFnTCZMrAVR
+         RvoO8J1MhdMiMINqU4LW6s6rfHzww9+Zrdx2h82DvGyH808mnRAV3gKLaJoxJ/EBhUgk
+         2BwG6RP6jnfkxZM8eWVaLHWhX3c+/XXg4QmpgbNwqvjjaEIwPJEcC7hpuYqbAhWuxI6X
+         Eb0zBaWVUVan89nCXeLFxK61MLQh/aXUNKT6DWmuHzHu/N6wmKj/iSzJ1namcxIREacF
+         qr6qPNB15BNQ1OAn2H112wrUohmXRggz59eSsk6BRpPndiEzr9mZZgu4EN0KYPl8OyQa
+         56qQ==
+X-Gm-Message-State: AOAM530H/FrByKWo7h8RQJl7/rdUGdFjConMiIoh0ANNNXuT0fTmQmt2
+        OqAadU6szeoFQ6ZEFeoq+4t77c/AeZGs5w==
+X-Google-Smtp-Source: ABdhPJzZUKeg4Rm9p/szzjf9rOL8deIbDZKIYA1aPXEuZ8oBrxaWO0OEV4M3p3jSTHvvqVNFc0i4lw==
+X-Received: by 2002:a02:6d04:0:b0:306:3f0c:6e2f with SMTP id m4-20020a026d04000000b003063f0c6e2fmr16890708jac.306.1645500254031;
+        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
+Received: from ?IPV6:2601:284:8200:b700:fc7f:e53f:676e:280d? ([2601:284:8200:b700:fc7f:e53f:676e:280d])
+        by smtp.googlemail.com with ESMTPSA id e14sm1973816ilu.13.2022.02.21.19.24.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Feb 2022 19:24:13 -0800 (PST)
+Message-ID: <cac945fa-ec67-4bbf-8893-323adf0836d8@gmail.com>
+Date:   Mon, 21 Feb 2022 20:24:12 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJgM+y=hArN4+pNRGO6uM76spJ4Bi3fK7xAvnSHj_wFzw@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.0
+Subject: Re: [PATCH net-next v3 2/4] net: tap: track dropped skb via
+ kfree_skb_reason()
+Content-Language: en-US
+To:     Dongli Zhang <dongli.zhang@oracle.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
+        joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
+References: <20220221053440.7320-1-dongli.zhang@oracle.com>
+ <20220221053440.7320-3-dongli.zhang@oracle.com>
+From:   David Ahern <dsahern@gmail.com>
+In-Reply-To: <20220221053440.7320-3-dongli.zhang@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,174 +78,39 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 02:15:37AM IST, Alexei Starovoitov wrote:
-> On Sat, Feb 19, 2022 at 6:59 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Sun, Feb 20, 2022 at 07:48:08AM IST, Alexei Starovoitov wrote:
-> > > On Sat, Feb 19, 2022 at 05:40:35PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > On Sat, Feb 19, 2022 at 05:07:39PM IST, Kumar Kartikeya Dwivedi wrote:
-> > > > > A few more fixes for bad PTR_TO_BTF_ID reg->off being accepted in places, that
-> > > > > can lead to the kernel crashing. Noticed while making sure my own series for BTF
-> > > > > ID pointer in map won't allow stores for pointers with incorrect offsets.
-> > > > >
-> > > > > I include one example where d_path can crash even if you NULL check
-> > > > > PTR_TO_BTF_ID, and one example of how missing NULL check in helper taking
-> > > > > PTR_TO_BTF_ID (like bpf_sock_from_file) is a real problem, see the selftest
-> > > > > patch.
-> > > > >
-> > > > > The &f->f_path becomes NULL + offset in case f is NULL, circumventing NULL
-> > > > > checks in existing helpers. The only thing needed to trigger this finding an
-> > > > > object that embeds the object of interest, and then somehow obtaining a NULL
-> > > > > PTR_TO_BTF_ID to it (not hard, esp. due to exception handler for PROBE_MEM loads
-> > > > > writing 0 to destination register).
-> > > > >
-> > > > > However, for the case of patch 2, it is allowed in my series since the next load
-> > > > > of the bad pointer stored using:
-> > > > >   struct file *f = ...; // some pointer walking returning NULL pointer
-> > > > >   map_val->ptr = &f->f_path; // ptr being struct path *
-> > > > > ... would be marked as PTR_UNTRUSTED, so it won't be allowed to be passed into
-> > > > > the kernel, and hence can be permitted. In referenced case, the PTR_TO_BTF_ID
-> > > > > should not be NULL anyway. kptr_get style helper takes PTR_TO_MAP_VALUE in
-> > > > > referenced ptr case only, so the load either yields NULL or RCU protected
-> > > > > pointer.
-> > > > >
-> > > > > Tests for patch 1 depend on fixup_kfunc_btf_id in test_verifier, hence will be
-> > > > > sent after merge window opens, some other changes after bpf tree merges into
-> > > > > bpf-next, but all pending ones can be seen here [0]. Tests for patch 2 are
-> > > > > included, and try to trigger crash without the fix, but it's not 100% reliable.
-> > > > > We may need special testing helpers or kfuncs to make it thorough, but wanted to
-> > > > > wait before getting feedback.
-> > > > >
-> > > > > Issue fixed by patch 2 is a bit more broader in scope, and would require proper
-> > > > > discussion (before being applied) on the correct way forward, as it is
-> > > > > technically backwards incompatible change, but hopefully never breaks real
-> > > > > programs, only malicious or already incorrect ones.
-> > > > >
-> > > > > Also, please suggest the right "Fixes" tag for patch 2.
-> > > > >
-> > > > > As for patch 3 (selftest), please suggest a better way to get a certain type of
-> > > > > PTR_TO_BTF_ID which can be NULL or NULL+offset. Can we add kfuncs for testing
-> > > > > that return such pointers and make them available to e.g. TC progs, if the fix
-> > > > > in patch 2 is acceptable?
-> > > > >
-> > > > >   [0]: https://github.com/kkdwivedi/linux/commits/fixes-bpf-next
-> > > > >
-> > > >
-> > > > Looking at BPF CI [1], it seems it surfaces another problem I was seeing locally
-> > > > but couldn't craft a reliable test case for, that it forms a non-NULL but
-> > > > invalid pointer using pointer walking, in some cases RCU read lock provides
-> > > > protection for those cases, but not all (esp. if kernel doesn't clear the old
-> > > > pointer that was in use before, and has it sitting in some location). RDI (arg1)
-> > > > seems to be pointing somewhere behind the faulting address, which means the
-> > > > &f->f_path is bad.
-> > > >
-> > > > But this requires a larger discussion.
-> > > >
-> > > > In that case, PAGE_SIZE thing won't help. We may have to introduce a PTR_BPF_REF
-> > > > flag (e.g. set for ctx args of tracing progs, set based on BTF tagging in other
-> > > > places) which tells the verifier that the pointer for the duration of program
-> > > > will be valid, so it can be passed into helpers.
-> > > >
-> > > > So for cases like &f->f_path it will work, since file + off will still have
-> > > > PTR_BPF_REF set in reg state. In case of pointer walking, where dst_reg state
-> > > > is updated on walk, we may have to explicitly tag members where PTR_BPF_REF can
-> > > > be inherited if parent object has PTR_BPF_REF (i.e. ref to parent implies ref to
-> > > > child cases).
-> > > >
-> > > > Something like:
-> > > >
-> > > > struct foo {
-> > > >     ...
-> > > >     struct bar __bpf_ref *p;
-> > > >     struct baz *q;
-> > > >     ...
-> > > > }
-> > > >
-> > > > ... then if getting:
-> > > >
-> > > >     struct foo *f = ...; // PTR_TO_BTF_ID | PTR_BPF_REF
-> > > >     struct bar *p = f->p; // Inherits PTR_BPF_REF
-> > > >     struct baz *q = f->q; // Does not inherit PTR_BPF_REF
-> > > >
-> > > > Thoughts?
-> > > >
-> > > >   [1]: https://github.com/kernel-patches/bpf/runs/5258413028?check_suite_focus=true
-> > >
-> > > fd_array wasn't zero initialized at alloc time, so it contains garbage.
-> > > fd_array[63] read that garbage.
-> > > So patches 2 and 3 don't help.
-> > > The 'fixes' list for patch 3 is ridiculous. No need.
-> > > Pls drop patch 2 and in instead of
-> > > +#define bpf_ptr_is_invalid(p) (unlikely((unsigned long)(p) < PAGE_SIZE))
-> > > do static inline function that checks
-> > > if ((unsigned long)p < user_addr_max())
-> >
-> > This prevents this specific case, but what happens when PTR_TO_BTF_ID can be
-> > formed to an already freed object (which seems even more likely to me in
-> > sleepable progs, because typical RCU grace period won't wait for us)? Or even
-> > just reading from structures which don't clear pointers they have freed, but are
-> > themselves not freed (so exception handling zeroing dst reg won't kick in).
->
-> Right. The above check would prevent a class of issues, but not all of them.
-> If kernel code doesn't clear the pointer inside a struct after freeing it
-> it would lead to uaf.
-> Thankfully most of the code is rcu and typical rcu protected pointer
-> usage would replace the pointer before doing call_rcu() to clean it.
-> There are corner cases and we need to gradually close such holes.
-> My point is that it's not a bpf tree material. No need to
-> create panic and do a patch with gadzillion 'fixes' tags.
+On 2/20/22 10:34 PM, Dongli Zhang wrote:
+> The TAP can be used as vhost-net backend. E.g., the tap_handle_frame() is
+> the interface to forward the skb from TAP to vhost-net/virtio-net.
+> 
+> However, there are many "goto drop" in the TAP driver. Therefore, the
+> kfree_skb_reason() is involved at each "goto drop" to help userspace
+> ftrace/ebpf to track the reason for the loss of packets.
+> 
+> The below reasons are introduced:
+> 
+> - SKB_DROP_REASON_SKB_CSUM
+> - SKB_DROP_REASON_SKB_COPY_DATA
+> - SKB_DROP_REASON_SKB_GSO_SEG
+> - SKB_DROP_REASON_DEV_HDR
+> - SKB_DROP_REASON_FULL_RING
+> 
+> Cc: Joao Martins <joao.m.martins@oracle.com>
+> Cc: Joe Jin <joe.jin@oracle.com>
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+> Changed since v1:
+>   - revise the reason name
+> Changed since v2:
+>   - declare drop_reason as type "enum skb_drop_reason"
+>   - handle the drop in skb_list_walk_safe() case
+> 
+>  drivers/net/tap.c          | 35 +++++++++++++++++++++++++----------
+>  include/linux/skbuff.h     |  9 +++++++++
+>  include/trace/events/skb.h |  5 +++++
+>  3 files changed, 39 insertions(+), 10 deletions(-)
+> 
 
-Ok, I'll drop them, but some stable helpers did miss checking NULL too, e.g.
-bpf_sock_from_file.
+couple of places where the new reason should be in reverse xmas order;
+logic wise:
 
-> With bpf progs calling kfuncs there is a possibility of a crash.
-
-This is not just limited to kfuncs.
-
-Apart from BPF helpers, just as an example, I was looking at bpf_inode_storage
-last week, that looks suspect to me now; after it has been enabled in sleepable
-progs, __destroy_inode etc. no longer wait for the rcu_read_unlock_trace. So
-many more cases where inode pointer is obtained by following pointer chains
-(e.g. we can just consider fd_array case, where valid file is closed after we
-obtain file->f_inode) which would be prevented due to RCU before, would now be
-problematic.
-
-> We need to eliminate such possibilities when we can.
-> But we're not going to backport hundred patches to old kernels.
-> We will close one hole today and a year later another hole could be found.
-> We'll close it too, but we are not going to backport a year worth of
-> verifier patches.
-
-Ok, understood.
-
-I will target bpf-next going forward, but since you agree this needs to be
-fixed, it seems to me we need to bring in a hammer and mark all PTR_TO_BTF_ID
-not obtained from known 'safe' contexts as e.g. PTR_UNTRUSTED, so that they can
-only be dereferenced. But we can clear the untrusted flag for cases where we
-know it is guaranteed to be a valid pointer, e.g. say LSM args, atleast for the
-duration of the program lifetime.
-
-Martin also floated a similar idea when sleepable local storage was being
-discussed [0] (the paragraph describing PTR_TO_RDONLY_BTF_ID).
-
-We also need to handle cases where pointer walking is used, to decide whether to
-set PTR_UNTRUSTED or not. I guess we can use BTF tagging here to annotate
-members and say 'if valid pointer to parent exists, valid pointer to this object
-can be formed too', but not all cases are as simple.
-
-WDYT?
-
-  [0]: https://lore.kernel.org/bpf/20210901063217.5zpvnltvfmctrkum@kafai-mbp.dhcp.thefacebook.com
-
->
-> > > and bails out.
-> > > bpf-next is fine.
-> > > Not sure whether patch 1 is strictly necessary after above change.
-> >
-> > It is still needed to prevent the var_off case.
->
-> Right. var_off should be prevented.
-
---
-Kartikeya
+Reviewed-by: David Ahern <dsahern@kernel.org>
