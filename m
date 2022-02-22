@@ -2,165 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 896ED4BF15A
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 06:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1114BF1E3
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 07:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229463AbiBVF2l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 00:28:41 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:48216 "EHLO
+        id S230133AbiBVGFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 01:05:53 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:34422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbiBVF2j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 00:28:39 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE546322;
-        Mon, 21 Feb 2022 21:28:14 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id b8so17257165pjb.4;
-        Mon, 21 Feb 2022 21:28:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7UhZLEQ2XwIqOLzkoLoLaWERjJej97HqulPmb+JFKyk=;
-        b=KbI3gIv2Z+hOLzG4/L3p48NZnN2ubLvv1y1ICdglmma75nL96TBUSRZJdJS6qSneCI
-         9O8jbQ7MboYgYIBSx+orRKzLdosMaejVR48Ypv+wMRnA4MM7jn32e/bMwYsFXDK+VZXV
-         UTQ2ZKl41sQqNdrUwYnVfkF7esBtTdpkIG7rFOjQkrjka/UPiMhy0ME+/oU8WSMBFFf0
-         HEstuVEGWw5PFr7Id+aMVV5aM/WpRmLX6KmWjlzF2YShum9GuCkmtruCWqlrgXs7IdoT
-         9AIHLhOA3Ko5dvFr1dhCjupXtARQHr3LICCprGogoQ/+iNua3UAT4qNlWkp+TIM+sru2
-         WGag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7UhZLEQ2XwIqOLzkoLoLaWERjJej97HqulPmb+JFKyk=;
-        b=J8Fk7oZiwxZW9OZN+iGIHCC06d15Ihp/Z3n65Iz9d8AsmRSZ1bctBQERyet9AwZPIi
-         36vR3g/WJ1zYBpn93v1aRRWCBVrmdY0C1IQc/KhoDIOCTm8i0ofjie0njkmrmI9mjvsf
-         it9JCqz1VmhdY7NMTR7pjPUMop/qAknPJky/7py7v6XjwcGvMR0cGIUlDponEnag0Vr3
-         4sm3TQWOr6zKhIgbWGYkCwgegD56+BhWUwd+5fhmhbMAitSQrdVA7TXX8zBSWhGscTan
-         DP05Yg5RRLv/vYf5iVhJtosVe8LZyRTfqBQ+BKu71DYcNqFqUinHukJiDU/ms3V2DW4M
-         vwzg==
-X-Gm-Message-State: AOAM533QXBDB2yky0lWAAhMHqk46gql1eiWqFWAy5l6VH0v4K/s3MGzG
-        DGTEv4eg+pjWR+hz2W7NfW8=
-X-Google-Smtp-Source: ABdhPJweLiL3Ygk8pSxgE6seCLAzt6XCOv4VgXvHdRUCMO1jo1Iy0b0dqfl4NxvlH04uoY3ZoZb7yQ==
-X-Received: by 2002:a17:90b:4f4b:b0:1b9:3798:85f8 with SMTP id pj11-20020a17090b4f4b00b001b9379885f8mr2417410pjb.139.1645507694191;
-        Mon, 21 Feb 2022 21:28:14 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:e2d6])
-        by smtp.gmail.com with ESMTPSA id s5sm14253230pfd.66.2022.02.21.21.28.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Feb 2022 21:28:13 -0800 (PST)
-Date:   Mon, 21 Feb 2022 21:28:11 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+        with ESMTP id S230078AbiBVGFw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 01:05:52 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6D09D0E5;
+        Mon, 21 Feb 2022 22:05:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E540660F49;
+        Tue, 22 Feb 2022 06:05:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 479F6C36AE3;
+        Tue, 22 Feb 2022 06:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645509926;
+        bh=sTgSEKKoICol33yrPaBoC5i5Zy7dMIxDHtgX1m8Wif0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jvYiGVqzS6uC1sMS0YYUMW6roBhxyPQvTtRoYJ0CfpSX2zjuHbSyAQ2B0eIo7X/f/
+         EVBdm/n8jGfiJhbxwqLnvC03t0JCe4KM8WLrLyGS/bPhwADxipv7EB/xhUhjrUQrvG
+         jO8dvEUyBu/UodszQHrpSzGUERMSQfsmWfPxi30tSSwcQZXAARHA+gSMOJp267OWUH
+         FssrCn8iodiohTSACoC1WzjrlrYYH06X4x318t6xQnAldW79CGM10tTd+bs8YyjqsR
+         vYQVRZnVNnui4ojM7AYGRoPiX8MR/QEcTZmbMEd2rfzVQjesMH2IlXv4RNogekiLQI
+         faFKZcMxgh5aA==
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-2d310db3812so161780817b3.3;
+        Mon, 21 Feb 2022 22:05:26 -0800 (PST)
+X-Gm-Message-State: AOAM5333sBR/IMjP/1CjBkyI9ZGNcX7R0TxRoqMBkfZGxz7rffLRwzRQ
+        i8Oq60bwSpWg+BwcQHM7cj7nV0sQzaSt3/hW1iI=
+X-Google-Smtp-Source: ABdhPJzEZ/bEc8cwZMK0aBgwowso24AHWiaqSakzFUZIobZmtbYInj/25T2cMOnwraye3UOTl0ZiQabsjfRQcJc3oNA=
+X-Received: by 2002:a81:9895:0:b0:2d7:7e75:9ba8 with SMTP id
+ p143-20020a819895000000b002d77e759ba8mr4335827ywg.130.1645509925349; Mon, 21
+ Feb 2022 22:05:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20220220134813.3411982-1-memxor@gmail.com>
+In-Reply-To: <20220220134813.3411982-1-memxor@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 21 Feb 2022 22:05:14 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW53epuRQ3X5bYeoxRUL9sdEm7MUQ8bUoQCsf=C7k3hQ8A@mail.gmail.com>
+Message-ID: <CAPhsuW53epuRQ3X5bYeoxRUL9sdEm7MUQ8bUoQCsf=C7k3hQ8A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 00/15] Introduce typed pointer support in BPF maps
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
-        netfilter-devel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v1 01/15] bpf: Factor out fd returning from
- bpf_btf_find_by_name_kind
-Message-ID: <20220222052811.4633snvrqrcy4riq@ast-mbp.dhcp.thefacebook.com>
-References: <20220220134813.3411982-1-memxor@gmail.com>
- <20220220134813.3411982-2-memxor@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220220134813.3411982-2-memxor@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        netfilter-devel@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Feb 20, 2022 at 07:17:59PM +0530, Kumar Kartikeya Dwivedi wrote:
-> In next few patches, we need a helper that searches all kernel BTFs
-> (vmlinux and module BTFs), and finds the type denoted by 'name' and
-> 'kind'. Turns out bpf_btf_find_by_name_kind already does the same thing,
-> but it instead returns a BTF ID and optionally fd (if module BTF). This
-> is used for relocating ksyms in BPF loader code (bpftool gen skel -L).
-> 
-> We extract the core code out into a new helper
-> btf_find_by_name_kind_all, which returns the BTF ID and BTF pointer in
-> an out parameter. The reference for the returned BTF pointer is only
-> bumped if it is a module BTF, this needs to be kept in mind when using
-> this helper.
-> 
-> Hence, the user must release the BTF reference iff btf_is_module is
-> true, otherwise transfer the ownership to e.g. an fd.
-> 
-> In case of the helper, the fd is only allocated for module BTFs, so no
-> extra handling for btf_vmlinux case is required.
-> 
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  kernel/bpf/btf.c | 47 +++++++++++++++++++++++++++++++----------------
->  1 file changed, 31 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 2c4c5dbe2abe..3645d8c14a18 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6545,16 +6545,10 @@ static struct btf *btf_get_module_btf(const struct module *module)
->  	return btf;
->  }
->  
-> -BPF_CALL_4(bpf_btf_find_by_name_kind, char *, name, int, name_sz, u32, kind, int, flags)
-> +static s32 btf_find_by_name_kind_all(const char *name, u32 kind, struct btf **btfp)
+On Sun, Feb 20, 2022 at 5:48 AM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
+>
+> Introduction
+> ------------
+>
+> This set enables storing pointers of a certain type in BPF map, and extends the
+> verifier to enforce type safety and lifetime correctness properties.
+>
+> The infrastructure being added is generic enough for allowing storing any kind
+> of pointers whose type is available using BTF (user or kernel) in the future
+> (e.g. strongly typed memory allocation in BPF program), which are internally
+> tracked in the verifier as PTR_TO_BTF_ID, but for now the series limits them to
+> four kinds of pointers obtained from the kernel.
+>
+> Obviously, use of this feature depends on map BTF.
+>
+> 1. Unreferenced kernel pointer
+>
+> In this case, there are very few restrictions. The pointer type being stored
+> must match the type declared in the map value. However, such a pointer when
+> loaded from the map can only be dereferenced, but not passed to any in-kernel
+> helpers or kernel functions available to the program. This is because while the
+> verifier's exception handling mechanism coverts BPF_LDX to PROBE_MEM loads,
+> which are then handled specially by the JIT implementation, the same liberty is
+> not available to accesses inside the kernel. The pointer by the time it is
+> passed into a helper has no lifetime related guarantees about the object it is
+> pointing to, and may well be referencing invalid memory.
+>
+> 2. Referenced kernel pointer
+>
+> This case imposes a lot of restrictions on the programmer, to ensure safety. To
+> transfer the ownership of a reference in the BPF program to the map, the user
+> must use the BPF_XCHG instruction, which returns the old pointer contained in
+> the map, as an acquired reference, and releases verifier state for the
+> referenced pointer being exchanged, as it moves into the map.
+>
+> This a normal PTR_TO_BTF_ID that can be used with in-kernel helpers and kernel
+> functions callable by the program.
+>
+> However, if BPF_LDX is used to load a referenced pointer from the map, it is
+> still not permitted to pass it to in-kernel helpers or kernel functions. To
+> obtain a reference usable with helpers, the user must invoke a kfunc helper
+> which returns a usable reference (which also must be eventually released before
+> BPF_EXIT, or moved into a map).
+>
+> Since the load of the pointer (preserving data dependency ordering) must happen
+> inside the RCU read section, the kfunc helper will take a pointer to the map
+> value, which must point to the actual pointer of the object whose reference is
+> to be raised. The type will be verified from the BTF information of the kfunc,
+> as the prototype must be:
+>
+>         T *func(T **, ... /* other arguments */);
+>
+> Then, the verifier checks whether pointer at offset of the map value points to
+> the type T, and permits the call.
+>
+> This convention is followed so that such helpers may also be called from
+> sleepable BPF programs, where RCU read lock is not necessarily held in the BPF
+> program context, hence necessiating the need to pass in a pointer to the actual
+> pointer to perform the load inside the RCU read section.
+>
+> 3. per-CPU kernel pointer
+>
+> These have very little restrictions. The user can store a PTR_TO_PERCPU_BTF_ID
+> into the map, and when loading from the map, they must NULL check it before use,
+> because while a non-zero value stored into the map should always be valid, it can
+> still be reset to zero on updates. After checking it to be non-NULL, it can be
+> passed to bpf_per_cpu_ptr and bpf_this_cpu_ptr helpers to obtain a PTR_TO_BTF_ID
+> to underlying per-CPU object.
+>
+> It is also permitted to write 0 and reset the value.
+>
+> 4. Userspace pointer
+>
+> The verifier recently gained support for annotating BTF with __user type tag.
+> This indicates pointers pointing to memory which must be read using the
+> bpf_probe_read_user helper to ensure correct results. The set also permits
+> storing them into the BPF map, and ensures user pointer cannot be stored
+> into other kinds of pointers mentioned above.
+>
+> When loaded from the map, the only thing that can be done is to pass this
+> pointer to bpf_probe_read_user. No dereference is allowed.
+>
 
-The name is getting too long.
-How about bpf_find_btf_id() ?
+I guess I missed some context here. Could you please provide some reference
+to the use cases of these features?
 
->  {
->  	struct btf *btf;
-> -	long ret;
-> -
-> -	if (flags)
-> -		return -EINVAL;
-> -
-> -	if (name_sz <= 1 || name[name_sz - 1])
-> -		return -EINVAL;
-> +	s32 ret;
->  
->  	btf = bpf_get_btf_vmlinux();
->  	if (IS_ERR(btf))
-> @@ -6580,19 +6574,40 @@ BPF_CALL_4(bpf_btf_find_by_name_kind, char *, name, int, name_sz, u32, kind, int
->  			spin_unlock_bh(&btf_idr_lock);
->  			ret = btf_find_by_name_kind(mod_btf, name, kind);
->  			if (ret > 0) {
-> -				int btf_obj_fd;
-> -
-> -				btf_obj_fd = __btf_new_fd(mod_btf);
-> -				if (btf_obj_fd < 0) {
-> -					btf_put(mod_btf);
-> -					return btf_obj_fd;
-> -				}
-> -				return ret | (((u64)btf_obj_fd) << 32);
-> +				*btfp = mod_btf;
-> +				return ret;
->  			}
->  			spin_lock_bh(&btf_idr_lock);
->  			btf_put(mod_btf);
->  		}
->  		spin_unlock_bh(&btf_idr_lock);
-> +	} else {
-> +		*btfp = btf;
-> +	}
+For Unreferenced kernel pointer and userspace pointer, it seems that there is
+no guarantee the pointer will still be valid during access (we only know it is
+valid when it is stored in the map). Is this correct?
 
-Since we're refactoring let's drop the indent.
-How about
-  if (ret > 0) {
-    *btfp = btf;
-    return ret;
-  }
-  idr_for_each_entry().
+Thanks,
+Song
 
-and move the func right after btf_find_by_name_kind(),
-so that later patch doesn't need to do:
-static s32 bpf_find_btf_id();
-Eventually this helper might become global with this name.
-
-Also may be do btf_get() for vmlinux_btf too?
-In case it reduces 'if (btf_is_module())' checks.
+[...]
