@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD384BEF4D
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 03:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330584BEF7A
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 03:22:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236708AbiBVCBr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 21:01:47 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50628 "EHLO
+        id S230343AbiBVCPA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 21:15:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbiBVCBn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 21:01:43 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5C481EECA;
-        Mon, 21 Feb 2022 18:01:19 -0800 (PST)
+        with ESMTP id S230436AbiBVCO7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 21:14:59 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5121C12D;
+        Mon, 21 Feb 2022 18:14:35 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 53A59B8184E;
-        Tue, 22 Feb 2022 02:01:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF4C9C340F0;
-        Tue, 22 Feb 2022 02:01:16 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1AB4AB817F8;
+        Tue, 22 Feb 2022 02:14:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC38EC340E9;
+        Tue, 22 Feb 2022 02:14:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645495277;
-        bh=82E44GVnMO3ZiuMUchoEAQGuozP+onbtfSj3aYx1p3k=;
+        s=k20201202; t=1645496072;
+        bh=KqibIir4n8GGBG4Zyj0JQPp8upAMZezOjVYAX7/7D/0=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dkUjOROGYgxoaIlIjcoJOBbMvpzAWf5eJq3HoFbDKAFnGMpOFr45Syat6S+hiZ8vS
-         c/iHzeccFya/Coon/R673M43Lz7upMuKVjesq5XF9/cfx0toiptc/4850vTUSxaC4n
-         RNb9yO3Rv0QTnxolO61MZdjIlWinrOAyeIdHsdKF/FIJaEhE+QG95C0vUUARrmtoCz
-         kGB0qlsYrfd74MNkAnMQdS2OjFZXhdyPtTnr/VMOZpj38TRN/yO+qDm35YogScoAIf
-         QZI0RfRelWoxpwqJVCRbxzWbhwwfjotoqw3g6zXl7ZIO1tf0SFxQrGWfLffm2cdKvt
-         5A5srA7aTXjfw==
-Received: by mail-yb1-f174.google.com with SMTP id w63so16704191ybe.10;
-        Mon, 21 Feb 2022 18:01:16 -0800 (PST)
-X-Gm-Message-State: AOAM530mExL97lKojVg8n0j+dB6OFDlsuQdyR0PsMskB8hQcmsMoeQLS
-        e20B1sH2nxEU0uvtx+S0YN9hK94RQoNNGvC8UBg=
-X-Google-Smtp-Source: ABdhPJzl/UPdOGfPXb1ow2MxZcuraEWgOUFss7Nj1XxOwAjWoZS9CmM/S0zJjGNZXMPXC+UYuNGhMjCSJcoBUdrAOWI=
-X-Received: by 2002:a25:d60c:0:b0:610:dc8d:b3bd with SMTP id
- n12-20020a25d60c000000b00610dc8db3bdmr21529172ybg.561.1645495275984; Mon, 21
- Feb 2022 18:01:15 -0800 (PST)
+        b=aQ8vgFKTbc8fEzvCZvW4uEzI3uiFEVYJzqfbp2rdnhCvilW9QZM0/TeArOPfXbXcJ
+         /cIaFHbE/s0Hthwoau49V7tNl0TjULHzQfZv8XR7lVf2lIENFi2+vI9qqhUr20I/LL
+         cAiSHTgEPlKY/2U3WGeR2+wRpUPUyCdJh9Q00m/usPFsj4peijOXYpW/sRwagRAqJu
+         NQsca5467UPgWyE3CJ0UlIZbLcs1shzIqcGFTyxJYYTkzKTaMdu/OR24wOIfeLhp/A
+         jCitbecM9ejEuENjCjLc6ENKiwBYbKnNHr2PTIQHRwpnASt2BsGMEKZoW2wzos02/D
+         Ml6z70n6nNcWQ==
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-2d6d0cb5da4so102904367b3.10;
+        Mon, 21 Feb 2022 18:14:32 -0800 (PST)
+X-Gm-Message-State: AOAM531iVbQ9a6+NH5JSwH3QzSKwcJEAYE8D+vGTrb4HagcZ5Zz7KdzD
+        YjChbEapVI1IlWfvPHCVVMEdRkJ9sdDRMVP4RF8=
+X-Google-Smtp-Source: ABdhPJyAbe26v/2n6fVKLChZbz15YoE+ivjn//HNPARGdjBarXJdCsgXDG93/l5ndvOw0bHFCvNRfyu5nXfkwuAf3Qc=
+X-Received: by 2002:a81:9895:0:b0:2d7:7e75:9ba8 with SMTP id
+ p143-20020a819895000000b002d77e759ba8mr3783733ywg.130.1645496071854; Mon, 21
+ Feb 2022 18:14:31 -0800 (PST)
 MIME-Version: 1.0
-References: <1645240502-13398-1-git-send-email-yangtiezhu@loongson.cn> <1645240502-13398-2-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1645240502-13398-2-git-send-email-yangtiezhu@loongson.cn>
+References: <1645240502-13398-1-git-send-email-yangtiezhu@loongson.cn> <1645240502-13398-3-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1645240502-13398-3-git-send-email-yangtiezhu@loongson.cn>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Feb 2022 18:01:05 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6bkhcDXb5k-46G_f4L+ot2QJwbY_-Urd+BEfrPWdmf+Q@mail.gmail.com>
-Message-ID: <CAPhsuW6bkhcDXb5k-46G_f4L+ot2QJwbY_-Urd+BEfrPWdmf+Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Add some description about
- BPF_JIT_ALWAYS_ON in Kconfig
+Date:   Mon, 21 Feb 2022 18:14:20 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5gbFXspvfFBmourDmkdVVhLN-iU-N=zLbm++GeNfM3Xw@mail.gmail.com>
+Message-ID: <CAPhsuW5gbFXspvfFBmourDmkdVVhLN-iU-N=zLbm++GeNfM3Xw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf: Make BPF_JIT_DEFAULT_ON selectable
+ in Kconfig
 To:     Tiezhu Yang <yangtiezhu@loongson.cn>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -72,40 +72,59 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Feb 18, 2022 at 7:15 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> When CONFIG_BPF_JIT_ALWAYS_ON is enabled, /proc/sys/net/core/bpf_jit_enable
-> is permanently set to 1 and setting any other value than that will return
-> in failure.
+> Currently, only x86, arm64 and s390 select ARCH_WANT_DEFAULT_BPF_JIT,
+> the other archs do not select ARCH_WANT_DEFAULT_BPF_JIT. On the archs
+> without ARCH_WANT_DEFAULT_BPF_JIT, if we want to set bpf_jit_enable to
+> 1 by default, the only way is to enable CONFIG_BPF_JIT_ALWAYS_ON, then
+> the users can not change it to 0 or 2, it seems bad for some users. We
+> can select ARCH_WANT_DEFAULT_BPF_JIT for those archs if it is proper,
+> but at least for now, make BPF_JIT_DEFAULT_ON selectable can give them
+> a chance.
 >
-> Add the above description in the help text of config BPF_JIT_ALWAYS_ON, and
-> then we can distinguish between BPF_JIT_ALWAYS_ON and BPF_JIT_DEFAULT_ON.
+> Additionally, with this patch, under !BPF_JIT_ALWAYS_ON, we can disable
+> BPF_JIT_DEFAULT_ON on the archs with ARCH_WANT_DEFAULT_BPF_JIT when make
+> menuconfig, it seems flexible for some developers.
 >
 > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  kernel/bpf/Kconfig | 4 ++++
->  1 file changed, 4 insertions(+)
+>  kernel/bpf/Kconfig | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 >
 > diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
-> index d24d518..cbf3f65 100644
+> index cbf3f65..461ac60 100644
 > --- a/kernel/bpf/Kconfig
 > +++ b/kernel/bpf/Kconfig
-> @@ -58,6 +58,10 @@ config BPF_JIT_ALWAYS_ON
+> @@ -54,6 +54,7 @@ config BPF_JIT
+>  config BPF_JIT_ALWAYS_ON
+>         bool "Permanently enable BPF JIT and remove BPF interpreter"
+>         depends on BPF_SYSCALL && HAVE_EBPF_JIT && BPF_JIT
+> +       select BPF_JIT_DEFAULT_ON
+>         help
 >           Enables BPF JIT and removes BPF interpreter to avoid speculative
 >           execution of BPF instructions by the interpreter.
+> @@ -63,8 +64,16 @@ config BPF_JIT_ALWAYS_ON
+>           in failure.
 >
-> +         When CONFIG_BPF_JIT_ALWAYS_ON is enabled, /proc/sys/net/core/bpf_jit_enable
-> +         is permanently set to 1 and setting any other value than that will return
-> +         in failure.
-
-nit: "return failure" (no "in").
-
-Other than this,
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
-> +
 >  config BPF_JIT_DEFAULT_ON
->         def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
->         depends on HAVE_EBPF_JIT && BPF_JIT
+> -       def_bool ARCH_WANT_DEFAULT_BPF_JIT || BPF_JIT_ALWAYS_ON
+> -       depends on HAVE_EBPF_JIT && BPF_JIT
+> +       bool "Defaultly enable BPF JIT and remove BPF interpreter"
+
+I think "remove BPF interpreter" is not accurate. I guess we can just say
+"Enable BPF JIT by default". (also "defaultly" sounds weird to me).
+
+> +       default y if ARCH_WANT_DEFAULT_BPF_JIT
+> +       depends on BPF_SYSCALL && HAVE_EBPF_JIT && BPF_JIT
+> +       help
+> +         Enables BPF JIT and removes BPF interpreter to avoid speculative
+> +         execution of BPF instructions by the interpreter.
+> +
+> +         When CONFIG_BPF_JIT_DEFAULT_ON is enabled but CONFIG_BPF_JIT_ALWAYS_ON
+> +         is disabled, /proc/sys/net/core/bpf_jit_enable is set to 1 by default
+> +         and can be changed to 0 or 2.
+>
+>  config BPF_UNPRIV_DEFAULT_OFF
+>         bool "Disable unprivileged BPF by default"
 > --
 > 2.1.0
 >
