@@ -2,59 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B614C04BC
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 23:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDF14C04C4
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 23:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbiBVWik (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 17:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36626 "EHLO
+        id S230219AbiBVWkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 17:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234535AbiBVWik (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 17:38:40 -0500
+        with ESMTP id S236101AbiBVWkh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 17:40:37 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4C7123400;
-        Tue, 22 Feb 2022 14:38:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325E21275C4
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 14:40:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0570260A2B;
-        Tue, 22 Feb 2022 22:38:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B940C340F1;
-        Tue, 22 Feb 2022 22:38:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C4C6760AFA
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 22:40:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1AB4FC340EF;
+        Tue, 22 Feb 2022 22:40:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645569493;
-        bh=eznyyFPWZsjRNoz+3ocqrHVP65LBVpsg/41+l5g3tmo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S+cVumIwyedmsw9roq+HPnEHoOcsX35w7kNR1b0KwEMvYlxc75U0S0h8I0HqeUhWd
-         04j7vhjALMig4mkYWdCW0zH3CmRDY6T0qUrjqeKZfSOE3XOo6Rrt1iFiiYYYC9HZoy
-         w27Nust3sbVqPqpxDbOHdJe+gpfwnAcwLdYyeDOa8bFKuJ7BFgwEnVtJkJRoB5g/lZ
-         Ogtlx3acN2PPj5fBp2owLTF9VeQJ1U4b/Xhy+f8qWb2SxpnQHDEzVZRloyHq1yyoJ2
-         xTVS9tyGgeCdaVCbzbVjHEYRlWuIOL8R6LFRIJUkFpy5EXmbX3yMFYLEQ85y1azKnM
-         YnPUi8JuLRGGA==
-From:   Will Deacon <will@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>, Hou Tao <houtao1@huawei.com>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH bpf-next v4 0/4] bpf, arm64: support more atomic ops
-Date:   Tue, 22 Feb 2022 22:38:02 +0000
-Message-Id: <164556514968.1490345.10884104309048795776.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220217072232.1186625-1-houtao1@huawei.com>
-References: <20220217072232.1186625-1-houtao1@huawei.com>
-MIME-Version: 1.0
+        s=k20201202; t=1645569610;
+        bh=dt5IKw3nwD+fGVNbz38TktRMrHAHi40v21Uo2X0lEyE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=U74PREwi/e2VCS85omlou9u2O09bvgoW8+P2duO+jM94LGG/l+CSASaoOSC0SgT12
+         fiifl7uIw/qXBoVNkS9u9VVcmFPbNLV6NaLxT5wYshe8PAdeiU7J7NjyOHYu2Q3XcO
+         JEbz5gmIUn3DD/PgRQDz0hHDM6JltjI98M6d2FsVlT4HyKAE1r/BcP6CjKZ/BFYt8u
+         /uSDOS50Rp9NLEz13/jmZRyEvBUoGL4mEFAzflwbAD3QkGnZlNWHAiQVBoquCINFQN
+         IRJ0DFcOMumG6rgkWf2tRs++aWVC8grkV2AsjXBcpB605ZdO81xILOm2/CvFPZ2UFY
+         VhE0uZNYD/uBw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F332FE73590;
+        Tue, 22 Feb 2022 22:40:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] libbpf: Remove redundant check in
+ btf_fixup_datasec()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164556960999.25883.2769876686293413359.git-patchwork-notify@kernel.org>
+Date:   Tue, 22 Feb 2022 22:40:09 +0000
+References: <20220220072750.209215-1-ytcoode@gmail.com>
+In-Reply-To: <20220220072750.209215-1-ytcoode@gmail.com>
+To:     Yuntao Wang <ytcoode@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,32 +58,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 17 Feb 2022 15:22:28 +0800, Hou Tao wrote:
-> Atomics support in bpf has already been done by "Atomics for eBPF"
-> patch series [1], but it only adds support for x86, and this patchset
-> adds support for arm64.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Sun, 20 Feb 2022 15:27:50 +0800 you wrote:
+> The check 't->size && t->size != size' is redundant because if t->size
+> compares unequal to 0, we will just skip straight to sorting variables.
 > 
-> Patch #1 & patch #2 are arm64 related. Patch #1 moves the common used
-> macro AARCH64_BREAK_FAULT into insn-def.h for insn.h. Patch #2 adds
-> necessary encoder helpers for atomic operations.
-> 
-> [...]
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Applied to arm64 (for-next/insn), thanks!
+Here is the summary with links:
+  - [bpf-next] libbpf: Remove redundant check in btf_fixup_datasec()
+    https://git.kernel.org/bpf/bpf-next/c/6966d4c4425b
 
-[1/4] arm64: move AARCH64_BREAK_FAULT into insn-def.h
-      https://git.kernel.org/arm64/c/97e58e395e9c
-[2/4] arm64: insn: add encoders for atomic operations
-      https://git.kernel.org/arm64/c/fa1114d9eba5
-[3/4] bpf, arm64: support more atomic operations
-      (no commit info)
-[4/4] selftests/bpf: use raw_tp program for atomic test
-      (no commit info)
-
-Cheers,
+You are awesome, thank you!
 -- 
-Will
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+
