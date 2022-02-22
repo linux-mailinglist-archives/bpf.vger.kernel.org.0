@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6B94BF083
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE054BF028
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbiBVDYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 22:24:39 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37218 "EHLO
+        id S240769AbiBVD3A (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 22:29:00 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbiBVDYi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 22:24:38 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9250D5F90;
-        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id m185so18440834iof.10;
-        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
+        with ESMTP id S234051AbiBVD3A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 22:29:00 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248F722B1F;
+        Mon, 21 Feb 2022 19:28:35 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id j5so8852682ila.2;
+        Mon, 21 Feb 2022 19:28:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=t9pbxXf5AxDJimERyAK/g611uy98VuNWmmEmuXc8qEw=;
-        b=cQGwRIJzviZF9BcUrpncofuqGASKjdKjS1dBrbatBcOJd+O3l02b0Z301JZGkarEm+
-         15zz8FOCluPEQI6cwB/sOGYFv1SC4APKpE2Pxv2zZDs5AztiNNp1dn4JjR2dkO91okTO
-         1BrgUjfzkTXGjmTCqJNfOGFUfhx+Xeo3VaONlKhYpNh9px33vLRoDjfMXGZ1vJAA1hTN
-         ANPJuFxm8lwLLQy3wJjFGpCwJaW6A62j3FZYxzw+/ukRJOex5tzy+gNmzqg3Dbqh+Pv1
-         uY6i8C8Rm/RQg5VsDK0Yyw9CXylZB1J/xRPtP5KDQfIsTg6r2w4IF3N1SHOxojf+oyS7
-         dUow==
+        bh=PJVXd6uPpgWdmHZEx7s8y7RU08UT5hr73kZpWlT93uI=;
+        b=YYs0od3w0+7ABTLgw6mTJCMTVYS8FoUt4crhqeXiZKZB3IlDa7mZaEMskMLFUWucvg
+         KW2hkB7rwLLdKz0Cet+dTHFS1cf8tJ+dtHmN6NVZ9+GRdkTSQ6E219oSm7/JqaQQgBuX
+         z/KTTi99jI6Io2VnfIoGQwy1n39AueRtseipLfEfobRp7MIJqgnOLt48v0R446GAO6FX
+         j2DHFg/I4xK8R2poZAjOjtg1hD5XrGmyw2FLLc0E8eU2momZRZ+wgwWdr0frTXK5J6uM
+         pl5+AzTCgb/huTn5n4mnEt1r4ZsjcyHim2yZR9JdmIup5l2n42v7aB7sZsT3u42NYFDb
+         WoAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=t9pbxXf5AxDJimERyAK/g611uy98VuNWmmEmuXc8qEw=;
-        b=lU4W98uiJ9x0Rb4Bcq1HevpmrG2nXeHKAffHIvJlnpZaRp0W/dudfCjlFnTCZMrAVR
-         RvoO8J1MhdMiMINqU4LW6s6rfHzww9+Zrdx2h82DvGyH808mnRAV3gKLaJoxJ/EBhUgk
-         2BwG6RP6jnfkxZM8eWVaLHWhX3c+/XXg4QmpgbNwqvjjaEIwPJEcC7hpuYqbAhWuxI6X
-         Eb0zBaWVUVan89nCXeLFxK61MLQh/aXUNKT6DWmuHzHu/N6wmKj/iSzJ1namcxIREacF
-         qr6qPNB15BNQ1OAn2H112wrUohmXRggz59eSsk6BRpPndiEzr9mZZgu4EN0KYPl8OyQa
-         56qQ==
-X-Gm-Message-State: AOAM530H/FrByKWo7h8RQJl7/rdUGdFjConMiIoh0ANNNXuT0fTmQmt2
-        OqAadU6szeoFQ6ZEFeoq+4t77c/AeZGs5w==
-X-Google-Smtp-Source: ABdhPJzZUKeg4Rm9p/szzjf9rOL8deIbDZKIYA1aPXEuZ8oBrxaWO0OEV4M3p3jSTHvvqVNFc0i4lw==
-X-Received: by 2002:a02:6d04:0:b0:306:3f0c:6e2f with SMTP id m4-20020a026d04000000b003063f0c6e2fmr16890708jac.306.1645500254031;
-        Mon, 21 Feb 2022 19:24:14 -0800 (PST)
+        bh=PJVXd6uPpgWdmHZEx7s8y7RU08UT5hr73kZpWlT93uI=;
+        b=Nkb57JszOAVjLJpqCIavwDbx2lcxWVHThxztAtnKEmnNPk0UR0kglXAVqk/hTPd0uZ
+         L9ZTCMTbvclPQLclaPB8QkRdPcgauz0v885HbtTog9ZdvCJTgXKzK7o6VOuTszQ4tceV
+         4G7XijE4wWquBrPZEvu1zoAnFcclDDaQBVmMDcPwacQHvz0gaVlrB+O2dTr9DEcsgWkD
+         nqDjqR/T/BMgquLCVRFsbYVmbnDHhFHJqHY66YZx1onZF0meQT9nZkATrt6csWQr7ERF
+         gUb5Vu0rGbktbcrmHOEpbW4lIDWAWeV4h0IOWgmdYwaOVbj91Bk0I+6YcYbIE88EyM/D
+         79RQ==
+X-Gm-Message-State: AOAM5339mQycq0RaeF0t+xdtsmywDUxmWF5Dt7PMmz4d17RVLUXHQvhB
+        YflvWBdw+avlPIrs1K/HLMY=
+X-Google-Smtp-Source: ABdhPJz14bkgcNlvUTWpGLS2bzkE8NPCw56tyu6vl8k5rGRhQ4QGlUMl7b0zFUOEPoLaw5tbJHV9zg==
+X-Received: by 2002:a05:6e02:19cf:b0:2b8:b53e:7aba with SMTP id r15-20020a056e0219cf00b002b8b53e7abamr18260121ill.258.1645500514587;
+        Mon, 21 Feb 2022 19:28:34 -0800 (PST)
 Received: from ?IPV6:2601:284:8200:b700:fc7f:e53f:676e:280d? ([2601:284:8200:b700:fc7f:e53f:676e:280d])
-        by smtp.googlemail.com with ESMTPSA id e14sm1973816ilu.13.2022.02.21.19.24.13
+        by smtp.googlemail.com with ESMTPSA id n15sm1379445ilo.26.2022.02.21.19.28.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Feb 2022 19:24:13 -0800 (PST)
-Message-ID: <cac945fa-ec67-4bbf-8893-323adf0836d8@gmail.com>
-Date:   Mon, 21 Feb 2022 20:24:12 -0700
+        Mon, 21 Feb 2022 19:28:34 -0800 (PST)
+Message-ID: <877dfc5d-c3a1-463f-3abc-15e5827cfdb6@gmail.com>
+Date:   Mon, 21 Feb 2022 20:28:33 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.6.0
-Subject: Re: [PATCH net-next v3 2/4] net: tap: track dropped skb via
+Subject: Re: [PATCH net-next v3 4/4] net: tun: track dropped skb via
  kfree_skb_reason()
 Content-Language: en-US
 To:     Dongli Zhang <dongli.zhang@oracle.com>, netdev@vger.kernel.org,
@@ -63,9 +63,9 @@ Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
         joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
 References: <20220221053440.7320-1-dongli.zhang@oracle.com>
- <20220221053440.7320-3-dongli.zhang@oracle.com>
+ <20220221053440.7320-5-dongli.zhang@oracle.com>
 From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20220221053440.7320-3-dongli.zhang@oracle.com>
+In-Reply-To: <20220221053440.7320-5-dongli.zhang@oracle.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -79,38 +79,54 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 On 2/20/22 10:34 PM, Dongli Zhang wrote:
-> The TAP can be used as vhost-net backend. E.g., the tap_handle_frame() is
-> the interface to forward the skb from TAP to vhost-net/virtio-net.
-> 
-> However, there are many "goto drop" in the TAP driver. Therefore, the
-> kfree_skb_reason() is involved at each "goto drop" to help userspace
-> ftrace/ebpf to track the reason for the loss of packets.
-> 
-> The below reasons are introduced:
-> 
-> - SKB_DROP_REASON_SKB_CSUM
-> - SKB_DROP_REASON_SKB_COPY_DATA
-> - SKB_DROP_REASON_SKB_GSO_SEG
-> - SKB_DROP_REASON_DEV_HDR
-> - SKB_DROP_REASON_FULL_RING
-> 
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Joe Jin <joe.jin@oracle.com>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
-> ---
-> Changed since v1:
->   - revise the reason name
-> Changed since v2:
->   - declare drop_reason as type "enum skb_drop_reason"
->   - handle the drop in skb_list_walk_safe() case
-> 
->  drivers/net/tap.c          | 35 +++++++++++++++++++++++++----------
->  include/linux/skbuff.h     |  9 +++++++++
->  include/trace/events/skb.h |  5 +++++
->  3 files changed, 39 insertions(+), 10 deletions(-)
-> 
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index aa27268..bf7d8cd 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -1062,13 +1062,16 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	struct netdev_queue *queue;
+>  	struct tun_file *tfile;
+>  	int len = skb->len;
+> +	enum skb_drop_reason drop_reason;
 
-couple of places where the new reason should be in reverse xmas order;
-logic wise:
+this function is already honoring reverse xmas tree style, so this needs
+to be moved up.
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+>  
+>  	rcu_read_lock();
+>  	tfile = rcu_dereference(tun->tfiles[txq]);
+>  
+>  	/* Drop packet if interface is not attached */
+> -	if (!tfile)
+> +	if (!tfile) {
+> +		drop_reason = SKB_DROP_REASON_DEV_READY;
+>  		goto drop;
+> +	}
+>  
+>  	if (!rcu_dereference(tun->steering_prog))
+>  		tun_automq_xmit(tun, skb);
+> @@ -1078,22 +1081,32 @@ static netdev_tx_t tun_net_xmit(struct sk_buff *skb, struct net_device *dev)
+>  	/* Drop if the filter does not like it.
+>  	 * This is a noop if the filter is disabled.
+>  	 * Filter can be enabled only for the TAP devices. */
+> -	if (!check_filter(&tun->txflt, skb))
+> +	if (!check_filter(&tun->txflt, skb)) {
+> +		drop_reason = SKB_DROP_REASON_DEV_FILTER;
+>  		goto drop;
+> +	}
+>  
+>  	if (tfile->socket.sk->sk_filter &&
+> -	    sk_filter(tfile->socket.sk, skb))
+> +	    sk_filter(tfile->socket.sk, skb)) {
+> +		drop_reason = SKB_DROP_REASON_SOCKET_FILTER;
+>  		goto drop;
+> +	}
+>  
+>  	len = run_ebpf_filter(tun, skb, len);
+> -	if (len == 0)
+> +	if (len == 0) {
+> +		drop_reason = SKB_DROP_REASON_BPF_FILTER;
+
+how does this bpf filter differ from SKB_DROP_REASON_SOCKET_FILTER? I
+think the reason code needs to be a little clearer on the distinction.
+
