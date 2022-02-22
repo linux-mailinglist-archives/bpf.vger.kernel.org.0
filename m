@@ -2,70 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792734BF37F
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 09:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CB74BF3BE
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 09:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbiBVIV6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 03:21:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S229674AbiBVIfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 03:35:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbiBVIV6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 03:21:58 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB1F55BC2;
-        Tue, 22 Feb 2022 00:21:32 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id t4-20020a17090a3b4400b001bc40b548f9so1715497pjf.0;
-        Tue, 22 Feb 2022 00:21:32 -0800 (PST)
+        with ESMTP id S229586AbiBVIft (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 03:35:49 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C854158EBA;
+        Tue, 22 Feb 2022 00:35:24 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id v5so1940628ilm.9;
+        Tue, 22 Feb 2022 00:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ASqSsrhSJTPhhRTmHJa6rLZ0juV1bYbfnhOAxny8cKg=;
-        b=JEL6s72nsNb2b0zG2g+1J0ABzkFbDLmW+aVp4wVgJXvZmtjfei313oIbiLJJ3Ombal
-         Laho50ihOG87T7/aclTDNKjk7LZ9Q7S8azfcoLphndzoCJBEZ+FrVdW+VN60rbQKctVl
-         SKXklWVKUiKkS79XorY0Hkj1g630PIa/xtyCba4cw6mPvjpFWj7AM2FgtIcE0PHg12Ed
-         OXDHdjg41Xz7EcwBTewRuVBscdeNaADJnzsiU7vuL9nfJguuk/1TKwa/xJ/Vw+oyd6rQ
-         0cVZL4qOQ+lr96G/mkvEF08poVhhrMccOg8ONk7FVC6HCpVP8Xl++Xv58AgxqvWWEkel
-         lP6g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ohS+tBJXbJlq7l0HDDlW1u4G+GIRR4Wd/pd1Ro3QENU=;
+        b=gALrkjbbycpw0hWvhtTJ91/8oRHivrhLwnjLa9U/Ty5QHB+FXUVexvIejaiWKo9oFZ
+         0X1YBACat3glKsCa9FhNF8i7jTe6XZoz6YKMlVd5FaMLpsPSZLzSyfuTgxy2hgTlASsx
+         FglLJeaqmj2G6p71cD+gdQGw54Ur75bGd23ZnrgnAH884NHuefVKoEFfhXMv0CwsebO8
+         e6KAOEWJ04RU5bNMIhM5quvJkh8x2jaOJ60AK6rqZHPQnFXnVro0LV1Xx41TxP9gd3gp
+         lmmtxRSa0DfgrzEzRUNESzEgRE301P7qmbqv/l26OP0/JfCGRrb3CuI6WWGGdCvylPZR
+         AjQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ASqSsrhSJTPhhRTmHJa6rLZ0juV1bYbfnhOAxny8cKg=;
-        b=YZxTAgfAMIaf4eAdCaLVriWSVpWgQvXK2HzE2C2mnf9LLhnDMZh8jNjHc8b7YT+3Pn
-         EDVPjExHA4e2kpEciR0OLvFeqJyUBe3yD67YCSqptST486VDmad3BPHQLiUhl0Lv2QZn
-         H8As8ZrNKgD3ik0FlIv/CFihFpdkhbQkOPHyiLamNyd1zxtZlJeMBiwIzX5bOoLI+jhN
-         mFg4h/PPBTR0vrNutY6UzAWXYIp1oB/M6zGnCu1PHMzbW2YWbxrNl0yLfGyesYZELHJX
-         bu4gidMqDN9szkui1dPY8vBs6m975n/efFasFewuF0thyX9M1sg9Jj2CXL9SLvH8adiP
-         Wkiw==
-X-Gm-Message-State: AOAM532lbIhuWryntlw1TihOLDSHjWA9AWDcU5ZrLDFQFJkQPZ/Eu4vB
-        L7cBdi5HjyRXAb4RrAxN6n4=
-X-Google-Smtp-Source: ABdhPJxEvV3wZ3qLeNbr+UAbHlAP19jNeARyMtuZyYmO4QxKO8JWlPqPXEySJkag4FLRKH0rO8e6dw==
-X-Received: by 2002:a17:903:40ca:b0:14e:8885:1f29 with SMTP id t10-20020a17090340ca00b0014e88851f29mr22088310pld.137.1645518091903;
-        Tue, 22 Feb 2022 00:21:31 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id q9sm16792446pfk.31.2022.02.22.00.21.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 00:21:31 -0800 (PST)
-Date:   Tue, 22 Feb 2022 13:51:29 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Song Liu <song@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netfilter-devel@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v1 00/15] Introduce typed pointer support in BPF
- maps
-Message-ID: <20220222082129.yivvpm6yo3474dp3@apollo.legion>
-References: <20220220134813.3411982-1-memxor@gmail.com>
- <CAPhsuW53epuRQ3X5bYeoxRUL9sdEm7MUQ8bUoQCsf=C7k3hQ8A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ohS+tBJXbJlq7l0HDDlW1u4G+GIRR4Wd/pd1Ro3QENU=;
+        b=T5EMbM8uX5MDgnCZx8drgAYbtadNHl5p2qn4793OqQZ6okxMKfH4FMKQUMHkAK8UIk
+         wB4FPqvvLLqxLaOiXm4j79rv6EOJ1IgWA1yAjPxbMXYp0xWtgrVvfTo/+XpOpoxr5YYY
+         Y+BQG3sAWji7wTdsIAIH9OVQp5YrElDLJZmroJfvhi2IkXgOEmSUOIHVIJmgO6SBpXkk
+         ORuqJgflAAT3kz1gSmWpAhhQJyhGOK1+Y5NbYPXMECZj0EthbkCx1qbE/JtjPhrc2YjI
+         Vl7+GgrQ3dfF4uz5kuJLGWuZ/I+qmkBEpjVAEHzbNgF9Jg24qQLGzKGdaTlCrQdXimjF
+         7bYg==
+X-Gm-Message-State: AOAM531iO7ssdqRtecWJZ1Hd21XWOOG8a4OXUEQ1Fp3W76ysjznNqZEK
+        Gi+HoN50SXV3usPJLoA5iN4HL0lvksBS3ldY7fVKYtZ1fXk=
+X-Google-Smtp-Source: ABdhPJzY+Pn1Ko+vu3C7S+wW5+WwKfNSPl6MhiHXDisjkybCZ1aKT4RX7DsSJEu9WajpKaifLxkMn+qWnRVb/L5bdqs=
+X-Received: by 2002:a05:6e02:154d:b0:2bc:84c0:b255 with SMTP id
+ j13-20020a056e02154d00b002bc84c0b255mr20020315ilu.87.1645518923950; Tue, 22
+ Feb 2022 00:35:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPhsuW53epuRQ3X5bYeoxRUL9sdEm7MUQ8bUoQCsf=C7k3hQ8A@mail.gmail.com>
+References: <20220218095612.52082-1-laoar.shao@gmail.com> <20220218095612.52082-3-laoar.shao@gmail.com>
+ <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com>
+ <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
+ <CAADnVQ+FuK2wihDy5GumBN3LVBky0r04CmS4h1JsVoS7QoH6LA@mail.gmail.com>
+ <CALOAHbAvG1gEAFhqs61x4aStaxph-O3f8k0XbCuUJK4rxcMRFw@mail.gmail.com> <CAADnVQ+ye+hRB2RvDY+=-kTOhBZesW0fyLR0EY9cV972SwZSSQ@mail.gmail.com>
+In-Reply-To: <CAADnVQ+ye+hRB2RvDY+=-kTOhBZesW0fyLR0EY9cV972SwZSSQ@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 22 Feb 2022 16:34:48 +0800
+Message-ID: <CALOAHbCkpL7hB-fLKupwODTXHopQ=tMzxgdG-JAV_Nuv6eG7cg@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/3] bpf: set attached cgroup name in attach_name
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,173 +76,121 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 11:35:14AM IST, Song Liu wrote:
-> On Sun, Feb 20, 2022 at 5:48 AM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > Introduction
-> > ------------
-> >
-> > This set enables storing pointers of a certain type in BPF map, and extends the
-> > verifier to enforce type safety and lifetime correctness properties.
-> >
-> > The infrastructure being added is generic enough for allowing storing any kind
-> > of pointers whose type is available using BTF (user or kernel) in the future
-> > (e.g. strongly typed memory allocation in BPF program), which are internally
-> > tracked in the verifier as PTR_TO_BTF_ID, but for now the series limits them to
-> > four kinds of pointers obtained from the kernel.
-> >
-> > Obviously, use of this feature depends on map BTF.
-> >
-> > 1. Unreferenced kernel pointer
-> >
-> > In this case, there are very few restrictions. The pointer type being stored
-> > must match the type declared in the map value. However, such a pointer when
-> > loaded from the map can only be dereferenced, but not passed to any in-kernel
-> > helpers or kernel functions available to the program. This is because while the
-> > verifier's exception handling mechanism coverts BPF_LDX to PROBE_MEM loads,
-> > which are then handled specially by the JIT implementation, the same liberty is
-> > not available to accesses inside the kernel. The pointer by the time it is
-> > passed into a helper has no lifetime related guarantees about the object it is
-> > pointing to, and may well be referencing invalid memory.
-> >
-> > 2. Referenced kernel pointer
-> >
-> > This case imposes a lot of restrictions on the programmer, to ensure safety. To
-> > transfer the ownership of a reference in the BPF program to the map, the user
-> > must use the BPF_XCHG instruction, which returns the old pointer contained in
-> > the map, as an acquired reference, and releases verifier state for the
-> > referenced pointer being exchanged, as it moves into the map.
-> >
-> > This a normal PTR_TO_BTF_ID that can be used with in-kernel helpers and kernel
-> > functions callable by the program.
-> >
-> > However, if BPF_LDX is used to load a referenced pointer from the map, it is
-> > still not permitted to pass it to in-kernel helpers or kernel functions. To
-> > obtain a reference usable with helpers, the user must invoke a kfunc helper
-> > which returns a usable reference (which also must be eventually released before
-> > BPF_EXIT, or moved into a map).
-> >
-> > Since the load of the pointer (preserving data dependency ordering) must happen
-> > inside the RCU read section, the kfunc helper will take a pointer to the map
-> > value, which must point to the actual pointer of the object whose reference is
-> > to be raised. The type will be verified from the BTF information of the kfunc,
-> > as the prototype must be:
-> >
-> >         T *func(T **, ... /* other arguments */);
-> >
-> > Then, the verifier checks whether pointer at offset of the map value points to
-> > the type T, and permits the call.
-> >
-> > This convention is followed so that such helpers may also be called from
-> > sleepable BPF programs, where RCU read lock is not necessarily held in the BPF
-> > program context, hence necessiating the need to pass in a pointer to the actual
-> > pointer to perform the load inside the RCU read section.
-> >
-> > 3. per-CPU kernel pointer
-> >
-> > These have very little restrictions. The user can store a PTR_TO_PERCPU_BTF_ID
-> > into the map, and when loading from the map, they must NULL check it before use,
-> > because while a non-zero value stored into the map should always be valid, it can
-> > still be reset to zero on updates. After checking it to be non-NULL, it can be
-> > passed to bpf_per_cpu_ptr and bpf_this_cpu_ptr helpers to obtain a PTR_TO_BTF_ID
-> > to underlying per-CPU object.
-> >
-> > It is also permitted to write 0 and reset the value.
-> >
-> > 4. Userspace pointer
-> >
-> > The verifier recently gained support for annotating BTF with __user type tag.
-> > This indicates pointers pointing to memory which must be read using the
-> > bpf_probe_read_user helper to ensure correct results. The set also permits
-> > storing them into the BPF map, and ensures user pointer cannot be stored
-> > into other kinds of pointers mentioned above.
-> >
-> > When loaded from the map, the only thing that can be done is to pass this
-> > pointer to bpf_probe_read_user. No dereference is allowed.
-> >
+On Tue, Feb 22, 2022 at 12:30 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> I guess I missed some context here. Could you please provide some reference
-> to the use cases of these features?
+> On Mon, Feb 21, 2022 at 6:26 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > On Mon, Feb 21, 2022 at 4:59 AM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Sun, Feb 20, 2022 at 6:17 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >
+> > > > On Sun, Feb 20, 2022 at 2:27 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > >
+> > > > > On Fri, Feb 18, 2022 at 1:56 AM Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > > > >
+> > > > > > Set the cgroup path when a bpf prog is attached to a cgroup, and unset
+> > > > > > it when the bpf prog is detached.
+> > > > > >
+> > > > > > Below is the result after this change,
+> > > > > > $ cat progs.debug
+> > > > > >   id name             attached
+> > > > > >    5 dump_bpf_map     bpf_iter_bpf_map
+> > > > > >    7 dump_bpf_prog    bpf_iter_bpf_prog
+> > > > > >   17 bpf_sockmap      cgroup:/
+> > > > > >   19 bpf_redir_proxy
+> > > > > >
+> > > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > > > > ---
+> > > > > >  kernel/bpf/cgroup.c | 8 ++++++++
+> > > > > >  1 file changed, 8 insertions(+)
+> > > > > >
+> > > > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > > > > > index 43eb3501721b..ebd87e54f2d0 100644
+> > > > > > --- a/kernel/bpf/cgroup.c
+> > > > > > +++ b/kernel/bpf/cgroup.c
+> > > > > > @@ -440,6 +440,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > > > > >         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > > > > >         struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > > > > >         enum cgroup_bpf_attach_type atype;
+> > > > > > +       char cgrp_path[64] = "cgroup:";
+> > > > > >         struct bpf_prog_list *pl;
+> > > > > >         struct list_head *progs;
+> > > > > >         int err;
+> > > > > > @@ -508,6 +509,11 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > > > > >         else
+> > > > > >                 static_branch_inc(&cgroup_bpf_enabled_key[atype]);
+> > > > > >         bpf_cgroup_storages_link(new_storage, cgrp, type);
+> > > > > > +
+> > > > > > +       cgroup_name(cgrp, cgrp_path + strlen("cgroup:"), 64);
+> > > > > > +       cgrp_path[63] = '\0';
+> > > > > > +       prog->aux->attach_name = kstrdup(cgrp_path, GFP_KERNEL);
+> > > > > > +
+> > > > >
+> > > > > This is pure debug code. We cannot have it in the kernel.
+> > > > > Not even under #ifdef.
+> > > > >
+> > > > > Please do such debug code on a side as your own bpf program.
+> > > > > For example by kprobe-ing in this function and keeping the path
+> > > > > in a bpf map or send it to user space via ringbuf.
+> > > > > Or enable cgroup tracepoint and monitor cgroup_mkdir with full path.
+> > > > > Record it in user space or in bpf map, etc.
+> > > > >
+> > > >
+> > > > It is another possible solution to  hook the related kernel functions
+> > > > or tracepoints, but it may be a little complicated to track all the
+> > > > bpf attach types, for example we also want to track
+> > > > BPF_PROG_TYPE_SK_MSG[1], BPF_PROG_TYPE_FLOW_DISSECTOR and etc.
+> > > > While the attach_name provides us a generic way to get how the bpf
+> > > > progs are attached, which can't be got by bpftool.
+> > >
+> > > bpftool can certainly print such details.
+> > > See how it's using task_file iterator.
+> > > It can be extended to look into cgroups and sockmap,
+> > > and for each program print "sockmap:%d", map->id if so desired.
+> >
+> > I have read through the task_file code, but I haven't found a direct
+> > way to get the attached cgroups or maps of a specified prog.
+> > It is easy to look into a cgroup or sockmap, but the key point here is
+> > which is the proper cgroup or sockmap.
+> > There are some possible ways to get the attached cgroup or sockmap.
+> >
+> > - add new member into struct bpf_prog_aux
 >
-
-The common usecase is caching references to objects inside BPF maps, to avoid
-costly lookups, and being able to raise it once for the duration of program
-invocation when passing it to multiple helpers (to avoid further re-lookups).
-Storing references also allows you to control object lifetime.
-
-One other use case is enabling xdp_frame queueing in XDP using this, but that
-still needs some integration work after this lands, so it's a bit early to
-comment on the specifics.
-
-Other than that, I think Alexei already mentioned this could be easily extended
-to do memory allocation returning a PTR_TO_BTF_ID in a BPF program [0] in the
-future.
-
-  [0]: https://lore.kernel.org/bpf/20220216230615.po6huyrgkswk7u67@ast-mbp.dhcp.thefacebook.com
-
-> For Unreferenced kernel pointer and userspace pointer, it seems that there is
-> no guarantee the pointer will still be valid during access (we only know it is
-> valid when it is stored in the map). Is this correct?
+> No. Please stop proposing kernel changes for your debug needs.
 >
-
-That is correct. In the case of unreferenced and referenced kernel pointers,
-when you do a BPF_LDX, both are marked as PTR_UNTRUSTED, and it is not allowed
-to pass them into helpers or kfuncs, because from that point onwards we cannot
-claim that the object is still alive when pointer is used later. Still,
-dereference is permitted because verifier handles faults for bad accesses using
-PROBE_MEM conversion for PTR_TO_BTF_ID loads in convert_ctx_accesses (which is
-then later detected by JIT to build exception table used by exception handler).
-
-In case of reading unreferenced pointer, in some cases you know that the pointer
-will stay valid, so you can just store it in the map and load and directly
-access it, it imposes very little restrictions.
-
-For the referenced case, and BPF_LDX marking it as PTR_UNTRUSTED, you could say
-that this makes it a lot less useful, because if BPF program already holds
-reference, just to make sure I _read valid data_, I still have to use the
-kptr_get style helper to raise and put reference to ensure the object is alive
-when it is accessed.
-
-So in that case, for RCU protected objects, it should still wait for BPF program
-to hit BPF_EXIT before the actual release, but for other cases like the case of
-sleepable programs, or objects where refcount alone manages lifetime, you can
-also detect writer presence of the other BPF program (to detect if pointer
-during our access was xchg'd out) using a seqlock style scheme:
-
-	v = bpf_map_lookup_elem(&map, ...);
-	if (!v)
-		return 0;
-	seq_begin = v->seq;
-	atomic_thread_fence(memory_order_acquire); // A
-	<do access>
-	atomic_thread_fence(memory_order_acquire); // B
-	seq_end = v->seq;
-	if (seq_begin & 1 || seq_begin != seq_end)
-		goto bad_read;
-	<use data>
-
-Ofcourse, barriers are not yet in BPF, but you get the idea (it should work on
-x86). The updater BPF program will increment v->seq before and after xchg,
-ensuring proper ordering. v->seq starts as 0, so odd seq indicates writer update
-is in progress.
-
-This would allow you to not raise refcount, while still ensuring that as long as
-object was accessed, it was still valid between A and B. Even if raising
-uncontended refcount is cheap, this is much cheaper.
-
-The case of userspace pointer is different, it sets the MEM_USER flag, so the
-only useful thing to do is calling bpf_probe_read_user, you can't even
-dereference it. You are right that in most cases that userspace pointer won't be
-useful, but for some cooperative cases between BPF program and userspace thread,
-it can act as a way to share certain thread local areas/userspace memory that
-the BPF program can then store keyed by the task_struct *, where using a BPF map
-to share memory is not always possible.
-
-> Thanks,
-> Song
+> >    For example,
+> >     struct bpf_prog_aux{
+> >         union {
+> >             struct cgroup *attached_cgrp;
+> >             struct bpf_map *attached_map;
+> >         };
+> >     };
+> >     Then we can easily get the related map or cgroup by extending
+> > task_file iterator.
+> >
+> > - build a table for attached maps, cgroups and etc
+> >    Like we did for pinned files.
+> >    Then we can compare the prog with the members stored in this table
+> > one by one, but that seems a little heavy.
+> >
+> > There may be some other ways.
 >
-> [...]
+> - iterate bpf maps
+> - find sockmap
+> - do equivalent of sock_map_progs(), but open coded inside bpf prog
+> - read progs, print them.
 
---
-Kartikeya
+That's similar to the second  way I proposed above.
+The trouble is it may be too heavy to iterate the target objects, for
+example, there may be thousands of cgroups on a single host, and if we
+want to know which cgroup is attached by a bpf prog we have to iterate
+all the cgroups until find it.
+But it seems there is no better choice.
+Anyway thanks for the advice.
+
+-- 
+Thanks
+Yafang
