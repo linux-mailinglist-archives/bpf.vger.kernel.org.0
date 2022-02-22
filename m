@@ -2,74 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DACC24C017E
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 19:39:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07B224C0139
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 19:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232771AbiBVSja (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 13:39:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
+        id S234749AbiBVS0x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 13:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbiBVSja (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 13:39:30 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EEA9A98B
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:39:03 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id w27so8885626lfa.5
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:39:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=L6wm5MBeh72wTvetYJOdYxWP9lbwHJ1SwpX9xuNkcog=;
-        b=FC6vL+DyPy2ZqUQIZn5eGRGldQYaavmiV9PU77iUP4riRePtOWz7KT/De8Zl8X1G3Y
-         nFI289B1K4VDxGgPHwA6MkLghdg/qUkq5RtCcMgb8EWJaFaGqnFQwD2kvYyXu+qLEAqh
-         anDMkBPJvCY3spU714K8Ee9cjpamenRkFF7Dc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=L6wm5MBeh72wTvetYJOdYxWP9lbwHJ1SwpX9xuNkcog=;
-        b=ac/w7WfgLQsnX9cFrYunxZVt3RYldOwcvEuUioFTRAp40a0/LOUFmPkabydVaQzsMe
-         9vvMssrbACTjAavEjv4VyUZjfX2NNyabGwBoTdZ7ui2npYkTZqkBZ0x8v/6QwYFWTvpJ
-         nepbN7kWRt285EGDLRAVGQTzFMKXhI13IPem50CGSNmr3Fqx8UJhRh+/pWyiTZOCK+oW
-         qEPp1lOEVlUOvt9WFQnLFORCIUi+fYk8rY4EtNbojYpMAXtjeS23r1+FRdO9QH1cgW6B
-         qyYaf2VUnx2A+Wv92kXxgUfIjq9s9fhAp2Kn0bQZPSaXXTbmoXIu8VLUplDF9EkKi1Mw
-         qEoA==
-X-Gm-Message-State: AOAM5308BLEritEE14J2KFnxPSK0yPT1x5Hw1hKr63LYXH4Zw4G4qr1T
-        MBgyjFix7QqxzkG253Mqhmy1nA==
-X-Google-Smtp-Source: ABdhPJxOxQLtIik5i4TpnPW4Xd/iainAY7zmgnXqK4oPYCpLARRmRIOq49Mi7rEZas/PTcKNO8fMBg==
-X-Received: by 2002:a19:7504:0:b0:443:15b6:5641 with SMTP id y4-20020a197504000000b0044315b65641mr18087261lfe.351.1645555141917;
-        Tue, 22 Feb 2022 10:39:01 -0800 (PST)
-Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id u8sm1397505lfi.211.2022.02.22.10.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 10:39:01 -0800 (PST)
-References: <20220221180358.169101-1-jakub@cloudflare.com>
- <8ff3f2ff692acaffe9494007a3431c269372f822.camel@linux.ibm.com>
- <88a4927eaf3ca385ce9a7406ef23062a39eb1734.camel@linux.ibm.com>
- <0eeac90306f03b4fdb2b028ffb509e4d20121aec.camel@linux.ibm.com>
- <87fsoakjj6.fsf@cloudflare.com>
- <6e28c1c3ef0eda6f041593216ac32b210e55e4b7.camel@linux.ibm.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S230325AbiBVS0w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 13:26:52 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD67CEB314
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 10:26:26 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21MHQFOo001440;
+        Tue, 22 Feb 2022 18:26:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=cLvDnjeNtCNLKH6yg3RwoFnnx7v+VqsJzhUNi1RP0Qo=;
+ b=CuMRCv+BhDoK1CFXQLtkUSyA7VnaEC2VJR6/xkkeR9gRNa/bqO5rCjE9DuWKVRAxfzaP
+ UDC4dLa4tRn3k5Qt3zF+DyLSkY1Zvv4S1Iw0IQQcoPSKj8p1F3uQXglRJHN4SjQjcZl/
+ Favur27me8hUZZtxvkcWMX8oo4514crRQTGZlHB+oXtBBIaMtmKyMGAeMM4LWfsvgmd7
+ k6UtlEecAHqC/2cZR7d5MrV2/FNcOoxPu+ignRXY3amxnjvEGm+O0biZnjDbadfga/4T
+ UXm0wm/vK7ab+udiHjPIRcYAY9vbfO6mfA3CxQersQ6gK/yCxEHfpS8tPbl3UOmMyor7 lw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ed2pqvbfc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 18:26:07 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21MHiULV019473;
+        Tue, 22 Feb 2022 18:26:06 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ed2pqvbex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 18:26:06 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21MIPp9f018591;
+        Tue, 22 Feb 2022 18:26:05 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ear69540y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Feb 2022 18:26:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21MIQ1FU50069814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Feb 2022 18:26:01 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BE5E94C046;
+        Tue, 22 Feb 2022 18:26:01 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A4434C044;
+        Tue, 22 Feb 2022 18:26:01 +0000 (GMT)
+Received: from heavy.lan (unknown [9.171.78.41])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 22 Feb 2022 18:26:01 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix implementation-defined
- behavior in sk_lookup test
-Date:   Tue, 22 Feb 2022 19:24:11 +0100
-In-reply-to: <6e28c1c3ef0eda6f041593216ac32b210e55e4b7.camel@linux.ibm.com>
-Message-ID: <87bkyykapm.fsf@cloudflare.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH RFC bpf-next 0/3] bpf_sk_lookup.remote_port fixes
+Date:   Tue, 22 Feb 2022 19:25:56 +0100
+Message-Id: <20220222182559.2865596-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.34.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I6rZK8MxFOG7L0WW8nKGXRKaDvX_zT1q
+X-Proofpoint-GUID: T9IXDrqQLCpgvdB4YrPHKxu48KV_gMnG
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-22_05,2022-02-21_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202220111
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,225 +92,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 06:42 PM +01, Ilya Leoshkevich wrote:
-> On Tue, 2022-02-22 at 15:53 +0100, Jakub Sitnicki wrote:
->> On Tue, Feb 22, 2022 at 03:22 AM +01, Ilya Leoshkevich wrote:
->> > On Tue, 2022-02-22 at 01:43 +0100, Ilya Leoshkevich wrote:
->> > > On Mon, 2022-02-21 at 22:39 +0100, Ilya Leoshkevich wrote:
->> > > > On Mon, 2022-02-21 at 19:03 +0100, Jakub Sitnicki wrote:
->> > > > > Shifting 16-bit type by 16 bits is implementation-defined for
->> > > > > BPF
->> > > > > programs.
->> > > > > Don't rely on it in case it is causing the test failures we
->> > > > > are
->> > > > > seeing on
->> > > > > s390x z15 target.
->> > > > >=20
->> > > > > Fixes: 2ed0dc5937d3 ("selftests/bpf: Cover 4-byte load from
->> > > > > remote_port in bpf_sk_lookup")
->> > > > > Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> > > > > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> > > > > ---
->> > > > >=20
->> > > > > I don't have a dev env for s390x/z15 set up yet, so can't
->> > > > > definitely
->> > > > > confirm the fix.
->> > > > > That said, it seems worth fixing either way.
->> > > > >=20
->> > > > > =C2=A0tools/testing/selftests/bpf/progs/test_sk_lookup.c | 3 ++-
->> > > > > =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
->> > > > >=20
->> > > > > diff --git
->> > > > > a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > > > b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > > > index bf5b7caefdd0..7d47276a8964 100644
->> > > > > --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > > > +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > > > @@ -65,6 +65,7 @@ static const __u32 KEY_SERVER_A =3D SERVER_A;
->> > > > > =C2=A0static const __u32 KEY_SERVER_B =3D SERVER_B;
->> > > > > =C2=A0
->> > > > > =C2=A0static const __u16 SRC_PORT =3D bpf_htons(8008);
->> > > > > +static const __u32 SRC_PORT_U32 =3D bpf_htonl(8008U << 16);
->> > > > > =C2=A0static const __u32 SRC_IP4 =3D IP4(127, 0, 0, 2);
->> > > > > =C2=A0static const __u32 SRC_IP6[] =3D IP6(0xfd000000, 0x0, 0x0,
->> > > > > 0x00000002);
->> > > > > =C2=A0
->> > > > > @@ -421,7 +422,7 @@ int ctx_narrow_access(struct
->> > > > > bpf_sk_lookup
->> > > > > *ctx)
->> > > > > =C2=A0
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Load from rem=
-ote_port field with zero padding
->> > > > > (backward
->> > > > > compatibility) */
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val_u32 =3D *(__=
-u32 *)&ctx->remote_port;
->> > > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (val_u32 !=3D bpf_=
-htonl(bpf_ntohs(SRC_PORT) << 16))
->> > > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (val_u32 !=3D SRC_=
-PORT_U32)
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return SK_DROP;
->> > > > > =C2=A0
->> > > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Narrow loads =
-from local_port field. Expect
->> > > > > DST_PORT.
->> > > > > */
->> > > >=20
->> > > > Unfortunately this doesn't help with the s390 problem.
->> > > > I'll try to debug this.
->> > >=20
->> > > I have to admit I have a hard time wrapping my head around the
->> > > requirements here.
->> > >=20
->> > > Based on the pre-9a69e2b385f4 code, do I understand correctly
->> > > that
->> > > for the following input
->> > >=20
->> > > Port:=C2=A0=C2=A0=C2=A0=C2=A0 0x1f48
->> > > SRC_PORT: 0x481f
->> > >=20
->> > > we expect the following results for different kinds of loads:
->> > >=20
->> > > Size=C2=A0=C2=A0 Offset=C2=A0 LE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BE
->> > > BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1f=C2=A0=C2=A0=
-=C2=A0 0
->> > > BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x48=C2=A0=C2=A0=
-=C2=A0 0
->> > > BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0x48
->> > > BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0x1f
->> > > BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0
->> > > BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0x481f
->> > > BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0x481f
->> > >=20
->> > > and this is guaranteed by the struct bpf_sk_lookup ABI? Because
->> > > then
->> > > it
->> > > looks as if 9a69e2b385f4 breaks it on big-endian as follows:
->> > >=20
->> > > Size=C2=A0=C2=A0 Offset=C2=A0 BE-9a69e2b385f4
->> > > BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x48
->> > > BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1f
->> > > BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> > > BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> > > BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f
->> > > BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> > > BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f0000
->> >=20
->> > Sorry, I worded this incorrectly: 9a69e2b385f4 did not change the
->> > kernel behavior, the ABI is not broken and the old compiled code
->> > should
->> > continue to work.
->> > What the second table really shows are what the results should be
->> > according to the 9a69e2b385f4 struct bpf_sk_lookup definition,
->> > which I
->> > still think is broken on big-endian and needs to be adjusted to
->> > match
->> > the ABI.
->> >=20
->> > I noticed one other strange thing in the meantime: loads from
->> > *(__u32 *)&ctx->remote_port, *(__u16 *)&ctx->remote_port and
->> > *((__u16 *)&ctx->remote_port + 1) all produce 8008 on s390, which
->> > is
->> > clearly inconsistent. It looks as if convert_ctx_accesses() needs
->> > to be
->> > adjusted to handle combinations like ctx_field_size =3D=3D 4 && size =
-=3D=3D
->> > 2
->> > && target_size =3D=3D 2. I will continue with this tomorrow.
->> >=20
->> > > Or is the old behavior a bug and this new one is desirable?
->> > > 9a69e2b385f4 has no Fixes: tag, so I assume that's the former :-(
->> > >=20
->> > > In which case, would it make sense to fix it by swapping
->> > > remote_port
->> > > and :16 in bpf_sk_lookup on big-endian?
->>=20
->> Thanks for looking into it.
->>=20
->> When it comes to requirements, my intention was to keep the same
->> behavior as before the split up of the remote_port field in
->> 9a69e2b385f4
->> ("bpf: Make remote_port field in struct bpf_sk_lookup 16-bit wide").
->>=20
->> 9a69e2b385f4 was supposed to be a formality, after a similar change
->> in
->> 4421a582718a ("bpf: Make dst_port field in struct bpf_sock 16-bit
->> wide"), which went in earlier.
->>=20
->> In 4421a582718a I've provided a bit more context. I understand that
->> the
->> remote_port value, even before the type changed from u32 to u16,
->> appeared to the BPF program as if laid out in memory like so:
->>=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 offsetof(struct bpf_sk_lookup, remote_por=
-t) +0=C2=A0 <port MSB>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +1=
-=C2=A0 <port LSB>
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +2=
-=C2=A0 0x00
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 +3=
-=C2=A0 0x00
->>=20
->> Translating it to your handy table format, I expect should result in
->> loads as so if port is 8008 =3D 0x1f48:
->>=20
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Size=C2=A0=C2=A0 Offset=C2=A0 LE=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 BE
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0x1f=C2=A0=C2=A0=C2=A0 0x1f
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0x48=C2=A0=C2=A0=C2=A0 0x48
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0x481f=C2=A0 0x1f48
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 0x481f=C2=A0 0x1f480000
->
-> Hmm, I think for big-endian the layout is different.
-> If we look at test_sk_lookup.c from 9a69e2b385f4^:
->
->         /* Narrow loads from remote_port field. Expect SRC_PORT. */
->         if (LSB(ctx->remote_port, 0) !=3D ((SRC_PORT >> 0) & 0xff) ||
->             LSB(ctx->remote_port, 1) !=3D ((SRC_PORT >> 8) & 0xff) ||
->             LSB(ctx->remote_port, 2) !=3D 0 || LSB(ctx->remote_port, 3)
-> !=3D 0)
->                 return SK_DROP;
->
-> LSB() on little-endian is just byte indexing, so it's indeed=C2=A0
-> 1f,48,00,00. However, on big-endian it's indexing from the end, so
-> it's 00,00,48,1f.
+Hi,
 
-I understood that LSB() is indexing from the end on BE because SRC_PORT
-constant value differs on LE (=3D 0x481f) and BE (=3D 0x1f48) platforms, so
+These are my current patches for the discussion from [1] and [2].
 
-                 LE  BE
-  SRC_PORT >> 0  1f  48
-  SRC_PORT >> 8  48  1f
+With these changes tests pass on both x86_64 and s390x, but there are
+quite a few things I'm not sure about, hence it's just an RFC:
 
-So on LE we first compare remote_port MSB, then LSB.
-While on BE we start with remote_port LSB, then MSB.
+- Can moving size < target_size check lead to incorrect shifts in some
+  corner cases that I missed?
 
-But, now that you have pointed it out, I notice that sizeof(remote_port)
-has changed and from 4 to 2, and I can't see how LSB(=E2=80=A6, 3) and LSB(=
-=E2=80=A6, 4)
-loads can keep working on big-endian.
+- Are different layouts of remote_port on little- and big-endian a bug
+  or a feature? Do we want things to be this way? If not, are we bound
+  by the ABI anyway?
 
-[...]
+- Is there any way to make uapi changes look nicer? A wall of nested
+  structs, unions and ifdefs in an otherwise clean struct definition
+  isn't looking particularly good.
+
+- What is the Officially Approved way to access the remote_port field
+  from C code? I'm leaning towards bpf_ntohs((__u16)remote_port), like
+  in [3], and I adjusted the test accordingly.
+
+[1] https://lore.kernel.org/bpf/CAEf4BzaRNLw9_EnaMo5e46CdEkzbJiVU3j9oxnsemBKjNFf3wQ@mail.gmail.com/
+[2] https://lore.kernel.org/bpf/20220221180358.169101-1-jakub@cloudflare.com/
+[3] https://lore.kernel.org/bpf/20220113070245.791577-1-imagedong@tencent.com/
+
+Ilya Leoshkevich (3):
+  bpf: Fix certain narrow loads with offsets
+  bpf: Fix bpf_sk_lookup.remote_port on big-endian
+  selftests/bpf: Adapt bpf_sk_lookup.remote_port loads
+
+ include/uapi/linux/bpf.h                        | 17 +++++++++++++++--
+ kernel/bpf/verifier.c                           | 14 +++++++++-----
+ net/core/filter.c                               |  5 ++---
+ tools/include/uapi/linux/bpf.h                  | 17 +++++++++++++++--
+ .../selftests/bpf/progs/test_sk_lookup.c        | 17 +++++++++++------
+ 5 files changed, 52 insertions(+), 18 deletions(-)
+
+-- 
+2.34.1
+
