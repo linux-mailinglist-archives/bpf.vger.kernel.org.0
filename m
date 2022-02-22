@@ -2,63 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3664BF0DE
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2B34BF0F3
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 05:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbiBVEWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Feb 2022 23:22:21 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:51484 "EHLO
+        id S229976AbiBVEap (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Feb 2022 23:30:45 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:36810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbiBVEWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Feb 2022 23:22:21 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABBFB867
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 20:21:55 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id om7so17115571pjb.5
-        for <bpf@vger.kernel.org>; Mon, 21 Feb 2022 20:21:55 -0800 (PST)
+        with ESMTP id S229669AbiBVEao (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Feb 2022 23:30:44 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050AD9D4C1;
+        Mon, 21 Feb 2022 20:30:15 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id gl14-20020a17090b120e00b001bc2182c3d5so799608pjb.1;
+        Mon, 21 Feb 2022 20:30:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yU0UH9B8ILdrG9Vv6gwxKFfracY7EL3+H9xPYFIMrTA=;
-        b=g3+JVyBZBPpY5wnuOyYyO6zZbfsk7EqwjqIKv08s8+4gFoWd+gJcUHDQEJzHNt20Fa
-         4C/1eMhQhKGBsr6VhKfdzC74T8JmwmQnWpSaGOZcNx1/mw+53F7XtaEu/gZviNPORxrI
-         s9fNyXVoLGalojXhv/E3h0wIW1YJKByqP6FwXEZQ928ah4uaNLln8CtoLY+6q0dtng0F
-         cMQqmrJgpkBFSQjn65f8WHDXa7VSufSZ9NOLV1QGanmOjUTiMja0mmLZZMYhL5tH3qm6
-         j/MwgB7iD4Ba5kw1rYoQiAJeHwj47W+AOIAkPukL7M3FglcAZeSbnPXtG7WfiUA/RpwD
-         pfLw==
+        bh=2IZfGqcc5mgEr3Q2qco8v+1frM3x3CTORZa261ZfQBw=;
+        b=WqttCe9aYEff+/cRAdFFPQEiABP3ZhIUeiepBC8nhk7yXwsAc0FEyM6jjVlMtC9sP5
+         PTbtiwz5RTF+MKoix1doUgVdPrNOARdJCbewBDqG6eIDKSVUgelfg4z6cfV1yYo+3MLZ
+         JgYa5YI/9NrB0acRD7tVMr1dM8DDhgrrNJyTGWeRJgKmdxEOAxl9ykX46s6vPhFMwxqo
+         j9pZxorAraUf39yjjAHpkUgZzOwdHaCET/Niwzyugl+QiIzdNwLwOyEq8xodGgBkLeE9
+         LQlitUXyKqeYjkt8h6nh5TOOat5dIVFV0JmEc2Px2aN7FnnTeMtNSUm25fEopkgyHu30
+         urTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yU0UH9B8ILdrG9Vv6gwxKFfracY7EL3+H9xPYFIMrTA=;
-        b=Es/NFYMGaMBkTU9fIBjTGyyNFk+fzxiODleCChql3FlYghxaXHHqfI//PJ7mk+jzFo
-         TpWYjTHSZVW0bXhXO+OdQRgfk8YNhxKch+YWqkOz8QAa5vdshXxb3iaMr01VCn2pKZvb
-         XI+hT857veB1RtBW4bPppKhWkOsRAWMyWPdz7U4YzEwl5FT4qRtIiXJZIHC/myE78fwN
-         Vlshx6UNty+AdwwBxUa4IHnP7rjZc69Pk6HE587uuyq6xKYcTyETZ+1KBeLSMPl0/+H7
-         Ruuor/bhkjKHfkTjmClj4X/v8BlXdHIjYkPWC7Zitr3B4X4BD1cKoZH6rrKamEj4hopQ
-         AIpg==
-X-Gm-Message-State: AOAM531QJfd6iXnH0zG6WezEe1INeyawUFX09VsXJ11BplOeU54KPuDx
-        8hUDvHsGKlOvq9G0qjy8Hku9fn8VltLiJMRNUQY=
-X-Google-Smtp-Source: ABdhPJxvUTnAxEMypwyUB7jjkCqelQMXcofBQZ8boX/0JmkL6/QA9KdXCdOtxjRBShT8xRSE5IJkWPi2UTvPfqUd7r4=
-X-Received: by 2002:a17:90b:180e:b0:1b9:e022:280a with SMTP id
- lw14-20020a17090b180e00b001b9e022280amr2264191pjb.20.1645503714413; Mon, 21
- Feb 2022 20:21:54 -0800 (PST)
+        bh=2IZfGqcc5mgEr3Q2qco8v+1frM3x3CTORZa261ZfQBw=;
+        b=Joi9qYndm93wi4LD5MNeWYvw+E8vIPEKYJo9K+lFHQ1Jc4GMYp/aNa1gaVtsA8q1ns
+         Z9TWf9/DYQ+WRlgNJBRL3GjidJ78oWhJJTsanELmbWQvP0qWK+2yKTT0/KEkyMfXy+vh
+         8QpqZQG1yIB3+ayADbWonEf7I/jDFpMUy8ivwwROmT07kO2liU9W7sxwm12n7htF8fKS
+         ZQWBuoVj8BNwysC5i3hqtq+Q16t9kTBOWH9N7dj29Zh6D2HWGc8We1UbwogTHVWx+lXx
+         fdQY48ZtgkG0yEAIuOrPRENZGB52Jwzh+E7NnlDe8zsO6XTLWo5IkyhYnV3MdwBqctZB
+         VP3g==
+X-Gm-Message-State: AOAM531Qgmz6xZXPbksx/L8D7UCJW47vsdRZbYiNCVOlX9oIGWezJ4WJ
+        KFGhVjikE8G49+EY7Y4DpA/a4v47hBHE12yD8NY=
+X-Google-Smtp-Source: ABdhPJx9YayGKPD6R0B87TBiNa2x1jXMZFOtocFXPgEKQMMy3Aul3dy82oDwXS7HImXbAp71rlWF7rxStle9h1VapDQ=
+X-Received: by 2002:a17:902:76c5:b0:14e:e325:9513 with SMTP id
+ j5-20020a17090276c500b0014ee3259513mr21618411plt.55.1645504215284; Mon, 21
+ Feb 2022 20:30:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20220219113744.1852259-1-memxor@gmail.com> <20220219113744.1852259-2-memxor@gmail.com>
- <20220220022409.r5y2bovtgz3r2n47@ast-mbp.dhcp.thefacebook.com>
- <20220220024915.nohjpzvsn5bu2opo@apollo.legion> <CAADnVQJ-1D8f36EF-mQk_B_UmGyDbHZnEtYC_mNqt_yDncOCNg@mail.gmail.com>
- <20220222033132.2ooqxlvld7xxrghm@apollo.legion>
-In-Reply-To: <20220222033132.2ooqxlvld7xxrghm@apollo.legion>
+References: <20220218095612.52082-1-laoar.shao@gmail.com> <20220218095612.52082-3-laoar.shao@gmail.com>
+ <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com>
+ <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
+ <CAADnVQ+FuK2wihDy5GumBN3LVBky0r04CmS4h1JsVoS7QoH6LA@mail.gmail.com> <CALOAHbAvG1gEAFhqs61x4aStaxph-O3f8k0XbCuUJK4rxcMRFw@mail.gmail.com>
+In-Reply-To: <CALOAHbAvG1gEAFhqs61x4aStaxph-O3f8k0XbCuUJK4rxcMRFw@mail.gmail.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 21 Feb 2022 20:21:43 -0800
-Message-ID: <CAADnVQJ51KcMWnUwcwqmjm_fWShjZeOsOWEGQLX-htWKWixgrw@mail.gmail.com>
-Subject: Re: [PATCH bpf v1 1/5] bpf: Fix kfunc register offset check for PTR_TO_BTF_ID
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 21 Feb 2022 20:30:04 -0800
+Message-ID: <CAADnVQ+ye+hRB2RvDY+=-kTOhBZesW0fyLR0EY9cV972SwZSSQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/3] bpf: set attached cgroup name in attach_name
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -70,126 +75,106 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 21, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Mon, Feb 21, 2022 at 6:26 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 >
-> On Tue, Feb 22, 2022 at 02:06:15AM IST, Alexei Starovoitov wrote:
-> > On Sat, Feb 19, 2022 at 6:49 PM Kumar Kartikeya Dwivedi
-> > <memxor@gmail.com> wrote:
+> On Mon, Feb 21, 2022 at 4:59 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Sun, Feb 20, 2022 at 6:17 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > > >
-> > > On Sun, Feb 20, 2022 at 07:54:09AM IST, Alexei Starovoitov wrote:
-> > > > On Sat, Feb 19, 2022 at 05:07:40PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > On Sun, Feb 20, 2022 at 2:27 AM Alexei Starovoitov
+> > > <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > On Fri, Feb 18, 2022 at 1:56 AM Yafang Shao <laoar.shao@gmail.com> wrote:
 > > > > >
-> > > > > +/* Caller ensures reg->type does not have PTR_MAYBE_NULL */
-> > > > > +int check_func_arg_reg_off(struct bpf_verifier_env *env,
-> > > > > +                      const struct bpf_reg_state *reg, int regno,
-> > > > > +                      bool arg_alloc_mem)
-> > > > > +{
-> > > > > +   enum bpf_reg_type type = reg->type;
-> > > > > +   int err;
+> > > > > Set the cgroup path when a bpf prog is attached to a cgroup, and unset
+> > > > > it when the bpf prog is detached.
+> > > > >
+> > > > > Below is the result after this change,
+> > > > > $ cat progs.debug
+> > > > >   id name             attached
+> > > > >    5 dump_bpf_map     bpf_iter_bpf_map
+> > > > >    7 dump_bpf_prog    bpf_iter_bpf_prog
+> > > > >   17 bpf_sockmap      cgroup:/
+> > > > >   19 bpf_redir_proxy
+> > > > >
+> > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > > > ---
+> > > > >  kernel/bpf/cgroup.c | 8 ++++++++
+> > > > >  1 file changed, 8 insertions(+)
+> > > > >
+> > > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> > > > > index 43eb3501721b..ebd87e54f2d0 100644
+> > > > > --- a/kernel/bpf/cgroup.c
+> > > > > +++ b/kernel/bpf/cgroup.c
+> > > > > @@ -440,6 +440,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > > > >         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > > > >         struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
+> > > > >         enum cgroup_bpf_attach_type atype;
+> > > > > +       char cgrp_path[64] = "cgroup:";
+> > > > >         struct bpf_prog_list *pl;
+> > > > >         struct list_head *progs;
+> > > > >         int err;
+> > > > > @@ -508,6 +509,11 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
+> > > > >         else
+> > > > >                 static_branch_inc(&cgroup_bpf_enabled_key[atype]);
+> > > > >         bpf_cgroup_storages_link(new_storage, cgrp, type);
 > > > > > +
-> > > > > +   WARN_ON_ONCE(type & PTR_MAYBE_NULL);
+> > > > > +       cgroup_name(cgrp, cgrp_path + strlen("cgroup:"), 64);
+> > > > > +       cgrp_path[63] = '\0';
+> > > > > +       prog->aux->attach_name = kstrdup(cgrp_path, GFP_KERNEL);
+> > > > > +
 > > > >
-> > > > So the warn was added and made things more difficult and check had to be moved
-> > > > into check_mem_reg to clear that flag?
-> > > > Why add that warn in the first place then?
-> > > > The logic get convoluted because of that.
+> > > > This is pure debug code. We cannot have it in the kernel.
+> > > > Not even under #ifdef.
+> > > >
+> > > > Please do such debug code on a side as your own bpf program.
+> > > > For example by kprobe-ing in this function and keeping the path
+> > > > in a bpf map or send it to user space via ringbuf.
+> > > > Or enable cgroup tracepoint and monitor cgroup_mkdir with full path.
+> > > > Record it in user space or in bpf map, etc.
 > > > >
 > > >
-> > > Ok, will drop.
-> > >
-> > > > > +   if (reg->off < 0) {
-> > > > > +           verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
-> > > > > +                   reg_type_str(env, reg->type), regno, reg->off);
-> > > > > +           return -EACCES;
-> > > > > +   }
-> > > >
-> > > > Out of the whole patch this part is useful. The rest seems to dealing
-> > > > with self inflicted pain.
-> > > > Just call check_ptr_off_reg() for kfunc ?
-> > >
-> > > I still think we should call a common helper.
+> > > It is another possible solution to  hook the related kernel functions
+> > > or tracepoints, but it may be a little complicated to track all the
+> > > bpf attach types, for example we also want to track
+> > > BPF_PROG_TYPE_SK_MSG[1], BPF_PROG_TYPE_FLOW_DISSECTOR and etc.
+> > > While the attach_name provides us a generic way to get how the bpf
+> > > progs are attached, which can't be got by bpftool.
 > >
-> > What is the point of "common helper" when types
-> > with explicit allow of reg offset like PTR_TO_PACKET cannot
-> > be passed into kfuncs?
-> > A common helper would mislead the reader that such checks are necessary.
-> >
+> > bpftool can certainly print such details.
+> > See how it's using task_file iterator.
+> > It can be extended to look into cgroups and sockmap,
+> > and for each program print "sockmap:%d", map->id if so desired.
 >
-> PTR_TO_PACKET is certainly allowed to be passed to kfunc, and not just that,
-> PTR_TO_STACK, PTR_TO_BUF, PTR_TO_MEM, PTR_TO_MAP_VALUE, PTR_TO_MAP_KEY, all are
-> permited after we set ptr_to_mem_ok = true for kfunc. And these can have fixed
-> off and sometimes var_off to be set. They are also allowed for global functions.
-
-Ahh. Right. The whole check inside check_mem_reg dance confused me.
-
-> Which is why I thought having a single list in the entire verifier would be more
-> easier to maintain, then we can update it in one place and ensure both BPF
-> helpers and kfunc are covered by the same checks and expectations for fixed and
-> variable offsets. It isn't 'misleading' because all those types are also
-> permitted for kfuncs.
+> I have read through the task_file code, but I haven't found a direct
+> way to get the attached cgroups or maps of a specified prog.
+> It is easy to look into a cgroup or sockmap, but the key point here is
+> which is the proper cgroup or sockmap.
+> There are some possible ways to get the attached cgroup or sockmap.
 >
-> > >  For kfunc there are also reg->type
-> > > PTR_TO_SOCK etc., for them fixed offset should be rejected. So we can either
-> > > have a common helper like this for both kfunc and BPF helpers, or exposing
-> > > fixed_off_ok parameter in check_ptr_off_reg. Your wish.
-> >
-> > Are you saying that we should allow PTR_TO_SOCKET+fixed_off ?
->
-> No, I said we need to allow fixed off for PTR_TO_BTF_ID, but also prevent
-> var_off for it, but just using check_ptr_off_reg would not help because it
-> prevents fixed_off, and using __check_ptr_off_reg with fixed_off_ok == true
-> would be wrong for PTR_TO_SOCKET etc. Hence some refactoring is needed.
->
-> And using check_ptr_off_reg ultimately (through the common check or directly)
-> also rejects var_off for PTR_TO_BTF_ID, which was the actual problem that
-> started this whole patch.
->
-> > I guess than it's better to convert this line
-> >                 err = __check_ptr_off_reg(env, reg, regno,
-> >                                           type == PTR_TO_BTF_ID);
-> > into a helper.
-> > And convert this line:
-> > reg->type == PTR_TO_BTF_ID ||
-> >    (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type))
-> >
-> > into another helper.
-> > Like:
-> > static inline bool is_ptr_to_btf_id(type)
-> > {
-> >   return type == PTR_TO_BTF_ID ||
-> >    (reg2btf_ids[base_type(type)] && !type_flag(type));
-> > }
-> > and
-> > int check_ptr_off_reg(struct bpf_verifier_env *env,
-> >                       const struct bpf_reg_state *reg, int regno)
-> > {
-> >   return __check_ptr_off_reg(env, reg, regno, is_ptr_to_btf_id(reg->type));
-> > }
-> >
-> > and call check_ptr_off_reg() directly from check_func_arg()
-> > instead of __check_ptr_off_reg.
-> >
-> > and call check_ptr_off_reg() from btf_check_func_arg_match() too.
+> - add new member into struct bpf_prog_aux
 
-Thoughts about the above proposal?
-In addition to above we can have check_func_arg_reg_off()
-and call it early and once in btf_check_func_arg_match()
-instead of hiding deep in a call chain.
-I don't like 'bool arg_alloc_mem' part though
-and would like to get rid of 'bool ptr_to_mem_ok' eventually as well.
-Such flags make the code harder to follow,
-since the action on the flag value is done outside
-of the main part of the code.
-For example reading btf_check_func_arg_match() on its own is complicated.
-The developer has to examine all call sites to see how they pass that flag.
-Same thing with 'bool arg_alloc_mem'.
-Please pass arg_type instead.
+No. Please stop proposing kernel changes for your debug needs.
 
-This patch should be split into three.
-p1 - refactor into check_func_arg_reg_off helper.
-p2 - call it form btf_check_func_arg_match
-p3 - add off < 0 check.
+>    For example,
+>     struct bpf_prog_aux{
+>         union {
+>             struct cgroup *attached_cgrp;
+>             struct bpf_map *attached_map;
+>         };
+>     };
+>     Then we can easily get the related map or cgroup by extending
+> task_file iterator.
+>
+> - build a table for attached maps, cgroups and etc
+>    Like we did for pinned files.
+>    Then we can compare the prog with the members stored in this table
+> one by one, but that seems a little heavy.
+>
+> There may be some other ways.
 
-If you're adding "while at it" to the commit log it means that
-it shouldn't be a single patch.
+- iterate bpf maps
+- find sockmap
+- do equivalent of sock_map_progs(), but open coded inside bpf prog
+- read progs, print them.
