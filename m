@@ -2,144 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8524BFE56
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 17:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BA54BFFA4
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 18:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232897AbiBVQUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 11:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46492 "EHLO
+        id S234135AbiBVRGm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 12:06:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231785AbiBVQUi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 11:20:38 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBCB166A50;
-        Tue, 22 Feb 2022 08:20:12 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id p23so17454383pgj.2;
-        Tue, 22 Feb 2022 08:20:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ClOtmGzsE/+HFZkogsicuQKY5HWGG1zJS6eXPncIitU=;
-        b=HoclMKcRSJ8/OGIfdwj9QiopD81m5GxvFpIRP8nyIb+9pEqsKjt8u1KtIrMmwhpM7q
-         9jSKoCxWn+ZU1dPY5gBmUkHdwHgxRdDEzdkjzghC4HuE33SJuJ2kMzppv9U6wxqMjiee
-         OngocmrEWA59n+RD5coWWq0IgAsDl8/qIUiTTJl/xr7+24Bn3bitbKIaV2nbxbDq+B24
-         N30lJ8QD/asC13Fpp6rhxW2NpR7TaBR6T8QM343XnysFdlE6HSc/FSvTTSNDIndXwpd+
-         79z1b8NqWuQ2EATEmxknp2KPG/tf3oVMiBSVKpWI+VWSULO7lZea0dvwzqnJLRxW1dRt
-         9p5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ClOtmGzsE/+HFZkogsicuQKY5HWGG1zJS6eXPncIitU=;
-        b=h7l/+WOzsklOYMhnVzV4iNSGZlRCrLin6McaZs2mVnGSGJlgZ4OR0F3wwHmljA9gWJ
-         w5zUkUJHpCpcsh/CjdHgkuXH+cKnH/C69aYOZr/hmHumy2S4hE8bi+AwAGibM2pDhpb7
-         CZpve/PrIg144F6tsRrbC5M0Jm7OmvVHlwtuMb57l/VZi8lWcBeTimM05kTgd54pbhp+
-         fFl204sBWgK0McI4KnV591dKydeXH8N0Kc6N2Fbap6+dx8FfIRXODdhenWmQm1A96L9m
-         QcMa0jYwOsz7u12yaaP39xKaV83Ch/wReQBTAFJf+i3noG/9NbBi4rJ2RBC6bpD1JyBw
-         81uQ==
-X-Gm-Message-State: AOAM533T1oBqBVdNt03Dz6OQ9QxKfFW8eRAsfw4yV0mY2MM76wdrknWw
-        YwY2nTzSmUuv8i1PWo3YXFKwMfC9H3L0K4bIKPk=
-X-Google-Smtp-Source: ABdhPJzPUZkc4gu9S98Ee5lwt2NifFZpjjzglk9u7AJ2eIcW8vD5rugqM7bIi3trF9wS+Be5A6YTuCmhsjl5DIggXrc=
-X-Received: by 2002:a05:6a00:809:b0:4f1:14bb:40b1 with SMTP id
- m9-20020a056a00080900b004f114bb40b1mr14233900pfk.69.1645546811808; Tue, 22
- Feb 2022 08:20:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20220220134813.3411982-1-memxor@gmail.com> <20220220134813.3411982-5-memxor@gmail.com>
- <20220222065349.ladxy5cqfpdklk3a@ast-mbp.dhcp.thefacebook.com> <20220222071026.fqdjmd5fhjbl56xl@apollo.legion>
-In-Reply-To: <20220222071026.fqdjmd5fhjbl56xl@apollo.legion>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 22 Feb 2022 08:20:00 -0800
-Message-ID: <CAADnVQLba_X7fZczY774+1GGrGcC5sopD5pzMaDK_O8P+Aeyig@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 04/15] bpf: Allow storing referenced
- PTR_TO_BTF_ID in map
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S232716AbiBVRGl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 12:06:41 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0383353B55;
+        Tue, 22 Feb 2022 09:06:16 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 753CFCE13B3;
+        Tue, 22 Feb 2022 17:06:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6639C340E8;
+        Tue, 22 Feb 2022 17:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645549572;
+        bh=envM6Pe0RNjwRRahtg36RWvOnQB8p5h1bqAvG1iwJ+I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Syn4hZMdM6n/VYkbbMBLZAjyLuBnppJIiMfpb0T6F01VJwhCiqvE2HOxlmTlpbmnV
+         lLqzT2xz5cg6eIO23M3nxa1DeS80goZ/PhA+M39IXcsHZ96eAl73EbIGaLmtstKWX9
+         CyYkiCMWnVs6IbkS71rIfiVmvkjvhzXjmYS6tvlPsNMjhIr8eTJFvA5XgSi8LGhSiP
+         jM6O0mD86X79zMb9miol1YVf+fhNgxhYO6q7XmHoW++uESkCXiV9ls67SkoD1xr85N
+         ZBwafFXF/RX7dYXeBYJgDW6LUkmqqnsz9PPYD4HI8A8heW/moUBWZG1L5VeKgO0PLH
+         WGf6uZQB7o6Wg==
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [PATCHv2 bpf-next 0/8] bpf: Add kprobe multi link
+Date:   Tue, 22 Feb 2022 18:05:50 +0100
+Message-Id: <20220222170600.611515-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 21, 2022 at 11:10 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Tue, Feb 22, 2022 at 12:23:49PM IST, Alexei Starovoitov wrote:
-> > On Sun, Feb 20, 2022 at 07:18:02PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > >  static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regno,
-> > >                         int off, int bpf_size, enum bpf_access_type t,
-> > > -                       int value_regno, bool strict_alignment_once)
-> > > +                       int value_regno, bool strict_alignment_once,
-> > > +                       struct bpf_reg_state *atomic_load_reg)
-> >
-> > No new side effects please.
-> > value_regno is not pretty already.
-> > At least its known ugliness that we need to clean up one day.
-> >
-> > >  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
-> > >  {
-> > > +   struct bpf_reg_state atomic_load_reg;
-> > >     int load_reg;
-> > >     int err;
-> > >
-> > > +   __mark_reg_unknown(env, &atomic_load_reg);
-> > > +
-> > >     switch (insn->imm) {
-> > >     case BPF_ADD:
-> > >     case BPF_ADD | BPF_FETCH:
-> > > @@ -4813,6 +4894,7 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
-> > >             else
-> > >                     load_reg = insn->src_reg;
-> > >
-> > > +           atomic_load_reg = *reg_state(env, load_reg);
-> > >             /* check and record load of old value */
-> > >             err = check_reg_arg(env, load_reg, DST_OP);
-> > >             if (err)
-> > > @@ -4825,20 +4907,21 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
-> > >     }
-> > >
-> > >     /* Check whether we can read the memory, with second call for fetch
-> > > -    * case to simulate the register fill.
-> > > +    * case to simulate the register fill, which also triggers checks
-> > > +    * for manipulation of BTF ID pointers embedded in BPF maps.
-> > >      */
-> > >     err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> > > -                          BPF_SIZE(insn->code), BPF_READ, -1, true);
-> > > +                          BPF_SIZE(insn->code), BPF_READ, -1, true, NULL);
-> > >     if (!err && load_reg >= 0)
-> > >             err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> > >                                    BPF_SIZE(insn->code), BPF_READ, load_reg,
-> > > -                                  true);
-> > > +                                  true, load_reg >= 0 ? &atomic_load_reg : NULL);
-> >
-> > Special xchg logic should be down outside of check_mem_access()
-> > instead of hidden by layers of calls.
->
-> Right, it's ugly, but if we don't capture the reg state before that
-> check_reg_arg(env, load_reg, DST_OP), it's not possible to see the actual
-> PTR_TO_BTF_ID being moved into the map, since check_reg_arg will do a
-> mark_reg_unknown for value_regno. Any other ideas on what I can do?
->
-> 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
-> changed the order of check_mem_access and DST_OP check_reg_arg.
+hi,
+this patchset adds new link type BPF_TRACE_KPROBE_MULTI that attaches
+kprobe program through fprobe API [1] instroduced by Masami.
 
-That highlights my point that side effects are bad.
-That commit tries to work around that behavior and makes things
-harder to extend like you found out with xchg logic.
-Another option would be to add bpf_kptr_xchg() helper
-instead of dealing with insn. It will be tiny bit slower,
-but it will work on all architectures. While xchg bpf jit is
-on x86,s390,mips so far.
-We need to think more on how to refactor check_mem_acess without
-digging ourselves into an even bigger hole.
+The fprobe API allows to attach probe on multiple functions at once very
+fast, because it works on top of ftrace. On the other hand this limits
+the probe point to the function entry or return.
+
+
+With bpftrace support I see following attach speed:
+
+  # perf stat --null -r 5 ./src/bpftrace -e 'kprobe:x* { } i:ms:1 { exit(); } '
+  Attaching 2 probes...
+  Attaching 3342 functions
+  ...
+
+  1.4960 +- 0.0285 seconds time elapsed  ( +-  1.91% )
+
+
+v2 changes:
+  - based on latest fprobe changes [1]
+  - renaming the uapi interface to kprobe multi
+  - adding support for sort_r to pass user pointer for swap functions
+    and using that in cookie support to keep just single functions array
+  - moving new link to kernel/trace/bpf_trace.c file
+  - using single fprobe callback function for entry and exit
+  - using kvzalloc, libbpf_ensure_mem functions
+  - adding new k[ret]probe.multi sections instead of using current kprobe
+  - used glob_match from test_progs.c, added '?' matching
+  - move bpf_get_func_ip verifier inline change to seprate change
+  - couple of other minor fixes
+
+
+Also available at:
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  bpf/kprobe_multi
+
+thanks,
+jirka
+
+
+[1] https://lore.kernel.org/bpf/164458044634.586276.3261555265565111183.stgit@devnote2/
+---
+Jiri Olsa (10):
+      lib/sort: Add priv pointer to swap function
+      bpf: Add multi kprobe link
+      bpf: Add bpf_get_func_ip kprobe helper for multi kprobe link
+      bpf: Add support to inline bpf_get_func_ip helper on x86
+      bpf: Add cookie support to programs attached with kprobe multi link
+      libbpf: Add libbpf_kallsyms_parse function
+      libbpf: Add bpf_link_create support for multi kprobes
+      libbpf: Add bpf_program__attach_kprobe_opts support for multi kprobes
+      selftest/bpf: Add kprobe_multi attach test
+      selftest/bpf: Add kprobe_multi test for bpf_cookie values
+
+ include/linux/bpf_types.h                                   |   1 +
+ include/linux/sort.h                                        |   4 +-
+ include/linux/trace_events.h                                |   6 ++
+ include/linux/types.h                                       |   1 +
+ include/uapi/linux/bpf.h                                    |  14 ++++
+ kernel/bpf/syscall.c                                        |  26 ++++++--
+ kernel/bpf/verifier.c                                       |  21 +++++-
+ kernel/trace/bpf_trace.c                                    | 331 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ lib/sort.c                                                  |  42 +++++++++---
+ tools/include/uapi/linux/bpf.h                              |  14 ++++
+ tools/lib/bpf/bpf.c                                         |   7 ++
+ tools/lib/bpf/bpf.h                                         |   9 ++-
+ tools/lib/bpf/libbpf.c                                      | 192 +++++++++++++++++++++++++++++++++++++++++++++--------
+ tools/lib/bpf/libbpf_internal.h                             |   5 ++
+ tools/testing/selftests/bpf/prog_tests/bpf_cookie.c         |  72 ++++++++++++++++++++
+ tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c  | 115 ++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/kprobe_multi.c            |  58 ++++++++++++++++
+ tools/testing/selftests/bpf/progs/kprobe_multi_bpf_cookie.c |  62 +++++++++++++++++
+ 18 files changed, 930 insertions(+), 50 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi.c
+ create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_bpf_cookie.c
