@@ -2,70 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CB74BF3BE
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 09:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB9E4BF48C
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 10:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbiBVIfu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 03:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42662 "EHLO
+        id S230096AbiBVJUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 04:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbiBVIft (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 03:35:49 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C854158EBA;
-        Tue, 22 Feb 2022 00:35:24 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id v5so1940628ilm.9;
-        Tue, 22 Feb 2022 00:35:24 -0800 (PST)
+        with ESMTP id S229808AbiBVJUL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 04:20:11 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B58C149BA3
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 01:19:43 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id t4-20020a17090a3b4400b001bc40b548f9so1837391pjf.0
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 01:19:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ohS+tBJXbJlq7l0HDDlW1u4G+GIRR4Wd/pd1Ro3QENU=;
-        b=gALrkjbbycpw0hWvhtTJ91/8oRHivrhLwnjLa9U/Ty5QHB+FXUVexvIejaiWKo9oFZ
-         0X1YBACat3glKsCa9FhNF8i7jTe6XZoz6YKMlVd5FaMLpsPSZLzSyfuTgxy2hgTlASsx
-         FglLJeaqmj2G6p71cD+gdQGw54Ur75bGd23ZnrgnAH884NHuefVKoEFfhXMv0CwsebO8
-         e6KAOEWJ04RU5bNMIhM5quvJkh8x2jaOJ60AK6rqZHPQnFXnVro0LV1Xx41TxP9gd3gp
-         lmmtxRSa0DfgrzEzRUNESzEgRE301P7qmbqv/l26OP0/JfCGRrb3CuI6WWGGdCvylPZR
-         AjQg==
+         :cc:content-transfer-encoding;
+        bh=eH8WIdOj5Woq88qVAFgU9dGdxdX8fEiqJyOT99bEyYk=;
+        b=MehL0wRxVfbAj73UNl4pP3kmP2psSnS8Xl/hVjPYdX5WU9Ljxb4MMXUhJF5uMvINKB
+         8uNlywq680oergZvDaFDPOeqSHbIVK3OVQfEzkhpw7uWCCbxZkF8wlLEPUIs2yij3SSd
+         fVN1uZ8la2y03opjCIGnMFRDOktis1YYJVjDde1h0trmuWy5/bdFF9c1XWHkMTmKv9jc
+         1Yz0rh2d85d95Tn/v5pRp4uHEd49ei6SaZ2rGVQJl/dFcuQQl/IIhW0FlWdrRm5LW1P6
+         y7WON6ymiZZc1fF3vWp5rb0ajyrve0Y9gIT0DrFkyU3HtKSCpID6NhAqjOpF4ZmtcEGi
+         +tMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ohS+tBJXbJlq7l0HDDlW1u4G+GIRR4Wd/pd1Ro3QENU=;
-        b=T5EMbM8uX5MDgnCZx8drgAYbtadNHl5p2qn4793OqQZ6okxMKfH4FMKQUMHkAK8UIk
-         wB4FPqvvLLqxLaOiXm4j79rv6EOJ1IgWA1yAjPxbMXYp0xWtgrVvfTo/+XpOpoxr5YYY
-         Y+BQG3sAWji7wTdsIAIH9OVQp5YrElDLJZmroJfvhi2IkXgOEmSUOIHVIJmgO6SBpXkk
-         ORuqJgflAAT3kz1gSmWpAhhQJyhGOK1+Y5NbYPXMECZj0EthbkCx1qbE/JtjPhrc2YjI
-         Vl7+GgrQ3dfF4uz5kuJLGWuZ/I+qmkBEpjVAEHzbNgF9Jg24qQLGzKGdaTlCrQdXimjF
-         7bYg==
-X-Gm-Message-State: AOAM531iO7ssdqRtecWJZ1Hd21XWOOG8a4OXUEQ1Fp3W76ysjznNqZEK
-        Gi+HoN50SXV3usPJLoA5iN4HL0lvksBS3ldY7fVKYtZ1fXk=
-X-Google-Smtp-Source: ABdhPJzY+Pn1Ko+vu3C7S+wW5+WwKfNSPl6MhiHXDisjkybCZ1aKT4RX7DsSJEu9WajpKaifLxkMn+qWnRVb/L5bdqs=
-X-Received: by 2002:a05:6e02:154d:b0:2bc:84c0:b255 with SMTP id
- j13-20020a056e02154d00b002bc84c0b255mr20020315ilu.87.1645518923950; Tue, 22
- Feb 2022 00:35:23 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eH8WIdOj5Woq88qVAFgU9dGdxdX8fEiqJyOT99bEyYk=;
+        b=joLIOyyc9aaOo14KOkP/84cuVv1A2TpLJnQOvYQA6eY1c1xAPE6p+AbBoWrci31d2p
+         XhZFL6nDBur5B5SE+8XaNxGcAzsXdO1bolfDBuUoyGo4U0hwlK0gph9NpHTMdk19ItHy
+         AwNvxOeu886J6aYLavAQ0QpJPDGXEhJ4f+cTZrl7FoCd+iaGbT8TW4s1SKQpQys1a3J8
+         Fmv5zLlm35j3lixdDv3OF6PI4Ec1g6k6u/muMitDUd6kH3SeTGmDaiM4hJay7XbsmVwO
+         4A1YyXvvubmrKVfY3vByNh5BCIDPXnS00rYSFfzEvz0any0OSTKqHLO+JmetEHuVR3Nj
+         T//Q==
+X-Gm-Message-State: AOAM5309Xm6+wvQwjwmIOPOrwsDQVmPVqxsvTbxI8X2cxoCmUS6KX1s5
+        oAHEEcv4HUbmTpMcBO8CNhOzEvmeYjKmzNC2tX+ShyuIvQolig==
+X-Google-Smtp-Source: ABdhPJwlQnLfDm5+MLv5fjzsKH30Klj15jjwyksbyhtm9YnKJOELC3xsddDAO2OLpzqWpSU2g3zYBnlPsygIRptGI+U=
+X-Received: by 2002:a17:90a:7f03:b0:1b8:8d90:b194 with SMTP id
+ k3-20020a17090a7f0300b001b88d90b194mr3208090pjl.2.1645521582971; Tue, 22 Feb
+ 2022 01:19:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20220218095612.52082-1-laoar.shao@gmail.com> <20220218095612.52082-3-laoar.shao@gmail.com>
- <CAADnVQJhGmvY1NDsy9WE6tnqYM6JCmi4iZtB7xHuWh4yC-awPw@mail.gmail.com>
- <CALOAHbCytBP4osCXSZ_7+A69NuVf6SYDWGFC62O_MkHn9Fn10Q@mail.gmail.com>
- <CAADnVQ+FuK2wihDy5GumBN3LVBky0r04CmS4h1JsVoS7QoH6LA@mail.gmail.com>
- <CALOAHbAvG1gEAFhqs61x4aStaxph-O3f8k0XbCuUJK4rxcMRFw@mail.gmail.com> <CAADnVQ+ye+hRB2RvDY+=-kTOhBZesW0fyLR0EY9cV972SwZSSQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+ye+hRB2RvDY+=-kTOhBZesW0fyLR0EY9cV972SwZSSQ@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 22 Feb 2022 16:34:48 +0800
-Message-ID: <CALOAHbCkpL7hB-fLKupwODTXHopQ=tMzxgdG-JAV_Nuv6eG7cg@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/3] bpf: set attached cgroup name in attach_name
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+References: <CAKXe6S+B9+uH3R4qiNx68yZwX32iaAC6g92x7jS9JodNRjaAyg@mail.gmail.com>
+ <565e2bb0-2f42-cbb4-f63a-40723ee16414@fb.com>
+In-Reply-To: <565e2bb0-2f42-cbb4-f63a-40723ee16414@fb.com>
+From:   Li Qiang <liq3ea@gmail.com>
+Date:   Tue, 22 Feb 2022 17:19:06 +0800
+Message-ID: <CAKXe6SKcxOQwVPCFzmzHf46z+sTR25tayb3rp0C3kHG3rA_8DA@mail.gmail.com>
+Subject: Re: How to get the device number of 'bpf_get_ns_current_pid_tgid' helper
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -76,121 +66,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 12:30 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+Yonghong Song <yhs@fb.com> =E4=BA=8E2022=E5=B9=B42=E6=9C=8822=E6=97=A5=E5=
+=91=A8=E4=BA=8C 14:24=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Mon, Feb 21, 2022 at 6:26 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Mon, Feb 21, 2022 at 4:59 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Sun, Feb 20, 2022 at 6:17 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > >
-> > > > On Sun, Feb 20, 2022 at 2:27 AM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Feb 18, 2022 at 1:56 AM Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > > > >
-> > > > > > Set the cgroup path when a bpf prog is attached to a cgroup, and unset
-> > > > > > it when the bpf prog is detached.
-> > > > > >
-> > > > > > Below is the result after this change,
-> > > > > > $ cat progs.debug
-> > > > > >   id name             attached
-> > > > > >    5 dump_bpf_map     bpf_iter_bpf_map
-> > > > > >    7 dump_bpf_prog    bpf_iter_bpf_prog
-> > > > > >   17 bpf_sockmap      cgroup:/
-> > > > > >   19 bpf_redir_proxy
-> > > > > >
-> > > > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > > > ---
-> > > > > >  kernel/bpf/cgroup.c | 8 ++++++++
-> > > > > >  1 file changed, 8 insertions(+)
-> > > > > >
-> > > > > > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > > > > > index 43eb3501721b..ebd87e54f2d0 100644
-> > > > > > --- a/kernel/bpf/cgroup.c
-> > > > > > +++ b/kernel/bpf/cgroup.c
-> > > > > > @@ -440,6 +440,7 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> > > > > >         struct bpf_cgroup_storage *storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > > > > >         struct bpf_cgroup_storage *new_storage[MAX_BPF_CGROUP_STORAGE_TYPE] = {};
-> > > > > >         enum cgroup_bpf_attach_type atype;
-> > > > > > +       char cgrp_path[64] = "cgroup:";
-> > > > > >         struct bpf_prog_list *pl;
-> > > > > >         struct list_head *progs;
-> > > > > >         int err;
-> > > > > > @@ -508,6 +509,11 @@ static int __cgroup_bpf_attach(struct cgroup *cgrp,
-> > > > > >         else
-> > > > > >                 static_branch_inc(&cgroup_bpf_enabled_key[atype]);
-> > > > > >         bpf_cgroup_storages_link(new_storage, cgrp, type);
-> > > > > > +
-> > > > > > +       cgroup_name(cgrp, cgrp_path + strlen("cgroup:"), 64);
-> > > > > > +       cgrp_path[63] = '\0';
-> > > > > > +       prog->aux->attach_name = kstrdup(cgrp_path, GFP_KERNEL);
-> > > > > > +
-> > > > >
-> > > > > This is pure debug code. We cannot have it in the kernel.
-> > > > > Not even under #ifdef.
-> > > > >
-> > > > > Please do such debug code on a side as your own bpf program.
-> > > > > For example by kprobe-ing in this function and keeping the path
-> > > > > in a bpf map or send it to user space via ringbuf.
-> > > > > Or enable cgroup tracepoint and monitor cgroup_mkdir with full path.
-> > > > > Record it in user space or in bpf map, etc.
-> > > > >
-> > > >
-> > > > It is another possible solution to  hook the related kernel functions
-> > > > or tracepoints, but it may be a little complicated to track all the
-> > > > bpf attach types, for example we also want to track
-> > > > BPF_PROG_TYPE_SK_MSG[1], BPF_PROG_TYPE_FLOW_DISSECTOR and etc.
-> > > > While the attach_name provides us a generic way to get how the bpf
-> > > > progs are attached, which can't be got by bpftool.
-> > >
-> > > bpftool can certainly print such details.
-> > > See how it's using task_file iterator.
-> > > It can be extended to look into cgroups and sockmap,
-> > > and for each program print "sockmap:%d", map->id if so desired.
-> >
-> > I have read through the task_file code, but I haven't found a direct
-> > way to get the attached cgroups or maps of a specified prog.
-> > It is easy to look into a cgroup or sockmap, but the key point here is
-> > which is the proper cgroup or sockmap.
-> > There are some possible ways to get the attached cgroup or sockmap.
-> >
-> > - add new member into struct bpf_prog_aux
 >
-> No. Please stop proposing kernel changes for your debug needs.
 >
-> >    For example,
-> >     struct bpf_prog_aux{
-> >         union {
-> >             struct cgroup *attached_cgrp;
-> >             struct bpf_map *attached_map;
-> >         };
-> >     };
-> >     Then we can easily get the related map or cgroup by extending
-> > task_file iterator.
+> On 2/21/22 7:43 PM, Li Qiang wrote:
+> > Hello all,
 > >
-> > - build a table for attached maps, cgroups and etc
-> >    Like we did for pinned files.
-> >    Then we can compare the prog with the members stored in this table
-> > one by one, but that seems a little heavy.
-> >
-> > There may be some other ways.
+> > As we know, to call 'bpf_get_ns_current_pid_tgid' helper we need dev
+> > and inode number. The inode number is quite easy to get by 'ls -lh
+> > /proc/xx/ns/'. So how can we get the device number easily in practice?
+> > the kernel test just uses 0 to test.
 >
-> - iterate bpf maps
-> - find sockmap
-> - do equivalent of sock_map_progs(), but open coded inside bpf prog
-> - read progs, print them.
+> You can use the following command inside the namespace to
+> get the dev number and inode number.
+>
 
-That's similar to the second  way I proposed above.
-The trouble is it may be too heavy to iterate the target objects, for
-example, there may be thousands of cgroups on a single host, and if we
-want to know which cgroup is attached by a bpf prog we have to iterate
-all the cgroups until find it.
-But it seems there is no better choice.
-Anyway thanks for the advice.
+Thanks Yonghong, this just remind me to look the stat syscall and it
+also contains the device info.
 
--- 
-Thanks
-Yafang
+
+
+> $ stat -L /proc/self/ns/pid
+>    File: /proc/self/ns/pid
+>    Size: 0               Blocks: 0          IO Block: 4096   regular
+> empty file
+> Device: 4h/4d   Inode: 4026531836  Links: 1
+> Access: (0444/-r--r--r--)  Uid: (    0/    root)   Gid: (    0/    root)
+> Access: 2022-02-21 22:22:48.782383342 -0800
+> Modify: 2022-02-21 22:22:48.782383342 -0800
+> Change: 2022-02-21 22:22:48.782383342 -0800
+>   Birth: -
+>
+>
+> >
+> > Thanks,
+> > Li Qiang
