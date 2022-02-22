@@ -2,171 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C64414BFC9B
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 16:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 969D44BFDF6
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 17:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbiBVPbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 10:31:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        id S233867AbiBVQAY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 11:00:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233469AbiBVPbM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 10:31:12 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBADB163041
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:30:45 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c0fe:4675:4cef:99a5])
-        by baptiste.telenet-ops.be with bizsmtp
-        id yFWe260014Plfy301FWeNn; Tue, 22 Feb 2022 16:30:43 +0100
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1nMX7d-001Yw6-D0; Tue, 22 Feb 2022 16:30:37 +0100
-Date:   Tue, 22 Feb 2022 16:30:37 +0100 (CET)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-X-X-Sender: geert@ramsan.of.borg
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-cc:     Marek Szyprowski <m.szyprowski@samsung.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>,
-        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH net-next v3 2/3] net: dev: Makes sure netif_rx() can be
- invoked in any context.
-In-Reply-To: <da6abfe2-dafd-4aa1-adca-472137423ba4@samsung.com>
-Message-ID: <alpine.DEB.2.22.394.2202221622570.372449@ramsan.of.borg>
-References: <20220211233839.2280731-1-bigeasy@linutronix.de>        <20220211233839.2280731-3-bigeasy@linutronix.de>        <CGME20220216085613eucas1p1d33aca0243a3671ed0798055fc65dc54@eucas1p1.samsung.com> <da6abfe2-dafd-4aa1-adca-472137423ba4@samsung.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        with ESMTP id S233860AbiBVQAT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 11:00:19 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEBDBD8876
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:59:53 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id cp23-20020a17090afb9700b001bbfe0fbe94so3103326pjb.3
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=qSk871QKHM1Ie3Z0lSVMx7QpeNYqXYeUnwkrnigCfVQ=;
+        b=prkgIL8Pa6JY7kGVgVN9ImP+qcI9xvy+Ru4WZOFHIEIIKxifp+Xz5O75NKOa4jKnhf
+         z/aElVJPdB8VKgltKQmQgUKfGXqYmmPh8UhYlkuWt5TBbSRz0r1JfNbvX4NJDynOBUk9
+         ZnMSJyqUmAU3IcE1TX2QPehZ1F0YCf89vNDY2bWxprh08Z3jlg5kzeC42Jzr1Hm9syYO
+         0Kr53kftpgPqs7POZXi+3mC/Nm3zEEBR5V7FAarw5B7CZ2QxVKFifOsxMBh0vGkItzwX
+         3T6xKUMOcRu4tinPUrCGWF3MRZV10uZC5Th+ih2K7d0LkF3zd8iSLt8L54PQpBmjtx05
+         L8Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=qSk871QKHM1Ie3Z0lSVMx7QpeNYqXYeUnwkrnigCfVQ=;
+        b=5ybqn10T9TZpN+/XdpOsrco6wN6e3Fc1HkeiM9fdXcjoR8m33don8d518MfNKiEfCT
+         Eo6LIrijA12btZMUvd1ECEgjP9fG58F6N9vOvVGfmFATsfgjvsmbLNz1sAZyq3bL/hYB
+         5U0WKFSgRH5hzEWh+ozCb8tX/IZCL4QqZDAI1E3OFipcQIV8SxOsq74y75iHfklmlWEw
+         geqEk4VNTSOtTqYPLrArQbVEPo4f9xhCs/+TKoBQym3TXF+5IR976SxDhGR1xqUBZSgb
+         a7WXoCYY0cq2W1MP0rpULcKCThFcKrEXo/y9kKbxtgnPfV1vpjKJ6YhTVPlrhPVYLXm5
+         rILw==
+X-Gm-Message-State: AOAM533xU+6oawWQFnNYbZneu0a8jlh4VsCnlGbhsRZFHVpkP3JABIPJ
+        nvSn8XZq/sEIil6DZzbewbQ=
+X-Google-Smtp-Source: ABdhPJx1sfo193WIVNEqM9BmRY7g9mNMflyrWagvGIpEJaoWKbgxb0zwpL1jvWdHuJIdDEgNn7J17Q==
+X-Received: by 2002:a17:902:bd47:b0:14d:a8b7:236 with SMTP id b7-20020a170902bd4700b0014da8b70236mr23817849plx.20.1645545593408;
+        Tue, 22 Feb 2022 07:59:53 -0800 (PST)
+Received: from [192.168.0.120] ([121.35.100.98])
+        by smtp.gmail.com with ESMTPSA id lb18sm3076694pjb.42.2022.02.22.07.59.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Feb 2022 07:59:53 -0800 (PST)
+Message-ID: <8712d13d-2b3a-386c-74ac-1ce9cccd125b@gmail.com>
+Date:   Tue, 22 Feb 2022 23:59:47 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-147414761-1645543837=:372449"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH bpf-next v3 1/1] bpftool: bpf skeletons assert type sizes
+Content-Language: en-US
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <cover.1644970147.git.delyank@fb.com>
+ <b73550a69ea8c02fd93c862f9cfe38f7e1813e7a.1644970147.git.delyank@fb.com>
+ <CAEf4BzahTxY+djRkD6cjbGwkv_oevshpN-OpRMdYQ2P0_a1dOA@mail.gmail.com>
+From:   Hengqi Chen <hengqi.chen@gmail.com>
+In-Reply-To: <CAEf4BzahTxY+djRkD6cjbGwkv_oevshpN-OpRMdYQ2P0_a1dOA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-147414761-1645543837=:372449
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8BIT
 
- 	Hi Sebastian,
-
-On Wed, 16 Feb 2022, Marek Szyprowski wrote:
-> On 12.02.2022 00:38, Sebastian Andrzej Siewior wrote:
->> Dave suggested a while ago (eleven years by now) "Let's make netif_rx()
->> work in all contexts and get rid of netif_rx_ni()". Eric agreed and
->> pointed out that modern devices should use netif_receive_skb() to avoid
->> the overhead.
->> In the meantime someone added another variant, netif_rx_any_context(),
->> which behaves as suggested.
+On 2/16/22 09:19, Andrii Nakryiko wrote:
+> On Tue, Feb 15, 2022 at 4:12 PM Delyan Kratunov <delyank@fb.com> wrote:
 >>
->> netif_rx() must be invoked with disabled bottom halves to ensure that
->> pending softirqs, which were raised within the function, are handled.
->> netif_rx_ni() can be invoked only from process context (bottom halves
->> must be enabled) because the function handles pending softirqs without
->> checking if bottom halves were disabled or not.
->> netif_rx_any_context() invokes on the former functions by checking
->> in_interrupts().
+>> When emitting type declarations in skeletons, bpftool will now also emit
+>> static assertions on the size of the data/bss/rodata/etc fields. This
+>> ensures that in situations where userspace and kernel types have the same
+>> name but differ in size we do not silently produce incorrect results but
+>> instead break the build.
 >>
->> netif_rx() could be taught to handle both cases (disabled and enabled
->> bottom halves) by simply disabling bottom halves while invoking
->> netif_rx_internal(). The local_bh_enable() invocation will then invoke
->> pending softirqs only if the BH-disable counter drops to zero.
+>> This was reported in [1] and as expected the repro in [2] fails to build
+>> on the new size assert after this change.
 >>
->> Eric is concerned about the overhead of BH-disable+enable especially in
->> regard to the loopback driver. As critical as this driver is, it will
->> receive a shortcut to avoid the additional overhead which is not needed.
+>>   [1]: Closes: https://github.com/libbpf/libbpf/issues/433
+>>   [2]: https://github.com/fuweid/iovisor-bcc-pr-3777
 >>
->> Add a local_bh_disable() section in netif_rx() to ensure softirqs are
->> handled if needed.
->> Provide __netif_rx() which does not disable BH and has a lockdep assert
->> to ensure that interrupts are disabled. Use this shortcut in the
->> loopback driver and in drivers/net/*.c.
->> Make netif_rx_ni() and netif_rx_any_context() invoke netif_rx() so they
->> can be removed once they are no more users left.
->>
->> Link: https://lkml.kernel.org/r/20100415.020246.218622820.davem@davemloft.net
->> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->> Reviewed-by: Eric Dumazet <edumazet@google.com>
->> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
->
-> This patch landed in linux-next 20220215 as commit baebdf48c360 ("net:
-> dev: Makes sure netif_rx() can be invoked in any context."). I found
-> that it triggers the following warning on my test systems with USB CDC
-> ethernet gadget:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 876 at kernel/softirq.c:308
-> __local_bh_disable_ip+0xbc/0xc0
+>> Signed-off-by: Delyan Kratunov <delyank@fb.com>
+>> ---
+> 
+> LGTM with a trivial styling nits. But this doesn't apply cleanly to
+> bpf-next (see [0]). Can you please rebase and resend. Also for
+> single-patch submissions we don't require cover letter, to please just
+> put all the description into one patch without cover letter.
+> 
+>   [0] https://github.com/kernel-patches/bpf/pull/2563#issuecomment-1040929960
+> 
+>>  tools/bpf/bpftool/gen.c | 134 +++++++++++++++++++++++++++++++++-------
+>>  1 file changed, 112 insertions(+), 22 deletions(-)
+> 
+> [...]
+> 
+>> +
+>> +       bpf_object__for_each_map(map, obj) {
+>> +               if (!bpf_map__is_internal(map))
+>> +                       continue;
+>> +               if (!(bpf_map__map_flags(map) & BPF_F_MMAPABLE))
+>> +                       continue;
+>> +               if (!get_map_ident(map, map_ident, sizeof(map_ident)))
+>> +                       continue;
+>> +
+>> +               sec = find_type_for_map(obj, map_ident);
+>> +
+> 
+> nit: unnecessary empty line between assignment and "error checking"
+> 
+>> +               if (!sec) {
+>> +                       /* best effort, couldn't find the type for this map */
+>> +                       continue;
+>> +               }
+>> +
+>> +               sec_var = btf_var_secinfos(sec);
+>> +               vlen =  btf_vlen(sec);
+>> +
+>> +               for (i = 0; i < vlen; i++, sec_var++) {
+>> +                       const struct btf_type *var = btf__type_by_id(btf, sec_var->type);
+>> +                       const char *var_name = btf__name_by_offset(btf, var->name_off);
+>> +                       __u32 var_type_id = var->type;
+>> +                       __s64 var_size = btf__resolve_size(btf, var_type_id);
+>> +
+>> +                       if (var_size < 0)
+>> +                               continue;
+>> +
+>> +                       /* static variables are not exposed through BPF skeleton */
+>> +                       if (btf_var(var)->linkage == BTF_VAR_STATIC)
+>> +                               continue;
+>> +
+>> +                       var_ident[0] = '\0';
+>> +                       strncat(var_ident, var_name, sizeof(var_ident) - 1);
+>> +                       sanitize_identifier(var_ident);
+>> +
+>> +                       printf("\t_Static_assert(");
+>> +                       printf("sizeof(s->%1$s->%2$s) == %3$lld, ",
+>> +                              map_ident, var_ident, var_size);
+>> +                       printf("\"unexpected size of '%1$s'\");\n", var_ident);
+> 
+> nit: I'd keep this as one printf, it makes it a bit easier to follow.
+> 
+>> +               }
+>> +       }
+> 
+> [...]
 
-Similar on rbtx4927 (CONFIG_NE2000=y), where I'm getting a slightly
-different warning:
+Feel free to add:
 
-     Sending DHCP requests .
-     ------------[ cut here ]------------
-     WARNING: CPU: 0 PID: 0 at kernel/softirq.c:362 __local_bh_enable_ip+0x4c/0xc0
-     Modules linked in:
-     CPU: 0 PID: 0 Comm: swapper Not tainted 5.17.0-rc5-rbtx4927-00770-ga8ca72253967 #300
-     Stack : 9800000000b80800 0000000000000008 0000000000000000 a5ba96d4be38c8b0
- 	    0000000000000000 9800000000813c10 ffffffff80468188 9800000000813a90
- 	    0000000000000001 9800000000813ab0 0000000000000000 20746f4e20726570
- 	    0000000000000010 ffffffff802c1400 ffffffff8054ce76 722d302e37312e35
- 	    0000000000000000 0000000000000000 0000000000000009 0000000000000000
- 	    98000000008bfd40 000000000000004c 0000000006020283 0000000006020287
- 	    0000000000000000 0000000000000000 0000000000000000 ffffffff80540000
- 	    ffffffff804b8000 9800000000813c10 9800000000b80800 ffffffff801238bc
- 	    0000000000000000 ffffffff80470000 0000000000000000 0000000000000009
- 	    0000000000000000 ffffffff80108738 0000000000000000 ffffffff801238bc
- 	    ...
-     Call Trace:
-     [<ffffffff80108738>] show_stack+0x68/0xf4
-     [<ffffffff801238bc>] __warn+0xc0/0xf0
-     [<ffffffff80123964>] warn_slowpath_fmt+0x78/0x94
-     [<ffffffff80126408>] __local_bh_enable_ip+0x4c/0xc0
-     [<ffffffff80341754>] netif_rx+0x20/0x30
-     [<ffffffff8031d870>] ei_receive+0x2f0/0x36c
-     [<ffffffff8031e624>] eip_interrupt+0x2dc/0x36c
-     [<ffffffff8014f488>] __handle_irq_event_percpu+0x8c/0x134
-     [<ffffffff8014f548>] handle_irq_event_percpu+0x18/0x60
-     [<ffffffff8014f5c8>] handle_irq_event+0x38/0x60
-     [<ffffffff80152008>] handle_level_irq+0x80/0xbc
-     [<ffffffff8014eecc>] handle_irq_desc+0x24/0x3c
-     [<ffffffff804014b8>] do_IRQ+0x18/0x24
-     [<ffffffff801031b0>] handle_int+0x148/0x154
-     [<ffffffff80104e18>] arch_local_irq_enable+0x18/0x24
-     [<ffffffff8040148c>] default_idle_call+0x2c/0x3c
-     [<ffffffff801445d0>] do_idle+0xcc/0x104
-     [<ffffffff80144620>] cpu_startup_entry+0x18/0x20
-     [<ffffffff80508e34>] start_kernel+0x6f4/0x738
-
-     ---[ end trace 0000000000000000 ]---
-     , OK
-     IP-Config: Got DHCP answer from a.b.c.d, my address is a.b.c.e
-     IP-Config: Complete:
-
-Reverting baebdf48c3600807 ("net: dev: Makes sure netif_rx() can be
-invoked in any context.") fixes the issue for me.
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
---8323329-147414761-1645543837=:372449--
+Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
+Tested-by: Hengqi Chen <hengqi.chen@gmail.com>
