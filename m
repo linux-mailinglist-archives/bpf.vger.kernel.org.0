@@ -2,72 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E424BFC90
-	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 16:28:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64414BFC9B
+	for <lists+bpf@lfdr.de>; Tue, 22 Feb 2022 16:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbiBVP27 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 10:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49156 "EHLO
+        id S231628AbiBVPbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 10:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231908AbiBVP25 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 10:28:57 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B02151D14
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:28:31 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id o9so20165631ljq.4
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:28:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=5Camp1f5YD6S5y4s958IvGmaEcdbiPH6xGBLOsrZkMc=;
-        b=CRd4Fp52psQ+4Ye6htpIi/lovPHL8wdHLU4HQPPSqwFhyJSB6SjMXArOxVhP6e1Mm2
-         yYSDf6RO+RTXwqXd+6AIcKVeI4Unhw+5r8GJefvDElPa16YGQTyJd1Qo8i88mUKbCGsq
-         wpZ4npyH2dfeVmYnX0PRqew9K+vAbySsYiI28=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=5Camp1f5YD6S5y4s958IvGmaEcdbiPH6xGBLOsrZkMc=;
-        b=ATfEPLEENpN5tpQndXHoY1GTphCbNjy9EsQ1JBMi80vy9QGVPJS26TpiTiIkdnAIDF
-         WAadj5ySh0Eus4VqF9lLJIbL3fcGiO0x183eUK9EbY1DvQRQv+bNG+yrwE8tYcJojbam
-         iUEPoFTxJCa+66RitVbi2JoyFtCLHr4nkgmYtpBqz7Uq/jbOV3Xf5M3faoIjfkm+WGHI
-         tDOWlDUHfjo36AjWDv4/G5QascYcwofhQ5z249xFD1HzJW+h+etFCxdKPqSA9e54Dsl0
-         yMRNngB2pcPoBAEtMfhepz14vPzdlZxxfZqfGaPmVActb/mEe8JWaNbnPU/jC0TfxcQ8
-         s7Zw==
-X-Gm-Message-State: AOAM531CdWL7ElA9qUyqZPiKisM1PdIlVH6HPOmZDhVT9iiSrEQeZBh7
-        UmAGjAcgrANJo+E5DMuuwDQj6Q==
-X-Google-Smtp-Source: ABdhPJwZgA8QLLN8UuoQ3Ut5Enywy/ypQyozI0AsaVNju9yKNZKQihq3bAU9bdM6jc9/SLwdIYP+Ng==
-X-Received: by 2002:a2e:8746:0:b0:246:2930:53f7 with SMTP id q6-20020a2e8746000000b00246293053f7mr14055009ljj.0.1645543710016;
-        Tue, 22 Feb 2022 07:28:30 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id a9sm1403629lfb.191.2022.02.22.07.28.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 07:28:29 -0800 (PST)
-References: <20220221180358.169101-1-jakub@cloudflare.com>
- <8ff3f2ff692acaffe9494007a3431c269372f822.camel@linux.ibm.com>
- <88a4927eaf3ca385ce9a7406ef23062a39eb1734.camel@linux.ibm.com>
- <0eeac90306f03b4fdb2b028ffb509e4d20121aec.camel@linux.ibm.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        with ESMTP id S233469AbiBVPbM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 10:31:12 -0500
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBADB163041
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 07:30:45 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:c0fe:4675:4cef:99a5])
+        by baptiste.telenet-ops.be with bizsmtp
+        id yFWe260014Plfy301FWeNn; Tue, 22 Feb 2022 16:30:43 +0100
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nMX7d-001Yw6-D0; Tue, 22 Feb 2022 16:30:37 +0100
+Date:   Tue, 22 Feb 2022 16:30:37 +0100 (CET)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+cc:     Marek Szyprowski <m.szyprowski@samsung.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix implementation-defined
- behavior in sk_lookup test
-Date:   Tue, 22 Feb 2022 15:53:00 +0100
-In-reply-to: <0eeac90306f03b4fdb2b028ffb509e4d20121aec.camel@linux.ibm.com>
-Message-ID: <87fsoakjj6.fsf@cloudflare.com>
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH net-next v3 2/3] net: dev: Makes sure netif_rx() can be
+ invoked in any context.
+In-Reply-To: <da6abfe2-dafd-4aa1-adca-472137423ba4@samsung.com>
+Message-ID: <alpine.DEB.2.22.394.2202221622570.372449@ramsan.of.borg>
+References: <20220211233839.2280731-1-bigeasy@linutronix.de>        <20220211233839.2280731-3-bigeasy@linutronix.de>        <CGME20220216085613eucas1p1d33aca0243a3671ed0798055fc65dc54@eucas1p1.samsung.com> <da6abfe2-dafd-4aa1-adca-472137423ba4@samsung.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/mixed; boundary="8323329-147414761-1645543837=:372449"
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,171 +54,119 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 03:22 AM +01, Ilya Leoshkevich wrote:
-> On Tue, 2022-02-22 at 01:43 +0100, Ilya Leoshkevich wrote:
->> On Mon, 2022-02-21 at 22:39 +0100, Ilya Leoshkevich wrote:
->> > On Mon, 2022-02-21 at 19:03 +0100, Jakub Sitnicki wrote:
->> > > Shifting 16-bit type by 16 bits is implementation-defined for BPF
->> > > programs.
->> > > Don't rely on it in case it is causing the test failures we are
->> > > seeing on
->> > > s390x z15 target.
->> > >=20
->> > > Fixes: 2ed0dc5937d3 ("selftests/bpf: Cover 4-byte load from
->> > > remote_port in bpf_sk_lookup")
->> > > Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
->> > > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> > > ---
->> > >=20
->> > > I don't have a dev env for s390x/z15 set up yet, so can't
->> > > definitely
->> > > confirm the fix.
->> > > That said, it seems worth fixing either way.
->> > >=20
->> > > =C2=A0tools/testing/selftests/bpf/progs/test_sk_lookup.c | 3 ++-
->> > > =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
->> > >=20
->> > > diff --git a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > index bf5b7caefdd0..7d47276a8964 100644
->> > > --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
->> > > @@ -65,6 +65,7 @@ static const __u32 KEY_SERVER_A =3D SERVER_A;
->> > > =C2=A0static const __u32 KEY_SERVER_B =3D SERVER_B;
->> > > =C2=A0
->> > > =C2=A0static const __u16 SRC_PORT =3D bpf_htons(8008);
->> > > +static const __u32 SRC_PORT_U32 =3D bpf_htonl(8008U << 16);
->> > > =C2=A0static const __u32 SRC_IP4 =3D IP4(127, 0, 0, 2);
->> > > =C2=A0static const __u32 SRC_IP6[] =3D IP6(0xfd000000, 0x0, 0x0,
->> > > 0x00000002);
->> > > =C2=A0
->> > > @@ -421,7 +422,7 @@ int ctx_narrow_access(struct bpf_sk_lookup
->> > > *ctx)
->> > > =C2=A0
->> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Load from remote_=
-port field with zero padding
->> > > (backward
->> > > compatibility) */
->> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0val_u32 =3D *(__u32 =
-*)&ctx->remote_port;
->> > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (val_u32 !=3D bpf_hton=
-l(bpf_ntohs(SRC_PORT) << 16))
->> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (val_u32 !=3D SRC_PORT=
-_U32)
->> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return SK_DROP;
->> > > =C2=A0
->> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Narrow loads from=
- local_port field. Expect DST_PORT.
->> > > */
->> >=20
->> > Unfortunately this doesn't help with the s390 problem.
->> > I'll try to debug this.
->>=20
->> I have to admit I have a hard time wrapping my head around the
->> requirements here.
->>=20
->> Based on the pre-9a69e2b385f4 code, do I understand correctly that
->> for the following input
->>=20
->> Port:=C2=A0=C2=A0=C2=A0=C2=A0 0x1f48
->> SRC_PORT: 0x481f
->>=20
->> we expect the following results for different kinds of loads:
->>=20
->> Size=C2=A0=C2=A0 Offset=C2=A0 LE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BE
->> BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1f=C2=A0=C2=A0=C2=A0=
- 0
->> BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x48=C2=A0=C2=A0=C2=A0=
- 0
->> BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 0x48
->> BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 0x1f
->> BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0
->> BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 0x481f
->> BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0x481f
->>=20
->> and this is guaranteed by the struct bpf_sk_lookup ABI? Because then
->> it
->> looks as if 9a69e2b385f4 breaks it on big-endian as follows:
->>=20
->> Size=C2=A0=C2=A0 Offset=C2=A0 BE-9a69e2b385f4
->> BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x48
->> BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1f
->> BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f
->> BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0
->> BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f0000
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-147414761-1645543837=:372449
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+
+ 	Hi Sebastian,
+
+On Wed, 16 Feb 2022, Marek Szyprowski wrote:
+> On 12.02.2022 00:38, Sebastian Andrzej Siewior wrote:
+>> Dave suggested a while ago (eleven years by now) "Let's make netif_rx()
+>> work in all contexts and get rid of netif_rx_ni()". Eric agreed and
+>> pointed out that modern devices should use netif_receive_skb() to avoid
+>> the overhead.
+>> In the meantime someone added another variant, netif_rx_any_context(),
+>> which behaves as suggested.
+>>
+>> netif_rx() must be invoked with disabled bottom halves to ensure that
+>> pending softirqs, which were raised within the function, are handled.
+>> netif_rx_ni() can be invoked only from process context (bottom halves
+>> must be enabled) because the function handles pending softirqs without
+>> checking if bottom halves were disabled or not.
+>> netif_rx_any_context() invokes on the former functions by checking
+>> in_interrupts().
+>>
+>> netif_rx() could be taught to handle both cases (disabled and enabled
+>> bottom halves) by simply disabling bottom halves while invoking
+>> netif_rx_internal(). The local_bh_enable() invocation will then invoke
+>> pending softirqs only if the BH-disable counter drops to zero.
+>>
+>> Eric is concerned about the overhead of BH-disable+enable especially in
+>> regard to the loopback driver. As critical as this driver is, it will
+>> receive a shortcut to avoid the additional overhead which is not needed.
+>>
+>> Add a local_bh_disable() section in netif_rx() to ensure softirqs are
+>> handled if needed.
+>> Provide __netif_rx() which does not disable BH and has a lockdep assert
+>> to ensure that interrupts are disabled. Use this shortcut in the
+>> loopback driver and in drivers/net/*.c.
+>> Make netif_rx_ni() and netif_rx_any_context() invoke netif_rx() so they
+>> can be removed once they are no more users left.
+>>
+>> Link: https://lkml.kernel.org/r/20100415.020246.218622820.davem@davemloft.net
+>> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+>> Reviewed-by: Eric Dumazet <edumazet@google.com>
+>> Reviewed-by: Toke Høiland-Jørgensen <toke@redhat.com>
 >
-> Sorry, I worded this incorrectly: 9a69e2b385f4 did not change the
-> kernel behavior, the ABI is not broken and the old compiled code should
-> continue to work.
-> What the second table really shows are what the results should be
-> according to the 9a69e2b385f4 struct bpf_sk_lookup definition, which I
-> still think is broken on big-endian and needs to be adjusted to match
-> the ABI.
+> This patch landed in linux-next 20220215 as commit baebdf48c360 ("net:
+> dev: Makes sure netif_rx() can be invoked in any context."). I found
+> that it triggers the following warning on my test systems with USB CDC
+> ethernet gadget:
 >
-> I noticed one other strange thing in the meantime: loads from
-> *(__u32 *)&ctx->remote_port, *(__u16 *)&ctx->remote_port and
-> *((__u16 *)&ctx->remote_port + 1) all produce 8008 on s390, which is
-> clearly inconsistent. It looks as if convert_ctx_accesses() needs to be
-> adjusted to handle combinations like ctx_field_size =3D=3D 4 && size =3D=
-=3D 2
-> && target_size =3D=3D 2. I will continue with this tomorrow.
->
->> Or is the old behavior a bug and this new one is desirable?
->> 9a69e2b385f4 has no Fixes: tag, so I assume that's the former :-(
->>=20
->> In which case, would it make sense to fix it by swapping remote_port
->> and :16 in bpf_sk_lookup on big-endian?
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 876 at kernel/softirq.c:308
+> __local_bh_disable_ip+0xbc/0xc0
 
-Thanks for looking into it.
+Similar on rbtx4927 (CONFIG_NE2000=y), where I'm getting a slightly
+different warning:
 
-When it comes to requirements, my intention was to keep the same
-behavior as before the split up of the remote_port field in 9a69e2b385f4
-("bpf: Make remote_port field in struct bpf_sk_lookup 16-bit wide").
+     Sending DHCP requests .
+     ------------[ cut here ]------------
+     WARNING: CPU: 0 PID: 0 at kernel/softirq.c:362 __local_bh_enable_ip+0x4c/0xc0
+     Modules linked in:
+     CPU: 0 PID: 0 Comm: swapper Not tainted 5.17.0-rc5-rbtx4927-00770-ga8ca72253967 #300
+     Stack : 9800000000b80800 0000000000000008 0000000000000000 a5ba96d4be38c8b0
+ 	    0000000000000000 9800000000813c10 ffffffff80468188 9800000000813a90
+ 	    0000000000000001 9800000000813ab0 0000000000000000 20746f4e20726570
+ 	    0000000000000010 ffffffff802c1400 ffffffff8054ce76 722d302e37312e35
+ 	    0000000000000000 0000000000000000 0000000000000009 0000000000000000
+ 	    98000000008bfd40 000000000000004c 0000000006020283 0000000006020287
+ 	    0000000000000000 0000000000000000 0000000000000000 ffffffff80540000
+ 	    ffffffff804b8000 9800000000813c10 9800000000b80800 ffffffff801238bc
+ 	    0000000000000000 ffffffff80470000 0000000000000000 0000000000000009
+ 	    0000000000000000 ffffffff80108738 0000000000000000 ffffffff801238bc
+ 	    ...
+     Call Trace:
+     [<ffffffff80108738>] show_stack+0x68/0xf4
+     [<ffffffff801238bc>] __warn+0xc0/0xf0
+     [<ffffffff80123964>] warn_slowpath_fmt+0x78/0x94
+     [<ffffffff80126408>] __local_bh_enable_ip+0x4c/0xc0
+     [<ffffffff80341754>] netif_rx+0x20/0x30
+     [<ffffffff8031d870>] ei_receive+0x2f0/0x36c
+     [<ffffffff8031e624>] eip_interrupt+0x2dc/0x36c
+     [<ffffffff8014f488>] __handle_irq_event_percpu+0x8c/0x134
+     [<ffffffff8014f548>] handle_irq_event_percpu+0x18/0x60
+     [<ffffffff8014f5c8>] handle_irq_event+0x38/0x60
+     [<ffffffff80152008>] handle_level_irq+0x80/0xbc
+     [<ffffffff8014eecc>] handle_irq_desc+0x24/0x3c
+     [<ffffffff804014b8>] do_IRQ+0x18/0x24
+     [<ffffffff801031b0>] handle_int+0x148/0x154
+     [<ffffffff80104e18>] arch_local_irq_enable+0x18/0x24
+     [<ffffffff8040148c>] default_idle_call+0x2c/0x3c
+     [<ffffffff801445d0>] do_idle+0xcc/0x104
+     [<ffffffff80144620>] cpu_startup_entry+0x18/0x20
+     [<ffffffff80508e34>] start_kernel+0x6f4/0x738
 
-9a69e2b385f4 was supposed to be a formality, after a similar change in
-4421a582718a ("bpf: Make dst_port field in struct bpf_sock 16-bit
-wide"), which went in earlier.
+     ---[ end trace 0000000000000000 ]---
+     , OK
+     IP-Config: Got DHCP answer from a.b.c.d, my address is a.b.c.e
+     IP-Config: Complete:
 
-In 4421a582718a I've provided a bit more context. I understand that the
-remote_port value, even before the type changed from u32 to u16,
-appeared to the BPF program as if laid out in memory like so:
+Reverting baebdf48c3600807 ("net: dev: Makes sure netif_rx() can be
+invoked in any context.") fixes the issue for me.
 
-      offsetof(struct bpf_sk_lookup, remote_port) +0  <port MSB>
-                                                  +1  <port LSB>
-                                                  +2  0x00
-                                                  +3  0x00
+Gr{oetje,eeting}s,
 
-Translating it to your handy table format, I expect should result in
-loads as so if port is 8008 =3D 0x1f48:
+ 						Geert
 
-      Size=C2=A0=C2=A0 Offset=C2=A0 LE=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BE
-      BPF_B=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x1f=C2=A0=C2=A0=C2=
-=A0 0x1f
-      BPF_B=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x48=C2=A0=C2=A0=C2=
-=A0 0x48
-      BPF_B=C2=A0 2=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0
-      BPF_B=C2=A0 3=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0
-      BPF_H=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0x1f48
-      BPF_H=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0
-      BPF_W=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0x481f=C2=A0 0x1f48=
-0000
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-But since the fix does not work, there must be a mistake somewhere in my
-reasoning.
-
-I expect I should be able to get virtme for s390 working sometime this
-week to check my math. I've seen your collegue had some luck with it
-[1].
-
-Looking forward to your findings.
-
-[1] https://github.com/cilium/ebpf/issues/86#issuecomment-623945549
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
+--8323329-147414761-1645543837=:372449--
