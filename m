@@ -2,128 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E4F4C1F6E
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 00:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4024C1F77
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 00:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243674AbiBWXQK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Feb 2022 18:16:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34040 "EHLO
+        id S244755AbiBWXQj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Feb 2022 18:16:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236982AbiBWXQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Feb 2022 18:16:09 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2351357150;
-        Wed, 23 Feb 2022 15:15:41 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id w7so728785ioj.5;
-        Wed, 23 Feb 2022 15:15:41 -0800 (PST)
+        with ESMTP id S242528AbiBWXQi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Feb 2022 18:16:38 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E5AD58390
+        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 15:16:09 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2d6bca75aa2so5304347b3.18
+        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 15:16:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=P25Zfn5c3BtqYaoA6/wRj29feqJY0Zz0Nev1IhUk9Dc=;
-        b=HfHAa2uKg47YCKjW0CQBrlojE22jxt/8JNZubtz/35jfAp6QaO8wnHBFEPeo2fSHkK
-         SlW5+ZEyXEaPUU8AlTeR+Eaixz0FpST78wWFjKrpAKpQ9O+dAFJFZ9RzEtHzFygvvCJ+
-         Ypwhe6dTmaxzM8AXonk9ymSZPpsyYGxoLUMTJd68Yq5ahc5pSE4No3w0ybWVdkDpZ46r
-         G4Rubvbu3Z9xV+KKf58+xb8TeYWX/97dGaGioNDNPx92V7kCUeBFObmLNJeRTQsaMNUK
-         25JhzDK+vd5H7pthS2OpoR/ffvFhd4p3UthPI131UoaRCQ9esrbZOUYHrkoJNG2024rk
-         eS1g==
+        bh=BhJUsoTK5aV5hMXGrbNckKjnY5JAB55Pq/ekvjk0Clw=;
+        b=Wx79eJ0cagmUtytYmD+wFDQpVmtPNTNGkehmvpo4FpB/mI9qc9+PW/iD+6d1oU32bm
+         bghAq2mffsQJarF80M5rq4CwlbzA3n9mDcHuk78DjliwqSLBvxDHnIGyPI5+nuif/cAe
+         CS4Hf3HolDnznBSVTAaQulpYp1MHm3gFhCdEG/YRSozm2JGK0EkfL7YEV7lsskDTn0MP
+         tkUoZuA2HV/qgKlyZyCA2uPdHW1cOcUPpd/XX9Dr4xIaKaifCS1v6XmmlyBJ8oUFoXYi
+         sJMbDKUEK/V9NWsDPxTDvR1XPCPNIb4xUk1eZW4OwLzq2mUYYgb1jJxGEmVDoi++7k2K
+         nB4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P25Zfn5c3BtqYaoA6/wRj29feqJY0Zz0Nev1IhUk9Dc=;
-        b=0r0zHnATpRnEAJre4YWhRGz3getxQq+71bFd8emRhnGnBHferDdgzOrDQWFT88o8bC
-         +fmgyWiOI0DdTkWRBL/rVg95iopHBbSaHbsoKjIQBIAbyff6x33m5Du/LEusNP9VDcTh
-         RgZoj4yPvYSHqFySW7faS2WmzhZavEApjqPjNrrvNJYYa9XEuspUZhQH+VvVVHPxfVaZ
-         Newwq510RnTuY4IZ2PGQANPa34LjKETkxO8xI4QXgLPcGNa4c9G9UjNoNOgONtsWq2J/
-         X7eo+wpebBOUFc5cIeaXADr5W1jyamMcBt0T22HJPfnuZSpd3WjivLkGkeSuZmqdOmaR
-         exnw==
-X-Gm-Message-State: AOAM5327tVoGUrquZNT+Er/7OUgVzQlkuJ0Ok9a8w5MGtLG9pMCJnDtj
-        R31wESD69wCZehdcn4KVDt5899RTNs6YzpnXTR0=
-X-Google-Smtp-Source: ABdhPJyH0mfb4p1AXEHyZ7nFOjHrPR/3RLDwloDCPaFaTjCrBVgRJexaQLr2VbGg+iObXNrg/nG3gbCUia8PAMp8V7w=
-X-Received: by 2002:a05:6602:3c6:b0:63d:cac9:bd35 with SMTP id
- g6-20020a05660203c600b0063dcac9bd35mr8474iov.144.1645658140535; Wed, 23 Feb
- 2022 15:15:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20220222204236.2192513-1-stijn@linux-ipv6.be> <CAPhsuW6WgjL_atKCivbk5iMNBFHuSGcjAC0tdZYag2fOesUBKA@mail.gmail.com>
-In-Reply-To: <CAPhsuW6WgjL_atKCivbk5iMNBFHuSGcjAC0tdZYag2fOesUBKA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Feb 2022 15:15:29 -0800
-Message-ID: <CAEf4BzYuk2Rur-pae7gbuXSb=ayJ0fUREStdWyorWgd_q1D9zQ@mail.gmail.com>
-Subject: Re: [PATCH] libbpf: fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
-To:     Song Liu <song@kernel.org>
-Cc:     Stijn Tintel <stijn@linux-ipv6.be>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=BhJUsoTK5aV5hMXGrbNckKjnY5JAB55Pq/ekvjk0Clw=;
+        b=Ik987bTUAVAuvHdVsc4zoaddXn7NfB0dUmYSDH2sB0DwT6eeDfL1F9/KbWglFpD/eU
+         xDenn7yutQoe52+I7vgEpQare+Nj6mjasAzYIxT03gJYql4BLsOsD2DOb8t+R2iBrBtn
+         /GJNEOC/bgwBnwXX4HilpgKSy39s2Orlk99XEJ34SOtthIb4szjxwEV2yZUubkZOtFhP
+         HsBa7JJS5lfVBjXNOgV1DYaK4b57nH9IvCrLcmCduuIh9vRUwgjcDVeuAj6wRsa3dKfR
+         EyOPYMVPMWnfoatAbXF+Jj5r/H4bWBQtIn1CcKSnrpqV+1pQDEXTVMf+BsNEQ8mrTHii
+         KVzA==
+X-Gm-Message-State: AOAM532h6a9XAWen2XeIyXl8GCgfo2pyhPiloioK1NjPvsc/xgbjHoy9
+        Y4YL9nNp2hO7BvCXQkILbBk3SXibvRPh
+X-Google-Smtp-Source: ABdhPJyjbkOhm+d3Qo5rFFcxETx/mv1oPTm67GgShybJP9Gq4GEZRAfpRd8aZXD6Scb4/ZrTVK9r79DI0beC
+X-Received: from gthelen2.svl.corp.google.com ([2620:15c:2cd:202:26ef:3969:d6e5:31f])
+ (user=gthelen job=sendgmr) by 2002:a5b:342:0:b0:624:9b29:979f with SMTP id
+ q2-20020a5b0342000000b006249b29979fmr39735ybp.599.1645658168592; Wed, 23 Feb
+ 2022 15:16:08 -0800 (PST)
+Date:   Wed, 23 Feb 2022 15:16:06 -0800
+In-Reply-To: <CAEf4BzbjxwEukaZfW9qCLwXeyS32WeNQ_8MvUqRd-JA7cZzuGw@mail.gmail.com>
+Message-Id: <xr9335k918eh.fsf@gthelen2.svl.corp.google.com>
+Mime-Version: 1.0
+References: <20220223222002.1085114-1-haoluo@google.com> <CAEf4BzbjxwEukaZfW9qCLwXeyS32WeNQ_8MvUqRd-JA7cZzuGw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Cache the last valid build_id.
+From:   Greg Thelen <gthelen@google.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Blake Jones <blakejones@google.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 6:37 PM Song Liu <song@kernel.org> wrote:
->
-> On Tue, Feb 22, 2022 at 12:51 PM Stijn Tintel <stijn@linux-ipv6.be> wrote:
-> >
-> > When a BPF map of type BPF_MAP_TYPE_PERF_EVENT_ARRAY doesn't have the
-> > max_entries parameter set, this parameter will be set to the number of
-> > possible CPUs. Due to this, the map_is_reuse_compat function will return
-> > false, causing the following error when trying to reuse the map:
-> >
-> > libbpf: couldn't reuse pinned map at '/sys/fs/bpf/m_logging': parameter mismatch
-> >
-> > Fix this by checking against the number of possible CPUs if the
-> > max_entries parameter is not set in the map definition.
-> >
-> > Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
-> > Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
->
-> Acked-by: Song Liu <songliubraving@fb.com>
->
-> I think the following fix would be more future proof, but the patch
-> as-is is better for
-> stable backport? How about we add a follow up patch on top of current
-> patch to fix
-> def->max_entries once for all?
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-Keeping special logic for PERF_EVENT_ARRAY in one place is
-preferrable. With this, the changes in map_is_reuse_compat() shouldn't
-be necessary at all. Stijn, can you please send v2 with Song's
-proposed changes?
+> On Wed, Feb 23, 2022 at 2:20 PM Hao Luo <haoluo@google.com> wrote:
+>>
+>> For binaries that are statically linked, consecutive stack frames are
+>> likely to be in the same VMA and therefore have the same build id.
+>> As an optimization for this case, we can cache the previous frame's
+>> VMA, if the new frame has the same VMA as the previous one, reuse the
+>> previous one's build id. We are holding the MM locks as reader across
+>> the entire loop, so we don't need to worry about VMA going away.
+>>
+>> Tested through "stacktrace_build_id" and "stacktrace_build_id_nmi" in
+>> test_progs.
+>>
+>> Suggested-by: Greg Thelen <gthelen@google.com>
+>> Signed-off-by: Hao Luo <haoluo@google.com>
+>> ---
+>>  kernel/bpf/stackmap.c | 11 ++++++++++-
+>>  1 file changed, 10 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+>> index 22c8ae94e4c1..280b9198af27 100644
+>> --- a/kernel/bpf/stackmap.c
+>> +++ b/kernel/bpf/stackmap.c
+>> @@ -132,7 +132,8 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>>         int i;
+>>         struct mmap_unlock_irq_work *work = NULL;
+>>         bool irq_work_busy = bpf_mmap_unlock_get_irq_work(&work);
+>> -       struct vm_area_struct *vma;
+>> +       struct vm_area_struct *vma, *prev_vma = NULL;
+>> +       const char *prev_build_id;
+>>
+>>         /* If the irq_work is in use, fall back to report ips. Same
+>>          * fallback is used for kernel stack (!user) on a stackmap with
+>> @@ -151,6 +152,11 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>>
+>>         for (i = 0; i < trace_nr; i++) {
+>>                 vma = find_vma(current->mm, ips[i]);
+>
+> as a further optimization, shouldn't we first check if ips[i] is
+> within prev_vma and avoid rbtree walk altogether? Would this work:
+>
+> if (prev_vma && range_in_vma(prev_vma, ips[i])) {
+>    /* reuse build_id */
+> }
+> vma = find_vma(current->mm, ips[i]);
+>
+>
+> ?
 
->
-> Thanks,
-> Song
->
-> diff --git i/tools/lib/bpf/libbpf.c w/tools/lib/bpf/libbpf.c
-> index ad43b6ce825e..a1bc1c80bc69 100644
-> --- i/tools/lib/bpf/libbpf.c
-> +++ w/tools/lib/bpf/libbpf.c
-> @@ -4881,10 +4881,9 @@ static int bpf_object__create_map(struct
-> bpf_object *obj, struct bpf_map *map, b
->                         return nr_cpus;
->                 }
->                 pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
-> -               max_entries = nr_cpus;
-> -       } else {
-> -               max_entries = def->max_entries;
-> +               def->max_entries = nr_cpus;
->         }
-> +       max_entries = def->max_entries;
->
->         if (bpf_map__is_struct_ops(map))
->                 create_attr.btf_vmlinux_value_type_id =
-> map->btf_vmlinux_value_type_id;
+Yes, that's a nice addition. Good idea.
+
+>> +               if (vma && vma == prev_vma) {
+>> +                       memcpy(id_offs[i].build_id, prev_build_id,
+>> +                              BUILD_ID_SIZE_MAX);
+>> +                       goto build_id_valid;
+>> +               }
+>>                 if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
+>>                         /* per entry fall back to ips */
+>>                         id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+>> @@ -158,9 +164,12 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+>>                         memset(id_offs[i].build_id, 0, BUILD_ID_SIZE_MAX);
+>>                         continue;
+>>                 }
+>> +build_id_valid:
+>>                 id_offs[i].offset = (vma->vm_pgoff << PAGE_SHIFT) + ips[i]
+>>                         - vma->vm_start;
+>>                 id_offs[i].status = BPF_STACK_BUILD_ID_VALID;
+>> +               prev_vma = vma;
+>> +               prev_build_id = id_offs[i].build_id;
+>>         }
+>>         bpf_mmap_unlock_mm(work, current->mm);
+>>  }
+>> --
+>> 2.35.1.473.g83b2b277ed-goog
+>>
