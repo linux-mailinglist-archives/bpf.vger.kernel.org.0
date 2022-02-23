@@ -2,75 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F329C4C0A16
-	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 04:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A70274C0A29
+	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 04:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbiBWDQa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 22:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S230118AbiBWDWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 22:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234515AbiBWDQa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 22:16:30 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2175AEDF
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 19:16:03 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id h17-20020a17090acf1100b001bc68ecce4aso906049pju.4
-        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 19:16:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/crZP71eJl9y0P9FwboRj7BiuT2+SmiIORcuK3GiRw0=;
-        b=I416eO1mh7vq8UwpoPEx0Zfb999vvadrWDVgo5pi2tafkVr/GPgsHDeICfx4tdYS0k
-         JkmcapOlnJawpaYFeA+LS4WP3kc5xe54OoBDmVrdKP7QC6RzS1mNLMAqZTatKCdnpkRh
-         qw8bI7Cu05IgxtgE0KBAHf45g5LIHT2y0+XM8k9XOzmtiMEZYSnw66BqvRi9jbrfE24m
-         E341Prr304O+R/mVrCH0PULk0mWm//Pu5Raw4ZENcw+IgXAsUSM/K6XxSZpPJjZx8j9g
-         jBp3u0C5Z6so2OpFUbMvB/1hClBoCXi5obeteb1IroQ8NtU3Lx3EGIL2zhJsQwV8PTIA
-         4Nsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/crZP71eJl9y0P9FwboRj7BiuT2+SmiIORcuK3GiRw0=;
-        b=K0SwP3bg0w7v4RJ9h1boGia2OL79llCNROQJ+T5LIMV9DGcZs9DteLuvxpVtw30sKL
-         hZNMRcPbLAuae534Om/Dnomuoq07zwGHUzuS6AOgFL92henBhX1Y+7qVrS7V39Tsnd/q
-         45L9ojsjYSqij698GHL0NKDGjoqlS3O/2u19T5iWGLI3VYk0/zPeFySMMsBhWp30KNE4
-         xnd6V54kHNZIUtjugrg+7kW4hjOV5r3tczph1VKIWEXQGJH9Ogg2CoptMmfLP1xV/WrI
-         KxK37U3Q4y2DaMDYOXscJF9CGvPyVN3wybhx6/rNcifazfywcWSg0HJJUw9ayfnWjhgk
-         KTIw==
-X-Gm-Message-State: AOAM532+iRrf//IXu34ZL1mRa4XmpdCo0P2eEpBqKZT5W+K4Vg8q6haw
-        foHyS/mdYMIZkdNk/zwJW+o=
-X-Google-Smtp-Source: ABdhPJyeMDOCYeypqJY/G11Xm4wliHSgnmTD36/a4UXKF0Hwi3jB6rFMWt3uXVpSC5EZUFbR2Pah6g==
-X-Received: by 2002:a17:90a:5a85:b0:1bc:8bda:6a42 with SMTP id n5-20020a17090a5a8500b001bc8bda6a42mr3270288pji.4.1645586162716;
-        Tue, 22 Feb 2022 19:16:02 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id o8sm19891906pfu.90.2022.02.22.19.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 19:16:02 -0800 (PST)
-Date:   Wed, 23 Feb 2022 08:46:00 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S237736AbiBWDWq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 22:22:46 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9586F31352;
+        Tue, 22 Feb 2022 19:22:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4D2DBB81E34;
+        Wed, 23 Feb 2022 03:22:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B888C340E8;
+        Wed, 23 Feb 2022 03:22:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645586537;
+        bh=lg6yqO7Dr/3RAU+AMRY7QoG1UsSGE09TyZ94UM1qbQQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gCo9uwVLP4d1JlkpHfuMRUUH+KKwB1Clv7DYGri21erCtgjkh4WNX4vJKUu9nuFUC
+         cZP3P9Og6LPCevG07qnGgH249bdUjqhQOvYzqse9k9emzI42iVwwW5K3x+uZJ1i6E2
+         MxBzA5N1n3liFCEK5B1/4q90ADLfNa59lH+YChtKwfpLU8EUnQbT1G0C91EeQ35qWr
+         hDZTE1/Sdn8Eh2uDKTqB0Ypu06EUeKrWIogEz6eUQFRaIvqgqgcJcEm2yOn07j1mDw
+         J/JU3DjF7bTjDpugAiv8Ztj11rc3bkH62i/J3aLY50ZJhbdQs3NlDwmYIPNw7ikWqd
+         QnNMmZE5K39tw==
+Date:   Wed, 23 Feb 2022 12:22:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: [PATCH bpf v1 1/5] bpf: Fix kfunc register offset check for
- PTR_TO_BTF_ID
-Message-ID: <20220223031600.pvbhu3dbwxke4eia@apollo.legion>
-References: <20220219113744.1852259-1-memxor@gmail.com>
- <20220219113744.1852259-2-memxor@gmail.com>
- <20220220022409.r5y2bovtgz3r2n47@ast-mbp.dhcp.thefacebook.com>
- <20220220024915.nohjpzvsn5bu2opo@apollo.legion>
- <CAADnVQJ-1D8f36EF-mQk_B_UmGyDbHZnEtYC_mNqt_yDncOCNg@mail.gmail.com>
- <20220222033132.2ooqxlvld7xxrghm@apollo.legion>
- <CAADnVQJ51KcMWnUwcwqmjm_fWShjZeOsOWEGQLX-htWKWixgrw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJ51KcMWnUwcwqmjm_fWShjZeOsOWEGQLX-htWKWixgrw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 01/10] lib/sort: Add priv pointer to swap function
+Message-Id: <20220223122211.f1cf0bf0d019d79322c19957@kernel.org>
+In-Reply-To: <20220222170600.611515-2-jolsa@kernel.org>
+References: <20220222170600.611515-1-jolsa@kernel.org>
+        <20220222170600.611515-2-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,132 +64,164 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 09:51:43AM IST, Alexei Starovoitov wrote:
-> On Mon, Feb 21, 2022 at 7:31 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
-> >
-> > On Tue, Feb 22, 2022 at 02:06:15AM IST, Alexei Starovoitov wrote:
-> > > On Sat, Feb 19, 2022 at 6:49 PM Kumar Kartikeya Dwivedi
-> > > <memxor@gmail.com> wrote:
-> > > >
-> > > > On Sun, Feb 20, 2022 at 07:54:09AM IST, Alexei Starovoitov wrote:
-> > > > > On Sat, Feb 19, 2022 at 05:07:40PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > > >
-> > > > > > +/* Caller ensures reg->type does not have PTR_MAYBE_NULL */
-> > > > > > +int check_func_arg_reg_off(struct bpf_verifier_env *env,
-> > > > > > +                      const struct bpf_reg_state *reg, int regno,
-> > > > > > +                      bool arg_alloc_mem)
-> > > > > > +{
-> > > > > > +   enum bpf_reg_type type = reg->type;
-> > > > > > +   int err;
-> > > > > > +
-> > > > > > +   WARN_ON_ONCE(type & PTR_MAYBE_NULL);
-> > > > >
-> > > > > So the warn was added and made things more difficult and check had to be moved
-> > > > > into check_mem_reg to clear that flag?
-> > > > > Why add that warn in the first place then?
-> > > > > The logic get convoluted because of that.
-> > > > >
-> > > >
-> > > > Ok, will drop.
-> > > >
-> > > > > > +   if (reg->off < 0) {
-> > > > > > +           verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
-> > > > > > +                   reg_type_str(env, reg->type), regno, reg->off);
-> > > > > > +           return -EACCES;
-> > > > > > +   }
-> > > > >
-> > > > > Out of the whole patch this part is useful. The rest seems to dealing
-> > > > > with self inflicted pain.
-> > > > > Just call check_ptr_off_reg() for kfunc ?
-> > > >
-> > > > I still think we should call a common helper.
-> > >
-> > > What is the point of "common helper" when types
-> > > with explicit allow of reg offset like PTR_TO_PACKET cannot
-> > > be passed into kfuncs?
-> > > A common helper would mislead the reader that such checks are necessary.
-> > >
-> >
-> > PTR_TO_PACKET is certainly allowed to be passed to kfunc, and not just that,
-> > PTR_TO_STACK, PTR_TO_BUF, PTR_TO_MEM, PTR_TO_MAP_VALUE, PTR_TO_MAP_KEY, all are
-> > permited after we set ptr_to_mem_ok = true for kfunc. And these can have fixed
-> > off and sometimes var_off to be set. They are also allowed for global functions.
->
-> Ahh. Right. The whole check inside check_mem_reg dance confused me.
->
-> > Which is why I thought having a single list in the entire verifier would be more
-> > easier to maintain, then we can update it in one place and ensure both BPF
-> > helpers and kfunc are covered by the same checks and expectations for fixed and
-> > variable offsets. It isn't 'misleading' because all those types are also
-> > permitted for kfuncs.
-> >
-> > > >  For kfunc there are also reg->type
-> > > > PTR_TO_SOCK etc., for them fixed offset should be rejected. So we can either
-> > > > have a common helper like this for both kfunc and BPF helpers, or exposing
-> > > > fixed_off_ok parameter in check_ptr_off_reg. Your wish.
-> > >
-> > > Are you saying that we should allow PTR_TO_SOCKET+fixed_off ?
-> >
-> > No, I said we need to allow fixed off for PTR_TO_BTF_ID, but also prevent
-> > var_off for it, but just using check_ptr_off_reg would not help because it
-> > prevents fixed_off, and using __check_ptr_off_reg with fixed_off_ok == true
-> > would be wrong for PTR_TO_SOCKET etc. Hence some refactoring is needed.
-> >
-> > And using check_ptr_off_reg ultimately (through the common check or directly)
-> > also rejects var_off for PTR_TO_BTF_ID, which was the actual problem that
-> > started this whole patch.
-> >
-> > > I guess than it's better to convert this line
-> > >                 err = __check_ptr_off_reg(env, reg, regno,
-> > >                                           type == PTR_TO_BTF_ID);
-> > > into a helper.
-> > > And convert this line:
-> > > reg->type == PTR_TO_BTF_ID ||
-> > >    (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type))
-> > >
-> > > into another helper.
-> > > Like:
-> > > static inline bool is_ptr_to_btf_id(type)
-> > > {
-> > >   return type == PTR_TO_BTF_ID ||
-> > >    (reg2btf_ids[base_type(type)] && !type_flag(type));
-> > > }
-> > > and
-> > > int check_ptr_off_reg(struct bpf_verifier_env *env,
-> > >                       const struct bpf_reg_state *reg, int regno)
-> > > {
-> > >   return __check_ptr_off_reg(env, reg, regno, is_ptr_to_btf_id(reg->type));
-> > > }
-> > >
-> > > and call check_ptr_off_reg() directly from check_func_arg()
-> > > instead of __check_ptr_off_reg.
-> > >
-> > > and call check_ptr_off_reg() from btf_check_func_arg_match() too.
->
-> Thoughts about the above proposal?
-> In addition to above we can have check_func_arg_reg_off()
-> and call it early and once in btf_check_func_arg_match()
-> instead of hiding deep in a call chain.
-> I don't like 'bool arg_alloc_mem' part though
-> and would like to get rid of 'bool ptr_to_mem_ok' eventually as well.
-> Such flags make the code harder to follow,
-> since the action on the flag value is done outside
-> of the main part of the code.
-> For example reading btf_check_func_arg_match() on its own is complicated.
-> The developer has to examine all call sites to see how they pass that flag.
-> Same thing with 'bool arg_alloc_mem'.
-> Please pass arg_type instead.
->
-> This patch should be split into three.
-> p1 - refactor into check_func_arg_reg_off helper.
-> p2 - call it form btf_check_func_arg_match
-> p3 - add off < 0 check.
->
-> If you're adding "while at it" to the commit log it means that
-> it shouldn't be a single patch.
+On Tue, 22 Feb 2022 18:05:51 +0100
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-Agree with everything, will split and respin. Thanks.
+> Adding support to have priv pointer in swap callback function.
+> 
+> Following the initial change on cmp callback functions [1]
+> and adding SWAP_WRAPPER macro to identify sort call of sort_r.
+> 
 
---
-Kartikeya
+This looks good to me.
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+> [1] 4333fb96ca10 ("media: lib/sort.c: implement sort() variant taking context argument")
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/sort.h  |  2 +-
+>  include/linux/types.h |  1 +
+>  lib/sort.c            | 40 ++++++++++++++++++++++++++++++----------
+>  3 files changed, 32 insertions(+), 11 deletions(-)
+> 
+> diff --git a/include/linux/sort.h b/include/linux/sort.h
+> index b5898725fe9d..e163287ac6c1 100644
+> --- a/include/linux/sort.h
+> +++ b/include/linux/sort.h
+> @@ -6,7 +6,7 @@
+>  
+>  void sort_r(void *base, size_t num, size_t size,
+>  	    cmp_r_func_t cmp_func,
+> -	    swap_func_t swap_func,
+> +	    swap_r_func_t swap_func,
+>  	    const void *priv);
+>  
+>  void sort(void *base, size_t num, size_t size,
+> diff --git a/include/linux/types.h b/include/linux/types.h
+> index ac825ad90e44..ea8cf60a8a79 100644
+> --- a/include/linux/types.h
+> +++ b/include/linux/types.h
+> @@ -226,6 +226,7 @@ struct callback_head {
+>  typedef void (*rcu_callback_t)(struct rcu_head *head);
+>  typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
+>  
+> +typedef void (*swap_r_func_t)(void *a, void *b, int size, const void *priv);
+>  typedef void (*swap_func_t)(void *a, void *b, int size);
+>  
+>  typedef int (*cmp_r_func_t)(const void *a, const void *b, const void *priv);
+> diff --git a/lib/sort.c b/lib/sort.c
+> index aa18153864d2..b399bf10d675 100644
+> --- a/lib/sort.c
+> +++ b/lib/sort.c
+> @@ -122,16 +122,27 @@ static void swap_bytes(void *a, void *b, size_t n)
+>   * a pointer, but small integers make for the smallest compare
+>   * instructions.
+>   */
+> -#define SWAP_WORDS_64 (swap_func_t)0
+> -#define SWAP_WORDS_32 (swap_func_t)1
+> -#define SWAP_BYTES    (swap_func_t)2
+> +#define SWAP_WORDS_64 (swap_r_func_t)0
+> +#define SWAP_WORDS_32 (swap_r_func_t)1
+> +#define SWAP_BYTES    (swap_r_func_t)2
+> +#define SWAP_WRAPPER  (swap_r_func_t)3
+> +
+> +struct wrapper {
+> +	cmp_func_t cmp;
+> +	swap_func_t swap;
+> +};
+>  
+>  /*
+>   * The function pointer is last to make tail calls most efficient if the
+>   * compiler decides not to inline this function.
+>   */
+> -static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
+> +static void do_swap(void *a, void *b, size_t size, swap_r_func_t swap_func, const void *priv)
+>  {
+> +	if (swap_func == SWAP_WRAPPER) {
+> +		((const struct wrapper *)priv)->swap(a, b, (int)size);
+> +		return;
+> +	}
+> +
+>  	if (swap_func == SWAP_WORDS_64)
+>  		swap_words_64(a, b, size);
+>  	else if (swap_func == SWAP_WORDS_32)
+> @@ -139,7 +150,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
+>  	else if (swap_func == SWAP_BYTES)
+>  		swap_bytes(a, b, size);
+>  	else
+> -		swap_func(a, b, (int)size);
+> +		swap_func(a, b, (int)size, priv);
+>  }
+>  
+>  #define _CMP_WRAPPER ((cmp_r_func_t)0L)
+> @@ -147,7 +158,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
+>  static int do_cmp(const void *a, const void *b, cmp_r_func_t cmp, const void *priv)
+>  {
+>  	if (cmp == _CMP_WRAPPER)
+> -		return ((cmp_func_t)(priv))(a, b);
+> +		return ((const struct wrapper *)priv)->cmp(a, b);
+>  	return cmp(a, b, priv);
+>  }
+>  
+> @@ -198,7 +209,7 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
+>   */
+>  void sort_r(void *base, size_t num, size_t size,
+>  	    cmp_r_func_t cmp_func,
+> -	    swap_func_t swap_func,
+> +	    swap_r_func_t swap_func,
+>  	    const void *priv)
+>  {
+>  	/* pre-scale counters for performance */
+> @@ -208,6 +219,10 @@ void sort_r(void *base, size_t num, size_t size,
+>  	if (!a)		/* num < 2 || size == 0 */
+>  		return;
+>  
+> +	/* called from 'sort' without swap function, let's pick the default */
+> +	if (swap_func == SWAP_WRAPPER && !((struct wrapper *)priv)->swap)
+> +		swap_func = NULL;
+> +
+>  	if (!swap_func) {
+>  		if (is_aligned(base, size, 8))
+>  			swap_func = SWAP_WORDS_64;
+> @@ -230,7 +245,7 @@ void sort_r(void *base, size_t num, size_t size,
+>  		if (a)			/* Building heap: sift down --a */
+>  			a -= size;
+>  		else if (n -= size)	/* Sorting: Extract root to --n */
+> -			do_swap(base, base + n, size, swap_func);
+> +			do_swap(base, base + n, size, swap_func, priv);
+>  		else			/* Sort complete */
+>  			break;
+>  
+> @@ -257,7 +272,7 @@ void sort_r(void *base, size_t num, size_t size,
+>  		c = b;			/* Where "a" belongs */
+>  		while (b != a) {	/* Shift it into place */
+>  			b = parent(b, lsbit, size);
+> -			do_swap(base + b, base + c, size, swap_func);
+> +			do_swap(base + b, base + c, size, swap_func, priv);
+>  		}
+>  	}
+>  }
+> @@ -267,6 +282,11 @@ void sort(void *base, size_t num, size_t size,
+>  	  cmp_func_t cmp_func,
+>  	  swap_func_t swap_func)
+>  {
+> -	return sort_r(base, num, size, _CMP_WRAPPER, swap_func, cmp_func);
+> +	struct wrapper w = {
+> +		.cmp  = cmp_func,
+> +		.swap = swap_func,
+> +	};
+> +
+> +	return sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w);
+>  }
+>  EXPORT_SYMBOL(sort);
+> -- 
+> 2.35.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
