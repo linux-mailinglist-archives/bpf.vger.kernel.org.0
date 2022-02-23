@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AEC4C0E4E
-	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 09:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC6B4C0E8C
+	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 09:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238654AbiBWIea (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Feb 2022 03:34:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S238071AbiBWIx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Feb 2022 03:53:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233549AbiBWIe2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Feb 2022 03:34:28 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A970674C4;
-        Wed, 23 Feb 2022 00:34:02 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id j10-20020a17090a94ca00b001bc2a9596f6so2024409pjw.5;
-        Wed, 23 Feb 2022 00:34:02 -0800 (PST)
+        with ESMTP id S239090AbiBWIx5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Feb 2022 03:53:57 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7974D7B55B;
+        Wed, 23 Feb 2022 00:53:29 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o8so490004pgf.9;
+        Wed, 23 Feb 2022 00:53:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=iDb45oPj0ifDcB8Xoh2dodzalPDAwvLvo6tLmA+1g1A=;
-        b=pZyB5i3EDjAvoOu1W4jIwUnpSx7RWt7r5xjs0PYS8CWbj9v/+h6LN5hErKk9z+R5tF
-         3MK33kzZg+4iafVWLruxFp+YPsCSgYshqQy5MwK6eYG9h0d3tlqTJ6od746GCspi3onX
-         xnO7jWcH5ymHmNkpRplsON3xjlfiMKGCfYXm+GpIHnUtRHzNQqUYj+lTAvPH/CrMK6EY
-         snxwzaLrt4fp8VbMaoyw8FLwrR9702Qy/U4H0gjia+elRMlqIQEJPvDbzyvqBJa/QKPh
-         6kH0c7Y2exw98Im4vIstHP54myt2aWXNIzXBi0/6htlpvmdWWBJS7lGkdO4dJxBn7Cb/
-         H6hw==
+        b=mjbK/Qvyky40bHpb9CMcZeTXTikILi0QdvNGlkl/xfbx4ehMMLyLVLBwG4UAHrjXJC
+         qZ97pFWziKsT8Ay5h4ojKoZyq6NeXAh6ADGWvdRQa2t2iIkkdmV2eHSjj0U7qlbim6Pt
+         FOYoBJP5rOCNKtQOZvrqlHbv5uETayn7kMpKlF8KWDXNKiHmjBGNDZWHjf+DZDKrSyua
+         Lm6AqmUKEXj9hGreOdCtBvtMXNSDrHIgPQrlpdQq/UEKV8bD9T1yuxUEc8zw9Ok2X2Cx
+         N3iRl6WixrLYYwWx9/RAIeCWXNAfflB6skCejDzhXl7Y0nrM4wBCthW0YvQBvuwFhJko
+         ctiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
         bh=iDb45oPj0ifDcB8Xoh2dodzalPDAwvLvo6tLmA+1g1A=;
-        b=wRZt2jF9Q9Q2dv69l+QYBDUP2Fybnilnk3PVqFFxN4ETNpe8QOY2/rQXygs5hj7AMT
-         e5n3n8mYTIz9YgiHpbnaBfj+/41rkR7Kw/IJYY0QI7driHpaCKi5i120L0PFcfllATrb
-         pTKqAf0tbw/j9Xnsi5RtgiKi+QMjuJZLdsU/T06H9sTuGzn2u2ZY6rUKyEIGTE+Bfpy7
-         yrvKSRgSA2vt2687pprcHf63im1iLDat6MsMKNIw7vEHIOGRbvMCY7n5MpBfNW3wy7WK
-         WJeTce03gKVPiPGodQY9J12UC1+zv47PfpmCOZhteE2uvQrsI9F4OJ2C4s3QLdJSLpDW
-         LCKA==
-X-Gm-Message-State: AOAM533NBPVQpOK5d1RI+aSQfuDjVTmy/MjdtebqbWqvjWd8xJzHJI+Q
-        hP3zjoLi74F2816f4TYv19KZLeom+M5zrKYPZho=
-X-Google-Smtp-Source: ABdhPJxjyJEbWbvUjPn8qDp3Uys0pRB+Jj2L39nYmoHtTf0LFOWN1YRvivO9TAo6OOnscTXB4pYx9w==
-X-Received: by 2002:a17:90a:ac1:b0:1b9:7dd3:ba5f with SMTP id r1-20020a17090a0ac100b001b97dd3ba5fmr8126134pje.178.1645605241389;
-        Wed, 23 Feb 2022 00:34:01 -0800 (PST)
+        b=zK7TWib1MGdDn8GbDGLRy9sHiG69cgzLpzUsWXSvgPBDUaCYXn/kxj7fZYT2h4qFd/
+         ofaWWLyaXya3vy7Wxrq+Gk+eicoGvJ7fV1JX2WT7MjiVXkVHLimNihIzBEgdjkNyIdvo
+         i+eaQ8vh0c9Rs4N61dLgsqfprHzyFk41Sxi6Zvw7oWNSBsgcvcKrE5/z89nIgc0pvaHV
+         S/eD6P/dV9Jk0qoDsBMXAyBttZeeFfjOqy3rr+qKqKX3XsQc9O4tCgMllgYI/1BYpO9Z
+         orItWqqgtS501u4OaeJ96uo6YQTTqujcCG9O5bwIH/j8H3c5qTQYDvXj1B2+V09woR9G
+         StqA==
+X-Gm-Message-State: AOAM531zDWZAyhVzq3R0ReaDEaxUiGK01fDklDDT+b8ylnWg2xQdEqzm
+        Ln/2fk2zXEY18WLH+HjAQBssuALfPl2Vp9PpnNc=
+X-Google-Smtp-Source: ABdhPJx/R0IJt/LaaJ2AfxqrABa8uf/z9Mb2sxVMk8u3hvcBKdcmjiDWBmzbbR8L5ikg9VGcY06oyQ==
+X-Received: by 2002:a63:5d09:0:b0:372:9a55:bf89 with SMTP id r9-20020a635d09000000b003729a55bf89mr22668044pgb.321.1645606408731;
+        Wed, 23 Feb 2022 00:53:28 -0800 (PST)
 Received: from localhost.localdomain ([43.132.141.8])
-        by smtp.gmail.com with ESMTPSA id bd14sm9338613pfb.165.2022.02.23.00.33.58
+        by smtp.gmail.com with ESMTPSA id ft9sm2043174pjb.4.2022.02.23.00.53.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Feb 2022 00:34:00 -0800 (PST)
+        Wed, 23 Feb 2022 00:53:28 -0800 (PST)
 From:   Yuntao Wang <ytcoode@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -57,9 +57,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH] libbpf: Simplify the find_elf_sec_sz() function
-Date:   Wed, 23 Feb 2022 16:33:00 +0800
-Message-Id: <20220223083300.3054673-1-ytcoode@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Simplify the find_elf_sec_sz() function
+Date:   Wed, 23 Feb 2022 16:52:44 +0800
+Message-Id: <20220223085244.3058118-1-ytcoode@gmail.com>
 X-Mailer: git-send-email 2.35.0.rc2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
