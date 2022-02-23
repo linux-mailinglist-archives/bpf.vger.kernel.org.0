@@ -2,59 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 878E24C1DFF
-	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 22:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6528E4C1E00
+	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 22:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbiBWVwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Feb 2022 16:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
+        id S236975AbiBWVxY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Feb 2022 16:53:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242944AbiBWVww (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Feb 2022 16:52:52 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C0950479
-        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:52:22 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id f14so530451ioz.1
-        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:52:22 -0800 (PST)
+        with ESMTP id S231163AbiBWVxX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Feb 2022 16:53:23 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C283D4A1;
+        Wed, 23 Feb 2022 13:52:55 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 132so7693pga.5;
+        Wed, 23 Feb 2022 13:52:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=hXkpvEzzYNvCCitEo5bl7Fi1UuXXWRtiv2UdnjZT6sM=;
-        b=UADhrGGwBBKPzhdNySWuRCunMcmm72Pxw2LXyxmyvKEnDRZYzJI8JLXmRf/3FZx2MV
-         9G6XJK9MhOH5Uid7d9TqXmTwJw2wW2DUPHRDrhyLdhRcsIIQYzRokymMqtZZEB0sejMu
-         9vOEtGR13hhnchmGhJsZeP0kyscUlkkBTNA50RweElu6AYdmp8KDwVqxh0fx008DBq8c
-         NOP4xXt8H3KtFkuIOGwAEJhzHZrDyw5LunFvAlqZGGgb/UbqaTA0WXCVKoft7MrIyxSG
-         16ZR42Hx2EAFws1XFfxcUcvGGJjj0cKAYFFWgy9OpXerWOOMSpaBjTN7qBrjv/o2NIlH
-         GuQg==
+        bh=gXGApdCCkLLJU3lWOlSSJO79UnPt9wOKOFtUSzHhqkQ=;
+        b=HR8mwc4RStBmg/lPZ2Wp4KAU3bQJ+wvNsZ1hQtoW98eO4xff9yIJCpYRwmDp7Jgdnm
+         pJJZi4PigXgsxw85PMdWTpELCcqhgBPVqxv1RipxvOlpBLKUY+sRKaA0LxoMmpfeZdGV
+         BoTQNBQ4rxoXqK9i6XyTtrolNl9msAVhV96tiRl3YJrebDJeL56IDgX/6/Q6SQhlv0iQ
+         SG+XIUngtPH0UpS6T2o+Slb8p9dIM5rgnztjaMa3iTPX4uh0P0Haiq/qVHLAJ+BwlFFI
+         cBmJhFOmwCcsHe3ceMy9KKz+YdinKxWJtdZHKTkhRA17yYSgeTlV0Xo4ltGVjWU115dj
+         Xfyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=hXkpvEzzYNvCCitEo5bl7Fi1UuXXWRtiv2UdnjZT6sM=;
-        b=s8ZqzkU3w7oXwh6cy8RLajtrgFmr0WKV9KJ3e9piQQcp3DXqcwTgyrM6EHASLPdjP0
-         7bfT2n6WrsLcbbeai60WWmF4dm6QiZzIEN4f+wnXTSlJplvLdEgLnG4xNWPvJyfECAJ4
-         A816CLnXhFcjnzZ9xXP82Lju9dStz5l87qN8K0x7y5AjizOveaX36qbeaxpdf+zGoHrb
-         JcTPAVrzfGmfDRbkWpM5BoTFDh5r5q1DSAWkK0zqhrFiyeEDI05/HQxsBB7JvN1ih5Mr
-         er5L1t6vN01uZo7vTAHCBXAKVK0HKy0HHoDYEuP/oNqGrWZkhpdA7crzNYltNdYjJacz
-         6xQg==
-X-Gm-Message-State: AOAM5312/F5DD0rcmy8uAoa53z0XDL7EmlZv0Q6b4U838ovdUYP/qBe4
-        lHEk8DXABi/9z1cnf+TjRtdFh8VRNKWVT+dxEjJhTqMXe5KlEA==
-X-Google-Smtp-Source: ABdhPJxHvA0cUBmHq99rmj5t3PSpiF25eitrDmQckXHFCohknjeInChiAkF5g/sQcHolp8VqGk9uim92nH2WjX5Q920=
-X-Received: by 2002:a05:6638:382:b0:30e:3e2e:3227 with SMTP id
- y2-20020a056638038200b0030e3e2e3227mr1348499jap.234.1645653141610; Wed, 23
- Feb 2022 13:52:21 -0800 (PST)
+        bh=gXGApdCCkLLJU3lWOlSSJO79UnPt9wOKOFtUSzHhqkQ=;
+        b=i3bws+ELZG40JWc2MtElhlNKfIcNapg67as9moyaTHDCvyPYge9Ca0skA9XYkP15kZ
+         mq3h1TSRomI3rqNwrvj7Mm7K1ZGw0SguHeNYSWo8eKcxAnENTDF/IJ4AAWc9OXmu7NnJ
+         mvwScAxIuYEP/jviGK77TGKSj6OGmtRlawXhKEGwt/5Gy8h7PN8eIQ2OdFkAoMQGVuoz
+         ++gKVU3X+VBOScGI5gksxN05aiTUuFa4WGf9uummato/AR1C3AzsLf0nATREhQ9e/bcr
+         3IwwxZ509JP4PfdAtX/3qWML5yCPuvrQPqdv9leVTPULP8YTiabusUMljRYNmyk0RYKm
+         Y27g==
+X-Gm-Message-State: AOAM5307LL/W42VY1tvTu4Z3XrJu5wLlvnBZlBwjj8I5aw9tyAKfnETY
+        A0cv+bmjbUfmCYAMyiGZKYAuYWi8BLUZKIlF7sk=
+X-Google-Smtp-Source: ABdhPJy9Ner6v03TtXVxjONuOPQpO6/F6xh4gxQws0cozma7eIgHXcDBJDqPBqY5h+1zFGg9Q8eT0sNbpFEeQJtp9Ck=
+X-Received: by 2002:a63:3481:0:b0:372:f3e7:6f8c with SMTP id
+ b123-20020a633481000000b00372f3e76f8cmr1304605pga.336.1645653174772; Wed, 23
+ Feb 2022 13:52:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20220223020645.1169905-1-mykolal@fb.com> <CAEf4BzZ=_p7qxRZr3tWJ8rAb3pM1ynd20Tsq7YoH_302xghzgA@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ=_p7qxRZr3tWJ8rAb3pM1ynd20Tsq7YoH_302xghzgA@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Feb 2022 13:52:10 -0800
-Message-ID: <CAEf4BzZduzFZwZsdUrECo_60ecONDH-RDxgsD4JZKaHR2KweLg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] Small BPF verifier log improvements
-To:     Mykola Lysenko <mykolal@fb.com>
+References: <20220220134813.3411982-1-memxor@gmail.com> <20220220134813.3411982-5-memxor@gmail.com>
+ <20220222065349.ladxy5cqfpdklk3a@ast-mbp.dhcp.thefacebook.com>
+ <20220222071026.fqdjmd5fhjbl56xl@apollo.legion> <CAADnVQLba_X7fZczY774+1GGrGcC5sopD5pzMaDK_O8P+Aeyig@mail.gmail.com>
+ <20220223030447.ugwjlfjiqynntbgj@apollo.legion>
+In-Reply-To: <20220223030447.ugwjlfjiqynntbgj@apollo.legion>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 23 Feb 2022 13:52:43 -0800
+Message-ID: <CAADnVQ+vKtE7_RHAMcc73aL+6XZMir_3tcCOxGaz_0sWiRQiOA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 04/15] bpf: Allow storing referenced
+ PTR_TO_BTF_ID in map
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -66,150 +74,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 8:23 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Feb 22, 2022 at 7:04 PM Kumar Kartikeya Dwivedi
+<memxor@gmail.com> wrote:
 >
-> On Tue, Feb 22, 2022 at 6:07 PM Mykola Lysenko <mykolal@fb.com> wrote:
+> On Tue, Feb 22, 2022 at 09:50:00PM IST, Alexei Starovoitov wrote:
+> > On Mon, Feb 21, 2022 at 11:10 PM Kumar Kartikeya Dwivedi
+> > <memxor@gmail.com> wrote:
+> > >
+> > > On Tue, Feb 22, 2022 at 12:23:49PM IST, Alexei Starovoitov wrote:
+> > > > On Sun, Feb 20, 2022 at 07:18:02PM +0530, Kumar Kartikeya Dwivedi wrote:
+> > > > >  static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regno,
+> > > > >                         int off, int bpf_size, enum bpf_access_type t,
+> > > > > -                       int value_regno, bool strict_alignment_once)
+> > > > > +                       int value_regno, bool strict_alignment_once,
+> > > > > +                       struct bpf_reg_state *atomic_load_reg)
+> > > >
+> > > > No new side effects please.
+> > > > value_regno is not pretty already.
+> > > > At least its known ugliness that we need to clean up one day.
+> > > >
+> > > > >  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+> > > > >  {
+> > > > > +   struct bpf_reg_state atomic_load_reg;
+> > > > >     int load_reg;
+> > > > >     int err;
+> > > > >
+> > > > > +   __mark_reg_unknown(env, &atomic_load_reg);
+> > > > > +
+> > > > >     switch (insn->imm) {
+> > > > >     case BPF_ADD:
+> > > > >     case BPF_ADD | BPF_FETCH:
+> > > > > @@ -4813,6 +4894,7 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> > > > >             else
+> > > > >                     load_reg = insn->src_reg;
+> > > > >
+> > > > > +           atomic_load_reg = *reg_state(env, load_reg);
+> > > > >             /* check and record load of old value */
+> > > > >             err = check_reg_arg(env, load_reg, DST_OP);
+> > > > >             if (err)
+> > > > > @@ -4825,20 +4907,21 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> > > > >     }
+> > > > >
+> > > > >     /* Check whether we can read the memory, with second call for fetch
+> > > > > -    * case to simulate the register fill.
+> > > > > +    * case to simulate the register fill, which also triggers checks
+> > > > > +    * for manipulation of BTF ID pointers embedded in BPF maps.
+> > > > >      */
+> > > > >     err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > > > > -                          BPF_SIZE(insn->code), BPF_READ, -1, true);
+> > > > > +                          BPF_SIZE(insn->code), BPF_READ, -1, true, NULL);
+> > > > >     if (!err && load_reg >= 0)
+> > > > >             err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > > > >                                    BPF_SIZE(insn->code), BPF_READ, load_reg,
+> > > > > -                                  true);
+> > > > > +                                  true, load_reg >= 0 ? &atomic_load_reg : NULL);
+> > > >
+> > > > Special xchg logic should be down outside of check_mem_access()
+> > > > instead of hidden by layers of calls.
+> > >
+> > > Right, it's ugly, but if we don't capture the reg state before that
+> > > check_reg_arg(env, load_reg, DST_OP), it's not possible to see the actual
+> > > PTR_TO_BTF_ID being moved into the map, since check_reg_arg will do a
+> > > mark_reg_unknown for value_regno. Any other ideas on what I can do?
+> > >
+> > > 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
+> > > changed the order of check_mem_access and DST_OP check_reg_arg.
 > >
-> > In particular:
-> > 1) remove output of inv for scalars
-> > 2) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
-> > 3) remove output of id=0
-> > 4) remove output of ref_obj_id=0
-> >
-> > Signed-off-by: Mykola Lysenko <mykolal@fb.com>
-> > ---
+> > That highlights my point that side effects are bad.
+> > That commit tries to work around that behavior and makes things
+> > harder to extend like you found out with xchg logic.
+> > Another option would be to add bpf_kptr_xchg() helper
+> > instead of dealing with insn. It will be tiny bit slower,
+> > but it will work on all architectures. While xchg bpf jit is
+> > on x86,s390,mips so far.
 >
-> LGTM, thanks.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Right, but kfunc is currently limited to x86, which is required to obtain a
+> refcounted PTR_TO_BTF_ID that you can move into the map, so it wouldn't make
+> much of a difference.
 
-Actually seems like you missed updating some tests, please take a look:
+Well the patches to add trampoline support to powerpc were already posted.
 
-  [0] https://github.com/kernel-patches/bpf/runs/5297754845?check_suite_focus=true
+> > We need to think more on how to refactor check_mem_acess without
+> > digging ourselves into an even bigger hole.
+>
+> So I'm ok with working on untangling check_mem_access as a follow up, but for
+> now should we go forward with how it is? Just looking at it yesterday makes me
+> think it's going to require a fair amount of refactoring and discussion.
+>
+> Also, do you have any ideas on how to change it? Do you want it to work like how
+> is_valid_access callbacks work? So passing something like a bpf_insn_access_aux
+> into the call, where it sets how it'd like to update the register, and then
+> actual updates take place in caller context?
 
->
-> >  kernel/bpf/verifier.c                         |  59 ++---
-> >  .../testing/selftests/bpf/prog_tests/align.c  | 218 +++++++++---------
-> >  .../selftests/bpf/prog_tests/log_buf.c        |   4 +-
-> >  3 files changed, 143 insertions(+), 138 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index d7473fee247c..91154806715d 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -539,7 +539,7 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
-> >         char postfix[16] = {0}, prefix[32] = {0};
-> >         static const char * const str[] = {
-> >                 [NOT_INIT]              = "?",
-> > -               [SCALAR_VALUE]          = "inv",
-> > +               [SCALAR_VALUE]          = "",
-> >                 [PTR_TO_CTX]            = "ctx",
-> >                 [CONST_PTR_TO_MAP]      = "map_ptr",
-> >                 [PTR_TO_MAP_VALUE]      = "map_value",
-> > @@ -693,66 +693,71 @@ static void print_verifier_state(struct bpf_verifier_env *env,
-> >                         /* reg->off should be 0 for SCALAR_VALUE */
-> >                         verbose(env, "%lld", reg->var_off.value + reg->off);
-> >                 } else {
-> > +                       const char *sep = "";
-> > +
-> >                         if (base_type(t) == PTR_TO_BTF_ID ||
-> >                             base_type(t) == PTR_TO_PERCPU_BTF_ID)
-> >                                 verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
-> > -                       verbose(env, "(id=%d", reg->id);
-> > -                       if (reg_type_may_be_refcounted_or_null(t))
-> > -                               verbose(env, ",ref_obj_id=%d", reg->ref_obj_id);
-> > +                       verbose(env, "(");
-> > +
-> > +/*
-> > + * _a stands for append, was shortened to avoid multiline statements below. this macro is used to
-> > + * output a comma separated list of attributes
-> > + */
-> > +#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__); sep = ","; })
->
-> it's a very local macro so it probably doesn't matter all that much,
-> but a bit more readable name could be verbose_attr() or even just
-> log_attr(). I'll leave it up to Alexei and Daniel to decide if they'd
-> like to change it.
->
-> > +
-> > +                       if (reg->id)
-> > +                               verbose_a("id=%d", reg->id);
-> > +                       if (reg_type_may_be_refcounted_or_null(t) && reg->ref_obj_id)
-> > +                               verbose_a("ref_obj_id=%d", reg->ref_obj_id);
-> >                         if (t != SCALAR_VALUE)
-> > -                               verbose(env, ",off=%d", reg->off);
-> > +                               verbose_a("off=%d", reg->off);
-> >                         if (type_is_pkt_pointer(t))
-> > -                               verbose(env, ",r=%d", reg->range);
-> > +                               verbose_a("r=%d", reg->range);
-> >                         else if (base_type(t) == CONST_PTR_TO_MAP ||
-> >                                  base_type(t) == PTR_TO_MAP_KEY ||
-> >                                  base_type(t) == PTR_TO_MAP_VALUE)
-> > -                               verbose(env, ",ks=%d,vs=%d",
-> > -                                       reg->map_ptr->key_size,
-> > -                                       reg->map_ptr->value_size);
-> > +                               verbose_a("ks=%d,vs=%d",
-> > +                                         reg->map_ptr->key_size,
-> > +                                         reg->map_ptr->value_size);
-> >                         if (tnum_is_const(reg->var_off)) {
-> >                                 /* Typically an immediate SCALAR_VALUE, but
-> >                                  * could be a pointer whose offset is too big
-> >                                  * for reg->off
-> >                                  */
-> > -                               verbose(env, ",imm=%llx", reg->var_off.value);
-> > +                               verbose_a("imm=%llx", reg->var_off.value);
-> >                         } else {
-> >                                 if (reg->smin_value != reg->umin_value &&
-> >                                     reg->smin_value != S64_MIN)
-> > -                                       verbose(env, ",smin_value=%lld",
-> > -                                               (long long)reg->smin_value);
-> > +                                       verbose_a("smin=%lld", (long long)reg->smin_value);
-> >                                 if (reg->smax_value != reg->umax_value &&
-> >                                     reg->smax_value != S64_MAX)
-> > -                                       verbose(env, ",smax_value=%lld",
-> > -                                               (long long)reg->smax_value);
-> > +                                       verbose_a("smax=%lld", (long long)reg->smax_value);
-> >                                 if (reg->umin_value != 0)
-> > -                                       verbose(env, ",umin_value=%llu",
-> > -                                               (unsigned long long)reg->umin_value);
-> > +                                       verbose_a("umin=%llu", (unsigned long long)reg->umin_value);
-> >                                 if (reg->umax_value != U64_MAX)
-> > -                                       verbose(env, ",umax_value=%llu",
-> > -                                               (unsigned long long)reg->umax_value);
-> > +                                       verbose_a("umax=%llu", (unsigned long long)reg->umax_value);
-> >                                 if (!tnum_is_unknown(reg->var_off)) {
-> >                                         char tn_buf[48];
-> >
-> >                                         tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
-> > -                                       verbose(env, ",var_off=%s", tn_buf);
-> > +                                       verbose_a("var_off=%s", tn_buf);
-> >                                 }
-> >                                 if (reg->s32_min_value != reg->smin_value &&
-> >                                     reg->s32_min_value != S32_MIN)
-> > -                                       verbose(env, ",s32_min_value=%d",
-> > -                                               (int)(reg->s32_min_value));
-> > +                                       verbose_a("s32_min=%d", (int)(reg->s32_min_value));
-> >                                 if (reg->s32_max_value != reg->smax_value &&
-> >                                     reg->s32_max_value != S32_MAX)
-> > -                                       verbose(env, ",s32_max_value=%d",
-> > -                                               (int)(reg->s32_max_value));
-> > +                                       verbose_a("s32_max=%d", (int)(reg->s32_max_value));
-> >                                 if (reg->u32_min_value != reg->umin_value &&
-> >                                     reg->u32_min_value != U32_MIN)
-> > -                                       verbose(env, ",u32_min_value=%d",
-> > -                                               (int)(reg->u32_min_value));
-> > +                                       verbose_a("u32_min=%d", (int)(reg->u32_min_value));
-> >                                 if (reg->u32_max_value != reg->umax_value &&
-> >                                     reg->u32_max_value != U32_MAX)
-> > -                                       verbose(env, ",u32_max_value=%d",
-> > -                                               (int)(reg->u32_max_value));
-> > +                                       verbose_a("u32_max=%d", (int)(reg->u32_max_value));
-> >                         }
-> > +#undef verbose_a
-> > +
-> >                         verbose(env, ")");
-> >                 }
-> >         }
->
-> [...]
+I don't like callbacks in general.
+They're fine for walk_the_tree, for_each_elem accessors,
+but passing a callback into check_mem_access is not great.
+Do you mind going with a bpf_kptr_xchg() helper for now
+and optimizing into direct xchg insn later?
+It's not clear whether it's going to be faster to be noticeable.
