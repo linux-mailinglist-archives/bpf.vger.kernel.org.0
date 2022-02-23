@@ -2,61 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C901A4C1DEC
-	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 22:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 878E24C1DFF
+	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 22:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241267AbiBWVrj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Feb 2022 16:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        id S242634AbiBWVwx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Feb 2022 16:52:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240831AbiBWVrh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Feb 2022 16:47:37 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87AFA47068
-        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:47:08 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id y5so195499ill.13
-        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:47:08 -0800 (PST)
+        with ESMTP id S242944AbiBWVww (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Feb 2022 16:52:52 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42C0950479
+        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:52:22 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id f14so530451ioz.1
+        for <bpf@vger.kernel.org>; Wed, 23 Feb 2022 13:52:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zeAe1YWkrG5sY9V7Oz+vaaqIlWn8szkRcfgG1CiLftI=;
-        b=TzrLRv/FVyCN9hGpcAG5LMFgaaP6aGS/bkXv1oeqH1UBARFfs9tZp5xE6EXEe2xB6o
-         YfDkuVzLJ5WUAtkijZsSBE3Y5SHe68dgDJc/mZMt0gpp8k7EWucTLjOVbQB9blWK5fU+
-         H/tNsp/Fj2t+1L3Iabo+FALr4BCsRFACrvdOgdKsHCzge1XoT/Ij5fxSu4aylTOTCWo3
-         3GMHJyCTAO7CJWRecQHDfJOr7YW0wt3TSd9m/eaUwJjGCbZ3MwBPxvQ0qoEGKygyZAO6
-         TxmbFz722vI7dfSaz/o23iURUvQRtglQlgVW8w0MR3haNlCRWeV7JHe/vagqeKGSGQp6
-         e6HQ==
+        bh=hXkpvEzzYNvCCitEo5bl7Fi1UuXXWRtiv2UdnjZT6sM=;
+        b=UADhrGGwBBKPzhdNySWuRCunMcmm72Pxw2LXyxmyvKEnDRZYzJI8JLXmRf/3FZx2MV
+         9G6XJK9MhOH5Uid7d9TqXmTwJw2wW2DUPHRDrhyLdhRcsIIQYzRokymMqtZZEB0sejMu
+         9vOEtGR13hhnchmGhJsZeP0kyscUlkkBTNA50RweElu6AYdmp8KDwVqxh0fx008DBq8c
+         NOP4xXt8H3KtFkuIOGwAEJhzHZrDyw5LunFvAlqZGGgb/UbqaTA0WXCVKoft7MrIyxSG
+         16ZR42Hx2EAFws1XFfxcUcvGGJjj0cKAYFFWgy9OpXerWOOMSpaBjTN7qBrjv/o2NIlH
+         GuQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zeAe1YWkrG5sY9V7Oz+vaaqIlWn8szkRcfgG1CiLftI=;
-        b=jYohjar+gx9X746obu8Q1m5ZzstFlwlB82qmccSxS8oHbMsG9uBmu/xnaO0eAMhBPG
-         RZrX7P13EV+2h5VVxjnjxcIvKFnY+Cpmvwwv4vvKKJOjEbMPY1GIrFZWLdBX2QPHUGuQ
-         VkwCfJsC2zPZPwadqyg/DTYHKAakoiLdwgVTCLYUGLsYJwzVKoG3qWah+CuGQvjO8P1B
-         lZkgMHZE5AfyaCN6yjXakgL1f4N76TSFjGNd43NfHRgkTvp+547DJGxzKqkcum+PTXNL
-         gjNjAiICBDFd3siR2q5+pSQ2gdsXoziqrRFA/QQP9NAYQg8mDlp9tnSUrNoR0H2Ufuhj
-         DP7w==
-X-Gm-Message-State: AOAM530BdI8sTMWuvJFKx5xpJhr7kOwmW1rJzVr0J04Gwy9wjpEYXwtL
-        UOEkDj6eqX/ARi8biUMYbYl5X7k4Y7Xz90zaHTUieirw1+g=
-X-Google-Smtp-Source: ABdhPJzShYQ4h46a87h5uKKkj3fT1sj5ot3177JLfKwiy11XuofXRa/ZmEUFuGBJhb7ix6z1lZk2pDlGsItFAWGLZvM=
-X-Received: by 2002:a05:6e02:1a88:b0:2be:a472:90d9 with SMTP id
- k8-20020a056e021a8800b002bea47290d9mr1374915ilv.239.1645652827834; Wed, 23
- Feb 2022 13:47:07 -0800 (PST)
+        bh=hXkpvEzzYNvCCitEo5bl7Fi1UuXXWRtiv2UdnjZT6sM=;
+        b=s8ZqzkU3w7oXwh6cy8RLajtrgFmr0WKV9KJ3e9piQQcp3DXqcwTgyrM6EHASLPdjP0
+         7bfT2n6WrsLcbbeai60WWmF4dm6QiZzIEN4f+wnXTSlJplvLdEgLnG4xNWPvJyfECAJ4
+         A816CLnXhFcjnzZ9xXP82Lju9dStz5l87qN8K0x7y5AjizOveaX36qbeaxpdf+zGoHrb
+         JcTPAVrzfGmfDRbkWpM5BoTFDh5r5q1DSAWkK0zqhrFiyeEDI05/HQxsBB7JvN1ih5Mr
+         er5L1t6vN01uZo7vTAHCBXAKVK0HKy0HHoDYEuP/oNqGrWZkhpdA7crzNYltNdYjJacz
+         6xQg==
+X-Gm-Message-State: AOAM5312/F5DD0rcmy8uAoa53z0XDL7EmlZv0Q6b4U838ovdUYP/qBe4
+        lHEk8DXABi/9z1cnf+TjRtdFh8VRNKWVT+dxEjJhTqMXe5KlEA==
+X-Google-Smtp-Source: ABdhPJxHvA0cUBmHq99rmj5t3PSpiF25eitrDmQckXHFCohknjeInChiAkF5g/sQcHolp8VqGk9uim92nH2WjX5Q920=
+X-Received: by 2002:a05:6638:382:b0:30e:3e2e:3227 with SMTP id
+ y2-20020a056638038200b0030e3e2e3227mr1348499jap.234.1645653141610; Wed, 23
+ Feb 2022 13:52:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20220218075103.10002-1-9erthalion6@gmail.com>
-In-Reply-To: <20220218075103.10002-1-9erthalion6@gmail.com>
+References: <20220223020645.1169905-1-mykolal@fb.com> <CAEf4BzZ=_p7qxRZr3tWJ8rAb3pM1ynd20Tsq7YoH_302xghzgA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ=_p7qxRZr3tWJ8rAb3pM1ynd20Tsq7YoH_302xghzgA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 23 Feb 2022 13:46:56 -0800
-Message-ID: <CAEf4BzaD4FJw9_45v0-N5MbSKMCDcENQPzUDwo1FWoX-5ixzsg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3] bpftool: Add bpf_cookie to link output
-To:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Date:   Wed, 23 Feb 2022 13:52:10 -0800
+Message-ID: <CAEf4BzZduzFZwZsdUrECo_60ecONDH-RDxgsD4JZKaHR2KweLg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] Small BPF verifier log improvements
+To:     Mykola Lysenko <mykolal@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Yonghong Song <yhs@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -68,163 +66,150 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 11:51 PM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+On Tue, Feb 22, 2022 at 8:23 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie for
-> BPF perf links") introduced the concept of user specified bpf_cookie,
-> which could be accessed by BPF programs using bpf_get_attach_cookie().
-> For troubleshooting purposes it is convenient to expose bpf_cookie via
-> bpftool as well, so there is no need to meddle with the target BPF
-> program itself.
+> On Tue, Feb 22, 2022 at 6:07 PM Mykola Lysenko <mykolal@fb.com> wrote:
+> >
+> > In particular:
+> > 1) remove output of inv for scalars
+> > 2) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
+> > 3) remove output of id=0
+> > 4) remove output of ref_obj_id=0
+> >
+> > Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> > ---
 >
-> Implemented using the pid iterator BPF program to actually fetch
-> bpf_cookies, which allows constraining code changes only to bpftool.
+> LGTM, thanks.
 >
-> $ bpftool link
-> 1: type 7  prog 5
->         bpf_cookie 123
->         pids bootstrap(81)
->
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
-> Changes in v3:
->     - Use pid iterator to fetch bpf_cookie
->
-> Changes in v2:
->     - Display bpf_cookie in bpftool link command instead perf
->
-> Previous discussion: https://lore.kernel.org/bpf/20220204181146.8429-1-9erthalion6@gmail.com/
->
->  tools/bpf/bpftool/main.h                  |  2 ++
->  tools/bpf/bpftool/pids.c                  | 15 +++++++++++++--
->  tools/bpf/bpftool/skeleton/pid_iter.bpf.c | 16 ++++++++++++++++
->  tools/bpf/bpftool/skeleton/pid_iter.h     |  1 +
->  4 files changed, 32 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
-> index 0c3840596b5a..c0042bd56139 100644
-> --- a/tools/bpf/bpftool/main.h
-> +++ b/tools/bpf/bpftool/main.h
-> @@ -114,6 +114,8 @@ struct obj_ref {
->  struct obj_refs {
->         int ref_cnt;
->         struct obj_ref *refs;
-> +       enum bpf_obj_type type;
-> +       __u64 bpf_cookie;
->  };
->
->  struct btf;
-> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-> index 7c384d10e95f..d4db4049d94b 100644
-> --- a/tools/bpf/bpftool/pids.c
-> +++ b/tools/bpf/bpftool/pids.c
-> @@ -28,7 +28,8 @@ void emit_obj_refs_json(struct hashmap *map, __u32 id, json_writer_t *json_write
->
->  #include "pid_iter.skel.h"
->
-> -static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
-> +static void add_ref(struct hashmap *map, struct pid_iter_entry *e,
-> +                               enum bpf_obj_type type)
->  {
->         struct hashmap_entry *entry;
->         struct obj_refs *refs;
-> @@ -55,6 +56,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
->                 ref->pid = e->pid;
->                 memcpy(ref->comm, e->comm, sizeof(ref->comm));
->                 refs->ref_cnt++;
-> +               refs->type = type;
-> +               refs->bpf_cookie = e->bpf_cookie;
->
->                 return;
->         }
-> @@ -78,6 +81,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
->         ref->pid = e->pid;
->         memcpy(ref->comm, e->comm, sizeof(ref->comm));
->         refs->ref_cnt = 1;
-> +       refs->type = type;
-> +       refs->bpf_cookie = e->bpf_cookie;
->
->         err = hashmap__append(map, u32_as_hash_field(e->id), refs);
->         if (err)
-> @@ -161,7 +166,7 @@ int build_obj_refs_table(struct hashmap **map, enum bpf_obj_type type)
->
->                 e = (void *)buf;
->                 for (i = 0; i < ret; i++, e++) {
-> -                       add_ref(*map, e);
-> +                       add_ref(*map, e, type);
->                 }
->         }
->         err = 0;
-> @@ -205,6 +210,9 @@ void emit_obj_refs_json(struct hashmap *map, __u32 id,
->                 if (refs->ref_cnt == 0)
->                         break;
->
-> +               if (refs->type == BPF_OBJ_LINK)
-> +                       jsonw_lluint_field(json_writer, "bpf_cookie", refs->bpf_cookie);
-> +
->                 jsonw_name(json_writer, "pids");
->                 jsonw_start_array(json_writer);
->                 for (i = 0; i < refs->ref_cnt; i++) {
-> @@ -234,6 +242,9 @@ void emit_obj_refs_plain(struct hashmap *map, __u32 id, const char *prefix)
->                 if (refs->ref_cnt == 0)
->                         break;
->
-> +               if (refs->type == BPF_OBJ_LINK)
-> +                       printf("\n\tbpf_cookie %llu", refs->bpf_cookie);
-> +
->                 printf("%s", prefix);
->                 for (i = 0; i < refs->ref_cnt; i++) {
->                         struct obj_ref *ref = &refs->refs[i];
-> diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> index f70702fcb224..afdfdfbf305d 100644
-> --- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-> @@ -38,6 +38,17 @@ static __always_inline __u32 get_obj_id(void *ent, enum bpf_obj_type type)
->         }
->  }
->
-> +static __always_inline __u64 get_bpf_cookie(struct bpf_link *link)
-> +{
-> +       struct bpf_perf_link *perf_link;
-> +       struct perf_event *event;
-> +
-> +       perf_link = container_of(link, struct bpf_perf_link, link);
-> +       event = BPF_CORE_READ(perf_link, perf_file, private_data);
-> +       return BPF_CORE_READ(event, bpf_cookie);
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-not every bpf_link is bpf_perf_link, you can't do it for every
-instance of bpf_link.
+Actually seems like you missed updating some tests, please take a look:
 
-> +}
-> +
-> +
->  SEC("iter/task_file")
->  int iter(struct bpf_iter__task_file *ctx)
->  {
-> @@ -71,6 +82,11 @@ int iter(struct bpf_iter__task_file *ctx)
+  [0] https://github.com/kernel-patches/bpf/runs/5297754845?check_suite_focus=true
+
 >
->         e.pid = task->tgid;
->         e.id = get_obj_id(file->private_data, obj_type);
-> +       e.bpf_cookie = 0;
-> +
-> +       if (obj_type == BPF_OBJ_LINK)
-> +               e.bpf_cookie = get_bpf_cookie((struct bpf_link *) file->private_data);
-> +
->         bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm),
->                                   task->group_leader->comm);
->         bpf_seq_write(ctx->meta->seq, &e, sizeof(e));
-> diff --git a/tools/bpf/bpftool/skeleton/pid_iter.h b/tools/bpf/bpftool/skeleton/pid_iter.h
-> index 5692cf257adb..a631640f6fe4 100644
-> --- a/tools/bpf/bpftool/skeleton/pid_iter.h
-> +++ b/tools/bpf/bpftool/skeleton/pid_iter.h
-> @@ -7,6 +7,7 @@ struct pid_iter_entry {
->         __u32 id;
->         int pid;
->         char comm[16];
-> +       __u64 bpf_cookie;
->  };
+> >  kernel/bpf/verifier.c                         |  59 ++---
+> >  .../testing/selftests/bpf/prog_tests/align.c  | 218 +++++++++---------
+> >  .../selftests/bpf/prog_tests/log_buf.c        |   4 +-
+> >  3 files changed, 143 insertions(+), 138 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index d7473fee247c..91154806715d 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -539,7 +539,7 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+> >         char postfix[16] = {0}, prefix[32] = {0};
+> >         static const char * const str[] = {
+> >                 [NOT_INIT]              = "?",
+> > -               [SCALAR_VALUE]          = "inv",
+> > +               [SCALAR_VALUE]          = "",
+> >                 [PTR_TO_CTX]            = "ctx",
+> >                 [CONST_PTR_TO_MAP]      = "map_ptr",
+> >                 [PTR_TO_MAP_VALUE]      = "map_value",
+> > @@ -693,66 +693,71 @@ static void print_verifier_state(struct bpf_verifier_env *env,
+> >                         /* reg->off should be 0 for SCALAR_VALUE */
+> >                         verbose(env, "%lld", reg->var_off.value + reg->off);
+> >                 } else {
+> > +                       const char *sep = "";
+> > +
+> >                         if (base_type(t) == PTR_TO_BTF_ID ||
+> >                             base_type(t) == PTR_TO_PERCPU_BTF_ID)
+> >                                 verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
+> > -                       verbose(env, "(id=%d", reg->id);
+> > -                       if (reg_type_may_be_refcounted_or_null(t))
+> > -                               verbose(env, ",ref_obj_id=%d", reg->ref_obj_id);
+> > +                       verbose(env, "(");
+> > +
+> > +/*
+> > + * _a stands for append, was shortened to avoid multiline statements below. this macro is used to
+> > + * output a comma separated list of attributes
+> > + */
+> > +#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__); sep = ","; })
 >
->  #endif
-> --
-> 2.32.0
+> it's a very local macro so it probably doesn't matter all that much,
+> but a bit more readable name could be verbose_attr() or even just
+> log_attr(). I'll leave it up to Alexei and Daniel to decide if they'd
+> like to change it.
 >
+> > +
+> > +                       if (reg->id)
+> > +                               verbose_a("id=%d", reg->id);
+> > +                       if (reg_type_may_be_refcounted_or_null(t) && reg->ref_obj_id)
+> > +                               verbose_a("ref_obj_id=%d", reg->ref_obj_id);
+> >                         if (t != SCALAR_VALUE)
+> > -                               verbose(env, ",off=%d", reg->off);
+> > +                               verbose_a("off=%d", reg->off);
+> >                         if (type_is_pkt_pointer(t))
+> > -                               verbose(env, ",r=%d", reg->range);
+> > +                               verbose_a("r=%d", reg->range);
+> >                         else if (base_type(t) == CONST_PTR_TO_MAP ||
+> >                                  base_type(t) == PTR_TO_MAP_KEY ||
+> >                                  base_type(t) == PTR_TO_MAP_VALUE)
+> > -                               verbose(env, ",ks=%d,vs=%d",
+> > -                                       reg->map_ptr->key_size,
+> > -                                       reg->map_ptr->value_size);
+> > +                               verbose_a("ks=%d,vs=%d",
+> > +                                         reg->map_ptr->key_size,
+> > +                                         reg->map_ptr->value_size);
+> >                         if (tnum_is_const(reg->var_off)) {
+> >                                 /* Typically an immediate SCALAR_VALUE, but
+> >                                  * could be a pointer whose offset is too big
+> >                                  * for reg->off
+> >                                  */
+> > -                               verbose(env, ",imm=%llx", reg->var_off.value);
+> > +                               verbose_a("imm=%llx", reg->var_off.value);
+> >                         } else {
+> >                                 if (reg->smin_value != reg->umin_value &&
+> >                                     reg->smin_value != S64_MIN)
+> > -                                       verbose(env, ",smin_value=%lld",
+> > -                                               (long long)reg->smin_value);
+> > +                                       verbose_a("smin=%lld", (long long)reg->smin_value);
+> >                                 if (reg->smax_value != reg->umax_value &&
+> >                                     reg->smax_value != S64_MAX)
+> > -                                       verbose(env, ",smax_value=%lld",
+> > -                                               (long long)reg->smax_value);
+> > +                                       verbose_a("smax=%lld", (long long)reg->smax_value);
+> >                                 if (reg->umin_value != 0)
+> > -                                       verbose(env, ",umin_value=%llu",
+> > -                                               (unsigned long long)reg->umin_value);
+> > +                                       verbose_a("umin=%llu", (unsigned long long)reg->umin_value);
+> >                                 if (reg->umax_value != U64_MAX)
+> > -                                       verbose(env, ",umax_value=%llu",
+> > -                                               (unsigned long long)reg->umax_value);
+> > +                                       verbose_a("umax=%llu", (unsigned long long)reg->umax_value);
+> >                                 if (!tnum_is_unknown(reg->var_off)) {
+> >                                         char tn_buf[48];
+> >
+> >                                         tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> > -                                       verbose(env, ",var_off=%s", tn_buf);
+> > +                                       verbose_a("var_off=%s", tn_buf);
+> >                                 }
+> >                                 if (reg->s32_min_value != reg->smin_value &&
+> >                                     reg->s32_min_value != S32_MIN)
+> > -                                       verbose(env, ",s32_min_value=%d",
+> > -                                               (int)(reg->s32_min_value));
+> > +                                       verbose_a("s32_min=%d", (int)(reg->s32_min_value));
+> >                                 if (reg->s32_max_value != reg->smax_value &&
+> >                                     reg->s32_max_value != S32_MAX)
+> > -                                       verbose(env, ",s32_max_value=%d",
+> > -                                               (int)(reg->s32_max_value));
+> > +                                       verbose_a("s32_max=%d", (int)(reg->s32_max_value));
+> >                                 if (reg->u32_min_value != reg->umin_value &&
+> >                                     reg->u32_min_value != U32_MIN)
+> > -                                       verbose(env, ",u32_min_value=%d",
+> > -                                               (int)(reg->u32_min_value));
+> > +                                       verbose_a("u32_min=%d", (int)(reg->u32_min_value));
+> >                                 if (reg->u32_max_value != reg->umax_value &&
+> >                                     reg->u32_max_value != U32_MAX)
+> > -                                       verbose(env, ",u32_max_value=%d",
+> > -                                               (int)(reg->u32_max_value));
+> > +                                       verbose_a("u32_max=%d", (int)(reg->u32_max_value));
+> >                         }
+> > +#undef verbose_a
+> > +
+> >                         verbose(env, ")");
+> >                 }
+> >         }
+>
+> [...]
