@@ -2,61 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70274C0A29
-	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 04:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B64204C0B08
+	for <lists+bpf@lfdr.de>; Wed, 23 Feb 2022 05:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbiBWDWr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Feb 2022 22:22:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
+        id S233051AbiBWEY1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Feb 2022 23:24:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237736AbiBWDWq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Feb 2022 22:22:46 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9586F31352;
-        Tue, 22 Feb 2022 19:22:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4D2DBB81E34;
-        Wed, 23 Feb 2022 03:22:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B888C340E8;
-        Wed, 23 Feb 2022 03:22:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645586537;
-        bh=lg6yqO7Dr/3RAU+AMRY7QoG1UsSGE09TyZ94UM1qbQQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gCo9uwVLP4d1JlkpHfuMRUUH+KKwB1Clv7DYGri21erCtgjkh4WNX4vJKUu9nuFUC
-         cZP3P9Og6LPCevG07qnGgH249bdUjqhQOvYzqse9k9emzI42iVwwW5K3x+uZJ1i6E2
-         MxBzA5N1n3liFCEK5B1/4q90ADLfNa59lH+YChtKwfpLU8EUnQbT1G0C91EeQ35qWr
-         hDZTE1/Sdn8Eh2uDKTqB0Ypu06EUeKrWIogEz6eUQFRaIvqgqgcJcEm2yOn07j1mDw
-         J/JU3DjF7bTjDpugAiv8Ztj11rc3bkH62i/J3aLY50ZJhbdQs3NlDwmYIPNw7ikWqd
-         QnNMmZE5K39tw==
-Date:   Wed, 23 Feb 2022 12:22:11 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        with ESMTP id S230187AbiBWEY0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Feb 2022 23:24:26 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA333DA4D
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 20:23:59 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id s1so22957114iob.9
+        for <bpf@vger.kernel.org>; Tue, 22 Feb 2022 20:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VFj2CaE1ZACWXMB3IRfH8zBAYMktKVEGtUCeow+dGnk=;
+        b=pepjUSbInRUsn/8PHL1cmpuRNzrjQhNcTd4O4NNhEb8J2+FniSDi6DWMemU3LFH+of
+         6RQawA4kurKp8swJsNTfcwGiiB0o9kGKy61nXb2teOxX2ES0Xc+mpkCROZncizGdlk5r
+         QYGVYtJRlmoQlPDV2ruJ5KUjHX0CbM6KfqFm3nmKZMw1xQfc4GT8RT+8DUPDCzGQCBTg
+         8NopMtnhY6FQoHT1Hw3R98rkUddReNu9Cga/LEQcA7QI5wJPiqOPaH02e+RKdH/yJPLK
+         ZurjNbalcPrLydxJxwS7a0BFiitl2LXL30BcYH6NOEZdJbLuDcqqAhSz0bJxr4NtVwX/
+         vB/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VFj2CaE1ZACWXMB3IRfH8zBAYMktKVEGtUCeow+dGnk=;
+        b=S0Bx4Lvs6A0NuCVAgFNAlG5iHVfIjjnvwOaG9s6+VG0rxTbte/UD6K7dZfkDWezgHl
+         EQvMMUpDuKAClbaZy9T4J6dldieRpXMY7hAWDjFunwREROJFqnLNaXXGSx3wOpheuRtC
+         ddMTVsGTa8BQqfM3g3mEiiE6EvLK1KEI4wLfMqnLtyF0boU3yIj6JgyqgDp+rMP1f8rS
+         uOsEjAGx6snlD2mUq/KDdUHO6qe1pAQyg8wCWNRevXLnqX5yCr+BkCB58H/0cdbLAEG1
+         VGtfvP04CFlpDxfTByaLeM9rg4qrnxpJ+AQ9BDWuPz6IzTirM3tO8d2CV/FyEYG7jy8c
+         XuHA==
+X-Gm-Message-State: AOAM5317Ni10EOFbSnZa0Y7Zn/XcfoqIQR0qLLc3Fg98E+IuaeOSUJjQ
+        52FtDHSReOgeHbqyXpWYHlXV0fGtQorXsLT3e6H2VL4GKHCHCg==
+X-Google-Smtp-Source: ABdhPJw6lkeg9YjNybR0EE7FgKjAnjXH16lKWRbDbAn792FjOU4YGUIV1AH4zs4jCSqAj0gccOqsqreYCWoMSmDgD/w=
+X-Received: by 2002:a05:6602:210c:b0:640:7616:d93a with SMTP id
+ x12-20020a056602210c00b006407616d93amr18149887iox.154.1645590238654; Tue, 22
+ Feb 2022 20:23:58 -0800 (PST)
+MIME-Version: 1.0
+References: <20220223020645.1169905-1-mykolal@fb.com>
+In-Reply-To: <20220223020645.1169905-1-mykolal@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 22 Feb 2022 20:23:47 -0800
+Message-ID: <CAEf4BzZ=_p7qxRZr3tWJ8rAb3pM1ynd20Tsq7YoH_302xghzgA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] Small BPF verifier log improvements
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 01/10] lib/sort: Add priv pointer to swap function
-Message-Id: <20220223122211.f1cf0bf0d019d79322c19957@kernel.org>
-In-Reply-To: <20220222170600.611515-2-jolsa@kernel.org>
-References: <20220222170600.611515-1-jolsa@kernel.org>
-        <20220222170600.611515-2-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,164 +66,142 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 22 Feb 2022 18:05:51 +0100
-Jiri Olsa <jolsa@kernel.org> wrote:
-
-> Adding support to have priv pointer in swap callback function.
-> 
-> Following the initial change on cmp callback functions [1]
-> and adding SWAP_WRAPPER macro to identify sort call of sort_r.
-> 
-
-This looks good to me.
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> [1] 4333fb96ca10 ("media: lib/sort.c: implement sort() variant taking context argument")
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Tue, Feb 22, 2022 at 6:07 PM Mykola Lysenko <mykolal@fb.com> wrote:
+>
+> In particular:
+> 1) remove output of inv for scalars
+> 2) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
+> 3) remove output of id=0
+> 4) remove output of ref_obj_id=0
+>
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 > ---
->  include/linux/sort.h  |  2 +-
->  include/linux/types.h |  1 +
->  lib/sort.c            | 40 ++++++++++++++++++++++++++++++----------
->  3 files changed, 32 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/sort.h b/include/linux/sort.h
-> index b5898725fe9d..e163287ac6c1 100644
-> --- a/include/linux/sort.h
-> +++ b/include/linux/sort.h
-> @@ -6,7 +6,7 @@
->  
->  void sort_r(void *base, size_t num, size_t size,
->  	    cmp_r_func_t cmp_func,
-> -	    swap_func_t swap_func,
-> +	    swap_r_func_t swap_func,
->  	    const void *priv);
->  
->  void sort(void *base, size_t num, size_t size,
-> diff --git a/include/linux/types.h b/include/linux/types.h
-> index ac825ad90e44..ea8cf60a8a79 100644
-> --- a/include/linux/types.h
-> +++ b/include/linux/types.h
-> @@ -226,6 +226,7 @@ struct callback_head {
->  typedef void (*rcu_callback_t)(struct rcu_head *head);
->  typedef void (*call_rcu_func_t)(struct rcu_head *head, rcu_callback_t func);
->  
-> +typedef void (*swap_r_func_t)(void *a, void *b, int size, const void *priv);
->  typedef void (*swap_func_t)(void *a, void *b, int size);
->  
->  typedef int (*cmp_r_func_t)(const void *a, const void *b, const void *priv);
-> diff --git a/lib/sort.c b/lib/sort.c
-> index aa18153864d2..b399bf10d675 100644
-> --- a/lib/sort.c
-> +++ b/lib/sort.c
-> @@ -122,16 +122,27 @@ static void swap_bytes(void *a, void *b, size_t n)
->   * a pointer, but small integers make for the smallest compare
->   * instructions.
->   */
-> -#define SWAP_WORDS_64 (swap_func_t)0
-> -#define SWAP_WORDS_32 (swap_func_t)1
-> -#define SWAP_BYTES    (swap_func_t)2
-> +#define SWAP_WORDS_64 (swap_r_func_t)0
-> +#define SWAP_WORDS_32 (swap_r_func_t)1
-> +#define SWAP_BYTES    (swap_r_func_t)2
-> +#define SWAP_WRAPPER  (swap_r_func_t)3
-> +
-> +struct wrapper {
-> +	cmp_func_t cmp;
-> +	swap_func_t swap;
-> +};
->  
->  /*
->   * The function pointer is last to make tail calls most efficient if the
->   * compiler decides not to inline this function.
->   */
-> -static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
-> +static void do_swap(void *a, void *b, size_t size, swap_r_func_t swap_func, const void *priv)
->  {
-> +	if (swap_func == SWAP_WRAPPER) {
-> +		((const struct wrapper *)priv)->swap(a, b, (int)size);
-> +		return;
-> +	}
-> +
->  	if (swap_func == SWAP_WORDS_64)
->  		swap_words_64(a, b, size);
->  	else if (swap_func == SWAP_WORDS_32)
-> @@ -139,7 +150,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
->  	else if (swap_func == SWAP_BYTES)
->  		swap_bytes(a, b, size);
->  	else
-> -		swap_func(a, b, (int)size);
-> +		swap_func(a, b, (int)size, priv);
->  }
->  
->  #define _CMP_WRAPPER ((cmp_r_func_t)0L)
-> @@ -147,7 +158,7 @@ static void do_swap(void *a, void *b, size_t size, swap_func_t swap_func)
->  static int do_cmp(const void *a, const void *b, cmp_r_func_t cmp, const void *priv)
->  {
->  	if (cmp == _CMP_WRAPPER)
-> -		return ((cmp_func_t)(priv))(a, b);
-> +		return ((const struct wrapper *)priv)->cmp(a, b);
->  	return cmp(a, b, priv);
->  }
->  
-> @@ -198,7 +209,7 @@ static size_t parent(size_t i, unsigned int lsbit, size_t size)
->   */
->  void sort_r(void *base, size_t num, size_t size,
->  	    cmp_r_func_t cmp_func,
-> -	    swap_func_t swap_func,
-> +	    swap_r_func_t swap_func,
->  	    const void *priv)
->  {
->  	/* pre-scale counters for performance */
-> @@ -208,6 +219,10 @@ void sort_r(void *base, size_t num, size_t size,
->  	if (!a)		/* num < 2 || size == 0 */
->  		return;
->  
-> +	/* called from 'sort' without swap function, let's pick the default */
-> +	if (swap_func == SWAP_WRAPPER && !((struct wrapper *)priv)->swap)
-> +		swap_func = NULL;
-> +
->  	if (!swap_func) {
->  		if (is_aligned(base, size, 8))
->  			swap_func = SWAP_WORDS_64;
-> @@ -230,7 +245,7 @@ void sort_r(void *base, size_t num, size_t size,
->  		if (a)			/* Building heap: sift down --a */
->  			a -= size;
->  		else if (n -= size)	/* Sorting: Extract root to --n */
-> -			do_swap(base, base + n, size, swap_func);
-> +			do_swap(base, base + n, size, swap_func, priv);
->  		else			/* Sort complete */
->  			break;
->  
-> @@ -257,7 +272,7 @@ void sort_r(void *base, size_t num, size_t size,
->  		c = b;			/* Where "a" belongs */
->  		while (b != a) {	/* Shift it into place */
->  			b = parent(b, lsbit, size);
-> -			do_swap(base + b, base + c, size, swap_func);
-> +			do_swap(base + b, base + c, size, swap_func, priv);
->  		}
->  	}
->  }
-> @@ -267,6 +282,11 @@ void sort(void *base, size_t num, size_t size,
->  	  cmp_func_t cmp_func,
->  	  swap_func_t swap_func)
->  {
-> -	return sort_r(base, num, size, _CMP_WRAPPER, swap_func, cmp_func);
-> +	struct wrapper w = {
-> +		.cmp  = cmp_func,
-> +		.swap = swap_func,
-> +	};
-> +
-> +	return sort_r(base, num, size, _CMP_WRAPPER, SWAP_WRAPPER, &w);
->  }
->  EXPORT_SYMBOL(sort);
-> -- 
-> 2.35.1
-> 
 
+LGTM, thanks.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  kernel/bpf/verifier.c                         |  59 ++---
+>  .../testing/selftests/bpf/prog_tests/align.c  | 218 +++++++++---------
+>  .../selftests/bpf/prog_tests/log_buf.c        |   4 +-
+>  3 files changed, 143 insertions(+), 138 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d7473fee247c..91154806715d 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -539,7 +539,7 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
+>         char postfix[16] = {0}, prefix[32] = {0};
+>         static const char * const str[] = {
+>                 [NOT_INIT]              = "?",
+> -               [SCALAR_VALUE]          = "inv",
+> +               [SCALAR_VALUE]          = "",
+>                 [PTR_TO_CTX]            = "ctx",
+>                 [CONST_PTR_TO_MAP]      = "map_ptr",
+>                 [PTR_TO_MAP_VALUE]      = "map_value",
+> @@ -693,66 +693,71 @@ static void print_verifier_state(struct bpf_verifier_env *env,
+>                         /* reg->off should be 0 for SCALAR_VALUE */
+>                         verbose(env, "%lld", reg->var_off.value + reg->off);
+>                 } else {
+> +                       const char *sep = "";
+> +
+>                         if (base_type(t) == PTR_TO_BTF_ID ||
+>                             base_type(t) == PTR_TO_PERCPU_BTF_ID)
+>                                 verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
+> -                       verbose(env, "(id=%d", reg->id);
+> -                       if (reg_type_may_be_refcounted_or_null(t))
+> -                               verbose(env, ",ref_obj_id=%d", reg->ref_obj_id);
+> +                       verbose(env, "(");
+> +
+> +/*
+> + * _a stands for append, was shortened to avoid multiline statements below. this macro is used to
+> + * output a comma separated list of attributes
+> + */
+> +#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__); sep = ","; })
+
+it's a very local macro so it probably doesn't matter all that much,
+but a bit more readable name could be verbose_attr() or even just
+log_attr(). I'll leave it up to Alexei and Daniel to decide if they'd
+like to change it.
+
+> +
+> +                       if (reg->id)
+> +                               verbose_a("id=%d", reg->id);
+> +                       if (reg_type_may_be_refcounted_or_null(t) && reg->ref_obj_id)
+> +                               verbose_a("ref_obj_id=%d", reg->ref_obj_id);
+>                         if (t != SCALAR_VALUE)
+> -                               verbose(env, ",off=%d", reg->off);
+> +                               verbose_a("off=%d", reg->off);
+>                         if (type_is_pkt_pointer(t))
+> -                               verbose(env, ",r=%d", reg->range);
+> +                               verbose_a("r=%d", reg->range);
+>                         else if (base_type(t) == CONST_PTR_TO_MAP ||
+>                                  base_type(t) == PTR_TO_MAP_KEY ||
+>                                  base_type(t) == PTR_TO_MAP_VALUE)
+> -                               verbose(env, ",ks=%d,vs=%d",
+> -                                       reg->map_ptr->key_size,
+> -                                       reg->map_ptr->value_size);
+> +                               verbose_a("ks=%d,vs=%d",
+> +                                         reg->map_ptr->key_size,
+> +                                         reg->map_ptr->value_size);
+>                         if (tnum_is_const(reg->var_off)) {
+>                                 /* Typically an immediate SCALAR_VALUE, but
+>                                  * could be a pointer whose offset is too big
+>                                  * for reg->off
+>                                  */
+> -                               verbose(env, ",imm=%llx", reg->var_off.value);
+> +                               verbose_a("imm=%llx", reg->var_off.value);
+>                         } else {
+>                                 if (reg->smin_value != reg->umin_value &&
+>                                     reg->smin_value != S64_MIN)
+> -                                       verbose(env, ",smin_value=%lld",
+> -                                               (long long)reg->smin_value);
+> +                                       verbose_a("smin=%lld", (long long)reg->smin_value);
+>                                 if (reg->smax_value != reg->umax_value &&
+>                                     reg->smax_value != S64_MAX)
+> -                                       verbose(env, ",smax_value=%lld",
+> -                                               (long long)reg->smax_value);
+> +                                       verbose_a("smax=%lld", (long long)reg->smax_value);
+>                                 if (reg->umin_value != 0)
+> -                                       verbose(env, ",umin_value=%llu",
+> -                                               (unsigned long long)reg->umin_value);
+> +                                       verbose_a("umin=%llu", (unsigned long long)reg->umin_value);
+>                                 if (reg->umax_value != U64_MAX)
+> -                                       verbose(env, ",umax_value=%llu",
+> -                                               (unsigned long long)reg->umax_value);
+> +                                       verbose_a("umax=%llu", (unsigned long long)reg->umax_value);
+>                                 if (!tnum_is_unknown(reg->var_off)) {
+>                                         char tn_buf[48];
+>
+>                                         tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> -                                       verbose(env, ",var_off=%s", tn_buf);
+> +                                       verbose_a("var_off=%s", tn_buf);
+>                                 }
+>                                 if (reg->s32_min_value != reg->smin_value &&
+>                                     reg->s32_min_value != S32_MIN)
+> -                                       verbose(env, ",s32_min_value=%d",
+> -                                               (int)(reg->s32_min_value));
+> +                                       verbose_a("s32_min=%d", (int)(reg->s32_min_value));
+>                                 if (reg->s32_max_value != reg->smax_value &&
+>                                     reg->s32_max_value != S32_MAX)
+> -                                       verbose(env, ",s32_max_value=%d",
+> -                                               (int)(reg->s32_max_value));
+> +                                       verbose_a("s32_max=%d", (int)(reg->s32_max_value));
+>                                 if (reg->u32_min_value != reg->umin_value &&
+>                                     reg->u32_min_value != U32_MIN)
+> -                                       verbose(env, ",u32_min_value=%d",
+> -                                               (int)(reg->u32_min_value));
+> +                                       verbose_a("u32_min=%d", (int)(reg->u32_min_value));
+>                                 if (reg->u32_max_value != reg->umax_value &&
+>                                     reg->u32_max_value != U32_MAX)
+> -                                       verbose(env, ",u32_max_value=%d",
+> -                                               (int)(reg->u32_max_value));
+> +                                       verbose_a("u32_max=%d", (int)(reg->u32_max_value));
+>                         }
+> +#undef verbose_a
+> +
+>                         verbose(env, ")");
+>                 }
+>         }
+
+[...]
