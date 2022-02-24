@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC6E4C3063
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 16:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D674C3060
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 16:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236699AbiBXPx2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 10:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38140 "EHLO
+        id S236706AbiBXPxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 10:53:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236687AbiBXPx1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 10:53:27 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B331768EE;
-        Thu, 24 Feb 2022 07:52:57 -0800 (PST)
+        with ESMTP id S236708AbiBXPxg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 10:53:36 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838CC17C428;
+        Thu, 24 Feb 2022 07:53:05 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7AC56B826E6;
-        Thu, 24 Feb 2022 15:52:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F097DC340E9;
-        Thu, 24 Feb 2022 15:52:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F64661734;
+        Thu, 24 Feb 2022 15:53:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C30C340E9;
+        Thu, 24 Feb 2022 15:53:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645717974;
-        bh=F4B7NFz9O/AImD8t6k14afQUAbBcNtoV7Q8whGE42BM=;
+        s=k20201202; t=1645717984;
+        bh=n55syU/tXlapEzX4NoBEFxyvoVefYeSgGLgTfFUMav8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EeywNKUH6h2996oP6wWhEg+LGKCRrgFB+rLpe10CkDRvKlu/zDU6QfuVQwWrhfQhX
-         UQmtz293qTN80adgnHCR9PPchreiURKTZgA6vu1ZjAimSLuIfHKYX12PtYBJUlnDTo
-         /ofLE4LV//VO6dO67Z+S9EZAVSeYqtDpaVAWLcXHpmsb4hqgDo/IySd30Kul1FkXFY
-         GdfWi7JoShwp8abeN+fQt2AtQ3Bf0pGOayx4Gu4g+r4155h4Yw9yxQGws97//svsZ2
-         LSoTrIrt1ENXj2gwsZpq3KW6ksM5O5MYHSaIqO53jak7xbLS4EGOdIcirGLOPgzD9x
-         anJpmYNiBGvag==
+        b=YOmV7Lo0ztEeqpzwMFaagIJ6aguH2nu6mxkjva0+rxH/8xI3F93BzCbkjZzE6jCJd
+         5eDZ2xnHWaT3lJOvNCMX3VGkQHfvTt68I/u7em4cMd+Uc9KT+PgsCVE+G0fL79qh+D
+         fLcW85uUy7p1YRsQZvZ7mEdMVBdu88IVJRRaWE/MFc6Mmb5iCICaXFtsekRi9xrAld
+         4+CGN2KLIYWzMk8Sg79c+sUWuNYGqGoklbRqNLUhG6EJdz6fzPw6ZWd71+pNQXQ0JK
+         OtXUm+XBMl9R0LX5h7OIflDPadxaqYDmgLC9K9th18wAiv/yTg7jPIDKaSqFOucEfb
+         LajHmig4L4muw==
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Andrii Nakryiko <andrii@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     Andrii Nakryiko <andrii@kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Ian Rogers <irogers@google.com>,
         linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 1/2] perf tools: Remove bpf_program__set_priv/bpf_program__priv usage
-Date:   Thu, 24 Feb 2022 16:52:37 +0100
-Message-Id: <20220224155238.714682-2-jolsa@kernel.org>
+Subject: [PATCH 2/2] perf tools: Remove bpf_map__set_priv/bpf_map__priv usage
+Date:   Thu, 24 Feb 2022 16:52:38 +0100
+Message-Id: <20220224155238.714682-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220224155238.714682-1-jolsa@kernel.org>
 References: <20220224155238.714682-1-jolsa@kernel.org>
@@ -60,7 +60,7 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both bpf_program__set_priv/bpf_program__priv are deprecated
+Both bpf_map__set_priv/bpf_map__priv are deprecated
 and will be eventually removed.
 
 Using hashmap to replace that functionality.
@@ -68,185 +68,163 @@ Using hashmap to replace that functionality.
 Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/perf/util/bpf-loader.c | 98 ++++++++++++++++++++++++++++++------
- 1 file changed, 82 insertions(+), 16 deletions(-)
+ tools/perf/util/bpf-loader.c | 66 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 59 insertions(+), 7 deletions(-)
 
 diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index efd9c703b5cc..b9d4278895ec 100644
+index b9d4278895ec..4f6173756a9d 100644
 --- a/tools/perf/util/bpf-loader.c
 +++ b/tools/perf/util/bpf-loader.c
-@@ -26,6 +26,7 @@
- #include "util.h"
+@@ -27,6 +27,7 @@
  #include "llvm-utils.h"
  #include "c++/clang-c.h"
-+#include "hashmap.h"
+ #include "hashmap.h"
++#include "asm/bug.h"
  
  #include <internal/xyarray.h>
  
-@@ -55,6 +56,7 @@ struct bpf_perf_object {
- };
+@@ -57,6 +58,7 @@ struct bpf_perf_object {
  
  static LIST_HEAD(bpf_objects_list);
-+static struct hashmap *bpf_program_hash;
+ static struct hashmap *bpf_program_hash;
++static struct hashmap *bpf_map_hash;
  
  static struct bpf_perf_object *
  bpf_perf_object__next(struct bpf_perf_object *prev)
-@@ -173,6 +175,35 @@ struct bpf_object *bpf__prepare_load(const char *filename, bool source)
- 	return obj;
+@@ -204,6 +206,8 @@ static void bpf_program_hash_free(void)
+ 	bpf_program_hash = NULL;
  }
  
-+static void
-+clear_prog_priv(const struct bpf_program *prog __maybe_unused,
-+		void *_priv)
-+{
-+	struct bpf_prog_priv *priv = _priv;
-+
-+	cleanup_perf_probe_events(&priv->pev, 1);
-+	zfree(&priv->insns_buf);
-+	zfree(&priv->type_mapping);
-+	zfree(&priv->sys_name);
-+	zfree(&priv->evt_name);
-+	free(priv);
-+}
-+
-+static void bpf_program_hash_free(void)
-+{
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+
-+	if (IS_ERR_OR_NULL(bpf_program_hash))
-+		return;
-+
-+	hashmap__for_each_entry(bpf_program_hash, cur, bkt)
-+		clear_prog_priv(cur->key, cur->value);
-+
-+	hashmap__free(bpf_program_hash);
-+	bpf_program_hash = NULL;
-+}
++static void bpf_map_hash_free(void);
 +
  void bpf__clear(void)
  {
  	struct bpf_perf_object *perf_obj, *tmp;
-@@ -181,20 +212,55 @@ void bpf__clear(void)
- 		bpf__unprobe(perf_obj->obj);
- 		bpf_perf_object__close(perf_obj);
+@@ -214,6 +218,7 @@ void bpf__clear(void)
  	}
-+
-+	bpf_program_hash_free();
+ 
+ 	bpf_program_hash_free();
++	bpf_map_hash_free();
  }
  
--static void
--clear_prog_priv(struct bpf_program *prog __maybe_unused,
--		void *_priv)
-+static size_t ptr_hash(const void *__key, void *ctx __maybe_unused)
- {
--	struct bpf_prog_priv *priv = _priv;
-+	return (size_t) __key;
-+}
+ static size_t ptr_hash(const void *__key, void *ctx __maybe_unused)
+@@ -976,7 +981,7 @@ bpf_map_priv__purge(struct bpf_map_priv *priv)
+ }
  
--	cleanup_perf_probe_events(&priv->pev, 1);
--	zfree(&priv->insns_buf);
--	zfree(&priv->type_mapping);
--	zfree(&priv->sys_name);
--	zfree(&priv->evt_name);
--	free(priv);
-+static bool ptr_equal(const void *key1, const void *key2,
-+			  void *ctx __maybe_unused)
-+{
-+	return key1 == key2;
-+}
-+
-+static void *program_priv(const struct bpf_program *prog)
+ static void
+-bpf_map_priv__clear(struct bpf_map *map __maybe_unused,
++bpf_map_priv__clear(const struct bpf_map *map __maybe_unused,
+ 		    void *_priv)
+ {
+ 	struct bpf_map_priv *priv = _priv;
+@@ -985,6 +990,53 @@ bpf_map_priv__clear(struct bpf_map *map __maybe_unused,
+ 	free(priv);
+ }
+ 
++static void *map_priv(const struct bpf_map *map)
 +{
 +	void *priv;
 +
-+	if (IS_ERR_OR_NULL(bpf_program_hash))
++	if (IS_ERR_OR_NULL(bpf_map_hash))
 +		return NULL;
-+	if (!hashmap__find(bpf_program_hash, prog, &priv))
++	if (!hashmap__find(bpf_map_hash, map, &priv))
 +		return NULL;
 +	return priv;
 +}
 +
-+static int program_set_priv(struct bpf_program *prog, void *priv)
++static void bpf_map_hash_free(void)
++{
++	struct hashmap_entry *cur;
++	size_t bkt;
++
++	if (IS_ERR_OR_NULL(bpf_map_hash))
++		return;
++
++	hashmap__for_each_entry(bpf_map_hash, cur, bkt)
++		bpf_map_priv__clear(cur->key, cur->value);
++
++	hashmap__free(bpf_map_hash);
++	bpf_map_hash = NULL;
++}
++
++static int map_set_priv(struct bpf_map *map, void *priv)
 +{
 +	void *old_priv;
 +
-+	/*
-+	 * Should not happen, we warn about it in the
-+	 * caller function - config_bpf_program
-+	 */
-+	if (IS_ERR(bpf_program_hash))
++	if (WARN_ON_ONCE(IS_ERR(bpf_map_hash)))
 +		return PTR_ERR(bpf_program_hash);
 +
-+	if (!bpf_program_hash) {
-+		bpf_program_hash = hashmap__new(ptr_hash, ptr_equal, NULL);
-+		if (IS_ERR(bpf_program_hash))
-+			return PTR_ERR(bpf_program_hash);
++	if (!bpf_map_hash) {
++		bpf_map_hash = hashmap__new(ptr_hash, ptr_equal, NULL);
++		if (IS_ERR(bpf_map_hash))
++			return PTR_ERR(bpf_map_hash);
 +	}
 +
-+	old_priv = program_priv(prog);
++	old_priv = map_priv(map);
 +	if (old_priv) {
-+		clear_prog_priv(prog, old_priv);
-+		return hashmap__set(bpf_program_hash, prog, priv, NULL, NULL);
++		bpf_map_priv__clear(map, old_priv);
++		return hashmap__set(bpf_map_hash, map, priv, NULL, NULL);
 +	}
-+	return hashmap__add(bpf_program_hash, prog, priv);
- }
- 
++	return hashmap__add(bpf_map_hash, map, priv);
++}
++
  static int
-@@ -438,7 +504,7 @@ config_bpf_program(struct bpf_program *prog)
- 	pr_debug("bpf: config '%s' is ok\n", config_str);
- 
- set_priv:
--	err = bpf_program__set_priv(prog, priv, clear_prog_priv);
-+	err = program_set_priv(prog, priv);
- 	if (err) {
- 		pr_debug("Failed to set priv for program '%s'\n", config_str);
- 		goto errout;
-@@ -479,7 +545,7 @@ preproc_gen_prologue(struct bpf_program *prog, int n,
- 		     struct bpf_insn *orig_insns, int orig_insns_cnt,
- 		     struct bpf_prog_prep_result *res)
+ bpf_map_op_setkey(struct bpf_map_op *op, struct parse_events_term *term)
  {
--	struct bpf_prog_priv *priv = bpf_program__priv(prog);
-+	struct bpf_prog_priv *priv = program_priv(prog);
- 	struct probe_trace_event *tev;
- 	struct perf_probe_event *pev;
- 	struct bpf_insn *buf;
-@@ -630,7 +696,7 @@ static int map_prologue(struct perf_probe_event *pev, int *mapping,
- 
- static int hook_load_preprocessor(struct bpf_program *prog)
+@@ -1084,7 +1136,7 @@ static int
+ bpf_map__add_op(struct bpf_map *map, struct bpf_map_op *op)
  {
--	struct bpf_prog_priv *priv = bpf_program__priv(prog);
-+	struct bpf_prog_priv *priv = program_priv(prog);
- 	struct perf_probe_event *pev;
- 	bool need_prologue = false;
- 	int err, i;
-@@ -706,7 +772,7 @@ int bpf__probe(struct bpf_object *obj)
- 		if (err)
- 			goto out;
+ 	const char *map_name = bpf_map__name(map);
+-	struct bpf_map_priv *priv = bpf_map__priv(map);
++	struct bpf_map_priv *priv = map_priv(map);
  
--		priv = bpf_program__priv(prog);
-+		priv = program_priv(prog);
- 		if (IS_ERR_OR_NULL(priv)) {
+ 	if (IS_ERR(priv)) {
+ 		pr_debug("Failed to get private from map %s\n", map_name);
+@@ -1099,7 +1151,7 @@ bpf_map__add_op(struct bpf_map *map, struct bpf_map_op *op)
+ 		}
+ 		INIT_LIST_HEAD(&priv->ops_list);
+ 
+-		if (bpf_map__set_priv(map, priv, bpf_map_priv__clear)) {
++		if (map_set_priv(map, priv)) {
+ 			free(priv);
+ 			return -BPF_LOADER_ERRNO__INTERNAL;
+ 		}
+@@ -1440,7 +1492,7 @@ bpf_map_config_foreach_key(struct bpf_map *map,
+ 	struct bpf_map_op *op;
+ 	const struct bpf_map_def *def;
+ 	const char *name = bpf_map__name(map);
+-	struct bpf_map_priv *priv = bpf_map__priv(map);
++	struct bpf_map_priv *priv = map_priv(map);
+ 
+ 	if (IS_ERR(priv)) {
+ 		pr_debug("ERROR: failed to get private from map %s\n", name);
+@@ -1660,7 +1712,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
+ 	bool need_init = false;
+ 
+ 	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
+-		struct bpf_map_priv *priv = bpf_map__priv(map);
++		struct bpf_map_priv *priv = map_priv(map);
+ 
+ 		if (IS_ERR(priv))
+ 			return ERR_PTR(-BPF_LOADER_ERRNO__INTERNAL);
+@@ -1696,7 +1748,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
+ 	}
+ 
+ 	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
+-		struct bpf_map_priv *priv = bpf_map__priv(map);
++		struct bpf_map_priv *priv = map_priv(map);
+ 
+ 		if (IS_ERR(priv))
+ 			return ERR_PTR(-BPF_LOADER_ERRNO__INTERNAL);
+@@ -1708,7 +1760,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
  			if (!priv)
- 				err = -BPF_LOADER_ERRNO__INTERNAL;
-@@ -758,7 +824,7 @@ int bpf__unprobe(struct bpf_object *obj)
- 	struct bpf_program *prog;
+ 				return ERR_PTR(-ENOMEM);
  
- 	bpf_object__for_each_program(prog, obj) {
--		struct bpf_prog_priv *priv = bpf_program__priv(prog);
-+		struct bpf_prog_priv *priv = program_priv(prog);
- 		int i;
- 
- 		if (IS_ERR_OR_NULL(priv) || priv->is_tp)
-@@ -814,7 +880,7 @@ int bpf__foreach_event(struct bpf_object *obj,
- 	int err;
- 
- 	bpf_object__for_each_program(prog, obj) {
--		struct bpf_prog_priv *priv = bpf_program__priv(prog);
-+		struct bpf_prog_priv *priv = program_priv(prog);
- 		struct probe_trace_event *tev;
- 		struct perf_probe_event *pev;
- 		int i, fd;
+-			err = bpf_map__set_priv(map, priv, bpf_map_priv__clear);
++			err = map_set_priv(map, priv);
+ 			if (err) {
+ 				bpf_map_priv__clear(map, priv);
+ 				return ERR_PTR(err);
 -- 
 2.35.1
 
