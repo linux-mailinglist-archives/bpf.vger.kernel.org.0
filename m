@@ -2,93 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA244C3445
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 19:01:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE174C3465
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 19:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbiBXSBo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 13:01:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S231826AbiBXSNu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 13:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbiBXSBn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 13:01:43 -0500
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AAB2556DD;
-        Thu, 24 Feb 2022 10:01:12 -0800 (PST)
-Received: from relay5-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::225])
-        by mslow1.mail.gandi.net (Postfix) with ESMTP id A3CB6CCFC0;
-        Thu, 24 Feb 2022 17:41:27 +0000 (UTC)
-Received: (Authenticated sender: hadess@hadess.net)
-        by mail.gandi.net (Postfix) with ESMTPSA id 8C7601C007E;
-        Thu, 24 Feb 2022 17:41:19 +0000 (UTC)
-Message-ID: <f965c04f34aabe93fe8ef91bb4d1ce4d24159173.camel@hadess.net>
-Subject: Re: [PATCH bpf-next v1 0/6] Introduce eBPF support for HID devices
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S229662AbiBXSNt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 13:13:49 -0500
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D79A2223108;
+        Thu, 24 Feb 2022 10:13:18 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id d23so5250046lfv.13;
+        Thu, 24 Feb 2022 10:13:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jeGCsvgLf6lDIaUf9nSWr2xBU0ddXBX+76rMpizQ4kk=;
+        b=ZKLa4bhzoK0aYAb1rCwPdNTMAlrjQ+ciN6pMoz90knLrCWRTkQSSGBL6plkkDH8Ckd
+         sCBAE8OdOERBn/AN89CsQmGtt1cO95KkPxILz14d+LEW2Los4ufrFP0/OjRt/OknXts8
+         B14IWeD09kWTOqxEYqhmpUpVTj7dyezWy8yMdsr3VW69xIOsnyvLBhoNSCSdl4dbMwgM
+         o57xoNSD2x9XE4+MksNDFMLGSfXlFywxGmF9hRWRvrOFj+Kv2XVUyZ36U5rj6UzfssVA
+         GbU+b6TItkmFT1VwTuYmRnqcABu9QmYXSBK5ekkLvrKxlLhIksB8Oe68cpWLhQTa19m9
+         4a/g==
+X-Gm-Message-State: AOAM532+uZLKhnyofrM068Rjc5n83kamvHxJQda1kE7FF+bjMW1neSoF
+        +QP6sLQUzXBgkgcoLArH+4CmXSb+L95HI5l95bEnDs+I
+X-Google-Smtp-Source: ABdhPJxekjZAOq28/vw9kIHAlAdiwhXyXAhBOqWsyiLgH7Ks9EUYfmOgidFOaFQKOXVyjJuNg6YoPhLKOCBisL0Iie8=
+X-Received: by 2002:ac2:5f90:0:b0:42f:b094:d72f with SMTP id
+ r16-20020ac25f90000000b0042fb094d72fmr2436044lfe.586.1645726396659; Thu, 24
+ Feb 2022 10:13:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20220224000531.1265030-1-haoluo@google.com> <CAPhsuW6BqEn8azap_zcWq0Zkvv8mRFg6g0UX2fPQXwzT+F6V=A@mail.gmail.com>
+In-Reply-To: <CAPhsuW6BqEn8azap_zcWq0Zkvv8mRFg6g0UX2fPQXwzT+F6V=A@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 24 Feb 2022 10:13:05 -0800
+Message-ID: <CAM9d7cjv1FnJ6ggq70uecWLAP4eQzzsaaEtMT68C9Nva5eMH+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Cache the last valid build_id.
+To:     Song Liu <song@kernel.org>
+Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Date:   Thu, 24 Feb 2022 18:41:18 +0100
-In-Reply-To: <YhdsgokMMSEQ0Yc8@kroah.com>
-References: <20220224110828.2168231-1-benjamin.tissoires@redhat.com>
-         <YhdsgokMMSEQ0Yc8@kroah.com>
+        Song Liu <songliubraving@fb.com>,
+        Blake Jones <blakejones@google.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2022-02-24 at 12:31 +0100, Greg KH wrote:
-> On Thu, Feb 24, 2022 at 12:08:22PM +0100, Benjamin Tissoires wrote:
-> > Hi there,
-> > 
-> > This series introduces support of eBPF for HID devices.
-> > 
-> > I have several use cases where eBPF could be interesting for those
-> > input devices:
-> > 
-> > - simple fixup of report descriptor:
-> > 
-> > In the HID tree, we have half of the drivers that are "simple" and
-> > that just fix one key or one byte in the report descriptor.
-> > Currently, for users of such devices, the process of fixing them
-> > is long and painful.
-> > With eBPF, we could externalize those fixups in one external repo,
-> > ship various CoRe bpf programs and have those programs loaded at
-> > boot
-> > time without having to install a new kernel (and wait 6 months for
-> > the
-> > fix to land in the distro kernel)
-> 
-> Why would a distro update such an external repo faster than they
-> update
-> the kernel?  Many sane distros update their kernel faster than other
-> packages already, how about fixing your distro?  :)
-> 
-> I'm all for the idea of using ebpf for HID devices, but now we have
-> to
-> keep track of multiple packages to be in sync here.  Is this making
-> things harder overall?
+Hello,
 
-I don't quite understand how taking eBPF quirks for HID devices out of
-the kernel tree is different from taking suspend quirks out of the
-kernel tree:
-https://www.spinics.net/lists/linux-usb/msg204506.html
+On Wed, Feb 23, 2022 at 6:31 PM Song Liu <song@kernel.org> wrote:
+>
+> On Wed, Feb 23, 2022 at 4:05 PM Hao Luo <haoluo@google.com> wrote:
+> >
+> > For binaries that are statically linked, consecutive stack frames are
+> > likely to be in the same VMA and therefore have the same build id.
+> > As an optimization for this case, we can cache the previous frame's
+> > VMA, if the new frame has the same VMA as the previous one, reuse the
+> > previous one's build id. We are holding the MM locks as reader across
+> > the entire loop, so we don't need to worry about VMA going away.
+> >
+> > Tested through "stacktrace_build_id" and "stacktrace_build_id_nmi" in
+> > test_progs.
+> >
+> > Suggested-by: Greg Thelen <gthelen@google.com>
+> > Signed-off-by: Hao Luo <haoluo@google.com>
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
