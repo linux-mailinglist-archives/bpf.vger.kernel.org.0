@@ -2,188 +2,316 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 402C44C30B1
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 17:00:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51A14C318B
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 17:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230369AbiBXQAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 11:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58498 "EHLO
+        id S229924AbiBXQfd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 11:35:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbiBXQAM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 11:00:12 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7203BB577
-        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 07:59:28 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id w7so4337192qvr.3
-        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 07:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=gqOgm8FvfYxrPnxT+G4DW2qNZzJhArG622fIixWhtpg=;
-        b=h5ZN26X5NAmhxjI2cNyZTmm5+2BZQaB4PhQXbBOhwml31PknsRkSxpnie5Pk4e0n8N
-         ucMddJt/VKcrD9FCGE1zCONNj+58mibz9qaTly7ZSs8IOPNpfWSdXIk9bJOyY3v2osKR
-         fbaKNoDJ5JuvmWbPO700vsU0BSR38IoUkcctt81R1wocDgUthuwF+/lFAHdfS3zgLGgC
-         LpHaI3b7NWCQPs6HVwySmgr9xSeRIEpx6+ByISYyqPZ7GlchosjA+y3B47saPKpwOWcA
-         QUFvAm0akg5UlWQlGCmRw+5HXyDvIck88WNhoeWOXMTwVNMR3907iZEJ4Rb23hd08jHx
-         Am1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=gqOgm8FvfYxrPnxT+G4DW2qNZzJhArG622fIixWhtpg=;
-        b=z22qTWgU3232ozGgwwZcwiH/qTOodLZ2a8SGlxnxPI3ZeGRpej3r4TeTl5ClXqS9Du
-         jv4AKyC6iNp6uvh8ShXhp5+cFCOYuWa4BMz0wrRtKcCHxW4gZABcNCB92iR0PZNq4zVY
-         uOwdS7aISElCPxz741V2MbKaAzpvcTn87fX3YBRjUKlSEuN1LWrX5JUP3Q0sn4qXmhZ0
-         jx/0ljt0Kj+M8soWnw7AlfEYm0jQGR54+RzoQrv1kcosjcf6gKK20Q4MfTXY9X+R8Wv8
-         J54syOxDKB//bYrguCzXLjeAbxkky45+I4ynYz5ljv424gnV/F55Q9kiodSUNatMWfXL
-         gxoA==
-X-Gm-Message-State: AOAM531Z2+eD7nLnmZJaRWU43Sk7aVzWv/A1YFkSheQiNrTSXdKb5s/4
-        VJG8SCZ4JtMVtlRhpE2sVN2e64wFXJZYaolZ
-X-Google-Smtp-Source: ABdhPJyLQ1BrprrPj7Z/ncbZLKkWpbFJ6QCGUwxS4i7cOHcc1fXc5hBuljJyNTFV6nRd3+MQsFxngQ==
-X-Received: by 2002:ac8:578c:0:b0:2de:7281:6234 with SMTP id v12-20020ac8578c000000b002de72816234mr2991255qta.359.1645718365211;
-        Thu, 24 Feb 2022 07:59:25 -0800 (PST)
-Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
-        by smtp.gmail.com with ESMTPSA id z14sm1739862qtw.56.2022.02.24.07.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Feb 2022 07:59:24 -0800 (PST)
-Date:   Thu, 24 Feb 2022 10:59:23 -0500
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     lsf-pc@lists.linuxfoundation.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [REMINDER] LSF/MM/BPF: 2022: Call for Proposals
-Message-ID: <YherWymi1E/hP/sS@localhost.localdomain>
+        with ESMTP id S230126AbiBXQf3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 11:35:29 -0500
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B461E503E;
+        Thu, 24 Feb 2022 08:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1645720496; x=1677256496;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sZo1dKoT1ZvTnpA6N1vZm61Emhx8fsuWyOHmngWIuy8=;
+  b=AsP2Bz+11Nuq3XtdQp8nidHo78ha0KUrN3zAkNZLRtwjXULbohdRDPyY
+   8WpI+HcL+fuCxm5hpVmQ37jOJNLoXQxmwuC3MaiD311Yh6QFkiRsok+K8
+   YEiwcJe+rIToBMg3mhvQP5J+f690noVKA6lfu4WYuwvPVtSu3MOZiNK4y
+   AAxpTiunlwNn5X6wQdXTJPhjEVuiVzJkAQssMDIq7UcKNPEpZz9dU710f
+   F+t+pjHPB0NSvraCTs3h7R8fshMz/BKRLe51MbD/EY3SL932Kw/q3RAkj
+   5iiRd1qzjJ30BFnHEd0RVOgllfLnwZOO+1hZyoBfyKPNVoIE/5m9xJlYf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="252468272"
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; 
+   d="scan'208";a="252468272"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Feb 2022 08:27:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,134,1643702400"; 
+   d="scan'208";a="506373453"
+Received: from boxer.igk.intel.com (HELO boxer) ([10.102.20.173])
+  by orsmga002.jf.intel.com with ESMTP; 24 Feb 2022 08:27:33 -0800
+Date:   Thu, 24 Feb 2022 17:27:32 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        Elza Mathew <elza.mathew@intel.com>
+Subject: Re: [PATCH bpf] xsk: fix race at socket teardown
+Message-ID: <Yhex9EuXMVS+wZhq@boxer>
+References: <20220222094347.6010-1-magnus.karlsson@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220222094347.6010-1-magnus.karlsson@gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A few updates
+On Tue, Feb 22, 2022 at 10:43:47AM +0100, Magnus Karlsson wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Fix a race in the xsk socket teardown code that can lead to a null
+> pointer dereference splat. The current xsk unbind code in
+> xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
+> xs->dev to NULL and then waits for any NAPI processing to terminate
+> using synchronize_net(). After that, the release code starts to tear
+> down the socket state and free allocated memory.
+> 
+> BUG: kernel NULL pointer dereference, address: 00000000000000c0
+> PGD 8000000932469067 P4D 8000000932469067 PUD 0
+> Oops: 0000 [#1] PREEMPT SMP PTI
+> CPU: 25 PID: 69132 Comm: grpcpp_sync_ser Tainted: G          I       5.16.0+ #2
+> Hardware name: Dell Inc. PowerEdge R730/0599V5, BIOS 1.2.10 03/09/2015
+> RIP: 0010:__xsk_sendmsg+0x2c/0x690
+> Code: 44 00 00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 38 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 48 8b 87 08 03 00 00 <f6> 80 c0 00 00 00 01 >
+> RSP: 0018:ffffa2348bd13d50 EFLAGS: 00010246
+> RAX: 0000000000000000 RBX: 0000000000000040 RCX: ffff8d5fc632d258
+> RDX: 0000000000400000 RSI: ffffa2348bd13e10 RDI: ffff8d5fc5489800
+> RBP: ffffa2348bd13db0 R08: 0000000000000000 R09: 00007ffffffff000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8d5fc5489800
+> R13: ffff8d5fcb0f5140 R14: ffff8d5fcb0f5140 R15: 0000000000000000
+> FS:  00007f991cff9400(0000) GS:ffff8d6f1f700000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000000000c0 CR3: 0000000114888005 CR4: 00000000001706e0
+> Call Trace:
+> <TASK>
+> ? aa_sk_perm+0x43/0x1b0
+> xsk_sendmsg+0xf0/0x110
+> sock_sendmsg+0x65/0x70
+> __sys_sendto+0x113/0x190
+> ? debug_smp_processor_id+0x17/0x20
+> ? fpregs_assert_state_consistent+0x23/0x50
+> ? exit_to_user_mode_prepare+0xa5/0x1d0
+> __x64_sys_sendto+0x29/0x30
+> do_syscall_64+0x3b/0xc0
+> entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> There are two problems with the current code. First, setting xs->dev
+> to NULL before waiting for all users to stop using the socket is not
+> correct. The entry to the data plane functions xsk_poll(),
+> xsk_sendmsg(), and xsk_recvmsg() are all guarded by a test that
+> xs->state is in the state XSK_BOUND and if not, it returns right
+> away. But one process might have passed this test but still have not
+> gotten to the point in which it uses xs->dev in the code. In this
+> interim, a second process executing xsk_unbind_dev() might have set
+> xs->dev to NULL which will lead to a crash for the first process. The
+> solution here is just to get rid of this NULL assignment since it is
+> not used anymore. Before commit 42fddcc7c64b ("xsk: use state member
+> for socket synchronization"), xs->dev was the gatekeeper to admit
+> processes into the data plane functions, but it was replaced with the
+> state variable xs->state in the aforementioned commit.
+> 
+> The second problem is that synchronize_net() does not wait for any
+> process in xsk_poll(), xsk_sendmsg(), or xsk_recvmsg() to complete,
+> which means that the state they rely on might be cleaned up
+> prematurely. This can happen when the notifier gets called (at driver
+> unload for example) as it uses xsk_unbind_dev(). Solve this by
+> extending the RCU critical region from just the ndo_xsk_wakeup to the
+> whole functions mentioned above, so that both the test of xs->state ==
+> XSK_BOUND and the last use of any member of xs is covered by the RCU
+> critical section. This will guarantee that when synchronize_net()
+> completes, there will be no processes left executing xsk_poll(),
+> xsk_sendmsg(), or xsk_recvmsg() and state can be cleaned up
+> safely. Note that we need to drop the RCU lock for the SKB xmit path
+> as it uses functions that might sleep. Due to this, we have to retest
+> the xs->state after we grab the mutex that protects the SKB xmit code
+> from, among a number of things, an xsk_unbind_dev() being executed
+> from the notifier at the same time.
+> 
+> Fixes: 42fddcc7c64b ("xsk: use state member for socket synchronization")
+> Reported-by: Elza Mathew <elza.mathew@intel.com>
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  net/xdp/xsk.c | 75 ++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 53 insertions(+), 22 deletions(-)
+> 
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 28ef3f4465ae..e506635b1981 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -400,21 +400,11 @@ u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, struct xdp_desc *
+>  }
+>  EXPORT_SYMBOL(xsk_tx_peek_release_desc_batch);
+>  
+> -static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
+> +static int xsk_zc_xmit(struct xdp_sock *xs, u8 flags)
+>  {
+>  	struct net_device *dev = xs->dev;
+> -	int err;
+> -
+> -	rcu_read_lock();
+> -	err = dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+> -	rcu_read_unlock();
+> -
+> -	return err;
+> -}
+>  
+> -static int xsk_zc_xmit(struct xdp_sock *xs)
+> -{
+> -	return xsk_wakeup(xs, XDP_WAKEUP_TX);
+> +	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
+>  }
+>  
+>  static void xsk_destruct_skb(struct sk_buff *skb)
+> @@ -533,6 +523,12 @@ static int xsk_generic_xmit(struct sock *sk)
+>  
+>  	mutex_lock(&xs->mutex);
+>  
+> +	/* Since we dropped the RCU read lock, the socket state might have changed. */
+> +	if (unlikely(!xsk_is_bound(xs))) {
+> +		err = -ENXIO;
+> +		goto out;
+> +	}
+> +
+>  	if (xs->queue_id >= xs->dev->real_num_tx_queues)
+>  		goto out;
+>  
+> @@ -596,16 +592,26 @@ static int xsk_generic_xmit(struct sock *sk)
+>  	return err;
+>  }
+>  
+> -static int __xsk_sendmsg(struct sock *sk)
+> +static int xsk_xmit(struct sock *sk)
+>  {
+>  	struct xdp_sock *xs = xdp_sk(sk);
+> +	int ret;
+>  
+>  	if (unlikely(!(xs->dev->flags & IFF_UP)))
+>  		return -ENETDOWN;
+>  	if (unlikely(!xs->tx))
+>  		return -ENOBUFS;
+>  
+> -	return xs->zc ? xsk_zc_xmit(xs) : xsk_generic_xmit(sk);
+> +	if (xs->zc)
+> +		return xsk_zc_xmit(xs, XDP_WAKEUP_TX);
+> +
+> +	/* Drop the RCU lock since the SKB path might sleep. */
+> +	rcu_read_unlock();
+> +	ret = xsk_generic_xmit(sk);
+> +	/* Reaquire RCU lock before going into common code. */
+> +	rcu_read_lock();
+> +
+> +	return ret;
+>  }
+>  
+>  static bool xsk_no_wakeup(struct sock *sk)
+> @@ -619,7 +625,7 @@ static bool xsk_no_wakeup(struct sock *sk)
+>  #endif
+>  }
+>  
+> -static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+> +static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  {
+>  	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
+>  	struct sock *sk = sock->sk;
+> @@ -639,11 +645,22 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  
+>  	pool = xs->pool;
+>  	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
+> -		return __xsk_sendmsg(sk);
+> +		return xsk_xmit(sk);
+>  	return 0;
+>  }
+>  
+> -static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
+> +static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+> +{
+> +	int ret;
+> +
+> +	rcu_read_lock();
+> +	ret = __xsk_sendmsg(sock, m, total_len);
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+> +static int __xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
+>  {
+>  	bool need_wait = !(flags & MSG_DONTWAIT);
+>  	struct sock *sk = sock->sk;
+> @@ -665,10 +682,21 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
+>  		return 0;
+>  
+>  	if (xs->pool->cached_need_wakeup & XDP_WAKEUP_RX && xs->zc)
+> -		return xsk_wakeup(xs, XDP_WAKEUP_RX);
+> +		return xsk_zc_xmit(xs, XDP_WAKEUP_RX);
 
-- The COVID related restrictions can be found here 
+Feels a bit contradictory to have xmit func with rx flag, no?
+Could we keep it as xsk_wakeup instead?
 
-	https://events.linuxfoundation.org/lsfmm/attend/health-and-safety/
-
-- We are working on a virtual component, however it will likely not be
-  interactive, likely just a live stream and then an IRC channel to ask
-  questions through.
-
---- Original email ---
-
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2022 will be held from May 2 to May 4 at The
-Margaritaville Resort Palm Springs in Palm Springs, California.
-LSF/MM/BPF is an invitation-only technical workshop to map out
-improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline kernel
-within the coming years.
-
-COVID is at the front of our minds as we attempt to put together the
-best and safest conference we can arrange.  The logistics of how to hold
-an in person event will change and evolve as we get closer to the actual
-date, but rest assured we will do everything recommended by public
-health officials.
-
-LSF/MM/BPF 2022 will be a three day, stand-alone conference with four
-subsystem-specific tracks, cross-track discussions, as well as BoF and
-hacking sessions.
-
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
-
-If advance notice is required for visa applications then please point
-that out in your proposal or request to attend, and submit the topic as
-soon as possible.
-
-This years instructions are similar to our previous attempts.  We're
-asking that you please let us know you want to be invited by March 1,
-2022.  We realize that travel is an ever changing target, but it helps
-us get an idea of possible attendance numbers.  Clearly things can and
-will change, so consider the request to attend deadline more about
-planning and less about concrete plans.
-
-1) Fill out the following Google form to request attendance and
-suggest any topics
-
-	https://forms.gle/uD5tbZYGpaRXPnE19
-
-In previous years we have accidentally missed people's attendance
-requests because they either didn't cc lsf-pc@ or we simply missed them
-in the flurry of emails we get.  Our community is large and our
-volunteers are busy, filling this out will help us make sure we don't
-miss anybody.
-
-2) Proposals for agenda topics should still be sent to the following
-lists to allow for discussion among your peers.  This will help us
-figure out which topics are important for the agenda.
-
-        lsf-pc@lists.linux-foundation.org
-
-and CC the mailing lists that are relevant for the topic in question:
-
-        FS:     linux-fsdevel@vger.kernel.org
-        MM:     linux-mm@kvack.org
-        Block:  linux-block@vger.kernel.org
-        ATA:    linux-ide@vger.kernel.org
-        SCSI:   linux-scsi@vger.kernel.org
-        NVMe:   linux-nvme@lists.infradead.org
-        BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
-track. In addition, please make sure to start a new thread for each
-topic rather than following up to an existing one. Agenda topics and
-attendees will be selected by the program committee, but the final
-agenda will be formed by consensus of the attendees on the day.
-
-We will try to cap attendance at around 25-30 per track to facilitate
-discussions although the final numbers will depend on the room sizes
-at the venue.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks; the sessions are supposed to be
-interactive, inclusive discussions.
-
-There will be no recording or audio bridge. However, we expect that
-written minutes will be published as we did in previous years:
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-3) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-        lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-        Josef Bacik (Filesystems)
-        Amir Goldstein (Filesystems)
-        Martin K. Petersen (Storage)
-        Omar Sandoval (Storage)
-        Michal Hocko (MM)
-        Dan Williams (MM)
-        Alexei Starovoitov (BPF)
-        Daniel Borkmann (BPF)
+>  	return 0;
+>  }
+>  
+> +static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
+> +{
+> +	int ret;
+> +
+> +	rcu_read_lock();
+> +	ret = __xsk_recvmsg(sock, m, len, flags);
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+>  static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>  			     struct poll_table_struct *wait)
+>  {
+> @@ -679,17 +707,20 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>  
+>  	sock_poll_wait(file, sock, wait);
+>  
+> -	if (unlikely(!xsk_is_bound(xs)))
+> +	rcu_read_lock();
+> +	if (unlikely(!xsk_is_bound(xs))) {
+> +		rcu_read_unlock();
+>  		return mask;
+> +	}
+>  
+>  	pool = xs->pool;
+>  
+>  	if (pool->cached_need_wakeup) {
+>  		if (xs->zc)
+> -			xsk_wakeup(xs, pool->cached_need_wakeup);
+> +			xsk_zc_xmit(xs, pool->cached_need_wakeup);
+>  		else
+>  			/* Poll needs to drive Tx also in copy mode */
+> -			__xsk_sendmsg(sk);
+> +			xsk_xmit(sk);
+>  	}
+>  
+>  	if (xs->rx && !xskq_prod_is_empty(xs->rx))
+> @@ -697,6 +728,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>  	if (xs->tx && xsk_tx_writeable(xs))
+>  		mask |= EPOLLOUT | EPOLLWRNORM;
+>  
+> +	rcu_read_unlock();
+>  	return mask;
+>  }
+>  
+> @@ -728,7 +760,6 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
+>  
+>  	/* Wait for driver to stop using the xdp socket. */
+>  	xp_del_xsk(xs->pool, xs);
+> -	xs->dev = NULL;
+>  	synchronize_net();
+>  	dev_put(dev);
+>  }
+> 
+> base-commit: 8940e6b669ca1196ce0a0549c819078096390f76
+> -- 
+> 2.34.1
+> 
