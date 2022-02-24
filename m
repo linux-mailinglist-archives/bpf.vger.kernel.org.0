@@ -2,229 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D674C3060
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 16:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 402C44C30B1
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 17:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236706AbiBXPxh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 10:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38438 "EHLO
+        id S230369AbiBXQAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 11:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236708AbiBXPxg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 10:53:36 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838CC17C428;
-        Thu, 24 Feb 2022 07:53:05 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F64661734;
-        Thu, 24 Feb 2022 15:53:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C30C340E9;
-        Thu, 24 Feb 2022 15:53:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645717984;
-        bh=n55syU/tXlapEzX4NoBEFxyvoVefYeSgGLgTfFUMav8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YOmV7Lo0ztEeqpzwMFaagIJ6aguH2nu6mxkjva0+rxH/8xI3F93BzCbkjZzE6jCJd
-         5eDZ2xnHWaT3lJOvNCMX3VGkQHfvTt68I/u7em4cMd+Uc9KT+PgsCVE+G0fL79qh+D
-         fLcW85uUy7p1YRsQZvZ7mEdMVBdu88IVJRRaWE/MFc6Mmb5iCICaXFtsekRi9xrAld
-         4+CGN2KLIYWzMk8Sg79c+sUWuNYGqGoklbRqNLUhG6EJdz6fzPw6ZWd71+pNQXQ0JK
-         OtXUm+XBMl9R0LX5h7OIflDPadxaqYDmgLC9K9th18wAiv/yTg7jPIDKaSqFOucEfb
-         LajHmig4L4muw==
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 2/2] perf tools: Remove bpf_map__set_priv/bpf_map__priv usage
-Date:   Thu, 24 Feb 2022 16:52:38 +0100
-Message-Id: <20220224155238.714682-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220224155238.714682-1-jolsa@kernel.org>
-References: <20220224155238.714682-1-jolsa@kernel.org>
+        with ESMTP id S232438AbiBXQAM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 11:00:12 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7203BB577
+        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 07:59:28 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id w7so4337192qvr.3
+        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 07:59:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=gqOgm8FvfYxrPnxT+G4DW2qNZzJhArG622fIixWhtpg=;
+        b=h5ZN26X5NAmhxjI2cNyZTmm5+2BZQaB4PhQXbBOhwml31PknsRkSxpnie5Pk4e0n8N
+         ucMddJt/VKcrD9FCGE1zCONNj+58mibz9qaTly7ZSs8IOPNpfWSdXIk9bJOyY3v2osKR
+         fbaKNoDJ5JuvmWbPO700vsU0BSR38IoUkcctt81R1wocDgUthuwF+/lFAHdfS3zgLGgC
+         LpHaI3b7NWCQPs6HVwySmgr9xSeRIEpx6+ByISYyqPZ7GlchosjA+y3B47saPKpwOWcA
+         QUFvAm0akg5UlWQlGCmRw+5HXyDvIck88WNhoeWOXMTwVNMR3907iZEJ4Rb23hd08jHx
+         Am1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=gqOgm8FvfYxrPnxT+G4DW2qNZzJhArG622fIixWhtpg=;
+        b=z22qTWgU3232ozGgwwZcwiH/qTOodLZ2a8SGlxnxPI3ZeGRpej3r4TeTl5ClXqS9Du
+         jv4AKyC6iNp6uvh8ShXhp5+cFCOYuWa4BMz0wrRtKcCHxW4gZABcNCB92iR0PZNq4zVY
+         uOwdS7aISElCPxz741V2MbKaAzpvcTn87fX3YBRjUKlSEuN1LWrX5JUP3Q0sn4qXmhZ0
+         jx/0ljt0Kj+M8soWnw7AlfEYm0jQGR54+RzoQrv1kcosjcf6gKK20Q4MfTXY9X+R8Wv8
+         J54syOxDKB//bYrguCzXLjeAbxkky45+I4ynYz5ljv424gnV/F55Q9kiodSUNatMWfXL
+         gxoA==
+X-Gm-Message-State: AOAM531Z2+eD7nLnmZJaRWU43Sk7aVzWv/A1YFkSheQiNrTSXdKb5s/4
+        VJG8SCZ4JtMVtlRhpE2sVN2e64wFXJZYaolZ
+X-Google-Smtp-Source: ABdhPJyLQ1BrprrPj7Z/ncbZLKkWpbFJ6QCGUwxS4i7cOHcc1fXc5hBuljJyNTFV6nRd3+MQsFxngQ==
+X-Received: by 2002:ac8:578c:0:b0:2de:7281:6234 with SMTP id v12-20020ac8578c000000b002de72816234mr2991255qta.359.1645718365211;
+        Thu, 24 Feb 2022 07:59:25 -0800 (PST)
+Received: from localhost (cpe-174-109-172-136.nc.res.rr.com. [174.109.172.136])
+        by smtp.gmail.com with ESMTPSA id z14sm1739862qtw.56.2022.02.24.07.59.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Feb 2022 07:59:24 -0800 (PST)
+Date:   Thu, 24 Feb 2022 10:59:23 -0500
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     lsf-pc@lists.linuxfoundation.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-nvme@lists.infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [REMINDER] LSF/MM/BPF: 2022: Call for Proposals
+Message-ID: <YherWymi1E/hP/sS@localhost.localdomain>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Both bpf_map__set_priv/bpf_map__priv are deprecated
-and will be eventually removed.
+A few updates
 
-Using hashmap to replace that functionality.
+- The COVID related restrictions can be found here 
 
-Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/perf/util/bpf-loader.c | 66 ++++++++++++++++++++++++++++++++----
- 1 file changed, 59 insertions(+), 7 deletions(-)
+	https://events.linuxfoundation.org/lsfmm/attend/health-and-safety/
 
-diff --git a/tools/perf/util/bpf-loader.c b/tools/perf/util/bpf-loader.c
-index b9d4278895ec..4f6173756a9d 100644
---- a/tools/perf/util/bpf-loader.c
-+++ b/tools/perf/util/bpf-loader.c
-@@ -27,6 +27,7 @@
- #include "llvm-utils.h"
- #include "c++/clang-c.h"
- #include "hashmap.h"
-+#include "asm/bug.h"
- 
- #include <internal/xyarray.h>
- 
-@@ -57,6 +58,7 @@ struct bpf_perf_object {
- 
- static LIST_HEAD(bpf_objects_list);
- static struct hashmap *bpf_program_hash;
-+static struct hashmap *bpf_map_hash;
- 
- static struct bpf_perf_object *
- bpf_perf_object__next(struct bpf_perf_object *prev)
-@@ -204,6 +206,8 @@ static void bpf_program_hash_free(void)
- 	bpf_program_hash = NULL;
- }
- 
-+static void bpf_map_hash_free(void);
-+
- void bpf__clear(void)
- {
- 	struct bpf_perf_object *perf_obj, *tmp;
-@@ -214,6 +218,7 @@ void bpf__clear(void)
- 	}
- 
- 	bpf_program_hash_free();
-+	bpf_map_hash_free();
- }
- 
- static size_t ptr_hash(const void *__key, void *ctx __maybe_unused)
-@@ -976,7 +981,7 @@ bpf_map_priv__purge(struct bpf_map_priv *priv)
- }
- 
- static void
--bpf_map_priv__clear(struct bpf_map *map __maybe_unused,
-+bpf_map_priv__clear(const struct bpf_map *map __maybe_unused,
- 		    void *_priv)
- {
- 	struct bpf_map_priv *priv = _priv;
-@@ -985,6 +990,53 @@ bpf_map_priv__clear(struct bpf_map *map __maybe_unused,
- 	free(priv);
- }
- 
-+static void *map_priv(const struct bpf_map *map)
-+{
-+	void *priv;
-+
-+	if (IS_ERR_OR_NULL(bpf_map_hash))
-+		return NULL;
-+	if (!hashmap__find(bpf_map_hash, map, &priv))
-+		return NULL;
-+	return priv;
-+}
-+
-+static void bpf_map_hash_free(void)
-+{
-+	struct hashmap_entry *cur;
-+	size_t bkt;
-+
-+	if (IS_ERR_OR_NULL(bpf_map_hash))
-+		return;
-+
-+	hashmap__for_each_entry(bpf_map_hash, cur, bkt)
-+		bpf_map_priv__clear(cur->key, cur->value);
-+
-+	hashmap__free(bpf_map_hash);
-+	bpf_map_hash = NULL;
-+}
-+
-+static int map_set_priv(struct bpf_map *map, void *priv)
-+{
-+	void *old_priv;
-+
-+	if (WARN_ON_ONCE(IS_ERR(bpf_map_hash)))
-+		return PTR_ERR(bpf_program_hash);
-+
-+	if (!bpf_map_hash) {
-+		bpf_map_hash = hashmap__new(ptr_hash, ptr_equal, NULL);
-+		if (IS_ERR(bpf_map_hash))
-+			return PTR_ERR(bpf_map_hash);
-+	}
-+
-+	old_priv = map_priv(map);
-+	if (old_priv) {
-+		bpf_map_priv__clear(map, old_priv);
-+		return hashmap__set(bpf_map_hash, map, priv, NULL, NULL);
-+	}
-+	return hashmap__add(bpf_map_hash, map, priv);
-+}
-+
- static int
- bpf_map_op_setkey(struct bpf_map_op *op, struct parse_events_term *term)
- {
-@@ -1084,7 +1136,7 @@ static int
- bpf_map__add_op(struct bpf_map *map, struct bpf_map_op *op)
- {
- 	const char *map_name = bpf_map__name(map);
--	struct bpf_map_priv *priv = bpf_map__priv(map);
-+	struct bpf_map_priv *priv = map_priv(map);
- 
- 	if (IS_ERR(priv)) {
- 		pr_debug("Failed to get private from map %s\n", map_name);
-@@ -1099,7 +1151,7 @@ bpf_map__add_op(struct bpf_map *map, struct bpf_map_op *op)
- 		}
- 		INIT_LIST_HEAD(&priv->ops_list);
- 
--		if (bpf_map__set_priv(map, priv, bpf_map_priv__clear)) {
-+		if (map_set_priv(map, priv)) {
- 			free(priv);
- 			return -BPF_LOADER_ERRNO__INTERNAL;
- 		}
-@@ -1440,7 +1492,7 @@ bpf_map_config_foreach_key(struct bpf_map *map,
- 	struct bpf_map_op *op;
- 	const struct bpf_map_def *def;
- 	const char *name = bpf_map__name(map);
--	struct bpf_map_priv *priv = bpf_map__priv(map);
-+	struct bpf_map_priv *priv = map_priv(map);
- 
- 	if (IS_ERR(priv)) {
- 		pr_debug("ERROR: failed to get private from map %s\n", name);
-@@ -1660,7 +1712,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
- 	bool need_init = false;
- 
- 	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
--		struct bpf_map_priv *priv = bpf_map__priv(map);
-+		struct bpf_map_priv *priv = map_priv(map);
- 
- 		if (IS_ERR(priv))
- 			return ERR_PTR(-BPF_LOADER_ERRNO__INTERNAL);
-@@ -1696,7 +1748,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
- 	}
- 
- 	bpf__perf_for_each_map_named(map, perf_obj, tmp, name) {
--		struct bpf_map_priv *priv = bpf_map__priv(map);
-+		struct bpf_map_priv *priv = map_priv(map);
- 
- 		if (IS_ERR(priv))
- 			return ERR_PTR(-BPF_LOADER_ERRNO__INTERNAL);
-@@ -1708,7 +1760,7 @@ struct evsel *bpf__setup_output_event(struct evlist *evlist, const char *name)
- 			if (!priv)
- 				return ERR_PTR(-ENOMEM);
- 
--			err = bpf_map__set_priv(map, priv, bpf_map_priv__clear);
-+			err = map_set_priv(map, priv);
- 			if (err) {
- 				bpf_map_priv__clear(map, priv);
- 				return ERR_PTR(err);
--- 
-2.35.1
+- We are working on a virtual component, however it will likely not be
+  interactive, likely just a live stream and then an IRC channel to ask
+  questions through.
 
+--- Original email ---
+
+The annual Linux Storage, Filesystem, Memory Management, and BPF
+(LSF/MM/BPF) Summit for 2022 will be held from May 2 to May 4 at The
+Margaritaville Resort Palm Springs in Palm Springs, California.
+LSF/MM/BPF is an invitation-only technical workshop to map out
+improvements to the Linux storage, filesystem, BPF, and memory
+management subsystems that will make their way into the mainline kernel
+within the coming years.
+
+COVID is at the front of our minds as we attempt to put together the
+best and safest conference we can arrange.  The logistics of how to hold
+an in person event will change and evolve as we get closer to the actual
+date, but rest assured we will do everything recommended by public
+health officials.
+
+LSF/MM/BPF 2022 will be a three day, stand-alone conference with four
+subsystem-specific tracks, cross-track discussions, as well as BoF and
+hacking sessions.
+
+On behalf of the committee I am issuing a call for agenda proposals
+that are suitable for cross-track discussion as well as technical
+subjects for the breakout sessions.
+
+If advance notice is required for visa applications then please point
+that out in your proposal or request to attend, and submit the topic as
+soon as possible.
+
+This years instructions are similar to our previous attempts.  We're
+asking that you please let us know you want to be invited by March 1,
+2022.  We realize that travel is an ever changing target, but it helps
+us get an idea of possible attendance numbers.  Clearly things can and
+will change, so consider the request to attend deadline more about
+planning and less about concrete plans.
+
+1) Fill out the following Google form to request attendance and
+suggest any topics
+
+	https://forms.gle/uD5tbZYGpaRXPnE19
+
+In previous years we have accidentally missed people's attendance
+requests because they either didn't cc lsf-pc@ or we simply missed them
+in the flurry of emails we get.  Our community is large and our
+volunteers are busy, filling this out will help us make sure we don't
+miss anybody.
+
+2) Proposals for agenda topics should still be sent to the following
+lists to allow for discussion among your peers.  This will help us
+figure out which topics are important for the agenda.
+
+        lsf-pc@lists.linux-foundation.org
+
+and CC the mailing lists that are relevant for the topic in question:
+
+        FS:     linux-fsdevel@vger.kernel.org
+        MM:     linux-mm@kvack.org
+        Block:  linux-block@vger.kernel.org
+        ATA:    linux-ide@vger.kernel.org
+        SCSI:   linux-scsi@vger.kernel.org
+        NVMe:   linux-nvme@lists.infradead.org
+        BPF:    bpf@vger.kernel.org
+
+Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier to
+track. In addition, please make sure to start a new thread for each
+topic rather than following up to an existing one. Agenda topics and
+attendees will be selected by the program committee, but the final
+agenda will be formed by consensus of the attendees on the day.
+
+We will try to cap attendance at around 25-30 per track to facilitate
+discussions although the final numbers will depend on the room sizes
+at the venue.
+
+For discussion leaders, slides and visualizations are encouraged to
+outline the subject matter and focus the discussions. Please refrain
+from lengthy presentations and talks; the sessions are supposed to be
+interactive, inclusive discussions.
+
+There will be no recording or audio bridge. However, we expect that
+written minutes will be published as we did in previous years:
+
+2019: https://lwn.net/Articles/lsfmm2019/
+
+2018: https://lwn.net/Articles/lsfmm2018/
+
+2017: https://lwn.net/Articles/lsfmm2017/
+
+2016: https://lwn.net/Articles/lsfmm2016/
+
+2015: https://lwn.net/Articles/lsfmm2015/
+
+2014: http://lwn.net/Articles/LSFMM2014/
+
+3) If you have feedback on last year's meeting that we can use to
+improve this year's, please also send that to:
+
+        lsf-pc@lists.linux-foundation.org
+
+Thank you on behalf of the program committee:
+
+        Josef Bacik (Filesystems)
+        Amir Goldstein (Filesystems)
+        Martin K. Petersen (Storage)
+        Omar Sandoval (Storage)
+        Michal Hocko (MM)
+        Dan Williams (MM)
+        Alexei Starovoitov (BPF)
+        Daniel Borkmann (BPF)
