@@ -2,54 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 367FA4C2E6E
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 15:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C664C2F13
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 16:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234897AbiBXOaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 09:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        id S235736AbiBXPM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 10:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235541AbiBXOaH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 09:30:07 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2052.outbound.protection.outlook.com [40.107.93.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E2A17C41F;
-        Thu, 24 Feb 2022 06:29:37 -0800 (PST)
+        with ESMTP id S235813AbiBXPM5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 10:12:57 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1anam02on2068.outbound.protection.outlook.com [40.107.96.68])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F5420428B;
+        Thu, 24 Feb 2022 07:12:27 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QQ6HKUUfIVx45Xw/MKVEBLvmoplWfqZpX/ZfTJ+QHqDKL2mGw2cE9oo3i9Grl/MnoLSjh0D1g8ECUDKEhr0fJeg56bKshoFDIzCXUjgWzJ+KSXZ5BXwDc2X2ibBnV/TyaH42DYGI6lDtb+cDJXxIsBfi26S6AuQ/sxJSQPvBU6cwRun44mxLi6NrHnMEyjicNiHMRNK5Q/fD27Pw7c7gbfCkMDlLEDYfO9OE1BmLBF8wljGLzkTIwaWiaM4iNwff4p8xsYhyiKGQI3erywZGe9IwuUuwoq1umtelsoKbP2rvoHsqfP8h8Athj4c/W/7kw/PGvqdcnMy9YskW4Xd/wA==
+ b=C/JSQnOecOHeNVwLCTQ96ZWO5sjv50zcGJwEa3ZnbdD1AYiz9BFdlIl2FSb1Zd1lh1Jsh+UU867o5W7S9RhN9tgFeAZjP6GZXgBIPwHj0KOwecFimyccCNknwGjFRt0Yd9FM2B8EccLpI9DY1pfaj3DPDwHdvCAuBXMJoQjMLkIt26a6HykbWKrytSwmW/jNABl010NZtGw4Mll9o84MlhNUe52GLlS7uWear2QybpXX+icve8yqSpyVHX4oYtMgOjyxfFhekLrOUhjVEemSHtqAydeCJBXbskLCqOmJZAMsMtaOl3Kau09s0ctWlFb5OCc7IcLuf2/n3fGMpBRrIw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eYw6RgkwDH7SaDUTaZVDmGBDnPBPi734xu9BrJ1/Egg=;
- b=YG4dSXd1p0/CKaKBGxkOXeTBAF8xESevzTHAt5aS3O6cmOoPXqdQlIXko0Ig+j88oVBvri09FqY7EJc0hYhE+S39AMiihOvp5kkpxNXRYhk6BojnwJ51FZcNO3fJTVXGuF3CUEmuxVUhaKnGCeTJmwtcAfaznCKAVsSy22+oxPw05LTBfrw0iN1kt4HUy95ZV14XnDUTORWQF5Il8qFhqvC82h8QchbfFtel/UY7D6lKPYTmRdztO8qSW1397tG9Zif+8qctIHNviEUlum+IlsiwczAUhZ0peDewtjuzo+jYbWvxwb1fjgB7RrjB3iEtzMmJ7Jnrvk+Ne+UGJAcV8w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
+ bh=DgJ5Xe4z288cQZ0ilvHgU6L/8kSZR7OFXwiGlJsqQ7E=;
+ b=l+5L5Fx8Uu0/RJFar66R6IHMwPygaXJl6Rlc8b3eYT4Yg0H26kmyc2ufaInADs/9WncqPuPNHVG5BmJm7WY+bRV5G2xcm/6FogZWEATLSXf5+0t/pu0ZH5w5UESZd59wklCcr4nrT1YqOYMsbvgBa47JpisNVWSzRnnCQtrpoXixlqAl6+xq2b7n4meCASMkgo8iDUo++p53dCrehdtm+Hxvj4Zxi10ZV666hVvXRvAy6IL5oHN606gsekgaRZOcdODz1q2LhcsAtp45RgcNxI7G2Y+wYS/wBnpAmwoepOju5gTBlt/AyT2lg6A/gz8BaRvJgaBNXU7muTceYt+Ebw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.234) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eYw6RgkwDH7SaDUTaZVDmGBDnPBPi734xu9BrJ1/Egg=;
- b=NT6omVUco7WncfMUyOI/SVilXL6a9U5fWd6BpRJJpFOgQMqO/d8WGhFpgbC9nILRR1IEPW1GzTSTDgeuVRLuJLIAeX8jNeMI5praIDYeylq8DImbYneTVA+dNDF85T3SvdYmjhp1ABVBDn9HAhOCDZo0Ewc5OsDiEsDJeLNfSoFgg9uvrDZDID/6pvSE848quBgQvvbUHWqAjNVTJtM1hKjg6zrhTE8vosJE/x0Y/za7WtKaWxBjZ6JhEjrFuUqQqEH8e1yYXzySNhr91ww3WD7ReR+54IRz4xxb1jM8AGHzE2Hz3ZoHNvsAzgAWgXK6vVinBUirFhnKHYe+vdFnmQ==
-Received: from DM4PR12MB5150.namprd12.prod.outlook.com (2603:10b6:5:391::23)
- by MWHPR12MB1343.namprd12.prod.outlook.com (2603:10b6:300:7::9) with
+ bh=DgJ5Xe4z288cQZ0ilvHgU6L/8kSZR7OFXwiGlJsqQ7E=;
+ b=jnapSSyaCcwTdxlzOO9szdXpSCl52dM7QTBPuZyt308Hd/UKAAdwn8uG8GJKi3K1MJorDDBQIEwSVAR1EqYs4klO+2+puBXukBSzMVJtNLGzpprYCiDFc4x2tPnaS+53KdAlHyF/qsct+Uzt8jQWmY1z7StnBWn29ZCgp9KUSaCmGsEhfVZzF2pqM69cHeojXC1WFPzc6WbrOWcYa8P7XQq4aObsTQjv+xuBdX7eYWTR4xgxW4RH/GnFtW6U8Up6l5fcGzHibFq1klbQL/Pyny56PcgLwHJaPE343KIW79REDt8hDEoZfIsT2N0NzRY6QlzyEmn9kvf0/L3SIKIKRQ==
+Received: from BN0PR03CA0057.namprd03.prod.outlook.com (2603:10b6:408:e7::32)
+ by BL0PR12MB2577.namprd12.prod.outlook.com (2603:10b6:207:42::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.24; Thu, 24 Feb
- 2022 14:29:34 +0000
-Received: from DM4PR12MB5150.namprd12.prod.outlook.com
- ([fe80::9b8:7073:5693:8d06]) by DM4PR12MB5150.namprd12.prod.outlook.com
- ([fe80::9b8:7073:5693:8d06%5]) with mapi id 15.20.5017.024; Thu, 24 Feb 2022
- 14:29:34 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.22; Thu, 24 Feb
+ 2022 15:12:26 +0000
+Received: from BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:e7:cafe::d4) by BN0PR03CA0057.outlook.office365.com
+ (2603:10b6:408:e7::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.23 via Frontend
+ Transport; Thu, 24 Feb 2022 15:12:25 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.234; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.234) by
+ BN8NAM11FT055.mail.protection.outlook.com (10.13.177.62) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5017.22 via Frontend Transport; Thu, 24 Feb 2022 15:12:25 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by DRHQMAIL101.nvidia.com
+ (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 24 Feb
+ 2022 15:12:25 +0000
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Thu, 24 Feb 2022
+ 07:12:23 -0800
+Received: from vdi.nvidia.com (10.127.8.12) by mail.nvidia.com (10.129.68.9)
+ with Microsoft SMTP Server id 15.2.986.9 via Frontend Transport; Thu, 24 Feb
+ 2022 07:12:16 -0800
 From:   Maxim Mikityanskiy <maximmi@nvidia.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-CC:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>,
+To:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, <netdev@vger.kernel.org>
+CC:     Tariq Toukan <tariqt@nvidia.com>, Martin KaFai Lau <kafai@fb.com>,
+        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -57,91 +74,44 @@ CC:     =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@toke.dk>,
         Lorenz Bauer <lmb@cloudflare.com>,
         Eric Dumazet <edumazet@google.com>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "David Ahern" <dsahern@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        "Jesper Dangaard Brouer" <hawk@kernel.org>,
         Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
         Joe Stringer <joe@cilium.io>,
-        Florent Revest <revest@chromium.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: RE: [PATCH bpf-next v2 2/3] bpf: Add helpers to issue and check SYN
- cookies in XDP
-Thread-Topic: [PATCH bpf-next v2 2/3] bpf: Add helpers to issue and check SYN
- cookies in XDP
-Thread-Index: AQHYETUMIeFJsb6vVUS8oyTXGAShkqxzXzkAgAnvjYCAAF1RgIAAAgiAgAKb04CAAnekgIAAvXQAgBreGQD//+3oAIAEpQ2A
-Date:   Thu, 24 Feb 2022 14:29:34 +0000
-Message-ID: <DM4PR12MB51507EE4B11ECCEA7D689320DC3D9@DM4PR12MB5150.namprd12.prod.outlook.com>
-References: <20220124151340.376807-1-maximmi@nvidia.com>
- <20220124151340.376807-3-maximmi@nvidia.com>
- <61efacc6980f4_274ca2083e@john.notmuch>
- <8f5fecac-ce6e-adc8-305b-a2ee76328bce@nvidia.com>
- <61f850bdf1b23_8597208f8@john.notmuch> <61f852711e15a_92e0208ac@john.notmuch>
- <9cef58de-1f84-5988-92f8-fcdd3c61f689@nvidia.com>
- <61fc9483dfbe7_1d27c208e7@john.notmuch> <87a6f6bu6n.fsf@toke.dk>
- <6b6ce8a2-e409-0297-cb29-fe9493c9d637@nvidia.com>
- <20220221152142.cm6fiag27g74bk6h@apollo.legion>
-In-Reply-To: <20220221152142.cm6fiag27g74bk6h@apollo.legion>
-Accept-Language: en-US, ru-RU
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 61e74401-d056-475d-6236-08d9f7a2142e
-x-ms-traffictypediagnostic: MWHPR12MB1343:EE_
-x-microsoft-antispam-prvs: <MWHPR12MB134303BB86CF97F0C3B9F877DC3D9@MWHPR12MB1343.namprd12.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: cZe43fqwMsM6V+PpZGNNdp345O/FYXe0tDQrYunZf9ZWNL+DQmCOUCO2eJofvgUI7oJEkiXe4OWwx4mO9PRiLt+tw3rYlipbtLiunZOxnAbuKAF9G0dlxQGZQ9JkAi0gG6AwmzUCsw1/PAaQZkwFTz12DKwv9Lpn2O25r19+vYlVgSzCzqlNK+jJCtQkbvTKi1reDG93o5zJ/7ubWJuuqk2B+E71aRGHwNhM8XP6bH45kakyzV1BifBrZhte8ldQ2AtVJeY91iQytd6zAtcxBsSpDRz8/sN+RIvBjjiWQTlgBWVrIOkq9U96PgxFQND5cTvPgwwPkHTgd8ZKmKfTrreOmvRxhbjQIh8RofJfNDyPOPP9KP0FRuPnUi3bs1TtAj2RV8P7Bobi9SmwT+jSXGqUeY4ExVdbTTagpQIjRhjbViUAAkoo6EK54b8LQlAI51hG34gbPwnPgEOYvXSYY8cnxDLiAM7F6dQWfMDjeBjqdEEHfmGqVVxy/gzwS1xtmQZtrPgu4gCQ4Af5zVpydXS+cDGDri8VFBv1UaI7DZoTavmkvt5t1ZTPVf2vKePc3BslrTj6vI03OKMhkkgdem1dS3/WCjJuDpLxRY2H/WbSwvXs2QhTuBfJDo2p2yqcK0/EzVzR6JrKzTjKR3/+khgqv5c7ysBYMLRCcXV+UgL4YMU3LQ6R4uO3Q1xiqtii3jL3EUyZwL3pTimnF0CSCQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5150.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(71200400001)(122000001)(508600001)(83380400001)(66574015)(33656002)(2906002)(6506007)(9686003)(7696005)(53546011)(8936002)(52536014)(54906003)(30864003)(86362001)(38070700005)(38100700002)(316002)(186003)(26005)(76116006)(8676002)(4326008)(7416002)(6916009)(66556008)(5660300002)(64756008)(66946007)(66476007)(66446008)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?n/t1OXKImtioBJtKlf998CB20PoxFJnE2Ub3sKZE41/ddQqZOxbpsuM4VE?=
- =?iso-8859-1?Q?FDifxB+B3q13jJAfhM6+TWIHR0t1sOCagzySmNSV6D1tltooo/8mJwSBsF?=
- =?iso-8859-1?Q?LI999E64K/aDxeqtLJlX1aFO9LKfaWuuWPQEqMKsiPKuEPQcdA7XtiUkKx?=
- =?iso-8859-1?Q?wwHIEQ854KPx3IY0p42oodJtxovGYK8p7/9y7gwGWeyw7LDBJLjgoxBTbl?=
- =?iso-8859-1?Q?D9L0SAOz0Yeg8FMRUa+bj+a5fcOqWVKbHDs20T+NOHKuGTypup7WxNIzmG?=
- =?iso-8859-1?Q?XwmsZkeO+ydXJRQ4dZ+vGTBDgxOinDK6k2wR5er/GuMajos13QHj5nJmsq?=
- =?iso-8859-1?Q?iq5Fk3i3qdzTIKG0EcvYW9bahWJBH8WGwp2V7wpd+ndM2m5Zbr8inNXkZ1?=
- =?iso-8859-1?Q?OJYQ3Cq1nq6TuA/aeDwRerBSVPlh+0xdHH9uMLyuoAF3et1JJRUwi29t3L?=
- =?iso-8859-1?Q?8t/S790Vj/8nF/Q3O0cfYDJcwnOPji1L5Khw8dA8FKIw9TQSSHnnyVRnlO?=
- =?iso-8859-1?Q?U02ppsK4+lC3qF/QJMvPm4M6FlR3N+ODG14e4oImU35tnbtzEk/H/dQrey?=
- =?iso-8859-1?Q?sh1vipcCHGB+LerY4nBqEK5T0TczWdh3wz9fZnE06heeMW8sgb++WFIXYh?=
- =?iso-8859-1?Q?2fzphq+Q7k7zRAg8vh3J89byd4VgE5Wng16HjMmnbSzaEFsFkTajF7iFFa?=
- =?iso-8859-1?Q?FEcFBtpJmWFK4wGXBENhFRmS2zpm6uPACpi9kTly2U2bYGpfW0yHyPmejF?=
- =?iso-8859-1?Q?uffaJYfHvPAuGbEqnOt6PFt8fXC7mRhTeRO2taFKnRl+2IbNbSjs6S5G3G?=
- =?iso-8859-1?Q?nAjbjxJ/t/xnjlSSCENDPx0XJ1eaHJDmvoiXXnG7fR0W8y65mwsBgozmtJ?=
- =?iso-8859-1?Q?/hgZEj2aZQiktbYclfVxlH+3OyLT61dwhHH/YGNR/FOwkrQ6DI3Ly4iSPF?=
- =?iso-8859-1?Q?GQ8DxVnZf223lp431A9K7bqOsMmyFTREe3kpdACRwgihBMZwZMvcc8x7zV?=
- =?iso-8859-1?Q?CkJDmMiA3IUbYqKldA7OufsN8FfikcM6zCL+uFPYRY4OSQB1l5DXsu2i4d?=
- =?iso-8859-1?Q?nZqvrK72up9DuD8qz+x25kLXSTF0ykpF5JPx5v5AaeiL1p7xv/ckQfr5ff?=
- =?iso-8859-1?Q?6e2wgzxeEsiMHLni5QfFuIogF+z1vp258GVyK4iRZRqbxoJnedSaj43RIN?=
- =?iso-8859-1?Q?DD8EyBMUWYnzzQhj/TXcASmfGCMaRDWvpbohaXZgtazIkazWyYEH0tlt8E?=
- =?iso-8859-1?Q?2gtzBMId2BJ9BS0tHsg4QTlcFa1KihLDEel/eWtbCke9tBs6KG/W3eyEor?=
- =?iso-8859-1?Q?T7r8uSSsgu5DHJvIKTEmU1u+goX+la6Q92hbc64I/AeMWakF8K1C/LGzYB?=
- =?iso-8859-1?Q?HkLNxyQ5j9U5veRtzmpNTzpD5llhTNMF69Et/RSYR9zke3Is2hDcdMRpjx?=
- =?iso-8859-1?Q?atcp5+ramzZaSvsw5vglCFA8DMRAKMlwoIxQXwz1u3zCLEo6t5mamEnTpB?=
- =?iso-8859-1?Q?cdtbhRkkqnl21mgnrMR3k4TDVCQ5Lroy+xXJNLrjdPG7j8xPJzIL7nS5qE?=
- =?iso-8859-1?Q?0PDV/UXCycwkaKBHyJseECh/QRkBPinj5gOexLs0B8JKKL9EcyoDxqiLTt?=
- =?iso-8859-1?Q?u8cF45NBKSUJv5M/gvfW8XCUIIyzeMmpo6c58jCKgAM6GDwOB/Gaelsc9y?=
- =?iso-8859-1?Q?vxilUCN+NXcZKh3Gbjg=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        "Florent Revest" <revest@chromium.org>,
+        <linux-kselftest@vger.kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+        "Kumar Kartikeya Dwivedi" <memxor@gmail.com>,
+        Florian Westphal <fw@strlen.de>,
+        "Maxim Mikityanskiy" <maximmi@nvidia.com>
+Subject: [PATCH bpf-next v3 0/5] New BPF helpers to accelerate synproxy
+Date:   Thu, 24 Feb 2022 17:11:40 +0200
+Message-ID: <20220224151145.355355-1-maximmi@nvidia.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 552ca9a6-51f5-400d-6793-08d9f7a810de
+X-MS-TrafficTypeDiagnostic: BL0PR12MB2577:EE_
+X-Microsoft-Antispam-PRVS: <BL0PR12MB257727459FC2AB6D0D84B89DDC3D9@BL0PR12MB2577.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u/pTCFmqh1ZcSpUlkNb0SXgmop7PYZfr5uG9L72f4v+xQ5wpfXr63oL2vszf2Pc9mjN0OI6kTJll7ZbOG60UwYzIIWPCl/4R0UoWyM7KhIxoqMaJ22chN4oVCps+WNfEw/k6SfJTryz9Wu1OBrjMhl/IEE/w3OTBG8ydyvfJOCRSy25pMb/BmvXOvlTyRiW7CyMX4Wv8LPkf+y/knokLogfMe3ao7R9SGgCT8D6xuZdbaCHnlwaP7hX/PDuPHJMpcbi5lpenuQJM/guwu0Ffer/0hPh0iYD1+j2CCRyFtPqXqLEQhCf8CfnEjfJIvjhppwAq7arihfAReF+4qh5DNG/a7U8k9SIHBsqWbccVvMfQ8sb3rUIEN2/KAccMA+Pi0sDTWk1yGAbttCpA8fuv3fJP+QFpD0cyJuvQPOfibUakQdmp48eoV6vCy6a1BMmGQ2+G84tXUcfB8ccXPlPETOIG3kg/nHk3R5K8GwrZT3zGw7ptln/LaldSTBp3pGRokpCvdese2d81yHby8dkLcW9Kzt8P1LaHmtQYzzKyiUe7tijlyJxWqtsT+1XSw/buzD2KtHzY/KQ05CwN4gE+owEgeGpVU0obFp6K8eKBdMyGX4C7sxtJZLyAAZTjeFGenj7jtnHVOvH7O+Rvm1jdKvL0wz//elAKKgyFa/jB+b1k8Le3YClzPl6LWFTyPN07zjoN8z9JZ/p9CjObgRf/ffRdbqGSeahzfmOsS11ij/MESdih9sNkLbLbRbCS3+YMGFAJqaLZyZyiv7RDz7Hp5usdem3pqOPQBib7ZCyyRS3Fyge9FPZDPJobg5mLp54JCBtJFvb0m1J/VKNln6e4zw==
+X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(40470700004)(46966006)(36840700001)(2616005)(4326008)(82310400004)(186003)(70586007)(316002)(26005)(8676002)(36860700001)(1076003)(70206006)(107886003)(47076005)(356005)(6666004)(36756003)(86362001)(40460700003)(7696005)(8936002)(508600001)(426003)(5660300002)(336012)(2906002)(966005)(54906003)(110136005)(7416002)(83380400001)(81166007)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5150.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 61e74401-d056-475d-6236-08d9f7a2142e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Feb 2022 14:29:34.3576
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2022 15:12:25.7494
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NdFk81KxhUz01Rg0ziaWcMNXF2fcMNw3KSXQl37HkGVeo1w5/627rGvkjt2uwYzWVfu0HQWnYj8PDqjeY4o87w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1343
+X-MS-Exchange-CrossTenant-Network-Message-Id: 552ca9a6-51f5-400d-6793-08d9f7a810de
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT055.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2577
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -152,307 +122,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+The first patch of this series is an improvement to the existing
+syncookie BPF helper. The second patch is a documentation fix.
 
+The third patch allows BPF helpers to accept memory regions of fixed
+size without doing runtime size checks.
 
-> -----Original Message-----
-> From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Sent: 21 February, 2022 17:22
-> To: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Cc: Toke H=F8iland-J=F8rgensen <toke@toke.dk>; John Fastabend
-> <john.fastabend@gmail.com>; bpf@vger.kernel.org; Alexei Starovoitov
-> <ast@kernel.org>; Daniel Borkmann <daniel@iogearbox.net>; Andrii Nakryiko
-> <andrii@kernel.org>; netdev@vger.kernel.org; Tariq Toukan
-> <tariqt@nvidia.com>; Martin KaFai Lau <kafai@fb.com>; Song Liu
-> <songliubraving@fb.com>; Yonghong Song <yhs@fb.com>; KP Singh
-> <kpsingh@kernel.org>; David S. Miller <davem@davemloft.net>; Jakub Kicins=
-ki
-> <kuba@kernel.org>; Petar Penkov <ppenkov@google.com>; Lorenz Bauer
-> <lmb@cloudflare.com>; Eric Dumazet <edumazet@google.com>; Hideaki YOSHIFU=
-JI
-> <yoshfuji@linux-ipv6.org>; David Ahern <dsahern@kernel.org>; Shuah Khan
-> <shuah@kernel.org>; Jesper Dangaard Brouer <hawk@kernel.org>; Nathan
-> Chancellor <nathan@kernel.org>; Nick Desaulniers <ndesaulniers@google.com=
->;
-> Joe Stringer <joe@cilium.io>; Florent Revest <revest@chromium.org>; linux=
--
-> kselftest@vger.kernel.org; Florian Westphal <fw@strlen.de>
-> Subject: Re: [PATCH bpf-next v2 2/3] bpf: Add helpers to issue and check =
-SYN
-> cookies in XDP
->=20
-> On Mon, Feb 21, 2022 at 07:56:28PM IST, Maxim Mikityanskiy wrote:
-> > On 2022-02-04 16:08, Toke H=F8iland-J=F8rgensen wrote:
-> > > John Fastabend <john.fastabend@gmail.com> writes:
-> > >
-> > > > Maxim Mikityanskiy wrote:
-> > > > > On 2022-01-31 23:19, John Fastabend wrote:
-> > > > > > John Fastabend wrote:
-> > > > > > > Maxim Mikityanskiy wrote:
-> > > > > > > > On 2022-01-25 09:54, John Fastabend wrote:
-> > > > > > > > > Maxim Mikityanskiy wrote:
-> > > > > > > > > > The new helpers bpf_tcp_raw_{gen,check}_syncookie allow=
- an
-> XDP program
-> > > > > > > > > > to generate SYN cookies in response to TCP SYN packets =
-and
-> to check
-> > > > > > > > > > those cookies upon receiving the first ACK packet (the
-> final packet of
-> > > > > > > > > > the TCP handshake).
-> > > > > > > > > >
-> > > > > > > > > > Unlike bpf_tcp_{gen,check}_syncookie these new helpers
-> don't need a
-> > > > > > > > > > listening socket on the local machine, which allows to =
-use
-> them together
-> > > > > > > > > > with synproxy to accelerate SYN cookie generation.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> > > > > > > > > > Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-> > > > > > > > > > ---
-> > > > > > > > >
-> > > > > > > > > [...]
-> > > > > > > > >
-> > > > > > > > > > +
-> > > > > > > > > > +BPF_CALL_4(bpf_tcp_raw_check_syncookie, void *, iph, u=
-32,
-> iph_len,
-> > > > > > > > > > +	   struct tcphdr *, th, u32, th_len)
-> > > > > > > > > > +{
-> > > > > > > > > > +#ifdef CONFIG_SYN_COOKIES
-> > > > > > > > > > +	u32 cookie;
-> > > > > > > > > > +	int ret;
-> > > > > > > > > > +
-> > > > > > > > > > +	if (unlikely(th_len < sizeof(*th)))
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > > > +
-> > > > > > > > > > +	if (!th->ack || th->rst || th->syn)
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > > > +
-> > > > > > > > > > +	if (unlikely(iph_len < sizeof(struct iphdr)))
-> > > > > > > > > > +		return -EINVAL;
-> > > > > > > > > > +
-> > > > > > > > > > +	cookie =3D ntohl(th->ack_seq) - 1;
-> > > > > > > > > > +
-> > > > > > > > > > +	/* Both struct iphdr and struct ipv6hdr have the
-> version field at the
-> > > > > > > > > > +	 * same offset so we can cast to the shorter header
-> (struct iphdr).
-> > > > > > > > > > +	 */
-> > > > > > > > > > +	switch (((struct iphdr *)iph)->version) {
-> > > > > > > > > > +	case 4:
-> > > > > > > > >
-> > > > > > > > > Did you consider just exposing __cookie_v4_check() and
-> __cookie_v6_check()?
-> > > > > > > >
-> > > > > > > > No, I didn't, I just implemented it consistently with
-> > > > > > > > bpf_tcp_check_syncookie, but let's consider it.
-> > > > > > > >
-> > > > > > > > I can't just pass a pointer from BPF without passing the si=
-ze,
-> so I
-> > > > > > > > would need some wrappers around __cookie_v{4,6}_check anywa=
-y.
-> The checks
-> > > > > > > > for th_len and iph_len would have to stay in the helpers. T=
-he
-> check for
-> > > > > > > > TCP flags (ACK, !RST, !SYN) could be either in the helper o=
-r
-> in BPF. The
-> > > > > > > > switch would obviously be gone.
-> > > > > > >
-> > > > > > > I'm not sure you would need the len checks in helper, they
-> provide
-> > > > > > > some guarantees I guess, but the void * is just memory I don'=
-t
-> see
-> > > > > > > any checks on its size. It could be the last byte of a value =
-for
-> > > > > > > example?
-> > > > >
-> > > > > The verifier makes sure that the packet pointer and the size come
-> > > > > together in function parameters (see check_arg_pair_ok). It also
-> makes
-> > > > > sure that the memory region defined by these two parameters is
-> valid,
-> > > > > i.e. in our case it belongs to packet data.
-> > > > >
-> > > > > Now that the helper got a valid memory region, its length is stil=
-l
-> > > > > arbitrary. The helper has to check it's big enough to contain a T=
-CP
-> > > > > header, before trying to access its fields. Hence the checks in t=
-he
-> helper.
-> > > > >
-> > > > > > I suspect we need to add verifier checks here anyways to ensure=
- we
-> don't
-> > > > > > walk off the end of a value unless something else is ensuring t=
-he
-> iph
-> > > > > > is inside a valid memory block.
-> > > > >
-> > > > > The verifier ensures that the [iph; iph+iph_len) is valid memory,
-> but
-> > > > > the helper still has to check that struct iphdr fits into this
-> region.
-> > > > > Otherwise iph_len could be too small, and the helper would access
-> memory
-> > > > > outside of the valid region.
-> > > >
-> > > > Thanks for the details this all makes sense. See response to
-> > > > other mail about adding new types. Replied to the wrong email
-> > > > but I think the context is not lost.
-> > >
-> > > Keeping my reply here in an attempt to de-fork :)
-> > >
-> > > > > > > >
-> > > > > > > > The bottom line is that it would be the same code, but with=
-out
-> the
-> > > > > > > > switch, and repeated twice. What benefit do you see in this
-> approach?
-> > > > > > >
-> > > > > > > The only benefit would be to shave some instructions off the
-> program.
-> > > > > > > XDP is about performance so I figure we shouldn't be adding
-> arbitrary
-> > > > > > > stuff here. OTOH you're already jumping into a helper so it
-> might
-> > > > > > > not matter at all.
-> > > > > > >
-> > > > > > > >    From my side, I only see the ability to drop one branch =
-at
-> the expense
-> > > > > > > > of duplicating the code above the switch (th_len and iph_le=
-n
-> checks).
-> > > > > > >
-> > > > > > > Just not sure you need the checks either, can you just assume
-> the user
-> > > > > > > gives good data?
-> > > > >
-> > > > > No, since the BPF program would be able to trick the kernel into
-> reading
-> > > > > from an invalid location (see the explanation above).
-> > > > >
-> > > > > > > >
-> > > > > > > > > My code at least has already run the code above before it
-> would ever call
-> > > > > > > > > this helper so all the other bits are duplicate.
-> > > > > > > >
-> > > > > > > > Sorry, I didn't quite understand this part. What "your code=
-"
-> are you
-> > > > > > > > referring to?
-> > > > > > >
-> > > > > > > Just that the XDP code I maintain has a if ipv4 {...} else
-> ipv6{...}
-> > > > > > > structure
-> > > > >
-> > > > > Same for my code (see the last patch in the series).
-> > > > >
-> > > > > Splitting into two helpers would allow to drop the extra switch i=
-n
-> the
-> > > > > helper, however:
-> > > > >
-> > > > > 1. The code will be duplicated for the checks.
-> > > >
-> > > > See response wrt PTR_TO_IP, PTR_TO_TCP types.
-> > >
-> > > So about that (quoting some context from your other email):
-> > >
-> > > > We could have some new mem types, PTR_TO_IPV4, PTR_TO_IPv6, and
-> PTR_TO_TCP.
-> > > > Then we simplify the helper signatures to just,
-> > > >
-> > > >    bpf_tcp_raw_check_syncookie_v4(iph, tcph);
-> > > >    bpf_tcp_raw_check_syncookie_v6(iph, tcph);
-> > > >
-> > > > And the verifier "knows" what a v4/v6 header is and does the mem
-> > > > check at verification time instead of run time.
-> > >
-> > > I think this could probably be achieved with PTR_TO_BTF arguments to =
-the
-> > > helper (if we define appropriate struct types that the program can us=
-e
-> > > for each header type)?
-> >
-> > I get the following error when I try to pass the headers from packet da=
-ta
-> to
-> > a helper that accepts ARG_PTR_TO_BTF_ID:
-> >
-> > ; value =3D bpf_tcp_raw_gen_syncookie_ipv4(hdr->ipv4, hdr->tcp,
-> > 297: (79) r1 =3D *(u64 *)(r10 -80)      ; R1_w=3Dpkt(id=3D0,off=3D14,r=
-=3D74,imm=3D0)
-> > R10=3Dfp0
-> > 298: (79) r2 =3D *(u64 *)(r10 -72)      ;
-> > R2_w=3Dpkt(id=3D5,off=3D14,r=3D74,umax_value=3D60,var_off=3D(0x0; 0x3c)=
-) R10=3Dfp0
-> > 299: (bc) w3 =3D w9                     ;
-> > R3_w=3DinvP(id=3D0,umin_value=3D20,umax_value=3D60,var_off=3D(0x0; 0x3c=
-))
-> > R9=3DinvP(id=3D0,umin_value=3D20,umax_value=3D60,var_off=3D(0x0; 0x3c))
-> > 300: (85) call bpf_tcp_raw_gen_syncookie_ipv4#192
-> > R1 type=3Dpkt expected=3Dptr_
-> > processed 317 insns (limit 1000000) max_states_per_insn 0 total_states =
-23
-> > peak_states 23 mark_read 12
-> > -- END PROG LOAD LOG --
-> >
-> > It looks like the verifier doesn't currently support such type conversi=
-on.
-> > Could you give any clue what is needed to add this support? Is it enoug=
-h
-> to
-> > extend compatible_reg_types, or should more checks be added anywhere?
-> >
->=20
-> I think what he meant was getting the size hint from the function prototy=
-pe.
-> In
-> case of kfunc we do it by resolving type size from BTF, for the PTR_TO_ME=
-M
-> case
-> when a size argument is missing. For helper, you can add a field to indic=
-ate
-> the
-> constant size hint in the bpf_func_proto, and then in check_func_arg
-> directly do
-> the equivalent check_helper_mem_access for arg_type_is_mem_ptr block if s=
-uch
-> a
-> hint is set, instead of delaying it till check_mem_size_reg call when the
-> next
-> arg_type_is_mem_size block is executed.
->=20
-> Then you can have two helpers with same argument types but different size
-> hint
-> values for the header argument, so you wouldn't need an extra mem size
-> parameter.
->=20
-> You may also want to disallow setting both the size hint and next argumen=
-t
-> as
-> ARG_CONST_SIZE.
+The two last patches add new functionality that allows XDP to
+accelerate iptables synproxy.
 
-Thanks, I implemented your suggestion as a new feature of the verifier,
-and it works.
+v1 of this series [1] used to include a patch that exposed conntrack
+lookup to BPF using stable helpers. It was superseded by series [2] by
+Kumar Kartikeya Dwivedi, which implements this functionality using
+unstable helpers.
 
-I'm ready to respin the series, I've split my new helpers, but splitting
-the existing helpers won't be part of resubmission, because it is out of
-scope of changes I intended to push. It can be added later as an
-improvement, though.
+The fourth patch adds new helpers to issue and check SYN cookies without
+binding to a socket, which is useful in the synproxy scenario.
 
-> > Alternatively, I can revert to ARG_PTR_TO_MEM and do size checks in
-> runtime
-> > in the helper.
-> >
-> > [...]
->=20
-> --
-> Kartikeya
+The fifth patch adds a selftest, which consists of a script, an XDP
+program and a userspace control application. The XDP program uses
+socketless SYN cookie helpers and queries conntrack status instead of
+socket status. The userspace control application allows to tune
+parameters of the XDP program. This program also serves as a minimal
+example of usage of the new functionality.
+
+The draft of the new functionality was presented on Netdev 0x15 [3].
+
+v2 changes:
+
+Split into two series, submitted bugfixes to bpf, dropped the conntrack
+patches, implemented the timestamp cookie in BPF using bpf_loop, dropped
+the timestamp cookie patch.
+
+v3 changes:
+
+Moved some patches from bpf to bpf-next, dropped the patch that changed
+error codes, split the new helpers into IPv4/IPv6, added verifier
+functionality to accept memory regions of fixed size.
+
+[1]: https://lore.kernel.org/bpf/20211020095815.GJ28644@breakpoint.cc/t/
+[2]: https://lore.kernel.org/bpf/20220114163953.1455836-1-memxor@gmail.com/
+[3]: https://netdevconf.info/0x15/session.html?Accelerating-synproxy-with-XDP
+
+Maxim Mikityanskiy (5):
+  bpf: Use ipv6_only_sock in bpf_tcp_gen_syncookie
+  bpf: Fix documentation of th_len in bpf_tcp_{gen,check}_syncookie
+  bpf: Allow helpers to accept pointers with a fixed size
+  bpf: Add helpers to issue and check SYN cookies in XDP
+  bpf: Add selftests for raw syncookie helpers
+
+ include/linux/bpf.h                           |  10 +
+ include/net/tcp.h                             |   1 +
+ include/uapi/linux/bpf.h                      | 100 ++-
+ kernel/bpf/verifier.c                         |  26 +-
+ net/core/filter.c                             | 128 ++-
+ net/ipv4/tcp_input.c                          |   3 +-
+ scripts/bpf_doc.py                            |   4 +
+ tools/include/uapi/linux/bpf.h                | 100 ++-
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   5 +-
+ .../selftests/bpf/progs/xdp_synproxy_kern.c   | 750 ++++++++++++++++++
+ .../selftests/bpf/test_xdp_synproxy.sh        |  71 ++
+ tools/testing/selftests/bpf/xdp_synproxy.c    | 418 ++++++++++
+ 13 files changed, 1594 insertions(+), 23 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_synproxy.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_synproxy.c
+
+-- 
+2.30.2
+
