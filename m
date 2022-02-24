@@ -2,83 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B12B4C3473
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 19:16:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 177BF4C3484
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 19:21:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbiBXSRM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 13:17:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57926 "EHLO
+        id S232709AbiBXSVF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 13:21:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbiBXSRL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 13:17:11 -0500
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C793711140;
-        Thu, 24 Feb 2022 10:16:40 -0800 (PST)
-Received: from localhost.localdomain (c-73-140-2-214.hsd1.wa.comcast.net [73.140.2.214])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 51AC320C31D9;
-        Thu, 24 Feb 2022 10:16:40 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 51AC320C31D9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1645726600;
-        bh=B9D0vxUsqxzPl9SgqxuD2InwAl15dfx72SkXuvsaNUE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CVTrs4+vSecZwIS60ocevKSDh0y7A9Znfdrs27XhtYZRyTZH+jdCDlwcvwiG9C4nx
-         nX0GqYuGW7g5sHbKcjg+uJlSXd1qxH4JdiQV0TeebWWWgm6RdLZ1YTs8MCStsmf1Sg
-         JRVPnKW1avCtJ5JnXXP0Ak0rS0sSKuA5CloBVJsw=
-From:   Beau Belgrave <beaub@linux.microsoft.com>
-To:     rostedt@goodmis.org, dan.carpenter@oracle.com
-Cc:     linux-trace-devel@vger.kernel.org, bpf@vger.kernel.org,
-        beaub@linux.microsoft.com
-Subject: [PATCH] user_events: Fix potential uninitialized pointer while parsing field
-Date:   Thu, 24 Feb 2022 10:16:37 -0800
-Message-Id: <20220224181637.2129-1-beaub@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232672AbiBXSVE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 13:21:04 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECC52556E4;
+        Thu, 24 Feb 2022 10:20:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9A56D60B0E;
+        Thu, 24 Feb 2022 18:20:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78637C340E9;
+        Thu, 24 Feb 2022 18:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1645726833;
+        bh=cLEjIETcg/OJ3fT0H+e8jwtt0eqs6MXPvVtlC2jV8PQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nyqKUgzRU2t7o/ub+aIX9fXlhdK+rfzjWeg6vo2QTWXXEN1cewKOjPJRnXe/Nx2Ou
+         loZukuiIEs4ALvJflu8IX4X2HXaPHATG5b/MavRxbxOwMZJ3wpgQEbE6nNuafSBC7u
+         t9TOIji+xztIIxeN2btLZqJmJZ6ub920T/uymotM=
+Date:   Thu, 24 Feb 2022 19:20:25 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 0/6] Introduce eBPF support for HID devices
+Message-ID: <YhfMaYsS3YI9T2nT@kroah.com>
+References: <20220224110828.2168231-1-benjamin.tissoires@redhat.com>
+ <YhdsgokMMSEQ0Yc8@kroah.com>
+ <f965c04f34aabe93fe8ef91bb4d1ce4d24159173.camel@hadess.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f965c04f34aabe93fe8ef91bb4d1ce4d24159173.camel@hadess.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ensure name is initialized by default to NULL to prevent possible edge
-cases that could lead to it being left uninitialized. Add an explicit
-check for NULL name to ensure edge boundaries.
+On Thu, Feb 24, 2022 at 06:41:18PM +0100, Bastien Nocera wrote:
+> On Thu, 2022-02-24 at 12:31 +0100, Greg KH wrote:
+> > On Thu, Feb 24, 2022 at 12:08:22PM +0100, Benjamin Tissoires wrote:
+> > > Hi there,
+> > > 
+> > > This series introduces support of eBPF for HID devices.
+> > > 
+> > > I have several use cases where eBPF could be interesting for those
+> > > input devices:
+> > > 
+> > > - simple fixup of report descriptor:
+> > > 
+> > > In the HID tree, we have half of the drivers that are "simple" and
+> > > that just fix one key or one byte in the report descriptor.
+> > > Currently, for users of such devices, the process of fixing them
+> > > is long and painful.
+> > > With eBPF, we could externalize those fixups in one external repo,
+> > > ship various CoRe bpf programs and have those programs loaded at
+> > > boot
+> > > time without having to install a new kernel (and wait 6 months for
+> > > the
+> > > fix to land in the distro kernel)
+> > 
+> > Why would a distro update such an external repo faster than they
+> > update
+> > the kernel?  Many sane distros update their kernel faster than other
+> > packages already, how about fixing your distro?  :)
+> > 
+> > I'm all for the idea of using ebpf for HID devices, but now we have
+> > to
+> > keep track of multiple packages to be in sync here.  Is this making
+> > things harder overall?
+> 
+> I don't quite understand how taking eBPF quirks for HID devices out of
+> the kernel tree is different from taking suspend quirks out of the
+> kernel tree:
+> https://www.spinics.net/lists/linux-usb/msg204506.html
 
-Link: https://lore.kernel.org/bpf/20220224105334.GA2248@kili/
+A list of all devices possible, and the policy decisions to make on
+those devices, belongs in userspace, not in the kernel.  That's what the
+hwdb contains.
 
-Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- kernel/trace/trace_events_user.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Quirks in order to get the device to work properly is not a policy
+decision, they are needed to get the device to work.  If you wish to
+suspend it or not based on the vendor/product id, in order to possibly
+save some more battery life on some types of systems, is something that
+belongs in userspace.
 
-diff --git a/kernel/trace/trace_events_user.c b/kernel/trace/trace_events_user.c
-index 2b5e9fdb63a0..9a6191a6a786 100644
---- a/kernel/trace/trace_events_user.c
-+++ b/kernel/trace/trace_events_user.c
-@@ -362,6 +362,8 @@ static int user_event_parse_field(char *field, struct user_event *user,
- 	*field++ = '\0';
- 	depth++;
- parse:
-+	name = NULL;
-+
- 	while ((part = strsep(&field, " ")) != NULL) {
- 		switch (depth++) {
- 		case FIELD_DEPTH_TYPE:
-@@ -382,7 +384,7 @@ static int user_event_parse_field(char *field, struct user_event *user,
- 		}
- 	}
- 
--	if (depth < FIELD_DEPTH_SIZE)
-+	if (depth < FIELD_DEPTH_SIZE || !name)
- 		return -EINVAL;
- 
- 	if (depth == FIELD_DEPTH_SIZE)
+If you want to replace the existing HID quirk tables with an ebpf
+program that ships with the kernel, wonderful, I have no objection to
+that.  If a user is required to download the external quirk table just
+to get their device to work with the kernel, that's probably something
+you don't want to do.
 
-base-commit: 864ea0e10cc90416a01b46f0d47a6f26dc020820
--- 
-2.17.1
+thanks,
 
+greg k-h
