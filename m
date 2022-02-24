@@ -2,66 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0E74C27C9
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 10:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EB64C28E5
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 11:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbiBXJPb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 04:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        id S233280AbiBXKJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 05:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbiBXJPa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 04:15:30 -0500
-X-Greylist: delayed 442 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Feb 2022 01:15:00 PST
-Received: from mail.alecwise.pl (mail.alecwise.pl [89.40.125.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E0C2465CA
-        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 01:15:00 -0800 (PST)
-Received: by mail.alecwise.pl (Postfix, from userid 1001)
-        id 7C5DCA3F9C; Thu, 24 Feb 2022 09:06:57 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alecwise.pl; s=mail;
-        t=1645693656; bh=M1ZVeu3q6Upppe+FUx/3rgI7MKJXh389NZDbgCK1SX4=;
-        h=Date:From:To:Subject:From;
-        b=JW5R92H6AuDpYOb4QX7I//2LzvZIAU31U9pKo72oYwr4ZCMc5xLRd43wNeY/wnkGm
-         2i//RsO45W31a3cQHRB1e6SyWOX+Uy8dQRWX6bEe8Z9PUBOL5zBx6WFUXhUAQ840PD
-         +HDE5VlBcncn7nogw8FPa//jiO1l1nxONgbbNBATp5mchYZVLOoVh/Y6xiiajnvrmT
-         ehOaFkk2vFupIp9oVgmoyujUDSx335L8dhnrzExBerJBW5obThCgkTGGyudDa8rv5Q
-         +TJ37EQeUyQf/H6LHB+MGLa8WaoREkY4k0AUwW+Dj1hZYsMOPJa0nPBMz+gbGX7Aoz
-         Zso7GSHE8j3hw==
-Received: by mail.alecwise.pl for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 09:05:55 GMT
-Message-ID: <20220224074501-0.1.t.2mfc.0.dzql3nlw1p@alecwise.pl>
-Date:   Thu, 24 Feb 2022 09:05:55 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@alecwise.pl>
-To:     <bpf@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.alecwise.pl
+        with ESMTP id S233227AbiBXKJk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 05:09:40 -0500
+Received: from mail.tintel.eu (mail.tintel.eu [51.83.127.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 223D128AD96;
+        Thu, 24 Feb 2022 02:09:05 -0800 (PST)
+Received: from localhost (localhost [IPv6:::1])
+        by mail.tintel.eu (Postfix) with ESMTP id 50C8C434FC4A;
+        Thu, 24 Feb 2022 11:09:02 +0100 (CET)
+Received: from mail.tintel.eu ([IPv6:::1])
+        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10032)
+        with ESMTP id SFVhmd4-Hbc4; Thu, 24 Feb 2022 11:09:01 +0100 (CET)
+Received: from localhost (localhost [IPv6:::1])
+        by mail.tintel.eu (Postfix) with ESMTP id BBDAB434FC4B;
+        Thu, 24 Feb 2022 11:09:01 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.tintel.eu BBDAB434FC4B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux-ipv6.be;
+        s=502B7754-045F-11E5-BBC5-64595FD46BE8; t=1645697341;
+        bh=NsEziSD8zXGAxjibXFGFRrDDNKL9BST7ZKyzNe6aCCc=;
+        h=Message-ID:Date:MIME-Version:To:From;
+        b=cjdelavZb9bpnlZ24Xu1lGiiftDZaQ9y9quF0qr572LG3GfZefKKt9dUqmP7bjiLj
+         R1a8lWip6pBHta8VooDEz3xgPmIt8MdklEls7mtZKSqClTrUKqLM5TJBk0v+8Siyyx
+         keJo3orc3JNB7CeA95rH4x8IBQDcFtW6jFtaYZlc=
+X-Virus-Scanned: amavisd-new at mail.tintel.eu
+Received: from mail.tintel.eu ([IPv6:::1])
+        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10026)
+        with ESMTP id 0BgzWEgqgmxJ; Thu, 24 Feb 2022 11:09:01 +0100 (CET)
+Received: from [IPV6:2001:67c:21bc:20::10] (unknown [IPv6:2001:67c:21bc:20::10])
+        (Authenticated sender: stijn@tintel.eu)
+        by mail.tintel.eu (Postfix) with ESMTPSA id E115A434FC4A;
+        Thu, 24 Feb 2022 11:09:00 +0100 (CET)
+Message-ID: <ac624e07-5310-438a-dce3-d2edb01e8031@linux-ipv6.be>
+Date:   Thu, 24 Feb 2022 12:08:59 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] libbpf: fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
+Content-Language: en-GB
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Song Liu <song@kernel.org>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20220222204236.2192513-1-stijn@linux-ipv6.be>
+ <CAPhsuW6WgjL_atKCivbk5iMNBFHuSGcjAC0tdZYag2fOesUBKA@mail.gmail.com>
+ <CAEf4BzYuk2Rur-pae7gbuXSb=ayJ0fUREStdWyorWgd_q1D9zQ@mail.gmail.com>
+From:   Stijn Tintel <stijn@linux-ipv6.be>
+In-Reply-To: <CAEf4BzYuk2Rur-pae7gbuXSb=ayJ0fUREStdWyorWgd_q1D9zQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,NICE_REPLY_A,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On 24/02/2022 01:15, Andrii Nakryiko wrote:
+> On Tue, Feb 22, 2022 at 6:37 PM Song Liu <song@kernel.org> wrote:
+>> On Tue, Feb 22, 2022 at 12:51 PM Stijn Tintel <stijn@linux-ipv6.be> wrote:
+>>> When a BPF map of type BPF_MAP_TYPE_PERF_EVENT_ARRAY doesn't have the
+>>> max_entries parameter set, this parameter will be set to the number of
+>>> possible CPUs. Due to this, the map_is_reuse_compat function will return
+>>> false, causing the following error when trying to reuse the map:
+>>>
+>>> libbpf: couldn't reuse pinned map at '/sys/fs/bpf/m_logging': parameter mismatch
+>>>
+>>> Fix this by checking against the number of possible CPUs if the
+>>> max_entries parameter is not set in the map definition.
+>>>
+>>> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
+>>> Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>>
+>> I think the following fix would be more future proof, but the patch
+>> as-is is better for
+>> stable backport? How about we add a follow up patch on top of current
+>> patch to fix
+>> def->max_entries once for all?
+> Keeping special logic for PERF_EVENT_ARRAY in one place is
+> preferrable. With this, the changes in map_is_reuse_compat() shouldn't
+> be necessary at all. Stijn, can you please send v2 with Song's
+> proposed changes?
+>
+Will do!
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
+Thanks,
+Stijn
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
-
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
-
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
-
-
-Pozdrawiam
-Arkadiusz Soko=C5=82owski
