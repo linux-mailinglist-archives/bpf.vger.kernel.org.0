@@ -2,48 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CE74C28CB
-	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 11:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6A84C2944
+	for <lists+bpf@lfdr.de>; Thu, 24 Feb 2022 11:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbiBXKEn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 05:04:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S231623AbiBXKWP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 05:22:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232299AbiBXKEm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 05:04:42 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A87C285AB1
-        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 02:04:12 -0800 (PST)
-Received: from kwepemi500013.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4K47fy51Drz1FCX3;
-        Thu, 24 Feb 2022 17:59:38 +0800 (CST)
-Received: from huawei.com (10.67.174.197) by kwepemi500013.china.huawei.com
- (7.221.188.120) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Thu, 24 Feb
- 2022 18:04:10 +0800
-From:   Xu Kuohai <xukuohai@huawei.com>
-To:     <bpf@vger.kernel.org>
-CC:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S230344AbiBXKWN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 05:22:13 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC1011147
+        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 02:21:42 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a23so3285015eju.3
+        for <bpf@vger.kernel.org>; Thu, 24 Feb 2022 02:21:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Htc3oqWxZZMcWDbUXLeAQItx5CvgH1P5LweVKfWWbXU=;
+        b=YKgYD1I6XrVZ0S6uDdTcELyy7K2p9re21N1W4SD5OwQmZL6TUJRWhHHVVU7MmtBdo+
+         c+YcxC0tg9sLKNs0ZRamriW9Q8iKrVC+Dga8qoE/f8+XUP+96bDxFzXZV1pmdxXW86WN
+         o69nXC4icshS8z7Nat2x8HSu3Lv/9ZOFZ6umFnyVmTwbEwcSxc2SMmkwXunSJMt1AI1g
+         z+nKO54D0NayWsiZlFwHk+ah2KSAxnMFZSUHMgbjTB3tq34NAYNd9SaQV0nLfMRrOwLS
+         iN2e7BURm3SbqZ+12DlUHVyoRoD0p1o6sYKFnQJZk7H8rU8qDc3Hf9wWmAVH4Yl3sTGH
+         Nhow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Htc3oqWxZZMcWDbUXLeAQItx5CvgH1P5LweVKfWWbXU=;
+        b=JSG3DrdmKEiRhr0KlX+ezlnnI7VWFKnAsnbx4y/PZ0SpOEfTzqGrBae8jSFWjA07/7
+         D6SVY4vCNcXlX31gm6IxQT1nj0FX4dccP8pnhnVyk1rNKjc+QhI/zGqzUNOm2szSL2pz
+         g3FrRguD4JMAkNDRmI0/BVLCpODNMOVPXvrfmsE+hRfKCyPt60qxEXk/V/qoImFku4fn
+         l7O5nv/1Rum3028Lo8ko28O8JIYsdpfbvKRyMTpGWjRb5CAY+IwRfhge94vLRt+xnc5d
+         FoUCySP0Ifm9mQVJlWv5/R1IltfJMzqHmiShd3+q614lh8IAwj+IPVIsRr7cl7fbmqki
+         aUDA==
+X-Gm-Message-State: AOAM531UAIpXu1omkYW3dnzLNMbDBR+gIZYFDYdsHHnJK5/IHei8ReSS
+        ejYPNPcGdoWDyIMEjiHTPXch/6OdsE5jyg==
+X-Google-Smtp-Source: ABdhPJwKwy9gbDflJtc0X3PRdaHY4Vg40d7PrjYzsLby7GuGttjiyc1cDQvE9DaqOeo+GCM9FQ3urg==
+X-Received: by 2002:a17:906:1316:b0:6cf:d101:9638 with SMTP id w22-20020a170906131600b006cfd1019638mr1653017ejb.284.1645698100730;
+        Thu, 24 Feb 2022 02:21:40 -0800 (PST)
+Received: from ddolgov.remote.csb (dslb-178-012-046-224.178.012.pools.vodafone-ip.de. [178.12.46.224])
+        by smtp.gmail.com with ESMTPSA id c29sm1151518ejj.117.2022.02.24.02.21.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Feb 2022 02:21:40 -0800 (PST)
+Date:   Thu, 24 Feb 2022 11:21:39 +0100
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Update btf_dump case for conflicting type names
-Date:   Thu, 24 Feb 2022 05:14:44 -0500
-Message-ID: <20220224101444.1169015-3-xukuohai@huawei.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220224101444.1169015-1-xukuohai@huawei.com>
-References: <20220224101444.1169015-1-xukuohai@huawei.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [RFC PATCH v3] bpftool: Add bpf_cookie to link output
+Message-ID: <20220224102139.rvf44rd6wbzlf4gc@ddolgov.remote.csb>
+References: <20220218075103.10002-1-9erthalion6@gmail.com>
+ <CAEf4BzaD4FJw9_45v0-N5MbSKMCDcENQPzUDwo1FWoX-5ixzsg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.197]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemi500013.china.huawei.com (7.221.188.120)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaD4FJw9_45v0-N5MbSKMCDcENQPzUDwo1FWoX-5ixzsg@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,115 +73,19 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Update btf_dump case for conflicting names caused by forward declaration.
+> On Wed, Feb 23, 2022 at 01:46:56PM -0800, Andrii Nakryiko wrote:
+> On Thu, Feb 17, 2022 at 11:51 PM Dmitrii Dolgov <9erthalion6@gmail.com> wrote:
+> >
+> > +static __always_inline __u64 get_bpf_cookie(struct bpf_link *link)
+> > +{
+> > +       struct bpf_perf_link *perf_link;
+> > +       struct perf_event *event;
+> > +
+> > +       perf_link = container_of(link, struct bpf_perf_link, link);
+> > +       event = BPF_CORE_READ(perf_link, perf_file, private_data);
+> > +       return BPF_CORE_READ(event, bpf_cookie);
+>
+> not every bpf_link is bpf_perf_link, you can't do it for every
+> instance of bpf_link.
 
-Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/btf_dump.c       | 54 ++++++++++++++-----
- 1 file changed, 41 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_dump.c b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-index 9e26903f9170..a224207cdcc4 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_dump.c
-@@ -148,22 +148,38 @@ static void test_btf_dump_incremental(void)
- 
- 	/* First, generate BTF corresponding to the following C code:
- 	 *
--	 * enum { VAL = 1 };
-+	 * enum x;
-+	 *
-+	 * enum x { X = 1 };
-+	 *
-+	 * enum { Y = 1 };
-+	 *
-+	 * struct s;
- 	 *
- 	 * struct s { int x; };
- 	 *
- 	 */
-+	id = btf__add_enum(btf, "x", 4);
-+	ASSERT_EQ(id, 1, "enum_declaration_id");
-+	id = btf__add_enum(btf, "x", 4);
-+	ASSERT_EQ(id, 2, "named_enum_id");
-+	err = btf__add_enum_value(btf, "X", 1);
-+	ASSERT_OK(err, "named_enum_val_ok");
-+
- 	id = btf__add_enum(btf, NULL, 4);
--	ASSERT_EQ(id, 1, "enum_id");
--	err = btf__add_enum_value(btf, "VAL", 1);
--	ASSERT_OK(err, "enum_val_ok");
-+	ASSERT_EQ(id, 3, "anon_enum_id");
-+	err = btf__add_enum_value(btf, "Y", 1);
-+	ASSERT_OK(err, "anon_enum_val_ok");
- 
- 	id = btf__add_int(btf, "int", 4, BTF_INT_SIGNED);
--	ASSERT_EQ(id, 2, "int_id");
-+	ASSERT_EQ(id, 4, "int_id");
-+
-+	id = btf__add_fwd(btf, "s", BTF_FWD_STRUCT);
-+	ASSERT_EQ(id, 5, "fwd_id");
- 
- 	id = btf__add_struct(btf, "s", 4);
--	ASSERT_EQ(id, 3, "struct_id");
--	err = btf__add_field(btf, "x", 2, 0, 0);
-+	ASSERT_EQ(id, 6, "struct_id");
-+	err = btf__add_field(btf, "x", 4, 0, 0);
- 	ASSERT_OK(err, "field_ok");
- 
- 	for (i = 1; i < btf__type_cnt(btf); i++) {
-@@ -173,11 +189,20 @@ static void test_btf_dump_incremental(void)
- 
- 	fflush(dump_buf_file);
- 	dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
-+
- 	ASSERT_STREQ(dump_buf,
-+"enum x;\n"
-+"\n"
-+"enum x {\n"
-+"	X = 1,\n"
-+"};\n"
-+"\n"
- "enum {\n"
--"	VAL = 1,\n"
-+"	Y = 1,\n"
- "};\n"
- "\n"
-+"struct s;\n"
-+"\n"
- "struct s {\n"
- "	int x;\n"
- "};\n\n", "c_dump1");
-@@ -199,10 +224,12 @@ static void test_btf_dump_incremental(void)
- 	fseek(dump_buf_file, 0, SEEK_SET);
- 
- 	id = btf__add_struct(btf, "s", 4);
--	ASSERT_EQ(id, 4, "struct_id");
--	err = btf__add_field(btf, "x", 1, 0, 0);
-+	ASSERT_EQ(id, 5, "struct_id");
-+	err = btf__add_field(btf, "x", 2, 0, 0);
-+	ASSERT_OK(err, "field_ok");
-+	err = btf__add_field(btf, "y", 3, 32, 0);
- 	ASSERT_OK(err, "field_ok");
--	err = btf__add_field(btf, "s", 3, 32, 0);
-+	err = btf__add_field(btf, "s", 6, 64, 0);
- 	ASSERT_OK(err, "field_ok");
- 
- 	for (i = 1; i < btf__type_cnt(btf); i++) {
-@@ -214,9 +241,10 @@ static void test_btf_dump_incremental(void)
- 	dump_buf[dump_buf_sz] = 0; /* some libc implementations don't do this */
- 	ASSERT_STREQ(dump_buf,
- "struct s___2 {\n"
-+"	enum x x;\n"
- "	enum {\n"
--"		VAL___2 = 1,\n"
--"	} x;\n"
-+"		Y___2 = 1,\n"
-+"	} y;\n"
- "	struct s s;\n"
- "};\n\n" , "c_dump1");
- 
--- 
-2.30.2
-
+Right, thanks. I was somehow testing it only with perf links, will fix.
