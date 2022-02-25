@@ -2,70 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE354C478B
-	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 15:32:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D4E4C48BB
+	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 16:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241629AbiBYOdH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Feb 2022 09:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        id S238145AbiBYPYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Feb 2022 10:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241786AbiBYOci (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Feb 2022 09:32:38 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5C716F96F;
-        Fri, 25 Feb 2022 06:32:06 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C5F87B831F8;
-        Fri, 25 Feb 2022 14:32:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A86AC340E7;
-        Fri, 25 Feb 2022 14:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645799523;
-        bh=R7UNX1EqDtGkiEAz9dtDTaaeHOPhPEl39fh/58YEnQE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bgqJcWqvGAoXF08p/LH3hYFTePdjznND7PCmsKaczhezQ+3/BhmYy/L6t1T3YP+Zh
-         CP639+Wia/zVanM9JURiQcBx12XkW2vlkFuXE05vLd2RyQy9DqdvF7X0Cz/RPR4qT4
-         zbi2lRlOzacRqog1z/0kYCRGeIV0WEUh62DA6oU/HdJcCmL1cd/Np0LYwerbDkOcza
-         c7Wa8DGFFTziPBEguzqM2Wc3MfN+gz3Tc49xqyiRGrTVLkHA31okY0nD4NuaBUjjWv
-         GV4aykR+tloz1ZM4Spw82lY5Q/EVTEJXoHEdEH48Pr4Hw6pom6KqSo9WN+lD8kXqJt
-         qEk2CvhgMWGeA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 2C484403C8; Fri, 25 Feb 2022 11:32:00 -0300 (-03)
-Date:   Fri, 25 Feb 2022 11:32:00 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 3/3] perf tools: Rework prologue generation code
-Message-ID: <YhjoYEoF7FJSwKO2@kernel.org>
-References: <20220217131916.50615-1-jolsa@kernel.org>
- <20220217131916.50615-4-jolsa@kernel.org>
- <CAEf4BzYP7=JuyuY=xZe71urpxat4ba-JnqeSTcHF=CYmsQbofQ@mail.gmail.com>
- <Yg9geQ0LJjhnrc7j@krava>
- <CAEf4BzZaFWhWf73JbfO7gLi82Nn4ma-qmaZBPij=giNzzoSCTQ@mail.gmail.com>
- <YhJF00d9baPtXjzH@krava>
- <CAEf4BzaiBO3_617kkXZdYJ8hS8YF--ZLgapNbgeeEJ-pY0H88g@mail.gmail.com>
- <YhjIOX5BDYh4SRZB@krava>
+        with ESMTP id S232083AbiBYPYi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Feb 2022 10:24:38 -0500
+Received: from mail.tintel.eu (mail.tintel.eu [51.83.127.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD9052E7B;
+        Fri, 25 Feb 2022 07:24:02 -0800 (PST)
+Received: from localhost (localhost [IPv6:::1])
+        by mail.tintel.eu (Postfix) with ESMTP id 2DD2D443B971;
+        Fri, 25 Feb 2022 16:23:59 +0100 (CET)
+Received: from mail.tintel.eu ([IPv6:::1])
+        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10032)
+        with ESMTP id w5frC7GqIgB7; Fri, 25 Feb 2022 16:23:58 +0100 (CET)
+Received: from localhost (localhost [IPv6:::1])
+        by mail.tintel.eu (Postfix) with ESMTP id 85E04443813E;
+        Fri, 25 Feb 2022 16:23:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.tintel.eu 85E04443813E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux-ipv6.be;
+        s=502B7754-045F-11E5-BBC5-64595FD46BE8; t=1645802638;
+        bh=iD0jBu37ZJr9EscfZ+evIV/HBHbE8EFNFF4helr1Mt8=;
+        h=From:To:Date:Message-Id:MIME-Version;
+        b=FW6BvRlvWP6FdiwJLoU9yE36O6SVnhAPoKMnhIHObYWEPqrmrZn+evVTXtzvqw3ak
+         cx4iTsx58Q6ljV0EdlEBG7hOiqxuw6ssbmZ7+dm2Qy9yhsOKQpfkK/E01FaD59kiNA
+         qShOihCn/O7s3YmfHGrqommDhD1DCooR105RwYS0=
+X-Virus-Scanned: amavisd-new at mail.tintel.eu
+Received: from mail.tintel.eu ([IPv6:::1])
+        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10026)
+        with ESMTP id KOsuI6pEIIqM; Fri, 25 Feb 2022 16:23:58 +0100 (CET)
+Received: from taz.sof.bg.adlevio.net (unknown [IPv6:2001:67c:21bc:20::10])
+        by mail.tintel.eu (Postfix) with ESMTPS id 39FAB42A43B9;
+        Fri, 25 Feb 2022 16:23:58 +0100 (CET)
+From:   Stijn Tintel <stijn@linux-ipv6.be>
+To:     bpf@vger.kernel.org, songliubraving@fb.com, andrii@kernel.org,
+        toke@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kpsingh@kernel.org, yhs@fb.com, kafai@fb.com, daniel@iogearbox.net,
+        ast@kernel.org
+Subject: [PATCH v2] libbpf: fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
+Date:   Fri, 25 Feb 2022 17:23:55 +0200
+Message-Id: <20220225152355.315204-1-stijn@linux-ipv6.be>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YhjIOX5BDYh4SRZB@krava>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Rspamd-Pre-Result: action=no action;
+        module=multimap;
+        Matched map: IP_WHITELIST
+X-Rspamd-Queue-Id: 39FAB42A43B9
+X-Rspamd-Pre-Result: action=no action;
+        module=multimap;
+        Matched map: IP_WHITELIST
+X-Spamd-Result: default: False [0.00 / 15.00];
+        IP_WHITELIST(0.00)[2001:67c:21bc:20::10];
+        ASN(0.00)[asn:200533, ipnet:2001:67c:21bc::/48, country:BG]
+X-Rspamd-Server: skulls
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,111 +70,138 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Feb 25, 2022 at 01:14:49PM +0100, Jiri Olsa escreveu:
-> On Wed, Feb 23, 2022 at 02:29:56PM -0800, Andrii Nakryiko wrote:
-> 
-> SNIP
-> 
-> > > and R3 is loaded in the prologue code (first 15 instructions)
-> > > and it also sets 'err' (R2) with the result of the reading:
-> > >
-> > >            0: (bf) r6 = r1
-> > >            1: (79) r3 = *(u64 *)(r6 +96)
-> > >            2: (bf) r7 = r10
-> > >            3: (07) r7 += -8
-> > >            4: (7b) *(u64 *)(r10 -8) = r3
-> > >            5: (b7) r2 = 8
-> > >            6: (bf) r1 = r7
-> > >            7: (85) call bpf_probe_read_user#-60848
-> > >            8: (55) if r0 != 0x0 goto pc+2
-> > >            9: (61) r3 = *(u32 *)(r10 -8)
-> > >           10: (05) goto pc+3
-> > >           11: (b7) r2 = 1
-> > >           12: (b7) r3 = 0
-> > >           13: (05) goto pc+1
-> > >           14: (b7) r2 = 0
-> > >           15: (bf) r1 = r6
-> > >
-> > >           16: (b7) r1 = 100
-> > >           17: (6b) *(u16 *)(r10 -8) = r1
-> > >           18: (18) r1 = 0x6c25203a6f697270
-> > >           20: (7b) *(u64 *)(r10 -16) = r1
-> > >           21: (bf) r1 = r10
-> > >           22: (07) r1 += -16
-> > >           23: (b7) r2 = 10
-> > >           24: (85) call bpf_trace_printk#-54848
-> > >           25: (b7) r0 = 1
-> > >           26: (95) exit
-> > >
-> > >
-> > > I'm still scratching my head how to workaround this.. we do want maps
-> > > and all the other updates to the code, but verifier won't let it pass
-> > > without the prologue code
-> > 
-> > ugh, perf cornered itself into supporting this crazy scheme and now
- 
-> well, it just used the interface that was provided at the time
+When a BPF map of type BPF_MAP_TYPE_PERF_EVENT_ARRAY doesn't have the
+max_entries parameter set, the map will be created with max_entries set
+to the number of available CPUs. When we try to reuse such a pinned map,
+map_is_reuse_compat will return false, as max_entries in the map
+definition differs from max_entries of the existing map, causing the
+following error:
 
-At the time it was where experimentation was done with tooling for eBPF,
-Wangnan tried to provide a compact way to give access to parameters.
+libbpf: couldn't reuse pinned map at '/sys/fs/bpf/m_logging': parameter m=
+ismatch
 
-The problem now is for libbpf to remove something that is used and that
-was documented to some extent in the perf tools examples so there _may_
-be some usage of it, we just can't know.
+Fix this by overwriting max_entries in the map definition. For this to
+work, we need to do this in bpf_object__create_maps, before calling
+bpf_object__reuse_map.
 
-Its like Linux removing some syscall that is "crazy" and wait for
-somebody to complain of the breakage caused when they update to a new
-version.
- 
-> > there is no good solution. I'm still questioning the value of
-> > supporting this going forward. Is there an evidence that anyone is
-> > using this functionality at all? Is it worth it trying to carry it on
-> > just because we have some example that exercises this feature?
- 
-> yea we discussed this again and I think we can somehow mark this
-> feature in perf as deprecated and remove it after some time,
-> because even with the workaround below it'll be pita ;-)
-> 
-> or people will come and scream and we will find some other solution
+Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF o=
+bjects")
+Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
+---
+v2: overwrite max_entries in the map definition instead of adding an
+    extra check in map_is_reuse_compat, and introduce a helper function
+    for this as suggested by Song.
+---
+ tools/lib/bpf/libbpf.c | 44 ++++++++++++++++++++++++------------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
-:-\ if you have some "ugly" way to keep the feature, can't we go with
-it?
- 
-> I already sent the rest of the changes (prog/map priv) separately
-> and will send some RFC for the deprecation
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 7f10dd501a52..133462637b09 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4854,7 +4854,6 @@ static int bpf_object__create_map(struct bpf_object=
+ *obj, struct bpf_map *map, b
+ 	LIBBPF_OPTS(bpf_map_create_opts, create_attr);
+ 	struct bpf_map_def *def =3D &map->def;
+ 	const char *map_name =3D NULL;
+-	__u32 max_entries;
+ 	int err =3D 0;
+=20
+ 	if (kernel_supports(obj, FEAT_PROG_NAME))
+@@ -4864,21 +4863,6 @@ static int bpf_object__create_map(struct bpf_objec=
+t *obj, struct bpf_map *map, b
+ 	create_attr.numa_node =3D map->numa_node;
+ 	create_attr.map_extra =3D map->map_extra;
+=20
+-	if (def->type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries=
+) {
+-		int nr_cpus;
+-
+-		nr_cpus =3D libbpf_num_possible_cpus();
+-		if (nr_cpus < 0) {
+-			pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
+-				map->name, nr_cpus);
+-			return nr_cpus;
+-		}
+-		pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
+-		max_entries =3D nr_cpus;
+-	} else {
+-		max_entries =3D def->max_entries;
+-	}
+-
+ 	if (bpf_map__is_struct_ops(map))
+ 		create_attr.btf_vmlinux_value_type_id =3D map->btf_vmlinux_value_type_=
+id;
+=20
+@@ -4928,7 +4912,7 @@ static int bpf_object__create_map(struct bpf_object=
+ *obj, struct bpf_map *map, b
+=20
+ 	if (obj->gen_loader) {
+ 		bpf_gen__map_create(obj->gen_loader, def->type, map_name,
+-				    def->key_size, def->value_size, max_entries,
++				    def->key_size, def->value_size, def->max_entries,
+ 				    &create_attr, is_inner ? -1 : map - obj->maps);
+ 		/* Pretend to have valid FD to pass various fd >=3D 0 checks.
+ 		 * This fd =3D=3D 0 will not be used with any syscall and will be rese=
+t to -1 eventually.
+@@ -4937,7 +4921,7 @@ static int bpf_object__create_map(struct bpf_object=
+ *obj, struct bpf_map *map, b
+ 	} else {
+ 		map->fd =3D bpf_map_create(def->type, map_name,
+ 					 def->key_size, def->value_size,
+-					 max_entries, &create_attr);
++					 def->max_entries, &create_attr);
+ 	}
+ 	if (map->fd < 0 && (create_attr.btf_key_type_id ||
+ 			    create_attr.btf_value_type_id)) {
+@@ -4954,7 +4938,7 @@ static int bpf_object__create_map(struct bpf_object=
+ *obj, struct bpf_map *map, b
+ 		map->btf_value_type_id =3D 0;
+ 		map->fd =3D bpf_map_create(def->type, map_name,
+ 					 def->key_size, def->value_size,
+-					 max_entries, &create_attr);
++					 def->max_entries, &create_attr);
+ 	}
+=20
+ 	err =3D map->fd < 0 ? -errno : 0;
+@@ -5058,6 +5042,24 @@ static int bpf_object_init_prog_arrays(struct bpf_=
+object *obj)
+ 	return 0;
+ }
+=20
++static int map_set_def_max_entries(struct bpf_map *map)
++{
++	if (map->def.type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY && !map->def.max=
+_entries) {
++		int nr_cpus;
++
++		nr_cpus =3D libbpf_num_possible_cpus();
++		if (nr_cpus < 0) {
++			pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
++				map->name, nr_cpus);
++			return nr_cpus;
++		}
++		pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
++		map->def.max_entries =3D nr_cpus;
++	}
++
++	return 0;
++}
++
+ static int
+ bpf_object__create_maps(struct bpf_object *obj)
+ {
+@@ -5090,6 +5092,10 @@ bpf_object__create_maps(struct bpf_object *obj)
+ 			continue;
+ 		}
+=20
++		err =3D map_set_def_max_entries(map);
++		if (err)
++			goto err_out;
++
+ 		retried =3D false;
+ retry:
+ 		if (map->pin_path) {
+--=20
+2.34.1
 
-I'll look at it now.
-
-Thanks for your work on this, Jiri.
-
-- Araldo
- 
-> thanks,
-> jirka
-> 
-> > 
-> > Anyways, one way to solve this is to add bpf_program__set_insns() that
-> > could be called from prog_init_fn callback (which I just realized
-> > hasn't landed yet, I'll send v4 today) to prepend a simple preamble
-> > like this:
-> > 
-> > r1 = 0;
-> > r2 = 0;
-> > r3 = 0;
-> > f4 = 0;
-> > r5 = 0; /* how many input arguments we support? */
-> > 
-> > This will make all input arguments initialized, libbpf will be able to
-> > adjust all the relocations and stuff. Once this "prototype program" is
-> > loaded, perf can grab final instructions and replace first X
-> > instructions with desired preamble.
-> > 
-> > But... ugliness and horror, yeah :(
-> > 
-> > 
-> > >
-> > > jirka
-
--- 
-
-- Arnaldo
