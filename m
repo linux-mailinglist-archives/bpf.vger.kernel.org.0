@@ -2,100 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D9B4C3A4A
-	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 01:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5935E4C3AF9
+	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 02:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbiBYAXT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Feb 2022 19:23:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42102 "EHLO
+        id S236404AbiBYBcU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Feb 2022 20:32:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231464AbiBYAXS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Feb 2022 19:23:18 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1854181E7C;
-        Thu, 24 Feb 2022 16:22:47 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21P040um005357;
-        Fri, 25 Feb 2022 00:22:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=e37v2GGU0I/ORobayoE//gNcdIQqEbFUPLKvwzSTUcs=;
- b=ToxcDVZYs1RBgdqKn5XErLBdgZhyajrqeHlttLi1QTukmwFv1MsDb0lpPVfkE4ZYF8sK
- ojf0DildiscwC+C1fKnzJwIr883uSI9eEJYGKn2lgFzHBAZ8RtkTphXhgAXVSK39R15p
- 231cr3R9pBcPeV0cSxrkxBE6BG94busD2VXLNDNiIvrkxxAXAeUO3GVsAlRxyMsjjljf
- DV08QllHvVuOxDtRpd/NGIc/HM2wWvKORczqfVgGSOKWYFjFlRY84tiGO4zNEe8Vrr8d
- q/M+DW47yTvSkK9ZYw8gXs/xbnGOvQXs4EE7jiEKMQ/JVDtGzjOEFk75zFbEnv6LTSU0 Ow== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3edwkex1gt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Feb 2022 00:22:24 +0000
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21P0C64p032409;
-        Fri, 25 Feb 2022 00:22:21 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04ams.nl.ibm.com with ESMTP id 3ear69n2vx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Feb 2022 00:22:21 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21P0MJrp54854090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Feb 2022 00:22:19 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 34C2452050;
-        Fri, 25 Feb 2022 00:22:19 +0000 (GMT)
-Received: from sig-9-65-86-89.ibm.com (unknown [9.65.86.89])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 9D81B5204E;
-        Fri, 25 Feb 2022 00:22:17 +0000 (GMT)
-Message-ID: <408a96085814b2578486b2859e63ff906f5e5876.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 0/6] bpf-lsm: Extend interoperability with IMA
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, shuah@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@kernel.org, revest@chromium.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 24 Feb 2022 19:22:17 -0500
-In-Reply-To: <20220215124042.186506-1-roberto.sassu@huawei.com>
-References: <20220215124042.186506-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: hA114obf-THotzvqlZ7wCVGc3u1_A-VZ
-X-Proofpoint-ORIG-GUID: hA114obf-THotzvqlZ7wCVGc3u1_A-VZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-24_06,2022-02-24_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- mlxscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=821 priorityscore=1501 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202240131
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S236398AbiBYBcT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Feb 2022 20:32:19 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5E857498;
+        Thu, 24 Feb 2022 17:31:46 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K4XK32XrkzdfbP;
+        Fri, 25 Feb 2022 09:30:31 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 25 Feb 2022 09:31:39 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
+        <davem@davemloft.net>, <bpf@vger.kernel.org>
+CC:     <edumazet@google.com>, <yoshfuji@linux-ipv6.org>,
+        <dsahern@kernel.org>, <kuba@kernel.org>, <ast@kernel.org>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
+        Wang Yufen <wangyufen@huawei.com>
+Subject: [PATCH bpf-next 0/4] bpf, sockmap: Fix memleaks and issues of mem charge/uncharge
+Date:   Fri, 25 Feb 2022 09:49:25 +0800
+Message-ID: <20220225014929.942444-1-wangyufen@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Roberto,
+This patchset fixes memleaks and incorrect charge/uncharge memory, these
+issues cause the following info:
 
-On Tue, 2022-02-15 at 13:40 +0100, Roberto Sassu wrote:
-> Extend the interoperability with IMA, to give wider flexibility for the
-> implementation of integrity-focused LSMs based on eBPF.
+WARNING: CPU: 0 PID: 9202 at net/core/stream.c:205 sk_stream_kill_queues+0xc8/0xe0
+Call Trace:
+ <IRQ>
+ inet_csk_destroy_sock+0x55/0x110
+ tcp_rcv_state_process+0xe5f/0xe90
+ ? sk_filter_trim_cap+0x10d/0x230
+ ? tcp_v4_do_rcv+0x161/0x250
+ tcp_v4_do_rcv+0x161/0x250
+ tcp_v4_rcv+0xc3a/0xce0
+ ip_protocol_deliver_rcu+0x3d/0x230
+ ip_local_deliver_finish+0x54/0x60
+ ip_local_deliver+0xfd/0x110
+ ? ip_protocol_deliver_rcu+0x230/0x230
+ ip_rcv+0xd6/0x100
+ ? ip_local_deliver+0x110/0x110
+ __netif_receive_skb_one_core+0x85/0xa0
+ process_backlog+0xa4/0x160
+ __napi_poll+0x29/0x1b0
+ net_rx_action+0x287/0x300
+ __do_softirq+0xff/0x2fc
+ do_softirq+0x79/0x90
+ </IRQ>
 
-I've previously requested adding eBPF module measurements and signature
-verification support in IMA.  There seemed to be some interest, but
-nothing has been posted.
+WARNING: CPU: 0 PID: 531 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x175/0x1b0
+Call Trace:
+ <TASK>
+ __sk_destruct+0x24/0x1f0
+ sk_psock_destroy+0x19b/0x1c0
+ process_one_work+0x1b3/0x3c0
+ ? process_one_work+0x3c0/0x3c0
+ worker_thread+0x30/0x350
+ ? process_one_work+0x3c0/0x3c0
+ kthread+0xe6/0x110
+ ? kthread_complete_and_exit+0x20/0x20
+ ret_from_fork+0x22/0x30
+ </TASK>
 
-thanks,
+Wang Yufen (4):
+  bpf, sockmap: Fix memleak in sk_psock_queue_msg
+  bpf, sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full
+  bpf, sockmap: Fix more uncharged while msg has more_data
+  bpf, sockmap: Fix double uncharge the mem of sk_msg
 
-Mimi
+ include/linux/skmsg.h | 13 ++++---------
+ net/ipv4/tcp_bpf.c    | 13 +++++++++----
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+-- 
+2.25.1
 
