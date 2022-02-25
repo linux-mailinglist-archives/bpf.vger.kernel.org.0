@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CBBF4C5229
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 00:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E34DD4C522D
+	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 00:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239505AbiBYXod (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Feb 2022 18:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        id S239674AbiBYXok (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Feb 2022 18:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239576AbiBYXoc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Feb 2022 18:44:32 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC74B1A275C
-        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 15:43:58 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id s133-20020a252c8b000000b0062112290d0bso4893583ybs.23
-        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 15:43:58 -0800 (PST)
+        with ESMTP id S239464AbiBYXoe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Feb 2022 18:44:34 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BED11B7561
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 15:44:01 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2d6994a6942so45802017b3.17
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 15:44:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=CSyFxfUZpUzPLuCXdgJGZClgw+3AJRlfu/i2BCEdHwc=;
-        b=WeGdlmUqXHjVbARfDifYeaq/dMDQCvyVTPwaPTxPW4KG8eTZQDll26EEGndOpSiHKE
-         O2oyDy8pB8fJFLNeMvX+/y3ET9UeDjH3dyk8YZnyif9DxqF40ioemsVYcnVfVmwlljlZ
-         TI1yWSmE3ArYWQEuNs8XIqXbRgNntoqP8ZQc8cTYFn+rXTN9mKIAGs+ODtdY2/7/dpF1
-         Mlx2LIVyU+OWV8LptNe5GGrjvcRVEqgm+i9y4DmgSkq3eGyIdnTmcWSA6dmVKtf1Bow+
-         wCwfJyzUhGMPRZmVKFgs/mCIVO36zfE1LI32FpabZPaXDSuiHPNgUPnHVdWzjEAMKIL5
-         zhKw==
+        bh=p4juH2rEFqz2fRb0q0EOdUgi0xcehQjhls9oJX8T4Ro=;
+        b=Xih7N6C6oWH75MqvjSdcB5rlpKfs8fpSY2hs91oDFWZdSoraz3WAhCnm6FRYONgPev
+         UI+qioAt0hPDvIh8XuqBrXDNUb6U4WgiJHojKbt1wBjEVLKol0Bmno7jX9SuVh3jnBYp
+         Tmg8Hn2FVymogh6B0K1aCrwZteoMTbwCtIyLP5HMft7/k6PBiVaDBNofejnldDu0f0ng
+         Jg8ENvWPshI9CqMg+5UCyI74YPmB5rpgQq78dq7e7gZPi6mzpLl/hpj979WiHsoarytX
+         hWBOmkVTOxeuSu4nNhnBQNpeQsYgTQKIBfEm3Fy08XDlfL7PiVhvwjOk212C3F9vsH4P
+         y2/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=CSyFxfUZpUzPLuCXdgJGZClgw+3AJRlfu/i2BCEdHwc=;
-        b=maahD+ZBufI70FYVlEUWFcDrN7VvvCOUtDKhYWOxUZxnTmAqWoXnjEj/u1EFFwNG1s
-         OA4s3FYCb+SbCaEfntP0qD2AW5qOAlzlL9yPgb/4OPL1+qlUHTKV/xSW2hSFDsSj8wmK
-         UR32/oExxj/+lLk2fSMnsRduTzP4zWFE8mz+CeuOmP8ihr7S4NXXg+ILZNrHPo2KBiuf
-         dKOuBPtLpGM8z7z+b11stnn9qlfa73/Zky900mghIXFoYoU0AwRtNP3e8k8o2XPVlz3F
-         DoDhiX32/5XxVZGrM2OaGh5XyR80Xa/R+POoyD1f3FalzTRqtL1Q0TUvK75OZWcztai8
-         +ajQ==
-X-Gm-Message-State: AOAM530/1xLgr/neViSckey51qcvzl0KMwV5cuIe0qCu81mxKvsKVKFg
-        WEfwFu3YmlWxr/wqXzEae12f6uvTUIA=
-X-Google-Smtp-Source: ABdhPJyRV+FC7RXrcuAS+KiM2C2hXhTqFOLuXMoFojAkUbWorNMJ49eKnvj8E76UedfW3Xoi/Qwx2zKOnLU=
+        bh=p4juH2rEFqz2fRb0q0EOdUgi0xcehQjhls9oJX8T4Ro=;
+        b=Nl+LOlEIo4mpJDBmZgf0Dalwq9aJB+cngj4jCFHLaSmMesE6H1vSb4R3trgiWIhlfS
+         l7Mor3PFU8bmvXzOAH6gfJgd0qpy4kexTOVQaTONVOHbp3VesoH9aQ4smk4O1ZAPU5yR
+         Hs6imNjCv3fp42XcR93qTXm4oEwxSeM3DYpqJNERC85p+6zBNmGv1zTtR/67Vnl7iI0E
+         wXWwqmE/CH6s7+IwSQqcBl/rDyJEc97xemER9y7kifubBB+D+fkdF8gknLyyaduEAYjs
+         tNnevSxPP7euJIE1SwIutJ0KT57/D1oUxy/WL/gQ9sFuPujvwM63nRRo03UbyrELmn8e
+         JA0w==
+X-Gm-Message-State: AOAM531QqOyoZb7Nbc2MI6Jgfwmr3v6oM7TtEl3sUo+a2zrjZn+BiHUq
+        Kf0F/8eHmuB/sMbr62nDR2ND0oe08FQ=
+X-Google-Smtp-Source: ABdhPJyzBgcYPBrOnA3Nrku4K+C/BiAAZJWhHak8FL2CwleJ8t+gqeTBvZDmuziEcaIN1FWvBiftzXM/sOE=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:378d:645d:49ad:4f8b])
- (user=haoluo job=sendgmr) by 2002:a25:25c8:0:b0:622:82ce:ec7a with SMTP id
- l191-20020a2525c8000000b0062282ceec7amr9568082ybl.66.1645832638179; Fri, 25
- Feb 2022 15:43:58 -0800 (PST)
-Date:   Fri, 25 Feb 2022 15:43:36 -0800
+ (user=haoluo job=sendgmr) by 2002:a25:6b4d:0:b0:624:7295:42ee with SMTP id
+ o13-20020a256b4d000000b00624729542eemr9575122ybm.290.1645832640625; Fri, 25
+ Feb 2022 15:44:00 -0800 (PST)
+Date:   Fri, 25 Feb 2022 15:43:37 -0800
 In-Reply-To: <20220225234339.2386398-1-haoluo@google.com>
-Message-Id: <20220225234339.2386398-7-haoluo@google.com>
+Message-Id: <20220225234339.2386398-8-haoluo@google.com>
 Mime-Version: 1.0
 References: <20220225234339.2386398-1-haoluo@google.com>
 X-Mailer: git-send-email 2.35.1.574.g5d30c73bfb-goog
-Subject: [PATCH bpf-next v1 6/9] libbpf: Add sleepable tp_btf
+Subject: [PATCH bpf-next v1 7/9] bpf: Lift permission check in __sys_bpf when
+ called from kernel.
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -74,28 +75,58 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In the previous patches, we have introduced sleepable tracepoints in the
-kernel and listed a couple of cgroup tracepoints as sleepable. This
-patch introduces a sleepable version of tp_btf. Sleepable tp_btf progs
-can only attach to sleepable tracepoints.
+After we introduced sleepable tracing programs, we now have an
+interesting problem. There are now three execution paths that can
+reach bpf_sys_bpf:
+
+ 1. called from bpf syscall.
+ 2. called from kernel context (e.g. kernel modules).
+ 3. called from bpf programs.
+
+Ideally, capability check in bpf_sys_bpf is necessary for the first two
+scenarios. But it may not be necessary for the third case.
+
+The use case of sleepable tracepoints is to allow root user to deploy
+bpf progs which run when a certain kernel tracepoints are triggered.
+An example use case is to monitor cgroup creation and perform bpf
+operations whenever a cgroup is created. These operations include
+pinning an iter to export the cgroup's state. Using sleepable tracing
+is preferred because it eliminates the need of a userspace daemon to
+monitor cgroup changes.
+
+However, in this use case, the current task who triggers the tracepoint
+may be unprivileged and the permission check in __sys_bpf will thus
+prevent it from making bpf syscalls. Therefore the tracing progs
+deployed by root can not be used by non-root users.
+
+A solution to this problem is to lift the permission check if the caller
+of bpf_sys_bpf comes from either kernel context or bpf programs.
+
+An alternative of lifting this permission check would be introducing an
+'unpriv' version of bpf_sys_bpf, which doesn't check the current task's
+capability. If the owner of the tracing prog wants it to be exclusively
+used by root users, they can use the 'priv' version of bpf_sys_bpf; if
+the owner wants it to be usable for non-root users, they can use the
+'unpriv' version.
 
 Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- tools/lib/bpf/libbpf.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/bpf/syscall.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 776b8e034d62..910682357390 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -8619,6 +8619,7 @@ static const struct bpf_sec_def section_defs[] = {
- 	SEC_DEF("fentry/",		TRACING, BPF_TRACE_FENTRY, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("fmod_ret/",		TRACING, BPF_MODIFY_RETURN, SEC_ATTACH_BTF, attach_trace),
- 	SEC_DEF("fexit/",		TRACING, BPF_TRACE_FEXIT, SEC_ATTACH_BTF, attach_trace),
-+	SEC_DEF("tp_btf.s/",            TRACING, BPF_TRACE_RAW_TP, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fentry.s/",		TRACING, BPF_TRACE_FENTRY, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fmod_ret.s/",		TRACING, BPF_MODIFY_RETURN, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
- 	SEC_DEF("fexit.s/",		TRACING, BPF_TRACE_FEXIT, SEC_ATTACH_BTF | SEC_SLEEPABLE, attach_trace),
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0a12f52fe8a9..3bf88002ee56 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4613,7 +4613,7 @@ static int __sys_bpf(int cmd, bpfptr_t uattr, unsigned int size)
+ 	union bpf_attr attr;
+ 	int err;
+ 
+-	if (sysctl_unprivileged_bpf_disabled && !bpf_capable())
++	if (sysctl_unprivileged_bpf_disabled && !bpf_capable() && !uattr.is_kernel)
+ 		return -EPERM;
+ 
+ 	err = bpf_check_uarg_tail_zero(uattr, sizeof(attr), size);
 -- 
 2.35.1.574.g5d30c73bfb-goog
 
