@@ -2,73 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E554A4C4FDB
-	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 21:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6974C5048
+	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 22:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236788AbiBYUoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Feb 2022 15:44:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52526 "EHLO
+        id S236812AbiBYVAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Feb 2022 16:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbiBYUoF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Feb 2022 15:44:05 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A49671AAFFE
-        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 12:43:32 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id v3so3576619qta.11
-        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 12:43:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0sTP7GDwptY8bNx87CNOI5Rdq6AzguIA/W9Y/8oT6f8=;
-        b=MFoC5VBmZ3jGwG60wzsi/T6z2BtuS+rvj2L1jxRcPe/3E5zsMeT9bjEakVZp9Jnsxd
-         tg4kSqlPzGlA0iyUQrY3CElDO+rbis9VxcDUHxSeSsFW3TRa388paIs3qbtKuCXgkx5+
-         7xECK5DaXmFD3LY1+sOvgivI+qff76NvPyshWHmNHnvvVdsqYBnpczFZLz3yFzP+Orfa
-         ZNSrBwGn88hdyaNa7CvOfyfQoyQCH9Oj0LnAlb5mHIuruh4MSpFq/799rPMISTacNcYV
-         ivt9ctgA35LgvVvZUTZVi6hufVwiRD/K+kx4igZsyJnYNaOjNt0J677oY6ITiFClSdq6
-         hm3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0sTP7GDwptY8bNx87CNOI5Rdq6AzguIA/W9Y/8oT6f8=;
-        b=2NghhbwHz+VCJBlBvxgrzzG+6/J8N0eNiGXNO4X0HxBN45/vSUPhHIK6CPL3SM153Y
-         Y5Cbfs8tpifPpOK1DpkML1yA+kQEUxcoxCAk9AaOy4mp57i/35IsCmrs7fqkL87rVms/
-         FNB/ycbROyvTZuNfdGq31CTcZdDRJIHClY1es7vyFeFfWeR3yM22d9++YHXGn80A6DdY
-         h2uyAr2z0AQcFMrFwqHVYc4oeSgjwYwV/w97SlU2aBmJREZEcB/atrvz23Zl/7I0Z6wC
-         1VqOLlLi8ruKKgtHuc8V9kygNpbSd+vQvrpAk6QogJ8uRPHr2uEkY0jPqis449V67Dlh
-         9qCg==
-X-Gm-Message-State: AOAM530EDJ32ZbGXBS7xAHDdU8rjaeV1Hlnl37SRJ9ptWvNtXr+K4dmI
-        ZTov2ZFCLlKFIcsMpq/E/BsZnw==
-X-Google-Smtp-Source: ABdhPJzAV+ii4WYbFAl+R+9tZfWmW/IA2f9BQUUwP6auXL+OaWyHqFSrXjfWo5MVaMH9Ks9Zb6CIZg==
-X-Received: by 2002:a05:622a:1a81:b0:2ce:7959:d9a2 with SMTP id s1-20020a05622a1a8100b002ce7959d9a2mr8351037qtc.135.1645821811716;
-        Fri, 25 Feb 2022 12:43:31 -0800 (PST)
-Received: from [100.115.92.195] ([98.217.233.229])
-        by smtp.gmail.com with ESMTPSA id o13-20020ac87c4d000000b002dd2647f223sm2150705qtv.42.2022.02.25.12.43.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Feb 2022 12:43:31 -0800 (PST)
-Message-ID: <a7f26f93-c5f8-2abc-e186-5d179706ae8e@soleen.com>
-Date:   Fri, 25 Feb 2022 15:43:29 -0500
+        with ESMTP id S238019AbiBYVAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Feb 2022 16:00:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B709532C7
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 13:00:15 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0EB1AB83391
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 21:00:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 85752C340E8;
+        Fri, 25 Feb 2022 21:00:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645822812;
+        bh=bI7YVDKNBAfL8Da7yIKg5OXIqVqWryJ3PdebESkevuU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=UT8Axnl2y1kGbHyQzP/JPjOtYSK+6c9yOjXYp/EnHw0qS5NnFP7jtc9t2Ecn0gX0F
+         YAGvLxj4u5MlRVs2IWGcdDX77CXJKrz5XrpFBpCAil7TydrwEuE/nimXRGT+bf8qaS
+         Bxb9XxhKhc93eswnFSPN9SiqFfPh4KjiEKW9b40m8MJH7/SGtEvG+U/Zsp3mt/WfGT
+         995SA8teArlkRgIa3iYQHN5dTpNte+C0qjnzOfeTwTy1kwL39aA2u2HYfZNLUMOinW
+         j3hPNPpGQ0/Ye3V67JhkhNSaCQCiGn0ArltiIokmyOsOGqZkRRSaSN2Gltdt6hl508
+         gv9JPFxKvy2/A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6D07FE6D453;
+        Fri, 25 Feb 2022 21:00:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [PATCH bpf-next v2] bpf: Cache the last valid build_id.
-Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Song Liu <songliubraving@fb.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Blake Jones <blakejones@google.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Greg Thelen <gthelen@google.com>
-References: <20220224000531.1265030-1-haoluo@google.com>
-From:   Pasha Tatashin <pasha.tatashin@soleen.com>
-In-Reply-To: <20220224000531.1265030-1-haoluo@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3] bpf: Fix issue with bpf preload module taking
+ over stdout/stdin of kernel.
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164582281244.5121.11798369109469658699.git-patchwork-notify@kernel.org>
+Date:   Fri, 25 Feb 2022 21:00:12 +0000
+References: <20220225185923.2535519-1-fallentree@fb.com>
+In-Reply-To: <20220225185923.2535519-1-fallentree@fb.com>
+To:     Yucong Sun <fallentree@fb.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        sunyucong@gmail.com, kernel-team@fb.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,21 +57,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/23/22 19:05, Hao Luo wrote:
-> For binaries that are statically linked, consecutive stack frames are
-> likely to be in the same VMA and therefore have the same build id.
-> As an optimization for this case, we can cache the previous frame's
-> VMA, if the new frame has the same VMA as the previous one, reuse the
-> previous one's build id. We are holding the MM locks as reader across
-> the entire loop, so we don't need to worry about VMA going away.
-> 
-> Tested through "stacktrace_build_id" and "stacktrace_build_id_nmi" in
-> test_progs.
-> 
-> Suggested-by: Greg Thelen <gthelen@google.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
+Hello:
 
-Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Thanks,
-Pasha
+On Fri, 25 Feb 2022 10:59:24 -0800 you wrote:
+> In a previous commit (1), BPF preload process was switched from user mode
+> process to use in-kernel light skeleton instead. However, in the kernel context
+> the available FD starts from 0, instead of normally 3 for user mode process.
+> The preload process also left two FDs open, taking over FD 0 and 1. This later
+> caused issues when kernel trys to setup stdin/stdout/stderr for init process,
+> assuming FD 0,1,2 are available.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3] bpf: Fix issue with bpf preload module taking over stdout/stdin of kernel.
+    https://git.kernel.org/bpf/bpf-next/c/80bebebdac93
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
