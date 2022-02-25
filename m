@@ -2,206 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D4E4C48BB
-	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 16:24:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E03B4C48DC
+	for <lists+bpf@lfdr.de>; Fri, 25 Feb 2022 16:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238145AbiBYPYj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Feb 2022 10:24:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
+        id S242062AbiBYP3H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 25 Feb 2022 10:29:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbiBYPYi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Feb 2022 10:24:38 -0500
-Received: from mail.tintel.eu (mail.tintel.eu [51.83.127.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD9052E7B;
-        Fri, 25 Feb 2022 07:24:02 -0800 (PST)
-Received: from localhost (localhost [IPv6:::1])
-        by mail.tintel.eu (Postfix) with ESMTP id 2DD2D443B971;
-        Fri, 25 Feb 2022 16:23:59 +0100 (CET)
-Received: from mail.tintel.eu ([IPv6:::1])
-        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10032)
-        with ESMTP id w5frC7GqIgB7; Fri, 25 Feb 2022 16:23:58 +0100 (CET)
-Received: from localhost (localhost [IPv6:::1])
-        by mail.tintel.eu (Postfix) with ESMTP id 85E04443813E;
-        Fri, 25 Feb 2022 16:23:58 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.tintel.eu 85E04443813E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux-ipv6.be;
-        s=502B7754-045F-11E5-BBC5-64595FD46BE8; t=1645802638;
-        bh=iD0jBu37ZJr9EscfZ+evIV/HBHbE8EFNFF4helr1Mt8=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=FW6BvRlvWP6FdiwJLoU9yE36O6SVnhAPoKMnhIHObYWEPqrmrZn+evVTXtzvqw3ak
-         cx4iTsx58Q6ljV0EdlEBG7hOiqxuw6ssbmZ7+dm2Qy9yhsOKQpfkK/E01FaD59kiNA
-         qShOihCn/O7s3YmfHGrqommDhD1DCooR105RwYS0=
-X-Virus-Scanned: amavisd-new at mail.tintel.eu
-Received: from mail.tintel.eu ([IPv6:::1])
-        by localhost (mail.tintel.eu [IPv6:::1]) (amavisd-new, port 10026)
-        with ESMTP id KOsuI6pEIIqM; Fri, 25 Feb 2022 16:23:58 +0100 (CET)
-Received: from taz.sof.bg.adlevio.net (unknown [IPv6:2001:67c:21bc:20::10])
-        by mail.tintel.eu (Postfix) with ESMTPS id 39FAB42A43B9;
-        Fri, 25 Feb 2022 16:23:58 +0100 (CET)
-From:   Stijn Tintel <stijn@linux-ipv6.be>
-To:     bpf@vger.kernel.org, songliubraving@fb.com, andrii@kernel.org,
-        toke@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kpsingh@kernel.org, yhs@fb.com, kafai@fb.com, daniel@iogearbox.net,
-        ast@kernel.org
-Subject: [PATCH v2] libbpf: fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
-Date:   Fri, 25 Feb 2022 17:23:55 +0200
-Message-Id: <20220225152355.315204-1-stijn@linux-ipv6.be>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S240592AbiBYP3G (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 25 Feb 2022 10:29:06 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7807820D816
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 07:28:32 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id h15so7909992edv.7
+        for <bpf@vger.kernel.org>; Fri, 25 Feb 2022 07:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iLxf1fZDTiZpCuq+mHl7usWCDrS+N/OQtnmPAGuje4E=;
+        b=VPVZ7WODFfi9ePuEabGauSKvoyQ70/GvjsF6SMmur1zT+uh0Pop24HxZvVxLFzn0qq
+         XLt81b7s6VaKL4lkJMTSqDYbQq5MsepGoQWChFRwdZOrIo9Cr+rBRSi6Zh0kFV8fefUx
+         JTE0pqxsr1dhlwnqlr+n12YyWdLzIvzAK0lmL8/bgNdESU0U6iyidnGk6L2kuSuJwBrF
+         Zyuc9xBBe1T7YnVoyRVHCx9hMezkZHztKiCesrDlhiPvbzwCEiR3WlwOuIMI93EUie8Y
+         rUlUkYJrgc0KULUL5cbOioIvLdTmN40rWkkvyQVTmwASI1lr7ra3u1ewGilSBKO21qY0
+         Wq7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iLxf1fZDTiZpCuq+mHl7usWCDrS+N/OQtnmPAGuje4E=;
+        b=kUIGSObhAs8/3KZMhuiBMAm71xHH5coCTIyK8HUQqjBPDviR+HPuPXlHGsbFjMSKCK
+         fztzFJxpQmLRRaXYEMwxEYh8BHxFYxC/HRsZjYT2bJBYH81iGYSO1e42Hm+2DNKo8rWL
+         vEV9n2HZd6QAfy8UVF2justxdqrphix1iDUMXj0UO/4+Y+QaPCauojJStXJArb4Kpfzn
+         vT5c5nuwykCOJxG0OGy9SliGaDoMX+CDtoUpreM43le8P69n2fnmYuCFsOuuGr6c03YL
+         zpZoa1i/n5aFyxB8JvUJ3Zjm/LpIFNA5gpgDsvnw4O6SQRRRUORWM+ctM/DpNqO3AOCH
+         DbhQ==
+X-Gm-Message-State: AOAM533rJfvRPHUNqxkoUmXs0rvVyAx+UPlgprBbrSfTTyIbsPldZwIE
+        vUrqiM2BJ/fkLKB9LpBRg6VykURG3vTMnA==
+X-Google-Smtp-Source: ABdhPJxSSqYcsmGfqRV/sCuHa6BaxMzznWyO/UWRh0EwZe64tTn17iQ5/b/u4eLg255iEpb41Hk7GQ==
+X-Received: by 2002:a05:6402:b9c:b0:410:d469:d73d with SMTP id cf28-20020a0564020b9c00b00410d469d73dmr7629837edb.78.1645802910941;
+        Fri, 25 Feb 2022 07:28:30 -0800 (PST)
+Received: from erthalion.local (dslb-178-012-046-224.178.012.pools.vodafone-ip.de. [178.12.46.224])
+        by smtp.gmail.com with ESMTPSA id o8-20020a17090637c800b006cee4c6c9acsm1147938ejc.11.2022.02.25.07.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Feb 2022 07:28:30 -0800 (PST)
+From:   Dmitrii Dolgov <9erthalion6@gmail.com>
+To:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, quentin@isovalent.com, yhs@fb.com
+Cc:     Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [RFC PATCH v4] bpftool: Add bpf_cookie to link output
+Date:   Fri, 25 Feb 2022 16:28:02 +0100
+Message-Id: <20220225152802.20957-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-X-Rspamd-Pre-Result: action=no action;
-        module=multimap;
-        Matched map: IP_WHITELIST
-X-Rspamd-Queue-Id: 39FAB42A43B9
-X-Rspamd-Pre-Result: action=no action;
-        module=multimap;
-        Matched map: IP_WHITELIST
-X-Spamd-Result: default: False [0.00 / 15.00];
-        IP_WHITELIST(0.00)[2001:67c:21bc:20::10];
-        ASN(0.00)[asn:200533, ipnet:2001:67c:21bc::/48, country:BG]
-X-Rspamd-Server: skulls
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When a BPF map of type BPF_MAP_TYPE_PERF_EVENT_ARRAY doesn't have the
-max_entries parameter set, the map will be created with max_entries set
-to the number of available CPUs. When we try to reuse such a pinned map,
-map_is_reuse_compat will return false, as max_entries in the map
-definition differs from max_entries of the existing map, causing the
-following error:
+Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie for
+BPF perf links") introduced the concept of user specified bpf_cookie,
+which could be accessed by BPF programs using bpf_get_attach_cookie().
+For troubleshooting purposes it is convenient to expose bpf_cookie via
+bpftool as well, so there is no need to meddle with the target BPF
+program itself.
 
-libbpf: couldn't reuse pinned map at '/sys/fs/bpf/m_logging': parameter m=
-ismatch
+Implemented using the pid iterator BPF program to actually fetch
+bpf_cookies, which allows constraining code changes only to bpftool.
 
-Fix this by overwriting max_entries in the map definition. For this to
-work, we need to do this in bpf_object__create_maps, before calling
-bpf_object__reuse_map.
+$ bpftool link
+1: type 7  prog 5
+        bpf_cookie 123
+        pids bootstrap(81)
 
-Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF o=
-bjects")
-Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
+Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
 ---
-v2: overwrite max_entries in the map definition instead of adding an
-    extra check in map_is_reuse_compat, and introduce a helper function
-    for this as suggested by Song.
----
- tools/lib/bpf/libbpf.c | 44 ++++++++++++++++++++++++------------------
- 1 file changed, 25 insertions(+), 19 deletions(-)
+Changes in v4:
+    - Fetch cookies only for bpf_perf_link
+    - Signal about bpf_cookie via the flag, instead of deducing it from
+      the object and link type
+    - Reset pid_iter_entry to avoid invalid indirect read from stack
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 7f10dd501a52..133462637b09 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4854,7 +4854,6 @@ static int bpf_object__create_map(struct bpf_object=
- *obj, struct bpf_map *map, b
- 	LIBBPF_OPTS(bpf_map_create_opts, create_attr);
- 	struct bpf_map_def *def =3D &map->def;
- 	const char *map_name =3D NULL;
--	__u32 max_entries;
- 	int err =3D 0;
-=20
- 	if (kernel_supports(obj, FEAT_PROG_NAME))
-@@ -4864,21 +4863,6 @@ static int bpf_object__create_map(struct bpf_objec=
-t *obj, struct bpf_map *map, b
- 	create_attr.numa_node =3D map->numa_node;
- 	create_attr.map_extra =3D map->map_extra;
-=20
--	if (def->type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries=
-) {
--		int nr_cpus;
--
--		nr_cpus =3D libbpf_num_possible_cpus();
--		if (nr_cpus < 0) {
--			pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
--				map->name, nr_cpus);
--			return nr_cpus;
--		}
--		pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
--		max_entries =3D nr_cpus;
--	} else {
--		max_entries =3D def->max_entries;
--	}
--
- 	if (bpf_map__is_struct_ops(map))
- 		create_attr.btf_vmlinux_value_type_id =3D map->btf_vmlinux_value_type_=
-id;
-=20
-@@ -4928,7 +4912,7 @@ static int bpf_object__create_map(struct bpf_object=
- *obj, struct bpf_map *map, b
-=20
- 	if (obj->gen_loader) {
- 		bpf_gen__map_create(obj->gen_loader, def->type, map_name,
--				    def->key_size, def->value_size, max_entries,
-+				    def->key_size, def->value_size, def->max_entries,
- 				    &create_attr, is_inner ? -1 : map - obj->maps);
- 		/* Pretend to have valid FD to pass various fd >=3D 0 checks.
- 		 * This fd =3D=3D 0 will not be used with any syscall and will be rese=
-t to -1 eventually.
-@@ -4937,7 +4921,7 @@ static int bpf_object__create_map(struct bpf_object=
- *obj, struct bpf_map *map, b
- 	} else {
- 		map->fd =3D bpf_map_create(def->type, map_name,
- 					 def->key_size, def->value_size,
--					 max_entries, &create_attr);
-+					 def->max_entries, &create_attr);
+Changes in v3:
+    - Use pid iterator to fetch bpf_cookie
+
+Changes in v2:
+    - Display bpf_cookie in bpftool link command instead perf
+
+Previous discussion: https://lore.kernel.org/bpf/20220218075103.10002-1-9erthalion6@gmail.com/
+
+ tools/bpf/bpftool/main.h                  |  2 ++
+ tools/bpf/bpftool/pids.c                  | 10 +++++++++
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c | 25 +++++++++++++++++++++++
+ tools/bpf/bpftool/skeleton/pid_iter.h     |  2 ++
+ 4 files changed, 39 insertions(+)
+
+diff --git a/tools/bpf/bpftool/main.h b/tools/bpf/bpftool/main.h
+index 0c3840596b5a..1bb76aa1f3b2 100644
+--- a/tools/bpf/bpftool/main.h
++++ b/tools/bpf/bpftool/main.h
+@@ -114,6 +114,8 @@ struct obj_ref {
+ struct obj_refs {
+ 	int ref_cnt;
+ 	struct obj_ref *refs;
++	bool bpf_cookie_set;
++	__u64 bpf_cookie;
+ };
+ 
+ struct btf;
+diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+index 7c384d10e95f..152502c2d6f9 100644
+--- a/tools/bpf/bpftool/pids.c
++++ b/tools/bpf/bpftool/pids.c
+@@ -55,6 +55,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+ 		ref->pid = e->pid;
+ 		memcpy(ref->comm, e->comm, sizeof(ref->comm));
+ 		refs->ref_cnt++;
++		refs->bpf_cookie_set = e->bpf_cookie_set;
++		refs->bpf_cookie = e->bpf_cookie;
+ 
+ 		return;
  	}
- 	if (map->fd < 0 && (create_attr.btf_key_type_id ||
- 			    create_attr.btf_value_type_id)) {
-@@ -4954,7 +4938,7 @@ static int bpf_object__create_map(struct bpf_object=
- *obj, struct bpf_map *map, b
- 		map->btf_value_type_id =3D 0;
- 		map->fd =3D bpf_map_create(def->type, map_name,
- 					 def->key_size, def->value_size,
--					 max_entries, &create_attr);
-+					 def->max_entries, &create_attr);
+@@ -78,6 +80,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+ 	ref->pid = e->pid;
+ 	memcpy(ref->comm, e->comm, sizeof(ref->comm));
+ 	refs->ref_cnt = 1;
++	refs->bpf_cookie_set = e->bpf_cookie_set;
++	refs->bpf_cookie = e->bpf_cookie;
+ 
+ 	err = hashmap__append(map, u32_as_hash_field(e->id), refs);
+ 	if (err)
+@@ -205,6 +209,9 @@ void emit_obj_refs_json(struct hashmap *map, __u32 id,
+ 		if (refs->ref_cnt == 0)
+ 			break;
+ 
++		if (refs->bpf_cookie_set)
++			jsonw_lluint_field(json_writer, "bpf_cookie", refs->bpf_cookie);
++
+ 		jsonw_name(json_writer, "pids");
+ 		jsonw_start_array(json_writer);
+ 		for (i = 0; i < refs->ref_cnt; i++) {
+@@ -234,6 +241,9 @@ void emit_obj_refs_plain(struct hashmap *map, __u32 id, const char *prefix)
+ 		if (refs->ref_cnt == 0)
+ 			break;
+ 
++		if (refs->bpf_cookie_set)
++			printf("\n\tbpf_cookie %llu", refs->bpf_cookie);
++
+ 		printf("%s", prefix);
+ 		for (i = 0; i < refs->ref_cnt; i++) {
+ 			struct obj_ref *ref = &refs->refs[i];
+diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+index f70702fcb224..91366ce33717 100644
+--- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
++++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+@@ -38,6 +38,18 @@ static __always_inline __u32 get_obj_id(void *ent, enum bpf_obj_type type)
  	}
-=20
- 	err =3D map->fd < 0 ? -errno : 0;
-@@ -5058,6 +5042,24 @@ static int bpf_object_init_prog_arrays(struct bpf_=
-object *obj)
- 	return 0;
  }
-=20
-+static int map_set_def_max_entries(struct bpf_map *map)
+ 
++/* could be used only with BPF_LINK_TYPE_PERF_EVENT links */
++static __always_inline __u64 get_bpf_cookie(struct bpf_link *link)
 +{
-+	if (map->def.type =3D=3D BPF_MAP_TYPE_PERF_EVENT_ARRAY && !map->def.max=
-_entries) {
-+		int nr_cpus;
++	struct bpf_perf_link *perf_link;
++	struct perf_event *event;
 +
-+		nr_cpus =3D libbpf_num_possible_cpus();
-+		if (nr_cpus < 0) {
-+			pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
-+				map->name, nr_cpus);
-+			return nr_cpus;
-+		}
-+		pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
-+		map->def.max_entries =3D nr_cpus;
-+	}
-+
-+	return 0;
++	perf_link = container_of(link, struct bpf_perf_link, link);
++	event = BPF_CORE_READ(perf_link, perf_file, private_data);
++	return BPF_CORE_READ(event, bpf_cookie);
 +}
 +
- static int
- bpf_object__create_maps(struct bpf_object *obj)
- {
-@@ -5090,6 +5092,10 @@ bpf_object__create_maps(struct bpf_object *obj)
- 			continue;
- 		}
-=20
-+		err =3D map_set_def_max_entries(map);
-+		if (err)
-+			goto err_out;
 +
- 		retried =3D false;
- retry:
- 		if (map->pin_path) {
---=20
-2.34.1
+ SEC("iter/task_file")
+ int iter(struct bpf_iter__task_file *ctx)
+ {
+@@ -69,8 +81,21 @@ int iter(struct bpf_iter__task_file *ctx)
+ 	if (file->f_op != fops)
+ 		return 0;
+ 
++	__builtin_memset(&e, 0, sizeof(e));
+ 	e.pid = task->tgid;
+ 	e.id = get_obj_id(file->private_data, obj_type);
++	e.bpf_cookie = 0;
++	e.bpf_cookie_set = false;
++
++	if (obj_type == BPF_OBJ_LINK) {
++		struct bpf_link *link = (struct bpf_link *) file->private_data;
++
++		if (BPF_CORE_READ(link, type) == BPF_LINK_TYPE_PERF_EVENT) {
++			e.bpf_cookie_set = true;
++			e.bpf_cookie = get_bpf_cookie(link);
++		}
++	}
++
+ 	bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm),
+ 				  task->group_leader->comm);
+ 	bpf_seq_write(ctx->meta->seq, &e, sizeof(e));
+diff --git a/tools/bpf/bpftool/skeleton/pid_iter.h b/tools/bpf/bpftool/skeleton/pid_iter.h
+index 5692cf257adb..2676cece58d7 100644
+--- a/tools/bpf/bpftool/skeleton/pid_iter.h
++++ b/tools/bpf/bpftool/skeleton/pid_iter.h
+@@ -6,6 +6,8 @@
+ struct pid_iter_entry {
+ 	__u32 id;
+ 	int pid;
++	__u64 bpf_cookie;
++	bool bpf_cookie_set;
+ 	char comm[16];
+ };
+ 
+-- 
+2.32.0
 
