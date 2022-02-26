@@ -2,61 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA9424C541C
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 07:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBC34C5454
+	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 08:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229577AbiBZGMW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Feb 2022 01:12:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46810 "EHLO
+        id S230098AbiBZHUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 02:20:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbiBZGMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Feb 2022 01:12:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB45C2BAF3B;
-        Fri, 25 Feb 2022 22:11:47 -0800 (PST)
+        with ESMTP id S229581AbiBZHUs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 02:20:48 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859E510EC6B;
+        Fri, 25 Feb 2022 23:20:14 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 81A6E60B72;
-        Sat, 26 Feb 2022 06:11:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E63F8C340F2;
-        Sat, 26 Feb 2022 06:11:46 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2DA61B80E98;
+        Sat, 26 Feb 2022 07:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D579AC340F7;
+        Sat, 26 Feb 2022 07:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645855906;
-        bh=r5rev/UqgjHZwz5Xbpbd5gQP1ldjs9PDROFwrCAHB2o=;
+        s=k20201202; t=1645860011;
+        bh=ofx/8UMawymSolW9/1spk+z2Bwj/As67j3fVkfBuAzs=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A0kmdkd3V1RXqL92ioBP0M1/TaJAbJfnb7K0HJs2ooPXBc3KgR1RFNilgRw0N+X9W
-         GATsVcZ8UrQg78pNo/idi21OvFRaJRU/1oplUelXUkfQxW5oyhVZlE2rUek+gNx4VL
-         FoEkw4sglocdXhfyQjaGiWt3npszBx83aHyp9PZxjUdVKOCpOATOiwVUGKxn/Dx6MJ
-         QKrpvSRd5ZfR2hJ/cE/biUuu79H2yzXMoazx7PMmVqd+NmCgLJ/vK64imwsZXPdmw9
-         7W/bEBLjgDWlhBqcJ5pKe8aZexCR++rU7UCVdFPHpSg3UcscMxQydR4bugsWn92pAZ
-         2tE1OZV05CubQ==
-Received: by mail-yb1-f176.google.com with SMTP id c6so9978896ybk.3;
-        Fri, 25 Feb 2022 22:11:46 -0800 (PST)
-X-Gm-Message-State: AOAM5325OoYc9pTBMRKM4qNv1uHUazB1iQJ6JrwKBrJ0IlT/e0w91fM1
-        1Bn8puUuuOxU+9Oxg3/hCQQ2iKAeUjP2FyQBTOc=
-X-Google-Smtp-Source: ABdhPJw/1j0Jl6aqyekJ/DyjUClCR0sairiCd+k8gMLmylyvGRy7eWMKUy/d954CE8hilUHcIfQdB71C5m7QZQ+X/f4=
-X-Received: by 2002:a25:8546:0:b0:61e:1d34:ec71 with SMTP id
- f6-20020a258546000000b0061e1d34ec71mr10248523ybn.259.1645855905985; Fri, 25
- Feb 2022 22:11:45 -0800 (PST)
+        b=iCF/uAhVIA7RG+I1dt0cBvq2m17PR8LzsMFcaai9xyipY638e4u7caZj8Up4mdbjC
+         U0Qb2Wr02F3O/bfYLGfUHS6J1mAXTzmd4oiVd+C6/g0UYH+gVly5AiguSeBxU4hP3L
+         fh14a1xXdNDi5+FFHmNfbhkjQkSefxg94D5o/uRJSNGxefLSBRkj3BX8tYCSS8TlfS
+         y3w9rWoVFjmnUhWsP7hdDfr7ruc9vrqdo0YLMZQSjqqhZH8PZ8EJ/Dz9ZN8saD+bDs
+         qdb+7+6Ov/jfnxUKVJSUPTsd99zAUwA+O9/2BL4Qlg5KEtPmNtnnhJGpkfdf+2qON9
+         web5PzO55EKLA==
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-2d641c31776so55816417b3.12;
+        Fri, 25 Feb 2022 23:20:11 -0800 (PST)
+X-Gm-Message-State: AOAM530D9yFbOgmtHGarx0ARbaWS5mplACLtZ9vmFzNrCqUY0/2AZg53
+        2vbhudY7OrD/KM3fDVhkORJs8keibEo5u7czvqY=
+X-Google-Smtp-Source: ABdhPJxdIFLHwHUx529GD3ngCgx2QM3CmfT7PgzGhXo2DtgLpPra5Wv7EzZh/16FFBtkTaHYLf7wLuM43neFA3g+GMk=
+X-Received: by 2002:a0d:ea0a:0:b0:2d6:93b9:cda1 with SMTP id
+ t10-20020a0dea0a000000b002d693b9cda1mr11410445ywe.460.1645860010773; Fri, 25
+ Feb 2022 23:20:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20220225152355.315204-1-stijn@linux-ipv6.be>
-In-Reply-To: <20220225152355.315204-1-stijn@linux-ipv6.be>
+References: <20220224110828.2168231-1-benjamin.tissoires@redhat.com> <20220224110828.2168231-2-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220224110828.2168231-2-benjamin.tissoires@redhat.com>
 From:   Song Liu <song@kernel.org>
-Date:   Fri, 25 Feb 2022 22:11:35 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5yA_zx7iyy-k+048S5a=1QiM=SBKDKhg=sGBVVUb0wvA@mail.gmail.com>
-Message-ID: <CAPhsuW5yA_zx7iyy-k+048S5a=1QiM=SBKDKhg=sGBVVUb0wvA@mail.gmail.com>
-Subject: Re: [PATCH v2] libbpf: fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
-To:     Stijn Tintel <stijn@linux-ipv6.be>
-Cc:     bpf <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
+Date:   Fri, 25 Feb 2022 23:19:59 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6wx6aNfLzFt5npCG+X=keB57_mkZNwHkAQ0gZWNk9ixw@mail.gmail.com>
+Message-ID: <CAPhsuW6wx6aNfLzFt5npCG+X=keB57_mkZNwHkAQ0gZWNk9ixw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/6] HID: initial BPF implementation
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-input@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
@@ -68,131 +73,308 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 7:24 AM Stijn Tintel <stijn@linux-ipv6.be> wrote:
+On Thu, Feb 24, 2022 at 3:09 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
 >
-> When a BPF map of type BPF_MAP_TYPE_PERF_EVENT_ARRAY doesn't have the
-> max_entries parameter set, the map will be created with max_entries set
-> to the number of available CPUs. When we try to reuse such a pinned map,
-> map_is_reuse_compat will return false, as max_entries in the map
-> definition differs from max_entries of the existing map, causing the
-> following error:
+> HID is a protocol that could benefit from using BPF too.
 >
-> libbpf: couldn't reuse pinned map at '/sys/fs/bpf/m_logging': parameter mismatch
+> This patch implements a net-like use of BPF capability for HID.
+> Any incoming report coming from the device gets injected into a series
+> of BPF programs that can modify it or even discard it by setting the
+> size in the context to 0.
 >
-> Fix this by overwriting max_entries in the map definition. For this to
-> work, we need to do this in bpf_object__create_maps, before calling
-> bpf_object__reuse_map.
+> The kernel/bpf implementation is based on net-namespace.c, with only
+> the bpf_link part kept, there is no real points in keeping the
+> bpf_prog_{attach|detach} API.
 >
-> Fixes: 57a00f41644f ("libbpf: Add auto-pinning of maps when loading BPF objects")
-> Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
-
-Acked-by: Song Liu <songliubraving@fb.com>
-
+> The implementation is split into 2 parts:
+> - the kernel/bpf part which isn't aware of the HID usage, but takes care
+>   of handling the BPF links
+> - the drivers/hid/hid-bpf.c part which knows about HID
+>
+> Note that HID can be compiled in as a module, and so the functions that
+> kernel/bpf/hid.c needs to call in hid.ko are exported in struct hid_hooks.
+>
+> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 > ---
-> v2: overwrite max_entries in the map definition instead of adding an
->     extra check in map_is_reuse_compat, and introduce a helper function
->     for this as suggested by Song.
-> ---
->  tools/lib/bpf/libbpf.c | 44 ++++++++++++++++++++++++------------------
->  1 file changed, 25 insertions(+), 19 deletions(-)
+>  drivers/hid/Makefile                         |   1 +
+>  drivers/hid/hid-bpf.c                        | 176 ++++++++
+>  drivers/hid/hid-core.c                       |  21 +-
+>  include/linux/bpf-hid.h                      |  87 ++++
+>  include/linux/bpf_types.h                    |   4 +
+>  include/linux/hid.h                          |  16 +
+>  include/uapi/linux/bpf.h                     |   7 +
+>  include/uapi/linux/bpf_hid.h                 |  39 ++
+>  kernel/bpf/Makefile                          |   3 +
+>  kernel/bpf/hid.c                             | 437 +++++++++++++++++++
+>  kernel/bpf/syscall.c                         |   8 +
+>  samples/bpf/.gitignore                       |   1 +
+>  samples/bpf/Makefile                         |   4 +
+>  samples/bpf/hid_mouse_kern.c                 |  66 +++
+>  samples/bpf/hid_mouse_user.c                 | 129 ++++++
+>  tools/include/uapi/linux/bpf.h               |   7 +
+>  tools/lib/bpf/libbpf.c                       |   7 +
+>  tools/lib/bpf/libbpf.h                       |   2 +
+>  tools/lib/bpf/libbpf.map                     |   1 +
+>  tools/testing/selftests/bpf/prog_tests/hid.c | 318 ++++++++++++++
+>  tools/testing/selftests/bpf/progs/hid.c      |  20 +
+>  21 files changed, 1351 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/hid/hid-bpf.c
+>  create mode 100644 include/linux/bpf-hid.h
+>  create mode 100644 include/uapi/linux/bpf_hid.h
+>  create mode 100644 kernel/bpf/hid.c
+>  create mode 100644 samples/bpf/hid_mouse_kern.c
+>  create mode 100644 samples/bpf/hid_mouse_user.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/hid.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/hid.c
+
+Please split kernel changes, libbpf changes, selftests, and sample code into
+separate patches.
+
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 7f10dd501a52..133462637b09 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4854,7 +4854,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         LIBBPF_OPTS(bpf_map_create_opts, create_attr);
->         struct bpf_map_def *def = &map->def;
->         const char *map_name = NULL;
-> -       __u32 max_entries;
->         int err = 0;
+> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
+> index 6d3e630e81af..08d2d7619937 100644
+> --- a/drivers/hid/Makefile
+> +++ b/drivers/hid/Makefile
+> @@ -4,6 +4,7 @@
+>  #
+>  hid-y                  := hid-core.o hid-input.o hid-quirks.o
+>  hid-$(CONFIG_DEBUG_FS)         += hid-debug.o
+> +hid-$(CONFIG_BPF)              += hid-bpf.o
 >
->         if (kernel_supports(obj, FEAT_PROG_NAME))
-> @@ -4864,21 +4863,6 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         create_attr.numa_node = map->numa_node;
->         create_attr.map_extra = map->map_extra;
->
-> -       if (def->type == BPF_MAP_TYPE_PERF_EVENT_ARRAY && !def->max_entries) {
-> -               int nr_cpus;
-> -
-> -               nr_cpus = libbpf_num_possible_cpus();
-> -               if (nr_cpus < 0) {
-> -                       pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
-> -                               map->name, nr_cpus);
-> -                       return nr_cpus;
-> -               }
-> -               pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
-> -               max_entries = nr_cpus;
-> -       } else {
-> -               max_entries = def->max_entries;
-> -       }
-> -
->         if (bpf_map__is_struct_ops(map))
->                 create_attr.btf_vmlinux_value_type_id = map->btf_vmlinux_value_type_id;
->
-> @@ -4928,7 +4912,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->
->         if (obj->gen_loader) {
->                 bpf_gen__map_create(obj->gen_loader, def->type, map_name,
-> -                                   def->key_size, def->value_size, max_entries,
-> +                                   def->key_size, def->value_size, def->max_entries,
->                                     &create_attr, is_inner ? -1 : map - obj->maps);
->                 /* Pretend to have valid FD to pass various fd >= 0 checks.
->                  * This fd == 0 will not be used with any syscall and will be reset to -1 eventually.
-> @@ -4937,7 +4921,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->         } else {
->                 map->fd = bpf_map_create(def->type, map_name,
->                                          def->key_size, def->value_size,
-> -                                        max_entries, &create_attr);
-> +                                        def->max_entries, &create_attr);
->         }
->         if (map->fd < 0 && (create_attr.btf_key_type_id ||
->                             create_attr.btf_value_type_id)) {
-> @@ -4954,7 +4938,7 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->                 map->btf_value_type_id = 0;
->                 map->fd = bpf_map_create(def->type, map_name,
->                                          def->key_size, def->value_size,
-> -                                        max_entries, &create_attr);
-> +                                        def->max_entries, &create_attr);
->         }
->
->         err = map->fd < 0 ? -errno : 0;
-> @@ -5058,6 +5042,24 @@ static int bpf_object_init_prog_arrays(struct bpf_object *obj)
->         return 0;
->  }
->
-> +static int map_set_def_max_entries(struct bpf_map *map)
+>  obj-$(CONFIG_HID)              += hid.o
+>  obj-$(CONFIG_UHID)             += uhid.o
+> diff --git a/drivers/hid/hid-bpf.c b/drivers/hid/hid-bpf.c
+> new file mode 100644
+> index 000000000000..6c8445820944
+> --- /dev/null
+> +++ b/drivers/hid/hid-bpf.c
+> @@ -0,0 +1,176 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + *  BPF in HID support for Linux
+> + *
+> + *  Copyright (c) 2021 Benjamin Tissoires
+
+Maybe 2022?
+
+[...]
+
+> +static int hid_bpf_run_progs(struct hid_device *hdev, enum bpf_hid_attach_type type,
+> +                            struct hid_bpf_ctx *ctx, u8 *data, int size)
 > +{
-> +       if (map->def.type == BPF_MAP_TYPE_PERF_EVENT_ARRAY && !map->def.max_entries) {
-> +               int nr_cpus;
+> +       enum hid_bpf_event event = HID_BPF_UNDEF;
 > +
-> +               nr_cpus = libbpf_num_possible_cpus();
-> +               if (nr_cpus < 0) {
-> +                       pr_warn("map '%s': failed to determine number of system CPUs: %d\n",
-> +                               map->name, nr_cpus);
-> +                       return nr_cpus;
-> +               }
-> +               pr_debug("map '%s': setting size to %d\n", map->name, nr_cpus);
-> +               map->def.max_entries = nr_cpus;
+> +       if (type < 0 || !ctx)
+> +               return -EINVAL;
+> +
+> +       switch (type) {
+> +       case BPF_HID_ATTACH_DEVICE_EVENT:
+> +               event = HID_BPF_DEVICE_EVENT;
+> +               if (size > sizeof(ctx->u.device.data))
+> +                       return -E2BIG;
+> +               break;
+> +       default:
+> +               return -EINVAL;
 > +       }
+> +
+> +       if (!hdev->bpf.run_array[type])
+> +               return 0;
+> +
+> +       memset(ctx, 0, sizeof(*ctx));
+> +       ctx->hdev = hdev;
+> +       ctx->type = event;
+> +
+> +       if (size && data) {
+> +               switch (event) {
+> +               case HID_BPF_DEVICE_EVENT:
+> +                       memcpy(ctx->u.device.data, data, size);
+> +                       ctx->u.device.size = size;
+> +                       break;
+> +               default:
+> +                       /* do nothing */
+> +               }
+> +       }
+> +
+> +       BPF_PROG_RUN_ARRAY(hdev->bpf.run_array[type], ctx, bpf_prog_run);
+
+I guess we need "return BPF_PROG_RUN_ARRAY(...)"?
+
 > +
 > +       return 0;
 > +}
 > +
->  static int
->  bpf_object__create_maps(struct bpf_object *obj)
->  {
-> @@ -5090,6 +5092,10 @@ bpf_object__create_maps(struct bpf_object *obj)
->                         continue;
->                 }
->
-> +               err = map_set_def_max_entries(map);
-> +               if (err)
-> +                       goto err_out;
+> +u8 *hid_bpf_raw_event(struct hid_device *hdev, u8 *data, int *size)
+> +{
+> +       int ret;
 > +
->                 retried = false;
->  retry:
->                 if (map->pin_path) {
-> --
-> 2.34.1
+> +       if (bpf_hid_link_empty(&hdev->bpf, BPF_HID_ATTACH_DEVICE_EVENT))
+> +               return data;
+> +
+> +       ret = hid_bpf_run_progs(hdev, BPF_HID_ATTACH_DEVICE_EVENT,
+> +                               hdev->bpf.ctx, data, *size);
+> +       if (ret)
+> +               return data;
+
+shall we return ERR_PTR(ret)?
+
+> +
+> +       if (!hdev->bpf.ctx->u.device.size)
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       *size = hdev->bpf.ctx->u.device.size;
+> +
+> +       return hdev->bpf.ctx->u.device.data;
+> +}
+
+[...]
+
+> diff --git a/include/uapi/linux/bpf_hid.h b/include/uapi/linux/bpf_hid.h
+> new file mode 100644
+> index 000000000000..243ac45a253f
+> --- /dev/null
+> +++ b/include/uapi/linux/bpf_hid.h
+> @@ -0,0 +1,39 @@
+> +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> +
+> +/*
+> + *  HID BPF public headers
+> + *
+> + *  Copyright (c) 2021 Benjamin Tissoires
+> + */
+> +
+> +#ifndef _UAPI__LINUX_BPF_HID_H__
+> +#define _UAPI__LINUX_BPF_HID_H__
+> +
+> +#include <linux/types.h>
+> +
+> +#define HID_BPF_MAX_BUFFER_SIZE                16384           /* 16kb */
+> +
+> +struct hid_device;
+> +
+> +enum hid_bpf_event {
+> +       HID_BPF_UNDEF = 0,
+> +       HID_BPF_DEVICE_EVENT,
+> +};
+> +
+> +/* type is HID_BPF_DEVICE_EVENT */
+> +struct hid_bpf_ctx_device_event {
+> +       __u8 data[HID_BPF_MAX_BUFFER_SIZE];
+
+16kB sounds pretty big to me, do we usually need that much?
+
+> +       unsigned long size;
+> +};
+> +
+> +struct hid_bpf_ctx {
+> +       enum hid_bpf_event type;
+> +       struct hid_device *hdev;
+> +
+> +       union {
+> +               struct hid_bpf_ctx_device_event device;
+> +       } u;
+> +};
+> +
+> +#endif /* _UAPI__LINUX_BPF_HID_H__ */
+[...]
+
+> diff --git a/kernel/bpf/hid.c b/kernel/bpf/hid.c
+> new file mode 100644
+> index 000000000000..d3cb952bfc26
+> --- /dev/null
+> +++ b/kernel/bpf/hid.c
+
+[...]
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 9c7a72b65eee..230ca6964a7e 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3,6 +3,7 @@
+>   */
+>  #include <linux/bpf.h>
+>  #include <linux/bpf-cgroup.h>
+> +#include <linux/bpf-hid.h>
+>  #include <linux/bpf_trace.h>
+>  #include <linux/bpf_lirc.h>
+>  #include <linux/bpf_verifier.h>
+> @@ -2174,6 +2175,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
+>         case BPF_PROG_TYPE_CGROUP_SYSCTL:
+>         case BPF_PROG_TYPE_SOCK_OPS:
+>         case BPF_PROG_TYPE_EXT: /* extends any prog */
+> +       case BPF_PROG_TYPE_HID:
+
+Is this net_admin type?
+
+>                 return true;
+>         case BPF_PROG_TYPE_CGROUP_SKB:
+>                 /* always unpriv */
+> @@ -3188,6 +3190,8 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+>                 return BPF_PROG_TYPE_SK_LOOKUP;
+>         case BPF_XDP:
+>                 return BPF_PROG_TYPE_XDP;
+> +       case BPF_HID_DEVICE_EVENT:
+> +               return BPF_PROG_TYPE_HID;
+>         default:
+>                 return BPF_PROG_TYPE_UNSPEC;
+>         }
+> @@ -3331,6 +3335,8 @@ static int bpf_prog_query(const union bpf_attr *attr,
+>         case BPF_SK_MSG_VERDICT:
+>         case BPF_SK_SKB_VERDICT:
+>                 return sock_map_bpf_prog_query(attr, uattr);
+> +       case BPF_HID_DEVICE_EVENT:
+> +               return bpf_hid_prog_query(attr, uattr);
+>         default:
+>                 return -EINVAL;
+>         }
+> @@ -4325,6 +4331,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+>                 ret = bpf_perf_link_attach(attr, prog);
+>                 break;
+>  #endif
+> +       case BPF_PROG_TYPE_HID:
+> +               return bpf_hid_link_create(attr, prog);
+>         default:
+>                 ret = -EINVAL;
+>         }
+
+[...]
+
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index afe3d0d7f5f2..5978b92cacd3 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -952,6 +952,7 @@ enum bpf_prog_type {
+>         BPF_PROG_TYPE_LSM,
+>         BPF_PROG_TYPE_SK_LOOKUP,
+>         BPF_PROG_TYPE_SYSCALL, /* a program that can execute syscalls */
+> +       BPF_PROG_TYPE_HID,
+>  };
+>
+>  enum bpf_attach_type {
+> @@ -997,6 +998,7 @@ enum bpf_attach_type {
+>         BPF_SK_REUSEPORT_SELECT,
+>         BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
+>         BPF_PERF_EVENT,
+> +       BPF_HID_DEVICE_EVENT,
+>         __MAX_BPF_ATTACH_TYPE
+>  };
+>
+> @@ -1011,6 +1013,7 @@ enum bpf_link_type {
+>         BPF_LINK_TYPE_NETNS = 5,
+>         BPF_LINK_TYPE_XDP = 6,
+>         BPF_LINK_TYPE_PERF_EVENT = 7,
+> +       BPF_LINK_TYPE_HID = 8,
+>
+>         MAX_BPF_LINK_TYPE,
+>  };
+> @@ -5870,6 +5873,10 @@ struct bpf_link_info {
+>                 struct {
+>                         __u32 ifindex;
+>                 } xdp;
+> +               struct  {
+> +                       __s32 hidraw_ino;
+> +                       __u32 attach_type;
+> +               } hid;
+>         };
+>  } __attribute__((aligned(8)));
 >
