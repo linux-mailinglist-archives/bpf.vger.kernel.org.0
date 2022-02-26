@@ -2,116 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF644C54D0
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 10:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C57E34C55C8
+	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 13:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbiBZJUE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Feb 2022 04:20:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S231578AbiBZMUu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 07:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbiBZJUD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Feb 2022 04:20:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4EF4E263729
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 01:19:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645867168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BQWC4qnEcozjetIUZAtQHzyvu0e2sFoHBrXr/242A4Q=;
-        b=Tebt/Jlh42UlaL03nqVeC5sy13NQG9FBNsir2Kn+HVmZjvBOB6SvvoBBpwlK13uUbNqWnp
-        oUJKZiLn/Uhr/79gKp6SyTJ9gepkOiJtfOHSRii+GaVwaGgLJfjsYyNlU83cD0BZmdX5LL
-        gMP74JPDy0sz40uXDglm1kZ/hQumzwU=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-487-DVDrkA5NMxGLKR8zj1cqMw-1; Sat, 26 Feb 2022 04:19:26 -0500
-X-MC-Unique: DVDrkA5NMxGLKR8zj1cqMw-1
-Received: by mail-pf1-f200.google.com with SMTP id y28-20020aa793dc000000b004e160274e3eso4561170pff.18
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 01:19:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BQWC4qnEcozjetIUZAtQHzyvu0e2sFoHBrXr/242A4Q=;
-        b=7LTbtarG2bgD39FjbI1t3LF5NzrIKeQYMTo5FadYqY3DqDKEzrhxAk7qgwoGqYGxFT
-         HZNAx1ZUe+eh35qH3Obkq6oLyQ1B7tbniyGaWJIoYt9PVzuvTJsoQzRjTWyFwVfs2hnE
-         6VKk2vQ3fRLJADP2EPu0hgju6ZKJTReE2mQnkEUKilbYHTZj0efNnHQWoaTIdPlP/wOP
-         VjAQJHMYiy6WH0ltmyWpYlKEr+JVyCz4IS1FMGpg+6/77eBkVmDH2v8D+3MSAaXvT0vl
-         iDhsbcKl1u3t75GjKQuqX73SgMUvusY74fD9OGoF1Rze6DeMreoJRtmju5bCuYGcyAZE
-         PSIw==
-X-Gm-Message-State: AOAM531c+Mtfc/l5yxXE6XBQkByGVi3GHc/f5iv3s1qVyzvr+XffB3+p
-        HNKz+214vEhtVCL6NRXIz6CLc1bvfdz+y93MQhcPnHERJXGPdhBTga72I6zFLOClfZtrxSgpV89
-        e8V+QtgxV7vWPaezT365RRIW0Gncc
-X-Received: by 2002:a65:5bc3:0:b0:378:4f82:d73d with SMTP id o3-20020a655bc3000000b003784f82d73dmr4114568pgr.191.1645867165738;
-        Sat, 26 Feb 2022 01:19:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwdmbKJWHucKh9BWGgfnXQpcu4fvoXKQiGkxgHr4yoN9zm+Warf9dy1Ixf50NWclTqjqytmZTgZRWPfxr9pk+s=
-X-Received: by 2002:a65:5bc3:0:b0:378:4f82:d73d with SMTP id
- o3-20020a655bc3000000b003784f82d73dmr4114546pgr.191.1645867165532; Sat, 26
- Feb 2022 01:19:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20220224110828.2168231-1-benjamin.tissoires@redhat.com>
- <YhdsgokMMSEQ0Yc8@kroah.com> <CAO-hwJJcepWJaU9Ytuwe_TiuZUGTq_ivKknX8x8Ws=zBFUp0SQ@mail.gmail.com>
- <YhjbzxxgxtSxFLe/@kroah.com> <CAO-hwJJpJf-GHzU7-9bhMz7OydNPCucTtrm=-GeOf-Ee5-aKrw@mail.gmail.com>
- <YhkEqpF6QSYeoMQn@kroah.com> <CAPhsuW4F6pMNYwstQOy68pyU2xrtd8c3k8q2GrNKY9fj46TMdg@mail.gmail.com>
-In-Reply-To: <CAPhsuW4F6pMNYwstQOy68pyU2xrtd8c3k8q2GrNKY9fj46TMdg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Sat, 26 Feb 2022 10:19:14 +0100
-Message-ID: <CAO-hwJL7qfAihq=8dwrh=0xLnKKxmCS42KE0eJECKfREEuEkhg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/6] Introduce eBPF support for HID devices
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S231520AbiBZMUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 07:20:49 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD8650E15;
+        Sat, 26 Feb 2022 04:20:15 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4K5QZz1l2Jz1FDVp;
+        Sat, 26 Feb 2022 20:15:39 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Sat, 26 Feb
+ 2022 20:20:13 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Will Deacon <will@kernel.org>
+CC:     Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Peter Hutterer <peter.hutterer@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>,
+        Zi Shen Lim <zlim.lnx@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Ard Biesheuvel <ard.biesheuvel@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH bpf-next v4 0/2] bpf, arm64: fix bpf line info
+Date:   Sat, 26 Feb 2022 20:19:04 +0800
+Message-ID: <20220226121906.5709-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.18.2
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500025.china.huawei.com (7.185.36.35)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 26, 2022 at 8:37 AM Song Liu <song@kernel.org> wrote:
->
-> On Fri, Feb 25, 2022 at 8:32 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> [...]
-> >
-> > One comment about the patch series.  You might want to break the patches
-> > up a bit smaller, having the example code in a separate commit from the
-> > "add this feature" commit, as it was hard to pick out what was kernel
-> > changes, and what was test changes from it.  That way I can complain
-> > about the example code and tests without having to worry about the
-> > kernel patches.
->
-> Echo on this part.  Please organize kernel changes, libbpf changes,
-> maybe also bpftool changes, selftests, and samples into separate patches.
-> This would help folks without HID experience understand the design.
->
+Hi,
 
-Sure. And thanks for the initial review.
+The patchset addresses two issues in bpf line info for arm64:
 
-I'll send out a splitted v2 early next week then.
+(1) insn_to_jit_off only considers the body itself and ignores
+    prologue before the body. Fixed in patch #1.
 
-Cheers,
-Benjamin
+(2) insn_to_jit_off passed to bpf_prog_fill_jited_linfo() is
+    calculated in instruction granularity instead of bytes
+    granularity. Fixed in patch #2.
+
+Comments are always welcome.
+
+Regards,
+Tao
+
+Change Log:
+v4:
+ * patch #2: convert ctx.offset into byte offset before call
+   bpf_prog_fill_jited_linfo() instead of converting it back and forth.
+
+v3: https://lore.kernel.org/bpf/20220208012539.491753-1-houtao1@huawei.com
+ * patch #2: explain why bpf2a64_offset() needs update
+ * add Fixes tags in both patches
+
+v2: https://lore.kernel.org/bpf/20220125105707.292449-1-houtao1@huawei.com
+ * split into two independent patches (from Daniel)
+ * use AARCH64_INSN_SIZE instead of defining INSN_SIZE
+
+v1: https://lore.kernel.org/bpf/20220104014236.1512639-1-houtao1@huawei.com
+
+Hou Tao (2):
+  bpf, arm64: call build_prologue() first in first JIT pass
+  bpf, arm64: feed byte-offset into bpf line info
+
+ arch/arm64/net/bpf_jit_comp.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
+
+-- 
+2.18.2
 
