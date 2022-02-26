@@ -2,126 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3404D4C56BD
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 17:01:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807F74C56D7
+	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 17:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbiBZQBe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Feb 2022 11:01:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        id S231775AbiBZQjD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 11:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232265AbiBZQBd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Feb 2022 11:01:33 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB8B179259;
-        Sat, 26 Feb 2022 08:00:59 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id hw13so16537919ejc.9;
-        Sat, 26 Feb 2022 08:00:59 -0800 (PST)
+        with ESMTP id S230359AbiBZQjA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 11:39:00 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F8326CCFF;
+        Sat, 26 Feb 2022 08:38:26 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id ev16-20020a17090aead000b001bc3835fea8so7616591pjb.0;
+        Sat, 26 Feb 2022 08:38:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y+Us+84YJbXsy1zIplUSCiEcPWyNLvsDi6jitmhUwvE=;
-        b=qXxeJK//ibcQsJDMTZPMSXPJzTyYeMA7wvNp4gsl96nqdVf4EK48nvZz+h4WwuuZh8
-         N4YG6GH/v77X0rXQyEKPiAs6GE1s4WqpF4KuoBxEPV6wsM6otmTHStPl51RJh8Zy5DgN
-         SHa8DN4Y0myRcJSqxDNVYQew0vJw38yUvM9t3DV4SohAKcuzr+2g5nu0w5ALZDbil3pV
-         6UcU9dCRru1RYuO9Svfinr8JS9HLHxpBhpy5Sec0+y9U6K8QU1eDSDty+zqRaDSiRP0w
-         8lQuN7Hqa4zjE5aWvymLULmQFyAZGc6Qa87b7UGHAR233PObNdm0wbgVi2ffDNpVxBDx
-         VUxQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CUVRXEQjDfoKEnIhwgTgR29LkrM8Q5Udo+mcuXgqxmY=;
+        b=grgm2wFbK239cNsLuzTSkhY1fzbLdc1+OWLlurJMgls83pSJbwu15IopmmDkS32PPL
+         tNEmmBI0vNz9/Mydz6ArfC24pv2VrzwdsLMsf84Yms+r/DvKK2uUnGk8lAb6J3LpDch/
+         hzT/WYx4ugDyw4a5sICOVIRHCLT96cpcof/bhY3NZcW0mnM/ispEckofu/No/6QLbmPj
+         HzkEMzhgOMYUJIewtIiyD/BPzELZg9mfZSt7Ce3v1cdBxRU8NVs5Lo5l5ke8gpmHz4T3
+         7/IWy7u2LVZc6VR2ykF8rEpCSWFZIeYXrLYPqwXGu3vjef92ycMR9pJl14BBzZQSS61j
+         x0+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y+Us+84YJbXsy1zIplUSCiEcPWyNLvsDi6jitmhUwvE=;
-        b=4JBvYhbS0L11byfskv09A71WRjLt0TGXSUlqwOXV3YF+O/ZZcoCz5f+uN0z4Pows2K
-         QhI4znB01WZb5lNy2oiCbSKBMQeKwke/V7yF6hvz9olF4DKBWd32LkDIEXFGPThZ4hFs
-         CsPsIvms7jPcO1oUXZKJVGg0c0oJBCY//oZyar56gOIpZ4PzkpBe06SS4fO9Wl3BMbBH
-         /Q9szY9/NnJ2O2thSRdJBW1RmW7mMVQYS1XcKuqEGDaPUU6k7eu0wPMQ3e/Ts02JOQML
-         h93mLOv17xq6V5uBnZvoIZFJR+QMIwK1qCLmscFLpGPY/uKFWJbgpBr+sImQlkomhCns
-         z5cQ==
-X-Gm-Message-State: AOAM533xHyKLvXIn7cKCBrvP4KDjDvuyNRfMJbwtu59WNKyX5vBMYYHJ
-        6kbxwzV4a4e9VfU2i9a7S7A=
-X-Google-Smtp-Source: ABdhPJy2VRO2oC+bWr2xZvbxgCqrgWglVmah7oQnqwwKhIXTF2nfJQlUIilzf4DcT5jdCInOvQJK1w==
-X-Received: by 2002:a17:906:f250:b0:6b5:83df:237d with SMTP id gy16-20020a170906f25000b006b583df237dmr10009053ejb.157.1645891257693;
-        Sat, 26 Feb 2022 08:00:57 -0800 (PST)
-Received: from krava ([2a00:102a:4012:7bee:99f7:73f9:d8ed:b1a])
-        by smtp.gmail.com with ESMTPSA id c4-20020a170906340400b006d077e850b5sm2364125ejb.23.2022.02.26.08.00.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CUVRXEQjDfoKEnIhwgTgR29LkrM8Q5Udo+mcuXgqxmY=;
+        b=zHHCA+jvl2EKigiBuCFL2JBp8EwG5kJ29RQufDMPcMuWuF6Ts5ID+t8fL1zij3rAbK
+         +JNpJ2lWOlRkiATQhsjHTlxG3D7ayXWG8wQle7m4PArPCAlG5VWDkxREbwzmhYZX0Gf6
+         XiQT7n8VmI0TnoxetJMrVPc/32qx3DQOyLuLQfgAddgwKZReHg6IXv1IC/6EUdSdmID/
+         JwFS5fQN9UG6J8zIcBy+6uHpn/o39qwhiatIp2yZh5tYxVODp7ZbtTyosGtVuhHa3GxA
+         UtFXEqrjdCXa72uEQacmO0iSqy2/dOk4PEmv9qPRU263mEWTz7rn3FHm5f8E/2+WpyR9
+         EE3Q==
+X-Gm-Message-State: AOAM531KcJ6c4J6uLHcVj7S7b5UbdcngvuOEQy627Q6qidmFwaFlBlVl
+        x6lYzDqnv60q5WmiwdmhKk454k/S3tvgpQ==
+X-Google-Smtp-Source: ABdhPJyX3DH6/7pRuo98AF5k/wsbwDDIgDR8b7/uEgUSRy3dwdVRxE2BVCaEZc+fx8I6+XwbcMw8zA==
+X-Received: by 2002:a17:902:7205:b0:14c:9586:f9d5 with SMTP id ba5-20020a170902720500b0014c9586f9d5mr12627831plb.77.1645893505599;
+        Sat, 26 Feb 2022 08:38:25 -0800 (PST)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id g7-20020a656cc7000000b00375948e63d6sm5602217pgw.91.2022.02.26.08.38.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Feb 2022 08:00:57 -0800 (PST)
-Date:   Sat, 26 Feb 2022 17:00:52 +0100
-From:   Jiri Olsa <olsajiri@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, jolsa@kernel.org,
-        sunyucong@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 bpf-next 4/4] selftests/bpf: add tests for u[ret]probe
- attach by name
-Message-ID: <YhpOI1Yk7JlmIgLQ@krava>
-References: <1643645554-28723-1-git-send-email-alan.maguire@oracle.com>
- <1643645554-28723-5-git-send-email-alan.maguire@oracle.com>
+        Sat, 26 Feb 2022 08:38:25 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez?= <mauricio@kinvolk.io>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next v2] bpftool: Remove redundant slashes
+Date:   Sun, 27 Feb 2022 00:38:15 +0800
+Message-Id: <20220226163815.520133-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220225161507.470763-1-ytcoode@gmail.com>
+References: <20220225161507.470763-1-ytcoode@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1643645554-28723-5-git-send-email-alan.maguire@oracle.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 04:12:34PM +0000, Alan Maguire wrote:
+Because the OUTPUT variable ends with a slash but CURDIR doesn't, to keep
+the _OUTPUT value consistent, we add a trailing slash to CURDIR when
+defining _OUTPUT variable.
 
-SNIP
+Since the _OUTPUT variable holds a value ending with a trailing slash,
+there is no need to add another one when defining BOOTSTRAP_OUTPUT and
+LIBBPF_OUTPUT variables.
 
-> +	/* verify auto-attach fails for old-style uprobe definition */
-> +	uprobe_err_link = bpf_program__attach(skel->progs.handle_uprobe_byname);
-> +	if (!ASSERT_EQ(libbpf_get_error(uprobe_err_link), -ESRCH,
-> +		       "auto-attach should fail for old-style name"))
-> +		goto cleanup;
-> +
-> +	uprobe_opts.func_name = "trigger_func2";
-> +	uprobe_opts.retprobe = false;
-> +	uprobe_opts.ref_ctr_offset = 0;
-> +	skel->links.handle_uprobe_byname =
-> +			bpf_program__attach_uprobe_opts(skel->progs.handle_uprobe_byname,
-> +							0 /* this pid */,
-> +							"/proc/self/exe",
-> +							0, &uprobe_opts);
-> +	if (!ASSERT_OK_PTR(skel->links.handle_uprobe_byname, "attach_uprobe_byname"))
-> +		goto cleanup;
-> +
-> +	/* verify auto-attach works */
-> +	skel->links.handle_uretprobe_byname =
-> +			bpf_program__attach(skel->progs.handle_uretprobe_byname);
-> +	if (!ASSERT_OK_PTR(skel->links.handle_uretprobe_byname, "attach_uretprobe_byname"))
-> +		goto cleanup;
-> +
-> +	/* test attach by name for a library function, using the library
-> +	 * as the binary argument.  To do this, find path to libc used
-> +	 * by test_progs via /proc/self/maps.
-> +	 */
-> +	libc_path = get_lib_path("libc-");
+When defining LIBBPF_INCLUDE and LIBBPF_BOOTSTRAP_INCLUDE, we shouldn't
+add an extra slash either for the same reason.
 
-hi,
-I'm getting crash in here because the libc line in maps for me
-looks like: /usr/lib64/libc.so.6
+When building libbpf, the value of the DESTDIR argument should also not
+end with a trailing slash.
 
-plus the check below will let through null pointer
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+---
+v1 -> v2: make the commit message more accurate
 
-> +	if (!ASSERT_OK_PTR(libc_path, "get path to libc"))
-> +		goto cleanup;
-> +	if (!ASSERT_NEQ(strstr(libc_path, "libc-"), NULL, "find libc path in /proc/self/maps"))
-> +		goto cleanup;
+ tools/bpf/bpftool/Makefile | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-and when I tried to use 'libc' in here, it does not crash but
-libc_path holds the whole maps line:
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index ba647aede0d6..9800f966fd51 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -18,19 +18,19 @@ BPF_DIR = $(srctree)/tools/lib/bpf
+ ifneq ($(OUTPUT),)
+   _OUTPUT := $(OUTPUT)
+ else
+-  _OUTPUT := $(CURDIR)
++  _OUTPUT := $(CURDIR)/
+ endif
+-BOOTSTRAP_OUTPUT := $(_OUTPUT)/bootstrap/
++BOOTSTRAP_OUTPUT := $(_OUTPUT)bootstrap/
+ 
+-LIBBPF_OUTPUT := $(_OUTPUT)/libbpf/
++LIBBPF_OUTPUT := $(_OUTPUT)libbpf/
+ LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
+-LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
++LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
+ LIBBPF_HDRS_DIR := $(LIBBPF_INCLUDE)/bpf
+ LIBBPF := $(LIBBPF_OUTPUT)libbpf.a
+ 
+ LIBBPF_BOOTSTRAP_OUTPUT := $(BOOTSTRAP_OUTPUT)libbpf/
+ LIBBPF_BOOTSTRAP_DESTDIR := $(LIBBPF_BOOTSTRAP_OUTPUT)
+-LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
++LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)include
+ LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
+ LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+ 
+@@ -44,7 +44,7 @@ $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DI
+ 
+ $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
+ 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
+-		DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
++		DESTDIR=$(LIBBPF_DESTDIR:/=) prefix= $(LIBBPF) install_headers
+ 
+ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
+ 	$(call QUIET_INSTALL, $@)
+@@ -52,7 +52,7 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+ 
+ $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+ 	$(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+-		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR) prefix= \
++		DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR:/=) prefix= \
+ 		ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) $@ install_headers
+ 
+ $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
+-- 
+2.35.1
 
-  7fdbef31d000-7fdbef349000 r--p 00000000 fd:01 201656665                  /usr/lib64/libc.so.6
-
-so it fails, I guess there's some issue in get_lib_path
-
-jirka
