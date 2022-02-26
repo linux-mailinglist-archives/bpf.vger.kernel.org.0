@@ -2,139 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD954C536F
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 03:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D06B4C5416
+	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 07:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbiBZCyO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 25 Feb 2022 21:54:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        id S229796AbiBZGJ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 01:09:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbiBZCyN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 25 Feb 2022 21:54:13 -0500
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14156E2A;
-        Fri, 25 Feb 2022 18:53:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645844019; x=1677380019;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fyXkQYuaZpvUkMN1JTZ1FZur3c45JAM3b8/ijmKoljI=;
-  b=Ld5wblocW0geLincYEjqpMZ0cVSdqWPx8nWvJ9zD3PuluLyOanQ+4tap
-   z+IJ9YWI/zqT8f9w3KTClwU/D8ecrPIKXzzrV91b+S9pxCPGlel69UrXF
-   18hrwtBvonFYpWcbvZFdXIhB5uZOSqtzvjlPQ3EEaB3VSsCz9GexK67qF
-   vmMXwrCTxxxfyAW8N2C8xc5MgKde4NUg1SmUveIf3ZxRmdpOqyxjXvAuq
-   wdmkRKaNyYVlrEM+uDGmUWWANnjRlMLhBHtZHM429wAe4ke8n3t/lEuOw
-   ElTr9QGXSsVv53HHisJgjMpr8SkSbr+9AOGfKPlk4taSfxl7on+XHKlyP
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="252352950"
-X-IronPort-AV: E=Sophos;i="5.90,138,1643702400"; 
-   d="scan'208";a="252352950"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2022 18:53:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,138,1643702400"; 
-   d="scan'208";a="640314184"
-Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 25 Feb 2022 18:53:34 -0800
-Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nNnDB-00050W-Os; Sat, 26 Feb 2022 02:53:33 +0000
-Date:   Sat, 26 Feb 2022 10:53:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kbuild-all@lists.01.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf-next v1 8/9] bpf: Introduce cgroup iter
-Message-ID: <202202261033.JZXn2oS0-lkp@intel.com>
-References: <20220225234339.2386398-9-haoluo@google.com>
+        with ESMTP id S229539AbiBZGJ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 01:09:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0786D114FD2;
+        Fri, 25 Feb 2022 22:09:24 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 96E8160C11;
+        Sat, 26 Feb 2022 06:09:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF5C1C340F2;
+        Sat, 26 Feb 2022 06:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645855763;
+        bh=heJPHUn7XfYzu7DFZYuil9Qqj8KTMzMdMdnl3ERx3n0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pUfEb1A++U1BmqJ2LV6MbiUF0ATv17WQnB/udPZJCSqnaSR50nbMeURXuqJySyR2X
+         +ei5GXwJDYt2K2SMs0ve81dq5UF0RtDhFDhK8miihluN6x5w11fxmTeICmXy7uNW+j
+         rbv1PEpdyD1FOZlPVGqGOa5estNLUvpuh/RzprNDqehAqTeMa5285LHrp3FSnZXILV
+         WtLvUNO1hs0r+kXIv/PS4W+9Abll/TU4wEpNHuVQA9mTjWC+C5dZX0U9rfuwkDHzKl
+         W0bdsl9lqDOTHpCUFz2XMkfNRa4B8+NwV1uOhmcVTHEPDRrCed5SLINbj8ewGlTRKG
+         WAUPsATln/FxQ==
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-2d07ae0b1c0so55394387b3.2;
+        Fri, 25 Feb 2022 22:09:22 -0800 (PST)
+X-Gm-Message-State: AOAM5309VeP4oxyvlOIKcSoPwjM84SFNUn3wnRVrdbl01eIr8SgQaKlt
+        NB3GmshSqVYXzTN2diSasHLoIZecTc3SYOLDG9E=
+X-Google-Smtp-Source: ABdhPJwEJSBx1AuAkbwrgaXvQ5OpPdVFQ+dHsTQ1QI4eAoqz4maw3zf4pXv2cWgNzYR1XD+ZLqVYF89SjSDFeZm6fbc=
+X-Received: by 2002:a81:83d6:0:b0:2ca:93ad:e4d6 with SMTP id
+ t205-20020a8183d6000000b002ca93ade4d6mr10756915ywf.472.1645855761917; Fri, 25
+ Feb 2022 22:09:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220225234339.2386398-9-haoluo@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220225161507.470763-1-ytcoode@gmail.com>
+In-Reply-To: <20220225161507.470763-1-ytcoode@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 25 Feb 2022 22:09:10 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5=mAv4Oa++kSxz4j5imvoGM70Vtk+qqCU3dY2Osf0gYA@mail.gmail.com>
+Message-ID: <CAPhsuW5=mAv4Oa++kSxz4j5imvoGM70Vtk+qqCU3dY2Osf0gYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpftool: Remove redundant slashes
+To:     Yuntao Wang <ytcoode@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        =?UTF-8?Q?Mauricio_V=C3=A1squez?= <mauricio@kinvolk.io>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UPPERCASE_50_75
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Hao,
+On Fri, Feb 25, 2022 at 8:15 AM Yuntao Wang <ytcoode@gmail.com> wrote:
+>
+> Since the _OUTPUT variable holds a value ending with a trailing slash,
 
-Thank you for the patch! Perhaps something to improve:
+While the change makes sense, I think the description here is not accurate.
+Currently, we require OUTPUT to end with trailing slash. However, if
+OUTPUT is not defined, _OUTPUT will not hold a trailing slash. Adding
+trailing slash to _OUTPUT is one part of this patch, so I think we should not
+say that's the reason of this change.
 
-[auto build test WARNING on bpf-next/master]
+Thanks,
+Song
 
-url:    https://github.com/0day-ci/linux/commits/Hao-Luo/Extend-cgroup-interface-with-bpf/20220226-074615
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-config: arm-randconfig-c002-20220226 (https://download.01.org/0day-ci/archive/20220226/202202261033.JZXn2oS0-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/ee74423719e2efb4efa7a4491920c78b60024ec7
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Hao-Luo/Extend-cgroup-interface-with-bpf/20220226-074615
-        git checkout ee74423719e2efb4efa7a4491920c78b60024ec7
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=arm SHELL=/bin/bash kernel/bpf/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/cgroup_iter.c:101:6: warning: no previous prototype for 'bpf_iter_cgroup_show_fdinfo' [-Wmissing-prototypes]
-     101 | void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/cgroup_iter.c: In function 'bpf_iter_cgroup_show_fdinfo':
->> kernel/bpf/cgroup_iter.c:107:40: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'u64' {aka 'long long unsigned int'} [-Wformat=]
-     107 |         seq_printf(seq, "cgroup_id:\t%lu\n", aux->cgroup_id);
-         |                                      ~~^     ~~~~~~~~~~~~~~
-         |                                        |        |
-         |                                        |        u64 {aka long long unsigned int}
-         |                                        long unsigned int
-         |                                      %llu
-   kernel/bpf/cgroup_iter.c: At top level:
->> kernel/bpf/cgroup_iter.c:111:5: warning: no previous prototype for 'bpf_iter_cgroup_fill_link_info' [-Wmissing-prototypes]
-     111 | int bpf_iter_cgroup_fill_link_info(const struct bpf_iter_aux_info *aux,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/bpf_iter_cgroup_show_fdinfo +101 kernel/bpf/cgroup_iter.c
-
-   100	
- > 101	void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
-   102					 struct seq_file *seq)
-   103	{
-   104		char buf[64] = {0};
-   105	
-   106		cgroup_path_from_kernfs_id(aux->cgroup_id, buf, sizeof(buf));
- > 107		seq_printf(seq, "cgroup_id:\t%lu\n", aux->cgroup_id);
-   108		seq_printf(seq, "cgroup_path:\t%s\n", buf);
-   109	}
-   110	
- > 111	int bpf_iter_cgroup_fill_link_info(const struct bpf_iter_aux_info *aux,
-   112					   struct bpf_link_info *info)
-   113	{
-   114		info->iter.cgroup.cgroup_id = aux->cgroup_id;
-   115		return 0;
-   116	}
-   117	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> there is no need to add another one when defining BOOTSTRAP_OUTPUT and
+> LIBBPF_OUTPUT variables.
+>
+> When defining LIBBPF_INCLUDE and LIBBPF_BOOTSTRAP_INCLUDE, we shouldn't
+> add an extra slash either for the same reason.
+>
+> When building libbpf, the value of the DESTDIR argument should also not
+> end with a trailing slash.
+>
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> ---
+>  tools/bpf/bpftool/Makefile | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+> index ba647aede0d6..9800f966fd51 100644
+> --- a/tools/bpf/bpftool/Makefile
+> +++ b/tools/bpf/bpftool/Makefile
+> @@ -18,19 +18,19 @@ BPF_DIR = $(srctree)/tools/lib/bpf
+>  ifneq ($(OUTPUT),)
+>    _OUTPUT := $(OUTPUT)
+>  else
+> -  _OUTPUT := $(CURDIR)
+> +  _OUTPUT := $(CURDIR)/
+>  endif
+> -BOOTSTRAP_OUTPUT := $(_OUTPUT)/bootstrap/
+> +BOOTSTRAP_OUTPUT := $(_OUTPUT)bootstrap/
+>
+> -LIBBPF_OUTPUT := $(_OUTPUT)/libbpf/
+> +LIBBPF_OUTPUT := $(_OUTPUT)libbpf/
+>  LIBBPF_DESTDIR := $(LIBBPF_OUTPUT)
+> -LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)/include
+> +LIBBPF_INCLUDE := $(LIBBPF_DESTDIR)include
+>  LIBBPF_HDRS_DIR := $(LIBBPF_INCLUDE)/bpf
+>  LIBBPF := $(LIBBPF_OUTPUT)libbpf.a
+>
+>  LIBBPF_BOOTSTRAP_OUTPUT := $(BOOTSTRAP_OUTPUT)libbpf/
+>  LIBBPF_BOOTSTRAP_DESTDIR := $(LIBBPF_BOOTSTRAP_OUTPUT)
+> -LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)/include
+> +LIBBPF_BOOTSTRAP_INCLUDE := $(LIBBPF_BOOTSTRAP_DESTDIR)include
+>  LIBBPF_BOOTSTRAP_HDRS_DIR := $(LIBBPF_BOOTSTRAP_INCLUDE)/bpf
+>  LIBBPF_BOOTSTRAP := $(LIBBPF_BOOTSTRAP_OUTPUT)libbpf.a
+>
+> @@ -44,7 +44,7 @@ $(LIBBPF_OUTPUT) $(BOOTSTRAP_OUTPUT) $(LIBBPF_BOOTSTRAP_OUTPUT) $(LIBBPF_HDRS_DI
+>
+>  $(LIBBPF): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_OUTPUT)
+>         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_OUTPUT) \
+> -               DESTDIR=$(LIBBPF_DESTDIR) prefix= $(LIBBPF) install_headers
+> +               DESTDIR=$(LIBBPF_DESTDIR:/=) prefix= $(LIBBPF) install_headers
+>
+>  $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_DIR)
+>         $(call QUIET_INSTALL, $@)
+> @@ -52,7 +52,7 @@ $(LIBBPF_INTERNAL_HDRS): $(LIBBPF_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_HDRS_
+>
+>  $(LIBBPF_BOOTSTRAP): $(wildcard $(BPF_DIR)/*.[ch] $(BPF_DIR)/Makefile) | $(LIBBPF_BOOTSTRAP_OUTPUT)
+>         $(Q)$(MAKE) -C $(BPF_DIR) OUTPUT=$(LIBBPF_BOOTSTRAP_OUTPUT) \
+> -               DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR) prefix= \
+> +               DESTDIR=$(LIBBPF_BOOTSTRAP_DESTDIR:/=) prefix= \
+>                 ARCH= CROSS_COMPILE= CC=$(HOSTCC) LD=$(HOSTLD) $@ install_headers
+>
+>  $(LIBBPF_BOOTSTRAP_INTERNAL_HDRS): $(LIBBPF_BOOTSTRAP_HDRS_DIR)/%.h: $(BPF_DIR)/%.h | $(LIBBPF_BOOTSTRAP_HDRS_DIR)
+> --
+> 2.35.1
+>
