@@ -2,109 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE47F4C5E66
-	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 20:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8116B4C5E92
+	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 21:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbiB0TVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Feb 2022 14:21:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        id S230483AbiB0U2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Feb 2022 15:28:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231461AbiB0TVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Feb 2022 14:21:51 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE015AA4F;
-        Sun, 27 Feb 2022 11:21:14 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id n185so8855401qke.5;
-        Sun, 27 Feb 2022 11:21:14 -0800 (PST)
+        with ESMTP id S230394AbiB0U2h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Feb 2022 15:28:37 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3223842EC5
+        for <bpf@vger.kernel.org>; Sun, 27 Feb 2022 12:28:00 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id w27so18094201lfa.5
+        for <bpf@vger.kernel.org>; Sun, 27 Feb 2022 12:28:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2kTkSUUIcLs9zQI8iWiQZP7AOGs73ov/WhJ7PVeoNzU=;
-        b=Wh3kyVlXWHtCXU3c54GBRjurnMkqgcRqdeEgNQjnH7f72dJcNVr/vFJ62OKGxvwsmI
-         CyW3OXuV1FtX4CGJ9M1xgrBNZJkwEkTqXmN6w9+ib2DOQC2tnxYqBuxRoq6gi/7+fsnd
-         0WsEQTqFfUU0i7t33IxuxJ9qead0vbiX/VNQvzZrzPh3vl86LfwNKngGr6NK8d/PqWGz
-         SmrO1D7UA5dBB2JuBHir3EXqilqWyhqSxW/1C90TIYvd856pzM7XIq6YFgmT4MpD0zwB
-         2Gu03CDLs5WJ329dr8xHIlTuNi1NHWlleYjE9Pc/Is840nYzBuVUD98+CrNtctVvk46D
-         mpxw==
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B29fexB9ZTCKi7CISL13JlGHaQZbWyBbVpInY3I/6NY=;
+        b=n2rDCDUhGA35dCXCp8qHKaMdSSUe2zvsERiPeW4R9DiGwFSaDGFbnuwd9ekhMpnjNP
+         AF03weEkGiJ/MHjtpiFRl6/I2i20jBGTZCpzxHDU8fUBnfOMwbB+/mr+QQ8m0ff41dwV
+         rmrDiw1gGFNPRzLDZmJhoPlktQMBlkP6i+Zjo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2kTkSUUIcLs9zQI8iWiQZP7AOGs73ov/WhJ7PVeoNzU=;
-        b=KWHkHTIHFLiblB+bUxIFMYzVtp8xXOe+FFMqzmw9wofOyJpKxO1AykTZMYdYFWgTaR
-         f2G/npNIPQXAWobNr4+fqGcqsBRcAnJZ7yHSZTGK61Qrz10lK7o5ZKj1dRwClpt1+E9a
-         5hm6W7fO+fFZdMGShlkRnzoQO66Qu+EurfIq7mn9B9nNRoYC18iR/CAz9/EwaUsStwI4
-         9+UtUa55A3U93Q5kuTQ5HsRha+ekOg5mKhQxyFqWcWh3GK3sBDwyctAxRYvfcxgFHdZo
-         DhWsKvXSWK7oXuHBRZRRRmFmfGDOHtyeHLWK/qWSeG2HwLrkst58T0ESfei+rXbrIxkd
-         rQ/g==
-X-Gm-Message-State: AOAM530k1ZxfPaCLXYbmDgGyWnbO2orSKiT6g+ronBFUBopkecZzvQYr
-        26qMzhU/aAKIqw9qU11cHjE=
-X-Google-Smtp-Source: ABdhPJwdIw9DshOjZbeeTS1xcpuDbjWJT+MHr+t3bOAgyyxrKn1mc7Af5OOz+zCqKiBfvQjrBOslJA==
-X-Received: by 2002:a37:688c:0:b0:507:db8b:b71a with SMTP id d134-20020a37688c000000b00507db8bb71amr9496711qkc.396.1645989673576;
-        Sun, 27 Feb 2022 11:21:13 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:ee9e:a12e:deed:13de])
-        by smtp.gmail.com with ESMTPSA id 26-20020a05620a041a00b0062aae550fa2sm4115804qkp.81.2022.02.27.11.21.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B29fexB9ZTCKi7CISL13JlGHaQZbWyBbVpInY3I/6NY=;
+        b=ZQYNf2BOwElR3LN4JSFXV6xmmCycesk3eFJu3dcm+uEvCK+ckT7jP/ncQmNWiIm5xY
+         2/KOwRNs/cA0OT9oSn6GCHnWdE5aTmENdUyKU9XMQ729BsGSXptUX059lxPoTqVwUema
+         7n2eb/5klS1NC96b2hj4MVUVokDUKwLhMBzv+dUOTOcm3F6PCXRWTB0V0kYbnOcF5aQu
+         /9a9DElnU/WtJuuKw7f8gNRVRDA5xS6PqT3L6gmR2Kqq2trIxydqkbEFSN0jQT67p3Vx
+         rPSAP8AlizkORSOfgKrWEWql6nCcY5ohcx9UWuDiuXxHKZJfPxrHTTQyfCpm4W9k+LP8
+         /5kQ==
+X-Gm-Message-State: AOAM531Vt9BV9mWlDgn68fTJUj4yjIxOaYfhZgQ4+Y4LXwMRHupzzXiI
+        12VXPNBpxeh9HmYlLAs9BMatvNo4xLJa7w==
+X-Google-Smtp-Source: ABdhPJxlN4WNaX+29tnCm2jCGZTJgPE6bCkxzfBp4SamcnaKzfaofey1Y+xHU7XF1oX06uMaRm83Pg==
+X-Received: by 2002:ac2:4c1c:0:b0:443:5db3:4748 with SMTP id t28-20020ac24c1c000000b004435db34748mr10696549lfq.643.1645993678329;
+        Sun, 27 Feb 2022 12:27:58 -0800 (PST)
+Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
+        by smtp.gmail.com with ESMTPSA id f8-20020a2e3808000000b002468b8ca6d1sm216008lja.27.2022.02.27.12.27.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Feb 2022 11:21:13 -0800 (PST)
-Date:   Sun, 27 Feb 2022 11:21:12 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     Wang Yufen <wangyufen@huawei.com>
-Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
-        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
-        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/4] bpf, sockmap: Fix memleak in
- sk_psock_queue_msg
-Message-ID: <YhvPKB8O7ml5JSHQ@pop-os.localdomain>
-References: <20220225014929.942444-1-wangyufen@huawei.com>
- <20220225014929.942444-2-wangyufen@huawei.com>
+        Sun, 27 Feb 2022 12:27:58 -0800 (PST)
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        kernel-team@cloudflare.com, Martin KaFai Lau <kafai@fb.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH bpf-next v2 0/3] Fixes for sock_fields selftests
+Date:   Sun, 27 Feb 2022 21:27:54 +0100
+Message-Id: <20220227202757.519015-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220225014929.942444-2-wangyufen@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 25, 2022 at 09:49:26AM +0800, Wang Yufen wrote:
-> If tcp_bpf_sendmsg is running during a tear down operation we may enqueue
-> data on the ingress msg queue while tear down is trying to free it.
-> 
->  sk1 (redirect sk2)                         sk2
->  -------------------                      ---------------
-> tcp_bpf_sendmsg()
->  tcp_bpf_send_verdict()
->   tcp_bpf_sendmsg_redir()
->    bpf_tcp_ingress()
->                                           sock_map_close()
->                                            lock_sock()
->     lock_sock() ... blocking
->                                            sk_psock_stop
->                                             sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
->                                            release_sock(sk);
->     lock_sock()	
->     sk_mem_charge()
->     get_page()
->     sk_psock_queue_msg()
->      sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED);
->       drop_sk_msg()
->     release_sock()
-> 
-> While drop_sk_msg(), the msg has charged memory form sk by sk_mem_charge
-> and has sg pages need to put. To fix we use sk_msg_free() and then kfee()
-> msg.
-> 
+This is a respin of a fix for error reporting in sock_fields test.
 
-What about the other code path? That is, sk_psock_skb_ingress_enqueue().
-I don't see skmsg is charged there.
+Fixing the error reporting has uncovered bugs in the recently added test for
+sk->dst_port access. Series now includes patches that address the broken test.
 
-Thanks.
+The series has been tested on x86_64 and s390.
+
+v1 -> v2:
+- Limit read_sk_dst_port only to client traffic (patch 2)
+- Make read_sk_dst_port pass on litte- and big-endian (patch 3)
+
+v1: https://lore.kernel.org/bpf/20220225184130.483208-1-jakub@cloudflare.com/
+
+Jakub Sitnicki (3):
+  selftests/bpf: Fix error reporting from sock_fields programs
+  selftests/bpf: Check dst_port only on the client socket
+  selftests/bpf: Fix test for 4-byte load from dst_port on big-endian
+
+ .../selftests/bpf/progs/test_sock_fields.c    | 30 ++++++++++++++++---
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+
+-- 
+2.35.1
+
