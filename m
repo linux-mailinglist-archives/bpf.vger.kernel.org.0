@@ -2,69 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB954C58FD
-	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 03:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B7C4C5918
+	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 04:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbiB0Cpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Feb 2022 21:45:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
+        id S229767AbiB0DJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 22:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbiB0Cpg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Feb 2022 21:45:36 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B361C885A
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 18:45:01 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id cp23-20020a17090afb9700b001bbfe0fbe94so8301914pjb.3
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 18:45:01 -0800 (PST)
+        with ESMTP id S229700AbiB0DJd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 22:09:33 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18462067DA;
+        Sat, 26 Feb 2022 19:08:58 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v4so8156989pjh.2;
+        Sat, 26 Feb 2022 19:08:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=w8TCfKy8ImOuaWfyMUjdPIyIIUebuwNJCwVjU5dy5qs=;
-        b=EeTNYC39QF06psWqna4paPelQwMD++57eiK9hRjbNQwxCWNltz0JC5VhhqdCZAmlG9
-         V5M7krMo+gmOt02k2uUJChBUj7NkCW7p8SlcCHTy2d9z/SGeE6SqsiOmwMe1rpCumgVQ
-         9fMwc18cyEMYNIKL41b87l8SOMtAiTt6nQM4sZ+8AOmD1Uailft0tF4+ckgs1lskwsj8
-         CPV2ZWhSvFbyhihNNUJUKvixt6YZYnc4kT9ME2xMf1XDJmLmwbEwLj1aTP29jT+XKDZ4
-         H2SI2hU0TTxPjsJ5Q/1/ARMH2JFsXTZ9R4Tk/1udwqWXvvubt/w6lMhLS8jqfX9x2Zyh
-         kyHA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=giHWKE8EoWJJI1S11W7iOOUvnVnZvXZu5hWofARFx2Y=;
+        b=j6cT5EnZe/7B6jMRmWcxOE2JWOvjuZt+gEBQf814P9BAGv9WMXpAeYl5I4Wy/qCqF8
+         7dl3Kw1TfGbnRpU3y9uVaLcxvrJoaNXBOuC997NBJj9bdaqqqWNA/OmD3EdJfAquXz7v
+         T4MLgZRfomCEX6vuowCWQqS/zb3Xj+TTnY/nbWB1cBS4LMaFr2D+V5xviTdexUN3rvjx
+         Pv0TRbVQxijF1wlvwjlEPu9ip1CUbifXz3uaSAefeFBLYwHygZmUZ/zsuEfeecQhc5e5
+         WJMdbNdzwaqxTn346ivdTvz2oTml8IIN9iNPf0y8RRw8ftIQZDC3mDXESW+xkIxbAnxH
+         OWsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=w8TCfKy8ImOuaWfyMUjdPIyIIUebuwNJCwVjU5dy5qs=;
-        b=GxPz6CNYuc5w9FrDkgiQZp3uZxHSnoHS8IvOyAKlfaQkd0M8/RQJ5ZoVYaPk5keihH
-         Lta+1p7/emSifeiwjCGixcOEd3pLvEn5H6q5GiBaX4wWYz0vii2aXudcFQxl1UvaXzbn
-         q8/chr8WqH3PH++RFkG1risOHDFKK3LK3r6ICLMGyF2KEGK6EbbxhltrJla2Z2erxJR8
-         jsKifbVEZluSboPeYTdZtTudVg46sMbIAK+PiIss3qCOScEgnhrrQxov+bz5awVBbTUA
-         mi1fFXoHIw21IlsbR1/Umc+329fMCYc7aPvKEFTaCwbh9+PX2yoTldGPJwV07+5BZgEK
-         Folg==
-X-Gm-Message-State: AOAM532nN2Hyjyx9kn1NBerfYsYcAP71JIpcUJWGLCeni+och3RlaG1u
-        BVFHr93wgDjFKdQEq2ktpfQ=
-X-Google-Smtp-Source: ABdhPJyOfKM8P6LZUGRDNsFRVkcXrkjDfW3FclV3YF36F8grOXqVGNMtzxS/ffcDV9j6l2k2LgpdVQ==
-X-Received: by 2002:a17:902:d4cc:b0:151:3857:817b with SMTP id o12-20020a170902d4cc00b001513857817bmr8765889plg.139.1645929900365;
-        Sat, 26 Feb 2022 18:45:00 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6566])
-        by smtp.gmail.com with ESMTPSA id pg14-20020a17090b1e0e00b001bbadc2205dsm6760282pjb.20.2022.02.26.18.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Feb 2022 18:44:59 -0800 (PST)
-Date:   Sat, 26 Feb 2022 18:44:57 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] bpf: Fix bpf_sk_lookup.remote_port on
- big-endian
-Message-ID: <20220227024457.rv5zei6qk4d6wy6d@ast-mbp.dhcp.thefacebook.com>
-References: <20220222182559.2865596-1-iii@linux.ibm.com>
- <20220222182559.2865596-3-iii@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=giHWKE8EoWJJI1S11W7iOOUvnVnZvXZu5hWofARFx2Y=;
+        b=GRe7QDgF5Hu+PY72NHYG+rC5CA5HXR3wnNbZOe87FZgkGitjiZtuLu+XTXoEC1eR3Y
+         S9lbIMUYvY/8XH6jBtPtr1zp0SFwcbuw7M5YQuzEJ9uEp96Y0WBYIwvUyC6EFMS6uo7S
+         D7rKtde/iQIa6Ml9ZNebrPE1+bP19LljlrAe0UArq9VaYZmbe6w+gwrEmM5nz9Kd6Z5G
+         hEXBJDpIRxqFeyhQ/rQMCyfYW4blowwNo2ghvGliSM9dffQBHBwwYcO3lCHTQvCE7/0j
+         FE79AThNBnLKT+wrtLjlV2LVGN+fhJhjqSJJb0ZWsv58Ma+by8aJNgjKZhZVuK7QHViH
+         VhHw==
+X-Gm-Message-State: AOAM5325FIR1FM0XXg/wIOQSrksQZPHxO11NiwvONLA8byVi9CG1O0KI
+        FYTXRq4rB4+p1LZ+C+CdvGF74ntm8AVRyBKiURs=
+X-Google-Smtp-Source: ABdhPJykP3VSUiwfYWVT7Lr+E/M8eGbSawuOMKCkxunCtEhAHbAxbDIRC8/gydxyzU33n6N/McxnBRi0WW7xbK2Zcgs=
+X-Received: by 2002:a17:903:32c1:b0:14f:8ba2:2326 with SMTP id
+ i1-20020a17090332c100b0014f8ba22326mr14487381plr.34.1645931338097; Sat, 26
+ Feb 2022 19:08:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220222182559.2865596-3-iii@linux.ibm.com>
+References: <20220214111337.3539-1-houtao1@huawei.com> <20220217035041.axk46atz7j4svi2k@ast-mbp.dhcp.thefacebook.com>
+ <3b968224-c086-a8b6-159a-55db7ec46011@huawei.com> <CAADnVQ+z75P0sryoGhgUwrHRMr2Jw=eFO4eCRe0Ume554si9Zg@mail.gmail.com>
+ <ecc04a70-0b57-62ef-ab52-e7169845d789@huawei.com>
+In-Reply-To: <ecc04a70-0b57-62ef-ab52-e7169845d789@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Sat, 26 Feb 2022 19:08:47 -0800
+Message-ID: <CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next v2 0/3] bpf: support string key in htab
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Joanne Koong <joannekoong@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FROM_FMBLA_NEWDOM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,51 +72,41 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 07:25:58PM +0100, Ilya Leoshkevich wrote:
-> On big-endian, the port is available in the second __u16, not the first
-> one. Therefore, provide a big-endian-specific definition that reflects
-> that. Also, define remote_port_compat in order to have nicer
-> architecture-agnostic code in the verifier and in tests.
-> 
-> Fixes: 9a69e2b385f4 ("bpf: Make remote_port field in struct bpf_sk_lookup 16-bit wide")
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
->  include/uapi/linux/bpf.h       | 17 +++++++++++++++--
->  net/core/filter.c              |  5 ++---
->  tools/include/uapi/linux/bpf.h | 17 +++++++++++++++--
->  3 files changed, 32 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index afe3d0d7f5f2..7b0e5efa58e0 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -10,6 +10,7 @@
->  
->  #include <linux/types.h>
->  #include <linux/bpf_common.h>
-> +#include <asm/byteorder.h>
->  
->  /* Extended instruction set based on top of classic BPF */
->  
-> @@ -6453,8 +6454,20 @@ struct bpf_sk_lookup {
->  	__u32 protocol;		/* IP protocol (IPPROTO_TCP, IPPROTO_UDP) */
->  	__u32 remote_ip4;	/* Network byte order */
->  	__u32 remote_ip6[4];	/* Network byte order */
-> -	__be16 remote_port;	/* Network byte order */
-> -	__u16 :16;		/* Zero padding */
-> +	union {
-> +		struct {
-> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
-> +			__be16 remote_port;	/* Network byte order */
-> +			__u16 :16;		/* Zero padding */
-> +#elif defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
-> +			__u16 :16;		/* Zero padding */
-> +			__be16 remote_port;	/* Network byte order */
-> +#else
-> +#error unspecified endianness
-> +#endif
-> +		};
-> +		__u32 remote_port_compat;
+On Sat, Feb 26, 2022 at 4:16 AM Hou Tao <houtao1@huawei.com> wrote:
+>
+> For now, our case is a write-once case, so only lookup is considered.
+> When data set is bigger than 128KB, hash table has better lookup performance as
+> show below:
+>
+> | lookup all elem (ms) | 4K  | 16K  | 64K  | 128K  | 256K  | 512K  | 1M     | 2M     | 4M      | 7M      |
+> | -------------------- | --- | ---- | ---- | ----- | ----- | ----- | ------ | ------ | ------- | ------- |
+> | hash                 | 3.3 | 12.7 | 47   | 90.6  | 185.9 | 382.3 | 788.5  | 1622.4 | 3296    | 6248.7  |
+> | tries                | 2   | 10   | 45.9 | 111.6 | 274.6 | 688.9 | 1747.2 | 4394.5 | 11229.8 | 27148.8 |
+> | tst                  | 3.8 | 16.4 | 61.3 | 139.1 | 313.9 | 707.3 | 1641.3 | 3856.1 | 9002.3  | 19793.8 |
 
-Sorry this hack is not an option.
-Don't have any suggestions at this point. Pls come up with something else.
+Yeah. It's hard to beat hash lookup when it's hitting a good case of O(1),
+but what are the chances that it stays this way?
+Are you saying you can size up the table and populate to good % just once?
+
+If so it's probably better to replace all strings with something
+like a good hash.
+7M elements is not a lot. A hash producing 8 or 16 bytes will have close
+to zero false positives.
+And in case of "populate the table once" the hash seed can be
+precomputed and adjusted, so you can guarantee zero collisions
+for 7M strings. While lookup part can still have 0.001% chance
+of a false positive there could be a way to deal with it after lookup.
+
+> Ternary search tree always has better memory usage:
+>
+> | memory usage (MB) | 4K  | 16K | 64K  | 128K | 256K | 512K | 1M   | 2M    | 4M    | 7M     |
+> | ----------------- | --- | --- | ---- | ---- | ---- | ---- | ---- | ----- | ----- | ------ |
+> | hash              | 2.2 | 8.9 | 35.5 | 71   | 142  | 284  | 568  | 1136  | 2272  | 4302.5 |
+> | tries             | 2.1 | 8.5 | 34   | 68   | 136  | 272  | 544  | 1088  | 2176  | 4106.9 |
+> | tst               | 0.5 | 1.6 | 5.6  | 10.6 | 20.3 | 38.6 | 73.1 | 138.6 | 264.6 | 479.5  |
+>
+
+Ternary search tree looks amazing.
+Since you have a prototype can you wrap it into a new type of bpf map
+and post the patches?
+I wonder what data structures look like to achieve such memory efficiency.
