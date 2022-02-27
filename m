@@ -2,140 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 977BB4C5DDF
-	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 18:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE47F4C5E66
+	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 20:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbiB0Rrx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Feb 2022 12:47:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S229794AbiB0TVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Feb 2022 14:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229932AbiB0Rrw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Feb 2022 12:47:52 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF1D192B8;
-        Sun, 27 Feb 2022 09:47:15 -0800 (PST)
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21RFhvWH024416;
-        Sun, 27 Feb 2022 17:46:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=1QT+MIO5sQ0+JqoR5oSJ3DCQEEiRdGdRmp8VLGdPWfY=;
- b=TXdyGagn3Hf+0Sh+VqIUC5zyVVR6UFq80qAi/s4LALIjFggi5sMFOqzMYL94MPrUgQlr
- 6uBPZXhdOEI1/A9z+raQTshHas3+aFpHrZspt621RTAAGadagwavc69TQKeNrN7dDLnY
- 3qfclnz64nk69u8hVnHNvz4mAZsRHAylUhunkb0DNdee/xhuIwTFexSd9xZ++NvoYcHm
- l2es5TZJHzvxfdIuvUpKqilRWIPAbo5V2emias6B44l4MU2cvjgy/rKLbsn7SPb0yRdW
- wJAKIEApKK+3xzmkBTZqhKbY1/qPFGfH9ZgtezTp28Mz2YTZWPJfRFK9YGeM9ZkMiqcr zg== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3egc6u9ffy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Feb 2022 17:46:55 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21RHgqKh008397;
-        Sun, 27 Feb 2022 17:46:53 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma01fra.de.ibm.com with ESMTP id 3efbu8vr5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Feb 2022 17:46:53 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21RHkpUP45220184
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 27 Feb 2022 17:46:51 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E491811C05B;
-        Sun, 27 Feb 2022 17:46:50 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA03411C050;
-        Sun, 27 Feb 2022 17:46:48 +0000 (GMT)
-Received: from sig-9-65-89-64.ibm.com (unknown [9.65.89.64])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 27 Feb 2022 17:46:48 +0000 (GMT)
-Message-ID: <8b140d740ccb813a3fabacd928a5dc3499f145db.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 0/6] bpf-lsm: Extend interoperability with IMA
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Sun, 27 Feb 2022 12:46:48 -0500
-In-Reply-To: <YhnfzipoU1NbkjQQ@kroah.com>
-References: <20220215124042.186506-1-roberto.sassu@huawei.com>
-         <408a96085814b2578486b2859e63ff906f5e5876.camel@linux.ibm.com>
-         <5117c79227ce4b9d97e193fd8fb59ba2@huawei.com>
-         <223d9eedc03f68cfa4f1624c4673e844e29da7d5.camel@linux.ibm.com>
-         <YhnfzipoU1NbkjQQ@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: E-5Jt3XnaWTAon6wvc8bbVIw6kQEakXm
-X-Proofpoint-GUID: E-5Jt3XnaWTAon6wvc8bbVIw6kQEakXm
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        with ESMTP id S231461AbiB0TVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Feb 2022 14:21:51 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE015AA4F;
+        Sun, 27 Feb 2022 11:21:14 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id n185so8855401qke.5;
+        Sun, 27 Feb 2022 11:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2kTkSUUIcLs9zQI8iWiQZP7AOGs73ov/WhJ7PVeoNzU=;
+        b=Wh3kyVlXWHtCXU3c54GBRjurnMkqgcRqdeEgNQjnH7f72dJcNVr/vFJ62OKGxvwsmI
+         CyW3OXuV1FtX4CGJ9M1xgrBNZJkwEkTqXmN6w9+ib2DOQC2tnxYqBuxRoq6gi/7+fsnd
+         0WsEQTqFfUU0i7t33IxuxJ9qead0vbiX/VNQvzZrzPh3vl86LfwNKngGr6NK8d/PqWGz
+         SmrO1D7UA5dBB2JuBHir3EXqilqWyhqSxW/1C90TIYvd856pzM7XIq6YFgmT4MpD0zwB
+         2Gu03CDLs5WJ329dr8xHIlTuNi1NHWlleYjE9Pc/Is840nYzBuVUD98+CrNtctVvk46D
+         mpxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2kTkSUUIcLs9zQI8iWiQZP7AOGs73ov/WhJ7PVeoNzU=;
+        b=KWHkHTIHFLiblB+bUxIFMYzVtp8xXOe+FFMqzmw9wofOyJpKxO1AykTZMYdYFWgTaR
+         f2G/npNIPQXAWobNr4+fqGcqsBRcAnJZ7yHSZTGK61Qrz10lK7o5ZKj1dRwClpt1+E9a
+         5hm6W7fO+fFZdMGShlkRnzoQO66Qu+EurfIq7mn9B9nNRoYC18iR/CAz9/EwaUsStwI4
+         9+UtUa55A3U93Q5kuTQ5HsRha+ekOg5mKhQxyFqWcWh3GK3sBDwyctAxRYvfcxgFHdZo
+         DhWsKvXSWK7oXuHBRZRRRmFmfGDOHtyeHLWK/qWSeG2HwLrkst58T0ESfei+rXbrIxkd
+         rQ/g==
+X-Gm-Message-State: AOAM530k1ZxfPaCLXYbmDgGyWnbO2orSKiT6g+ronBFUBopkecZzvQYr
+        26qMzhU/aAKIqw9qU11cHjE=
+X-Google-Smtp-Source: ABdhPJwdIw9DshOjZbeeTS1xcpuDbjWJT+MHr+t3bOAgyyxrKn1mc7Af5OOz+zCqKiBfvQjrBOslJA==
+X-Received: by 2002:a37:688c:0:b0:507:db8b:b71a with SMTP id d134-20020a37688c000000b00507db8bb71amr9496711qkc.396.1645989673576;
+        Sun, 27 Feb 2022 11:21:13 -0800 (PST)
+Received: from localhost ([2600:1700:65a0:ab60:ee9e:a12e:deed:13de])
+        by smtp.gmail.com with ESMTPSA id 26-20020a05620a041a00b0062aae550fa2sm4115804qkp.81.2022.02.27.11.21.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Feb 2022 11:21:13 -0800 (PST)
+Date:   Sun, 27 Feb 2022 11:21:12 -0800
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
+        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/4] bpf, sockmap: Fix memleak in
+ sk_psock_queue_msg
+Message-ID: <YhvPKB8O7ml5JSHQ@pop-os.localdomain>
+References: <20220225014929.942444-1-wangyufen@huawei.com>
+ <20220225014929.942444-2-wangyufen@huawei.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-27_07,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- adultscore=0 suspectscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202270122
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220225014929.942444-2-wangyufen@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2022-02-26 at 09:07 +0100, Greg Kroah-Hartman wrote:
-> On Fri, Feb 25, 2022 at 02:11:04PM -0500, Mimi Zohar wrote:
-> > On Fri, 2022-02-25 at 08:41 +0000, Roberto Sassu wrote:
-> > > > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > > > Sent: Friday, February 25, 2022 1:22 AM
-> > > > Hi Roberto,
-> > > > 
-> > > > On Tue, 2022-02-15 at 13:40 +0100, Roberto Sassu wrote:
-> > > > > Extend the interoperability with IMA, to give wider flexibility for the
-> > > > > implementation of integrity-focused LSMs based on eBPF.
-> > > > 
-> > > > I've previously requested adding eBPF module measurements and signature
-> > > > verification support in IMA.  There seemed to be some interest, but
-> > > > nothing has been posted.
-> > > 
-> > > Hi Mimi
-> > > 
-> > > for my use case, DIGLIM eBPF, IMA integrity verification is
-> > > needed until the binary carrying the eBPF program is executed
-> > > as the init process. I've been thinking to use an appended
-> > > signature to overcome the limitation of lack of xattrs in the
-> > > initial ram disk.
-> > 
-> > I would still like to see xattrs supported in the initial ram disk. 
-> > Assuming you're still interested in pursuing it, someone would need to
-> > review and upstream it.  Greg?
+On Fri, Feb 25, 2022 at 09:49:26AM +0800, Wang Yufen wrote:
+> If tcp_bpf_sendmsg is running during a tear down operation we may enqueue
+> data on the ingress msg queue while tear down is trying to free it.
 > 
-> Me?  How about the filesystem maintainers and developers?  :)
+>  sk1 (redirect sk2)                         sk2
+>  -------------------                      ---------------
+> tcp_bpf_sendmsg()
+>  tcp_bpf_send_verdict()
+>   tcp_bpf_sendmsg_redir()
+>    bpf_tcp_ingress()
+>                                           sock_map_close()
+>                                            lock_sock()
+>     lock_sock() ... blocking
+>                                            sk_psock_stop
+>                                             sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
+>                                            release_sock(sk);
+>     lock_sock()	
+>     sk_mem_charge()
+>     get_page()
+>     sk_psock_queue_msg()
+>      sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED);
+>       drop_sk_msg()
+>     release_sock()
 > 
-> There's a reason we never added xattrs support to ram disks, but I can't
-> remember why...
+> While drop_sk_msg(), the msg has charged memory form sk by sk_mem_charge
+> and has sg pages need to put. To fix we use sk_msg_free() and then kfee()
+> msg.
+> 
 
-CPIO 'newc' format doesn't support xattrs.
+What about the other code path? That is, sk_psock_skb_ingress_enqueue().
+I don't see skmsg is charged there.
 
-thanks,
-
-Mimi
-
+Thanks.
