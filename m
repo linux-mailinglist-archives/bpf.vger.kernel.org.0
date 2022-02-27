@@ -2,217 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9C74C584D
-	for <lists+bpf@lfdr.de>; Sat, 26 Feb 2022 22:34:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CB954C58FD
+	for <lists+bpf@lfdr.de>; Sun, 27 Feb 2022 03:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbiBZVcn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Feb 2022 16:32:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39802 "EHLO
+        id S229700AbiB0Cpg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 26 Feb 2022 21:45:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbiBZVcm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 26 Feb 2022 16:32:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29A32583AD
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 13:32:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1645911126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nK0PVAC4y+xiFwMO8Vk7u/GCZxcWQNhJP8dZSYh/Vc4=;
-        b=RxV5AUVhKwz0FJ0co5aDVcNc/iUW0Vtd0V+WsxcA5/JzqIvCQIcOAQUy178mWiswx7X4GX
-        3Ad7AE5ehGiJnxAdMeWjTHQIILhdoC2GPsNubH7EZFbBr6ViPzdiCNaqtM5dniGQepEPYI
-        qjOTkBum/HTw05bmGpItdmaocQZSU6w=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-588-pZ7lq5afM2SVgO2irEdqBA-1; Sat, 26 Feb 2022 16:32:04 -0500
-X-MC-Unique: pZ7lq5afM2SVgO2irEdqBA-1
-Received: by mail-ed1-f72.google.com with SMTP id d11-20020a50c88b000000b00410ba7a14acso3391248edh.6
-        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 13:32:04 -0800 (PST)
+        with ESMTP id S229521AbiB0Cpg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 26 Feb 2022 21:45:36 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B361C885A
+        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 18:45:01 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id cp23-20020a17090afb9700b001bbfe0fbe94so8301914pjb.3
+        for <bpf@vger.kernel.org>; Sat, 26 Feb 2022 18:45:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w8TCfKy8ImOuaWfyMUjdPIyIIUebuwNJCwVjU5dy5qs=;
+        b=EeTNYC39QF06psWqna4paPelQwMD++57eiK9hRjbNQwxCWNltz0JC5VhhqdCZAmlG9
+         V5M7krMo+gmOt02k2uUJChBUj7NkCW7p8SlcCHTy2d9z/SGeE6SqsiOmwMe1rpCumgVQ
+         9fMwc18cyEMYNIKL41b87l8SOMtAiTt6nQM4sZ+8AOmD1Uailft0tF4+ckgs1lskwsj8
+         CPV2ZWhSvFbyhihNNUJUKvixt6YZYnc4kT9ME2xMf1XDJmLmwbEwLj1aTP29jT+XKDZ4
+         H2SI2hU0TTxPjsJ5Q/1/ARMH2JFsXTZ9R4Tk/1udwqWXvvubt/w6lMhLS8jqfX9x2Zyh
+         kyHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=nK0PVAC4y+xiFwMO8Vk7u/GCZxcWQNhJP8dZSYh/Vc4=;
-        b=Nhi+mZtx/AVKeydvy/J0RAUIwDHjQzCCnsNEYbQPS+PZk7MjKerPeIdF5g9CDpcQ6a
-         nBkypu6comV1gyoiWQKobU8lehe3vILkNIxSB1e8k0mbhtAhrHOj06AXBuGF7wgF/4Pc
-         +RUJOIjJYl1q+TdE7qMgwy0oy8va4EpbYGxDklk6DGUHABmd3708cwcFDkbFg1ytvXCR
-         BjG5Xv379sZYhrx+cLTeg1V8yZ8nvyM6jlhnY8aJNG2HjqqJPmyy96pQeTwUXvmeKeVG
-         ALkhPTWxJ/pLhFkmMFqPKvcYUBmFSS0rl9Ch9k5NJLdaDUhznmDYb0vd7iPxhReVJ/Ty
-         II+g==
-X-Gm-Message-State: AOAM532CUXREuyJsM0Hn40mAeEC0OpMeyEwtD1Ajt3bWa0EEG77JGfs7
-        B5ttTm1LYPu7M3J0SKSd6jT518BEf324YhLv17sEP1XUXlr7EzZZIEHtinQPqHIunxApkRN1TqY
-        P0h3DdwOSYilv
-X-Received: by 2002:a17:906:4ad6:b0:6b8:33e5:c3a1 with SMTP id u22-20020a1709064ad600b006b833e5c3a1mr10400084ejt.472.1645911123553;
-        Sat, 26 Feb 2022 13:32:03 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxEljZLRVtBTXEAe1NQIb725EdQdUWhZA+Ki0dAr06/KvUxNPZPmGrD2t5VyS5x2NAGeKUdiw==
-X-Received: by 2002:a17:906:4ad6:b0:6b8:33e5:c3a1 with SMTP id u22-20020a1709064ad600b006b833e5c3a1mr10400062ejt.472.1645911123129;
-        Sat, 26 Feb 2022 13:32:03 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id u10-20020a50d94a000000b004131aa2525esm3471782edj.49.2022.02.26.13.32.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w8TCfKy8ImOuaWfyMUjdPIyIIUebuwNJCwVjU5dy5qs=;
+        b=GxPz6CNYuc5w9FrDkgiQZp3uZxHSnoHS8IvOyAKlfaQkd0M8/RQJ5ZoVYaPk5keihH
+         Lta+1p7/emSifeiwjCGixcOEd3pLvEn5H6q5GiBaX4wWYz0vii2aXudcFQxl1UvaXzbn
+         q8/chr8WqH3PH++RFkG1risOHDFKK3LK3r6ICLMGyF2KEGK6EbbxhltrJla2Z2erxJR8
+         jsKifbVEZluSboPeYTdZtTudVg46sMbIAK+PiIss3qCOScEgnhrrQxov+bz5awVBbTUA
+         mi1fFXoHIw21IlsbR1/Umc+329fMCYc7aPvKEFTaCwbh9+PX2yoTldGPJwV07+5BZgEK
+         Folg==
+X-Gm-Message-State: AOAM532nN2Hyjyx9kn1NBerfYsYcAP71JIpcUJWGLCeni+och3RlaG1u
+        BVFHr93wgDjFKdQEq2ktpfQ=
+X-Google-Smtp-Source: ABdhPJyOfKM8P6LZUGRDNsFRVkcXrkjDfW3FclV3YF36F8grOXqVGNMtzxS/ffcDV9j6l2k2LgpdVQ==
+X-Received: by 2002:a17:902:d4cc:b0:151:3857:817b with SMTP id o12-20020a170902d4cc00b001513857817bmr8765889plg.139.1645929900365;
+        Sat, 26 Feb 2022 18:45:00 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:6566])
+        by smtp.gmail.com with ESMTPSA id pg14-20020a17090b1e0e00b001bbadc2205dsm6760282pjb.20.2022.02.26.18.44.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Feb 2022 13:32:02 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id EBEB2130DD6; Sat, 26 Feb 2022 22:32:00 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Sat, 26 Feb 2022 18:44:59 -0800 (PST)
+Date:   Sat, 26 Feb 2022 18:44:57 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 5/5] selftests/bpf: Add selftest for
- XDP_REDIRECT in BPF_PROG_RUN
-In-Reply-To: <20220224011949.7mt4pluj4apqr44h@kafai-mbp.dhcp.thefacebook.com>
-References: <20220218175029.330224-1-toke@redhat.com>
- <20220218175029.330224-6-toke@redhat.com>
- <20220224011949.7mt4pluj4apqr44h@kafai-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Sat, 26 Feb 2022 22:32:00 +0100
-Message-ID: <87a6eduxf3.fsf@toke.dk>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 2/3] bpf: Fix bpf_sk_lookup.remote_port on
+ big-endian
+Message-ID: <20220227024457.rv5zei6qk4d6wy6d@ast-mbp.dhcp.thefacebook.com>
+References: <20220222182559.2865596-1-iii@linux.ibm.com>
+ <20220222182559.2865596-3-iii@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220222182559.2865596-3-iii@linux.ibm.com>
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FROM_FMBLA_NEWDOM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+On Tue, Feb 22, 2022 at 07:25:58PM +0100, Ilya Leoshkevich wrote:
+> On big-endian, the port is available in the second __u16, not the first
+> one. Therefore, provide a big-endian-specific definition that reflects
+> that. Also, define remote_port_compat in order to have nicer
+> architecture-agnostic code in the verifier and in tests.
+> 
+> Fixes: 9a69e2b385f4 ("bpf: Make remote_port field in struct bpf_sk_lookup 16-bit wide")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  include/uapi/linux/bpf.h       | 17 +++++++++++++++--
+>  net/core/filter.c              |  5 ++---
+>  tools/include/uapi/linux/bpf.h | 17 +++++++++++++++--
+>  3 files changed, 32 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index afe3d0d7f5f2..7b0e5efa58e0 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -10,6 +10,7 @@
+>  
+>  #include <linux/types.h>
+>  #include <linux/bpf_common.h>
+> +#include <asm/byteorder.h>
+>  
+>  /* Extended instruction set based on top of classic BPF */
+>  
+> @@ -6453,8 +6454,20 @@ struct bpf_sk_lookup {
+>  	__u32 protocol;		/* IP protocol (IPPROTO_TCP, IPPROTO_UDP) */
+>  	__u32 remote_ip4;	/* Network byte order */
+>  	__u32 remote_ip6[4];	/* Network byte order */
+> -	__be16 remote_port;	/* Network byte order */
+> -	__u16 :16;		/* Zero padding */
+> +	union {
+> +		struct {
+> +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+> +			__be16 remote_port;	/* Network byte order */
+> +			__u16 :16;		/* Zero padding */
+> +#elif defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+> +			__u16 :16;		/* Zero padding */
+> +			__be16 remote_port;	/* Network byte order */
+> +#else
+> +#error unspecified endianness
+> +#endif
+> +		};
+> +		__u32 remote_port_compat;
 
-> On Fri, Feb 18, 2022 at 06:50:29PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
-> [ .. ]
->
->> diff --git a/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c b/=
-tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->> new file mode 100644
->> index 000000000000..af3cffccc794
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
->> @@ -0,0 +1,85 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_helpers.h>
->> +
->> +#define ETH_ALEN 6
->> +const volatile int ifindex_out;
->> +const volatile int ifindex_in;
->> +const volatile __u8 expect_dst[ETH_ALEN];
->> +volatile int pkts_seen_xdp =3D 0;
->> +volatile int pkts_seen_tc =3D 0;
->> +volatile int retcode =3D XDP_REDIRECT;
->> +
->> +SEC("xdp")
->> +int xdp_redirect(struct xdp_md *xdp)
->> +{
->> +	__u32 *metadata =3D (void *)(long)xdp->data_meta;
->> +	void *data =3D (void *)(long)xdp->data;
->> +	int ret =3D retcode;
->> +
->> +	if (xdp->ingress_ifindex !=3D ifindex_in)
->> +		return XDP_ABORTED;
->> +
->> +	if (metadata + 1 > data)
->> +		return XDP_ABORTED;
->> +
->> +	if (*metadata !=3D 0x42)
->> +		return XDP_ABORTED;
->> +
->> +	if (bpf_xdp_adjust_meta(xdp, 4))
->> +		return XDP_ABORTED;
->> +
->> +	if (retcode > XDP_PASS)
->> +		retcode--;
->> +
->> +	if (ret =3D=3D XDP_REDIRECT)
->> +		return bpf_redirect(ifindex_out, 0);
->> +
->> +	return ret;
->> +}
->> +
->> +static bool check_pkt(void *data, void *data_end)
->> +{
->> +	struct ethhdr *eth =3D data;
->> +	struct ipv6hdr *iph =3D (void *)(eth + 1);
->> +	struct udphdr *udp =3D (void *)(iph + 1);
->> +	__u8 *payload =3D (void *)(udp + 1);
->> +
->> +	if (payload + 1 > data_end)
->> +		return false;
->> +
->> +	if (iph->nexthdr !=3D IPPROTO_UDP || *payload !=3D 0x42)
->> +		return false;
->> +
->> +	/* reset the payload so the same packet doesn't get counted twice when
->> +	 * it cycles back through the kernel path and out the dst veth
->> +	 */
->> +	*payload =3D 0;
->> +	return true;
->> +}
->> +
->> +SEC("xdp")
->> +int xdp_count_pkts(struct xdp_md *xdp)
->> +{
->> +	void *data =3D (void *)(long)xdp->data;
->> +	void *data_end =3D (void *)(long)xdp->data_end;
->> +
->> +	if (check_pkt(data, data_end))
->> +		pkts_seen_xdp++;
->> +
->> +	return XDP_PASS;
-> If it is XDP_DROP here (@veth-ingress), the packet will be put back to
-> the page pool with zero-ed payload and that will be closer to the real
-> scenario when xmit-ing out of a real NIC instead of veth? Just to
-> ensure I understand the recycling and pkt rewrite description in patch
-> 2 correctly because it seems the test always getting a data init-ed
-> page.
-
-Ah, yeah, good point, we do end up releasing all the pages on the other
-end of the veth, so they don't get recycled. I'll change to XDP_DROP the
-packets, and change the xdp_redirect() function to explicitly set the
-payload instead of expecting it to come from userspace.
-
-> Regarding to the tcp trafficgen in the xdptool repo,
-> do you have thoughts on how to handle retransmit (e.g. after seeing
-> SACK or dupack)?  Is it possible for the regular xdp receiver (i.e.
-> not test_run) to directly retransmit it after seeing SACK if it knows
-> the tcp payload?
-
-Hmm, that's an interesting idea. Yeah, I think it should be possible for
-the XDP program on the interface to reply with the missing packet
-directly: it can just resize the ACK coming in, rewrite the TCP header,
-fill it out with the payload, and return XDP_TX. However, this will
-obviously only work if every SACK can be fulfilled with a single
-re-transmission, which I don't think we can assume in the general case?
-So I think some more state needs to be kept; however, such direct reply
-hole-filling could potentially be a nice optimisation to have on top in
-any case, so thank you for the idea!
-
-> An off topic question, I expect the test_run approach is faster.
-> Mostly curious, do you have a rough guess on what may be the perf
-> difference with doing it in xsk?
-
-Good question. There certainly exists very high performance DPDK-based
-traffic generators; and AFAIK, XSK can more or less match DPDK
-performance in zero-copy mode, so in this case I think it should be
-possible to match the test_run in raw performance. Not sure about copy
-mode; and of course in both cases it comes with the usual limitation of
-having to dedicate a suitably configured NIC queue, whereas the
-in-kernel trafficgen can run without interfering with other traffic
-(except for taking up the link capacity, of course).
-
--Toke
-
+Sorry this hack is not an option.
+Don't have any suggestions at this point. Pls come up with something else.
