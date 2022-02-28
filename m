@@ -2,110 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3554C6E7A
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0E04C6E26
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235873AbiB1Nom (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 08:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44578 "EHLO
+        id S235376AbiB1N2k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 08:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234616AbiB1Nom (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 08:44:42 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB20941988
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 05:44:02 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id i11so21460902lfu.3
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 05:44:02 -0800 (PST)
+        with ESMTP id S236032AbiB1N2j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 08:28:39 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C286B30F6F;
+        Mon, 28 Feb 2022 05:28:00 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id q11so10707506pln.11;
+        Mon, 28 Feb 2022 05:28:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=nN0PVIst4nluPMs1rHztby7hTwBkYQGxOHSdFHHEa5I=;
-        b=ivIiwoggsHhoqPaJoV+GqNT2QGrhX8b+A8bPB6h2OM1DiQ13rFEWhV8iR5LrKoGIc1
-         5baplXD/TIyLSAGLgLqVRKOAwo7HfMLWhGRslCxE4FBBfyJ78H5EHiHw0Tu+C1oDc9Lx
-         +rliyUFqG8jdgSNTFp5yGrTD1E3XMqI+Mh9DM=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y1lfQkaMWFdWKl8tBqnI/TXOCG2pTT27XRwhXLuxq6k=;
+        b=AOGl3kXEr5wLLSx++P32sRbRmd3mcW6LtIDUENN/eveEgyrfi/v5AelyysX4lbBn5N
+         WPhdFkslH5lJwIm16GPhYrhymCV8ajEeo877j8SKQ5DcBwAdKpbYxpHSEY65/jcMRuCp
+         ATK18qik38Iggpo6jeWvvzcx9+lXn4QYumRL5i0UogAlQp2D7ug9ADScxFvF3fObdubG
+         7ZmlHVakD/Gi/PiBMuP6cnnV9PmSf71VwM2FGLVidjnCwhKXMq5v4XF5N1Vvv4G5BLVF
+         XBBZIJKasLp4askqQVDn+VAy17phnSJqY92JYiG8ZthysCfkWRbcyL1hOFxJNCUDWKHw
+         gH6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=nN0PVIst4nluPMs1rHztby7hTwBkYQGxOHSdFHHEa5I=;
-        b=gREbfG2eNq5yBswMsw+V1MIegOs6o/raKD1N5kuh7GeyILXzoDoZ/Ag+MaPCzLlSTt
-         E/5o1MTcLSdH0Kn7LYz1jq5wSsXX/YyHfT5L+Q1MOgIITqYhkro9xFYDIQZ/fBDJJnhh
-         g7i0vNRrMxKShvIAWfOx9wzLRwhbxAshU0zGxo5mz2WiZI7bzkubqrKpm5R4hequsV4Y
-         kyYmwRCHg8MxNW8K4oh1VIgWYZc2JrEleBYEdZwWjv62Q+tnw80bWbQzqT0UzWebem8y
-         67bG1Zu8P/xUF6kYryXTJt9R7If05+deu/Qqi+m6xdvFFObELU3EFicHWSVfnRn5Plgn
-         B05Q==
-X-Gm-Message-State: AOAM533ASi97yzhz7f8LI0JHW00meoiNybxhrWb7BQRkfbMqewIGq/xs
-        INWSwgatCMizVBnzNy61LUN97w==
-X-Google-Smtp-Source: ABdhPJyh0x0id6i2++t3+jAlusZcs4ppqOG0Gb3a7/ARGufN/hFwpWS1N12NZbklearM1VkX+XkmWg==
-X-Received: by 2002:a05:6512:3f0d:b0:443:5f35:6360 with SMTP id y13-20020a0565123f0d00b004435f356360mr12311512lfa.661.1646055841061;
-        Mon, 28 Feb 2022 05:44:01 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id l2-20020a2e99c2000000b002461413aa81sm1324781ljj.78.2022.02.28.05.44.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Feb 2022 05:44:00 -0800 (PST)
-References: <20220222182559.2865596-1-iii@linux.ibm.com>
- <20220222182559.2865596-3-iii@linux.ibm.com>
- <20220227024457.rv5zei6qk4d6wy6d@ast-mbp.dhcp.thefacebook.com>
- <87y21whwwl.fsf@cloudflare.com>
- <87d79308a2ffce76a805cc1e5f60d28bebc74239.camel@linux.ibm.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y1lfQkaMWFdWKl8tBqnI/TXOCG2pTT27XRwhXLuxq6k=;
+        b=AYoaeaoDmZA0Pb9o5Nbuaf7fKRrhIyJjdnPm5niMmKm0VJ4SjBSHlwRuTkoFk3OVDu
+         mh8Yp4X76+LGN+dxxRrPJ++ajyI5OtPR6ZFk7alu8W8SZb1DZfI2Ylhl2zF3tOwoM4CI
+         y1rzNOiQlmhz1x7s3lDPQiaNoBNyVOVk8wRB8KEluo+Ofae/sMx5PjMImPofgizRAkdQ
+         l3SNce6N7Ww0sF2lnrjwoxUuWwK0J6D1LcebBoVn36fl1rJrm5simcCntKdMq2xZrW9/
+         3gwe7GozpSC0VO/4RjAndkUDriEfX1RUI2etoNhP6YRJu5rNZfhnhWdQhzch+Gt6LvWO
+         oD6Q==
+X-Gm-Message-State: AOAM5314rXdG3EpfhkS1wf6bowHQl/c4AQOUsJLq/flb4SY/HDcB//L9
+        0aBaATvf3E65CZB6Sf4dhAbQG56Fu5Or2DCMtXOXSoG5b4o=
+X-Google-Smtp-Source: ABdhPJzu7wWsHJhfI60JHYyIhEtqGy54QKziY7rmxV8/+HA9syr0Sbr+ChrV/y5HvtKZAMtK0MAyfv8/FxMWwGDmwVc=
+X-Received: by 2002:a17:90a:b307:b0:1bd:37f3:f0fc with SMTP id
+ d7-20020a17090ab30700b001bd37f3f0fcmr7439953pjr.132.1646054880182; Mon, 28
+ Feb 2022 05:28:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20220228094552.10134-1-magnus.karlsson@gmail.com> <CAJ+HfNiMQOgnKfa2EtnazK8MuQx5zUtF8GzQjdo-kUAoDv+Z1A@mail.gmail.com>
+In-Reply-To: <CAJ+HfNiMQOgnKfa2EtnazK8MuQx5zUtF8GzQjdo-kUAoDv+Z1A@mail.gmail.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 28 Feb 2022 14:27:49 +0100
+Message-ID: <CAJ8uoz0NRRoviHd4tthsyMyAqw2FRUeWn17VP4k-7=9uJ3Kitw@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] xsk: fix race at socket teardown
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next 2/3] bpf: Fix bpf_sk_lookup.remote_port on
- big-endian
-Date:   Mon, 28 Feb 2022 14:26:23 +0100
-In-reply-to: <87d79308a2ffce76a805cc1e5f60d28bebc74239.camel@linux.ibm.com>
-Message-ID: <87tucjhzrz.fsf@cloudflare.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Netdev <netdev@vger.kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Elza Mathew <elza.mathew@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 11:19 AM +01, Ilya Leoshkevich wrote:
-> In order to resolve this inconsistency I've implemented patch 1 of this
-> series. With that, "sk->dst_port == bpf_htons(0xcafe)" starts to fail,
-> and that's where one needs something like this patch.
+On Mon, Feb 28, 2022 at 2:21 PM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
+>
+> On Mon, 28 Feb 2022 at 10:46, Magnus Karlsson <magnus.karlsson@gmail.com>=
+ wrote:
+> >
+> > From: Magnus Karlsson <magnus.karlsson@intel.com>
+> >
+> > Fix a race in the xsk socket teardown code that can lead to a null
+> > pointer dereference splat. The current xsk unbind code in
+> > xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
+> > xs->dev to NULL and then waits for any NAPI processing to terminate
+> > using synchronize_net(). After that, the release code starts to tear
+> > down the socket state and free allocated memory.
+> >
+> [...]
+> >
+> > v1 -> v2:
+> > * Naming xsk_zc_xmit() -> xsk_wakeup() [Maciej]
+> >
+>
+> Magnus,
+>
+> You forgot to include my ACK! So, again:
+>
+> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
-Truth be told I can't reproduce the said failure.
-I've extended the test with an additional check:
+Sorry for that Bj=C3=B6rn.
 
-   306          bool ok = sk->dst_port == bpf_htons(0xcafe);
-   307          if (!ok)
-   308                  RET_LOG();
-   309          if (!sk_dst_port__load_word(sk))
-   310                  RET_LOG();
+/Magnus
 
-... but it translates to the same BPF assembly as
-sk_dst_port__load_half. That is:
-
-; bool ok = sk->dst_port == bpf_htons(0xcafe);
-   9: (69) r1 = *(u16 *)(r6 +12)
-  10: (bc) w1 = w1
-; if (!ok)
-  11: (16) if w1 == 0xcafe goto pc+2
-  12: (b4) w1 = 308
-  13: (05) goto pc+14
-
-During the test I had patch 1 from this series applied on top of [1].
-The latter series should not matter, though, I didn't touch the access
-converter.
-
-Mind sharing what does the `bpftool prog objdump` output look like for
-the failing test on your side?
-
-[1] https://lore.kernel.org/bpf/20220227202757.519015-1-jakub@cloudflare.com/
-
+>
+> Cheers,
+> Bj=C3=B6rn
