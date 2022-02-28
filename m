@@ -2,84 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6835C4C732E
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 18:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC264C7356
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 18:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236739AbiB1ReA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 12:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S238137AbiB1Reg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 12:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238618AbiB1Rdl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 12:33:41 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C2091AD9;
-        Mon, 28 Feb 2022 09:30:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3822EB815BB;
-        Mon, 28 Feb 2022 17:30:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CC5EAC340F1;
-        Mon, 28 Feb 2022 17:30:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646069410;
-        bh=M6RlHK50m518zh9g/W6m7lS2gQjIJv2LEskTH0mM9A4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=F2eTdYUVmG31/oWZlEVR6gXLyzclsyvcR2PUlLFkN7iZzxE3QbmZO/Gcg1g+swIU5
-         d0e5yoDhn4ad7hqSTd7fro1hcZfi6DMKBQPEL59CECVw1ylQRqQ6vyi5zTX36emYfR
-         22IHZwHKBcJLc+zg7ypFFBpo/A8SoHloXkrW9JxHvkKfXjWrHem76fCB0Zn37m5QyQ
-         OPFK0IlBgzXjkx+gUcF3VqOfFNb+foT0jTloCo4LGGBfU+QO+NZBt+3A0EzYqHwr2R
-         G7nxeA+6VCl0z95O1INP1KgRvj9EtSVDQ4gMaQABqsL7I3odalR+8JzJAQ3ZsjI9xV
-         v3w0d8kO/ipLw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B30CAE5D087;
-        Mon, 28 Feb 2022 17:30:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S238871AbiB1Rd6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 12:33:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 28FC693994
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 09:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646069433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TBNyyVKFIgtXo2siONgO+K8rh6ETB7+JIbrxg9YBDkY=;
+        b=RDZg6FLdaLIpDOd+CDVdMEsTHyKOp276FRMvtUA75t+rQCb6a1tA74+LfJz8ygjmhVsGM6
+        Mh2lier5aB6ddsnIqSpirj5WPiF7a5dbJK9UjBuxHDdu7R7wjSjYj5AaN7NE3ZJZA8RF/Y
+        gQwHgSxgmjLTOVBbKAGjkVoZKUa1dxk=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-362-DuKdIjgrMvuRbxCiinvEPQ-1; Mon, 28 Feb 2022 12:30:31 -0500
+X-MC-Unique: DuKdIjgrMvuRbxCiinvEPQ-1
+Received: by mail-pl1-f200.google.com with SMTP id w13-20020a1709027b8d00b0014fb4f012d3so5099601pll.12
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 09:30:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TBNyyVKFIgtXo2siONgO+K8rh6ETB7+JIbrxg9YBDkY=;
+        b=QcwQxNqzjsdogPoKA+dSWHwC3J7yQm/TIDKVWXFRamSqjvaYTyLv4WvydqeqBUl6R4
+         W4nOtvaolWmiVgQsCM5brMdslGGbbzahoCc8qVNXPi1e+8byZZMGfYbjjKmIZA3jRARH
+         r9eKzo7CLEYCKpkzvbpW3y3pHr2z6Z74WxV4kxNnvScNQqT27wCQXDzsvwoLkjgjFDuh
+         tRgjg/gtt3LhD5STAgbLQswAZ4e/+G/TdrVcKdaaSMb41TX+UUQ+/mTypz31meJji1k0
+         1FHAWtHwQGL43GKLdXZB1Nr/MyDtfjFL3tBFhJOKgH0DE33wxUlZIVloTjU8QVuAVlw5
+         EHog==
+X-Gm-Message-State: AOAM530sBYteA0jxwY3Tdlm2DTEefm3f5VjLfjZuFrWQuZT6MMbnEUjV
+        tp2OpP5wWb1RxXlRGzkF7wY/jx48hSuN5rN7sj63s8JuJGP22sIfJA6Vh1bPCqUKPIG2RMhCvG/
+        x9Q4PNUJAbFgQ5Tu2GCI9QFcFAcbc
+X-Received: by 2002:a17:90a:560a:b0:1bc:72e7:3c13 with SMTP id r10-20020a17090a560a00b001bc72e73c13mr17481041pjf.246.1646069430787;
+        Mon, 28 Feb 2022 09:30:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw1v8+Lu0rP+9NAXHotlnTBxz36fDCgljyirfY6qlP//hmJIiUmPdBMWOJ0HtOZuZM/abGbibrD7d754N3pyLA=
+X-Received: by 2002:a17:90a:560a:b0:1bc:72e7:3c13 with SMTP id
+ r10-20020a17090a560a00b001bc72e73c13mr17481014pjf.246.1646069430520; Mon, 28
+ Feb 2022 09:30:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf, docs: add a missing colon in verifier.rst
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164606941072.17364.6616334283282888938.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Feb 2022 17:30:10 +0000
-References: <20220228080416.1689327-1-wanjiabing@vivo.com>
-In-Reply-To: <20220228080416.1689327-1-wanjiabing@vivo.com>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     corbet@lwn.net, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiabing.wan@qq.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220224110828.2168231-1-benjamin.tissoires@redhat.com>
+ <20220224110828.2168231-2-benjamin.tissoires@redhat.com> <YhdtKN7qodX7VDPV@kroah.com>
+In-Reply-To: <YhdtKN7qodX7VDPV@kroah.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Mon, 28 Feb 2022 18:30:19 +0100
+Message-ID: <CAO-hwJL73en_7thxM6Xt-RC2kqp=D8oyWuU_EL60hCsFCYPrsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/6] HID: initial BPF implementation
+To:     Greg KH <greg@kroah.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Thu, Feb 24, 2022 at 12:41 PM Greg KH <greg@kroah.com> wrote:
+>
+> On Thu, Feb 24, 2022 at 12:08:23PM +0100, Benjamin Tissoires wrote:
+> > index 000000000000..243ac45a253f
+> > --- /dev/null
+> > +++ b/include/uapi/linux/bpf_hid.h
+> > @@ -0,0 +1,39 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-or-later WITH Linux-syscall-note */
+> > +
+> > +/*
+> > + *  HID BPF public headers
+> > + *
+> > + *  Copyright (c) 2021 Benjamin Tissoires
+> > + */
+> > +
+> > +#ifndef _UAPI__LINUX_BPF_HID_H__
+> > +#define _UAPI__LINUX_BPF_HID_H__
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +#define HID_BPF_MAX_BUFFER_SIZE              16384           /* 16kb */
+> > +
+> > +struct hid_device;
+> > +
+> > +enum hid_bpf_event {
+> > +     HID_BPF_UNDEF = 0,
+> > +     HID_BPF_DEVICE_EVENT,
+> > +};
+> > +
+> > +/* type is HID_BPF_DEVICE_EVENT */
+> > +struct hid_bpf_ctx_device_event {
+> > +     __u8 data[HID_BPF_MAX_BUFFER_SIZE];
+> > +     unsigned long size;
+>
+> That's not a valid type to cross the user/kernel boundry, shouldn't it
+> be "__u64"?  But really, isn't __u32 enough here?
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Fixed locally with a __u16 instead. Will be present in v2.
 
-On Mon, 28 Feb 2022 16:04:16 +0800 you wrote:
-> Add a missing colon to fix the document style.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  Documentation/bpf/verifier.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - bpf, docs: add a missing colon in verifier.rst
-    https://git.kernel.org/bpf/bpf-next/c/43429ea74a12
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Cheers,
+Benjamin
 
