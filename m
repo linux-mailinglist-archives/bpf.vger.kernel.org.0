@@ -2,54 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9905E4C6E2F
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C25DE4C7008
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 15:50:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235607AbiB1Nbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 08:31:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60750 "EHLO
+        id S229926AbiB1Ouu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 09:50:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235283AbiB1Nbj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 08:31:39 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD95B32EE5;
-        Mon, 28 Feb 2022 05:31:00 -0800 (PST)
+        with ESMTP id S229842AbiB1Out (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 09:50:49 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419EB70CD8;
+        Mon, 28 Feb 2022 06:50:11 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6B369B80D90;
-        Mon, 28 Feb 2022 13:30:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 16CE9C340F0;
-        Mon, 28 Feb 2022 13:30:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D215260E73;
+        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C771C340F0;
+        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646055058;
-        bh=/VuYTTGgeEib3boM9Ub2hTNazbf2SqMji6n9B3orojI=;
+        s=k20201202; t=1646059810;
+        bh=cFBfY/fLFmtTsDUlYBq68VyDF1uktnmTFCrJLrn4gJw=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=RxTGsogK/V7McELULdz3MvlwygpAWPsnAc+UpNS4QL229/0eUVRAtlYWh1jUCjahn
-         1u6LXGYmz+LfiW03HZSJ+LgHz+pESJgYX9qCZXh7FAFch9V4z1mfGm4Vq1cOXc4Cjh
-         tCi2YLlkNAwZxbzEcpzdtWIBkQn/2xsHls3wTO7fN33szxMQWMRsDjS4WM38PSgIgu
-         kvxDXk3J+JFTNaZ34G7aj4Z6srx3SAACQJjh4MdJtLvF/9DYOSo6U8jUWljr3Mws2q
-         WJde7W6im2prdC9xj/5XTnvviksR43wU6sq+EnKnx3CECE+GvIcDMagtWWZVFqem9G
-         I/q38MwD5qH+g==
+        b=o4G+z6MmA4tZaYlB49EP2bH8WT+1aVTVN8TBSM7x9XPyli9ICKyza5G8ThenEBZLN
+         /WfevvlvWRrq2ZotIXmK90UsB7bzB/8idAO2/pOsZUbF5QNuiRvvPWocYHB4m7uU3K
+         hL3nOoNpY2GdzX4DAUvdc5st35VpyJAuTu2hflTD65x84/ecolfV9iwQEb/8QPSAzH
+         3R7bPXaxvJCcd4QLM0zUyhIJMoofvSbDis7PHvEb4xs+oYVQ/jkQX7p6lGBRfGpBPT
+         o3QoTqq4nrafgiIYZ6T8osl012WI16tqq4eRNJtpP1tDkEgjc89KuJgZUUZm5baVhM
+         tR9hF+3531Umg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EE84CE5D087;
-        Mon, 28 Feb 2022 13:30:57 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B842E5D087;
+        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: add config to allow loading modules with BTF
- mismatches
+Subject: Re: [PATCH bpf v2] xsk: fix race at socket teardown
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164605505797.13902.1254314206143134404.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Feb 2022 13:30:57 +0000
-References: <20220223012814.1898677-1-connoro@google.com>
-In-Reply-To: <20220223012814.1898677-1-connoro@google.com>
-To:     Connor O'Brien <connoro@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        shung-hsi.yu@suse.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, msuchanek@suse.de
+Message-Id: <164605981010.28346.16023482692929405783.git-patchwork-notify@kernel.org>
+Date:   Mon, 28 Feb 2022 14:50:10 +0000
+References: <20220228094552.10134-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20220228094552.10134-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
+        bpf@vger.kernel.org, elza.mathew@intel.com
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -62,22 +60,24 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Wed, 23 Feb 2022 01:28:14 +0000 you wrote:
-> BTF mismatch can occur for a separately-built module even when the ABI
-> is otherwise compatible and nothing else would prevent successfully
-> loading. Add a new config to control how mismatches are handled. By
-> default, preserve the current behavior of refusing to load the
-> module. If MODULE_ALLOW_BTF_MISMATCH is enabled, load the module but
-> ignore its BTF information.
+On Mon, 28 Feb 2022 10:45:52 +0100 you wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Fix a race in the xsk socket teardown code that can lead to a null
+> pointer dereference splat. The current xsk unbind code in
+> xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
+> xs->dev to NULL and then waits for any NAPI processing to terminate
+> using synchronize_net(). After that, the release code starts to tear
+> down the socket state and free allocated memory.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] bpf: add config to allow loading modules with BTF mismatches
-    https://git.kernel.org/bpf/bpf-next/c/5e214f2e43e4
+  - [bpf,v2] xsk: fix race at socket teardown
+    https://git.kernel.org/bpf/bpf/c/18b1ab7aa76b
 
 You are awesome, thank you!
 -- 
