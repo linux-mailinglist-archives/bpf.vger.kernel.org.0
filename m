@@ -2,86 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25DE4C7008
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 15:50:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1294C7037
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 16:00:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbiB1Ouu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 09:50:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47168 "EHLO
+        id S234532AbiB1PAo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 10:00:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbiB1Out (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 09:50:49 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 419EB70CD8;
-        Mon, 28 Feb 2022 06:50:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D215260E73;
-        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3C771C340F0;
-        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646059810;
-        bh=cFBfY/fLFmtTsDUlYBq68VyDF1uktnmTFCrJLrn4gJw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=o4G+z6MmA4tZaYlB49EP2bH8WT+1aVTVN8TBSM7x9XPyli9ICKyza5G8ThenEBZLN
-         /WfevvlvWRrq2ZotIXmK90UsB7bzB/8idAO2/pOsZUbF5QNuiRvvPWocYHB4m7uU3K
-         hL3nOoNpY2GdzX4DAUvdc5st35VpyJAuTu2hflTD65x84/ecolfV9iwQEb/8QPSAzH
-         3R7bPXaxvJCcd4QLM0zUyhIJMoofvSbDis7PHvEb4xs+oYVQ/jkQX7p6lGBRfGpBPT
-         o3QoTqq4nrafgiIYZ6T8osl012WI16tqq4eRNJtpP1tDkEgjc89KuJgZUUZm5baVhM
-         tR9hF+3531Umg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B842E5D087;
-        Mon, 28 Feb 2022 14:50:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S234144AbiB1PAo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 10:00:44 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B33950B03;
+        Mon, 28 Feb 2022 07:00:04 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nOhVK-0006vm-0T; Mon, 28 Feb 2022 16:00:02 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nOhVJ-0000iV-Kb; Mon, 28 Feb 2022 16:00:01 +0100
+Subject: Re: [PATCH 1/1] libbpf: ensure F_DUPFD_CLOEXEC is defined
+To:     James Hilliard <james.hilliard1@gmail.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20220227142551.2349805-1-james.hilliard1@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6af1530a-a4bf-dccf-947d-78ce235a4414@iogearbox.net>
+Date:   Mon, 28 Feb 2022 16:00:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2] xsk: fix race at socket teardown
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164605981010.28346.16023482692929405783.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Feb 2022 14:50:10 +0000
-References: <20220228094552.10134-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20220228094552.10134-1-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
-        bpf@vger.kernel.org, elza.mathew@intel.com
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220227142551.2349805-1-james.hilliard1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26467/Mon Feb 28 10:24:05 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+Hi James,
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Mon, 28 Feb 2022 10:45:52 +0100 you wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On 2/27/22 3:25 PM, James Hilliard wrote:
+> This definition seems to be missing from some older toolchains.
 > 
-> Fix a race in the xsk socket teardown code that can lead to a null
-> pointer dereference splat. The current xsk unbind code in
-> xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
-> xs->dev to NULL and then waits for any NAPI processing to terminate
-> using synchronize_net(). After that, the release code starts to tear
-> down the socket state and free allocated memory.
+> Note that the fcntl.h in libbpf_internal.h is not a kernel header
+> but rather a toolchain libc header.
 > 
-> [...]
+> Fixes:
+> libbpf_internal.h:521:18: error: 'F_DUPFD_CLOEXEC' undeclared (first use in this function); did you mean 'FD_CLOEXEC'?
+>     fd = fcntl(fd, F_DUPFD_CLOEXEC, 3);
+>                    ^~~~~~~~~~~~~~~
+>                    FD_CLOEXEC
+> 
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 
-Here is the summary with links:
-  - [bpf,v2] xsk: fix race at socket teardown
-    https://git.kernel.org/bpf/bpf/c/18b1ab7aa76b
+Do you have some more info on your env (e.g. libc)? Looks like F_DUPFD_CLOEXEC
+was added back in 2.6.24 kernel. When did libc add it?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Should we instead just add an include for <linux/fcntl.h> to libbpf_internal.h
+(given it defines F_DUPFD_CLOEXEC as well)?
 
+> ---
+>   tools/lib/bpf/libbpf_internal.h | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index 4fda8bdf0a0d..d2a86b5a457a 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -31,6 +31,10 @@
+>   #define EM_BPF 247
+>   #endif
+>   
+> +#ifndef F_DUPFD_CLOEXEC
+> +#define F_DUPFD_CLOEXEC 1030
+> +#endif
+> +
+>   #ifndef R_BPF_64_64
+>   #define R_BPF_64_64 1
+>   #endif
+> 
 
+Thanks,
+Daniel
