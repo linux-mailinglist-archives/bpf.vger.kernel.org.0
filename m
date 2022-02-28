@@ -2,67 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A0C4C6DFD
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1AE4C6E1B
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbiB1NWb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 08:22:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
+        id S230288AbiB1N00 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 08:26:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbiB1NWb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 08:22:31 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716CB74856;
-        Mon, 28 Feb 2022 05:21:52 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id v21so15417811wrv.5;
-        Mon, 28 Feb 2022 05:21:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s0NsuICxJeQm5lZHkm/Wtp5kkx249MNu2vdtKTTuGUk=;
-        b=YqPbzzlXLtxkL17lnGL4fy26gUBE9tSEaX0hlfyDI3J+mrfCTb/MY7fsk8K72tV0K2
-         tankkm9cVwdhPdsTeM/ktTlBcaemkBX6AySPNpZzLssKWQxLk3XuQiIY/6HB6P7WMLON
-         mNOaV65Iw//SQB5NFfy2TfxhXDKlFErusN9jkACgHdi9vqwU6EEaqbT2uxK4Hu0n3lp3
-         tBG5MVyrnNhJjMzWTxQ/oo45YRsJHT1aSSCwjkF0yjfpiY/34cTlRVQgkQiCJvBmBMaO
-         kiuEPpeO97d0Ic41TI7xb5/2NbLwAHfz5BTRFr0Jqmt9axcTHjsRfmipo1+N3nD2PI8I
-         iiGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s0NsuICxJeQm5lZHkm/Wtp5kkx249MNu2vdtKTTuGUk=;
-        b=1DkI2vDE6G1nFI/2XlvAQ3MD6jJks+7OI2x9Zd6fA8Ub4iJe4oMtDO+aWu5dOZ7BuF
-         v8u69AuOVz9JOgpvG+0LF5QOAIgynh4T3agaAjs0e5LOAa0u6HoUnC2YHKOmy18E+kK1
-         qQwq2OKvuuwuMbW9Sy9cbfYzDus4bPLkgfNGEZPt8V2E6uVs6uVxHgN7uhdrETJ4HnIi
-         SUalX5DWlVGX13OO+uffpS/y3jStAQNmb2TZoFPpHrwMxhtrn4cbTps//ikniPzm6lSC
-         RGv9B1rrLie8Ez3dap6ghAaf8nRYHUFrBwoY1UpZxF8YYCvITVKqH7yCb8IRIp3PRI2p
-         9fWQ==
-X-Gm-Message-State: AOAM533oD6SwzlB1Nz7OpRF8ZEplocJXwSmNQfJL4bOKdrYRJHXDUMW+
-        Wn2/YHHvHmGTJ6Ymzg+qc97zaoUWxQUNn9fzLqPPsB6KJKppg52yKfk=
-X-Google-Smtp-Source: ABdhPJxDY5qYxFQLCoccs4Ge87le5cs+NQMPqimmygustN6/86J25yFXpRcgRjIypVqKzD0s79mslmyaW/uco4//Vp4=
-X-Received: by 2002:a5d:694b:0:b0:1ed:9d4d:671e with SMTP id
- r11-20020a5d694b000000b001ed9d4d671emr15541690wrw.557.1646054510955; Mon, 28
- Feb 2022 05:21:50 -0800 (PST)
+        with ESMTP id S235498AbiB1N0Y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 08:26:24 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED757A99E;
+        Mon, 28 Feb 2022 05:25:46 -0800 (PST)
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nOg21-000A8i-H2; Mon, 28 Feb 2022 14:25:41 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nOg21-000XD9-63; Mon, 28 Feb 2022 14:25:41 +0100
+Subject: Re: [PATCH bpf-next] bpf: add config to allow loading modules with
+ BTF mismatches
+To:     Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Connor O'Brien <connoro@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>
+References: <20220223012814.1898677-1-connoro@google.com>
+ <YhW5UIQ5kf8Fr3kI@syu-laptop.lan>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6a979467-7bfb-68eb-57d6-f5294846bac4@iogearbox.net>
+Date:   Mon, 28 Feb 2022 14:25:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20220228094552.10134-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20220228094552.10134-1-magnus.karlsson@gmail.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Mon, 28 Feb 2022 14:21:39 +0100
-Message-ID: <CAJ+HfNiMQOgnKfa2EtnazK8MuQx5zUtF8GzQjdo-kUAoDv+Z1A@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] xsk: fix race at socket teardown
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Netdev <netdev@vger.kernel.org>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Elza Mathew <elza.mathew@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <YhW5UIQ5kf8Fr3kI@syu-laptop.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26467/Mon Feb 28 10:24:05 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,30 +59,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 28 Feb 2022 at 10:46, Magnus Karlsson <magnus.karlsson@gmail.com> w=
-rote:
->
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> Fix a race in the xsk socket teardown code that can lead to a null
-> pointer dereference splat. The current xsk unbind code in
-> xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
-> xs->dev to NULL and then waits for any NAPI processing to terminate
-> using synchronize_net(). After that, the release code starts to tear
-> down the socket state and free allocated memory.
->
-[...]
->
-> v1 -> v2:
-> * Naming xsk_zc_xmit() -> xsk_wakeup() [Maciej]
->
+On 2/23/22 5:34 AM, Shung-Hsi Yu wrote:
+> On Wed, Feb 23, 2022 at 01:28:14AM +0000, Connor O'Brien wrote:
+>> BTF mismatch can occur for a separately-built module even when the ABI
+>> is otherwise compatible and nothing else would prevent successfully
+>> loading. Add a new config to control how mismatches are handled. By
+>> default, preserve the current behavior of refusing to load the
+>> module. If MODULE_ALLOW_BTF_MISMATCH is enabled, load the module but
+>> ignore its BTF information.
+>>
+>> Suggested-by: Yonghong Song <yhs@fb.com>
+>> Suggested-by: Michal Suchánek <msuchanek@suse.de>
+>> Signed-off-by: Connor O'Brien <connoro@google.com>
+> 
+> Maybe reference the discussion thread as well?
+> 
+> Link: https://lore.kernel.org/bpf/CAADnVQJ+OVPnBz8z3vNu8gKXX42jCUqfuvhWAyCQDu8N_yqqwQ@mail.gmail.com/
 
-Magnus,
-
-You forgot to include my ACK! So, again:
-
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-
-
-Cheers,
-Bj=C3=B6rn
+LGTM, and added above into the commit log while applying. Thanks everyone!
