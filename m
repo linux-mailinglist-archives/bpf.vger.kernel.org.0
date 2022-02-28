@@ -2,311 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 721034C65ED
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 10:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 270204C6707
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 11:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbiB1Jqs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 04:46:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S230001AbiB1KUR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 05:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbiB1Jqs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 04:46:48 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B25694BD;
-        Mon, 28 Feb 2022 01:46:06 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id l2-20020a7bc342000000b0037fa585de26so6927538wmj.1;
-        Mon, 28 Feb 2022 01:46:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QQ+h1cU+uKWHVdXhKrvR//NlJMjix3kBk80whKwXXPA=;
-        b=guSg6poWdMuA1G1XQlIccMwzP+cCtMrCmNBvp61qIFSDcdgQwCCgo7wg0CiFD7xjD5
-         DoUpiJx2dbTPrRtIFFTxxOMxVJ2JUohemopuVcRHQCPEicSXKmi1qBdftLqSO6VyS2BE
-         GAgbUbEP7iEet/huN1FyRzajkdqrVTfS/Cg86HAJ3N2Ys5P8olTIpEqt3g2UIvNc8qZh
-         ksrw7BDp1tGS98QelO2Tt/H4GqyvuOe3Q4PbP0u+S/p7OnKIlpjdjsllWBdz2kXKkrbz
-         /D/rlnghH1DjVVlIDIFnyfGJlU3Fs0aAfs5y8xYVXuylUMULnwYo9jb61ido9vxYvvFL
-         dhSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QQ+h1cU+uKWHVdXhKrvR//NlJMjix3kBk80whKwXXPA=;
-        b=w4gWRpntM6IQ6bOr/kP7v+69zwmfG3MTcPMv4WYISCH/OzXCxOt13tT2wm6dl1KwGG
-         5fvKd8FXmP6Ng9GclhtKbfGopNiJ5CjIhBeYYphDViCFeoVEybSr/pM1eLn2ylqdzcWd
-         8HuX8E7PQSKsuCdthedVLDKyV5chRWll2NCQav0C2q+aIz6HAkkuB+vZT3u2yCXgax1z
-         PJIZkyOrw6hO6ZRlkJv/K+L4eXzNyeQ0mnrYaa5/XtUoAW8h9L6dc01YVFY7aveTFGa1
-         hBgtTr8Tu8LI4vGfpTX2vqc8RvqRlcHSa2BHk8CtpXukxjVW45qIvlsbX4VWUUjI3DxO
-         G8BA==
-X-Gm-Message-State: AOAM533kDIjmF3j+35dFgr96YlIXQ3Gdqe4icoVmopncgKJYQWkRXHMV
-        XulfGDaYsloj5yNV79jCEAI=
-X-Google-Smtp-Source: ABdhPJxGgmGpZEpvx00D21fufuoHydRi/6Sym+G4SrHsbK9vFoMF9kAYq4BipxIdbXUmjtLoh3c0wA==
-X-Received: by 2002:a1c:a382:0:b0:381:cfd:5564 with SMTP id m124-20020a1ca382000000b003810cfd5564mr12306783wme.103.1646041564829;
-        Mon, 28 Feb 2022 01:46:04 -0800 (PST)
-Received: from localhost.localdomain (h-46-59-47-246.A165.priv.bahnhof.se. [46.59.47.246])
-        by smtp.gmail.com with ESMTPSA id q23-20020a1cf317000000b003815206a638sm4468447wmq.15.2022.02.28.01.46.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Feb 2022 01:46:04 -0800 (PST)
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-To:     magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        maciej.fijalkowski@intel.com
-Cc:     jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        Elza Mathew <elza.mathew@intel.com>
-Subject: [PATCH bpf v2] xsk: fix race at socket teardown
-Date:   Mon, 28 Feb 2022 10:45:52 +0100
-Message-Id: <20220228094552.10134-1-magnus.karlsson@gmail.com>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
+        with ESMTP id S229514AbiB1KUQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 05:20:16 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 780854EF56
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 02:19:37 -0800 (PST)
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21SA8bsg013058;
+        Mon, 28 Feb 2022 10:19:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=N9uPvlO1l1d6lm9fmuktgUWp2GnXuunPWzdSg6YFI4o=;
+ b=mxZwqYFylrncKqDGB1JgVM5rfXV36SdJ9CWun9yAzeNa8NQln9lihhyZEgNzlfJZ5Qyj
+ fwn2wlBrZRiJNIm3VKbEcehlo6HTi3kEov/VDFPpHiVNsfOZGWuxFQDemybDAhGnw/cW
+ IndhcBoCdYwyln1Vo81AGPJh1QGkcIXsLQPCRyZWFRj89Zp2rWK0sWqM/cFq1T2+px70
+ kK6kexTN16H5DWbCgJapcgXCprjk3lgUGniGLiPE/+5Dy0eyJfs+7pKNXalRolXssRh9
+ Qno+pcuDI0zwpfAr8QwNSidE6OF31yDY9MoBrLyqYdSpblIY1jMRwBhfnXRL4ZuQ+66/ lA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3egu4mt1k0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Feb 2022 10:19:16 +0000
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21SA9HhO018730;
+        Mon, 28 Feb 2022 10:19:16 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3egu4mt1jk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Feb 2022 10:19:15 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21SADPph027186;
+        Mon, 28 Feb 2022 10:19:14 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3egbj12ehq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Feb 2022 10:19:13 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21SAJAYZ51184084
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Feb 2022 10:19:11 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D3E61A4054;
+        Mon, 28 Feb 2022 10:19:10 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6DF96A405F;
+        Mon, 28 Feb 2022 10:19:10 +0000 (GMT)
+Received: from [9.171.78.41] (unknown [9.171.78.41])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Feb 2022 10:19:10 +0000 (GMT)
+Message-ID: <87d79308a2ffce76a805cc1e5f60d28bebc74239.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 2/3] bpf: Fix bpf_sk_lookup.remote_port on
+ big-endian
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Mon, 28 Feb 2022 11:19:10 +0100
+In-Reply-To: <87y21whwwl.fsf@cloudflare.com>
+References: <20220222182559.2865596-1-iii@linux.ibm.com>
+         <20220222182559.2865596-3-iii@linux.ibm.com>
+         <20220227024457.rv5zei6qk4d6wy6d@ast-mbp.dhcp.thefacebook.com>
+         <87y21whwwl.fsf@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K4cWcX5UUgg1v7sUCQshdqRVSSIYSJqx
+X-Proofpoint-ORIG-GUID: NWf5H4JRDBiMkLGbSKc3yQ8bsg_i361I
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-02-28_04,2022-02-26_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 impostorscore=0
+ clxscore=1015 spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202280057
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Magnus Karlsson <magnus.karlsson@intel.com>
+On Sun, 2022-02-27 at 21:30 +0100, Jakub Sitnicki wrote:
+> 
+> On Sat, Feb 26, 2022 at 06:44 PM -08, Alexei Starovoitov wrote:
+> > On Tue, Feb 22, 2022 at 07:25:58PM +0100, Ilya Leoshkevich wrote:
+> > > On big-endian, the port is available in the second __u16, not the
+> > > first
+> > > one. Therefore, provide a big-endian-specific definition that
+> > > reflects
+> > > that. Also, define remote_port_compat in order to have nicer
+> > > architecture-agnostic code in the verifier and in tests.
+> > > 
+> > > Fixes: 9a69e2b385f4 ("bpf: Make remote_port field in struct
+> > > bpf_sk_lookup 16-bit wide")
+> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > ---
+> > >  include/uapi/linux/bpf.h       | 17 +++++++++++++++--
+> > >  net/core/filter.c              |  5 ++---
+> > >  tools/include/uapi/linux/bpf.h | 17 +++++++++++++++--
+> > >  3 files changed, 32 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > index afe3d0d7f5f2..7b0e5efa58e0 100644
+> > > --- a/include/uapi/linux/bpf.h
+> > > +++ b/include/uapi/linux/bpf.h
+> > > @@ -10,6 +10,7 @@
+> > >  
+> > >  #include <linux/types.h>
+> > >  #include <linux/bpf_common.h>
+> > > +#include <asm/byteorder.h>
+> > >  
+> > >  /* Extended instruction set based on top of classic BPF */
+> > >  
+> > > @@ -6453,8 +6454,20 @@ struct bpf_sk_lookup {
+> > >         __u32 protocol;         /* IP protocol (IPPROTO_TCP,
+> > > IPPROTO_UDP) */
+> > >         __u32 remote_ip4;       /* Network byte order */
+> > >         __u32 remote_ip6[4];    /* Network byte order */
+> > > -       __be16 remote_port;     /* Network byte order */
+> > > -       __u16 :16;              /* Zero padding */
+> > > +       union {
+> > > +               struct {
+> > > +#if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN :
+> > > defined(__LITTLE_ENDIAN)
+> > > +                       __be16 remote_port;     /* Network byte
+> > > order */
+> > > +                       __u16 :16;              /* Zero padding
+> > > */
+> > > +#elif defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN :
+> > > defined(__BIG_ENDIAN)
+> > > +                       __u16 :16;              /* Zero padding
+> > > */
+> > > +                       __be16 remote_port;     /* Network byte
+> > > order */
+> > > +#else
+> > > +#error unspecified endianness
+> > > +#endif
+> > > +               };
+> > > +               __u32 remote_port_compat;
+> > 
+> > Sorry this hack is not an option.
+> > Don't have any suggestions at this point. Pls come up with
+> > something else.
+> 
+> I think we can keep the bpf_sk_lookup definition as is, if we leave
+> the
+> 4-byte load from remote_port offset quirky behavior on little-endian.
+> 
+> Please take a look at the test fix I've posted for 4-byte load from
+> bpf_sock dst_port that works for me on x86_64 and s390. It is exactly
+> the same case as we're dealing with here:
+> 
+> https://lore.kernel.org/bpf/20220227202757.519015-4-jakub@cloudflare.com/T/#u
+> 
 
-Fix a race in the xsk socket teardown code that can lead to a null
-pointer dereference splat. The current xsk unbind code in
-xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
-xs->dev to NULL and then waits for any NAPI processing to terminate
-using synchronize_net(). After that, the release code starts to tear
-down the socket state and free allocated memory.
+What about 2-byte loads?
 
-BUG: kernel NULL pointer dereference, address: 00000000000000c0
-PGD 8000000932469067 P4D 8000000932469067 PUD 0
-Oops: 0000 [#1] PREEMPT SMP PTI
-CPU: 25 PID: 69132 Comm: grpcpp_sync_ser Tainted: G          I       5.16.0+ #2
-Hardware name: Dell Inc. PowerEdge R730/0599V5, BIOS 1.2.10 03/09/2015
-RIP: 0010:__xsk_sendmsg+0x2c/0x690
-Code: 44 00 00 55 48 89 e5 41 57 41 56 41 55 41 54 53 48 83 ec 38 65 48 8b 04 25 28 00 00 00 48 89 45 d0 31 c0 48 8b 87 08 03 00 00 <f6> 80 c0 00 00 00 01 >
-RSP: 0018:ffffa2348bd13d50 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000040 RCX: ffff8d5fc632d258
-RDX: 0000000000400000 RSI: ffffa2348bd13e10 RDI: ffff8d5fc5489800
-RBP: ffffa2348bd13db0 R08: 0000000000000000 R09: 00007ffffffff000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8d5fc5489800
-R13: ffff8d5fcb0f5140 R14: ffff8d5fcb0f5140 R15: 0000000000000000
-FS:  00007f991cff9400(0000) GS:ffff8d6f1f700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000000000c0 CR3: 0000000114888005 CR4: 00000000001706e0
-Call Trace:
-<TASK>
-? aa_sk_perm+0x43/0x1b0
-xsk_sendmsg+0xf0/0x110
-sock_sendmsg+0x65/0x70
-__sys_sendto+0x113/0x190
-? debug_smp_processor_id+0x17/0x20
-? fpregs_assert_state_consistent+0x23/0x50
-? exit_to_user_mode_prepare+0xa5/0x1d0
-__x64_sys_sendto+0x29/0x30
-do_syscall_64+0x3b/0xc0
-entry_SYSCALL_64_after_hwframe+0x44/0xae
+static __noinline bool sk_dst_port__load_half(struct bpf_sock *sk)
+{
+	__u16 *half = (__u16 *)&sk->dst_port;
+	return half[0] == bpf_htons(0xcafe);
+}
 
-There are two problems with the current code. First, setting xs->dev
-to NULL before waiting for all users to stop using the socket is not
-correct. The entry to the data plane functions xsk_poll(),
-xsk_sendmsg(), and xsk_recvmsg() are all guarded by a test that
-xs->state is in the state XSK_BOUND and if not, it returns right
-away. But one process might have passed this test but still have not
-gotten to the point in which it uses xs->dev in the code. In this
-interim, a second process executing xsk_unbind_dev() might have set
-xs->dev to NULL which will lead to a crash for the first process. The
-solution here is just to get rid of this NULL assignment since it is
-not used anymore. Before commit 42fddcc7c64b ("xsk: use state member
-for socket synchronization"), xs->dev was the gatekeeper to admit
-processes into the data plane functions, but it was replaced with the
-state variable xs->state in the aforementioned commit.
+requires "ca fe ?? ??" in memory on BE, while
 
-The second problem is that synchronize_net() does not wait for any
-process in xsk_poll(), xsk_sendmsg(), or xsk_recvmsg() to complete,
-which means that the state they rely on might be cleaned up
-prematurely. This can happen when the notifier gets called (at driver
-unload for example) as it uses xsk_unbind_dev(). Solve this by
-extending the RCU critical region from just the ndo_xsk_wakeup to the
-whole functions mentioned above, so that both the test of xs->state ==
-XSK_BOUND and the last use of any member of xs is covered by the RCU
-critical section. This will guarantee that when synchronize_net()
-completes, there will be no processes left executing xsk_poll(),
-xsk_sendmsg(), or xsk_recvmsg() and state can be cleaned up
-safely. Note that we need to drop the RCU lock for the SKB xmit path
-as it uses functions that might sleep. Due to this, we have to retest
-the xs->state after we grab the mutex that protects the SKB xmit code
-from, among a number of things, an xsk_unbind_dev() being executed
-from the notifier at the same time.
+static __noinline bool sk_dst_port__load_word(struct bpf_sock *sk)
+{
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+	const __u8 SHIFT = 16;
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+	const __u8 SHIFT = 0;
+#else
+#error "Unrecognized __BYTE_ORDER__"
+#endif
+	__u32 *word = (__u32 *)&sk->dst_port;
+	return word[0] == bpf_htonl(0xcafe << SHIFT);
+}
 
-v1 -> v2:
-* Naming xsk_zc_xmit() -> xsk_wakeup() [Maciej]
+requires "00 00 ca fe". This is inconsistent. Furthermore, one
+cannot see it with bpf_sock thanks to
 
-Fixes: 42fddcc7c64b ("xsk: use state member for socket synchronization")
-Reported-by: Elza Mathew <elza.mathew@intel.com>
-Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 69 +++++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 50 insertions(+), 19 deletions(-)
+	case offsetofend(struct bpf_sock, dst_port) ...
+	     offsetof(struct bpf_sock, dst_ip4) - 1:
+		return false;
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 28ef3f4465ae..ac343cd8ff3f 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -403,18 +403,8 @@ EXPORT_SYMBOL(xsk_tx_peek_release_desc_batch);
- static int xsk_wakeup(struct xdp_sock *xs, u8 flags)
- {
- 	struct net_device *dev = xs->dev;
--	int err;
--
--	rcu_read_lock();
--	err = dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
--	rcu_read_unlock();
--
--	return err;
--}
- 
--static int xsk_zc_xmit(struct xdp_sock *xs)
--{
--	return xsk_wakeup(xs, XDP_WAKEUP_TX);
-+	return dev->netdev_ops->ndo_xsk_wakeup(dev, xs->queue_id, flags);
- }
- 
- static void xsk_destruct_skb(struct sk_buff *skb)
-@@ -533,6 +523,12 @@ static int xsk_generic_xmit(struct sock *sk)
- 
- 	mutex_lock(&xs->mutex);
- 
-+	/* Since we dropped the RCU read lock, the socket state might have changed. */
-+	if (unlikely(!xsk_is_bound(xs))) {
-+		err = -ENXIO;
-+		goto out;
-+	}
-+
- 	if (xs->queue_id >= xs->dev->real_num_tx_queues)
- 		goto out;
- 
-@@ -596,16 +592,26 @@ static int xsk_generic_xmit(struct sock *sk)
- 	return err;
- }
- 
--static int __xsk_sendmsg(struct sock *sk)
-+static int xsk_xmit(struct sock *sk)
- {
- 	struct xdp_sock *xs = xdp_sk(sk);
-+	int ret;
- 
- 	if (unlikely(!(xs->dev->flags & IFF_UP)))
- 		return -ENETDOWN;
- 	if (unlikely(!xs->tx))
- 		return -ENOBUFS;
- 
--	return xs->zc ? xsk_zc_xmit(xs) : xsk_generic_xmit(sk);
-+	if (xs->zc)
-+		return xsk_wakeup(xs, XDP_WAKEUP_TX);
-+
-+	/* Drop the RCU lock since the SKB path might sleep. */
-+	rcu_read_unlock();
-+	ret = xsk_generic_xmit(sk);
-+	/* Reaquire RCU lock before going into common code. */
-+	rcu_read_lock();
-+
-+	return ret;
- }
- 
- static bool xsk_no_wakeup(struct sock *sk)
-@@ -619,7 +625,7 @@ static bool xsk_no_wakeup(struct sock *sk)
- #endif
- }
- 
--static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+static int __xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- {
- 	bool need_wait = !(m->msg_flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
-@@ -639,11 +645,22 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 
- 	pool = xs->pool;
- 	if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
--		return __xsk_sendmsg(sk);
-+		return xsk_xmit(sk);
- 	return 0;
- }
- 
--static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
-+static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
-+{
-+	int ret;
-+
-+	rcu_read_lock();
-+	ret = __xsk_sendmsg(sock, m, total_len);
-+	rcu_read_unlock();
-+
-+	return ret;
-+}
-+
-+static int __xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
- {
- 	bool need_wait = !(flags & MSG_DONTWAIT);
- 	struct sock *sk = sock->sk;
-@@ -669,6 +686,17 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
- 	return 0;
- }
- 
-+static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int flags)
-+{
-+	int ret;
-+
-+	rcu_read_lock();
-+	ret = __xsk_recvmsg(sock, m, len, flags);
-+	rcu_read_unlock();
-+
-+	return ret;
-+}
-+
- static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 			     struct poll_table_struct *wait)
- {
-@@ -679,8 +707,11 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 
- 	sock_poll_wait(file, sock, wait);
- 
--	if (unlikely(!xsk_is_bound(xs)))
-+	rcu_read_lock();
-+	if (unlikely(!xsk_is_bound(xs))) {
-+		rcu_read_unlock();
- 		return mask;
-+	}
- 
- 	pool = xs->pool;
- 
-@@ -689,7 +720,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 			xsk_wakeup(xs, pool->cached_need_wakeup);
- 		else
- 			/* Poll needs to drive Tx also in copy mode */
--			__xsk_sendmsg(sk);
-+			xsk_xmit(sk);
- 	}
- 
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
-@@ -697,6 +728,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 	if (xs->tx && xsk_tx_writeable(xs))
- 		mask |= EPOLLOUT | EPOLLWRNORM;
- 
-+	rcu_read_unlock();
- 	return mask;
- }
- 
-@@ -728,7 +760,6 @@ static void xsk_unbind_dev(struct xdp_sock *xs)
- 
- 	/* Wait for driver to stop using the xdp socket. */
- 	xp_del_xsk(xs->pool, xs);
--	xs->dev = NULL;
- 	synchronize_net();
- 	dev_put(dev);
- }
+however, with sk_lookup this is the case: loading the most significant
+half of the port produces non-zero! So, it's not simply a quirkiness of
+the 4-byte load, it's a mutual inconsistency between LSW loads, MSW
+loads and 4-byte loads.
 
-base-commit: 8940e6b669ca1196ce0a0549c819078096390f76
--- 
-2.34.1
+One might argue that we can live with that, especially since all the
+user-relevant tests pass - here I can only say that an inconsistency on
+such a fundamental level makes me nervous.
 
+In order to resolve this inconsistency I've implemented patch 1 of this
+series. With that, "sk->dst_port == bpf_htons(0xcafe)" starts to fail,
+and that's where one needs something like this patch.
+
+Best regards,
+Ilya
