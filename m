@@ -2,87 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 742674C6D77
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A0C4C6DFD
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 14:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbiB1NLM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 08:11:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
+        id S230338AbiB1NWb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 08:22:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbiB1NLL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 08:11:11 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D89178074;
-        Mon, 28 Feb 2022 05:10:33 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CC004B81157;
-        Mon, 28 Feb 2022 13:10:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 60371C340F0;
-        Mon, 28 Feb 2022 13:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646053830;
-        bh=ZBuUlcgZuwhB4Zj01JBCKDbi1zNnOuUJtxYFgINRXVs=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=eCV0LMY8Aavy6n3Wa2pkNsVmy+8383KerJdnoHlIbonORPwIGyrEabKoxwhUFsp9i
-         ANHucHxM1pmqeDglaLj5DRY6Nh6SNsvOmMXC2FwqeM1XSAf9Qs6Iipm2MAbuPQx4vk
-         5wKETAU2grL1p+10TiaUtegaCOTZknrsNWKATqgoEqFsSGIKbkz7yxxmEzgsG23CZs
-         EipN0EZiTr2ArDQK1DSiJKOFe3DNZUXMpvqo6SsuCoHN3t7JagcLg9wNPsr3CGgZnN
-         npt9wZcPc6BzTP3RF6IZf9LLdRK3zXahBQoWAsO9JdF1Cz+xCx6Nd/fwjYn8F+xoWk
-         H8AdkM/A1D6Og==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3BEC1E5D087;
-        Mon, 28 Feb 2022 13:10:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S231887AbiB1NWb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 08:22:31 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 716CB74856;
+        Mon, 28 Feb 2022 05:21:52 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id v21so15417811wrv.5;
+        Mon, 28 Feb 2022 05:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=s0NsuICxJeQm5lZHkm/Wtp5kkx249MNu2vdtKTTuGUk=;
+        b=YqPbzzlXLtxkL17lnGL4fy26gUBE9tSEaX0hlfyDI3J+mrfCTb/MY7fsk8K72tV0K2
+         tankkm9cVwdhPdsTeM/ktTlBcaemkBX6AySPNpZzLssKWQxLk3XuQiIY/6HB6P7WMLON
+         mNOaV65Iw//SQB5NFfy2TfxhXDKlFErusN9jkACgHdi9vqwU6EEaqbT2uxK4Hu0n3lp3
+         tBG5MVyrnNhJjMzWTxQ/oo45YRsJHT1aSSCwjkF0yjfpiY/34cTlRVQgkQiCJvBmBMaO
+         kiuEPpeO97d0Ic41TI7xb5/2NbLwAHfz5BTRFr0Jqmt9axcTHjsRfmipo1+N3nD2PI8I
+         iiGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=s0NsuICxJeQm5lZHkm/Wtp5kkx249MNu2vdtKTTuGUk=;
+        b=1DkI2vDE6G1nFI/2XlvAQ3MD6jJks+7OI2x9Zd6fA8Ub4iJe4oMtDO+aWu5dOZ7BuF
+         v8u69AuOVz9JOgpvG+0LF5QOAIgynh4T3agaAjs0e5LOAa0u6HoUnC2YHKOmy18E+kK1
+         qQwq2OKvuuwuMbW9Sy9cbfYzDus4bPLkgfNGEZPt8V2E6uVs6uVxHgN7uhdrETJ4HnIi
+         SUalX5DWlVGX13OO+uffpS/y3jStAQNmb2TZoFPpHrwMxhtrn4cbTps//ikniPzm6lSC
+         RGv9B1rrLie8Ez3dap6ghAaf8nRYHUFrBwoY1UpZxF8YYCvITVKqH7yCb8IRIp3PRI2p
+         9fWQ==
+X-Gm-Message-State: AOAM533oD6SwzlB1Nz7OpRF8ZEplocJXwSmNQfJL4bOKdrYRJHXDUMW+
+        Wn2/YHHvHmGTJ6Ymzg+qc97zaoUWxQUNn9fzLqPPsB6KJKppg52yKfk=
+X-Google-Smtp-Source: ABdhPJxDY5qYxFQLCoccs4Ge87le5cs+NQMPqimmygustN6/86J25yFXpRcgRjIypVqKzD0s79mslmyaW/uco4//Vp4=
+X-Received: by 2002:a5d:694b:0:b0:1ed:9d4d:671e with SMTP id
+ r11-20020a5d694b000000b001ed9d4d671emr15541690wrw.557.1646054510955; Mon, 28
+ Feb 2022 05:21:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2] Update L7 BPF maintainers / mailmap
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164605383024.32298.17156248466124593273.git-patchwork-notify@kernel.org>
-Date:   Mon, 28 Feb 2022 13:10:30 +0000
-References: <20220222103925.25802-1-lmb@cloudflare.com>
-In-Reply-To: <20220222103925.25802-1-lmb@cloudflare.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220228094552.10134-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20220228094552.10134-1-magnus.karlsson@gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 28 Feb 2022 14:21:39 +0100
+Message-ID: <CAJ+HfNiMQOgnKfa2EtnazK8MuQx5zUtF8GzQjdo-kUAoDv+Z1A@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] xsk: fix race at socket teardown
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Elza Mathew <elza.mathew@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, 28 Feb 2022 at 10:46, Magnus Karlsson <magnus.karlsson@gmail.com> w=
+rote:
+>
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> Fix a race in the xsk socket teardown code that can lead to a null
+> pointer dereference splat. The current xsk unbind code in
+> xsk_unbind_dev() starts by setting xs->state to XSK_UNBOUND, sets
+> xs->dev to NULL and then waits for any NAPI processing to terminate
+> using synchronize_net(). After that, the release code starts to tear
+> down the socket state and free allocated memory.
+>
+[...]
+>
+> v1 -> v2:
+> * Naming xsk_zc_xmit() -> xsk_wakeup() [Maciej]
+>
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+Magnus,
 
-On Tue, 22 Feb 2022 10:39:23 +0000 you wrote:
-> Hi,
-> 
-> I'm leaving my position at Cloudflare, so I'm stepping down from the
-> sockmap maintainership. I'm also adding a new email address where people
-> can reach me.
-> 
-> Best
-> Lorenz
-> 
-> [...]
+You forgot to include my ACK! So, again:
 
-Here is the summary with links:
-  - [1/2] bpf: remove Lorenz Bauer from L7 BPF maintainers
-    https://git.kernel.org/bpf/bpf/c/f54eeae970f4
-  - [2/2] mailmap: update Lorenz Bauers address
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
 
+Cheers,
+Bj=C3=B6rn
