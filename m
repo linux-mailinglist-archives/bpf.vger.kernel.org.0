@@ -2,73 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B11364C7D12
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 23:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AED6A4C7E3C
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 00:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbiB1WLd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 17:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
+        id S229728AbiB1XYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 18:24:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiB1WLc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 17:11:32 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E100FC6833
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 14:10:52 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id i8so506328wrr.8
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 14:10:52 -0800 (PST)
+        with ESMTP id S229717AbiB1XYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 18:24:16 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7F07C330C
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 15:23:35 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id b64-20020a256743000000b0061e169a5f19so11732132ybc.11
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 15:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V0f1W4Wc0EEoXA/hJdBQxq1Gp1glgbsbboI5sHwm0rI=;
-        b=dbuCifi5i+s3laQK3MjadtEFvIaRuSFEgIgs6v+ZXKni+Uy6rtBlqfgbKbaERW/Vm1
-         6qpTNdPApqL8ttGC58JdO2m32ISLCxCp9lgTqt9qHVEM5Up+KJ6s0837mtLlEEer5Jsp
-         rOSTtj0S66wvuhJZPTQdev8Lo0+ur6L7tvlxGIivcI9PdXalv+tXMPK8VVVm07MRaSY+
-         Xpa6gf2FjPZt7rm3pfMZsc/bYGSzbyaNjnOpJwKjfwxjese1IJa7Fb30PIGk8rXsxBzd
-         GVDlAcjlEOIQzv8J5MLmfVjLTgvBWDa966RLFV0DKx+6MjGRW+1gBUbxkQLeNw+jz4iA
-         f0wg==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Hl63cIacA+y8aLzzmyl5L8wBUuBQ1b/3yZnRLsIwylg=;
+        b=jAao/jq5jMxA2ELK6SgJRtpeoq77RDQVN5qgI/4Us4sP+jmjp40jD1IcRJsmh1EHgx
+         m9uinNqt+dCTNXJgv1g9mue+wlv2xsOmn2+hn/I+GKLGFjBSRF7mb4sZH3jN+qPE+Mou
+         wXqXDTkNDTuDftbBr11MTViCPhi8+SojdV8qj8PgIAzn2pPH3L4Pk5H62KzxUEzHu0nz
+         441hsoGUHQrt/4i3cJGuIsOFKvGXiGLq7SYLJ6H/rMgo7fj/BuUAGDZbiJkI0aceAEYT
+         EnNLRB+7T0ofLtJ/9wdtnqiW7cXoeOo1vd6+i+E+E6O07NDWW3a/OOIMUIghVBhV3o4f
+         uwBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V0f1W4Wc0EEoXA/hJdBQxq1Gp1glgbsbboI5sHwm0rI=;
-        b=6ympUxFELLDH4AN/wWugmsKo8IqUW/H8wAf8Rfby2AdOy0Fabd800hbJPnX7b3IsPw
-         vmADCYOfqDkyf4QDVfAzmPkbWRvVPtpooFNp6StGp6VEhDCnjLjP3cVSlnO7SenZ2DBj
-         YKMF1S2EybnaZUzVvpbRFNINWYFbkcDPqd37JP+pBWzPJx9+cd/ums7QM6b3X2EA+4Gu
-         Hu3EgpXyUmQ1CIO0abY0/fD2YNL/p2m3496qqHyvk9WeOAHS1t3wm3eq6gy9JSv2gAPj
-         PKAi195xL2F9Jjvs6gw8U5Khf40b5KDMPbTffdOqUXXGc9tGNUrr1V4QMPUG/qPBfLXq
-         Yqfw==
-X-Gm-Message-State: AOAM532GRIDIDlkVEmkyNT6xLwGZuxWtEHAMZzulIAjzBAiiybG1z7mk
-        jXJFzOzWozcv9d3ymApooP48mhaoBbn92REoJ4eB+w==
-X-Google-Smtp-Source: ABdhPJw6PXGJIac5rut6ZC/vWklpF7aamF7EfGb1aEh9WRRLAHsBR9tQMNEYrHisL9SdJHFVLRLoE6GVV5puGg+mONQ=
-X-Received: by 2002:adf:cd04:0:b0:1f0:d63:392c with SMTP id
- w4-20020adfcd04000000b001f00d63392cmr173680wrm.489.1646086251275; Mon, 28 Feb
- 2022 14:10:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-2-haoluo@google.com>
- <20220227051821.fwrmeu7r6bab6tio@apollo.legion>
-In-Reply-To: <20220227051821.fwrmeu7r6bab6tio@apollo.legion>
-From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 28 Feb 2022 14:10:39 -0800
-Message-ID: <CA+khW7g4mLw9W+CY651FaE-2SF0XBeaGKa5Le7ZnTBTK7eD30Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/9] bpf: Add mkdir, rmdir, unlink syscalls
- for prog_bpf_syscall
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Hl63cIacA+y8aLzzmyl5L8wBUuBQ1b/3yZnRLsIwylg=;
+        b=dAblvzJKvSkWAzil1WN1XQaUsOPE8+roxQJr9zzGtat6RVuosApqEmk3olTRW20H1g
+         LrGIuZRHUD08duXtPYGa4GJ96ZGXxJxnRlBv3DAU6gQzt2mJ4/6PE0uTcvTkkmSDpccw
+         WznVlBzF6p/x4fzyAsxPToTyxgvCW9JzZNJiMDJLQqCrnSkC6MxUq+gvB/MyOSIOkBYS
+         fqbq9qV5JRVxnFbxxJIyhHNdi/18F/uVuqPBVw8Tppt/iFr1v43lTnNbnDlLZ0U132vt
+         a3GxUwzuq3XiaIn7yK3lt6k56/6ok3627H6SYcNmWHnGfzO8AVSPpY1b6zg6biUNDeqN
+         e1Hw==
+X-Gm-Message-State: AOAM532O38p98btIRL8P+9t69ZKzvipsz6519ciajSANPyKkC9RnZJ/N
+        xI8tuIiQyNna4eFPg9KXkJzkFAM=
+X-Google-Smtp-Source: ABdhPJxkvsVPqRd5oHsNWX9wqjTUm1s4KG2y4Uox79pr8SwtrF8i4tR0F5IMf9kU59L2I+KVXzj+lKI=
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:201:e0d9:4eba:c433:775d])
+ (user=sdf job=sendgmr) by 2002:a25:296:0:b0:623:a267:ab94 with SMTP id
+ 144-20020a250296000000b00623a267ab94mr21495769ybc.430.1646090615042; Mon, 28
+ Feb 2022 15:23:35 -0800 (PST)
+Date:   Mon, 28 Feb 2022 15:23:32 -0800
+Message-Id: <20220228232332.458871-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.1.574.g5d30c73bfb-goog
+Subject: [PATCH bpf-next] bpf: test_run: Fix overflow in xdp frags bpf_test_finish
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        Stanislav Fomichev <sdf@google.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-10.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,68 +64,40 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+Syzkaller reports another issue:
+WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
+check_copy_size include/linux/thread_info.h:230 [inline]
+WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
+copy_to_user include/linux/uaccess.h:199 [inline]
+WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
+bpf_test_finish.isra.0+0x4b2/0x680 net/bpf/test_run.c:171
 
-On Sat, Feb 26, 2022 at 9:18 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
->
-> On Sat, Feb 26, 2022 at 05:13:31AM IST, Hao Luo wrote:
-> > This patch allows bpf_syscall prog to perform some basic filesystem
-> > operations: create, remove directories and unlink files. Three bpf
-> > helpers are added for this purpose. When combined with the following
-> > patches that allow pinning and getting bpf objects from bpf prog,
-> > this feature can be used to create directory hierarchy in bpffs that
-> > help manage bpf objects purely using bpf progs.
-> >
-> > The added helpers subject to the same permission checks as their syscall
-> > version. For example, one can not write to a read-only file system;
-> > The identity of the current process is checked to see whether it has
-> > sufficient permission to perform the operations.
-> >
-> > Only directories and files in bpffs can be created or removed by these
-> > helpers. But it won't be too hard to allow these helpers to operate
-> > on files in other filesystems, if we want.
-> >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> > + *
-> > + * long bpf_mkdir(const char *pathname, int pathname_sz, u32 mode)
-> > + *   Description
-> > + *           Attempts to create a directory name *pathname*. The argument
-> > + *           *pathname_sz* specifies the length of the string *pathname*.
-> > + *           The argument *mode* specifies the mode for the new directory. It
-> > + *           is modified by the process's umask. It has the same semantic as
-> > + *           the syscall mkdir(2).
-> > + *   Return
-> > + *           0 on success, or a negative error in case of failure.
-> > + *
-> > + * long bpf_rmdir(const char *pathname, int pathname_sz)
-> > + *   Description
-> > + *           Deletes a directory, which must be empty.
-> > + *   Return
-> > + *           0 on sucess, or a negative error in case of failure.
-> > + *
-> > + * long bpf_unlink(const char *pathname, int pathname_sz)
-> > + *   Description
-> > + *           Deletes a name and possibly the file it refers to. It has the
-> > + *           same semantic as the syscall unlink(2).
-> > + *   Return
-> > + *           0 on success, or a negative error in case of failure.
-> >   */
-> >
->
-> How about only introducing bpf_sys_mkdirat and bpf_sys_unlinkat? That would be
-> more useful for other cases in future, and when AT_FDCWD is passed, has the same
-> functionality as these, but when openat/fget is supported, it would work
-> relative to other dirfds as well. It can also allow using dirfd of the process
-> calling read for a iterator (e.g. if it sets the fd number using skel->bss).
-> unlinkat's AT_REMOVEDIR flag also removes the need for a bpf_rmdir.
->
-> WDYT?
->
+This can happen when the userspace buffer is smaller than head+frags.
+Return ENOSPC in this case.
 
-The idea sounds good to me, more flexible. But I don't have a real use
-case for using the added 'dirfd' at this moment. For all the use cases
-I can think of, absolute paths will suffice, I think. Unless other
-reviewers have opposition, I will try switching to mkdirat and
-unlinkat in v2.
+Fixes: 7855e0db150a ("bpf: test_run: add xdp_shared_info pointer in bpf_test_finish signature")
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ net/bpf/test_run.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index f08034500813..eb129e48f90b 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -150,6 +150,11 @@ static int bpf_test_finish(const union bpf_attr *kattr,
+ 	if (data_out) {
+ 		int len = sinfo ? copy_size - sinfo->xdp_frags_size : copy_size;
+ 
++		if (len < 0) {
++			err = -ENOSPC;
++			goto out;
++		}
++
+ 		if (copy_to_user(data_out, data, len))
+ 			goto out;
+ 
+-- 
+2.35.1.574.g5d30c73bfb-goog
+
