@@ -2,98 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E21C4C609B
-	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 02:20:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBE24C6104
+	for <lists+bpf@lfdr.de>; Mon, 28 Feb 2022 03:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbiB1BVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 27 Feb 2022 20:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        id S230370AbiB1CRp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 27 Feb 2022 21:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231618AbiB1BVG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 27 Feb 2022 20:21:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D953E5C66B;
-        Sun, 27 Feb 2022 17:20:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 86D2CB80CD5;
-        Mon, 28 Feb 2022 01:20:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACE50C340EE;
-        Mon, 28 Feb 2022 01:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646011226;
-        bh=7Vx9N8987kps795HY7hHjHYJ6nh4+GLyowZu6iYELtM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NMDZm1pl8MjI2yjTQ1KLehTgaUU66bT7ORHHMaFpk+2wXw13r+2wOkDMR/3h0iaQc
-         qhjmuWEcfszvRa/W9wF/k4yH8YkjBl2WzzMhnIH/noCHD9jyAuF0p0CMYYjiGnpjI8
-         x8nC3c5rUkgnA1iPm3J8yMnR9nbFaGXVdaOaL8271Kjv/qTzv1iyGbZscXyhFQl6pw
-         ufQiHQkbSjVsGjEIxpUbP6XUHmC0A95eO+NfUCpo1t+FLy9GVWViiPBeEXMKohfZJP
-         BKUIKstWRsFGbd6Kv2F5gQZn/Ze4sETDUWjVX0FhbYW9BBOpMMhXt84aNOdzZZHud0
-         zhYrJixoE+EEA==
-Message-ID: <acdce090-dfa6-5449-ae7c-cfd0dde46aa2@kernel.org>
-Date:   Sun, 27 Feb 2022 18:20:23 -0700
+        with ESMTP id S231284AbiB1CRn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 27 Feb 2022 21:17:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2F2216C911
+        for <bpf@vger.kernel.org>; Sun, 27 Feb 2022 18:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646014562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CNnWgfiQ5Q6Qh97dwmTTW8CSwF1BaMsz3d9uB0mZlfU=;
+        b=FfRshwVbt20L4NftCSMKH6sWyHlDjBMVUwIo4GuLMnWZWvDwq9qsD3U+yk2NqU5F6f1s2E
+        0jDnxR0RKkMq0SLicHqBwylgyNs2RqKl/tZIbQeBVlz+VS/9m1KdPMVG+vAOqcnFAV+vjp
+        ZkELG5PjSPqzJYmEZiyvK8m5x1cL5YE=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-228-n2JKGF6XPiCkA024pjd_1A-1; Sun, 27 Feb 2022 21:16:00 -0500
+X-MC-Unique: n2JKGF6XPiCkA024pjd_1A-1
+Received: by mail-lj1-f199.google.com with SMTP id bf20-20020a2eaa14000000b0024634b36cdaso4971097ljb.0
+        for <bpf@vger.kernel.org>; Sun, 27 Feb 2022 18:16:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CNnWgfiQ5Q6Qh97dwmTTW8CSwF1BaMsz3d9uB0mZlfU=;
+        b=qtyetOy8WIGWA/tiJ58D67k53K65Wx/Z2ovYizSq10WhQT+tb2amJ0/1Uwe38Z8N68
+         uSIhMLRcVT23dcuCjTbPocv29X7i+74dmC5+0G8dhOdNaacDVQH7FE3J6pPuJlkXX3U1
+         N7Gyb/ypYEicQzzXA84GN0m3pvo0I+8Kb48TB3FBxdhLgtGlX9HEArtxvPoT/g8j6Ies
+         8pQLtiuFHZbnwAB0i1cJCzZG7y6118iyytlRMvKWHEYcFSQlfORbrZg1Ioxy735KghN/
+         E21suAA+aicqSvXCajJg5tqhVJHrD4FS57VPiTfaz9nLQO9LiZa1MPg4XIX5aJI6VpEF
+         owsw==
+X-Gm-Message-State: AOAM533smdTy6xIvEfTGx6ZiKw33IliF7hJCMV9UCRbEtjqLFS7UoO6s
+        LhfDWh+5CUEEnMXvtkrDUZAkUtXKMYY5YVVTjQ1KsAULNrwHi4IbInPaTTApy/jmqgtxG6hAefw
+        6LeEhUMakCi+OfIfv76pmzhkqecmX
+X-Received: by 2002:a05:651c:b12:b0:246:74cb:4a4 with SMTP id b18-20020a05651c0b1200b0024674cb04a4mr9044571ljr.492.1646014558515;
+        Sun, 27 Feb 2022 18:15:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz2IUEdlig5Qxrnulga+hl3unA9Ll/9S9C/ZsbSGHeENvGx+vqIAwaZpk161mttnlyBOJreuBl3ckcaf9f4JsU=
+X-Received: by 2002:a05:651c:b12:b0:246:74cb:4a4 with SMTP id
+ b18-20020a05651c0b1200b0024674cb04a4mr9044559ljr.492.1646014558307; Sun, 27
+ Feb 2022 18:15:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [PATCH net-next v4 4/4] net: tun: track dropped skb via
- kfree_skb_reason()
-Content-Language: en-US
-To:     Dongli Zhang <dongli.zhang@oracle.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
-        joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
-References: <20220226084929.6417-1-dongli.zhang@oracle.com>
- <20220226084929.6417-5-dongli.zhang@oracle.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <20220226084929.6417-5-dongli.zhang@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220224103852.311369-1-baymaxhuang@gmail.com> <20220225090223.636877-1-baymaxhuang@gmail.com>
+In-Reply-To: <20220225090223.636877-1-baymaxhuang@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 28 Feb 2022 10:15:47 +0800
+Message-ID: <CACGkMEvRxb02LgF9Tq9ypnAmfBmrw1iG1W8pB5hqNs3DROxmvw@mail.gmail.com>
+Subject: Re: [PATCH net-next v2] tun: support NAPI for packets received from
+ batched XDP buffs
+To:     Harold Huang <baymaxhuang@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/26/22 1:49 AM, Dongli Zhang wrote:
-> The TUN can be used as vhost-net backend. E.g, the tun_net_xmit() is the
-> interface to forward the skb from TUN to vhost-net/virtio-net.
-> 
-> However, there are many "goto drop" in the TUN driver. Therefore, the
-> kfree_skb_reason() is involved at each "goto drop" to help userspace
-> ftrace/ebpf to track the reason for the loss of packets.
-> 
-> The below reasons are introduced:
-> 
-> - SKB_DROP_REASON_SKB_PULL
-> - SKB_DROP_REASON_SKB_TRIM
-> - SKB_DROP_REASON_DEV_READY
-> - SKB_DROP_REASON_TAP_FILTER
-> - SKB_DROP_REASON_TAP_TXFILTER
-> 
-> Cc: Joao Martins <joao.m.martins@oracle.com>
-> Cc: Joe Jin <joe.jin@oracle.com>
-> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+On Fri, Feb 25, 2022 at 5:03 PM Harold Huang <baymaxhuang@gmail.com> wrote:
+>
+> In tun, NAPI is supported and we can also use NAPI in the path of
+> batched XDP buffs to accelerate packet processing. What is more, after
+> we use NAPI, GRO is also supported. The iperf shows that the throughput of
+> single stream could be improved from 4.5Gbps to 9.2Gbps. Additionally, 9.2
+> Gbps nearly reachs the line speed of the phy nic and there is still about
+> 15% idle cpu core remaining on the vhost thread.
+>
+> Test topology:
+>
+> [iperf server]<--->tap<--->dpdk testpmd<--->phy nic<--->[iperf client]
+>
+> Iperf stream:
+>
+> Before:
+> ...
+> [  5]   5.00-6.00   sec   558 MBytes  4.68 Gbits/sec    0   1.50 MBytes
+> [  5]   6.00-7.00   sec   556 MBytes  4.67 Gbits/sec    1   1.35 MBytes
+> [  5]   7.00-8.00   sec   556 MBytes  4.67 Gbits/sec    2   1.18 MBytes
+> [  5]   8.00-9.00   sec   559 MBytes  4.69 Gbits/sec    0   1.48 MBytes
+> [  5]   9.00-10.00  sec   556 MBytes  4.67 Gbits/sec    1   1.33 MBytes
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.00  sec  5.39 GBytes  4.63 Gbits/sec   72          sender
+> [  5]   0.00-10.04  sec  5.39 GBytes  4.61 Gbits/sec               receiver
+>
+> After:
+> ...
+> [  5]   5.00-6.00   sec  1.07 GBytes  9.19 Gbits/sec    0   1.55 MBytes
+> [  5]   6.00-7.00   sec  1.08 GBytes  9.30 Gbits/sec    0   1.63 MBytes
+> [  5]   7.00-8.00   sec  1.08 GBytes  9.25 Gbits/sec    0   1.72 MBytes
+> [  5]   8.00-9.00   sec  1.08 GBytes  9.25 Gbits/sec   77   1.31 MBytes
+> [  5]   9.00-10.00  sec  1.08 GBytes  9.24 Gbits/sec    0   1.48 MBytes
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID] Interval           Transfer     Bitrate         Retr
+> [  5]   0.00-10.00  sec  10.8 GBytes  9.28 Gbits/sec  166          sender
+> [  5]   0.00-10.04  sec  10.8 GBytes  9.24 Gbits/sec               receiver
+> ....
+>
+> Reported-at: https://lore.kernel.org/all/CACGkMEvTLG0Ayg+TtbN4q4pPW-ycgCCs3sC3-TF8cuRTf7Pp1A@mail.gmail.com
+> Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
 > ---
-> Changed since v1:
->   - revise the reason name
-> Changed since v2:
->   - declare drop_reason as type "enum skb_drop_reason"
-> Changed since v3:
->   - rename to TAP_FILTER and TAP_TXFILTER
->   - honor reverse xmas tree style declaration for 'drop_reason' in
->     tun_net_xmit()
-> 
->  drivers/net/tun.c          | 37 ++++++++++++++++++++++++++++---------
->  include/linux/skbuff.h     | 10 ++++++++++
->  include/trace/events/skb.h |  5 +++++
->  3 files changed, 43 insertions(+), 9 deletions(-)
-> 
+> v1 -> v2
+>  - fix commit messages
+>  - add queued flag to avoid void unnecessary napi suggested by Jason
+>
+>  drivers/net/tun.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index fed85447701a..c7d8b7c821d8 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -2379,7 +2379,7 @@ static void tun_put_page(struct tun_page *tpage)
+>  }
+>
+>  static int tun_xdp_one(struct tun_struct *tun,
+> -                      struct tun_file *tfile,
+> +                      struct tun_file *tfile, int *queued,
+>                        struct xdp_buff *xdp, int *flush,
+>                        struct tun_page *tpage)
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+Nit: how about simply returning the number of packets queued here?
+
+Thanks
+
+>  {
+> @@ -2388,6 +2388,7 @@ static int tun_xdp_one(struct tun_struct *tun,
+>         struct virtio_net_hdr *gso = &hdr->gso;
+>         struct bpf_prog *xdp_prog;
+>         struct sk_buff *skb = NULL;
+> +       struct sk_buff_head *queue;
+>         u32 rxhash = 0, act;
+>         int buflen = hdr->buflen;
+>         int err = 0;
+> @@ -2464,7 +2465,15 @@ static int tun_xdp_one(struct tun_struct *tun,
+>             !tfile->detached)
+>                 rxhash = __skb_get_hash_symmetric(skb);
+>
+> -       netif_receive_skb(skb);
+> +       if (tfile->napi_enabled) {
+> +               queue = &tfile->sk.sk_write_queue;
+> +               spin_lock(&queue->lock);
+> +               __skb_queue_tail(queue, skb);
+> +               spin_unlock(&queue->lock);
+> +               (*queued)++;
+> +       } else {
+> +               netif_receive_skb(skb);
+> +       }
+>
+>         /* No need to disable preemption here since this function is
+>          * always called with bh disabled
+> @@ -2492,7 +2501,7 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>         if (ctl && (ctl->type == TUN_MSG_PTR)) {
+>                 struct tun_page tpage;
+>                 int n = ctl->num;
+> -               int flush = 0;
+> +               int flush = 0, queued = 0;
+>
+>                 memset(&tpage, 0, sizeof(tpage));
+>
+> @@ -2501,12 +2510,15 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>
+>                 for (i = 0; i < n; i++) {
+>                         xdp = &((struct xdp_buff *)ctl->ptr)[i];
+> -                       tun_xdp_one(tun, tfile, xdp, &flush, &tpage);
+> +                       tun_xdp_one(tun, tfile, &queued, xdp, &flush, &tpage);
+>                 }
+>
+>                 if (flush)
+>                         xdp_do_flush();
+>
+> +               if (tfile->napi_enabled && queued > 0)
+> +                       napi_schedule(&tfile->napi);
+> +
+>                 rcu_read_unlock();
+>                 local_bh_enable();
+>
+> --
+> 2.27.0
+>
+
