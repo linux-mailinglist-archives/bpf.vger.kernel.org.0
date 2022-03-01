@@ -2,126 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E10BB4C90F9
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 17:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168E04C9287
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 19:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbiCAQ6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 11:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
+        id S236600AbiCASEy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 13:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232656AbiCAQ6c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 11:58:32 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F424DF63;
-        Tue,  1 Mar 2022 08:57:50 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id ev16-20020a17090aead000b001bc3835fea8so2748693pjb.0;
-        Tue, 01 Mar 2022 08:57:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zo/7GfGlOnzofFvvg9nl2uRoZm9krz9UZhB43diZ0xQ=;
-        b=RNqA+/co2oe/6+gH0Z9qupty7/bWWmJnkIwk8N7n+UbysnG+ErCb3lADt8G0pVTK3U
-         aUYi8LzRI/WMW8YKctdfQAb9HQ3r841bhMzzT57HtSqb3V7pjcDrNyHlysvuZI4J7t6M
-         Z8rJNpG+H/lgc/3MBfbKhxOQCgD4O/vBczqOso2xjc1Z1GYcTI/YOUZzL6PaEbbuRNpQ
-         zzv1qF2/mDvo7zrcKiJSr1+p7XyEE3Q/qbSd52AvM58dDLvULCuEk1EBa1mlN5hPjlDK
-         vITfq18YvRdvc9rdJxzKosjdnYWLAPf4Cu8aBQ8d9e1K8ddOQzqwCnsO6h6ucHAZZsaV
-         vflw==
+        with ESMTP id S230148AbiCASEx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 13:04:53 -0500
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8C8F205C4;
+        Tue,  1 Mar 2022 10:04:10 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id v22so22947708ljh.7;
+        Tue, 01 Mar 2022 10:04:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zo/7GfGlOnzofFvvg9nl2uRoZm9krz9UZhB43diZ0xQ=;
-        b=rIVy0RmrLJyPiuunKwtzNp1NmqhWDjDc2A8W+HrB11MLB5lFIwXHz6ue0Vpro5bgTU
-         g1UQNd0ubtw6wwstmQR3iD+Jxyf37DHNuohgUoAnULizfm9nyDL3n3xUDLV8CNjL5X+f
-         Oh6lbDajDwzscjDPr+ygXbbgp8saIzlHWQX7dAMplN4yGzW7JRL/2fx/vYVPa1nIofxh
-         /P8vmR0R/15Els/n7IWvB7Elrie60ZKbLVQloYUtFv0MnGfUnPhRsgcbdli6SsUURUj5
-         7rKRbj3RagztUmbwhDaYSCkGthdPYfd5FcMvG84vn3+AW8seYdjuDQJfjO4S4UtGKrjF
-         w9HA==
-X-Gm-Message-State: AOAM5335KwkccFvT7HoiV62IIgw7VnA3KbR0razTLSQsHYOEV0b/WUM0
-        uEs847aN10qnlGZK0xHzP+g8/GTe/oVB4Yjb
-X-Google-Smtp-Source: ABdhPJyaTAyeGUQ7KahmWWxURRoepGSsTwC6E1Q1U1J+cTHYHX7a5lqwlr97c/hx8naBMGtBkz43Kw==
-X-Received: by 2002:a17:902:b289:b0:14f:ebc2:8b85 with SMTP id u9-20020a170902b28900b0014febc28b85mr25905806plr.39.1646153870098;
-        Tue, 01 Mar 2022 08:57:50 -0800 (PST)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id k17-20020a056a00169100b004f3c2ac6600sm17887468pfc.116.2022.03.01.08.57.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Mar 2022 08:57:49 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] libbpf: Add a check to ensure that page_cnt is non-zero
-Date:   Wed,  2 Mar 2022 00:57:37 +0800
-Message-Id: <20220301165737.672007-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5e5d4xKeEeUZ3+qWANyOhEjefcxDPbVrweTplbTrGL0=;
+        b=XbEol5Idr3Jxdf0oIwFNehiDpMcJvxAGlN7NjXT0vPdtPXflh6W9lIAKvtoS4I3hGM
+         yWFYsUt80IDHhvnkbNn2ZYRdgZp2KUVUIZru832OHfpsyX+b2896Mf6Ny4cM/tIuMk7E
+         CTHbD/vg3Cpa61lx47WLD/NgH+37SMq2hCTXgwuKiTk33vOa/f5p0p7xpXimbuPPZtpV
+         zMmziONZ9eguPTrJe0+uZ5IyTX/umq0gOjgCVm4thjiqONTB80IWMSws7gpoTxk5jRKt
+         KR4jYs12jE1aC4W8ZwPb9sGTIPFf5c4Tyfs955nScnpAGMMVPQ12v8BKp1O3AW5+zH+M
+         Mk7Q==
+X-Gm-Message-State: AOAM5328jZ/YUFO90iMae1glVZy2wFnWHL/2HS5rtwi97QRMEUYYCbnK
+        0oSpQ9aR/KjCnqsSM7Ar3UmqRxB0WhDF8Toyeeo=
+X-Google-Smtp-Source: ABdhPJynEtWmU+r7YVpV/44yaa1XMqFio7eeol8Jvu88b1N6K5fmbNWznf5U9Eepkwm+AIwaL+W1fa4QAVUjN49JMsI=
+X-Received: by 2002:a2e:819a:0:b0:240:8b4c:ef10 with SMTP id
+ e26-20020a2e819a000000b002408b4cef10mr18068820ljg.180.1646157848769; Tue, 01
+ Mar 2022 10:04:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220301010412.431299-1-namhyung@kernel.org> <20220301010412.431299-3-namhyung@kernel.org>
+ <Yh3cwBloddIGvCjU@hirez.programming.kicks-ass.net>
+In-Reply-To: <Yh3cwBloddIGvCjU@hirez.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Tue, 1 Mar 2022 10:03:57 -0800
+Message-ID: <CAM9d7cguuyY74L9XK=z384bwO6nTCw4XOFNK1yaJhhmKYTBBoA@mail.gmail.com>
+Subject: Re: [PATCH 2/4] locking: Apply contention tracepoints in the slow path
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Radoslaw Burny <rburny@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The page_cnt parameter is used to specify the number of memory pages
-allocated for each per-CPU buffer, it must be non-zero and a power of 2.
+Hi Peter,
 
-Currently, the __perf_buffer__new() function attempts to validate that
-the page_cnt is a power of 2 but forgets checking for the case where
-page_cnt is zero, we can fix it by replacing 'page_cnt & (page_cnt - 1)'
-with '!is_power_of_2(page_cnt)'.
+On Tue, Mar 1, 2022 at 12:44 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Feb 28, 2022 at 05:04:10PM -0800, Namhyung Kim wrote:
+> > @@ -80,7 +81,9 @@ static inline void queued_read_lock(struct qrwlock *lock)
+> >               return;
+> >
+> >       /* The slowpath will decrement the reader count, if necessary. */
+> > +     LOCK_CONTENTION_BEGIN(lock, LCB_F_READ);
+> >       queued_read_lock_slowpath(lock);
+> > +     LOCK_CONTENTION_END(lock);
+> >  }
+> >
+> >  /**
+> > @@ -94,7 +97,9 @@ static inline void queued_write_lock(struct qrwlock *lock)
+> >       if (likely(atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED)))
+> >               return;
+> >
+> > +     LOCK_CONTENTION_BEGIN(lock, LCB_F_WRITE);
+> >       queued_write_lock_slowpath(lock);
+> > +     LOCK_CONTENTION_END(lock);
+> >  }
+>
+> > @@ -82,7 +83,9 @@ static __always_inline void queued_spin_lock(struct qspinlock *lock)
+> >       if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
+> >               return;
+> >
+> > +     LOCK_CONTENTION_BEGIN(lock, 0);
+> >       queued_spin_lock_slowpath(lock, val);
+> > +     LOCK_CONTENTION_END(lock);
+> >  }
+>
+> Can you please stick that _inside_ the slowpath? You really don't want
+> to inline that.
 
-Thus we also don't need to add a check in perf_buffer__new_v0_6_0() to
-make sure that page_cnt is non-zero and the check for zero in
-perf_buffer__new_raw_v0_6_0() can also be removed.
+I can move it into the slow path with caller ip.
 
-The code is cleaner and more readable.
-
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- tools/lib/bpf/libbpf.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index be6480e260c4..4dd1d82cd5b9 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -33,6 +33,7 @@
- #include <linux/filter.h>
- #include <linux/list.h>
- #include <linux/limits.h>
-+#include <linux/log2.h>
- #include <linux/perf_event.h>
- #include <linux/ring_buffer.h>
- #include <linux/version.h>
-@@ -10951,7 +10952,7 @@ struct perf_buffer *perf_buffer__new_raw_v0_6_0(int map_fd, size_t page_cnt,
- {
- 	struct perf_buffer_params p = {};
- 
--	if (page_cnt == 0 || !attr)
-+	if (!attr)
- 		return libbpf_err_ptr(-EINVAL);
- 
- 	if (!OPTS_VALID(opts, perf_buffer_raw_opts))
-@@ -10992,7 +10993,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
- 	__u32 map_info_len;
- 	int err, i, j, n;
- 
--	if (page_cnt & (page_cnt - 1)) {
-+	if (!is_power_of_2(page_cnt)) {
- 		pr_warn("page count should be power of two, but is %zu\n",
- 			page_cnt);
- 		return ERR_PTR(-EINVAL);
--- 
-2.35.1
-
+Thanks,
+Namhyung
