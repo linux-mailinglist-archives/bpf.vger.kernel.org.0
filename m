@@ -2,107 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03294C805A
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 02:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B8A4C8066
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 02:37:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbiCABcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 20:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
+        id S232001AbiCABiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 20:38:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbiCABcG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 20:32:06 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAC8F06
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 17:31:26 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id c14so11477564ilm.4
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 17:31:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nfMGmIM5IGKijbqJ0tS1UtYJj2PiFYUavVKp3kozVyk=;
-        b=S7XsyhrGMOW8Mwrj15giRJ2JSWrUK1/vXBExyCAYqZ34t9gOCEFP34jFQ8qhPRwULz
-         nDWhp1WaBFmvonaBLUesT9+bfGWaPpRiT4bBTPSBhkkMv3B31el1AOhYznAESua9puMo
-         LAE/bXE3t1sluak1BzQnFXlY4iMr6sgwXDj+0ReMP10Q1panQ8Tzy5UQQ10yousT6yCQ
-         J7UiUE4N+4GEojYVa8+qaRqzZ+El2Ba3BMJR5ahOGHsfRu3g1MEdmSmuHy41VZ67FLPp
-         o8hqW6JPpONM8I8trtEm8hAp6pfA/krhzoEjuLz1QnzdHRFOQrpEVpIpcuYm958DmGi7
-         /hGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nfMGmIM5IGKijbqJ0tS1UtYJj2PiFYUavVKp3kozVyk=;
-        b=Yr+XEnUfWHlb5PtG4/ovz+R3lwxljVy4/FsfuzpwOjHKPiLqoL78qhvF3YM5hreOAz
-         4B7ucQaIVqnlkV7Wi2N2RowMct+jAFzgq7yoiSfWMNcksF14mNVZafbg9HowwAGHpVjT
-         gdAMKnJwFLisgrKoMQxqtdOjLjV9dJ1g/DWWu9Js5vhXQ/X62lx8y3jvwOPq/b5ZDFNl
-         5t2NpYsAgqSNOA6B2R3uYzifE8PHacH9zXXensc3hcySdiPjGJMmyaLD+wY9s8LkbmGA
-         NuoZbq1W7lx7HvCElN0hqi8m86LbVaL3d1GTtXT7rJXq0HjUljMHArqNQ5z7ESHv3qVm
-         JeFg==
-X-Gm-Message-State: AOAM5319ZYEzLuywLr7nurQrcyZzzmm2q3JahUWLg2yrm1Rlq9bOYg9Z
-        UQswTj+1MsaOUhfczIFlhi2krVAEsAGQuj5ns8M=
-X-Google-Smtp-Source: ABdhPJylTXyJ8R20110SPOVqRCA6454p5fAE5jZyOpTmwaJKI175L0TJ8z3jbOFhp9/rGoh2scXFxNzZiwWAya1KWIE=
-X-Received: by 2002:a92:ca0d:0:b0:2c2:a846:b05a with SMTP id
- j13-20020a92ca0d000000b002c2a846b05amr16759584ils.252.1646098285766; Mon, 28
- Feb 2022 17:31:25 -0800 (PST)
+        with ESMTP id S229583AbiCABiQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 20:38:16 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163DD22520
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 17:37:36 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D45A76156D
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 01:37:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F6EC340EE
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 01:37:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646098655;
+        bh=Xs9sRozGvtPStbYMq0g/5V/66r6PtbUrStImxXrUP9s=;
+        h=From:Date:Subject:To:From;
+        b=UXkdjiQ83LZAOTqVELD29zfSyXWESD30IuXLOCJL9aTXnfqgMH8ljU0tRA8lNStgF
+         /epmjyj1pA+OdY4uz3l3VtJK96h+onEZAeVgBDm0qZP63aebyCqC44EdrSarZoAnEf
+         jVYTWSBD1axAPTdWy+YzwkLwieS5YJpfIj7uGkBCkkAyLpfyo/8o3P+ZfLhi4wNKP5
+         91ojeNkKpRQ7wckyqHhSB3O1NBMvSyUShj95dC284K9sgS6cS9lSIxxMqRIFgDKKW9
+         Ejxn4o+5syM/ZuiteQtR/HcRzLhxB8gYxTr/5263LP8ZtfCnVD50Di5tOzeHIeVLHp
+         FS5UAGnLsm6YA==
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-2d07c4a0d06so128476127b3.13
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 17:37:35 -0800 (PST)
+X-Gm-Message-State: AOAM5306Wx0YWK2SVCUu1MLBFRuBLbe1y0s8JT9uqHV/ldY8DBMIpc8G
+        yygAbHB8f4v97D7Joo+KAhfP00l0FndF8AY470Y=
+X-Google-Smtp-Source: ABdhPJzarOJB46/w1u1JDw/iJbG4cKlKO/BhYpv4clIqTdoybcuucC5alZO7SG6xH+6LAluGb7+r3/iPXfAScVGQTK4=
+X-Received: by 2002:a81:c47:0:b0:2d6:beec:b381 with SMTP id
+ 68-20020a810c47000000b002d6beecb381mr22985482ywm.148.1646098654346; Mon, 28
+ Feb 2022 17:37:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20220224120943.1169985-1-xukuohai@huawei.com>
-In-Reply-To: <20220224120943.1169985-1-xukuohai@huawei.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Feb 2022 17:31:14 -0800
-Message-ID: <CAEf4Bzaw3hDqrJ=sQVVjY-Gpjf90tWRpo-s2a_vFYTKWEe9qqw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/2] Fix btf dump error caused by declaration
-To:     Xu Kuohai <xukuohai@huawei.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 28 Feb 2022 17:37:23 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6c17p3XkzSxxo7YBW9LHjqerOqQvt7C1+S--8C9omeng@mail.gmail.com>
+Message-ID: <CAPhsuW6c17p3XkzSxxo7YBW9LHjqerOqQvt7C1+S--8C9omeng@mail.gmail.com>
+Subject: [LSF/MM/BPF TOPIC] Debug with BPF in container environments
+To:     lsf-pc@lists.linux-foundation.org, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 3:59 AM Xu Kuohai <xukuohai@huawei.com> wrote:
->
-> This series fixes a btf dump error caused by forward declaration.
->
-> Currently if a declaration appears in the BTF before the definition,
-> the definition is dumped as a conflicting name, eg:
->
->     $ bpftool btf dump file vmlinux format raw | grep "'unix_sock'"
->     [81287] FWD 'unix_sock' fwd_kind=struct
->     [89336] STRUCT 'unix_sock' size=1024 vlen=14
->
->     $ bpftool btf dump file vmlinux format c | grep "struct unix_sock"
->     struct unix_sock;
->     struct unix_sock___2 {      <--- conflict, the "___2" is unexpected
->                     struct unix_sock___2 *unix_sk;
->
-> This causes a "definition not found" compilation error if the dump output
-> is used as a header file.
->
+BPF based tools, such as bcc and bpftrace, are very helpful for
+debugging various issues. However, most BPF capabilities require
+CAP_SYS_ADMIN, CAP_BPF, CAP_NET_ADMIN, and/or CAP_PERF, which creates
+security concerns in container environments. In this LSF/MM/BPF, I
+would like to discuss different options to enable debugging with BPF
+in a container, while maintaining security.
 
-seems like I replied about test failures on v2 instead of v3 (there
-are test failures for v3, though), please check the link in that
-reply. But I wanted to also mention that it would be great to keep a
-succinct version log in the cover letter with what was changed or
-fixed between versions (see other submissions on the mailing list).
+To kick off the brainstorming, here are some random ideas on the top of my head:
 
-> Xu Kuohai (2):
->   libbpf: Skip forward declaration when counting duplicated type names
->   selftests/bpf: Update btf_dump case for conflicting names
->
->  tools/lib/bpf/btf_dump.c                      |  5 ++
->  .../selftests/bpf/prog_tests/btf_dump.c       | 54 ++++++++++++++-----
->  2 files changed, 46 insertions(+), 13 deletions(-)
->
-> --
-> 2.30.2
->
+1. Control what data is accessible to each user. This is clearly
+tricky for kernel data structures shared by different users.
+
+2. Control the trigger of BPF programs, iow, one user's BPF program
+could not trigger on other user's tasks. However, this won't work well
+with interrupts and special kernel functions/tracepoints, such as
+context switches.
+
+3. Limit which BPF programs are accessible to non-root users. There
+are multiple ways to do this. The sys admin could pin some BPF
+programs and share them with users in the container (via a bind mount
+of bpffs). This is relatively safe, but not flexible enough for
+debugging uses. On the other side of the safe-flexible spectrum, the
+sys admin could use setcap on bpftrace, bcc-py, or some customized
+tools, but this is not ideal either.
+
+4. perf subsystem enables monitoring for non-root users with per-task
+perf events that move with a specific task. We don't have such a
+concept in BPF, but similar ideas may work well in some scenarios.
+
+5. Some combination of different mechanisms.
+
+Thanks,
+Song
