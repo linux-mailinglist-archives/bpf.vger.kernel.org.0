@@ -2,72 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEF84C8444
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 07:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166A04C8468
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 07:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232313AbiCAGo1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 01:44:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55154 "EHLO
+        id S232521AbiCAG63 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 01:58:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiCAGo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 01:44:27 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5FC70CD6;
-        Mon, 28 Feb 2022 22:43:46 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id l9so12254206pls.6;
-        Mon, 28 Feb 2022 22:43:46 -0800 (PST)
+        with ESMTP id S229814AbiCAG62 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 01:58:28 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B2A49F1D
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 22:57:48 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id g7-20020a17090a708700b001bb78857ccdso1290253pjk.1
+        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 22:57:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+owYc1beiZNdVQWI5pfer3AMJMG+Sa0wwOUcL3jCg/M=;
-        b=mhNIm7K8HCmmestlFa3eFuBAsCUtvPUG4FIZlkQTSacPCQpagAAGbpAhZM/0yeiXv5
-         EFWSoPXHVye+yv0CPoK6KGmkv6kJxr9Cfcy9ZFjI7eIiz8+t+Nc5hN68yZ3yK/NyAvOa
-         oxl3XgUyX3PSDqZ/Ma+n0BsEq+G99hVUwCDKTia0IuOnZqIK923uqAnUJj/gdLpizGHl
-         +N15qzdLMnQoNn9s8LDDKGfGxN1Twuidp2iSKW8ewXBvD7XAPiWdMNvhdD7dPadMLAFT
-         eYEV6H28YBmoJxUfIZQ+F8y8q12MXYDDNZ6FF6SDiRoHKGHUKHWg/gsfbVAhBU313ETp
-         sI3Q==
+        bh=ctxl2yb8hg0sfA+hglhvWUm8oGUAYJjY7RQkRAOYL3s=;
+        b=DnnCzPTY/8N7D/vXvjXNHMnrdLURHeHTgNzDZcALV/YJynKuHVijWUku49g3nH7z2O
+         +118yheNL0KHPaDuzv6V9QzNbM1QAeai0kq/UTZsuR8PaY7WOtM0ug7ydvK3ot6BqTpx
+         CIYloOSO5wEvjc/BPq2NToRSxBSVGOpbGHemCQM8dljZ1+VuQOBHbpWMuWVQo71OTp3m
+         5kbf6EpBJrLbZMDVo62OfCAeTbPSuEFKa9HLW+oSYYvGnqiwTmywb98nK3KWFN8mNExA
+         7SvuVdFjLWAQDP8UNd/GrZxwOLFV2oNsgPcbDySSpjnGemcmNckSrw/7dswi/RtDNGD7
+         Hy6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=+owYc1beiZNdVQWI5pfer3AMJMG+Sa0wwOUcL3jCg/M=;
-        b=LRfUjXYAh6QQy68+VA/ks1ZJyqtWWabLuUYqF/9StSxgFi22/0SAZfjCyvIOp2RVH7
-         O8TdtR2I2oTo9o0iqul3Q6GzkEVol9anT9vh00+7pRC4mTDxvNEEKgn9ge+bJrkxP2/8
-         EzMJBdLtfuHKeaprftOyCRgmQ50PbT4/KG5TGj3rUt5sGuDMfuDr1Asua4L4vOr/C36G
-         mU82QT7HUMGfaR7OeWHhVm+eynYgMPdSb0POC6LYKLb9G2bcxQhbdnDdMaN8Qp2gMGBU
-         ZthsFRCJu0JMmGFdwFN9Kf+ESKjSaZ+Xe740vNv21Y8tpxXsPrEtE6NemmIrcC65l75m
-         7eNA==
-X-Gm-Message-State: AOAM533dQuku4wYq9ZV4tPwoSLxQuR/UE3RfGIypkukxArrfY2JY/hTp
-        tqVueWVcTgV5pdP+A29gwko5kDNOrqbVOGRW
-X-Google-Smtp-Source: ABdhPJzzjKHZ4eMqpTkMRQtO2BodQZzivbsPo3+4bXmKPse4ZCebcpTrEUMZm0j7p2XARGe2hTwy5Q==
-X-Received: by 2002:a17:90a:67c3:b0:1bc:9cdf:1ee9 with SMTP id g3-20020a17090a67c300b001bc9cdf1ee9mr20506471pjm.203.1646117026083;
-        Mon, 28 Feb 2022 22:43:46 -0800 (PST)
-Received: from localhost.localdomain ([157.255.44.217])
-        by smtp.gmail.com with ESMTPSA id m14-20020a056a00164e00b004cd92ccbaa3sm15757586pfc.170.2022.02.28.22.43.43
+        bh=ctxl2yb8hg0sfA+hglhvWUm8oGUAYJjY7RQkRAOYL3s=;
+        b=puyoOPFvfzeEfDju9njBmokpwwbuZhB0ak+LZu5Pg7c3yZYu4XkUm+PSOcDYNHirqF
+         lbVuYb94kN5qgK0plk4Tps4nMZuMezTrrFW0ueNkEMI7m4i+FiKOaWiMKuRQG7d9xZ67
+         PDPDT0j9KO3FvM8rvos1PQHH46iNHtVc8hqbjbP/49c61GTH3TpUc5raT7DrSbCEnGif
+         2e/uhVU+iLAdorekIOmpv5jG7eYkv7ukClH5SGJBG4LLiFhbKWVJRPMhylpOUx8gDuZc
+         gMss26wgGUDlmzeyhl2XuNrHHb87MSs/P2LKwhszWzKwP3e2//Qk78RdxPbOUrLw3pDU
+         +Gbw==
+X-Gm-Message-State: AOAM533mzX0MGPDtLETRJuQ2C/Hfxrm/7B8VTnAoSLsiGt0pwjDmUGwg
+        oq5oeJ2nfLxKDcqY5cL5RKx9LygVoic=
+X-Google-Smtp-Source: ABdhPJxg8rYdBuadR5S6WWL7LFKewLwhCXUEzMsiP9CKX9401Eli5YNXff6u+GY8ZlThXjTj2zZzFw==
+X-Received: by 2002:a17:90b:1249:b0:1bc:30a4:8344 with SMTP id gx9-20020a17090b124900b001bc30a48344mr20233014pjb.186.1646117867950;
+        Mon, 28 Feb 2022 22:57:47 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id d14-20020a056a0024ce00b004f3c87df62bsm16329498pfv.81.2022.02.28.22.57.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Feb 2022 22:43:45 -0800 (PST)
-From:   Harold Huang <baymaxhuang@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     jasowang@redhat.com, edumazet@google.com,
-        Harold Huang <baymaxhuang@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        Mon, 28 Feb 2022 22:57:47 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        kvm@vger.kernel.org (open list:VIRTIO HOST (VHOST)),
-        virtualization@lists.linux-foundation.org (open list:VIRTIO HOST
-        (VHOST)), bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
-Subject: [PATCH net-next] tuntap: add sanity checks about msg_controllen in sendmsg
-Date:   Tue,  1 Mar 2022 14:43:14 +0800
-Message-Id: <20220301064314.2028737-1-baymaxhuang@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next v1 0/6] Fixes for bad PTR_TO_BTF_ID offset
+Date:   Tue,  1 Mar 2022 12:27:39 +0530
+Message-Id: <20220301065745.1634848-1-memxor@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1276; h=from:subject; bh=HCmeENLSmP9ulAELTv4A/Kt0DNS9Lo6s7ektL51AFHU=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiHcO1L28/7b5tROnKYB7jSwwC62iFmbswUO3e1hew nz8y2hGJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYh3DtQAKCRBM4MiGSL8RyuKSD/ 4shOZbWpELOU5vcYZgXeuU7FmTTUebMNf+QQsa4als+WuIOh3o/rgSBrGDR+YsOCsf0SCwTKzah0Y2 pTXOXTH/TVvls15mq/gLqa2OlX+WzSUwPulGzyCpbINtKj6GDQrKD3YaPELNNHvkmQAcmE3wXJNQfE S9xSV9oLd09FT3PzA+DnIRkqhhqXGlu9KBYjQEqWm8uH3fg+JEND5Gv41KJ8kdi2njlJKDhHx1tVgt BCnxQOi80KDaTtOac9DKw7uepx9rYLu4zBWHZ4uuEaSzJMXthFLKlZ0JYO/Zy9MFsWbzAKjj83PTm6 tsLKWBjjlqi4ydSVRDEDAPWnmEFeBWNtNt/j4EYndNt6I+rz1Rdf0gxtHtYBp2w1Kr/znUJFw+QI02 ObrHv2msGbFWpl47ESBf8BZuLQSunnMPVaWOgiILkX+JdCN5czrv4uEJWTt18ZtlU2fJ5QlCpHwWnH 6Xuj2Ek1wCHahZzYzsTsdxg/3oxpdJ8csKfktubdWQRwF7BeeK/khgX42U+Cw6IOTFzBj/j7cIIAhC uxpZqjDyn1HRWXOxh/DoFYlSc4Z+G/zB+9ZYr1pHVKtv/99OKn/3YzI4iGD3SrG16MZZ7H94GkOTk0 Bb/fdalJc4d52LW3b0Q58QEzA7Tqnj78I4d3ibWKmtJ8K9sPPfJuvsPjUrrg==
+X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -79,61 +70,30 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
-tun_sendmsg. Although we donot use msg_controllen in this path, we should
-check msg_controllen to make sure the caller pass a valid msg_ctl.
+This set fixes a bug related to bad var_off being permitted for kfunc call in
+case of PTR_TO_BTF_ID, consolidates offset checks for all register types allowed
+as helper or kfunc arguments into a common shared helper, and introduces a
+couple of other checks to harden the kfunc release logic and prevent future
+bugs. Some selftests are also included that fail in absence of these fixes,
+serving as demonstration of the issues being fixed.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
+Kumar Kartikeya Dwivedi (6):
+  bpf: Add check_func_arg_reg_off function
+  bpf: Fix PTR_TO_BTF_ID var_off check
+  bpf: Disallow negative offset in check_ptr_off_reg
+  bpf: Harden register offset checks for release kfunc
+  selftests/bpf: Update tests for new errstr
+  selftests/bpf: Add tests for kfunc register offset checks
 
-Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-Suggested-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
----
- drivers/net/tap.c   | 3 ++-
- drivers/net/tun.c   | 3 ++-
- drivers/vhost/net.c | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ include/linux/bpf_verifier.h                  |  3 +
+ kernel/bpf/btf.c                              | 24 ++++--
+ kernel/bpf/verifier.c                         | 75 ++++++++++-------
+ net/bpf/test_run.c                            | 11 +++
+ .../selftests/bpf/verifier/bounds_deduction.c |  2 +-
+ tools/testing/selftests/bpf/verifier/calls.c  | 82 +++++++++++++++++++
+ tools/testing/selftests/bpf/verifier/ctx.c    |  8 +-
+ 7 files changed, 167 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/net/tap.c b/drivers/net/tap.c
-index 8e3a28ba6b28..ba2ef5437e16 100644
---- a/drivers/net/tap.c
-+++ b/drivers/net/tap.c
-@@ -1198,7 +1198,8 @@ static int tap_sendmsg(struct socket *sock, struct msghdr *m,
- 	struct xdp_buff *xdp;
- 	int i;
- 
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		for (i = 0; i < ctl->num; i++) {
- 			xdp = &((struct xdp_buff *)ctl->ptr)[i];
- 			tap_get_user_xdp(q, xdp);
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 969ea69fd29d..2a0d8a5d7aec 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -2501,7 +2501,8 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 	if (!tun)
- 		return -EBADFD;
- 
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		struct tun_page tpage;
- 		int n = ctl->num;
- 		int flush = 0, queued = 0;
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 28ef323882fb..792ab5f23647 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -473,6 +473,7 @@ static void vhost_tx_batch(struct vhost_net *net,
- 		goto signal_used;
- 
- 	msghdr->msg_control = &ctl;
-+	msghdr->msg_controllen = sizeof(ctl);
- 	err = sock->ops->sendmsg(sock, msghdr, 0);
- 	if (unlikely(err < 0)) {
- 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
 -- 
-2.27.0
+2.35.1
 
