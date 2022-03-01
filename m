@@ -2,111 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFEB4C8C90
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 14:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CD24C8CB7
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 14:33:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbiCAN1V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 08:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50122 "EHLO
+        id S233824AbiCANef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 08:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbiCAN1U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 08:27:20 -0500
-Received: from chinatelecom.cn (prt-mail.chinatelecom.cn [42.123.76.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DEDF9D0C1;
-        Tue,  1 Mar 2022 05:26:39 -0800 (PST)
-HMM_SOURCE_IP: 172.18.0.218:56246.1658835715
-HMM_ATTACHE_NUM: 0001
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-222.210.155.146 (unknown [172.18.0.218])
-        by chinatelecom.cn (HERMES) with SMTP id D6D50280029;
-        Tue,  1 Mar 2022 21:26:25 +0800 (CST)
-X-189-SAVE-TO-SEND: +lic121@chinatelecom.cn
-Received: from  ([172.18.0.218])
-        by app0025 with ESMTP id 06415c6c8f124d04b2344848f72223f3 for bpf@vger.kernel.org;
-        Tue, 01 Mar 2022 21:26:35 CST
-X-Transaction-ID: 06415c6c8f124d04b2344848f72223f3
-X-Real-From: lic121@chinatelecom.cn
-X-Receive-IP: 172.18.0.218
-X-MEDUSA-Status: 0
-Sender: lic121@chinatelecom.cn
-Date:   Tue, 1 Mar 2022 13:26:23 +0000
-From:   lic121 <lic121@chinatelecom.cn>
-To:     bpf@vger.kernel.org
-Cc:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lic121@chinatelecom.cn
-Subject: [PATCH bpf] libbpf: unmap rings when umem deleted
-Message-ID: <20220301132623.GA19995@vscode.7~>
+        with ESMTP id S234386AbiCANee (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 08:34:34 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29557E08F
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 05:33:52 -0800 (PST)
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nP2dS-0006HL-6I; Tue, 01 Mar 2022 14:33:50 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nP2dR-000FJc-VD; Tue, 01 Mar 2022 14:33:49 +0100
+Subject: Re: [PATCH v4 bpf-next] Small BPF verifier log improvements
+To:     Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org
+Cc:     kernel-team@fb.com
+References: <20220224003729.2949667-1-mykolal@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <feebf924-426a-7128-993d-10a642088ccd@iogearbox.net>
+Date:   Tue, 1 Mar 2022 14:33:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220224003729.2949667-1-mykolal@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26468/Tue Mar  1 10:31:38 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-xsk_umem__create() does mmap for fill/comp rings, but xsk_umem__delete()
-doesn't do the unmap. This works fine for regular cases, because
-xsk_socket__delete() does unmap for the rings. But for the case that
-xsk_socket__create_shared() fails, umem rings are not unmapped.
+Hi Mykola,
 
-fill_save/comp_save are checked to determine if rings have already be
-unmapped by xsk. If fill_save and comp_save are NULL, it means that the
-rings have already been used by xsk. Then they are supposed to be
-unmapped by xsk_socket__delete(). Otherwise, xsk_umem__delete() does the
-unmap.
+On 2/24/22 1:37 AM, Mykola Lysenko wrote:
+> In particular:
+> 1) remove output of inv for scalars in print_verifier_state
+> 2) replace inv with scalar in verifier error messages
+> 3) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
+> 4) remove output of id=0
+> 5) remove output of ref_obj_id=0
+> 
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 
-Fixes: 2f6324a3937f ("libbpf: Support shared umems between queues and devices")
-Signed-off-by: lic121 <lic121@chinatelecom.cn>
----
- tools/lib/bpf/xsk.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Thanks for helping to improve the verifier output. Small comment below:
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index edafe56..32a2f57 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -1193,12 +1193,23 @@ int xsk_socket__create(struct xsk_socket **xsk_ptr, const char *ifname,
- 
- int xsk_umem__delete(struct xsk_umem *umem)
- {
-+	struct xdp_mmap_offsets off;
-+	int err;
-+
- 	if (!umem)
- 		return 0;
- 
- 	if (umem->refcount)
- 		return -EBUSY;
- 
-+	err = xsk_get_mmap_offsets(umem->fd, &off);
-+	if (!err && umem->fill_save && umem->comp_save) {
-+		munmap(umem->fill_save->ring - off.fr.desc,
-+		       off.fr.desc + umem->config.fill_size * sizeof(__u64));
-+		munmap(umem->comp_save->ring - off.cr.desc,
-+		       off.cr.desc + umem->config.comp_size * sizeof(__u64));
-+	}
-+
- 	close(umem->fd);
- 	free(umem);
- 
--- 
-1.8.3.1
+[...]
+> diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testing/selftests/bpf/prog_tests/align.c
+> index 0ee29e11eaee..210dc6b4a169 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/align.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/align.c
+> @@ -39,13 +39,13 @@ static struct bpf_align_test tests[] = {
+>   		},
+>   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>   		.matches = {
+> -			{0, "R1=ctx(id=0,off=0,imm=0)"},
+> +			{0, "R1=ctx(off=0,imm=0)"},
+>   			{0, "R10=fp0"},
+> -			{0, "R3_w=inv2"},
+> -			{1, "R3_w=inv4"},
+> -			{2, "R3_w=inv8"},
+> -			{3, "R3_w=inv16"},
+> -			{4, "R3_w=inv32"},
+> +			{0, "R3_w=2"},
+> +			{1, "R3_w=4"},
+> +			{2, "R3_w=8"},
+> +			{3, "R3_w=16"},
+> +			{4, "R3_w=32"},
 
+Ack, definitely better compared to the state today. :)
+
+[...]
+> @@ -161,19 +161,19 @@ static struct bpf_align_test tests[] = {
+>   		},
+>   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>   		.matches = {
+> -			{6, "R0_w=pkt(id=0,off=8,r=8,imm=0)"},
+> -			{6, "R3_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+> -			{7, "R3_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
+> -			{8, "R3_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+> -			{9, "R3_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
+> -			{10, "R3_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
+> -			{12, "R3_w=pkt_end(id=0,off=0,imm=0)"},
+> -			{17, "R4_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+> -			{18, "R4_w=inv(id=0,umax_value=8160,var_off=(0x0; 0x1fe0))"},
+> -			{19, "R4_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
+> -			{20, "R4_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
+> -			{21, "R4_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+> -			{22, "R4_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
+> +			{6, "R0_w=pkt(off=8,r=8,imm=0)"},
+> +			{6, "R3_w=(umax=255,var_off=(0x0; 0xff))"},
+> +			{7, "R3_w=(umax=510,var_off=(0x0; 0x1fe))"},
+> +			{8, "R3_w=(umax=1020,var_off=(0x0; 0x3fc))"},
+> +			{9, "R3_w=(umax=2040,var_off=(0x0; 0x7f8))"},
+> +			{10, "R3_w=(umax=4080,var_off=(0x0; 0xff0))"},
+> +			{12, "R3_w=pkt_end(off=0,imm=0)"},
+> +			{17, "R4_w=(umax=255,var_off=(0x0; 0xff))"},
+> +			{18, "R4_w=(umax=8160,var_off=(0x0; 0x1fe0))"},
+> +			{19, "R4_w=(umax=4080,var_off=(0x0; 0xff0))"},
+> +			{20, "R4_w=(umax=2040,var_off=(0x0; 0x7f8))"},
+> +			{21, "R4_w=(umax=1020,var_off=(0x0; 0x3fc))"},
+> +			{22, "R4_w=(umax=510,var_off=(0x0; 0x1fe))"},
+>   		},
+>   	},
+>   	{
+
+However, not printing any type info here is imho more confusing. For debugging /
+troubleshooting knowing that the register type is inv or scalar would be helpful.
+Fwiw, scalar is probably a better fit, although longer..
+
+Thanks,
+Daniel
