@@ -2,90 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A25D14C9087
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 17:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10BB4C90F9
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 17:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbiCAQjS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 11:39:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
+        id S235211AbiCAQ6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 11:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236276AbiCAQjS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 11:39:18 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EC13F89A
-        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 08:38:34 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id w7so17083721qvr.3
-        for <bpf@vger.kernel.org>; Tue, 01 Mar 2022 08:38:34 -0800 (PST)
+        with ESMTP id S232656AbiCAQ6c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 11:58:32 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F424DF63;
+        Tue,  1 Mar 2022 08:57:50 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id ev16-20020a17090aead000b001bc3835fea8so2748693pjb.0;
+        Tue, 01 Mar 2022 08:57:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3oyHDJPXz4MUJgBElW4MaL2dWxxSt5ih3fxmiK5Gs50=;
-        b=biU6fsA9UrmFW3BIfaYv5RzawE4Tvt4q/tuJ4G/JQzTVzsvnQkkFS85DkakG9eiGTJ
-         nEcbJvECd4Cha/qgxSiVok0JT6iW0D25p0NyClDMHEu8jgkoMVJk/5XEPiiZIu0vAB44
-         z/D5vXpGjby5sIB0dKN9jnm8NzVL8I305WeIf791sBTbYhguhUT9ESBrbMJq+fk1l0vx
-         N302M1QWTbmMb49UP8I/VrF37DAe8hQKmIH0qOsKZzkvG9CYmbY2Ir3b82MMAgJUQQz3
-         Km6BV7bCnyaUhQROiLxoujwvWrzDPw1KcIFMEHlt8VhJxJ1Z2zzmbk7EPVbS6bHBlpBC
-         LltQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo/7GfGlOnzofFvvg9nl2uRoZm9krz9UZhB43diZ0xQ=;
+        b=RNqA+/co2oe/6+gH0Z9qupty7/bWWmJnkIwk8N7n+UbysnG+ErCb3lADt8G0pVTK3U
+         aUYi8LzRI/WMW8YKctdfQAb9HQ3r841bhMzzT57HtSqb3V7pjcDrNyHlysvuZI4J7t6M
+         Z8rJNpG+H/lgc/3MBfbKhxOQCgD4O/vBczqOso2xjc1Z1GYcTI/YOUZzL6PaEbbuRNpQ
+         zzv1qF2/mDvo7zrcKiJSr1+p7XyEE3Q/qbSd52AvM58dDLvULCuEk1EBa1mlN5hPjlDK
+         vITfq18YvRdvc9rdJxzKosjdnYWLAPf4Cu8aBQ8d9e1K8ddOQzqwCnsO6h6ucHAZZsaV
+         vflw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3oyHDJPXz4MUJgBElW4MaL2dWxxSt5ih3fxmiK5Gs50=;
-        b=m23Nn4qdTy7yBA4QU+eXrc2NG599cFo6RPL5TgLEofnKOMHfzGyDtFP7Bg+JwlZPJk
-         WCw5kigwprThWc27+KUEALspHNve5zA/UMXAuQs7bT5ZfZ9tIrhL6IRiWm84DxUVpZNs
-         E5wgnh+d+OFR3K3piAPl4n+TCnzMn1Ijxk26yrwlJtqsOgIR2wRkJaZZoEzWUXS4RkGB
-         59N0HKixwfDXhKv08TNc+anXTXb+rnn7upgFOkRBvL6F5IN0SYaloTs0xs7nlUZFkA3X
-         Lw6YrTO0a9VP2wApUWGxsH3GV0a9utlSwBxt8PkVwIB0CvFtocJr62og4bjhlDwZselr
-         5zXw==
-X-Gm-Message-State: AOAM531wNy1uxKEUlPriLEfsFuaJy74QVZaOGHXsPRNixDbQpK8Ke7WB
-        /UPFNYteY5Ivdn3wcshntSEtH8x/5fwMg7ujU0jjzw==
-X-Google-Smtp-Source: ABdhPJwQugZDd7FBcl55Uiy4B5juwSw6Er9YBu2Rdfc92MOO/fr+SVNg95zVcDNOFOwnICrqENeY4DIQ3xHg0BazFSk=
-X-Received: by 2002:a05:6214:d42:b0:431:d89a:66b6 with SMTP id
- 2-20020a0562140d4200b00431d89a66b6mr18251002qvr.58.1646152713708; Tue, 01 Mar
- 2022 08:38:33 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zo/7GfGlOnzofFvvg9nl2uRoZm9krz9UZhB43diZ0xQ=;
+        b=rIVy0RmrLJyPiuunKwtzNp1NmqhWDjDc2A8W+HrB11MLB5lFIwXHz6ue0Vpro5bgTU
+         g1UQNd0ubtw6wwstmQR3iD+Jxyf37DHNuohgUoAnULizfm9nyDL3n3xUDLV8CNjL5X+f
+         Oh6lbDajDwzscjDPr+ygXbbgp8saIzlHWQX7dAMplN4yGzW7JRL/2fx/vYVPa1nIofxh
+         /P8vmR0R/15Els/n7IWvB7Elrie60ZKbLVQloYUtFv0MnGfUnPhRsgcbdli6SsUURUj5
+         7rKRbj3RagztUmbwhDaYSCkGthdPYfd5FcMvG84vn3+AW8seYdjuDQJfjO4S4UtGKrjF
+         w9HA==
+X-Gm-Message-State: AOAM5335KwkccFvT7HoiV62IIgw7VnA3KbR0razTLSQsHYOEV0b/WUM0
+        uEs847aN10qnlGZK0xHzP+g8/GTe/oVB4Yjb
+X-Google-Smtp-Source: ABdhPJyaTAyeGUQ7KahmWWxURRoepGSsTwC6E1Q1U1J+cTHYHX7a5lqwlr97c/hx8naBMGtBkz43Kw==
+X-Received: by 2002:a17:902:b289:b0:14f:ebc2:8b85 with SMTP id u9-20020a170902b28900b0014febc28b85mr25905806plr.39.1646153870098;
+        Tue, 01 Mar 2022 08:57:50 -0800 (PST)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id k17-20020a056a00169100b004f3c2ac6600sm17887468pfc.116.2022.03.01.08.57.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Mar 2022 08:57:49 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Add a check to ensure that page_cnt is non-zero
+Date:   Wed,  2 Mar 2022 00:57:37 +0800
+Message-Id: <20220301165737.672007-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <20220228232332.458871-1-sdf@google.com> <6a6333da-f282-09d2-fd2d-cb67e33a07a1@iogearbox.net>
-In-Reply-To: <6a6333da-f282-09d2-fd2d-cb67e33a07a1@iogearbox.net>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Tue, 1 Mar 2022 08:38:22 -0800
-Message-ID: <CAKH8qBuPws+aYA-+sbqA2-NEPXNjmmHVGfU99Xb1LD7LomAa3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: test_run: Fix overflow in xdp frags bpf_test_finish
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        andrii@kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 1, 2022 at 8:33 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 3/1/22 12:23 AM, Stanislav Fomichev wrote:
-> > Syzkaller reports another issue:
-> > WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
-> > check_copy_size include/linux/thread_info.h:230 [inline]
-> > WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
-> > copy_to_user include/linux/uaccess.h:199 [inline]
-> > WARNING: CPU: 0 PID: 10775 at include/linux/thread_info.h:230
-> > bpf_test_finish.isra.0+0x4b2/0x680 net/bpf/test_run.c:171
-> >
-> > This can happen when the userspace buffer is smaller than head+frags.
-> > Return ENOSPC in this case.
-> >
-> > Fixes: 7855e0db150a ("bpf: test_run: add xdp_shared_info pointer in bpf_test_finish signature")
-> > Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
->
-> Do we have a Reported-by tag for syzkaller so it can match against its report?
+The page_cnt parameter is used to specify the number of memory pages
+allocated for each per-CPU buffer, it must be non-zero and a power of 2.
 
-Oops, sorry, totally forgot:
+Currently, the __perf_buffer__new() function attempts to validate that
+the page_cnt is a power of 2 but forgets checking for the case where
+page_cnt is zero, we can fix it by replacing 'page_cnt & (page_cnt - 1)'
+with '!is_power_of_2(page_cnt)'.
 
-Reported-by: syzbot+5f81df6205ecbbc56ab5@syzkaller.appspotmail.com
+Thus we also don't need to add a check in perf_buffer__new_v0_6_0() to
+make sure that page_cnt is non-zero and the check for zero in
+perf_buffer__new_raw_v0_6_0() can also be removed.
+
+The code is cleaner and more readable.
+
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ tools/lib/bpf/libbpf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index be6480e260c4..4dd1d82cd5b9 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -33,6 +33,7 @@
+ #include <linux/filter.h>
+ #include <linux/list.h>
+ #include <linux/limits.h>
++#include <linux/log2.h>
+ #include <linux/perf_event.h>
+ #include <linux/ring_buffer.h>
+ #include <linux/version.h>
+@@ -10951,7 +10952,7 @@ struct perf_buffer *perf_buffer__new_raw_v0_6_0(int map_fd, size_t page_cnt,
+ {
+ 	struct perf_buffer_params p = {};
+ 
+-	if (page_cnt == 0 || !attr)
++	if (!attr)
+ 		return libbpf_err_ptr(-EINVAL);
+ 
+ 	if (!OPTS_VALID(opts, perf_buffer_raw_opts))
+@@ -10992,7 +10993,7 @@ static struct perf_buffer *__perf_buffer__new(int map_fd, size_t page_cnt,
+ 	__u32 map_info_len;
+ 	int err, i, j, n;
+ 
+-	if (page_cnt & (page_cnt - 1)) {
++	if (!is_power_of_2(page_cnt)) {
+ 		pr_warn("page count should be power of two, but is %zu\n",
+ 			page_cnt);
+ 		return ERR_PTR(-EINVAL);
+-- 
+2.35.1
+
