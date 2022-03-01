@@ -2,101 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F6D4C863F
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 09:18:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162854C86CB
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 09:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233117AbiCAITO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 03:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        id S232960AbiCAIo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 03:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbiCAITO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 03:19:14 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418E611A10;
-        Tue,  1 Mar 2022 00:18:34 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id bt3so9299655qtb.0;
-        Tue, 01 Mar 2022 00:18:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IurrTkx6DCr4ulIznm4VdKXJFaHnNtzg1HfInKM99Es=;
-        b=RdKHfPZSb0l9CM4WDiZIUSrO3kj+w7FMPxcBoiSZv3Iu8JJw48grUEm5aeE4V4UBYh
-         SD0lrtG6hJIOBQFII5hnmnmFUqpeYD/QARF5xgeLmytrp4or6ZGaeztwcVZ35Qs5UpNP
-         M2CRiGYVVVhWJP2Zz3tLNT/0KpKhg02zSQtuy7g2KL9MDCsfITO0LRzsiKXS5v2oYigX
-         jYngmjIwOJ/mxOHToffx1UPitgcyhn2vs1COaAakaxSojPq7WodKGix5XXW5jZBULcL/
-         DWTZtSRO4BSiPXBt+Gzw/xrLLIWNG2rl+crGNc1TSxSDFThllCuIUMIZrx1gk5OSrAFr
-         YfFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IurrTkx6DCr4ulIznm4VdKXJFaHnNtzg1HfInKM99Es=;
-        b=1pS5KkZpsZmMQuT6Cescdfe3UaR9Pc+IvkXIgQyPN96JkxTPpPiC2xBTGojefwV9gJ
-         O7TsYzrbEeVXkftboVVTBILhI4zezB9164V1hOspTx5RwG1b0M1UUtZZVFcKpS2FEde8
-         NoQze1TF4dfAyblAC2/DR78b+Xgknzc6wDBZM/c53X7jWN5+SvdzGp2BafLPqoIvvJx5
-         gjclOiOB+nQvGOzIXnDoWZucR7ITfMx70L3et9tKC3HG4NIf9LsPb3bjzBGc3ZtssYV2
-         A210rM6xAlKvvWU1sG7DhrrbswKWDZkDEGvq0XEMgRF0K7Jc+odugjKTi9ZhG46JMC1M
-         opOA==
-X-Gm-Message-State: AOAM532KsDkloofW7K/g9jCkN6ujGHwk22QAtglUddzK83cDUXzvryr2
-        wsBpJWlI6acW67p1l5fYsxc=
-X-Google-Smtp-Source: ABdhPJzmePecP4wTNT1Yp38PAlSvaEYvpH/frASEeLMA5EmRDor4vO2MdS8CijBsh6exq5Snu11qVg==
-X-Received: by 2002:ac8:7d44:0:b0:2de:4d14:b6b9 with SMTP id h4-20020ac87d44000000b002de4d14b6b9mr19022794qtb.505.1646122713255;
-        Tue, 01 Mar 2022 00:18:33 -0800 (PST)
-Received: from localhost.localdomain ([193.203.214.57])
-        by smtp.gmail.com with ESMTPSA id 3-20020ac85703000000b002dcea434fa4sm8713557qtw.18.2022.03.01.00.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Mar 2022 00:18:32 -0800 (PST)
-From:   cgel.zte@gmail.com
-X-Google-Original-From: chi.minghao@zte.com.cn
-To:     pablo@netfilter.org
-Cc:     kadlec@netfilter.org, fw@strlen.de, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Minghao Chi <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cn>
-Subject: [PATCH] net/netfilter: use memset avoid infoleaks
-Date:   Tue,  1 Mar 2022 08:18:24 +0000
-Message-Id: <20220301081824.2053310-1-chi.minghao@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229532AbiCAIo4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 03:44:56 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD9F7DA84;
+        Tue,  1 Mar 2022 00:44:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ada8xpo23wBI1pn03oUM0wmOJBiudB2NMaqAB+HG05s=; b=mWdnCWfHHw4SvGH/OxiIK0T/Wj
+        BhWT1rlS3oKQnPYWAOvMAyc346EtkfGkty3jEvzzDSRzrHJoxui2ywx+xDrnlrulV+Mcqf8pHeL54
+        IHK5LKW/xnw842B4j+9eEvq3ZZYqFJscSwIfy0m+tZEp9VMp1rqTI5t7EVXVIPFw0ac5Ja1KDpH/2
+        HGeGQFED0ZSugTPa2JUxhJMqg5iCSPnlfTwwsV0wFM2ahMHU40VL7rI6SuAqv2kLN01xQ4oRM3cCa
+        uLQ1IpJt0J5TqOLZama4B+2juAN3mvT0yvSUE27uZtYoKFN7gSpUYjvMjahxDppPRQpS1qC+Lb5BI
+        Ip7EXerw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nOy6k-00EClk-P6; Tue, 01 Mar 2022 08:43:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6BA8F30017F;
+        Tue,  1 Mar 2022 09:43:44 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 29C742024C933; Tue,  1 Mar 2022 09:43:44 +0100 (CET)
+Date:   Tue, 1 Mar 2022 09:43:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        bpf@vger.kernel.org, Radoslaw Burny <rburny@google.com>
+Subject: Re: [PATCH 2/4] locking: Apply contention tracepoints in the slow
+ path
+Message-ID: <Yh3cwBloddIGvCjU@hirez.programming.kicks-ass.net>
+References: <20220301010412.431299-1-namhyung@kernel.org>
+ <20220301010412.431299-3-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220301010412.431299-3-namhyung@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Minghao Chi (CGEL ZTE) <chi.minghao@zte.com.cn>
+On Mon, Feb 28, 2022 at 05:04:10PM -0800, Namhyung Kim wrote:
+> @@ -80,7 +81,9 @@ static inline void queued_read_lock(struct qrwlock *lock)
+>  		return;
+>  
+>  	/* The slowpath will decrement the reader count, if necessary. */
+> +	LOCK_CONTENTION_BEGIN(lock, LCB_F_READ);
+>  	queued_read_lock_slowpath(lock);
+> +	LOCK_CONTENTION_END(lock);
+>  }
+>  
+>  /**
+> @@ -94,7 +97,9 @@ static inline void queued_write_lock(struct qrwlock *lock)
+>  	if (likely(atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED)))
+>  		return;
+>  
+> +	LOCK_CONTENTION_BEGIN(lock, LCB_F_WRITE);
+>  	queued_write_lock_slowpath(lock);
+> +	LOCK_CONTENTION_END(lock);
+>  }
 
-Use memset to initialize structs to preventing infoleaks
-in __bpf_mt_check_bytecode
+> @@ -82,7 +83,9 @@ static __always_inline void queued_spin_lock(struct qspinlock *lock)
+>  	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
+>  		return;
+>  
+> +	LOCK_CONTENTION_BEGIN(lock, 0);
+>  	queued_spin_lock_slowpath(lock, val);
+> +	LOCK_CONTENTION_END(lock);
+>  }
 
-Reported-by: Zeal Robot <zealci@zte.com.cn>
-Signed-off-by: Minghao Chi (CGEL ZTE) <chi.minghao@zte.com.cn>
----
- net/netfilter/xt_bpf.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/net/netfilter/xt_bpf.c b/net/netfilter/xt_bpf.c
-index 849ac552a154..5750a68a2a3f 100644
---- a/net/netfilter/xt_bpf.c
-+++ b/net/netfilter/xt_bpf.c
-@@ -29,6 +29,7 @@ static int __bpf_mt_check_bytecode(struct sock_filter *insns, __u16 len,
- 	if (len > XT_BPF_MAX_NUM_INSTR)
- 		return -EINVAL;
- 
-+	memset(&program, 0x0, sizeof(program));
- 	program.len = len;
- 	program.filter = insns;
- 
--- 
-2.25.1
-
+Can you please stick that _inside_ the slowpath? You really don't want
+to inline that.
