@@ -2,75 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA134C8754
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 10:05:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE9E4C8831
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 10:39:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbiCAJGV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 04:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54748 "EHLO
+        id S233901AbiCAJjj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 04:39:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbiCAJGT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 04:06:19 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C9E88B1F;
-        Tue,  1 Mar 2022 01:05:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ypFVgiobg8wO+A66SFG5Fx9R9ZoG7oPUgj1Wyrv8P+k=; b=jlDbn0r2/yAl/JGPsa9Fo7fAwx
-        648B6op6eIuFS8obnBy+R/ZPxwZ5Cu+uZysk57Y8WKbeAckr+bgHNRRaywV8n4fkvJleTzx1rRKMm
-        zgS1q8SRIJXg46/GFkJU8K6aEm/SGXxOvXDkPu+DUNOL4Kbw23hMVjOeY5JzluH2vMC/pWhiB4j+a
-        61kzZy6CsB2Ph/vPFDrmURMSiMRjDeL7b5PXDy5dNPfQ2u6T3Lgk6g2521wMTM7oX5Z3b87S4jzKg
-        Pd7nq9NeTg+8+0mx9OpVX5xxZUPUItgWqOnZJEsSWURwEjuvYT1WV8otutSpRiGgtQ2lYH1iaXNMV
-        S6oOgeEQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nOyRW-009QMM-0l; Tue, 01 Mar 2022 09:05:14 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBBFD30018E;
-        Tue,  1 Mar 2022 10:05:12 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DBECD2024C933; Tue,  1 Mar 2022 10:05:12 +0100 (CET)
-Date:   Tue, 1 Mar 2022 10:05:12 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Byungchul Park <byungchul.park@lge.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
-        bpf@vger.kernel.org, Radoslaw Burny <rburny@google.com>
-Subject: Re: [PATCH 3/4] locking/mutex: Pass proper call-site ip
-Message-ID: <Yh3hyIIHLJEXZND3@hirez.programming.kicks-ass.net>
-References: <20220301010412.431299-1-namhyung@kernel.org>
- <20220301010412.431299-4-namhyung@kernel.org>
+        with ESMTP id S231645AbiCAJji (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 04:39:38 -0500
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3591C92C;
+        Tue,  1 Mar 2022 01:38:57 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1nOyxu-0000OC-Cj; Tue, 01 Mar 2022 10:38:42 +0100
+Date:   Tue, 1 Mar 2022 10:38:42 +0100
+From:   Florian Westphal <fw@strlen.de>
+To:     cgel.zte@gmail.com
+Cc:     pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Minghao Chi <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] net/netfilter: use memset avoid infoleaks
+Message-ID: <20220301093842.GE12167@breakpoint.cc>
+References: <20220301081824.2053310-1-chi.minghao@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220301010412.431299-4-namhyung@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220301081824.2053310-1-chi.minghao@zte.com.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 05:04:11PM -0800, Namhyung Kim wrote:
-> The __mutex_lock_slowpath() and friends are declared as noinline and
-> _RET_IP_ returns its caller as mutex_lock which is not meaningful.
-> Pass the ip from mutex_lock() to have actual caller info in the trace.
+cgel.zte@gmail.com <cgel.zte@gmail.com> wrote:
+> From: Minghao Chi (CGEL ZTE) <chi.minghao@zte.com.cn>
+> 
+> Use memset to initialize structs to preventing infoleaks
+> in __bpf_mt_check_bytecode
 
-Blergh, can't you do a very limited unwind when you do the tracing
-instead? 3 or 4 levels should be plenty fast and sufficient.
+What infoleak, care to elaborate?  I don't see where this gets
+returned to userspace, its on-stack struct?
