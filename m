@@ -2,276 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CCB4C81B4
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 04:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926D44C81BA
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 04:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbiCADkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Feb 2022 22:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52812 "EHLO
+        id S230243AbiCADo5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Feb 2022 22:44:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbiCADkp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Feb 2022 22:40:45 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C02B65DE47
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 19:40:04 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 21SMwRvH019469
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 19:40:04 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=fHHQKhgE1HMBRZUJiBbFIlH1UantHsx0WQyLRdcbNmw=;
- b=l3KMyHLFttyhRwRDPDGCApo3PkGFwsQWyjYPeYwyESwpul6d+NU19zowQS3EeA3q4l1m
- pZhl/H9ko4vhhybwC0KY0WkxRukorAc+x3eBA40dHWYsBqgzI9vU6mpVQoohD2l/MeFR
- yA3ST41FOBc4jORblqQj94SP+QVpnkB0OqI= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3eh11nmj3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 28 Feb 2022 19:40:03 -0800
-Received: from twshared29821.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Mon, 28 Feb 2022 19:40:02 -0800
-Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
-        id DBA0138C289D; Mon, 28 Feb 2022 19:39:58 -0800 (PST)
-From:   Mykola Lysenko <mykolal@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>, Mykola Lysenko <mykolal@fb.com>
-Subject: [PATCH v2 bpf-next] Improve BPF test stability (related to perf events and scheduling)
-Date:   Mon, 28 Feb 2022 19:39:07 -0800
-Message-ID: <20220301033907.902728-1-mykolal@fb.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
+        with ESMTP id S229670AbiCADo5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Feb 2022 22:44:57 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4458F61A1F;
+        Mon, 28 Feb 2022 19:44:17 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id d19so17114928ioc.8;
+        Mon, 28 Feb 2022 19:44:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Vn+PVVoXKoUHPCXcRLpX+JrNULpiUavqMcZhXHY9RqY=;
+        b=SBTqOQMCWs98AYaN0Qm+mIHtdyqugOlQKaCcmQq6sAdCK3KIOUizjR2zLILpjHYyZM
+         2+NLpK/imqnPvwznXCJM7dUr9t6M8u/qvsfOvjaYDUyHED8uvMh5tSDkjVByapdyu5Av
+         JJ7aoEYLpoI2x2U/w3bMg/hpSrbe0x438o0e1uctBNmB9Px9Pp64NtI+D0Lq7x0rNWzU
+         VpTp6Z4WbkJRUgeBaRYU3rwmEpn+M/W8EET2E8hM4twiT/+qFWk/IIHNtwHdNP19h5j1
+         bco+fpcX1oapsVo/bp3iazSfqKNIU3dGn6iBrbiSa3svsWnxGDLHwrqnin+mNUt0FiYg
+         WbbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Vn+PVVoXKoUHPCXcRLpX+JrNULpiUavqMcZhXHY9RqY=;
+        b=nuFhHxijJiLO85yc2i5zgt6ibHwipkJZc+Xo/EEpubAj0FPkSfm8G6wZwjWSWpfItO
+         Y+/qC50empd1agkvOXRKByErrKfwXrNI3LK/2H1HfK7V0Zqj1tYBuKl6ELD8JpoV/eY1
+         y08sE49odLeBnTqrrzbIvGUUYCGpkNfDO7uOi/B1NIiUovON8LULMsFG95Hxwg2BM6+A
+         57WhDOfNFnBfLJqFiH2qffk6xeoTFruJCvtrejByyuD0oEalnUHTyImHD0MB2pB5q9zj
+         zvuE8ldA4uWy4DVPSvkJKOxO3JLXHBn+YuHVsr60QEjXmRrDlEq3N5qlSr16YpHWjW46
+         J/2A==
+X-Gm-Message-State: AOAM530hqtOyPw/neLy+n5JGZB4ra0JUMZIxj1xJj++feU77+vsU/lBW
+        bUyW73JYPXVMm/6q7Sdi/pZYf/7TC8U3WA==
+X-Google-Smtp-Source: ABdhPJz7hjad9HXmOIERw9WyOvpJmxUuFOa1r+SJOXgozLOv3Fwi7RXrznYRZRgEChrQgLwXXjbVOA==
+X-Received: by 2002:a05:6638:d52:b0:314:d4d9:f8e4 with SMTP id d18-20020a0566380d5200b00314d4d9f8e4mr19086526jak.139.1646106256662;
+        Mon, 28 Feb 2022 19:44:16 -0800 (PST)
+Received: from localhost ([99.197.200.79])
+        by smtp.gmail.com with ESMTPSA id l3-20020a056e020e4300b002c242b778a5sm7060174ilk.74.2022.02.28.19.44.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Feb 2022 19:44:16 -0800 (PST)
+Date:   Mon, 28 Feb 2022 19:44:08 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     wangyufen <wangyufen@huawei.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
+        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org
+Message-ID: <621d96888e266_8c479208da@john.notmuch>
+In-Reply-To: <43776e3f-08c0-5d1a-1c2b-dd6084a6de33@huawei.com>
+References: <20220225014929.942444-1-wangyufen@huawei.com>
+ <20220225014929.942444-2-wangyufen@huawei.com>
+ <YhvPKB8O7ml5JSHQ@pop-os.localdomain>
+ <43776e3f-08c0-5d1a-1c2b-dd6084a6de33@huawei.com>
+Subject: Re: [PATCH bpf-next 1/4] bpf, sockmap: Fix memleak in
+ sk_psock_queue_msg
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: pDd8os0vZMWDW7YdLFZiTGP642Qy7gCb
-X-Proofpoint-ORIG-GUID: pDd8os0vZMWDW7YdLFZiTGP642Qy7gCb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-28_10,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 priorityscore=1501
- mlxlogscore=999 clxscore=1015 phishscore=0 impostorscore=0
- lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxscore=0 spamscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2203010016
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In send_signal, replace sleep with dummy cpu intensive computation
-to increase probability of child process being scheduled. Add few
-more asserts.
+wangyufen wrote:
+> =
 
-In find_vma, reduce sample_freq as higher values may be rejected in
-some qemu setups, remove usleep and increase length of cpu intensive
-computation.
+> =E5=9C=A8 2022/2/28 3:21, Cong Wang =E5=86=99=E9=81=93:
+> > On Fri, Feb 25, 2022 at 09:49:26AM +0800, Wang Yufen wrote:
+> >> If tcp_bpf_sendmsg is running during a tear down operation we may en=
+queue
+> >> data on the ingress msg queue while tear down is trying to free it.
+> >>
+> >>   sk1 (redirect sk2)                         sk2
+> >>   -------------------                      ---------------
+> >> tcp_bpf_sendmsg()
+> >>   tcp_bpf_send_verdict()
+> >>    tcp_bpf_sendmsg_redir()
+> >>     bpf_tcp_ingress()
+> >>                                            sock_map_close()
+> >>                                             lock_sock()
+> >>      lock_sock() ... blocking
+> >>                                             sk_psock_stop
+> >>                                              sk_psock_clear_state(ps=
+ock, SK_PSOCK_TX_ENABLED);
+> >>                                             release_sock(sk);
+> >>      lock_sock()	=
 
-In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
-higher values may be rejected in some qemu setups
+> >>      sk_mem_charge()
+> >>      get_page()
+> >>      sk_psock_queue_msg()
+> >>       sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED);
+> >>        drop_sk_msg()
+> >>      release_sock()
+> >>
+> >> While drop_sk_msg(), the msg has charged memory form sk by sk_mem_ch=
+arge
+> >> and has sg pages need to put. To fix we use sk_msg_free() and then k=
+fee()
+> >> msg.
+> >>
+> > What about the other code path? That is, sk_psock_skb_ingress_enqueue=
+().
+> > I don't see skmsg is charged there.
+> =
 
-Signed-off-by: Mykola Lysenko <mykolal@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
- .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
- .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
- .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
- .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
- .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
- 6 files changed, 25 insertions(+), 15 deletions(-)
+> sk_psock_skb_ingress_self() | sk_psock_skb_ingress()
+>  =C2=A0=C2=A0 skb_set_owner_r()
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sk_mem_charge()
+>  =C2=A0=C2=A0 sk_psock_skb_ingress_enqueue()
+> =
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
-testing/selftests/bpf/prog_tests/bpf_cookie.c
-index cd10df6cd0fc..0612e79a9281 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-@@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
- 	attr.type =3D PERF_TYPE_SOFTWARE;
- 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
- 	attr.freq =3D 1;
--	attr.sample_freq =3D 4000;
-+	attr.sample_freq =3D 1000;
- 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
-OEXEC);
- 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
-sting/selftests/bpf/prog_tests/find_vma.c
-index b74b3c0c555a..a0b68381cd79 100644
---- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
-+++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-@@ -30,12 +30,20 @@ static int open_pe(void)
- 	attr.type =3D PERF_TYPE_HARDWARE;
- 	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
- 	attr.freq =3D 1;
--	attr.sample_freq =3D 4000;
-+	attr.sample_freq =3D 1000;
- 	pfd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CL=
-OEXEC);
-=20
- 	return pfd >=3D 0 ? pfd : -errno;
- }
-=20
-+static bool find_vma_pe_condition(struct find_vma *skel)
-+{
-+	return skel->bss->found_vm_exec !=3D 1 ||
-+		skel->data->find_addr_ret =3D=3D -1 ||
-+		skel->data->find_zero_ret !=3D 0 ||
-+		skel->bss->d_iname[0] =3D=3D 0;
-+}
-+
- static void test_find_vma_pe(struct find_vma *skel)
- {
- 	struct bpf_link *link =3D NULL;
-@@ -57,7 +65,7 @@ static void test_find_vma_pe(struct find_vma *skel)
- 	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
- 		goto cleanup;
-=20
--	for (i =3D 0; i < 1000000; ++i)
-+	for (i =3D 0; i < 1000000000 && find_vma_pe_condition(skel); ++i)
- 		++j;
-=20
- 	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
-@@ -108,7 +116,6 @@ void serial_test_find_vma(void)
- 	skel->bss->addr =3D (__u64)(uintptr_t)test_find_vma_pe;
-=20
- 	test_find_vma_pe(skel);
--	usleep(100000); /* allow the irq_work to finish */
- 	test_find_vma_kprobe(skel);
-=20
- 	find_vma__destroy(skel);
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/too=
-ls/testing/selftests/bpf/prog_tests/perf_branches.c
-index 12c4f45cee1a..bc24f83339d6 100644
---- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
-@@ -110,7 +110,7 @@ static void test_perf_branches_hw(void)
- 	attr.type =3D PERF_TYPE_HARDWARE;
- 	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
- 	attr.freq =3D 1;
--	attr.sample_freq =3D 4000;
-+	attr.sample_freq =3D 1000;
- 	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
- 	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANC=
-H_ANY;
- 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
-OEXEC);
-@@ -151,7 +151,7 @@ static void test_perf_branches_no_hw(void)
- 	attr.type =3D PERF_TYPE_SOFTWARE;
- 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
- 	attr.freq =3D 1;
--	attr.sample_freq =3D 4000;
-+	attr.sample_freq =3D 1000;
- 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
-OEXEC);
- 	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
- 		return;
-diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/t=
-esting/selftests/bpf/prog_tests/perf_link.c
-index ede07344f264..224eba6fef2e 100644
---- a/tools/testing/selftests/bpf/prog_tests/perf_link.c
-+++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
-@@ -39,7 +39,7 @@ void serial_test_perf_link(void)
- 	attr.type =3D PERF_TYPE_SOFTWARE;
- 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
- 	attr.freq =3D 1;
--	attr.sample_freq =3D 4000;
-+	attr.sample_freq =3D 1000;
- 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
-OEXEC);
- 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
- 		goto cleanup;
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools=
-/testing/selftests/bpf/prog_tests/send_signal.c
-index 776916b61c40..b1b574c7016a 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -4,11 +4,11 @@
- #include <sys/resource.h>
- #include "test_send_signal_kern.skel.h"
-=20
--int sigusr1_received =3D 0;
-+static int sigusr1_received;
-=20
- static void sigusr1_handler(int signum)
- {
--	sigusr1_received++;
-+	sigusr1_received =3D 1;
- }
-=20
- static void test_send_signal_common(struct perf_event_attr *attr,
-@@ -40,9 +40,10 @@ static void test_send_signal_common(struct perf_event_=
-attr *attr,
-=20
- 	if (pid =3D=3D 0) {
- 		int old_prio;
-+		volatile int volatile_variable =3D 0;
-=20
- 		/* install signal handler and notify parent */
--		signal(SIGUSR1, sigusr1_handler);
-+		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
-=20
- 		close(pipe_c2p[0]); /* close read */
- 		close(pipe_p2c[1]); /* close write */
-@@ -63,9 +64,11 @@ static void test_send_signal_common(struct perf_event_=
-attr *attr,
- 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
-=20
- 		/* wait a little for signal handler */
--		sleep(1);
-+		for (int i =3D 0; i < 100000000 && !sigusr1_received; i++)
-+			volatile_variable /=3D i + 1;
-=20
- 		buf[0] =3D sigusr1_received ? '2' : '0';
-+		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
- 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
-=20
- 		/* wait for parent notification and exit */
-@@ -93,7 +96,7 @@ static void test_send_signal_common(struct perf_event_a=
-ttr *attr,
- 			goto destroy_skel;
- 		}
- 	} else {
--		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1,
-+		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
- 				 -1 /* group id */, 0 /* flags */);
- 		if (!ASSERT_GE(pmu_fd, 0, "perf_event_open")) {
- 			err =3D -1;
-@@ -110,9 +113,9 @@ static void test_send_signal_common(struct perf_event=
-_attr *attr,
- 	ASSERT_EQ(read(pipe_c2p[0], buf, 1), 1, "pipe_read");
-=20
- 	/* trigger the bpf send_signal */
--	skel->bss->pid =3D pid;
--	skel->bss->sig =3D SIGUSR1;
- 	skel->bss->signal_thread =3D signal_thread;
-+	skel->bss->sig =3D SIGUSR1;
-+	skel->bss->pid =3D pid;
-=20
- 	/* notify child that bpf program can send_signal now */
- 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/=
-tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-index b4233d3efac2..92354cd72044 100644
---- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -10,7 +10,7 @@ static __always_inline int bpf_send_signal_test(void *c=
-tx)
- {
- 	int ret;
-=20
--	if (status !=3D 0 || sig =3D=3D 0 || pid =3D=3D 0)
-+	if (status !=3D 0 || pid =3D=3D 0)
- 		return 0;
-=20
- 	if ((bpf_get_current_pid_tgid() >> 32) =3D=3D pid) {
---=20
-2.30.2
+> The other code path skmsg is charged by skb_set_owner_r()->sk_mem_charg=
+e()
+> =
 
+> >
+> > Thanks.
+> > .
+
+I walked that code and fix LGTM as well.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>=
