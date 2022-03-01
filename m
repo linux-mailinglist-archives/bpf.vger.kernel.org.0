@@ -2,131 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD24C8CB7
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 14:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0151B4C8E1F
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 15:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbiCANef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 08:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
+        id S235290AbiCAOqN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 09:46:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbiCANee (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 08:34:34 -0500
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B29557E08F
-        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 05:33:52 -0800 (PST)
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nP2dS-0006HL-6I; Tue, 01 Mar 2022 14:33:50 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nP2dR-000FJc-VD; Tue, 01 Mar 2022 14:33:49 +0100
-Subject: Re: [PATCH v4 bpf-next] Small BPF verifier log improvements
-To:     Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org
-Cc:     kernel-team@fb.com
-References: <20220224003729.2949667-1-mykolal@fb.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <feebf924-426a-7128-993d-10a642088ccd@iogearbox.net>
-Date:   Tue, 1 Mar 2022 14:33:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S235346AbiCAOqI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 09:46:08 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667F93CA6C;
+        Tue,  1 Mar 2022 06:45:27 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ED9D9615F1;
+        Tue,  1 Mar 2022 14:45:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C200AC340EE;
+        Tue,  1 Mar 2022 14:45:24 +0000 (UTC)
+Date:   Tue, 1 Mar 2022 09:45:23 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        bpf@vger.kernel.org, Radoslaw Burny <rburny@google.com>
+Subject: Re: [PATCH 2/4] locking: Apply contention tracepoints in the slow
+ path
+Message-ID: <20220301094523.5e4bc77d@gandalf.local.home>
+In-Reply-To: <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
+References: <20220301010412.431299-1-namhyung@kernel.org>
+        <20220301010412.431299-3-namhyung@kernel.org>
+        <Yh3heodejlBiwqLj@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20220224003729.2949667-1-mykolal@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26468/Tue Mar  1 10:31:38 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Mykola,
+On Tue, 1 Mar 2022 10:03:54 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On 2/24/22 1:37 AM, Mykola Lysenko wrote:
-> In particular:
-> 1) remove output of inv for scalars in print_verifier_state
-> 2) replace inv with scalar in verifier error messages
-> 3) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
-> 4) remove output of id=0
-> 5) remove output of ref_obj_id=0
-> 
-> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+> index 8555c4efe97c..18b9f4bf6f34 100644
+> --- a/kernel/locking/rtmutex.c
+> +++ b/kernel/locking/rtmutex.c
+> @@ -1579,6 +1579,8 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+>  
+>  	set_current_state(state);
+>  
+> +	trace_contention_begin(lock, _RET_IP_, LCB_F_RT);
 
-Thanks for helping to improve the verifier output. Small comment below:
+I guess one issue with this is that _RET_IP_ will return the rt_mutex
+address if this is not inlined, making the _RET_IP_ rather useless.
 
-[...]
-> diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testing/selftests/bpf/prog_tests/align.c
-> index 0ee29e11eaee..210dc6b4a169 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/align.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/align.c
-> @@ -39,13 +39,13 @@ static struct bpf_align_test tests[] = {
->   		},
->   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
->   		.matches = {
-> -			{0, "R1=ctx(id=0,off=0,imm=0)"},
-> +			{0, "R1=ctx(off=0,imm=0)"},
->   			{0, "R10=fp0"},
-> -			{0, "R3_w=inv2"},
-> -			{1, "R3_w=inv4"},
-> -			{2, "R3_w=inv8"},
-> -			{3, "R3_w=inv16"},
-> -			{4, "R3_w=inv32"},
-> +			{0, "R3_w=2"},
-> +			{1, "R3_w=4"},
-> +			{2, "R3_w=8"},
-> +			{3, "R3_w=16"},
-> +			{4, "R3_w=32"},
+Now, if we can pass the _RET_IP_ into __rt_mutex_slowlock() then we could
+reference that.
 
-Ack, definitely better compared to the state today. :)
+-- Steve
 
-[...]
-> @@ -161,19 +161,19 @@ static struct bpf_align_test tests[] = {
->   		},
->   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
->   		.matches = {
-> -			{6, "R0_w=pkt(id=0,off=8,r=8,imm=0)"},
-> -			{6, "R3_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
-> -			{7, "R3_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
-> -			{8, "R3_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
-> -			{9, "R3_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
-> -			{10, "R3_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
-> -			{12, "R3_w=pkt_end(id=0,off=0,imm=0)"},
-> -			{17, "R4_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
-> -			{18, "R4_w=inv(id=0,umax_value=8160,var_off=(0x0; 0x1fe0))"},
-> -			{19, "R4_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
-> -			{20, "R4_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
-> -			{21, "R4_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
-> -			{22, "R4_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
-> +			{6, "R0_w=pkt(off=8,r=8,imm=0)"},
-> +			{6, "R3_w=(umax=255,var_off=(0x0; 0xff))"},
-> +			{7, "R3_w=(umax=510,var_off=(0x0; 0x1fe))"},
-> +			{8, "R3_w=(umax=1020,var_off=(0x0; 0x3fc))"},
-> +			{9, "R3_w=(umax=2040,var_off=(0x0; 0x7f8))"},
-> +			{10, "R3_w=(umax=4080,var_off=(0x0; 0xff0))"},
-> +			{12, "R3_w=pkt_end(off=0,imm=0)"},
-> +			{17, "R4_w=(umax=255,var_off=(0x0; 0xff))"},
-> +			{18, "R4_w=(umax=8160,var_off=(0x0; 0x1fe0))"},
-> +			{19, "R4_w=(umax=4080,var_off=(0x0; 0xff0))"},
-> +			{20, "R4_w=(umax=2040,var_off=(0x0; 0x7f8))"},
-> +			{21, "R4_w=(umax=1020,var_off=(0x0; 0x3fc))"},
-> +			{22, "R4_w=(umax=510,var_off=(0x0; 0x1fe))"},
->   		},
->   	},
->   	{
 
-However, not printing any type info here is imho more confusing. For debugging /
-troubleshooting knowing that the register type is inv or scalar would be helpful.
-Fwiw, scalar is probably a better fit, although longer..
-
-Thanks,
-Daniel
+> +
+>  	ret = task_blocks_on_rt_mutex(lock, waiter, current, ww_ctx, chwalk);
+>  	if (likely(!ret))
+>  		ret = rt_mutex_slowlock_block(lock, ww_ctx, state, NULL, waiter);
+> @@ -1601,6 +1603,9 @@ static int __sched __rt_mutex_slowlock(struct rt_mutex_base *lock,
+>  	 * unconditionally. We might have to fix that up.
+>  	 */
+>  	fixup_rt_mutex_waiters(lock);
+> +
+> +	trace_contention_end(lock, ret);
+> +
+>  	return ret;
+>  }
