@@ -2,178 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 612364C9695
-	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 21:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46F0D4C9758
+	for <lists+bpf@lfdr.de>; Tue,  1 Mar 2022 21:52:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbiCAUY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 15:24:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
+        id S238432AbiCAUx0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 15:53:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238536AbiCAUXV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 15:23:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F559A0BE4;
-        Tue,  1 Mar 2022 12:20:38 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D9A860906;
-        Tue,  1 Mar 2022 20:20:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E67EC340EE;
-        Tue,  1 Mar 2022 20:19:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646165999;
-        bh=IKX32sWHzfqA+GXof/lcAj87x4fva3TL+Bqv6/XCzIk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a7Rye6vaTY+PyD7fSEy5eB4anrOX5khfhRojhN328y4SVhUnT8zEXa9aVZ5jvMMs0
-         RMx7oHdOFp8ImDo55ILKzV3VeYrCYeIXyj7XT5n2OA4M2nS8DhIVNooeW+0keRy+oZ
-         5jUH2gUzXnJC9POEZBVdsWnm76sBrxIRqLPkKmFn0qkUi7qhYRU4Th/9bk6rnuKOS6
-         nyuvdV8diZknKJefk4Nh9gdEsjjSPq9YCetcxpr83KqhYSOXT88zIXj7EiMc9z3qjd
-         8AruQVaSwDii0evf0dhoHrqRccFYJs+tuBPMmY9cPFM5QTJMqSCDEl9u28VHkyKElA
-         wF+FoIAtlHTIg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, shuah@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 01/11] selftests/bpf: Add test for bpf_timer overwriting crash
-Date:   Tue,  1 Mar 2022 15:19:34 -0500
-Message-Id: <20220301201951.19066-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S238429AbiCAUxY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 15:53:24 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C7BDE4
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 12:52:41 -0800 (PST)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nP9U7-000AY1-3A; Tue, 01 Mar 2022 21:52:39 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nP9U6-000H5e-Sd; Tue, 01 Mar 2022 21:52:38 +0100
+Subject: Re: [PATCH v4 bpf-next] Small BPF verifier log improvements
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
+References: <20220224003729.2949667-1-mykolal@fb.com>
+ <feebf924-426a-7128-993d-10a642088ccd@iogearbox.net>
+ <DBC16090-E170-4725-A872-36D98568E9DF@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <4085c6be-878b-1a4f-0bfc-c4cb80140d19@iogearbox.net>
+Date:   Tue, 1 Mar 2022 21:52:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <DBC16090-E170-4725-A872-36D98568E9DF@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26468/Tue Mar  1 10:31:38 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+On 3/1/22 7:56 PM, Mykola Lysenko wrote:
+>> On Mar 1, 2022, at 5:33 AM, Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 2/24/22 1:37 AM, Mykola Lysenko wrote:
+>>> In particular:
+>>> 1) remove output of inv for scalars in print_verifier_state
+>>> 2) replace inv with scalar in verifier error messages
+>>> 3) remove _value suffixes for umin/umax/s32_min/etc (except map_value)
+>>> 4) remove output of id=0
+>>> 5) remove output of ref_obj_id=0
+>>> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+>>
+>> Thanks for helping to improve the verifier output. Small comment below:
+> 
+> Thanks for the review!
+> 
+>> [...]
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testing/selftests/bpf/prog_tests/align.c
+>>> index 0ee29e11eaee..210dc6b4a169 100644
+>>> --- a/tools/testing/selftests/bpf/prog_tests/align.c
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/align.c
+>>> @@ -39,13 +39,13 @@ static struct bpf_align_test tests[] = {
+>>>   		},
+>>>   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>>>   		.matches = {
+>>> -			{0, "R1=ctx(id=0,off=0,imm=0)"},
+>>> +			{0, "R1=ctx(off=0,imm=0)"},
+>>>   			{0, "R10=fp0"},
+>>> -			{0, "R3_w=inv2"},
+>>> -			{1, "R3_w=inv4"},
+>>> -			{2, "R3_w=inv8"},
+>>> -			{3, "R3_w=inv16"},
+>>> -			{4, "R3_w=inv32"},
+>>> +			{0, "R3_w=2"},
+>>> +			{1, "R3_w=4"},
+>>> +			{2, "R3_w=8"},
+>>> +			{3, "R3_w=16"},
+>>> +			{4, "R3_w=32"},
+>>
+>> Ack, definitely better compared to the state today. :)
+>>
+>> [...]
+>>> @@ -161,19 +161,19 @@ static struct bpf_align_test tests[] = {
+>>>   		},
+>>>   		.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>>>   		.matches = {
+>>> -			{6, "R0_w=pkt(id=0,off=8,r=8,imm=0)"},
+>>> -			{6, "R3_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+>>> -			{7, "R3_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
+>>> -			{8, "R3_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+>>> -			{9, "R3_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
+>>> -			{10, "R3_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
+>>> -			{12, "R3_w=pkt_end(id=0,off=0,imm=0)"},
+>>> -			{17, "R4_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+>>> -			{18, "R4_w=inv(id=0,umax_value=8160,var_off=(0x0; 0x1fe0))"},
+>>> -			{19, "R4_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
+>>> -			{20, "R4_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
+>>> -			{21, "R4_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+>>> -			{22, "R4_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
+>>> +			{6, "R0_w=pkt(off=8,r=8,imm=0)"},
+>>> +			{6, "R3_w=(umax=255,var_off=(0x0; 0xff))"},
+>>> +			{7, "R3_w=(umax=510,var_off=(0x0; 0x1fe))"},
+>>> +			{8, "R3_w=(umax=1020,var_off=(0x0; 0x3fc))"},
+>>> +			{9, "R3_w=(umax=2040,var_off=(0x0; 0x7f8))"},
+>>> +			{10, "R3_w=(umax=4080,var_off=(0x0; 0xff0))"},
+>>> +			{12, "R3_w=pkt_end(off=0,imm=0)"},
+>>> +			{17, "R4_w=(umax=255,var_off=(0x0; 0xff))"},
+>>> +			{18, "R4_w=(umax=8160,var_off=(0x0; 0x1fe0))"},
+>>> +			{19, "R4_w=(umax=4080,var_off=(0x0; 0xff0))"},
+>>> +			{20, "R4_w=(umax=2040,var_off=(0x0; 0x7f8))"},
+>>> +			{21, "R4_w=(umax=1020,var_off=(0x0; 0x3fc))"},
+>>> +			{22, "R4_w=(umax=510,var_off=(0x0; 0x1fe))"},
+>>>   		},
+>>>   	},
+>>>   	{
+>>
+>> However, not printing any type info here is imho more confusing. For debugging /
+>> troubleshooting knowing that the register type is inv or scalar would be helpful.
+>> Fwiw, scalar is probably a better fit, although longer..
+> 
+> So, just to confirm. You are proposing to leave cases like "R3_w=8” as is, but change cases like "R3_w=(umax=255,var_off=(0x0; 0xff))” to “R3_w=scalar(umax=255,var_off=(0x0; 0xff))”, correct?
 
-[ Upstream commit a7e75016a0753c24d6c995bc02501ae35368e333 ]
+Yes, that would look reasonable and pretty self-descriptive to me.
 
-Add a test that validates that timer value is not overwritten when doing
-a copy_map_value call in the kernel. Without the prior fix, this test
-triggers a crash.
-
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20220209070324.1093182-3-memxor@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- .../selftests/bpf/prog_tests/timer_crash.c    | 32 +++++++++++
- .../testing/selftests/bpf/progs/timer_crash.c | 54 +++++++++++++++++++
- 2 files changed, 86 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/timer_crash.c
- create mode 100644 tools/testing/selftests/bpf/progs/timer_crash.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer_crash.c b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-new file mode 100644
-index 0000000000000..f74b82305da8c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/timer_crash.c
-@@ -0,0 +1,32 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "timer_crash.skel.h"
-+
-+enum {
-+	MODE_ARRAY,
-+	MODE_HASH,
-+};
-+
-+static void test_timer_crash_mode(int mode)
-+{
-+	struct timer_crash *skel;
-+
-+	skel = timer_crash__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "timer_crash__open_and_load"))
-+		return;
-+	skel->bss->pid = getpid();
-+	skel->bss->crash_map = mode;
-+	if (!ASSERT_OK(timer_crash__attach(skel), "timer_crash__attach"))
-+		goto end;
-+	usleep(1);
-+end:
-+	timer_crash__destroy(skel);
-+}
-+
-+void test_timer_crash(void)
-+{
-+	if (test__start_subtest("array"))
-+		test_timer_crash_mode(MODE_ARRAY);
-+	if (test__start_subtest("hash"))
-+		test_timer_crash_mode(MODE_HASH);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_crash.c b/tools/testing/selftests/bpf/progs/timer_crash.c
-new file mode 100644
-index 0000000000000..f8f7944e70dae
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/timer_crash.c
-@@ -0,0 +1,54 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+struct map_elem {
-+	struct bpf_timer timer;
-+	struct bpf_spin_lock lock;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_elem);
-+} amap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_elem);
-+} hmap SEC(".maps");
-+
-+int pid = 0;
-+int crash_map = 0; /* 0 for amap, 1 for hmap */
-+
-+SEC("fentry/do_nanosleep")
-+int sys_enter(void *ctx)
-+{
-+	struct map_elem *e, value = {};
-+	void *map = crash_map ? (void *)&hmap : (void *)&amap;
-+
-+	if (bpf_get_current_task_btf()->tgid != pid)
-+		return 0;
-+
-+	*(void **)&value = (void *)0xdeadcaf3;
-+
-+	bpf_map_update_elem(map, &(int){0}, &value, 0);
-+	/* For array map, doing bpf_map_update_elem will do a
-+	 * check_and_free_timer_in_array, which will trigger the crash if timer
-+	 * pointer was overwritten, for hmap we need to use bpf_timer_cancel.
-+	 */
-+	if (crash_map == 1) {
-+		e = bpf_map_lookup_elem(map, &(int){0});
-+		if (!e)
-+			return 0;
-+		bpf_timer_cancel(&e->timer);
-+	}
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
-
+Thanks,
+Daniel
