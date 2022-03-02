@@ -2,62 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 755A44CB213
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE364CB22D
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235942AbiCBWO4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 17:14:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        id S245459AbiCBWVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 17:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbiCBWOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 17:14:54 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1B6BE1CD
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 14:14:08 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id p3-20020a17090a680300b001bbfb9d760eso6026406pjj.2
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 14:14:08 -0800 (PST)
+        with ESMTP id S245427AbiCBWVp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 17:21:45 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5A5D64C7;
+        Wed,  2 Mar 2022 14:21:00 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id p17so2801272plo.9;
+        Wed, 02 Mar 2022 14:21:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q1jMb9GFqwTZ8CqJP67nwzhSXDolz0RQo6OOa7SL1lg=;
-        b=d+e7ZLHAzijoqCeDwrgJRD2RI3Ou+E2tLmj2TkN+sC2kralf4vBan+ubpRvPco/Orw
-         BOnhrPp1006cGGEcglFX4CjtZ4i+sPlc7TTamphnau6bja/w388XWwXsc2JDtN1ByL0m
-         cUCMEr7GMRFh6Py7TPefvAChYlCnywMFiiDe1TZl9bqCPWtobFOu5494KnuSOitxSCd8
-         dO2NKsef//yj9IayBZkMxaX30+kt14yCr9la2nCocOdCaW+gD8p62Sb2u+uEIvHZo4zW
-         7Cy6hXaFfhEOGStGlcdp4KIycaEIW/Np9IjLRFx80J+nD9RKtNYrj8MQyQK2RfChIsJs
-         6nCg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7nNxLa5fVLf7zBJyhXcOqLR/oQ9otRapOrLZOBmy+fs=;
+        b=Yx2Tu1pyRlHwyWfAJpaPEYBK7U9Xa99I7npuIMQDOm1nT+bKEWdz9xuk9vvQiYr6J8
+         m1U1geFt2wL4cHfRXI9KOdoZNY51YM8PgOUStDGYaT8EXuRMtYZw20kOBukG/tLik6lf
+         I0+G0WYqOLGTVWbD+OP460WGiCHhUe2jIN76eywXx51y/KwDNyJGRD4pp7pwjc/wJiaI
+         vVbW1C767aYo5MU1Swv6OSimECLQ2Z0f+iBvSA6zIGTnAxQxOcDShEQS1e4HdBUH4EDX
+         r9S5UNIPWTXY9ud/6RiFoDm39kjo7s8VJhjQxeP4QymVnd8IOBYOvCBQHc3pIKgFQZBN
+         uf8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q1jMb9GFqwTZ8CqJP67nwzhSXDolz0RQo6OOa7SL1lg=;
-        b=5Ed1VBG4wK5W525/txgkFN1BD2wiZgz8jDG8Gltm0rDm2Pvc2Exm4TBHU+LW9D7OWH
-         mABIY7fbfFSyKcla7/iiISBhYJySw+H7/eL+kJ++FJ9Qmz0HvNdK+MC8lQ3w1iKwdfvF
-         lxjWlmZJeI/Kz5kBYg9mGheEd5UXU44YSJZbvxhxBMre4eI7sqm8yQ3e1M8diqMbTOiF
-         GyvM9AUTWh2zDDHIOsXFKE63hbsdqH1n04osK9FxGK80kJqYgaTtdaNTdKq/A3kBP9kb
-         5TJZ4bKxy8Bjv1jkDzMWcSdzPkE7DQoR5QbrYv2PlfY9FCSfzWCBLVXCtcXHrrOklb02
-         4IoQ==
-X-Gm-Message-State: AOAM531GXhIcKg7ttZ+jg2BFMC5xLF1HXWQptB8NjDyZ6YEZLEHrIju7
-        EFX/NQd57VZ8RPzQPfc9dq1t03h1b6oHpRJR3Oj0qBOy
-X-Google-Smtp-Source: ABdhPJwaoghPJcx19FMD10trrkOLL9oyhdIpFPScbTiIgLCFXDg9jGiGlZeTQJkgPdtVI2FFe3C0As67wMpVb4dOKnM=
-X-Received: by 2002:a17:903:32c1:b0:14f:8ba2:2326 with SMTP id
- i1-20020a17090332c100b0014f8ba22326mr32754983plr.34.1646259248205; Wed, 02
- Mar 2022 14:14:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20220301222745.1667206-1-mykolal@fb.com> <20220302212302.y7ct3xgkpwu4dto3@ast-mbp.dhcp.thefacebook.com>
- <d4e589ac-db4d-b721-580c-120ee524084d@iogearbox.net>
-In-Reply-To: <d4e589ac-db4d-b721-580c-120ee524084d@iogearbox.net>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7nNxLa5fVLf7zBJyhXcOqLR/oQ9otRapOrLZOBmy+fs=;
+        b=Iq2JiWqmC/iD+Xk6YKx9kpodTGpfEQTgSi4IhwVkW+R0jdM+nxS8GnLu6LUSZyCo7p
+         jQoJDwBLoLmpddyimWTJWveVVgQS/h6DG5QJPHpZNQsJpedW+Xol2g0NRFmX36My3tTy
+         rxBEb/BpWuBi+2GOlYwz5xCmBxPUdF41qWFES8y170ZQxQ6Ho0gXfYvPkNCcCU3A8mQB
+         jBMXTr3llKq5CZicr0upJhgbo7PCBNm9taa6JaVwLwwujVDgxzOouzSXCmh6pgTrMJNG
+         Hew3rzKRAamBfV4VZl2JPfsmwmuhZG7bIgotVXEr4c7OvXSgqPOpLF14xfiw9ESZ0qGA
+         K+Vw==
+X-Gm-Message-State: AOAM533av3EAY7GNKuCJEI/t5BXJWFGs+IQyQMRnXVkiAQYo2NEZhVCf
+        zdSyeNM3gwENdnLJeGYkjFk=
+X-Google-Smtp-Source: ABdhPJw3LwqNN9faD/CN8tV5gcaPOEskQM2Wni+pDcj4Vlrbq+CBge0QXPo1hghH4Dd+dIkl+666fQ==
+X-Received: by 2002:a17:902:7786:b0:14d:51c6:21a8 with SMTP id o6-20020a170902778600b0014d51c621a8mr33480455pll.75.1646259659674;
+        Wed, 02 Mar 2022 14:20:59 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::2:156b])
+        by smtp.gmail.com with ESMTPSA id h6-20020a636c06000000b00363a2533b17sm151118pgc.8.2022.03.02.14.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Mar 2022 14:20:59 -0800 (PST)
+Date:   Wed, 2 Mar 2022 14:20:56 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Mar 2022 14:13:56 -0800
-Message-ID: <CAADnVQLEbDrKt-ehyR=FqMfxcWLL0Tg6i7cKY+jjybBJLn+E0w@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next] Small BPF verifier log improvements
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, shuah@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, revest@chromium.org,
+        gregkh@linuxfoundation.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
+Message-ID: <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
+References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220302111404.193900-1-roberto.sassu@huawei.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -68,47 +74,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 2, 2022 at 1:46 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 3/2/22 10:23 PM, Alexei Starovoitov wrote:
-> > On Tue, Mar 01, 2022 at 02:27:45PM -0800, Mykola Lysenko wrote:
-> >>              .prog_type = BPF_PROG_TYPE_SCHED_CLS,
-> >>              .matches = {
-> >> -                    {6, "R3_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {7, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {8, "R4_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {9, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {10, "R4_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
-> >> -                    {11, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {12, "R4_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
-> >> -                    {13, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
-> >> -                    {14, "R4_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
-> >> -                    {15, "R4_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
-> >> +                    {6, "R3_w=scalar(umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {7, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {8, "R4_w=scalar(umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {9, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {10, "R4_w=scalar(umax=510,var_off=(0x0; 0x1fe))"},
-> >> +                    {11, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {12, "R4_w=scalar(umax=1020,var_off=(0x0; 0x3fc))"},
-> >> +                    {13, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
-> >> +                    {14, "R4_w=scalar(umax=2040,var_off=(0x0; 0x7f8))"},
-> >> +                    {15, "R4_w=scalar(umax=4080,var_off=(0x0; 0xff0))"},
-> >
-> > Sorry for the later review.
-> > Would "int" be more precise and less verbose than "scalar"?
->
-> Could work as well, although in many places today we make use of the term "scalar",
-> so developers might be more familiar with it (and more consistent towards the
-> verifier type internals).
+On Wed, Mar 02, 2022 at 12:13:55PM +0100, Roberto Sassu wrote:
+> Extend the interoperability with IMA, to give wider flexibility for the
+> implementation of integrity-focused LSMs based on eBPF.
+> 
+> Patch 1 fixes some style issues.
+> 
+> Patches 2-6 give the ability to eBPF-based LSMs to take advantage of the
+> measurement capability of IMA without needing to setup a policy in IMA
+> (those LSMs might implement the policy capability themselves).
+> 
+> Patches 7-9 allow eBPF-based LSMs to evaluate files read by the kernel.
+> 
+> Changelog
+> 
+> v2:
+> - Add better description to patch 1 (suggested by Shuah)
+> - Recalculate digest if it is not fresh (when IMA_COLLECTED flag not set)
+> - Move declaration of bpf_ima_file_hash() at the end (suggested by
+>   Yonghong)
+> - Add tests to check if the digest has been recalculated
+> - Add deny test for bpf_kernel_read_file()
+> - Add description to tests
+> 
+> v1:
+> - Modify ima_file_hash() only and allow the usage of the function with the
+>   modified behavior by eBPF-based LSMs through the new function
+>   bpf_ima_file_hash() (suggested by Mimi)
+> - Make bpf_lsm_kernel_read_file() sleepable so that bpf_ima_inode_hash()
+>   and bpf_ima_file_hash() can be called inside the implementation of
+>   eBPF-based LSMs for this hook
+> 
+> Roberto Sassu (9):
+>   ima: Fix documentation-related warnings in ima_main.c
+>   ima: Always return a file measurement in ima_file_hash()
+>   bpf-lsm: Introduce new helper bpf_ima_file_hash()
+>   selftests/bpf: Move sample generation code to ima_test_common()
+>   selftests/bpf: Add test for bpf_ima_file_hash()
+>   selftests/bpf: Check if the digest is refreshed after a file write
+>   bpf-lsm: Make bpf_lsm_kernel_read_file() as sleepable
+>   selftests/bpf: Add test for bpf_lsm_kernel_read_file()
+>   selftests/bpf: Check that bpf_kernel_read_file() denies reading IMA
+>     policy
 
-I was focusing more on users who will see these logs and
-would have to interpret them.
-I suspect the ratio is 1 developer to 1000 users.
-The users have to fight the verifier quite a bit to make the program pass.
-I was thinking about "i64" too. That's what llvm is using,
-but it's less clear than "int", which should be obvious
-for users since they write progs in C.
-It's also shorter.
-
-I can live with "scalar" though.
+We have to land this set through bpf-next.
+Please get the Acks for patches 1 and 2, so we can proceed.
