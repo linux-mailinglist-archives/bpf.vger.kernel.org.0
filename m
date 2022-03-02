@@ -2,151 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FEA4CB058
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 21:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 111284CB09E
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 22:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244303AbiCBU4P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 15:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
+        id S238451AbiCBVEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 16:04:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbiCBU4O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 15:56:14 -0500
+        with ESMTP id S232218AbiCBVEj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 16:04:39 -0500
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC2FACA0C7;
-        Wed,  2 Mar 2022 12:55:30 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222JMh1h005226;
-        Wed, 2 Mar 2022 12:55:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=7nY5qnJ7GliKa1SM/ZvK6yw2mRorMSMr87tIUs83Ezw=;
- b=lziRa4/+0EhUwQI2Br9fNK+kyq+nc5p2tv6Ck1ambrMfF+2PyCOF2pcsD9yJSs5tXCQX
- 0YUJDhnpRAQEVTVWD5Qh8R3e3zIdPT+LPj8gO0Y2dZYzCZEVmglsqHuz3iKj3EieUnyu
- oubTDTSC10JJ/fk5QxiwwU1Iuofx07VR+WE= 
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ej7kkvvmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Mar 2022 12:55:14 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5F09FEE
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 13:03:55 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222JMpPP009036
+        for <bpf@vger.kernel.org>; Wed, 2 Mar 2022 13:03:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=ZmaxZaPAEweVFP06MUaNTqeyC5Jh6/YfWWIG2PKA9kA=;
+ b=gHTxBnsQ7OrRWqy/bMzlwxV6KE41ktxKOKYp/sHTysv9Gw525geS8XZWdxgfyuYH94NZ
+ oW4VxK67nXPczCPzhBql38F7HTRM67TX0l6TQE09L/0ibwkiXTvRX1Un+AnAl9XkNH4f
+ lkwtslTKn/jYdh48pYTTzfBG8reS4fBT21g= 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ej6n05y8r-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 13:03:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DhuKDrv2TlSRi5wvPdSNe1RwDpPpKw2vV/OFl7PStA52xpP40m1Rs4dl2QcwscYUhP+xiVp39mIQrcarORIjg0dkoSmHh000kgJPpx/78dCGqWTQnoRY7nm49EHyToQ/8aaUJjTnPK2A2rIiZxfXDpN+mshwvgyvnyHM07AQLotWHuP89xuIHK/ewyM90hWRKWGzhjtYFPmEJxYC6FW2zI1wtVjMYY4W3oBeKXmEr3Fe+PNCgJ5xAnXrYzhzfN+CErZSG31d8s4SRdW3p3nMCtJCHchzXm6SQAajvGjgwSOWK9qfDBYIzHr/WhdqPH3BLhZpEGG0PsroUFiOm06S/g==
+ b=Ml+MnZ3zaYCQMrLG5Ie8icQ+H2Esp/6cCIwn9THtQx/ch1sOXtCcJK8X/m1EEz7f1WadqIQohoMEh7fcMbIwLOd0aoBVh1ekdrMPsU3fOZGzjL+TkWqxNQriyUp2HyZKUONgN4pDKAAwcXEcoUEhJAXsjs8ZqC9Ri/CFn+R0GF8ti/a16tVevA0M/k1enq4yygGWNGw94MeBYdKJahFXyZDA5nq3xTiu+pc9/RwiVHixXCVQMPTu4ZjE9rmzipVv/EPx7vuMAJctRYmQxzniWnrPQq+rmI8eG5dMDntXCQSHEG/byPy4C8UqTsH1P5H9O5gUA+nJ59L1Tzannb+kzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7nY5qnJ7GliKa1SM/ZvK6yw2mRorMSMr87tIUs83Ezw=;
- b=P8GPeMjSclEBLX6FR7ds/Z+XhRvZkTd3PhIozhpbn9zWcq+9lVtTlG73LvZBTOQ2sZrOyoBEWLeDxa+qYstnZ1NwkplufA2UG2+h0BAcGg683StTo2DGC5u0M6rEJ/675JEQMMDnxUeEOG+TEM0U2A+68pGcokxc0NSxceusJbn1fTxHE9T6gAddib5LwW9N+hoRV13wYulNtVsjW3tLcEhPKsMpF4hk8MYO6s4DQr2WuqGfLFXSZYiV9XLU808xLapeMTcjpHlN/ru4410+/SpTIL2US4QtCAj+PvdzUVUmxaehkZ/m8PjDc0J92tGO415SsyqD3TlbxAK6rKoHfQ==
+ bh=ZmaxZaPAEweVFP06MUaNTqeyC5Jh6/YfWWIG2PKA9kA=;
+ b=PInexB6c79siutEW5+nifcA4nhlSByOh/Wm9qu4ctP84mCPbzotchhjZjYrWYoqp0BA2A4nyI2rBTNmHxg5wlmIJMQFc3O9F2rSgyfHfD4Yvb0xAIJEW93tQ8Mx2/wmMfU2lQKZmnQ35+WppjLupDaTzwy9OAnqDHfsF19PzH1XdOCJV5NcwA/9j4xWQlb05L8iIHLY3Diu8CY9k9NFOUdA7IP7fkRWLgcj7Ln+bfa8pP2iG5QCWqyCydko28OaEgbPCyMWX9OOzoPUGh/z8PDdJpcCRUL1XkoKYbpge2k2NCAk3RjruqtXyxVU3VAQiAHjO4X4CLQ+pV0FVkUzAhA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by BN7PR15MB2452.namprd15.prod.outlook.com (2603:10b6:406:87::21) with
+Received: from MW4PR15MB4732.namprd15.prod.outlook.com (2603:10b6:303:10d::15)
+ by BN8PR15MB2596.namprd15.prod.outlook.com (2603:10b6:408:c3::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.26; Wed, 2 Mar
- 2022 20:55:12 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.5017.027; Wed, 2 Mar 2022
- 20:55:12 +0000
-Message-ID: <7e862b1c-7818-6759-caf1-962598d2c8b3@fb.com>
-Date:   Wed, 2 Mar 2022 12:55:06 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [PATCH bpf-next v1 1/9] bpf: Add mkdir, rmdir, unlink syscalls
- for prog_bpf_syscall
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Wed, 2 Mar
+ 2022 21:03:51 +0000
+Received: from MW4PR15MB4732.namprd15.prod.outlook.com
+ ([fe80::94b7:4b41:35e4:4def]) by MW4PR15MB4732.namprd15.prod.outlook.com
+ ([fe80::94b7:4b41:35e4:4def%4]) with mapi id 15.20.5038.014; Wed, 2 Mar 2022
+ 21:03:51 +0000
+From:   Mykola Lysenko <mykolal@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH v2 bpf-next] Improve BPF test stability (related to perf
+ events and scheduling)
+Thread-Topic: [PATCH v2 bpf-next] Improve BPF test stability (related to perf
+ events and scheduling)
+Thread-Index: AQHYLR4RBLwtGeD2UUGO+Hs99fhZfayrkScAgAEGpAA=
+Date:   Wed, 2 Mar 2022 21:03:51 +0000
+Message-ID: <8AD6BCF4-22EE-49C0-A459-24A805AFF0B5@fb.com>
+References: <20220301033907.902728-1-mykolal@fb.com>
+ <145b59c3-27d4-fc4c-82aa-e7294ace896c@fb.com>
+In-Reply-To: <145b59c3-27d4-fc4c-82aa-e7294ace896c@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220225234339.2386398-1-haoluo@google.com>
- <20220225234339.2386398-2-haoluo@google.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220225234339.2386398-2-haoluo@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW2PR2101CA0005.namprd21.prod.outlook.com
- (2603:10b6:302:1::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 733ac1f8-0cd0-4dac-efcc-08d9fc90273b
+x-ms-traffictypediagnostic: BN8PR15MB2596:EE_
+x-microsoft-antispam-prvs: <BN8PR15MB2596600462CCFC5F99883BB0C0039@BN8PR15MB2596.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hLGxtC0AmG9CEqBA9ZosYiZyJql2Zb1Nx81PPIpWrz5OjDWG7DPlef7Vx50FYS+PZUrFu0H2YFtJf6X7Oo9aOgYpBP2QHv2TmXY71+SCHFW0kYIUvC8Sg7tjBQ7mwFdNKKgEcaZPMJ7OarHKN7jPllE9uhXHSrZLfTyMaOvSRaJqSeRxZcAdCg60LgHRuXmZBXzdp00XL9rqso5SM4ipl6YcAc9qH/BA+Lc7hRpdD5amtLORDxLR3oMFDSmteOqmR4r4O5UOtv9HCVJJ4TI6YF7VADfIL18P/u1I1OsMbrKogf7I8ffqQB90nk6j8TQqCJIp9bvaRd0dNf7jWe8AMi65l4RKyv74esgmZX7sPG+XklQC0+XY/cE28a/AD3WbK7KpRvn3rB0yVBYLJ/oavd9sQ6G+09G12G1LS94Bc+ZzWvIdUDGFxJZbyLFj6Lrm4tOOJNy0/+hsIYJR6tzeOd4lhfir3XZ95dgT3Ihdtr/pbQ+53W8rNWXx9kV31AarP5fHl5JgMRKa5S3mmab4d89E5yna6VzVW/VQPwS+KwW7fCBDBZCExuX3ENwTXIQy0aDPcN2YylObY2rdvtGKAgxKJ77BHUcit2FLNHoQkU3apqwg0IcWGo/gU4WDgoyWrla1sHUCRG2p3MBv5WFunDx2DiMVTLUfo/ilaHbX6GJU2hn+WMSXQOpLiIJK7dOUP6bZixHUr25nEPPWVmsDyu9zDco7+XymMCF+sNmV7Igc2qOSz2vYnWun+C7Diuvp
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR15MB4732.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(6506007)(6636002)(6486002)(36756003)(71200400001)(53546011)(54906003)(508600001)(33656002)(8676002)(64756008)(66446008)(83380400001)(316002)(37006003)(76116006)(6862004)(66946007)(66476007)(66556008)(4326008)(5660300002)(8936002)(38070700005)(2906002)(122000001)(86362001)(186003)(2616005)(38100700002)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?16PfPaoXcGvKYLWZKRQvuHPhbw/AoBn4qNuO3TGXy+H22hH4P0J/7+8o1A36?=
+ =?us-ascii?Q?+8b9Wg5AYX52WFa6nDDgxassD0v8f40Lg3KzHdNXyJMmWCFAMjLCCeyUEhKk?=
+ =?us-ascii?Q?2rMXuwSjeTnWljsAaGV1BqH8IWR/BTiPenxDtiBR2+iY1K2AxSo6K7B7o1bz?=
+ =?us-ascii?Q?Ln/0XjcqO6O/ssIsKxbxHVA8pNGHXDLZvc15MbIYNNelwxdylannDNookRV+?=
+ =?us-ascii?Q?+K2kqFfSmM8u7w+6r46B4isYTyAVIfMLIKhlgIRzk/gw2QH+qk0CO038aahS?=
+ =?us-ascii?Q?pIMrr9JxhfgDu3tRXAm35MUR1UV+E0ByUgFzwHXC8r8SipUsB5brz0s9oW8y?=
+ =?us-ascii?Q?iXlhXnwV60KUgFMg1u2RD/cmO8sn7o4pp4aqY3Xc+xT6NkEwl2IOr9ZbLztw?=
+ =?us-ascii?Q?TogOmOqDu7jIolVuX0roOBLhLSM40JVjxG+gNSPEEgiYH1+Dms6n9cu3aF13?=
+ =?us-ascii?Q?SJkKldD1a3J5ZDjgR+IgijcWlzpGjXj6V4TLLJZNLZKNy27YbjCRGsz+t1iG?=
+ =?us-ascii?Q?bC8jlBaCNNNx0YXwQHQZz3tFRLPg50OcdUrvvjhvm3wHU2nVcbTGFzEV77EL?=
+ =?us-ascii?Q?Dk1liAadjNfb3KUz+wYSmiW6jl4/M7iR8lqZS/cXn4plXOjBZYGCDP+PlwyK?=
+ =?us-ascii?Q?v1D5GLhJo643rdb7fz9z1qMre9tuwDjTbhsKxAo8ggL/Xyjt2kI5Q8AdA+GT?=
+ =?us-ascii?Q?CGUystHi7cKsYGZDBU0qFjJsyCY0o9JYLjbucEiV7puANnON8U/+PE6c1ra7?=
+ =?us-ascii?Q?C8QAuKnYQrUF/KvKTQLqM/edJ3YEVaXVODoKchi6KwDb3jCufe1SJi41W5Us?=
+ =?us-ascii?Q?nfCGunx5gf1OwuvaIgj5W6Z5fEYSpn5Y5m/jxHXfqhLZbaSNvIh+Tyn8+Fc5?=
+ =?us-ascii?Q?nOONgnS3tj4S7zvDhE5fNzu+pdIoiT01maqHY7+5VQw0i9mRU1Vtw7c5LeFN?=
+ =?us-ascii?Q?DirNUB6sf2wzUV/VDOgSlvaEdTtHqntrAt+qjwbaEDJvCXS2SVR0rqvTmKgW?=
+ =?us-ascii?Q?8B1MLmO9XcnyDaMrVdt0LJkH+biB/UzWUp1v+AiG4i4C+IsO6+n8S+z9Kima?=
+ =?us-ascii?Q?E5DamHnd5ge3KMHCVj6Y7yR79cozgIYaDRUXpOZLAg+QmozJVPlunfmdlp2H?=
+ =?us-ascii?Q?KRJUbSXDkc8bOKWxvU50UVWGz47D9uvU68DFixYQIRwhWLmYCJJoSPoyOKQi?=
+ =?us-ascii?Q?ZPvo1/M8ab/7RwScmjqGUMHxFY6tN+l5NkStSB8axXMppSOPOlj64wPFq81U?=
+ =?us-ascii?Q?6WzxHiLW9zg1UYWVCIckqxrzOs/6JTyZ6QiTc3HmbhwoHPA65IQ3Q3q5k99L?=
+ =?us-ascii?Q?9xt4YQ3gL5rBLsJpsUL3vRjriY824sZ9XKFMZK4etBZQu055dic2ltzHo7jN?=
+ =?us-ascii?Q?B/EtwipFHkgGq/4qsgswN/UE/3EmWfvLqy3OtNxqHZzo/TKvUl963ctIwQ3R?=
+ =?us-ascii?Q?rO83fyYne50EckOs2EzRLRIuJ075lHpRJ06KxHiURxjE6OBDCIw8/mJRifC3?=
+ =?us-ascii?Q?p7VWozzccqS9yZdw+xdmb+W+JYveRzifb6jCe+N0YXInOV5WX5CPeaAG7PZz?=
+ =?us-ascii?Q?yGxJ56zdtcpiouHsJTwQ9fLhif+SuZKll+FwvnMj3ylKn7g2NJRNGwRsJvqi?=
+ =?us-ascii?Q?sg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <CA2E8D1B74FBCA489058E08E6DB6AFB6@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b7b20daa-64fd-407d-43fd-08d9fc8ef1c1
-X-MS-TrafficTypeDiagnostic: BN7PR15MB2452:EE_
-X-Microsoft-Antispam-PRVS: <BN7PR15MB2452B1347373ADF8CCBE19D4D3039@BN7PR15MB2452.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GOsZ/cziu4NuaNk+uyZgxMn2DKftmRrGQYj8zShlmvArBWEwkw/AwiL2/gI9JEWiJqFC0WdqL2z+CHu/ytV0FGnJBaFIXnHhNkDRlIwtD/IR+rFY24mWq2RSIQ3Gt5ew/m0rKBfRoAyXXjIlxnf0QMM2wrCQJbdCZRPtM2X5f2ihQ6h6lFC34kqpPr+4OI0HOR4Q5TJJh9BTXlbbcwSH/nkir+5aEwUNj9TyZvUBn3D/MuP/z0rPdMR/ecaOxWYETZuW9ScUitUbaVZ0nIKTTkU3UvL2td18djjgL8OpN6XqpfAnYnVSvwns9KtLJuZV/GtIm4IRdlwix6ogIzBRdoCFLJ9P6kwps2760jsZbRXfPWWeWflhcKKIYcFc/w2n/eUJcTaXDkzi3p7Uvx5B+9jVK+cQR5cRBpYiioKhAAXFK+Z6fNOpchYSxHFCR7Cn1+emNynyVXyBu6ZkV3Vs+eTu4D7dRS1dPCs8qEWs4HQSrqCseo1JQO6vNjSSP1I5uyPEfT/aKHc/PZ1UO/Vqkb3R/0JU4Jss96iWnEWWFEq+COQrbn4AEU8pnm8QFtPpi6+VCtC4zplENKqUkLwXq5TvOmMTWwSiVah6vdVbPLz5BkMjwFhDAhmv8lF4IrHQtu3mJJW4WQv+4oHxccjjsPjBE8aJRjUlGZM1beAVQDWaLPVxtRKuhNEEb957E2pIauo/U41bG6Y6Q1GgDFpxuy8JpEunRk9tzHOLweNTZlc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(83380400001)(110136005)(38100700002)(54906003)(6512007)(66556008)(52116002)(6486002)(66476007)(66946007)(31686004)(508600001)(4326008)(8936002)(8676002)(316002)(36756003)(7416002)(31696002)(6666004)(86362001)(5660300002)(2616005)(6506007)(2906002)(53546011)(186003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dDdoT2FwdnoxMk5YcGppOEVSUE5FYUZlNi9HN1h5UU5OSE1zQ25qWVlML2hZ?=
- =?utf-8?B?dTFER1l6ZmVTazlkZm51aFc1dlk0OWxTaFYwcXJXcFVxRm1obFhVWmNIK21T?=
- =?utf-8?B?QlV5SzYybjBVMWZUMlpXcFVJWEVZdGl2YnpXclZhTmpvZDAvRE5CYnNJZU5X?=
- =?utf-8?B?L3dYWTR3QTJHbGVwQUFPRjFCVjMrbFJyYmVjdVBYQk0rSW1SUEdxeDFjYmFp?=
- =?utf-8?B?RmZxYUYrcjlQYmRlcEpqK0syb3E3WDRLYThXZkFMcVMxemhQK1lZN1lsZ25a?=
- =?utf-8?B?dU55VW1wbFl2TjU0UHpqVVNicUxVZ3B2d1kwOFRZcDNyTFZMMk9VemhoZGFq?=
- =?utf-8?B?RWNmYjM3Wm9yQmI5cHRPVlZSd1A2TU9kcExwT0NjWkhEUytsTXRsMzlMQkd2?=
- =?utf-8?B?cmF2OHZKTDhHMTlVdVY0ZDgvUnhnQ1N0MDNldmRpcFZVRzZMUG9RcTk5dzhB?=
- =?utf-8?B?U3RNY0VWSWxqSVQ2MFJacEJ5bGtVdjNhWGFoVDlZZlhjelVWbWNEQUltb3BJ?=
- =?utf-8?B?UEJZWWk0RklyTzFPL1NOOFdTRDUwL09kNEI2ZGhmZk1rY0hndVNncHNXN1JK?=
- =?utf-8?B?c1F4aTFaWlErUFc4d1d3QnlLQXozckM2OUxpVitPOVM3TFgyVFlGZVRBWVZM?=
- =?utf-8?B?a2hQQXVEcGN2VWVaZjlqd1pjSG01SFBUdTFHaTFURWhwNnpocElkb1N0V0dS?=
- =?utf-8?B?UzV0NFdqVXYzSmdiK3BQWG13T0w2U2RVSlNUSVdQMlc0UU1jZTJlQzJ5dUl4?=
- =?utf-8?B?TTExdDMvK1R5a0pOMGZ3N2tJbk0vMnA0S0F2bWQ0V0IxQ1Vra1hZUFYzd0Vo?=
- =?utf-8?B?TVRXMjRDUVNmRWFnSE80UlpjM0NReG1qbEJQbFlmTERLVnNwZTh4b0ZZcnlZ?=
- =?utf-8?B?QTNVTWxPVVdHaU1LemxlZSs4dUZ6MW1XK1JwdzYycUhEdFB1amdwbGlraHpv?=
- =?utf-8?B?VkgvT0QzbEVBeU5LQU9VOHp2M3dHNWNGVXVNemRDYys5TkhNYnZPeE5SMnZr?=
- =?utf-8?B?WnlQczlXYWdPMTM5K1pRTVZXRHlnTm5xWS90ZGdSa01IYW9oZVIxdzVIVVE4?=
- =?utf-8?B?K0c1RGRBYjZCTDRTOEtyQU9NRW01eXViQmkzQUlYTU9heXpXTnY0cTJKYVBP?=
- =?utf-8?B?M2lJVGpsQ3EwaEl0T3l2WHB5RFFjUytGeUM4L3N5cE9mNWUwdnZwcDlXbXZC?=
- =?utf-8?B?RmdXc0w2M3NrdVdUUExkK0s3aVZKZnV6SC9ZMzRzUFJ5eCtrSEhkeWZKenlI?=
- =?utf-8?B?dTVKQlJBOEVySSs0S1poRWI1RXp6aEZqeTFON1B4ejZzYWQ0Wkhldlp5WkMr?=
- =?utf-8?B?bDcwZnFGemYzeWVFZnhjOXNpRk5LNS9NVjk1cGVQRThVaFlhT0Zma3huWlY4?=
- =?utf-8?B?VU0vejl1Y1pkckZhNmlBMFMzQ0JYZzJjK2ZsSWlpUUpQdnk1UDRZalN4UWRK?=
- =?utf-8?B?V1NjOFMxN1QrQ3JLcW1ybmk1TlJiMFhWNzdMQXl1bDQ0NlM5UzZiK1VIWjdv?=
- =?utf-8?B?RjNodVF0UUF3ZXpZSVQ4YS81cTgwdW91U1FQREhVaVMrK0dMckZsS3k4V21h?=
- =?utf-8?B?TmFKdTFlNWtkV0gxZDdLUk5DcXM5NFRIU090NnU2OU9EaUNRMjl1dXRid0Q2?=
- =?utf-8?B?blhrU3FjR3ROaFJCUmtoTVlpYmVIUmI5VTlTZHYxTWN2dGVKMTdTSFdpT1Fo?=
- =?utf-8?B?N2UwUWNKaTJjOXR4V0hWS2FFZmJ2bDIwM2tBaHVlTnNaMU1yaWdDcEJaemQ2?=
- =?utf-8?B?MThJZ2lLQ2owdDJlOU1lY2hoRE1VV0VhQkx3bGF6NlM2WXVUNDFSdjEyMDly?=
- =?utf-8?B?ZWFwNGlOZlVKUTBaN1Vrak5TQXcvY3kxNDRmcU56Yk5UbFVScFV5K0hFZkt1?=
- =?utf-8?B?Qmgxb0FkTkc4LzZuVE5iY1kxRXhRNjZiMjFKdVlOaHhZTTJveEtjS09BemF4?=
- =?utf-8?B?bHBOeXkwL3oxb2FJVjFEMXJnVHFwMDhjaVVPT25tb1VkcDU4Zk9oQTMzc1B3?=
- =?utf-8?B?cW10cHc4L1lwTEFzU2dNNHB4QnhQU3g4MVBMYmlvWFRFalRDcXVUeG9zZXJs?=
- =?utf-8?B?WWZ2M2I4amtsTGQrRjgzS2tlaGkzUExzalI1b0IzL3BVc1VhVjVwWHF3dmFE?=
- =?utf-8?Q?nu8g0tiD4Oayr3uvo4pcx4ViA?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7b20daa-64fd-407d-43fd-08d9fc8ef1c1
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2022 20:55:12.2728
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR15MB4732.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 733ac1f8-0cd0-4dac-efcc-08d9fc90273b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2022 21:03:51.2271
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fwtOPDforTzbU9Xbvtk/eIeeCc0RzDONptyxp2ezm8pwb5Q0kny7p+sqvu+ws4nO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2452
-X-Proofpoint-GUID: OGdfvtAvvdAZscg1IPd5VHef1_FIiW9h
-X-Proofpoint-ORIG-GUID: OGdfvtAvvdAZscg1IPd5VHef1_FIiW9h
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: b0+8KYORGsP+fCUX2phI3sxlK/udnBsXMTM9Eu5w5U+UCZLoeaDccKhLriK6cszO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2596
+X-Proofpoint-ORIG-GUID: 6-G_-YrzxWsQHSc9ZdPoGi1SRKYzCVuD
+X-Proofpoint-GUID: 6-G_-YrzxWsQHSc9ZdPoGi1SRKYzCVuD
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-02_12,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
- adultscore=0 clxscore=1011 spamscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 impostorscore=0 phishscore=0 bulkscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ spamscore=0 impostorscore=0 lowpriorityscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2201110000 definitions=main-2203020087
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -155,93 +144,189 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/25/22 3:43 PM, Hao Luo wrote:
-> This patch allows bpf_syscall prog to perform some basic filesystem
-> operations: create, remove directories and unlink files. Three bpf
-> helpers are added for this purpose. When combined with the following
-> patches that allow pinning and getting bpf objects from bpf prog,
-> this feature can be used to create directory hierarchy in bpffs that
-> help manage bpf objects purely using bpf progs.
+> On Mar 1, 2022, at 9:23 PM, Yonghong Song <yhs@fb.com> wrote:
 > 
-> The added helpers subject to the same permission checks as their syscall
-> version. For example, one can not write to a read-only file system;
-> The identity of the current process is checked to see whether it has
-> sufficient permission to perform the operations.
 > 
-> Only directories and files in bpffs can be created or removed by these
-> helpers. But it won't be too hard to allow these helpers to operate
-> on files in other filesystems, if we want.
 > 
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->   include/linux/bpf.h            |   1 +
->   include/uapi/linux/bpf.h       |  26 +++++
->   kernel/bpf/inode.c             |   9 +-
->   kernel/bpf/syscall.c           | 177 +++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/bpf.h |  26 +++++
->   5 files changed, 236 insertions(+), 3 deletions(-)
+> On 2/28/22 7:39 PM, Mykola Lysenko wrote:
+>> In send_signal, replace sleep with dummy cpu intensive computation
+>> to increase probability of child process being scheduled. Add few
+>> more asserts.
+>> In find_vma, reduce sample_freq as higher values may be rejected in
+>> some qemu setups, remove usleep and increase length of cpu intensive
+>> computation.
+>> In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
+>> higher values may be rejected in some qemu setups
+>> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index f19abc59b6cd..fce5e26179f5 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1584,6 +1584,7 @@ int bpf_link_new_fd(struct bpf_link *link);
->   struct file *bpf_link_new_file(struct bpf_link *link, int *reserved_fd);
->   struct bpf_link *bpf_link_get_from_fd(u32 ufd);
->   
-> +bool bpf_path_is_bpf_dir(const struct path *path);
->   int bpf_obj_pin_user(u32 ufd, const char __user *pathname);
->   int bpf_obj_get_user(const char __user *pathname, int flags);
->   
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index afe3d0d7f5f2..a5dbc794403d 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5086,6 +5086,29 @@ union bpf_attr {
->    *	Return
->    *		0 on success, or a negative error in case of failure. On error
->    *		*dst* buffer is zeroed out.
-> + *
-> + * long bpf_mkdir(const char *pathname, int pathname_sz, u32 mode)
+> LGTM with a few nits below.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
 
-Can we make pathname_sz to be u32 instead of int? pathname_sz should 
-never be negative any way.
+Thanks for the review!
 
-Also, I think it is a good idea to add 'u64 flags' parameter for all
-three helpers, so we have room in the future to tune for new use cases.
+> 
+>> ---
+>>  .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
+>>  .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
+>>  .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
+>>  .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
+>>  .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
+>>  .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
+>>  6 files changed, 25 insertions(+), 15 deletions(-)
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+>> index cd10df6cd0fc..0612e79a9281 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+>> @@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+>>  	attr.type = PERF_TYPE_SOFTWARE;
+>>  	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>>  	attr.freq = 1;
+>> -	attr.sample_freq = 4000;
+>> +	attr.sample_freq = 1000;
+>>  	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>>  	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>>  		goto cleanup;
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+>> index b74b3c0c555a..a0b68381cd79 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+>> @@ -30,12 +30,20 @@ static int open_pe(void)
+>>  	attr.type = PERF_TYPE_HARDWARE;
+>>  	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>>  	attr.freq = 1;
+>> -	attr.sample_freq = 4000;
+>> +	attr.sample_freq = 1000;
+>>  	pfd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
+>>    	return pfd >= 0 ? pfd : -errno;
+>>  }
+>>  +static bool find_vma_pe_condition(struct find_vma *skel)
+>> +{
+>> +	return skel->bss->found_vm_exec != 1 ||
+> 
+> In test_and_reset_skel(), we have following codes for reset/default values:
+>        skel->bss->found_vm_exec = 0;
+>        skel->data->find_addr_ret = -1;
+>        skel->data->find_zero_ret = -1;
+>        skel->bss->d_iname[0] = 0;
+> 
+> I think we should stick to them, so it would be good
+> to change
+> 	skel->bss->found_vm_exec != 1
+> to
+> 	skel->bss->found_vm_exec == 0
+> 
+>> +		skel->data->find_addr_ret == -1 ||
+>> +		skel->data->find_zero_ret != 0 ||
+> 
+> Change
+> 	skel->data->find_zero_ret != 0
+> to
+> 	skel->data->find_zero_ret == -1
+> 
+> The bpf program may set skel->data->find_zero_ret to
+> -ENOENT (-2)  or -EBUSY (-16) in which case we should
+> stop the iteration.
 
-> + *	Description
-> + *		Attempts to create a directory name *pathname*. The argument
-> + *		*pathname_sz* specifies the length of the string *pathname*.
-> + *		The argument *mode* specifies the mode for the new directory. It
-> + *		is modified by the process's umask. It has the same semantic as
-> + *		the syscall mkdir(2).
-> + *	Return
-> + *		0 on success, or a negative error in case of failure.
-> + *
-> + * long bpf_rmdir(const char *pathname, int pathname_sz)
-> + *	Description
-> + *		Deletes a directory, which must be empty.
-> + *	Return
-> + *		0 on sucess, or a negative error in case of failure.
-> + *
-> + * long bpf_unlink(const char *pathname, int pathname_sz)
-> + *	Description
-> + *		Deletes a name and possibly the file it refers to. It has the
-> + *		same semantic as the syscall unlink(2).
-> + *	Return
-> + *		0 on success, or a negative error in case of failure.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -5280,6 +5303,9 @@ union bpf_attr {
->   	FN(xdp_load_bytes),		\
->   	FN(xdp_store_bytes),		\
->   	FN(copy_from_user_task),	\
-> +	FN(mkdir),			\
-> +	FN(rmdir),			\
-> +	FN(unlink),			\
->   	/* */
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-[...]
+Debugged this test a bit more, and it seems we should continue iterating when -16 is returned, as it converges to 0 eventually and test passes.
+
+Will you be ok to add check that find_zero_ret == -1 or == -16?
+
+> 
+>> +		skel->bss->d_iname[0] == 0;
+>> +}
+>> +
+>>  static void test_find_vma_pe(struct find_vma *skel)
+>>  {
+>>  	struct bpf_link *link = NULL;
+>> @@ -57,7 +65,7 @@ static void test_find_vma_pe(struct find_vma *skel)
+>>  	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+>>  		goto cleanup;
+>>  -	for (i = 0; i < 1000000; ++i)
+>> +	for (i = 0; i < 1000000000 && find_vma_pe_condition(skel); ++i)
+>>  		++j;
+>>    	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
+>> @@ -108,7 +116,6 @@ void serial_test_find_vma(void)
+>>  	skel->bss->addr = (__u64)(uintptr_t)test_find_vma_pe;
+>>    	test_find_vma_pe(skel);
+>> -	usleep(100000); /* allow the irq_work to finish */
+>>  	test_find_vma_kprobe(skel);
+>>    	find_vma__destroy(skel);
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+>> index 12c4f45cee1a..bc24f83339d6 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+>> @@ -110,7 +110,7 @@ static void test_perf_branches_hw(void)
+>>  	attr.type = PERF_TYPE_HARDWARE;
+>>  	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>>  	attr.freq = 1;
+>> -	attr.sample_freq = 4000;
+>> +	attr.sample_freq = 1000;
+>>  	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
+>>  	attr.branch_sample_type = PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
+>>  	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>> @@ -151,7 +151,7 @@ static void test_perf_branches_no_hw(void)
+>>  	attr.type = PERF_TYPE_SOFTWARE;
+>>  	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>>  	attr.freq = 1;
+>> -	attr.sample_freq = 4000;
+>> +	attr.sample_freq = 1000;
+>>  	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>>  	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
+>>  		return;
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+>> index ede07344f264..224eba6fef2e 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/perf_link.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+>> @@ -39,7 +39,7 @@ void serial_test_perf_link(void)
+>>  	attr.type = PERF_TYPE_SOFTWARE;
+>>  	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>>  	attr.freq = 1;
+>> -	attr.sample_freq = 4000;
+>> +	attr.sample_freq = 1000;
+>>  	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>>  	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>>  		goto cleanup;
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+>> index 776916b61c40..b1b574c7016a 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+>> @@ -4,11 +4,11 @@
+>>  #include <sys/resource.h>
+>>  #include "test_send_signal_kern.skel.h"
+>>  -int sigusr1_received = 0;
+>> +static int sigusr1_received;
+>>    static void sigusr1_handler(int signum)
+>>  {
+>> -	sigusr1_received++;
+>> +	sigusr1_received = 1;
+>>  }
+>>    static void test_send_signal_common(struct perf_event_attr *attr,
+>> @@ -40,9 +40,10 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>>    	if (pid == 0) {
+>>  		int old_prio;
+>> +		volatile int volatile_variable = 0;
+> 
+> I think it is okay to use variable 'j' to be consistent with other
+> similar codes in selftests.
+
+Sounds good
+
+> 
+>>    		/* install signal handler and notify parent */
+>> -		signal(SIGUSR1, sigusr1_handler);
+>> +		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
+>>    		close(pipe_c2p[0]); /* close read */
+>>  		close(pipe_p2c[1]); /* close write */
+>> @@ -63,9 +64,11 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>>  		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
+>>    		/* wait a little for signal handler */
+>> -		sleep(1);
+>> +		for (int i = 0; i < 100000000 && !sigusr1_received; i++)
+>> +			volatile_variable /= i + 1;
+>>    		buf[0] = sigusr1_received ? '2' : '0';
+>> +		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
+>>  		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+>>    		/* wait for parent notification and exit */
+> [...]
+
