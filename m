@@ -2,145 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA01D4C9CC6
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 05:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AB14C9D23
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 06:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237229AbiCBEy1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 23:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S237942AbiCBFY4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 00:24:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236930AbiCBEy1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 23:54:27 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5ADAA94C5
-        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 20:53:43 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2224dAAM010915;
-        Tue, 1 Mar 2022 20:53:29 -0800
+        with ESMTP id S235176AbiCBFYz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 00:24:55 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3781F5F4D7
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 21:24:12 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 2222MvP3028755;
+        Tue, 1 Mar 2022 21:23:54 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=t6LmmDGjKJnpXXqk8ePQHT7vHLSy6hLL8/CfLTKkDUM=;
- b=a7yGZJ7xgYqCV7hLRcASqN4nfY3Ll9Vnw8q78F6j0N8/LrqqbfX7K/4oxLWKoeWjOqRK
- vy+VH4g9NR9KaKNkVxQ5Qs88higadoDbhhhg9dYzB1684k6xTJMqfKAWJIktRjkFiGeS
- nwouHP3XJS0bsBRFaF6RegFWhUv4iiNGVvs= 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ej1r0g1hv-1
+ bh=kM0ZPBmSmBgx/vEHX3R8deSlylLTchyfHns6deRFOrQ=;
+ b=lvsctsCFiM712hd0B9oHivo6bhgYr8Pvs7mLkmesCYM7FmkrqUQexIuEWpDci/QkbjgE
+ ojv2nIeLtnTxSeIK8qwUPZPhUG2054HjZsG/5j/eKf3qI2ioatjsUFNCZg6s7yNcynSu
+ j17sH4ZzqlGwuRWnfwYX8depiDY5cRIqzmE= 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2041.outbound.protection.outlook.com [104.47.51.41])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ehyr6gxsq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Mar 2022 20:53:29 -0800
+        Tue, 01 Mar 2022 21:23:54 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RWtll1AA1SeyDc+GCtkYb/HQOppx+vkOO9aLAJ2v+9BM3Ft3M8qSNEWJQWBDin+Xkan40Hd3bUCqpgv3DAbd9vc7bEnyz/ttZUmA/Zr3yrr/qkOYIsmPnd2URZn5cjPCUQkCDz0iRgd9TwHfyHbyrR9Fs60VN5zRh2HRtfmE8FDaCCFdO2gqLs8vGTtSyrVXgnpcwQ7yDQIxGulzTTXLdzkgjSagd6PokmnchiDWT1xHyWxRj2Oay0Dhwn5pm0x4vr7tnXjHkjycAnW15zKvE2UoTqCqgSbR3Nj5yEjaRHfyxKLWkf9TQxEXl0x7ZCu02K9sn5MCURexUHyOlKMlag==
+ b=E5H9u+4FVZurLWnsG5YviD5FmLT8bxlxF1tduymgRFDTW6QM3rIkbPGwFj5qYRlQjpmfkVayEybBzMNv/bCrOHjCntbYrS5ruRY5sphwRcxgnYJ8AQQ7CMirIIwfS8lVqfusyqPjhSskEEGs32+1qhMUDkWdfqd49fGrjHs9o+HUtcp2oIppjh8AgAMf/r3knqApWY5DVEJXKJ1I6UQW/5LYlUI/fQRW55E9k60lA3l+XW0IXy13f1HQos6nQ9GE4yUvlLm90C/M9D4XmKcIuADnXe3havBU6O2QKEpPpA49u8M//2p26vaFn7kAUW4yufvdhnWGShoFZHbn3zeQXA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t6LmmDGjKJnpXXqk8ePQHT7vHLSy6hLL8/CfLTKkDUM=;
- b=JCqAzTIEKZLHswHm5ca7dEmokGiNBL3/KdfWl+En7BBarBG/pUpVzl/1BuV8M22lDifLd6YRCYBHQmr+JR+RY36QQR/LjsVaj1l5NgI1yaUtXMH5geYyaB7dFphWCL+IVkXDrMWrmm5W4nVCmeZkR1sT/iVWrH1lJbocfF4JqIoGPoAMRspqPtuXJVXPMOSPIhiBjouMsGe631KZPborws86qmPlxGYjkvdEP9B4E2geo3QzJokWLuxHn09CX9HuybMDDyrjA/iDIcS+QpY81C6NgFPC3M8JfYy3P0uHscAxFjieGCViS0fbe80ZJ8pAG+gm4R+vpeH8ryYJx1QTEA==
+ bh=kM0ZPBmSmBgx/vEHX3R8deSlylLTchyfHns6deRFOrQ=;
+ b=OvbIeLq9X2A9h1du5c0ZFI+J8jk0gmQookeCx8JKu/SnKQDAiC4uawlAALpoy6rfJwpCY9NBXTpjWU7weSU4/igJg4B0zL4g9p++S/BYEIYrgMQBMOzQCdGENxmSU8dWo+GtWYS3eYpv1q3AMimcg3BBboqt+LE03vL/HX9xLwMejiVpELd1hnoNQ1Y3F6NjeWmopPeySjKUpFM47e4zQcg+xlNnaKVLedeFHYVB4bEIaz72Dbhgir8G10eFWuJZgXOtR16b9V4peznUXpJZqgEUhhtQWSy56b+Lh1oKo0+fcU3N1eaCd2RAjoQ87Kwdt1TIxgvF8C2dmKRn9RGEmw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM6PR15MB2505.namprd15.prod.outlook.com (2603:10b6:5:85::30) with
+ by BN6PR15MB1394.namprd15.prod.outlook.com (2603:10b6:404:c2::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.26; Wed, 2 Mar
- 2022 04:53:27 +0000
+ 2022 05:23:52 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.5017.027; Wed, 2 Mar 2022
- 04:53:26 +0000
-Message-ID: <ab6970fc-eaa0-9462-9614-893085c42331@fb.com>
-Date:   Tue, 1 Mar 2022 20:53:21 -0800
+ 05:23:52 +0000
+Message-ID: <145b59c3-27d4-fc4c-82aa-e7294ace896c@fb.com>
+Date:   Tue, 1 Mar 2022 21:23:48 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [PATCH bpf-next] Improve BPF test stability (related to perf
+Subject: Re: [PATCH v2 bpf-next] Improve BPF test stability (related to perf
  events and scheduling)
 Content-Language: en-US
-To:     Mykola Lysenko <mykolal@fb.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-References: <20220219003004.1085072-1-mykolal@fb.com>
- <CAEf4BzahKEObA_quad2M5Rmn42yPCNFAvVUtPVthFi2jPYNpmg@mail.gmail.com>
- <22435EA9-9336-4978-819A-0F91EFDBEA9E@fb.com>
- <CAEf4BzaAr_khs682uyCZ0HhFuNJWwKYDcfqhNE12rWYmU20JOA@mail.gmail.com>
- <a8f8a6f2-25c4-09c2-0b5a-0dab73f17f9e@fb.com>
- <8A284AAF-84BA-48A4-BF4D-7BDB2426DAB8@fb.com>
+To:     Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
+        ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net
+Cc:     kernel-team@fb.com
+References: <20220301033907.902728-1-mykolal@fb.com>
 From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <8A284AAF-84BA-48A4-BF4D-7BDB2426DAB8@fb.com>
+In-Reply-To: <20220301033907.902728-1-mykolal@fb.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4P222CA0018.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::23) To SN6PR1501MB2064.namprd15.prod.outlook.com
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MWHPR22CA0070.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::32) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: faf5aae4-fa70-40fc-9674-08d9fc089681
-X-MS-TrafficTypeDiagnostic: DM6PR15MB2505:EE_
-X-Microsoft-Antispam-PRVS: <DM6PR15MB2505D97CEDF3DD8DF0620DA7D3039@DM6PR15MB2505.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 87259cb6-47f9-4c21-aea4-08d9fc0cd684
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1394:EE_
+X-Microsoft-Antispam-PRVS: <BN6PR15MB1394F0A4B7F69D2D483FCFD1D3039@BN6PR15MB1394.namprd15.prod.outlook.com>
 X-FB-Source: Internal
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QwH2wIlb05MwbO9fIbK30cg1WzyRrdkYL3j4pqjBYgiUiOlNs/G0Qz6odVE8wFNOUqvrlaULXzXt6P0XA34UdX+Ltpv7cbNg0F4Ql8Rzp/PoXQaJIotwR6kK795bW+6RTYBbyurEMm1eQ6n6jCp1svpG9GVSg/3YOT82hbB9YYPzz/lwdOhtf7M5aMNodrcu/7znmxFfshTAAyPTHhx3sETWpqGyHwVdbhPY67tDtG5bsvNTgm1g8U44sl//05JNIy1Aw60910Uy4U7Bgzx5pIEDhIMbqVwQZBc4udH2bwRHjVX/ajbatgZ26bkdi05HVEqhh/MTnkbGFgjgi4BWA67OTRacHsr9Eujw7X5Uo8eG39Iuzuu91TH+K96lRC5tbQGYUKS+M0cZNxu+YpJhvdB0IF3JzBV8jJZukxnRLxQZQ5d+zzc9BZO0l6RkoidyFxJaNKVJ+wBeoJWjfJzseG//vd/TBX1ek/URRyYv0ts2DXy96XzkWHuZPOFO6WUfx4aKZey3QdX8Sx3ZN9fdUV/DkC9NqYo2awGBWBFdhCO6C/Gl4UVD4fcJ9qY9ufr1HFybOoPjgm+LiDK/AYJb5tZltmiJuGUUqReJjkhBvOrseT768p4TY1jFFq0B3iTeykcKGWmjnsbl9eCQ2vNqv3CfZPCaoGLjQIrMNeyjhMUSGWn4gGJRIcxHN5qqantVBG/fbSDXeSGAZnz5L2pXSJbNdOZgDwy+86uECl1p/3s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8676002)(2616005)(66476007)(186003)(54906003)(4326008)(6862004)(66946007)(66556008)(6666004)(6506007)(6512007)(31696002)(86362001)(53546011)(38100700002)(508600001)(37006003)(52116002)(6636002)(316002)(36756003)(31686004)(30864003)(8936002)(5660300002)(6486002)(83380400001)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: Dionljw2pD7E4WHUke2AdTLC7PHF7oRA1IGGOYjxpp0bDFper6m09dtY8DL5cwVW4V0oysS9JczjL0xDgI33S9UZoMJsBSQKsPloA3UliXF8SCr6G8BxSFS1DH5VGadxFvhrBB0+C4Wgtni/R92cxuM7AQ/DIocH4zTRed1c1n7vNMDeb1CtpMRvgIJGeP2AXI68+5+rP2VkM/pjjamRDzC8BE4tMaJAgdzYifjLxSG4QxqZlq0GfapzIo2KZVnNCkBksLDFbspuvVlbOWsE7/NhysyCqyvP/n92HF1TBJ6Dd+m9SoOXmPaYPXLkmONUukFl+mieNnEHFgUxIB9Ls4cV5wEP2gm484snDjDGgPV4T5fb2zH0cKzmPv0OKFzrmTwyDwAm93CHMlqmERnNJVeFpLpWa9hnp3T0ssNGHqvLcgxB5ynyYNuCMybPeq39Mz+nkLuICSA2T8Lvbv/oAePgP8yLrq9GNAU1cHZO39Pc07oxo/z7X246OxfhBq+2bYU8VHgQjwS4WfIOnletUejk7WGdE+XS4G+L1oeygEgAopNG6SOuxT0eQ9Rb3MqZo6OD2LX8b4xRfWWumH29yE2DdMspiVdTxCnnRXr7YJf2MWqtdJE+BTp2oE8GZYPI60Jqn47mMgVSOgKvqpFHwGkTMYugkgmXtdG18IilDgV2o2tQ/5Ad/a9Yz1r1UCWYyczu6PpbnoJ68A5o1XsXRU157XUidJM6ua9cywnkHI5QOa6EDn8awK0LEvToZI52
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6486002)(508600001)(6506007)(53546011)(52116002)(6666004)(6512007)(66946007)(66556008)(66476007)(8676002)(4326008)(86362001)(31696002)(316002)(83380400001)(2616005)(186003)(38100700002)(36756003)(31686004)(2906002)(5660300002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dUIwQzErZHNDQmY4Z3U2aGRyOWJWYXpDcmhTNmhrUkV6ajdvV3J4Z29DZVhD?=
- =?utf-8?B?MXdtK0ZDWGZJQVJFMlFvU3RMdk1xSGNVWTJoTlVBTmtua0NlUDlwbUdxWk5p?=
- =?utf-8?B?UVZOY3dXVklzN0E3UVhVY2N6WG5KN0s1WGJwS3M1M1ZsaW5mT09OaFJjQ3Zj?=
- =?utf-8?B?b0dJZVJsaitaUmRKS3VzZ3ZsQ21RQ1VaTGZvYXBwUlNFNzZud0NzVEE3UDdn?=
- =?utf-8?B?eW00NzNhMjMvRlFxMHdUSkVvU1VMQUFjWDlZcFdjRkgxRFNZTU00elNXUWJi?=
- =?utf-8?B?MDMxS1c4TjhTdGl4ZVpaWEcyVW9Gakw4emRLVkM1d2s2aG56c2Mza3lqY3lC?=
- =?utf-8?B?aWRrUkJmQjI1YkhHVm0xVHowMlVwWDNYUjBEejNNTHZTRWVoUFJORGEwVTVC?=
- =?utf-8?B?Z1k4OG4yU3ZLYXBWT2VGMThLS1FMcGVnQVl3blVQQmZOcGpkYkF2Q20xdG9M?=
- =?utf-8?B?MzVSU215dnJZUTlQaU0xQUNrd09wSnJYMFREd3o1WEl3Yjk1b0NNazN6cGNt?=
- =?utf-8?B?azVyU2hCNEVZTXA5SzNSaFZydG9UalRyWWQwRXVLbkdDaDlDTWFDN0t0NHdl?=
- =?utf-8?B?Z2YzVDQ1d0lrWGorbC9OOXZ0Sk5ucnhydjhEN3VPVEFrMlp6aFg0RjdBS1g4?=
- =?utf-8?B?ckpzVS91SXJ0ZXcvV3A1WkhybHpka0piZXNmNi94OTY5UHhzWENwYkN3NEtE?=
- =?utf-8?B?MWQ5MTdJY1JDS0NodUNCV2paVEtKMlQrcDhyVWhMRzVtUVNZMDlkOW0rbC9k?=
- =?utf-8?B?SzNvY00vU1poTy9VWnhSeUFoT1YzNG1BZFZ6Z056ci9EdzNRMmJWSWdQSHUv?=
- =?utf-8?B?UzBtcUxHeVEyRTBjZDV6QzQ5SkVRZTZsVmNFaktiK0hyeC9nMThLNWU0SVNI?=
- =?utf-8?B?OTREaGhUdVM3V0dPNHRHWTR1YnNldXdXeWN5TVp0ZmZqZkh1aFdlTGtaWnpm?=
- =?utf-8?B?SHVwZHlOVWh1NGY3WkJQRjZncDg5Vi91NmVnSnFmemJESExLMzhvdTJVNnNJ?=
- =?utf-8?B?T01obEM3REROZTR6UDFUQWJPNFJteXo5V0ZtUlBsMTY4TVVsa09ReVlhQlRJ?=
- =?utf-8?B?MURDQ2oxZTdiMTIyblRqaWZzdEVtOW8rdWV4ODJOMkR0MHJINzNhYzdZUnJ4?=
- =?utf-8?B?Qm5iaEtydjF0dFZkSm8wZmpCbHE2b253TWhSc2E4NVphd0ZnZ3pnQ3NwMHVp?=
- =?utf-8?B?dU1Tbis3VjBVT2NTYUVUeW9hTEtHRmtyS3lTeSswTkdPQ1N0WVhyU0kzNXNq?=
- =?utf-8?B?aXdGcE9xVEJsSjR1b01mRTgvQy95NU9ucTNlbmVHTktvUGJscG1ocGNaTlB6?=
- =?utf-8?B?ak1XdGZ6RUJwbDNkNjNNS3JlOXJ0UWZJT1BPVGVVYVFvNWZHRnRyY1BoZk1F?=
- =?utf-8?B?TzloZFJ0Y1hROEJkcFkySjZNNS8xVjdSOHRiVGNRTjhUZFVrcksvT2lxbG4v?=
- =?utf-8?B?M01HLytnMDJWejlHL00yVmhMOEZlU1J1L29pREhRQ0NhTEhKVVJFUUtnd3FX?=
- =?utf-8?B?T2VKSlFwalN2ckg2YjRSYkpjSmxuSkcrRjBrRERHbXJEODJVVFllOXZkTEVV?=
- =?utf-8?B?M3lpY3NtamV0bXVvcHg4YzNsQnBHblAzRUtQNEhieC9CRFhBRHFjN1d2ZW0x?=
- =?utf-8?B?R29TeFQ1d2JZbTZwbXVEVmhzL2JlRVpmRHVFb0VTdTcydU9IenNRMGx0aEpr?=
- =?utf-8?B?cGduMDFSN2M5NzVhR2c0cXF1KzJuZEh6cjlnUGtXaWpmTHJsTmZncGxSMFNV?=
- =?utf-8?B?cGEyR0ZVaEowNHdnWDY5dktlOTlBdlFmek1uQ2RBMndYYk55cGEweFZvbjJ0?=
- =?utf-8?B?V2t6RDI5bDNFV2JhWVdQWldFdUlOQ3dNSXUxNVFudjVyVXl6WWFEaXY5UFQw?=
- =?utf-8?B?RXQ3T2VibFQ2cEUweW5XQno4ajNYcWpXZk5EUmhIUXoxVDZkblVPWW5aMnN6?=
- =?utf-8?B?MXRDdGJCVEVEd3BQMmptMzNFUXVxN2t3OFJyWmFDTlNEK0tUUTlRSEN4TCs3?=
- =?utf-8?B?QW40RjZsQVJjTmdnQTl4NzJIS3hwSWMwejhGdk1ualpUMVRKbFlyWUlFbmZu?=
- =?utf-8?B?dDY1b1RyTEVzWTZ2aFNmY0NET2ZPa2s2aVIwb2hNMnJDeEFxZnVUcFBXdyt5?=
- =?utf-8?Q?/ems87IrcFQYzKaoo51NK7g1d?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TDdFS0VaNW91amN6UjhoQzZveml0VjBiRmJWbkxOMlFhZVJlZkx1V0ltK09K?=
+ =?utf-8?B?YUtFcjFwWDZOZVZMQ293M0VZeUlWdUY1NCtOSkFteFlTOGdUMzBLcDU5Y1JZ?=
+ =?utf-8?B?NWwxNnA2ZlZGQ3FJNzJycVk0cU1DK284RElUOVVjdEhXUGdZMUdROWlPaDVM?=
+ =?utf-8?B?YVoxeDlkVUNhK0hFa2tMdDVNS2VLYWhmVVRSeHM0S1FjaUpRQ3llY3dhekV2?=
+ =?utf-8?B?d2gvTjlXRUplK1pmaUFDKzVsa05ueW1oSUJxUHJ3SG9VeEx5VUMwc01pOGpt?=
+ =?utf-8?B?aEd1Y28yTnJXb0FtenhJWXgranVpUnBTb3dQUjVsaU5BbkRKTnkvRkdaL0Jq?=
+ =?utf-8?B?Wm12R2p0RTh4RGRFQ2xkZE9SUnVwNGsvTFpJQ0pRNU5zMmh2S2x4OWJwU3Vq?=
+ =?utf-8?B?ZjR5bkd4aEJPdVQzQmNGdE5pNmgzUnJyK3JxSDJsS2VIS3BLcDZiaFBTZDhX?=
+ =?utf-8?B?YndRZzJxK3JLcS9pWkVOMzFQbmpxeVFLWUxFRjEzdUhJZVNQTmRpKzloWE1N?=
+ =?utf-8?B?OGdjVWZsaGkydDloS0M0aE9zTnIrSlBkOGdVakE1QlBVaEJkbW5QbUNXTUZF?=
+ =?utf-8?B?NElEeHM3MTRBL0R5SGpzU0hDTjBTQnBtRXVZYWkyMHpmcDZkRitKL0lwY00w?=
+ =?utf-8?B?ODc5c2t6YW5qeFZDVng0T2lwSHB1cTBnQVlEMTY0d2NYYlNLOWhGS2hhcUQz?=
+ =?utf-8?B?L0N1eFQ4VFpIL1FSMUJWd2tsQ21hWG12WE1DSEN5Zi9LZTJZempYa0wvdi9Y?=
+ =?utf-8?B?UTdjQ1VtdTg4Z0tSclQ5SzVLNEFxc1NucnBiSU1CeVlOK01qSWJrMkZtZWFF?=
+ =?utf-8?B?THhnZXVaK0ZyTnhoZGxJZGpycGpNZDR4LytVTGl0emE4OFY2NnhFT0YvNXN6?=
+ =?utf-8?B?Sy92MnJzVWRBZlhQYm9qOVZMQW9JcURWTjFweElENFRtbkxISDNGZEQ4NFBY?=
+ =?utf-8?B?aUVjWHV3SHpsUys4VmVEb0xkaG4rQWRnM2Zic2JCWDFLQ0hNTlhxUlZKbjFa?=
+ =?utf-8?B?b0FlNkp4ZjZtZ0Z1U09FbzRORXNoVkVrRkpQR2JackFCQWRLaUJER015dmhl?=
+ =?utf-8?B?Rlh0Y3NBeDdhNUtuRWw1ZE9jdi9pMndRMlU3amp0RDhSQ2hYbFlrVU8vdUZs?=
+ =?utf-8?B?cFkyY1hGR3ZndlJYTW1UYUtJZGpCMnM5YjFkaUF4Mld2aXBnMlRRbkhKdy9N?=
+ =?utf-8?B?L3NpeGxiWWVLS0JQSTBBT1h6MmlBczV4clY1UndsTEZjb1M4MFJoR25GQy83?=
+ =?utf-8?B?OG1EUnlGVGlSVVZ0ODZzSVdzUWxReGpBOVJTNjQvQjhJNTVkd1V3THJFWEtS?=
+ =?utf-8?B?Yk1zbDh1bWErTU8rT3JTR1owUUlpQTR5TUkrMVUySHl5eUkwZDBqN2FCYVJO?=
+ =?utf-8?B?RnFFalNHRnBpNm1UOFhmYXlSbkZwa0xxaHBBWEFVbFhVWko0K0ZqMXJEM2lz?=
+ =?utf-8?B?MXRUOWZ6dzRHSTB1bmJGcTBmZVFVd2RPcGhESVZPRjEweVhpeWpLUXdwZFZq?=
+ =?utf-8?B?TlQwRHhHSS92TkNOK0xTWUhVRVRCQkNKd0szR3RGT3I4Zm9NMy9USUZtSVRR?=
+ =?utf-8?B?b2ljVHZjSW1FMWlFL2RtMFVqNmlGdm12ai9qdGhRWk9ScCs5UXJVVmZ4QlJS?=
+ =?utf-8?B?VmhwYXdxWXh1S2hrS09DaEVlU3d2R1l5ZExGN1NkVlVSc1hESDlrWWx4dUh2?=
+ =?utf-8?B?RWRxenB3R01kWlFFRmNvYVZZOUNQZHdKbC9hUE9uTkdsam1TRUtPcHc5dzFH?=
+ =?utf-8?B?OGN2WDA2c3hPMHRNSndFTkM0S3o1V0lvdDRXYldEUDFqMFVqcXgwWjFZYnVm?=
+ =?utf-8?B?S0RSSkZMUndORytobFRTR25tTnhoQkJtVXorV0M4Y0E3WHNSclZxRmxMbUpq?=
+ =?utf-8?B?QU5udFNnNnlrSHcxS2x0UGdXSTYzc2JJMVJ2dU9OVVg5QWd6bm0xRTVGbVdw?=
+ =?utf-8?B?YjYvRzhHRnpERFFvdWFzbGZ1VnNzZ0tZMzYwS0ErS2RpQjhNZ3czRnlrM2Zj?=
+ =?utf-8?B?dDIvcDY1N1c0WWtibkY5YU4vZVBmS3F6NUFmSkxETE9lNFhuaVUwQWVtSWhx?=
+ =?utf-8?B?RlUyZ1QzQnRNRWZnTysycDhkS0NjMHY5RWl0RC9TMlo4NEFDQW9zcnVuSmZ1?=
+ =?utf-8?B?aVIrTGNPQmdGR3lzVlFrakMvZE1idEswa00vWWszZzNhUWhxTU5xMURFWUhh?=
+ =?utf-8?B?dUE9PQ==?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: faf5aae4-fa70-40fc-9674-08d9fc089681
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87259cb6-47f9-4c21-aea4-08d9fc0cd684
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2022 04:53:26.6211
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2022 05:23:51.9556
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LDEVbJhTCmkt8Z5gf3wbOMZ2ch/N5WiytWSp8lPSwrZuR+Mz0WK6mgruav/nJaJm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB2505
-X-Proofpoint-ORIG-GUID: eD0Egu8GU7V9cNaBEQSWNzxkK266j26N
-X-Proofpoint-GUID: eD0Egu8GU7V9cNaBEQSWNzxkK266j26N
+X-MS-Exchange-CrossTenant-UserPrincipalName: k0ktB/QmtokPGEqOn8UaRe0Ds/deM/iUu7X3M5bt7rOcI2CbDYNXshO/MnZdRN8O
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1394
+X-Proofpoint-GUID: V6g_BWue1115pVz7069k6azO4hnXLWvH
+X-Proofpoint-ORIG-GUID: V6g_BWue1115pVz7069k6azO4hnXLWvH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-02_01,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 bulkscore=0
- phishscore=0 mlxscore=0 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
- clxscore=1015 spamscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2203020021
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0
+ clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2203020024
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
@@ -155,261 +149,192 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/28/22 7:45 PM, Mykola Lysenko wrote:
+On 2/28/22 7:39 PM, Mykola Lysenko wrote:
+> In send_signal, replace sleep with dummy cpu intensive computation
+> to increase probability of child process being scheduled. Add few
+> more asserts.
 > 
+> In find_vma, reduce sample_freq as higher values may be rejected in
+> some qemu setups, remove usleep and increase length of cpu intensive
+> computation.
 > 
->> On Feb 22, 2022, at 8:32 PM, Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 2/22/22 7:13 PM, Andrii Nakryiko wrote:
->>> On Tue, Feb 22, 2022 at 12:35 PM Mykola Lysenko <mykolal@fb.com> wrote:
->>>>
->>>> Thanks for the review Andrii!
->>>>
->>>>> On Feb 19, 2022, at 8:39 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>>>>
->>>>> On Fri, Feb 18, 2022 at 4:30 PM Mykola Lysenko <mykolal@fb.com> wrote:
->>>>>>
->>>>>> In send_signal, replace sleep with dummy cpu intensive computation
->>>>>> to increase probability of child process being scheduled. Add few
->>>>>> more asserts.
->>>>>>
->>>>>> In find_vma, reduce sample_freq as higher values may be rejected in
->>>>>> some qemu setups, remove usleep and increase length of cpu intensive
->>>>>> computation.
->>>>>>
->>>>>> In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
->>>>>> higher values may be rejected in some qemu setups
->>>>>>
->>>>>> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
->>>>>> ---
->>>>>> .../testing/selftests/bpf/prog_tests/bpf_cookie.c  |  2 +-
->>>>>> tools/testing/selftests/bpf/prog_tests/find_vma.c  |  5 ++---
->>>>>> .../selftests/bpf/prog_tests/perf_branches.c       |  4 ++--
->>>>>> tools/testing/selftests/bpf/prog_tests/perf_link.c |  2 +-
->>>>>> .../testing/selftests/bpf/prog_tests/send_signal.c | 14 ++++++++++----
->>>>>> 5 files changed, 16 insertions(+), 11 deletions(-)
->>>>>>
->>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
->>>>>> index cd10df6cd0fc..0612e79a9281 100644
->>>>>> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
->>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
->>>>>> @@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
->>>>>>         attr.type = PERF_TYPE_SOFTWARE;
->>>>>>         attr.config = PERF_COUNT_SW_CPU_CLOCK;
->>>>>>         attr.freq = 1;
->>>>>> -       attr.sample_freq = 4000;
->>>>>> +       attr.sample_freq = 1000;
->>>>>>         pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
->>>>>>         if (!ASSERT_GE(pfd, 0, "perf_fd"))
->>>>>>                 goto cleanup;
->>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
->>>>>> index b74b3c0c555a..acc41223a112 100644
->>>>>> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
->>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
->>>>>> @@ -30,7 +30,7 @@ static int open_pe(void)
->>>>>>         attr.type = PERF_TYPE_HARDWARE;
->>>>>>         attr.config = PERF_COUNT_HW_CPU_CYCLES;
->>>>>>         attr.freq = 1;
->>>>>> -       attr.sample_freq = 4000;
->>>>>> +       attr.sample_freq = 1000;
->>>>>>         pfd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
->>>>>>
->>>>>>         return pfd >= 0 ? pfd : -errno;
->>>>>> @@ -57,7 +57,7 @@ static void test_find_vma_pe(struct find_vma *skel)
->>>>>>         if (!ASSERT_OK_PTR(link, "attach_perf_event"))
->>>>>>                 goto cleanup;
->>>>>>
->>>>>> -       for (i = 0; i < 1000000; ++i)
->>>>>> +       for (i = 0; i < 1000000000; ++i)
->>>>>
->>>>> 1bln seems excessive... maybe 10mln would be enough?
->>>>
->>>> See explanation for send_signal test case below
->>>>
->>>>>
->>>>>>                 ++j;
->>>>>>
->>>>>>         test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
->>>>>
->>>>> [...]
->>>>>
->>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
->>>>>> index 776916b61c40..841217bd1df6 100644
->>>>>> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
->>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
->>>>>> @@ -4,11 +4,12 @@
->>>>>> #include <sys/resource.h>
->>>>>> #include "test_send_signal_kern.skel.h"
->>>>>>
->>>>>> -int sigusr1_received = 0;
->>>>>> +int sigusr1_received;
->>>>>> +volatile int volatile_variable;
->>>>>
->>>>> please make them static
->>>>
->>>> sure
->>>>
->>>>>
->>>>>>
->>>>>> static void sigusr1_handler(int signum)
->>>>>> {
->>>>>> -       sigusr1_received++;
->>>>>> +       sigusr1_received = 1;
->>>>>> }
->>>>>>
->>>>>> static void test_send_signal_common(struct perf_event_attr *attr,
->>>>>> @@ -42,7 +43,9 @@ static void test_send_signal_common(struct perf_event_attr *attr,
->>>>>>                 int old_prio;
->>>>>>
->>>>>>                 /* install signal handler and notify parent */
->>>>>> +               errno = 0;
->>>>>>                 signal(SIGUSR1, sigusr1_handler);
->>>>>> +               ASSERT_OK(errno, "signal");
->>>>>
->>>>> just ASSERT_OK(signal(...), "signal");
->>>>
->>>> I am fine to merge signal and ASSERT lines, but will substitute with condition "signal(SIGUSR1, sigusr1_handler) != SIG_ERR”, sounds good?
->>>>
->>> Ah, signal is a bit special with return values. Yeah,
->>> ASSERT_NEQ(signal(...), SIG_ERR, "signal") sounds good.
->>>>>
->>>>>>
->>>>>>                 close(pipe_c2p[0]); /* close read */
->>>>>>                 close(pipe_p2c[1]); /* close write */
->>>>>> @@ -63,9 +66,12 @@ static void test_send_signal_common(struct perf_event_attr *attr,
->>>>>>                 ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
->>>>>>
->>>>>>                 /* wait a little for signal handler */
->>>>>> -               sleep(1);
->>>>>> +               for (int i = 0; i < 1000000000; i++)
->>>>>
->>>>> same about 1bln
->>>>
->>>> With 10mln and 100 test runs I got 86 failures
->>>> 100mln - 63 failures
->>>> 1bln - 0 failures on 100 runs
->>>>
->>>> Now, there is performance concern for this test. Running
->>>>
->>>> time sudo  ./test_progs -t send_signal/send_signal_nmi_thread
->>>>
->>>> With 1bln takes ~4s
->>>> 100mln - 1s.
->>>> Unchanged test with sleep(1); takes ~2s.
->>>>
->>>> On the other hand 300mln runs ~2s, and only fails 1 time per 100 runs. As 300mln does not regress performance comparing to the current “sleep(1)” implementation, I propose to go with it. What do you think?
->>> I think if we need to burn multiple seconds of CPU to make the test
->>> reliable, then we should either rework or disable/remove the test. In
->>> CI those billions of iterations will be much slower. And even waiting
->>> for 4 seconds for just one test is painful.
->>> Yonghong, WDYT? Should we just drop thi test? It has caused us a bunch
->>> of flakiness and maintenance burden without actually catching any
->>> issues. Maybe it's better to just get rid of it?
->>
->> Could we try to set affinity for the child process here?
->> See perf_branches.c:
->>
->> ...
->>         /* generate some branches on cpu 0 */
->>         CPU_ZERO(&cpu_set);
->>         CPU_SET(0, &cpu_set);
->>         err = pthread_setaffinity_np(pthread_self(), sizeof(cpu_set), &cpu_set);
->>         if (CHECK(err, "set_affinity", "cpu #0, err %d\n", err))
->>                 goto out_destroy;
->>         /* spin the loop for a while (random high number) */
->>         for (i = 0; i < 1000000; ++i)
->>                 ++j;
->> ...
->>
->> Binding the process (single thread) to a particular cpu can
->> prevent other non-binding processes from migrating to this
->> cpu and boost the chance for NMI triggered on this cpu.
->> This could be the reason perf_branches.c (and a few other tests)
->> does.
->>
->> In send_signal case, the cpu affinity probably should
->> set to cpu 1 as cpu 0 has been pinned by previous tests for
->> the main process and I didn't see it 'unpinned'
->> (by setaffinity to ALL cpus).
->> This is inconvenient.
->>
->> So the following is my suggestion:
->> 1. abstract the above 'pthread_setaffinity_np to
->>    a helper to set affinity to a particular cpu as
->>    this function has been used in several cases.
->> 2. create a new helper to undo setaffinity (set cpu
->>    mask to all available cpus) so we can pair it
->>    with pthread_setaffinity_np helper in prog_tests/...
->>    files.
->> 3. clean up prog_tests/... files which have pthread_setaffinity_np.
->> 4. use helpers 1/2 with loop bound 1000000 for send_signal test.
->>    The implementation here will be consistent with
->>    other NMI tests. Hopefully the test can consistent
->>    pass similar to other NMI tests.
->>
->> WDYT?
+> In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
+> higher values may be rejected in some qemu setups
 > 
-> Hi Yonghong,
-> 
-> I have tried this approach in the send_signal test without much success unfortunately (different CPUs and configurations options). It is required though for perf_branches test, yet to understand why.
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 
-Thanks for experiments. I looked at the code again. Indeed 
-pthread_setaffinity_np is not needed for send_signal test. This is 
-because we use perf_event_open pid/cpu config like below:
-        pid > 0 and cpu == -1
-               This measures the specified process/thread on any CPU.
+LGTM with a few nits below.
 
-For perf_branches, pthread_setaffinity_np is needed since it uses
-the perf_evnet_open pid/cpu config like below:
-        pid == -1 and cpu >= 0
-               This measures all processes/threads on the specified CPU. 
-  This requires CAP_SYS_ADMIN capabil‐
-               ity or a /proc/sys/kernel/perf_event_paranoid value of 
-less than 1.
+Acked-by: Yonghong Song <yhs@fb.com>
 
+> ---
+>   .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
+>   .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
+>   .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
+>   .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
+>   .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
+>   .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
+>   6 files changed, 25 insertions(+), 15 deletions(-)
 > 
-> In the V2 of this patch, I used modified approach when we will stop crunching volatile variable when needed condition became true. I hope this will be an acceptable middle ground in this case.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> index cd10df6cd0fc..0612e79a9281 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> @@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+>   	attr.type = PERF_TYPE_SOFTWARE;
+>   	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>   	attr.freq = 1;
+> -	attr.sample_freq = 4000;
+> +	attr.sample_freq = 1000;
+>   	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>   	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>   		goto cleanup;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> index b74b3c0c555a..a0b68381cd79 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> @@ -30,12 +30,20 @@ static int open_pe(void)
+>   	attr.type = PERF_TYPE_HARDWARE;
+>   	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>   	attr.freq = 1;
+> -	attr.sample_freq = 4000;
+> +	attr.sample_freq = 1000;
+>   	pfd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
+>   
+>   	return pfd >= 0 ? pfd : -errno;
+>   }
+>   
+> +static bool find_vma_pe_condition(struct find_vma *skel)
+> +{
+> +	return skel->bss->found_vm_exec != 1 ||
 
-My current setup is using qemu on a physical server and cannot reproduce 
-the issue. So I created another setup which uses qemu on a VM itseld and
-can actually reproduce the issue. Replacing the sleep(1) with
-   for (int i = 0; i < 1000000000; i++) /* 1billion */
-      j++; /* volatile int j */
-seems fixing the issue. But your change
-   for (int i = 0; i < 100000000 && !sigusr1_received; i++)	
-      volatile_variable /= i + 1;
-works too and I tested it and in most cases the time for the subtest
-is 0.8x or 0.9x seconds. Sometimes it can be < 0.5 seconds, and 
-occasionally it may be 1.0x seconds. Overall, this is definitely
-an improvement for fixing flakiness and better runtime.
+In test_and_reset_skel(), we have following codes for reset/default values:
+         skel->bss->found_vm_exec = 0;
+         skel->data->find_addr_ret = -1;
+         skel->data->find_zero_ret = -1;
+         skel->bss->d_iname[0] = 0;
 
-> 
-> Thanks!
-> 
->>
->>>>
->>>>>
->>>>>> +                       volatile_variable++;
->>>>>>
->>>>>>                 buf[0] = sigusr1_received ? '2' : '0';
->>>>>> +               ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
->>>>>> +
->>>>>>                 ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
->>>>>>
->>>>>>                 /* wait for parent notification and exit */
->>>>>> @@ -110,9 +116,9 @@ static void test_send_signal_common(struct perf_event_attr *attr,
->>>>>>         ASSERT_EQ(read(pipe_c2p[0], buf, 1), 1, "pipe_read");
->>>>>>
->>>>>>         /* trigger the bpf send_signal */
->>>>>> +       skel->bss->signal_thread = signal_thread;
->>>>>>         skel->bss->pid = pid;
->>>>>>         skel->bss->sig = SIGUSR1;
->>>>>> -       skel->bss->signal_thread = signal_thread;
->>>>>>
->>>>>>         /* notify child that bpf program can send_signal now */
->>>>>>         ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
->>>>>> --
->>>>>> 2.30.2
-> 
+I think we should stick to them, so it would be good
+to change
+	skel->bss->found_vm_exec != 1
+to
+	skel->bss->found_vm_exec == 0
+
+> +		skel->data->find_addr_ret == -1 ||
+> +		skel->data->find_zero_ret != 0 ||
+
+Change
+	skel->data->find_zero_ret != 0
+to
+	skel->data->find_zero_ret == -1
+
+The bpf program may set skel->data->find_zero_ret to
+-ENOENT (-2)  or -EBUSY (-16) in which case we should
+stop the iteration.
+
+> +		skel->bss->d_iname[0] == 0;
+> +}
+> +
+>   static void test_find_vma_pe(struct find_vma *skel)
+>   {
+>   	struct bpf_link *link = NULL;
+> @@ -57,7 +65,7 @@ static void test_find_vma_pe(struct find_vma *skel)
+>   	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+>   		goto cleanup;
+>   
+> -	for (i = 0; i < 1000000; ++i)
+> +	for (i = 0; i < 1000000000 && find_vma_pe_condition(skel); ++i)
+>   		++j;
+>   
+>   	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
+> @@ -108,7 +116,6 @@ void serial_test_find_vma(void)
+>   	skel->bss->addr = (__u64)(uintptr_t)test_find_vma_pe;
+>   
+>   	test_find_vma_pe(skel);
+> -	usleep(100000); /* allow the irq_work to finish */
+>   	test_find_vma_kprobe(skel);
+>   
+>   	find_vma__destroy(skel);
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> index 12c4f45cee1a..bc24f83339d6 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+> @@ -110,7 +110,7 @@ static void test_perf_branches_hw(void)
+>   	attr.type = PERF_TYPE_HARDWARE;
+>   	attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>   	attr.freq = 1;
+> -	attr.sample_freq = 4000;
+> +	attr.sample_freq = 1000;
+>   	attr.sample_type = PERF_SAMPLE_BRANCH_STACK;
+>   	attr.branch_sample_type = PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANCH_ANY;
+>   	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+> @@ -151,7 +151,7 @@ static void test_perf_branches_no_hw(void)
+>   	attr.type = PERF_TYPE_SOFTWARE;
+>   	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>   	attr.freq = 1;
+> -	attr.sample_freq = 4000;
+> +	attr.sample_freq = 1000;
+>   	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>   	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
+>   		return;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+> index ede07344f264..224eba6fef2e 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/perf_link.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+> @@ -39,7 +39,7 @@ void serial_test_perf_link(void)
+>   	attr.type = PERF_TYPE_SOFTWARE;
+>   	attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>   	attr.freq = 1;
+> -	attr.sample_freq = 4000;
+> +	attr.sample_freq = 1000;
+>   	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>   	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>   		goto cleanup;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> index 776916b61c40..b1b574c7016a 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+> @@ -4,11 +4,11 @@
+>   #include <sys/resource.h>
+>   #include "test_send_signal_kern.skel.h"
+>   
+> -int sigusr1_received = 0;
+> +static int sigusr1_received;
+>   
+>   static void sigusr1_handler(int signum)
+>   {
+> -	sigusr1_received++;
+> +	sigusr1_received = 1;
+>   }
+>   
+>   static void test_send_signal_common(struct perf_event_attr *attr,
+> @@ -40,9 +40,10 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>   
+>   	if (pid == 0) {
+>   		int old_prio;
+> +		volatile int volatile_variable = 0;
+
+I think it is okay to use variable 'j' to be consistent with other
+similar codes in selftests.
+
+>   
+>   		/* install signal handler and notify parent */
+> -		signal(SIGUSR1, sigusr1_handler);
+> +		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
+>   
+>   		close(pipe_c2p[0]); /* close read */
+>   		close(pipe_p2c[1]); /* close write */
+> @@ -63,9 +64,11 @@ static void test_send_signal_common(struct perf_event_attr *attr,
+>   		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
+>   
+>   		/* wait a little for signal handler */
+> -		sleep(1);
+> +		for (int i = 0; i < 100000000 && !sigusr1_received; i++)
+> +			volatile_variable /= i + 1;
+>   
+>   		buf[0] = sigusr1_received ? '2' : '0';
+> +		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
+>   		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+>   
+>   		/* wait for parent notification and exit */
+[...]
