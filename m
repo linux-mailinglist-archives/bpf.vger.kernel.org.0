@@ -2,76 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4259B4C9C27
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 04:29:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 173CC4C9C33
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 04:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbiCBDaX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 22:30:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
+        id S239338AbiCBDi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 22:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbiCBDaX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 22:30:23 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5DFFB0D17;
-        Tue,  1 Mar 2022 19:29:40 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id o7-20020a056820040700b003205d5eae6eso12644oou.5;
-        Tue, 01 Mar 2022 19:29:40 -0800 (PST)
+        with ESMTP id S229911AbiCBDi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 22:38:26 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65FB321815;
+        Tue,  1 Mar 2022 19:37:44 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id p3-20020a17090a680300b001bbfb9d760eso3643827pjj.2;
+        Tue, 01 Mar 2022 19:37:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=6Q0bxE67I8y0tNyscEgKpcVLyNoRx4Y38uQCKmsrJXs=;
-        b=Y947JocD2+sMdok3nZr8cn9CnXm1HJHtBdilWI7XGsiHzz0gnVNoW6s9GlC6DCPo8f
-         Hs3+xo9n5QzmKwx5UOu6jbuBvVKgaIU3IhRp1TzH8GXoPgxc/s4KMu4HP/nhYi3apncQ
-         zu1Cd7RJbcX1Jh9Kq4Dw/CMTQj7hvtBi/A/ags+MJPqUdzC2yREUAe73YJIy4Ir1H+/n
-         kwv9pmdrPZtlff3xH41ULkhMu4ZWblUt2VDr37uoq0gVboVn8LE//4Qwily7fjxzhlkC
-         vSGnK+i4ktzKLhZ93hsvIEitS0vDTkgD5mmRr3i3cJkYp126CL78a0tUShM2xg5HLb4f
-         0wDw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PciJuOAlr8N3GqSNavEdG7YQccwdvrpqQWLs3HjQ+VA=;
+        b=PTrKRROTBIa4xEupzDIFrHPrHyenZvzWG12wzZoLZps2cuBcmiiusPNsfOHUIIhXY1
+         Dzaqn9aibxk9RctgxxOtEDHEWTp3Sx5miliKdiqss/S1J0EicS0fash1SGy1v9mPvfr7
+         T38SofsQMbg8X07nA6By9jVC+2Tz9jDdzuDjpqdBInKOA0ljX1TjvSOcpZjVtP61EznM
+         +MQTFBTgZ8VMToldXITtTwvHSIWnSfoU2zYEz5YHpxNW8GD7zvgtZ7FO3HaerB9nhzyO
+         xVjj4p3u8kb3Fo2eCDpluGcJlh/hyUHNARfmIpmcyD8f8C6pr0G5S+7Qxg4tswPptD3G
+         FDIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=6Q0bxE67I8y0tNyscEgKpcVLyNoRx4Y38uQCKmsrJXs=;
-        b=A38/NL5lbkPEOH9Bd80aq66uLBk8Is3f/3lAsqXYw36WubMLcJnWLX90HPUlwLLCqt
-         cOFaGAVwYGxghNANTi09VSiX+xLM/t1qVIhJGgNjGuHfsPvc+Vo9i9cV8obzj2UMH73D
-         /4FLWwlyTzI4Z5UiVH4kGclHqUFU89XQEQWUnvlUspvHDLMoNvMYxlPFFUs1QdogrSQN
-         kDb/5JCj4H4QHH0Hr1c1+Qrd9uSZEeRLlGJiVFynrC0yzOGJ9MoQ3gZodN+aOXSitiv/
-         OETgWp79WC5kVpngaovw+JnDl7TH4XAPabBpXaBJMkaK78B1Aw75ME1gmzeRfGCByH+8
-         WpzA==
-X-Gm-Message-State: AOAM531eBlOKwH4SP1yHW8lM+xYJl40qs7lFT24mdIqUYKbLvrl8rNfJ
-        6prMhxoXkdHwtAFH1p0rmtA=
-X-Google-Smtp-Source: ABdhPJy17OB73gebQWHaD3DcjnRxBmx0KdCe+tnIIJ0DXj+s62oFSr9rFn+6UqsMBVq99jXvVqMUKA==
-X-Received: by 2002:a4a:e865:0:b0:318:4b66:ffe0 with SMTP id m5-20020a4ae865000000b003184b66ffe0mr13923364oom.80.1646191780103;
-        Tue, 01 Mar 2022 19:29:40 -0800 (PST)
-Received: from [172.16.0.2] ([8.48.134.59])
-        by smtp.googlemail.com with ESMTPSA id kw10-20020a056870ac0a00b000d75f1d9b87sm1061411oab.52.2022.03.01.19.29.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Mar 2022 19:29:39 -0800 (PST)
-Message-ID: <2071f8a0-148d-96fa-75b9-8277c2f87287@gmail.com>
-Date:   Tue, 1 Mar 2022 20:29:37 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PciJuOAlr8N3GqSNavEdG7YQccwdvrpqQWLs3HjQ+VA=;
+        b=gvDZLgHvRpznxGdkyCTrIXQHa106/TQZV99R2TzWfCFzyq2K0zkT5bZpdhmJLdLZvS
+         9l/UeqCUVHpa7i5DhvA9pg+5Ti8ng0DXUqubR4kqqN/hW2XOnPSbvXmH13xjl7RVpklO
+         uAev9uEhiaP4GQIeIV1n8J+Ba7DfE5w1sPKLeDIqcWj1mmfuFQHwcDF0IqPnl2C+cQdp
+         rjqIITB6XYNAwHCF8q3M7Md+5t1NgBPblK+QBFXbYIrSL583lEMazmCXtIBtY9HQa7hw
+         YkN3HWl2HIDxJrEGoHo/mXwbWiDA7gLvhtKsXwjbYRxWfbJsUNlkj/RivbvPqrQR4dQ9
+         qP+g==
+X-Gm-Message-State: AOAM533QTOElizu11nGdVnX+BFjApevuFIV6BsCPtDXfED/gWS8G9L8q
+        dhcTYJQutxImfSt1p3CsKXT1wFF3LNEOZ0lApOo=
+X-Google-Smtp-Source: ABdhPJx3DSL5oCKadQfLogOuMPj7/RztMmYXlngTeE6kQDqGd069vD88fNu+VHUk/rH2vprZMfwWvfhvn2DVYrJFk8A=
+X-Received: by 2002:a17:903:18d:b0:150:b6d:64cd with SMTP id
+ z13-20020a170903018d00b001500b6d64cdmr28972607plg.123.1646192263949; Tue, 01
+ Mar 2022 19:37:43 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [PATCH net-next v4 4/4] net: tun: track dropped skb via
- kfree_skb_reason()
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
-        joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
-References: <20220226084929.6417-1-dongli.zhang@oracle.com>
- <20220226084929.6417-5-dongli.zhang@oracle.com>
- <20220301185021.7cba195d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20220301185021.7cba195d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220301064314.2028737-1-baymaxhuang@gmail.com> <20220301180512.06f7f6dc@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20220301180512.06f7f6dc@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Harold Huang <baymaxhuang@gmail.com>
+Date:   Wed, 2 Mar 2022 11:37:32 +0800
+Message-ID: <CAHJXk3aA62C5s-MV-B6mCTuUJGCdc-pEJpEkxX7vBDwDdHaSrw@mail.gmail.com>
+Subject: Re: [PATCH net-next] tuntap: add sanity checks about msg_controllen
+ in sendmsg
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>, Jason Wang <jasowang@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO HOST (VHOST)" <kvm@vger.kernel.org>,
+        "open list:VIRTIO HOST (VHOST)" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,41 +78,25 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/1/22 7:50 PM, Jakub Kicinski wrote:
-> On Sat, 26 Feb 2022 00:49:29 -0800 Dongli Zhang wrote:
->> +	SKB_DROP_REASON_SKB_PULL,	/* failed to pull sk_buff data */
->> +	SKB_DROP_REASON_SKB_TRIM,	/* failed to trim sk_buff data */
-> 
-> IDK if these are not too low level and therefore lacking meaning.
-> 
-> What are your thoughts David?
+On Wed, Mar 2, 2022 at 10:05 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Tue,  1 Mar 2022 14:43:14 +0800 Harold Huang wrote:
+> > In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
+> > tun_sendmsg. Although we donot use msg_controllen in this path, we should
+> > check msg_controllen to make sure the caller pass a valid msg_ctl.
+> >
+> > [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
+> >
+> > Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+> > Suggested-by: Jason Wang <jasowang@redhat.com>
+> > Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
+>
+> Would you mind resending the same patch? It looks like it depended on
+> your other change so the build bot was unable to apply and test it.
 
-I agree. Not every kfree_skb is worthy of a reason. "Internal
-housekeeping" errors are random and nothing a user / admin can do about
-drops.
+Yes, it depends on this patch [1] which has been applied to netdev.  I
+see this patch could be applied to netdev by git am. But if I use
+another patch that could be applied to linux master, it could not be
+applied to netdev anymore.
 
-IMHO, the value of the reason code is when it aligns with SNMP counters
-(original motivation for this direction) and relevant details like TCP
-or UDP checksum mismatch, packets for a socket that is not open, socket
-is full, ring buffer is full, packets for "other host", etc.
-
-> 
-> Would it be better to up level the names a little bit and call SKB_PULL
-> something like "HDR_TRUNC" or "HDR_INV" or "HDR_ERR" etc or maybe
-> "L2_HDR_ERR" since in this case we seem to be pulling off ETH_HLEN?
-> 
-> For SKB_TRIM the error comes from allocation failures, there may be
-> a whole bunch of skb helpers which will fail only under mem pressure,
-> would it be better to identify them and return some ENOMEM related
-> reason, since, most likely, those will be noise to whoever is tracking
-> real errors?
-> 
->>  	SKB_DROP_REASON_DEV_HDR,	/* there is something wrong with
->>  					 * device driver specific header
->>  					 */
->> +	SKB_DROP_REASON_DEV_READY,	/* device is not ready */
-> 
-> What is ready? link is not up? peer not connected? can we expand?
-
-As I recall in this case it is the tfile for a tun device disappeared -
-ie., a race condition.
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=fb3f903769e8
