@@ -2,123 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFC34CAC82
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 18:51:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B659A4CACB2
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 18:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244097AbiCBRw2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 2 Mar 2022 12:52:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39116 "EHLO
+        id S242036AbiCBSAD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 13:00:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244268AbiCBRw2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 12:52:28 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE63BC6232
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 09:51:44 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222HZhxY027482
-        for <bpf@vger.kernel.org>; Wed, 2 Mar 2022 09:51:44 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ehyr6qajs-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 09:51:44 -0800
-Received: from twshared5730.23.frc3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 2 Mar 2022 09:51:41 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 5B6A62B54210F; Wed,  2 Mar 2022 09:51:34 -0800 (PST)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, Song Liu <song@kernel.org>,
-        Kui-Feng Lee <kuifeng@fb.com>, Yonghong Song <yhs@fb.com>
-Subject: [PATCH v2 bpf-next 2/2] bpf, x86: set header->size properly before freeing it
-Date:   Wed, 2 Mar 2022 09:51:26 -0800
-Message-ID: <20220302175126.247459-3-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220302175126.247459-1-song@kernel.org>
-References: <20220302175126.247459-1-song@kernel.org>
+        with ESMTP id S229674AbiCBSAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 13:00:03 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3185ECA716;
+        Wed,  2 Mar 2022 09:59:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646243960; x=1677779960;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=o1sOw8MbrRf1lb7YiLa+Xb9jmU5kGhH5OtK2OB/80JM=;
+  b=n13nTENcoqKc3NpUlfGUtyYehS3tL+yu2NhyDFdTaopgCx2fEdXpe2d2
+   hiRwzArAWAoiHR1ppyHtGqPQUY+Kkzt23Ue2HXXML689gam4CWzUHetYO
+   qIAZmmKlZP6m1mopJgb03pcGnuHQBxgwNWTxnG/RVlLHPAHVwygxB2/ux
+   Jzw+444AcD+FbX1eW6nrIZq+Z5XdbyIFhEL4zl4rOmiogKmTi5CGzxq2T
+   62VI6DE2l2+nYDHsdnkPSsF7mSYYdhYnfvhZeqbdaqle466bV9HIz0d8g
+   5oqZhe4rrxRQSEBdTJiOOCdqzcaZ4cJN3okixU0B5ayAtDDcjc8QGrGb8
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10274"; a="251041188"
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; 
+   d="scan'208";a="251041188"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2022 09:59:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; 
+   d="scan'208";a="630492505"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Mar 2022 09:59:19 -0800
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+        maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, andrii@kernel.org,
+        kpsingh@kernel.org, kafai@fb.com, yhs@fb.com, songliubraving@fb.com
+Subject: [PATCH net 0/2][pull request] Intel Wired LAN Driver Updates 2022-03-02
+Date:   Wed,  2 Mar 2022 09:59:26 -0800
+Message-Id: <20220302175928.4129098-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: HHFmQ4yRgv_o06qV0xTEsn12JOhR8i1d
-X-Proofpoint-ORIG-GUID: HHFmQ4yRgv_o06qV0xTEsn12JOhR8i1d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-02_12,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 spamscore=0
- clxscore=1015 priorityscore=1501 mlxscore=0 phishscore=0 adultscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 mlxlogscore=703 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2203020077
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On do_jit failure path, the header is freed by bpf_jit_binary_pack_free.
-While bpf_jit_binary_pack_free doesn't require proper ro_header->size,
-bpf_prog_pack_free still uses it. Set header->size in bpf_int_jit_compile
-before calling bpf_jit_binary_pack_free.
+This series contains updates to ixgbe and ice drivers.
 
-Fixes: 1022a5498f6f ("bpf, x86_64: Use bpf_jit_binary_pack_alloc")
-Fixes: 33c9805860e5 ("bpf: Introduce bpf_jit_binary_pack_[alloc|finalize|free]")
-Reported-by: Kui-Feng Lee <kuifeng@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Song Liu <song@kernel.org>
----
- arch/x86/net/bpf_jit_comp.c | 5 ++++-
- kernel/bpf/core.c           | 9 ++++++---
- 2 files changed, 10 insertions(+), 4 deletions(-)
+Maciej fixes an issue that occurs when carrier is not ok and xsk_pool
+is present that will cause ksoftirqd to consume 100% CPU by changing
+the value returned when the carrier state is not ok for ixgbe. He also
+removes checks against ice_ring_is_xdp() that can't occur for ice.
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index c7db0fe4de2f..e6ff8f4f9ea4 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2330,8 +2330,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- 		if (proglen <= 0) {
- out_image:
- 			image = NULL;
--			if (header)
-+			if (header) {
-+				bpf_arch_text_copy(&header->size, &rw_header->size,
-+						   sizeof(rw_header->size));
- 				bpf_jit_binary_pack_free(header, rw_header);
-+			}
- 			prog = orig_prog;
- 			goto out_addrs;
- 		}
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ebb0193d07f0..ab630f773ec1 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1112,13 +1112,16 @@ int bpf_jit_binary_pack_finalize(struct bpf_prog *prog,
-  *   1) when the program is freed after;
-  *   2) when the JIT engine fails (before bpf_jit_binary_pack_finalize).
-  * For case 2), we need to free both the RO memory and the RW buffer.
-- * Also, ro_header->size in 2) is not properly set yet, so rw_header->size
-- * is used for uncharge.
-+ *
-+ * bpf_jit_binary_pack_free requires proper ro_header->size. However,
-+ * bpf_jit_binary_pack_alloc does not set it. Therefore, ro_header->size
-+ * must be set with either bpf_jit_binary_pack_finalize (normal path) or
-+ * bpf_arch_text_copy (when jit fails).
-  */
- void bpf_jit_binary_pack_free(struct bpf_binary_header *ro_header,
- 			      struct bpf_binary_header *rw_header)
- {
--	u32 size = rw_header ? rw_header->size : ro_header->size;
-+	u32 size = ro_header->size;
- 
- 	bpf_prog_pack_free(ro_header);
- 	kvfree(rw_header);
+The following are changes since commit 4761df52f1549cc8c5ffcad0b2095fffe2c5435d:
+  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue 10GbE
+
+Maciej Fijalkowski (2):
+  ixgbe: xsk: change !netif_carrier_ok() handling in ixgbe_xmit_zc()
+  ice: avoid XDP checks in ice_clean_tx_irq()
+
+ drivers/net/ethernet/intel/ice/ice_txrx.c    | 7 +------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c | 6 ++++--
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
 -- 
-2.30.2
+2.31.1
 
