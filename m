@@ -2,85 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC264C9A9E
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 02:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16EA54C9ACD
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 02:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238946AbiCBBk4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 20:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        id S238968AbiCBB7d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 20:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238931AbiCBBkz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 20:40:55 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED50EA2508;
-        Tue,  1 Mar 2022 17:40:13 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 0A825CE2082;
-        Wed,  2 Mar 2022 01:40:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 134CEC340F0;
-        Wed,  2 Mar 2022 01:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646185210;
-        bh=yiu2oVO8iMfUx8EITjMvjJ0JsQ6koCRlfPLhskhPshw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mCDoiTtw0T88xtrDgZ8GvcOrpJpL/HbGqFUfXy+tPngi0wtZZm+Vqf0LIHZoyqAfY
-         9JEdSVry3XnnuwwtThP4Uauz+NC4gy+p8wVhAjnpyrTLzbsSKfTfHXOKLbb5yWsiAW
-         BCgz4xHr088dHv1eeltEILX8/XtrKqu4GuQ8VRgLqmvg04WIkp/8Pybofzv1sRLA9g
-         0qAzWkjQnXUDvf5CY25Ektbfyv5K0TQloxTo0De9QnXTYn0/iUS3ksf7SYfbeZrbHs
-         /kFsXk5CRzirj9uyuVBR+pScsPJ2O3IFfcTfnNNMPici54dhmtlxqZGm/a2v8jy28X
-         6ya7T3dGJ4VsQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EA678EAC096;
-        Wed,  2 Mar 2022 01:40:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230314AbiCBB7c (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 20:59:32 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85BA5A167;
+        Tue,  1 Mar 2022 17:58:50 -0800 (PST)
+Received: from dggeme762-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K7cgH4gNCzBrST;
+        Wed,  2 Mar 2022 09:56:59 +0800 (CST)
+Received: from linux-suse12sp5.huawei.com (10.67.133.175) by
+ dggeme762-chm.china.huawei.com (10.3.19.108) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.21; Wed, 2 Mar 2022 09:58:48 +0800
+From:   Yan Zhu <zhuyan34@huawei.com>
+To:     <mcgrof@kernel.org>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <keescook@chromium.org>, <kpsingh@kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liucheng32@huawei.com>, <netdev@vger.kernel.org>,
+        <nixiaoming@huawei.com>, <songliubraving@fb.com>,
+        <xiechengliang1@huawei.com>, <yhs@fb.com>, <yzaikin@google.com>,
+        <zengweilin@huawei.com>, <zhuyan34@huawei.com>
+Subject: Re: [PATCH v2 sysctl-next] bpf: move the bpf syscall sysctl table to bpf module
+Date:   Wed, 2 Mar 2022 09:58:42 +0800
+Message-ID: <20220302015842.128491-1-zhuyan34@huawei.com>
+X-Mailer: git-send-email 2.12.3
+In-Reply-To: <Yh1dtBTeRtjD0eGp@bombadil.infradead.org>
+References: <Yh1dtBTeRtjD0eGp@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3] tun: support NAPI for packets received from
- batched XDP buffs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164618520995.21891.13359440725672676433.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Mar 2022 01:40:09 +0000
-References: <20220228033805.1579435-1-baymaxhuang@gmail.com>
-In-Reply-To: <20220228033805.1579435-1-baymaxhuang@gmail.com>
-To:     Harold Huang <baymaxhuang@gmail.com>
-Cc:     netdev@vger.kernel.org, jasowang@redhat.com, pabeni@redhat.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.67.133.175]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme762-chm.china.huawei.com (10.3.19.108)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 28 Feb 2022 11:38:05 +0800 you wrote:
-> In tun, NAPI is supported and we can also use NAPI in the path of
-> batched XDP buffs to accelerate packet processing. What is more, after
-> we use NAPI, GRO is also supported. The iperf shows that the throughput of
-> single stream could be improved from 4.5Gbps to 9.2Gbps. Additionally, 9.2
-> Gbps nearly reachs the line speed of the phy nic and there is still about
-> 15% idle cpu core remaining on the vhost thread.
+Mon, 28 Feb 2022 15:41:40 -0800, Luis Chamberlain wrote:
+> On Mon, Feb 28, 2022 at 04:53:44PM +0100, Daniel Borkmann wrote:
+> > Hi Yan,
+> > 
+> > On 2/23/22 11:28 AM, Yan Zhu wrote:
+> > > Aggregating the code of the feature in the code file of the feature
+> > > itself can improve readability and reduce merge conflicts. So move
+> > > the bpf syscall sysctl table to kernel/bpf/syscall.c
+> > > 
+> > > Signed-off-by: Yan Zhu <zhuyan34@huawei.com>
+> > > 
+> > > ---
+> > > v1->v2:
+> > >    1.Added patch branch identifier sysctl-next.
+> > >    2.Re-describe the reason for the patch submission.
+> > 
+> > I'm not applying it given there is very little value in this change, see also what
+> > has been said earlier:
+> > 
+> > https://lore.kernel.org/bpf/CAADnVQKmBoQEG1+nmrCg2ePVncn9rZJX9R4eucP9ULiY=xVGjQ@mail.gmail.com/
 > 
-> [...]
+> Daniel,
+> 
+> sorry folk are seing you patches with crap commit logs. The
+> justification should be made clearer: we're moving sysctls out of
+> kernel/sysctl.c as its a mess. I already moved all filesystem sysctls
+> out. And with time the goal is to move all sysctls out to their own
+> susbsystem/actual user.
+> kernel/sysctl.c has grown to an insane mess and its easy to run
+> into conflicts with it. The effort to move them out is part of this.
+Luis,
 
-Here is the summary with links:
-  - [net-next,v3] tun: support NAPI for packets received from batched XDP buffs
-    https://git.kernel.org/netdev/net-next/c/fb3f903769e8
+Thanks for the suggestion, I will use it as my patch from the commit
+message to be able to clearly describe the purpose of the patch.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+> The commit logs should not suck though...
 
