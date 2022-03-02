@@ -2,57 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2C54CB276
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 050304CB286
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbiCBWqI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 17:46:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44942 "EHLO
+        id S229884AbiCBWsj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 17:48:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiCBWqI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 17:46:08 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE72125C92
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 14:45:18 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id t14so2895186pgr.3
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 14:45:18 -0800 (PST)
+        with ESMTP id S229680AbiCBWsi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 17:48:38 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6815927B0E
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 14:47:43 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id v4so3095415pjh.2
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 14:47:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pFQG+6kZG13cRzcVw5sdXMiwmqZRNHoyAGSTXlkjVVk=;
-        b=PMmfKdV7zJWymaAL9lvAVw58IAeEH0cxqEz80WdkJzaMQ9nQpDN4RUN52vCyxs0nqj
-         ZsseffgjfmPApoZuzFHYeqOY3jwajYkye7erYXM7RbK+qxsEIvxWv+HUyBCm+djnmkd+
-         4eT+8Q58EJFLHJ02GzS06D03zk1uu6F9++Gn9nh3xn08CCNuvL6ypMOyOk3ChKS2Zbaz
-         ZIlS/of+Kdr6d3G28ZbzHZYD8zTUVz5GHcIT+KAr9iWQIUq8XCz2WvzlFYC4qu/SlijU
-         cor4hzk3wMVqkqnTKkaTaZgS66k3XX6Z8lQaWcDk3vTqb67QcvFFGSMFNd7O8U7xawju
-         lGUg==
+        bh=MXwMgtp7aGEPftELBgU0R9BW5PS1bdwaZuOl3PeKffE=;
+        b=AzeIDbYGU2d70QwtB9OxBXk29BbHNhJ18jUJKXFdS0hEXmD69ERbiMhaiwtqluqy4T
+         kvB6opMLayDp0v5Fldmk5ZH7RpfoKR0TrWDQZeZ5ReuwuRDUG8XodbS0jK/g7KMtKYK+
+         GWYxNKVggS5rYXrLuFnA0CeqiT20AMkbelfsCybd4WEDgBvRPUjpC0lk/1ich5HwoaAk
+         xn+VhJio0M+ZoNi+izLxM28d54rIAkxMoiUehJWQCcmPMF0W1IMD8C/MNY2POSlrHNoo
+         6qdxJfhhdu1Std0lzRjosLurnUpZn1ThPWJ4dcbtJcqb6AitglZl5QXHd9DSa5VT4cXU
+         Jf0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pFQG+6kZG13cRzcVw5sdXMiwmqZRNHoyAGSTXlkjVVk=;
-        b=bVVtoM6tyN2GugpIqjf144WCI7CUEA9Fy+pjuG4+PFqDVUs+Sjf6pWqE7nbvs2GTqH
-         yluH+z9Yfq/YoTPuzPz+4wHy3koR/fm4AsjB11qfeEPxlQ05ZkrtY0vgb50UNu4kj4Zm
-         4u6leOFjDNGuWlbPu1JvpV+xE7mStUfVOoKTnOv378R6h4OIjKPYQRnxYXT915TAks4v
-         a1Qkhb3c+XfQ05OM9L5vrCWcvl9FSZUvKNfIG1H1YQZCSde5YYOJ4OI2vHj5XsVWTpSj
-         L774MPaXf1hKx4+gmS7IUuGiKB4PWKnzxnhyV7Gtah0Zzx1Oei5ZSGicpjnZwyxbpdy7
-         cWQg==
-X-Gm-Message-State: AOAM533D+AevoK4ik50HCK5hJvQf5OhZFi+H71HzcSk49C0dw62Tf0Fs
-        L81Q1TE08eIkoibtroXKkxv5YHFoLq4z5QwsZdA=
-X-Google-Smtp-Source: ABdhPJwP/A6hZ2zc0W3JY4iFVYzig6D+m5k9TxiAtnnOu5/CXP5B+Bpd/oRdC7sYQI0Qw5ZUEVrxhyXjHrFs8jhjxnI=
-X-Received: by 2002:a05:6a00:809:b0:4f1:14bb:40b1 with SMTP id
- m9-20020a056a00080900b004f114bb40b1mr35459745pfk.69.1646261118106; Wed, 02
- Mar 2022 14:45:18 -0800 (PST)
+        bh=MXwMgtp7aGEPftELBgU0R9BW5PS1bdwaZuOl3PeKffE=;
+        b=qo5gnWEUXcEvLEIcz0zhO5RqZ43ewtlpoBp+wQtxQ3ybvhGBB0umpdWgDsSHmHqke2
+         kh309KTHi1cEJCHZP4/tP6TEmLmGvx8hliAakrh/j+0W/VfV1yX0nTuDfg4Ggz6aTYcf
+         eYV6dKZBkm+8oMK019J80zwBCdR/epRUSt71ydu5+HD1MQrwwAQ89iG+pHsWCTD2aUnx
+         xdkQUMTz7eB+UuuMZ+q/5wdrdeAni9vJWa4VYPfD66285viQ00LCUV4+TqETbr0aLGqQ
+         qQY6gzVOgkMrEQkRdhD/uXbk/tDSqPhYzfmIb+lyFJdK2qglZpL4au2QYE90WGA3Kj7J
+         Zq/Q==
+X-Gm-Message-State: AOAM5318aeWsA/1leC2NP8qfPqtLXmsu/71w/nRb4WFmvA9HUrg4ziWd
+        NEyYPZllsiWBL+JQfH3lVMbx0wrq2LSUTkqAcaI=
+X-Google-Smtp-Source: ABdhPJyOepaybsFAjIqZBxBAS7LOzKn/LEr98q2LFGXsGjk+ATwurexPlAX6WWWEw4pqyyPpBhxOlZ5fxOKG5yZB2/o=
+X-Received: by 2002:a17:90b:1a81:b0:1bc:c3e5:27b2 with SMTP id
+ ng1-20020a17090b1a8100b001bcc3e527b2mr2146407pjb.20.1646261257086; Wed, 02
+ Mar 2022 14:47:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20220301065745.1634848-1-memxor@gmail.com> <20220301065745.1634848-6-memxor@gmail.com>
-In-Reply-To: <20220301065745.1634848-6-memxor@gmail.com>
+References: <20220301065745.1634848-7-memxor@gmail.com> <202203011937.wMLpkfU3-lkp@intel.com>
+ <20220301115722.jjklznmjsbnkdsf2@apollo.legion>
+In-Reply-To: <20220301115722.jjklznmjsbnkdsf2@apollo.legion>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Mar 2022 14:45:06 -0800
-Message-ID: <CAADnVQKXrPu4DB_5MnzC+E2aiebex9CqLD=rOUdGd0mKo_szBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 5/6] selftests/bpf: Update tests for new errstr
+Date:   Wed, 2 Mar 2022 14:47:25 -0800
+Message-ID: <CAADnVQL-sSMacA8S-gvKTAz-CAdTaDgX=4ZZrwFL=zZKYC0-Aw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 6/6] selftests/bpf: Add tests for kfunc
+ register offset checks
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Cc:     kernel test robot <lkp@intel.com>, bpf <bpf@vger.kernel.org>,
+        llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -66,27 +70,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 10:58 PM Kumar Kartikeya Dwivedi
-<memxor@gmail.com> wrote:
+On Tue, Mar 1, 2022 at 3:57 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> Verifier for negative offset case returns a different, more clear error
-> message. Update existing verifier selftests to work with that.
+> On Tue, Mar 01, 2022 at 05:10:31PM IST, kernel test robot wrote:
+> > Hi Kumar,
+> >
+> > Thank you for the patch! Perhaps something to improve:
+> >
+> > [auto build test WARNING on bpf-next/master]
+> >
+> > url:    https://github.com/0day-ci/linux/commits/Kumar-Kartikeya-Dwivedi/Fixes-for-bad-PTR_TO_BTF_ID-offset/20220301-150010
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+> > config: s390-randconfig-r021-20220301 (https://download.01.org/0day-ci/archive/20220301/202203011937.wMLpkfU3-lkp@intel.com/config)
+> > compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project d271fc04d5b97b12e6b797c6067d3c96a8d7470e)
 >
-> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> ---
->  tools/testing/selftests/bpf/verifier/bounds_deduction.c | 2 +-
->  tools/testing/selftests/bpf/verifier/ctx.c              | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/verifier/bounds_deduction.c b/tools/testing/selftests/bpf/verifier/bounds_deduction.c
-> index 91869aea6d64..3931c481e30c 100644
-> --- a/tools/testing/selftests/bpf/verifier/bounds_deduction.c
-> +++ b/tools/testing/selftests/bpf/verifier/bounds_deduction.c
-> @@ -105,7 +105,7 @@
->                 BPF_EXIT_INSN(),
->         },
->         .errstr_unpriv = "R1 has pointer with unsupported alu operation",
-> -       .errstr = "dereference of modified ctx ptr",
-> +       .errstr = "negative offset ctx ptr R1 off=-1 disallowed",
+> The same warning is emitted on clang for all existing definitions, so I can
+> respin with a fix for the warning like we do for GCC, otherwise it can also
+> be a follow up patch.
 
-Should this be a part of patch 3 to avoid breaking bisect?
+Separate patch is fine.
+How do you plan on fixing it?
+What is __diag_ignore equivalent for clang?
