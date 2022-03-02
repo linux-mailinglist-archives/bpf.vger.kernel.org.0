@@ -2,158 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5724CAACC
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 17:50:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FDDE4CAB7C
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 18:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243537AbiCBQv0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 11:51:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S237931AbiCBRZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 12:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231479AbiCBQvZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 11:51:25 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB67CF3BC;
-        Wed,  2 Mar 2022 08:50:42 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 222Eq6Pv010113;
-        Wed, 2 Mar 2022 16:49:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=5qG95uJWjcmBS17C6q23GyBcJheihhlIqlTAx1boPUY=;
- b=g1UoC+Bz7Y3R1eWDcjt5oqCWB6IEM2djEeJ9KDQRNVybB11cPqz293lVc7HkLfAUy5Pq
- sGbZzgmPDkUC969uZtD4AkRCb6yI8vSsryw52MRrI/Y6oWLVBL6517TKMx5hYxLTBOS/
- IPWiR3JgFpGBccTQXRHjr8ByzTV/K1kr00Xv88t3aYI08w7C2ueAERcj013JwKPALUXU
- dIvPl3ECuHH0Ye0O8Y+b7ST8Tu3y3rx5MX6H53LfF3v7sFEf6SBiCKwKQHc/fkWkd7A9
- uFXO2NKOKomFfH+TnKqVSRYFga6AHv+J8hXyvTNswpM8BycjnXdG9k5uxdc86wjfuevi 1A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ehbk9cy0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Mar 2022 16:49:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 222GfMhR100778;
-        Wed, 2 Mar 2022 16:49:46 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
-        by aserp3030.oracle.com with ESMTP id 3efa8gcjxa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 02 Mar 2022 16:49:46 +0000
+        with ESMTP id S233594AbiCBRZd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 12:25:33 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7D7CA313;
+        Wed,  2 Mar 2022 09:24:50 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222EqvrI021281;
+        Wed, 2 Mar 2022 09:24:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : mime-version; s=facebook;
+ bh=f8ZG16TZncATxn93lOqqM050dx/pBw2zazkUNOvjBR4=;
+ b=EaYew4D/zgOY9aAvkDHqUclvbDBRitnx4pV6Z5xUwhqYk0yqBQo3/cvlPLazQwv5pF6P
+ 6X9HpVW+loGBfjtkYl8D5ImM9kZ+n/+QuHTBW529QZOSuayMdWhv5JgyKiDI9tIRNlRM
+ 77bixwFWb6t0GRi8OSDGww8jfXlQiGS1DE0= 
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2047.outbound.protection.outlook.com [104.47.51.47])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ejaqws586-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Mar 2022 09:24:49 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=H0z7NdCR5KW30zE1uOH2Tk0XcNEgeGB7zII+NdEC4e8BHUOM00lnaQeAWiNPZzWRNIcpKrB9JipF09czNxvYfl/6Np2CNoQYEn/3pAyU1NeitW5iC9ysUatnX6dgCPAexHsqJXNIvsqNexZFa2Q8yAdLtC7rCyQih+0NEBCS/8tnsfzELzRgi8e310j8DAhjnM4SFjZYXR6qC4qQi4gKD0oK6ZMumb0R7A81VM//nUk2ThSqN/9HljD7WPaySYr6YmPqMdfnI9GF0lPSHN3mqj3ASmNaZHQawgiKRzI9Ymt/gU9EIYw9f6qVANXl665mrsddF1U7NuCyN3Lw2yjjpw==
+ b=gPP14g90Prx/11W1+4BJyu7nWhRSn4donTavXW5u6Vuwip2D9ZblflvJ53yiiOOU3xTnyOiQwz3zILKN32WmzzXhGPD3AXmuys3CxZ/i5BC32KsfilMgRS7eVrz7VxtM2tE2Tg6nz6VRvCYICWax4dykIQOx8+PLrLFoRTAHTMGti3f9G0dwIPyuGMTnXEPHgS1IBncJCbWxZYo/R3F6P9tudIJ0F1lgdse54XEqpP6kkb3R+VYNQptypJwci/dCjSa4fat2AMwuzENtn6V9YVxNATEUbYaoOAlblUlsHP4QbmVmsjrYtYKq0X5ytfPI/zY/HkFebjshKYHHsjgF1w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5qG95uJWjcmBS17C6q23GyBcJheihhlIqlTAx1boPUY=;
- b=hDw0s7Sa4efbwTNbU3hlrPIUFOvG2wA3jg1VZ144gohloICuGfzXS/dz0L698UVlmSYJ7/WkG3DVVYs27unzJFbYUAWCaKKnEQ3Hy/xLLOBhgkUFLT0OWaI4A1DEx+6Qux4bcRv1T6XgxOJgnmCp/hWjgBxg4HSeA69UjE0fuS238Qi9cDqLlWronQlf1tjsbIOdUekBGTTzndrchYcKDxOT5Kaul7KBgtT/GIHo8F5wg6eYy9/ExWHNmFdGMvkeKoyeVnvGiA5LCWO5ZrV4C9t67RrbTDwnd3yM9jMN5EtTMhyCXFZm9SzI8IRk8CfYRu8AwDzhdqLE3IO4WVOtvQ==
+ bh=f8ZG16TZncATxn93lOqqM050dx/pBw2zazkUNOvjBR4=;
+ b=Xlz+1oKd9ApeY53tpwApVYL4hYxe1NwIDtudIPzCqpEWCh43MZfW+WLbJjT9hyVcRtHIL/a3zI8F0Jqy7NN/j0Kj11v8NJ/v5euv3iaPKFOtjwunkxoY7CD8UqyRn+l83MIp9RAPtRL8X8n6QzR4lkgeOSQnw+if+DuDZluc0P2f8jO7hY5PfYcxWnma2OVC1GBzpVhYBUEGSRpoA/UTff9UO9MmQWEzO5TO4p09HJQrzmbBrDrm+KeoiDyv951fsSFTqugUeDRACovqgrK+cn+If5lMa7FXZisblK5p6PbT4HiS54il4/indFycOFphfo2bD1SlEV6ZllwFckQ3CQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5qG95uJWjcmBS17C6q23GyBcJheihhlIqlTAx1boPUY=;
- b=NPVwzNg0yJWrUYhL3r2W+Qzwwr6xhfO1SdDamlv7q6brSrdBOUf3F5Xyck5Oon1LySXE2sNlimlstNKdRl5e4gBG+QJuxSzKmwYyS0BRTXE1eLdsBQ/TsW7pA4RbXpmbhgIFrV7bslrFKOKCQSXieCBC+3Tajn7r+R4FY626dx0=
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com (2603:10b6:a02:a9::20)
- by BN6PR10MB1490.namprd10.prod.outlook.com (2603:10b6:404:45::9) with
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
+ by MN2PR15MB2640.namprd15.prod.outlook.com (2603:10b6:208:12d::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Wed, 2 Mar
- 2022 16:49:43 +0000
-Received: from BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::a0d5:610d:bcf:9b47]) by BYAPR10MB2663.namprd10.prod.outlook.com
- ([fe80::a0d5:610d:bcf:9b47%4]) with mapi id 15.20.5017.027; Wed, 2 Mar 2022
- 16:49:43 +0000
-Subject: Re: [PATCH net-next v4 1/4] skbuff: introduce kfree_skb_list_reason()
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
-        joao.m.martins@oracle.com, joe.jin@oracle.com, dsahern@gmail.com,
-        edumazet@google.com
-References: <20220226084929.6417-1-dongli.zhang@oracle.com>
- <20220226084929.6417-2-dongli.zhang@oracle.com>
- <20220301183454.4813d022@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Dongli Zhang <dongli.zhang@oracle.com>
-Message-ID: <1bce4d36-8032-d6c9-541c-858a38ba2596@oracle.com>
-Date:   Wed, 2 Mar 2022 08:49:39 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-In-Reply-To: <20220301183454.4813d022@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=utf-8
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.25; Wed, 2 Mar
+ 2022 17:24:44 +0000
+Received: from SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7da4:795a:91b8:fa54]) by SA1PR15MB5109.namprd15.prod.outlook.com
+ ([fe80::7da4:795a:91b8:fa54%7]) with mapi id 15.20.5038.014; Wed, 2 Mar 2022
+ 17:24:44 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <Kernel-team@fb.com>, Kui-Feng Lee <kuifeng@fb.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf, x86: set header->size properly before
+ freeing it
+Thread-Topic: [PATCH bpf-next 2/2] bpf, x86: set header->size properly before
+ freeing it
+Thread-Index: AQHYLc6n8kvYfnXc6USIhZM3zMX4Yayrrh+AgACrFAA=
+Date:   Wed, 2 Mar 2022 17:24:44 +0000
+Message-ID: <3CC742A6-36B9-4D8D-B801-9700660C9E6B@fb.com>
+References: <20220302004339.3932356-1-song@kernel.org>
+ <20220302004339.3932356-3-song@kernel.org>
+ <dceb436d-76f3-208f-3f68-d7d614259360@fb.com>
+In-Reply-To: <dceb436d-76f3-208f-3f68-d7d614259360@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0501CA0089.namprd05.prod.outlook.com
- (2603:10b6:803:22::27) To BYAPR10MB2663.namprd10.prod.outlook.com
- (2603:10b6:a02:a9::20)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3693.60.0.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 38f45d73-7a92-4d5b-86be-08d9fc718b4a
+x-ms-traffictypediagnostic: MN2PR15MB2640:EE_
+x-microsoft-antispam-prvs: <MN2PR15MB2640B4314B4C79175E95BE0AB3039@MN2PR15MB2640.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: l3usoTfCya1aUgf9393cEJ+23jMpVwOVZ4yk9IvhbR6klpYGoPK96m08/n3C7/matpvoDGQ7HAC5V3uHBK/Es0aPbW2EVmz1vmBK5N6DG1q1jVFo+65fLVCGqdZoEdjlEmOeb8ixzs1/f1VIc1uIfcbZbOhhngayzCF3597zJy1YWRmeqRjA4GyNlXZ1UaTDT6laV5+ZcwpBM4B8vMMd9lULYfbRg9qn62w2IsamELKPQjXMLQ7PGnKHbdIbSk8a+x/+GWemQU0WeiWOWbse6L063haElwHBO1zUGU5BLlXrYaXjfNhwiH03f0Y3l1uSgzNgCJmU9KRid+4I1u84FarN+jdgFkp5ut9r9/EMJ6lf12cteggbmnqQkztWFHuTo7I6939IUAshEEr3lQ5USAwpk1MALyI+oLj7sbO53NwIWwEf3okLT1rctuT6Lvvj9DKNvbiyeK2yMVWfiw3/trg1BnXnKF1Wab8B/5CZwLXz31SGzjBtDARL9xujbFHX8RMg8C7E+oeWQ8dTeFL3+zEIsxqKVdaDSPq9FFyS6UrukDyttqe7ypDV0s1cKgkHJBExhDrxdpRa7aHWLtRDIhCr0FR+ybYQQf9sOnJ/tLVthFUmtspmi59T1teFXzGfwaFBztTgrvnucTxRD5rKb9D52vBbhvKMszLyV+aka30QRsJpaDVgchOevDRGO/xrunWHFSftXUNBui7218VHsTlY0iggg9+sR1514DUnRXCGq2rMxD02s7Vp5Or96D4C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(54906003)(6506007)(37006003)(508600001)(6486002)(36756003)(33656002)(6636002)(71200400001)(122000001)(6512007)(38070700005)(38100700002)(316002)(53546011)(186003)(91956017)(66946007)(2616005)(64756008)(66446008)(2906002)(66476007)(66556008)(76116006)(6862004)(5660300002)(8676002)(4326008)(8936002)(83380400001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?GRabdqGAf//MlYtBb27x1gJkhXOQSBNtx4wO69noaG1q3vzBIF2fWHxAkOiK?=
+ =?us-ascii?Q?hBnvWj/ujYdeYzzKvxhkXACFs9lvsKHjTHUNVYXERkE5X+sOr5DEA8bgYcGn?=
+ =?us-ascii?Q?gFAjmMtZ8lUCAW2TNwsEeHqr77TqwjQMGB6qV9nXf+E/JKF8liesF9YPGZnx?=
+ =?us-ascii?Q?Vf8RW8vI8f5gGHt04iEqlKtcrjzKv3S8F28HkDSygAQsAVwo5YMfKx39zZxJ?=
+ =?us-ascii?Q?H9/lVjwB7u1+XjYhAyYJ2iHfjuEdf1hFTdBPtK9B7o24OZkIiYRvH36B+7ik?=
+ =?us-ascii?Q?FWtRsnem9XESMnXIELjFLltStl922NnGnYEdCH+EemogStvghvptqfU+M4Cb?=
+ =?us-ascii?Q?cw7DapWMEC0Y5si6jYztd3fOQTY4BJf2C6DvnZB87es0MsrGSAwQYU2MKTeG?=
+ =?us-ascii?Q?UW7V5zWU4g68bOCBV4ANLqb81bWvfVhp6hdLr9dViOwaxJJFIk1GjKPHxyaJ?=
+ =?us-ascii?Q?+RWljbPunf0BmiQQAAY53EPcv9tZEL+9QtUa976KSQ0wnDRAaq7unJsJ803u?=
+ =?us-ascii?Q?FrRVDzdywrLiiugAnd3FcHvCjfN6hvdexfp5fECcOw0o/LoVkjNm98Hjhrpg?=
+ =?us-ascii?Q?BQ3BXdtswGlTysZ99m55Ceu9t9XOQ22Lf+56SxpNUgheC/ZiBDZXl1Ox1o3z?=
+ =?us-ascii?Q?zvNP7tZxrMkrqIwcngpDYwE+RK8nuF3ZiXbfct9fc46Y+opEs8B5O5H05R7O?=
+ =?us-ascii?Q?/Df9pw/sGAY7xt10Yua2OJv91GqUEkBYy9jPmHFJi3NT/nxf73CO1VSexfsR?=
+ =?us-ascii?Q?apQ/sBH6k2GticG89pZVZ6eq1e8W9M2TTpG65VOAmckD+bSjGFuaqb3TM7mj?=
+ =?us-ascii?Q?KFKJcPZyFNswhaSbRQYuciIY9LQmBslXd8WvuoRGR+kcVZowiSzxykxbTsjM?=
+ =?us-ascii?Q?zJxVUw6+7RAHWKKu1nQJmXSGhhq5PCr/FM/T8ZYjxEfwQRqErPc43Bhqj3/v?=
+ =?us-ascii?Q?+ZlSkMqoIXY7uH2i/S/HvNW0w5JXkpuXWSrAVNQpAHiVz+kfkAm4YbcdlToj?=
+ =?us-ascii?Q?L0IJDz4bLZ6g0MNs6NdKsb1paojmPPijqWK5qV5eXhHzMkkKx4BVkQ5IWK03?=
+ =?us-ascii?Q?AiWQPVqGvDzsjYeSTFSpQFI3N31vbWnqgTLvQp8qKDPgIy/6dbK/GqsWB4Mg?=
+ =?us-ascii?Q?XpnRhNW98Vm3jZF7NoFsV67wVUW08oL5sB/Ppb0yrkVC+/jcyw9PJbk4lx5H?=
+ =?us-ascii?Q?SoJ4g8kceO1LSkAtOK2RMhG3ZleRe/y869sBE0HpoTwwJ0x34ioFQJcCLuAx?=
+ =?us-ascii?Q?klO3Ujez8J9B72KNdVgL4jqEuU4/RmLtBuci2Y03QL+UKT6X5gq2lJ2Ji3lO?=
+ =?us-ascii?Q?YbeoCbdVO4L2qdlnRvvg5KkPdWK+AgaLYUQprMTh2kFXMxCrrCRc/31GX64W?=
+ =?us-ascii?Q?gIsWrHyBqHSryWkLfVKgCwFJoDZ0xJMk3JgTMuh5PQT/v9PBvQ4qpxANvXXC?=
+ =?us-ascii?Q?vnDuikZBywSp7RcQYx9q8jhl4+7laQLqL1yqUerDc6aCKuVHtPfTAfimRbZy?=
+ =?us-ascii?Q?/kB8J7Pkl6M5xjaIozxCVbaF0+jR2g9MTRORkUtxPGVcxLK9GFH+hXwDIwAS?=
+ =?us-ascii?Q?fa8tP93f2ob8xBDy9uLiNFdDlitm6lkP1Qw8+sNZsMOB+xbkgBo99CKmHGzj?=
+ =?us-ascii?Q?+utdnTn7cwoAEQp+UixbcqltZcPi2Ep8oBe5CdxP/zNBioBVsC/2iP5PJ+mV?=
+ =?us-ascii?Q?0m2uUg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C36223AD22A48144B920F108E838F738@namprd15.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48b5ff91-0310-4818-baf0-08d9fc6ca68e
-X-MS-TrafficTypeDiagnostic: BN6PR10MB1490:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR10MB1490D47AC53D2C149A7B81E8F0039@BN6PR10MB1490.namprd10.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nIGVamZ5huvsjmTnyBfKeVW+EREknmp2xciDb7fUuiy0vmc8avd9vvJgz1nfxwWJXLPZRF/voxnoyRabQy6RcxraSAoIQjC2gE5IRYUcQWUuNNAg4xcm98ds22vgV4CLRCCIiY51ZlBPnp82jRIk6WrnPo/SxCRjsNYYKrxYAWCioAHuyD5zPq8j6koB192LR0LD4nK52mgkHZFGzD7CkvXh2ra/MM4VMH09GnlN/Jb8SJrlO6BYDr6X9G7ZcWKakqSJ7xh2kJBSHnRVfzb+fdUAHCfZnrtf/ES66skhzHwIuBf7sysHZQZLcOQaNP/hEDkkWPI25HmPZlwsHqcyo6dE4COwzYMXuyDSyCtpO2YkkAUSOzudy0CmDBTdh2xfiq17VILI4cHRDI67xNpj1n7TMXBHc+jxMycX42DFKKqPcHdK/f6P+hDU4WaCRe+m3d73HLstfICogeU2CH5rj0ws7EKhFrchIjcszWzKm5vGuHR7raAw8SMtWhGTaeGXDKod5icUM/vjZ4kEqrMeEuzCIfzowEK2Xv5NPa+AoIT8xkd8dsWRn9znAiKBFHA1NsK+MrIa1zjH0goDDtIIUWRcQxX013oUri11b+Uupm0l/66t9LNLsuD9q+5asTTxbPnILwYshvsBhVBJUH3nw9a9e2lWfP9BZ0vajsSU+PhwABlWMSbdU4P4d15UoA+wMfQ0n7tlpjdCEcrPOzp3no7lhYXrTYRU3Bgucv998ASI0lLJclFgT77XfYYx4I1u
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2663.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(6512007)(6506007)(6666004)(36756003)(6486002)(53546011)(508600001)(6916009)(8676002)(316002)(31686004)(66946007)(66476007)(66556008)(4326008)(5660300002)(31696002)(8936002)(2906002)(86362001)(186003)(4744005)(44832011)(2616005)(38100700002)(7416002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3BqUjFXS2RoUnNHdzFkdFRpVmVjUjk2TzVyWllkOUFhRVpWeDlrUnYzSFhQ?=
- =?utf-8?B?Rnd1MEVDbHI1WFc0VjdPdWIwTXFzazBhaEhoNWVFZXBiSSt0QnFPNWMxR2JK?=
- =?utf-8?B?WWNaRmoxWGZDRVY4SWp2VEQwS1JGWXNNVFcwMU8raVdqc0V0azRHa2lPVHly?=
- =?utf-8?B?ekhhUzArNDJCSkM1VEVsN3ZDbTFHZXJrRlNzTHlLM1drajZHYXkrVjVnZjRR?=
- =?utf-8?B?OEg4eFJrbVJhc1lCeVlaVE13QnkwZzlZOHYzTDVNWk4zNm8zdUMyTGY2S2dr?=
- =?utf-8?B?WlREZ29KemcyUTVJaFdVUkdIOS9GcFk0MTRTSHdaNkRCbHZJcXZxV2c3ZGJ4?=
- =?utf-8?B?ejhraHZSZjZvYW5ZZFBaMlJOcEovY0pRbVl1VXlUKzZLdDZjUnhwTksyT3dC?=
- =?utf-8?B?aVdWRldNcWN6T0hSWk0yOHdDWHVUbm95eHg5RWdmbDIzNHM2OWpCWG0xMFFW?=
- =?utf-8?B?QzNYREtvNEN3L2FUWll3bzZPaGltNUdmSmxtTlp0OXNEYlJQVFUzM3dNOHRy?=
- =?utf-8?B?eEx6RS9JSU0yaDE0eWlBcHZaVGlqZHpkbGFXQ2RVNjQwZnRYMzBBZi9ESXZY?=
- =?utf-8?B?NytTdTRQcUdhMWluSUkvNTFrNnkzRjUwTUpnZXpuTWM3eGJpdkZOWmtrbXV5?=
- =?utf-8?B?cHVDdkd0ejJHNzR0elh5UUlObXdDMHhRNS9abytnL2N3TkxvalJpak1xUU5H?=
- =?utf-8?B?NUpTYnNQamJvUEF4QjRaME1tc0grTE93amt5cXlOakNONHZMYlNYeXJEVEZX?=
- =?utf-8?B?bHQwalVjSkZmVUpMYWMxY1NsdTd0Nkh2bkl1SktUZGt2ZTJRcWRmS0FJVEdR?=
- =?utf-8?B?RXBNOTk3MCsrWXczcUxQRFRZUGJWNFRBeXh4WVVTZVczenpJVEhJOHhMQks3?=
- =?utf-8?B?a1FmNXRlQkcrOElJWlNWRDR5UXhDNlJKeG16WXRSRTFsNmt6bnpSZ1ZlUzFR?=
- =?utf-8?B?N1VSV3lxSTltcmNsbEhmdCthaUpicFpXRVE1V2p0aVNtQm5jSVhiQjFOU2tI?=
- =?utf-8?B?VnEyamprY0l6ay9FSnh6dGZKdW1NaFZKOVBFYXZETi8vSUxpelZwcEYrVG44?=
- =?utf-8?B?bXpEMXNsL0ZLUjdPUmU0ZU45UnRhNFJFNUFDbUUvang5OW4zSG9OdGw1dkR1?=
- =?utf-8?B?aWJLZmJRd1pXaUpwRjdGSzd3Y0pHVHpXUjlZR1BWMXptSmE3eFRGblJpblhj?=
- =?utf-8?B?am1tK2Z1NGdnNkt4aXdBSk1KZHZJVDBQOExTcG8yOG9KWHBQb3ZWMlRWMkV4?=
- =?utf-8?B?ZmtCUGtxbGIvS1Y4V2J0eXZtTTNKdTkyb0FOWW1lejhJSUxId3h3K2txNjRh?=
- =?utf-8?B?SGRSR2lqM1FGNHdKb05DeW1iOG9JZGhoaXBSaXA0eFFFVmVjRktKNnZtN2U3?=
- =?utf-8?B?WFdKaCtjeWRGMEJZSjV3TzVIS1VueUZIcm9nOUhiUlRRbmpjNkNsbTdJUFRV?=
- =?utf-8?B?blZ3ZTZJWUxzdkJuT1lpMW5CdEFtdktsTVhPRGtUNnZ4YkZFUUZxMVBIRVF4?=
- =?utf-8?B?V1NNaFJ5MURkUCtFWTVTMXMxamtZdGtaTXYzS3A4QWV2NEkxWlRiMFhLQWxK?=
- =?utf-8?B?c1ZtRHNOUTAxcFI5Q2Uzc1RqTFQ2VlpDdG5vazh3dFZDeURiZmZaWmNCODJ0?=
- =?utf-8?B?NmhQd2JwaVh1RFlvVE1TVUNiVDB1V29WWU55R01zbjdkam1VL1pFZEtnemth?=
- =?utf-8?B?bjVFM01ZNEVxazVISUJOcEZ4R2tyTmdBNHZCRTNwSVNyWkVIWThrcXAweGM4?=
- =?utf-8?B?cHJCYnJWQ3VXZkROTC9hbnZEWTczM2txeE45eFlackZJOFFRbW5ndkZuTnJO?=
- =?utf-8?B?d0JyV2U0eUlPektUeDJIUzdaUWVtcVdHdVVOVzNmYy90VUpOV2E0cWN3dE5s?=
- =?utf-8?B?NldpSFNIMGRkdisxZnN0QTIya2ZnQ2RlU1J2TjZacHl5c25XOUgrUU9NdGFM?=
- =?utf-8?B?elVsOFBMSDkxZ3hXWHhzUk1IUTJQUUMxekNoT2NFY2xUNmRvZ3hoSjRKdjAy?=
- =?utf-8?B?eXNaV3B5MGVwSTNYLyszZDd1cUxZS00ySDlFc1crbmQyMVAvRDE1anZRNjM5?=
- =?utf-8?B?eXo2NzBPMmlueUxQdlBVR0lWRUtZd29sWnhHUFlmNWZiWGl5Uy9yUTlFYWQ1?=
- =?utf-8?B?ZFVhc0Y0ajE1VGR4aTh2ZGFReTNZbEZrSGt5NUt1ZmEzb0xHbzBTYVRQRWdY?=
- =?utf-8?B?YXpTb1FKdUNBbUFMVjJoMUZ1U3B1NWpuSWxxUzJ3QzJzKzRvcjFNTUI2RFdo?=
- =?utf-8?B?NFJPVzRtMFR4T1VCVXorZFpxdFlnPT0=?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48b5ff91-0310-4818-baf0-08d9fc6ca68e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2663.namprd10.prod.outlook.com
+X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2022 16:49:43.2237
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38f45d73-7a92-4d5b-86be-08d9fc718b4a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2022 17:24:44.7119
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DHmQiEWo+JIy3sykWB5udJDVoaW0+YME3dRIzgPO1GeHqkwdd7yWbeAmt9lULpxrVxGKW6jtBx1T0sOQXgLhUg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR10MB1490
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10274 signatures=686787
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2203020074
-X-Proofpoint-GUID: vI1SzAyaYZQmjNhUmFJKorPcXis668bn
-X-Proofpoint-ORIG-GUID: vI1SzAyaYZQmjNhUmFJKorPcXis668bn
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /N4k6yDwn69ZF77fFC5/YcMOF1b6DO5SyTB0I6wNMMVJd+hqkdmsQFv01YQ5ImYn8OJfgVunZrj6tPu8w+s0ng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2640
+X-Proofpoint-GUID: 6b6_xxZ74dxF08eLiasfch4CMKgWxRAn
+X-Proofpoint-ORIG-GUID: 6b6_xxZ74dxF08eLiasfch4CMKgWxRAn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-02_12,2022-02-26_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 bulkscore=0 spamscore=0
+ mlxlogscore=917 suspectscore=0 adultscore=0 lowpriorityscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2203020076
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -161,21 +146,85 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Jakub,
 
-On 3/1/22 6:34 PM, Jakub Kicinski wrote:
-> On Sat, 26 Feb 2022 00:49:26 -0800 Dongli Zhang wrote:
->> +void kfree_skb_list(struct sk_buff *segs)
->> +{
->> +	kfree_skb_list_reason(segs, SKB_DROP_REASON_NOT_SPECIFIED);
->> +}
->>  EXPORT_SYMBOL(kfree_skb_list);
+
+> On Mar 1, 2022, at 11:12 PM, Yonghong Song <yhs@fb.com> wrote:
 > 
-> Why not make it a static inline now, like we did with kfree_skb()?
 > 
+> 
+> On 3/1/22 4:43 PM, Song Liu wrote:
+>> On do_jit failure path, the header is freed by bpf_jit_binary_pack_free.
+>> While bpf_jit_binary_pack_free doesn't require proper ro_header->size,
+>> bpf_prog_pack_free still uses it. Set header->size in bpf_int_jit_compile
+>> before calling bpf_jit_binary_pack_free.
+>> Fixes: 1022a5498f6f ("bpf, x86_64: Use bpf_jit_binary_pack_alloc")
+>> Fixes: 33c9805860e5 ("bpf: Introduce bpf_jit_binary_pack_[alloc|finalize|free]")
+>> Reported-by: Kui-Feng Lee <kuifeng@fb.com>
+>> Signed-off-by: Song Liu <song@kernel.org>
+> 
+> LGTM with a nit below related to comments.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>> ---
+>>  arch/x86/net/bpf_jit_comp.c | 6 +++++-
+>>  kernel/bpf/core.c           | 7 ++++---
+>>  2 files changed, 9 insertions(+), 4 deletions(-)
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index c7db0fe4de2f..b923d81ff6f9 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -2330,8 +2330,12 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>  		if (proglen <= 0) {
+>>  out_image:
+>>  			image = NULL;
+>> -			if (header)
+>> +			if (header) {
+>> +				/* set header->size for bpf_arch_text_copy */
+> 
+> This comment is confusing. Setting header->size is not for bpf_arch_text_copy. Probably you mean 'by bpf_arch_text_copy?
+> I think this comment is not necessary.
 
-I will move kfree_skb_list() to include/linux/skbuff.h as static inline.
+I meant to say set header->size for bpf_jit_binary_pack_free(). I guess it is
+not really necessary. Let me remove it. 
 
-Thank you very much!
+> 
+>> +				bpf_arch_text_copy(&header->size, &rw_header->size,
+>> +						   sizeof(rw_header->size));
+>>  				bpf_jit_binary_pack_free(header, rw_header);
+>> +			}
+>>  			prog = orig_prog;
+>>  			goto out_addrs;
+>>  		}
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index ebb0193d07f0..da587e4619e0 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -1112,13 +1112,14 @@ int bpf_jit_binary_pack_finalize(struct bpf_prog *prog,
+>>   *   1) when the program is freed after;
+>>   *   2) when the JIT engine fails (before bpf_jit_binary_pack_finalize).
+>>   * For case 2), we need to free both the RO memory and the RW buffer.
+>> - * Also, ro_header->size in 2) is not properly set yet, so rw_header->size
+>> - * is used for uncharge.
+>> + *
+>> + * If bpf_jit_binary_pack_free is called before _finalize (jit error),
+> 
+> Do you mean bpf_jit_binary_pack_free() is called before calling
+> bpf_jit_binary_pack_finalize()? This seems not the case.
 
-Dongli Zhang
+Now I see this is a little confusing. Let me rephrase it in v2. 
+
+Thanks,
+Song
+
+> 
+>> + * it is necessary to set ro_header->size properly before freeing it.
+>>   */
+>>  void bpf_jit_binary_pack_free(struct bpf_binary_header *ro_header,
+>>  			      struct bpf_binary_header *rw_header)
+>>  {
+>> -	u32 size = rw_header ? rw_header->size : ro_header->size;
+>> +	u32 size = ro_header->size;
+>>    	bpf_prog_pack_free(ro_header);
+>>  	kvfree(rw_header);
+
