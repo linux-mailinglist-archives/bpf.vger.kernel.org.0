@@ -2,71 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F1B4CB26F
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 622EE4CB274
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 23:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbiCBWpI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 17:45:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S229685AbiCBWp5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 17:45:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiCBWpH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 17:45:07 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6D911AA35
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 14:44:20 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id c16-20020a17090aa61000b001befad2bfaaso2693192pjq.1
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 14:44:20 -0800 (PST)
+        with ESMTP id S229453AbiCBWp4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 17:45:56 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272F538D82;
+        Wed,  2 Mar 2022 14:45:10 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id a5so3170577pfv.9;
+        Wed, 02 Mar 2022 14:45:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=OaO1C0A4RZhi03jLNSxHuTDNX8GQ/eMEG0fY/WrHb+M=;
-        b=MNG1Ks8osFyWJTPwiVxi+tD60/qdUaKjNAP8JHI3YsL0UG69XBtNRPhRitmUcZGzk8
-         0r77FnQ2bNrpViSwUMaQgFV5c87jkemVhQsk/RmjFR5c3UAVBseuc2hDrMFxUFzia+Ra
-         t9ohVgz37vDlNbWAkCWbfZ9nzyfJyN2+ceiromb5L1WRriVeWaJW8xWam1cNWm/ztxbE
-         akGp9fBDA8ec558PIW2hrsPOv4bmOXPv6K/69/wChTubzAYE8l5GlQrpvm/oHEtHWkYu
-         EH/68TxCgdwN2hnM6OY90zJx4DpdSgWPx6wqXN1P+tBTxwZVSaPw6wjnVNGMQwOoPrgu
-         IoXA==
+        bh=Bu1m8QE7xycjxrnGexY9vNyLC1cQoJ9MRpYoO3qPQyQ=;
+        b=avOlyqO0PsKAkdGgIHP0gTDxTLboi2RcrN+BJNxNMCIerAZFFa81WUrORROdz7/omO
+         nNzPM/rPve/tNk0ap4tR7su31RvrA9WKmBLhhBTQrYmBnnglQnbUMw9IhZZxYQLj7ESF
+         QLXQ+dfnTQr9JJ6rjQgyjJ/cwDBB7K3PEB3F0/CMF75Mt9Rc+PNNT2Uebenqey020OP0
+         A/+9Aqz6Xy7RRC4P+lN6tKKzlQ5uEtN1P693aNxkCa0iz4dEie/y8nHgXMkoL3B5WXl/
+         XVgq4uw+IcMsKcH0KifSP6hCZkgt7jjU5DFbRB/ZFOENQTgttPUNt5U+A20Ee8zn4Crz
+         HXTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=OaO1C0A4RZhi03jLNSxHuTDNX8GQ/eMEG0fY/WrHb+M=;
-        b=X2I0NvjtOiHsMWzmgrahZ7dkIqA7ckOJDijkM+FB5c3vhDSbs3+O9S2RmyHrj7r84R
-         96N00xgs5Ymbm6KQOhLtSETsOHZZGyS63H4WJUgrcm4H86iURnIlnUBxgEW1H123lN1y
-         f0nJuIzEHca0CqaHg2PGnbobqA4k9jaEQqCX9u+CH/T5tJqYR/CszMa/J1YvDpWp02Ve
-         arRBCbgo6i+DIc7aGSwCVo2Tf0cmItvq8R4fZZE80KGld2B2LFzsWVUL8RDKkm5o0SV6
-         g258fM64VW42RmjklExaBkSBfNdcZgaV7j3rwe4Hf0CIhTiq8SfQqx7LURVWTtfL70Ik
-         6evw==
-X-Gm-Message-State: AOAM53058y6v/zqJg2AyhNwVbzzvOGVxGuyJZAscmoMeCIOrPzNYILYE
-        jEaNTsRMYL5ObN/yw2FWcrVBfJfpfc4=
-X-Google-Smtp-Source: ABdhPJz/SztYfESW6PZFHbS6aUPLY2ETCM/5PteB/K2GaClzAqyUscB49kg8e73vcPwMKeb/PBppmA==
-X-Received: by 2002:a17:90a:7885:b0:1be:d757:fa73 with SMTP id x5-20020a17090a788500b001bed757fa73mr2058265pjk.169.1646261060320;
-        Wed, 02 Mar 2022 14:44:20 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::2:156b])
-        by smtp.gmail.com with ESMTPSA id u10-20020a6540ca000000b0037445e95c93sm163876pgp.15.2022.03.02.14.44.19
+        bh=Bu1m8QE7xycjxrnGexY9vNyLC1cQoJ9MRpYoO3qPQyQ=;
+        b=svGa9fNADuYTd3m2i4lrp8cNUf7WxCQCLehEdHg4zvK/isHJi8VED8pGo+QrXRw8x3
+         VP7wDE0SqUCmwsfUtqDhihU2WjaGMZM9N8dS9mDkuolWzObK5oSM+ia2FR4u++5nS+1O
+         rGx3KG5wZ7Uq+j4kD8zKrpwHD3onGYhO0MoiEdaORBR2N+4QD70IWSNk4Xm8qLNdEOB3
+         iUfYwyMryn7fPTyAN3v5bIvhk61DlQwHWBiesRpst+RIvQYGv9v+bDLvRyoOWRtKtOCx
+         Qu84nWOAFHFh1wRcouON/seiTqpCmIKmQVJ/BaWZcIHGPjxkvfM3u1QemDZQgL6U2FHn
+         GgvA==
+X-Gm-Message-State: AOAM5302cC/iy7/t/15p4bDjlK7FAcUPZgjL4S8Bmt3syiXYF+xxk9zT
+        TEQHOqOmm0dPaZSnc9PmaJY=
+X-Google-Smtp-Source: ABdhPJwnD7avpCpK886IAUGLL7iydkYwBRettoU9e5I3A5GQJFV2Z+hQTHbDRrIy0M3ZL53jolzRGQ==
+X-Received: by 2002:a05:6a00:b49:b0:4cf:432f:9cd9 with SMTP id p9-20020a056a000b4900b004cf432f9cd9mr35426442pfo.10.1646261109563;
+        Wed, 02 Mar 2022 14:45:09 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id 17-20020a056a00071100b004f0f941d1e8sm201102pfl.24.2022.03.02.14.45.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 14:44:19 -0800 (PST)
-Date:   Wed, 2 Mar 2022 14:44:18 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
+        Wed, 02 Mar 2022 14:45:09 -0800 (PST)
+Date:   Thu, 3 Mar 2022 04:15:06 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Hao Luo <haoluo@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next v1 4/6] bpf: Harden register offset checks for
- release kfunc
-Message-ID: <20220302224418.5ph7nkzx2qmcy36n@ast-mbp.dhcp.thefacebook.com>
-References: <20220301065745.1634848-1-memxor@gmail.com>
- <20220301065745.1634848-5-memxor@gmail.com>
- <20220302032024.knhf2wyfiscjy73p@kafai-mbp>
- <20220302094218.5gov4mdmyiqfrt6p@apollo.legion>
- <20220302215640.2thsbd4blxbfd7tk@kafai-mbp>
- <20220302223020.3vmwknct24pplzzr@apollo.legion>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v1 8/9] bpf: Introduce cgroup iter
+Message-ID: <20220302224506.jc7jwkdaatukicik@apollo.legion>
+References: <20220225234339.2386398-1-haoluo@google.com>
+ <20220225234339.2386398-9-haoluo@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220302223020.3vmwknct24pplzzr@apollo.legion>
+In-Reply-To: <20220225234339.2386398-9-haoluo@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,174 +78,262 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 03, 2022 at 04:00:20AM +0530, Kumar Kartikeya Dwivedi wrote:
-> On Thu, Mar 03, 2022 at 03:26:40AM IST, Martin KaFai Lau wrote:
-> > On Wed, Mar 02, 2022 at 03:12:18PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > On Wed, Mar 02, 2022 at 08:50:24AM IST, Martin KaFai Lau wrote:
-> > > > On Tue, Mar 01, 2022 at 12:27:43PM +0530, Kumar Kartikeya Dwivedi wrote:
-> > > > > Let's ensure that the PTR_TO_BTF_ID reg being passed in to release kfunc
-> > > > > always has its offset set to 0. While not a real problem now, there's a
-> > > > > very real possibility this will become a problem when more and more
-> > > > > kfuncs are exposed.
-> > > > >
-> > > > > Previous commits already protected against non-zero var_off. The case we
-> > > > > are concerned about now is when we have a type that can be returned by
-> > > > > acquire kfunc:
-> > > > >
-> > > > > struct foo {
-> > > > > 	int a;
-> > > > > 	int b;
-> > > > > 	struct bar b;
-> > > > > };
-> > > > >
-> > > > > ... and struct bar is also a type that can be returned by another
-> > > > > acquire kfunc.
-> > > > >
-> > > > > Then, doing the following sequence:
-> > > > >
-> > > > > 	struct foo *f = bpf_get_foo(); // acquire kfunc
-> > > > > 	if (!f)
-> > > > > 		return 0;
-> > > > > 	bpf_put_bar(&f->b); // release kfunc
-> > > > >
-> > > > > ... would work with the current code, since the btf_struct_ids_match
-> > > > > takes reg->off into account for matching pointer type with release kfunc
-> > > > > argument type, but would obviously be incorrect, and most likely lead to
-> > > > > a kernel crash. A test has been included later to prevent regressions in
-> > > > > this area.
-> > > > >
-> > > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > > ---
-> > > > >  kernel/bpf/btf.c | 15 +++++++++++++--
-> > > > >  1 file changed, 13 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > > > index 7f6a0ae5028b..ba6845225b65 100644
-> > > > > --- a/kernel/bpf/btf.c
-> > > > > +++ b/kernel/bpf/btf.c
-> > > > > @@ -5753,6 +5753,9 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > > >  		return -EINVAL;
-> > > > >  	}
-> > > > >
-> > > > > +	if (is_kfunc)
-> > > > > +		rel = btf_kfunc_id_set_contains(btf, resolve_prog_type(env->prog),
-> > > > > +						BTF_KFUNC_TYPE_RELEASE, func_id);
-> > > > >  	/* check that BTF function arguments match actual types that the
-> > > > >  	 * verifier sees.
-> > > > >  	 */
-> > > > > @@ -5816,6 +5819,16 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
-> > > > >  							regno, reg->ref_obj_id, ref_obj_id);
-> > > > >  						return -EFAULT;
-> > > > >  					}
-> > > > > +					/* Ensure that offset of referenced PTR_TO_BTF_ID is
-> > > > > +					 * always zero, when passed to release function.
-> > > > > +					 * var_off has already been checked to be 0 by
-> > > > > +					 * check_func_arg_reg_off.
-> > > > > +					 */
-> > > > > +					if (rel && reg->off) {
-> > > > Here is another reg->off check for PTR_TO_BTF_ID on top of the
-> > > > one 'check_func_arg_reg_off' added to the same function in patch 2.
-> > > > A nit, I also found passing ARG_DONTCARE in patch 2 a bit convoluted
-> > > > considering the btf func does not need ARG_* to begin with.
-> > > >
-> > >
-> > > Right, arg_type doesn't really matter here (unless we start indicating in BTF we
-> > > want to take ringbuf allocation directly without size parameter or getting size
-> > > from BTF type).
-> > >
-> > > > How about directly use the __check_ptr_off_reg() here instead of
-> > > > check_func_arg_reg_off()?  Then patch 1 is not needed.
-> > > >
-> > > > Would something like this do the same thing (uncompiled code) ?
-> > > >
-> > >
-> > > I should have included a link to the previous discussion, sorry about that:
-> > > https://lore.kernel.org/bpf/20220223031600.pvbhu3dbwxke4eia@apollo.legion
-> > Ah. Thanks for the link.  I didn't go back to the list since the set is
-> > tagged v1 ;)
-> >
-> 
-> Right, I split the first patch out and then added this patch, so it felt more
-> appropriate to tag it as v1. But I will include this link in the cover letter
-> going forward.
-> 
-> > > Yes, this should also do the same thing, but the idea was to avoid keeping the
-> > > same checks in multiple places. For now, there is only the special case of
-> > > ARG_TYPE_PTR_TO_ALLOC_MEM and PTR_TO_BTF_ID that require some special handling,
-> > > the former of which is currently not relevant for kfunc, but adding some future
-> > > type and ensuring kfunc, and helper do the offset checks correctly just means
-> > > updating check_func_arg_reg_off.
-> > >
-> > > reg->off in case of PTR_TO_BTF_ID reg for release kfunc is a bit of a special
-> > > case. We should also do the same thing for BPF helpers, now that I look at it,
-> > > but there's only one which takes a PTR_TO_BTF_ID right now (bpf_sk_release), and
-> > > it isn't problematic currently, but now that referenced PTR_TO_BTF_ID is used it
-> > > is quite possible to support it in more BPF helpers later and forget to prevent
-> > > such case.
-> > >
-> > > So, it would be possible to move this check inside check_func_arg_reg_off, based
-> > > on a new bool is_release_func parameter, and relying on the assumption that only
-> > > one referenced register can be passed to helper or kfunc at a time (already
-> > > enforced for both BPF helpers and kfuncs).
-> > >
-> > > Basically, instead of doing type == PTR_TO_BTF_ID for fixed_off_ok inside it, we
-> > > will do:
-> > >
-> > > 	fixed_off_ok = false;
-> > > 	if (type == PTR_TO_BTF_ID && (!is_release_func || !reg->ref_obj_id))
-> > > 		fixed_off_ok = true;
-> > For the preemptive fix on release func and non zero reg->off,
-> > should it be a release-without-acquire error instead of a ptr-type/reg->off error?
-> > The fix should be either clearing the reg->ref_obj_id earlier or at least treat
-> > ref_obj_id as zero here and then fallthrough the existing release-without-acquire
-> > error.  It is more to do with the ref_obj_id becomes invalid after reg->off
-> > becoming non-zero instead of reg->off is not allowed for a specific ptr
-> > type.  It is better to separate this preemptive fix to another set.
-> >
-> 
-> So IIUC what you're saying is that once someone performs increment, we reset the
-> ref_obj_id to 0, then the reference state is still present so
-> check_reference_leak would complain, but releasing such modified register won't
-> work since ref_obj_id is 0 (so no ref state for that ref_obj_id).
-> 
-> But I think clang (or even user writing BPF ASM) would be well within its rights
-> to temporarily add an offset to the register, pass member pointer to some other
-> helper, or read some data, and then decrement it again to shift the pointer
-> backwards setting reg->off to 0. Then they should be able to again pass such
-> register to release helper or kfunc. I think it would be unlikely (you can save
-> original pointer to caller saved reg, or spill to stack, or use offset in LDX,
-> etc.) but certainly not impossible.
+On Sat, Feb 26, 2022 at 05:13:38AM IST, Hao Luo wrote:
+> Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
+> iter doesn't iterate a set of kernel objects. Instead, it is supposed to
+> be parameterized by a cgroup id and prints only that cgroup. So one
+> needs to specify a target cgroup id when attaching this iter.
+>
+> The target cgroup's state can be read out via a link of this iter.
+> Typically, we can monitor cgroup creation and deletion using sleepable
+> tracing and use it to create corresponding directories in bpffs and pin
+> a cgroup id parameterized link in the directory. Then we can read the
+> auto-pinned iter link to get cgroup's state. The output of the iter link
+> is determined by the program. See the selftest test_cgroup_stats.c for
+> an example.
+>
+> Signed-off-by: Hao Luo <haoluo@google.com>
+> ---
+>  include/linux/bpf.h            |   1 +
+>  include/uapi/linux/bpf.h       |   6 ++
+>  kernel/bpf/Makefile            |   2 +-
+>  kernel/bpf/cgroup_iter.c       | 141 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |   6 ++
+>  5 files changed, 155 insertions(+), 1 deletion(-)
+>  create mode 100644 kernel/bpf/cgroup_iter.c
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 759ade7b24b3..3ce9b0b7ed89 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1595,6 +1595,7 @@ int bpf_obj_get_path(bpfptr_t pathname, int flags);
+>
+>  struct bpf_iter_aux_info {
+>  	struct bpf_map *map;
+> +	u64 cgroup_id;
+>  };
+>
+>  typedef int (*bpf_iter_attach_target_t)(struct bpf_prog *prog,
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index a5dbc794403d..855ad80d9983 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -91,6 +91,9 @@ union bpf_iter_link_info {
+>  	struct {
+>  		__u32	map_fd;
+>  	} map;
+> +	struct {
+> +		__u64	cgroup_id;
+> +	} cgroup;
+>  };
+>
+>  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> @@ -5887,6 +5890,9 @@ struct bpf_link_info {
+>  				struct {
+>  					__u32 map_id;
+>  				} map;
+> +				struct {
+> +					__u64 cgroup_id;
+> +				} cgroup;
+>  			};
+>  		} iter;
+>  		struct  {
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index c1a9be6a4b9f..52a0e4c6e96e 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -8,7 +8,7 @@ CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
+>
+>  obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
+>  obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
+> -obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
+> +obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o cgroup_iter.o
+>  obj-$(CONFIG_BPF_SYSCALL) += bpf_local_storage.o bpf_task_storage.o
+>  obj-${CONFIG_BPF_LSM}	  += bpf_inode_storage.o
+>  obj-$(CONFIG_BPF_SYSCALL) += disasm.o
+> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+> new file mode 100644
+> index 000000000000..011d9dcd1d51
+> --- /dev/null
+> +++ b/kernel/bpf/cgroup_iter.c
+> @@ -0,0 +1,141 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2022 Google */
+> +#include <linux/bpf.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/cgroup.h>
+> +#include <linux/kernel.h>
+> +#include <linux/seq_file.h>
+> +
+> +struct bpf_iter__cgroup {
+> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
+> +	__bpf_md_ptr(struct cgroup *, cgroup);
+> +};
+> +
+> +static void *cgroup_iter_seq_start(struct seq_file *seq, loff_t *pos)
+> +{
+> +	struct cgroup *cgroup;
+> +	u64 cgroup_id;
+> +
+> +	/* Only one session is supported. */
+> +	if (*pos > 0)
+> +		return NULL;
+> +
+> +	cgroup_id = *(u64 *)seq->private;
+> +	cgroup = cgroup_get_from_id(cgroup_id);
+> +	if (!cgroup)
+> +		return NULL;
+> +
+> +	if (*pos == 0)
+> +		++*pos;
+> +
+> +	return cgroup;
+> +}
+> +
+> +static void *cgroup_iter_seq_next(struct seq_file *seq, void *v, loff_t *pos)
+> +{
+> +	++*pos;
+> +	return NULL;
+> +}
+> +
+> +static int cgroup_iter_seq_show(struct seq_file *seq, void *v)
+> +{
+> +	struct bpf_iter__cgroup ctx;
+> +	struct bpf_iter_meta meta;
+> +	struct bpf_prog *prog;
+> +	int ret = 0;
+> +
+> +	ctx.meta = &meta;
+> +	ctx.cgroup = v;
+> +	meta.seq = seq;
+> +	prog = bpf_iter_get_info(&meta, false);
+> +	if (prog)
+> +		ret = bpf_iter_run_prog(prog, &ctx);
+> +
+> +	return ret;
+> +}
+> +
+> +static void cgroup_iter_seq_stop(struct seq_file *seq, void *v)
+> +{
+> +	if (v)
+> +		cgroup_put(v);
+> +}
 
-I don't think llvm will ever do such thing. Passing into a helper means
-that the register is scratched. It won't be reused after the call.
-Saving modified into a stack to restore later just to do a math on it
-goes against "optimization" goal of the compiler.
+I think in existing iterators, we make a final call to seq_show, with v as NULL,
+is there a specific reason to do it differently for this? There is logic in
+bpf_iter.c to trigger ->stop() callback again when ->start() or ->next() returns
+NULL, to execute BPF program with NULL p, see the comment above stop label.
 
-> I think the key point is that we want to make user pass the register as it was
-> when it was acquired, they can do any changes to off between acquire and
-> release, just that it should be set back to 0 when release function is called.
+If you do add the seq_show call with NULL, you'd also need to change the
+ctx_arg_info PTR_TO_BTF_ID to PTR_TO_BTF_ID_OR_NULL.
 
-Correct and this patch is covering that.
-I'm not sure what is the contention point here.
-Sorry I'm behind the mailing list.
+> +
+> +static const struct seq_operations cgroup_iter_seq_ops = {
+> +	.start  = cgroup_iter_seq_start,
+> +	.next   = cgroup_iter_seq_next,
+> +	.stop   = cgroup_iter_seq_stop,
+> +	.show   = cgroup_iter_seq_show,
+> +};
+> +
+> +BTF_ID_LIST_SINGLE(bpf_cgroup_btf_id, struct, cgroup)
+> +
+> +static int cgroup_iter_seq_init(void *priv_data, struct bpf_iter_aux_info *aux)
+> +{
+> +	*(u64 *)priv_data = aux->cgroup_id;
+> +	return 0;
+> +}
+> +
+> +static void cgroup_iter_seq_fini(void *priv_data)
+> +{
+> +}
+> +
+> +static const struct bpf_iter_seq_info cgroup_iter_seq_info = {
+> +	.seq_ops                = &cgroup_iter_seq_ops,
+> +	.init_seq_private       = cgroup_iter_seq_init,
+> +	.fini_seq_private       = cgroup_iter_seq_fini,
+> +	.seq_priv_size          = sizeof(u64),
+> +};
+> +
+> +static int bpf_iter_attach_cgroup(struct bpf_prog *prog,
+> +				  union bpf_iter_link_info *linfo,
+> +				  struct bpf_iter_aux_info *aux)
+> +{
+> +	aux->cgroup_id = linfo->cgroup.cgroup_id;
+> +	return 0;
+> +}
+> +
+> +static void bpf_iter_detach_cgroup(struct bpf_iter_aux_info *aux)
+> +{
+> +}
+> +
+> +void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
+> +				 struct seq_file *seq)
+> +{
+> +	char buf[64] = {0};
+> +
+> +	cgroup_path_from_kernfs_id(aux->cgroup_id, buf, sizeof(buf));
+> +	seq_printf(seq, "cgroup_id:\t%lu\n", aux->cgroup_id);
+> +	seq_printf(seq, "cgroup_path:\t%s\n", buf);
+> +}
+> +
+> +int bpf_iter_cgroup_fill_link_info(const struct bpf_iter_aux_info *aux,
+> +				   struct bpf_link_info *info)
+> +{
+> +	info->iter.cgroup.cgroup_id = aux->cgroup_id;
+> +	return 0;
+> +}
+> +
+> +DEFINE_BPF_ITER_FUNC(cgroup, struct bpf_iter_meta *meta,
+> +		     struct cgroup *cgroup)
+> +
+> +static struct bpf_iter_reg bpf_cgroup_reg_info = {
+> +	.target			= "cgroup",
+> +	.attach_target		= bpf_iter_attach_cgroup,
+> +	.detach_target		= bpf_iter_detach_cgroup,
+> +	.show_fdinfo		= bpf_iter_cgroup_show_fdinfo,
+> +	.fill_link_info		= bpf_iter_cgroup_fill_link_info,
+> +	.ctx_arg_info_size	= 1,
+> +	.ctx_arg_info		= {
+> +		{ offsetof(struct bpf_iter__cgroup, cgroup),
+> +		  PTR_TO_BTF_ID },
+> +	},
+> +	.seq_info		= &cgroup_iter_seq_info,
+> +};
+> +
+> +static int __init bpf_cgroup_iter_init(void)
+> +{
+> +	bpf_cgroup_reg_info.ctx_arg_info[0].btf_id = bpf_cgroup_btf_id[0];
+> +	return bpf_iter_reg_target(&bpf_cgroup_reg_info);
+> +}
+> +
+> +late_initcall(bpf_cgroup_iter_init);
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index a5dbc794403d..855ad80d9983 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -91,6 +91,9 @@ union bpf_iter_link_info {
+>  	struct {
+>  		__u32	map_fd;
+>  	} map;
+> +	struct {
+> +		__u64	cgroup_id;
+> +	} cgroup;
+>  };
+>
+>  /* BPF syscall commands, see bpf(2) man-page for more details. */
+> @@ -5887,6 +5890,9 @@ struct bpf_link_info {
+>  				struct {
+>  					__u32 map_id;
+>  				} map;
+> +				struct {
+> +					__u64 cgroup_id;
+> +				} cgroup;
+>  			};
+>  		} iter;
+>  		struct  {
+> --
+> 2.35.1.574.g5d30c73bfb-goog
+>
 
-> > >
-> > > Again, given we can only pass one referenced reg, if we see release func and a
-> > > reg with ref_obj_id, it is the one being released.
-> > >
-> > > In the end, it's more of a preference thing, if you feel strongly about it I can
-> > > go with the __check_ptr_off_reg call too.
-> > Yeah, it is a preference thing and not feeling strongly.
-> > Without the need for the release-func/reg->off preemptive fix, adding
-> > one __check_ptr_off_reg() seems to be a cleaner fix to me but
-> > I won't insist.
-
-fwiw I like patches 1-3.
-I think extra check here for release func is justified on its own.
-Converting it into:
-  fixed_off_ok = false;
-  if (type == PTR_TO_BTF_ID && (!is_release_func || !reg->ref_obj_id))
-          fixed_off_ok = true;
-obfuscates the check to me.
-if (rel && reg->off) check
-is pretty obvious.
+--
+Kartikeya
