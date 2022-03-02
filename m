@@ -2,151 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC114CA34A
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 12:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 179634CA9F5
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 17:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235285AbiCBLTB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 06:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S233412AbiCBQSP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 11:18:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241746AbiCBLSf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 06:18:35 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A5EDC4B7C;
-        Wed,  2 Mar 2022 03:16:05 -0800 (PST)
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4K7s4158THz67vZB;
-        Wed,  2 Mar 2022 19:15:45 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.63.22) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 2 Mar 2022 12:15:52 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <shuah@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>, <yhs@fb.com>,
-        <kpsingh@kernel.org>, <revest@chromium.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v3 9/9] selftests/bpf: Check that bpf_kernel_read_file() denies reading IMA policy
-Date:   Wed, 2 Mar 2022 12:14:04 +0100
-Message-ID: <20220302111404.193900-10-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220302111404.193900-1-roberto.sassu@huawei.com>
-References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+        with ESMTP id S241289AbiCBQSO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 11:18:14 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54BADFF6;
+        Wed,  2 Mar 2022 08:17:30 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id z4so2029171pgh.12;
+        Wed, 02 Mar 2022 08:17:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NEIR/7K1s5SDBS74dA3+Y+CfCaE7Ky5QycYBnqqINX0=;
+        b=Ha+XagQsMacjhkbXnL64JKc+CZBwxnYxmXFTox8j+vtCx6mMcSdUrx/nunnzr3GKrJ
+         aswA8xCKNLW8R79BwUzLvnrcG+QeASYfeSYk5hl4AlycJqGREAUqXae1nhMW3AU6+N4e
+         DoODIgvR6VfBGmU+Eex59FweaJlVTBBKcQf8VAv2AV4MRGPdPukMJUoqepNeYIGeXEmx
+         +oIsiMJqXt+1wJF5yS+63YhiGNdOzMMJTAsmNIljzYhadrxLADevHSVOjZij8YYcBusH
+         JhmUVPhdeR3k1N4ETiBKmwmL+9d/dKdSmLtaddBparxepmra6iV24sudQBtc954ff8gp
+         Jtrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NEIR/7K1s5SDBS74dA3+Y+CfCaE7Ky5QycYBnqqINX0=;
+        b=EvEyUyHyXhzIo8EkpYB5FYABCZR7I6ZxoOzQRurAvS05APDiGYnDN1qteUv7EvJTZ1
+         pR6BE49SUhFIZdLMkFQZtoXEaoi9yXo2RcmKh0zDTuvvUfzZD7BP5BgANcNpZsKF5R4D
+         RSa8c9pNoo1vmbam3IQxTGmC/mOq3eEZoMP9pIo0TeKwngxmGXrVaNUC+/2PTG1EI0cV
+         UKy0WYGoTcMSDA06uJBtJTOghudG2/VCeB+joJyIagZXStSH8MSq/VaDBpC5nE3rFd9j
+         VjVLUln/n1rdcY6bSpNEF98U4g9MznFMo2Ch0LFuFTsd0yhx/+b4bdn0upyR2VZ8CzkL
+         Uczg==
+X-Gm-Message-State: AOAM533QqISlDnUO2fNHROTJgEDNxJbGpx4xGS6qGtpZBz5Ue0ZMpNs6
+        0RFAkVZiwKxlvxHIexJmLVv8LH9oz2Y=
+X-Google-Smtp-Source: ABdhPJzIcUsRPPvxop3yyNgUUT2Wrry/q9exPCghkTe3ylpYlLe+sowBJqGGcANUGkZO1W0j8uoJvw==
+X-Received: by 2002:a05:6a00:1a8b:b0:4e1:4151:6637 with SMTP id e11-20020a056a001a8b00b004e141516637mr33883387pfv.23.1646237850250;
+        Wed, 02 Mar 2022 08:17:30 -0800 (PST)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:7e41:847f:4bb0:a922])
+        by smtp.gmail.com with ESMTPSA id w17-20020a056a0014d100b004f1063290basm21771704pfu.15.2022.03.02.08.17.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Mar 2022 08:17:29 -0800 (PST)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Neal Cardwell <ncardwell@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        syzbot <syzkaller@googlegroups.com>
+Subject: [PATCH net 1/2] bpf, sockmap: Do not ignore orig_len parameter
+Date:   Wed,  2 Mar 2022 08:17:22 -0800
+Message-Id: <20220302161723.3910001-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.35.1.574.g5d30c73bfb-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.63.22]
-X-ClientProxiedBy: lhreml751-chm.china.huawei.com (10.201.108.201) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Check that bpf_kernel_read_file() denies the reading of an IMA policy, by
-ensuring that ima_setup.sh exits with an error.
+From: Eric Dumazet <edumazet@google.com>
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Currently, sk_psock_verdict_recv() returns skb->len
+
+This is problematic because tcp_read_sock() might have
+passed orig_len < skb->len, due to the presence of TCP urgent data.
+
+This causes an infinite loop from tcp_read_sock()
+
+Followup patch will make tcp_read_sock() more robust vs bad actors.
+
+Fixes: ef5659280eb1 ("bpf, sockmap: Allow skipping sk_skb parser program")
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Tested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- .../selftests/bpf/prog_tests/test_ima.c        | 17 +++++++++++++++++
- tools/testing/selftests/bpf/progs/ima.c        | 18 ++++++++++++++++++
- 2 files changed, 35 insertions(+)
+ net/core/skmsg.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-index b13a141c4220..b13feceb38f1 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-@@ -59,6 +59,7 @@ static void test_init(struct ima__bss *bss)
- 	bss->use_ima_file_hash = false;
- 	bss->enable_bprm_creds_for_exec = false;
- 	bss->enable_kernel_read_file = false;
-+	bss->test_deny = false;
- }
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 8eb671c827f90f1f3d2514163fc82998c9906cb6..929a2b096b04e01b85bff0a69209413abe86102d 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -1153,7 +1153,7 @@ static int sk_psock_verdict_recv(read_descriptor_t *desc, struct sk_buff *skb,
+ 	struct sk_psock *psock;
+ 	struct bpf_prog *prog;
+ 	int ret = __SK_DROP;
+-	int len = skb->len;
++	int len = orig_len;
  
- void test_test_ima(void)
-@@ -200,6 +201,22 @@ void test_test_ima(void)
- 	ASSERT_NEQ(ima_hash_from_bpf[0], 0, "ima_hash");
- 	ASSERT_NEQ(ima_hash_from_bpf[1], 0, "ima_hash");
- 
-+	/*
-+	 * Test #6
-+	 * - Goal: ensure that the kernel_read_file hook denies an operation
-+	 * - Expected result: 0 samples
-+	 */
-+	test_init(skel->bss);
-+	skel->bss->enable_kernel_read_file = true;
-+	skel->bss->test_deny = true;
-+	err = _run_measured_process(measured_dir, &skel->bss->monitored_pid,
-+				    "load-policy");
-+	if (CHECK(!err, "run_measured_process #6", "err = %d\n", err))
-+		goto close_clean;
-+
-+	err = ring_buffer__consume(ringbuf);
-+	ASSERT_EQ(err, 0, "num_samples_or_err");
-+
- close_clean:
- 	snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
- 	err = system(cmd);
-diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-index e3ce943c5c3d..e16a2c208481 100644
---- a/tools/testing/selftests/bpf/progs/ima.c
-+++ b/tools/testing/selftests/bpf/progs/ima.c
-@@ -21,6 +21,7 @@ char _license[] SEC("license") = "GPL";
- bool use_ima_file_hash;
- bool enable_bprm_creds_for_exec;
- bool enable_kernel_read_file;
-+bool test_deny;
- 
- static void ima_test_common(struct file *file)
- {
-@@ -51,6 +52,17 @@ static void ima_test_common(struct file *file)
- 	return;
- }
- 
-+static int ima_test_deny(void)
-+{
-+	u32 pid;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid == monitored_pid && test_deny)
-+		return -EPERM;
-+
-+	return 0;
-+}
-+
- SEC("lsm.s/bprm_committed_creds")
- void BPF_PROG(bprm_committed_creds, struct linux_binprm *bprm)
- {
-@@ -71,6 +83,8 @@ SEC("lsm.s/kernel_read_file")
- int BPF_PROG(kernel_read_file, struct file *file, enum kernel_read_file_id id,
- 	     bool contents)
- {
-+	int ret;
-+
- 	if (!enable_kernel_read_file)
- 		return 0;
- 
-@@ -80,6 +94,10 @@ int BPF_PROG(kernel_read_file, struct file *file, enum kernel_read_file_id id,
- 	if (id != READING_POLICY)
- 		return 0;
- 
-+	ret = ima_test_deny();
-+	if (ret < 0)
-+		return ret;
-+
- 	ima_test_common(file);
- 	return 0;
- }
+ 	/* clone here so sk_eat_skb() in tcp_read_sock does not drop our data */
+ 	skb = skb_clone(skb, GFP_ATOMIC);
 -- 
-2.32.0
+2.35.1.574.g5d30c73bfb-goog
 
