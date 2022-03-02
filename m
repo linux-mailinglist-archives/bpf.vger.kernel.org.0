@@ -2,106 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D46064CAE30
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 20:04:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0264CAE78
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 20:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244902AbiCBTFb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 14:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43996 "EHLO
+        id S241547AbiCBTST (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 14:18:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244920AbiCBTFa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 14:05:30 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE08FCE912;
-        Wed,  2 Mar 2022 11:04:45 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id e6so2440692pgn.2;
-        Wed, 02 Mar 2022 11:04:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=89mCuEEPrHsDNLVc4CIhD+BpAIBZ4ipH8mmu8QHY24I=;
-        b=ASaAtjHAZ6ZUzTh4PD6SWipUIIfM/2THlxXj1EddQIJUeNE+f0Ed54nasQgGf6sSRm
-         fmGv9F894L/kwRtROdxR+bmzOdzy+ltKxEuR+0ewjxemfuHKW05FZ1fTVPCZVBVp5vxN
-         DBF+pVPbE6Snnwa0J+28pRn2uopN4fBBe/peJkEWLEqhO5skx5H0Xser4LjMTXIC0Ncl
-         gkhBehQfs2HPUKBwc+ZClo21sS2huqlmadns2kPEzCZvzBwADXCYobjOkWR7PQ/bmPoL
-         ijsDDnmWdd7deZhKeNupBsY4puZymFVArw/JyCQHczo/Qm0+RWrwlCj0gsmm029pflPt
-         WEjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=89mCuEEPrHsDNLVc4CIhD+BpAIBZ4ipH8mmu8QHY24I=;
-        b=dFIV+YO+aIs46nSKMUXJiyDGxNLx6TO9liGMj4VFy586duePAkALx9bicY9YhdCn9d
-         Kl6sc2Xf7uAsd1Oh8Pywj1YTprWA8zAGQHL3PD7gKtblAiV3i6v6gDkp/VsXTbkwABAL
-         v8n9jnvn6/Q5uBLHd9ruXatTV59qAVFrCgMV7dqdMyqJEvG0Ght8mb0zRkdfpkefyE8c
-         K8TZJ+Fw0xGg7OHOtPV1qtvifHjgnZIpn9bzKu/q3ntnz3mmqXlbS74H75HbouX6yZ5c
-         SEbeHYuFbQlIIAdMjfLlVGNkuIDuTL9DSwXwzA0MVbpZl8W+JkCXqiqcEaPHGEeQr8Gy
-         ACVQ==
-X-Gm-Message-State: AOAM533ku4sOaMgqC7cdQ1ulRyd28TyfY0qH+zluDDILvjJcZfUandaH
-        LHrr7plnEzBoev6nyHF9cFA=
-X-Google-Smtp-Source: ABdhPJzSF4lKkKQmBZEuODpUX0JiH/7aVt+3OpLX5P4rezHsTIcSBmTrJlQOsdKcjOnhkR7LWLOTYA==
-X-Received: by 2002:a05:6a00:c95:b0:4e1:1f5a:35cf with SMTP id a21-20020a056a000c9500b004e11f5a35cfmr34510025pfv.56.1646247884848;
-        Wed, 02 Mar 2022 11:04:44 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::2:156b])
-        by smtp.gmail.com with ESMTPSA id q13-20020a056a00088d00b004e1bea9c582sm22324779pfj.43.2022.03.02.11.04.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 11:04:44 -0800 (PST)
-Date:   Wed, 2 Mar 2022 11:04:40 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v8 2/5] Documentation/bpf: Add documentation for
- BPF_PROG_RUN
-Message-ID: <20220302190440.t5cvezlkg7ynajam@ast-mbp.dhcp.thefacebook.com>
-References: <20220218175029.330224-1-toke@redhat.com>
- <20220218175029.330224-3-toke@redhat.com>
+        with ESMTP id S240728AbiCBTSS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 14:18:18 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034DAA187;
+        Wed,  2 Mar 2022 11:17:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4FB0D61632;
+        Wed,  2 Mar 2022 19:17:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C94DC004E1;
+        Wed,  2 Mar 2022 19:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646248653;
+        bh=/Z9NL1R6Uwfmg3+ggDEmUITGmY/PGsenpQnwgnFGBCw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CT5/d8lrPSRXqPX3lQErLUXiAvTtxI0LrBVyWTYAZJSadHlCNSL9UHC63GXIEfF3+
+         tn+JRjIlHyvZhm4YxvbKZdayrrlH4OqaO9mdT04sir14vOKJwJaIFvme/ViMx28R78
+         0LpPIahWyc/GU9aHeE/SyUaGVxsBs4YKHj03oheh1n2SPWneZq4gNqH79j+NaJxbYV
+         TfD83doSTWw0kascuOG3ef/Mhh6TzhBhPKNUQ9Gpj3LZK++pu5C108VY71TaNz+NYU
+         mzHMcrLo+BBQmKFDdA5u1tvaXL9p02Zwz/7nv9sbaGgC1RhHzV31Fw6Q/oF/vY7q4V
+         OnpVqa5bYKBkA==
+Date:   Wed, 2 Mar 2022 11:17:31 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     dsahern@gmail.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, davem@davemloft.net,
+        rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, imagedong@tencent.com,
+        joao.m.martins@oracle.com, joe.jin@oracle.com, edumazet@google.com
+Subject: Re: [PATCH net-next v4 4/4] net: tun: track dropped skb via
+ kfree_skb_reason()
+Message-ID: <20220302111731.00746020@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <ca81687c-4943-6d58-34f9-fb0a858f6887@oracle.com>
+References: <20220226084929.6417-1-dongli.zhang@oracle.com>
+        <20220226084929.6417-5-dongli.zhang@oracle.com>
+        <20220301185021.7cba195d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <ca81687c-4943-6d58-34f9-fb0a858f6887@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220218175029.330224-3-toke@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 06:50:26PM +0100, Toke Høiland-Jørgensen wrote:
-> This adds documentation for the BPF_PROG_RUN command; a short overview of
-> the command itself, and a more verbose description of the "live packet"
-> mode for XDP introduced in the previous commit.
+On Wed, 2 Mar 2022 10:19:30 -0800 Dongli Zhang wrote:
+> On 3/1/22 6:50 PM, Jakub Kicinski wrote:
+> > On Sat, 26 Feb 2022 00:49:29 -0800 Dongli Zhang wrote:  
+> >> +	SKB_DROP_REASON_SKB_PULL,	/* failed to pull sk_buff data */
+> >> +	SKB_DROP_REASON_SKB_TRIM,	/* failed to trim sk_buff data */  
+> > 
+> > IDK if these are not too low level and therefore lacking meaning.
+> > 
+> > What are your thoughts David?
+> > 
+> > Would it be better to up level the names a little bit and call SKB_PULL
+> > something like "HDR_TRUNC" or "HDR_INV" or "HDR_ERR" etc or maybe
+> > "L2_HDR_ERR" since in this case we seem to be pulling off ETH_HLEN?  
+> 
+> This is for device driver and I think for most of cases the people understanding
+> source code will be involved. I think SKB_PULL is more meaningful to people
+> understanding source code.
+> 
+> The functions to pull data to skb is commonly used with the same pattern, and
+> not only for ETH_HLEN. E.g., I randomly found below in kernel source code.
+> 
+> 1071 static rx_handler_result_t macsec_handle_frame(struct sk_buff **pskb)
+> 1072 {
+> ... ...
+> 1102         pulled_sci = pskb_may_pull(skb, macsec_extra_len(true));
+> 1103         if (!pulled_sci) {
+> 1104                 if (!pskb_may_pull(skb, macsec_extra_len(false)))
+> 1105                         goto drop_direct;
+> 1106         }
+> ... ...
+> 1254 drop_direct:
+> 1255         kfree_skb(skb);
+> 1256         *pskb = NULL;
+> 1257         return RX_HANDLER_CONSUMED;
+> 
+> 
+> About 'L2_HDR_ERR', I am curious what the user/administrator may do as next
+> step, while the 'SKB_PULL' will be very clear to the developers which kernel
+> operation (e.g., to pull some protocol/hdr data to sk_buff data) is with the issue.
+> 
+> I may use 'L2_HDR_ERR' if you prefer.
 
-Overall the patch set looks great. The doc really helps.
-One nit below.
+We don't have to break it out per layer if you prefer. Let's call it
+HDR_TRUNC.
 
-> +- When running the program with multiple repetitions, the execution will happen
-> +  in batches, where the program is executed multiple times in a loop, the result
-> +  is saved, and other actions (like redirecting the packet or passing it to the
-> +  networking stack) will happen for the whole batch after the execution. This is
-> +  similar to how execution happens in driver-mode XDP for each hardware NAPI
-> +  cycle. The batch size defaults to 64 packets (which is same as the NAPI batch
-> +  size), but the batch size can be specified by userspace through the
-> +  ``batch_size`` parameter, up to a maximum of 256 packets.
+I don't like SKB_PULL, people using these trace points are as likely 
+to be BPF developers as kernel developers and skb_pull will not be
+meaningful to them. Besides the code can check if header is not
+truncated in other ways than pskb_may_pull(). And calling things 
+by the name of the helper that failed is bad precedent.
 
-This paragraph is a bit confusing.
-I've read it as the program can do only one kind of result per batch and
-it will apply to the whole batch.
-But the program can do XDP_PASS/REDIRECT in any order.
-Can you make "the result is saved" a bit more clear?
+> > For SKB_TRIM the error comes from allocation failures, there may be
+> > a whole bunch of skb helpers which will fail only under mem pressure,
+> > would it be better to identify them and return some ENOMEM related
+> > reason, since, most likely, those will be noise to whoever is tracking
+> > real errors?  
+> 
+> The reasons I want to use SKB_TRIM:
+> 
+> 1. To have SKB_PULL and SKB_TRIM (perhaps more SKB_XXX in the future in the same
+> set).
+> 
+> 2. Although so that SKB_TRIM is always caused by ENOMEM, suppose if there is new
+> return values by pskb_trim(), the reason is not going to be valid any longer.
+> 
+> 
+> I may use SKB_DROP_REASON_NOMEM if you prefer.
+> 
+> Another concern is that many functions may return -ENOMEM. It is more likely
+> that if there are two "goto drop" to return -ENOMEM, we will not be able to tell
+> from which function the sk_buff is dropped, e.g.,
+> 
+> if (function_A()) {
+>     reason = -ENOMEM;
+>     goto drop;
+> }
+> 
+> if (function_B()) {
+>     reason = -ENOMEM;
+>     goto drop;
+> }
+
+Are you saying that you're intending to break out skb drop reasons 
+by what entity failed to allocate memory? I'd think "skb was dropped
+because of OOM" is what should be reported. What we were trying to
+allocate is not very relevant (and can be gotten from the stack trace 
+if needed).
+
+> >>  	SKB_DROP_REASON_DEV_HDR,	/* there is something wrong with
+> >>  					 * device driver specific header
+> >>  					 */
+> >> +	SKB_DROP_REASON_DEV_READY,	/* device is not ready */  
+> > 
+> > What is ready? link is not up? peer not connected? can we expand?
+> 
+> In this patchset, it is for either:
+> 
+> - tun->tfiles[txq] is not set, or
+> 
+> - !(tun->dev->flags & IFF_UP)
+> 
+> I want to make it very generic so that the sk_buff dropped due to any device
+> level data structure that is not up/ready/initialized/allocated will use this
+> reason in the future.
+
+Let's expand the documentation so someone reading thru the enum can
+feel confident if they are using this reason correctly.
+
+Side note - you may want to switch to inline comments to make writing
+more verbose documentation, I mean:
+
+	/* This is the explanation of reason one which explains what
+	 * reason ones means, and how it should be used. We can make
+	 * use of full line width this way.
+         */
+	SKB_DROP_REASON_ONE,
+	/* And this is an explanation for reason two. */
+	SKB_DROP_REASON_TWO,
