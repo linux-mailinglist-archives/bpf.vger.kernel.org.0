@@ -2,39 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C488E4C9B63
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 03:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F224C9B64
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 03:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbiCBCti (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 21:49:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55454 "EHLO
+        id S235976AbiCBCtj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 21:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235976AbiCBCti (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S232091AbiCBCti (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 1 Mar 2022 21:49:38 -0500
 Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EE2AA034
-        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 18:48:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E76AA022
+        for <bpf@vger.kernel.org>; Tue,  1 Mar 2022 18:48:56 -0800 (PST)
 Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 2221cmCd017818
-        for <bpf@vger.kernel.org>; Tue, 1 Mar 2022 18:48:55 -0800
+        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 2221cmCf017818
+        for <bpf@vger.kernel.org>; Tue, 1 Mar 2022 18:48:56 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
- date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=f8lPfnRiag8el5diAMmbcStYfZyYO2j2g16tDVcfMwk=;
- b=ZIc6VpV2Dj6p9/9W+jbg875dfWWeXE+6J8sH0LAgd4aZlK3nRU0TZi8j+J7HGDowIR0a
- GQ9BJu5nZc5MrueCSZjrJimflPgabRVlAeTRv5FcmZ9WWWyHKGwalClYi8XFBXcQFbi6
- 9q3olb+dkyMe/eNdxaIKSwgHho0TCO/UcYE= 
+ date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=Aramq/23cv9gBb4zXtXh8pwhRm2yRj8KGGRSyFVOfeg=;
+ b=o2xgO6T5AqEwifCxlwiXQ2uSMfxFeO7eRj0sy68Ur/RQ0UqPOmGcaeiJF9zPx0CKHTBq
+ kUWKe2h8Q/npQm6wV+tsOJrarkpYKEB3Ovt77e2ml22/KAxMHk6g3V7wIxzs5aeChbdF
+ DdaCZ3+dZJubYjgAnv7RwBcSTZ60v83yFow= 
 Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3ehn5wmt5a-3
+        by m0089730.ppops.net (PPS) with ESMTPS id 3ehn5wmt5a-5
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 01 Mar 2022 18:48:54 -0800
+        for <bpf@vger.kernel.org>; Tue, 01 Mar 2022 18:48:55 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VUL1KbX0fawymq/8vkcZPkPWVlBFLOX5a0Sn0Bwt93zORxjeRp9UixaVKKo8zppu/10jQQK0Wlk0NDvtAU4MQrRfw2svSiMEkbBE+bQB+TC8Uy+SJ8ecAMkWpCTWSS2GFzJVTRFPfXR/Pvm1/8YfyPtV2oJW9Lhl9pr9H4yiirmHrOQ72nvvJAwg/Ax9jkF8W0z2je82ZNDfoMSkRwCTc5oX6rZcoIc75h7E0LZHw+mSSPhh1xng5CCu4jB9OWJCsVjb4CZcXOCMHpyZWdIUuQiO9DKBIyodVvlPXB4Ht/cFqCkHum7lOeTHdEhUmTsUo0VB2MS6pvpwPUC9vVSu4Q==
+ b=T/9lGDEtr4QoT+NLaCbSaSwe9xU5MMJBYv4ApRjsfW6UhrocwS1L/zWaYGYvNC9OB0VGPnE9czHSIpA/Bh2QdZp1W4f/FsbnjftxJ3TYARtRq8YKwHuHte/UFWK9EBYLtNZ2HXsDim/AXPBxMqKKo/Vwn4rYycVk7S9EjxcI9qmcWGZPaRqX2jM0cjtrizUQ8liMhB5BBrse/JViRK7yOm/qiggUdfJ99VqQ1kxkZtUDwk7E799n1Ar202ssKCAmTGI/qd1hU5UrzyYeSSiLcfwdLuVTVHlYdj6ux7fMHWxkmloMSlfw5q2pL8+jHE18lvT/lBOkchz9C+PDsEfaqA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=f8lPfnRiag8el5diAMmbcStYfZyYO2j2g16tDVcfMwk=;
- b=SZk7naYUqpnjAr0WfrVQUpuGlXfa9z1rlfc99ARGDOtVv4Qe6J52QpCErwcFDWUSCRsiz5tDZvYifPkRr7Etl2+OIMf5bfOAK8uRcJKW+yRVDuf0WCFPDrL9h6QzZS/SpCsaFbRJhocEsT5CAIjV2wZ/Ti0gk/yiUxG/ECtK8oeXu+g7BmPI4eDpPWQ26qCUKMVN14QS9hUFhAvEpJhpJEJJhmwwgh/i1csJ4EkNT3vlr91+gtwJGOPwhiQImuiO0A6Ykq5b67BvJvlU0IhNrxrrwupDQP80xoYDPrZZXOKyptzg/eOiPYvV0zJLatoEeCV1RmPfl9EbxPGIkZnwyA==
+ bh=Aramq/23cv9gBb4zXtXh8pwhRm2yRj8KGGRSyFVOfeg=;
+ b=fXFmaQ6rX2WpndCMvnR2BdgmMS/0AvxLd0M6vZxvQeL7czi5fzLwXELML8FFVrzcOoDT882fc9lGhmdpug2GdJEHH4Hr9AA4OREQePzM7bc0hAw6Ux9FqV2owhJ3N5HtpF2KrGc8UgGgua8w+QbHdha/Pae40E8rCel4U2KrVTGggG5SNEyzz5f6dj8Bq/DU81bmikWy7qQu/eKD1OBjG2+M/7Hnm2guA810Rn+sXrSZOAodugsvDm7UrTuz9IGHmzZvGa9Ti+UX+tlvt1rSsYmBasZHdFtImAqhX3eU+WJ6mg7a5hd+o9QTCWVpYOxqNI9IxkpJTlomAUbWiVA6og==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
@@ -42,67 +41,64 @@ Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
  by MW4PR15MB4441.namprd15.prod.outlook.com (2603:10b6:303:102::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.26; Wed, 2 Mar
- 2022 02:48:48 +0000
+ 2022 02:48:50 +0000
 Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::90c1:20f8:4fc6:d7a3]) by SJ0PR15MB5154.namprd15.prod.outlook.com
  ([fe80::90c1:20f8:4fc6:d7a3%5]) with mapi id 15.20.5017.027; Wed, 2 Mar 2022
- 02:48:48 +0000
+ 02:48:50 +0000
 From:   Delyan Kratunov <delyank@fb.com>
 To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
         "andrii@kernel.org" <andrii@kernel.org>,
         "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next 4/4] selftests/bpf: test subskeleton functionality
-Thread-Topic: [PATCH bpf-next 4/4] selftests/bpf: test subskeleton
- functionality
-Thread-Index: AQHYLeAKFjdznAZJQ0qoqoIsaLkktQ==
-Date:   Wed, 2 Mar 2022 02:48:48 +0000
-Message-ID: <89a850b9c06835b839da76386ee0e4bbeaf5a37b.1646188795.git.delyank@fb.com>
-References: <cover.1646188795.git.delyank@fb.com>
-In-Reply-To: <cover.1646188795.git.delyank@fb.com>
+Subject: [PATCH bpf-next 0/4] Subskeleton support for BPF libraries
+Thread-Topic: [PATCH bpf-next 0/4] Subskeleton support for BPF libraries
+Thread-Index: AQHYLeALXEbvktBNF0S1HbrihHCfaw==
+Date:   Wed, 2 Mar 2022 02:48:50 +0000
+Message-ID: <cover.1646188795.git.delyank@fb.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 17ec22d4-690c-4c20-4160-08d9fbf72d46
+x-ms-office365-filtering-correlation-id: 06eeedda-6b43-48ab-8328-08d9fbf72e64
 x-ms-traffictypediagnostic: MW4PR15MB4441:EE_
-x-microsoft-antispam-prvs: <MW4PR15MB444162B2DCAD57456EF320C7C1039@MW4PR15MB4441.namprd15.prod.outlook.com>
+x-microsoft-antispam-prvs: <MW4PR15MB444156E96B3F19BF61FFCB89C1039@MW4PR15MB4441.namprd15.prod.outlook.com>
 x-fb-source: Internal
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EzOjkV8pP3KLX9MYF4t5ojV+JpoOvJyo5E7nMzk1zezjIV/UUAL0sThm4UpKRUady2us5cyFKXqLOiQqswtqaGFoYa8bn32MeJ7LYi1hkjPNNx/ije8RPe5H26A/s0BZDSO9pBYkuOuv9CJqsMeGnYgOcQFAWlG9i9CictCSApcK3hWCK/7YKmhYyy0TP74HpTykukwMLLFfTPv9ZaeC7wOLzURFxPqJJWwIkjoAXrxT7kMsJksh8HzYPPBDo1p97Q6PFjrLTWMf62xIjs5q2mqw3/zkvRtE1RvKgqOlCgPP9nKyN143kxYq71VOHYbsTGWVuc6j7ZbA8uU2Ww4GQ1o9+22ysZTCTl5R/8l2fFo3UqUbpFhm9fr2Unf5INYDRQarA7OSkyrgS3zOB1WPnTVC+AALslyUEYt1wmlP5DnBH9Sz0MWZwP3NwSahvXkkKdtza4PFV3ctNfHsI3Yae8H0v7L2yyLaEvc/tdun460d40F/CrtLpffUM5I8nXbk/Pw0NoMlCw7KIVT+MPkQgiIvrG6zKN8qIWbl89FXykf3ssRatQzHRSnor5UAuOLw0pL6RGX9NpfDjEtgjRi9z130b1asdZxJN5kbl0dmiwOnXcUHdeB1sBd9hnUiGiPO9PG309OgCXSyDbudjIUq8FCfoJ9SOpbaA3/+h/aSG3tUEefIrvLJL0kf95RlUGPIwbS0hlY/TXZGiU74j0UrUQ==
+x-microsoft-antispam-message-info: E73vbPx3inOSk6Jce5btPli57Y9tlMw93c1dnm0skX9aXcu50V1uQDuajhzJMycdOG7C3md+awRHA7m+Ic4TITsZuG2omLojUFkxa39S+9m20U+wYNrRW60zDKgKOpzW+AkMRWVss/QEpkjsWhCtBmI4FAj9nfWCHHV3IWXjhXEUDZh60shbrn69v6uJkzL214JcXkP9g1hd8p8mlEJteKNu+g3DrhnfU6sEXLOk4q0NJ0Y4+MnmrV/QCqKFBDszfpS4NeOtQJ5iXbo4LWwZl1Sq8YTWF2TG7OKuhfSi/WAxWGVBli5TAw5gLDDX8u+cPfD3KMIWcIDARKZaFpBYTWxgLTcmX2f4z7r4tT3UlQ0Ut4Nij+GTmhCCcm8NruYqxlhgDdhl3FEcc12/NWoCj+3DTwc4JE73CTMJrrbCDIt1rKx3zxbioxc7h42s652esqXLVlzhtghFP8WBSQQhJeEoRv/OW8bQxpEk5o54g4BDoAdjVTeWHVQuFftibuH46dqPGB9KYCjUyetpMpgLeL2PeMiQgsJOxRZ7qUEjeiv4NLs/QvaWGCjo0RKpL5/8FxeFomv1bu9n+HeQXeOp+Ph/tKwaApt1thRfKBt1d5usmu0iPMkbrEwxXM3j6NaVkZe2gloYhPb14GJaxCdpaWRX8uuK+C/bbsUSQceIlaRJxuxUlcwUIQmrSKO32UDq2WRc6asvcWdfiJ8YyzOCfg==
 x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(316002)(38100700002)(83380400001)(110136005)(122000001)(86362001)(6512007)(6506007)(66476007)(186003)(38070700005)(91956017)(36756003)(2616005)(66946007)(76116006)(66446008)(66556008)(64756008)(2906002)(8936002)(5660300002)(71200400001)(508600001)(8676002)(6486002);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?wYC9QTh5gYC1mS0C/jN3PtjbBut0xq8gyzwwbi/E90JiqR0hjvsXYRqAd0?=
- =?iso-8859-1?Q?74O+6QKC3PtTXEn4aqRzIo/KwDxZHIdzfQEVd4arErWx27Cremqob4reY/?=
- =?iso-8859-1?Q?NkxBhPrioPCqu/76rNU8ZwiK48AOynjkZpYvFqLItFSKuftCyHy9TseUCG?=
- =?iso-8859-1?Q?Pl5PVecMWX5e4sRNqpuIR1HpGQtVCzmFpYQ0k2zwLtUWyZmLnpGz1pZ26N?=
- =?iso-8859-1?Q?29tU6UUrXyCOCCQ7HGEz85xG/tOzBEu4JZ7cTCAfsuBGHT3fdDWH3dkwXT?=
- =?iso-8859-1?Q?BJJSj3P/ZZVH7XHDGlzkuSYdZG+DQDIw06M0i5G7Vr1Dhd8tXZ/16a7sRF?=
- =?iso-8859-1?Q?INMn3DjrfcFUQUL9TV0DPQnKxN0zgxXO3xiXvUGyEtt7NJvzeCuPBT96Zg?=
- =?iso-8859-1?Q?G5hIqvpGAz7LHQ08WXJ3M40D9C/DYFv6UBNwrgfC1FMs3R4xnuxIsykIlS?=
- =?iso-8859-1?Q?fqsWgNAKcH09BEzS2/cW821hXexNZz3d9JC4RhR2e7LHIsHTyFUj8nYH5R?=
- =?iso-8859-1?Q?FNAiA2uPxyi3Gvxze78tMzNCNXN5GAzZSTcWOBpQ2n+zrPZ6d5h0JMdD62?=
- =?iso-8859-1?Q?v2mDlLx/g/sX420ZxYyTyzDdU4G8vjhweEWbrkvI3fE7VZduwGpKCWra5E?=
- =?iso-8859-1?Q?1Isul20b8SME3aYiHYHqC9pEWGQ+XGGTPvkHPCrq2d+gKLJloa3h3Plmji?=
- =?iso-8859-1?Q?w/WdtRVnr1ZRSEJxHoSMTMjm1eNsgfm5MWQxnei3FW5yBWUs9j3RQNpLPD?=
- =?iso-8859-1?Q?GNZMrRbux863i1tmArZFRejT056/VvytOJKPKLyxh+J1TzGD7CzcD9Bfry?=
- =?iso-8859-1?Q?3UkC0dYH+Ggh/IM5RhF7PsKozAUHnm69ZAUpwk5QV3Y/ykCMqLFF+IobCi?=
- =?iso-8859-1?Q?uR7YtNkRFcFyfLgx4dxJ6/EvptBOtQ2sMRDVQcbYM41DKQYC1i+1uS7QsK?=
- =?iso-8859-1?Q?D+Oqgcm6es3ljWsdrhK5XW3cV1zR7kA183ladHOwA2DQc2rmdA5/zYrfXs?=
- =?iso-8859-1?Q?xx2rQOrHRll/drhILpWq0oj2zgjoVwtFRWtq7Sl/+UrK5biG6VGhWZhYph?=
- =?iso-8859-1?Q?JNFZ0HE4Q36E4DdBhQzNX3Tax8MbVfo+aZSkLhoTFuzXZF5BMtvxgetJ6v?=
- =?iso-8859-1?Q?SMQLy3ctouPPoWwKlDEscK27IbtE8vdcq1G1UcjA+xRLv1sECFbKCOgB17?=
- =?iso-8859-1?Q?YlUGh8oWpeNW42oUUfWgkpIiUfFvWiN8R7r86j6IGbu1H0ezfRNP8XhVdz?=
- =?iso-8859-1?Q?GXocxwmTVwx7CFsYulBrsYhmjqNouMTgB05d6u7M6C89xoAc15dQKFizji?=
- =?iso-8859-1?Q?Z06JOcW/ntwdHx2c7z4G3PrlNBZS+zEDR9FOMp1AhbGLwaUS9jZjm9A7cg?=
- =?iso-8859-1?Q?FF34V105J986AYWnxFNNywBBtc33KVGUfi4xENKWzKppOMazNCXuZncWuZ?=
- =?iso-8859-1?Q?//tJmbZEZ2JnavjzS8Xlr51tTVhAXabcg/bkRkE1UZVeM+WSayhy+Hct7Y?=
- =?iso-8859-1?Q?R4ezQZn2FbCMoh0HZrGa7Wq/rnu6UNgw3XVm/Jo9Gkc7p1xmMTKJc7mkMx?=
- =?iso-8859-1?Q?dlxgx+yIQXnkLHdZmAqxCg2PBLE+PaKB1IolvLoqSiDa3kjcmOHav1rMwL?=
- =?iso-8859-1?Q?/S2D390KmRLVuIWbgw2IyaPCn3EV84qb34/CEIY8r1RfQnY8fZ+yqjzg?=
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?yNg/HF2bA5pg4zF+tyTXEmm2Dzfjk8ChKEuuaSTXKjFJkTXtz+928ai7lt?=
+ =?iso-8859-1?Q?0nO6HQ8r1wBhAssP3aInjKzm0BnfWCXNetGhCSS8NjMjp4eEFeEgJh2VQm?=
+ =?iso-8859-1?Q?jEbdz+n4g8OrdjYU3vtvu7CLjv6unK+AYz83KgGGkxpO8WjiLAGJyQBbVd?=
+ =?iso-8859-1?Q?0Sin/iHipAGHL/xSF5svO1JCe2pKtB2Oh6TP8bDF4kvjDYtEbLTtKzOfIh?=
+ =?iso-8859-1?Q?285Pc2uxSP1fM8yKRaxpmS5LbjlWuRvwqTdO96ViFTKKuVKnQdprSVaVKz?=
+ =?iso-8859-1?Q?1Pl87c5rV08pCL17BCoQtlEQvXhj0ZdBe6zTlzh3cdtDKuYY7nVifJqErT?=
+ =?iso-8859-1?Q?/73ZlAzASzEB4Cxpa0Kw+ZttvtGYUTFB7+nmKxwpPiUxZNuRcD4niW7P4a?=
+ =?iso-8859-1?Q?fYdRJ86iIKHll9tECR0marZvMSiMXjR7PVmylWg/3GMs6rCoIEwJeH9J1+?=
+ =?iso-8859-1?Q?1kmcYQs3q8/nvmEiz2tT5AgoFeWddgQUWp9QojuXLTXEy1t5H1DaXAgEXF?=
+ =?iso-8859-1?Q?v7KYxiaFN6dWCB5+VjZBxnyiQ8odsowooAvJWgf4C5pBF+MKExLWR1I5qo?=
+ =?iso-8859-1?Q?jAcF/+xwa7rP1G+QKETxrBgk/twURiom/qbzYb+5BXG0k4B6p/l0zdp+Fb?=
+ =?iso-8859-1?Q?hCfDA9wSt6u/1rtwf1tDXgb7AdBhOH9iYDNt8Uzwzs/DWvEYCGUf9TT4kh?=
+ =?iso-8859-1?Q?oIhpUEP6aSGzRKe4nNvFd1qL6sgxH/vLD7bNg5DKViY5Of+ic6LRdfgvna?=
+ =?iso-8859-1?Q?IJ07pSKZEwpYXmKLI8E43gpMvfyjVZK1VjvyOe+ug0NQ6Tmgg1O9pYQ9nb?=
+ =?iso-8859-1?Q?96IkIsdiCKKYD+wpJFJcdwnaLmBogK7TbN5yPCik5cK1E6R7KWU4on0+a9?=
+ =?iso-8859-1?Q?jGvaCDAHFsajtJPi3nXOMmfc9J/VUpTX6mck/QccELXg4ewLOtbzRvhlQy?=
+ =?iso-8859-1?Q?413cvY8RKYFavArvQCo8FdFIgDJKbZZkjQNJpwuPVB2Sneh0F8gPWvPgQE?=
+ =?iso-8859-1?Q?d9sOURUDt5pb/jev7wZmT89iQRnFqqBMiCiW8+3uzfkjIEqmKPm1bdhb3S?=
+ =?iso-8859-1?Q?YM7l4DiLfWLKLuj+SOfmSzA4ACYK5C6bZIQqP/niZDorlMJw65ZAN2L37F?=
+ =?iso-8859-1?Q?o1vdU3NYQ6FsKvVOLC+Mo8UTAFEupaUCiFY7g8PHGE/78l5jnzQwAZfOXx?=
+ =?iso-8859-1?Q?9ZMOp07X6iCrIXvjqA1QjsqfeLWk20rYCPPh4MKWUoxK2sDOmeBbwXhizv?=
+ =?iso-8859-1?Q?JmOkyqmr9F9QeKigpDSrIrTX1ISdQXdaLQicedl/yIm3Ie67nJU4iQkgjG?=
+ =?iso-8859-1?Q?DRPECTOZsFxGBUdQz/uLxTZzZeKyjniFVRuIvXG31Y7LATjLhcpPNwL0Tw?=
+ =?iso-8859-1?Q?0ln8ut//b5xb2Qi3rCPwxMTKOiXktS107k9biOvirD4BkjDlF/LdZOdRGc?=
+ =?iso-8859-1?Q?89OgCVYMEpfMTJDAQmiJYtmlgA7bH4EgsvPZ0WN7hye3/dUcI9dwznSxTk?=
+ =?iso-8859-1?Q?ew4wDwtaOH6myERKMuXNqaKiQiFIYJ2plRgq3Q6vjZm9CYZBb7+UIcaggW?=
+ =?iso-8859-1?Q?0htOkMbf+Q5Lu7A/RMhtUfDfbl2mGCAkeidMYngN9tgM6OFpiTYRUgW1Jx?=
+ =?iso-8859-1?Q?fvb6NeMXeXS3QlveeGiE81P5Y5WMQEEE4L896Sf35sMMzhxNYNKTVZzA?=
  =?iso-8859-1?Q?=3D=3D?=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -110,16 +106,16 @@ MIME-Version: 1.0
 X-OriginatorOrg: fb.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17ec22d4-690c-4c20-4160-08d9fbf72d46
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2022 02:48:48.3759
+X-MS-Exchange-CrossTenant-Network-Message-Id: 06eeedda-6b43-48ab-8328-08d9fbf72e64
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2022 02:48:50.2687
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fhfU2FfpMJ3UHlICg8Q6he2OYd2vmLKryuMNrYkMUQOrhJ1Kxh2ovDId1gBPUED2
+X-MS-Exchange-CrossTenant-userprincipalname: y8fLZVKCOJIqo0plFqCNeb+hstSsR7OzCR4jBSqdvMAVl0SosGpzSZFTGVdCbbZG
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR15MB4441
-X-Proofpoint-GUID: aqKLqf5eAEmbRevizC1jSo2CPX44wvJ9
-X-Proofpoint-ORIG-GUID: aqKLqf5eAEmbRevizC1jSo2CPX44wvJ9
+X-Proofpoint-GUID: wZIFfGrcVLliphkimDSGJUrmjdV1u6fj
+X-Proofpoint-ORIG-GUID: wZIFfGrcVLliphkimDSGJUrmjdV1u6fj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-02_01,2022-02-26_01,2022-02-23_01
@@ -139,20 +135,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The new Makefile support via SUBSKELS and .skel.h-deps is a mixture
-of LINKED_SKELS and LSKELS. By definition subskeletons require multiple
-BPF object files to be linked together. However, generating the
-subskeleton only requires the library object file and not the final
-program object file.
+In the quest for ever more modularity, a new need has arisen - the ability =
+to
+access data associated with a BPF library from a corresponding userspace li=
+brary.
+The catch is that we don't want the userspace library to know about the str=
+ucture of the
+final BPF object that the BPF library is linked into.
 
-Signed-off-by: Delyan Kratunov <delyank@fb.com>
----
- tools/testing/selftests/bpf/Makefile          | 18 ++++++++-
- .../selftests/bpf/prog_tests/subskeleton.c    | 38 +++++++++++++++++++
- .../bpf/prog_tests/subskeleton_lib.c          | 29 ++++++++++++++
- .../selftests/bpf/progs/test_subskeleton.c    | 20 ++++++++++
- .../bpf/progs/test_subskeleton_lib.c          | 22 +++++++++++
- 5 files changed, 125 insertions(+), 2 deletions(-)
+In pursuit of this modularity, this patch series introduces *subskeletons.*
+Subskeletons are similar in use and design to skeletons with a couple of di=
+fferences:
+
+1. The generated storage types do not rely on contiguous storage for the li=
+brary's
+variables because they may be interspersed randomly throughout the final BP=
+F object's sections.
+
+2. Subskeletons do not own objects and instead require a loaded bpf_object*=
+ to
+be passed at runtime in order to be initialized. By extension, symbols are =
+resolved at
+runtime by parsing the final object's BTF. This has the interesting effect =
+that the same
+userspace code can interoperate with the library BPF code *linked into diff=
+erent final objects.*
+
+3. Currently, only globals are supported though the codegen can be extended=
+ to support
+non-owning pointers to maps, progs, links, etc.
+
+Areas that are RFC/TODO:
+* AFAICT, the ELF section names are the only way to find the correct maps i=
+n the final
+linked object. As a result, I've added bpf_map__section_name so bpftool can=
+ use the section
+names in the codegen. Do let me know if there's a better design I'm missing=
+.
+
+* The bpf_object__{open,destroy}_subskeleton approach mirrors the correspon=
+ding skeleton
+support functionality. Do let me know if there's anything that needs to exi=
+st in it to ensure
+forward compatibility. (Unfortunately, I don't see any way for subskeletons=
+ to work with older
+libbpf versions, so I'd rather introduce all the new APIs they may need in =
+a single version.)
+
+
+Delyan Kratunov (4):
+  libbpf: expose map elf section name
+  bpftool: add support for subskeletons
+  libbpf: add subskeleton scaffolding
+  selftests/bpf: test subskeleton functionality
+
+ tools/bpf/bpftool/gen.c                       | 322 +++++++++++++++++-
+ tools/lib/bpf/libbpf.c                        |  84 +++++
+ tools/lib/bpf/libbpf.h                        |  23 ++
+ tools/lib/bpf/libbpf.map                      |   7 +
+ tools/lib/bpf/libbpf_version.h                |   2 +-
+ tools/testing/selftests/bpf/Makefile          |  18 +-
+ .../selftests/bpf/prog_tests/subskeleton.c    |  38 +++
+ .../bpf/prog_tests/subskeleton_lib.c          |  29 ++
+ .../selftests/bpf/progs/test_subskeleton.c    |  20 ++
+ .../bpf/progs/test_subskeleton_lib.c          |  22 ++
+ 10 files changed, 553 insertions(+), 12 deletions(-)
  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton_lib.=
 c
@@ -160,214 +207,5 @@ c
  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.=
 c
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests=
-/bpf/Makefile
-index fe12b4f5fe20..57da63ba790b 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -326,19 +326,23 @@ endef
- SKEL_BLACKLIST :=3D btf__% test_pinning_invalid.c test_sk_assign.c
-=20
- LINKED_SKELS :=3D test_static_linked.skel.h linked_funcs.skel.h		\
--		linked_vars.skel.h linked_maps.skel.h
-+		linked_vars.skel.h linked_maps.skel.h test_subskeleton.skel.h
-+
-+SUBSKELS :=3D test_subskeleton_lib.skel.h
-=20
- LSKELS :=3D kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
- 	test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
- 	map_ptr_kern.c core_kern.c core_kern_overflow.c
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA :=3D test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_su=
-bprog.c
--SKEL_BLACKLIST +=3D $$(LSKELS)
-+SKEL_BLACKLIST +=3D $$(LSKELS) $$(SUBSKELS)
-=20
- test_static_linked.skel.h-deps :=3D test_static_linked1.o test_static_link=
-ed2.o
- linked_funcs.skel.h-deps :=3D linked_funcs1.o linked_funcs2.o
- linked_vars.skel.h-deps :=3D linked_vars1.o linked_vars2.o
- linked_maps.skel.h-deps :=3D linked_maps1.o linked_maps2.o
-+test_subskeleton.skel.h-deps :=3D test_subskeleton_lib.o test_subskeleton.=
-o
-+test_subskeleton_lib.skel.h-deps :=3D test_subskeleton_lib.o
-=20
- LINKED_BPF_SRCS :=3D $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($=
-(skel)-deps)))
-=20
-@@ -363,6 +367,7 @@ TRUNNER_BPF_SKELS :=3D $$(patsubst %.c,$$(TRUNNER_OUTPU=
-T)/%.skel.h,	\
- 				 $$(filter-out $(SKEL_BLACKLIST) $(LINKED_BPF_SRCS),\
- 					       $$(TRUNNER_BPF_SRCS)))
- TRUNNER_BPF_LSKELS :=3D $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(L=
-SKELS) $$(LSKELS_EXTRA))
-+TRUNNER_BPF_SUBSKELS :=3D $$(addprefix $$(TRUNNER_OUTPUT)/,$(SUBSKELS))
- TRUNNER_BPF_SKELS_LINKED :=3D $$(addprefix $$(TRUNNER_OUTPUT)/,$(LINKED_SK=
-ELS))
- TEST_GEN_FILES +=3D $$(TRUNNER_BPF_OBJS)
-=20
-@@ -405,6 +410,14 @@ $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRU=
-NNER_OUTPUT)
- 	$(Q)diff $$(<:.o=3D.linked2.o) $$(<:.o=3D.linked3.o)
- 	$(Q)$$(BPFTOOL) gen skeleton $$(<:.o=3D.linked3.o) name $$(notdir $$(<:.o=
-=3D)) > $$@
-=20
-+$(TRUNNER_BPF_SUBSKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
-+	$$(call msg,GEN-SUBSKEL,$(TRUNNER_BINARY),$$@)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=3D.linked1.o) $$<
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=3D.linked2.o) $$(<:.o=3D.linked1.o)
-+	$(Q)$$(BPFTOOL) gen object $$(<:.o=3D.linked3.o) $$(<:.o=3D.linked2.o)
-+	$(Q)diff $$(<:.o=3D.linked2.o) $$(<:.o=3D.linked3.o)
-+	$(Q)$$(BPFTOOL) gen subskeleton $$(<:.o=3D.linked3.o) name $$(notdir $$(<=
-:.o=3D)) > $$@
-+
- $(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
- 	$$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
- 	$(Q)$$(BPFTOOL) gen object $$(<:.o=3D.linked1.o) $$<
-@@ -441,6 +454,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:			\
- 		      $(TRUNNER_EXTRA_HDRS)				\
- 		      $(TRUNNER_BPF_OBJS)				\
- 		      $(TRUNNER_BPF_SKELS)				\
-+		      $(TRUNNER_BPF_SUBSKELS)				\
- 		      $(TRUNNER_BPF_LSKELS)				\
- 		      $(TRUNNER_BPF_SKELS_LINKED)			\
- 		      $$(BPFOBJ) | $(TRUNNER_OUTPUT)
-diff --git a/tools/testing/selftests/bpf/prog_tests/subskeleton.c b/tools/t=
-esting/selftests/bpf/prog_tests/subskeleton.c
-new file mode 100644
-index 000000000000..651aafc28e7f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/subskeleton.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+
-+#include <test_progs.h>
-+#include "test_subskeleton.skel.h"
-+
-+extern void subskeleton_lib_setup(struct bpf_object *obj);
-+extern int subskeleton_lib_subresult(struct bpf_object *obj);
-+
-+void test_subskeleton(void)
-+{
-+	int duration =3D 0, err, result;
-+	struct test_subskeleton *skel;
-+
-+	skel =3D test_subskeleton__open();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		return;
-+
-+	skel->rodata->rovar1 =3D 10;
-+
-+	err =3D test_subskeleton__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+
-+	subskeleton_lib_setup(skel->obj);
-+
-+	err =3D test_subskeleton__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	result =3D subskeleton_lib_subresult(skel->obj) * 10;
-+	ASSERT_EQ(skel->bss->out1, result, "unexpected calculation");
-+cleanup:
-+	test_subskeleton__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c b/too=
-ls/testing/selftests/bpf/prog_tests/subskeleton_lib.c
-new file mode 100644
-index 000000000000..f7f98b3febaf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
-+
-+#include <test_progs.h>
-+#include <bpf/libbpf.h>
-+
-+#include "test_subskeleton_lib.skel.h"
-+
-+void subskeleton_lib_setup(struct bpf_object *obj)
-+{
-+	struct test_subskeleton_lib *lib =3D test_subskeleton_lib__open(obj);
-+
-+	ASSERT_OK_PTR(lib, "open subskeleton");
-+
-+	*lib->data.var1 =3D 1;
-+	*lib->bss.var2 =3D 2;
-+	lib->bss.var3->var3_1 =3D 3;
-+	lib->bss.var3->var3_2 =3D 4;
-+}
-+
-+int subskeleton_lib_subresult(struct bpf_object *obj)
-+{
-+	struct test_subskeleton_lib *lib =3D test_subskeleton_lib__open(obj);
-+
-+	ASSERT_OK_PTR(lib, "open subskeleton");
-+
-+	ASSERT_EQ(*lib->bss.libout1, 1 + 2 + 3 + 4, "lib subresult");
-+	return *lib->bss.libout1;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_subskeleton.c b/tools/t=
-esting/selftests/bpf/progs/test_subskeleton.c
-new file mode 100644
-index 000000000000..bad3970718cb
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_subskeleton.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+const int rovar1;
-+int out1;
-+
-+extern int lib_routine(void);
-+
-+SEC("raw_tp/sys_enter")
-+int handler1(const void *ctx)
-+{
-+	out1 =3D lib_routine() * rovar1;
-+	return 0;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
-+int VERSION SEC("version") =3D 1;
-diff --git a/tools/testing/selftests/bpf/progs/test_subskeleton_lib.c b/too=
-ls/testing/selftests/bpf/progs/test_subskeleton_lib.c
-new file mode 100644
-index 000000000000..23c7f24997a7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+int var1 =3D -1;
-+int var2;
-+struct {
-+	int var3_1;
-+	__s64 var3_2;
-+} var3;
-+int libout1;
-+
-+int lib_routine(void)
-+{
-+	libout1 =3D  var1 + var2 + var3.var3_1 + var3.var3_2;
-+	return libout1;
-+}
-+
-+char LICENSE[] SEC("license") =3D "GPL";
-+int VERSION SEC("version") =3D 1;
---=20
-2.34.1
+--
+2.34.1=
