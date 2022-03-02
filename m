@@ -2,96 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7318A4CB151
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 22:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CA24CB15B
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 22:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235502AbiCBVbY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 16:31:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S235450AbiCBVfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 16:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235450AbiCBVbY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 16:31:24 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1205C12F4;
-        Wed,  2 Mar 2022 13:30:40 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id em10-20020a17090b014a00b001bc3071f921so5916725pjb.5;
-        Wed, 02 Mar 2022 13:30:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nyusHpS8EmL1VoCHpGz/00LI2WKioPnqvVUuwj+fb94=;
-        b=bCIPC+IGt237jnLACRmj4g3rZLB6nirJw+6cX9ZdxeUVtQq1hD3iEhzdPM7VS3351W
-         S/uwkeKqkhxUWBZuJuq1N+Uwhupzuxc+wz2/YaSFK8nTsFsTlYLjJPe7y/RyBmcx+XH9
-         RKK4crAnQLdX6by3X9bWGpD4H6KctF5i+/vPxo7zxYcLpa4AAiDLDYglyaAVziC1Jm1O
-         nn++D8xKXFFH1PcqydXYHCZl3C+q5pz7r5T6JS0Qh80Y6Pv/oyJee8VlhGFuAuvN1A+T
-         yf7ZiPwx9k7wKJDoynJJft9iYkjlB1us/UPNAUNr4XUUqZBGcuHyD3V73mg8agYJpxn7
-         lSCQ==
+        with ESMTP id S245307AbiCBVfd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 16:35:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7483E46B32
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 13:34:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646256887;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5WupCZ6aFmy9XKTwO56vm8BsGbMlpzmFfI9+PMks/QM=;
+        b=SCU86IDPU8JpUKNClxgaJJULkaHNWeI/OchJhR/YQFjBm/ED5an4KVM0SPbsbZf7TvBV/O
+        gM8a4pe5eanbKq3Hlo7aktuQCbuIgP+RoH+/yin5NnmkrFbScjTA6rDtC2HkPFFKVYSlu1
+        8wE4+1nbZYvpRMzQpeDgJ5h7Gpouhaw=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-564-ZBVQFBDPOrWDv3n4RvGU8Q-1; Wed, 02 Mar 2022 16:34:46 -0500
+X-MC-Unique: ZBVQFBDPOrWDv3n4RvGU8Q-1
+Received: by mail-ed1-f69.google.com with SMTP id f9-20020a0564021e8900b00412d0a6ef0dso1707465edf.11
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 13:34:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nyusHpS8EmL1VoCHpGz/00LI2WKioPnqvVUuwj+fb94=;
-        b=minvKuBSMqXgK/+N36nb/j9XENIPpllZhjjRaqCyTQF4amKO6ttuHPmfiEVLnXWNT1
-         vmBGcJ5LPxUcZEytqLjQoLN0nlL7kGcV+u4PTlQjTEwRKuce1SVd4U/t6MI/S1Y+O4Cm
-         MyJHwxYBMv3kSa8OdaXG34CNmSROeZQNASe1QtT4Q1+w9yx4WnZzV8+SsAVDoTU2ae7l
-         veXWnzxr1S43Un0Qhl4fJw/kDb16vm2rUW8QoOVOw3zDnCxEEz5LW14HeW+H47fYMc76
-         9Q8jtqZw85mIJFqwSn4/4cTA0U65/JFXvrCpbBE4Fz2uNawNsZWVIzveDMw3e4Tp+lNf
-         6o7w==
-X-Gm-Message-State: AOAM532dURwXayOwK9/D9v5WpWX4E4BbzLkW29kH0k9rx4UOuFzkF/Mm
-        MkQh9IdabZlWNncsveW+jhB3QU4+RILKwt9UIV4jJyTO
-X-Google-Smtp-Source: ABdhPJxb0WmJSWX+kj8ZQe0C71q4wm97dExymAGgXb1TROVss43903mrcR+0YFfKcZHgdY0feLuDga0xZ/2rbclEl1E=
-X-Received: by 2002:a17:903:32c1:b0:14f:8ba2:2326 with SMTP id
- i1-20020a17090332c100b0014f8ba22326mr32606268plr.34.1646256640328; Wed, 02
- Mar 2022 13:30:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-5-haoluo@google.com>
- <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com>
-In-Reply-To: <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Mar 2022 13:30:28 -0800
-Message-ID: <CAADnVQ+q0vF03cH8w0c50XMZU1yf_0UjZ+ZarQ_RqMQrVpOFPA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=5WupCZ6aFmy9XKTwO56vm8BsGbMlpzmFfI9+PMks/QM=;
+        b=PPtMsRdvtQDPTEGLaWlBLHPv6kOeE5aAkMZ3lObOkRxO1722191wappuSSwD1IK1K5
+         8EO5o2o0GQ6P7Ic3f+jdxkEvnLKxz/Lkl1VHfj2hxjqU1NeJ3fGKti0rEw+k8aZWIvn+
+         /S0SL4KE0mEO7wWZBFudAyaHoi+FmHVyDFuI7UIL45WXIRtrcR8EYQRVy4nj0NL21/0V
+         My3DT53sVUyfri2i01gX+SO5skoI4MA11nZBDfis7wbil1AJg/Cobg+4OHY2LGIXcn7h
+         xQ7QYJ83YXC3IX1zQjZ7b0sbS9FY7or5gwEyUzuiwjtzdD2IkoI4tHpF0di3+aLGpylu
+         F3Hw==
+X-Gm-Message-State: AOAM530ig3Z6K/XoYU6BVMtwds8B/chVdaxtY+1E5yF69YAgMB426Q6X
+        UT2FSJPrtE/JRDMjwtzddx4EZLp6nRC1jkPwpwk2IcLdhY9KBnAxjYLMRA5bc1AuTqldaavD9+l
+        BpmjoZhFZuqYN
+X-Received: by 2002:a17:907:3e19:b0:6da:86b9:acc with SMTP id hp25-20020a1709073e1900b006da86b90accmr1238124ejc.655.1646256884070;
+        Wed, 02 Mar 2022 13:34:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxcayKVAMFXQkrG7XvksKP1j+QP+060buGhwLWrqFAmSuFl4FDYRfszoadjhe+++DTe9PMNQg==
+X-Received: by 2002:a17:907:3e19:b0:6da:86b9:acc with SMTP id hp25-20020a1709073e1900b006da86b90accmr1238062ejc.655.1646256882831;
+        Wed, 02 Mar 2022 13:34:42 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id o7-20020a17090608c700b006cef23cf158sm31871eje.175.2022.03.02.13.34.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Mar 2022 13:34:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 44E70131929; Wed,  2 Mar 2022 22:34:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v8 2/5] Documentation/bpf: Add documentation
+ for BPF_PROG_RUN
+In-Reply-To: <20220302190440.t5cvezlkg7ynajam@ast-mbp.dhcp.thefacebook.com>
+References: <20220218175029.330224-1-toke@redhat.com>
+ <20220218175029.330224-3-toke@redhat.com>
+ <20220302190440.t5cvezlkg7ynajam@ast-mbp.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 02 Mar 2022 22:34:41 +0100
+Message-ID: <87bkyodoni.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 2, 2022 at 1:23 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 2/25/22 3:43 PM, Hao Luo wrote:
-> > Add a new type of bpf tracepoints: sleepable tracepoints, which allows
-> > the handler to make calls that may sleep. With sleepable tracepoints, a
-> > set of syscall helpers (which may sleep) may also be called from
-> > sleepable tracepoints.
->
-> There are some old discussions on sleepable tracepoints, maybe
-> worthwhile to take a look.
->
-> https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-Right. It's very much related, but obsolete too.
-We don't need any of that for sleeptable _raw_ tps.
-I prefer to stay with "sleepable" name as well to
-match the rest of the bpf sleepable code.
-In all cases it's faultable.
+> On Fri, Feb 18, 2022 at 06:50:26PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
+n wrote:
+>> This adds documentation for the BPF_PROG_RUN command; a short overview of
+>> the command itself, and a more verbose description of the "live packet"
+>> mode for XDP introduced in the previous commit.
+>
+> Overall the patch set looks great. The doc really helps.
+
+Great, thanks!
+
+> One nit below.
+>
+>> +- When running the program with multiple repetitions, the execution wil=
+l happen
+>> +  in batches, where the program is executed multiple times in a loop, t=
+he result
+>> +  is saved, and other actions (like redirecting the packet or passing i=
+t to the
+>> +  networking stack) will happen for the whole batch after the execution=
+. This is
+>> +  similar to how execution happens in driver-mode XDP for each hardware=
+ NAPI
+>> +  cycle. The batch size defaults to 64 packets (which is same as the NA=
+PI batch
+>> +  size), but the batch size can be specified by userspace through the
+>> +  ``batch_size`` parameter, up to a maximum of 256 packets.
+>
+> This paragraph is a bit confusing.
+> I've read it as the program can do only one kind of result per batch and
+> it will apply to the whole batch.
+> But the program can do XDP_PASS/REDIRECT in any order.
+> Can you make "the result is saved" a bit more clear?
+
+Yeah, re-reading it now, I see what you mean; will try to make it
+clearer...
+
+-Toke
+
