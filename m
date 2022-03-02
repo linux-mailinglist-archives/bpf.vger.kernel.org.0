@@ -2,78 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6384C9AE0
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 03:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B094C9AF7
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 03:10:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238990AbiCBCF5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Mar 2022 21:05:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S235514AbiCBCKt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Mar 2022 21:10:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbiCBCF4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Mar 2022 21:05:56 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1753D5F241;
-        Tue,  1 Mar 2022 18:05:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A7635615D3;
-        Wed,  2 Mar 2022 02:05:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8382AC340EE;
-        Wed,  2 Mar 2022 02:05:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646186714;
-        bh=5i8Y5+dBeeL89jeI9/AO5sLou/tQrxrcO+QtYbCCKUc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=f5R3K7LQpxliNR5Lci0onOHclKiqth1ZuwJE+DSpmjDqYk+O6stDhcRJ5MX65Zioe
-         NPTzlzD1OekD3KsA86i3EqwvToKi1cDnAUI4gVpVAd13m9DeT8al538iFv80R9/5bU
-         92oYPHZjTkfdOSoB6oyMevjeC3si3MaMeC7uCuqAzgg4OrpSlytHbenOyU4xV1S4vE
-         bGy5KhHr0o9kkzbkSpNxG+TVpVElHfkkgucfpNfLYLDNTxdkLmNTpGHj/6i/UX2NeO
-         fDGriUvcdbAh8sQwaF1U59Cu30oVk761nMWSG8RNn7GK/yK1TCXs+kFvJxUcAD9CDn
-         tla4rME8QEXYg==
-Date:   Tue, 1 Mar 2022 18:05:12 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Harold Huang <baymaxhuang@gmail.com>
-Cc:     netdev@vger.kernel.org, jasowang@redhat.com, edumazet@google.com,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        kvm@vger.kernel.org (open list:VIRTIO HOST (VHOST)),
-        virtualization@lists.linux-foundation.org (open list:VIRTIO HOST 
-        (VHOST)), bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
-Subject: Re: [PATCH net-next] tuntap: add sanity checks about msg_controllen
- in sendmsg
-Message-ID: <20220301180512.06f7f6dc@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20220301064314.2028737-1-baymaxhuang@gmail.com>
-References: <20220301064314.2028737-1-baymaxhuang@gmail.com>
+        with ESMTP id S230147AbiCBCKs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Mar 2022 21:10:48 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F753E5D8;
+        Tue,  1 Mar 2022 18:10:06 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4K7ctG1fmxzVfpF;
+        Wed,  2 Mar 2022 10:06:30 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 2 Mar 2022 10:10:03 +0800
+From:   Wang Yufen <wangyufen@huawei.com>
+To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <lmb@cloudflare.com>
+CC:     <davem@davemloft.net>, <edumazet@google.com>,
+        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
+        <ast@kernel.org>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Wang Yufen <wangyufen@huawei.com>
+Subject: [PATCH bpf-next v2 0/4] bpf, sockmap: Fix memleaks and issues of mem charge/uncharge
+Date:   Wed, 2 Mar 2022 10:27:51 +0800
+Message-ID: <20220302022755.3876705-1-wangyufen@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue,  1 Mar 2022 14:43:14 +0800 Harold Huang wrote:
-> In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
-> tun_sendmsg. Although we donot use msg_controllen in this path, we should
-> check msg_controllen to make sure the caller pass a valid msg_ctl.
-> 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
-> 
-> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
+This patchset fixes memleaks and incorrect charge/uncharge memory, these
+issues cause the following info:
 
-Would you mind resending the same patch? It looks like it depended on
-your other change so the build bot was unable to apply and test it.
+WARNING: CPU: 0 PID: 9202 at net/core/stream.c:205 sk_stream_kill_queues+0xc8/0xe0
+Call Trace:
+ <IRQ>
+ inet_csk_destroy_sock+0x55/0x110
+ tcp_rcv_state_process+0xe5f/0xe90
+ ? sk_filter_trim_cap+0x10d/0x230
+ ? tcp_v4_do_rcv+0x161/0x250
+ tcp_v4_do_rcv+0x161/0x250
+ tcp_v4_rcv+0xc3a/0xce0
+ ip_protocol_deliver_rcu+0x3d/0x230
+ ip_local_deliver_finish+0x54/0x60
+ ip_local_deliver+0xfd/0x110
+ ? ip_protocol_deliver_rcu+0x230/0x230
+ ip_rcv+0xd6/0x100
+ ? ip_local_deliver+0x110/0x110
+ __netif_receive_skb_one_core+0x85/0xa0
+ process_backlog+0xa4/0x160
+ __napi_poll+0x29/0x1b0
+ net_rx_action+0x287/0x300
+ __do_softirq+0xff/0x2fc
+ do_softirq+0x79/0x90
+ </IRQ>
+
+WARNING: CPU: 0 PID: 531 at net/ipv4/af_inet.c:154 inet_sock_destruct+0x175/0x1b0
+Call Trace:
+ <TASK>
+ __sk_destruct+0x24/0x1f0
+ sk_psock_destroy+0x19b/0x1c0
+ process_one_work+0x1b3/0x3c0
+ ? process_one_work+0x3c0/0x3c0
+ worker_thread+0x30/0x350
+ ? process_one_work+0x3c0/0x3c0
+ kthread+0xe6/0x110
+ ? kthread_complete_and_exit+0x20/0x20
+ ret_from_fork+0x22/0x30
+ </TASK>
+
+Changes since v1:
+-Update the commit message of patch #2, the error path is from ENOMEM not
+the ENOSPC.
+-Simply returning an error code when psock is null, as John Fastabend
+suggested.
+
+Wang Yufen (4):
+  bpf, sockmap: Fix memleak in sk_psock_queue_msg
+  bpf, sockmap: Fix memleak in tcp_bpf_sendmsg while sk msg is full
+  bpf, sockmap: Fix more uncharged while msg has more_data
+  bpf, sockmap: Fix double uncharge the mem of sk_msg
+
+ include/linux/skmsg.h | 13 ++++---------
+ net/ipv4/tcp_bpf.c    | 18 +++++++++++-------
+ 2 files changed, 15 insertions(+), 16 deletions(-)
+
+-- 
+2.25.1
+
