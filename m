@@ -2,229 +2,279 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0429C4CB135
-	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 22:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900134CB14B
+	for <lists+bpf@lfdr.de>; Wed,  2 Mar 2022 22:27:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235400AbiCBVYm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 16:24:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
+        id S245232AbiCBV2h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 16:28:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245078AbiCBVYm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 16:24:42 -0500
+        with ESMTP id S245290AbiCBV2g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 16:28:36 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6959C55750;
-        Wed,  2 Mar 2022 13:23:58 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222JMpq6011178;
-        Wed, 2 Mar 2022 13:23:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=GLYTafprSBdejc8WL16AaUVfJGZp/F/RCRQ4hj+7Pxc=;
- b=QuTjm091toUF+QbBzpnN0INGSpXWRY/YNEC6pV1NzjJcuof10pn3aMVo1ow6eCp681L7
- wn7azNP3ISJ2ktuQvsAdgytgF50Ob3SpZr2aoZKB80r6hfsgQ0F4cWSY1YkcGMV11xbF
- oW1jj8cc8FCgRLiYJWxHkTn6qftqsbSLf74= 
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2171.outbound.protection.outlook.com [104.47.73.171])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ejaqwtxw3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Mar 2022 13:23:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PtrwH31w2GLH42jvGZTz72QyFudkEXLpEPHiXL6CfhMhYhVoGI+MNTLGj7v4E8PG03Tn6izrQMFjvyLU16mQcBO4pqq/PoTpnKrfL4jNAducLCf/PzzAHfy0MHHXnzUvvkIm1s0sDOnhe7WedaLdRemMpwl/GtM5aN7WQ2s9LWOsoKcnDedmvcGSS+TAg1zlOGAPntreZnY4qKldA41kOtTBuw+LlBrdGdNig6ninXnVnoIl0I3rIEv7haO21aAzR+dzDTwiHnwjfnwkYEwPHANIpOsIb5vF0B9WzK2BYPi48ZKloOnWP9FUa8dxQbOUGiyVQA3ryj/Mu387FplXjw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GLYTafprSBdejc8WL16AaUVfJGZp/F/RCRQ4hj+7Pxc=;
- b=izBnaGDO+hD7cecq5RnvPbAR9JPHzWlm5fZkCfKNEb2Sk+EFjZQHqbbvCmcKnQh0xcVyY5xof1rUsvlnxYLNBn5EXdYolUhuuPcHiikBtpy/FKH4jNtJq2F3ks32xRHfvvT55cOwatdGxLHhohN6uA9MsBo2l91noyUEIi9hnHGrI2E0mC2pH4cd3nOlS23LZGiXyOXE8gkSrQ52ezFeT0R46Wgj2IXq+ouv1sLtQhWG+lzseXqoJFTIyH5Ne1zggZU3RGIfYKfdTtO8aDcD8d7qMTZ64TkV6ba6AxWXGbeiC3xRdLy0Nl2nKhl+d/tdsDW/fLjEuBBQN7OoHKWklw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR1501MB2173.namprd15.prod.outlook.com (2603:10b6:805:9::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.13; Wed, 2 Mar
- 2022 21:23:40 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.5017.027; Wed, 2 Mar 2022
- 21:23:40 +0000
-Message-ID: <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com>
-Date:   Wed, 2 Mar 2022 13:23:35 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
-Content-Language: en-US
-To:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20220225234339.2386398-1-haoluo@google.com>
- <20220225234339.2386398-5-haoluo@google.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220225234339.2386398-5-haoluo@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-ClientProxiedBy: CO2PR05CA0092.namprd05.prod.outlook.com
- (2603:10b6:104:1::18) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7442dde6-95b6-48e1-4430-08d9fc92eb9d
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2173:EE_
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB2173A1324AE4C8D5C3E2B151D3039@SN6PR1501MB2173.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2Y8Appe9o+bE/E2Cxn3GKYMAoIRRrqyPJvcWXQT4nn/yCUhGQrqzaHIHY3iXMyWTVsz/C4b5QSy1iFKYjP1FewGIQ+2d0luZu4mJYOjcBaX6A3jx/fRBLb79pg2V5vKDk7GArR42myoJwcyfKqZliKb+EU0Aev0ztCzvcE3Q5teG2xEctSCg0ciPxLE4RDACqX54ksegQRcj+31nHONx1NQmEydFImpbbVoOGQvtFrhDdMZy1jiUNp1FxbeVft8dk7+ZKuBTPcjlou+3oU/MsAPeD6yVdwubt5u6X1keYYlNJnKCYZKfFOlgnSt3vICJPQ7qL0YE+wc83M4BeqZn/Isut2L1Xlp+CK4t+GrolHWjQrzpNV9hLGj3JQCR9KsxQnr/NhAuUl4N9F6OfsNn0tHWo2+QE5yPGFlHHw2ZTLWMK67/b+vfckTLJ1pzqX3SgiPTYTunocFnD3Wgsz9kp+c2MzCtj266T01aVBROc2OSl/0UAegW2ZbjRswcK/FAYTzWmlU5M3igNUbbtWTOERoh/d8KWzUdm9nzgZ6z8XSpQtgarg7Brc/9TEBLdifASDKlUpNwAtKEjWr9OmP/oluwUI6J7GvuMttWU+zRDwqhQTUTgDzM2onDIu0P6Q5M7ECEBEu/N6r15F9ULuffhtbwYqRmhoJo8TYwIlFGqPpJLhcpveU8H16x3zDNTyZU2G2QOWSr9EZOFpYM7nJVIPHo+V6lNSQe9QLFCN/wQxdkdmMsRGmA6FzG1TkYFA7joa5BrK4B4g8wHMD9afAoooSIdImMB9OYrAhOYwDk3YqBQ8bj+8t6F66VBVUBcNQ06AdcEnK/TYU5/wgSt4zWbg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(508600001)(83380400001)(6486002)(2906002)(966005)(6512007)(6666004)(186003)(6506007)(52116002)(2616005)(31686004)(8676002)(31696002)(86362001)(7416002)(53546011)(4326008)(8936002)(66946007)(66476007)(66556008)(36756003)(54906003)(110136005)(316002)(5660300002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SThNZzd5a05hc3QydkphRTYxcnNyN1BGU3B6MCtNc2VhTjdWNE5nYU90bm9o?=
- =?utf-8?B?YVNpTnM0WGpkdUlvWkJJU3BlZmpmM1cyQVp5OU9RQmgrMzI1Z2Vaa25qZHNv?=
- =?utf-8?B?bjFGM1pHcWNpVy9vNE1hWlovZ09Sa1RFMDlzek5pN2M1MTBKeXZkUkVrQjdC?=
- =?utf-8?B?eDQ4VTJYQXJIaWRsVWZwTGtPamNzekVWaXFhamwwNTBvRFY3Z2RFR1NqY09S?=
- =?utf-8?B?WUZ0ZHVaQ1VDKytXVDJNMXNib3F2WWJ4MjlkcUlJWHAzNk8xYVdocG00Ukdo?=
- =?utf-8?B?c3ZERW1kVGQrcklWZGorYWJHTndzVmM4WTlNZFhCOVJvNHlKZDJyaU9tSFM2?=
- =?utf-8?B?eThGeGVvcUxYaXBDS0pSTXJwdE1iVkZRdGFXTjRZZlFhTFBJU09YMkU0UGJY?=
- =?utf-8?B?MTRCQWtVaThtWkRjT0YzUkRPcnQ2dmNQczlhQkxiQ1hhM0RqcGx5azR6SVlJ?=
- =?utf-8?B?eXdITGhUOGRxMTUvQTdSYktkVVc5UURCdGoxSDUzU2NkaTNVWDNNK2J3VWJZ?=
- =?utf-8?B?QkpVcXdZaityWDVWNXRVWTNLQU5jT3Z1Yjd0OUVYcERsZWQ1ODhnNlEzTmJn?=
- =?utf-8?B?L1pZQlFMR1BkKzBkQXJ5RUR6NC9LRnkxdHJEOEZyUVd3OCtod3k3VDFiTnNk?=
- =?utf-8?B?YlVodWs5ZkVHeGdWaHhDWnZjQngxSXo2ZGFBdTQ5cTRyM3VWSjBsYm56Vlg0?=
- =?utf-8?B?Q0x6UDNKd1E0MlZaeXdtWFoxZjB2WTgzZ1pRVkgxYktSTW9TTHZVQ3gydklm?=
- =?utf-8?B?SUZZZVVQVkp5L3lqL2Z3YlVlR3RsK3BmNzgyWUdjdm9scHVxc3VDalpBUGlB?=
- =?utf-8?B?R1dCKzhYQVM3Q2pYZG1vSUpjQ3RjV1locGZveVlxcXRqZUdkM2dWS1J2R285?=
- =?utf-8?B?Tm9hcVJZc3NGVE4rVFhJUG5QeXpHT3RDL3JvZlliZzU1b1RQN3VLQ3o4TDhh?=
- =?utf-8?B?bi9Xek4rL1RqRlJBbnp3M20zU0wwWkNuRHlHVCtGNE8rTC8xbUI4c3dST1k2?=
- =?utf-8?B?Q0tNcHdFYmVxRnRYUjgxeENmMEtkNzFyS05JTHdMOGhTUmZINkF0UGlJYkpl?=
- =?utf-8?B?ZHdlN2dtaVV0ZE8ySld6ajVYMndKYTdOb3g1eEZUQldOOS9uRnRTUGxiR1RC?=
- =?utf-8?B?Z1N1WnQvVzFTeEE3clhOU1NwbVI2bzRJR2lhSHUrMDVOSytFY1Z1NmQwWW9F?=
- =?utf-8?B?NTVvd0lva3dncGxNanUwNUUvdDU0SHVzT1lvNHNZanJmL3dXMXl2QlE4NTJQ?=
- =?utf-8?B?NE1LQWRDN1d4aUdtQlhqZ2VwQVhEOWtWZnpQMkxDYzZPYkluOHVpbm1aM09C?=
- =?utf-8?B?Z1dvVU42bWlEY3dWc253eVBjWmJrVHViV2NYNEVadE9XbHVtQnhEczhRbXlZ?=
- =?utf-8?B?OEhnVEhnaVlNMWp2RklQeTJkMG9yemx5UitiS296WU1NVG1RVTlsVDU2YXFy?=
- =?utf-8?B?SmpnaW9GeEwxSEtqUVp6OEpDQWh0T1R4SGZjRVIzdUMrSWVpcm85Vll0d01B?=
- =?utf-8?B?Y2FoSzJDcmQ2UVNIeW1EY1FucDJpTlB0ZnJVTzZuZ1NQZURIVlhsTlZMVkxK?=
- =?utf-8?B?MExvejc0bzlhVkFubGtlM1lMZ3dXaWtmTGVhZGoraEFRcE5vd1VOOXhTUmNj?=
- =?utf-8?B?MGlYL2JHeEtrNFp4NHMyNEsrTTQwL3lyL3hLNElzaWRHTWVqTlV4ejY5YkJM?=
- =?utf-8?B?UUF0M2U3QUN4eVVoejhES242OG1TNnJRdk5xakRmN2I0NjNSeXFabDhsM09J?=
- =?utf-8?B?c3Q5dVVyNDRQblhBOEZ0UFpzR2Yvam5HZHZrTk5LTFh2SVRqbzVackRndm1Q?=
- =?utf-8?B?ZUpKUU81L24vRkJZeHY0ZUUyRko0Nmlsd0IyOXd3bks4SlJJOGN6YTdrRHFk?=
- =?utf-8?B?YWRYKzFLQTh3czBBQ1dtN3FqRi9jbWNXdmFNMUU2MTNhMjNmZ0J3WW1YWEds?=
- =?utf-8?B?dlduUzdwMUtjdmR0a0Y5QTBJVW5NQk1SelRybG1iNDVGN3RIdWNHVlNFZjdP?=
- =?utf-8?B?cisxUWVXUUtRVm4zRlRSZERnS2VYMkJoWGlWUXNXNFJXc1BReGlGbEUrQUhZ?=
- =?utf-8?B?Y2FFWDRWenRteEwvODdyOVlwUG1xV2FFM1lNMCtiRTRmclJYVy94cVpOQndl?=
- =?utf-8?B?c0JCNzRsdTJKNkxHdkFEa1Zrelc3OEFjTEFFa00waHFxcjNRVGd6L1FnZnRn?=
- =?utf-8?B?TEE9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7442dde6-95b6-48e1-4430-08d9fc92eb9d
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2022 21:23:39.9419
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OMd3gdz8b7n9UqSbYvwi5RxRaRFQbfr8WFJoMN7DKXnO8lZbmN1PhtjPli+0pFX1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2173
-X-Proofpoint-GUID: r9TFOuyMGduukZ8fTqjirddvVW5tueyp
-X-Proofpoint-ORIG-GUID: r9TFOuyMGduukZ8fTqjirddvVW5tueyp
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C924443ED5
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 13:27:51 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 222JMkLX000437
+        for <bpf@vger.kernel.org>; Wed, 2 Mar 2022 13:27:51 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=kpQ4gmwbrChFMiE9c2+r/yPMeROptpRN+ErlXjcWUuU=;
+ b=cleZkmNB+BpQ2XOde6nwZF9bjlHF4OKAmdAVfQDOgwP/zk+rUwSmTp9fXTKwCmD2SNAw
+ M/0Z8TbixSukMbnV+CWBSw1rYjRLARaZpZrIeapbzfQVyqwAlyhlbfq/rz+bo4zB2dtW
+ 5rWji6MOfABJP4c8a7s78Gq/ztOCoVwmLeg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ej7jgw5u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 13:27:51 -0800
+Received: from twshared29821.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 2 Mar 2022 13:27:48 -0800
+Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
+        id B23113A15985; Wed,  2 Mar 2022 13:27:41 -0800 (PST)
+From:   Mykola Lysenko <mykolal@fb.com>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
+        <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>, Mykola Lysenko <mykolal@fb.com>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH v3 bpf-next] Improve BPF test stability (related to perf events and scheduling)
+Date:   Wed, 2 Mar 2022 13:27:35 -0800
+Message-ID: <20220302212735.3412041-1-mykolal@fb.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: gRMafdL6QV27Iuwj4Fbz3glheN42RiFG
+X-Proofpoint-ORIG-GUID: gRMafdL6QV27Iuwj4Fbz3glheN42RiFG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-02_12,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 impostorscore=0
- malwarescore=0 clxscore=1015 priorityscore=1501 bulkscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 adultscore=0 lowpriorityscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2203020089
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 malwarescore=0
+ impostorscore=0 clxscore=1015 bulkscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2203020089
 X-FB-Internal: deliver
 X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+In send_signal, replace sleep with dummy cpu intensive computation
+to increase probability of child process being scheduled. Add few
+more asserts.
 
+In find_vma, reduce sample_freq as higher values may be rejected in
+some qemu setups, remove usleep and increase length of cpu intensive
+computation.
 
-On 2/25/22 3:43 PM, Hao Luo wrote:
-> Add a new type of bpf tracepoints: sleepable tracepoints, which allows
-> the handler to make calls that may sleep. With sleepable tracepoints, a
-> set of syscall helpers (which may sleep) may also be called from
-> sleepable tracepoints.
+In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
+higher values may be rejected in some qemu setups
 
-There are some old discussions on sleepable tracepoints, maybe
-worthwhile to take a look.
+Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+ .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
+ .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
+ .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
+ .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
+ .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
+ .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
+ 6 files changed, 25 insertions(+), 15 deletions(-)
 
-https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/=
+testing/selftests/bpf/prog_tests/bpf_cookie.c
+index cd10df6cd0fc..0612e79a9281 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+@@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+ 	attr.type =3D PERF_TYPE_SOFTWARE;
+ 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
+ 	attr.freq =3D 1;
+-	attr.sample_freq =3D 4000;
++	attr.sample_freq =3D 1000;
+ 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
+OEXEC);
+ 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+ 		goto cleanup;
+diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
+sting/selftests/bpf/prog_tests/find_vma.c
+index b74b3c0c555a..7cf4feb6464c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
++++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+@@ -30,12 +30,20 @@ static int open_pe(void)
+ 	attr.type =3D PERF_TYPE_HARDWARE;
+ 	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
+ 	attr.freq =3D 1;
+-	attr.sample_freq =3D 4000;
++	attr.sample_freq =3D 1000;
+ 	pfd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CL=
+OEXEC);
+=20
+ 	return pfd >=3D 0 ? pfd : -errno;
+ }
+=20
++static bool find_vma_pe_condition(struct find_vma *skel)
++{
++	return skel->bss->found_vm_exec =3D=3D 0 ||
++		skel->data->find_addr_ret !=3D 0 ||
++		skel->data->find_zero_ret =3D=3D -1 ||
++		strcmp(skel->bss->d_iname, "test_progs") !=3D 0;
++}
++
+ static void test_find_vma_pe(struct find_vma *skel)
+ {
+ 	struct bpf_link *link =3D NULL;
+@@ -57,7 +65,7 @@ static void test_find_vma_pe(struct find_vma *skel)
+ 	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+ 		goto cleanup;
+=20
+-	for (i =3D 0; i < 1000000; ++i)
++	for (i =3D 0; i < 1000000000 && find_vma_pe_condition(skel); ++i)
+ 		++j;
+=20
+ 	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
+@@ -108,7 +116,6 @@ void serial_test_find_vma(void)
+ 	skel->bss->addr =3D (__u64)(uintptr_t)test_find_vma_pe;
+=20
+ 	test_find_vma_pe(skel);
+-	usleep(100000); /* allow the irq_work to finish */
+ 	test_find_vma_kprobe(skel);
+=20
+ 	find_vma__destroy(skel);
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_branches.c b/too=
+ls/testing/selftests/bpf/prog_tests/perf_branches.c
+index 12c4f45cee1a..bc24f83339d6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/perf_branches.c
++++ b/tools/testing/selftests/bpf/prog_tests/perf_branches.c
+@@ -110,7 +110,7 @@ static void test_perf_branches_hw(void)
+ 	attr.type =3D PERF_TYPE_HARDWARE;
+ 	attr.config =3D PERF_COUNT_HW_CPU_CYCLES;
+ 	attr.freq =3D 1;
+-	attr.sample_freq =3D 4000;
++	attr.sample_freq =3D 1000;
+ 	attr.sample_type =3D PERF_SAMPLE_BRANCH_STACK;
+ 	attr.branch_sample_type =3D PERF_SAMPLE_BRANCH_USER | PERF_SAMPLE_BRANC=
+H_ANY;
+ 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
+OEXEC);
+@@ -151,7 +151,7 @@ static void test_perf_branches_no_hw(void)
+ 	attr.type =3D PERF_TYPE_SOFTWARE;
+ 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
+ 	attr.freq =3D 1;
+-	attr.sample_freq =3D 4000;
++	attr.sample_freq =3D 1000;
+ 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
+OEXEC);
+ 	if (CHECK(pfd < 0, "perf_event_open", "err %d\n", pfd))
+ 		return;
+diff --git a/tools/testing/selftests/bpf/prog_tests/perf_link.c b/tools/t=
+esting/selftests/bpf/prog_tests/perf_link.c
+index ede07344f264..224eba6fef2e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/perf_link.c
++++ b/tools/testing/selftests/bpf/prog_tests/perf_link.c
+@@ -39,7 +39,7 @@ void serial_test_perf_link(void)
+ 	attr.type =3D PERF_TYPE_SOFTWARE;
+ 	attr.config =3D PERF_COUNT_SW_CPU_CLOCK;
+ 	attr.freq =3D 1;
+-	attr.sample_freq =3D 4000;
++	attr.sample_freq =3D 1000;
+ 	pfd =3D syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CL=
+OEXEC);
+ 	if (!ASSERT_GE(pfd, 0, "perf_fd"))
+ 		goto cleanup;
+diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools=
+/testing/selftests/bpf/prog_tests/send_signal.c
+index 776916b61c40..def50f1c5c31 100644
+--- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
++++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
+@@ -4,11 +4,11 @@
+ #include <sys/resource.h>
+ #include "test_send_signal_kern.skel.h"
+=20
+-int sigusr1_received =3D 0;
++static int sigusr1_received;
+=20
+ static void sigusr1_handler(int signum)
+ {
+-	sigusr1_received++;
++	sigusr1_received =3D 1;
+ }
+=20
+ static void test_send_signal_common(struct perf_event_attr *attr,
+@@ -40,9 +40,10 @@ static void test_send_signal_common(struct perf_event_=
+attr *attr,
+=20
+ 	if (pid =3D=3D 0) {
+ 		int old_prio;
++		volatile int j =3D 0;
+=20
+ 		/* install signal handler and notify parent */
+-		signal(SIGUSR1, sigusr1_handler);
++		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
+=20
+ 		close(pipe_c2p[0]); /* close read */
+ 		close(pipe_p2c[1]); /* close write */
+@@ -63,9 +64,11 @@ static void test_send_signal_common(struct perf_event_=
+attr *attr,
+ 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
+=20
+ 		/* wait a little for signal handler */
+-		sleep(1);
++		for (int i =3D 0; i < 100000000 && !sigusr1_received; i++)
++			j /=3D i + 1;
+=20
+ 		buf[0] =3D sigusr1_received ? '2' : '0';
++		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
+ 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
+=20
+ 		/* wait for parent notification and exit */
+@@ -93,7 +96,7 @@ static void test_send_signal_common(struct perf_event_a=
+ttr *attr,
+ 			goto destroy_skel;
+ 		}
+ 	} else {
+-		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1,
++		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
+ 				 -1 /* group id */, 0 /* flags */);
+ 		if (!ASSERT_GE(pmu_fd, 0, "perf_event_open")) {
+ 			err =3D -1;
+@@ -110,9 +113,9 @@ static void test_send_signal_common(struct perf_event=
+_attr *attr,
+ 	ASSERT_EQ(read(pipe_c2p[0], buf, 1), 1, "pipe_read");
+=20
+ 	/* trigger the bpf send_signal */
+-	skel->bss->pid =3D pid;
+-	skel->bss->sig =3D SIGUSR1;
+ 	skel->bss->signal_thread =3D signal_thread;
++	skel->bss->sig =3D SIGUSR1;
++	skel->bss->pid =3D pid;
+=20
+ 	/* notify child that bpf program can send_signal now */
+ 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
+diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/=
+tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+index b4233d3efac2..92354cd72044 100644
+--- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
+@@ -10,7 +10,7 @@ static __always_inline int bpf_send_signal_test(void *c=
+tx)
+ {
+ 	int ret;
+=20
+-	if (status !=3D 0 || sig =3D=3D 0 || pid =3D=3D 0)
++	if (status !=3D 0 || pid =3D=3D 0)
+ 		return 0;
+=20
+ 	if ((bpf_get_current_pid_tgid() >> 32) =3D=3D pid) {
+--=20
+2.30.2
 
-> 
-> In the following patches, we will whitelist some tracepoints to be
-> sleepable.
-> 
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->   include/linux/bpf.h             | 10 +++++++-
->   include/linux/tracepoint-defs.h |  1 +
->   include/trace/bpf_probe.h       | 22 ++++++++++++++----
->   kernel/bpf/syscall.c            | 41 +++++++++++++++++++++++----------
->   kernel/trace/bpf_trace.c        |  5 ++++
->   5 files changed, 61 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index c36eeced3838..759ade7b24b3 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1810,6 +1810,9 @@ struct bpf_prog *bpf_prog_by_id(u32 id);
->   struct bpf_link *bpf_link_by_id(u32 id);
->   
->   const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id func_id);
-> +const struct bpf_func_proto *
-> +tracing_prog_syscall_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog);
-> +
->   void bpf_task_storage_free(struct task_struct *task);
->   bool bpf_prog_has_kfunc_call(const struct bpf_prog *prog);
->   const struct btf_func_model *
-> @@ -1822,7 +1825,6 @@ struct bpf_core_ctx {
->   
->   int bpf_core_apply(struct bpf_core_ctx *ctx, const struct bpf_core_relo *relo,
->   		   int relo_idx, void *insn);
-> -
->   #else /* !CONFIG_BPF_SYSCALL */
->   static inline struct bpf_prog *bpf_prog_get(u32 ufd)
->   {
-> @@ -2011,6 +2013,12 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->   	return NULL;
->   }
->   
-> +static inline struct bpf_func_proto *
-> +tracing_prog_syscall_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> +{
-> +	return NULL;
-> +}
-> +
->   static inline void bpf_task_storage_free(struct task_struct *task)
->   {
->   }
-> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-> index e7c2276be33e..c73c7ab3680e 100644
-> --- a/include/linux/tracepoint-defs.h
-> +++ b/include/linux/tracepoint-defs.h
-> @@ -51,6 +51,7 @@ struct bpf_raw_event_map {
->   	void			*bpf_func;
->   	u32			num_args;
->   	u32			writable_size;
-> +	u32			sleepable;
->   } __aligned(32);
->   
->   /*
-[...]
