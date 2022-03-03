@@ -2,183 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 178114CB539
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 04:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976554CB5A2
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 04:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbiCCDFx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 22:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53764 "EHLO
+        id S229540AbiCCEAI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 23:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231924AbiCCDFx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 22:05:53 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E964D24D
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 19:05:08 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t14so3354103pgr.3
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 19:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=aV1tl+iqj7SLdK+mIoSDEKSKSu1znNwYK3wlOHn9KoU=;
-        b=HCVyx7xZOTP/yai7zk0odvz+VlpH+g0jgGyyfPDCX0tdgqi3UA+fg+uKtVJmadWuMw
-         g2jW4R3Mbtz6VhSnJLSmjgrRilyZzjbFvFAgBPXMPy/yiJlUI8sQ6A0zXyBrK4TZKydn
-         al8hy2kxz266tsNeiVXbWuROI3P/nYqYydaac6PG6TSTwMHyrybnvV3hh3BghDJP/2Bm
-         dhlBdQT+NlE/+tINxy/gzDbRZmL+/GCLOonU/UDJmvEzWzm+SS3dOnFdp3L1nFl0kNrs
-         HZNPDiarE4ENPgX9XB11YxofmQFakdmoFkMTQk4WkG/AZD0kZNIi8WTCn+UDMvh3GcFk
-         CamA==
+        with ESMTP id S229532AbiCCEAH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 23:00:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5D3F15720C
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 19:59:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646279961;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JLyYEFbzKazGajr/Z7eLhFc2iDs9PD4fdRAFMZ5Qomk=;
+        b=Xo6PY89Xap6AfFQ2FRhWBcsxBlF9R/3gwYuVBP8FX9aeBV2jbKiMy5IQM363sOdr8y7719
+        HD6NwEO77xHRf5j4fSEcxgh4OmfCsqKXIf/aUPodKIIenfoCuomJDrLjDd6AErdz6/PhTU
+        /7ER9uadbB/BbsI3W+HmkOp2AU+I+AY=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-531-NEtA_ilcPzGEdwHYozYgwA-1; Wed, 02 Mar 2022 22:59:20 -0500
+X-MC-Unique: NEtA_ilcPzGEdwHYozYgwA-1
+Received: by mail-pg1-f198.google.com with SMTP id x4-20020a63b344000000b00375662f4a7bso2114286pgt.15
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 19:59:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=aV1tl+iqj7SLdK+mIoSDEKSKSu1znNwYK3wlOHn9KoU=;
-        b=fVkOvB4xBQFbrwPP2K6UQQAIC7lcvp9a0chq3GecD9kBnMem43Xh8BFNsdPvCE0IAH
-         7UfNFcND5675lPTG5tHZAKMsv9UdRCarZqXIdzlGQecO9H+l9H5vd9vqoWPZhxmUOlwa
-         MJ5qWmhq7vdJfTJf/rJ988Z9YRzLsdwoNV2lP290YNlYVvz+IXG7Mtz0NOsoayQExAs8
-         OJaFQCqJhLMjoxALPTNFzIzRuY5n+sTrdROehox7wUm+uHtFGAxeNwFHjJDWGvJC3zgZ
-         7Y7UNSzne28/4KDCWXOEq53hrAZumBA0a4kl2T88kPkC3WGY7MHmIeocXH5lsKrhIFU+
-         JBiQ==
-X-Gm-Message-State: AOAM531T8NNbGMezn8wQzt1HfkAvXreECsGBUCmwQZJy9dgV3zld6jS9
-        xuVq8x/y/zhIo6l29KOlNfAtwbjc4UY=
-X-Google-Smtp-Source: ABdhPJwyRq7o9hVK0cC8oUhrU0rOr4nR+8jkFM+fx7Xh0DbZ0btb4mYKWchurL+G0x2CQcbm+G5tAw==
-X-Received: by 2002:a63:3481:0:b0:372:f3e7:6f8c with SMTP id b123-20020a633481000000b00372f3e76f8cmr28773482pga.336.1646276708175;
-        Wed, 02 Mar 2022 19:05:08 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id x23-20020a63fe57000000b0036490068f12sm470445pgj.90.2022.03.02.19.05.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 19:05:07 -0800 (PST)
-Date:   Thu, 3 Mar 2022 08:35:05 +0530
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org
-Subject: Re: BTF type tags not emitted properly when using macros
-Message-ID: <20220303030505.vpjcucrdyczat7mt@apollo.legion>
-References: <20220220071333.sltv4jrwniool2qy@apollo.legion>
- <11b93216-2592-adfa-1a0b-d8d870144f90@fb.com>
- <6bbb282c-2944-5e22-0869-af1905fa6ced@fb.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=JLyYEFbzKazGajr/Z7eLhFc2iDs9PD4fdRAFMZ5Qomk=;
+        b=WlciI9ZeFnh5LlEViB6qL9//vMNqFHalj6dEnIgvjCkFaoN0Hh4jWfbRduyUGdweZT
+         95UACq6ODYT4+oKBiK8847XdEhzu+L38OByei5xsau5fitmSZru+v1cOsLrOEdS0DdJ9
+         a78S5ps9ePuu4p0vDv7QrTOgEQOF5iC+TZ5lgmfzo/1fZrTNKxz3VhwGoWdY3r5cW2sf
+         7hUG/2atsaSqsoWUCZaiP/7Cztrg3yQ+u3J+QdXVlPJTBfhMmOj+dv0+2GYFtIuQTWtJ
+         QfI5WGII1qpcyAF0z6+WdRC31DnyK3joYLs7mylYaZYCMXIX6Y/4f9zTVY0uoP+8NXxg
+         kjhA==
+X-Gm-Message-State: AOAM531DggllFfHhJKGGtcb97gyYgGWHBIwALHrH3MnRqr3cqXhwPJJL
+        5ss3svhvAz8bchNWP4v8xU2NHGCU3DcR3TIEnfoArvwXak0/dhJ6H8yeh1ZP7HEVgYOoTyfsDlR
+        AMpaoC96Hg4oD
+X-Received: by 2002:a05:6a00:188f:b0:4e1:a253:850c with SMTP id x15-20020a056a00188f00b004e1a253850cmr36329978pfh.61.1646279959009;
+        Wed, 02 Mar 2022 19:59:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyZQZtiyN/+eVQIh36yLquJvhShQxa3L1DH/1+/nasdtDZX5ozJfyYacmVoMm56LpbVlK/3mQ==
+X-Received: by 2002:a05:6a00:188f:b0:4e1:a253:850c with SMTP id x15-20020a056a00188f00b004e1a253850cmr36329956pfh.61.1646279958700;
+        Wed, 02 Mar 2022 19:59:18 -0800 (PST)
+Received: from [10.72.13.250] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id u11-20020a056a00124b00b004e11307f8cdsm662501pfi.86.2022.03.02.19.59.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Mar 2022 19:59:18 -0800 (PST)
+Message-ID: <276dfdf4-2ee5-b054-4e34-c5c32b99d6d7@redhat.com>
+Date:   Thu, 3 Mar 2022 11:59:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.1
+Subject: Re: [PATCH net-next] tuntap: add sanity checks about msg_controllen
+ in sendmsg
+Content-Language: en-US
+To:     Harold Huang <baymaxhuang@gmail.com>, netdev@vger.kernel.org
+Cc:     edumazet@google.com, Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:VIRTIO HOST (VHOST)" <kvm@vger.kernel.org>,
+        "open list:VIRTIO HOST (VHOST)" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:XDP (eXpress Data Path)" <bpf@vger.kernel.org>
+References: <20220301064314.2028737-1-baymaxhuang@gmail.com>
+ <20220303022441.383865-1-baymaxhuang@gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220303022441.383865-1-baymaxhuang@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6bbb282c-2944-5e22-0869-af1905fa6ced@fb.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 12:25:58PM IST, Yonghong Song wrote:
->
->
-> On 2/20/22 11:22 AM, Yonghong Song wrote:
-> >
-> >
-> > On 2/19/22 11:13 PM, Kumar Kartikeya Dwivedi wrote:
-> > > Hi list,
-> > >
-> > > I noticed another problem in LLVM HEAD wrt BTF type tags.
-> > >
-> > > When I have a file like bad.c:
-> > >
-> > >   ; cat bad.c
-> > > #define __kptr __attribute__((btf_type_tag("btf_id")))
-> > > #define __kptr_ref __kptr __attribute__((btf_type_tag("ref")))
-> > > #define __kptr_percpu __kptr __attribute__((btf_type_tag("percpu")))
-> > > #define __kptr_user __kptr __attribute__((btf_type_tag("user")))
-> > >
-> > > struct map_value {
-> > >          int __kptr *a;
-> > >          int __kptr_ref *b;
-> > >          int __kptr_percpu *c;
-> > >          int __kptr_user *d;
-> > > };
-> > >
-> > > struct map_value *func(void);
-> > >
-> > > int main(void)
-> > > {
-> > >          struct map_value *p = func();
-> > >          return *p->a + *p->b + *p->c + *p->d;
-> > > }
-> > >
-> > > All tags are not emitted to BTF (neither are they there in
-> > > llvm-dwarfdump output):
-> > >
-> > >   ; ./src/linux/kptr-map/tools/bpf/bpftool/bpftool btf dump file
-> > > bad.o format raw
-> > > [1] FUNC_PROTO '(anon)' ret_type_id=2 vlen=0
-> > > [2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED
-> > > [3] FUNC 'main' type_id=1 linkage=global
-> > > [4] FUNC_PROTO '(anon)' ret_type_id=5 vlen=0
-> > > [5] PTR '(anon)' type_id=6
-> > > [6] STRUCT 'map_value' size=32 vlen=4
-> > >          'a' type_id=8 bits_offset=0
-> > >          'b' type_id=11 bits_offset=64
-> > >          'c' type_id=11 bits_offset=128
-> > >          'd' type_id=11 bits_offset=192
-> > > [7] TYPE_TAG 'btf_id' type_id=2
-> > > [8] PTR '(anon)' type_id=7
-> > > [9] TYPE_TAG 'btf_id' type_id=2
-> > > [10] TYPE_TAG 'ref' type_id=9
-> > > [11] PTR '(anon)' type_id=10
-> > > [12] FUNC 'func' type_id=4 linkage=extern
-> > >
-> > > Notice that only btf_id (__kptr) and btf_id + ref (__kptr_ref) are
-> > > emitted
-> > > properly, and then rest of members use type_id=11, instead of
-> > > emitting more type
-> > > tags.
-> >
-> > Thanks for reporting. I think clang frontend may have bugs in handling
-> > nested macros. Will debug this.
->
-> I just submitted a clang patch to fix this issue.
-> See https://reviews.llvm.org/D120296
->
-> It should fix your above test case like
->   struct map_value {
->           int __kptr *a;
->           int __kptr_ref *b;
->           int __kptr_percpu *c;
->           int __kptr_user *d;
->   };
-> or
->   struct map_value {
->           int __attribute__((btf_type_tag("btf_id"))) *a;
->           int __attribute__((btf_type_tag("btf_id")))
-> __attribute__((btf_type_tag("ref"))) *b;
->           ...
->   }
-> etc.
->
-> It should work with the pure or mix of macro-defined-attribute and/or
-> raw-attribute. Please give a try. Thanks!
->
 
-Thanks, and sorry for the delay, I just gave it a spin today, and it seems to
-fix the problem.
+åœ¨ 2022/3/3 ä¸Šåˆ10:24, Harold Huang å†™é“:
+> In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
+> tun_sendmsg. Although we donot use msg_controllen in this path, we should
+> check msg_controllen to make sure the caller pass a valid msg_ctl.
+>
+> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
+>
+> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+> Suggested-by: Jason Wang <jasowang@redhat.com>
+> Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
 
-> >
-> > >
-> > > When I use a mix of macro and direct attributes, or just attributes,
-> > > it does work:
-> > >
-> > > ; cat good.c
-> > > #define __kptr __attribute__((btf_type_tag("btf_id")))
-> > >
-> > > struct map_value {
-> > >          int __kptr *a;
-> > >          int __kptr __attribute__((btf_type_tag("ref"))) *b;
-> > >          int __kptr __attribute__((btf_type_tag("percpu"))) *c;
-> > >          int __kptr __attribute__((btf_type_tag("user"))) *d;
-> > > };
-> > >
-> [...]
 
---
-Kartikeya
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+> ---
+>   drivers/net/tap.c   | 3 ++-
+>   drivers/net/tun.c   | 3 ++-
+>   drivers/vhost/net.c | 1 +
+>   3 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/tap.c b/drivers/net/tap.c
+> index 8e3a28ba6b28..ba2ef5437e16 100644
+> --- a/drivers/net/tap.c
+> +++ b/drivers/net/tap.c
+> @@ -1198,7 +1198,8 @@ static int tap_sendmsg(struct socket *sock, struct msghdr *m,
+>   	struct xdp_buff *xdp;
+>   	int i;
+>   
+> -	if (ctl && (ctl->type == TUN_MSG_PTR)) {
+> +	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
+> +	    ctl && ctl->type == TUN_MSG_PTR) {
+>   		for (i = 0; i < ctl->num; i++) {
+>   			xdp = &((struct xdp_buff *)ctl->ptr)[i];
+>   			tap_get_user_xdp(q, xdp);
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 969ea69fd29d..2a0d8a5d7aec 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -2501,7 +2501,8 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>   	if (!tun)
+>   		return -EBADFD;
+>   
+> -	if (ctl && (ctl->type == TUN_MSG_PTR)) {
+> +	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
+> +	    ctl && ctl->type == TUN_MSG_PTR) {
+>   		struct tun_page tpage;
+>   		int n = ctl->num;
+>   		int flush = 0, queued = 0;
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 28ef323882fb..792ab5f23647 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -473,6 +473,7 @@ static void vhost_tx_batch(struct vhost_net *net,
+>   		goto signal_used;
+>   
+>   	msghdr->msg_control = &ctl;
+> +	msghdr->msg_controllen = sizeof(ctl);
+>   	err = sock->ops->sendmsg(sock, msghdr, 0);
+>   	if (unlikely(err < 0)) {
+>   		vq_err(&nvq->vq, "Fail to batch sending packets\n");
+
