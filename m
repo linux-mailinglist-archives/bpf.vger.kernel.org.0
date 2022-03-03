@@ -2,145 +2,166 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F028C4CC510
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 19:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CAA4CC533
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 19:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234407AbiCCSZl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 13:25:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55768 "EHLO
+        id S233280AbiCCS3N (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 13:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232674AbiCCSZk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 13:25:40 -0500
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DA41A39E0
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 10:24:53 -0800 (PST)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.1.2/8.16.1.2) with ESMTP id 223Bb310020062;
-        Thu, 3 Mar 2022 10:24:40 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=qUhQt76tourk2z2zKn8NCCPGhksyLfJ210bF6K5nyu8=;
- b=QdUMlXyVHSCp/fuId5nkTFIuM/pWitlOp11Lpl2dgIT8+uxE62wzlSQHYhY2sMoJa4lZ
- FCNYz35HuG4Wdo5+k8KzoFNhMm+ugXbjAdDLcXIece0eRl+hZ9DVOn3BWrTfPIKl7K4J
- HfbFxobrQ7yPnj8aEPM5lQQMSweE0+As9Bo= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2176.outbound.protection.outlook.com [104.47.59.176])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3eja5t24p6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 03 Mar 2022 10:24:39 -0800
+        with ESMTP id S233030AbiCCS3M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 13:29:12 -0500
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BEA2DEA14;
+        Thu,  3 Mar 2022 10:28:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646332106; x=1677868106;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/POH554UqH5EK9J6Qj68x77+/6tPDKf3dbqdjd6Kf0c=;
+  b=FeAlH3qmjgPKsbT8XG15YwpWshj8nYhYlwsVLnOqr5x+wvZdmQTG587N
+   RsCmfyPNo2OrzO4o6VXw2eZBwE8lkruDS2h3GcSPonIY6VZn9wrfd/1SI
+   GT+qh3r0fOZRwgvPdnMnfc/6kV0T6k7Px/xN19atVZ9TCN0kirasXgTtx
+   O5OD20GCOR7Wmtym5bsNNKHtr6Kmr2CconIIvxp9azXKxqdkqslSoE+6P
+   6XjItiSTyLp1m7TU/200zsAmHWa8VkwxBNo6XhnbJynu1OIMFEKgXIiGV
+   0rYqzC67GpUUbVRfjONiUDNizFKvEoEy2T8KOWrNGgSywS5yfFSOSCCkT
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10275"; a="253701577"
+X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
+   d="scan'208";a="253701577"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2022 10:25:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,151,1643702400"; 
+   d="scan'208";a="710030062"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga005.jf.intel.com with ESMTP; 03 Mar 2022 10:25:23 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Thu, 3 Mar 2022 10:25:22 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21 via Frontend Transport; Thu, 3 Mar 2022 10:25:22 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.177)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2308.21; Thu, 3 Mar 2022 10:25:20 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gWTqdUATjBDythQJC48a04k2dNAzSAR9vGVU4/SK9L5RGs1VqYUFSXvmjNQWHNLtiExLNIqGDwYt06a5Iute3di2GkPhzN5uToPwhoddcWRlo4fKIzTmRjlVs/MK63iwW3OFpKf/OPz2kWh2WixTyjGBcAuFaRMYqfkR98q1nyfgHcwHQdvBKiBRxU/6IieS7WvsY2yY7ujOnwHLTXvfX30oOZ1x8VYT8It0H7OXdCbv3FtC3zB52reHgO86eCjg7h0x5sgEkkCZf9SadtwIGF+2thwRVWsLTWPnI52EFmEnthOtHYzfQ8VvTZdxJ3fb/iBAlaJkgvksjap5D9Ei/A==
+ b=OaCC1hjvBVp3C5/IJd0Ny0uXWa92HzEJhB+E0W9FQfQ/2/nx6W+pUVGSMxcxKtUI71dCzytbqhy2ltdZllmf+Ey/7v4SApRjviLWXy09Et9Pq0YM4wwuXhE0GIlPACLx9wmmKRj4ct0fuCBqohLvmpSsmEMjMNC06pyVbSWY6WN7OidXkFgbHMyHCoeoraQvLM+YKc2EDRl0/1+Ga+SdHU7Kmb5zv0uxPSrqEBxc8y9SHwNepSCtL01SBo7jtBnVi38p2CO0QZ4mjnqjwcMWMJ0onaz6mQNA0lbruqCrB1DO9P8BuUitwiAydRVNSHXmMut8RIH31geB0ApzYQFw3w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qUhQt76tourk2z2zKn8NCCPGhksyLfJ210bF6K5nyu8=;
- b=h2X77g/crlAKVWJBL0XHBTw8yn3Oh3XA5gzLeLSoHIgnI3GnC5gNF5O+aHgNRG0mu0bky3po5P4Lcef5xd6fLCZLrIF39H0iMxCnJ2FW+yZDdsZE6ctpYeBJMouez03U2HqQyf+WbgXsCUaiYbEQbGlnGFrOs3GKcrQERTPzIV8Jn99OP5iTdaYkmrQXOrHIKIU8DiaAJkQUvBdsFGnXKvhRtVPrCPodRG5ksVJD+DUbE0xly31/cGgCnfONNDNbJwrg/1x9h/r1pLT416FVZkEdh5MypjN9PNUsGx1Gkyr2PIQNgBLpMWxBllfXJpusTpcyRQY9PdDwrDzCADoJLg==
+ bh=4dgjPmDOt4iUkUne3G5/1EBwkzS93QG1TXy84Ptwdjo=;
+ b=PRuoZvLq20396hXhSMEWxBSDLGBwEyBV5A+fHkRHrQDYwPYGuN/0LbMVpnalQSyTWuabiFHcxiU/Zk1z5qXrQ7S2kGZ4oeL1q6O/bbWMXmP9cBNPX3RtLTAkdwBGq2nckchc95C4HzLfjG21z8gECcA5Z5lxIVbivk5WWMOr/Pqk6B4WRKoYL5f7MCTq/uifpmwyMYE+Ijw8PbnaNRTOX5sqg+FqRiOoTQcppnqcURzmIUJySDCkz+Mhc5o3my5CV35nZdC0v+Xy8YKYpphkR+p/g9svChXn40vacVyvJPaZEB7Rl8P0Xiju0fmi1nggLN6JbAL5SLofxQaINKSDVQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by DM5PR15MB1307.namprd15.prod.outlook.com (2603:10b6:3:b6::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5017.26; Thu, 3 Mar 2022 18:24:38 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.5017.029; Thu, 3 Mar 2022
- 18:24:32 +0000
-Message-ID: <47222739-81a0-c1ca-fdaa-82a2e0b67ee4@fb.com>
-Date:   Thu, 3 Mar 2022 10:24:28 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.1
-Subject: Re: [RFC PATCH v4] bpftool: Add bpf_cookie to link output
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN6PR11MB3229.namprd11.prod.outlook.com (2603:10b6:805:ba::28)
+ by MW3PR11MB4651.namprd11.prod.outlook.com (2603:10b6:303:2c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.25; Thu, 3 Mar
+ 2022 18:25:18 +0000
+Received: from SN6PR11MB3229.namprd11.prod.outlook.com
+ ([fe80::d484:c3ff:3689:fe81]) by SN6PR11MB3229.namprd11.prod.outlook.com
+ ([fe80::d484:c3ff:3689:fe81%6]) with mapi id 15.20.5017.027; Thu, 3 Mar 2022
+ 18:25:17 +0000
+Message-ID: <9d9250be-0bdc-07c8-ee53-53041cd11b33@intel.com>
+Date:   Thu, 3 Mar 2022 10:25:13 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH net 2/2] ice: avoid XDP checks in ice_clean_tx_irq()
 Content-Language: en-US
-To:     Dmitry Dolgov <9erthalion6@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, quentin@isovalent.com
-References: <20220225152802.20957-1-9erthalion6@gmail.com>
- <a646e7d3-b4aa-3a00-013e-4fc9531c2d83@fb.com>
- <20220303162010.qcz7dovfg736h4ed@erthalion.local>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220303162010.qcz7dovfg736h4ed@erthalion.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
+        <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
+        <andrii@kernel.org>, <kpsingh@kernel.org>, <kafai@fb.com>,
+        <yhs@fb.com>, <songliubraving@fb.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kiran Bhandare <kiranx.bhandare@intel.com>
+References: <20220302175928.4129098-1-anthony.l.nguyen@intel.com>
+ <20220302175928.4129098-3-anthony.l.nguyen@intel.com>
+ <20220303081901.3e811507@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+ <20220303082848.64804e7a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+In-Reply-To: <20220303082848.64804e7a@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P221CA0011.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+X-ClientProxiedBy: CO1PR15CA0076.namprd15.prod.outlook.com
+ (2603:10b6:101:20::20) To SN6PR11MB3229.namprd11.prod.outlook.com
+ (2603:10b6:805:ba::28)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e7d6e310-65c6-4889-86cb-08d9fd431033
-X-MS-TrafficTypeDiagnostic: DM5PR15MB1307:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR15MB130728E6D9FB0B85389FE823D3049@DM5PR15MB1307.namprd15.prod.outlook.com>
-X-FB-Source: Internal
+X-MS-Office365-Filtering-Correlation-Id: 6da5da4f-4e37-41dd-60ef-08d9fd432afb
+X-MS-TrafficTypeDiagnostic: MW3PR11MB4651:EE_
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-Microsoft-Antispam-PRVS: <MW3PR11MB4651DFCBED8F62FBCAEC5766C6049@MW3PR11MB4651.namprd11.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Nh89zIXyFl6KHZYyHuL6ji6Ag0gIlqR+OFMWB/onL8/nd8yIBM8WyQ0rGtVYiBOflcektrKG9U5R6quNxs2PY3vWEIGRmhOk7DqAX1PbJCiYV67GHjlyYxIS87aP4oM6riQ/Piv4cHfdu2usWmSYcA80MdRPYRtiVtp5SIfVF2zrLY3da3e01F3gYecG737Z0h9OB4nUAhaN53/n6YZY951clKkWAkIJLsXQd+pDGfAztSJG8Bpy70yh4vMZ+6qyVa58mJdMBFh9uoE6MIv9d0Ud1IG8evsSufiR0mzfNXEZzrMj/WqSdt+be67c+qo43O10U8RWcqL/mAXcEbLaZ1g70hG7snnwNT9AxAsgs9FSGiSvtZpcX9LivtGhS6BhQOL1X4hUDjfeu8JnIpIs1Lhwd+YVac27sUlya6T5BGhkcuIO6Wow/2oVex0zUZv354lYHvZdPSdT//GuHXmrNYMLNPf6AQR4wZawRGLKo/dWQ2acirsTXlt0c2v7JyRntAnZ0DNl2Pc+Mh8WSGvGaPBj2KBma/xAYAN+G+2IqCvA0m9T9ouOwm9oxmDvZUVk96nsXWAVTfGHwPtKsqTfbTK9tVB77dik9Rk66vRE60AeRezzJHIcz2T3QfdscuIVxsy2aPpliC9X6fENQ+xZgbMJjFhYDk+H9J0RA708HzRfMS82CzEjgSEsdPkhACbQ/DypvifX8W1cOcHYxQFHacDybCI5kSBP6qxOqfbpPcSLka8gKmRDlgmVe/GZBla3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(186003)(66946007)(66556008)(66476007)(52116002)(53546011)(6512007)(6506007)(6666004)(6486002)(31696002)(2616005)(31686004)(6916009)(316002)(8676002)(4326008)(8936002)(36756003)(5660300002)(38100700002)(83380400001)(2906002)(86362001)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: aUAa0v4e2rv9gK5TUIDaE3B7lLkQyNxqqWkDSEFG/5FO8sL1ONYKSNsBzN47OLb+4oj9vVkHPRxAgrrVCa8/gcvEXFCNhQSGqVe/otTCEt5rfiqf94ciV9LXwp8X3SgGh75+0z8vZjinirjIWhP71p1zfjNF9YNyw7Ij9lTmhLuPK7m49cjHSqXvHQBkk/SePCiJ6RGTlgczT144O3VFBqHya51qyozlxLwjlUAPKqvnBNeuzixDtUFZnSuyla8f4Aw7M2uQDHKHuGnXIlL1vqvpqriW+sd1eI2TGgAGuHTdYdANdsQU6EA7PhAjNdMo4ueMJx1vxj9MeUKTWJKTuHQ+gOJxTB77rUQXfUIrqM+uppzloEshGQqizQfxMYel2Wf+AgxasWwa1X8DdFVBn6oCZ/dMmQ+bF7vfdef9+URyUJqeU3dT1F/I0YH0YE4XOqPMH/UpLGYN+8Y2ITQynwRjQdwrRW91bRdD71m3j+NWLPzIKSbnesAk+CNh+2EQmKPC6uCXbEr7JdIjhnf3pQpFOVezCaHGUZm2uJSIgq7atJI6kuNSMBh4ZHF6/91V529kzJukDbzsI3qqx+et8F9a+O+nsmncsRm6qc3yzHSu8wGYA5DL+ynqTlTdZXNFMLUiK3BYMZEWjCzt1APPPFJ1zpPzSNnx3G/lc6TuYVrLNkqo3tA6NC+RVrQEWlTiAp4eLvXNv+KmwqJOT0xOW+RA0/Dsb7QmzIFHLtt3HDXMnOS4F3rlxGvBeysiiL8X
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3229.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66946007)(8676002)(36756003)(4326008)(66476007)(5660300002)(66556008)(8936002)(6486002)(53546011)(83380400001)(7416002)(508600001)(38100700002)(86362001)(31686004)(2906002)(316002)(31696002)(82960400001)(107886003)(54906003)(6916009)(6506007)(186003)(2616005)(26005)(6666004)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?enh2c3RwMzNNbUcybUMvbFBoWmkxVlNhYjlGQW12d0ZnMlhzRGNnUENuM3c5?=
- =?utf-8?B?Mmk4b2N1YTZTV05yNm5DMDkxdEMyMGk4RFVhaHNCeFVzTDNJelJvdW1kNVB0?=
- =?utf-8?B?N2JWTjF3N2ZEUTl4RElIMEJqWVE4MzdicVpOZ2djTlFwejZDbFFMcW1aUTJj?=
- =?utf-8?B?UzdpbzZqenVxVzFsTE80V1RscE4wd2NtTEhPT2g3VDltQTVEWTJ0OWJ4KzVF?=
- =?utf-8?B?RUc5Y0I1NTdrR2FSemFLaWgyTDVpRCtGR0RiNnhEUmNPV3ByQWJRTHpVS3Z5?=
- =?utf-8?B?ekhPWnR2d1lTb1lFZnlGZFhZam55NnR0QXFxaFhvUm5FcmRGSGw4QmdQTURR?=
- =?utf-8?B?czlOVDY2RFo5TUxtbnE3bDE1OHUwbDgyOEplODVGMjVucHNXNUJXQkJCMkpv?=
- =?utf-8?B?MFprTk9TNVQya0ZhOWNCWDE5SVdpTkZYbGZIUmtUaXBFMHpmdnpUWDF4Vkl1?=
- =?utf-8?B?bEVNdzE2MldZNkxyVWZDczFyWDk4WU1sY2FvRFBOSEVMTGNaSWY0UHBtQk96?=
- =?utf-8?B?WHpRTnRrSVljdlN6YU5DQ3ZxSjcwbkd5UTVnckhtZ3B2WXA1RkFmSUpKL2Rs?=
- =?utf-8?B?WDBBcjN4dWVSSk1nYU1tcXdpam5qdE9nUTNUVC9pVWVKVnF2RlRpMHFmeVJt?=
- =?utf-8?B?Q29sUm5jeHRjbjY5dnE4cm9sbE1CZ0pac2M5UUVBaXhTalNTNXRkZGlFd2hv?=
- =?utf-8?B?Nlc1WEFYc0ZHaDFUdmpoUmpVNzFzeDU5VHdFS1o1eDdmNnVMNXlHbEVHNnV4?=
- =?utf-8?B?VWNnYTNFcFJZbnRMdDF2WXZLUXNEZnhmaTRFaWdJSGRLL3V4UzNxZGhOM1E0?=
- =?utf-8?B?N1BRMERLT3pNb25LVnB3bTNTeGV4MjIrTk9RU2FpcWE4TzRMWFhueVNIaXZD?=
- =?utf-8?B?TUtwcmVVZkZDc1J2V0tGdkh6cnlNNys3a2J6b3ZIeWVUNDQyVWM4bzdZZ1Zy?=
- =?utf-8?B?bGg0Sm42b0lhalNSYXVNYkJxQ3hDcUpCbzFHRmdGekx5cFlSYWdzUjgwRDJQ?=
- =?utf-8?B?MllDdnQwS09UYXRQQk5veWVNTVFLOUZlTFBVeW9zcnRBVzJZamM0Y1FhNThR?=
- =?utf-8?B?MWZ6SXJTcGtKMXBwSnpiYUg1NmhiZHRiQTZsdmVEUWpBNFYwKy9RUFlKZEVP?=
- =?utf-8?B?SmlnYTBsMnFGK05EcDk0MWFtSzlOcDhJdkt4TDRUbzBwaXEzYml1M1hTVC9H?=
- =?utf-8?B?VjBDL1lvc0lDSW5CV1ozWW0yZGNLL09mZ0NLNHMyVGNhSFU4RnZmdnoyVUFw?=
- =?utf-8?B?U3VnNCsrakxWaVVhcHphQVcyMUljalE3NkdTZG5NR2lvMGdJK1Z5NkE0YnNE?=
- =?utf-8?B?cXdBV3FBbU5qUVdMazI2ZnFaVUhJUTl0WUoyMzM5MXR3S2V4S1VBbHZBaVh4?=
- =?utf-8?B?WEFxcTB1ZXFRNldEbGg4YUxMajJSUDUzVjJiVFRTK3Y3aWJaeVEyOWhxWUpj?=
- =?utf-8?B?QTBnRWpnSDNzYTdEYWc3ZEp0THlhNnRvZXhCZTdnZHVUN1JERGZtWWhkRktw?=
- =?utf-8?B?UlNmYUdKYTloZWt6RUFWSndmZW0zdk5xS1RqSnJtbHdSM01kUnpYekRCeXBi?=
- =?utf-8?B?cXgxbzdRd2RyWDE3RHlJOEo3alN6NURXZjhWWGhwTWNmdDJKZDg3K211dEF3?=
- =?utf-8?B?a2VxUXR0S1hJbFp3WTdvT2luYWgzcDZ4RGdyWE92OW9jYkd1K3BnYWdVaWdP?=
- =?utf-8?B?aUVrVXRBUE44UUdSMWh5OWg3VnFTS0NIcks5SnZuYzcrU01PQVh1TVVKOTlk?=
- =?utf-8?B?dGp6ZkNrWHhtNTZOcHEvUHJjME9pamtYOFk1a05Nd00vU0JRK3dyTW91VTEv?=
- =?utf-8?B?T2NEV3M3bHVwazBMaU1YTGkyWTJxek03L2dsNnJITlF3d0pQbEt1MUNBUjk0?=
- =?utf-8?B?eUN2NkxJeGRvSUFsbXZndEFyWHRlVDhqL3NWUVZPOXlOMndSYWMzZk92ZlBB?=
- =?utf-8?B?cFIvOTB6VDFybDBCWkR6MStDZlNtMmQ2bEdjRThkWmtPYno3dG1jV3V6MGlQ?=
- =?utf-8?B?WENnTGRuRld3THhJMEF1TU54Qmh3bGVBMk95NDJETmJFdWo1UlBWdHVyK2c4?=
- =?utf-8?B?eHdGRVI3N3ExanlCM1lkSWlXekx5bVZyNzBFZlBNbUpzWE5PWEx1aERReE4r?=
- =?utf-8?B?Y0lIVCtmK0Y4MEVabWFnZTJrcS9yWlNpcDVlR3dxek1OUWxobEVrLzlkT3B4?=
- =?utf-8?B?aHc9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e7d6e310-65c6-4889-86cb-08d9fd431033
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eFM4RVBkdkE5QlVmUUl2Y2tuS1o2anlQclowaDdza0ZoVFFPRmRrWUM0T0Ro?=
+ =?utf-8?B?V2J0d3FrK09Za0M4R1VkUnZoaklmdi9PN1RiZVJ0aFBWanl0Q0pxQVZ2aS9W?=
+ =?utf-8?B?Uys1R0pOcWsvOHZ2T1NSYjV3bHVUZkNjbXVSKzdBSXAwMFRNb1V0Y21KT1Zh?=
+ =?utf-8?B?RHRnWld5Q3dHQWpmeEVsUlRqd0crelM2QjJsU3M3SWxsRSthRFhsQ0F4ZEc0?=
+ =?utf-8?B?VW9OVzcxOWgvTlh5QTV6OC83Wm95MWp0ZmtVKzNMRFBCdFlTNXMyT3lHWXZI?=
+ =?utf-8?B?VFNDYTkxVk83L3h0YkpQT09EeGU2R2d0NjFndnNGajBvc01jZ3k4VFIyTTZw?=
+ =?utf-8?B?NnZoc3RoZXV0YW92b0hoUCthNXV1c0VjUE9mVWpIcVIxZEpkVlFDTkhsYmJW?=
+ =?utf-8?B?RWNnNEYyS3BDcmU1cjVSVnBCaW1NemRZZlhHc3RxcG4vL3RzODM2eTh4MUtG?=
+ =?utf-8?B?T05UbXBqUTdSUDA0aWpLdUtjNW0zdTNpbVV6VDdWSlZvaitBaFJhN2xRTHB0?=
+ =?utf-8?B?Y0Fyb29MbEFNVFR1emFGVHBya0dwUTVGc1hKNXVLQ2Y3aU14U1VZNFZZMHlD?=
+ =?utf-8?B?T3l5eDFmYU5WbmFaSEtETlBGQjBBc0t1M3ZZcVJSTVlVY21oQ0Zwa0FVa0lN?=
+ =?utf-8?B?UmtWL3Bsc3VZZ2MwZm5PY0UwSXpmUkJobjNqdGQ3QXFGQkpReFUvN2NXODNW?=
+ =?utf-8?B?MktPakZVcUtnZ2xhM3gwajEwNlFjSlFPL3lrYlpzckVCbStxZGFQc3pSUk9S?=
+ =?utf-8?B?b2hJRGRlWmZnYW9wcTJGeW9vcC8reUdkbllMbmpodXV5RUJpUXVzb2tYc2VB?=
+ =?utf-8?B?SXJuTnFBTFo3dFhoOTl5cUtDV0taS2ZvbkZFV1QwRTZXTmlaYXJwUU5acmFP?=
+ =?utf-8?B?c1cyY2pUaGtjdHVxbVI5OTJUNnRmRUFqZnBFWitnS2QvQlhJWDQyZlY0YjBZ?=
+ =?utf-8?B?aUp2Vk9jZE4rM0pINlA0QzJkMFhHU3hTK1lpZllyQ1NPZ0tHem1yY1lNc2ps?=
+ =?utf-8?B?ZjRqTzNEUHJMdnk4Z2h6THNIMnVxcjJMUVovV0Q2RmlibGVlV1FTSkdJUWk1?=
+ =?utf-8?B?VUdDRWIrZDFDT2NuMmU2SXBFWlhqay9uY0J6ZHVkQWgxelg1K2ZxN3RiMG9J?=
+ =?utf-8?B?K3I1dEJZVnZJYllrRmthQXBEdDFXQzlROVFjV1lMOWM0TkZBNUo3RHF1L1My?=
+ =?utf-8?B?THdrbEdDVVlYM1dSVGZ5WGlwcks2cFgxNm5HNk52MVJSZjVXMlpQdWJUTm5S?=
+ =?utf-8?B?V1J1T3gyR0ZDMnpubS9EZDVDWnFjWDdnSzBWVVJicEQ3T0xEYldobFdDWTUr?=
+ =?utf-8?B?alhuM0Z0NVVNNkNpVk5BakZrU3dmUmxtVllHSHhjT3UrYkNTVmlYL1E0Ukh4?=
+ =?utf-8?B?ZUNoZi9pT2ErbWxZdGRqVVJXOVRycU5jY0J0Z0NwM3NDYTF2OC91bFpqSEFM?=
+ =?utf-8?B?V0d0OXBnWVYyVjRMT3pkRHA3cEt3WEVpdHAxVWdiR3NWR1hzNm9QL0U0Nk1L?=
+ =?utf-8?B?RUNjSVEwZFRUWGlqNndCSnJta3VjRDJMVlBxTmlBV0FFMFZsUVBPb2tIYjN5?=
+ =?utf-8?B?OU9BZXgveis2SHg5ZVZRRS94QkZjY2Nwemlrd3FQbk5oZTltUXBsdnZlRzlj?=
+ =?utf-8?B?UWl6dkRjVlJCTVQrdERjUWxWbUw3U1lLczJIemtTMGZleElIUnU2eTFDY1R3?=
+ =?utf-8?B?OVk2eVpwcSttWTlkeWxadG1MbFp2d2NQL3laRy9RSDlIWGREeE9WWHRBcWJ1?=
+ =?utf-8?B?Tlk0c01IOUxrb2NtYkhNdC8xSDNJYmVPSGYyK3h0TC9KRk95QzVFNEh4VWxj?=
+ =?utf-8?B?SXZDZTUwcmlmK3RHU1kwbThSQ1oxRHVJdXRwMEhvZHRvM1FyQmF1cUhZUUtN?=
+ =?utf-8?B?S2hKTXdaTG5WajRhSnozRFpPZjUxei9RNzQramh4SFgwRnRQeWFvZkc5WDZp?=
+ =?utf-8?B?a1VpWVB1VGZJZkxtS2NQdkZ5WEw5czBHZXJQSC85aWx1Q3hmSGcyTjNGWXJE?=
+ =?utf-8?B?WE5zM2NRS0VBdDhMK3hLc3Y2WG9Cd2tLbGg3aTZqL04vbnhpZXcwYlNaUEgw?=
+ =?utf-8?B?YjFpZDB2L2IzOFZuKzZQK3VHSTZoK3ZRYkEwSDliQXBGeFQ1ZXFFTGM0RGtU?=
+ =?utf-8?B?SUE0TkV2TUVzVDNlcTcwbWdweVdwZk1iZlBVeHlsWldFM01keE5KZHhaV0tN?=
+ =?utf-8?B?OExObGNtT2dKRVN4Wmg1SjJ4ZTNSb3owL2o1K0dUczJFU25HQVE5cFB1Z2dw?=
+ =?utf-8?Q?X23OCjG+93WWG30OeCYq83mdujbXS4+IcnZYonPe+s=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6da5da4f-4e37-41dd-60ef-08d9fd432afb
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3229.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2022 18:24:32.9209
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2022 18:25:17.6951
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3+oXrRgBVO3NgD2DyR0ZmkLc6vJO1PPnHq9vbDtQAEObbYwTaxIKsQ+1W+xkvOjT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1307
-X-Proofpoint-ORIG-GUID: usW1DnS4bwuVw-523Y2bMl3Xb5GTtHWR
-X-Proofpoint-GUID: usW1DnS4bwuVw-523Y2bMl3Xb5GTtHWR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-03_09,2022-02-26_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 impostorscore=0
- malwarescore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2203030084
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-MS-Exchange-CrossTenant-UserPrincipalName: fTy2B+5sfwtQjEKxQ57O8SGYrTM5WjhmtNXMqHsJMxinVMAVcmeLp+4sClwnkrrbafARZFumMUYmvD8OpZ/7xOKsXv9ud6Xt2izBlBslUVk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4651
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -148,56 +169,26 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
+On 3/3/2022 8:28 AM, Jakub Kicinski wrote:
+> On Thu, 3 Mar 2022 08:19:01 -0800 Jakub Kicinski wrote:
+>> On Wed,  2 Mar 2022 09:59:28 -0800 Tony Nguyen wrote:
+>>> From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>>>
+>>> Commit 9610bd988df9 ("ice: optimize XDP_TX workloads") introduced Tx IRQ
+>>> cleaning routine dedicated for XDP rings. Currently it is impossible to
+>>> call ice_clean_tx_irq() against XDP ring, so it is safe to drop
+>>> ice_ring_is_xdp() calls in there.
+>>>
+>>> Fixes: 1c96c16858ba ("ice: update to newer kernel API")
+>>> Fixes: cc14db11c8a4 ("ice: use prefetch methods")
+>>> Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+>>> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+>>> Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>  (A Contingent Worker at Intel)
+>>> Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+>> Is this really a fix?
+> I'll apply patch 1 from the list, please reroute this one to net-next.
 
-On 3/3/22 8:20 AM, Dmitry Dolgov wrote:
->> On Tue, Mar 01, 2022 at 11:53:56PM -0800, Yonghong Song wrote:
->>
->>
->> On 2/25/22 7:28 AM, Dmitrii Dolgov wrote:
->>> Commit 82e6b1eee6a8 ("bpf: Allow to specify user-provided bpf_cookie for
->>> BPF perf links") introduced the concept of user specified bpf_cookie,
->>> which could be accessed by BPF programs using bpf_get_attach_cookie().
->>> For troubleshooting purposes it is convenient to expose bpf_cookie via
->>> bpftool as well, so there is no need to meddle with the target BPF
->>> program itself.
->>
->> Do you still need RFC tag? It looks like we have a consensus
->> with this bpf_iter approach, right?
->>
->> Please also add "bpf-next" to the tag for clarity purpose.
-> 
-> Yeah, you're right, it seems there is no need for RFC tag any more. Will
-> add "bpf-next" tag as well, thanks for the suggestion.
-> 
->>> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
->>> index 7c384d10e95f..152502c2d6f9 100644
->>> --- a/tools/bpf/bpftool/pids.c
->>> +++ b/tools/bpf/bpftool/pids.c
->>> @@ -55,6 +55,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
->>>    		ref->pid = e->pid;
->>>    		memcpy(ref->comm, e->comm, sizeof(ref->comm));
->>>    		refs->ref_cnt++;
->>> +		refs->bpf_cookie_set = e->bpf_cookie_set;
->>> +		refs->bpf_cookie = e->bpf_cookie;
->>
->> Do we need here? It is weird that we overwrite the bpf_cookie with every new
->> 'pid' reference.
->>
->> When you create a link, the cookie is fixed for that link. You could pin
->> that link in bpffs e.g., /sys/fs/bpf/link1 and other programs can then
->> get a reference to the link1, but they should still have the same cookie. Is
->> that right?
-> 
-> Right, I have the same understanding about a single fixed cookie per
-> link. But in this particular case the implementation uses
-> hashmap__for_each_key_entry (which is essentially a loop with a
-> condition inside) and inside it returns as soon as the first entry was
-> found. So I guess it will not override the cookie with every new
-> reference, do I see it correct?
+Thanks Jakub, will do.
 
-They are not return if pid is not the same.
+-Tony
 
-Let us say the same link is used for pid1 and pid2.
-The pid1 case will have refs->bpf_cookie[_set] set properly.
-The pid2 case will trigger the above code, and since for the same
-link, cookie is fixed, so the above code is not really needed.
