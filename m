@@ -2,41 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9234CC170
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 16:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E17C4CC1F0
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 16:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbiCCPhM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 10:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S233923AbiCCPw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 10:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233890AbiCCPhM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 10:37:12 -0500
+        with ESMTP id S232806AbiCCPw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 10:52:26 -0500
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C3514346A
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 07:36:24 -0800 (PST)
-Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E5E1959D7
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 07:51:41 -0800 (PST)
+Received: from sslproxy05.your-server.de ([78.46.172.2])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nPnV8-000GYv-5z; Thu, 03 Mar 2022 16:36:22 +0100
+        id 1nPnju-0001iQ-Qd; Thu, 03 Mar 2022 16:51:38 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1nPnV7-000Btv-UA; Thu, 03 Mar 2022 16:36:21 +0100
-Subject: Re: [PATCH v3 bpf-next] Improve BPF test stability (related to perf
- events and scheduling)
-To:     Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
-        ast@kernel.org, andrii@kernel.org
-Cc:     kernel-team@fb.com, Yonghong Song <yhs@fb.com>
-References: <20220302212735.3412041-1-mykolal@fb.com>
+        id 1nPnju-0005xW-K8; Thu, 03 Mar 2022 16:51:38 +0100
+Subject: Re: [PATCH v5 bpf-next] Small BPF verifier log improvements
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20220301222745.1667206-1-mykolal@fb.com>
+ <20220302212302.y7ct3xgkpwu4dto3@ast-mbp.dhcp.thefacebook.com>
+ <d4e589ac-db4d-b721-580c-120ee524084d@iogearbox.net>
+ <CAADnVQLEbDrKt-ehyR=FqMfxcWLL0Tg6i7cKY+jjybBJLn+E0w@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <8bb551bc-c687-04fe-d588-6beb1495f01d@iogearbox.net>
-Date:   Thu, 3 Mar 2022 16:36:21 +0100
+Message-ID: <9449f4fa-4361-f550-5954-a855280611ce@iogearbox.net>
+Date:   Thu, 3 Mar 2022 16:51:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20220302212735.3412041-1-mykolal@fb.com>
+In-Reply-To: <CAADnVQLEbDrKt-ehyR=FqMfxcWLL0Tg6i7cKY+jjybBJLn+E0w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,67 +55,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/2/22 10:27 PM, Mykola Lysenko wrote:
-> In send_signal, replace sleep with dummy cpu intensive computation
-> to increase probability of child process being scheduled. Add few
-> more asserts.
+On 3/2/22 11:13 PM, Alexei Starovoitov wrote:
+> On Wed, Mar 2, 2022 at 1:46 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 3/2/22 10:23 PM, Alexei Starovoitov wrote:
+>>> On Tue, Mar 01, 2022 at 02:27:45PM -0800, Mykola Lysenko wrote:
+>>>>               .prog_type = BPF_PROG_TYPE_SCHED_CLS,
+>>>>               .matches = {
+>>>> -                    {6, "R3_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {7, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {8, "R4_w=inv(id=0,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {9, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {10, "R4_w=inv(id=0,umax_value=510,var_off=(0x0; 0x1fe))"},
+>>>> -                    {11, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {12, "R4_w=inv(id=0,umax_value=1020,var_off=(0x0; 0x3fc))"},
+>>>> -                    {13, "R4_w=inv(id=1,umax_value=255,var_off=(0x0; 0xff))"},
+>>>> -                    {14, "R4_w=inv(id=0,umax_value=2040,var_off=(0x0; 0x7f8))"},
+>>>> -                    {15, "R4_w=inv(id=0,umax_value=4080,var_off=(0x0; 0xff0))"},
+>>>> +                    {6, "R3_w=scalar(umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {7, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {8, "R4_w=scalar(umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {9, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {10, "R4_w=scalar(umax=510,var_off=(0x0; 0x1fe))"},
+>>>> +                    {11, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {12, "R4_w=scalar(umax=1020,var_off=(0x0; 0x3fc))"},
+>>>> +                    {13, "R4_w=scalar(id=1,umax=255,var_off=(0x0; 0xff))"},
+>>>> +                    {14, "R4_w=scalar(umax=2040,var_off=(0x0; 0x7f8))"},
+>>>> +                    {15, "R4_w=scalar(umax=4080,var_off=(0x0; 0xff0))"},
+>>>
+>>> Sorry for the later review.
+>>> Would "int" be more precise and less verbose than "scalar"?
+>>
+>> Could work as well, although in many places today we make use of the term "scalar",
+>> so developers might be more familiar with it (and more consistent towards the
+>> verifier type internals).
 > 
-> In find_vma, reduce sample_freq as higher values may be rejected in
-> some qemu setups, remove usleep and increase length of cpu intensive
-> computation.
+> I was focusing more on users who will see these logs and
+> would have to interpret them.
+> I suspect the ratio is 1 developer to 1000 users.
+> The users have to fight the verifier quite a bit to make the program pass.
+> I was thinking about "i64" too. That's what llvm is using,
+> but it's less clear than "int", which should be obvious
+> for users since they write progs in C.
+> It's also shorter.
 > 
-> In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
-> higher values may be rejected in some qemu setups
-> 
-> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->   .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
->   .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
->   .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
->   .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
->   .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
->   .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
->   6 files changed, 25 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> index cd10df6cd0fc..0612e79a9281 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
-> @@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
->   	attr.type = PERF_TYPE_SOFTWARE;
->   	attr.config = PERF_COUNT_SW_CPU_CLOCK;
->   	attr.freq = 1;
-> -	attr.sample_freq = 4000;
-> +	attr.sample_freq = 1000;
->   	pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
->   	if (!ASSERT_GE(pfd, 0, "perf_fd"))
->   		goto cleanup;
-> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-> index b74b3c0c555a..7cf4feb6464c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-> @@ -30,12 +30,20 @@ static int open_pe(void)
->   	attr.type = PERF_TYPE_HARDWARE;
->   	attr.config = PERF_COUNT_HW_CPU_CYCLES;
->   	attr.freq = 1;
-> -	attr.sample_freq = 4000;
-> +	attr.sample_freq = 1000;
->   	pfd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
->   
->   	return pfd >= 0 ? pfd : -errno;
->   }
->   
-> +static bool find_vma_pe_condition(struct find_vma *skel)
-> +{
-> +	return skel->bss->found_vm_exec == 0 ||
-> +		skel->data->find_addr_ret != 0 ||
+> I can live with "scalar" though.
 
-Should this not test for `skel->data->find_addr_ret == -1` ?
-
-> +		skel->data->find_zero_ret == -1 ||
-> +		strcmp(skel->bss->d_iname, "test_progs") != 0;
-> +}
-> +
-Thanks,
-Daniel
+Imho, 'scalar' fits best. 'i64' would still be better then 'int' as it could imply
+different width. Anyway, can push it out in a bit.
