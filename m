@@ -2,58 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B104CC6BB
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 21:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52304CC6C6
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 21:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235266AbiCCUDV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 15:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        id S233879AbiCCUFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 15:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbiCCUDU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 15:03:20 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792CB13F8E
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 12:02:32 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id 11so5589461qtt.9
-        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 12:02:32 -0800 (PST)
+        with ESMTP id S231293AbiCCUFf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 15:05:35 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA4B1A614A;
+        Thu,  3 Mar 2022 12:04:49 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id ge19-20020a17090b0e1300b001bcca16e2e7so8768072pjb.3;
+        Thu, 03 Mar 2022 12:04:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MaScE8GyebyU6r3WCtmrMsrGmQSEIWA8j66ZS3wi93M=;
-        b=ej+018mnUowGx/lkTywzhkGAlos+1Ico9tU5gHKUYkppZqTFf0jh1jSvQV7VsAnOBk
-         7qS0JImypN6LJH07/0uooDW7qslSO+tifcorqA3ucIm/A8zX5U7f+Hf+sOhDRRAGp7qr
-         Xvzmf/OBKE96a0gZx+TYI8IZX2hJoFZbR8lrZWaorVh+qRORi385T2LurXm9WcGxAV63
-         B8pDf23gAyVADvzuI3yaQ0hWnys+9DhSxLq2DSQeC8du8ep+70QFQuiG5hDaUi9LSmMA
-         V/aWeK9pLc9uHCCNwaQP2eKGOUrgIs7wklIe7FWA8qMYNNK4AjXcnWUmdzGTj6Tkd7Vr
-         4ebg==
+        bh=yho2Dl6zShl3TZZkq1NcbPCns9z7cGft4LPJ8Xl368w=;
+        b=lNS2rMT/gK/+w8QkIK7rO4Qt3B+qUPqMdfDWn/FJac6BVBaQdMJwxQdT4MuC2HqW8t
+         b/1J0jdLkcBwL//tj0M7RSAfqLlsr8ED+x3NFybe82/2VMTuCfNht74yMgRG59m0DP2e
+         JYWEt/VknEWSkSn61Z5C76z3wpiHlfBma9KkjsqULcNNRJVFB3Gqvv8gzXl43+0+a0+v
+         KMq749VxNgBmbF3u9egK/k4U0wxBUF+nQorgurHA98GZbQmyJaQG3MF0DcYHpOVrjR3T
+         Uev8EZ0dHD8uxoILnNPsifEMA7D2eP1E4FtH4HaKzrl2S+ORlO/OF79ZIZjfM7OBUCWI
+         noBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MaScE8GyebyU6r3WCtmrMsrGmQSEIWA8j66ZS3wi93M=;
-        b=x9LzJUUdcVABpg1rMJyHlJllcPNtCrKqGdLP8MEntOZ5LLLObUHdLLPB+qV4kgkYJK
-         paMd8jUUDFze0lggeWU+SBKxSP+9++fgM4cwCOKOQURZ4nAhTZT75HyfVCldR2pD3xD/
-         R3+T1ELFeUX3pcGFUj+U/tt4b9DnsNk0hrZ4xQjtNwuwA0D1REjFDXsI3XWaKxN7jAXB
-         cKO4g+TeLSStRxdQeGbmx+pDNhLM9mcGA6aNN/fO6x+OKwkecaoBF7jHV5VFtY1Bvozl
-         +OuxA6TidEgkdDMoKYjMOU19qTv3twqpMDtm0Mcq4879v5PVUg6C//+eqpxwhOH2uRoh
-         +GRA==
-X-Gm-Message-State: AOAM533swt8NBDDU6L2AjZodLYL6y1n7goC5nQQGSZUI9t+jVfjLAPKf
-        n+baV68SM1IEohmPZFeIfDISpcArylKryUUg8Vxnfw==
-X-Google-Smtp-Source: ABdhPJyHxQpGbx5CYUvBHzuf9uDpy7o9cKCStiKEoT6uBEzSIyBq9PM2pDz7INHaEJmsYE0D9x4nKj1i8nVzHls4suo=
-X-Received: by 2002:a05:622a:170f:b0:2de:1b24:dc1f with SMTP id
- h15-20020a05622a170f00b002de1b24dc1fmr28264061qtk.299.1646337751707; Thu, 03
- Mar 2022 12:02:31 -0800 (PST)
+        bh=yho2Dl6zShl3TZZkq1NcbPCns9z7cGft4LPJ8Xl368w=;
+        b=eFGupIYmIb1CAdIRIHgZVBFC0cjA2Na/LakH+pQ39/cOSItwUHnfCgadb1vKBRywnt
+         DOXhqYFhDoNLeWfhml7VK0TZ0ye7TdLhegIiU6wK/4/CM9nRz24yBstvflmbRid7bGHS
+         XaM1Ctg37Bfw4tFU6euWAwTxEvnIWvIMK/B7s9X5iRoDWh5Q8TRhFpQWGvY5lQ3Wq268
+         PCA3srMZVRGRRmeJwy1l4synCIXpAArULQcW+FD0x3zMrDqoB4fSzxl4rCXkt+Ttbeo9
+         3eS31/umvBqu5C1Zp5TjXNBuwBmt5Or1SRMIeEkEdRjGmkKZPDi1KloPGvDt5K1X2p2M
+         PZ7w==
+X-Gm-Message-State: AOAM5331utJuhK2iGJGcthX+RemEvGZLw8/BX28LzHPqrhp/VG6EGXoN
+        QLzLUUDP6QJALRj/ZFEfLkk1qWo3fI8tt8owRME=
+X-Google-Smtp-Source: ABdhPJwznKq7WAlWGc5jU9fVVPRFGTBBbRz1nOWEus/QP1k4cwGVZuGTO18YEyGhePknq75Rx4utv2aqTmUl0FhyLwk=
+X-Received: by 2002:a17:902:e807:b0:150:2801:86f8 with SMTP id
+ u7-20020a170902e80700b00150280186f8mr32835951plg.64.1646337889035; Thu, 03
+ Mar 2022 12:04:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-9-haoluo@google.com>
- <a4a23560-8a63-90f6-ad1c-c2d5c761e7e6@fb.com>
-In-Reply-To: <a4a23560-8a63-90f6-ad1c-c2d5c761e7e6@fb.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 3 Mar 2022 12:02:20 -0800
-Message-ID: <CA+khW7iR4-D60TYJ0Ehz-XGz8S6sqf14nQa9WqyYLucCc-04iQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 8/9] bpf: Introduce cgroup iter
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-5-haoluo@google.com>
+ <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com> <CAADnVQ+q0vF03cH8w0c50XMZU1yf_0UjZ+ZarQ_RqMQrVpOFPA@mail.gmail.com>
+ <93c3fc30-ad38-96fa-cf8e-20e55b267a3b@fb.com> <CAADnVQL4yxhDCLjvCCmpOtg0+8-HSg32KG07TCxx+L+Gji7n6g@mail.gmail.com>
+ <CA+khW7gyOGgqJjyuSjJMJ8+iQmozZ6VhSJ7exZF0gGLOeS5gog@mail.gmail.com> <CAADnVQ+wsp1+4DvrJjw_CAZDatsaQKKz-ZZADdTqSfUAqhv3SA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+wsp1+4DvrJjw_CAZDatsaQKKz-ZZADdTqSfUAqhv3SA@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 3 Mar 2022 12:04:37 -0800
+Message-ID: <CAADnVQ+YBiHR5NyAww3_Y7sW2iANPcVB42SEqdxrvXmaVSEgjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
+To:     Hao Luo <haoluo@google.com>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -61,124 +63,81 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
         Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, joshdon@google.com, sdf@google.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+        Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks Yonghong,
-
-On Wed, Mar 2, 2022 at 2:00 PM Yonghong Song <yhs@fb.com> wrote:
+On Thu, Mar 3, 2022 at 12:02 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
->
->
-> On 2/25/22 3:43 PM, Hao Luo wrote:
-> > Introduce a new type of iter prog: cgroup. Unlike other bpf_iter, this
-> > iter doesn't iterate a set of kernel objects. Instead, it is supposed to
-> > be parameterized by a cgroup id and prints only that cgroup. So one
-> > needs to specify a target cgroup id when attaching this iter.
+> On Thu, Mar 3, 2022 at 11:43 AM Hao Luo <haoluo@google.com> wrote:
 > >
-> > The target cgroup's state can be read out via a link of this iter.
-> > Typically, we can monitor cgroup creation and deletion using sleepable
-> > tracing and use it to create corresponding directories in bpffs and pin
-> > a cgroup id parameterized link in the directory. Then we can read the
-> > auto-pinned iter link to get cgroup's state. The output of the iter link
-> > is determined by the program. See the selftest test_cgroup_stats.c for
-> > an example.
+> > On Wed, Mar 2, 2022 at 6:29 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Mar 2, 2022 at 5:09 PM Yonghong Song <yhs@fb.com> wrote:
+> > > >
+> > > >
+> > > >
+> > > > On 3/2/22 1:30 PM, Alexei Starovoitov wrote:
+> > > > > On Wed, Mar 2, 2022 at 1:23 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > >>
+> > > > >>
+> > > > >>
+> > > > >> On 2/25/22 3:43 PM, Hao Luo wrote:
+> > > > >>> Add a new type of bpf tracepoints: sleepable tracepoints, which allows
+> > > > >>> the handler to make calls that may sleep. With sleepable tracepoints, a
+> > > > >>> set of syscall helpers (which may sleep) may also be called from
+> > > > >>> sleepable tracepoints.
+> > > > >>
+> > > > >> There are some old discussions on sleepable tracepoints, maybe
+> > > > >> worthwhile to take a look.
+> > > > >>
+> > > > >> https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
+> > > > >
+> > > > > Right. It's very much related, but obsolete too.
+> > > > > We don't need any of that for sleeptable _raw_ tps.
+> > > > > I prefer to stay with "sleepable" name as well to
+> > > > > match the rest of the bpf sleepable code.
+> > > > > In all cases it's faultable.
+> > > >
+> > > > sounds good to me. Agree that for the bpf user case, Hao's
+> > > > implementation should be enough.
+> > >
+> > > Just remembered that we can also do trivial noinline __weak
+> > > nop function and mark it sleepable on the verifier side.
+> > > That's what we were planning to do to trace map update/delete ops
+> > > in Joe Burton's series.
+> > > Then we don't need to extend tp infra.
+> > > I'm fine whichever way. I see pros and cons in both options.
 > >
-> > Signed-off-by: Hao Luo <haoluo@google.com>
-> > ---
-> >   include/linux/bpf.h            |   1 +
-> >   include/uapi/linux/bpf.h       |   6 ++
-> >   kernel/bpf/Makefile            |   2 +-
-> >   kernel/bpf/cgroup_iter.c       | 141 +++++++++++++++++++++++++++++++++
-> >   tools/include/uapi/linux/bpf.h |   6 ++
-> >   5 files changed, 155 insertions(+), 1 deletion(-)
-> >   create mode 100644 kernel/bpf/cgroup_iter.c
+> > Joe is also cc'ed in this patchset, I will sync up with him on the
+> > status of trace map work.
 > >
-[...]
-> > +static const struct bpf_iter_seq_info cgroup_iter_seq_info = {
-> > +     .seq_ops                = &cgroup_iter_seq_ops,
-> > +     .init_seq_private       = cgroup_iter_seq_init,
-> > +     .fini_seq_private       = cgroup_iter_seq_fini,
+> > Alexei, do we have potentially other variants of tp? We can make the
+> > current u16 sleepable a flag, so we can reuse this flag later when we
+> > have another type of tracepoints.
 >
-> Since cgroup_iter_seq_fini() is a nop, you can just have
->         .fini_seq_private       = NULL,
->
+> When we added the ability to attach to kernel functions and mark them
+> as allow_error_inject the usefulness of tracepoints and even
+> writeable tracepoints was deminissed.
+> If we do sleepable tracepoint, I suspect, it may be the last extension
+> in that area.
+> I guess I'm convincing myself that noinline weak nop func
+> is better here. Just like it's better for Joe's map tracing.
 
-Sounds good. It looks weird to have .init without .fini. This may
-indicate a bug somewhere. .attach and .detach the same. I see that you
-pointed out a bug in a followed reply and the fix has paired attach
-and detach. That explains something. :)
-
-> > +void bpf_iter_cgroup_show_fdinfo(const struct bpf_iter_aux_info *aux,
-> > +                              struct seq_file *seq)
-> > +{
-> > +     char buf[64] = {0};
->
-> Is this 64 the maximum possible cgroup path length?
-> If there is a macro for that, I think it would be good to use it.
->
-
-64 is something I made up. There is a macro for path length. Let me
-use that in v2.
-
-> > +
-> > +     cgroup_path_from_kernfs_id(aux->cgroup_id, buf, sizeof(buf));
->
-> cgroup_path_from_kernfs_id() might fail in which case, buf will be 0.
-> and cgroup_path will be nothing. I guess this might be the expected
-> result. I might be good to add a comment to clarify in the code.
->
-
-No problem.
-
->
-> > +     seq_printf(seq, "cgroup_id:\t%lu\n", aux->cgroup_id);
-> > +     seq_printf(seq, "cgroup_path:\t%s\n", buf);
-> > +}
-> > +
-> > +int bpf_iter_cgroup_fill_link_info(const struct bpf_iter_aux_info *aux,
-> > +                                struct bpf_link_info *info)
-> > +{
-> > +     info->iter.cgroup.cgroup_id = aux->cgroup_id;
-> > +     return 0;
-> > +}
-> > +
-> > +DEFINE_BPF_ITER_FUNC(cgroup, struct bpf_iter_meta *meta,
-> > +                  struct cgroup *cgroup)
-> > +
-> > +static struct bpf_iter_reg bpf_cgroup_reg_info = {
-> > +     .target                 = "cgroup",
-> > +     .attach_target          = bpf_iter_attach_cgroup,
-> > +     .detach_target          = bpf_iter_detach_cgroup,
->
-> The same ehre, since bpf_iter_detach_cgroup() is a nop,
-> you can replace it with NULL in the above.
->
-> > +     .show_fdinfo            = bpf_iter_cgroup_show_fdinfo,
-> > +     .fill_link_info         = bpf_iter_cgroup_fill_link_info,
-> > +     .ctx_arg_info_size      = 1,
-> > +     .ctx_arg_info           = {
-> > +             { offsetof(struct bpf_iter__cgroup, cgroup),
-> > +               PTR_TO_BTF_ID },
-> > +     },
-> > +     .seq_info               = &cgroup_iter_seq_info,
-> > +};
-> > +
-> > +static int __init bpf_cgroup_iter_init(void)
-> > +{
-> > +     bpf_cgroup_reg_info.ctx_arg_info[0].btf_id = bpf_cgroup_btf_id[0];
-> > +     return bpf_iter_reg_target(&bpf_cgroup_reg_info);
-> > +}
-> > +
-> [...]
+To add to the above... The only downside of sleepable nop func
+comparing to tp is the lack of static_branch.
+So this nop call will always be there.
+For map tracing and for cgroup mkdir/rmdir the few nanosecond
+overhead of calling an empty function isn't even measurable.
