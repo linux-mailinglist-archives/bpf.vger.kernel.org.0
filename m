@@ -2,90 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE3D4CB6B2
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 07:10:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F74B4CB6D5
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 07:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbiCCGLB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 01:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53058 "EHLO
+        id S229734AbiCCGP2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 01:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbiCCGK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 01:10:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBCA165C2E;
-        Wed,  2 Mar 2022 22:10:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6AC96184A;
-        Thu,  3 Mar 2022 06:10:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 148D6C340F1;
-        Thu,  3 Mar 2022 06:10:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646287813;
-        bh=TU7DuLmOUOXBIjeGYJd3zB0+Q4BLMX5PtrBjAzuK8Mo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=iNynvhI4uNhPWhh2pPT7f0HtuhnBRH+MJALrvOl1BspEsqnAB0AgJW5MPnQM+FBAV
-         seUGQWk7qRwF1o/5aSbjwTAV5bt1KnUKJwfZAy96UwHGi8CzJnn+eCyPX5VALtsPQy
-         ibGPWVUP2hsKk2WqAyXhVx/o99k+30ilZ7vZYO9JtsxJszIj3evCJi/Wlxaqokgfwv
-         0bOLoPgx0ZyQJ+OujqQDMARLyD9zYZIk5cB14dOFQcopACcGggStlKHDv6BdR/fNC+
-         uBDKuseskgf60ByoKhMbZdGdXwI/GvbV58p/wj1WjB6AxBzBj+ccOWtZj2Zx+mPNby
-         T3S4ZActdfIZw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EB8D2EAC09D;
-        Thu,  3 Mar 2022 06:10:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S229486AbiCCGP1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 01:15:27 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE58145ACD;
+        Wed,  2 Mar 2022 22:14:41 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id t21so3197300qkg.6;
+        Wed, 02 Mar 2022 22:14:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qdBEAgbWuxxR2o/00VXlWsOSQa7k5j8aT75LEC/xh4g=;
+        b=TqFopctsLeF437cCAMgwiayH0ExDBYCvSEpa3OTAPM74UPRSqDqwxc7PJr5L4phAYq
+         QlDBrfoZrRNZh6jiwhO0AbtCKjutBChUn8/QRIufwgLGC93hi34/J74XV5KFa6sKBTfJ
+         nJyWVLXT7EsOQt0gTqO2fLEj9VJHow9kvXMKdEbebVJxpzYHUCC18mKiME2IdWE3+HXE
+         OlJeLV70dyxZiVhtPR34mGESe5LblQeN3cH2tIsafGsZ/KTkmaHi1E6Iaiu565CfNhSh
+         rykL5hkZK36TF9mth9e+CSxYBXhVrGQnCnPJmrBSSHMbJyqMIPije/9pdpfcUcldIHkk
+         1Zaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qdBEAgbWuxxR2o/00VXlWsOSQa7k5j8aT75LEC/xh4g=;
+        b=we9wY0tdBMnYCyJpN5fgHVJtx5TnmPFMOWtOFtHfUc1p2BA8ej9oRL4wWX3lxpFtyz
+         WSYP67LNhtIcZoNvu1+Wp3ZM+wypV3m8/zoS99lwTv9zLYlfHytdMUlpBNis2xMbcjvQ
+         f9cLX5WQ3V15eBeY939h6/gPC3tsEd3xnbVjZuA5tXQNNB/VPV9FmbUXhuTKYi25kJoj
+         5CmPAdmk65f5C+Vq2PmNPEQMsFqtx9CyFPu2oRaAovwYcyUm+ACYFUP8YbvUMlP68ZCk
+         fblUIntPv4PnMURWDYoNHAWzlQFKZB2ZarkjQw8XcIq4nhFMuqYWYZ8p7uyuqr7wElml
+         CUyg==
+X-Gm-Message-State: AOAM533RmlSNYrJgPDl8LbAD1lvtGdDfPDFHHfErkXf5HkXBP1XNcGjM
+        FZRQv//ciyS6YemWxbvkIyg=
+X-Google-Smtp-Source: ABdhPJzbZa7HQwBZqvgMTYMeKJokxtfUEwUSHO/Clg6gZX2ZLzATAPsgLAT4goELV49XJK9ocNoinQ==
+X-Received: by 2002:a37:6110:0:b0:60d:ed9f:18da with SMTP id v16-20020a376110000000b0060ded9f18damr18097055qkb.610.1646288080917;
+        Wed, 02 Mar 2022 22:14:40 -0800 (PST)
+Received: from localhost ([2600:1700:65a0:ab60:2f27:f8bb:e136:eaec])
+        by smtp.gmail.com with ESMTPSA id d15-20020a05622a15cf00b002de711a190bsm885885qty.71.2022.03.02.22.14.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Mar 2022 22:14:40 -0800 (PST)
+Date:   Wed, 2 Mar 2022 22:14:38 -0800
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     Wang Yufen <wangyufen@huawei.com>
+Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
+        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
+        edumazet@google.com, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v2 3/4] bpf, sockmap: Fix more uncharged while
+ msg has more_data
+Message-ID: <YiBczo/gN8w9Hl+L@pop-os.localdomain>
+References: <20220302022755.3876705-1-wangyufen@huawei.com>
+ <20220302022755.3876705-4-wangyufen@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] tuntap: add sanity checks about msg_controllen in
- sendmsg
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164628781296.31171.2633658939059325470.git-patchwork-notify@kernel.org>
-Date:   Thu, 03 Mar 2022 06:10:12 +0000
-References: <20220303022441.383865-1-baymaxhuang@gmail.com>
-In-Reply-To: <20220303022441.383865-1-baymaxhuang@gmail.com>
-To:     Harold Huang <baymaxhuang@gmail.com>
-Cc:     netdev@vger.kernel.org, jasowang@redhat.com, edumazet@google.com,
-        eric.dumazet@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        mst@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220302022755.3876705-4-wangyufen@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Thu,  3 Mar 2022 10:24:40 +0800 you wrote:
-> In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
-> tun_sendmsg. Although we donot use msg_controllen in this path, we should
-> check msg_controllen to make sure the caller pass a valid msg_ctl.
+On Wed, Mar 02, 2022 at 10:27:54AM +0800, Wang Yufen wrote:
+> In tcp_bpf_send_verdict(), if msg has more data after
+> tcp_bpf_sendmsg_redir():
 > 
-> [1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
+> tcp_bpf_send_verdict()
+>  tosend = msg->sg.size  //msg->sg.size = 22220
+>  case __SK_REDIRECT:
+>   sk_msg_return()  //uncharged msg->sg.size(22220) sk->sk_forward_alloc
+>   tcp_bpf_sendmsg_redir() //after tcp_bpf_sendmsg_redir, msg->sg.size=11000
+>  goto more_data;
+>  tosend = msg->sg.size  //msg->sg.size = 11000
+>  case __SK_REDIRECT:
+>   sk_msg_return()  //uncharged msg->sg.size(11000) to sk->sk_forward_alloc
 > 
-> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-> Suggested-by: Jason Wang <jasowang@redhat.com>
-> Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
-> 
-> [...]
+> The msg->sg.size(11000) has been uncharged twice, to fix we can charge the
+> remaining msg->sg.size before goto more data.
 
-Here is the summary with links:
-  - [net-next] tuntap: add sanity checks about msg_controllen in sendmsg
-    https://git.kernel.org/netdev/net-next/c/74a335a07a17
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+It looks like bpf_exec_tx_verdict() has the same issue.
 
