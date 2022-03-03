@@ -2,142 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D52304CC6C6
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 21:04:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547584CC6F3
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 21:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233879AbiCCUFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 15:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
+        id S234041AbiCCUPm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 15:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbiCCUFf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 15:05:35 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA4B1A614A;
-        Thu,  3 Mar 2022 12:04:49 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id ge19-20020a17090b0e1300b001bcca16e2e7so8768072pjb.3;
-        Thu, 03 Mar 2022 12:04:49 -0800 (PST)
+        with ESMTP id S236384AbiCCUPh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 15:15:37 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F1313AA25
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 12:14:30 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id o1so7038496edc.3
+        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 12:14:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yho2Dl6zShl3TZZkq1NcbPCns9z7cGft4LPJ8Xl368w=;
-        b=lNS2rMT/gK/+w8QkIK7rO4Qt3B+qUPqMdfDWn/FJac6BVBaQdMJwxQdT4MuC2HqW8t
-         b/1J0jdLkcBwL//tj0M7RSAfqLlsr8ED+x3NFybe82/2VMTuCfNht74yMgRG59m0DP2e
-         JYWEt/VknEWSkSn61Z5C76z3wpiHlfBma9KkjsqULcNNRJVFB3Gqvv8gzXl43+0+a0+v
-         KMq749VxNgBmbF3u9egK/k4U0wxBUF+nQorgurHA98GZbQmyJaQG3MF0DcYHpOVrjR3T
-         Uev8EZ0dHD8uxoILnNPsifEMA7D2eP1E4FtH4HaKzrl2S+ORlO/OF79ZIZjfM7OBUCWI
-         noBQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kmuNG0yiz5WG4N7exvUSlImL0QUiJlJZYN+I707eiNU=;
+        b=KxVbauQ60M3kGkUNkBTFo/coAOUmcDCtsji8V+jaIAaSELRp+XHpKRoqYymjIGM94a
+         2dr0+KF3fOy5d/HkXlgKKr7ZJXcQOFLO3s9voqftlAYhoL4S1MUdHWu7+q4HIaDLUQqg
+         EDLip2LUMfFjiRRw9WorCnEnUrUAtBVHwqS/bPYITC9Pnq4unTLD4NGkUmB4Dnkg9UCq
+         kC+dfUb4FL6E+qSnPAVrV2S9yf9duZrU39Rqp72WrFziKPe5BtFL3haSLHnQTLOeEL/r
+         w159iE6rB8uH823ZB/iUi7uGfQu3WcTZe3eGVw6IBSvEKDr9zRaHf5rALL+eWWTjMLvC
+         Vv+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yho2Dl6zShl3TZZkq1NcbPCns9z7cGft4LPJ8Xl368w=;
-        b=eFGupIYmIb1CAdIRIHgZVBFC0cjA2Na/LakH+pQ39/cOSItwUHnfCgadb1vKBRywnt
-         DOXhqYFhDoNLeWfhml7VK0TZ0ye7TdLhegIiU6wK/4/CM9nRz24yBstvflmbRid7bGHS
-         XaM1Ctg37Bfw4tFU6euWAwTxEvnIWvIMK/B7s9X5iRoDWh5Q8TRhFpQWGvY5lQ3Wq268
-         PCA3srMZVRGRRmeJwy1l4synCIXpAArULQcW+FD0x3zMrDqoB4fSzxl4rCXkt+Ttbeo9
-         3eS31/umvBqu5C1Zp5TjXNBuwBmt5Or1SRMIeEkEdRjGmkKZPDi1KloPGvDt5K1X2p2M
-         PZ7w==
-X-Gm-Message-State: AOAM5331utJuhK2iGJGcthX+RemEvGZLw8/BX28LzHPqrhp/VG6EGXoN
-        QLzLUUDP6QJALRj/ZFEfLkk1qWo3fI8tt8owRME=
-X-Google-Smtp-Source: ABdhPJwznKq7WAlWGc5jU9fVVPRFGTBBbRz1nOWEus/QP1k4cwGVZuGTO18YEyGhePknq75Rx4utv2aqTmUl0FhyLwk=
-X-Received: by 2002:a17:902:e807:b0:150:2801:86f8 with SMTP id
- u7-20020a170902e80700b00150280186f8mr32835951plg.64.1646337889035; Thu, 03
- Mar 2022 12:04:49 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kmuNG0yiz5WG4N7exvUSlImL0QUiJlJZYN+I707eiNU=;
+        b=JE//nMYAQaqYsOucYRY1YciVeNDuuYn1fGcTa25jTfMW1I9ugP3NB92D7JzLOhU4Tp
+         PBdmLc5b/kj43ftAcztcy8JGsVCRAUgvkgaumJtbcOjMfMarHjEy3uGFvOfAda80JElG
+         MZU4KfT6NEq38VhTX5TDmN96RZwsbN6qY+Rgcrunms+Q5+aJ45z2l8dSL5JILVDdTRyP
+         QX7rF3Qr/WJQfnWXNonOSjwqkVld9nqKUDKUHJJvYTdBPGm0q1Eey1Q757WXFNjSwugt
+         yWFsNn94XImzAsZCwESHrovRgoGb3/6sdjkW2OTm2kWXh0TizkKqFVjVWnqD/H//8jnS
+         MO0A==
+X-Gm-Message-State: AOAM533xNlwgOOJO09pv0GQGO6W2oQ0ScLet+rRMH0S9gZW+gA7Fp1Ip
+        AwS1JycrOX4a97FinaeoeoD3msO+7Gk=
+X-Google-Smtp-Source: ABdhPJzalAVv6fuly/BFi1uxeoCJdkVXJcubZk4oNe6s8YNCfdkbGjGkWO/MZ0RHZWvQ5JUVoxymNA==
+X-Received: by 2002:a05:6402:1e8b:b0:3da:58e6:9a09 with SMTP id f11-20020a0564021e8b00b003da58e69a09mr35570869edf.155.1646338468967;
+        Thu, 03 Mar 2022 12:14:28 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-230-047.178.005.pools.vodafone-ip.de. [178.5.230.47])
+        by smtp.gmail.com with ESMTPSA id h7-20020a1709066d8700b006d4b4d137fbsm1035942ejt.50.2022.03.03.12.14.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Mar 2022 12:14:28 -0800 (PST)
+Date:   Thu, 3 Mar 2022 21:14:01 +0100
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, quentin@isovalent.com
+Subject: Re: [RFC PATCH v4] bpftool: Add bpf_cookie to link output
+Message-ID: <20220303201401.xdenf7r42obtrrnn@erthalion.local>
+References: <20220225152802.20957-1-9erthalion6@gmail.com>
+ <a646e7d3-b4aa-3a00-013e-4fc9531c2d83@fb.com>
+ <20220303162010.qcz7dovfg736h4ed@erthalion.local>
+ <47222739-81a0-c1ca-fdaa-82a2e0b67ee4@fb.com>
 MIME-Version: 1.0
-References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-5-haoluo@google.com>
- <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com> <CAADnVQ+q0vF03cH8w0c50XMZU1yf_0UjZ+ZarQ_RqMQrVpOFPA@mail.gmail.com>
- <93c3fc30-ad38-96fa-cf8e-20e55b267a3b@fb.com> <CAADnVQL4yxhDCLjvCCmpOtg0+8-HSg32KG07TCxx+L+Gji7n6g@mail.gmail.com>
- <CA+khW7gyOGgqJjyuSjJMJ8+iQmozZ6VhSJ7exZF0gGLOeS5gog@mail.gmail.com> <CAADnVQ+wsp1+4DvrJjw_CAZDatsaQKKz-ZZADdTqSfUAqhv3SA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+wsp1+4DvrJjw_CAZDatsaQKKz-ZZADdTqSfUAqhv3SA@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 3 Mar 2022 12:04:37 -0800
-Message-ID: <CAADnVQ+YBiHR5NyAww3_Y7sW2iANPcVB42SEqdxrvXmaVSEgjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
-To:     Hao Luo <haoluo@google.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47222739-81a0-c1ca-fdaa-82a2e0b67ee4@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 3, 2022 at 12:02 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+> On Thu, Mar 03, 2022 at 10:24:28AM -0800, Yonghong Song wrote:
 >
-> On Thu, Mar 3, 2022 at 11:43 AM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Wed, Mar 2, 2022 at 6:29 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+> > > > diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> > > > index 7c384d10e95f..152502c2d6f9 100644
+> > > > --- a/tools/bpf/bpftool/pids.c
+> > > > +++ b/tools/bpf/bpftool/pids.c
+> > > > @@ -55,6 +55,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+> > > >    		ref->pid = e->pid;
+> > > >    		memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> > > >    		refs->ref_cnt++;
+> > > > +		refs->bpf_cookie_set = e->bpf_cookie_set;
+> > > > +		refs->bpf_cookie = e->bpf_cookie;
 > > >
-> > > On Wed, Mar 2, 2022 at 5:09 PM Yonghong Song <yhs@fb.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > On 3/2/22 1:30 PM, Alexei Starovoitov wrote:
-> > > > > On Wed, Mar 2, 2022 at 1:23 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > >>
-> > > > >>
-> > > > >>
-> > > > >> On 2/25/22 3:43 PM, Hao Luo wrote:
-> > > > >>> Add a new type of bpf tracepoints: sleepable tracepoints, which allows
-> > > > >>> the handler to make calls that may sleep. With sleepable tracepoints, a
-> > > > >>> set of syscall helpers (which may sleep) may also be called from
-> > > > >>> sleepable tracepoints.
-> > > > >>
-> > > > >> There are some old discussions on sleepable tracepoints, maybe
-> > > > >> worthwhile to take a look.
-> > > > >>
-> > > > >> https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
-> > > > >
-> > > > > Right. It's very much related, but obsolete too.
-> > > > > We don't need any of that for sleeptable _raw_ tps.
-> > > > > I prefer to stay with "sleepable" name as well to
-> > > > > match the rest of the bpf sleepable code.
-> > > > > In all cases it's faultable.
-> > > >
-> > > > sounds good to me. Agree that for the bpf user case, Hao's
-> > > > implementation should be enough.
+> > > Do we need here? It is weird that we overwrite the bpf_cookie with every new
+> > > 'pid' reference.
 > > >
-> > > Just remembered that we can also do trivial noinline __weak
-> > > nop function and mark it sleepable on the verifier side.
-> > > That's what we were planning to do to trace map update/delete ops
-> > > in Joe Burton's series.
-> > > Then we don't need to extend tp infra.
-> > > I'm fine whichever way. I see pros and cons in both options.
+> > > When you create a link, the cookie is fixed for that link. You could pin
+> > > that link in bpffs e.g., /sys/fs/bpf/link1 and other programs can then
+> > > get a reference to the link1, but they should still have the same cookie. Is
+> > > that right?
 > >
-> > Joe is also cc'ed in this patchset, I will sync up with him on the
-> > status of trace map work.
-> >
-> > Alexei, do we have potentially other variants of tp? We can make the
-> > current u16 sleepable a flag, so we can reuse this flag later when we
-> > have another type of tracepoints.
+> > Right, I have the same understanding about a single fixed cookie per
+> > link. But in this particular case the implementation uses
+> > hashmap__for_each_key_entry (which is essentially a loop with a
+> > condition inside) and inside it returns as soon as the first entry was
+> > found. So I guess it will not override the cookie with every new
+> > reference, do I see it correct?
 >
-> When we added the ability to attach to kernel functions and mark them
-> as allow_error_inject the usefulness of tracepoints and even
-> writeable tracepoints was deminissed.
-> If we do sleepable tracepoint, I suspect, it may be the last extension
-> in that area.
-> I guess I'm convincing myself that noinline weak nop func
-> is better here. Just like it's better for Joe's map tracing.
+> They are not return if pid is not the same.
+>
+> Let us say the same link is used for pid1 and pid2.
+> The pid1 case will have refs->bpf_cookie[_set] set properly.
+> The pid2 case will trigger the above code, and since for the same
+> link, cookie is fixed, so the above code is not really needed.
 
-To add to the above... The only downside of sleepable nop func
-comparing to tp is the lack of static_branch.
-So this nop call will always be there.
-For map tracing and for cgroup mkdir/rmdir the few nanosecond
-overhead of calling an empty function isn't even measurable.
+Oh, I see, thanks for clarification! Will post a new version soon.
