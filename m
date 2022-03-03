@@ -2,124 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7849B4CBB08
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 11:08:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A80344CBBAC
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 11:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231859AbiCCKIs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Mar 2022 05:08:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S231405AbiCCKtO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 05:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229833AbiCCKIr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 05:08:47 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A9516EAB3;
-        Thu,  3 Mar 2022 02:08:01 -0800 (PST)
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4K8RTz6Vc5z67Wgc;
-        Thu,  3 Mar 2022 18:06:47 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Thu, 3 Mar 2022 11:07:59 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
- Thu, 3 Mar 2022 11:07:59 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>, "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "revest@chromium.org" <revest@chromium.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
-Thread-Topic: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
-Thread-Index: AQHYLiawVJiGIoJTAUWtCyWVLc4li6ysmoEAgADV/tA=
-Date:   Thu, 3 Mar 2022 10:07:59 +0000
-Message-ID: <c9ef19a0203e4e9eb9416fa84d034db0@huawei.com>
-References: <20220302111404.193900-1-roberto.sassu@huawei.com>
- <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S232484AbiCCKtM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 05:49:12 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B56B177768;
+        Thu,  3 Mar 2022 02:48:24 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nPj0O-0006IH-16; Thu, 03 Mar 2022 11:48:20 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nPj0N-000UgS-ON; Thu, 03 Mar 2022 11:48:19 +0100
+Subject: Re: [PATCH v6 net-next 03/13] net: Handle delivery_time in
+ skb->tstamp during network tapping with af_packet
+To:     Martin KaFai Lau <kafai@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, kernel-team@fb.com,
+        Willem de Bruijn <willemb@google.com>
+References: <20220302195519.3479274-1-kafai@fb.com>
+ <20220302195538.3480753-1-kafai@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <63e625fe-067d-bcc3-d28a-6e23402b1ff2@iogearbox.net>
+Date:   Thu, 3 Mar 2022 11:48:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220302195538.3480753-1-kafai@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26470/Thu Mar  3 10:49:16 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> From: Alexei Starovoitov [mailto:alexei.starovoitov@gmail.com]
-> Sent: Wednesday, March 2, 2022 11:21 PM
-> On Wed, Mar 02, 2022 at 12:13:55PM +0100, Roberto Sassu wrote:
-> > Extend the interoperability with IMA, to give wider flexibility for the
-> > implementation of integrity-focused LSMs based on eBPF.
-> >
-> > Patch 1 fixes some style issues.
-> >
-> > Patches 2-6 give the ability to eBPF-based LSMs to take advantage of the
-> > measurement capability of IMA without needing to setup a policy in IMA
-> > (those LSMs might implement the policy capability themselves).
-> >
-> > Patches 7-9 allow eBPF-based LSMs to evaluate files read by the kernel.
-> >
-> > Changelog
-> >
-> > v2:
-> > - Add better description to patch 1 (suggested by Shuah)
-> > - Recalculate digest if it is not fresh (when IMA_COLLECTED flag not set)
-> > - Move declaration of bpf_ima_file_hash() at the end (suggested by
-> >   Yonghong)
-> > - Add tests to check if the digest has been recalculated
-> > - Add deny test for bpf_kernel_read_file()
-> > - Add description to tests
-> >
-> > v1:
-> > - Modify ima_file_hash() only and allow the usage of the function with the
-> >   modified behavior by eBPF-based LSMs through the new function
-> >   bpf_ima_file_hash() (suggested by Mimi)
-> > - Make bpf_lsm_kernel_read_file() sleepable so that bpf_ima_inode_hash()
-> >   and bpf_ima_file_hash() can be called inside the implementation of
-> >   eBPF-based LSMs for this hook
-> >
-> > Roberto Sassu (9):
-> >   ima: Fix documentation-related warnings in ima_main.c
-> >   ima: Always return a file measurement in ima_file_hash()
-> >   bpf-lsm: Introduce new helper bpf_ima_file_hash()
-> >   selftests/bpf: Move sample generation code to ima_test_common()
-> >   selftests/bpf: Add test for bpf_ima_file_hash()
-> >   selftests/bpf: Check if the digest is refreshed after a file write
-> >   bpf-lsm: Make bpf_lsm_kernel_read_file() as sleepable
-> >   selftests/bpf: Add test for bpf_lsm_kernel_read_file()
-> >   selftests/bpf: Check that bpf_kernel_read_file() denies reading IMA
-> >     policy
+On 3/2/22 8:55 PM, Martin KaFai Lau wrote:
+[...]
+> When tapping at ingress, it currently expects the skb->tstamp is either 0
+> or the (rcv) timestamp.  Meaning, the tapping at ingress path
+> has already expected the skb->tstamp could be 0 and it will get
+> the (rcv) timestamp by ktime_get_real() when needed.
 > 
-> We have to land this set through bpf-next.
-> Please get the Acks for patches 1 and 2, so we can proceed.
+> There are two cases for tapping at ingress:
+> 
+> One case is af_packet queues the skb to its sk_receive_queue.
+> The skb is either not shared or new clone created.  The newly
+> added skb_clear_delivery_time() is called to clear the
+> delivery_time (if any) and set the (rcv) timestamp if
+> needed before the skb is queued to the sk_receive_queue.
+[...]
+>   
+> +DECLARE_STATIC_KEY_FALSE(netstamp_needed_key);
+> +
+> +/* It is used in the ingress path to clear the delivery_time.
+> + * If needed, set the skb->tstamp to the (rcv) timestamp.
+> + */
+> +static inline void skb_clear_delivery_time(struct sk_buff *skb)
+> +{
+> +	if (skb->mono_delivery_time) {
+> +		skb->mono_delivery_time = 0;
+> +		if (static_branch_unlikely(&netstamp_needed_key))
+> +			skb->tstamp = ktime_get_real();
+> +		else
+> +			skb->tstamp = 0;
+> +	}
+> +}
+> +
+>   static inline void skb_clear_tstamp(struct sk_buff *skb)
+[...]
+> @@ -2199,6 +2199,7 @@ static int packet_rcv(struct sk_buff *skb, struct net_device *dev,
+>   	spin_lock(&sk->sk_receive_queue.lock);
+>   	po->stats.stats1.tp_packets++;
+>   	sock_skb_set_dropcount(sk, skb);
+> +	skb_clear_delivery_time(skb);
 
-Ok. Mimi, do you have time to have a look at those patches?
+Maybe not fully clear from your description, but for ingress taps, we are allowed
+to mangle timestamp here because main recv loop enters taps via deliver_skb(), which
+bumps skb->users refcount and {t,}packet_rcv() always hits the skb_shared(skb) case
+which then clones skb.. (and for egress we are covered anyway given dev_queue_xmit_nit()
+will skb_clone() once anyway for tx tstamp)?
 
-Thanks
+>   	__skb_queue_tail(&sk->sk_receive_queue, skb);
+>   	spin_unlock(&sk->sk_receive_queue.lock);
+>   	sk->sk_data_ready(sk);
+> @@ -2377,6 +2378,7 @@ static int tpacket_rcv(struct sk_buff *skb, struct net_device *dev,
+>   	po->stats.stats1.tp_packets++;
+>   	if (copy_skb) {
+>   		status |= TP_STATUS_COPY;
+> +		skb_clear_delivery_time(copy_skb);
+>   		__skb_queue_tail(&sk->sk_receive_queue, copy_skb);
+>   	}
+>   	spin_unlock(&sk->sk_receive_queue.lock);
+> 
 
-Roberto
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Zhong Ronghua
+Thanks,
+Daniel
