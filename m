@@ -2,76 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CE44CC885
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 23:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F7B4CC8B4
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 23:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbiCCWHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 17:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
+        id S236778AbiCCWUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 17:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236729AbiCCWHB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 17:07:01 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62BC16BCC9
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 14:06:14 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id w7so5258933qvr.3
-        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 14:06:14 -0800 (PST)
+        with ESMTP id S236760AbiCCWUn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 17:20:43 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC18C10A7DC
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 14:19:57 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id 195so7599656iou.0
+        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 14:19:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5k2k3A0LFYi9Jncq52kJ2NzCsXNzhgHinqc0TjcoM9A=;
-        b=XoFbx+xFqBZMAy0LhdIpfAc04plEW2Krcu218bvLJZDQk9+Me3gpAYFsU/afdsjmKE
-         mJ3UWBiS6LzY4zTl22WNy3jkXTC+aRUJULXIc8M5JLH9x6zrM7T+asA8NvLrqdsH8JXC
-         tvtOXzBS0KErfSA4fHqAo4UbP0vT+rsKMVLgOtR1E544FdXnryqzbFfQGMcb8QU6s551
-         S+aLQJTzEphGvhDxZgHkbLTPzB1NStBqRxnu+gSwhMCFSNmGd5gxv00fu1JFpXhOCF0U
-         4ihN0y3yK5MTnEa6PmcxZh+WVbue6uewFcqBzc3OX16t+3LsLetq1ufTEUuegghZjZbs
-         eCmA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uy2afJ9ZPvmmHWI6b6VB2HM3H9arIDEQAaJ8qNi/u4s=;
+        b=AlMT6ljgLpZMvzgD59xHREgkpKiwKbtEuapOcBDIpPtJKRqPOXV5oO+kmZCujKdnEM
+         fD3joPO6+cvZ7l8OTW9lKXJOo2YStlCEYiRdIiJOCEnB7aHGVQhrJZTnpOunVg4cDg58
+         ncYE0pwb5SnXjTa6giQK3X4pbcCr1szj2cyHg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5k2k3A0LFYi9Jncq52kJ2NzCsXNzhgHinqc0TjcoM9A=;
-        b=2hVyBa3s7XdksbN55/gkxGOCpYC5WWxUkGXtUaEM7vvJ20jdKHRKVyrKxRNLkry4Wy
-         NtrD/hgQHjAWf7FQfSYWaLK9HY8oSSiGG5MUTOmIfmTyW6wGDjWWKV+TMHXgCpxE6hNe
-         WzIkrBLj2l9UfOfR6wMTbbgpGnpdWVRFDxl3UnavqVubqjV9GX9RMNZVe1UK322UWbm6
-         Qpn4SDGbMPcpgbgwToSCpGSBXPiMOAvXP7Iavsqtk8JZGEvj/kcZUpu+jQBOkhmk5F08
-         pUk6bSB1ZibeWT6/j17GoepzKi0Hlx8UVlkz1KNrmKgx6/AE/CsdoxaHqX8Z97W2OS7h
-         qSCg==
-X-Gm-Message-State: AOAM531pSpqccn4RTuSsA9cvk/oI7vDpxqiJ2Mgmj/E6+J+5fBEP1DzO
-        7JJOKF74GaXjIgdXxobSF2EpqC9Hmg5qbp6z3onS8Q==
-X-Google-Smtp-Source: ABdhPJwfeZFI8sgw+nRIbT1l6xDKXxt78DrozcBZtxZc35qlexlXir7g7uMD4liO3+I5+Nv3kNFoMDoIxXejsKk6kYk=
-X-Received: by 2002:a05:6214:1881:b0:432:5b6c:2add with SMTP id
- cx1-20020a056214188100b004325b6c2addmr25621693qvb.17.1646345173863; Thu, 03
- Mar 2022 14:06:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-5-haoluo@google.com>
- <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com> <CAADnVQ+q0vF03cH8w0c50XMZU1yf_0UjZ+ZarQ_RqMQrVpOFPA@mail.gmail.com>
- <93c3fc30-ad38-96fa-cf8e-20e55b267a3b@fb.com> <CAADnVQL4yxhDCLjvCCmpOtg0+8-HSg32KG07TCxx+L+Gji7n6g@mail.gmail.com>
- <CA+khW7gyOGgqJjyuSjJMJ8+iQmozZ6VhSJ7exZF0gGLOeS5gog@mail.gmail.com>
- <CAADnVQ+wsp1+4DvrJjw_CAZDatsaQKKz-ZZADdTqSfUAqhv3SA@mail.gmail.com> <CAADnVQ+YBiHR5NyAww3_Y7sW2iANPcVB42SEqdxrvXmaVSEgjg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+YBiHR5NyAww3_Y7sW2iANPcVB42SEqdxrvXmaVSEgjg@mail.gmail.com>
-From:   Hao Luo <haoluo@google.com>
-Date:   Thu, 3 Mar 2022 14:06:02 -0800
-Message-ID: <CA+khW7gXv4839+USyr4+LkpW-Y2Js7shZ4DsvGeZvdRmPr1Fdw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uy2afJ9ZPvmmHWI6b6VB2HM3H9arIDEQAaJ8qNi/u4s=;
+        b=JyfbucAp6r8NnR3nQL0Ngf/bjSstRVLWmL4cx+5gXUEDqHFw23UBGo24Cy0DH36fYV
+         8CStcvxLAtNLpS8hmgcdIDy+d9FK1KIGAK+HSSTy5Srgwx8fJQgxSN9ElhKz4kNk/wQc
+         SY++Vv0p+APK87wVYs5Y9s8t+/fd7BCqmU9hxtE9mDEZ0oi7C9Z3H8NBPiBkvtBOs8Gc
+         wv+7oxglMU68l4HQXBk0fBvErv5U07qbLBHw5IsP8enaQBb9OgNpGVBWUKv+LKtzmj8O
+         LoLS6kK/aErl/Ujt3bBlbIXEpsYLa6aK8VA0V2rHGVaPlmNa5xowHWfr6yOBx9t2+As0
+         MIMQ==
+X-Gm-Message-State: AOAM532YfIW7RTIxYQUZafGf/DH2dJrEceUJfXF5NSK+v8F8HeiqL8vE
+        7vkLq/oxsgSTZC3ugA/8wVqAlw==
+X-Google-Smtp-Source: ABdhPJwyV0kCAYS8zhtpz6l8KGJh5RlhH2rviKwOeDCFKFlpKmMI3raFfSdWuPxguPN1PV2EMTVkDg==
+X-Received: by 2002:a05:6602:242a:b0:640:746c:c2bd with SMTP id g10-20020a056602242a00b00640746cc2bdmr28851332iob.74.1646345997073;
+        Thu, 03 Mar 2022 14:19:57 -0800 (PST)
+Received: from [192.168.1.128] ([71.205.29.0])
+        by smtp.gmail.com with ESMTPSA id i14-20020a056e021d0e00b002c60beec66asm1878556ila.78.2022.03.03.14.19.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 03 Mar 2022 14:19:56 -0800 (PST)
+Subject: Re: [PATCH V2] selftests: Fix build when $(O) points to a relative
+ path
+To:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joe Burton <jevburton.kernel@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
-        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     kernel@collabora.com, kernelci@groups.io,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20220216223817.1386745-1-usama.anjum@collabora.com>
+ <46489cd9-fb7a-5a4b-7f36-1c9f6566bd93@collabora.com>
+ <63870982-62ba-97f2-5ee2-d4457a7a5cdb@linuxfoundation.org>
+ <9a643612-ea85-7b28-a792-770927836d43@linuxfoundation.org>
+ <ddb52ffe-5016-cc5a-3af4-a0a8e7b3e119@collabora.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a6096266-5063-d353-924d-cb0379d25380@linuxfoundation.org>
+Date:   Thu, 3 Mar 2022 15:19:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <ddb52ffe-5016-cc5a-3af4-a0a8e7b3e119@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,74 +85,62 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 3, 2022 at 12:04 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 3, 2022 at 12:02 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Mar 3, 2022 at 11:43 AM Hao Luo <haoluo@google.com> wrote:
-> > >
-> > > On Wed, Mar 2, 2022 at 6:29 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Mar 2, 2022 at 5:09 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > >
-> > > > >
-> > > > >
-> > > > > On 3/2/22 1:30 PM, Alexei Starovoitov wrote:
-> > > > > > On Wed, Mar 2, 2022 at 1:23 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > >>
-> > > > > >>
-> > > > > >>
-> > > > > >> On 2/25/22 3:43 PM, Hao Luo wrote:
-> > > > > >>> Add a new type of bpf tracepoints: sleepable tracepoints, which allows
-> > > > > >>> the handler to make calls that may sleep. With sleepable tracepoints, a
-> > > > > >>> set of syscall helpers (which may sleep) may also be called from
-> > > > > >>> sleepable tracepoints.
-> > > > > >>
-> > > > > >> There are some old discussions on sleepable tracepoints, maybe
-> > > > > >> worthwhile to take a look.
-> > > > > >>
-> > > > > >> https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
-> > > > > >
-> > > > > > Right. It's very much related, but obsolete too.
-> > > > > > We don't need any of that for sleeptable _raw_ tps.
-> > > > > > I prefer to stay with "sleepable" name as well to
-> > > > > > match the rest of the bpf sleepable code.
-> > > > > > In all cases it's faultable.
-> > > > >
-> > > > > sounds good to me. Agree that for the bpf user case, Hao's
-> > > > > implementation should be enough.
-> > > >
-> > > > Just remembered that we can also do trivial noinline __weak
-> > > > nop function and mark it sleepable on the verifier side.
-> > > > That's what we were planning to do to trace map update/delete ops
-> > > > in Joe Burton's series.
-> > > > Then we don't need to extend tp infra.
-> > > > I'm fine whichever way. I see pros and cons in both options.
-> > >
-> > > Joe is also cc'ed in this patchset, I will sync up with him on the
-> > > status of trace map work.
-> > >
-> > > Alexei, do we have potentially other variants of tp? We can make the
-> > > current u16 sleepable a flag, so we can reuse this flag later when we
-> > > have another type of tracepoints.
-> >
-> > When we added the ability to attach to kernel functions and mark them
-> > as allow_error_inject the usefulness of tracepoints and even
-> > writeable tracepoints was deminissed.
-> > If we do sleepable tracepoint, I suspect, it may be the last extension
-> > in that area.
-> > I guess I'm convincing myself that noinline weak nop func
-> > is better here. Just like it's better for Joe's map tracing.
->
-> To add to the above... The only downside of sleepable nop func
-> comparing to tp is the lack of static_branch.
-> So this nop call will always be there.
-> For map tracing and for cgroup mkdir/rmdir the few nanosecond
-> overhead of calling an empty function isn't even measurable.
+On 2/26/22 12:32 AM, Muhammad Usama Anjum wrote:
+> On 2/26/22 2:13 AM, Shuah Khan wrote:
+>> On 2/25/22 11:01 AM, Shuah Khan wrote:
+>>> On 2/25/22 10:22 AM, Muhammad Usama Anjum wrote:
+>>>> Any thoughts about it?
+>>>>
+>>>
+>>> No to post please.
+>>>
+>>>> On 2/17/22 3:38 AM, Muhammad Usama Anjum wrote:
+>>>>> Build of bpf and tc-testing selftests fails when the relative path of
+>>>>> the build directory is specified.
+>>>>>
+>>>>> make -C tools/testing/selftests O=build0
+>>>>> make[1]: Entering directory
+>>>>> '/linux_mainline/tools/testing/selftests/bpf'
+>>>>> ../../../scripts/Makefile.include:4: *** O=build0 does not exist.
+>>>>> Stop.
+>>>>> make[1]: Entering directory
+>>>>> '/linux_mainline/tools/testing/selftests/tc-testing'
+>>>>> ../../../scripts/Makefile.include:4: *** O=build0 does not exist.
+>>>>> Stop.
+>>>>>
+>>>>> Makefiles of bpf and tc-testing include scripts/Makefile.include file.
+>>>>> This file has sanity checking inside it which checks the output path.
+>>>>> The output path is not relative to the bpf or tc-testing. The sanity
+>>>>> check fails. Expand the output path to get rid of this error. The
+>>>>> fix is
+>>>>> the same as mentioned in commit 150a27328b68 ("bpf, preload: Fix build
+>>>>> when $(O) points to a relative path").
+>>>>>
+>>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>>>>> ---
+>>>>> Changes in V2:
+>>>>> Add more explaination to the commit message.
+>>>>> Support make install as well.
+>>>
+>>
+>> Does the same happen when you use make kselftest-all?
+> No, this problem doesn't appear when using make kselftest-all.
+> 
+> As separate output directory build was broken in kernel's top most
+> Makefile i.e., make kselftest-all O=dir. (I've sent separate patch to
+> fix this:
+> https://lore.kernel.org/lkml/20220223191016.1658728-1-usama.anjum@collabora.com/)
+> So people must have been using kselftest's internal Makefile directly to
+> keep object files in separate directory i.e., make -C
+> tools/testing/selftests O=dir and in this way the build of these tests
+> (bpf, tc-testing) fail. This patch is fixing those build errors.
+> 
+>>
+>> I am unable to reproduce what you are seeing?
+> make -C tools/testing/selftests O=dir should reproduce this problem.
+> 
 
-The overhead should be fine, I think. mkdir/rmdir won't be frequent
-operations. Thanks for the explanation. Let me give it a try and
-report back how it works.
+Applied to linux-kselftest next for Linux 5.18-rc1.
+
+thanks,
+-- Shuah
