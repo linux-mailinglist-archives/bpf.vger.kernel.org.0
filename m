@@ -2,52 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E18F4CC4D3
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 19:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5FC4CC4D4
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 19:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbiCCSPC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 13:15:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59724 "EHLO
+        id S234474AbiCCSPR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 13:15:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232699AbiCCSO6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 13:14:58 -0500
+        with ESMTP id S232699AbiCCSPR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 13:15:17 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B2C154D1F
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 10:14:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9337F1965E8
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 10:14:30 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8151361917
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 18:14:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72267C004E1;
-        Thu,  3 Mar 2022 18:14:11 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2D757618EF
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 18:14:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3CFC004E1
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 18:14:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646331251;
-        bh=LVSPewNmGhXRyzLyEm10SYfCvlpreycNSgNgIJS1/7Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RbS2Kbu1DpPOkrxl9uxTq8uJZ4POT6c3roRLNtoB7aJYNAaudVX1w84/Epu/fQBkb
-         cvTKzG72mN/5LUWhMTaw3VYuTFIeZVJxdT1blsse0UZwGu9A1Qu6Q+OvleUULCrFP6
-         sBqRLubxMSyQMeHjCZvMJHumKOK7s1lz/xQQZ6+M9/HZcAdDW/kF3rjy02WubZHArN
-         SaL+efNtKATeAweYzaYHgiHuETkeqgB8919eV36nTpaVZ9aqZ8FrQNZOx5fvcCRoET
-         J0aISwHFM+gXktb4IoUBb4aTjWxAL6LdASpHl/YQKLOdLCUi3+JNnO1jtuhbFUhiUM
-         +mpxHGm5zUPBw==
-Date:   Thu, 3 Mar 2022 11:14:04 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH bpf-next v2 5/8] compiler-clang.h: Add __diag
- infrastructure for clang
-Message-ID: <YiEFbKk12F0UPfx5@thelio-3990X>
-References: <20220303045029.2645297-1-memxor@gmail.com>
- <20220303045029.2645297-6-memxor@gmail.com>
+        s=k20201202; t=1646331269;
+        bh=qFUOAEusKf5EqlT1leY+fpapk6uaLFy25npXakzaPOU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LgUz89MlyL2oMwnV+jl1CbkoV4FbjRYo0SlhXSUZ5hMQ4yb4Pb/zp+uPocsPFMlLo
+         +PAx6suDpzaP2faoPunZF/mEOn2MyJE+M/fwgFgk+f3BRfUub8yYBjEuyRaYnm+WR3
+         zRK4lTnWpb3wOnfBAI1+ZbMVeC9JaNL1vEsPfnFHgH804PMs+l+YfcnTECikPFhXMi
+         kelhjewrFDrVG2AdHUUmuJIl02+yTU70VqMCcPqOYv5ablzsxGe4RqxQd5AZq/QTIB
+         gaB9H+Let7QPiYMJNQm63Ac6YvnY8T11fAlrpmyHwftuwyttNrOPF5VZyz2CrSkndp
+         vFaQFnxldDTtA==
+Received: by mail-ej1-f49.google.com with SMTP id qx21so12391548ejb.13
+        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 10:14:29 -0800 (PST)
+X-Gm-Message-State: AOAM532axeNxLpq1tqX4OxTHmUJXSnnjc3uGTPEOJQt8pP9l20TUdT3x
+        vlUFdxMfmtyVyIJXOzIcvQJDXZw55qX9UFuFOzChcw==
+X-Google-Smtp-Source: ABdhPJxnZKo6LX8xW1ggtkT/YnLsX1bDHLa/SMbYlFtKkMSZxzUgC3/QFBzNDtHaNzXIkRqX2USVwPgCqAewaig5tfo=
+X-Received: by 2002:a17:906:9814:b0:6da:a60b:f99b with SMTP id
+ lm20-20020a170906981400b006daa60bf99bmr1287850ejb.496.1646331267646; Thu, 03
+ Mar 2022 10:14:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220303045029.2645297-6-memxor@gmail.com>
+References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+ <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
+ <fe1d17e7e7d4b5e4cdeb9f96f5771ded23b7c8f0.camel@linux.ibm.com>
+ <CACYkzJ4fmJ4XtC6gx6k_Gjq0n5vjSJyq=L--H-Eho072HJoywA@mail.gmail.com> <04d878d4b2441bb8a579a4191d8edc936c5a794a.camel@linux.ibm.com>
+In-Reply-To: <04d878d4b2441bb8a579a4191d8edc936c5a794a.camel@linux.ibm.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 3 Mar 2022 19:14:16 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5RNDV582yt1xCZ8AQUW6v_o0Dtoc_XAQN1GXnoOmze6Q@mail.gmail.com>
+Message-ID: <CACYkzJ5RNDV582yt1xCZ8AQUW6v_o0Dtoc_XAQN1GXnoOmze6Q@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>, shuah@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        yhs@fb.com, revest@chromium.org, gregkh@linuxfoundation.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@google.com>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,80 +72,128 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Kumar,
+On Thu, Mar 3, 2022 at 5:30 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+>
+> On Thu, 2022-03-03 at 17:17 +0100, KP Singh wrote:
+> > On Thu, Mar 3, 2022 at 5:05 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > >
+> > > [Cc'ing Florent, Kees]
+> > >
+> > > Hi Alexei,
+> > >
+> > > On Wed, 2022-03-02 at 14:20 -0800, Alexei Starovoitov wrote:
+> > > > On Wed, Mar 02, 2022 at 12:13:55PM +0100, Roberto Sassu wrote:
+> > > > > Extend the interoperability with IMA, to give wider flexibility for the
+> > > > > implementation of integrity-focused LSMs based on eBPF.
+> > > > >
+> > > > > Patch 1 fixes some style issues.
+> > > > >
+> > > > > Patches 2-6 give the ability to eBPF-based LSMs to take advantage of the
+> > > > > measurement capability of IMA without needing to setup a policy in IMA
+> > > > > (those LSMs might implement the policy capability themselves).
+> > > > >
+> > > > > Patches 7-9 allow eBPF-based LSMs to evaluate files read by the kernel.
+> > > > >
+> > > > > Changelog
+> > > > >
+> > > > > v2:
+> > > > > - Add better description to patch 1 (suggested by Shuah)
+> > > > > - Recalculate digest if it is not fresh (when IMA_COLLECTED flag not set)
+> > > > > - Move declaration of bpf_ima_file_hash() at the end (suggested by
+> > > > >   Yonghong)
+> > > > > - Add tests to check if the digest has been recalculated
+> > > > > - Add deny test for bpf_kernel_read_file()
+> > > > > - Add description to tests
+> > > > >
+> > > > > v1:
+> > > > > - Modify ima_file_hash() only and allow the usage of the function with the
+> > > > >   modified behavior by eBPF-based LSMs through the new function
+> > > > >   bpf_ima_file_hash() (suggested by Mimi)
+> > > > > - Make bpf_lsm_kernel_read_file() sleepable so that bpf_ima_inode_hash()
+> > > > >   and bpf_ima_file_hash() can be called inside the implementation of
+> > > > >   eBPF-based LSMs for this hook
+> > > > >
+> > > > > Roberto Sassu (9):
+> > > > >   ima: Fix documentation-related warnings in ima_main.c
+> > > > >   ima: Always return a file measurement in ima_file_hash()
+> > > > >   bpf-lsm: Introduce new helper bpf_ima_file_hash()
+> > > > >   selftests/bpf: Move sample generation code to ima_test_common()
+> > > > >   selftests/bpf: Add test for bpf_ima_file_hash()
+> > > > >   selftests/bpf: Check if the digest is refreshed after a file write
+> > > > >   bpf-lsm: Make bpf_lsm_kernel_read_file() as sleepable
+> > > > >   selftests/bpf: Add test for bpf_lsm_kernel_read_file()
+> > > > >   selftests/bpf: Check that bpf_kernel_read_file() denies reading IMA
+> > > > >     policy
+> > > >
+> > > > We have to land this set through bpf-next.
+> > > > Please get the Acks for patches 1 and 2, so we can proceed.
+> > >
+> >
+> > Hi Mimi,
+> >
+> > > Each year in the LSS integrity status update talk, I've mentioned the
+> > > eBPF integrity gaps.  I finally reached out to KP, Florent Revest, Kees
+> >
+> > Thanks for bringing this up and it's very timely because we have been
+> > having discussion around eBPF program signing and delineating that
+> > from eBPF program integrity use-cases.
+> >
+> > My plan is to travel to LSS (travel and visa permitting) and we can discuss
+> > it more there.
+> >
+> > If you prefer we can also discuss it before in one of the BPF office hours:
+> >
+> > https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit#gid=0
+>
+> Sounds good.
+>
+> >
+> > > and others, letting them know that I'm concerned about the eBPF module
+> > > integrity gaps.  True there is a difference between signing the eBPF
+> > > source modules versus the eBPF generated output, but IMA could at least
+> > > verify the integrity of the source eBPF modules making sure they are
+> > > measured, the module hash audited, and are properly signed.
+> > >
+> > > Before expanding the ima_file_hash() or ima_inode_hash() usage, I'd
+> > > appreciate someone adding the IMA support to measure, appraise, and
+> > > audit eBPF modules.  I realize that closing the eBPF integrity gaps is
+> > > orthogonal to this patch set, but this patch set is not only extending
+> >
+> > This really is orthogonal and IMHO it does not seem rational to block this
+> > patchset on it.
+> >
+> > > the ima_file_hash()/ima_inode_hash() usage, but will be used to
+> > > circumvent IMA.  As per usual, IMA is policy based, allowing those
+> >
+> > I don't think they are being used to circumvent IMA but for totally
+> > different use-cases (e.g. as a data point for detecting attacks).
+> >
+> >
+> > > interested in eBPF module integrity to define IMA policy rules.
+>
+> That might be true for your usecase, but not Roberto's.  From the cover
+> letter above, Roberto was honest in saying:
+>
+> Patches 2-6 give the ability to eBPF-based LSMs to take advantage of
+> the measurement capability of IMA without needing to setup a policy in
+> IMA (those LSMs might implement the policy capability themselves).
 
-Thanks for sending this along!
+Currently to use the helper bpf_ima_inode_hash in LSM progs
+one needs to have a basic IMA policy in place just to get a hash,
+even if one does not need to use the whole feature-set provided by IMA.
+These patches would be quite beneficial for this user-journey.
 
-On Thu, Mar 03, 2022 at 10:20:26AM +0530, Kumar Kartikeya Dwivedi wrote:
-> From: Nathan Chancellor <nathan@kernel.org>
-> 
-> Add __diag macros similar to those in compiler-gcc.h, so that warnings
-> that need to be adjusted for specific cases but not globally can be
-> ignored for LLVM compilation mode as well.
+Even Robert's use case is to implement IMA policies in BPF this is still
+fundamentally different from IMA doing integrity measurement for BPF
+and blocking this patch-set on the latter does not seem rational and
+I don't see how implementing integrity for BPF would avoid your
+concerns.
 
-I would word this last sentence as:
 
-"ignored when building with clang."
 
-Technically speaking, LLVM is not the one emitting the warnings, clang
-is :) this is useful with LLVM=1 or CC=clang.
-
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: llvm@lists.linux.dev
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-
-You should add your signed-off-by here to notate that you have touched
-the patch per Documentation/process/submitting-patches.rst. It is also
-courteous to note that you wrote the commit message, something along the
-lines of:
-
-"[Kumar: Wrote commit message]
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>"
-
-Regardless, this looks good to me with the context of the other two
-patches:
-
-https://lore.kernel.org/r/20220303045029.2645297-7-memxor@gmail.com/
-https://lore.kernel.org/r/20220303045029.2645297-8-memxor@gmail.com/
-
-Cheers,
-Nathan
-
-> ---
->  include/linux/compiler-clang.h | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> index 3c4de9b6c6e3..f1aa41d520bd 100644
-> --- a/include/linux/compiler-clang.h
-> +++ b/include/linux/compiler-clang.h
-> @@ -68,3 +68,25 @@
->  
->  #define __nocfi		__attribute__((__no_sanitize__("cfi")))
->  #define __cficanonical	__attribute__((__cfi_canonical_jump_table__))
-> +
-> +/*
-> + * Turn individual warnings and errors on and off locally, depending
-> + * on version.
-> + */
-> +#define __diag_clang(version, severity, s) \
-> +	__diag_clang_ ## version(__diag_clang_ ## severity s)
-> +
-> +/* Severity used in pragma directives */
-> +#define __diag_clang_ignore	ignored
-> +#define __diag_clang_warn	warning
-> +#define __diag_clang_error	error
-> +
-> +#define __diag_str1(s)		#s
-> +#define __diag_str(s)		__diag_str1(s)
-> +#define __diag(s)		_Pragma(__diag_str(clang diagnostic s))
-> +
-> +#if CONFIG_CLANG_VERSION >= 110000
-> +#define __diag_clang_11(s)	__diag(s)
-> +#else
-> +#define __diag_clang_11(s)
-> +#endif
-> -- 
-> 2.35.1
-> 
+>
+> --
+> thanks,
+>
+> Mimi
+>
