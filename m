@@ -2,117 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4958D4CBFB3
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 15:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DEA64CC059
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 15:50:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbiCCON1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 09:13:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
+        id S234087AbiCCOvF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 09:51:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbiCCONZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 09:13:25 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED603206D;
-        Thu,  3 Mar 2022 06:12:36 -0800 (PST)
-Date:   Thu, 3 Mar 2022 15:12:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1646316754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kM28Ed3sQRC3n6r/X153q0nmqLuk+lNgIXo03RuPFtU=;
-        b=2eodbM+DUacNIcfi6r7IDwejEEQ2bEXBj8mWq+CBRazxwhbcIsIH7EeYXPJ5rCA6mvMCTf
-        3GGTNE5SIc7xDIfplxU4qu8M8d1JMoKvxRfBIocCESUJzs8LGJIqIdyAXKBneaFTz5Prt6
-        ePj+DpgM5nOqocQoUa7OxQC9tnKClPrfUPlaGM5wBotrJ0ATWdUZpk222idY8ExiITC90k
-        1EVFggdAAvmPmDH/T8+E9g+HV3OXcvVIwzLLz9ap6ZsZKAaK9l14rLj4/qRWWn5PKm1w79
-        MV+r8+pc1rXBIwvRIh2gpORb8MPqsTh95LHNpY75EczLBweUiNn7IUa/OIkblw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1646316754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kM28Ed3sQRC3n6r/X153q0nmqLuk+lNgIXo03RuPFtU=;
-        b=kjceKYxlZJVyI/gIO6gidBITF0FfybrqLTpobrQZh7a8lXYUzNvJanHyiD0sbx9ZG8nC7B
-        /zATaTCiVdeY1/BA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH net] xdp: xdp_mem_allocator can be NULL in
- trace_mem_connect().
-Message-ID: <YiDM0WRlWuM2jjNJ@linutronix.de>
-References: <YiC0BwndXiwxGDNz@linutronix.de>
- <875yovdtm4.fsf@toke.dk>
+        with ESMTP id S233911AbiCCOvD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 09:51:03 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE3718F230;
+        Thu,  3 Mar 2022 06:50:17 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D6A89B82601;
+        Thu,  3 Mar 2022 14:50:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 83634C340F0;
+        Thu,  3 Mar 2022 14:50:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646319014;
+        bh=OCUroMO+Hn4MAGjXlYAT3Z59GOg1NzgoFBzVVB2JnII=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CTua5J5BZFspbB5Snu2Tx3498/QYlHZzk2UWBhPxNU/xCeYjB7w5pGpdo4UpKAP3E
+         KLDq9e60/1YC93xKJ2seZSdWSaBj4Il9vnzO5RsJi8GXpDCf7agbZMoauTuoPAqodX
+         z72qv6EkiEB2TpW75rstfZ/wTyRoXQs5JHXDXkLFSY9KvPZNTY3ub3SV6wIaRZnta1
+         0rQUAcsk/litD1gCGzMbl2fbL9I/4ViZnhFfLyCb832eHuBhz+At+wFUCs+sZwaXsm
+         23JOnMWMcH3Eqe2O05dOehxpmeRV52lxU9n/8bMG7HmvQkPna/vbH4DwA4oHJlsNNn
+         sXgUwx9bOdpTg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 69A93EAC096;
+        Thu,  3 Mar 2022 14:50:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <875yovdtm4.fsf@toke.dk>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v6 net-next 0/13] Preserve mono delivery time (EDT) in
+ skb->tstamp
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164631901442.29171.11893100741370106265.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Mar 2022 14:50:14 +0000
+References: <20220302195519.3479274-1-kafai@fb.com>
+In-Reply-To: <20220302195519.3479274-1-kafai@fb.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        andrii@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, kernel-team@fb.com,
+        willemb@google.com
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2022-03-03 14:59:47 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
->=20
-> > Since the commit mentioned below __xdp_reg_mem_model() can return a NULL
-> > pointer. This pointer is dereferenced in trace_mem_connect() which leads
-> > to segfault. It can be reproduced with enabled trace events during ifup.
-> >
-> > Only assign the arguments in the trace-event macro if `xa' is set.
-> > Otherwise set the parameters to 0.
-> >
-> > Fixes: 4a48ef70b93b8 ("xdp: Allow registering memory model without rxq =
-reference")
-> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->=20
-> Hmm, so before the commit you mention, the tracepoint wasn't triggered
-> at all in the code path that now sets xdp_alloc is NULL. So I'm
-> wondering if we should just do the same here? Is the trace event useful
-> in all cases?
+Hello:
 
-Correct. It says:
-|              ip-1230    [003] .....     3.053473: mem_connect: mem_id=3D0=
- mem_type=3DPAGE_SHARED allocator=3D0000000000000000 ifindex=3D2
+This series was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-> Alternatively, if we keep it, I think the mem.id and mem.type should be
-> available from rxq->mem, right?
+On Wed, 2 Mar 2022 11:55:19 -0800 you wrote:
+> skb->tstamp was first used as the (rcv) timestamp.
+> The major usage is to report it to the user (e.g. SO_TIMESTAMP).
+> 
+> Later, skb->tstamp is also set as the (future) delivery_time (e.g. EDT in TCP)
+> during egress and used by the qdisc (e.g. sch_fq) to make decision on when
+> the skb can be passed to the dev.
+> 
+> [...]
 
-Yes, if these are the same things. In my case they are also 0:
+Here is the summary with links:
+  - [v6,net-next,01/13] net: Add skb->mono_delivery_time to distinguish mono delivery_time from (rcv) timestamp
+    https://git.kernel.org/netdev/net-next/c/a1ac9c8acec1
+  - [v6,net-next,02/13] net: Add skb_clear_tstamp() to keep the mono delivery_time
+    https://git.kernel.org/netdev/net-next/c/de799101519a
+  - [v6,net-next,03/13] net: Handle delivery_time in skb->tstamp during network tapping with af_packet
+    https://git.kernel.org/netdev/net-next/c/27942a15209f
+  - [v6,net-next,04/13] net: Clear mono_delivery_time bit in __skb_tstamp_tx()
+    https://git.kernel.org/netdev/net-next/c/d93376f503c7
+  - [v6,net-next,05/13] net: Set skb->mono_delivery_time and clear it after sch_handle_ingress()
+    https://git.kernel.org/netdev/net-next/c/d98d58a00261
+  - [v6,net-next,06/13] net: ip: Handle delivery_time in ip defrag
+    https://git.kernel.org/netdev/net-next/c/8672406eb5d7
+  - [v6,net-next,07/13] net: ipv6: Handle delivery_time in ipv6 defrag
+    https://git.kernel.org/netdev/net-next/c/335c8cf3b537
+  - [v6,net-next,08/13] net: ipv6: Get rcv timestamp if needed when handling hop-by-hop IOAM option
+    https://git.kernel.org/netdev/net-next/c/b6561f8491ca
+  - [v6,net-next,09/13] net: Get rcv tstamp if needed in nfnetlink_{log, queue}.c
+    https://git.kernel.org/netdev/net-next/c/80fcec675112
+  - [v6,net-next,10/13] net: Postpone skb_clear_delivery_time() until knowing the skb is delivered locally
+    https://git.kernel.org/netdev/net-next/c/cd14e9b7b8d3
+  - [v6,net-next,11/13] bpf: Keep the (rcv) timestamp behavior for the existing tc-bpf@ingress
+    https://git.kernel.org/netdev/net-next/c/7449197d600d
+  - [v6,net-next,12/13] bpf: Add __sk_buff->delivery_time_type and bpf_skb_set_skb_delivery_time()
+    https://git.kernel.org/netdev/net-next/c/8d21ec0e46ed
+  - [v6,net-next,13/13] bpf: selftests: test skb->tstamp in redirect_neigh
+    https://git.kernel.org/netdev/net-next/c/c803475fd8dd
 
-|              ip-1245    [000] .....     3.045684: mem_connect: mem_id=3D0=
- mem_type=3DPAGE_SHARED allocator=3D0000000000000000 ifindex=3D2
-|        ifconfig-1332    [003] .....    21.030879: mem_connect: mem_id=3D0=
- mem_type=3DPAGE_SHARED allocator=3D0000000000000000 ifindex=3D3
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-So depends on what makes sense that tp can be skipped for xa =3D=3D NULL or
-remain with
-               __entry->mem_id         =3D rxq->mem.id;
-               __entry->mem_type       =3D rxq->mem.type;
-	       __entry->allocator      =3D xa ? xa->allocator : NULL;
 
-if it makes sense.
-
-> -Toke
-
-Sebastian
