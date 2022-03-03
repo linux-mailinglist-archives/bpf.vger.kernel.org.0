@@ -2,106 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 305564CB88F
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 09:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0F5F4CB99B
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 09:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbiCCITh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 03:19:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48116 "EHLO
+        id S230115AbiCCIv4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 03:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbiCCITg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 03:19:36 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F9D1712B4;
-        Thu,  3 Mar 2022 00:18:51 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id z16so4149026pfh.3;
-        Thu, 03 Mar 2022 00:18:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vU1b7wDDnqVNlq1Z3Hvkh5KsF871sfs1Pb9VrlvOM1A=;
-        b=qpwp/6D+p9CYtGRLDE/pjwu0ektMH0lMywmc/153ea/IKQFvTa0ijFGROHSzpG0ur2
-         0lxIRSCwR55CVXs3b4YkLKTlfXCLiaDoP9TEl0pHT65bK6dIkDIto8ztD28Fc6QR9e1G
-         94yRK/QPDODBgmyvQuwUcgpAimqi7ihlZsrXkPZVOz1Hz7F7DtUQCdrZgsx+h27uzd0O
-         ABRUNvI5dDHu7TcJ7Yx6tBpjMEVnXwl3RV80aHQEC6vbSJx6aIMqkTC3At0wd7wpcfFS
-         5OD7VtKzLqmjB/f5+Rs2HOIRipvXTg32g8OUFJ2JisK5njm6Dtl0MboQUoYb5nS9LjDD
-         08mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vU1b7wDDnqVNlq1Z3Hvkh5KsF871sfs1Pb9VrlvOM1A=;
-        b=3CyAXQFS0evdBRiUOyskkUERs+ipi1DxehTA7f6SQos8WWOBPVUrC9qQZne6cs1lK6
-         DqZdNMtz6FTFDzkFHHkc4qseECCW0gPSgZn5Gz2ZqY4BvOPSu53L/5UAyWbOoCeT/ZVh
-         zu7URgPZN6z8DNGmDwlKnyWXXFS2KGxRXtf2gNDGOGjCwO8w+1XXXmk3wH1ubSOGFG9Y
-         CdqpR0heBVzz2+p9oCpPrvAE18ablU580eAITUeEYZwI+boqXaeLy94VGu3qZ94C++3V
-         VUIaNcjYK24ndSQxajoL06VemzCr/eFOBY+kgKfQOzXAuNV+5WbyvsmPQouZP/asvVO0
-         Y5eg==
-X-Gm-Message-State: AOAM533mCvA0HzFDGRfWvtP6N036N+QI+q1glAIuomM9wwsq4LZh0EN/
-        mHlBuRWeCFYWGYnEZFutkInHuAVMxMnNCZOM
-X-Google-Smtp-Source: ABdhPJyaZ7N5WWHDTy0tfYJJ9BH5pHdFZMLr4vk8eCMjqLRRsNjkUIBSBREIrqJRHdC14YEzXyDjIg==
-X-Received: by 2002:a65:41c3:0:b0:363:5711:e234 with SMTP id b3-20020a6541c3000000b003635711e234mr29286766pgq.386.1646295530702;
-        Thu, 03 Mar 2022 00:18:50 -0800 (PST)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id k20-20020a056a00135400b004ecc81067b8sm1733592pfu.144.2022.03.03.00.18.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 00:18:50 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] bpf: Replace strncpy() with strscpy_pad()
-Date:   Thu,  3 Mar 2022 16:18:00 +0800
-Message-Id: <20220303081800.82653-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S230512AbiCCIvy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 03:51:54 -0500
+Received: from mail.extrapart.com.pl (mail.extrapart.com.pl [217.61.21.221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C2E175867
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 00:51:07 -0800 (PST)
+Received: by mail.extrapart.com.pl (Postfix, from userid 1001)
+        id A5733A1BF2; Thu,  3 Mar 2022 08:50:57 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=extrapart.com.pl;
+        s=mail; t=1646297465;
+        bh=buBwkictM90Vyd8ElDbF20ov3CLfq+fIaZvvC+nvN7k=;
+        h=Date:From:To:Subject:From;
+        b=ejG0qUkB6EqB76/6D1Jk543R5dSGngtC+snljRUfoSNqg1CbbY/MXrfIK/WxNnGka
+         j2/Pm8LaA4xgfcD5lD2/pMKOAS+7SWfq/qN/9ZM/pwEUW/esATrrcBnirrsV9kNlvr
+         EtvQWTHWKlNRqITAIf5JIzatfJmrMc4VQv6+KaiBbYDy22h5fNrpYOWCBe0GWIGDzI
+         Ri9Pv/JNwysSXVku70mU9CRVhF9RwT3Mxkf2FPoc+gcFBJou17R6vG8w6wQeRQtFNg
+         +qcCoa7AX9dUoMuQOB/joCJ1l/uqJ735RO5Hhvb83JiLOxnSFUCs+a6c4WPssyzWNJ
+         3H6Gwak4/+HXg==
+Received: by mail.extrapart.com.pl for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 08:50:53 GMT
+Message-ID: <20220303074500-0.1.s.17d7.0.uelcgmb6rs@extrapart.com.pl>
+Date:   Thu,  3 Mar 2022 08:50:53 GMT
+From:   "Jacek Szkudlarski" <jacek.szkudlarski@extrapart.com.pl>
+To:     <bpf@vger.kernel.org>
+Subject: Wycena paneli fotowoltaicznych
+X-Mailer: mail.extrapart.com.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using strncpy() on NUL-terminated strings is considered deprecated[1],
-replace it with strscpy_pad().
+Dzie=C5=84 dobry,
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
+irm=C4=85.
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- kernel/bpf/helpers.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
+ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index ae64110a98b5..d03b28761a67 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -225,13 +225,7 @@ BPF_CALL_2(bpf_get_current_comm, char *, buf, u32, size)
- 	if (unlikely(!task))
- 		goto err_clear;
- 
--	strncpy(buf, task->comm, size);
--
--	/* Verifier guarantees that size > 0. For task->comm exceeding
--	 * size, guarantee that buf is %NUL-terminated. Unconditionally
--	 * done here to save the size test.
--	 */
--	buf[size - 1] = 0;
-+	strscpy_pad(buf, task->comm, size);
- 	return 0;
- err_clear:
- 	memset(buf, 0, size);
--- 
-2.35.1
+Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
+ropozycji?
 
+
+Pozdrawiam,
+Jacek Szkudlarski
