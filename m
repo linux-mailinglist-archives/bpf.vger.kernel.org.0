@@ -2,109 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CD04CC408
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 18:35:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FD04CC442
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 18:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbiCCRgK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 12:36:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36280 "EHLO
+        id S234070AbiCCRtI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 12:49:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbiCCRgJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 12:36:09 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D835031922
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 09:35:22 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id i11so9801257lfu.3
-        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 09:35:22 -0800 (PST)
+        with ESMTP id S229805AbiCCRtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 12:49:07 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384E055227;
+        Thu,  3 Mar 2022 09:48:21 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id d17so5355676pfl.0;
+        Thu, 03 Mar 2022 09:48:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=gJO9t+nw81mCakkJU4rcitth7kTwFygbrgST2tWJ3Vo=;
-        b=qyoVlFBomloAoUn1xlqx5IqE4FsUTuCVy8zHzcuJ6wcDz2/Xvarcsb0GQF5O5/xLF5
-         LZArGmIjj93gpo5DX6O45bTPYBcCKTFF+h220RDpA7/hkvvRNC32IKf1csyrUlo4wQ0X
-         HhwF+6j4xdD4Z2FiJRipv6i5ijnAbRFBsmQsA=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DWgo+Jyh9HNlFj03oyr40rqSHaNpbhrExburNx9Vpkw=;
+        b=kSQUhMu5yuqyHz/OCTt4rXjFkBdVCHlBTyhEuNalsz+cKJyB4s2ZZ07jrsUAiBJK1S
+         SVe7/9uDGyyPa/SGynl4cNP5Jf4rjwImfNdvdNARuS9z8MiJOPSdJaVkRQ1aUVciVeh4
+         Lxg6q4YgqnlcxiGVdDGwr2APOvYx24Jysb6K/pwa7LROp/VnTcs2vVEgedtjresmbBbG
+         iw5FjqmmPRblwIgcHSOiRCzpwed+oOif9A+kwJ8H1VABDTwkT6/ARUuac4rwiy8XWDWT
+         ZKYxQjUyF56oP9M8pS4rjydPZjjtipXsIEHQm8zEcbK+bJPpFj4Vcs9oHyrKsJe+NYtR
+         Ql0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=gJO9t+nw81mCakkJU4rcitth7kTwFygbrgST2tWJ3Vo=;
-        b=WnK/4tF/gvbCteZRv85Gc8HaFY5iKsQwHMktv/HNJzAp67yL/hUSccSHvz5sHgfQwv
-         IM9N/jGVOrJPXxOJQlZ9a1AYHJ/BhM/83J4OTr3KZIzXD66XL+nk5z7YmBUjOLLRYeJG
-         PFjATpF2pEtgYdbK37s9rVdHgs5o6woZG8WEg4th6xZ6tPwqSCXOEUrpS/S4Miea+sjj
-         LcqszOYm+Odcbx3qM68gC5oU6SGbTcXjuKnJ7SrQcxExLIVTQLypeJPA0fuw1av5QdnG
-         NK9cyKUso6PlGJGb3chJA0x93eisusM/dUFfv81x5hIUF+k1395DIzydOBrLjA/2gize
-         X8mA==
-X-Gm-Message-State: AOAM531IQGcj+SQczplAyqo9Zq+Zug84AXcR2u+HBeVSjemrTy49hrJw
-        vVxPKy8qa8UX9Aihml6P52pcdQ==
-X-Google-Smtp-Source: ABdhPJzZI8wTAhP+syWE9VPh8Qg10UjeSdqOap0TYm4UFweiyRiNQpiwd1zO6gZNGkzqAu4agWfSxw==
-X-Received: by 2002:ac2:4d29:0:b0:445:b80c:1130 with SMTP id h9-20020ac24d29000000b00445b80c1130mr6625873lfk.21.1646328919443;
-        Thu, 03 Mar 2022 09:35:19 -0800 (PST)
-Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id c12-20020a056512074c00b004458cd423f7sm542354lfs.68.2022.03.03.09.35.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DWgo+Jyh9HNlFj03oyr40rqSHaNpbhrExburNx9Vpkw=;
+        b=Xwy7CuMEdUfNme4Gdx6T19M2HlVA2DhhA27f1s0OAfen6vzTmMFHGgK7cjXjmwQxhw
+         6b0NkOuDcq94AQSImbcl2U2p44vMaTMaJ5x1FcVpYrHFs8oefFI4S6wpqxoAXCMXiibf
+         ugYa4OmcBFdNdLdTX9OIf0x5hN/Yq4lOatrZN4FIM/+s6JXyXdMl5eRXOgyRBWb0Lw23
+         yplt7rtAXw+/N1fwv/meIZmuQQ960zcogy5k36qRWs3AgPzEYEREd4hoT8VL22EiB/tB
+         XBMAZji1+tnc3DfgQ6t7wYqNUXTdFdWN1q26Yy8KalknI9rykdrIxkjavkZBAv7rLxqr
+         mBgA==
+X-Gm-Message-State: AOAM532kOewKyMlNnCMBOoeXkE9Iat8oFMBm8E8PXwOUhCp9bLIfFChL
+        hQminyQm0VYKLm6SIoe0Q9c=
+X-Google-Smtp-Source: ABdhPJwNfqVoyFjxKcFMzuf/BBbRvC4r94aov9WO7W4ncBMoWcEO5TpSJ9wSrk7htFbPWpKLwiRX3w==
+X-Received: by 2002:a62:7ad5:0:b0:4e1:5bda:823b with SMTP id v204-20020a627ad5000000b004e15bda823bmr39246215pfc.75.1646329700710;
+        Thu, 03 Mar 2022 09:48:20 -0800 (PST)
+Received: from localhost.localdomain ([203.205.141.116])
+        by smtp.gmail.com with ESMTPSA id a38-20020a056a001d2600b004f0f0f852a4sm3209395pfx.77.2022.03.03.09.48.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 09:35:19 -0800 (PST)
-References: <20220227202757.519015-1-jakub@cloudflare.com>
- <20220227202757.519015-3-jakub@cloudflare.com>
- <20220301062536.zs6z6q56exu3hgvv@kafai-mbp.dhcp.thefacebook.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com, Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2 2/3] selftests/bpf: Check dst_port only on
- the client socket
-Date:   Thu, 03 Mar 2022 18:34:38 +0100
-In-reply-to: <20220301062536.zs6z6q56exu3hgvv@kafai-mbp.dhcp.thefacebook.com>
-Message-ID: <87zgm7gcrt.fsf@cloudflare.com>
+        Thu, 03 Mar 2022 09:48:20 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: imagedong@tencent.com
+To:     dsahern@kernel.org, kuba@kernel.org
+Cc:     rostedt@goodmis.org, mingo@redhat.com, davem@davemloft.net,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, imagedong@tencent.com,
+        edumazet@google.com, talalahmad@google.com, keescook@chromium.org,
+        ilias.apalodimas@linaro.org, alobakin@pm.me,
+        flyingpeng@tencent.com, mengensun@tencent.com, atenart@kernel.org,
+        bigeasy@linutronix.de, memxor@gmail.com, arnd@arndb.de,
+        pabeni@redhat.com, willemb@google.com, vvs@virtuozzo.com,
+        cong.wang@bytedance.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH net-next 0/7] net: dev: add skb drop reasons to net/core/dev.c
+Date:   Fri,  4 Mar 2022 01:47:00 +0800
+Message-Id: <20220303174707.40431-1-imagedong@tencent.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 10:25 PM -08, Martin KaFai Lau wrote:
-> On Sun, Feb 27, 2022 at 09:27:56PM +0100, Jakub Sitnicki wrote:
->> cgroup_skb/egress programs which sock_fields test installs process packets
->> flying in both directions, from the client to the server, and in reverse
->> direction.
->> 
->> Recently added dst_port check relies on the fact that destination
->> port (remote peer port) of the socket which sends the packet is known ahead
->> of time. This holds true only for the client socket, which connects to the
->> known server port.
->> 
->> Filter out any traffic that is not bound to be egressing from the client
->> socket in the test program for reading the dst_port.
->> 
->> Fixes: 8f50f16ff39d ("selftests/bpf: Extend verifier and bpf_sock tests for dst_port loads")
->> Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
->> ---
->>  .../testing/selftests/bpf/progs/test_sock_fields.c  | 13 +++++++++++--
->>  1 file changed, 11 insertions(+), 2 deletions(-)
->> 
->> diff --git a/tools/testing/selftests/bpf/progs/test_sock_fields.c b/tools/testing/selftests/bpf/progs/test_sock_fields.c
->> index 3e2e3ee51cc9..186fed1deaab 100644
->> --- a/tools/testing/selftests/bpf/progs/test_sock_fields.c
->> +++ b/tools/testing/selftests/bpf/progs/test_sock_fields.c
->> @@ -42,6 +42,11 @@ struct {
->>  	__type(value, struct bpf_spinlock_cnt);
->>  } sk_pkt_out_cnt10 SEC(".maps");
->>  
->> +enum {
->> +	TCP_SYN_SENT = 2,
->> +	TCP_LISTEN = 10,
-> Thanks for the clean up.
->
-> A nit. directly use BPF_TCP_SYN_SENT and BPF_TCP_LISTEN.
+From: Menglong Dong <imagedong@tencent.com>
 
-Thanks. Completely forgot about those.
+In the commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()"),
+we added the support of reporting the reasons of skb drops to kfree_skb
+tracepoint. And in this series patches, reasons for skb drops are added
+to the link layer, which means that 'net/core/dev.c' is our target.
+
+Following functions are processed:
+
+sch_handle_egress()
+__dev_xmit_skb()
+enqueue_to_backlog()
+do_xdp_generic()
+sch_handle_ingress()
+__netif_receive_skb_core()
+
+and following new drop reasons are added (what they mean can be see in
+the document of them):
+
+SKB_DROP_REASON_QDISC_EGRESS
+SKB_DROP_REASON_QDISC_DROP
+SKB_DROP_REASON_CPU_BACKLOG
+SKB_DROP_REASON_XDP
+SKB_DROP_REASON_QDISC_INGRESS
+SKB_DROP_REASON_PTYPE_ABSENT
+
+In order to add skb drop reasons to kfree_skb_list(), the function
+kfree_skb_list_reason() is introduced in the 2th patch, which will be
+used in __dev_xmit_skb() in the 3th patch.
+
+
+Menglong Dong (7):
+  net: dev: use kfree_skb_reason() for sch_handle_egress()
+  net: skb: introduce the function kfree_skb_list_reason()
+  net: dev: add skb drop reasons to __dev_xmit_skb()
+  net: dev: use kfree_skb_reason() for enqueue_to_backlog()
+  net: dev: use kfree_skb_reason() for do_xdp_generic()
+  net: dev: use kfree_skb_reason() for sch_handle_ingress()
+  net: dev: use kfree_skb_reason() for __netif_receive_skb_core()
+
+ include/linux/skbuff.h     | 32 +++++++++++++++++++++++++++++++-
+ include/trace/events/skb.h |  5 +++++
+ net/core/dev.c             | 25 ++++++++++++++++---------
+ net/core/skbuff.c          |  7 ++++---
+ 4 files changed, 56 insertions(+), 13 deletions(-)
+
+-- 
+2.35.1
+
