@@ -2,66 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37E704CB5FD
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 05:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39F34CB61E
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 06:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229664AbiCCEvt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 23:51:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46678 "EHLO
+        id S229514AbiCCE7r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 23:59:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbiCCEvs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 23:51:48 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F618164D12
-        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 20:51:03 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id t11so4473245ioi.7
-        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 20:51:03 -0800 (PST)
+        with ESMTP id S229696AbiCCE7q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 23:59:46 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912B213FAF5
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 20:59:00 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id k7so3134911ilo.8
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 20:59:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KMkbAw3Kp5EU/cxL2G8cv6kwfEfWhomGZ5srHO4udII=;
-        b=gUy78XL/jhztpJGUxU+WwzFsRT4vvY16WHta3XvuIvzl81dcAHD5O7Bb0OYLfkohyJ
-         h4FWv3FfwSW3WnjEGcfO9MdlaVQyS47wJ6muUnXl+QfjASgwPu8LXmJHGlcmCGLURdx9
-         JpXP4mEvAnw+NiEK2Dxu+Nz04XUhHOdFKLAO15kDKb6AOWRyr8ku98t1S+nZ8WQNW7rS
-         X9mie4pdEXUrQ+hk8Y4y7qulsQ3gHSkf5kUlC7FKrQhPgEEjx+b+0zGPBIXMw4hWNmNq
-         OG54br+Cv3v4lVKKJ5nZFBzECTGV0KpCGc7aY3gZoqcwMGEakxqskPWTNvdlo0F/GgHx
-         WUpA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VMQ/XvxGa0NDlk6zpJ0bYw9GieiJspLDRSpN4Iu0As0=;
+        b=H0s983Tl2lhGVjcMQ/gye5N5YgUbD8vn8MIroIMU9tpFrH6R312h3zqO7LP4w1kC9g
+         dcsfSzazrvfMPQl89HMffbHH3qtRhxacJZhB4rQuyM9XLTZbj+wCQ78yuD0sfa2Gk+8L
+         oHTolb5VgrRWe75pnRtnVjnbrKhfh4qCO/wm5pvOAq8gtH5Gv2SDapXEaQ8ybceYgjrR
+         D4fg6gLW0sHTEd/+Zp1JQhdk9njGlGDD4oxuXJepry96LzDLJP2A5HwGuN7l3V2Y3YnW
+         diWegt49z7rmokccAhZ0cIT7oH7fEDA/ZPx9wks+JSyJVNmEke6FVeaaoG+YIQtc9286
+         aUTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KMkbAw3Kp5EU/cxL2G8cv6kwfEfWhomGZ5srHO4udII=;
-        b=sIaBy9j2COTwEeHctylpMAFGiqurdQgbeSUzYttyo+C0gzU7sIaCkl/924JCJEBwk2
-         iJ93ueXqOxSAAA7MSIEM2Vp/VDh0C56gaqq8ZjcG/dCHX5GOFkBJU/4ORoNbGeH7Ywum
-         J4TZ0klAEA773Ie2J+ZSd6BVDaNDdBTAN+vG2sGtqM+odqrG+ICxZxavAREWd/AhlHGU
-         Tx3mTnSg4IZLypcFl0RqFVhWqQpZ6/sa1C+nB3ktkfSDlLtwP71oecYt/5OY5s+RiVyf
-         e49ODZsz+52Ae63h7tHwqdUW6WxdyWepLntas/kgFQZ0FumP9ZnwtQsueJhaDG3JFf4g
-         FCUw==
-X-Gm-Message-State: AOAM533my9UgCoMoo5fLBewW01egTNjEKacBAK4XkyLd+u4vAoiwagNC
-        HEFlc5nXRDgaYrnYMMhicgWeMbIf0UU=
-X-Google-Smtp-Source: ABdhPJy12UlChhFH8KQptk/ZKhPVEWVJuoXrNDHOol6Gfeh9nTus5wnHDyI4vs1qnVFDZ3zXR15x5A==
-X-Received: by 2002:a05:6638:594:b0:314:32a6:90b2 with SMTP id a20-20020a056638059400b0031432a690b2mr27914139jar.128.1646283062689;
-        Wed, 02 Mar 2022 20:51:02 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id l3-20020a056e020e4300b002c242b778a5sm664943ilk.74.2022.03.02.20.51.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 20:51:02 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v2 8/8] selftests/bpf: Add tests for kfunc register offset checks
-Date:   Thu,  3 Mar 2022 10:20:29 +0530
-Message-Id: <20220303045029.2645297-9-memxor@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220303045029.2645297-1-memxor@gmail.com>
-References: <20220303045029.2645297-1-memxor@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VMQ/XvxGa0NDlk6zpJ0bYw9GieiJspLDRSpN4Iu0As0=;
+        b=wObjjr5I6ex+BRZeQFbRxuXP2WaYCvpkGzhVE6pkuT+XB6TcNKE1u8v87zPm2TE73g
+         v1Lf6yfiz6woWLTc9fPxf13rZYcwtz2iOvOigTJF2d3e/LjvLVgmK2tYx3XsO0ugeAT/
+         m7vXagfdZ7q6GIr8PWYLaZ7F8uSiIfVdDnc86q3mY1omr4esnjo94X+srRatTjFUkCzR
+         UCeYt3v8Senguniedzfx+vzteYGxSuLt1Oy0mQd8agKYQ7d+QltHqDuTE1F7qWr2N9o1
+         1WvRFO4+waaLlozEQ2kulMrOKOwqpb0f7B17crc2+xfVY6JZ739K0PnR93T7zSUQ0a9C
+         EkRQ==
+X-Gm-Message-State: AOAM533rkVKbi3y1UxaU5gKF0d+0xrulT9akeB0LG5Q1TsVCb2f3iLnG
+        YPq/8SDHYTBJmYNuMCqM2MUo3APz/fLn/Pix7xFeNZXo6ow=
+X-Google-Smtp-Source: ABdhPJyvGNOWboByUESUm/R1renAsBxyZcFHo9Zu+tZnZh8peX1kr1MPMhINqwNilRSL9iuTpyp6mcC1TBPdjvENwVY=
+X-Received: by 2002:a92:c148:0:b0:2c2:615a:49e9 with SMTP id
+ b8-20020a92c148000000b002c2615a49e9mr30424404ilh.98.1646283539910; Wed, 02
+ Mar 2022 20:58:59 -0800 (PST)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5152; h=from:subject; bh=ZA6niTy+2R3m76GIXQOKUtiklHS04OcrNRxjzRASO10=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiIEj/C0tK1mYDmNKcpRBqCXnBIQq6F9rLMiogUOof YrvxetOJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiBI/wAKCRBM4MiGSL8RyljzD/ 44L9u+MECUkeNxCPIAjEVO1ONwGZGwiPSS4hRKEZ+OZxDY8tNvVmCS5O2/mhlRv//j7zxvQDNxJ3J/ fmkLbJuhxUuYduR4aNLDrxrlYumwhN6qdGQGwABiC/ndSEHHWpCOurkt8xeopAZEeTfMkVP5Xmut5c dQAfFrXURajfjFsi5PSjziju4FM5Zb++xXiHH7tX7e4IE/bWfVUs7TF0c4k8sFLEO7WrbyXiwpC8sN rMhw9Tq3GEGz2KRis+1H3EMwueNSGCkYqKo2q1v5EoigOJ+n5+QauAD3qvrt4Og0Txmvlhb2uyXGKl LLHGDmlMCWYRhC2DvyV2tbZtla6xFmGCutrsviCUDidR79PINeK565U+62Gh+A2Y66ClQ1CwQUIuxl SycGMYeBltF6JBXVfyt9xbJGUd7x7MNWX2J5K7OM59ydl+tO9u5BGrfSbqNLHjFhmncv6/CkuC6gaj 32dzSro4RJg1doMDQr1CgjLi54XZ3R9+XM7oQgf6EE4m6LzmTV26pukd54B5LVNtPcuIQlmMV3YRBz dWHQRG+UcTNGHZtj815dSElot6KQ+w03lXi4yBAJO8mEvyadAXCw3nEmKamlMHqXHW6aQyZxsm7fEa kcogFiI6enkq+KsHVMO2RqCJFQC4fOs6fTpBkUGiAxc3WQUgZjRUV54qQBIA==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+References: <cover.1646188795.git.delyank@fb.com> <89a850b9c06835b839da76386ee0e4bbeaf5a37b.1646188795.git.delyank@fb.com>
+In-Reply-To: <89a850b9c06835b839da76386ee0e4bbeaf5a37b.1646188795.git.delyank@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Mar 2022 20:58:48 -0800
+Message-ID: <CAEf4Bzb4S+Vs6-TfzMYrieSQdR0yeg1DaCguYnt6PgQiDtHBHA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: test subskeleton functionality
+To:     Delyan Kratunov <delyank@fb.com>
+Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,157 +67,290 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Include a few verifier selftests that test against the problems being
-fixed by previous commits, i.e. release kfunc always require
-PTR_TO_BTF_ID fixed and var_off to be 0, and negative offset is not
-permitted and returns a helpful error message.
+On Tue, Mar 1, 2022 at 6:49 PM Delyan Kratunov <delyank@fb.com> wrote:
+>
+> The new Makefile support via SUBSKELS and .skel.h-deps is a mixture
+> of LINKED_SKELS and LSKELS. By definition subskeletons require multiple
+> BPF object files to be linked together. However, generating the
+> subskeleton only requires the library object file and not the final
+> program object file.
+>
+> Signed-off-by: Delyan Kratunov <delyank@fb.com>
+> ---
+>  tools/testing/selftests/bpf/Makefile          | 18 ++++++++-
+>  .../selftests/bpf/prog_tests/subskeleton.c    | 38 +++++++++++++++++++
+>  .../bpf/prog_tests/subskeleton_lib.c          | 29 ++++++++++++++
+>  .../selftests/bpf/progs/test_subskeleton.c    | 20 ++++++++++
+>  .../bpf/progs/test_subskeleton_lib.c          | 22 +++++++++++
+>  5 files changed, 125 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index fe12b4f5fe20..57da63ba790b 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -326,19 +326,23 @@ endef
+>  SKEL_BLACKLIST := btf__% test_pinning_invalid.c test_sk_assign.c
+>
+>  LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h          \
+> -               linked_vars.skel.h linked_maps.skel.h
+> +               linked_vars.skel.h linked_maps.skel.h test_subskeleton.skel.h
+> +
+> +SUBSKELS := test_subskeleton_lib.skel.h
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- net/bpf/test_run.c                           | 11 +++
- tools/testing/selftests/bpf/verifier/calls.c | 83 ++++++++++++++++++++
- 2 files changed, 94 insertions(+)
+So, unless I'm mistaken, bpf_object__open() will succeed for
+"incomplete" BPF object file (e.g., even if they have unresolved
+externs, for example). At least that used to be the case.
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index fcc83017cd03..ba410b069824 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -270,9 +270,14 @@ struct sock * noinline bpf_kfunc_call_test3(struct sock *sk)
- 	return sk;
- }
- 
-+struct prog_test_member {
-+	u64 c;
-+};
-+
- struct prog_test_ref_kfunc {
- 	int a;
- 	int b;
-+	struct prog_test_member memb;
- 	struct prog_test_ref_kfunc *next;
- };
- 
-@@ -295,6 +300,10 @@ noinline void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p)
- {
- }
- 
-+noinline void bpf_kfunc_call_memb_release(struct prog_test_member *p)
-+{
-+}
-+
- struct prog_test_pass1 {
- 	int x0;
- 	struct {
-@@ -379,6 +388,7 @@ BTF_ID(func, bpf_kfunc_call_test2)
- BTF_ID(func, bpf_kfunc_call_test3)
- BTF_ID(func, bpf_kfunc_call_test_acquire)
- BTF_ID(func, bpf_kfunc_call_test_release)
-+BTF_ID(func, bpf_kfunc_call_memb_release)
- BTF_ID(func, bpf_kfunc_call_test_pass_ctx)
- BTF_ID(func, bpf_kfunc_call_test_pass1)
- BTF_ID(func, bpf_kfunc_call_test_pass2)
-@@ -396,6 +406,7 @@ BTF_SET_END(test_sk_acquire_kfunc_ids)
- 
- BTF_SET_START(test_sk_release_kfunc_ids)
- BTF_ID(func, bpf_kfunc_call_test_release)
-+BTF_ID(func, bpf_kfunc_call_memb_release)
- BTF_SET_END(test_sk_release_kfunc_ids)
- 
- BTF_SET_START(test_sk_ret_null_kfunc_ids)
-diff --git a/tools/testing/selftests/bpf/verifier/calls.c b/tools/testing/selftests/bpf/verifier/calls.c
-index 0a8ea60c2a80..7bc077198033 100644
---- a/tools/testing/selftests/bpf/verifier/calls.c
-+++ b/tools/testing/selftests/bpf/verifier/calls.c
-@@ -115,6 +115,89 @@
- 		{ "bpf_kfunc_call_test_release", 5 },
- 	},
- },
-+{
-+	"calls: invalid kfunc call: reg->off must be zero when passed to release kfunc",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_0, 8),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.result = REJECT,
-+	.errstr = "R1 must have zero offset when passed to release func",
-+	.fixup_kfunc_btf_id = {
-+		{ "bpf_kfunc_call_test_acquire", 3 },
-+		{ "bpf_kfunc_call_memb_release", 8 },
-+	},
-+},
-+{
-+	"calls: invalid kfunc call: PTR_TO_BTF_ID with negative offset",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_1, 16),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -4),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.fixup_kfunc_btf_id = {
-+		{ "bpf_kfunc_call_test_acquire", 3 },
-+		{ "bpf_kfunc_call_test_release", 9 },
-+	},
-+	.result_unpriv = REJECT,
-+	.result = REJECT,
-+	.errstr = "negative offset ptr_ ptr R1 off=-4 disallowed",
-+},
-+{
-+	"calls: invalid kfunc call: PTR_TO_BTF_ID with variable offset",
-+	.insns = {
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+	BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -8),
-+	BPF_ST_MEM(BPF_DW, BPF_REG_1, 0, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	BPF_EXIT_INSN(),
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_0),
-+	BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_0, 4),
-+	BPF_JMP_IMM(BPF_JLE, BPF_REG_2, 4, 3),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_JMP_IMM(BPF_JGE, BPF_REG_2, 0, 3),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	BPF_ALU64_REG(BPF_ADD, BPF_REG_1, BPF_REG_2),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, BPF_PSEUDO_KFUNC_CALL, 0, 0),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
-+	.fixup_kfunc_btf_id = {
-+		{ "bpf_kfunc_call_test_acquire", 3 },
-+		{ "bpf_kfunc_call_test_release", 9 },
-+		{ "bpf_kfunc_call_test_release", 13 },
-+		{ "bpf_kfunc_call_test_release", 17 },
-+	},
-+	.result_unpriv = REJECT,
-+	.result = REJECT,
-+	.errstr = "variable ptr_ access var_off=(0x0; 0x7) disallowed",
-+},
- {
- 	"calls: basic sanity",
- 	.insns = {
--- 
-2.35.1
+In such a case, we can totally generate both skeletons and
+sub-skeletons for all files for which we currently generate skeletons.
+It will keep Makefile simpler and will test sub-skeleton code
+generator on a much wider variety of BPF object files. Let's use
+.subskel.h naming convention for those. We can even add a simple test
+in test_skeleton, test_vmlinux and a bunch of others that "stress
+test" skeleton features to make sure that corresponding sub-skeleton
+can be opened just fine.
 
+We probably will run into name conflicts for <skel>__open and
+<skel>__destroy... So we can either use <skel>__open_subskel and
+<skel>__destroy_subskel to disambiguate (might not be a bad idea to
+make it clear that we are dealing with "incomplete" sub-skeleton), or
+we can just not test skeleton and sub-skeleton in the same user-space
+.c file. Not sure if anyone feels strongly about naming, let me know.
+
+>
+>  LSKELS := kfunc_call_test.c fentry_test.c fexit_test.c fexit_sleep.c \
+>         test_ringbuf.c atomics.c trace_printk.c trace_vprintk.c \
+>         map_ptr_kern.c core_kern.c core_kern_overflow.c
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test_subprog.c
+> -SKEL_BLACKLIST += $$(LSKELS)
+> +SKEL_BLACKLIST += $$(LSKELS) $$(SUBSKELS)
+>
+>  test_static_linked.skel.h-deps := test_static_linked1.o test_static_linked2.o
+>  linked_funcs.skel.h-deps := linked_funcs1.o linked_funcs2.o
+>  linked_vars.skel.h-deps := linked_vars1.o linked_vars2.o
+>  linked_maps.skel.h-deps := linked_maps1.o linked_maps2.o
+> +test_subskeleton.skel.h-deps := test_subskeleton_lib.o test_subskeleton.o
+> +test_subskeleton_lib.skel.h-deps := test_subskeleton_lib.o
+>
+>  LINKED_BPF_SRCS := $(patsubst %.o,%.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
+>
+> @@ -363,6 +367,7 @@ TRUNNER_BPF_SKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.skel.h,   \
+>                                  $$(filter-out $(SKEL_BLACKLIST) $(LINKED_BPF_SRCS),\
+>                                                $$(TRUNNER_BPF_SRCS)))
+>  TRUNNER_BPF_LSKELS := $$(patsubst %.c,$$(TRUNNER_OUTPUT)/%.lskel.h, $$(LSKELS) $$(LSKELS_EXTRA))
+> +TRUNNER_BPF_SUBSKELS := $$(addprefix $$(TRUNNER_OUTPUT)/,$(SUBSKELS))
+>  TRUNNER_BPF_SKELS_LINKED := $$(addprefix $$(TRUNNER_OUTPUT)/,$(LINKED_SKELS))
+>  TEST_GEN_FILES += $$(TRUNNER_BPF_OBJS)
+>
+> @@ -405,6 +410,14 @@ $(TRUNNER_BPF_SKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+>         $(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
+>         $(Q)$$(BPFTOOL) gen skeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
+>
+> +$(TRUNNER_BPF_SUBSKELS): %.skel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+> +       $$(call msg,GEN-SUBSKEL,$(TRUNNER_BINARY),$$@)
+> +       $(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
+> +       $(Q)$$(BPFTOOL) gen object $$(<:.o=.linked2.o) $$(<:.o=.linked1.o)
+> +       $(Q)$$(BPFTOOL) gen object $$(<:.o=.linked3.o) $$(<:.o=.linked2.o)
+> +       $(Q)diff $$(<:.o=.linked2.o) $$(<:.o=.linked3.o)
+> +       $(Q)$$(BPFTOOL) gen subskeleton $$(<:.o=.linked3.o) name $$(notdir $$(<:.o=)) > $$@
+> +
+>  $(TRUNNER_BPF_LSKELS): %.lskel.h: %.o $(BPFTOOL) | $(TRUNNER_OUTPUT)
+>         $$(call msg,GEN-SKEL,$(TRUNNER_BINARY),$$@)
+>         $(Q)$$(BPFTOOL) gen object $$(<:.o=.linked1.o) $$<
+> @@ -441,6 +454,7 @@ $(TRUNNER_TEST_OBJS): $(TRUNNER_OUTPUT)/%.test.o:                   \
+>                       $(TRUNNER_EXTRA_HDRS)                             \
+>                       $(TRUNNER_BPF_OBJS)                               \
+>                       $(TRUNNER_BPF_SKELS)                              \
+> +                     $(TRUNNER_BPF_SUBSKELS)                           \
+>                       $(TRUNNER_BPF_LSKELS)                             \
+>                       $(TRUNNER_BPF_SKELS_LINKED)                       \
+>                       $$(BPFOBJ) | $(TRUNNER_OUTPUT)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/subskeleton.c b/tools/testing/selftests/bpf/prog_tests/subskeleton.c
+> new file mode 100644
+> index 000000000000..651aafc28e7f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/subskeleton.c
+> @@ -0,0 +1,38 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2019 Facebook */
+> +
+
+year is off
+
+> +#include <test_progs.h>
+> +#include "test_subskeleton.skel.h"
+> +
+> +extern void subskeleton_lib_setup(struct bpf_object *obj);
+> +extern int subskeleton_lib_subresult(struct bpf_object *obj);
+> +
+> +void test_subskeleton(void)
+> +{
+> +       int duration = 0, err, result;
+> +       struct test_subskeleton *skel;
+> +
+> +       skel = test_subskeleton__open();
+> +       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+
+no CHECK()s
+
+> +               return;
+> +
+> +       skel->rodata->rovar1 = 10;
+> +
+> +       err = test_subskeleton__load(skel);
+> +       if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
+
+CHECK
+
+> +               goto cleanup;
+> +
+> +       subskeleton_lib_setup(skel->obj);
+> +
+> +       err = test_subskeleton__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+
+CHECK
+
+> +               goto cleanup;
+> +
+> +       /* trigger tracepoint */
+> +       usleep(1);
+> +
+> +       result = subskeleton_lib_subresult(skel->obj) * 10;
+> +       ASSERT_EQ(skel->bss->out1, result, "unexpected calculation");
+> +cleanup:
+> +       test_subskeleton__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c b/tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c
+> new file mode 100644
+> index 000000000000..f7f98b3febaf
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/subskeleton_lib.c
+> @@ -0,0 +1,29 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2019 Facebook */
+> +
+
+outdated year?
+
+> +#include <test_progs.h>
+> +#include <bpf/libbpf.h>
+> +
+> +#include "test_subskeleton_lib.skel.h"
+> +
+> +void subskeleton_lib_setup(struct bpf_object *obj)
+> +{
+> +       struct test_subskeleton_lib *lib = test_subskeleton_lib__open(obj);
+> +
+> +       ASSERT_OK_PTR(lib, "open subskeleton");
+
+return on failed assert, otherwise SIGSEGV
+
+> +
+> +       *lib->data.var1 = 1;
+> +       *lib->bss.var2 = 2;
+> +       lib->bss.var3->var3_1 = 3;
+> +       lib->bss.var3->var3_2 = 4;
+> +}
+> +
+> +int subskeleton_lib_subresult(struct bpf_object *obj)
+> +{
+> +       struct test_subskeleton_lib *lib = test_subskeleton_lib__open(obj);
+> +
+> +       ASSERT_OK_PTR(lib, "open subskeleton");
+> +
+> +       ASSERT_EQ(*lib->bss.libout1, 1 + 2 + 3 + 4, "lib subresult");
+> +       return *lib->bss.libout1;
+> +}
+
+I'm not sure we really need to have a separate user-space file to
+simulate a library code. Let's have this library setup code in the
+selftest file itself
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_subskeleton.c b/tools/testing/selftests/bpf/progs/test_subskeleton.c
+> new file mode 100644
+> index 000000000000..bad3970718cb
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_subskeleton.c
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +const int rovar1;
+> +int out1;
+
+see below, let's have some shared stuff between skeleton and
+subskeleton (.kconfig, variable used from lib, variable defined in
+lib, etc). Think creatively on how you could break codegen :)
+
+As we want to add maps, I'd also use extern maps for more coverage
+
+> +
+> +extern int lib_routine(void);
+> +
+> +SEC("raw_tp/sys_enter")
+> +int handler1(const void *ctx)
+> +{
+> +       out1 = lib_routine() * rovar1;
+> +       return 0;
+> +}
+> +
+> +char LICENSE[] SEC("license") = "GPL";
+> +int VERSION SEC("version") = 1;
+
+see below, no VERSION nowadays
+
+> diff --git a/tools/testing/selftests/bpf/progs/test_subskeleton_lib.c b/tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
+> new file mode 100644
+> index 000000000000..23c7f24997a7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_subskeleton_lib.c
+> @@ -0,0 +1,22 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +int var1 = -1;
+> +int var2;
+> +struct {
+> +       int var3_1;
+> +       __s64 var3_2;
+> +} var3;
+> +int libout1;
+
+we should also test:
+
+- .kconfig externs
+- __weak variables
+- .rodata variable (like Alexei already mentioned)
+- let's also have an array variable (C uses non-uniform syntax for
+pointer to an array)
+- extern .data variable defined in another file
+
+> +
+> +int lib_routine(void)
+> +{
+> +       libout1 =  var1 + var2 + var3.var3_1 + var3.var3_2;
+
+nit: extra space after =
+
+> +       return libout1;
+> +}
+> +
+> +char LICENSE[] SEC("license") = "GPL";
+> +int VERSION SEC("version") = 1;
+
+VERSION is obsolete, please drop
+
+> --
+> 2.34.1
