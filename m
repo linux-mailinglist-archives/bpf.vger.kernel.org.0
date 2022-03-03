@@ -2,75 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AE64CB4D3
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 03:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B89424CB50E
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 03:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbiCCCZy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 21:25:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S231720AbiCCCac (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 21:30:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbiCCCZx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 21:25:53 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E272B197;
-        Wed,  2 Mar 2022 18:25:09 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id z2so3237605plg.8;
-        Wed, 02 Mar 2022 18:25:09 -0800 (PST)
+        with ESMTP id S231702AbiCCCab (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 21:30:31 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C46D3EF3C;
+        Wed,  2 Mar 2022 18:29:47 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id z12-20020a17090ad78c00b001bf022b69d6so2432055pju.2;
+        Wed, 02 Mar 2022 18:29:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+owYc1beiZNdVQWI5pfer3AMJMG+Sa0wwOUcL3jCg/M=;
-        b=N/ogtJZFKTRwAFlfhS0OuPvfRc3Mc2rkVgfcoUi3PHPuoQhst7CUfVAi1rLMJRPfDh
-         96ZAyKA0/PRpcSC+A/L0WsJS+9B4PMY9RlMTC/lR6byI+mc/U5FU6uP+jzWmjq5XdkH2
-         RJ96SYYuRYHp7ODGFJygl+vsFusH/OxSGBtC91Acn8g9oBIfLFFl5dcVgqsoTHmyEBXU
-         b2kOfJoBtlz2KDk8oxiM+W5DcU+99501t2Rzp39KYEoOgmF32rFvyefNyLdMZx2v/niZ
-         GXFAudoxSQO4KEvagjnsRSiyniFMk3cEptyjnwSOyzOf+whsnt5H9oFqUzLLQqpCusky
-         I50Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t11rGjeJbaPKo4iIzfdlK+BfedmdNwblLmmUNHyIl/s=;
+        b=LaBwsIw262WVf/mDTL0709lGkwF46Jcxad+J+nwwx7JjWd4qP096eOqaCM2VAmSIht
+         wGxm4Dsv9k9gRui1sH4PxWNSfMr07ZeSTBdu1yvsxFYMayiLCpAJGOXhwznx97zPCd2W
+         1t93LsQ18l0E1hu4RqFZVvUk1p86GbTKRhnUeH8akfZt/XrDqNqDkrZzcOipXqJ+L7ml
+         uIVGnzLKp3MVN2HSwJwj+7wpJxJiyPXq4Gi12UuFMWI8IOxJkUUBRD2AkEogjNA0i68d
+         4BpnbqaKb2RkRn1asKsRKgctWPsFugfnLi8nIQ9HUAfJDJzzJrhcSFNGHxuV2Zed0enA
+         0qTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+owYc1beiZNdVQWI5pfer3AMJMG+Sa0wwOUcL3jCg/M=;
-        b=ls0b83qUXC3xJ2HZfRv32kpMEvjXS+v3Debw5y+qJJAoA9VdEbU5HQQdNTtV9vyCr3
-         qoI2nV93snilIuNGMlYmvUsfnQb/tYR6ousJ+Sat9U2f2Vwurc0MF0Lw+KMAy7Mr7enM
-         bwgW0bFrFBom13/+CvXeutsH7/k5nksIeWDdhrFSEKqJ+azagyvhUZCq1iSZuPxDUcdo
-         JR/7JaylR4IMI2d51ORLSLMSGYT4aL92pR6wU65AF/JlTFR3Qh+smQbvJTzCnDWve7Qh
-         ytcVUfHAIokfujeSlrfGCMt3OK99xeIZucBsi312BnG8IgaqOOdquy979EFVMi8S4ieq
-         +o1w==
-X-Gm-Message-State: AOAM530PNtWwwnB/+39GrQp8GzkXkxVdPAfoQFgZdY3yOvmSCwXEmwz0
-        /4eLkCuCOLcOfnoD1P5NjKneEmNOVNKDBloG
-X-Google-Smtp-Source: ABdhPJwNk7hy6g36u2v2wPwp/L7scAUbPYKRT4PM+N0nuOLZg5Ue5d7LQjdVp7ZLYxBbSMx6+xBXBQ==
-X-Received: by 2002:a17:902:7802:b0:150:baa:bc1a with SMTP id p2-20020a170902780200b001500baabc1amr33493067pll.110.1646274308811;
-        Wed, 02 Mar 2022 18:25:08 -0800 (PST)
-Received: from localhost.localdomain ([157.255.44.218])
-        by smtp.gmail.com with ESMTPSA id s9-20020a056a00194900b004e1583f88a2sm490687pfk.0.2022.03.02.18.25.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 18:25:08 -0800 (PST)
-From:   Harold Huang <baymaxhuang@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     jasowang@redhat.com, edumazet@google.com,
-        Harold Huang <baymaxhuang@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        kvm@vger.kernel.org (open list:VIRTIO HOST (VHOST)),
-        virtualization@lists.linux-foundation.org (open list:VIRTIO HOST
-        (VHOST)), bpf@vger.kernel.org (open list:XDP (eXpress Data Path))
-Subject: [PATCH net-next] tuntap: add sanity checks about msg_controllen in sendmsg
-Date:   Thu,  3 Mar 2022 10:24:40 +0800
-Message-Id: <20220303022441.383865-1-baymaxhuang@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220301064314.2028737-1-baymaxhuang@gmail.com>
-References: <20220301064314.2028737-1-baymaxhuang@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t11rGjeJbaPKo4iIzfdlK+BfedmdNwblLmmUNHyIl/s=;
+        b=mQoPCob4Vj1yweEyvBDCP5q2qtkq++HQfSMtCjgelS2ECRD9k6oiIeRz44yY6kDumr
+         I/KaOHo8HP5WQTyRZHhCqGqOTOGVKvIYSx3MbgxsA+6fOWw38Va3Z4IEAJiEGRc5V3sb
+         YNC4U+B/zFMRXqO4c4qSquCRA2+AjDEI8pu7KaVUGsHIiV85CzJjfMqPG2O1EWTNmqXT
+         Mc9lnyxpp/xcfItQyaB5KfVmaSqnbd+qMJUY+b2upW7ZmftqtrcVraXudYYahhQkffu5
+         09brjf4FUUHSzt2quyJwIrbA9VJFLHllEpQ5dHky7WOhx+Ym7EKA9ZjlWtLi74N/H9NB
+         pKiQ==
+X-Gm-Message-State: AOAM532n0/RKzPPrqxiA99a2ilNmiwA/dWG2ay35cli26MaWCFV3lwxB
+        c9vIHzh1qKCGdKlVuSK4RbdU9lVqwwaHvli/JgGe60Cm
+X-Google-Smtp-Source: ABdhPJy+6x4bAj139bTUUQWuKIgLLPNL9DSC9ipZnEz5zg+b/vDIpT/n1lv2gwAmOJsh8qZWpnxAfkTDbypHY+zBp3E=
+X-Received: by 2002:a17:902:76c5:b0:14e:e325:9513 with SMTP id
+ j5-20020a17090276c500b0014ee3259513mr33748266plt.55.1646274586726; Wed, 02
+ Mar 2022 18:29:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220225234339.2386398-1-haoluo@google.com> <20220225234339.2386398-5-haoluo@google.com>
+ <c323bce9-a04e-b1c3-580a-783fde259d60@fb.com> <CAADnVQ+q0vF03cH8w0c50XMZU1yf_0UjZ+ZarQ_RqMQrVpOFPA@mail.gmail.com>
+ <93c3fc30-ad38-96fa-cf8e-20e55b267a3b@fb.com>
+In-Reply-To: <93c3fc30-ad38-96fa-cf8e-20e55b267a3b@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 2 Mar 2022 18:29:35 -0800
+Message-ID: <CAADnVQL4yxhDCLjvCCmpOtg0+8-HSg32KG07TCxx+L+Gji7n6g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 4/9] bpf: Introduce sleepable tracepoints
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Hao Luo <haoluo@google.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Joe Burton <jevburton.kernel@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Josh Don <joshdon@google.com>,
+        Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -81,61 +76,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-In patch [1], tun_msg_ctl was added to allow pass batched xdp buffers to
-tun_sendmsg. Although we donot use msg_controllen in this path, we should
-check msg_controllen to make sure the caller pass a valid msg_ctl.
+On Wed, Mar 2, 2022 at 5:09 PM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 3/2/22 1:30 PM, Alexei Starovoitov wrote:
+> > On Wed, Mar 2, 2022 at 1:23 PM Yonghong Song <yhs@fb.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2/25/22 3:43 PM, Hao Luo wrote:
+> >>> Add a new type of bpf tracepoints: sleepable tracepoints, which allows
+> >>> the handler to make calls that may sleep. With sleepable tracepoints, a
+> >>> set of syscall helpers (which may sleep) may also be called from
+> >>> sleepable tracepoints.
+> >>
+> >> There are some old discussions on sleepable tracepoints, maybe
+> >> worthwhile to take a look.
+> >>
+> >> https://lore.kernel.org/bpf/20210218222125.46565-5-mjeanson@efficios.com/T/
+> >
+> > Right. It's very much related, but obsolete too.
+> > We don't need any of that for sleeptable _raw_ tps.
+> > I prefer to stay with "sleepable" name as well to
+> > match the rest of the bpf sleepable code.
+> > In all cases it's faultable.
+>
+> sounds good to me. Agree that for the bpf user case, Hao's
+> implementation should be enough.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fe8dd45bb7556246c6b76277b1ba4296c91c2505
-
-Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
-Suggested-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Harold Huang <baymaxhuang@gmail.com>
----
- drivers/net/tap.c   | 3 ++-
- drivers/net/tun.c   | 3 ++-
- drivers/vhost/net.c | 1 +
- 3 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/tap.c b/drivers/net/tap.c
-index 8e3a28ba6b28..ba2ef5437e16 100644
---- a/drivers/net/tap.c
-+++ b/drivers/net/tap.c
-@@ -1198,7 +1198,8 @@ static int tap_sendmsg(struct socket *sock, struct msghdr *m,
- 	struct xdp_buff *xdp;
- 	int i;
- 
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		for (i = 0; i < ctl->num; i++) {
- 			xdp = &((struct xdp_buff *)ctl->ptr)[i];
- 			tap_get_user_xdp(q, xdp);
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index 969ea69fd29d..2a0d8a5d7aec 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -2501,7 +2501,8 @@ static int tun_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
- 	if (!tun)
- 		return -EBADFD;
- 
--	if (ctl && (ctl->type == TUN_MSG_PTR)) {
-+	if (m->msg_controllen == sizeof(struct tun_msg_ctl) &&
-+	    ctl && ctl->type == TUN_MSG_PTR) {
- 		struct tun_page tpage;
- 		int n = ctl->num;
- 		int flush = 0, queued = 0;
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index 28ef323882fb..792ab5f23647 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -473,6 +473,7 @@ static void vhost_tx_batch(struct vhost_net *net,
- 		goto signal_used;
- 
- 	msghdr->msg_control = &ctl;
-+	msghdr->msg_controllen = sizeof(ctl);
- 	err = sock->ops->sendmsg(sock, msghdr, 0);
- 	if (unlikely(err < 0)) {
- 		vq_err(&nvq->vq, "Fail to batch sending packets\n");
--- 
-2.27.0
-
+Just remembered that we can also do trivial noinline __weak
+nop function and mark it sleepable on the verifier side.
+That's what we were planning to do to trace map update/delete ops
+in Joe Burton's series.
+Then we don't need to extend tp infra.
+I'm fine whichever way. I see pros and cons in both options.
