@@ -2,132 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D45AF4CB3B9
-	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 01:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D9F4CB40D
+	for <lists+bpf@lfdr.de>; Thu,  3 Mar 2022 02:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbiCCAb7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Mar 2022 19:31:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43688 "EHLO
+        id S229664AbiCCAh1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Mar 2022 19:37:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbiCCAb6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Mar 2022 19:31:58 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56A3CBB0B8;
-        Wed,  2 Mar 2022 16:31:14 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id j24so3346337oii.11;
-        Wed, 02 Mar 2022 16:31:14 -0800 (PST)
+        with ESMTP id S230422AbiCCAh0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Mar 2022 19:37:26 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F00DCA0F7
+        for <bpf@vger.kernel.org>; Wed,  2 Mar 2022 16:36:40 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id t7so3404749ybi.8
+        for <bpf@vger.kernel.org>; Wed, 02 Mar 2022 16:36:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GpygpwvbCIq+atpVl63RWzRvcyI5EavhzcTuik774Ps=;
-        b=JvVrqIL7vzw0G6nRRxEgqgpC6cTRdpQpXoay6Ud9ZFckp0lsTXrzUYdjBcOT/9c/5M
-         rkNVazOGOXapDtD2QAz8puQBAsgatFqRr4Zb5ThiBvAv+XQHq1MMQa+C1ACCHFVU6J+n
-         ydxncHn/0DZuW0cnNkv8GF3AVz8Ka+dPmimbmtPzx48HHCli+h+XK8n/1ogXLyBSuEpo
-         kS/wmitAcLBXFDorXnrw3ydxMvgdgz2Afk5gysrrs6A+Ux2QCPX+jxRO10LD4rXFn1NG
-         BTukeCSL6XpgBkvT5KSz7p5tkRVi7cxLYsp6ZC5fgRCTgnYoH9s1DyEbZL1FXxFY/aQN
-         5Myg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rYpc8OdpiDyhS7cAK/Cj+v+hA3m1UOUbP84FLYfv7jA=;
+        b=ItSFvhBH5/lD6xqAF8pwNl84z/sm8XsGp0ZhGIvoRbMohhwm361z3xWhFWVNCqzKnl
+         XWd79sSuZWQmOO92MHnwh3ifSejoDiu5SjtRLwBkAKZ9JdIhuhpkF4O/SuMJRto4Br+4
+         BxsaLbIfzin+H+iJKTj1dqfh5IS9HezaF9/WdYhXBNCyXiAwzMFWmRp3F4w0XkdWASLC
+         nf/b+rP16MPRZTn5dyuxG7biqsawlqiZKXOwy6NLkwEz6IsMff/eoP3ib6Ox9tc5zYJz
+         /MEDTeaR7PSV0Mxob2MK5mwHkMVJI9Bd7RIUfSSH/gV3D7GyfTaUdy371PW3rHAg5ged
+         88xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GpygpwvbCIq+atpVl63RWzRvcyI5EavhzcTuik774Ps=;
-        b=KtfS0mQEuY7FwPOKhkFt/AADLNp/o8daO02JT4H12vvPJCAIvg816jsZPIpUaBaO6K
-         MziUonxG1teiDoj7zfzu73gQaXAQWnPM8wkz/dFPC5ffRm0P6AHh9aoxs0cljC65BoZe
-         HlNLiHs6xZzscjLZkyU2JKfApy1RaD+nMNyEWkDAWNY8WugWw1s9AikkrTX/LQeiqnB9
-         8gVHDRv5uAk04j822L3cQa+6p+m0rhc2MSr1sY2GA6qOV9R59yJ2qKTx76epX4AGQ2pD
-         qTasDBNOTUDvBBGCO8hw8yLF7B2XarFSYiZOmPwDjIv6hDwVHI6inRr44f5EZf8jn2ua
-         Wd+Q==
-X-Gm-Message-State: AOAM533dNZfRTS4kdJlSnU03gN8I/lVqB9GAL7puNpJEV49nJiSW+rbh
-        O3YlQaTvtBEQ/ycVxDWHllE=
-X-Google-Smtp-Source: ABdhPJzOmby5kJNvG96Otw79hmNwElZlOiUPp/M4i9hDC8SfzCAoCiqr8Vn6ePK3RDnwnH+kwdNhig==
-X-Received: by 2002:a05:6808:488:b0:2d4:fb86:6fed with SMTP id z8-20020a056808048800b002d4fb866fedmr2306266oid.133.1646267473666;
-        Wed, 02 Mar 2022 16:31:13 -0800 (PST)
-Received: from localhost ([2600:1700:65a0:ab60:17f1:53ec:373a:a88a])
-        by smtp.gmail.com with ESMTPSA id m21-20020a056820051500b0031d0841b87esm242331ooj.34.2022.03.02.16.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Mar 2022 16:31:13 -0800 (PST)
-Date:   Wed, 2 Mar 2022 16:31:12 -0800
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     wangyufen <wangyufen@huawei.com>
-Cc:     john.fastabend@gmail.com, daniel@iogearbox.net,
-        jakub@cloudflare.com, lmb@cloudflare.com, davem@davemloft.net,
-        bpf@vger.kernel.org, edumazet@google.com, yoshfuji@linux-ipv6.org,
-        dsahern@kernel.org, kuba@kernel.org, ast@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/4] bpf, sockmap: Fix memleak in
- sk_psock_queue_msg
-Message-ID: <YiAMUECNKtephFSh@pop-os.localdomain>
-References: <20220225014929.942444-1-wangyufen@huawei.com>
- <20220225014929.942444-2-wangyufen@huawei.com>
- <YhvPKB8O7ml5JSHQ@pop-os.localdomain>
- <43776e3f-08c0-5d1a-1c2b-dd6084a6de33@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rYpc8OdpiDyhS7cAK/Cj+v+hA3m1UOUbP84FLYfv7jA=;
+        b=UU4mKoudt29YQxK1R7pddfDWcydNT9gcoxgLlbK7H4NvQPWWmYuURstRcoLGH1+iBj
+         Ey1rxyCk8GmDSPrYUntRt/NLcFveOTRy4RqvHhFPMPBnA21sjZAQM0H9Bho484fr0UJ/
+         Gq6N91dyD820oTAFC+17BR3JMqtJ/ak8ngLtBq1F6SZKZGPqElzlqb8sKlRtp03BZ9cO
+         a4BRu+yUJnfFmtWJOWv/1Z+NH9dInvUTLPWLXLsHeemQPm+1oV3cTUhiJAFlTLp2o69i
+         uHOVi1Gm0Wilk9wg+fUsYu7dU55F4+hl/e5KN9RAphxHWOi89jeK0Ox5rKjL/lPSEaz6
+         wJXQ==
+X-Gm-Message-State: AOAM5324NQyuFO5Xau/dHPK1b5CvIYzxW7HcCADW9BmR/yJyo5s8kLrA
+        r8Vrk3xIdzbpUcCaERo6Zt+TZZZhDkfxTpsXW/KvYA==
+X-Google-Smtp-Source: ABdhPJzEqzamXbJ9LAWN805a5p9Niqcj4YHwX+QMeOIj6aBYlZPOf+ZPb6S976BkU57CB3L8gT9jZfIM22ctEYTaFgE=
+X-Received: by 2002:a25:8c86:0:b0:628:a042:9529 with SMTP id
+ m6-20020a258c86000000b00628a0429529mr5078055ybl.231.1646267799249; Wed, 02
+ Mar 2022 16:36:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <43776e3f-08c0-5d1a-1c2b-dd6084a6de33@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20220302195519.3479274-1-kafai@fb.com>
+In-Reply-To: <20220302195519.3479274-1-kafai@fb.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 2 Mar 2022 16:36:28 -0800
+Message-ID: <CANn89iLMi8FbT89BvyUCEAHscbqskXAt9tmeeqXZSeDcu8bN=g@mail.gmail.com>
+Subject: Re: [PATCH v6 net-next 0/13] Preserve mono delivery time (EDT) in skb->tstamp
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        kernel-team <kernel-team@fb.com>,
+        Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-18.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 01, 2022 at 09:49:12AM +0800, wangyufen wrote:
-> 
-> 在 2022/2/28 3:21, Cong Wang 写道:
-> > On Fri, Feb 25, 2022 at 09:49:26AM +0800, Wang Yufen wrote:
-> > > If tcp_bpf_sendmsg is running during a tear down operation we may enqueue
-> > > data on the ingress msg queue while tear down is trying to free it.
-> > > 
-> > >   sk1 (redirect sk2)                         sk2
-> > >   -------------------                      ---------------
-> > > tcp_bpf_sendmsg()
-> > >   tcp_bpf_send_verdict()
-> > >    tcp_bpf_sendmsg_redir()
-> > >     bpf_tcp_ingress()
-> > >                                            sock_map_close()
-> > >                                             lock_sock()
-> > >      lock_sock() ... blocking
-> > >                                             sk_psock_stop
-> > >                                              sk_psock_clear_state(psock, SK_PSOCK_TX_ENABLED);
-> > >                                             release_sock(sk);
-> > >      lock_sock()	
-> > >      sk_mem_charge()
-> > >      get_page()
-> > >      sk_psock_queue_msg()
-> > >       sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED);
-> > >        drop_sk_msg()
-> > >      release_sock()
-> > > 
-> > > While drop_sk_msg(), the msg has charged memory form sk by sk_mem_charge
-> > > and has sg pages need to put. To fix we use sk_msg_free() and then kfee()
-> > > msg.
-> > > 
-> > What about the other code path? That is, sk_psock_skb_ingress_enqueue().
-> > I don't see skmsg is charged there.
-> 
-> sk_psock_skb_ingress_self() | sk_psock_skb_ingress()
->    skb_set_owner_r()
->       sk_mem_charge()
->    sk_psock_skb_ingress_enqueue()
-> 
-> The other code path skmsg is charged by skb_set_owner_r()->sk_mem_charge()
-> 
+On Wed, Mar 2, 2022 at 11:55 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> skb->tstamp was first used as the (rcv) timestamp.
+> The major usage is to report it to the user (e.g. SO_TIMESTAMP).
+>
+> Later, skb->tstamp is also set as the (future) delivery_time (e.g. EDT in TCP)
+> during egress and used by the qdisc (e.g. sch_fq) to make decision on when
+> the skb can be passed to the dev.
+>
+> Currently, there is no way to tell skb->tstamp having the (rcv) timestamp
+> or the delivery_time, so it is always reset to 0 whenever forwarded
+> between egress and ingress.
+>
+> While it makes sense to always clear the (rcv) timestamp in skb->tstamp
+> to avoid confusing sch_fq that expects the delivery_time, it is a
+> performance issue [0] to clear the delivery_time if the skb finally
+> egress to a fq@phy-dev.
+>
+> This set is to keep the mono delivery time and make it available to
+> the final egress interface.  Please see individual patch for
+> the details.
+>
+> [0] (slide 22): https://linuxplumbersconf.org/event/11/contributions/953/attachments/867/1658/LPC_2021_BPF_Datapath_Extensions.pdf
+>
 
-skb_set_owner_r() charges skb, I was asking skmsg. ;) In
-sk_psock_skb_ingress_enqueue(), the skmsg was initialized but not
-actually charged, hence I was asking... From a second look, it seems
-sk_mem_uncharge() is not called for sk_psock_skb_ingress_enqueue() where
-msg->skb is clearly not NULL.
+For the whole series
 
-Also, you introduce an unnecessary sk_msg_init() from __sk_msg_free(),
-because you call kfree(msg) after it.
+Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Thanks.
+Thanks !
