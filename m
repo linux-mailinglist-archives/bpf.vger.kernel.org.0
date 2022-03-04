@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6E04CDB04
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 18:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD7C4CDAD4
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 18:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbiCDRgY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 12:36:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S241256AbiCDRgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 12:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241374AbiCDRfv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 12:35:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13D581D0860
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 09:34:33 -0800 (PST)
+        with ESMTP id S241270AbiCDRgR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 12:36:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C16501D0D7E
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 09:34:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646415272;
+        s=mimecast20190719; t=1646415275;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hyjhRPbC8PoyGPK2vPUfa6keKBWHXHhBVk1iPd78sYA=;
-        b=WQme19Ij0l0YTB8UCKGzhX3+z8ZaB6WGb58HaOAtZzIS3kq+lTQVaFDOr/W8+PxEH4661R
-        cL66/R39Is0qKvGsebdYcbp20eXqWtUQk08EyftrM2ym45QToB63VV+t3muYqXps0iNhkP
-        LGCIjbeBUeSPpuFYF5qxu0j9Y/WWj2g=
+        bh=6D49UDKOrGqHPDx4/UWVPGxY1Jg6fRi4v4NPaaelVcs=;
+        b=REs4LvZQVmXvZ4E5QTyuszPIGSWDWZJYO9c/RMVmiIYpsOCcVtsCrqlEHB7iIe1UWXwF3s
+        eD4MKYaI/DlrPjqQjzILv8+8EkybTxjHwU5+3GrD7CtFxtOMagnXAutswlIHmnAQaRx6Lm
+        jP2lyw42GT1tteFREkGMomKslBRrFI4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-640-SBCJqgcINg6uDPA-vRyA7w-1; Fri, 04 Mar 2022 12:34:29 -0500
-X-MC-Unique: SBCJqgcINg6uDPA-vRyA7w-1
+ us-mta-635-4zNjMA1AP86pw5KyP-IlSg-1; Fri, 04 Mar 2022 12:34:32 -0500
+X-MC-Unique: 4zNjMA1AP86pw5KyP-IlSg-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 004E11006AAA;
-        Fri,  4 Mar 2022 17:34:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AC7C5EF;
+        Fri,  4 Mar 2022 17:34:30 +0000 (UTC)
 Received: from plouf.redhat.com (unknown [10.39.192.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9BCB286596;
-        Fri,  4 Mar 2022 17:34:11 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 50EE986595;
+        Fri,  4 Mar 2022 17:34:26 +0000 (UTC)
 From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
 To:     Greg KH <gregkh@linuxfoundation.org>,
         Jiri Kosina <jikos@kernel.org>,
@@ -54,9 +54,9 @@ Cc:     Tero Kristo <tero.kristo@linux.intel.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Subject: [PATCH bpf-next v2 22/28] bpf/verifier: prevent non GPL programs to be loaded against HID
-Date:   Fri,  4 Mar 2022 18:28:46 +0100
-Message-Id: <20220304172852.274126-23-benjamin.tissoires@redhat.com>
+Subject: [PATCH bpf-next v2 23/28] HID: bpf: compute only the required buffer size for the device
+Date:   Fri,  4 Mar 2022 18:28:47 +0100
+Message-Id: <20220304172852.274126-24-benjamin.tissoires@redhat.com>
 In-Reply-To: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
 References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
 MIME-Version: 1.0
@@ -73,109 +73,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is just to hammer the obvious because I suspect you can not already
-load a bpf HID program which is not GPL because all of the useful
-functions are GPL only.
-
-Anyway, this ensures that users are not tempted to bypass this requirement
-and will allow us to ship tested BPF programs in the kernel without having
-to aorry about the license.
+There is no point in using 16 kB of memory if the device needs less
+for all of its reports (uwhich is usually the case).
 
 Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 
 ---
 
-new in v2:
- - Note: I placed this statement in check_attach_btf_id() to be local to
-   other similar checks (regarding LSM), however, I have no idea if this
-   is the correct place. Please shout at me if it isn't.
+new in v2
 ---
- include/linux/bpf-hid.h |  8 ++++++++
- kernel/bpf/hid.c        | 12 ++++++++++++
- kernel/bpf/verifier.c   |  7 +++++++
- 3 files changed, 27 insertions(+)
+ drivers/hid/hid-bpf.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
-index bd548f6a4a26..3da1d0ecb9be 100644
---- a/include/linux/bpf-hid.h
-+++ b/include/linux/bpf-hid.h
-@@ -2,6 +2,7 @@
- #ifndef _BPF_HID_H
- #define _BPF_HID_H
- 
-+#include <linux/bpf_verifier.h>
- #include <linux/mutex.h>
- #include <uapi/linux/bpf.h>
- #include <uapi/linux/bpf_hid.h>
-@@ -71,6 +72,8 @@ int bpf_hid_prog_query(const union bpf_attr *attr,
- 		       union bpf_attr __user *uattr);
- int bpf_hid_link_create(const union bpf_attr *attr,
- 			struct bpf_prog *prog);
-+int bpf_hid_verify_prog(struct bpf_verifier_log *vlog,
-+			const struct bpf_prog *prog);
- #else
- static inline int bpf_hid_prog_query(const union bpf_attr *attr,
- 				     union bpf_attr __user *uattr)
-@@ -83,6 +86,11 @@ static inline int bpf_hid_link_create(const union bpf_attr *attr,
+diff --git a/drivers/hid/hid-bpf.c b/drivers/hid/hid-bpf.c
+index b8c0060f3180..d56fbad990ed 100644
+--- a/drivers/hid/hid-bpf.c
++++ b/drivers/hid/hid-bpf.c
+@@ -61,11 +61,24 @@ static int hid_reconnect(struct hid_device *hdev)
+ static int hid_bpf_link_attach(struct hid_device *hdev, enum bpf_hid_attach_type type)
  {
- 	return -EOPNOTSUPP;
- }
-+static inline int bpf_hid_verify_prog(struct bpf_verifier_log *vlog,
-+				      const struct bpf_prog *prog)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif
- 
- static inline bool bpf_hid_link_empty(struct bpf_hid *bpf,
-diff --git a/kernel/bpf/hid.c b/kernel/bpf/hid.c
-index 653d10c0f4e6..b3dc1cd37a3e 100644
---- a/kernel/bpf/hid.c
-+++ b/kernel/bpf/hid.c
-@@ -37,6 +37,18 @@ void bpf_hid_set_hooks(struct bpf_hid_hooks *hooks)
- }
- EXPORT_SYMBOL_GPL(bpf_hid_set_hooks);
- 
-+int bpf_hid_verify_prog(struct bpf_verifier_log *vlog,
-+			const struct bpf_prog *prog)
-+{
-+	if (!prog->gpl_compatible) {
-+		bpf_log(vlog,
-+			"HID programs must have a GPL compatible license\n");
-+		return -EINVAL;
+ 	int err = 0;
++	unsigned int i, j, max_report_len = 0;
++
++	/* compute the maximum report length for this device */
++	for (i = 0; i < HID_REPORT_TYPES; i++) {
++		struct hid_report_enum *report_enum = hdev->report_enum + i;
++
++		for (j = 0; j < HID_MAX_IDS; j++) {
++			struct hid_report *report = report_enum->report_id_hash[j];
++
++			if (report)
++				max_report_len = max(max_report_len, hid_report_len(report));
++		}
 +	}
-+
-+	return 0;
-+}
-+
- BPF_CALL_5(bpf_hid_get_data, void*, ctx, u64, offset, u32, n, void*, data, u64, size)
- {
- 	struct hid_bpf_ctx *bpf_ctx = ctx;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a57db4b2803c..afec8fa1d674 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21,6 +21,7 @@
- #include <linux/perf_event.h>
- #include <linux/ctype.h>
- #include <linux/error-injection.h>
-+#include <linux/bpf-hid.h>
- #include <linux/bpf_lsm.h>
- #include <linux/btf_ids.h>
  
-@@ -14235,6 +14236,12 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS)
- 		return check_struct_ops_btf_id(env);
- 
-+	if (prog->type == BPF_PROG_TYPE_HID) {
-+		ret = bpf_hid_verify_prog(&env->log, prog);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	if (prog->type != BPF_PROG_TYPE_TRACING &&
- 	    prog->type != BPF_PROG_TYPE_LSM &&
- 	    prog->type != BPF_PROG_TYPE_EXT)
+ 	switch (type) {
+ 	case BPF_HID_ATTACH_DEVICE_EVENT:
+ 		if (!hdev->bpf.ctx) {
+-			hdev->bpf.ctx = bpf_hid_allocate_ctx(hdev, HID_BPF_MAX_BUFFER_SIZE);
++			hdev->bpf.ctx = bpf_hid_allocate_ctx(hdev, max_report_len);
+ 			if (IS_ERR(hdev->bpf.ctx)) {
+ 				err = PTR_ERR(hdev->bpf.ctx);
+ 				hdev->bpf.ctx = NULL;
 -- 
 2.35.1
 
