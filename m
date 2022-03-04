@@ -2,112 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FED04CCF5C
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 08:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814224CD29E
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 11:41:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239008AbiCDHyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 02:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
+        id S237373AbiCDKmK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 05:42:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239010AbiCDHyr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 02:54:47 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285E8192E36;
-        Thu,  3 Mar 2022 23:53:59 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K90Sl1Fzzzdb0N;
-        Fri,  4 Mar 2022 15:52:39 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 4 Mar 2022 15:53:56 +0800
-From:   Wang Yufen <wangyufen@huawei.com>
-To:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
-        <davem@davemloft.net>, <bpf@vger.kernel.org>
-CC:     <edumazet@google.com>, <yoshfuji@linux-ipv6.org>,
-        <dsahern@kernel.org>, <kuba@kernel.org>, <ast@kernel.org>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
-        Wang Yufen <wangyufen@huawei.com>
-Subject: [PATCH bpf-next v3 4/4] bpf, sockmap: Fix double uncharge the mem of sk_msg
-Date:   Fri, 4 Mar 2022 16:11:45 +0800
-Message-ID: <20220304081145.2037182-5-wangyufen@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220304081145.2037182-1-wangyufen@huawei.com>
-References: <20220304081145.2037182-1-wangyufen@huawei.com>
+        with ESMTP id S231206AbiCDKmJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 05:42:09 -0500
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1846B1AAFD6
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 02:41:22 -0800 (PST)
+Received: by mail-io1-f72.google.com with SMTP id z13-20020a5e8b4d000000b0064125220702so5176299iom.21
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 02:41:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6SuusqU261l0YZRBubHgkzmZFekkg3laoBBQucPRrgA=;
+        b=bIuwAFEr6+OIhzLsRjConbuMoo2sAlyqIir08jqsZFcXbqMz2w07Q46Pa+xt92UKyG
+         JM8ddpnlVSSWvvUGsrZOPUxP9P5wQvJEnIds+DiTAB7b9eG+OPx/n4Zc6UA2+3lEAxe6
+         l0uuwbgvl6EiF5Qzh5Vl4/JK6FehgOcflmMhM8PelHWVtFq7pFOKN6wxjljtTo5zQs4y
+         /OVFX4a2BJs+gOuJ24ZjB2tqgG+p6bMLLjgCSyiUlS4IyXHbjPG9yiKaGNSLQBRJXRc+
+         MEZRMnmaYPQXVY2j4IKdffOmp+bdX/NnP3zqGz7DZ7F+j3BRwSJhASgYud8OVVdVHuvJ
+         oY4w==
+X-Gm-Message-State: AOAM531QlfPO0ihcPu/Vw6JWJccOyLCEGccCBi3VBgEUd4jSmQ4AmmuL
+        v7SRWO7kZzwrYqtTqoHLzqiyRLZ7sp5cTJdLzKIAbNvxg8UB
+X-Google-Smtp-Source: ABdhPJwKCMl3GU2i9vbnDTeANVWYScaZeMCV2tSwF1TW5fUve4h9UUDcIrdH6VmCvdsJafXL55JBIVWVo0pCWJHPquGCcHchQG9J
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:178f:b0:2c4:b692:a8ec with SMTP id
+ y15-20020a056e02178f00b002c4b692a8ecmr13307761ilu.296.1646390481472; Fri, 04
+ Mar 2022 02:41:21 -0800 (PST)
+Date:   Fri, 04 Mar 2022 02:41:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf53e605d96227cd@google.com>
+Subject: [syzbot] linux-next boot error: WARNING: suspicious RCU usage in cpuacct_charge
+From:   syzbot <syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        brauner@kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, lizefan.x@bytedance.com,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If tcp_bpf_sendmsg is running during a tear down operation, psock may be
-freed.
+Hello,
 
-tcp_bpf_sendmsg()
- tcp_bpf_send_verdict()
-  sk_msg_return()
-  tcp_bpf_sendmsg_redir()
-   unlikely(!psock))
-     sk_msg_free()
+syzbot found the following issue on:
 
-The mem of msg has been uncharged in tcp_bpf_send_verdict() by
-sk_msg_return(), and would be uncharged by sk_msg_free() again. When psock
-is null, we can simply returning an error code, this would then trigger
-the sk_msg_free_nocharge in the error path of __SK_REDIRECT and would have
-the side effect of throwing an error up to user space. This would be a
-slight change in behavior from user side but would look the same as an
-error if the redirect on the socket threw an error.
+HEAD commit:    6d284ba80c0c Add linux-next specific files for 20220304
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c283d1700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=26714bde6b3ad08b
+dashboard link: https://syzkaller.appspot.com/bug?extid=16e3f2c77e7c5a0113f9
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-This issue can cause the following info:
-WARNING: CPU: 0 PID: 2136 at net/ipv4/af_inet.c:155 inet_sock_destruct+0x13c/0x260
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com
+
+
+=============================
+WARNING: suspicious RCU usage
+5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
+-----------------------------
+include/linux/cgroup.h:494 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 1, debug_locks = 1
+2 locks held by kthreadd/2:
+ #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
+ #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
+
+stack backtrace:
+CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  <TASK>
- __sk_destruct+0x24/0x1f0
- sk_psock_destroy+0x19b/0x1c0
- process_one_work+0x1b3/0x3c0
- worker_thread+0x30/0x350
- ? process_one_work+0x3c0/0x3c0
- kthread+0xe6/0x110
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x22/0x30
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ task_css include/linux/cgroup.h:494 [inline]
+ task_ca kernel/sched/cpuacct.c:40 [inline]
+ cpuacct_charge+0x2af/0x3c0 kernel/sched/cpuacct.c:342
+ cgroup_account_cputime include/linux/cgroup.h:792 [inline]
+ update_curr+0x37b/0x830 kernel/sched/fair.c:907
+ dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
+ dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
+ dequeue_task kernel/sched/core.c:2019 [inline]
+ __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
+ __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
+ __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
+ set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
+ kthreadd+0x44/0x750 kernel/kthread.c:724
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
  </TASK>
 
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Wang Yufen <wangyufen@huawei.com>
+=============================
+WARNING: suspicious RCU usage
+5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
+-----------------------------
+include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
+
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 1, debug_locks = 1
+2 locks held by kthreadd/2:
+ #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
+ #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
+
+stack backtrace:
+CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ task_css_set include/linux/cgroup.h:481 [inline]
+ task_dfl_cgroup include/linux/cgroup.h:550 [inline]
+ cgroup_account_cputime include/linux/cgroup.h:794 [inline]
+ update_curr+0x671/0x830 kernel/sched/fair.c:907
+ dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
+ dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
+ dequeue_task kernel/sched/core.c:2019 [inline]
+ __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
+ __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
+ __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
+ set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
+ kthreadd+0x44/0x750 kernel/kthread.c:724
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ </TASK>
+
+
 ---
- net/ipv4/tcp_bpf.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index 304800c60427..1cdcb4df0eb7 100644
---- a/net/ipv4/tcp_bpf.c
-+++ b/net/ipv4/tcp_bpf.c
-@@ -138,10 +138,9 @@ int tcp_bpf_sendmsg_redir(struct sock *sk, struct sk_msg *msg,
- 	struct sk_psock *psock = sk_psock_get(sk);
- 	int ret;
- 
--	if (unlikely(!psock)) {
--		sk_msg_free(sk, msg);
--		return 0;
--	}
-+	if (unlikely(!psock))
-+		return -EPIPE;
-+
- 	ret = ingress ? bpf_tcp_ingress(sk, psock, msg, bytes, flags) :
- 			tcp_bpf_push_locked(sk, msg, bytes, flags, false);
- 	sk_psock_put(sk, psock);
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
