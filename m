@@ -2,61 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239664CD7E9
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 16:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EE64CD899
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 17:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbiCDPfJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 10:35:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38152 "EHLO
+        id S229852AbiCDQIg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 11:08:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230418AbiCDPfJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 10:35:09 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A3F1BB707;
-        Fri,  4 Mar 2022 07:34:21 -0800 (PST)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id D9DBA2113A;
-        Fri,  4 Mar 2022 15:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1646408059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lZ6TTNtxY74fXOWfXPiwCETlyP35ucwNz18yl/4y86g=;
-        b=FtWoEWlcVlMAA7P+iq1Jdcg6fF2ws1Qr0crkZkuxgh8C5J0VJe3kIsc6ynKuS1ZcQ/fCzx
-        RcFjsoS6ejia0S0VCCeQ+4lYzgt5elaPjafqRj9syOVxg4M16VtjkHLLhJpWMjnHEH8JFS
-        0CSvSjvfelZa1W4tNwDs1ZxpWlqgWeY=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 6B5A9A3B84;
-        Fri,  4 Mar 2022 15:34:19 +0000 (UTC)
-Date:   Fri, 4 Mar 2022 16:34:19 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     torvalds@linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Willy Tarreau <w@1wt.eu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] mm: Consider __GFP_NOWARN flag for oversized kvmalloc()
- calls
-Message-ID: <YiIxe1gZRwTJ86cY@dhcp22.suse.cz>
-References: <8a99a175d25f4bcce6b78cee8fa536e40b987b0a.1646403182.git.daniel@iogearbox.net>
+        with ESMTP id S231899AbiCDQIe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 11:08:34 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B455E14C;
+        Fri,  4 Mar 2022 08:07:42 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 224Bs97E032089;
+        Fri, 4 Mar 2022 08:07:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=s64K5vt/OGe0DiEGvksjfU3/NxMbARsQ9JwvHLZerts=;
+ b=Icw9nA2mEGOdrx9YfRhXiCkN5p2hCfYZrlVIyTqc6Ii++CeKii722dUA+6VAFjl8GNF6
+ +jk1YrCacDPzBr28bmXW2Q4v1StcMVEkondBvndcYyY9JO3dZE5fibBLAynsu6HumJKJ
+ L9+5rpjrue8koenlaN6Y9qw+5YM2/R8gQI4= 
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2043.outbound.protection.outlook.com [104.47.73.43])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ek4hpp0et-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 04 Mar 2022 08:07:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iqgok8+Lpnojj7ZsG8tm///OURWVa6irdPL+4+OZOaVydo+WlNONbB/HXx8+9//X5/xLGPdZMZqI0W2ctr663RImrZsHyZJT2bE/TAiseZNUFc4eg/mNjdQseoQz3I4SjSOSXVaCp5AAV6rfMGVn+5NVCZ6pvEIfQBs5fJw8MsWmx00ncOE/r9vMiilxWt6wPHk7+ek/y2vbu3lAhYKbqBUwpZtqOxha3R6XOVtVHSPHbtybtt+FP95KEx0BkioQSagzp6RUJhcNtk5h8tKolDuYJPB8+8mxdIPGrsXUEh92HBWuXaHD51yOmo6YSi/TQkbnT19tTiogdi3FQpJdcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s64K5vt/OGe0DiEGvksjfU3/NxMbARsQ9JwvHLZerts=;
+ b=XXznOcWr59A3zNCTWvypvaVtzwg/uBN9bfEQMDFjTe0Zr1pKYRW7dViwSj9kR7Vw3agymtMTWleEb/nBR6jvwCQSLFLcTWV3YSUP8fozfwpDzS6C8XDCR4XlcrwLeFDjIoIzvIulluiDtbsW9qsjWkECDt09UDDc8b0JRPVHWTV2BCJ9B8n7SqtFOoi0wIW93jS+vz5M9aFWwSw6lax334RFAJsQLh3xFdfkN6T7mNju7KucRR6kIXuy8fX0TOAd+CotajUqReooUVHl5+xrYsDbM+dlc10QwC3/8QtFeNm45wPgkuvCKWxTPkQpfjy4En9Q4MtHUqogMH+50YFvlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by BN6PR15MB1554.namprd15.prod.outlook.com (2603:10b6:404:c4::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Fri, 4 Mar
+ 2022 16:07:25 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::91dd:facd:e7a5:a8d1]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::91dd:facd:e7a5:a8d1%3]) with mapi id 15.20.5017.029; Fri, 4 Mar 2022
+ 16:07:25 +0000
+Message-ID: <9e940637-1381-f51c-afef-9c78d463ace1@fb.com>
+Date:   Fri, 4 Mar 2022 08:07:21 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.1
+Subject: Re: [PATCH bpf-next v2] bpf: Replace strncpy() with strscpy()
+Content-Language: en-US
+To:     Yuntao Wang <ytcoode@gmail.com>
+Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com
+References: <e1e060a0-898f-1969-abec-ca01c2eb2049@fb.com>
+ <20220304070408.233658-1-ytcoode@gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+In-Reply-To: <20220304070408.233658-1-ytcoode@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-ClientProxiedBy: MWHPR02CA0023.namprd02.prod.outlook.com
+ (2603:10b6:300:4b::33) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0bd16590-c1c9-4762-b7f1-08d9fdf912cf
+X-MS-TrafficTypeDiagnostic: BN6PR15MB1554:EE_
+X-Microsoft-Antispam-PRVS: <BN6PR15MB15547DFCADC3D9FD27B3BFF1D3059@BN6PR15MB1554.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Sx8UxeWO8pcZd33Y4Bk7h7SBQ7f+LRIHwj3jT8j7ltPVG/t4Wh3YD1tlKxubaEFPkCok2KBgVJoeAzlhWZnqnbs7TqS8Ckd+yzTVUXVzAU9Z2IyZCLsA/Xa7omNsagrjh5LwQ+sAlGA9fKG0ID82Nt5uT3AhqR8kHdX9M9DqStQRelOgrEzMGE0QlGlgQxqnviwGk+ZgHQmsU/mzNFXSNzwCddOmmNg0delq1u55i5H6+fWaCnjKAZcggeKWOo9pTsMVFtacoU4KptfQgibtPT3ShqmpOFqvhiTLs84QPkBWFNIBpaaw0uzxfjmY9pdUbFFQtvA9DuWISSoFOv98XA22kzRde7AQNBZDdtY5JJfxyF2/pOrpBfhcqJaWAR3LSDx46+rQVXhSlVvrF8eRbTLG1FP/lsQDjgbahCvg0ezLntvTKhRMOqdUYx7nBhJB1TxC5dCKWBQ5uI+ZXA+YMqTH2ZYVFHNheR2gZvEhgWhpSq4eNn7hBVvUO7ULPluzvHNzqgkOLc0YdyoCyKQNNLs5q77n45n/CNtqUI9PYxNURe3a95kFcj2TaBHEvjfBtGZmAzz1SJd5vhhWzmYc8hSg+whIxh3Th7gWDixARQ76QKrDEHqLkrsaqRF4FcZJE+HgoSaM6VZRuM1VrWc+cPTuqrG9jki/20jXsqVPLFB9JirjrJ7ICLmizu6CMqPoSOmx2o3ljzOp2ZWWtVplvW1l/+efYak0tjJ84xvRTETSsZgeSBw5Am/j9GTQbWJ7zIc5fsu3QN6RT2/Ux2h0btyZS78L4kTsewEuNgMFomtgCz8YfUou+lsN46+/ktgP
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(186003)(2616005)(5660300002)(31696002)(86362001)(2906002)(4326008)(8676002)(6916009)(316002)(66946007)(66476007)(6666004)(6512007)(6506007)(53546011)(52116002)(4744005)(36756003)(8936002)(38100700002)(6486002)(966005)(508600001)(31686004)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U09PSXZONVk3dTdxQi9PYXZuaUN5TVlXaklTcno0QnMyamlTb1RvYXl6U0NH?=
+ =?utf-8?B?MThLK1RyNGtmSnZJYlZuRkVHMmIxNi83clVGL21tQ0ZRd1hJcG1Ob3ZUaDEz?=
+ =?utf-8?B?bXBWRmtlWW1vNlIrVG9aUnArQU9GelNzd0JxOFNpR21iOG1rSFpKOVBBOXds?=
+ =?utf-8?B?QngrTWNjWGxQZ0cxRlBWVEFXMWxsM3QrOTFBeXVmQjNxUzQvalplZzRJckhO?=
+ =?utf-8?B?OWdCbTNvY1dPMTFEZUppaUo3aUlCaklKcnprM2NadlUzNHVNdEZDdlEzN3Uy?=
+ =?utf-8?B?d2FieDNxVUx2NW9sVThRV3BIK2NPTDVleUtJL0t4RXdEU2oxeGlTeVRxUVh4?=
+ =?utf-8?B?SGxpblh3eG83Sy9uNVZaRXBrM3NGYm02UTVUVHdXQkkwd2ZNamNZS05lc2FS?=
+ =?utf-8?B?cGxEMjYzWE9PZGUvQUkvaC9Ed3VOWDNITXBvL2ZDbEwvczhpMEhkbW9tTzRS?=
+ =?utf-8?B?azIzV2hzOE9BaVZzVkxiR1ZqNXdPK1hrcXl6NVB4TjZ0OThDbytkN3UzTGdp?=
+ =?utf-8?B?cDJwWlVlZkxpd1UrM3pDSWNQWE92WVZMa0hKZENEVVZjV1VQRCtGYlh5S3Jp?=
+ =?utf-8?B?U2ZrcWRxUjduNVlUckJLdDNGTjdlaFVLL1lWY29tZFNqQ25veTVTVGI5dXhi?=
+ =?utf-8?B?K094djd1Szd5Z3R6SndyME5UZ0w3N0NTZ0hCdUNxcFZ4ZTk4TnlNeFRYcHRM?=
+ =?utf-8?B?NHNtRUdSMEJJbDNLMlY1K0lhdXRZemhUTStWeFpWQnJMNUcvSFZBeDhaV2c2?=
+ =?utf-8?B?WVlUcldDdXJBMFlxeG1wTXptL2t2RFA3U3NvUGZTSDZienFVSG9ad1diTkRG?=
+ =?utf-8?B?Q3pNNzY1T3BtdkxQMmd1Q1ZOTXdEckdTU1JKUzNlQjd1dm1ZQXJMSm9YZW16?=
+ =?utf-8?B?NXVzd1JuRWhFR0tVQjRnZWtlVWNHZU1YY2Z6Sk53RG9BbEFMTldRZHhtd1Rt?=
+ =?utf-8?B?cnBCNldCSnVzY1NCOFh3MUVaa2J1VjZ4eEhMb096TzluZkp6VHEzWmI4bVJ1?=
+ =?utf-8?B?MWxRb0lacTBHbU4vcW53bktDdG40V2M1WEtKS3g2RUViQXNlaDY5ejNLLzg1?=
+ =?utf-8?B?WUVxekN0Z3h1Y3BVZUZyREpKWkZtM2VhaWJOUCszMlNycHRBWisxckRzTWFH?=
+ =?utf-8?B?VzdnRFpaeC9tY0NocU55dGVNYUhxTExKbUx1bkFSb2pSMU5SeDZDTWRDN2lE?=
+ =?utf-8?B?VnRCaEduaFdTb2tqQTBzN0dQbFd3Yys4RndGa2diZXJSVk1XQkVIVEE4TURK?=
+ =?utf-8?B?elV3N2Fubm5DV05UaTJsSnp3SVpiOFVqaURGTVV1ellZQWdSZjdjNUVBcWhX?=
+ =?utf-8?B?aDUrWGo3clJrSFpKU2dFY0NWcWt6MXdZYkYxcHdKZjB4VG10UThsVEhWUkpL?=
+ =?utf-8?B?SXdhQzRPTWlXTVd5bklZV1BGQkZNdUxuK1l4N1p2RS9kZCtzekt1eTE4YXNk?=
+ =?utf-8?B?b0pKTk9tRTEzTlZLQ0NRVThhTnJBVFZDRWZnZDE5eFhBempiL2QyVzdWOVdS?=
+ =?utf-8?B?Zlp0Q2NlSFlWV2h4MjJlVi9QYmhaTDRPcTU2TjRxemNpTjgzMWRFZ2xxWHd4?=
+ =?utf-8?B?R085cnNEUWtneDR4OHlyVHI0YWlHWUdRQjZSU053OWEvVkt6ZlJWd1NiRWR6?=
+ =?utf-8?B?NWdEOGxKc3YvV1dFQ1B1VkhEQm1HNldWM3hTSjVidXBUTHJvd0RlNWdWL2xR?=
+ =?utf-8?B?bnNKOGUvWnYvK2daYkNSdU5BTHBhRW9weU1ORWo3QVRjNGk3UHI5dmZTeUhN?=
+ =?utf-8?B?WXVXQWtzd0ZsOEp3dTlCWFV2eHlXdE1LZmZ1Rmt2dXRmd004L3lTQWtOd3d3?=
+ =?utf-8?B?d3FGbERxTldpeUd4YktjLzY2eGNHMTI2dW9LZmlTQ21jVHA5em1JS0ZEYVpo?=
+ =?utf-8?B?MmJlNStwZGxUa01WSkZaWWlzamtCQk1nZFRIOEN5aW0zbmFiSU9kUE9uZnJY?=
+ =?utf-8?B?OXR6TnBMdncxVi9sb05KLzRNM1FGaSs5amZVWmVOUCtsd0tNVVRQSUhTTmFQ?=
+ =?utf-8?B?ZVhjZ1BzNW1IL29MZmpqNXlmM2JtbkY3b3BHcmlUUWFjSDQ3aW5nbVBodjJN?=
+ =?utf-8?B?enpYY3B2aVk1SUgwNjZLMWJwcVV2dGtGRjFtZUJ6RFJKNzNna1Q5WGdncUZ3?=
+ =?utf-8?Q?t3BEer7oiNo1U3MKlY9DTmSaI?=
+X-OriginatorOrg: fb.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bd16590-c1c9-4762-b7f1-08d9fdf912cf
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2022 16:07:25.5641
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: N6d4JdHP3F11BP8uKzd/rDL4tTFWjI6iFVUCPLuziN8frNpct1FY38BsLHoDidUR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1554
+X-Proofpoint-ORIG-GUID: IsHM_Krlf66cr5594AuAmNRF2dFTgpvM
+X-Proofpoint-GUID: IsHM_Krlf66cr5594AuAmNRF2dFTgpvM
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8a99a175d25f4bcce6b78cee8fa536e40b987b0a.1646403182.git.daniel@iogearbox.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-04_07,2022-03-04_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 mlxlogscore=507
+ spamscore=0 phishscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 clxscore=1015 mlxscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203040083
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,111 +149,18 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri 04-03-22 15:26:32, Daniel Borkmann wrote:
-> syzkaller was recently triggering an oversized kvmalloc() warning via
-> xdp_umem_create().
-> 
-> The triggered warning was added back in 7661809d493b ("mm: don't allow
-> oversized kvmalloc() calls"). The rationale for the warning for huge
-> kvmalloc sizes was as a reaction to a security bug where the size was
-> more than UINT_MAX but not everything was prepared to handle unsigned
-> long sizes.
-> 
-> Anyway, the AF_XDP related call trace from this syzkaller report was:
-> 
->   kvmalloc include/linux/mm.h:806 [inline]
->   kvmalloc_array include/linux/mm.h:824 [inline]
->   kvcalloc include/linux/mm.h:829 [inline]
->   xdp_umem_pin_pages net/xdp/xdp_umem.c:102 [inline]
->   xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
->   xdp_umem_create+0x6a5/0xf00 net/xdp/xdp_umem.c:252
->   xsk_setsockopt+0x604/0x790 net/xdp/xsk.c:1068
->   __sys_setsockopt+0x1fd/0x4e0 net/socket.c:2176
->   __do_sys_setsockopt net/socket.c:2187 [inline]
->   __se_sys_setsockopt net/socket.c:2184 [inline]
->   __x64_sys_setsockopt+0xb5/0x150 net/socket.c:2184
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Björn mentioned that requests for >2GB allocation can still be valid:
-> 
->   The structure that is being allocated is the page-pinning accounting.
->   AF_XDP has an internal limit of U32_MAX pages, which is *a lot*, but
->   still fewer than what memcg allows (PAGE_COUNTER_MAX is a LONG_MAX/
->   PAGE_SIZE on 64 bit systems). [...]
-> 
->   I could just change from U32_MAX to INT_MAX, but as I stated earlier
->   that has a hacky feeling to it. [...] From my perspective, the code
->   isn't broken, with the memcg limits in consideration. [...]
-> 
-> Linus says:
-> 
->   [...] Pretty much every time this has come up, the kernel warning has
->   shown that yes, the code was broken and there really wasn't a reason
->   for doing allocations that big.
-> 
->   Of course, some people would be perfectly fine with the allocation
->   failing, they just don't want the warning. I didn't want __GFP_NOWARN
->   to shut it up originally because I wanted people to see all those
->   cases, but these days I think we can just say "yeah, people can shut
->   it up explicitly by saying 'go ahead and fail this allocation, don't
->   warn about it'".
-> 
->   So enough time has passed that by now I'd certainly be ok with [it].
-> 
-> Thus allow call-sites to silence such userspace triggered splats if the
-> allocation requests have __GFP_NOWARN. For xdp_umem_pin_pages()'s call
-> to kvcalloc() this is already the case, so nothing else needed there.
-> 
-> Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-> Reported-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
-> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Tested-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
-> Cc: Björn Töpel <bjorn@kernel.org>
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Cc: Willy Tarreau <w@1wt.eu>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: David S. Miller <davem@davemloft.net>
-> Link: https://lore.kernel.org/bpf/CAJ+HfNhyfsT5cS_U9EC213ducHs9k9zNxX9+abqC0kTrPbQ0gg@mail.gmail.com
-> Link: https://lore.kernel.org/bpf/20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org
 
-This makes sense to me.
-Ackd-by: Michal Hocko <mhocko@suse.com>
 
-> ---
->  [ Hi Linus, just to follow-up on the discussion from here [0], I've cooked
->    up proper and tested patch. Feel free to take it directly to your tree if
->    you prefer, or we could also either route it via bpf or mm, whichever way
->    is best. Thanks!
->    [0] https://lore.kernel.org/bpf/CAHk-=wiRq+_jd_O1gz3J6-ANtXMY7iLpi8XFUcmtB3rBixvUXQ@mail.gmail.com/ ]
+On 3/3/22 11:04 PM, Yuntao Wang wrote:
+> Using strncpy() on NUL-terminated strings is considered deprecated[1].
+> Moreover, if the length of 'task->comm' is less than the destination buffer
+> size, strncpy() will NUL-pad the destination buffer, which is a needless
+> performance penalty.
 > 
->  mm/util.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Replacing strncpy() with strscpy() fixes all these issues.
 > 
-> diff --git a/mm/util.c b/mm/util.c
-> index 7e43369064c8..d3102081add0 100644
-> --- a/mm/util.c
-> +++ b/mm/util.c
-> @@ -587,8 +587,10 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
->  		return ret;
->  
->  	/* Don't even allow crazy sizes */
-> -	if (WARN_ON_ONCE(size > INT_MAX))
-> +	if (unlikely(size > INT_MAX)) {
-> +		WARN_ON_ONCE(!(flags & __GFP_NOWARN));
->  		return NULL;
-> +	}
->  
->  	return __vmalloc_node(size, 1, flags, node,
->  			__builtin_return_address(0));
-> -- 
-> 2.21.0
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> 
+> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
 
--- 
-Michal Hocko
-SUSE Labs
+Acked-by: Yonghong Song <yhs@fb.com>
