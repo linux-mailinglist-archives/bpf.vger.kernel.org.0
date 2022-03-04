@@ -2,111 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3778A4CCE45
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 08:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36C14CCEE7
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 08:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234721AbiCDHHN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 02:07:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35764 "EHLO
+        id S230182AbiCDHOe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 02:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbiCDHHM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 02:07:12 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1F718E430;
-        Thu,  3 Mar 2022 23:06:25 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id b8so6647606pjb.4;
-        Thu, 03 Mar 2022 23:06:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q/M3caOnFE3N93SPkyxpAe4BQV2suFmBpM97xNgq+TA=;
-        b=anS/vfnrEbn89xVNCCdRDdOukM3FAdc/3eOHFcE9uWJA+9Xx46X3WP0tLapUtRkGPd
-         Hj0FMecC2bNJmBBnyKEJqIOuvkWrTVI8vwTS6oXYbo6c38lu70/HoAnkMHCPSW8k3rOh
-         ekyJ6fFjyp61UiOGj1uhC5ZoYVdioNtO9AxJmFzumb1AY5ffwwLjcPWPbsV8s2wZJq4h
-         7ZZ39NvWbSpJezJ95Xm6u7Nsh4kL8sEWvDwuU73cBWIET6ZJ1iYihl6SoP5bf146yDJG
-         gtYKBwgDcbRy3qfT8QQhzxWbHuOpuB76lauxlTn7F2YXaeeWkHg1FAAWjenCOdF7bk89
-         3a3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q/M3caOnFE3N93SPkyxpAe4BQV2suFmBpM97xNgq+TA=;
-        b=jbKdqX+xh8BQVrnKSWgI64PQwZYC5l0A3mh095Sii9AhHvrfeRFAhCfcln3UPpNnyA
-         Gc1FOnxniPFYwU5ZOFcUoANOaItY6M7v2r+0D3gMXxZlCSLW6DpFpgT3+aDwGX54852x
-         3E1YJi2Au8sApALefw9VYOYNeQOp2uh1kMisgD/orG3+iKAEEhM6WiXkejWRb4oi4Ulf
-         aqx0BDkKljHuDgLhLy+TqP2SPsKHBWKqJNuPMEeLj4DlhW0ssFsWn3MgPw9P9UlHJcsy
-         JucdVDtJQzgImknTJiucHWJaVF0pvi7eK4RVKIKioOP5mbFXwoGgC+k6fqK6a1gZJ7r2
-         k+aw==
-X-Gm-Message-State: AOAM5338RmWVKUxrTOA3DLideliS0IcMp95pobaE+hO0Qym8d3xQVqjV
-        jmqQtKE8noqpYq52dwLgxB8=
-X-Google-Smtp-Source: ABdhPJxJWAPOFI6E9NdzxWEpdtku8KpJi10GWzq0ldm6Pw+2AH4SvRr9Of/Dd1ZzIZzxezLQ0njqLg==
-X-Received: by 2002:a17:902:e5cf:b0:151:b24e:8d3b with SMTP id u15-20020a170902e5cf00b00151b24e8d3bmr4883162plf.29.1646377585360;
-        Thu, 03 Mar 2022 23:06:25 -0800 (PST)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id c34-20020a630d22000000b0034cb89e4695sm3783586pgl.28.2022.03.03.23.06.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 23:06:24 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     yhs@fb.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com, ytcoode@gmail.com
-Subject: [PATCH bpf-next v2] bpf: Replace strncpy() with strscpy()
-Date:   Fri,  4 Mar 2022 15:04:08 +0800
-Message-Id: <20220304070408.233658-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <e1e060a0-898f-1969-abec-ca01c2eb2049@fb.com>
-References: <e1e060a0-898f-1969-abec-ca01c2eb2049@fb.com>
+        with ESMTP id S239104AbiCDHNI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 02:13:08 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE567199D7F;
+        Thu,  3 Mar 2022 23:08:38 -0800 (PST)
+Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K8zSQ22yQzdfxT;
+        Fri,  4 Mar 2022 15:07:18 +0800 (CST)
+Received: from [10.174.177.215] (10.174.177.215) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 4 Mar 2022 15:08:36 +0800
+Subject: Re: [PATCH bpf-next v2 3/4] bpf, sockmap: Fix more uncharged while
+ msg has more_data
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+CC:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
+        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
+        <davem@davemloft.net>, <edumazet@google.com>,
+        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
+        <ast@kernel.org>, <andrii@kernel.org>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20220302022755.3876705-1-wangyufen@huawei.com>
+ <20220302022755.3876705-4-wangyufen@huawei.com>
+ <YiBczo/gN8w9Hl+L@pop-os.localdomain>
+From:   wangyufen <wangyufen@huawei.com>
+Message-ID: <43486167-1d02-c053-96f4-55a2683f3da8@huawei.com>
+Date:   Fri, 4 Mar 2022 15:08:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <YiBczo/gN8w9Hl+L@pop-os.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.177.215]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using strncpy() on NUL-terminated strings is considered deprecated[1].
-Moreover, if the length of 'task->comm' is less than the destination buffer
-size, strncpy() will NUL-pad the destination buffer, which is a needless
-performance penalty.
 
-Replacing strncpy() with strscpy() fixes all these issues.
+在 2022/3/3 14:14, Cong Wang 写道:
+> On Wed, Mar 02, 2022 at 10:27:54AM +0800, Wang Yufen wrote:
+>> In tcp_bpf_send_verdict(), if msg has more data after
+>> tcp_bpf_sendmsg_redir():
+>>
+>> tcp_bpf_send_verdict()
+>>   tosend = msg->sg.size  //msg->sg.size = 22220
+>>   case __SK_REDIRECT:
+>>    sk_msg_return()  //uncharged msg->sg.size(22220) sk->sk_forward_alloc
+>>    tcp_bpf_sendmsg_redir() //after tcp_bpf_sendmsg_redir, msg->sg.size=11000
+>>   goto more_data;
+>>   tosend = msg->sg.size  //msg->sg.size = 11000
+>>   case __SK_REDIRECT:
+>>    sk_msg_return()  //uncharged msg->sg.size(11000) to sk->sk_forward_alloc
+>>
+>> The msg->sg.size(11000) has been uncharged twice, to fix we can charge the
+>> remaining msg->sg.size before goto more data.
+> It looks like bpf_exec_tx_verdict() has the same issue.
+>
+> .
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+In bpf_exec_tx_verdict(), case __SK_REDIRECT,  msg_redir is used and 
+msg->sg.size is deducted in advance.
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1 -> v2: replace strncpy() with strscpy() instead of strscpy_pad()
+Therefore, this issue (more uncharged) does not exist.
 
- kernel/bpf/helpers.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+However, I think that if msg_redir processing cannot be completed , that 
+is msg_redir has more data,
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index ae64110a98b5..315053ef6a75 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -225,13 +225,8 @@ BPF_CALL_2(bpf_get_current_comm, char *, buf, u32, size)
- 	if (unlikely(!task))
- 		goto err_clear;
- 
--	strncpy(buf, task->comm, size);
--
--	/* Verifier guarantees that size > 0. For task->comm exceeding
--	 * size, guarantee that buf is %NUL-terminated. Unconditionally
--	 * done here to save the size test.
--	 */
--	buf[size - 1] = 0;
-+	/* Verifier guarantees that size > 0 */
-+	strscpy(buf, task->comm, size);
- 	return 0;
- err_clear:
- 	memset(buf, 0, size);
--- 
-2.35.1
+and there is no subsequent processing,  maybe that is another problem.
+
+
+Thanks.
 
