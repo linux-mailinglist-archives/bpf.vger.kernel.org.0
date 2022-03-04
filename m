@@ -2,57 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 323044CCCB3
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 05:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 343844CCCC5
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 06:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237952AbiCDE5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 23:57:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        id S233587AbiCDFGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 00:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbiCDE5k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 23:57:40 -0500
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C755F24F;
-        Thu,  3 Mar 2022 20:56:53 -0800 (PST)
-Received: by mail-ej1-x644.google.com with SMTP id kt27so15169293ejb.0;
-        Thu, 03 Mar 2022 20:56:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8+YG6PyMN5lqIoue4o1YYMq3iasC+Fhw1iQpSQooE+M=;
-        b=UvE9UrA4K4VIMHua6297VjO/RNOAypHTISR3IARdr+JhiU1pIJBN+AV1hnQ0KkcDc3
-         sY5NfvAiwpzpYCrfvjDleTuPsFno/TsC3WWNVOJ5oQl/W1wQy8Ucs5teJl4Zf1m/H8cD
-         6IfHkwGbJ7l1JfyC5z8+3cHDirngiPabxFift/wKu5nlUri8q2IEHAwKOgH00Zs+NZSs
-         dWDWvcmLXqwFptqgIcTS45ppDRkN4bH+J1aHQbU74uOlTPi03vf3uL7XpQ1ms30kzuXk
-         a0v4fIVtrhqQNvAVMQRs6FAwrIU2QuNwQbbovqH36a75teN3Hs8HT7CyJt2g2uI01oT3
-         RRBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8+YG6PyMN5lqIoue4o1YYMq3iasC+Fhw1iQpSQooE+M=;
-        b=6iq2QI25/ilRXCoiOnPawILy4q3tXwZB8KpDO2Zp7GDeZg33tYTut53VJcSni5kqMG
-         v7pXOrbaTIe+TjR6sby+hh9FdAYEtEdRQHc2igjYjYlhTi9+Eri7YDC9LCSBqpcItuq4
-         5l6ZFv2CxbljkQB5dqPi7CILxYtmLF8O2wLCwahOjB1WHLfEBja+A6TQomsvoiZ3De5A
-         qNFjwrSGXQ7XczKKhK4eeAkz//lvWNsfCvvYdgJLgpgEeqDihThVfBEuqnf6e11m7Ccn
-         n2e9q1k9pV8JtMPpLQz41pcp/oLsjDW1n2HxlRSnh3peMhV8zfw1/cHTCcf28jyX8QsY
-         a5pA==
-X-Gm-Message-State: AOAM533n2+v21pYHqAQAC5oebrdMGaS6OYUs4GmgTlQATXqQXgddimih
-        9eQynNvQ9hmT2h1to94SCJH5oDVFXMGaMOytQRXYcGxzxAo=
-X-Google-Smtp-Source: ABdhPJzYFik4UTuG/N9R7FFgV784My9WYDvWq32+ekF04YhITVM5mdFwok2VYzSwuukuJnsZ9Sw6m6zqRHkvXw9tPGE=
-X-Received: by 2002:a17:906:4cd2:b0:6c8:7a90:9c7 with SMTP id
- q18-20020a1709064cd200b006c87a9009c7mr29669407ejt.439.1646369812115; Thu, 03
- Mar 2022 20:56:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20220303174707.40431-1-imagedong@tencent.com> <20220303174707.40431-2-imagedong@tencent.com>
- <20220303202539.17ac1dd5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20220303202539.17ac1dd5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 4 Mar 2022 12:56:40 +0800
-Message-ID: <CADxym3ZC1kXYF2_YnY3xKYnRGzPimHnahR5eoAr4fkawkm5aSA@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/7] net: dev: use kfree_skb_reason() for sch_handle_egress()
-To:     Jakub Kicinski <kuba@kernel.org>
+        with ESMTP id S230244AbiCDFGf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 00:06:35 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D01416FDD5;
+        Thu,  3 Mar 2022 21:05:49 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 316FDB82758;
+        Fri,  4 Mar 2022 05:05:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9693EC340E9;
+        Fri,  4 Mar 2022 05:05:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646370346;
+        bh=4x65Fp7ObQMvsWCK/jjF9UZ9wVhjMToo0McU7yZbAB8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UOPsBaUoldwHegmZ9+2wxga8RV87CUfr9bstWRpPWCQFWuyfuh0d+e/n8sxsXyQFr
+         lS4EdOsfJ5/mV/JlcbaQSuumz3m02f6267PCit8/jnPDWoAbPdsYrhrs4jyQD7mmsK
+         i7niYPHvGEc8K8q+r5QDB6RCKY11vfUpCGFwAOi/wB+Y5oYQtEgxrkjzWuWwVkUpI5
+         qoEb8lkS8AQo5AIoeWltX/Vt7pJ33fYiNlO5E2y2/ri5pHjk0B66ROfDNloHG+j7HN
+         YsZ52/PwF2Z5rRLdT7MLf4oGzEOJBYKj2CBTmHmJA8rlkEpQ6xP4t/NJHYB7L/AAnp
+         SDQXsmB1rbViA==
+Date:   Thu, 3 Mar 2022 21:05:44 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Menglong Dong <menglong8.dong@gmail.com>
 Cc:     David Ahern <dsahern@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -77,34 +58,35 @@ Cc:     David Ahern <dsahern@kernel.org>,
         Cong Wang <cong.wang@bytedance.com>,
         LKML <linux-kernel@vger.kernel.org>,
         netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next 1/7] net: dev: use kfree_skb_reason() for
+ sch_handle_egress()
+Message-ID: <20220303210544.5036cf7c@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <CADxym3ZC1kXYF2_YnY3xKYnRGzPimHnahR5eoAr4fkawkm5aSA@mail.gmail.com>
+References: <20220303174707.40431-1-imagedong@tencent.com>
+        <20220303174707.40431-2-imagedong@tencent.com>
+        <20220303202539.17ac1dd5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        <CADxym3ZC1kXYF2_YnY3xKYnRGzPimHnahR5eoAr4fkawkm5aSA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 4, 2022 at 12:25 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Fri,  4 Mar 2022 01:47:01 +0800 menglong8.dong@gmail.com wrote:
-> > Replace kfree_skb() used in sch_handle_egress() with kfree_skb_reason().
-> > The drop reason SKB_DROP_REASON_QDISC_EGRESS is introduced. Considering
-> > the code path of qdisc egerss, we make it distinct with the drop reason
-> > of SKB_DROP_REASON_QDISC_DROP in the next commit.
->
-> I don't think this has much to do with Qdiscs, this is the TC
-> egress hook, it's more for filtering. Classful Qdisc like HTB
-> will run its own classification. I think.
->
-> Maybe TC_EGRESS?
+On Fri, 4 Mar 2022 12:56:40 +0800 Menglong Dong wrote:
+> You are right, I think I misunderstanded the concept of qdisc and tc before.
+> and seems all 'QDISC' here should be 'TC'? which means:
+> 
+> QDISC_EGRESS -> TC_EGRESS
+> QDISC_DROP -> TC_DROP
 
-You are right, I think I misunderstanded the concept of qdisc and tc before.
-and seems all 'QDISC' here should be 'TC'? which means:
+For this one QDISC is good, I think, it will mostly catch packets 
+which went thru qdisc_drop(), right?
 
-QDISC_EGRESS -> TC_EGRESS
-QDISC_DROP -> TC_DROP
-QDISC_INGRESS -> TC_INGRESS
+> QDISC_INGRESS -> TC_INGRESS
