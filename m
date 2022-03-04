@@ -2,57 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 139184CDEB5
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 21:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A42EF4CDD6E
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 20:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbiCDUGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 15:06:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53318 "EHLO
+        id S229453AbiCDTys (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 14:54:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230164AbiCDUGC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 15:06:02 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672CD31AF78
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 12:01:48 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id q8so10757851iod.2
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 12:01:48 -0800 (PST)
+        with ESMTP id S229436AbiCDTyr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 14:54:47 -0500
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43EE81C9B5C
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:50:03 -0800 (PST)
+Received: by mail-il1-f180.google.com with SMTP id 13so1350316ilq.5
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 11:50:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O7OLZj9rVyIA/cuusSddefTkUC8S9jwrVI7aSuOTwU8=;
-        b=KZhl8cPz8VPZF189CYhXzEKjOV85C3T479ZsuAQDX690BJgGL3X2woY6yrMh8BlVHY
-         QE5fE8y6m3b764RObAYkC5gKB+5NnNvTVB/6+vSjdAQlBJfV3eu97GBBUcuwJYpy7Zjv
-         /EW48ykwVHn74RiL4WEEUnlAHQUaeV4NeHp+84gbbMPFtvCtyX44I2Q6GC1KPczTx5qt
-         zLhiXNYgYQoCRxAUnexdCn+uxGxahE8eHWBiAwWOEpFcYNN5QCoGG7pPTxptCWNnKCGQ
-         CRfmdhsjmM7UBBDco0NFSeUvuMWl/o+LWgqYSUZUgzVR9dTKzeWLxIdZlmnQSepcxh0o
-         yLWw==
+        bh=nZBTNphfaHhZVTqi3GXUcMB6Eq7viceo1VRkv3S8cUU=;
+        b=iW/DIJCyQv3qLJJkiOFoKIE6kAfYzY9dUJC+SMGpCaGgvYx83Hn1tpOWmkvo2AZGue
+         yY/NPxkhrrtyAC/118in2LFjvvd0khkGCPHSxubBqWimW0TkpCQXcg++2sWimrHEkBqT
+         iPKUMAmyZe7a9LNhCbw+8cTclOG2hfADerrbfoGg83ZBBX94BOG4AMdCvb9QNjlpuXwW
+         TUnpz6cQh5QX33CCYHUlgNjuVi5mB7ptxRalhJpVNt8NvUhPd4zzOQBoYAKMcQtEvQLy
+         axAASkbwl9VwEMnhduRvzUfIxQzDBOgLk/SVrN7xEIbMxJxACTRJGrU22y6kxl1CpdgU
+         HIVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O7OLZj9rVyIA/cuusSddefTkUC8S9jwrVI7aSuOTwU8=;
-        b=Mop3c5x7kaApZdeDekwx5G4DBrHEGG00XXQrNkpdUWX4HKC6LWdj6bo8kd46INetYp
-         DqxlvNhuSd5QKDVihIcO9E881Wh+nThI1a7hWJ7sImpRSB4BENLaVs3SuxK5SNKW10CD
-         y/VPhitvfxR9T+xX0Gvnp5jxMTZv64y294cYYUE/QwyZyjBJwoZJfAdrHKcE9ODiqUtK
-         BYmy1mEM/TG/KD3yerjCYkoOfQNW5lxPoL6t0JPJSUdGkwFq2lT3tPFd2CzdvIQjsrn+
-         jKNtopgCeZ8L7eSkiEfEBfq6azX0G6QgV08GQueyQMi8OUw/lJkNL+9EJFH57Beqq7KT
-         HDaA==
-X-Gm-Message-State: AOAM5318fApMSr6KjhsHvwvEwXyvST6li/oYhTei7A7lfOjX+w5s1NSf
-        KaepvA2qxnvGWU1jKNlVlJhMlTRtBy4AB3rKfJEFo0EgN+M=
-X-Google-Smtp-Source: ABdhPJzRmZ6kQ8lsE6/KDwx6+rpivxNdG3UV8ztcjbr90G3xY9TwwfDWgK7onMlsqM6owxeYwcDMiKEswzXsy0+q3Ys=
+        bh=nZBTNphfaHhZVTqi3GXUcMB6Eq7viceo1VRkv3S8cUU=;
+        b=Kb2FaCfj5TzLblIVkgSv2fipTS0So3sebdkQC6689/kozGPqajLrePuh6upd2CHNKJ
+         9iz/6IKitp8TWL9Wmu/Th7ucvzR1QM6lC9EiB9JYZ4A5rzwXuarxHbpAV1yXCPGAlM6c
+         q+IZLY6surmVZZsXD8yMlXRXPt2UQAyLltqmVzAERkY3zERqJP47vOxIzr4XWhOQNe2E
+         TeETkH2uqJ/yEK92WlOVwL0HA0aBqatXcvqN7KuqtqIXzFl4jTVGeWK0d+nletfXngbj
+         hrzyISrxsi6CXJEmqWh+D2Tm4igO+mcc+jXJcALxpNdDHmI666Uz8N5YaMm6cGWmXn8x
+         NgOw==
+X-Gm-Message-State: AOAM533MxbxjCpFDJ+1vbOyjeQuJrZjtOgeNetwK1dzoKblEHWVxpnt2
+        0igXO1x4Yv2Bn2EWO5uUDM7BLaDDEpTNHUtEp13ryPLh40vaGQ==
+X-Google-Smtp-Source: ABdhPJwYSnjUCUxc5D0JN5bpRurU8X3U2nMy3O9GLJ4XTfY2rnj1CihLmXlGBAnws/9sJAlLOafA1qf3Rjrf38elvMI=
 X-Received: by 2002:a5e:c648:0:b0:640:bc31:cbec with SMTP id
- s8-20020a5ec648000000b00640bc31cbecmr114683ioo.79.1646422207587; Fri, 04 Mar
- 2022 11:30:07 -0800 (PST)
+ s8-20020a5ec648000000b00640bc31cbecmr143573ioo.79.1646422818357; Fri, 04 Mar
+ 2022 11:40:18 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1646188795.git.delyank@fb.com> <a679538775e08c6f7686c2aec201589b47eda483.1646188795.git.delyank@fb.com>
- <CAEf4BzZzAToLHESKrddn2y1FoLHHUVGzJe7=1ih0E3EA7BBdHg@mail.gmail.com>
- <9028e60f908d30d5f156064cebfd5af8d66c5c9c.camel@fb.com> <108158a8914fbae73f750d635773172db007a704.camel@fb.com>
-In-Reply-To: <108158a8914fbae73f750d635773172db007a704.camel@fb.com>
+References: <cover.1646188795.git.delyank@fb.com> <13cba9e1c39e999e7bfb14f1f986b76d13e150b3.1646188795.git.delyank@fb.com>
+ <CAEf4Bza55GsV1oZa=d9UuscNerMsvFPtXSTQ9qr8mrxPQVu7QA@mail.gmail.com>
+ <CAEf4BzbHM_5Ytw=bMbw8Lif+EMyyCmvTRt36DnkGB00+ovX26w@mail.gmail.com> <af229a64d7f64996c75e6406b146ff00df3e9f5a.camel@fb.com>
+In-Reply-To: <af229a64d7f64996c75e6406b146ff00df3e9f5a.camel@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Mar 2022 11:29:56 -0800
-Message-ID: <CAEf4Bzb_iM7pmuTdRu7JinUpXU-h-En0Vs+DPTshZgg-86YAJg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpftool: add support for subskeletons
+Date:   Fri, 4 Mar 2022 11:40:07 -0800
+Message-ID: <CAEf4BzaTLjf+Z51Gx=3MQKUJh2WAEq6o+Ps3KSV4tANK_GECzg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] libbpf: add subskeleton scaffolding
 To:     Delyan Kratunov <delyank@fb.com>
 Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
         "ast@kernel.org" <ast@kernel.org>,
@@ -61,41 +61,104 @@ Cc:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 3, 2022 at 12:54 PM Delyan Kratunov <delyank@fb.com> wrote:
+On Thu, Mar 3, 2022 at 11:09 AM Delyan Kratunov <delyank@fb.com> wrote:
 >
-> On Thu, 2022-03-03 at 10:52 -0800, Delyan Kratunov wrote:
+> On Wed, 2022-03-02 at 20:34 -0800, Andrii Nakryiko wrote:
 > > >
-> > > >
-> > > > +               map_type_id = btf__find_by_name_kind(btf,
-> > > > bpf_map__section_name(map), BTF_KIND_DATASEC);
-> > >
-> > > if we set obj_name to "", bpf_map__name() should return ELF section
-> > > name here, so no need to expose this as an API
-> > >
-> > >
-> > > oh, but also bpf_map__btf_value_type_id() should give you this ID directly
 > >
-> > TIL, that's not obvious at all. There's a few places in gen.c that could be
-> > simplified then - find_type_for_map goes through slicing the complete name and
-> > walking over every BTF type to match on the slice. Is there some compatibility
-> > reason to do that or is btf_value_type_id always there?
+> > forgot to mention, this patch logically probably should go before
+> > bpftool changes: 1) define types and APIs in libbpf, and only then 2)
+> > "use" those in bpftool
 >
-> Unfortunately, the internal datasec maps have value_type_id = key_value_type_id
-> = 0 i.e. void, so bpf_map__btf_value_type_id won't work out of the box.
+> Sure.
 >
-> I haven't looked if that's a bug all the way in clang-emitted object or
-> somewhere further on.
+> > > >
+> > > > +struct bpf_sym_skeleton {
+> > >
+> > > I tried to get used to this "sym" terminology for a bit, but it still
+> > > feels off. From user's perspective all this are variables. Any
+> > > objections to use "var" terminology?
+>
+> "var" has a specific meaning in btf and I didn't want to make bpf_var_skeleton
+> look related to btf_var for example. Given the extern usage that libs require, I
+> figured "sym" would make sense to the user.
+>
 
-Yeah, just replied in another email. We fill it out too late, but it
-should be possible to move it earlier into open phase.
+Even for extern cases, we only generate stuff that really is a
+variable. That is, it has allocated memory and there is specific
+value. Only .kconfig is like that. .ksyms, for example, doesn't get
+any exposure in skeleton as it can't be used from user-space code.
+
+For me, symbol is just way too generic (could be basically anything,
+including ELF section symbol, function, etc, etc). But our use case is
+always variables available to both user-space and BPF code. I don't
+think btf_var vs btf_var_skeleton confusion is significant (and even
+then, each extern in .kconfig has corresponding BTF_KIND_VAR, so it
+all is in sync).
+
+> If you don't think the confusion with btf_var is significant, I can rename it -
+> this is all used by generated code anyway.
+>
+> > >
+> > > > +       const char *name;
+> > > > +       const char *section;
+> > >
+> > > what if we store a pointer to struct bpf_map * instead, that way we
+> > > won't need to search, we'll just have a pointer ready
+>
+> We'd have to search *somewhere*. I'd rather have the search inside libbpf than
+> inside the generated code. Besides, finding the right bpf_map from within the
+> subskeleton is pretty annoying - you'll have to do suffix searches on the
+> bpf_map names in the passed-in bpf_object and codegening all that is unnecessary
+> when libbpf can look at real_name.
+
+I think you misunderstood what I proposed. There is no explicit
+searching. Here is a simple example of sub-skeleton struct and how
+code-generated code will fill it out
+
+
+struct my_subskel {
+    struct {
+        struct bpf_map *my_map;
+    } maps;
+    struct my_subskel__data {
+        int *my_var;
+    } data;
+};
+
+
+/* in codegen'ed code */
+
+struct my_subskel *s;
+
+subskel->syms[0].name = "my_var";
+subskel->syms[0].map = &s->maps.data_syn;
+
+
+It's similar in principle to how we define maps (that are found and
+filled out by libbpf):
+
+        s->maps[4].name = ".data.dyn";
+        s->maps[4].map = &obj->maps.data_dyn;
+        s->maps[4].mmaped = (void **)&obj->data_dyn;
+
+
+Except in this case we use &s->maps.data_syn for reading, not for
+writing into it.
+
+Hope this is clearer now.
+
 
 >
-> -- Delyan
+> >
+>
+> Thanks,
+> Delyan
