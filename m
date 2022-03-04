@@ -2,65 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 113D14CCA6E
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 01:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9334CCA6F
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 01:05:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbiCDAGF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Mar 2022 19:06:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
+        id S232018AbiCDAGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Mar 2022 19:06:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232018AbiCDAGF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Mar 2022 19:06:05 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB635ECB2E
-        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 16:05:18 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id z16so6151319pfh.3
-        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 16:05:18 -0800 (PST)
+        with ESMTP id S232040AbiCDAGI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Mar 2022 19:06:08 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDEAFECB35
+        for <bpf@vger.kernel.org>; Thu,  3 Mar 2022 16:05:21 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d187so6118905pfa.10
+        for <bpf@vger.kernel.org>; Thu, 03 Mar 2022 16:05:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OcePxdVil0j2Y0EYMcgPWL10sT920XMS2ub3RyNr3OY=;
-        b=WvjECKX1b+qXDBPmVeYMETZnTb2pBxUbek0xXJCyBvnsCa3tPaeSNJPxwdIA5LBxwl
-         iHVm8NGGFot/5WznZwcZLnw5OaLCVWMGdH7mOqzpIdrqTMwyomZxd4IPActCNTJ0c9LW
-         RL4+jqkSVhJKQxfFGBFqSCSpyPQhAyUZpri3/OBnE55Uqyfrd6wndqj5q+MfGvW4A08n
-         wPQTUqHpe8VfqTa/vmUvKNm/+xlUySvvFbGuXPTYHNNlgCeZebJUP6SUNTQI5h2T/LGB
-         XwnbPHPEjvn2ktHkRoRcFNK8LmPRuvYiPk3d3/qYTnh65UGbtZFFHtdbPq/6nGWBAo2e
-         HliQ==
+        bh=+6kSUFctZfI/YchZo5RsCcQPvQAdCC0KVtCxqqxsImQ=;
+        b=c0qtnKchQaAw4wDTinluctfpUSpFWd6kDbA0mfCH2R5aRlVZNiWuGz+M0QNn19BGiB
+         S3rqNDwO1TB7dK7Ljf8QST0FqGACTBzxuqsO41aBk+TmiLoJ5er3m1u/m/st8yylHLQk
+         8cFvvxFjhSv3uvDwKOfdbofVCCX7BugynAdduoi9BqBwsPO6Fb/qZmtmFu+xR82HQecq
+         dvR7j6E6H0LBc5SKawi3vIpYyApaI21j4p+G1kT6RRUL83WAgn810jtcaVo1D8P5xLdz
+         s7F0AFwGRxqBgqmjHU9ZBBDf/X6YyNTBxi/hMBEVklE6jzdAcos2sp3aVMHwtqFkQjY2
+         8lew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OcePxdVil0j2Y0EYMcgPWL10sT920XMS2ub3RyNr3OY=;
-        b=I+7J0uBOtsBpqyREpGOoHYkr0gWx0UPgInUZsWzh8dIPm6+MPUSncBC5o35CADX+wS
-         J5oz1tFA9JOGEzMF6wovCV0IsyOexL9xuvGL5YXwu3CNQfjIlS5YObGmfqxXR7m5d050
-         5YpLL2n/ddfC5+AVR0yV6qSab3g1/XKERXUgkNABdR/J6gR3+4BGO2sgirAoljt1kkFn
-         v4b39YKBpWsdVAaHlQhoIR44fHNot6wvGYh5GukWeCC8i1KxKB6oinbqJHm6CVC8WGJv
-         Rc6La9VP34caqVpJ1wqnkb2qI5sZhT7lWPhNb5OjYX9suiSGdO/F9WvTrpYMq34zD3i9
-         68Vg==
-X-Gm-Message-State: AOAM530jLcDfzB7zLVEz/CVX3fgh38KfaMuIpYvH9qcVzLCeWX+WH3Tr
-        osgbBHIXzzggNBj5OcTMi3ckWzr3LpY=
-X-Google-Smtp-Source: ABdhPJyvxplWy1i3pXQNMdxLHKICGXoFn0jxV2FNfJX3cXwXb+gC3stuCgHVFRMH6zFqjYzCWxayoA==
-X-Received: by 2002:a65:6210:0:b0:374:ba5:aacc with SMTP id d16-20020a656210000000b003740ba5aaccmr31805860pgv.8.1646352318249;
-        Thu, 03 Mar 2022 16:05:18 -0800 (PST)
+        bh=+6kSUFctZfI/YchZo5RsCcQPvQAdCC0KVtCxqqxsImQ=;
+        b=Cieibg6pOPpcOoMRrUVNw8WcAonvtMLhe+jaUK79Ni7qgarvPgP0qv5okkQiyQFw0O
+         GBS1K/BIYOVKW9P0+Ys6ZwPtBP3jpWAqjKVU1vudQfLdnmPx5o/UaHQn7EuEgfwCjr9+
+         wqW4EHO31ezpcmy5NLXxvteJT4CPQ/YpoJ5/yeV8A/dR2j+A5uTrhifLoo1OPFrkhsGP
+         OOI47H4tk1/9gXclx/61pOZMwP8dhiFQYj2I4m8NqHwwGT5zg+svY7qGMfDq2p4yH2zl
+         2d+gemHNUlAz8+fcJchc5tC4Xd2bKZbUKdA473YMsnkDkStV/th8CL+n+x/yTW1xlJ3V
+         dCBQ==
+X-Gm-Message-State: AOAM532XMMw/jSD+2E9D9LyLxc9L7UKxBQAdPTtl+sEnPpIFajOgS3Zk
+        ggnb2EQVyjqqQPmeMe14m3/p5kO3+9k=
+X-Google-Smtp-Source: ABdhPJwkhcbZSvqO0Yl3dQ82iSWj2mikSdjKMsqfBd1MmDd1LVjatWILZxznnU3HHQD9nWbL28zVxQ==
+X-Received: by 2002:a63:3dc5:0:b0:370:d638:5826 with SMTP id k188-20020a633dc5000000b00370d6385826mr32264777pga.184.1646352321296;
+        Thu, 03 Mar 2022 16:05:21 -0800 (PST)
 Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id y39-20020a056a00182700b004e19980d6cbsm3604523pfa.210.2022.03.03.16.05.17
+        by smtp.gmail.com with ESMTPSA id kb6-20020a17090ae7c600b001bee8664d82sm8108242pjb.35.2022.03.03.16.05.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Mar 2022 16:05:18 -0800 (PST)
+        Thu, 03 Mar 2022 16:05:21 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next v3 2/8] bpf: Fix PTR_TO_BTF_ID var_off check
-Date:   Fri,  4 Mar 2022 05:35:02 +0530
-Message-Id: <20220304000508.2904128-3-memxor@gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next v3 3/8] bpf: Disallow negative offset in check_ptr_off_reg
+Date:   Fri,  4 Mar 2022 05:35:03 +0530
+Message-Id: <20220304000508.2904128-4-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220304000508.2904128-1-memxor@gmail.com>
 References: <20220304000508.2904128-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3141; h=from:subject; bh=6O/7bE9Cyl1Q+aBejwnyFc0HIYcck0DgiMjjeMgU0Ns=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiIVd//KGjWYQoDvpihEw7sVUZ14iQ8LRSclbsQ3t2 Ew6pM82JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiFXfwAKCRBM4MiGSL8RygXKD/ wLRmfyqjcP5X85AYsY9aLK6OZ8hmXllD9+JZeoi0rKJQzpWzcWPYBtxhm0hg+t7zf9MUKA1kJorBor UGtagw7J/Ay7qiPu0K8WHocpEKFM9PvyB6fstJS3FNBdn7w+s/VRXZH5pYTddHRQ/VSb6WLHBYWMtU KqTk/gzN/WHs51nyIFERukBgoA14k2UpOBXk2s/E1DTMaxrcHnDlcwFaZAZ/RAXsbYZEBMNx1wYmau 1ByiwhfNV2u7fPCDFnmN9bMSXO20SnpLTGk+Qi4n+Cbsg1LYxtrxdsd1ApvUhtuBheIdHupjU6YeWL 9SBug6gCCXGHKz0P1N8YG6ArpTr1mrd/Iyog+TSsYzgylBK0U4sjhxOEhWdm/GRf67PsDo4HOQbRiZ 4Oc8BCNvl7bL4y82Ggw3T5YNnGEQVTxY5V1hpa5YkN38sLdDjobvCk6ciP5xDIgyifTe4TGvidVSf5 xt+rV3n5ufBpdB4OuZceYEdVJNUpKjgUDJkhnHn2odyM2PC490xkThnNpvlMfPx0LiE3FWe4H46HPB jfh630xxCHey/6JrBhuQzHqOwArgkd6h2aMzUZQskaSbFG4LQq2kubCkccnUXBZHToYJsC+rN+hrpv gVosroJDO33vy2gOKYfAjwnWOIIBq09JMCMN49OmWQ02bPhKDO3SN/dc568A==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3278; h=from:subject; bh=gjo4yMlDUFz8jc0xX19/30cTQ0Kvjk8SrrfHiz6dWOw=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiIVd//QuYXXGVLFP15MMFWVFbqEKKa+QvRca/BHOR RnolGWyJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiFXfwAKCRBM4MiGSL8RysZhD/ oC98qZIjVgikahC8noQ8cIwl7ujBjPn07ctlfyC+pQ9S0uXQJ2w4cJ9jBWcEqHhk8KAJE69/WSSXUh hkZ3NLdoZOn0Wha7zVz/yKT6IQyET0TOoHIVeY4OSfi5e2g1k3/X6YEVZCEBbzihendg+HI/Vp5oU+ P6s/8fMjlgwhMvNvJNSsT/vC7S6aMAqlpNiqjazQFKoWmO5Ku54QO5Bd7tUNnw0kl3tCxSmbJgqt0A UzkHcUT5NZmCS7qWO6yc1h+zWG/8uVvnHL0jpKRbGlKL7/Dr7I4uZRGTgd8i4fXcprAZDNMpCCCTD2 aUEXmgqPDqYnHbdEUERTx2JVwpXNR9CgnjfoqAJuY99r6FMATZQm2Po9Wqq626/1aUJqVmNAI8+snG G+L0C3DgYOzQUpMPA7AWWoQoUV1o4sWDXfYzke58eUstG8RwXLc+UDTooUq6I6ko0ArdT7BQMJ6XqV hQvDtxWXDqskK77YbABbNWEcNIalRuo1flHqKcYs8WJCW7aJkQ0Y3p3ZwhMYV3iZ9vApI8KzWh/ly7 QHyWhWO2hw5uBD0uemLqM65zPj8ZlgBpP7eFtzO0ZjcRs0DayXSzDJKqxn8cjOsiXWo7kXbaKLTIGn QSo9jCy+I24dz68Ty8faAS2rf+oB8sK4QqYOgMeKlp33OgJSTNXN0zPNHlag==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,75 +72,87 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When kfunc support was added, check_ctx_reg was called for PTR_TO_CTX
-register, but no offset checks were made for PTR_TO_BTF_ID. Only
-reg->off was taken into account by btf_struct_ids_match, which protected
-against type mismatch due to non-zero reg->off, but when reg->off was
-zero, a user could set the variable offset of the register and allow it
-to be passed to kfunc, leading to bad pointer being passed into the
-kernel.
+check_ptr_off_reg only allows fixed offset to be set for PTR_TO_BTF_ID,
+where reg->off < 0 doesn't make sense. This would shift the pointer
+backwards, and fails later in btf_struct_ids_match or btf_struct_walk
+due to out of bounds access (since offset is interpreted as unsigned).
 
-Fix this by reusing the extracted helper check_func_arg_reg_off from
-previous commit, and make one call before checking all supported
-register types. Since the list is maintained, any future changes will be
-taken into account by updating check_func_arg_reg_off. This function
-prevents non-zero var_off to be set for PTR_TO_BTF_ID, but still allows
-a fixed non-zero reg->off, which is needed for type matching to work
-correctly when using pointer arithmetic.
+Improve the verifier by rejecting this case by using a better error
+message for BPF helpers and kfunc, by putting a check inside the
+check_func_arg_reg_off function.
 
-ARG_DONTCARE is passed as arg_type, since kfunc doesn't support
-accepting a ARG_PTR_TO_ALLOC_MEM without relying on size of parameter
-type from BTF (in case of pointer), or using a mem, len pair. The
-forcing of offset check for ARG_PTR_TO_ALLOC_MEM is done because ringbuf
-helpers obtain the size from the header located at the beginning of the
-memory region, hence any changes to the original pointer shouldn't be
-allowed. In case of kfunc, size is always known, either at verification
-time, or using the length parameter, hence this forcing is not required.
+Also, update existing verifier selftests to work with new error string.
 
-Since this check will happen once already for PTR_TO_CTX, remove the
-check_ptr_off_reg call inside its block.
-
-Cc: Martin KaFai Lau <kafai@fb.com>
-Fixes: e6ac2450d6de ("bpf: Support bpf program calling kernel function")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/btf.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/bpf/verifier.c                                   | 6 ++++++
+ tools/testing/selftests/bpf/verifier/bounds_deduction.c | 2 +-
+ tools/testing/selftests/bpf/verifier/ctx.c              | 8 ++++----
+ 3 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b472cf0c8fdb..7f6a0ae5028b 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5726,7 +5726,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 	const char *func_name, *ref_tname;
- 	const struct btf_type *t, *ref_t;
- 	const struct btf_param *args;
--	int ref_regno = 0;
-+	int ref_regno = 0, ret;
- 	bool rel = false;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index c85f4b2458f4..e55bfd23e81b 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3990,6 +3990,12 @@ static int __check_ptr_off_reg(struct bpf_verifier_env *env,
+ 	 * is only allowed in its original, unmodified form.
+ 	 */
  
- 	t = btf_type_by_id(btf, func_id);
-@@ -5776,6 +5776,11 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 
- 		ref_t = btf_type_skip_modifiers(btf, t->type, &ref_id);
- 		ref_tname = btf_name_by_offset(btf, ref_t->name_off);
++	if (reg->off < 0) {
++		verbose(env, "negative offset %s ptr R%d off=%d disallowed\n",
++			reg_type_str(env, reg->type), regno, reg->off);
++		return -EACCES;
++	}
 +
-+		ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
-+		if (ret < 0)
-+			return ret;
-+
- 		if (btf_get_prog_ctx_type(log, btf, t,
- 					  env->prog->type, i)) {
- 			/* If function expects ctx type in BTF check that caller
-@@ -5787,8 +5792,6 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
- 					i, btf_type_str(t));
- 				return -EINVAL;
- 			}
--			if (check_ptr_off_reg(env, reg, regno))
--				return -EINVAL;
- 		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
- 			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
- 			const struct btf_type *reg_ref_t;
+ 	if (!fixed_off_ok && reg->off) {
+ 		verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
+ 			reg_type_str(env, reg->type), regno, reg->off);
+diff --git a/tools/testing/selftests/bpf/verifier/bounds_deduction.c b/tools/testing/selftests/bpf/verifier/bounds_deduction.c
+index 91869aea6d64..3931c481e30c 100644
+--- a/tools/testing/selftests/bpf/verifier/bounds_deduction.c
++++ b/tools/testing/selftests/bpf/verifier/bounds_deduction.c
+@@ -105,7 +105,7 @@
+ 		BPF_EXIT_INSN(),
+ 	},
+ 	.errstr_unpriv = "R1 has pointer with unsupported alu operation",
+-	.errstr = "dereference of modified ctx ptr",
++	.errstr = "negative offset ctx ptr R1 off=-1 disallowed",
+ 	.result = REJECT,
+ 	.flags = F_NEEDS_EFFICIENT_UNALIGNED_ACCESS,
+ },
+diff --git a/tools/testing/selftests/bpf/verifier/ctx.c b/tools/testing/selftests/bpf/verifier/ctx.c
+index 60f6fbe03f19..c8eaf0536c24 100644
+--- a/tools/testing/selftests/bpf/verifier/ctx.c
++++ b/tools/testing/selftests/bpf/verifier/ctx.c
+@@ -58,7 +58,7 @@
+ 	},
+ 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
+ 	.result = REJECT,
+-	.errstr = "dereference of modified ctx ptr",
++	.errstr = "negative offset ctx ptr R1 off=-612 disallowed",
+ },
+ {
+ 	"pass modified ctx pointer to helper, 2",
+@@ -71,8 +71,8 @@
+ 	},
+ 	.result_unpriv = REJECT,
+ 	.result = REJECT,
+-	.errstr_unpriv = "dereference of modified ctx ptr",
+-	.errstr = "dereference of modified ctx ptr",
++	.errstr_unpriv = "negative offset ctx ptr R1 off=-612 disallowed",
++	.errstr = "negative offset ctx ptr R1 off=-612 disallowed",
+ },
+ {
+ 	"pass modified ctx pointer to helper, 3",
+@@ -141,7 +141,7 @@
+ 	.prog_type = BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
+ 	.expected_attach_type = BPF_CGROUP_UDP6_SENDMSG,
+ 	.result = REJECT,
+-	.errstr = "dereference of modified ctx ptr",
++	.errstr = "negative offset ctx ptr R1 off=-612 disallowed",
+ },
+ {
+ 	"pass ctx or null check, 5: null (connect)",
 -- 
 2.35.1
 
