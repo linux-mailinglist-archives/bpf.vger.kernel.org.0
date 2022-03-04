@@ -2,56 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 814224CD29E
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 11:41:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BCC4CD352
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 12:23:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237373AbiCDKmK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 05:42:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        id S231184AbiCDLYL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Mar 2022 06:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231206AbiCDKmJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 05:42:09 -0500
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1846B1AAFD6
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 02:41:22 -0800 (PST)
-Received: by mail-io1-f72.google.com with SMTP id z13-20020a5e8b4d000000b0064125220702so5176299iom.21
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 02:41:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6SuusqU261l0YZRBubHgkzmZFekkg3laoBBQucPRrgA=;
-        b=bIuwAFEr6+OIhzLsRjConbuMoo2sAlyqIir08jqsZFcXbqMz2w07Q46Pa+xt92UKyG
-         JM8ddpnlVSSWvvUGsrZOPUxP9P5wQvJEnIds+DiTAB7b9eG+OPx/n4Zc6UA2+3lEAxe6
-         l0uuwbgvl6EiF5Qzh5Vl4/JK6FehgOcflmMhM8PelHWVtFq7pFOKN6wxjljtTo5zQs4y
-         /OVFX4a2BJs+gOuJ24ZjB2tqgG+p6bMLLjgCSyiUlS4IyXHbjPG9yiKaGNSLQBRJXRc+
-         MEZRMnmaYPQXVY2j4IKdffOmp+bdX/NnP3zqGz7DZ7F+j3BRwSJhASgYud8OVVdVHuvJ
-         oY4w==
-X-Gm-Message-State: AOAM531QlfPO0ihcPu/Vw6JWJccOyLCEGccCBi3VBgEUd4jSmQ4AmmuL
-        v7SRWO7kZzwrYqtTqoHLzqiyRLZ7sp5cTJdLzKIAbNvxg8UB
-X-Google-Smtp-Source: ABdhPJwKCMl3GU2i9vbnDTeANVWYScaZeMCV2tSwF1TW5fUve4h9UUDcIrdH6VmCvdsJafXL55JBIVWVo0pCWJHPquGCcHchQG9J
+        with ESMTP id S230096AbiCDLYL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 06:24:11 -0500
+X-Greylist: delayed 582 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 04 Mar 2022 03:23:23 PST
+Received: from mxo.utc.fr (mxo-out8.utc.fr [195.83.155.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B641E11E3F3
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 03:23:23 -0800 (PST)
+Received: from vmc.utc.fr (vmc.utc.fr [195.83.155.12])
+        by mxo.utc.fr (Postfix) with ESMTP id D50E841607
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 12:11:12 +0100 (CET)
+Received: from mxo.utc.fr (mxo.utc.fr [195.83.155.6])
+        by vmc.utc.fr (vmc.utc.fr) with ESMTP id 1E78F1248D9
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:43:14 +0100 (CET)
+Received: from mxo.utc.fr (localhost [127.0.0.1])
+        by mxo.utc.fr (Postfix) with ESMTP id 6A3B859796
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:27:20 +0100 (CET)
+Received: from smtps.utc.fr (smtps.utc.fr [195.83.155.8])
+        by mxo.utc.fr (Postfix) with ESMTP id DBAD3AEA6B
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:01:27 +0100 (CET)
+Received: from [193.169.255.111] (unknown [193.169.255.111])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pougetju@smtps.utc.fr)
+        by smtps.utc.fr (Postfix) with ESMTPSA id A1BC5222D20
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 09:47:40 +0100 (CET)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:178f:b0:2c4:b692:a8ec with SMTP id
- y15-20020a056e02178f00b002c4b692a8ecmr13307761ilu.296.1646390481472; Fri, 04
- Mar 2022 02:41:21 -0800 (PST)
-Date:   Fri, 04 Mar 2022 02:41:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf53e605d96227cd@google.com>
-Subject: [syzbot] linux-next boot error: WARNING: suspicious RCU usage in cpuacct_charge
-From:   syzbot <syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        brauner@kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
-        hannes@cmpxchg.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, lizefan.x@bytedance.com,
-        netdev@vger.kernel.org, sfr@canb.auug.org.au,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re:
+To:     bpf@vger.kernel.org
+From:   "Harald Hauge" <justine.pouget@etu.utc.fr>
+Date:   Fri, 04 Mar 2022 00:47:40 -0800
+Reply-To: weicho110@163.com
+Message-Id: <20220304102720.6A3B859796@mxo.utc.fr>
+X-DRWEB-SCAN: disabled
+X-CLAMAV-SCAN: ok
+X-VRSPAM-SCORE: 1
+X-VRSPAM-STATE: legit
+X-VRSPAM-CAUSE: gggruggvucftvghtrhhoucdtuddrgedvvddruddtkedgudejucetufdoteggodetrfcurfhrohhfihhlvgemucggteffgffitefvgfghtegjpdggtfgfnhhsuhgsshgtrhhisggvnecuuegrihhlohhuthemuceftddtnecuogfuphgrmhfkphdqohhuthculddumdenucfjughrpegtggfguffvhfffrhesthhqtddttddtudenucfhrhhomhepfdfjrghrrghlugcujfgruhhgvgdfuceojhhushhtihhnvgdrphhouhhgvghtsegvthhurdhuthgtrdhfrheqnecuggftrfgrthhtvghrnhepueeuheekjeefteegffeujeekvdduudevudfhhfduiedtheelhedvkeehfeeiieelnecukfhppeduleehrdekfedrudehhedriedpudelfedrudeiledrvdehhedrudduudenucfuphgrmhfkphepudelfedrudeiledrvdehhedrudduudenucfrrghrrghmpehmohguvgepshhmthhpohhuthdpihhnvghtpeduleehrdekfedrudehhedriedphhgvlhhopehmgihordhuthgtrdhfrhdpmhgrihhlfhhrohhmpehjuhhsthhinhgvrdhpohhughgvthesvghtuhdruhhttgdrfhhrpdhnsggprhgtphhtthhopedupdhrtghpthhtohepsghpfhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-Spam-Status: No, score=3.3 required=5.0 tests=BAYES_50,
+        FREEMAIL_FORGED_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,KHOP_HELO_FCRDNS,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,98 +60,13 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Hello,
+I'm Harald Hauge, an Investment Manager from Norway.
+I will your assistance in executing this Business from my country
+to yours.
 
-syzbot found the following issue on:
+This is a short term investment with good returns. Kindly
+reply to confirm the validity of your email so I can give you comprehensive details about the project.
 
-HEAD commit:    6d284ba80c0c Add linux-next specific files for 20220304
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c283d1700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=26714bde6b3ad08b
-dashboard link: https://syzkaller.appspot.com/bug?extid=16e3f2c77e7c5a0113f9
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+16e3f2c77e7c5a0113f9@syzkaller.appspotmail.com
-
-
-=============================
-WARNING: suspicious RCU usage
-5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
------------------------------
-include/linux/cgroup.h:494 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-2 locks held by kthreadd/2:
- #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
- #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
-
-stack backtrace:
-CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- task_css include/linux/cgroup.h:494 [inline]
- task_ca kernel/sched/cpuacct.c:40 [inline]
- cpuacct_charge+0x2af/0x3c0 kernel/sched/cpuacct.c:342
- cgroup_account_cputime include/linux/cgroup.h:792 [inline]
- update_curr+0x37b/0x830 kernel/sched/fair.c:907
- dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
- dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
- dequeue_task kernel/sched/core.c:2019 [inline]
- __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
- __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
- __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
- set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
- kthreadd+0x44/0x750 kernel/kthread.c:724
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-=============================
-WARNING: suspicious RCU usage
-5.17.0-rc6-next-20220304-syzkaller #0 Not tainted
------------------------------
-include/linux/cgroup.h:481 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 1, debug_locks = 1
-2 locks held by kthreadd/2:
- #0: ffff8881401726e0 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x63/0x360 kernel/sched/core.c:578
- #1: ffff8880b9c39f98 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x120 kernel/sched/core.c:478
-
-stack backtrace:
-CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc6-next-20220304-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- task_css_set include/linux/cgroup.h:481 [inline]
- task_dfl_cgroup include/linux/cgroup.h:550 [inline]
- cgroup_account_cputime include/linux/cgroup.h:794 [inline]
- update_curr+0x671/0x830 kernel/sched/fair.c:907
- dequeue_entity+0x23/0xfd0 kernel/sched/fair.c:4422
- dequeue_task_fair+0x238/0xea0 kernel/sched/fair.c:5771
- dequeue_task kernel/sched/core.c:2019 [inline]
- __do_set_cpus_allowed+0x186/0x960 kernel/sched/core.c:2508
- __set_cpus_allowed_ptr_locked+0x2ba/0x4e0 kernel/sched/core.c:2841
- __set_cpus_allowed_ptr kernel/sched/core.c:2874 [inline]
- set_cpus_allowed_ptr+0x78/0xa0 kernel/sched/core.c:2879
- kthreadd+0x44/0x750 kernel/kthread.c:724
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best Regards,
+Harald Hauge
+Business Consultant
