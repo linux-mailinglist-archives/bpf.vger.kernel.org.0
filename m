@@ -2,93 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E36C14CCEE7
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 08:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C5A4CCF0C
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 08:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230182AbiCDHOe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 02:14:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S235535AbiCDH3n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 02:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239104AbiCDHNI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 02:13:08 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE567199D7F;
-        Thu,  3 Mar 2022 23:08:38 -0800 (PST)
-Received: from canpemm500010.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4K8zSQ22yQzdfxT;
-        Fri,  4 Mar 2022 15:07:18 +0800 (CST)
-Received: from [10.174.177.215] (10.174.177.215) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 4 Mar 2022 15:08:36 +0800
-Subject: Re: [PATCH bpf-next v2 3/4] bpf, sockmap: Fix more uncharged while
- msg has more_data
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-CC:     <john.fastabend@gmail.com>, <daniel@iogearbox.net>,
-        <jakub@cloudflare.com>, <lmb@cloudflare.com>,
-        <davem@davemloft.net>, <edumazet@google.com>,
-        <yoshfuji@linux-ipv6.org>, <dsahern@kernel.org>, <kuba@kernel.org>,
-        <ast@kernel.org>, <andrii@kernel.org>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <kpsingh@kernel.org>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20220302022755.3876705-1-wangyufen@huawei.com>
- <20220302022755.3876705-4-wangyufen@huawei.com>
- <YiBczo/gN8w9Hl+L@pop-os.localdomain>
-From:   wangyufen <wangyufen@huawei.com>
-Message-ID: <43486167-1d02-c053-96f4-55a2683f3da8@huawei.com>
-Date:   Fri, 4 Mar 2022 15:08:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        with ESMTP id S233932AbiCDH3n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 02:29:43 -0500
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3D165A1;
+        Thu,  3 Mar 2022 23:28:52 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id m14so12638410lfu.4;
+        Thu, 03 Mar 2022 23:28:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YgcBgxM/33mXus47pIGMzwpsQpru5dt8KhwXXP66SyI=;
+        b=K4Q8TCU7BSm/H+PF3eNN9Ibb+tYUhXk8XSbhBSo2U/2DHwN71N50ljFmr2Fmhxf1tH
+         IjS4liuKbH9I+Nvko14moUMuHirAQzbt4IDEjXf/kVvEMLfSR0L4eg8vcYLIrCXSKoLX
+         iLLPs7dSMBrEseCo3195NVmC3T36dRktcHhu86VXQf0eryw7zrdbRKp/cPXC7++/oEBF
+         a6+GQkwj4cNSJfOnecOdku5+6+ziqDJbFfEep1seThPtk/g6h5+2I4VQWJXPih4ie59Q
+         RU5DUYIeazeWbYdtiF6xioqwtAMgs3RccTvvrSCpzguiu0RKAuJ9NKL/82ha4lCJ1oBo
+         A8HA==
+X-Gm-Message-State: AOAM530KF62D+PF95nUd5hIo+H4I+WDPuEnYhrJ8tSrEbsQte0KTNAbr
+        MY5yf30y8OfXkpELp3UiJO+CfeP+9YJpgQP+JRs=
+X-Google-Smtp-Source: ABdhPJxDY6x4O+YoxOBjIVgvcNrjoQxKXoMzBc4XWqzvtRyFNrqvqedcF2/GV9/jRLHOkv4+W9wBJzzgEgL7a7xB4p4=
+X-Received: by 2002:a05:6512:33d6:b0:43b:8dc3:130f with SMTP id
+ d22-20020a05651233d600b0043b8dc3130fmr24512452lfg.47.1646378930321; Thu, 03
+ Mar 2022 23:28:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YiBczo/gN8w9Hl+L@pop-os.localdomain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.215]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500010.china.huawei.com (7.192.105.118)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220301010412.431299-1-namhyung@kernel.org> <20220301010412.431299-4-namhyung@kernel.org>
+ <Yh3hyIIHLJEXZND3@hirez.programming.kicks-ass.net> <20220301095354.0c2b7008@gandalf.local.home>
+ <20220301194720.GJ11184@worktop.programming.kicks-ass.net>
+In-Reply-To: <20220301194720.GJ11184@worktop.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 3 Mar 2022 23:28:38 -0800
+Message-ID: <CAM9d7chroDP+UGfjEq+Cis4N6Y=ukNGJssNN8dQsLW-CTRZZpg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] locking/mutex: Pass proper call-site ip
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Byungchul Park <byungchul.park@lge.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Radoslaw Burny <rburny@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-在 2022/3/3 14:14, Cong Wang 写道:
-> On Wed, Mar 02, 2022 at 10:27:54AM +0800, Wang Yufen wrote:
->> In tcp_bpf_send_verdict(), if msg has more data after
->> tcp_bpf_sendmsg_redir():
->>
->> tcp_bpf_send_verdict()
->>   tosend = msg->sg.size  //msg->sg.size = 22220
->>   case __SK_REDIRECT:
->>    sk_msg_return()  //uncharged msg->sg.size(22220) sk->sk_forward_alloc
->>    tcp_bpf_sendmsg_redir() //after tcp_bpf_sendmsg_redir, msg->sg.size=11000
->>   goto more_data;
->>   tosend = msg->sg.size  //msg->sg.size = 11000
->>   case __SK_REDIRECT:
->>    sk_msg_return()  //uncharged msg->sg.size(11000) to sk->sk_forward_alloc
->>
->> The msg->sg.size(11000) has been uncharged twice, to fix we can charge the
->> remaining msg->sg.size before goto more data.
-> It looks like bpf_exec_tx_verdict() has the same issue.
+On Tue, Mar 1, 2022 at 11:47 AM Peter Zijlstra <peterz@infradead.org> wrote:
 >
-> .
+> On Tue, Mar 01, 2022 at 09:53:54AM -0500, Steven Rostedt wrote:
+> > On Tue, 1 Mar 2022 10:05:12 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > > On Mon, Feb 28, 2022 at 05:04:11PM -0800, Namhyung Kim wrote:
+> > > > The __mutex_lock_slowpath() and friends are declared as noinline and
+> > > > _RET_IP_ returns its caller as mutex_lock which is not meaningful.
+> > > > Pass the ip from mutex_lock() to have actual caller info in the trace.
+> > >
+> > > Blergh, can't you do a very limited unwind when you do the tracing
+> > > instead? 3 or 4 levels should be plenty fast and sufficient.
+> >
+> > Is there a fast and sufficient way that works across architectures?
+>
+> The normal stacktrace API? Or the fancy new arch_stack_walk() which is
+> already available on most architectures you actually care about and
+> risc-v :-)
+>
+> Remember, this is the contention path, we're going to stall anyway,
+> doing a few levels of unwind shouldn't really hurt at that point.
+>
+> Anyway; when I wrote that this morning, I was thinking:
+>
+>         unsigned long ips[4];
+>         stack_trace_save(ips, 4, 0);
 
-In bpf_exec_tx_verdict(), case __SK_REDIRECT,  msg_redir is used and 
-msg->sg.size is deducted in advance.
+When I collected stack traces in a BPF, it already consumed 3 or 4
+entries in the BPF so I had to increase the size to 8 and skip 4.
+But it didn't add noticeable overheads in my test.
 
-Therefore, this issue (more uncharged) does not exist.
-
-However, I think that if msg_redir processing cannot be completed , that 
-is msg_redir has more data,
-
-and there is no subsequent processing,  maybe that is another problem.
-
-
-Thanks.
-
+Thanks,
+Namhyung
