@@ -2,63 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D886A4CE0AA
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 00:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFBF4CE0BB
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 00:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbiCDXM1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 18:12:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
+        id S230155AbiCDXMn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 18:12:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbiCDXMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 18:12:21 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9611827C505;
-        Fri,  4 Mar 2022 15:11:31 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id r11so6523745ioh.10;
-        Fri, 04 Mar 2022 15:11:31 -0800 (PST)
+        with ESMTP id S230112AbiCDXMY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 18:12:24 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E241427B910;
+        Fri,  4 Mar 2022 15:11:34 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id d62so11086589iog.13;
+        Fri, 04 Mar 2022 15:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tu3PDx8g7KdqKYGH/ad44ha7i36AbBBCjLin1LUtj1g=;
-        b=FynEEowqc8uoDpDdddzAibcLbLStzYJHCWwKsfNr/6PtYz6QEFqM1WMRsQvWUSGbfH
-         TH3sYevrcBTp9bpR/VZjug2TCAqwmxUpnmhzxYXHq1PoWp6cHTIas68hBVRqTizWncjf
-         vU1JS8K5LNSFIW2ozc638Uq2R4lOdewq0sY9kMzUEHfBDFjrbJbvFeB9J6FCSUMYGreh
-         Ir23r28bd9EzjkZRi8uhQJHqJS016tlsiVEe0B2C+yy5RMYGI6wHu86IhO5xy9hmv5x/
-         eNSyJoqjGt4fVT78rLnx83P1AUKruYeSSZumwSEd8I3L8BfjgiwzyIRG4Y0H4vXAbtLw
-         sPHQ==
+        bh=1gzqM+fI8L57ITd1AkQS2sQnxRxWLhMOjue8gj0QwBk=;
+        b=XzsSls8oRVEG8aj5sG+FF+YVI5/j/VzcgZINA5RRFPCtVeqt4MejlWe8K+hLZU14TW
+         2SlKlbmnm2WYXn7zJkgULe4VjzHuNJDLPYmz1GbSg99Dlvp/XJz3dCiquVABzZj1OXNr
+         eGS1kBH1GNX7+sCwb+Bo+vI8zljaNEbcrGMg2t0+PoxCoT33mvSIF9Hwyd5tHk1fpPIl
+         VMhs7lTMlB2q6ZEh7ikUpxU0KReomvRjbv4WHrpwxlst4LnxDToDMyGVT1jfpJI55p9G
+         117iDhkrRDCWxYxlglSo2AiOYmXzw51IkQwV5NQ8yNEsiKGxh4yUGz9IGKQyJDDAY9Yx
+         1zSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tu3PDx8g7KdqKYGH/ad44ha7i36AbBBCjLin1LUtj1g=;
-        b=SaFZUU/kUJsvDB8rW87Kit6w0FDwvn5WEql58PV6+4tv8CYXMTzen5AMYHzfqu6NGz
-         x0ge/wacfml8A9uc/2E6zOORI5NGiwKkj+HkZl3C49wlAsKWafPofIaXaP/CMPzM+haP
-         WBO3Jduaq/CSuqaC0Pq1XJXhBCmXQ8Ax2LYb5nNIFzWiXjii2ox7tx1g5eE8yIBLP9Or
-         2c4+HNqnOQ8HPKeJiRv7/lXRahbebAN5P4dRl5Kp6UjN0eX6d9Ug6Z1LIJi9aVQNVYAl
-         m6cUp5rwlQ3aZcpCnWe9aQltK0WaT+f/7hOJ9Hu8hdA6CGTbvkic2FAMOgRDvdEMGnKQ
-         HPjw==
-X-Gm-Message-State: AOAM533Uvx9b68oUdoC1cR0yj0095q8JEMbq3suSLqIGjtpHmx/m3oSw
-        xI8R0P4AgAWCTlv5VCwjH7XUYvFjqZvjjmBrNWk=
-X-Google-Smtp-Source: ABdhPJznjZfiBNK5ZHPfKBI8524+/bgYpVoCyN5zO7+bYe9J/XEB3rNkFgl0pVm5jHQun53FctBUCiauBfgboAk2/kk=
-X-Received: by 2002:a5e:c648:0:b0:640:bc31:cbec with SMTP id
- s8-20020a5ec648000000b00640bc31cbecmr707642ioo.79.1646435490885; Fri, 04 Mar
- 2022 15:11:30 -0800 (PST)
+        bh=1gzqM+fI8L57ITd1AkQS2sQnxRxWLhMOjue8gj0QwBk=;
+        b=bgjaU9sYlC9iwjqXzvfocgw02p/yTM6nJy+pVKblHKfz2MFDpsN8sAJ6FHouyE5aUZ
+         bqwzk9eGxlXr4Ncwa/36Kqj5vbUaIui4KB1SAef2p0l1ZbdzhMqBU3HLFbwSJJJc/vag
+         T7KJ/RyJhlILt7ysOjsu8s0dFAHQqZ2NGVJtDGlPCIygDlqeb63Qe8x1djZjvuQQJ9V5
+         qD3ZmTkjZjA9PKqA3AFBRYp4ZQ9RGpojhv/I4Id5o/0CGT8F4RZFnq7YNgSA2vi2hnGp
+         LQH7arv5ER7+ERE/Hv+ABYQr1BPh5LS+VyER263HrM2+HMeBYN1ImQO6HTnn0K8vNA5C
+         b30g==
+X-Gm-Message-State: AOAM530K3viDKeUeqFUHfT9bbc7tIfOEV4irGYzO893uHwijrI7PjVO2
+        ez+5VuKZvxwtr20YQDfoPPpiqJ1ZKRXIjt6utI8=
+X-Google-Smtp-Source: ABdhPJydnf0WSpatYMMouwDrjxxxT95bQIsWqB7R4Dd3PlUe4UmH9w0ofUg05YR/rqnn3I6iI7eMF485cVV1Cb6i2bo=
+X-Received: by 2002:a05:6602:1605:b0:644:d491:1bec with SMTP id
+ x5-20020a056602160500b00644d4911becmr730013iow.63.1646435494276; Fri, 04 Mar
+ 2022 15:11:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20220222170600.611515-1-jolsa@kernel.org> <20220222170600.611515-9-jolsa@kernel.org>
-In-Reply-To: <20220222170600.611515-9-jolsa@kernel.org>
+References: <20220222170600.611515-1-jolsa@kernel.org> <20220222170600.611515-10-jolsa@kernel.org>
+In-Reply-To: <20220222170600.611515-10-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Mar 2022 15:11:19 -0800
-Message-ID: <CAEf4Bza0qRAzA7WmtPD4US4Kur3qf3X+LC5uowr_H3Y-_pLfCA@mail.gmail.com>
-Subject: Re: [PATCH 08/10] libbpf: Add bpf_program__attach_kprobe_opts support
- for multi kprobes
+Date:   Fri, 4 Mar 2022 15:11:23 -0800
+Message-ID: <CAEf4BzZ+6SN4BRFKEBePqyjB2-Xw49tKa3rpmxt8-qDwONXC8w@mail.gmail.com>
+Subject: Re: [PATCH 09/10] selftest/bpf: Add kprobe_multi attach test
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Masami Hiramatsu <mhiramat@redhat.com>,
-        Yucong Sun <fallentree@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         lkml <linux-kernel@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -77,184 +74,158 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 22, 2022 at 9:07 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Feb 22, 2022 at 9:08 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding support to bpf_program__attach_kprobe_opts to attach kprobes
-> to multiple functions.
+> Adding kprobe_multi attach test that uses new fprobe interface to
+> attach kprobe program to multiple functions.
 >
-> If the kprobe program has BPF_TRACE_KPROBE_MULTI as expected_attach_type
-> it will use the new kprobe_multi link to attach the program. In this case
-> it will use 'func_name' as pattern for functions to attach.
+> The test is attaching programs to bpf_fentry_test* functions and
+> uses single trampoline program bpf_prog_test_run to trigger
+> bpf_fentry_test* functions.
 >
-> Adding also new section types 'kprobe.multi' and kretprobe.multi'
-> that allows to specify wildcards (*?) for functions, like:
->
->   SEC("kprobe.multi/bpf_fentry_test*")
->   SEC("kretprobe.multi/bpf_fentry_test?")
->
-> This will set kprobe's expected_attach_type to BPF_TRACE_KPROBE_MULTI,
-> and attach it to functions provided by the function pattern.
->
-> Using glob_match from selftests/bpf/test_progs.c and adding support to
-> match '?' based on original perf code.
->
-> Cc: Masami Hiramatsu <mhiramat@redhat.com>
-> Cc: Yucong Sun <fallentree@fb.com>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  tools/lib/bpf/libbpf.c | 130 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 125 insertions(+), 5 deletions(-)
+
+subj typo: selftest -> selftests
+
+>  .../bpf/prog_tests/kprobe_multi_test.c        | 115 ++++++++++++++++++
+>  .../selftests/bpf/progs/kprobe_multi.c        |  58 +++++++++
+>  2 files changed, 173 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi.c
 >
 
 [...]
 
-> +static struct bpf_link *
-> +attach_kprobe_multi_opts(const struct bpf_program *prog,
-> +                  const char *func_pattern,
-> +                  const struct bpf_kprobe_opts *kopts)
+> +
+> +static void test_link_api_addrs(void)
+> +{
+> +       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
+> +       __u64 addrs[8];
+> +
+> +       kallsyms_find("bpf_fentry_test1", &addrs[0]);
+> +       kallsyms_find("bpf_fentry_test2", &addrs[1]);
+> +       kallsyms_find("bpf_fentry_test3", &addrs[2]);
+> +       kallsyms_find("bpf_fentry_test4", &addrs[3]);
+> +       kallsyms_find("bpf_fentry_test5", &addrs[4]);
+> +       kallsyms_find("bpf_fentry_test6",  &addrs[5]);
+> +       kallsyms_find("bpf_fentry_test7", &addrs[6]);
+> +       kallsyms_find("bpf_fentry_test8", &addrs[7]);
+
+ASSERT_OK() that symbols are found? It also sucks that we re-parse
+kallsyms so much...
+
+maybe use load_kallsyms() to pre-cache? We should also teach
+load_kallsyms() to not reload kallsyms more than once
+
+> +
+> +       opts.kprobe_multi.addrs = (__u64) addrs;
+> +       opts.kprobe_multi.cnt = 8;
+
+ARRAY_SIZE()?
+
+> +       test_link_api(&opts);
+> +}
+> +
+> +static void test_link_api_syms(void)
 > +{
 > +       DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts);
 
 nit: just LIBBPF_OPTS
 
-
-> +       struct kprobe_multi_resolve res = {
-> +               .name = func_pattern,
+> +       const char *syms[8] = {
+> +               "bpf_fentry_test1",
+> +               "bpf_fentry_test2",
+> +               "bpf_fentry_test3",
+> +               "bpf_fentry_test4",
+> +               "bpf_fentry_test5",
+> +               "bpf_fentry_test6",
+> +               "bpf_fentry_test7",
+> +               "bpf_fentry_test8",
 > +       };
-> +       struct bpf_link *link = NULL;
-> +       char errmsg[STRERR_BUFSIZE];
-> +       int err, link_fd, prog_fd;
-> +       bool retprobe;
 > +
-> +       err = libbpf_kallsyms_parse(resolve_kprobe_multi_cb, &res);
+> +       opts.kprobe_multi.syms = (__u64) syms;
+> +       opts.kprobe_multi.cnt = 8;
 
-hm... I think as a generic API we should support three modes of
-specifying attachment target:
+ARRAY_SIZE() ?
 
-
-1. glob-based (very convenient, I agree)
-2. array of function names (very convenient when I know specific set
-of functions)
-3. array of addresses (advanced use case, so probably will be rarely used).
-
-
-
-So I wonder if it's better to have a separate
-bpf_program__attach_kprobe_multi() API for this, instead of doing both
-inside bpf_program__attach_kprobe()...
-
-In such case bpf_program__attach_kprobe() could either fail if
-expected attach type is BPF_TRACE_KPROBE_MULTI or it can redirect to
-attach_kprobe_multi with func_name as a pattern or just single
-function (let's think which one makes more sense)
-
-Let's at least think about this
-
-
-> +       if (err)
-> +               goto error;
-> +       if (!res.cnt) {
-> +               err = -ENOENT;
-> +               goto error;
-> +       }
-> +
-> +       retprobe = OPTS_GET(kopts, retprobe, false);
-> +
-> +       opts.kprobe_multi.addrs = ptr_to_u64(res.addrs);
-> +       opts.kprobe_multi.cnt = res.cnt;
-> +       opts.flags = retprobe ? BPF_F_KPROBE_MULTI_RETURN : 0;
-
-this should be opts.kprobe_multi.flags
-
-> +
-> +       link = calloc(1, sizeof(*link));
-> +       if (!link) {
-> +               err = -ENOMEM;
-> +               goto error;
-> +       }
-> +       link->detach = &bpf_link__detach_fd;
-> +
-> +       prog_fd = bpf_program__fd(prog);
-> +       link_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_KPROBE_MULTI, &opts);
-> +       if (link_fd < 0) {
-> +               err = -errno;
-> +               pr_warn("prog '%s': failed to attach to %s: %s\n",
-
-"to attach multi-kprobe for '%s': %s" ?
-
-> +                       prog->name, res.name,
-> +                       libbpf_strerror_r(err, errmsg, sizeof(errmsg)));
-> +               goto error;
-> +       }
-> +       link->fd = link_fd;
-> +       free(res.addrs);
-> +       return link;
-> +
-> +error:
-> +       free(link);
-> +       free(res.addrs);
-> +       return libbpf_err_ptr(err);
+> +       test_link_api(&opts);
 > +}
 > +
->  struct bpf_link *
->  bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
->                                 const char *func_name,
-> @@ -10054,6 +10163,9 @@ bpf_program__attach_kprobe_opts(const struct bpf_program *prog,
->         if (!OPTS_VALID(opts, bpf_kprobe_opts))
->                 return libbpf_err_ptr(-EINVAL);
->
-> +       if (prog->expected_attach_type == BPF_TRACE_KPROBE_MULTI)
-> +               return attach_kprobe_multi_opts(prog, func_name, opts);
+> +void test_kprobe_multi_test(void)
+> +{
+> +       test_skel_api();
+> +       test_link_api_syms();
+> +       test_link_api_addrs();
+
+model as subtests?
+
+
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi.c b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> new file mode 100644
+> index 000000000000..71318c65931c
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/kprobe_multi.c
+> @@ -0,0 +1,58 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
 > +
->         retprobe = OPTS_GET(opts, retprobe, false);
->         offset = OPTS_GET(opts, offset, 0);
->         pe_opts.bpf_cookie = OPTS_GET(opts, bpf_cookie, 0);
-
-see how you don't support cookies (plural) and this offset doesn't
-make sense for multi-kprobe. Separate API is necessary to expose all
-the possibilities and functionality.
-
-> @@ -10122,19 +10234,27 @@ struct bpf_link *bpf_program__attach_kprobe(const struct bpf_program *prog,
->  static struct bpf_link *attach_kprobe(const struct bpf_program *prog, long cookie)
->  {
->         DECLARE_LIBBPF_OPTS(bpf_kprobe_opts, opts);
-> +       const char *func_name = NULL;
->         unsigned long offset = 0;
->         struct bpf_link *link;
-> -       const char *func_name;
->         char *func;
->         int n, err;
->
-> -       opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe/");
-> -       if (opts.retprobe)
-> +       opts.retprobe = str_has_pfx(prog->sec_name, "kretprobe");
+> +char _license[] SEC("license") = "GPL";
 > +
-> +       if (str_has_pfx(prog->sec_name, "kretprobe/"))
->                 func_name = prog->sec_name + sizeof("kretprobe/") - 1;
-> -       else
-> +       else if (str_has_pfx(prog->sec_name, "kprobe/"))
->                 func_name = prog->sec_name + sizeof("kprobe/") - 1;
-> +       else if (str_has_pfx(prog->sec_name, "kretprobe.multi/"))
-> +               func_name = prog->sec_name + sizeof("kretprobe.multi/") - 1;
-> +       else if (str_has_pfx(prog->sec_name, "kprobe.multi/"))
-> +               func_name = prog->sec_name + sizeof("kprobe.multi/") - 1;
-
-starts to feel that we should find '/' and then do strcmp(), instead
-of this duplication of strings?
-
+> +extern const void bpf_fentry_test1 __ksym;
+> +extern const void bpf_fentry_test2 __ksym;
+> +extern const void bpf_fentry_test3 __ksym;
+> +extern const void bpf_fentry_test4 __ksym;
+> +extern const void bpf_fentry_test5 __ksym;
+> +extern const void bpf_fentry_test6 __ksym;
+> +extern const void bpf_fentry_test7 __ksym;
+> +extern const void bpf_fentry_test8 __ksym;
 > +
-> +       if (!func_name)
-> +               return libbpf_err_ptr(-EINVAL);
->
-> -       n = sscanf(func_name, "%m[a-zA-Z0-9_.]+%li", &func, &offset);
-> +       n = sscanf(func_name, "%m[a-zA-Z0-9_.*?]+%li", &func, &offset);
-
-'*' and '?' are still invalid for non-multi-kprobe...
-
-
->         if (n < 1) {
->                 err = -EINVAL;
->                 pr_warn("kprobe name is invalid: %s\n", func_name);
+> +/* No tests, just to trigger bpf_fentry_test* through tracing test_run */
+> +SEC("fentry/bpf_modify_return_test")
+> +int BPF_PROG(test1)
+> +{
+> +       return 0;
+> +}
+> +
+> +__u64 test2_result = 0;
+> +
+> +SEC("kprobe.multi/bpf_fentry_test?")
+> +int test2(struct pt_regs *ctx)
+> +{
+> +       __u64 addr = bpf_get_func_ip(ctx);
+> +
+> +       test2_result += (const void *) addr == &bpf_fentry_test1 ||
+> +                       (const void *) addr == &bpf_fentry_test2 ||
+> +                       (const void *) addr == &bpf_fentry_test3 ||
+> +                       (const void *) addr == &bpf_fentry_test4 ||
+> +                       (const void *) addr == &bpf_fentry_test5 ||
+> +                       (const void *) addr == &bpf_fentry_test6 ||
+> +                       (const void *) addr == &bpf_fentry_test7 ||
+> +                       (const void *) addr == &bpf_fentry_test8;
+> +       return 0;
+> +}
+> +
+> +__u64 test3_result = 0;
+> +
+> +SEC("kretprobe.multi/bpf_fentry_test*")
+> +int test3(struct pt_regs *ctx)
+> +{
+> +       __u64 addr = bpf_get_func_ip(ctx);
+> +
+> +       test3_result += (const void *) addr == &bpf_fentry_test1 ||
+> +                       (const void *) addr == &bpf_fentry_test2 ||
+> +                       (const void *) addr == &bpf_fentry_test3 ||
+> +                       (const void *) addr == &bpf_fentry_test4 ||
+> +                       (const void *) addr == &bpf_fentry_test5 ||
+> +                       (const void *) addr == &bpf_fentry_test6 ||
+> +                       (const void *) addr == &bpf_fentry_test7 ||
+> +                       (const void *) addr == &bpf_fentry_test8;
+> +       return 0;
+> +}
 > --
 > 2.35.1
 >
