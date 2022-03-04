@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C99E14CDD42
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 20:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76D74CDD43
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 20:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbiCDTSB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 14:18:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S229543AbiCDTSE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 14:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiCDTSB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 14:18:01 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66E323065F
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:17:04 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id i62-20020a25d141000000b0062896a69ed2so8233171ybg.3
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 11:17:04 -0800 (PST)
+        with ESMTP id S229588AbiCDTSD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 14:18:03 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A3D7230676
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:17:07 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b11-20020a5b008b000000b00624ea481d55so8164053ybp.19
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 11:17:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=KoYpn3AgYNDwZ8FSu31gnREGCw/9CQxmy1ddBZwxVn0=;
-        b=McCPwFkpe1hKbdLUsARNZ2n/OmnJyfVv/m0D7qQIwfVosCoD80BWrsUjuXpAWS5009
-         kGS1/F3cAazIaEyKjoOkKWYQdtXw7RviG8ZmcAKB8vvScs3Zy06MZeA0BI164j3l9wta
-         10Y95pUwc+R0+U9ePDi5jAhEpjBeQ6ppG7OfbGzYaryvEAudyCX89UKEcCIy8i6Ghcwz
-         FnSJC63aje6Kvj7TGBfd5AhBQEGhJjZrTBFvVwxm38O7Ku5EG6QxDBcp1GInbAO0SM/P
-         uk6FMB4ao4duWlDQ2/FYbcMy/f+5SjTzVZLwELkh3ckeGcOdyh2I9ufpqYmEk1sVkXzl
-         ADmw==
+        bh=FFg88VD8lHLeFAaJL0zz//A5zVr6Ua46r66BG9JX7Kc=;
+        b=AanckrFSwCOURq1r3P+d7lbN50dVjfABAtQAhbnt9L3xr3geDlAhWBj8F6IvffVhEQ
+         DVmE/gtmjSNn83Ee4ZQuAgOhNEEs0S5Vt3r4vMX1Bxaz2QFg/+W4QDSSvDqLWBpVzVRG
+         gBzYBK5rO6NA5AS3paF6QZoRgv+4PanrKV1pniuHET8mCFEvZxFIU3hpoiGld+B02Nd6
+         4tvFKlklvCOWNU5G62CS8HLXNIrKmMGEG7ZmFa4ZU857zgZd7ysWTm8wqvgkQi9eRbQG
+         hop5+gOCQtmZCO1osS+ORB/EGh0WockEZ/RFgt6qd34yow6wyMRn738u5wd5ZtBUziyD
+         EjHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=KoYpn3AgYNDwZ8FSu31gnREGCw/9CQxmy1ddBZwxVn0=;
-        b=Bt3mmVQVueGKHsI8PS8l42e9252oAbKXopksKCZncA/te0wy8OWcDB/dt4hp2ykX93
-         XAByZKMB0KM2BInQ7lEkyQCirJ0llG412PyYhCsFnfKsqgl/qQCfEWd1bI5U6lEfmUVS
-         5LWTgMJ5lzzn4YJlGAsR7CbK958/gqP9KKzr28uexh+Rfxzif2HGCFOT8W0PFuq1CZbP
-         rfytneDKrvJ8iyRjtIcHQp5LKSLgSqeXU89kIALPdewAPrYpCGwaRgnBd3p6QpBd9qVd
-         siMRiTzYR7Tb62mbaY7UzqkQA2CHDkSZKoiq1qdMTDUlpl9IX4PJNFWSMCYL1FdR1t0u
-         zH1A==
-X-Gm-Message-State: AOAM5335gUpUCgi5sQW7clcbGbodIeWQsZS9YdbIDGyTGmkQRzTyNBrd
-        L1bJ6pTHJEpKO2kgfXrofHzrIAp72qk=
-X-Google-Smtp-Source: ABdhPJy7LQNu9aJh9BO7PAoyQ35YRZ0Xp4iq/PIBXJY/5BqIpP7pbCBBycVcYp5tznQtxjUBfuQN1NccVXE=
+        bh=FFg88VD8lHLeFAaJL0zz//A5zVr6Ua46r66BG9JX7Kc=;
+        b=7dZiN80i4X6Yel84eI7yl/EpACndBd0zOvw7PQ51QSO/vFVJNQV4p9mvIDkugJ0mkv
+         IxbcnSqsMnTsbk/YXrlIxM3Aql3FP80fJLe1ae0h4zqGd2sNV1REyQU6WrcamB/XYNqW
+         132KWz4PEi5w3HH8wvFRKDstFcLkZJXehSv5iPzqxqxPRhoZT7iB69g5t60oEEXV7Bd9
+         L+arwgY3rX22CA1YG0sPMHsvGeTj+F05nXvNxF/840Q78mN87dsjHm2aW6fGuWJhc9FE
+         68TblQfDApL/6vR6863ckjQBYyz+hOld2jAZgHSu/6ef/ADOEg3KN32kC1vrcuZB2Ktz
+         AaEA==
+X-Gm-Message-State: AOAM532qGFBB2V+vlDnbudkuelmpq3iqkwXN/DV7UCZqj8gJYRIe2kpf
+        MQhKLz7x2fFxaNr7UhciaFGibXhNVZ8=
+X-Google-Smtp-Source: ABdhPJxJNLT2bs5kjZIxmXNaSsn/pW/hOGYLTpFlGdVPZcjBoWKMwqKknHDwYOl9GqavTfHtD5FJR/pWgTk=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:d204:6f81:5498:9251])
- (user=haoluo job=sendgmr) by 2002:a25:ce05:0:b0:628:9612:16ca with SMTP id
- x5-20020a25ce05000000b00628961216camr16138013ybe.191.1646421423845; Fri, 04
- Mar 2022 11:17:03 -0800 (PST)
-Date:   Fri,  4 Mar 2022 11:16:54 -0800
+ (user=haoluo job=sendgmr) by 2002:a25:6608:0:b0:628:d9bd:6245 with SMTP id
+ a8-20020a256608000000b00628d9bd6245mr6592639ybc.560.1646421426327; Fri, 04
+ Mar 2022 11:17:06 -0800 (PST)
+Date:   Fri,  4 Mar 2022 11:16:55 -0800
 In-Reply-To: <20220304191657.981240-1-haoluo@google.com>
-Message-Id: <20220304191657.981240-2-haoluo@google.com>
+Message-Id: <20220304191657.981240-3-haoluo@google.com>
 Mime-Version: 1.0
 References: <20220304191657.981240-1-haoluo@google.com>
 X-Mailer: git-send-email 2.35.1.616.g0bdcbb4464-goog
-Subject: [PATCH bpf-next v1 1/4] bpf: Fix checking PTR_TO_BTF_ID in check_mem_access
+Subject: [PATCH bpf-next v1 2/4] compiler_types: define __percpu as __attribute__((btf_type_tag("percpu")))
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -69,74 +69,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With the introduction of MEM_USER in
+This is similar to commit 7472d5a642c9 ("compiler_types: define __user as
+__attribute__((btf_type_tag("user")))"), where a type tag "user" was
+introduced to identify the pointers that point to user memory. With that
+change, the newest compile toolchain can encode __user information into
+vmlinux BTF, which can be used by the BPF verifier to enforce safe
+program behaviors.
 
- commit c6f1bfe89ac9 ("bpf: reject program if a __user tagged memory accessed in kernel way")
+Similarly, we have __percpu attribute, which is mainly used to indicate
+memory is allocated in percpu region. The __percpu pointers in kernel
+are supposed to be used together with functions like per_cpu_ptr() and
+this_cpu_ptr(), which perform necessary calculation on the pointer's
+base address. Without the btf_type_tag introduced in this patch,
+__percpu pointers will be treated as regular memory pointers in vmlinux
+BTF and BPF programs are allowed to directly dereference them, generating
+incorrect behaviors. Now with "percpu" btf_type_tag, the BPF verifier is
+able to differentiate __percpu pointers from regular pointers and forbids
+unexpected behaviors like direct load.
 
-PTR_TO_BTF_ID can be combined with a MEM_USER tag. Therefore, most
-likely, when we compare reg_type against PTR_TO_BTF_ID, we want to use
-the reg's base_type. Previously the check in check_mem_access() wants
-to say: if the reg is BTF_ID but not NULL, the execution flow falls
-into the 'then' branch. But now a reg of (BTF_ID | MEM_USER), which
-should go into the 'then' branch, goes into the 'else'.
+The following is an example similar to the one given in commit
+7472d5a642c9:
 
-The end results before and after this patch are the same: regs tagged
-with MEM_USER get rejected, but not in a way we intended. So fix the
-condition, the error message now is correct.
-
-Before (log from commit 696c39011538):
-
-  $ ./test_progs -v -n 22/3
+  [$ ~] cat test.c
+  #define __percpu __attribute__((btf_type_tag("percpu")))
+  int foo(int __percpu *arg) {
+  	return *arg;
+  }
+  [$ ~] clang -O2 -g -c test.c
+  [$ ~] pahole -JV test.o
   ...
-  libbpf: prog 'test_user1': BPF program load failed: Permission denied
-  libbpf: prog 'test_user1': -- BEGIN PROG LOAD LOG --
-  R1 type=ctx expected=fp
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  ; int BPF_PROG(test_user1, struct bpf_testmod_btf_type_tag_1 *arg)
-  0: (79) r1 = *(u64 *)(r1 +0)
-  func 'bpf_testmod_test_btf_type_tag_user_1' arg0 has btf_id 136561 type STRUCT 'bpf_testmod_btf_type_tag_1'
-  1: R1_w=user_ptr_bpf_testmod_btf_type_tag_1(id=0,off=0,imm=0)
-  ; g = arg->a;
-  1: (61) r1 = *(u32 *)(r1 +0)
-  R1 invalid mem access 'user_ptr_'
+  File test.o:
+  [1] INT int size=4 nr_bits=32 encoding=SIGNED
+  [2] TYPE_TAG percpu type_id=1
+  [3] PTR (anon) type_id=2
+  [4] FUNC_PROTO (anon) return=1 args=(3 arg)
+  [5] FUNC foo type_id=4
+  [$ ~]
 
-Now:
+for the function argument "int __percpu *arg", its type is described as
+	PTR -> TYPE_TAG(percpu) -> INT
+The kernel can use this information for bpf verification or other
+use cases.
 
-  libbpf: prog 'test_user1': BPF program load failed: Permission denied
-  libbpf: prog 'test_user1': -- BEGIN PROG LOAD LOG --
-  R1 type=ctx expected=fp
-  0: R1=ctx(id=0,off=0,imm=0) R10=fp0
-  ; int BPF_PROG(test_user1, struct bpf_testmod_btf_type_tag_1 *arg)
-  0: (79) r1 = *(u64 *)(r1 +0)
-  func 'bpf_testmod_test_btf_type_tag_user_1' arg0 has btf_id 104036 type STRUCT 'bpf_testmod_btf_type_tag_1'
-  1: R1_w=user_ptr_bpf_testmod_btf_type_tag_1(id=0,ref_obj_id=0,off=0,imm=0)
-  ; g = arg->a;
-  1: (61) r1 = *(u32 *)(r1 +0)
-  R1 is ptr_bpf_testmod_btf_type_tag_1 access user memory: off=0
+Like commit 7472d5a642c9, this feature requires clang (>= clang14) and
+pahole (>= 1.23).
 
-Note the error message for the reason of rejection.
-
-Fixes: c6f1bfe89ac9 ("bpf: reject program if a __user tagged memory accessed in kernel way")
 Cc: Yonghong Song <yhs@fb.com>
 Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- kernel/bpf/verifier.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/compiler_types.h | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a57db4b2803c..d63b1f40e029 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4556,7 +4556,8 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
- 		err = check_tp_buffer_access(env, reg, regno, off, size);
- 		if (!err && t == BPF_READ && value_regno >= 0)
- 			mark_reg_unknown(env, regs, value_regno);
--	} else if (reg->type == PTR_TO_BTF_ID) {
-+	} else if (base_type(reg->type) == PTR_TO_BTF_ID &&
-+		   !type_may_be_null(reg->type)) {
- 		err = check_ptr_to_btf_access(env, regs, regno, off, size, t,
- 					      value_regno);
- 	} else if (reg->type == CONST_PTR_TO_MAP) {
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index 3f31ff400432..223abf43679a 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -38,7 +38,12 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
+ #  define __user
+ # endif
+ # define __iomem
+-# define __percpu
++# if defined(CONFIG_DEBUG_INFO_BTF) && defined(CONFIG_PAHOLE_HAS_BTF_TAG) && \
++	__has_attribute(btf_type_tag)
++#  define __percpu	__attribute__((btf_type_tag("percpu")))
++# else
++#  define __percpu
++# endif
+ # define __rcu
+ # define __chk_user_ptr(x)	(void)0
+ # define __chk_io_ptr(x)	(void)0
 -- 
 2.35.1.616.g0bdcbb4464-goog
 
