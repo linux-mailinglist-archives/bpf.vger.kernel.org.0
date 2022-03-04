@@ -2,57 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA55B4CDD44
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 20:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957EE4CDD45
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 20:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229588AbiCDTSH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 14:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36924 "EHLO
+        id S229820AbiCDTSK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 14:18:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbiCDTSG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 14:18:06 -0500
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD3D230E49
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:17:09 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-2dbf52cc4b9so79191717b3.18
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 11:17:09 -0800 (PST)
+        with ESMTP id S229611AbiCDTSJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 14:18:09 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F780230E6E
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 11:17:12 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2d726bd83a2so78853537b3.20
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 11:17:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=EJCHN7+lWdL8WYCXAfrmjUR1COHaUhE3YyahfzOO8g4=;
-        b=PBr9MMZ9ptlNQ20PjeIu5hZyLBUgYOlo0yZxVWmP7J7zM0upQpS0O2Un7EGSUOxrlw
-         F1nKNyhldYOOsxG/g9fx7dYZ01FZDOmEJpKnPxIcLA6WkDFY6oCnVz7l2uOvWe/6sNYY
-         OKnfJLLG59Y+/O40MS1zdrakSFAe0t3YeusHzKCynK27OH55lJWDld80FcuqcyQ7EFY/
-         1gwyFynXU9izJQimV60Bq9cqTq74OJoTBWljFj+J3SEpyUmn5q38PP+NE/9vd7TBNFg+
-         ddAgIPMyQH0nzSvGqWhubeDM7AcMshisqCAs7Ppgm8ZzSRw4F9Y10ofRdE2dZhLvOsH1
-         GJZw==
+        bh=7Fdyq2zl3Pn/KJWhFsp8uIQPyOE72aunF6Y/Yf0GGQI=;
+        b=s6aV8QLut1V+onK6489O8IDLDeMnKDrp75Va/PwX/npSBsBixhEyLAxXvzXVc1xMxA
+         skrK+8Nqg3q7pycesMMQ9GgWeOtWQ/AH5mznt7KZzkTGb+qAKWeWpbD3xIRgHMABdToX
+         BUABCCiPHA1f3RGyJTiFqSQoO7RHq4hkvYn2zT7WW6tXTNpeQF95ySUFNQayYtBJFQbZ
+         kRtTC+UKStRYIm7iAol4JEsNiZ71jycfjIlboGzapdieXZsfC+wnod/ygU9/0Q5iVxMh
+         vzrb00OfroXKdttxiD1J1C0xEKi2T2/fAx9tAe75sDCWdWRMeG3Kw83K8+YP1gxxesyx
+         aoFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=EJCHN7+lWdL8WYCXAfrmjUR1COHaUhE3YyahfzOO8g4=;
-        b=hKXFcOrRW2zcDOZZVxki5tRSww856zQoCs4fqJJ7faNIjOzvTS6ZJ7EgVIdpna4oNK
-         pU2iSAbB4AeCvbaKxyLmrQXEF8NHsTa58JBnGKXRNWAFQzKBUHYRSU5b7SILLxD3a1xj
-         8K6L9+FSHgU+Fq2ZRa7w/v6uV6F84axAtBYg8C44L2js3DzytDnesuxH2VHLy8XqXZC7
-         OzA0kuhA0zaan/dPt1FPNFq0ViE/2svIWE5hEEu04y1enr/6T+Ql3B6APgoI1aXal0Iy
-         cc8pAAbdwrCVJp0O3fWufk4CrZ6pHzxRBrX7kBL2Fhsh0ejyEjbZ7oSgd94dWlbS1nUf
-         OGyw==
-X-Gm-Message-State: AOAM533N6JWrsY6BD0CEzpE6/W+O3HNsBGZbqLgeOyKLd4a/NvrxLJMH
-        Ghicj8RsTD9LpMPuLoMqOfM+QcEc+5o=
-X-Google-Smtp-Source: ABdhPJwO383XNlCHn38VXCdCnRrmvxaz64GBphzFH674uew3YXxRxdfaKxEnSWAwU2la9DXIidYxkeqMG1w=
+        bh=7Fdyq2zl3Pn/KJWhFsp8uIQPyOE72aunF6Y/Yf0GGQI=;
+        b=HqRCik07cxzIQE6e+AlSjUPb4HJHhVytsNValmrnOhO65jdQoslQdSR0ltvWlBMsK2
+         MwFDhLd60lZ5sq0lJL7b6Anf+/WpoYVSAweYZQv/rJCw1OtbJL6gPrBcpCRhyX09cXFA
+         0eGcRbg9MzsfEFMoPxZjlz6suuWdK+AB8LR6f8+K3TN4n8ek5jkJm+51eFa/QFfG7wYz
+         REpxp4D/ARGxfUuwD1DfeLiYxL51Bp7N6babzF2dW/jq61odc9P5v8nzqa9r2vjLqJlA
+         pEjNBIc2UyMnuQto1O7wC+e9CLX4vnRvEW+cCZoXtIWbY4zI9FyCqDKg4uXxAena/Br+
+         4G3A==
+X-Gm-Message-State: AOAM532SRB2ElFjaLfiB5qUEuOt4AwmUPLvQYwjBzdn0eyT3wHvmGpAl
+        C36Y8gD7Q1GwomAMOkmuPr/m0jbJIqE=
+X-Google-Smtp-Source: ABdhPJyiCfBKoQ9i/MFZRr93lw0d4r7iOLd5mSKkWydJ7oR1xp5xZ79128CVeq29B8xM9Gr7k1VOlHzxTPQ=
 X-Received: from haoluo.svl.corp.google.com ([2620:15c:2cd:202:d204:6f81:5498:9251])
- (user=haoluo job=sendgmr) by 2002:a25:305:0:b0:628:b49a:29c4 with SMTP id
- 5-20020a250305000000b00628b49a29c4mr11922962ybd.425.1646421428739; Fri, 04
- Mar 2022 11:17:08 -0800 (PST)
-Date:   Fri,  4 Mar 2022 11:16:56 -0800
+ (user=haoluo job=sendgmr) by 2002:a25:7804:0:b0:628:ec4c:989b with SMTP id
+ t4-20020a257804000000b00628ec4c989bmr3202280ybc.428.1646421430967; Fri, 04
+ Mar 2022 11:17:10 -0800 (PST)
+Date:   Fri,  4 Mar 2022 11:16:57 -0800
 In-Reply-To: <20220304191657.981240-1-haoluo@google.com>
-Message-Id: <20220304191657.981240-4-haoluo@google.com>
+Message-Id: <20220304191657.981240-5-haoluo@google.com>
 Mime-Version: 1.0
 References: <20220304191657.981240-1-haoluo@google.com>
 X-Mailer: git-send-email 2.35.1.616.g0bdcbb4464-goog
-Subject: [PATCH bpf-next v1 3/4] bpf: Reject programs that try to load
- __percpu memory.
+Subject: [PATCH bpf-next v1 4/4] selftests/bpf: Add a test for btf_type_tag "percpu"
 From:   Hao Luo <haoluo@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -70,193 +69,410 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-With the introduction of the btf_type_tag "percpu", we can add a
-MEM_PERCPU to identify those pointers that point to percpu memory.
-The ability of differetiating percpu pointers from regular memory
-pointers have two benefits:
+Add test for percpu btf_type_tag. Similar to the "user" tag, we test
+the following cases:
 
- 1. It forbids unexpected use of percpu pointers, such as direct loads.
-    In kernel, there are special functions used for accessing percpu
-    memory. Directly loading percpu memory is meaningless. We already
-    have BPF helpers like bpf_per_cpu_ptr() and bpf_this_cpu_ptr() that
-    wrap the kernel percpu functions. So we can now convert percpu
-    pointers into regular pointers in a safe way.
+ 1. __percpu struct field.
+ 2. __percpu as function parameter.
+ 3. per_cpu_ptr() accepts dynamically allocated __percpu memory.
 
- 2. Previously, bpf_per_cpu_ptr() and bpf_this_cpu_ptr() only work on
-    PTR_TO_PERCPU_BTF_ID, a special reg_type which describes static
-    percpu variables in kernel (we rely on pahole to encode them into
-    vmlinux BTF). Now, since we can identify __percpu tagged pointers,
-    we can also identify dynamically allocated percpu memory as well.
-    It means we can use bpf_xxx_cpu_ptr() on dynamic percpu memory.
-    This would be very convenient when accessing fields like
-    "cgroup->rstat_cpu".
+Because the test for "user" and the test for "percpu" are very similar,
+a little bit of refactoring has been done in btf_tag.c. Basically, both
+tests share the same function for loading vmlinux and module btf.
 
-Cc: Yonghong Song <yhs@fb.com>
+Example output from log:
+
+ > ./test_progs -v -t btf_tag
+
+ libbpf: prog 'test_percpu1': BPF program load failed: Permission denied
+ libbpf: prog 'test_percpu1': -- BEGIN PROG LOAD LOG --
+ ...
+ ; g = arg->a;
+ 1: (61) r1 = *(u32 *)(r1 +0)
+ R1 is ptr_bpf_testmod_btf_type_tag_1 access percpu memory: off=0
+ ...
+ test_btf_type_tag_mod_percpu:PASS:btf_type_tag_percpu 0 nsec
+ #26/6 btf_tag/btf_type_tag_percpu_mod1:OK
+
+ libbpf: prog 'test_percpu2': BPF program load failed: Permission denied
+ libbpf: prog 'test_percpu2': -- BEGIN PROG LOAD LOG --
+ ...
+ ; g = arg->p->a;
+ 2: (61) r1 = *(u32 *)(r1 +0)
+ R1 is ptr_bpf_testmod_btf_type_tag_1 access percpu memory: off=0
+ ...
+ test_btf_type_tag_mod_percpu:PASS:btf_type_tag_percpu 0 nsec
+ #26/7 btf_tag/btf_type_tag_percpu_mod2:OK
+
+ libbpf: prog 'test_percpu_load': BPF program load failed: Permission denied
+ libbpf: prog 'test_percpu_load': -- BEGIN PROG LOAD LOG --
+ ...
+ ; g = (__u64)cgrp->rstat_cpu->updated_children;
+ 2: (79) r1 = *(u64 *)(r1 +48)
+ R1 is ptr_cgroup_rstat_cpu access percpu memory: off=48
+ ...
+ test_btf_type_tag_vmlinux_percpu:PASS:btf_type_tag_percpu_load 0 nsec
+ #26/8 btf_tag/btf_type_tag_percpu_vmlinux_load:OK
+
+ load_btfs:PASS:could not load vmlinux BTF 0 nsec
+ test_btf_type_tag_vmlinux_percpu:PASS:btf_type_tag_percpu 0 nsec
+ test_btf_type_tag_vmlinux_percpu:PASS:btf_type_tag_percpu_helper 0 nsec
+ #26/9 btf_tag/btf_type_tag_percpu_vmlinux_helper:OK
+
 Signed-off-by: Hao Luo <haoluo@google.com>
 ---
- include/linux/bpf.h   | 11 +++++++++--
- kernel/bpf/btf.c      |  8 +++++++-
- kernel/bpf/verifier.c | 24 ++++++++++++++----------
- 3 files changed, 30 insertions(+), 13 deletions(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  17 ++
+ .../selftests/bpf/prog_tests/btf_tag.c        | 164 ++++++++++++++----
+ .../selftests/bpf/progs/btf_type_tag_percpu.c |  66 +++++++
+ 3 files changed, 218 insertions(+), 29 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/btf_type_tag_percpu.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f19abc59b6cd..88449fbbe063 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -334,7 +334,15 @@ enum bpf_type_flag {
- 	/* MEM is in user address space. */
- 	MEM_USER		= BIT(3 + BPF_BASE_TYPE_BITS),
- 
--	__BPF_TYPE_LAST_FLAG	= MEM_USER,
-+	/* MEM is a percpu memory. MEM_PERCPU tags PTR_TO_BTF_ID. When tagged
-+	 * with MEM_PERCPU, PTR_TO_BTF_ID _cannot_ be directly accessed. In
-+	 * order to drop this tag, it must be passed into bpf_per_cpu_ptr()
-+	 * or bpf_this_cpu_ptr(), which will return the pointer corresponding
-+	 * to the specified cpu.
-+	 */
-+	MEM_PERCPU		= BIT(4 + BPF_BASE_TYPE_BITS),
-+
-+	__BPF_TYPE_LAST_FLAG	= MEM_PERCPU,
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 27d63be47b95..17c211f3b924 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -33,6 +33,10 @@ struct bpf_testmod_btf_type_tag_2 {
+ 	struct bpf_testmod_btf_type_tag_1 __user *p;
  };
  
- /* Max number of base types. */
-@@ -516,7 +524,6 @@ enum bpf_reg_type {
- 	 */
- 	PTR_TO_MEM,		 /* reg points to valid memory region */
- 	PTR_TO_BUF,		 /* reg points to a read/write buffer */
--	PTR_TO_PERCPU_BTF_ID,	 /* reg points to a percpu kernel variable */
- 	PTR_TO_FUNC,		 /* reg points to a bpf program function */
- 	__BPF_REG_TYPE_MAX,
++struct bpf_testmod_btf_type_tag_3 {
++	struct bpf_testmod_btf_type_tag_1 __percpu *p;
++};
++
+ noinline int
+ bpf_testmod_test_btf_type_tag_user_1(struct bpf_testmod_btf_type_tag_1 __user *arg) {
+ 	BTF_TYPE_EMIT(func_proto_typedef);
+@@ -46,6 +50,19 @@ bpf_testmod_test_btf_type_tag_user_2(struct bpf_testmod_btf_type_tag_2 *arg) {
+ 	return arg->p->a;
+ }
  
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b472cf0c8fdb..f9f2218b27fe 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5057,6 +5057,8 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		tag_value = __btf_name_by_offset(btf, t->name_off);
- 		if (strcmp(tag_value, "user") == 0)
- 			info->reg_type |= MEM_USER;
-+		if (strcmp(tag_value, "percpu") == 0)
-+			info->reg_type |= MEM_PERCPU;
++noinline int
++bpf_testmod_test_btf_type_tag_percpu_1(struct bpf_testmod_btf_type_tag_1 __percpu *arg) {
++	BTF_TYPE_EMIT(func_proto_typedef);
++	BTF_TYPE_EMIT(func_proto_typedef_nested1);
++	BTF_TYPE_EMIT(func_proto_typedef_nested2);
++	return arg->a;
++}
++
++noinline int
++bpf_testmod_test_btf_type_tag_percpu_2(struct bpf_testmod_btf_type_tag_3 *arg) {
++	return arg->p->a;
++}
++
+ noinline int bpf_testmod_loop_test(int n)
+ {
+ 	int i, sum = 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf_tag.c b/tools/testing/selftests/bpf/prog_tests/btf_tag.c
+index f7560b54a6bb..071430cd54de 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf_tag.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf_tag.c
+@@ -10,6 +10,7 @@ struct btf_type_tag_test {
+ };
+ #include "btf_type_tag.skel.h"
+ #include "btf_type_tag_user.skel.h"
++#include "btf_type_tag_percpu.skel.h"
+ 
+ static void test_btf_decl_tag(void)
+ {
+@@ -43,38 +44,81 @@ static void test_btf_type_tag(void)
+ 	btf_type_tag__destroy(skel);
+ }
+ 
+-static void test_btf_type_tag_mod_user(bool load_test_user1)
++/* loads vmlinux_btf as well as module_btf. If the caller passes NULL as
++ * module_btf, it will not load module btf.
++ *
++ * Returns 0 on success.
++ * Return -1 On error. In case of error, the loaded btf will be freed and the
++ * input parameters will be set to pointing to NULL.
++ */
++static int load_btfs(struct btf **vmlinux_btf, struct btf **module_btf,
++		     bool needs_vmlinux_tag)
+ {
+ 	const char *module_name = "bpf_testmod";
+-	struct btf *vmlinux_btf, *module_btf;
+-	struct btf_type_tag_user *skel;
+ 	__s32 type_id;
+-	int err;
+ 
+ 	if (!env.has_testmod) {
+ 		test__skip();
+-		return;
++		return -1;
  	}
  
- 	/* skip modifiers */
-@@ -5285,12 +5287,16 @@ static int btf_struct_walk(struct bpf_verifier_log *log, const struct btf *btf,
- 				return -EACCES;
- 			}
+-	/* skip the test if the module does not have __user tags */
+-	vmlinux_btf = btf__load_vmlinux_btf();
+-	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
+-		return;
++	*vmlinux_btf = btf__load_vmlinux_btf();
++	if (!ASSERT_OK_PTR(*vmlinux_btf, "could not load vmlinux BTF"))
++		return -1;
++
++	if (!needs_vmlinux_tag)
++		goto load_module_btf;
  
--			/* check __user tag */
-+			/* check type tag */
- 			t = btf_type_by_id(btf, mtype->type);
- 			if (btf_type_is_type_tag(t)) {
- 				tag_value = __btf_name_by_offset(btf, t->name_off);
-+				/* check __user tag */
- 				if (strcmp(tag_value, "user") == 0)
- 					tmp_flag = MEM_USER;
-+				/* check __percpu tag */
-+				if (strcmp(tag_value, "percpu") == 0)
-+					tmp_flag = MEM_PERCPU;
- 			}
+-	module_btf = btf__load_module_btf(module_name, vmlinux_btf);
+-	if (!ASSERT_OK_PTR(module_btf, "could not load module BTF"))
++	/* skip the test if the vmlinux does not have __user tags */
++	type_id = btf__find_by_name_kind(*vmlinux_btf, "user", BTF_KIND_TYPE_TAG);
++	if (type_id <= 0) {
++		printf("%s:SKIP: btf_type_tag attribute not in vmlinux btf", __func__);
++		test__skip();
+ 		goto free_vmlinux_btf;
++	}
  
- 			stype = btf_type_skip_modifiers(btf, mtype->type, &id);
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index d63b1f40e029..093e47360d6d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -554,7 +554,6 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
- 		[PTR_TO_TP_BUFFER]	= "tp_buffer",
- 		[PTR_TO_XDP_SOCK]	= "xdp_sock",
- 		[PTR_TO_BTF_ID]		= "ptr_",
--		[PTR_TO_PERCPU_BTF_ID]	= "percpu_ptr_",
- 		[PTR_TO_MEM]		= "mem",
- 		[PTR_TO_BUF]		= "buf",
- 		[PTR_TO_FUNC]		= "func",
-@@ -562,8 +561,7 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
- 	};
- 
- 	if (type & PTR_MAYBE_NULL) {
--		if (base_type(type) == PTR_TO_BTF_ID ||
--		    base_type(type) == PTR_TO_PERCPU_BTF_ID)
-+		if (base_type(type) == PTR_TO_BTF_ID)
- 			strncpy(postfix, "or_null_", 16);
- 		else
- 			strncpy(postfix, "_or_null", 16);
-@@ -575,6 +573,8 @@ static const char *reg_type_str(struct bpf_verifier_env *env,
- 		strncpy(prefix, "alloc_", 32);
- 	if (type & MEM_USER)
- 		strncpy(prefix, "user_", 32);
-+	if (type & MEM_PERCPU)
-+		strncpy(prefix, "percpu_", 32);
- 
- 	snprintf(env->type_str_buf, TYPE_STR_BUF_LEN, "%s%s%s",
- 		 prefix, str[base_type(type)], postfix);
-@@ -697,8 +697,7 @@ static void print_verifier_state(struct bpf_verifier_env *env,
- 			const char *sep = "";
- 
- 			verbose(env, "%s", reg_type_str(env, t));
--			if (base_type(t) == PTR_TO_BTF_ID ||
--			    base_type(t) == PTR_TO_PERCPU_BTF_ID)
-+			if (base_type(t) == PTR_TO_BTF_ID)
- 				verbose(env, "%s", kernel_type_name(reg->btf, reg->btf_id));
- 			verbose(env, "(");
- /*
-@@ -2783,7 +2782,6 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
- 	case PTR_TO_XDP_SOCK:
- 	case PTR_TO_BTF_ID:
- 	case PTR_TO_BUF:
--	case PTR_TO_PERCPU_BTF_ID:
- 	case PTR_TO_MEM:
- 	case PTR_TO_FUNC:
- 	case PTR_TO_MAP_KEY:
-@@ -4197,6 +4195,13 @@ static int check_ptr_to_btf_access(struct bpf_verifier_env *env,
- 		return -EACCES;
+-	type_id = btf__find_by_name_kind(module_btf, "user", BTF_KIND_TYPE_TAG);
++load_module_btf:
++	/* skip loading module_btf, if not requested by caller */
++	if (!module_btf)
++		return 0;
++
++	*module_btf = btf__load_module_btf(module_name, *vmlinux_btf);
++	if (!ASSERT_OK_PTR(*module_btf, "could not load module BTF"))
++		goto free_vmlinux_btf;
++
++	/* skip the test if the module does not have __user tags */
++	type_id = btf__find_by_name_kind(*module_btf, "user", BTF_KIND_TYPE_TAG);
+ 	if (type_id <= 0) {
+ 		printf("%s:SKIP: btf_type_tag attribute not in %s", __func__, module_name);
+ 		test__skip();
+ 		goto free_module_btf;
  	}
  
-+	if (reg->type & MEM_PERCPU) {
-+		verbose(env,
-+			"R%d is ptr_%s access percpu memory: off=%d\n",
-+			regno, tname, off);
-+		return -EACCES;
++	return 0;
++
++free_module_btf:
++	btf__free(*module_btf);
++free_vmlinux_btf:
++	btf__free(*vmlinux_btf);
++
++	*vmlinux_btf = NULL;
++	if (module_btf)
++		*module_btf = NULL;
++	return -1;
++}
++
++static void test_btf_type_tag_mod_user(bool load_test_user1)
++{
++	struct btf *vmlinux_btf = NULL, *module_btf = NULL;
++	struct btf_type_tag_user *skel;
++	int err;
++
++	if (load_btfs(&vmlinux_btf, &module_btf, /*needs_vmlinux_tag=*/false))
++		return;
++
+ 	skel = btf_type_tag_user__open();
+ 	if (!ASSERT_OK_PTR(skel, "btf_type_tag_user"))
+-		goto free_module_btf;
++		goto cleanup;
+ 
+ 	bpf_program__set_autoload(skel->progs.test_sys_getsockname, false);
+ 	if (load_test_user1)
+@@ -87,34 +131,23 @@ static void test_btf_type_tag_mod_user(bool load_test_user1)
+ 
+ 	btf_type_tag_user__destroy(skel);
+ 
+-free_module_btf:
++cleanup:
+ 	btf__free(module_btf);
+-free_vmlinux_btf:
+ 	btf__free(vmlinux_btf);
+ }
+ 
+ static void test_btf_type_tag_vmlinux_user(void)
+ {
+ 	struct btf_type_tag_user *skel;
+-	struct btf *vmlinux_btf;
+-	__s32 type_id;
++	struct btf *vmlinux_btf = NULL;
+ 	int err;
+ 
+-	/* skip the test if the vmlinux does not have __user tags */
+-	vmlinux_btf = btf__load_vmlinux_btf();
+-	if (!ASSERT_OK_PTR(vmlinux_btf, "could not load vmlinux BTF"))
++	if (load_btfs(&vmlinux_btf, NULL, /*needs_vmlinux_tag=*/true))
+ 		return;
+ 
+-	type_id = btf__find_by_name_kind(vmlinux_btf, "user", BTF_KIND_TYPE_TAG);
+-	if (type_id <= 0) {
+-		printf("%s:SKIP: btf_type_tag attribute not in vmlinux btf", __func__);
+-		test__skip();
+-		goto free_vmlinux_btf;
+-	}
+-
+ 	skel = btf_type_tag_user__open();
+ 	if (!ASSERT_OK_PTR(skel, "btf_type_tag_user"))
+-		goto free_vmlinux_btf;
++		goto cleanup;
+ 
+ 	bpf_program__set_autoload(skel->progs.test_user2, false);
+ 	bpf_program__set_autoload(skel->progs.test_user1, false);
+@@ -124,7 +157,70 @@ static void test_btf_type_tag_vmlinux_user(void)
+ 
+ 	btf_type_tag_user__destroy(skel);
+ 
+-free_vmlinux_btf:
++cleanup:
++	btf__free(vmlinux_btf);
++}
++
++static void test_btf_type_tag_mod_percpu(bool load_test_percpu1)
++{
++	struct btf *vmlinux_btf, *module_btf;
++	struct btf_type_tag_percpu *skel;
++	int err;
++
++	if (load_btfs(&vmlinux_btf, &module_btf, /*needs_vmlinux_tag=*/false))
++		return;
++
++	skel = btf_type_tag_percpu__open();
++	if (!ASSERT_OK_PTR(skel, "btf_type_tag_percpu"))
++		goto cleanup;
++
++	bpf_program__set_autoload(skel->progs.test_percpu_load, false);
++	bpf_program__set_autoload(skel->progs.test_percpu_helper, false);
++	if (load_test_percpu1)
++		bpf_program__set_autoload(skel->progs.test_percpu2, false);
++	else
++		bpf_program__set_autoload(skel->progs.test_percpu1, false);
++
++	err = btf_type_tag_percpu__load(skel);
++	ASSERT_ERR(err, "btf_type_tag_percpu");
++
++	btf_type_tag_percpu__destroy(skel);
++
++cleanup:
++	btf__free(module_btf);
++	btf__free(vmlinux_btf);
++}
++
++static void test_btf_type_tag_vmlinux_percpu(bool load_test)
++{
++	struct btf_type_tag_percpu *skel;
++	struct btf *vmlinux_btf = NULL;
++	int err;
++
++	if (load_btfs(&vmlinux_btf, NULL, /*needs_vmlinux_tag=*/true))
++		return;
++
++	skel = btf_type_tag_percpu__open();
++	if (!ASSERT_OK_PTR(skel, "btf_type_tag_percpu"))
++		goto cleanup;
++
++	bpf_program__set_autoload(skel->progs.test_percpu2, false);
++	bpf_program__set_autoload(skel->progs.test_percpu1, false);
++	if (load_test) {
++		bpf_program__set_autoload(skel->progs.test_percpu_helper, false);
++
++		err = btf_type_tag_percpu__load(skel);
++		ASSERT_ERR(err, "btf_type_tag_percpu_load");
++	} else {
++		bpf_program__set_autoload(skel->progs.test_percpu_load, false);
++
++		err = btf_type_tag_percpu__load(skel);
++		ASSERT_OK(err, "btf_type_tag_percpu_helper");
 +	}
 +
- 	if (env->ops->btf_struct_access) {
- 		ret = env->ops->btf_struct_access(&env->log, reg->btf, t,
- 						  off, size, atype, &btf_id, &flag);
-@@ -4803,7 +4808,7 @@ static int check_stack_range_initialized(
- 		}
++	btf_type_tag_percpu__destroy(skel);
++
++cleanup:
+ 	btf__free(vmlinux_btf);
+ }
  
- 		if (is_spilled_reg(&state->stack[spi]) &&
--		    state->stack[spi].spilled_ptr.type == PTR_TO_BTF_ID)
-+		    base_type(state->stack[spi].spilled_ptr.type) == PTR_TO_BTF_ID)
- 			goto mark;
- 
- 		if (is_spilled_reg(&state->stack[spi]) &&
-@@ -5259,7 +5264,7 @@ static const struct bpf_reg_types alloc_mem_types = { .types = { PTR_TO_MEM | ME
- static const struct bpf_reg_types const_map_ptr_types = { .types = { CONST_PTR_TO_MAP } };
- static const struct bpf_reg_types btf_ptr_types = { .types = { PTR_TO_BTF_ID } };
- static const struct bpf_reg_types spin_lock_types = { .types = { PTR_TO_MAP_VALUE } };
--static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_PERCPU_BTF_ID } };
-+static const struct bpf_reg_types percpu_btf_ptr_types = { .types = { PTR_TO_BTF_ID | MEM_PERCPU } };
- static const struct bpf_reg_types func_ptr_types = { .types = { PTR_TO_FUNC } };
- static const struct bpf_reg_types stack_ptr_types = { .types = { PTR_TO_STACK } };
- static const struct bpf_reg_types const_str_ptr_types = { .types = { PTR_TO_MAP_VALUE } };
-@@ -9639,7 +9644,6 @@ static int check_ld_imm(struct bpf_verifier_env *env, struct bpf_insn *insn)
- 			dst_reg->mem_size = aux->btf_var.mem_size;
- 			break;
- 		case PTR_TO_BTF_ID:
--		case PTR_TO_PERCPU_BTF_ID:
- 			dst_reg->btf = aux->btf_var.btf;
- 			dst_reg->btf_id = aux->btf_var.btf_id;
- 			break;
-@@ -11839,7 +11843,7 @@ static int check_pseudo_btf_id(struct bpf_verifier_env *env,
- 	type = t->type;
- 	t = btf_type_skip_modifiers(btf, type, NULL);
- 	if (percpu) {
--		aux->btf_var.reg_type = PTR_TO_PERCPU_BTF_ID;
-+		aux->btf_var.reg_type = PTR_TO_BTF_ID | MEM_PERCPU;
- 		aux->btf_var.btf = btf;
- 		aux->btf_var.btf_id = type;
- 	} else if (!btf_type_is_struct(t)) {
+@@ -134,10 +230,20 @@ void test_btf_tag(void)
+ 		test_btf_decl_tag();
+ 	if (test__start_subtest("btf_type_tag"))
+ 		test_btf_type_tag();
++
+ 	if (test__start_subtest("btf_type_tag_user_mod1"))
+ 		test_btf_type_tag_mod_user(true);
+ 	if (test__start_subtest("btf_type_tag_user_mod2"))
+ 		test_btf_type_tag_mod_user(false);
+ 	if (test__start_subtest("btf_type_tag_sys_user_vmlinux"))
+ 		test_btf_type_tag_vmlinux_user();
++
++	if (test__start_subtest("btf_type_tag_percpu_mod1"))
++		test_btf_type_tag_mod_percpu(true);
++	if (test__start_subtest("btf_type_tag_percpu_mod2"))
++		test_btf_type_tag_mod_percpu(false);
++	if (test__start_subtest("btf_type_tag_percpu_vmlinux_load"))
++		test_btf_type_tag_vmlinux_percpu(true);
++	if (test__start_subtest("btf_type_tag_percpu_vmlinux_helper"))
++		test_btf_type_tag_vmlinux_percpu(false);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/btf_type_tag_percpu.c b/tools/testing/selftests/bpf/progs/btf_type_tag_percpu.c
+new file mode 100644
+index 000000000000..8feddb8289cf
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/btf_type_tag_percpu.c
+@@ -0,0 +1,66 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2022 Google */
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++struct bpf_testmod_btf_type_tag_1 {
++	int a;
++};
++
++struct bpf_testmod_btf_type_tag_2 {
++	struct bpf_testmod_btf_type_tag_1 *p;
++};
++
++__u64 g;
++
++SEC("fentry/bpf_testmod_test_btf_type_tag_percpu_1")
++int BPF_PROG(test_percpu1, struct bpf_testmod_btf_type_tag_1 *arg)
++{
++	g = arg->a;
++	return 0;
++}
++
++SEC("fentry/bpf_testmod_test_btf_type_tag_percpu_2")
++int BPF_PROG(test_percpu2, struct bpf_testmod_btf_type_tag_2 *arg)
++{
++	g = arg->p->a;
++	return 0;
++}
++
++/* trace_cgroup_mkdir(struct cgroup *cgrp, const char *path)
++ *
++ * struct cgroup_rstat_cpu {
++ *   ...
++ *   struct cgroup *updated_children;
++ *   ...
++ * };
++ *
++ * struct cgroup {
++ *   ...
++ *   struct cgroup_rstat_cpu __percpu *rstat_cpu;
++ *   ...
++ * };
++ */
++SEC("tp_btf/cgroup_mkdir")
++int BPF_PROG(test_percpu_load, struct cgroup *cgrp, const char *path)
++{
++	g = (__u64)cgrp->rstat_cpu->updated_children;
++	return 0;
++}
++
++SEC("tp_btf/cgroup_mkdir")
++int BPF_PROG(test_percpu_helper, struct cgroup *cgrp, const char *path)
++{
++	struct cgroup_rstat_cpu *rstat;
++	__u32 cpu;
++
++	cpu = bpf_get_smp_processor_id();
++	rstat = (struct cgroup_rstat_cpu *)bpf_per_cpu_ptr(cgrp->rstat_cpu, cpu);
++	if (rstat) {
++		/* READ_ONCE */
++		*(volatile int *)rstat;
++	}
++
++	return 0;
++}
 -- 
 2.35.1.616.g0bdcbb4464-goog
 
