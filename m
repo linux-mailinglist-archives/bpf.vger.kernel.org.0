@@ -2,202 +2,259 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF524CD935
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 17:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA504CD956
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 17:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238188AbiCDQjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 11:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55372 "EHLO
+        id S240475AbiCDQoG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 11:44:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiCDQjL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 11:39:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 68CA2506F5
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 08:38:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646411902;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6EPRGQE/0v4vpBDuxKxWtHT4mXa5VDUCWuXpciIweIM=;
-        b=JHMPxcyGa2yeOOFeJ+D/10/zfz+DVH73Wln/JUT9fW7X9hy1Y/hr/OTZN9Sla8OY2PDu5/
-        4UlEIVf/KOxaQM7kimJdzHMJrwHtyjSpxlKBU8DSZgOuiy/JEHeEnhjSpInnIGZZKhY5Ri
-        ywkITID/oQXHoAKzo+YQKwPv1mtTvRk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-370-tKs-ZLuUN3SZ6LvgTBRdiw-1; Fri, 04 Mar 2022 11:38:21 -0500
-X-MC-Unique: tKs-ZLuUN3SZ6LvgTBRdiw-1
-Received: by mail-wm1-f69.google.com with SMTP id n62-20020a1ca441000000b0038124c99ebcso2596724wme.9
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 08:38:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6EPRGQE/0v4vpBDuxKxWtHT4mXa5VDUCWuXpciIweIM=;
-        b=TnnuuLFMO+OB9Wf58+pYn/5fM6IDVZPP7qidepM8K/5h2U859nb1SYjrgTiMPskqIx
-         QBF46Hnp4bkbeCvCSVDoVYe2k/y1FG9Rt/lgyVcjtGrI5gEceVTFDkyhAXrAHFAGiVXr
-         BvhEHDy7Gv1pgdAfAWY/jp6X1dXjwsP2SF2YRkfHsk/d+A+WB/VvgSgKw4g4o95oQHMf
-         AHpHMPj4b0e83PmEvIu8Mklz/OaCGntZaiwNLwuszKuWQcQGfybwtZFxRWWVhYJWGVmt
-         QfSB6bWMTmY5/taQETEdbjz+XHW09mljLOlGZuG0l0gpaK475wYtmN9LO2ghPeu5NuLE
-         8nSw==
-X-Gm-Message-State: AOAM531SqRE2m8PKr53jw6Updo+7AdvUiEH/fTWhx7TEjQG24evDleqO
-        GP7Emv3xg4GD/PbsDNTXZ1MSzPBP9kRCLSdgYB1dL8c/p3iiB880xNe4FFQFqamHYVg4PtacO2O
-        b1Hn9aemvd87a
-X-Received: by 2002:a5d:4ccc:0:b0:1f0:d0d7:3239 with SMTP id c12-20020a5d4ccc000000b001f0d0d73239mr2290171wrt.137.1646411900372;
-        Fri, 04 Mar 2022 08:38:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwfLvl3TD7vPXLKPydZXT7gU3bFx7qvbxDxEGWlF41piBEtxcGWoo0f2y7oLmHBQVDBL5m8Qw==
-X-Received: by 2002:a5d:4ccc:0:b0:1f0:d0d7:3239 with SMTP id c12-20020a5d4ccc000000b001f0d0d73239mr2290148wrt.137.1646411900072;
-        Fri, 04 Mar 2022 08:38:20 -0800 (PST)
-Received: from redhat.com ([2.52.16.157])
-        by smtp.gmail.com with ESMTPSA id m128-20020a1ca386000000b003898b148bf0sm460195wme.20.2022.03.04.08.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Mar 2022 08:38:19 -0800 (PST)
-Date:   Fri, 4 Mar 2022 11:38:14 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] virtio_net: xdp xmit use virtio dma api
-Message-ID: <20220304113316-mutt-send-email-mst@kernel.org>
-References: <20220224110402.108161-1-xuanzhuo@linux.alibaba.com>
- <20220224110402.108161-10-xuanzhuo@linux.alibaba.com>
+        with ESMTP id S240713AbiCDQoE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 11:44:04 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58356F11B4;
+        Fri,  4 Mar 2022 08:43:16 -0800 (PST)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nQB1N-000Ewe-FU; Fri, 04 Mar 2022 17:43:13 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf-next 2022-03-04
+Date:   Fri,  4 Mar 2022 17:43:13 +0100
+Message-Id: <20220304164313.31675-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220224110402.108161-10-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26471/Fri Mar  4 10:24:47 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 24, 2022 at 07:04:02PM +0800, Xuan Zhuo wrote:
-> XDP xmit uses virtio dma api for DMA operations. No longer let virtio
-> core manage DMA address.
-> 
-> To record the DMA address, allocate a space in the xdp_frame headroom to
-> store the DMA address.
-> 
-> Introduce virtnet_return_xdp_frame() to release the xdp frame and
-> complete the dma unmap operation.
+Hi David, hi Jakub,
 
-This commit suffers from the same issue as most other commits
-in this series: log just repeats what patch is doing without
-adding motivation.
+The following pull-request contains BPF updates for your *net-next* tree.
 
-So with this patch applied, what happened exactly? Did something
-previously broken start working now?
-This is what we want in the commit log, first of all.
+We've added 32 non-merge commits during the last 14 day(s) which contain
+a total of 59 files changed, 1038 insertions(+), 473 deletions(-).
 
-Thanks!
+The main changes are:
 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 42 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 35 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index a801ea40908f..0efbf7992a95 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -321,6 +321,20 @@ static struct page *get_a_page(struct receive_queue *rq, gfp_t gfp_mask)
->  	return p;
->  }
->  
-> +static void virtnet_return_xdp_frame(struct send_queue *sq,
-> +				     struct xdp_frame *frame)
-> +{
-> +	struct virtnet_info *vi = sq->vq->vdev->priv;
-> +	dma_addr_t *p_addr, addr;
-> +
-> +	p_addr = frame->data - sizeof(*p_addr);
-> +	addr = *p_addr;
-> +
-> +	virtio_dma_unmap(&vi->vdev->dev, addr, frame->len, DMA_TO_DEVICE);
-> +
-> +	xdp_return_frame(frame);
-> +}
-> +
->  static void virtqueue_napi_schedule(struct napi_struct *napi,
->  				    struct virtqueue *vq)
->  {
-> @@ -504,9 +518,11 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
->  				   struct xdp_frame *xdpf)
->  {
->  	struct virtio_net_hdr_mrg_rxbuf *hdr;
-> +	struct device *dev = &vi->vdev->dev;
-> +	dma_addr_t addr, *p_addr;
->  	int err;
->  
-> -	if (unlikely(xdpf->headroom < vi->hdr_len))
-> +	if (unlikely(xdpf->headroom < vi->hdr_len + sizeof(addr)))
->  		return -EOVERFLOW;
->  
->  	/* Make room for virtqueue hdr (also change xdpf->headroom?) */
-> @@ -516,10 +532,21 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
->  	memset(hdr, 0, vi->hdr_len);
->  	xdpf->len   += vi->hdr_len;
->  
-> -	sg_init_one(sq->sg, xdpf->data, xdpf->len);
-> +	p_addr = xdpf->data - sizeof(addr);
-> +
-> +	addr = virtio_dma_map(dev, xdpf->data, xdpf->len, DMA_TO_DEVICE);
-> +
-> +	if (virtio_dma_mapping_error(dev, addr))
-> +		return -ENOMEM;
-> +
-> +	*p_addr = addr;
-> +
-> +	sg_init_table(sq->sg, 1);
-> +	sq->sg->dma_address = addr;
-> +	sq->sg->length = xdpf->len;
->  
-> -	err = virtqueue_add_outbuf(sq->vq, sq->sg, 1, xdp_to_ptr(xdpf),
-> -				   GFP_ATOMIC);
-> +	err = virtqueue_add_outbuf_premapped(sq->vq, sq->sg, 1,
-> +					     xdp_to_ptr(xdpf), GFP_ATOMIC);
->  	if (unlikely(err))
->  		return -ENOSPC; /* Caller handle free/refcnt */
->  
-> @@ -600,7 +627,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
->  			struct xdp_frame *frame = ptr_to_xdp(ptr);
->  
->  			bytes += frame->len;
-> -			xdp_return_frame(frame);
-> +			virtnet_return_xdp_frame(sq, frame);
->  		} else {
->  			struct sk_buff *skb = ptr;
->  
-> @@ -1486,7 +1513,7 @@ static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi)
->  			struct xdp_frame *frame = ptr_to_xdp(ptr);
->  
->  			bytes += frame->len;
-> -			xdp_return_frame(frame);
-> +			virtnet_return_xdp_frame(sq, frame);
->  		}
->  		packets++;
->  	}
-> @@ -2815,7 +2842,8 @@ static void free_unused_bufs(struct virtnet_info *vi)
->  			if (!is_xdp_frame(buf))
->  				dev_kfree_skb(buf);
->  			else
-> -				xdp_return_frame(ptr_to_xdp(buf));
-> +				virtnet_return_xdp_frame(vi->sq + i,
-> +							 ptr_to_xdp(buf));
->  		}
->  	}
->  
-> -- 
-> 2.31.0
+1) Optimize BPF stackmap's build_id retrieval by caching last valid build_id,
+   as consecutive stack frames are likely to be in the same VMA and therefore
+   have the same build id, from Hao Luo.
 
+2) Several improvements to arm64 BPF JIT, that is, support for JITing
+   the atomic[64]_fetch_add, atomic[64]_[fetch_]{and,or,xor} and lastly
+   atomic[64]_{xchg|cmpxchg}. Also fix the BTF line info dump for JITed
+   programs, from Hou Tao.
+
+3) Optimize generic BPF map batch deletion by only enforcing synchronize_rcu()
+   barrier once upon return to user space, from Eric Dumazet.
+
+4) For kernel build parse DWARF and generate BTF through pahole with enabled
+   multithreading, from Kui-Feng Lee.
+
+5) BPF verifier usability improvements by making log info more concise and
+   replacing inv with scalar type name, from Mykola Lysenko.
+
+6) Two follow-up fixes for BPF prog JIT pack allocator, from Song Liu.
+
+7) Add a new Kconfig to allow for loading kernel modules with non-matching
+   BTF type info; their BTF info is then removed on load, from Connor O'Brien.
+
+8) Remove reallocarray() usage from bpftool and switch to libbpf_reallocarray()
+   in order to fix compilation errors for older glibc, from Mauricio Vásquez.
+
+9) Fix libbpf to error on conflicting name in BTF when type declaration
+   appears before the definition, from Xu Kuohai.
+
+10) Fix issue in BPF preload for in-kernel light skeleton where loaded BPF
+    program fds prevent init process from setting up fd 0-2, from Yucong Sun.
+
+11) Fix libbpf reuse of pinned perf RB map when max_entries is auto-determined
+    by libbpf, from Stijn Tintel.
+
+12) Several cleanups for libbpf and a fix to enforce perf RB map #pages to be
+    non-zero, from Yuntao Wang.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Andrii Nakryiko, Hengqi Chen, kernel test robot, Kui-Feng Lee, Kumar 
+Kartikeya Dwivedi, Marc Zyngier, Namhyung Kim, Pasha Tatashin, Quentin 
+Monnet, Shung-Hsi Yu, Song Liu, Stanislav Fomichev, Yonghong Song, 
+Yucong Sun
+
+----------------------------------------------------------------
+
+The following changes since commit 086d49058cd8471046ae9927524708820f5fd1c7:
+
+  ipv6: annotate some data-races around sk->sk_prot (2022-02-18 11:53:28 +0000)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
+
+for you to fetch changes up to 7df5072cc05fd1aab5823bbc465d033cd292fca8:
+
+  bpf: Small BPF verifier log improvements (2022-03-03 16:54:10 +0100)
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'fixes for bpf_prog_pack'
+
+Andrii Nakryiko (1):
+      selftests/bpf: Fix btfgen tests
+
+Connor O'Brien (1):
+      bpf: Add config to allow loading modules with BTF mismatches
+
+Daniel Borkmann (1):
+      Merge branch 'for-next/insn' of ssh://gitolite.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+
+Delyan Kratunov (1):
+      bpftool: Bpf skeletons assert type sizes
+
+Eric Dumazet (1):
+      bpf: Call maybe_wait_bpf_programs() only once from generic_map_delete_batch()
+
+Hao Luo (1):
+      bpf: Cache the last valid build_id
+
+Hou Tao (6):
+      arm64: move AARCH64_BREAK_FAULT into insn-def.h
+      arm64: insn: add encoders for atomic operations
+      bpf, arm64: Call build_prologue() first in first JIT pass
+      bpf, arm64: Feed byte-offset into bpf line info
+      bpf, arm64: Support more atomic operations
+      bpf, selftests: Use raw_tp program for atomic test
+
+James Morse (1):
+      arm64: insn: Generate 64 bit mask immediates correctly
+
+Kui-Feng Lee (1):
+      scripts/pahole-flags.sh: Parse DWARF and generate BTF with multithreading.
+
+Kumar Kartikeya Dwivedi (1):
+      selftests/bpf: Add test for reg2btf_ids out of bounds access
+
+Mauricio Vásquez (1):
+      bpftool: Remove usage of reallocarray()
+
+Mykola Lysenko (1):
+      bpf: Small BPF verifier log improvements
+
+Song Liu (2):
+      x86: Disable HAVE_ARCH_HUGE_VMALLOC on 32-bit x86
+      bpf, x86: Set header->size properly before freeing it
+
+Souptick Joarder (HPE) (1):
+      bpf: Initialize ret to 0 inside btf_populate_kfunc_set()
+
+Stanislav Fomichev (1):
+      bpf, test_run: Fix overflow in XDP frags bpf_test_finish
+
+Stijn Tintel (1):
+      libbpf: Fix BPF_MAP_TYPE_PERF_EVENT_ARRAY auto-pinning
+
+Tiezhu Yang (1):
+      bpf: Add some description about BPF_JIT_ALWAYS_ON in Kconfig
+
+Tom Rix (1):
+      bpf: Cleanup comments
+
+Wan Jiabing (1):
+      bpf, docs: Add a missing colon in verifier.rst
+
+Xu Kuohai (2):
+      libbpf: Skip forward declaration when counting duplicated type names
+      selftests/bpf: Update btf_dump case for conflicting names
+
+Yonghong Song (1):
+      selftests/bpf: Fix a clang deprecated-declarations compilation error
+
+Yucong Sun (1):
+      bpf: Fix issue with bpf preload module taking over stdout/stdin of kernel.
+
+Yuntao Wang (4):
+      libbpf: Remove redundant check in btf_fixup_datasec()
+      libbpf: Simplify the find_elf_sec_sz() function
+      bpftool: Remove redundant slashes
+      libbpf: Add a check to ensure that page_cnt is non-zero
+
+ Documentation/bpf/verifier.rst                     |   2 +-
+ arch/arm64/include/asm/debug-monitors.h            |  12 -
+ arch/arm64/include/asm/insn-def.h                  |  14 ++
+ arch/arm64/include/asm/insn.h                      |  80 ++++++-
+ arch/arm64/lib/insn.c                              | 187 ++++++++++++++--
+ arch/arm64/net/bpf_jit.h                           |  44 +++-
+ arch/arm64/net/bpf_jit_comp.c                      | 241 +++++++++++++++++----
+ arch/x86/Kconfig                                   |   2 +-
+ arch/x86/net/bpf_jit_comp.c                        |   5 +-
+ kernel/bpf/Kconfig                                 |   4 +
+ kernel/bpf/bpf_local_storage.c                     |   2 +-
+ kernel/bpf/btf.c                                   |  11 +-
+ kernel/bpf/cgroup.c                                |   8 +-
+ kernel/bpf/core.c                                  |   9 +-
+ kernel/bpf/hashtab.c                               |   2 +-
+ kernel/bpf/helpers.c                               |   2 +-
+ kernel/bpf/local_storage.c                         |   2 +-
+ kernel/bpf/preload/bpf_preload_kern.c              |   7 +
+ kernel/bpf/reuseport_array.c                       |   2 +-
+ kernel/bpf/stackmap.c                              |  12 +-
+ kernel/bpf/syscall.c                               |   5 +-
+ kernel/bpf/trampoline.c                            |   2 +-
+ kernel/bpf/verifier.c                              |  64 +++---
+ lib/Kconfig.debug                                  |  10 +
+ net/bpf/test_run.c                                 |   5 +
+ scripts/pahole-flags.sh                            |   3 +
+ tools/bpf/bpftool/Makefile                         |  20 +-
+ tools/bpf/bpftool/gen.c                            | 127 +++++++++--
+ tools/bpf/bpftool/main.h                           |   2 +-
+ tools/bpf/bpftool/prog.c                           |   7 +-
+ tools/bpf/bpftool/xlated_dumper.c                  |   5 +-
+ tools/lib/bpf/btf_dump.c                           |   5 +
+ tools/lib/bpf/libbpf.c                             |  56 ++---
+ tools/testing/selftests/bpf/.gitignore             |   1 +
+ tools/testing/selftests/bpf/Makefile               |   3 +-
+ tools/testing/selftests/bpf/prog_tests/align.c     | 218 +++++++++----------
+ tools/testing/selftests/bpf/prog_tests/atomics.c   |  91 ++------
+ tools/testing/selftests/bpf/prog_tests/btf_dump.c  |  54 +++--
+ .../testing/selftests/bpf/prog_tests/core_reloc.c  |  17 +-
+ tools/testing/selftests/bpf/prog_tests/log_buf.c   |   4 +-
+ tools/testing/selftests/bpf/progs/atomics.c        |  28 +--
+ tools/testing/selftests/bpf/test_cpp.cpp           |   3 +
+ .../selftests/bpf/verifier/atomic_invalid.c        |   6 +-
+ tools/testing/selftests/bpf/verifier/bounds.c      |   4 +-
+ tools/testing/selftests/bpf/verifier/calls.c       |  25 ++-
+ tools/testing/selftests/bpf/verifier/ctx.c         |   4 +-
+ .../selftests/bpf/verifier/direct_packet_access.c  |   2 +-
+ .../selftests/bpf/verifier/helper_access_var_len.c |   6 +-
+ tools/testing/selftests/bpf/verifier/jmp32.c       |  16 +-
+ tools/testing/selftests/bpf/verifier/precise.c     |   4 +-
+ tools/testing/selftests/bpf/verifier/raw_stack.c   |   4 +-
+ .../testing/selftests/bpf/verifier/ref_tracking.c  |   6 +-
+ .../selftests/bpf/verifier/search_pruning.c        |   2 +-
+ tools/testing/selftests/bpf/verifier/sock.c        |   2 +-
+ tools/testing/selftests/bpf/verifier/spill_fill.c  |  38 ++--
+ tools/testing/selftests/bpf/verifier/unpriv.c      |   4 +-
+ .../selftests/bpf/verifier/value_illegal_alu.c     |   4 +-
+ .../selftests/bpf/verifier/value_ptr_arith.c       |   4 +-
+ tools/testing/selftests/bpf/verifier/var_off.c     |   2 +-
+ 59 files changed, 1038 insertions(+), 473 deletions(-)
