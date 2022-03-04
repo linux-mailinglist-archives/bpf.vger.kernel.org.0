@@ -2,155 +2,223 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3929A4CDCD2
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 19:41:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C2B4CDCDB
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 19:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237792AbiCDSmI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 13:42:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51054 "EHLO
+        id S229834AbiCDSoS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Mar 2022 13:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbiCDSmG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 13:42:06 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717951C887D;
-        Fri,  4 Mar 2022 10:41:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 24488B82AB6;
-        Fri,  4 Mar 2022 18:41:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A04BC340E9;
-        Fri,  4 Mar 2022 18:41:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1646419275;
-        bh=uxk8jrltaI2bVraUdYKTkU9k+XFyK/OnzyDp1sbSgVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sUcs4WgIH6R+ZZEPQK4UoiWMqAYIJXAgGfqZAYzJonteRITY92L2DwiOF7rRyQlBD
-         1Be95H+zW+ls6ErzlcclmLSqlGkxyNnGFyzfUrue1pFJDJRfHNJXSoPH4Y+A6Ikhyf
-         7+O0Lpanus/sCgGHDKahstBt0GzMjFzZc2zlHvz8=
-Date:   Fri, 4 Mar 2022 19:41:09 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 12/28] bpf/hid: add hid_{get|set}_data helpers
-Message-ID: <YiJdRQxYzfncfTR5@kroah.com>
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-13-benjamin.tissoires@redhat.com>
+        with ESMTP id S231433AbiCDSoR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 13:44:17 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C7A71C92
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 10:43:28 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 224HQP7I015590
+        for <bpf@vger.kernel.org>; Fri, 4 Mar 2022 10:43:28 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ek4jkq8eh-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 10:43:28 -0800
+Received: from twshared33837.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 4 Mar 2022 10:43:27 -0800
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 88A3E19D6D6E; Fri,  4 Mar 2022 10:43:22 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <edumazet@google.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH bpf-next] bpf: select proper size for bpf_prog_pack
+Date:   Fri, 4 Mar 2022 10:43:20 -0800
+Message-ID: <20220304184320.3424748-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220304172852.274126-13-benjamin.tissoires@redhat.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_RED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: -rWTkNOOhNBUgQ5ZtCc8SqglEwXxl--p
+X-Proofpoint-ORIG-GUID: -rWTkNOOhNBUgQ5ZtCc8SqglEwXxl--p
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-04_08,2022-03-04_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
+ mlxlogscore=823 clxscore=1034 priorityscore=1501 adultscore=0 phishscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203040093
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 06:28:36PM +0100, Benjamin Tissoires wrote:
-> When we process an incoming HID report, it is common to have to account
-> for fields that are not aligned in the report. HID is using 2 helpers
-> hid_field_extract() and implement() to pick up any data at any offset
-> within the report.
-> 
-> Export those 2 helpers in BPF programs so users can also rely on them.
-> The second net worth advantage of those helpers is that now we can
-> fetch data anywhere in the report without knowing at compile time the
-> location of it. The boundary checks are done in hid-bpf.c, to prevent
-> a memory leak.
-> 
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> 
-> ---
-> 
-> changes in v2:
-> - split the patch with libbpf and HID left outside.
-> ---
->  include/linux/bpf-hid.h        |  4 +++
->  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++++
->  kernel/bpf/hid.c               | 53 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++++
->  4 files changed, 121 insertions(+)
-> 
-> diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
-> index 0c5000b28b20..69bb28523ceb 100644
-> --- a/include/linux/bpf-hid.h
-> +++ b/include/linux/bpf-hid.h
-> @@ -93,6 +93,10 @@ struct bpf_hid_hooks {
->  	int (*link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
->  	void (*link_attached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
->  	void (*array_detached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> +	int (*hid_get_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> +			    u64 offset, u32 n, u8 *data, u64 data_size);
-> +	int (*hid_set_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> +			    u64 offset, u32 n, u8 *data, u64 data_size);
->  };
->  
->  #ifdef CONFIG_BPF
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index a7a8d9cfcf24..4845a20e6f96 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5090,6 +5090,36 @@ union bpf_attr {
->   *	Return
->   *		0 on success, or a negative error in case of failure. On error
->   *		*dst* buffer is zeroed out.
-> + *
-> + * int bpf_hid_get_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> + *	Description
-> + *		Get the data of size n (in bits) at the given offset (bits) in the
-> + *		ctx->event.data field and store it into data.
-> + *
-> + *		if n is less or equal than 32, we can address with bit precision,
-> + *		the value in the buffer. However, data must be a pointer to a u32
-> + *		and size must be 4.
-> + *
-> + *		if n is greater than 32, offset and n must be a multiple of 8
-> + *		and the result is working with a memcpy internally.
-> + *	Return
-> + *		The length of data copied into data. On error, a negative value
-> + *		is returned.
-> + *
-> + * int bpf_hid_set_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> + *	Description
-> + *		Set the data of size n (in bits) at the given offset (bits) in the
-> + *		ctx->event.data field.
-> + *
-> + *		if n is less or equal than 32, we can address with bit precision,
-> + *		the value in the buffer. However, data must be a pointer to a u32
-> + *		and size must be 4.
-> + *
-> + *		if n is greater than 32, offset and n must be a multiple of 8
-> + *		and the result is working with a memcpy internally.
-> + *	Return
-> + *		The length of data copied into ctx->event.data. On error, a negative
-> + *		value is returned.
+Using HPAGE_PMD_SIZE as the size for bpf_prog_pack is not ideal in some
+cases. Specifically, for NUMA systems, __vmalloc_node_range requires
+PMD_SIZE * num_online_nodes() to allocate huge pages. Also, if the system
+does not support huge pages (i.e., with cmdline option nohugevmalloc), it
+is better to use PAGE_SIZE packs.
 
-Wait, nevermind my reviewed-by previously, see my comment about how this
-might be split into 4:
-	bpf_hid_set_bytes()
-	bpf_hid_get_bytes()
-	bpf_hid_set_bits()
-	bpf_hid_get_bits()
+Add logic to select proper size for bpf_prog_pack. This solution is not
+ideal, as it makes assumption about the behavior of module_alloc and
+__vmalloc_node_range. However, it appears to be the easiest solution as
+it doesn't require changes in module_alloc and vmalloc code.
 
-Should be easier to understand and maintain over time, right?
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ kernel/bpf/core.c | 66 +++++++++++++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 22 deletions(-)
 
-thanks,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ab630f773ec1..957b198364eb 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -33,6 +33,7 @@
+ #include <linux/extable.h>
+ #include <linux/log2.h>
+ #include <linux/bpf_verifier.h>
++#include <linux/nodemask.h>
+ 
+ #include <asm/barrier.h>
+ #include <asm/unaligned.h>
+@@ -814,15 +815,9 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+  * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+  * to host BPF programs.
+  */
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+-#else
+-#define BPF_PROG_PACK_SIZE	PAGE_SIZE
+-#endif
+ #define BPF_PROG_CHUNK_SHIFT	6
+ #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+ #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+-#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+ 
+ struct bpf_prog_pack {
+ 	struct list_head list;
+@@ -830,30 +825,57 @@ struct bpf_prog_pack {
+ 	unsigned long bitmap[];
+ };
+ 
+-#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
+ #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+ 
++static size_t bpf_prog_pack_size = -1;
++
++static inline int bpf_prog_chunk_count(void)
++{
++	WARN_ON_ONCE(bpf_prog_pack_size == -1);
++	return bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE;
++}
++
+ static DEFINE_MUTEX(pack_mutex);
+ static LIST_HEAD(pack_list);
+ 
+ static struct bpf_prog_pack *alloc_new_pack(void)
+ {
+ 	struct bpf_prog_pack *pack;
++	size_t size;
++	void *ptr;
+ 
+-	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
+-	if (!pack)
++	if (bpf_prog_pack_size == -1) {
++		/* Test whether we can get huge pages. If not just use
++		 * PAGE_SIZE packs.
++		 */
++		size = PMD_SIZE * num_online_nodes();
++		ptr = module_alloc(size);
++		if (ptr && is_vm_area_hugepages(ptr)) {
++			bpf_prog_pack_size = size;
++			goto got_ptr;
++		} else {
++			bpf_prog_pack_size = PAGE_SIZE;
++			vfree(ptr);
++		}
++	}
++
++	ptr = module_alloc(bpf_prog_pack_size);
++	if (!ptr)
+ 		return NULL;
+-	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
+-	if (!pack->ptr) {
+-		kfree(pack);
++got_ptr:
++	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(bpf_prog_chunk_count())),
++		       GFP_KERNEL);
++	if (!pack) {
++		vfree(ptr);
+ 		return NULL;
+ 	}
+-	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
++	pack->ptr = ptr;
++	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+ 	set_vm_flush_reset_perms(pack->ptr);
+-	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+-	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
++	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 	return pack;
+ }
+ 
+@@ -864,7 +886,7 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	unsigned long pos;
+ 	void *ptr = NULL;
+ 
+-	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (size > bpf_prog_pack_size) {
+ 		size = round_up(size, PAGE_SIZE);
+ 		ptr = module_alloc(size);
+ 		if (ptr) {
+@@ -876,9 +898,9 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	}
+ 	mutex_lock(&pack_mutex);
+ 	list_for_each_entry(pack, &pack_list, list) {
+-		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
++		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
+ 						 nbits, 0);
+-		if (pos < BPF_PROG_CHUNK_COUNT)
++		if (pos < bpf_prog_chunk_count())
+ 			goto found_free_area;
+ 	}
+ 
+@@ -904,12 +926,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	unsigned long pos;
+ 	void *pack_ptr;
+ 
+-	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (hdr->size > bpf_prog_pack_size) {
+ 		module_memfree(hdr);
+ 		return;
+ 	}
+ 
+-	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
++	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size - 1));
+ 	mutex_lock(&pack_mutex);
+ 
+ 	list_for_each_entry(tmp, &pack_list, list) {
+@@ -926,8 +948,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+ 
+ 	bitmap_clear(pack->bitmap, pos, nbits);
+-	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+-				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
++	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
++				       bpf_prog_chunk_count(), 0) == 0) {
+ 		list_del(&pack->list);
+ 		module_memfree(pack->ptr);
+ 		kfree(pack);
+-- 
+2.30.2
 
-greg k-h
