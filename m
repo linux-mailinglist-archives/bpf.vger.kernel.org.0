@@ -2,61 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3034CD446
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 13:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 822CD4CD64E
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 15:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbiCDMbC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 07:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
+        id S239844AbiCDO2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 09:28:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbiCDMbC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 07:31:02 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330711B2ADB;
-        Fri,  4 Mar 2022 04:30:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DB251B8288E;
-        Fri,  4 Mar 2022 12:30:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8F6C5C340E9;
-        Fri,  4 Mar 2022 12:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646397011;
-        bh=QA8RCFymaLyeZeKiUg1NVuIP/Pi6PirolXYtEgX5gjY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lwWrslfh9fx+fLjOIhOy0o32JPUMw7IrLXbPnbKIHh9w4pYAfVdCYawxM5AOD65Jn
-         UiwH/K3Oy6UInVx6dgnqJun1slSvmzlCsBEW4qseaI3MrIPn68RGKBUcb4448JZt0N
-         wL4aY79C7XDW/2uOSOEDBzslPIGtwDRXAwn0hB6qcKmTFBmkrsT5Wu0YOLbbxXIVni
-         RLFvLIy6z5UEIaN3p2xupH0EQpXZ451VcTDidvz91oRDsom257h7Xc6bxtGLG+AkOn
-         lai2y34Pq9J7t3P8NV6Qt1PpslJeH1C4s0WH6HRobuR02mjZTBDuCVVAguBH2C6END
-         Xl2hn9oeAahpw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 727E4E6D4BB;
-        Fri,  4 Mar 2022 12:30:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S239834AbiCDO15 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 09:27:57 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4DE1BAF25;
+        Fri,  4 Mar 2022 06:27:08 -0800 (PST)
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nQ8tR-000Foa-Vf; Fri, 04 Mar 2022 15:26:54 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     torvalds@linux-foundation.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Willy Tarreau <w@1wt.eu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: [PATCH] mm: Consider __GFP_NOWARN flag for oversized kvmalloc() calls
+Date:   Fri,  4 Mar 2022 15:26:32 +0100
+Message-Id: <8a99a175d25f4bcce6b78cee8fa536e40b987b0a.1646403182.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/7] net: dev: add skb drop reasons to
- net/core/dev.c
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164639701146.17360.7146529640103224533.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Mar 2022 12:30:11 +0000
-References: <20220304060046.115414-1-imagedong@tencent.com>
-In-Reply-To: <20220304060046.115414-1-imagedong@tencent.com>
-To:     Menglong Dong <menglong8.dong@gmail.com>
-Cc:     dsahern@kernel.org, kuba@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, davem@davemloft.net, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        imagedong@tencent.com, edumazet@google.com, talalahmad@google.com,
-        keescook@chromium.org, ilias.apalodimas@linaro.org, alobakin@pm.me,
-        flyingpeng@tencent.com, mengensun@tencent.com, atenart@kernel.org,
-        bigeasy@linutronix.de, memxor@gmail.com, arnd@arndb.de,
-        pabeni@redhat.com, willemb@google.com, vvs@virtuozzo.com,
-        cong.wang@bytedance.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26471/Fri Mar  4 10:24:47 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -65,40 +51,103 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+syzkaller was recently triggering an oversized kvmalloc() warning via
+xdp_umem_create().
 
-This series was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+The triggered warning was added back in 7661809d493b ("mm: don't allow
+oversized kvmalloc() calls"). The rationale for the warning for huge
+kvmalloc sizes was as a reaction to a security bug where the size was
+more than UINT_MAX but not everything was prepared to handle unsigned
+long sizes.
 
-On Fri,  4 Mar 2022 14:00:39 +0800 you wrote:
-> From: Menglong Dong <imagedong@tencent.com>
-> 
-> In the commit c504e5c2f964 ("net: skb: introduce kfree_skb_reason()"),
-> we added the support of reporting the reasons of skb drops to kfree_skb
-> tracepoint. And in this series patches, reasons for skb drops are added
-> to the link layer, which means that 'net/core/dev.c' is our target.
-> 
-> [...]
+Anyway, the AF_XDP related call trace from this syzkaller report was:
 
-Here is the summary with links:
-  - [net-next,v2,1/7] net: dev: use kfree_skb_reason() for sch_handle_egress()
-    https://git.kernel.org/netdev/net-next/c/98b4d7a4e737
-  - [net-next,v2,2/7] net: skb: introduce the function kfree_skb_list_reason()
-    https://git.kernel.org/netdev/net-next/c/215b0f1963d4
-  - [net-next,v2,3/7] net: dev: add skb drop reasons to __dev_xmit_skb()
-    https://git.kernel.org/netdev/net-next/c/7faef0547f4c
-  - [net-next,v2,4/7] net: dev: use kfree_skb_reason() for enqueue_to_backlog()
-    https://git.kernel.org/netdev/net-next/c/44f0bd40803c
-  - [net-next,v2,5/7] net: dev: use kfree_skb_reason() for do_xdp_generic()
-    https://git.kernel.org/netdev/net-next/c/7e726ed81e1d
-  - [net-next,v2,6/7] net: dev: use kfree_skb_reason() for sch_handle_ingress()
-    https://git.kernel.org/netdev/net-next/c/a568aff26ac0
-  - [net-next,v2,7/7] net: dev: use kfree_skb_reason() for __netif_receive_skb_core()
-    https://git.kernel.org/netdev/net-next/c/6c2728b7c141
+  kvmalloc include/linux/mm.h:806 [inline]
+  kvmalloc_array include/linux/mm.h:824 [inline]
+  kvcalloc include/linux/mm.h:829 [inline]
+  xdp_umem_pin_pages net/xdp/xdp_umem.c:102 [inline]
+  xdp_umem_reg net/xdp/xdp_umem.c:219 [inline]
+  xdp_umem_create+0x6a5/0xf00 net/xdp/xdp_umem.c:252
+  xsk_setsockopt+0x604/0x790 net/xdp/xsk.c:1068
+  __sys_setsockopt+0x1fd/0x4e0 net/socket.c:2176
+  __do_sys_setsockopt net/socket.c:2187 [inline]
+  __se_sys_setsockopt net/socket.c:2184 [inline]
+  __x64_sys_setsockopt+0xb5/0x150 net/socket.c:2184
+  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-You are awesome, thank you!
+Björn mentioned that requests for >2GB allocation can still be valid:
+
+  The structure that is being allocated is the page-pinning accounting.
+  AF_XDP has an internal limit of U32_MAX pages, which is *a lot*, but
+  still fewer than what memcg allows (PAGE_COUNTER_MAX is a LONG_MAX/
+  PAGE_SIZE on 64 bit systems). [...]
+
+  I could just change from U32_MAX to INT_MAX, but as I stated earlier
+  that has a hacky feeling to it. [...] From my perspective, the code
+  isn't broken, with the memcg limits in consideration. [...]
+
+Linus says:
+
+  [...] Pretty much every time this has come up, the kernel warning has
+  shown that yes, the code was broken and there really wasn't a reason
+  for doing allocations that big.
+
+  Of course, some people would be perfectly fine with the allocation
+  failing, they just don't want the warning. I didn't want __GFP_NOWARN
+  to shut it up originally because I wanted people to see all those
+  cases, but these days I think we can just say "yeah, people can shut
+  it up explicitly by saying 'go ahead and fail this allocation, don't
+  warn about it'".
+
+  So enough time has passed that by now I'd certainly be ok with [it].
+
+Thus allow call-sites to silence such userspace triggered splats if the
+allocation requests have __GFP_NOWARN. For xdp_umem_pin_pages()'s call
+to kvcalloc() this is already the case, so nothing else needed there.
+
+Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+Reported-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: syzbot+11421fbbff99b989670e@syzkaller.appspotmail.com
+Cc: Björn Töpel <bjorn@kernel.org>
+Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+Cc: Willy Tarreau <w@1wt.eu>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/bpf/CAJ+HfNhyfsT5cS_U9EC213ducHs9k9zNxX9+abqC0kTrPbQ0gg@mail.gmail.com
+Link: https://lore.kernel.org/bpf/20211201202905.b9892171e3f5b9a60f9da251@linux-foundation.org
+---
+ [ Hi Linus, just to follow-up on the discussion from here [0], I've cooked
+   up proper and tested patch. Feel free to take it directly to your tree if
+   you prefer, or we could also either route it via bpf or mm, whichever way
+   is best. Thanks!
+   [0] https://lore.kernel.org/bpf/CAHk-=wiRq+_jd_O1gz3J6-ANtXMY7iLpi8XFUcmtB3rBixvUXQ@mail.gmail.com/ ]
+
+ mm/util.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/util.c b/mm/util.c
+index 7e43369064c8..d3102081add0 100644
+--- a/mm/util.c
++++ b/mm/util.c
+@@ -587,8 +587,10 @@ void *kvmalloc_node(size_t size, gfp_t flags, int node)
+ 		return ret;
+ 
+ 	/* Don't even allow crazy sizes */
+-	if (WARN_ON_ONCE(size > INT_MAX))
++	if (unlikely(size > INT_MAX)) {
++		WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+ 		return NULL;
++	}
+ 
+ 	return __vmalloc_node(size, 1, flags, node,
+ 			__builtin_return_address(0));
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.21.0
 
