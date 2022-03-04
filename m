@@ -2,65 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DE84CE060
-	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 23:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BC24CE061
+	for <lists+bpf@lfdr.de>; Fri,  4 Mar 2022 23:46:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbiCDWrm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 17:47:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55410 "EHLO
+        id S230041AbiCDWro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 17:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbiCDWrl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 17:47:41 -0500
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BEA5FF35
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 14:46:52 -0800 (PST)
-Received: by mail-pj1-x1042.google.com with SMTP id cx5so8498426pjb.1
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 14:46:52 -0800 (PST)
+        with ESMTP id S229605AbiCDWrn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 17:47:43 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 966575FF35
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 14:46:55 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id s11so8757850pfu.13
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 14:46:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fuhtxbd6qplhvsoEWtRGbE1XBkjpmIPLEyl/Yh0auqA=;
-        b=JctYWYBIIqpGv8/i/kGUrcgOP76TkuvBtdGq+pmF8NNlaHstt//2wTpYPUvjKMH1UM
-         kW+AX6tegasUbmAz7a4UR7M8xgW+l6LzTm8jQ2mrOIeaNWCXEXULSE18FNVqEoBHfoKC
-         8gw0EEqSlAkAs4/dgVJokFJOdIobzem7FaAecMsfEoK9rZltYB8zohYqx0Y8Fp1uNbn0
-         zfpZz1mwlzQ/QHu3Nk5+ukgVM4UTCmNvtzLVuV6OZ7opBLo9jokTqf7tN4dZSkv62UYN
-         32/Z7qh44TQIQVA/JkSUtkpH5Qkpy9PHMIQUtDZZJvmlha+fW+4k9uW33J3Hbknkmyhh
-         4cyA==
+        bh=OcePxdVil0j2Y0EYMcgPWL10sT920XMS2ub3RyNr3OY=;
+        b=Niho66qpXCHXBysu79m46rK/5PN4Vs4wg5T6Jdtmea67cxAMNUcf5hygcJKvYYE2P1
+         WWrkWpafSTnFkGZbZMXZdmTx5rkrw8OgVOLD04Xr7VJ0dakwrIsZw2D60KzdbiR3GZ5R
+         0hwpIuyCx6LRXBi9ajTMip7P71XdatKxAS7ekC9vpHTN4rO7pqObJSM58sZCxgC7zG6F
+         qM0LnMgl/PMOww+BpIJ7y5G22hiLhXefvw+HwUE0lmij1NRBAx/rqC9osEiu1xsI+xWO
+         yAx63SpvD/yYzXeOZJhZc7f4YTmzHqx4y5veCbEhPBVBk6r8qfDZqfC5IIcSxsuccqJU
+         d+kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fuhtxbd6qplhvsoEWtRGbE1XBkjpmIPLEyl/Yh0auqA=;
-        b=mN8yfj57nTQsnPqVIPleZ7b1CkjA7cTFXvW51I/uVA9OU96mKHjE4a1FMbgd6lqbiX
-         HKtMLTC48KB6mKwWT1hRw5K5JyXXeuDSC8WYXbDxwiUIm616/nPyOTmsifDOsIksLPt2
-         4Po8lPvs1yme+Kn6r61iOgQi0uWbTEXEtNVnWFFtTh2jOVF0nKtEl/CYOUmFfI1Gl71e
-         1rsE6/3aEt83SUBRQRzvz1livB4mXpXUMuyzH7lG6ZZUD2ff5dKIfv9l2gUEzVDNBf/S
-         apsjvUueZHYuwcHtVCjDcE4nksmzwtbYNOquEiJ5d4uZSsXti2ggy1MqkgGWaWpaPBEc
-         ijGA==
-X-Gm-Message-State: AOAM533jJ8hX9x2Idk97b3dgmS241Z1maKzy2/eqVCSm9B8SpNC0RxoQ
-        WgeTK+HrX4xgT4AnuExHWivFpaznTGo=
-X-Google-Smtp-Source: ABdhPJworUO7z5Zxd3Zixf1GoljjnDCLA7K4NlTTE4gf6uyw98BEMhSzI6wKXI8VySlPPrFrskONjw==
-X-Received: by 2002:a17:903:230e:b0:151:cf0d:a959 with SMTP id d14-20020a170903230e00b00151cf0da959mr249622plh.139.1646434011941;
-        Fri, 04 Mar 2022 14:46:51 -0800 (PST)
+        bh=OcePxdVil0j2Y0EYMcgPWL10sT920XMS2ub3RyNr3OY=;
+        b=ZdFmMOUlA/76Shr9I9PFt8aBnpoQ8XLMwaVbWArjDvxgmxdrzWBLFJ+9RdJlC7I009
+         Cl4us9K7VU6rdjpP9IUMRgneTIBvpqsynvHsXXHdQGL0rDyqJVVzOAsP4B6+lbQiqQdc
+         KoieAlezuUnr061MmIPVqed+gCSkOckkuKFOnHUSVxYp4z13Gy/6b1b9H+5XRgvWzMWY
+         /fYjVSX4E95PTExZ6T0VghVDdwCU80qByD292Kjc7SYf+dXbAc/jDAHp6WmnE1IxWhiW
+         Umz+m346HXcrYNjXGKNmZ2vlAy8doPHVKkisFf9zBcWFz7ClXxn2bmXBzwdy2bGIkObv
+         FYug==
+X-Gm-Message-State: AOAM532zenH1HFOn8wNxzs1Y0zYvUCgUc6H8yj+QTtzaEM2JcEd8wja7
+        +TczWynDjUsEf+GDsROF/uH0RSFA8ks=
+X-Google-Smtp-Source: ABdhPJx193uyftJ7DHuzAHhcH4Syxz2Lpd3BC9OO7aJgcyeO/dgL9X4Cyi0tKUwu7Gn+FCdNGYYN5Q==
+X-Received: by 2002:a05:6a00:22cc:b0:4e0:58dc:e489 with SMTP id f12-20020a056a0022cc00b004e058dce489mr963066pfj.58.1646434014969;
+        Fri, 04 Mar 2022 14:46:54 -0800 (PST)
 Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id k12-20020a635a4c000000b0037852b86236sm5224453pgm.75.2022.03.04.14.46.51
+        by smtp.gmail.com with ESMTPSA id n22-20020a056a0007d600b004f3ba7c23e2sm6941818pfu.37.2022.03.04.14.46.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Mar 2022 14:46:51 -0800 (PST)
+        Fri, 04 Mar 2022 14:46:54 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf-next v4 1/8] bpf: Add check_func_arg_reg_off function
-Date:   Sat,  5 Mar 2022 04:16:38 +0530
-Message-Id: <20220304224645.3677453-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v4 2/8] bpf: Fix PTR_TO_BTF_ID var_off check
+Date:   Sat,  5 Mar 2022 04:16:39 +0530
+Message-Id: <20220304224645.3677453-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220304224645.3677453-1-memxor@gmail.com>
 References: <20220304224645.3677453-1-memxor@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3788; h=from:subject; bh=LOHvAtVPEoEg5hYwocIYDuuQfOkN+wepUOXlJyzeQUA=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiIpasZ7Fmns/+T8RGgAnvKVvOxaQ2peEd7EQFea6O SROPgF6JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiKWrAAKCRBM4MiGSL8RyqHED/ 9xrRjKA78ReRF1bvDsSP5U+4mUBPvXI+vkP/lMKoHa8ANtBoBmCJpTbyYG1GmNsha3hB4sy0J97ZAd xEW5pCvqaJEBraw3P78j1nSQZ1BDGF5agKogVjOq6vC9sC+VsaGqtlEuw/7BnV+OgCGwGN4vFSylBO ndi7rnswL/8SjNp0RppthCN/zDuEELugNn2Lzc39i/H7cS8f0bftFe8AMwfwmbreJbw1FNYSboEuL9 Bv5x8Z08Ulc/RGN4g/ouY+QikHZ8M7UxY7YeelN9nIzBS+jNw0GM3NgAr0IdbR/3M2+SpgyJ98L9ly u9tMwQ5GcbScF11NDJk2Epk4DmwVezgkaw+Y7ZqDpNwEwmE1LU3uWvW803yQ3BpJ1CulskOewHgK8s DeAKYVp8fTLVDQRyHiX/KtqGgT0JmmkhoXoPnJIwZw/+dA3HnBglei9eFzzMfppn2TaKqRkC663fSg OeZiBI9ufsdtBcD2kQKbSiFRTsfv3jXXXCrX57QyhgvpW3pf8V0XjwiYL1n0o3oVVkvPeBza1wbSH8 JIr8n7PlGqy36ydQ9CVa1GMvfAkQ6Ywk7K3FM6PJpelA9z09b2QY4fO6FmKSJAbdBTmY+ie5w0YHet nJhXL/OaA5lfP1+HK2QfLQiUWi5o/BzM0wvXsUWVmPqWZXoRr4lySwLhd+Dw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3141; h=from:subject; bh=6O/7bE9Cyl1Q+aBejwnyFc0HIYcck0DgiMjjeMgU0Ns=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiIpas/KGjWYQoDvpihEw7sVUZ14iQ8LRSclbsQ3t2 Ew6pM82JAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiKWrAAKCRBM4MiGSL8RymS1D/ 0VVGKOOzWk7Gn2+zi5IvY1stjuHZ4HcGnsncT/1+9D5zM1GB7Xqs1wtzlrL1iFtgyYvQJ12RdfxcXW Mglv9Uv6llDYxjjdU5bUcnhxWEIYEVb4O7arN6LJFCY0Zz4xcku2NQM+TxbX/g/7vIqkZ0MB5R4/Fu FrykVxD051J18Goa6ECh8EsQADbJ1NeMMAkS0e/vs6F41zKuGsq8IQRQBzqHEiGztUq/HdFM04uJFa mxpiMDiVJC+J6Haic0iOKxlm6cRX+SBC6AEp6cr8sh/gyF/0it9XFIS92hHyCwQUoUkB58IqmPAdRw hRK4278ggkyElnppCp0wWwHrKcw7MohZAzq24h3MLbx5128ppOVqzoxAH2TmEHp2i4zW3zvzAqD7u3 WIF4DwxEioqdKvGSueLAOfbubN0mMV3LKat8fOh2sQTZgUw/w62lBzsAbVYcnF+YHRrx08uqAeR50E +XCneuAU43Dkl60+GJVwJk9/FF9EcvYQM74Ta1RW3ZPgUrICOYjTZz07qyLvuredkYvLg/iimWupQz rKjgqhsF0pd4b83O7vcoDBHCCdFccj0NexVBLQblOakfzzkXD2f0pt48qGBXDEgg333NAgBgYSXAHS nyjDHMiyZHK5U8HIWkxh12ztyDqBFLxrbuvE/umv7Ml2ySedpsnTY8Q7aA/A==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -73,120 +73,75 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lift the list of register types allowed for having fixed and variable
-offsets when passed as helper function arguments into a common helper,
-so that they can be reused for kfunc checks in later commits. Keeping a
-common helper aids maintainability and allows us to follow the same
-consistent rules across helpers and kfuncs. Also, convert check_func_arg
-to use this function.
+When kfunc support was added, check_ctx_reg was called for PTR_TO_CTX
+register, but no offset checks were made for PTR_TO_BTF_ID. Only
+reg->off was taken into account by btf_struct_ids_match, which protected
+against type mismatch due to non-zero reg->off, but when reg->off was
+zero, a user could set the variable offset of the register and allow it
+to be passed to kfunc, leading to bad pointer being passed into the
+kernel.
 
+Fix this by reusing the extracted helper check_func_arg_reg_off from
+previous commit, and make one call before checking all supported
+register types. Since the list is maintained, any future changes will be
+taken into account by updating check_func_arg_reg_off. This function
+prevents non-zero var_off to be set for PTR_TO_BTF_ID, but still allows
+a fixed non-zero reg->off, which is needed for type matching to work
+correctly when using pointer arithmetic.
+
+ARG_DONTCARE is passed as arg_type, since kfunc doesn't support
+accepting a ARG_PTR_TO_ALLOC_MEM without relying on size of parameter
+type from BTF (in case of pointer), or using a mem, len pair. The
+forcing of offset check for ARG_PTR_TO_ALLOC_MEM is done because ringbuf
+helpers obtain the size from the header located at the beginning of the
+memory region, hence any changes to the original pointer shouldn't be
+allowed. In case of kfunc, size is always known, either at verification
+time, or using the length parameter, hence this forcing is not required.
+
+Since this check will happen once already for PTR_TO_CTX, remove the
+check_ptr_off_reg call inside its block.
+
+Cc: Martin KaFai Lau <kafai@fb.com>
+Fixes: e6ac2450d6de ("bpf: Support bpf program calling kernel function")
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- include/linux/bpf_verifier.h |  3 ++
- kernel/bpf/verifier.c        | 69 +++++++++++++++++++++---------------
- 2 files changed, 44 insertions(+), 28 deletions(-)
+ kernel/bpf/btf.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 7a7be8c057f2..38b24ee8d8c2 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -521,6 +521,9 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt);
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index b472cf0c8fdb..7f6a0ae5028b 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -5726,7 +5726,7 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 	const char *func_name, *ref_tname;
+ 	const struct btf_type *t, *ref_t;
+ 	const struct btf_param *args;
+-	int ref_regno = 0;
++	int ref_regno = 0, ret;
+ 	bool rel = false;
  
- int check_ptr_off_reg(struct bpf_verifier_env *env,
- 		      const struct bpf_reg_state *reg, int regno);
-+int check_func_arg_reg_off(struct bpf_verifier_env *env,
-+			   const struct bpf_reg_state *reg, int regno,
-+			   enum bpf_arg_type arg_type);
- int check_kfunc_mem_size_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
- 			     u32 regno);
- int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index a57db4b2803c..e37eb6020253 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5359,6 +5359,44 @@ static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
- 	return 0;
- }
+ 	t = btf_type_by_id(btf, func_id);
+@@ -5776,6 +5776,11 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
  
-+int check_func_arg_reg_off(struct bpf_verifier_env *env,
-+			   const struct bpf_reg_state *reg, int regno,
-+			   enum bpf_arg_type arg_type)
-+{
-+	enum bpf_reg_type type = reg->type;
-+	bool fixed_off_ok = false;
+ 		ref_t = btf_type_skip_modifiers(btf, t->type, &ref_id);
+ 		ref_tname = btf_name_by_offset(btf, ref_t->name_off);
 +
-+	switch ((u32)type) {
-+	case SCALAR_VALUE:
-+	/* Pointer types where reg offset is explicitly allowed: */
-+	case PTR_TO_PACKET:
-+	case PTR_TO_PACKET_META:
-+	case PTR_TO_MAP_KEY:
-+	case PTR_TO_MAP_VALUE:
-+	case PTR_TO_MEM:
-+	case PTR_TO_MEM | MEM_RDONLY:
-+	case PTR_TO_MEM | MEM_ALLOC:
-+	case PTR_TO_BUF:
-+	case PTR_TO_BUF | MEM_RDONLY:
-+	case PTR_TO_STACK:
-+		/* Some of the argument types nevertheless require a
-+		 * zero register offset.
-+		 */
-+		if (arg_type != ARG_PTR_TO_ALLOC_MEM)
-+			return 0;
-+		break;
-+	/* All the rest must be rejected, except PTR_TO_BTF_ID which allows
-+	 * fixed offset.
-+	 */
-+	case PTR_TO_BTF_ID:
-+		fixed_off_ok = true;
-+		break;
-+	default:
-+		break;
-+	}
-+	return __check_ptr_off_reg(env, reg, regno, fixed_off_ok);
-+}
++		ret = check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
++		if (ret < 0)
++			return ret;
 +
- static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			  struct bpf_call_arg_meta *meta,
- 			  const struct bpf_func_proto *fn)
-@@ -5408,34 +5446,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 	if (err)
- 		return err;
- 
--	switch ((u32)type) {
--	case SCALAR_VALUE:
--	/* Pointer types where reg offset is explicitly allowed: */
--	case PTR_TO_PACKET:
--	case PTR_TO_PACKET_META:
--	case PTR_TO_MAP_KEY:
--	case PTR_TO_MAP_VALUE:
--	case PTR_TO_MEM:
--	case PTR_TO_MEM | MEM_RDONLY:
--	case PTR_TO_MEM | MEM_ALLOC:
--	case PTR_TO_BUF:
--	case PTR_TO_BUF | MEM_RDONLY:
--	case PTR_TO_STACK:
--		/* Some of the argument types nevertheless require a
--		 * zero register offset.
--		 */
--		if (arg_type == ARG_PTR_TO_ALLOC_MEM)
--			goto force_off_check;
--		break;
--	/* All the rest must be rejected: */
--	default:
--force_off_check:
--		err = __check_ptr_off_reg(env, reg, regno,
--					  type == PTR_TO_BTF_ID);
--		if (err < 0)
--			return err;
--		break;
--	}
-+	err = check_func_arg_reg_off(env, reg, regno, arg_type);
-+	if (err)
-+		return err;
- 
- skip_type_check:
- 	if (reg->ref_obj_id) {
+ 		if (btf_get_prog_ctx_type(log, btf, t,
+ 					  env->prog->type, i)) {
+ 			/* If function expects ctx type in BTF check that caller
+@@ -5787,8 +5792,6 @@ static int btf_check_func_arg_match(struct bpf_verifier_env *env,
+ 					i, btf_type_str(t));
+ 				return -EINVAL;
+ 			}
+-			if (check_ptr_off_reg(env, reg, regno))
+-				return -EINVAL;
+ 		} else if (is_kfunc && (reg->type == PTR_TO_BTF_ID ||
+ 			   (reg2btf_ids[base_type(reg->type)] && !type_flag(reg->type)))) {
+ 			const struct btf_type *reg_ref_t;
 -- 
 2.35.1
 
