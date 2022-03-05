@@ -2,124 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9754CE624
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 17:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EAE4CE652
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 18:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbiCEQ6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Mar 2022 11:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S229581AbiCERvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Mar 2022 12:51:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbiCEQ6x (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Mar 2022 11:58:53 -0500
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5408E41FA9;
-        Sat,  5 Mar 2022 08:58:02 -0800 (PST)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 47BBB101CB3; Sat,  5 Mar 2022 16:58:00 +0000 (UTC)
-Date:   Sat, 5 Mar 2022 16:58:00 +0000
-From:   Sean Young <sean@mess.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Song Liu <song@kernel.org>, Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 01/28] bpf: add new is_sys_admin_prog_type()
- helper
-Message-ID: <YiOWmG2oARiYmRHr@gofer.mess.org>
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-2-benjamin.tissoires@redhat.com>
- <CAPhsuW4otgwwDN6+xcjPXmZyUDiynEKFtXjaFb-=kjz7HzUmZw@mail.gmail.com>
- <CAO-hwJJjDMaTXH9i1UkO7Qy+sbNprDyW67cRp8HryMMWMi5H9w@mail.gmail.com>
+        with ESMTP id S229517AbiCERvE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Mar 2022 12:51:04 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1500D214F92
+        for <bpf@vger.kernel.org>; Sat,  5 Mar 2022 09:50:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7ED74B800C1
+        for <bpf@vger.kernel.org>; Sat,  5 Mar 2022 17:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 17F97C340F0;
+        Sat,  5 Mar 2022 17:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646502611;
+        bh=+kswrFrRjyp4XTNLVOLYR6x1ivXx5zzR+J8uzgrgH/A=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Il/iuWwOFH/Sp6D8QxT/FqST6z1X5YqS2ETlUhKqtbf2IL8f9WYnDm5k4ARqKGGd3
+         Q6JttCtNpM3RP7lgs2nNwhPS9k4JT3VLgLFa2ZIi+Kfwnv9kQ0bpcTbWA50ohzN4qE
+         FKfLgOJ3rq4qoI3rBXXi5V33LPf84iKewryOEh6bz78rQqj+5eMx1q5N90MJH0Ximt
+         wgFk2wj5gnzHso2Xh/dhpHHDF8BtZaXMEf/6xf7EIz3BclPeaO1kcK74IeaIqns0nI
+         FMH8RkAHS3pok1Xuh7+SBxXyenj4hq+wxf3vMP9OoGb2vkzMVFHjA1+FaH+rmqJ0FC
+         AwOytdwcHNsug==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E4C8EF03839;
+        Sat,  5 Mar 2022 17:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO-hwJJjDMaTXH9i1UkO7Qy+sbNprDyW67cRp8HryMMWMi5H9w@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 bpf-next 0/3] libbpf: support custom SEC() handlers
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164650261093.19324.13192928606287006737.git-patchwork-notify@kernel.org>
+Date:   Sat, 05 Mar 2022 17:50:10 +0000
+References: <20220305010129.1549719-1-andrii@kernel.org>
+In-Reply-To: <20220305010129.1549719-1-andrii@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com, alan.maguire@oracle.com
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 05, 2022 at 11:07:04AM +0100, Benjamin Tissoires wrote:
-> On Sat, Mar 5, 2022 at 12:12 AM Song Liu <song@kernel.org> wrote:
-> >
-> > On Fri, Mar 4, 2022 at 9:30 AM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > > LIRC_MODE2 does not really need net_admin capability, but only sys_admin.
-> > >
-> > > Extract a new helper for it, it will be also used for the HID bpf
-> > > implementation.
-> > >
-> > > Cc: Sean Young <sean@mess.org>
-> > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > >
-> > > ---
-> > >
-> > > new in v2
-> > > ---
-> > >  kernel/bpf/syscall.c | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > index db402ebc5570..cc570891322b 100644
-> > > --- a/kernel/bpf/syscall.c
-> > > +++ b/kernel/bpf/syscall.c
-> > > @@ -2165,7 +2165,6 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
-> > >         case BPF_PROG_TYPE_LWT_SEG6LOCAL:
-> > >         case BPF_PROG_TYPE_SK_SKB:
-> > >         case BPF_PROG_TYPE_SK_MSG:
-> > > -       case BPF_PROG_TYPE_LIRC_MODE2:
-> > >         case BPF_PROG_TYPE_FLOW_DISSECTOR:
-> > >         case BPF_PROG_TYPE_CGROUP_DEVICE:
-> > >         case BPF_PROG_TYPE_CGROUP_SOCK:
-> > > @@ -2202,6 +2201,17 @@ static bool is_perfmon_prog_type(enum bpf_prog_type prog_type)
-> > >         }
-> > >  }
-> > >
-> > > +static bool is_sys_admin_prog_type(enum bpf_prog_type prog_type)
-> > > +{
-> > > +       switch (prog_type) {
-> > > +       case BPF_PROG_TYPE_LIRC_MODE2:
-> > > +       case BPF_PROG_TYPE_EXT: /* extends any prog */
-> > > +               return true;
-> > > +       default:
-> > > +               return false;
-> > > +       }
-> > > +}
-> >
-> > I am not sure whether we should do this. This is a behavior change, that may
-> > break some user space. Also, BPF_PROG_TYPE_EXT is checked in
-> > is_perfmon_prog_type(), and this change will make that case useless.
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri, 4 Mar 2022 17:01:26 -0800 you wrote:
+> Add ability for user applications and libraries to register custom BPF program
+> SEC() handlers. See patch #2 for examples where this is useful.
 > 
-> Sure, I can drop it from v3 and make this function appear for HID only.
+> Patch #1 does some preliminary refactoring to allow exponsing program
+> init, preload, and attach callbacks as public API. It also establishes
+> a protocol to allow optional auto-attach behavior. This will also help the
+> case of sometimes auto-attachable uprobes.
+> 
+> [...]
 
-For BPF_PROG_TYPE_LIRC_MODE2, I don't think this change will break userspace.
-This is called from ir-keytable(1) which is called from udev. It should have
-all the necessary permissions.
+Here is the summary with links:
+  - [v5,bpf-next,1/3] libbpf: allow BPF program auto-attach handlers to bail out
+    https://git.kernel.org/bpf/bpf-next/c/4fa5bcfe07f7
+  - [v5,bpf-next,2/3] libbpf: support custom SEC() handlers
+    https://git.kernel.org/bpf/bpf-next/c/697f104db8a6
+  - [v5,bpf-next,3/3] selftests/bpf: add custom SEC() handling selftest
+    https://git.kernel.org/bpf/bpf-next/c/aa963bcb0adc
 
-In addition, the vast majority IR decoders are non-bpf. bpf ir decoders have
-very few users at the moment.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I am working on completely new userspace tooling which will make extensive
-use of bpf ir decoding with full lircd and IRP compatibility, but this is not
-finished yet (see https://github.com/seanyoung/cir).
 
-Thanks
-
-Sean
