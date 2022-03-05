@@ -2,82 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85724CE292
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 05:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 410AF4CE408
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 10:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbiCEEM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 23:12:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        id S230217AbiCEJzm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Mar 2022 04:55:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230525AbiCEEMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 23:12:55 -0500
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3652158788
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 20:12:06 -0800 (PST)
-Received: by mail-il1-f197.google.com with SMTP id y11-20020a056e021beb00b002c3f8984f9eso6821110ilv.10
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 20:12:06 -0800 (PST)
+        with ESMTP id S230077AbiCEJzm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Mar 2022 04:55:42 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB09357143;
+        Sat,  5 Mar 2022 01:54:52 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id z8so6995414oix.3;
+        Sat, 05 Mar 2022 01:54:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nLa4Cpd6Xd8qLrAmRhbVrWhN1Lu5pmble/aRSf36KTE=;
+        b=CKhBgN8Od9ZbW7JxeJRyxUI27hWxrvhyWv3lj4zpjleUIxL/LxTr1VyHR9lgL6ia55
+         9M/xIDy3uP6t4/jsmMpPMw/FFP+0XSEHGuLRV3XuHJ/4hU80umxifaHhljXdQx6+NSA7
+         7cZTxxAyhjuiRnfvVrtztKtVyBg3PpQM8qDm1X0GwoN3pFZw41mHAtlwUOSD0qrADfRw
+         lyf3lZrhabJz/g2bowqISwAd/Lp5WU05d47Ki160GMIgXeDdqE+8obsm0NRF3PiYvNc8
+         OJ68zBTRFxa0ovXwR9yYCx2XOKhWY+vui5WUImVRpLUcqQV3oLCNiFh3/+mjz4rgov/u
+         qnXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=onw4IedYX5qQ+gs+/33tUPuWqMbo0NqLTtVJkCIiq2g=;
-        b=SxOOqcs0NCM1hejF9GCvglfIvOBty47kska4VuEL6G6TXrQo+UaRcrH/N32bx5WqLO
-         +Mw9i3IE6DcPm+jlgJwKo5MoC65SvNVYo/Dn7fnO/tN7ij0UZS0Cfo2HHh9xbACbq2DB
-         Xl47Us3192xJxGsTtVl1m6exLjXe+APztLuM9aDFwmJ+kCR7s7EjePVL2lb6tfB+sfop
-         AvVuHkSrSZcxYTzgBfWElI9T7KImuYudBiEC/veSfSP/K5XYu9jDhQa7zfThwNzlqbES
-         Z3QXV0MrtD69FZ3g/SMqzBsS8TBo7rwd0LGB8J9Rp2wL5EGFcJUvv4m71s73qbkesqaG
-         t0lA==
-X-Gm-Message-State: AOAM531IbBKpxWgS1rpaG0uod6iBsxLErtEpX7koYro+nCf3j3xxG/iB
-        dXk6CSEwp9RbitcgcYpwuoP+c/AKltXJg/N8KDibibaVTmWA
-X-Google-Smtp-Source: ABdhPJzOBwKReV3RereJZlHH5ZjtC5jwfknmMso75kx0/qkY3OMmwZ+dbVFJ25ESSnLpfhjnoGRcvzf6EVGbNodG6+8WXvw/FBWI
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nLa4Cpd6Xd8qLrAmRhbVrWhN1Lu5pmble/aRSf36KTE=;
+        b=m7laIspBloAXE4zkjlHtsk5g8x0r91/o4n2ajwUSmLDMndwxxNIi9gm3RBEJETYGk2
+         lXV/mPIl541Se11x9O918mFe6TYMEz4qNxTd26hpWG7UPJJF9btE2JBlwQzvhJTRIYTM
+         fv8AiDt0Uh0bekKrJ545MrbEVwZvlht3wDo5S5Rs9Ul13469PsAkSQPIhNoHEK7VI6z8
+         vpZCtaLLt70xqyRkV598CVod2GL8uYuY7wZjgPYtXR6pcVNyeYsNhrGD5RcmlvkMR6xF
+         htXX3iNLFJEYra3bmalXy5HDYSfAseqpdgVziOtdfiibBbQsLx1lBq+jzdMLEMpezQTu
+         xjWQ==
+X-Gm-Message-State: AOAM53252cayekWPeyJtFcoLXSgliMm3ozLv5952MMVW/k2ZRVF6IPJZ
+        oSxxcMlqPnniv4gTWzVTTtU7iZ0+j3CsSR3jsSU=
+X-Google-Smtp-Source: ABdhPJz/k5bl7+Soe/sBfdfKbokR4zRXDOyv5k9or4b352BUPOFezuz+RbitwqqD0s0gHVXWRa4FTawlxMhdtC9Gd0I=
+X-Received: by 2002:a05:6808:bce:b0:2d9:a01a:487d with SMTP id
+ o14-20020a0568080bce00b002d9a01a487dmr1833093oik.200.1646474092109; Sat, 05
+ Mar 2022 01:54:52 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:170f:b0:2c2:c247:b586 with SMTP id
- u15-20020a056e02170f00b002c2c247b586mr1696971ill.155.1646453526316; Fri, 04
- Mar 2022 20:12:06 -0800 (PST)
-Date:   Fri, 04 Mar 2022 20:12:06 -0800
-In-Reply-To: <00000000000061d7eb05d7057144@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000934ec105d970d589@google.com>
-Subject: Re: [syzbot] WARNING in bpf_prog_test_run_xdp
-From:   syzbot <syzbot+79fd1ab62b382be6f337@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, boris.ostrovsky@oracle.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, jgross@suse.com, john.fastabend@gmail.com,
-        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, lorenzo@kernel.org,
-        netdev@vger.kernel.org, roger.pau@citrix.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
-        toke@redhat.com, yhs@fb.com
+References: <20220227142551.2349805-1-james.hilliard1@gmail.com> <6af1530a-a4bf-dccf-947d-78ce235a4414@iogearbox.net>
+In-Reply-To: <6af1530a-a4bf-dccf-947d-78ce235a4414@iogearbox.net>
+From:   James Hilliard <james.hilliard1@gmail.com>
+Date:   Sat, 5 Mar 2022 02:54:41 -0700
+Message-ID: <CADvTj4pOE+WD1rmS4S6kazeJWtoRTi5Ng_gJXVUkZwC_xMCySA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] libbpf: ensure F_DUPFD_CLOEXEC is defined
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Mon, Feb 28, 2022 at 8:00 AM Daniel Borkmann <daniel@iogearbox.net> wrot=
+e:
+>
+> Hi James,
+>
+> On 2/27/22 3:25 PM, James Hilliard wrote:
+> > This definition seems to be missing from some older toolchains.
+> >
+> > Note that the fcntl.h in libbpf_internal.h is not a kernel header
+> > but rather a toolchain libc header.
+> >
+> > Fixes:
+> > libbpf_internal.h:521:18: error: 'F_DUPFD_CLOEXEC' undeclared (first us=
+e in this function); did you mean 'FD_CLOEXEC'?
+> >     fd =3D fcntl(fd, F_DUPFD_CLOEXEC, 3);
+> >                    ^~~~~~~~~~~~~~~
+> >                    FD_CLOEXEC
+> >
+> > Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+>
+> Do you have some more info on your env (e.g. libc)? Looks like F_DUPFD_CL=
+OEXEC
+> was added back in 2.6.24 kernel. When did libc add it?
+>
+> Should we instead just add an include for <linux/fcntl.h> to libbpf_inter=
+nal.h
+> (given it defines F_DUPFD_CLOEXEC as well)?
 
-commit c8980fcb210851138cb34c9a8cb0cf0c09f07bf9
-Author: Roger Pau Monne <roger.pau@citrix.com>
-Date:   Fri Jan 21 09:01:46 2022 +0000
+That seems to cause a conflict: error: redefinition of =E2=80=98struct floc=
+k=E2=80=99
 
-    xen/x2apic: enable x2apic mode when supported for HVM
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13b1991a700000
-start commit:   000fe940e51f sfc: The size of the RX recycle ring should b..
-git tree:       net-next
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e029d3b2ccd4c91a
-dashboard link: https://syzkaller.appspot.com/bug?extid=79fd1ab62b382be6f337
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a719cc700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15851cec700000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: xen/x2apic: enable x2apic mode when supported for HVM
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> > ---
+> >   tools/lib/bpf/libbpf_internal.h | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_int=
+ernal.h
+> > index 4fda8bdf0a0d..d2a86b5a457a 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -31,6 +31,10 @@
+> >   #define EM_BPF 247
+> >   #endif
+> >
+> > +#ifndef F_DUPFD_CLOEXEC
+> > +#define F_DUPFD_CLOEXEC 1030
+> > +#endif
+> > +
+> >   #ifndef R_BPF_64_64
+> >   #define R_BPF_64_64 1
+> >   #endif
+> >
+>
+> Thanks,
+> Daniel
