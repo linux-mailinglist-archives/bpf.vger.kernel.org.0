@@ -2,193 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A86C4CE444
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 11:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B044CE4E1
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 13:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbiCEKsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Mar 2022 05:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49164 "EHLO
+        id S231659AbiCEMps (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Mar 2022 07:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiCEKsN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Mar 2022 05:48:13 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC0C239698;
-        Sat,  5 Mar 2022 02:47:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 27B15B80954;
-        Sat,  5 Mar 2022 10:47:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59833C004E1;
-        Sat,  5 Mar 2022 10:47:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1646477240;
-        bh=8uMCSfZUrz+ebC90sqKQ9bZPdZjBoqwQIf3kRyxg6aA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z3cPZkm8ZigWMMjxNUWxleDVr430ZYB/C2X3RkLGaOlMGsg4c+S2xdOw7SmuFpTNB
-         L+vNfszXDjZFA615c4GPQaTjgNzjJ0W/UDVVJmlJ8sQbMKHp3dDSEbgv1p2c/WNb1h
-         zfK82FmwkvkyvrshXEI6ZrQPqG0aFD8jRqBh+kpA=
-Date:   Sat, 5 Mar 2022 11:47:17 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 12/28] bpf/hid: add hid_{get|set}_data helpers
-Message-ID: <YiM/tTYeuAcnz/Xh@kroah.com>
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-13-benjamin.tissoires@redhat.com>
- <YiJdRQxYzfncfTR5@kroah.com>
- <CAO-hwJJ3Yi+JLr40J8nXccjF8PrjiQw1w0Bskz8QHXdNVh1n+A@mail.gmail.com>
+        with ESMTP id S231575AbiCEMps (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Mar 2022 07:45:48 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B431CC7FD
+        for <bpf@vger.kernel.org>; Sat,  5 Mar 2022 04:44:55 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id p15so22766150ejc.7
+        for <bpf@vger.kernel.org>; Sat, 05 Mar 2022 04:44:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BT/LruK1iU2aEC5IUz8FPhJu685NPizXKAEkqmR3dME=;
+        b=NCg8APlFjOE9h2Y+o0xCxjR53+eJdRZt2fXOBbgWJSvktNhRw3C0497CUkWnxANB58
+         KdFCGAHfMJ5yt/2zCG8WuUoe7Qe9cuvh9vHK/MWUDStWeBo9DHInYqhfxIXZjiFjusyP
+         MZyUM99kZ6KlWhIe8IWyD52SDtMIYajjj3V67bLn1Cx4ZZp/jq6ixlhAsielV4TDA9iS
+         CdCLCs+qMoCqCMMWy9uDJaCHhY10MbeVIuf5a9ftZSkFMkN3r88H02UFIg3HHtFEcwX2
+         02T2CkiKX6/wnL8quj1fWokjkONEJWBW4qrD0nhum/e5olQGP720XMMFLA3sz1LLMSdc
+         CQCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BT/LruK1iU2aEC5IUz8FPhJu685NPizXKAEkqmR3dME=;
+        b=ZZDQ2Wz4g6LcY5bwRpbbg3TCWt29XeoXmY9WVZp/DI6fGjCbfShxfBFa8vXamQAdtQ
+         q9uRMww3cl8Lh47mh6yyDZH7+cYgv0zS+CdkkWeSSxISJmqHG570BBE2VPvxlBSdmMcU
+         sTvW5Zq3CFKGiS3Qcws1OwYYTfF0V56u+IQ/cUKqxPSmRiNaya4C1ugSeQXwr1wIq2Cp
+         3iLeVg0pM8/8IDKuO3WX0Kxo+0z939gaZKA2coRGQBzbZ9A+ZGhyM6Lf+BK63xW6IZHW
+         QxnBNorjGiZT7r7yCboyn2fUTNuRv9EMBVo+sLXO4ONytj27nZhQfD7cV4K/6gtN5TU2
+         aH1g==
+X-Gm-Message-State: AOAM531n/5wmqbR9eP312aGvOTsu4lLpQ6y0FDPyY8dUBp1rX0pwuV4H
+        lovdLXtV8Ay/cVnuyX1ABuY53c3EpLk=
+X-Google-Smtp-Source: ABdhPJzVzsYirWXwuBS697QmDrsV2kQ/Y5KjYJ28++zhVK0pkrjsnyMLSVzKPixsXkaqZJrP8zf4rA==
+X-Received: by 2002:a17:907:7ea3:b0:6d9:4406:6029 with SMTP id qb35-20020a1709077ea300b006d944066029mr2837442ejc.262.1646484294423;
+        Sat, 05 Mar 2022 04:44:54 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-230-047.178.005.pools.vodafone-ip.de. [178.5.230.47])
+        by smtp.gmail.com with ESMTPSA id sb31-20020a1709076d9f00b006ceb969822esm2816355ejc.76.2022.03.05.04.44.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Mar 2022 04:44:53 -0800 (PST)
+Date:   Sat, 5 Mar 2022 13:44:26 +0100
+From:   Dmitry Dolgov <9erthalion6@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, quentin@isovalent.com
+Subject: Re: [PATCH bpf-next v5] bpftool: Add bpf_cookie to link output
+Message-ID: <20220305124426.qodif327pima6rqj@erthalion.local>
+References: <20220304143610.10796-1-9erthalion6@gmail.com>
+ <acf30143-dc2c-9651-44b6-af45a1c426ce@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAO-hwJJ3Yi+JLr40J8nXccjF8PrjiQw1w0Bskz8QHXdNVh1n+A@mail.gmail.com>
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <acf30143-dc2c-9651-44b6-af45a1c426ce@fb.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 05, 2022 at 11:33:07AM +0100, Benjamin Tissoires wrote:
-> On Fri, Mar 4, 2022 at 7:41 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Fri, Mar 04, 2022 at 06:28:36PM +0100, Benjamin Tissoires wrote:
-> > > When we process an incoming HID report, it is common to have to account
-> > > for fields that are not aligned in the report. HID is using 2 helpers
-> > > hid_field_extract() and implement() to pick up any data at any offset
-> > > within the report.
-> > >
-> > > Export those 2 helpers in BPF programs so users can also rely on them.
-> > > The second net worth advantage of those helpers is that now we can
-> > > fetch data anywhere in the report without knowing at compile time the
-> > > location of it. The boundary checks are done in hid-bpf.c, to prevent
-> > > a memory leak.
-> > >
-> > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > >
-> > > ---
-> > >
-> > > changes in v2:
-> > > - split the patch with libbpf and HID left outside.
-> > > ---
-> > >  include/linux/bpf-hid.h        |  4 +++
-> > >  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++++
-> > >  kernel/bpf/hid.c               | 53 ++++++++++++++++++++++++++++++++++
-> > >  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++++
-> > >  4 files changed, 121 insertions(+)
-> > >
-> > > diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
-> > > index 0c5000b28b20..69bb28523ceb 100644
-> > > --- a/include/linux/bpf-hid.h
-> > > +++ b/include/linux/bpf-hid.h
-> > > @@ -93,6 +93,10 @@ struct bpf_hid_hooks {
-> > >       int (*link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > >       void (*link_attached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > >       void (*array_detached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > > +     int (*hid_get_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
-> > > +     int (*hid_set_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
-> > >  };
-> > >
-> > >  #ifdef CONFIG_BPF
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index a7a8d9cfcf24..4845a20e6f96 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -5090,6 +5090,36 @@ union bpf_attr {
-> > >   *   Return
-> > >   *           0 on success, or a negative error in case of failure. On error
-> > >   *           *dst* buffer is zeroed out.
-> > > + *
-> > > + * int bpf_hid_get_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> > > + *   Description
-> > > + *           Get the data of size n (in bits) at the given offset (bits) in the
-> > > + *           ctx->event.data field and store it into data.
-> > > + *
-> > > + *           if n is less or equal than 32, we can address with bit precision,
-> > > + *           the value in the buffer. However, data must be a pointer to a u32
-> > > + *           and size must be 4.
-> > > + *
-> > > + *           if n is greater than 32, offset and n must be a multiple of 8
-> > > + *           and the result is working with a memcpy internally.
-> > > + *   Return
-> > > + *           The length of data copied into data. On error, a negative value
-> > > + *           is returned.
-> > > + *
-> > > + * int bpf_hid_set_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> > > + *   Description
-> > > + *           Set the data of size n (in bits) at the given offset (bits) in the
-> > > + *           ctx->event.data field.
-> > > + *
-> > > + *           if n is less or equal than 32, we can address with bit precision,
-> > > + *           the value in the buffer. However, data must be a pointer to a u32
-> > > + *           and size must be 4.
-> > > + *
-> > > + *           if n is greater than 32, offset and n must be a multiple of 8
-> > > + *           and the result is working with a memcpy internally.
-> > > + *   Return
-> > > + *           The length of data copied into ctx->event.data. On error, a negative
-> > > + *           value is returned.
-> >
-> 
-> Quick answer on this one (before going deeper with the other remarks next week):
-> 
-> > Wait, nevermind my reviewed-by previously, see my comment about how this
-> > might be split into 4:
-> >         bpf_hid_set_bytes()
-> >         bpf_hid_get_bytes()
-> >         bpf_hid_set_bits()
-> >         bpf_hid_get_bits()
-> >
-> > Should be easier to understand and maintain over time, right?
-> 
-> Yes, definitively. I thought about adding a `bytes` suffix to the
-> function name for n > 32, but not the `bits` one, meaning the API was
-> still bunkers in my head.
-> 
-> And as I mentioned in the commit notes, I knew the API proposed in
-> this patch was not correct, simply because while working on the
-> selftests it was completely wrong :)
-> 
-> In terms of API usage, does it feel wrong for you to have only a
-> subset of the array available "for free" and enforce the rest to be
-> used through these helpers?
+On Fri, Mar 04, 2022 at 08:21:34AM -0800, Yonghong Song wrote:
+>
+> > diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+> > index 7c384d10e95f..6c6e7c90cc3d 100644
+> > --- a/tools/bpf/bpftool/pids.c
+> > +++ b/tools/bpf/bpftool/pids.c
+> > @@ -78,6 +78,8 @@ static void add_ref(struct hashmap *map, struct pid_iter_entry *e)
+> >   	ref->pid = e->pid;
+> >   	memcpy(ref->comm, e->comm, sizeof(ref->comm));
+> >   	refs->ref_cnt = 1;
+> > +	refs->bpf_cookie_set = e->bpf_cookie_set;
+> > +	refs->bpf_cookie = e->bpf_cookie;
+> >   	err = hashmap__append(map, u32_as_hash_field(e->id), refs);
+> >   	if (err)
+> > @@ -205,6 +207,9 @@ void emit_obj_refs_json(struct hashmap *map, __u32 id,
+> >   		if (refs->ref_cnt == 0)
+> >   			break;
+> > +		if (refs->bpf_cookie_set)
+> > +			jsonw_lluint_field(json_writer, "bpf_cookie", refs->bpf_cookie);
+>
+> The original motivation for 'bpf_cookie' is for kprobe to get function
+> addresses. In that case, printing with llx (0x...) is better than llu
+> since people can easily search it with /proc/kallsyms to get what the
+> function it attached to. But on the other hand, other use cases might
+> be simply just wanting an int.
+>
+> I don't have a strong opinion here. Just to speak out loud so other
+> people can comment on this too.
 
-It does feel "odd" but:
+Interesting, I didn't know that. The current implementation of
+'bpf_cookie' seems to be quite opaque, with no assumptions about what
+does it contain, probably it makes sense to keep it like that. But I
+don't have a strong opinion here either, would love to hear what others
+think.
 
-> That's the point I am not sure but I feel like 1024 (or slightly more)
-> would be enough for most use cases, and when we are dealing with
-> bigger data sets the helpers can be justified.
+> > diff --git a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > index f70702fcb224..91366ce33717 100644
+> > --- a/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > +++ b/tools/bpf/bpftool/skeleton/pid_iter.bpf.c
+> > @@ -38,6 +38,18 @@ static __always_inline __u32 get_obj_id(void *ent, enum bpf_obj_type type)
+> >   	}
+> >   }
+> > +/* could be used only with BPF_LINK_TYPE_PERF_EVENT links */
+> > +static __always_inline __u64 get_bpf_cookie(struct bpf_link *link)
+> > +{
+> > +	struct bpf_perf_link *perf_link;
+> > +	struct perf_event *event;
+> > +
+> > +	perf_link = container_of(link, struct bpf_perf_link, link);
+> > +	event = BPF_CORE_READ(perf_link, perf_file, private_data);
+> > +	return BPF_CORE_READ(event, bpf_cookie);
+> > +}
+> > +
+> > +
+> >   SEC("iter/task_file")
+> >   int iter(struct bpf_iter__task_file *ctx)
+> >   {
+> > @@ -69,8 +81,21 @@ int iter(struct bpf_iter__task_file *ctx)
+> >   	if (file->f_op != fops)
+> >   		return 0;
+> > +	__builtin_memset(&e, 0, sizeof(e));
+> >   	e.pid = task->tgid;
+> >   	e.id = get_obj_id(file->private_data, obj_type);
+> > +	e.bpf_cookie = 0;
+> > +	e.bpf_cookie_set = false;
+>
+> We already have __builtin_memset(&e, 0, sizeof(e)) in the above, so
+> the above e.bpf_cookie and e.bpf_cookie_set assignment is not
+> necessary.
 
-How often are hid reports that big?  If providing access to the first
-1024 or so bytes for free would handle the huge majority of fixup cases,
-and only if you have crazy devices with large reports would you have to
-use the functions, it might be fine.
-
-The problem is, only time will tell, and then, it's too late to change
-the api :)
-
-So I agree with this for now, stick with what you have (if you split
-this into 4 functions), and let's see what happens.
-
-thanks,
-
-greg k-h
+Good point, will remote this.
