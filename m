@@ -2,332 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82C94CE1C8
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 02:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA11E4CE1D0
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 02:14:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229589AbiCEBCb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Mar 2022 20:02:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49874 "EHLO
+        id S230261AbiCEBO7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Mar 2022 20:14:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiCEBC2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 20:02:28 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4E01AE66B
-        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 17:01:39 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 224HQQib015606
-        for <bpf@vger.kernel.org>; Fri, 4 Mar 2022 17:01:39 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ek4jkscqf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 17:01:38 -0800
-Received: from twshared2439.42.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 4 Mar 2022 17:01:38 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-        id 4A7DA132C9938; Fri,  4 Mar 2022 17:01:36 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v5 bpf-next 3/3] selftests/bpf: add custom SEC() handling selftest
-Date:   Fri, 4 Mar 2022 17:01:29 -0800
-Message-ID: <20220305010129.1549719-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220305010129.1549719-1-andrii@kernel.org>
-References: <20220305010129.1549719-1-andrii@kernel.org>
+        with ESMTP id S230150AbiCEBO6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 20:14:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A57222452A;
+        Fri,  4 Mar 2022 17:14:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1478D61760;
+        Sat,  5 Mar 2022 01:14:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F6C9C340F3;
+        Sat,  5 Mar 2022 01:14:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646442848;
+        bh=vaBaHCp9DaFEapWiEZFao3YLd11lfyjPtyNq2m5VXs4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c5/LqdcZfLOG1K7x4z+crxSvHxys5Zkw7f9QXyqpzs26ZTePy8t+0WwfcqMrN/+bL
+         7OU3ZWZcPFSiJEdUWxHxUilezuEjcF4oQsSLWZDefw7RU7+yQf6JYFeBiiFwNpBL+5
+         zheDWBqq8w34KXW1DeQAcMPyVzSlLEo/C5OUqeffQlUhhh+OQpkVI0aMAEyQVvGbcx
+         090qHvUTuLVHE08zvSEF4KwMRunGPqFd4srcdIieMD2n5NJ9xHH/NMUk5w1fQb/HQ6
+         9b+o7Dum29DB5legGE+aLzgcZ9HbFaFQmb4t6kAzbVMOL7UCGJcFGpDC4c8PC+k3jU
+         14wIbWL4XQElw==
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-2dc28791ecbso96077867b3.4;
+        Fri, 04 Mar 2022 17:14:08 -0800 (PST)
+X-Gm-Message-State: AOAM530yzNX9zSgQtcryoFISWLCal/6lCu7vaUOsPUktTI/EPz/VN4+h
+        aCZR/6uH6VpYMtFQ6xl3bUTbHHS7OYrGElk8Ud8=
+X-Google-Smtp-Source: ABdhPJwbMS+4wemss6vJVt55VmA2cZt2K+EUmtlozCbIK6ZzqQVPdiXo3ZGnJj6Y4ZRvYCbj3HqANRXxoQbmZCW59R8=
+X-Received: by 2002:a81:23ce:0:b0:2dc:b20:cc73 with SMTP id
+ j197-20020a8123ce000000b002dc0b20cc73mr1211954ywj.130.1646442847422; Fri, 04
+ Mar 2022 17:14:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: RStdWeTTfZ08UmYYfOa3LUj1H3w9CNrU
-X-Proofpoint-ORIG-GUID: RStdWeTTfZ08UmYYfOa3LUj1H3w9CNrU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-04_09,2022-03-04_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 malwarescore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
- suspectscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203050002
-X-FB-Internal: deliver
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+In-Reply-To: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 4 Mar 2022 17:13:56 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com>
+Message-ID: <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/28] Introduce eBPF support for HID devices
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a selftest validating various aspects of libbpf's handling of custom
-SEC() handlers. It also demonstrates how libraries can ensure very early
-callbacks registration and unregistration using
-__attribute__((constructor))/__attribute__((destructor)) functions.
+On Fri, Mar 4, 2022 at 9:29 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> Hi,
+>
+> This is a followup of my v1 at [0].
+>
+> The short summary of the previous cover letter and discussions is that
+> HID could benefit from BPF for the following use cases:
+>
+> - simple fixup of report descriptor:
+>   benefits are faster development time and testing, with the produced
+>   bpf program being shipped in the kernel directly (the shipping part
+>   is *not* addressed here).
+>
+> - Universal Stylus Interface:
+>   allows a user-space program to define its own kernel interface
+>
+> - Surface Dial:
+>   somehow similar to the previous one except that userspace can decide
+>   to change the shape of the exported device
+>
+> - firewall:
+>   still partly missing there, there is not yet interception of hidraw
+>   calls, but it's coming in a followup series, I promise
+>
+> - tracing:
+>   well, tracing.
+>
+>
+> I tried to address as many comments as I could and here is the short log
+> of changes:
+>
+> v2:
+> ===
+>
+> - split the series by subsystem (bpf, HID, libbpf, selftests and
+>   samples)
+>
+> - Added an extra patch at the beginning to not require CAP_NET_ADMIN for
+>   BPF_PROG_TYPE_LIRC_MODE2 (please shout if this is wrong)
+>
+> - made the bpf context attached to HID program of dynamic size:
+>   * the first 1 kB will be able to be addressed directly
+>   * the rest can be retrieved through bpf_hid_{set|get}_data
+>     (note that I am definitivey not happy with that API, because there
+>     is part of it in bits and other in bytes. ouch)
+>
+> - added an extra patch to prevent non GPL HID bpf programs to be loaded
+>   of type BPF_PROG_TYPE_HID
+>   * same here, not really happy but I don't know where to put that check
+>     in verifier.c
+>
+> - added a new flag BPF_F_INSERT_HEAD for BPF_LINK_CREATE syscall when in
+>   used with HID program types.
+>   * this flag is used for tracing, to be able to load a program before
+>     any others that might already have been inserted and that might
+>     change the data stream.
+>
+> Cheers,
+> Benjamin
+>
 
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/custom_sec_handlers.c      | 176 ++++++++++++++++++
- .../bpf/progs/test_custom_sec_handlers.c      |  63 +++++++
- 2 files changed, 239 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+The set looks good so far. I will review the rest later.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-new file mode 100644
-index 000000000000..b2dfc5954aea
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
-@@ -0,0 +1,176 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include <test_progs.h>
-+#include "test_custom_sec_handlers.skel.h"
-+
-+#define COOKIE_ABC1 1
-+#define COOKIE_ABC2 2
-+#define COOKIE_CUSTOM 3
-+#define COOKIE_FALLBACK 4
-+#define COOKIE_KPROBE 5
-+
-+static int custom_setup_prog(struct bpf_program *prog, long cookie)
-+{
-+	if (cookie == COOKIE_ABC1)
-+		bpf_program__set_autoload(prog, false);
-+
-+	return 0;
-+}
-+
-+static int custom_prepare_load_prog(struct bpf_program *prog,
-+				    struct bpf_prog_load_opts *opts, long cookie)
-+{
-+	if (cookie == COOKIE_FALLBACK)
-+		opts->prog_flags |= BPF_F_SLEEPABLE;
-+	else if (cookie == COOKIE_ABC1)
-+		ASSERT_FALSE(true, "unexpected preload for abc");
-+
-+	return 0;
-+}
-+
-+static int custom_attach_prog(const struct bpf_program *prog, long cookie,
-+			      struct bpf_link **link)
-+{
-+	switch (cookie) {
-+	case COOKIE_ABC2:
-+		*link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
-+		return libbpf_get_error(*link);
-+	case COOKIE_CUSTOM:
-+		*link = bpf_program__attach_tracepoint(prog, "syscalls", "sys_enter_nanosleep");
-+		return libbpf_get_error(*link);
-+	case COOKIE_KPROBE:
-+	case COOKIE_FALLBACK:
-+		/* no auto-attach for SEC("xyz") and SEC("kprobe") */
-+		*link = NULL;
-+		return 0;
-+	default:
-+		ASSERT_FALSE(true, "unexpected cookie");
-+		return -EINVAL;
-+	}
-+}
-+
-+static int abc1_id;
-+static int abc2_id;
-+static int custom_id;
-+static int fallback_id;
-+static int kprobe_id;
-+
-+__attribute__((constructor))
-+static void register_sec_handlers(void)
-+{
-+	LIBBPF_OPTS(libbpf_prog_handler_opts, abc1_opts,
-+		.cookie = COOKIE_ABC1,
-+		.prog_setup_fn = custom_setup_prog,
-+		.prog_prepare_load_fn = custom_prepare_load_prog,
-+		.prog_attach_fn = NULL,
-+	);
-+	LIBBPF_OPTS(libbpf_prog_handler_opts, abc2_opts,
-+		.cookie = COOKIE_ABC2,
-+		.prog_setup_fn = custom_setup_prog,
-+		.prog_prepare_load_fn = custom_prepare_load_prog,
-+		.prog_attach_fn = custom_attach_prog,
-+	);
-+	LIBBPF_OPTS(libbpf_prog_handler_opts, custom_opts,
-+		.cookie = COOKIE_CUSTOM,
-+		.prog_setup_fn = NULL,
-+		.prog_prepare_load_fn = NULL,
-+		.prog_attach_fn = custom_attach_prog,
-+	);
-+
-+	abc1_id = libbpf_register_prog_handler("abc", BPF_PROG_TYPE_RAW_TRACEPOINT, 0, &abc1_opts);
-+	abc2_id = libbpf_register_prog_handler("abc/", BPF_PROG_TYPE_RAW_TRACEPOINT, 0, &abc2_opts);
-+	custom_id = libbpf_register_prog_handler("custom+", BPF_PROG_TYPE_TRACEPOINT, 0, &custom_opts);
-+}
-+
-+__attribute__((destructor))
-+static void unregister_sec_handlers(void)
-+{
-+	libbpf_unregister_prog_handler(abc1_id);
-+	libbpf_unregister_prog_handler(abc2_id);
-+	libbpf_unregister_prog_handler(custom_id);
-+}
-+
-+void test_custom_sec_handlers(void)
-+{
-+	LIBBPF_OPTS(libbpf_prog_handler_opts, opts,
-+		.prog_setup_fn = custom_setup_prog,
-+		.prog_prepare_load_fn = custom_prepare_load_prog,
-+		.prog_attach_fn = custom_attach_prog,
-+	);
-+	struct test_custom_sec_handlers* skel;
-+	int err;
-+
-+	ASSERT_GT(abc1_id, 0, "abc1_id");
-+	ASSERT_GT(abc2_id, 0, "abc2_id");
-+	ASSERT_GT(custom_id, 0, "custom_id");
-+
-+	/* override libbpf's handle of SEC("kprobe/...") but also allow pure
-+	 * SEC("kprobe") due to "kprobe+" specifier. Register it as
-+	 * TRACEPOINT, just for fun.
-+	 */
-+	opts.cookie = COOKIE_KPROBE;
-+	kprobe_id = libbpf_register_prog_handler("kprobe+", BPF_PROG_TYPE_TRACEPOINT, 0, &opts);
-+	/* fallback treats everything as BPF_PROG_TYPE_SYSCALL program to test
-+	 * setting custom BPF_F_SLEEPABLE bit in preload handler
-+	 */
-+	opts.cookie = COOKIE_FALLBACK;
-+	fallback_id = libbpf_register_prog_handler(NULL, BPF_PROG_TYPE_SYSCALL, 0, &opts);
-+
-+	if (!ASSERT_GT(fallback_id, 0, "fallback_id") /* || !ASSERT_GT(kprobe_id, 0, "kprobe_id")*/) {
-+		if (fallback_id > 0)
-+			libbpf_unregister_prog_handler(fallback_id);
-+		if (kprobe_id > 0)
-+			libbpf_unregister_prog_handler(kprobe_id);
-+		return;
-+	}
-+
-+	/* open skeleton and validate assumptions */
-+	skel = test_custom_sec_handlers__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(bpf_program__type(skel->progs.abc1), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc1_type");
-+	ASSERT_FALSE(bpf_program__autoload(skel->progs.abc1), "abc1_autoload");
-+
-+	ASSERT_EQ(bpf_program__type(skel->progs.abc2), BPF_PROG_TYPE_RAW_TRACEPOINT, "abc2_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.custom1), BPF_PROG_TYPE_TRACEPOINT, "custom1_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.custom2), BPF_PROG_TYPE_TRACEPOINT, "custom2_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.kprobe1), BPF_PROG_TYPE_TRACEPOINT, "kprobe1_type");
-+	ASSERT_EQ(bpf_program__type(skel->progs.xyz), BPF_PROG_TYPE_SYSCALL, "xyz_type");
-+
-+	skel->rodata->my_pid = getpid();
-+
-+	/* now attempt to load everything */
-+	err = test_custom_sec_handlers__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto cleanup;
-+
-+	/* now try to auto-attach everything */
-+	err = test_custom_sec_handlers__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	skel->links.xyz = bpf_program__attach(skel->progs.kprobe1);
-+	ASSERT_EQ(errno, EOPNOTSUPP, "xyz_attach_err");
-+	ASSERT_ERR_PTR(skel->links.xyz, "xyz_attach");
-+
-+	/* trigger programs */
-+	usleep(1);
-+
-+	/* SEC("abc") is set to not auto-loaded */
-+	ASSERT_FALSE(skel->bss->abc1_called, "abc1_called");
-+	ASSERT_TRUE(skel->bss->abc2_called, "abc2_called");
-+	ASSERT_TRUE(skel->bss->custom1_called, "custom1_called");
-+	ASSERT_TRUE(skel->bss->custom2_called, "custom2_called");
-+	/* SEC("kprobe") shouldn't be auto-attached */
-+	ASSERT_FALSE(skel->bss->kprobe1_called, "kprobe1_called");
-+	/* SEC("xyz") shouldn't be auto-attached */
-+	ASSERT_FALSE(skel->bss->xyz_called, "xyz_called");
-+
-+cleanup:
-+	test_custom_sec_handlers__destroy(skel);
-+
-+	ASSERT_OK(libbpf_unregister_prog_handler(fallback_id), "unregister_fallback");
-+	ASSERT_OK(libbpf_unregister_prog_handler(kprobe_id), "unregister_kprobe");
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
-new file mode 100644
-index 000000000000..4061f701ca50
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
-@@ -0,0 +1,63 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2022 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+const volatile int my_pid;
-+
-+bool abc1_called;
-+bool abc2_called;
-+bool custom1_called;
-+bool custom2_called;
-+bool kprobe1_called;
-+bool xyz_called;
-+
-+SEC("abc")
-+int abc1(void *ctx)
-+{
-+	abc1_called = true;
-+	return 0;
-+}
-+
-+SEC("abc/whatever")
-+int abc2(void *ctx)
-+{
-+	abc2_called = true;
-+	return 0;
-+}
-+
-+SEC("custom")
-+int custom1(void *ctx)
-+{
-+	custom1_called = true;
-+	return 0;
-+}
-+
-+SEC("custom/something")
-+int custom2(void *ctx)
-+{
-+	custom2_called = true;
-+	return 0;
-+}
-+
-+SEC("kprobe")
-+int kprobe1(void *ctx)
-+{
-+	kprobe1_called = true;
-+	return 0;
-+}
-+
-+SEC("xyz/blah")
-+int xyz(void *ctx)
-+{
-+	int whatever;
-+
-+	/* use sleepable helper, custom handler should set sleepable flag */
-+	bpf_copy_from_user(&whatever, sizeof(whatever), NULL);
-+	xyz_called = true;
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.30.2
+[...]
 
+A quick note about how we organize these patches. Maybe we can
+merge some of these patches like:
+
+>   bpf: introduce hid program type
+>   bpf/hid: add a new attach type to change the report descriptor
+>   bpf/hid: add new BPF type to trigger commands from userspace
+I guess the three can merge into one.
+
+>   HID: hook up with bpf
+>   HID: allow to change the report descriptor from an eBPF program
+>   HID: bpf: compute only the required buffer size for the device
+>   HID: bpf: only call hid_bpf_raw_event() if a ctx is available
+I haven't read through all of them, but I guess they can probably merge
+as well.
+
+>   libbpf: add HID program type and API
+>   libbpf: add new attach type BPF_HID_RDESC_FIXUP
+>   libbpf: add new attach type BPF_HID_USER_EVENT
+There 3 can merge, and maybe also the one below
+>   libbpf: add handling for BPF_F_INSERT_HEAD in HID programs
+
+>   samples/bpf: add new hid_mouse example
+>   samples/bpf: add a report descriptor fixup
+>   samples/bpf: fix bpf_program__attach_hid() api change
+Maybe it makes sense to merge these 3?
+
+>   bpf/hid: add hid_{get|set}_data helpers
+>   HID: bpf: implement hid_bpf_get|set_data
+>   bpf/hid: add bpf_hid_raw_request helper function
+>   HID: add implementation of bpf_hid_raw_request
+We can have 1 or 2 patches for these helpers
+
+>   selftests/bpf: add tests for the HID-bpf initial implementation
+>   selftests/bpf: add report descriptor fixup tests
+>   selftests/bpf: add tests for hid_{get|set}_data helpers
+>   selftests/bpf: add test for user call of HID bpf programs
+>   selftests/bpf: hid: rely on uhid event to know if a test device is
+>     ready
+>   selftests/bpf: add tests for bpf_hid_hw_request
+>   selftests/bpf: Add a test for BPF_F_INSERT_HEAD
+These selftests could also merge into 1 or 2 patches I guess.
+
+I understand rearranging these patches may take quite some effort.
+But I do feel that's a cleaner approach (from someone doesn't know
+much about HID). If you really hate it that way, we can discuss...
+
+Thanks,
+Song
