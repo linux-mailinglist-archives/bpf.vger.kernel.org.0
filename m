@@ -2,64 +2,64 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E6B4CE42B
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 11:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FEC4CE434
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 11:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbiCEKY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Mar 2022 05:24:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42588 "EHLO
+        id S229801AbiCEKeP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Mar 2022 05:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbiCEKY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Mar 2022 05:24:28 -0500
+        with ESMTP id S229581AbiCEKeP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Mar 2022 05:34:15 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1B9751C8852
-        for <bpf@vger.kernel.org>; Sat,  5 Mar 2022 02:23:38 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F2751D7939
+        for <bpf@vger.kernel.org>; Sat,  5 Mar 2022 02:33:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646475817;
+        s=mimecast20190719; t=1646476404;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Hvf1qgX47UJYQeYWAdFBUDBszqQVNdTtkeMXNOzeWN0=;
-        b=SOlq9/wY2idMV3sDpkplXowNyaRsQG6bouMgMofvcQg+lkQ5JvvXOPOD/H3zusn8q9Hc4M
-        muobeDQIJNxjk7vL9ZFeVm7+7P/9ytMst1vWSRsL3uIqyZQq8HgjNyi4K+02bwcZ+tFf3U
-        y9cTdw++P3viapC/cr8skJcjlOpxbs4=
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
- [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=WaB48QPXvxyorCNEAfGOqCQhNyQCx5tsNaq3iOR1gLs=;
+        b=JHr56w+984QzL429L2X3SHnZjZnU05oxv0i028DjVAuIbOH+x+rKVJd0HMybv08evN9JMc
+        MF0fGoJmEZ2emBgZK79x0bfnScoozJzn0w9Zc/hKNWq9DSLP4uIW+jaH/Kjy4eSSVhFtBL
+        I6KJ6gSLnp469ZJp+lFexT5z+wsglS4=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-656-Ms9TqfM9PcmGb92KGynSlw-1; Sat, 05 Mar 2022 05:23:36 -0500
-X-MC-Unique: Ms9TqfM9PcmGb92KGynSlw-1
-Received: by mail-pj1-f71.google.com with SMTP id o41-20020a17090a0a2c00b001bf06e5badfso3860243pjo.3
-        for <bpf@vger.kernel.org>; Sat, 05 Mar 2022 02:23:36 -0800 (PST)
+ us-mta-44-9YCdJuT9PBe8vHvEnZfBxw-1; Sat, 05 Mar 2022 05:33:20 -0500
+X-MC-Unique: 9YCdJuT9PBe8vHvEnZfBxw-1
+Received: by mail-pf1-f200.google.com with SMTP id k130-20020a628488000000b004f362b45f28so6743799pfd.9
+        for <bpf@vger.kernel.org>; Sat, 05 Mar 2022 02:33:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Hvf1qgX47UJYQeYWAdFBUDBszqQVNdTtkeMXNOzeWN0=;
-        b=1OvkaO6bqSYAlENwQXztAZI6FdCDEPQ4+aPlVyU5Stg2wJXEvLVbMHEVCRGPM6FfsJ
-         TMaCJhC/ZHusHORCMN+yw9Gzke9tA3XPXaHPc4uzOfMRChSf5F4TPEc2nXtp/YLOZpH5
-         Yw8Vsc1eJCfNWkkK84mylhC4snzpLDvjCw4me4K5LdUhPg7tJp+4a/MO0RxXj6tMdLwc
-         ANLOZT1bW4wAm1AgntNxqZHpQPAsh62DQg5/hjR4UVIq5A9/lXU/7m/MgK87ny95SxRD
-         qkihBHSTZ8+nhBPmY+2zC5aZ8G8v6Oh+KS/o2WE6GafDMpBcF9tLWpLL04Gmwj0BEUAE
-         8zXg==
-X-Gm-Message-State: AOAM5324vTf3Izzy7BJeOEbKJJcPL9NZ/1hLIswGScF1eTD92YXclxLE
-        htIudmLfnXO178jWPHsbTbRnrUVoucNsdfqsbu2lNgHN7+9VicmFBtPRgUsQ+dJ2QgM3ZmQ1zY5
-        OGFwi8cGR/iGFSjCX6QED9wNFd5xu
-X-Received: by 2002:a63:5110:0:b0:374:2312:1860 with SMTP id f16-20020a635110000000b0037423121860mr2273163pgb.146.1646475814777;
-        Sat, 05 Mar 2022 02:23:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz5ZMd0uYusP/CiqUmEnrtnVqF5GUNOPwSIzFTbtcHGF3xaobFFlMvqPEEOWLQmwDs9YoDqL5XyWqlpO7HeEtI=
-X-Received: by 2002:a63:5110:0:b0:374:2312:1860 with SMTP id
- f16-20020a635110000000b0037423121860mr2273127pgb.146.1646475814245; Sat, 05
- Mar 2022 02:23:34 -0800 (PST)
+        bh=WaB48QPXvxyorCNEAfGOqCQhNyQCx5tsNaq3iOR1gLs=;
+        b=uOjdJO96h+Pq0e6VTW0bgnGwWRa4j6z8ksHZC9RxTizq8fyHzoIrp9TbvdCOl31VR+
+         tcjEuBzo41WlGieinrwoBDDb82gnA90iyuhfB2bUiZTpfOcuKCAE+ECk0DbDg6BzN+Xz
+         o9D5zEQNESK/VpcBun+jgA20XtDIlOQ61bCZBAaCghbIxY8N/Gi6ZaSsvUN0m7iI6kVg
+         dNNuI9uQIXH8YpBlMPOOVHh+N02lUN9r4C0kogSulGZMODP48vfyf7MDDyNvyNMJ9XmX
+         GJPU+Xq/9ef+o0Cax5Rz/s6oyzhSQhuK3apIw4oRAJeTHSWrJJ70g5JyoR/ZSpEpSPBg
+         LUHw==
+X-Gm-Message-State: AOAM531ONvDtfVzt75LRJ0SVFlZnBjqSe057GUKu/FtHD+qsQdvOwrm8
+        yS80nb8tAfdteK1xUBYMr/ijSVS+GgrPRsURGeBNl9twnMMinZI1TpGtB57nHzaQXulUu8c+LKv
+        PWWqb3CUoF9+BkLRB4Vov5yN/aF8t
+X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id x17-20020a170902e05100b00151b4853453mr2939332plx.116.1646476399594;
+        Sat, 05 Mar 2022 02:33:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwvMDMUSIapPGQR4vWL/oj2loykrWmm3QH2dbQIs2qPbGiLM6oj2RR6sBZVongKZSYwpL44WrYmtyNHa5g2bns=
+X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id
+ x17-20020a170902e05100b00151b4853453mr2939309plx.116.1646476399238; Sat, 05
+ Mar 2022 02:33:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com> <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com>
-In-Reply-To: <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com>
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+ <20220304172852.274126-13-benjamin.tissoires@redhat.com> <YiJdRQxYzfncfTR5@kroah.com>
+In-Reply-To: <YiJdRQxYzfncfTR5@kroah.com>
 From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Sat, 5 Mar 2022 11:23:23 +0100
-Message-ID: <CAO-hwJJkhxDAhT_cwo=Tkx8_=B-MuS=_enByj1t6GEuXD9Lj5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/28] Introduce eBPF support for HID devices
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
+Date:   Sat, 5 Mar 2022 11:33:07 +0100
+Message-ID: <CAO-hwJJ3Yi+JLr40J8nXccjF8PrjiQw1w0Bskz8QHXdNVh1n+A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 12/28] bpf/hid: add hid_{get|set}_data helpers
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -70,7 +70,7 @@ Cc:     Greg KH <gregkh@linuxfoundation.org>,
         Dave Marchevsky <davemarchevsky@fb.com>,
         Joe Stringer <joe@cilium.io>,
         Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         linux-kselftest@vger.kernel.org
@@ -86,168 +86,122 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Song,
-
-Thanks a lot for the review.
-
-I'll comment on the review in more details next week, but I have a
-quick question here:
-
-On Sat, Mar 5, 2022 at 2:14 AM Song Liu <song@kernel.org> wrote:
+On Fri, Mar 4, 2022 at 7:41 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> On Fri, Mar 4, 2022 at 9:29 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
+> On Fri, Mar 04, 2022 at 06:28:36PM +0100, Benjamin Tissoires wrote:
+> > When we process an incoming HID report, it is common to have to account
+> > for fields that are not aligned in the report. HID is using 2 helpers
+> > hid_field_extract() and implement() to pick up any data at any offset
+> > within the report.
 > >
-> > Hi,
+> > Export those 2 helpers in BPF programs so users can also rely on them.
+> > The second net worth advantage of those helpers is that now we can
+> > fetch data anywhere in the report without knowing at compile time the
+> > location of it. The boundary checks are done in hid-bpf.c, to prevent
+> > a memory leak.
 > >
-> > This is a followup of my v1 at [0].
+> > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 > >
-> > The short summary of the previous cover letter and discussions is that
-> > HID could benefit from BPF for the following use cases:
+> > ---
 > >
-> > - simple fixup of report descriptor:
-> >   benefits are faster development time and testing, with the produced
-> >   bpf program being shipped in the kernel directly (the shipping part
-> >   is *not* addressed here).
+> > changes in v2:
+> > - split the patch with libbpf and HID left outside.
+> > ---
+> >  include/linux/bpf-hid.h        |  4 +++
+> >  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++++
+> >  kernel/bpf/hid.c               | 53 ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++++
+> >  4 files changed, 121 insertions(+)
 > >
-> > - Universal Stylus Interface:
-> >   allows a user-space program to define its own kernel interface
+> > diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
+> > index 0c5000b28b20..69bb28523ceb 100644
+> > --- a/include/linux/bpf-hid.h
+> > +++ b/include/linux/bpf-hid.h
+> > @@ -93,6 +93,10 @@ struct bpf_hid_hooks {
+> >       int (*link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> >       void (*link_attached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> >       void (*array_detached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> > +     int (*hid_get_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> > +                         u64 offset, u32 n, u8 *data, u64 data_size);
+> > +     int (*hid_set_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> > +                         u64 offset, u32 n, u8 *data, u64 data_size);
+> >  };
 > >
-> > - Surface Dial:
-> >   somehow similar to the previous one except that userspace can decide
-> >   to change the shape of the exported device
-> >
-> > - firewall:
-> >   still partly missing there, there is not yet interception of hidraw
-> >   calls, but it's coming in a followup series, I promise
-> >
-> > - tracing:
-> >   well, tracing.
-> >
-> >
-> > I tried to address as many comments as I could and here is the short log
-> > of changes:
-> >
-> > v2:
-> > ===
-> >
-> > - split the series by subsystem (bpf, HID, libbpf, selftests and
-> >   samples)
-> >
-> > - Added an extra patch at the beginning to not require CAP_NET_ADMIN for
-> >   BPF_PROG_TYPE_LIRC_MODE2 (please shout if this is wrong)
-> >
-> > - made the bpf context attached to HID program of dynamic size:
-> >   * the first 1 kB will be able to be addressed directly
-> >   * the rest can be retrieved through bpf_hid_{set|get}_data
-> >     (note that I am definitivey not happy with that API, because there
-> >     is part of it in bits and other in bytes. ouch)
-> >
-> > - added an extra patch to prevent non GPL HID bpf programs to be loaded
-> >   of type BPF_PROG_TYPE_HID
-> >   * same here, not really happy but I don't know where to put that check
-> >     in verifier.c
-> >
-> > - added a new flag BPF_F_INSERT_HEAD for BPF_LINK_CREATE syscall when in
-> >   used with HID program types.
-> >   * this flag is used for tracing, to be able to load a program before
-> >     any others that might already have been inserted and that might
-> >     change the data stream.
-> >
-> > Cheers,
-> > Benjamin
-> >
->
-> The set looks good so far. I will review the rest later.
->
-> [...]
->
-> A quick note about how we organize these patches. Maybe we can
-> merge some of these patches like:
-
-Just to be sure we are talking about the same thing: you mean squash
-the patch together?
-
->
-> >   bpf: introduce hid program type
-> >   bpf/hid: add a new attach type to change the report descriptor
-> >   bpf/hid: add new BPF type to trigger commands from userspace
-> I guess the three can merge into one.
->
-> >   HID: hook up with bpf
-> >   HID: allow to change the report descriptor from an eBPF program
-> >   HID: bpf: compute only the required buffer size for the device
-> >   HID: bpf: only call hid_bpf_raw_event() if a ctx is available
-> I haven't read through all of them, but I guess they can probably merge
-> as well.
-
-There are certainly patches that we could squash together (3 and 4
-from this list into the previous ones), but I'd like to keep some sort
-of granularity here to not have a patch bomb that gets harder to come
-back later.
-
->
-> >   libbpf: add HID program type and API
-> >   libbpf: add new attach type BPF_HID_RDESC_FIXUP
-> >   libbpf: add new attach type BPF_HID_USER_EVENT
-> There 3 can merge, and maybe also the one below
-> >   libbpf: add handling for BPF_F_INSERT_HEAD in HID programs
-
-Yeah, the libbpf changes are small enough to not really justify
-separate patches.
-
->
-> >   samples/bpf: add new hid_mouse example
-> >   samples/bpf: add a report descriptor fixup
-> >   samples/bpf: fix bpf_program__attach_hid() api change
-> Maybe it makes sense to merge these 3?
-
-Sure, why not.
-
->
-> >   bpf/hid: add hid_{get|set}_data helpers
-> >   HID: bpf: implement hid_bpf_get|set_data
-> >   bpf/hid: add bpf_hid_raw_request helper function
-> >   HID: add implementation of bpf_hid_raw_request
-> We can have 1 or 2 patches for these helpers
-
-OK, the patches should be self-contained enough.
-
->
-> >   selftests/bpf: add tests for the HID-bpf initial implementation
-> >   selftests/bpf: add report descriptor fixup tests
-> >   selftests/bpf: add tests for hid_{get|set}_data helpers
-> >   selftests/bpf: add test for user call of HID bpf programs
-> >   selftests/bpf: hid: rely on uhid event to know if a test device is
-> >     ready
-> >   selftests/bpf: add tests for bpf_hid_hw_request
-> >   selftests/bpf: Add a test for BPF_F_INSERT_HEAD
-> These selftests could also merge into 1 or 2 patches I guess.
-
-I'd still like to link them to the granularity of the bpf changes, so
-I can refer a selftest change to a specific commit/functionality
-added. But that's just my personal taste, and I can be convinced
-otherwise. This should give us maybe 4 patches instead of 7.
-
->
-> I understand rearranging these patches may take quite some effort.
-> But I do feel that's a cleaner approach (from someone doesn't know
-> much about HID). If you really hate it that way, we can discuss...
+> >  #ifdef CONFIG_BPF
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index a7a8d9cfcf24..4845a20e6f96 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -5090,6 +5090,36 @@ union bpf_attr {
+> >   *   Return
+> >   *           0 on success, or a negative error in case of failure. On error
+> >   *           *dst* buffer is zeroed out.
+> > + *
+> > + * int bpf_hid_get_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
+> > + *   Description
+> > + *           Get the data of size n (in bits) at the given offset (bits) in the
+> > + *           ctx->event.data field and store it into data.
+> > + *
+> > + *           if n is less or equal than 32, we can address with bit precision,
+> > + *           the value in the buffer. However, data must be a pointer to a u32
+> > + *           and size must be 4.
+> > + *
+> > + *           if n is greater than 32, offset and n must be a multiple of 8
+> > + *           and the result is working with a memcpy internally.
+> > + *   Return
+> > + *           The length of data copied into data. On error, a negative value
+> > + *           is returned.
+> > + *
+> > + * int bpf_hid_set_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
+> > + *   Description
+> > + *           Set the data of size n (in bits) at the given offset (bits) in the
+> > + *           ctx->event.data field.
+> > + *
+> > + *           if n is less or equal than 32, we can address with bit precision,
+> > + *           the value in the buffer. However, data must be a pointer to a u32
+> > + *           and size must be 4.
+> > + *
+> > + *           if n is greater than 32, offset and n must be a multiple of 8
+> > + *           and the result is working with a memcpy internally.
+> > + *   Return
+> > + *           The length of data copied into ctx->event.data. On error, a negative
+> > + *           value is returned.
 >
 
-No worries. I don't mind iterating on the series. IIRC I already
-rewrote it twice from scratch, and that's when the selftests I
-introduced in the second rewrite were tremendously helpful :) And
-honestly I don't think it'll be too much effort to reorder/squash the
-patches given that the v2 is *very* granular.
+Quick answer on this one (before going deeper with the other remarks next week):
 
-Anyway, I prefer having the reviewers happy so we can have a solid
-rock API from day 1 than keeping it obscure for everyone and having to
-deal with design issues forever. So if it takes 10 or 20 revisions to
-have everybody on the same page, that's fine with me (not that I want
-to have that many revisions, just that I won't be afraid of the
-bikeshedding we might have at some point).
+> Wait, nevermind my reviewed-by previously, see my comment about how this
+> might be split into 4:
+>         bpf_hid_set_bytes()
+>         bpf_hid_get_bytes()
+>         bpf_hid_set_bits()
+>         bpf_hid_get_bits()
+>
+> Should be easier to understand and maintain over time, right?
+
+Yes, definitively. I thought about adding a `bytes` suffix to the
+function name for n > 32, but not the `bits` one, meaning the API was
+still bunkers in my head.
+
+And as I mentioned in the commit notes, I knew the API proposed in
+this patch was not correct, simply because while working on the
+selftests it was completely wrong :)
+
+In terms of API usage, does it feel wrong for you to have only a
+subset of the array available "for free" and enforce the rest to be
+used through these helpers?
+That's the point I am not sure but I feel like 1024 (or slightly more)
+would be enough for most use cases, and when we are dealing with
+bigger data sets the helpers can be justified.
+
+Thanks for the suggestion.
 
 Cheers,
 Benjamin
+
+>
+> thanks,
+>
+> greg k-h
+>
 
