@@ -2,97 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625164CE1B0
-	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 01:41:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416DF4CE1C6
+	for <lists+bpf@lfdr.de>; Sat,  5 Mar 2022 02:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbiCEAm3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Mar 2022 19:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60922 "EHLO
+        id S229550AbiCEBC1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Mar 2022 20:02:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbiCEAm3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Mar 2022 19:42:29 -0500
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3944D15C191;
-        Fri,  4 Mar 2022 16:41:39 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 62748CE2F37;
-        Sat,  5 Mar 2022 00:41:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F927C340EF;
-        Sat,  5 Mar 2022 00:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646440896;
-        bh=XnyKpVbqFye4ROXP1rvn2MXKkQjlnGcCb7ljnwSBAsY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jRgyicmmLZmddgtoXbicy9Nn759yWEAYHm4luZQFaksvkp5g0rLoxzO6a1qJvQ9Tw
-         DfcT6+uDpb+xjgjrWxWY88iUgMobvbpk2zMxDKftNsu8DrHjYn2TKQBTRuI4pcpqUY
-         Wz8zlW+zEjnsEt3gFCIlmoDR9fgW5R+QcOEjQnts7n7AJZHtUKG71+Ayqmkhfs34dR
-         g+xdXHeoKALUY3L/fXtMPROl5IB8lrqH/RH04XgFcqCHYzRuKASZBujTvnpOnunWqv
-         7Hiqwnw7p4NbvhxdB8ZwBXIkhsPrQcR5d2zS0rVq200ugJrxidBxreo1YCNCZA/eYg
-         1biFWyp7LOzYw==
-Received: by mail-yb1-f181.google.com with SMTP id f38so20116762ybi.3;
-        Fri, 04 Mar 2022 16:41:36 -0800 (PST)
-X-Gm-Message-State: AOAM533kfmvKF4wO6pMLpl2dzoBQGEpnFoPSGISDZGdYwWcR9HtnOybb
-        0SVNTH/PLZ/c0K7d1mnDOdfD/PkbDU0BAvTG3xs=
-X-Google-Smtp-Source: ABdhPJyWdz6gBQAx8B/98c8TW3aIPYiu+3hQvOx+it/kv+3mZhkHdigjO8Z10pH+efqGZFkRNuF9Okg/UNkLKvUEkLM=
-X-Received: by 2002:a25:8546:0:b0:61e:1d34:ec71 with SMTP id
- f6-20020a258546000000b0061e1d34ec71mr917915ybn.259.1646440895532; Fri, 04 Mar
- 2022 16:41:35 -0800 (PST)
+        with ESMTP id S229479AbiCEBC1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Mar 2022 20:02:27 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16541AD963
+        for <bpf@vger.kernel.org>; Fri,  4 Mar 2022 17:01:38 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 224HQk3C007091
+        for <bpf@vger.kernel.org>; Fri, 4 Mar 2022 17:01:38 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ek4hrscjf-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 04 Mar 2022 17:01:38 -0800
+Received: from twshared27297.14.frc2.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Fri, 4 Mar 2022 17:01:35 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+        id 24ED7132C992B; Fri,  4 Mar 2022 17:01:30 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v5 bpf-next 0/3] libbpf: support custom SEC() handlers
+Date:   Fri, 4 Mar 2022 17:01:26 -0800
+Message-ID: <20220305010129.1549719-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com> <20220304172852.274126-6-benjamin.tissoires@redhat.com>
-In-Reply-To: <20220304172852.274126-6-benjamin.tissoires@redhat.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 4 Mar 2022 16:41:24 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW63HQE_GWFrz-t9_Uyq3KK3raYeG_x7OYMGR02DHzQ1=g@mail.gmail.com>
-Message-ID: <CAPhsuW63HQE_GWFrz-t9_Uyq3KK3raYeG_x7OYMGR02DHzQ1=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 05/28] selftests/bpf: add tests for the
- HID-bpf initial implementation
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: EINGEuE73GL0y0qQR0zY8c24vd-roZIz
+X-Proofpoint-ORIG-GUID: EINGEuE73GL0y0qQR0zY8c24vd-roZIz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-04_09,2022-03-04_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=fb_outbound_notspam policy=fb_outbound score=0 lowpriorityscore=0
+ adultscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ impostorscore=0 mlxscore=0 spamscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203050002
+X-FB-Internal: deliver
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 4, 2022 at 9:31 AM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> The test is pretty basic:
-> - create a virtual uhid device that no userspace will like (to not mess
->   up the running system)
-> - attach a BPF prog to it
-> - open the matching hidraw node
-> - inject one event and check:
->   * that the BPF program can do something on the event stream
->   * can modify the event stream
->
-> Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
->
+Add ability for user applications and libraries to register custom BPF program
+SEC() handlers. See patch #2 for examples where this is useful.
 
-Does this test run with vm (qemu, etc.)? Maybe we need to update
-tools/testing/selftests/bpf/config ?
+Patch #1 does some preliminary refactoring to allow exponsing program
+init, preload, and attach callbacks as public API. It also establishes
+a protocol to allow optional auto-attach behavior. This will also help the
+case of sometimes auto-attachable uprobes.
 
-Thanks,
-Song
+v4->v5:
+  - API documentation improvements (Daniel);
+v3->v4:
+  - init_fn -> prog_setup_fn, preload_fn -> prog_prepare_load_fn (Alexei);
+v2->v3:
+  - moved callbacks and cookie into OPTS struct (Alan);
+  - added more test scenarios (Alan);
+  - address most of Alan's feedback, but kept API name;
+v1->v2:
+  - resubmitting due to git send-email screw up.
+
+Cc: Alan Maguire <alan.maguire@oracle.com>
+
+Andrii Nakryiko (3):
+  libbpf: allow BPF program auto-attach handlers to bail out
+  libbpf: support custom SEC() handlers
+  selftests/bpf: add custom SEC() handling selftest
+
+ tools/lib/bpf/libbpf.c                        | 332 ++++++++++++------
+ tools/lib/bpf/libbpf.h                        | 109 ++++++
+ tools/lib/bpf/libbpf.map                      |   6 +
+ tools/lib/bpf/libbpf_version.h                |   2 +-
+ .../bpf/prog_tests/custom_sec_handlers.c      | 176 ++++++++++
+ .../bpf/progs/test_custom_sec_handlers.c      |  63 ++++
+ 6 files changed, 586 insertions(+), 102 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/custom_sec_handlers.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_custom_sec_handlers.c
+
+-- 
+2.30.2
+
