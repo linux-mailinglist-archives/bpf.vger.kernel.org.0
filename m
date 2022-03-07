@@ -2,63 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD9C4CFFAD
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 14:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3285F4CFFD0
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 14:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240994AbiCGNLs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 08:11:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47806 "EHLO
+        id S242684AbiCGNTH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 08:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbiCGNLs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 08:11:48 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C17D6E54F
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 05:10:54 -0800 (PST)
+        with ESMTP id S242809AbiCGNTG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 08:19:06 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7D529C9A
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 05:18:10 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DCC5D611E6
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 13:10:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A558C36AE2
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 13:10:53 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A8720B8124B
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 13:18:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 576B9C36AE3
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 13:18:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646658653;
-        bh=fCInmiuvlc/GQdKOrA2zZo3Bi20L9F6QJcn0+RVCAiI=;
+        s=k20201202; t=1646659088;
+        bh=0x9avxE1QuPb1xRSPHVfHgo20smbkC0ezQPHmsX583Y=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rIf5sIiBy2gGYb9/yhohwJ3t7ysj/+O/6V2mgdX0dllBjKZKcK/3kIxV0bZy33shm
-         QJMe3yhvnNG23dx9mve7th7TdUjzMr/ShojO46oEYW/I6Dk9a8GJngL+v1NOv2yU2I
-         Pt/Evjp94cM4mDAMxGFP/agvJNiIs558PS5gFvZBKqb6dcp9lRflnhl4QBt+qYJ3UA
-         RrJAITZZtsH56fi4wPO6N/Mbkkx6Ya8rsjWKV9bztUfxIAb587yL0YmqWmeV3OJujV
-         s6nGIgJNTYrMGjQO3+Ct0DVXUtZZJ5c+KZY915+7CUbCDZ8oW117+KD9H1YkxuXA/j
-         Ssh4pH0S5P+bA==
-Received: by mail-ej1-f45.google.com with SMTP id dr20so31760721ejc.6
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 05:10:53 -0800 (PST)
-X-Gm-Message-State: AOAM5321SnldlTILV/Sn+cdz8YASB0Gpv9KhCQUovK+Aal+JiZz8Dfoh
-        dpJg756vkvWsNMUkWEbP/JvTdfDTRwv+SzJhBL3R3g==
-X-Google-Smtp-Source: ABdhPJzIYeKSoVRpZIOmRbz2rLVRFbAjEmzy4/bKOWzDhUnEUHbTPKAwd0X55sDOq2ux4CoXTgJfbSa7wHtSa03AP5k=
+        b=fdfnW2FlS2s/NtI9OIEPoL3friIZhn4gB+q9ykNTwU5vvuw+nEflebKpQ3V3Pf4Lq
+         z1BWhCICYLQtHghvBBeeuVJezZ3Hf6PZ3w+svus4UbBeUsvAyA0WgXS5q6PEXrcohQ
+         U23e8nTBn7HGvs9ksItlQIjmC62kxSbWB5GB4c5VWjL7CJVUNiioReQrUB0b+B0izG
+         3192CzMmcsmDuN9waHQVmNKjgENwZ5u7B40kB4aazoknGByseLS7kWkeZnji6uljzW
+         qp6gKFVNXu3ojloMsNRa7sUIp/hh1PyEtMUFyfS2vflRdTLJz7zczBt/r6E6axLPhR
+         2anp04mEGAqyA==
+Received: by mail-ej1-f44.google.com with SMTP id qt6so31824108ejb.11
+        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 05:18:08 -0800 (PST)
+X-Gm-Message-State: AOAM532+gtO9R1tOEECxdEBN8LBHWiGJTsEWeNFJ1bdmEdY4zGTB0riv
+        sbsOxCo/ui1beINK70S1Rfr9Qn4wYzbb4kF1YihldA==
+X-Google-Smtp-Source: ABdhPJxvgCXjgHPF1PjOKJm57sEpqWrgNtbAss/mIVzf2hdDQwOt3w5GqYZan1KufyCv5U1e45adv0v2fXT5T3kQmJk=
 X-Received: by 2002:a17:906:a1c8:b0:6da:a635:e402 with SMTP id
- bx8-20020a170906a1c800b006daa635e402mr9412960ejb.598.1646658649659; Mon, 07
- Mar 2022 05:10:49 -0800 (PST)
+ bx8-20020a170906a1c800b006daa635e402mr9441257ejb.598.1646659086280; Mon, 07
+ Mar 2022 05:18:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304150402.729127-1-kpsingh@kernel.org> <CAJygYd1uwX05w3-+avZfz9d2a=8OD7VTMEv8Uo9AHLHrnu=k+Q@mail.gmail.com>
- <CACYkzJ547orpP-9qoq7vqtJSwxanW8FyVuhAdGVOtm8fgh3DuA@mail.gmail.com> <CAEf4BzaUp_i_K4ieyac0_Z620RXyrmWcvjKny37qT9qK6=Dvfg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaUp_i_K4ieyac0_Z620RXyrmWcvjKny37qT9qK6=Dvfg@mail.gmail.com>
+References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+ <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
+ <fe1d17e7e7d4b5e4cdeb9f96f5771ded23b7c8f0.camel@linux.ibm.com>
+ <CACYkzJ4fmJ4XtC6gx6k_Gjq0n5vjSJyq=L--H-Eho072HJoywA@mail.gmail.com>
+ <04d878d4b2441bb8a579a4191d8edc936c5a794a.camel@linux.ibm.com>
+ <CACYkzJ5RNDV582yt1xCZ8AQUW6v_o0Dtoc_XAQN1GXnoOmze6Q@mail.gmail.com>
+ <b6bf8463c1b370a5b5c9987ae1312fd930d36785.camel@linux.ibm.com>
+ <CAADnVQKfh3Z1DXJ3PEjFheQWEDFOKQjuyx+pkvqe6MXEmo7YHQ@mail.gmail.com> <40db9f74fd3c9c7b660e3a203c5a6eda08736d5b.camel@linux.ibm.com>
+In-Reply-To: <40db9f74fd3c9c7b660e3a203c5a6eda08736d5b.camel@linux.ibm.com>
 From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 7 Mar 2022 14:10:38 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7cme-Dxo6dGS1RwPZFVq5=sdqWmkRtmYbA5JoavoFoQw@mail.gmail.com>
-Message-ID: <CACYkzJ7cme-Dxo6dGS1RwPZFVq5=sdqWmkRtmYbA5JoavoFoQw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf/selftests: Allow vmtest.sh to build
- statically linked test_progs.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     "sunyucong@gmail.com" <sunyucong@gmail.com>,
-        bpf <bpf@vger.kernel.org>, "Geyslan G. Bem" <geyslan@gmail.com>,
+Date:   Mon, 7 Mar 2022 14:17:55 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ65D2OZKrEbrCS32+FsQ3BVzs1zQcRQSLnaNQHYTjZFBA@mail.gmail.com>
+Message-ID: <CACYkzJ65D2OZKrEbrCS32+FsQ3BVzs1zQcRQSLnaNQHYTjZFBA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florent Revest <revest@google.com>,
+        Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,113 +83,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 5, 2022 at 1:38 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Mar 7, 2022 at 3:57 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
 >
-> On Fri, Mar 4, 2022 at 9:18 AM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > On Fri, Mar 4, 2022 at 5:57 PM sunyucong@gmail.com <sunyucong@gmail.com> wrote:
-> > >
-> > > On Fri, Mar 4, 2022 at 8:48 AM KP Singh <kpsingh@kernel.org> wrote:
-> > > >
-> > > > Dynamic linking when compiling on the host can cause issues when the
-> > > > libc version does not match the one in the VM image.
-> > > > Allow the user to use static compilation when this issue arises:
-> > > >
-> > > > Before:
-> > > >   ./vmtest.sh -- ./test_progs -t test_ima
-> > > >   ./test_progs: /usr/lib/libc.so.6: version `GLIBC_2.33' not found (required by ./test_progs)
-> > > >
-> > > > After:
-> > > >
-> > > >   TRUNNER_LDFLAGS=-static ./vmtest.sh -- ./test_progs -t test_ima
-> > > >   test_ima:OK
-> > > >   Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-> > > >
-> > > > Not using static as the default as some distros may not have dependent
-> > > > static libraries.
-> > > >
-> > > > Reported-by: "Geyslan G. Bem" <geyslan@gmail.com>
-> > > > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/Makefile  | 4 ++--
-> > > >  tools/testing/selftests/bpf/vmtest.sh | 2 +-
-> > > >  2 files changed, 3 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > > > index fe12b4f5fe20..2473c9b0cb2e 100644
-> > > > --- a/tools/testing/selftests/bpf/Makefile
-> > > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > > @@ -162,7 +162,7 @@ $(MAKE_DIRS):
-> > > >
-> > > >  $(OUTPUT)/%.o: %.c
-> > > >         $(call msg,CC,,$@)
-> > > > -       $(Q)$(CC) $(CFLAGS) -c $(filter %.c,$^) $(LDLIBS) -o $@
-> > > > +       $(Q)$(CC) $(CFLAGS) $(TRUNNER_LDFLAGS) -c $(filter %.c,$^) $(LDLIBS) -o $@
-> > > >
-> > > >  $(OUTPUT)/%:%.c
-> > > >         $(call msg,BINARY,,$@)
-> > > > @@ -468,7 +468,7 @@ $(OUTPUT)/$(TRUNNER_BINARY): $(TRUNNER_TEST_OBJS)                   \
-> > > >                              $(RESOLVE_BTFIDS)                          \
-> > > >                              | $(TRUNNER_BINARY)-extras
-> > > >         $$(call msg,BINARY,,$$@)
-> > > > -       $(Q)$$(CC) $$(CFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-> > > > +       $(Q)$$(CC) $$(CFLAGS) $(TRUNNER_LDFLAGS) $$(filter %.a %.o,$$^) $$(LDLIBS) -o $$@
-> > > >         $(Q)$(RESOLVE_BTFIDS) --btf $(TRUNNER_OUTPUT)/btf_data.o $$@
-> > > >         $(Q)ln -sf $(if $2,..,.)/tools/build/bpftool/bootstrap/bpftool $(if $2,$2/)bpftool
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/vmtest.sh b/tools/testing/selftests/bpf/vmtest.sh
-> > > > index e0bb04a97e10..a8bf6ceb3d06 100755
-> > > > --- a/tools/testing/selftests/bpf/vmtest.sh
-> > > > +++ b/tools/testing/selftests/bpf/vmtest.sh
-> > > > @@ -155,7 +155,7 @@ update_selftests()
-> > > >         local selftests_dir="${kernel_checkout}/tools/testing/selftests/bpf"
-> > > >
-> > > >         cd "${selftests_dir}"
-> > > > -       ${make_command}
-> > > > +       ${make_command} TRUNNER_LDFLAGS=-static
-> > >
-> > > In the commit message you mentioned we are not making it default for
-> > > everyone, Yet here making it default?
-> >
-> > I have already sent a v2, maybe you missed that
-> >
-> > https://lore.kernel.org/bpf/20220304150708.729904-1-kpsingh@kernel.org/T/#u
-> >
-> > after noticing my mistake
-> >
-> > https://lore.kernel.org/bpf/CAJygYd1uwX05w3-+avZfz9d2a=8OD7VTMEv8Uo9AHLHrnu=k+Q@mail.gmail.com/T/#m1a3eedc831d8b27e5639b1d57e3af36a2b20f449
-> >
-> > > Also, do we need to add a new TRUNNER_LDFLAGS ? Why not just LDFLAGS,
-> > > we also use CFLAGS.  Thinking ahead if we want add ASAN support later,
-> >
-> > Simple LDFLAGS and CFLAGS (not TRUNNER_*) did not work for me for some reason.
+> On Thu, 2022-03-03 at 14:39 -0800, Alexei Starovoitov wrote:
 >
-> I think LDFLAGS are not wired properly everywhere. But have you tried
+> > . There is no such thing as "eBPF modules". There are BPF programs.
+> > They cannot be signed the same way as kernel modules.
+> > We've been working on providing a way to sign them for more
+> > than a year now. That work is still ongoing.
+> >
+> > . IMA cannot be used for integrity check of BPF programs for the same
+> > reasons why kernel module like signing cannot be used.
 >
-> LDLIBS=-static ./vmtest.sh ?
+> I assume the issue isn't where the signature is stored (e.g. appended,
+> xattr), but of calculating the hash.  Where is the discussion taking
 
-LDLIBS=-static ./vmtest.sh -j 72 -- ./test_progs -t test_ima
+This has the relevant background: https://lwn.net/Articles/853489/
 
-works for me. Sending a docs patch instead.
+We had some more discussions in one of our BSC meeting:
+
+https://github.com/ebpf-io/bsc/blob/master/minutes.md
+
+and we expect the discussions to continue over conferences this year
+ (e.g. LSF/MM/BPF, Linux Plumbers). As I mentioned on another thread
+we don't have to wait for conferences and we can discuss this in the BPF
+office hours. Please feel free to add an agenda at:
+
+https://docs.google.com/spreadsheets/d/1LfrDXZ9-fdhvPEp_LHkxAMYyxxpwBXjywWa0AejEveU/edit#gid=0
+
+(best is to give some notice so that interested folks can join).
+
+> place?   Are there any summaries of what has been discussed?
+>
+> FYI, IMA isn't limited to measuring files.  Support was added for
+> buffer measurements (e.g kexec boot command line, certificates) and
+> measuring kernel critical data (e.g. SELinux in memory policy & state,
+> device mapper).
+
+Nice. I need to look at how this is implemented.
+
+- KP
 
 >
-> In my case I can't get libcap.a to be installed in my system, so
-> compilation never completely succeeds, but I think it should get you
-> what you want
+> thanks,
 >
-> >
-> > > maybe add a switch to vmtest.sh for choosing flavor to run would be
-> > > better.
-> >
-> > I am not sure if we want to add a switch for everything. But I don't
-> > mind if folks think it would be useful.
-> >
-> > >
-> > >
-> > > >
-> > > >         # Mount the image and copy the selftests to the image.
-> > > >         mount_image
-> > > > --
-> > > > 2.35.1.616.g0bdcbb4464-goog
-> > > >
+> Mimi
+>
