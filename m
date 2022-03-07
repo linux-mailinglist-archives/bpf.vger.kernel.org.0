@@ -2,78 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E89B4D0014
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 14:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4DA4D0095
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 15:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229529AbiCGNbw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 08:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
+        id S240396AbiCGOB3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 09:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236126AbiCGNbv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 08:31:51 -0500
+        with ESMTP id S239786AbiCGOB2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 09:01:28 -0500
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F3877F6F4
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 05:30:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA03889333;
+        Mon,  7 Mar 2022 06:00:34 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C96746122D
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 13:30:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 509EAC340F3;
-        Mon,  7 Mar 2022 13:30:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 45E7F61266;
+        Mon,  7 Mar 2022 14:00:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54DF5C340EB;
+        Mon,  7 Mar 2022 14:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646659856;
-        bh=31+R4UnZ61SObhWIDQT9GnDaCSVSHfzKpVrsfw4E2Ug=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jV/PMZ4cOudyFd/TnyuXL7WghWMcSNT3fj4YTeuuONM87gHs92KR/5+ed0mocukVt
-         wqevJ2MK2tCiZaEWi/A7VcRZHdsbSJ57MbJuzn38FeuveBRY0GddmdzZHIFVxs2e4k
-         iSHMczr/d2XJFzxWSWh3Kcwh6MRYu8iCDyR3qKet9r551L5K8NSaW6aDhPwgm7gPat
-         8HSfEUSR2YtxtlOQoUreuNf8/4z3MjwodhY5JK3A++Lx1oNxdlfbRRhU9uN6HvXDS1
-         dmAo6oQ2J7nosd6UNeeMhgENUoCjiqPkIprwn1XMDHOIr4DltRIYjCs3wqyZiXO1IR
-         rQctaUP4Rni4A==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        s=k20201202; t=1646661633;
+        bh=AUTZ4SHzz2itvOQ5SUm88SHoX24HvJUW+0NaQzv8J3k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F2td//5fwB39fMMh4fLb1tfGTG7iJWRLyOteTNLVh3RSr7ZDvo6TI5EoHtEmkldr3
+         JHettZzepZj6pizKJFWpNJOPkrGYfw0hjj3nO54kOmGilLmflhHz/au6guRoCLiAQQ
+         xArwZmCN2pbLODGTDEdML7aYksfF62X6/rGLeSkwVGAsxhWkB9WOYHALLVuf7xhik/
+         T5c5EJY/3T3/j0OOwETzv0rktoa19OAdGNW7dC2pGwIr4m9qQltiOWS8z8i0lsO1vh
+         m0l5yJbkSfCHreDcZgmA7uz83N7gK2UvdAUiqHTfwMuSFL6tqoG2nJ0DYYqS2+hddc
+         4rmFvAw3Haetw==
+Date:   Mon, 7 Mar 2022 23:00:27 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/2] bpf/docs: Update list of architectures supported.
-Date:   Mon,  7 Mar 2022 13:30:48 +0000
-Message-Id: <20220307133048.1287644-2-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.35.1.616.g0bdcbb4464-goog
-In-Reply-To: <20220307133048.1287644-1-kpsingh@kernel.org>
-References: <20220307133048.1287644-1-kpsingh@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v9 02/11] fprobe: Add ftrace based probe APIs
+Message-Id: <20220307230027.679cca95a201b094e700716d@kernel.org>
+In-Reply-To: <YiYAw64nDTWB/V0t@krava>
+References: <164655933970.1674510.3809060481512713846.stgit@devnote2>
+        <164655936328.1674510.15506582463881824113.stgit@devnote2>
+        <YiYAw64nDTWB/V0t@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-vmtest.sh also supports s390x now.
+On Mon, 7 Mar 2022 13:55:31 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/README.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Sun, Mar 06, 2022 at 06:36:03PM +0900, Masami Hiramatsu wrote:
+> 
+> SNIP
+> 
+> > +}
+> > +NOKPROBE_SYMBOL(fprobe_handler);
+> > +
+> > +/* Convert ftrace location address from symbols */
+> > +static unsigned long *get_ftrace_locations(const char **syms, int num)
+> > +{
+> > +	unsigned long addr, size;
+> > +	unsigned long *addrs;
+> > +	int i;
+> > +
+> > +	/* Convert symbols to symbol address */
+> > +	addrs = kcalloc(num, sizeof(*addrs), GFP_KERNEL);
+> > +	if (!addrs)
+> > +		return ERR_PTR(-ENOMEM);
+> > +
+> > +	for (i = 0; i < num; i++) {
+> > +		addrs[i] = kallsyms_lookup_name(syms[i]);
+> > +		if (!addrs[i])	/* Maybe wrong symbol */
+> > +			goto error;
+> > +	}
+> > +
+> > +	/* Convert symbol address to ftrace location. */
+> > +	for (i = 0; i < num; i++) {
+> > +		if (!kallsyms_lookup_size_offset(addrs[i], &size, NULL) || !size)
+> > +			goto error;
+> > +		addr = ftrace_location_range(addrs[i], addrs[i] + size - 1);
+> > +		if (!addr) /* No dynamic ftrace there. */
+> > +			goto error;
+> > +		addrs[i] = addr;
+> > +	}
+> 
+> why not one just single loop ?
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index f7fa74448492..54410ef3fc1c 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -44,7 +44,7 @@ Incase of linker errors when running selftests, try using static linking:
-           If you want to change pahole and llvm, you can change `PATH` environment
-           variable in the beginning of script.
- 
--.. note:: The script currently only supports x86_64.
-+.. note:: The script currently only supports x86_64 and s390x architectures.
- 
- Additional information about selftest failures are
- documented here.
+Indeed :-D Thanks!
+
+> 
+> jirka
+> 
+> 
+> > +
+> > +	return addrs;
+> > +
+> > +error:
+> > +	kfree(addrs);
+> > +
+> > +	return ERR_PTR(-ENOENT);
+> > +}
+> > +
+> > +static void fprobe_init(struct fprobe *fp)
+> > +{
+> > +	fp->nmissed = 0;
+> > +	fp->ops.func = fprobe_handler;
+> > +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> > +}
+> 
+> SNIP
+
+
 -- 
-2.35.1.616.g0bdcbb4464-goog
-
+Masami Hiramatsu <mhiramat@kernel.org>
