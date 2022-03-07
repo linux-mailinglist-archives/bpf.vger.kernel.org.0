@@ -2,277 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4224CEEB6
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 00:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2328D4CEFDB
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 03:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234472AbiCFXo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 6 Mar 2022 18:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
+        id S234890AbiCGC6R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 6 Mar 2022 21:58:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbiCFXo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 6 Mar 2022 18:44:27 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF32441FA6;
-        Sun,  6 Mar 2022 15:43:31 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id n2so2779801plf.4;
-        Sun, 06 Mar 2022 15:43:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lJBUsmq/FnvtLIHjhXncbj5Tidl/UCuplMGGTlXujII=;
-        b=LQi92m9Afpnf1TM82RlMQxFYjgT3szmcMSDg2sQr/BnC9mXVyV9VbKDAdPfa40RKnz
-         SHwzoxd6RC5AwfNOh8syL+fTj1yP++/ShUCiGxyo5nHn/0DMX85x+26hJK1qhZDiTv6Y
-         Yr3XEMM+d3fn9xwQIpUTCNaq0TLe6QXeMEoa/lUy+R5xNuQbcDMpAiT/dEUe7+qVv3Hy
-         NcTcvcGXAOSR9eSEFIK5KB4eArj0JEDR7B0DPbs/Ylg+pjXljzCWePQNNaT/a58bZPmY
-         Iu13eLaei/BRSzLhNs2ukpMtarQX1vFowagoJv2ALwpqtZN0opRlHhScyFsj+jBzxfWy
-         jkuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lJBUsmq/FnvtLIHjhXncbj5Tidl/UCuplMGGTlXujII=;
-        b=M5EZij4657QiKS9aqkTpEzhxaqic0boPxYJe4kUaIawqcZE5J1P1D4Ucq3Mr4OHmLj
-         Niibvdc2Ygfk/OSTGuCXvPsMTBg/dIkTMD+cL2SdJwoxwn4cOCCVB2zeBlgJm5y33w7c
-         Li7gcz7ivbsgk5vFhGIsLRipQ0oSeL4yPvX1gkLimQvUOtzB891KdaslIR3mm3vwDLtD
-         rFJhjPPynMPlAP3E2ERzK9TyGWa2BvwAiF42Dbq+H5TAAVIK+A1XWHdWypAU95exUeME
-         UJ94H7JKo/IINO+sySdkk4WODPdXUDaAQcnFUTfh9z/Y3mPbOknlyCKqAlGSVmx9Ilr0
-         sncw==
-X-Gm-Message-State: AOAM5300o7CgSLZ3jpfMYAUnlTu007P3SRWAo8dLfRaEB0I+MC7N4/uc
-        ybm5GZKkj1I2R5ddqmnaIKO1mk7GGNQ=
-X-Google-Smtp-Source: ABdhPJxihHw79IwcWUHPwD503YUhnpkHhvXyT4+4bwOqEiG1Du8iSfrW3MOGY9klGUHDH05qTfKyzA==
-X-Received: by 2002:a17:903:4a:b0:151:be09:3de9 with SMTP id l10-20020a170903004a00b00151be093de9mr9484280pla.138.1646610211165;
-        Sun, 06 Mar 2022 15:43:31 -0800 (PST)
-Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
-        by smtp.gmail.com with ESMTPSA id e18-20020a63d952000000b00372a1295210sm9821274pgj.51.2022.03.06.15.43.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 06 Mar 2022 15:43:30 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S229844AbiCGC6R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 6 Mar 2022 21:58:17 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882C83AA7C;
+        Sun,  6 Mar 2022 18:57:23 -0800 (PST)
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 226Nvjef021551;
+        Mon, 7 Mar 2022 02:56:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=1eIJSI1NTmItcs+yInRgSiDCvd4xmWyeej3JLoJid00=;
+ b=jv8VDTxl4rByADG0VXUaLiX5/iEzdPz1RlCujzZ/1HHtQbwAUFy/KLa2YZnE0JKTG3It
+ p/zc4ax4K9T7eCskvNPvlc2i+S/zU+tRjwqUMo93yHDwE9+9yprZfbp20ZmQ+maIdFIz
+ 4Nx9FlBZ0JaoquPLPryktNUrhG6gQHwYChm5mDnBaO2whlRWdz8KGv0fMBN+Y+EmOvN4
+ x+1XxhaFJmFp38ur8KX/k3etJKskATqTU6c8YzRmx/gSw+eImDnt1y+JENDadaabYXXR
+ Qla3MKtoTfJ9jKJeSImz1kOKu+l5Now6x3PGP0vnCdeURbn3R52Fv7tSngNH7YdPzEgf 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3emsauugyy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Mar 2022 02:56:37 +0000
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2272rjs1027309;
+        Mon, 7 Mar 2022 02:56:37 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3emsauugy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Mar 2022 02:56:36 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2272oglG020550;
+        Mon, 7 Mar 2022 02:56:34 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ekyg8udmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Mar 2022 02:56:34 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2272uWlE54985058
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 7 Mar 2022 02:56:32 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EF4335204E;
+        Mon,  7 Mar 2022 02:56:31 +0000 (GMT)
+Received: from sig-9-65-93-47.ibm.com (unknown [9.65.93.47])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AA16752052;
+        Mon,  7 Mar 2022 02:56:29 +0000 (GMT)
+Message-ID: <40db9f74fd3c9c7b660e3a203c5a6eda08736d5b.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     KP Singh <kpsingh@kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
-        netdev@vger.kernel.org
-Subject: [PATCH bpf-next v1 5/5] selftests/bpf: Update xdp_adjust_frags to use bpf_packet_pointer
-Date:   Mon,  7 Mar 2022 05:13:11 +0530
-Message-Id: <20220306234311.452206-6-memxor@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220306234311.452206-1-memxor@gmail.com>
-References: <20220306234311.452206-1-memxor@gmail.com>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6576; h=from:subject; bh=OXZz41oVugK2/7L6N3ycV+OTCSur4CL6HLpmzD2oez4=; b=owEBbQKS/ZANAwAIAUzgyIZIvxHKAcsmYgBiJUWoJznMM5rS0a5JMG902uKhYP4qtu8Mca9o8Ucm coegemaJAjMEAAEIAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCYiVFqAAKCRBM4MiGSL8RyuxpEA COV26IS1uGo85apqHNO1zlSf8il4NxnYojYQ1jMEKDcqb+E+IPiUTuu26dWXLPdiSbms/zfJ/m3Uef WA7UKrOmO6+/a7IBtmpjbvSFGfauA29EjmWI4NwzwZCLE2sHXpoK1HbnPLdkvn5RsicATgaVjotdfN FUypDdl8l/r6+3uzT9E4mWJtHgZv2ERP5GPmE1dZdynm75eyfUlQLja0AtRbphjcF2gAUyvcht6EgJ 1LyJxO/Lz9g1yI4L2l7BZFfD4dCrrTo/LCFhvZq+L07JZoFABlc/vxVMVvtP7t4WxJwatLfUhNslf8 IuHKIGcwd00r9SQqZg+PoMqIuHYrGzSNKYBsxTbm2FXTTe0VdJIUvqPAc0kZB5uCuUFGxGhZBgcNbs B21TWnC//R1oJutDhkbUkWjgLnmmi2IvqjI40LxU/38WONXtZfr1Hlb2tr7po6aTsZaWHRqQDBVPip vT3qbJlQSTQqXJejU5YKKtEJFirhnQHeqricQ4MKaTj/Vycr21fVeHMmP9hAIo0RJjJYlPTFVJV1sV z7/+s3p8jIGTU2yGDBrKOgEzdCeiXQuq0bYQ5i9vxUG9ByIKxalB4BQ5hxdW8gVJnbD/HUdO1bEk6K hbWCoE16vlp+IumeqecBoLA5o0cAXS7ul9FTKjyD6JG6YTK40RgoKmyxVnng==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Florent Revest <revest@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florent Revest <revest@google.com>,
+        Kees Cook <keescook@chromium.org>
+Date:   Sun, 06 Mar 2022 21:56:29 -0500
+In-Reply-To: <CAADnVQKfh3Z1DXJ3PEjFheQWEDFOKQjuyx+pkvqe6MXEmo7YHQ@mail.gmail.com>
+References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+         <20220302222056.73dzw5lnapvfurxg@ast-mbp.dhcp.thefacebook.com>
+         <fe1d17e7e7d4b5e4cdeb9f96f5771ded23b7c8f0.camel@linux.ibm.com>
+         <CACYkzJ4fmJ4XtC6gx6k_Gjq0n5vjSJyq=L--H-Eho072HJoywA@mail.gmail.com>
+         <04d878d4b2441bb8a579a4191d8edc936c5a794a.camel@linux.ibm.com>
+         <CACYkzJ5RNDV582yt1xCZ8AQUW6v_o0Dtoc_XAQN1GXnoOmze6Q@mail.gmail.com>
+         <b6bf8463c1b370a5b5c9987ae1312fd930d36785.camel@linux.ibm.com>
+         <CAADnVQKfh3Z1DXJ3PEjFheQWEDFOKQjuyx+pkvqe6MXEmo7YHQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 1i1lsDYxbujpiuUY5lO0IzHm1pdBsxDU
+X-Proofpoint-ORIG-GUID: 9Vu05vBnzLx42nhBLQjdsKV_lX1PuNqU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-06_09,2022-03-04_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 mlxlogscore=999 clxscore=1015 mlxscore=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 bulkscore=0 suspectscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203070013
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test that in case of linear region, we always are able to do DPA without
-any errors. Note how offset is clamped to range [0, 0xffff] and len is a
-constant. Ensure that helper vs DPA is detected and tested.
+On Thu, 2022-03-03 at 14:39 -0800, Alexei Starovoitov wrote:
 
-Add a force_helper mode, that forces use of bpf_xdp_load_bytes and
-bpf_xdp_store_bytes instead of using bpf_packet_pointer, even for
-contiguous regions, to make sure that case keeps working.
+> . There is no such thing as "eBPF modules". There are BPF programs.
+> They cannot be signed the same way as kernel modules.
+> We've been working on providing a way to sign them for more
+> than a year now. That work is still ongoing.
+> 
+> . IMA cannot be used for integrity check of BPF programs for the same
+> reasons why kernel module like signing cannot be used.
 
-Also, we can take this opportunity to convert it to use BPF skeleton.
+I assume the issue isn't where the signature is stored (e.g. appended,
+xattr), but of calculating the hash.  Where is the discussion taking
+place?   Are there any summaries of what has been discussed?
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- .../bpf/prog_tests/xdp_adjust_frags.c         | 46 +++++++++++++------
- .../bpf/progs/test_xdp_update_frags.c         | 46 +++++++++++++------
- 2 files changed, 65 insertions(+), 27 deletions(-)
+FYI, IMA isn't limited to measuring files.  Support was added for
+buffer measurements (e.g kexec boot command line, certificates) and
+measuring kernel critical data (e.g. SELinux in memory policy & state,
+device mapper).
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-index 2f033da4cd45..cfb50a575b11 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_frags.c
-@@ -2,26 +2,24 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- 
--static void test_xdp_update_frags(void)
-+#include "test_xdp_update_frags.skel.h"
-+
-+static void test_xdp_update_frags(bool force_helper)
- {
--	const char *file = "./test_xdp_update_frags.o";
- 	int err, prog_fd, max_skb_frags, buf_size, num;
--	struct bpf_program *prog;
--	struct bpf_object *obj;
-+	LIBBPF_OPTS(bpf_test_run_opts, topts);
-+	struct test_xdp_update_frags *skel;
- 	__u32 *offset;
- 	__u8 *buf;
- 	FILE *f;
--	LIBBPF_OPTS(bpf_test_run_opts, topts);
- 
--	obj = bpf_object__open(file);
--	if (libbpf_get_error(obj))
-+	skel = test_xdp_update_frags__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_xdp_update_frags__open_and_load"))
- 		return;
- 
--	prog = bpf_object__next_program(obj, NULL);
--	if (bpf_object__load(obj))
--		return;
-+	skel->bss->force_helper = force_helper;
- 
--	prog_fd = bpf_program__fd(prog);
-+	prog_fd = bpf_program__fd(skel->progs.xdp_adjust_frags);
- 
- 	buf = malloc(128);
- 	if (!ASSERT_OK_PTR(buf, "alloc buf 128b"))
-@@ -45,6 +43,13 @@ static void test_xdp_update_frags(void)
- 	ASSERT_EQ(topts.retval, XDP_PASS, "xdp_update_frag retval");
- 	ASSERT_EQ(buf[16], 0xbb, "xdp_update_frag buf[16]");
- 	ASSERT_EQ(buf[31], 0xbb, "xdp_update_frag buf[31]");
-+	if (force_helper) {
-+		ASSERT_EQ(skel->bss->used_dpa, false, "did not use DPA");
-+		ASSERT_EQ(skel->bss->used_helper, true, "used helper");
-+	} else {
-+		ASSERT_EQ(skel->bss->used_dpa, true, "used DPA");
-+		ASSERT_EQ(skel->bss->used_helper, false, "did not use helper");
-+	}
- 
- 	free(buf);
- 
-@@ -70,6 +75,13 @@ static void test_xdp_update_frags(void)
- 	ASSERT_EQ(topts.retval, XDP_PASS, "xdp_update_frag retval");
- 	ASSERT_EQ(buf[5000], 0xbb, "xdp_update_frag buf[5000]");
- 	ASSERT_EQ(buf[5015], 0xbb, "xdp_update_frag buf[5015]");
-+	if (force_helper) {
-+		ASSERT_EQ(skel->bss->used_dpa, false, "did not use DPA");
-+		ASSERT_EQ(skel->bss->used_helper, true, "used helper");
-+	} else {
-+		ASSERT_EQ(skel->bss->used_dpa, true, "used DPA");
-+		ASSERT_EQ(skel->bss->used_helper, false, "did not use helper");
-+	}
- 
- 	memset(buf, 0, 9000);
- 	offset = (__u32 *)buf;
-@@ -84,6 +96,8 @@ static void test_xdp_update_frags(void)
- 	ASSERT_EQ(topts.retval, XDP_PASS, "xdp_update_frag retval");
- 	ASSERT_EQ(buf[3510], 0xbb, "xdp_update_frag buf[3510]");
- 	ASSERT_EQ(buf[3525], 0xbb, "xdp_update_frag buf[3525]");
-+	ASSERT_EQ(skel->bss->used_dpa, false, "did not use DPA");
-+	ASSERT_EQ(skel->bss->used_helper, true, "used helper");
- 
- 	memset(buf, 0, 9000);
- 	offset = (__u32 *)buf;
-@@ -98,6 +112,8 @@ static void test_xdp_update_frags(void)
- 	ASSERT_EQ(topts.retval, XDP_PASS, "xdp_update_frag retval");
- 	ASSERT_EQ(buf[7606], 0xbb, "xdp_update_frag buf[7606]");
- 	ASSERT_EQ(buf[7621], 0xbb, "xdp_update_frag buf[7621]");
-+	ASSERT_EQ(skel->bss->used_dpa, false, "did not use DPA");
-+	ASSERT_EQ(skel->bss->used_helper, true, "used helper");
- 
- 	free(buf);
- 
-@@ -136,11 +152,13 @@ static void test_xdp_update_frags(void)
- 		  "unsupported buf size, possible non-default /proc/sys/net/core/max_skb_flags?");
- 	free(buf);
- out:
--	bpf_object__close(obj);
-+	test_xdp_update_frags__destroy(skel);
- }
- 
- void test_xdp_adjust_frags(void)
- {
--	if (test__start_subtest("xdp_adjust_frags"))
--		test_xdp_update_frags();
-+	if (test__start_subtest("xdp_adjust_frags-force-nodpa"))
-+		test_xdp_update_frags(true);
-+	if (test__start_subtest("xdp_adjust_frags-dpa+memcpy"))
-+		test_xdp_update_frags(false);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-index 2a3496d8e327..1ad5c45e06e0 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_update_frags.c
-@@ -4,37 +4,57 @@
-  * modify it under the terms of version 2 of the GNU General Public
-  * License as published by the Free Software Foundation.
-  */
--#include <linux/bpf.h>
--#include <linux/if_ether.h>
-+#include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- 
- int _version SEC("version") = 1;
- 
-+bool force_helper;
-+bool used_dpa;
-+bool used_helper;
-+
-+#define XDP_LEN 16
-+
- SEC("xdp.frags")
- int xdp_adjust_frags(struct xdp_md *xdp)
- {
- 	__u8 *data_end = (void *)(long)xdp->data_end;
- 	__u8 *data = (void *)(long)xdp->data;
--	__u8 val[16] = {};
-+	__u8 val[XDP_LEN] = {};
-+	__u8 *ptr = NULL;
- 	__u32 offset;
- 	int err;
- 
-+	used_dpa = false;
-+	used_helper = false;
-+
- 	if (data + sizeof(__u32) > data_end)
- 		return XDP_DROP;
- 
- 	offset = *(__u32 *)data;
--	err = bpf_xdp_load_bytes(xdp, offset, val, sizeof(val));
--	if (err < 0)
-+	offset &= 0xffff;
-+	if (!force_helper)
-+		ptr = bpf_packet_pointer(xdp, offset, XDP_LEN);
-+	if (!ptr) {
-+		used_helper = true;
-+		err = bpf_xdp_load_bytes(xdp, offset, val, sizeof(val));
-+		if (err < 0)
-+			return XDP_DROP;
-+		ptr = val;
-+	} else {
-+		used_dpa = true;
-+	}
-+
-+	if (ptr[0] != 0xaa || ptr[15] != 0xaa) /* marker */
- 		return XDP_DROP;
- 
--	if (val[0] != 0xaa || val[15] != 0xaa) /* marker */
--		return XDP_DROP;
--
--	val[0] = 0xbb; /* update the marker */
--	val[15] = 0xbb;
--	err = bpf_xdp_store_bytes(xdp, offset, val, sizeof(val));
--	if (err < 0)
--		return XDP_DROP;
-+	ptr[0] = 0xbb; /* update the marker */
-+	ptr[15] = 0xbb;
-+	if (ptr == val) {
-+		err = bpf_xdp_store_bytes(xdp, offset, val, sizeof(val));
-+		if (err < 0)
-+			return XDP_DROP;
-+	}
- 
- 	return XDP_PASS;
- }
--- 
-2.35.1
+thanks,
+
+Mimi
 
