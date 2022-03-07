@@ -2,69 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555BC4D07AB
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 20:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D1A4D07AE
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 20:28:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239067AbiCGT2b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 14:28:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39924 "EHLO
+        id S239187AbiCGT3X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 14:29:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbiCGT2a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 14:28:30 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31B83FD08
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 11:27:34 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id s25so21994443lji.5
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 11:27:34 -0800 (PST)
+        with ESMTP id S232064AbiCGT3X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 14:29:23 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12D4AE47;
+        Mon,  7 Mar 2022 11:28:27 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id n19so6975053lfh.8;
+        Mon, 07 Mar 2022 11:28:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=SVBV2wZFJAjN2h9j0Z4F7Jopu2ak6HDZAwmIwXaGh1o=;
-        b=b3guF+X4TC+TdqPtkW12kFCkavbOOOW56cGgKmUIHum7T6rwaa1+RbjhNEjwgHpfLb
-         21h3Ap4cIwhxCiGf0ICLaAJnj9+V5Gno7TGr8zeo2/oskdQRKHAi5LrWx94LHOLMaL07
-         POBLxzfhK8Zkhi6RwaKYtcyIIVmvQeMoMObjy9W5jKqTLygmvhVuUy0Ijqdvm4P9uGaP
-         l4QB3vFDOij2gh11c/Xpkp24SJMXj1UfnVdY2/vi694x8xX+7YYhWPJxUoJEdvc6H3cz
-         LTYcsGTKp+jAALjL7gmrEPq93MArixMhwHuV32R5GMnH8IQ13EK2mCBFY4VzJWSzStA/
-         exyA==
+        bh=omZqi7W8GBGM2eccYGUpTeQjxUdxp7+vH2Lo2guanBs=;
+        b=goSMcWtZxitx+IOx7s+s1EalbPffLTFHgAZAcBAHgDEFK3kPuuanlPXq6tXQaxMxSl
+         DpRdNJgH26tPno5xEmgIxwEQabO7ckQZjUMYo4+GBpn786uPTkv4Pd/TRE3Hxa6bkubt
+         XlOtqqOQYmKex1V12ue4euXT+oe256HrVgjfyniXCff4YwIQRgV54uySMPJ6b+ar0bgE
+         Hwweo0ilQCNErKas3eVWt7OBBBSfgJ+elJU0U3ilfX1vMVD2dA9OyJBVOSYq0ptm3jC2
+         tFDoh8oSNO4iwsBaFRWg4gAaLU25locqme+cJLy6g2PPpINtBUXzaXwZOltSO8Bat8bY
+         J2tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=SVBV2wZFJAjN2h9j0Z4F7Jopu2ak6HDZAwmIwXaGh1o=;
-        b=oRrUB+dQ2RK9YglSRc0Qa86ZLXGzxJQyV9T/ZO+QQ0oYO9ut7srAZ8Ea90+qviSXOb
-         S8bWZoVHOMu5ZUgwodV72OBhn7CqZiT4IVwVpow4uQdmUZbGcW38L60qYkAiTjeLV8Bh
-         /G7vPRuXe/wFWZaBxGGdJ4paRPO91WvGlbGEYJCcFWkAl/3gIe9aXQHqjRYNAAetp11C
-         xANy0Ph1ovPGd2CV/9kw+KkQWqFMdm67s7n369LssZnDu3k8XBm7n4mf75OWLemjtzec
-         ue3FazLE6tWE332QR/dimdLbmjPj0CFIwI8UYR+fi1sWvo2db3Zbl2myqBIUDHeUtOWL
-         KjWA==
-X-Gm-Message-State: AOAM533rc8mKDNVOMLuVEFzEq1SVpd2W2iBr4e6aRXwbipn71hexETWa
-        BjzyVEvosP2jdSkO5MfAKLHVFPqrgKHUdb9hAoephQ6WwUoige+A
-X-Google-Smtp-Source: ABdhPJwlCRpT16fu20mg/MrXVr3UiSRNMzd+8h23r72AfO3t1sYz5AUlWa7TNhUOqODIfn89a8MDl1AI71zquuH1lls=
-X-Received: by 2002:a2e:871a:0:b0:246:ee2:1109 with SMTP id
- m26-20020a2e871a000000b002460ee21109mr8500427lji.165.1646681251621; Mon, 07
- Mar 2022 11:27:31 -0800 (PST)
+        bh=omZqi7W8GBGM2eccYGUpTeQjxUdxp7+vH2Lo2guanBs=;
+        b=dyRd61rvog1IjH7CAUemEx2qWCGLZjY8q4o9hZBhoIbSeoDvTluZQXOV7mgOjUEGmZ
+         NGEfrlcWURUSf7thrb4OqOsItRoXYltWZlaAGq87HmGgtiHh/KSt9WA2teZgDBSL0U2z
+         bIpX0onfejO/LgSblOPvL8KXHv91hzwcDe5oGVgaUlEGLflfzYJRo0dQhxxhn539roat
+         +gRSY9nKpiUEOjHVQv1LAf42SZwElnFVptrt07FMl9PBsS5hvUSl5Lg+G53q4yKQERxS
+         n9H8/d5vl8CTBJr2Iele8DbZ1dwFO6F8VDQH7UCN+JK8nyCC/MOP4RSOB1nQSo1yLVZY
+         Pw3A==
+X-Gm-Message-State: AOAM533c/L01FAOK2Hc6Mvfzn9ODQJ5jh1g2eXsepea/3mNo8fMkZ/kZ
+        8Gs2JfvaluKTzoQjqgZasjWZ4cTZffIlHQyt1Pw=
+X-Google-Smtp-Source: ABdhPJyYCfHgzA2i9xHcJ+K22YVF52g0oJflAsjJ1VHpeyVZqyjEw9oUTEZqrmqgSyFpj/dspfr1WkSzMebijNtJFeU=
+X-Received: by 2002:a19:9201:0:b0:443:c317:98ff with SMTP id
+ u1-20020a199201000000b00443c31798ffmr8462944lfd.331.1646681304873; Mon, 07
+ Mar 2022 11:28:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304224645.3677453-1-memxor@gmail.com> <20220304224645.3677453-6-memxor@gmail.com>
- <CAKwvOdnEyvjZn14WAPyL1O=S9C-LGx7aB3fYc7TAbgngfcXM5A@mail.gmail.com>
-In-Reply-To: <CAKwvOdnEyvjZn14WAPyL1O=S9C-LGx7aB3fYc7TAbgngfcXM5A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 7 Mar 2022 11:27:20 -0800
-Message-ID: <CAKwvOdnwiRdvTRA1Y30bzOsnwUyvSEbq+qT0tU4_vVHz=y_0Ng@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 5/8] compiler-clang.h: Add __diag
- infrastructure for clang
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>
+References: <20220306234311.452206-1-memxor@gmail.com> <20220306234311.452206-2-memxor@gmail.com>
+In-Reply-To: <20220306234311.452206-2-memxor@gmail.com>
+From:   Joanne Koong <joannelkoong@gmail.com>
+Date:   Mon, 7 Mar 2022 11:28:13 -0800
+Message-ID: <CAJnrk1au7dH--t4warkURJK7k=8=ZAtHyViOWFj2Nnu0dPkqjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/5] bpf: Add ARG_SCALAR and ARG_CONSTANT
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
+        netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,88 +73,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Also, please cc me and the llvm mailing list on all changes to
-include/linux/compiler-clang.h. I see now on lore there's further
-patches here than just this single patch I was cc'ed on.
+On Mon, Mar 7, 2022 at 1:24 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> In the next patch, we will introduce a new helper 'bpf_packet_pointer'
+> that takes offset and len and returns a packet pointer. There we want to
+> statically enforce offset is in range [0, 0xffff], and that len is a
+> constant value, in range [1, 0xffff]. This also helps us avoid a
+> pointless runtime check. To make these checks possible, we need to
+> ensure we only get a scalar type. Although a lot of other argument types
+> take scalars, their intent is different. Hence add general ARG_SCALAR
+> and ARG_CONSTANT types, where the latter is also checked to be constant
+> in addition to being scalar.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h   |  2 ++
+>  kernel/bpf/verifier.c | 13 +++++++++++++
+>  2 files changed, 15 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 88449fbbe063..7841d90b83df 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -391,6 +391,8 @@ enum bpf_arg_type {
+>         ARG_PTR_TO_STACK,       /* pointer to stack */
+>         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+>         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
+> +       ARG_SCALAR,             /* a scalar with any value(s) */
+> +       ARG_CONSTANT,           /* a scalar with constant value */
+>         __BPF_ARG_TYPE_MAX,
+>
 
-On Mon, Mar 7, 2022 at 11:25 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+Should we rename ARG_CONST_SIZE and ARG_CONST_SIZE_OR_ZERO to
+something like ARG_MEM_CONST_SIZE / ARG_MEM_CONST_SIZE_OR_ZERO to make
+the interface more explicit? I think that would make it less confusing
+to differentiate between ARG_CONST_SIZE and ARG_CONSTANT for arguments
+that describe the length/size but are not associated with a memory
+buffer.
+
+
+>         /* Extended arg_types. */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ec3a7b6c9515..0373d5bd240f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5163,6 +5163,12 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+>                type == ARG_PTR_TO_LONG;
+>  }
 >
-> On Fri, Mar 4, 2022 at 2:47 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> >
-> > From: Nathan Chancellor <nathan@kernel.org>
-> >
-> > Add __diag macros similar to those in compiler-gcc.h, so that warnings
-> > that need to be adjusted for specific cases but not globally can be
-> > ignored when building with clang.
-> >
-> > Cc: Nathan Chancellor <nathan@kernel.org>
-> > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > Cc: llvm@lists.linux.dev
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > [ Kartikeya: wrote commit message ]
-> > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > ---
-> >  include/linux/compiler-clang.h | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >
-> > diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
-> > index 3c4de9b6c6e3..f1aa41d520bd 100644
-> > --- a/include/linux/compiler-clang.h
-> > +++ b/include/linux/compiler-clang.h
+> +static bool arg_type_is_scalar(enum bpf_arg_type type)
+> +{
+> +       return type == ARG_SCALAR ||
+> +              type == ARG_CONSTANT;
+> +}
+> +
+
+I think this function name might be a bit misleading since
+ARG_CONST_SIZE / ARG_CONST_SIZE_OR_ZERO / ARG_CONST_ALLOC_SIZE_OR_ZERO
+are also scalar arg types. Maybe one alternative is to add a function
+"arg_type_is_const" and then in check_func_arg, enforce that if
+arg_type_is_const, then tnum_is_const(reg->var_off) must be true.
+WDYT?
+
+>  static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  {
+>         if (type == ARG_PTR_TO_INT)
+> @@ -5302,6 +5308,8 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>         [ARG_PTR_TO_STACK]              = &stack_ptr_types,
+>         [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+>         [ARG_PTR_TO_TIMER]              = &timer_types,
+> +       [ARG_SCALAR]                    = &scalar_types,
+> +       [ARG_CONSTANT]                  = &scalar_types,
+>  };
 >
-> The equivalent functionality for GCC has
-> 357 #ifndef __diag_GCC
-> 358 #define __diag_GCC(version, severity, string)
-> 359 #endif
-> in include/linux/compiler_types.h. Should this patch as well? (at
-> least #define __diag_clang`)?
+>  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> @@ -5635,6 +5643,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                         verbose(env, "string is not zero-terminated\n");
+>                         return -EINVAL;
+>                 }
+> +       } else if (arg_type_is_scalar(arg_type)) {
+> +               if (arg_type == ARG_CONSTANT && !tnum_is_const(reg->var_off)) {
+> +                       verbose(env, "R%d is not a known constant\n", regno);
+> +                       return -EACCES;
+> +               }
+>         }
 >
-> > @@ -68,3 +68,25 @@
-> >
-> >  #define __nocfi                __attribute__((__no_sanitize__("cfi")))
-> >  #define __cficanonical __attribute__((__cfi_canonical_jump_table__))
-> > +
-> > +/*
-> > + * Turn individual warnings and errors on and off locally, depending
-> > + * on version.
-> > + */
-> > +#define __diag_clang(version, severity, s) \
-> > +       __diag_clang_ ## version(__diag_clang_ ## severity s)
-> > +
-> > +/* Severity used in pragma directives */
-> > +#define __diag_clang_ignore    ignored
-> > +#define __diag_clang_warn      warning
-> > +#define __diag_clang_error     error
->
-> These severities match GCC. I wonder if rather than copy+pasting these
-> over, we could rework __diag_ignore, __diag_warn, and __diag_error to
-> not invoke a compiler-suffixed macro and rather pass the compiler
-> along (or make it implicit since we know CONFIG_CC_IS_CLANG vs
-> CONFIG_CC_IS_GCC)?  We can probably land this than follow up on better
-> code-reuse between compilers for diagnostics.
->
-> > +
-> > +#define __diag_str1(s)         #s
-> > +#define __diag_str(s)          __diag_str1(s)
-> > +#define __diag(s)              _Pragma(__diag_str(clang diagnostic s))
-> > +
-> > +#if CONFIG_CLANG_VERSION >= 110000
-> > +#define __diag_clang_11(s)     __diag(s)
-> > +#else
-> > +#define __diag_clang_11(s)
-> > +#endif
-> > --
-> > 2.35.1
-> >
->
->
+>         return err;
 > --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> 2.35.1
+>
