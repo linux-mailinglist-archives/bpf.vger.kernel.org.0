@@ -2,115 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A524D05FF
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 19:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4FA4D0608
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 19:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241416AbiCGSIm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 13:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
+        id S244526AbiCGSM7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 13:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240194AbiCGSIk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 13:08:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 088A413EAC
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 10:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646676465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RvaTFVFlhoWCYTtn8OjDRzgolmWJtqhRLewxCkbzX6U=;
-        b=S1V4kH34NCaqJlSSdU+O5yYEp1Pd1VQvRZHTctgahh69R8LJ2MVeMo894SwYUq14gY1ZjI
-        rN2ai4IoreolhSfKUArhMS6j1sOW4tosmVhFfSpxMUy6E3pIgLgLIeYzdy7zUWqYqETXJ0
-        JSSgc82U9z0F++DDEmgOLW8FQ5t6TJE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-333-za6doQzqNiaW0mS1R-7r2g-1; Mon, 07 Mar 2022 13:07:44 -0500
-X-MC-Unique: za6doQzqNiaW0mS1R-7r2g-1
-Received: by mail-ej1-f71.google.com with SMTP id ga31-20020a1709070c1f00b006cec400422fso7345447ejc.22
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 10:07:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=RvaTFVFlhoWCYTtn8OjDRzgolmWJtqhRLewxCkbzX6U=;
-        b=T/44z1YOeBKHIM6yUmPw0RI3O9NI27vKSkCK9yLjko/B3xEjZ6f1o53nYKg0vfaDA0
-         UTYL4LzhgWH+5ivvzfDt533b2t07Ob75uHtEDN6H+LKtmBHUuR7NUbHZBlYnvYZoTMFg
-         aipAJBUs4/AA8HGInxIWvAZvDM8jcHmp3FhcNpSM+qAHlfI7UhbbV8iwD7dxp0nERKJY
-         ADoFfmK2NA2U302rGQvk7hkeG9DUQmSWsvfxka8Q22GPAIEx5uDglm0Nmdj32dJULXmE
-         B04wjEBaSjuAShUM/KL0k7QV/HkjfwJizqfezuesvtnA6IiLjhC3Sr/Gm0sGgGrDshBh
-         pJAQ==
-X-Gm-Message-State: AOAM531XWj/2Wnqx9xbbkramjRvWLtBe1tPvcwgfnlUqt0TZZvsvcWhM
-        rMDthjEOWcIRdKJeOsyLdvYbQ8g32qVcayTZG/uHwXQAXZUvusTC5ECHNN8OhnQUgAVj0Hn3pHr
-        W0DZkkh/BaCQE
-X-Received: by 2002:a50:fc12:0:b0:415:cf24:f6c2 with SMTP id i18-20020a50fc12000000b00415cf24f6c2mr12261336edr.3.1646676460438;
-        Mon, 07 Mar 2022 10:07:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzj/pMyeLnO+AfEn2FN0t9A3R2NI1Knsz32MsTNlmQ9802qYDQkMJbnNQPxXHlXJvIMBYiyYw==
-X-Received: by 2002:a50:fc12:0:b0:415:cf24:f6c2 with SMTP id i18-20020a50fc12000000b00415cf24f6c2mr12261215edr.3.1646676458949;
-        Mon, 07 Mar 2022 10:07:38 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id i14-20020a50cfce000000b00415b0730921sm6701819edk.42.2022.03.07.10.07.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 10:07:38 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C2ED3131FDB; Mon,  7 Mar 2022 19:07:37 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH net] xdp: xdp_mem_allocator can be NULL in
- trace_mem_connect().
-In-Reply-To: <YiZIEVTRMQVYe8DP@linutronix.de>
-References: <YiC0BwndXiwxGDNz@linutronix.de> <875yovdtm4.fsf@toke.dk>
- <YiDM0WRlWuM2jjNJ@linutronix.de> <87y21l7lmr.fsf@toke.dk>
- <YiZIEVTRMQVYe8DP@linutronix.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 07 Mar 2022 19:07:37 +0100
-Message-ID: <87sfrt7i1i.fsf@toke.dk>
+        with ESMTP id S241596AbiCGSM6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 13:12:58 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFA5265813;
+        Mon,  7 Mar 2022 10:12:03 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7B154612D8;
+        Mon,  7 Mar 2022 18:12:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4755C340EF;
+        Mon,  7 Mar 2022 18:12:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646676722;
+        bh=7SnCPkdwsxJGwpkdFqlHuUuDSdeXpOUHPBz01VNaJaE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uEGbH611keqViMtcvSDFfr04yicHxU+HboFesqdEiydQBak3alHEjkzuKTxpzPGla
+         3pMmSIxsb3NxypO7rjoFWjjTNLHIX6nmFSkkH4wZXmF7ZB028kTBBdqOJ/rMbHu+X+
+         BDbhxVhTw8AGyjKAR6vBiPFFfjjzfIMp5ULo9OY1abxANhVz9xryZY0QLs8zNnKN9V
+         g4+k7MheWv5Mt6jQFMEG7lhWbTjj4OG/527rGF+IB1Ll7I+W7w9eaXRQg64lkN748R
+         GXmM4mZyVp82jCm841EXGRBQrdm306+l67gXeZxnBMfLznjcwMshImBfm9vQ0HxsaL
+         +a4fVodNPsHvA==
+Received: by mail-yb1-f170.google.com with SMTP id l2so13190233ybe.8;
+        Mon, 07 Mar 2022 10:12:02 -0800 (PST)
+X-Gm-Message-State: AOAM532L66tU+k/9qKud/syfLhoVLo3D3RjqxA5KEFWSCh0nEWYtBDPV
+        knhJ7ETIHq1kHbQhtaJpk204SoJI3BpcfSI+XoQ=
+X-Google-Smtp-Source: ABdhPJwILUMoOgkBhUjC+vc910B4Xeebwa3HBZyw9YZNJbz9I1ydBkpMbaTWiwiyIzw/MiTvG/mOEQeCZrB2btDc64E=
+X-Received: by 2002:a25:8b81:0:b0:629:17d5:68c1 with SMTP id
+ j1-20020a258b81000000b0062917d568c1mr8199079ybl.449.1646676721862; Mon, 07
+ Mar 2022 10:12:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+ <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com> <CAO-hwJJkhxDAhT_cwo=Tkx8_=B-MuS=_enByj1t6GEuXD9Lj5Q@mail.gmail.com>
+In-Reply-To: <CAO-hwJJkhxDAhT_cwo=Tkx8_=B-MuS=_enByj1t6GEuXD9Lj5Q@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 7 Mar 2022 10:11:51 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW54ytOFrpW8+2kTuxNxu+-7JNmybCpbU=uG+un+-Xpw4A@mail.gmail.com>
+Message-ID: <CAPhsuW54ytOFrpW8+2kTuxNxu+-7JNmybCpbU=uG+un+-Xpw4A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 00/28] Introduce eBPF support for HID devices
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
-
-> On 2022-03-07 17:50:04 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->>=20
->> Right, looking at the code again, the id is only assigned in the path
->> that doesn't return NULL from __xdp_reg_mem_model().
->>=20
->> Given that the trace points were put in specifically to be able to pair
->> connect/disconnect using the IDs, I don't think there's any use to
->> creating the events if there's no ID, so I think we should fix it by
->> skipping the trace event entirely if xdp_alloc is NULL.
+On Sat, Mar 5, 2022 at 2:23 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+> > >
+> >
+> > The set looks good so far. I will review the rest later.
+> >
+> > [...]
+> >
+> > A quick note about how we organize these patches. Maybe we can
+> > merge some of these patches like:
 >
-> This sounds like a reasonable explanation. If nobody disagrees then I
-> post a new patch tomorrow and try to recycle some of what you wrote :)
+> Just to be sure we are talking about the same thing: you mean squash
+> the patch together?
 
-SGTM :)
+Right, squash some patches together.
 
--Toke
+>
+> >
+> > >   bpf: introduce hid program type
+> > >   bpf/hid: add a new attach type to change the report descriptor
+> > >   bpf/hid: add new BPF type to trigger commands from userspace
+> > I guess the three can merge into one.
+> >
+> > >   HID: hook up with bpf
+> > >   HID: allow to change the report descriptor from an eBPF program
+> > >   HID: bpf: compute only the required buffer size for the device
+> > >   HID: bpf: only call hid_bpf_raw_event() if a ctx is available
+> > I haven't read through all of them, but I guess they can probably merge
+> > as well.
+>
+> There are certainly patches that we could squash together (3 and 4
+> from this list into the previous ones), but I'd like to keep some sort
+> of granularity here to not have a patch bomb that gets harder to come
+> back later.
 
+Totally agreed with the granularity of patches. I am not a big fan of patch
+bombs either. :)
+
+I guess the problem I have with the current version is that I don't have a
+big picture of the design while reading through relatively big patches. A
+overview with the following information in the cover letter would be really
+help here:
+  1. How different types of programs are triggered (IRQ, user input, etc.);
+  2. What are the operations and/or outcomes of these programs;
+  3. How would programs of different types (or attach types) interact
+   with each other (via bpf maps? chaining?)
+  4. What's the new uapi;
+  5. New helpers and other logistics
+
+Sometimes, I find the changes to uapi are the key for me to understand the
+patches, and I would like to see one or two patches with all the UAPI
+changes (i.e. bpf_hid_attach_type). However, that may or may not apply to
+this set due to granularity concerns.
+
+Does this make sense?
+
+Thanks,
+Song
+
+
+
+
+>
+> >
+> > >   libbpf: add HID program type and API
+> > >   libbpf: add new attach type BPF_HID_RDESC_FIXUP
+> > >   libbpf: add new attach type BPF_HID_USER_EVENT
+> > There 3 can merge, and maybe also the one below
+> > >   libbpf: add handling for BPF_F_INSERT_HEAD in HID programs
+>
+> Yeah, the libbpf changes are small enough to not really justify
+> separate patches.
+>
+> >
+> > >   samples/bpf: add new hid_mouse example
+> > >   samples/bpf: add a report descriptor fixup
+> > >   samples/bpf: fix bpf_program__attach_hid() api change
+> > Maybe it makes sense to merge these 3?
+>
+> Sure, why not.
+>
+> >
+> > >   bpf/hid: add hid_{get|set}_data helpers
+> > >   HID: bpf: implement hid_bpf_get|set_data
+> > >   bpf/hid: add bpf_hid_raw_request helper function
+> > >   HID: add implementation of bpf_hid_raw_request
+> > We can have 1 or 2 patches for these helpers
+>
+> OK, the patches should be self-contained enough.
+>
+> >
+> > >   selftests/bpf: add tests for the HID-bpf initial implementation
+> > >   selftests/bpf: add report descriptor fixup tests
+> > >   selftests/bpf: add tests for hid_{get|set}_data helpers
+> > >   selftests/bpf: add test for user call of HID bpf programs
+> > >   selftests/bpf: hid: rely on uhid event to know if a test device is
+> > >     ready
+> > >   selftests/bpf: add tests for bpf_hid_hw_request
+> > >   selftests/bpf: Add a test for BPF_F_INSERT_HEAD
+> > These selftests could also merge into 1 or 2 patches I guess.
+>
+> I'd still like to link them to the granularity of the bpf changes, so
+> I can refer a selftest change to a specific commit/functionality
+> added. But that's just my personal taste, and I can be convinced
+> otherwise. This should give us maybe 4 patches instead of 7.
+>
+> >
+> > I understand rearranging these patches may take quite some effort.
+> > But I do feel that's a cleaner approach (from someone doesn't know
+> > much about HID). If you really hate it that way, we can discuss...
+> >
+>
+> No worries. I don't mind iterating on the series. IIRC I already
+> rewrote it twice from scratch, and that's when the selftests I
+> introduced in the second rewrite were tremendously helpful :) And
+> honestly I don't think it'll be too much effort to reorder/squash the
+> patches given that the v2 is *very* granular.
+>
+> Anyway, I prefer having the reviewers happy so we can have a solid
+> rock API from day 1 than keeping it obscure for everyone and having to
+> deal with design issues forever. So if it takes 10 or 20 revisions to
+> have everybody on the same page, that's fine with me (not that I want
+> to have that many revisions, just that I won't be afraid of the
+> bikeshedding we might have at some point).
+>
+> Cheers,
+> Benjamin
+>
