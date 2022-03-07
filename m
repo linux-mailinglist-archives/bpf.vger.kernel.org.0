@@ -2,228 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DF84D06B1
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 19:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B08FE4D07A7
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 20:25:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240835AbiCGSkv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 13:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
+        id S232023AbiCGT01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 14:26:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbiCGSku (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 13:40:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCDB529CAE
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 10:39:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646678394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9ZYITTVdz5E4+MP8QXGV8rdQvoNIDdLo/xFs/aMEjrI=;
-        b=Ue/uiHYWByMxQmXTJK1ir1dy3J1MVsGs8DTYJDRpYuwGfXV3nZpvipfQZ5Vdf0gg6zCSju
-        UQeVzTcd7cKPfdR993gSVnF8ttzXlFU8hciIKqDltvWXbiltvSD0mbqQHdqHrZTtosqqOH
-        86chIa6SZv/0sCtlP8hE+vW7p+1Qbwc=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-648-ejoO4782NlGlqfekg4xxKw-1; Mon, 07 Mar 2022 13:39:52 -0500
-X-MC-Unique: ejoO4782NlGlqfekg4xxKw-1
-Received: by mail-pf1-f200.google.com with SMTP id h128-20020a625386000000b004f10a219a98so10870560pfb.0
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 10:39:52 -0800 (PST)
+        with ESMTP id S232064AbiCGT00 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 14:26:26 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418CE4DF55
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 11:25:30 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id bn33so21985742ljb.6
+        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 11:25:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zde+bArhl6iHnfeDcrHDIvktUnraUGyUCuxigU/BOkY=;
+        b=KhRk/1V7uwjfSpHh19Rrs/JpqMPgVDx+fFU9lWjxPiYuzbX/u4MIPZigCcKkR1w/Fi
+         OkkTbXKKY+Wx/7SApjnQ59ozRVWfXnYGQXwuJN4mx22VG83lFlUNPxQXTZkMY3PbMjk6
+         uSqe2Jm0pS2Qd6/sCTdLQLOxKcBqeGyA11xvCbmB7EmfWUXR3TbIzBcWxB2baiQJ3nye
+         MjQGpqxjvGM8ThoYzduO3f/qsZ1DmcDQi5tbsvtYsPZsXiIt3Gq2yCnYzPFgySyIghbR
+         MPIFy4hOZ/qulEQcCjpRD//grvSJDtA8JmwssrL5h1qYrwK61j4vYSTWXT4009RI9grG
+         9laA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9ZYITTVdz5E4+MP8QXGV8rdQvoNIDdLo/xFs/aMEjrI=;
-        b=6MPDf5DZ4dQek+Pll1peA+3OS4XS8cFifuAo2bWPd/euBebWKKfTSlBLjMVK/AqwEC
-         79FHhAcJ1AD1UIhLA2SZnphRluWoEuCMoLPcDtpP6dT9yTMewhCvn42KDwiGi23CdlT2
-         nVcnpJsn8ISe6iKEtj62PgxgVf2r1KeACbPtju5ACIJfGA3TT2+iE0Qb1G92KYVqpSgP
-         kKxfQcr6BrkawrsFE07OP8+RiSnF+MhLN/nbRh08/IwLR/smNoNTwfHE4RCGdEcveS5F
-         rClOI2WAmDuxMvYtdVlxCW2npSLZ0A4j0eDCS4dmu93NvOCm4iQvLWoxCdFQn2xkSBOd
-         eBdQ==
-X-Gm-Message-State: AOAM533DuyC7j+6mjQynxLPolPr1XfnqI+RHhx7OmVqmaKHVaP1t4bB2
-        vvV59MVlWjd1hrslCdTlROgYPoGyKuwn5MjpTHZPtDmBPL0K3DLrH/K4azlz0cB6YCL6evMPuDg
-        rLwmhvfkTkKZEhkm/aaOmqBMx7jJE
-X-Received: by 2002:a17:90a:dac2:b0:1bd:fecf:6bd1 with SMTP id g2-20020a17090adac200b001bdfecf6bd1mr301660pjx.113.1646678391742;
-        Mon, 07 Mar 2022 10:39:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzDDHIBz07WN3CzLDgk3mGB0kBAncDY+MW2K8mom6cbKR7neISU8OXSB6QzhoWCCgjgI/vefNzYDogresVc6J4=
-X-Received: by 2002:a17:90a:dac2:b0:1bd:fecf:6bd1 with SMTP id
- g2-20020a17090adac200b001bdfecf6bd1mr301626pjx.113.1646678391376; Mon, 07 Mar
- 2022 10:39:51 -0800 (PST)
+        bh=Zde+bArhl6iHnfeDcrHDIvktUnraUGyUCuxigU/BOkY=;
+        b=63YX5yt6q0G3Xde9sbuPN1HQwv6+ddLUzH9tgpjgiwMPPvb2pM4TD+JgIN5558cvIX
+         2ZbMdGsPUkKiX232DgY6pRru8dPBcy6+sDLl7MVJttyddwoHl8OS/e7NSUsD/vRycLz2
+         HlHoA+5ssmjxptOLp5rFTIVLlyC9rXCb5hPYmL8/HC81VAg9JZJ1prLoT15rZe1cwlH1
+         L4TlLmrUk5ZL6OfRA32JmuHWsHsC8fCOUem0Bq/p85TdMc3PsM6wso7er1V6cRzcoOI2
+         o5Sb3aenCtNk8knv0mfvGBXEY+QlU70yCJ4cs9+at2l1+6WdjsLUP2Urtcuvl67GcXBW
+         Of8Q==
+X-Gm-Message-State: AOAM531ig7gkyoOuI+z2PpPTwU2sUmmJC4Xy/Q/ytcKEsOTfTODRk2ex
+        oNJYQL3SpdReBzNz6FcNdGXWH9g9qfX3t3TOfpJfMga7X3FgWf2O
+X-Google-Smtp-Source: ABdhPJwNfCjyiif9DMrdPtATO6xJkrKid3s/RoxeqvVrxuHQFLXwY58EUFhAM8dhqrn7AT08/Q6wAXy+HzCq3lENTVI=
+X-Received: by 2002:a2e:bf24:0:b0:246:801e:39d3 with SMTP id
+ c36-20020a2ebf24000000b00246801e39d3mr8338955ljr.472.1646681127052; Mon, 07
+ Mar 2022 11:25:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-3-benjamin.tissoires@redhat.com> <CAPhsuW5CYF9isR4ffRdm3xA_n_FBoL+AGFkzNn4dn2LgRaQQkg@mail.gmail.com>
-In-Reply-To: <CAPhsuW5CYF9isR4ffRdm3xA_n_FBoL+AGFkzNn4dn2LgRaQQkg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Mon, 7 Mar 2022 19:39:40 +0100
-Message-ID: <CAO-hwJKFE4Ps962BBubn8=1K0k9mC2qi8VerFbZo1sqpp6yekg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/28] bpf: introduce hid program type
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20220304224645.3677453-1-memxor@gmail.com> <20220304224645.3677453-6-memxor@gmail.com>
+In-Reply-To: <20220304224645.3677453-6-memxor@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 7 Mar 2022 11:25:15 -0800
+Message-ID: <CAKwvOdnEyvjZn14WAPyL1O=S9C-LGx7aB3fYc7TAbgngfcXM5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 5/8] compiler-clang.h: Add __diag
+ infrastructure for clang
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
+        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Mar 5, 2022 at 1:03 AM Song Liu <song@kernel.org> wrote:
+On Fri, Mar 4, 2022 at 2:47 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 >
-> On Fri, Mar 4, 2022 at 9:31 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> >
-> > HID is a protocol that could benefit from using BPF too.
+> From: Nathan Chancellor <nathan@kernel.org>
 >
-> [...]
+> Add __diag macros similar to those in compiler-gcc.h, so that warnings
+> that need to be adjusted for specific cases but not globally can be
+> ignored when building with clang.
 >
-> > +#include <linux/list.h>
-> > +#include <linux/slab.h>
-> > +
-> > +struct bpf_prog;
-> > +struct bpf_prog_array;
-> > +struct hid_device;
-> > +
-> > +enum bpf_hid_attach_type {
-> > +       BPF_HID_ATTACH_INVALID = -1,
-> > +       BPF_HID_ATTACH_DEVICE_EVENT = 0,
-> > +       MAX_BPF_HID_ATTACH_TYPE
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: llvm@lists.linux.dev
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+> [ Kartikeya: wrote commit message ]
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/compiler-clang.h | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
 >
-> Is it typical to have different BPF programs for different attach types?
-> Otherwise, (different types may have similar BPF programs), maybe
-> we can pass type as an argument to the program (shared among
-> different types)?
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index 3c4de9b6c6e3..f1aa41d520bd 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
 
-Not quite sure I am entirely following you, but I consider the various
-attach types to be quite different and thus you can not really reuse
-the same BPF program with 2 different attach types.
+The equivalent functionality for GCC has
+357 #ifndef __diag_GCC
+358 #define __diag_GCC(version, severity, string)
+359 #endif
+in include/linux/compiler_types.h. Should this patch as well? (at
+least #define __diag_clang`)?
 
-In my view, we have 4 attach types:
-- BPF_HID_ATTACH_DEVICE_EVENT: called whenever we receive an IRQ from
-the given device (so this is net-like event stream)
-- BPF_HID_ATTACH_RDESC_FIXUP: there can be only one of this type, and
-this is called to change the device capabilities. So you can not reuse
-the other programs for this one
-- BPF_HID_ATTACH_USER_EVENT: called explicitly by the userspace
-process owning the program. There we can use functions that are
-sleeping (we are not in IRQ context), so this is also fundamentally
-different from the 3 others.
-- BPF_HID_ATTACH_DRIVER_EVENT: whenever the driver gets called into,
-we get a bpf program run. This can be suspend/resume, or even specific
-request to the device (change a feature on the device or get its
-current state). Again, IMO fundamentally different from the others.
-
-So I'm open to any suggestions, but if we can keep the userspace API
-being defined with different SEC in libbpf, that would be the best.
-
+> @@ -68,3 +68,25 @@
 >
-> [...]
->
-> > +struct hid_device;
-> > +
-> > +enum hid_bpf_event {
-> > +       HID_BPF_UNDEF = 0,
-> > +       HID_BPF_DEVICE_EVENT,           /* when attach type is BPF_HID_DEVICE_EVENT */
-> > +};
-> > +
-> > +struct hid_bpf_ctx {
-> > +       enum hid_bpf_event type;        /* read-only */
-> > +       __u16 allocated_size;           /* the allocated size of data below (RO) */
->
-> There is a (6-byte?) hole here.
->
-> > +       struct hid_device *hdev;        /* read-only */
-> > +
-> > +       __u16 size;                     /* used size in data (RW) */
-> > +       __u8 data[];                    /* data buffer (RW) */
-> > +};
->
-> Do we really need hit_bpf_ctx in uapi? Maybe we can just use it
-> from vmlinuxh?
+>  #define __nocfi                __attribute__((__no_sanitize__("cfi")))
+>  #define __cficanonical __attribute__((__cfi_canonical_jump_table__))
+> +
+> +/*
+> + * Turn individual warnings and errors on and off locally, depending
+> + * on version.
+> + */
+> +#define __diag_clang(version, severity, s) \
+> +       __diag_clang_ ## version(__diag_clang_ ## severity s)
+> +
+> +/* Severity used in pragma directives */
+> +#define __diag_clang_ignore    ignored
+> +#define __diag_clang_warn      warning
+> +#define __diag_clang_error     error
 
-I had a thought at this context today, and I think I am getting to the
-limit of what I understand.
+These severities match GCC. I wonder if rather than copy+pasting these
+over, we could rework __diag_ignore, __diag_warn, and __diag_error to
+not invoke a compiler-suffixed macro and rather pass the compiler
+along (or make it implicit since we know CONFIG_CC_IS_CLANG vs
+CONFIG_CC_IS_GCC)?  We can probably land this than follow up on better
+code-reuse between compilers for diagnostics.
 
-My first worry is that the way I wrote it there, with a variable data
-field length is that this is not forward compatible. Unless BTF and
-CORE are making magic, this will bite me in the long run IMO.
-
-But then, you are talking about not using uapi, and I am starting to
-wonder: am I doing the things correctly?
-
-To solve my first issue (and the weird API I had to introduce in the
-bpf_hid_get/set_data), I came up to the following:
-instead of exporting the data directly in the context, I could create
-a helper bpf_hid_get_data_buf(ctx, const uint size) that returns a
-RET_PTR_TO_ALLOC_MEM_OR_NULL in the same way bpf_ringbuf_reserve()
-does.
-
-This way, I can directly access the fields within the bpf program
-without having to worry about the size.
-
-But now, I am wondering whether the uapi I defined here is correct in
-the way CORE works.
-
-My goal is to have HID-BPF programs to be CORE compatible, and not
-have to recompile them depending on the underlying kernel.
-
-I can not understand right now if I need to add some other BTF helpers
-in the same way the access to struct xdp_md and struct xdp_buff are
-converted between one and other, or if defining a forward compatible
-struct hid_bpf_ctx is enough.
-As far as I understand, .convert_ctx_access allows to export a stable
-uapi to the bpf prog users with the verifier doing the conversion
-between the structs for me. But is this really required for all the
-BPF programs if we want them to be CORE?
-
-Also, I am starting to wonder if I should not hide fields in the
-context to the users. The .data field could be a pointer and only
-accessed through the helper I mentioned above. This would be forward
-compatible, and also allows to use whatever available memory in the
-kernel to be forwarded to the BPF program. This way I can skip the
-memcpy part and work directly with the incoming dma data buffer from
-the IRQ.
-
-But is it best practice to do such a thing?
-
-Cheers,
-Benjamin
-
->
-> [...]
->
-> > +
-> > +static bool hid_is_valid_access(int off, int size,
-> > +                               enum bpf_access_type access_type,
-> > +                               const struct bpf_prog *prog,
-> > +                               struct bpf_insn_access_aux *info)
-> > +{
-> > +       /* everything not in ctx is prohibited */
-> > +       if (off < 0 || off + size > sizeof(struct hid_bpf_ctx) + HID_BPF_MIN_BUFFER_SIZE)
-> > +               return false;
->
-> Mabe add the following here to fail unaligned accesses
->
->         if (off % size != 0)
->                 return false;
-> [...]
+> +
+> +#define __diag_str1(s)         #s
+> +#define __diag_str(s)          __diag_str1(s)
+> +#define __diag(s)              _Pragma(__diag_str(clang diagnostic s))
+> +
+> +#if CONFIG_CLANG_VERSION >= 110000
+> +#define __diag_clang_11(s)     __diag(s)
+> +#else
+> +#define __diag_clang_11(s)
+> +#endif
+> --
+> 2.35.1
 >
 
+
+-- 
+Thanks,
+~Nick Desaulniers
