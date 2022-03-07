@@ -2,163 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D1A4D07AE
-	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 20:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 236D84D07BC
+	for <lists+bpf@lfdr.de>; Mon,  7 Mar 2022 20:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239187AbiCGT3X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 14:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
+        id S245111AbiCGTbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 14:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbiCGT3X (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 14:29:23 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12D4AE47;
-        Mon,  7 Mar 2022 11:28:27 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id n19so6975053lfh.8;
-        Mon, 07 Mar 2022 11:28:27 -0800 (PST)
+        with ESMTP id S229747AbiCGTbW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 14:31:22 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39ED47E0B3
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 11:30:28 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id bx5so14944225pjb.3
+        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 11:30:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=omZqi7W8GBGM2eccYGUpTeQjxUdxp7+vH2Lo2guanBs=;
-        b=goSMcWtZxitx+IOx7s+s1EalbPffLTFHgAZAcBAHgDEFK3kPuuanlPXq6tXQaxMxSl
-         DpRdNJgH26tPno5xEmgIxwEQabO7ckQZjUMYo4+GBpn786uPTkv4Pd/TRE3Hxa6bkubt
-         XlOtqqOQYmKex1V12ue4euXT+oe256HrVgjfyniXCff4YwIQRgV54uySMPJ6b+ar0bgE
-         Hwweo0ilQCNErKas3eVWt7OBBBSfgJ+elJU0U3ilfX1vMVD2dA9OyJBVOSYq0ptm3jC2
-         tFDoh8oSNO4iwsBaFRWg4gAaLU25locqme+cJLy6g2PPpINtBUXzaXwZOltSO8Bat8bY
-         J2tw==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=q9MIZw6teCffW6Igi7yqKRQRmAst7rY6bxwkmUE9mhs=;
+        b=bZD8Y3SqOgghrjCIHTeGTF6y6uqzsnVMF4L6I6oOWCeeoTHF94gaNNfuDiAr11u+qa
+         M+fjbH8BA93m9z4YCAZ1qs+tII+HXl7jmhJf9EFLpNy/zuGf0prGeo7Ba0dnTt5JxiCN
+         9/5N2y2e4zqUHuOOgZ4rz2Q4HnUK+2M5MrVfIyKBFGIFsYzj6wxWB5syvmVxBSP4NUxk
+         r3xQuoFO0F4eCOaFmTBQVV9t6tIbhMH6Oc1MvsC1jJffUHd5jOLs+ntjvfh6ylYTm1Ff
+         snO7v4AJlAOzYvTfXCpISPyvw6RKAnTkeVXNoQ5DnQvl9fxQ7RurPKRpiQoipSNIHK4B
+         T+CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=omZqi7W8GBGM2eccYGUpTeQjxUdxp7+vH2Lo2guanBs=;
-        b=dyRd61rvog1IjH7CAUemEx2qWCGLZjY8q4o9hZBhoIbSeoDvTluZQXOV7mgOjUEGmZ
-         NGEfrlcWURUSf7thrb4OqOsItRoXYltWZlaAGq87HmGgtiHh/KSt9WA2teZgDBSL0U2z
-         bIpX0onfejO/LgSblOPvL8KXHv91hzwcDe5oGVgaUlEGLflfzYJRo0dQhxxhn539roat
-         +gRSY9nKpiUEOjHVQv1LAf42SZwElnFVptrt07FMl9PBsS5hvUSl5Lg+G53q4yKQERxS
-         n9H8/d5vl8CTBJr2Iele8DbZ1dwFO6F8VDQH7UCN+JK8nyCC/MOP4RSOB1nQSo1yLVZY
-         Pw3A==
-X-Gm-Message-State: AOAM533c/L01FAOK2Hc6Mvfzn9ODQJ5jh1g2eXsepea/3mNo8fMkZ/kZ
-        8Gs2JfvaluKTzoQjqgZasjWZ4cTZffIlHQyt1Pw=
-X-Google-Smtp-Source: ABdhPJyYCfHgzA2i9xHcJ+K22YVF52g0oJflAsjJ1VHpeyVZqyjEw9oUTEZqrmqgSyFpj/dspfr1WkSzMebijNtJFeU=
-X-Received: by 2002:a19:9201:0:b0:443:c317:98ff with SMTP id
- u1-20020a199201000000b00443c31798ffmr8462944lfd.331.1646681304873; Mon, 07
- Mar 2022 11:28:24 -0800 (PST)
-MIME-Version: 1.0
-References: <20220306234311.452206-1-memxor@gmail.com> <20220306234311.452206-2-memxor@gmail.com>
-In-Reply-To: <20220306234311.452206-2-memxor@gmail.com>
-From:   Joanne Koong <joannelkoong@gmail.com>
-Date:   Mon, 7 Mar 2022 11:28:13 -0800
-Message-ID: <CAJnrk1au7dH--t4warkURJK7k=8=ZAtHyViOWFj2Nnu0dPkqjg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/5] bpf: Add ARG_SCALAR and ARG_CONSTANT
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=q9MIZw6teCffW6Igi7yqKRQRmAst7rY6bxwkmUE9mhs=;
+        b=vpCPQ7fLik/gFd4m8DLjiccln4/7jdDcCBgDThcBxRBH/37NIEJC83SLRjUSvalm4E
+         b5E2yyQPPQ6Inj35H6UDlEDUY5dvmNIKfEzB3jGd18eO7ThDyGeWxMas4seoefA4wOAg
+         uweE+hma+QIwcwz5aAtMTLdJhjQu3SXGd4S4/MMfc0KyJCDJdlhwFROW7aezM3STSuRH
+         f7zhQjtiKS8n2YWOwdrZtcPLbGLy7Mf2qepSRISdxZIrLo/H3zrVnFMP5E727XVw6CaP
+         WBNWwP+u7m9bXAOG+X9d1zUl3Ao/7YUeDWsTVQP2wCq+zyc+wy96aQuSxukXTBYreGNf
+         U4vw==
+X-Gm-Message-State: AOAM533jEzBoiy1s1znCDPVzCbBLYYuZYYBaa/0xCsa+G6+DN2IS0G6Q
+        tWeAiuUA+BmUeyahGvtMwW+tX5LKfDUDWPK7
+X-Google-Smtp-Source: ABdhPJyueplzty6iTaelh4axK7ODYO1cjiZs/oKOKz7W6sQIdDdh6KDUi0nMOLA3BiyTcV+lPPH0aw==
+X-Received: by 2002:a17:90a:ba10:b0:1bf:6900:2c5d with SMTP id s16-20020a17090aba1000b001bf69002c5dmr601274pjr.36.1646681427476;
+        Mon, 07 Mar 2022 11:30:27 -0800 (PST)
+Received: from google.com ([2620:15c:211:202:ed1d:9a92:2389:76be])
+        by smtp.gmail.com with ESMTPSA id g6-20020a056a001a0600b004f2a4316a0asm16426990pfv.60.2022.03.07.11.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Mar 2022 11:30:26 -0800 (PST)
+Date:   Mon, 7 Mar 2022 11:30:18 -0800
+From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 6/8] compiler_types.h: Add unified
+ __diag_ignore_all for GCC/LLVM
+Message-ID: <YiZdSoNcaESkzvBs@google.com>
+References: <20220304224645.3677453-1-memxor@gmail.com>
+ <20220304224645.3677453-7-memxor@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220304224645.3677453-7-memxor@gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 7, 2022 at 1:24 AM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
->
-> In the next patch, we will introduce a new helper 'bpf_packet_pointer'
-> that takes offset and len and returns a packet pointer. There we want to
-> statically enforce offset is in range [0, 0xffff], and that len is a
-> constant value, in range [1, 0xffff]. This also helps us avoid a
-> pointless runtime check. To make these checks possible, we need to
-> ensure we only get a scalar type. Although a lot of other argument types
-> take scalars, their intent is different. Hence add general ARG_SCALAR
-> and ARG_CONSTANT types, where the latter is also checked to be constant
-> in addition to being scalar.
->
+On Sat, Mar 05, 2022 at 04:16:43AM +0530, Kumar Kartikeya Dwivedi wrote:
+> Add a __diag_ignore_all macro, to ignore warnings for both GCC and LLVM,
+> without having to specify the compiler type and version. By default, GCC
+> 8 and clang 11 are used. This will be used by bpf subsystem to ignore
+> -Wmissing-prototypes warning for functions that are meant to be global
+> functions so that they are in vmlinux BTF, but don't have a prototype.
+> 
+> Cc: linux-kernel@vger.kernel.org
 > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 > ---
->  include/linux/bpf.h   |  2 ++
->  kernel/bpf/verifier.c | 13 +++++++++++++
->  2 files changed, 15 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 88449fbbe063..7841d90b83df 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -391,6 +391,8 @@ enum bpf_arg_type {
->         ARG_PTR_TO_STACK,       /* pointer to stack */
->         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
->         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
-> +       ARG_SCALAR,             /* a scalar with any value(s) */
-> +       ARG_CONSTANT,           /* a scalar with constant value */
->         __BPF_ARG_TYPE_MAX,
->
-
-Should we rename ARG_CONST_SIZE and ARG_CONST_SIZE_OR_ZERO to
-something like ARG_MEM_CONST_SIZE / ARG_MEM_CONST_SIZE_OR_ZERO to make
-the interface more explicit? I think that would make it less confusing
-to differentiate between ARG_CONST_SIZE and ARG_CONSTANT for arguments
-that describe the length/size but are not associated with a memory
-buffer.
-
-
->         /* Extended arg_types. */
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ec3a7b6c9515..0373d5bd240f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -5163,6 +5163,12 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
->                type == ARG_PTR_TO_LONG;
->  }
->
-> +static bool arg_type_is_scalar(enum bpf_arg_type type)
-> +{
-> +       return type == ARG_SCALAR ||
-> +              type == ARG_CONSTANT;
-> +}
+>  include/linux/compiler-clang.h | 3 +++
+>  include/linux/compiler-gcc.h   | 3 +++
+>  include/linux/compiler_types.h | 4 ++++
+>  3 files changed, 10 insertions(+)
+> 
+> diff --git a/include/linux/compiler-clang.h b/include/linux/compiler-clang.h
+> index f1aa41d520bd..babb1347148c 100644
+> --- a/include/linux/compiler-clang.h
+> +++ b/include/linux/compiler-clang.h
+> @@ -90,3 +90,6 @@
+>  #else
+>  #define __diag_clang_11(s)
+>  #endif
 > +
+> +#define __diag_ignore_all(option, comment) \
+> +	__diag_clang(11, ignore, option)
+> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+> index ccbbd31b3aae..d364c98a4a80 100644
+> --- a/include/linux/compiler-gcc.h
+> +++ b/include/linux/compiler-gcc.h
+> @@ -151,6 +151,9 @@
+>  #define __diag_GCC_8(s)
+>  #endif
+>  
+> +#define __diag_ignore_all(option, comment) \
+> +	__diag_GCC(8, ignore, option)
 
-I think this function name might be a bit misleading since
-ARG_CONST_SIZE / ARG_CONST_SIZE_OR_ZERO / ARG_CONST_ALLOC_SIZE_OR_ZERO
-are also scalar arg types. Maybe one alternative is to add a function
-"arg_type_is_const" and then in check_func_arg, enforce that if
-arg_type_is_const, then tnum_is_const(reg->var_off) must be true.
-WDYT?
+While this approach will work for clang, it doesn't seem scalable for
+GCC. Documentation/process/changes.rst documents that we support gcc
+5.1+. This approach will only disable diagnostics for gcc 8+.
 
->  static int int_ptr_type_to_size(enum bpf_arg_type type)
->  {
->         if (type == ARG_PTR_TO_INT)
-> @@ -5302,6 +5308,8 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
->         [ARG_PTR_TO_STACK]              = &stack_ptr_types,
->         [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
->         [ARG_PTR_TO_TIMER]              = &timer_types,
-> +       [ARG_SCALAR]                    = &scalar_types,
-> +       [ARG_CONSTANT]                  = &scalar_types,
->  };
->
->  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> @@ -5635,6 +5643,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                         verbose(env, "string is not zero-terminated\n");
->                         return -EINVAL;
->                 }
-> +       } else if (arg_type_is_scalar(arg_type)) {
-> +               if (arg_type == ARG_CONSTANT && !tnum_is_const(reg->var_off)) {
-> +                       verbose(env, "R%d is not a known constant\n", regno);
-> +                       return -EACCES;
-> +               }
->         }
->
->         return err;
-> --
+> +
+>  /*
+>   * Prior to 9.1, -Wno-alloc-size-larger-than (and therefore the "alloc_size"
+>   * attribute) do not work, and must be disabled.
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index 3f31ff400432..8e5d2f50f951 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -371,4 +371,8 @@ struct ftrace_likely_data {
+>  #define __diag_error(compiler, version, option, comment) \
+>  	__diag_ ## compiler(version, error, option)
+>  
+> +#ifndef __diag_ignore_all
+> +#define __diag_ignore_all(option, comment)
+> +#endif
+> +
+>  #endif /* __LINUX_COMPILER_TYPES_H */
+> -- 
 > 2.35.1
->
+> 
