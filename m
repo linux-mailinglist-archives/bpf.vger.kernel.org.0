@@ -2,76 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EC64D0C61
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 01:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32254D0D1B
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 01:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242581AbiCHAD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 19:03:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
+        id S1344149AbiCHA6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 19:58:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbiCHAD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 19:03:28 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0118610C4
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 16:02:30 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 132so14909109pga.5
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 16:02:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EuPyOGfEKvdmmkdx2+eXzCMxoHYA5c2y/gEEklhVQ8Y=;
-        b=w86scsa7q9Xnl0bLj+lNlCk+0DfSqXcgC1XjYdV9JlUD5r33NHVtD/k4Z3i68INFzb
-         3PsYjEj7tYILf5c0b0NFC22yaKAvf8VY5Mn0adjjgPE2VSVaktycyrLB7k0WqcRpBjL2
-         d4/rmVfelv7b6GNGFQ6MW40e/XSKfqdBGivBVAshyfXPioW6DxsdskGve3t6y4jaq8X7
-         LKc+Y1q79NjfAHag8OgcMDBTGxuT2vMUJtn77JbPERpSkhZty1lV1kD34KOYMBUWQKN0
-         yzW3tlrmLdcLAwID/vZOCie+5VIEqZ/4N1tPITIlAaHk4qKbpKAAga7Q8NDhjzb7IS2F
-         Hxgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EuPyOGfEKvdmmkdx2+eXzCMxoHYA5c2y/gEEklhVQ8Y=;
-        b=X/6ooGYCIjZWXldu4UaaCaA0OnlsTjiwML2/4DLauCDJNclqET0VBCnQNvBblIeDFL
-         L5fsL4Kqw1vw8C6rf8pQwVxkeapBwGUD0oJdv3i0YpjYpwnjeDpQAIMmf4zd7ogZzw3x
-         eeQyCY43o15n2KuW3O/5/6RymSPkNjwV8RIQmtsc8EQp242ZGX+l+LwT7T+yPncUA8zW
-         N/WCHqIgVI/ShZAlOka6rYQYX0xiWV2vU37H3CfDdKzUol40+koDoDWCzZPnE5+dx7pP
-         GhsEwIVvnQQ1Q6yxSL12vEnXBBg36kTWfMjG2lyWSyo++GADFiqtZs+8A+d/+ud4shQa
-         C7Nw==
-X-Gm-Message-State: AOAM531UuSGk38Q2b/emgqL3s5kEc0+koAAu1aY1//ylkZrq2D3JDuQJ
-        kdNAoHVoYZWz3jbRa2/ybEKQcA==
-X-Google-Smtp-Source: ABdhPJxykFoZuKmjviuSn9DcWv3yRmnj5s2LUlovrzLZDhDLZZjG8LFtTII2ivb0MrPwguN6v7pB7w==
-X-Received: by 2002:a63:1760:0:b0:374:6621:9236 with SMTP id 32-20020a631760000000b0037466219236mr12019521pgx.7.1646697749418;
-        Mon, 07 Mar 2022 16:02:29 -0800 (PST)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id 23-20020a17090a0d5700b001bc3c650e01sm1383704pju.1.2022.03.07.16.02.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 16:02:29 -0800 (PST)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     davem@davemloft.net
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S1344216AbiCHA6H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 19:58:07 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334551155;
+        Mon,  7 Mar 2022 16:57:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DAF68B8175C;
+        Tue,  8 Mar 2022 00:57:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57A38C340F7;
+        Tue,  8 Mar 2022 00:57:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646701029;
+        bh=je9wh1jfc8vKoLFB/XMs5xZvr+6tezIiCo7tP89tgpY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RtO0co1gSFJwkq5vXNLxKNXO9f+Lqdl/mTUmq3ywOT33iUb4fS3ofFh/GNVp3Qjw+
+         +uzyYNtR5S34pDPFvE4ay2DXgKx2v1Cko9Re1wcy5Ov6cNEVTgmu/A3mEHiUSo8lvZ
+         nycf7fbdhQ5/WKRcp9H+y3P+Pnn/jffuuYCmfsNg/r9k6l6c/Yvl3MZmOwyWd8+ycx
+         /PaAZcNPWQ9UNuvfgUENYGupOJ4rLXnVV+/knXC57CkiHPMTee7WloB3QvyXWpMWv5
+         VOtax9kU/mu2L4xvOPP36dLjxchYBMp7CYManYIXd/f5W/MkTRrZSz16q34atGJ0xm
+         gjoieoE60I1Gw==
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-2dc242a79beso174466237b3.8;
+        Mon, 07 Mar 2022 16:57:09 -0800 (PST)
+X-Gm-Message-State: AOAM531+Xug1aIvWcWQ7dnvy0PBoOEpw99I0r/RvTmHukYfGLwH5SEaz
+        nA/PVsLf9fc9biRWgGvJs6kYjoFmdl2r1sBDyqg=
+X-Google-Smtp-Source: ABdhPJw5iu98Yx0WOcx2dkiKYmMKSq7PTAddXcLAeBR9h8z6v4BOKZMtV6hsGVJoY6yvheeO6z4E3FZsWGXfPBMxJBI=
+X-Received: by 2002:a0d:fb45:0:b0:2d0:d09a:576c with SMTP id
+ l66-20020a0dfb45000000b002d0d09a576cmr11184300ywf.447.1646701028244; Mon, 07
+ Mar 2022 16:57:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+ <20220304172852.274126-3-benjamin.tissoires@redhat.com> <CAPhsuW5CYF9isR4ffRdm3xA_n_FBoL+AGFkzNn4dn2LgRaQQkg@mail.gmail.com>
+ <CAO-hwJKFE4Ps962BBubn8=1K0k9mC2qi8VerFbZo1sqpp6yekg@mail.gmail.com>
+In-Reply-To: <CAO-hwJKFE4Ps962BBubn8=1K0k9mC2qi8VerFbZo1sqpp6yekg@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 7 Mar 2022 16:56:57 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5mZQ-N7RCndxP0RNi669RU5Tbu-Uu0M-KW2-mPYZbbng@mail.gmail.com>
+Message-ID: <CAPhsuW5mZQ-N7RCndxP0RNi669RU5Tbu-Uu0M-KW2-mPYZbbng@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 02/28] bpf: introduce hid program type
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
-Subject: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-Date:   Mon,  7 Mar 2022 16:01:46 -0800
-Message-Id: <20220308000146.534935-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.35.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,91 +77,148 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzbot found a kernel bug in the ipv6 stack:
-LINK: https://syzkaller.appspot.com/bug?id=205d6f11d72329ab8d62a610c44c5e7e25415580
+On Mon, Mar 7, 2022 at 10:39 AM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> On Sat, Mar 5, 2022 at 1:03 AM Song Liu <song@kernel.org> wrote:
+> >
+> > On Fri, Mar 4, 2022 at 9:31 AM Benjamin Tissoires
+> > <benjamin.tissoires@redhat.com> wrote:
+> > >
+> > > HID is a protocol that could benefit from using BPF too.
+> >
+> > [...]
+> >
+> > > +#include <linux/list.h>
+> > > +#include <linux/slab.h>
+> > > +
+> > > +struct bpf_prog;
+> > > +struct bpf_prog_array;
+> > > +struct hid_device;
+> > > +
+> > > +enum bpf_hid_attach_type {
+> > > +       BPF_HID_ATTACH_INVALID = -1,
+> > > +       BPF_HID_ATTACH_DEVICE_EVENT = 0,
+> > > +       MAX_BPF_HID_ATTACH_TYPE
+> >
+> > Is it typical to have different BPF programs for different attach types?
+> > Otherwise, (different types may have similar BPF programs), maybe
+> > we can pass type as an argument to the program (shared among
+> > different types)?
+>
+> Not quite sure I am entirely following you, but I consider the various
+> attach types to be quite different and thus you can not really reuse
+> the same BPF program with 2 different attach types.
+>
+> In my view, we have 4 attach types:
+> - BPF_HID_ATTACH_DEVICE_EVENT: called whenever we receive an IRQ from
+> the given device (so this is net-like event stream)
+> - BPF_HID_ATTACH_RDESC_FIXUP: there can be only one of this type, and
+> this is called to change the device capabilities. So you can not reuse
+> the other programs for this one
+> - BPF_HID_ATTACH_USER_EVENT: called explicitly by the userspace
+> process owning the program. There we can use functions that are
+> sleeping (we are not in IRQ context), so this is also fundamentally
+> different from the 3 others.
+> - BPF_HID_ATTACH_DRIVER_EVENT: whenever the driver gets called into,
+> we get a bpf program run. This can be suspend/resume, or even specific
+> request to the device (change a feature on the device or get its
+> current state). Again, IMO fundamentally different from the others.
+>
+> So I'm open to any suggestions, but if we can keep the userspace API
+> being defined with different SEC in libbpf, that would be the best.
 
-The reproducer triggers it by sending an invalid message via sendmmsg() call,
-which triggers skb_over_panic, and crashes the kernel:
+Thanks for this information. Different attach_types sound right for the use
+case.
 
-skbuff: skb_over_panic: text:ffffffff84647fb4 len:65575 put:65575
-head:ffff888109ff0000 data:ffff888109ff0088 tail:0x100af end:0xfec0
-dev:<NULL>
+>
+> >
+> > [...]
+> >
+> > > +struct hid_device;
+> > > +
+> > > +enum hid_bpf_event {
+> > > +       HID_BPF_UNDEF = 0,
+> > > +       HID_BPF_DEVICE_EVENT,           /* when attach type is BPF_HID_DEVICE_EVENT */
+> > > +};
+> > > +
+> > > +struct hid_bpf_ctx {
+> > > +       enum hid_bpf_event type;        /* read-only */
+> > > +       __u16 allocated_size;           /* the allocated size of data below (RO) */
+> >
+> > There is a (6-byte?) hole here.
+> >
+> > > +       struct hid_device *hdev;        /* read-only */
+> > > +
+> > > +       __u16 size;                     /* used size in data (RW) */
+> > > +       __u8 data[];                    /* data buffer (RW) */
+> > > +};
+> >
+> > Do we really need hit_bpf_ctx in uapi? Maybe we can just use it
+> > from vmlinuxh?
+>
+> I had a thought at this context today, and I think I am getting to the
+> limit of what I understand.
+>
+> My first worry is that the way I wrote it there, with a variable data
+> field length is that this is not forward compatible. Unless BTF and
+> CORE are making magic, this will bite me in the long run IMO.
+>
+> But then, you are talking about not using uapi, and I am starting to
+> wonder: am I doing the things correctly?
+>
+> To solve my first issue (and the weird API I had to introduce in the
+> bpf_hid_get/set_data), I came up to the following:
+> instead of exporting the data directly in the context, I could create
+> a helper bpf_hid_get_data_buf(ctx, const uint size) that returns a
+> RET_PTR_TO_ALLOC_MEM_OR_NULL in the same way bpf_ringbuf_reserve()
+> does.
+>
+> This way, I can directly access the fields within the bpf program
+> without having to worry about the size.
+>
+> But now, I am wondering whether the uapi I defined here is correct in
+> the way CORE works.
+>
+> My goal is to have HID-BPF programs to be CORE compatible, and not
+> have to recompile them depending on the underlying kernel.
+>
+> I can not understand right now if I need to add some other BTF helpers
+> in the same way the access to struct xdp_md and struct xdp_buff are
+> converted between one and other, or if defining a forward compatible
+> struct hid_bpf_ctx is enough.
+> As far as I understand, .convert_ctx_access allows to export a stable
+> uapi to the bpf prog users with the verifier doing the conversion
+> between the structs for me. But is this really required for all the
+> BPF programs if we want them to be CORE?
+>
+> Also, I am starting to wonder if I should not hide fields in the
+> context to the users. The .data field could be a pointer and only
+> accessed through the helper I mentioned above. This would be forward
+> compatible, and also allows to use whatever available memory in the
+> kernel to be forwarded to the BPF program. This way I can skip the
+> memcpy part and work directly with the incoming dma data buffer from
+> the IRQ.
+>
+> But is it best practice to do such a thing?
 
-------------[ cut here ]------------
-kernel BUG at net/core/skbuff.c:113!
-PREEMPT SMP KASAN
-CPU: 1 PID: 1818 Comm: repro Not tainted 5.17.0-rc7-dirty #9
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
-RIP: 0010:skb_panic+0x173/0x175
-RSP: 0018:ffffc900015bf3b8 EFLAGS: 00010282
-RAX: 0000000000000090 RBX: ffff88810e848c80 RCX: 0000000000000000
-RDX: ffff88810fd84300 RSI: ffffffff814fa5ef RDI: fffff520002b7e69
-RBP: ffffc900015bf420 R08: 0000000000000090 R09: 0000000000000000
-R10: ffffffff814f55f4 R11: 203a666675626b73 R12: ffffffff855bff80
-R13: ffffffff84647fb4 R14: 0000000000010027 R15: ffffffff855bf420
-FS:  0000000000c8b3c0(0000) GS:ffff88811b100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 0000000106b68000 CR4: 0000000000150ea0
-Call Trace:
- <TASK>
- skb_put.cold+0x23/0x23
- __ip6_append_data.isra.0.cold+0x396/0xe3a
- ip6_append_data+0x1e5/0x320
- rawv6_sendmsg.cold+0x1618/0x2ba9
- inet_sendmsg+0x9e/0xe0
- sock_sendmsg+0xd7/0x130
- ____sys_sendmsg+0x381/0x8a0
- ___sys_sendmsg+0x100/0x170
- __sys_sendmmsg+0x26c/0x3b7
- __x64_sys_sendmmsg+0xb2/0xbd
- do_syscall_64+0x35/0xb0
- entry_SYSCALL_64_after_hwframe+0x44/0xae
+I think .convert_ctx_access is the way to go if we want to access the data
+buffer without memcpy. I am not sure how much work is needed to make
+it compatible with CORE though.
 
-The reproducer can be found here:
-LINK: https://syzkaller.appspot.com/text?tag=ReproC&x=1648c83fb00000
-This can be fixed by increasing the alloclen in case it is smaller than
-fraglen in __ip6_append_data().
+To make sure I understand the case, do we want something like
 
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
+bpf_prog(struct hid_bpf_ctx *ctx)
+{
+    /* makes sure n < ctx->size */
+    x = ctx->data[n]; /* read data */
+    ctx->data[n] = <something>; /* write data */
+    ctx->size = <something <= n>; /* change data size */
+}
 
-Reported-by: syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
- net/ipv6/ip6_output.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+We also need it to be CORE, so that we may modify hid_bpf_ctx by
+inserting more members to it before data.
 
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 4788f6b37053..622345af323e 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1629,6 +1629,13 @@ static int __ip6_append_data(struct sock *sk,
- 				err = -EINVAL;
- 				goto error;
- 			}
-+			if (unlikely(alloclen < fraglen)) {
-+				if (printk_ratelimit())
-+					pr_warn("%s: wrong alloclen: %d, fraglen: %d",
-+						__func__, alloclen, fraglen);
-+				alloclen = fraglen;
-+			}
-+
- 			if (transhdrlen) {
- 				skb = sock_alloc_send_skb(sk, alloclen,
- 						(flags & MSG_DONTWAIT), &err);
--- 
-2.35.1
+Is this accurate?
+
+Song
