@@ -2,158 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9481B4D0E26
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 03:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A334D0EB8
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 05:38:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242539AbiCHC7S convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 7 Mar 2022 21:59:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        id S242461AbiCHEjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 23:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242350AbiCHC7S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 21:59:18 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E1D839147
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 18:58:22 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-230-RAzJzQoSOG-PkwXfrfam0w-1; Tue, 08 Mar 2022 02:58:19 +0000
-X-MC-Unique: RAzJzQoSOG-PkwXfrfam0w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.28; Tue, 8 Mar 2022 02:58:18 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.028; Tue, 8 Mar 2022 02:58:18 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tadeusz Struk' <tadeusz.struk@linaro.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-CC:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S237826AbiCHEi6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 23:38:58 -0500
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD85C13DFB;
+        Mon,  7 Mar 2022 20:38:02 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id r4so4376607lfr.1;
+        Mon, 07 Mar 2022 20:38:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ExE8WvfRjxN7qDY8jPSgjg/R7OV7shYgJVHpiWtF5B0=;
+        b=tdrCw6g87eglfm0a6/hBiFuro00rigVnHLE7JJf/bv2MCV7vhVr1lxyS/Bxr2N6KBX
+         rODTDU50jQM+v5+nu+4AR7fPYUtCxLufBqOodY5EzB3GUdES6idwTpK6qIEsXRTm6sYN
+         NwhGHwZmHKsml8YywguTaIphOcgBP3AVvwf1t5kytrL/DBVP+9TktHBgReijY8pqTZaU
+         NhZLy9zx343W2OpW2rQ2N9YoZ0TYrahxDEWm9qBE2qymb1H8BcWG8zX2wR9ooLtavaZy
+         +LX0UsxzZigtjV+2xNvsfA51/LsiQJ2Z8U+NKAkVzLSaHoVxSVJi3VqiEGtX4IBvdb+k
+         BZIQ==
+X-Gm-Message-State: AOAM531dH+/IfOJFTLYS/RxDXEzf4uteFimRg60kDjPAuENaxsGm0PIl
+        jTEJqbGJC5a64zc3HeDHLKWI+mBUCJA8P9r8Y3Y=
+X-Google-Smtp-Source: ABdhPJyphz/S/llS9OXnB/IurzYXJDmlGfTZKEoTxw80c268tGE+fz0VLXvl7vov35bB6OfbZPIvONAnX1pU3axlf4c=
+X-Received: by 2002:a05:6512:2109:b0:448:2706:7bcb with SMTP id
+ q9-20020a056512210900b0044827067bcbmr8121880lfr.528.1646714280654; Mon, 07
+ Mar 2022 20:38:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20220304232832.764156-1-namhyung@kernel.org> <38f99862-e5f4-0688-b5ef-43fa6584b823@fb.com>
+In-Reply-To: <38f99862-e5f4-0688-b5ef-43fa6584b823@fb.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 7 Mar 2022 20:37:49 -0800
+Message-ID: <CAM9d7cgHLDYVR-cJjw8xpWr9DvWR_C91hBiMN+eMNPB9UtROXg@mail.gmail.com>
+Subject: Re: [RFC] A couple of issues on BPF callstack
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
-        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
-Subject: RE: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-Thread-Topic: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-Thread-Index: AQHYMn/TZOkDvut8fEivb26qHFvt1ay0yvXA
-Date:   Tue, 8 Mar 2022 02:58:18 +0000
-Message-ID: <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com>
-References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
-In-Reply-To: <20220308000146.534935-1-tadeusz.struk@linaro.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Eugene Loh <eugene.loh@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tadeusz Struk
-> Sent: 08 March 2022 00:02
-> 
-> Syzbot found a kernel bug in the ipv6 stack:
-> LINK: https://syzkaller.appspot.com/bug?id=205d6f11d72329ab8d62a610c44c5e7e25415580
-> 
-> The reproducer triggers it by sending an invalid message via sendmmsg() call,
-> which triggers skb_over_panic, and crashes the kernel:
-> 
-> skbuff: skb_over_panic: text:ffffffff84647fb4 len:65575 put:65575
-> head:ffff888109ff0000 data:ffff888109ff0088 tail:0x100af end:0xfec0
-> dev:<NULL>
-> 
-> ------------[ cut here ]------------
-> kernel BUG at net/core/skbuff.c:113!
-> PREEMPT SMP KASAN
-> CPU: 1 PID: 1818 Comm: repro Not tainted 5.17.0-rc7-dirty #9
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
-> RIP: 0010:skb_panic+0x173/0x175
-> RSP: 0018:ffffc900015bf3b8 EFLAGS: 00010282
-> RAX: 0000000000000090 RBX: ffff88810e848c80 RCX: 0000000000000000
-> RDX: ffff88810fd84300 RSI: ffffffff814fa5ef RDI: fffff520002b7e69
-> RBP: ffffc900015bf420 R08: 0000000000000090 R09: 0000000000000000
-> R10: ffffffff814f55f4 R11: 203a666675626b73 R12: ffffffff855bff80
-> R13: ffffffff84647fb4 R14: 0000000000010027 R15: ffffffff855bf420
-> FS:  0000000000c8b3c0(0000) GS:ffff88811b100000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000040 CR3: 0000000106b68000 CR4: 0000000000150ea0
-> Call Trace:
->  <TASK>
->  skb_put.cold+0x23/0x23
->  __ip6_append_data.isra.0.cold+0x396/0xe3a
->  ip6_append_data+0x1e5/0x320
->  rawv6_sendmsg.cold+0x1618/0x2ba9
->  inet_sendmsg+0x9e/0xe0
->  sock_sendmsg+0xd7/0x130
->  ____sys_sendmsg+0x381/0x8a0
->  ___sys_sendmsg+0x100/0x170
->  __sys_sendmmsg+0x26c/0x3b7
->  __x64_sys_sendmmsg+0xb2/0xbd
->  do_syscall_64+0x35/0xb0
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The reproducer can be found here:
-> LINK: https://syzkaller.appspot.com/text?tag=ReproC&x=1648c83fb00000
-> This can be fixed by increasing the alloclen in case it is smaller than
-> fraglen in __ip6_append_data().
-> 
-> 
-> Reported-by: syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
-> Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
-> ---
->  net/ipv6/ip6_output.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index 4788f6b37053..622345af323e 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -1629,6 +1629,13 @@ static int __ip6_append_data(struct sock *sk,
->  				err = -EINVAL;
->  				goto error;
->  			}
-> +			if (unlikely(alloclen < fraglen)) {
-> +				if (printk_ratelimit())
-> +					pr_warn("%s: wrong alloclen: %d, fraglen: %d",
-> +						__func__, alloclen, fraglen);
-> +				alloclen = fraglen;
-> +			}
-> +
+Hello,
 
-Except that is a valid case, see a few lines higher:
+On Sat, Mar 5, 2022 at 4:28 PM Yonghong Song <yhs@fb.com> wrote:
+> On 3/4/22 3:28 PM, Namhyung Kim wrote:
+> > More important thing to me is the content of the (perf) callchain.  If
+> > the event has __PERF_SAMPLE_CALLCHAIN_EARLY, it will have context info
+> > like PERF_CONTEXT_KERNEL.  So user might or might not see it depending
+> > on whether the perf_event set with precise_ip and SAMPLE_CALLCHAIN.
+> > This doesn't look good.
+>
+> Patch 7b04d6d60fcf ("bpf: Separate bpf_get_[stack|stackid] for
+> perf events BPF") tried to fix __PERF_SAMPLE_CALLCHAIN_EARLY issue
+> for bpf_get_stack[id]() helpers.
 
-				alloclen = min_t(int, fraglen, MAX_HEADER);
-				pagedlen = fraglen - alloclen;
+Right.
 
-You need to report the input values that cause the problem later on.
+> The helpers will check whether event->attr.sample_type has
+> __PERF_SAMPLE_CALLCHAIN_EARLY encoded or not, based on which
+> the stacks will be retrieved accordingly.
+> Did you any issue here?
 
-	David
+It changes stack trace results by adding perf contexts like
+PERF_CONTEXT_KERNEL and PERF_CONTEXT_USER.
+Without __PERF_SAMPLE_CALLCHAIN_EARLY, I don't see those.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> >
+> > After all, I think it'd be really great if we can skip those
+> > uninteresting info easily.  Maybe we could add a flag to skip BPF code
+>
+> We cannot just skip those callchains with __PERF_SAMPLE_CALLCHAIN_EARLY.
+> There are real use cases for it.
 
+I'm not saying that I want to skip all the callchains.
+What I want is a way to avoid those perf context info
+in the callchains so that I can make sure to have the
+same stack traces in a known code path regardless
+of the event attribute and cpu vendors - as far as I know
+__PERF_SAMPLE_CALLCHAIN_EARLY is enabled on Intel cpus only.
+
+>
+> > perf context, and even some scheduler code from the trace respectively
+> > like in stack_trace_consume_entry_nosched().
+>
+> A flag for the bpf_get_stack[id]() helpers? It is possible. It would be
+> great if you can detail your use case here and how a flag could help
+> you.
+
+Yep, something like BPF_F_SKIP_BPF_STACK.
+
+In my case, I collect a callchain in a tracepoint to find its caller.
+And I want to have a short call stack depth for a performance reason.
+But the every 3 or 4 entries are already filled by BPF code and
+I want to skip them.  I know that I can set it with skip mask but
+having a hard coded value can be annoying since it might be
+changed by different compilers, kernel version or configurations.
+
+Similarly, I think it'd be useful to skip some scheduler functions
+like __schedule when collecting stack traces in sched_switch.
+
+Thanks,
+Namhyung
