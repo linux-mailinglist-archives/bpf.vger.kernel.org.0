@@ -2,145 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0450B4D1CC3
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 17:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BF14D1E07
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 17:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348130AbiCHQHm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 11:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
+        id S231604AbiCHQ7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 11:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348141AbiCHQHi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 11:07:38 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED28506ED;
-        Tue,  8 Mar 2022 08:06:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BEBF761700;
-        Tue,  8 Mar 2022 16:06:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38E95C340EB;
-        Tue,  8 Mar 2022 16:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646755600;
-        bh=SzMKhNQ5lQgLCj4MtTg1AA64E4vnZL1Bd6/sbl/i9/o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bCEJImAk10jIGT06538PWfpo8F5Kzfd/HrG2syJDv8iPvyVhb7R8lUi4xBi+EJsfN
-         Net7iYUAcO2qeVKcyNGmVdnir6v3tnOY/HNWoPoRzJ/CbbLqqdkbWfhlvIUjlKw95S
-         lvNNoiX6G2PMePkuegZd/KJ13SNiSqjz2uiiUvi4JeqzsAmKhEKC0vpAFE/OQgKxmP
-         RclibLu4je9fDLl7hCRhCEwaPbCsJeog7afWLOraLzKwAlS/df5huYzj4l06RTVJFc
-         2UwsroHI9o1BzIp4zAyoE3FfsNwAab/tW+H6rYTceAcuw3Ltnqh8LYkj5qBbKTAWzJ
-         o1LKxdsUVpncA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com, toke@redhat.com,
-        pabeni@redhat.com, echaudro@redhat.com,
-        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
-        andrii@kernel.org
-Subject: [PATCH v4 bpf-next 3/3] veth: allow jumbo frames in xdp mode
-Date:   Tue,  8 Mar 2022 17:06:00 +0100
-Message-Id: <930b1ad3d84f7ca5a41ba75571f9146a932c5394.1646755129.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1646755129.git.lorenzo@kernel.org>
-References: <cover.1646755129.git.lorenzo@kernel.org>
+        with ESMTP id S237630AbiCHQ7Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 11:59:16 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C038834BA2;
+        Tue,  8 Mar 2022 08:58:18 -0800 (PST)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nRdA8-00060e-O6; Tue, 08 Mar 2022 17:58:16 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nRdA8-0000D9-Gl; Tue, 08 Mar 2022 17:58:16 +0100
+Subject: Re: [PATCH bpf-next] bpf: select proper size for bpf_prog_pack
+To:     Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kernel-team@fb.com,
+        edumazet@google.com
+References: <20220304184320.3424748-1-song@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c0be971d-c03e-abcb-83fd-d0b087e38780@iogearbox.net>
+Date:   Tue, 8 Mar 2022 17:58:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220304184320.3424748-1-song@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26475/Tue Mar  8 10:31:43 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow increasing the MTU over page boundaries on veth devices
-if the attached xdp program declares to support xdp fragments.
-Enable NETIF_F_ALL_TSO when the device is running in xdp mode.
+On 3/4/22 7:43 PM, Song Liu wrote:
+> Using HPAGE_PMD_SIZE as the size for bpf_prog_pack is not ideal in some
+> cases. Specifically, for NUMA systems, __vmalloc_node_range requires
+> PMD_SIZE * num_online_nodes() to allocate huge pages. Also, if the system
+> does not support huge pages (i.e., with cmdline option nohugevmalloc), it
+> is better to use PAGE_SIZE packs.
+> 
+> Add logic to select proper size for bpf_prog_pack. This solution is not
+> ideal, as it makes assumption about the behavior of module_alloc and
+> __vmalloc_node_range. However, it appears to be the easiest solution as
+> it doesn't require changes in module_alloc and vmalloc code.
+> 
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- drivers/net/veth.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+nit: Fixes tag?
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 47b21b1d2fd9..c5a2dc2b2e4b 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -293,8 +293,7 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
- /* return true if the specified skb has chances of GRO aggregation
-  * Don't strive for accuracy, but try to avoid GRO overhead in the most
-  * common scenarios.
-- * When XDP is enabled, all traffic is considered eligible, as the xmit
-- * device has TSO off.
-+ * When XDP is enabled, all traffic is considered eligible.
-  * When TSO is enabled on the xmit device, we are likely interested only
-  * in UDP aggregation, explicitly check for that if the skb is suspected
-  * - the sock_wfree destructor is used by UDP, ICMP and XDP sockets -
-@@ -302,11 +301,13 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
-  */
- static bool veth_skb_is_eligible_for_gro(const struct net_device *dev,
- 					 const struct net_device *rcv,
-+					 const struct veth_rq *rq,
- 					 const struct sk_buff *skb)
- {
--	return !(dev->features & NETIF_F_ALL_TSO) ||
--		(skb->destructor == sock_wfree &&
--		 rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
-+	return rcu_access_pointer(rq->xdp_prog) ||
-+	       !(dev->features & NETIF_F_ALL_TSO) ||
-+	       (skb->destructor == sock_wfree &&
-+		rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
- }
- 
- static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -335,7 +336,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
- 		 * Don't bother with napi/GRO if the skb can't be aggregated
- 		 */
- 		use_napi = rcu_access_pointer(rq->napi) &&
--			   veth_skb_is_eligible_for_gro(dev, rcv, skb);
-+			   veth_skb_is_eligible_for_gro(dev, rcv, rq, skb);
- 	}
- 
- 	skb_tx_timestamp(skb);
-@@ -1525,9 +1526,14 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			goto err;
- 		}
- 
--		max_mtu = PAGE_SIZE - VETH_XDP_HEADROOM -
--			  peer->hard_header_len -
--			  SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+		max_mtu = SKB_WITH_OVERHEAD(PAGE_SIZE - VETH_XDP_HEADROOM) -
-+			  peer->hard_header_len;
-+		/* Allow increasing the max_mtu if the program supports
-+		 * XDP fragments.
-+		 */
-+		if (prog->aux->xdp_has_frags)
-+			max_mtu += PAGE_SIZE * MAX_SKB_FRAGS;
-+
- 		if (peer->mtu > max_mtu) {
- 			NL_SET_ERR_MSG_MOD(extack, "Peer MTU is too large to set XDP");
- 			err = -ERANGE;
-@@ -1549,7 +1555,7 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 		}
- 
- 		if (!old_prog) {
--			peer->hw_features &= ~NETIF_F_GSO_SOFTWARE;
-+			peer->hw_features &= ~NETIF_F_GSO_FRAGLIST;
- 			peer->max_mtu = max_mtu;
- 		}
- 	}
-@@ -1560,7 +1566,7 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 				veth_disable_xdp(dev);
- 
- 			if (peer) {
--				peer->hw_features |= NETIF_F_GSO_SOFTWARE;
-+				peer->hw_features |= NETIF_F_GSO_FRAGLIST;
- 				peer->max_mtu = ETH_MAX_MTU;
- 			}
- 		}
--- 
-2.35.1
+> Signed-off-by: Song Liu <song@kernel.org>
+[...]
+>   
+> +static size_t bpf_prog_pack_size = -1;
+> +
+> +static inline int bpf_prog_chunk_count(void)
+> +{
+> +	WARN_ON_ONCE(bpf_prog_pack_size == -1);
+> +	return bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE;
+> +}
+> +
+>   static DEFINE_MUTEX(pack_mutex);
+>   static LIST_HEAD(pack_list);
+>   
+>   static struct bpf_prog_pack *alloc_new_pack(void)
+>   {
+>   	struct bpf_prog_pack *pack;
+> +	size_t size;
+> +	void *ptr;
+>   
+> -	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
+> -	if (!pack)
+> +	if (bpf_prog_pack_size == -1) {
+> +		/* Test whether we can get huge pages. If not just use
+> +		 * PAGE_SIZE packs.
+> +		 */
+> +		size = PMD_SIZE * num_online_nodes();
+> +		ptr = module_alloc(size);
+> +		if (ptr && is_vm_area_hugepages(ptr)) {
+> +			bpf_prog_pack_size = size;
+> +			goto got_ptr;
+> +		} else {
+> +			bpf_prog_pack_size = PAGE_SIZE;
+> +			vfree(ptr);
+> +		}
+> +	}
+> +
+> +	ptr = module_alloc(bpf_prog_pack_size);
+> +	if (!ptr)
+>   		return NULL;
+> -	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
+> -	if (!pack->ptr) {
+> -		kfree(pack);
+> +got_ptr:
+> +	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(bpf_prog_chunk_count())),
+> +		       GFP_KERNEL);
+> +	if (!pack) {
+> +		vfree(ptr);
+>   		return NULL;
+>   	}
+> -	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
+> +	pack->ptr = ptr;
+> +	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+>   	list_add_tail(&pack->list, &pack_list);
+>   
+>   	set_vm_flush_reset_perms(pack->ptr);
+> -	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+> -	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+> +	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+> +	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+>   	return pack;
+>   }
+>   
+> @@ -864,7 +886,7 @@ static void *bpf_prog_pack_alloc(u32 size)
+>   	unsigned long pos;
+>   	void *ptr = NULL;
+>   
+> -	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
+> +	if (size > bpf_prog_pack_size) {
+>   		size = round_up(size, PAGE_SIZE);
+>   		ptr = module_alloc(size);
+>   		if (ptr) {
 
+What happens if the /very first/ program requests an allocation size of >PAGE_SIZE? Wouldn't
+this result in OOB write?
+
+The 'size > bpf_prog_pack_size' is initially skipped due to -1 but then the module_alloc()
+won't return a huge page, so we redo the allocation with bpf_prog_pack_size as PAGE_SIZE and
+return a pointer into this pack?
+
+Thanks,
+Daniel
