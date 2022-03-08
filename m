@@ -2,130 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BB84D1C22
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 16:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3CE84D1C58
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 16:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347942AbiCHPo0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 10:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60176 "EHLO
+        id S234610AbiCHPzg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 10:55:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345557AbiCHPoZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 10:44:25 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D952E35DEC
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 07:43:27 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id g19so6097934pfc.9
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 07:43:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=NKwIWMJN7+i0XAg6jLVO6Lxt5C5EwTCBUXnqdpcor6s=;
-        b=fnXsdHWHw7mUsqGMsNQNYtwM7WylTiW27BpmCbqF6a95dLCwqgprMTmy8V63gQPQbb
-         NGmTURhW09sZZieeNdO1PTsTT3kfjlYZev9v2Dd8g788Zwc3ZQGO9PB8zjvRR1Y8lVkL
-         RQADxtnVDXTyS93mSxYM8hZSMbuKYd+FvzHg5EeEXO8g8X0/x/QnHuForGl/gyKs1wyY
-         Q0PefRyAz8WKQpft4VUqB1vEvNuVNJVXzAu3y5b6IvETnV1nwiSbOIqwEI0zDC1QO73+
-         ijFdkRVbtkV2OoxqTiGG2GGgcEdUUVidzsEIgV4wq79lVTUmkWahXHyR24x8SGfc8bv1
-         WgDA==
+        with ESMTP id S233754AbiCHPzf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 10:55:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E125B42A1B
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 07:54:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646754877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d95MYyYSlM7RR5/ZLc51aXvuYkDamcn1aR039lQ9eiQ=;
+        b=PRjTC6utrEIxe7J7jbMeG3GBPivI3aq+HdkXF9KbVEf2ziXGzFIndfynkvrjxLpREx9DTd
+        TkGi9jsjBKOxKNZTXCaEnaxhSdXO1HSqtVXsKa8jA57v4ifRSq4ncKKuQR9hWSVO4+2d31
+        fPNR780ayes5oZgUYkP0yj4vlpaNFnM=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-391-pvYrs7X5P_eenKH63nDwNg-1; Tue, 08 Mar 2022 10:54:36 -0500
+X-MC-Unique: pvYrs7X5P_eenKH63nDwNg-1
+Received: by mail-qk1-f199.google.com with SMTP id 12-20020a37090c000000b0067b32f93b90so4554847qkj.16
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 07:54:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=NKwIWMJN7+i0XAg6jLVO6Lxt5C5EwTCBUXnqdpcor6s=;
-        b=giWp4KvNYvAgpGMXvDAI++/fRv3MBK46ciLTGNvqjltnvTKfdG1OsQMZlLu4AwK3/x
-         difZjFpX0J+5rkx1Tp+TRYfAmT7zfpYgvqyvHdgul+Xxh0YFAnKHjBElHWFQjMDkoFPt
-         ikm7X49af04bKpHZQs/D/q+BcFAmxoqYKjb0Dyv1tDPNU8XaeXY9mBi57MBY+1AyfqDm
-         7XCPIlsZnwLqW4tDwUyEtzo24QWbuAEz62qRrkSL7S2Q38XnitFMPvDDRbUCSGpb7AOs
-         MwpYWHLPWdHP+XCoggMgHh8YM3X+owT8D6StfkQxnhHUIbBl3q8o+bG+Eck+o5fyHL7l
-         wx/w==
-X-Gm-Message-State: AOAM5318czawdekgkMsLKRtJl9OmfL1nozucwcHez7LsRBa4pV0yNr3b
-        /4KsggJeOkYT0UFCCHIRRYkC2w==
-X-Google-Smtp-Source: ABdhPJwiFpX6DdpatCjywFz/zgNVGeCJCOcO+1z4NGPqQXYELIrHV0oRR8uxO502R5Zie6fawLTSqw==
-X-Received: by 2002:a63:d642:0:b0:378:a4c2:7b94 with SMTP id d2-20020a63d642000000b00378a4c27b94mr14559338pgj.218.1646754207291;
-        Tue, 08 Mar 2022 07:43:27 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id nl9-20020a17090b384900b001bccf96588dsm3534648pjb.46.2022.03.08.07.43.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Mar 2022 07:43:27 -0800 (PST)
-Message-ID: <6155b68c-161b-0745-b303-f7e037b56e28@linaro.org>
-Date:   Tue, 8 Mar 2022 07:43:25 -0800
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d95MYyYSlM7RR5/ZLc51aXvuYkDamcn1aR039lQ9eiQ=;
+        b=VLjUK3zYtIHz+8UzOxO6FouD1rn2RhySDHrnRpKUwpgLP7XYsxKbFluFGcZ2zHhhdd
+         3Ag7axqEYkoBGQQ5j7aezmWz5MKkv0WgboYHLmhvqo3ggrfknFAa5sa+Fv8deBpNiuSP
+         zberQk1CqgwPENg0EsdqJ7fh6v6hFpCutNCxYAQc62LuBnRZGgmslQjc0eHdIXlQpFtg
+         9+N7YdEOV4D2s8dykq5pjh+Ob90RTtMVY/XhXQUGVxjZX8K/J56lRxJI6/3yRWJ8rW/7
+         2akWVQNnHJEfkrfs6YWe4bUJpDeH0409PbmGTtqPoIUKxTeOVPN9zLtsGoUwxWZ/AvO/
+         M+Lw==
+X-Gm-Message-State: AOAM533kmgQs42Bh4f6zy3Y1fn9qL1diSlvWqDDmvk0YoQ/3VhV0Dv74
+        sJnJY7rJJU6hnDpDCTvBo1E8LhmD9a0wV++nppzUXmRCpim3vbZv3kitlwJvQC3b3mBMx0AN32e
+        xQLevcq9230H+
+X-Received: by 2002:a05:622a:d4:b0:2e0:673f:fd9b with SMTP id p20-20020a05622a00d400b002e0673ffd9bmr8543461qtw.575.1646754875890;
+        Tue, 08 Mar 2022 07:54:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJypvVr5xG/q5C56DA/V5bm+j9caye7DiiT1SPvbkcZrKFdQf6gemGPWCyYDJAmbvZQG4+CiKQ==
+X-Received: by 2002:a05:622a:d4:b0:2e0:673f:fd9b with SMTP id p20-20020a05622a00d400b002e0673ffd9bmr8543448qtw.575.1646754875673;
+        Tue, 08 Mar 2022 07:54:35 -0800 (PST)
+Received: from localhost ([37.183.9.66])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05622a018700b002dfed15c9edsm11001753qtw.74.2022.03.08.07.54.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 07:54:35 -0800 (PST)
+Date:   Tue, 8 Mar 2022 16:54:32 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        brouer@redhat.com, toke@redhat.com, pabeni@redhat.com,
+        echaudro@redhat.com, toshiaki.makita1@gmail.com, andrii@kernel.org
+Subject: Re: [PATCH v3 bpf-next 0/3] introduce xdp frags support to veth
+ driver
+Message-ID: <Yid8OBYtqEhlr30X@lore-desk>
+References: <cover.1645558706.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
-        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
-References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
- <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-In-Reply-To: <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="E9E7A/WvfuN84J/d"
+Content-Disposition: inline
+In-Reply-To: <cover.1645558706.git.lorenzo@kernel.org>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David,
-On 3/7/22 18:58, David Laight wrote:
->> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
->> index 4788f6b37053..622345af323e 100644
->> --- a/net/ipv6/ip6_output.c
->> +++ b/net/ipv6/ip6_output.c
->> @@ -1629,6 +1629,13 @@ static int __ip6_append_data(struct sock *sk,
->>   				err = -EINVAL;
->>   				goto error;
->>   			}
->> +			if (unlikely(alloclen < fraglen)) {
->> +				if (printk_ratelimit())
->> +					pr_warn("%s: wrong alloclen: %d, fraglen: %d",
->> +						__func__, alloclen, fraglen);
->> +				alloclen = fraglen;
->> +			}
->> +
-> Except that is a valid case, see a few lines higher:
-> 
-> 				alloclen = min_t(int, fraglen, MAX_HEADER);
-> 				pagedlen = fraglen - alloclen;
-> 
-> You need to report the input values that cause the problem later on.
 
-OK, but in this case it falls into the first if block:
-https://elixir.bootlin.com/linux/v5.17-rc7/source/net/ipv6/ip6_output.c#L1606
-where alloclen is assigned the value of mtu.
-The values in this case are just before the alloc_skb() are:
+--E9E7A/WvfuN84J/d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-alloclen = 1480
-alloc_extra = 136
-datalen = 64095
-fragheaderlen = 1480
-fraglen = 65575
-transhdrlen = 0
-mtu = 1480
+> Introduce xdp frags support to veth driver in order to allow increasing t=
+he mtu
+> over the page boundary if the attached xdp program declares to support xdp
+> fragments. Enable NETIF_F_ALL_TSO when the device is running in xdp mode.
+> This series has been tested running xdp_router_ipv4 sample available in t=
+he
+> kernel tree redirecting tcp traffic from veth pair into the mvneta driver.
 
--- 
-Thanks,
-Tadeusz
+Hi Alexei and Daniel,
+
+please drop this revision, I will post a new version soon adding a check on=
+ max
+supported mtu when the loaded program support xdp frags.
+
+Regards,
+Lorenzo
+
+>=20
+> Changes since v2:
+> - move rcu_access_pointer() check in veth_skb_is_eligible_for_gro
+>=20
+> Changes since v1:
+> - always consider skb paged are non-writable
+> - fix tpt issue with sctp
+> - always use napi if we are running in xdp mode in veth_xmit
+>=20
+> Lorenzo Bianconi (3):
+>   net: veth: account total xdp_frame len running ndo_xdp_xmit
+>   veth: rework veth_xdp_rcv_skb in order to accept non-linear skb
+>   veth: allow jumbo frames in xdp mode
+>=20
+>  drivers/net/veth.c | 212 +++++++++++++++++++++++++++++----------------
+>  include/net/xdp.h  |  14 +++
+>  net/core/xdp.c     |   1 +
+>  3 files changed, 151 insertions(+), 76 deletions(-)
+>=20
+> --=20
+> 2.35.1
+>=20
+
+--E9E7A/WvfuN84J/d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYid8OAAKCRA6cBh0uS2t
+rJs6AQDRixs/npYZbWVQwrHy6O7z7k1hHwOnJ5CkmzNPSGfxxQD9GuACLgMgoLp1
+hJJRXbs3oQrZ2a7GpHbCIAaY7RtI2Qg=
+=GPEP
+-----END PGP SIGNATURE-----
+
+--E9E7A/WvfuN84J/d--
+
