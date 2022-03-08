@@ -2,98 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 062804D2453
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 23:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435B04D2472
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 23:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350751AbiCHWeI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 17:34:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46038 "EHLO
+        id S1350464AbiCHWoP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 17:44:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347211AbiCHWeH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 17:34:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340182657B;
-        Tue,  8 Mar 2022 14:33:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ZnnZECseUcd9qArTaNvmaOGk8AT/bGfF2OBX0/Pu6YI=; b=BGXn/vo6kdZZ23p4KvpqaaT/l8
-        wVSJRIEWuCWWIkTBOzOK0avCBqTr6SZ1hN84uOn1+N43X/GsH8cpJJv1Lc4R4qyktlVvvKRxmvqsJ
-        JYTgTflMVPUfCtoV2bidg+s/K11rA/DOK2V6L6nMigF1EHYhkIuC0zLwnM6o49WLoLuciPCH6sUSe
-        YFfXUafsLPm4LYOhXUb8tH1BsLIX5pE23DSChwCrHdrfsubt6kUO08VxgGQOJcqs43wFRxKC1jo8i
-        hT24zgjkCoU8ru60bt6egiBLSkTqKwUKsHnCeJ8tB3CzSq++M/6ZErORxW96JeMSJBzVZfwTDc/h3
-        5TzKZdnw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nRiNj-00GbDB-AW; Tue, 08 Mar 2022 22:32:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEE3F30027B;
-        Tue,  8 Mar 2022 23:32:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 79FB520097204; Tue,  8 Mar 2022 23:32:37 +0100 (CET)
-Date:   Tue, 8 Mar 2022 23:32:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        keescook@chromium.org, samitolvanen@google.com,
-        mark.rutland@arm.com, alyssa.milburn@intel.com, mbenes@suse.cz,
-        rostedt@goodmis.org, mhiramat@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-Message-ID: <YifZhUVoHLT/76fE@hirez.programming.kicks-ass.net>
-References: <20220308153011.021123062@infradead.org>
- <20220308200052.rpr4vkxppnxguirg@ast-mbp.dhcp.thefacebook.com>
- <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
+        with ESMTP id S1344759AbiCHWoO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 17:44:14 -0500
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A063615D;
+        Tue,  8 Mar 2022 14:43:17 -0800 (PST)
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nRiXx-000BWH-6i; Tue, 08 Mar 2022 23:43:13 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1nRiXw-0005MY-Up; Tue, 08 Mar 2022 23:43:12 +0100
+Subject: Re: [PATCH bpf v2] tools: fix unavoidable GCC call in Clang builds
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>, netdev@vger.kernel.org
+Cc:     llvm@lists.linux.dev, kernel@collabora.com,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Manoj Gupta <manojgupta@chromium.com>,
+        Nathan Chancellor <nathan@kernel.org>, bpf@vger.kernel.org
+References: <20220308121428.81735-1-adrian.ratiu@collabora.com>
+ <6e82ffbb-ebc8-30e8-2326-95712578ee07@iogearbox.net>
+ <87fsnsrt1t.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <29531b96-5fbc-a332-365d-8f6a1e5cc619@iogearbox.net>
+Date:   Tue, 8 Mar 2022 23:43:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <87fsnsrt1t.fsf@ryzen9.i-did-not-set--mail-host-address--so-tickle-me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: base64
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.5/26475/Tue Mar  8 10:31:43 2022)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 08, 2022 at 11:01:04PM +0100, Peter Zijlstra wrote:
-> On Tue, Mar 08, 2022 at 12:00:52PM -0800, Alexei Starovoitov wrote:
-> > On Tue, Mar 08, 2022 at 04:30:11PM +0100, Peter Zijlstra wrote:
-> > > Hopefully last posting...
-> > > 
-> > > Since last time:
-> > > 
-> > >  - updated the ftrace_location() patch (naveen, rostedt)
-> > >  - added a few comments and clarifications (bpetkov)
-> > >  - disable jump-tables (joao)
-> > >  - verified clang-14-rc2 works
-> > >  - fixed a whole bunch of objtool unreachable insn issue
-> > >  - picked up a few more tags
-> > > 
-> > > Patches go on top of tip/master + arm64/for-next/linkage. Also available here:
-> > > 
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/wip.ibt
-> > 
-> > I've tried to test it.
-> 
-> I could cleanly do:
-> 
-> git checkout tip/master
-> git merge bpf-next/master
-> git merge queue/x86/wip.ibt
-> 
-> You want me to push out that result somewhere?
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/ibt
-
-includes bpf-next/master.
-
-
+T24gMy84LzIyIDExOjE0IFBNLCBBZHJpYW4gUmF0aXUgd3JvdGU6DQo+IE9uIFR1ZSwgMDgg
+TWFyIDIwMjIsIERhbmllbCBCb3JrbWFubiA8ZGFuaWVsQGlvZ2VhcmJveC5uZXQ+IHdyb3Rl
+Og0KPj4gT24gMy84LzIyIDE6MTQgUE0sIEFkcmlhbiBSYXRpdSB3cm90ZToNCj4+PiBJbiBD
+aHJvbWVPUyBhbmQgR2VudG9vIHdlIGNhdGNoIGFueSB1bndhbnRlZCBtaXhlZCBDbGFuZy9M
+TFZNIGFuZCBHQ0MvYmludXRpbHMgdXNhZ2UgdmlhIHRvb2xjaGFpbiB3cmFwcGVycyB3aGlj
+aCBmYWlsIGJ1aWxkcy7CoCBUaGlzIGhhcyByZXZlYWxlZCB0aGF0IEdDQyBpcyBjYWxsZWQg
+dW5jb25kaXRpb25hbGx5IGluIENsYW5nIGNvbmZpZ3VyZWQgYnVpbGRzIHRvIHBvcHVsYXRl
+IEdDQ19UT09MQ0hBSU5fRElSLiBBbGxvdyB0aGUgdXNlciB0byBvdmVycmlkZSBDTEFOR19D
+Uk9TU19GTEFHUyB0byBhdm9pZCB0aGUgR0NDIGNhbGwgLSBpbiBvdXIgY2FzZSB3ZSBzZXQg
+dGhlIHZhciBkaXJlY3RseSBpbiB0aGUgZWJ1aWxkIHJlY2lwZS7CoMKgIEluIHRoZW9yeSBD
+bGFuZyBjb3VsZCBiZSBhYmxlIHRvIGF1dG9kZXRlY3QgdGhlc2Ugc2V0dGluZ3Mgc28gdGhp
+cyBsb2dpYyBjb3VsZCBiZSByZW1vdmVkIGVudGlyZWx5LCBidXQgaW4gcHJhY3RpY2UgYXMg
+dGhlIGNvbW1pdCBjZWJkYjczNzQ1NzcgKCJ0b29sczogSGVscCBjcm9zcy1idWlsZGluZyB3
+aXRoIGNsYW5nIikgbWVudGlvbnMsIHRoaXMgZG9lcyBub3QgYWx3YXlzIHdvcmssIHNvIGdp
+dmluZyBkaXN0cmlidXRpb25zIG1vcmUgY29udHJvbCB0byBzcGVjaWZ5IHRoZWlyIGZsYWdz
+ICYgc3lzcm9vdCBpcyBiZW5lZmljaWFsLsKgwqAgU3VnZ2VzdGVkLWJ5OiBNYW5vaiBHdXB0
+YSA8bWFub2pndXB0YUBjaHJvbWl1bS5jb20+IFN1Z2dlc3RlZC1ieTogTmF0aGFuIENoYW5j
+ZWxsb3IgPG5hdGhhbkBrZXJuZWwub3JnPiBBY2tlZC1ieTogTmF0aGFuIENoYW5jZWxsb3Ig
+PG5hdGhhbkBrZXJuZWwub3JnPiBTaWduZWQtb2ZmLWJ5OiBBZHJpYW4gUmF0aXUgPGFkcmlh
+bi5yYXRpdUBjb2xsYWJvcmEuY29tPiAtLS0gQ2hhbmdlcyBpbiB2MjogwqDCoCAqIFJlcGxh
+Y2VkIHZhcmlhYmxlIG92ZXJyaWRlIEdDQ19UT09MQ0hBSU5fRElSIC0+IMKgwqAgQ0xBTkdf
+Q1JPU1NfRkxBR1MgDQo+Pg0KPj4gQXMgSSB1bmRlcnN0YW5kIGl0IGZyb20gWzBdIGFuZCBn
+aXZlbiB3ZSdyZSBsYXRlIGluIHRoZSBjeWNsZSwgdGhpcyBpcyB0YXJnZXRlZCBmb3IgYnBm
+LW5leHQgbm90IGJwZiwgcmlnaHQ/DQo+IA0KPiBZZXMsIGxldCdzIHRhcmdldCB0aGlzIGZv
+ciBicGYtbmV4dC4gVGhlIGlzc3VlIHdhcyBpbnRyb2R1Y2VkIGluIHRoZSA1LjE3IGN5Y2xl
+IGJ1dCBpbmRlZWQgaXQncyBsYXRlLiBJIGNhbiBkbyBhIHN0YWJsZSBiYWNrcG9ydCB0byA1
+LjE3IGFmdGVyIGl0IHJlbGVhc2VzLg0KDQpPaywgc2d0bS4gR2l2ZW4gaXQgaGFzIGFuIEFj
+ayBieSBOYXRoYW4sIEkndmUgcHVzaGVkIGl0IHRvIGJwZi1uZXh0Lg0KDQpUaGFua3MgZXZl
+cnlvbmUsDQpEYW5pZWwNCg==
