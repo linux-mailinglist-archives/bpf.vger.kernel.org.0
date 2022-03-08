@@ -2,162 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3AA4D2225
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 21:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E44D226C
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 21:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350113AbiCHUGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 15:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S241931AbiCHUUk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 15:20:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349809AbiCHUGg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 15:06:36 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976174A3E9
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 12:05:39 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 228IopFf025017
-        for <bpf@vger.kernel.org>; Tue, 8 Mar 2022 12:05:39 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=PozqKVmCONyHBnyS7Bdpuz/RFF2KXoE2Pn4Bv0wNZT4=;
- b=PdEZWmfAV1W+C8rupHKPV6m7vc3zQJfYhIBiLTFa1ftyVIvbCIknGLdPqT9CwQX7OICt
- Ht/VQtm6WInNbKmY9S9FHtp0ESHXHU9XYD+WYjKt+3unIKHbvvNksrVZ1YSCu69kpy/l
- X33HNNJN8COy1LbzGhY0FXwZK2VxOHzBqrQ= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3enu25y25n-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 12:05:39 -0800
-Received: from twshared22811.39.frc1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 8 Mar 2022 12:05:38 -0800
-Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
-        id E00D03EBB79B; Tue,  8 Mar 2022 12:05:33 -0800 (PST)
-From:   Mykola Lysenko <mykolal@fb.com>
-To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
-        <daniel@iogearbox.net>
-CC:     <yhs@fb.com>, Mykola Lysenko <mykolal@fb.com>
-Subject: [PATCH v4 bpf-next 3/3] Improve stability of find_vma BPF test
-Date:   Tue, 8 Mar 2022 12:04:49 -0800
-Message-ID: <20220308200449.1757478-4-mykolal@fb.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220308200449.1757478-1-mykolal@fb.com>
-References: <20220308200449.1757478-1-mykolal@fb.com>
+        with ESMTP id S237572AbiCHUUj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 15:20:39 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA9249271
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 12:19:41 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id bt26so41803lfb.3
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 12:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5G0nUjl/KUrTKhsMXBs/MFTWcVX5OA3ZyIM0Ytd/oIs=;
+        b=MAglNXJ8Sc+oq2oP8KkAhJpusI6CzFcvHDc3MuNvraLwkwgx5kjelsqaQaPdcnUwN7
+         sgSwdLACAvidz7x2TYZ132gY/R46GTDVjRLZIwwCYJhYjhCa+WIZijq1o2ZntwGj8elp
+         aY7gXPV2/C9DwCP5WTNNLOTul4mId87R/vnRNbAySP0KbyQfGlnJBvRk7UyJ5NP5duXe
+         CU41GQm8QhWDfoWKLulVvHyb4qAY7JmCvFfB+IZcocM3s3O8Zud1xAqfvORXzxxktJQ3
+         T85yNLfRTDy5hJdSYiuBSrNChXGwgjvcqyp/H63Digrn7j6NJQ3Vg1bThQjIOGVI+BPe
+         oZzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5G0nUjl/KUrTKhsMXBs/MFTWcVX5OA3ZyIM0Ytd/oIs=;
+        b=mTEfqBWMiPGPlIikSTNPK6BRejCqB7MoO9l3u/b83asj0L3B53oDvtgRj19PzbEH+3
+         ckJvX+Z2drTj6ljjG5jUK76oUIfAlnpMSoF8Ii0AWAQKTcpRji6ECzzE5jGR1lP7PWvA
+         5FCiedvv+VeVL7xckBwx3h8ym1TNwh4FQKkBWrAQ5NFDbABZLbJh1neNvNRIXrpBvN/U
+         tujl97F1u7e4k5oClE1cfprDg7lTZGHXavG0R6jlAC0/dKdOheSt4ylw516GJ8zZiJ2i
+         ZzqABgsWLGlCoyFt1PDthm6lymzwWpaOIJNsUhWMP9r03auL5NRU/M8piMcQlrkQoxKV
+         tRZQ==
+X-Gm-Message-State: AOAM530PExoGMWLD+ifHYulU2y4NXjAMZSOZdO1QI0+R4DT57OaGPbsz
+        /wD3QZu+pwC37TgzQbw1hoEBLGBhtxPhidaJ8xCuvXBSG/s=
+X-Google-Smtp-Source: ABdhPJzbmwR5Wk1MmV0Bwi0IAdpQRWCYhgfaNGWumrVHQj3DN707JLa5krrjQy9j4T8tUnTLrNfaE3DOLAYHcqGT0O8=
+X-Received: by 2002:a05:6512:3242:b0:448:4a8f:6ae1 with SMTP id
+ c2-20020a056512324200b004484a8f6ae1mr1628816lfr.665.1646770779424; Tue, 08
+ Mar 2022 12:19:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ye1dqFESTi4t3PZBTjwklw3St6ABInk9
-X-Proofpoint-ORIG-GUID: ye1dqFESTi4t3PZBTjwklw3St6ABInk9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-08_08,2022-03-04_01,2022-02-23_01
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220302212735.3412041-1-mykolal@fb.com>
+In-Reply-To: <20220302212735.3412041-1-mykolal@fb.com>
+From:   "sunyucong@gmail.com" <sunyucong@gmail.com>
+Date:   Tue, 8 Mar 2022 12:19:12 -0800
+Message-ID: <CAJygYd1X+aYQ1u96bwU+a5wDzADDGMH7f202nq00xZMr+YRScg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] Improve BPF test stability (related to perf
+ events and scheduling)
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove unneeded spleep and increase length of dummy CPU
-intensive computation to guarantee test process execution.
-Also, complete aforemention computation as soon as
-test success criteria is met
+On Wed, Mar 2, 2022 at 3:53 PM Mykola Lysenko <mykolal@fb.com> wrote:
+>
+> In send_signal, replace sleep with dummy cpu intensive computation
+> to increase probability of child process being scheduled. Add few
+> more asserts.
+>
+> In find_vma, reduce sample_freq as higher values may be rejected in
+> some qemu setups, remove usleep and increase length of cpu intensive
+> computation.
+>
+> In bpf_cookie, perf_link and perf_branches, reduce sample_freq as
+> higher values may be rejected in some qemu setups
+>
+> Signed-off-by: Mykola Lysenko <mykolal@fb.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> ---
+>  .../selftests/bpf/prog_tests/bpf_cookie.c       |  2 +-
+>  .../testing/selftests/bpf/prog_tests/find_vma.c | 13 ++++++++++---
+>  .../selftests/bpf/prog_tests/perf_branches.c    |  4 ++--
+>  .../selftests/bpf/prog_tests/perf_link.c        |  2 +-
+>  .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
+>  .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
+>  6 files changed, 25 insertions(+), 15 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> index cd10df6cd0fc..0612e79a9281 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_cookie.c
+> @@ -199,7 +199,7 @@ static void pe_subtest(struct test_bpf_cookie *skel)
+>         attr.type = PERF_TYPE_SOFTWARE;
+>         attr.config = PERF_COUNT_SW_CPU_CLOCK;
+>         attr.freq = 1;
+> -       attr.sample_freq = 4000;
+> +       attr.sample_freq = 1000;
+>         pfd = syscall(__NR_perf_event_open, &attr, -1, 0, -1, PERF_FLAG_FD_CLOEXEC);
+>         if (!ASSERT_GE(pfd, 0, "perf_fd"))
+>                 goto cleanup;
+> diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> index b74b3c0c555a..7cf4feb6464c 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+> @@ -30,12 +30,20 @@ static int open_pe(void)
+>         attr.type = PERF_TYPE_HARDWARE;
+>         attr.config = PERF_COUNT_HW_CPU_CYCLES;
+>         attr.freq = 1;
+> -       attr.sample_freq = 4000;
+> +       attr.sample_freq = 1000;
 
-Signed-off-by: Mykola Lysenko <mykolal@fb.com>
-Acked-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/find_vma.c       | 28 +++++++++++++------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+I think It's actually better to modify sysctl.
+perf_event_max_sample_rate through test_progs, I had a patch do that
+before, but Andrii didn't apply it. (I've forgotten why) , but this is
+a recurring issue when running in VM in parallel mode.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
-sting/selftests/bpf/prog_tests/find_vma.c
-index 743a094c9510..5165b38f0e59 100644
---- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
-+++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
-@@ -7,12 +7,14 @@
- #include "find_vma_fail1.skel.h"
- #include "find_vma_fail2.skel.h"
-=20
--static void test_and_reset_skel(struct find_vma *skel, int expected_find=
-_zero_ret)
-+static void test_and_reset_skel(struct find_vma *skel, int expected_find=
-_zero_ret, bool need_test)
- {
--	ASSERT_EQ(skel->bss->found_vm_exec, 1, "found_vm_exec");
--	ASSERT_EQ(skel->data->find_addr_ret, 0, "find_addr_ret");
--	ASSERT_EQ(skel->data->find_zero_ret, expected_find_zero_ret, "find_zero=
-_ret");
--	ASSERT_OK_PTR(strstr(skel->bss->d_iname, "test_progs"), "find_test_prog=
-s");
-+	if (need_test) {
-+		ASSERT_EQ(skel->bss->found_vm_exec, 1, "found_vm_exec");
-+		ASSERT_EQ(skel->data->find_addr_ret, 0, "find_addr_ret");
-+		ASSERT_EQ(skel->data->find_zero_ret, expected_find_zero_ret, "find_zer=
-o_ret");
-+		ASSERT_OK_PTR(strstr(skel->bss->d_iname, "test_progs"), "find_test_pro=
-gs");
-+	}
-=20
- 	skel->bss->found_vm_exec =3D 0;
- 	skel->data->find_addr_ret =3D -1;
-@@ -36,11 +38,20 @@ static int open_pe(void)
- 	return pfd >=3D 0 ? pfd : -errno;
- }
-=20
-+static bool find_vma_pe_condition(struct find_vma *skel)
-+{
-+	return skel->bss->found_vm_exec =3D=3D 0 ||
-+		skel->data->find_addr_ret !=3D 0 ||
-+		skel->data->find_zero_ret =3D=3D -1 ||
-+		strcmp(skel->bss->d_iname, "test_progs") !=3D 0;
-+}
-+
- static void test_find_vma_pe(struct find_vma *skel)
- {
- 	struct bpf_link *link =3D NULL;
- 	volatile int j =3D 0;
- 	int pfd, i;
-+	const int one_bn =3D 1000000000;
-=20
- 	pfd =3D open_pe();
- 	if (pfd < 0) {
-@@ -57,10 +68,10 @@ static void test_find_vma_pe(struct find_vma *skel)
- 	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
- 		goto cleanup;
-=20
--	for (i =3D 0; i < 1000000; ++i)
-+	for (i =3D 0; i < one_bn && find_vma_pe_condition(skel); ++i)
- 		++j;
-=20
--	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
-+	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, i =3D=3D=
- one_bn);
- cleanup:
- 	bpf_link__destroy(link);
- 	close(pfd);
-@@ -75,7 +86,7 @@ static void test_find_vma_kprobe(struct find_vma *skel)
- 		return;
-=20
- 	getpgid(skel->bss->target_pid);
--	test_and_reset_skel(skel, -ENOENT /* could not find vma for ptr 0 */);
-+	test_and_reset_skel(skel, -ENOENT /* could not find vma for ptr 0 */, t=
-rue);
- }
-=20
- static void test_illegal_write_vma(void)
-@@ -108,7 +119,6 @@ void serial_test_find_vma(void)
- 	skel->bss->addr =3D (__u64)(uintptr_t)test_find_vma_pe;
-=20
- 	test_find_vma_pe(skel);
--	usleep(100000); /* allow the irq_work to finish */
- 	test_find_vma_kprobe(skel);
-=20
- 	find_vma__destroy(skel);
---=20
-2.30.2
-
+>         pfd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, PERF_FLAG_FD_CLOEXEC);
+>
+>         return pfd >= 0 ? pfd : -errno;
+>  }
