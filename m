@@ -2,261 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 758754D1334
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 10:20:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3754D14FB
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 11:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345297AbiCHJVR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 04:21:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47764 "EHLO
+        id S244921AbiCHKoq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 05:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236199AbiCHJVQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 04:21:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD0963D1E0
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 01:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646731219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BHJNKcefmBPCZQfETqNljYPzoWjRgF0JS6C9KGiRgtk=;
-        b=YX5a8O9F0SWzhxi9BQzc40XEBADzOccyVq6zvYQKGFtyOD4i7qunjm2xpsbekuLjt9/qpb
-        QzaiWPbsdRCDCR8imcbtK3C5Xt3wkNUo3XbhByGWX3F2O9mQFpsiiOuZB+da4ymxcG7jcb
-        wP8hHKK6sLjPTehs/XcEz0riW/RC05U=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-258-GvaLemYCMt6gYgPyqEZmgg-1; Tue, 08 Mar 2022 04:20:18 -0500
-X-MC-Unique: GvaLemYCMt6gYgPyqEZmgg-1
-Received: by mail-pf1-f198.google.com with SMTP id 67-20020a621446000000b004f739ef52f1so126485pfu.0
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 01:20:18 -0800 (PST)
+        with ESMTP id S235914AbiCHKop (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 05:44:45 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EBF41303;
+        Tue,  8 Mar 2022 02:43:47 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id b8so16769833pjb.4;
+        Tue, 08 Mar 2022 02:43:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kVG0kf5foVe3hmr29o5GrRkYkCpLk23FIIa7/Ch95rM=;
+        b=qkS3qbfEay2oO+bJ7agoouaRbAinfT0Kb9++JSZjVeDI7efUDPFveFdENLmqpoodpy
+         sAHmO1GBYEjJjdshPGMDGwYQtzfLST3WOywx+nzQlmLIbqmkQCtMOJU2Crmsrhp9/BPy
+         uzERFM0UW2fId8T1AbhKmWHZkCcGy3IL8pIpLwGJh9ezaQpJ1ajcaGQ1OfBKEY22KU7F
+         DT1dE1YPA3rTmAx6//NsqmjsYgnKF+mjNaCRIAdj1atw6FfzbZ1jC/6yGbj112JkLO8S
+         AxJf4xewxUf/UX1mNMxwXYJsL9BH0vVob6kA548rrvKNlozd9HG4a57x6TehGDHbkbtC
+         a8Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BHJNKcefmBPCZQfETqNljYPzoWjRgF0JS6C9KGiRgtk=;
-        b=KihC0HxYX/Q3A4HCmHBIDEeOQyyRwaqt8NTp7GBgSJc/O+m6xy+VbIQVwp41BFuQ0m
-         OBufDQtWWcvQzucoYktQ5YHhlVg4eKG5l0kSNk012/fi6csfh/IacOrenw2KjVXKpjWP
-         lnIpXdowiamvqh5En9v1YZ42PZdjse7SA6tGgV6N9THH9/J5DxK57DniOu04+nF1o/CI
-         6+0ScrzEsMQPeNf9RAC7sySwKrT3yeAgUjACumHovod00V3nMD1RJrEY8soMZ/6ai+jq
-         GucyA6GNvoEJKFkcvi8H6dy8ZMwZ2T8pFCuo/Ml2oB1dqa9DVbzBjDZe9bEWkglex5oP
-         Mqwg==
-X-Gm-Message-State: AOAM531qnUuq22vsMtg9MGOK+HW4VD1yFcBgV2warEV8voAZNjU/Ps8y
-        Cat4jQIawS/SgZ8V3YgYSR7YoV9QTRjX0REeWp6CPfb2sxaAAZiVceWxfKWy+XncvZV0FCGIIZp
-        JFkHcwNcARkvEBiXQWc74LAbNVNGr
-X-Received: by 2002:a17:90a:560a:b0:1bc:72e7:3c13 with SMTP id r10-20020a17090a560a00b001bc72e73c13mr3561612pjf.246.1646731217691;
-        Tue, 08 Mar 2022 01:20:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxGBcsxWUY1lv6BGvVcM0BJmAMRFc5RbO84C7BBpZHsPBTdtiEjxgMTPrLlikfMuAeEH1bfUbyx1yR8JsE0/AY=
-X-Received: by 2002:a17:90a:560a:b0:1bc:72e7:3c13 with SMTP id
- r10-20020a17090a560a00b001bc72e73c13mr3561553pjf.246.1646731217191; Tue, 08
- Mar 2022 01:20:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-3-benjamin.tissoires@redhat.com> <CAPhsuW5CYF9isR4ffRdm3xA_n_FBoL+AGFkzNn4dn2LgRaQQkg@mail.gmail.com>
- <CAO-hwJKFE4Ps962BBubn8=1K0k9mC2qi8VerFbZo1sqpp6yekg@mail.gmail.com> <CAPhsuW5mZQ-N7RCndxP0RNi669RU5Tbu-Uu0M-KW2-mPYZbbng@mail.gmail.com>
-In-Reply-To: <CAPhsuW5mZQ-N7RCndxP0RNi669RU5Tbu-Uu0M-KW2-mPYZbbng@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 8 Mar 2022 10:20:06 +0100
-Message-ID: <CAO-hwJ+_aZDdKguze-BC+Ok9=HccAYSUFrNJmQBZfX3oufRGUQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 02/28] bpf: introduce hid program type
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kVG0kf5foVe3hmr29o5GrRkYkCpLk23FIIa7/Ch95rM=;
+        b=nQPvXLfQi8SPDw4tntu/ebpQirSUGmr0PIFmO1L8ZksENeQcrIw8pAegPyji2ow13s
+         bHYRjgUneRNVCBXm7uPHqnkOERjPPKvq4j9fnJtUotKYfKU1nON80jikqf+tN5fZ0zyS
+         4f4UYT20nCUmEANWFw588HOK3kCuoXkX9RAwmyOAZcw9UEc8AYc0AIs1SlGc6T2n7zrT
+         gxTNMiLNA5DVK/KbOdXL7+zob7Jer/jxEZYXub9ZlM5e4jFSoGhIdlZCzv03MF7O6i2M
+         V7eJ5LXKcGgOGUlwl5NZhdb8XvDJjdYAAs4ZI4HOq9csaIvulDEujsa2YewN+U4fIpsd
+         kVnw==
+X-Gm-Message-State: AOAM532nhM7QOJtsiCfkmNZWu/gIui7s40jxmT1uLb50dBj0ebAIa+UU
+        p+oS7tNjl1dw9k9wJ7RDiQ1KnTC/QYey0/L1
+X-Google-Smtp-Source: ABdhPJwRFxwTt9GHPixKsjKE5eWxu+NxvBZb3wvWFzW4iKxyKr999BOU/oqXVvwXW3t1MW36ewlAlw==
+X-Received: by 2002:a17:902:e848:b0:151:e3a5:b609 with SMTP id t8-20020a170902e84800b00151e3a5b609mr11000504plg.137.1646736227405;
+        Tue, 08 Mar 2022 02:43:47 -0800 (PST)
+Received: from baaz ([49.36.203.74])
+        by smtp.gmail.com with ESMTPSA id q22-20020a056a00085600b004f397d1f3b5sm20327837pfk.171.2022.03.08.02.43.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 02:43:46 -0800 (PST)
+Date:   Tue, 8 Mar 2022 16:13:40 +0530
+From:   Muhammad Falak R Wani <falakreyaz@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next] samples/bpf: fix broken bpf programs due to
+ function inlining
+Message-ID: <YiczXPnQakMwNEbX@baaz>
+References: <20220306121535.156276-1-falakreyaz@gmail.com>
+ <CAEf4BzYmVo9rw1Ys0ZufQFA=f7sy+dP=d9L9rmGS5L91qV1K+A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzYmVo9rw1Ys0ZufQFA=f7sy+dP=d9L9rmGS5L91qV1K+A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 8, 2022 at 1:57 AM Song Liu <song@kernel.org> wrote:
->
-> On Mon, Mar 7, 2022 at 10:39 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
+On Mon, Mar 07, 2022 at 10:11:36PM -0800, Andrii Nakryiko wrote:
+> On Sun, Mar 6, 2022 at 4:15 AM Muhammad Falak R Wani
+> <falakreyaz@gmail.com> wrote:
 > >
-> > On Sat, Mar 5, 2022 at 1:03 AM Song Liu <song@kernel.org> wrote:
-> > >
-> > > On Fri, Mar 4, 2022 at 9:31 AM Benjamin Tissoires
-> > > <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > > > HID is a protocol that could benefit from using BPF too.
-> > >
-> > > [...]
-> > >
-> > > > +#include <linux/list.h>
-> > > > +#include <linux/slab.h>
-> > > > +
-> > > > +struct bpf_prog;
-> > > > +struct bpf_prog_array;
-> > > > +struct hid_device;
-> > > > +
-> > > > +enum bpf_hid_attach_type {
-> > > > +       BPF_HID_ATTACH_INVALID = -1,
-> > > > +       BPF_HID_ATTACH_DEVICE_EVENT = 0,
-> > > > +       MAX_BPF_HID_ATTACH_TYPE
-> > >
-> > > Is it typical to have different BPF programs for different attach types?
-> > > Otherwise, (different types may have similar BPF programs), maybe
-> > > we can pass type as an argument to the program (shared among
-> > > different types)?
+> > commit: "be6bfe36db17 block: inline hot paths of blk_account_io_*()"
+> > inlines the function `blk_account_io_done`. As a result we can't attach a
+> > kprobe to the function anymore. Use `__blk_account_io_done` instead.
 > >
-> > Not quite sure I am entirely following you, but I consider the various
-> > attach types to be quite different and thus you can not really reuse
-> > the same BPF program with 2 different attach types.
+> > Signed-off-by: Muhammad Falak R Wani <falakreyaz@gmail.com>
+> > ---
+> >  samples/bpf/task_fd_query_kern.c | 2 +-
+> >  samples/bpf/tracex3_kern.c       | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
 > >
-> > In my view, we have 4 attach types:
-> > - BPF_HID_ATTACH_DEVICE_EVENT: called whenever we receive an IRQ from
-> > the given device (so this is net-like event stream)
-> > - BPF_HID_ATTACH_RDESC_FIXUP: there can be only one of this type, and
-> > this is called to change the device capabilities. So you can not reuse
-> > the other programs for this one
-> > - BPF_HID_ATTACH_USER_EVENT: called explicitly by the userspace
-> > process owning the program. There we can use functions that are
-> > sleeping (we are not in IRQ context), so this is also fundamentally
-> > different from the 3 others.
-> > - BPF_HID_ATTACH_DRIVER_EVENT: whenever the driver gets called into,
-> > we get a bpf program run. This can be suspend/resume, or even specific
-> > request to the device (change a feature on the device or get its
-> > current state). Again, IMO fundamentally different from the others.
-> >
-> > So I'm open to any suggestions, but if we can keep the userspace API
-> > being defined with different SEC in libbpf, that would be the best.
->
-> Thanks for this information. Different attach_types sound right for the use
-> case.
->
-> >
-> > >
-> > > [...]
-> > >
-> > > > +struct hid_device;
-> > > > +
-> > > > +enum hid_bpf_event {
-> > > > +       HID_BPF_UNDEF = 0,
-> > > > +       HID_BPF_DEVICE_EVENT,           /* when attach type is BPF_HID_DEVICE_EVENT */
-> > > > +};
-> > > > +
-> > > > +struct hid_bpf_ctx {
-> > > > +       enum hid_bpf_event type;        /* read-only */
-> > > > +       __u16 allocated_size;           /* the allocated size of data below (RO) */
-> > >
-> > > There is a (6-byte?) hole here.
-> > >
-> > > > +       struct hid_device *hdev;        /* read-only */
-> > > > +
-> > > > +       __u16 size;                     /* used size in data (RW) */
-> > > > +       __u8 data[];                    /* data buffer (RW) */
-> > > > +};
-> > >
-> > > Do we really need hit_bpf_ctx in uapi? Maybe we can just use it
-> > > from vmlinuxh?
-> >
-> > I had a thought at this context today, and I think I am getting to the
-> > limit of what I understand.
-> >
-> > My first worry is that the way I wrote it there, with a variable data
-> > field length is that this is not forward compatible. Unless BTF and
-> > CORE are making magic, this will bite me in the long run IMO.
-> >
-> > But then, you are talking about not using uapi, and I am starting to
-> > wonder: am I doing the things correctly?
-> >
-> > To solve my first issue (and the weird API I had to introduce in the
-> > bpf_hid_get/set_data), I came up to the following:
-> > instead of exporting the data directly in the context, I could create
-> > a helper bpf_hid_get_data_buf(ctx, const uint size) that returns a
-> > RET_PTR_TO_ALLOC_MEM_OR_NULL in the same way bpf_ringbuf_reserve()
-> > does.
-> >
-> > This way, I can directly access the fields within the bpf program
-> > without having to worry about the size.
-> >
-> > But now, I am wondering whether the uapi I defined here is correct in
-> > the way CORE works.
-> >
-> > My goal is to have HID-BPF programs to be CORE compatible, and not
-> > have to recompile them depending on the underlying kernel.
-> >
-> > I can not understand right now if I need to add some other BTF helpers
-> > in the same way the access to struct xdp_md and struct xdp_buff are
-> > converted between one and other, or if defining a forward compatible
-> > struct hid_bpf_ctx is enough.
-> > As far as I understand, .convert_ctx_access allows to export a stable
-> > uapi to the bpf prog users with the verifier doing the conversion
-> > between the structs for me. But is this really required for all the
-> > BPF programs if we want them to be CORE?
-> >
-> > Also, I am starting to wonder if I should not hide fields in the
-> > context to the users. The .data field could be a pointer and only
-> > accessed through the helper I mentioned above. This would be forward
-> > compatible, and also allows to use whatever available memory in the
-> > kernel to be forwarded to the BPF program. This way I can skip the
-> > memcpy part and work directly with the incoming dma data buffer from
-> > the IRQ.
-> >
-> > But is it best practice to do such a thing?
->
-> I think .convert_ctx_access is the way to go if we want to access the data
-> buffer without memcpy. I am not sure how much work is needed to make
-> it compatible with CORE though.
->
-> To make sure I understand the case, do we want something like
->
-> bpf_prog(struct hid_bpf_ctx *ctx)
-> {
->     /* makes sure n < ctx->size */
->     x = ctx->data[n]; /* read data */
->     ctx->data[n] = <something>; /* write data */
->     ctx->size = <something <= n>; /* change data size */
-> }
->
-> We also need it to be CORE, so that we may modify hid_bpf_ctx by
-> inserting more members to it before data.
->
-> Is this accurate?
->
-
-Yes, you pretty much summed it all (except maybe that we might want to
-have allocated_size in addition to size so we can also grow the value
-of .size within the allocated limit).
-
-All in all, what I want for HID bpf programs is to be able to read and
-write an array of bytes, and change its size within an allocated
-kernel limit.
-
-This will apply to every HID bpf attach type, to the exception of some
-BPF_HID_ATTACH_DRIVER_EVENT when we are receiving a suspend/resume
-notification. Though in the suspend/resume case we won't have the data
-array available, so it won't matter much.
-
-I want the HID bpf programs to be CORE, but if you tell me that it
-would matter only if we need to reshuffle hid_bpf_ctx, I would be fine
-simply put a comment "new fields must be added at the end" like some
-other definitions of contexts are doing.
-
-Besides that, I currently do not want to allow access to the content
-of struct hid_device (or any other kernel struct) in HID BPF programs.
-That might be of interest at some point for debugging, but with just
-the array capability I should be able to achieve all of my use cases.
-
-Cheers,
-Benjamin
-
+> > diff --git a/samples/bpf/task_fd_query_kern.c b/samples/bpf/task_fd_query_kern.c
+> > index c821294e1774..186ac0a79c0a 100644
+> > --- a/samples/bpf/task_fd_query_kern.c
+> > +++ b/samples/bpf/task_fd_query_kern.c
+> 
+> samples/bpf/task_fd_query_user.c also needs adjusting, no? Have you
+> tried running those samples?
+Aplologies, I ran the `tracex3` program, but missed to verify `task_fd_query`. Should I send a V2
+where I modify only the `tracex3` ?
