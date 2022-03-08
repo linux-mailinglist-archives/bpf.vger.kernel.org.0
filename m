@@ -2,66 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A3F4D0ED3
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 05:45:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D8D4D0F3F
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 06:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbiCHEqO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 23:46:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
+        id S233456AbiCHFnV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 00:43:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbiCHEqO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 23:46:14 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6DB2F034;
-        Mon,  7 Mar 2022 20:45:18 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 132so15406172pga.5;
-        Mon, 07 Mar 2022 20:45:18 -0800 (PST)
+        with ESMTP id S232397AbiCHFnU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 00:43:20 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4028220E5;
+        Mon,  7 Mar 2022 21:42:24 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id 195so19845322iou.0;
+        Mon, 07 Mar 2022 21:42:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yp4XOV099+8KsjwVQiajLdJYpcZJrSJVKo5Wf41XMi8=;
-        b=QHI84cHVmSwSoO2tyNVe5iGb4gKbOv/ABZag9JmtRrCyTwa23g+0au1vFyxpIoBk5Q
-         OetNzX8dNPvw/wse4800/DYsCnGgvhBiXEl6e/4cUhtYzNwD/vgg1wMOkhpHRPxAB4NY
-         p32TR/wU+dtlg4BqxOGRXn+Nj4wLYjVJgM+g9eQuqJMJutwgvv/ZNW2RrBKDL6+kaOle
-         pz2uUhhAcqVwbyZDb6q2EI6KPhEzUrjaK/5EKG7zJPY5fK8Y7cYXuGor/A4I5aqtRl4H
-         unG1l6g0tH/ng1JxAMlKoKqKYaokYj3finNdBfvMmaH1QGl4y4emn/fqDWueAEy6OLEQ
-         v+eg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VU/bk80dcvq3/B3jqvkSt1+SbRmuTtLtwkH9kdbbGQg=;
+        b=S36EuXfluWmyDYsp3P4NtHTdlgZ3jNFcoYuNp+TSNHec/f+mfX6Ob1V4aQqaufz5S2
+         HbwGlUEx/LVenwQ146QDL1/eXOV3nXjv311IFzWB4e5r3ZjAOQo3vOANtJHdq/+CD9Jg
+         m4Bl6DhT3Gbi+YX1e3XyEDyy4PMxJhgK7Sr03icEtq0Wi6ic5iNXlSJcyZzh9Y898/Dz
+         G2eTNyU5DgDStdaYQsYWgwcjw+um4qmd0J44mcH6JtdWkIDtVshwtDsI6+v351Hbxe4I
+         FbhxTbbtXQP1TIkHMuhtMSRyMD7/FVJ+IGYiCisWzPC0ERkAc3at9aHkqEgD3EFFvDSd
+         BUDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yp4XOV099+8KsjwVQiajLdJYpcZJrSJVKo5Wf41XMi8=;
-        b=xHaY9DqIrLnNy695Uyk9CJefE39B+iOmMLqVd4ev1JUm2IdSYamWL/O7r4l9maUQhz
-         u2/OXiQjCmzvOO6sDH8cFLidQMLqUXYj5d0iL5UwshE6R395s2XEe9fNbKlKq/QY0uh7
-         HKJdd+DHU0IF/kz8zr7emOaYUD9Gi248chfYdlngcj460kYFLBzGDsE3qhGThD+0oxcU
-         JfaiJgSBRCJSos6Zh71T1QypLoDhC7frO//Ftm9BrHGzro0iZ/Idevzp6asLUAvMcc5j
-         K8EsUvRrT4gunQnknDDAGDuQGiZUHd7GEZmPxp7jjfyAMBq8fOWe35G+OyMVWJfyEUeC
-         km+Q==
-X-Gm-Message-State: AOAM530FX88o9RQdXxbIUdIDeMMleLxZKZ/+cbJb0vg0stH/+hMqpu4o
-        Kyu8HdYLcmXHwGwVRadKED8=
-X-Google-Smtp-Source: ABdhPJw3KNVBabWHI90FOifMwoskaCmEEWI2OlnSyaCuukWxxfkGwDHTtACAaEbDyKPg3A1X6wGTVA==
-X-Received: by 2002:a65:554e:0:b0:34d:f721:7fef with SMTP id t14-20020a65554e000000b0034df7217fefmr12753728pgr.476.1646714718231;
-        Mon, 07 Mar 2022 20:45:18 -0800 (PST)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id g12-20020a056a0023cc00b004f707cc97f9sm5174022pfc.52.2022.03.07.20.45.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Mar 2022 20:45:17 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     quentin@isovalent.com
-Cc:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com, yhs@fb.com,
-        ytcoode@gmail.com
-Subject: [PATCH bpf-next v2] bpf: Clean up Makefile of bpf preload
-Date:   Tue,  8 Mar 2022 12:43:39 +0800
-Message-Id: <20220308044339.458876-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <56b9dab5-6a3d-58ff-69c9-7abaabf41d05@isovalent.com>
-References: <56b9dab5-6a3d-58ff-69c9-7abaabf41d05@isovalent.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VU/bk80dcvq3/B3jqvkSt1+SbRmuTtLtwkH9kdbbGQg=;
+        b=FcSxPnVxsA0L6VqjyBBps29VKAt1yORAJ5IrkV1IIEopcL3GOEgrckWlVDhrgqmI7X
+         2lSH6DvcioU0uym0NXGh+SKORpeLYgCVwU0iPGUELSROiMSjhBpBv1A+cWGPiDB9aC85
+         4lBWyWW46VcpDgPy5hxmwQKV0LyNrR94gyzJg6mOXSRkFQ297uee8OBFGepHJ7FqHbNG
+         FUFxzDjEqVizHjU2g6ckfBdcvSuITzeEDCGzZ3HHl8EmMAPw7PHw2Un2ejOhFTNrSizK
+         wMN0b0X3n2KyAn7eCgti1PUF/RofWLiFMN6diku5Tjum96bVZeI7a5D8I2y0dz1H+b//
+         dN1w==
+X-Gm-Message-State: AOAM530yC8/qIMLh11Zdl+Z0Zp3N3Vzea9ZgahAZVTVuoMtDF1GE4VCk
+        hWfGaGYXpVUw290N4p8gNHxz12JhJ+10MIPRulhWdSJR2fo=
+X-Google-Smtp-Source: ABdhPJxoVBWSeo1Oh9SY4a1guJBlUjUUPu3rs3+wGg4oTVIxqevKUfb/5ElZhm2aVSuPnwHXoCk3iE9lQpYHVztTddA=
+X-Received: by 2002:a5d:948a:0:b0:645:b742:87c0 with SMTP id
+ v10-20020a5d948a000000b00645b74287c0mr9647775ioj.79.1646718144199; Mon, 07
+ Mar 2022 21:42:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220306234311.452206-1-memxor@gmail.com> <20220306234311.452206-2-memxor@gmail.com>
+In-Reply-To: <20220306234311.452206-2-memxor@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Mar 2022 21:42:13 -0800
+Message-ID: <CAEf4Bza0smGgyty87gfbUM8z5i+QOFvVqH+VHYcQxobODxCvfQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 1/5] bpf: Add ARG_SCALAR and ARG_CONSTANT
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,32 +73,90 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The trailing slash in LIBBPF_SRCS is redundant, it should be removed.
+On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>
+> In the next patch, we will introduce a new helper 'bpf_packet_pointer'
+> that takes offset and len and returns a packet pointer. There we want to
+> statically enforce offset is in range [0, 0xffff], and that len is a
+> constant value, in range [1, 0xffff]. This also helps us avoid a
+> pointless runtime check. To make these checks possible, we need to
+> ensure we only get a scalar type. Although a lot of other argument types
+> take scalars, their intent is different. Hence add general ARG_SCALAR
+> and ARG_CONSTANT types, where the latter is also checked to be constant
+> in addition to being scalar.
+>
+> Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> ---
+>  include/linux/bpf.h   |  2 ++
+>  kernel/bpf/verifier.c | 13 +++++++++++++
+>  2 files changed, 15 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 88449fbbe063..7841d90b83df 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -391,6 +391,8 @@ enum bpf_arg_type {
+>         ARG_PTR_TO_STACK,       /* pointer to stack */
+>         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
+>         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
+> +       ARG_SCALAR,             /* a scalar with any value(s) */
 
-But to simplify the Makefile further, we can set LIBBPF_INCLUDE to
-$(srctree)/tools/lib directly, thus the LIBBPF_SRCS variable is unused
-and can be removed.
+What's the difference between ARG_ANYTHING and ARG_SCALAR?
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
-v1->v2: get rid of LIBBPF_SRCS
+> +       ARG_CONSTANT,           /* a scalar with constant value */
 
- kernel/bpf/preload/Makefile | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+This ARG_CONSTANT serves a very similar purpose as
+ARG_CONST_ALLOC_SIZE_OR_ZERO, tbh. The only difference is that one is
+used to set meta->mem_size and this one is used (through extra func_id
+special handling) to set meta->ret_pkt_len. But meta->mem_size and
+meta->ret_pkt_len mean the same thing: how many bytes are directly
+accessible through a pointer returned from the helper. So I feel like
+there is some opportunity to unify and generalize, instead of adding
+more custom variants of constants. WDYT?
 
-diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-index 167534e3b0b4..7284782981bf 100644
---- a/kernel/bpf/preload/Makefile
-+++ b/kernel/bpf/preload/Makefile
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
--LIBBPF_INCLUDE = $(LIBBPF_SRCS)/..
-+LIBBPF_INCLUDE = $(srctree)/tools/lib
- 
- obj-$(CONFIG_BPF_PRELOAD_UMD) += bpf_preload.o
- CFLAGS_bpf_preload_kern.o += -I $(LIBBPF_INCLUDE)
--- 
-2.35.1
 
+
+>         __BPF_ARG_TYPE_MAX,
+>
+>         /* Extended arg_types. */
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ec3a7b6c9515..0373d5bd240f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5163,6 +5163,12 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
+>                type == ARG_PTR_TO_LONG;
+>  }
+>
+> +static bool arg_type_is_scalar(enum bpf_arg_type type)
+> +{
+> +       return type == ARG_SCALAR ||
+> +              type == ARG_CONSTANT;
+> +}
+> +
+>  static int int_ptr_type_to_size(enum bpf_arg_type type)
+>  {
+>         if (type == ARG_PTR_TO_INT)
+> @@ -5302,6 +5308,8 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
+>         [ARG_PTR_TO_STACK]              = &stack_ptr_types,
+>         [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
+>         [ARG_PTR_TO_TIMER]              = &timer_types,
+> +       [ARG_SCALAR]                    = &scalar_types,
+> +       [ARG_CONSTANT]                  = &scalar_types,
+>  };
+>
+>  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
+> @@ -5635,6 +5643,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                         verbose(env, "string is not zero-terminated\n");
+>                         return -EINVAL;
+>                 }
+> +       } else if (arg_type_is_scalar(arg_type)) {
+> +               if (arg_type == ARG_CONSTANT && !tnum_is_const(reg->var_off)) {
+> +                       verbose(env, "R%d is not a known constant\n", regno);
+> +                       return -EACCES;
+> +               }
+>         }
+>
+>         return err;
+> --
+> 2.35.1
+>
