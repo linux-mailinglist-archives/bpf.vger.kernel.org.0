@@ -2,163 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 487474D21D3
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 20:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BAD4D2209
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 20:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349632AbiCHTrJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 14:47:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
+        id S1350102AbiCHTyP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 8 Mar 2022 14:54:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345981AbiCHTrI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 14:47:08 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D404FC4F
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 11:46:08 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id e2so27271pls.10
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 11:46:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc
-         :references:from:subject:in-reply-to:content-transfer-encoding;
-        bh=bHQS21fo7rJF8A8D9YsCm/nb3uEruXx6UdaugBD/6Lo=;
-        b=OOvRCvAQU0PZwsr/DCMpdtfEjRxI9y3rMSDOceFJklWIfHv76w+j8r95EB5TSWnyxd
-         88J9R0SDhMVHnGNc4KcweWjfpD+vmQ+QUQrV9FDGJkAz+AOPtSLba+R3jA8CuAkGFB5E
-         jQYQcDaW++IOaFIJ3l0p2xew8PflSUAhnTs3e0ICl4Nyhn2IrTu6u8tlUoWYfjchLLMo
-         D52ukvQRjK7uhXUXe9MqU8nanoom8O4OsEF0xW/lR8FAtDIXiZ10vup4RxQuVil7gtVv
-         BaCSB4CKXGpi9W2FUWm1i9UoxZuTzrTNdpMOn6T/nr6LCxusqbg+ssL5atLU8OFzcoFF
-         mSgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:references:from:subject:in-reply-to
-         :content-transfer-encoding;
-        bh=bHQS21fo7rJF8A8D9YsCm/nb3uEruXx6UdaugBD/6Lo=;
-        b=RdKvxd+2JvbDlKxpGZsdvw2AfcxDrwJKwpRp1F6AVRp6PgjWPQDJEhXbK6awghuvEk
-         q3iz2+K8RtP0neyTPfDtUR1cAz1rjgCNAeyUTLIQ6aIgMQDQp+tBI7jrBOFEUUAy0ESF
-         Q95benNCBbWZ7r6WSPSLVNanyRcpEhh/H6BhCk45hVv7R4gjbOhLk1hnsppRZ5evkm84
-         j1wdCSyDoGzO4mknQcvlw2ynBxoa4s/t4gb78zLY5Yb7W2MU5pishTqp/JWPo8tOouMG
-         N/g/sgnbPxEfMnh858zrYuwUfQsFyHXc0dvseDl/IKcH5cgI4SGQmReh5PxpbJgMjAeJ
-         FAHg==
-X-Gm-Message-State: AOAM530MhdbYbMfEwTpmwgEa9q0sVej8zzkDpjnBmcPkbUEnQkA0RXqQ
-        BhAvRgiU4GcvugdyKvt+Fa6CMg==
-X-Google-Smtp-Source: ABdhPJz1DbY6O4TiI5ONKEG8sUN+o3Jvyass91mWX6uYAaX5chzhem7M++HMnSD5+kHppJfGsqMuVw==
-X-Received: by 2002:a17:90a:5302:b0:1b9:ba0a:27e5 with SMTP id x2-20020a17090a530200b001b9ba0a27e5mr6280388pjh.91.1646768768301;
-        Tue, 08 Mar 2022 11:46:08 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id i15-20020a63b30f000000b003803aee35a2sm7644895pgf.31.2022.03.08.11.46.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Mar 2022 11:46:08 -0800 (PST)
-Message-ID: <45522c89-a3b4-4b98-232b-9c69470124a3@linaro.org>
-Date:   Tue, 8 Mar 2022 11:46:07 -0800
+        with ESMTP id S1350101AbiCHTyM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 14:54:12 -0500
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14FAD37BE6
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 11:53:13 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 228Ioqv3027337
+        for <bpf@vger.kernel.org>; Tue, 8 Mar 2022 11:53:13 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3emr97s9ue-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 11:53:13 -0800
+Received: from twshared33837.14.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 8 Mar 2022 11:53:10 -0800
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 9C70D1D8EF47; Tue,  8 Mar 2022 11:53:04 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <edumazet@google.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v2 bpf-next] bpf: select proper size for bpf_prog_pack
+Date:   Tue, 8 Mar 2022 11:53:03 -0800
+Message-ID: <20220308195303.556765-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Content-Language: en-US
-To:     David Ahern <dsahern@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
-        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
-References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
- <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com>
- <6155b68c-161b-0745-b303-f7e037b56e28@linaro.org>
- <66463e26-8564-9f58-ce41-9a2843891d1a@kernel.org>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-Subject: Re: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-In-Reply-To: <66463e26-8564-9f58-ce41-9a2843891d1a@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: NmtTZtf7G86JTQsry9q3PmG9krmuIK-r
+X-Proofpoint-GUID: NmtTZtf7G86JTQsry9q3PmG9krmuIK-r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-08_08,2022-03-04_01,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/8/22 10:18, David Ahern wrote:
->> alloclen = 1480
->> alloc_extra = 136
->> datalen = 64095
->> fragheaderlen = 1480
->> fraglen = 65575
->> transhdrlen = 0
->> mtu = 1480
->>
-> Does this solve the problem (whitespace damaged on paste, but it is just
-> a code move and removing fraglen getting set twice):
-> 
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index e69fac576970..59f036241f1b 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -1589,6 +1589,15 @@ static int __ip6_append_data(struct sock *sk,
-> 
->                          if (datalen > (cork->length <= mtu &&
-> !(cork->flags & IPCORK_ALLFRAG) ? mtu : maxfraglen) - fragheaderlen)
->                                  datalen = maxfraglen - fragheaderlen -
-> rt->dst.trailer_len;
-> +
-> +                       if (datalen != length + fraggap) {
-> +                               /*
-> +                                * this is not the last fragment, the
-> trailer
-> +                                * space is regarded as data space.
-> +                                */
-> +                               datalen += rt->dst.trailer_len;
-> +                       }
-> +
->                          fraglen = datalen + fragheaderlen;
->                          pagedlen = 0;
-> 
-> @@ -1615,16 +1624,6 @@ static int __ip6_append_data(struct sock *sk,
->                          }
->                          alloclen += alloc_extra;
-> 
-> -                       if (datalen != length + fraggap) {
-> -                               /*
-> -                                * this is not the last fragment, the
-> trailer
-> -                                * space is regarded as data space.
-> -                                */
-> -                               datalen += rt->dst.trailer_len;
-> -                       }
-> -
-> -                       fraglen = datalen + fragheaderlen;
-> -
->                          copy = datalen - transhdrlen - fraggap - pagedlen;
->                          if (copy < 0) {
->                                  err = -EINVAL;
+Using HPAGE_PMD_SIZE as the size for bpf_prog_pack is not ideal in some
+cases. Specifically, for NUMA systems, __vmalloc_node_range requires
+PMD_SIZE * num_online_nodes() to allocate huge pages. Also, if the system
+does not support huge pages (i.e., with cmdline option nohugevmalloc), it
+is better to use PAGE_SIZE packs.
 
-That fails in the same way:
+Add logic to select proper size for bpf_prog_pack. This solution is not
+ideal, as it makes assumption about the behavior of module_alloc and
+__vmalloc_node_range. However, it appears to be the easiest solution as
+it doesn't require changes in module_alloc and vmalloc code.
 
-skbuff: skb_over_panic: text:ffffffff83e7b48b len:65575 put:65575 
-head:ffff888101f8a000 data:ffff888101f8a088 tail:0x100af end:0x6c0 dev:<NULL>
-------------[ cut here ]------------
-kernel BUG at net/core/skbuff.c:113!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 1852 Comm: repro Not tainted 5.17.0-rc7-00020-gea4424be1688-dirty #19
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
-RIP: 0010:skb_panic+0x173/0x175
+Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
+Signed-off-by: Song Liu <song@kernel.org>
 
-I'm not sure how it supposed to help since it doesn't change the alloclen at all.
-I think the problem here is that the size of the allocated skb is too small.
+---
+Changes v1 => v2:
+1. Fix case with first program > PAGE_SIZE. (Daniel)
+2. Add Fixes tag.
+3. Remove a inline to avoid netdev/source_inline error.
+---
+ kernel/bpf/core.c | 75 ++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 51 insertions(+), 24 deletions(-)
 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ab630f773ec1..f039c1f7e5dd 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -33,6 +33,7 @@
+ #include <linux/extable.h>
+ #include <linux/log2.h>
+ #include <linux/bpf_verifier.h>
++#include <linux/nodemask.h>
+ 
+ #include <asm/barrier.h>
+ #include <asm/unaligned.h>
+@@ -814,15 +815,9 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+  * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+  * to host BPF programs.
+  */
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+-#else
+-#define BPF_PROG_PACK_SIZE	PAGE_SIZE
+-#endif
+ #define BPF_PROG_CHUNK_SHIFT	6
+ #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+ #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+-#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+ 
+ struct bpf_prog_pack {
+ 	struct list_head list;
+@@ -830,30 +825,59 @@ struct bpf_prog_pack {
+ 	unsigned long bitmap[];
+ };
+ 
+-#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
+ #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+ 
++static size_t bpf_prog_pack_size = -1;
++
++static int bpf_prog_chunk_count(void)
++{
++	WARN_ON_ONCE(bpf_prog_pack_size == -1);
++	return bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE;
++}
++
+ static DEFINE_MUTEX(pack_mutex);
+ static LIST_HEAD(pack_list);
+ 
++static size_t select_bpf_prog_pack_size(void)
++{
++	size_t size;
++	void *ptr;
++
++	size = PMD_SIZE * num_online_nodes() - 1;
++	ptr = module_alloc(size);
++
++	/* Test whether we can get huge pages. If not just use PAGE_SIZE
++	 * packs.
++	 */
++	if (!ptr || !is_vm_area_hugepages(ptr))
++		size = PAGE_SIZE;
++
++	vfree(ptr);
++	return size;
++}
++
+ static struct bpf_prog_pack *alloc_new_pack(void)
+ {
+ 	struct bpf_prog_pack *pack;
++	void *ptr;
+ 
+-	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
+-	if (!pack)
++	ptr = module_alloc(bpf_prog_pack_size);
++	if (!ptr)
+ 		return NULL;
+-	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
+-	if (!pack->ptr) {
+-		kfree(pack);
++
++	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(bpf_prog_chunk_count())),
++		       GFP_KERNEL);
++	if (!pack) {
++		vfree(ptr);
+ 		return NULL;
+ 	}
+-	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
++	pack->ptr = ptr;
++	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+ 	set_vm_flush_reset_perms(pack->ptr);
+-	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+-	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
++	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 	return pack;
+ }
+ 
+@@ -864,7 +888,11 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	unsigned long pos;
+ 	void *ptr = NULL;
+ 
+-	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	mutex_lock(&pack_mutex);
++	if (bpf_prog_pack_size == -1)
++		bpf_prog_pack_size = select_bpf_prog_pack_size();
++
++	if (size > bpf_prog_pack_size) {
+ 		size = round_up(size, PAGE_SIZE);
+ 		ptr = module_alloc(size);
+ 		if (ptr) {
+@@ -872,13 +900,12 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
+ 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
+ 		}
+-		return ptr;
++		goto out;
+ 	}
+-	mutex_lock(&pack_mutex);
+ 	list_for_each_entry(pack, &pack_list, list) {
+-		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
++		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
+ 						 nbits, 0);
+-		if (pos < BPF_PROG_CHUNK_COUNT)
++		if (pos < bpf_prog_chunk_count())
+ 			goto found_free_area;
+ 	}
+ 
+@@ -904,12 +931,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	unsigned long pos;
+ 	void *pack_ptr;
+ 
+-	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (hdr->size > bpf_prog_pack_size) {
+ 		module_memfree(hdr);
+ 		return;
+ 	}
+ 
+-	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
++	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size - 1));
+ 	mutex_lock(&pack_mutex);
+ 
+ 	list_for_each_entry(tmp, &pack_list, list) {
+@@ -926,8 +953,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+ 
+ 	bitmap_clear(pack->bitmap, pos, nbits);
+-	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+-				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
++	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
++				       bpf_prog_chunk_count(), 0) == 0) {
+ 		list_del(&pack->list);
+ 		module_memfree(pack->ptr);
+ 		kfree(pack);
 -- 
-Thanks,
-Tadeusz
+2.30.2
+
