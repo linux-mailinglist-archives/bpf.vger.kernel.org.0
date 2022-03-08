@@ -2,81 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BDE34D1958
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 14:37:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA784D1961
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 14:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347170AbiCHNiN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 08:38:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
+        id S241770AbiCHNl3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 08:41:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347165AbiCHNiM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 08:38:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E9A6496BC
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 05:37:15 -0800 (PST)
+        with ESMTP id S233002AbiCHNl2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 08:41:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8516549909
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 05:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646746635;
+        s=mimecast20190719; t=1646746830;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xhWKpJMEu/E6K5E8FVFu8klaC4t/DVD3aQhe7Ihi7RE=;
-        b=ZUaIlKEloW3slv0bFL5scqw+dxwczmTTIs2JtCxKgWglBD5MvAyYlwThBAHbBa7IPICb4s
-        yMj/SMgLtAWgx2z76PIzwYVm0RLbqe15XqFJQJfHG/V7x2b/dwprmiOXILnWSXYnCaJifO
-        44STAQyo2pgaShWFGapbJZ+69kZPvSc=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=PvIz0oH5ghTkMuuKn7KDKQOpc3bAif4RIMI3seszmXA=;
+        b=VkOJ2SDxEmGse36tWiNQL6joTYlmfjzKkM30wvwAUX0PxP9oHg1xGBHpcTxB7Vs5+Hw+2y
+        zBQtB8TvfpD9npYwa/cXvAx8i84Gac3qqWlJRI7B1hBG0V7Hm+SgJ+EdJSJGu4nW8W7jih
+        XCUKfXym0PX2qtZpyeDnQbNTh/71I9w=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-600-rIgQJE8ZOiyMHbH41I3JNQ-1; Tue, 08 Mar 2022 08:37:14 -0500
-X-MC-Unique: rIgQJE8ZOiyMHbH41I3JNQ-1
-Received: by mail-pg1-f198.google.com with SMTP id t18-20020a63dd12000000b00342725203b5so10285427pgg.16
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 05:37:13 -0800 (PST)
+ us-mta-463-_Z7YGESqNmihOFK2HA8AnQ-1; Tue, 08 Mar 2022 08:40:29 -0500
+X-MC-Unique: _Z7YGESqNmihOFK2HA8AnQ-1
+Received: by mail-ej1-f69.google.com with SMTP id k16-20020a17090632d000b006ae1cdb0f07so8701907ejk.16
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 05:40:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xhWKpJMEu/E6K5E8FVFu8klaC4t/DVD3aQhe7Ihi7RE=;
-        b=CmTI7oNiJow4rBes/Yhx536M2lotCIQO6VmT8u8SmtHVNgGW2x4Nqkm1cjRbumWTuL
-         9nrZEZkdcfwaDdxYg+mwhjh0H/Z1IfL7HZsCCYEakd5LHn7k/ymgC5P0uwsMJMgYmHJ1
-         4K9EHmgh6L4AEG/4v6YJdNC6er0Nt79Ac1Xxz8S5M1X57De8c49izj60HRDNaMMQgVrd
-         d08lf6JGRddn3IYtbaVJ5H5PZ2hFYc2cKN1VsnD7neSRwLatNZWZ23Vcq2Vx4IWgQ+4C
-         Z3PrVPJhip9UsuoaQffYHjO7AiHKwnSf7N8Jp/hZqMniI3uECtuI6typZuRiNJ8AFBhY
-         iN0w==
-X-Gm-Message-State: AOAM533fHo+k4b0nvva5uDKKaLNLw/KrmBmgwYxWx2hqp/Ix/PFfXVxL
-        qtnqtQVn7C2FbLpeDpbQSeXkiNqJhROoA8CDm8mdbY2+fynhP4bgzj07Hbi2sD3CyP1mpYuOp7U
-        cm7p2OIGqsJfp1qtlIL3383dUM70n
-X-Received: by 2002:a17:902:c407:b0:151:f794:ac5e with SMTP id k7-20020a170902c40700b00151f794ac5emr6557652plk.67.1646746632903;
-        Tue, 08 Mar 2022 05:37:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxH7lKjecmXh4BgOUsidbsUgZyvzcMgDU6mn0VwVrEex18NF//hg/FePuDpXYtu+/umBrPRyySRl1rvmLXpJR0=
-X-Received: by 2002:a17:902:c407:b0:151:f794:ac5e with SMTP id
- k7-20020a170902c40700b00151f794ac5emr6557623plk.67.1646746632670; Tue, 08 Mar
- 2022 05:37:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <CAPhsuW5APYjoZWKDkZ9CBZzaF0NfSQQ-OeZSJgDa=wB-5O+Wng@mail.gmail.com>
- <CAO-hwJJkhxDAhT_cwo=Tkx8_=B-MuS=_enByj1t6GEuXD9Lj5Q@mail.gmail.com> <CAPhsuW54ytOFrpW8+2kTuxNxu+-7JNmybCpbU=uG+un+-Xpw4A@mail.gmail.com>
-In-Reply-To: <CAPhsuW54ytOFrpW8+2kTuxNxu+-7JNmybCpbU=uG+un+-Xpw4A@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Tue, 8 Mar 2022 14:37:01 +0100
-Message-ID: <CAO-hwJ+DO0cenO_vqG+85c=U5=W4Ksqfa+nqPEW7cqby=YDwmw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 00/28] Introduce eBPF support for HID devices
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=PvIz0oH5ghTkMuuKn7KDKQOpc3bAif4RIMI3seszmXA=;
+        b=P5kEv4xr8Mw4DUC2ZmuLJwhUMCBPG6ptxpi2kujPa/Ewh+yqOsqHk+8NET4sn+cqLe
+         NnX8BwQ0AFwRGQxOJhz/4QFxikIl4wIjxHe06Ko7wx64mVF3NHxnkN3AaQU/liz61fAU
+         pXbQZjNZ/qgCmFGrxeZJTY74xLLw2/IsTL2n6UHoglxSLmt74NnwRmA48Os5s80M9jxT
+         9ZUJq9lRMpObfQVhJoZpF9eoenFtHmDSDqiio/IMTuHAPfF+LAZctjOjuSQZ+vRK1DmN
+         Lhxhll0w2OqMq6eeCG6VVXnIWKSPs17ZMRosFFkvF6WzEVfp13T4cfJ6q0GHVoIUlbtO
+         F6YQ==
+X-Gm-Message-State: AOAM532KTBG+hMAFUPFPC3odIvW3uL0uSd1J4fbe7VAVVDPMj0EbQl8/
+        h+KNpZprEGB3Tz1kVd9FNVPcAmbCYSWyia87gHSaPb4M82dFak1ltpXZ4iq1apQIx66XnXl95iF
+        MV/6rZmbjRp6y
+X-Received: by 2002:a17:906:edbd:b0:6b6:bd54:235c with SMTP id sa29-20020a170906edbd00b006b6bd54235cmr13506219ejb.363.1646746827217;
+        Tue, 08 Mar 2022 05:40:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyFajPGF/cyRkXd8nck3k31hNg6jgvLdu++0Df3BKFHfh3BAem4gPBLzJZ0U3tgpCAQu80MUw==
+X-Received: by 2002:a17:906:edbd:b0:6b6:bd54:235c with SMTP id sa29-20020a170906edbd00b006b6bd54235cmr13506046ejb.363.1646746824525;
+        Tue, 08 Mar 2022 05:40:24 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l20-20020a1709066b9400b006dabdbc8350sm4555508ejr.30.2022.03.08.05.40.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 05:40:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 5882D1928AB; Tue,  8 Mar 2022 14:40:23 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v1 0/5] Introduce bpf_packet_pointer helper
+In-Reply-To: <20220308070828.4tjiuvvyqwmhru6a@apollo.legion>
+References: <20220306234311.452206-1-memxor@gmail.com>
+ <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
+ <20220308070828.4tjiuvvyqwmhru6a@apollo.legion>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 08 Mar 2022 14:40:23 +0100
+Message-ID: <87lexky33s.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -88,74 +88,89 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Mar 7, 2022 at 7:12 PM Song Liu <song@kernel.org> wrote:
->
-> On Sat, Mar 5, 2022 at 2:23 AM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> > > >
-> > >
-> > > The set looks good so far. I will review the rest later.
-> > >
-> > > [...]
-> > >
-> > > A quick note about how we organize these patches. Maybe we can
-> > > merge some of these patches like:
-> >
-> > Just to be sure we are talking about the same thing: you mean squash
-> > the patch together?
->
-> Right, squash some patches together.
->
-> >
-> > >
-> > > >   bpf: introduce hid program type
-> > > >   bpf/hid: add a new attach type to change the report descriptor
-> > > >   bpf/hid: add new BPF type to trigger commands from userspace
-> > > I guess the three can merge into one.
-> > >
-> > > >   HID: hook up with bpf
-> > > >   HID: allow to change the report descriptor from an eBPF program
-> > > >   HID: bpf: compute only the required buffer size for the device
-> > > >   HID: bpf: only call hid_bpf_raw_event() if a ctx is available
-> > > I haven't read through all of them, but I guess they can probably merge
-> > > as well.
-> >
-> > There are certainly patches that we could squash together (3 and 4
-> > from this list into the previous ones), but I'd like to keep some sort
-> > of granularity here to not have a patch bomb that gets harder to come
-> > back later.
->
-> Totally agreed with the granularity of patches. I am not a big fan of patch
-> bombs either. :)
->
-> I guess the problem I have with the current version is that I don't have a
-> big picture of the design while reading through relatively big patches. A
-> overview with the following information in the cover letter would be really
-> help here:
->   1. How different types of programs are triggered (IRQ, user input, etc.);
->   2. What are the operations and/or outcomes of these programs;
->   3. How would programs of different types (or attach types) interact
->    with each other (via bpf maps? chaining?)
->   4. What's the new uapi;
->   5. New helpers and other logistics
->
-> Sometimes, I find the changes to uapi are the key for me to understand the
-> patches, and I would like to see one or two patches with all the UAPI
-> changes (i.e. bpf_hid_attach_type). However, that may or may not apply to
-> this set due to granularity concerns.
->
-> Does this make sense?
->
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-It definitely does. And as I read that, I realized that if I manage to
-get such a clear depiction of what HID-BPF is, it would certainly be a
-good idea to paste that in a file into the Documentation directory as
-well :)
+> On Tue, Mar 08, 2022 at 11:18:52AM IST, Andrii Nakryiko wrote:
+>> On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+>> >
+>> > Expose existing 'bpf_xdp_pointer' as a BPF helper named 'bpf_packet_pointer'
+>> > returning a packet pointer with a fixed immutable range. This can be useful to
+>> > enable DPA without having to use memcpy (currently the case in
+>> > bpf_xdp_load_bytes and bpf_xdp_store_bytes).
+>> >
+>> > The intended usage to read and write data for multi-buff XDP is:
+>> >
+>> >         int err = 0;
+>> >         char buf[N];
+>> >
+>> >         off &= 0xffff;
+>> >         ptr = bpf_packet_pointer(ctx, off, sizeof(buf), &err);
+>> >         if (unlikely(!ptr)) {
+>> >                 if (err < 0)
+>> >                         return XDP_ABORTED;
+>> >                 err = bpf_xdp_load_bytes(ctx, off, buf, sizeof(buf));
+>> >                 if (err < 0)
+>> >                         return XDP_ABORTED;
+>> >                 ptr = buf;
+>> >         }
+>> >         ...
+>> >         // Do some stores and loads in [ptr, ptr + N) region
+>> >         ...
+>> >         if (unlikely(ptr == buf)) {
+>> >                 err = bpf_xdp_store_bytes(ctx, off, buf, sizeof(buf));
+>> >                 if (err < 0)
+>> >                         return XDP_ABORTED;
+>> >         }
+>> >
+>> > Note that bpf_packet_pointer returns a PTR_TO_PACKET, not PTR_TO_MEM, because
+>> > these pointers need to be invalidated on clear_all_pkt_pointers invocation, and
+>> > it is also more meaningful to the user to see return value as R0=pkt.
+>> >
+>> > This series is meant to collect feedback on the approach, next version can
+>> > include a bpf_skb_pointer and exposing it as bpf_packet_pointer helper for TC
+>> > hooks, and explore not resetting range to zero on r0 += rX, instead check access
+>> > like check_mem_region_access (var_off + off < range), since there would be no
+>> > data_end to compare against and obtain a new range.
+>> >
+>> > The common name and func_id is supposed to allow writing generic code using
+>> > bpf_packet_pointer that works for both XDP and TC programs.
+>> >
+>> > Please see the individual patches for implementation details.
+>> >
+>>
+>> Joanne is working on a "bpf_dynptr" framework that will support
+>> exactly this feature, in addition to working with dynamically
+>> allocated memory, working with memory of statically unknown size (but
+>> safe and checked at runtime), etc. And all that within a generic
+>> common feature implemented uniformly within the verifier. E.g., it
+>> won't need any of the custom bits of logic added in patch #2 and #3.
+>> So I'm thinking that instead of custom-implementing a partial case of
+>> bpf_dynptr just for skb and xdp packets, let's maybe wait for dynptr
+>> and do it only once there?
+>>
+>
+> Interesting stuff, looking forward to it.
+>
+>> See also my ARG_CONSTANT comment. It seems like a pretty common thing
+>> where input constant is used to characterize some pointer returned
+>> from the helper (e.g., bpf_ringbuf_reserve() case), and we'll need
+>> that for bpf_dynptr for exactly this "give me direct access of N
+>> bytes, if possible" case. So improving/generalizing it now before
+>> dynptr lands makes a lot of sense, outside of bpf_packet_pointer()
+>> feature itself.
+>
+> No worries, we can continue the discussion in patch 1, I'll split out the arg
+> changes into a separate patch, and wait for dynptr to be posted before reworking
+> this.
 
-I think you have a slightly better picture now with the exchanges we
-are having on the individual patches, but I'll try to come out with
-that description in the cover letter for v3.
+This does raise the question of what we do in the meantime, though? Your
+patch includes a change to bpf_xdp_{load,store}_bytes() which, if we're
+making it, really has to go in before those hit a release and become
+UAPI.
 
-Cheers,
-Benjamin
+One option would be to still make the change to those other helpers;
+they'd become a bit slower, but if we have a solution for that coming,
+that may be OK for a single release? WDYT?
+
+-Toke
 
