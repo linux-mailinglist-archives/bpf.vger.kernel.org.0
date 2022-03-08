@@ -2,62 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C39B4D0DA3
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 02:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61C24D0DA4
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 02:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbiCHBpW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 20:45:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33962 "EHLO
+        id S238894AbiCHBq6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 20:46:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbiCHBpU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 20:45:20 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F33C3B03B
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 17:44:25 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id o12so3605690ilg.5
-        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 17:44:25 -0800 (PST)
+        with ESMTP id S232589AbiCHBq5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 20:46:57 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139173B03B;
+        Mon,  7 Mar 2022 17:46:02 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id c23so19366920ioi.4;
+        Mon, 07 Mar 2022 17:46:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C0RQ2IhupddfihnnOQJR0xL9KZyig+Yf0OQhHwUAqpg=;
-        b=CQG26rBXZ+IcG1wh+cfa1gVCistaeRHl6M57Y7PAPu0HJd8fKLk68YhXPxdfh1MxTN
-         mrs7HbljG+uitErdxguwhjt5ssSsfk/lWLZwXvmdYwwyo2YdGo/dyOjsX44Z++LLUBun
-         UNpCMMfbgnmOl9H49Vx2+D9VmxtOfl8ODtY83WlD+NB1heYWxHpBygvQhLqvMyEKuAgz
-         Eq0GpeTCt++w1D/olq5FTmxwHnNJPOysE4zKqMjG1Nw2OQCp+dINW+vNEcHcaH+OVEiZ
-         5AFoHIcJMw9UtMvJ5zceHGpUMkARcRQLCdkMW/9on74LQ8LHXJ335SpkFf2DLsFPHefs
-         1mtQ==
+        bh=ZF3jjml8gHoMGe/6ujoxgmRuAgN0wrADO7T1ytoQlCw=;
+        b=WfcMeNLdh4Pm+mt6ab76xkmpVLwakCh08SPuKJhzRR4vwpmZSdGTIiafqxoNDPaHO3
+         GEZzI2JImi7am1z3beqwCXFsm2G9yWKDxuc6bT1BoThkuZtFn1AIHYNokSNR0LUJ4oZb
+         Hihyh6+9yAhOne86xB2lsVhVeQii8IIFy6jhzIgGGWrH6e8iFfgVveE73rba5fbOEien
+         98M/Vv4sJbAKskC0+LOIn+zKMlala9hvmUiniLpvFw9etlsa0hi3muZTJIp8kiXojOVY
+         iEBzZIGUdZCuw/K9X5hTict54hwHhbbWdd/H6kd7KkqGar9nNYfSG+0j+zibsjii4Ygj
+         /Zgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C0RQ2IhupddfihnnOQJR0xL9KZyig+Yf0OQhHwUAqpg=;
-        b=fRepmBw9Neom6YMAg+zLoX6DV64cOw6HD5YZfaDr/dOWhXuX9HMp5/qQTxJYfUfc0X
-         p3eQQ7OqQT4Fwabx+8BMwH76hWl6QhjJajZl9wwDMiw+ZMMSVCc5N5zElyxv8WMawAkI
-         A+w2YMFMxdSki5FiSFXNd8KT+YzkgPeBROxwhEgeCQLC4YYZ7QJxWavIhjbg0kQmDfJ6
-         k6CWb5LOkhDplcW+bSIsxfit6EZSm4ch0+m9NwDqMBbVqxG5cY1NeWtUWbkUnX+e+dp1
-         jVX+y7/tC4HnMnK5V9fRlJ4Ia6NMQuCiVRtXYh5zoWijg6Dj+sJ0Uz0G88iWLqbPbiDV
-         1WjQ==
-X-Gm-Message-State: AOAM5339npDNGchlCEtGkBEdseM3SimYjauGXqoPSweuEA3sQb2ZNdMN
-        HLGQ7c1MgtQ7FetF9wZgyNEqnezIhS480UjxnaspyFEGEFdK1Q==
-X-Google-Smtp-Source: ABdhPJwiRXem7JlBXdsniQhlAxdzgErkdKWuYdQcNecR9WfMBknxfo0v1y7r4UvDuxnePOJZIRsP8FEdPV1+EMKVj7U=
-X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
- y6-20020a926406000000b002bbf1dee13emr13712457ilb.305.1646703864824; Mon, 07
- Mar 2022 17:44:24 -0800 (PST)
+        bh=ZF3jjml8gHoMGe/6ujoxgmRuAgN0wrADO7T1ytoQlCw=;
+        b=dPCA/J+Wrbywfv+Kyk7YyY2phKiQjXrfpmYNV4OepZhgkgx56lKkjYyXbjNCMa9kWJ
+         wcw5XtsImy+byhFpl3CAvt9KxdDVtAkVYuub1GMXwBFhVg1e2135Thi0AzSnvX6mOKIA
+         0ecScCW8fPBiA3Am+SSuBmx695YJ2MIUEOJEaee2MdBxhrw/J5MzLV/bOwKQba51XaoO
+         oHcyOZxl3X9ufEcCYc64JcoUG9tQO4yhSKFfe4p0LYFbWzRfFQMZQdGYsbmo/NUmQ6eA
+         ii0V+Lh/8qt4u73KSs20ksQmUU7NaxR8QT0ZG9VfyBn5HgKxvrjZEwK5GZfxvqUNaETO
+         Lqjw==
+X-Gm-Message-State: AOAM530nVLt+J/u45qmjp1Hj/Dtpltjdw+n3sXTmiOqCv6kXDBFUFIK9
+        nrP7T1rSLmuAP6n9m6+ahRrc2z6dJ1mhp23pIM0=
+X-Google-Smtp-Source: ABdhPJx0orrM+20oBeADOwU18aKBO3V3a93TYoZX0f/+kDgglPAtC+Sps9jWcJHtEYImZHBzKSZ5ZqvZySWSupVuJBE=
+X-Received: by 2002:a05:6602:1605:b0:644:d491:1bec with SMTP id
+ x5-20020a056602160500b00644d4911becmr12567959iow.63.1646703961520; Mon, 07
+ Mar 2022 17:46:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20220304191657.981240-1-haoluo@google.com> <20220304191657.981240-3-haoluo@google.com>
-In-Reply-To: <20220304191657.981240-3-haoluo@google.com>
+References: <20220222170600.611515-1-jolsa@kernel.org> <CAEf4BzaugZWf6f_0JzA-mqaGfp52tCwEp5dWdhpeVt6GjDLQ3Q@mail.gmail.com>
+ <20220305200939.2754ba82@yoga.local.home> <20220306103257.fcc36747bf6a689a24c91d59@gmail.com>
+In-Reply-To: <20220306103257.fcc36747bf6a689a24c91d59@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Mar 2022 17:44:14 -0800
-Message-ID: <CAEf4BzadmAQSUHSSDfSeiMvicvdbOKh_r7oCX2=OThbjOS-rMw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 2/4] compiler_types: define __percpu as __attribute__((btf_type_tag("percpu")))
-To:     Hao Luo <haoluo@google.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Mon, 7 Mar 2022 17:45:50 -0800
+Message-ID: <CAEf4Bzak7JADnf=bp92LGBGefKt=nzvLB49=weNTv1A3B5fSzg@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 0/8] bpf: Add kprobe multi link
+To:     Masami Hiramatsu <masami.hiramatsu@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -69,90 +75,38 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 4, 2022 at 11:17 AM Hao Luo <haoluo@google.com> wrote:
+On Sat, Mar 5, 2022 at 5:33 PM Masami Hiramatsu
+<masami.hiramatsu@gmail.com> wrote:
 >
-> This is similar to commit 7472d5a642c9 ("compiler_types: define __user as
-> __attribute__((btf_type_tag("user")))"), where a type tag "user" was
-> introduced to identify the pointers that point to user memory. With that
-> change, the newest compile toolchain can encode __user information into
-> vmlinux BTF, which can be used by the BPF verifier to enforce safe
-> program behaviors.
+> On Sat, 5 Mar 2022 20:09:39 -0500
+> Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> Similarly, we have __percpu attribute, which is mainly used to indicate
-> memory is allocated in percpu region. The __percpu pointers in kernel
-> are supposed to be used together with functions like per_cpu_ptr() and
-> this_cpu_ptr(), which perform necessary calculation on the pointer's
-> base address. Without the btf_type_tag introduced in this patch,
-> __percpu pointers will be treated as regular memory pointers in vmlinux
-> BTF and BPF programs are allowed to directly dereference them, generating
-> incorrect behaviors. Now with "percpu" btf_type_tag, the BPF verifier is
-> able to differentiate __percpu pointers from regular pointers and forbids
-> unexpected behaviors like direct load.
->
-> The following is an example similar to the one given in commit
-> 7472d5a642c9:
->
->   [$ ~] cat test.c
->   #define __percpu __attribute__((btf_type_tag("percpu")))
->   int foo(int __percpu *arg) {
->         return *arg;
->   }
->   [$ ~] clang -O2 -g -c test.c
->   [$ ~] pahole -JV test.o
->   ...
->   File test.o:
->   [1] INT int size=4 nr_bits=32 encoding=SIGNED
->   [2] TYPE_TAG percpu type_id=1
->   [3] PTR (anon) type_id=2
->   [4] FUNC_PROTO (anon) return=1 args=(3 arg)
->   [5] FUNC foo type_id=4
->   [$ ~]
->
-> for the function argument "int __percpu *arg", its type is described as
->         PTR -> TYPE_TAG(percpu) -> INT
-> The kernel can use this information for bpf verification or other
-> use cases.
->
-> Like commit 7472d5a642c9, this feature requires clang (>= clang14) and
-> pahole (>= 1.23).
->
-> Cc: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Hao Luo <haoluo@google.com>
-> ---
->  include/linux/compiler_types.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 3f31ff400432..223abf43679a 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -38,7 +38,12 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->  #  define __user
->  # endif
->  # define __iomem
-> -# define __percpu
-> +# if defined(CONFIG_DEBUG_INFO_BTF) && defined(CONFIG_PAHOLE_HAS_BTF_TAG) && \
-> +       __has_attribute(btf_type_tag)
-> +#  define __percpu     __attribute__((btf_type_tag("percpu")))
+> > On Fri, 4 Mar 2022 15:10:55 -0800
+> > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > > Masami, Jiri, Steven, what would be the logistics here? What's the
+> > > plan for getting this upstream? Any idea about timelines? I really
+> > > hope it won't take as long as it took for kretprobe stack trace
+> > > capturing fixes last year to land. Can we take Masami's changes
+> > > through bpf-next tree? If yes, Steven, can you please review and give
+> > > your acks? Thanks for understanding!
+> >
+> > Yeah, I'll start looking at it this week. I just started a new job and
 
+Thanks, Steven. Greatly appreciated!
 
-Maybe let's add
+> > that's been taking up a lot of my time and limiting what I can look at
+> > upstream.
+>
+> Let me update my series, I found some issues in the selftest.
+> I'll send v9 soon.
 
-#if defined(CONFIG_DEBUG_INFO_BTF) &&
-defined(CONFIG_PAHOLE_HAS_BTF_TAG) && __has_attribute(btf_type_tag)
-#define BTF_TYPE_TAG(value) __attribute__((btf_type_tag(#value)))
-#else
-#define BTF_TYPE_TAG(value) /* nothing */
-#endif
+I haven't checked, but if you haven't based your patches off of
+bpf-next tree, please do so in the next revision, so that we can land
+your patch set and Jiri's patch set on top without any issues. Thanks!
 
-and use BTF_TYPE_TAG() macro unconditionally everywhere?
-
-> +# else
-> +#  define __percpu
-> +# endif
->  # define __rcu
->  # define __chk_user_ptr(x)     (void)0
->  # define __chk_io_ptr(x)       (void)0
+>
+> Thank you!
+>
 > --
-> 2.35.1.616.g0bdcbb4464-goog
->
+> Masami Hiramatsu
