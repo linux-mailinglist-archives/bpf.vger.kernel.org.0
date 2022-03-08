@@ -2,290 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F5D4D10AD
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 08:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC72F4D10B8
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 08:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243450AbiCHHGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 02:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        id S1344500AbiCHHJ2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 02:09:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232755AbiCHHGj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 02:06:39 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 112B93D4AE;
-        Mon,  7 Mar 2022 23:05:41 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V6cqqVc_1646723135;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V6cqqVc_1646723135)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 08 Mar 2022 15:05:36 +0800
-Message-ID: <1646722885.3801584-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v6 06/26] virtio_ring: packed: extrace the logic of creating vring
-Date:   Tue, 8 Mar 2022 15:01:25 +0800
-From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S1344488AbiCHHJ1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 02:09:27 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E744433882;
+        Mon,  7 Mar 2022 23:08:31 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id z4so15638148pgh.12;
+        Mon, 07 Mar 2022 23:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Im7jvRNh/+Pw/q4dfL4KJR6p5CokLYnnteKa2XpYZZA=;
+        b=L+97Fuk8zObxNl42ypmo1qi9vzxXbkUFXqkWSzZbTgZgoiMhmIglBUUitVLXx1cHcs
+         WWGkJjlVtFGDG7PEJKUhxImdF+7xJlPBivXObMKxgdqSe95muesGgmdsZuHITtnB4qQF
+         qXYkajqF/AxWIn+M8DOXoml6zIEM8uTausMCi/7b0iYZRjrqKwglWeqWcnR/HW16mn4B
+         wI6gp+nCENFg/y5Rcz1hBWmyrOUVLv9P6cAJdsEtEDo0UUYDCe8JAJ7n6RcPX3l/f/jx
+         jahiaosH1zgPiKKNKS8qXOLKRhzIvRj8b4s/yZjXRT6j6enWV4Z5sxTGv6xrS3Fcd9Q5
+         sKZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Im7jvRNh/+Pw/q4dfL4KJR6p5CokLYnnteKa2XpYZZA=;
+        b=oR1JlWs/sXrSFxphW3aQPYrA28/VSAcjhamjz/cX3yJk9lYhqOZmksMaOWhvxuOCud
+         mVGbzMNf0hpbxKfjV+40LmM2vN232iEhZOk+FRZ1bv525NtHKoadDgQszPd1PA8Gwwxm
+         pfmjmr63c1IuxiBHgQtJx3umvZhGba+nWqlQM/e5UUKfD0pa7/fKPJ7J5D7QOuXA8LYX
+         WKC9ZD+eY+QwXaHdMDkiQW6c6qlVdO7xA8yWA4vhu5ihLrmcDjidMRCs2FUCaujO8mwF
+         WR6EgteVxKec/fbIHEslfGclSl0ZZqnNRJ8h9qsFcc+rZ73oaFR0NqUQH67JVy027IiA
+         Kr/w==
+X-Gm-Message-State: AOAM5302fHv7636v/cHPmCSBgCcmXqBHz7p7saxkgv4HPBcwdLtSbSvy
+        idxmc0JRVJ+C08emII7NcBM=
+X-Google-Smtp-Source: ABdhPJwOxxhbiazXA/g6xdgfKu9arPs1AmiYxfQtq0/YXWY7Cj9RksLbIpvVHOZV5/9Xa1OpbBTvrQ==
+X-Received: by 2002:aa7:9017:0:b0:4df:e33f:f1b4 with SMTP id m23-20020aa79017000000b004dfe33ff1b4mr17131184pfo.80.1646723311380;
+        Mon, 07 Mar 2022 23:08:31 -0800 (PST)
+Received: from localhost ([2405:201:6014:d0c0:6243:316e:a9e1:adda])
+        by smtp.gmail.com with ESMTPSA id y34-20020a056a00182200b004f71c56a7e8sm3429180pfa.213.2022.03.07.23.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Mar 2022 23:08:31 -0800 (PST)
+Date:   Tue, 8 Mar 2022 12:38:28 +0530
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org
-References: <20220224081102.80224-1-xuanzhuo@linux.alibaba.com>
- <20220224081102.80224-7-xuanzhuo@linux.alibaba.com>
- <20220307171629-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20220307171629-mutt-send-email-mst@kernel.org>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v1 0/5] Introduce bpf_packet_pointer helper
+Message-ID: <20220308070828.4tjiuvvyqwmhru6a@apollo.legion>
+References: <20220306234311.452206-1-memxor@gmail.com>
+ <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 7 Mar 2022 17:17:51 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Feb 24, 2022 at 04:10:42PM +0800, Xuan Zhuo wrote:
-> > Separate the logic of packed to create vring queue.
+On Tue, Mar 08, 2022 at 11:18:52AM IST, Andrii Nakryiko wrote:
+> On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > For the convenience of passing parameters, add a structure
-> > vring_packed.
+> > Expose existing 'bpf_xdp_pointer' as a BPF helper named 'bpf_packet_pointer'
+> > returning a packet pointer with a fixed immutable range. This can be useful to
+> > enable DPA without having to use memcpy (currently the case in
+> > bpf_xdp_load_bytes and bpf_xdp_store_bytes).
 > >
-> > This feature is required for subsequent virtuqueue reset vring.
+> > The intended usage to read and write data for multi-buff XDP is:
 > >
-> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> >         int err = 0;
+> >         char buf[N];
+> >
+> >         off &= 0xffff;
+> >         ptr = bpf_packet_pointer(ctx, off, sizeof(buf), &err);
+> >         if (unlikely(!ptr)) {
+> >                 if (err < 0)
+> >                         return XDP_ABORTED;
+> >                 err = bpf_xdp_load_bytes(ctx, off, buf, sizeof(buf));
+> >                 if (err < 0)
+> >                         return XDP_ABORTED;
+> >                 ptr = buf;
+> >         }
+> >         ...
+> >         // Do some stores and loads in [ptr, ptr + N) region
+> >         ...
+> >         if (unlikely(ptr == buf)) {
+> >                 err = bpf_xdp_store_bytes(ctx, off, buf, sizeof(buf));
+> >                 if (err < 0)
+> >                         return XDP_ABORTED;
+> >         }
+> >
+> > Note that bpf_packet_pointer returns a PTR_TO_PACKET, not PTR_TO_MEM, because
+> > these pointers need to be invalidated on clear_all_pkt_pointers invocation, and
+> > it is also more meaningful to the user to see return value as R0=pkt.
+> >
+> > This series is meant to collect feedback on the approach, next version can
+> > include a bpf_skb_pointer and exposing it as bpf_packet_pointer helper for TC
+> > hooks, and explore not resetting range to zero on r0 += rX, instead check access
+> > like check_mem_region_access (var_off + off < range), since there would be no
+> > data_end to compare against and obtain a new range.
+> >
+> > The common name and func_id is supposed to allow writing generic code using
+> > bpf_packet_pointer that works for both XDP and TC programs.
+> >
+> > Please see the individual patches for implementation details.
+> >
 >
-> Subject has a typo.
-
-I will fix it.
-
-> Besides:
+> Joanne is working on a "bpf_dynptr" framework that will support
+> exactly this feature, in addition to working with dynamically
+> allocated memory, working with memory of statically unknown size (but
+> safe and checked at runtime), etc. And all that within a generic
+> common feature implemented uniformly within the verifier. E.g., it
+> won't need any of the custom bits of logic added in patch #2 and #3.
+> So I'm thinking that instead of custom-implementing a partial case of
+> bpf_dynptr just for skb and xdp packets, let's maybe wait for dynptr
+> and do it only once there?
 >
-> > ---
-> >  drivers/virtio/virtio_ring.c | 121 ++++++++++++++++++++++++++---------
-> >  1 file changed, 92 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index dc6313b79305..41864c5e665f 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -92,6 +92,18 @@ struct vring_split {
-> >  	struct vring vring;
-> >  };
-> >
-> > +struct vring_packed {
-> > +	u32 num;
-> > +	struct vring_packed_desc *ring;
-> > +	struct vring_packed_desc_event *driver;
-> > +	struct vring_packed_desc_event *device;
-> > +	dma_addr_t ring_dma_addr;
-> > +	dma_addr_t driver_event_dma_addr;
-> > +	dma_addr_t device_event_dma_addr;
-> > +	size_t ring_size_in_bytes;
-> > +	size_t event_size_in_bytes;
-> > +};
-> > +
-> >  struct vring_virtqueue {
-> >  	struct virtqueue vq;
-> >
-> > @@ -1683,45 +1695,101 @@ static struct vring_desc_extra *vring_alloc_desc_extra(struct vring_virtqueue *v
-> >  	return desc_extra;
-> >  }
-> >
-> > -static struct virtqueue *vring_create_virtqueue_packed(
-> > -	unsigned int index,
-> > -	unsigned int num,
-> > -	unsigned int vring_align,
-> > -	struct virtio_device *vdev,
-> > -	bool weak_barriers,
-> > -	bool may_reduce_num,
-> > -	bool context,
-> > -	bool (*notify)(struct virtqueue *),
-> > -	void (*callback)(struct virtqueue *),
-> > -	const char *name)
-> > +static void vring_free_vring_packed(struct vring_packed *vring,
-> > +				    struct virtio_device *vdev)
-> > +{
-> > +	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
-> > +	struct vring_packed_desc_event *driver, *device;
-> > +	size_t ring_size_in_bytes, event_size_in_bytes;
-> > +	struct vring_packed_desc *ring;
-> > +
-> > +	ring                  = vring->ring;
-> > +	driver                = vring->driver;
-> > +	device                = vring->device;
-> > +	ring_dma_addr         = vring->ring_size_in_bytes;
-> > +	event_size_in_bytes   = vring->event_size_in_bytes;
-> > +	ring_dma_addr         = vring->ring_dma_addr;
-> > +	driver_event_dma_addr = vring->driver_event_dma_addr;
-> > +	device_event_dma_addr = vring->device_event_dma_addr;
-> > +
-> > +	if (device)
-> > +		vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
-> > +
-> > +	if (driver)
-> > +		vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
-> > +
-> > +	if (ring)
-> > +		vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
->
-> ring_size_in_bytes is uninitialized here.
->
-> Which begs the question how was this tested patchset generally and
-> this patch in particular.
-> Please add note on tested configurations and tests run to the patchset.
 
-Sorry, my environment is running in split mode. I did not retest the packed mode
-before sending patches. Because my dpdk vhost-user is not easy to use, I
-need to change the kernel of the host.
+Interesting stuff, looking forward to it.
 
-I would like to ask if there are other lightweight environments that can be used
-to test packed mode.
+> See also my ARG_CONSTANT comment. It seems like a pretty common thing
+> where input constant is used to characterize some pointer returned
+> from the helper (e.g., bpf_ringbuf_reserve() case), and we'll need
+> that for bpf_dynptr for exactly this "give me direct access of N
+> bytes, if possible" case. So improving/generalizing it now before
+> dynptr lands makes a lot of sense, outside of bpf_packet_pointer()
+> feature itself.
 
-
-Thanks.
-
+No worries, we can continue the discussion in patch 1, I'll split out the arg
+changes into a separate patch, and wait for dynptr to be posted before reworking
+this.
 
 >
-> > +}
-> > +
-> > +static int vring_create_vring_packed(struct vring_packed *vring,
-> > +				    struct virtio_device *vdev,
-> > +				    u32 num)
-> >  {
-> > -	struct vring_virtqueue *vq;
-> >  	struct vring_packed_desc *ring;
-> >  	struct vring_packed_desc_event *driver, *device;
-> >  	dma_addr_t ring_dma_addr, driver_event_dma_addr, device_event_dma_addr;
-> >  	size_t ring_size_in_bytes, event_size_in_bytes;
+> > Kumar Kartikeya Dwivedi (5):
+> >   bpf: Add ARG_SCALAR and ARG_CONSTANT
+> >   bpf: Introduce pkt_uid concept for PTR_TO_PACKET
+> >   bpf: Introduce bpf_packet_pointer helper to do DPA
+> >   selftests/bpf: Add verifier tests for pkt pointer with pkt_uid
+> >   selftests/bpf: Update xdp_adjust_frags to use bpf_packet_pointer
 > >
-> > +	memset(vring, 0, sizeof(*vring));
-> > +
-> >  	ring_size_in_bytes = num * sizeof(struct vring_packed_desc);
-> >
-> >  	ring = vring_alloc_queue(vdev, ring_size_in_bytes,
-> >  				 &ring_dma_addr,
-> >  				 GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
-> >  	if (!ring)
-> > -		goto err_ring;
-> > +		goto err;
-> > +
-> > +	vring->num = num;
-> > +	vring->ring = ring;
-> > +	vring->ring_size_in_bytes = ring_size_in_bytes;
-> > +	vring->ring_dma_addr = ring_dma_addr;
-> >
-> >  	event_size_in_bytes = sizeof(struct vring_packed_desc_event);
-> > +	vring->event_size_in_bytes = event_size_in_bytes;
-> >
-> >  	driver = vring_alloc_queue(vdev, event_size_in_bytes,
-> >  				   &driver_event_dma_addr,
-> >  				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
-> >  	if (!driver)
-> > -		goto err_driver;
-> > +		goto err;
-> > +
-> > +	vring->driver = driver;
-> > +	vring->driver_event_dma_addr = driver_event_dma_addr;
-> >
-> >  	device = vring_alloc_queue(vdev, event_size_in_bytes,
-> >  				   &device_event_dma_addr,
-> >  				   GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
-> >  	if (!device)
-> > -		goto err_device;
-> > +		goto err;
-> > +
-> > +	vring->device = device;
-> > +	vring->device_event_dma_addr = device_event_dma_addr;
-> > +	return 0;
-> > +
-> > +err:
-> > +	vring_free_vring_packed(vring, vdev);
-> > +	return -ENOMEM;
-> > +}
-> > +
-> > +static struct virtqueue *vring_create_virtqueue_packed(
-> > +	unsigned int index,
-> > +	unsigned int num,
-> > +	unsigned int vring_align,
-> > +	struct virtio_device *vdev,
-> > +	bool weak_barriers,
-> > +	bool may_reduce_num,
-> > +	bool context,
-> > +	bool (*notify)(struct virtqueue *),
-> > +	void (*callback)(struct virtqueue *),
-> > +	const char *name)
-> > +{
-> > +	struct vring_virtqueue *vq;
-> > +	struct vring_packed vring;
-> > +
-> > +	if (vring_create_vring_packed(&vring, vdev, num))
-> > +		goto err_vq;
-> >
-> >  	vq = kmalloc(sizeof(*vq), GFP_KERNEL);
-> >  	if (!vq)
-> > @@ -1753,17 +1821,17 @@ static struct virtqueue *vring_create_virtqueue_packed(
-> >  	if (virtio_has_feature(vdev, VIRTIO_F_ORDER_PLATFORM))
-> >  		vq->weak_barriers = false;
-> >
-> > -	vq->packed.ring_dma_addr = ring_dma_addr;
-> > -	vq->packed.driver_event_dma_addr = driver_event_dma_addr;
-> > -	vq->packed.device_event_dma_addr = device_event_dma_addr;
-> > +	vq->packed.ring_dma_addr = vring.ring_dma_addr;
-> > +	vq->packed.driver_event_dma_addr = vring.driver_event_dma_addr;
-> > +	vq->packed.device_event_dma_addr = vring.device_event_dma_addr;
-> >
-> > -	vq->packed.ring_size_in_bytes = ring_size_in_bytes;
-> > -	vq->packed.event_size_in_bytes = event_size_in_bytes;
-> > +	vq->packed.ring_size_in_bytes = vring.ring_size_in_bytes;
-> > +	vq->packed.event_size_in_bytes = vring.event_size_in_bytes;
-> >
-> >  	vq->packed.vring.num = num;
-> > -	vq->packed.vring.desc = ring;
-> > -	vq->packed.vring.driver = driver;
-> > -	vq->packed.vring.device = device;
-> > +	vq->packed.vring.desc = vring.ring;
-> > +	vq->packed.vring.driver = vring.driver;
-> > +	vq->packed.vring.device = vring.device;
-> >
-> >  	vq->packed.next_avail_idx = 0;
-> >  	vq->packed.avail_wrap_counter = 1;
-> > @@ -1804,12 +1872,7 @@ static struct virtqueue *vring_create_virtqueue_packed(
-> >  err_desc_state:
-> >  	kfree(vq);
-> >  err_vq:
-> > -	vring_free_queue(vdev, event_size_in_bytes, device, device_event_dma_addr);
-> > -err_device:
-> > -	vring_free_queue(vdev, event_size_in_bytes, driver, driver_event_dma_addr);
-> > -err_driver:
-> > -	vring_free_queue(vdev, ring_size_in_bytes, ring, ring_dma_addr);
-> > -err_ring:
-> > +	vring_free_vring_packed(&vring, vdev);
-> >  	return NULL;
-> >  }
+> >  include/linux/bpf.h                           |   4 +
+> >  include/linux/bpf_verifier.h                  |   9 +-
+> >  include/uapi/linux/bpf.h                      |  12 ++
+> >  kernel/bpf/verifier.c                         |  97 ++++++++++--
+> >  net/core/filter.c                             |  48 +++---
+> >  tools/include/uapi/linux/bpf.h                |  12 ++
+> >  .../bpf/prog_tests/xdp_adjust_frags.c         |  46 ++++--
+> >  .../bpf/progs/test_xdp_update_frags.c         |  46 ++++--
+> >  tools/testing/selftests/bpf/verifier/xdp.c    | 146 ++++++++++++++++++
+> >  9 files changed, 358 insertions(+), 62 deletions(-)
 > >
 > > --
-> > 2.31.0
->
+> > 2.35.1
+> >
+
+--
+Kartikeya
