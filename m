@@ -2,183 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4CB4D0C3B
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 00:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC64D0C61
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 01:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343951AbiCGXtK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Mar 2022 18:49:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        id S242581AbiCHAD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Mar 2022 19:03:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344005AbiCGXtF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Mar 2022 18:49:05 -0500
-Received: from na01-obe.outbound.protection.outlook.com (mail-centralusazon11021016.outbound.protection.outlook.com [52.101.62.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4071B1ADA6
-        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 15:48:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eKPTO3U2qMI6FA9JTkvnovZJLTJs2VeeRH2dwt5Xczyuw0IrS/CjoG1VL8rrgrtgsdvHwuXB3uavTRi+fbd70XZgWXxlwcj+Rw09lduxbiJf6fFGzpP9ykcj8K230jk5g0FdmJ49JvS3BMHlQQuK8frqYgChGQ0VKG1e4RyzuyeWzvZm856zpQsa8zt6KcxCKvDGyGitH9VeneeCUYfWVLJhRCEoImdlDnDWkYVHcKMkZqarxUE5J5iUGngB0Kmv+XUYxvrzb9ldoidKBtqWMowPZZprFNRptfbfLJSMnCR+U7QnqSSGK0nCQ9sCueKkscDegK2yo0xKeZTZwvsY2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HIERg48abpLZ1D3MCSmQ6YdNRfSsaBnIeQ4wijLrInY=;
- b=F3xDisN9UIWxSws8MX8HdXvgUq0B5Ghd7YXeFOtLdVQ89zywOxMDffKRYIdPx42IVYjr71dAhDUEvDeoTgS6giIJSZ5QGHIr6L0zxlkEJeNjWtx/EaHXccJHwqm/v+7AFEYevhYBFg635VHF3fJd+21Y5t9Qh96BYGhQ/z62nQ+tSfBepb4Z2FBupYA1k/0dvTHPlZ7Njh/7y4dHVii8SP9hcdbMDlHp4RvYfFcuqGGa4mCCQnENuY4t2f3LcgC8E8xGZDd59rnxSXLCS4tFFyZ+mj756OXGK+uljKyO4s5YbmOsGVY5rwgfxh8R2VB9lqgKZ2gYNoE54TW/iI1UOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HIERg48abpLZ1D3MCSmQ6YdNRfSsaBnIeQ4wijLrInY=;
- b=YGZjAGASif0r56aFBzwWVHBTsXXWvTLKPojSpaB40H5cxYbBptEVagh+JoBwQ0fUMdjbRKNBVbb+Fyj9K0cQ6MBgpxL3CyhCfYxobQy6zG382XKZqoWmv/0NDf9du6pgDaf7c439kjoFt2N1FM+HdyonxxGJHzFBjZxwVVozhfw=
-Received: from CH2PR21MB1430.namprd21.prod.outlook.com (2603:10b6:610:80::17)
- by DS7PR21MB3343.namprd21.prod.outlook.com (2603:10b6:8:82::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.3; Mon, 7 Mar
- 2022 23:48:07 +0000
-Received: from CH2PR21MB1430.namprd21.prod.outlook.com
- ([fe80::f990:4b74:c257:7ef5]) by CH2PR21MB1430.namprd21.prod.outlook.com
- ([fe80::f990:4b74:c257:7ef5%7]) with mapi id 15.20.5081.004; Mon, 7 Mar 2022
- 23:48:07 +0000
-From:   Alan Jowett <Alan.Jowett@microsoft.com>
-To:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next] Support load time binding of bpf-helpers.
-Thread-Topic: [PATCH bpf-next] Support load time binding of bpf-helpers.
-Thread-Index: AdgyfY9KAOB35mfkQ9OERhtYbxsHug==
-Date:   Mon, 7 Mar 2022 23:48:07 +0000
-Message-ID: <CH2PR21MB1430AFEB81F5F7930E8027C1FA089@CH2PR21MB1430.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=e1b222d6-6092-4892-b649-296b9a558b13;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-03-07T23:44:41Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 60a86938-980b-4b2f-2fed-08da0094edfb
-x-ms-traffictypediagnostic: DS7PR21MB3343:EE_
-x-ms-exchange-atpmessageproperties: SA|SL
-x-microsoft-antispam-prvs: <DS7PR21MB3343A9957B5AFAE8EC677D12FA089@DS7PR21MB3343.namprd21.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CNOgZkOIyiE4ahVNYwMDtSNeAKhAw7qcyi6O83diTVg+Af5sMVxrL0Io0HNY49fE0bJDR7CIsEO4j9yoEZzOpbVCjG6vpWuylDSrfIYIOI7Ep6ETLy5OEtokx/v2fUL5Hfv0m3UOnfZGUq6x4gYzIrMZqivtlgXiSgcBV2c5Cg2fBfKwqVYccplYqAHP8cai+hPJtqcRUDR3S39HC+IVnNILyLi04oNfKStC/WLb8vrmVFMZfukgo0FyNRsv2HaoDQU+EDAXgtzJfcWDQu2ahoen+kgky8OHHSA38k/55AjiHJAD9fSgj5WA4XA3rgrunYgS58Y1B0fn3mZNAmJb7C2lJ6TfEtSufQ9oawrYnEK5BuJMsAqxRXWIqPZ/LZdwiCZSgK6umTTECigXyHWuTBHO+HK0pD0d5dnj2kBBbOjgDLeImIgYaXCNzidIVUoZTzTol/85PpWVfeUwy4j3QWhSTfSHf0zAnbuijCjNMutz1Pd2FFNu7jMC/VOTUq9Q9urp3ZDBUe81B72UnzAdHlMgRpUGq+vcGSWnmz0rmXIJNwPFP3IFgDcHaxl9K2qo2kjLFssV3WDnri+ltH0Bc1hbBzc15fxZoJj13eqN1yrM64ytgh6lk+fEK8kfwMwLpptcLOp7Gthn1Ar4Wh18PcIGx/XJo+nzzO5dep8fT1vjV9bHWihRetdY03jugBudEnfRg1z0FZ5DOH8VjpMWHa1GFVlpI02I1p8b2SL2G6p9ZYJ1wD2H3pqJ0X/iAPiR
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR21MB1430.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(86362001)(52536014)(8936002)(83380400001)(33656002)(55016003)(38100700002)(82960400001)(38070700005)(316002)(508600001)(71200400001)(7696005)(6916009)(26005)(9686003)(186003)(10290500003)(2906002)(8676002)(66946007)(76116006)(122000001)(64756008)(82950400001)(5660300002)(66556008)(66446008)(66476007)(6506007)(8990500004)(451199004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/t/M6urCP1KKyAxFn44SZlAzB/n+bQRYMN3CeZqyhMu5+Wm//H0Wwq31K1Qy?=
- =?us-ascii?Q?+HlL1uvYgqcLSycQjEmEeDPVsUmWgOJBavVJNbjEbkcDTOaMT8nUU5TeP9mG?=
- =?us-ascii?Q?L+gNmjCJzDjVWXv+lssOGrW24ZyaRxo4xnYepqAqy1YmroxGq/vcT2PkNj8H?=
- =?us-ascii?Q?AVJmuVIU9XG2tOn0tfWeoWIKnk/yD+18aBFA4dFUBJq7wsIzEv71tt3w/jzx?=
- =?us-ascii?Q?LCKRRU6JXFug+4TN4LCk32iC71yXj2LdODMN34/COCLAq6eZIRppgVkwFjqo?=
- =?us-ascii?Q?+jA8nku+8WUwNc2XE108dhemCBJErY89/X1Tj8NMlFqyAMrWTWaFG0y/NIIr?=
- =?us-ascii?Q?KRFPtJyOAcmyfRo+LeM47OQRhrcK5lxk+2+BPJJaKnm2EquujJyxbcyIm75d?=
- =?us-ascii?Q?TcZS9SfyC5vGcH0y6VfhDetjhtu4WZfQaxyO0qn7EUg8s24FP3onPfbJNfbn?=
- =?us-ascii?Q?lxj/yJueZfToPDVMc95wgSfOrY8y/jOyTlpEeqhICw6o0K07FD5Sa5otSBBm?=
- =?us-ascii?Q?+pi1TTJ+dkCON0931XQDIxfeASY4eUP6+93X2FYOaCUc9DFgyuj5tzExYAC1?=
- =?us-ascii?Q?zcvuTiRxiR6V4ojUTTp2aogFQywUWSugh8mYRarx/AQPnPoIGHryhwsp9rXE?=
- =?us-ascii?Q?Bq/hGJLPJBcAS0HAOamRTekeU7pOxpS65SAEiz3d4KfV/wdxTACv7TD0Ejwf?=
- =?us-ascii?Q?QRA/D/rcj12F7q/sVoBddhXZL3XhpvqG2/QcRVUCWapaThQO3ONqnvcLhQ/6?=
- =?us-ascii?Q?Vk9u99fvlh5XO1GUwrAzkI9I1R/Aiv/05NCRYj2S5Zfnxb29W6hWmWFEU956?=
- =?us-ascii?Q?gbMDxNv+lIzlCa+E6lvDREfH9o+Y9rdC64+tGihJ9LBAfR2veadBpiS5PPt1?=
- =?us-ascii?Q?7dG0Utf3D6bvCApPTmOOiIHm8hb0deydbz5MjVx/+s875rvE8UQBUlFSId37?=
- =?us-ascii?Q?+OFdrYVm6RkvVy8DoqB+K/RnBad11+tyzYiPtPX5C+Ap2AuP1c+h+Ay4T4xF?=
- =?us-ascii?Q?xlOuNsPyw+1rGBhEYvDVEWjxJmg70dK6EdcyfVVxzTvdZ5sy9Zqdb5n8f2pO?=
- =?us-ascii?Q?O3nrKHQuqZnaQOpL771dbg48UsTtNcef+cBeJSYCaxpWaNzL3MCfr5Z+tmsm?=
- =?us-ascii?Q?9mQjTDOnHKSYvcTohZYGRe+VKlsf5h5rueD6QvcQlG+o1XetLwzMEeojhIee?=
- =?us-ascii?Q?QKKnXSAyPyOJcAqwcj5JEcG24T07vAbrnv6raNXIz0X23ebJGLY0oZAMjlhW?=
- =?us-ascii?Q?sZEgoW33BVUnyHppZ5MzPutzLKBQmtM4P52aCeiq6AIG33SussvVNv/nLFgs?=
- =?us-ascii?Q?Hlqe+FaPXThMG1YX/gB1ENHM2IKM6vARhKJEfWWknezrnnRk1UdnSTA0OXy4?=
- =?us-ascii?Q?RtN97GWEVpTjCJV6l4gvUNaoAZGKfEiuSDWX1yULhVw2Ls5G09w/EoI327TE?=
- =?us-ascii?Q?vzDJLdqmsYaOCQ92dd1NI1rRZpOgnbnA?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S233951AbiCHAD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Mar 2022 19:03:28 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0118610C4
+        for <bpf@vger.kernel.org>; Mon,  7 Mar 2022 16:02:30 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 132so14909109pga.5
+        for <bpf@vger.kernel.org>; Mon, 07 Mar 2022 16:02:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EuPyOGfEKvdmmkdx2+eXzCMxoHYA5c2y/gEEklhVQ8Y=;
+        b=w86scsa7q9Xnl0bLj+lNlCk+0DfSqXcgC1XjYdV9JlUD5r33NHVtD/k4Z3i68INFzb
+         3PsYjEj7tYILf5c0b0NFC22yaKAvf8VY5Mn0adjjgPE2VSVaktycyrLB7k0WqcRpBjL2
+         d4/rmVfelv7b6GNGFQ6MW40e/XSKfqdBGivBVAshyfXPioW6DxsdskGve3t6y4jaq8X7
+         LKc+Y1q79NjfAHag8OgcMDBTGxuT2vMUJtn77JbPERpSkhZty1lV1kD34KOYMBUWQKN0
+         yzW3tlrmLdcLAwID/vZOCie+5VIEqZ/4N1tPITIlAaHk4qKbpKAAga7Q8NDhjzb7IS2F
+         Hxgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EuPyOGfEKvdmmkdx2+eXzCMxoHYA5c2y/gEEklhVQ8Y=;
+        b=X/6ooGYCIjZWXldu4UaaCaA0OnlsTjiwML2/4DLauCDJNclqET0VBCnQNvBblIeDFL
+         L5fsL4Kqw1vw8C6rf8pQwVxkeapBwGUD0oJdv3i0YpjYpwnjeDpQAIMmf4zd7ogZzw3x
+         eeQyCY43o15n2KuW3O/5/6RymSPkNjwV8RIQmtsc8EQp242ZGX+l+LwT7T+yPncUA8zW
+         N/WCHqIgVI/ShZAlOka6rYQYX0xiWV2vU37H3CfDdKzUol40+koDoDWCzZPnE5+dx7pP
+         GhsEwIVvnQQ1Q6yxSL12vEnXBBg36kTWfMjG2lyWSyo++GADFiqtZs+8A+d/+ud4shQa
+         C7Nw==
+X-Gm-Message-State: AOAM531UuSGk38Q2b/emgqL3s5kEc0+koAAu1aY1//ylkZrq2D3JDuQJ
+        kdNAoHVoYZWz3jbRa2/ybEKQcA==
+X-Google-Smtp-Source: ABdhPJxykFoZuKmjviuSn9DcWv3yRmnj5s2LUlovrzLZDhDLZZjG8LFtTII2ivb0MrPwguN6v7pB7w==
+X-Received: by 2002:a63:1760:0:b0:374:6621:9236 with SMTP id 32-20020a631760000000b0037466219236mr12019521pgx.7.1646697749418;
+        Mon, 07 Mar 2022 16:02:29 -0800 (PST)
+Received: from localhost.localdomain ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id 23-20020a17090a0d5700b001bc3c650e01sm1383704pju.1.2022.03.07.16.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Mar 2022 16:02:29 -0800 (PST)
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+To:     davem@davemloft.net
+Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
+Subject: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
+Date:   Mon,  7 Mar 2022 16:01:46 -0800
+Message-Id: <20220308000146.534935-1-tadeusz.struk@linaro.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR21MB1430.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 60a86938-980b-4b2f-2fed-08da0094edfb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Mar 2022 23:48:07.3668
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7MXM27b8h3Z13jt2am9ctC06U37d0BIWet7e/R/Nhop20ahkDx4TiGYzTbS7GlBc6DpWwx2Pm1kGNt+txrxbmg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR21MB3343
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF helper function names are common across different platforms, but the
-id assigned to helper functions may vary. This change provides an option
-to generate eBPF ELF files with relocations for helper functions which
-permits resolving helper function names to ids at load time instead of
-at compile time.
+Syzbot found a kernel bug in the ipv6 stack:
+LINK: https://syzkaller.appspot.com/bug?id=205d6f11d72329ab8d62a610c44c5e7e25415580
 
-Add a level of indirection to bpf_doc.py (and generated bpf_helper_defs.h)
-to permit compile time generation of bpf-helper function declarations to
-facilitating late binding of bpf-helpers to helper id for cases where
-different platforms use different helper ids, but the same helper
-functions.
+The reproducer triggers it by sending an invalid message via sendmmsg() call,
+which triggers skb_over_panic, and crashes the kernel:
 
-Example use case would be:
-"#define BPF_HELPER(return_type, name, args, id) \
-    extern return_type name args"
+skbuff: skb_over_panic: text:ffffffff84647fb4 len:65575 put:65575
+head:ffff888109ff0000 data:ffff888109ff0088 tail:0x100af end:0xfec0
+dev:<NULL>
 
-To generate:
-extern void * bpf_map_lookup_elem (void *map, const void *key);
+------------[ cut here ]------------
+kernel BUG at net/core/skbuff.c:113!
+PREEMPT SMP KASAN
+CPU: 1 PID: 1818 Comm: repro Not tainted 5.17.0-rc7-dirty #9
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
+RIP: 0010:skb_panic+0x173/0x175
+RSP: 0018:ffffc900015bf3b8 EFLAGS: 00010282
+RAX: 0000000000000090 RBX: ffff88810e848c80 RCX: 0000000000000000
+RDX: ffff88810fd84300 RSI: ffffffff814fa5ef RDI: fffff520002b7e69
+RBP: ffffc900015bf420 R08: 0000000000000090 R09: 0000000000000000
+R10: ffffffff814f55f4 R11: 203a666675626b73 R12: ffffffff855bff80
+R13: ffffffff84647fb4 R14: 0000000000010027 R15: ffffffff855bf420
+FS:  0000000000c8b3c0(0000) GS:ffff88811b100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000040 CR3: 0000000106b68000 CR4: 0000000000150ea0
+Call Trace:
+ <TASK>
+ skb_put.cold+0x23/0x23
+ __ip6_append_data.isra.0.cold+0x396/0xe3a
+ ip6_append_data+0x1e5/0x320
+ rawv6_sendmsg.cold+0x1618/0x2ba9
+ inet_sendmsg+0x9e/0xe0
+ sock_sendmsg+0xd7/0x130
+ ____sys_sendmsg+0x381/0x8a0
+ ___sys_sendmsg+0x100/0x170
+ __sys_sendmmsg+0x26c/0x3b7
+ __x64_sys_sendmmsg+0xb2/0xbd
+ do_syscall_64+0x35/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Instead of:
-static void *(*bpf_map_lookup_elem) (void *map, const void *key) \
-    =3D (void*) 1;
+The reproducer can be found here:
+LINK: https://syzkaller.appspot.com/text?tag=ReproC&x=1648c83fb00000
+This can be fixed by increasing the alloclen in case it is smaller than
+fraglen in __ip6_append_data().
 
-This would result in the bpf-helpers having external linkage and permit
-late binding of BPF programs to helper function ids.
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
 
-Signed-off-by: Alan Jowett <alanjo@microsoft.com>
+Reported-by: syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
+Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
 ---
- scripts/bpf_helpers_doc.py | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ net/ipv6/ip6_output.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
-index 867ada23281c..442b5e87687e 100755
---- a/scripts/bpf_helpers_doc.py
-+++ b/scripts/bpf_helpers_doc.py
-@@ -519,6 +519,10 @@ class PrinterHelpers(Printer):
-         for fwd in self.type_fwds:
-             print('%s;' % fwd)
-         print('')
-+        print('#ifndef BPF_HELPER')
-+        print('#define BPF_HELPER(return_type, name, args, id) static retu=
-rn_type(*name) args =3D (void*) id')
-+        print('#endif')
-+        print('')
-=20
-     def print_footer(self):
-         footer =3D ''
-@@ -558,7 +562,7 @@ class PrinterHelpers(Printer):
-                 print(' *{}{}'.format(' \t' if line else '', line))
-=20
-         print(' */')
--        print('static %s %s(*%s)(' % (self.map_type(proto['ret_type']),
-+        print('BPF_HELPER(%s%s, %s, (' % (self.map_type(proto['ret_type'])=
-,
-                                       proto['ret_star'], proto['name']), e=
-nd=3D'')
-         comma =3D ''
-         for i, a in enumerate(proto['args']):
-@@ -577,7 +581,7 @@ class PrinterHelpers(Printer):
-             comma =3D ', '
-             print(one_arg, end=3D'')
-=20
--        print(') =3D (void *) %d;' % len(self.seen_helpers))
-+        print('), %d);' % len(self.seen_helpers))
-         print('')
-=20
- ##########################################################################=
-#####
---=20
-2.25.1
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 4788f6b37053..622345af323e 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1629,6 +1629,13 @@ static int __ip6_append_data(struct sock *sk,
+ 				err = -EINVAL;
+ 				goto error;
+ 			}
++			if (unlikely(alloclen < fraglen)) {
++				if (printk_ratelimit())
++					pr_warn("%s: wrong alloclen: %d, fraglen: %d",
++						__func__, alloclen, fraglen);
++				alloclen = fraglen;
++			}
++
+ 			if (transhdrlen) {
+ 				skb = sock_alloc_send_skb(sk, alloclen,
+ 						(flags & MSG_DONTWAIT), &err);
+-- 
+2.35.1
