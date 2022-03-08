@@ -2,45 +2,45 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E894D2224
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 21:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3AA4D2225
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 21:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239451AbiCHUGb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 15:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        id S1350113AbiCHUGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 15:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349809AbiCHUGa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 15:06:30 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E386F4A3F2
-        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 12:05:32 -0800 (PST)
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 228IopX3006462
-        for <bpf@vger.kernel.org>; Tue, 8 Mar 2022 12:05:32 -0800
+        with ESMTP id S1349809AbiCHUGg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 15:06:36 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976174A3E9
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 12:05:39 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 228IopFf025017
+        for <bpf@vger.kernel.org>; Tue, 8 Mar 2022 12:05:39 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=J/AsUeXdChTNAAaH8tHz6xRh/RVZtXXwzd1TsAGTg2s=;
- b=kTTImTdtAQoZ+Igwj+4uKawRfct79QP2tLX+H5GZJU5ntMvvq0tW4uIOBkH3zVC7bT/N
- FZrb2OyISwpf0mA8kkEBJ0/CeJ3pC0OlCUxsV9VjverX0LyBQA/vtDeh38RnYUb660v7
- Z+jf+YKSCbAtLa+B1R2l5Z22S7c/PicnUow= 
+ bh=PozqKVmCONyHBnyS7Bdpuz/RFF2KXoE2Pn4Bv0wNZT4=;
+ b=PdEZWmfAV1W+C8rupHKPV6m7vc3zQJfYhIBiLTFa1ftyVIvbCIknGLdPqT9CwQX7OICt
+ Ht/VQtm6WInNbKmY9S9FHtp0ESHXHU9XYD+WYjKt+3unIKHbvvNksrVZ1YSCu69kpy/l
+ X33HNNJN8COy1LbzGhY0FXwZK2VxOHzBqrQ= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ep4b2m9tm-3
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3enu25y25n-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 12:05:32 -0800
-Received: from twshared21672.25.frc3.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 12:05:39 -0800
+Received: from twshared22811.39.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Tue, 8 Mar 2022 12:05:30 -0800
+ 15.1.2308.21; Tue, 8 Mar 2022 12:05:38 -0800
 Received: by devvm4897.frc0.facebook.com (Postfix, from userid 537053)
-        id DB9013EBB765; Tue,  8 Mar 2022 12:05:28 -0800 (PST)
+        id E00D03EBB79B; Tue,  8 Mar 2022 12:05:33 -0800 (PST)
 From:   Mykola Lysenko <mykolal@fb.com>
 To:     <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
         <daniel@iogearbox.net>
 CC:     <yhs@fb.com>, Mykola Lysenko <mykolal@fb.com>
-Subject: [PATCH v4 bpf-next 2/3] Improve send_signal BPF test stability
-Date:   Tue, 8 Mar 2022 12:04:48 -0800
-Message-ID: <20220308200449.1757478-3-mykolal@fb.com>
+Subject: [PATCH v4 bpf-next 3/3] Improve stability of find_vma BPF test
+Date:   Tue, 8 Mar 2022 12:04:49 -0800
+Message-ID: <20220308200449.1757478-4-mykolal@fb.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220308200449.1757478-1-mykolal@fb.com>
 References: <20220308200449.1757478-1-mykolal@fb.com>
@@ -48,8 +48,8 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7biA9z6spVTCk3AOpYRPuWBWXcfjPE_M
-X-Proofpoint-GUID: 7biA9z6spVTCk3AOpYRPuWBWXcfjPE_M
+X-Proofpoint-GUID: ye1dqFESTi4t3PZBTjwklw3St6ABInk9
+X-Proofpoint-ORIG-GUID: ye1dqFESTi4t3PZBTjwklw3St6ABInk9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-08_08,2022-03-04_01,2022-02-23_01
@@ -63,102 +63,101 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Substitute sleep with dummy CPU intensive computation.
-Finish aforemention computation as soon as signal was
-delivered to the test process. Make the BPF code to
-only execute when PID global variable is set
+Remove unneeded spleep and increase length of dummy CPU
+intensive computation to guarantee test process execution.
+Also, complete aforemention computation as soon as
+test success criteria is met
 
 Signed-off-by: Mykola Lysenko <mykolal@fb.com>
 Acked-by: Yonghong Song <yhs@fb.com>
 ---
- .../selftests/bpf/prog_tests/send_signal.c      | 17 ++++++++++-------
- .../selftests/bpf/progs/test_send_signal_kern.c |  2 +-
- 2 files changed, 11 insertions(+), 8 deletions(-)
+ .../selftests/bpf/prog_tests/find_vma.c       | 28 +++++++++++++------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools=
-/testing/selftests/bpf/prog_tests/send_signal.c
-index 776916b61c40..def50f1c5c31 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -4,11 +4,11 @@
- #include <sys/resource.h>
- #include "test_send_signal_kern.skel.h"
+diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/te=
+sting/selftests/bpf/prog_tests/find_vma.c
+index 743a094c9510..5165b38f0e59 100644
+--- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
++++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+@@ -7,12 +7,14 @@
+ #include "find_vma_fail1.skel.h"
+ #include "find_vma_fail2.skel.h"
 =20
--int sigusr1_received =3D 0;
-+static int sigusr1_received;
-=20
- static void sigusr1_handler(int signum)
+-static void test_and_reset_skel(struct find_vma *skel, int expected_find=
+_zero_ret)
++static void test_and_reset_skel(struct find_vma *skel, int expected_find=
+_zero_ret, bool need_test)
  {
--	sigusr1_received++;
-+	sigusr1_received =3D 1;
+-	ASSERT_EQ(skel->bss->found_vm_exec, 1, "found_vm_exec");
+-	ASSERT_EQ(skel->data->find_addr_ret, 0, "find_addr_ret");
+-	ASSERT_EQ(skel->data->find_zero_ret, expected_find_zero_ret, "find_zero=
+_ret");
+-	ASSERT_OK_PTR(strstr(skel->bss->d_iname, "test_progs"), "find_test_prog=
+s");
++	if (need_test) {
++		ASSERT_EQ(skel->bss->found_vm_exec, 1, "found_vm_exec");
++		ASSERT_EQ(skel->data->find_addr_ret, 0, "find_addr_ret");
++		ASSERT_EQ(skel->data->find_zero_ret, expected_find_zero_ret, "find_zer=
+o_ret");
++		ASSERT_OK_PTR(strstr(skel->bss->d_iname, "test_progs"), "find_test_pro=
+gs");
++	}
+=20
+ 	skel->bss->found_vm_exec =3D 0;
+ 	skel->data->find_addr_ret =3D -1;
+@@ -36,11 +38,20 @@ static int open_pe(void)
+ 	return pfd >=3D 0 ? pfd : -errno;
  }
 =20
- static void test_send_signal_common(struct perf_event_attr *attr,
-@@ -40,9 +40,10 @@ static void test_send_signal_common(struct perf_event_=
-attr *attr,
-=20
- 	if (pid =3D=3D 0) {
- 		int old_prio;
-+		volatile int j =3D 0;
-=20
- 		/* install signal handler and notify parent */
--		signal(SIGUSR1, sigusr1_handler);
-+		ASSERT_NEQ(signal(SIGUSR1, sigusr1_handler), SIG_ERR, "signal");
-=20
- 		close(pipe_c2p[0]); /* close read */
- 		close(pipe_p2c[1]); /* close write */
-@@ -63,9 +64,11 @@ static void test_send_signal_common(struct perf_event_=
-attr *attr,
- 		ASSERT_EQ(read(pipe_p2c[0], buf, 1), 1, "pipe_read");
-=20
- 		/* wait a little for signal handler */
--		sleep(1);
-+		for (int i =3D 0; i < 100000000 && !sigusr1_received; i++)
-+			j /=3D i + 1;
-=20
- 		buf[0] =3D sigusr1_received ? '2' : '0';
-+		ASSERT_EQ(sigusr1_received, 1, "sigusr1_received");
- 		ASSERT_EQ(write(pipe_c2p[1], buf, 1), 1, "pipe_write");
-=20
- 		/* wait for parent notification and exit */
-@@ -93,7 +96,7 @@ static void test_send_signal_common(struct perf_event_a=
-ttr *attr,
- 			goto destroy_skel;
- 		}
- 	} else {
--		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1,
-+		pmu_fd =3D syscall(__NR_perf_event_open, attr, pid, -1 /* cpu */,
- 				 -1 /* group id */, 0 /* flags */);
- 		if (!ASSERT_GE(pmu_fd, 0, "perf_event_open")) {
- 			err =3D -1;
-@@ -110,9 +113,9 @@ static void test_send_signal_common(struct perf_event=
-_attr *attr,
- 	ASSERT_EQ(read(pipe_c2p[0], buf, 1), 1, "pipe_read");
-=20
- 	/* trigger the bpf send_signal */
--	skel->bss->pid =3D pid;
--	skel->bss->sig =3D SIGUSR1;
- 	skel->bss->signal_thread =3D signal_thread;
-+	skel->bss->sig =3D SIGUSR1;
-+	skel->bss->pid =3D pid;
-=20
- 	/* notify child that bpf program can send_signal now */
- 	ASSERT_EQ(write(pipe_p2c[1], buf, 1), 1, "pipe_write");
-diff --git a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c b/=
-tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-index b4233d3efac2..92354cd72044 100644
---- a/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_send_signal_kern.c
-@@ -10,7 +10,7 @@ static __always_inline int bpf_send_signal_test(void *c=
-tx)
++static bool find_vma_pe_condition(struct find_vma *skel)
++{
++	return skel->bss->found_vm_exec =3D=3D 0 ||
++		skel->data->find_addr_ret !=3D 0 ||
++		skel->data->find_zero_ret =3D=3D -1 ||
++		strcmp(skel->bss->d_iname, "test_progs") !=3D 0;
++}
++
+ static void test_find_vma_pe(struct find_vma *skel)
  {
- 	int ret;
+ 	struct bpf_link *link =3D NULL;
+ 	volatile int j =3D 0;
+ 	int pfd, i;
++	const int one_bn =3D 1000000000;
 =20
--	if (status !=3D 0 || sig =3D=3D 0 || pid =3D=3D 0)
-+	if (status !=3D 0 || pid =3D=3D 0)
- 		return 0;
+ 	pfd =3D open_pe();
+ 	if (pfd < 0) {
+@@ -57,10 +68,10 @@ static void test_find_vma_pe(struct find_vma *skel)
+ 	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+ 		goto cleanup;
 =20
- 	if ((bpf_get_current_pid_tgid() >> 32) =3D=3D pid) {
+-	for (i =3D 0; i < 1000000; ++i)
++	for (i =3D 0; i < one_bn && find_vma_pe_condition(skel); ++i)
+ 		++j;
+=20
+-	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */);
++	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, i =3D=3D=
+ one_bn);
+ cleanup:
+ 	bpf_link__destroy(link);
+ 	close(pfd);
+@@ -75,7 +86,7 @@ static void test_find_vma_kprobe(struct find_vma *skel)
+ 		return;
+=20
+ 	getpgid(skel->bss->target_pid);
+-	test_and_reset_skel(skel, -ENOENT /* could not find vma for ptr 0 */);
++	test_and_reset_skel(skel, -ENOENT /* could not find vma for ptr 0 */, t=
+rue);
+ }
+=20
+ static void test_illegal_write_vma(void)
+@@ -108,7 +119,6 @@ void serial_test_find_vma(void)
+ 	skel->bss->addr =3D (__u64)(uintptr_t)test_find_vma_pe;
+=20
+ 	test_find_vma_pe(skel);
+-	usleep(100000); /* allow the irq_work to finish */
+ 	test_find_vma_kprobe(skel);
+=20
+ 	find_vma__destroy(skel);
 --=20
 2.30.2
 
