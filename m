@@ -2,168 +2,293 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C57884D1B3E
-	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 16:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DB24D1C60
+	for <lists+bpf@lfdr.de>; Tue,  8 Mar 2022 16:54:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347743AbiCHPBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 10:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
+        id S1348023AbiCHPzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 10:55:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237601AbiCHPBw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 10:01:52 -0500
-X-Greylist: delayed 87 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 08 Mar 2022 07:00:56 PST
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27FF522B39;
-        Tue,  8 Mar 2022 07:00:56 -0800 (PST)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nRbK3-0007bV-Mq; Tue, 08 Mar 2022 16:00:23 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1nRbK3-0002yZ-7c; Tue, 08 Mar 2022 16:00:23 +0100
-Subject: Re: [PATCH] selftests/bpf: fix array_size.cocci warning
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     Guo Zhengkui <guozhengkui@vivo.com>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Christy Lee <christylee@fb.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgense?= =?UTF-8?Q?n?= 
-        <toke@redhat.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-Cc:     zhengkui_guo@outlook.com
-References: <20220308091813.28574-1-guozhengkui@vivo.com>
- <cc8cffe8-58ed-27f3-0865-4ac3b2313866@iogearbox.net>
-Message-ID: <b01130f4-0f9c-9fe4-639b-0dcece4ca09a@iogearbox.net>
-Date:   Tue, 8 Mar 2022 16:00:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        with ESMTP id S1348031AbiCHPzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 10:55:51 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5FC4F9C5
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 07:54:53 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id z26so17440380lji.8
+        for <bpf@vger.kernel.org>; Tue, 08 Mar 2022 07:54:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=3CkbM5IgF+3VsBWsQZ/PnBVfDF9LD+iXdHQtzsNI6d0=;
+        b=nTAU2/gVBTx7gXPBshTQ8Ox4mgVuY4OG3VmehMeWAbsJk9PzqF1NJN8CP7LnTCLVDc
+         FXXpBZUjV09dLAvskptuZzivucvk+WP4Xo57Ts5vLGD6SZG8de67TFMBqO2gbwCzJkvj
+         e1EawDzYw98RjhFW/XkWYsD8NziPKlou6Fr2M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=3CkbM5IgF+3VsBWsQZ/PnBVfDF9LD+iXdHQtzsNI6d0=;
+        b=04yn+kegrRRf3ieTyswpdsEgvllJl4tjQIU670bjdJTYWNgG/AWA4qU/jMndhA/J2/
+         hbzTVcEyZ7lWsmNzlq5zWGVR8DK3UKy+FB85+0QJvX/yr1YE4QLozKxvVE/kREeyAiaP
+         wq15zsDj8Yn/u3OhgGrvZAio5Kc9klfBE0FAVF3gVtdlPeFPis5Eak67WqWauz2kJUx3
+         +37Hl8Jo6LO8toOxt5AG6FX/SBCimAeilVDbzzXweeZNEXDz5A19sabSrOprV+IVf677
+         XmocnPVPqEJH2Qmt/+wAbWE5QrQtS8u0INq4VhV4Bg0cMR7mAyb20npnZsZw5hYOfZJX
+         tDew==
+X-Gm-Message-State: AOAM532dTHIe+8TzPOfyHJhV8FN8ER2NYcthf9pBA9SNy+2FrHpB6o0O
+        5aJKKbuYiksmCSxmI7UreQGv2Q==
+X-Google-Smtp-Source: ABdhPJyQPcNlOht5k4KPmYIyKQIWWBrJiPtL2fwrjj2DHGfLJzyXsQtQ03+lqr9+xyoRff5zVKnKDw==
+X-Received: by 2002:a2e:a78f:0:b0:246:8848:178 with SMTP id c15-20020a2ea78f000000b0024688480178mr11485699ljf.432.1646754891563;
+        Tue, 08 Mar 2022 07:54:51 -0800 (PST)
+Received: from cloudflare.com (2a01-110f-4809-d800-0000-0000-0000-0f9c.aa.ipv6.supernova.orange.pl. [2a01:110f:4809:d800::f9c])
+        by smtp.gmail.com with ESMTPSA id c27-20020a2ebf1b000000b00247eba13667sm837856ljr.16.2022.03.08.07.54.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 07:54:51 -0800 (PST)
+References: <20220222182559.2865596-1-iii@linux.ibm.com>
+ <20220222182559.2865596-2-iii@linux.ibm.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 1/3] bpf: Fix certain narrow loads with
+ offsets
+Date:   Tue, 08 Mar 2022 16:01:05 +0100
+In-reply-to: <20220222182559.2865596-2-iii@linux.ibm.com>
+Message-ID: <87bkygzbg5.fsf@cloudflare.com>
 MIME-Version: 1.0
-In-Reply-To: <cc8cffe8-58ed-27f3-0865-4ac3b2313866@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.5/26475/Tue Mar  8 10:31:43 2022)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/8/22 3:59 PM, Daniel Borkmann wrote:
-> On 3/8/22 10:17 AM, Guo Zhengkui wrote:
->> Fix the array_size.cocci warning in tools/testing/selftests/bpf/
->>
->> Use `ARRAY_SIZE(arr)` instead of forms like `sizeof(arr)/sizeof(arr[0])`.
->>
->> syscall.c and test_rdonly_maps.c don't contain header files which
->> implement ARRAY_SIZE() macro. So I add `#include <linux/kernel.h>`,
->> in which ARRAY_SIZE(arr) not only calculates the size of `arr`, but also
->> checks that `arr` is really an array (using __must_be_array(arr)).
->>
->> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
-> [...]
->> diff --git a/tools/testing/selftests/bpf/progs/syscall.c b/tools/testing/selftests/bpf/progs/syscall.c
->> index e550f728962d..85c6e7849463 100644
->> --- a/tools/testing/selftests/bpf/progs/syscall.c
->> +++ b/tools/testing/selftests/bpf/progs/syscall.c
->> @@ -6,6 +6,7 @@
->>   #include <bpf/bpf_tracing.h>
->>   #include <../../../tools/include/linux/filter.h>
->>   #include <linux/btf.h>
->> +#include <linux/kernel.h>
->>   char _license[] SEC("license") = "GPL";
->> @@ -82,7 +83,7 @@ int bpf_prog(struct args *ctx)
->>       static __u64 value = 34;
->>       static union bpf_attr prog_load_attr = {
->>           .prog_type = BPF_PROG_TYPE_XDP,
->> -        .insn_cnt = sizeof(insns) / sizeof(insns[0]),
->> +        .insn_cnt = ARRAY_SIZE(insns),
->>       };
->>       int ret;
->> diff --git a/tools/testing/selftests/bpf/progs/test_rdonly_maps.c b/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
->> index fc8e8a34a3db..ca75aac745a4 100644
->> --- a/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
->> +++ b/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
->> @@ -3,6 +3,7 @@
->>   #include <linux/ptrace.h>
->>   #include <linux/bpf.h>
->> +#include <linux/kernel.h>
->>   #include <bpf/bpf_helpers.h>
->>   const struct {
->> @@ -64,7 +65,7 @@ int full_loop(struct pt_regs *ctx)
->>   {
->>       /* prevent compiler to optimize everything out */
->>       unsigned * volatile p = (void *)&rdonly_values.a;
->> -    int i = sizeof(rdonly_values.a) / sizeof(rdonly_values.a[0]);
->> +    int i = ARRAY_SIZE(rdonly_values.a);
->>       unsigned iters = 0, sum = 0;
-> 
-> There's bpf_util.h with ARRAY_SIZE definition which is used in selftests, pls change to
-> reuse that one.
+On Tue, Feb 22, 2022 at 07:25 PM +01, Ilya Leoshkevich wrote:
+> Verifier treats bpf_sk_lookup.remote_port as a 32-bit field for
+> backward compatibility, regardless of what the uapi headers say.
+> This field is mapped onto the 16-bit bpf_sk_lookup_kern.sport field.
+> Therefore, accessing the most significant 16 bits of
+> bpf_sk_lookup.remote_port must produce 0, which is currently not
+> the case.
+>
+> The problem is that narrow loads with offset - commit 46f53a65d2de
+> ("bpf: Allow narrow loads with offset > 0"), don't play nicely with
+> the masking optimization - commit 239946314e57 ("bpf: possibly avoid
+> extra masking for narrower load in verifier"). In particular, when we
+> suppress extra masking, we suppress shifting as well, which is not
+> correct.
+>
+> Fix by moving the masking suppression check to BPF_AND generation.
+>
+> Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  kernel/bpf/verifier.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index d7473fee247c..195f2e9b5a47 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -12848,7 +12848,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  			return -EINVAL;
+>  		}
+>  
+> -		if (is_narrower_load && size < target_size) {
+> +		if (is_narrower_load) {
+>  			u8 shift = bpf_ctx_narrow_access_offset(
+>  				off, size, size_default) * 8;
+>  			if (shift && cnt + 1 >= ARRAY_SIZE(insn_buf)) {
+> @@ -12860,15 +12860,19 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  					insn_buf[cnt++] = BPF_ALU32_IMM(BPF_RSH,
+>  									insn->dst_reg,
+>  									shift);
+> -				insn_buf[cnt++] = BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
+> -								(1 << size * 8) - 1);
+> +				if (size < target_size)
+> +					insn_buf[cnt++] = BPF_ALU32_IMM(
+> +						BPF_AND, insn->dst_reg,
+> +						(1 << size * 8) - 1);
+>  			} else {
+>  				if (shift)
+>  					insn_buf[cnt++] = BPF_ALU64_IMM(BPF_RSH,
+>  									insn->dst_reg,
+>  									shift);
+> -				insn_buf[cnt++] = BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
+> -								(1ULL << size * 8) - 1);
+> +				if (size < target_size)
+> +					insn_buf[cnt++] = BPF_ALU64_IMM(
+> +						BPF_AND, insn->dst_reg,
+> +						(1ULL << size * 8) - 1);
+>  			}
+>  		}
 
-Also, CI failed with your patch:
+Thanks for patience. I'm coming back to this.
 
-https://github.com/kernel-patches/bpf/runs/5462211251?check_suite_focus=true
+This fix affects the 2-byte load from bpf_sk_lookup.remote_port.
+Dumping the xlated BPF code confirms it.
 
-   In file included from progs/test_rdonly_maps.c:6:
-   In file included from /usr/include/linux/kernel.h:5:
-   /usr/include/linux/sysinfo.h:9:2: error: unknown type name '__kernel_long_t'
-           __kernel_long_t uptime;         /* Seconds since boot */
-           ^
-   /usr/include/linux/sysinfo.h:10:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t loads[3];      /* 1, 5, and 15 minute load averages */
-           ^
-   /usr/include/linux/sysinfo.h:11:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t totalram;      /* Total usable main memory size */
-           ^
-   /usr/include/linux/sysinfo.h:12:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t freeram;       /* Available memory size */
-           ^
-   /usr/include/linux/sysinfo.h:13:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t sharedram;     /* Amount of shared memory */
-           ^
-   /usr/include/linux/sysinfo.h:14:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t bufferram;     /* Memory used by buffers */
-           ^
-   /usr/include/linux/sysinfo.h:15:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t totalswap;     /* Total swap space size */
-           ^
-   /usr/include/linux/sysinfo.h:16:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t freeswap;      /* swap space still available */
-           ^
-   /usr/include/linux/sysinfo.h:19:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t totalhigh;     /* Total high memory size */
-           ^
-   /usr/include/linux/sysinfo.h:20:2: error: unknown type name '__kernel_ulong_t'
-           __kernel_ulong_t freehigh;      /* Available high memory size */
-           ^
-   /usr/include/linux/sysinfo.h:22:22: error: use of undeclared identifier '__kernel_ulong_t'
-           char _f[20-2*sizeof(__kernel_ulong_t)-sizeof(__u32)];   /* Padding: libc5 uses this.. */
-                               ^
-   progs/test_rdonly_maps.c:68:10: error: implicit declaration of function 'ARRAY_SIZE' is invalid in C99 [-Werror,-Wimplicit-function-declaration]
-           int i = ARRAY_SIZE(rdonly_values.a);
-                   ^
-   12 errors generated.
-   make: *** [Makefile:488: /tmp/runner/work/bpf/bpf/tools/testing/selftests/bpf/test_rdonly_maps.o] Error 1
-   make: *** Waiting for unfinished jobs....
-   Error: Process completed with exit code 2.
+On LE (x86-64) things look well.
+
+Before this patch:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (b7) r0 = 0
+   2: (95) exit
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (b7) r0 = 0
+   2: (95) exit
+
+After this patch:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (b7) r0 = 0
+   2: (95) exit
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (74) w2 >>= 16
+   2: (b7) r0 = 0
+   3: (95) exit
+
+Which works great because the JIT generates a zero-extended load movzwq:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+bpf_prog_5e4fe3dbdcb18fd3:
+   0:   nopl   0x0(%rax,%rax,1)
+   5:   xchg   %ax,%ax
+   7:   push   %rbp
+   8:   mov    %rsp,%rbp
+   b:   movzwq 0x4(%rdi),%rsi
+  10:   xor    %eax,%eax
+  12:   leave
+  13:   ret
+
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+bpf_prog_4a6336c64a340b96:
+   0:   nopl   0x0(%rax,%rax,1)
+   5:   xchg   %ax,%ax
+   7:   push   %rbp
+   8:   mov    %rsp,%rbp
+   b:   movzwq 0x4(%rdi),%rsi
+  10:   shr    $0x10,%esi
+  13:   xor    %eax,%eax
+  15:   leave
+  16:   ret
+
+Runtime checks for bpf_sk_lookup.remote_port load and the 2-bytes of
+zero padding following it, like below, pass with flying colors:
+
+	ok = ctx->remote_port == bpf_htons(8008);
+	if (!ok)
+		return SK_DROP;
+	ok = *((__u16 *)&ctx->remote_port + 1) == 0;
+	if (!ok)
+		return SK_DROP;
+
+(The above checks compile to half-word (2-byte) loads.)
+
+
+On BE (s390x) things look different:
+
+Before the patch:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (bc) w2 = w2
+   2: (b7) r0 = 0
+   3: (95) exit
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (bc) w2 = w2
+   2: (b7) r0 = 0
+   3: (95) exit
+
+After the patch:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (bc) w2 = w2
+   2: (74) w2 >>= 16
+   3: (bc) w2 = w2
+   4: (b7) r0 = 0
+   5: (95) exit
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+   0: (69) r2 = *(u16 *)(r1 +4)
+   1: (bc) w2 = w2
+   2: (b7) r0 = 0
+   3: (95) exit
+
+These compile to:
+
+* size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
+bpf_prog_fdd58b8caca29f00:
+   0:   j       0x0000000000000006
+   4:   nopr
+   6:   stmg    %r11,%r15,112(%r15)
+   c:   la      %r13,64(%r15)
+  10:   aghi    %r15,-96
+  14:   llgh    %r3,4(%r2,%r0)
+  1a:   srl     %r3,16
+  1e:   llgfr   %r3,%r3
+  22:   lgfi    %r14,0
+  28:   lgr     %r2,%r14
+  2c:   lmg     %r11,%r15,208(%r15)
+  32:   br      %r14
+
+
+* size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
+bpf_prog_5e3d8e92223c6841:
+   0:   j       0x0000000000000006
+   4:   nopr
+   6:   stmg    %r11,%r15,112(%r15)
+   c:   la      %r13,64(%r15)
+  10:   aghi    %r15,-96
+  14:   llgh    %r3,4(%r2,%r0)
+  1a:   lgfi    %r14,0
+  20:   lgr     %r2,%r14
+  24:   lmg     %r11,%r15,208(%r15)
+  2a:   br      %r14
+
+Now, we right shift the value when loading
+
+  *(u16 *)(r1 +36)
+
+which in C BPF is equivalent to
+
+  *((__u16 *)&ctx->remote_port + 0)
+
+due to how the shift is calculated by bpf_ctx_narrow_access_offset().
+
+This makes the expected typical use-case
+
+  ctx->remote_port == bpf_htons(8008)
+
+fail on s390x because llgh (Load Logical Halfword (64<-16)) seems to lay
+out the data in the destination register so that it holds
+0x0000_0000_0000_1f48.
+
+I don't know that was the intention here, as it makes the BPF C code
+non-portable.
+
+WDYT?
+
+
+BTW. Out of curiosity, how does a Logical Load Halfword (llgh) differ
+differ from a non-logical Load Halfword (lgh) on s390x? Compiler
+Explorer generates a non-logical load for similar C code.
