@@ -2,119 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C503C4D3615
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 18:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3D34D36C3
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 18:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237268AbiCIRAK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 9 Mar 2022 12:00:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
+        id S236588AbiCIRRn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 12:17:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236354AbiCIRAD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 12:00:03 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E4D1AF8ED;
-        Wed,  9 Mar 2022 08:47:10 -0800 (PST)
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4KDJ2m3HZyz67wwW;
-        Thu, 10 Mar 2022 00:45:04 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 9 Mar 2022 17:46:27 +0100
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2308.021;
- Wed, 9 Mar 2022 17:46:27 +0100
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     "lsf-pc@lists.linux-foundation.org" 
-        <lsf-pc@lists.linux-foundation.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: [LSF/MM/BPF TOPIC] DIGLIM eBPF
-Thread-Topic: [LSF/MM/BPF TOPIC] DIGLIM eBPF
-Thread-Index: AdgzyU0J69ucohptSrqMF06VRSG1Dw==
-Date:   Wed, 9 Mar 2022 16:46:27 +0000
-Message-ID: <4d6932e96d774227b42721d9f645ba51@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.204.63.33]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        with ESMTP id S237135AbiCIRRa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 12:17:30 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70065CF3B5;
+        Wed,  9 Mar 2022 09:15:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F15AEB82229;
+        Wed,  9 Mar 2022 17:15:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BC9FC340E8;
+        Wed,  9 Mar 2022 17:15:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646846110;
+        bh=SkM8iGSGYhgOrIRJdrVqhWJ2hKO7IhD4kGpAJ6LqKt4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SbUK4DFBP2PrFAFmiPEvsEutUFrVrh3/zaMf+HSp7Fuk+SmIYazUGgzuCP27Wtuxi
+         KSblCR77Lva4Rk7SJiCI8G60pjpk/7MI+9+LbJGr8UAcZajU0DbEIylqV6qKWYEGYo
+         4wrFhkSpB2Ojtdh2Ru54sJ2VbOj6F6Dcis8lJdZ5TPr3NVBJ71SK8Un2oncRWnh5nB
+         nIe9lPYE/IcME30vI2xeWlvdBchUb7Ca0QK0pY4GE7qs1B1/W0nH0APSMLHQrMgi1Q
+         OgHnqGW6R7Eba5iR9YGMCzueMG9TnDiFHgLmjJadIZm74x2fxUXhsBx0rDfcZMVcax
+         KIgHL0fASyfcw==
+Date:   Wed, 9 Mar 2022 09:15:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH net] xdp: xdp_mem_allocator can be NULL in
+ trace_mem_connect().
+Message-ID: <20220309091508.4e48511f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87sfrt7i1i.fsf@toke.dk>
+References: <YiC0BwndXiwxGDNz@linutronix.de>
+        <875yovdtm4.fsf@toke.dk>
+        <YiDM0WRlWuM2jjNJ@linutronix.de>
+        <87y21l7lmr.fsf@toke.dk>
+        <YiZIEVTRMQVYe8DP@linutronix.de>
+        <87sfrt7i1i.fsf@toke.dk>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear PC
+On Mon, 07 Mar 2022 19:07:37 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>=20
+> > On 2022-03-07 17:50:04 [+0100], Toke H=C3=B8iland-J=C3=B8rgensen wrote:=
+ =20
+> >>=20
+> >> Right, looking at the code again, the id is only assigned in the path
+> >> that doesn't return NULL from __xdp_reg_mem_model().
+> >>=20
+> >> Given that the trace points were put in specifically to be able to pair
+> >> connect/disconnect using the IDs, I don't think there's any use to
+> >> creating the events if there's no ID, so I think we should fix it by
+> >> skipping the trace event entirely if xdp_alloc is NULL. =20
+> >
+> > This sounds like a reasonable explanation. If nobody disagrees then I
+> > post a new patch tomorrow and try to recycle some of what you wrote :) =
+=20
+>=20
+> SGTM :)
 
-I would like to propose a topic for the upcoming LSF/MM/BPF
-summit in May:
-
-DIGLIM eBPF: secure boot at application level with minimal changes to distros
-
-The recent addition in the kernel of the bpf LSM made it
-much easier to propose new LSMs targeting a specific
-use case, without requiring modification of existing LSMs
-in the security subsystem.
-
-Integrity Measurement Architecture (IMA) and Extended
-Verification Module (EVM) have become the de-facto
-standard choice for providing kernel-based integrity
-services.
-
-However, while IMA and EVM operate at file granularity,
-requiring each file to be signed to pass appraisal, Digest
-Lists Integrity Module (DIGLIM) takes a different approach.
-It builds a pool of reference values for file/metadata digests
-and grants access to a file if the calculated digest is found
-in the pool.
-
-The main advantage of this approach is that it is not
-constrained by a specific data format, as the pool can
-be built from any data format, as long as the corresponding
-parser is supported. DIGLIM can take reference values
-from unmodified Linux distributions to make its security
-decisions.
-
-An alternative of supporting the new approach in IMA,
-which would be still possible, has been to rewrite DIGLIM
-as an eBPF program, to operate in a similar way as IMA
-does.
-
-Although it has yet to be seen if the performance of the
-eBPF implementation matches the one aiming to be
-integrated in the kernel, at least from the functionality
-point of view, eBPF proved to be more than sufficient
-and even better than the kernel counterpart.
-
-Since the data structures and the primitives to manage
-the pool of reference values are already implemented by
-eBPF (e.g. hash map), DIGLIM had only to declare and
-use those data structures from the relevant LSM hooks.
-
-The developed eBPF program [1] of ~250 LOC is capable
-of verifying the code executed in the unmodified
-Fedora 36 [2] and openSUSE Tumbleweed [3] up to the
-GNOME desktop (yet, without any verification of the
-data source, or the eBPF program itself, to be done as
-future work).
-
-Thanks
-
-Roberto
-
-[1] https://github.com/robertosassu/diglim-ebpf/blob/master/ebpf/diglim_kern.c
-[2] https://copr.fedorainfracloud.org/coprs/robertosassu/DIGLIM-eBPF/repo/fedora-36/robertosassu-DIGLIM-eBPF-fedora-36.repo
-[3] https://download.opensuse.org/repositories/home:/roberto.sassu:/branches:/openSUSE:/Factory/openSUSE_Tumbleweed/
-
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Zhong Ronghua
+Was the patch posted? This seems to be a 5.17 thing, so it'd be really
+really good if the fix was in net by tomorrow morning! :S
