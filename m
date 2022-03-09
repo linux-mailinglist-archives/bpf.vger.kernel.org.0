@@ -2,236 +2,203 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007314D2FEA
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 14:29:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7F64D3101
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 15:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232302AbiCINaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 08:30:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S233539AbiCIOcV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 09:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbiCINaf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 08:30:35 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEF6175817;
-        Wed,  9 Mar 2022 05:29:35 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id p2so1469232ile.2;
-        Wed, 09 Mar 2022 05:29:35 -0800 (PST)
+        with ESMTP id S229703AbiCIOcU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 09:32:20 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E9F1520FE
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 06:31:21 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id bi12so5490028ejb.3
+        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 06:31:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Ie3g071ONGf67RV/Jbx4FIY700bvMZXq2+ZmsEi+AI=;
-        b=QIUfIU5qzXULTpfA1D74Pw/xIK0NPaopdTDk8k2ygZTjo1n2jfbhz0/iuGe6x1Oa7F
-         xxbP5v3KNuVHO0k8x0S9369AYAQIgFi7cCeznz4Gf0erFdfjCSDu8MI9Kwf/cQzqebXR
-         AHg8yinGUbusdz/Kb18I8Bn76YNjPMo5ILsYvYgY+zZbRfAJsO4p1A6MIgPWiQfWU3+8
-         /4TDpzoRd1+DXBKqrevTrJwbPRELTp+gNHa3WItasD8SXMvN2xnf4eKWWuo60DY/93bZ
-         6LDjkDzjeqByU7zI7xMpO64/iKqZ4lsxktrvmKKinv4axpudjJRz8TlDaiL+KiJHR8aA
-         W7Mg==
+        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=PQB1XYobyvRfOVoiVCRsq8RH9cBRYteK2cv6AlZYxXE=;
+        b=YLMa4IpHVMWXHKsx1iuUqS04WuR8fw9YmY5yNbwcMHaplBcn6ZQY0icZyOcWgOmxym
+         mhLLwCepcq3rABSU2UJV9dI2tTb1oad75O4KM/O7Z26tXHXbxQD+9YfyNrivFhAib8hQ
+         HMLage55zb18qhc0a4t0LbWVXFDVA5KGOMlfB/tiq/awMLeZav/bfSA1ofn8mE/fj2Np
+         dsEidalIyn1+u7UrImzUuZvUcp3O1TsFh3ocwHlzSvmikDS5BhjbT+QD7HFNDkNz6vns
+         WnF83fNJh7/1iCun6RHmbIFtE3AqRJpdVlF4INOZ4Ij18q26xqVnYec7lCYSsc4nwN2R
+         QrOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Ie3g071ONGf67RV/Jbx4FIY700bvMZXq2+ZmsEi+AI=;
-        b=5TA2yFsOSwWAMat6cioyLC+4lvfN4NFOPUkBBaFkLthB1mTwX9Cr7I9wfqVRojm1DR
-         cOiFVYMcRGIVX1IvLO+mg+4uwost1MHr0W1S0RCzk2tapnXVkj+AwEe2/+R6yIUUe02v
-         f1KxAWaeXy7pbwmoe/WUBT8MeoY5YlDsIoS6tRns99EHWrz+GenoV+4siwMGxbnhaM46
-         NfTdcaTwxIoT6Tq/KxkNzMQTp2WzBqfCtt0EcBi1pRyNhm8dfKyi97Rdmu+IlS2DnLC8
-         M5u1mpHAmdQl469cHnz8/GhLbG9MhIibZbGrL1zvmpZ+I0CfN6U533bGyuRyZNPmwl1s
-         IhVw==
-X-Gm-Message-State: AOAM530S7ChC5paoW4pzBZE/z2DGa7E+DvxaluOZZK/J3BsoKJXA6zld
-        BSZ+8vCi8bgT/Jv3p5DHf5W9H9I2ZGQINYPlf0iNUgmLWNk=
-X-Google-Smtp-Source: ABdhPJzglI42fOllC5NUHdfXe8Gktl5ckVAcIjBAlwX/mY0PeB/ZjpzCY2ytg3QT5IHiwb9tRiiQNj7NVCEqRqX5CMA=
-X-Received: by 2002:a92:7c13:0:b0:2c6:610f:82f0 with SMTP id
- x19-20020a927c13000000b002c6610f82f0mr5740790ilc.6.1646832575111; Wed, 09 Mar
- 2022 05:29:35 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=PQB1XYobyvRfOVoiVCRsq8RH9cBRYteK2cv6AlZYxXE=;
+        b=s1ru32K+WqMrO0b0M7rw6XgVfwCeFxYhGZhrWZiTKFrcl7OK+8zRRvWk5Hey3RJq2f
+         ooJKBr34ipHs8oZuF9t6mVA5SMq5D0LCEc/4HNtnB1ZFTOsvphFM9hIeu+v0g4dRVyk9
+         qiD3MuS/3q+Zk65YzxldF8+Xy9fCYhClfiFufzFXtM5JjK7/4h4uy8f9A56L5wtvk/b0
+         3B3CiurNKSFuus76j1RRxPBjWDECto1EkgsJNSRnb1i1Ifo6et0IBvIEIhN5xd/mdcQS
+         2ahguFMynB5ROEd5VqDkNmf1ZJpdtPhRQnf8ZRdlTwxxh53U2K5V4iIQWMB2qurgtQB7
+         Ax9g==
+X-Gm-Message-State: AOAM532TATuXWBR0SweOA4Lw3p/6v36cO2KbS7L4ueVj/iLwH9bED+8y
+        10XunDFfLNcea90oxdSbVBFvaFCXNGJMnVhE
+X-Google-Smtp-Source: ABdhPJxj7EUDKMRuUhEtMCdDjcO7QPmKMhZwG86OOe8f1SYZqKXnSQdfufcFLnxRCd0Cb/m3b/D2Tg==
+X-Received: by 2002:a17:907:7e9c:b0:6db:4788:66ab with SMTP id qb28-20020a1709077e9c00b006db478866abmr33323ejc.112.1646836280383;
+        Wed, 09 Mar 2022 06:31:20 -0800 (PST)
+Received: from [192.168.1.8] ([149.86.77.40])
+        by smtp.gmail.com with ESMTPSA id k20-20020a170906681400b006da86bef01fsm798106ejr.79.2022.03.09.06.31.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Mar 2022 06:31:19 -0800 (PST)
+Message-ID: <a5df60e1-f0b1-070f-7c93-133f0c562a21@isovalent.com>
+Date:   Wed, 9 Mar 2022 14:31:18 +0000
 MIME-Version: 1.0
-References: <20220308131056.6732-1-laoar.shao@gmail.com> <Yif+QZbCALQcYrFZ@carbon.dhcp.thefacebook.com>
-In-Reply-To: <Yif+QZbCALQcYrFZ@carbon.dhcp.thefacebook.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 9 Mar 2022 21:28:58 +0800
-Message-ID: <CALOAHbARWARjK4cAjUfsGDy3G4sAZaHRiFQsbjNc=EfHsCfnnQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/9] bpf, mm: recharge bpf memory from offline memcg
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [v2,bpf-next] bpftool: Restore support for BPF offload-enabled
+ feature probing
+Content-Language: en-GB
+To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@corigine.com>,
+        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Simon Horman <simon.horman@corigine.com>, oss-drivers@corigine.com
+References: <20220309085452.298278-1-niklas.soderlund@corigine.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+In-Reply-To: <20220309085452.298278-1-niklas.soderlund@corigine.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 9, 2022 at 9:09 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
->
-> On Tue, Mar 08, 2022 at 01:10:47PM +0000, Yafang Shao wrote:
-> > When we use memcg to limit the containers which load bpf progs and maps,
-> > we find there is an issue that the lifecycle of container and bpf are not
-> > always the same, because we may pin the maps and progs while update the
-> > container only. So once the container which has alreay pinned progs and
-> > maps is restarted, the pinned progs and maps are no longer charged to it
-> > any more. In other words, this kind of container can steal memory from the
-> > host, that is not expected by us. This patchset means to resolve this
-> > issue.
-> >
-> > After the container is restarted, the old memcg which is charged by the
-> > pinned progs and maps will be offline but won't be freed until all of the
-> > related maps and progs are freed. If we want to charge these bpf memory to
-> > the new started memcg, we should uncharge them from the offline memcg first
-> > and then charge it to the new one. As we have already known how the bpf
-> > memroy is allocated and freed, we can also know how to charge and uncharge
-> > it. This pathset implements various charge and uncharge methords for these
-> > memory.
-> >
-> > Regarding how to do the recharge, we decide to implement new bpf syscalls
-> > to do it. With the new implemented bpf syscall, the agent running in the
-> > container can use it to do the recharge. As of now we only implement it for
-> > the bpf hash maps. Below is a simple example how to do the recharge,
-> >
-> > ====
-> > int main(int argc, char *argv[])
-> > {
-> >       union bpf_attr attr = {};
-> >       int map_id;
-> >       int pfd;
-> >
-> >       if (argc < 2) {
-> >               printf("Pls. give a map id \n");
-> >               exit(-1);
-> >       }
-> >
-> >       map_id = atoi(argv[1]);
-> >       attr.map_id = map_id;
-> >       pfd = syscall(SYS_bpf, BPF_MAP_RECHARGE, &attr, sizeof(attr));
-> >       if (pfd < 0)
-> >               perror("BPF_MAP_RECHARGE");
-> >
-> >       return 0;
-> > }
-> >
-> > ====
-> >
-> > Patch #1 and #2 is for the observability, with which we can easily check
-> > whether the bpf maps is charged to a memcg and whether the memcg is offline.
-> > Patch #3, #4 and #5 is for the charge and uncharge methord for vmalloc-ed,
-> > kmalloc-ed and percpu memory.
-> > Patch #6~#9 implements the recharge of bpf hash map, which is mostly used
-> > by our bpf services. The other maps hasn't been implemented yet. The bpf progs
-> > hasn't been implemented neither.
-> >
-> > This pathset is still a POC now, with limited testing. Any feedback is
-> > welcomed.
->
-> Hello Yafang!
->
-> It's an interesting topic, which goes well beyond bpf. In general, on cgroup
-> offlining we either do nothing either recharge pages to the parent cgroup
-> (latter is preferred), which helps to release the pinned memcg structure.
->
+2022-03-09 09:54 UTC+0100 ~ Niklas Söderlund <niklas.soderlund@corigine.com>
+> Commit 1a56c18e6c2e4e74 ("bpftool: Stop supporting BPF offload-enabled
+> feature probing") removed the support to probe for BPF offload features.
+> This is still something that is useful for NFP NIC that can support
+> offloading of BPF programs.
+> 
+> The reason for the dropped support was that libbpf starting with v1.0
+> would drop support for passing the ifindex to the BPF prog/map/helper
+> feature probing APIs. In order to keep this useful feature for NFP
+> restore the functionality by moving it directly into bpftool.
+> 
+> The code restored is a simplified version of the code that existed in
+> libbpf which supposed passing the ifindex. The simplification is that it
+> only targets the cases where ifindex is given and call into libbpf for
+> the cases where it's not.
 
-We have thought about recharging pages to the parent cgroup (the root
-memcg in our case),
-but it can't resolve our issue.
-Releasing the pinned memcg struct is the benefit of recharging pages
-to the parent,
-but as there won't be too many memcgs pinned by bpf, so it may not be worth it.
+[...]
 
+> +static bool probe_prog_type_ifindex(enum bpf_prog_type prog_type, __u32 ifindex)
+> +{
+> +	struct bpf_insn insns[2] = {
+> +		BPF_MOV64_IMM(BPF_REG_0, 0),
+> +		BPF_EXIT_INSN()
+> +	};
+> +
+> +	switch (prog_type) {
+> +	case BPF_PROG_TYPE_SCHED_CLS:
+> +		/* nfp returns -EINVAL on exit(0) with TC offload */
+> +		insns[0].imm = 2;
+> +		break;
+> +	case BPF_PROG_TYPE_XDP:
+> +		break;
+> +	default:
+> +		return false;
+> +	}
 
-> Your approach raises some questions:
+Looking again at this block, you can remove this switch/case completely.
+Moving 0 by default into R0 was best in generic libbpf's probes because
+there were a number of types that wouldn't accept 2 as a return value;
+but here you can just return 2 all the time, for XDP this will mean
+XDP_PASS and the nfp accepts it. (Do keep the comment on nfp returning
+-EINVAL on exit(0), though, please.)
 
-Nice questions.
+> +
+> +	return probe_prog_load_ifindex(prog_type, insns, ARRAY_SIZE(insns),
+> +				       NULL, 0, ifindex);
+> +}
+> +
+>  static void
+>  probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
+>  		const char *define_prefix, __u32 ifindex)
+> @@ -488,11 +564,19 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
+>  	bool res;
+>  
+>  	if (ifindex) {
+> -		p_info("BPF offload feature probing is not supported");
+> -		return;
+> +		switch (prog_type) {
+> +		case BPF_PROG_TYPE_SCHED_CLS:
+> +		case BPF_PROG_TYPE_XDP:
+> +			break;
+> +		default:
+> +			return;
+> +		}
+> +
+> +		res = probe_prog_type_ifindex(prog_type, ifindex);
+> +	} else {
+> +		res = libbpf_probe_bpf_prog_type(prog_type, NULL);
+>  	}
+>  
+> -	res = libbpf_probe_bpf_prog_type(prog_type, NULL);
+>  #ifdef USE_LIBCAP
+>  	/* Probe may succeed even if program load fails, for unprivileged users
+>  	 * check that we did not fail because of insufficient permissions
+> @@ -521,6 +605,35 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
+>  			   define_prefix);
+>  }
+>  
+> +static bool probe_map_type_ifindex(enum bpf_map_type map_type, __u32 ifindex)
+> +{
+> +	LIBBPF_OPTS(bpf_map_create_opts, opts);
+> +	int key_size, value_size, max_entries;
+> +	int fd;
+> +
+> +	opts.map_ifindex = ifindex;
+> +
+> +	key_size	= sizeof(__u32);
+> +	value_size	= sizeof(__u32);
+> +	max_entries	= 1;
+> +
+> +	switch (map_type) {
+> +	case BPF_MAP_TYPE_HASH:
+> +	case BPF_MAP_TYPE_ARRAY:
+> +		break;
+> +	default:
+> +		return false;
+> +	}
 
-> 1) what if the new cgroup is not large enough to contain the bpf map?
+This switch/case should probably not be here. Either skip
+probe_map_type_ifindex() entirely if you assume other map types are not
+supported, or just probe all types for real.
 
-The recharge is supposed to be triggered at the container start time.
-After the container is started, the agent which will load the bpf
-programs will do it as follows,
-1. Check if the bpf program has already been loaded,
-    if not,  goto 5.
-2. Check if the bpf program will pin maps or progs,
-    if not, goto 6.
-3. Check if the pinned maps and progs are charged to an offline memcg,
-    if not, goto 6.
-4. Recharge the pinned maps or progs to the current memcg.
-   goto 6.
-5. load new bpf program, and also pinned maps and progs if desired.
-6. End.
+Speaking of which, we agreed yesterday on probing for all map types. But
+I think my suggestion was wrong (apologies!), because the simplified
+probes that you're adding back does not contain the necessary
+adjustments to work with all map types (the switch(map_type) in libbpf's
+probe_map_create()). So we should probably probe just hash/array maps,
+but move the switch/case above to probe_map_type(), like we do for prog
+types, to avoid printing any output for other map types. This will
+prevent other drivers to probe for additional map types, but a large
+portion of those probes would be broken, so it's for the best. We can
+always extend probe_map_type_ifindex() in the future to support more
+types if necessary.
 
-If the recharge fails, it means that the memcg limit is too low, we
-should reconsider
-the limit of the container.
-
-Regarding other cases that it may do the recharge in the runtime, I
-think the failure is
-a common OOM case, that means the usage in this container is out of memory, we
-should kill something.
-
-
-> 2) does it mean that some userspace app will monitor the state of the cgroup
-> which was the original owner of the bpf map and recharge once it's deleted?
-
-In our use case,  we don't need to monitor that behavior.
-The agent which loads the bpf programs has the responsibility to do
-the recharge.
-As all the agents are controlled by ourselves, it is easy to do it like that.
-
-For more generic use cases, it can do the bpf maintenance in a sidecar container
-in the containerized environment.  The admin can provide such sidercar
-to bpf owners.
-The admin can also introduce an agent on the host to check if there're
-maps or progs
-charged to an offline memcg and then take the action. It is not easy
-to find which one owns
-the pinned maps or progs as the pinned path is unique.
-
-> 3) what if there are several cgroups are sharing the same map? who will be
-> the next owner?
-
-I think we can follow the same rule that we take care of sharing pages
-across memcgs
-currently: who loads it first, who owns the map. Then after the first
-one exit, the next owner
-is who firstly does the recharge.
-
-> 4) because recharging is fully voluntary, why any application should want to do
-> it, if it can just use the memory for free? it doesn't really look as a working
-> resource control mechanism.
->
-
-As I explained in 2), all the agents are under our control, so we can
-easily handle it like that.
-For generic use cases, an agent running on the host and sidecar (or
-SDK) provided
-to bpf users can also handle it.
-
-> Will reparenting work for your case? If not, can you, please, describe the
-> problem you're trying to solve by recharging the memory?
->
-
-Reparenting doesn't work for us.
-The problem is memory resource control: the limitation on the bpf
-containers will be useless
-if the lifecycle of bpf progs can containers are not the same.
-The containers are always upgraded - IOW restarted - more frequently
-than the bpf progs and maps,
-that is also one of the reasons why we choose to pin them on the host.
-
--- 
-Thanks
-Yafang
+> +
+> +	fd = bpf_map_create(map_type, NULL, key_size, value_size, max_entries,
+> +			    &opts);
+> +
+> +	if (fd >= 0)
+> +		close(fd);
+> +
+> +	return fd >= 0;
+> +}
+> +
+>  static void
+>  probe_map_type(enum bpf_map_type map_type, const char *define_prefix,
+>  	       __u32 ifindex)
