@@ -2,165 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58D4D3B14
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 21:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336924D3B54
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 21:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbiCIU2w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 15:28:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        id S229586AbiCIUsm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 15:48:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238184AbiCIU2v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 15:28:51 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F7C50042
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 12:27:52 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id 9so2974636pll.6
-        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 12:27:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=GUbtsiwXo7ZWNRfgZSEDw0U2PipEoXKr9rZN+rhPk3s=;
-        b=SUA/yFMpMyj5GekKm292AylNufR9xs7Du5jXCeQmd7EDE/yZMieHd8zw+20EBhKiQL
-         LJe2ZwA2+pASXKJsll9JWWryWd4G9oTsTuYX82IA+q+SPzHKJekgLaaNab8Xoyu9Gnqy
-         Qz7YMac23398Ydaq3cXWbhq4tDiaaJVSvRptsejR3kcCTP/EB4VUbOpF4UQsCPU4Rx51
-         3Fuu7Ibt7wDy7KsmMQe7ggwIZQiOO3dDhmqD4aAN8+jbToDTslnbCLrcVbmCm0EAbncQ
-         R6OcG5gB5m1EOfF4dGm4mpsu6deOZl3okcWyQJMnGFQz7NB1rU0OvIpFNgP03LAS2ngx
-         JdEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=GUbtsiwXo7ZWNRfgZSEDw0U2PipEoXKr9rZN+rhPk3s=;
-        b=bIDpnw6mw8fXBeT/qWk30WQScvbrUsY//H+gTCBZlxyaPEgsKJNjIHsZKYe2cP29L0
-         LsfjwQsjFjcHXkdxM50id88c4zD6pMeQyamogc06laj89UG7dt8hzECm5ePsp2T8yZGy
-         DUiicW0nj0VgqzyXwLrOqa/Lb1hj5Q8Dhmnhlv3Svn8BplKrQOOyq/rYW/vT4ZLEv9nl
-         5+EFM7TgEnAXU6PF+JuwE58cK+7zBrInR01QS9na/XA3Y+oCG5Ckkrl39x5SzoSD50lu
-         crDnBS+tJhxlS9VqPtGqDzuT0i9fC9hqT+PrjmSARvDCqmfTl8WCxIXud1AfGJSOT6Qt
-         QInw==
-X-Gm-Message-State: AOAM530Jex9VftcYOKzJoIAQ0JjFeiEeuBR4jrvRUklBPfqbef9Pgqsl
-        dOBrQAleu1gofhHid9h3OJKVluZlghm561nrKW703Q==
-X-Google-Smtp-Source: ABdhPJwJjCsschFnpoiZo+TBwCCYDT3Ute/Kgm6anN+K+zvlADEqrOAkki4TZUAVcrxor/K17H58isMDi+V4hORr64Q=
-X-Received: by 2002:a17:903:41c9:b0:152:ab7:438 with SMTP id
- u9-20020a17090341c900b001520ab70438mr1315823ple.162.1646857671071; Wed, 09
- Mar 2022 12:27:51 -0800 (PST)
-MIME-Version: 1.0
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 9 Mar 2022 12:27:15 -0800
-Message-ID: <CAJD7tkbQNpeX8MGw9dXa5gi6am=VNXwgwUoTd6+K=foixEm1fw@mail.gmail.com>
-Subject: [RFC bpf-next] Hierarchical Cgroup Stats Collection Using BPF
-To:     Alexei Starovoitov <ast@kernel.org>,
+        with ESMTP id S232660AbiCIUsl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 15:48:41 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 729876433;
+        Wed,  9 Mar 2022 12:47:41 -0800 (PST)
+Date:   Wed, 9 Mar 2022 21:47:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1646858860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/VaQWHFrdCQjtr2d2yjCrhvjrQsK4eQi6tnlA98NSys=;
+        b=XZHJ7Y9Io7mKHHbrh8ShVpAdpOErvqc6yTUNt7DWXityEliik2XKnPpEjAB+vguMnCWk4X
+        a/ADh/3IANOzgsX/oPwcoE9RDPht2JB4I2vkiHx7qbVYGzx3CCJ9Ry5I3xf3FRg0W5AIgl
+        QGGs583i1rAUMI2RQt8AWQlBRg9zeWE2PuJtvty7SEMyTtuz15Q7Uoci38XE3a2XzHLAqd
+        G2cb8UujnYWbHdKxZE3HOUDxhU8tylWTEbkgZkYJzcianW5G89a08iVmy+QMpZikgB/aCb
+        uRXmigqoW87kezS7YFQ9vq75biqadxw+a6E4r27YzimlpBdYR9X/XAuwaefW6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1646858860;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/VaQWHFrdCQjtr2d2yjCrhvjrQsK4eQi6tnlA98NSys=;
+        b=vH43nxZp8aUBd5K69HKfo5f9nEmE3a6V+oQrQ8YrLxXMMnUOu1O0JJzaL2Ib/1ukgG4+Fp
+        sIZwZgfbyYy7/0Ag==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Hao Luo <haoluo@google.com>, Shakeel Butt <shakeelb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        David Rientjes <rientjes@google.com>, bpf@vger.kernel.org,
-        KP Singh <kpsingh@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yhs@fb.com>
+Subject: [PATCH net v2] xdp: xdp_mem_allocator can be NULL in
+ trace_mem_connect().
+Message-ID: <YikSav7Y1iEQv8sq@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey everyone,
+Since the commit mentioned below __xdp_reg_mem_model() can return a NULL
+pointer. This pointer is dereferenced in trace_mem_connect() which leads
+to segfault.
 
-I would like to discuss an idea to facilitate collection of
-hierarchical cgroup stats using BPF programs. We want to provide a
-simple interface for BPF programs to collect hierarchical cgroup stats
-and integrate with the existing rstat aggregation mechanism in the
-kernel. The most prominent use case is the ability to extend memcg
-stats (and histograms) by BPF programs.
+The trace points (mem_connect + mem_disconnect) were put in place to
+pair connect/disconnect using the IDs. The ID is only assigned if
+__xdp_reg_mem_model() does not return NULL. That connect trace point is
+of no use if there is no ID.
 
-This also integrates nicely with Hao's work [1] that enables reading
-those stats through files, similar to cgroupfs. This idea is more
-concerned about the stats collection path.
+Skip that connect trace point if xdp_alloc is NULL.
 
-The main idea is to introduce a new map type (let's call it BPF cgroup
-stats map for now). This map will be keyed by cgroup_id (similar to
-cgroup storage). The value is an array (or struct, more on this later)
-that the user chooses its size and element type, which will hold the
-stats. The main properties of the map are as follows:
-1. Map entries creation and deletion is handled automatically by the kernel=
-.
-2. Internally, the map entries contain per-cpu arrays, a total array,
-and a pending array.
-3. BPF programs & user space see the entry as a single array, updates
-are transparently made to per-cpu array, and lookups invoke stats
-flushing.
+[ Toke H=C3=B8iland-J=C3=B8rgensen delivered the reasoning for skipping the=
+ trace
+  point ]
 
-The main differences between this and a cgroup storage is that it
-naturally integrates with rstat hierarchical aggregation (more on that
-later). The reason why we do not want to do aggregation in BPF
-programs or in user space are:
-1. Each program will loop through the cgroup descendants to do their
-own stats aggregation, lots of repeated work.
-2. We will loop through all the descendants, even those that do not
-have updates.
+Fixes: 4a48ef70b93b8 ("xdp: Allow registering memory model without rxq refe=
+rence")
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+v1=E2=80=A6v2:
+   - Instead letting the trace point deal with a NULL pointer, skip the
+     trace point.
 
-These problems are already addressed by the rstat aggregation
-mechanism in the kernel, which is primarily used for memcg stats. We
-want to provide a way for BPF programs to be able to make use of this
-as well.
+ net/core/xdp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-The lifetime of map entries can be handled as follows:
-- When the map is created, it gets as a parameter an initial
-cgroup_id, maybe through the map_extra parameter struct bpf_attr. The
-map is created and entries for the initial cgroup and all its
-descendants are created.
-- The update and delete interfaces are disabled. The kernel creates
-entries for new cgroups and removes entries for destroyed cgroups (we
-can use cgroup_bpf_inherit() and  cgroup_bpf_release()).
-- When all the entries in the map are deleted (initial cgroup
-destroyed), the map is destroyed.
-
-The map usage by BPF programs and integration with rstat can be as follows:
-- Internally, each map entry has per-cpu arrays, a total array, and a
-pending array. BPF programs and user space only see one array.
-- The update interface is disabled. BPF programs use helpers to modify
-elements. Internally, the modifications are made to per-cpu arrays,
-and invoke a call to cgroup_bpf_updated()  or an equivalent.
-- Lookups (from BPF programs or user space) invoke an rstat flush and
-read from the total array.
-- In cgroup_rstat_flush_locked() flush BPF stats as well.
-
-Flushing of BPF stats can be as follows:
-- For every cgroup, we will either use flags to distinguish BPF stats
-updates from normal stats updates, or flush both anyway (memcg stats
-are periodically flushed anyway).
-- We will need to link cgroups to the maps that have entries for them.
-One possible implementation here is to store the map entries in struct
-cgroup_bpf in a htable indexed by map fd. The update helpers will also
-use this to avoid lookups.
-- For each updated cgroup, we go through all of its maps, accumulate
-per-cpu arrays to the total array, then propagate total to the
-parent=E2=80=99s pending array (same mechanism as memcg stats flushing).
-
-There is room for extensions or generalizations here:
-- Provide flags to enable/disable using per-cpu arrays (for stats that
-are not updated frequently), and enable/disable hierarchical
-aggregation (for non-hierarchical stats, they can still make benefit
-of the automatic entries creation & deletion).
-- Provide different hierarchical aggregation operations : SUM, MAX, MIN, et=
-c.
-- Instead of an array as the map value, use a struct, and let the user
-provide an aggregator function in the form of a BPF program.
-
-I am happy to hear your thoughts about the idea in general and any
-comments or concerns.
-
-
-
-
-
-
-
-[1] https://lwn.net/Articles/886292/
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 7aba355049862..8ebb22eb6497c 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -357,7 +357,8 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp=
+_rxq,
+ 	if (IS_ERR(xdp_alloc))
+ 		return PTR_ERR(xdp_alloc);
+=20
+-	trace_mem_connect(xdp_alloc, xdp_rxq);
++	if (xdp_alloc)
++		trace_mem_connect(xdp_alloc, xdp_rxq);
+ 	return 0;
+ }
+=20
+--=20
+2.35.1
