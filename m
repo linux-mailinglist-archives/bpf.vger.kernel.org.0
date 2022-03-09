@@ -2,199 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3724D3992
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 20:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3854D3A44
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 20:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235583AbiCITKc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 14:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
+        id S233694AbiCIT0G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 14:26:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237304AbiCITKa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 14:10:30 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00691405FD;
-        Wed,  9 Mar 2022 11:09:23 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id q13so2778949plk.12;
-        Wed, 09 Mar 2022 11:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/nVY7Pv0jOp1vE8P2rLSzVj8Q/vteoulCeG/Iqc/qo0=;
-        b=fs9AQdUqAMDAgQxlCnTIwCd/kC/S8fOKLkoWKRx6jhTp65OiAG5qwAib95SE2OGZj6
-         nH+0FojPkjHntv34O76aevt/ZzjBvB7Hu6JkBvBiXa4WSz+eDUxGzb1bbGagNqNwzEMp
-         EqjE7z9Ea3atmJISfGLwWhTZxCFLHhn3Ezn1haslV1EnD7FHrw2lxW02f0DN4InGoMLc
-         //Rv2YkLBmJKwgEMaKJlI+odrPCDZhEsPuJIFC2+VVWXXy+bXbvixpk62RMBZuLAtTYb
-         yRcx/EN4QeAWP5SArZS5LcsvzSg7n0vLHw08MAr6bozZsz3q1Ff5xpi4uV/LM+EvveOH
-         Rxbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/nVY7Pv0jOp1vE8P2rLSzVj8Q/vteoulCeG/Iqc/qo0=;
-        b=OW2gXmwEX6ZczeBc2nTgB8desbyy5ntO8v5awadDpJQrZbfB6nBhuLZ0f2vnBoDxWZ
-         9jRvuq7yIB00MYsGHeh3JqbhP4WlSIkuYZ3vPpJllrqW6jk6tFsCj5u7BrPOu1UNHl6n
-         iQjzCdRJt59wuQJef4hS/ktZDTJFzzu4vyF8ElKA90Al3CV4Wf0rJIgO1PVXHIB6QSL5
-         n9SzY6gcTva6+VJ9mpVcVRkhOXKAjhrOrTdE09OHwZt+eO1fj8lBm1474woHiHqBcwiO
-         MXW59oIxAm2BG+LkemxiB5OYjnw+2DiuZ1Job7NkQs5R5ruZZOmtHGD/ie04FPYCxOXs
-         pO8A==
-X-Gm-Message-State: AOAM530M4+NxBUKkkvyfzjxMbYON5BuIgjx1ezwKjzCLcj3pEs5SNL+b
-        XUip+B0sLdQO2e1e2xMZkSlPTeo702g=
-X-Google-Smtp-Source: ABdhPJzqbJ+3ZPvgt8XUva6AZh6mj0Ha7NHPXhdAi5NJNBMM9ZgzXXRGIeMWAceiG1AJV7MRKhR0/Q==
-X-Received: by 2002:a17:902:be14:b0:14f:ce67:d0a1 with SMTP id r20-20020a170902be1400b0014fce67d0a1mr950100pls.29.1646852963052;
-        Wed, 09 Mar 2022 11:09:23 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:500::2:db4e])
-        by smtp.gmail.com with ESMTPSA id g7-20020a056a000b8700b004e1bed5c3bfsm3968629pfj.68.2022.03.09.11.09.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 11:09:22 -0800 (PST)
-Date:   Wed, 9 Mar 2022 11:09:17 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, joao@overdrivepizza.com, hjl.tools@gmail.com,
-        jpoimboe@redhat.com, andrew.cooper3@citrix.com,
-        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
-        keescook@chromium.org, samitolvanen@google.com,
-        mark.rutland@arm.com, alyssa.milburn@intel.com, mbenes@suse.cz,
-        rostedt@goodmis.org, mhiramat@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-Message-ID: <20220309190917.w3tq72alughslanq@ast-mbp.dhcp.thefacebook.com>
-References: <20220308153011.021123062@infradead.org>
- <20220308200052.rpr4vkxppnxguirg@ast-mbp.dhcp.thefacebook.com>
- <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
- <YifZhUVoHLT/76fE@hirez.programming.kicks-ass.net>
- <Yif8nO2xg6QnVQfD@hirez.programming.kicks-ass.net>
+        with ESMTP id S237869AbiCITZ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 14:25:57 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE134D244;
+        Wed,  9 Mar 2022 11:24:57 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 002CE61946;
+        Wed,  9 Mar 2022 19:24:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B57CC340E8;
+        Wed,  9 Mar 2022 19:24:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646853896;
+        bh=GvosrddkShiAOjkzMTCCY4CHUr5jl7TCtyB0MWngh2k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RlMaQD5h/rIXEMhyS9zNch0tGam8paK0rySqa4+f/Bk3B6y7ylElfx3Qr5CP5ASVA
+         4lrDnDVbPtaI2PmarxD2B2n/YrdRikHIgyFUQGXRmBUZxfmHav3aF2y7Wo9hFpJ5f2
+         kxoO2vArXbfOKbJy8Q/W5cd7Ws4XuhDog5Rm5YiOSFTVvkfs9zroG+65KNUM5+VIR9
+         UA+cyixRZgo62krGtuaRKI2TkfQT4KpLyJB7rrrrYD9soCFbZKuJ1ZzvnVr7ZcYW0I
+         z0VUnz1OOF9maANSVU6pa6sWWWyVy8tKJnN6iTTYKLVmTuUfxkYn2ucExDVEwgv7Tk
+         NMXyQTIj4e2bA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 87E57403C8; Wed,  9 Mar 2022 16:24:53 -0300 (-03)
+Date:   Wed, 9 Mar 2022 16:24:53 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Kui-Feng Lee <kuifeng@fb.com>, dwarves@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH dwarves v4 1/4] dwarf_loader: Receive per-thread data on
+ worker threads.
+Message-ID: <Yij/BSPgMl8/HEhg@kernel.org>
+References: <20220126192039.2840752-1-kuifeng@fb.com>
+ <20220126192039.2840752-2-kuifeng@fb.com>
+ <CAEf4BzarN4L8U+hLnvZrNg0CR-oQr25OFs_W_tfW3aAHGAVFWw@mail.gmail.com>
+ <YfJudZmSS1yTkeP/@kernel.org>
+ <CAEf4Bza8xB+yFb4qGPvM7YwvHCb1zQ8yosGbKj63vcRM7d9aLg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Yif8nO2xg6QnVQfD@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAEf4Bza8xB+yFb4qGPvM7YwvHCb1zQ8yosGbKj63vcRM7d9aLg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 09, 2022 at 02:02:20AM +0100, Peter Zijlstra wrote:
-> On Tue, Mar 08, 2022 at 11:32:37PM +0100, Peter Zijlstra wrote:
-> > On Tue, Mar 08, 2022 at 11:01:04PM +0100, Peter Zijlstra wrote:
-> > > On Tue, Mar 08, 2022 at 12:00:52PM -0800, Alexei Starovoitov wrote:
-> > > > On Tue, Mar 08, 2022 at 04:30:11PM +0100, Peter Zijlstra wrote:
-> > > > > Hopefully last posting...
-> > > > > 
-> > > > > Since last time:
-> > > > > 
-> > > > >  - updated the ftrace_location() patch (naveen, rostedt)
-> > > > >  - added a few comments and clarifications (bpetkov)
-> > > > >  - disable jump-tables (joao)
-> > > > >  - verified clang-14-rc2 works
-> > > > >  - fixed a whole bunch of objtool unreachable insn issue
-> > > > >  - picked up a few more tags
-> > > > > 
-> > > > > Patches go on top of tip/master + arm64/for-next/linkage. Also available here:
-> > > > > 
-> > > > >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/wip.ibt
-> > > > 
-> > > > I've tried to test it.
-> > > 
-> > > I could cleanly do:
-> > > 
-> > > git checkout tip/master
-> > > git merge bpf-next/master
-> > > git merge queue/x86/wip.ibt
-> > > 
-> > > You want me to push out that result somewhere?
-> > 
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/ibt
-> > 
-> > includes bpf-next/master.
+Em Tue, Mar 08, 2022 at 03:45:03PM -0800, Andrii Nakryiko escreveu:
+> On Thu, Jan 27, 2022 at 11:22 AM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Wed, Jan 26, 2022 at 11:55:25AM -0800, Andrii Nakryiko escreveu:
+> > > On Wed, Jan 26, 2022 at 11:20 AM Kui-Feng Lee <kuifeng@fb.com> wrote:
+> > > >
+> > > > Add arguments to steal and thread_exit callbacks of conf_load to
+> > > > receive per-thread data.
+> > > >
+> > > > Signed-off-by: Kui-Feng Lee <kuifeng@fb.com>
+> > > > ---
+> > >
+> > > Please carry over acks you got on previous revisions, unless you did
+> > > some drastic changes to already acked patches.
+> >
+> > Yes, please do so.
+> >
+> > I'll collect them this time, no need to resend.
+> >
 > 
-> I just managed to run bpf selftests with that kernel on a tigerlake
-> platform.  Seems to still work.
+> Hey, Arnaldo!
+> 
+> Any idea when these patches will make it into master branch? I see
+> they are in tmp.master right now.
 
-Pulled above and it got even worse.
-With kasan and lockdep during qemu boot I see:
-[    1.147498] rcu_scheduler_active = 1, debug_locks = 1
-[    1.147498] 2 locks held by kthreadd/2:
-[    1.147498]  #0: ffff888100362b80 (&p->pi_lock){....}-{2:2}, at: task_rq_lock+0x71/0x380
-[    1.147498]  #1: ffff8881f6a3a218 (&rq->__lock){-...}-{2:2}, at: raw_spin_rq_lock_nested+0x2b/0x40
-[    1.147498]
-[    1.147498] stack backtrace:
-[    1.147498] CPU: 0 PID: 2 Comm: kthreadd Not tainted 5.17.0-rc7-02289-gc958c6aae879 #1
-[    1.147498] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-[    1.147498] Call Trace:
-[    1.147498]  <TASK>
-[    1.147498]  dump_stack_lvl+0x48/0x5b
-[    1.147498]  cpuacct_charge+0x2b3/0x390
-[    1.147498]  update_curr+0x33e/0x7d0
-[    1.147498]  dequeue_entity+0x28/0xdf0
-[    1.147498]  ? rcu_read_lock_bh_held+0xa0/0xa0
-[    1.147498]  dequeue_task_fair+0x1fa/0xd60
-[    1.147498]  __do_set_cpus_allowed+0x253/0x620
-[    1.147498]  __set_cpus_allowed_ptr_locked+0x25f/0x450
-[    1.147498]  __set_cpus_allowed_ptr+0x7c/0xa0
-[    1.147498]  ? __set_cpus_allowed_ptr_locked+0x450/0x450
-[    1.147498]  ? _raw_spin_unlock_irqrestore+0x34/0x60
-[    1.147498]  ? lockdep_hardirqs_on+0x7d/0x100
-[    1.147498]  kthreadd+0x48/0x610
-[    1.147498]  ? _raw_spin_unlock_irq+0x28/0x50
-[    1.147498]  ? kthread_is_per_cpu+0xc0/0xc0
-[    1.147498]  ret_from_fork+0x1f/0x30
+I did some minor fixups to the cset comment and to the code in the
+'pahole --compile' new feature at the head of it and pushed all up,
+please check.
 
-[    6.698206] ======================================================
-[    6.698209] WARNING: possible circular locking dependency detected
-[    6.698211] 5.17.0-rc7-02289-gc958c6aae879 #1 Not tainted
-[    6.698213] ------------------------------------------------------
-[    6.698214] scsi_eh_1/401 is trying to acquire lock:
-[    6.698216] ffff888100360900 (&p->pi_lock){-.-.}-{2:2}, at: try_to_wake_up+0xb6/0x1570
-[    6.698241]
-[    6.698241] but task is already holding lock:
-[    6.698241] ffffffff854439f8 ((console_sem).lock){-...}-{2:2}, at: up+0x1b/0xe0
-[    6.698253]
-[    6.698253] which lock already depends on the new lock.
-[    6.698253]
-[    6.698254]
-[    6.698254] the existing dependency chain (in reverse order) is:
-[    6.698255]
-[    6.698255] -> #2 ((console_sem).lock){-...}-{2:2}:
-[    6.698259]        _raw_spin_lock_irqsave+0x3c/0x60
-[    6.698270]        down_trylock+0x17/0x70
-[    6.698274]        __down_trylock_console_sem+0x23/0x90
-[    6.698278]        console_trylock+0x17/0x70
-[    6.698281]        vprintk_emit+0x72/0x290
-[    6.698288]        _printk+0x9a/0xb4
-[    6.698296]        lockdep_rcu_suspicious+0x60/0x158
-[    6.698299]        cpuacct_charge+0x2b3/0x390
-[    6.698302]        update_curr+0x33e/0x7d0
-[    6.698306]        dequeue_entity+0x28/0xdf0
-[    6.698308]        dequeue_task_fair+0x1fa/0xd60
+- Arnaldo
+ 
+> > - Arnaldo
+> >
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > >
+> > > >  btf_loader.c   | 2 +-
+> > > >  ctf_loader.c   | 2 +-
+> > > >  dwarf_loader.c | 4 ++--
+> > > >  dwarves.h      | 5 +++--
+> > > >  pahole.c       | 3 ++-
+> > > >  pdwtags.c      | 3 ++-
+> > > >  pfunct.c       | 4 +++-
+> > > >  7 files changed, 14 insertions(+), 9 deletions(-)
+> > > >
+> > > > diff --git a/btf_loader.c b/btf_loader.c
+> > > > index 7a5b16ff393e..b61cadd55127 100644
+> > > > --- a/btf_loader.c
+> > > > +++ b/btf_loader.c
+> > > > @@ -624,7 +624,7 @@ static int cus__load_btf(struct cus *cus, struct conf_load *conf, const char *fi
+> > > >          * The app stole this cu, possibly deleting it,
+> > > >          * so forget about it
+> > > >          */
+> > > > -       if (conf && conf->steal && conf->steal(cu, conf))
+> > > > +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
+> > > >                 return 0;
+> > > >
+> > > >         cus__add(cus, cu);
+> > > > diff --git a/ctf_loader.c b/ctf_loader.c
+> > > > index 7c34739afdce..de6d4dbfce97 100644
+> > > > --- a/ctf_loader.c
+> > > > +++ b/ctf_loader.c
+> > > > @@ -722,7 +722,7 @@ int ctf__load_file(struct cus *cus, struct conf_load *conf,
+> > > >          * The app stole this cu, possibly deleting it,
+> > > >          * so forget about it
+> > > >          */
+> > > > -       if (conf && conf->steal && conf->steal(cu, conf))
+> > > > +       if (conf && conf->steal && conf->steal(cu, conf, NULL))
+> > > >                 return 0;
+> > > >
+> > > >         cus__add(cus, cu);
+> > > > diff --git a/dwarf_loader.c b/dwarf_loader.c
+> > > > index e30b03c1c541..bf9ea3765419 100644
+> > > > --- a/dwarf_loader.c
+> > > > +++ b/dwarf_loader.c
+> > > > @@ -2686,7 +2686,7 @@ static int cu__finalize(struct cu *cu, struct conf_load *conf)
+> > > >  {
+> > > >         cu__for_all_tags(cu, class_member__cache_byte_size, conf);
+> > > >         if (conf && conf->steal) {
+> > > > -               return conf->steal(cu, conf);
+> > > > +               return conf->steal(cu, conf, NULL);
+> > > >         }
+> > > >         return LSK__KEEPIT;
+> > > >  }
+> > > > @@ -2930,7 +2930,7 @@ static void *dwarf_cus__process_cu_thread(void *arg)
+> > > >                         goto out_abort;
+> > > >         }
+> > > >
+> > > > -       if (dcus->conf->thread_exit && dcus->conf->thread_exit() != 0)
+> > > > +       if (dcus->conf->thread_exit && dcus->conf->thread_exit(dcus->conf, NULL) != 0)
+> > > >                 goto out_abort;
+> > > >
+> > > >         return (void *)DWARF_CB_OK;
+> > > > diff --git a/dwarves.h b/dwarves.h
+> > > > index 52d162d67456..9a8e4de8843a 100644
+> > > > --- a/dwarves.h
+> > > > +++ b/dwarves.h
+> > > > @@ -48,8 +48,9 @@ struct conf_fprintf;
+> > > >   */
+> > > >  struct conf_load {
+> > > >         enum load_steal_kind    (*steal)(struct cu *cu,
+> > > > -                                        struct conf_load *conf);
+> > > > -       int                     (*thread_exit)(void);
+> > > > +                                        struct conf_load *conf,
+> > > > +                                        void *thr_data);
+> > > > +       int                     (*thread_exit)(struct conf_load *conf, void *thr_data);
+> > > >         void                    *cookie;
+> > > >         char                    *format_path;
+> > > >         int                     nr_jobs;
+> > > > diff --git a/pahole.c b/pahole.c
+> > > > index f3a51cb2fe74..f3eeaaca4cdf 100644
+> > > > --- a/pahole.c
+> > > > +++ b/pahole.c
+> > > > @@ -2799,7 +2799,8 @@ out:
+> > > >  static struct type_instance *header;
+> > > >
+> > > >  static enum load_steal_kind pahole_stealer(struct cu *cu,
+> > > > -                                          struct conf_load *conf_load)
+> > > > +                                          struct conf_load *conf_load,
+> > > > +                                          void *thr_data)
+> > > >  {
+> > > >         int ret = LSK__DELETE;
+> > > >
+> > > > diff --git a/pdwtags.c b/pdwtags.c
+> > > > index 2b5ba1bf6745..8b1d6f1c96cb 100644
+> > > > --- a/pdwtags.c
+> > > > +++ b/pdwtags.c
+> > > > @@ -72,7 +72,8 @@ static int cu__emit_tags(struct cu *cu)
+> > > >  }
+> > > >
+> > > >  static enum load_steal_kind pdwtags_stealer(struct cu *cu,
+> > > > -                                           struct conf_load *conf_load __maybe_unused)
+> > > > +                                           struct conf_load *conf_load __maybe_unused,
+> > > > +                                           void *thr_data __maybe_unused)
+> > > >  {
+> > > >         cu__emit_tags(cu);
+> > > >         return LSK__DELETE;
+> > > > diff --git a/pfunct.c b/pfunct.c
+> > > > index 5485622e639b..314915b774f4 100644
+> > > > --- a/pfunct.c
+> > > > +++ b/pfunct.c
+> > > > @@ -489,7 +489,9 @@ int elf_symtabs__show(char *filenames[])
+> > > >         return EXIT_SUCCESS;
+> > > >  }
+> > > >
+> > > > -static enum load_steal_kind pfunct_stealer(struct cu *cu, struct conf_load *conf_load __maybe_unused)
+> > > > +static enum load_steal_kind pfunct_stealer(struct cu *cu,
+> > > > +                                          struct conf_load *conf_load __maybe_unused,
+> > > > +                                          void *thr_data __maybe_unused)
+> > > >  {
+> > > >
+> > > >         if (function_name) {
+> > > > --
+> > > > 2.30.2
+> > > >
+> >
+> > --
+> >
+> > - Arnaldo
 
-Most of the time it hangs during the boot.
-I'm using gcc 8.5 and qemu -smp 8
+-- 
 
-With qemu -smp 1 it luckly boots.
-Then I run test_progs and see:
-Summary: 215/1115 PASSED, 4 SKIPPED, 18 FAILED
-All trampoline tests fail.
-Here is one:
-$ test_progs -t fentry
-test_fentry_fexit:PASS:fentry_skel_load 0 nsec
-test_fentry_fexit:PASS:fexit_skel_load 0 nsec
-test_fentry_fexit:PASS:fentry_attach 0 nsec
-test_fentry_fexit:FAIL:fexit_attach unexpected error: -1 (errno 19)
-#54 fentry_fexit:FAIL
-
-or
-
-./test_progs -t xdp_bpf
-test_xdp_bpf2bpf:PASS:test_xdp__open_and_load 0 nsec
-test_xdp_bpf2bpf:PASS:test_xdp_bpf2bpf__open 0 nsec
-test_xdp_bpf2bpf:PASS:test_xdp_bpf2bpf__load 0 nsec
-libbpf: prog 'trace_on_entry': failed to attach: Device or resource busy
-libbpf: prog 'trace_on_entry': failed to auto-attach: -16
-test_xdp_bpf2bpf:FAIL:test_xdp_bpf2bpf__attach unexpected error: -16 (errno 16)
-#225 xdp_bpf2bpf:FAIL
-
+- Arnaldo
