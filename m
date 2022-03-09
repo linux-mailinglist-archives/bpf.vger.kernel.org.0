@@ -2,233 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C354D38E8
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 19:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6174A4D396E
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 20:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbiCISgo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 9 Mar 2022 13:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
+        id S234526AbiCITEE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 14:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbiCISgn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 13:36:43 -0500
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9773F16F958
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 10:35:43 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 229IGTG7015746
-        for <bpf@vger.kernel.org>; Wed, 9 Mar 2022 10:35:43 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eq1c7g4xs-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 10:35:43 -0800
-Received: from twshared5730.23.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 9 Mar 2022 10:35:42 -0800
-Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
-        id 0976C1F22BF5; Wed,  9 Mar 2022 10:35:30 -0800 (PST)
-From:   Song Liu <song@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kernel-team@fb.com>, <edumazet@google.com>,
-        Song Liu <song@kernel.org>
-Subject: [PATCH v3 bpf-next] bpf: select proper size for bpf_prog_pack
-Date:   Wed, 9 Mar 2022 10:35:23 -0800
-Message-ID: <20220309183523.3308210-1-song@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        with ESMTP id S237183AbiCITEB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 14:04:01 -0500
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47014DA85A;
+        Wed,  9 Mar 2022 11:03:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646852580; x=1678388580;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=D0z9GoD253sfAGu6XuCPx0+iysd91jMKa61FyfjAFcw=;
+  b=MvrhtKVSzTDe+zXkNQDvG3G4bckL7kWAfkr1XbgxuYuU0gkaxGi0w4hB
+   kiKZTlBtW7ZUZeWYuANouzesEFOB+pne4Ur0X1JcUJKVAmqbq5FAJKuqS
+   YGY4nSsr5AMUu2rRx3S/f9pPWX+/1rK+YUk4e4wqkMUU7Koxx8NxYPTKm
+   Rm+n/2qDL2U3VKw5Rjn2gpPh6/1ia4d+680KpO8JAvkSqNDip6oOHmWkp
+   9GUz6kIDhk0yaTbRhw/DlCaZH6xfbOHy1PHtjk6lkIXRVuRNRUQBWGM79
+   9WCzPkKgk3N196Mu5tityt1flt2xEih8eRm4vwzRU4Fbl7kG/Y93djORa
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="341494160"
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; 
+   d="scan'208";a="341494160"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2022 11:02:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,168,1643702400"; 
+   d="scan'208";a="781188766"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by fmsmga006.fm.intel.com with ESMTP; 09 Mar 2022 11:02:58 -0800
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        netdev@vger.kernel.org, anthony.l.nguyen@intel.com,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, bpf@vger.kernel.org,
+        andrii@kernel.org, kpsingh@kernel.org, kafai@fb.com, yhs@fb.com,
+        songliubraving@fb.com,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kiran Bhandare <kiranx.bhandare@intel.com>
+Subject: [PATCH net-next 4/5] ice: avoid XDP checks in ice_clean_tx_irq()
+Date:   Wed,  9 Mar 2022 11:03:14 -0800
+Message-Id: <20220309190315.1380414-5-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20220309190315.1380414-1-anthony.l.nguyen@intel.com>
+References: <20220309190315.1380414-1-anthony.l.nguyen@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: vcLEJj_6IWnz883enQv7V38d32talDj2
-X-Proofpoint-ORIG-GUID: vcLEJj_6IWnz883enQv7V38d32talDj2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-09_07,2022-03-09_01,2022-02-23_01
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Using HPAGE_PMD_SIZE as the size for bpf_prog_pack is not ideal in some
-cases. Specifically, for NUMA systems, __vmalloc_node_range requires
-PMD_SIZE * num_online_nodes() to allocate huge pages. Also, if the system
-does not support huge pages (i.e., with cmdline option nohugevmalloc), it
-is better to use PAGE_SIZE packs.
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
-Add logic to select proper size for bpf_prog_pack. This solution is not
-ideal, as it makes assumption about the behavior of module_alloc and
-__vmalloc_node_range. However, it appears to be the easiest solution as
-it doesn't require changes in module_alloc and vmalloc code.
+Commit 9610bd988df9 ("ice: optimize XDP_TX workloads") introduced Tx IRQ
+cleaning routine dedicated for XDP rings. Currently it is impossible to
+call ice_clean_tx_irq() against XDP ring, so it is safe to drop
+ice_ring_is_xdp() calls in there.
 
-Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
-Signed-off-by: Song Liu <song@kernel.org>
-
+Reviewed-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Tested-by: Kiran Bhandare <kiranx.bhandare@intel.com>  (A Contingent Worker at Intel)
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 ---
-Changes v2 => v3:
-1. Remove a leftover debug change.
-2. Shuffle alloc_new_pack() for cleaner patch.
+ drivers/net/ethernet/intel/ice/ice_txrx.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-Changes v1 => v2:
-1. Fix case with first program > PAGE_SIZE. (Daniel)
-2. Add Fixes tag.
-3. Remove a inline to avoid netdev/source_inline error.
----
- kernel/bpf/core.c | 66 ++++++++++++++++++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ab630f773ec1..b793d7bcfa11 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -33,6 +33,7 @@
- #include <linux/extable.h>
- #include <linux/log2.h>
- #include <linux/bpf_verifier.h>
-+#include <linux/nodemask.h>
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 853f57a9589a..f9bf008471c9 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -223,8 +223,7 @@ static bool ice_clean_tx_irq(struct ice_tx_ring *tx_ring, int napi_budget)
+ 	struct ice_tx_buf *tx_buf;
  
- #include <asm/barrier.h>
- #include <asm/unaligned.h>
-@@ -814,15 +815,9 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
-  * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
-  * to host BPF programs.
-  */
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
--#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
--#else
--#define BPF_PROG_PACK_SIZE	PAGE_SIZE
--#endif
- #define BPF_PROG_CHUNK_SHIFT	6
- #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
- #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
--#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+ 	/* get the bql data ready */
+-	if (!ice_ring_is_xdp(tx_ring))
+-		netdev_txq_bql_complete_prefetchw(txring_txq(tx_ring));
++	netdev_txq_bql_complete_prefetchw(txring_txq(tx_ring));
  
- struct bpf_prog_pack {
- 	struct list_head list;
-@@ -830,30 +825,56 @@ struct bpf_prog_pack {
- 	unsigned long bitmap[];
- };
+ 	tx_buf = &tx_ring->tx_buf[i];
+ 	tx_desc = ICE_TX_DESC(tx_ring, i);
+@@ -313,10 +312,6 @@ static bool ice_clean_tx_irq(struct ice_tx_ring *tx_ring, int napi_budget)
+ 	tx_ring->next_to_clean = i;
  
--#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
- #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+ 	ice_update_tx_ring_stats(tx_ring, total_pkts, total_bytes);
+-
+-	if (ice_ring_is_xdp(tx_ring))
+-		return !!budget;
+-
+ 	netdev_tx_completed_queue(txring_txq(tx_ring), total_pkts, total_bytes);
  
-+static size_t bpf_prog_pack_size = -1;
-+
-+static int bpf_prog_chunk_count(void)
-+{
-+	WARN_ON_ONCE(bpf_prog_pack_size == -1);
-+	return bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE;
-+}
-+
- static DEFINE_MUTEX(pack_mutex);
- static LIST_HEAD(pack_list);
- 
-+static size_t select_bpf_prog_pack_size(void)
-+{
-+	size_t size;
-+	void *ptr;
-+
-+	size = PMD_SIZE * num_online_nodes();
-+	ptr = module_alloc(size);
-+
-+	/* Test whether we can get huge pages. If not just use PAGE_SIZE
-+	 * packs.
-+	 */
-+	if (!ptr || !is_vm_area_hugepages(ptr))
-+		size = PAGE_SIZE;
-+
-+	vfree(ptr);
-+	return size;
-+}
-+
- static struct bpf_prog_pack *alloc_new_pack(void)
- {
- 	struct bpf_prog_pack *pack;
- 
--	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
-+	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(bpf_prog_chunk_count())),
-+		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
--	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
-+	pack->ptr = module_alloc(bpf_prog_pack_size);
- 	if (!pack->ptr) {
- 		kfree(pack);
- 		return NULL;
- 	}
--	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
-+	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
- 	list_add_tail(&pack->list, &pack_list);
- 
- 	set_vm_flush_reset_perms(pack->ptr);
--	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
--	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-+	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
-+	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
- 	return pack;
- }
- 
-@@ -864,7 +885,11 @@ static void *bpf_prog_pack_alloc(u32 size)
- 	unsigned long pos;
- 	void *ptr = NULL;
- 
--	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-+	mutex_lock(&pack_mutex);
-+	if (bpf_prog_pack_size == -1)
-+		bpf_prog_pack_size = select_bpf_prog_pack_size();
-+
-+	if (size > bpf_prog_pack_size) {
- 		size = round_up(size, PAGE_SIZE);
- 		ptr = module_alloc(size);
- 		if (ptr) {
-@@ -872,13 +897,12 @@ static void *bpf_prog_pack_alloc(u32 size)
- 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
- 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
- 		}
--		return ptr;
-+		goto out;
- 	}
--	mutex_lock(&pack_mutex);
- 	list_for_each_entry(pack, &pack_list, list) {
--		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
-+		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
- 						 nbits, 0);
--		if (pos < BPF_PROG_CHUNK_COUNT)
-+		if (pos < bpf_prog_chunk_count())
- 			goto found_free_area;
- 	}
- 
-@@ -904,12 +928,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	unsigned long pos;
- 	void *pack_ptr;
- 
--	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
-+	if (hdr->size > bpf_prog_pack_size) {
- 		module_memfree(hdr);
- 		return;
- 	}
- 
--	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
-+	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size - 1));
- 	mutex_lock(&pack_mutex);
- 
- 	list_for_each_entry(tmp, &pack_list, list) {
-@@ -926,8 +950,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
- 	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
- 
- 	bitmap_clear(pack->bitmap, pos, nbits);
--	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
--				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
-+	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
-+				       bpf_prog_chunk_count(), 0) == 0) {
- 		list_del(&pack->list);
- 		module_memfree(pack->ptr);
- 		kfree(pack);
+ #define TX_WAKE_THRESHOLD ((s16)(DESC_NEEDED * 2))
 -- 
-2.30.2
+2.31.1
 
