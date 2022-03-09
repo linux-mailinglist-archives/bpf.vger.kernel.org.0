@@ -2,303 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F4F4D389F
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 19:21:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C354D38E8
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 19:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbiCISUB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 13:20:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
+        id S232909AbiCISgo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 9 Mar 2022 13:36:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbiCISUA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 13:20:00 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBD851E41
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 10:19:01 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id 15-20020a17090a098f00b001bef0376d5cso3025829pjo.5
-        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 10:19:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=b+36kVZ1eH5PrAKCZPHq/6t1l0kSLjZrSsqHo52p/gc=;
-        b=YaAM0kKpKNyog0nOM4LpTWfxvQm7eBvZSmTf372GHlXkpbn5Wfh+vAnoVJ64RDuxqO
-         o3ji8HtjLIPYxZyh3iPoWAi0ZHCiIjgaPKxSHS7e4+aFV8bm7fY6XfzGY1MsxTOLlDn4
-         d6oLZtBuRYyC/QaCRgw0VjP9vbMFblCt0ZTeIOs11T5PCRs/XH01lfT32h+Fg5MsJACT
-         IVWqu+V/cnikT6a6J8wgg6wRbL5MS5wmbwxKOt/BgJpiCfHFG5RFrvZ+ELO253RguktB
-         VEaIeuorazetYhtnji7l/TL16TYMuuy2og4r3ur66Guy6lMh40xCGZDTR/54bXtRjWWv
-         60Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b+36kVZ1eH5PrAKCZPHq/6t1l0kSLjZrSsqHo52p/gc=;
-        b=r1jD4n1eRbrcxzmVZ/9PzR1Jsku6oPZwAkC7ZcVYdZQ4rpGWx1ONZ1w1TCsPGjJmTp
-         7+zxDpH9YlrXbsBXzcpE5ZRO9cFiTARw2Vm4+ATZXP2A5DJnHXNNLmpu9liRX21iwJ9l
-         DwC+2I6YIUEYilHASl3SZibDrfNnXaLzVNDWFpavOt7kWyCC62W52aPKcW7RTGprWVq1
-         gedIrYY1z3C+pcywq4AXr43UeXUxUr2Gi4Xbv+Ah30YsDAbGLIljNEwjwCzj8R3RM4X8
-         A+4zg9Q3mSl0/+zk9zyJxKl1exZPuW+VULeqvm762nV0Xq7UAgAM+YWklXFJyeA4fkHn
-         Ebsg==
-X-Gm-Message-State: AOAM533H4ff5EsFq1Esooe93ClXXUCsLzjEDqLfIuUAte5GI6W/HuGSn
-        l7PU+UwBsAL2z9F5NsH7olSZEg==
-X-Google-Smtp-Source: ABdhPJxUJ6DmW4ZhilNw+HZY2kVwYjGWFeIawYHJDlOcnrsGSJmPBnG2yQNz2rWEiRM35qcfGa3+yQ==
-X-Received: by 2002:a17:90a:c68c:b0:1bf:a7c9:957a with SMTP id n12-20020a17090ac68c00b001bfa7c9957amr738367pjt.177.1646849940523;
-        Wed, 09 Mar 2022 10:19:00 -0800 (PST)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id d2-20020a056a0010c200b004f102a13040sm3834120pfu.19.2022.03.09.10.18.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 10:18:58 -0800 (PST)
-Date:   Wed, 9 Mar 2022 11:18:55 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v7 18/26] virtio: find_vqs() add arg sizes
-Message-ID: <20220309181855.GA1983245@p14s>
-References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
- <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
+        with ESMTP id S231774AbiCISgn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 13:36:43 -0500
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9773F16F958
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 10:35:43 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 229IGTG7015746
+        for <bpf@vger.kernel.org>; Wed, 9 Mar 2022 10:35:43 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eq1c7g4xs-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 10:35:43 -0800
+Received: from twshared5730.23.frc3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Wed, 9 Mar 2022 10:35:42 -0800
+Received: by devbig932.frc1.facebook.com (Postfix, from userid 4523)
+        id 0976C1F22BF5; Wed,  9 Mar 2022 10:35:30 -0800 (PST)
+From:   Song Liu <song@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kernel-team@fb.com>, <edumazet@google.com>,
+        Song Liu <song@kernel.org>
+Subject: [PATCH v3 bpf-next] bpf: select proper size for bpf_prog_pack
+Date:   Wed, 9 Mar 2022 10:35:23 -0800
+Message-ID: <20220309183523.3308210-1-song@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: vcLEJj_6IWnz883enQv7V38d32talDj2
+X-Proofpoint-ORIG-GUID: vcLEJj_6IWnz883enQv7V38d32talDj2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-09_07,2022-03-09_01,2022-02-23_01
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 08, 2022 at 08:35:10PM +0800, Xuan Zhuo wrote:
-> find_vqs() adds a new parameter sizes to specify the size of each vq
-> vring.
-> 
-> 0 means use the maximum size supported by the backend.
-> 
-> In the split scenario, the meaning of size is the largest size, because
-> it may be limited by memory, the virtio core will try a smaller size.
-> And the size is power of 2.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  arch/um/drivers/virtio_uml.c             |  2 +-
->  drivers/platform/mellanox/mlxbf-tmfifo.c |  3 ++-
->  drivers/remoteproc/remoteproc_virtio.c   |  2 +-
+Using HPAGE_PMD_SIZE as the size for bpf_prog_pack is not ideal in some
+cases. Specifically, for NUMA systems, __vmalloc_node_range requires
+PMD_SIZE * num_online_nodes() to allocate huge pages. Also, if the system
+does not support huge pages (i.e., with cmdline option nohugevmalloc), it
+is better to use PAGE_SIZE packs.
 
-For the remoteproc changes:
+Add logic to select proper size for bpf_prog_pack. This solution is not
+ideal, as it makes assumption about the behavior of module_alloc and
+__vmalloc_node_range. However, it appears to be the easiest solution as
+it doesn't require changes in module_alloc and vmalloc code.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Fixes: 57631054fae6 ("bpf: Introduce bpf_prog_pack allocator")
+Signed-off-by: Song Liu <song@kernel.org>
 
->  drivers/s390/virtio/virtio_ccw.c         |  2 +-
->  drivers/virtio/virtio_mmio.c             |  2 +-
->  drivers/virtio/virtio_pci_common.c       |  2 +-
->  drivers/virtio/virtio_pci_common.h       |  2 +-
->  drivers/virtio/virtio_pci_modern.c       |  5 +++--
->  drivers/virtio/virtio_vdpa.c             |  2 +-
->  include/linux/virtio_config.h            | 11 +++++++----
->  10 files changed, 19 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
-> index ba562d68dc04..055b91ccbe8a 100644
-> --- a/arch/um/drivers/virtio_uml.c
-> +++ b/arch/um/drivers/virtio_uml.c
-> @@ -998,7 +998,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
->  static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
->  		       const char * const names[], const bool *ctx,
-> -		       struct irq_affinity *desc)
-> +		       struct irq_affinity *desc, u32 sizes[])
->  {
->  	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
->  	int i, queue_idx = 0, rc;
-> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> index 38800e86ed8a..aea7aa218b22 100644
-> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> @@ -929,7 +929,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
->  					vq_callback_t *callbacks[],
->  					const char * const names[],
->  					const bool *ctx,
-> -					struct irq_affinity *desc)
-> +					struct irq_affinity *desc,
-> +					u32 sizes[])
->  {
->  	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
->  	struct mlxbf_tmfifo_vring *vring;
-> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-> index 70ab496d0431..3a167bec5b09 100644
-> --- a/drivers/remoteproc/remoteproc_virtio.c
-> +++ b/drivers/remoteproc/remoteproc_virtio.c
-> @@ -157,7 +157,7 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
->  				 vq_callback_t *callbacks[],
->  				 const char * const names[],
->  				 const bool * ctx,
-> -				 struct irq_affinity *desc)
-> +				 struct irq_affinity *desc, u32 sizes[])
->  {
->  	int i, ret, queue_idx = 0;
->  
-> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
-> index d35e7a3f7067..b74e08c71534 100644
-> --- a/drivers/s390/virtio/virtio_ccw.c
-> +++ b/drivers/s390/virtio/virtio_ccw.c
-> @@ -632,7 +632,7 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  			       vq_callback_t *callbacks[],
->  			       const char * const names[],
->  			       const bool *ctx,
-> -			       struct irq_affinity *desc)
-> +			       struct irq_affinity *desc, u32 sizes[])
->  {
->  	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
->  	unsigned long *indicatorp = NULL;
-> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> index a41abc8051b9..55d575f6ef2d 100644
-> --- a/drivers/virtio/virtio_mmio.c
-> +++ b/drivers/virtio/virtio_mmio.c
-> @@ -462,7 +462,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  		       vq_callback_t *callbacks[],
->  		       const char * const names[],
->  		       const bool *ctx,
-> -		       struct irq_affinity *desc)
-> +		       struct irq_affinity *desc, u32 sizes[])
->  {
->  	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
->  	int irq = platform_get_irq(vm_dev->pdev, 0);
-> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
-> index 863d3a8a0956..8e8fa7e5ad80 100644
-> --- a/drivers/virtio/virtio_pci_common.c
-> +++ b/drivers/virtio/virtio_pci_common.c
-> @@ -428,7 +428,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
->  int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  		struct virtqueue *vqs[], vq_callback_t *callbacks[],
->  		const char * const names[], const bool *ctx,
-> -		struct irq_affinity *desc)
-> +		struct irq_affinity *desc, u32 sizes[])
->  {
->  	int err;
->  
-> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
-> index 23f6c5c678d5..9dbf1d555dff 100644
-> --- a/drivers/virtio/virtio_pci_common.h
-> +++ b/drivers/virtio/virtio_pci_common.h
-> @@ -114,7 +114,7 @@ void vp_del_vqs(struct virtio_device *vdev);
->  int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  		struct virtqueue *vqs[], vq_callback_t *callbacks[],
->  		const char * const names[], const bool *ctx,
-> -		struct irq_affinity *desc);
-> +		struct irq_affinity *desc, u32 sizes[]);
->  const char *vp_bus_name(struct virtio_device *vdev);
->  
->  /* Setup the affinity for a virtqueue:
-> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
-> index 3c67d3607802..342795175c29 100644
-> --- a/drivers/virtio/virtio_pci_modern.c
-> +++ b/drivers/virtio/virtio_pci_modern.c
-> @@ -343,11 +343,12 @@ static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  			      struct virtqueue *vqs[],
->  			      vq_callback_t *callbacks[],
->  			      const char * const names[], const bool *ctx,
-> -			      struct irq_affinity *desc)
-> +			      struct irq_affinity *desc, u32 sizes[])
->  {
->  	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
->  	struct virtqueue *vq;
-> -	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
-> +	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc,
-> +			     sizes);
->  
->  	if (rc)
->  		return rc;
-> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
-> index 7767a7f0119b..ee08d01ee8b1 100644
-> --- a/drivers/virtio/virtio_vdpa.c
-> +++ b/drivers/virtio/virtio_vdpa.c
-> @@ -268,7 +268,7 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  				vq_callback_t *callbacks[],
->  				const char * const names[],
->  				const bool *ctx,
-> -				struct irq_affinity *desc)
-> +				struct irq_affinity *desc, u32 sizes[])
->  {
->  	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
->  	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
-> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
-> index 0b81fbe17c85..5157524d8036 100644
-> --- a/include/linux/virtio_config.h
-> +++ b/include/linux/virtio_config.h
-> @@ -57,6 +57,7 @@ struct virtio_shm_region {
->   *		include a NULL entry for vqs that do not need a callback
->   *	names: array of virtqueue names (mainly for debugging)
->   *		include a NULL entry for vqs unused by driver
-> + *	sizes: array of virtqueue sizes
->   *	Returns 0 on success or error status
->   * @del_vqs: free virtqueues found by find_vqs().
->   * @get_features: get the array of feature bits for this device.
-> @@ -98,7 +99,8 @@ struct virtio_config_ops {
->  	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
->  			struct virtqueue *vqs[], vq_callback_t *callbacks[],
->  			const char * const names[], const bool *ctx,
-> -			struct irq_affinity *desc);
-> +			struct irq_affinity *desc,
-> +			u32 sizes[]);
->  	void (*del_vqs)(struct virtio_device *);
->  	u64 (*get_features)(struct virtio_device *vdev);
->  	int (*finalize_features)(struct virtio_device *vdev);
-> @@ -205,7 +207,7 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
->  	const char *names[] = { n };
->  	struct virtqueue *vq;
->  	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
-> -					 NULL);
-> +					 NULL, NULL);
->  	if (err < 0)
->  		return ERR_PTR(err);
->  	return vq;
-> @@ -217,7 +219,8 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
->  			const char * const names[],
->  			struct irq_affinity *desc)
->  {
-> -	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
-> +	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
-> +				      desc, NULL);
->  }
->  
->  static inline
-> @@ -227,7 +230,7 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
->  			struct irq_affinity *desc)
->  {
->  	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
-> -				      desc);
-> +				      desc, NULL);
->  }
->  
->  /**
-> -- 
-> 2.31.0
-> 
+---
+Changes v2 => v3:
+1. Remove a leftover debug change.
+2. Shuffle alloc_new_pack() for cleaner patch.
+
+Changes v1 => v2:
+1. Fix case with first program > PAGE_SIZE. (Daniel)
+2. Add Fixes tag.
+3. Remove a inline to avoid netdev/source_inline error.
+---
+ kernel/bpf/core.c | 66 ++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 45 insertions(+), 21 deletions(-)
+
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ab630f773ec1..b793d7bcfa11 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -33,6 +33,7 @@
+ #include <linux/extable.h>
+ #include <linux/log2.h>
+ #include <linux/bpf_verifier.h>
++#include <linux/nodemask.h>
+ 
+ #include <asm/barrier.h>
+ #include <asm/unaligned.h>
+@@ -814,15 +815,9 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+  * allocator. The prog_pack allocator uses HPAGE_PMD_SIZE page (2MB on x86)
+  * to host BPF programs.
+  */
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-#define BPF_PROG_PACK_SIZE	HPAGE_PMD_SIZE
+-#else
+-#define BPF_PROG_PACK_SIZE	PAGE_SIZE
+-#endif
+ #define BPF_PROG_CHUNK_SHIFT	6
+ #define BPF_PROG_CHUNK_SIZE	(1 << BPF_PROG_CHUNK_SHIFT)
+ #define BPF_PROG_CHUNK_MASK	(~(BPF_PROG_CHUNK_SIZE - 1))
+-#define BPF_PROG_CHUNK_COUNT	(BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE)
+ 
+ struct bpf_prog_pack {
+ 	struct list_head list;
+@@ -830,30 +825,56 @@ struct bpf_prog_pack {
+ 	unsigned long bitmap[];
+ };
+ 
+-#define BPF_PROG_MAX_PACK_PROG_SIZE	BPF_PROG_PACK_SIZE
+ #define BPF_PROG_SIZE_TO_NBITS(size)	(round_up(size, BPF_PROG_CHUNK_SIZE) / BPF_PROG_CHUNK_SIZE)
+ 
++static size_t bpf_prog_pack_size = -1;
++
++static int bpf_prog_chunk_count(void)
++{
++	WARN_ON_ONCE(bpf_prog_pack_size == -1);
++	return bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE;
++}
++
+ static DEFINE_MUTEX(pack_mutex);
+ static LIST_HEAD(pack_list);
+ 
++static size_t select_bpf_prog_pack_size(void)
++{
++	size_t size;
++	void *ptr;
++
++	size = PMD_SIZE * num_online_nodes();
++	ptr = module_alloc(size);
++
++	/* Test whether we can get huge pages. If not just use PAGE_SIZE
++	 * packs.
++	 */
++	if (!ptr || !is_vm_area_hugepages(ptr))
++		size = PAGE_SIZE;
++
++	vfree(ptr);
++	return size;
++}
++
+ static struct bpf_prog_pack *alloc_new_pack(void)
+ {
+ 	struct bpf_prog_pack *pack;
+ 
+-	pack = kzalloc(sizeof(*pack) + BITS_TO_BYTES(BPF_PROG_CHUNK_COUNT), GFP_KERNEL);
++	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(bpf_prog_chunk_count())),
++		       GFP_KERNEL);
+ 	if (!pack)
+ 		return NULL;
+-	pack->ptr = module_alloc(BPF_PROG_PACK_SIZE);
++	pack->ptr = module_alloc(bpf_prog_pack_size);
+ 	if (!pack->ptr) {
+ 		kfree(pack);
+ 		return NULL;
+ 	}
+-	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
++	bitmap_zero(pack->bitmap, bpf_prog_pack_size / BPF_PROG_CHUNK_SIZE);
+ 	list_add_tail(&pack->list, &pack_list);
+ 
+ 	set_vm_flush_reset_perms(pack->ptr);
+-	set_memory_ro((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
+-	set_memory_x((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
++	set_memory_ro((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
++	set_memory_x((unsigned long)pack->ptr, bpf_prog_pack_size / PAGE_SIZE);
+ 	return pack;
+ }
+ 
+@@ -864,7 +885,11 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 	unsigned long pos;
+ 	void *ptr = NULL;
+ 
+-	if (size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	mutex_lock(&pack_mutex);
++	if (bpf_prog_pack_size == -1)
++		bpf_prog_pack_size = select_bpf_prog_pack_size();
++
++	if (size > bpf_prog_pack_size) {
+ 		size = round_up(size, PAGE_SIZE);
+ 		ptr = module_alloc(size);
+ 		if (ptr) {
+@@ -872,13 +897,12 @@ static void *bpf_prog_pack_alloc(u32 size)
+ 			set_memory_ro((unsigned long)ptr, size / PAGE_SIZE);
+ 			set_memory_x((unsigned long)ptr, size / PAGE_SIZE);
+ 		}
+-		return ptr;
++		goto out;
+ 	}
+-	mutex_lock(&pack_mutex);
+ 	list_for_each_entry(pack, &pack_list, list) {
+-		pos = bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
++		pos = bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
+ 						 nbits, 0);
+-		if (pos < BPF_PROG_CHUNK_COUNT)
++		if (pos < bpf_prog_chunk_count())
+ 			goto found_free_area;
+ 	}
+ 
+@@ -904,12 +928,12 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	unsigned long pos;
+ 	void *pack_ptr;
+ 
+-	if (hdr->size > BPF_PROG_MAX_PACK_PROG_SIZE) {
++	if (hdr->size > bpf_prog_pack_size) {
+ 		module_memfree(hdr);
+ 		return;
+ 	}
+ 
+-	pack_ptr = (void *)((unsigned long)hdr & ~(BPF_PROG_PACK_SIZE - 1));
++	pack_ptr = (void *)((unsigned long)hdr & ~(bpf_prog_pack_size - 1));
+ 	mutex_lock(&pack_mutex);
+ 
+ 	list_for_each_entry(tmp, &pack_list, list) {
+@@ -926,8 +950,8 @@ static void bpf_prog_pack_free(struct bpf_binary_header *hdr)
+ 	pos = ((unsigned long)hdr - (unsigned long)pack_ptr) >> BPF_PROG_CHUNK_SHIFT;
+ 
+ 	bitmap_clear(pack->bitmap, pos, nbits);
+-	if (bitmap_find_next_zero_area(pack->bitmap, BPF_PROG_CHUNK_COUNT, 0,
+-				       BPF_PROG_CHUNK_COUNT, 0) == 0) {
++	if (bitmap_find_next_zero_area(pack->bitmap, bpf_prog_chunk_count(), 0,
++				       bpf_prog_chunk_count(), 0) == 0) {
+ 		list_del(&pack->list);
+ 		module_memfree(pack->ptr);
+ 		kfree(pack);
+-- 
+2.30.2
+
