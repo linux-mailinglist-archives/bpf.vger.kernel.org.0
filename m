@@ -2,468 +2,316 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B364D2B06
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 09:56:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A82E4D2B27
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 10:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbiCII4h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 03:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S231638AbiCIJA5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 04:00:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbiCII4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 03:56:36 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2092.outbound.protection.outlook.com [40.107.223.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D752013D933
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 00:55:37 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BSQ7+9QFIPeJ8sqOShIZzkkvPorPk8DKRrS1YR1mT0M83EFyhaijTLwZD7I2PJ71orX6NaVqHUtOEkIhdufVRDMw4w9oYeT/I11QyYgWdVRq6by3y7qC0gY3Pn8/A8/Js9MUmEhIV+AslzyspKiJsygmWb4GHhSygFbUgw0X+EF/bZZJk2Qg4YyplMwaCOG7BgV8SqSgREGpmREa2wU7RLVs3/7TLcRpGCDp02hvrBJw+/WpkB/AUlqEUZCvKJK9MxiKKi0tO0ixNT4n5S+9sAacKFtIy1N9mlRBJ9YNDE3ax1+PCQFOE4n0p7OfNjzRdN8/GYXiwIYq0CJoXfkrHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WJBvCHpsUrI8bDn+T1mVVMoPMefCTetN6jacivydco8=;
- b=jL37Cv2t9j4nVQZL2AnfXMWkGluQyoR9EF5emq4Zz9VK7s1POk+CioQwxXULLBNRgq5J2/IWcBA8kKSxLKiBTUs+GcCSZWCiGcWUL++QLMNWjwno5j3BckYwWXUG9QkvMA4M0aW5ON/s/PPC8fD6vOp6rroiNTBrZ0C5OvxtTdkAnYuNBVanspCISqB0XQWe+j9Y9IA91m4yRtICGHnKrehCf7IzE6AS0x7cpMdEfzhMcfeq0/oHzWPVTgzZjy9srB6r8H934eAO5ZhlcNSxf47aPMi1UnYgJt2yZ/AWSAr8Web/XF1U+o3EyHQuyvHl+Zdq5ZgpQheLFSZVo9k+Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
- dkim=pass header.d=corigine.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WJBvCHpsUrI8bDn+T1mVVMoPMefCTetN6jacivydco8=;
- b=FonGiIN6IGZ2Vfekmx2gpDBf7ESdG/uvJ3LwlwSaZKtAREsx4n+K8Kz/MFaCBxEB+f3DkxKewMxiMoj1tLtvL/AoeS6457cxUTftlUWunmSc3wdSq9jErHUzDkpW3+axa6BX2W01anmdvNyrIt5r+hINYSuDeZ+dP+zvZGjBrT0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=corigine.com;
-Received: from DM6PR13MB4431.namprd13.prod.outlook.com (2603:10b6:5:1bb::21)
- by MW5PR13MB5416.namprd13.prod.outlook.com (2603:10b6:303:191::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.15; Wed, 9 Mar
- 2022 08:55:35 +0000
-Received: from DM6PR13MB4431.namprd13.prod.outlook.com
- ([fe80::e035:ce64:e29e:54f6]) by DM6PR13MB4431.namprd13.prod.outlook.com
- ([fe80::e035:ce64:e29e:54f6%5]) with mapi id 15.20.5061.020; Wed, 9 Mar 2022
- 08:55:34 +0000
-From:   =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>
-To:     bpf@vger.kernel.org, Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Simon Horman <simon.horman@corigine.com>, oss-drivers@corigine.com,
-        =?UTF-8?q?Niklas=20S=C3=B6derlund?= <niklas.soderlund@corigine.com>
-Subject: [v2,bpf-next] bpftool: Restore support for BPF offload-enabled feature probing
-Date:   Wed,  9 Mar 2022 09:54:52 +0100
-Message-Id: <20220309085452.298278-1-niklas.soderlund@corigine.com>
-X-Mailer: git-send-email 2.35.1
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: AM6PR10CA0060.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:209:80::37) To DM6PR13MB4431.namprd13.prod.outlook.com
- (2603:10b6:5:1bb::21)
+        with ESMTP id S231654AbiCIJAz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 04:00:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 456F543ED0
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 00:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646816394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x8yHVBEnyTtnmoISAFZcAjn3ZY8yz59tAyHTMglZYZI=;
+        b=Z30qzloSHz7g9XP5fbdEGcV+hOM4BF4a2S+7LJIEzVb5euIAbPGOaIDDpIJYtvgMhC9Ud4
+        fgB5IpiTH7/B0yVUFG4Z0QAyTSJjCerC2I0JyJjfrmufhbqnVrd4uqTFSexpMJ0FB63EpT
+        9Q0APXONqf7E6equOl2JItGcTacmKPg=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-623-wQf1TMwDMESmViHogvK_EQ-1; Wed, 09 Mar 2022 03:59:53 -0500
+X-MC-Unique: wQf1TMwDMESmViHogvK_EQ-1
+Received: by mail-pf1-f200.google.com with SMTP id t134-20020a62788c000000b004e1367caccaso1185960pfc.14
+        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 00:59:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=x8yHVBEnyTtnmoISAFZcAjn3ZY8yz59tAyHTMglZYZI=;
+        b=2Qg3iBTkwGidP56jx6SShWGjCoA/MgdVnYU5PzUQ6NaoF11wlWnMcan6ZAsjLhNTGp
+         olHPoGMo4SXwVMORaK2u3aSl3c1mmfpPbWgCzNEa0O/6J5fkL4vG8722nVHXhp5iMnlk
+         znTSh1Nky8f/P4dFF0W0jRkXfvKVXCDo3+KkMhnLkcJcm2B3+5sZIjZ5ij+opgTfMyEF
+         NYZ3oma/03I7rD8A4EHxK8XSCRNsFw2CdqqIuHWTr6PAuDhvEkdnaDxRd35T9yKREfD5
+         /CD3VdeF+B9mP2of2ioHkhQdjFrLYqOq4lnC/Dhplwq0MgkHWxTYYTl831vvpw6QZVUL
+         RVzQ==
+X-Gm-Message-State: AOAM532b9MT2q/Uerl+IPuKzXYJGqEkj9fXpWfwxUiTdtXVwJmrNJeS7
+        Wn6axh2lSOoHNVcIfToYj0NngGY5hHl5XdFHfbUV5p+5rhqN/KnQV7iwoDhD7WZFYR9IhJlG5Sl
+        imA/EI6+JToFM
+X-Received: by 2002:a17:90b:1809:b0:1bf:59c:d20b with SMTP id lw9-20020a17090b180900b001bf059cd20bmr9235618pjb.220.1646816391388;
+        Wed, 09 Mar 2022 00:59:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwSrlkUIBjCBgVqqB4dCvGZjp1SQaxgp6LwdOXPgvGUIxaBt8outGkN6uQDPlBdJyjqOxHfHg==
+X-Received: by 2002:a17:90b:1809:b0:1bf:59c:d20b with SMTP id lw9-20020a17090b180900b001bf059cd20bmr9235599pjb.220.1646816391077;
+        Wed, 09 Mar 2022 00:59:51 -0800 (PST)
+Received: from [10.72.12.183] ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id w6-20020a056a0014c600b004f7374ac18dsm1959931pfu.195.2022.03.09.00.59.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Mar 2022 00:59:50 -0800 (PST)
+Message-ID: <0fb55c37-69a6-a700-504b-e8d78b86fed4@redhat.com>
+Date:   Wed, 9 Mar 2022 16:59:32 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ed1f5d64-54e4-4289-f6c5-08da01aa92cd
-X-MS-TrafficTypeDiagnostic: MW5PR13MB5416:EE_
-X-Microsoft-Antispam-PRVS: <MW5PR13MB5416A99FAC65B1B98BC0FE09E70A9@MW5PR13MB5416.namprd13.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jr1v4+EqmxR5YYXTvdlyNaI5HKM+scY0KqTasN04hKtU/FIMq559zQzAE5ku7gOcj3DX4z+CvTfH6gOUVkU/rxOAim1Jo+uDLpavIme8ydcood6/oOkaGmVy86xflArH8x89tA0YjLZfrSdO+n3kmBy7QTnylBzbOsNDKCQcuc2S3v9G22f1vD3sQ/nGPRU4xEkYr/N0HQdMq5w4QkZSnWHr1MUTeUdAKekNZXnfgbQalqxB3D3spb9xk1jVIe8WOiSSYEmW9gWtc0vyEUm4/J/BqLP+MMIDClU3kEDJwkwGaPnek+kxBFvMQfiTkvJRWSJrrR0dCZBHnnQy3Gd6czbrUaeaKKE02kJ78ASdbAAidOfToQjPryZCaUlyZTNX6dwS4Iqdf2/xKZ+29WgwUSfCuX+tssvI1dheCNBz8xEj3Dv/kRbGicPIHkrtd4vNzj9G1eUcgVpvqzOdXQ2r0MmA63Ec7M2PmGONFucylbgK1ai1SLhCR3iK7ZM9ofrMQv7RLQxDkZidY3XR0AjlCqDKjvZuxf1Qu4qmMiG/71vssh1GxlibbCPdeLz3/1qV8kqkoYFKS3kB0fD2rV/uPsKQCTJOrA66fONS8QhrSinpF1ypWKfF4+ClvPs1gakzBsuHZt3Mk0ycwfVWT4WVgGBAdD8JyoUkM5NPvDFq+Hpd1TiNdchpXWfwAIJbn6/PHaOcqCCtCNlOwjO4lQ8a24+/Hq1L7ixXWrdVKMZejlM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR13MB4431.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(376002)(346002)(39840400004)(396003)(136003)(366004)(6486002)(66556008)(1076003)(8676002)(4326008)(66946007)(54906003)(110136005)(316002)(83380400001)(508600001)(36756003)(6512007)(5660300002)(66574015)(66476007)(2906002)(186003)(2616005)(107886003)(26005)(6666004)(8936002)(52116002)(6506007)(38100700002)(38350700002)(86362001)(309714004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M1Z1MDM0aTRpS0JIaFJqZXRpRkhkNUtKVEFQOW5NUm1sNCs4ZUYwcjJlc3Fr?=
- =?utf-8?B?RUZXK2U5T0dZU0VEN282MTcyOUNyT0VOb05LVkJrbnpUeUVoQnRXZjNyMmtC?=
- =?utf-8?B?c0x3VkxjWWRNbEVuNlUrV0c5K0YxREZCTXdtdnNhTUpzNWhhMy96b1NIeC81?=
- =?utf-8?B?RWVPQmcrVGFoWERnK21aRlpLL0FZNTRRODBCUnowNEVOZ1hIZGZWN3JVWklB?=
- =?utf-8?B?TzBTdEFFTDN6WERVdEZKZDhWbzlSWGJ5aDQyc3BDRjNsUzJPRnhMZUZxNjNH?=
- =?utf-8?B?RGpIZ3JscGNrQUJHK2kzTktEVFVEb21nekhSVTZ3NEthQXN3Yk5wdXJHbkRI?=
- =?utf-8?B?amI2LzlvVWRPUGVGRmdEQzFWMUVacUpYeW5ac2xRRXczeHRyTVpJNzZxSTlp?=
- =?utf-8?B?YW80dlhkT2Vqd0xFOTZFaWNTdlZPL2ZmbFhKc3JYc0Vad1JyODVkNkVtaHhh?=
- =?utf-8?B?NmM1OGhMbEkrbDF0M2g1a2htUDdmUEpibFdWaXdMNVY2dlcwem9nbXRkUEpm?=
- =?utf-8?B?Q2Z0R2Fxb21QM1pJbFJ4VTBFczdFeEdyazFBQUFNbkc4U0VkcXJHWStsZkMr?=
- =?utf-8?B?dWxNa2p6eE9RWnZ6MTY3SHQydmVpdCtLc0R5VWlSZXE2dXRBV05iajlFL3FQ?=
- =?utf-8?B?cUJuQm1QcFBLMlI5ZnZkZ3BFWk9qdjNFaVR6V3E5MFFtZjMwTFBURlAreWk4?=
- =?utf-8?B?LzRRcjdLaS96NjIwQ1YvSEZVLzV4T0pPQ09tSTkyNVZGRy8zSXBFQUtjRXlH?=
- =?utf-8?B?dEJ2OUQwdUdEcVVKTml6STZsNlJQYU5wQUZvTTBxcU1QYjg3a0QraUJEVlcr?=
- =?utf-8?B?T3Z2UG45Y3JKSVZhc3NwM0pSUEEyYW1QQkR5NUc4N1IzUmNIT1hzS3libWJV?=
- =?utf-8?B?SnN1K3puaWdnRms4YlJIaythbDhEVUZTZjhqOXM1aCthWmFvVS9xOW1xV3lj?=
- =?utf-8?B?TGhuVkpnUTNpaFg0a0pzdkREc1FXclpDQVlzdGZoMDFxb2hjQjAzOXZ2b0NM?=
- =?utf-8?B?dkJFTGtQK3RVMWtYRWN1OXUwT2dyYjZEeW1tcmcxaFlJNHg4STM1WllPR1ZI?=
- =?utf-8?B?b0cyNTlQbjhvOUZ6c1R5VHN4bmk4ek1jb3JYcjk1N3FONjN5eWQvMVFlNStw?=
- =?utf-8?B?dmlPK1FESkJyb25aZzJYSDFXckN5S09ObVB5TU5oWVJoOGdyZEduOVJxWUE1?=
- =?utf-8?B?ZUtBYm1Ed1RPRDBpc0dnMlA2d0poM09ZSWJCRDdXbDk4Zm52eTdvZzdvY2Ew?=
- =?utf-8?B?RjNORExScnB2RnBLRGxPeEZIYjhuWGVsNDU4UGhtRHU3MnlzT2FnN0hWZEpW?=
- =?utf-8?B?aTlDMk5MUnRBZ3ZDWkErUnJtdytkYXJpZk9rbk50aldjZmtTU1BhRXE5RU5C?=
- =?utf-8?B?bmxDcjFScVIyNUY1SWdXOUYxdGVCY2VmMlkrZEpMUDduYkc0S05CREZRamJL?=
- =?utf-8?B?RGIrZjhVRklVdTdOa2cwSVhpVU96WWh1ZVBSbW11ZmR1SDBDYlhZcDFsaGpU?=
- =?utf-8?B?YUVkRHJWOGYvK2hJaGNDR1JUU05ITWMrQlAvOWo2LzEwTjJQVFpQeEo5a2NQ?=
- =?utf-8?B?U0RobW5GZFlTTG96WFpCbmlkQU5RbFJFbmNDQXlLYzNLeVk0SklldWZnNHdO?=
- =?utf-8?B?bE5YNVBJVytEaWd0OG9zMmRxMHpKRWdTdlJUREZYQjZJTTFCa2lhbFIxSGhl?=
- =?utf-8?B?cnNMUEtkYXlwdWRvc1NhYmtNbWpPSFFmN2Z0SWJLN2c5SkcwS1BxS2NZQjdh?=
- =?utf-8?B?M3NGMjI5L0FUeWJpWVFER0g0UVY0SVFMYzVvT3UzVzZoVzhWUzVQc0kwVitu?=
- =?utf-8?B?bGw5SE1VVGs2VEo5K2JRd0kxY3R1dGdnd3hsOWd1dEVkZ1FKVEJBb1J3SDJk?=
- =?utf-8?B?MzZhazJ6b085SmxoVjRCUTl4ZHFlMzJHVVJ2NTdhOW4zY1BIMk0yY1hoR2hB?=
- =?utf-8?B?SnVpeVFXaXZyTXhoR2RNRXU1Sm9YWCs1dGVVdHR6ZVBXYW9IaTlJdlZEQlhM?=
- =?utf-8?B?VnlDV0VJOFNBPT0=?=
-X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed1f5d64-54e4-4289-f6c5-08da01aa92cd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR13MB4431.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Mar 2022 08:55:34.8198
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hADcsLDXahShlNyjD15sXmsDppSWg5oL2KvoQ1BezCXzZZ3Br0N51erIVjdWG6nBpHd4X4Vk4618RBbX+F1b1OBqyyiIzAGarT1w4tcRQBo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR13MB5416
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.6.1
+Subject: Re: [PATCH v7 18/26] virtio: find_vqs() add arg sizes
+Content-Language: en-US
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20220308123518.33800-19-xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Commit 1a56c18e6c2e4e74 ("bpftool: Stop supporting BPF offload-enabled
-feature probing") removed the support to probe for BPF offload features.
-This is still something that is useful for NFP NIC that can support
-offloading of BPF programs.
 
-The reason for the dropped support was that libbpf starting with v1.0
-would drop support for passing the ifindex to the BPF prog/map/helper
-feature probing APIs. In order to keep this useful feature for NFP
-restore the functionality by moving it directly into bpftool.
+在 2022/3/8 下午8:35, Xuan Zhuo 写道:
+> find_vqs() adds a new parameter sizes to specify the size of each vq
+> vring.
+>
+> 0 means use the maximum size supported by the backend.
+>
+> In the split scenario, the meaning of size is the largest size, because
+> it may be limited by memory, the virtio core will try a smaller size.
+> And the size is power of 2.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   arch/um/drivers/virtio_uml.c             |  2 +-
+>   drivers/platform/mellanox/mlxbf-tmfifo.c |  3 ++-
+>   drivers/remoteproc/remoteproc_virtio.c   |  2 +-
+>   drivers/s390/virtio/virtio_ccw.c         |  2 +-
+>   drivers/virtio/virtio_mmio.c             |  2 +-
+>   drivers/virtio/virtio_pci_common.c       |  2 +-
+>   drivers/virtio/virtio_pci_common.h       |  2 +-
+>   drivers/virtio/virtio_pci_modern.c       |  5 +++--
+>   drivers/virtio/virtio_vdpa.c             |  2 +-
+>   include/linux/virtio_config.h            | 11 +++++++----
+>   10 files changed, 19 insertions(+), 14 deletions(-)
+>
+> diff --git a/arch/um/drivers/virtio_uml.c b/arch/um/drivers/virtio_uml.c
+> index ba562d68dc04..055b91ccbe8a 100644
+> --- a/arch/um/drivers/virtio_uml.c
+> +++ b/arch/um/drivers/virtio_uml.c
+> @@ -998,7 +998,7 @@ static struct virtqueue *vu_setup_vq(struct virtio_device *vdev,
+>   static int vu_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   		       struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>   		       const char * const names[], const bool *ctx,
+> -		       struct irq_affinity *desc)
+> +		       struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	struct virtio_uml_device *vu_dev = to_virtio_uml_device(vdev);
+>   	int i, queue_idx = 0, rc;
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index 38800e86ed8a..aea7aa218b22 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -929,7 +929,8 @@ static int mlxbf_tmfifo_virtio_find_vqs(struct virtio_device *vdev,
+>   					vq_callback_t *callbacks[],
+>   					const char * const names[],
 
-The code restored is a simplified version of the code that existed in
-libbpf which supposed passing the ifindex. The simplification is that it
-only targets the cases where ifindex is given and call into libbpf for
-the cases where it's not.
 
-Before restoring support for probing offload features:
+Nit: Let's be consistent here, e.g move sizes before ctx (this is what 
+next patch did and seems cleaner).
 
-  # bpftool feature probe dev ens4np0
-  Scanning system call availability...
-  bpf() syscall is available
+Thanks
 
-  Scanning eBPF program types...
 
-  Scanning eBPF map types...
-
-  Scanning eBPF helper functions...
-  eBPF helpers supported for program type sched_cls:
-  eBPF helpers supported for program type xdp:
-
-  Scanning miscellaneous eBPF features...
-  Large program size limit is NOT available
-  Bounded loop support is NOT available
-  ISA extension v2 is NOT available
-  ISA extension v3 is NOT available
-
-With support for probing offload features restored:
-
-  # bpftool feature probe dev ens4np0
-  Scanning system call availability...
-  bpf() syscall is available
-
-  Scanning eBPF program types...
-  eBPF program_type sched_cls is available
-  eBPF program_type xdp is available
-
-  Scanning eBPF map types...
-  eBPF map_type hash is available
-  eBPF map_type array is available
-  eBPF map_type prog_array is NOT available
-  eBPF map_type perf_event_array is NOT available
-  eBPF map_type percpu_hash is NOT available
-  eBPF map_type percpu_array is NOT available
-  eBPF map_type stack_trace is NOT available
-  eBPF map_type cgroup_array is NOT available
-  eBPF map_type lru_hash is NOT available
-  eBPF map_type lru_percpu_hash is NOT available
-  eBPF map_type lpm_trie is NOT available
-  eBPF map_type array_of_maps is NOT available
-  eBPF map_type hash_of_maps is NOT available
-  eBPF map_type devmap is NOT available
-  eBPF map_type sockmap is NOT available
-  eBPF map_type cpumap is NOT available
-  eBPF map_type xskmap is NOT available
-  eBPF map_type sockhash is NOT available
-  eBPF map_type cgroup_storage is NOT available
-  eBPF map_type reuseport_sockarray is NOT available
-  eBPF map_type percpu_cgroup_storage is NOT available
-  eBPF map_type queue is NOT available
-  eBPF map_type stack is NOT available
-  eBPF map_type sk_storage is NOT available
-  eBPF map_type devmap_hash is NOT available
-  eBPF map_type struct_ops is NOT available
-  eBPF map_type ringbuf is NOT available
-  eBPF map_type inode_storage is NOT available
-  eBPF map_type task_storage is NOT available
-  eBPF map_type bloom_filter is NOT available
-
-  Scanning eBPF helper functions...
-  eBPF helpers supported for program type sched_cls:
-  	- bpf_map_lookup_elem
-  	- bpf_get_prandom_u32
-  	- bpf_perf_event_output
-  eBPF helpers supported for program type xdp:
-  	- bpf_map_lookup_elem
-  	- bpf_get_prandom_u32
-  	- bpf_perf_event_output
-  	- bpf_xdp_adjust_head
-  	- bpf_xdp_adjust_tail
-
-  Scanning miscellaneous eBPF features...
-  Large program size limit is NOT available
-  Bounded loop support is NOT available
-  ISA extension v2 is NOT available
-  ISA extension v3 is NOT available
-
-Signed-off-by: Niklas Söderlund <niklas.soderlund@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@corigine.com>
----
-* Changes since v1
-- Drop unneeded logic in probe_prog_load_ifindex() that was kept for
-  incorrect reasons while resurrecting the functionality from the more
-  generic use-case in libbpf.
-- Change the return type of probe_prog_load_ifindex() from int to bool
-  and perform all error checks directly.
----
- tools/bpf/bpftool/feature.c | 166 ++++++++++++++++++++++++++++++++----
- 1 file changed, 151 insertions(+), 15 deletions(-)
-
-diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-index 9c894b1447de8cf0..85696339e2500dbe 100644
---- a/tools/bpf/bpftool/feature.c
-+++ b/tools/bpf/bpftool/feature.c
-@@ -3,6 +3,7 @@
- 
- #include <ctype.h>
- #include <errno.h>
-+#include <fcntl.h>
- #include <string.h>
- #include <unistd.h>
- #include <net/if.h>
-@@ -45,6 +46,11 @@ static bool run_as_unprivileged;
- 
- /* Miscellaneous utility functions */
- 
-+static bool grep(const char *buffer, const char *pattern)
-+{
-+	return !!strstr(buffer, pattern);
-+}
-+
- static bool check_procfs(void)
- {
- 	struct statfs st_fs;
-@@ -135,6 +141,32 @@ static void print_end_section(void)
- 
- /* Probing functions */
- 
-+static int get_vendor_id(int ifindex)
-+{
-+	char ifname[IF_NAMESIZE], path[64], buf[8];
-+	ssize_t len;
-+	int fd;
-+
-+	if (!if_indextoname(ifindex, ifname))
-+		return -1;
-+
-+	snprintf(path, sizeof(path), "/sys/class/net/%s/device/vendor", ifname);
-+
-+	fd = open(path, O_RDONLY | O_CLOEXEC);
-+	if (fd < 0)
-+		return -1;
-+
-+	len = read(fd, buf, sizeof(buf));
-+	close(fd);
-+	if (len < 0)
-+		return -1;
-+	if (len >= (ssize_t)sizeof(buf))
-+		return -1;
-+	buf[len] = '\0';
-+
-+	return strtol(buf, NULL, 0);
-+}
-+
- static int read_procfs(const char *path)
- {
- 	char *endptr, *line = NULL;
-@@ -478,6 +510,50 @@ static bool probe_bpf_syscall(const char *define_prefix)
- 	return res;
- }
- 
-+static bool
-+probe_prog_load_ifindex(enum bpf_prog_type prog_type,
-+			const struct bpf_insn *insns, size_t insns_cnt,
-+			char *log_buf, size_t log_buf_sz,
-+			__u32 ifindex)
-+{
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts,
-+		    .log_buf = log_buf,
-+		    .log_size = log_buf_sz,
-+		    .log_level = log_buf ? 1 : 0,
-+		    .prog_ifindex = ifindex,
-+		   );
-+	int fd;
-+
-+	errno = 0;
-+	fd = bpf_prog_load(prog_type, NULL, "GPL", insns, insns_cnt, &opts);
-+	if (fd >= 0)
-+		close(fd);
-+
-+	return fd >= 0 && errno != EINVAL && errno != EOPNOTSUPP;
-+}
-+
-+static bool probe_prog_type_ifindex(enum bpf_prog_type prog_type, __u32 ifindex)
-+{
-+	struct bpf_insn insns[2] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN()
-+	};
-+
-+	switch (prog_type) {
-+	case BPF_PROG_TYPE_SCHED_CLS:
-+		/* nfp returns -EINVAL on exit(0) with TC offload */
-+		insns[0].imm = 2;
-+		break;
-+	case BPF_PROG_TYPE_XDP:
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	return probe_prog_load_ifindex(prog_type, insns, ARRAY_SIZE(insns),
-+				       NULL, 0, ifindex);
-+}
-+
- static void
- probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
- 		const char *define_prefix, __u32 ifindex)
-@@ -488,11 +564,19 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
- 	bool res;
- 
- 	if (ifindex) {
--		p_info("BPF offload feature probing is not supported");
--		return;
-+		switch (prog_type) {
-+		case BPF_PROG_TYPE_SCHED_CLS:
-+		case BPF_PROG_TYPE_XDP:
-+			break;
-+		default:
-+			return;
-+		}
-+
-+		res = probe_prog_type_ifindex(prog_type, ifindex);
-+	} else {
-+		res = libbpf_probe_bpf_prog_type(prog_type, NULL);
- 	}
- 
--	res = libbpf_probe_bpf_prog_type(prog_type, NULL);
- #ifdef USE_LIBCAP
- 	/* Probe may succeed even if program load fails, for unprivileged users
- 	 * check that we did not fail because of insufficient permissions
-@@ -521,6 +605,35 @@ probe_prog_type(enum bpf_prog_type prog_type, bool *supported_types,
- 			   define_prefix);
- }
- 
-+static bool probe_map_type_ifindex(enum bpf_map_type map_type, __u32 ifindex)
-+{
-+	LIBBPF_OPTS(bpf_map_create_opts, opts);
-+	int key_size, value_size, max_entries;
-+	int fd;
-+
-+	opts.map_ifindex = ifindex;
-+
-+	key_size	= sizeof(__u32);
-+	value_size	= sizeof(__u32);
-+	max_entries	= 1;
-+
-+	switch (map_type) {
-+	case BPF_MAP_TYPE_HASH:
-+	case BPF_MAP_TYPE_ARRAY:
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	fd = bpf_map_create(map_type, NULL, key_size, value_size, max_entries,
-+			    &opts);
-+
-+	if (fd >= 0)
-+		close(fd);
-+
-+	return fd >= 0;
-+}
-+
- static void
- probe_map_type(enum bpf_map_type map_type, const char *define_prefix,
- 	       __u32 ifindex)
-@@ -530,12 +643,10 @@ probe_map_type(enum bpf_map_type map_type, const char *define_prefix,
- 	size_t maxlen;
- 	bool res;
- 
--	if (ifindex) {
--		p_info("BPF offload feature probing is not supported");
--		return;
--	}
--
--	res = libbpf_probe_bpf_map_type(map_type, NULL);
-+	if (ifindex)
-+		res = probe_map_type_ifindex(map_type, ifindex);
-+	else
-+		res = libbpf_probe_bpf_map_type(map_type, NULL);
- 
- 	/* Probe result depends on the success of map creation, no additional
- 	 * check required for unprivileged users
-@@ -559,6 +670,33 @@ probe_map_type(enum bpf_map_type map_type, const char *define_prefix,
- 			   define_prefix);
- }
- 
-+static bool
-+probe_helper_ifindex(enum bpf_func_id id, enum bpf_prog_type prog_type,
-+		     __u32 ifindex)
-+{
-+	struct bpf_insn insns[2] = {
-+		BPF_EMIT_CALL(id),
-+		BPF_EXIT_INSN()
-+	};
-+	char buf[4096] = {};
-+	bool res;
-+
-+	probe_prog_load_ifindex(prog_type, insns, ARRAY_SIZE(insns), buf,
-+				sizeof(buf), ifindex);
-+	res = !grep(buf, "invalid func ") && !grep(buf, "unknown func ");
-+
-+	switch (get_vendor_id(ifindex)) {
-+	case 0x19ee: /* Netronome specific */
-+		res = res && !grep(buf, "not supported by FW") &&
-+			!grep(buf, "unsupported function id");
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return res;
-+}
-+
- static void
- probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
- 			  const char *define_prefix, unsigned int id,
-@@ -567,12 +705,10 @@ probe_helper_for_progtype(enum bpf_prog_type prog_type, bool supported_type,
- 	bool res = false;
- 
- 	if (supported_type) {
--		if (ifindex) {
--			p_info("BPF offload feature probing is not supported");
--			return;
--		}
--
--		res = libbpf_probe_bpf_helper(prog_type, id, NULL);
-+		if (ifindex)
-+			res = probe_helper_ifindex(id, prog_type, ifindex);
-+		else
-+			res = libbpf_probe_bpf_helper(prog_type, id, NULL);
- #ifdef USE_LIBCAP
- 		/* Probe may succeed even if program load fails, for
- 		 * unprivileged users check that we did not fail because of
--- 
-2.35.1
+>   					const bool *ctx,
+> -					struct irq_affinity *desc)
+> +					struct irq_affinity *desc,
+> +					u32 sizes[])
+>   {
+>   	struct mlxbf_tmfifo_vdev *tm_vdev = mlxbf_vdev_to_tmfifo(vdev);
+>   	struct mlxbf_tmfifo_vring *vring;
+> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
+> index 70ab496d0431..3a167bec5b09 100644
+> --- a/drivers/remoteproc/remoteproc_virtio.c
+> +++ b/drivers/remoteproc/remoteproc_virtio.c
+> @@ -157,7 +157,7 @@ static int rproc_virtio_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+>   				 vq_callback_t *callbacks[],
+>   				 const char * const names[],
+>   				 const bool * ctx,
+> -				 struct irq_affinity *desc)
+> +				 struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	int i, ret, queue_idx = 0;
+>   
+> diff --git a/drivers/s390/virtio/virtio_ccw.c b/drivers/s390/virtio/virtio_ccw.c
+> index d35e7a3f7067..b74e08c71534 100644
+> --- a/drivers/s390/virtio/virtio_ccw.c
+> +++ b/drivers/s390/virtio/virtio_ccw.c
+> @@ -632,7 +632,7 @@ static int virtio_ccw_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   			       vq_callback_t *callbacks[],
+>   			       const char * const names[],
+>   			       const bool *ctx,
+> -			       struct irq_affinity *desc)
+> +			       struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	struct virtio_ccw_device *vcdev = to_vc_device(vdev);
+>   	unsigned long *indicatorp = NULL;
+> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+> index a41abc8051b9..55d575f6ef2d 100644
+> --- a/drivers/virtio/virtio_mmio.c
+> +++ b/drivers/virtio/virtio_mmio.c
+> @@ -462,7 +462,7 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   		       vq_callback_t *callbacks[],
+>   		       const char * const names[],
+>   		       const bool *ctx,
+> -		       struct irq_affinity *desc)
+> +		       struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+>   	int irq = platform_get_irq(vm_dev->pdev, 0);
+> diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio_pci_common.c
+> index 863d3a8a0956..8e8fa7e5ad80 100644
+> --- a/drivers/virtio/virtio_pci_common.c
+> +++ b/drivers/virtio/virtio_pci_common.c
+> @@ -428,7 +428,7 @@ static int vp_find_vqs_intx(struct virtio_device *vdev, unsigned nvqs,
+>   int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>   		const char * const names[], const bool *ctx,
+> -		struct irq_affinity *desc)
+> +		struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	int err;
+>   
+> diff --git a/drivers/virtio/virtio_pci_common.h b/drivers/virtio/virtio_pci_common.h
+> index 23f6c5c678d5..9dbf1d555dff 100644
+> --- a/drivers/virtio/virtio_pci_common.h
+> +++ b/drivers/virtio/virtio_pci_common.h
+> @@ -114,7 +114,7 @@ void vp_del_vqs(struct virtio_device *vdev);
+>   int vp_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   		struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>   		const char * const names[], const bool *ctx,
+> -		struct irq_affinity *desc);
+> +		struct irq_affinity *desc, u32 sizes[]);
+>   const char *vp_bus_name(struct virtio_device *vdev);
+>   
+>   /* Setup the affinity for a virtqueue:
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index 3c67d3607802..342795175c29 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -343,11 +343,12 @@ static int vp_modern_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   			      struct virtqueue *vqs[],
+>   			      vq_callback_t *callbacks[],
+>   			      const char * const names[], const bool *ctx,
+> -			      struct irq_affinity *desc)
+> +			      struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+>   	struct virtqueue *vq;
+> -	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc);
+> +	int rc = vp_find_vqs(vdev, nvqs, vqs, callbacks, names, ctx, desc,
+> +			     sizes);
+>   
+>   	if (rc)
+>   		return rc;
+> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> index 7767a7f0119b..ee08d01ee8b1 100644
+> --- a/drivers/virtio/virtio_vdpa.c
+> +++ b/drivers/virtio/virtio_vdpa.c
+> @@ -268,7 +268,7 @@ static int virtio_vdpa_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   				vq_callback_t *callbacks[],
+>   				const char * const names[],
+>   				const bool *ctx,
+> -				struct irq_affinity *desc)
+> +				struct irq_affinity *desc, u32 sizes[])
+>   {
+>   	struct virtio_vdpa_device *vd_dev = to_virtio_vdpa_device(vdev);
+>   	struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+> index 0b81fbe17c85..5157524d8036 100644
+> --- a/include/linux/virtio_config.h
+> +++ b/include/linux/virtio_config.h
+> @@ -57,6 +57,7 @@ struct virtio_shm_region {
+>    *		include a NULL entry for vqs that do not need a callback
+>    *	names: array of virtqueue names (mainly for debugging)
+>    *		include a NULL entry for vqs unused by driver
+> + *	sizes: array of virtqueue sizes
+>    *	Returns 0 on success or error status
+>    * @del_vqs: free virtqueues found by find_vqs().
+>    * @get_features: get the array of feature bits for this device.
+> @@ -98,7 +99,8 @@ struct virtio_config_ops {
+>   	int (*find_vqs)(struct virtio_device *, unsigned nvqs,
+>   			struct virtqueue *vqs[], vq_callback_t *callbacks[],
+>   			const char * const names[], const bool *ctx,
+> -			struct irq_affinity *desc);
+> +			struct irq_affinity *desc,
+> +			u32 sizes[]);
+>   	void (*del_vqs)(struct virtio_device *);
+>   	u64 (*get_features)(struct virtio_device *vdev);
+>   	int (*finalize_features)(struct virtio_device *vdev);
+> @@ -205,7 +207,7 @@ struct virtqueue *virtio_find_single_vq(struct virtio_device *vdev,
+>   	const char *names[] = { n };
+>   	struct virtqueue *vq;
+>   	int err = vdev->config->find_vqs(vdev, 1, &vq, callbacks, names, NULL,
+> -					 NULL);
+> +					 NULL, NULL);
+>   	if (err < 0)
+>   		return ERR_PTR(err);
+>   	return vq;
+> @@ -217,7 +219,8 @@ int virtio_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+>   			const char * const names[],
+>   			struct irq_affinity *desc)
+>   {
+> -	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL, desc);
+> +	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, NULL,
+> +				      desc, NULL);
+>   }
+>   
+>   static inline
+> @@ -227,7 +230,7 @@ int virtio_find_vqs_ctx(struct virtio_device *vdev, unsigned nvqs,
+>   			struct irq_affinity *desc)
+>   {
+>   	return vdev->config->find_vqs(vdev, nvqs, vqs, callbacks, names, ctx,
+> -				      desc);
+> +				      desc, NULL);
+>   }
+>   
+>   /**
 
