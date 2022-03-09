@@ -2,488 +2,236 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B2F4D2F21
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 13:35:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007314D2FEA
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 14:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231231AbiCIMf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 07:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58500 "EHLO
+        id S232302AbiCINaf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 08:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbiCIMf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 07:35:26 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F0E1693AD
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 04:34:26 -0800 (PST)
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 229BNdu4030759;
-        Wed, 9 Mar 2022 12:34:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=g5JtA95GP3vSZzWuEG8oDf6q8sefbem76ik41pJpr3g=;
- b=p+BWbPXcitFOHWaT7G59ziCZbUgjEpsdYtMU0f0sC4unQ2pM2NYCZdOQ8TIgdpZrey1J
- O73EEGFXYhoXEgC6BpNOzEuUyvx32b6BWLx8TIpxxWS/DXNkDsz0qCF202f8Xhygkb3A
- hFUpzPNwfZVkotoI6+nDb6t9OB8zuGlIB3fyvqbV3mxZwOO2VfEsGPeG1VYMDwiPWLN6
- jAwfO3z+Tv4P9H6W/2BL3GnPgm12Na/1oTbKf96SDx1HXUCcx8hDSJ/ybLxyKAXHHWPP
- xW444gmrUxUEY/+QbfCaMdzWfMja9lwM7BXak33kPH+AthEHPfKNV7zXbf0OVZWejzbB Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3enu2sycwd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Mar 2022 12:34:13 +0000
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 229CFQbt017367;
-        Wed, 9 Mar 2022 12:34:12 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3enu2sycvs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Mar 2022 12:34:12 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 229CHeKF025122;
-        Wed, 9 Mar 2022 12:34:10 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 3ekyg90me8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 09 Mar 2022 12:34:10 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 229CMtdZ44761344
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 9 Mar 2022 12:22:55 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AF4EAA405C;
-        Wed,  9 Mar 2022 12:34:06 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4FAD5A405F;
-        Wed,  9 Mar 2022 12:34:06 +0000 (GMT)
-Received: from [9.171.29.97] (unknown [9.171.29.97])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  9 Mar 2022 12:34:06 +0000 (GMT)
-Message-ID: <a924d763fe50ec80594ca3fac6b311cf9ec20fca.camel@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next 1/3] bpf: Fix certain narrow loads with
- offsets
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
+        with ESMTP id S230119AbiCINaf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 08:30:35 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCEF6175817;
+        Wed,  9 Mar 2022 05:29:35 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id p2so1469232ile.2;
+        Wed, 09 Mar 2022 05:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Ie3g071ONGf67RV/Jbx4FIY700bvMZXq2+ZmsEi+AI=;
+        b=QIUfIU5qzXULTpfA1D74Pw/xIK0NPaopdTDk8k2ygZTjo1n2jfbhz0/iuGe6x1Oa7F
+         xxbP5v3KNuVHO0k8x0S9369AYAQIgFi7cCeznz4Gf0erFdfjCSDu8MI9Kwf/cQzqebXR
+         AHg8yinGUbusdz/Kb18I8Bn76YNjPMo5ILsYvYgY+zZbRfAJsO4p1A6MIgPWiQfWU3+8
+         /4TDpzoRd1+DXBKqrevTrJwbPRELTp+gNHa3WItasD8SXMvN2xnf4eKWWuo60DY/93bZ
+         6LDjkDzjeqByU7zI7xMpO64/iKqZ4lsxktrvmKKinv4axpudjJRz8TlDaiL+KiJHR8aA
+         W7Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Ie3g071ONGf67RV/Jbx4FIY700bvMZXq2+ZmsEi+AI=;
+        b=5TA2yFsOSwWAMat6cioyLC+4lvfN4NFOPUkBBaFkLthB1mTwX9Cr7I9wfqVRojm1DR
+         cOiFVYMcRGIVX1IvLO+mg+4uwost1MHr0W1S0RCzk2tapnXVkj+AwEe2/+R6yIUUe02v
+         f1KxAWaeXy7pbwmoe/WUBT8MeoY5YlDsIoS6tRns99EHWrz+GenoV+4siwMGxbnhaM46
+         NfTdcaTwxIoT6Tq/KxkNzMQTp2WzBqfCtt0EcBi1pRyNhm8dfKyi97Rdmu+IlS2DnLC8
+         M5u1mpHAmdQl469cHnz8/GhLbG9MhIibZbGrL1zvmpZ+I0CfN6U533bGyuRyZNPmwl1s
+         IhVw==
+X-Gm-Message-State: AOAM530S7ChC5paoW4pzBZE/z2DGa7E+DvxaluOZZK/J3BsoKJXA6zld
+        BSZ+8vCi8bgT/Jv3p5DHf5W9H9I2ZGQINYPlf0iNUgmLWNk=
+X-Google-Smtp-Source: ABdhPJzglI42fOllC5NUHdfXe8Gktl5ckVAcIjBAlwX/mY0PeB/ZjpzCY2ytg3QT5IHiwb9tRiiQNj7NVCEqRqX5CMA=
+X-Received: by 2002:a92:7c13:0:b0:2c6:610f:82f0 with SMTP id
+ x19-20020a927c13000000b002c6610f82f0mr5740790ilc.6.1646832575111; Wed, 09 Mar
+ 2022 05:29:35 -0800 (PST)
+MIME-Version: 1.0
+References: <20220308131056.6732-1-laoar.shao@gmail.com> <Yif+QZbCALQcYrFZ@carbon.dhcp.thefacebook.com>
+In-Reply-To: <Yif+QZbCALQcYrFZ@carbon.dhcp.thefacebook.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Wed, 9 Mar 2022 21:28:58 +0800
+Message-ID: <CALOAHbARWARjK4cAjUfsGDy3G4sAZaHRiFQsbjNc=EfHsCfnnQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/9] bpf, mm: recharge bpf memory from offline memcg
+To:     Roman Gushchin <roman.gushchin@linux.dev>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Wed, 09 Mar 2022 13:34:06 +0100
-In-Reply-To: <871qzbz5sa.fsf@cloudflare.com>
-References: <20220222182559.2865596-1-iii@linux.ibm.com>
-         <20220222182559.2865596-2-iii@linux.ibm.com>
-         <87bkygzbg5.fsf@cloudflare.com>
-         <8d8b464f6c2820989d67f00d24b6003b8b758274.camel@linux.ibm.com>
-         <871qzbz5sa.fsf@cloudflare.com>
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-1.fc35) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -fY9mdShlNe2pBrakBpryDmCNExKZWsS
-X-Proofpoint-GUID: wn9ItD8mx2CogW7YwL6F3bc8nv55_HB5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-09_04,2022-03-04_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- impostorscore=0 phishscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203090069
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2022-03-09 at 09:36 +0100, Jakub Sitnicki wrote:
-> On Wed, Mar 09, 2022 at 12:58 AM +01, Ilya Leoshkevich wrote:
-> > On Tue, 2022-03-08 at 16:01 +0100, Jakub Sitnicki wrote:
-> > > On Tue, Feb 22, 2022 at 07:25 PM +01, Ilya Leoshkevich wrote:
-> > > > Verifier treats bpf_sk_lookup.remote_port as a 32-bit field for
-> > > > backward compatibility, regardless of what the uapi headers
-> > > > say.
-> > > > This field is mapped onto the 16-bit bpf_sk_lookup_kern.sport
-> > > > field.
-> > > > Therefore, accessing the most significant 16 bits of
-> > > > bpf_sk_lookup.remote_port must produce 0, which is currently
-> > > > not
-> > > > the case.
-> > > > 
-> > > > The problem is that narrow loads with offset - commit
-> > > > 46f53a65d2de
-> > > > ("bpf: Allow narrow loads with offset > 0"), don't play nicely
-> > > > with
-> > > > the masking optimization - commit 239946314e57 ("bpf: possibly
-> > > > avoid
-> > > > extra masking for narrower load in verifier"). In particular,
-> > > > when
-> > > > we
-> > > > suppress extra masking, we suppress shifting as well, which is
-> > > > not
-> > > > correct.
-> > > > 
-> > > > Fix by moving the masking suppression check to BPF_AND
-> > > > generation.
-> > > > 
-> > > > Fixes: 46f53a65d2de ("bpf: Allow narrow loads with offset > 0")
-> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > ---
-> > > >  kernel/bpf/verifier.c | 14 +++++++++-----
-> > > >  1 file changed, 9 insertions(+), 5 deletions(-)
-> > > > 
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index d7473fee247c..195f2e9b5a47 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -12848,7 +12848,7 @@ static int convert_ctx_accesses(struct
-> > > > bpf_verifier_env *env)
-> > > >                         return -EINVAL;
-> > > >                 }
-> > > >  
-> > > > -               if (is_narrower_load && size < target_size) {
-> > > > +               if (is_narrower_load) {
-> > > >                         u8 shift =
-> > > > bpf_ctx_narrow_access_offset(
-> > > >                                 off, size, size_default) * 8;
-> > > >                         if (shift && cnt + 1 >=
-> > > > ARRAY_SIZE(insn_buf)) {
-> > > > @@ -12860,15 +12860,19 @@ static int
-> > > > convert_ctx_accesses(struct
-> > > > bpf_verifier_env *env)
-> > > >                                         insn_buf[cnt++] =
-> > > > BPF_ALU32_IMM(BPF_RSH,
-> > > >                                                                
-> > > >     
-> > > >      insn->dst_reg,
-> > > >                                                                
-> > > >     
-> > > >      shift);
-> > > > -                               insn_buf[cnt++] =
-> > > > BPF_ALU32_IMM(BPF_AND, insn->dst_reg,
-> > > > -
-> > > >                                                                (
-> > > > 1
-> > > > << size * 8) - 1);
-> > > > +                               if (size < target_size)
-> > > > +                                       insn_buf[cnt++] =
-> > > > BPF_ALU32_IMM(
-> > > > +                                               BPF_AND, insn-
-> > > > > dst_reg,
-> > > > +                                               (1 << size * 8)
-> > > > -
-> > > > 1);
-> > > >                         } else {
-> > > >                                 if (shift)
-> > > >                                         insn_buf[cnt++] =
-> > > > BPF_ALU64_IMM(BPF_RSH,
-> > > >                                                                
-> > > >     
-> > > >      insn->dst_reg,
-> > > >                                                                
-> > > >     
-> > > >      shift);
-> > > > -                               insn_buf[cnt++] =
-> > > > BPF_ALU64_IMM(BPF_AND, insn->dst_reg,
-> > > > -
-> > > >                                                                
-> > > > (1ULL
-> > > >  << size * 8) - 1);
-> > > > +                               if (size < target_size)
-> > > > +                                       insn_buf[cnt++] =
-> > > > BPF_ALU64_IMM(
-> > > > +                                               BPF_AND, insn-
-> > > > > dst_reg,
-> > > > +                                               (1ULL << size *
-> > > > 8)
-> > > > - 1);
-> > > >                         }
-> > > >                 }
-> > > 
-> > > Thanks for patience. I'm coming back to this.
-> > > 
-> > > This fix affects the 2-byte load from bpf_sk_lookup.remote_port.
-> > > Dumping the xlated BPF code confirms it.
-> > > 
-> > > On LE (x86-64) things look well.
-> > > 
-> > > Before this patch:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (b7) r0 = 0
-> > >    2: (95) exit
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (b7) r0 = 0
-> > >    2: (95) exit
-> > > 
-> > > After this patch:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (b7) r0 = 0
-> > >    2: (95) exit
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (74) w2 >>= 16
-> > >    2: (b7) r0 = 0
-> > >    3: (95) exit
-> > > 
-> > > Which works great because the JIT generates a zero-extended load
-> > > movzwq:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > > bpf_prog_5e4fe3dbdcb18fd3:
-> > >    0:   nopl   0x0(%rax,%rax,1)
-> > >    5:   xchg   %ax,%ax
-> > >    7:   push   %rbp
-> > >    8:   mov    %rsp,%rbp
-> > >    b:   movzwq 0x4(%rdi),%rsi
-> > >   10:   xor    %eax,%eax
-> > >   12:   leave
-> > >   13:   ret
-> > > 
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > > bpf_prog_4a6336c64a340b96:
-> > >    0:   nopl   0x0(%rax,%rax,1)
-> > >    5:   xchg   %ax,%ax
-> > >    7:   push   %rbp
-> > >    8:   mov    %rsp,%rbp
-> > >    b:   movzwq 0x4(%rdi),%rsi
-> > >   10:   shr    $0x10,%esi
-> > >   13:   xor    %eax,%eax
-> > >   15:   leave
-> > >   16:   ret
-> > > 
-> > > Runtime checks for bpf_sk_lookup.remote_port load and the 2-bytes
-> > > of
-> > > zero padding following it, like below, pass with flying colors:
-> > > 
-> > >         ok = ctx->remote_port == bpf_htons(8008);
-> > >         if (!ok)
-> > >                 return SK_DROP;
-> > >         ok = *((__u16 *)&ctx->remote_port + 1) == 0;
-> > >         if (!ok)
-> > >                 return SK_DROP;
-> > > 
-> > > (The above checks compile to half-word (2-byte) loads.)
-> > > 
-> > > 
-> > > On BE (s390x) things look different:
-> > > 
-> > > Before the patch:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (bc) w2 = w2
-> > >    2: (b7) r0 = 0
-> > >    3: (95) exit
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (bc) w2 = w2
-> > >    2: (b7) r0 = 0
-> > >    3: (95) exit
-> > > 
-> > > After the patch:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (bc) w2 = w2
-> > >    2: (74) w2 >>= 16
-> > >    3: (bc) w2 = w2
-> > >    4: (b7) r0 = 0
-> > >    5: (95) exit
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > >    0: (69) r2 = *(u16 *)(r1 +4)
-> > >    1: (bc) w2 = w2
-> > >    2: (b7) r0 = 0
-> > >    3: (95) exit
-> > > 
-> > > These compile to:
-> > > 
-> > > * size=2, offset=0, 0: (69) r2 = *(u16 *)(r1 +36)
-> > > bpf_prog_fdd58b8caca29f00:
-> > >    0:   j       0x0000000000000006
-> > >    4:   nopr
-> > >    6:   stmg    %r11,%r15,112(%r15)
-> > >    c:   la      %r13,64(%r15)
-> > >   10:   aghi    %r15,-96
-> > >   14:   llgh    %r3,4(%r2,%r0)
-> > >   1a:   srl     %r3,16
-> > >   1e:   llgfr   %r3,%r3
-> > >   22:   lgfi    %r14,0
-> > >   28:   lgr     %r2,%r14
-> > >   2c:   lmg     %r11,%r15,208(%r15)
-> > >   32:   br      %r14
-> > > 
-> > > 
-> > > * size=2, offset=2, 0: (69) r2 = *(u16 *)(r1 +38)
-> > > bpf_prog_5e3d8e92223c6841:
-> > >    0:   j       0x0000000000000006
-> > >    4:   nopr
-> > >    6:   stmg    %r11,%r15,112(%r15)
-> > >    c:   la      %r13,64(%r15)
-> > >   10:   aghi    %r15,-96
-> > >   14:   llgh    %r3,4(%r2,%r0)
-> > >   1a:   lgfi    %r14,0
-> > >   20:   lgr     %r2,%r14
-> > >   24:   lmg     %r11,%r15,208(%r15)
-> > >   2a:   br      %r14
-> > > 
-> > > Now, we right shift the value when loading
-> > > 
-> > >   *(u16 *)(r1 +36)
-> > > 
-> > > which in C BPF is equivalent to
-> > > 
-> > >   *((__u16 *)&ctx->remote_port + 0)
-> > > 
-> > > due to how the shift is calculated by
-> > > bpf_ctx_narrow_access_offset().
-> > 
-> > Right, that's exactly the intention here.
-> > The way I see the situation is: the ABI forces us to treat
-> > remote_port
-> > as a 32-bit field, even though the updated header now says
-> > otherwise.
-> > And this:
-> > 
-> >     unsigned int remote_port;
-> >     unsigned short result = *(unsigned short *)remote_port;
-> > 
-> > should be the same as:
-> > 
-> >     unsigned short result = remote_port >> 16;
-> > 
-> > on big-endian. Note that this is inherently non-portable.
-> 
-> 
-> 
-> 
-> 
-> > 
-> > > This makes the expected typical use-case
-> > > 
-> > >   ctx->remote_port == bpf_htons(8008)
-> > > 
-> > > fail on s390x because llgh (Load Logical Halfword (64<-16)) seems
-> > > to
-> > > lay
-> > > out the data in the destination register so that it holds
-> > > 0x0000_0000_0000_1f48.
-> > > 
-> > > I don't know that was the intention here, as it makes the BPF C
-> > > code
-> > > non-portable.
-> > > 
-> > > WDYT?
-> > 
-> > This depends on how we define the remote_port field. I would argue
-> > that
-> > the definition from patch 2 - even though ugly - is the correct
-> > one.
-> > It is consistent with both the little-endian (1f 48 00 00) and
-> > big-endian (00 00 1f 48) ABIs.
-> > 
-> > I don't think the current definition is correct, because it expects
-> > 1f 48 00 00 on big-endian, and this is not the case. We can verify
-> > this
-> > by taking 9a69e2^ and applying
-> > 
-> > --- a/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_sk_lookup.c
-> > @@ -417,6 +417,8 @@ int ctx_narrow_access(struct bpf_sk_lookup
-> > *ctx)
-> >                 return SK_DROP;
-> >         if (LSW(ctx->remote_port, 0) != SRC_PORT)
-> >                 return SK_DROP;
-> > +       if (ctx->remote_port != SRC_PORT)
-> > +               return SK_DROP;
-> >  
-> >         /* Narrow loads from local_port field. Expect DST_PORT. */
-> >         if (LSB(ctx->local_port, 0) != ((DST_PORT >> 0) & 0xff) ||
-> > 
-> > Therefore that
-> > 
-> >   ctx->remote_port == bpf_htons(8008)
-> > 
-> > fails without patch 2 is as expected.
-> > 
-> 
-> Consider this - today the below is true on both LE and BE, right?
-> 
->   *(u32 *)&ctx->remote_port == *(u16 *)&ctx->remote_port
-> 
-> because the loads get converted to:
-> 
->   *(u16 *)&ctx_kern->sport == *(u16 *)&ctx_kern->sport
-> 
-> IOW, today, because of the bug that you are fixing here, the data
-> layout
-> changes from the PoV of the BPF program depending on the load size.
-> 
-> With 2-byte loads, without this patch, the data layout appears as:
-> 
->   struct bpf_sk_lookup {
->     ...
->     __be16 remote_port;
->     __be16 remote_port;
->     ...
->   }
+On Wed, Mar 9, 2022 at 9:09 AM Roman Gushchin <roman.gushchin@linux.dev> wrote:
+>
+> On Tue, Mar 08, 2022 at 01:10:47PM +0000, Yafang Shao wrote:
+> > When we use memcg to limit the containers which load bpf progs and maps,
+> > we find there is an issue that the lifecycle of container and bpf are not
+> > always the same, because we may pin the maps and progs while update the
+> > container only. So once the container which has alreay pinned progs and
+> > maps is restarted, the pinned progs and maps are no longer charged to it
+> > any more. In other words, this kind of container can steal memory from the
+> > host, that is not expected by us. This patchset means to resolve this
+> > issue.
+> >
+> > After the container is restarted, the old memcg which is charged by the
+> > pinned progs and maps will be offline but won't be freed until all of the
+> > related maps and progs are freed. If we want to charge these bpf memory to
+> > the new started memcg, we should uncharge them from the offline memcg first
+> > and then charge it to the new one. As we have already known how the bpf
+> > memroy is allocated and freed, we can also know how to charge and uncharge
+> > it. This pathset implements various charge and uncharge methords for these
+> > memory.
+> >
+> > Regarding how to do the recharge, we decide to implement new bpf syscalls
+> > to do it. With the new implemented bpf syscall, the agent running in the
+> > container can use it to do the recharge. As of now we only implement it for
+> > the bpf hash maps. Below is a simple example how to do the recharge,
+> >
+> > ====
+> > int main(int argc, char *argv[])
+> > {
+> >       union bpf_attr attr = {};
+> >       int map_id;
+> >       int pfd;
+> >
+> >       if (argc < 2) {
+> >               printf("Pls. give a map id \n");
+> >               exit(-1);
+> >       }
+> >
+> >       map_id = atoi(argv[1]);
+> >       attr.map_id = map_id;
+> >       pfd = syscall(SYS_bpf, BPF_MAP_RECHARGE, &attr, sizeof(attr));
+> >       if (pfd < 0)
+> >               perror("BPF_MAP_RECHARGE");
+> >
+> >       return 0;
+> > }
+> >
+> > ====
+> >
+> > Patch #1 and #2 is for the observability, with which we can easily check
+> > whether the bpf maps is charged to a memcg and whether the memcg is offline.
+> > Patch #3, #4 and #5 is for the charge and uncharge methord for vmalloc-ed,
+> > kmalloc-ed and percpu memory.
+> > Patch #6~#9 implements the recharge of bpf hash map, which is mostly used
+> > by our bpf services. The other maps hasn't been implemented yet. The bpf progs
+> > hasn't been implemented neither.
+> >
+> > This pathset is still a POC now, with limited testing. Any feedback is
+> > welcomed.
+>
+> Hello Yafang!
+>
+> It's an interesting topic, which goes well beyond bpf. In general, on cgroup
+> offlining we either do nothing either recharge pages to the parent cgroup
+> (latter is preferred), which helps to release the pinned memcg structure.
+>
 
-I see, one can indeed argue that this is also a part of the ABI now.
-So we're stuck between a rock and a hard place.
+We have thought about recharging pages to the parent cgroup (the root
+memcg in our case),
+but it can't resolve our issue.
+Releasing the pinned memcg struct is the benefit of recharging pages
+to the parent,
+but as there won't be too many memcgs pinned by bpf, so it may not be worth it.
 
-> While for 4-byte loads, it appears as in your 2nd patch:
-> 
->   struct bpf_sk_lookup {
->     ...
->     #if little-endian
->     __be16 remote_port;
->     __u16  :16; /* zero padding */
->     #elif big-endian
->     __u16  :16; /* zero padding */
->     __be16 remote_port;
->     #endif
->     ...
->   }
-> 
-> Because of that I don't see how we could keep complete ABI
-> compatiblity,
-> and have just one definition of struct bpf_sk_lookup that reflects
-> it. These are conflicting requirements.
-> 
-> I'd bite the bullet for 4-byte loads, for the sake of having an
-> endian-agnostic struct bpf_sk_lookup and struct bpf_sock definition
-> in
-> the uAPI header.
-> 
-> The sacrifice here is that the access converter will have to keep
-> rewriting 4-byte access to bpf_sk_lookup.remote_port and
-> bpf_sock.dst_port in this unexpected, quirky manner.
-> 
-> The expectation is that with time users will recompile their BPF
-> progs
-> against the updated bpf.h, and switch to 2-byte loads. That will make
-> the quirk in the access converter dead code in time.
-> 
-> I don't have any better ideas. Sorry.
-> 
-> [...]
 
-I agree, let's go ahead with this solution.
+> Your approach raises some questions:
 
-The only remaining problem that I see is: the bug is in the common
-code, and it will affect the fields that we add in the future.
+Nice questions.
 
-Can we either document this state of things in a comment, or fix the
-bug and emulate the old behavior for certain fields?
+> 1) what if the new cgroup is not large enough to contain the bpf map?
+
+The recharge is supposed to be triggered at the container start time.
+After the container is started, the agent which will load the bpf
+programs will do it as follows,
+1. Check if the bpf program has already been loaded,
+    if not,  goto 5.
+2. Check if the bpf program will pin maps or progs,
+    if not, goto 6.
+3. Check if the pinned maps and progs are charged to an offline memcg,
+    if not, goto 6.
+4. Recharge the pinned maps or progs to the current memcg.
+   goto 6.
+5. load new bpf program, and also pinned maps and progs if desired.
+6. End.
+
+If the recharge fails, it means that the memcg limit is too low, we
+should reconsider
+the limit of the container.
+
+Regarding other cases that it may do the recharge in the runtime, I
+think the failure is
+a common OOM case, that means the usage in this container is out of memory, we
+should kill something.
+
+
+> 2) does it mean that some userspace app will monitor the state of the cgroup
+> which was the original owner of the bpf map and recharge once it's deleted?
+
+In our use case,  we don't need to monitor that behavior.
+The agent which loads the bpf programs has the responsibility to do
+the recharge.
+As all the agents are controlled by ourselves, it is easy to do it like that.
+
+For more generic use cases, it can do the bpf maintenance in a sidecar container
+in the containerized environment.  The admin can provide such sidercar
+to bpf owners.
+The admin can also introduce an agent on the host to check if there're
+maps or progs
+charged to an offline memcg and then take the action. It is not easy
+to find which one owns
+the pinned maps or progs as the pinned path is unique.
+
+> 3) what if there are several cgroups are sharing the same map? who will be
+> the next owner?
+
+I think we can follow the same rule that we take care of sharing pages
+across memcgs
+currently: who loads it first, who owns the map. Then after the first
+one exit, the next owner
+is who firstly does the recharge.
+
+> 4) because recharging is fully voluntary, why any application should want to do
+> it, if it can just use the memory for free? it doesn't really look as a working
+> resource control mechanism.
+>
+
+As I explained in 2), all the agents are under our control, so we can
+easily handle it like that.
+For generic use cases, an agent running on the host and sidecar (or
+SDK) provided
+to bpf users can also handle it.
+
+> Will reparenting work for your case? If not, can you, please, describe the
+> problem you're trying to solve by recharging the memory?
+>
+
+Reparenting doesn't work for us.
+The problem is memory resource control: the limitation on the bpf
+containers will be useless
+if the lifecycle of bpf progs can containers are not the same.
+The containers are always upgraded - IOW restarted - more frequently
+than the bpf progs and maps,
+that is also one of the reasons why we choose to pin them on the host.
+
+-- 
+Thanks
+Yafang
