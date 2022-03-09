@@ -2,58 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5EA4D2E62
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 12:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC8A4D2ED9
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 13:14:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbiCILsd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 06:48:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S231934AbiCIMPv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 07:15:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbiCILsa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 06:48:30 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8DD60CEE;
-        Wed,  9 Mar 2022 03:47:30 -0800 (PST)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KD9Kq5Hgwz1GCKR;
-        Wed,  9 Mar 2022 19:42:39 +0800 (CST)
-Received: from [10.174.176.117] (10.174.176.117) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Wed, 9 Mar 2022 19:47:28 +0800
-Subject: Re: [RFC PATCH bpf-next v2 0/3] bpf: support string key in htab
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        with ESMTP id S230378AbiCIMPu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 07:15:50 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E53B910CF2B;
+        Wed,  9 Mar 2022 04:14:51 -0800 (PST)
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KDB1L6070zfYkm;
+        Wed,  9 Mar 2022 20:13:26 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by dggpeml500025.china.huawei.com
+ (7.185.36.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Wed, 9 Mar
+ 2022 20:14:49 +0800
+From:   Hou Tao <houtao1@huawei.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+CC:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Joanne Koong <joannekoong@fb.com>
-References: <20220214111337.3539-1-houtao1@huawei.com>
- <20220217035041.axk46atz7j4svi2k@ast-mbp.dhcp.thefacebook.com>
- <3b968224-c086-a8b6-159a-55db7ec46011@huawei.com>
- <CAADnVQ+z75P0sryoGhgUwrHRMr2Jw=eFO4eCRe0Ume554si9Zg@mail.gmail.com>
- <ecc04a70-0b57-62ef-ab52-e7169845d789@huawei.com>
- <CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com>
-From:   Hou Tao <houtao1@huawei.com>
-Message-ID: <daea3845-ab03-12df-ec3b-a645dcee5aaf@huawei.com>
-Date:   Wed, 9 Mar 2022 19:47:27 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        KP Singh <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <houtao1@huawei.com>
+Subject: [PATCH bpf-next 0/4] fixes for bpf_jit_harden race
+Date:   Wed, 9 Mar 2022 20:33:17 +0800
+Message-ID: <20220309123321.2400262-1-houtao1@huawei.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQJUJp3YBcpESwR3Q1U6GS1mBM=Vp-qYuQX7eZOaoLjdUA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.117]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500025.china.huawei.com (7.185.36.35)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,59 +54,48 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Hi,
 
-On 2/27/2022 11:08 AM, Alexei Starovoitov wrote:
-> On Sat, Feb 26, 2022 at 4:16 AM Hou Tao <houtao1@huawei.com> wrote:
->>
->> For now, our case is a write-once case, so only lookup is considered.
->> When data set is bigger than 128KB, hash table has better lookup performance as
->> show below:
->>
->> | lookup all elem (ms) | 4K  | 16K  | 64K  | 128K  | 256K  | 512K  | 1M     | 2M     | 4M      | 7M      |
->> | -------------------- | --- | ---- | ---- | ----- | ----- | ----- | ------ | ------ | ------- | ------- |
->> | hash                 | 3.3 | 12.7 | 47   | 90.6  | 185.9 | 382.3 | 788.5  | 1622.4 | 3296    | 6248.7  |
->> | tries                | 2   | 10   | 45.9 | 111.6 | 274.6 | 688.9 | 1747.2 | 4394.5 | 11229.8 | 27148.8 |
->> | tst                  | 3.8 | 16.4 | 61.3 | 139.1 | 313.9 | 707.3 | 1641.3 | 3856.1 | 9002.3  | 19793.8 |
-> 
-> Yeah. It's hard to beat hash lookup when it's hitting a good case of O(1),
-> but what are the chances that it stays this way?
-> Are you saying you can size up the table and populate to good % just once?
->
-Yes. for our case the hash table is populated only once. During these test the
-hash table is populated firstly by inserting all strings into the table and then
-do the lookup. The strings for all tests come from the same string set.
+Now bpf_jit_harden will be tested twice for each subprog if there are
+subprogs in bpf program and constant blinding may increase the length of
+program, so when running "./test_progs -t subprogs" and toggling
+bpf_jit_harden between 0 and 2, extra pass in bpf_int_jit_compile() may
+fail because constant blinding increases the length of subprog and
+the length is mismatched with the first pass.
 
-> If so it's probably better to replace all strings with something
-> like a good hash
-A strong one like sha1sum and using the string as hash-table value just
-as proposed in previous email ?
+The failure uncovers several issues in error handling of jit_subprogs()
+and bpf_int_jit_compile():
+(1) jit_subprogs() continues even when extra pass for one subprogs fails
+It may leads to oops during to UAF. Fixed in patch #1.
 
-> 7M elements is not a lot. A hash producing 8 or 16 bytes will have close
-> to zero false positives.
-> And in case of "populate the table once" the hash seed can be
-> precomputed and adjusted, so you can guarantee zero collisions
-> for 7M strings. While lookup part can still have 0.001% chance
-> of a false positive there could be a way to deal with it after lookup.
->
-I can try the above method. But the lookup procedure will be slowed done by
-calculating a good hash and the memory usage will not reduced.
+(2) jit_subprogs() doesn't do proper cleanup for other subprogs which
+    have not went through the extra pass.
+It will lead to oops and memory leak. Fixed in patch #2. Other arch JIT
+may have the same problem, and will fix later if the proposed fix for
+x86-64 is accepted.
 
->> Ternary search tree always has better memory usage:
->>
->> | memory usage (MB) | 4K  | 16K | 64K  | 128K | 256K | 512K | 1M   | 2M    | 4M    | 7M     |
->> | ----------------- | --- | --- | ---- | ---- | ---- | ---- | ---- | ----- | ----- | ------ |
->> | hash              | 2.2 | 8.9 | 35.5 | 71   | 142  | 284  | 568  | 1136  | 2272  | 4302.5 |
->> | tries             | 2.1 | 8.5 | 34   | 68   | 136  | 272  | 544  | 1088  | 2176  | 4106.9 |
->> | tst               | 0.5 | 1.6 | 5.6  | 10.6 | 20.3 | 38.6 | 73.1 | 138.6 | 264.6 | 479.5  |
->>
-> 
-> Ternary search tree looks amazing.
-> Since you have a prototype can you wrap it into a new type of bpf map
-> and post the patches?
-Will do.
+(3) bpf_int_jit_compile() may fail due to inconsistent twice read values
+    from bpf_jit_harden
+Fixed in patch #3 by caching the value of bpf_jit_blinding_enabled().
 
-> I wonder what data structures look like to achieve such memory efficiency.
-The lower memory usage partially is due to the string set for test is full file
-paths and these paths share the same prefix. And ternary search tree reduces the
-memory usage by sharing the common prefix.
-> .
-> 
+Patch #4 just adds a test to ensure these problem are fixed.
+
+Comments and suggestions are welcome.
+
+Regards,
+Tao
+
+Hou Tao (4):
+  bpf, x86: Fall back to interpreter mode when extra pass fails
+  bpf: Introduce bpf_int_jit_abort()
+  bpf: Fix net.core.bpf_jit_harden race
+  selftests/bpf: Test subprog jit when toggle bpf_jit_harden repeatedly
+
+ arch/x86/net/bpf_jit_comp.c                   | 35 ++++++++-
+ include/linux/filter.h                        |  2 +
+ kernel/bpf/core.c                             | 12 ++-
+ kernel/bpf/verifier.c                         |  8 +-
+ .../selftests/bpf/prog_tests/subprogs.c       | 77 ++++++++++++++++---
+ 5 files changed, 120 insertions(+), 14 deletions(-)
+
+-- 
+2.29.2
+
