@@ -2,133 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B18DC4D27C0
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 05:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3544D26E3
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 05:06:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbiCIB0u (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Mar 2022 20:26:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
+        id S231234AbiCIBvM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Mar 2022 20:51:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbiCIB0t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Mar 2022 20:26:49 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D85B938781;
-        Tue,  8 Mar 2022 17:25:36 -0800 (PST)
-Date:   Tue, 8 Mar 2022 17:09:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1646788170;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CoYbkvqX7SVrmA+5dEmgUrCctf3A7Hfs0hhsJiwcdT0=;
-        b=gOilLZsrg582SBBi9rjggwn2nkeTUMgAaVPXGahDrfK6nr5srF19MFNZjwZPFovUzfUX+w
-        5OnnujQ7pg5YPmWDr5O/YCzzJgjcrpky6oPcxiqYOAAwR44pidDSr41LKBMp1jqhHe3GdY
-        7+i+ROgz0Q2xdSaQbnyS9Ff7/xi7v24=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz,
-        hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        guro@fb.com, linux-mm@kvack.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH RFC 0/9] bpf, mm: recharge bpf memory from offline memcg
-Message-ID: <Yif+QZbCALQcYrFZ@carbon.dhcp.thefacebook.com>
-References: <20220308131056.6732-1-laoar.shao@gmail.com>
+        with ESMTP id S231139AbiCIBvL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Mar 2022 20:51:11 -0500
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A87D1092
+        for <bpf@vger.kernel.org>; Tue,  8 Mar 2022 17:50:14 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 61A65CE1C1C
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 01:50:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 89A38C340EE;
+        Wed,  9 Mar 2022 01:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646790610;
+        bh=el6kkE6pj8kZ91DLFtmF5w/PMgT2Jidlj3+vukmFr2o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=baGQ0/OYOaK0c4iBc8iytH7Pjz5o617Ogq9drjoeDXMDcXoT+yWb3kSJPypOd4GKE
+         svWdVaBITpoDSMEQNjPT7Hiatsvw2J6EUAM8Vw0rXfLGJZk74EpFFZeUw0JIv5A4F/
+         YB1l6LM/nWMJBf8R63YSfNZLd5JFm8FLAVuxl8JxZxhLFKkQGLJwXfkVgLHwI6kLME
+         I7az6+riZdVsqKTL7Q4NsV9ZXX3O5qGR+Y5TScMcKJIP0SS9zt8151VP9ssgMsQRrE
+         kIp6Zf40FeRnowilO7KdHhemLaovYzI/V2YNnzg7ozc4CNC53Gdxv8vcSesDXQyWyv
+         AFEO5q4SJ2l4g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 68DF9E7BB08;
+        Wed,  9 Mar 2022 01:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220308131056.6732-1-laoar.shao@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 bpf-next 0/3] BPF test_progs tests improvement
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164679061042.16054.7847681903762449527.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Mar 2022 01:50:10 +0000
+References: <20220308200449.1757478-1-mykolal@fb.com>
+In-Reply-To: <20220308200449.1757478-1-mykolal@fb.com>
+To:     Mykola Lysenko <mykolal@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+        daniel@iogearbox.net, yhs@fb.com
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 08, 2022 at 01:10:47PM +0000, Yafang Shao wrote:
-> When we use memcg to limit the containers which load bpf progs and maps,
-> we find there is an issue that the lifecycle of container and bpf are not
-> always the same, because we may pin the maps and progs while update the
-> container only. So once the container which has alreay pinned progs and
-> maps is restarted, the pinned progs and maps are no longer charged to it
-> any more. In other words, this kind of container can steal memory from the
-> host, that is not expected by us. This patchset means to resolve this
-> issue.
-> 
-> After the container is restarted, the old memcg which is charged by the
-> pinned progs and maps will be offline but won't be freed until all of the
-> related maps and progs are freed. If we want to charge these bpf memory to
-> the new started memcg, we should uncharge them from the offline memcg first
-> and then charge it to the new one. As we have already known how the bpf
-> memroy is allocated and freed, we can also know how to charge and uncharge
-> it. This pathset implements various charge and uncharge methords for these
-> memory.
-> 
-> Regarding how to do the recharge, we decide to implement new bpf syscalls
-> to do it. With the new implemented bpf syscall, the agent running in the
-> container can use it to do the recharge. As of now we only implement it for
-> the bpf hash maps. Below is a simple example how to do the recharge,
-> 
-> ====
-> int main(int argc, char *argv[])
-> {
-> 	union bpf_attr attr = {};
-> 	int map_id;
-> 	int pfd;
-> 
-> 	if (argc < 2) {
-> 		printf("Pls. give a map id \n");
-> 		exit(-1);
-> 	}
-> 
-> 	map_id = atoi(argv[1]);
-> 	attr.map_id = map_id;
-> 	pfd = syscall(SYS_bpf, BPF_MAP_RECHARGE, &attr, sizeof(attr));
-> 	if (pfd < 0)
-> 		perror("BPF_MAP_RECHARGE");
-> 
-> 	return 0;
-> }
-> 
-> ====
-> 
-> Patch #1 and #2 is for the observability, with which we can easily check
-> whether the bpf maps is charged to a memcg and whether the memcg is offline.
-> Patch #3, #4 and #5 is for the charge and uncharge methord for vmalloc-ed,
-> kmalloc-ed and percpu memory.
-> Patch #6~#9 implements the recharge of bpf hash map, which is mostly used
-> by our bpf services. The other maps hasn't been implemented yet. The bpf progs
-> hasn't been implemented neither.
-> 
-> This pathset is still a POC now, with limited testing. Any feedback is
-> welcomed.
+Hello:
 
-Hello Yafang!
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-It's an interesting topic, which goes well beyond bpf. In general, on cgroup
-offlining we either do nothing either recharge pages to the parent cgroup
-(latter is preferred), which helps to release the pinned memcg structure.
+On Tue, 8 Mar 2022 12:04:46 -0800 you wrote:
+> First patch reduces the sample_freq to 1000 to ensure test will
+> work even when kernel.perf_event_max_sample_rate was reduced to 1000.
+> 
+> Patches for send_signal and find_vma tune the test implementation to
+> make sure needed thread is scheduled. Also, both tests will finish as
+> soon as possible after the test condition is met.
+> 
+> [...]
 
-Your approach raises some questions:
-1) what if the new cgroup is not large enough to contain the bpf map?
-2) does it mean that some userspace app will monitor the state of the cgroup
-which was the original owner of the bpf map and recharge once it's deleted?
-3) what if there are several cgroups are sharing the same map? who will be
-the next owner?
-4) because recharging is fully voluntary, why any application should want to do
-it, if it can just use the memory for free? it doesn't really look as a working
-resource control mechanism.
+Here is the summary with links:
+  - [v4,bpf-next,1/3] Improve perf related BPF tests (sample_freq issue)
+    https://git.kernel.org/bpf/bpf-next/c/d4b540544499
+  - [v4,bpf-next,2/3] Improve send_signal BPF test stability
+    https://git.kernel.org/bpf/bpf-next/c/1fd49864127c
+  - [v4,bpf-next,3/3] Improve stability of find_vma BPF test
+    https://git.kernel.org/bpf/bpf-next/c/ba83af059153
 
-Will reparenting work for your case? If not, can you, please, describe the
-problem you're trying to solve by recharging the memory?
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks!
+
