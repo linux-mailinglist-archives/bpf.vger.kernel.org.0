@@ -2,178 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2DE4D2D2A
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 11:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F83F4D2D71
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 11:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbiCIKgR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 05:36:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55212 "EHLO
+        id S231610AbiCIKyx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 05:54:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbiCIKgQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 05:36:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 485AFEB15A
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 02:35:18 -0800 (PST)
+        with ESMTP id S229825AbiCIKyv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 05:54:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F332B108BFA
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 02:53:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646822117;
+        s=mimecast20190719; t=1646823231;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=92tkil4B/YfMjsRlwMuANtc0Vrgq6z66WglTSkkwlNA=;
-        b=OtAHwAOoLqNwbQ7yQBXKYmF/bH9ncCmQXrrkP8okVnQWzuCq4+1b7IfkqNZvkL8XSHDMNL
-        gG+zwWKS0+GXWUJ3sOHY2rvZ6RrPzvm2vlDNymy/DNRBwMPaCxtmu6gQrFvVeG48IirSl3
-        KAfeHhgAPIqkDTbE64fXz0sM+rluzzo=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding;
+        bh=02r+NmCazBBggQt7cpmsLpOIdXu9uJMEzOSzvtqhcj4=;
+        b=IRYf3WJWJeAzOYvE/lEl7UB6txEaKyWaQeOtWk8OCIdsplHrjMHHhpITWURUEQ8eVveitR
+        vSBp6Vh/boU/ims0jNhEMn09Wf8qPI0Ld3s+0VyKKdbFrNJweRyE9GDAFPabsn6w666v2Z
+        3xfysgMw727g6PnCHmy4dkurrjvV6rE=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-610-4BxnfQurOOOtmi5Gozwn0g-1; Wed, 09 Mar 2022 05:35:16 -0500
-X-MC-Unique: 4BxnfQurOOOtmi5Gozwn0g-1
-Received: by mail-ed1-f71.google.com with SMTP id o20-20020aa7dd54000000b00413bc19ad08so1059306edw.7
-        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 02:35:15 -0800 (PST)
+ us-mta-609-yg74YGm-MLSqvxdjlIsYlg-1; Wed, 09 Mar 2022 05:53:50 -0500
+X-MC-Unique: yg74YGm-MLSqvxdjlIsYlg-1
+Received: by mail-ej1-f69.google.com with SMTP id qf24-20020a1709077f1800b006ce8c140d3dso1080495ejc.18
+        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 02:53:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=92tkil4B/YfMjsRlwMuANtc0Vrgq6z66WglTSkkwlNA=;
-        b=p3oW+Oii5NkyNbnCEWh9esR+TsFnwWTL2LOBrJ/nm2siSNtXoRrKARCx+yy0oAGgnV
-         2Jg2fcqk5ZA1SEkW/qu5l44D6qRcKlxKgX4QZuiK1RkQYTfLiECN9+5fPwEYkAWV02Mm
-         odTZeZELO+S5deaNva9ezvXxou3qxoLQ+ss4bhGI+OmZ60+Q/IJBYvN6awlq1dDqzFdp
-         2jpwwA9BIUSnCTvsdYvqUNy9Rj5uErE2vBZzUzwU4YrW53inpa4j/3kq66n+5VGxUUFs
-         cmkHdd2fOBvcUkzpUjrw36r61kclYKk6udCIaWRVhF2TJSHd+RHIcgP7PXgR7QbwTpXb
-         6MFw==
-X-Gm-Message-State: AOAM531ORiGUqJBElOaYVWcXb8rk92I3xsG0YwartwS1osHEZn27ZJTZ
-        6Ue3/wqVz63VPoSzft8JNhDNz8dEyVUwXkp0qUht9DqFPSmViCUUXJDoXJw0itcOS4EhnUQiXPR
-        WAuM2TIVl1nEm
-X-Received: by 2002:a17:906:b50:b0:6d6:e503:131c with SMTP id v16-20020a1709060b5000b006d6e503131cmr16974937ejg.597.1646822114617;
-        Wed, 09 Mar 2022 02:35:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwAPWJSjo0iYiBtPlfXi30N80hLtsRGajYqQqdLwzPHV7Uo+j8kWTXXkYw1BdTVNR4RbtXXtA==
-X-Received: by 2002:a17:906:b50:b0:6d6:e503:131c with SMTP id v16-20020a1709060b5000b006d6e503131cmr16974912ejg.597.1646822114188;
-        Wed, 09 Mar 2022 02:35:14 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=02r+NmCazBBggQt7cpmsLpOIdXu9uJMEzOSzvtqhcj4=;
+        b=DSIDCQyAhtGUtzED73lnLTn6dryQHKn7CE6SM683CsVet2QLSK7pKJ9ETxesnCiVgA
+         XQp2K4/MqJExbOYDbvXatk645Z1DQQVMr/Va9hGm0qbFW+eFFvd8g3UnI0x9r6S2dVj+
+         PlR3QihgwyBcru0tWZDNBSNOs0MGej+KPq0uENsZhsGq44WHtRbDOhxAGHDly325OXt2
+         mY22oMgE7iGU2tgq1nrgzuar+BkPqGUmN5Jpz6IjFTaFp0u8jiwUAk8/PN+RXYAZ0Nsk
+         F8JCvFCgJjNZAYuaCN/NHvcMrivCDMXgiz6bHDjSVKwXl+zjIBFqDfEIss4bjREaqK+Q
+         9mIQ==
+X-Gm-Message-State: AOAM532b+Ni9hIxa2850agurIOdii29DFWL3eiIiQ5WfyRl0BdgnPXxU
+        zZwA8H8NpT1zZ4bJXzX5gEkqq2cXXr+2RYXDxA0tL7zY4CF5AMH7pwEcZT6M4LN+mZD3kMdsrFv
+        w0iO0XOOmFAcZ
+X-Received: by 2002:a05:6402:26d0:b0:416:7165:269a with SMTP id x16-20020a05640226d000b004167165269amr6783884edd.61.1646823229152;
+        Wed, 09 Mar 2022 02:53:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyDjlb1CuYh5dhEiPKbAnGIQAqcmEaq4OyIJn0XbOV/ot+24zANGDXknRFViye64mzQtOXOgQ==
+X-Received: by 2002:a05:6402:26d0:b0:416:7165:269a with SMTP id x16-20020a05640226d000b004167165269amr6783860edd.61.1646823228659;
+        Wed, 09 Mar 2022 02:53:48 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id fy1-20020a1709069f0100b006d229ed7f30sm570156ejc.39.2022.03.09.02.35.13
+        by smtp.gmail.com with ESMTPSA id lk10-20020a170906cb0a00b006da92317793sm577564ejb.131.2022.03.09.02.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Mar 2022 02:35:13 -0800 (PST)
+        Wed, 09 Mar 2022 02:53:48 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id ECC3E192A9F; Wed,  9 Mar 2022 11:35:12 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id 5A161192AA5; Wed,  9 Mar 2022 11:53:47 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v10 1/5] bpf: Add "live packet" mode for XDP in
- BPF_PROG_RUN
-In-Reply-To: <20220309061018.wn5tddiguywdeyra@kafai-mbp.dhcp.thefacebook.com>
-References: <20220308145801.46256-1-toke@redhat.com>
- <20220308145801.46256-2-toke@redhat.com>
- <20220309061018.wn5tddiguywdeyra@kafai-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 09 Mar 2022 11:35:12 +0100
-Message-ID: <87h787wh0f.fsf@toke.dk>
+Subject: [PATCH bpf-next v11 0/5] Add support for transmitting packets using XDP in bpf_prog_run()
+Date:   Wed,  9 Mar 2022 11:53:41 +0100
+Message-Id: <20220309105346.100053-1-toke@redhat.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+This series adds support for transmitting packets using XDP in
+bpf_prog_run(), by enabling a new mode "live packet" mode which will handle
+the XDP program return codes and redirect the packets to the stack or other
+devices.
 
-> On Tue, Mar 08, 2022 at 03:57:57PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> +static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_pro=
-g *prog,
->> +			      u32 repeat)
->> +{
->> +	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
->> +	int err =3D 0, act, ret, i, nframes =3D 0, batch_sz;
->> +	struct xdp_frame **frames =3D xdp->frames;
->> +	struct xdp_page_head *head;
->> +	struct xdp_frame *frm;
->> +	bool redirect =3D false;
->> +	struct xdp_buff *ctx;
->> +	struct page *page;
->> +
->> +	batch_sz =3D min_t(u32, repeat, xdp->batch_size);
->> +
->> +	local_bh_disable();
->> +	xdp_set_return_frame_no_direct();
->> +
->> +	for (i =3D 0; i < batch_sz; i++) {
->> +		page =3D page_pool_dev_alloc_pages(xdp->pp);
->> +		if (!page) {
->> +			err =3D -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		head =3D phys_to_virt(page_to_phys(page));
->> +		reset_ctx(head);
->> +		ctx =3D &head->ctx;
->> +		frm =3D &head->frm;
->> +		xdp->frame_cnt++;
->> +
->> +		act =3D bpf_prog_run_xdp(prog, ctx);
->> +
->> +		/* if program changed pkt bounds we need to update the xdp_frame */
->> +		if (unlikely(ctx_was_changed(head))) {
->> +			ret =3D xdp_update_frame_from_buff(ctx, frm);
->> +			if (ret) {
->> +				xdp_return_buff(ctx);
->> +				continue;
->> +			}
->> +		}
->> +
->> +		switch (act) {
->> +		case XDP_TX:
->> +			/* we can't do a real XDP_TX since we're not in the
->> +			 * driver, so turn it into a REDIRECT back to the same
->> +			 * index
->> +			 */
->> +			ri->tgt_index =3D xdp->dev->ifindex;
->> +			ri->map_id =3D INT_MAX;
->> +			ri->map_type =3D BPF_MAP_TYPE_UNSPEC;
->> +			fallthrough;
->> +		case XDP_REDIRECT:
->> +			redirect =3D true;
->> +			ret =3D xdp_do_redirect_frame(xdp->dev, ctx, frm, prog);
->> +			if (ret)
->> +				xdp_return_buff(ctx);
->> +			break;
->> +		case XDP_PASS:
->> +			frames[nframes++] =3D frm;
->> +			break;
->> +		default:
->> +			bpf_warn_invalid_xdp_action(NULL, prog, act);
->> +			fallthrough;
->> +		case XDP_DROP:
->> +			xdp_return_buff(ctx);
->> +			break;
->> +		}
->> +	}
->> +
->> +out:
->> +	if (redirect)
->> +		xdp_do_flush();
->> +	if (nframes)
->> +		err =3D xdp_recv_frames(frames, nframes, xdp->skbs, xdp->dev);
-> This may overwrite the -ENOMEM with 0.
+The primary use case for this is testing the redirect map types and the
+ndo_xdp_xmit driver operation without an external traffic generator. But it
+turns out to also be useful for creating a programmable traffic generator
+in XDP, as well as injecting frames into the stack. A sample traffic
+generator, which was included in previous versions of the series, but now
+moved to xdp-tools, transmits up to 9 Mpps/core on my test machine.
 
-Argh, oops! And here I thought I was being clever by getting rid of the
-indirection through 'ret'. Will fix, thanks!
+To transmit the frames, the new mode instantiates a page_pool structure in
+bpf_prog_run() and initialises the pages to contain XDP frames with the
+data passed in by userspace. These frames can then be handled as though
+they came from the hardware XDP path, and the existing page_pool code takes
+care of returning and recycling them. The setup is optimised for high
+performance with a high number of repetitions to support stress testing and
+the traffic generator use case; see patch 1 for details.
 
--Toke
+v11:
+- Fix override of return code in xdp_test_run_batch()
+- Add Martin's ACKs to remaining patches
+
+v10:
+- Only propagate memory allocation errors from xdp_test_run_batch()
+- Get rid of BPF_F_TEST_XDP_RESERVED; batch_size can be used to probe
+- Check that batch_size is unset in non-XDP test_run funcs
+- Lower the number of repetitions in the selftest to 10k
+- Count number of recycled pages in the selftest
+- Fix a few other nits from Martin, carry forward ACKs
+
+v9:
+- XDP_DROP packets in the selftest to ensure pages are recycled
+- Fix a few issues reported by the kernel test robot
+- Rewrite the documentation of the batch size to make it a bit clearer
+- Rebase to newest bpf-next
+
+v8:
+- Make the batch size configurable from userspace
+- Don't interrupt the packet loop on errors in do_redirect (this can be
+  caught from the tracepoint)
+- Add documentation of the feature
+- Add reserved flag userspace can use to probe for support (kernel didn't
+  check flags previously)
+- Rebase to newest bpf-next, disallow live mode for jumbo frames
+
+v7:
+- Extend the local_bh_disable() to cover the full test run loop, to prevent
+  running concurrently with the softirq. Fixes a deadlock with veth xmit.
+- Reinstate the forwarding sysctl setting in the selftest, and bump up the
+  number of packets being transmitted to trigger the above bug.
+- Update commit message to make it clear that user space can select the
+  ingress interface.
+
+v6:
+- Fix meta vs data pointer setting and add a selftest for it
+- Add local_bh_disable() around code passing packets up the stack
+- Create a new netns for the selftest and use a TC program instead of the
+  forwarding hack to count packets being XDP_PASS'ed from the test prog.
+- Check for the correct ingress ifindex in the selftest
+- Rebase and drop patches 1-5 that were already merged
+
+v5:
+- Rebase to current bpf-next
+
+v4:
+- Fix a few code style issues (Alexei)
+- Also handle the other return codes: XDP_PASS builds skbs and injects them
+  into the stack, and XDP_TX is turned into a redirect out the same
+  interface (Alexei).
+- Drop the last patch adding an xdp_trafficgen program to samples/bpf; this
+  will live in xdp-tools instead (Alexei).
+- Add a separate bpf_test_run_xdp_live() function to test_run.c instead of
+  entangling the new mode in the existing bpf_test_run().
+
+v3:
+- Reorder patches to make sure they all build individually (Patchwork)
+- Remove a couple of unused variables (Patchwork)
+- Remove unlikely() annotation in slow path and add back John's ACK that I
+  accidentally dropped for v2 (John)
+
+v2:
+- Split up up __xdp_do_redirect to avoid passing two pointers to it (John)
+- Always reset context pointers before each test run (John)
+- Use get_mac_addr() from xdp_sample_user.h instead of rolling our own (Kumar)
+- Fix wrong offset for metadata pointer
+
+Toke Høiland-Jørgensen (5):
+  bpf: Add "live packet" mode for XDP in BPF_PROG_RUN
+  Documentation/bpf: Add documentation for BPF_PROG_RUN
+  libbpf: Support batch_size option to bpf_prog_test_run
+  selftests/bpf: Move open_netns() and close_netns() into
+    network_helpers.c
+  selftests/bpf: Add selftest for XDP_REDIRECT in BPF_PROG_RUN
+
+ Documentation/bpf/bpf_prog_run.rst            | 117 ++++++
+ Documentation/bpf/index.rst                   |   1 +
+ include/uapi/linux/bpf.h                      |   3 +
+ kernel/bpf/Kconfig                            |   1 +
+ kernel/bpf/syscall.c                          |   2 +-
+ net/bpf/test_run.c                            | 334 +++++++++++++++++-
+ tools/include/uapi/linux/bpf.h                |   3 +
+ tools/lib/bpf/bpf.c                           |   1 +
+ tools/lib/bpf/bpf.h                           |   3 +-
+ tools/testing/selftests/bpf/network_helpers.c |  86 +++++
+ tools/testing/selftests/bpf/network_helpers.h |   9 +
+ .../selftests/bpf/prog_tests/tc_redirect.c    |  89 -----
+ .../bpf/prog_tests/xdp_do_redirect.c          | 177 ++++++++++
+ .../bpf/progs/test_xdp_do_redirect.c          | 100 ++++++
+ 14 files changed, 821 insertions(+), 105 deletions(-)
+ create mode 100644 Documentation/bpf/bpf_prog_run.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_xdp_do_redirect.c
+
+-- 
+2.35.1
 
