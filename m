@@ -2,40 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E3C4D3BA6
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 22:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6F14D3C22
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 22:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbiCIVEe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 16:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S235357AbiCIVhR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 16:37:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbiCIVEe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 16:04:34 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E358935240;
-        Wed,  9 Mar 2022 13:03:34 -0800 (PST)
+        with ESMTP id S235179AbiCIVhQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 16:37:16 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2510CFA231;
+        Wed,  9 Mar 2022 13:36:16 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0389C61A74;
-        Wed,  9 Mar 2022 21:03:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF41AC340E8;
-        Wed,  9 Mar 2022 21:03:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646859813;
-        bh=OcrV5azfQFTJQc6og+7xhBeiB30HvqTIYzMyp9F7t2o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GwC+mlky5WDv+hgPz4JGzC13hH+nx5jE80JAiLmK6xXfpCn3QGRh+PU7TQ0AqIFzD
-         hg7+8RzJ2zz1k+Ue4bFReKzn3s+erH2ejpPt+fNOHtcBXbor3sp7eSshGqZUK0TqW9
-         T/NXobudWvS0coKBwzC9sKiQRlfUyXU4Zh2UncywRGK3GO32T85vNitpJwvHHwZTyX
-         HsNlGjiYuGCO5Vg06Cr5j9U8ylQpdxTzftyLyaRogsCrEVOW3KKxN64dXMtwkftO9l
-         yZgXmsruK3lmeixn3lnP1CqlCzypEp3Z9q/Ddu8VHiF642ivqkiRjagss1W3hmFek/
-         xZzq1jA4UqS1A==
-Date:   Wed, 9 Mar 2022 13:03:31 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B60D261B0E;
+        Wed,  9 Mar 2022 21:36:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B8DEC340E8;
+        Wed,  9 Mar 2022 21:36:13 +0000 (UTC)
+Date:   Wed, 9 Mar 2022 16:36:11 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
 To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
+        <toke@redhat.com>, netdev@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -45,39 +36,46 @@ Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH net] xdp: xdp_mem_allocator can be NULL in
+Subject: Re: [PATCH net v2] xdp: xdp_mem_allocator can be NULL in
  trace_mem_connect().
-Message-ID: <20220309130331.0f28ab36@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YikSiGjkOtM7zMkM@linutronix.de>
-References: <YiC0BwndXiwxGDNz@linutronix.de>
-        <875yovdtm4.fsf@toke.dk>
-        <YiDM0WRlWuM2jjNJ@linutronix.de>
-        <87y21l7lmr.fsf@toke.dk>
-        <YiZIEVTRMQVYe8DP@linutronix.de>
-        <87sfrt7i1i.fsf@toke.dk>
-        <20220309091508.4e48511f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YikSiGjkOtM7zMkM@linutronix.de>
+Message-ID: <20220309163611.3c6e2beb@gandalf.local.home>
+In-Reply-To: <YikSav7Y1iEQv8sq@linutronix.de>
+References: <YikSav7Y1iEQv8sq@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 9 Mar 2022 21:48:08 +0100 Sebastian Andrzej Siewior wrote:
-> On 2022-03-09 09:15:08 [-0800], Jakub Kicinski wrote:
-> > Was the patch posted? This seems to be a 5.17 thing, so it'd be really
-> > really good if the fix was in net by tomorrow morning! :S  
-> 
-> Just posted v2.
+On Wed, 9 Mar 2022 21:47:38 +0100
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-Perfect, thank you!
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -357,7 +357,8 @@ int xdp_rxq_info_reg_mem_model(struct xdp_rxq_info *xdp_rxq,
+>  	if (IS_ERR(xdp_alloc))
+>  		return PTR_ERR(xdp_alloc);
+>  
+> -	trace_mem_connect(xdp_alloc, xdp_rxq);
+> +	if (xdp_alloc)
+
+Eliminate the check when tracing is disabled:
+
+	if (trace_mem_connect_enabled() && xdp_alloc)
+
+-- Steve
+
+
+> +		trace_mem_connect(xdp_alloc, xdp_rxq);
+>  	return 0;
+>  }
+>  
