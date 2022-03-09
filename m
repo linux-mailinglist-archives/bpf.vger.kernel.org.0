@@ -2,119 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2204D3C26
-	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 22:37:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 044CE4D3C67
+	for <lists+bpf@lfdr.de>; Wed,  9 Mar 2022 22:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237633AbiCIViM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Mar 2022 16:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38112 "EHLO
+        id S236242AbiCIVxV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Mar 2022 16:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235532AbiCIViL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Mar 2022 16:38:11 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E51FA23F
-        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 13:37:11 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id gj15-20020a17090b108f00b001bef86c67c1so3471135pjb.3
-        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 13:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wlzgTk54ceIcRNUIRfltpizWVBeZoYCRZ8q4Bed9oLE=;
-        b=VbMpg2UEFOZKZXQ5NwnPX9SeOVkeE9/ZhzMl1B8h7Hb0C9SPsw2hRuqRoes9stgpG9
-         1FB3SRLXSUXMvALYlhQ9dXYr+e7EVet/DAaXZ4MzxtD8V2glb/+okoXBx/eKxbS3DCX5
-         KFPv/VFcQ6+a0U1htGoniK7qBY9J7FkUfYYchQY5l0XQDrRHg6X93ApRbOKYQHQnHk9T
-         cv5WoO3ZM2UwLm4Dc0JHLIF9gbBvNm/yb2rrlfUUKBMFd+JffuJu/mF/sd4nz1jpquGH
-         5FhAWy1r/wN12TTsYuzFc6O1eCQHBMYn42rOLHw7ydiupIAp0bEGo2xnTFr1ZN9K+n72
-         576g==
+        with ESMTP id S233863AbiCIVxU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Mar 2022 16:53:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B788F4631
+        for <bpf@vger.kernel.org>; Wed,  9 Mar 2022 13:52:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646862740;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Jt46+1UBm/1UiUEBiRZpbEhGZ+ENlJfo7E1vE1EyEB4=;
+        b=K6h9e7pUCt9aj5A0jK2gKL/GVd7bDgyViMXcmXK8iEyAF2YMO2otl1VEz4bnmle+empkBI
+        kpHxqEYBMh1fXjENJrTZymNNYwncv+hzz5E1XxuxDEctBH4jhBsY+2EYx6HlXLQmXfYypE
+        UOz9vmeUZDmrRwSx16KHePpM+BbWr+E=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-604-xL5-suPWMYexG9twRL500Q-1; Wed, 09 Mar 2022 16:52:19 -0500
+X-MC-Unique: xL5-suPWMYexG9twRL500Q-1
+Received: by mail-ed1-f71.google.com with SMTP id bq19-20020a056402215300b0040f276105a4so1994133edb.2
+        for <bpf@vger.kernel.org>; Wed, 09 Mar 2022 13:52:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wlzgTk54ceIcRNUIRfltpizWVBeZoYCRZ8q4Bed9oLE=;
-        b=zpXzVZQAdwxlGHkmyTsM5n77QvpMp3XKaPJHM0l3HCWMz5ep388mw648Qv/QaPzTYs
-         NsNTYPX1tl94dAtLX1uSLMYMK0C33bz1+GDYw9czolJc4WlF8AcMgLmhpxZtW9GZG2yQ
-         bonH0BiRjGbKdNLV8AJPRWNoUmvrrGJrHBtWoBhKdg11YgkVF1yq/R4rQ14oz0BhOVCc
-         IAwTQtPUoceawX7EsB44DngUXZffNjoe4J1Rw6C2MMOeJIY1cjdqagPbU9E4PfrKDtfm
-         zSv20eoQ9Pfv4LZlprudgrL6FtbSGiuYA2w6851n4fGs7NyMVOvGe8NMGGq+3JkL9CyB
-         cPVg==
-X-Gm-Message-State: AOAM530wMaI54lNUZWqq3I0IWi89rA/EbWFri1HkEZ29HiO0Ut4beR6x
-        bAfOi4OmzcNHAFGTiMQgOTQjyg==
-X-Google-Smtp-Source: ABdhPJwGMmx8SPY+CM0XimNEXYg9jCyiePtDuMoMlCxK7GllqQ3cz2ZD/SGfSjxiutbYdowCWGKajQ==
-X-Received: by 2002:a17:90b:4f44:b0:1bf:61b2:4560 with SMTP id pj4-20020a17090b4f4400b001bf61b24560mr12287231pjb.245.1646861831400;
-        Wed, 09 Mar 2022 13:37:11 -0800 (PST)
-Received: from [192.168.254.17] ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id s3-20020a056a00194300b004f6da3a1a3bsm4189545pfk.8.2022.03.09.13.37.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Mar 2022 13:37:11 -0800 (PST)
-Message-ID: <8fdab42f-171f-53d7-8e0e-b29161c0e3e2@linaro.org>
-Date:   Wed, 9 Mar 2022 13:37:10 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-Content-Language: en-US
-To:     David Ahern <dsahern@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Jt46+1UBm/1UiUEBiRZpbEhGZ+ENlJfo7E1vE1EyEB4=;
+        b=kPLHYXpnuD/R6Udm7LrvWEx6JCoCVIazAK5gCVezZbBifxmVDLM75YZ5JslLlWsE00
+         WXafFvMyQZdStfrzjHKabRtEDRvJXlOLAw78LNyOT/UoxcWpAZYRp6j/i3ms2r40/wii
+         rESkoVtClDHZT4SxEob3ldgP6DNGihERDEmULSBiK9+nMWfB/cqWzJNkFkhtkFvH8SzR
+         O5Rtli/4U2XOTc2fbEd8ydnQB8GB0qL+f6mNNY+Ks2ASFQ2W7g4Rjo8BQ2kHp8ITUIUu
+         Jy7EPcoAhVCa48L6mpmeSyIXJZLufX8cGjpEqVhkQU5jGwexzRNpZTBPskkne+ylie4J
+         PptA==
+X-Gm-Message-State: AOAM532AmSIuLKfychGNHqfzB37lQbQbsEXgWrGkD2ljzHlvcKUZHXpG
+        oV2IRoWNsXtH1mpiLaqgYroVq3BWd2A+AHA+Ya+yvxivXlWXSgLaloYLaGfM3gQXOm9Jzmf9b6V
+        2CqSO0smYWrLy
+X-Received: by 2002:a05:6402:168e:b0:416:1714:a45c with SMTP id a14-20020a056402168e00b004161714a45cmr1431825edv.313.1646862737111;
+        Wed, 09 Mar 2022 13:52:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxkx7BIwgJLX3HbEgIm5+oS2n8RfHGLt73XmG46iPOoMx8OhSB+V6R63JXLAqYDdf2VUefnwA==
+X-Received: by 2002:a05:6402:168e:b0:416:1714:a45c with SMTP id a14-20020a056402168e00b004161714a45cmr1431731edv.313.1646862735382;
+        Wed, 09 Mar 2022 13:52:15 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id z3-20020a056402274300b004169771bd91sm1226184edd.39.2022.03.09.13.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Mar 2022 13:52:14 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 13C8F192B64; Wed,  9 Mar 2022 22:52:14 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
-        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
-References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
- <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com>
- <6155b68c-161b-0745-b303-f7e037b56e28@linaro.org>
- <66463e26-8564-9f58-ce41-9a2843891d1a@kernel.org>
- <45522c89-a3b4-4b98-232b-9c69470124a3@linaro.org>
- <ff2e1007-5883-5178-6415-326d6ae69c34@kernel.org>
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-In-Reply-To: <ff2e1007-5883-5178-6415-326d6ae69c34@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH net v2] xdp: xdp_mem_allocator can be NULL in
+ trace_mem_connect().
+In-Reply-To: <YikSav7Y1iEQv8sq@linutronix.de>
+References: <YikSav7Y1iEQv8sq@linutronix.de>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 09 Mar 2022 22:52:14 +0100
+Message-ID: <87v8wmvlo1.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 3/8/22 21:01, David Ahern wrote:
-> On 3/8/22 12:46 PM, Tadeusz Struk wrote:
->> That fails in the same way:
->>
->> skbuff: skb_over_panic: text:ffffffff83e7b48b len:65575 put:65575
->> head:ffff888101f8a000 data:ffff888101f8a088 tail:0x100af end:0x6c0
->> dev:<NULL>
->> ------------[ cut here ]------------
->> kernel BUG at net/core/skbuff.c:113!
->> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
->> CPU: 0 PID: 1852 Comm: repro Not tainted
->> 5.17.0-rc7-00020-gea4424be1688-dirty #19
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
->> RIP: 0010:skb_panic+0x173/0x175
->>
->> I'm not sure how it supposed to help since it doesn't change the
->> alloclen at all.
-> 
-> alloclen is a function of fraglen and fraglen is a function of datalen.
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
 
-Ok, but in this case it doesn't affect the alloclen and it still fails.
+> Since the commit mentioned below __xdp_reg_mem_model() can return a NULL
+> pointer. This pointer is dereferenced in trace_mem_connect() which leads
+> to segfault.
+>
+> The trace points (mem_connect + mem_disconnect) were put in place to
+> pair connect/disconnect using the IDs. The ID is only assigned if
+> __xdp_reg_mem_model() does not return NULL. That connect trace point is
+> of no use if there is no ID.
+>
+> Skip that connect trace point if xdp_alloc is NULL.
+>
+> [ Toke H=C3=B8iland-J=C3=B8rgensen delivered the reasoning for skipping t=
+he trace
+>   point ]
+>
+> Fixes: 4a48ef70b93b8 ("xdp: Allow registering memory model without rxq re=
+ference")
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
--- 
-Thanks,
-Tadeusz
+With Steven's fix:
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
