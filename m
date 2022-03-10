@@ -2,69 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABA44D551F
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9EFE4D5526
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244516AbiCJXKz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 18:10:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S1344130AbiCJXN0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 18:13:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344588AbiCJXKz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 18:10:55 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC528199E3C;
-        Thu, 10 Mar 2022 15:09:52 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id h7so4852573ile.1;
-        Thu, 10 Mar 2022 15:09:52 -0800 (PST)
+        with ESMTP id S241967AbiCJXNX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 18:13:23 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E988F19ABCB;
+        Thu, 10 Mar 2022 15:12:21 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id q11so8304967iod.6;
+        Thu, 10 Mar 2022 15:12:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j4TVDw4rN6EdYfGSgXLoGMrFzFLcXGq34JPi95cMvSw=;
-        b=MzFGsdF/UoyHF9nXUp/V62u6tWx9msTKat4rhv/HH+mvvh5D7laPUquovlqcetNf4i
-         EsTjQuX6sNZY4Rbsu9zICYQ+CNkVp+MqUKRauSete+OLlVPHAQ3sROxksMGgVxGCeagx
-         CDNFdFdlaq0+ZncYFbTNLX3h7n+5w7j3ZtOeP3G2nWeaZobi5SmTtSZvdP5LOEI4Rwde
-         xXxV4hOffZXFxJ8sfBg4SUqUcyu5Qcb64H6pJfQmF4qohGmX5kZ6XjCdPmR03D8DMaIo
-         O8TFYKGMDRyZQ302F1OVrZ3YYyWPigndKr0J8oo9ACLEOEGdrAOPIvpel+gYQfsB2Y4X
-         WCQQ==
+         :cc:content-transfer-encoding;
+        bh=dxCHAjsDCTNBJKyEwkL56V3bK7pD9RSNMgx9E8Iptqs=;
+        b=VfHxDVJICHGUMwmhobHcWJ09/45B5rL0He6UelxYJp43oIKB9SB1VvGdbElWfEOqxJ
+         439B0qQB+kj3+H2g+DA9X3qGw/AA72SiXQnzEuWgxGAlwHMiRxAiy4Vd7Lnp2YgebNh7
+         58v4mvdiZ3J4MsXaQ5IVMjbiQIKjS644xmeJ7lrg0d0aVhvQLhdJr5WL1ob60lfLQOqL
+         89qEuFPkVjpxIOBEVXC9raCSVi0XxfGbS3fv7pRmcSPWUxmmTFRVLfpvJ4DLy+T1olbG
+         yl4qzmjE9jaMskn2SOQSEdB42HFeAHTFLKnZ48Pd671dtWQAIA2+hfK8CUhNtgKhb35T
+         P07A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j4TVDw4rN6EdYfGSgXLoGMrFzFLcXGq34JPi95cMvSw=;
-        b=6stq3f4Jm5y9X6i4pek+s+dUPOWdPFmI0ZzRFDCoAa/Lt/+dlRzrWizcX0qUXKn9G0
-         LCkM5P4UgVpcBLnag1qXKI9eMHjZOylxukvSQRg5yqAlRrxMN3w98Oj9NtQMEH3I6XWn
-         xmE8aVj6D/bp7MKvlKWgd1HgP55i0Bm4Q5kNu3i1XCd5iDsJEzp0GsK58tVfX9cFNrsq
-         EYRd7Fw1SgjCXf5MUP1DGMX0/Y6c0+dDwdNyBx5GumCyMWJn+C2j6ET5ovmFJaTn6pEP
-         c7btcWtew5110Tq6M7ww/x4qB9/mvyLL1hq8fTRPqsR1K5s5MBF3UN3a4VLkGcD1fwWW
-         CqQA==
-X-Gm-Message-State: AOAM531+6y0kONsYPm3NwEhHoRz8WoilagGpK/hxmfW67KPR9KwLAL9c
-        kaM7kOpJw+oXto66cb6CrlDL7XzdAG1VL3N+/bE=
-X-Google-Smtp-Source: ABdhPJz+nVSzfb7UPqcbxCTQj5LQsrCrRN215patQqWbbNR9esDAnPphIX1F9pQENL5bVSMTv2Z7KbWyliSt4y5NRKk=
-X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
- y6-20020a926406000000b002bbf1dee13emr5477171ilb.305.1646953792190; Thu, 10
- Mar 2022 15:09:52 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dxCHAjsDCTNBJKyEwkL56V3bK7pD9RSNMgx9E8Iptqs=;
+        b=iyz0Totao0oYm9TxlxnAneeBaL8m1EsaviamDRluUodqMyvI/GOiRBvoIGa3YjWyal
+         O8bl4KI/V0lzV30hI0gpN8Iqlyv66Qjqc5vdDPZV6EsI6fODDWcOT53KgtOZaaXuYTgM
+         8gD9Tq4JEmnapXc2SiVFhcPyrNV5bC6BkoTrSkPGX+mqg6YpVCpqxODEvKdt3fwoLE/H
+         xufcqeSrssK+rF5ED7QJXosOI1nb0FTAmraU6e0OJISMkx0eJ8M4RxBWQi5N5S95S1/x
+         FvjB356kHytKOGOWAjNW3Cn4H/cqRVsNR90b7hLFQdfM426erJG9tM6dMWXenDC8xlg2
+         O7tQ==
+X-Gm-Message-State: AOAM533ifRnsX42JdkTLkJLBgpI5zigJ8GEcYbVwwtfadoX1a/XBzko/
+        Y7E4dRfaZq6+Rf2VqWDhbPtK2+Pk2GD0eqO0V2A=
+X-Google-Smtp-Source: ABdhPJzj010mbCfGWOgXWrtCT/ERGcFxEkoCnXh09bDgXAuSfCqLSTCWZHTCMgDxTpxmlL02KCmIcl+5U2wEm2bmsL4=
+X-Received: by 2002:a05:6638:33a8:b0:319:cb5c:f6d9 with SMTP id
+ h40-20020a05663833a800b00319cb5cf6d9mr946015jav.93.1646953941324; Thu, 10 Mar
+ 2022 15:12:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20220306234311.452206-1-memxor@gmail.com> <20220306234311.452206-2-memxor@gmail.com>
- <CAEf4Bza0smGgyty87gfbUM8z5i+QOFvVqH+VHYcQxobODxCvfQ@mail.gmail.com>
- <20220308062602.7aydtzkk5ghyo5gb@apollo.legion> <CAEf4BzbfQ6S526j61uNc0gqE3q=QCyWpztZVMdiM38JFKazmRA@mail.gmail.com>
-In-Reply-To: <CAEf4BzbfQ6S526j61uNc0gqE3q=QCyWpztZVMdiM38JFKazmRA@mail.gmail.com>
+References: <20220306234311.452206-1-memxor@gmail.com> <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
+ <20220308070828.4tjiuvvyqwmhru6a@apollo.legion> <87lexky33s.fsf@toke.dk>
+In-Reply-To: <87lexky33s.fsf@toke.dk>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Mar 2022 15:09:40 -0800
-Message-ID: <CAEf4Bzb1DmZazWP0YpB-bhbeM-DYyOLSVQjWMS306MoSw51Xww@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/5] bpf: Add ARG_SCALAR and ARG_CONSTANT
-To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 10 Mar 2022 15:12:10 -0800
+Message-ID: <CAEf4Bza6BhG7wtgmvWohEKpN5jSTyQwxm5-738oMoniz1v3uVw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 0/5] Introduce bpf_packet_pointer helper
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Martin KaFai Lau <kafai@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
         Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -75,191 +75,115 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 3:05 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Mar 8, 2022 at 5:40 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
 >
-> On Mon, Mar 7, 2022 at 10:26 PM Kumar Kartikeya Dwivedi
-> <memxor@gmail.com> wrote:
+> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>
+> > On Tue, Mar 08, 2022 at 11:18:52AM IST, Andrii Nakryiko wrote:
+> >> On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmail.c=
+om> wrote:
+> >> >
+> >> > Expose existing 'bpf_xdp_pointer' as a BPF helper named 'bpf_packet_=
+pointer'
+> >> > returning a packet pointer with a fixed immutable range. This can be=
+ useful to
+> >> > enable DPA without having to use memcpy (currently the case in
+> >> > bpf_xdp_load_bytes and bpf_xdp_store_bytes).
+> >> >
+> >> > The intended usage to read and write data for multi-buff XDP is:
+> >> >
+> >> >         int err =3D 0;
+> >> >         char buf[N];
+> >> >
+> >> >         off &=3D 0xffff;
+> >> >         ptr =3D bpf_packet_pointer(ctx, off, sizeof(buf), &err);
+> >> >         if (unlikely(!ptr)) {
+> >> >                 if (err < 0)
+> >> >                         return XDP_ABORTED;
+> >> >                 err =3D bpf_xdp_load_bytes(ctx, off, buf, sizeof(buf=
+));
+> >> >                 if (err < 0)
+> >> >                         return XDP_ABORTED;
+> >> >                 ptr =3D buf;
+> >> >         }
+> >> >         ...
+> >> >         // Do some stores and loads in [ptr, ptr + N) region
+> >> >         ...
+> >> >         if (unlikely(ptr =3D=3D buf)) {
+> >> >                 err =3D bpf_xdp_store_bytes(ctx, off, buf, sizeof(bu=
+f));
+> >> >                 if (err < 0)
+> >> >                         return XDP_ABORTED;
+> >> >         }
+> >> >
+> >> > Note that bpf_packet_pointer returns a PTR_TO_PACKET, not PTR_TO_MEM=
+, because
+> >> > these pointers need to be invalidated on clear_all_pkt_pointers invo=
+cation, and
+> >> > it is also more meaningful to the user to see return value as R0=3Dp=
+kt.
+> >> >
+> >> > This series is meant to collect feedback on the approach, next versi=
+on can
+> >> > include a bpf_skb_pointer and exposing it as bpf_packet_pointer help=
+er for TC
+> >> > hooks, and explore not resetting range to zero on r0 +=3D rX, instea=
+d check access
+> >> > like check_mem_region_access (var_off + off < range), since there wo=
+uld be no
+> >> > data_end to compare against and obtain a new range.
+> >> >
+> >> > The common name and func_id is supposed to allow writing generic cod=
+e using
+> >> > bpf_packet_pointer that works for both XDP and TC programs.
+> >> >
+> >> > Please see the individual patches for implementation details.
+> >> >
+> >>
+> >> Joanne is working on a "bpf_dynptr" framework that will support
+> >> exactly this feature, in addition to working with dynamically
+> >> allocated memory, working with memory of statically unknown size (but
+> >> safe and checked at runtime), etc. And all that within a generic
+> >> common feature implemented uniformly within the verifier. E.g., it
+> >> won't need any of the custom bits of logic added in patch #2 and #3.
+> >> So I'm thinking that instead of custom-implementing a partial case of
+> >> bpf_dynptr just for skb and xdp packets, let's maybe wait for dynptr
+> >> and do it only once there?
+> >>
 > >
-> > On Tue, Mar 08, 2022 at 11:12:13AM IST, Andrii Nakryiko wrote:
-> > > On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > > >
-> > > > In the next patch, we will introduce a new helper 'bpf_packet_pointer'
-> > > > that takes offset and len and returns a packet pointer. There we want to
-> > > > statically enforce offset is in range [0, 0xffff], and that len is a
-> > > > constant value, in range [1, 0xffff]. This also helps us avoid a
-> > > > pointless runtime check. To make these checks possible, we need to
-> > > > ensure we only get a scalar type. Although a lot of other argument types
-> > > > take scalars, their intent is different. Hence add general ARG_SCALAR
-> > > > and ARG_CONSTANT types, where the latter is also checked to be constant
-> > > > in addition to being scalar.
-> > > >
-> > > > Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> > > > ---
-> > > >  include/linux/bpf.h   |  2 ++
-> > > >  kernel/bpf/verifier.c | 13 +++++++++++++
-> > > >  2 files changed, 15 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > > > index 88449fbbe063..7841d90b83df 100644
-> > > > --- a/include/linux/bpf.h
-> > > > +++ b/include/linux/bpf.h
-> > > > @@ -391,6 +391,8 @@ enum bpf_arg_type {
-> > > >         ARG_PTR_TO_STACK,       /* pointer to stack */
-> > > >         ARG_PTR_TO_CONST_STR,   /* pointer to a null terminated read-only string */
-> > > >         ARG_PTR_TO_TIMER,       /* pointer to bpf_timer */
-> > > > +       ARG_SCALAR,             /* a scalar with any value(s) */
-> > >
-> > > What's the difference between ARG_ANYTHING and ARG_SCALAR?
-> > >
+> > Interesting stuff, looking forward to it.
 > >
-> > ARG_SCALAR only accepts reg->type == SCALAR, ARG_ANYTHING accepts anything as
-> > long as reg->type != NOT_INIT (due to SRC_OP for check_reg_arg and early return
-> > without further checks).
+> >> See also my ARG_CONSTANT comment. It seems like a pretty common thing
+> >> where input constant is used to characterize some pointer returned
+> >> from the helper (e.g., bpf_ringbuf_reserve() case), and we'll need
+> >> that for bpf_dynptr for exactly this "give me direct access of N
+> >> bytes, if possible" case. So improving/generalizing it now before
+> >> dynptr lands makes a lot of sense, outside of bpf_packet_pointer()
+> >> feature itself.
 > >
+> > No worries, we can continue the discussion in patch 1, I'll split out t=
+he arg
+> > changes into a separate patch, and wait for dynptr to be posted before =
+reworking
+> > this.
 >
-> Ah, ok, didn't realize that it's not always scalar for ARG_ANYTHING
+> This does raise the question of what we do in the meantime, though? Your
+> patch includes a change to bpf_xdp_{load,store}_bytes() which, if we're
+> making it, really has to go in before those hit a release and become
+> UAPI.
 >
->
-> > > > +       ARG_CONSTANT,           /* a scalar with constant value */
-> > >
-> > > This ARG_CONSTANT serves a very similar purpose as
-> > > ARG_CONST_ALLOC_SIZE_OR_ZERO, tbh. The only difference is that one is
-> > > used to set meta->mem_size and this one is used (through extra func_id
-> > > special handling) to set meta->ret_pkt_len. But meta->mem_size and
-> > > meta->ret_pkt_len mean the same thing: how many bytes are directly
-> > > accessible through a pointer returned from the helper. So I feel like
-> > > there is some opportunity to unify and generalize, instead of adding
-> > > more custom variants of constants. WDYT?
-> > >
-> >
-> > I see, indeed it would make sense to make both equivalent, since
-> > CONST_ALLOC_SIZE must also be a constant. Joanne also mentioned consolidating,
-> > but I didn't understand how that would work for ARG_CONSTANT and ARG_CONST_SIZE
-> > ones.
-> >
-> > I'm wondering whether we can take a step back and should go with the following
-> > convention:
-> >
-> > ARG_MEM_SIZE, and two type flags, ARG_ZERO | ARG_CONSTANT
-> >
-> > Old                             New (in bpf_func_proto)
-> > -------------------------------------------------------------------
-> > ARG_CONST_SIZE                  ARG_MEM_SIZE
-> > ARG_CONST_SIZE_OR_ZERO          ARG_MEM_SIZE | ARG_ZERO
-> > ARG_CONST_ALLOC_SIZE            ARG_MEM_SIZE | ARG_CONST
-> > ARG_CONST_ALLOC_SIZE_OR_ZERO    ARG_MEM_SIZE | ARG_CONST | ARG_ZERO
-> > ARG_CONSTANT (mine)             ARG_MEM_SIZE | ARG_CONST
-> >
->
-> I think using "ARG_MEM_SIZE" as part of ARG_CONSTANT is backwards and
-> misleading. It makes more sense to me to have ARG_CONSTANT and use
-> ARG_ZERO (or rather ARG_MAYBE_ZERO?) and ARG_MEM_SIZE (to specify that
-> this constant is describing the size of memory of a pointer that is
-> passed in a previous argument).
->
-> Basically, something like:
->
-> ARG_CONST_SIZE => ARG_CONSTANT | ARG_MEM_SIZE
-> ARG_CONST_SIZE_OR_ZERO => ARG_CONSTANT | ARG_MEM_SIZE | ARG_MAYBE_ZERO
->
-> Then we can replace ARG_CONST_ALLOC_SIZE and
-> ARG_CONST_ALLOC_SIZE_OR_ZERO with ARG_CONSTANT  and ARG_CONSTANT |
-> ARG_MAYBE_ZERO and we'll have a bit of special case to handle
-> bpf_ringbuf_reserve.
->
-> For ARG_CONSTANT, verifier will remember the value in
-> bpf_call_arg_meta, and then we can use it as necessary (e.g., instead
-> of mem_size when ARG_MEM_SIZE is specified) depending on context,
-> helper being called, etc.
->
-> Adding ARG_CONST just makes no sense as we always want constant value,
-> otherwise it might as well be just ARG_ANYTHING, right?
+> One option would be to still make the change to those other helpers;
+> they'd become a bit slower, but if we have a solution for that coming,
+> that may be OK for a single release? WDYT?
 
-Re-reading this, this paragraph is very confusing (especially taking
-into account what I wrote above). My point was that in your table, you
-have ARG_MEM_SIZE as a "base type" and ARG_CONST as "modifier". And
-that makes little sense to me, because in all cases we have a
-constant, but not in all cases we use that constant to describe the
-size of memory passed in a previous argument. So I inverted that,
-ARG_CONSTANT as "base type", ARG_MEM_SIZE and ARG_MAYBE_ZERO as
-modifiers. And we then don't need 5 different resulting types because
-"CONST_ALLOC_SIZE" handling is just a custom constant handling for
-bpf_ringbuf_reserve. Just like for your use case you wanted to use
-plain ARG_CONSTANT and add some extra logic for your
-bpf_packet_pointer(). I hope this clarifies it a bit.
+I must have missed important changes to bpf_xdp_{load,store}_bytes().
+Does anything change about its behavior? If there are some fixes
+specific to those helpers, we should fix them as well as a separate
+patch. My main objection is adding a bpf_packet_pointer() special case
+when we have a generic mechanism in the works that will come this use
+case (among other use cases).
 
 >
-> I haven't spent much time thinking about this, though, so I'm probably
-> missing something.
+> -Toke
 >
->
-> > When we detect ARG_CONST, we always set meta->mem_size, which can be used to
-> > refine returned pointer range, otherwise meta->mem_size = -1 by default (so it
-> > will be -1 for the !tnum_is_const(reg->var_off) case).
-> >
-> > if (arg_type & ARG_CONST)
-> >         meta->mem_size = reg->var_off.value;
-> >         if (!(arg_type & ARG_ZERO) && !meta->mem_size)
-> >                 // error
-> >
-> > The check_mem_size_reg call is only made when we see that previous reg was
-> > ARG_PTR_TO_MEM. When preceding argument is not ARG_PTR_TO_MEM, we error if
-> > ARG_CONST is not set for ARG_MEM_SIZE (so that either the mem size is for
-> > previous parameter, or otherwise a constant size for the returned pointer).
-> > We can also only allow certain pointer return types for that case.
-> >
-> > If that is too much automagic, we can also discern using ARG_MEM_SIZE vs
-> > ARG_RET_MEM_SIZE, but I think the above is fine.
-> >
-> > ARG_CONST ofcourse only applies to args taking scalar type.
-> >
-> > >
-> > >
-> > > >         __BPF_ARG_TYPE_MAX,
-> > > >
-> > > >         /* Extended arg_types. */
-> > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > index ec3a7b6c9515..0373d5bd240f 100644
-> > > > --- a/kernel/bpf/verifier.c
-> > > > +++ b/kernel/bpf/verifier.c
-> > > > @@ -5163,6 +5163,12 @@ static bool arg_type_is_int_ptr(enum bpf_arg_type type)
-> > > >                type == ARG_PTR_TO_LONG;
-> > > >  }
-> > > >
-> > > > +static bool arg_type_is_scalar(enum bpf_arg_type type)
-> > > > +{
-> > > > +       return type == ARG_SCALAR ||
-> > > > +              type == ARG_CONSTANT;
-> > > > +}
-> > > > +
-> > > >  static int int_ptr_type_to_size(enum bpf_arg_type type)
-> > > >  {
-> > > >         if (type == ARG_PTR_TO_INT)
-> > > > @@ -5302,6 +5308,8 @@ static const struct bpf_reg_types *compatible_reg_types[__BPF_ARG_TYPE_MAX] = {
-> > > >         [ARG_PTR_TO_STACK]              = &stack_ptr_types,
-> > > >         [ARG_PTR_TO_CONST_STR]          = &const_str_ptr_types,
-> > > >         [ARG_PTR_TO_TIMER]              = &timer_types,
-> > > > +       [ARG_SCALAR]                    = &scalar_types,
-> > > > +       [ARG_CONSTANT]                  = &scalar_types,
-> > > >  };
-> > > >
-> > > >  static int check_reg_type(struct bpf_verifier_env *env, u32 regno,
-> > > > @@ -5635,6 +5643,11 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
-> > > >                         verbose(env, "string is not zero-terminated\n");
-> > > >                         return -EINVAL;
-> > > >                 }
-> > > > +       } else if (arg_type_is_scalar(arg_type)) {
-> > > > +               if (arg_type == ARG_CONSTANT && !tnum_is_const(reg->var_off)) {
-> > > > +                       verbose(env, "R%d is not a known constant\n", regno);
-> > > > +                       return -EACCES;
-> > > > +               }
-> > > >         }
-> > > >
-> > > >         return err;
-> > > > --
-> > > > 2.35.1
-> > > >
-> >
-> > --
-> > Kartikeya
