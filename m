@@ -2,180 +2,316 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 574534D4615
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 12:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B1D4D46AD
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 13:18:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238581AbiCJLoa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 06:44:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        id S241941AbiCJMSW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 07:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241763AbiCJLo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 06:44:27 -0500
+        with ESMTP id S241934AbiCJMSV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 07:18:21 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1F3B145AE7
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:43:20 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EDD431480EE
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 04:17:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646912600;
+        s=mimecast20190719; t=1646914638;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=Lv3jLStTHDx9pIIehZeBR/P5OFpCscaUeKQYtaO9J88=;
-        b=N6hBCc3/THnCj+WJ0tqffK3LVzdLpGHTIFnRn/AArcD6PEMfP2Tsof90RXuKw9iaeUgjh1
-        ynluLeOIb2e/udfAajs7uvmedHrz6j2CmEbpwn3+KItxipN6nIVDKtVbsoTDm7KKQeUgBO
-        JzM3LKwM33YTE2CMQluPUaWTr3Oes0Y=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=iCa3Iap6wQ5Zl4P5Ktca1OOk+bdgfEmL5P8D9QaSpF8=;
+        b=hT0CboUdAH1KMx5LfqD02zqiFZ5ZYMwhHRNFqevAIMLkwoicXVd4xfbLOgPit/0vofPfWK
+        /iGKP1PhrFuO0cv5nD1jQOYEnejCTHmK5RzJymrD0R+Z4abgibmb5rHaWVoPTNLUqkyH0O
+        57h2c847xIemOa403XxSPeyyrARrMx0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-562-CcOOi3J8N6ibxk2GP-vTNg-1; Thu, 10 Mar 2022 06:43:18 -0500
-X-MC-Unique: CcOOi3J8N6ibxk2GP-vTNg-1
-Received: by mail-wr1-f71.google.com with SMTP id t15-20020adfdc0f000000b001ef93643476so1592224wri.2
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:43:18 -0800 (PST)
+ us-mta-186-1JgYuJvcPRi5k-JEZ6wzUQ-1; Thu, 10 Mar 2022 07:17:17 -0500
+X-MC-Unique: 1JgYuJvcPRi5k-JEZ6wzUQ-1
+Received: by mail-wr1-f72.google.com with SMTP id q14-20020adfea0e000000b002036c16c6daso1624929wrm.8
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 04:17:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Lv3jLStTHDx9pIIehZeBR/P5OFpCscaUeKQYtaO9J88=;
-        b=sP3QpigrTpS7h5W9aLuvOELbqFezQkyzbGoXdVhQ0oCHLv46qtbQQ81JvCJLBCwIZw
-         HnMWYDcfmm1exL02eRctKTHVVYgb5pSV1tECPBRMlccrydV6gO+24kJvJYHLE+Qm8e8A
-         mNNDSHC6mhQXUhnzllqlwVEBorRX/d2W6dgfqr7ivEEyQpB76JPBcfSUVagoyxPzbMrj
-         6kt0J6PTgCX2SDMl0/HdCMqU1xGJEWgSEOX86uw0w724rcZvG8T/gcGBDIt9RUiyJGD1
-         qpjp2/DXxY2Itmgk7h5vLKvQMXEtqEsUfey75YfetF2Bi6EgAJBOiiWCEl3LERsp0xDm
-         ivDg==
-X-Gm-Message-State: AOAM532VycwFkHnEiDB9eWw2XLccAcXdVmllVtFjMdxcWh4VRPXIEnIx
-        VMp9CyssRuqTKq/9lL+sqiuN8xiGjf5+FSrDrUpe7NV2RTYjpLbPGUVgKqSA2rPi1wOVUOa062r
-        jcw9GbubH5tRp
-X-Received: by 2002:adf:f5c5:0:b0:1ed:bc44:63e4 with SMTP id k5-20020adff5c5000000b001edbc4463e4mr3307309wrp.236.1646912597411;
-        Thu, 10 Mar 2022 03:43:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyjLuElTWKtMfe3e05qseSNHDzbSk8W1f/geXhuoNVAo3LEF/oenypiYw3I0JieQAq3FqiPiA==
-X-Received: by 2002:adf:f5c5:0:b0:1ed:bc44:63e4 with SMTP id k5-20020adff5c5000000b001edbc4463e4mr3307283wrp.236.1646912597175;
-        Thu, 10 Mar 2022 03:43:17 -0800 (PST)
-Received: from localhost ([37.183.9.66])
-        by smtp.gmail.com with ESMTPSA id w6-20020a5d6806000000b002036515dda7sm4050451wru.33.2022.03.10.03.43.16
+        bh=iCa3Iap6wQ5Zl4P5Ktca1OOk+bdgfEmL5P8D9QaSpF8=;
+        b=iRG5RfvbQ6tiCFXMHwTof0lSPaYGlrQf4QiSzizVsz4wdSdmetIq81BRkW1O/xTBke
+         sLVRMioxI4Y2pmTHFy6BbN1bfMt+6IuLO+Zwmba6+lJMHEyA17FFNRKUiVCwWesjilmJ
+         xO0ydubMpCrCVwkcKAy6IliOjSim+9Zm6XPWOzsfhJPs1ff6FvhmkdcWFAbJ8qMi6/vS
+         KyYPa6RyQ0vu7+igcn4N+qh/rfNXz/mTgRO+rEeojMhnHkGk6KQSSAaKwH1M21ZEOL7I
+         ug0uOvCCMgBfFtsWHATxYK2KOawGo5KN4aNEb+x0rZIIQRUV3i0/pNgsjvF9WibRGwBQ
+         mJ1g==
+X-Gm-Message-State: AOAM533uPYLmc+eW/LPpC9qdOUZbtBoutqJjXumNU9Oqvd3OKu8ktw4+
+        7jCLDjnb7wmNwMVqp77zbHnnJyjzELlscnBaCvEA0TaMsuNk+5RbeESqE5uW0Dddc55t2U6EOxl
+        dzgPC352FR2zX
+X-Received: by 2002:a5d:52c5:0:b0:1f2:1a3:465a with SMTP id r5-20020a5d52c5000000b001f201a3465amr3386196wrv.206.1646914635785;
+        Thu, 10 Mar 2022 04:17:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJ8kxEUsaqBt/nb6dCuHcfgNxBZpEdY850Aa5dvWPrkmgIy1r3xCyWoo8uhz2jX3jr6T1QKQ==
+X-Received: by 2002:a5d:52c5:0:b0:1f2:1a3:465a with SMTP id r5-20020a5d52c5000000b001f201a3465amr3386152wrv.206.1646914635366;
+        Thu, 10 Mar 2022 04:17:15 -0800 (PST)
+Received: from redhat.com ([2.53.27.107])
+        by smtp.gmail.com with ESMTPSA id z2-20020a056000110200b001e7140ddb44sm4045484wrw.49.2022.03.10.04.17.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 03:43:16 -0800 (PST)
-Date:   Thu, 10 Mar 2022 12:43:14 +0100
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        pabeni@redhat.com, echaudro@redhat.com, toshiaki.makita1@gmail.com,
-        andrii@kernel.org
-Subject: Re: [PATCH v4 bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order
- to accept non-linear skb
-Message-ID: <YinkUiv/yC/gJhYZ@lore-desk>
-References: <cover.1646755129.git.lorenzo@kernel.org>
- <24703dbc3477a4b3aaf908f6226a566d27969f83.1646755129.git.lorenzo@kernel.org>
- <87ee3auk70.fsf@toke.dk>
+        Thu, 10 Mar 2022 04:17:14 -0800 (PST)
+Date:   Thu, 10 Mar 2022 07:17:09 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v7 09/26] virtio_ring: split: implement
+ virtqueue_reset_vring_split()
+Message-ID: <20220310071335-mutt-send-email-mst@kernel.org>
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-10-xuanzhuo@linux.alibaba.com>
+ <20220310015418-mutt-send-email-mst@kernel.org>
+ <1646896623.3794115-2-xuanzhuo@linux.alibaba.com>
+ <20220310025930-mutt-send-email-mst@kernel.org>
+ <1646900056.7775025-1-xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7lnIUU83iotuCzDe"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ee3auk70.fsf@toke.dk>
+In-Reply-To: <1646900056.7775025-1-xuanzhuo@linux.alibaba.com>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---7lnIUU83iotuCzDe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->=20
-> > Introduce veth_convert_xdp_buff_from_skb routine in order to
-> > convert a non-linear skb into a xdp buffer. If the received skb
-> > is cloned or shared, veth_convert_xdp_buff_from_skb will copy it
-> > in a new skb composed by order-0 pages for the linear and the
-> > fragmented area. Moreover veth_convert_xdp_buff_from_skb guarantees
-> > we have enough headroom for xdp.
-> > This is a preliminary patch to allow attaching xdp programs with frags
-> > support on veth devices.
+On Thu, Mar 10, 2022 at 04:14:16PM +0800, Xuan Zhuo wrote:
+> On Thu, 10 Mar 2022 03:07:22 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Thu, Mar 10, 2022 at 03:17:03PM +0800, Xuan Zhuo wrote:
+> > > On Thu, 10 Mar 2022 02:00:39 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > > On Tue, Mar 08, 2022 at 08:35:01PM +0800, Xuan Zhuo wrote:
+> > > > > virtio ring supports reset.
+> > > > >
+> > > > > Queue reset is divided into several stages.
+> > > > >
+> > > > > 1. notify device queue reset
+> > > > > 2. vring release
+> > > > > 3. attach new vring
+> > > > > 4. notify device queue re-enable
+> > > > >
+> > > > > After the first step is completed, the vring reset operation can be
+> > > > > performed. If the newly set vring num does not change, then just reset
+> > > > > the vq related value.
+> > > > >
+> > > > > Otherwise, the vring will be released and the vring will be reallocated.
+> > > > > And the vring will be attached to the vq. If this process fails, the
+> > > > > function will exit, and the state of the vq will be the vring release
+> > > > > state. You can call this function again to reallocate the vring.
+> > > > >
+> > > > > In addition, vring_align, may_reduce_num are necessary for reallocating
+> > > > > vring, so they are retained when creating vq.
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > ---
+> > > > >  drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 69 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > > > index e0422c04c903..148fb1fd3d5a 100644
+> > > > > --- a/drivers/virtio/virtio_ring.c
+> > > > > +++ b/drivers/virtio/virtio_ring.c
+> > > > > @@ -158,6 +158,12 @@ struct vring_virtqueue {
+> > > > >  			/* DMA address and size information */
+> > > > >  			dma_addr_t queue_dma_addr;
+> > > > >  			size_t queue_size_in_bytes;
+> > > > > +
+> > > > > +			/* The parameters for creating vrings are reserved for
+> > > > > +			 * creating new vrings when enabling reset queue.
+> > > > > +			 */
+> > > > > +			u32 vring_align;
+> > > > > +			bool may_reduce_num;
+> > > > >  		} split;
+> > > > >
+> > > > >  		/* Available for packed ring */
+> > > > > @@ -217,6 +223,12 @@ struct vring_virtqueue {
+> > > > >  #endif
+> > > > >  };
+> > > > >
+> > > > > +static void vring_free(struct virtqueue *vq);
+> > > > > +static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
+> > > > > +					 struct virtio_device *vdev);
+> > > > > +static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+> > > > > +					  struct virtio_device *vdev,
+> > > > > +					  struct vring vring);
+> > > > >
+> > > > >  /*
+> > > > >   * Helpers.
+> > > > > @@ -1012,6 +1024,8 @@ static struct virtqueue *vring_create_virtqueue_split(
+> > > > >  		return NULL;
+> > > > >  	}
+> > > > >
+> > > > > +	to_vvq(vq)->split.vring_align = vring_align;
+> > > > > +	to_vvq(vq)->split.may_reduce_num = may_reduce_num;
+> > > > >  	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
+> > > > >  	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+> > > > >  	to_vvq(vq)->we_own_ring = true;
+> > > > > @@ -1019,6 +1033,59 @@ static struct virtqueue *vring_create_virtqueue_split(
+> > > > >  	return vq;
+> > > > >  }
+> > > > >
+> > > > > +static int virtqueue_reset_vring_split(struct virtqueue *_vq, u32 num)
+> > > > > +{
+> > > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > > > +	struct virtio_device *vdev = _vq->vdev;
+> > > > > +	struct vring_split vring;
+> > > > > +	int err;
+> > > > > +
+> > > > > +	if (num > _vq->num_max)
+> > > > > +		return -E2BIG;
+> > > > > +
+> > > > > +	switch (vq->vq.reset) {
+> > > > > +	case VIRTIO_VQ_RESET_STEP_NONE:
+> > > > > +		return -ENOENT;
+> > > > > +
+> > > > > +	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
+> > > > > +	case VIRTIO_VQ_RESET_STEP_DEVICE:
+> > > > > +		if (vq->split.vring.num == num || !num)
+> > > > > +			break;
+> > > > > +
+> > > > > +		vring_free(_vq);
+> > > > > +
+> > > > > +		fallthrough;
+> > > > > +
+> > > > > +	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
+> > > > > +		if (!num)
+> > > > > +			num = vq->split.vring.num;
+> > > > > +
+> > > > > +		err = vring_create_vring_split(&vring, vdev,
+> > > > > +					       vq->split.vring_align,
+> > > > > +					       vq->weak_barriers,
+> > > > > +					       vq->split.may_reduce_num, num);
+> > > > > +		if (err)
+> > > > > +			return -ENOMEM;
+> > > > > +
+> > > > > +		err = __vring_virtqueue_attach_split(vq, vdev, vring.vring);
+> > > > > +		if (err) {
+> > > > > +			vring_free_queue(vdev, vring.queue_size_in_bytes,
+> > > > > +					 vring.queue,
+> > > > > +					 vring.dma_addr);
+> > > > > +			return -ENOMEM;
+> > > > > +		}
+> > > > > +
+> > > > > +		vq->split.queue_dma_addr = vring.dma_addr;
+> > > > > +		vq->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+> > > > > +	}
+> > > > > +
+> > > > > +	__vring_virtqueue_init_split(vq, vdev);
+> > > > > +	vq->we_own_ring = true;
+> > > > > +	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
+> > > > > +
+> > > > > +	return 0;
+> > > > > +}
+> > > > > +
+> > > >
+> > > > I kind of dislike this state machine.
+> > > >
+> > > > Hacks like special-casing num = 0 to mean "reset" are especially
+> > > > confusing.
+> > >
+> > > I'm removing it. I'll say in the function description that this function is
+> > > currently only called when vq has been reset. I'm no longer checking it based on
+> > > state.
+> > >
+> > > >
+> > > > And as Jason points out, when we want a resize then yes this currently
+> > > > implies reset but that is an implementation detail.
+> > > >
+> > > > There should be a way to just make these cases separate functions
+> > > > and then use them to compose consistent external APIs.
+> > >
+> > > Yes, virtqueue_resize_split() is fine for ethtool -G.
+> > >
+> > > But in the case of AF_XDP, just execute reset to free the buffer. The name
+> > > virtqueue_reset_vring_split() I think can cover both cases. Or we use two apis
+> > > to handle both scenarios?
+> > >
+> > > Or can anyone think of a better name. ^_^
+> > >
+> > > Thanks.
 > >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
->=20
-> It's cool that we can do this! A few comments below:
+> >
+> > I'd say resize should be called resize and reset should be called reset.
+> 
+> 
+> OK, I'll change it to resize here.
+> 
+> But I want to know that when I implement virtio-net to support AF_XDP, its
+> requirement is to release all submitted buffers. Then should I add a new api
+> such as virtqueue_reset_vring()?
 
-Hi Toke,
+Sounds like a reasonable name.
 
-thx for the review :)
+> >
+> > The big issue is a sane API for resize. Ideally it would resubmit
+> > buffers which did not get used. Question is what to do
+> > about buffers which don't fit (if ring has been downsized)?
+> > Maybe a callback that will handle them?
+> > And then what? Queue them up and readd later? Drop?
+> > If we drop we should drop from the head not the tail ...
+> 
+> It's a good idea, let's implement it later.
+> 
+> Thanks.
 
-[...]
+Well ... not sure how you are going to support resize
+if you don't know what to do with buffers that were
+in the ring.
 
-> > +static int veth_convert_xdp_buff_from_skb(struct veth_rq *rq,
-> > +					  struct xdp_buff *xdp,
-> > +					  struct sk_buff **pskb)
-> > +{
->=20
-> nit: It's not really "converting" and skb into an xdp_buff, since the
-> xdp_buff lives on the stack; so maybe 'veth_init_xdp_buff_from_skb()'?
-
-I kept the previous naming convention used for xdp_convert_frame_to_buff()
-(my goal would be to move it in xdp.c and reuse this routine for the
-generic-xdp use case) but I am fine with veth_init_xdp_buff_from_skb().
-
->=20
-> > +	struct sk_buff *skb =3D *pskb;
-> > +	u32 frame_sz;
-> > =20
-> >  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
-> > -	    skb_is_nonlinear(skb) || headroom < XDP_PACKET_HEADROOM) {
-> > +	    skb_shinfo(skb)->nr_frags) {
->=20
-> So this always clones the skb if it has frags? Is that really needed?
-
-if we look at skb_cow_data(), paged area is always considered not writable
-
->=20
-> Also, there's a lot of memory allocation and copying going on here; have
-> you measured the performance?
-
-even in the previous implementation we always reallocate the skb if the
-conditions above are verified so I do not expect any difference in the sing=
-le
-buffer use-case but I will run some performance tests.
-
->=20
-
-[...]
-
-> > +
-> > +	if (xdp_buff_has_frags(&xdp))
-> > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
-> > +	else
-> > +		skb->data_len =3D 0;
->=20
-> We can remove entire frags using xdp_adjust_tail, right? Will that get
-> propagated in the right way to the skb frags due to the dual use of
-> skb_shared_info, or?
-
-bpf_xdp_frags_shrink_tail() can remove entire frags and it will modify meta=
-data
-contained in the skb_shared_info (e.g. nr_frags or the frag size of
-the given page). We should consider the data_len field in this case. Agree?
-
-Regards,
-Lorenzo
-
->=20
-
---7lnIUU83iotuCzDe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYinkUgAKCRA6cBh0uS2t
-rPV3AQD9dCxckpCRsZy806fPlpUH4k5DTToXqM3PHWOztuxtGgD/R3LwMZNV24mK
-h7zmBfR//JSvD0w77HLj3e/LTVk+qw4=
-=gGvF
------END PGP SIGNATURE-----
-
---7lnIUU83iotuCzDe--
+> >
+> >
+> > > >
+> > > > If we additionally want to track state for debugging then bool flags
+> > > > seem more appropriate for this, though from experience that is
+> > > > not always worth the extra code.
+> > > >
+> > > >
+> > > >
+> > > > >  /*
+> > > > >   * Packed ring specific functions - *_packed().
+> > > > > @@ -2317,6 +2384,8 @@ static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+> > > > >  static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
+> > > > >  					 struct virtio_device *vdev)
+> > > > >  {
+> > > > > +	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
+> > > > > +
+> > > > >  	vq->packed_ring = false;
+> > > > >  	vq->we_own_ring = false;
+> > > > >  	vq->broken = false;
+> > > > > --
+> > > > > 2.31.0
+> > > >
+> >
 
