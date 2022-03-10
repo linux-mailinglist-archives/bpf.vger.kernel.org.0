@@ -2,91 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929EB4D4C4E
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 16:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4114D4C4B
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 16:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236318AbiCJOyl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 09:54:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S235393AbiCJOyk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 09:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346151AbiCJOmi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 09:42:38 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A8910783D
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 06:40:28 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id c7so4497687qka.7
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 06:40:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ts+dK3ttiY6R8zZea2yK4md86bxaZKIr+AquYrk3oLk=;
-        b=T4jwBlYZ27/C0gS7bBdNRi5VTaFy92J44Ybzk0KAMHe8N76j3PisechWpbiJ+ucg1U
-         YKnlg9x+UG2ZZ1dLdlUW8DhpFGxJTwkOhTrQEzV8y3cPTMPnKFllQnH1dIzJ6Rc6WEU6
-         +VabZFESxEvq3xiZZpCMMGdMqB2PsRZGzLJVuT4PH7rZCIVHuZx91YGI2dP2KpctJrqR
-         TmtwU30hLrjjDkk53sxc6uSi1Zr9furEM4pVB0ypgU3xIrBI98XltJE3fua6VaLNSA3U
-         PQ9cU4e1bhn9uWp7HGulZ43Pq9QYuaMPEiwP2OJVBjeGfnJKqLE9FjcWXNhWDpFB3oDU
-         EVog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ts+dK3ttiY6R8zZea2yK4md86bxaZKIr+AquYrk3oLk=;
-        b=h6MosogS3WsdwIow1ZggqQdyEbIMxBmeJfsl6cOQg5YUjcphLjDyGEwHgiultCOG7n
-         9lTxTC4ZrFDLAYJolZVgZK8AX6hvNvUkpP52IEHkqIPgPMVXy69kaxpyOlr+n/dCrIxn
-         9SLbW5PB1nE24BiI9teqyZoxhOzWFffUmMOqktz6MRLDmUfalpnSvkEa1o9wZd36TYtm
-         n1R+sGTQElHTkVX5G0w7b1q4s+o8LouTyJ4PP+HiNV5M1F3vFcx2RrT0LUv2pIWgSQos
-         NFKf1Zoy0cGBJIDDUl7hH0cmrc5pedERLrH7iQl9nZwfm4yd3ubrrmNZpEzXqRLf8jIb
-         86KQ==
-X-Gm-Message-State: AOAM531f9gAr0o9Xljj8vHzEb+XyOhfU2h1NcE9nAoZ3ESUNk3NaP4YA
-        vH/2b1PyomxBkx+TlNYxcTcoy9wM3Qg=
-X-Google-Smtp-Source: ABdhPJyTOAE19SMMeeKOuSwHhfzbxmHu8hrHL2hC+gabn1gNTVwIB8GGie/bkSTG1Cdl6vMIrc8LIg==
-X-Received: by 2002:a05:620a:4048:b0:67b:743:8d6d with SMTP id i8-20020a05620a404800b0067b07438d6dmr3088554qko.15.1646923227552;
-        Thu, 10 Mar 2022 06:40:27 -0800 (PST)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com. [209.85.128.177])
-        by smtp.gmail.com with ESMTPSA id u14-20020ac858ce000000b002de89087e7dsm3203901qta.78.2022.03.10.06.40.26
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Mar 2022 06:40:26 -0800 (PST)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-2dbd8777564so60858707b3.0
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 06:40:26 -0800 (PST)
-X-Received: by 2002:a81:594:0:b0:2dc:8978:1d64 with SMTP id
- 142-20020a810594000000b002dc89781d64mr4126054ywf.348.1646923225818; Thu, 10
- Mar 2022 06:40:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
- <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com> <6155b68c-161b-0745-b303-f7e037b56e28@linaro.org>
- <66463e26-8564-9f58-ce41-9a2843891d1a@kernel.org> <45522c89-a3b4-4b98-232b-9c69470124a3@linaro.org>
- <ff2e1007-5883-5178-6415-326d6ae69c34@kernel.org> <8fdab42f-171f-53d7-8e0e-b29161c0e3e2@linaro.org>
-In-Reply-To: <8fdab42f-171f-53d7-8e0e-b29161c0e3e2@linaro.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 10 Mar 2022 09:39:48 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSeAL7TsdW4t7=G91n3JLuYehUCnDGH4_rHS=vjm1-Nv9Q@mail.gmail.com>
-Message-ID: <CA+FuTSeAL7TsdW4t7=G91n3JLuYehUCnDGH4_rHS=vjm1-Nv9Q@mail.gmail.com>
-Subject: Re: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
-To:     Tadeusz Struk <tadeusz.struk@linaro.org>
-Cc:     David Ahern <dsahern@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
+        with ESMTP id S1347158AbiCJOue (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 09:50:34 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7388918F201;
+        Thu, 10 Mar 2022 06:45:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646923547; x=1678459547;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=QaPegg1jNSdooo38T77D3oKrBjhFtC11zzudIxnPRLo=;
+  b=Lfha/SC6mGJLFFRe8FbDBC8jFAwjZe7h2OxcU7Q+vYTLN16Xg8FBTLdz
+   HTiZbCUKXfYnRKhwGFjr8V8iX3ig+Y1Ua+DU5xa1XtepvVoVtpDsTCdjv
+   bbwNAbx5NNf45cRXIbc0Kgv35IdvY86oWYaj8VySrPFwXebPhf6KM00/p
+   JiF+dhPQy4MqONAUxbjgitm322CbGm0P8qG05q/p7g56uDcmqr8F7MnC/
+   bZjAT7YgLhvSFjA4jAWyygip7LhHJQ4EEG0RdWls4BYU5koMrN0eMOiSG
+   WgvOettJwRJ5mfffihZlPCGR2WBjhanDcTenhzM69ckcm/8/1XaoZtj2P
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10281"; a="252830990"
+X-IronPort-AV: E=Sophos;i="5.90,170,1643702400"; 
+   d="scan'208";a="252830990"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2022 06:45:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,170,1643702400"; 
+   d="scan'208";a="644464959"
+Received: from aubrey-app.sh.intel.com (HELO [10.239.53.25]) ([10.239.53.25])
+  by orsmga004.jf.intel.com with ESMTP; 10 Mar 2022 06:45:42 -0800
+Subject: Re: [PATCH v1 0/6] Add TDX Guest Attestation support
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
-        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     "H . Peter Anvin" <hpa@zytor.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20220222231735.268919-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Aubrey Li <aubrey.li@linux.intel.com>
+Message-ID: <93767fe9-9edd-8e31-c3ca-155bfa807915@linux.intel.com>
+Date:   Thu, 10 Mar 2022 22:45:40 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20220222231735.268919-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,41 +75,98 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Mar 9, 2022 at 4:37 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
->
-> On 3/8/22 21:01, David Ahern wrote:
-> > On 3/8/22 12:46 PM, Tadeusz Struk wrote:
-> >> That fails in the same way:
-> >>
-> >> skbuff: skb_over_panic: text:ffffffff83e7b48b len:65575 put:65575
-> >> head:ffff888101f8a000 data:ffff888101f8a088 tail:0x100af end:0x6c0
-> >> dev:<NULL>
-> >> ------------[ cut here ]------------
-> >> kernel BUG at net/core/skbuff.c:113!
-> >> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> >> CPU: 0 PID: 1852 Comm: repro Not tainted
-> >> 5.17.0-rc7-00020-gea4424be1688-dirty #19
-> >> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
-> >> RIP: 0010:skb_panic+0x173/0x175
-> >>
-> >> I'm not sure how it supposed to help since it doesn't change the
-> >> alloclen at all.
-> >
-> > alloclen is a function of fraglen and fraglen is a function of datalen.
->
-> Ok, but in this case it doesn't affect the alloclen and it still fails.
+On 2022/2/23 上午7:17, Kuppuswamy Sathyanarayanan wrote:
+> Hi All,
+> 
+> Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+> hosts and some physical attacks. VM guest with TDX support is called
+> as TD Guest.
+> 
+> In TD Guest, the attestation process is used to verify the 
+> trustworthiness of TD guest to the 3rd party servers. Such attestation
+> process is required by 3rd party servers before sending sensitive
+> information to TD guests. One usage example is to get encryption keys
+> from the key server for mounting the encrypted rootfs or secondary drive.
+>     
+> Following patches add the attestation support to TDX guest which
+> includes attestation user interface driver, user agent example, and
+> related hypercall support.
+> 
+> In this series, only following patches are in arch/x86 and are
+> intended for x86 maintainers review.
+> 
+> * x86/tdx: Add TDREPORT TDX Module call support
+> * x86/tdx: Add GetQuote TDX hypercall support
+> * x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+> * x86/tdx: Add TDX Guest event notify interrupt vector support
+> 
+> Patch titled "platform/x86: intel_tdx_attest: Add TDX Guest attestation
+> interface driver" adds the attestation driver support. This is supposed
+> to be reviewed by platform-x86 maintainers.
+> 
+> Also, patch titled "tools/tdx: Add a sample attestation user app" adds
+> a testing app for attestation feature which needs review from
+> bpf@vger.kernel.org.
+> 
+> Dependencies:
+> --------------
+> 
+> This feature has dependency on TDX guest core patch set series.
+> 
+> https://lore.kernel.org/all/20220218161718.67148-1-kirill.shutemov@linux.intel.com/T/
 
-This is some kind of non-standard packet that is being constructed. Do
-we understand how it is different?
+Does this feature also have dependency on QEMU tdx support?
 
-The .syz reproducer is generally a bit more readable than the .c
-equivalent. Though not as much as an strace of the binary, if you
-can share that.
+> 
+> History:
+> ----------
+> 
+> Previously this patch set was sent under title "Add TDX Guest
+> Support (Attestation support)". In the previous version, only the
+> attestation driver patch was reviewed and got acked. Rest of the
+> patches need to be reviewed freshly.
+> 
+> https://lore.kernel.org/bpf/20210806000946.2951441-1-sathyanarayanan.kuppuswamy@linux.intel.com/
+> 
+> Changes since previous submission:
+>  * Updated commit log and error handling in TDREPORT, GetQuote and
+>    SetupEventNotifyInterrupt support patches.
+>  * Added locking support in attestation driver.
+> 
+> Kuppuswamy Sathyanarayanan (6):
+>   x86/tdx: Add tdx_mcall_tdreport() API support
+>   x86/tdx: Add tdx_hcall_get_quote() API support
+>   x86/tdx: Add SetupEventNotifyInterrupt TDX hypercall support
+>   platform/x86: intel_tdx_attest: Add TDX Guest attestation interface
+>     driver
+>   x86/tdx: Add TDX Guest event notify interrupt vector support
+>   tools/tdx: Add a sample attestation user app
+> 
+>  arch/x86/coco/tdx.c                           | 170 ++++++++++++
+>  arch/x86/include/asm/hardirq.h                |   4 +
+>  arch/x86/include/asm/idtentry.h               |   4 +
+>  arch/x86/include/asm/irq_vectors.h            |   7 +-
+>  arch/x86/include/asm/tdx.h                    |   5 +
+>  arch/x86/kernel/irq.c                         |   7 +
+>  drivers/platform/x86/intel/Kconfig            |   1 +
+>  drivers/platform/x86/intel/Makefile           |   1 +
+>  drivers/platform/x86/intel/tdx/Kconfig        |  13 +
+>  drivers/platform/x86/intel/tdx/Makefile       |   3 +
+>  .../platform/x86/intel/tdx/intel_tdx_attest.c | 241 ++++++++++++++++++
+>  include/uapi/misc/tdx.h                       |  37 +++
+>  tools/Makefile                                |  13 +-
+>  tools/tdx/Makefile                            |  19 ++
+>  tools/tdx/attest/.gitignore                   |   2 +
+>  tools/tdx/attest/Makefile                     |  24 ++
+>  tools/tdx/attest/tdx-attest-test.c            | 240 +++++++++++++++++
+>  17 files changed, 784 insertions(+), 7 deletions(-)
+>  create mode 100644 drivers/platform/x86/intel/tdx/Kconfig
+>  create mode 100644 drivers/platform/x86/intel/tdx/Makefile
+>  create mode 100644 drivers/platform/x86/intel/tdx/intel_tdx_attest.c
+>  create mode 100644 include/uapi/misc/tdx.h
+>  create mode 100644 tools/tdx/Makefile
+>  create mode 100644 tools/tdx/attest/.gitignore
+>  create mode 100644 tools/tdx/attest/Makefile
+>  create mode 100644 tools/tdx/attest/tdx-attest-test.c
+> 
 
-r0 = socket$inet6_icmp_raw(0xa, 0x3, 0x3a)
-connect$inet6(r0, &(0x7f0000000040)={0xa, 0x0, 0x0, @dev, 0x6}, 0x1c)
-setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36,
-&(0x7f0000000100)=ANY=[@ANYBLOB="52b3"], 0x5a0)
-sendmmsg$inet(r0, &(0x7f00000002c0)=[{{0x0, 0x0,
-&(0x7f0000000000)=[{&(0x7f00000000c0)="1d2d", 0xfa5f}], 0x1}}], 0x1,
-0xfe80)
