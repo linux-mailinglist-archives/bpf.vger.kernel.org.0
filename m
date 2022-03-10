@@ -2,152 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9184D4F4F
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 17:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EB04D509E
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 18:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239721AbiCJQaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 11:30:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        id S231610AbiCJRec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 12:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238779AbiCJQa3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 11:30:29 -0500
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685C6546B2;
-        Thu, 10 Mar 2022 08:29:28 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22AFHIUM024012;
-        Thu, 10 Mar 2022 08:29:27 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=HxPk0wfg5sk3XAWqXY0MSvuOqUN6KRflbQNuojo1ofc=;
- b=E7/UKBH96HEzNtgBPN4ytflFdTJSyBgLJXNiAN7JjLOmWpdU1WlLC5AwDHYwYM15XRbQ
- KJIj3inRqmSHOCNdx1A+XqZWt/rcQsUc1PG5lCowmLp/1K73CGTkS+hZArwHsGZqXdS0
- tSiggxwzgR+fGz6/SxICF0iZ55Jw9mnkcx4= 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2045.outbound.protection.outlook.com [104.47.73.45])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eqkue0hwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Mar 2022 08:29:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzYcS5cxtNnLN6H4fQNYzJSU44iOVwMAGIf1oaGjq1I0AulgynBRQ8aSr797CSDhMRqixFGlvaNJBSqiTcG+1wKveaV5m4Rx1Nso3FNmZ/MjJiXbbODWGx740u/AP2BU5FoV0thCWwObKoXK2TK0FxzKHDaUljsqvHP79Jv0NrMb5u96upyjRksHJufmnu+oachi/P0hKCcn8/bFeRSElk58uDX3ayqTvcAt2kqodDoqb802KHL/RdWx9U1Gk+d5ebGa0RlNuLvoOxoURm5uVrWc0JlXzjfyMRTb2pp+mnn4lT/81ZJ8wpE7OaJJeCYRJqoXtjiu5e2GLBAeIpl3KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HxPk0wfg5sk3XAWqXY0MSvuOqUN6KRflbQNuojo1ofc=;
- b=duoaDAFuqf8KXJBt4w84BJkTxHSMTGOE5DbVgsgemCYzuBljYtQHJ6wb9ZrS9Hn/J/uxlwv7aUvDrAy1Gjfz6yvfgPV0iJQmXuEoVe0aCT3noPcHuRJPXBeKBXG2lVW3XjmddCw37VY118bGwd2tT+hyZHwxI5Yy5OKUppUjezGTdhdEqG/Rb+KPGHFRjqLDt45ycKqeFXQWM4Iw4uiuX0B7oC/IOB0mOGG3RB+P6SDwBOL2d3aM4NxRA7qwBt1+1r3adeYoWXya/HFsuKDDlj0vdjqbqiOZ0Y7aacoP597LI2cxM3pY549ddO6W8buTp5PsBgwKm4iopUsdle52DQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by PH0PR15MB4688.namprd15.prod.outlook.com (2603:10b6:510:8d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.14; Thu, 10 Mar
- 2022 16:29:25 +0000
-Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c5c7:1f39:edaf:9d48]) by SN6PR1501MB2064.namprd15.prod.outlook.com
- ([fe80::c5c7:1f39:edaf:9d48%4]) with mapi id 15.20.5061.022; Thu, 10 Mar 2022
- 16:29:25 +0000
-Message-ID: <177156e5-32c9-c0d7-f1b1-ec9fadc968e7@fb.com>
-Date:   Thu, 10 Mar 2022 08:29:22 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.2
-Subject: Re: [PATCH bpf-next] bpf: Fix comment for helper
- bpf_current_task_under_cgroup()
-Content-Language: en-US
-To:     Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org
-Cc:     stable@vger.kernel.org
-References: <20220310155335.1278783-1-hengqi.chen@gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-In-Reply-To: <20220310155335.1278783-1-hengqi.chen@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4P221CA0025.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:303:8b::30) To SN6PR1501MB2064.namprd15.prod.outlook.com
- (2603:10b6:805:d::27)
+        with ESMTP id S243093AbiCJReb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 12:34:31 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2F8141457
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 09:33:29 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id e22so5061441qvf.9
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 09:33:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SS7nrrNHVUaT5n6CRCXmiOuXobp29ColNc9iGvYhPoU=;
+        b=W860HSrEH6X1gW4Zy3kzEe2y2LtS9ojECWxkLzo2l+t9tgStOGe7Vy2L9ba+PqRBa7
+         6d8oeeU3rO1yqshfOqQ2ItFwtWlKG8ytM8pBp4wpUJLHqp+LOlT8XtChDuGY2DM1H2Sk
+         iWZkNLLqo3taaaK0r8wE7mqslSO/ql/Y9sP8oQPCYTxFB/3GaCq+H6lLQOONTalkurCD
+         pp+Uc0PpsDsdlIShrk1IQ50U4A586LzklHw5+pSblvQeh3GXnRnC+QpNhUFb++8S/l4/
+         lARsEWhAwmyZg0x3ziyOor53HxFOcFWjicr4hoKARk29D8eyeAxj7Gj2rR7HhgKQ8yAb
+         ccHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SS7nrrNHVUaT5n6CRCXmiOuXobp29ColNc9iGvYhPoU=;
+        b=TZjwDPmKu3Kp5vlAd86K+BGKuZDBFw6vkOtDPieBqILK7Oe6AnzDwAQ3Vf4u++AEos
+         8cpRlBaDIfZUHDdAAzVo6Jfh1EYARPJRXwy0fEYFF5eyPD7v5XD67Q36eIL7pa7ZMXjP
+         saeZ1XynQdR9T9dM3TI4aWoSxbliiIA/SbLuC6MhyOcSbCtmEziWuTfDiy4jsiwmS+Gg
+         F6V/Fuq1lZ2iMctW1LeXeiZOUaXIVkzxyP2UV8ebRpTBquSThrb+C7FEleNM19a/QcNw
+         P55CS67Krgs81afHoBWroxm743jEVPpR2Qw+xuhIqdSdF754EvTjiigks9AEydY8+VF+
+         EWnw==
+X-Gm-Message-State: AOAM530uDYudyhhmiSpkzZ6ioj9VyV9q71Pjj0WQw1D/fLL9/uSNeP8t
+        YtyxupWbQbrBqaHp4wm04OrMjCJzImQ=
+X-Google-Smtp-Source: ABdhPJwutcPGguslbqGo1dYNxjWPoXSKyl/+7gmKIxcg8J0nj9LNEl+OdH0gS1JN8R75HHbwP8L8mA==
+X-Received: by 2002:a05:6214:262f:b0:435:b5cb:2c60 with SMTP id gv15-20020a056214262f00b00435b5cb2c60mr4711441qvb.68.1646933608859;
+        Thu, 10 Mar 2022 09:33:28 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id t7-20020a05622a180700b002e0ccf0aa49sm3781727qtc.62.2022.03.10.09.33.26
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Mar 2022 09:33:26 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-2dc28791ecbso66286927b3.4
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 09:33:26 -0800 (PST)
+X-Received: by 2002:a0d:e288:0:b0:2db:f50a:9d10 with SMTP id
+ l130-20020a0de288000000b002dbf50a9d10mr5058002ywe.419.1646933605614; Thu, 10
+ Mar 2022 09:33:25 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 68c5b0c7-8d7a-40af-a746-08da02b323fe
-X-MS-TrafficTypeDiagnostic: PH0PR15MB4688:EE_
-X-Microsoft-Antispam-PRVS: <PH0PR15MB4688F0CD3F9F1B13AB4A6AD5D30B9@PH0PR15MB4688.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mX1HkIP8NqEOltVK+3IfoBJmXw9dfcBdSfP8CcBJBjnyM6boJF92coNMcAeNMpz0dDCK/YYHfc4EmxYs1sycxW7zNc7uRpIQ28hgYBDoCEt3KqPRrAqZMIjiKzxtrIiUwoi0ITde7oCeCCgCOK/MuuTBfraeefqnBV6p9siw49DuvWRUfbhhzk65e74URXDmSytXMXbviK5Fdtvj7Xb7OZ3YOWzIcRlHu17NhS7NlH/rLr3BVQ4MJAF5Wjh17p8CeuOVZPLjWb+SzZ1z8V1BmC2yX/WhZlmylWkHAVw46SLOgPXUYCV7q3JEVwWfIeliuVaR01EjUfQfPaadvTr5pSjnR4cWZc1e+bvyyd1IAsjZ5ZR13AKcOwLQZxMZmQBxLNzjrhyoUFmsyk57LDYEdpb90Z/1ud3ZLoiu5H2f2VBSc+zPq7t9IAXdTLDnvX+ivxkzOatVbHKELeJBZGu40x/b1nq+s4v0sTJ7gkW9hO2hMMlO6t2UZOrrbMTe3kNR3FssaesxHSsIjIQcDbEP+ECvuHtEsT9LFORmEa6m3yGkWDnla7Z77nEw1H7JmswXWWIdjNqEobonCHgNpk4xmgGOZ5o7k/N2QkbPRjEpoZIelNcjrSTcp0JRU6gRmLwTcHVddlHgdsQm2IulopdhCe8QU3U5y6an0dtdnkQgX9IUlF/v4mNwfzoCSphLbmUvVJQ2pNlx06gWqRBGdOcALrIceV0748+40hWjx88nju4Nox3IV/ra/qKCsMqyrM8h
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(8936002)(6506007)(86362001)(6666004)(8676002)(31696002)(36756003)(2616005)(2906002)(6512007)(66476007)(66946007)(66556008)(31686004)(316002)(52116002)(4744005)(186003)(5660300002)(6486002)(508600001)(4326008)(38100700002)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NWRIYkhtOWRIQ085RjY2ZGd1RVoxOTA5ZUd3TXdCb3lwQ29RU2p5Yzdqb3Z0?=
- =?utf-8?B?Y21ITmJhdXp5WHVlVm5Ra0Vac1dZam9iWmdQM21BdzRXRXJyb3lPTFdEMFls?=
- =?utf-8?B?MlozeVBHcUVsZTk3N2gzYUM0VEdWVDdkYThadXUrOVVNRkVXRUV1bmg2Tmpz?=
- =?utf-8?B?ekZWcTM3NkxVdmVJamdUNEVMOGJiZEpxYTM1WlpBTHFJVnhFOXVjTnh3R2Nu?=
- =?utf-8?B?Q29FdmF0cFNhY0loSFFYQUt3U3h6dXI2cnVPTFpDekRGRFM1UXFYQ0xBME5S?=
- =?utf-8?B?YVVCOURGSEVENkJDckxGYStsUHJpMXFXMFFUdU81R1ptaGk3TVo5bjMvUXRh?=
- =?utf-8?B?S2s5WHpacWROQXF3TGo5dnpkZHM0dzdZOVl6aUt4d1RKb3hiOSt5ZjVwdTJS?=
- =?utf-8?B?Vm5OcVQxaUdxbGFHckNCdW8zd2R3WnNpdUNRV3JMQnZlYTIxLzRHZ2VDc0xM?=
- =?utf-8?B?QmZGTDIzZW1adVVVdk1xTnRtUDNCaHVPTkd6UWtoVmQzeldEeENsS29GaWdl?=
- =?utf-8?B?cGdUT2JvUHBZZlhQMERpOHlMaWFJMTZKemZ6QURNbDJHTXY1b0NkSS9aeGNR?=
- =?utf-8?B?UnhpNkttOWhqK1MyWFNieUJCcXRicitRTjA2NDg2U2JHQ1NwdXlqaEJFbk1i?=
- =?utf-8?B?dE9sVVBhTCtLM2NHdVdiaW41Zm44ZUlCYmVtMUNsTXBQWUlDaXkvRDVkc3ph?=
- =?utf-8?B?VEFoUDB4SHlkNUhkRFdiVjRCKy9zWjdzUUVIbFpOdTFJbHBzVGRFQzUvWkxu?=
- =?utf-8?B?YU5FY29CZERPU29pL29IK2pPQkdMbmljd1g1QjRYYUxWVVhaWVFlTFJBVjJv?=
- =?utf-8?B?Y3liVFY2ZURoTXdWeEpzUHFocXVXZ0NZa0VoVUcyY0VkOUNvVkZhL2l6eEVZ?=
- =?utf-8?B?RVdadDAxTC9qOEh0WXc2TERaM3JneHlpM3NQeWFrMnYvazdCTWxoNy9BdnEr?=
- =?utf-8?B?N1FLMmk2RG45UTFnSXEybm5rb0tGUkg2cU1QKytBK1V1d3A5L2EwUmFlaEhn?=
- =?utf-8?B?aFhvMkY1Y1JRRGFxeHpFMVVqVzVNVUowVHNRV0UrN1dzdHUwN01kY2dwbGhC?=
- =?utf-8?B?dVJaOW0wZWRuOEZEOS9VWktiRjBWTTBEaTJDc3E4U0ovY2ZvZFVZUkNRUXRU?=
- =?utf-8?B?dG5kU1VLRVUwbTJJRTVJUUpIZVFhZWRnZkRHbGl2bzJ6OEE0aVZqcEYxQUpD?=
- =?utf-8?B?VnRscXNacmdRQXRwODFXWklYM3hhZi8xdVh4TURQM1F5M3FGRnlYY1ltY1li?=
- =?utf-8?B?c0dwQU9Lb0xHY2FPN3ZOZzV4NFkzT29jTzMyMENTMmhtOUJybmNIM1haSnc4?=
- =?utf-8?B?V2xoSzArUzNwSU1adnplZFRVUjRXRVFJdjlFaU1IdEFNZXczQnJwN2gwaHhm?=
- =?utf-8?B?aEVzL3luY0pmQnY4YklFSEZsZDlGdGF1UWk5bXFGbWd2eWQvM1VVeFRGZXQ3?=
- =?utf-8?B?bk9wTW1KWmxaMzFIbDJtWklHdWRZaGhqekNHUnZUbTQ4NnVRbVVQNDVOMUp4?=
- =?utf-8?B?WGtTRjdab3RNa2RSUkJjOFFKam5yZUtQT0xIYXJxNUhSN2ZFaytHSTdNQ3pY?=
- =?utf-8?B?QzV0M1BUL09sOTdObmtNM08rRkZUeUsvbG1mYzhYbTF5Q2NhMVFLUS9jQ2xk?=
- =?utf-8?B?U2dmZzVZS3puNTZScXF1OFBQd015aWxnODdQVHdpemZwZkxyRDk2TDRTcXAy?=
- =?utf-8?B?cmNFNUU3UGV0d0dMRjlvWTh2ZERRbmtYOE9EUEpYRjNMV2Q2dHJYQmdmVkZX?=
- =?utf-8?B?RXYvYlJ2bUdiQks0Q3MrWGRqYlQzdTJieFVZUTg0NGxtN2ZFZTZUdXZOZnBj?=
- =?utf-8?B?TmlkaUJLQUN2Z1VWM3B0b1pHREtVZXVwNHd0NEZuMXhDOTkweWZFMzViQlVr?=
- =?utf-8?B?SnhqL1hyeldneHArV3dPR2k0bVVRVTVEMStUK0dpQXQ4Sm1jYVo0VnJkSEh3?=
- =?utf-8?B?UW45OHg2Tk5RekNVcVBzZHdJMG55WVlITmhabmlSbDJvSThERHdYNjhBRmJT?=
- =?utf-8?B?YmFtRmNoaDA2aXF6TXd0aHRlamJPdEs4bWp4cFdnQ0tRQWFiOUhzbGFxb1J2?=
- =?utf-8?B?dnR5RjJUUmcvRUM4c2VkclFCcm1mYnIrdlk4QUVIa1ZTZkwrZ24vVVFUTVZ5?=
- =?utf-8?B?eHUzUXJ2V0NXUzd4Nkt1Q1BxSTV5U3cwUEE3enZldFhSV0ltTXJJTngrbUtR?=
- =?utf-8?B?aXc9PQ==?=
-X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68c5b0c7-8d7a-40af-a746-08da02b323fe
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2022 16:29:25.4983
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IsjWDKfsxGJS36bqhwPW1DUYk+buh/7NKSL2Yzdcov5IOGAveiSVeTrXIXaWwBdA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR15MB4688
-X-Proofpoint-GUID: PNAVa_Qk_IPHItTAZR023DkzgzNCmlUY
-X-Proofpoint-ORIG-GUID: PNAVa_Qk_IPHItTAZR023DkzgzNCmlUY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-03-10_06,2022-03-09_01,2022-02-23_01
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220308000146.534935-1-tadeusz.struk@linaro.org>
+ <14626165dad64bbaabed58ba7d59e523@AcuMS.aculab.com> <6155b68c-161b-0745-b303-f7e037b56e28@linaro.org>
+ <66463e26-8564-9f58-ce41-9a2843891d1a@kernel.org> <45522c89-a3b4-4b98-232b-9c69470124a3@linaro.org>
+ <ff2e1007-5883-5178-6415-326d6ae69c34@kernel.org> <8fdab42f-171f-53d7-8e0e-b29161c0e3e2@linaro.org>
+ <CA+FuTSeAL7TsdW4t7=G91n3JLuYehUCnDGH4_rHS=vjm1-Nv9Q@mail.gmail.com> <c7608cf0-fda2-1aa6-b0c1-3d4e0b5cad0e@linaro.org>
+In-Reply-To: <c7608cf0-fda2-1aa6-b0c1-3d4e0b5cad0e@linaro.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 10 Mar 2022 12:32:49 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScPUVpyK6WYXrePTg_533VF2wfPww4MOJYa17v0xbLeGQ@mail.gmail.com>
+Message-ID: <CA+FuTScPUVpyK6WYXrePTg_533VF2wfPww4MOJYa17v0xbLeGQ@mail.gmail.com>
+Subject: Re: [PATCH] net: ipv6: fix invalid alloclen in __ip6_append_data
+To:     Tadeusz Struk <tadeusz.struk@linaro.org>
+Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
+        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Mar 10, 2022 at 11:06 AM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+>
+> On 3/10/22 06:39, Willem de Bruijn wrote:
+> > On Wed, Mar 9, 2022 at 4:37 PM Tadeusz Struk <tadeusz.struk@linaro.org> wrote:
+> >>
+> >> On 3/8/22 21:01, David Ahern wrote:
+> >>> On 3/8/22 12:46 PM, Tadeusz Struk wrote:
+> >>>> That fails in the same way:
+> >>>>
+> >>>> skbuff: skb_over_panic: text:ffffffff83e7b48b len:65575 put:65575
+> >>>> head:ffff888101f8a000 data:ffff888101f8a088 tail:0x100af end:0x6c0
+> >>>> dev:<NULL>
+> >>>> ------------[ cut here ]------------
+> >>>> kernel BUG at net/core/skbuff.c:113!
+> >>>> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+> >>>> CPU: 0 PID: 1852 Comm: repro Not tainted
+> >>>> 5.17.0-rc7-00020-gea4424be1688-dirty #19
+> >>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1.fc35
+> >>>> RIP: 0010:skb_panic+0x173/0x175
+> >>>>
+> >>>> I'm not sure how it supposed to help since it doesn't change the
+> >>>> alloclen at all.
+> >>>
+> >>> alloclen is a function of fraglen and fraglen is a function of datalen.
+> >>
+> >> Ok, but in this case it doesn't affect the alloclen and it still fails.
+> >
+> > This is some kind of non-standard packet that is being constructed. Do
+> > we understand how it is different?
+> >
+> > The .syz reproducer is generally a bit more readable than the .c
+> > equivalent. Though not as much as an strace of the binary, if you
+> > can share that.
+> >
+> > r0 = socket$inet6_icmp_raw(0xa, 0x3, 0x3a)
+> > connect$inet6(r0, &(0x7f0000000040)={0xa, 0x0, 0x0, @dev, 0x6}, 0x1c)
+> > setsockopt$inet6_IPV6_HOPOPTS(r0, 0x29, 0x36,
+> > &(0x7f0000000100)=ANY=[@ANYBLOB="52b3"], 0x5a0)
+> > sendmmsg$inet(r0, &(0x7f00000002c0)=[{{0x0, 0x0,
+> > &(0x7f0000000000)=[{&(0x7f00000000c0)="1d2d", 0xfa5f}], 0x1}}], 0x1,
+> > 0xfe80)
+>
+> Here it is:
+> https://termbin.com/krtr
+> It won't be of much help, I'm afraid, as the offending sendmmsg()
+> call isn't fully printed.
 
+Thanks. It does offer some hints on the other two syscalls:
 
-On 3/10/22 7:53 AM, Hengqi Chen wrote:
-> Fix the descriptions of the return values of helper
-> bpf_current_task_under_cgroup().
-> 
-> Fixes: c6b5fb8690fa ("bpf: add documentation for eBPF helpers (42-50)")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Hengqi Chen <hengqi.chen@gmail.com>
+[pid   644] connect(3, {sa_family=AF_INET6, sin6_port=htons(0),
+sin6_flowinfo=htonl(0), inet_pton(AF_INET6, "fe80::", &sin6_addr),
+sin6_scope_id=if_nametoindex("tunl0")}, 28) = 0
+[pid   644] setsockopt(3, SOL_IPV6, IPV6_HOPOPTS,
+"R\263\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"...,
+1440) = 0
 
-Acked-by: Yonghong Song <yhs@fb.com>
+IPV6_HOPOPTS is ns_capable CAP_NET_RAW.
+
+So this adds 1440 bytes to opt_nflen, which is included in
+fragheaderlen, causing that to be exactly mtu. This means that the
+payload can never be sent, as each fragment header eats up the entire
+mtu? This is without any transport headers that would only be part of
+the first fragment (which go into opt_flen).
+
+If you can maybe catch the error before the skb_put and just return
+EINVAL, we might see whether sendmmsg is relevant or a simple send
+would be equivalent. (not super important, that appears unrelated.)
