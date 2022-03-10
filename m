@@ -2,32 +2,30 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD294D4253
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 09:18:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621A14D4284
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 09:29:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236539AbiCJITx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 03:19:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
+        id S240335AbiCJIaI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 03:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbiCJITx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 03:19:53 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE41C443C2;
-        Thu, 10 Mar 2022 00:18:50 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V6nhRC-_1646900323;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V6nhRC-_1646900323)
+        with ESMTP id S232250AbiCJIaI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 03:30:08 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8811135701;
+        Thu, 10 Mar 2022 00:29:05 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V6neRLx_1646900938;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V6neRLx_1646900938)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 10 Mar 2022 16:18:45 +0800
-Message-ID: <1646900056.7775025-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH v7 09/26] virtio_ring: split: implement virtqueue_reset_vring_split()
-Date:   Thu, 10 Mar 2022 16:14:16 +0800
+          Thu, 10 Mar 2022 16:28:59 +0800
+Message-ID: <1646900411.6481435-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v7 17/26] virtio_pci: queue_reset: support VIRTIO_F_RING_RESET
+Date:   Thu, 10 Mar 2022 16:20:11 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Hans de Goede <hdegoede@redhat.com>,
@@ -50,219 +48,250 @@ Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
         Vincent Whitchurch <vincent.whitchurch@axis.com>,
         linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
         linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, bpf@vger.kernel.org
+        kvm@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
- <20220308123518.33800-10-xuanzhuo@linux.alibaba.com>
- <20220310015418-mutt-send-email-mst@kernel.org>
- <1646896623.3794115-2-xuanzhuo@linux.alibaba.com>
- <20220310025930-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20220310025930-mutt-send-email-mst@kernel.org>
+ <20220308123518.33800-18-xuanzhuo@linux.alibaba.com>
+ <8b9d337d-71c2-07b4-8e65-6f83cf09bf7a@redhat.com>
+In-Reply-To: <8b9d337d-71c2-07b4-8e65-6f83cf09bf7a@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 10 Mar 2022 03:07:22 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Mar 10, 2022 at 03:17:03PM +0800, Xuan Zhuo wrote:
-> > On Thu, 10 Mar 2022 02:00:39 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Tue, Mar 08, 2022 at 08:35:01PM +0800, Xuan Zhuo wrote:
-> > > > virtio ring supports reset.
-> > > >
-> > > > Queue reset is divided into several stages.
-> > > >
-> > > > 1. notify device queue reset
-> > > > 2. vring release
-> > > > 3. attach new vring
-> > > > 4. notify device queue re-enable
-> > > >
-> > > > After the first step is completed, the vring reset operation can be
-> > > > performed. If the newly set vring num does not change, then just reset
-> > > > the vq related value.
-> > > >
-> > > > Otherwise, the vring will be released and the vring will be reallocated.
-> > > > And the vring will be attached to the vq. If this process fails, the
-> > > > function will exit, and the state of the vq will be the vring release
-> > > > state. You can call this function again to reallocate the vring.
-> > > >
-> > > > In addition, vring_align, may_reduce_num are necessary for reallocating
-> > > > vring, so they are retained when creating vq.
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 69 insertions(+)
-> > > >
-> > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > > > index e0422c04c903..148fb1fd3d5a 100644
-> > > > --- a/drivers/virtio/virtio_ring.c
-> > > > +++ b/drivers/virtio/virtio_ring.c
-> > > > @@ -158,6 +158,12 @@ struct vring_virtqueue {
-> > > >  			/* DMA address and size information */
-> > > >  			dma_addr_t queue_dma_addr;
-> > > >  			size_t queue_size_in_bytes;
-> > > > +
-> > > > +			/* The parameters for creating vrings are reserved for
-> > > > +			 * creating new vrings when enabling reset queue.
-> > > > +			 */
-> > > > +			u32 vring_align;
-> > > > +			bool may_reduce_num;
-> > > >  		} split;
-> > > >
-> > > >  		/* Available for packed ring */
-> > > > @@ -217,6 +223,12 @@ struct vring_virtqueue {
-> > > >  #endif
-> > > >  };
-> > > >
-> > > > +static void vring_free(struct virtqueue *vq);
-> > > > +static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
-> > > > +					 struct virtio_device *vdev);
-> > > > +static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
-> > > > +					  struct virtio_device *vdev,
-> > > > +					  struct vring vring);
-> > > >
-> > > >  /*
-> > > >   * Helpers.
-> > > > @@ -1012,6 +1024,8 @@ static struct virtqueue *vring_create_virtqueue_split(
-> > > >  		return NULL;
-> > > >  	}
-> > > >
-> > > > +	to_vvq(vq)->split.vring_align = vring_align;
-> > > > +	to_vvq(vq)->split.may_reduce_num = may_reduce_num;
-> > > >  	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
-> > > >  	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
-> > > >  	to_vvq(vq)->we_own_ring = true;
-> > > > @@ -1019,6 +1033,59 @@ static struct virtqueue *vring_create_virtqueue_split(
-> > > >  	return vq;
-> > > >  }
-> > > >
-> > > > +static int virtqueue_reset_vring_split(struct virtqueue *_vq, u32 num)
-> > > > +{
-> > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
-> > > > +	struct virtio_device *vdev = _vq->vdev;
-> > > > +	struct vring_split vring;
-> > > > +	int err;
-> > > > +
-> > > > +	if (num > _vq->num_max)
-> > > > +		return -E2BIG;
-> > > > +
-> > > > +	switch (vq->vq.reset) {
-> > > > +	case VIRTIO_VQ_RESET_STEP_NONE:
-> > > > +		return -ENOENT;
-> > > > +
-> > > > +	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
-> > > > +	case VIRTIO_VQ_RESET_STEP_DEVICE:
-> > > > +		if (vq->split.vring.num == num || !num)
-> > > > +			break;
-> > > > +
-> > > > +		vring_free(_vq);
-> > > > +
-> > > > +		fallthrough;
-> > > > +
-> > > > +	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
-> > > > +		if (!num)
-> > > > +			num = vq->split.vring.num;
-> > > > +
-> > > > +		err = vring_create_vring_split(&vring, vdev,
-> > > > +					       vq->split.vring_align,
-> > > > +					       vq->weak_barriers,
-> > > > +					       vq->split.may_reduce_num, num);
-> > > > +		if (err)
-> > > > +			return -ENOMEM;
-> > > > +
-> > > > +		err = __vring_virtqueue_attach_split(vq, vdev, vring.vring);
-> > > > +		if (err) {
-> > > > +			vring_free_queue(vdev, vring.queue_size_in_bytes,
-> > > > +					 vring.queue,
-> > > > +					 vring.dma_addr);
-> > > > +			return -ENOMEM;
-> > > > +		}
-> > > > +
-> > > > +		vq->split.queue_dma_addr = vring.dma_addr;
-> > > > +		vq->split.queue_size_in_bytes = vring.queue_size_in_bytes;
-> > > > +	}
-> > > > +
-> > > > +	__vring_virtqueue_init_split(vq, vdev);
-> > > > +	vq->we_own_ring = true;
-> > > > +	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
-> > > > +
-> > > > +	return 0;
-> > > > +}
-> > > > +
-> > >
-> > > I kind of dislike this state machine.
-> > >
-> > > Hacks like special-casing num = 0 to mean "reset" are especially
-> > > confusing.
+On Wed, 9 Mar 2022 16:54:10 +0800, Jason Wang <jasowang@redhat.com> wrote:
+>
+> =E5=9C=A8 2022/3/8 =E4=B8=8B=E5=8D=888:35, Xuan Zhuo =E5=86=99=E9=81=93:
+> > This patch implements virtio pci support for QUEUE RESET.
 > >
-> > I'm removing it. I'll say in the function description that this function is
-> > currently only called when vq has been reset. I'm no longer checking it based on
-> > state.
+> > Performing reset on a queue is divided into these steps:
 > >
-> > >
-> > > And as Jason points out, when we want a resize then yes this currently
-> > > implies reset but that is an implementation detail.
-> > >
-> > > There should be a way to just make these cases separate functions
-> > > and then use them to compose consistent external APIs.
+> >   1. virtio_reset_vq()              - notify the device to reset the qu=
+eue
+> >   2. virtqueue_detach_unused_buf()  - recycle the buffer submitted
+> >   3. virtqueue_reset_vring()        - reset the vring (may re-alloc)
+> >   4. virtio_enable_resetq()         - mmap vring to device, and enable =
+the queue
 > >
-> > Yes, virtqueue_resize_split() is fine for ethtool -G.
+> > This patch implements virtio_reset_vq(), virtio_enable_resetq() in the
+> > pci scenario.
 > >
-> > But in the case of AF_XDP, just execute reset to free the buffer. The name
-> > virtqueue_reset_vring_split() I think can cover both cases. Or we use two apis
-> > to handle both scenarios?
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >   drivers/virtio/virtio_pci_common.c |  8 +--
+> >   drivers/virtio/virtio_pci_modern.c | 83 ++++++++++++++++++++++++++++++
+> >   2 files changed, 88 insertions(+), 3 deletions(-)
 > >
-> > Or can anyone think of a better name. ^_^
+> > diff --git a/drivers/virtio/virtio_pci_common.c b/drivers/virtio/virtio=
+_pci_common.c
+> > index fdbde1db5ec5..863d3a8a0956 100644
+> > --- a/drivers/virtio/virtio_pci_common.c
+> > +++ b/drivers/virtio/virtio_pci_common.c
+> > @@ -248,9 +248,11 @@ static void vp_del_vq(struct virtqueue *vq)
+> >   	struct virtio_pci_vq_info *info =3D vp_dev->vqs[vq->index];
+> >   	unsigned long flags;
 > >
-> > Thanks.
+> > -	spin_lock_irqsave(&vp_dev->lock, flags);
+> > -	list_del(&info->node);
+> > -	spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +	if (!vq->reset) {
+> > +		spin_lock_irqsave(&vp_dev->lock, flags);
+> > +		list_del(&info->node);
+> > +		spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +	}
+> >
+> >   	vp_dev->del_vq(info);
+> >   	kfree(info);
+> > diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio=
+_pci_modern.c
+> > index 49a4493732cf..3c67d3607802 100644
+> > --- a/drivers/virtio/virtio_pci_modern.c
+> > +++ b/drivers/virtio/virtio_pci_modern.c
+> > @@ -34,6 +34,9 @@ static void vp_transport_features(struct virtio_devic=
+e *vdev, u64 features)
+> >   	if ((features & BIT_ULL(VIRTIO_F_SR_IOV)) &&
+> >   			pci_find_ext_capability(pci_dev, PCI_EXT_CAP_ID_SRIOV))
+> >   		__virtio_set_bit(vdev, VIRTIO_F_SR_IOV);
+> > +
+> > +	if (features & BIT_ULL(VIRTIO_F_RING_RESET))
+> > +		__virtio_set_bit(vdev, VIRTIO_F_RING_RESET);
+> >   }
+> >
+> >   /* virtio config->finalize_features() implementation */
+> > @@ -199,6 +202,82 @@ static int vp_active_vq(struct virtqueue *vq, u16 =
+msix_vec)
+> >   	return 0;
+> >   }
+> >
+> > +static int vp_modern_reset_vq(struct virtqueue *vq)
+> > +{
+> > +	struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
+> > +	struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
+> > +	struct virtio_pci_vq_info *info;
+> > +	unsigned long flags;
+> > +	unsigned int irq;
+> > +
+> > +	if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
+> > +		return -ENOENT;
+> > +
+> > +	vp_modern_set_queue_reset(mdev, vq->index);
+> > +
+> > +	info =3D vp_dev->vqs[vq->index];
+> > +
+> > +	/* delete vq from irq handler */
+> > +	spin_lock_irqsave(&vp_dev->lock, flags);
+> > +	list_del(&info->node);
+> > +	spin_unlock_irqrestore(&vp_dev->lock, flags);
+> > +
+> > +	INIT_LIST_HEAD(&info->node);
+> > +
+> > +	vq->reset =3D VIRTIO_VQ_RESET_STEP_DEVICE;
+> > +
+> > +	/* sync irq callback. */
+> > +	if (vp_dev->intx_enabled) {
+> > +		irq =3D vp_dev->pci_dev->irq;
+> > +
+> > +	} else {
+> > +		if (info->msix_vector =3D=3D VIRTIO_MSI_NO_VECTOR)
+> > +			return 0;
+> > +
+> > +		irq =3D pci_irq_vector(vp_dev->pci_dev, info->msix_vector);
+> > +	}
+> > +
+> > +	synchronize_irq(irq);
 >
 >
-> I'd say resize should be called resize and reset should be called reset.
-
-
-OK, I'll change it to resize here.
-
-But I want to know that when I implement virtio-net to support AF_XDP, its
-requirement is to release all submitted buffers. Then should I add a new api
-such as virtqueue_reset_vring()?
-
+> Synchronize_irq() is not sufficient here since it breaks the effort of
+> the interrupt hardening which is done by commits:
 >
-> The big issue is a sane API for resize. Ideally it would resubmit
-> buffers which did not get used. Question is what to do
-> about buffers which don't fit (if ring has been downsized)?
-> Maybe a callback that will handle them?
-> And then what? Queue them up and readd later? Drop?
-> If we drop we should drop from the head not the tail ...
+> 080cd7c3ac87 virtio-pci: harden INTX interrupts
+> 9e35276a5344 virtio_pci: harden MSI-X interrupts
+>
+> Unfortunately=C2=A0 080cd7c3ac87 introduces an issue that disable_irq() w=
+ere
+> used for the affinity managed irq but we're discussing a fix.
+>
 
-It's a good idea, let's implement it later.
+
+ok, I think disable_irq() is still used here.
+
+I want to determine the solution for this detail first. So I posted the cod=
+e, I
+hope Jason can help confirm this point first.
+
+There are three situations in which vq corresponds to an interrupt
+
+1. intx
+2. msix: per vq vectors
+2. msix: share irq
+
+Essentially can be divided into two categories: per vq vectors and share ir=
+q.
+
+For share irq is based on virtqueues to find vq, so I think it is safe as l=
+ong
+as list_del() is executed under the protection of the lock.
+
+In the case of per vq vectors, disable_irq() is used.
 
 Thanks.
 
->
->
-> > >
-> > > If we additionally want to track state for debugging then bool flags
-> > > seem more appropriate for this, though from experience that is
-> > > not always worth the extra code.
-> > >
-> > >
-> > >
-> > > >  /*
-> > > >   * Packed ring specific functions - *_packed().
-> > > > @@ -2317,6 +2384,8 @@ static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
-> > > >  static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
-> > > >  					 struct virtio_device *vdev)
-> > > >  {
-> > > > +	vq->vq.reset = VIRTIO_VQ_RESET_STEP_NONE;
-> > > > +
-> > > >  	vq->packed_ring = false;
-> > > >  	vq->we_own_ring = false;
-> > > >  	vq->broken = false;
-> > > > --
-> > > > 2.31.0
-> > >
->
++static int vp_modern_reset_vq(struct virtqueue *vq)
++{
++       struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
++       struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
++       struct virtio_pci_vq_info *info;
++       unsigned long flags;
++       unsigned int irq;
++
++       if (!virtio_has_feature(vq->vdev, VIRTIO_F_RING_RESET))
++               return -ENOENT;
++
++       vp_modern_set_queue_reset(mdev, vq->index);
++
++       info =3D vp_dev->vqs[vq->index];
++
++       /* delete vq from irq handler */
++       spin_lock_irqsave(&vp_dev->lock, flags);
++       list_del(&info->node);
++       vp_modern_set_queue_reset(mdev, vq->index);
++
++       info =3D vp_dev->vqs[vq->index];
++
++       /* delete vq from irq handler */
++       spin_lock_irqsave(&vp_dev->lock, flags);
++       list_del(&info->node);
++       spin_unlock_irqrestore(&vp_dev->lock, flags);
++
++       INIT_LIST_HEAD(&info->node);
++
++       /* For the case where vq has an exclusive irq, to prevent the irq f=
+rom
++        * being received again and the pending irq, call disable_irq().
++        *
++        * In the scenario based on shared interrupts, vq will be searched =
+from
++        * the queue virtqueues. Since the previous list_del() has been del=
+eted
++        * from the queue, it is impossible for vq to be called in this cas=
+e.
++        * There is no need to close the corresponding interrupt.
++        */
++       if (vp_dev->per_vq_vectors && msix_vec !=3D VIRTIO_MSI_NO_VECTOR)
++               disable_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vect=
+or));
++
++       vq->reset =3D true;
++
++       return 0;
++}
++
++static int vp_modern_enable_reset_vq(struct virtqueue *vq)
++{
++       struct virtio_pci_device *vp_dev =3D to_vp_device(vq->vdev);
++       struct virtio_pci_modern_device *mdev =3D &vp_dev->mdev;
++       struct virtio_pci_vq_info *info;
++       unsigned long flags, index;
++       int err;
++
++       if (!vq->reset)
++               return -EBUSY;
++
++       index =3D vq->index;
++       info =3D vp_dev->vqs[index];
++
++       /* check queue reset status */
++       if (vp_modern_get_queue_reset(mdev, index) !=3D 1)
++               return -EBUSY;
++
++       err =3D vp_active_vq(vq, info->msix_vector);
++       if (err)
++               return err;
++
++       if (vq->callback) {
++               spin_lock_irqsave(&vp_dev->lock, flags);
++               list_add(&info->node, &vp_dev->virtqueues);
++               spin_unlock_irqrestore(&vp_dev->lock, flags);
++       } else {
++               INIT_LIST_HEAD(&info->node);
++       }
++
++       vp_modern_set_queue_enable(&vp_dev->mdev, index, true);
++       vq->reset =3D false;
++
++       if (vp_dev->per_vq_vectors && msix_vec !=3D VIRTIO_MSI_NO_VECTOR)
++               enable_irq(pci_irq_vector(vp_dev->pci_dev, info->msix_vecto=
+r));
++
++       return 0;
++}
+
+
