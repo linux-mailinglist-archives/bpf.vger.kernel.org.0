@@ -2,52 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9B74D4D07
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 16:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4AE4D4D77
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 16:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236036AbiCJPVZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 10:21:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S239364AbiCJPV1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 10:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236570AbiCJPVR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S234361AbiCJPVR (ORCPT <rfc822;bpf@vger.kernel.org>);
         Thu, 10 Mar 2022 10:21:17 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6107A70F44
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 07:20:14 -0800 (PST)
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E8870CF6;
+        Thu, 10 Mar 2022 07:20:14 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E59A0B82520
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:20:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 61D28C340EB;
+        by ams.source.kernel.org (Postfix) with ESMTPS id ED6C6B826AF;
+        Thu, 10 Mar 2022 15:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7D492C340F6;
         Thu, 10 Mar 2022 15:20:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1646925611;
-        bh=rmnV7nZiv7wUUy3EhAKIJZy6fojvrw9uoygZIKmcL6Y=;
+        bh=VgsqP+rY/c6yq2avnnBE/Vq4rwW4pjTi03Kq+2PNRQQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UnSXjlZhd3eBjCDmRUDvJTOI8QWdYDd7bIJ8HGEq5zliee1GL87IjqkQZFDbGok/v
-         xMaNcLfX1JqzNGzZFAcBjOUoM9vshNOjWtA9fx7ju5nsF6pG1sYhD5/frLIYQFGVYG
-         2YiImIVQRrVI94cdcmQCl/vcX+J4kQT4qp97J8PD72No0DXn4meJfcEIEZ6lYJ++up
-         z+CiK4J85dOYy34L3S8RCTyw98skfyhvKm060OAoR7XN+MTV/LqjcTYVhOkfxQHDlx
-         Pkp56gJSR4G3DADXuN7hZFkPIGqKzBc4pOZgxIHxC2jxHuZZ3TYd3/rJtrf9y1b1w/
-         bavEmKYhVeqLA==
+        b=PZa8xhVg+lDSiEDBjyTCtiGjZyTSXt8sVQKCRb7orxnlGL5+9kf3WetrD8olpx8uY
+         3CKftXP1Hz5S3B0sTPB3PiGEkpDTxNc28tAosG1aLnU9eny1BpE55U+RM/rleggcuu
+         XF6P4L9hUN04whjogYUNaYxtOfmFBce+WHDmurBAcF8SqreV7rJcPcuJN4vtz/JgIP
+         PtwipzqSZg3E4Xq8dhzf0062Dp0OwKrxi0if8VKjCEoSWNqPSNfeyRp9qZaSAh/O9A
+         e2nYYuOGb6kn1mjltaj2CsF0eMzLQz1jA3CPvllLGueeRGDYfFWkEtLTpQ/P4Ju/p2
+         dp0yHZThc/7QA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 47163EAC095;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5D52EF03841;
         Thu, 10 Mar 2022 15:20:11 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [v3,bpf-next] bpftool: Restore support for BPF offload-enabled
- feature probing
+Subject: Re: [PATCH bpf-next] bpf: initialise retval in bpf_prog_test_run_xdp()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164692561128.14970.14177265183384711733.git-patchwork-notify@kernel.org>
+Message-Id: <164692561137.14970.12359681643557026664.git-patchwork-notify@kernel.org>
 Date:   Thu, 10 Mar 2022 15:20:11 +0000
-References: <20220310121846.921256-1-niklas.soderlund@corigine.com>
-In-Reply-To: <20220310121846.921256-1-niklas.soderlund@corigine.com>
-To:     =?utf-8?q?Niklas_S=C3=B6derlund_=3Cniklas=2Esoderlund=40corigine=2Ecom=3E?=@ci.codeaurora.org
-Cc:     bpf@vger.kernel.org, quentin@isovalent.com, andrii@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, simon.horman@corigine.com,
-        oss-drivers@corigine.com
+References: <20220310110228.161869-1-toke@redhat.com>
+In-Reply-To: <20220310110228.161869-1-toke@redhat.com>
+To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org, lkp@intel.com,
+        dan.carpenter@oracle.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,22 +65,22 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Thu, 10 Mar 2022 13:18:46 +0100 you wrote:
-> Commit 1a56c18e6c2e4e74 ("bpftool: Stop supporting BPF offload-enabled
-> feature probing") removed the support to probe for BPF offload features.
-> This is still something that is useful for NFP NIC that can support
-> offloading of BPF programs.
+On Thu, 10 Mar 2022 12:02:28 +0100 you wrote:
+> The kernel test robot pointed out that the newly added
+> bpf_test_run_xdp_live() runner doesn't set the retval in the caller (by
+> design), which means that the variable can be passed unitialised to
+> bpf_test_finish(). Fix this by initialising the variable properly.
 > 
-> The reason for the dropped support was that libbpf starting with v1.0
-> would drop support for passing the ifindex to the BPF prog/map/helper
-> feature probing APIs. In order to keep this useful feature for NFP
-> restore the functionality by moving it directly into bpftool.
+> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3,bpf-next] bpftool: Restore support for BPF offload-enabled feature probing
-    https://git.kernel.org/bpf/bpf-next/c/f655c088e74f
+  - [bpf-next] bpf: initialise retval in bpf_prog_test_run_xdp()
+    https://git.kernel.org/bpf/bpf-next/c/eecbfd976e86
 
 You are awesome, thank you!
 -- 
