@@ -2,144 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0A84D54EC
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 23:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D314D5503
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344502AbiCJW5l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 17:57:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        id S1344524AbiCJXHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 18:07:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232738AbiCJW5j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 17:57:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45D871986FF
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 14:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646952997;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X+C4z+W6JKvW1PkIKtt/f0rXq2MGC/kPw7Xm7/uk89s=;
-        b=FjZelZNX4hNp2TNws2K2Hojj4QyhC76VuUJEYSjNLMLFnEdJyHslxeUCfGwO7dzH89Vnya
-        Q2OtKXlnqbmsMFlTVkZtl/hhepHNFibb+tdFfh/bIPg2eSwX8f1O5KDyzry5qornzSofc6
-        q+pQBqXt1zCk7xC2tqeNPjg0zE5eGCE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-645-eUabmi_OMWW7N8FhYRWzZQ-1; Thu, 10 Mar 2022 17:56:36 -0500
-X-MC-Unique: eUabmi_OMWW7N8FhYRWzZQ-1
-Received: by mail-ej1-f70.google.com with SMTP id hq34-20020a1709073f2200b006d677c94909so3913927ejc.8
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 14:56:36 -0800 (PST)
+        with ESMTP id S1344531AbiCJXHB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 18:07:01 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD0FCEA24
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:05:59 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id z11so12014607lfh.13
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version:content-transfer-encoding;
+        bh=G9J8FmHq2/CqMV+jtudqhKexWT092dl7bgPQcNEIVpI=;
+        b=kqOPu49snnEYaDB6NIOJaYGr0ImOIF4OUUO7zYQwrxVSgFaeDAmw1yMD7v0QF3Ryyi
+         zjwIbDFydMGbXUIzL5/slUW8ZOfQaKpiWTF6oWeV8JBStCWYdxu+wwf+iL7vtBgE8lB9
+         aVnezfHcQLE7M9RNndqono6tZzQ7Oe8fkYXCU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=X+C4z+W6JKvW1PkIKtt/f0rXq2MGC/kPw7Xm7/uk89s=;
-        b=WUoBhb6puiLpAMzmrcavtk+QeXzF4WRho5UFB46H3lXXygY3i6Bbn90njclHUem0BO
-         F2rTRE+MKlJ0hRd09kVhpL+IBCPuc8Wcrq4vJikYWXY8goTsHko8loQlBCB0faKNEbS/
-         MPuR0bhiOwWYyNgzB38UxGbkv64dqI6S3Xvoe026g6j9qDOboJlSDDLqJ5M7yaMYUBgw
-         u4yu5+TIPHcakZPSdhR0ExteBstvbFRW3nY90hWRpMeYzkJ4kzeSdZiDc8QofDcDwOnT
-         +9GA0h3oW4eEJ7Uyce5558ZRy5jEsbSP3+JcYMqVv52kKV2VLurEIkOqcdnXVnaMS7sr
-         H8TA==
-X-Gm-Message-State: AOAM532NTplaumvlCxX3EYfoljnPv20dDGV8QkZCvPXUcAUDyV9nmF2O
-        ywu/db5pOmZLaOzLRSptTOHG8TpFpe7NaCkXk8U/2iIKpEyXbfyqeQBqqC2lFtxy+XJ78Xk3r7b
-        WkqY1PKNqQ1G6
-X-Received: by 2002:a17:907:da4:b0:6da:7952:ccd2 with SMTP id go36-20020a1709070da400b006da7952ccd2mr6015469ejc.763.1646952993996;
-        Thu, 10 Mar 2022 14:56:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxsZOomQyju/SgppJIjOpLtra7yrnPadi1K+LnceE/3q023DlNqyHtR4F2O64IOpBOAZBUmdA==
-X-Received: by 2002:a17:907:da4:b0:6da:7952:ccd2 with SMTP id go36-20020a1709070da400b006da7952ccd2mr6015421ejc.763.1646952992959;
-        Thu, 10 Mar 2022 14:56:32 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id g16-20020a170906521000b006d58773e992sm2259017ejm.188.2022.03.10.14.56.32
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version:content-transfer-encoding;
+        bh=G9J8FmHq2/CqMV+jtudqhKexWT092dl7bgPQcNEIVpI=;
+        b=WPHsHyc4IgziLuVIqTp2thDbr49wM0XPN/7KnTQ+x00ipl6lBb7DGt9Fej7yjWmyMr
+         EtAIi5BSm0t7HZ8OZGdRBVQztyubTOR8oWVFddbsYU0PFV0Sts8H5McfVBAQE79EkKzf
+         c6u1HvZFfrxoIpZVJedEF02ifeJKt98KVpj27RqBC5LeG8ZoFrdoIev+OrfY62hunVCR
+         uFumaEB0DZfGeLqJc2obZsVKcvBpphCty5i4ApdXSGP1QPeYS4kYZomTc44zOmIZ01EK
+         7eFV2ZO67OXNIJOk/m0HpfbyNek7+xgNgwB8e1sJQyGyt7IbVU47WUMQTiBrDnM2PNPL
+         nNlA==
+X-Gm-Message-State: AOAM53352nPJN3agyhCqQNMHbEaiZI7X8J+9F7AVsofb1RmYlSLRFv4M
+        V+cucay8sgY9yqmwHQDzOTo2kg==
+X-Google-Smtp-Source: ABdhPJwBeP1H+YsXCFBZFVSgVJtWDt+BjoUIPA40jh2nJVAjIw1o95VxemmxfNXWhAkJxgNIziKyVA==
+X-Received: by 2002:a05:6512:3f95:b0:448:40cd:dcab with SMTP id x21-20020a0565123f9500b0044840cddcabmr4251208lfa.517.1646953557908;
+        Thu, 10 Mar 2022 15:05:57 -0800 (PST)
+Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
+        by smtp.gmail.com with ESMTPSA id f15-20020a2e6a0f000000b0023e429778fasm1346783ljc.56.2022.03.10.15.05.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 14:56:32 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C34181A89A3; Thu, 10 Mar 2022 23:56:31 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        Thu, 10 Mar 2022 15:05:57 -0800 (PST)
+References: <20220222182559.2865596-1-iii@linux.ibm.com>
+ <20220222182559.2865596-2-iii@linux.ibm.com>
+ <87bkygzbg5.fsf@cloudflare.com>
+ <8d8b464f6c2820989d67f00d24b6003b8b758274.camel@linux.ibm.com>
+ <871qzbz5sa.fsf@cloudflare.com>
+ <a924d763fe50ec80594ca3fac6b311cf9ec20fca.camel@linux.ibm.com>
+User-agent: mu4e 1.6.10; emacs 27.2
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add a test for maximum packet size in xdp_do_redirect
-Date:   Thu, 10 Mar 2022 23:56:21 +0100
-Message-Id: <20220310225621.53374-2-toke@redhat.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220310225621.53374-1-toke@redhat.com>
-References: <20220310225621.53374-1-toke@redhat.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH RFC bpf-next 1/3] bpf: Fix certain narrow loads with
+ offsets
+Date:   Thu, 10 Mar 2022 23:57:43 +0100
+In-reply-to: <a924d763fe50ec80594ca3fac6b311cf9ec20fca.camel@linux.ibm.com>
+Message-ID: <87wnh1xvaj.fsf@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This adds an extra test to the xdp_do_redirect selftest for XDP live packet
-mode, which verifies that the maximum permissible packet size is accepted
-without any errors, and that a too big packet is correctly rejected.
 
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- .../bpf/prog_tests/xdp_do_redirect.c          | 24 +++++++++++++++++++
- 1 file changed, 24 insertions(+)
+On Wed, Mar 09, 2022 at 01:34 PM +01, Ilya Leoshkevich wrote:
+> On Wed, 2022-03-09 at 09:36 +0100, Jakub Sitnicki wrote:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-index 9926b07e38c8..a50971c6cf4a 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_do_redirect.c
-@@ -62,6 +62,28 @@ static int attach_tc_prog(struct bpf_tc_hook *hook, int fd)
- 	return 0;
- }
- 
-+/* The maximum permissible size is: PAGE_SIZE - sizeof(struct xdp_page_head) -
-+ * sizeof(struct skb_shared_info) - XDP_PACKET_HEADROOM = 3368 bytes
-+ */
-+#define MAX_PKT_SIZE 3368
-+static void test_max_pkt_size(int fd)
-+{
-+	char data[MAX_PKT_SIZE + 1] = {};
-+	int err;
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .data_in = &data,
-+			    .data_size_in = MAX_PKT_SIZE,
-+			    .flags = BPF_F_TEST_XDP_LIVE_FRAMES,
-+			    .repeat = 1,
-+		);
-+	err = bpf_prog_test_run_opts(fd, &opts);
-+	ASSERT_OK(err, "prog_run_max_size");
-+
-+	opts.data_size_in += 1;
-+	err = bpf_prog_test_run_opts(fd, &opts);
-+	ASSERT_EQ(err, -EINVAL, "prog_run_too_big");
-+}
-+
- #define NUM_PKTS 10000
- void test_xdp_do_redirect(void)
- {
-@@ -167,6 +189,8 @@ void test_xdp_do_redirect(void)
- 	ASSERT_EQ(skel->bss->pkts_seen_zero, 2, "pkt_count_zero");
- 	ASSERT_EQ(skel->bss->pkts_seen_tc, NUM_PKTS - 2, "pkt_count_tc");
- 
-+	test_max_pkt_size(bpf_program__fd(skel->progs.xdp_count_pkts));
-+
- out_tc:
- 	bpf_tc_hook_destroy(&tc_hook);
- out:
--- 
-2.35.1
+[...]
 
+>>=20
+>> Consider this - today the below is true on both LE and BE, right?
+>>=20
+>> =C2=A0 *(u32 *)&ctx->remote_port =3D=3D *(u16 *)&ctx->remote_port
+>>=20
+>> because the loads get converted to:
+>>=20
+>> =C2=A0 *(u16 *)&ctx_kern->sport =3D=3D *(u16 *)&ctx_kern->sport
+>>=20
+>> IOW, today, because of the bug that you are fixing here, the data
+>> layout
+>> changes from the PoV of the BPF program depending on the load size.
+>>=20
+>> With 2-byte loads, without this patch, the data layout appears as:
+>>=20
+>> =C2=A0 struct bpf_sk_lookup {
+>> =C2=A0=C2=A0=C2=A0 ...
+>> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
+>> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
+>> =C2=A0=C2=A0=C2=A0 ...
+>> =C2=A0 }
+>
+> I see, one can indeed argue that this is also a part of the ABI now.
+> So we're stuck between a rock and a hard place.
+>
+>> While for 4-byte loads, it appears as in your 2nd patch:
+>>=20
+>> =C2=A0 struct bpf_sk_lookup {
+>> =C2=A0=C2=A0=C2=A0 ...
+>> =C2=A0=C2=A0=C2=A0 #if little-endian
+>> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
+>> =C2=A0=C2=A0=C2=A0 __u16=C2=A0 :16; /* zero padding */
+>> =C2=A0=C2=A0=C2=A0 #elif big-endian
+>> =C2=A0=C2=A0=C2=A0 __u16=C2=A0 :16; /* zero padding */
+>> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
+>> =C2=A0=C2=A0=C2=A0 #endif
+>> =C2=A0=C2=A0=C2=A0 ...
+>> =C2=A0 }
+>>=20
+>> Because of that I don't see how we could keep complete ABI
+>> compatiblity,
+>> and have just one definition of struct bpf_sk_lookup that reflects
+>> it. These are conflicting requirements.
+>>=20
+>> I'd bite the bullet for 4-byte loads, for the sake of having an
+>> endian-agnostic struct bpf_sk_lookup and struct bpf_sock definition
+>> in
+>> the uAPI header.
+>>=20
+>> The sacrifice here is that the access converter will have to keep
+>> rewriting 4-byte access to bpf_sk_lookup.remote_port and
+>> bpf_sock.dst_port in this unexpected, quirky manner.
+>>=20
+>> The expectation is that with time users will recompile their BPF
+>> progs
+>> against the updated bpf.h, and switch to 2-byte loads. That will make
+>> the quirk in the access converter dead code in time.
+>>=20
+>> I don't have any better ideas. Sorry.
+>>=20
+>> [...]
+>
+> I agree, let's go ahead with this solution.
+>
+> The only remaining problem that I see is: the bug is in the common
+> code, and it will affect the fields that we add in the future.
+>
+> Can we either document this state of things in a comment, or fix the
+> bug and emulate the old behavior for certain fields?
+
+I think we can fix the bug in the common code, and compensate for the
+quirky 4-byte access to bpf_sk_lookup.remote_port and bpf_sock.dst_port
+in the is_valid_access and convert_ctx_access.
+
+With the patch as below, access to remote_port gets rewritten to:
+
+* size=3D1, offset=3D0, r2 =3D *(u8 *)(r1 +36)
+   0: (69) r2 =3D *(u16 *)(r1 +4)
+   1: (54) w2 &=3D 255
+   2: (b7) r0 =3D 0
+   3: (95) exit
+
+* size=3D1, offset=3D1, r2 =3D *(u8 *)(r1 +37)
+   0: (69) r2 =3D *(u16 *)(r1 +4)
+   1: (74) w2 >>=3D 8
+   2: (54) w2 &=3D 255
+   3: (b7) r0 =3D 0
+   4: (95) exit
+
+* size=3D1, offset=3D2, r2 =3D *(u8 *)(r1 +38)
+   0: (b4) w2 =3D 0
+   1: (54) w2 &=3D 255
+   2: (b7) r0 =3D 0
+   3: (95) exit
+
+* size=3D1, offset=3D3, r2 =3D *(u8 *)(r1 +39)
+   0: (b4) w2 =3D 0
+   1: (74) w2 >>=3D 8
+   2: (54) w2 &=3D 255
+   3: (b7) r0 =3D 0
+   4: (95) exit
+
+* size=3D2, offset=3D0, r2 =3D *(u16 *)(r1 +36)
+   0: (69) r2 =3D *(u16 *)(r1 +4)
+   1: (b7) r0 =3D 0
+   2: (95) exit
+
+* size=3D2, offset=3D2, r2 =3D *(u16 *)(r1 +38)
+   0: (b4) w2 =3D 0
+   1: (b7) r0 =3D 0
+   2: (95) exit
+
+* size=3D4, offset=3D0, r2 =3D *(u32 *)(r1 +36)
+   0: (69) r2 =3D *(u16 *)(r1 +4)
+   1: (b7) r0 =3D 0
+   2: (95) exit
+
+How does that look to you?
+
+Still need to give it a test on s390x.
+
+--8<--
+
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 65869fd510e8..2625a1d2dabc 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -10856,13 +10856,24 @@ static bool sk_lookup_is_valid_access(int off, in=
+t size,
+ 	case bpf_ctx_range(struct bpf_sk_lookup, local_ip4):
+ 	case bpf_ctx_range_till(struct bpf_sk_lookup, remote_ip6[0], remote_ip6[3=
+]):
+ 	case bpf_ctx_range_till(struct bpf_sk_lookup, local_ip6[0], local_ip6[3]):
+-	case offsetof(struct bpf_sk_lookup, remote_port) ...
+-	     offsetof(struct bpf_sk_lookup, local_ip4) - 1:
+ 	case bpf_ctx_range(struct bpf_sk_lookup, local_port):
+ 	case bpf_ctx_range(struct bpf_sk_lookup, ingress_ifindex):
+ 		bpf_ctx_record_field_size(info, sizeof(__u32));
+ 		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u32));
+=20
++	case bpf_ctx_range(struct bpf_sk_lookup, remote_port):
++		/* Allow 4-byte access to 2-byte field for backward compatibility */
++		if (size =3D=3D sizeof(__u32))
++			return off =3D=3D offsetof(struct bpf_sk_lookup, remote_port);
++		bpf_ctx_record_field_size(info, sizeof(__be16));
++		return bpf_ctx_narrow_access_ok(off, size, sizeof(__be16));
++
++	case offsetofend(struct bpf_sk_lookup, remote_port) ...
++	     offsetof(struct bpf_sk_lookup, local_ip4) - 1:
++		/* Allow access to zero padding for backward compatiblity */
++		bpf_ctx_record_field_size(info, sizeof(__u16));
++		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
++
+ 	default:
+ 		return false;
+ 	}
+@@ -10944,6 +10955,11 @@ static u32 sk_lookup_convert_ctx_access(enum bpf_a=
+ccess_type type,
+ 						     sport, 2, target_size));
+ 		break;
+=20
++	case offsetofend(struct bpf_sk_lookup, remote_port):
++		*target_size =3D 2;
++		*insn++ =3D BPF_MOV32_IMM(si->dst_reg, 0);
++		break;
++
+ 	case offsetof(struct bpf_sk_lookup, local_port):
+ 		*insn++ =3D BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
+ 				      bpf_target_off(struct bpf_sk_lookup_kern,
