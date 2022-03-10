@@ -2,55 +2,33 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 772984D546A
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 23:14:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2995D4D5475
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 23:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344342AbiCJWPG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 17:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44060 "EHLO
+        id S244749AbiCJWTY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Mar 2022 17:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343896AbiCJWPF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 17:15:05 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495F7197B46
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 14:14:03 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id o26so5862561pgb.8
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 14:14:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UzG3xwxvfaLfshaLysPhOgwGVwb5K3wxbNsB2PeYW8Y=;
-        b=xIIfbSPNUV8Ow0wLvcRQdP2Qe7loeLLVXmOTwxDaXkfmDW5jCezViM98w7q1uQr1I2
-         g2Io5NWjZjlegDBMXHuSk+kWVxbfISQOzk7UR0mcoCMj/FP9XMU5QzSH338gEXdaQMm3
-         FXAYA8/XXSntazYo0o5GiyvFgBJ5bUFtmxaHVcpBwZuxVnkcFSokFlDIb88U/Nadisgb
-         0oJnJDk7Jub0KO+awAzgiGlZfGkXRooPIu/ule2CbLNwTSSxC0BqhuV/puIYC3k0Vyfy
-         RyQvzHYY0FabRV9wwYNpG983O9ytwUKxe98ekoHczUocjnhzjEjkhPo1bf/CT3OgdcV4
-         gsVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UzG3xwxvfaLfshaLysPhOgwGVwb5K3wxbNsB2PeYW8Y=;
-        b=eRzrC6Fk7rsIEEQnYCW7clKUEpVgVz/sAOGTZi8sq6bhzapYEQgMrTSX/nLh05TnOv
-         NzIidwBkg5QAvPeAQjp5Kvz7X9IbldZkk8zlonH5E1faGgkRblJgQiu+G5q+WXX/uru2
-         Y+NF95ql3hQR4HtGEWNPMl8mtiUMs1vOKQr8YAWJlcVHgj85y+GNM+nhoKBUoWDZuHcU
-         17MLryyYk5Deq4wHTiG8C9tMaEANv1VXLNqeFR2Xnw4w2IQbFweDvDYkx9ZbzsFj+97j
-         fFluMplIqapNnjj1SvOzteHI9gy3RdhhoOzULVS2F7JfCAyYgfjDjYXVDy4M6BraWJ4Z
-         UQ0Q==
-X-Gm-Message-State: AOAM5320kTrfPxHRmcBxKRT1QLyG2wvhUr3SZlq/TM/EiOMbQM5gGLhR
-        ovLjYkbpXi+ppKqR89LXvQO+Uw==
-X-Google-Smtp-Source: ABdhPJyDPDNCNzaw9MyEiRkIMnm6aKQ+Xl8kK1W11zZDCZEXYzHIEfNaF1f5kgz+ExrcyR7MJSGhAQ==
-X-Received: by 2002:a05:6a00:843:b0:4f7:2830:6d81 with SMTP id q3-20020a056a00084300b004f728306d81mr6965380pfk.76.1646950442784;
-        Thu, 10 Mar 2022 14:14:02 -0800 (PST)
-Received: from localhost.localdomain ([50.39.160.154])
-        by smtp.gmail.com with ESMTPSA id nn15-20020a17090b38cf00b001bfceefd8cfsm3511915pjb.48.2022.03.10.14.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 14:14:02 -0800 (PST)
-From:   Tadeusz Struk <tadeusz.struk@linaro.org>
-To:     davem@davemloft.net
-Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        with ESMTP id S233512AbiCJWTY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 17:19:24 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B2FDF4ECD7
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 14:18:21 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-101-1qRMEwtpO-2LLQYOTwUG6Q-1; Thu, 10 Mar 2022 22:18:18 +0000
+X-MC-Unique: 1qRMEwtpO-2LLQYOTwUG6Q-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.28; Thu, 10 Mar 2022 22:18:17 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.028; Thu, 10 Mar 2022 22:18:16 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Tadeusz Struk' <tadeusz.struk@linaro.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+CC:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
         David Ahern <dsahern@kernel.org>,
         Jakub Kicinski <kuba@kernel.org>,
@@ -60,93 +38,67 @@ Cc:     Tadeusz Struk <tadeusz.struk@linaro.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
-Subject: [PATCH v2] net: ipv6: fix skb_over_panic in __ip6_append_data
-Date:   Thu, 10 Mar 2022 14:13:28 -0800
-Message-Id: <20220310221328.877987-1-tadeusz.struk@linaro.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <CA+FuTScPUVpyK6WYXrePTg_533VF2wfPww4MOJYa17v0xbLeGQ@mail.gmail.com>
+        KP Singh <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com" 
+        <syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com>
+Subject: RE: [PATCH v2] net: ipv6: fix skb_over_panic in __ip6_append_data
+Thread-Topic: [PATCH v2] net: ipv6: fix skb_over_panic in __ip6_append_data
+Thread-Index: AQHYNMwtn/GFN1e7cUOoZGj2dooiCKy5LxsQ
+Date:   Thu, 10 Mar 2022 22:18:16 +0000
+Message-ID: <d83a4ea5fc794728bf5d2bf6f0d4fce9@AcuMS.aculab.com>
 References: <CA+FuTScPUVpyK6WYXrePTg_533VF2wfPww4MOJYa17v0xbLeGQ@mail.gmail.com>
+ <20220310221328.877987-1-tadeusz.struk@linaro.org>
+In-Reply-To: <20220310221328.877987-1-tadeusz.struk@linaro.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Syzbot found a kernel bug in the ipv6 stack:
-LINK: https://syzkaller.appspot.com/bug?id=205d6f11d72329ab8d62a610c44c5e7e25415580
-The reproducer triggers it by sending a crafted message via sendmmsg()
-call, which triggers skb_over_panic, and crashes the kernel:
+From: Tadeusz Struk
+> Sent: 10 March 2022 22:13
+> 
+> Syzbot found a kernel bug in the ipv6 stack:
+> LINK: https://syzkaller.appspot.com/bug?id=205d6f11d72329ab8d62a610c44c5e7e25415580
+> The reproducer triggers it by sending a crafted message via sendmmsg()
+> call, which triggers skb_over_panic, and crashes the kernel:
+> 
+> skbuff: skb_over_panic: text:ffffffff84647fb4 len:65575 put:65575
+> head:ffff888109ff0000 data:ffff888109ff0088 tail:0x100af end:0xfec0
+> dev:<NULL>
+> 
+> Add a check that prevents an invalid packet with MTU equall to the
+> fregment header size to eat up all the space for payload.
 
-skbuff: skb_over_panic: text:ffffffff84647fb4 len:65575 put:65575
-head:ffff888109ff0000 data:ffff888109ff0088 tail:0x100af end:0xfec0
-dev:<NULL>
+There probably ought to be a check much earlier that stops
+the option that makes the iphdr being to big being accepted
+in the first place.
 
-Add a check that prevents an invalid packet with MTU equall to the
-fregment header size to eat up all the space for payload.
+Much better to do the check in the option generation code.
 
-The reproducer can be found here:
-LINK: https://syzkaller.appspot.com/text?tag=ReproC&x=1648c83fb00000
+	David
 
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
-Cc: David Ahern <dsahern@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-
-Reported-by: syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com
-Signed-off-by: Tadeusz Struk <tadeusz.struk@linaro.org>
----
-v2: Instead of updating the alloclen add a check that prevents
-    an invalid packet with MTU equall to the fregment header size
-    to eat up all the space for payload.
-    Fix suggested by Willem de Bruijn <willemdebruijn.kernel@gmail.com>
----
- net/ipv6/ip6_output.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 4788f6b37053..6d45112322a0 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1649,6 +1649,16 @@ static int __ip6_append_data(struct sock *sk,
- 			skb->protocol = htons(ETH_P_IPV6);
- 			skb->ip_summed = csummode;
- 			skb->csum = 0;
-+
-+			/*
-+			 *	Check if there is still room for payload
-+			 */
-+			if (fragheaderlen >= mtu) {
-+				err = -EMSGSIZE;
-+				kfree_skb(skb);
-+				goto error;
-+			}
-+
- 			/* reserve for fragmentation and ipsec header */
- 			skb_reserve(skb, hh_len + sizeof(struct frag_hdr) +
- 				    dst_exthdrlen);
--- 
-2.35.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
