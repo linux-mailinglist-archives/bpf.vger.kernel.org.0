@@ -2,149 +2,258 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3104D4704
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 13:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BCF84D4713
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 13:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235393AbiCJMcG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 07:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48928 "EHLO
+        id S238163AbiCJMgy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 07:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbiCJMcG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 07:32:06 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A78689325
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 04:31:04 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id l10so3174147wmb.0
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 04:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=KFEqXsw3kCazEmiGQY9m37Tsc5XnicKLMhtnnXNd7/w=;
-        b=u9hGPoBHK+HjInRQgc7cbjpCZ5pNRWPN2c0yrlPxHmvqlb7REV8Nn8+51iPYI3/Nb2
-         lXeXRlREi5JoN31G2GUaYOLAOkMUbefgAQZf1ed+S7jskVVtm15SCQ2rsXdlrRxEh3t5
-         Jn2r7bDC/dMJ+nX/Y5Ki2IndPpjszIy5MhM5gifCmAlJMfKLj3f3EbBLTJA0lPUF9U0a
-         71UdwHbE1/KxpbMDIGJk/JuVgbWA0sJiJt446iS41Av9QWjcgIRJGAcUPya4jEJ+PTvW
-         4hXqa7GBatuU7D5dh6t/gpwbNhizRG83FBQwIhgSysLn8Jia0CEcVRdM7kTXASlV3aek
-         CWGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=KFEqXsw3kCazEmiGQY9m37Tsc5XnicKLMhtnnXNd7/w=;
-        b=udEoNCmTuft7ynHzMZJVf2uzsV+azAAKSUdLJT3l7i6BWmtwM3R2WP2pBtCaj41vT/
-         ghkMODMAGYxviQkpNGuypCHclOiibyNCcOzTbAOIpZ23ziDNm6qQeBFopbwSs4ZI6u4Z
-         Odjz6mPL6xO0KfuRsRdhP7jB0pWfMIdUU0OorizI6RD9OcMCDPqtAFMYoC+UDhTh5Cmr
-         ZpfqChjIN6eldmeyz2b8kDOhmUbdMJqSexu83pGDj3+exXiOudS9gTAlR3/w10kBg8mP
-         OY1dY1fjsmP49SpXpJxoTEuZEux8G7v8UpMx0ilXIy7KeBZ7dnJ87vr0ztQe722yrASD
-         BGnw==
-X-Gm-Message-State: AOAM531cULtm6i2WBdcA5pz6QF0t5pgKj4MBu4gET3hJo5nI1kDwqYXD
-        VxsDYJG1iO66A0Kc8+0bOAa0xQ==
-X-Google-Smtp-Source: ABdhPJxWd/wCiyfqQPXP5AmoTr0J2f1m/2mys+M8TIAkoS5X4o0p9ZGgZ1QBytNduK3usIoIpT2qAA==
-X-Received: by 2002:a05:600c:a06:b0:37b:fdd8:4f8 with SMTP id z6-20020a05600c0a0600b0037bfdd804f8mr11685361wmp.41.1646915463091;
-        Thu, 10 Mar 2022 04:31:03 -0800 (PST)
-Received: from [192.168.1.8] ([149.86.74.181])
-        by smtp.gmail.com with ESMTPSA id f22-20020a1cc916000000b00380d3e49e89sm4306526wmb.22.2022.03.10.04.31.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 10 Mar 2022 04:31:02 -0800 (PST)
-Message-ID: <a4e23b5e-a8c0-452a-3b55-a22d38fccc9b@isovalent.com>
-Date:   Thu, 10 Mar 2022 12:31:01 +0000
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [v3,bpf-next] bpftool: Restore support for BPF offload-enabled
- feature probing
-Content-Language: en-GB
-To:     =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@corigine.com>,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+        with ESMTP id S235301AbiCJMgy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 07:36:54 -0500
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B6213D932;
+        Thu, 10 Mar 2022 04:35:47 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0V6oh3qv_1646915740;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0V6oh3qv_1646915740)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 10 Mar 2022 20:35:41 +0800
+Message-ID: <1646915610.3936472-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH v7 09/26] virtio_ring: split: implement virtqueue_reset_vring_split()
+Date:   Thu, 10 Mar 2022 20:33:30 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Simon Horman <simon.horman@corigine.com>, oss-drivers@corigine.com
-References: <20220310121846.921256-1-niklas.soderlund@corigine.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <20220310121846.921256-1-niklas.soderlund@corigine.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        linux-um@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        kvm@vger.kernel.org, bpf@vger.kernel.org
+References: <20220308123518.33800-1-xuanzhuo@linux.alibaba.com>
+ <20220308123518.33800-10-xuanzhuo@linux.alibaba.com>
+ <20220310015418-mutt-send-email-mst@kernel.org>
+ <1646896623.3794115-2-xuanzhuo@linux.alibaba.com>
+ <20220310025930-mutt-send-email-mst@kernel.org>
+ <1646900056.7775025-1-xuanzhuo@linux.alibaba.com>
+ <20220310071335-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20220310071335-mutt-send-email-mst@kernel.org>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-2022-03-10 13:18 UTC+0100 ~ Niklas Söderlund <niklas.soderlund@corigine.com>
-> Commit 1a56c18e6c2e4e74 ("bpftool: Stop supporting BPF offload-enabled
-> feature probing") removed the support to probe for BPF offload features.
-> This is still something that is useful for NFP NIC that can support
-> offloading of BPF programs.
-> 
-> The reason for the dropped support was that libbpf starting with v1.0
-> would drop support for passing the ifindex to the BPF prog/map/helper
-> feature probing APIs. In order to keep this useful feature for NFP
-> restore the functionality by moving it directly into bpftool.
-> 
-> The code restored is a simplified version of the code that existed in
-> libbpf which supposed passing the ifindex. The simplification is that it
-> only targets the cases where ifindex is given and call into libbpf for
-> the cases where it's not.
-> 
-> Before restoring support for probing offload features:
-> 
->   # bpftool feature probe dev ens4np0
->   Scanning system call availability...
->   bpf() syscall is available
-> 
->   Scanning eBPF program types...
-> 
->   Scanning eBPF map types...
-> 
->   Scanning eBPF helper functions...
->   eBPF helpers supported for program type sched_cls:
->   eBPF helpers supported for program type xdp:
-> 
->   Scanning miscellaneous eBPF features...
->   Large program size limit is NOT available
->   Bounded loop support is NOT available
->   ISA extension v2 is NOT available
->   ISA extension v3 is NOT available
-> 
-> With support for probing offload features restored:
-> 
->   # bpftool feature probe dev ens4np0
->   Scanning system call availability...
->   bpf() syscall is available
-> 
->   Scanning eBPF program types...
->   eBPF program_type sched_cls is available
->   eBPF program_type xdp is available
-> 
->   Scanning eBPF map types...
->   eBPF map_type hash is available
->   eBPF map_type array is available
-> 
->   Scanning eBPF helper functions...
->   eBPF helpers supported for program type sched_cls:
->   	- bpf_map_lookup_elem
->   	- bpf_get_prandom_u32
->   	- bpf_perf_event_output
->   eBPF helpers supported for program type xdp:
->   	- bpf_map_lookup_elem
->   	- bpf_get_prandom_u32
->   	- bpf_perf_event_output
->   	- bpf_xdp_adjust_head
->   	- bpf_xdp_adjust_tail
-> 
->   Scanning miscellaneous eBPF features...
->   Large program size limit is NOT available
->   Bounded loop support is NOT available
->   ISA extension v2 is NOT available
->   ISA extension v3 is NOT available
-> 
-> Signed-off-by: Niklas Söderlund <niklas.soderlund@corigine.com>
-> Signed-off-by: Simon Horman <simon.horman@corigine.com>
+On Thu, 10 Mar 2022 07:17:09 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Thu, Mar 10, 2022 at 04:14:16PM +0800, Xuan Zhuo wrote:
+> > On Thu, 10 Mar 2022 03:07:22 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > On Thu, Mar 10, 2022 at 03:17:03PM +0800, Xuan Zhuo wrote:
+> > > > On Thu, 10 Mar 2022 02:00:39 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > > > On Tue, Mar 08, 2022 at 08:35:01PM +0800, Xuan Zhuo wrote:
+> > > > > > virtio ring supports reset.
+> > > > > >
+> > > > > > Queue reset is divided into several stages.
+> > > > > >
+> > > > > > 1. notify device queue reset
+> > > > > > 2. vring release
+> > > > > > 3. attach new vring
+> > > > > > 4. notify device queue re-enable
+> > > > > >
+> > > > > > After the first step is completed, the vring reset operation can be
+> > > > > > performed. If the newly set vring num does not change, then just reset
+> > > > > > the vq related value.
+> > > > > >
+> > > > > > Otherwise, the vring will be released and the vring will be reallocated.
+> > > > > > And the vring will be attached to the vq. If this process fails, the
+> > > > > > function will exit, and the state of the vq will be the vring release
+> > > > > > state. You can call this function again to reallocate the vring.
+> > > > > >
+> > > > > > In addition, vring_align, may_reduce_num are necessary for reallocating
+> > > > > > vring, so they are retained when creating vq.
+> > > > > >
+> > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > ---
+> > > > > >  drivers/virtio/virtio_ring.c | 69 ++++++++++++++++++++++++++++++++++++
+> > > > > >  1 file changed, 69 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > > > > index e0422c04c903..148fb1fd3d5a 100644
+> > > > > > --- a/drivers/virtio/virtio_ring.c
+> > > > > > +++ b/drivers/virtio/virtio_ring.c
+> > > > > > @@ -158,6 +158,12 @@ struct vring_virtqueue {
+> > > > > >  			/* DMA address and size information */
+> > > > > >  			dma_addr_t queue_dma_addr;
+> > > > > >  			size_t queue_size_in_bytes;
+> > > > > > +
+> > > > > > +			/* The parameters for creating vrings are reserved for
+> > > > > > +			 * creating new vrings when enabling reset queue.
+> > > > > > +			 */
+> > > > > > +			u32 vring_align;
+> > > > > > +			bool may_reduce_num;
+> > > > > >  		} split;
+> > > > > >
+> > > > > >  		/* Available for packed ring */
+> > > > > > @@ -217,6 +223,12 @@ struct vring_virtqueue {
+> > > > > >  #endif
+> > > > > >  };
+> > > > > >
+> > > > > > +static void vring_free(struct virtqueue *vq);
+> > > > > > +static void __vring_virtqueue_init_split(struct vring_virtqueue *vq,
+> > > > > > +					 struct virtio_device *vdev);
+> > > > > > +static int __vring_virtqueue_attach_split(struct vring_virtqueue *vq,
+> > > > > > +					  struct virtio_device *vdev,
+> > > > > > +					  struct vring vring);
+> > > > > >
+> > > > > >  /*
+> > > > > >   * Helpers.
+> > > > > > @@ -1012,6 +1024,8 @@ static struct virtqueue *vring_create_virtqueue_split(
+> > > > > >  		return NULL;
+> > > > > >  	}
+> > > > > >
+> > > > > > +	to_vvq(vq)->split.vring_align = vring_align;
+> > > > > > +	to_vvq(vq)->split.may_reduce_num = may_reduce_num;
+> > > > > >  	to_vvq(vq)->split.queue_dma_addr = vring.dma_addr;
+> > > > > >  	to_vvq(vq)->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+> > > > > >  	to_vvq(vq)->we_own_ring = true;
+> > > > > > @@ -1019,6 +1033,59 @@ static struct virtqueue *vring_create_virtqueue_split(
+> > > > > >  	return vq;
+> > > > > >  }
+> > > > > >
+> > > > > > +static int virtqueue_reset_vring_split(struct virtqueue *_vq, u32 num)
+> > > > > > +{
+> > > > > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > > > > +	struct virtio_device *vdev = _vq->vdev;
+> > > > > > +	struct vring_split vring;
+> > > > > > +	int err;
+> > > > > > +
+> > > > > > +	if (num > _vq->num_max)
+> > > > > > +		return -E2BIG;
+> > > > > > +
+> > > > > > +	switch (vq->vq.reset) {
+> > > > > > +	case VIRTIO_VQ_RESET_STEP_NONE:
+> > > > > > +		return -ENOENT;
+> > > > > > +
+> > > > > > +	case VIRTIO_VQ_RESET_STEP_VRING_ATTACH:
+> > > > > > +	case VIRTIO_VQ_RESET_STEP_DEVICE:
+> > > > > > +		if (vq->split.vring.num == num || !num)
+> > > > > > +			break;
+> > > > > > +
+> > > > > > +		vring_free(_vq);
+> > > > > > +
+> > > > > > +		fallthrough;
+> > > > > > +
+> > > > > > +	case VIRTIO_VQ_RESET_STEP_VRING_RELEASE:
+> > > > > > +		if (!num)
+> > > > > > +			num = vq->split.vring.num;
+> > > > > > +
+> > > > > > +		err = vring_create_vring_split(&vring, vdev,
+> > > > > > +					       vq->split.vring_align,
+> > > > > > +					       vq->weak_barriers,
+> > > > > > +					       vq->split.may_reduce_num, num);
+> > > > > > +		if (err)
+> > > > > > +			return -ENOMEM;
+> > > > > > +
+> > > > > > +		err = __vring_virtqueue_attach_split(vq, vdev, vring.vring);
+> > > > > > +		if (err) {
+> > > > > > +			vring_free_queue(vdev, vring.queue_size_in_bytes,
+> > > > > > +					 vring.queue,
+> > > > > > +					 vring.dma_addr);
+> > > > > > +			return -ENOMEM;
+> > > > > > +		}
+> > > > > > +
+> > > > > > +		vq->split.queue_dma_addr = vring.dma_addr;
+> > > > > > +		vq->split.queue_size_in_bytes = vring.queue_size_in_bytes;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	__vring_virtqueue_init_split(vq, vdev);
+> > > > > > +	vq->we_own_ring = true;
+> > > > > > +	vq->vq.reset = VIRTIO_VQ_RESET_STEP_VRING_ATTACH;
+> > > > > > +
+> > > > > > +	return 0;
+> > > > > > +}
+> > > > > > +
+> > > > >
+> > > > > I kind of dislike this state machine.
+> > > > >
+> > > > > Hacks like special-casing num = 0 to mean "reset" are especially
+> > > > > confusing.
+> > > >
+> > > > I'm removing it. I'll say in the function description that this function is
+> > > > currently only called when vq has been reset. I'm no longer checking it based on
+> > > > state.
+> > > >
+> > > > >
+> > > > > And as Jason points out, when we want a resize then yes this currently
+> > > > > implies reset but that is an implementation detail.
+> > > > >
+> > > > > There should be a way to just make these cases separate functions
+> > > > > and then use them to compose consistent external APIs.
+> > > >
+> > > > Yes, virtqueue_resize_split() is fine for ethtool -G.
+> > > >
+> > > > But in the case of AF_XDP, just execute reset to free the buffer. The name
+> > > > virtqueue_reset_vring_split() I think can cover both cases. Or we use two apis
+> > > > to handle both scenarios?
+> > > >
+> > > > Or can anyone think of a better name. ^_^
+> > > >
+> > > > Thanks.
+> > >
+> > >
+> > > I'd say resize should be called resize and reset should be called reset.
+> >
+> >
+> > OK, I'll change it to resize here.
+> >
+> > But I want to know that when I implement virtio-net to support AF_XDP, its
+> > requirement is to release all submitted buffers. Then should I add a new api
+> > such as virtqueue_reset_vring()?
+>
+> Sounds like a reasonable name.
+>
+> > >
+> > > The big issue is a sane API for resize. Ideally it would resubmit
+> > > buffers which did not get used. Question is what to do
+> > > about buffers which don't fit (if ring has been downsized)?
+> > > Maybe a callback that will handle them?
+> > > And then what? Queue them up and readd later? Drop?
+> > > If we drop we should drop from the head not the tail ...
+> >
+> > It's a good idea, let's implement it later.
+> >
+> > Thanks.
+>
+> Well ... not sure how you are going to support resize
+> if you don't know what to do with buffers that were
+> in the ring.
 
-Looks good to me, thank you!
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
+The current solution is to call virtqueue_detach_unused_buf() to release buffers
+before resize ring.
+
+Thanks.
+
