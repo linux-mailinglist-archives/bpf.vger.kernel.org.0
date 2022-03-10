@@ -2,77 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1A164D445B
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 11:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC104D454B
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 12:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241128AbiCJKRx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 05:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58800 "EHLO
+        id S238500AbiCJLDl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 06:03:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241108AbiCJKRw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 05:17:52 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEFB13D934;
-        Thu, 10 Mar 2022 02:16:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QxtDdpYcf2JOJsi93GYP3dL8Ehp+16/1AcbmlLBV8SI=; b=DfaF72qUfGgARtmwcXdEeQaVt6
-        +UkPOlx2TBKBhG5WEVjjZ5Nshc+6uAKuTHeqpCbhZjZVAngNTGN8APsy0tsHTocIhXGjaaCK+o4uj
-        Ya7FMADf+iaWzf8fy9Qv93yuv+NWuxDKH44KMppwWWKQ18yW8ZNG8/9y1cNcTnSL1mPKzMDEJS9su
-        HFy9JLFEIffeGJtgfcIDX/ANlFCZocLXeCXbrc5IE99qinD6DHKl4EswHu3DGQB0hJDOEQ3YKv1rp
-        y+LSoMjDOkJKM5ntw6YEFwElx0Ewwi1fgDERMNJ39+9Jnp7BzX0Q4IwVTcpeqIWiLK/Tt+iVuSbpX
-        YK09Y1Qg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nSFq2-00H50N-2H; Thu, 10 Mar 2022 10:16:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7791C30027B;
-        Thu, 10 Mar 2022 11:16:03 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5AD152B52E224; Thu, 10 Mar 2022 11:16:03 +0100 (CET)
-Date:   Thu, 10 Mar 2022 11:16:03 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "joao@overdrivepizza.com" <joao@overdrivepizza.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "samitolvanen@google.com" <samitolvanen@google.com>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alyssa.milburn@intel.com" <alyssa.milburn@intel.com>,
-        "mbenes@suse.cz" <mbenes@suse.cz>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-Message-ID: <YinP49gEl2zUVekz@hirez.programming.kicks-ass.net>
-References: <20220308153011.021123062@infradead.org>
- <20220308200052.rpr4vkxppnxguirg@ast-mbp.dhcp.thefacebook.com>
- <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
- <YifZhUVoHLT/76fE@hirez.programming.kicks-ass.net>
- <CAKwvOdk0ROSOSDKHcyH0kP+5MFH5QnasD6kbAu8gG8CCXO7OmQ@mail.gmail.com>
- <Yim/QJhNBCDfuxsc@hirez.programming.kicks-ass.net>
- <184d593713ca4e289ddbd7590819eddc@AcuMS.aculab.com>
+        with ESMTP id S237070AbiCJLDk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 06:03:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 53715E01D
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:02:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646910158;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3YkGvyVq/I4joIsjY6Ig9+NmZe2zrWU3ce/aUwJiE8c=;
+        b=LXQWZjISvgybIEDlJlkUH4GhUe2uWpVKRWNTXoQ7j/72j1bZ8yhmOpQO7DXveAblF2bAqc
+        L6GoxWnsbmtrG0MjDlqQOW0KTXybX+xKjyuYw7uaFxTLqjCtN9b7PnpFf5YSCpiAPQVfHJ
+        Vw/5874i4v+72V8pen5JyxFkARjXolk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-324-xZv8wqSoNd6DRJzKgPpdaQ-1; Thu, 10 Mar 2022 06:02:37 -0500
+X-MC-Unique: xZv8wqSoNd6DRJzKgPpdaQ-1
+Received: by mail-ed1-f70.google.com with SMTP id h17-20020a05640250d100b004133863d836so2942911edb.0
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:02:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3YkGvyVq/I4joIsjY6Ig9+NmZe2zrWU3ce/aUwJiE8c=;
+        b=40fyazBh3IJuTnlvyLhpmWFJEgJ3eoqqnU/M42oFN9gCNhUVQ0/6+qyVJeR7LmYLEi
+         Vs54MwL3TTl+5rATM4iFXYHqRYfmhZtC2Rsf39JYmL+fp8sAm9fvtpc9yyeaQtTKj5/7
+         vYi8QxnaTCkyDQZzv76nXwZ5KfTPUOYkopOcSWq2dwWokQh8noOsUnwbHoZxioZFTU7/
+         z0P/fuPP7ozpshcvRh1bwT8MgEAYXRm4DX6DlYNeloZOzEaMF+navoGMhRWHDPUO41Il
+         GxLbz+yG2FIxZiQf8JLuYMgDTOGTVu0lxmNRZ38Gea0xsr0dUYlEFtX6b+yEVcbyeMYl
+         ZXwg==
+X-Gm-Message-State: AOAM532CHC8uz2iO4L+j/7gf8hfuEaaeXv5/DXTZayi2YwrBorIbJFDZ
+        EJsn7bEutSoR06y4LsaUQuT0x9xWlWrAPo1p44hqIVketu3kcWUvD2VFHon+V3rf5s7V2Q2sG7o
+        S3uQDDab2avgG
+X-Received: by 2002:a17:907:9485:b0:6db:331:591e with SMTP id dm5-20020a170907948500b006db0331591emr3602911ejc.478.1646910153958;
+        Thu, 10 Mar 2022 03:02:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwanO7L3hNOd+MuVKT3aE8AD0/A95WmIdMlHB/jhjQXPOhasyxgGufXAhlmCNCMVmVxV3u0SQ==
+X-Received: by 2002:a17:907:9485:b0:6db:331:591e with SMTP id dm5-20020a170907948500b006db0331591emr3602761ejc.478.1646910151616;
+        Thu, 10 Mar 2022 03:02:31 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id u19-20020a170906125300b006ceb043c8e1sm1717294eja.91.2022.03.10.03.02.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Mar 2022 03:02:31 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 7E5A7192CC1; Thu, 10 Mar 2022 12:02:30 +0100 (CET)
+From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: initialise retval in bpf_prog_test_run_xdp()
+Date:   Thu, 10 Mar 2022 12:02:28 +0100
+Message-Id: <20220310110228.161869-1-toke@redhat.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <184d593713ca4e289ddbd7590819eddc@AcuMS.aculab.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,133 +88,34 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 09:22:59AM +0000, David Laight wrote:
-> From: Peter Zijlstra
-> > Sent: 10 March 2022 09:05
-> > 
-> > On Wed, Mar 09, 2022 at 04:30:28PM -0800, Nick Desaulniers wrote:
-> > 
-> > > I observed the following error when building with
-> > > CONFIG_LTO_CLANG_FULL=y enabled:
-> > >
-> > > ld.lld: error: ld-temp.o <inline asm>:7:2: symbol 'ibt_selftest_ip' is
-> > > already defined
-> > >         ibt_selftest_ip:
-> > >         ^
-> > >
-> > > Seems to come from
-> > > commit a802350ba65a ("x86/ibt: Add IBT feature, MSR and #CP handling")
-> > >
-> > > Commenting out the label in the inline asm, I then observed:
-> > > vmlinux.o: warning: objtool: identify_cpu()+0x6d0: sibling call from
-> > > callable instruction with modified stack frame
-> > > vmlinux.o: warning: objtool: identify_cpu()+0x6e0: stack state
-> > > mismatch: cfa1=4+64 cfa2=4+8
-> > > These seemed to disappear when I kept CONFIG_LTO_CLANG_FULL=y but then
-> > > disabled CONFIG_X86_KERNEL_IBT. (perhaps due to the way I hacked out
-> > > the ibt_selftest_ip label).
-> > 
-> > Urgh.. I'm thikning this is a clang bug :/
-> > 
-> > The code in question is:
-> > 
-> > 
-> > void ibt_selftest_ip(void); /* code label defined in asm below */
-> > 
-> > DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
-> > {
-> > 	/* ... */
-> > 
-> > 	if (unlikely(regs->ip == (unsigned long)ibt_selftest_ip)) {
-> > 		regs->ax = 0;
-> > 		return;
-> > 	}
-> > 
-> > 	/* ... */
-> > }
-> > 
-> > bool ibt_selftest(void)
-> > {
-> > 	unsigned long ret;
-> > 
-> > 	asm ("	lea ibt_selftest_ip(%%rip), %%rax\n\t"
-> > 	     ANNOTATE_RETPOLINE_SAFE
-> > 	     "	jmp *%%rax\n\t"
-> > 	     "ibt_selftest_ip:\n\t"
-> > 	     UNWIND_HINT_FUNC
-> > 	     ANNOTATE_NOENDBR
-> > 	     "	nop\n\t"
-> > 
-> > 	     : "=a" (ret) : : "memory");
-> > 
-> > 	return !ret;
-> > }
-> > 
-> > There is only a single definition of that symbol, the one in the asm.
-> > The other is a declaration, which is used in the exception handler to
-> > compare against regs->ip.
-> 
-> LTO has probably inlined it twice.
+The kernel test robot pointed out that the newly added
+bpf_test_run_xdp_live() runner doesn't set the retval in the caller (by
+design), which means that the variable can be passed unitialised to
+bpf_test_finish(). Fix this by initialising the variable properly.
 
-Indeed, adding noinline to ibt_selftest() makes it work.
-
-
+Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN")
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index d8bbc705efe5..0c737cc31ee5 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -781,7 +781,8 @@ int3_exception_notify(struct notifier_block *self, unsigned long val, void *data
- 	return NOTIFY_STOP;
- }
- 
--static void __init int3_selftest(void)
-+/* Must be noinline to ensure uniqueness of int3_selftest_ip. */
-+static noinline void __init int3_selftest(void)
- {
- 	static __initdata struct notifier_block int3_exception_nb = {
- 		.notifier_call	= int3_exception_notify,
-@@ -794,9 +795,8 @@ static void __init int3_selftest(void)
- 	/*
- 	 * Basically: int3_magic(&val); but really complicated :-)
- 	 *
--	 * Stick the address of the INT3 instruction into int3_selftest_ip,
--	 * then trigger the INT3, padded with NOPs to match a CALL instruction
--	 * length.
-+	 * INT3 padded with NOP to CALL_INSN_SIZE. The int3_exception_nb
-+	 * notifier above will emulate CALL for us.
- 	 */
- 	asm volatile ("int3_selftest_ip:\n\t"
- 		      ANNOTATE_NOENDBR
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 837cc3c7d4f4..fb89a2f1011f 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -214,7 +214,7 @@ DEFINE_IDTENTRY(exc_overflow)
- 
- static __ro_after_init bool ibt_fatal = true;
- 
--void ibt_selftest_ip(void); /* code label defined in asm below */
-+extern void ibt_selftest_ip(void); /* code label defined in asm below */
- 
- enum cp_error_code {
- 	CP_EC        = (1 << 15) - 1,
-@@ -238,7 +238,7 @@ DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
- 	if (WARN_ON_ONCE(user_mode(regs) || (error_code & CP_EC) != CP_ENDBR))
- 		return;
- 
--	if (unlikely(regs->ip == (unsigned long)ibt_selftest_ip)) {
-+	if (unlikely(regs->ip == (unsigned long)&ibt_selftest_ip)) {
- 		regs->ax = 0;
- 		return;
- 	}
-@@ -252,7 +252,8 @@ DEFINE_IDTENTRY_ERRORCODE(exc_control_protection)
- 	BUG();
- }
- 
--bool ibt_selftest(void)
-+/* Must be noinline to ensure uniqueness of ibt_selftest_ip. */
-+noinline bool ibt_selftest(void)
- {
- 	unsigned long ret;
- 
+ net/bpf/test_run.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 25169908be4a..0acdc37c8415 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -1207,9 +1207,9 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	bool do_live = (kattr->test.flags & BPF_F_TEST_XDP_LIVE_FRAMES);
+ 	u32 tailroom = SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+ 	u32 batch_size = kattr->test.batch_size;
++	u32 retval = 0, duration, max_data_sz;
+ 	u32 size = kattr->test.data_size_in;
+ 	u32 headroom = XDP_PACKET_HEADROOM;
+-	u32 retval, duration, max_data_sz;
+ 	u32 repeat = kattr->test.repeat;
+ 	struct netdev_rx_queue *rxqueue;
+ 	struct skb_shared_info *sinfo;
+-- 
+2.35.1
+
