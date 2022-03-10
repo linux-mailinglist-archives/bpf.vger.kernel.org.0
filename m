@@ -2,148 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C04B54D519C
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 20:43:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884C94D526F
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 20:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245507AbiCJSiZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Mar 2022 13:38:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55156 "EHLO
+        id S237189AbiCJSye (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 13:54:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240404AbiCJSiX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 13:38:23 -0500
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1732D19D63C
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 10:37:21 -0800 (PST)
-Received: by mail-io1-f72.google.com with SMTP id k10-20020a5d91ca000000b006414a00b160so4452819ior.18
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 10:37:21 -0800 (PST)
+        with ESMTP id S239137AbiCJSyd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 13:54:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC21F143474
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 10:53:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646938409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xUIaunNwucj36TKfCu4S1HpxFWnNf4RhBlnOtJolQcU=;
+        b=TFhthyuDU0zTrGRsiR85dFI/AHesMupdJTAZlwW3i50/lvRA2M1X214tbbJOcv20rV3qqY
+        0bu/Nj17dBRfilYImqQF/+CrZuGEwhP3/3y1woQD8rdQb9PdJbhx0QlfQHigbSJvL7IplE
+        vwgVcnw7UeLkF59v2KdiIUz4mhlFspg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-86-wyKT084KM9CSM9cxU-a5cw-1; Thu, 10 Mar 2022 13:53:28 -0500
+X-MC-Unique: wyKT084KM9CSM9cxU-a5cw-1
+Received: by mail-ed1-f70.google.com with SMTP id i5-20020a056402054500b00415ce7443f4so3617327edx.12
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 10:53:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=LYK3nhgyD/Ny5AedOdu53cRFHrQjQndHfGqYjWxTv10=;
-        b=7mwLmB/fpvalIdTSM7NT9FZEkf1i/h+/ZPMM9ZC30VB1ZzhxbayBQ8xyVK9DyrT6JA
-         EeslWAqWSgUNKYhQn7PT/Bewify8OF3PsBAzulZGJgk5+eZZtyCTrDIXk3Hd18lstjKn
-         v4GnT0TtuuV0hC3frME7IzvXDm5dtDnfZCk4iTh2gN6n1c5IjAQqwJZ/61FcU22Cp5sD
-         j8GcJAVOS//zV6GvLJt2YIrnVHMf6CIDEp+fz3gQ7GDiBG830THzh/1s2H3RyBeEQUwi
-         bB5joqgmuLyHZURiw7B6EuGU5l7Z1xgKr5Hb9R9RSrzZim+8ijlgWldSCU9oTWwYN7lp
-         dqAw==
-X-Gm-Message-State: AOAM533a4JxDEZT+VYQV7NS9aAQDr7zR+It+uupw2LR+0tkUS3/XjGAG
-        XRelFP85TXT8xCJXyYcwdsL9yYSKirGQ4QycQGq4jnRpWEbR
-X-Google-Smtp-Source: ABdhPJyO4snl/KIWGs+wTTMW3KVNN9VcA1ZTFF0sRWA0kDSRXP9wtScBTqSM6MCJ+rSLjTH6qVrLL7iHvL8l6p3QQIrJZslaA2ae
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=xUIaunNwucj36TKfCu4S1HpxFWnNf4RhBlnOtJolQcU=;
+        b=0Mo1q9j2TcQmQ6DdYfj9dc0rVgVIXRZG2Qyup23Kf43EQHzkQs3QwnOXftUSBU5OKq
+         Skpp1caH4sKxPMNrZVgCxW7VDUNm29eOtrhVGR9YHgt4nNxUxWWTwOJ4L+Sj4urmekek
+         pS9rWlC+7HQt8TqGw/BxMppnBj44TrpQF/JQIE34b4RuGoy9NB0QvDWNvAVVEkcL+EHz
+         0HVj0mecOVMYoLxaO8xmZnjllV+C+9qJaVKvjZSp2GdaK4deALAI8KHSADQP6Yf5o/fQ
+         lDrhh5nEz6+Df8sJCQsYqMYzYdIw0oBKWvPbMc0v+J4F2QQ9WDszFNVBhnqIIkwKP7GB
+         KkCw==
+X-Gm-Message-State: AOAM530DwVX2vA6+ykfCRurQs+Miily4qboOh+rO9KrQ1oFPx9eSlkuH
+        H45cVBIxT//58tQzOvRo9fFyW4C+6Cwm6Ps2U5ZeI7f8fl91FxKsyqkFjlpzLxGKfIejABH1Ykf
+        GTaxq8CnN8KdP
+X-Received: by 2002:a17:907:72d0:b0:6db:4788:66a9 with SMTP id du16-20020a17090772d000b006db478866a9mr5601392ejc.516.1646938405124;
+        Thu, 10 Mar 2022 10:53:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx9jILF9inhzNJdKySpj2p2+R9+7o6A0HFC7VBoy7c5Z+J0niGiA7Y1r6kmbOb3YphNyNjTRQ==
+X-Received: by 2002:a17:907:72d0:b0:6db:4788:66a9 with SMTP id du16-20020a17090772d000b006db478866a9mr5601333ejc.516.1646938404026;
+        Thu, 10 Mar 2022 10:53:24 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id j7-20020a1709062a0700b006bc28a6b8f1sm2064352eje.222.2022.03.10.10.53.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Mar 2022 10:53:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id D106C1A8959; Thu, 10 Mar 2022 19:53:22 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        pabeni@redhat.com, echaudro@redhat.com, toshiaki.makita1@gmail.com,
+        andrii@kernel.org
+Subject: Re: [PATCH v4 bpf-next 3/3] veth: allow jumbo frames in xdp mode
+In-Reply-To: <YioT2TGc8M42V2K2@lore-desk>
+References: <cover.1646755129.git.lorenzo@kernel.org>
+ <930b1ad3d84f7ca5a41ba75571f9146a932c5394.1646755129.git.lorenzo@kernel.org>
+ <87bkyeujrv.fsf@toke.dk> <YioT2TGc8M42V2K2@lore-desk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 10 Mar 2022 19:53:22 +0100
+Message-ID: <87mthxy6zh.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8796:0:b0:645:bd36:3833 with SMTP id
- f22-20020a5d8796000000b00645bd363833mr4837920ion.158.1646937440370; Thu, 10
- Mar 2022 10:37:20 -0800 (PST)
-Date:   Thu, 10 Mar 2022 10:37:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000019c51e05d9e18158@google.com>
-Subject: [syzbot] BUG: missing reserved tailroom
-From:   syzbot <syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, toke@redhat.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
 
-syzbot found the following issue on:
+>> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>> 
+>> > Allow increasing the MTU over page boundaries on veth devices
+>> > if the attached xdp program declares to support xdp fragments.
+>> > Enable NETIF_F_ALL_TSO when the device is running in xdp mode.
+>> >
+>> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>> > ---
+>> >  drivers/net/veth.c | 28 +++++++++++++++++-----------
+>> >  1 file changed, 17 insertions(+), 11 deletions(-)
+>> >
+>> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+>> > index 47b21b1d2fd9..c5a2dc2b2e4b 100644
+>> > --- a/drivers/net/veth.c
+>> > +++ b/drivers/net/veth.c
+>> > @@ -293,8 +293,7 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
+>> >  /* return true if the specified skb has chances of GRO aggregation
+>> >   * Don't strive for accuracy, but try to avoid GRO overhead in the most
+>> >   * common scenarios.
+>> > - * When XDP is enabled, all traffic is considered eligible, as the xmit
+>> > - * device has TSO off.
+>> > + * When XDP is enabled, all traffic is considered eligible.
+>> >   * When TSO is enabled on the xmit device, we are likely interested only
+>> >   * in UDP aggregation, explicitly check for that if the skb is suspected
+>> >   * - the sock_wfree destructor is used by UDP, ICMP and XDP sockets -
+>> > @@ -302,11 +301,13 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
+>> >   */
+>> >  static bool veth_skb_is_eligible_for_gro(const struct net_device *dev,
+>> >  					 const struct net_device *rcv,
+>> > +					 const struct veth_rq *rq,
+>> >  					 const struct sk_buff *skb)
+>> >  {
+>> > -	return !(dev->features & NETIF_F_ALL_TSO) ||
+>> > -		(skb->destructor == sock_wfree &&
+>> > -		 rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
+>> > +	return rcu_access_pointer(rq->xdp_prog) ||
+>> > +	       !(dev->features & NETIF_F_ALL_TSO) ||
+>> > +	       (skb->destructor == sock_wfree &&
+>> > +		rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
+>> >  }
+>> >  
+>> >  static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+>> > @@ -335,7 +336,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+>> >  		 * Don't bother with napi/GRO if the skb can't be aggregated
+>> >  		 */
+>> >  		use_napi = rcu_access_pointer(rq->napi) &&
+>> > -			   veth_skb_is_eligible_for_gro(dev, rcv, skb);
+>> > +			   veth_skb_is_eligible_for_gro(dev, rcv, rq, skb);
+>> >  	}
+>> >  
+>> >  	skb_tx_timestamp(skb);
+>> > @@ -1525,9 +1526,14 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>> >  			goto err;
+>> >  		}
+>> >  
+>> > -		max_mtu = PAGE_SIZE - VETH_XDP_HEADROOM -
+>> > -			  peer->hard_header_len -
+>> > -			  SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>> > +		max_mtu = SKB_WITH_OVERHEAD(PAGE_SIZE - VETH_XDP_HEADROOM) -
+>> > +			  peer->hard_header_len;
+>> 
+>> Why are we no longer accounting the size of the skb_shared_info if the
+>> program doesn't support frags?
+>
+> doing so we do not allow packets over page boundaries (so non-linear xdp_buff)
+> if the attached program does not delclare to support them, right?
 
-HEAD commit:    de55c9a1967c Merge branch 'Add support for transmitting pa..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ce88ad700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2fa13781bcea50fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=0e91362d99386dc5de99
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f36345700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c8ca65700000
+Oh, sorry, somehow completely skipped over the addition of the
+SKB_WITH_OVERHEAD() - so thought you were removing the sizeof(struct
+skb_shared_info) from the calculation...
 
-The issue was bisected to:
+>> > +		/* Allow increasing the max_mtu if the program supports
+>> > +		 * XDP fragments.
+>> > +		 */
+>> > +		if (prog->aux->xdp_has_frags)
+>> > +			max_mtu += PAGE_SIZE * MAX_SKB_FRAGS;
+>> > +
+>> >  		if (peer->mtu > max_mtu) {
+>> >  			NL_SET_ERR_MSG_MOD(extack, "Peer MTU is too large to set XDP");
+>> >  			err = -ERANGE;
+>> > @@ -1549,7 +1555,7 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>> >  		}
+>> >  
+>> >  		if (!old_prog) {
+>> > -			peer->hw_features &= ~NETIF_F_GSO_SOFTWARE;
+>> > +			peer->hw_features &= ~NETIF_F_GSO_FRAGLIST;
+>> 
+>> The patch description says we're enabling TSO, but this change enables a
+>> couple of other flags as well. Also, it's not quite obvious to me why
+>> your change makes this possible? Is it because we can now execute XDP on
+>> a full TSO packet at once? Because then this should be coupled to the
+>> xdp_has_frags flag of the XDP program? Or will the TSO packet be
+>> segmented before it hits the XDP program? But then this change has
+>> nothing to do with the rest of your series?
+>
+> actually tso support is not mandatory for this feature (even if it is probably
+> meaningful). I will drop it from v5 and we can take care of it in a susequent
+> patch.
 
-commit b530e9e1063ed2b817eae7eec6ed2daa8be11608
-Author: Toke Høiland-Jørgensen <toke@redhat.com>
-Date:   Wed Mar 9 10:53:42 2022 +0000
+OK, SGTM
 
-    bpf: Add "live packet" mode for XDP in BPF_PROG_RUN
+-Toke
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17696e55700000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=14e96e55700000
-console output: https://syzkaller.appspot.com/x/log.txt?x=10e96e55700000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com
-Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN")
-
-------------[ cut here ]------------
-XDP_WARN: xdp_update_frame_from_buff(line:274): Driver BUG: missing reserved tailroom
-WARNING: CPU: 0 PID: 3590 at net/core/xdp.c:599 xdp_warn+0x28/0x30 net/core/xdp.c:599
-Modules linked in:
-CPU: 0 PID: 3590 Comm: syz-executor167 Not tainted 5.17.0-rc6-syzkaller-01958-gde55c9a1967c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:xdp_warn+0x28/0x30 net/core/xdp.c:599
-Code: 40 00 41 55 49 89 fd 41 54 41 89 d4 55 48 89 f5 e8 2d 08 3a fa 4c 89 e9 44 89 e2 48 89 ee 48 c7 c7 80 ea b0 8a e8 ef c7 cd 01 <0f> 0b 5d 41 5c 41 5d c3 55 53 48 89 fb e8 06 08 3a fa 48 8d 7b ec
-RSP: 0018:ffffc9000370f6f8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff888018d8a198 RCX: 0000000000000000
-RDX: ffff88802272d700 RSI: ffffffff815fe2c8 RDI: fffff520006e1ed1
-RBP: ffffffff8ab54aa0 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff815f895e R11: 0000000000000000 R12: 0000000000000112
-R13: ffffffff8ab54780 R14: ffff888018d8a000 R15: ffff888018d8ae98
-FS:  000055555694a300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001000 CR3: 000000007255a000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- xdp_update_frame_from_buff include/net/xdp.h:274 [inline]
- xdp_update_frame_from_buff include/net/xdp.h:260 [inline]
- xdp_test_run_init_page+0x3f1/0x500 net/bpf/test_run.c:143
- page_pool_set_pp_info net/core/page_pool.c:268 [inline]
- __page_pool_alloc_pages_slow+0x269/0x1050 net/core/page_pool.c:339
- page_pool_alloc_pages+0xb6/0x100 net/core/page_pool.c:372
- page_pool_dev_alloc_pages include/net/page_pool.h:197 [inline]
- xdp_test_run_batch net/bpf/test_run.c:280 [inline]
- bpf_test_run_xdp_live+0x53a/0x18c0 net/bpf/test_run.c:363
- bpf_prog_test_run_xdp+0x8f6/0x1440 net/bpf/test_run.c:1317
- bpf_prog_test_run kernel/bpf/syscall.c:3363 [inline]
- __sys_bpf+0x1858/0x59a0 kernel/bpf/syscall.c:4665
- __do_sys_bpf kernel/bpf/syscall.c:4751 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4749 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4749
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7fc3679a71f9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdd3b6d268 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fc3679a71f9
-RDX: 0000000000000048 RSI: 0000000020000000 RDI: 000000000000000a
-RBP: 00007fc36796b1e0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fc36796b270
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
