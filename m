@@ -2,73 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D314D5503
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 090A34D54FA
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344524AbiCJXHC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 18:07:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        id S1344131AbiCJXFT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 18:05:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344531AbiCJXHB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 18:07:01 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD0FCEA24
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:05:59 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id z11so12014607lfh.13
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:05:59 -0800 (PST)
+        with ESMTP id S242335AbiCJXFS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 18:05:18 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0CFD2276
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:04:16 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id n2so6212930plf.4
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:04:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version:content-transfer-encoding;
-        bh=G9J8FmHq2/CqMV+jtudqhKexWT092dl7bgPQcNEIVpI=;
-        b=kqOPu49snnEYaDB6NIOJaYGr0ImOIF4OUUO7zYQwrxVSgFaeDAmw1yMD7v0QF3Ryyi
-         zjwIbDFydMGbXUIzL5/slUW8ZOfQaKpiWTF6oWeV8JBStCWYdxu+wwf+iL7vtBgE8lB9
-         aVnezfHcQLE7M9RNndqono6tZzQ7Oe8fkYXCU=
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=1coxOHy+MiOVkaWgzSw++tkxGlirBpUlCMovtClURhw=;
+        b=CjWfotxA33yOsiAJ7O8Fm3Q6c+I6BF7K7x2OwbbcHiGwT0SPnVY4OXhan3k5QaGlbt
+         WU3LZJ+4LVyE4wxo5yZEYRRY6oVg/CwycFcrLAJA/7Sv9vc+4OPp3aEicV+dmxkIPNu7
+         B9mDme2VHkIEA86cgc3LRs1aJvhXqL+HivHuz8+8IKsulr7JWTB+EfFZ/70pTeYm0l5s
+         jbOQgfW0slhcjisOZ3zLqjDUjedFHxTul8fich1wTn1OV6bH8Bfv3gEdGQUbT/Jx7vRU
+         F+KzSYjRifjUoT98RTyxdS3W93t8RAjJ9ejZEz5cAaZ8uPIByzG/qpEFK88zunFNx8JJ
+         rnvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version:content-transfer-encoding;
-        bh=G9J8FmHq2/CqMV+jtudqhKexWT092dl7bgPQcNEIVpI=;
-        b=WPHsHyc4IgziLuVIqTp2thDbr49wM0XPN/7KnTQ+x00ipl6lBb7DGt9Fej7yjWmyMr
-         EtAIi5BSm0t7HZ8OZGdRBVQztyubTOR8oWVFddbsYU0PFV0Sts8H5McfVBAQE79EkKzf
-         c6u1HvZFfrxoIpZVJedEF02ifeJKt98KVpj27RqBC5LeG8ZoFrdoIev+OrfY62hunVCR
-         uFumaEB0DZfGeLqJc2obZsVKcvBpphCty5i4ApdXSGP1QPeYS4kYZomTc44zOmIZ01EK
-         7eFV2ZO67OXNIJOk/m0HpfbyNek7+xgNgwB8e1sJQyGyt7IbVU47WUMQTiBrDnM2PNPL
-         nNlA==
-X-Gm-Message-State: AOAM53352nPJN3agyhCqQNMHbEaiZI7X8J+9F7AVsofb1RmYlSLRFv4M
-        V+cucay8sgY9yqmwHQDzOTo2kg==
-X-Google-Smtp-Source: ABdhPJwBeP1H+YsXCFBZFVSgVJtWDt+BjoUIPA40jh2nJVAjIw1o95VxemmxfNXWhAkJxgNIziKyVA==
-X-Received: by 2002:a05:6512:3f95:b0:448:40cd:dcab with SMTP id x21-20020a0565123f9500b0044840cddcabmr4251208lfa.517.1646953557908;
-        Thu, 10 Mar 2022 15:05:57 -0800 (PST)
-Received: from cloudflare.com ([2a01:110f:4809:d800::f9c])
-        by smtp.gmail.com with ESMTPSA id f15-20020a2e6a0f000000b0023e429778fasm1346783ljc.56.2022.03.10.15.05.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 15:05:57 -0800 (PST)
-References: <20220222182559.2865596-1-iii@linux.ibm.com>
- <20220222182559.2865596-2-iii@linux.ibm.com>
- <87bkygzbg5.fsf@cloudflare.com>
- <8d8b464f6c2820989d67f00d24b6003b8b758274.camel@linux.ibm.com>
- <871qzbz5sa.fsf@cloudflare.com>
- <a924d763fe50ec80594ca3fac6b311cf9ec20fca.camel@linux.ibm.com>
-User-agent: mu4e 1.6.10; emacs 27.2
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH RFC bpf-next 1/3] bpf: Fix certain narrow loads with
- offsets
-Date:   Thu, 10 Mar 2022 23:57:43 +0100
-In-reply-to: <a924d763fe50ec80594ca3fac6b311cf9ec20fca.camel@linux.ibm.com>
-Message-ID: <87wnh1xvaj.fsf@cloudflare.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1coxOHy+MiOVkaWgzSw++tkxGlirBpUlCMovtClURhw=;
+        b=sxpiSi+b2+j/Ncl4Q7k1XCliJbG2CRI6mVZYmD1hOKcCV8bL/KxPlfHKrOzEercQxh
+         vKL/i28TGJHGVs804VikTtodkRdyx58EgnaSz1NCO8xXLUfiGe7KvYJk7MMrZTaWPxZz
+         10I+0eNbjZbmEIikx8YfYuh9yp3USqhgkRI1jPO/oOSKKDu2HJn1cOWqp19pHberpzzG
+         VgHBLTJQCmugIHI8FjYesXJ2N+iu+Mbvl5X9c1q/y7bl+YN4vlnU5hmZ5gVK7bS76bBq
+         lpIth1GwnTjzT4qMYZ7VnOpDjWHfT7EZyRmkZCYVr5Ozzg7LyyaaAeKugSE/lQXI6c6p
+         varA==
+X-Gm-Message-State: AOAM530r/4fudElbHKsqxIsFueMZ8HQdoQgpkmL0HXmY8O7YJTAMKl5v
+        ajFwyyM+pDp0dLV5uhlUHO3tVQ==
+X-Google-Smtp-Source: ABdhPJw8HTIbG6Vtna5RHQ3w0pUmdSBxZ9o7VNzoRIFubitq+l+4KYvfWrG6iZrcHpsFwfLo5jj15A==
+X-Received: by 2002:a17:903:124a:b0:151:99fe:1a10 with SMTP id u10-20020a170903124a00b0015199fe1a10mr7338107plh.87.1646953455727;
+        Thu, 10 Mar 2022 15:04:15 -0800 (PST)
+Received: from [192.168.254.17] ([50.39.160.154])
+        by smtp.gmail.com with ESMTPSA id rj14-20020a17090b3e8e00b001bf50a8b468sm11740225pjb.51.2022.03.10.15.04.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Mar 2022 15:04:15 -0800 (PST)
+Message-ID: <77a44185-c9cd-21f5-125f-b8eec7a66537@linaro.org>
+Date:   Thu, 10 Mar 2022 15:04:14 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2] net: ipv6: fix skb_over_panic in __ip6_append_data
+Content-Language: en-US
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        syzbot+e223cf47ec8ae183f2a0@syzkaller.appspotmail.com,
+        Willem de Bruijn <willemb@google.com>
+References: <CA+FuTScPUVpyK6WYXrePTg_533VF2wfPww4MOJYa17v0xbLeGQ@mail.gmail.com>
+ <20220310221328.877987-1-tadeusz.struk@linaro.org>
+ <20220310143011.00c21f53@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAF=yD-LrVjvY8wAqZtUTFS8V9ng2AD3jB1DOZvkagPOp3Sbq-g@mail.gmail.com>
+From:   Tadeusz Struk <tadeusz.struk@linaro.org>
+In-Reply-To: <CAF=yD-LrVjvY8wAqZtUTFS8V9ng2AD3jB1DOZvkagPOp3Sbq-g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,178 +90,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 3/10/22 14:43, Willem de Bruijn wrote:
+> On Thu, Mar 10, 2022 at 5:30 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>>
+>> On Thu, 10 Mar 2022 14:13:28 -0800 Tadeusz Struk wrote:
+>>> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+>>> index 4788f6b37053..6d45112322a0 100644
+>>> --- a/net/ipv6/ip6_output.c
+>>> +++ b/net/ipv6/ip6_output.c
+>>> @@ -1649,6 +1649,16 @@ static int __ip6_append_data(struct sock *sk,
+>>>                        skb->protocol = htons(ETH_P_IPV6);
+>>>                        skb->ip_summed = csummode;
+>>>                        skb->csum = 0;
+>>> +
+>>> +                     /*
+>>> +                      *      Check if there is still room for payload
+>>> +                      */
+>>
+>> TBH I think the check is self-explanatory. Not worth a banner comment,
+>> for sure.
+>>
+>>> +                     if (fragheaderlen >= mtu) {
+>>> +                             err = -EMSGSIZE;
+>>> +                             kfree_skb(skb);
+>>> +                             goto error;
+>>> +                     }
+>>
+>> Not sure if Willem prefers this placement, but seems like we can lift
+>> this check out of the loop, as soon as fragheaderlen and mtu are known.
+>>
+>>>                        /* reserve for fragmentation and ipsec header */
+>>>                        skb_reserve(skb, hh_len + sizeof(struct frag_hdr) +
+>>>                                    dst_exthdrlen);
+> 
+> Just updating this boundary check will do?
+> 
+>          if (mtu < fragheaderlen ||
+>              ((mtu - fragheaderlen) & ~7) + fragheaderlen <
+> sizeof(struct frag_hdr))
+>                  goto emsgsize;
 
-On Wed, Mar 09, 2022 at 01:34 PM +01, Ilya Leoshkevich wrote:
-> On Wed, 2022-03-09 at 09:36 +0100, Jakub Sitnicki wrote:
+Yes, it will. v3 on its way.
 
-[...]
-
->>=20
->> Consider this - today the below is true on both LE and BE, right?
->>=20
->> =C2=A0 *(u32 *)&ctx->remote_port =3D=3D *(u16 *)&ctx->remote_port
->>=20
->> because the loads get converted to:
->>=20
->> =C2=A0 *(u16 *)&ctx_kern->sport =3D=3D *(u16 *)&ctx_kern->sport
->>=20
->> IOW, today, because of the bug that you are fixing here, the data
->> layout
->> changes from the PoV of the BPF program depending on the load size.
->>=20
->> With 2-byte loads, without this patch, the data layout appears as:
->>=20
->> =C2=A0 struct bpf_sk_lookup {
->> =C2=A0=C2=A0=C2=A0 ...
->> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
->> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
->> =C2=A0=C2=A0=C2=A0 ...
->> =C2=A0 }
->
-> I see, one can indeed argue that this is also a part of the ABI now.
-> So we're stuck between a rock and a hard place.
->
->> While for 4-byte loads, it appears as in your 2nd patch:
->>=20
->> =C2=A0 struct bpf_sk_lookup {
->> =C2=A0=C2=A0=C2=A0 ...
->> =C2=A0=C2=A0=C2=A0 #if little-endian
->> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
->> =C2=A0=C2=A0=C2=A0 __u16=C2=A0 :16; /* zero padding */
->> =C2=A0=C2=A0=C2=A0 #elif big-endian
->> =C2=A0=C2=A0=C2=A0 __u16=C2=A0 :16; /* zero padding */
->> =C2=A0=C2=A0=C2=A0 __be16 remote_port;
->> =C2=A0=C2=A0=C2=A0 #endif
->> =C2=A0=C2=A0=C2=A0 ...
->> =C2=A0 }
->>=20
->> Because of that I don't see how we could keep complete ABI
->> compatiblity,
->> and have just one definition of struct bpf_sk_lookup that reflects
->> it. These are conflicting requirements.
->>=20
->> I'd bite the bullet for 4-byte loads, for the sake of having an
->> endian-agnostic struct bpf_sk_lookup and struct bpf_sock definition
->> in
->> the uAPI header.
->>=20
->> The sacrifice here is that the access converter will have to keep
->> rewriting 4-byte access to bpf_sk_lookup.remote_port and
->> bpf_sock.dst_port in this unexpected, quirky manner.
->>=20
->> The expectation is that with time users will recompile their BPF
->> progs
->> against the updated bpf.h, and switch to 2-byte loads. That will make
->> the quirk in the access converter dead code in time.
->>=20
->> I don't have any better ideas. Sorry.
->>=20
->> [...]
->
-> I agree, let's go ahead with this solution.
->
-> The only remaining problem that I see is: the bug is in the common
-> code, and it will affect the fields that we add in the future.
->
-> Can we either document this state of things in a comment, or fix the
-> bug and emulate the old behavior for certain fields?
-
-I think we can fix the bug in the common code, and compensate for the
-quirky 4-byte access to bpf_sk_lookup.remote_port and bpf_sock.dst_port
-in the is_valid_access and convert_ctx_access.
-
-With the patch as below, access to remote_port gets rewritten to:
-
-* size=3D1, offset=3D0, r2 =3D *(u8 *)(r1 +36)
-   0: (69) r2 =3D *(u16 *)(r1 +4)
-   1: (54) w2 &=3D 255
-   2: (b7) r0 =3D 0
-   3: (95) exit
-
-* size=3D1, offset=3D1, r2 =3D *(u8 *)(r1 +37)
-   0: (69) r2 =3D *(u16 *)(r1 +4)
-   1: (74) w2 >>=3D 8
-   2: (54) w2 &=3D 255
-   3: (b7) r0 =3D 0
-   4: (95) exit
-
-* size=3D1, offset=3D2, r2 =3D *(u8 *)(r1 +38)
-   0: (b4) w2 =3D 0
-   1: (54) w2 &=3D 255
-   2: (b7) r0 =3D 0
-   3: (95) exit
-
-* size=3D1, offset=3D3, r2 =3D *(u8 *)(r1 +39)
-   0: (b4) w2 =3D 0
-   1: (74) w2 >>=3D 8
-   2: (54) w2 &=3D 255
-   3: (b7) r0 =3D 0
-   4: (95) exit
-
-* size=3D2, offset=3D0, r2 =3D *(u16 *)(r1 +36)
-   0: (69) r2 =3D *(u16 *)(r1 +4)
-   1: (b7) r0 =3D 0
-   2: (95) exit
-
-* size=3D2, offset=3D2, r2 =3D *(u16 *)(r1 +38)
-   0: (b4) w2 =3D 0
-   1: (b7) r0 =3D 0
-   2: (95) exit
-
-* size=3D4, offset=3D0, r2 =3D *(u32 *)(r1 +36)
-   0: (69) r2 =3D *(u16 *)(r1 +4)
-   1: (b7) r0 =3D 0
-   2: (95) exit
-
-How does that look to you?
-
-Still need to give it a test on s390x.
-
---8<--
-
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 65869fd510e8..2625a1d2dabc 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -10856,13 +10856,24 @@ static bool sk_lookup_is_valid_access(int off, in=
-t size,
- 	case bpf_ctx_range(struct bpf_sk_lookup, local_ip4):
- 	case bpf_ctx_range_till(struct bpf_sk_lookup, remote_ip6[0], remote_ip6[3=
-]):
- 	case bpf_ctx_range_till(struct bpf_sk_lookup, local_ip6[0], local_ip6[3]):
--	case offsetof(struct bpf_sk_lookup, remote_port) ...
--	     offsetof(struct bpf_sk_lookup, local_ip4) - 1:
- 	case bpf_ctx_range(struct bpf_sk_lookup, local_port):
- 	case bpf_ctx_range(struct bpf_sk_lookup, ingress_ifindex):
- 		bpf_ctx_record_field_size(info, sizeof(__u32));
- 		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u32));
-=20
-+	case bpf_ctx_range(struct bpf_sk_lookup, remote_port):
-+		/* Allow 4-byte access to 2-byte field for backward compatibility */
-+		if (size =3D=3D sizeof(__u32))
-+			return off =3D=3D offsetof(struct bpf_sk_lookup, remote_port);
-+		bpf_ctx_record_field_size(info, sizeof(__be16));
-+		return bpf_ctx_narrow_access_ok(off, size, sizeof(__be16));
-+
-+	case offsetofend(struct bpf_sk_lookup, remote_port) ...
-+	     offsetof(struct bpf_sk_lookup, local_ip4) - 1:
-+		/* Allow access to zero padding for backward compatiblity */
-+		bpf_ctx_record_field_size(info, sizeof(__u16));
-+		return bpf_ctx_narrow_access_ok(off, size, sizeof(__u16));
-+
- 	default:
- 		return false;
- 	}
-@@ -10944,6 +10955,11 @@ static u32 sk_lookup_convert_ctx_access(enum bpf_a=
-ccess_type type,
- 						     sport, 2, target_size));
- 		break;
-=20
-+	case offsetofend(struct bpf_sk_lookup, remote_port):
-+		*target_size =3D 2;
-+		*insn++ =3D BPF_MOV32_IMM(si->dst_reg, 0);
-+		break;
-+
- 	case offsetof(struct bpf_sk_lookup, local_port):
- 		*insn++ =3D BPF_LDX_MEM(BPF_H, si->dst_reg, si->src_reg,
- 				      bpf_target_off(struct bpf_sk_lookup_kern,
+-- 
+Thanks,
+Tadeusz
