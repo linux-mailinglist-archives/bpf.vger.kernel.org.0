@@ -2,75 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E614D45AC
-	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 12:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574534D4615
+	for <lists+bpf@lfdr.de>; Thu, 10 Mar 2022 12:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241591AbiCJLby (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 06:31:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48100 "EHLO
+        id S238581AbiCJLoa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 06:44:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240349AbiCJLbx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 06:31:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2100141E2E
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:30:52 -0800 (PST)
+        with ESMTP id S241763AbiCJLo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 06:44:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1F3B145AE7
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:43:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1646911852;
+        s=mimecast20190719; t=1646912600;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DBExlLjpskpVeXqiYBMCamA2w6IO4jute6crnMTjK+E=;
-        b=by5M0TG/lepLb+slcqR0+RbwZsejjvqlmwRBYCfkQWn+YN9KmE6G86p1aT39ikhRfqHrWu
-        xSxgqNV4E2Ed5J0obNduwwqvdVAq5u2xE5mb5PtYhExnMwMfknyQ0E9+WgHgpUEZ1fivdK
-        +2X1MWINeyeoGK8rX8xPwO8G7eIHH44=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Lv3jLStTHDx9pIIehZeBR/P5OFpCscaUeKQYtaO9J88=;
+        b=N6hBCc3/THnCj+WJ0tqffK3LVzdLpGHTIFnRn/AArcD6PEMfP2Tsof90RXuKw9iaeUgjh1
+        ynluLeOIb2e/udfAajs7uvmedHrz6j2CmEbpwn3+KItxipN6nIVDKtVbsoTDm7KKQeUgBO
+        JzM3LKwM33YTE2CMQluPUaWTr3Oes0Y=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-287-5Qsd2AEwOxi99I7nqmdyeQ-1; Thu, 10 Mar 2022 06:30:51 -0500
-X-MC-Unique: 5Qsd2AEwOxi99I7nqmdyeQ-1
-Received: by mail-ed1-f70.google.com with SMTP id cf6-20020a0564020b8600b00415e9b35c81so2925354edb.9
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:30:50 -0800 (PST)
+ us-mta-562-CcOOi3J8N6ibxk2GP-vTNg-1; Thu, 10 Mar 2022 06:43:18 -0500
+X-MC-Unique: CcOOi3J8N6ibxk2GP-vTNg-1
+Received: by mail-wr1-f71.google.com with SMTP id t15-20020adfdc0f000000b001ef93643476so1592224wri.2
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 03:43:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=DBExlLjpskpVeXqiYBMCamA2w6IO4jute6crnMTjK+E=;
-        b=cGS6O0QE+/1UqrUvepCefLVT/B47p3Zw021FJgYS1ik7AlkXK95u4rAIxOrGlQHn1h
-         JbyvPFZQyPNERrIn03DVeQ+pe4Lgd1Hx1ImIQ3An5OfihEK5EdvSB0wvL9PRUn42Py0Q
-         mvnYcX3lfRf6vEmn5ozdIsnKRl2rdPgsbyS06CCLXBC/GIrnqXY3dxQWN0KcTn2AkxK/
-         qbGBLkFbIS9VM7kUpay3IgLvy4mTfRavCoPIJ+F8u0mCXHYDfeLMQcPP8uM6LEfoF0qt
-         C9yak6ZGEJgWZ13Fn0WvbonWBncv5k7WGtti4eJ8AufJH0/HO8ZeAXzjxJa8B8cF9Ocf
-         LCGA==
-X-Gm-Message-State: AOAM532sWz3BmRP4WQr6WLYhkjCQylbZYowJMJdDLYGtsrEqyNen0iQY
-        +IVjF7RAgar+ZJG4xgrYXhupl+67g6FrIMlyIMoRc0+I8hCWM5zWnWHNt5oAUHU15yu86aTdbUC
-        iy3fEHB32TzFm
-X-Received: by 2002:a50:fb93:0:b0:416:c4f:bd24 with SMTP id e19-20020a50fb93000000b004160c4fbd24mr3837354edq.225.1646911848962;
-        Thu, 10 Mar 2022 03:30:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy936ZsG9FnnDHIskhbLnEfRuA9HX6fFO8ZuZwxURuoNsoErHWOxwLmx59AiFAX+M/19aeCrA==
-X-Received: by 2002:a50:fb93:0:b0:416:c4f:bd24 with SMTP id e19-20020a50fb93000000b004160c4fbd24mr3837174edq.225.1646911846358;
-        Thu, 10 Mar 2022 03:30:46 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ee29-20020a056402291d00b00416270eaff5sm1924568edb.1.2022.03.10.03.30.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Lv3jLStTHDx9pIIehZeBR/P5OFpCscaUeKQYtaO9J88=;
+        b=sP3QpigrTpS7h5W9aLuvOELbqFezQkyzbGoXdVhQ0oCHLv46qtbQQ81JvCJLBCwIZw
+         HnMWYDcfmm1exL02eRctKTHVVYgb5pSV1tECPBRMlccrydV6gO+24kJvJYHLE+Qm8e8A
+         mNNDSHC6mhQXUhnzllqlwVEBorRX/d2W6dgfqr7ivEEyQpB76JPBcfSUVagoyxPzbMrj
+         6kt0J6PTgCX2SDMl0/HdCMqU1xGJEWgSEOX86uw0w724rcZvG8T/gcGBDIt9RUiyJGD1
+         qpjp2/DXxY2Itmgk7h5vLKvQMXEtqEsUfey75YfetF2Bi6EgAJBOiiWCEl3LERsp0xDm
+         ivDg==
+X-Gm-Message-State: AOAM532VycwFkHnEiDB9eWw2XLccAcXdVmllVtFjMdxcWh4VRPXIEnIx
+        VMp9CyssRuqTKq/9lL+sqiuN8xiGjf5+FSrDrUpe7NV2RTYjpLbPGUVgKqSA2rPi1wOVUOa062r
+        jcw9GbubH5tRp
+X-Received: by 2002:adf:f5c5:0:b0:1ed:bc44:63e4 with SMTP id k5-20020adff5c5000000b001edbc4463e4mr3307309wrp.236.1646912597411;
+        Thu, 10 Mar 2022 03:43:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyjLuElTWKtMfe3e05qseSNHDzbSk8W1f/geXhuoNVAo3LEF/oenypiYw3I0JieQAq3FqiPiA==
+X-Received: by 2002:adf:f5c5:0:b0:1ed:bc44:63e4 with SMTP id k5-20020adff5c5000000b001edbc4463e4mr3307283wrp.236.1646912597175;
+        Thu, 10 Mar 2022 03:43:17 -0800 (PST)
+Received: from localhost ([37.183.9.66])
+        by smtp.gmail.com with ESMTPSA id w6-20020a5d6806000000b002036515dda7sm4050451wru.33.2022.03.10.03.43.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 03:30:45 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id C6DC4192CD3; Thu, 10 Mar 2022 12:30:44 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com, pabeni@redhat.com,
-        echaudro@redhat.com, lorenzo.bianconi@redhat.com,
-        toshiaki.makita1@gmail.com, andrii@kernel.org
-Subject: Re: [PATCH v4 bpf-next 3/3] veth: allow jumbo frames in xdp mode
-In-Reply-To: <930b1ad3d84f7ca5a41ba75571f9146a932c5394.1646755129.git.lorenzo@kernel.org>
+        Thu, 10 Mar 2022 03:43:16 -0800 (PST)
+Date:   Thu, 10 Mar 2022 12:43:14 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        pabeni@redhat.com, echaudro@redhat.com, toshiaki.makita1@gmail.com,
+        andrii@kernel.org
+Subject: Re: [PATCH v4 bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order
+ to accept non-linear skb
+Message-ID: <YinkUiv/yC/gJhYZ@lore-desk>
 References: <cover.1646755129.git.lorenzo@kernel.org>
- <930b1ad3d84f7ca5a41ba75571f9146a932c5394.1646755129.git.lorenzo@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Thu, 10 Mar 2022 12:30:44 +0100
-Message-ID: <87bkyeujrv.fsf@toke.dk>
+ <24703dbc3477a4b3aaf908f6226a566d27969f83.1646755129.git.lorenzo@kernel.org>
+ <87ee3auk70.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7lnIUU83iotuCzDe"
+Content-Disposition: inline
+In-Reply-To: <87ee3auk70.fsf@toke.dk>
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -81,95 +82,100 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-> Allow increasing the MTU over page boundaries on veth devices
-> if the attached xdp program declares to support xdp fragments.
-> Enable NETIF_F_ALL_TSO when the device is running in xdp mode.
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  drivers/net/veth.c | 28 +++++++++++++++++-----------
->  1 file changed, 17 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-> index 47b21b1d2fd9..c5a2dc2b2e4b 100644
-> --- a/drivers/net/veth.c
-> +++ b/drivers/net/veth.c
-> @@ -293,8 +293,7 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
->  /* return true if the specified skb has chances of GRO aggregation
->   * Don't strive for accuracy, but try to avoid GRO overhead in the most
->   * common scenarios.
-> - * When XDP is enabled, all traffic is considered eligible, as the xmit
-> - * device has TSO off.
-> + * When XDP is enabled, all traffic is considered eligible.
->   * When TSO is enabled on the xmit device, we are likely interested only
->   * in UDP aggregation, explicitly check for that if the skb is suspected
->   * - the sock_wfree destructor is used by UDP, ICMP and XDP sockets -
-> @@ -302,11 +301,13 @@ static int veth_forward_skb(struct net_device *dev, struct sk_buff *skb,
->   */
->  static bool veth_skb_is_eligible_for_gro(const struct net_device *dev,
->  					 const struct net_device *rcv,
-> +					 const struct veth_rq *rq,
->  					 const struct sk_buff *skb)
->  {
-> -	return !(dev->features & NETIF_F_ALL_TSO) ||
-> -		(skb->destructor == sock_wfree &&
-> -		 rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
-> +	return rcu_access_pointer(rq->xdp_prog) ||
-> +	       !(dev->features & NETIF_F_ALL_TSO) ||
-> +	       (skb->destructor == sock_wfree &&
-> +		rcv->features & (NETIF_F_GRO_FRAGLIST | NETIF_F_GRO_UDP_FWD));
->  }
->  
->  static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
-> @@ -335,7 +336,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
->  		 * Don't bother with napi/GRO if the skb can't be aggregated
->  		 */
->  		use_napi = rcu_access_pointer(rq->napi) &&
-> -			   veth_skb_is_eligible_for_gro(dev, rcv, skb);
-> +			   veth_skb_is_eligible_for_gro(dev, rcv, rq, skb);
->  	}
->  
->  	skb_tx_timestamp(skb);
-> @@ -1525,9 +1526,14 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->  			goto err;
->  		}
->  
-> -		max_mtu = PAGE_SIZE - VETH_XDP_HEADROOM -
-> -			  peer->hard_header_len -
-> -			  SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-> +		max_mtu = SKB_WITH_OVERHEAD(PAGE_SIZE - VETH_XDP_HEADROOM) -
-> +			  peer->hard_header_len;
+--7lnIUU83iotuCzDe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Why are we no longer accounting the size of the skb_shared_info if the
-program doesn't support frags?
+> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+>=20
+> > Introduce veth_convert_xdp_buff_from_skb routine in order to
+> > convert a non-linear skb into a xdp buffer. If the received skb
+> > is cloned or shared, veth_convert_xdp_buff_from_skb will copy it
+> > in a new skb composed by order-0 pages for the linear and the
+> > fragmented area. Moreover veth_convert_xdp_buff_from_skb guarantees
+> > we have enough headroom for xdp.
+> > This is a preliminary patch to allow attaching xdp programs with frags
+> > support on veth devices.
+> >
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+>=20
+> It's cool that we can do this! A few comments below:
 
-> +		/* Allow increasing the max_mtu if the program supports
-> +		 * XDP fragments.
-> +		 */
-> +		if (prog->aux->xdp_has_frags)
-> +			max_mtu += PAGE_SIZE * MAX_SKB_FRAGS;
-> +
->  		if (peer->mtu > max_mtu) {
->  			NL_SET_ERR_MSG_MOD(extack, "Peer MTU is too large to set XDP");
->  			err = -ERANGE;
-> @@ -1549,7 +1555,7 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
->  		}
->  
->  		if (!old_prog) {
-> -			peer->hw_features &= ~NETIF_F_GSO_SOFTWARE;
-> +			peer->hw_features &= ~NETIF_F_GSO_FRAGLIST;
+Hi Toke,
 
-The patch description says we're enabling TSO, but this change enables a
-couple of other flags as well. Also, it's not quite obvious to me why
-your change makes this possible? Is it because we can now execute XDP on
-a full TSO packet at once? Because then this should be coupled to the
-xdp_has_frags flag of the XDP program? Or will the TSO packet be
-segmented before it hits the XDP program? But then this change has
-nothing to do with the rest of your series?
+thx for the review :)
 
-Please also add this explanation to the commit message :)
+[...]
 
--Toke
+> > +static int veth_convert_xdp_buff_from_skb(struct veth_rq *rq,
+> > +					  struct xdp_buff *xdp,
+> > +					  struct sk_buff **pskb)
+> > +{
+>=20
+> nit: It's not really "converting" and skb into an xdp_buff, since the
+> xdp_buff lives on the stack; so maybe 'veth_init_xdp_buff_from_skb()'?
+
+I kept the previous naming convention used for xdp_convert_frame_to_buff()
+(my goal would be to move it in xdp.c and reuse this routine for the
+generic-xdp use case) but I am fine with veth_init_xdp_buff_from_skb().
+
+>=20
+> > +	struct sk_buff *skb =3D *pskb;
+> > +	u32 frame_sz;
+> > =20
+> >  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+> > -	    skb_is_nonlinear(skb) || headroom < XDP_PACKET_HEADROOM) {
+> > +	    skb_shinfo(skb)->nr_frags) {
+>=20
+> So this always clones the skb if it has frags? Is that really needed?
+
+if we look at skb_cow_data(), paged area is always considered not writable
+
+>=20
+> Also, there's a lot of memory allocation and copying going on here; have
+> you measured the performance?
+
+even in the previous implementation we always reallocate the skb if the
+conditions above are verified so I do not expect any difference in the sing=
+le
+buffer use-case but I will run some performance tests.
+
+>=20
+
+[...]
+
+> > +
+> > +	if (xdp_buff_has_frags(&xdp))
+> > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
+> > +	else
+> > +		skb->data_len =3D 0;
+>=20
+> We can remove entire frags using xdp_adjust_tail, right? Will that get
+> propagated in the right way to the skb frags due to the dual use of
+> skb_shared_info, or?
+
+bpf_xdp_frags_shrink_tail() can remove entire frags and it will modify meta=
+data
+contained in the skb_shared_info (e.g. nr_frags or the frag size of
+the given page). We should consider the data_len field in this case. Agree?
+
+Regards,
+Lorenzo
+
+>=20
+
+--7lnIUU83iotuCzDe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYinkUgAKCRA6cBh0uS2t
+rPV3AQD9dCxckpCRsZy806fPlpUH4k5DTToXqM3PHWOztuxtGgD/R3LwMZNV24mK
+h7zmBfR//JSvD0w77HLj3e/LTVk+qw4=
+=gGvF
+-----END PGP SIGNATURE-----
+
+--7lnIUU83iotuCzDe--
 
