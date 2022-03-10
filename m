@@ -2,220 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 769C44D5589
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AFA4D55B1
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 00:47:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237986AbiCJXgi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 18:36:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51924 "EHLO
+        id S1344853AbiCJXr4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 18:47:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236034AbiCJXgi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 18:36:38 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694881587A6;
-        Thu, 10 Mar 2022 15:35:36 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id e6so6010811pgn.2;
-        Thu, 10 Mar 2022 15:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=R2UPqxeH2jOb5yVGm3qiaUhx7jWSpr0mj8g5fRIgwDI=;
-        b=JI5mOmwqt36wM6tnjxtdB/aJlLVZ7EoZlPouGY6EuulE6TxgmcgQQSbb7RXGnScTRw
-         eiq/5uIC4VkIZ4cpA24oI08SOukzhZeNEAL/C3Cb8SLH28/JSadvcA56PSAM38zgXwSY
-         qbRvrRO1iu0995wni+S04B2t5sl1rHMlnf2gC16Bo/Nr4aLLW8SZd64adZUzc3XIqxzc
-         n8C231yylqKDi3A9WNIaRfbfBllGY2EHfysdOT/WzTAPYyHoc5/e5gw7NhFo2R9zf1av
-         T7c6vcZooyaRPX3VBzBaNgRMhOwWgkd3ylaSTORYrsgfL0PFa7+4+pPnER287pkLhV1H
-         9qiQ==
+        with ESMTP id S1344869AbiCJXrr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 18:47:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 38F7119E01D
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:46:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646956004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oXt6f6cLtIHiy0vpPclSvGUgoo3PYAuq0R9cH40xJt0=;
+        b=f8WbBiXqGP4WcwrJrXELzp3ehdg489GlLQRwDM/rbBnzGWRYD7te+CXAfyiWoLOdUrzp0+
+        D56LI5y+Ep3Kd71On250/1UGhKDiDi9k3tvsFtSvjqJiUr6b7cS6iCTFCfXc6fojlyFHQP
+        FraqNSIYeoOayi9b6InaiKGsWQydBlo=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-588-kvkyR4AdNP6_b3UGmlb_gg-1; Thu, 10 Mar 2022 18:46:43 -0500
+X-MC-Unique: kvkyR4AdNP6_b3UGmlb_gg-1
+Received: by mail-qt1-f200.google.com with SMTP id e28-20020ac8415c000000b002c5e43ca6b7so5297417qtm.9
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 15:46:43 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=R2UPqxeH2jOb5yVGm3qiaUhx7jWSpr0mj8g5fRIgwDI=;
-        b=FYn4uww2gqumqlCITbiAUjXifVzBlVvDIT4fP/pW2jD8OxYx/kG5WTdCNVGK805lpU
-         ZPLrluZIMiQiDp5Y9FXgNb9FJNuTwpkleQE76IRkMLs/WdPi8m/RUptrGA9CJ3caOXAQ
-         hRUx8Mn34UomfyL018O8ApKWY7+pEsM0QpBiRXRywuo8BkV8nAkSP8dqsJmHXNPwyqiT
-         i6WEGICmwtsqJUojNR2ye6nDz2PjIHAzzL2braxaASTltxYXPFNyQZXIaMjuV0+brFip
-         6Mj7Smw+bTeTQ35gdzanvNIkV9FmTI+fQjThug9ikEAqIN1aFYqumSBO0k/TQP2v+hi6
-         xlQw==
-X-Gm-Message-State: AOAM533riUWbzXAZK29YBP7SLZzwnFrVVhscI6BFCaXaQm7PJ3n4BWti
-        F36dxcnqnJRwcRfaa8TlEZLEZ1alg+jC7N7ZKw4=
-X-Google-Smtp-Source: ABdhPJz2e3LYyu6RGUzSQ74c7e24FcGECgx9vr+rY6x25FtDA1OgDgd6w+XMILUTlJ6wZK5LhdxuuxRWfzdTgG2wgLc=
-X-Received: by 2002:a62:bd0e:0:b0:4f6:e07f:d4ee with SMTP id
- a14-20020a62bd0e000000b004f6e07fd4eemr7559056pff.46.1646955335812; Thu, 10
- Mar 2022 15:35:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oXt6f6cLtIHiy0vpPclSvGUgoo3PYAuq0R9cH40xJt0=;
+        b=7T1L2QNe26XVKrZh7fctkl0qnUDECl7yykyI+ZK9Ueg3/H3CCmZ1sF1cK+zKjUxSZ4
+         juhFTpHFEg8aU2lC2RfSrVReDpgIVCigU4ynBhSFtuDGtIOmZ94C1EwPUfCTXj/lU8OK
+         YGbhspHBpKG5/q0VKjrDqE32ttoc7OOQuKvPbnN2+lFKgrne4oib98lZ3YTAUMMrfXZ3
+         VPkF9DzpcRDbqX3qwuYOSN2R09bSdWnQMBgQw8NhR7/Mp5Lzh+et+VOjrEe/2ajCrtNw
+         cWuqEG5Nvh7Pspfm4S2kzSY3OOkw5zjaMBoW9EtrPq/6aijDD0W2WoL9tb2fq0c4iJ0I
+         1V8w==
+X-Gm-Message-State: AOAM532seMCDbfjQs4skeGeU9BTR3YYRgZ06xwJNVgSt9GFXozrwLAEg
+        wedTu5jjobFfTJeXX6b9DezO/67L0fugnsI76Iv/WG6ZKZXXn5iKuIjjquCigE3JhGeJsXV2NXr
+        2NOnJ298NgKIE
+X-Received: by 2002:a05:620a:4308:b0:67b:487e:e02a with SMTP id u8-20020a05620a430800b0067b487ee02amr4790431qko.696.1646956002509;
+        Thu, 10 Mar 2022 15:46:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyAbf1O9Nn5fcq2gbLsyHxoiS0Jt0YQ3PNs+QBQtxidM1cvJ+YUn7SjhbGw02/YBX2anjqy9A==
+X-Received: by 2002:a05:620a:4308:b0:67b:487e:e02a with SMTP id u8-20020a05620a430800b0067b487ee02amr4790414qko.696.1646956002209;
+        Thu, 10 Mar 2022 15:46:42 -0800 (PST)
+Received: from localhost ([37.183.9.66])
+        by smtp.gmail.com with ESMTPSA id v1-20020a05620a440100b0067d3fc2eaa6sm2941459qkp.96.2022.03.10.15.46.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Mar 2022 15:46:41 -0800 (PST)
+Date:   Fri, 11 Mar 2022 00:46:38 +0100
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        pabeni@redhat.com, echaudro@redhat.com, toshiaki.makita1@gmail.com,
+        andrii@kernel.org
+Subject: Re: [PATCH v4 bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order
+ to accept non-linear skb
+Message-ID: <YiqN3nxoOqznFPJm@lore-desk>
+References: <cover.1646755129.git.lorenzo@kernel.org>
+ <24703dbc3477a4b3aaf908f6226a566d27969f83.1646755129.git.lorenzo@kernel.org>
+ <87ee3auk70.fsf@toke.dk>
+ <YinkUiv/yC/gJhYZ@lore-desk>
+ <87ilsly6db.fsf@toke.dk>
+ <YipQzAGMyVbJQyhX@lore-desk>
 MIME-Version: 1.0
-References: <20220306234311.452206-1-memxor@gmail.com> <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
- <20220308070828.4tjiuvvyqwmhru6a@apollo.legion> <87lexky33s.fsf@toke.dk>
- <CAEf4Bza6BhG7wtgmvWohEKpN5jSTyQwxm5-738oMoniz1v3uVw@mail.gmail.com> <87bkydxu59.fsf@toke.dk>
-In-Reply-To: <87bkydxu59.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Mar 2022 15:35:24 -0800
-Message-ID: <CAADnVQJPOCzyF-hBVOxCwqNj-vAk5=Dt6UvPdGok1b6s=Zdd7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 0/5] Introduce bpf_packet_pointer helper
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7HTl4t6538JpPN/x"
+Content-Disposition: inline
+In-Reply-To: <YipQzAGMyVbJQyhX@lore-desk>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 3:30 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->
-> > On Tue, Mar 8, 2022 at 5:40 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >>
-> >> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-> >>
-> >> > On Tue, Mar 08, 2022 at 11:18:52AM IST, Andrii Nakryiko wrote:
-> >> >> On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gmai=
-l.com> wrote:
-> >> >> >
-> >> >> > Expose existing 'bpf_xdp_pointer' as a BPF helper named 'bpf_pack=
-et_pointer'
-> >> >> > returning a packet pointer with a fixed immutable range. This can=
- be useful to
-> >> >> > enable DPA without having to use memcpy (currently the case in
-> >> >> > bpf_xdp_load_bytes and bpf_xdp_store_bytes).
-> >> >> >
-> >> >> > The intended usage to read and write data for multi-buff XDP is:
-> >> >> >
-> >> >> >         int err =3D 0;
-> >> >> >         char buf[N];
-> >> >> >
-> >> >> >         off &=3D 0xffff;
-> >> >> >         ptr =3D bpf_packet_pointer(ctx, off, sizeof(buf), &err);
-> >> >> >         if (unlikely(!ptr)) {
-> >> >> >                 if (err < 0)
-> >> >> >                         return XDP_ABORTED;
-> >> >> >                 err =3D bpf_xdp_load_bytes(ctx, off, buf, sizeof(=
-buf));
-> >> >> >                 if (err < 0)
-> >> >> >                         return XDP_ABORTED;
-> >> >> >                 ptr =3D buf;
-> >> >> >         }
-> >> >> >         ...
-> >> >> >         // Do some stores and loads in [ptr, ptr + N) region
-> >> >> >         ...
-> >> >> >         if (unlikely(ptr =3D=3D buf)) {
-> >> >> >                 err =3D bpf_xdp_store_bytes(ctx, off, buf, sizeof=
-(buf));
-> >> >> >                 if (err < 0)
-> >> >> >                         return XDP_ABORTED;
-> >> >> >         }
-> >> >> >
-> >> >> > Note that bpf_packet_pointer returns a PTR_TO_PACKET, not PTR_TO_=
-MEM, because
-> >> >> > these pointers need to be invalidated on clear_all_pkt_pointers i=
-nvocation, and
-> >> >> > it is also more meaningful to the user to see return value as R0=
-=3Dpkt.
-> >> >> >
-> >> >> > This series is meant to collect feedback on the approach, next ve=
-rsion can
-> >> >> > include a bpf_skb_pointer and exposing it as bpf_packet_pointer h=
-elper for TC
-> >> >> > hooks, and explore not resetting range to zero on r0 +=3D rX, ins=
-tead check access
-> >> >> > like check_mem_region_access (var_off + off < range), since there=
- would be no
-> >> >> > data_end to compare against and obtain a new range.
-> >> >> >
-> >> >> > The common name and func_id is supposed to allow writing generic =
-code using
-> >> >> > bpf_packet_pointer that works for both XDP and TC programs.
-> >> >> >
-> >> >> > Please see the individual patches for implementation details.
-> >> >> >
-> >> >>
-> >> >> Joanne is working on a "bpf_dynptr" framework that will support
-> >> >> exactly this feature, in addition to working with dynamically
-> >> >> allocated memory, working with memory of statically unknown size (b=
-ut
-> >> >> safe and checked at runtime), etc. And all that within a generic
-> >> >> common feature implemented uniformly within the verifier. E.g., it
-> >> >> won't need any of the custom bits of logic added in patch #2 and #3=
-.
-> >> >> So I'm thinking that instead of custom-implementing a partial case =
-of
-> >> >> bpf_dynptr just for skb and xdp packets, let's maybe wait for dynpt=
-r
-> >> >> and do it only once there?
-> >> >>
-> >> >
-> >> > Interesting stuff, looking forward to it.
-> >> >
-> >> >> See also my ARG_CONSTANT comment. It seems like a pretty common thi=
-ng
-> >> >> where input constant is used to characterize some pointer returned
-> >> >> from the helper (e.g., bpf_ringbuf_reserve() case), and we'll need
-> >> >> that for bpf_dynptr for exactly this "give me direct access of N
-> >> >> bytes, if possible" case. So improving/generalizing it now before
-> >> >> dynptr lands makes a lot of sense, outside of bpf_packet_pointer()
-> >> >> feature itself.
-> >> >
-> >> > No worries, we can continue the discussion in patch 1, I'll split ou=
-t the arg
-> >> > changes into a separate patch, and wait for dynptr to be posted befo=
-re reworking
-> >> > this.
-> >>
-> >> This does raise the question of what we do in the meantime, though? Yo=
-ur
-> >> patch includes a change to bpf_xdp_{load,store}_bytes() which, if we'r=
-e
-> >> making it, really has to go in before those hit a release and become
-> >> UAPI.
-> >>
-> >> One option would be to still make the change to those other helpers;
-> >> they'd become a bit slower, but if we have a solution for that coming,
-> >> that may be OK for a single release? WDYT?
-> >
-> > I must have missed important changes to bpf_xdp_{load,store}_bytes().
-> > Does anything change about its behavior? If there are some fixes
-> > specific to those helpers, we should fix them as well as a separate
-> > patch. My main objection is adding a bpf_packet_pointer() special case
-> > when we have a generic mechanism in the works that will come this use
-> > case (among other use cases).
->
-> Well it's not a functional change per se, but Kartikeya's patch is
-> removing an optimisation from bpf_xdp_{load_store}_bytes() (i.e., the
-> use of the bpf_xdp_pointer()) in favour of making it available directly
-> to BPF. So if we don't do that change before those helpers are
-> finalised, we will end up either introducing a performance regression
-> for code using those helpers, or being stuck with the bpf_xdp_pointer()
-> use inside them even though it makes more sense to move it out to BPF.
->
-> So the "safe" thing to do would do the change to the store/load helpers
-> now, and get rid of the bpf_xdp_pointer() entirely until it can be
-> introduced as a BPF helper in a generic way. Of course this depends on
-> whether you consider performance regressions to be something to avoid,
-> but this being XDP IMO we should :)
 
-I don't follow this logic.
-Would you mean by "get rid of the bpf_xdp_pointer" ?
-It's just an internal static function.
+--7HTl4t6538JpPN/x
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Also I don't believe that this patch set and exposing
-bpf_xdp_pointer as a helper actually gives measurable performance wins.
-It looks quirky to me and hard to use.
+> > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+> >=20
+> > >> Lorenzo Bianconi <lorenzo@kernel.org> writes:
+> > >>=20
+> > >> > Introduce veth_convert_xdp_buff_from_skb routine in order to
+> > >> > convert a non-linear skb into a xdp buffer. If the received skb
+> > >> > is cloned or shared, veth_convert_xdp_buff_from_skb will copy it
+> > >> > in a new skb composed by order-0 pages for the linear and the
+> > >> > fragmented area. Moreover veth_convert_xdp_buff_from_skb guarantees
+> > >> > we have enough headroom for xdp.
+> > >> > This is a preliminary patch to allow attaching xdp programs with f=
+rags
+> > >> > support on veth devices.
+> > >> >
+> > >> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > >>=20
+> > >> It's cool that we can do this! A few comments below:
+> > >
+> > > Hi Toke,
+> > >
+> > > thx for the review :)
+> > >
+> > > [...]
+> > >
+> > >> > +static int veth_convert_xdp_buff_from_skb(struct veth_rq *rq,
+> > >> > +					  struct xdp_buff *xdp,
+> > >> > +					  struct sk_buff **pskb)
+> > >> > +{
+> > >>=20
+> > >> nit: It's not really "converting" and skb into an xdp_buff, since the
+> > >> xdp_buff lives on the stack; so maybe 'veth_init_xdp_buff_from_skb()=
+'?
+> > >
+> > > I kept the previous naming convention used for xdp_convert_frame_to_b=
+uff()
+> > > (my goal would be to move it in xdp.c and reuse this routine for the
+> > > generic-xdp use case) but I am fine with
+> > > veth_init_xdp_buff_from_skb().
+> >=20
+> > Consistency is probably good, but right now we have functions of the
+> > form 'xdp_convert_X_to_Y()' and 'xdp_update_Y_from_X()'. So to follow
+> > that you'd have either 'veth_update_xdp_buff_from_skb()' or
+> > 'veth_convert_skb_to_xdp_buff()' :)
+>=20
+> ack, I am fine with veth_convert_skb_to_xdp_buff()
+>=20
+> >=20
+> > >> > +	struct sk_buff *skb =3D *pskb;
+> > >> > +	u32 frame_sz;
+> > >> > =20
+> > >> >  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+> > >> > -	    skb_is_nonlinear(skb) || headroom < XDP_PACKET_HEADROOM) {
+> > >> > +	    skb_shinfo(skb)->nr_frags) {
+> > >>=20
+> > >> So this always clones the skb if it has frags? Is that really needed?
+> > >
+> > > if we look at skb_cow_data(), paged area is always considered not wri=
+table
+> >=20
+> > Ah, right, did not know that. Seems a bit odd, but OK.
+> >=20
+> > >> Also, there's a lot of memory allocation and copying going on here; =
+have
+> > >> you measured the performance?
+> > >
+> > > even in the previous implementation we always reallocate the skb if t=
+he
+> > > conditions above are verified so I do not expect any difference in th=
+e single
+> > > buffer use-case but I will run some performance tests.
+> >=20
+> > No, I wouldn't expect any difference for the single-buffer case, but I
+> > would also be interested in how big the overhead is of having to copy
+> > the whole jumbo-frame?
+>=20
+> oh ok, I got what you mean. I guess we can compare the tcp throughput for
+> the legacy skb mode (when no program is attached on the veth pair) and xd=
+p=20
+> mode (when we load a simple xdp program that just returns xdp_pass) when
+> jumbo frames are enabled. I would expect a performance penalty but let's =
+see.
+
+I run the tests described above and I got the following results:
+
+- skb mode mtu 1500B (TSO/GSO off): ~ 16.8 Gbps
+- xdp mode mtu 1500B (XDP_PASS):    ~ 9.52 Gbps
+
+- skb mode mtu 32KB (TSO/GSO off): ~ 41 Gbps
+- xdp mode mtu 32KB (XDP_PASS):    ~ 25 Gbps
+
+the (expected) performance penalty ratio (due to the copy) is quite constant
+
+Regards,
+Lorenzo
+
+>=20
+> >=20
+> > BTW, just noticed one other change - before we had:
+> >=20
+> > > -	headroom =3D skb_headroom(skb) - mac_len;
+> > >  	if (skb_shared(skb) || skb_head_is_locked(skb) ||
+> > > -	    skb_is_nonlinear(skb) || headroom < XDP_PACKET_HEADROOM) {
+> >=20
+> >=20
+> > And in your patch that becomes:
+> >=20
+> > > +	} else if (skb_headroom(skb) < XDP_PACKET_HEADROOM &&
+> > > +		   pskb_expand_head(skb, VETH_XDP_HEADROOM, 0, GFP_ATOMIC)) {
+> > > +		goto drop;
+> >=20
+> >=20
+> > So the mac_len subtraction disappeared; that seems wrong?
+>=20
+> we call __skb_push before running veth_convert_xdp_buff_from_skb() in
+> veth_xdp_rcv_skb().
+>=20
+> >=20
+> > >> > +
+> > >> > +	if (xdp_buff_has_frags(&xdp))
+> > >> > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
+> > >> > +	else
+> > >> > +		skb->data_len =3D 0;
+> > >>=20
+> > >> We can remove entire frags using xdp_adjust_tail, right? Will that g=
+et
+> > >> propagated in the right way to the skb frags due to the dual use of
+> > >> skb_shared_info, or?
+> > >
+> > > bpf_xdp_frags_shrink_tail() can remove entire frags and it will modify
+> > > metadata contained in the skb_shared_info (e.g. nr_frags or the frag
+> > > size of the given page). We should consider the data_len field in this
+> > > case. Agree?
+> >=20
+> > Right, that's what I assumed; makes sense. But adding a comment
+> > mentioning this above the update of data_len might be helpful? :)
+>=20
+> ack, will do.
+>=20
+> Regards,
+> Lorenzo
+>=20
+> >=20
+> > -Toke
+> >=20
+
+
+
+--7HTl4t6538JpPN/x
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYiqN3gAKCRA6cBh0uS2t
+rI5iAP95Zx+xeW+IB/giP5v4YiVpuAVhR4D4FZfRZbkmAiTPgwD7Bl2KOsR+0AIb
+QBuRFRu6XRwzc4HAFiDxDoB9CYCZPA4=
+=blfp
+-----END PGP SIGNATURE-----
+
+--7HTl4t6538JpPN/x--
+
