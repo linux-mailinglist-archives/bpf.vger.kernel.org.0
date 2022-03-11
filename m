@@ -2,90 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3914D5897
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 04:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B8A4D58C3
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 04:20:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345867AbiCKDBg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 22:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
+        id S237297AbiCKDVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 22:21:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345885AbiCKDBe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 22:01:34 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A17B1A8CA3
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 19:00:28 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id r12so6589670pla.1
-        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 19:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=networkplumber-org.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8Ji+Sz/InlU6NQ7/bE8a/j0QT0u2BBcoHxouEcw237Q=;
-        b=1ZI8yU4UrELG2xrC/mfVd6A+FaeFF+xwtztLkZtCvmLCL9ZEErSZpHk7iQwh9qdQJj
-         SUBcUc27Sn3R/NDBARB+reFk7UerEKN27Xn5YWdz6mz8Jkos8eGNMf+ibZAcuuIh5TM1
-         p5deuroKIfLra3z9yBeBmKSt91D4QZ23PgzE84zPNcgGJZ4/off5QhP0PkuaSRnlVMhw
-         inxMAToYVOeyAlvs043dpXiYqDF+T2B2necAj66KcoyJMwxg+owdBtezDI376bf51u4e
-         xWC9bvDsuaTmpexOzT7M7beDXBJT7IR7F732Ylxj56jsBX0jM3y1RZnzT9o9LHQvHo+g
-         xfdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8Ji+Sz/InlU6NQ7/bE8a/j0QT0u2BBcoHxouEcw237Q=;
-        b=ddArNBJDpO7Ib5RhYAfm8WBVBZ1KLIx3K9zMQAQg0jj78k9gDPLGKEXkNosQFVT+NZ
-         Go4laFDvYCIvXZE46v719GeCxahMgpqwqNcz2WxCalRBKjroIVgTvn2fZ66wCPlXpwCR
-         zhkMgnhaD5XXYsTSvq70df9pr3t70X4NiXJvjawatSkXyuwfCYAMDjVBzMeTzSR+U3Fx
-         ojNnyDfm8NzVuQ6lvw5AKxIUzKefjT+TQV8GiwZMGh5dEkkvNopat6qCLxxYljHCLFQM
-         4TYH24zSexe44y/WBbgLcgC89TGEpFT/jCMwAp7jXq9t3BW7ampHhs0oDI3tog8Y/h/z
-         zDIQ==
-X-Gm-Message-State: AOAM5325paAh6yrgXzgKEjLkPWu4o/9cZ1TuvBsLuNuaW0NdqxT3g/KG
-        bGRwOLEHNfFRHPLFyyvyqwqg/Q==
-X-Google-Smtp-Source: ABdhPJyVzrAMFLjoDnwq/ceXZU7fnb7H49S/WbDrtkMb1ng1xAfGPAuqFHWqw0NU4l1IITHvfuZHxA==
-X-Received: by 2002:a17:90a:c504:b0:1bf:6d9f:65a6 with SMTP id k4-20020a17090ac50400b001bf6d9f65a6mr8653580pjt.204.1646967627714;
-        Thu, 10 Mar 2022 19:00:27 -0800 (PST)
-Received: from hermes.local (204-195-112-199.wavecable.com. [204.195.112.199])
-        by smtp.gmail.com with ESMTPSA id u10-20020a6540ca000000b0037445e95c93sm6673005pgp.15.2022.03.10.19.00.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Mar 2022 19:00:27 -0800 (PST)
-Date:   Thu, 10 Mar 2022 19:00:24 -0800
-From:   Stephen Hemminger <stephen@networkplumber.org>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] hv_netvsc: Add check for kvmalloc_array
-Message-ID: <20220310190024.0eaa76b9@hermes.local>
-In-Reply-To: <20220311024344.2037906-1-jiasheng@iscas.ac.cn>
-References: <20220311024344.2037906-1-jiasheng@iscas.ac.cn>
+        with ESMTP id S230400AbiCKDVP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 22:21:15 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0061A7D92;
+        Thu, 10 Mar 2022 19:20:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 89D17610A2;
+        Fri, 11 Mar 2022 03:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DBE5AC340EF;
+        Fri, 11 Mar 2022 03:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646968812;
+        bh=VsGSHD7E4OpMLRoeX2QE+gkBvx0t0j1p1Ol0/Z7+yS0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=luK9NBPoQgXMbyWFT8nnbcOtbyvjfOpUXfoOyFuWrpBiEM/r/ufilfCNcmQ3oVX/N
+         x6EmdIwPtaD6MCifUK+Hc8W3j4ClYF0ea+osOGypIv+l54kemQJm3teGPCbJrg/K+D
+         PMfBAcbK1yHAMxvAjhMlIAtNyo5vkumxWmasEyVMW/j1VhX1tIcNLPBnZg1kJ9YboQ
+         vOVi5oPXv6Wd0LhliEjJ+UFFRokUEInZd6Fh9pxft3HJKZU+TLVmYVV8hauMZn3vMA
+         fC+cLp4bWjNI6uMmh0gGsKjYyzPxK5wEkV8O8OOQ0rWS5p7UO6vRDIsdb3yCy6RiOs
+         VhEo/gLcl723g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BE6D9EAC095;
+        Fri, 11 Mar 2022 03:20:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 0/9] bpf-lsm: Extend interoperability with IMA
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164696881277.12219.12423811667872228529.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Mar 2022 03:20:12 +0000
+References: <20220302111404.193900-1-roberto.sassu@huawei.com>
+In-Reply-To: <20220302111404.193900-1-roberto.sassu@huawei.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, shuah@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, revest@chromium.org,
+        gregkh@linuxfoundation.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 11 Mar 2022 10:43:44 +0800
-Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
+Hello:
 
-> +	if (!pcpu_sum) {
-> +		for (j = 0; j < i; j++)
-> +			data[j] = 0;
-> +		return
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-Why is unrolled zero (memset) needed? The data area comes from
-ethtool_get_stats and is already zeroed (vzalloc).
+On Wed, 2 Mar 2022 12:13:55 +0100 you wrote:
+> Extend the interoperability with IMA, to give wider flexibility for the
+> implementation of integrity-focused LSMs based on eBPF.
+> 
+> Patch 1 fixes some style issues.
+> 
+> Patches 2-6 give the ability to eBPF-based LSMs to take advantage of the
+> measurement capability of IMA without needing to setup a policy in IMA
+> (those LSMs might implement the policy capability themselves).
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,1/9] ima: Fix documentation-related warnings in ima_main.c
+    https://git.kernel.org/bpf/bpf-next/c/bae60eefb95c
+  - [v3,2/9] ima: Always return a file measurement in ima_file_hash()
+    https://git.kernel.org/bpf/bpf-next/c/280fe8367b0d
+  - [v3,3/9] bpf-lsm: Introduce new helper bpf_ima_file_hash()
+    https://git.kernel.org/bpf/bpf-next/c/174b16946e39
+  - [v3,4/9] selftests/bpf: Move sample generation code to ima_test_common()
+    https://git.kernel.org/bpf/bpf-next/c/2746de3c53d6
+  - [v3,5/9] selftests/bpf: Add test for bpf_ima_file_hash()
+    https://git.kernel.org/bpf/bpf-next/c/27a77d0d460c
+  - [v3,6/9] selftests/bpf: Check if the digest is refreshed after a file write
+    https://git.kernel.org/bpf/bpf-next/c/91e8fa254dbd
+  - [v3,7/9] bpf-lsm: Make bpf_lsm_kernel_read_file() as sleepable
+    https://git.kernel.org/bpf/bpf-next/c/df6b3039fa11
+  - [v3,8/9] selftests/bpf: Add test for bpf_lsm_kernel_read_file()
+    https://git.kernel.org/bpf/bpf-next/c/e6dcf7bbf37c
+  - [v3,9/9] selftests/bpf: Check that bpf_kernel_read_file() denies reading IMA policy
+    https://git.kernel.org/bpf/bpf-next/c/7bae42b68d7f
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-There does look like at TOCTOU error here with on the number of stats.
-Code doesn't look hotplug safe.
-Not sure, but that issue might have been raised during review.
