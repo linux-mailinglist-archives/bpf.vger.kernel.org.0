@@ -2,75 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 029574D6889
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 19:38:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1984D68FC
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 20:11:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237175AbiCKSjt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Mar 2022 13:39:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50482 "EHLO
+        id S234543AbiCKTM3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Mar 2022 14:12:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240230AbiCKSjs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Mar 2022 13:39:48 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05C45F8EB;
-        Fri, 11 Mar 2022 10:38:42 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id b16so11146388ioz.3;
-        Fri, 11 Mar 2022 10:38:42 -0800 (PST)
+        with ESMTP id S234133AbiCKTM2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Mar 2022 14:12:28 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CBF1B8FF2;
+        Fri, 11 Mar 2022 11:11:25 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id b14so6650643ilf.6;
+        Fri, 11 Mar 2022 11:11:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WFI9p5E2R1wq2NWvgYHqRIb+Zo5MSuZDRoBWnSp8cC0=;
-        b=Hz3qF2Jc/oDqlPTyODeX6aJQMsymr4mAoQa/4iAsl+s+AcF7H76WTBaUcvqqHezecW
-         Caq83ucTlRONEvHL6A75juWpGkNRjv+7NosLvVgx1Nl2iORThEFQxIN7kKR9QEvz60WL
-         ogrT0hc9l+uc2i7OIhyA/mZqv2G9Ztpk9n/ru+8TXm8uFCkk58VYqlVaeNRh0DVdX0ep
-         79Gg+qviEwPZHp3ezLtIZSDB+6qicFDbmpHraRxEprWl8R9pCxayyL8Z8ie67DYsxMjh
-         O16+Gi5uMiQc5BGr2z06DFg60HsziOkdOvgXL582mcqkh4XZ2o2IWgKYB/4uD5nOInfC
-         5Z7g==
+        bh=qZ4G1abLpX1+7FOiIPFq4p8zwTFy2fU8JzBB043JMrU=;
+        b=WCKzDTLSv5sImvRmJ5fYFhGVQ7cxKmL6C4Ca7BUKJsOjSoxLYYCmovQmdJd1i7TJma
+         tmdzE+NuUN4rreBhoswlO+sGDsN9eG+kxxScRQK4Jz9zPqIZBl4HlnFIEzUgeAFBvxx7
+         9WFthOB4dbTGLx3XZoFFCJZvkUnaE1EyRgWnqdyZ3bRjZctuBStydqAlM4qqavMDgtMd
+         ge69m5DYx1fdi+gm3wNC3eWpOkS9farucoZDgVqoBe0uq54FXH1WxQxTNYbizlvWb6J6
+         v7XibIjbPyNrFz1E3eHmv8UiwzzF2DQZ1KKlP11zjMSPoOPKauCjhSVySPUN4YsotS3v
+         6zyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WFI9p5E2R1wq2NWvgYHqRIb+Zo5MSuZDRoBWnSp8cC0=;
-        b=rDjWE3tbitOA6MIH8sjY6329LnnEjGqoyDz6neGHZ9AxUHeT80/uKlIf+bjhBhohp7
-         0UwFalgu6cQMzq8f02WgMGtIXr3WSVY8PkCwaWMJ3J5iY7iWPFuWPuYGGOW8uUghdjq7
-         GUZRlumQ0ZM+XvyLiZO5PVPZ6n/aBB2dByt9Bi4car6qMfEgLAco5covyW+vzup6MoTY
-         oc1B0eaYSRKq/CgoSozpVCwnLfAyA/L1JNWWybBgoW8aeJXymJrzQXilFYng2YjKO5mk
-         v6b8mo7IWjn725VXIo+rTOVn3rIreQ58azHqzXUWqUveRsEY/oxLqd+WyykKuTI35yXw
-         ZerA==
-X-Gm-Message-State: AOAM532S/mLYJWgWRr4UViaUCWMvf2Y3u8DZANRYWY30wwJFr9OtBuiW
-        5g7Ug0C00TlZUwGXOh/iTyf3Xs92uwlzJ+ovfrs=
-X-Google-Smtp-Source: ABdhPJwbmX1TybktyboJLuwffG7A5SMbgfzBhvnTrqO+0vKlPqtv7HOCxy6lefykP99jsDVGZTzRSIQr9pZc5Ok9EDY=
-X-Received: by 2002:a02:c00e:0:b0:317:c548:97c with SMTP id
- y14-20020a02c00e000000b00317c548097cmr9696778jai.234.1647023922364; Fri, 11
- Mar 2022 10:38:42 -0800 (PST)
+        bh=qZ4G1abLpX1+7FOiIPFq4p8zwTFy2fU8JzBB043JMrU=;
+        b=6b2PbSbVhrjRBfnhm14DvNkpWM2gHQgtjjrjeCpffkdggHk1Wrhq91Yd1hMf/wcyra
+         cHqNP2eypfyYTLZdI2CMY9JBbHU6lLBo+XCG551kRNj38azQz6JZdi6vIL4PkoGfT7ZD
+         z6yrf8txPydaB55ipst+GU8AoN8/uPyjph7ClosY7Vz9D3JMY/dJS0QP8poL8zhDQLS+
+         ptBfoabf5FkUaGrhM9C8H9FPl15tGir6lyw2QSX/pRPnrR7IwNoflUDhG8Raj1HCdY5w
+         2irLIuUlpEUHbuIgEZhU5gXO3DYEc0uSX8zFNTLobw5XZ109OxYZXFVPlx9Bt0z2SqDr
+         Q1ag==
+X-Gm-Message-State: AOAM5331hXFhyKxqUFPnYO80zWcsE9oXzMJO3Ks7w81wAvTz18bj9NyZ
+        AwTPm0Ti2TOzOe9FpIFBsFiLtxf71UZjZJEih3s=
+X-Google-Smtp-Source: ABdhPJzaunPVLCWbbdAT3/2L20Il8HLCeB/vZKDv2c9sbUYwJkO14EyW5dX6GeYXtBUuP4PBknPxTgcRjuwTsEY8JI0=
+X-Received: by 2002:a92:6406:0:b0:2bb:f1de:e13e with SMTP id
+ y6-20020a926406000000b002bbf1dee13emr8885290ilb.305.1647025884602; Fri, 11
+ Mar 2022 11:11:24 -0800 (PST)
 MIME-Version: 1.0
-References: <b01130f4-0f9c-9fe4-639b-0dcece4ca09a@iogearbox.net> <20220309033518.1743-1-guozhengkui@vivo.com>
-In-Reply-To: <20220309033518.1743-1-guozhengkui@vivo.com>
+References: <20220224000531.1265030-1-haoluo@google.com> <a7f26f93-c5f8-2abc-e186-5d179706ae8e@soleen.com>
+ <CA+khW7hwT0PSiToAJcdX1Te9QwhWL671sMX+92VS+V6Zsp+0Vg@mail.gmail.com>
+In-Reply-To: <CA+khW7hwT0PSiToAJcdX1Te9QwhWL671sMX+92VS+V6Zsp+0Vg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Mar 2022 10:38:31 -0800
-Message-ID: <CAEf4BzY0F3g8oH7+u14DTs707STVSCi8j=A5_S=hn6VRXHzzXg@mail.gmail.com>
-Subject: Re: [PATCH v2] selftests/bpf: fix array_size.cocci warning
-To:     Guo Zhengkui <guozhengkui@vivo.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 11 Mar 2022 11:11:13 -0800
+Message-ID: <CAEf4BzYa1o5FYWGY3tt6O_7LK5h+NmiFzM9QhnKA5n3w-3=p7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Cache the last valid build_id.
+To:     Hao Luo <haoluo@google.com>
+Cc:     Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Yucong Sun <sunyucong@gmail.com>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Christy Lee <christylee@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Delyan Kratunov <delyank@fb.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <netdev@vger.kernel.org>,
-        "open list:BPF (Safe dynamic programs and tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        zhengkui_guo@outlook.com
+        Song Liu <songliubraving@fb.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Blake Jones <blakejones@google.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
@@ -82,56 +73,49 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Mar 8, 2022 at 7:36 PM Guo Zhengkui <guozhengkui@vivo.com> wrote:
+On Thu, Mar 10, 2022 at 5:16 PM Hao Luo <haoluo@google.com> wrote:
 >
-> Fix the array_size.cocci warning in tools/testing/selftests/bpf/
+> On Fri, Feb 25, 2022 at 12:43 PM Pasha Tatashin
+> <pasha.tatashin@soleen.com> wrote:
+> >
+> > On 2/23/22 19:05, Hao Luo wrote:
+> > > For binaries that are statically linked, consecutive stack frames are
+> > > likely to be in the same VMA and therefore have the same build id.
+> > > As an optimization for this case, we can cache the previous frame's
+> > > VMA, if the new frame has the same VMA as the previous one, reuse the
+> > > previous one's build id. We are holding the MM locks as reader across
+> > > the entire loop, so we don't need to worry about VMA going away.
+> > >
+> > > Tested through "stacktrace_build_id" and "stacktrace_build_id_nmi" in
+> > > test_progs.
+> > >
+> > > Suggested-by: Greg Thelen <gthelen@google.com>
+> > > Signed-off-by: Hao Luo <haoluo@google.com>
+> >
+> > Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> >
 >
-> Use `ARRAY_SIZE(arr)` in bpf_util.h instead of forms like
-> `sizeof(arr)/sizeof(arr[0])`.
+> An update with performance numbers. Thanks to Blake Jones for
+> collecting the stats:
 >
-> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
-> ---
->  .../selftests/bpf/prog_tests/cgroup_attach_autodetach.c     | 2 +-
->  .../testing/selftests/bpf/prog_tests/cgroup_attach_multi.c  | 2 +-
->  .../selftests/bpf/prog_tests/cgroup_attach_override.c       | 2 +-
->  tools/testing/selftests/bpf/prog_tests/global_data.c        | 6 +++---
->  tools/testing/selftests/bpf/prog_tests/obj_name.c           | 2 +-
->  tools/testing/selftests/bpf/progs/syscall.c                 | 3 ++-
->  tools/testing/selftests/bpf/progs/test_rdonly_maps.c        | 3 ++-
->  tools/testing/selftests/bpf/test_cgroup_storage.c           | 2 +-
->  tools/testing/selftests/bpf/test_lru_map.c                  | 4 ++--
->  tools/testing/selftests/bpf/test_sock_addr.c                | 6 +++---
->  tools/testing/selftests/bpf/test_sockmap.c                  | 4 ++--
->  11 files changed, 19 insertions(+), 17 deletions(-)
+> In a production workload, with BPF probes sampling stack trace, we see
+> the following changes:
 >
+>  - stack_map_get_build_id_offset() is taking 70% of the time of
+> __bpf_get_stackid(); it was 80% before.
 
-[...]
+Great, thanks for following up with updated numbers!
 
-> diff --git a/tools/testing/selftests/bpf/progs/test_rdonly_maps.c b/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
-> index fc8e8a34a3db..a500f2c15970 100644
-> --- a/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
-> +++ b/tools/testing/selftests/bpf/progs/test_rdonly_maps.c
-> @@ -3,6 +3,7 @@
 >
->  #include <linux/ptrace.h>
->  #include <linux/bpf.h>
-> +#include <bpf_util.h>
-
-bpf_util.h isn't supposed to be included from BPF source code side. Is
-this ARRAY_SIZE() use so important for BPF programs? Maybe just leave
-existing code under progs/*.c as is?
-
->  #include <bpf/bpf_helpers.h>
+>  - find_get_page() and find_vma() together are taking 75% of the time
+> of stack_map_get_build_id_offset(); it was 83% before.
 >
->  const struct {
-> @@ -64,7 +65,7 @@ int full_loop(struct pt_regs *ctx)
->  {
->         /* prevent compiler to optimize everything out */
->         unsigned * volatile p = (void *)&rdonly_values.a;
-> -       int i = sizeof(rdonly_values.a) / sizeof(rdonly_values.a[0]);
-> +       int i = ARRAY_SIZE(rdonly_values.a);
->         unsigned iters = 0, sum = 0;
+> Note the call chain is
 >
->         /* validate verifier can allow full loop as well */
-
-[...]
+> __bpf_get_stackid()
+>   -> stack_map_get_build_id_offset()
+>     -> find_get_page()
+>     -> find_vma()
+>
+> > Thanks,
+> > Pasha
