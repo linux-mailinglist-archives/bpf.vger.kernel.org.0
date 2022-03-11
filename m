@@ -2,53 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B445A4D5E23
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 10:16:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925A74D5F94
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 11:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346244AbiCKJQQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Mar 2022 04:16:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        id S1347962AbiCKKf2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Mar 2022 05:35:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235073AbiCKJQP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Mar 2022 04:16:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A87291BBF45;
-        Fri, 11 Mar 2022 01:15:11 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45A9061F2B;
-        Fri, 11 Mar 2022 09:15:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B9BC340E9;
-        Fri, 11 Mar 2022 09:15:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646990110;
-        bh=c61+9/J2HkxPYOFusMQumMxePvjg9hKFovxmJgey1to=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iop+DWtIjJkMlUCEylX+HGdzTT0emHfBDcXbJbA2CRYwU5+uhcRCnZLYeO6/uvT1n
-         flELcwfb+4plMyLSVah3m7+ZeOAokTJ3Ea6SWO2IhPmRKcSYsRcNMiJoJEH6i8kQ1s
-         1ViRKtI9MRopgk/6pnYVQEYe6QGAnHSZ4NJ0O9i+sK/yS+eQZLx946qDg8nqVnvx/p
-         NzxpCpke+Vp/mj89iQ+dM3An8jGu2SDYdpQ3Oq/ALZmV95kko71w7CAi4FiS9SCaCv
-         2jejqYGMj6DEH2qVt2yMBaBIq7n8CO3E/5458yzWU2Cn6q1MxRbKk1rkqz51FrTFg1
-         prfEadv7QFVRQ==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com, toke@redhat.com,
-        pabeni@redhat.com, echaudro@redhat.com,
-        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com,
-        andrii@kernel.org
-Subject: [PATCH v5 bpf-next 3/3] veth: allow jumbo frames in xdp mode
-Date:   Fri, 11 Mar 2022 10:14:20 +0100
-Message-Id: <d5dc039c3d4123426e7023a488c449181a7bc57f.1646989407.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1646989407.git.lorenzo@kernel.org>
-References: <cover.1646989407.git.lorenzo@kernel.org>
+        with ESMTP id S1347953AbiCKKfY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Mar 2022 05:35:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCB91FFFAB
+        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 02:34:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1646994859;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AFpqd9XuKFh4SCv736RPdexKUxPNZgm3VWQxXXniTfY=;
+        b=Rutny/z1nK+pHCZpJL6pCknpRPuv+xm/JVhJR4m1zsVCdjC0F1I3+qYQPlqhWyHGQ526vV
+        8JzVRhU5p7Mcdhy0bgt/c0MiGXNK9uPxpdNUpUc2mvNsmqwPaGm8IlH0qRgWPaM+jNqgy+
+        FYIWcirnkF0ZJp7CqQlCRB/9Vxn2CQQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-483-u-I6kYW1N8qkVa3pC8iwpQ-1; Fri, 11 Mar 2022 05:34:18 -0500
+X-MC-Unique: u-I6kYW1N8qkVa3pC8iwpQ-1
+Received: by mail-ed1-f71.google.com with SMTP id h17-20020a05640250d100b004133863d836so4671893edb.0
+        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 02:34:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=AFpqd9XuKFh4SCv736RPdexKUxPNZgm3VWQxXXniTfY=;
+        b=aZAZkYDZuJPSxJ1WmuFyVlPwrsDKp+JGY8es4hMsNTO3iLu6XP2AVYU7Csi2GSAuQG
+         i8GIDAYO8f+V6G0W1XhuYmOz45va/1u0aewRgHmO/a/CfV45QmzNpqL3I1sbmQQ+l0CA
+         nCKn0Z6wNVMn+AuHMoWpfemmRWCj19k5+0d142Fe+Qcv+rBPf6bkzvsZOJjzTNn9S2Sl
+         nufHLr2EcC2+V+0btbDUWblAvzM74CRgQhR0hY45Hp+ik7nNPqUSY0EQD+zt9QQ5dD47
+         A96hQIBENZFEzn5fS762VXVgHZkirfjYX6cT7S3RzfL+1xk/05b9OTw9GZudssBTktkb
+         wztQ==
+X-Gm-Message-State: AOAM530z5fVLdBZfiCS1A6yC6Z5lURxFUHQFQxt+6DXTCUr2MUGd7efI
+        7PgzqK19C3+sbVpfPDnrkb3uy+M5hkW9ZGfAx2VicUcgTkQeZiuqgjd01eiTlzeGVrU0AE+3tML
+        ce8/Hl1xY3j7c
+X-Received: by 2002:a05:6402:42c6:b0:416:541:4be1 with SMTP id i6-20020a05640242c600b0041605414be1mr8313340edc.238.1646994857271;
+        Fri, 11 Mar 2022 02:34:17 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxZkfgsnpO3nJEej09NNnqUV5pMG7/Qs6i7uzpcD2BEtMQVnFa9fP8qaVFgLMxjG3rgi7pscw==
+X-Received: by 2002:a05:6402:42c6:b0:416:541:4be1 with SMTP id i6-20020a05640242c600b0041605414be1mr8313309edc.238.1646994856746;
+        Fri, 11 Mar 2022 02:34:16 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id d4-20020a1709067a0400b006d6e3ca9f71sm2811070ejo.198.2022.03.11.02.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 11 Mar 2022 02:34:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EFA1E1A8AE4; Fri, 11 Mar 2022 11:34:14 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Lorenz Bauer <linux@lmb.io>,
+        Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next v1 0/5] Introduce bpf_packet_pointer helper
+In-Reply-To: <20220311071935.6k24jzdv7izzifto@apollo>
+References: <20220306234311.452206-1-memxor@gmail.com>
+ <CAEf4BzaPhtUGhR1vTSNGVLAudA7fUDWqZZFDfFvHXi2MOdrN5w@mail.gmail.com>
+ <20220308070828.4tjiuvvyqwmhru6a@apollo.legion> <87lexky33s.fsf@toke.dk>
+ <CAEf4Bza6BhG7wtgmvWohEKpN5jSTyQwxm5-738oMoniz1v3uVw@mail.gmail.com>
+ <87bkydxu59.fsf@toke.dk> <20220311071935.6k24jzdv7izzifto@apollo>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 11 Mar 2022 11:34:14 +0100
+Message-ID: <878rtgydzt.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,36 +91,165 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Allow increasing the MTU over page boundaries on veth devices
-if the attached xdp program declares to support xdp fragments.
+Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- drivers/net/veth.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+> On Fri, Mar 11, 2022 at 05:00:42AM IST, Toke H=C3=B8iland-J=C3=B8rgensen =
+wrote:
+>> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>>
+>> > On Tue, Mar 8, 2022 at 5:40 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+>> >>
+>> >> Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
+>> >>
+>> >> > On Tue, Mar 08, 2022 at 11:18:52AM IST, Andrii Nakryiko wrote:
+>> >> >> On Sun, Mar 6, 2022 at 3:43 PM Kumar Kartikeya Dwivedi <memxor@gma=
+il.com> wrote:
+>> >> >> >
+>> >> >> > Expose existing 'bpf_xdp_pointer' as a BPF helper named 'bpf_pac=
+ket_pointer'
+>> >> >> > returning a packet pointer with a fixed immutable range. This ca=
+n be useful to
+>> >> >> > enable DPA without having to use memcpy (currently the case in
+>> >> >> > bpf_xdp_load_bytes and bpf_xdp_store_bytes).
+>> >> >> >
+>> >> >> > The intended usage to read and write data for multi-buff XDP is:
+>> >> >> >
+>> >> >> >         int err =3D 0;
+>> >> >> >         char buf[N];
+>> >> >> >
+>> >> >> >         off &=3D 0xffff;
+>> >> >> >         ptr =3D bpf_packet_pointer(ctx, off, sizeof(buf), &err);
+>> >> >> >         if (unlikely(!ptr)) {
+>> >> >> >                 if (err < 0)
+>> >> >> >                         return XDP_ABORTED;
+>> >> >> >                 err =3D bpf_xdp_load_bytes(ctx, off, buf, sizeof=
+(buf));
+>> >> >> >                 if (err < 0)
+>> >> >> >                         return XDP_ABORTED;
+>> >> >> >                 ptr =3D buf;
+>> >> >> >         }
+>> >> >> >         ...
+>> >> >> >         // Do some stores and loads in [ptr, ptr + N) region
+>> >> >> >         ...
+>> >> >> >         if (unlikely(ptr =3D=3D buf)) {
+>> >> >> >                 err =3D bpf_xdp_store_bytes(ctx, off, buf, sizeo=
+f(buf));
+>> >> >> >                 if (err < 0)
+>> >> >> >                         return XDP_ABORTED;
+>> >> >> >         }
+>> >> >> >
+>> >> >> > Note that bpf_packet_pointer returns a PTR_TO_PACKET, not PTR_TO=
+_MEM, because
+>> >> >> > these pointers need to be invalidated on clear_all_pkt_pointers =
+invocation, and
+>> >> >> > it is also more meaningful to the user to see return value as R0=
+=3Dpkt.
+>> >> >> >
+>> >> >> > This series is meant to collect feedback on the approach, next v=
+ersion can
+>> >> >> > include a bpf_skb_pointer and exposing it as bpf_packet_pointer =
+helper for TC
+>> >> >> > hooks, and explore not resetting range to zero on r0 +=3D rX, in=
+stead check access
+>> >> >> > like check_mem_region_access (var_off + off < range), since ther=
+e would be no
+>> >> >> > data_end to compare against and obtain a new range.
+>> >> >> >
+>> >> >> > The common name and func_id is supposed to allow writing generic=
+ code using
+>> >> >> > bpf_packet_pointer that works for both XDP and TC programs.
+>> >> >> >
+>> >> >> > Please see the individual patches for implementation details.
+>> >> >> >
+>> >> >>
+>> >> >> Joanne is working on a "bpf_dynptr" framework that will support
+>> >> >> exactly this feature, in addition to working with dynamically
+>> >> >> allocated memory, working with memory of statically unknown size (=
+but
+>> >> >> safe and checked at runtime), etc. And all that within a generic
+>> >> >> common feature implemented uniformly within the verifier. E.g., it
+>> >> >> won't need any of the custom bits of logic added in patch #2 and #=
+3.
+>> >> >> So I'm thinking that instead of custom-implementing a partial case=
+ of
+>> >> >> bpf_dynptr just for skb and xdp packets, let's maybe wait for dynp=
+tr
+>> >> >> and do it only once there?
+>> >> >>
+>> >> >
+>> >> > Interesting stuff, looking forward to it.
+>> >> >
+>> >> >> See also my ARG_CONSTANT comment. It seems like a pretty common th=
+ing
+>> >> >> where input constant is used to characterize some pointer returned
+>> >> >> from the helper (e.g., bpf_ringbuf_reserve() case), and we'll need
+>> >> >> that for bpf_dynptr for exactly this "give me direct access of N
+>> >> >> bytes, if possible" case. So improving/generalizing it now before
+>> >> >> dynptr lands makes a lot of sense, outside of bpf_packet_pointer()
+>> >> >> feature itself.
+>> >> >
+>> >> > No worries, we can continue the discussion in patch 1, I'll split o=
+ut the arg
+>> >> > changes into a separate patch, and wait for dynptr to be posted bef=
+ore reworking
+>> >> > this.
+>> >>
+>> >> This does raise the question of what we do in the meantime, though? Y=
+our
+>> >> patch includes a change to bpf_xdp_{load,store}_bytes() which, if we'=
+re
+>> >> making it, really has to go in before those hit a release and become
+>> >> UAPI.
+>> >>
+>> >> One option would be to still make the change to those other helpers;
+>> >> they'd become a bit slower, but if we have a solution for that coming,
+>> >> that may be OK for a single release? WDYT?
+>> >
+>> > I must have missed important changes to bpf_xdp_{load,store}_bytes().
+>> > Does anything change about its behavior? If there are some fixes
+>> > specific to those helpers, we should fix them as well as a separate
+>> > patch. My main objection is adding a bpf_packet_pointer() special case
+>> > when we have a generic mechanism in the works that will come this use
+>> > case (among other use cases).
+>>
+>> Well it's not a functional change per se, but Kartikeya's patch is
+>> removing an optimisation from bpf_xdp_{load_store}_bytes() (i.e., the
+>> use of the bpf_xdp_pointer()) in favour of making it available directly
+>> to BPF. So if we don't do that change before those helpers are
+>> finalised, we will end up either introducing a performance regression
+>> for code using those helpers, or being stuck with the bpf_xdp_pointer()
+>> use inside them even though it makes more sense to move it out to BPF.
+>>
+>
+> So IIUC, the case we're worried about is when a linear region is in head =
+or a
+> frag and bpf_xdp_pointer can be used to do a direct memcpy for it. But in=
+ my
+> testing there doesn't seem to be any difference. With or without the call=
+, the
+> time taken e.g. for bpf_xdp_load_bytes lies in the 30-40ns range. It woul=
+d make
+> sense, because for this case the code in bpf_xdp_pointer and bpf_xdp_copy=
+_buf
+> are almost the same, just that the latter has a conditional jump out of t=
+he loop
+> based on len. bpf_xdp_copy_buf is still only doing a single memcpy, the c=
+ost
+> seems to be dominated by that.
+>
+> Otoh, removing it would improve the case for the other scenario (when reg=
+ion
+> touches two or more frags) because we wouldn't spend time in bpf_xdp_poin=
+ter and
+> returning NULL from it failing to find a linear region, but that shouldn'=
+t be a
+> regression.
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index bfae15ec902b..1b5714926d81 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -1528,9 +1528,14 @@ static int veth_xdp_set(struct net_device *dev, struct bpf_prog *prog,
- 			goto err;
- 		}
- 
--		max_mtu = PAGE_SIZE - VETH_XDP_HEADROOM -
--			  peer->hard_header_len -
--			  SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
-+		max_mtu = SKB_WITH_OVERHEAD(PAGE_SIZE - VETH_XDP_HEADROOM) -
-+			  peer->hard_header_len;
-+		/* Allow increasing the max_mtu if the program supports
-+		 * XDP fragments.
-+		 */
-+		if (prog->aux->xdp_has_frags)
-+			max_mtu += PAGE_SIZE * MAX_SKB_FRAGS;
-+
- 		if (peer->mtu > max_mtu) {
- 			NL_SET_ERR_MSG_MOD(extack, "Peer MTU is too large to set XDP");
- 			err = -ERANGE;
--- 
-2.35.1
+Yeah, that was basically what I was worried about; thanks for testing!
+So this implies that the current use of the bpf_xdp_pointer() helper
+function is pretty pointless, right? But at least it's an internal
+detail so there's no hurry in fixing it...
+
+-Toke
 
