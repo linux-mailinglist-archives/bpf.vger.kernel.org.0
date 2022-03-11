@@ -2,85 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0024D4D58C4
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 04:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 754E44D58CA
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 04:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242117AbiCKDVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 22:21:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51862 "EHLO
+        id S237830AbiCKDWK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 22:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbiCKDVP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 22:21:15 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7951A8057;
-        Thu, 10 Mar 2022 19:20:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A486761274;
-        Fri, 11 Mar 2022 03:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EEDEBC340EE;
-        Fri, 11 Mar 2022 03:20:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646968813;
-        bh=gGmYQbRI5pcR1fAq//sQK1FgAHXuq9lDHXprS421ggw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ufq0Nkb1UySW/gJdWtmM9NYkzRh4aua/chnCk04EhcfCB4FnnnhP7nmAW5//UosCr
-         Ro0TLrhUa4wpr2vKTQNRhNIi6WucFMfZ3lBUT6hmTxuzs7CGOgmV4yFWiP1ExUkfhi
-         ZkQ7t8fcWVWLcvtupzQ4m5Upd2bgOw+5KS8NlikPQHEbphe17SewURbslvrzEYresm
-         jd1I/FFSroV5j9U+gIacTZ7cQg6t5c65NQkp+Sv8iN6NxGnC5JCw8WoKWfr2G6Ibbs
-         Ul3KIz4jHi63OjbVooJ/i/iRCsiLrPdoA7KdqSG/boI/oR1OAcK4j4m8tIXqwtlJxZ
-         fYZL4/l+cqEBQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C97D5E8DD5B;
-        Fri, 11 Mar 2022 03:20:12 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S232062AbiCKDWK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 22:22:10 -0500
+Received: from cstnet.cn (smtp21.cstnet.cn [159.226.251.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F195DD463;
+        Thu, 10 Mar 2022 19:21:03 -0800 (PST)
+Received: from localhost.localdomain (unknown [124.16.138.126])
+        by APP-01 (Coremail) with SMTP id qwCowADn7_sEwCpi2aYEAw--.16627S2;
+        Fri, 11 Mar 2022 11:20:37 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     stephen@networkplumber.org
+Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, decui@microsoft.com, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] hv_netvsc: Add check for kvmalloc_array
+Date:   Fri, 11 Mar 2022 11:20:35 +0800
+Message-Id: <20220311032035.2037962-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] compiler_types: Refactor the use of btf_type_tag
- attribute.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164696881282.12219.14234738746999653224.git-patchwork-notify@kernel.org>
-Date:   Fri, 11 Mar 2022 03:20:12 +0000
-References: <20220310211655.3173786-1-haoluo@google.com>
-In-Reply-To: <20220310211655.3173786-1-haoluo@google.com>
-To:     Hao Luo <haoluo@google.com>
-Cc:     ast@kernel.org, andrii@kernel.org, daniel@iogearbox.net,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: qwCowADn7_sEwCpi2aYEAw--.16627S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFW3Jw4xCrW3Wr15tr1fJFb_yoWDCrX_ur
+        48urnxZr4UCryrKF47tFy7Zr9Yyw4vqF1fZFW2qrZ3JFy8ArW7W3WrZrnrXrWfur4Y9F9x
+        C3ZrAF4Yv39FgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbaAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFV
+        Cjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWl
+        x4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r
+        1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j
+        6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8Jr
+        UvcSsGvfC2KfnxnUUI43ZEXa7sRidbbtUUUUU==
+X-Originating-IP: [124.16.138.126]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+As the potential failure of the kvmalloc_array(),
+it should be better to check and restore the 'data'
+if fails in order to avoid the dereference of the
+NULL pointer.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Fixes: 6ae746711263 ("hv_netvsc: Add per-cpu ethtool stats for netvsc")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/net/hyperv/netvsc_drv.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-On Thu, 10 Mar 2022 13:16:55 -0800 you wrote:
-> Previous patches have introduced the compiler attribute btf_type_tag for
-> __user and __percpu. The availability of this attribute depends on
-> some CONFIGs and compiler support. This patch refactors the use
-> of btf_type_tag by introducing BTF_TYPE_TAG, which hides all the
-> dependencies.
-> 
-> No functional change.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] compiler_types: Refactor the use of btf_type_tag attribute.
-    https://git.kernel.org/bpf/bpf-next/c/6789ab9668d9
-
-You are awesome, thank you!
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index 3646469433b1..018c4a5f6f44 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -1587,6 +1587,12 @@ static void netvsc_get_ethtool_stats(struct net_device *dev,
+ 	pcpu_sum = kvmalloc_array(num_possible_cpus(),
+ 				  sizeof(struct netvsc_ethtool_pcpu_stats),
+ 				  GFP_KERNEL);
++	if (!pcpu_sum) {
++		for (j = 0; j < i; j++)
++			data[j] = 0;
++		return;
++	}
++
+ 	netvsc_get_pcpu_stats(dev, pcpu_sum);
+ 	for_each_present_cpu(cpu) {
+ 		struct netvsc_ethtool_pcpu_stats *this_sum = &pcpu_sum[cpu];
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.25.1
 
