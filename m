@@ -2,87 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C9E4D643D
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 16:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7C64D6452
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 16:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346923AbiCKPDW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Mar 2022 10:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        id S233951AbiCKPJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Mar 2022 10:09:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347205AbiCKPDV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Mar 2022 10:03:21 -0500
+        with ESMTP id S1348487AbiCKPJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Mar 2022 10:09:56 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7E7B1A41EE
-        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:02:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E74171C469B
+        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:08:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647010936;
+        s=mimecast20190719; t=1647011332;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bhFk1vrA84GqSz25RsRFDbGtNHQdmxiZdJu+41NtC5A=;
-        b=jKmVkdNBIChMqM46d4bTC6+RhdhH4lQ2dNP8FAj9ymE/i6zaDQUFbxD1GKsUlE5DHswx63
-        nVHMEhqwxHGiMUNnI/lt+gI9/rlJrBegJfXo8fJyJQxMrsA4lm4O2dgStQiDIBhPrv88JC
-        zJ3IgykleLUgvbnIqintSKKOj7qZ1+Y=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=F/08TVTeX7qJdWIo3uuJ3+sRiIGvopv0E/DcuimI5Vg=;
+        b=BD5aqbN8W1TtjmUxDYF01T8P7eDlfnDPjtZWSflfD20NI3Rtf7ySQNtyd87sXkGahD0Tuc
+        qQpd2Z2Nit8zYLuWjfqNTyt0Klb5ycRPSHjWCgFQpSq5nDnsvBu0+jiUBTZifpbKl31fnB
+        TCI7i65cdO+JA4GBlJxjSnKjwYdGLzs=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-253-G6fEr59aNi6O_xepDBIVrg-1; Fri, 11 Mar 2022 10:02:15 -0500
-X-MC-Unique: G6fEr59aNi6O_xepDBIVrg-1
-Received: by mail-ej1-f70.google.com with SMTP id og24-20020a1709071dd800b006dab87bec4fso5106888ejc.0
-        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:02:15 -0800 (PST)
+ us-mta-265-GDRjkRp6ODyYHJav-UJDuw-1; Fri, 11 Mar 2022 10:08:50 -0500
+X-MC-Unique: GDRjkRp6ODyYHJav-UJDuw-1
+Received: by mail-pg1-f198.google.com with SMTP id 9-20020a630509000000b0037c8607d296so4981180pgf.22
+        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:08:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=bhFk1vrA84GqSz25RsRFDbGtNHQdmxiZdJu+41NtC5A=;
-        b=rQ9tFZ+DH4dxBKGZvqScL7fUmmZIINIM9siHpW8DbEB6HM3CPDzqytBhRoGZzwuEDf
-         mukR395kVP3Q4s6tqups1w3chHrt9K3hhFRDoEZoFqubI6wLRcRR8t1VZat896TIPKZc
-         4plfmkWQcBLyhsCG7SKvOsUy3Mf+Jrst6W8H5lkBEiMpGfmKX0iDC8x2/d6ddzeeJx8V
-         U14QSKci8fTaHl2zUZ0mwBFCfmmze1lzeUyaQ162+4OG9g4sTq2k6BWVTyA6+EHvYe9B
-         +PHkYgrrB3WfxZNI+pAhwI0CeHJSwMpWiEn0m5RsjJzYLbjVTZy9VvaE1RLy5JQVCgWx
-         Q9pA==
-X-Gm-Message-State: AOAM5322UUb+xPct54hPYDHiRBNT8ZP8q76cdFEZ+trZsofLpVOUCu7L
-        A2lkmYtETVEOMOLUl+Cqx5NiLvTd+gaP/mICFzfu/naBF2HRjGrGdVM9XcJdrZuedPoHjBu6KwE
-        BIYu92naXzBdv
-X-Received: by 2002:a05:6402:51cd:b0:416:a841:22a0 with SMTP id r13-20020a05640251cd00b00416a84122a0mr9249849edd.292.1647010931894;
-        Fri, 11 Mar 2022 07:02:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxQqG7/HKprlozH6n4cYd5+WV/+EBJ822bf0OnhKKBU64innPa8mWZQ3flMcquO9EbmlWsSog==
-X-Received: by 2002:a05:6402:51cd:b0:416:a841:22a0 with SMTP id r13-20020a05640251cd00b00416a84122a0mr9249685edd.292.1647010930106;
-        Fri, 11 Mar 2022 07:02:10 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id kw3-20020a170907770300b006b2511ea97dsm3033434ejc.42.2022.03.11.07.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Mar 2022 07:02:09 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id E251F1AB573; Fri, 11 Mar 2022 16:02:08 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F/08TVTeX7qJdWIo3uuJ3+sRiIGvopv0E/DcuimI5Vg=;
+        b=fHU/HVgmw01/ubJv3gZcoMc2z0uVIsu5ydHHjONYoIcl9kqm+wbxQm4JzUG7zM03jB
+         SHXZL97wPKpT4P4k60J2BeV8aR3mSJWHYKmL153G3X3QB9uUfTmHlwVbZIOpmG0tjLS9
+         sizHpfUdG5GwU3R8F43Zk29mkAYgX9crKCSAM7JuJzuZW/FcaMQWiAggX3fuwLdWoRVx
+         ZxO0gtj2uti5vSrSX5xAqOglCUEEXMJsffLnxdZd2vOr5GrM8gNtUKIT17B8iShChZbD
+         SVSfpptcC3ONaYqToitPKdVdxYsUQs62zvW7Cm5Ih7K97nbP6RZidR6l8Vcr8NyHqf8T
+         cMyw==
+X-Gm-Message-State: AOAM531UvWp4tjmVCBySz+6QPtR33HI0e2ksmxKikUTnn3n1MPA8Y3a6
+        YD39lDM7Ncj5QiDhiVTv7OJMxQu5K9PNGnsZwVr6Y/h9L7IIxiT+XTr3l+wgnsyktHCLwqKYf3r
+        vY+7Ou8ZByfGQJlc5vMj5llzrUlgK
+X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id x17-20020a170902e05100b00151b4853453mr10676978plx.116.1647011329128;
+        Fri, 11 Mar 2022 07:08:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwP66U88wrg4Uba/sXa89zRWh8cpyDVryV2J34r/lzVwh1XrWMHAvI+0SP9yFnM0v3WNYY/Auphd33L2Zn2V7A=
+X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id
+ x17-20020a170902e05100b00151b4853453mr10676930plx.116.1647011328721; Fri, 11
+ Mar 2022 07:08:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
+ <20220304172852.274126-13-benjamin.tissoires@redhat.com> <YiJdRQxYzfncfTR5@kroah.com>
+ <CAO-hwJJ3Yi+JLr40J8nXccjF8PrjiQw1w0Bskz8QHXdNVh1n+A@mail.gmail.com>
+ <YiM/tTYeuAcnz/Xh@kroah.com> <CAPhsuW4Yhpr6jeY8QCCvUcg_1REGWRRy7m5GXZw5Ehtt3eyAHQ@mail.gmail.com>
+In-Reply-To: <CAPhsuW4Yhpr6jeY8QCCvUcg_1REGWRRy7m5GXZw5Ehtt3eyAHQ@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 11 Mar 2022 16:08:37 +0100
+Message-ID: <CAO-hwJ+BuTsSJdH=dmtyNKcQw-vJ4up+MzZRcbN2E+aa=9iPnQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 12/28] bpf/hid: add hid_{get|set}_data helpers
+To:     Song Liu <song@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Kosina <jikos@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Fix packet size check for
- live packet mode
-In-Reply-To: <20220311000511.atows3k5uzggg6wf@kafai-mbp.dhcp.thefacebook.com>
-References: <20220310225621.53374-1-toke@redhat.com>
- <20220311000511.atows3k5uzggg6wf@kafai-mbp.dhcp.thefacebook.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 11 Mar 2022 16:02:08 +0100
-Message-ID: <87sfrown0v.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Dave Marchevsky <davemarchevsky@fb.com>,
+        Joe Stringer <joe@cilium.io>,
+        Tero Kristo <tero.kristo@linux.intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,77 +88,172 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Martin KaFai Lau <kafai@fb.com> writes:
+On Fri, Mar 11, 2022 at 1:41 AM Song Liu <song@kernel.org> wrote:
+>
+> On Sat, Mar 5, 2022 at 2:47 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sat, Mar 05, 2022 at 11:33:07AM +0100, Benjamin Tissoires wrote:
+> > > On Fri, Mar 4, 2022 at 7:41 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > >
+> > > > On Fri, Mar 04, 2022 at 06:28:36PM +0100, Benjamin Tissoires wrote:
+> > > > > When we process an incoming HID report, it is common to have to account
+> > > > > for fields that are not aligned in the report. HID is using 2 helpers
+> > > > > hid_field_extract() and implement() to pick up any data at any offset
+> > > > > within the report.
+> > > > >
+> > > > > Export those 2 helpers in BPF programs so users can also rely on them.
+> > > > > The second net worth advantage of those helpers is that now we can
+> > > > > fetch data anywhere in the report without knowing at compile time the
+> > > > > location of it. The boundary checks are done in hid-bpf.c, to prevent
+> > > > > a memory leak.
+> > > > >
+> > > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> > > > >
+> > > > > ---
+> > > > >
+> > > > > changes in v2:
+> > > > > - split the patch with libbpf and HID left outside.
+> > > > > ---
+> > > > >  include/linux/bpf-hid.h        |  4 +++
+> > > > >  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++++
+> > > > >  kernel/bpf/hid.c               | 53 ++++++++++++++++++++++++++++++++++
+> > > > >  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++++
+> > > > >  4 files changed, 121 insertions(+)
+> > > > >
+> > > > > diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
+> > > > > index 0c5000b28b20..69bb28523ceb 100644
+> > > > > --- a/include/linux/bpf-hid.h
+> > > > > +++ b/include/linux/bpf-hid.h
+> > > > > @@ -93,6 +93,10 @@ struct bpf_hid_hooks {
+> > > > >       int (*link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> > > > >       void (*link_attached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> > > > >       void (*array_detached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
+> > > > > +     int (*hid_get_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> > > > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
+> > > > > +     int (*hid_set_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
+> > > > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
+> > > > >  };
+> > > > >
+> > > > >  #ifdef CONFIG_BPF
+> > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > > index a7a8d9cfcf24..4845a20e6f96 100644
+> > > > > --- a/include/uapi/linux/bpf.h
+> > > > > +++ b/include/uapi/linux/bpf.h
+> > > > > @@ -5090,6 +5090,36 @@ union bpf_attr {
+> > > > >   *   Return
+> > > > >   *           0 on success, or a negative error in case of failure. On error
+> > > > >   *           *dst* buffer is zeroed out.
+> > > > > + *
+> > > > > + * int bpf_hid_get_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
+> > > > > + *   Description
+> > > > > + *           Get the data of size n (in bits) at the given offset (bits) in the
+> > > > > + *           ctx->event.data field and store it into data.
+> > > > > + *
+> > > > > + *           if n is less or equal than 32, we can address with bit precision,
+> > > > > + *           the value in the buffer. However, data must be a pointer to a u32
+> > > > > + *           and size must be 4.
+> > > > > + *
+> > > > > + *           if n is greater than 32, offset and n must be a multiple of 8
+> > > > > + *           and the result is working with a memcpy internally.
+> > > > > + *   Return
+> > > > > + *           The length of data copied into data. On error, a negative value
+> > > > > + *           is returned.
+> > > > > + *
+> > > > > + * int bpf_hid_set_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
+> > > > > + *   Description
+> > > > > + *           Set the data of size n (in bits) at the given offset (bits) in the
+> > > > > + *           ctx->event.data field.
+> > > > > + *
+> > > > > + *           if n is less or equal than 32, we can address with bit precision,
+> > > > > + *           the value in the buffer. However, data must be a pointer to a u32
+> > > > > + *           and size must be 4.
+> > > > > + *
+> > > > > + *           if n is greater than 32, offset and n must be a multiple of 8
+> > > > > + *           and the result is working with a memcpy internally.
+> > > > > + *   Return
+> > > > > + *           The length of data copied into ctx->event.data. On error, a negative
+> > > > > + *           value is returned.
+> > > >
+> > >
+> > > Quick answer on this one (before going deeper with the other remarks next week):
+> > >
+> > > > Wait, nevermind my reviewed-by previously, see my comment about how this
+> > > > might be split into 4:
+> > > >         bpf_hid_set_bytes()
+> > > >         bpf_hid_get_bytes()
+> > > >         bpf_hid_set_bits()
+> > > >         bpf_hid_get_bits()
+> > > >
+> > > > Should be easier to understand and maintain over time, right?
+> > >
+> > > Yes, definitively. I thought about adding a `bytes` suffix to the
+> > > function name for n > 32, but not the `bits` one, meaning the API was
+> > > still bunkers in my head.
+>
+> Do we really need per-bit access? I was under the impression that only
+> one BPF program is working on a ctx/buffer at a time, so we can just do
+> read-modify-write at byte level, no?
+>
 
-> On Thu, Mar 10, 2022 at 11:56:20PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> The live packet mode uses some extra space at the start of each page to
->> cache data structures so they don't have to be rebuilt at every repetiti=
-on.
->> This space wasn't correctly accounted for in the size checking of the
->> arguments supplied to userspace. In addition, the definition of the frame
->> size should include the size of the skb_shared_info (as there is other
->> logic that subtracts the size of this).
->>=20
->> Together, these mistakes resulted in userspace being able to trip the
->> XDP_WARN() in xdp_update_frame_from_buff(), which syzbot discovered in
->> short order. Fix this by changing the frame size define and adding the
->> extra headroom to the bpf_prog_test_run_xdp() function. Also drop the
->> max_len parameter to the page_pool init, since this is related to DMA wh=
-ich
->> is not used for the page pool instance in PROG_TEST_RUN.
->>=20
->> Reported-by: syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com
->> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RU=
-N")
->> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
->> ---
->>  net/bpf/test_run.c | 6 +++---
->>  1 file changed, 3 insertions(+), 3 deletions(-)
->>=20
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index 24405a280a9b..e7b9c2636d10 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -112,8 +112,7 @@ struct xdp_test_data {
->>  	u32 frame_cnt;
->>  };
->>=20=20
->> -#define TEST_XDP_FRAME_SIZE (PAGE_SIZE - sizeof(struct xdp_page_head)	\
->> -			     - sizeof(struct skb_shared_info))
->> +#define TEST_XDP_FRAME_SIZE (PAGE_SIZE - sizeof(struct xdp_page_head))
->>  #define TEST_XDP_MAX_BATCH 256
->>=20=20
->>  static void xdp_test_run_init_page(struct page *page, void *arg)
->> @@ -156,7 +155,6 @@ static int xdp_test_run_setup(struct xdp_test_data *=
-xdp, struct xdp_buff *orig_c
->>  		.flags =3D 0,
->>  		.pool_size =3D xdp->batch_size,
->>  		.nid =3D NUMA_NO_NODE,
->> -		.max_len =3D TEST_XDP_FRAME_SIZE,
->>  		.init_callback =3D xdp_test_run_init_page,
->>  		.init_arg =3D xdp,
->>  	};
->> @@ -1230,6 +1228,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, c=
-onst union bpf_attr *kattr,
->>  			batch_size =3D NAPI_POLL_WEIGHT;
->>  		else if (batch_size > TEST_XDP_MAX_BATCH)
->>  			return -E2BIG;
->> +
->> +		headroom +=3D sizeof(struct xdp_page_head);
-> The orig_ctx->data_end will ensure there is a sizeof(struct skb_shared_in=
-fo)
-> tailroom ?  It is quite tricky to read but I don't have a better idea
-> either.
+Yes, we really need per-bit access, and yes only one BPF program is
+working on a ctx/buffer at a time.
 
-Yeah, the length checks are all done for the non-live data case (in
-bpf_test_init()), so seemed simpler to just account the extra headroom
-to those checks instead of adding an extra check to the live-packet
-code.
+The per-bit access is a HID requirement and a much more convenient way
+of accessing data in the buffer. Well, there is another advantage too
+that I'll add later.
 
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+Basically, in the HID world, HW makers are trying to 'compact' the
+reports their device is sending to a minimum value.
 
-Thanks!
+For instance, when you have a 3 buttons + wheel mouse you may need:
+3 bits of information for the 3 buttons
+4 bits for the wheel
+16 bits for X
+16 bits for Y.
 
--Toke
+This usually translates almost verbatim in the report (we can add one
+bit of padding between buttons and wheel), which means that accessing
+the wheel data requires the user to access the offset 4 (bits) of size
+4 bits in the report.
+
+Some HW vendors are not even bothering aligning the data, so this can
+be messy from time to time with just plain byte access.
+All in all, the HID report descriptor gives you that information, and
+internally, the HID stack stores the offset in bits and the sizes in
+bits to access them without too much trouble.
+
+The second advantage I have with these 2 accessors is that it allows
+me to not know statically the offset and size values. Because the
+helper in the kernel checks them for me, I can use registers values
+that are unknown to the verifier and can basically have:
+
+```
+__u64 offsetX = 0;
+__u64 offsetY = 0;
+__u32 sizeX = 0;
+__u32 sizeY = 0;
+
+SEC("hid/device_event")
+int invert_xy(struct hid_bpf_ctx *ctx)
+{
+  __u16 x, y;
+
+  if (sizeX == 16) {
+    x = bpf_hid_get_bits(ctx, offsetX, sizeX);
+    bpf_hid_set_bits(ctx, offsetX, -x);
+  }
+  if (sizeY == 16) {
+    y = bpf_hid_get_bits(ctx, offsetY, sizeY);
+    bpf_hid_set_bits(ctx, offsetY, -y);
+  }
+  return 0;
+}
+```
+
+Then, I have my userspace program parse the report descriptor, set the
+correct values for size{X|Y} and offset{X|Y} and I can have this
+program compiled once and redistributed many times.
+
+Cheers,
+Benjamin
 
