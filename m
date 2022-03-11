@@ -2,127 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C364D5653
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 01:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0CA4D565E
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 01:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240556AbiCKAGq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Mar 2022 19:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
+        id S1344198AbiCKAM4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Mar 2022 19:12:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbiCKAGp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Mar 2022 19:06:45 -0500
+        with ESMTP id S237173AbiCKAMz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Mar 2022 19:12:55 -0500
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9797B19F445;
-        Thu, 10 Mar 2022 16:05:43 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22AI5FPH000964;
-        Thu, 10 Mar 2022 16:05:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=W9QXdaweemyIoD3/Qgc5eMZDzWrFe2nhqVQ3/srOcL8=;
- b=G0eiF5pJDrXERmjVBsVLzAQKuWMjewoi+Pb0e4C4Pjd7AjGDj1X2ypJe4ICIBs3zzQoZ
- ojQjT8OnCsmgqhRcmT4DKPM119At1DhA/LQsa3bY93fr7Zv/vPGaCR+Z+ONCHNwgCaGD
- hSfB6FVMEORbKBTSH1SgtDZtVs58585p0HM= 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eqex2dwgw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Mar 2022 16:05:21 -0800
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FDF1A06D7
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 16:11:52 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22AJFwk1005490
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 16:11:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : subject :
+ date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=fPwxHVSre8zRhCs0df+qmLsOpY9rf2ryG6PlD4V2gJk=;
+ b=Yl2GSCcZc2Ysv4tFjXNMZxVtbeecmOwUU1P3JxeUIKb4FII8n7NsqFJj3ChpxbnpwW6s
+ qCYLNeDgUcky4z4Wo+3fhTgA8vR6Qn8u0JqSH1nxPY/Rrj56uFJd85mCqzrf+ZOt5baA
+ oTsGUSwgFPG2PTvNMHd9cEp+lygJHhPgjvk= 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3eqqb5sykk-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 10 Mar 2022 16:11:51 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ErWsDrO5hwBwyjn4OINkO/BL2UmtLg55yuVTdhf4myCeixlNaEHx9KZzkCJF5yzpJ1eOLBGubFVJag4rvNTWlwM7900W1CeCb90EQWRuB0lrth5naVUVX1KoTvaVhVqn/biY07/woKErfQJOTtcvFBqzOueh/3HC0OqkxbHKBnB0gKpUcksa5ctIsIVS7Dc+b+C/XcXSu/sjTnBZAU+Za5ed+8hgd2xfWOWem2F2ODwpfz0PRT+tEIXi9Z+TI+/DQxWYPysGpMuDSxVd4iFdytdiIKQtMCSvrjarzj+emG4zSB2GJbF24oj9vEuXsH0OnFHerx2ljCBTxAEiUfxavA==
+ b=DQMk7YFLq+40cq0lK8e/l5zObop0m8Aad+D8LUFODNGl6xJk0IpEPLBQEimId4xHIG/yqQlfImRWiLu2PHZhUaLzpYZTJXDYePunbPwSooYh76O1MyDT5N88pg1E8koA+Z8nDBBCxBHXe0v30BT20Opi7vzuG/M1cC3004BFiJiJpyRaEa9kR+4wMqamOGJ1AvBbT1GV38VIgY5bZ6MLzmWr7IHkD4h6MmdgKdjV6IJelQFra0ywAi3TFlT8GuK1JZG/J7t1NJZ28nDpPCtQOCjV6EEejahYS9bfhZ8msdczMrI7389rm/siPmBWbpZlJqbp33BjbyzGPI9XMW9fZg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TFwiL438MJAR2Sdj2HpMT/RkhdtJJs+YQp/SoS+Y5yw=;
- b=SbxA0hMwdeiPd9uxctZzHg0wDoCnHu9gl4oNYevugJ4QUg4+EdRjdt9tF8H3uHo/yuzd1qUxCDDuiAjv6IsklBofwbk3aqfALwBKbPgiG8la7d/1rXVZ1VEsR/0Xu3yDLMY0Xs8gnYBh5Byw8TsqaOoZdtEHOJWFCEW8G3J7BW8vI8t4VcRj0eiuxstfi5c0AwqbzvjAuGXJAz9m86ZW8oYYi+wse7ibvXAvWuNweed8xjbkH8oR4535hqHIYGqUlEHrJbeaFiNkY7OYI6xHtjHry69qThCEzDiIYoiJkZaj+oIyya/MI7l4ZyMoHazjK2iTJfe0mSe4yuLhti6ANA==
+ bh=fPwxHVSre8zRhCs0df+qmLsOpY9rf2ryG6PlD4V2gJk=;
+ b=L7AjWj9tGM9fkqLCboJBUvhzPA21NscTKAtHfi+HWB9Z8u7kW5pwXx6SnNCjKNXc9m8uTAK90c9102L7kkSvrU2UpgltKLpyfuuB9ftJk1h1f65G5CfHdEAiGfFluduTlmUFJ/oOJxsAPAcBvAHNCPX/nNnvtu/JRlOoacJCNxvvaRRROm+VZF0WBYVqms0Y1fDmjhlUwIPjm/p/3jvsAo3cBU1pAh2BYDuGaFcdT35Xwacj48REYLHe7gEI09K0lU7zHJYIgJVg7UA7Vs1nsNx1iJcwVdrJoTaMl6s804nDAF1b/jawrbwfV6HAwSZwaKhsiXbvn+XotW+u98m7Zw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com (2603:10b6:806:1db::19)
- by BN7PR15MB2433.namprd15.prod.outlook.com (2603:10b6:406:88::26) with
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com (2603:10b6:a03:423::6)
+ by BN6PR15MB1170.namprd15.prod.outlook.com (2603:10b6:404:e8::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.22; Fri, 11 Mar
- 2022 00:05:19 +0000
-Received: from SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::708c:84b0:641f:e7ca]) by SA1PR15MB5016.namprd15.prod.outlook.com
- ([fe80::708c:84b0:641f:e7ca%3]) with mapi id 15.20.5061.022; Fri, 11 Mar 2022
- 00:05:17 +0000
-Date:   Thu, 10 Mar 2022 16:05:11 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] bpf, test_run: Fix packet size check for
- live packet mode
-Message-ID: <20220311000511.atows3k5uzggg6wf@kafai-mbp.dhcp.thefacebook.com>
-References: <20220310225621.53374-1-toke@redhat.com>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220310225621.53374-1-toke@redhat.com>
-X-ClientProxiedBy: MWHPR22CA0011.namprd22.prod.outlook.com
- (2603:10b6:300:ef::21) To SA1PR15MB5016.namprd15.prod.outlook.com
- (2603:10b6:806:1db::19)
+ 2022 00:11:48 +0000
+Received: from SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::90c1:20f8:4fc6:d7a3]) by SJ0PR15MB5154.namprd15.prod.outlook.com
+ ([fe80::90c1:20f8:4fc6:d7a3%6]) with mapi id 15.20.5061.022; Fri, 11 Mar 2022
+ 00:11:48 +0000
+From:   Delyan Kratunov <delyank@fb.com>
+To:     "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: [PATCH bpf-next v2 0/5] Subskeleton support for BPF libraries
+Thread-Topic: [PATCH bpf-next v2 0/5] Subskeleton support for BPF libraries
+Thread-Index: AQHYNNyZMS+llTJd+kukFENaK3O6yQ==
+Date:   Fri, 11 Mar 2022 00:11:48 +0000
+Message-ID: <cover.1646957399.git.delyank@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 05d03f72-ff50-4d83-56d8-08da02f3bc31
+x-ms-traffictypediagnostic: BN6PR15MB1170:EE_
+x-microsoft-antispam-prvs: <BN6PR15MB117029B6B01404515BE64F2EC10C9@BN6PR15MB1170.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hWXa2aTs+16S5aelutQwl7vK1ll1Upd0y44ghlf2seenHnfauSDRpctEssgd9cIzDN0w/19SUgJnw/RTav1SSz/0MY+eWfMUwPlp57xHCdhhTQAlfoVGU+Wucf4jRldw1dQxFaw93D2rVMS+0KTM9swCAIVv2giIo8ACTjJGhy/GmxzBnl5grqtImDl+ls/pbhAtxc1y5mgRnWF8UAGIVzy+bQA/IfcBsrZ5RFjon6qaYWcm5scCKky9YXvXSLRfnQJRc7Wr7Jw03ehKWXF7T5jqHtt4A9nVvg/9f5jkHiX7v9UvqHadVTFFXDAYe0O0RZdJDRFgBRb/zMwrZmp3XKnl2AEQ8n4RLvToF9sb+xSJ3/x9yIUgrV1uSCrd07F25yZvD49EIFi7ucmNjdCCIvZm9BcVLBM0Bm52DK0LI3HpZZ8LTyz7ykIHCiaxzB6r1x7lpaBO2QQMA8xv7GcTB+Vdji6+bO30HIWf97jIDl8JV4lvZeb1eCloNkWF5aqOKMDbvpbwgV5TxJXOEssr5+xPVpznfMrn6iiNfUl2EtjlXKWQmw506Gi3sUKqF4u6WzocbxMHLQWIyFs+mpZfQwI74rSAHEn3gGzNhMvfvWrUGqgcHvbwq3HrrrUy243D8AabmIMG/JJyHGHNdBe5uKJTYjbL/Wrel4s5u1JqqZubcEZ434ka/pbasNzpaxHzBvqzdwAxLcdEZdgOjD6YfA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB5154.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66556008)(66446008)(66476007)(8676002)(91956017)(38070700005)(66946007)(64756008)(76116006)(6506007)(186003)(8936002)(316002)(36756003)(122000001)(38100700002)(71200400001)(508600001)(5660300002)(6486002)(2906002)(6512007)(110136005)(83380400001)(2616005)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?Zh3YJ3bhDaHqSpIy86xRZnaBXvaGvtFsk1KoljakKmAbWbWX6HCbdSD9kk?=
+ =?iso-8859-1?Q?fgMj1hbb9WFtaO2RbDxcMOS2YC5SUx0IYDRPaBjGxeyRZKgCpxsWzACImF?=
+ =?iso-8859-1?Q?PF656B3/XolColPiW0b8vQzDVqXOH+7iODx+QkN8+KgaPQwxnyVPj8zLit?=
+ =?iso-8859-1?Q?vfVDbw5BXM99nolCvTk6AL0h4YrLzhfXiz4Qp7wH4NENz6OrJUmt3B4DRW?=
+ =?iso-8859-1?Q?lZiSVU4PuFHJGS1bhS6xYhJARMIi8bHpthQW9oJeYzB4gHsmpEuQ6jzEsj?=
+ =?iso-8859-1?Q?MAtMS681wRC6OQcH4E/ax2Q5DC7FfhlLBNBmCanXYRoYrjpVm5fyuFxS6o?=
+ =?iso-8859-1?Q?MC0VQecGCg2JrSLF+0LV7ZG3pXZwn5BypItAvWxEBKM4MpWGzZ6w6as7Ge?=
+ =?iso-8859-1?Q?LetxKvdgJ+2fNa8mkJRw/RlMXxHm4x/3N6A/trH0saQBayqvjW8869Hnw1?=
+ =?iso-8859-1?Q?ot6K31yHmgpxnX8Pqn2wKYEGAew9qmxOAknnrjoGSpK+ThacnKM3xButs9?=
+ =?iso-8859-1?Q?fswie0i31T2RYbDRtc/R8B/goOVABhNJQ470+C8bsRt5szUPcYizkf7Quw?=
+ =?iso-8859-1?Q?MBhSOWPBKJgM82Ray0UCEcCI9PwT5ulCvkHrtj4dRJHa/cf90GJoDL54u9?=
+ =?iso-8859-1?Q?jD/4QY7cbLtFSN6QKmWbU5dSPoXYlXYpobas7FIk98F5xn6ySb8SVzE3gf?=
+ =?iso-8859-1?Q?tA8v3LhfhRjYdqseYrrd7wV9gZC2iCZdfnfJ+IvmmZdnFudHoBBOPDmUPx?=
+ =?iso-8859-1?Q?XFfnLTv6VlAX5aceFozCEc7DaG+meXLlasfQoX3GRF+4PqKl9Abrj7FDxn?=
+ =?iso-8859-1?Q?Cyy8RmduFhdJO7E+kJ4rT6BGZ3meGleKt17O5Q/RiTO6R9skweZ68WsD1Z?=
+ =?iso-8859-1?Q?SahmYDwZsJyjNIo6BVBEGw650CZeCa7Dl34GumvuOUtKWJvUg4bTHegsoa?=
+ =?iso-8859-1?Q?Kc3UiRL3K0UoMtxxwPcSqh1dc1FjHvTETilOzUqIUcZ4DXzP1AV1V03E45?=
+ =?iso-8859-1?Q?X7GWBn/3NZnykCIQUMhfIK7PCTRgX4G5oi2X1XlDm8qeMvlIjacGEPvQwE?=
+ =?iso-8859-1?Q?Lbsu8FrdxDrXLRAnt8T8wvQn7ghC7AqjFHJE3jaMrgmYi0B+u67jpwZqyv?=
+ =?iso-8859-1?Q?abLs6/5dIWUVp8WcOOAl3/ItdZxHF8dIMveM7DcTUg8jucvy2DV/BqT1KE?=
+ =?iso-8859-1?Q?1Ftc6ZGldplXH+NawPt+bJj0hG2m24E/FK6DsZZFLCYOZplcfXUF5b6z24?=
+ =?iso-8859-1?Q?D/VXUjk9NpG8IrQhps0Z4eJLGCP8ZYutH7mvr6oAl1DoJeLBre9VE/ysK6?=
+ =?iso-8859-1?Q?QQRttCl96jvUgWKxv+j27dLoEMCRJ0TulD45bg6p14kHMl8v+XS/0ox7vX?=
+ =?iso-8859-1?Q?pNBiLFE3vDYj/lhHkljNuPkzzVD6mZoGHytjeya35RFGdRjMmNWAdl73PJ?=
+ =?iso-8859-1?Q?4D09xqUqCe+96lyuknK5We0mXefCNv5rDB29gr+YwUUcpuH+ElR0FOD8wv?=
+ =?iso-8859-1?Q?fIXeCuggY8YbHxNtvVk+9gATgFv+45/HAg3ljFlMgoQXyJT+gKK8pxWti+?=
+ =?iso-8859-1?Q?vnBUcrk=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 70ece2b0-72db-4778-a60b-08da02f2d320
-X-MS-TrafficTypeDiagnostic: BN7PR15MB2433:EE_
-X-Microsoft-Antispam-PRVS: <BN7PR15MB243386F5910271587FB5D8CCD50C9@BN7PR15MB2433.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Fd5dsQe7RD5IdLjGXKL7xIUYKk+mRzIII3ptWEoCcC+m7Kzi4hVZ8dn6FzH7gWJUezn2pQPzbfbqhqeAY+IchftmMP9FejgAAFpWTYnlmJzHdG+v5m5t57eMU+cewwJNvOwGRbFeVE6vtgR3TEKM87rydWPlTO6vl0wz1RQlPONy9oCCM/j+s3R3LGyIqLWsFU+5O6OuUb+EXGkmWZyFu8+AqrCZ8plBcvDRWLDUSc3dAlb4b0MFlrRdoN/jxB3Yf/dG1WLJ7RLPcqV0gvLPA4sng53J1by5lY97m3QqhREPZ9IaHL2A8LM2A5k5dpFBvGdd4keP0lEJ6RQ//CUGnqOAYF8JYX50N+kOeHfBj7KPdQQXec5xn6XGURXOAcVKILir1rVlaOtwjvn14Xl9nGLomp4AaqTLolNOG7CVMgY0l1Yj9fVAHxqi+XQ9dGOkiIWWGtQfJwhNt7+utHHdTUebq0oXfsvBwnHaJ9TZqv/EwX+J6di1kZF5juu4h24A43Zit9cVxOA2CIA75mPCo80tLTX3YHTBP/ctgCAyviPPf7Cy0os8Z6Al3ewk0DptOBOp+4Ff9XkEuFQLKjiSbBNAdG2qxjihoaDkHwM5wBQH6T78HEE0xi+j5OlEWRcKk5/cB+9zhOb7gsmoPBUy2g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5016.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(66946007)(66476007)(66556008)(1076003)(6666004)(5660300002)(7416002)(316002)(38100700002)(4326008)(8676002)(66574015)(8936002)(83380400001)(6916009)(186003)(52116002)(2906002)(9686003)(6512007)(508600001)(6506007)(6486002)(54906003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?g5cdXEXS/SgnLn2pv/aRTgNJ0jL1q3PGqM0pVIcCxOVXODSO5BrRJ11X9t?=
- =?iso-8859-1?Q?I89f4sK0mNRENlHme5C5rplKHIAQIauvogYdmlBQp7af8j6h+uE2J4QNKt?=
- =?iso-8859-1?Q?A4CI164iwi3Dj7llLYrcMgZ8a4YNbiwaG1IYqib6UFefjCW1415t1LdE2o?=
- =?iso-8859-1?Q?uvVM0WX753X9UWWPS9CPDBYiLbC3Xf224MvdqPOstd0Blxyd8IXsng55Gy?=
- =?iso-8859-1?Q?i1GN5RD5RZICD9EPoHShM3Lm2dPsj/PFQIX/v8deBiogPf659dAPygsaof?=
- =?iso-8859-1?Q?Sx4H0XCKLLQzm6fBT4i8W6rRiHoGCX11gfUrZwm9v+N9LWQSB2Xyhhk+gj?=
- =?iso-8859-1?Q?FLBGYsmQIC4XTKSMscPHO+Sc1MsvB5cCn1tO3q/k1zpxmrzdVaiu+WJVak?=
- =?iso-8859-1?Q?4f3A+IhXXMTfv/WUmi0Kt6T3NP9b22Iozm89hRY1RTqxNeUH2siBtJxZuX?=
- =?iso-8859-1?Q?keziYzr7wmkyR25P1yjPe+qS/6ICRb4K7BWZru6giJx9wGh+5wL1V5SE2K?=
- =?iso-8859-1?Q?Yr2Mzq9sqSAiUP71T6597Mk73N51YnpePZvcERzmlCYGiQWQ3T5Rfk0v/L?=
- =?iso-8859-1?Q?Yof48FnGlM3tBH5OChQ4iHcuN1e0A4yrn7HkM7HzF4tp0FihQ5enhMNzKX?=
- =?iso-8859-1?Q?3pAddadeNQA09LDsVyVLdg6fkAAZQNlSi7/3uPT1kktl96De6dAT2mpzj4?=
- =?iso-8859-1?Q?1OOtDfMJkfTcV+kmiJloRCjSKsUriWE4s/AWmNtVhEPV+aOwjN1lfwGxWQ?=
- =?iso-8859-1?Q?+gzvcd/pmNRGZLJjf1twEz8d7MpaQFDGO/XYPTea/pobI54O5a5wF8qa7X?=
- =?iso-8859-1?Q?/7gD2/64fBnywxeav65yZJTqDVBAzkZsntaXoIVhHBhrXOq/gJr7wbgj+N?=
- =?iso-8859-1?Q?ejpAA/JyMVb0+QgVW+IJ1cZJ6YVYsifJqdReERYv47/yVdbOi6uWQVCLA6?=
- =?iso-8859-1?Q?JyA3PvHY5GbDQzC1I/CrPQ3lqgLWcVHRQx8DIp1vTvkEH11gXlyrysX5eQ?=
- =?iso-8859-1?Q?DyQ771wsClSLfWLIpLjNrbjLEfSxbSRGlobQrnJCzr4VlDVUdZ1ZbqGRw3?=
- =?iso-8859-1?Q?qvnH5s4Jxwx0ZmoECkjwiajX1gqy5sVU6eYp1urDJEdJjPSp/xZdNhomOc?=
- =?iso-8859-1?Q?d+Ew6vPo2S6n9yst1gQSg9rS+MIYDvcbYts7RM+IhqfcTz4gdrSePmsqwm?=
- =?iso-8859-1?Q?1JhEdQe+gV5SfhClmAro9nmIwvvMkxvF3gNI2+2K5HJNn8KUd5LPDWiAFa?=
- =?iso-8859-1?Q?OMrGmp+VMHfXI2zOKOdQAcqbd6Sitk/vn7YRyBnfG+Q2E7j8rh3jJrwYd1?=
- =?iso-8859-1?Q?VRH/JLrzrZ+53mPHq4CI1vJ6GtGxxy0Z1yqgjcRnjeOkpQxCl9hNoWfJLb?=
- =?iso-8859-1?Q?SxHMCDNjwvLCyBOULYWDIAA8S/H3Ws80nMRg+Dz+TvENiTrpI3DsHZkxV2?=
- =?iso-8859-1?Q?3XFyC2nIhckOiTJDI+w7sYfD7Zf7suHGbK78wsst7/3K3XuuunteswJdIQ?=
- =?iso-8859-1?Q?8AMPmh/FMHZ5S5cwAco2h/4niyljkfYGWhFhi0p1bygA=3D=3D?=
 X-OriginatorOrg: fb.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 70ece2b0-72db-4778-a60b-08da02f2d320
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5016.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Mar 2022 00:05:17.5225
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB5154.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05d03f72-ff50-4d83-56d8-08da02f3bc31
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Mar 2022 00:11:48.2911
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: OIS1fIoXCm/F3cerg/BvETWiutNut4A5l9iUtTwXAC859bNvbOu6t4/w7cfz+dBN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2433
-X-Proofpoint-ORIG-GUID: I--CpgaqFA19o0FwgLvhymh82kDgOk0q
-X-Proofpoint-GUID: I--CpgaqFA19o0FwgLvhymh82kDgOk0q
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NFS0XGAfGw+AbWvjDDL/4n4IXiw94PR5uDxpxeEdwTQoG54IN6YzgfzL2p364aH8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1170
+X-Proofpoint-ORIG-GUID: CWGuIHXkupcEkftBZuCRZP62FehMvJMS
+X-Proofpoint-GUID: CWGuIHXkupcEkftBZuCRZP62FehMvJMS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
  definitions=2022-03-10_09,2022-03-09_01,2022-02-23_01
@@ -136,65 +127,153 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Mar 10, 2022 at 11:56:20PM +0100, Toke Høiland-Jørgensen wrote:
-> The live packet mode uses some extra space at the start of each page to
-> cache data structures so they don't have to be rebuilt at every repetition.
-> This space wasn't correctly accounted for in the size checking of the
-> arguments supplied to userspace. In addition, the definition of the frame
-> size should include the size of the skb_shared_info (as there is other
-> logic that subtracts the size of this).
-> 
-> Together, these mistakes resulted in userspace being able to trip the
-> XDP_WARN() in xdp_update_frame_from_buff(), which syzbot discovered in
-> short order. Fix this by changing the frame size define and adding the
-> extra headroom to the bpf_prog_test_run_xdp() function. Also drop the
-> max_len parameter to the page_pool init, since this is related to DMA which
-> is not used for the page pool instance in PROG_TEST_RUN.
-> 
-> Reported-by: syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com
-> Fixes: b530e9e1063e ("bpf: Add "live packet" mode for XDP in BPF_PROG_RUN")
-> Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-> ---
->  net/bpf/test_run.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index 24405a280a9b..e7b9c2636d10 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -112,8 +112,7 @@ struct xdp_test_data {
->  	u32 frame_cnt;
->  };
->  
-> -#define TEST_XDP_FRAME_SIZE (PAGE_SIZE - sizeof(struct xdp_page_head)	\
-> -			     - sizeof(struct skb_shared_info))
-> +#define TEST_XDP_FRAME_SIZE (PAGE_SIZE - sizeof(struct xdp_page_head))
->  #define TEST_XDP_MAX_BATCH 256
->  
->  static void xdp_test_run_init_page(struct page *page, void *arg)
-> @@ -156,7 +155,6 @@ static int xdp_test_run_setup(struct xdp_test_data *xdp, struct xdp_buff *orig_c
->  		.flags = 0,
->  		.pool_size = xdp->batch_size,
->  		.nid = NUMA_NO_NODE,
-> -		.max_len = TEST_XDP_FRAME_SIZE,
->  		.init_callback = xdp_test_run_init_page,
->  		.init_arg = xdp,
->  	};
-> @@ -1230,6 +1228,8 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
->  			batch_size = NAPI_POLL_WEIGHT;
->  		else if (batch_size > TEST_XDP_MAX_BATCH)
->  			return -E2BIG;
-> +
-> +		headroom += sizeof(struct xdp_page_head);
-The orig_ctx->data_end will ensure there is a sizeof(struct skb_shared_info)
-tailroom ?  It is quite tricky to read but I don't have a better idea
-either.
+In the quest for ever more modularity, a new need has arisen - the ability =
+to
+access data associated with a BPF library from a corresponding userspace li=
+brary.
+The catch is that we don't want the userspace library to know about the str=
+ucture of the
+final BPF object that the BPF library is linked into.
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+In pursuit of this modularity, this patch series introduces *subskeletons.*
+Subskeletons are similar in use and design to skeletons with a couple of di=
+fferences:
 
->  	} else if (batch_size) {
->  		return -EINVAL;
->  	}
-> -- 
-> 2.35.1
-> 
+1. The generated storage types do not rely on contiguous storage for the li=
+brary's
+variables because they may be interspersed randomly throughout the final BP=
+F object's sections.
+
+2. Subskeletons do not own objects and instead require a loaded bpf_object*=
+ to
+be passed at runtime in order to be initialized. By extension, symbols are =
+resolved at
+runtime by parsing the final object's BTF. This has the interesting effect =
+that the same
+userspace code can interoperate with the library BPF code *linked into diff=
+erent final objects.*
+
+3. Subskeletons allow access to all global variables, programs, and custom =
+maps. They also expose
+the internal maps *of the final object*. This allows bpf_var_skeleton objec=
+ts to contain a bpf_map**
+instead of a section name.
+
+Changes since v1:
+ - Introduced new strict mode knob for single-routine-in-.text compatibilit=
+y behavior, which
+   disproportionately affects library objects. bpftool works in 1.0 mode so=
+ subskeleton generation
+   doesn't have to worry about this now.
+ - Made bpf_map_btf_value_type_id available earlier and used it wherever ap=
+plicable.
+ - Refactoring in bpftool gen.c per review comments.
+ - Subskels now use typeof() for array and func proto globals to avoid the =
+need for runtime split btf.
+ - Expanded the subskeleton test to include arrays, custom maps, extern map=
+s, weak symbols, and kconfigs.
+ - selftests/bpf/Makefile now generates a subskel.h for every skel.h it wou=
+ld make.
+
+For reference, here is a shortened subskeleton header:
+
+#ifndef __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+#define __TEST_SUBSKELETON_LIB_SUBSKEL_H__
+
+struct test_subskeleton_lib {
+	struct bpf_object *obj;
+	struct bpf_object_subskeleton *subskel;
+	struct {
+		struct bpf_map *map2;
+		struct bpf_map *map1;
+		struct bpf_map *data;
+		struct bpf_map *rodata;
+		struct bpf_map *bss;
+		struct bpf_map *kconfig;
+	} maps;
+	struct {
+		struct bpf_program *lib_perf_handler;
+	} progs;
+	struct test_subskeleton_lib__data {
+		int *var6;
+		int *var2;
+		int *var5;
+	} data;
+	struct test_subskeleton_lib__rodata {
+		int *var1;
+	} rodata;
+	struct test_subskeleton_lib__bss {
+		struct {
+			int var3_1;
+			__s64 var3_2;
+		} *var3;
+		int *libout1;
+		typeof(int[4]) *var4;
+		typeof(int (*)()) *fn_ptr;
+	} bss;
+	struct test_subskeleton_lib__kconfig {
+		_Bool *CONFIG_BPF_SYSCALL;
+	} kconfig;
+
+static inline struct test_subskeleton_lib *
+test_subskeleton_lib__open(const struct bpf_object *src)
+{
+	struct test_subskeleton_lib *obj;
+	struct bpf_object_subskeleton *s;
+	int err;
+
+	...
+	s =3D (struct bpf_object_subskeleton *)calloc(1, sizeof(*s));
+	...
+
+	s->var_cnt =3D 9;
+	...
+
+	s->vars[0].name =3D "var6";
+	s->vars[0].map =3D &obj->maps.data;
+	s->vars[0].addr =3D (void**) &obj->data.var6;
+  ...
+
+	/* maps */
+	...
+
+	/* programs */
+	s->prog_cnt =3D 1;
+	...
+
+	err =3D bpf_object__open_subskeleton(s);
+  ...
+	return obj;
+}
+#endif /* __TEST_SUBSKELETON_LIB_SUBSKEL_H__ */
+
+Delyan Kratunov (5):
+  libbpf: add new strict flag for .text subprograms
+  libbpf: init btf_{key,value}_type_id on internal map open
+  libbpf: add subskeleton scaffolding
+  bpftool: add support for subskeletons
+  selftests/bpf: test subskeleton functionality
+
+ .../bpf/bpftool/Documentation/bpftool-gen.rst |  25 +
+ tools/bpf/bpftool/bash-completion/bpftool     |  14 +-
+ tools/bpf/bpftool/gen.c                       | 589 ++++++++++++++++--
+ tools/lib/bpf/libbpf.c                        | 151 ++++-
+ tools/lib/bpf/libbpf.h                        |  29 +
+ tools/lib/bpf/libbpf.map                      |   2 +
+ tools/lib/bpf/libbpf_legacy.h                 |   6 +
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |  10 +-
+ .../selftests/bpf/prog_tests/subskeleton.c    |  83 +++
+ .../selftests/bpf/progs/test_subskeleton.c    |  23 +
+ .../bpf/progs/test_subskeleton_lib.c          |  56 ++
+ .../bpf/progs/test_subskeleton_lib2.c         |  16 +
+ 13 files changed, 919 insertions(+), 86 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/subskeleton.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_subskeleton_lib2=
+.c
+
+--
+2.34.1=
