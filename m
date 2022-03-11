@@ -2,108 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BE54D6983
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 21:34:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B324D6A85
+	for <lists+bpf@lfdr.de>; Sat, 12 Mar 2022 00:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348151AbiCKUfS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Mar 2022 15:35:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
+        id S230096AbiCKWxo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Mar 2022 17:53:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236514AbiCKUfP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Mar 2022 15:35:15 -0500
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845411CBA83;
-        Fri, 11 Mar 2022 12:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647030851; x=1678566851;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VNO9aR6ZlUQ1VivRTLNBPxlOoJygXM0cpiuy5f1w6pA=;
-  b=hA4PIB6c4h8PtGY15F7+muULWpRKsER/3CtNvJAgdzuDHNq3lEKp6hB7
-   +/shU6S9ZYhOCxrGEg1YZvNdcAdqtAPDLCE4X2iNQs55xS6OdZYn2Vzk9
-   O/luiqjpt7uSeA8GYw+tx5Gz4o6iPlnZcCJgtooQfDgc4DPaaAq9H60UT
-   N9/NaUItkX3dE3fyBj8LL8StAnV0X/53NU74+ZagD36mvBlHPW/IA4AqC
-   5zZ0Jd8ic0dHtijPSwMziY/dOGoh+31cjagsJvYGoHX1FVZNpcZD9m0X0
-   bSHxXs83IJliZSfBJDyYQZx7OtobuylM6fOoYT3ckV0MsxB4ODtCX+1mc
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10283"; a="280394715"
-X-IronPort-AV: E=Sophos;i="5.90,174,1643702400"; 
-   d="scan'208";a="280394715"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Mar 2022 12:34:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,174,1643702400"; 
-   d="scan'208";a="579408523"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 11 Mar 2022 12:34:05 -0800
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nSlxc-000737-VD; Fri, 11 Mar 2022 20:34:04 +0000
-Date:   Sat, 12 Mar 2022 04:34:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     menglong8.dong@gmail.com, dsahern@kernel.org, kuba@kernel.org
-Cc:     kbuild-all@lists.01.org, nhorman@tuxdriver.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, imagedong@tencent.com,
-        edumazet@google.com, talalahmad@google.com, keescook@chromium.org,
-        alobakin@pm.me, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Mengen Sun <mengensun@tencent.com>,
-        Hao Peng <flyingpeng@tencent.com>
-Subject: Re: [PATCH] net: skb: move enum skb_drop_reason to uapi
-Message-ID: <202203120451.wHvod29d-lkp@intel.com>
-References: <20220311032828.702392-1-imagedong@tencent.com>
+        with ESMTP id S231136AbiCKWx1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Mar 2022 17:53:27 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C7C2A2D29;
+        Fri, 11 Mar 2022 14:27:04 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 98AB260EDF;
+        Fri, 11 Mar 2022 21:10:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 027D9C340EC;
+        Fri, 11 Mar 2022 21:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647033010;
+        bh=61Xxy7fRTLYTj8A4CEx5xGaKDEr6+LlKepnbpX8kW6U=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XpuvEQPzr1Kpt4+5y5kRPQIrB53DysoCiJ3AcwECWPWSJ1k10xSltMRQbBjvJfmeu
+         aKuHhuQBEzfWzDz3cOl2TRAuj5aMrf7A7P9Zg1eZIU1wK5Glfd0pq49nOj8o7TKp3w
+         QwYaBvGLt1d+YbEPnholsFk/oaviazdFWndlFAhMkjyL3swaYsnX7H2s8Ov4MC+7RE
+         ZlLUxS3injPFQwOF9zWx0vtkhJKerCVefa+K5xTgieFMRvsGXbeB3TN+dYwFz25t0E
+         EoNoW8jrgcALafo0fKpGq/ErKBCn7G+NVj84A6edWHfrdcl6cNJrA1HtgEjh03kcI9
+         g1NzaKEgig3Ww==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DAEA6E8DD5B;
+        Fri, 11 Mar 2022 21:10:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220311032828.702392-1-imagedong@tencent.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/2] bpf,
+ test_run: Fix packet size check for live packet mode
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164703300989.26095.18212474165043880639.git-patchwork-notify@kernel.org>
+Date:   Fri, 11 Mar 2022 21:10:09 +0000
+References: <20220310225621.53374-1-toke@redhat.com>
+In-Reply-To: <20220310225621.53374-1-toke@redhat.com>
+To:     =?utf-8?b?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2VuIDx0b2tlQHJlZGhhdC5jb20+?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, hawk@kernel.org,
+        syzbot+0e91362d99386dc5de99@syzkaller.appspotmail.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
 X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Hello:
 
-Thank you for the patch! Yet something to improve:
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-[auto build test ERROR on next-20220310]
-[cannot apply to linus/master v5.17-rc7 v5.17-rc6 v5.17-rc5 v5.17-rc7]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+On Thu, 10 Mar 2022 23:56:20 +0100 you wrote:
+> The live packet mode uses some extra space at the start of each page to
+> cache data structures so they don't have to be rebuilt at every repetition.
+> This space wasn't correctly accounted for in the size checking of the
+> arguments supplied to userspace. In addition, the definition of the frame
+> size should include the size of the skb_shared_info (as there is other
+> logic that subtracts the size of this).
+> 
+> [...]
 
-url:    https://github.com/0day-ci/linux/commits/menglong8-dong-gmail-com/net-skb-move-enum-skb_drop_reason-to-uapi/20220311-113243
-base:    71941773e143369a73c9c4a3b62fbb60736a1182
-config: i386-randconfig-a014 (https://download.01.org/0day-ci/archive/20220312/202203120451.wHvod29d-lkp@intel.com/config)
-compiler: gcc-9 (Ubuntu 9.4.0-1ubuntu1~20.04) 9.4.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/94a9a43cb9a6ba2e57d73b63226cbda08d24f6a2
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review menglong8-dong-gmail-com/net-skb-move-enum-skb_drop_reason-to-uapi/20220311-113243
-        git checkout 94a9a43cb9a6ba2e57d73b63226cbda08d24f6a2
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+Here is the summary with links:
+  - [bpf-next,1/2] bpf, test_run: Fix packet size check for live packet mode
+    https://git.kernel.org/bpf/bpf-next/c/b6f1f780b393
+  - [bpf-next,2/2] selftests/bpf: Add a test for maximum packet size in xdp_do_redirect
+    https://git.kernel.org/bpf/bpf-next/c/c09df4bd3a91
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-All errors (new ones prefixed by >>):
 
-   In file included from <command-line>:32:
->> ./usr/include/linux/net_dropmon.h:6:10: fatal error: uapi/linux/netlink.h: No such file or directory
-       6 | #include <uapi/linux/netlink.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-
----
-0-DAY CI Kernel Test Service
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
