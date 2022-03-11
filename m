@@ -2,258 +2,276 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7C64D6452
-	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 16:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1004D6478
+	for <lists+bpf@lfdr.de>; Fri, 11 Mar 2022 16:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbiCKPJ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Mar 2022 10:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
+        id S235402AbiCKPYi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Mar 2022 10:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348487AbiCKPJ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Mar 2022 10:09:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E74171C469B
-        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:08:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647011332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/08TVTeX7qJdWIo3uuJ3+sRiIGvopv0E/DcuimI5Vg=;
-        b=BD5aqbN8W1TtjmUxDYF01T8P7eDlfnDPjtZWSflfD20NI3Rtf7ySQNtyd87sXkGahD0Tuc
-        qQpd2Z2Nit8zYLuWjfqNTyt0Klb5ycRPSHjWCgFQpSq5nDnsvBu0+jiUBTZifpbKl31fnB
-        TCI7i65cdO+JA4GBlJxjSnKjwYdGLzs=
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
- [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-265-GDRjkRp6ODyYHJav-UJDuw-1; Fri, 11 Mar 2022 10:08:50 -0500
-X-MC-Unique: GDRjkRp6ODyYHJav-UJDuw-1
-Received: by mail-pg1-f198.google.com with SMTP id 9-20020a630509000000b0037c8607d296so4981180pgf.22
-        for <bpf@vger.kernel.org>; Fri, 11 Mar 2022 07:08:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F/08TVTeX7qJdWIo3uuJ3+sRiIGvopv0E/DcuimI5Vg=;
-        b=fHU/HVgmw01/ubJv3gZcoMc2z0uVIsu5ydHHjONYoIcl9kqm+wbxQm4JzUG7zM03jB
-         SHXZL97wPKpT4P4k60J2BeV8aR3mSJWHYKmL153G3X3QB9uUfTmHlwVbZIOpmG0tjLS9
-         sizHpfUdG5GwU3R8F43Zk29mkAYgX9crKCSAM7JuJzuZW/FcaMQWiAggX3fuwLdWoRVx
-         ZxO0gtj2uti5vSrSX5xAqOglCUEEXMJsffLnxdZd2vOr5GrM8gNtUKIT17B8iShChZbD
-         SVSfpptcC3ONaYqToitPKdVdxYsUQs62zvW7Cm5Ih7K97nbP6RZidR6l8Vcr8NyHqf8T
-         cMyw==
-X-Gm-Message-State: AOAM531UvWp4tjmVCBySz+6QPtR33HI0e2ksmxKikUTnn3n1MPA8Y3a6
-        YD39lDM7Ncj5QiDhiVTv7OJMxQu5K9PNGnsZwVr6Y/h9L7IIxiT+XTr3l+wgnsyktHCLwqKYf3r
-        vY+7Ou8ZByfGQJlc5vMj5llzrUlgK
-X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id x17-20020a170902e05100b00151b4853453mr10676978plx.116.1647011329128;
-        Fri, 11 Mar 2022 07:08:49 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwP66U88wrg4Uba/sXa89zRWh8cpyDVryV2J34r/lzVwh1XrWMHAvI+0SP9yFnM0v3WNYY/Auphd33L2Zn2V7A=
-X-Received: by 2002:a17:902:e051:b0:151:b485:3453 with SMTP id
- x17-20020a170902e05100b00151b4853453mr10676930plx.116.1647011328721; Fri, 11
- Mar 2022 07:08:48 -0800 (PST)
+        with ESMTP id S233886AbiCKPYh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Mar 2022 10:24:37 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1AA16FDE2;
+        Fri, 11 Mar 2022 07:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NjruXzuQDBa25iXAh8/mEaW7ZKoV0M6wDo7rHCp8Dyo=; b=ijaIGmrQPDAw1W7FSWpwXR8uoF
+        YQuBaRffUYgOIIwfwZABBn6MehvhV3D+zCMmuwMxRZhW2VAvxAJmJ0ztzTuwDVSPdjh5EHo1lT8Gg
+        V5Y06e8v/EX3P3DEex1jTEl+VsxpVVkU3Z7uJWV8gPAYI+C/ctbP4AeaRMZ6jXU8/zZ0ijEpJhR0T
+        Soe4Bmn4+3gdW57lUYF5D7uK6ilaERDC+hb2KySCRISAvnbp6WWJMmJlhFup1fvwoG53DH/OQ15y8
+        0Eqiklv7Oe0A9TjgItdGKFkU0H+ik63i192SvxpBlGFEv5iFh6YfRgySI3SdzMrtKHpjE+kZ4YOYk
+        Z+3AJHsA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nSh6d-00HTxp-Tg; Fri, 11 Mar 2022 15:23:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 390093000E6;
+        Fri, 11 Mar 2022 16:23:01 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0B8EA2BCABC06; Fri, 11 Mar 2022 16:23:01 +0100 (CET)
+Date:   Fri, 11 Mar 2022 16:23:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>, x86@kernel.org,
+        joao@overdrivepizza.com, hjl.tools@gmail.com, jpoimboe@redhat.com,
+        andrew.cooper3@citrix.com, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, keescook@chromium.org,
+        samitolvanen@google.com, mark.rutland@arm.com,
+        alyssa.milburn@intel.com, mbenes@suse.cz, mhiramat@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
+Message-ID: <YitpVCIllFrnakpL@hirez.programming.kicks-ass.net>
+References: <20220308153011.021123062@infradead.org>
+ <20220308200052.rpr4vkxppnxguirg@ast-mbp.dhcp.thefacebook.com>
+ <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
+ <YifZhUVoHLT/76fE@hirez.programming.kicks-ass.net>
+ <Yif8nO2xg6QnVQfD@hirez.programming.kicks-ass.net>
+ <20220309190917.w3tq72alughslanq@ast-mbp.dhcp.thefacebook.com>
+ <YinGZObp37b27LjK@hirez.programming.kicks-ass.net>
+ <YioBZmicMj7aAlLf@hirez.programming.kicks-ass.net>
+ <20220310093731.78a6a8d5@gandalf.local.home>
 MIME-Version: 1.0
-References: <20220304172852.274126-1-benjamin.tissoires@redhat.com>
- <20220304172852.274126-13-benjamin.tissoires@redhat.com> <YiJdRQxYzfncfTR5@kroah.com>
- <CAO-hwJJ3Yi+JLr40J8nXccjF8PrjiQw1w0Bskz8QHXdNVh1n+A@mail.gmail.com>
- <YiM/tTYeuAcnz/Xh@kroah.com> <CAPhsuW4Yhpr6jeY8QCCvUcg_1REGWRRy7m5GXZw5Ehtt3eyAHQ@mail.gmail.com>
-In-Reply-To: <CAPhsuW4Yhpr6jeY8QCCvUcg_1REGWRRy7m5GXZw5Ehtt3eyAHQ@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 11 Mar 2022 16:08:37 +0100
-Message-ID: <CAO-hwJ+BuTsSJdH=dmtyNKcQw-vJ4up+MzZRcbN2E+aa=9iPnQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 12/28] bpf/hid: add hid_{get|set}_data helpers
-To:     Song Liu <song@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Dave Marchevsky <davemarchevsky@fb.com>,
-        Joe Stringer <joe@cilium.io>,
-        Tero Kristo <tero.kristo@linux.intel.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220310093731.78a6a8d5@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 1:41 AM Song Liu <song@kernel.org> wrote:
->
-> On Sat, Mar 5, 2022 at 2:47 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sat, Mar 05, 2022 at 11:33:07AM +0100, Benjamin Tissoires wrote:
-> > > On Fri, Mar 4, 2022 at 7:41 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > >
-> > > > On Fri, Mar 04, 2022 at 06:28:36PM +0100, Benjamin Tissoires wrote:
-> > > > > When we process an incoming HID report, it is common to have to account
-> > > > > for fields that are not aligned in the report. HID is using 2 helpers
-> > > > > hid_field_extract() and implement() to pick up any data at any offset
-> > > > > within the report.
-> > > > >
-> > > > > Export those 2 helpers in BPF programs so users can also rely on them.
-> > > > > The second net worth advantage of those helpers is that now we can
-> > > > > fetch data anywhere in the report without knowing at compile time the
-> > > > > location of it. The boundary checks are done in hid-bpf.c, to prevent
-> > > > > a memory leak.
-> > > > >
-> > > > > Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> > > > >
-> > > > > ---
-> > > > >
-> > > > > changes in v2:
-> > > > > - split the patch with libbpf and HID left outside.
-> > > > > ---
-> > > > >  include/linux/bpf-hid.h        |  4 +++
-> > > > >  include/uapi/linux/bpf.h       | 32 ++++++++++++++++++++
-> > > > >  kernel/bpf/hid.c               | 53 ++++++++++++++++++++++++++++++++++
-> > > > >  tools/include/uapi/linux/bpf.h | 32 ++++++++++++++++++++
-> > > > >  4 files changed, 121 insertions(+)
-> > > > >
-> > > > > diff --git a/include/linux/bpf-hid.h b/include/linux/bpf-hid.h
-> > > > > index 0c5000b28b20..69bb28523ceb 100644
-> > > > > --- a/include/linux/bpf-hid.h
-> > > > > +++ b/include/linux/bpf-hid.h
-> > > > > @@ -93,6 +93,10 @@ struct bpf_hid_hooks {
-> > > > >       int (*link_attach)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > > > >       void (*link_attached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > > > >       void (*array_detached)(struct hid_device *hdev, enum bpf_hid_attach_type type);
-> > > > > +     int (*hid_get_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> > > > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
-> > > > > +     int (*hid_set_data)(struct hid_device *hdev, u8 *buf, size_t buf_size,
-> > > > > +                         u64 offset, u32 n, u8 *data, u64 data_size);
-> > > > >  };
-> > > > >
-> > > > >  #ifdef CONFIG_BPF
-> > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > > index a7a8d9cfcf24..4845a20e6f96 100644
-> > > > > --- a/include/uapi/linux/bpf.h
-> > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > @@ -5090,6 +5090,36 @@ union bpf_attr {
-> > > > >   *   Return
-> > > > >   *           0 on success, or a negative error in case of failure. On error
-> > > > >   *           *dst* buffer is zeroed out.
-> > > > > + *
-> > > > > + * int bpf_hid_get_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> > > > > + *   Description
-> > > > > + *           Get the data of size n (in bits) at the given offset (bits) in the
-> > > > > + *           ctx->event.data field and store it into data.
-> > > > > + *
-> > > > > + *           if n is less or equal than 32, we can address with bit precision,
-> > > > > + *           the value in the buffer. However, data must be a pointer to a u32
-> > > > > + *           and size must be 4.
-> > > > > + *
-> > > > > + *           if n is greater than 32, offset and n must be a multiple of 8
-> > > > > + *           and the result is working with a memcpy internally.
-> > > > > + *   Return
-> > > > > + *           The length of data copied into data. On error, a negative value
-> > > > > + *           is returned.
-> > > > > + *
-> > > > > + * int bpf_hid_set_data(void *ctx, u64 offset, u32 n, u8 *data, u64 size)
-> > > > > + *   Description
-> > > > > + *           Set the data of size n (in bits) at the given offset (bits) in the
-> > > > > + *           ctx->event.data field.
-> > > > > + *
-> > > > > + *           if n is less or equal than 32, we can address with bit precision,
-> > > > > + *           the value in the buffer. However, data must be a pointer to a u32
-> > > > > + *           and size must be 4.
-> > > > > + *
-> > > > > + *           if n is greater than 32, offset and n must be a multiple of 8
-> > > > > + *           and the result is working with a memcpy internally.
-> > > > > + *   Return
-> > > > > + *           The length of data copied into ctx->event.data. On error, a negative
-> > > > > + *           value is returned.
-> > > >
-> > >
-> > > Quick answer on this one (before going deeper with the other remarks next week):
-> > >
-> > > > Wait, nevermind my reviewed-by previously, see my comment about how this
-> > > > might be split into 4:
-> > > >         bpf_hid_set_bytes()
-> > > >         bpf_hid_get_bytes()
-> > > >         bpf_hid_set_bits()
-> > > >         bpf_hid_get_bits()
-> > > >
-> > > > Should be easier to understand and maintain over time, right?
-> > >
-> > > Yes, definitively. I thought about adding a `bytes` suffix to the
-> > > function name for n > 32, but not the `bits` one, meaning the API was
-> > > still bunkers in my head.
->
-> Do we really need per-bit access? I was under the impression that only
-> one BPF program is working on a ctx/buffer at a time, so we can just do
-> read-modify-write at byte level, no?
->
+On Thu, Mar 10, 2022 at 09:37:31AM -0500, Steven Rostedt wrote:
+> On Thu, 10 Mar 2022 14:47:18 +0100
+> Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> > index acb50fb7ed2d..2d86d3c09d64 100644
+> > --- a/kernel/trace/ftrace.c
+> > +++ b/kernel/trace/ftrace.c
+> > @@ -5354,6 +5381,11 @@ int modify_ftrace_direct(unsigned long ip,
+> >  	mutex_lock(&direct_mutex);
+> >  
+> >  	mutex_lock(&ftrace_lock);
+> > +
+> > +	ip = ftrace_location(ip);
+> > +	if (!ip)
+> > +		goto out_unlock;
+> > +
+> 
+> Perhaps this should go into find_direct_entry() instead, as I think you are
+> adding it before all the find_direct_entry() callers.
 
-Yes, we really need per-bit access, and yes only one BPF program is
-working on a ctx/buffer at a time.
+Something like so then?
 
-The per-bit access is a HID requirement and a much more convenient way
-of accessing data in the buffer. Well, there is another advantage too
-that I'll add later.
-
-Basically, in the HID world, HW makers are trying to 'compact' the
-reports their device is sending to a minimum value.
-
-For instance, when you have a 3 buttons + wheel mouse you may need:
-3 bits of information for the 3 buttons
-4 bits for the wheel
-16 bits for X
-16 bits for Y.
-
-This usually translates almost verbatim in the report (we can add one
-bit of padding between buttons and wheel), which means that accessing
-the wheel data requires the user to access the offset 4 (bits) of size
-4 bits in the report.
-
-Some HW vendors are not even bothering aligning the data, so this can
-be messy from time to time with just plain byte access.
-All in all, the HID report descriptor gives you that information, and
-internally, the HID stack stores the offset in bits and the sizes in
-bits to access them without too much trouble.
-
-The second advantage I have with these 2 accessors is that it allows
-me to not know statically the offset and size values. Because the
-helper in the kernel checks them for me, I can use registers values
-that are unknown to the verifier and can basically have:
-
-```
-__u64 offsetX = 0;
-__u64 offsetY = 0;
-__u32 sizeX = 0;
-__u32 sizeY = 0;
-
-SEC("hid/device_event")
-int invert_xy(struct hid_bpf_ctx *ctx)
-{
-  __u16 x, y;
-
-  if (sizeX == 16) {
-    x = bpf_hid_get_bits(ctx, offsetX, sizeX);
-    bpf_hid_set_bits(ctx, offsetX, -x);
-  }
-  if (sizeY == 16) {
-    y = bpf_hid_get_bits(ctx, offsetY, sizeY);
-    bpf_hid_set_bits(ctx, offsetY, -y);
-  }
-  return 0;
-}
-```
-
-Then, I have my userspace program parse the report descriptor, set the
-correct values for size{X|Y} and offset{X|Y} and I can have this
-program compiled once and redistributed many times.
-
-Cheers,
-Benjamin
-
+Index: linux-2.6/kernel/trace/ftrace.c
+===================================================================
+--- linux-2.6.orig/kernel/trace/ftrace.c
++++ linux-2.6/kernel/trace/ftrace.c
+@@ -1575,7 +1575,7 @@ unsigned long ftrace_location_range(unsi
+  * If @ip matches sym+0, return sym's ftrace location.
+  * Otherwise, return 0.
+  */
+-unsigned long ftrace_location(unsigned long ip)
++unsigned long __ftrace_location(unsigned long ip, struct dyn_ftrace **recp)
+ {
+ 	struct dyn_ftrace *rec;
+ 	unsigned long offset;
+@@ -1591,13 +1591,22 @@ unsigned long ftrace_location(unsigned l
+ 			rec = lookup_rec(ip, ip + size - 1);
+ 	}
+ 
+-	if (rec)
++	if (rec) {
++		if (recp)
++			*recp = rec;
++
+ 		return rec->ip;
++	}
+ 
+ out:
+ 	return 0;
+ }
+ 
++unsigned long ftrace_location(unsigned long ip)
++{
++	return __ftrace_location(ip, NULL);
++}
++
+ /**
+  * ftrace_text_reserved - return true if range contains an ftrace location
+  * @start: start of range to search
+@@ -2392,6 +2401,30 @@ static struct ftrace_hash *direct_functi
+ static DEFINE_MUTEX(direct_mutex);
+ int ftrace_direct_func_count;
+ 
++static struct ftrace_func_entry *
++find_direct_entry(unsigned long *ip, struct dyn_ftrace **recp, bool warn)
++{
++	struct ftrace_func_entry *entry;
++	struct dyn_ftrace *rec = NULL;
++
++	*ip = __ftrace_location(*ip, &rec);
++	if (!*ip)
++		return NULL;
++
++	if (recp)
++		*recp = rec;
++
++	entry = __ftrace_lookup_ip(direct_functions, *ip);
++	if (!entry) {
++		WARN_ON(rec->flags & FTRACE_FL_DIRECT);
++		return NULL;
++	}
++
++	WARN_ON(warn && !(rec->flags & FTRACE_FL_DIRECT));
++
++	return entry;
++}
++
+ /*
+  * Search the direct_functions hash to see if the given instruction pointer
+  * has a direct caller attached to it.
+@@ -2400,7 +2433,7 @@ unsigned long ftrace_find_rec_direct(uns
+ {
+ 	struct ftrace_func_entry *entry;
+ 
+-	entry = __ftrace_lookup_ip(direct_functions, ip);
++	entry = find_direct_entry(&ip, NULL, false);
+ 	if (!entry)
+ 		return 0;
+ 
+@@ -5127,40 +5160,19 @@ int register_ftrace_direct(unsigned long
+ 	struct ftrace_direct_func *direct;
+ 	struct ftrace_func_entry *entry;
+ 	struct ftrace_hash *free_hash = NULL;
+-	struct dyn_ftrace *rec;
++	struct dyn_ftrace *rec = NULL;
+ 	int ret = -ENODEV;
+ 
+ 	mutex_lock(&direct_mutex);
+ 
+-	ip = ftrace_location(ip);
+-	if (!ip)
++	entry = find_direct_entry(&ip, &rec, true);
++	if (!ip || !rec)
+ 		goto out_unlock;
+ 
+-	/* See if there's a direct function at @ip already */
+ 	ret = -EBUSY;
+-	if (ftrace_find_rec_direct(ip))
+-		goto out_unlock;
+-
+-	ret = -ENODEV;
+-	rec = lookup_rec(ip, ip);
+-	if (!rec)
++	if (entry && entry->direct)
+ 		goto out_unlock;
+ 
+-	/*
+-	 * Check if the rec says it has a direct call but we didn't
+-	 * find one earlier?
+-	 */
+-	if (WARN_ON(rec->flags & FTRACE_FL_DIRECT))
+-		goto out_unlock;
+-
+-	/* Make sure the ip points to the exact record */
+-	if (ip != rec->ip) {
+-		ip = rec->ip;
+-		/* Need to check this ip for a direct. */
+-		if (ftrace_find_rec_direct(ip))
+-			goto out_unlock;
+-	}
+-
+ 	ret = -ENOMEM;
+ 	direct = ftrace_find_direct_func(addr);
+ 	if (!direct) {
+@@ -5209,33 +5221,6 @@ int register_ftrace_direct(unsigned long
+ }
+ EXPORT_SYMBOL_GPL(register_ftrace_direct);
+ 
+-static struct ftrace_func_entry *find_direct_entry(unsigned long *ip,
+-						   struct dyn_ftrace **recp)
+-{
+-	struct ftrace_func_entry *entry;
+-	struct dyn_ftrace *rec;
+-
+-	rec = lookup_rec(*ip, *ip);
+-	if (!rec)
+-		return NULL;
+-
+-	entry = __ftrace_lookup_ip(direct_functions, rec->ip);
+-	if (!entry) {
+-		WARN_ON(rec->flags & FTRACE_FL_DIRECT);
+-		return NULL;
+-	}
+-
+-	WARN_ON(!(rec->flags & FTRACE_FL_DIRECT));
+-
+-	/* Passed in ip just needs to be on the call site */
+-	*ip = rec->ip;
+-
+-	if (recp)
+-		*recp = rec;
+-
+-	return entry;
+-}
+-
+ int unregister_ftrace_direct(unsigned long ip, unsigned long addr)
+ {
+ 	struct ftrace_direct_func *direct;
+@@ -5245,11 +5230,7 @@ int unregister_ftrace_direct(unsigned lo
+ 
+ 	mutex_lock(&direct_mutex);
+ 
+-	ip = ftrace_location(ip);
+-	if (!ip)
+-		goto out_unlock;
+-
+-	entry = find_direct_entry(&ip, NULL);
++	entry = find_direct_entry(&ip, NULL, true);
+ 	if (!entry)
+ 		goto out_unlock;
+ 
+@@ -5382,11 +5363,7 @@ int modify_ftrace_direct(unsigned long i
+ 
+ 	mutex_lock(&ftrace_lock);
+ 
+-	ip = ftrace_location(ip);
+-	if (!ip)
+-		goto out_unlock;
+-
+-	entry = find_direct_entry(&ip, &rec);
++	entry = find_direct_entry(&ip, &rec, true);
+ 	if (!entry)
+ 		goto out_unlock;
+ 
