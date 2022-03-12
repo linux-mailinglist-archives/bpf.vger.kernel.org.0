@@ -2,106 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B474D6FC9
-	for <lists+bpf@lfdr.de>; Sat, 12 Mar 2022 16:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEBFE4D7014
+	for <lists+bpf@lfdr.de>; Sat, 12 Mar 2022 18:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbiCLPpn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Mar 2022 10:45:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33828 "EHLO
+        id S232167AbiCLRPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Mar 2022 12:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbiCLPpn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Mar 2022 10:45:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B813CA67;
-        Sat, 12 Mar 2022 07:44:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l4QEBebUaifZcj/TbJPAnWkVaUA1yr6/N7uY1h3AI5c=; b=Fg2Yg7p5QIHUfT85fRxcArBEjw
-        bqeKPYLrLU2OIIlPlzsfVVCUoEQT6XofF+v4HECm3I8/zRbDVWjAseHRCUxu5e4UXLJ3DqTpfjuJf
-        rsOQ1/1NpB3iKlKU62G7gZX4foThloIu5ECK892g8VKeQIfoDGvuWTbIGqNnjZ7aQAW5FWT+ga8Qj
-        wb+Df/rx9JW5QZIISJ8olPEfTr/zchhGx1m/If4XxsB4bfKgwESm7UgfbzANW56G/R9ETMbrRNyue
-        7S2YJAS1iekYHhhW5FBqs0VAupXGds00vOdMDKlZ4zsGgUcWYdByJaBOfGkr6H42JjzO+nJZ3DeIC
-        LKYl6q9Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nT3ub-002Vd3-ET; Sat, 12 Mar 2022 15:44:09 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CB954987D0D; Sat, 12 Mar 2022 16:44:07 +0100 (CET)
-Date:   Sat, 12 Mar 2022 16:44:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     X86 ML <x86@kernel.org>, joao@overdrivepizza.com,
-        hjl.tools@gmail.com, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Mark Rutland <mark.rutland@arm.com>, alyssa.milburn@intel.com,
-        Miroslav Benes <mbenes@suse.cz>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+        with ESMTP id S229529AbiCLRPW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Mar 2022 12:15:22 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987E2BC38;
+        Sat, 12 Mar 2022 09:14:15 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t14so10132197pgr.3;
+        Sat, 12 Mar 2022 09:14:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iwg/DPu16+zMt2tN/Rk8mJRCieE5sWNSvOHeRAAyzGM=;
+        b=idR4FmDrGhy80aAK7BHwwFEO5HxxbEizRYQebRPK3u8fTXNWPeBXpNwTRD3YCLkNp2
+         STBXvblBzuCOgz+Ohu+9CWpcPSo5ii4zZxqNESAR0t9mBxUYngEv0T5X7grRGiES8Pad
+         gBQyk0TF3siDGvcMCREPpMkZKOU3aA/OK9VbOBLjgLkuCW6k76PKDzGwowb2jfppExZF
+         4Mc/r8MDFW+Xa875JjhzsYcxF+YID38q8OFPo+5jADvelrfk6BBa/bNkPpiI1Rqlc6wM
+         lDEvWyPKNk3r3L+7gryD1eu4HDB8AZhN9YQ0xE68PH5fVkATQlHII8xA0TH+n6JGHEAB
+         1vIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iwg/DPu16+zMt2tN/Rk8mJRCieE5sWNSvOHeRAAyzGM=;
+        b=DFGYE9yd/KKtE0hadQGv41a8z/dQSXUpPWXHHi+WShhU7PFfJ5lprPudtC3PBXrRnR
+         Q8hs1OPLv+jfIz7EOCEZyINR3ZOV0LMdlPDt8t6ehtQE4prEG+3EQHj940xL7jDEI2hQ
+         Dlg3/pMmHEPNvVAWg4I5S0lgOes1XKd0PyzWuZ4VUFmOhOqyWi/Zq9OKLO2tdj6X6JkN
+         1yhSmSgaduoAlzOvDQJCDa260HVSWNuruwDqxf14M/zx/jlbmw3qb9aAc/x633OETPHL
+         yu2Wf+e/HsB+tiBGVcXYa9xKf6xRY0Q9O23tzhFTs19YkyZMCp5lcPW9FlKekUi4ZXKP
+         xR9w==
+X-Gm-Message-State: AOAM533NcM3nFewHHYVHiWnBVzOcBR4Lgc8zmWIJ550QGjVRaCoxSq9/
+        fT6G5n12i/hQokjv2oJ5Zvc=
+X-Google-Smtp-Source: ABdhPJz4tuxHTgmXP0IDOb7+WpXoxLJegDdQ5hzPD6DQHWpqQVBabG3QuLP1Kbng/1nv/IRQ7oWLvQ==
+X-Received: by 2002:a65:48c8:0:b0:375:9c2b:ad33 with SMTP id o8-20020a6548c8000000b003759c2bad33mr13791239pgs.232.1647105254855;
+        Sat, 12 Mar 2022 09:14:14 -0800 (PST)
+Received: from localhost.localdomain ([223.212.58.71])
+        by smtp.gmail.com with ESMTPSA id b21-20020a17090a551500b001b90ef40301sm13371718pji.22.2022.03.12.09.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 12 Mar 2022 09:14:14 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v4 00/45] x86: Kernel IBT
-Message-ID: <20220312154407.GF28057@worktop.programming.kicks-ass.net>
-References: <20220308200052.rpr4vkxppnxguirg@ast-mbp.dhcp.thefacebook.com>
- <YifSIDAJ/ZBKJWrn@hirez.programming.kicks-ass.net>
- <YifZhUVoHLT/76fE@hirez.programming.kicks-ass.net>
- <Yif8nO2xg6QnVQfD@hirez.programming.kicks-ass.net>
- <20220309190917.w3tq72alughslanq@ast-mbp.dhcp.thefacebook.com>
- <YinGZObp37b27LjK@hirez.programming.kicks-ass.net>
- <YioBZmicMj7aAlLf@hirez.programming.kicks-ass.net>
- <YionV0+v/cUBiOh0@hirez.programming.kicks-ass.net>
- <YisnG9lW6kp8lBp3@hirez.programming.kicks-ass.net>
- <CAADnVQJfffD9tH_cWThktCCwXeoRV1XLZq69rKK5vKy_y6BN8A@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH bpf-next] libbpf: Remove redundant check in btf_ext__new()
+Date:   Sun, 13 Mar 2022 01:13:54 +0800
+Message-Id: <20220312171354.661448-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJfffD9tH_cWThktCCwXeoRV1XLZq69rKK5vKy_y6BN8A@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 09:09:38AM -0800, Alexei Starovoitov wrote:
-> On Fri, Mar 11, 2022 at 2:40 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Mar 10, 2022 at 05:29:11PM +0100, Peter Zijlstra wrote:
-> >
-> > > This seems to cure most of the rest. I'm still seeing one failure:
-> > >
-> > > libbpf: prog 'connect_v4_prog': BPF program load failed: Invalid argument
-> > > libbpf: failed to load program 'connect_v4_prog'
-> > > libbpf: failed to load object './connect4_prog.o'
-> > > test_fexit_bpf2bpf_common:FAIL:tgt_prog_load unexpected error: -22 (errno 22)
-> > > #48/4 fexit_bpf2bpf/func_replace_verify:FAIL
-> >
-> >
-> > Hmm, with those two patches on I get:
-> >
-> > root@tigerlake:/usr/src/linux-2.6/tgl-build# ./test_progs -t fexit
-> > #46 fentry_fexit:OK
-> > #48 fexit_bpf2bpf:OK
-> > #49 fexit_sleep:OK
-> > #50 fexit_stress:OK
-> > #51 fexit_test:OK
-> > Summary: 5/9 PASSED, 0 SKIPPED, 0 FAILED
-> >
-> > On the tigerlake, I suppose I'm doing something wrong on the other
-> > machine because there it's even failing on the pre-ibt kernel image.
-> >
-> > I'll go write up changelogs and stick these on.
-> 
-> What is the latest branch I can use to test it?
+Since 'core_relo_len' is the last field of 'struct btf_ext_header', if
+'xxx->hdr_len' is not less than 'offsetofend(xxx, core_relo_len)', then
+'xxx->hdr_len' must also be not less than 'offsetofend(xxx, line_info_len)'.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/ibt
+We can check 'xxx->hdr_len < offsetofend(xxx, core_relo_len)' first, if it
+passes, the 'xxx->hdr_len < offsetofend(xxx, line_info_len)' check will be
+redundant, it can be removed.
 
-that also include bpf-next. Thanks!
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ tools/lib/bpf/btf.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 1383e26c5d1f..d55b44124c3e 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -2813,7 +2813,7 @@ struct btf_ext *btf_ext__new(const __u8 *data, __u32 size)
+ 	if (err)
+ 		goto done;
+ 
+-	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, line_info_len)) {
++	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len)) {
+ 		err = -EINVAL;
+ 		goto done;
+ 	}
+@@ -2826,11 +2826,6 @@ struct btf_ext *btf_ext__new(const __u8 *data, __u32 size)
+ 	if (err)
+ 		goto done;
+ 
+-	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len)) {
+-		err = -EINVAL;
+-		goto done;
+-	}
+-
+ 	err = btf_ext_setup_core_relos(btf_ext);
+ 	if (err)
+ 		goto done;
+-- 
+2.35.1
+
