@@ -2,115 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBFE4D7014
-	for <lists+bpf@lfdr.de>; Sat, 12 Mar 2022 18:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1C14D70FF
+	for <lists+bpf@lfdr.de>; Sat, 12 Mar 2022 22:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbiCLRPX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Mar 2022 12:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
+        id S232717AbiCLVTS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Mar 2022 16:19:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbiCLRPW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Mar 2022 12:15:22 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987E2BC38;
-        Sat, 12 Mar 2022 09:14:15 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id t14so10132197pgr.3;
-        Sat, 12 Mar 2022 09:14:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iwg/DPu16+zMt2tN/Rk8mJRCieE5sWNSvOHeRAAyzGM=;
-        b=idR4FmDrGhy80aAK7BHwwFEO5HxxbEizRYQebRPK3u8fTXNWPeBXpNwTRD3YCLkNp2
-         STBXvblBzuCOgz+Ohu+9CWpcPSo5ii4zZxqNESAR0t9mBxUYngEv0T5X7grRGiES8Pad
-         gBQyk0TF3siDGvcMCREPpMkZKOU3aA/OK9VbOBLjgLkuCW6k76PKDzGwowb2jfppExZF
-         4Mc/r8MDFW+Xa875JjhzsYcxF+YID38q8OFPo+5jADvelrfk6BBa/bNkPpiI1Rqlc6wM
-         lDEvWyPKNk3r3L+7gryD1eu4HDB8AZhN9YQ0xE68PH5fVkATQlHII8xA0TH+n6JGHEAB
-         1vIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iwg/DPu16+zMt2tN/Rk8mJRCieE5sWNSvOHeRAAyzGM=;
-        b=DFGYE9yd/KKtE0hadQGv41a8z/dQSXUpPWXHHi+WShhU7PFfJ5lprPudtC3PBXrRnR
-         Q8hs1OPLv+jfIz7EOCEZyINR3ZOV0LMdlPDt8t6ehtQE4prEG+3EQHj940xL7jDEI2hQ
-         Dlg3/pMmHEPNvVAWg4I5S0lgOes1XKd0PyzWuZ4VUFmOhOqyWi/Zq9OKLO2tdj6X6JkN
-         1yhSmSgaduoAlzOvDQJCDa260HVSWNuruwDqxf14M/zx/jlbmw3qb9aAc/x633OETPHL
-         yu2Wf+e/HsB+tiBGVcXYa9xKf6xRY0Q9O23tzhFTs19YkyZMCp5lcPW9FlKekUi4ZXKP
-         xR9w==
-X-Gm-Message-State: AOAM533NcM3nFewHHYVHiWnBVzOcBR4Lgc8zmWIJ550QGjVRaCoxSq9/
-        fT6G5n12i/hQokjv2oJ5Zvc=
-X-Google-Smtp-Source: ABdhPJz4tuxHTgmXP0IDOb7+WpXoxLJegDdQ5hzPD6DQHWpqQVBabG3QuLP1Kbng/1nv/IRQ7oWLvQ==
-X-Received: by 2002:a65:48c8:0:b0:375:9c2b:ad33 with SMTP id o8-20020a6548c8000000b003759c2bad33mr13791239pgs.232.1647105254855;
-        Sat, 12 Mar 2022 09:14:14 -0800 (PST)
-Received: from localhost.localdomain ([223.212.58.71])
-        by smtp.gmail.com with ESMTPSA id b21-20020a17090a551500b001b90ef40301sm13371718pji.22.2022.03.12.09.14.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 12 Mar 2022 09:14:14 -0800 (PST)
-From:   Yuntao Wang <ytcoode@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yuntao Wang <ytcoode@gmail.com>
-Subject: [PATCH bpf-next] libbpf: Remove redundant check in btf_ext__new()
-Date:   Sun, 13 Mar 2022 01:13:54 +0800
-Message-Id: <20220312171354.661448-1-ytcoode@gmail.com>
-X-Mailer: git-send-email 2.35.1
+        with ESMTP id S232710AbiCLVTQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Mar 2022 16:19:16 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEF8554B8;
+        Sat, 12 Mar 2022 13:18:09 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B2C52611E4;
+        Sat, 12 Mar 2022 21:18:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A854C340EB;
+        Sat, 12 Mar 2022 21:18:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1647119888;
+        bh=CqybOwz/LLG4adtApkIEKsJSXWtpNr58vIootKUXpck=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OQxKxxQa5Zn2OQrmNjMli8LPcHzzNJwqfx+JMI7OQFHBZjDSVh7YWUt+9t69KOhAW
+         UCqKm6adB2mUHSLKG2EOMkp5CteGIq02W2P1T8HcgYBplL01YRwO3U9nPa49rIZ08x
+         2x7U/FaKxXJuYPCZVjkM1JmwV1A2g65uP4XS9218m2o4UOwdX6S92iJTWHYqbJuF+P
+         vydcbDvMhYtDdOXp3egGHB+1sBtFw2340S/0PMHm1fsXXeUI5CvJENa1/dPubGLAK3
+         G7T5ZvHB1Fj2+wVXFvN4nGJwBwIZCX4N69e+Dc+w1noAWQOCCUBXPdHf6mcGumvCRx
+         cwLvLvgONNKYA==
+Date:   Sat, 12 Mar 2022 13:18:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, brouer@redhat.com, pabeni@redhat.com,
+        echaudro@redhat.com, toshiaki.makita1@gmail.com, andrii@kernel.org
+Subject: Re: [PATCH v4 bpf-next 2/3] veth: rework veth_xdp_rcv_skb in order
+ to accept non-linear skb
+Message-ID: <20220312131806.1c2919ba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87ilsly6db.fsf@toke.dk>
+References: <cover.1646755129.git.lorenzo@kernel.org>
+        <24703dbc3477a4b3aaf908f6226a566d27969f83.1646755129.git.lorenzo@kernel.org>
+        <87ee3auk70.fsf@toke.dk>
+        <YinkUiv/yC/gJhYZ@lore-desk>
+        <87ilsly6db.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since 'core_relo_len' is the last field of 'struct btf_ext_header', if
-'xxx->hdr_len' is not less than 'offsetofend(xxx, core_relo_len)', then
-'xxx->hdr_len' must also be not less than 'offsetofend(xxx, line_info_len)'.
+On Thu, 10 Mar 2022 20:06:40 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> So this always clones the skb if it has frags? Is that really needed? =
+=20
+> >
+> > if we look at skb_cow_data(), paged area is always considered not writa=
+ble =20
+>=20
+> Ah, right, did not know that. Seems a bit odd, but OK.
 
-We can check 'xxx->hdr_len < offsetofend(xxx, core_relo_len)' first, if it
-passes, the 'xxx->hdr_len < offsetofend(xxx, line_info_len)' check will be
-redundant, it can be removed.
+Yeah, I think I pointed that out, I may well be wrong.
 
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
----
- tools/lib/bpf/btf.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+AFAICT frags which are not writable are not marked in any clear
+way. We have SKBFL_SHARED_FRAG which seems pretty close but its
+documented as an indication that the frag can be written under our
+feet, not that we can't write to it. Subtly different. And (as
+documented) it's only used when doing SW csums, as far as I can
+grep.
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 1383e26c5d1f..d55b44124c3e 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -2813,7 +2813,7 @@ struct btf_ext *btf_ext__new(const __u8 *data, __u32 size)
- 	if (err)
- 		goto done;
- 
--	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, line_info_len)) {
-+	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len)) {
- 		err = -EINVAL;
- 		goto done;
- 	}
-@@ -2826,11 +2826,6 @@ struct btf_ext *btf_ext__new(const __u8 *data, __u32 size)
- 	if (err)
- 		goto done;
- 
--	if (btf_ext->hdr->hdr_len < offsetofend(struct btf_ext_header, core_relo_len)) {
--		err = -EINVAL;
--		goto done;
--	}
--
- 	err = btf_ext_setup_core_relos(btf_ext);
- 	if (err)
- 		goto done;
--- 
-2.35.1
-
+Maybe someone else knows the semantics.
